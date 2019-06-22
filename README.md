@@ -2,9 +2,8 @@ AstroBin microservices based on <a href="http://nodejs.org" target="blank">Node.
 with <a href="https://nestjs.com/">Nest.js<a/> backends and 
 <a href="https://angular.io" target="blank">Angular</a> frontends.
 
- - #### Certified Equipment
-   - <a href="https://travis-ci.org/astrobin/astrobin-api"><img src="https://travis-ci.org/astrobin/astrobin-api.svg?branch=master" /></a>
-   - <a href="https://codecov.io/gh/astrobin/astrobin-api"><img src="https://codecov.io/gh/astrobin/astrobin-api/branch/master/graph/badge.svg" /></a>
+<a href="https://travis-ci.org/astrobin/astrobin-api"><img src="https://travis-ci.org/astrobin/astrobin-api.svg?branch=master" /></a>
+<a href="https://codecov.io/gh/astrobin/astrobin-api"><img src="https://codecov.io/gh/astrobin/astrobin-api/branch/master/graph/badge.svg" /></a>
 
 ## Description
 
