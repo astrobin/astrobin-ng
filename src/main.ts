@@ -8,7 +8,7 @@ async function bootstrap() {
     const options = new DocumentBuilder()
         .setTitle("AstroBin Certified Equipment API")
         .setDescription("The AstroBin Certified Equipment API description")
-        .setVersion("0.1")
+        .setVersion("0.1.0")
         .addTag("astrobin-certified-equipment")
         .build();
     const document = SwaggerModule.createDocument(app, options);
