@@ -2,6 +2,7 @@ import {Test, TestingModule} from "@nestjs/testing";
 import {VendorService} from "./vendor.service";
 
 class VendorRepositoryMock {
+    // tslint:disable-next-line:no-empty
     public find() {
     }
 }
