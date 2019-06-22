@@ -3,9 +3,13 @@ import {Injectable} from "@nestjs/common";
 
 @Injectable()
 export class CertifiedEquipmentService {
-    private dbUrl: string;
+    private readonly databaseUrl: string;
 
     constructor(config: ConfigService) {
-        this.dbUrl = config.get("DB_URL");
+        this.databaseUrl = config.get("DB_URL");
+    }
+
+    public getDatabaseUrl(): string {
+        return this.databaseUrl;
     }
 }
