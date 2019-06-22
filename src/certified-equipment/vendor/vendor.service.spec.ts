@@ -1,9 +1,13 @@
 import {Test, TestingModule} from "@nestjs/testing";
 import {VendorService} from "./vendor.service";
+import {Vendor} from "./vendor.entity";
+import {VendorGenerator} from "./vendor.generator";
 
 class VendorRepositoryMock {
-    // tslint:disable-next-line:no-empty
-    public find() {
+    public find(): Promise<Vendor[]> {
+        return new Promise<Vendor[]>(resolve => {
+            resolve([VendorGenerator.generate()]);
+        });
     }
 }
 

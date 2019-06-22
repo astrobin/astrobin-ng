@@ -27,4 +27,15 @@ export class ConfigService {
                 };
         }
     }
+
+    static getSecretJwtKey(): string {
+        let secret: string = `${process.env.JWT_SECRET}`;
+
+        if (secret === undefined) {
+            // Does not really matter.
+            secret = "test.jwt.secret";
+        }
+
+        return secret;
+    }
 }
