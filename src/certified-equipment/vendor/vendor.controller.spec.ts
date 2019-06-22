@@ -19,7 +19,7 @@ describe("VendorController", () => {
     });
 
     describe("getVendors", () => {
-        it("should return some vendors", () => {
+        it("should return some vendor", () => {
             const appController = module.get<VendorController>(VendorController);
             appController.getVendors().then(vendors => {
                 expect(vendors.length).toEqual(2);
