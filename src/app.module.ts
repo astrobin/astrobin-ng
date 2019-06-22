@@ -1,9 +1,15 @@
 import {Module} from "@nestjs/common";
-import {VendorModule} from "./certified-equipment/vendors/vendor.module";
+import {ConfigModule} from "./config.module";
+import {CertifiedEquipmentModule} from "./certified-equipment/certified-equipment.module";
+import {CertifiedEquipmentService} from "./certified-equipment/certified-equipment.service";
 
 @Module({
     imports: [
-        VendorModule,
+        ConfigModule,
+        CertifiedEquipmentModule,
+    ],
+    providers: [
+        CertifiedEquipmentService,
     ],
 })
 export class AppModule {
