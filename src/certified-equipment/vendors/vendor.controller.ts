@@ -1,5 +1,6 @@
-import {Controller, Get} from "@nestjs/common";
+import {Controller, Get, Param} from "@nestjs/common";
 import {VendorService} from "./vendor.service";
+import {Vendor} from "./vendor.entity";
 
 @Controller()
 export class VendorController {
@@ -7,7 +8,12 @@ export class VendorController {
     }
 
     @Get()
-    getHello(): string {
-        return this.vendorService.getHello();
+    getVendors(): Promise<Vendor[]> {
+        return this.vendorService.search();
+    }
+
+    @Get(":id")
+    getVendor(@Param() params: any): Promise<Vendor> {
+        return this.vendorService.get(params.id);
     }
 }

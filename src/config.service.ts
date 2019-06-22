@@ -11,4 +11,20 @@ export class ConfigService {
     get(key: string): string {
         return this.envConfig[key];
     }
+
+    static getTypeOrmConfiguration(): any {
+        const env: string = `${process.env.NODE_ENV}`;
+
+        switch (env) {
+            case "test":
+            default:
+                return {
+                    type: "sqlite",
+                    database: "local-database.db",
+                    synchronize: true,
+                    logging: false,
+                    entities: [__dirname + "/**/*.entity{.ts,.js}"],
+                };
+        }
+    }
 }
