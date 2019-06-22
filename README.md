@@ -1,4 +1,4 @@
-AstroBin microservices based on <a href="http://nodejs.org" target="blank">Node.js</a> and <a href="https://nestjs.com/">Nest.js<a/>.
+AstroBin API based on <a href="http://nodejs.org" target="blank">Node.js</a> and <a href="https://nestjs.com/">Nest.js<a/>.
 
 <a href="https://travis-ci.org/astrobin/astrobin-api"><img src="https://travis-ci.org/astrobin/astrobin-api.svg?branch=master" /></a>
 <a href="https://codecov.io/gh/astrobin/astrobin-api"><img src="https://codecov.io/gh/astrobin/astrobin-api/branch/master/graph/badge.svg" /></a>
