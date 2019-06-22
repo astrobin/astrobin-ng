@@ -67,6 +67,7 @@
     },
     "collectCoverageFrom": [
       "**/*.(t|j)s",
+      "!main.ts",
       "!**/*.module.(t|j)s"
     ],
     "coverageDirectory": "../coverage",
