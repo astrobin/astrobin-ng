@@ -1,21 +1,14 @@
- <p align="center">
-    An AstroBin microservice based on <a href="http://nodejs.org" target="blank">Node.js</a>,
-    with a <a href="https://nestjs.com/">Nest.js<a/> backend and an 
-    <a href="https://angular.io" target="blank">Angular</a> frontend.
-</p>
+AstroBin microservices based on <a href="http://nodejs.org" target="blank">Node.js</a>,
+with <a href="https://nestjs.com/">Nest.js<a/> backends and 
+<a href="https://angular.io" target="blank">Angular</a> frontends.
 
-<p align="center">
-    <a href="https://travis-ci.org/astrobin/astrobin-microservice-certified-equipment">
-      <img src="https://travis-ci.org/astrobin/astrobin-microservice-certified-equipment.svg?branch=master" />
-    </a>
-    <a href="https://codecov.io/gh/astrobin/astrobin-microservice-certified-equipment">
-      <img src="https://codecov.io/gh/astrobin/astrobin-microservice-certified-equipment/branch/master/graph/badge.svg" />
-    </a>
-</p>
+ - #### Certified Equipment
+   - <a href="https://travis-ci.org/astrobin/astrobin-api"><img src="https://travis-ci.org/astrobin/astrobin-api.svg?branch=master" /></a>
+   - <a href="https://codecov.io/gh/astrobin/astrobin-api"><img src="https://codecov.io/gh/astrobin/astrobin-api/branch/master/graph/badge.svg" /></a>
 
 ## Description
 
-[AstroBin Certified Equipment Microservice](https://github.com/astrobin/astrobin-microservice-certified-equipment).
+[AstroBin API](https://github.com/astrobin/astrobin-api).
 
 ## Installation
 
@@ -56,4 +49,4 @@ $ npm run test:cov
 
 ## License
 
-AstroBin Microservice Certified Equipment is [AGPL licensed](https://www.gnu.org/licenses/agpl-3.0.en.html).
+AstroBin Microservice Certified Equipment is [AGPL 3.0 licensed](https://www.gnu.org/licenses/agpl-3.0.en.html).

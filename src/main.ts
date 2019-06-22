@@ -6,10 +6,10 @@ async function bootstrap() {
     const app = await NestFactory.create(AppModule);
 
     const options = new DocumentBuilder()
-        .setTitle("AstroBin Certified Equipment API")
-        .setDescription("The AstroBin Certified Equipment API description")
+        .setTitle("AstroBin Microservice API")
+        .setDescription("An API for AstroBin microservices")
         .setVersion("0.1.0")
-        .addTag("astrobin-certified-equipment")
+        .addTag("astrobin-microservice-api")
         .build();
     const document = SwaggerModule.createDocument(app, options);
     SwaggerModule.setup("api", app, document);

@@ -1,7 +1,7 @@
 import * as request from "supertest";
 import {Test} from "@nestjs/testing";
 import {INestApplication} from "@nestjs/common";
-import {VendorModule} from "../vendors/vendor.module";
+import {VendorModule} from "../src/certified-equipment/vendors/vendor.module";
 
 describe("Vendor (e2e)", () => {
     let app: INestApplication;
