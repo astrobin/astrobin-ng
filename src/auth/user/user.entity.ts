@@ -1,5 +1,4 @@
-import {BeforeInsert, Column, Entity, PrimaryGeneratedColumn} from "typeorm";
-import * as crypto from "crypto";
+import {Column, Entity, PrimaryGeneratedColumn} from "typeorm";
 
 @Entity()
 export class User {
@@ -9,14 +8,11 @@ export class User {
     @Column()
     name: string;
 
-    @Column()
+    @Column({
+        unique: true,
+    })
     email: string;
 
     @Column()
     password: string;
-
-    @BeforeInsert()
-    hashPassword() {
-        this.password = crypto.createHmac("sha256", this.password).digest("hex");
-    }
 }

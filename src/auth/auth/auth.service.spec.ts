@@ -5,6 +5,8 @@ import {JwtServiceMock} from "./jwt.service.mock";
 import {UserService} from "../user/user.service";
 import {UserRepositoryMock} from "../user/user.service.spec";
 import {UserGenerator} from "../user/user.generator";
+import {AuthUtils} from "./auth-utils";
+import {HttpStatus} from "@nestjs/common";
 
 describe("AuthService", () => {
     let service: AuthService;
@@ -33,26 +35,42 @@ describe("AuthService", () => {
     });
 
     describe("login", () => {
-        it("should resolve to 404 if the user does not exist", async () => {
+        it("should resolve to NOT_FOUND if the user does not exist", async () => {
             jest.spyOn((service as any).userService, "findByEmail").mockReturnValue(null);
             const result = await service.login(UserGenerator.generate());
-            expect(result).toEqual({status: 404});
+            expect(result).toEqual({status: HttpStatus.NOT_FOUND});
         });
 
         it("should be ok", async () => {
             const user = UserGenerator.generate();
             jest.spyOn((service as any).userService, "findByEmail").mockReturnValue(user);
+            jest.spyOn(AuthUtils, "hashPassword").mockReturnValue(user.password);
             const result = await service.login(user);
             expect(result).toEqual({
                 access_token: undefined,
                 expires_in: 3600,
-                status: 200,
+                status: HttpStatus.OK,
                 user_id: user.id,
             });
+        });
+
+        it("should resolve to FORBIDDEN if password is incorrect", async () => {
+            const user = UserGenerator.generate();
+            jest.spyOn((service as any).userService, "findByEmail").mockReturnValue(user);
+            jest.spyOn(AuthUtils, "hashPassword").mockReturnValue("wrong password");
+            const result = await service.login(user);
+            expect(result).toEqual({status: HttpStatus.FORBIDDEN});
         });
     });
 
     describe("register", () => {
+        it("should fail if the user (by email) exists already", async () => {
+            const user = UserGenerator.generate();
+            jest.spyOn((service as any).userService, "findByEmail").mockReturnValue(user);
+            const result = await service.register(user);
+            expect(result).toEqual({status: HttpStatus.FORBIDDEN});
+        });
+
         it("should be ok", async () => {
             const user = UserGenerator.generate();
             jest.spyOn((service as any).userService, "create").mockReturnValue(user);

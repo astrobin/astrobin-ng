@@ -1,5 +1,6 @@
 import * as faker from "faker";
 import {User} from "./user.entity";
+import {AuthUtils} from "../auth/auth-utils";
 
 export class UserGenerator {
     static generate(): User {
@@ -7,7 +8,7 @@ export class UserGenerator {
             id: faker.random.uuid(),
             name: faker.name.findName(),
             email: faker.internet.email(),
-            password: faker.internet.password(),
+            password: AuthUtils.hashPassword(faker.internet.password()),
         } as User;
     }
 }

@@ -4,6 +4,7 @@ import {AuthService} from "./auth.service";
 import {AuthServiceMock} from "./auth.service.mock";
 import {UserGenerator} from "../user/user.generator";
 import {User} from "../user/user.entity";
+import {HttpStatus} from "@nestjs/common";
 
 describe("Auth Controller", () => {
     let controller: AuthController;
@@ -27,9 +28,9 @@ describe("Auth Controller", () => {
     });
 
     describe("login", () => {
-        it("should return 404 if user does not exist", async () => {
+        it("should return NOT_FOUND if user does not exist", async () => {
             const result = await controller.login(null);
-            expect(result).toEqual({status: 404});
+            expect(result).toEqual({status: HttpStatus.NOT_FOUND});
         });
 
         it("should return the very same user", async () => {

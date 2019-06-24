@@ -13,7 +13,7 @@ export class AuthController {
     }
 
     @Post("register")
-    async register(@Body() user: User): Promise<User> {
+    async register(@Body() user: User): Promise<User | {status: number}> {
         return this.authService.register(user);
     }
 }

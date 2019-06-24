@@ -2,6 +2,7 @@ import {Injectable} from "@nestjs/common";
 import {InjectRepository} from "@nestjs/typeorm";
 import {User} from "./user.entity";
 import {Repository} from "typeorm";
+import {AuthUtils} from "../auth/auth-utils";
 
 @Injectable()
 export class UserService {
@@ -24,7 +25,8 @@ export class UserService {
         });
     }
 
-    async create(user: User): Promise<User> {
-        return await this.repository.save(user);
+    async create(userData: User): Promise<User> {
+        userData.password = AuthUtils.hashPassword(userData.password);
+        return await this.repository.save(userData);
     }
 }

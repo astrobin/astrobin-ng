@@ -1,8 +1,16 @@
 import {JwtService} from "@nestjs/jwt";
 import {UserService} from "../user/user.service";
-import {Injectable} from "@nestjs/common";
+import {HttpStatus, Injectable} from "@nestjs/common";
 import {AuthServiceInterface} from "./auth.service.interface";
 import {User} from "../user/user.entity";
+import {AuthUtils} from "./auth-utils";
+
+interface JwtTokenInterface {
+    expires_in: number;
+    access_token: string;
+    user_id: string;
+    status: number;
+}
 
 @Injectable()
 export class AuthService implements AuthServiceInterface {
@@ -12,30 +20,35 @@ export class AuthService implements AuthServiceInterface {
     ) {
     }
 
-    public async login(user: User): Promise<User | { status: number }> {
-        return this.validate(user).then((userData) => {
-            if (!userData) {
-                return {status: 404};
-            }
+    public async login(userData: User): Promise<JwtTokenInterface | { status: number }> {
+        const user = await this.userService.findByEmail(userData.email);
 
-            const payload = `${userData.id}`;
-            const accessToken = this.jwtService.sign(payload);
+        if (!user) {
+            return {status: HttpStatus.NOT_FOUND};
+        }
 
-            return {
-                expires_in: 3600,
-                access_token: accessToken,
-                user_id: payload,
-                status: 200,
-            };
-        });
+        if (AuthUtils.hashPassword(userData.password) !== user.password) {
+            return {status: HttpStatus.FORBIDDEN};
+        }
+
+        const payload = `${user.id}`;
+        const accessToken = this.jwtService.sign(payload);
+
+        return {
+            expires_in: 3600,
+            access_token: accessToken,
+            user_id: payload,
+            status: HttpStatus.OK,
+        };
     }
 
-    public async register(user: User): Promise<User> {
-        return this.userService.create(user);
-    }
+    public async register(userData: User): Promise<User | {status: number}> {
+        const user = await this.userService.findByEmail(userData.email);
 
-    private async validate(userData: User): Promise<User> {
-        return await this.userService.findByEmail(userData.email);
-        // TODO: check for password.
+        if (user) {
+            return {status: HttpStatus.FORBIDDEN};
+        }
+
+        return this.userService.create(userData);
     }
 }
