@@ -1,41 +1,28 @@
-import * as dotenv from "dotenv";
-import * as fs from "fs";
-
 export class ConfigService {
-    private readonly envConfig: { [key: string]: string };
-
-    constructor(filePath: string) {
-        this.envConfig = dotenv.parse(fs.readFileSync(filePath));
-    }
-
-    get(key: string): string {
-        return this.envConfig[key];
+    static get(key: string): string {
+        return process.env[key];
     }
 
     static getTypeOrmConfiguration(): any {
-        const env: string = `${process.env.NODE_ENV}`;
+        const options = {
+            type: process.env.DB_TYPE || "sqlite",
+            database: undefined,
+            url: undefined,
+            synchronize: true,
+            logging: false,
+            entities: [__dirname + "/**/*.entity{.ts,.js}"],
+        };
 
-        switch (env) {
-            case "test":
-            default:
-                return {
-                    type: "sqlite",
-                    database: "local-database.db",
-                    synchronize: true,
-                    logging: false,
-                    entities: [__dirname + "/**/*.entity{.ts,.js}"],
-                };
+        if (options.type === "postgres") {
+            options.url = process.env.DB_URL;
+        } else {
+            options.database = process.env.DB_NAME || "astrobin-api.db";
         }
+
+        return options;
     }
 
     static getSecretJwtKey(): string {
-        let secret: string = `${process.env.JWT_SECRET}`;
-
-        if (secret === undefined) {
-            // Does not really matter.
-            secret = "test.jwt.secret";
-        }
-
-        return secret;
+        return process.env.JWT_SECRET || "test.jwt.secret";
     }
 }

@@ -20,7 +20,7 @@ describe("CertifiedEquipmentService", () => {
         service = module.get<CertifiedEquipmentService>(CertifiedEquipmentService);
     });
 
-    it("databaseUrl should be defined", () => {
-        expect(service.getDatabaseUrl()).toEqual("mockDatabaseUrl");
+    it("should compile", () => {
+        expect(service).toBeDefined();
     });
 });
