@@ -52,7 +52,7 @@
     "concurrently": "^4.1.0",
     "faker": "^4.1.0",
     "jest": "24.7.1",
-    "nodemon": "1.18.11",
+    "nodemon": "1.19.1",
     "prettier": "1.17.0",
     "sqlite3": "^4.0.9",
     "supertest": "4.0.2",
