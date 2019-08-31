@@ -1,19 +1,22 @@
-import {Controller, Get, Param} from "@nestjs/common";
-import {VendorService} from "./vendor.service";
-import {Vendor} from "./vendor.entity";
+import { Controller } from "@nestjs/common";
+import { VendorService } from "./vendor.service";
+import { Vendor } from "./vendor.entity";
+import { Crud } from "@nestjsx/crud";
 
-@Controller()
+@Crud({
+    model: {
+        type: Vendor,
+    },
+    params: {
+        id: {
+            field: "id",
+            type: "uuid",
+            primary: true,
+        },
+    },
+})
+@Controller("vendors")
 export class VendorController {
-    constructor(private readonly vendorService: VendorService) {
-    }
-
-    @Get()
-    getVendors(): Promise<Vendor[]> {
-        return this.vendorService.search();
-    }
-
-    @Get(":id")
-    getVendor(@Param() params: any): Promise<Vendor> {
-        return this.vendorService.get(params.id);
+    constructor(private readonly service: VendorService) {
     }
 }

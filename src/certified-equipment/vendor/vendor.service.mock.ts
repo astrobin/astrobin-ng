@@ -1,9 +1,8 @@
 import {Injectable} from "@nestjs/common";
 import {Vendor} from "./vendor.entity";
-import {VendorServiceInterface} from "./vendor.service.interface";
 
 @Injectable()
-export class VendorServiceMock implements VendorServiceInterface {
+export class VendorServiceMock {
     private readonly mockVendors: Vendor[] = [
         {
             id: "1",
