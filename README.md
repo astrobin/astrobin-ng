@@ -2,6 +2,7 @@ AstroBin API based on <a href="http://nodejs.org" target="blank">Node.js</a> and
 
 <a href="https://travis-ci.org/astrobin/astrobin-api"><img src="https://travis-ci.org/astrobin/astrobin-api.svg?branch=master" /></a>
 <a href="https://codecov.io/gh/astrobin/astrobin-api"><img src="https://codecov.io/gh/astrobin/astrobin-api/branch/master/graph/badge.svg" /></a>
+<a href="https://david-dm.org/astrobin/astrobin-api" title="dependencies status"><img src="https://david-dm.org/astrobin/astrobin-api/status.svg"/></a>
 
 ## Description
 
