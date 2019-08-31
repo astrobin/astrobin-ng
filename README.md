@@ -46,4 +46,4 @@ $ npm run test:cov
 
 ## License
 
-AstroBin Microservice Certified Equipment is [AGPL 3.0 licensed](https://www.gnu.org/licenses/agpl-3.0.en.html).
+AstroBin API is [AGPL 3.0 licensed](https://www.gnu.org/licenses/agpl-3.0.en.html).
