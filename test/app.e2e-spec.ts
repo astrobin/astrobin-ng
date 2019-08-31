@@ -1,7 +1,7 @@
 import * as request from "supertest";
-import {Test} from "@nestjs/testing";
-import {HttpStatus, INestApplication} from "@nestjs/common";
-import {AppModule} from "../src/app.module";
+import { Test } from "@nestjs/testing";
+import { HttpStatus, INestApplication } from "@nestjs/common";
+import { AppModule } from "../src/app.module";
 
 describe("App (e2e)", () => {
     let app: INestApplication;
@@ -15,10 +15,11 @@ describe("App (e2e)", () => {
         await app.init();
     });
 
-    it("/ (GET)", () => {
-        return request(app.getHttpServer())
-            .get("/")
-            .expect(HttpStatus.OK)
-            .expect("[]");
+    describe("/", () => {
+        it("should be 404", () => {
+            return request(app.getHttpServer())
+                .get("/")
+                .expect(HttpStatus.NOT_FOUND);
+        });
     });
 });
