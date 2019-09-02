@@ -1,7 +1,8 @@
-import { Controller } from "@nestjs/common";
+import { Controller, UseGuards } from "@nestjs/common";
 import { VendorService } from "./vendor.service";
 import { Vendor } from "./vendor.entity";
 import { Crud } from "@nestjsx/crud";
+import { AuthGuard } from "@nestjs/passport";
 
 @Crud({
     model: {
@@ -16,6 +17,7 @@ import { Crud } from "@nestjsx/crud";
     },
 })
 @Controller("vendors")
+@UseGuards(AuthGuard("jwt"))
 export class VendorController {
     constructor(private readonly service: VendorService) {
     }
