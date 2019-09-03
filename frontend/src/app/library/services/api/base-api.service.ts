@@ -1,3 +1,5 @@
+import { environment } from "../../../../environments/environment";
+
 export class BaseApiService {
-  protected baseUrl = "/api/v2";
+  protected baseUrl = environment.legacyApiUrl + "/api/v2";
 }

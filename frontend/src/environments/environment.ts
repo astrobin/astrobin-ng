@@ -5,6 +5,7 @@
 export const environment = {
   production: false,
   legacyBaseUrl: "http://localhost:8084",
+  legacyApiUrl: "http://localhost:8084"
 };
 
 /*
