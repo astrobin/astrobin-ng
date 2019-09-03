@@ -21,12 +21,22 @@ module.exports = function(config) {
       reports: ["html", "lcovonly", "text-summary"],
       fixWebpackSourcePaths: true
     },
-    reporters: ["progress", "kjhtml"],
+    reporters: ["progress"],
     port: 9876,
     colors: true,
     logLevel: config.LOG_INFO,
     autoWatch: true,
-    browsers: ["PhantomJS"],
-    singleRun: true
+    browsers: ["ChromeHeadlessOptimized"],
+    singleRun: true,
+    customLaunchers: {
+      ChromeHeadlessOptimized: {
+        base: 'ChromeHeadless',
+        flags: [
+          '--disable-gpu',
+          '--remote-debugging-port=9222',
+          '--no-sandbox',
+        ],
+      }
+    }
   });
 };
