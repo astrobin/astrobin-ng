@@ -17,9 +17,6 @@
         "build": {
           "builder": "@angular-builders/custom-webpack:browser",
           "options": {
-            "customWebpackConfig": {
-              "path": "./extra-webpack.config.js"
-            },
             "outputPath": "../astrobin/static/astrobin/bundles/frontend",
             "index": "src/index.html",
             "main": "src/main.ts",
