@@ -31,7 +31,7 @@
     "core-js": "2.6.0",
     "intl": "1.2.5",
     "rxjs": "6.3.3",
-    "tslib": "1.9.3",
+    "tslib": "1.10.0",
     "webpack-bundle-tracker": "0.4.2-beta",
     "zone.js": "0.8.26"
   },
