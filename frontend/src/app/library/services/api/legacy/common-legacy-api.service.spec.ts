@@ -1,23 +1,23 @@
 import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { of } from "rxjs";
-import { UserProfileModel } from "../../models/common/userprofile.model";
-import { UserModel } from "../../models/common/user.model";
-import { UserSubscriptionModel } from "../../models/common/usersubscription.model";
+import { UserProfileModel } from "../../../models/common/userprofile.model";
+import { UserModel } from "../../../models/common/user.model";
+import { UserSubscriptionModel } from "../../../models/common/usersubscription.model";
 
-import { CommonApiService } from "./common-api.service";
+import { CommonLegacyApiService } from "./common-legacy-api.service";
 
 describe("CommonApiService", () => {
-  let service: CommonApiService;
+  let service: CommonLegacyApiService;
   let httpMock: HttpTestingController;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
-      providers: [CommonApiService],
+      providers: [CommonLegacyApiService],
     });
 
-    service = TestBed.get(CommonApiService);
+    service = TestBed.get(CommonLegacyApiService);
     httpMock = TestBed.get(HttpTestingController);
   });
 

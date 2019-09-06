@@ -1,9 +1,9 @@
 import { Injectable } from "@angular/core";
-import { forkJoin, of } from "rxjs";
+import { BehaviorSubject, forkJoin, Observable, of } from "rxjs";
 import { flatMap, share } from "rxjs/operators";
 import { SubscriptionModel } from "../models/common/subscription.model";
 import { UserProfileModel } from "../models/common/userprofile.model";
-import { CommonApiService } from "./api/common-api.service";
+import { CommonLegacyApiService } from "./api/legacy/common-legacy-api.service";
 
 export interface IAppContext {
   currentUserProfile: UserProfileModel;
@@ -14,6 +14,8 @@ export interface IAppContext {
   providedIn: "root",
 })
 export class AppContextService {
+  private _subject = new BehaviorSubject<IAppContext>(undefined);
+
   private _appContext = {} as IAppContext;
 
   private _getCurrentUserProfile$ = this.commonApi.getCurrentUserProfile().pipe(share());
@@ -40,30 +42,36 @@ export class AppContextService {
 
   private _getSubscriptions$ = this.commonApi.getSubscriptions().pipe(share());
 
-  constructor(public commonApi: CommonApiService) {
+  constructor(public commonApi: CommonLegacyApiService) {
   }
 
   load(): Promise<any> {
-    return forkJoin(
-      this._getCurrentUserProfile$,
-      this._getCurrentUser$,
-      this._getUserSubscriptions$,
-      this._getSubscriptions$,
-    ).toPromise().then((results) => {
-      const userProfile: UserProfileModel = {
-        ...results[0],
-        ...{ userObject: results[1] },
-        ...{ userSubscriptionObjects: results[2] },
-      };
+    return new Promise<any>((resolve) => {
+      forkJoin(
+        this._getCurrentUserProfile$,
+        this._getCurrentUser$,
+        this._getUserSubscriptions$,
+        this._getSubscriptions$,
+      ).subscribe((results) => {
+        const userProfile: UserProfileModel = {
+          ...results[0],
+          ...{ userObject: results[1] },
+          ...{ userSubscriptionObjects: results[2] },
+        };
 
-      this._appContext = {
-        currentUserProfile: userProfile,
-        subscriptions: results[3],
-      };
+        this._appContext = {
+          currentUserProfile: userProfile,
+          subscriptions: results[3],
+        };
+
+        this._subject.next(this._appContext);
+
+        resolve(this);
+      });
     });
   }
 
-  get(): IAppContext {
-    return this._appContext;
+  get(): Observable<IAppContext> {
+    return this._subject.asObservable();
   }
 }

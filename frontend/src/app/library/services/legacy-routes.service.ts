@@ -9,7 +9,6 @@ const BASE_URL = environment.legacyBaseUrl;
 })
 export class LegacyRoutesService {
   HOME = BASE_URL + "/";
-  LOGIN = BASE_URL + "/accounts/login/";
   REGISTER = BASE_URL + "/accounts/register/";
   SUBSCRIPTIONS = BASE_URL + "/subscriptions/";
   UPLOAD = BASE_URL + "/upload/";
@@ -19,7 +18,6 @@ export class LegacyRoutesService {
   RAWDATA_HELP = BASE_URL + "/rawdata/help/1/";
   INBOX = BASE_URL + "/messages/inbox/";
   SETTINGS = BASE_URL + "/profile/edit/basic/";
-  LOGOUT = BASE_URL + "/accounts/logout/";
   FORUM_HOME = BASE_URL + "/forum/";
   FORUM_LATEST = BASE_URL + "/forum/topic/latest/";
   FORUM_SUBSCRIBED = BASE_URL + "/forum/topic/subscribed";

@@ -1,13 +1,14 @@
 import { TestBed } from "@angular/core/testing";
 import { of } from "rxjs";
-import { CommonApiService } from "./api/common-api.service";
+import { CommonLegacyApiService } from "./api/legacy/common-legacy-api.service";
 
 import { AppContextService } from "./app-context.service";
 
 class MockCommonApiService {
   getUser = jasmine.createSpy("getUser").and.returnValue(of({ id: 1 }));
-  getCurrentUserProfile = jasmine.createSpy("getCurrentUserProfile").and.returnValue(of({ user: 1 }));
+  getCurrentUserProfile = jasmine.createSpy("getCurrentUserProfile").and.returnValue(of({ id: 1 }));
   getSubscriptions = jasmine.createSpy("getSubscriptions").and.returnValue(of([]));
+  getUserSubscriptions = jasmine.createSpy("getUserSubscriptions").and.returnValue(of([]));
 }
 
 describe("AppContextService", () => {
@@ -16,10 +17,14 @@ describe("AppContextService", () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        { provide: CommonApiService, useClass: MockCommonApiService },
+        { provide: CommonLegacyApiService, useClass: MockCommonApiService },
       ],
     });
     service = TestBed.get(AppContextService);
+  });
+
+  afterAll(() => {
+    TestBed.resetTestingModule();
   });
 
   it("should be created", () => {
@@ -28,13 +33,13 @@ describe("AppContextService", () => {
 
   it("currentUserProfile should be available", () => {
     service.load().then((response) => {
-      expect(response.get().currentUserProfile.user).toEqual(1);
+      expect(response.get().currentUserProfile.id).toEqual(1);
     });
   });
 
   it("currentUser should be available", () => {
-    service.load().then((response) => {
-      expect(response.get().currentUser.id).toEqual(1);
+    service.load().then((contextService: AppContextService) => {
+      expect(contextService.get().currentUserProfile.userObject.id).toEqual(1);
     });
   });
 });

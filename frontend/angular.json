@@ -7,7 +7,7 @@
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
-      "prefix": "app",
+      "prefix": "astrobin",
       "schematics": {
         "@schematics/angular:component": {
           "styleext": "scss"

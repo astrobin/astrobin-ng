@@ -2,16 +2,16 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
-import { SubscriptionModel } from "../../models/common/subscription.model";
-import { UserProfileModel } from "../../models/common/userprofile.model";
-import { UserModel } from "../../models/common/user.model";
-import { UserSubscriptionModel } from "../../models/common/usersubscription.model";
-import { BaseApiService } from "./base-api.service";
+import { SubscriptionModel } from "../../../models/common/subscription.model";
+import { UserProfileModel } from "../../../models/common/userprofile.model";
+import { UserModel } from "../../../models/common/user.model";
+import { UserSubscriptionModel } from "../../../models/common/usersubscription.model";
+import { BaseLegacyApiService } from "./base-legacy-api.service";
 
 @Injectable({
   providedIn: "root",
 })
-export class CommonApiService extends BaseApiService {
+export class CommonLegacyApiService extends BaseLegacyApiService {
   configUrl = this.baseUrl + "/common";
 
   constructor(private http: HttpClient) {

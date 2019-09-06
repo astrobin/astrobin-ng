@@ -1,0 +1,30 @@
+@import "variables";
+@import "mixins";
+
+.modal {
+  .modal-content {
+    background-color: $lightest-grey;
+    border-radius: .4rem;
+  }
+  .modal-header {
+    @include darkest-background-texture;
+
+    .close {
+      color: $grey;
+      text-shadow: none;
+    }
+  }
+
+  .modal-body {
+    .modal-error {
+      background: $error-red;
+      color: $white;
+      padding: 1rem;
+      margin: calc(-1rem - 2px) -1rem 1rem;
+    }
+  }
+
+  .modal-footer {
+    border-top-color: $lighter-grey;
+  }
+}

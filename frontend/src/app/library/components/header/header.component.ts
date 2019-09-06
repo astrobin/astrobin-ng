@@ -1,7 +1,11 @@
-import { Component, OnInit } from "@angular/core";
+import { Component } from "@angular/core";
 import { AppContextService, IAppContext } from "../../services/app-context.service";
 import { LegacyRoutesService } from "../../services/legacy-routes.service";
 import { UsersService } from "../../services/users.service";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { LoginModalComponent } from "../auth/login-modal/login-modal.component";
+import { AuthService } from "../../services/auth.service";
+import { Observable } from "rxjs";
 
 interface IFlag {
   languageCode: string;
@@ -10,14 +14,16 @@ interface IFlag {
 }
 
 @Component({
-  selector: "app-header",
+  selector: "astrobin-header",
   templateUrl: "./header.component.html",
   styleUrls: ["./header.component.scss"],
 })
-export class HeaderComponent implements OnInit {
-  isCollapsed = true;
-  appContext: IAppContext;
-  flags: IFlag[] = [
+export class HeaderComponent {
+  public isCollapsed = true;
+
+  public appContext$: Observable<IAppContext>;
+
+  public flags: IFlag[] = [
     { languageCode: "en", countryCode: "us", label: "English (US)" },
     { languageCode: "en-GB", countryCode: "gb", label: "English (UK)" },
     { languageCode: "it", countryCode: "it", label: "Italiano" },
@@ -36,11 +42,22 @@ export class HeaderComponent implements OnInit {
     { languageCode: "ja", countryCode: "jp", label: "日本語" },
   ];
 
-  constructor(appContext: AppContextService, public legacyRoutes: LegacyRoutesService,
-              public usersService: UsersService) {
-    this.appContext = appContext.get();
+  public constructor(
+    appContext: AppContextService,
+    private modalService: NgbModal,
+    public legacyRoutes: LegacyRoutesService,
+    public authService: AuthService,
+    public usersService: UsersService) {
+    this.appContext$ = appContext.get();
   }
 
-  ngOnInit() {
+  public openLoginModal($event) {
+    $event.preventDefault();
+    this.modalService.open(LoginModalComponent, { centered: true });
+  }
+
+  public logout($event) {
+    $event.preventDefault();
+    this.authService.logout();
   }
 }
