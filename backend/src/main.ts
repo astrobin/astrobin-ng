@@ -4,7 +4,7 @@ import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import * as basicAuth from "express-basic-auth";
 
 async function bootstrap() {
-    const app = await NestFactory.create(AppModule);
+    const app = await NestFactory.create(AppModule, {cors: true});
 
     const options = new DocumentBuilder()
         .setTitle("AstroBin Microservice API")
@@ -22,6 +22,12 @@ async function bootstrap() {
         },
     }));
     SwaggerModule.setup(swaggerPath, app, document);
+
+    app.enableCors({
+        origin: "*",
+        methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+        allowedHeaders: "Content-Type, Accept",
+    });
 
     await app.listen(process.env.PORT || 3000);
 }

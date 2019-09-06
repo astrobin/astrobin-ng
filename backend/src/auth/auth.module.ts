@@ -1,21 +1,18 @@
-import { Module } from "@nestjs/common";
-import { TypeOrmModule } from "@nestjs/typeorm";
-import { User } from "./user/user.entity";
-import { UserService } from "./user/user.service";
+import { HttpModule, Module } from "@nestjs/common";
 import { JwtModule } from "@nestjs/jwt";
 import { ConfigService } from "../config.service";
-import { AuthService } from "./auth/auth.service";
-import { AuthController } from "./auth/auth.controller";
-import { JwtStrategy } from "./auth/jwt.strategy";
+import { AuthService } from "./auth.service";
+import { AuthController } from "./auth.controller";
+import { JwtStrategy } from "./jwt.strategy";
 
 @Module({
     imports: [
-        TypeOrmModule.forFeature([User]),
+        HttpModule,
         JwtModule.register({
             secretOrPrivateKey: ConfigService.getSecretJwtKey(),
         }),
     ],
-    providers: [UserService, AuthService, JwtStrategy],
+    providers: [AuthService, JwtStrategy],
     controllers: [AuthController],
 })
 export class AuthModule {

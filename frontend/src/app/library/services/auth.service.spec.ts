@@ -35,12 +35,12 @@ describe("AuthService", () => {
       service.login("foo", "bar").subscribe(result => {
         expect(result).toEqual(true);
         expect(service.isAuthenticated()).toBe(true);
-        expect(AuthService.getToken()).toBe("123");
+        expect(AuthService.getLegacyApiToken()).toBe("123");
 
         service.logout();
 
         expect(service.isAuthenticated()).toBe(false);
-        expect(AuthService.getToken()).toBe(null);
+        expect(AuthService.getLegacyApiToken()).toBe(null);
       });
     });
 
@@ -50,12 +50,12 @@ describe("AuthService", () => {
       service.login("foo", "bar").subscribe(result => {
         expect(result).toEqual(true);
         expect(service.isAuthenticated()).toBe(true);
-        expect(AuthService.getToken()).toBe("123");
+        expect(AuthService.getLegacyApiToken()).toBe("123");
 
         service.logout();
 
         expect(service.isAuthenticated()).toBe(false);
-        expect(AuthService.getToken()).toBe(null);
+        expect(AuthService.getLegacyApiToken()).toBe(null);
       });
     });
   });

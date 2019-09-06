@@ -2,11 +2,19 @@ import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from "@angular/c
 import { Injectable } from "@angular/core";
 import { AuthService } from "./auth.service";
 import { Observable } from "rxjs";
+import { environment } from "../../../environments/environment";
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    const authToken = AuthService.getToken();
+  intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    let authToken: string;
+
+    if (request.url.startsWith(environment.legacyApiUrl)) {
+      authToken = AuthService.getLegacyApiToken();
+    } else if (request.url.startsWith(environment.ngApiUrl)) {
+      authToken = AuthService.getNgApiToken();
+    }
+
     const headers = {
       "Content-Type": "application/json; charset=utf-8",
       "Accept": "application/json",
@@ -16,10 +24,10 @@ export class AuthInterceptor implements HttpInterceptor {
       headers["Authorization"] = `Token ${authToken}`;
     }
 
-    req = req.clone({
+    request = request.clone({
       setHeaders: headers,
     });
 
-    return next.handle(req);
+    return next.handle(request);
   }
 }

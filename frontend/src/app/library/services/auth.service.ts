@@ -1,8 +1,7 @@
 import { Injectable } from "@angular/core";
-import { Observable, of } from "rxjs";
+import { forkJoin, Observable, of } from "rxjs";
 import { catchError, map } from "rxjs/operators";
 import { AuthLegacyApiService } from "./api/legacy/auth-legacy-api.service";
-import { AuthApiService } from "./api/interfacees/auth-api.service.interface";
 import { AuthNgApiService } from "./api/ng/auth-ng-api.service";
 import { AppContextService } from "./app-context.service";
 
@@ -24,38 +23,36 @@ export class AuthService {
     public appContext: AppContextService) {
   }
 
-  public static getToken(): string {
+  public static getLegacyApiToken(): string {
     return localStorage.getItem(AuthService.LEGACY_LOCAL_STORAGE_KEY);
   }
 
-  public login(handle: string, password: string, type = AuthServiceType.LEGACY): Observable<boolean> {
-    let api: AuthApiService;
-    let localStorageKey: string;
+  public static getNgApiToken(): string {
+    return localStorage.getItem(AuthService.NG_LOCAL_STORAGE_KEY);
+  }
 
-    if (type === AuthServiceType.LEGACY) {
-      api = this.authLegacyApi;
-      localStorageKey = AuthService.LEGACY_LOCAL_STORAGE_KEY;
-    } else {
-      api = this.authNgApi;
-      localStorageKey = AuthService.NG_LOCAL_STORAGE_KEY;
-    }
-
-    return api.login(handle, password).pipe(
-      map(token => {
-        localStorage.setItem(localStorageKey, token);
+  public login(handle: string, password: string): Observable<boolean> {
+    return forkJoin([
+      this.authLegacyApi.login(handle, password),
+      this.authNgApi.login(handle, password),
+    ]).pipe(
+      map(tokens => {
+        localStorage.setItem(AuthService.LEGACY_LOCAL_STORAGE_KEY, tokens[0]);
+        localStorage.setItem(AuthService.NG_LOCAL_STORAGE_KEY, tokens[1]);
         this.appContext.load();
         return true;
       }),
-      catchError(() => of(false)),
+      catchError(() => of(false))
     );
   }
 
   public logout(): void {
     localStorage.removeItem(AuthService.LEGACY_LOCAL_STORAGE_KEY);
+    localStorage.removeItem(AuthService.NG_LOCAL_STORAGE_KEY);
     this.appContext.load();
   }
 
   public isAuthenticated(): boolean {
-    return AuthService.getToken() != null;
+    return AuthService.getLegacyApiToken() != null && AuthService.getNgApiToken() != null;
   }
 }
