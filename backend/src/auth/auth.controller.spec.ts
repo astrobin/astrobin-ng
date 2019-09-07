@@ -3,14 +3,21 @@ import { AuthController } from "./auth.controller";
 import { AuthService } from "./auth.service";
 import { Observable, of } from "rxjs";
 import { AuthServiceInterface } from "./auth.service.interface";
+import { JwtTokenInterface } from "../../../shared/interfaces/jwt-token.interface";
 
 class AuthServiceMock implements AuthServiceInterface {
-    public login(handle: string, password: string): Observable<{ token: string }> {
+    public login(handle: string, password: string): Observable<JwtTokenInterface> {
         if (handle === "ok") {
-            return of({token: "1234"});
+            return of({
+                token: "1234",
+                user_profile_id: 1,
+            });
         }
 
-        return of({token: null});
+        return of({
+            token: null,
+            user_profile_id: null,
+        });
     }
 }
 
