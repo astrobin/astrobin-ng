@@ -9,6 +9,8 @@ import { LibraryModule } from "./library/library.module";
 import { AppContextService } from "./library/services/app-context.service";
 import { SharedModule } from "./library/shared.module";
 import { LanguageLoader } from "./translate-loader";
+import { CommonLegacyApiService } from "./library/services/api/legacy/common-legacy-api.service";
+import { CommonLegacyApiServiceMock } from "./library/services/api/legacy/common-legacy-api.service-mock";
 
 describe("AppComponent", () => {
   beforeEach(async(() => {
@@ -27,6 +29,9 @@ describe("AppComponent", () => {
       ],
       providers: [
         AppContextService,
+        {
+          provide: CommonLegacyApiService, useClass: CommonLegacyApiServiceMock,
+        },
         {
           provide: APP_INITIALIZER,
           useFactory: appInitializer,
