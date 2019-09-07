@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "AstroBin API",
   "license": "AGPL-3.0",
-  "repository": "https://github.com/astrobin/astrobin-api",
+  "repository": "https://github.com/astrobin/astrobin-ng",
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "format": "prettier --write \\\\\\\\\\\\\\\"src/**/*.ts\\\\\\\\\\\\\\\" \\\\\\\\\\\\\\\"test/**/*.ts\\\\\\\\\\\\\\\"",
