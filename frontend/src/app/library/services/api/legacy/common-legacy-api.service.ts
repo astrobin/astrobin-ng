@@ -25,7 +25,7 @@ export class CommonLegacyApiService extends BaseLegacyApiService {
   }
 
   getCurrentUserProfile(): Observable<UserProfileModel> {
-    return this.http.get<UserProfileModel[]>(this.configUrl + "/userprofiles/current").pipe(
+    return this.http.get<UserProfileModel[]>(this.configUrl + "/userprofiles/current/").pipe(
       map(response => {
         if (response.length > 0) {
           return new UserProfileModel(response[0]);
@@ -46,7 +46,7 @@ export class CommonLegacyApiService extends BaseLegacyApiService {
   }
 
   getSubscriptions(): Observable<SubscriptionModel[]> {
-    return this.http.get<SubscriptionModel[]>(`${this.configUrl}/subscriptions`);
+    return this.http.get<SubscriptionModel[]>(`${this.configUrl}/subscriptions/`);
   }
 
   getUserSubscriptions(user?: UserModel): Observable<UserSubscriptionModel[]> {
