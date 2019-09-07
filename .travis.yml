@@ -23,8 +23,8 @@ before_script:
   - (cd frontend; npm run build)
 
 script:
-  - (cd backend; npm test:cov)
-  - (cd frontend; npm test:cov)
+  - (cd backend; npm run test:cov)
+  - (cd frontend; npm run test:cov)
   - (cd frontend; npm run build:prod)
 
 after_success:
