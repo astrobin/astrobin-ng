@@ -53,7 +53,7 @@ describe("CommonApiService", () => {
       expect(response.user).toEqual(mockUserProfile.user);
     });
 
-    const req = httpMock.expectOne(`${service.configUrl}/userprofiles/current`);
+    const req = httpMock.expectOne(`${service.configUrl}/userprofiles/current/`);
     expect(req.request.method).toBe("GET");
     req.flush([mockUserProfile]);
   });
@@ -63,7 +63,7 @@ describe("CommonApiService", () => {
       expect(response).toEqual(null);
     });
 
-    const req = httpMock.expectOne(`${service.configUrl}/userprofiles/current`);
+    const req = httpMock.expectOne(`${service.configUrl}/userprofiles/current/`);
     expect(req.request.method).toBe("GET");
     req.flush([]);
   });
