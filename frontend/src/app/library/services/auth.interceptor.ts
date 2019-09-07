@@ -8,11 +8,14 @@ import { environment } from "../../../environments/environment";
 export class AuthInterceptor implements HttpInterceptor {
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     let authToken: string;
+    let authScheme: string;
 
     if (request.url.startsWith(environment.legacyApiUrl)) {
       authToken = AuthService.getLegacyApiToken();
+      authScheme = "Token";
     } else if (request.url.startsWith(environment.ngApiUrl)) {
       authToken = AuthService.getNgApiToken();
+      authScheme = "jwt";
     }
 
     const headers = {
@@ -21,7 +24,7 @@ export class AuthInterceptor implements HttpInterceptor {
     };
 
     if (authToken) {
-      headers["Authorization"] = `Token ${authToken}`;
+      headers["Authorization"] = `${authScheme} ${authToken}`;
     }
 
     request = request.clone({
