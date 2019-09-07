@@ -1,0 +1,31 @@
+language: node_js
+sudo: false
+
+node_js:
+  - 10
+
+before_install:
+  - npm install codecov -g
+  - apt-get update -y
+  - apt-get install apt-transport-https
+  - apt-get install -y software-properties-common
+  - add-apt-repository -y ppa:canonical-chromium-builds/stage
+  - apt-get update -y
+  - apt-get install -y chromium-browser
+
+install:
+  - (cd backend; npm ci)
+  - (cd frontend; npm ci)
+
+before_script:
+  - (cd frontend; npm run lint)
+  - (cd backend; npm run build)
+  - (cd frontend; npm run build)
+
+script:
+  - (cd backend; npm test:cov)
+  - (cd frontend; npm test:cov)
+  - (cd frontend; npm run build:prod)
+
+after_success:
+  - codecov
