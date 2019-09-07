@@ -32,14 +32,18 @@ describe("AppContextService", () => {
   });
 
   it("currentUserProfile should be available", () => {
-    service.load().then((response) => {
-      expect(response.get().currentUserProfile.id).toEqual(1);
+    service.load().then((contextService: AppContextService) => {
+      contextService.get().subscribe(appContext => {
+        expect(appContext.currentUserProfile.id).toEqual(1);
+      });
     });
   });
 
   it("currentUser should be available", () => {
     service.load().then((contextService: AppContextService) => {
-      expect(contextService.get().currentUserProfile.userObject.id).toEqual(1);
+      contextService.get().subscribe(appContext => {
+        expect(appContext.currentUserProfile.userObject.id).toEqual(1);
+      });
     });
   });
 });

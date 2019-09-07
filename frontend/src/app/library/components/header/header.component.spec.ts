@@ -4,20 +4,24 @@ import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { NgbCollapseModule, NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
 import { TranslateLoader, TranslateModule } from "@ngx-translate/core";
 import { LanguageLoader } from "../../../translate-loader";
-import { UserModel } from "../../models/common/user.model";
-import { UserProfileModel } from "../../models/common/userprofile.model";
 import { PipesModule } from "../../pipes/pipes.module";
 import { AppContextService, IAppContext } from "../../services/app-context.service";
 import { SharedModule } from "../../shared.module";
 import { HeaderComponent } from "./header.component";
+import { Observable } from "rxjs";
+import { UserProfileModel } from "../../models/common/userprofile.model";
+import { UserModel } from "../../models/common/user.model";
 
 class MockAppContextService {
-  get = jasmine.createSpy("get").and.returnValue({
-    currentUserProfile: new UserProfileModel({
-        userObject: new UserModel({}),
-      },
-    ),
-  } as IAppContext);
+  get = jasmine.createSpy("get").and.returnValue(
+    new Observable<IAppContext>(observer => {
+      observer.next({
+        currentUserProfile: new UserProfileModel({
+            userObject: new UserModel({}),
+          },
+        ),
+      } as IAppContext);
+    }));
 }
 
 describe("HeaderComponent", () => {

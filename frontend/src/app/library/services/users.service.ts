@@ -24,7 +24,7 @@ export class UsersService {
 
         const ids = subscriptions.filter(s => s.category === "rawdata").map(s => s.id);
 
-        observer.next(user.userSubscriptionObjects.filter(us => {
+        observer.next(!!user.userSubscriptionObjects && user.userSubscriptionObjects.filter(us => {
           return ids.indexOf(us.subscription) > -1 && us.valid;
         }).length > 0);
 

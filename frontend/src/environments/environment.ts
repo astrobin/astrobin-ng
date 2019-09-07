@@ -4,9 +4,9 @@
 
 export const environment = {
   production: false,
-  legacyBaseUrl: "http://localhost:8084",
-  legacyApiUrl: "http://localhost:8084",
-  ngApiUrl: "http://localhost:3000",
+  legacyBaseUrl: "http://localhost:4400",
+  legacyApiUrl: "http://localhost:4400",
+  ngApiUrl: "http://localhost:4400",
 };
 
 /*

@@ -32,7 +32,7 @@ describe("AuthNgApiService", () => {
         expect(token).toEqual(mockToken);
       });
 
-      const req = httpMock.expectOne(`${service.configUrl}/api-auth-token/`);
+      const req = httpMock.expectOne(`${service.configUrl}/auth/login/`);
       expect(req.request.method).toBe("POST");
       req.flush({ token: mockToken });
     });
