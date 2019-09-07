@@ -19,7 +19,7 @@ export class CommonLegacyApiService extends BaseLegacyApiService {
   }
 
   getUser(id: number): Observable<UserModel> {
-    return this.http.get<UserModel>(this.configUrl + "/users/" + id).pipe(
+    return this.http.get<UserModel>( `${this.configUrl}/users/${id}/`).pipe(
       map(response => new UserModel(response)),
     );
   }

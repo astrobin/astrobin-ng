@@ -39,7 +39,7 @@ describe("CommonApiService", () => {
       expect(response.id).toEqual(mockUser.id);
     });
 
-    const req = httpMock.expectOne(`${service.configUrl}/users/${mockUser.id}`);
+    const req = httpMock.expectOne(`${service.configUrl}/users/${mockUser.id}/`);
     expect(req.request.method).toBe("GET");
     req.flush(mockUser);
   });
