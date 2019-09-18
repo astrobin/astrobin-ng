@@ -9,9 +9,11 @@ import { IsIotdSubmitterPipe } from "./is-iotd-submitter.pipe";
 import { IsProducerPipe } from "./is-producer.pipe";
 import { IsRetailerPipe } from "./is-retailer.pipe";
 import { IsSuperuserPipe } from "./is-superuser.pipe";
+import { EnsureUrlProtocolPipe } from "./ensure-url-protocol.pipe";
 
 @NgModule({
   declarations: [
+    EnsureUrlProtocolPipe,
     IsContentModeratorPipe,
     IsImageModeratorPipe,
     IsIotdJudgePipe,
@@ -26,6 +28,7 @@ import { IsSuperuserPipe } from "./is-superuser.pipe";
     CommonModule,
   ],
   exports: [
+    EnsureUrlProtocolPipe,
     IsContentModeratorPipe,
     IsImageModeratorPipe,
     IsIotdJudgePipe,

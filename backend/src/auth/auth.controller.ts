@@ -1,7 +1,7 @@
 import { Body, Controller, Post } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { Observable } from "rxjs";
-import { JwtTokenInterface } from "../../../shared/interfaces/jwt-token.interface";
+import { JwtTokenInterface } from "@shared/interfaces/auth/jwt-token.interface";
 
 export interface LoginDto {
     handle: string;

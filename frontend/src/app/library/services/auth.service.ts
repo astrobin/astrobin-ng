@@ -4,6 +4,7 @@ import { catchError, map } from "rxjs/operators";
 import { AuthLegacyApiService } from "./api/legacy/auth-legacy-api.service";
 import { AuthNgApiService } from "./api/ng/auth-ng-api.service";
 import { AppContextService } from "./app-context.service";
+import * as jwt_decode from "jwt-decode";
 
 export enum AuthServiceType {
   LEGACY,
@@ -42,7 +43,7 @@ export class AuthService {
         this.appContext.load();
         return true;
       }),
-      catchError(() => of(false))
+      catchError(() => of(false)),
     );
   }
 
@@ -54,5 +55,9 @@ export class AuthService {
 
   public isAuthenticated(): boolean {
     return AuthService.getLegacyApiToken() != null && AuthService.getNgApiToken() != null;
+  }
+
+  public userId(): string {
+    return jwt_decode(AuthService.getNgApiToken());
   }
 }

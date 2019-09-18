@@ -11,6 +11,7 @@ export class ConfigService {
             synchronize: true,
             logging: false,
             entities: [__dirname + "/**/*.entity{.ts,.js}"],
+            subscribers: [__dirname + "/**/*.entity-subscriber{.ts,.js}"],
         };
 
         if (options.type === "postgres") {

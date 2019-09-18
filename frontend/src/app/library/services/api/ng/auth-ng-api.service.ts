@@ -4,7 +4,7 @@ import { HttpClient } from "@angular/common/http";
 import { Observable } from "rxjs";
 import { BaseNgApiService } from "./base-ng-api.service";
 import { map } from "rxjs/operators";
-import { JwtTokenInterface } from "../../../../../../../shared/interfaces/jwt-token.interface";
+import { JwtTokenInterface } from "@shared/interfaces/auth/jwt-token.interface";
 
 @Injectable({
   providedIn: "root",

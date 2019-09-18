@@ -3,14 +3,14 @@ import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { NgbCollapseModule, NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
 import { TranslateLoader, TranslateModule } from "@ngx-translate/core";
-import { LanguageLoader } from "../../../translate-loader";
-import { PipesModule } from "../../pipes/pipes.module";
-import { AppContextService, IAppContext } from "../../services/app-context.service";
-import { SharedModule } from "../../shared.module";
+import { LanguageLoader } from "@astrobin/translate-loader";
+import { PipesModule } from "@library/pipes/pipes.module";
+import { AppContextService, IAppContext } from "@library/services/app-context.service";
+import { SharedModule } from "@library/shared.module";
 import { HeaderComponent } from "./header.component";
 import { Observable } from "rxjs";
-import { UserProfileModel } from "../../models/common/userprofile.model";
-import { UserModel } from "../../models/common/user.model";
+import { UserProfileModel } from "@library/models/common/userprofile.model";
+import { UserModel } from "@library/models/common/user.model";
 
 class MockAppContextService {
   get = jasmine.createSpy("get").and.returnValue(

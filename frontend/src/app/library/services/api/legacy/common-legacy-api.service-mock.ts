@@ -1,9 +1,9 @@
 import { Injectable } from "@angular/core";
 import { Observable, of } from "rxjs";
-import { SubscriptionModel } from "../../../models/common/subscription.model";
-import { UserProfileModel } from "../../../models/common/userprofile.model";
-import { UserModel } from "../../../models/common/user.model";
-import { UserSubscriptionModel } from "../../../models/common/usersubscription.model";
+import { SubscriptionModel } from "@library/models/common/subscription.model";
+import { UserProfileModel } from "@library/models/common/userprofile.model";
+import { UserModel } from "@library/models/common/user.model";
+import { UserSubscriptionModel } from "@library/models/common/usersubscription.model";
 import { CommonLegacyApiService } from "./common-legacy-api.service";
 
 @Injectable({

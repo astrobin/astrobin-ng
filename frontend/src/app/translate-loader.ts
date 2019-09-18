@@ -3,7 +3,7 @@ import { Injectable } from "@angular/core";
 import { TranslateLoader } from "@ngx-translate/core";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
-import { environment } from "../environments/environment";
+import { environment } from "@environments/environment";
 
 interface JsI18nResponse {
   catalog: any;

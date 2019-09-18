@@ -5,7 +5,7 @@
     "outDir": "./dist/out-tsc",
     "sourceMap": true,
     "declaration": false,
-    "module": "es2015",
+    "module": "esnext",
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
@@ -17,6 +17,13 @@
     "lib": [
       "es2018",
       "dom"
-    ]
+    ],
+    "paths": {
+      "@astrobin/*": ["src/app/*"],
+      "@features/*": ["src/app/features/*"],
+      "@library/*": ["src/app/library/*"],
+      "@environments/*": ["src/environments/*"],
+      "@shared/*": ["../shared/*"]
+    }
   }
 }

@@ -3,7 +3,7 @@ import { AuthController } from "./auth.controller";
 import { AuthService } from "./auth.service";
 import { Observable, of } from "rxjs";
 import { AuthServiceInterface } from "./auth.service.interface";
-import { JwtTokenInterface } from "../../../shared/interfaces/jwt-token.interface";
+import { JwtTokenInterface } from "@shared/interfaces/auth/jwt-token.interface";
 
 class AuthServiceMock implements AuthServiceInterface {
     public login(handle: string, password: string): Observable<JwtTokenInterface> {

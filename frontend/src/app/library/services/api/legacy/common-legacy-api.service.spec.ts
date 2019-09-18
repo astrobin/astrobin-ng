@@ -1,10 +1,9 @@
 import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { of } from "rxjs";
-import { UserProfileModel } from "../../../models/common/userprofile.model";
-import { UserModel } from "../../../models/common/user.model";
-import { UserSubscriptionModel } from "../../../models/common/usersubscription.model";
-
+import { UserProfileModel } from "@library/models/common/userprofile.model";
+import { UserModel } from "@library/models/common/user.model";
+import { UserSubscriptionModel } from "@library/models/common/usersubscription.model";
 import { CommonLegacyApiService } from "./common-legacy-api.service";
 
 describe("CommonApiService", () => {

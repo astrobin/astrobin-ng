@@ -1,0 +1,22 @@
+@import "variables";
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: $white;
+}
+
+h1 {
+  margin-bottom: 2rem;
+
+  + small {
+    font-size: 1.5rem;
+    color: $grey;
+    display: block;
+    margin-top: -2rem;
+    margin-bottom: 2rem;
+  }
+}

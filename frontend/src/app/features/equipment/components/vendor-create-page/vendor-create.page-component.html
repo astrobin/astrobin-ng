@@ -1,0 +1,18 @@
+<div class="page container">
+
+  <h1 translate="Add vendor"></h1>
+
+  <form [formGroup]="form" (ngSubmit)="submit(model)">
+    <formly-form [form]="form" [fields]="fields" [model]="model">
+      <div class="form-actions">
+        <button
+          type="submit"
+          class="btn btn-primary"
+          [class.loading]="loading || form.pending"
+          [disabled]="loading || form.pending"
+          translate="Save"></button>
+      </div>
+    </formly-form>
+  </form>
+
+</div>

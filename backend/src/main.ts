@@ -2,9 +2,10 @@ import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import * as basicAuth from "express-basic-auth";
+import { ErrorsInterceptor } from "./common/interceptors/errors.interceptor";
 
 async function bootstrap() {
-    const app = await NestFactory.create(AppModule, {cors: true});
+    const app = await NestFactory.create(AppModule, { cors: true });
 
     const options = new DocumentBuilder()
         .setTitle("AstroBin Microservice API")
@@ -28,6 +29,8 @@ async function bootstrap() {
         methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
         allowedHeaders: "Content-Type, Accept",
     });
+
+    app.useGlobalInterceptors(new ErrorsInterceptor());
 
     await app.listen(process.env.PORT || 3000);
 }

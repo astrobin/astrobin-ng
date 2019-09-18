@@ -8,6 +8,7 @@ import { HeaderComponent } from "./header/header.component";
 import { LoginModalComponent } from "./auth/login-modal/login-modal.component";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { RouterModule } from "@angular/router";
+import { EmptyListComponent } from "./misc/empty-list/empty-list.component";
 
 @NgModule({
   imports: [
@@ -23,11 +24,13 @@ import { RouterModule } from "@angular/router";
     RouterModule,
   ],
   declarations: [
+    EmptyListComponent,
     FooterComponent,
     HeaderComponent,
     LoginModalComponent,
   ],
   exports: [
+    EmptyListComponent,
     FormsModule,
     FooterComponent,
     HeaderComponent,

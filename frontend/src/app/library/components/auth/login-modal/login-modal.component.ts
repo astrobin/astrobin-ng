@@ -1,7 +1,7 @@
 import { Component } from "@angular/core";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { AuthService } from "../../../services/auth.service";
+import { AuthService } from "@library/services/auth.service";
 
 @Component({
   selector: "astrobin-login-modal",

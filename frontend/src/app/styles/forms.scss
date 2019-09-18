@@ -1,18 +1,45 @@
 @import "variables";
 
-input {
-  color: $light-grey;
-  background-color: $dark-grey;
-  border-radius: 8px;
-  border: 1px solid darken($dark-grey, 5%);
-  padding: 6px 8px;
+label {
+  font-size: 1rem;
+  font-weight: bold;
+}
 
-  &::placeholder {
-    color: lighten($dark-grey, 15%);
+.form-control {
+  &,
+  &:focus {
+    background-color: $darker-grey;
+    border-color: $dark-grey;
+    color: $light-grey;
+
+    &::placeholder {
+      color: $dark-grey !important;
+    }
   }
 
-  &:focus {
-    outline: none;
-    border-color: lighten($dark-grey, 5%);
+  &.is-invalid {
+    border-left: .5rem solid $error-red;
+    padding-left: calc(.75rem - .5rem + 1px);
+  }
+}
+
+.form-group {
+  margin-bottom: 2rem;
+
+  &.has-error {
+    label {
+      color: $error-red;
+    }
+  }
+}
+
+.form-actions {
+  margin-top: 2rem;
+  padding-top: .75rem;
+  border-top: 1px solid $dark-grey;
+  text-align: right;
+
+  .btn:not(:last-child) {
+    margin-right: 1rem;
   }
 }

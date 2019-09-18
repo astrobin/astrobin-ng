@@ -22,6 +22,7 @@
   "dependencies": {
     "@nestjs/common": "6.3.1",
     "@nestjs/core": "6.3.1",
+    "@nestjs/elasticsearch": "^6.0.1",
     "@nestjs/jwt": "6.1.1",
     "@nestjs/microservices": "6.3.1",
     "@nestjs/passport": "6.1.0",
@@ -31,9 +32,11 @@
     "@nestjs/websockets": "6.3.1",
     "@nestjsx/crud": "4.2.0",
     "@nestjsx/crud-typeorm": "4.2.0",
+    "@types/elasticsearch": "^5.0.35",
     "class-transformer": "0.2.3",
     "class-validator": "0.10.0",
     "dotenv": "8.0.0",
+    "elasticsearch": "^16.3.0",
     "express-basic-auth": "1.2.0",
     "passport": "0.4.0",
     "passport-jwt": "4.0.0",
@@ -84,6 +87,9 @@
       "!**/*.module.(t|j)s"
     ],
     "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "moduleNameMapper": {
+      "^@shared/(.*)$": "<rootDir>/../../shared/$1"
+    }
   }
 }

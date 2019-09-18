@@ -1,0 +1,13 @@
+<div class="container page">
+
+  <h1 translate="We found something similar"></h1>
+  <small translate="Are you sure you don't mean one of these?"></small>
+
+  <astrobin-vendor-list [vendors]="similarVendors"></astrobin-vendor-list>
+
+  <div class="form-actions">
+    <button class="btn btn-outline-light" translate="Go back" routerLink=".."></button>
+    <button class="btn btn-primary" translate="Yes, I'm sure" (click)="save()"></button>
+  </div>
+
+</div>
