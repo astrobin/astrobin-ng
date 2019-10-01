@@ -59,7 +59,7 @@ export class VendorCreatePageComponent {
         this.vendorService.create(model).subscribe();
       } else {
         this.session.put(VendorCheckSimilarPageComponent.SESSION_KEY, { similar, model });
-        this.router.navigate(["equipment/vendors/create/check-similar"]);
+        this.router.navigate(["/equipment/vendors/create/check-similar"]);
       }
     });
   }

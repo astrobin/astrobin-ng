@@ -36,7 +36,7 @@ describe("VendorApiService", () => {
         expect(response).toEqual(mockVendor as VendorInterface);
       });
 
-      const req = httpMock.expectOne(`${service.configUrl}`);
+      const req = httpMock.expectOne(`${service.configUrl}/`);
       expect(req.request.method).toBe("POST");
       req.flush(mockVendor);
     });

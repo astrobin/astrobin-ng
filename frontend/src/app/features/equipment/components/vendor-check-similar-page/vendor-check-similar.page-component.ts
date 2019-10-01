@@ -27,7 +27,7 @@ export class  VendorCheckSimilarPageComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     if (this.similarVendors === undefined) {
-      this.router.navigate(["equipment/vendors/create"]);
+      this.router.navigate(["/equipment/vendors/create"]);
     }
   }
 

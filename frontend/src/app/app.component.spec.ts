@@ -11,11 +11,13 @@ import { SharedModule } from "@library/shared.module";
 import { LanguageLoader } from "@astrobin/translate-loader";
 import { CommonLegacyApiService } from "@library/services/api/legacy/common-legacy-api.service";
 import { CommonLegacyApiServiceMock } from "@library/services/api/legacy/common-legacy-api.service-mock";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
 
 describe("AppComponent", () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
+        HttpClientTestingModule,
         RouterTestingModule,
         LibraryModule,
         TranslateModule.forRoot({

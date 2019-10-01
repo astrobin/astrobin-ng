@@ -20,6 +20,6 @@ describe("EnsureUrlProtocolPipe", () => {
 
   it("should prefix if it does not contains a protocol", () => {
     expect(pipe.transform("www.astrobin.com")).toEqual("http://www.astrobin.com");
-    expect(pipe.transform("astrobin.com")).toEqual("http://www.astrobin.com");
+    expect(pipe.transform("astrobin.com")).toEqual("http://astrobin.com");
   });
 });
