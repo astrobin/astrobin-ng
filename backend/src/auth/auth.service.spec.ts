@@ -31,19 +31,4 @@ describe("AuthService", () => {
     it("should be defined", () => {
         expect(service).toBeDefined();
     });
-
-    it("should have error message in case of error", () => {
-        const errorResponse = new HttpErrorResponse({
-            error: "Serious error",
-            status: 500,
-            statusText: "This should not have happened",
-        });
-
-        spyOn(service.http, "post").and.returnValue(of(errorResponse));
-        service.login("handle", "password").subscribe(token => {
-            expect(token.token).toBeNull();
-            expect(token.user_profile_id).toBeNull();
-            expect(token.error).toEqual("Serious error");
-        });
-    });
 });
