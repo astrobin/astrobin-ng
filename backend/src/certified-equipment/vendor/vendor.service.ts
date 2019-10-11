@@ -5,7 +5,7 @@ import { Repository } from "typeorm";
 import { TypeOrmCrudService } from "@nestjsx/crud-typeorm";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
-import { VendorInterface } from "@shared/interfaces/equipment/vendor.interface";
+import { VendorInterface } from "../../../../shared/interfaces/equipment/vendor.interface";
 import { SearchService } from "../../search/search.service";
 
 @Injectable()

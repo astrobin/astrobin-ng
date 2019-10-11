@@ -34,7 +34,7 @@ phases:
 
 artifacts:
   files:
-    - dist/**/*
+    - backend/dist/**/*
     - package.json
     - package-lock.json
   base-directory: .

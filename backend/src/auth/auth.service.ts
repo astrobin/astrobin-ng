@@ -3,7 +3,7 @@ import { HttpService, Injectable } from "@nestjs/common";
 import { AuthServiceInterface} from "./auth.service.interface";
 import { Observable, of } from "rxjs";
 import { catchError, map, mergeMap } from "rxjs/operators";
-import { JwtTokenInterface } from "@shared/interfaces/auth/jwt-token.interface";
+import { JwtTokenInterface } from "../../../shared/interfaces/auth/jwt-token.interface";
 
 @Injectable()
 export class AuthService implements AuthServiceInterface {

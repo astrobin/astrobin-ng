@@ -20,6 +20,5 @@ module.exports = {
         "!**/*.module.(t|j)s"
     ],
     coverageDirectory: "coverage",
-    testEnvironment: "node",
-    moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, { prefix: "<rootDir>/" })
+    testEnvironment: "node"
 };
