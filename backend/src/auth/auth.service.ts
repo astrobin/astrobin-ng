@@ -1,6 +1,6 @@
 import { JwtService } from "@nestjs/jwt";
 import { HttpService, Injectable } from "@nestjs/common";
-import { AuthServiceInterface} from "./auth.service.interface";
+import { AuthServiceInterface } from "./auth.service.interface";
 import { Observable, of } from "rxjs";
 import { catchError, map, mergeMap } from "rxjs/operators";
 import { JwtTokenInterface } from "../../../shared/interfaces/auth/jwt-token.interface";
@@ -18,16 +18,15 @@ export class AuthService implements AuthServiceInterface {
     public login(handle: string, password: string): Observable<JwtTokenInterface> {
         const tokenUrl = this.LEGACY_API_URL + "/api/v2/api-auth-token/";
         const userProfileUrl = this.LEGACY_API_URL + "/api/v2/common/userprofiles/current/";
-        const data = { username: handle, password };
+        const credentials = { username: handle, password };
 
-        return this.http.post<{ token: string }>(tokenUrl, data).pipe(
+        return this.http.post<{ token: string }>(tokenUrl, credentials).pipe(
             mergeMap(response => {
-                    const headers = {
-                        Authorization: "Token " + response.data.token,
-                    };
-                    return this.http.get<any>(userProfileUrl, { headers });
-                },
-            ),
+                const headers = {
+                    Authorization: "Token " + response.data.token,
+                };
+                return this.http.get<any>(userProfileUrl, { headers });
+            }),
             map(response => ({
                 token: this.jwtService.sign(response.data[0].id),
                 user_profile_id: response.data[0].id,
