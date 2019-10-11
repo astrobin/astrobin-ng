@@ -56,7 +56,26 @@
                   "maximumError": "5mb"
                 }
               ]
+            },
+            "local-production": {
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                }
+              ]
             }
+
           }
         },
         "serve": {
@@ -67,6 +86,9 @@
           "configurations": {
             "production": {
               "browserTarget": "frontend:build:production"
+            },
+            "local-production": {
+              "browserTarget": "frontend:build:local-production"
             }
           }
         },

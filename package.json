@@ -20,6 +20,7 @@
     "ng": ".node_modules/.bin/ng",
     "frontend:lint": "cd frontend; ng lint",
     "frontend:start": "cd frontend; ng serve --host 0.0.0.0 --port 4400",
+    "frontend:start:prod": "cd frontend; ng serve --host 0.0.0.0 --port 4400 --configuration=local-production",
     "frontend:build": "cd frontend; ng build",
     "frontend:build:prod": "cd frontend; ng build --prod --aot",
     "frontend:test": "jest --config frontend/jest.config.js",
