@@ -4,8 +4,6 @@ import { JwtService } from "@nestjs/jwt";
 import { JwtServiceMock } from "./jwt.service.mock";
 import { HttpService } from "@nestjs/common";
 import { HttpServiceMock } from "../mocks/http-service.mock";
-import { HttpErrorResponse } from "@angular/common/http";
-import { of } from "rxjs";
 
 describe("AuthService", () => {
     let service: AuthService;
