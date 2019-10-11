@@ -43,10 +43,10 @@ export class Vendor implements VendorInterface {
     createdBy: string;
 
     @Column({
-        type: "datetime",
+        type: "integer",
         update: false,
     })
-    createdWhen: Date;
+    createdWhen: number;
 
     @Column({
         type: "varchar",
@@ -56,9 +56,9 @@ export class Vendor implements VendorInterface {
     updatedBy: string;
 
     @Column({
-        type: "datetime",
+        type: "integer",
     })
-    updatedWhen: Date;
+    updatedWhen: number;
 
     @Column({
         type: "varchar",
@@ -76,11 +76,11 @@ export class Vendor implements VendorInterface {
     moderatedBy: string;
 
     @Column({
-        type: "datetime",
+        type: "integer",
         update: false,
         nullable: true,
     })
-    moderatedWhen: Date;
+    moderatedWhen: number;
 
     @Column({
         type: "varchar",

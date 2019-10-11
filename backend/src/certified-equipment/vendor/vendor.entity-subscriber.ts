@@ -18,7 +18,7 @@ export class VendorEntitySubscriber implements EntitySubscriberInterface<Vendor>
     }
 
     public beforeInsert(event: InsertEvent<Vendor>): void {
-        const now = new Date();
+        const now = new Date().getTime();
         event.entity.createdWhen = now;
         event.entity.updatedWhen = now;
     }

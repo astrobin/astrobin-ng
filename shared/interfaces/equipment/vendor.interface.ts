@@ -18,14 +18,14 @@ export interface VendorInterface {
     // AstroBin user who created this.
     createdBy: string;
 
-    // Date of creation.
-    createdWhen: Date;
+    // Timestamp of creation.
+    createdWhen: number;
 
     // AstroBin user who updated this.
     updatedBy: string;
 
-    // Date of update.
-    updatedWhen: Date;
+    // Timestamp of update.
+    updatedWhen: number;
 
     // Why was this updated?
     updateReason: string;
@@ -33,8 +33,8 @@ export interface VendorInterface {
     // AstroBin user who moderated this.
     moderatedBy: string;
 
-    // Date of moderation.
-    moderatedWhen: Date;
+    // Timestamp of moderation.
+    moderatedWhen: number;
 
     // Status after moderation.
     moderationStatus: ModerationStatus;
