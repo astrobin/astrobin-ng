@@ -32,9 +32,10 @@ export class AuthService implements AuthServiceInterface {
                 token: this.jwtService.sign(response.data[0].id),
                 user_profile_id: response.data[0].id,
             })),
-            catchError(() => of({
+            catchError((error) => of({
                 token: null,
                 user_profile_id: null,
+                error,
             })),
         );
     }
