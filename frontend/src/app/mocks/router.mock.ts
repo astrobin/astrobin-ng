@@ -1,5 +1,5 @@
-declare let jasmine;
+declare const jest;
 
 export class RouterMock {
-  public navigate = jasmine.createSpy("navigate");
+  public navigate = jest.fn();
 }

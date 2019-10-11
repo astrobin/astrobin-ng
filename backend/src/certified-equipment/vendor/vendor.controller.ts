@@ -5,7 +5,6 @@ import { Crud } from "@nestjsx/crud";
 import { AuthGuard } from "@nestjs/passport";
 import { Observable, of } from "rxjs";
 import { map } from "rxjs/operators";
-import { VendorInterface } from "@shared/interfaces/equipment/vendor.interface";
 
 @Crud({
     model: {

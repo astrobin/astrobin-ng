@@ -1,28 +1,33 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "baseUrl": "./",
+    "downlevelIteration": true,
     "outDir": "./dist/out-tsc",
     "sourceMap": true,
     "declaration": false,
     "module": "esnext",
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
+    "esModuleInterop": true,
     "experimentalDecorators": true,
     "importHelpers": true,
-    "target": "es5",
+    "target": "es2015",
     "typeRoots": [
-      "node_modules/@types"
+      "../node_modules/@types"
     ],
     "lib": [
       "es2018",
       "dom"
     ],
+    "types": [
+      "jest"
+    ],
+    "baseUrl": ".",
     "paths": {
-      "@astrobin/*": ["src/app/*"],
-      "@features/*": ["src/app/features/*"],
-      "@library/*": ["src/app/library/*"],
-      "@environments/*": ["src/environments/*"],
+      "@env/*": ["src/environments/*"],
+      "@lib/*": ["src/app/library/*"],
+      "@feats/*": ["src/app/features/*"],
+      "@app/*": ["src/app/*"],
       "@shared/*": ["../shared/*"]
     }
   }

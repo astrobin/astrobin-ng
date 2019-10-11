@@ -1,6 +1,6 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
-import { VendorInterface } from "../../../../shared/interfaces/equipment/vendor.interface";
-import { ModerationStatus } from "../../../../shared/enums/moderation-status.enum";
+import { VendorInterface } from "@shared/interfaces/equipment/vendor.interface";
+import { ModerationStatus } from "@shared/enums/moderation-status.enum";
 
 @Entity()
 export class Vendor implements VendorInterface {

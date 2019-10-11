@@ -1,8 +1,8 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
-import { SessionService } from "@library/services/session.service";
+import { SessionService } from "@lib/services/session.service";
 import { Router } from "@angular/router";
 import { VendorInterface } from "@shared/interfaces/equipment/vendor.interface";
-import { VendorService } from "@features/equipment/services/vendor.service";
+import { VendorService } from "@feats/equipment/services/vendor.service";
 
 @Component({
   selector: "astrobin-vendor-check-similar-page",

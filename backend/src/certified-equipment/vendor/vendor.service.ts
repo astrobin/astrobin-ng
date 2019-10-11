@@ -3,10 +3,10 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Vendor } from "./vendor.entity";
 import { Repository } from "typeorm";
 import { TypeOrmCrudService } from "@nestjsx/crud-typeorm";
-import { SearchService } from "../../search/search.service";
 import { Observable } from "rxjs";
-import { VendorInterface } from "@shared/interfaces/equipment/vendor.interface";
 import { map } from "rxjs/operators";
+import { VendorInterface } from "@shared/interfaces/equipment/vendor.interface";
+import { SearchService } from "../../search/search.service";
 
 @Injectable()
 export class VendorService extends TypeOrmCrudService<Vendor> {

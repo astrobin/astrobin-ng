@@ -1,17 +1,19 @@
 import { TestBed } from "@angular/core/testing";
 import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
-import { VendorApiService } from "@features/equipment/services/api/vendor-api.service";
+import { VendorApiService } from "./vendor-api.service";
 import { VendorInterface } from "@shared/interfaces/equipment/vendor.interface";
 
 describe("VendorApiService", () => {
   let service: VendorApiService;
   let httpMock: HttpTestingController;
 
-  beforeEach(() => TestBed.configureTestingModule({
-    imports: [
-      HttpClientTestingModule,
-    ],
-  }));
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [
+        HttpClientTestingModule,
+      ],
+    });
+  });
 
   beforeEach(() => {
     service = TestBed.get(VendorApiService);

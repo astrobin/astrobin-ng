@@ -1,10 +1,10 @@
 import { Component } from "@angular/core";
-import { AppContextService, IAppContext } from "@library/services/app-context.service";
-import { LegacyRoutesService } from "@library/services/legacy-routes.service";
-import { UsersService } from "@library/services/users.service";
+import { AppContextService, IAppContext } from "@lib/services/app-context.service";
+import { LegacyRoutesService } from "@lib/services/legacy-routes.service";
+import { UsersService } from "@lib/services/users.service";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { LoginModalComponent } from "@library/components/auth/login-modal/login-modal.component";
-import { AuthService } from "@library/services/auth.service";
+import { LoginModalComponent } from "@lib/components/auth/login-modal/login-modal.component";
+import { AuthService } from "@lib/services/auth.service";
 import { Observable } from "rxjs";
 
 interface IFlag {

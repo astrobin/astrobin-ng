@@ -1,9 +1,9 @@
 import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { of } from "rxjs";
-import { UserProfileModel } from "@library/models/common/userprofile.model";
-import { UserModel } from "@library/models/common/user.model";
-import { UserSubscriptionModel } from "@library/models/common/usersubscription.model";
+import { UserProfileModel } from "@lib/models/common/userprofile.model";
+import { UserModel } from "@lib/models/common/user.model";
+import { UserSubscriptionModel } from "@lib/models/common/usersubscription.model";
 import { CommonLegacyApiService } from "./common-legacy-api.service";
 
 describe("CommonApiService", () => {
@@ -68,14 +68,14 @@ describe("CommonApiService", () => {
   });
 
   it("isAuthenticated should return false if there is no current user profile", () => {
-    spyOn(service, "getCurrentUserProfile").and.returnValue(of(null));
+    jest.spyOn(service, "getCurrentUserProfile").mockReturnValue(of(null));
     service.isAuthenticated().subscribe(response => {
       expect(response).toBe(false);
     });
   });
 
   it("isAuthenticated should return true if there is a current user profile", () => {
-    spyOn(service, "getCurrentUserProfile").and.returnValue(of({ user: 1 }));
+    jest.spyOn(service, "getCurrentUserProfile").mockReturnValue(of({ user: 1 } as UserProfileModel));
     service.isAuthenticated().subscribe(response => {
       expect(response).toBe(true);
     });

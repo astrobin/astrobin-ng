@@ -3,7 +3,7 @@ import { ActivatedRoute, ParamMap } from "@angular/router";
 import { Observable } from "rxjs";
 import { VendorInterface } from "@shared/interfaces/equipment/vendor.interface";
 import { switchMap } from "rxjs/operators";
-import { VendorApiService } from "@features/equipment/services/api/vendor-api.service";
+import { VendorApiService } from "@feats/equipment/services/api/vendor-api.service";
 
 @Component({
   selector: "astrobin-vendor-detail-page",

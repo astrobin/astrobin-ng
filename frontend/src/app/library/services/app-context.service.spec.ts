@@ -5,10 +5,10 @@ import { CommonLegacyApiService } from "./api/legacy/common-legacy-api.service";
 import { AppContextService } from "./app-context.service";
 
 class MockCommonApiService {
-  getUser = jasmine.createSpy("getUser").and.returnValue(of({ id: 1 }));
-  getCurrentUserProfile = jasmine.createSpy("getCurrentUserProfile").and.returnValue(of({ id: 1 }));
-  getSubscriptions = jasmine.createSpy("getSubscriptions").and.returnValue(of([]));
-  getUserSubscriptions = jasmine.createSpy("getUserSubscriptions").and.returnValue(of([]));
+  getUser = jest.fn(() => of({ id: 1 }));
+  getCurrentUserProfile = jest.fn(() => of({ id: 1 }));
+  getSubscriptions = jest.fn(() => of([]));
+  getUserSubscriptions = jest.fn(() => of([]));
 }
 
 describe("AppContextService", () => {

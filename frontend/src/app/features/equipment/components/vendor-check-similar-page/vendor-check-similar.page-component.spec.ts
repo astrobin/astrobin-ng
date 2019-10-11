@@ -1,12 +1,12 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { VendorCheckSimilarPageComponent } from "./vendor-check-similar.page-component";
 import { MockComponents } from "ng-mocks";
-import { VendorListComponent } from "@features/equipment/containers/vendor-list/vendor-list.component";
+import { VendorListComponent } from "@feats/equipment/containers/vendor-list/vendor-list.component";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { ToastrModule } from "ngx-toastr";
 import { TranslateModule } from "@ngx-translate/core";
 import { Router } from "@angular/router";
-import { RouterMock } from "@astrobin/mocks/router.mock";
+import { RouterMock } from "@app/mocks/router.mock";
 
 describe("VendorCheckSimilarPageComponent", () => {
   let component: VendorCheckSimilarPageComponent;

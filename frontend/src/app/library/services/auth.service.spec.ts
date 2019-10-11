@@ -30,7 +30,7 @@ describe("AuthService", () => {
 
   describe("login/logout", () => {
     it("should work with legacy api", () => {
-      spyOn(service.authLegacyApi, "login").and.returnValue(of("123"));
+      jest.spyOn(service.authLegacyApi, "login").mockReturnValue(of("123"));
 
       service.login("foo", "bar").subscribe(result => {
         expect(result).toEqual(true);
@@ -45,7 +45,7 @@ describe("AuthService", () => {
     });
 
     it("should work with ng api", () => {
-      spyOn(service.authNgApi, "login").and.returnValue(of("123"));
+      jest.spyOn(service.authNgApi, "login").mockReturnValue(of("123"));
 
       service.login("foo", "bar").subscribe(result => {
         expect(result).toEqual(true);

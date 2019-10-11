@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { VendorComponent } from "./vendor.component";
-import { PipesModule } from "@library/pipes/pipes.module";
+import { PipesModule } from "@lib/pipes/pipes.module";
 import { VendorInterface } from "@shared/interfaces/equipment/vendor.interface";
 
 describe("VendorComponent", () => {

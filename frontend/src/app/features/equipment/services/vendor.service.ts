@@ -1,10 +1,10 @@
 import { Injectable } from "@angular/core";
-import { VendorApiService } from "@features/equipment/services/api/vendor-api.service";
+import { VendorApiService } from "@feats/equipment/services/api/vendor-api.service";
 import { Observable } from "rxjs";
 import { VendorInterface } from "@shared/interfaces/equipment/vendor.interface";
 import { map } from "rxjs/operators";
 import { Router } from "@angular/router";
-import { PopNotificationsService } from "@library/services/pop-notifications.service";
+import { PopNotificationsService } from "@lib/services/pop-notifications.service";
 import { TranslateService } from "@ngx-translate/core";
 
 @Injectable({

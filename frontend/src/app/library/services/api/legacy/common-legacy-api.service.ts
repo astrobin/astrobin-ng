@@ -2,10 +2,10 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
-import { SubscriptionModel } from "@library/models/common/subscription.model";
-import { UserProfileModel } from "@library/models/common/userprofile.model";
-import { UserModel } from "@library/models/common/user.model";
-import { UserSubscriptionModel } from "@library/models/common/usersubscription.model";
+import { SubscriptionModel } from "@lib/models/common/subscription.model";
+import { UserProfileModel } from "@lib/models/common/userprofile.model";
+import { UserModel } from "@lib/models/common/user.model";
+import { UserSubscriptionModel } from "@lib/models/common/usersubscription.model";
 import { BaseLegacyApiService } from "./base-legacy-api.service";
 
 @Injectable({

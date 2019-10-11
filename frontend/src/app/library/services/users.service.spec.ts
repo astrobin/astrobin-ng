@@ -9,8 +9,8 @@ import { Observable } from "rxjs";
 import { SubscriptionModel } from "../models/common/subscription.model";
 
 class MockAppContextService {
-  get = jasmine.createSpy("get").and.returnValue(
-    new Observable<IAppContext>(observer => {
+  get = jest.fn(
+    () => new Observable<IAppContext>(observer => {
       observer.next({
         currentUserProfile: null,
         subscriptions: [

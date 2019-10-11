@@ -1,9 +1,8 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { Observable } from "rxjs";
-import { BaseNgApiService } from "@library/services/api/ng/base-ng-api.service";
+import { BaseNgApiService } from "@lib/services/api/ng/base-ng-api.service";
 import { VendorInterface } from "@shared/interfaces/equipment/vendor.interface";
-import { map } from "rxjs/operators";
 
 @Injectable({
   providedIn: "root",

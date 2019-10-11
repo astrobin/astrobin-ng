@@ -14,19 +14,17 @@ before_install:
   - sudo apt-get install -y chromium-browser
 
 install:
-  - (cd backend; npm ci)
-  - (cd frontend; npm ci)
+  - npm ci
 
 before_script:
-  - (cd backend; npm run lint)
-  - (cd backend; npm run build)
-  - (cd frontend; npm run lint)
-  - (cd frontend; npm run build)
+  - npm run backend:lint
+  - npm run frontend:lint
+  - npm run backend:build
+  - npm run frontend:build
+  - npm run frontend:build:prod
 
 script:
-  - (cd backend; npm run test:cov)
-  - (cd frontend; npm run test:cov)
-  - (cd frontend; npm run build:prod)
+  - npm run test:cov
 
 after_success:
   - codecov

@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from "@angular/router";
 import { VendorInterface } from "@shared/interfaces/equipment/vendor.interface";
-import { VendorApiService } from "@features/equipment/services/api/vendor-api.service";
+import { VendorApiService } from "@feats/equipment/services/api/vendor-api.service";
 import { Observable } from "rxjs";
 
 @Injectable()

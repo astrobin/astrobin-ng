@@ -3,18 +3,18 @@ import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { NgbCollapseModule, NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
 import { TranslateLoader, TranslateModule } from "@ngx-translate/core";
-import { LanguageLoader } from "@astrobin/translate-loader";
-import { PipesModule } from "@library/pipes/pipes.module";
-import { AppContextService, IAppContext } from "@library/services/app-context.service";
-import { SharedModule } from "@library/shared.module";
+import { LanguageLoader } from "@app/translate-loader";
+import { PipesModule } from "@lib/pipes/pipes.module";
+import { AppContextService, IAppContext } from "@lib/services/app-context.service";
+import { SharedModule } from "@lib/shared.module";
 import { HeaderComponent } from "./header.component";
 import { Observable } from "rxjs";
-import { UserProfileModel } from "@library/models/common/userprofile.model";
-import { UserModel } from "@library/models/common/user.model";
+import { UserProfileModel } from "@lib/models/common/userprofile.model";
+import { UserModel } from "@lib/models/common/user.model";
 
 class MockAppContextService {
-  get = jasmine.createSpy("get").and.returnValue(
-    new Observable<IAppContext>(observer => {
+  get = jest.fn(
+    () => new Observable<IAppContext>(observer => {
       observer.next({
         currentUserProfile: new UserProfileModel({
             userObject: new UserModel({}),
@@ -48,8 +48,7 @@ describe("HeaderComponent", () => {
         { provide: AppContextService, useClass: MockAppContextService },
       ],
       declarations: [HeaderComponent],
-    })
-      .compileComponents();
+    }).compileComponents();
   }));
 
   beforeEach(() => {

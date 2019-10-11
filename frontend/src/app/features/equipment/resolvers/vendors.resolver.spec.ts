@@ -1,8 +1,8 @@
 import { Location } from "@angular/common";
 import { getTestBed, TestBed } from "@angular/core/testing";
 import { ActivatedRouteSnapshot, Router } from "@angular/router";
-import { VendorApiService } from "@features/equipment/services/api/vendor-api.service";
-import { VendorsResolver } from "@features/equipment/resolvers/vendors.resolver";
+import { VendorApiService } from "@feats/equipment/services/api/vendor-api.service";
+import { VendorsResolver } from "@feats/equipment/resolvers/vendors.resolver";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { Observable, of } from "rxjs";
@@ -30,7 +30,7 @@ describe("VendorsResolver", () => {
   });
 
   it("should resolve", async () => {
-    spyOn(resolver.vendorApi, "retrieveAll").and.returnValue(of([]));
+    jest.spyOn(resolver.vendorApi, "retrieveAll").mockReturnValue(of([]));
 
     const result: Observable<VendorInterface[]> = resolver.resolve(route, null);
     result.subscribe(async (vendors: VendorInterface[]) => {

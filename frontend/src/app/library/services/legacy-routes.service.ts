@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
-import { UserProfileModel } from "@library/models/common/userprofile.model";
-import { environment } from "@environments/environment";
+import { UserProfileModel } from "@lib/models/common/userprofile.model";
+import { environment } from "@env/environment";
 
 const BASE_URL = environment.legacyBaseUrl;
 

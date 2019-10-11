@@ -1,10 +1,10 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { VendorListComponent } from "./vendor-list.component";
 import { MockComponents } from "ng-mocks";
-import { VendorComponent } from "@features/equipment/containers/vendor/vendor.component";
-import { EmptyListComponent } from "@library/components/misc/empty-list/empty-list.component";
+import { VendorComponent } from "@feats/equipment/containers/vendor/vendor.component";
+import { EmptyListComponent } from "@lib/components/misc/empty-list/empty-list.component";
 import { Router } from "@angular/router";
-import { RouterMock } from "@astrobin/mocks/router.mock";
+import { RouterMock } from "@app/mocks/router.mock";
 
 describe("VendorListComponent", () => {
   let component: VendorListComponent;

@@ -3,16 +3,16 @@ import { FormControl, FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
 import { URL_REGEX } from "@shared/regexes";
-import { ValidationLoader } from "@library/services/validation-loader.service";
-import { VendorApiService } from "@features/equipment/services/api/vendor-api.service";
-import { AuthService } from "@library/services/auth.service";
+import { ValidationLoader } from "@lib/services/validation-loader.service";
+import { VendorApiService } from "@feats/equipment/services/api/vendor-api.service";
+import { AuthService } from "@lib/services/auth.service";
 import { forkJoin, Observable, of } from "rxjs";
 import { VendorInterface } from "@shared/interfaces/equipment/vendor.interface";
-import { SessionService } from "@library/services/session.service";
+import { SessionService } from "@lib/services/session.service";
 import { Router } from "@angular/router";
-import { VendorCheckSimilarPageComponent } from "@features/equipment/components/vendor-check-similar-page/vendor-check-similar.page-component";
+import { VendorCheckSimilarPageComponent } from "@feats/equipment/components/vendor-check-similar-page/vendor-check-similar.page-component";
 import { catchError, map } from "rxjs/operators";
-import { VendorService } from "@features/equipment/services/vendor.service";
+import { VendorService } from "@feats/equipment/services/vendor.service";
 
 @Component({
   selector: "astrobin-vendor-form-page",
