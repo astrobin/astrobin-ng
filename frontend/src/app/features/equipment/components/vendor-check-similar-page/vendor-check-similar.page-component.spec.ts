@@ -7,6 +7,7 @@ import { ToastrModule } from "ngx-toastr";
 import { TranslateModule } from "@ngx-translate/core";
 import { Router } from "@angular/router";
 import { RouterMock } from "@app/mocks/router.mock";
+import { VendorGenerator } from "@shared/generators/vendor.generator";
 
 describe("VendorCheckSimilarPageComponent", () => {
   let component: VendorCheckSimilarPageComponent;
@@ -35,13 +36,37 @@ describe("VendorCheckSimilarPageComponent", () => {
       .compileComponents();
   }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(VendorCheckSimilarPageComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+  describe("without session object", () => {
+    beforeEach(() => {
+      fixture = TestBed.createComponent(VendorCheckSimilarPageComponent);
+      component = fixture.componentInstance;
+      fixture.detectChanges();
+    });
+
+    it("should create", () => {
+      expect(component).toBeTruthy();
+    });
   });
 
-  it("should create", () => {
-    expect(component).toBeTruthy();
+  describe("with session object", () => {
+    const sessionObject = {
+      similar: [
+        VendorGenerator.generate(),
+        VendorGenerator.generate(),
+      ],
+      model: VendorGenerator.generate(),
+    };
+
+    beforeEach(() => {
+      fixture = TestBed.createComponent(VendorCheckSimilarPageComponent);
+      component = fixture.componentInstance;
+      component.session.put(VendorCheckSimilarPageComponent.SESSION_KEY, sessionObject);
+      fixture.detectChanges();
+    });
+
+    it("should have set the similar vendors and model", () => {
+      expect(component.similarVendors).toEqual(sessionObject.similar);
+      expect(component.model).toEqual(sessionObject.model);
+    });
   });
 });

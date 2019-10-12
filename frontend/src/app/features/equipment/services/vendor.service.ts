@@ -20,9 +20,8 @@ export class VendorService {
 
   public create(vendor: VendorInterface): Observable<void> {
     return this.api.create(vendor).pipe(map(response => {
-      this.router.navigate(["equipment/vendors", response.id]).then(() => {
-        this.popNotifications.success(this.translate.instant("Vendor created"));
-      });
+      this.router.navigate(["equipment/vendors", response.id]);
+      this.popNotifications.success(this.translate.instant("Vendor created"));
     }));
   }
 

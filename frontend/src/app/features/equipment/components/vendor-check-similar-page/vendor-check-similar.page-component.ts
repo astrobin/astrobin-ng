@@ -11,21 +11,22 @@ import { VendorService } from "@feats/equipment/services/vendor.service";
 })
 export class  VendorCheckSimilarPageComponent implements OnInit, OnDestroy {
   public static readonly SESSION_KEY = "check-similar";
-  public readonly similarVendors: VendorInterface[];
-  public readonly model: VendorInterface;
+  public similarVendors: VendorInterface[];
+  public model: VendorInterface;
 
   constructor(
     public readonly session: SessionService,
     public readonly router: Router,
     public readonly vendorService: VendorService) {
+  }
+
+  public ngOnInit(): void {
     const sessionObject = this.session.get(VendorCheckSimilarPageComponent.SESSION_KEY);
     if (sessionObject) {
       this.similarVendors = sessionObject.similar;
       this.model = sessionObject.model;
     }
-  }
 
-  public ngOnInit(): void {
     if (this.similarVendors === undefined) {
       this.router.navigate(["/equipment/vendors/create"]);
     }
