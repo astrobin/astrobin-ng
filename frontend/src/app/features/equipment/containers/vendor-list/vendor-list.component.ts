@@ -9,7 +9,7 @@ import { Router } from "@angular/router";
 })
 export class VendorListComponent {
   @Input()
-  public vendors: VendorInterface[];
+  public vendors: VendorInterface[] = [];
 
   public constructor(public readonly router: Router) {
   }

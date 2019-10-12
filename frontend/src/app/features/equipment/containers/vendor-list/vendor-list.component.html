@@ -1,4 +1,4 @@
-<ul class="list-group" *ngIf="vendors; else emptyTemplate">
+<ul class="list-group" *ngIf="vendors.length > 0; else emptyTemplate">
   <li class="list-group-item" *ngFor="let vendor of vendors" (click)="vendorClicked(vendor)">
     <astrobin-vendor [vendor]="vendor"></astrobin-vendor>
   </li>
