@@ -16,6 +16,7 @@ describe("ErrorInterceptor", () => {
         getArgByIndex: jest.fn().mockReturnThis(),
         switchToRpc: jest.fn().mockReturnThis(),
         switchToWs: jest.fn().mockReturnThis(),
+        getType: jest.fn().mockReturnThis(),
     };
 
     const callHandler = {
