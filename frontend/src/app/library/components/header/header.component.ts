@@ -44,10 +44,10 @@ export class HeaderComponent {
 
   public constructor(
     appContext: AppContextService,
-    private modalService: NgbModal,
-    public legacyRoutes: LegacyRoutesService,
-    public authService: AuthService,
-    public usersService: UsersService) {
+    public readonly modalService: NgbModal,
+    public readonly legacyRoutes: LegacyRoutesService,
+    public readonly authService: AuthService,
+    public readonly usersService: UsersService) {
     this.appContext$ = appContext.get();
   }
 

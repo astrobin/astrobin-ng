@@ -1,6 +1,6 @@
 import { TestBed } from "@angular/core/testing";
 import { AuthService } from "./auth.service";
-import { AuthApiService } from "./api/interfacees/auth-api.service.interface";
+import { AuthApiService } from "./api/interfaces/auth-api.service.interface";
 import { of } from "rxjs";
 import { AuthLegacyApiService } from "./api/legacy/auth-legacy-api.service";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
@@ -29,9 +29,12 @@ describe("AuthService", () => {
   });
 
   describe("login/logout", () => {
-    it("should work with legacy api", () => {
+    beforeEach(() => {
       jest.spyOn(service.authLegacyApi, "login").mockReturnValue(of("123"));
+      jest.spyOn(service.authNgApi, "login").mockReturnValue(of("123"));
+    });
 
+    it("should work with legacy api", () => {
       service.login("foo", "bar").subscribe(result => {
         expect(result).toEqual(true);
         expect(service.isAuthenticated()).toBe(true);
@@ -45,8 +48,6 @@ describe("AuthService", () => {
     });
 
     it("should work with ng api", () => {
-      jest.spyOn(service.authNgApi, "login").mockReturnValue(of("123"));
-
       service.login("foo", "bar").subscribe(result => {
         expect(result).toEqual(true);
         expect(service.isAuthenticated()).toBe(true);

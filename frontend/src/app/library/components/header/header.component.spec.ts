@@ -60,4 +60,32 @@ describe("HeaderComponent", () => {
   it("should create", () => {
     expect(component).toBeTruthy();
   });
+
+  describe("openLoginModal", () => {
+    it("should defer to modalService", () => {
+      spyOn(component.modalService, "open");
+      const mockEvent = {
+        preventDefault: jest.fn(),
+      };
+
+      component.openLoginModal(mockEvent);
+
+      expect(mockEvent.preventDefault).toHaveBeenCalled();
+      expect(component.modalService.open).toHaveBeenCalled();
+    });
+  });
+
+  describe("logout", () => {
+    it("should defer to authService", () => {
+      spyOn(component.authService, "logout");
+      const mockEvent = {
+        preventDefault: jest.fn(),
+      };
+
+      component.logout(mockEvent);
+
+      expect(mockEvent.preventDefault).toHaveBeenCalled();
+      expect(component.authService.logout).toHaveBeenCalled();
+    });
+  });
 });

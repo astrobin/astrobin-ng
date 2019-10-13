@@ -14,9 +14,9 @@ export class LoginModalComponent {
   public error = false;
 
   constructor(
-    public activeModal: NgbActiveModal,
-    public formBuilder: FormBuilder,
-    public authService: AuthService) {
+    public readonly activeModal: NgbActiveModal,
+    public readonly formBuilder: FormBuilder,
+    public readonly authService: AuthService) {
 
     this.form = this.formBuilder.group({
       handle: ["", Validators.required],

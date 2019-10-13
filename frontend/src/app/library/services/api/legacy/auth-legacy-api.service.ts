@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { AuthApiService } from "../interfacees/auth-api.service.interface";
+import { AuthApiService } from "../interfaces/auth-api.service.interface";
 import { HttpClient } from "@angular/common/http";
 import { Observable } from "rxjs";
 import { BaseLegacyApiService } from "./base-legacy-api.service";
@@ -17,7 +17,7 @@ export class AuthLegacyApiService extends BaseLegacyApiService implements AuthAp
 
   public login(handle: string, password: string): Observable<string> {
     return this.http.post<{token: string}>(
-      this.baseUrl + "/api-auth-token/", {username: handle, password}).pipe(
+      this.configUrl + "/api-auth-token/", {username: handle, password}).pipe(
       map(response => response.token)
     );
   }

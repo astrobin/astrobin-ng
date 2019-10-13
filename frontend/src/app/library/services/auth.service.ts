@@ -19,9 +19,9 @@ export class AuthService {
   static NG_LOCAL_STORAGE_KEY = "ng-auth-token";
 
   constructor(
-    public authLegacyApi: AuthLegacyApiService,
-    public authNgApi: AuthNgApiService,
-    public appContext: AppContextService) {
+    public readonly authLegacyApi: AuthLegacyApiService,
+    public readonly authNgApi: AuthNgApiService,
+    public readonly appContext: AppContextService) {
   }
 
   public static getLegacyApiToken(): string {
