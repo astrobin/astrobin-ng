@@ -65,10 +65,10 @@ export class VendorCreatePageComponent {
   }
 
   _checkSimilar(name: string): Observable<any> {
-    return forkJoin(
+    return forkJoin([
       this.vendorApi.retrieveByName(name),
       this.vendorApi.findSimilar(name),
-    );
+    ]);
   }
 
   private _initModel(): void {

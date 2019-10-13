@@ -47,12 +47,12 @@ export class AppContextService {
 
   load(): Promise<any> {
     return new Promise<any>((resolve) => {
-      forkJoin(
+      forkJoin([
         this._getCurrentUserProfile$,
         this._getCurrentUser$,
         this._getUserSubscriptions$,
         this._getSubscriptions$,
-      ).subscribe((results) => {
+      ]).subscribe((results) => {
         const userProfile: UserProfileModel = {
           ...results[0],
           ...{ userObject: results[1] },
