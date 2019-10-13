@@ -51,7 +51,7 @@
     "@nestjs/passport": "6.1.0",
     "@nestjs/platform-express": "6.3.1",
     "@nestjs/swagger": "3.0.2",
-    "@nestjs/typeorm": "6.1.2",
+    "@nestjs/typeorm": "6.2.0",
     "@nestjs/websockets": "6.3.1",
     "@nestjsx/crud": "4.2.0",
     "@nestjsx/crud-typeorm": "4.2.0",
