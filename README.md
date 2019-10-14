@@ -57,3 +57,4 @@ $ npm run test:cov
 ## License
 
 AstroBin NG is [AGPL 3.0 licensed](https://www.gnu.org/licenses/agpl-3.0.en.html).
+
