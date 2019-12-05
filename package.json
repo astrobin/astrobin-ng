@@ -106,7 +106,7 @@
     "nodemon": "1.19.3",
     "prettier": "1.17.0",
     "protractor": "^5.4.2",
-    "sqlite3": "4.1.0",
+    "sqlite3": "4.1.1",
     "supertest": "4.0.2",
     "ts-jest": "^24.0.2",
     "ts-node": "^8.4.1",
