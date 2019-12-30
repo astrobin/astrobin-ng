@@ -53,7 +53,7 @@
     "@nestjs/swagger": "3.1.0",
     "@nestjs/typeorm": "6.2.0",
     "@nestjs/websockets": "6.8.3",
-    "@nestjsx/crud": "4.2.0",
+    "@nestjsx/crud": "4.4.1",
     "@nestjsx/crud-typeorm": "4.2.0",
     "@ng-bootstrap/ng-bootstrap": "^5.1.1",
     "@ngx-formly/bootstrap": "^5.4.3",
