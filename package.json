@@ -50,7 +50,7 @@
     "@nestjs/microservices": "6.8.3",
     "@nestjs/passport": "6.1.0",
     "@nestjs/platform-express": "6.8.3",
-    "@nestjs/swagger": "3.1.0",
+    "@nestjs/swagger": "4.4.0",
     "@nestjs/typeorm": "6.2.0",
     "@nestjs/websockets": "6.8.3",
     "@nestjsx/crud": "4.2.0",
