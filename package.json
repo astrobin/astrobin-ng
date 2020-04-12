@@ -13,7 +13,7 @@
     "frontend:build:prod": "cd frontend; ng build --prod --aot",
     "test": "jest --config frontend/jest.config.js",
     "test:cov": "jest --config frontend/jest.config.js --coverage",
-    "test:e2e": "jest --config frontend/jest.config.js --config frontend/test/jest-e2e.json",
+    "test:e2e": "jest --config frontend/jest.config.js --config frontend/test/jest-e2e.json"
   },
   "private": true,
   "dependencies": {
