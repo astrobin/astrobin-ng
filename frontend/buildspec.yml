@@ -1,21 +1,6 @@
 version: 0.2
 
-env:
-  variables:
-    CHROME_BIN: "/usr/bin/chromium-browser"
-
 phases:
-  install:
-    runtime-versions:
-      nodejs: 10
-    commands:
-      - apt-get update -y
-      - apt-get install apt-transport-https
-      - apt-get install -y software-properties-common
-      - add-apt-repository -y ppa:canonical-chromium-builds/stage
-      - apt-get update -y
-      - apt-get install -y chromium-browser
-
   pre_build:
     commands:
       - npm ci
