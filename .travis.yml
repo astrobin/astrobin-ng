@@ -6,12 +6,6 @@ node_js:
 
 before_install:
   - npm install codecov -g
-  - sudo apt-get update -y
-  - sudo apt-get install apt-transport-https
-  - sudo apt-get install -y software-properties-common
-  - sudo add-apt-repository -y ppa:canonical-chromium-builds/stage
-  - sudo apt-get update -y
-  - sudo apt-get install -y chromium-browser
 
 install:
   - npm ci
