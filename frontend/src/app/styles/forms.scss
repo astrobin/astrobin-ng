@@ -10,10 +10,10 @@ label {
   &:focus {
     background-color: $darker-grey;
     border-color: $dark-grey;
-    color: $light-grey;
+    color: $lighter-grey;
 
     &::placeholder {
-      color: $dark-grey !important;
+      color: $grey !important;
     }
   }
 

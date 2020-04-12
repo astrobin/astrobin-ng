@@ -175,8 +175,10 @@
 
         <!-- Quick search form -->
         <li class="nav-item quick-search">
-          <form [action]="classicRoutes.SEARCH" method="get">
-            <input name="q" placeholder="{{ 'Quick search' | translate }}" type="text"/>
+          <form ngNoForm [action]="classicRoutes.SEARCH" method="get">
+            <label>
+              <input name="q" class="form-control" placeholder="{{ 'Quick search' | translate }}" type="text"/>
+            </label>
           </form>
         </li>
         <!-- ./Quick search form -->
