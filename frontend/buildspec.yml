@@ -22,9 +22,7 @@ phases:
 
   build:
     commands:
-      - npm run backend:lint
       - npm run frontend:lint
-      - npm run backend:build
       - npm run frontend:build
       - npm run frontend:build:prod
 

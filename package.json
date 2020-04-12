@@ -5,18 +5,6 @@
   "license": "AGPL-3.0",
   "repository": "https://github.com/astrobin/astrobin-ng",
   "scripts": {
-    "backend:lint": "tslint -p backend/tsconfig.json -c backend/tslint.json",
-    "backend:build": "tsc -p backend/tsconfig.build.json",
-    "backend:start": "ts-node -P backend/tsconfig.json -r tsconfig-paths/register backend/src/main.ts",
-    "backend:start:dev": "concurrently --handle-input \"wait-on backend/dist/backend/src/main.js && nodemon\" \"tsc -w -p backend/tsconfig.build.json\" ",
-    "backend:start:debug": "nodemon --config backend/nodemon-debug.json",
-    "backend:prestart:prod": "rimraf backend/dist && npm run backend:build",
-    "backend:start:prod": "node backend/dist/backend/src/main.js",
-    "backend:test": "jest --config backend/jest.config.js",
-    "backend:test:watch": "jest --config backend/jest.config.js --watch",
-    "backend:test:cov": "jest --config backend/jest.config.js --coverage",
-    "backend:test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --config backend/jest.config.js --runInBand",
-    "backend:test:e2e": "jest --config backend/jest.config.js --config backend/test/jest-e2e.json",
     "ng": ".node_modules/.bin/ng",
     "frontend:lint": "cd frontend; ng lint",
     "frontend:start": "cd frontend; ng serve --host 0.0.0.0 --port 4400",
@@ -117,7 +105,6 @@
   },
   "jest": {
     "projects": [
-      "backend/jest.config.js",
       "frontend/jest.config.js"
     ]
   }

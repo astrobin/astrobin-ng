@@ -1,5 +1,4 @@
-AstroBin NG, based on [Node.js](https://nodejs.org), [Nest.js](https://nestjs.com),
-[Angular](https://angular.io).
+AstroBin NG, based on [Node.js](https://nodejs.org), [Angular](https://angular.io).
 
 [![Build Status](https://travis-ci.org/astrobin/astrobin-ng.svg?branch=master)](https://travis-ci.org/astrobin/astrobin-ng)
 [![codecov](https://codecov.io/gh/astrobin/astrobin-ng/branch/master/graph/badge.svg)](https://codecov.io/gh/astrobin/astrobin-ng)
@@ -16,19 +15,6 @@ AstroBin NG, based on [Node.js](https://nodejs.org), [Nest.js](https://nestjs.co
 $ npm ci
 ```
 
-## Running the backend
-
-```bash
-# development
-$ npm run backend:start
-
-# watch mode
-$ npm run backend:start:dev
-
-# production mode
-$ npm run backend:start:prod
-```
-
 ## Running the frontend
 
 ```bash
@@ -36,7 +22,7 @@ $ npm run backend:start:prod
 $ npm run frontend:start
 
 # production mode
-$ npm run backend:start:prod
+$ npm run frontend:start:prod
 ```
 
 ## Test
