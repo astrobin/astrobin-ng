@@ -1,6 +1,5 @@
 AstroBin NG, based on [Node.js](https://nodejs.org), [Angular](https://angular.io).
 
-[![Build Status](https://travis-ci.org/astrobin/astrobin-ng.svg?branch=master)](https://travis-ci.org/astrobin/astrobin-ng)
 [![codecov](https://codecov.io/gh/astrobin/astrobin-ng/branch/master/graph/badge.svg)](https://codecov.io/gh/astrobin/astrobin-ng)
 [![dependencies Status](https://david-dm.org/astrobin/astrobin-ng/status.svg)](https://david-dm.org/astrobin/astrobin-ng)
 [![Maintainability](https://api.codeclimate.com/v1/badges/247f94974d0ff8baeac4/maintainability)](https://codeclimate.com/github/astrobin/astrobin-api/maintainability)
