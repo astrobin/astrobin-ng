@@ -1,12 +1,12 @@
 import { TestBed } from "@angular/core/testing";
 
-import { LegacyRoutesService } from "./legacy-routes.service";
+import { ClassicRoutesService } from "./classic-routes.service";
 
-describe("LegacyRoutesService", () => {
+describe("ClassicRoutesService", () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it("should be created", () => {
-    const service: LegacyRoutesService = TestBed.get(LegacyRoutesService);
+    const service: ClassicRoutesService = TestBed.get(ClassicRoutesService);
     expect(service).toBeTruthy();
   });
 });

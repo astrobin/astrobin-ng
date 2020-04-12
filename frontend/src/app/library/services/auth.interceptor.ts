@@ -10,12 +10,9 @@ export class AuthInterceptor implements HttpInterceptor {
     let authToken: string;
     let authScheme: string;
 
-    if (request.url.startsWith(environment.legacyApiUrl)) {
-      authToken = AuthService.getLegacyApiToken();
+    if (request.url.startsWith(environment.classicApiUrl)) {
+      authToken = AuthService.getClassicApiToken();
       authScheme = "Token";
-    } else if (request.url.startsWith(environment.ngApiUrl)) {
-      authToken = AuthService.getNgApiToken();
-      authScheme = "jwt";
     }
 
     const headers = {

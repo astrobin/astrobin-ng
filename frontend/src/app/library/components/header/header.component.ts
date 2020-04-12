@@ -1,6 +1,6 @@
 import { Component } from "@angular/core";
 import { AppContextService, IAppContext } from "@lib/services/app-context.service";
-import { LegacyRoutesService } from "@lib/services/legacy-routes.service";
+import { ClassicRoutesService } from "@lib/services/classic-routes.service";
 import { UsersService } from "@lib/services/users.service";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { LoginModalComponent } from "@lib/components/auth/login-modal/login-modal.component";
@@ -45,7 +45,7 @@ export class HeaderComponent {
   public constructor(
     appContext: AppContextService,
     public readonly modalService: NgbModal,
-    public readonly legacyRoutes: LegacyRoutesService,
+    public readonly classicRoutes: ClassicRoutesService,
     public readonly authService: AuthService,
     public readonly usersService: UsersService) {
     this.appContext$ = appContext.get();

@@ -15,7 +15,7 @@ export class LanguageLoader implements TranslateLoader {
   }
 
   getTranslation(): Observable<any> {
-    return this.http.get(environment.legacyApiUrl + "/jsi18n/").pipe(
+    return this.http.get(environment.classicApiUrl + "/jsi18n/").pipe(
       map((response: JsI18nResponse) => response.catalog));
   }
 }

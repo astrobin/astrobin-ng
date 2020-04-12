@@ -1,7 +1,7 @@
 <nav class="navbar navbar-expand-lg">
   <div class="container">
 
-    <a [href]="legacyRoutes.HOME" class="navbar-brand">
+    <a [href]="classicRoutes.HOME" class="navbar-brand">
       <img alt="AstroBin" src="assets/images/nav-logo.png"/>
     </a>
 
@@ -23,14 +23,14 @@
 
                 <h6 class="dropdown-header" translate>Images</h6>
 
-                <a *ngIf="profile | isImageModerator" [href]="legacyRoutes.MODERATE_IMAGE_QUEUE"
+                <a *ngIf="profile | isImageModerator" [href]="classicRoutes.MODERATE_IMAGE_QUEUE"
                    class="dropdown-item">
                   <fa-icon icon="images"></fa-icon>
                   {{ "Image queue" | translate }}
                 </a>
 
                 <a *ngIf="(profile | isImageModerator) && (profile | isSuperuser)"
-                   [href]="legacyRoutes.MODERATE_SPAM_QUEUE"
+                   [href]="classicRoutes.MODERATE_SPAM_QUEUE"
                    class="dropdown-item">
                   <fa-icon icon="flag"></fa-icon>
                   {{ "Spam queue" | translate }}
@@ -40,19 +40,19 @@
                   <div class="dropdown-divider"></div>
                   <h6 class="dropdown-header" translate>Image of the day</h6>
 
-                  <a *ngIf="profile | isIotdSubmitter" [href]="legacyRoutes.IOTD_SUBMISSION_QUEUE"
+                  <a *ngIf="profile | isIotdSubmitter" [href]="classicRoutes.IOTD_SUBMISSION_QUEUE"
                      class="dropdown-item">
                     <fa-icon icon="upload"></fa-icon>
                     {{ "Submission queue" | translate }}
                   </a>
 
-                  <a *ngIf="profile | isIotdReviewer" [href]="legacyRoutes.IOTD_REVIEW_QUEUE"
+                  <a *ngIf="profile | isIotdReviewer" [href]="classicRoutes.IOTD_REVIEW_QUEUE"
                      class="dropdown-item">
                     <fa-icon icon="star"></fa-icon>
                     {{ "Review queue" | translate }}
                   </a>
 
-                  <a *ngIf="profile | isIotdJudge" [href]="legacyRoutes.IOTD_JUDGEMENT_QUEUE"
+                  <a *ngIf="profile | isIotdJudge" [href]="classicRoutes.IOTD_JUDGEMENT_QUEUE"
                      class="dropdown-item">
                     <fa-icon icon="hammer"></fa-icon>
                     {{ "Judgement queue" | translate }}
@@ -71,17 +71,17 @@
             <button class="btn btn-link" id="forumDropdown" ngbDropdownToggle translate>Forum</button>
             <div aria-labelledby="forumDropdown" ngbDropdownMenu>
 
-              <a [href]="legacyRoutes.FORUM_HOME" class="dropdown-item">
+              <a [href]="classicRoutes.FORUM_HOME" class="dropdown-item">
                 <fa-icon icon="comments"></fa-icon>
                 {{ "Home" | translate }}
               </a>
 
-              <a [href]="legacyRoutes.FORUM_LATEST" class="dropdown-item">
+              <a [href]="classicRoutes.FORUM_LATEST" class="dropdown-item">
                 <fa-icon icon="sort-amount-down"></fa-icon>
                 {{ "Latest topics" | translate }}
               </a>
 
-              <a [href]="legacyRoutes.FORUM_SUBSCRIBED" class="dropdown-item">
+              <a [href]="classicRoutes.FORUM_SUBSCRIBED" class="dropdown-item">
                 <fa-icon icon="eye"></fa-icon>
                 {{ "Subscribed topics" | translate }}
               </a>
@@ -97,43 +97,33 @@
             <button class="btn btn-link" id="exploreDropdown" ngbDropdownToggle translate>Explore</button>
             <div aria-labelledby="exploreDropdown" ngbDropdownMenu>
 
-              <a [href]="legacyRoutes.SEARCH" class="dropdown-item">
+              <a [href]="classicRoutes.SEARCH" class="dropdown-item">
                 <fa-icon icon="search"></fa-icon>
                 {{ "The Big Wall / Advanced search" | translate }}
               </a>
 
-              <a routerLink="equipment/vendors" class="dropdown-item">
-                <fa-icon icon="certificate"></fa-icon>
-                {{ "Certified Equipment Database" | translate }}
-              </a>
-
               <div class="dropdown-divider"></div>
 
-              <a [href]="legacyRoutes.TOP_PICKS" class="dropdown-item">
+              <a [href]="classicRoutes.TOP_PICKS" class="dropdown-item">
                 <fa-icon icon="star"></fa-icon>
                 {{ "Top Picks" | translate }}
               </a>
 
-              <a [href]="legacyRoutes.IOTD" class="dropdown-item">
+              <a [href]="classicRoutes.IOTD" class="dropdown-item">
                 <fa-icon icon="trophy"></fa-icon>
                 {{ "Image of the day" | translate }}
               </a>
 
               <div class="dropdown-divider"></div>
 
-              <a [href]="legacyRoutes.GROUPS" class="dropdown-item">
+              <a [href]="classicRoutes.GROUPS" class="dropdown-item">
                 <fa-icon icon="users"></fa-icon>
                 {{ "Groups" | translate }}
               </a>
 
-              <a [href]="legacyRoutes.RAWDATA_PUBLIC_DATA_POOLS" class="dropdown-item">
-                <fa-icon icon="book"></fa-icon>
-                {{ "Public data pools" | translate }}
-              </a>
-
               <div class="dropdown-divider"></div>
 
-              <a [href]="legacyRoutes.TRENDING_ASTROPHOTOGRAPHERS" class="dropdown-item">
+              <a [href]="classicRoutes.TRENDING_ASTROPHOTOGRAPHERS" class="dropdown-item">
                 <fa-icon icon="list-ol"></fa-icon>
                 {{ "Trending astrophotographers" | translate }}
               </a>
@@ -149,31 +139,31 @@
             <button class="btn btn-link" id="helpDropdown" ngbDropdownToggle translate>Help</button>
             <div aria-labelledby="helpDropdown" ngbDropdownMenu>
 
-              <a [href]="legacyRoutes.HELP" class="dropdown-item">
+              <a [href]="classicRoutes.ABOUT" class="dropdown-item">
                 <fa-icon icon="info"></fa-icon>
                 {{ "What is this site?" | translate }}
               </a>
 
               <div class="dropdown-divider"></div>
 
-              <a [href]="legacyRoutes.FAQ" class="dropdown-item">
+              <a [href]="classicRoutes.FAQ" class="dropdown-item">
                 <fa-icon icon="question"></fa-icon>
                 {{ "FAQ" | translate }}
               </a>
 
-              <a [href]="legacyRoutes.RAWDATA_HELP" class="dropdown-item">
-                <fa-icon icon="book"></fa-icon>
-                {{ "AstroBin Raw Data" | translate }}
-              </a>
-
               <div class="dropdown-divider"></div>
 
-              <a [href]="legacyRoutes.HELP_API" class="dropdown-item">
+              <a [href]="classicRoutes.HELP_API" class="dropdown-item">
                 <fa-icon icon="key"></fa-icon>
                 {{ "API (beta)" | translate }}
               </a>
 
-              <a [href]="legacyRoutes.CONTACT" class="dropdown-item">
+              <a [href]="classicRoutes.SPONSORS" class="dropdown-item">
+                <fa-icon icon="users"></fa-icon>
+                {{ "Sponsors" | translate }}
+              </a>
+
+              <a [href]="classicRoutes.CONTACT" class="dropdown-item">
                 <fa-icon icon="envelope"></fa-icon>
                 {{ "Contact" | translate }}
               </a>
@@ -185,7 +175,7 @@
 
         <!-- Quick search form -->
         <li class="nav-item quick-search">
-          <form [action]="legacyRoutes.SEARCH" method="get">
+          <form [action]="classicRoutes.SEARCH" method="get">
             <input name="q" placeholder="{{ 'Quick search' | translate }}" type="text"/>
           </form>
         </li>
@@ -197,7 +187,7 @@
         <li class="nav-item">
           <a href="#" class="nav-link" (click)="openLoginModal($event)" translate>Login</a>
         </li>
-        <li class="nav-item"><a [href]="legacyRoutes.REGISTER" class="nav-link" translate>Register</a></li>
+        <li class="nav-item"><a [href]="classicRoutes.REGISTER" class="nav-link" translate>Register</a></li>
       </ul>
 
       <ul *ngIf="(appContext$ | async)?.currentUserProfile.userObject" class="navbar-nav">
@@ -208,7 +198,7 @@
               <fa-icon icon="globe"></fa-icon>
             </button>
             <div aria-labelledby="languageDropdown" ngbDropdownMenu>
-              <a *ngFor="let flag of flags" [href]="legacyRoutes.SET_LANGUAGE(flag.languageCode)" class="dropdown-item">
+              <a *ngFor="let flag of flags" [href]="classicRoutes.SET_LANGUAGE(flag.languageCode)" class="dropdown-item">
                 <img class="flag flag-{{ flag.countryCode }}"
                      height="16" src="/assets/flags/blank.gif"
                      width="16"/>
@@ -250,12 +240,12 @@
 
             <div aria-labelledby="userDropdown" ngbDropdownMenu>
 
-              <a [href]="legacyRoutes.SUBSCRIPTIONS" class="dropdown-item">
+              <a [href]="classicRoutes.SUBSCRIPTIONS" class="dropdown-item">
                 <fa-icon icon="asterisk"></fa-icon>
                 {{ "Subscription plans" | translate }}
               </a>
 
-              <a [href]="legacyRoutes.UPLOAD" class="dropdown-item">
+              <a [href]="classicRoutes.UPLOAD" class="dropdown-item">
                 <fa-icon icon="upload"></fa-icon>
                 {{ "Upload" | translate }}
               </a>
@@ -264,61 +254,45 @@
               <h6 class="dropdown-header" translate>My places</h6>
 
               <a *ngIf="profile | isProducer"
-                 [href]="legacyRoutes.COMMERCIAL_PRODUCTS(profile)" class="dropdown-item">
+                 [href]="classicRoutes.COMMERCIAL_PRODUCTS(profile)" class="dropdown-item">
                 <fa-icon icon="barcode"></fa-icon>
                 {{ "Commercial products" | translate }}
               </a>
 
               <a
-                [href]="legacyRoutes.GALLERY(profile)" class="dropdown-item">
+                [href]="classicRoutes.GALLERY(profile)" class="dropdown-item">
                 <fa-icon icon="image"></fa-icon>
                 {{ "Gallery" | translate }}
               </a>
 
               <a
-                [href]="legacyRoutes.BOOKMARKS(profile)" class="dropdown-item">
+                [href]="classicRoutes.BOOKMARKS(profile)" class="dropdown-item">
                 <fa-icon icon="bookmark"></fa-icon>
                 {{ "Bookmarks" | translate }}
               </a>
 
               <a
-                [href]="legacyRoutes.PLOTS(profile)" class="dropdown-item">
+                [href]="classicRoutes.PLOTS(profile)" class="dropdown-item">
                 <fa-icon icon="chart-bar"></fa-icon>
                 {{ "Plots" | translate }}
               </a>
 
               <div class="dropdown-divider"></div>
-              <h6 class="dropdown-header" translate>Raw data</h6>
 
               <a
-                *ngIf="usersService.hasValidRawDataSubscription(profile)"
-                [href]="legacyRoutes.RAWDATA" class="dropdown-item">
-                <fa-icon icon="book"></fa-icon>
-                {{ "Raw data library" | translate }}
-              </a>
-
-              <a
-                [href]="legacyRoutes.RAWDATA_PRIVATE_SHARED_FOLDERS" class="dropdown-item">
-                <fa-icon icon="lock"></fa-icon>
-                {{ "Private shared folders" | translate }}
-              </a>
-
-              <div class="dropdown-divider"></div>
-
-              <a
-                [href]="legacyRoutes.INBOX" class="dropdown-item">
+                [href]="classicRoutes.INBOX" class="dropdown-item">
                 <fa-icon icon="inbox"></fa-icon>
                 {{ "My messages" | translate }}
               </a>
 
               <a
-                [href]="legacyRoutes.API_KEYS(profile)" class="dropdown-item">
+                [href]="classicRoutes.API_KEYS(profile)" class="dropdown-item">
                 <fa-icon icon="key"></fa-icon>
                 {{ "API Keys" | translate }}
               </a>
 
               <a
-                [href]="legacyRoutes.SETTINGS" class="dropdown-item">
+                [href]="classicRoutes.SETTINGS" class="dropdown-item">
                 <fa-icon icon="edit"></fa-icon>
                 {{ "My settings" | translate }}
               </a>
@@ -338,7 +312,7 @@
 
         <!-- Upload button -->
         <li class="nav-item d-none d-lg-block">
-          <a [href]="legacyRoutes.UPLOAD" class="btn btn-link nav-link">
+          <a [href]="classicRoutes.UPLOAD" class="btn btn-link nav-link">
             <fa-icon icon="upload"></fa-icon>
           </a>
         </li>

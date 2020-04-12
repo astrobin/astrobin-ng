@@ -9,8 +9,8 @@ import { LibraryModule } from "@lib/library.module";
 import { AppContextService } from "@lib/services/app-context.service";
 import { SharedModule } from "@lib/shared.module";
 import { LanguageLoader } from "@app/translate-loader";
-import { CommonLegacyApiService } from "@lib/services/api/legacy/common-legacy-api.service";
-import { CommonLegacyApiServiceMock } from "@lib/services/api/legacy/common-legacy-api.service-mock";
+import { CommonClassicApiService } from "@lib/services/api/classic/common-classic-api.service";
+import { CommonClassicApiServiceMock } from "@lib/services/api/classic/common-classic-api-service-mock.service";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 
 describe("AppComponent", () => {
@@ -32,7 +32,7 @@ describe("AppComponent", () => {
       providers: [
         AppContextService,
         {
-          provide: CommonLegacyApiService, useClass: CommonLegacyApiServiceMock,
+          provide: CommonClassicApiService, useClass: CommonClassicApiServiceMock,
         },
         {
           provide: APP_INITIALIZER,

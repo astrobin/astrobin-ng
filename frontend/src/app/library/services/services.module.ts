@@ -2,7 +2,7 @@ import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
 import { ApiModule } from "./api/api.module";
 import { AppContextService } from "./app-context.service";
-import { LegacyRoutesService } from "./legacy-routes.service";
+import { ClassicRoutesService } from "./classic-routes.service";
 import { UsersService } from "./users.service";
 
 @NgModule({
@@ -12,7 +12,7 @@ import { UsersService } from "./users.service";
   ],
   providers: [
     AppContextService,
-    LegacyRoutesService,
+    ClassicRoutesService,
     UsersService,
   ],
   exports: [

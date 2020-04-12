@@ -1,10 +1,8 @@
 import { TestBed } from "@angular/core/testing";
 import { AuthService } from "./auth.service";
-import { AuthApiService } from "./api/interfaces/auth-api.service.interface";
 import { of } from "rxjs";
-import { AuthLegacyApiService } from "./api/legacy/auth-legacy-api.service";
+import { AuthClassicApiService } from "./api/classic/auth-classic-api.service";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { AuthNgApiService } from "./api/ng/auth-ng-api.service";
 
 describe("AuthService", () => {
   let service: AuthService;
@@ -15,8 +13,7 @@ describe("AuthService", () => {
     ],
     providers: [
       AuthService,
-      AuthLegacyApiService,
-      AuthNgApiService,
+      AuthClassicApiService,
     ],
   }));
 
@@ -30,33 +27,19 @@ describe("AuthService", () => {
 
   describe("login/logout", () => {
     beforeEach(() => {
-      jest.spyOn(service.authLegacyApi, "login").mockReturnValue(of("123"));
-      jest.spyOn(service.authNgApi, "login").mockReturnValue(of("123"));
+      jest.spyOn(service.authClassicApi, "login").mockReturnValue(of("123"));
     });
 
-    it("should work with legacy api", () => {
+    it("should work with classic api", () => {
       service.login("foo", "bar").subscribe(result => {
         expect(result).toEqual(true);
         expect(service.isAuthenticated()).toBe(true);
-        expect(AuthService.getLegacyApiToken()).toBe("123");
+        expect(AuthService.getClassicApiToken()).toBe("123");
 
         service.logout();
 
         expect(service.isAuthenticated()).toBe(false);
-        expect(AuthService.getLegacyApiToken()).toBe(null);
-      });
-    });
-
-    it("should work with ng api", () => {
-      service.login("foo", "bar").subscribe(result => {
-        expect(result).toEqual(true);
-        expect(service.isAuthenticated()).toBe(true);
-        expect(AuthService.getLegacyApiToken()).toBe("123");
-
-        service.logout();
-
-        expect(service.isAuthenticated()).toBe(false);
-        expect(AuthService.getLegacyApiToken()).toBe(null);
+        expect(AuthService.getClassicApiToken()).toBe(null);
       });
     });
   });

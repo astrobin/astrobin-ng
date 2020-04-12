@@ -3,13 +3,11 @@ import { HttpClientTestingModule, HttpTestingController } from "@angular/common/
 import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import { AuthInterceptor } from "@lib/services/auth.interceptor";
 import { AuthService } from "@lib/services/auth.service";
-import { AuthLegacyApiService } from "@lib/services/api/legacy/auth-legacy-api.service";
-import { AuthNgApiService } from "@lib/services/api/ng/auth-ng-api.service";
+import { AuthClassicApiService } from "@lib/services/api/classic/auth-classic-api.service";
 
 describe(`AuthHttpInterceptor`, () => {
   let authService: AuthService;
-  let authLegacyApi: AuthLegacyApiService;
-  let authNgApi: AuthNgApiService;
+  let authClassicApi: AuthClassicApiService;
   let httpMock: HttpTestingController;
 
   beforeEach(() => {
@@ -17,8 +15,7 @@ describe(`AuthHttpInterceptor`, () => {
       imports: [HttpClientTestingModule],
       providers: [
         AuthService,
-        AuthLegacyApiService,
-        AuthNgApiService,
+        AuthClassicApiService,
         {
           provide: HTTP_INTERCEPTORS,
           useClass: AuthInterceptor,
@@ -28,12 +25,10 @@ describe(`AuthHttpInterceptor`, () => {
     });
 
     authService = TestBed.get(AuthService);
-    authLegacyApi = TestBed.get(AuthLegacyApiService);
-    authNgApi = TestBed.get(AuthNgApiService);
+    authClassicApi = TestBed.get(AuthClassicApiService);
     httpMock = TestBed.get(HttpTestingController);
 
-    spyOn(AuthService, "getLegacyApiToken").and.returnValue("legacy-auth-token");
-    spyOn(AuthService, "getNgApiToken").and.returnValue("ng-auth-token");
+    spyOn(AuthService, "getClassicApiToken").and.returnValue("classic-auth-token");
   });
 
   afterEach(() => {
@@ -45,10 +40,8 @@ describe(`AuthHttpInterceptor`, () => {
       expect(response).toBeTruthy();
     });
 
-    const legacyApiHttpRequest = httpMock.expectOne(`${authLegacyApi.configUrl}/api-auth-token/`);
-    const ngApiHttpRequest = httpMock.expectOne(`${authNgApi.configUrl}/auth/login/`);
+    const classicApiHttpRequest = httpMock.expectOne(`${authClassicApi.configUrl}/api-auth-token/`);
 
-    expect(legacyApiHttpRequest.request.headers.has("Authorization")).toEqual(true);
-    expect(ngApiHttpRequest.request.headers.has("Authorization")).toEqual(true);
+    expect(classicApiHttpRequest.request.headers.has("Authorization")).toEqual(true);
   });
 });

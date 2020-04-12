@@ -52,7 +52,6 @@ export class UserProfileModel {
   // Computed, convenience fields.
   userObject?: UserModel;
   userSubscriptionObjects?: UserSubscriptionModel[];
-  hasValidRawDataSubscription?: boolean;
 
   constructor(values: Object = {}) {
     Object.assign(this, values);

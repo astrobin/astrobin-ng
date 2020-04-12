@@ -1,9 +1,0 @@
-<ul class="list-group" *ngIf="vendors.length > 0; else emptyTemplate">
-  <li class="list-group-item" *ngFor="let vendor of vendors" (click)="vendorClicked(vendor)">
-    <astrobin-vendor [vendor]="vendor"></astrobin-vendor>
-  </li>
-</ul>
-
-<ng-template #emptyTemplate>
-  <astrobin-empty-list></astrobin-empty-list>
-</ng-template>

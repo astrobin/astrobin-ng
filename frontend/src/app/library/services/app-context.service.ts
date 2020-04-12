@@ -3,7 +3,7 @@ import { BehaviorSubject, forkJoin, Observable, of } from "rxjs";
 import { flatMap, share } from "rxjs/operators";
 import { SubscriptionModel } from "../models/common/subscription.model";
 import { UserProfileModel } from "../models/common/userprofile.model";
-import { CommonLegacyApiService } from "./api/legacy/common-legacy-api.service";
+import { CommonClassicApiService } from "./api/classic/common-classic-api.service";
 
 export interface IAppContext {
   currentUserProfile: UserProfileModel;
@@ -42,7 +42,7 @@ export class AppContextService {
 
   private _getSubscriptions$ = this.commonApi.getSubscriptions().pipe(share());
 
-  constructor(public commonApi: CommonLegacyApiService) {
+  constructor(public commonApi: CommonClassicApiService) {
   }
 
   load(): Promise<any> {

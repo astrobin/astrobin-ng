@@ -1,6 +1,6 @@
 import { TestBed } from "@angular/core/testing";
 import { of } from "rxjs";
-import { CommonLegacyApiService } from "./api/legacy/common-legacy-api.service";
+import { CommonClassicApiService } from "./api/classic/common-classic-api.service";
 
 import { AppContextService } from "./app-context.service";
 
@@ -17,7 +17,7 @@ describe("AppContextService", () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        { provide: CommonLegacyApiService, useClass: MockCommonApiService },
+        { provide: CommonClassicApiService, useClass: MockCommonApiService },
       ],
     });
     service = TestBed.get(AppContextService);

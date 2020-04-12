@@ -43,7 +43,7 @@ astrobin-root:empty + .app-loading {
 
 .container {
   @media screen and (min-width: 1200px) {
-    // Match the legacy AstroBin frontend on Bootstrap 2.
+    // Match the classic AstroBin frontend on Bootstrap 2.
     // TODO: get rid of this eventually.
     max-width: 970px;
   }

@@ -1,7 +1,7 @@
 import { HTTP_INTERCEPTORS, HttpClientModule } from "@angular/common/http";
 import { NgModule } from "@angular/core";
-import { CommonLegacyApiService } from "./legacy/common-legacy-api.service";
-import { AuthLegacyApiService } from "./legacy/auth-legacy-api.service";
+import { CommonClassicApiService } from "./classic/common-classic-api.service";
+import { AuthClassicApiService } from "./classic/auth-classic-api.service";
 import { AuthInterceptor } from "../auth.interceptor";
 
 @NgModule({
@@ -14,8 +14,8 @@ import { AuthInterceptor } from "../auth.interceptor";
       useClass: AuthInterceptor,
       multi: true,
     },
-    AuthLegacyApiService,
-    CommonLegacyApiService,
+    AuthClassicApiService,
+    CommonClassicApiService,
   ],
 })
 export class ApiModule {

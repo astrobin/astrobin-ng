@@ -9,6 +9,7 @@ export class SessionService {
   public get(key: string): any {
     return this._storage[key];
   }
+
   public put(key: string, data: any): void {
     this._storage[key] = data;
   }
