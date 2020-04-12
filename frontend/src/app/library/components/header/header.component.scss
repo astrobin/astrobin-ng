@@ -13,11 +13,9 @@
 }
 
 .nav-item {
-  margin: 0 0 0 6px;
-
   .dropdown-toggle:not(.user-dropdown-toggle) {
     margin: 0;
-    padding: 12px;
+    padding: 1rem .5rem;
 
     &:hover {
       text-decoration: none;
@@ -29,8 +27,7 @@
   }
 
   .user-dropdown-toggle {
-    margin-top: 8px;
-    padding: 4px 12px;
+    margin: .75rem .5rem;
 
     .scores {
       font-size: 66%;
@@ -67,18 +64,17 @@
   }
 
   &.quick-search {
-    margin-top: 7px;
-    margin-left: 12px;
+    padding: .5rem;
+
+    label {
+      margin: 0;
+    }
   }
 
   .nav-link {
     display: inline-block;
     margin: 0;
-    padding: 5px;
-  }
-
-  > .nav-link {
-    padding: 10px;
+    padding: 1rem .5rem;
   }
 
   .no-triangle::after {
