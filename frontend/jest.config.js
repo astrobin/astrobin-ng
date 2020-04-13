@@ -3,7 +3,6 @@ const { compilerOptions } = require("./tsconfig.json");
 
 module.exports = {
   verbose: true,
-  allowJs: true,
   preset: "jest-preset-angular",
   setupFilesAfterEnv: ["<rootDir>/setupJest.ts"],
   collectCoverageFrom: [
