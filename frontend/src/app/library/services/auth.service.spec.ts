@@ -1,21 +1,18 @@
+import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
-import { AuthService } from "./auth.service";
 import { of } from "rxjs";
 import { AuthClassicApiService } from "./api/classic/auth/auth-classic-api.service";
-import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { AuthService } from "./auth.service";
 
 describe("AuthService", () => {
   let service: AuthService;
 
-  beforeEach(() => TestBed.configureTestingModule({
-    imports: [
-      HttpClientTestingModule,
-    ],
-    providers: [
-      AuthService,
-      AuthClassicApiService,
-    ],
-  }));
+  beforeEach(() =>
+    TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule],
+      providers: [AuthService, AuthClassicApiService]
+    })
+  );
 
   beforeEach(() => {
     service = TestBed.get(AuthService);

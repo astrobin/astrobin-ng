@@ -1,6 +1,6 @@
-import { IsImageModeratorPipe } from "./is-image-moderator.pipe";
 import { UserGenerator } from "@lib/generators/user.generator";
 import { UserServiceMock } from "@lib/services/user.service-mock";
+import { IsImageModeratorPipe } from "./is-image-moderator.pipe";
 
 describe("IsImageModeratorPipe", () => {
   let pipe: IsImageModeratorPipe;

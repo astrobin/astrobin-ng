@@ -1,17 +1,17 @@
 import { HttpClient } from "@angular/common/http";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { APP_INITIALIZER } from "@angular/core";
 import { async, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
-import { TranslateLoader, TranslateModule } from "@ngx-translate/core";
 import { AppComponent } from "@app/app.component";
 import { appInitializer } from "@app/app.module";
+import { LanguageLoader } from "@app/translate-loader";
 import { LibraryModule } from "@lib/library.module";
+import { CommonClassicApiServiceMock } from "@lib/services/api/classic/common/common-api-mock.service";
+import { CommonApiService } from "@lib/services/api/classic/common/common-api.service";
 import { AppContextService } from "@lib/services/app-context.service";
 import { SharedModule } from "@lib/shared.module";
-import { LanguageLoader } from "@app/translate-loader";
-import { CommonApiService } from "@lib/services/api/classic/common/common-api.service";
-import { CommonClassicApiServiceMock } from "@lib/services/api/classic/common/common-api-mock.service";
-import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { TranslateLoader, TranslateModule } from "@ngx-translate/core";
 
 describe("AppComponent", () => {
   beforeEach(async(() => {
@@ -24,28 +24,25 @@ describe("AppComponent", () => {
           loader: {
             provide: TranslateLoader,
             useClass: LanguageLoader,
-            deps: [HttpClient],
-          },
+            deps: [HttpClient]
+          }
         }),
-        SharedModule,
+        SharedModule
       ],
       providers: [
         AppContextService,
         {
-          provide: CommonApiService, useClass: CommonClassicApiServiceMock,
+          provide: CommonApiService,
+          useClass: CommonClassicApiServiceMock
         },
         {
           provide: APP_INITIALIZER,
           useFactory: appInitializer,
           multi: true,
-          deps: [
-            AppContextService,
-          ],
-        },
+          deps: [AppContextService]
+        }
       ],
-      declarations: [
-        AppComponent,
-      ],
+      declarations: [AppComponent]
     }).compileComponents();
   }));
 

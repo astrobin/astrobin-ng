@@ -1,12 +1,20 @@
-import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from "@angular/common/http";
+import {
+  HttpEvent,
+  HttpHandler,
+  HttpInterceptor,
+  HttpRequest
+} from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { AuthService } from "./auth.service";
-import { Observable } from "rxjs";
 import { environment } from "@env/environment";
+import { Observable } from "rxjs";
+import { AuthService } from "./auth.service";
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-  intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+  intercept(
+    request: HttpRequest<any>,
+    next: HttpHandler
+  ): Observable<HttpEvent<any>> {
     let authToken: string;
     let authScheme: string;
 
@@ -17,7 +25,7 @@ export class AuthInterceptor implements HttpInterceptor {
 
     const headers = {
       "Content-Type": "application/json; charset=utf-8",
-      "Accept": "application/json",
+      Accept: "application/json"
     };
 
     if (authToken) {
@@ -25,7 +33,7 @@ export class AuthInterceptor implements HttpInterceptor {
     }
 
     request = request.clone({
-      setHeaders: headers,
+      setHeaders: headers
     });
 
     return next.handle(request);

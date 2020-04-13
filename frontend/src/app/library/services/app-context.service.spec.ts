@@ -2,9 +2,9 @@ import { TestBed } from "@angular/core/testing";
 import { of } from "rxjs";
 import { CommonApiService } from "./api/classic/common/common-api.service";
 
-import { AppContextService } from "./app-context.service";
 import { UserProfileGenerator } from "@lib/generators/user-profile.generator";
 import { UserGenerator } from "@lib/generators/user.generator";
+import { AppContextService } from "./app-context.service";
 
 class MockCommonApiService {
   getUser = jest.fn(() => of(UserGenerator.user()));
@@ -18,9 +18,7 @@ describe("AppContextService", () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        { provide: CommonApiService, useClass: MockCommonApiService },
-      ],
+      providers: [{ provide: CommonApiService, useClass: MockCommonApiService }]
     });
     service = TestBed.get(AppContextService);
   });

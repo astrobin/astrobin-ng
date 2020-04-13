@@ -4,7 +4,7 @@
 .modal {
   .modal-content {
     background-color: $lightest-grey;
-    border-radius: .4rem;
+    border-radius: 0.4rem;
   }
   .modal-header {
     @include darkest-background-texture;

@@ -6,19 +6,19 @@ import { AppContextService } from "./app-context.service";
 
 export enum AuthServiceType {
   // Classic Auth = against the regular Django AstroBin service.
-  CLASSIC,
+  CLASSIC
 }
 
 @Injectable({
-  providedIn: "root",
+  providedIn: "root"
 })
 export class AuthService {
   static CLASSIC_LOCAL_STORAGE_KEY = "classic-auth-token";
 
   constructor(
     public readonly authClassicApi: AuthClassicApiService,
-    public readonly appContext: AppContextService) {
-  }
+    public readonly appContext: AppContextService
+  ) {}
 
   public static getClassicApiToken(): string {
     return localStorage.getItem(AuthService.CLASSIC_LOCAL_STORAGE_KEY);
@@ -31,7 +31,7 @@ export class AuthService {
         this.appContext.load();
         return true;
       }),
-      catchError(() => of(false)),
+      catchError(() => of(false))
     );
   }
 

@@ -1,6 +1,6 @@
-import { IsIotdReviewerPipe } from "./is-iotd-reviewer.pipe";
-import { UserServiceMock } from "@lib/services/user.service-mock";
 import { UserGenerator } from "@lib/generators/user.generator";
+import { UserServiceMock } from "@lib/services/user.service-mock";
+import { IsIotdReviewerPipe } from "./is-iotd-reviewer.pipe";
 
 describe("IsIotdReviewerPipe", () => {
   let pipe: IsIotdReviewerPipe;

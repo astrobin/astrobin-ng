@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
-import { UserInterface } from "@app/library/interfaces/user.interface";
 import { GroupInterface } from "@app/library/interfaces/group.interface";
 import { PermissionInterface } from "@app/library/interfaces/permission.interface";
+import { UserInterface } from "@app/library/interfaces/user.interface";
 import { UserProfileInterface } from "@lib/interfaces/user-profile.interface";
 
 export interface BackendPermissionInterface {
@@ -85,15 +85,17 @@ export interface BackendUserProfileInterface {
 }
 
 @Injectable({
-  providedIn: "root",
+  providedIn: "root"
 })
 export class CommonApiAdaptorService {
-  permissionFromBackend(permission: BackendPermissionInterface): PermissionInterface {
+  permissionFromBackend(
+    permission: BackendPermissionInterface
+  ): PermissionInterface {
     return {
       id: permission.id,
       name: permission.name,
       codeName: permission.codename,
-      contentType: permission.content_type,
+      contentType: permission.content_type
     };
   }
 
@@ -101,7 +103,9 @@ export class CommonApiAdaptorService {
     return {
       id: group.id,
       name: group.name,
-      permissions: group.permissions.map(permission => this.permissionFromBackend(permission)),
+      permissions: group.permissions.map(permission =>
+        this.permissionFromBackend(permission)
+      )
     };
   }
 
@@ -118,11 +122,15 @@ export class CommonApiAdaptorService {
       isStaff: user.is_staff,
       isActive: user.is_active,
       groups: user.groups.map(group => this.groupFromBackend(group)),
-      userPermissions: user.user_permissions.map(permission => this.permissionFromBackend(permission)),
+      userPermissions: user.user_permissions.map(permission =>
+        this.permissionFromBackend(permission)
+      )
     };
   }
 
-  userProfileFromBackend(userProfile: BackendUserProfileInterface): UserProfileInterface {
+  userProfileFromBackend(
+    userProfile: BackendUserProfileInterface
+  ): UserProfileInterface {
     return {
       id: userProfile.id,
       deleted: new Date(userProfile.deleted),
@@ -149,8 +157,10 @@ export class CommonApiAdaptorService {
       defaultWatermarkText: userProfile.default_watermark_text,
       acceptTos: userProfile.accept_tos,
       receiveNewsletter: userProfile.receive_newsletter,
-      receiveImportantCommunications: userProfile.receive_important_communications,
-      receiveMarketingAndCommercialMaterial: userProfile.receive_marketing_and_commercial_material,
+      receiveImportantCommunications:
+        userProfile.receive_important_communications,
+      receiveMarketingAndCommercialMaterial:
+        userProfile.receive_marketing_and_commercial_material,
       language: userProfile.language,
       seenRealName: userProfile.seen_realname,
       seenEmailPermissions: userProfile.seen_email_permissions,
@@ -172,7 +182,9 @@ export class CommonApiAdaptorService {
       premiumOfferExpiration: new Date(userProfile.premium_offer_expiration),
       premiumOfferSent: new Date(userProfile.premium_offer_sent),
       allowAstronomyAds: userProfile.allow_astronomy_ads,
-      inactiveAccountReminderSent: new Date(userProfile.inactive_account_reminder_sent),
+      inactiveAccountReminderSent: new Date(
+        userProfile.inactive_account_reminder_sent
+      )
     };
   }
 }

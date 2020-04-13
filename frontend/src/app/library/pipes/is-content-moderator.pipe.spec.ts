@@ -1,6 +1,6 @@
-import { IsContentModeratorPipe } from "./is-content-moderator.pipe";
-import { UserServiceMock } from "@lib/services/user.service-mock";
 import { UserGenerator } from "@lib/generators/user.generator";
+import { UserServiceMock } from "@lib/services/user.service-mock";
+import { IsContentModeratorPipe } from "./is-content-moderator.pipe";
 
 describe("IsContentModeratorPipe", () => {
   let pipe: IsContentModeratorPipe;

@@ -18,8 +18,8 @@ label {
   }
 
   &.is-invalid {
-    border-left: .5rem solid $error-red;
-    padding-left: calc(.75rem - .5rem + 1px);
+    border-left: 0.5rem solid $error-red;
+    padding-left: calc(0.75rem - 0.5rem + 1px);
   }
 }
 
@@ -35,7 +35,7 @@ label {
 
 .form-actions {
   margin-top: 2rem;
-  padding-top: .75rem;
+  padding-top: 0.75rem;
   border-top: 1px solid $dark-grey;
   text-align: right;
 

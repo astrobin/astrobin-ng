@@ -1,23 +1,31 @@
 import { HttpClient } from "@angular/common/http";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
-import { NgbCollapseModule, NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
-import { TranslateLoader, TranslateModule } from "@ngx-translate/core";
 import { LanguageLoader } from "@app/translate-loader";
-import { PipesModule } from "@lib/pipes/pipes.module";
-import { AppContextService, IAppContext } from "@lib/services/app-context.service";
-import { SharedModule } from "@lib/shared.module";
-import { HeaderComponent } from "./header.component";
-import { Observable } from "rxjs";
 import { UserProfileGenerator } from "@lib/generators/user-profile.generator";
+import { PipesModule } from "@lib/pipes/pipes.module";
+import {
+  AppContextInterface,
+  AppContextService
+} from "@lib/services/app-context.service";
+import { SharedModule } from "@lib/shared.module";
+import {
+  NgbCollapseModule,
+  NgbTooltipModule
+} from "@ng-bootstrap/ng-bootstrap";
+import { TranslateLoader, TranslateModule } from "@ngx-translate/core";
+import { Observable } from "rxjs";
+import { HeaderComponent } from "./header.component";
 
 class MockAppContextService {
   get = jest.fn(
-    () => new Observable<IAppContext>(observer => {
-      observer.next({
-        currentUserProfile: UserProfileGenerator.userProfile(),
-      } as IAppContext);
-    }));
+    () =>
+      new Observable<AppContextInterface>(observer => {
+        observer.next({
+          currentUserProfile: UserProfileGenerator.userProfile()
+        } as AppContextInterface);
+      })
+  );
 }
 
 describe("HeaderComponent", () => {
@@ -34,16 +42,16 @@ describe("HeaderComponent", () => {
           loader: {
             provide: TranslateLoader,
             useClass: LanguageLoader,
-            deps: [HttpClient],
-          },
+            deps: [HttpClient]
+          }
         }),
         SharedModule,
-        PipesModule,
+        PipesModule
       ],
       providers: [
-        { provide: AppContextService, useClass: MockAppContextService },
+        { provide: AppContextService, useClass: MockAppContextService }
       ],
-      declarations: [HeaderComponent],
+      declarations: [HeaderComponent]
     }).compileComponents();
   }));
 
@@ -61,7 +69,7 @@ describe("HeaderComponent", () => {
     it("should defer to modalService", () => {
       spyOn(component.modalService, "open");
       const mockEvent = {
-        preventDefault: jest.fn(),
+        preventDefault: jest.fn()
       };
 
       component.openLoginModal(mockEvent);
@@ -75,7 +83,7 @@ describe("HeaderComponent", () => {
     it("should defer to authService", () => {
       spyOn(component.authService, "logout");
       const mockEvent = {
-        preventDefault: jest.fn(),
+        preventDefault: jest.fn()
       };
 
       component.logout(mockEvent);

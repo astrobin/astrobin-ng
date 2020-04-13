@@ -1,5 +1,5 @@
-import { UserInterface } from "@lib/interfaces/user.interface";
 import { GroupGenerator } from "@lib/generators/group.generator";
+import { UserInterface } from "@lib/interfaces/user.interface";
 
 export class UserGenerator {
   static user(): UserInterface {
@@ -14,9 +14,7 @@ export class UserGenerator {
       isSuperUser: false,
       isStaff: false,
       isActive: true,
-      groups: [
-        GroupGenerator.group(),
-      ],
+      groups: [GroupGenerator.group()],
       userPermissions: []
     };
   }

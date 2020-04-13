@@ -1,7 +1,7 @@
 import { Pipe, PipeTransform } from "@angular/core";
 
 @Pipe({
-  name: "ensureUrlProtocol",
+  name: "ensureUrlProtocol"
 })
 export class EnsureUrlProtocolPipe implements PipeTransform {
   transform(value: string, args?: any): string {

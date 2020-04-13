@@ -1,10 +1,13 @@
-import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
+import {
+  HttpClientTestingModule,
+  HttpTestingController
+} from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
-import { of } from "rxjs";
-import { UserSubscriptionInterface } from "@lib/interfaces/user-subscription.interface";
-import { CommonApiService } from "./common-api.service";
-import { UserGenerator } from "@lib/generators/user.generator";
 import { UserProfileGenerator } from "@lib/generators/user-profile.generator";
+import { UserGenerator } from "@lib/generators/user.generator";
+import { UserSubscriptionInterface } from "@lib/interfaces/user-subscription.interface";
+import { of } from "rxjs";
+import { CommonApiService } from "./common-api.service";
 
 describe("CommonApiService", () => {
   let service: CommonApiService;
@@ -13,7 +16,7 @@ describe("CommonApiService", () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
-      providers: [CommonApiService],
+      providers: [CommonApiService]
     });
 
     service = TestBed.get(CommonApiService);
@@ -47,7 +50,9 @@ describe("CommonApiService", () => {
       expect(response.user).toEqual(userProfile.user);
     });
 
-    const req = httpMock.expectOne(`${service.configUrl}/userprofiles/current/`);
+    const req = httpMock.expectOne(
+      `${service.configUrl}/userprofiles/current/`
+    );
     expect(req.request.method).toBe("GET");
     req.flush([userProfile]);
   });
@@ -57,7 +62,9 @@ describe("CommonApiService", () => {
       expect(response).toEqual(null);
     });
 
-    const req = httpMock.expectOne(`${service.configUrl}/userprofiles/current/`);
+    const req = httpMock.expectOne(
+      `${service.configUrl}/userprofiles/current/`
+    );
     expect(req.request.method).toBe("GET");
     req.flush([]);
   });
@@ -70,7 +77,9 @@ describe("CommonApiService", () => {
   });
 
   it("isAuthenticated should return true if there is a current user profile", () => {
-    jest.spyOn(service, "getCurrentUserProfile").mockReturnValue(of(UserProfileGenerator.userProfile()));
+    jest
+      .spyOn(service, "getCurrentUserProfile")
+      .mockReturnValue(of(UserProfileGenerator.userProfile()));
     service.isAuthenticated().subscribe(response => {
       expect(response).toBe(true);
     });
@@ -93,7 +102,9 @@ describe("CommonApiService", () => {
       expect(response[0].user).toBe(1);
     });
 
-    const req = httpMock.expectOne(`${service.configUrl}/usersubscriptions/?user=1`);
+    const req = httpMock.expectOne(
+      `${service.configUrl}/usersubscriptions/?user=1`
+    );
     expect(req.request.method).toBe("GET");
     req.flush([{ user: 1 } as UserSubscriptionInterface]);
   });

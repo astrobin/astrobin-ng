@@ -1,16 +1,19 @@
+import {
+  HttpClientTestingModule,
+  HttpTestingController
+} from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { AuthClassicApiService } from "./auth-classic-api.service";
-import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
 
 describe("AuthApiService", () => {
   let service: AuthClassicApiService;
   let httpMock: HttpTestingController;
 
-  beforeEach(() => TestBed.configureTestingModule({
-    imports: [
-      HttpClientTestingModule
-    ]
-  }));
+  beforeEach(() =>
+    TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule]
+    })
+  );
 
   beforeEach(() => {
     service = TestBed.get(AuthClassicApiService);
@@ -34,7 +37,7 @@ describe("AuthApiService", () => {
 
       const req = httpMock.expectOne(`${service.configUrl}/api-auth-token/`);
       expect(req.request.method).toBe("POST");
-      req.flush({token: mockToken});
+      req.flush({ token: mockToken });
     });
   });
 });

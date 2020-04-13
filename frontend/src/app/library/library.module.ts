@@ -5,17 +5,7 @@ import { PipesModule } from "./pipes/pipes.module";
 import { ServicesModule } from "./services/services.module";
 
 @NgModule({
-  imports: [
-    CommonModule,
-    ComponentsModule,
-    PipesModule,
-    ServicesModule,
-  ],
-  exports: [
-    ComponentsModule,
-    PipesModule,
-    ServicesModule,
-  ],
+  imports: [CommonModule, ComponentsModule, PipesModule, ServicesModule],
+  exports: [ComponentsModule, PipesModule, ServicesModule]
 })
-export class LibraryModule {
-}
+export class LibraryModule {}

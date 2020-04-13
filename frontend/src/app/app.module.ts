@@ -1,7 +1,11 @@
 import { HttpClient } from "@angular/common/http";
 import { APP_INITIALIZER, NgModule } from "@angular/core";
 import { BrowserModule } from "@angular/platform-browser";
-import { FaIconLibrary, FontAwesomeModule } from "@fortawesome/angular-fontawesome";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import {
+  FaIconLibrary,
+  FontAwesomeModule
+} from "@fortawesome/angular-fontawesome";
 import {
   faAsterisk,
   faBarcode,
@@ -33,21 +37,20 @@ import {
   faTasks,
   faTrophy,
   faUpload,
-  faUsers,
+  faUsers
 } from "@fortawesome/free-solid-svg-icons";
-import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
-import { TranslateLoader, TranslateModule } from "@ngx-translate/core";
-import { AppRoutingModule } from "./app-routing.module";
-import { AppComponent } from "./app.component";
 import { LibraryModule } from "@lib/library.module";
 import { AppContextService } from "@lib/services/app-context.service";
-import { SharedModule } from "@lib/shared.module";
-import { LanguageLoader } from "./translate-loader";
-import { FormlyModule } from "@ngx-formly/core";
-import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { ValidationLoader } from "@lib/services/validation-loader.service";
-import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { SharedModule } from "@lib/shared.module";
+import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
+import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
+import { FormlyModule } from "@ngx-formly/core";
+import { TranslateLoader, TranslateModule } from "@ngx-translate/core";
 import { ToastrModule } from "ngx-toastr";
+import { AppRoutingModule } from "./app-routing.module";
+import { AppComponent } from "./app.component";
+import { LanguageLoader } from "./translate-loader";
 
 export function appInitializer(appContext: AppContextService) {
   return () => appContext.load();
@@ -56,16 +59,41 @@ export function appInitializer(appContext: AppContextService) {
 export function initFontAwesome(iconLibrary: FaIconLibrary) {
   iconLibrary.addIconPacks(fas);
   iconLibrary.addIcons(
-    faAsterisk, faBarcode, faBook, faBookmark, faChartBar, faComments, faEdit, faEnvelope, faEye, faFlag, faGlobe,
-    faHammer, faImage, faImages, faInbox, faInfo, faKey, faListOl, faLock, faBars, faQuestion, faSearch, faSignOutAlt,
-    faSortAmountDown, faStar, faTasks, faTrophy, faUpload, faUsers, faCertificate,
+    faAsterisk,
+    faBarcode,
+    faBook,
+    faBookmark,
+    faChartBar,
+    faComments,
+    faEdit,
+    faEnvelope,
+    faEye,
+    faFlag,
+    faGlobe,
+    faHammer,
+    faImage,
+    faImages,
+    faInbox,
+    faInfo,
+    faKey,
+    faListOl,
+    faLock,
+    faBars,
+    faQuestion,
+    faSearch,
+    faSignOutAlt,
+    faSortAmountDown,
+    faStar,
+    faTasks,
+    faTrophy,
+    faUpload,
+    faUsers,
+    faCertificate
   );
 }
 
 @NgModule({
-  declarations: [
-    AppComponent,
-  ],
+  declarations: [AppComponent],
   imports: [
     // Angular
     BrowserModule,
@@ -81,14 +109,14 @@ export function initFontAwesome(iconLibrary: FaIconLibrary) {
       loader: {
         provide: TranslateLoader,
         useClass: LanguageLoader,
-        deps: [HttpClient],
-      },
+        deps: [HttpClient]
+      }
     }),
 
     // App
     AppRoutingModule,
     LibraryModule,
-    SharedModule.forRoot(),
+    SharedModule.forRoot()
   ],
   providers: [
     AppContextService,
@@ -96,13 +124,11 @@ export function initFontAwesome(iconLibrary: FaIconLibrary) {
       provide: APP_INITIALIZER,
       useFactory: appInitializer,
       multi: true,
-      deps: [
-        AppContextService,
-      ],
+      deps: [AppContextService]
     },
-    ValidationLoader,
+    ValidationLoader
   ],
-  bootstrap: [AppComponent],
+  bootstrap: [AppComponent]
 })
 export class AppModule {
   public constructor(iconLibrary: FaIconLibrary) {

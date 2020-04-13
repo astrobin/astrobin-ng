@@ -1,5 +1,5 @@
-import { IsSuperUserPipe } from "./is-superuser.pipe";
 import { UserGenerator } from "@lib/generators/user.generator";
+import { IsSuperUserPipe } from "./is-superuser.pipe";
 
 describe("IsSuperuserPipe", () => {
   let pipe: IsSuperUserPipe;

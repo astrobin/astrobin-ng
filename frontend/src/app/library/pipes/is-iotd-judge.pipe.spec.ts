@@ -1,6 +1,6 @@
-import { IsIotdJudgePipe } from "./is-iotd-judge.pipe";
 import { UserGenerator } from "@lib/generators/user.generator";
 import { UserServiceMock } from "@lib/services/user.service-mock";
+import { IsIotdJudgePipe } from "./is-iotd-judge.pipe";
 
 describe("IsIotdJudgePipe", () => {
   let pipe: IsIotdJudgePipe;

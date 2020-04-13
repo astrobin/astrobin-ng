@@ -4,7 +4,7 @@ import {
   BackendGroupInterface,
   BackendPermissionInterface,
   BackendUserInterface,
-  CommonApiAdaptorService,
+  CommonApiAdaptorService
 } from "./common-api-adaptor.service";
 
 describe("CommonApiAdaptorService", () => {
@@ -25,14 +25,14 @@ describe("CommonApiAdaptorService", () => {
         id: 1,
         name: "foo",
         codename: "bar",
-        content_type: 2,
+        content_type: 2
       };
 
       expect(service.permissionFromBackend(backendPermission)).toEqual({
         id: 1,
         name: "foo",
         codeName: "bar",
-        contentType: 2,
+        contentType: 2
       });
     });
   });
@@ -47,15 +47,15 @@ describe("CommonApiAdaptorService", () => {
             id: 1,
             name: "foo",
             codename: "bar",
-            content_type: 2,
+            content_type: 2
           },
           {
             id: 2,
             name: "foo2",
             codename: "bar2",
-            content_type: 2,
-          },
-        ],
+            content_type: 2
+          }
+        ]
       };
 
       expect(service.groupFromBackend(backendGroup)).toEqual({
@@ -66,15 +66,15 @@ describe("CommonApiAdaptorService", () => {
             id: 1,
             name: "foo",
             codeName: "bar",
-            contentType: 2,
+            contentType: 2
           },
           {
             id: 2,
             name: "foo2",
             codeName: "bar2",
-            contentType: 2,
-          },
-        ],
+            contentType: 2
+          }
+        ]
       });
     });
   });
@@ -101,31 +101,31 @@ describe("CommonApiAdaptorService", () => {
                 id: 1,
                 name: "foo",
                 codename: "bar",
-                content_type: 2,
+                content_type: 2
               },
               {
                 id: 2,
                 name: "foo2",
                 codename: "bar2",
-                content_type: 2,
-              },
-            ],
-          },
+                content_type: 2
+              }
+            ]
+          }
         ],
         user_permissions: [
           {
             id: 1,
             name: "foo",
             codename: "bar",
-            content_type: 2,
+            content_type: 2
           },
           {
             id: 2,
             name: "foo2",
             codename: "bar2",
-            content_type: 2,
-          },
-        ],
+            content_type: 2
+          }
+        ]
       };
 
       expect(service.userFromBackend(backendUser)).toEqual({
@@ -148,31 +148,31 @@ describe("CommonApiAdaptorService", () => {
                 id: 1,
                 name: "foo",
                 codeName: "bar",
-                contentType: 2,
+                contentType: 2
               },
               {
                 id: 2,
                 name: "foo2",
                 codeName: "bar2",
-                contentType: 2,
-              },
-            ],
-          },
+                contentType: 2
+              }
+            ]
+          }
         ],
         userPermissions: [
           {
             id: 1,
             name: "foo",
             codeName: "bar",
-            contentType: 2,
+            contentType: 2
           },
           {
             id: 2,
             name: "foo2",
             codeName: "bar2",
-            contentType: 2,
-          },
-        ],
+            contentType: 2
+          }
+        ]
       });
     });
   });

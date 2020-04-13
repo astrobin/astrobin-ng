@@ -1,12 +1,15 @@
 import { Component } from "@angular/core";
-import { AppContextService, IAppContext } from "@lib/services/app-context.service";
+import { LoginModalComponent } from "@lib/components/auth/login-modal/login-modal.component";
+import {
+  AppContextInterface,
+  AppContextService
+} from "@lib/services/app-context.service";
+import { AuthService } from "@lib/services/auth.service";
 import { ClassicRoutesService } from "@lib/services/classic-routes.service";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { LoginModalComponent } from "@lib/components/auth/login-modal/login-modal.component";
-import { AuthService } from "@lib/services/auth.service";
 import { Observable } from "rxjs";
 
-interface IFlag {
+interface FlagInterface {
   languageCode: string;
   countryCode: string;
   label: string;
@@ -15,14 +18,14 @@ interface IFlag {
 @Component({
   selector: "astrobin-header",
   templateUrl: "./header.component.html",
-  styleUrls: ["./header.component.scss"],
+  styleUrls: ["./header.component.scss"]
 })
 export class HeaderComponent {
   public isCollapsed = true;
 
-  public appContext$: Observable<IAppContext>;
+  public appContext$: Observable<AppContextInterface>;
 
-  public flags: IFlag[] = [
+  public flags: FlagInterface[] = [
     { languageCode: "en", countryCode: "us", label: "English (US)" },
     { languageCode: "en-GB", countryCode: "gb", label: "English (UK)" },
     { languageCode: "it", countryCode: "it", label: "Italiano" },
@@ -38,14 +41,15 @@ export class HeaderComponent {
     { languageCode: "el", countryCode: "gr", label: "Ελληνικά" },
     { languageCode: "ru", countryCode: "ru", label: "Русский" },
     { languageCode: "ar", countryCode: "ar", label: "العربية" },
-    { languageCode: "ja", countryCode: "jp", label: "日本語" },
+    { languageCode: "ja", countryCode: "jp", label: "日本語" }
   ];
 
   public constructor(
     appContext: AppContextService,
     public readonly modalService: NgbModal,
     public readonly classicRoutes: ClassicRoutesService,
-    public readonly authService: AuthService) {
+    public readonly authService: AuthService
+  ) {
     this.appContext$ = appContext.get();
   }
 

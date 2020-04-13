@@ -1,6 +1,6 @@
-import { IsRetailerPipe } from "./is-retailer.pipe";
-import { UserServiceMock } from "@lib/services/user.service-mock";
 import { UserGenerator } from "@lib/generators/user.generator";
+import { UserServiceMock } from "@lib/services/user.service-mock";
+import { IsRetailerPipe } from "./is-retailer.pipe";
 
 describe("IsRetailerPipe", () => {
   let pipe: IsRetailerPipe;

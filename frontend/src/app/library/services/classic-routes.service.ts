@@ -6,7 +6,7 @@ import { UserInterface } from "@lib/interfaces/user.interface";
 const BASE_URL = environment.classicBaseUrl;
 
 @Injectable({
-  providedIn: "root",
+  providedIn: "root"
 })
 export class ClassicRoutesService {
   HOME = BASE_URL + "/";
@@ -34,15 +34,21 @@ export class ClassicRoutesService {
   IOTD_REVIEW_QUEUE = BASE_URL + "/iotd/review-queue/";
   IOTD_JUDGEMENT_QUEUE = BASE_URL + "/iotd/judgement-queue/";
 
-  COMMERCIAL_PRODUCTS = (profile: UserInterface) => BASE_URL + `/users/${profile.username}/commercial/products/`;
+  COMMERCIAL_PRODUCTS = (profile: UserInterface) =>
+    BASE_URL + `/users/${profile.username}/commercial/products/`;
 
-  GALLERY = (profile: UserInterface) => BASE_URL + `/users/${profile.username}/`;
+  GALLERY = (profile: UserInterface) =>
+    BASE_URL + `/users/${profile.username}/`;
 
-  BOOKMARKS = (profile: UserInterface) => BASE_URL + `/users/${profile.username}/bookmarks/`;
+  BOOKMARKS = (profile: UserInterface) =>
+    BASE_URL + `/users/${profile.username}/bookmarks/`;
 
-  PLOTS = (profile: UserInterface) => BASE_URL + `/users/${profile.username}/plots/`;
+  PLOTS = (profile: UserInterface) =>
+    BASE_URL + `/users/${profile.username}/plots/`;
 
-  API_KEYS = (profile: UserInterface) => BASE_URL + `/users/${profile.username}/apikeys/`;
+  API_KEYS = (profile: UserInterface) =>
+    BASE_URL + `/users/${profile.username}/apikeys/`;
 
-  SET_LANGUAGE = (languageCode: string) => BASE_URL + `/language/set/${languageCode}/`;
+  SET_LANGUAGE = (languageCode: string) =>
+    BASE_URL + `/language/set/${languageCode}/`;
 }

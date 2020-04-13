@@ -1,9 +1,12 @@
-import { TestBed } from "@angular/core/testing";
-import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
 import { HTTP_INTERCEPTORS } from "@angular/common/http";
+import {
+  HttpClientTestingModule,
+  HttpTestingController
+} from "@angular/common/http/testing";
+import { TestBed } from "@angular/core/testing";
+import { AuthClassicApiService } from "@lib/services/api/classic/auth/auth-classic-api.service";
 import { AuthInterceptor } from "@lib/services/auth.interceptor";
 import { AuthService } from "@lib/services/auth.service";
-import { AuthClassicApiService } from "@lib/services/api/classic/auth/auth-classic-api.service";
 
 describe(`AuthHttpInterceptor`, () => {
   let authService: AuthService;
@@ -19,16 +22,18 @@ describe(`AuthHttpInterceptor`, () => {
         {
           provide: HTTP_INTERCEPTORS,
           useClass: AuthInterceptor,
-          multi: true,
-        },
-      ],
+          multi: true
+        }
+      ]
     });
 
     authService = TestBed.get(AuthService);
     authClassicApi = TestBed.get(AuthClassicApiService);
     httpMock = TestBed.get(HttpTestingController);
 
-    spyOn(AuthService, "getClassicApiToken").and.returnValue("classic-auth-token");
+    spyOn(AuthService, "getClassicApiToken").and.returnValue(
+      "classic-auth-token"
+    );
   });
 
   afterEach(() => {
@@ -40,8 +45,12 @@ describe(`AuthHttpInterceptor`, () => {
       expect(response).toBeTruthy();
     });
 
-    const classicApiHttpRequest = httpMock.expectOne(`${authClassicApi.configUrl}/api-auth-token/`);
+    const classicApiHttpRequest = httpMock.expectOne(
+      `${authClassicApi.configUrl}/api-auth-token/`
+    );
 
-    expect(classicApiHttpRequest.request.headers.has("Authorization")).toEqual(true);
+    expect(classicApiHttpRequest.request.headers.has("Authorization")).toEqual(
+      true
+    );
   });
 });

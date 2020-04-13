@@ -1,5 +1,6 @@
-import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
+import { NgModule } from "@angular/core";
+import { EnsureUrlProtocolPipe } from "./ensure-url-protocol.pipe";
 import { IsContentModeratorPipe } from "./is-content-moderator.pipe";
 import { IsImageModeratorPipe } from "./is-image-moderator.pipe";
 import { IsIotdJudgePipe } from "./is-iotd-judge.pipe";
@@ -9,7 +10,6 @@ import { IsIotdSubmitterPipe } from "./is-iotd-submitter.pipe";
 import { IsProducerPipe } from "./is-producer.pipe";
 import { IsRetailerPipe } from "./is-retailer.pipe";
 import { IsSuperUserPipe } from "./is-superuser.pipe";
-import { EnsureUrlProtocolPipe } from "./ensure-url-protocol.pipe";
 
 @NgModule({
   declarations: [
@@ -22,11 +22,9 @@ import { EnsureUrlProtocolPipe } from "./ensure-url-protocol.pipe";
     IsIotdSubmitterPipe,
     IsProducerPipe,
     IsRetailerPipe,
-    IsSuperUserPipe,
+    IsSuperUserPipe
   ],
-  imports: [
-    CommonModule,
-  ],
+  imports: [CommonModule],
   exports: [
     EnsureUrlProtocolPipe,
     IsContentModeratorPipe,
@@ -37,8 +35,7 @@ import { EnsureUrlProtocolPipe } from "./ensure-url-protocol.pipe";
     IsIotdSubmitterPipe,
     IsProducerPipe,
     IsRetailerPipe,
-    IsSuperUserPipe,
-  ],
+    IsSuperUserPipe
+  ]
 })
-export class PipesModule {
-}
+export class PipesModule {}

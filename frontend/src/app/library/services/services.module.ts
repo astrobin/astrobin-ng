@@ -5,17 +5,8 @@ import { AppContextService } from "./app-context.service";
 import { ClassicRoutesService } from "./classic-routes.service";
 
 @NgModule({
-  imports: [
-    CommonModule,
-    ApiModule,
-  ],
-  providers: [
-    AppContextService,
-    ClassicRoutesService,
-  ],
-  exports: [
-    ApiModule,
-  ],
+  imports: [CommonModule, ApiModule],
+  providers: [AppContextService, ClassicRoutesService],
+  exports: [ApiModule]
 })
-export class ServicesModule {
-}
+export class ServicesModule {}

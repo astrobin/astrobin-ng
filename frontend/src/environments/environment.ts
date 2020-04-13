@@ -6,7 +6,7 @@ export const environment = {
   production: false,
   classicBaseUrl: "http://localhost:8084",
   classicApiUrl: "http://localhost:8084",
-  ngApiUrl: "http://localhost:3000",
+  ngApiUrl: "http://localhost:3000"
 };
 
 /*

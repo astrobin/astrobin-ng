@@ -1,10 +1,10 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { LoginModalComponent } from "./login-modal.component";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { ReactiveFormsModule } from "@angular/forms";
 import { NgbActiveModal, NgbModalModule } from "@ng-bootstrap/ng-bootstrap";
-import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { of } from "rxjs";
+import { LoginModalComponent } from "./login-modal.component";
 
 describe("LoginModalComponent", () => {
   let component: LoginModalComponent;
@@ -12,19 +12,10 @@ describe("LoginModalComponent", () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [
-        ReactiveFormsModule,
-        HttpClientTestingModule,
-        NgbModalModule,
-      ],
-      declarations: [
-        LoginModalComponent
-      ],
-      providers: [
-        NgbActiveModal
-      ]
-    })
-      .compileComponents();
+      imports: [ReactiveFormsModule, HttpClientTestingModule, NgbModalModule],
+      declarations: [LoginModalComponent],
+      providers: [NgbActiveModal]
+    }).compileComponents();
   }));
 
   beforeEach(() => {

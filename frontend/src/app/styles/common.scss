@@ -14,7 +14,7 @@ body {
 
 .app-loading {
   opacity: 0;
-  transition: opacity .8s ease-in-out;
+  transition: opacity 0.8s ease-in-out;
   z-index: -1;
   display: block;
   width: 2rem;
@@ -58,7 +58,7 @@ a {
 }
 
 .dropdown-menu {
-  font-size: .85rem;
+  font-size: 0.85rem;
 
   .dropdown-item {
     &:hover {
@@ -68,7 +68,7 @@ a {
 
     fa-icon {
       font-size: 11px;
-      margin-right: .25rem;
+      margin-right: 0.25rem;
       width: 1rem;
       display: inline-block;
       text-align: center;
@@ -76,14 +76,13 @@ a {
   }
 }
 
-
 .dropdown-toggle {
   padding-top: 4px;
   padding-bottom: 4px;
   margin-top: 3px;
 
   &::after {
-    margin-left: .5rem;
-    vertical-align: .085rem;
+    margin-left: 0.5rem;
+    vertical-align: 0.085rem;
   }
 }

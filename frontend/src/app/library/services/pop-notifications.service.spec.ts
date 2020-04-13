@@ -1,18 +1,15 @@
 import { TestBed } from "@angular/core/testing";
 
-import { PopNotificationsService } from "./pop-notifications.service";
-import { ToastrModule } from "ngx-toastr";
 import { TranslateModule } from "@ngx-translate/core";
+import { ToastrModule } from "ngx-toastr";
+import { PopNotificationsService } from "./pop-notifications.service";
 
 describe("PopNotificationsService", () => {
   let service: PopNotificationsService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        ToastrModule.forRoot(),
-        TranslateModule.forRoot(),
-      ],
+      imports: [ToastrModule.forRoot(), TranslateModule.forRoot()]
     });
 
     service = TestBed.get(PopNotificationsService);
@@ -36,7 +33,10 @@ describe("PopNotificationsService", () => {
     it("should defer to toastr module, without title", () => {
       service.success("message");
 
-      expect(service.toastr.success).toHaveBeenCalledWith("message", "Success!");
+      expect(service.toastr.success).toHaveBeenCalledWith(
+        "message",
+        "Success!"
+      );
     });
   });
 
@@ -72,7 +72,10 @@ describe("PopNotificationsService", () => {
     it("should defer to toastr module, without title", () => {
       service.warning("message");
 
-      expect(service.toastr.warning).toHaveBeenCalledWith("message", "Warning!");
+      expect(service.toastr.warning).toHaveBeenCalledWith(
+        "message",
+        "Warning!"
+      );
     });
   });
 

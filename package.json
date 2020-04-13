@@ -53,21 +53,18 @@
     "@angular/compiler-cli": "8.2.10",
     "@angular/language-service": "8.2.10",
     "@biesbjerg/ngx-translate-extract": "^4.2.0",
-    "@nestjs/testing": "6.8.3",
     "@types/dotenv": "6.1.1",
     "@types/express": "4.16.1",
     "@types/jest": "^24.0.18",
     "@types/node": "^12.7.8",
-    "@types/passport-local": "1.0.33",
     "@types/supertest": "2.0.7",
     "codelyzer": "^5.0.1",
-    "concurrently": "5.0.0",
     "faker": "4.1.0",
     "jest": "^24.9.0",
     "jest-preset-angular": "^7.1.1",
     "ng-mocks": "^8.1.0",
     "nodemon": "1.19.3",
-    "prettier": "1.17.0",
+    "prettier": "^1.19.1",
     "protractor": "^5.4.2",
     "sqlite3": "4.1.0",
     "supertest": "4.0.2",
@@ -75,6 +72,8 @@
     "ts-node": "^8.4.1",
     "tsconfig-paths": "3.9.0",
     "tslint": "^5.20.0",
+    "tslint-angular": "^3.0.2",
+    "tslint-config-prettier": "^1.18.0",
     "typescript": "^3.4.5",
     "wait-on": "3.3.0"
   },
@@ -82,5 +81,11 @@
     "projects": [
       "frontend/jest.config.js"
     ]
+  },
+  "importSort": {
+    ".js, .jsx, .ts, .tsx": {
+      "style": "module",
+      "parser": "typescript"
+    }
   }
 }
