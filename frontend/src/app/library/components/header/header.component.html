@@ -277,6 +277,7 @@
                   height="16"
                   src="/assets/flags/blank.gif"
                   width="16"
+                  alt="{{ flag.countryCode }}"
                 />
                 {{ flag.label }}
               </a>
@@ -312,14 +313,15 @@
                   ngbTooltip="{{ 'AstroBin index' | translate }}"
                   placement="bottom"
                 >
-                  TODO
+                  {{ ctx.currentUserProfile.astroBinIndex }}
                 </span>
+                &middot;
                 <span
                   class="score"
                   ngbTooltip="{{ 'Followers' | translate }}"
                   placement="bottom"
                 >
-                  TODO
+                  {{ ctx.currentUserProfile.followers }}
                 </span>
               </span>
             </button>

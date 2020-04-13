@@ -48,4 +48,6 @@ export interface UserProfileInterface {
   software: number[];
   filters: number[];
   accessories: number[];
+  astroBinIndex?: number;
+  followers?: number;
 }

@@ -51,7 +51,9 @@ export class UserProfileGenerator {
       focalReducers: [],
       software: [],
       filters: [],
-      accessories: []
+      accessories: [],
+      astroBinIndex: 0.0,
+      followers: 0
     };
   }
 }
