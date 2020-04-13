@@ -100,7 +100,6 @@ export function initFontAwesome(iconLibrary: FaIconLibrary) {
     BrowserAnimationsModule,
 
     // Third party
-    FontAwesomeModule,
     FormlyModule.forRoot(),
     FormlyBootstrapModule,
     NgbModule,

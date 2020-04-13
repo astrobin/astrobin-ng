@@ -2,6 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { LanguageLoader } from "@app/translate-loader";
+import { FontAwesomeTestingModule } from "@fortawesome/angular-fontawesome/testing";
 import { UserProfileGenerator } from "@lib/generators/user-profile.generator";
 import { PipesModule } from "@lib/pipes/pipes.module";
 import {
@@ -36,6 +37,7 @@ describe("HeaderComponent", () => {
     TestBed.configureTestingModule({
       imports: [
         HttpClientTestingModule,
+        FontAwesomeTestingModule,
         NgbCollapseModule,
         NgbTooltipModule,
         TranslateModule.forRoot({
