@@ -1,10 +1,5 @@
 version: 0.2
 
-phases:
-  install:
-    commands:
-      - npm install codecov -g
-
   pre_build:
     commands:
       - npm ci
@@ -12,14 +7,11 @@ phases:
   build:
     commands:
       - npm run frontend:lint
-      - npm run frontend:build
       - npm run frontend:build:prod
 
   post_build:
     commands:
-      - npm run test:cov
-    finally:
-      - codecov
+      - npm run test
 
 artifacts:
   files:
