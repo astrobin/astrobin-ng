@@ -1,12 +1,12 @@
-import { UserModel } from "../models/common/user.model";
-import { UserProfileModel } from "../models/common/userprofile.model";
 import { IsContentModeratorPipe } from "./is-content-moderator.pipe";
+import { UserServiceMock } from "@lib/services/user.service-mock";
+import { UserGenerator } from "@lib/generators/user.generator";
 
 describe("IsContentModeratorPipe", () => {
   let pipe: IsContentModeratorPipe;
 
   beforeAll(() => {
-    pipe = new IsContentModeratorPipe();
+    pipe = new IsContentModeratorPipe(new UserServiceMock());
   });
 
   it("create an instance", () => {
@@ -14,35 +14,12 @@ describe("IsContentModeratorPipe", () => {
   });
 
   it("pipe should work for content moderator", () => {
-    const profile = new UserProfileModel({
-      userObject: new UserModel({
-        groups: [
-          {
-            id: 1,
-            name: "content_moderators",
-          },
-        ],
-      }),
-    });
-    expect(pipe.transform(profile)).toBe(true);
+    jest.spyOn(pipe.userService, "isInGroup").mockReturnValue(true);
+    expect(pipe.transform(UserGenerator.user())).toBe(true);
   });
 
-  it("pipe should work for non content moderator", () => {
-    const profile = new UserProfileModel({
-      userObject: new UserModel({
-        groups: [
-          {
-            id: 1,
-            name: "Admins",
-          },
-        ],
-      }),
-    });
-    expect(pipe.transform(profile)).toBe(false);
-  });
-
-  it("pipe should work if no groups", () => {
-    const profile = new UserProfileModel();
-    expect(pipe.transform(profile)).toBe(false);
+  it("pipe should work for content moderator", () => {
+    jest.spyOn(pipe.userService, "isInGroup").mockReturnValue(false);
+    expect(pipe.transform(UserGenerator.user())).toBe(false);
   });
 });

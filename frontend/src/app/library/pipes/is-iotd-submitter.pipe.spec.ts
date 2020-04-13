@@ -1,48 +1,25 @@
-import { UserModel } from "../models/common/user.model";
-import { UserProfileModel } from "../models/common/userprofile.model";
 import { IsIotdSubmitterPipe } from "./is-iotd-submitter.pipe";
+import { UserGenerator } from "@lib/generators/user.generator";
+import { UserServiceMock } from "@lib/services/user.service-mock";
 
 describe("IsIotdSubmitterPipe", () => {
   let pipe: IsIotdSubmitterPipe;
 
   beforeAll(() => {
-    pipe = new IsIotdSubmitterPipe();
+    pipe = new IsIotdSubmitterPipe(new UserServiceMock());
   });
 
   it("create an instance", () => {
     expect(pipe).toBeTruthy();
   });
 
-  it("pipe should work for iotd submitters", () => {
-    const profile = new UserProfileModel({
-      userObject: new UserModel({
-        groups: [
-          {
-            id: 1,
-            name: "iotd_submitters",
-          },
-        ],
-      }),
-    });
-    expect(pipe.transform(profile)).toBe(true);
+  it("pipe be true when user is in group", () => {
+    jest.spyOn(pipe.userService, "isInGroup").mockReturnValue(true);
+    expect(pipe.transform(UserGenerator.user())).toBe(true);
   });
 
-  it("pipe should work for non iotd submitters", () => {
-    const profile = new UserProfileModel({
-      userObject: new UserModel({
-        groups: [
-          {
-            id: 1,
-            name: "Admins",
-          },
-        ],
-      }),
-    });
-    expect(pipe.transform(profile)).toBe(false);
-  });
-
-  it("pipe should work if no groups", () => {
-    const profile = new UserProfileModel();
-    expect(pipe.transform(profile)).toBe(false);
+  it("pipe be false when user is in not group", () => {
+    jest.spyOn(pipe.userService, "isInGroup").mockReturnValue(false);
+    expect(pipe.transform(UserGenerator.user())).toBe(false);
   });
 });

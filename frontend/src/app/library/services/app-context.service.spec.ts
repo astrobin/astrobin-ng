@@ -1,12 +1,14 @@
 import { TestBed } from "@angular/core/testing";
 import { of } from "rxjs";
-import { CommonClassicApiService } from "./api/classic/common-classic-api.service";
+import { CommonApiService } from "./api/classic/common/common-api.service";
 
 import { AppContextService } from "./app-context.service";
+import { UserProfileGenerator } from "@lib/generators/user-profile.generator";
+import { UserGenerator } from "@lib/generators/user.generator";
 
 class MockCommonApiService {
-  getUser = jest.fn(() => of({ id: 1 }));
-  getCurrentUserProfile = jest.fn(() => of({ id: 1 }));
+  getUser = jest.fn(() => of(UserGenerator.user()));
+  getCurrentUserProfile = jest.fn(() => of(UserProfileGenerator.userProfile()));
   getSubscriptions = jest.fn(() => of([]));
   getUserSubscriptions = jest.fn(() => of([]));
 }
@@ -17,7 +19,7 @@ describe("AppContextService", () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        { provide: CommonClassicApiService, useClass: MockCommonApiService },
+        { provide: CommonApiService, useClass: MockCommonApiService },
       ],
     });
     service = TestBed.get(AppContextService);
@@ -42,7 +44,7 @@ describe("AppContextService", () => {
   it("currentUser should be available", () => {
     service.load().then((contextService: AppContextService) => {
       contextService.get().subscribe(appContext => {
-        expect(appContext.currentUserProfile.userObject.id).toEqual(1);
+        expect(appContext.currentUser.id).toEqual(1);
       });
     });
   });

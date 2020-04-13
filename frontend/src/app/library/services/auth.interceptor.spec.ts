@@ -3,7 +3,7 @@ import { HttpClientTestingModule, HttpTestingController } from "@angular/common/
 import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import { AuthInterceptor } from "@lib/services/auth.interceptor";
 import { AuthService } from "@lib/services/auth.service";
-import { AuthClassicApiService } from "@lib/services/api/classic/auth-classic-api.service";
+import { AuthClassicApiService } from "@lib/services/api/classic/auth/auth-classic-api.service";
 
 describe(`AuthHttpInterceptor`, () => {
   let authService: AuthService;

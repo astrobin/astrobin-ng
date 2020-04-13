@@ -8,7 +8,7 @@ import { IsIotdStaffPipe } from "./is-iotd-staff.pipe";
 import { IsIotdSubmitterPipe } from "./is-iotd-submitter.pipe";
 import { IsProducerPipe } from "./is-producer.pipe";
 import { IsRetailerPipe } from "./is-retailer.pipe";
-import { IsSuperuserPipe } from "./is-superuser.pipe";
+import { IsSuperUserPipe } from "./is-superuser.pipe";
 import { EnsureUrlProtocolPipe } from "./ensure-url-protocol.pipe";
 
 @NgModule({
@@ -22,7 +22,7 @@ import { EnsureUrlProtocolPipe } from "./ensure-url-protocol.pipe";
     IsIotdSubmitterPipe,
     IsProducerPipe,
     IsRetailerPipe,
-    IsSuperuserPipe,
+    IsSuperUserPipe,
   ],
   imports: [
     CommonModule,
@@ -37,7 +37,7 @@ import { EnsureUrlProtocolPipe } from "./ensure-url-protocol.pipe";
     IsIotdSubmitterPipe,
     IsProducerPipe,
     IsRetailerPipe,
-    IsSuperuserPipe,
+    IsSuperUserPipe,
   ],
 })
 export class PipesModule {

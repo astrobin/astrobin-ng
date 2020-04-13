@@ -1,4 +1,4 @@
-export class UserSubscriptionModel {
+export interface UserSubscriptionInterface {
   id: number;
   valid: boolean;
   expires: string;
@@ -6,8 +6,4 @@ export class UserSubscriptionModel {
   cancelled: boolean;
   user: number;
   subscription: number;
-
-  constructor(values: Object = {}) {
-    Object.assign(this, values);
-  }
 }

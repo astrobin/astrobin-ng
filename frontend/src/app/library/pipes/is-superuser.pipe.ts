@@ -1,14 +1,11 @@
 import { Pipe, PipeTransform } from "@angular/core";
-import { UserProfileModel } from "../models/common/userprofile.model";
+import { UserInterface } from "@lib/interfaces/user.interface";
 
 @Pipe({
-  name: "isSuperuser",
+  name: "isSuperUser",
 })
-export class IsSuperuserPipe implements PipeTransform {
-  transform(value: UserProfileModel, args?: any): any {
-    if (!value.userObject) {
-      return false;
-    }
-    return value.userObject.is_superuser;
+export class IsSuperUserPipe implements PipeTransform {
+  transform(user: UserInterface, args?: any): any {
+    return user.isSuperUser;
   }
 }

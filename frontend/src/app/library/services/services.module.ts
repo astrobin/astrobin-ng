@@ -3,7 +3,6 @@ import { NgModule } from "@angular/core";
 import { ApiModule } from "./api/api.module";
 import { AppContextService } from "./app-context.service";
 import { ClassicRoutesService } from "./classic-routes.service";
-import { UsersService } from "./users.service";
 
 @NgModule({
   imports: [
@@ -13,7 +12,6 @@ import { UsersService } from "./users.service";
   providers: [
     AppContextService,
     ClassicRoutesService,
-    UsersService,
   ],
   exports: [
     ApiModule,

@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Observable, of } from "rxjs";
 import { catchError, map } from "rxjs/operators";
-import { AuthClassicApiService } from "./api/classic/auth-classic-api.service";
+import { AuthClassicApiService } from "./api/classic/auth/auth-classic-api.service";
 import { AppContextService } from "./app-context.service";
 
 export enum AuthServiceType {

@@ -1,14 +1,15 @@
 import { Pipe, PipeTransform } from "@angular/core";
-import { UserProfileModel } from "../models/common/userprofile.model";
+import { UserService } from "@lib/services/user.service";
+import { UserInterface } from "@lib/interfaces/user.interface";
 
 @Pipe({
   name: "isIotdSubmitter",
 })
 export class IsIotdSubmitterPipe implements PipeTransform {
-  transform(value: UserProfileModel, args?: any): any {
-    if (!value.userObject) {
-      return false;
-    }
-    return value.userObject.isInGroup("iotd_submitters");
+  constructor(public userService: UserService) {
+  }
+
+  transform(user: UserInterface, args?: any): any {
+    return this.userService.isInGroup(user, "iotd_submitters");
   }
 }

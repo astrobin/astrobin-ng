@@ -1,7 +1,7 @@
 import { TestBed } from "@angular/core/testing";
 import { AuthService } from "./auth.service";
 import { of } from "rxjs";
-import { AuthClassicApiService } from "./api/classic/auth-classic-api.service";
+import { AuthClassicApiService } from "./api/classic/auth/auth-classic-api.service";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 
 describe("AuthService", () => {

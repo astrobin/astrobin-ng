@@ -9,17 +9,13 @@ import { AppContextService, IAppContext } from "@lib/services/app-context.servic
 import { SharedModule } from "@lib/shared.module";
 import { HeaderComponent } from "./header.component";
 import { Observable } from "rxjs";
-import { UserProfileModel } from "@lib/models/common/userprofile.model";
-import { UserModel } from "@lib/models/common/user.model";
+import { UserProfileGenerator } from "@lib/generators/user-profile.generator";
 
 class MockAppContextService {
   get = jest.fn(
     () => new Observable<IAppContext>(observer => {
       observer.next({
-        currentUserProfile: new UserProfileModel({
-            userObject: new UserModel({}),
-          },
-        ),
+        currentUserProfile: UserProfileGenerator.userProfile(),
       } as IAppContext);
     }));
 }

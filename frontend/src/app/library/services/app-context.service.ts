@@ -1,13 +1,17 @@
 import { Injectable } from "@angular/core";
 import { BehaviorSubject, forkJoin, Observable, of } from "rxjs";
 import { flatMap, share } from "rxjs/operators";
-import { SubscriptionModel } from "../models/common/subscription.model";
-import { UserProfileModel } from "../models/common/userprofile.model";
-import { CommonClassicApiService } from "./api/classic/common-classic-api.service";
+import { CommonApiService } from "./api/classic/common/common-api.service";
+import { UserProfileInterface } from "@lib/interfaces/user-profile.interface";
+import { SubscriptionInterface } from "@lib/interfaces/subscription.interface";
+import { UserInterface } from "@lib/interfaces/user.interface";
+import { UserSubscriptionInterface } from "@lib/interfaces/user-subscription.interface";
 
 export interface IAppContext {
-  currentUserProfile: UserProfileModel;
-  subscriptions: SubscriptionModel[];
+  currentUserProfile: UserProfileInterface;
+  currentUser: UserInterface;
+  currentUserSubscriptions: UserSubscriptionInterface[];
+  subscriptions: SubscriptionInterface[];
 }
 
 @Injectable({
@@ -42,7 +46,7 @@ export class AppContextService {
 
   private _getSubscriptions$ = this.commonApi.getSubscriptions().pipe(share());
 
-  constructor(public commonApi: CommonClassicApiService) {
+  constructor(public commonApi: CommonApiService) {
   }
 
   load(): Promise<any> {
@@ -53,14 +57,10 @@ export class AppContextService {
         this._getUserSubscriptions$,
         this._getSubscriptions$,
       ]).subscribe((results) => {
-        const userProfile: UserProfileModel = {
-          ...results[0],
-          ...{ userObject: results[1] },
-          ...{ userSubscriptionObjects: results[2] },
-        };
-
         this._appContext = {
-          currentUserProfile: userProfile,
+          currentUserProfile: results[0],
+          currentUser: results[1],
+          currentUserSubscriptions: results[2],
           subscriptions: results[3],
         };
 

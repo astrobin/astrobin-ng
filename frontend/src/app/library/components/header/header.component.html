@@ -15,44 +15,44 @@
       <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
 
         <!-- Moderate menu -->
-        <ng-container *ngIf="(appContext$ | async)?.currentUserProfile as profile">
-          <li *ngIf="profile | isContentModerator" class="nav-item">
+        <ng-container *ngIf="(appContext$ | async) as ctx">
+          <li *ngIf="ctx.currentUser | isContentModerator" class="nav-item">
             <div class="d-inline-block" ngbDropdown>
               <button class="btn btn-link" id="moderateDropdown" ngbDropdownToggle translate>Moderate</button>
               <div aria-labelledby="moderateDropdown" ngbDropdownMenu>
 
                 <h6 class="dropdown-header" translate>Images</h6>
 
-                <a *ngIf="profile | isImageModerator" [href]="classicRoutes.MODERATE_IMAGE_QUEUE"
+                <a *ngIf="ctx.currentUser | isImageModerator" [href]="classicRoutes.MODERATE_IMAGE_QUEUE"
                    class="dropdown-item">
                   <fa-icon icon="images"></fa-icon>
                   {{ "Image queue" | translate }}
                 </a>
 
-                <a *ngIf="(profile | isImageModerator) && (profile | isSuperuser)"
+                <a *ngIf="(ctx.currentUser | isImageModerator) && (ctx.currentUser | isSuperUser)"
                    [href]="classicRoutes.MODERATE_SPAM_QUEUE"
                    class="dropdown-item">
                   <fa-icon icon="flag"></fa-icon>
                   {{ "Spam queue" | translate }}
                 </a>
 
-                <ng-container *ngIf="profile | isIotdStaff">
+                <ng-container *ngIf="ctx.currentUser | isIotdStaff">
                   <div class="dropdown-divider"></div>
                   <h6 class="dropdown-header" translate>Image of the day</h6>
 
-                  <a *ngIf="profile | isIotdSubmitter" [href]="classicRoutes.IOTD_SUBMISSION_QUEUE"
+                  <a *ngIf="ctx.currentUser | isIotdSubmitter" [href]="classicRoutes.IOTD_SUBMISSION_QUEUE"
                      class="dropdown-item">
                     <fa-icon icon="upload"></fa-icon>
                     {{ "Submission queue" | translate }}
                   </a>
 
-                  <a *ngIf="profile | isIotdReviewer" [href]="classicRoutes.IOTD_REVIEW_QUEUE"
+                  <a *ngIf="ctx.currentUser | isIotdReviewer" [href]="classicRoutes.IOTD_REVIEW_QUEUE"
                      class="dropdown-item">
                     <fa-icon icon="star"></fa-icon>
                     {{ "Review queue" | translate }}
                   </a>
 
-                  <a *ngIf="profile | isIotdJudge" [href]="classicRoutes.IOTD_JUDGEMENT_QUEUE"
+                  <a *ngIf="ctx.currentUser | isIotdJudge" [href]="classicRoutes.IOTD_JUDGEMENT_QUEUE"
                      class="dropdown-item">
                     <fa-icon icon="hammer"></fa-icon>
                     {{ "Judgement queue" | translate }}
@@ -185,14 +185,14 @@
 
       </ul>
 
-      <ul *ngIf="!(appContext$ | async)?.currentUserProfile.userObject" class="navbar-nav">
+      <ul *ngIf="!(appContext$ | async)?.currentUser" class="navbar-nav">
         <li class="nav-item">
           <a href="#" class="nav-link" (click)="openLoginModal($event)" translate>Login</a>
         </li>
         <li class="nav-item"><a [href]="classicRoutes.REGISTER" class="nav-link" translate>Register</a></li>
       </ul>
 
-      <ul *ngIf="(appContext$ | async)?.currentUserProfile.userObject" class="navbar-nav">
+      <ul *ngIf="(appContext$ | async)?.currentUser" class="navbar-nav">
         <!-- Language selector -->
         <li class="nav-item d-none d-lg-block">
           <div class="d-inline-block" ngbDropdown>
@@ -219,23 +219,23 @@
         <!-- ./Language selector -->
 
         <!-- User menu -->
-        <li class="nav-item" *ngIf="(appContext$ | async)?.currentUserProfile as profile">
+        <li class="nav-item" *ngIf="(appContext$ | async) as ctx">
           <div class="d-inline-block" ngbDropdown>
             <button class="btn btn-primary user-dropdown-toggle" id="userDropdown" ngbDropdownToggle>
-              {{ profile.userObject.username }}
+              {{ ctx.currentUser.username }}
               <span class="scores">
                 <span
-                  *ngIf="!profile.exclude_from_competitions"
+                  *ngIf="!ctx.currentUserProfile.excludeFromCompetition"
                   class="score"
                   ngbTooltip="{{ 'AstroBin index' | translate }}"
                   placement="bottom">
-                   {{ profile.astrobin_index }} &bull;
+                   TODO
                 </span>
                 <span
                   class="score"
                   ngbTooltip="{{ 'Followers' | translate }}"
                   placement="bottom">
-                   {{ profile.followers }}
+                   TODO
                 </span>
               </span>
             </button>
@@ -255,26 +255,26 @@
               <div class="dropdown-divider"></div>
               <h6 class="dropdown-header" translate>My places</h6>
 
-              <a *ngIf="profile | isProducer"
-                 [href]="classicRoutes.COMMERCIAL_PRODUCTS(profile)" class="dropdown-item">
+              <a *ngIf="ctx.currentUser | isProducer"
+                 [href]="classicRoutes.COMMERCIAL_PRODUCTS(ctx.currentUser)" class="dropdown-item">
                 <fa-icon icon="barcode"></fa-icon>
                 {{ "Commercial products" | translate }}
               </a>
 
               <a
-                [href]="classicRoutes.GALLERY(profile)" class="dropdown-item">
+                [href]="classicRoutes.GALLERY(ctx.currentUser)" class="dropdown-item">
                 <fa-icon icon="image"></fa-icon>
                 {{ "Gallery" | translate }}
               </a>
 
               <a
-                [href]="classicRoutes.BOOKMARKS(profile)" class="dropdown-item">
+                [href]="classicRoutes.BOOKMARKS(ctx.currentUser)" class="dropdown-item">
                 <fa-icon icon="bookmark"></fa-icon>
                 {{ "Bookmarks" | translate }}
               </a>
 
               <a
-                [href]="classicRoutes.PLOTS(profile)" class="dropdown-item">
+                [href]="classicRoutes.PLOTS(ctx.currentUser)" class="dropdown-item">
                 <fa-icon icon="chart-bar"></fa-icon>
                 {{ "Plots" | translate }}
               </a>
@@ -288,7 +288,7 @@
               </a>
 
               <a
-                [href]="classicRoutes.API_KEYS(profile)" class="dropdown-item">
+                [href]="classicRoutes.API_KEYS(ctx.currentUser)" class="dropdown-item">
                 <fa-icon icon="key"></fa-icon>
                 {{ "API Keys" | translate }}
               </a>
