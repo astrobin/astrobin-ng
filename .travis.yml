@@ -11,9 +11,9 @@ install:
   - npm ci
 
 before_script:
-  - npm run frontend:lint
-  - npm run frontend:build
-  - npm run frontend:build:prod
+  - npm run lint
+  - npm run build
+  - npm run build:prod
 
 script:
   - npm run test:cov

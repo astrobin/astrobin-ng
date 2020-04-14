@@ -1,0 +1,21 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - npm ci
+
+  build:
+    commands:
+      - npm run lint
+      - npm run build
+      - npm run build:prod
+
+  post_build:
+    commands:
+      - npm run test
+
+artifacts:
+  files:
+    - '**/*'
+  base-directory: dist

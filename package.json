@@ -6,13 +6,13 @@
   "repository": "https://github.com/astrobin/astrobin-ng",
   "scripts": {
     "ng": ".node_modules/.bin/ng",
-    "frontend:lint": "cd frontend; ng lint",
-    "frontend:start": "cd frontend; ng serve --host 0.0.0.0 --port 4400",
-    "frontend:start:prod": "cd frontend; ng serve --host 0.0.0.0 --port 4400 --configuration=local-production",
-    "frontend:build": "cd frontend; ng build",
-    "frontend:build:prod": "cd frontend; ng build --prod --aot",
-    "test": "jest --config frontend/jest.config.js",
-    "test:cov": "jest --config frontend/jest.config.js --coverage"
+    "lint": "ng lint",
+    "start": "ng serve --host 0.0.0.0 --port 4400",
+    "start:prod": "ng serve --host 0.0.0.0 --port 4400 --configuration=local-production",
+    "build": "ng build",
+    "build:prod": "ng build --prod --aot",
+    "test": "jest --config jest.config.js",
+    "test:cov": "jest --config jest.config.js --coverage"
   },
   "private": true,
   "dependencies": {
@@ -22,6 +22,7 @@
     "@angular/compiler": "9.1.1",
     "@angular/core": "9.1.1",
     "@angular/forms": "^9.1.1",
+    "@angular/localize": "^9.1.1",
     "@angular/platform-browser": "9.1.1",
     "@angular/platform-browser-dynamic": "9.1.1",
     "@angular/router": "9.1.1",
@@ -39,10 +40,10 @@
     "core-js": "^3.2.1",
     "dotenv": "8.1.0",
     "intl": "1.2.5",
-    "ngx-toastr": "^11.0.0",
+    "ngx-toastr": "^12.0.1",
     "reflect-metadata": "0.1.13",
     "rimraf": "2.6.3",
-    "rxjs": "6.5.3",
+    "rxjs": "6.5.5",
     "tslib": "^1.10.0",
     "webpack-bundle-tracker": "^0.4.3",
     "zone.js": "^0.10.3"
@@ -80,7 +81,7 @@
   },
   "jest": {
     "projects": [
-      "frontend/jest.config.js"
+      "jest.config.js"
     ]
   },
   "importSort": {

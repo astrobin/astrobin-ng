@@ -15,14 +15,14 @@ AstroBin NG, based on [Node.js](https://nodejs.org), [Angular](https://angular.i
 $ npm ci
 ```
 
-## Running the frontend
+## Running it
 
 ```bash
 # development
-$ npm run frontend:start
+$ npm run start
 
 # production mode
-$ npm run frontend:start:prod
+$ npm run start:prod
 ```
 
 ## Test

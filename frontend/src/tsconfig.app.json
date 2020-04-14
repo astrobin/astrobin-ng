@@ -1,8 +1,0 @@
-{
-  "extends": "../tsconfig",
-  "compilerOptions": {
-    "outDir": "../out-tsc/app",
-    "types": []
-  },
-  "exclude": ["**/*.spec.ts"]
-}
