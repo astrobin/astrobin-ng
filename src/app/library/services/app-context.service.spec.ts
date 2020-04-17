@@ -18,7 +18,7 @@ describe("AppContextService", () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [{ provide: CommonApiService, useClass: MockCommonApiService }],
+      providers: [{ provide: CommonApiService, useClass: MockCommonApiService }]
     });
     service = TestBed.inject(AppContextService);
   });

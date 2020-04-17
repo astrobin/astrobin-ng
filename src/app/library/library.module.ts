@@ -1,11 +1,18 @@
 import { CommonModule } from "@angular/common";
-import { NgModule } from "@angular/core";
+import { HttpClientModule } from "@angular/common/http";
+import { ModuleWithProviders, NgModule } from "@angular/core";
+import { ServicesModule } from "@lib/services/services.module";
 import { ComponentsModule } from "./components/components.module";
 import { PipesModule } from "./pipes/pipes.module";
-import { ServicesModule } from "./services/services.module";
 
 @NgModule({
-  imports: [CommonModule, ComponentsModule, PipesModule, ServicesModule],
-  exports: [ComponentsModule, PipesModule, ServicesModule]
+  imports: [CommonModule, ComponentsModule, HttpClientModule, PipesModule, ServicesModule],
+  exports: [ComponentsModule, HttpClientModule, PipesModule, ServicesModule]
 })
-export class LibraryModule {}
+export class LibraryModule {
+  static forRoot(): ModuleWithProviders {
+    return {
+      ngModule: LibraryModule
+    };
+  }
+}

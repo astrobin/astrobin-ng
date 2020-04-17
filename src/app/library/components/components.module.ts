@@ -2,9 +2,10 @@ import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { RouterModule } from "@angular/router";
+import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { NgbCollapseModule, NgbDropdownModule, NgbModalModule, NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
+import { TranslateModule } from "@ngx-translate/core";
 import { PipesModule } from "../pipes/pipes.module";
-import { SharedModule } from "../shared.module";
 import { LoginModalComponent } from "./auth/login-modal/login-modal.component";
 import { FooterComponent } from "./footer/footer.component";
 import { HeaderComponent } from "./header/header.component";
@@ -13,6 +14,7 @@ import { EmptyListComponent } from "./misc/empty-list/empty-list.component";
 @NgModule({
   imports: [
     CommonModule,
+    FontAwesomeModule,
     FormsModule,
     NgbCollapseModule,
     NgbDropdownModule,
@@ -20,19 +22,15 @@ import { EmptyListComponent } from "./misc/empty-list/empty-list.component";
     NgbTooltipModule,
     PipesModule,
     ReactiveFormsModule,
-    SharedModule,
-    RouterModule
+    RouterModule,
+    TranslateModule
   ],
-  declarations: [
-    EmptyListComponent,
-    FooterComponent,
-    HeaderComponent,
-    LoginModalComponent
-  ],
+  declarations: [EmptyListComponent, FooterComponent, HeaderComponent, LoginModalComponent],
   exports: [
     EmptyListComponent,
-    FormsModule,
+    FontAwesomeModule,
     FooterComponent,
+    FormsModule,
     HeaderComponent,
     LoginModalComponent,
     NgbCollapseModule,
@@ -40,8 +38,7 @@ import { EmptyListComponent } from "./misc/empty-list/empty-list.component";
     NgbModalModule,
     NgbTooltipModule,
     PipesModule,
-    ReactiveFormsModule,
-    SharedModule
+    ReactiveFormsModule
   ],
   entryComponents: [LoginModalComponent]
 })

@@ -2,7 +2,9 @@ import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { ReactiveFormsModule } from "@angular/forms";
+import { WindowRefService } from "@lib/services/window-ref.service";
 import { NgbActiveModal, NgbModalModule } from "@ng-bootstrap/ng-bootstrap";
+import { TranslateModule } from "@ngx-translate/core";
 import { of } from "rxjs";
 import { LoginModalComponent } from "./login-modal.component";
 
@@ -12,9 +14,9 @@ describe("LoginModalComponent", () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule, HttpClientTestingModule, NgbModalModule],
+      imports: [ReactiveFormsModule, HttpClientTestingModule, NgbModalModule, TranslateModule.forRoot()],
       declarations: [LoginModalComponent],
-      providers: [NgbActiveModal]
+      providers: [NgbActiveModal, WindowRefService]
     }).compileComponents();
   }));
 

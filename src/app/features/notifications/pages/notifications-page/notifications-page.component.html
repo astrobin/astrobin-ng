@@ -1,0 +1,51 @@
+<div class="page">
+  <h1>
+    {{"Notifications" | translate}}
+    <span *ngIf="notificationsService.unreadCount$ | async as unreadCount" class="badge badge-danger badge-pill">
+      {{ unreadCount }}
+    </span>
+  </h1>
+
+  <ng-container *ngIf="notificationsService.notifications$ | async as notifications; else loading">
+    <ng-container *ngIf="notifications.count > 0; else noNotifications">
+      <ngb-pagination (pageChange)="pageChange($event)" [(page)]="page" [collectionSize]="notifications.count">
+      </ngb-pagination>
+
+      <table class="table table-dark table-striped table-borderless table-responsive-md notifications-table">
+        <tbody>
+          <tr *ngFor="let notification of notifications.results">
+            <td [class.read]="notification.read" [class.unread]="!notification.read" class="read-indicator">
+              <fa-icon (click)="toggleRead(notification)" class="read-icon" icon="eye">
+              </fa-icon>
+            </td>
+            <td class="messages">
+              <span [innerHTML]="notification.message | normalizeNotificationLink"></span>
+            </td>
+            <td class="created">{{ notification.created.toString() | timeAgo }}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <ngb-pagination (pageChange)="pageChange($event)" [(page)]="page" [collectionSize]="notifications.count">
+      </ngb-pagination>
+    </ng-container>
+  </ng-container>
+
+  <ng-template #noNotifications>
+    <astrobin-empty-list></astrobin-empty-list>
+  </ng-template>
+
+  <ng-template #loading>
+    <div *ngIf="notificationsService.loading$ | async" class="app-loading active"></div>
+  </ng-template>
+
+  <div class="buttons-area">
+    <button (click)="markAllAsRead()" [class.loading]="notificationsService.loading$ | async"
+            [disabled]="!(notificationsService.unreadCount$ | async)" class="btn btn-primary">
+      {{"Mark all as read" | translate}}
+    </button>
+    <a [attr.href]="classicRoutesService.NOTIFICATION_SETTINGS" class="btn btn-secondary">
+      {{"Settings"|translate}}
+    </a>
+  </div>
+</div>

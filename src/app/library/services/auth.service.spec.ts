@@ -1,5 +1,6 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { TestBed } from "@angular/core/testing";
+import { fakeAsync, flush, TestBed } from "@angular/core/testing";
+import { WindowRefService } from "@lib/services/window-ref.service";
 import { of } from "rxjs";
 import { AuthClassicApiService } from "./api/classic/auth/auth-classic-api.service";
 import { AuthService } from "./auth.service";
@@ -10,7 +11,7 @@ describe("AuthService", () => {
   beforeEach(() =>
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
-      providers: [AuthService, AuthClassicApiService]
+      providers: [AuthService, AuthClassicApiService, WindowRefService]
     })
   );
 
@@ -27,17 +28,21 @@ describe("AuthService", () => {
       jest.spyOn(service.authClassicApi, "login").mockReturnValue(of("123"));
     });
 
-    it("should work with classic api", () => {
+    it("should work with classic api", fakeAsync(done => {
       service.login("foo", "bar").subscribe(result => {
         expect(result).toEqual(true);
         expect(service.isAuthenticated()).toBe(true);
         expect(AuthService.getClassicApiToken()).toBe("123");
 
+        flush();
+
         service.logout();
 
         expect(service.isAuthenticated()).toBe(false);
         expect(AuthService.getClassicApiToken()).toBe(null);
+
+        done();
       });
-    });
+    }));
   });
 });

@@ -1,0 +1,25 @@
+@import "../../../../styles/variables";
+
+h1 .badge {
+  display: inline-block;
+  font-size: 1rem;
+  transform: translateY(-1rem);
+}
+
+.table {
+  .read-indicator {
+    cursor: pointer;
+
+    &.read .read-icon {
+      color: $light-grey;
+    }
+
+    &.unread .read-icon {
+      color: $accent-color;
+    }
+  }
+
+  .created {
+    text-align: right;
+  }
+}

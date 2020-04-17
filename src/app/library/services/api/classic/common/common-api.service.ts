@@ -7,7 +7,7 @@ import { UserInterface } from "@lib/interfaces/user.interface";
 import {
   BackendUserInterface,
   BackendUserProfileInterface,
-  CommonApiAdaptorService,
+  CommonApiAdaptorService
 } from "@lib/services/api/classic/common/common-api-adaptor.service";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";

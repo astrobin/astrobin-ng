@@ -1,9 +1,10 @@
 import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
-import { TestBed } from "@angular/core/testing";
+import { fakeAsync, flushMicrotasks, TestBed } from "@angular/core/testing";
 import { AuthClassicApiService } from "@lib/services/api/classic/auth/auth-classic-api.service";
 import { AuthInterceptor } from "@lib/services/auth.interceptor";
 import { AuthService } from "@lib/services/auth.service";
+import { WindowRefService } from "@lib/services/window-ref.service";
 
 describe(`AuthHttpInterceptor`, () => {
   let authService: AuthService;
@@ -19,8 +20,9 @@ describe(`AuthHttpInterceptor`, () => {
         {
           provide: HTTP_INTERCEPTORS,
           useClass: AuthInterceptor,
-          multi: true,
+          multi: true
         },
+        WindowRefService
       ]
     });
 
@@ -28,26 +30,20 @@ describe(`AuthHttpInterceptor`, () => {
     authClassicApi = TestBed.inject(AuthClassicApiService);
     httpMock = TestBed.inject(HttpTestingController);
 
-    spyOn(AuthService, "getClassicApiToken").and.returnValue(
-      "classic-auth-token",
-    );
+    spyOn(AuthService, "getClassicApiToken").and.returnValue("classic-auth-token");
   });
 
   afterEach(() => {
     httpMock.verify();
   });
 
-  it("should add an Authorization header", () => {
+  it("should add an Authorization header", fakeAsync(done => {
     authService.login("handle", "password").subscribe(response => {
+      const classicApiHttpRequest = httpMock.expectOne(`${authClassicApi.configUrl}/api-auth-token/`);
+      expect(classicApiHttpRequest.request.headers.has("Authorization")).toEqual(true);
       expect(response).toBeTruthy();
+      done();
     });
-
-    const classicApiHttpRequest = httpMock.expectOne(
-      `${authClassicApi.configUrl}/api-auth-token/`
-    );
-
-    expect(classicApiHttpRequest.request.headers.has("Authorization")).toEqual(
-      true
-    );
-  });
+    flushMicrotasks();
+  }));
 });

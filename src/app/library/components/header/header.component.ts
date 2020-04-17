@@ -1,8 +1,10 @@
 import { Component } from "@angular/core";
+import { NotificationsService } from "@features/notifications/services/notifications.service";
 import { LoginModalComponent } from "@lib/components/auth/login-modal/login-modal.component";
 import { AppContextInterface, AppContextService } from "@lib/services/app-context.service";
 import { AuthService } from "@lib/services/auth.service";
 import { ClassicRoutesService } from "@lib/services/classic-routes.service";
+import { LoadingService } from "@lib/services/loading.service";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Observable } from "rxjs";
 
@@ -18,11 +20,11 @@ interface FlagInterface {
   styleUrls: ["./header.component.scss"]
 })
 export class HeaderComponent {
-  public isCollapsed = true;
+  isCollapsed = true;
 
-  public appContext$: Observable<AppContextInterface>;
+  appContext$: Observable<AppContextInterface>;
 
-  public flags: FlagInterface[] = [
+  flags: FlagInterface[] = [
     { languageCode: "en", countryCode: "us", label: "English (US)" },
     { languageCode: "en-GB", countryCode: "gb", label: "English (UK)" },
     { languageCode: "it", countryCode: "it", label: "Italiano" },
@@ -41,21 +43,23 @@ export class HeaderComponent {
     { languageCode: "ja", countryCode: "jp", label: "日本語" }
   ];
 
-  public constructor(
+  constructor(
     appContext: AppContextService,
-    public readonly modalService: NgbModal,
-    public readonly classicRoutes: ClassicRoutesService,
-    public readonly authService: AuthService
+    public modalService: NgbModal,
+    public classicRoutes: ClassicRoutesService,
+    public authService: AuthService,
+    public notificationsService: NotificationsService,
+    public loadingService: LoadingService
   ) {
     this.appContext$ = appContext.get();
   }
 
-  public openLoginModal($event) {
+  openLoginModal($event) {
     $event.preventDefault();
     this.modalService.open(LoginModalComponent, { centered: true });
   }
 
-  public logout($event) {
+  logout($event) {
     $event.preventDefault();
     this.authService.logout();
   }

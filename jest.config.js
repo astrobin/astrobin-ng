@@ -5,12 +5,8 @@ module.exports = {
   verbose: true,
   preset: "jest-preset-angular",
   setupFilesAfterEnv: ["<rootDir>/setupJest.ts"],
-  collectCoverageFrom: [
-    "**/*.ts",
-    "!main.ts",
-    "!**/*.module.(t|j)s"
-  ],
+  collectCoverageFrom: ["**/*.ts", "!main.ts", "!**/*.module.(t|j)s", "!**/*mock.ts"],
   coverageDirectory: "coverage",
-  transformIgnorePatterns: ['^.+\\.js$'],
+  transformIgnorePatterns: ["^.+\\.js$"],
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, { prefix: "<rootDir>/" })
 };

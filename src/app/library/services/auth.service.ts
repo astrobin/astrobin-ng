@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
+import { WindowRefService } from "@lib/services/window-ref.service";
 import { Observable, of } from "rxjs";
-import { catchError, map } from "rxjs/operators";
+import { catchError, map, take } from "rxjs/operators";
 import { AuthClassicApiService } from "./api/classic/auth/auth-classic-api.service";
 import { AppContextService } from "./app-context.service";
 
@@ -16,8 +17,9 @@ export class AuthService {
   static CLASSIC_LOCAL_STORAGE_KEY = "classic-auth-token";
 
   constructor(
-    public readonly authClassicApi: AuthClassicApiService,
-    public readonly appContext: AppContextService
+    public authClassicApi: AuthClassicApiService,
+    public appContext: AppContextService,
+    public windowRef: WindowRefService
   ) {}
 
   public static getClassicApiToken(): string {
@@ -25,19 +27,32 @@ export class AuthService {
   }
 
   public login(handle: string, password: string): Observable<boolean> {
-    return this.authClassicApi.login(handle, password).pipe(
-      map(token => {
-        localStorage.setItem(AuthService.CLASSIC_LOCAL_STORAGE_KEY, token);
-        this.appContext.load();
-        return true;
-      }),
-      catchError(() => of(false))
-    );
+    return new Observable<boolean>(observer => {
+      this.authClassicApi
+        .login(handle, password)
+        .pipe(
+          take(1),
+          map(token => {
+            localStorage.setItem(AuthService.CLASSIC_LOCAL_STORAGE_KEY, token);
+            this.appContext.load().then(() => {
+              observer.next(true);
+              observer.complete();
+              this.windowRef.nativeWindow.location.reload();
+            });
+          }),
+          catchError(() => of(false))
+        )
+        .subscribe();
+    });
   }
 
   public logout(): void {
-    localStorage.removeItem(AuthService.CLASSIC_LOCAL_STORAGE_KEY);
-    this.appContext.load();
+    if (localStorage.getItem(AuthService.CLASSIC_LOCAL_STORAGE_KEY)) {
+      localStorage.removeItem(AuthService.CLASSIC_LOCAL_STORAGE_KEY);
+      this.appContext.load().then(() => {
+        this.windowRef.nativeWindow.location.reload();
+      });
+    }
   }
 
   public isAuthenticated(): boolean {

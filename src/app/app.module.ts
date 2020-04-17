@@ -34,12 +34,12 @@ import {
   faTasks,
   faTrophy,
   faUpload,
-  faUsers,
+  faUsers
 } from "@fortawesome/free-solid-svg-icons";
 import { LibraryModule } from "@lib/library.module";
 import { AppContextService } from "@lib/services/app-context.service";
 import { ValidationLoader } from "@lib/services/validation-loader.service";
-import { SharedModule } from "@lib/shared.module";
+import { WindowRefService } from "@lib/services/window-ref.service";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FormlyModule } from "@ngx-formly/core";
@@ -111,8 +111,7 @@ export function initFontAwesome(iconLibrary: FaIconLibrary) {
 
     // App
     AppRoutingModule,
-    LibraryModule,
-    SharedModule.forRoot()
+    LibraryModule.forRoot()
   ],
   providers: [
     AppContextService,
@@ -122,7 +121,8 @@ export function initFontAwesome(iconLibrary: FaIconLibrary) {
       multi: true,
       deps: [AppContextService]
     },
-    ValidationLoader
+    ValidationLoader,
+    WindowRefService
   ],
   bootstrap: [AppComponent]
 })

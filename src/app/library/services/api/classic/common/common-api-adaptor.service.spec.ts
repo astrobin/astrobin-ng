@@ -4,7 +4,7 @@ import {
   BackendGroupInterface,
   BackendPermissionInterface,
   BackendUserInterface,
-  CommonApiAdaptorService,
+  CommonApiAdaptorService
 } from "./common-api-adaptor.service";
 
 describe("CommonApiAdaptorService", () => {

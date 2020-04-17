@@ -13,7 +13,7 @@ describe("CommonApiService", () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
-      providers: [CommonApiService],
+      providers: [CommonApiService]
     });
 
     service = TestBed.inject(CommonApiService);

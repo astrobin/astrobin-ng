@@ -1,3 +1,7 @@
+<div [class.loading]="loadingService.isLoading()" class="global-loading-indicator">
+  <div class="background"></div>
+</div>
+
 <nav class="navbar navbar-expand-lg">
   <div class="container">
     <a [href]="classicRoutes.HOME" class="navbar-brand">
@@ -218,8 +222,20 @@
         </li>
         <!-- ./Language selector -->
 
+        <!-- Notifications -->
+        <li class="nav-item d-none d-lg-block notifications-list-item">
+          <a class="btn btn-link nav-link" routerLink="/notifications">
+            <fa-icon icon="bell"></fa-icon>
+            <ng-container *ngIf="(notificationsService.unreadCount$ | async) as unreadCount">
+              <span class="badge badge-danger badge-pill">
+                {{ unreadCount }}
+              </span>
+            </ng-container>
+          </a>
+        </li>
+
         <!-- User menu -->
-        <li *ngIf="appContext$ | async as ctx" class="nav-item">
+        <li *ngIf=" appContext$ | async as ctx" class="nav-item">
           <div class="d-inline-block" ngbDropdown>
             <button class="btn btn-primary user-dropdown-toggle" id="userDropdown" ngbDropdownToggle>
               {{ ctx.currentUser.username }}
@@ -227,8 +243,8 @@
                 <span *ngIf="!ctx.currentUserProfile.excludeFromCompetition" class="score"
                       ngbTooltip="{{ 'AstroBin index' | translate }}" placement="bottom">
                   {{ ctx.currentUserProfile.astroBinIndex }}
+                  &middot;
                 </span>
-                &middot;
                 <span class="score" ngbTooltip="{{ 'Followers' | translate }}" placement="bottom">
                   {{ ctx.currentUserProfile.followers }}
                 </span>

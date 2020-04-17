@@ -1,5 +1,6 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 
+import { TranslateModule } from "@ngx-translate/core";
 import { EmptyListComponent } from "./empty-list.component";
 
 describe("EmptyListComponent", () => {
@@ -8,6 +9,7 @@ describe("EmptyListComponent", () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      imports: [TranslateModule.forRoot()],
       declarations: [EmptyListComponent]
     }).compileComponents();
   }));

@@ -6,7 +6,7 @@ import { FontAwesomeTestingModule } from "@fortawesome/angular-fontawesome/testi
 import { UserProfileGenerator } from "@lib/generators/user-profile.generator";
 import { PipesModule } from "@lib/pipes/pipes.module";
 import { AppContextInterface, AppContextService } from "@lib/services/app-context.service";
-import { SharedModule } from "@lib/shared.module";
+import { WindowRefService } from "@lib/services/window-ref.service";
 import { NgbCollapseModule, NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
 import { TranslateLoader, TranslateModule } from "@ngx-translate/core";
 import { Observable } from "rxjs";
@@ -41,12 +41,9 @@ describe("HeaderComponent", () => {
             deps: [HttpClient]
           }
         }),
-        SharedModule,
         PipesModule
       ],
-      providers: [
-        { provide: AppContextService, useClass: MockAppContextService }
-      ],
+      providers: [{ provide: AppContextService, useClass: MockAppContextService }, WindowRefService],
       declarations: [HeaderComponent]
     }).compileComponents();
   }));
