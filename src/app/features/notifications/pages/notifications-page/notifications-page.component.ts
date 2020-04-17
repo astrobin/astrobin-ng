@@ -1,8 +1,8 @@
 import { Component, OnInit } from "@angular/core";
+import { NotificationInterface } from "@features/notifications/interfaces/notification.interface";
 import { NotificationsService } from "@features/notifications/services/notifications.service";
 import { ClassicRoutesService } from "@lib/services/classic-routes.service";
 import { take } from "rxjs/operators";
-import { NotificationInterface } from "@features/notifications/interfaces/notification.interface";
 
 @Component({
   selector: "astrobin-notifications-page",

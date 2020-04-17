@@ -1,9 +1,9 @@
 import { TestBed } from "@angular/core/testing";
+import { NotificationInterface } from "@features/notifications/interfaces/notification.interface";
 import {
   BackendNotificationInterface,
   NotificationsApiAdaptorService
 } from "@features/notifications/services/notifications-api-adaptor.service";
-import { NotificationInterface } from "@features/notifications/interfaces/notification.interface";
 
 describe("NotificationsApiAdaptorService", () => {
   let service: NotificationsApiAdaptorService;

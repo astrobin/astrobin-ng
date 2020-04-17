@@ -1,5 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+import { NotificationListResponseInterface } from "@features/notifications/interfaces/notification-list-response.interface";
+import { NotificationInterface } from "@features/notifications/interfaces/notification.interface";
 import {
   BackendNotificationListResponseInterface,
   NotificationsApiAdaptorService
@@ -7,8 +9,6 @@ import {
 import { BaseClassicApiService } from "@lib/services/api/classic/base-classic-api.service";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
-import { NotificationInterface } from "@features/notifications/interfaces/notification.interface";
-import { NotificationListResponseInterface } from "@features/notifications/interfaces/notification-list-response.interface";
 
 @Injectable({
   providedIn: "root"

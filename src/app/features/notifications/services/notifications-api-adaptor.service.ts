@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
-import { NotificationInterface } from "@features/notifications/interfaces/notification.interface";
 import { NotificationListResponseInterface } from "@features/notifications/interfaces/notification-list-response.interface";
+import { NotificationInterface } from "@features/notifications/interfaces/notification.interface";
 
 export interface BackendNotificationInterface {
   id: number;

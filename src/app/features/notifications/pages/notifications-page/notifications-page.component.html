@@ -42,7 +42,8 @@
 
   <div class="buttons-area">
     <button (click)="markAllAsRead()" [class.loading]="notificationsService.loading$ | async"
-            [disabled]="!(notificationsService.unreadCount$ | async)" class="btn btn-primary" id="mark-all-as-read">
+            [disabled]="(notificationsService.unreadCount$ | async) === 0" class="btn btn-primary"
+            id="mark-all-as-read">
       {{"Mark all as read" | translate}}
     </button>
     <a [attr.href]="classicRoutesService.NOTIFICATION_SETTINGS" class="btn btn-secondary">
