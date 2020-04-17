@@ -8,5 +8,6 @@ module.exports = {
   collectCoverageFrom: ["**/*.ts", "!main.ts", "!**/*.module.(t|j)s", "!**/*mock.ts"],
   coverageDirectory: "coverage",
   transformIgnorePatterns: ["^.+\\.js$"],
-  moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, { prefix: "<rootDir>/" })
+  moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, { prefix: "<rootDir>/" }),
+  modulePathIgnorePatterns: ["<rootDir>/cypress"]
 };

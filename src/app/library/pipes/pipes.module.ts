@@ -10,6 +10,7 @@ import { IsIotdSubmitterPipe } from "./is-iotd-submitter.pipe";
 import { IsProducerPipe } from "./is-producer.pipe";
 import { IsRetailerPipe } from "./is-retailer.pipe";
 import { IsSuperUserPipe } from "./is-superuser.pipe";
+import { TimeAgoExtendsPipe } from "@lib/pipes/timeago.pipe";
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { IsSuperUserPipe } from "./is-superuser.pipe";
     IsIotdSubmitterPipe,
     IsProducerPipe,
     IsRetailerPipe,
-    IsSuperUserPipe
+    IsSuperUserPipe,
+    TimeAgoExtendsPipe
   ],
   imports: [CommonModule],
   exports: [
@@ -35,7 +37,8 @@ import { IsSuperUserPipe } from "./is-superuser.pipe";
     IsIotdSubmitterPipe,
     IsProducerPipe,
     IsRetailerPipe,
-    IsSuperUserPipe
+    IsSuperUserPipe,
+    TimeAgoExtendsPipe
   ]
 })
 export class PipesModule {}

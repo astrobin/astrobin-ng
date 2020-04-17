@@ -50,3 +50,4 @@ Thumbs.db
 *.css
 /dist/
 /cypress/videos
+/cypress/screenshots
