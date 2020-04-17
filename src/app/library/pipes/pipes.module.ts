@@ -1,5 +1,6 @@
 import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
+import { TimeAgoExtendsPipe } from "@lib/pipes/timeago.pipe";
 import { EnsureUrlProtocolPipe } from "./ensure-url-protocol.pipe";
 import { IsContentModeratorPipe } from "./is-content-moderator.pipe";
 import { IsImageModeratorPipe } from "./is-image-moderator.pipe";
@@ -10,7 +11,6 @@ import { IsIotdSubmitterPipe } from "./is-iotd-submitter.pipe";
 import { IsProducerPipe } from "./is-producer.pipe";
 import { IsRetailerPipe } from "./is-retailer.pipe";
 import { IsSuperUserPipe } from "./is-superuser.pipe";
-import { TimeAgoExtendsPipe } from "@lib/pipes/timeago.pipe";
 
 @NgModule({
   declarations: [
