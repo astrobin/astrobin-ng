@@ -12,7 +12,9 @@
     "build": "ng build",
     "build:prod": "ng build --prod --aot",
     "test": "jest --config jest.config.js",
-    "test:cov": "jest --config jest.config.js --coverage"
+    "test:cov": "jest --config jest.config.js --coverage",
+    "cy:wait-run": "./node_modules/.bin/wait-on http-get://localhost:4400/ && cypress run",
+    "cy:serve-and-run": "node_modules/.bin/run-p -r \"start\" \"cy:wait-run\""
   },
   "private": true,
   "dependencies": {
@@ -61,12 +63,15 @@
     "@types/node": "^12.7.8",
     "@types/supertest": "2.0.7",
     "codelyzer": "^5.0.1",
+    "concurrently": "^5.1.0",
+    "cypress": "^4.4.0",
     "faker": "4.1.0",
     "jest": "^24.9.0",
     "jest-preset-angular": "^7.1.1",
     "js-beautify": "^1.11.0",
     "ng-mocks": "^8.1.0",
     "nodemon": "1.19.3",
+    "npm-run-all": "^4.1.5",
     "prettier": "^1.19.1",
     "protractor": "^5.4.2",
     "sqlite3": "4.1.0",
@@ -78,7 +83,7 @@
     "tslint-angular": "^3.0.2",
     "tslint-config-prettier": "^1.18.0",
     "typescript": "^3.8.3",
-    "wait-on": "3.3.0"
+    "wait-on": "^3.3.0"
   },
   "jest": {
     "projects": [

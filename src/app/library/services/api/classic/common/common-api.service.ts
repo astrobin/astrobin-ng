@@ -19,39 +19,26 @@ import { BaseClassicApiService } from "../base-classic-api.service";
 export class CommonApiService extends BaseClassicApiService {
   configUrl = this.baseUrl + "/common";
 
-  constructor(
-    private http: HttpClient,
-    public commonApiAdaptorService: CommonApiAdaptorService
-  ) {
+  constructor(private http: HttpClient, public commonApiAdaptorService: CommonApiAdaptorService) {
     super();
   }
 
   getUser(id: number): Observable<UserInterface> {
     return this.http
       .get<BackendUserInterface>(`${this.configUrl}/users/${id}/`)
-      .pipe(
-        map((user: BackendUserInterface) =>
-          this.commonApiAdaptorService.userFromBackend(user)
-        )
-      );
+      .pipe(map((user: BackendUserInterface) => this.commonApiAdaptorService.userFromBackend(user)));
   }
 
   getCurrentUserProfile(): Observable<UserProfileInterface> {
-    return this.http
-      .get<BackendUserProfileInterface[]>(
-        this.configUrl + "/userprofiles/current/"
-      )
-      .pipe(
-        map(response => {
-          if (response.length > 0) {
-            return this.commonApiAdaptorService.userProfileFromBackend(
-              response[0]
-            );
-          }
+    return this.http.get<BackendUserProfileInterface[]>(this.configUrl + "/userprofiles/current/").pipe(
+      map(response => {
+        if (response.length > 0) {
+          return this.commonApiAdaptorService.userProfileFromBackend(response[0]);
+        }
 
-          return null;
-        })
-      );
+        return null;
+      })
+    );
   }
 
   isAuthenticated(): Observable<boolean> {
@@ -64,14 +51,10 @@ export class CommonApiService extends BaseClassicApiService {
   }
 
   getSubscriptions(): Observable<SubscriptionInterface[]> {
-    return this.http.get<SubscriptionInterface[]>(
-      `${this.configUrl}/subscriptions/`
-    );
+    return this.http.get<SubscriptionInterface[]>(`${this.configUrl}/subscriptions/`);
   }
 
-  getUserSubscriptions(
-    user?: UserInterface
-  ): Observable<UserSubscriptionInterface[]> {
+  getUserSubscriptions(user?: UserInterface): Observable<UserSubscriptionInterface[]> {
     let url = `${this.configUrl}/usersubscriptions/`;
     if (user) {
       url += `?user=${user.id}`;

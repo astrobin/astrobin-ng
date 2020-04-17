@@ -4,10 +4,7 @@ import { RouterModule, Routes } from "@angular/router";
 const routes: Routes = [
   {
     path: "notifications",
-    loadChildren: () =>
-      import("@features/notifications/notifications.module").then(
-        m => m.NotificationsModule
-      )
+    loadChildren: () => import("@features/notifications/notifications.module").then(m => m.NotificationsModule)
   },
   {
     path: "",
