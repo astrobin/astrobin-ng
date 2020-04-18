@@ -11,12 +11,17 @@
   "date_joined": "2020-04-09T19:45:21.522611",
   "groups": [
     {
-      "id": 14,
+      "id": 1,
+      "name": "astrobin_ultimate_2020",
+      "permissions": []
+    },
+    {
+      "id": 2,
       "name": "content_moderators",
       "permissions": []
     },
     {
-      "id": 15,
+      "id": 3,
       "name": "image_moderators",
       "permissions": []
     }
