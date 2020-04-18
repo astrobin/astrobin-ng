@@ -1,0 +1,24 @@
+<div class="page">
+  <h1>{{ "Log in" | translate }}</h1>
+
+  <astrobin-login-form #loginForm (loginSuccessful)="loginSuccessful()"></astrobin-login-form>
+
+  <div class="buttons-area">
+    <button
+      [class.loading]="loginForm.loading"
+      [disabled]="!loginForm.form.valid || loginForm.loading"
+      (click)="loginForm.login()"
+      class="btn btn-primary"
+    >
+      {{ "Log in" | translate }}
+    </button>
+
+    <a [attr.href]="classicRoutesService.REGISTER" class="btn btn-secondary">
+      {{ "Register" | translate }}
+    </a>
+
+    <a [attr.href]="classicRoutesService.RESET_PASSSWORD" class="btn btn-secondary">
+      {{ "Reset password" | translate }}
+    </a>
+  </div>
+</div>

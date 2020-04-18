@@ -13,7 +13,7 @@ label {
     color: $lighter-grey;
 
     &::placeholder {
-      color: $grey !important;
+      color: $light-grey !important;
     }
   }
 
@@ -42,4 +42,8 @@ label {
   .btn:not(:last-child) {
     margin-right: 1rem;
   }
+}
+
+.error {
+  color: $error-red;
 }

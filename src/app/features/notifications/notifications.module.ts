@@ -6,7 +6,8 @@ import { NormalizeNotificationLinkPipe } from "@features/notifications/pipes/nor
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { ComponentsModule } from "@lib/components/components.module";
 import { PipesModule } from "@lib/pipes/pipes.module";
-import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
+import { AuthGuardService } from "@lib/services/guards/auth-guard.service";
+import { NgbPaginationModule } from "@ng-bootstrap/ng-bootstrap";
 import { TranslateModule } from "@ngx-translate/core";
 import { NotificationsPageComponent } from "./pages/notifications-page/notifications-page.component";
 
@@ -15,11 +16,12 @@ import { NotificationsPageComponent } from "./pages/notifications-page/notificat
   imports: [
     CommonModule,
     FontAwesomeModule,
-    NgbModule,
+    NgbPaginationModule,
     RouterModule.forChild(routes),
     TranslateModule.forChild(),
     ComponentsModule,
     PipesModule
-  ]
+  ],
+  providers: [AuthGuardService]
 })
 export class NotificationsModule {}

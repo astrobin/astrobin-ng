@@ -1,6 +1,6 @@
 import { async, TestBed } from "@angular/core/testing";
 import { NotificationInterfaceGenerator } from "@features/notifications/generators/notification.interface.generator";
-import { NotificationServiceMock } from "@features/notifications/services/nootification.service-mock";
+import { NotificationServiceMock } from "@features/notifications/services/notification.service-mock";
 import { NotificationsApiService } from "@features/notifications/services/notifications-api.service";
 import { NotificationsService } from "@features/notifications/services/notifications.service";
 import { of } from "rxjs";

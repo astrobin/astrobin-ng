@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { NotificationInterfaceGenerator } from "@features/notifications/generators/notification.interface.generator";
 import { NormalizeNotificationLinkPipe } from "@features/notifications/pipes/normalize-notification-link.pipe";
-import { NotificationServiceMock } from "@features/notifications/services/nootification.service-mock";
+import { NotificationServiceMock } from "@features/notifications/services/notification.service-mock";
 import { NotificationsService } from "@features/notifications/services/notifications.service";
 import { FontAwesomeTestingModule } from "@fortawesome/angular-fontawesome/testing";
 import { EmptyListComponent } from "@lib/components/misc/empty-list/empty-list.component";

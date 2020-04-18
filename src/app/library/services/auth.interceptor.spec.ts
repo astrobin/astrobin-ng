@@ -1,10 +1,12 @@
 import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
-import { fakeAsync, flushMicrotasks, TestBed } from "@angular/core/testing";
+import { TestBed } from "@angular/core/testing";
 import { AuthClassicApiService } from "@lib/services/api/classic/auth/auth-classic-api.service";
 import { AuthInterceptor } from "@lib/services/auth.interceptor";
 import { AuthService } from "@lib/services/auth.service";
 import { WindowRefService } from "@lib/services/window-ref.service";
+import { TranslateModule } from "@ngx-translate/core";
+import { ToastrModule } from "ngx-toastr";
 
 describe(`AuthHttpInterceptor`, () => {
   let authService: AuthService;
@@ -13,7 +15,7 @@ describe(`AuthHttpInterceptor`, () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
+      imports: [HttpClientTestingModule, ToastrModule.forRoot(), TranslateModule.forRoot()],
       providers: [
         AuthService,
         AuthClassicApiService,
@@ -37,13 +39,12 @@ describe(`AuthHttpInterceptor`, () => {
     httpMock.verify();
   });
 
-  it("should add an Authorization header", fakeAsync(done => {
+  it("should add an Authorization header", () => {
     authService.login("handle", "password").subscribe(response => {
-      const classicApiHttpRequest = httpMock.expectOne(`${authClassicApi.configUrl}/api-auth-token/`);
-      expect(classicApiHttpRequest.request.headers.has("Authorization")).toEqual(true);
-      expect(response).toBeTruthy();
-      done();
+      expect(response).toBe(false);
     });
-    flushMicrotasks();
-  }));
+
+    const classicApiHttpRequest = httpMock.expectOne(`${authClassicApi.configUrl}/api-auth-token/`);
+    expect(classicApiHttpRequest.request.headers.has("Authorization")).toEqual(true);
+  });
 });

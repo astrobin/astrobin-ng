@@ -3,7 +3,7 @@ import { Injectable } from "@angular/core";
 import { environment } from "@env/environment";
 import { PopNotificationsService } from "@lib/services/pop-notifications.service";
 import { TranslateService } from "@ngx-translate/core";
-import { Observable, of } from "rxjs";
+import { Observable, throwError } from "rxjs";
 import { catchError } from "rxjs/operators";
 import { AuthService } from "./auth.service";
 
@@ -13,8 +13,7 @@ export class AuthInterceptor implements HttpInterceptor {
     public popNotificationsService: PopNotificationsService,
     public authService: AuthService,
     public translate: TranslateService
-  ) {
-  }
+  ) {}
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     let authToken: string;
@@ -45,7 +44,7 @@ export class AuthInterceptor implements HttpInterceptor {
           this.popNotificationsService.warning(this.translate.instant("Your session is invalid, please login again"));
         }
 
-        return of(error);
+        return throwError(error);
       })
     );
   }

@@ -6,6 +6,7 @@ import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { NgbCollapseModule, NgbDropdownModule, NgbModalModule, NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
 import { TranslateModule } from "@ngx-translate/core";
 import { PipesModule } from "../pipes/pipes.module";
+import { LoginFormComponent } from "./auth/login-form/login-form.component";
 import { LoginModalComponent } from "./auth/login-modal/login-modal.component";
 import { FooterComponent } from "./footer/footer.component";
 import { HeaderComponent } from "./header/header.component";
@@ -25,13 +26,14 @@ import { EmptyListComponent } from "./misc/empty-list/empty-list.component";
     RouterModule,
     TranslateModule
   ],
-  declarations: [EmptyListComponent, FooterComponent, HeaderComponent, LoginModalComponent],
+  declarations: [EmptyListComponent, FooterComponent, HeaderComponent, LoginFormComponent, LoginModalComponent],
   exports: [
     EmptyListComponent,
     FontAwesomeModule,
     FooterComponent,
     FormsModule,
     HeaderComponent,
+    LoginFormComponent,
     LoginModalComponent,
     NgbCollapseModule,
     NgbDropdownModule,
