@@ -86,6 +86,9 @@
     "typescript": "^3.8.3",
     "wait-on": "^3.3.0"
   },
+  "config": {
+    "unsafe-perm": true
+  },
   "jest": {
     "projects": [
       "jest.config.js"
