@@ -1,7 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { TranslatePoHttpLoader } from "@fjnr/ngx-translate-po-http-loader";
 import { environment } from "@env/environment";
+import { TranslatePoHttpLoader } from "@fjnr/ngx-translate-po-http-loader";
 import { TranslateLoader } from "@ngx-translate/core";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
