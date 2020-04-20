@@ -5,6 +5,7 @@ import { AppContextInterface, AppContextService } from "@lib/services/app-contex
 import { AuthService } from "@lib/services/auth.service";
 import { ClassicRoutesService } from "@lib/services/classic-routes.service";
 import { LoadingService } from "@lib/services/loading.service";
+import { WindowRefService } from "@lib/services/window-ref.service";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Observable } from "rxjs";
 
@@ -49,7 +50,8 @@ export class HeaderComponent {
     public classicRoutes: ClassicRoutesService,
     public authService: AuthService,
     public notificationsService: NotificationsService,
-    public loadingService: LoadingService
+    public loadingService: LoadingService,
+    public windowRef: WindowRefService
   ) {
     this.appContext$ = appContext.get();
   }

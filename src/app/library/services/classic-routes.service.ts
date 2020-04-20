@@ -45,5 +45,5 @@ export class ClassicRoutesService {
 
   API_KEYS = (profile: UserInterface) => BASE_URL + `/users/${profile.username}/apikeys/`;
 
-  SET_LANGUAGE = (languageCode: string) => BASE_URL + `/language/set/${languageCode}/`;
+  SET_LANGUAGE = (languageCode: string, next) => BASE_URL + `/language/set/${languageCode}/?next=${next}`;
 }

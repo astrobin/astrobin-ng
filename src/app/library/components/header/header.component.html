@@ -5,12 +5,12 @@
 <nav class="navbar navbar-expand-lg">
   <div class="container">
     <a [href]="classicRoutes.HOME" class="navbar-brand">
-      <img alt="AstroBin" src="assets/images/nav-logo.png"/>
+      <img alt="AstroBin" src="assets/images/nav-logo.png" />
     </a>
 
     <button (click)="isCollapsed = !isCollapsed" [attr.aria-expanded]="!isCollapsed"
-            aria-controls="navbarSupportedContent" aria-label="Toggle navigation" class="navbar-toggler"
-            data-target="#navbarSupportedContent" data-toggle="collapse" type="button">
+      aria-controls="navbarSupportedContent" aria-label="Toggle navigation" class="navbar-toggler"
+      data-target="#navbarSupportedContent" data-toggle="collapse" type="button">
       <fa-icon icon="bars"></fa-icon>
     </button>
 
@@ -27,7 +27,7 @@
                 <h6 class="dropdown-header" translate>Images</h6>
 
                 <a *ngIf="ctx.currentUser | isImageModerator" [href]="classicRoutes.MODERATE_IMAGE_QUEUE"
-                   class="dropdown-item">
+                  class="dropdown-item">
                   <fa-icon icon="images"></fa-icon>
                   {{ "Image queue" | translate }}
                 </a>
@@ -45,19 +45,19 @@
                   <h6 class="dropdown-header" translate>Image of the day</h6>
 
                   <a *ngIf="ctx.currentUser | isIotdSubmitter" [href]="classicRoutes.IOTD_SUBMISSION_QUEUE"
-                     class="dropdown-item">
+                    class="dropdown-item">
                     <fa-icon icon="upload"></fa-icon>
                     {{ "Submission queue" | translate }}
                   </a>
 
                   <a *ngIf="ctx.currentUser | isIotdReviewer" [href]="classicRoutes.IOTD_REVIEW_QUEUE"
-                     class="dropdown-item">
+                    class="dropdown-item">
                     <fa-icon icon="star"></fa-icon>
                     {{ "Review queue" | translate }}
                   </a>
 
                   <a *ngIf="ctx.currentUser | isIotdJudge" [href]="classicRoutes.IOTD_JUDGEMENT_QUEUE"
-                     class="dropdown-item">
+                    class="dropdown-item">
                     <fa-icon icon="hammer"></fa-icon>
                     {{ "Judgement queue" | translate }}
                   </a>
@@ -180,7 +180,7 @@
         <li class="nav-item quick-search">
           <form [action]="classicRoutes.SEARCH" method="get" ngNoForm>
             <label>
-              <input class="form-control" name="q" placeholder="{{ 'Quick search' | translate }}" type="text"/>
+              <input class="form-control" name="q" placeholder="{{ 'Quick search' | translate }}" type="text" />
             </label>
           </form>
         </li>
@@ -204,10 +204,10 @@
               <fa-icon icon="globe"></fa-icon>
             </button>
             <div aria-labelledby="languageDropdown" ngbDropdownMenu>
-              <a *ngFor="let flag of flags" [href]="classicRoutes.SET_LANGUAGE(flag.languageCode)"
-                 class="dropdown-item">
+              <a *ngFor="let flag of flags" [href]="classicRoutes.SET_LANGUAGE(flag.languageCode,
+              windowRef.nativeWindow.location.href)" class="dropdown-item">
                 <img alt="{{ flag.countryCode }}" class="flag flag-{{ flag.countryCode }}" height="16"
-                     src="/assets/flags/blank.gif" width="16"/>
+                  src="/assets/flags/blank.gif" width="16" />
                 {{ flag.label }}
               </a>
 
@@ -241,7 +241,7 @@
               {{ ctx.currentUser.username }}
               <span class="scores">
                 <span *ngIf="!ctx.currentUserProfile.excludeFromCompetition" class="score"
-                      ngbTooltip="{{ 'AstroBin index' | translate }}" placement="bottom">
+                  ngbTooltip="{{ 'AstroBin index' | translate }}" placement="bottom">
                   {{ ctx.currentUserProfile.astroBinIndex }}
                   &middot;
                 </span>
@@ -266,7 +266,7 @@
               <h6 class="dropdown-header">{{"My places" | translate}}</h6>
 
               <a *ngIf="ctx.currentUser | isProducer" [href]="classicRoutes.COMMERCIAL_PRODUCTS(ctx.currentUser)"
-                 class="dropdown-item">
+                class="dropdown-item">
                 <fa-icon icon="barcode"></fa-icon>
                 {{ "Commercial products" | translate }}
               </a>

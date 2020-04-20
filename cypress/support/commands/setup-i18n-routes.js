@@ -1,3 +1,3 @@
 Cypress.Commands.add("setupI18nRoutes", () => {
-  cy.route("GET", "**/jsi18n", "fixture:api/jsi18n.json").as("jsi18n");
+  cy.route("GET", "**/json-api/i18n/messages/*", "fixture:api/i18n.txt").as("i18n");
 });

@@ -5,6 +5,7 @@
   "license": "AGPL-3.0",
   "repository": "https://github.com/astrobin/astrobin-ng",
   "scripts": {
+    "postinstall": "node patch-iconv.js && node patch-ng-devkit.js",
     "ng": ".node_modules/.bin/ng",
     "lint": "ng lint",
     "start": "ng serve --host 0.0.0.0 --port 4400",
@@ -28,6 +29,7 @@
     "@angular/platform-browser": "9.1.1",
     "@angular/platform-browser-dynamic": "9.1.1",
     "@angular/router": "9.1.1",
+    "@fjnr/ngx-translate-po-http-loader": "^3.1.2",
     "@fortawesome/angular-fontawesome": "^0.6.1",
     "@fortawesome/fontawesome-svg-core": "^1.2.28",
     "@fortawesome/free-solid-svg-icons": "^5.13.0",
@@ -56,7 +58,6 @@
     "@angular/cli": "9.1.1",
     "@angular/compiler-cli": "9.1.1",
     "@angular/language-service": "9.1.1",
-    "@biesbjerg/ngx-translate-extract": "^4.2.0",
     "@types/dotenv": "6.1.1",
     "@types/express": "4.16.1",
     "@types/jest": "^24.0.18",

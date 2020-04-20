@@ -4,12 +4,8 @@
   <astrobin-login-form #loginForm (loginSuccessful)="loginSuccessful()"></astrobin-login-form>
 
   <div class="buttons-area">
-    <button
-      [class.loading]="loginForm.loading"
-      [disabled]="!loginForm.form.valid || loginForm.loading"
-      (click)="loginForm.login()"
-      class="btn btn-primary"
-    >
+    <button [class.loading]="loginForm.loading" [disabled]="!loginForm.form.valid || loginForm.loading"
+      (click)="loginForm.login()" class="btn btn-primary">
       {{ "Log in" | translate }}
     </button>
 

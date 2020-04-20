@@ -1,6 +1,8 @@
 import { Component } from "@angular/core";
+import { AppContextService } from "@lib/services/app-context.service";
 import { NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
 import { TranslateService } from "@ngx-translate/core";
+import { take } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-root",
@@ -8,19 +10,27 @@ import { TranslateService } from "@ngx-translate/core";
   styleUrls: ["./app.component.scss"]
 })
 export class AppComponent {
-  title = "AstroBin";
+  private _defaultLanguage = "en";
 
-  constructor(public translate: TranslateService, public paginationConfig: NgbPaginationConfig) {
+  constructor(
+    public translate: TranslateService,
+    public paginationConfig: NgbPaginationConfig,
+    public appContext: AppContextService
+  ) {
     this.initTranslate();
     this.initPagination();
   }
 
   initTranslate(): void {
-    // this language will be used as a fallback when a translation isn't found in the current language
-    this.translate.setDefaultLang("en");
-
-    // the lang to use, if the lang isn't available, it will use the current loader to get them
-    this.translate.use("en");
+    this.translate.setDefaultLang(this._defaultLanguage);
+    this.appContext
+      .get()
+      .pipe(take(1))
+      .subscribe(appContext => {
+        this.translate.use(
+          appContext.currentUserProfile ? appContext.currentUserProfile.language : this._defaultLanguage
+        );
+      });
   }
 
   initPagination(): void {
