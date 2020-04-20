@@ -8,8 +8,7 @@ import { BaseClassicApiService } from "../base-classic-api.service";
 @Injectable({
   providedIn: "root"
 })
-export class AuthClassicApiService extends BaseClassicApiService
-  implements AuthApiService {
+export class AuthClassicApiService extends BaseClassicApiService implements AuthApiService {
   public configUrl = this.baseUrl;
 
   public constructor(public http: HttpClient) {
@@ -22,6 +21,6 @@ export class AuthClassicApiService extends BaseClassicApiService
         username: handle,
         password
       })
-      .pipe(map(response => response.token));
+      .pipe(map(response => (response ? response.token : null)));
   }
 }
