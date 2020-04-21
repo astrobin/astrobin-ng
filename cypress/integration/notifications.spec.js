@@ -34,7 +34,7 @@ context("notifications", () => {
 
     describe("when there is a notification", () => {
       beforeEach(() => {
-        cy.route("GET", "**/notifications/notification?page=*", "fixture:api/notifications/notification_one.json").as(
+        cy.route("GET", "**/notifications/notification/?page=*", "fixture:api/notifications/notification_one.json").as(
           "getNotificationOne"
         );
 
