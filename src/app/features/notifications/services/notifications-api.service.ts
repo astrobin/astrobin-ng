@@ -22,7 +22,7 @@ export class NotificationsApiService extends BaseClassicApiService {
 
   getAll(page = 1): Observable<NotificationListResponseInterface> {
     return this.http
-      .get<BackendNotificationListResponseInterface>(`${this.configUrl}?page=${page}`)
+      .get<BackendNotificationListResponseInterface>(`${this.configUrl}/?page=${page}`)
       .pipe(map(response => this.notificationsApiAdaptorService.notificationListResponseFromBackend(response)));
   }
 
