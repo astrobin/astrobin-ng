@@ -66,6 +66,7 @@
     "@types/supertest": "2.0.7",
     "codelyzer": "^5.0.1",
     "concurrently": "^5.1.0",
+    "cross-var": "^1.1.0",
     "cypress": "^4.4.1",
     "faker": "4.1.0",
     "jest": "^24.9.0",
