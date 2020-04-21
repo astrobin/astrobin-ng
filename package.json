@@ -14,7 +14,7 @@
     "build:prod": "ng build --prod --aot",
     "test": "jest --config jest.config.js",
     "test:cov": "jest --config jest.config.js --coverage",
-    "cy:wait-run": "./node_modules/.bin/wait-on http-get://localhost:4400/ && cypress run",
+    "cy:wait-run": "./node_modules/.bin/wait-on http-get://localhost:4400/ && cross-var cypress run --record --key $CYPRESS_KEY",
     "cy:serve-and-run": "node_modules/.bin/run-p -r \"start\" \"cy:wait-run\""
   },
   "private": true,
