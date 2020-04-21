@@ -7,7 +7,7 @@ context("login-page", () => {
 
     cy.route("GET", "**/common/userprofiles/current", []).as("getCurrentUserProfile");
 
-    cy.visit("/login?redirectUrl=%2F");
+    cy.visitPage("/login?redirectUrl=%2F");
   });
 
   it("should display the form", () => {

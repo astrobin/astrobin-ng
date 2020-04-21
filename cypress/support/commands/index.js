@@ -30,4 +30,7 @@ import "./setup-initialization-routes";
 import "./setup-notifications-routes";
 import "./setup-subscription-routes";
 
+import "./wait-for-initialization-routes";
+
 import "./login";
+import "./visit-page";

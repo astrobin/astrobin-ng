@@ -7,7 +7,7 @@ context("login-modal", () => {
 
     cy.route("GET", "**/common/userprofiles/current", []).as("getCurrentUserProfile");
 
-    cy.visit("/");
+    cy.visitPage("/");
 
     cy.get(".navbar #login-button").click();
   });

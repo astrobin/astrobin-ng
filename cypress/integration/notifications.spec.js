@@ -7,7 +7,7 @@ context("notifications", () => {
       cy.setupInitializationRoutes();
       cy.route("GET", "**/common/userprofiles/current", []).as("getCurrentUserProfile");
 
-      cy.visit("/notifications");
+      cy.visitPage("/notifications");
       cy.url().should("contain", "/login?redirectUrl=%2Fnotifications");
     });
   });
@@ -21,7 +21,7 @@ context("notifications", () => {
     describe("when there are no notifications", () => {
       beforeEach(() => {
         cy.login();
-        cy.visit("/notifications");
+        cy.visitPage("/notifications");
         cy.wait("@getUnreadNotificationsCount");
       });
 
@@ -41,7 +41,7 @@ context("notifications", () => {
         cy.route("GET", "**/notifications/notification/get_unread_count", "1").as("getUnreadNotificationsCount");
 
         cy.login();
-        cy.visit("/notifications");
+        cy.visitPage("/notifications");
         cy.wait("@getUnreadNotificationsCount");
       });
 
