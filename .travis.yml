@@ -17,7 +17,7 @@ before_script:
 
 script:
   - npm run test:cov
-  - npm run cy:serve-and-run
+  - npm run cy:serve-and-run-record
 
 after_success:
   - codecov
