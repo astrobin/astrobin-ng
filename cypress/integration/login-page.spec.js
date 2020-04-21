@@ -53,4 +53,13 @@ context("login-page", () => {
 
     cy.url().should("equal", "http://localhost:4400/");
   });
+
+  it("should redirect to front page in case of success (login via enter key)", () => {
+    cy.login();
+
+    cy.get("#handle").type("handle");
+    cy.get("#password").type("password{enter}");
+
+    cy.url().should("equal", "http://localhost:4400/");
+  });
 });

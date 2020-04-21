@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from "@angular/core";
+import { Component, EventEmitter, HostListener, OnInit, Output } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { AuthService } from "@lib/services/auth.service";
 
@@ -22,7 +22,7 @@ export class LoginFormComponent implements OnInit {
     });
   }
 
-  public login(): void {
+  @HostListener("document:keydown.enter", ["$event"]) login(): void {
     this.loading = true;
 
     const onError = () => {
