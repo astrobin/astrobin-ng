@@ -17,7 +17,7 @@
     "cy:wait-run": "./node_modules/.bin/wait-on http-get://localhost:4400/ && cypress run",
     "cy:wait-run-record": "./node_modules/.bin/wait-on http-get://localhost:4400/ && cross-var cypress run --record --key $CYPRESS_KEY",
     "cy:serve-and-run": "node_modules/.bin/run-p -r \"start\" \"cy:wait-run\"",
-    "cy:serve-and-ru-recoord": "node_modules/.bin/run-p -r \"start\" \"cy:wait-run-record\""
+    "cy:serve-and-run-record": "node_modules/.bin/run-p -r \"start\" \"cy:wait-run-record\""
   },
   "private": true,
   "dependencies": {
