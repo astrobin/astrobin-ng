@@ -5,5 +5,5 @@ export interface AuthServiceInterface {
 
   logout(): void;
 
-  isAuthenticated(): boolean;
+  isAuthenticated(): Observable<boolean>;
 }

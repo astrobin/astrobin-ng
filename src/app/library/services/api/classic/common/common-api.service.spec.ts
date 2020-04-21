@@ -3,7 +3,6 @@ import { TestBed } from "@angular/core/testing";
 import { UserProfileGenerator } from "@lib/generators/user-profile.generator";
 import { UserGenerator } from "@lib/generators/user.generator";
 import { UserSubscriptionInterface } from "@lib/interfaces/user-subscription.interface";
-import { of } from "rxjs";
 import { CommonApiService } from "./common-api.service";
 
 describe("CommonApiService", () => {
@@ -60,20 +59,6 @@ describe("CommonApiService", () => {
     const req = httpMock.expectOne(`${service.configUrl}/userprofiles/current/`);
     expect(req.request.method).toBe("GET");
     req.flush([]);
-  });
-
-  it("isAuthenticated should return false if there is no current user profile", () => {
-    jest.spyOn(service, "getCurrentUserProfile").mockReturnValue(of(null));
-    service.isAuthenticated().subscribe(response => {
-      expect(response).toBe(false);
-    });
-  });
-
-  it("isAuthenticated should return true if there is a current user profile", () => {
-    jest.spyOn(service, "getCurrentUserProfile").mockReturnValue(of(UserProfileGenerator.userProfile()));
-    service.isAuthenticated().subscribe(response => {
-      expect(response).toBe(true);
-    });
   });
 
   it("getUserSubscriptions should return list", () => {

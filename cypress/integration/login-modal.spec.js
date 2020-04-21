@@ -52,8 +52,7 @@ context("login-modal", () => {
     cy.get("#handle").type("handle");
     cy.get("#password").type("password");
 
-    cy.setupInitializationRoutes();
-
+    cy.login();
     cy.get(".modal-footer .btn-primary").click();
 
     cy.url().should("equal", "http://localhost:4400/");

@@ -9,6 +9,7 @@ import {
   BackendUserProfileInterface,
   CommonApiAdaptorService
 } from "@lib/services/api/classic/common/common-api-adaptor.service";
+import { CommonApiServiceInterface } from "@lib/services/api/classic/common/common-api.service-interface";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 import { BaseClassicApiService } from "../base-classic-api.service";
@@ -16,7 +17,7 @@ import { BaseClassicApiService } from "../base-classic-api.service";
 @Injectable({
   providedIn: "root"
 })
-export class CommonApiService extends BaseClassicApiService {
+export class CommonApiService extends BaseClassicApiService implements CommonApiServiceInterface {
   configUrl = this.baseUrl + "/common";
 
   constructor(private http: HttpClient, public commonApiAdaptorService: CommonApiAdaptorService) {
@@ -39,15 +40,6 @@ export class CommonApiService extends BaseClassicApiService {
         return null;
       })
     );
-  }
-
-  isAuthenticated(): Observable<boolean> {
-    return new Observable(observer => {
-      this.getCurrentUserProfile().subscribe(userProfile => {
-        observer.next(userProfile !== null);
-        observer.complete();
-      });
-    });
   }
 
   getSubscriptions(): Observable<SubscriptionInterface[]> {

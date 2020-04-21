@@ -16,11 +16,11 @@ context("notifications", () => {
     beforeEach(() => {
       cy.server();
       cy.setupInitializationRoutes();
-      cy.setupAuthToken();
     });
 
     describe("when there are no notifications", () => {
       beforeEach(() => {
+        cy.login();
         cy.visit("/notifications");
         cy.wait("@getUnreadNotificationsCount");
       });
@@ -38,8 +38,9 @@ context("notifications", () => {
           "getNotificationOne"
         );
 
-        cy.route("GET", "**/notifications/notification/get_unread_count", 1).as("getUnreadNotificationsCount");
+        cy.route("GET", "**/notifications/notification/get_unread_count", "1").as("getUnreadNotificationsCount");
 
+        cy.login();
         cy.visit("/notifications");
         cy.wait("@getUnreadNotificationsCount");
       });
@@ -55,7 +56,7 @@ context("notifications", () => {
       });
 
       it("should fetch count again when marking a notification as read", () => {
-        cy.route("GET", "**/notifications/notification/get_unread_count", 0);
+        cy.route("GET", "**/notifications/notification/get_unread_count", "0");
 
         cy.get("#notification-1 .read-icon").click();
         cy.get("#unread-notifications-count").should("not.exist");
@@ -64,7 +65,7 @@ context("notifications", () => {
       });
 
       it("should fetch count again when marking all as read", () => {
-        cy.route("GET", "**/notifications/notification/get_unread_count", 0);
+        cy.route("GET", "**/notifications/notification/get_unread_count", "0");
 
         cy.get("#mark-all-as-read").click();
 
@@ -74,7 +75,7 @@ context("notifications", () => {
       });
 
       it("should show the loading stripes when marking as read is slow", () => {
-        cy.route("GET", "**/notifications/notification/get_unread_count", 0);
+        cy.route("GET", "**/notifications/notification/get_unread_count", "0");
 
         cy.route({
           method: "POST",

@@ -1,24 +1,19 @@
 import { TestBed } from "@angular/core/testing";
-import { of } from "rxjs";
+import { CommonApiServiceMock } from "@lib/services/api/classic/common/common-api.service-mock";
+import { JsonApiService } from "@lib/services/api/classic/json/json-api.service";
+import { JsonApiServiceMock } from "@lib/services/api/classic/json/json-api.service-mock";
 import { CommonApiService } from "./api/classic/common/common-api.service";
-
-import { UserProfileGenerator } from "@lib/generators/user-profile.generator";
-import { UserGenerator } from "@lib/generators/user.generator";
 import { AppContextService } from "./app-context.service";
-
-class MockCommonApiService {
-  getUser = jest.fn(() => of(UserGenerator.user()));
-  getCurrentUserProfile = jest.fn(() => of(UserProfileGenerator.userProfile()));
-  getSubscriptions = jest.fn(() => of([]));
-  getUserSubscriptions = jest.fn(() => of([]));
-}
 
 describe("AppContextService", () => {
   let service: AppContextService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [{ provide: CommonApiService, useClass: MockCommonApiService }]
+      providers: [
+        { provide: CommonApiService, useClass: CommonApiServiceMock },
+        { provide: JsonApiService, useClass: JsonApiServiceMock }
+      ]
     });
     service = TestBed.inject(AppContextService);
   });
@@ -32,7 +27,7 @@ describe("AppContextService", () => {
   });
 
   it("currentUserProfile should be available", () => {
-    service.load().then((contextService: AppContextService) => {
+    service.loadForUser().then((contextService: AppContextService) => {
       contextService.get().subscribe(appContext => {
         expect(appContext.currentUserProfile.id).toEqual(1);
       });
@@ -40,7 +35,7 @@ describe("AppContextService", () => {
   });
 
   it("currentUser should be available", () => {
-    service.load().then((contextService: AppContextService) => {
+    service.loadForUser().then((contextService: AppContextService) => {
       contextService.get().subscribe(appContext => {
         expect(appContext.currentUser.id).toEqual(1);
       });

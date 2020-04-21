@@ -24,10 +24,10 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
 
-import "./setup-auth-token";
-
 import "./setup-auth-routes";
-import "./setup-i18n-routes";
+import "./setup-app-routes";
 import "./setup-initialization-routes";
 import "./setup-notifications-routes";
 import "./setup-subscription-routes";
+
+import "./login";

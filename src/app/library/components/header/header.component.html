@@ -17,7 +17,7 @@
     <div [ngbCollapse]="isCollapsed" class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
         <!-- Moderate menu -->
-        <ng-container *ngIf="appContext$ | async as ctx">
+        <ng-container *ngIf="(authService.isAuthenticated() | async) && appContext$ | async as ctx">
           <li *ngIf="ctx.currentUser | isContentModerator" class="nav-item">
             <div class="d-inline-block" ngbDropdown>
               <button class="btn btn-link" id="moderateDropdown" ngbDropdownToggle translate>
@@ -187,7 +187,7 @@
         <!-- ./Quick search form -->
       </ul>
 
-      <ul *ngIf="!(appContext$ | async)?.currentUser" class="navbar-nav">
+      <ul *ngIf="(authService.isAuthenticated() | async) === false" class="navbar-nav">
         <li class="nav-item">
           <a (click)="openLoginModal($event)" class="nav-link" href="#" id="login-button">{{"Log in" | translate}}</a>
         </li>
@@ -196,7 +196,7 @@
         </li>
       </ul>
 
-      <ul *ngIf="(appContext$ | async)?.currentUser" class="navbar-nav">
+      <ul *ngIf="authService.isAuthenticated() | async" class="navbar-nav">
         <!-- Language selector -->
         <li class="nav-item d-none d-lg-block">
           <div class="d-inline-block" ngbDropdown>
@@ -235,18 +235,18 @@
         </li>
 
         <!-- User menu -->
-        <li *ngIf=" appContext$ | async as ctx" class="nav-item">
+        <li *ngIf="(authService.isAuthenticated() | async) && appContext$ | async as ctx" class="nav-item">
           <div class="d-inline-block" ngbDropdown>
             <button class="btn btn-primary user-dropdown-toggle" id="user-dropdown" ngbDropdownToggle>
-              {{ ctx.currentUser.username }}
+              {{ ctx.currentUser?.username }}
               <span class="scores">
-                <span *ngIf="!ctx.currentUserProfile.excludeFromCompetition" class="score"
+                <span *ngIf="!ctx.currentUserProfile?.excludeFromCompetition" class="score"
                   ngbTooltip="{{ 'AstroBin index' | translate }}" placement="bottom">
-                  {{ ctx.currentUserProfile.astroBinIndex }}
+                  {{ ctx.currentUserProfile?.astroBinIndex }}
                   &middot;
                 </span>
                 <span class="score" ngbTooltip="{{ 'Followers' | translate }}" placement="bottom">
-                  {{ ctx.currentUserProfile.followers }}
+                  {{ ctx.currentUserProfile?.followers }}
                 </span>
               </span>
             </button>

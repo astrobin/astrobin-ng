@@ -5,13 +5,13 @@ import { SubscriptionInterface } from "@lib/interfaces/subscription.interface";
 import { UserProfileInterface } from "@lib/interfaces/user-profile.interface";
 import { UserSubscriptionInterface } from "@lib/interfaces/user-subscription.interface";
 import { UserInterface } from "@lib/interfaces/user.interface";
+import { CommonApiServiceInterface } from "@lib/services/api/classic/common/common-api.service-interface";
 import { Observable, of } from "rxjs";
-import { CommonApiService } from "./common-api.service";
 
 @Injectable({
   providedIn: "root"
 })
-export class CommonClassicApiServiceMock extends CommonApiService {
+export class CommonApiServiceMock implements CommonApiServiceInterface {
   getUser(id: number): Observable<UserInterface> {
     return of(UserGenerator.user());
   }
@@ -20,17 +20,11 @@ export class CommonClassicApiServiceMock extends CommonApiService {
     return of(UserProfileGenerator.userProfile());
   }
 
-  isAuthenticated(): Observable<boolean> {
-    return of(false);
-  }
-
   getSubscriptions(): Observable<SubscriptionInterface[]> {
     return of(null);
   }
 
-  getUserSubscriptions(
-    user?: UserInterface
-  ): Observable<UserSubscriptionInterface[]> {
+  getUserSubscriptions(user?: UserInterface): Observable<UserSubscriptionInterface[]> {
     return of([]);
   }
 }

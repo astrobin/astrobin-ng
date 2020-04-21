@@ -38,19 +38,36 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { LibraryModule } from "@lib/library.module";
 import { AppContextService } from "@lib/services/app-context.service";
+import { AuthService } from "@lib/services/auth.service";
 import { ValidationLoader } from "@lib/services/validation-loader.service";
 import { WindowRefService } from "@lib/services/window-ref.service";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FormlyModule } from "@ngx-formly/core";
 import { TranslateLoader, TranslateModule } from "@ngx-translate/core";
+import { CookieService } from "ngx-cookie-service";
 import { ToastrModule } from "ngx-toastr";
+import { take } from "rxjs/operators";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
 import { LanguageLoader } from "./translate-loader";
 
-export function appInitializer(appContext: AppContextService) {
-  return () => appContext.load();
+export function appInitializer(appContext: AppContextService, authService: AuthService) {
+  return () =>
+    new Promise<any>(resolve => {
+      appContext.load().then(() => {
+        authService
+          .isAuthenticated()
+          .pipe(take(1))
+          .subscribe(authenticated => {
+            if (authenticated) {
+              appContext.loadForUser().then(() => resolve());
+            } else {
+              resolve();
+            }
+          });
+      });
+    });
 }
 
 export function initFontAwesome(iconLibrary: FaIconLibrary) {
@@ -105,7 +122,7 @@ export function initFontAwesome(iconLibrary: FaIconLibrary) {
       loader: {
         provide: TranslateLoader,
         useClass: LanguageLoader,
-        deps: [HttpClient]
+        deps: [AppContextService, HttpClient]
       }
     }),
 
@@ -119,8 +136,9 @@ export function initFontAwesome(iconLibrary: FaIconLibrary) {
       provide: APP_INITIALIZER,
       useFactory: appInitializer,
       multi: true,
-      deps: [AppContextService]
+      deps: [AppContextService, AuthService]
     },
+    CookieService,
     ValidationLoader,
     WindowRefService
   ],

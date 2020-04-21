@@ -32,7 +32,7 @@ describe(`AuthHttpInterceptor`, () => {
     authClassicApi = TestBed.inject(AuthClassicApiService);
     httpMock = TestBed.inject(HttpTestingController);
 
-    spyOn(AuthService, "getClassicApiToken").and.returnValue("classic-auth-token");
+    spyOn(authService, "getClassicApiToken").and.returnValue("classic-auth-token");
   });
 
   afterEach(() => {

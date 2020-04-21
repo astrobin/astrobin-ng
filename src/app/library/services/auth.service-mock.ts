@@ -8,7 +8,7 @@ export class AuthServiceMock implements AuthServiceInterface {
 
   logout(): void {}
 
-  isAuthenticated(): boolean {
-    return true;
+  isAuthenticated(): Observable<boolean> {
+    return of(true);
   }
 }

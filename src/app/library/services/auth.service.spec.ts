@@ -31,15 +31,13 @@ describe("AuthService", () => {
     it("should work with classic api", fakeAsync(done => {
       service.login("foo", "bar").subscribe(result => {
         expect(result).toEqual(true);
-        expect(service.isAuthenticated()).toBe(true);
-        expect(AuthService.getClassicApiToken()).toBe("123");
+        expect(service.getClassicApiToken()).toBe("123");
 
         flush();
 
         service.logout();
 
-        expect(service.isAuthenticated()).toBe(false);
-        expect(AuthService.getClassicApiToken()).toBe(null);
+        expect(service.getClassicApiToken()).toBe(null);
 
         done();
       });

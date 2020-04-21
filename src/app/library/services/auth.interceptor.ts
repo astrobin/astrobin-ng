@@ -20,7 +20,7 @@ export class AuthInterceptor implements HttpInterceptor {
     let authScheme: string;
 
     if (request.url.startsWith(environment.classicApiUrl)) {
-      authToken = AuthService.getClassicApiToken();
+      authToken = this.authService.getClassicApiToken();
       authScheme = "Token";
     }
 

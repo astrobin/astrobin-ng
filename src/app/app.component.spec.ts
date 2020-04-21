@@ -8,7 +8,7 @@ import { appInitializer } from "@app/app.module";
 import { LanguageLoader } from "@app/translate-loader";
 import { LibraryModule } from "@lib/library.module";
 import { CommonApiService } from "@lib/services/api/classic/common/common-api.service";
-import { CommonClassicApiServiceMock } from "@lib/services/api/classic/common/common-api.service-mock";
+import { CommonApiServiceMock } from "@lib/services/api/classic/common/common-api.service-mock";
 import { AppContextService } from "@lib/services/app-context.service";
 import { WindowRefService } from "@lib/services/window-ref.service";
 import { TranslateLoader, TranslateModule } from "@ngx-translate/core";
@@ -32,7 +32,7 @@ describe("AppComponent", () => {
         AppContextService,
         {
           provide: CommonApiService,
-          useClass: CommonClassicApiServiceMock
+          useClass: CommonApiServiceMock
         },
         {
           provide: APP_INITIALIZER,

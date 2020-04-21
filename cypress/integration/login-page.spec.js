@@ -48,6 +48,7 @@ context("login-page", () => {
     cy.get("#handle").type("handle");
     cy.get("#password").type("password");
 
+    cy.login();
     cy.get(".buttons-area .btn-primary").click();
 
     cy.url().should("equal", "http://localhost:4400/");
