@@ -10,7 +10,7 @@ const BASE_URL = environment.classicBaseUrl;
 export class ClassicRoutesService {
   HOME = BASE_URL + "/";
   REGISTER = BASE_URL + "/accounts/register/";
-  RESET_PASSSWORD = BASE_URL + "/accounts/password/reset";
+  RESET_PASSWORD = BASE_URL + "/accounts/password/reset";
   SUBSCRIPTIONS = BASE_URL + "/subscriptions/";
   UPLOAD = BASE_URL + "/upload/";
   INBOX = BASE_URL + "/messages/inbox/";
