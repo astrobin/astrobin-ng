@@ -1,5 +1,5 @@
 Cypress.Commands.add("setupNotificationRoutes", () => {
-  cy.route("GET", "**/notifications/notification?page=*", "fixture:api/notifications/notification_none.json").as(
+  cy.route("GET", "**/notifications/notification/?page=*", "fixture:api/notifications/notification_none.json").as(
     "getNotificationsNone"
   );
 
