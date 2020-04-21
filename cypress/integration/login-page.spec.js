@@ -11,7 +11,9 @@ context("login-page", () => {
   });
 
   it("should display the form", () => {
-    cy.get("h1").should("contain.text", "Log in");
+    cy.get("h1")
+      .contains("Log in")
+      .should("exist");
     cy.get("#handle").should("exist");
     cy.get("#password").should("exist");
     cy.get(".buttons-area .btn")
