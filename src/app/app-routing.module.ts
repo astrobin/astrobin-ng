@@ -11,9 +11,8 @@ const routes: Routes = [
     loadChildren: () => import("@features/notifications/notifications.module").then(m => m.NotificationsModule)
   },
   {
-    path: "",
-    redirectTo: "",
-    pathMatch: "full"
+    path: "**",
+    loadChildren: () => import("@features/not-found-404/not-found-404.module").then(m => m.NotFound404Module)
   }
 ];
 
