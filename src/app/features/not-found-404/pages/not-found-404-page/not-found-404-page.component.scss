@@ -1,0 +1,20 @@
+.page {
+  padding: 4rem;
+}
+
+.telescope {
+  background: url("/assets/images/telescope.svg") no-repeat center;
+  background-size: contain;
+  height: 8rem;
+  margin-bottom: 2rem;
+}
+
+h1 {
+  font-size: 6rem;
+  text-align: center;
+
+  + p {
+    font-size: 1.5rem;
+    text-align: center;
+  }
+}
