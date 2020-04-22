@@ -37,6 +37,7 @@ import {
   faUsers
 } from "@fortawesome/free-solid-svg-icons";
 import { LibraryModule } from "@lib/library.module";
+import { JsonApiService } from "@lib/services/api/classic/json/json-api.service";
 import { AppContextService } from "@lib/services/app-context.service";
 import { AuthService } from "@lib/services/auth.service";
 import { ValidationLoader } from "@lib/services/validation-loader.service";
@@ -122,7 +123,7 @@ export function initFontAwesome(iconLibrary: FaIconLibrary) {
       loader: {
         provide: TranslateLoader,
         useClass: LanguageLoader,
-        deps: [AppContextService, HttpClient]
+        deps: [HttpClient, JsonApiService]
       }
     }),
 

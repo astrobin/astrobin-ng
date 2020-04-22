@@ -1,6 +1,7 @@
 import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
+import { RouterTestingModule } from "@angular/router/testing";
 import { AuthClassicApiService } from "@lib/services/api/classic/auth/auth-classic-api.service";
 import { AuthInterceptor } from "@lib/services/auth.interceptor";
 import { AuthService } from "@lib/services/auth.service";
@@ -15,7 +16,7 @@ describe(`AuthHttpInterceptor`, () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, ToastrModule.forRoot(), TranslateModule.forRoot()],
+      imports: [HttpClientTestingModule, RouterTestingModule, ToastrModule.forRoot(), TranslateModule.forRoot()],
       providers: [
         AuthService,
         AuthClassicApiService,

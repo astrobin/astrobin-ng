@@ -2,6 +2,7 @@ import { TestBed } from "@angular/core/testing";
 import { CommonApiServiceMock } from "@lib/services/api/classic/common/common-api.service-mock";
 import { JsonApiService } from "@lib/services/api/classic/json/json-api.service";
 import { JsonApiServiceMock } from "@lib/services/api/classic/json/json-api.service-mock";
+import { TranslateModule } from "@ngx-translate/core";
 import { CommonApiService } from "./api/classic/common/common-api.service";
 import { AppContextService } from "./app-context.service";
 
@@ -10,6 +11,7 @@ describe("AppContextService", () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
+      imports: [TranslateModule.forRoot()],
       providers: [
         { provide: CommonApiService, useClass: CommonApiServiceMock },
         { provide: JsonApiService, useClass: JsonApiServiceMock }

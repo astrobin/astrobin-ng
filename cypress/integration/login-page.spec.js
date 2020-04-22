@@ -1,13 +1,13 @@
 /// <reference types="cypress" />
 
-context("login-page", () => {
+context("account-page", () => {
   beforeEach(() => {
     cy.server();
     cy.setupInitializationRoutes();
 
     cy.route("GET", "**/common/userprofiles/current", []).as("getCurrentUserProfile");
 
-    cy.visitPage("/login?redirectUrl=%2F");
+    cy.visitPage("/account/login?redirectUrl=%2F");
   });
 
   it("should display the form", () => {
@@ -53,15 +53,19 @@ context("login-page", () => {
     cy.login();
     cy.get(".buttons-area .btn-primary").click();
 
+    cy.url().should("equal", "http://localhost:4400/account/logged-in?redirectUrl=%2F");
+    cy.wait(3000);
     cy.url().should("equal", "http://localhost:4400/");
   });
 
-  it("should redirect to front page in case of success (login via enter key)", () => {
+  it("should redirect to front page in case of success (account via enter key)", () => {
     cy.login();
 
     cy.get("#handle").type("handle");
     cy.get("#password").type("password{enter}");
 
+    cy.url().should("equal", "http://localhost:4400/account/logged-in?redirectUrl=%2F");
+    cy.wait(3000);
     cy.url().should("equal", "http://localhost:4400/");
   });
 });

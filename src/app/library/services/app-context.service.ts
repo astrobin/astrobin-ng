@@ -1,16 +1,15 @@
 import { Injectable } from "@angular/core";
-import { BackendConfigInterface } from "@lib/interfaces/backend-config.interface";
 import { SubscriptionInterface } from "@lib/interfaces/subscription.interface";
 import { UserProfileInterface } from "@lib/interfaces/user-profile.interface";
 import { UserSubscriptionInterface } from "@lib/interfaces/user-subscription.interface";
 import { UserInterface } from "@lib/interfaces/user.interface";
 import { JsonApiService } from "@lib/services/api/classic/json/json-api.service";
+import { TranslateService } from "@ngx-translate/core";
 import { BehaviorSubject, forkJoin, Observable, of } from "rxjs";
 import { flatMap, share } from "rxjs/operators";
 import { CommonApiService } from "./api/classic/common/common-api.service";
 
 export interface AppContextInterface {
-  backendConfig: BackendConfigInterface;
   currentUserProfile: UserProfileInterface;
   currentUser: UserInterface;
   currentUserSubscriptions: UserSubscriptionInterface[];
@@ -25,8 +24,6 @@ export class AppContextService {
 
   private _appContext = {} as AppContextInterface;
 
-  private _getBackendConfig$ = this.jsonApi.getBackendConfig().pipe(share());
-
   private _getCurrentUserProfile$ = this.commonApi.getCurrentUserProfile().pipe(share());
 
   private _getCurrentUser$ = this._getCurrentUserProfile$.pipe(
@@ -36,8 +33,7 @@ export class AppContextService {
       }
 
       return of(null);
-    }),
-    share()
+    })
   );
 
   private _getUserSubscriptions$ = this._getCurrentUser$.pipe(
@@ -47,28 +43,28 @@ export class AppContextService {
       }
 
       return of(null);
-    }),
-    share()
+    })
   );
 
   private _getSubscriptions$ = this.commonApi.getSubscriptions().pipe(share());
 
-  constructor(public commonApi: CommonApiService, public jsonApi: JsonApiService) {}
+  constructor(public commonApi: CommonApiService, public jsonApi: JsonApiService, public translate: TranslateService) {}
 
   load(): Promise<any> {
     return new Promise<any>(resolve => {
-      forkJoin([this._getBackendConfig$, this._getSubscriptions$]).subscribe(results => {
+      forkJoin([this._getSubscriptions$]).subscribe(results => {
         this._appContext = {
           ...this._appContext,
           ...{
-            backendConfig: results[0],
-            subscriptions: results[1]
+            subscriptions: results[0]
           }
         };
 
-        this._subject.next(this._appContext);
-
-        resolve(this);
+        this.translate.setDefaultLang("en");
+        this.translate.use("en").subscribe(() => {
+          this._subject.next(this._appContext);
+          resolve(this);
+        });
       });
     });
   }
@@ -86,9 +82,10 @@ export class AppContextService {
             }
           };
 
-          this._subject.next(this._appContext);
-
-          resolve(this);
+          this.translate.use(this._appContext.currentUserProfile.language).subscribe(() => {
+            this._subject.next(this._appContext);
+            resolve(this);
+          });
         }
       );
     });

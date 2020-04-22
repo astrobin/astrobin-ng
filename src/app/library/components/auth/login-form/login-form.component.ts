@@ -1,4 +1,4 @@
-import { Component, EventEmitter, HostListener, OnInit, Output } from "@angular/core";
+import { Component, EventEmitter, HostListener, Input, OnInit, Output } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { AuthService } from "@lib/services/auth.service";
 
@@ -11,6 +11,8 @@ export class LoginFormComponent implements OnInit {
   form: FormGroup;
   loading = false;
   error = false;
+
+  @Input() redirectUrl: string;
   @Output() loginSuccessful = new EventEmitter();
 
   constructor(public readonly formBuilder: FormBuilder, public readonly authService: AuthService) {}
@@ -30,7 +32,7 @@ export class LoginFormComponent implements OnInit {
     };
 
     this.authService
-      .login(this.form.get("handle").value, this.form.get("password").value)
+      .login(this.form.get("handle").value, this.form.get("password").value, this.redirectUrl)
       .subscribe((loggedIn: boolean) => {
         if (loggedIn) {
           this.error = false;

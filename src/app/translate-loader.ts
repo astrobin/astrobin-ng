@@ -2,31 +2,51 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { environment } from "@env/environment";
 import { TranslatePoHttpLoader } from "@fjnr/ngx-translate-po-http-loader";
-import { AppContextService } from "@lib/services/app-context.service";
+import { JsonApiService } from "@lib/services/api/classic/json/json-api.service";
 import { TranslateLoader } from "@ngx-translate/core";
-import { Observable } from "rxjs";
+import { forkJoin, Observable } from "rxjs";
 import { map, switchMap } from "rxjs/operators";
 
 @Injectable()
 export class LanguageLoader extends TranslatePoHttpLoader implements TranslateLoader {
-  constructor(
-    private _appContext: AppContextService,
-    protected _http: HttpClient,
-    protected _prefix: string = "/json-api/i18n/messages",
-    protected _suffix: string = ""
-  ) {
-    super(_http, _prefix, _suffix);
-  }
-
-  getTranslation(lang: string): Observable<any> {
-    return this._appContext.get().pipe(
-      switchMap(appContext =>
+  private _classicTranslations$ = (lang: string) =>
+    this._jsonApi.getBackendConfig().pipe(
+      switchMap(backendConfig =>
         this._http
-          .get(`${environment.classicApiUrl}${this._prefix}/${lang}/?version=${appContext.backendConfig.version}`, {
+          .get(`${environment.classicApiUrl}/json-api/i18n/messages/${lang}/?version=${backendConfig.version}`, {
             responseType: "text"
           })
           .pipe(map((contents: string) => this.parse(contents)))
       )
     );
+
+  private _ngTranslations$ = (lang: string) => this._http.get(`/assets/i18n/${lang}.json`);
+
+  constructor(protected _http: HttpClient, private _jsonApi: JsonApiService) {
+    super(_http);
+  }
+
+  getTranslation(lang: string): Observable<any> {
+    return forkJoin([this._classicTranslations$(lang), this._ngTranslations$(lang)]).pipe(
+      map(results => {
+        return {
+          ...results[0],
+          ...results[1]
+        };
+      })
+    );
+  }
+
+  parse(contents: string): any {
+    const translations = super.parse(contents);
+    const mapped = {};
+
+    Object.keys(translations).forEach(key => {
+      const regex = /%\((.*?)\)s/g;
+      const replacement = "{{$1}}";
+      mapped[key.replace(regex, replacement)] = translations[key].replace(regex, replacement);
+    });
+
+    return mapped;
   }
 }

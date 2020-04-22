@@ -2,13 +2,13 @@
 
 context("notifications", () => {
   describe("when logged out", () => {
-    it("should redirect to the login page", () => {
+    it("should redirect to the account page", () => {
       cy.server();
       cy.setupInitializationRoutes();
       cy.route("GET", "**/common/userprofiles/current", []).as("getCurrentUserProfile");
 
       cy.visitPage("/notifications");
-      cy.url().should("contain", "/login?redirectUrl=%2Fnotifications");
+      cy.url().should("contain", "/account/login?redirectUrl=%2Fnotifications");
     });
   });
 

@@ -1,5 +1,5 @@
-import { Component, ViewChild } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
+import { Component, OnInit, ViewChild } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
 import { LoginFormComponent } from "@lib/components/auth/login-form/login-form.component";
 import { ClassicRoutesService } from "@lib/services/classic-routes.service";
 import { WindowRefService } from "@lib/services/window-ref.service";
@@ -9,17 +9,19 @@ import { WindowRefService } from "@lib/services/window-ref.service";
   templateUrl: "./login-page.component.html",
   styleUrls: ["./login-page.component.scss"]
 })
-export class LoginPageComponent {
+export class LoginPageComponent implements OnInit {
+  redirectUrl: string;
+
   @ViewChild("loginForm") loginForm: LoginFormComponent;
 
   constructor(
     public windowRef: WindowRefService,
     public classicRoutesService: ClassicRoutesService,
-    public route: ActivatedRoute
+    public route: ActivatedRoute,
+    public router: Router
   ) {}
 
-  loginSuccessful(): void {
-    const redirectUrl = this.route.snapshot.queryParamMap.get("redirectUrl");
-    this.windowRef.nativeWindow.location.assign(redirectUrl ? redirectUrl : this.classicRoutesService.HOME);
+  ngOnInit(): void {
+    this.redirectUrl = this.route.snapshot.queryParamMap.get("redirectUrl");
   }
 }

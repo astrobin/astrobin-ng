@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
+import { Router } from "@angular/router";
 import { AuthServiceInterface } from "@lib/services/auth.service-interface";
-import { WindowRefService } from "@lib/services/window-ref.service";
 import { CookieService } from "ngx-cookie-service";
 import { Observable, of } from "rxjs";
 import { catchError, map, take } from "rxjs/operators";
@@ -17,14 +17,14 @@ export class AuthService implements AuthServiceInterface {
     public authClassicApi: AuthClassicApiService,
     public appContext: AppContextService,
     public cookieService: CookieService,
-    public windowRef: WindowRefService
+    public router: Router
   ) {}
 
   getClassicApiToken(): string {
     return this.cookieService.get(AuthService.CLASSIC_AUTH_TOKEN_COOKIE);
   }
 
-  login(handle: string, password: string): Observable<boolean> {
+  login(handle: string, password: string, redirectUrl?: string): Observable<boolean> {
     return new Observable<boolean>(observer => {
       this.authClassicApi
         .login(handle, password)
@@ -42,10 +42,12 @@ export class AuthService implements AuthServiceInterface {
               return;
             }
 
+            this.cookieService.set(AuthService.CLASSIC_AUTH_TOKEN_COOKIE, token, 180);
             this.appContext.loadForUser().then(() => {
-              this.cookieService.set(AuthService.CLASSIC_AUTH_TOKEN_COOKIE, token, 180);
-              observer.next(true);
-              observer.complete();
+              this.router.navigate(["account", "logged-in"], { queryParams: { redirectUrl } }).then(() => {
+                observer.next(true);
+                observer.complete();
+              });
             });
           })
         )
@@ -55,8 +57,9 @@ export class AuthService implements AuthServiceInterface {
 
   logout(): void {
     if (this.cookieService.check(AuthService.CLASSIC_AUTH_TOKEN_COOKIE)) {
-      this.cookieService.delete(AuthService.CLASSIC_AUTH_TOKEN_COOKIE);
-      this.windowRef.nativeWindow.location.reload();
+      this.router.navigate(["account", "logged-out"]).then(() => {
+        this.cookieService.delete(AuthService.CLASSIC_AUTH_TOKEN_COOKIE);
+      });
     }
   }
 

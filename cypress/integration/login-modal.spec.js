@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 
-context("login-modal", () => {
+context("account-modal", () => {
   beforeEach(() => {
     cy.server();
     cy.setupInitializationRoutes();
@@ -60,7 +60,7 @@ context("login-modal", () => {
     cy.get("#user-dropdown").should("exist");
   });
 
-  it("should redirect to front page in case of success (login via enter key)", () => {
+  it("should redirect to front page in case of success (account via enter key)", () => {
     cy.login();
 
     cy.get("#handle").type("handle");

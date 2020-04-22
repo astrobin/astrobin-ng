@@ -1,3 +1,8 @@
 {
-  "Log in": "Log in"
+  "Good bye!": "Arrivederci!",
+  "Log in": "Log in",
+  "Welcome!": "Benvenuto!",
+  "You have been logged in.": "Hai fatto il log in.",
+  "You have been logged out. Come back soon!": "Hai fatto il log out. Torna presto!",
+  "You will be redirected in {{seconds}} seconds...": "Sarai rediretto in {{seconds}} secondi..."
 }

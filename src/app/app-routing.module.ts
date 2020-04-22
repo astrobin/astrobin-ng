@@ -3,8 +3,8 @@ import { RouterModule, Routes } from "@angular/router";
 
 const routes: Routes = [
   {
-    path: "login",
-    loadChildren: () => import("@features/login/login.module").then(m => m.LoginModule)
+    path: "account",
+    loadChildren: () => import("@features/account/account.module").then(m => m.AccountModule)
   },
   {
     path: "notifications",

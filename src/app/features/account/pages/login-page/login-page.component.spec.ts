@@ -28,21 +28,4 @@ describe("LoginPageComponent", () => {
   it("should create", () => {
     expect(component).toBeTruthy();
   });
-
-  describe("loginSuccessful", () => {
-    it("should redirect", () => {
-      const { location } = window;
-      delete window.location;
-      // @ts-ignore
-      window.location = { assign: jest.fn() };
-
-      jest.spyOn(window.location, "assign");
-      jest.spyOn(component.route.snapshot.queryParamMap, "get").mockReturnValue("/foo");
-
-      component.loginSuccessful();
-
-      expect(component.windowRef.nativeWindow.location.assign).toHaveBeenCalledWith("/foo");
-      window.location = location;
-    });
-  });
 });

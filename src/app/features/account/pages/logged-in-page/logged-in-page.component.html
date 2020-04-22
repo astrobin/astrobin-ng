@@ -1,0 +1,12 @@
+<div class="page hero">
+  <div class="doormat hero-image"></div>
+
+  <h1>
+    {{ "Welcome!" | translate }}
+  </h1>
+  <p>{{ "You have been logged in." | translate }}</p>
+
+  <div class="text-center text-muted">
+    {{ redirectionMessage | translate:{seconds: seconds} }}
+  </div>
+</div>

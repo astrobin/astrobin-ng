@@ -24,7 +24,7 @@ export class AuthGuardService implements CanActivate {
 
           this.router
             .navigateByUrl(
-              this.router.createUrlTree(["/login"], {
+              this.router.createUrlTree(["/account/login"], {
                 queryParams: {
                   redirectUrl
                 }

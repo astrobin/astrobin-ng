@@ -1,6 +1,7 @@
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { ReactiveFormsModule } from "@angular/forms";
+import { RouterTestingModule } from "@angular/router/testing";
 import { LoginFormComponent } from "@lib/components/auth/login-form/login-form.component";
 import { WindowRefService } from "@lib/services/window-ref.service";
 import { NgbActiveModal, NgbModalModule } from "@ng-bootstrap/ng-bootstrap";
@@ -13,7 +14,13 @@ describe("LoginModalComponent", () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule, HttpClientTestingModule, NgbModalModule, TranslateModule.forRoot()],
+      imports: [
+        HttpClientTestingModule,
+        NgbModalModule,
+        ReactiveFormsModule,
+        RouterTestingModule,
+        TranslateModule.forRoot()
+      ],
       declarations: [LoginModalComponent, LoginFormComponent],
       providers: [NgbActiveModal, WindowRefService]
     }).compileComponents();

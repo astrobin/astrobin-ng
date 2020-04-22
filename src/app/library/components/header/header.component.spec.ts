@@ -1,6 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { RouterTestingModule } from "@angular/router/testing";
 import { LanguageLoader } from "@app/translate-loader";
 import { FontAwesomeTestingModule } from "@fortawesome/angular-fontawesome/testing";
 import { UserProfileGenerator } from "@lib/generators/user-profile.generator";
@@ -34,6 +35,7 @@ describe("HeaderComponent", () => {
         FontAwesomeTestingModule,
         NgbCollapseModule,
         NgbTooltipModule,
+        RouterTestingModule,
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,

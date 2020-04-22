@@ -21,4 +21,40 @@
       margin-left: .5rem;
     }
   }
+
+  &.hero {
+    padding: 4rem;
+
+    .hero-image {
+      background-size: contain;
+      height: 8rem;
+      margin-bottom: 2rem;
+    }
+
+    h1 {
+      font-size: 6rem;
+      text-align: center;
+
+      + p {
+        font-size: 1.5rem;
+        text-align: center;
+      }
+    }
+
+    @media (max-width: $sm-max) {
+      padding: 2rem;
+
+      .hero-image {
+        height: 6rem;
+      }
+
+      h1 {
+        font-size: 3rem;
+
+        + p {
+          font-size: initial;
+        }
+      }
+    }
+  }
 }

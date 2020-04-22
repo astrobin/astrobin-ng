@@ -1,3 +1,8 @@
 {
-  "Log in": "Log in"
+  "Good bye!": null,
+  "Log in": null,
+  "Welcome!": null,
+  "You have been logged in.": null,
+  "You have been logged out. Come back soon!": null,
+  "You will be redirected in {{seconds}} seconds...": null
 }
