@@ -5,7 +5,7 @@ context("not-found-404", () => {
     cy.server();
     cy.setupInitializationRoutes();
 
-    cy.visitPage("/this -does-not-exist");
+    cy.visitPage("/this-does-not-exist");
 
     cy.get("h1")
       .contains("404")
