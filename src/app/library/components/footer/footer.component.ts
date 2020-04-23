@@ -13,6 +13,19 @@ export class FooterComponent {
   }
 
   get version(): string {
-    return new Date(VERSION).toUTCString();
+    let date: Date;
+
+    try {
+      date = new Date(VERSION);
+    } catch (e) {
+      if (e instanceof ReferenceError) {
+        // VERSION will not be defined during testing.
+        date = new Date();
+      } else {
+        throw e;
+      }
+    }
+
+    return date.toUTCString();
   }
 }
