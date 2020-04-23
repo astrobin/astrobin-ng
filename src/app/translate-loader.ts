@@ -7,6 +7,8 @@ import { TranslateLoader } from "@ngx-translate/core";
 import { forkJoin, Observable } from "rxjs";
 import { map, switchMap } from "rxjs/operators";
 
+declare const VERSION: string;
+
 @Injectable()
 export class LanguageLoader extends TranslatePoHttpLoader implements TranslateLoader {
   private _classicTranslations$ = (lang: string) =>
@@ -20,7 +22,7 @@ export class LanguageLoader extends TranslatePoHttpLoader implements TranslateLo
       )
     );
 
-  private _ngTranslations$ = (lang: string) => this._http.get(`/assets/i18n/${lang}.json`);
+  private _ngTranslations$ = (lang: string) => this._http.get(`/assets/i18n/${lang}.json?version=${VERSION}`);
 
   constructor(protected _http: HttpClient, private _jsonApi: JsonApiService) {
     super(_http);

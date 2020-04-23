@@ -1,3 +1,13 @@
 <footer class="footer">
-  <div class="container">&copy; 2010 - {{ currentYear }}, Salvatore Iovene</div>
+  <div class="container">
+    <div class="row">
+      <div class="col">
+        &copy; 2010 - {{ currentYear }}, Salvatore Iovene
+      </div>
+
+      <div class="col text-right build-date">
+        Build: {{ version }}
+      </div>
+    </div>
+  </div>
 </footer>

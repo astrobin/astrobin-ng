@@ -1,16 +1,18 @@
-import { Component, OnInit } from "@angular/core";
+import { Component } from "@angular/core";
+
+declare const VERSION: string;
 
 @Component({
   selector: "astrobin-footer",
   templateUrl: "./footer.component.html",
   styleUrls: ["./footer.component.scss"]
 })
-export class FooterComponent implements OnInit {
-  constructor() {}
-
+export class FooterComponent {
   get currentYear(): number {
     return new Date().getFullYear();
   }
 
-  ngOnInit() {}
+  get version(): string {
+    return new Date(VERSION).toUTCString();
+  }
 }

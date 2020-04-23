@@ -10,3 +10,7 @@
   @include darkest-background-texture;
   color: $darkest_background_text_color;
 }
+
+.build-date {
+  color: $grey;
+}
