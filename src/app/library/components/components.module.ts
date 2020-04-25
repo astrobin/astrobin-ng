@@ -11,6 +11,7 @@ import { LoginModalComponent } from "./auth/login-modal/login-modal.component";
 import { FooterComponent } from "./footer/footer.component";
 import { HeaderComponent } from "./header/header.component";
 import { EmptyListComponent } from "./misc/empty-list/empty-list.component";
+import { UsernameComponent } from "./misc/username/username.component";
 
 @NgModule({
   imports: [
@@ -26,7 +27,14 @@ import { EmptyListComponent } from "./misc/empty-list/empty-list.component";
     RouterModule,
     TranslateModule
   ],
-  declarations: [EmptyListComponent, FooterComponent, HeaderComponent, LoginFormComponent, LoginModalComponent],
+  declarations: [
+    EmptyListComponent,
+    FooterComponent,
+    HeaderComponent,
+    LoginFormComponent,
+    LoginModalComponent,
+    UsernameComponent
+  ],
   exports: [
     EmptyListComponent,
     FontAwesomeModule,
@@ -40,7 +48,8 @@ import { EmptyListComponent } from "./misc/empty-list/empty-list.component";
     NgbModalModule,
     NgbTooltipModule,
     PipesModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    UsernameComponent
   ],
   entryComponents: [LoginModalComponent]
 })
