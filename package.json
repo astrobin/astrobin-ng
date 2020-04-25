@@ -42,7 +42,7 @@
     "@ngx-translate/http-loader": "4.0.0",
     "bootstrap": "4.3.1",
     "class-transformer": "0.2.3",
-    "class-validator": "0.12.1",
+    "class-validator": "0.12.2",
     "core-js": "^3.2.1",
     "dotenv": "8.1.0",
     "intl": "1.2.5",
