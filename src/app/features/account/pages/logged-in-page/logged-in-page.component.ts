@@ -1,7 +1,9 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ClassicRoutesService } from "@lib/services/classic-routes.service";
+import { TitleService } from "@lib/services/title/title.service";
 import { WindowRefService } from "@lib/services/window-ref.service";
+import { TranslateService } from "@ngx-translate/core";
 import { interval } from "rxjs";
 import { take, tap } from "rxjs/operators";
 
@@ -17,8 +19,12 @@ export class LoggedInPageComponent implements OnInit {
     public route: ActivatedRoute,
     public router: Router,
     public windowRef: WindowRefService,
-    public classicRoutesService: ClassicRoutesService
-  ) {}
+    public classicRoutesService: ClassicRoutesService,
+    public titleService: TitleService,
+    public translate: TranslateService
+  ) {
+    titleService.setTitle(translate.instant("Welcome!"));
+  }
 
   ngOnInit(): void {
     this.redirectUrl = this.route.snapshot.queryParamMap.get("redirectUrl");

@@ -1,6 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { APP_INITIALIZER, NgModule } from "@angular/core";
-import { BrowserModule } from "@angular/platform-browser";
+import { BrowserModule, Title } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { FaIconLibrary } from "@fortawesome/angular-fontawesome";
 import {
@@ -140,6 +140,7 @@ export function initFontAwesome(iconLibrary: FaIconLibrary) {
       deps: [AppContextService, AuthService]
     },
     CookieService,
+    Title,
     ValidationLoader,
     WindowRefService
   ],

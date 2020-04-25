@@ -2,7 +2,9 @@ import { Component, OnInit, ViewChild } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { LoginFormComponent } from "@lib/components/auth/login-form/login-form.component";
 import { ClassicRoutesService } from "@lib/services/classic-routes.service";
+import { TitleService } from "@lib/services/title/title.service";
 import { WindowRefService } from "@lib/services/window-ref.service";
+import { TranslateService } from "@ngx-translate/core";
 
 @Component({
   selector: "astrobin-login-page",
@@ -18,8 +20,12 @@ export class LoginPageComponent implements OnInit {
     public windowRef: WindowRefService,
     public classicRoutesService: ClassicRoutesService,
     public route: ActivatedRoute,
-    public router: Router
-  ) {}
+    public router: Router,
+    public titleService: TitleService,
+    public translate: TranslateService
+  ) {
+    titleService.setTitle(translate.instant("Log in"));
+  }
 
   ngOnInit(): void {
     this.redirectUrl = this.route.snapshot.queryParamMap.get("redirectUrl");
