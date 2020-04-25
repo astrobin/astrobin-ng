@@ -26,7 +26,7 @@ export class ClassicRoutesService {
   ABOUT = "https://welcome.astrobin.com/about";
   FAQ = "https://welcome.astrobin.com/faq";
   HELP_API = BASE_URL + "/help/api/";
-  SPONSORS = "https://welcome.astrobin.com/sponsors";
+  SPONSORS = "https://welcome.astrobin.com/sponsors-and-partners";
   CONTACT = BASE_URL + "/contact/";
   MODERATE_IMAGE_QUEUE = BASE_URL + "/moderate/images/";
   MODERATE_SPAM_QUEUE = BASE_URL + "/moderate/spam/";
