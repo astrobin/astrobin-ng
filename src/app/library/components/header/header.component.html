@@ -238,7 +238,7 @@
         <li *ngIf="(authService.isAuthenticated() | async) && appContext$ | async as ctx" class="nav-item">
           <div class="d-inline-block" ngbDropdown>
             <button class="btn btn-primary user-dropdown-toggle" id="user-dropdown" ngbDropdownToggle>
-              {{ ctx.currentUser?.username }}
+              <astrobin-username [user]="ctx.currentUser"></astrobin-username>
               <span class="scores">
                 <span *ngIf="!ctx.currentUserProfile?.excludeFromCompetition" class="score"
                   ngbTooltip="{{ 'AstroBin index' | translate }}" placement="bottom">

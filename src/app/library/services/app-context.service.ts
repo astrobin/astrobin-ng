@@ -4,6 +4,7 @@ import { UserProfileInterface } from "@lib/interfaces/user-profile.interface";
 import { UserSubscriptionInterface } from "@lib/interfaces/user-subscription.interface";
 import { UserInterface } from "@lib/interfaces/user.interface";
 import { JsonApiService } from "@lib/services/api/classic/json/json-api.service";
+import { UserStoreService } from "@lib/services/user-store.service";
 import { TranslateService } from "@ngx-translate/core";
 import { BehaviorSubject, forkJoin, Observable, of } from "rxjs";
 import { flatMap, share } from "rxjs/operators";
@@ -48,7 +49,12 @@ export class AppContextService {
 
   private _getSubscriptions$ = this.commonApi.getSubscriptions().pipe(share());
 
-  constructor(public commonApi: CommonApiService, public jsonApi: JsonApiService, public translate: TranslateService) {}
+  constructor(
+    public commonApi: CommonApiService,
+    public jsonApi: JsonApiService,
+    public translate: TranslateService,
+    public userStore: UserStoreService
+  ) {}
 
   load(): Promise<any> {
     return new Promise<any>(resolve => {
@@ -73,11 +79,17 @@ export class AppContextService {
     return new Promise<any>(resolve => {
       forkJoin([this._getCurrentUserProfile$, this._getCurrentUser$, this._getUserSubscriptions$]).subscribe(
         results => {
+          const userProfile = results[0];
+          const user = results[1];
+
+          this.userStore.addUserProfile(userProfile);
+          this.userStore.addUser(user);
+
           this._appContext = {
             ...this._appContext,
             ...{
-              currentUserProfile: results[0],
-              currentUser: results[1],
+              currentUserProfile: userProfile,
+              currentUser: user,
               currentUserSubscriptions: results[2]
             }
           };

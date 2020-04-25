@@ -4,12 +4,14 @@ import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { LanguageLoader } from "@app/translate-loader";
 import { FontAwesomeTestingModule } from "@fortawesome/angular-fontawesome/testing";
+import { UsernameComponent } from "@lib/components/misc/username/username.component";
 import { UserProfileGenerator } from "@lib/generators/user-profile.generator";
 import { PipesModule } from "@lib/pipes/pipes.module";
 import { AppContextInterface, AppContextService } from "@lib/services/app-context.service";
 import { WindowRefService } from "@lib/services/window-ref.service";
 import { NgbCollapseModule, NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
 import { TranslateLoader, TranslateModule } from "@ngx-translate/core";
+import { MockComponents } from "ng-mocks";
 import { Observable } from "rxjs";
 import { HeaderComponent } from "./header.component";
 
@@ -46,7 +48,7 @@ describe("HeaderComponent", () => {
         PipesModule
       ],
       providers: [{ provide: AppContextService, useClass: MockAppContextService }, WindowRefService],
-      declarations: [HeaderComponent]
+      declarations: [HeaderComponent, MockComponents(UsernameComponent)]
     }).compileComponents();
   }));
 

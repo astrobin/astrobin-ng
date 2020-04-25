@@ -56,6 +56,10 @@ context("account-page", () => {
     cy.url().should("equal", "http://localhost:4400/account/logged-in?redirectUrl=%2F");
     cy.wait(3000);
     cy.url().should("equal", "http://localhost:4400/");
+
+    cy.get("#user-dropdown astrobin-username .username")
+      .contains("AstroBin Dev")
+      .should("exist");
   });
 
   it("should redirect to front page in case of success (account via enter key)", () => {
