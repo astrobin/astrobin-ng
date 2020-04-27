@@ -1,9 +1,9 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { ClassicRoutesService } from "@lib/services/classic-routes.service";
-import { TitleService } from "@lib/services/title/title.service";
-import { WindowRefService } from "@lib/services/window-ref.service";
 import { TranslateService } from "@ngx-translate/core";
+import { ClassicRoutesService } from "@shared/services/classic-routes.service";
+import { TitleService } from "@shared/services/title/title.service";
+import { WindowRefService } from "@shared/services/window-ref.service";
 import { interval } from "rxjs";
 import { take, tap } from "rxjs/operators";
 
@@ -26,6 +26,10 @@ export class LoggedInPageComponent implements OnInit {
     titleService.setTitle(translate.instant("Welcome!"));
   }
 
+  get redirectionMessage(): string {
+    return "You will be redirected in {{seconds}} seconds...";
+  }
+
   ngOnInit(): void {
     this.redirectUrl = this.route.snapshot.queryParamMap.get("redirectUrl");
 
@@ -43,9 +47,5 @@ export class LoggedInPageComponent implements OnInit {
           }
         }
       });
-  }
-
-  get redirectionMessage(): string {
-    return "You will be redirected in {{seconds}} seconds...";
   }
 }

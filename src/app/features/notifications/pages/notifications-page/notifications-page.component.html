@@ -2,7 +2,7 @@
   <h1>
     {{"Notifications" | translate}}
     <span *ngIf="notificationsService.unreadCount$ | async as unreadCount" class="badge badge-danger badge-pill"
-          id="unread-notifications-count">
+      id="unread-notifications-count">
       {{ unreadCount }}
     </span>
   </h1>
@@ -22,7 +22,7 @@
             <td class="messages">
               <span [innerHTML]="notification.message | normalizeNotificationLink"></span>
             </td>
-            <td class="created">{{ notification.created.toString() | timeAgo }}</td>
+            <td class="created">{{ notification.created.toString() | timeago:true }}</td>
           </tr>
         </tbody>
       </table>
@@ -42,8 +42,7 @@
 
   <div class="buttons-area">
     <button (click)="markAllAsRead()" [class.loading]="notificationsService.loading$ | async"
-            [disabled]="(notificationsService.unreadCount$ | async) === 0" class="btn btn-primary"
-            id="mark-all-as-read">
+      [disabled]="(notificationsService.unreadCount$ | async) === 0" class="btn btn-primary" id="mark-all-as-read">
       {{"Mark all as read" | translate}}
     </button>
     <a [attr.href]="classicRoutesService.NOTIFICATION_SETTINGS" class="btn btn-secondary">

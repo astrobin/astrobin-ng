@@ -1,6 +1,6 @@
 import { Component } from "@angular/core";
-import { TitleService } from "@lib/services/title/title.service";
 import { TranslateService } from "@ngx-translate/core";
+import { TitleService } from "@shared/services/title/title.service";
 
 @Component({
   selector: "astrobin-not-found-page",

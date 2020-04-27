@@ -1,9 +1,9 @@
 import { Component, OnInit } from "@angular/core";
 import { NotificationInterface } from "@features/notifications/interfaces/notification.interface";
 import { NotificationsService } from "@features/notifications/services/notifications.service";
-import { ClassicRoutesService } from "@lib/services/classic-routes.service";
-import { TitleService } from "@lib/services/title/title.service";
 import { TranslateService } from "@ngx-translate/core";
+import { ClassicRoutesService } from "@shared/services/classic-routes.service";
+import { TitleService } from "@shared/services/title/title.service";
 import { take } from "rxjs/operators";
 
 @Component({
@@ -20,8 +20,7 @@ export class NotificationsPageComponent implements OnInit {
     public titleService: TitleService,
     public translate: TranslateService
   ) {
-    titleService.setTitle(translate.instant("Notifications"));
-  }
+    titleService.setTitle(translate.instant("Notifications"));}
 
   ngOnInit(): void {
     this.notificationsService.refresh();
