@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { TitleServiceInterface } from "@lib/services/title/title.service-interface";
+import { TitleServiceInterface } from "@shared/services/title/title.service-interface";
 
 @Injectable({
   providedIn: "root"
