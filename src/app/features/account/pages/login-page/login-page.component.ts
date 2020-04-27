@@ -1,8 +1,8 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { LoginFormComponent } from "@lib/components/auth/login-form/login-form.component";
-import { ClassicRoutesService } from "@lib/services/classic-routes.service";
-import { WindowRefService } from "@lib/services/window-ref.service";
+import { LoginFormComponent } from "@shared/components/auth/login-form/login-form.component";
+import { ClassicRoutesService } from "@shared/services/classic-routes.service";
+import { WindowRefService } from "@shared/services/window-ref.service";
 
 @Component({
   selector: "astrobin-login-page",

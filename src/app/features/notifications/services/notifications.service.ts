@@ -3,7 +3,7 @@ import { NotificationListResponseInterface } from "@features/notifications/inter
 import { NotificationInterface } from "@features/notifications/interfaces/notification.interface";
 import { NotificationServiceInterface } from "@features/notifications/services/notification.service.interface";
 import { NotificationsApiService } from "@features/notifications/services/notifications-api.service";
-import { LoadingService } from "@lib/services/loading.service";
+import { LoadingService } from "@shared/services/loading.service";
 import { Observable, Subject, throwError } from "rxjs";
 import { catchError, debounceTime, switchMap, take, tap } from "rxjs/operators";
 

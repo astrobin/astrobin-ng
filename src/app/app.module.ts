@@ -1,8 +1,10 @@
-import { HttpClient } from "@angular/common/http";
-import { APP_INITIALIZER, NgModule } from "@angular/core";
+import { HttpClient, HttpClientModule } from "@angular/common/http";
+import { NgModule } from "@angular/core";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { FaIconLibrary } from "@fortawesome/angular-fontawesome";
+import { AppRoutingModule } from "@app/app-routing.module";
+import { LanguageLoader } from "@app/translate-loader";
+import { FaIconLibrary, FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import {
   faAsterisk,
   faBarcode,
@@ -36,40 +38,11 @@ import {
   faUpload,
   faUsers
 } from "@fortawesome/free-solid-svg-icons";
-import { LibraryModule } from "@lib/library.module";
-import { JsonApiService } from "@lib/services/api/classic/json/json-api.service";
-import { AppContextService } from "@lib/services/app-context.service";
-import { AuthService } from "@lib/services/auth.service";
-import { ValidationLoader } from "@lib/services/validation-loader.service";
-import { WindowRefService } from "@lib/services/window-ref.service";
-import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
-import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
-import { FormlyModule } from "@ngx-formly/core";
 import { TranslateLoader, TranslateModule } from "@ngx-translate/core";
-import { CookieService } from "ngx-cookie-service";
-import { ToastrModule } from "ngx-toastr";
-import { take } from "rxjs/operators";
-import { AppRoutingModule } from "./app-routing.module";
+import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
+import { SharedModule } from "@shared/shared.module";
+import { TimeagoCustomFormatter, TimeagoFormatter, TimeagoIntl, TimeagoModule } from "ngx-timeago";
 import { AppComponent } from "./app.component";
-import { LanguageLoader } from "./translate-loader";
-
-export function appInitializer(appContext: AppContextService, authService: AuthService) {
-  return () =>
-    new Promise<any>(resolve => {
-      appContext.load().then(() => {
-        authService
-          .isAuthenticated()
-          .pipe(take(1))
-          .subscribe(authenticated => {
-            if (authenticated) {
-              appContext.loadForUser().then(() => resolve());
-            } else {
-              resolve();
-            }
-          });
-      });
-    });
-}
 
 export function initFontAwesome(iconLibrary: FaIconLibrary) {
   iconLibrary.addIconPacks(fas);
@@ -108,17 +81,18 @@ export function initFontAwesome(iconLibrary: FaIconLibrary) {
 }
 
 @NgModule({
-  declarations: [AppComponent],
   imports: [
-    // Angular
+    // Angular.
     BrowserModule,
     BrowserAnimationsModule,
+    HttpClientModule,
 
-    // Third party
-    FormlyModule.forRoot(),
-    FormlyBootstrapModule,
-    NgbModule,
-    ToastrModule.forRoot(),
+    // Dependencies.
+    FontAwesomeModule,
+    TimeagoModule.forRoot({
+      intl: TimeagoIntl,
+      formatter: { provide: TimeagoFormatter, useClass: TimeagoCustomFormatter }
+    }),
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
@@ -127,22 +101,11 @@ export function initFontAwesome(iconLibrary: FaIconLibrary) {
       }
     }),
 
-    // App
+    // This app.
     AppRoutingModule,
-    LibraryModule.forRoot()
+    SharedModule.forRoot()
   ],
-  providers: [
-    AppContextService,
-    {
-      provide: APP_INITIALIZER,
-      useFactory: appInitializer,
-      multi: true,
-      deps: [AppContextService, AuthService]
-    },
-    CookieService,
-    ValidationLoader,
-    WindowRefService
-  ],
+  declarations: [AppComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule {

@@ -1,6 +1,5 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
-
-import { TranslateModule } from "@ngx-translate/core";
+import { testAppImports } from "@app/test-app.imports";
 import { NotFound404PageComponent } from "./not-found-404-page.component";
 
 describe("NotFoundPageComponent", () => {
@@ -9,7 +8,7 @@ describe("NotFoundPageComponent", () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [TranslateModule.forRoot()],
+      imports: [testAppImports],
       declarations: [NotFound404PageComponent]
     }).compileComponents();
   }));

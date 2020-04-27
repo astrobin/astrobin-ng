@@ -27,8 +27,8 @@
       "@env/*": [
         "src/environments/*"
       ],
-      "@lib/*": [
-        "src/app/library/*"
+      "@shared/*": [
+        "src/app/shared/*"
       ],
       "@features/*": [
         "src/app/features/*"

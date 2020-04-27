@@ -6,7 +6,7 @@ import {
   BackendNotificationListResponseInterface,
   NotificationsApiAdaptorService
 } from "@features/notifications/services/notifications-api-adaptor.service";
-import { BaseClassicApiService } from "@lib/services/api/classic/base-classic-api.service";
+import { BaseClassicApiService } from "@shared/services/api/classic/base-classic-api.service";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 

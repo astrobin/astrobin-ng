@@ -1,14 +1,12 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { testAppImports } from "@app/test-app.imports";
 import { NotificationInterfaceGenerator } from "@features/notifications/generators/notification.interface.generator";
 import { NormalizeNotificationLinkPipe } from "@features/notifications/pipes/normalize-notification-link.pipe";
 import { NotificationServiceMock } from "@features/notifications/services/notification.service-mock";
 import { NotificationsService } from "@features/notifications/services/notifications.service";
-import { FontAwesomeTestingModule } from "@fortawesome/angular-fontawesome/testing";
-import { EmptyListComponent } from "@lib/components/misc/empty-list/empty-list.component";
-import { NgbPaginationModule } from "@ng-bootstrap/ng-bootstrap";
-import { TranslateModule } from "@ngx-translate/core";
+import { EmptyListComponent } from "@shared/components/misc/empty-list/empty-list.component";
 import { MockComponents, MockPipe } from "ng-mocks";
-import { TimeAgoPipe } from "time-ago-pipe";
+import { TimeagoPipe } from "ngx-timeago";
 import { NotificationsPageComponent } from "./notifications-page.component";
 
 describe("NotificationsPageComponent", () => {
@@ -17,12 +15,12 @@ describe("NotificationsPageComponent", () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [NgbPaginationModule, FontAwesomeTestingModule, TranslateModule.forRoot()],
+      imports: [testAppImports],
       declarations: [
         NotificationsPageComponent,
         MockComponents(EmptyListComponent),
         MockPipe(NormalizeNotificationLinkPipe),
-        MockPipe(TimeAgoPipe)
+        MockPipe(TimeagoPipe)
       ],
       providers: [
         {

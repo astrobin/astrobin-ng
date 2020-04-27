@@ -1,6 +1,5 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
-
-import { TranslateModule } from "@ngx-translate/core";
+import { testAppImports } from "@app/test-app.imports";
 import { LoggedOutPageComponent } from "./logged-out-page.component";
 
 describe("LoggedOutPageComponent", () => {
@@ -9,7 +8,7 @@ describe("LoggedOutPageComponent", () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [TranslateModule.forRoot()],
+      imports: [testAppImports],
       declarations: [LoggedOutPageComponent]
     }).compileComponents();
   }));

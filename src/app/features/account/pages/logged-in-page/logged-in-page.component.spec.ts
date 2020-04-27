@@ -1,7 +1,6 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
-import { RouterTestingModule } from "@angular/router/testing";
-import { WindowRefService } from "@lib/services/window-ref.service";
-import { TranslateModule } from "@ngx-translate/core";
+import { testAppImports } from "@app/test-app.imports";
+import { WindowRefService } from "@shared/services/window-ref.service";
 import { LoggedInPageComponent } from "./logged-in-page.component";
 
 describe("LoggedInPageComponent", () => {
@@ -10,7 +9,7 @@ describe("LoggedInPageComponent", () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule, TranslateModule.forRoot()],
+      imports: [testAppImports],
       declarations: [LoggedInPageComponent],
       providers: [WindowRefService]
     }).compileComponents();

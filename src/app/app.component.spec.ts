@@ -1,33 +1,21 @@
-import { HttpClient } from "@angular/common/http";
-import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { APP_INITIALIZER } from "@angular/core";
 import { async, TestBed } from "@angular/core/testing";
-import { RouterTestingModule } from "@angular/router/testing";
 import { AppComponent } from "@app/app.component";
-import { appInitializer } from "@app/app.module";
-import { LanguageLoader } from "@app/translate-loader";
-import { LibraryModule } from "@lib/library.module";
-import { CommonApiService } from "@lib/services/api/classic/common/common-api.service";
-import { CommonApiServiceMock } from "@lib/services/api/classic/common/common-api.service-mock";
-import { AppContextService } from "@lib/services/app-context.service";
-import { WindowRefService } from "@lib/services/window-ref.service";
-import { TranslateLoader, TranslateModule } from "@ngx-translate/core";
+import { testAppImports } from "@app/test-app.imports";
+import { FooterComponent } from "@shared/components/footer/footer.component";
+import { HeaderComponent } from "@shared/components/header/header.component";
+import { CommonApiService } from "@shared/services/api/classic/common/common-api.service";
+import { CommonApiServiceMock } from "@shared/services/api/classic/common/common-api.service-mock";
+import { AppContextService } from "@shared/services/app-context.service";
+import { WindowRefService } from "@shared/services/window-ref.service";
+import { appInitializer } from "@shared/shared.module";
+import { MockComponents } from "ng-mocks";
+import { TimeagoIntl } from "ngx-timeago";
 
 describe("AppComponent", () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        RouterTestingModule,
-        LibraryModule,
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useClass: LanguageLoader,
-            deps: [HttpClient]
-          }
-        })
-      ],
+      imports: [testAppImports],
       providers: [
         AppContextService,
         {
@@ -40,9 +28,10 @@ describe("AppComponent", () => {
           multi: true,
           deps: [AppContextService]
         },
+        TimeagoIntl,
         WindowRefService
       ],
-      declarations: [AppComponent]
+      declarations: [AppComponent, MockComponents(HeaderComponent, FooterComponent)]
     }).compileComponents();
   }));
 
