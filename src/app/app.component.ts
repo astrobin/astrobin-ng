@@ -1,5 +1,8 @@
 import { Component } from "@angular/core";
+import { NavigationEnd, Router } from "@angular/router";
 import { NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
+
+declare const gtag: any;
 
 @Component({
   selector: "astrobin-root",
@@ -7,7 +10,8 @@ import { NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
   styleUrls: ["./app.component.scss"]
 })
 export class AppComponent {
-  constructor(public paginationConfig: NgbPaginationConfig) {
+  constructor(public router: Router, public paginationConfig: NgbPaginationConfig) {
+    this.initRouterEvents();
     this.initPagination();
   }
 
@@ -15,5 +19,21 @@ export class AppComponent {
     this.paginationConfig.pageSize = 50;
     this.paginationConfig.maxSize = 5;
     this.paginationConfig.rotate = true;
+  }
+
+  initRouterEvents(): void {
+    this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        this.tagGoogleAnalyticsPage(event.urlAfterRedirects);
+      }
+    });
+  }
+
+  tagGoogleAnalyticsPage(url: string): void {
+    if (typeof gtag !== "undefined") {
+      gtag("config", "UA-844985-10", {
+        page_path: url
+      });
+    }
   }
 }

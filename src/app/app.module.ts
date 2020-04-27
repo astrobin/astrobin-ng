@@ -1,10 +1,3 @@
-import { HttpClient, HttpClientModule } from "@angular/common/http";
-import { NgModule } from "@angular/core";
-import { BrowserModule } from "@angular/platform-browser";
-import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { AppRoutingModule } from "@app/app-routing.module";
-import { LanguageLoader } from "@app/translate-loader";
-import { FaIconLibrary, FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import {
   faAsterisk,
   faBarcode,
@@ -38,11 +31,22 @@ import {
   faUpload,
   faUsers
 } from "@fortawesome/free-solid-svg-icons";
-import { TranslateLoader, TranslateModule } from "@ngx-translate/core";
-import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
-import { SharedModule } from "@shared/shared.module";
-import { TimeagoCustomFormatter, TimeagoFormatter, TimeagoIntl, TimeagoModule } from "ngx-timeago";
-import { AppComponent } from "./app.component";
+import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { BrowserModule, Title } from '@angular/platform-browser';
+import { HttpClientModule, HttpClient } from '@angular/common/http';
+import { TimeagoModule, TimeagoIntl, TimeagoFormatter, TimeagoCustomFormatter } from 'ngx-timeago';
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { LanguageLoader } from './translate-loader';
+import { JsonApiService } from '@shared/services/api/classic/json/json-api.service';
+import { AppRoutingModule } from './app-routing.module';
+import { appInitializer, SharedModule } from "@shared/shared.module";
+import { AppContextService } from '@shared/services/app-context.service';
+import { APP_INITIALIZER } from '@angular/core';
+import { AuthService } from '@shared/services/auth.service';
+import { CookieService } from 'ngx-cookie-service';
+import { WindowRefService } from '@shared/services/window-ref.service';
+import { ValidationLoader } from '@shared/services/validation-loader.service';
+import { AppComponent } from "@app/app.component";
 
 export function initFontAwesome(iconLibrary: FaIconLibrary) {
   iconLibrary.addIconPacks(fas);
@@ -104,6 +108,19 @@ export function initFontAwesome(iconLibrary: FaIconLibrary) {
     // This app.
     AppRoutingModule,
     SharedModule.forRoot()
+  ],
+  providers: [
+    AppContextService,
+    {
+      provide: APP_INITIALIZER,
+      useFactory: appInitializer,
+      multi: true,
+      deps: [AppContextService, AuthService]
+    },
+    CookieService,
+    Title,
+    ValidationLoader,
+    WindowRefService
   ],
   declarations: [AppComponent],
   bootstrap: [AppComponent]
