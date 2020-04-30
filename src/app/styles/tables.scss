@@ -1,5 +1,7 @@
 .table {
-  &.table-dark {
-    background-color: transparent;
+  td.fit,
+  th.fit {
+    white-space: nowrap;
+    width: 1%;
   }
 }

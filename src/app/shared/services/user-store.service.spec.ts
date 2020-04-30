@@ -30,4 +30,17 @@ describe("UserStoreService", () => {
 
     expect(service.getUserProfile(userProfile.id)).toEqual(userProfile);
   });
+
+  it("should get user profile by user id", () => {
+    const user = UserGenerator.user();
+    const userProfile = UserProfileGenerator.userProfile();
+
+    userProfile.id = 99;
+    user.userProfile = 99;
+
+    service.addUser(user);
+    service.addUserProfile(userProfile);
+
+    expect(service.getUserProfileByUserId(user.id)).toEqual(userProfile);
+  });
 });

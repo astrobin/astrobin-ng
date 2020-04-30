@@ -5,6 +5,8 @@ import { LoadingServiceInterface } from "@shared/services/loading.service-interf
   providedIn: "root"
 })
 export class LoadingService implements LoadingServiceInterface {
+  static readonly DEBOUNCE_TIME = 250;
+
   private _isLoading = false;
 
   isLoading(): boolean {

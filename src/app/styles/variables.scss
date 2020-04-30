@@ -18,6 +18,7 @@ $darkest_background_text_color: #b0b0b0;
 $error-red: #e84545;
 
 // Bootstrap overrides:
+$primary: $accent-color;
 $theme-colors: (
   "primary": $accent-color
 );

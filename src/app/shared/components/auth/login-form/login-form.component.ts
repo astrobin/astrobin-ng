@@ -1,5 +1,6 @@
 import { Component, EventEmitter, HostListener, Input, OnInit, Output } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { BaseComponent } from "@shared/components/base.component";
 import { AuthService } from "@shared/services/auth.service";
 
 @Component({
@@ -7,7 +8,7 @@ import { AuthService } from "@shared/services/auth.service";
   templateUrl: "./login-form.component.html",
   styleUrls: ["./login-form.component.scss"]
 })
-export class LoginFormComponent implements OnInit {
+export class LoginFormComponent extends BaseComponent implements OnInit {
   form: FormGroup;
   loading = false;
   error = false;
@@ -15,7 +16,9 @@ export class LoginFormComponent implements OnInit {
   @Input() redirectUrl: string;
   @Output() loginSuccessful = new EventEmitter();
 
-  constructor(public readonly formBuilder: FormBuilder, public readonly authService: AuthService) {}
+  constructor(public readonly formBuilder: FormBuilder, public readonly authService: AuthService) {
+    super();
+  }
 
   ngOnInit(): void {
     this.form = this.formBuilder.group({

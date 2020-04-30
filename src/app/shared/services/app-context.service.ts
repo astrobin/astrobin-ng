@@ -10,6 +10,8 @@ import { BehaviorSubject, forkJoin, Observable, of } from "rxjs";
 import { flatMap, share } from "rxjs/operators";
 import { CommonApiService } from "./api/classic/common/common-api.service";
 
+import { BaseService } from "@shared/services/base.service";
+import { LoadingService } from "@shared/services/loading.service";
 import { strings as timeagoAf } from "ngx-timeago/language-strings/af";
 import { strings as timeagoAr } from "ngx-timeago/language-strings/ar";
 import { strings as timeagoAz } from "ngx-timeago/language-strings/az";
@@ -76,7 +78,7 @@ export interface AppContextInterface {
 @Injectable({
   providedIn: "root"
 })
-export class AppContextService {
+export class AppContextService extends BaseService {
   public context$: Observable<AppContextInterface>;
 
   private _subject = new BehaviorSubject<AppContextInterface>(undefined);
@@ -103,11 +105,13 @@ export class AppContextService {
   private _getSubscriptions$ = this.commonApi.getSubscriptions().pipe(share());
 
   constructor(
+    public loadingService: LoadingService,
     public commonApi: CommonApiService,
     public timeagoIntl: TimeagoIntl,
     public translate: TranslateService,
     public userStore: UserStoreService
   ) {
+    super(loadingService);
     this.context$ = this._subject.asObservable();
   }
 

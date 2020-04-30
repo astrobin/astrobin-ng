@@ -10,8 +10,10 @@ import {
   CommonApiAdaptorService
 } from "@shared/services/api/classic/common/common-api-adaptor.service";
 import { CommonApiServiceInterface } from "@shared/services/api/classic/common/common-api.service-interface";
-import { Observable } from "rxjs";
-import { map } from "rxjs/operators";
+import { LoadingService } from "@shared/services/loading.service";
+import { UserStoreService } from "@shared/services/user-store.service";
+import { Observable, of } from "rxjs";
+import { map, mergeMap, tap, withLatestFrom } from "rxjs/operators";
 import { BaseClassicApiService } from "../base-classic-api.service";
 
 @Injectable({
@@ -20,14 +22,47 @@ import { BaseClassicApiService } from "../base-classic-api.service";
 export class CommonApiService extends BaseClassicApiService implements CommonApiServiceInterface {
   configUrl = this.baseUrl + "/common";
 
-  constructor(private http: HttpClient, public commonApiAdaptorService: CommonApiAdaptorService) {
-    super();
+  constructor(
+    public loadingService: LoadingService,
+    public http: HttpClient,
+    public commonApiAdaptorService: CommonApiAdaptorService,
+    public userStore: UserStoreService
+  ) {
+    super(loadingService);
   }
 
   getUser(id: number): Observable<UserInterface> {
-    return this.http
-      .get<BackendUserInterface>(`${this.configUrl}/users/${id}/`)
-      .pipe(map((user: BackendUserInterface) => this.commonApiAdaptorService.userFromBackend(user)));
+    if (this.userStore.getUser(id)) {
+      return of(this.userStore.getUser(id));
+    }
+
+    return this.http.get<BackendUserInterface>(`${this.configUrl}/users/${id}/`).pipe(
+      map(user => this.commonApiAdaptorService.userFromBackend(user)),
+      tap(user => this.userStore.addUser(user))
+    );
+  }
+
+  getUserProfile(id: number): Observable<UserProfileInterface> {
+    if (this.userStore.getUserProfile(id)) {
+      return of(this.userStore.getUserProfile(id));
+    }
+
+    return this.http.get<BackendUserProfileInterface>(`${this.configUrl}/userprofiles/${id}/`).pipe(
+      map(userProfile => this.commonApiAdaptorService.userProfileFromBackend(userProfile)),
+      tap(userProfile => this.userStore.addUserProfile(userProfile))
+    );
+  }
+
+  resolveUser(id: number): Observable<{ user: UserInterface; userProfile: UserProfileInterface }> {
+    const user$ = this.getUser(id);
+    return user$.pipe(
+      mergeMap(user => this.getUserProfile(user.userProfile)),
+      withLatestFrom(user$),
+      map(([userProfile, user]) => ({
+        user,
+        userProfile
+      }))
+    );
   }
 
   getCurrentUserProfile(): Observable<UserProfileInterface> {
@@ -38,7 +73,8 @@ export class CommonApiService extends BaseClassicApiService implements CommonApi
         }
 
         return null;
-      })
+      }),
+      tap(userProfile => this.userStore.addUserProfile(userProfile))
     );
   }
 

@@ -1,10 +1,18 @@
 import { Injectable } from "@angular/core";
 import { FormlyConfig, FormlyFieldConfig } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
+import { BaseService } from "@shared/services/base.service";
+import { LoadingService } from "@shared/services/loading.service";
 
 @Injectable()
-export class ValidationLoader {
-  public constructor(private translate: TranslateService, private config: FormlyConfig) {}
+export class ValidationLoader extends BaseService {
+  public constructor(
+    public loadingService: LoadingService,
+    public translate: TranslateService,
+    public config: FormlyConfig
+  ) {
+    super(loadingService);
+  }
 
   static minlengthValidationMessage(field: FormlyFieldConfig, translate: TranslateService) {
     return translate.instant("Please input at least {{number}} characters", {

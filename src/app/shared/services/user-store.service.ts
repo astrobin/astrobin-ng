@@ -1,12 +1,13 @@
 import { Injectable } from "@angular/core";
 import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
 import { UserInterface } from "@shared/interfaces/user.interface";
+import { BaseService } from "@shared/services/base.service";
 import { UserStoreServiceInterface } from "@shared/services/user-store.service-interface";
 
 @Injectable({
   providedIn: "root"
 })
-export class UserStoreService implements UserStoreServiceInterface {
+export class UserStoreService extends BaseService implements UserStoreServiceInterface {
   private _users: { [key: number]: UserInterface } = {};
   private _userProfiles: { [key: number]: UserProfileInterface } = {};
 
@@ -24,5 +25,10 @@ export class UserStoreService implements UserStoreServiceInterface {
 
   getUserProfile(id: number): UserProfileInterface {
     return this._userProfiles[id];
+  }
+
+  getUserProfileByUserId(id: number) {
+    const user = this.getUser(id);
+    return this.getUserProfile(user.userProfile);
   }
 }

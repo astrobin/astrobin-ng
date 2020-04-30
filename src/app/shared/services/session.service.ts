@@ -1,9 +1,10 @@
 import { Injectable } from "@angular/core";
+import { BaseService } from "@shared/services/base.service";
 
 @Injectable({
   providedIn: "root"
 })
-export class SessionService {
+export class SessionService extends BaseService {
   private readonly _storage: any = {};
 
   public get(key: string): any {
