@@ -4,6 +4,7 @@ import { ContestInterface } from "@features/contests/interfaces/contest.interfac
 import { ListResponseInterface } from "@shared/interfaces/list-response.interface";
 import { BaseClassicApiService } from "@shared/services/api/classic/base-classic-api.service";
 import { CommonApiService } from "@shared/services/api/classic/common/common-api.service";
+import { LoadingService } from "@shared/services/loading.service";
 import { Observable } from "rxjs";
 import { take, tap } from "rxjs/operators";
 
@@ -13,8 +14,8 @@ import { take, tap } from "rxjs/operators";
 export class ContestsApiService extends BaseClassicApiService {
   readonly configUrl = this.baseUrl + "/contests";
 
-  constructor(public http: HttpClient, public commonApi: CommonApiService) {
-    super();
+  constructor(public loadingService: LoadingService, public http: HttpClient, public commonApi: CommonApiService) {
+    super(loadingService);
   }
 
   list(filters?: { [key: string]: string }): Observable<ListResponseInterface<ContestInterface>> {
