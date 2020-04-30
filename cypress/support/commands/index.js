@@ -26,6 +26,7 @@
 
 import "./setup-auth-routes";
 import "./setup-app-routes";
+import "./setup-contests-routes";
 import "./setup-initialization-routes";
 import "./setup-notifications-routes";
 import "./setup-subscription-routes";
