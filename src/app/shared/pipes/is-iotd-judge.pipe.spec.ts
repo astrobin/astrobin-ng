@@ -1,3 +1,4 @@
+import { TestBed } from "@angular/core/testing";
 import { UserGenerator } from "@shared/generators/user.generator";
 import { UserServiceMock } from "@shared/services/user.service-mock";
 import { IsIotdJudgePipe } from "./is-iotd-judge.pipe";
@@ -6,7 +7,7 @@ describe("IsIotdJudgePipe", () => {
   let pipe: IsIotdJudgePipe;
 
   beforeAll(() => {
-    pipe = new IsIotdJudgePipe(new UserServiceMock());
+    pipe = new IsIotdJudgePipe(TestBed.inject(UserServiceMock));
   });
 
   it("create an instance", () => {

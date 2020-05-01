@@ -10,6 +10,7 @@ import {
   CommonApiAdaptorService
 } from "@shared/services/api/classic/common/common-api-adaptor.service";
 import { CommonApiServiceInterface } from "@shared/services/api/classic/common/common-api.service-interface";
+import { LoadingService } from "@shared/services/loading.service";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 import { BaseClassicApiService } from "../base-classic-api.service";
@@ -20,8 +21,12 @@ import { BaseClassicApiService } from "../base-classic-api.service";
 export class CommonApiService extends BaseClassicApiService implements CommonApiServiceInterface {
   configUrl = this.baseUrl + "/common";
 
-  constructor(private http: HttpClient, public commonApiAdaptorService: CommonApiAdaptorService) {
-    super();
+  constructor(
+    public loadingService: LoadingService,
+    private http: HttpClient,
+    public commonApiAdaptorService: CommonApiAdaptorService
+  ) {
+    super(loadingService);
   }
 
   getUser(id: number): Observable<UserInterface> {

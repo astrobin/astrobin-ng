@@ -1,13 +1,14 @@
 import { Injectable } from "@angular/core";
 import { environment } from "@env/environment";
 import { UserInterface } from "@shared/interfaces/user.interface";
+import { BaseService } from "@shared/services/base.service";
 
 const BASE_URL = environment.classicBaseUrl;
 
 @Injectable({
   providedIn: "root"
 })
-export class ClassicRoutesService {
+export class ClassicRoutesService extends BaseService {
   HOME = BASE_URL + "/";
   REGISTER = BASE_URL + "/accounts/register/";
   RESET_PASSWORD = BASE_URL + "/accounts/password/reset";

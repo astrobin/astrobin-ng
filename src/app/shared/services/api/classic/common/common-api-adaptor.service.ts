@@ -3,6 +3,7 @@ import { GroupInterface } from "@shared/interfaces/group.interface";
 import { PermissionInterface } from "@shared/interfaces/permission.interface";
 import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
 import { UserInterface } from "@shared/interfaces/user.interface";
+import { BaseService } from "@shared/services/base.service";
 
 export interface BackendPermissionInterface {
   id: number;
@@ -89,7 +90,7 @@ export interface BackendUserProfileInterface {
 @Injectable({
   providedIn: "root"
 })
-export class CommonApiAdaptorService {
+export class CommonApiAdaptorService extends BaseService {
   permissionFromBackend(permission: BackendPermissionInterface): PermissionInterface {
     return {
       id: permission.id,

@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import { NotificationListResponseInterface } from "@features/notifications/interfaces/notification-list-response.interface";
 import { NotificationInterface } from "@features/notifications/interfaces/notification.interface";
+import { BaseService } from "@shared/services/base.service";
 
 export interface BackendNotificationInterface {
   id: number;
@@ -27,7 +28,7 @@ export interface BackendNotificationListResponseInterface {
 @Injectable({
   providedIn: "root"
 })
-export class NotificationsApiAdaptorService {
+export class NotificationsApiAdaptorService extends BaseService {
   notificationFromBackend(notification: BackendNotificationInterface): NotificationInterface {
     return {
       id: notification.id,

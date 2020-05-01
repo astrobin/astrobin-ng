@@ -6,12 +6,13 @@ import { UserProfileInterface } from "@shared/interfaces/user-profile.interface"
 import { UserSubscriptionInterface } from "@shared/interfaces/user-subscription.interface";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { CommonApiServiceInterface } from "@shared/services/api/classic/common/common-api.service-interface";
+import { BaseService } from "@shared/services/base.service";
 import { Observable, of } from "rxjs";
 
 @Injectable({
   providedIn: "root"
 })
-export class CommonApiServiceMock implements CommonApiServiceInterface {
+export class CommonApiServiceMock extends BaseService implements CommonApiServiceInterface {
   getUser(id: number): Observable<UserInterface> {
     return of(UserGenerator.user());
   }

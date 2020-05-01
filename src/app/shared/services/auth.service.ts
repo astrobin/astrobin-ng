@@ -1,6 +1,8 @@
 import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
 import { AuthServiceInterface } from "@shared/services/auth.service-interface";
+import { BaseService } from "@shared/services/base.service";
+import { LoadingService } from "@shared/services/loading.service";
 import { CookieService } from "ngx-cookie-service";
 import { Observable, of } from "rxjs";
 import { catchError, map, take } from "rxjs/operators";
@@ -10,15 +12,18 @@ import { AppContextService } from "./app-context.service";
 @Injectable({
   providedIn: "root"
 })
-export class AuthService implements AuthServiceInterface {
+export class AuthService extends BaseService implements AuthServiceInterface {
   static CLASSIC_AUTH_TOKEN_COOKIE = "classic-auth-token";
 
   constructor(
+    public loadingService: LoadingService,
     public authClassicApi: AuthClassicApiService,
     public appContext: AppContextService,
     public cookieService: CookieService,
     public router: Router
-  ) {}
+  ) {
+    super(loadingService);
+  }
 
   getClassicApiToken(): string {
     return this.cookieService.get(AuthService.CLASSIC_AUTH_TOKEN_COOKIE);
