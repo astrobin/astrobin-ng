@@ -41,7 +41,7 @@
     "@ngx-translate/core": "12.1.2",
     "@ngx-translate/http-loader": "4.0.0",
     "bootstrap": "4.3.1",
-    "bootswatch": "^4.4.1",
+    "bootswatch": "4.4.1",
     "class-transformer": "0.2.3",
     "class-validator": "0.12.2",
     "core-js": "3.6.5",
