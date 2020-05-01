@@ -7,6 +7,7 @@ import { HeaderComponent } from "@shared/components/header/header.component";
 import { CommonApiService } from "@shared/services/api/classic/common/common-api.service";
 import { CommonApiServiceMock } from "@shared/services/api/classic/common/common-api.service-mock";
 import { AppContextService } from "@shared/services/app-context.service";
+import { AuthService } from "@shared/services/auth.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { appInitializer } from "@shared/shared.module";
 import { MockComponents } from "ng-mocks";
@@ -26,7 +27,7 @@ describe("AppComponent", () => {
           provide: APP_INITIALIZER,
           useFactory: appInitializer,
           multi: true,
-          deps: [AppContextService]
+          deps: [AppContextService, AuthService]
         },
         TimeagoIntl,
         WindowRefService
