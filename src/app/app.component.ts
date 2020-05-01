@@ -1,6 +1,7 @@
 import { Component } from "@angular/core";
 import { NavigationEnd, Router } from "@angular/router";
 import { NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
+import { BaseComponent } from "@shared/components/base.component";
 
 declare const gtag: any;
 
@@ -9,8 +10,9 @@ declare const gtag: any;
   templateUrl: "./app.component.html",
   styleUrls: ["./app.component.scss"]
 })
-export class AppComponent {
+export class AppComponent extends BaseComponent {
   constructor(public router: Router, public paginationConfig: NgbPaginationConfig) {
+    super();
     this.initRouterEvents();
     this.initPagination();
   }
