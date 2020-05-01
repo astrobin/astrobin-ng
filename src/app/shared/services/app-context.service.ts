@@ -4,6 +4,7 @@ import { SubscriptionInterface } from "@shared/interfaces/subscription.interface
 import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
 import { UserSubscriptionInterface } from "@shared/interfaces/user-subscription.interface";
 import { UserInterface } from "@shared/interfaces/user.interface";
+import { LoadingService } from "@shared/services/loading.service";
 import { UserStoreService } from "@shared/services/user-store.service";
 import { TimeagoIntl } from "ngx-timeago";
 import { BehaviorSubject, forkJoin, Observable, of } from "rxjs";
@@ -66,7 +67,6 @@ import { strings as timeagoUz } from "ngx-timeago/language-strings/uz";
 import { strings as timeagoVi } from "ngx-timeago/language-strings/vi";
 import { strings as timeagoZhCn } from "ngx-timeago/language-strings/zh-CN";
 import { strings as timeagoZhTw } from "ngx-timeago/language-strings/zh-TW";
-import { LoadingService } from "@shared/services/loading.service";
 
 export interface AppContextInterface {
   currentUserProfile: UserProfileInterface;
