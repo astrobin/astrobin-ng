@@ -1,8 +1,4 @@
 import { NotificationInterface } from "@features/notifications/interfaces/notification.interface";
+import { ListResponseInterface } from "@shared/interfaces/list-response.interface";
 
-export interface NotificationListResponseInterface {
-  count: number;
-  next: string;
-  previous: string;
-  results: NotificationInterface[];
-}
+export interface NotificationListResponseInterface extends ListResponseInterface<NotificationInterface> {}

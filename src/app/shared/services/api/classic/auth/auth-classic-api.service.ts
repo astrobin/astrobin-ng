@@ -3,7 +3,7 @@ import { Injectable } from "@angular/core";
 import { LoadingService } from "@shared/services/loading.service";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
-import { AuthApiService } from "../../interfaces/auth-api.service.interface";
+import { AuthApiService } from "../../interfaces/auth-api.service-interface";
 import { BaseClassicApiService } from "../base-classic-api.service";
 
 @Injectable({

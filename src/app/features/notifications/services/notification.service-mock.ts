@@ -1,5 +1,5 @@
 import { NotificationListResponseInterfaceGenerator } from "@features/notifications/generators/notification-list-response.interface.generator";
-import { NotificationServiceInterface } from "@features/notifications/services/notification.service.interface";
+import { NotificationServiceInterface } from "@features/notifications/services/notification.service-interface";
 import { BaseService } from "@shared/services/base.service";
 import { of } from "rxjs";
 
