@@ -62,9 +62,8 @@ export class AuthService extends BaseService implements AuthServiceInterface {
 
   logout(): void {
     if (this.cookieService.check(AuthService.CLASSIC_AUTH_TOKEN_COOKIE)) {
-      this.router.navigate(["account", "logged-out"]).then(() => {
-        this.cookieService.delete(AuthService.CLASSIC_AUTH_TOKEN_COOKIE);
-      });
+      this.cookieService.delete(AuthService.CLASSIC_AUTH_TOKEN_COOKIE);
+      this.router.navigate(["account", "logged-out"]);
     }
   }
 
