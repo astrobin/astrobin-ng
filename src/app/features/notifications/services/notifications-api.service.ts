@@ -7,6 +7,7 @@ import {
   NotificationsApiAdaptorService
 } from "@features/notifications/services/notifications-api-adaptor.service";
 import { BaseClassicApiService } from "@shared/services/api/classic/base-classic-api.service";
+import { LoadingService } from "@shared/services/loading.service";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 
@@ -16,8 +17,12 @@ import { map } from "rxjs/operators";
 export class NotificationsApiService extends BaseClassicApiService {
   configUrl = this.baseUrl + "/notifications/notification";
 
-  constructor(public http: HttpClient, public notificationsApiAdaptorService: NotificationsApiAdaptorService) {
-    super();
+  constructor(
+    public loadingService: LoadingService,
+    public http: HttpClient,
+    public notificationsApiAdaptorService: NotificationsApiAdaptorService
+  ) {
+    super(loadingService);
   }
 
   getAll(page = 1): Observable<NotificationListResponseInterface> {

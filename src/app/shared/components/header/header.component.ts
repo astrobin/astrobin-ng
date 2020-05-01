@@ -2,6 +2,7 @@ import { Component } from "@angular/core";
 import { NotificationsService } from "@features/notifications/services/notifications.service";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { LoginModalComponent } from "@shared/components/auth/login-modal/login-modal.component";
+import { BaseComponent } from "@shared/components/base.component";
 import { AppContextService } from "@shared/services/app-context.service";
 import { AuthService } from "@shared/services/auth.service";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
@@ -19,7 +20,7 @@ interface FlagInterface {
   templateUrl: "./header.component.html",
   styleUrls: ["./header.component.scss"]
 })
-export class HeaderComponent {
+export class HeaderComponent extends BaseComponent {
   isCollapsed = true;
 
   flags: FlagInterface[] = [
@@ -49,7 +50,9 @@ export class HeaderComponent {
     public notificationsService: NotificationsService,
     public loadingService: LoadingService,
     public windowRef: WindowRefService
-  ) {}
+  ) {
+    super();
+  }
 
   openLoginModal($event) {
     $event.preventDefault();

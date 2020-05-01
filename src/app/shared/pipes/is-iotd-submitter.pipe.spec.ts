@@ -1,3 +1,4 @@
+import { TestBed } from "@angular/core/testing";
 import { UserGenerator } from "@shared/generators/user.generator";
 import { UserServiceMock } from "@shared/services/user.service-mock";
 import { IsIotdSubmitterPipe } from "./is-iotd-submitter.pipe";
@@ -6,7 +7,7 @@ describe("IsIotdSubmitterPipe", () => {
   let pipe: IsIotdSubmitterPipe;
 
   beforeAll(() => {
-    pipe = new IsIotdSubmitterPipe(new UserServiceMock());
+    pipe = new IsIotdSubmitterPipe(TestBed.inject(UserServiceMock));
   });
 
   it("create an instance", () => {

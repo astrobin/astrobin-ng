@@ -1,3 +1,4 @@
+import { TestBed } from "@angular/core/testing";
 import { UserGenerator } from "@shared/generators/user.generator";
 import { UserServiceMock } from "@shared/services/user.service-mock";
 import { IsImageModeratorPipe } from "./is-image-moderator.pipe";
@@ -6,7 +7,7 @@ describe("IsImageModeratorPipe", () => {
   let pipe: IsImageModeratorPipe;
 
   beforeAll(() => {
-    pipe = new IsImageModeratorPipe(new UserServiceMock());
+    pipe = new IsImageModeratorPipe(TestBed.inject(UserServiceMock));
   });
 
   it("create an instance", () => {
