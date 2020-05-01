@@ -1,12 +1,16 @@
 import { Injectable } from "@angular/core";
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from "@angular/router";
 import { AuthService } from "@shared/services/auth.service";
+import { BaseService } from "@shared/services/base.service";
+import { LoadingService } from "@shared/services/loading.service";
 import { Observable } from "rxjs";
 import { take } from "rxjs/operators";
 
 @Injectable()
-export class AuthGuardService implements CanActivate {
-  constructor(public authService: AuthService, public router: Router) {}
+export class AuthGuardService extends BaseService implements CanActivate {
+  constructor(public loadingService: LoadingService, public authService: AuthService, public router: Router) {
+    super(loadingService);
+  }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
     return new Observable<boolean>(observer => {
