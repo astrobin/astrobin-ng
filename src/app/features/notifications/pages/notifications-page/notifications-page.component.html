@@ -12,17 +12,17 @@
       <ngb-pagination (pageChange)="pageChange($event)" [(page)]="page" [collectionSize]="notifications.count">
       </ngb-pagination>
 
-      <table class="table table-dark table-striped table-borderless table-responsive-md notifications-table">
+      <table class="table table-striped table-borderless table-responsive-md notifications-table">
         <tbody>
           <tr *ngFor="let notification of notifications.results" id="notification-{{notification.id}}">
-            <td [class.read]="notification.read" [class.unread]="!notification.read" class="read-indicator">
+            <td [class.read]="notification.read" [class.unread]="!notification.read" class="read-indicator fit">
               <fa-icon (click)="toggleRead(notification)" class="read-icon" icon="eye">
               </fa-icon>
             </td>
             <td class="messages">
               <span [innerHTML]="notification.message | normalizeNotificationLink"></span>
             </td>
-            <td class="created">{{ notification.created.toString() | timeago:true }}</td>
+            <td class="created fit text-right">{{ notification.created.toString() | timeago:true }}</td>
           </tr>
         </tbody>
       </table>
