@@ -3,19 +3,9 @@
 
 .modal {
   .modal-content {
-    background-color: $lightest-grey;
     border-radius: 0.4rem;
   }
   .modal-header {
     @include darkest-background-texture;
-
-    .close {
-      color: $light-grey;
-      text-shadow: none;
-    }
-  }
-
-  .modal-footer {
-    border-top-color: $lighter-grey;
   }
 }
