@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { NotificationListResponseInterface } from "@features/notifications/interfaces/notification-list-response.interface";
 import { NotificationInterface } from "@features/notifications/interfaces/notification.interface";
-import { NotificationServiceInterface } from "@features/notifications/services/notification.service.interface";
+import { NotificationServiceInterface } from "@features/notifications/services/notification.service-interface";
 import { NotificationsApiService } from "@features/notifications/services/notifications-api.service";
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
