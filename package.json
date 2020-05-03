@@ -83,7 +83,7 @@
     "sqlite3": "4.2.0",
     "supertest": "4.0.2",
     "ts-jest": "25.4.0",
-    "ts-node": "8.9.1",
+    "ts-node": "8.10.1",
     "tsconfig-paths": "3.9.0",
     "tslint": "5.20.1",
     "tslint-angular": "3.0.2",
