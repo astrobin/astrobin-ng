@@ -64,7 +64,7 @@
     "@angular/language-service": "9.1.4",
     "@types/dotenv": "6.1.1",
     "@types/jest": "25.2.1",
-    "@types/node": "12.12.37",
+    "@types/node": "12.12.38",
     "@types/supertest": "2.0.9",
     "codelyzer": "5.2.2",
     "concurrently": "5.2.0",
