@@ -60,6 +60,10 @@ context("account-page", () => {
     cy.get("#user-dropdown astrobin-username .username")
       .contains("AstroBin Dev")
       .should("exist");
+
+    cy.get("#user-dropdown .scores .astrobin-index").should("contain.text", "1.23");
+    cy.get("#user-dropdown .scores .astrobin-index").should("not.contain.text", "1.234");
+    cy.get("#user-dropdown .scores .followers").should("contain.text", "123");
   });
 
   it("should redirect to front page in case of success (account via enter key)", () => {

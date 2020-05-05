@@ -1,8 +1,8 @@
 [
   {
     "id": 1,
-    "astrobin_index": 0.0,
-    "followers": 0,
+    "astrobin_index": 1.23456789,
+    "followers": 123,
     "deleted": null,
     "updated": "2020-04-12T09:51:42.722663",
     "real_name": "AstroBin Dev",
