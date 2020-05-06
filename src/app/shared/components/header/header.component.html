@@ -242,12 +242,12 @@
             <button class="btn btn-primary user-dropdown-toggle" id="user-dropdown" ngbDropdownToggle>
               <astrobin-username [user]="ctx.currentUser"></astrobin-username>
               <span class="scores">
-                <span *ngIf="!ctx.currentUserProfile?.excludeFromCompetition" class="score"
+                <span *ngIf="!ctx.currentUserProfile?.excludeFromCompetition" class="astrobin-index"
                   ngbTooltip="{{ 'AstroBin index' | translate }}" placement="bottom">
-                  {{ ctx.currentUserProfile?.astroBinIndex }}
+                  {{ ctx.currentUserProfile?.astroBinIndex | number:"1.2-2" }}
                   &middot;
                 </span>
-                <span class="score" ngbTooltip="{{ 'Followers' | translate }}" placement="bottom">
+                <span class="followers" ngbTooltip="{{ 'Followers' | translate }}" placement="bottom">
                   {{ ctx.currentUserProfile?.followers }}
                 </span>
               </span>
