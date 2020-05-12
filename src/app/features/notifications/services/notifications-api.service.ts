@@ -25,6 +25,10 @@ export class NotificationsApiService extends BaseClassicApiService {
   }
 
   update(notification: NotificationInterface): Observable<void> {
+    if (!notification.extraTags) {
+      notification.extraTags = "-";
+    }
+
     return this.http.put<void>(`${this.configUrl}/${notification.id}/`, notification);
   }
 
