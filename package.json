@@ -11,13 +11,15 @@
     "start": "ng serve --host 0.0.0.0 --port 4400 --extra-webpack-config webpack.partial.js",
     "start:prod": "ng serve --host 0.0.0.0 --port 4400 --configuration=local-production  --extra-webpack-config webpack.partial.js",
     "build": "ng build  --extra-webpack-config webpack.partial.js",
+    "build:stats": "ng build  --extra-webpack-config webpack.partial.js --stats-json",
     "build:prod": "ng build --prod --aot  --extra-webpack-config webpack.partial.js",
     "test": "jest --config jest.config.js",
     "test:cov": "jest --config jest.config.js --coverage",
     "cy:wait-run": "./node_modules/.bin/wait-on http-get://localhost:4400/ && cypress run",
     "cy:wait-run-record": "./node_modules/.bin/wait-on http-get://localhost:4400/ && cross-var cypress run --record --key $CYPRESS_KEY",
     "cy:serve-and-run": "node_modules/.bin/run-p -r \"start\" \"cy:wait-run\"",
-    "cy:serve-and-run-record": "node_modules/.bin/run-p -r \"start\" \"cy:wait-run-record\""
+    "cy:serve-and-run-record": "node_modules/.bin/run-p -r \"start\" \"cy:wait-run-record\"",
+    "analyze": "webpack-bundle-analyzer dist/stats-es2015.json"
   },
   "private": true,
   "dependencies": {
@@ -89,7 +91,8 @@
     "tslint-angular": "3.0.2",
     "tslint-config-prettier": "1.18.0",
     "typescript": "3.8.3",
-    "wait-on": "5.0.0"
+    "wait-on": "5.0.0",
+    "webpack-bundle-analyzer": "^3.7.0"
   },
   "jest": {
     "projects": [
