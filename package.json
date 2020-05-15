@@ -90,7 +90,7 @@
     "tslint": "5.20.1",
     "tslint-angular": "3.0.2",
     "tslint-config-prettier": "1.18.0",
-    "typescript": "3.8.3",
+    "typescript": "3.9.2",
     "wait-on": "5.0.0",
     "webpack-bundle-analyzer": "^3.7.0"
   },
