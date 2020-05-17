@@ -14,8 +14,11 @@
     margin-top: 4rem;
     padding-top: 1rem;
     border-top: 1px solid lighten($grey, 5%);
-    display: flex;
-    justify-content: flex-end;
+
+    @media (min-width: $sm-min) {
+      display: flex;
+      justify-content: flex-end;
+    }
 
     > .btn {
       margin-left: .5rem;
