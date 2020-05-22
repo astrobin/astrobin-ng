@@ -47,7 +47,7 @@ export class AuthService extends BaseService implements AuthServiceInterface {
               return;
             }
 
-            this.cookieService.set(AuthService.CLASSIC_AUTH_TOKEN_COOKIE, token, 180);
+            this.cookieService.set(AuthService.CLASSIC_AUTH_TOKEN_COOKIE, token, 180, "/");
             this.appContext.loadForUser().then(() => {
               this.router.navigate(["account", "logged-in"], { queryParams: { redirectUrl } }).then(() => {
                 observer.next(true);
@@ -62,7 +62,7 @@ export class AuthService extends BaseService implements AuthServiceInterface {
 
   logout(): void {
     if (this.cookieService.check(AuthService.CLASSIC_AUTH_TOKEN_COOKIE)) {
-      this.cookieService.delete(AuthService.CLASSIC_AUTH_TOKEN_COOKIE);
+      this.cookieService.delete(AuthService.CLASSIC_AUTH_TOKEN_COOKIE, "/");
       this.router.navigate(["account", "logged-out"]);
     }
   }

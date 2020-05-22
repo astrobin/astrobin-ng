@@ -8,6 +8,8 @@ import { AuthService } from "@shared/services/auth.service";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
+import { Observable } from "rxjs";
+import { map } from "rxjs/operators";
 
 interface FlagInterface {
   languageCode: string;
@@ -26,18 +28,20 @@ export class HeaderComponent extends BaseComponent {
   flags: FlagInterface[] = [
     { languageCode: "en", countryCode: "us", label: "English (US)" },
     { languageCode: "en-GB", countryCode: "gb", label: "English (UK)" },
-    { languageCode: "it", countryCode: "it", label: "Italiano" },
+    { languageCode: "-", countryCode: "-", label: "-" },
+    { languageCode: "de", countryCode: "de", label: "Deutsch" },
     { languageCode: "es", countryCode: "es", label: "Español" },
     { languageCode: "fr", countryCode: "fr", label: "Français" },
-    { languageCode: "fi", countryCode: "fi", label: "Suomi" },
-    { languageCode: "de", countryCode: "de", label: "Deutsch" },
+    { languageCode: "it", countryCode: "it", label: "Italiano" },
+    { languageCode: "-", countryCode: "-", label: "-" },
+    { languageCode: "el", countryCode: "gr", label: "Ελληνικά" },
     { languageCode: "nl", countryCode: "nl", label: "Nederlands" },
-    { languageCode: "tr", countryCode: "tr", label: "Türk" },
-    { languageCode: "sq", countryCode: "al", label: "Shqipe" },
     { languageCode: "pl", countryCode: "pl", label: "Polski" },
     { languageCode: "pt-BR", countryCode: "br", label: "Português brasileiro" },
-    { languageCode: "el", countryCode: "gr", label: "Ελληνικά" },
     { languageCode: "ru", countryCode: "ru", label: "Русский" },
+    { languageCode: "sq", countryCode: "al", label: "Shqipe" },
+    { languageCode: "fi", countryCode: "fi", label: "Suomi" },
+    { languageCode: "tr", countryCode: "tr", label: "Türk" },
     { languageCode: "ar", countryCode: "ar", label: "العربية" },
     { languageCode: "ja", countryCode: "jp", label: "日本語" }
   ];
@@ -62,5 +66,21 @@ export class HeaderComponent extends BaseComponent {
   logout($event) {
     $event.preventDefault();
     this.authService.logout();
+  }
+
+  currentLanguageCode$(): Observable<string> {
+    return this.appContext.context$.pipe(map(context => context.languageCode));
+  }
+
+  currentLanguageFlag$(): Observable<string> {
+    return this.appContext.context$.pipe(
+      map(context => {
+        for (const flag of this.flags) {
+          if (flag.languageCode === context.languageCode) {
+            return flag.countryCode;
+          }
+        }
+      })
+    );
   }
 }
