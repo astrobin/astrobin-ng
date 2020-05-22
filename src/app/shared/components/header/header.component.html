@@ -196,20 +196,25 @@
         </li>
       </ul>
 
-      <ul *ngIf="authService.isAuthenticated() | async" class="navbar-nav">
+      <ul class="navbar-nav">
         <!-- Language selector -->
         <li class="nav-item d-none d-lg-block">
           <div class="d-inline-block" ngbDropdown>
             <button class="btn btn-link no-triangle" id="languageDropdown" ngbDropdownToggle>
-              <fa-icon icon="globe"></fa-icon>
+              <img alt="{{ currentLanguageCode$() | async }}" class="flag flag-{{ currentLanguageFlag$() | async }}"
+                height="16" src="/assets/flags/blank.gif" width="16" />
             </button>
             <div aria-labelledby="languageDropdown" ngbDropdownMenu>
-              <a *ngFor="let flag of flags" [href]="classicRoutes.SET_LANGUAGE(flag.languageCode,
-              windowRef.nativeWindow.location.href)" class="dropdown-item">
-                <img alt="{{ flag.countryCode }}" class="flag flag-{{ flag.countryCode }}" height="16"
-                  src="/assets/flags/blank.gif" width="16" />
-                {{ flag.label }}
-              </a>
+              <ng-container *ngFor="let flag of flags">
+                <a *ngIf="flag.countryCode !== '-'" [href]="classicRoutes.SET_LANGUAGE(flag.languageCode,
+                    windowRef.nativeWindow.location.href)" class="dropdown-item">
+                  <img alt="{{ flag.countryCode }}" class="flag flag-{{ flag.countryCode }}" height="16"
+                    src="/assets/flags/blank.gif" width="16" />
+                  {{ flag.label }}
+                </a>
+
+                <div *ngIf="flag.countryCode === '-'" class="dropdown-divider"></div>
+              </ng-container>
 
               <div class="dropdown-divider"></div>
 
