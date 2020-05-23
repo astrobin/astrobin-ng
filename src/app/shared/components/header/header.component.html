@@ -201,20 +201,25 @@
         </li>
       </ul>
 
-      <ul *ngIf="authService.isAuthenticated() | async" class="navbar-nav">
+      <ul class="navbar-nav">
         <!-- Language selector -->
         <li class="nav-item d-none d-lg-block">
           <div class="d-inline-block" ngbDropdown>
             <button class="btn btn-link no-triangle" id="languageDropdown" ngbDropdownToggle>
-              <fa-icon icon="globe"></fa-icon>
+              <img alt="{{ currentLanguageCode$() | async }}" class="flag flag-{{ currentLanguageFlag$() | async }}"
+                height="16" src="/assets/flags/blank.gif" width="16" />
             </button>
             <div aria-labelledby="languageDropdown" ngbDropdownMenu>
-              <a *ngFor="let flag of flags" [href]="classicRoutes.SET_LANGUAGE(flag.languageCode,
-              windowRef.nativeWindow.location.href)" class="dropdown-item">
-                <img alt="{{ flag.countryCode }}" class="flag flag-{{ flag.countryCode }}" height="16"
-                  src="/assets/flags/blank.gif" width="16" />
-                {{ flag.label }}
-              </a>
+              <ng-container *ngFor="let flag of flags">
+                <a *ngIf="flag.countryCode !== '-'" [href]="classicRoutes.SET_LANGUAGE(flag.languageCode,
+                    windowRef.nativeWindow.location.href)" class="dropdown-item">
+                  <img alt="{{ flag.countryCode }}" class="flag flag-{{ flag.countryCode }}" height="16"
+                    src="/assets/flags/blank.gif" width="16" />
+                  {{ flag.label }}
+                </a>
+
+                <div *ngIf="flag.countryCode === '-'" class="dropdown-divider"></div>
+              </ng-container>
 
               <div class="dropdown-divider"></div>
 
@@ -247,12 +252,12 @@
             <button class="btn btn-primary user-dropdown-toggle" id="user-dropdown" ngbDropdownToggle>
               <astrobin-username [user]="ctx.currentUser" [link]="false"></astrobin-username>
               <span class="scores">
-                <span *ngIf="!ctx.currentUserProfile?.excludeFromCompetition" class="score"
+                <span *ngIf="!ctx.currentUserProfile?.excludeFromCompetition" class="astrobin-index"
                   ngbTooltip="{{ 'AstroBin index' | translate }}" placement="bottom">
-                  {{ ctx.currentUserProfile?.astroBinIndex }}
+                  {{ ctx.currentUserProfile?.astroBinIndex | number:"1.2-2" }}
                   &middot;
                 </span>
-                <span class="score" ngbTooltip="{{ 'Followers' | translate }}" placement="bottom">
+                <span class="followers" ngbTooltip="{{ 'Followers' | translate }}" placement="bottom">
                   {{ ctx.currentUserProfile?.followers }}
                 </span>
               </span>

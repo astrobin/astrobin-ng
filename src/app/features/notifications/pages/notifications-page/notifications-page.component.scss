@@ -1,4 +1,5 @@
 @import "../../../../styles/variables";
+@import "../../../../styles/mixins";
 
 h1 .badge {
   display: inline-block;
@@ -17,5 +18,9 @@ h1 .badge {
     &.unread .read-icon {
       color: $accent-color;
     }
+  }
+
+  ::ng-deep a {
+    @include subtle-accent-link;
   }
 }

@@ -11,6 +11,24 @@
       dataLayer.push(arguments);
     }
     gtag('js', new Date());
+
+    gtag("config", "UA-844985-10", {
+      "linker": {
+        "domains": [
+          "www.astrobin.com",
+          "app.astrobin.com",
+          "welcome.astrobin.com",
+          "de.welcome.astrobin.com",
+          "es.welcome.astrobin.com",
+          "fr.welcome.astrobin.com",
+          "it.welcome.astrobin.com",
+          "pt.welcome.astrobin.com"
+        ],
+        "accept_incoming": true
+      }
+    });
+
+    gtag('config', "AW-1062298010");
   </script>
 
   <meta charset="utf-8" />

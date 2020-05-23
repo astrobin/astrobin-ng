@@ -69,6 +69,7 @@ import { strings as timeagoZhCn } from "ngx-timeago/language-strings/zh-CN";
 import { strings as timeagoZhTw } from "ngx-timeago/language-strings/zh-TW";
 
 export interface AppContextInterface {
+  languageCode: string;
   currentUserProfile: UserProfileInterface;
   currentUser: UserInterface;
   currentUserSubscriptions: UserSubscriptionInterface[];
@@ -125,9 +126,16 @@ export class AppContextService extends BaseService {
           }
         };
 
-        this.translate.setDefaultLang("en");
-        this.translate.use("en").subscribe(() => {
-          this._setTimeagoIntl("en");
+        let defaultLanguage = navigator.language || "en";
+        if (defaultLanguage.indexOf("-") > -1) {
+          defaultLanguage = defaultLanguage.split("-")[0];
+        }
+
+        this._appContext.languageCode = defaultLanguage;
+
+        this.translate.setDefaultLang(defaultLanguage);
+        this.translate.use(defaultLanguage).subscribe(() => {
+          this._setTimeagoIntl(defaultLanguage);
           this._subject.next(this._appContext);
           resolve(this);
         });
@@ -154,8 +162,11 @@ export class AppContextService extends BaseService {
             }
           };
 
-          this.translate.use(this._appContext.currentUserProfile.language).subscribe(() => {
-            this._setTimeagoIntl(this._appContext.currentUserProfile.language);
+          const languageCode = this._appContext.currentUserProfile.language;
+          this._appContext.languageCode = languageCode;
+          this.translate.setDefaultLang(languageCode);
+          this.translate.use(languageCode).subscribe(() => {
+            this._setTimeagoIntl(languageCode);
             this._subject.next(this._appContext);
             resolve(this);
           });
