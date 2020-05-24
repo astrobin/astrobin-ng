@@ -92,7 +92,8 @@ export class AppContextService extends BaseService {
       }
 
       return of(null);
-    })
+    }),
+    share()
   );
   private _getUserSubscriptions$ = this._getCurrentUser$.pipe(
     flatMap(user => {
@@ -101,7 +102,8 @@ export class AppContextService extends BaseService {
       }
 
       return of(null);
-    })
+    }),
+    share()
   );
   private _getSubscriptions$ = this.commonApi.getSubscriptions().pipe(share());
 
