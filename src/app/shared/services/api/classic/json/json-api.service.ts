@@ -1,6 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { environment } from "@env/environment";
+import { BackendConfigInterface } from "@shared/interfaces/backend-config.interface";
 import { JsonApiServiceInterface } from "@shared/services/api/classic/json/json-api.service-interface";
 import { LoadingService } from "@shared/services/loading.service";
 import { Observable } from "rxjs";
@@ -16,7 +17,7 @@ export class JsonApiService extends BaseClassicApiService implements JsonApiServ
     super(loadingService);
   }
 
-  getBackendConfig(): Observable<{ version: string }> {
-    return this.http.get<{ version: string }>(`${this.configUrl}/common/app-config/`);
+  getBackendConfig(): Observable<BackendConfigInterface> {
+    return this.http.get<BackendConfigInterface>(`${this.configUrl}/common/app-config/`);
   }
 }
