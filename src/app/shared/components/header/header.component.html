@@ -201,19 +201,15 @@
         <li class="nav-item d-none d-lg-block">
           <div class="d-inline-block" ngbDropdown>
             <button class="btn btn-link no-triangle" id="languageDropdown" ngbDropdownToggle>
-              <img alt="{{ currentLanguageCode$() | async }}" class="flag flag-{{ currentLanguageFlag$() | async }}"
-                height="16" src="/assets/flags/blank.gif" width="16" />
+              <fa-icon icon="globe"></fa-icon>
             </button>
             <div aria-labelledby="languageDropdown" ngbDropdownMenu>
-              <ng-container *ngFor="let flag of flags">
-                <a *ngIf="flag.countryCode !== '-'" [href]="classicRoutes.SET_LANGUAGE(flag.languageCode,
+              <ng-container *ngFor="let language of languages">
+                <a *ngIf="language.code !== '-'" [href]="classicRoutes.SET_LANGUAGE(language.code,
                     windowRef.nativeWindow.location.href)" class="dropdown-item">
-                  <img alt="{{ flag.countryCode }}" class="flag flag-{{ flag.countryCode }}" height="16"
-                    src="/assets/flags/blank.gif" width="16" />
-                  {{ flag.label }}
+                  {{ language.label }}
                 </a>
-
-                <div *ngIf="flag.countryCode === '-'" class="dropdown-divider"></div>
+                <div *ngIf="language.code === '-'" class="dropdown-divider"></div>
               </ng-container>
 
               <div class="dropdown-divider"></div>
