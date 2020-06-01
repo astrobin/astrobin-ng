@@ -32,6 +32,7 @@ export class HeaderComponent extends BaseComponent {
     { code: "es", label: "Español" },
     { code: "fr", label: "Français" },
     { code: "it", label: "Italiano" },
+    { code: "pt", label: "Português" },
     { code: "-", label: "-" },
     { code: "ar", label: "العربية" },
     { code: "el", label: "Ελληνικά" },
@@ -39,7 +40,6 @@ export class HeaderComponent extends BaseComponent {
     { code: "ja", label: "日本語" },
     { code: "nl", label: "Nederlands" },
     { code: "pl", label: "Polski" },
-    { code: "pt", label: "Português" },
     { code: "ru", label: "Русский" },
     { code: "sq", label: "Shqipe" },
     { code: "tr", label: "Türk" }
