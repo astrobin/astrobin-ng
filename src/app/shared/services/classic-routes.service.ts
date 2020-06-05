@@ -23,6 +23,7 @@ export class ClassicRoutesService extends BaseService {
   TOP_PICKS = BASE_URL + "/explore/top-picks/";
   IOTD = BASE_URL + "/iotd/archive/";
   GROUPS = BASE_URL + "/groups/";
+  REMOTE_ASTROPHOTOGRAPHY = "https://welcome.astrobin.com/remote-astrophotography";
   TRENDING_ASTROPHOTOGRAPHERS = BASE_URL + "/trending-astrophotographers/";
   ABOUT = "https://welcome.astrobin.com/about";
   FAQ = "https://welcome.astrobin.com/faq";

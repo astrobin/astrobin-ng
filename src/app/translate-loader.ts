@@ -46,7 +46,7 @@ export class LanguageLoader extends TranslatePoHttpLoader implements TranslateLo
     this._jsonApi.getBackendConfig().pipe(
       switchMap(backendConfig =>
         this._http
-          .get(`${environment.classicApiUrl}/json-api/i18n/messages/${lang}/?version=${backendConfig.version}`, {
+          .get(`${environment.classicApiUrl}/json-api/i18n/messages/${lang}/?version=${backendConfig.i18nHash}`, {
             responseType: "text"
           })
           .pipe(map((contents: string) => this.parse(contents)))

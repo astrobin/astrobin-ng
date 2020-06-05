@@ -11,9 +11,8 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 
-interface FlagInterface {
-  languageCode: string;
-  countryCode: string;
+interface AvailableLanguageInterface {
+  code: string;
   label: string;
 }
 
@@ -25,25 +24,25 @@ interface FlagInterface {
 export class HeaderComponent extends BaseComponent {
   isCollapsed = true;
 
-  flags: FlagInterface[] = [
-    { languageCode: "en", countryCode: "us", label: "English (US)" },
-    { languageCode: "en-GB", countryCode: "gb", label: "English (UK)" },
-    { languageCode: "-", countryCode: "-", label: "-" },
-    { languageCode: "de", countryCode: "de", label: "Deutsch" },
-    { languageCode: "es", countryCode: "es", label: "Español" },
-    { languageCode: "fr", countryCode: "fr", label: "Français" },
-    { languageCode: "it", countryCode: "it", label: "Italiano" },
-    { languageCode: "-", countryCode: "-", label: "-" },
-    { languageCode: "el", countryCode: "gr", label: "Ελληνικά" },
-    { languageCode: "nl", countryCode: "nl", label: "Nederlands" },
-    { languageCode: "pl", countryCode: "pl", label: "Polski" },
-    { languageCode: "pt-BR", countryCode: "br", label: "Português brasileiro" },
-    { languageCode: "ru", countryCode: "ru", label: "Русский" },
-    { languageCode: "sq", countryCode: "al", label: "Shqipe" },
-    { languageCode: "fi", countryCode: "fi", label: "Suomi" },
-    { languageCode: "tr", countryCode: "tr", label: "Türk" },
-    { languageCode: "ar", countryCode: "ar", label: "العربية" },
-    { languageCode: "ja", countryCode: "jp", label: "日本語" }
+  languages: AvailableLanguageInterface[] = [
+    { code: "en", label: "English (US)" },
+    { code: "en-GB", label: "English (UK)" },
+    { code: "-", label: "-" },
+    { code: "de", label: "Deutsch" },
+    { code: "es", label: "Español" },
+    { code: "fr", label: "Français" },
+    { code: "it", label: "Italiano" },
+    { code: "pt", label: "Português" },
+    { code: "-", label: "-" },
+    { code: "ar", label: "العربية" },
+    { code: "el", label: "Ελληνικά" },
+    { code: "fi", label: "Suomi" },
+    { code: "ja", label: "日本語" },
+    { code: "nl", label: "Nederlands" },
+    { code: "pl", label: "Polski" },
+    { code: "ru", label: "Русский" },
+    { code: "sq", label: "Shqipe" },
+    { code: "tr", label: "Türk" }
   ];
 
   constructor(
@@ -70,17 +69,5 @@ export class HeaderComponent extends BaseComponent {
 
   currentLanguageCode$(): Observable<string> {
     return this.appContext.context$.pipe(map(context => context.languageCode));
-  }
-
-  currentLanguageFlag$(): Observable<string> {
-    return this.appContext.context$.pipe(
-      map(context => {
-        for (const flag of this.flags) {
-          if (flag.languageCode === context.languageCode) {
-            return flag.countryCode;
-          }
-        }
-      })
-    );
   }
 }
