@@ -33,7 +33,7 @@
     "@angular/platform-browser": "9.1.9",
     "@angular/platform-browser-dynamic": "9.1.9",
     "@angular/router": "9.1.9",
-    "@fjnr/ngx-translate-po-http-loader": "3.1.2",
+    "@fjnr/ngx-translate-po-http-loader": "3.1.5",
     "@fortawesome/angular-fontawesome": "0.6.1",
     "@fortawesome/fontawesome-svg-core": "1.2.28",
     "@fortawesome/free-solid-svg-icons": "5.13.0",
