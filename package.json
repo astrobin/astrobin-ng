@@ -73,7 +73,7 @@
     "cross-var": "1.1.0",
     "cypress": "4.8.0",
     "faker": "4.1.0",
-    "jest": "26.0.1",
+    "jest": "26.1.0",
     "jest-preset-angular": "7.1.1",
     "js-beautify": "1.11.0",
     "ng-mocks": "9.6.2",
