@@ -71,7 +71,7 @@
     "codelyzer": "5.2.2",
     "concurrently": "5.2.0",
     "cross-var": "1.1.0",
-    "cypress": "4.8.0",
+    "cypress": "4.9.0",
     "faker": "4.1.0",
     "jest": "26.1.0",
     "jest-preset-angular": "7.1.1",
