@@ -13,7 +13,7 @@
   > .buttons-area {
     margin-top: 4rem;
     padding-top: 1rem;
-    border-top: 1px solid lighten($grey, 5%);
+    border-top: 1px solid $light-grey;
 
     @media (min-width: $sm-min) {
       display: flex;

@@ -27,7 +27,7 @@ describe("CommonApiService", () => {
 
   describe("getBackendConfig", () => {
     it("should work", () => {
-      service.getBackendConfig().subscribe(response => {
+      service.getBackendConfig$().subscribe(response => {
         expect(response.version).toEqual("v2.0.0");
       });
 

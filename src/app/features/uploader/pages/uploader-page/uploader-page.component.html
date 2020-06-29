@@ -1,0 +1,25 @@
+<div class="page">
+  <h1>
+    {{"Uploader" | translate}}
+  </h1>
+
+  <ng-container *ngIf="{
+    appContext: appContext$ | async,
+    backendConfig: backendConfig$ | async
+    } as data">
+
+    <astrobin-read-only-mode *ngIf="data.backendConfig?.readOnly; else uploaderTemplate"></astrobin-read-only-mode>
+
+  </ng-container>
+</div>
+
+<ng-template #uploaderTemplate>
+  <form (ngSubmit)="onSubmit()" [formGroup]="form">
+    <formly-form [fields]="fields" [form]="form" [model]="model"></formly-form>
+
+    <div class="form-actions">
+      <button class="btn btn-lg btn-primary" [disabled]="uploadButtonDisabled()" [class.loading]="uploadButtonLoading()"
+        type="submit">{{ "Upload" | translate }}</button>
+    </div>
+  </form>
+</ng-template>

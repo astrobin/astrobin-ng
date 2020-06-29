@@ -17,7 +17,7 @@ export class JsonApiService extends BaseClassicApiService implements JsonApiServ
     super(loadingService);
   }
 
-  getBackendConfig(): Observable<BackendConfigInterface> {
+  getBackendConfig$(): Observable<BackendConfigInterface> {
     return this.http.get<BackendConfigInterface>(`${this.configUrl}/common/app-config/`);
   }
 }

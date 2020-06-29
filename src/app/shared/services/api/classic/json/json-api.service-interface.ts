@@ -2,5 +2,5 @@ import { BackendConfigInterface } from "@shared/interfaces/backend-config.interf
 import { Observable } from "rxjs";
 
 export interface JsonApiServiceInterface {
-  getBackendConfig(): Observable<BackendConfigInterface>;
+  getBackendConfig$(): Observable<BackendConfigInterface>;
 }

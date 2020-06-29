@@ -5,10 +5,13 @@ import { NgbModule, NgbPaginationModule } from "@ng-bootstrap/ng-bootstrap";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FormlyModule } from "@ngx-formly/core";
 import { TranslateModule } from "@ngx-translate/core";
+import { FormlyFieldChunkedFileComponent } from "@shared/components/misc/formly-field-chunked-file/formly-field-chunked-file.component";
 import { ApiModule } from "@shared/services/api/api.module";
 import { AppContextService } from "@shared/services/app-context.service";
 import { AuthService } from "@shared/services/auth.service";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
+import { AuthGuardService } from "@shared/services/guards/auth-guard.service";
+import { UltimateSubscriptionGuardService } from "@shared/services/guards/ultimate-subscription-guard.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { SessionService } from "@shared/services/session.service";
@@ -47,7 +50,15 @@ export function appInitializer(appContext: AppContextService, authService: AuthS
     ComponentsModule,
     HttpClientModule,
 
-    FormlyModule.forRoot(),
+    FormlyModule.forRoot({
+      types: [
+        {
+          name: "chunked-file",
+          component: FormlyFieldChunkedFileComponent,
+          wrappers: ["form-field"]
+        }
+      ]
+    }),
     FormlyBootstrapModule,
     NgbModule,
     NgbPaginationModule,
@@ -75,16 +86,19 @@ export class SharedModule {
       ngModule: SharedModule,
       providers: [
         AppContextService,
+        AuthGuardService,
         AuthService,
         ClassicRoutesService,
         CookieService,
         LoadingService,
         PopNotificationsService,
         SessionService,
+        UltimateSubscriptionGuardService,
         UserService,
         UserStoreService,
         ValidationLoader,
-        WindowRefService,  {
+        WindowRefService,
+        {
           provide: APP_INITIALIZER,
           useFactory: appInitializer,
           multi: true,
