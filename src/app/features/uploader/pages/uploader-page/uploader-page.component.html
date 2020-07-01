@@ -20,6 +20,9 @@
     <formly-form [fields]="fields" [form]="form" [model]="model"></formly-form>
 
     <div class="form-actions">
+      <a class="btn btn-link"
+        [attr.href]="classicRoutesService.UPLOAD">{{ "Return to the classic uploader" | translate }}
+      </a>
       <button class="btn btn-lg btn-primary" [disabled]="uploadButtonDisabled()" [class.loading]="uploadButtonLoading()"
         type="submit">{{ "Upload" | translate }}</button>
     </div>
