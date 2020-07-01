@@ -2,6 +2,7 @@ import { TestBed } from "@angular/core/testing";
 import { RouterStateSnapshot } from "@angular/router";
 import { testAppImports } from "@app/test-app.imports";
 import { testAppProviders } from "@app/test-app.providers";
+import { Constants } from "@shared/constants";
 import { AppContextGenerator } from "@shared/generators/app-context.generator";
 import { AuthGuardService } from "@shared/services/guards/auth-guard.service";
 import { UltimateSubscriptionGuardService } from "@shared/services/guards/ultimate-subscription-guard.service";
@@ -19,7 +20,6 @@ describe("UltimateSubscriptionGuardService", () => {
 
   beforeEach(() => {
     service = TestBed.inject(UltimateSubscriptionGuardService);
-    service.appContextService.context$ = of(AppContextGenerator.appContext());
   });
 
   it("should be created", () => {
@@ -27,17 +27,17 @@ describe("UltimateSubscriptionGuardService", () => {
   });
 
   it("should pass if user is Ultimate", () => {
-    jest.spyOn(service.userSubscriptionService, "isUltimateSubscriber").mockReturnValue(true);
+    const context = AppContextGenerator.appContext();
+    context.subscriptions[0].name = Constants.ASTROBIN_ULTIMATE_2020;
+    service.appContextService.context$ = of(AppContextGenerator.appContext());
     service.canActivate(null, { url: "/foo" } as RouterStateSnapshot).subscribe(result => {
       expect(result).toBe(true);
     });
   });
 
   it("should redirect to permission denied page if user is not Ultimate", () => {
-    jest.spyOn(service.userSubscriptionService, "isUltimateSubscriber").mockReturnValue(false);
-    jest.spyOn(service.router, "navigateByUrl").mockImplementation(() => {
-      return new Promise(resolve => resolve());
-    });
+    const context = AppContextGenerator.appContext();
+    context.subscriptions[0].name = Constants.ASTROBIN_PREMIUM_2020;
     service.canActivate(null, { url: "/foo" } as RouterStateSnapshot).subscribe(result => {
       expect(result).toBe(false);
       expect(service.router.navigateByUrl).toHaveBeenCalled();

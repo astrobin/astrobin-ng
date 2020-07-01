@@ -1,9 +1,9 @@
 import { Injectable } from "@angular/core";
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from "@angular/router";
+import { Constants } from "@shared/constants";
 import { AppContextService } from "@shared/services/app-context.service";
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
-import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
 import { Observable } from "rxjs";
 import { take } from "rxjs/operators";
 
@@ -12,7 +12,6 @@ export class UltimateSubscriptionGuardService extends BaseService implements Can
   constructor(
     public loadingService: LoadingService,
     public appContextService: AppContextService,
-    public userSubscriptionService: UserSubscriptionService,
     public router: Router
   ) {
     super(loadingService);
@@ -21,7 +20,14 @@ export class UltimateSubscriptionGuardService extends BaseService implements Can
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
     return new Observable<boolean>(observer => {
       this.appContextService.context$.pipe(take(1)).subscribe(context => {
-        if (this.userSubscriptionService.isUltimateSubscriber(context.currentUser)) {
+        const ultimate = context.subscriptions.filter(
+          subscription => subscription.name === Constants.ASTROBIN_ULTIMATE_2020
+        )[0];
+        if (
+          context.currentUserSubscriptions.filter(userSubscription => {
+            return userSubscription.subscription === ultimate.id && userSubscription.valid;
+          }).length > 0
+        ) {
           observer.next(true);
           observer.complete();
           return;
