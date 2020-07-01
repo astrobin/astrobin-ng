@@ -104,15 +104,6 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnDest
     return this.uploadState && this.uploadState.status === "complete";
   }
 
-  isPaused(): boolean {
-    return (
-      this.uploadState &&
-      ["pause"].indexOf(this.uploadState.status) > -1 &&
-      this.uploadState.progress &&
-      this.uploadState.progress > 0
-    );
-  }
-
   ngOnDestroy(): void {
     if (this._metadataChangesSubscription) {
       this._metadataChangesSubscription.unsubscribe();

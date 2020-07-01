@@ -1,5 +1,6 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 
+import { testAppImports } from "@app/test-app.imports";
 import { ReadOnlyModeComponent } from "./read-only-mode.component";
 
 describe("ReadOnlyModeComponent", () => {
@@ -8,6 +9,8 @@ describe("ReadOnlyModeComponent", () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      imports: testAppImports,
+
       declarations: [ReadOnlyModeComponent]
     }).compileComponents();
   }));

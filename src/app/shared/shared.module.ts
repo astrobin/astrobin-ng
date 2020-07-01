@@ -1,11 +1,11 @@
 import { CommonModule } from "@angular/common";
 import { HttpClientModule } from "@angular/common/http";
 import { APP_INITIALIZER, ModuleWithProviders, NgModule } from "@angular/core";
+import { formlyConfig } from "@app/formly.config";
 import { NgbModule, NgbPaginationModule } from "@ng-bootstrap/ng-bootstrap";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FormlyModule } from "@ngx-formly/core";
 import { TranslateModule } from "@ngx-translate/core";
-import { FormlyFieldChunkedFileComponent } from "@shared/components/misc/formly-field-chunked-file/formly-field-chunked-file.component";
 import { ApiModule } from "@shared/services/api/api.module";
 import { AppContextService } from "@shared/services/app-context.service";
 import { AuthService } from "@shared/services/auth.service";
@@ -50,15 +50,7 @@ export function appInitializer(appContext: AppContextService, authService: AuthS
     ComponentsModule,
     HttpClientModule,
 
-    FormlyModule.forRoot({
-      types: [
-        {
-          name: "chunked-file",
-          component: FormlyFieldChunkedFileComponent,
-          wrappers: ["form-field"]
-        }
-      ]
-    }),
+    FormlyModule.forRoot(formlyConfig),
     FormlyBootstrapModule,
     NgbModule,
     NgbPaginationModule,

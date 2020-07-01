@@ -31,6 +31,7 @@ export class UploaderPageComponent extends BaseComponent implements OnInit {
   fields: FormlyFieldConfig[] = [
     {
       key: "title",
+      id: "title",
       type: "input",
       templateOptions: {
         label: this.translate.instant("Title"),
@@ -40,6 +41,7 @@ export class UploaderPageComponent extends BaseComponent implements OnInit {
     },
     {
       key: "image_file",
+      id: "image_file",
       type: "chunked-file",
       templateOptions: {
         required: true
@@ -47,6 +49,7 @@ export class UploaderPageComponent extends BaseComponent implements OnInit {
     },
     {
       key: "is_wip",
+      id: "is_wip",
       type: "checkbox",
       templateOptions: {
         label: this.translate.instant("Upload to your Staging area"),
@@ -59,6 +62,7 @@ export class UploaderPageComponent extends BaseComponent implements OnInit {
     },
     {
       key: "skip_notifications",
+      id: "skip_notifications",
       type: "checkbox",
       templateOptions: {
         label: this.translate.instant("Skip notifications"),
