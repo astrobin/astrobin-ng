@@ -36,7 +36,7 @@ export class UploaderPageComponent extends BaseComponent implements OnInit {
       templateOptions: {
         label: this.translate.instant("Title"),
         required: true,
-        change: this._updateUploadMetadataWithTitle.bind(this)
+        change: this._onTitleChange.bind(this)
       }
     },
     {
@@ -57,7 +57,7 @@ export class UploaderPageComponent extends BaseComponent implements OnInit {
           "This will upload this image to your staging area, making it unlisted. The " +
             "image will be accessible by anyone with a direct link."
         ),
-        change: this._updateUploadMetadataWithWip.bind(this)
+        change: this._onIsWipChange.bind(this)
       }
     },
     {
@@ -67,7 +67,10 @@ export class UploaderPageComponent extends BaseComponent implements OnInit {
       templateOptions: {
         label: this.translate.instant("Skip notifications"),
         description: this.translate.instant("Do not notify your followers about this revision."),
-        change: this._updateUploadMetadataWithSkipNotifications.bind(this)
+        change: this._onSkipNotificationsChange.bind(this)
+      },
+      expressionProperties: {
+        "templateOptions.disabled": "model.is_wip"
       }
     }
   ];
@@ -121,15 +124,16 @@ export class UploaderPageComponent extends BaseComponent implements OnInit {
     );
   }
 
-  private _updateUploadMetadataWithTitle() {
+  private _onTitleChange() {
     this.uploadDataService.setMetadata("image-upload", { title: this.model.title });
   }
 
-  private _updateUploadMetadataWithWip() {
+  private _onIsWipChange() {
+    this.form.patchValue({ skip_notifications: true });
     this.uploadDataService.setMetadata("image-upload", { is_wip: this.model.is_wip });
   }
 
-  private _updateUploadMetadataWithSkipNotifications() {
+  private _onSkipNotificationsChange() {
     this.uploadDataService.setMetadata("image-upload", { skip_notifications: this.model.skip_notifications });
   }
 }
