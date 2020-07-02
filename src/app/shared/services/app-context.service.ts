@@ -84,8 +84,10 @@ export class AppContextService extends BaseService {
 
   private _subject = new BehaviorSubject<AppContextInterface>(undefined);
   private _appContext = {} as AppContextInterface;
-  private _getCurrentUserProfile$ = this.commonApi.getCurrentUserProfile().pipe(share());
-  private _getCurrentUser$ = this._getCurrentUserProfile$.pipe(
+  private _getCurrentUserProfile$: Observable<UserProfileInterface> = this.commonApi
+    .getCurrentUserProfile()
+    .pipe(share());
+  private _getCurrentUser$: Observable<UserInterface> = this._getCurrentUserProfile$.pipe(
     flatMap(userProfile => {
       if (userProfile !== null) {
         return this.commonApi.getUser(userProfile.user);
@@ -95,7 +97,7 @@ export class AppContextService extends BaseService {
     }),
     share()
   );
-  private _getUserSubscriptions$ = this._getCurrentUser$.pipe(
+  private _getUserSubscriptions$: Observable<UserSubscriptionInterface[]> = this._getCurrentUser$.pipe(
     flatMap(user => {
       if (user !== null) {
         return this.commonApi.getUserSubscriptions(user);
@@ -105,7 +107,7 @@ export class AppContextService extends BaseService {
     }),
     share()
   );
-  private _getSubscriptions$ = this.commonApi.getSubscriptions().pipe(share());
+  private _getSubscriptions$: Observable<SubscriptionInterface[]> = this.commonApi.getSubscriptions().pipe(share());
 
   constructor(
     public loadingService: LoadingService,

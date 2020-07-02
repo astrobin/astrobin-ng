@@ -1,6 +1,7 @@
 import { CommonModule } from "@angular/common";
 import { HttpClientModule } from "@angular/common/http";
 import { APP_INITIALIZER, ModuleWithProviders, NgModule } from "@angular/core";
+import { formlyConfig } from "@app/formly.config";
 import { NgbModule, NgbPaginationModule } from "@ng-bootstrap/ng-bootstrap";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FormlyModule } from "@ngx-formly/core";
@@ -9,6 +10,8 @@ import { ApiModule } from "@shared/services/api/api.module";
 import { AppContextService } from "@shared/services/app-context.service";
 import { AuthService } from "@shared/services/auth.service";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
+import { AuthGuardService } from "@shared/services/guards/auth-guard.service";
+import { UltimateSubscriptionGuardService } from "@shared/services/guards/ultimate-subscription-guard.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { SessionService } from "@shared/services/session.service";
@@ -47,7 +50,7 @@ export function appInitializer(appContext: AppContextService, authService: AuthS
     ComponentsModule,
     HttpClientModule,
 
-    FormlyModule.forRoot(),
+    FormlyModule.forRoot(formlyConfig),
     FormlyBootstrapModule,
     NgbModule,
     NgbPaginationModule,
@@ -75,16 +78,19 @@ export class SharedModule {
       ngModule: SharedModule,
       providers: [
         AppContextService,
+        AuthGuardService,
         AuthService,
         ClassicRoutesService,
         CookieService,
         LoadingService,
         PopNotificationsService,
         SessionService,
+        UltimateSubscriptionGuardService,
         UserService,
         UserStoreService,
         ValidationLoader,
-        WindowRefService,  {
+        WindowRefService,
+        {
           provide: APP_INITIALIZER,
           useFactory: appInitializer,
           multi: true,

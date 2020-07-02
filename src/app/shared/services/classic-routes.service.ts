@@ -48,4 +48,6 @@ export class ClassicRoutesService extends BaseService {
   API_KEYS = (profile: UserInterface) => BASE_URL + `/users/${profile?.username}/apikeys/`;
 
   SET_LANGUAGE = (languageCode: string, next) => BASE_URL + `/language/set/${languageCode}/?next=${next}`;
+
+  EDIT_IMAGE_THUMBNAILS = (id: string) => BASE_URL + `/edit/thumbnails/${id}/`;
 }
