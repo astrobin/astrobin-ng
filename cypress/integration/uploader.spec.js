@@ -86,6 +86,13 @@ context("upload-metadata", () => {
       });
 
       it("should redirect if user is Premium 2020", () => {
+      it("should check and disable the 'skip notification' checkbox if 'staging area' is selected", () => {
+        cy.get("[for='is_wip']").click();
+        cy.get("#skip_notifications").should("be.disabled");
+        cy.get("#skip_notifications").should("be.checked");
+      });
+
+      it("should redirect if user is not Ultimate", () => {
         cy.login();
 
         cy.route("GET", "**/common/usersubscriptions/?user=*", "fixture:api/common/usersubscriptions_2.json").as(
