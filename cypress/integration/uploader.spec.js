@@ -47,7 +47,45 @@ context("upload-metadata", () => {
         cy.get("#skip_notifications").should("exist");
       });
 
-      it("should redirect if user is not Ultimate", () => {
+      it("should have all form controls if user is Premium", () => {
+        cy.login();
+
+        cy.route(
+          "GET",
+          "**/common/usersubscriptions/?user=*",
+          "fixture:api/common/usersubscriptions_2_premium.json"
+        ).as("getUserSubscriptions");
+
+        cy.route("GET", "**/common/users/*", "fixture:api/common/users_2.json").as("getUser");
+
+        cy.visitPage("/uploader");
+
+        cy.get("#title").should("exist");
+        cy.get("#image_file").should("exist");
+        cy.get("#is_wip").should("exist");
+        cy.get("#skip_notifications").should("exist");
+      });
+
+      it("should have all form controls if user is Premium (autorenew)", () => {
+        cy.login();
+
+        cy.route(
+          "GET",
+          "**/common/usersubscriptions/?user=*",
+          "fixture:api/common/usersubscriptions_2_premium_autorenew.json"
+        ).as("getUserSubscriptions");
+
+        cy.route("GET", "**/common/users/*", "fixture:api/common/users_2.json").as("getUser");
+
+        cy.visitPage("/uploader");
+
+        cy.get("#title").should("exist");
+        cy.get("#image_file").should("exist");
+        cy.get("#is_wip").should("exist");
+        cy.get("#skip_notifications").should("exist");
+      });
+
+      it("should redirect if user is Premium 2020", () => {
         cy.login();
 
         cy.route("GET", "**/common/usersubscriptions/?user=*", "fixture:api/common/usersubscriptions_2.json").as(
@@ -58,7 +96,7 @@ context("upload-metadata", () => {
 
         cy.visitPage("/uploader");
 
-        cy.url().should("contain", "/permission-denied?reason=ultimate-subscription-required");
+        cy.url().should("contain", "/permission-denied");
       });
     });
   });

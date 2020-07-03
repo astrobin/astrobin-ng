@@ -2,10 +2,10 @@ import { GroupGenerator } from "@shared/generators/group.generator";
 import { SubscriptionInterface } from "@shared/interfaces/subscription.interface";
 
 export class SubscriptionGenerator {
-  static subscription(): SubscriptionInterface {
+  static subscription(id?: number, name?: string): SubscriptionInterface {
     return {
-      id: 1,
-      name: "Test subscription",
+      id: id || 1,
+      name: name || "Test subscription",
       description: "Description of test subscription",
       price: 99,
       currency: "CHF",

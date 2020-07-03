@@ -1,7 +1,7 @@
 import { Routes } from "@angular/router";
 import { UploaderPageComponent } from "@features/uploader/pages/uploader-page/uploader-page.component";
+import { UploaderGuardService } from "@features/uploader/services/guards/uploader-guard.service";
 import { AuthGuardService } from "@shared/services/guards/auth-guard.service";
-import { UltimateSubscriptionGuardService } from "@shared/services/guards/ultimate-subscription-guard.service";
 
 export const routes: Routes = [
   {
@@ -11,7 +11,7 @@ export const routes: Routes = [
     children: [
       {
         path: "",
-        canActivate: [UltimateSubscriptionGuardService],
+        canActivate: [UploaderGuardService],
         component: UploaderPageComponent
       }
     ]
