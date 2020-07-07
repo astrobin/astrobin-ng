@@ -50,7 +50,9 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnDest
           ...this.uploadOptions.metadata,
           ...event.metadata
         };
-        this.uploaderService.queue.forEach(queue => (queue.metadata = this.uploadOptions.metadata));
+        this.uploaderService.queue.forEach(
+          queue => (queue.metadata = { ...queue.metadata, ...this.uploadOptions.metadata })
+        );
       });
   }
 
