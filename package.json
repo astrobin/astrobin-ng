@@ -91,7 +91,7 @@
     "tslint-angular": "3.0.2",
     "tslint-config-prettier": "1.18.0",
     "typescript": "3.8.3",
-    "wait-on": "5.0.3",
+    "wait-on": "5.1.0",
     "webpack-bundle-analyzer": "3.8.0"
   },
   "jest": {
