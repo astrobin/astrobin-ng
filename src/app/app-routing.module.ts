@@ -15,6 +15,15 @@ const routes: Routes = [
     loadChildren: () => import("@features/notifications/notifications.module").then(m => m.NotificationsModule)
   },
   {
+    path: "permission-denied",
+    loadChildren: () =>
+      import("@features/permission-denied/permission-denied.module").then(m => m.PermissionDeniedModule)
+  },
+  {
+    path: "uploader",
+    loadChildren: () => import("@features/uploader/uploader.module").then(m => m.UploaderModule)
+  },
+  {
     path: "**",
     loadChildren: () => import("@features/not-found-404/not-found-404.module").then(m => m.NotFound404Module)
   }

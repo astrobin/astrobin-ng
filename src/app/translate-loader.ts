@@ -43,7 +43,7 @@ export class LanguageLoader extends TranslatePoHttpLoader implements TranslateLo
   }
 
   private _classicTranslations$ = (lang: string) =>
-    this._jsonApi.getBackendConfig().pipe(
+    this._jsonApi.getBackendConfig$().pipe(
       switchMap(backendConfig =>
         this._http
           .get(`${environment.classicApiUrl}/json-api/i18n/messages/${lang}/?version=${backendConfig.i18nHash}`, {

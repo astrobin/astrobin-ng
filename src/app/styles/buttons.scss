@@ -51,28 +51,28 @@
   }
 
   &.btn-secondary:not(:disabled):not(.disabled) {
-    background: $lightest-grey linear-gradient(
+    background: $white linear-gradient(
         to bottom,
-        $lightest-grey,
-        darken($lighter-grey, 10%)
+        $white,
+        darken($white, 10%)
     );
     border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
     color: $darker-grey;
     text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
 
     &:hover {
-      background: $lightest-grey linear-gradient(
+      background: $white linear-gradient(
           to bottom,
-          lighten($lightest-grey, 5%),
-          darken($lighter-grey, 5%)
+          lighten($white, 5%),
+          darken($white, 5%)
       );
     }
 
     &:active {
-      background: $lightest-grey linear-gradient(
+      background: $white linear-gradient(
           to top,
-          lighten($lightest-grey, 5%),
-          darken($lighter-grey, 5%)
+          lighten($white, 5%),
+          darken($white, 5%)
       );
       color: $darker-grey;
     }
