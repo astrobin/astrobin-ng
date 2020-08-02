@@ -86,24 +86,25 @@ context("upload-metadata", () => {
       });
 
       it("should redirect if user is Premium 2020", () => {
-      it("should check and disable the 'skip notification' checkbox if 'staging area' is selected", () => {
-        cy.get("[for='is_wip']").click();
-        cy.get("#skip_notifications").should("be.disabled");
-        cy.get("#skip_notifications").should("be.checked");
-      });
+        it("should check and disable the 'skip notification' checkbox if 'staging area' is selected", () => {
+          cy.get("[for='is_wip']").click();
+          cy.get("#skip_notifications").should("be.disabled");
+          cy.get("#skip_notifications").should("be.checked");
+        });
 
-      it("should redirect if user is not Ultimate", () => {
-        cy.login();
+        it("should redirect if user is not Ultimate", () => {
+          cy.login();
 
-        cy.route("GET", "**/common/usersubscriptions/?user=*", "fixture:api/common/usersubscriptions_2.json").as(
-          "getUserSubscriptions"
-        );
+          cy.route("GET", "**/common/usersubscriptions/?user=*", "fixture:api/common/usersubscriptions_2.json").as(
+            "getUserSubscriptions"
+          );
 
-        cy.route("GET", "**/common/users/*", "fixture:api/common/users_2.json").as("getUser");
+          cy.route("GET", "**/common/users/*", "fixture:api/common/users_2.json").as("getUser");
 
-        cy.visitPage("/uploader");
+          cy.visitPage("/uploader");
 
-        cy.url().should("contain", "/permission-denied");
+          cy.url().should("contain", "/permission-denied");
+        });
       });
     });
   });

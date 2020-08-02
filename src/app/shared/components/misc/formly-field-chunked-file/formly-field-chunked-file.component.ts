@@ -2,8 +2,11 @@ import { Component, OnDestroy } from "@angular/core";
 import { environment } from "@env/environment";
 import { CustomTus } from "@features/uploader/custom-tus";
 import { FieldType } from "@ngx-formly/core";
+import { TranslateService } from "@ngx-translate/core";
 import { FileUpload } from "@shared/components/misc/formly-field-chunked-file/file-upload";
+import { Constants } from "@shared/constants";
 import { AuthService } from "@shared/services/auth.service";
+import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { UploadDataService } from "@shared/services/upload-metadata/upload-data.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { UploadState, UploadxOptions, UploadxService } from "ngx-uploadx";
@@ -37,7 +40,10 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnDest
   constructor(
     public authService: AuthService,
     public uploaderService: UploadxService,
-    public uploadDataService: UploadDataService
+    public uploadDataService: UploadDataService,
+    public utilsService: UtilsService,
+    public popNotificationsService: PopNotificationsService,
+    public translateService: TranslateService
   ) {
     super();
 
@@ -60,7 +66,14 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnDest
     this._uploadEventsSubscription = state$.subscribe((state: UploadState) => {
       this.uploadState = state;
       if (state.status === "added") {
-        this.upload = new FileUpload(state);
+        const extension = this.utilsService.fileExtension(state.name);
+        if (Constants.ALLOWED_UPLOAD_EXTENSIONS.indexOf(extension) > -1) {
+          this.upload = new FileUpload(state);
+        } else {
+          this.popNotificationsService.error(
+            this.translateService.instant("File type not supported") + `: ${extension}`
+          );
+        }
       }
     });
   }
