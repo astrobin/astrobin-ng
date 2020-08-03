@@ -12,4 +12,14 @@ export class UtilsService {
 
     return `${S4()}${S4()}-${S4()}-${S4()}-${S4()}-${S4()}${S4()}${S4()}`;
   }
+
+  fileExtension(filename: string): string | undefined {
+    const separator = ".";
+
+    if (!filename || filename.indexOf(separator) === -1) {
+      return undefined;
+    }
+
+    return filename.split(separator).pop();
+  }
 }
