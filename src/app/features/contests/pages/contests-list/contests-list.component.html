@@ -1,0 +1,86 @@
+<ng-template #contestsTable let-contests="contests">
+  <table *ngIf="contests.length > 0" class="table table-borderless table-striped  ">
+    <thead>
+      <tr>
+        <th>{{ "Title" | translate }}</th>
+        <th class="fit">{{ "User" | translate }}</th>
+        <th class="fit">{{ "Start" | translate }}</th>
+        <th class="fit text-right">{{ "End" | translate }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let contest of contests">
+        <td>{{ contest.title }}</td>
+        <td class="fit">
+          <astrobin-username [user]="userStore.getUser(contest.user)"></astrobin-username>
+        </td>
+        <td class="fit">{{ contest.startDate | timeago}}</td>
+        <td class="fit text-right">{{ contest.endDate | timeago}}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <astrobin-empty-list *ngIf="contests.length === 0"></astrobin-empty-list>
+</ng-template>
+
+<div class="page">
+  <h1>{{ "Contests" | translate }}</h1>
+
+  <ngb-accordion activeIds="running-contests,open-contests,closed-contests">
+    <ngb-panel id="running-contests" *ngIf="runningContests$ | async as contests">
+      <ng-template ngbPanelHeader>
+        <div class="d-flex align-items-center justify-content-between">
+          <h5 class="m-0">
+            {{ "Running contests" | translate }}
+            <small
+              class="text-muted">{{"The following contests are running and voting is allowed." | translate}}</small>
+          </h5>
+          <button class="btn btn-link" (click)="refreshRunningContests()">
+            <fa-icon icon="sync" class="text-muted" [spin]="refreshingRunningContests"></fa-icon>
+          </button>
+        </div>
+      </ng-template>
+      <ng-template ngbPanelContent>
+        <ng-container [ngTemplateOutlet]="contestsTable" [ngTemplateOutletContext]="{ contests: contests.results }">
+        </ng-container>
+      </ng-template>
+    </ngb-panel>
+
+    <ngb-panel id="open-contests" *ngIf="openContests$ | async as contests">
+      <ng-template ngbPanelHeader>
+        <div class="d-flex align-items-center justify-content-between">
+          <h5 class="m-0">
+            {{ "Open contests" | translate }}
+            <small class="text-muted">{{ "The following contests are open for participation." | translate }}</small>
+          </h5>
+          <button class="btn btn-link" (click)="refreshOpenContests()">
+            <fa-icon icon="sync" class="text-muted" [spin]="refreshingOpenContests"></fa-icon>
+          </button>
+        </div>
+      </ng-template>
+      <ng-template ngbPanelContent>
+        <ng-container [ngTemplateOutlet]="contestsTable" [ngTemplateOutletContext]="{ contests: contests.results }">
+        </ng-container>
+      </ng-template>
+    </ngb-panel>
+
+    <ngb-panel id="closed-contests" *ngIf="closedContests$ | async as contests">
+      <ng-template ngbPanelHeader>
+        <div class="d-flex align-items-center justify-content-between">
+          <h5 class="m-0">
+            {{ "Closed contests" | translate }}
+            <small class="text-muted">{{ "The following contests have ended." | translate }}</small>
+          </h5>
+          <button class="btn btn-link" (click)="refreshClosedContests()">
+            <fa-icon icon="sync" class="text-muted" [spin]="refreshingClosedContests"></fa-icon>
+          </button>
+        </div>
+      </ng-template>
+      <ng-template ngbPanelContent>
+        <ng-container [ngTemplateOutlet]="contestsTable" [ngTemplateOutletContext]="{ contests: contests.results }">
+        </ng-container>
+      </ng-template>
+    </ngb-panel>
+  </ngb-accordion>
+
+</div>

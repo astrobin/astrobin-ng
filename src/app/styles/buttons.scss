@@ -77,4 +77,11 @@
       color: $darker-grey;
     }
   }
+
+  &.btn-link {
+    &:not([disabled]):not(.disabled):active,
+    &:not([disabled]):not(.disabled):focus {
+      border: 0;
+    }
+  }
 }

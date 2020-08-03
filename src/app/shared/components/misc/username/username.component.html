@@ -1,3 +1,11 @@
-<span class="username">
+<ng-template #username let-user="user">
   {{ usernameService.getDisplayName(user) }}
+</ng-template>
+
+<a class="username" [attr.href]="classicRoutes.GALLERY(user)" *ngIf="link">
+  <ng-container [ngTemplateOutlet]="username" [ngTemplateOutletContext]="{user: user}"></ng-container>
+</a>
+
+<span class="username" *ngIf="!link">
+  <ng-container [ngTemplateOutlet]="username" [ngTemplateOutletContext]="{user: user}"></ng-container>
 </span>

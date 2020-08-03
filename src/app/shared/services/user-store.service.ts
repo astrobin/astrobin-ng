@@ -26,4 +26,9 @@ export class UserStoreService extends BaseService implements UserStoreServiceInt
   getUserProfile(id: number): UserProfileInterface {
     return this._userProfiles[id];
   }
+
+  getUserProfileByUserId(id: number) {
+    const user = this.getUser(id);
+    return this.getUserProfile(user.userProfile);
+  }
 }

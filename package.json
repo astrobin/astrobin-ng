@@ -49,6 +49,7 @@
     "core-js": "3.6.5",
     "dotenv": "8.1.0",
     "intl": "1.2.5",
+    "moment": "^2.24.0",
     "ngx-cookie-service": "3.0.4",
     "ngx-timeago": "1.0.4",
     "ngx-toastr": "12.1.0",

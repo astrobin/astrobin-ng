@@ -1,0 +1,27 @@
+{
+  "count": 3,
+  "next": null,
+  "previous": null,
+  "results": [
+    {
+      "id": 1,
+      "user": 1,
+      "title": "Test contest",
+      "description": "Test description",
+      "rules": "Test rules",
+      "prizes": "Test prizes",
+      "startDate": "2000-01-01",
+      "endDate": "2000-01-14"
+    },
+    {
+      "id": 2,
+      "user": 1,
+      "title": "Test contest 2",
+      "description": "Test description 2",
+      "rules": "Test rules 2",
+      "prizes": "Test prizes 2",
+      "startDate": "2100-01-01",
+      "endDate": "2100-01-14"
+    }
+  ]
+}

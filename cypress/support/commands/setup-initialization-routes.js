@@ -5,4 +5,5 @@ Cypress.Commands.add("setupInitializationRoutes", () => {
   cy.setupAuthRoutes();
   cy.setupSubscriptionRoutes();
   cy.setupNotificationRoutes();
+  cy.setupContestsRoutes();
 });

@@ -40,6 +40,18 @@ describe("CommonApiService", () => {
     req.flush(user);
   });
 
+  it("getUserProfile should work", () => {
+    const userProfile = UserProfileGenerator.userProfile();
+
+    service.getUserProfile(userProfile.id).subscribe(response => {
+      expect(response.id).toEqual(userProfile.id);
+    });
+
+    const req = httpMock.expectOne(`${service.configUrl}/userprofiles/${userProfile.id}/`);
+    expect(req.request.method).toBe("GET");
+    req.flush(userProfile);
+  });
+
   it("getCurrentUserProfile should return the authenticated user", () => {
     const userProfile = UserProfileGenerator.userProfile();
 

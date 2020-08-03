@@ -136,6 +136,11 @@
             {{ "Image of the day" | translate }}
           </a>
 
+          <a routerLink="/contests" class="dropdown-item">
+            <fa-icon icon="medal"></fa-icon>
+            {{ "Contests" | translate }}
+          </a>
+
           <div class="dropdown-divider"></div>
 
           <a [href]="classicRoutes.GROUPS" class="dropdown-item">
@@ -264,7 +269,7 @@
   <li *ngIf="(appContext.context$ | async).currentUser && appContext.context$ | async as ctx" class="nav-item">
     <div class="d-inline-block" ngbDropdown>
       <button class="btn btn-primary user-dropdown-toggle" id="user-dropdown" ngbDropdownToggle>
-        <astrobin-username [user]="ctx.currentUser"></astrobin-username>
+        <astrobin-username [user]="ctx.currentUser" [link]="false"></astrobin-username>
         <span class="scores">
           <span *ngIf="!ctx.currentUserProfile?.excludeFromCompetition" class="astrobin-index"
             ngbTooltip="{{ 'AstroBin index' | translate }}" placement="bottom">
