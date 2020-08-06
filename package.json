@@ -37,7 +37,7 @@
     "@fortawesome/angular-fontawesome": "0.7.0",
     "@fortawesome/fontawesome-svg-core": "1.2.30",
     "@fortawesome/free-solid-svg-icons": "5.14.0",
-    "@ng-bootstrap/ng-bootstrap": "6.1.0",
+    "@ng-bootstrap/ng-bootstrap": "7.0.0",
     "@ngx-formly/bootstrap": "5.8.0",
     "@ngx-formly/core": "5.8.0",
     "@ngx-translate/core": "12.1.2",
