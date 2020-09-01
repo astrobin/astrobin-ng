@@ -4,6 +4,7 @@ context("revision uploader", () => {
   beforeEach(() => {
     cy.server();
     cy.route("GET", "**/images/image/1", "fixture:api/images/image_1.json").as("getImage");
+    cy.route("GET", "**/images/thumbnail-group/?image=1", "fixture:api/images/image_1.json").as("getThumbnailGroup");
   });
 
   describe("when logged out", () => {
@@ -36,7 +37,17 @@ context("revision uploader", () => {
     describe("when the website is not in read-only mode", () => {
       beforeEach(() => {
         cy.login();
-        cy.visitPage("/uploader/revision/1");
+
+        cy.route("GET", "**/common/userprofiles/current", "fixture:api/common/userprofile_current_2.json").as(
+          "getCurrentUserProfile"
+        );
+        cy.route("GET", "**/common/users/*", "fixture:api/common/users_2.json").as("getUser");
+        cy.route("GET", "**/images/image/2", "fixture:api/images/image_2.json").as("getImage");
+        cy.route("GET", "**/images/thumbnail-group/?image=2", "fixture:api/images/image_2.json").as(
+          "getThumbnailGroup"
+        );
+
+        cy.visitPage("/uploader/revision/2");
       });
 
       it("should not show the read-only mode alert", () => {
@@ -44,7 +55,6 @@ context("revision uploader", () => {
       });
 
       it("should have all form controls", () => {
-        cy.get("#image_title").should("exist");
         cy.get("#image_file").should("exist");
         cy.get("#description").should("exist");
         cy.get("#skip_notifications").should("exist");
@@ -54,17 +64,22 @@ context("revision uploader", () => {
       it("should have all form controls if user is Premium", () => {
         cy.login();
 
+        cy.route("GET", "**/common/userprofiles/current", "fixture:api/common/userprofile_current_2.json").as(
+          "getCurrentUserProfile"
+        );
+        cy.route("GET", "**/common/users/*", "fixture:api/common/users_2.json").as("getUser");
+        cy.route("GET", "**/images/image/2", "fixture:api/images/image_2.json").as("getImage");
+        cy.route("GET", "**/images/thumbnail-group/?image=2", "fixture:api/images/image_2.json").as(
+          "getThumbnailGroup"
+        );
         cy.route(
           "GET",
           "**/common/usersubscriptions/?user=*",
           "fixture:api/common/usersubscriptions_2_premium.json"
         ).as("getUserSubscriptions");
 
-        cy.route("GET", "**/common/users/*", "fixture:api/common/users_2.json").as("getUser");
+        cy.visitPage("/uploader/revision/2");
 
-        cy.visitPage("/uploader/revision/1");
-
-        cy.get("#image_title").should("exist");
         cy.get("#image_file").should("exist");
         cy.get("#description").should("exist");
         cy.get("#skip_notifications").should("exist");
@@ -74,17 +89,22 @@ context("revision uploader", () => {
       it("should have all form controls if user is Premium (autorenew)", () => {
         cy.login();
 
+        cy.route("GET", "**/common/userprofiles/current", "fixture:api/common/userprofile_current_2.json").as(
+          "getCurrentUserProfile"
+        );
+        cy.route("GET", "**/common/users/*", "fixture:api/common/users_2.json").as("getUser");
+        cy.route("GET", "**/images/image/2", "fixture:api/images/image_2.json").as("getImage");
+        cy.route("GET", "**/images/thumbnail-group/?image=2", "fixture:api/images/image_2.json").as(
+          "getThumbnailGroup"
+        );
         cy.route(
           "GET",
           "**/common/usersubscriptions/?user=*",
           "fixture:api/common/usersubscriptions_2_premium_autorenew.json"
         ).as("getUserSubscriptions");
 
-        cy.route("GET", "**/common/users/*", "fixture:api/common/users_2.json").as("getUser");
+        cy.visitPage("/uploader/revision/2");
 
-        cy.visitPage("/uploader/revision/1");
-
-        cy.get("#image_title").should("exist");
         cy.get("#image_file").should("exist");
         cy.get("#description").should("exist");
         cy.get("#skip_notifications").should("exist");
@@ -100,7 +120,7 @@ context("revision uploader", () => {
 
         cy.route("GET", "**/common/users/*", "fixture:api/common/users_2.json").as("getUser");
 
-        cy.visitPage("/uploader/revision/1");
+        cy.visitPage("/uploader/revision/2");
 
         cy.url().should("contain", "/permission-denied");
       });

@@ -1,0 +1,9 @@
+{
+  "user": 2,
+  "pk": 2,
+  "hash": "abc123",
+  "title": "Test image",
+  "imageFile": "http://localhost:8084//media/images/test.png",
+  "isWip": false,
+  "skipNotifications": false
+}
