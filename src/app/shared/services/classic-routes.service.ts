@@ -51,5 +51,7 @@ export class ClassicRoutesService extends BaseService {
 
   IMAGE = (id: string) => BASE_URL + `/${id}/`;
 
-  EDIT_IMAGE_THUMBNAILS = (id: string) => BASE_URL + `/edit/revision/${id}/`;
+  EDIT_IMAGE_THUMBNAILS = (id: string) => BASE_URL + `/edit/thumbnails/${id}/`;
+
+  EDIT_IMAGE_REVISION = (id: string) => BASE_URL + `/edit/revision/${id}/`;
 }

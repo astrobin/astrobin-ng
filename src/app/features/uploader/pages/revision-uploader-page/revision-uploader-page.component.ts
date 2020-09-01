@@ -126,7 +126,7 @@ export class RevisionUploaderPageComponent extends BaseComponent implements OnIn
         this.popNotificationsService.error(`Error: ${uploadState.responseStatus}`);
       } else if (uploadState.status === "complete") {
         const response = JSON.parse(uploadState.response);
-        this.windowRef.nativeWindow.location.assign(this.classicRoutesService.EDIT_IMAGE_THUMBNAILS(response.pk));
+        this.windowRef.nativeWindow.location.assign(this.classicRoutesService.EDIT_IMAGE_REVISION(response.pk));
       }
     });
   }

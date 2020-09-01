@@ -104,9 +104,8 @@ export class UploaderPageComponent extends BaseComponent implements OnInit {
         this.popNotificationsService.error(`Error: ${uploadState.responseStatus}`);
       } else if (uploadState.status === "complete") {
         const response = JSON.parse(uploadState.response);
-        const pk = response.pk;
         const hash = response.hash;
-        this.windowRef.nativeWindow.location.assign(`${this.classicRoutesService.IMAGE(hash || pk)}?upload`);
+        this.windowRef.nativeWindow.location.assign(`${this.classicRoutesService.EDIT_IMAGE_THUMBNAILS(hash)}?upload`);
       }
     });
   }
