@@ -1,17 +1,17 @@
 import { Injectable } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
-import { SubscriptionInterface } from "@shared/interfaces/subscription.interface";
-import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
-import { UserSubscriptionInterface } from "@shared/interfaces/user-subscription.interface";
-import { UserInterface } from "@shared/interfaces/user.interface";
-import { LoadingService } from "@shared/services/loading.service";
-import { UserStoreService } from "@shared/services/user-store.service";
 import { TimeagoIntl } from "ngx-timeago";
 import { BehaviorSubject, forkJoin, Observable, of } from "rxjs";
 import { flatMap, share } from "rxjs/operators";
-import { CommonApiService } from "./api/classic/common/common-api.service";
+import { SubscriptionInterface } from "../../interfaces/subscription.interface";
+import { UserProfileInterface } from "../../interfaces/user-profile.interface";
+import { UserSubscriptionInterface } from "../../interfaces/user-subscription.interface";
+import { UserInterface } from "../../interfaces/user.interface";
+import { CommonApiService } from "../api/classic/common/common-api.service";
+import { LoadingService } from "../loading.service";
+import { UserStoreService } from "../user-store.service";
 
-import { BaseService } from "@shared/services/base.service";
+import { AppContextServiceInterface } from "@shared/services/app-context/app-context.service-interface";
 import { strings as timeagoAf } from "ngx-timeago/language-strings/af";
 import { strings as timeagoAr } from "ngx-timeago/language-strings/ar";
 import { strings as timeagoAz } from "ngx-timeago/language-strings/az";
@@ -67,6 +67,7 @@ import { strings as timeagoUz } from "ngx-timeago/language-strings/uz";
 import { strings as timeagoVi } from "ngx-timeago/language-strings/vi";
 import { strings as timeagoZhCn } from "ngx-timeago/language-strings/zh-CN";
 import { strings as timeagoZhTw } from "ngx-timeago/language-strings/zh-TW";
+import { BaseService } from "../base.service";
 
 export interface AppContextInterface {
   languageCode: string;
@@ -79,7 +80,7 @@ export interface AppContextInterface {
 @Injectable({
   providedIn: "root"
 })
-export class AppContextService extends BaseService {
+export class AppContextService extends BaseService implements AppContextServiceInterface {
   public context$: Observable<AppContextInterface>;
 
   private _subject = new BehaviorSubject<AppContextInterface>(undefined);

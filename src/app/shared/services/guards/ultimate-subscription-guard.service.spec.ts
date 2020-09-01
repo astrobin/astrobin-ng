@@ -30,7 +30,7 @@ describe("UltimateSubscriptionGuardService", () => {
   });
 
   it("should pass if user is Ultimate", done => {
-    const context = AppContextGenerator.appContext();
+    const context = AppContextGenerator.default();
     context.currentUserSubscriptions[0].subscription = TestConstants.ASTROBIN_ULTIMATE_2020_ID;
     service.appContextService.context$ = of(context);
 
@@ -41,7 +41,7 @@ describe("UltimateSubscriptionGuardService", () => {
   });
 
   it("should redirect to permission denied page if user is not Ultimate", done => {
-    const context = AppContextGenerator.appContext();
+    const context = AppContextGenerator.default();
     context.currentUserSubscriptions[0].subscription = TestConstants.ASTROBIN_PREMIUM_2020_ID;
     service.appContextService.context$ = of(context);
 
@@ -53,7 +53,7 @@ describe("UltimateSubscriptionGuardService", () => {
   });
 
   it("should redirect to permission denied page if user is Ultimate but not valid", done => {
-    const context = AppContextGenerator.appContext();
+    const context = AppContextGenerator.default();
     context.currentUserSubscriptions[0].subscription = TestConstants.ASTROBIN_ULTIMATE_2020_ID;
     context.currentUserSubscriptions[0].valid = false;
     service.appContextService.context$ = of(context);

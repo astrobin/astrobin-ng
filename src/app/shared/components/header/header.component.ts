@@ -3,7 +3,7 @@ import { NotificationsService } from "@features/notifications/services/notificat
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { LoginModalComponent } from "@shared/components/auth/login-modal/login-modal.component";
 import { BaseComponent } from "@shared/components/base.component";
-import { AppContextService } from "@shared/services/app-context.service";
+import { AppContextService } from "@shared/services/app-context/app-context.service";
 import { AuthService } from "@shared/services/auth.service";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { LoadingService } from "@shared/services/loading.service";

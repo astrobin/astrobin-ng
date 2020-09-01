@@ -6,10 +6,11 @@ import { PremiumSubscriptionGuardService } from "@shared/services/guards/premium
 import { UltimateSubscriptionGuardService } from "@shared/services/guards/ultimate-subscription-guard.service";
 import { SharedModule } from "@shared/shared.module";
 import { UploadxModule } from "ngx-uploadx";
+import { RevisionUploaderPageComponent } from "./pages/revision-uploader-page/revision-uploader-page.component";
 import { UploaderPageComponent } from "./pages/uploader-page/uploader-page.component";
 
 @NgModule({
-  declarations: [UploaderPageComponent],
+  declarations: [RevisionUploaderPageComponent, UploaderPageComponent],
   imports: [RouterModule.forChild(routes), SharedModule, UploadxModule],
   providers: [PremiumSubscriptionGuardService, UltimateSubscriptionGuardService, UploaderGuardService]
 })

@@ -5,7 +5,7 @@ import { testAppImports } from "@app/test-app.imports";
 import { testAppProviders } from "@app/test-app.providers";
 import { FooterComponent } from "@shared/components/footer/footer.component";
 import { HeaderComponent } from "@shared/components/header/header.component";
-import { AppContextService } from "@shared/services/app-context.service";
+import { AppContextService } from "@shared/services/app-context/app-context.service";
 import { AuthService } from "@shared/services/auth.service";
 import { appInitializer } from "@shared/shared.module";
 import { MockComponents } from "ng-mocks";

@@ -30,7 +30,7 @@ describe("PremiumSubscriptionGuardService", () => {
   });
 
   it("should pass if user is Premium", done => {
-    const context = AppContextGenerator.appContext();
+    const context = AppContextGenerator.default();
     context.currentUserSubscriptions[0].subscription = TestConstants.ASTROBIN_PREMIUM_ID;
     service.appContextService.context$ = of(context);
 
@@ -41,7 +41,7 @@ describe("PremiumSubscriptionGuardService", () => {
   });
 
   it("should pass if user is Premium (autorenew)", done => {
-    const context = AppContextGenerator.appContext();
+    const context = AppContextGenerator.default();
     context.currentUserSubscriptions[0].subscription = TestConstants.ASTROBIN_PREMIUM_AUTORENEW_ID;
     service.appContextService.context$ = of(context);
 
@@ -52,7 +52,7 @@ describe("PremiumSubscriptionGuardService", () => {
   });
 
   it("should redirect to permission denied page if user is Premium 2020", done => {
-    const context = AppContextGenerator.appContext();
+    const context = AppContextGenerator.default();
     context.currentUserSubscriptions[0].subscription = TestConstants.ASTROBIN_PREMIUM_2020_ID;
     service.appContextService.context$ = of(context);
 
@@ -64,7 +64,7 @@ describe("PremiumSubscriptionGuardService", () => {
   });
 
   it("should redirect to permission denied page if user is Premium but not valid", done => {
-    const context = AppContextGenerator.appContext();
+    const context = AppContextGenerator.default();
     context.currentUserSubscriptions[0].subscription = TestConstants.ASTROBIN_PREMIUM_ID;
     context.currentUserSubscriptions[0].valid = false;
     service.appContextService.context$ = of(context);

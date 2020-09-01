@@ -1,8 +1,13 @@
 import { Component, OnInit } from "@angular/core";
 import { FormGroup } from "@angular/forms";
+import { ActivatedRoute } from "@angular/router";
+import { environment } from "@env/environment";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
 import { BaseComponent } from "@shared/components/base.component";
+import { Constants } from "@shared/constants";
+import { ImageInterface } from "@shared/interfaces/image.interface";
+import { ThumbnailGroupApiService } from "@shared/services/api/classic/images-app/thumbnail-group/thumbnail-group-api.service";
 import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
 import { AppContextService } from "@shared/services/app-context/app-context.service";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
@@ -11,35 +16,26 @@ import { TitleService } from "@shared/services/title/title.service";
 import { UploadDataService } from "@shared/services/upload-metadata/upload-data.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { UploadState, UploadxService } from "ngx-uploadx";
-import { takeUntil } from "rxjs/operators";
+import { Observable } from "rxjs";
+import { map, takeUntil } from "rxjs/operators";
 
 @Component({
-  selector: "astrobin-uploader-page",
-  templateUrl: "./uploader-page.component.html",
-  styleUrls: ["./uploader-page.component.scss"]
+  selector: "astrobin-revision-uploader-page",
+  templateUrl: "./revision-uploader-page.component.html",
+  styleUrls: ["./revision-uploader-page.component.scss"]
 })
-export class UploaderPageComponent extends BaseComponent implements OnInit {
+export class RevisionUploaderPageComponent extends BaseComponent implements OnInit {
   form = new FormGroup({});
   uploadState: UploadState;
 
   model = {
-    title: "",
     image_file: "",
-    is_wip: false,
-    skip_notifications: false
+    description: "",
+    skip_notifications: false,
+    mark_as_final: true
   };
 
   fields: FormlyFieldConfig[] = [
-    {
-      key: "title",
-      id: "title",
-      type: "input",
-      templateOptions: {
-        label: this.translate.instant("Title"),
-        required: true,
-        change: this._onTitleChange.bind(this)
-      }
-    },
     {
       key: "image_file",
       id: "image_file",
@@ -49,16 +45,14 @@ export class UploaderPageComponent extends BaseComponent implements OnInit {
       }
     },
     {
-      key: "is_wip",
-      id: "is_wip",
-      type: "checkbox",
+      key: "description",
+      id: "description",
+      type: "textarea",
       templateOptions: {
-        label: this.translate.instant("Upload to your Staging area"),
-        description: this.translate.instant(
-          "This will upload this image to your staging area, making it unlisted. The " +
-            "image will be accessible by anyone with a direct link."
-        ),
-        change: this._onIsWipChange.bind(this)
+        label: this.translate.instant("Description"),
+        required: false,
+        change: this._onDescriptionChange.bind(this),
+        rows: 4
       }
     },
     {
@@ -69,9 +63,16 @@ export class UploaderPageComponent extends BaseComponent implements OnInit {
         label: this.translate.instant("Skip notifications"),
         description: this.translate.instant("Do not notify your followers about this revision."),
         change: this._onSkipNotificationsChange.bind(this)
-      },
-      expressionProperties: {
-        "templateOptions.disabled": "model.is_wip"
+      }
+    },
+    {
+      key: "mark_as_final",
+      id: "mark_as_final",
+      type: "checkbox",
+      templateOptions: {
+        label: this.translate.instant("Mark as final"),
+        description: this.translate.instant("Mark this revision as the final rendition of your image."),
+        change: this._onMarkAsFinalChange.bind(this)
       }
     }
   ];
@@ -79,6 +80,10 @@ export class UploaderPageComponent extends BaseComponent implements OnInit {
   appContext$ = this.appContext.context$;
 
   backendConfig$ = this.jsonApiService.getBackendConfig$();
+
+  imageThumbnail$: Observable<string>;
+
+  image: ImageInterface;
 
   constructor(
     public appContext: AppContextService,
@@ -89,13 +94,30 @@ export class UploaderPageComponent extends BaseComponent implements OnInit {
     public popNotificationsService: PopNotificationsService,
     public windowRef: WindowRefService,
     public classicRoutesService: ClassicRoutesService,
-    public titleService: TitleService
+    public route: ActivatedRoute,
+    public titleService: TitleService,
+    public thumbnailGroupApiService: ThumbnailGroupApiService
   ) {
     super();
   }
 
   ngOnInit(): void {
-    this.titleService.setTitle(this.translate.instant("Uploader") + " (beta)");
+    this.titleService.setTitle(this.translate.instant("Revision uploader") + " (beta)");
+
+    this.image = this.route.snapshot.data.image;
+    this.uploadDataService.patchMetadata("image-upload", { image_id: this.image.pk });
+    this.uploadDataService.patchMetadata("image-upload", { is_revision: true });
+    this.uploadDataService.patchMetadata("image-upload", { description: Constants.NO_VALUE });
+
+    this.imageThumbnail$ = this.thumbnailGroupApiService
+      .getThumbnailGroup(this.image.pk, Constants.ORIGINAL_REVISION)
+      .pipe(map(thumbnailGroup => thumbnailGroup.gallery));
+
+    this._onDescriptionChange();
+    this._onSkipNotificationsChange();
+    this._onMarkAsFinalChange();
+
+    this.uploadDataService.setEndpoint(`${environment.classicBaseUrl}/api/v2/images/image-revision/`);
 
     this.uploaderService.events.pipe(takeUntil(this.destroyed$)).subscribe(uploadState => {
       this.uploadState = uploadState;
@@ -104,8 +126,7 @@ export class UploaderPageComponent extends BaseComponent implements OnInit {
         this.popNotificationsService.error(`Error: ${uploadState.responseStatus}`);
       } else if (uploadState.status === "complete") {
         const response = JSON.parse(uploadState.response);
-        const hash = response.hash;
-        this.windowRef.nativeWindow.location.assign(`${this.classicRoutesService.EDIT_IMAGE_THUMBNAILS(hash)}?upload`);
+        this.windowRef.nativeWindow.location.assign(this.classicRoutesService.EDIT_IMAGE_THUMBNAILS(response.pk));
       }
     });
   }
@@ -128,16 +149,15 @@ export class UploaderPageComponent extends BaseComponent implements OnInit {
     );
   }
 
-  private _onTitleChange() {
-    this.uploadDataService.setMetadata("image-upload", { title: this.model.title });
-  }
-
-  private _onIsWipChange() {
-    this.form.patchValue({ skip_notifications: true });
-    this.uploadDataService.setMetadata("image-upload", { is_wip: this.model.is_wip });
+  private _onDescriptionChange() {
+    this.uploadDataService.patchMetadata("image-upload", { description: this.model.description || Constants.NO_VALUE });
   }
 
   private _onSkipNotificationsChange() {
-    this.uploadDataService.setMetadata("image-upload", { skip_notifications: this.model.skip_notifications });
+    this.uploadDataService.patchMetadata("image-upload", { skip_notifications: this.model.skip_notifications });
+  }
+
+  private _onMarkAsFinalChange() {
+    this.uploadDataService.patchMetadata("image-upload", { mark_as_final: this.model.mark_as_final });
   }
 }

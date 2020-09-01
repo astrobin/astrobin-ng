@@ -41,7 +41,7 @@ export class AuthInterceptor implements HttpInterceptor {
       catchError(error => {
         if (error instanceof HttpErrorResponse && error.status === 401) {
           this.authService.logout();
-          this.popNotificationsService.warning(this.translate.instant("Your session is invalid, please account again"));
+          this.popNotificationsService.warning(this.translate.instant("Your session is invalid, please log in again"));
         }
 
         return throwError(error);

@@ -7,10 +7,11 @@ import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FormlyModule } from "@ngx-formly/core";
 import { TranslateModule } from "@ngx-translate/core";
 import { ApiModule } from "@shared/services/api/api.module";
-import { AppContextService } from "@shared/services/app-context.service";
+import { AppContextService } from "@shared/services/app-context/app-context.service";
 import { AuthService } from "@shared/services/auth.service";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { AuthGuardService } from "@shared/services/guards/auth-guard.service";
+import { ImageOwnerGuardService } from "@shared/services/guards/image-owner-guard.service";
 import { UltimateSubscriptionGuardService } from "@shared/services/guards/ultimate-subscription-guard.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
@@ -73,7 +74,7 @@ export function appInitializer(appContext: AppContextService, authService: AuthS
   ]
 })
 export class SharedModule {
-  static forRoot(): ModuleWithProviders {
+  static forRoot(): ModuleWithProviders<SharedModule> {
     return {
       ngModule: SharedModule,
       providers: [
@@ -82,6 +83,7 @@ export class SharedModule {
         AuthService,
         ClassicRoutesService,
         CookieService,
+        ImageOwnerGuardService,
         LoadingService,
         PopNotificationsService,
         SessionService,
