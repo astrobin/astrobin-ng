@@ -2,7 +2,7 @@ import { TestBed } from "@angular/core/testing";
 import { ActivatedRouteSnapshot, RouterStateSnapshot } from "@angular/router";
 import { testAppImports } from "@app/test-app.imports";
 import { testAppProviders } from "@app/test-app.providers";
-import { of } from "rxjs";
+import { of, throwError } from "rxjs";
 import { AppContextGenerator } from "../../generators/app-context.generator";
 import { ImageGenerator } from "../../generators/image.generator";
 import { UserGenerator } from "../../generators/user.generator";
@@ -40,6 +40,21 @@ describe("ImageOwnerGuardService", () => {
 
   it("should not pass if user is not logged in", done => {
     jest.spyOn(service.authService, "isAuthenticated").mockReturnValue(of(false));
+
+    service.canActivate(null, { url: "/foo" } as RouterStateSnapshot).subscribe(result => {
+      expect(result).toBe(false);
+      done();
+    });
+  });
+
+  it("should not pass if the image doesn't exist", done => {
+    const error = {
+      status: 404,
+      message: "Not found"
+    };
+
+    jest.spyOn(service.authService, "isAuthenticated").mockReturnValue(of(true));
+    jest.spyOn(service.imageApiService, "getImage").mockReturnValue(throwError(error));
 
     service.canActivate(null, { url: "/foo" } as RouterStateSnapshot).subscribe(result => {
       expect(result).toBe(false);
