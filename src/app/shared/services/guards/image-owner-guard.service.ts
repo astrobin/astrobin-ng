@@ -3,8 +3,8 @@ import { Injectable } from "@angular/core";
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from "@angular/router";
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
-import { Observable } from "rxjs";
-import { map, switchMap } from "rxjs/operators";
+import { EMPTY, Observable } from "rxjs";
+import { catchError, map, switchMap } from "rxjs/operators";
 import { ImageApiService } from "../api/classic/images-app/image/image-api.service";
 import { AppContextService } from "../app-context/app-context.service";
 import { AuthService } from "../auth.service";
@@ -36,6 +36,12 @@ export class ImageOwnerGuardService extends BaseService implements CanActivate {
             switchMap(context =>
               this.imageApiService.getImage(+route.params["imageId"]).pipe(map(image => ({ context, image })))
             ),
+            catchError(err => {
+              this.router.navigateByUrl("/404", { skipLocationChange: true }).then(() => {
+                this.location.replaceState(state.url);
+              });
+              return EMPTY;
+            }),
             map(({ context, image }) => image.user === context.currentUser.id)
           )
           .subscribe(canActivate => {

@@ -15,11 +15,9 @@ export class ImageResolver implements Resolve<ImageInterface> {
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> | Promise<any> | any {
     return this.service.getImage(+route.paramMap.get("imageId")).pipe(
       catchError(err => {
-        setTimeout(() => {
-          this.router.navigateByUrl("/404", { skipLocationChange: true }).then(() => {
-            this.location.replaceState(state.url);
-          });
-        }, 1);
+        this.router.navigateByUrl("/404", { skipLocationChange: true }).then(() => {
+          this.location.replaceState(state.url);
+        });
         return EMPTY;
       })
     );
