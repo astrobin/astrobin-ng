@@ -1,3 +1,4 @@
+import { Location } from "@angular/common";
 import { Injectable } from "@angular/core";
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from "@angular/router";
 import { BaseService } from "@shared/services/base.service";
@@ -15,7 +16,8 @@ export class ImageOwnerGuardService extends BaseService implements CanActivate {
     public authService: AuthService,
     public appContextService: AppContextService,
     public imageApiService: ImageApiService,
-    public router: Router
+    public router: Router,
+    public location: Location
   ) {
     super(loadingService);
   }
@@ -41,12 +43,11 @@ export class ImageOwnerGuardService extends BaseService implements CanActivate {
               observer.next(true);
               observer.complete();
             } else {
-              this.router
-                .navigateByUrl(this.router.createUrlTree(["/permission-denied"], { replaceUrl: false }))
-                .then(() => {
-                  observer.next(false);
-                  observer.complete();
-                });
+              this.router.navigateByUrl("/permission-denied", { skipLocationChange: true }).then(() => {
+                observer.next(false);
+                observer.complete();
+                this.location.replaceState(state.url);
+              });
             }
           });
       });
