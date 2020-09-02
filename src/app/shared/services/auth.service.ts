@@ -7,7 +7,7 @@ import { CookieService } from "ngx-cookie-service";
 import { Observable, of } from "rxjs";
 import { catchError, map, take } from "rxjs/operators";
 import { AuthClassicApiService } from "./api/classic/auth/auth-classic-api.service";
-import { AppContextService } from "./app-context.service";
+import { AppContextService } from "./app-context/app-context.service";
 
 @Injectable({
   providedIn: "root"

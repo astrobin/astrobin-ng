@@ -1,5 +1,4 @@
 import { Component, OnDestroy } from "@angular/core";
-import { environment } from "@env/environment";
 import { CustomTus } from "@features/uploader/custom-tus";
 import { FieldType } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
@@ -22,7 +21,6 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnDest
   upload: FileUpload;
   uploadState: UploadState;
   uploadOptions: UploadxOptions = {
-    endpoint: `${environment.classicBaseUrl}/api/v2/images/image/`,
     allowedTypes: "image/jpeg,image/png,image/gif",
     uploaderClass: CustomTus,
     chunkSize: 1024 * 1024,
@@ -35,6 +33,7 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnDest
   };
 
   private readonly _metadataChangesSubscription: Subscription;
+  private readonly _endpointChangesSubscription: Subscription;
   private _uploadEventsSubscription: Subscription;
 
   constructor(
@@ -60,6 +59,10 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnDest
           queue => (queue.metadata = { ...queue.metadata, ...this.uploadOptions.metadata })
         );
       });
+
+    this._endpointChangesSubscription = this.uploadDataService.endpointChanges$.subscribe(endpoint => {
+      this.uploadOptions.endpoint = endpoint;
+    });
   }
 
   onUpload(state$: Observable<UploadState>) {
@@ -122,6 +125,10 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnDest
   ngOnDestroy(): void {
     if (this._metadataChangesSubscription) {
       this._metadataChangesSubscription.unsubscribe();
+    }
+
+    if (this._endpointChangesSubscription) {
+      this._endpointChangesSubscription.unsubscribe();
     }
 
     if (this._uploadEventsSubscription) {

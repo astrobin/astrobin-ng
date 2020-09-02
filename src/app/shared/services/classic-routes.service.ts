@@ -49,5 +49,9 @@ export class ClassicRoutesService extends BaseService {
 
   SET_LANGUAGE = (languageCode: string, next) => BASE_URL + `/language/set/${languageCode}/?next=${next}`;
 
+  IMAGE = (id: string) => BASE_URL + `/${id}/`;
+
   EDIT_IMAGE_THUMBNAILS = (id: string) => BASE_URL + `/edit/thumbnails/${id}/`;
+
+  EDIT_IMAGE_REVISION = (id: string) => BASE_URL + `/edit/revision/${id}/`;
 }

@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from "@angular/router";
 import { Constants } from "@shared/constants";
-import { AppContextService } from "@shared/services/app-context.service";
+import { AppContextService } from "@shared/services/app-context/app-context.service";
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { Observable } from "rxjs";

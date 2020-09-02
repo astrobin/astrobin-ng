@@ -4,7 +4,7 @@ import { CommonApiServiceMock } from "@shared/services/api/classic/common/common
 import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
 import { JsonApiServiceMock } from "@shared/services/api/classic/json/json-api.service-mock";
 import { TimeagoIntl } from "ngx-timeago";
-import { CommonApiService } from "./api/classic/common/common-api.service";
+import { CommonApiService } from "../api/classic/common/common-api.service";
 import { AppContextService } from "./app-context.service";
 
 describe("AppContextService", () => {

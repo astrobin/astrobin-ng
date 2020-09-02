@@ -39,7 +39,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { TranslateLoader, TranslateModule } from "@ngx-translate/core";
 import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
-import { AppContextService } from "@shared/services/app-context.service";
+import { AppContextService } from "@shared/services/app-context/app-context.service";
 import { AuthService } from "@shared/services/auth.service";
 import { ValidationLoader } from "@shared/services/validation-loader.service";
 import { WindowRefService } from "@shared/services/window-ref.service";

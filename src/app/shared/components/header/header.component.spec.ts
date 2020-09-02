@@ -10,7 +10,7 @@ import { IsIotdStaffPipe } from "@shared/pipes/is-iotd-staff.pipe";
 import { IsIotdSubmitterPipe } from "@shared/pipes/is-iotd-submitter.pipe";
 import { IsProducerPipe } from "@shared/pipes/is-producer.pipe";
 import { IsSuperUserPipe } from "@shared/pipes/is-superuser.pipe";
-import { AppContextInterface, AppContextService } from "@shared/services/app-context.service";
+import { AppContextInterface, AppContextService } from "@shared/services/app-context/app-context.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { MockComponents, MockPipe } from "ng-mocks";
 import { Observable } from "rxjs";

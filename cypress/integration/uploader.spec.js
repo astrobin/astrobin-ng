@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 
-context("upload-metadata", () => {
+context("uploader", () => {
   describe("when logged out", () => {
     it("should redirect to the login page", () => {
       cy.server();
