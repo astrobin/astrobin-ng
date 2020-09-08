@@ -21,7 +21,7 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnDest
   upload: FileUpload;
   uploadState: UploadState;
   uploadOptions: UploadxOptions = {
-    allowedTypes: "image/jpeg,image/png,image/gif",
+    allowedTypes: Constants.ALLOWED_UPLOAD_EXTENSIONS.join(","),
     uploaderClass: CustomTus,
     chunkSize: 1024 * 1024,
     multiple: false,
@@ -34,6 +34,7 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnDest
 
   private readonly _metadataChangesSubscription: Subscription;
   private readonly _endpointChangesSubscription: Subscription;
+  private readonly _allowedTypesChangesSubscription: Subscription;
   private _uploadEventsSubscription: Subscription;
 
   constructor(
@@ -63,6 +64,10 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnDest
     this._endpointChangesSubscription = this.uploadDataService.endpointChanges$.subscribe(endpoint => {
       this.uploadOptions.endpoint = endpoint;
     });
+
+    this._allowedTypesChangesSubscription = this.uploadDataService.allowedTypesChanges$.subscribe(allowedTypes => {
+      this.uploadOptions.allowedTypes = allowedTypes;
+    });
   }
 
   onUpload(state$: Observable<UploadState>) {
@@ -70,7 +75,8 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnDest
       this.uploadState = state;
       if (state.status === "added") {
         const extension = this.utilsService.fileExtension(state.name);
-        if (Constants.ALLOWED_UPLOAD_EXTENSIONS.indexOf(extension) > -1) {
+
+        if (this.uploadOptions.allowedTypes.indexOf(`.${extension}`) > -1) {
           this.upload = new FileUpload(state);
         } else {
           this.popNotificationsService.error(
@@ -129,6 +135,10 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnDest
 
     if (this._endpointChangesSubscription) {
       this._endpointChangesSubscription.unsubscribe();
+    }
+
+    if (this._allowedTypesChangesSubscription) {
+      this._allowedTypesChangesSubscription.unsubscribe();
     }
 
     if (this._uploadEventsSubscription) {

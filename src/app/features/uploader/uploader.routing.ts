@@ -5,6 +5,7 @@ import { AuthGuardService } from "@shared/services/guards/auth-guard.service";
 import { ImageResolver } from "../../shared/resolvers/image.resolver";
 import { ImageOwnerGuardService } from "../../shared/services/guards/image-owner-guard.service";
 import { RevisionUploaderPageComponent } from "./pages/revision-uploader-page/revision-uploader-page.component";
+import { UncompressedSourceUploaderPageComponent } from "./pages/uncompressed-source-uploader-page/uncompressed-source-uploader-page.component";
 
 export const routes: Routes = [
   {
@@ -21,6 +22,14 @@ export const routes: Routes = [
         path: "revision/:imageId",
         canActivate: [UploaderGuardService, ImageOwnerGuardService],
         component: RevisionUploaderPageComponent,
+        resolve: {
+          image: ImageResolver
+        }
+      },
+      {
+        path: "uncompressed-source/:imageId",
+        canActivate: [UploaderGuardService, ImageOwnerGuardService],
+        component: UncompressedSourceUploaderPageComponent,
         resolve: {
           image: ImageResolver
         }
