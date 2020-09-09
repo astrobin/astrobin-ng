@@ -1,5 +1,7 @@
 /// <reference types="cypress" />
 
+import { Constants } from "../../src/app/shared/constants";
+
 context("uncompressed source uploader", () => {
   beforeEach(() => {
     cy.server();
@@ -56,6 +58,10 @@ context("uncompressed source uploader", () => {
 
       it("should have all form controls", () => {
         cy.get("#image_file").should("exist");
+        cy.get(".allowed-formats").should(
+          "contain.text",
+          Constants.ALLOWED_UNCOMPRESSED_SOURCE_UPLOAD_EXTENSIONS.join(",")
+        );
       });
 
       it("should have all form controls if user is Premium", () => {
@@ -78,6 +84,10 @@ context("uncompressed source uploader", () => {
         cy.visitPage("/uploader/uncompressed-source/2");
 
         cy.get("#image_file").should("exist");
+        cy.get(".allowed-formats").should(
+          "contain.text",
+          Constants.ALLOWED_UNCOMPRESSED_SOURCE_UPLOAD_EXTENSIONS.join(",")
+        );
       });
 
       it("should have all form controls if user is Premium (autorenew)", () => {
@@ -100,6 +110,10 @@ context("uncompressed source uploader", () => {
         cy.visitPage("/uploader/uncompressed-source/2");
 
         cy.get("#image_file").should("exist");
+        cy.get(".allowed-formats").should(
+          "contain.text",
+          Constants.ALLOWED_UNCOMPRESSED_SOURCE_UPLOAD_EXTENSIONS.join(",")
+        );
       });
 
       it("should redirect if user is not Ultimate", () => {
