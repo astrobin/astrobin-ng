@@ -58,7 +58,7 @@ context("uncompressed source uploader", () => {
 
       it("should have all form controls", () => {
         cy.get("#image_file").should("exist");
-        cy.get(".allowed-formats").should(
+        cy.get(".accepted-formats").should(
           "contain.text",
           Constants.ALLOWED_UNCOMPRESSED_SOURCE_UPLOAD_EXTENSIONS.join(",")
         );
@@ -84,7 +84,7 @@ context("uncompressed source uploader", () => {
         cy.visitPage("/uploader/uncompressed-source/2");
 
         cy.get("#image_file").should("exist");
-        cy.get(".allowed-formats").should(
+        cy.get(".accepted-formats").should(
           "contain.text",
           Constants.ALLOWED_UNCOMPRESSED_SOURCE_UPLOAD_EXTENSIONS.join(",")
         );
@@ -110,7 +110,7 @@ context("uncompressed source uploader", () => {
         cy.visitPage("/uploader/uncompressed-source/2");
 
         cy.get("#image_file").should("exist");
-        cy.get(".allowed-formats").should(
+        cy.get(".accepted-formats").should(
           "contain.text",
           Constants.ALLOWED_UNCOMPRESSED_SOURCE_UPLOAD_EXTENSIONS.join(",")
         );

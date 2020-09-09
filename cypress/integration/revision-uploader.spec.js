@@ -61,7 +61,7 @@ context("revision uploader", () => {
         cy.get("#description").should("exist");
         cy.get("#skip_notifications").should("exist");
         cy.get("#mark_as_final").should("exist");
-        cy.get(".allowed-formats").should("contain.text", Constants.ALLOWED_UPLOAD_EXTENSIONS.join(","));
+        cy.get(".accepted-formats").should("contain.text", Constants.ALLOWED_UPLOAD_EXTENSIONS.join(","));
       });
 
       it("should have all form controls if user is Premium", () => {
@@ -87,7 +87,7 @@ context("revision uploader", () => {
         cy.get("#description").should("exist");
         cy.get("#skip_notifications").should("exist");
         cy.get("#mark_as_final").should("exist");
-        cy.get(".allowed-formats").should("contain.text", Constants.ALLOWED_UPLOAD_EXTENSIONS.join(","));
+        cy.get(".accepted-formats").should("contain.text", Constants.ALLOWED_UPLOAD_EXTENSIONS.join(","));
       });
 
       it("should have all form controls if user is Premium (autorenew)", () => {
@@ -113,7 +113,7 @@ context("revision uploader", () => {
         cy.get("#description").should("exist");
         cy.get("#skip_notifications").should("exist");
         cy.get("#mark_as_final").should("exist");
-        cy.get(".allowed-formats").should("contain.text", Constants.ALLOWED_UPLOAD_EXTENSIONS.join(","));
+        cy.get(".accepted-formats").should("contain.text", Constants.ALLOWED_UPLOAD_EXTENSIONS.join(","));
       });
 
       it("should redirect if user is not Ultimate", () => {

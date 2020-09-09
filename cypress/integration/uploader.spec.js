@@ -47,7 +47,7 @@ context("uploader", () => {
         cy.get("#image_file").should("exist");
         cy.get("#is_wip").should("exist");
         cy.get("#skip_notifications").should("exist");
-        cy.get(".allowed-formats").should("contain.text", Constants.ALLOWED_UPLOAD_EXTENSIONS.join(","));
+        cy.get(".accepted-formats").should("contain.text", Constants.ALLOWED_UPLOAD_EXTENSIONS.join(","));
       });
 
       it("should have all form controls if user is Premium", () => {
@@ -67,7 +67,7 @@ context("uploader", () => {
         cy.get("#image_file").should("exist");
         cy.get("#is_wip").should("exist");
         cy.get("#skip_notifications").should("exist");
-        cy.get(".allowed-formats").should("contain.text", Constants.ALLOWED_UPLOAD_EXTENSIONS.join(","));
+        cy.get(".accepted-formats").should("contain.text", Constants.ALLOWED_UPLOAD_EXTENSIONS.join(","));
       });
 
       it("should have all form controls if user is Premium (autorenew)", () => {
@@ -87,7 +87,7 @@ context("uploader", () => {
         cy.get("#image_file").should("exist");
         cy.get("#is_wip").should("exist");
         cy.get("#skip_notifications").should("exist");
-        cy.get(".allowed-formats").should("contain.text", Constants.ALLOWED_UPLOAD_EXTENSIONS.join(","));
+        cy.get(".accepted-formats").should("contain.text", Constants.ALLOWED_UPLOAD_EXTENSIONS.join(","));
       });
 
       it("should redirect if user is Premium 2020", () => {
