@@ -2,7 +2,7 @@
 
 import { Constants } from "../../src/app/shared/constants";
 
-context("revision uploader", () => {
+context("uncompressed source uploader", () => {
   beforeEach(() => {
     cy.server();
     cy.route("GET", "**/images/image/1", "fixture:api/images/image_1.json").as("getImage");
@@ -14,8 +14,8 @@ context("revision uploader", () => {
       cy.setupInitializationRoutes();
       cy.route("GET", "**/common/userprofiles/current", []).as("getCurrentUserProfile");
 
-      cy.visitPage("/uploader/revision/1");
-      cy.url().should("contain", "/account/login?redirectUrl=%2Fuploader%2Frevision%2F1");
+      cy.visitPage("/uploader/uncompressed-source/1");
+      cy.url().should("contain", "/account/login?redirectUrl=%2Fuploader%2Funcompressed-source%2F1");
     });
   });
 
@@ -28,7 +28,7 @@ context("revision uploader", () => {
       beforeEach(() => {
         cy.login();
         cy.route("GET", "**/json-api/common/app-config/", "fixture:api/json/app-config-read-only.json").as("appConfig");
-        cy.visitPage("/uploader/revision/1");
+        cy.visitPage("/uploader/uncompressed-source/1");
       });
 
       it("should show the read-only mode alert", () => {
@@ -49,7 +49,7 @@ context("revision uploader", () => {
           "getThumbnailGroup"
         );
 
-        cy.visitPage("/uploader/revision/2");
+        cy.visitPage("/uploader/uncompressed-source/2");
       });
 
       it("should not show the read-only mode alert", () => {
@@ -58,10 +58,10 @@ context("revision uploader", () => {
 
       it("should have all form controls", () => {
         cy.get("#image_file").should("exist");
-        cy.get("#description").should("exist");
-        cy.get("#skip_notifications").should("exist");
-        cy.get("#mark_as_final").should("exist");
-        cy.get(".accepted-formats").should("contain.text", Constants.ALLOWED_UPLOAD_EXTENSIONS.join(","));
+        cy.get(".accepted-formats").should(
+          "contain.text",
+          Constants.ALLOWED_UNCOMPRESSED_SOURCE_UPLOAD_EXTENSIONS.join(",")
+        );
       });
 
       it("should have all form controls if user is Premium", () => {
@@ -81,13 +81,13 @@ context("revision uploader", () => {
           "fixture:api/common/usersubscriptions_2_premium.json"
         ).as("getUserSubscriptions");
 
-        cy.visitPage("/uploader/revision/2");
+        cy.visitPage("/uploader/uncompressed-source/2");
 
         cy.get("#image_file").should("exist");
-        cy.get("#description").should("exist");
-        cy.get("#skip_notifications").should("exist");
-        cy.get("#mark_as_final").should("exist");
-        cy.get(".accepted-formats").should("contain.text", Constants.ALLOWED_UPLOAD_EXTENSIONS.join(","));
+        cy.get(".accepted-formats").should(
+          "contain.text",
+          Constants.ALLOWED_UNCOMPRESSED_SOURCE_UPLOAD_EXTENSIONS.join(",")
+        );
       });
 
       it("should have all form controls if user is Premium (autorenew)", () => {
@@ -107,13 +107,13 @@ context("revision uploader", () => {
           "fixture:api/common/usersubscriptions_2_premium_autorenew.json"
         ).as("getUserSubscriptions");
 
-        cy.visitPage("/uploader/revision/2");
+        cy.visitPage("/uploader/uncompressed-source/2");
 
         cy.get("#image_file").should("exist");
-        cy.get("#description").should("exist");
-        cy.get("#skip_notifications").should("exist");
-        cy.get("#mark_as_final").should("exist");
-        cy.get(".accepted-formats").should("contain.text", Constants.ALLOWED_UPLOAD_EXTENSIONS.join(","));
+        cy.get(".accepted-formats").should(
+          "contain.text",
+          Constants.ALLOWED_UNCOMPRESSED_SOURCE_UPLOAD_EXTENSIONS.join(",")
+        );
       });
 
       it("should redirect if user is not Ultimate", () => {
@@ -125,7 +125,7 @@ context("revision uploader", () => {
 
         cy.route("GET", "**/common/users/*", "fixture:api/common/users_2.json").as("getUser");
 
-        cy.visitPage("/uploader/revision/2");
+        cy.visitPage("/uploader/uncompressed-source/2");
 
         cy.url().should("contain", "/permission-denied");
       });

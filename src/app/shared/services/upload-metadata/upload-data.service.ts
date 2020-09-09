@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import { environment } from "@env/environment";
+import { Constants } from "@shared/constants";
 import { UploadDataServiceInterface } from "@shared/services/upload-metadata/upload-data.service-interface";
 import { BehaviorSubject, Observable } from "rxjs";
 
@@ -18,6 +19,7 @@ export interface UploadMetadataEventInterface {
 export class UploadDataService implements UploadDataServiceInterface {
   metadataChanges$: Observable<UploadMetadataEventInterface>;
   endpointChanges$: Observable<string>;
+  allowedTypesChanges$: Observable<string>;
 
   private _metadata: { [key: string]: UploadMetadataInterface } = {};
 
@@ -25,9 +27,12 @@ export class UploadDataService implements UploadDataServiceInterface {
 
   private _endpointChanges = new BehaviorSubject<string>(`${environment.classicBaseUrl}/api/v2/images/image/`);
 
+  private _allowedTypesChanges = new BehaviorSubject<string>(Constants.ALLOWED_UPLOAD_EXTENSIONS.join());
+
   constructor() {
     this.metadataChanges$ = this._metadataChanges.asObservable();
     this.endpointChanges$ = this._endpointChanges.asObservable();
+    this.allowedTypesChanges$ = this._allowedTypesChanges.asObservable();
   }
 
   setMetadata(id: string, metadata: UploadMetadataInterface): void {
@@ -45,5 +50,9 @@ export class UploadDataService implements UploadDataServiceInterface {
 
   setEndpoint(endpoint: string) {
     this._endpointChanges.next(endpoint);
+  }
+
+  setAllowedTypes(allowedTypes: string) {
+    this._allowedTypesChanges.next(allowedTypes);
   }
 }

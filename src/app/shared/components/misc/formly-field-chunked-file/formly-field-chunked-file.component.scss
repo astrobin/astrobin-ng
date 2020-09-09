@@ -55,7 +55,6 @@ label {
   }
 
   .file {
-    padding-top: 1rem;
     font-weight: normal;
     text-transform: uppercase;
     color: $lighter-grey;
@@ -80,4 +79,10 @@ label {
   input {
     display: none;
   }
+}
+
+.accepted-formats {
+  color: $light-grey;
+  font-size: .9rem;
+  text-transform: none;
 }
