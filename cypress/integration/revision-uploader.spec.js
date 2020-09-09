@@ -2,7 +2,7 @@
 
 import { Constants } from "../../src/app/shared/constants";
 
-context.only("revision uploader", () => {
+context("revision uploader", () => {
   beforeEach(() => {
     cy.server();
     cy.route("GET", "**/images/image/1", "fixture:api/images/image_1.json").as("getImage");
