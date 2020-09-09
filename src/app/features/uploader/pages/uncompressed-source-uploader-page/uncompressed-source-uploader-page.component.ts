@@ -21,7 +21,7 @@ import { Observable } from "rxjs";
 import { map, take, takeUntil } from "rxjs/operators";
 
 @Component({
-  selector: "astrobin-revision-uploader-page",
+  selector: "astrobin-uncompressed-source-uploader-page",
   templateUrl: "./uncompressed-source-uploader-page.component.html",
   styleUrls: ["./uncompressed-source-uploader-page.component.scss"]
 })
