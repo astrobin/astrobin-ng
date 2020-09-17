@@ -93,7 +93,7 @@
     "tslint-config-prettier": "1.18.0",
     "typescript": "3.8.3",
     "wait-on": "5.2.0",
-    "webpack-bundle-analyzer": "3.8.0"
+    "webpack-bundle-analyzer": "3.9.0"
   },
   "jest": {
     "projects": [
