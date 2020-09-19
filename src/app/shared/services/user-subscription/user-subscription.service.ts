@@ -65,22 +65,22 @@ export class UserSubscriptionService extends BaseService implements UserSubscrip
             premiumCounter: appContext.currentUserProfile.premiumCounter,
             backendConfig,
             isUltimateOrPremium,
-            isLite,
-            isLite2020
+            isLite2020,
+            isLite
           }))
         )
       ),
-      map(({ premiumCounter, backendConfig, isUltimateOrPremium, isLite, isLite2020 }) => {
+      map(({ premiumCounter, backendConfig, isUltimateOrPremium, isLite2020, isLite }) => {
         if (isUltimateOrPremium) {
           return true;
         }
 
-        if (isLite) {
-          return premiumCounter < backendConfig.PREMIUM_MAX_IMAGES_LITE;
-        }
-
         if (isLite2020) {
           return premiumCounter < backendConfig.PREMIUM_MAX_IMAGES_LITE_2020;
+        }
+
+        if (isLite) {
+          return premiumCounter < backendConfig.PREMIUM_MAX_IMAGES_LITE;
         }
 
         // If we got here, the user is on Free.
