@@ -14,15 +14,15 @@
       <small>
         <span *ngIf="data.appContext.currentUserProfile |
           hasValidUserSubscription:[SubscriptionName.ASTROBIN_ULTIMATE_2020] |
-          async; else noUltimate" translate>
-          You have an <strong>AstroBin Ultimate</strong> subscription. Enjoy your unlimited uploads!
+          async; else noUltimate"
+          [innerHTML]="'You have an <strong>AstroBin Ultimate</strong> subscription. Enjoy your unlimited uploads!' | translate">
         </span>
 
         <ng-template #noUltimate>
           <span *ngIf="data.appContext.currentUserProfile | hasValidUserSubscription:[
             SubscriptionName.ASTROBIN_PREMIUM, SubscriptionName.ASTROBIN_PREMIUM_AUTORENEW,
-            SubscriptionName.ASTROBIN_PREMIUM_2020] | async; else noPremium" translate>
-            You have an <strong>AstroBin Premium</strong> subscription. Enjoy your unlimited uploads!
+            SubscriptionName.ASTROBIN_PREMIUM_2020] | async; else noPremium"
+            [innerHTML]="'You have an <strong>AstroBin Premium</strong> subscription. Enjoy your unlimited uploads!' | translate">
           </span>
         </ng-template>
 
@@ -62,7 +62,6 @@
     </ng-container>
 
   </ng-container>
-
 </div>
 
 <ng-template #uploaderTemplate>
