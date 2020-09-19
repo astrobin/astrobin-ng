@@ -2,6 +2,7 @@ import { Component } from "@angular/core";
 import { NavigationEnd, Router } from "@angular/router";
 import { NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
 import { BaseComponent } from "@shared/components/base.component";
+import { ValidationLoaderService } from "@shared/services/validation-loader.service";
 
 declare const gtag: any;
 
@@ -11,10 +12,15 @@ declare const gtag: any;
   styleUrls: ["./app.component.scss"]
 })
 export class AppComponent extends BaseComponent {
-  constructor(public router: Router, public paginationConfig: NgbPaginationConfig) {
+  constructor(
+    public router: Router,
+    public paginationConfig: NgbPaginationConfig,
+    public validationLoaderService: ValidationLoaderService
+  ) {
     super();
     this.initRouterEvents();
     this.initPagination();
+    this.validationLoaderService.init();
   }
 
   initPagination(): void {

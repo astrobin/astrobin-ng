@@ -13,8 +13,8 @@ h1 {
   margin-bottom: 2rem;
 
   + small {
-    font-size: 1.5rem;
-    color: $grey;
+    font-size: 1rem;
+    color: $light-grey;
     display: block;
     margin-top: -2rem;
     margin-bottom: 2rem;
@@ -24,4 +24,8 @@ h1 {
     font-size: 2.25rem;
     hyphens: auto;
   }
+}
+
+strong {
+  color: $lightest-grey;
 }

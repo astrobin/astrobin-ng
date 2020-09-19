@@ -35,14 +35,17 @@ context("uploader", () => {
     describe("when the website is not in read-only mode", () => {
       beforeEach(() => {
         cy.login();
-        cy.visitPage("/uploader");
       });
 
       it("should not show the read-only mode alert", () => {
+        cy.visitPage("/uploader");
+
         cy.get("astrobin-read-only-mode").should("not.exist");
       });
 
       it("should have all form controls", () => {
+        cy.visitPage("/uploader");
+
         cy.get("#title").should("exist");
         cy.get("#image_file").should("exist");
         cy.get("#is_wip").should("exist");
@@ -90,26 +93,42 @@ context("uploader", () => {
         cy.get(".accepted-formats").should("contain.text", Constants.ALLOWED_UPLOAD_EXTENSIONS.join(","));
       });
 
-      it("should redirect if user is Premium 2020", () => {
-        it("should check and disable the 'skip notification' checkbox if 'staging area' is selected", () => {
-          cy.get("[for='is_wip']").click();
-          cy.get("#skip_notifications").should("be.disabled");
-          cy.get("#skip_notifications").should("be.checked");
-        });
+      it("should have all form controls if user is Premium 2020", () => {
+        cy.login();
 
-        it("should redirect if user is not Ultimate", () => {
-          cy.login();
+        cy.route(
+          "GET",
+          "**/common/usersubscriptions/?user=*",
+          "fixture:api/common/usersubscriptions_2_premium_2020.json"
+        ).as("getUserSubscriptions");
 
-          cy.route("GET", "**/common/usersubscriptions/?user=*", "fixture:api/common/usersubscriptions_2.json").as(
-            "getUserSubscriptions"
-          );
+        cy.route("GET", "**/common/users/*", "fixture:api/common/users_2.json").as("getUser");
 
-          cy.route("GET", "**/common/users/*", "fixture:api/common/users_2.json").as("getUser");
+        cy.visitPage("/uploader");
 
-          cy.visitPage("/uploader");
+        cy.get("#title").should("exist");
+        cy.get("#image_file").should("exist");
+        cy.get("#is_wip").should("exist");
+        cy.get("#skip_notifications").should("exist");
+        cy.get(".accepted-formats").should("contain.text", Constants.ALLOWED_UPLOAD_EXTENSIONS.join(","));
+      });
 
-          cy.url().should("contain", "/permission-denied");
-        });
+      it("should have all form controls if user is Free", () => {
+        cy.login();
+
+        cy.route("GET", "**/common/usersubscriptions/?user=*", "fixture:api/common/usersubscriptions_2_free.json").as(
+          "getUserSubscriptions"
+        );
+
+        cy.route("GET", "**/common/users/*", "fixture:api/common/users_2.json").as("getUser");
+
+        cy.visitPage("/uploader");
+
+        cy.get("#title").should("exist");
+        cy.get("#image_file").should("exist");
+        cy.get("#is_wip").should("exist");
+        cy.get("#skip_notifications").should("exist");
+        cy.get(".accepted-formats").should("contain.text", Constants.ALLOWED_UPLOAD_EXTENSIONS.join(","));
       });
     });
   });

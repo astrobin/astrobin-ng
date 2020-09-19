@@ -22,6 +22,10 @@
     border-bottom: 1px solid $light-grey;
     padding-bottom: .5rem;
     margin-bottom: 3rem;
+
+    + small {
+      margin-bottom: 3rem;
+    }
   }
 
   > .buttons-area {
@@ -41,12 +45,6 @@
 
   &.hero {
     padding: 4rem;
-
-    .hero-image {
-      background-size: contain;
-      height: 8rem;
-      margin-bottom: 2rem;
-    }
 
     h1 {
       font-size: 6rem;
@@ -73,5 +71,11 @@
         }
       }
     }
+  }
+
+  .hero-image {
+    background-size: contain;
+    height: 8rem;
+    margin-bottom: 2rem;
   }
 }

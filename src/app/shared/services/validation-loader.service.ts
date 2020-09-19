@@ -5,7 +5,7 @@ import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
 
 @Injectable()
-export class ValidationLoader extends BaseService {
+export class ValidationLoaderService extends BaseService {
   public constructor(
     public loadingService: LoadingService,
     public translate: TranslateService,
@@ -26,7 +26,7 @@ export class ValidationLoader extends BaseService {
 
     // Messages with params
     this.config.addValidatorMessage("minlength", (err, field) =>
-      ValidationLoader.minlengthValidationMessage(field, this.translate)
+      ValidationLoaderService.minlengthValidationMessage(field, this.translate)
     );
   }
 }

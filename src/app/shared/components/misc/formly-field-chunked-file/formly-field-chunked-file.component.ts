@@ -5,12 +5,17 @@ import { TranslateService } from "@ngx-translate/core";
 import { FileUpload } from "@shared/components/misc/formly-field-chunked-file/file-upload";
 import { Constants } from "@shared/constants";
 import { AuthService } from "@shared/services/auth.service";
+import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { UploadDataService } from "@shared/services/upload-metadata/upload-data.service";
+import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { UploadState, UploadxOptions, UploadxService } from "ngx-uploadx";
 import { Observable, Subscription } from "rxjs";
 import { filter } from "rxjs/operators";
+
+// PLEASE NOTE: due to the usage of the UploaderDataService, there can be only one chunked file upload field on a page
+// at any given time.
 
 @Component({
   selector: "astrobin-formly-field-chunked-file",
@@ -43,7 +48,9 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnDest
     public uploadDataService: UploadDataService,
     public utilsService: UtilsService,
     public popNotificationsService: PopNotificationsService,
-    public translateService: TranslateService
+    public translateService: TranslateService,
+    public userSubscriptionService: UserSubscriptionService,
+    public classicRoutesService: ClassicRoutesService
   ) {
     super();
 
@@ -77,11 +84,25 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnDest
         const extension = this.utilsService.fileExtension(state.name);
 
         if (this.uploadOptions.allowedTypes.indexOf(`.${extension}`) > -1) {
-          this.upload = new FileUpload(state);
+          this.userSubscriptionService.fileSizeAllowed(state.size).subscribe(result => {
+            if (result.allowed) {
+              this.upload = new FileUpload(state);
+            } else {
+              const message =
+                "Sorry, but this image is too large. Under your current subscription plan, the maximum allowed image size is {{max}}.";
+              this.popNotificationsService.error(
+                this.translateService.instant(message, {
+                  max: result.max / 1024 / 1024 + " MB"
+                })
+              );
+              this.uploaderService.queue = [];
+            }
+          });
         } else {
           this.popNotificationsService.error(
             this.translateService.instant("File type not supported") + `: ${extension}`
           );
+          this.uploaderService.queue = [];
         }
       }
     });

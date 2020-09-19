@@ -2,7 +2,7 @@ import { UserSubscriptionInterface } from "@shared/interfaces/user-subscription.
 import { TestConstants } from "@shared/test-constants";
 
 export class UserSubscriptionGenerator {
-  static userSubscription(): UserSubscriptionInterface {
+  static userSubscription(subscription = TestConstants.ASTROBIN_ULTIMATE_2020_ID): UserSubscriptionInterface {
     return {
       id: 1,
       valid: true,
@@ -10,7 +10,7 @@ export class UserSubscriptionGenerator {
       active: true,
       cancelled: false,
       user: 1,
-      subscription: TestConstants.ASTROBIN_ULTIMATE_2020_ID
+      subscription
     };
   }
 }

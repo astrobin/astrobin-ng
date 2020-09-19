@@ -85,6 +85,7 @@ export interface BackendUserProfileInterface {
   inactive_account_reminder_sent: string;
   astrobin_index: number;
   followers: number;
+  premium_counter: number;
 }
 
 @Injectable({
@@ -177,7 +178,8 @@ export class CommonApiAdaptorService extends BaseService {
       allowAstronomyAds: userProfile.allow_astronomy_ads,
       inactiveAccountReminderSent: new Date(userProfile.inactive_account_reminder_sent),
       astroBinIndex: userProfile.astrobin_index,
-      followers: userProfile.followers
+      followers: userProfile.followers,
+      premiumCounter: userProfile.premium_counter
     };
   }
 }

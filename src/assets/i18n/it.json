@@ -4,5 +4,13 @@
   "Welcome!": "Benvenuto!",
   "You have been logged in.": "Hai fatto il log in.",
   "You have been logged out. Come back soon!": "Hai fatto il log out. Torna presto!",
-  "You will be redirected in {{seconds}} seconds...": "Sarai rediretto in {{seconds}} secondi..."
+  "You will be redirected in {{seconds}} seconds...": "Sarai rediretto in {{seconds}} secondi...",
+  "You have an <strong>AstroBin Ultimate</strong> subscription. Enjoy your unlimited uploads!": "Hai un abbonamento <strong>AstroBin Ultimate</strong>. Goditi i tuoi upload illimitati!",
+  "You have an <strong>AstroBin Premium</strong> subscription. Enjoy your unlimited uploads!": "Hai un abbonamento <strong>AstroBin Premium</strong>. Goditi i tuoi upload illimitati!",
+  "You have an <strong>AstroBin Lite</strong> subscription. You have used <strong>{{counter}}</strong> of your <strong>{{slots}}</strong> yearly upload slots.": "Hai un abbonamento <strong>AstroBin Lite</strong>. Hai usato <strong>{{counter}}</strong> dei tuoi <strong>{{slots}}</strong> slot di upload annuali.",
+  "You have an <strong>AstroBin Lite</strong> subscription. You have used <strong>{{counter}}</strong> of your <strong>{{slots}}</strong> upload slots.": "Hai un abbonamento <strong>AstroBin Lite</strong>. Hai usato <strong>{{counter}}</strong> dei tuoi <strong>{{slots}}</strong> slot di upload.",
+  "You have an <strong>AstroBin Free</strong> membership. You have used <strong>{{counter}}</strong> of your <strong>{{slots}}</strong> upload slots.": "Hai un account <strong>AstroBin Free</strong>. Hai usato <strong>{{counter}}</strong> dei tuoi <strong>{{slots}}</strong> slot di upload.",
+  "It looks like you reached the upload limit for your subscription.": "Sembra che tu abbia raggiunto il limite di upload per il tuo abbonamento.",
+  "Return to the classic uploader": "Torna all'uploader classico",
+  "Sorry, but this image is too large. Under your current subscription plan, the maximum allowed image size is {{max}}.": "Spiacenti, ma questa immagine è troppo pesante. Con il tuo abbonamento, la dimensione massima consentita è di {{max}}."
 }
