@@ -1,19 +1,24 @@
 import { Injectable } from "@angular/core";
 import { SubscriptionInterface } from "@shared/interfaces/subscription.interface";
 import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
+import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
 import { AppContextService } from "@shared/services/app-context/app-context.service";
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { UserSubscriptionServiceInterface } from "@shared/services/user-subscription/user-subscription.service-interface";
 import { SubscriptionName } from "@shared/types/subscription-name.type";
-import { Observable } from "rxjs";
-import { map, take } from "rxjs/operators";
+import { Observable, zip } from "rxjs";
+import { map, switchMap, take } from "rxjs/operators";
 
 @Injectable({
   providedIn: "root"
 })
 export class UserSubscriptionService extends BaseService implements UserSubscriptionServiceInterface {
-  constructor(public loadingService: LoadingService, public appContextService: AppContextService) {
+  constructor(
+    public loadingService: LoadingService,
+    public appContextService: AppContextService,
+    public jsonApiService: JsonApiService
+  ) {
     super(loadingService);
   }
 
@@ -36,6 +41,100 @@ export class UserSubscriptionService extends BaseService implements UserSubscrip
         }
 
         return false;
+      })
+    );
+  }
+
+  uploadAllowed(): Observable<boolean> {
+    return zip(this.appContextService.context$, this.jsonApiService.getBackendConfig$()).pipe(
+      switchMap(([appContext, backendConfig]) =>
+        zip(
+          this.hasValidSubscription(appContext.currentUserProfile, [
+            SubscriptionName.ASTROBIN_ULTIMATE_2020,
+            SubscriptionName.ASTROBIN_PREMIUM,
+            SubscriptionName.ASTROBIN_PREMIUM_AUTORENEW,
+            SubscriptionName.ASTROBIN_PREMIUM_2020
+          ]),
+          this.hasValidSubscription(appContext.currentUserProfile, [SubscriptionName.ASTROBIN_LITE_2020]),
+          this.hasValidSubscription(appContext.currentUserProfile, [
+            SubscriptionName.ASTROBIN_LITE,
+            SubscriptionName.ASTROBIN_LITE_AUTORENEW
+          ])
+        ).pipe(
+          map(([isUltimateOrPremium, isLite, isLite2020]) => ({
+            premiumCounter: appContext.currentUserProfile.premiumCounter,
+            backendConfig,
+            isUltimateOrPremium,
+            isLite,
+            isLite2020
+          }))
+        )
+      ),
+      map(({ premiumCounter, backendConfig, isUltimateOrPremium, isLite, isLite2020 }) => {
+        if (isUltimateOrPremium) {
+          return true;
+        }
+
+        if (isLite) {
+          return premiumCounter < backendConfig.PREMIUM_MAX_IMAGES_LITE;
+        }
+
+        if (isLite2020) {
+          return premiumCounter < backendConfig.PREMIUM_MAX_IMAGES_LITE_2020;
+        }
+
+        // If we got here, the user is on Free.
+        return premiumCounter < backendConfig.PREMIUM_MAX_IMAGES_FREE_2020;
+      })
+    );
+  }
+
+  fileSizeAllowed(size: number): Observable<{ allowed: boolean; max: number }> {
+    return zip(this.appContextService.context$, this.jsonApiService.getBackendConfig$()).pipe(
+      switchMap(([appContext, backendConfig]) =>
+        zip(
+          this.hasValidSubscription(appContext.currentUserProfile, [
+            SubscriptionName.ASTROBIN_ULTIMATE_2020,
+            SubscriptionName.ASTROBIN_PREMIUM,
+            SubscriptionName.ASTROBIN_PREMIUM_AUTORENEW,
+            SubscriptionName.ASTROBIN_LITE,
+            SubscriptionName.ASTROBIN_LITE_AUTORENEW
+          ]),
+          this.hasValidSubscription(appContext.currentUserProfile, [SubscriptionName.ASTROBIN_PREMIUM_2020]),
+          this.hasValidSubscription(appContext.currentUserProfile, [SubscriptionName.ASTROBIN_LITE_2020])
+        ).pipe(
+          map(([isUltimateOrEquivalent, isPremium, isLite]) => ({
+            backendConfig,
+            isUltimateOrEquivalent,
+            isPremium,
+            isLite
+          }))
+        )
+      ),
+      map(({ backendConfig, isUltimateOrEquivalent, isPremium, isLite }) => {
+        if (isUltimateOrEquivalent) {
+          return { allowed: true, max: Number.MAX_SAFE_INTEGER };
+        }
+
+        if (isPremium) {
+          return {
+            allowed: size < backendConfig.PREMIUM_MAX_IMAGE_SIZE_PREMIUM_2020,
+            max: backendConfig.PREMIUM_MAX_IMAGE_SIZE_PREMIUM_2020
+          };
+        }
+
+        if (isLite) {
+          return {
+            allowed: size < backendConfig.PREMIUM_MAX_IMAGE_SIZE_LITE_2020,
+            max: backendConfig.PREMIUM_MAX_IMAGE_SIZE_LITE_2020
+          };
+        }
+
+        // If we got here, the user is on Free.
+        return {
+          allowed: size < backendConfig.PREMIUM_MAX_IMAGE_SIZE_FREE_2020,
+          max: backendConfig.PREMIUM_MAX_IMAGE_SIZE_FREE_2020
+        };
       })
     );
   }

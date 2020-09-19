@@ -50,4 +50,5 @@ export interface UserProfileInterface {
   accessories: number[];
   astroBinIndex?: number;
   followers?: number;
+  premiumCounter: number;
 }

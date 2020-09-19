@@ -18,7 +18,7 @@ import { PopNotificationsService } from "@shared/services/pop-notifications.serv
 import { SessionService } from "@shared/services/session.service";
 import { UserStoreService } from "@shared/services/user-store.service";
 import { UserService } from "@shared/services/user.service";
-import { ValidationLoader } from "@shared/services/validation-loader.service";
+import { ValidationLoaderService } from "@shared/services/validation-loader.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { CookieService } from "ngx-cookie-service";
 import { TimeagoModule } from "ngx-timeago";
@@ -90,7 +90,7 @@ export class SharedModule {
         UltimateSubscriptionGuardService,
         UserService,
         UserStoreService,
-        ValidationLoader,
+        ValidationLoaderService,
         WindowRefService,
         {
           provide: APP_INITIALIZER,

@@ -15,7 +15,6 @@ export const routes: Routes = [
     children: [
       {
         path: "",
-        canActivate: [UploaderGuardService],
         component: UploaderPageComponent
       },
       {

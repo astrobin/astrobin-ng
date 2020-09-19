@@ -1,30 +1,89 @@
 <div class="page">
-  <h1>
-    {{"Uploader" | translate}}
-
-    <span class="beta">beta</span>
-  </h1>
 
   <ng-container *ngIf="{
     appContext: appContext$ | async,
     backendConfig: backendConfig$ | async
     } as data">
 
-    <astrobin-read-only-mode *ngIf="data.backendConfig?.readOnly; else uploaderTemplate"></astrobin-read-only-mode>
+    <ng-container *ngIf="data.appContext && data.backendConfig">
+
+      <h1>
+        {{"Uploader" | translate}} <span class="beta">beta</span>
+      </h1>
+
+      <small>
+        <span *ngIf="data.appContext.currentUserProfile |
+          hasValidUserSubscription:[SubscriptionName.ASTROBIN_ULTIMATE_2020] |
+          async; else noUltimate" translate>
+          You have an <strong>AstroBin Ultimate</strong> subscription. Enjoy your unlimited uploads!
+        </span>
+
+        <ng-template #noUltimate>
+          <span *ngIf="data.appContext.currentUserProfile | hasValidUserSubscription:[
+            SubscriptionName.ASTROBIN_PREMIUM, SubscriptionName.ASTROBIN_PREMIUM_AUTORENEW,
+            SubscriptionName.ASTROBIN_PREMIUM_2020] | async; else noPremium" translate>
+            You have an <strong>AstroBin Premium</strong> subscription. Enjoy your unlimited uploads!
+          </span>
+        </ng-template>
+
+        <ng-template #noPremium>
+          <span *ngIf="data.appContext.currentUserProfile | hasValidUserSubscription:[
+            SubscriptionName.ASTROBIN_LITE, SubscriptionName.ASTROBIN_LITE_AUTORENEW] | async; else lite2020"
+            [innerHTML]="liteMessage |
+            translate:{
+              counter: data.appContext.currentUserProfile.premiumCounter,
+              slots: data.backendConfig.PREMIUM_MAX_IMAGES_LITE
+            }">
+          </span>
+        </ng-template>
+
+        <ng-template #lite2020>
+          <span *ngIf="data.appContext.currentUserProfile | hasValidUserSubscription:[
+            SubscriptionName.ASTROBIN_LITE_2020] | async; else free" [innerHTML]="lite2020Message |
+            translate:{
+              counter: data.appContext.currentUserProfile.premiumCounter,
+              slots: data.backendConfig.PREMIUM_MAX_IMAGES_LITE_2020
+            }">
+          </span>
+        </ng-template>
+
+        <ng-template #free>
+          <span [innerHTML]="freeMessage | translate:{
+            counter: data.appContext.currentUserProfile.premiumCounter,
+            slots: data.backendConfig.PREMIUM_MAX_IMAGES_FREE_2020
+          }">
+          </span>
+        </ng-template>
+
+      </small>
+
+      <astrobin-read-only-mode *ngIf="data.backendConfig?.readOnly; else uploaderTemplate"></astrobin-read-only-mode>
+
+    </ng-container>
 
   </ng-container>
+
 </div>
 
 <ng-template #uploaderTemplate>
-  <form (ngSubmit)="onSubmit()" [formGroup]="form">
+  <form (ngSubmit)="onSubmit()" [formGroup]="form" *ngIf="(uploadAllowed$ | async) !== false; else uploadNotAllowed">
     <formly-form [fields]="fields" [form]="form" [model]="model"></formly-form>
-
     <div class="form-actions">
-      <a class="btn btn-link"
-        [attr.href]="classicRoutesService.UPLOAD">{{ "Return to the classic uploader" | translate }}
+      <a class="btn btn-link" [attr.href]="classicRoutesService.UPLOAD + '?forceClassicUploader'">
+        {{ "Return to the classic uploader" | translate }}
       </a>
-      <button class="btn btn-lg btn-primary" [disabled]="uploadButtonDisabled()" [class.loading]="uploadButtonLoading()"
-        type="submit">{{ "Upload" | translate }}</button>
+      <button class=" btn btn-lg btn-primary" [disabled]="uploadButtonDisabled()"
+        [class.loading]="uploadButtonLoading()" type="submit">{{ "Upload" | translate }}</button>
     </div>
   </form>
+</ng-template>
+
+
+<ng-template #uploadNotAllowed>
+  <div class="sad hero-image"></div>
+
+  <div class="alert alert-warning">
+    {{ "It looks like you reached the upload limit for your subscription." | translate }}
+    <a [attr.href]="classicRoutesService.SUBSCRIPTIONS">{{ "Would you like to upgrade?" | translate }}</a>
+  </div>
 </ng-template>

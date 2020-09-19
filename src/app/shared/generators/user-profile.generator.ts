@@ -53,7 +53,8 @@ export class UserProfileGenerator {
       filters: [],
       accessories: [],
       astroBinIndex: 0.0,
-      followers: 0
+      followers: 0,
+      premiumCounter: 0
     };
   }
 }

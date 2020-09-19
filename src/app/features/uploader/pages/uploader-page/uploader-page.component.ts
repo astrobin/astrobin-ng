@@ -9,7 +9,9 @@ import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { TitleService } from "@shared/services/title/title.service";
 import { UploadDataService } from "@shared/services/upload-metadata/upload-data.service";
+import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
+import { SubscriptionName } from "@shared/types/subscription-name.type";
 import { UploadState, UploadxService } from "ngx-uploadx";
 import { takeUntil } from "rxjs/operators";
 
@@ -21,6 +23,7 @@ import { takeUntil } from "rxjs/operators";
 export class UploaderPageComponent extends BaseComponent implements OnInit {
   form = new FormGroup({});
   uploadState: UploadState;
+  SubscriptionName: typeof SubscriptionName = SubscriptionName;
 
   model = {
     title: "",
@@ -46,6 +49,9 @@ export class UploaderPageComponent extends BaseComponent implements OnInit {
       type: "chunked-file",
       templateOptions: {
         required: true
+      },
+      validators: {
+        validation: [{ name: "file-size", options: { max: 0 } }]
       }
     },
     {
@@ -80,6 +86,8 @@ export class UploaderPageComponent extends BaseComponent implements OnInit {
 
   backendConfig$ = this.jsonApiService.getBackendConfig$();
 
+  uploadAllowed$ = this.userSubscriptionService.uploadAllowed();
+
   constructor(
     public appContext: AppContextService,
     public jsonApiService: JsonApiService,
@@ -89,13 +97,41 @@ export class UploaderPageComponent extends BaseComponent implements OnInit {
     public popNotificationsService: PopNotificationsService,
     public windowRef: WindowRefService,
     public classicRoutesService: ClassicRoutesService,
-    public titleService: TitleService
+    public titleService: TitleService,
+    public userSubscriptionService: UserSubscriptionService
   ) {
     super();
   }
 
+  get liteMessage(): string {
+    return (
+      "You have an <strong>AstroBin Lite</strong> subscription. You have used <strong>{{counter}}</strong> of " +
+      "your <strong>{{slots}}</strong> yearly upload slots."
+    );
+  }
+
+  get lite2020Message(): string {
+    return (
+      "You have an <strong>AstroBin Lite</strong> subscription. You have used <strong>{{counter}}</strong> of " +
+      "your <strong>{{slots}}</strong> upload slots."
+    );
+  }
+
+  get freeMessage(): string {
+    return (
+      "You have an <strong>AstroBin Free</strong> membership. You have used <strong>{{counter}}</strong> of " +
+      "your <strong>{{slots}}</strong> upload slots."
+    );
+  }
+
   ngOnInit(): void {
     this.titleService.setTitle(this.translate.instant("Uploader") + " (beta)");
+
+    this.userSubscriptionService.fileSizeAllowed(0).subscribe(result => {
+      const field = this.fields.filter(x => x.key === "image_file")[0];
+      const validator = field.validators.validation.filter(x => x.name === "file-size")[0];
+      validator.options.max = result.max;
+    });
 
     this.uploaderService.events.pipe(takeUntil(this.destroyed$)).subscribe(uploadState => {
       this.uploadState = uploadState;

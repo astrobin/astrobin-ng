@@ -28,10 +28,11 @@ context("uncompressed source uploader", () => {
       beforeEach(() => {
         cy.login();
         cy.route("GET", "**/json-api/common/app-config/", "fixture:api/json/app-config-read-only.json").as("appConfig");
-        cy.visitPage("/uploader/uncompressed-source/1");
       });
 
       it("should show the read-only mode alert", () => {
+        cy.visitPage("/uploader/uncompressed-source/1");
+
         cy.get("astrobin-read-only-mode").should("exist");
       });
     });
@@ -48,15 +49,17 @@ context("uncompressed source uploader", () => {
         cy.route("GET", "**/images/thumbnail-group/?image=2", "fixture:api/images/image_2.json").as(
           "getThumbnailGroup"
         );
-
-        cy.visitPage("/uploader/uncompressed-source/2");
       });
 
       it("should not show the read-only mode alert", () => {
+        cy.visitPage("/uploader/uncompressed-source/2");
+
         cy.get("astrobin-read-only-mode").should("not.exist");
       });
 
       it("should have all form controls", () => {
+        cy.visitPage("/uploader/uncompressed-source/2");
+
         cy.get("#image_file").should("exist");
         cy.get(".accepted-formats").should(
           "contain.text",
@@ -116,10 +119,26 @@ context("uncompressed source uploader", () => {
         );
       });
 
-      it("should redirect if user is not Ultimate", () => {
+      it("should redirect if user is Premium 2020", () => {
         cy.login();
 
-        cy.route("GET", "**/common/usersubscriptions/?user=*", "fixture:api/common/usersubscriptions_2.json").as(
+        cy.route(
+          "GET",
+          "**/common/usersubscriptions/?user=*",
+          "fixture:api/common/usersubscriptions_2_premium_2020.json"
+        ).as("getUserSubscriptions");
+
+        cy.route("GET", "**/common/users/*", "fixture:api/common/users_2.json").as("getUser");
+
+        cy.visitPage("/uploader/uncompressed-source/2");
+
+        cy.url().should("contain", "/permission-denied");
+      });
+
+      it("should redirect if user is Free", () => {
+        cy.login();
+
+        cy.route("GET", "**/common/usersubscriptions/?user=*", "fixture:api/common/usersubscriptions_2_free.json").as(
           "getUserSubscriptions"
         );
 

@@ -1,5 +1,6 @@
 import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
+import { HasValidUserSubscriptionPipe } from "@shared/pipes/has-valid-user-subscription.pipe";
 import { EnsureUrlProtocolPipe } from "./ensure-url-protocol.pipe";
 import { IsContentModeratorPipe } from "./is-content-moderator.pipe";
 import { IsImageModeratorPipe } from "./is-image-moderator.pipe";
@@ -11,31 +12,23 @@ import { IsProducerPipe } from "./is-producer.pipe";
 import { IsRetailerPipe } from "./is-retailer.pipe";
 import { IsSuperUserPipe } from "./is-superuser.pipe";
 
+const pipes = [
+  EnsureUrlProtocolPipe,
+  IsContentModeratorPipe,
+  IsImageModeratorPipe,
+  IsIotdJudgePipe,
+  IsIotdReviewerPipe,
+  IsIotdStaffPipe,
+  IsIotdSubmitterPipe,
+  IsProducerPipe,
+  IsRetailerPipe,
+  IsSuperUserPipe,
+  HasValidUserSubscriptionPipe
+];
+
 @NgModule({
-  declarations: [
-    EnsureUrlProtocolPipe,
-    IsContentModeratorPipe,
-    IsImageModeratorPipe,
-    IsIotdJudgePipe,
-    IsIotdReviewerPipe,
-    IsIotdStaffPipe,
-    IsIotdSubmitterPipe,
-    IsProducerPipe,
-    IsRetailerPipe,
-    IsSuperUserPipe
-  ],
+  declarations: pipes,
   imports: [CommonModule],
-  exports: [
-    EnsureUrlProtocolPipe,
-    IsContentModeratorPipe,
-    IsImageModeratorPipe,
-    IsIotdJudgePipe,
-    IsIotdReviewerPipe,
-    IsIotdStaffPipe,
-    IsIotdSubmitterPipe,
-    IsProducerPipe,
-    IsRetailerPipe,
-    IsSuperUserPipe
-  ]
+  exports: pipes
 })
 export class PipesModule {}
