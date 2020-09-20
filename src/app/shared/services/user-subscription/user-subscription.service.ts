@@ -61,7 +61,7 @@ export class UserSubscriptionService extends BaseService implements UserSubscrip
             SubscriptionName.ASTROBIN_LITE_AUTORENEW
           ])
         ).pipe(
-          map(([isUltimateOrPremium, isLite, isLite2020]) => ({
+          map(([isUltimateOrPremium, isLite2020, isLite]) => ({
             premiumCounter: appContext.currentUserProfile.premiumCounter,
             backendConfig,
             isUltimateOrPremium,
