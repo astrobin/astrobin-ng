@@ -79,10 +79,17 @@
 
 
 <ng-template #uploadNotAllowed>
-  <div class="sad hero-image"></div>
+  <div class="upload-not-allowed">
+    <div class="sad hero-image"></div>
 
-  <div class="alert alert-warning">
-    {{ "It looks like you reached the upload limit for your subscription." | translate }}
-    <a [attr.href]="classicRoutesService.SUBSCRIPTIONS">{{ "Would you like to upgrade?" | translate }}</a>
+    <div class="alert alert-warning">
+      {{ "It looks like you reached the upload limit for your subscription." | translate }}
+      <a [attr.href]="classicRoutesService.SUBSCRIPTIONS">{{ "Would you like to upgrade?" | translate }}</a>
+    </div>
+
+    <a class="btn btn-link return-to-classic-uploader" [attr.href]="classicRoutesService.UPLOAD +
+    '?forceClassicUploader'">
+      {{ "Return to the classic uploader" | translate }}
+    </a>
   </div>
 </ng-template>
