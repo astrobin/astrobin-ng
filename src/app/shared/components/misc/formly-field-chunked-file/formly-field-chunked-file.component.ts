@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { CustomTus } from "@features/uploader/custom-tus";
 import { FieldType } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
@@ -11,7 +11,7 @@ import { UploadDataService } from "@shared/services/upload-metadata/upload-data.
 import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { UploadState, UploadxOptions, UploadxService } from "ngx-uploadx";
-import { Observable, Subscription } from "rxjs";
+import { Subscription } from "rxjs";
 import { filter } from "rxjs/operators";
 
 // PLEASE NOTE: due to the usage of the UploaderDataService, there can be only one chunked file upload field on a page
@@ -22,7 +22,7 @@ import { filter } from "rxjs/operators";
   templateUrl: "./formly-field-chunked-file.component.html",
   styleUrls: ["./formly-field-chunked-file.component.scss"]
 })
-export class FormlyFieldChunkedFileComponent extends FieldType implements OnDestroy {
+export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit, OnDestroy {
   upload: FileUpload;
   uploadState: UploadState;
   uploadOptions: UploadxOptions = {
@@ -37,10 +37,9 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnDest
     }
   };
 
-  private readonly _metadataChangesSubscription: Subscription;
-  private readonly _endpointChangesSubscription: Subscription;
-  private readonly _allowedTypesChangesSubscription: Subscription;
-  private _uploadEventsSubscription: Subscription;
+  private _metadataChangesSubscription: Subscription;
+  private _endpointChangesSubscription: Subscription;
+  private _allowedTypesChangesSubscription: Subscription;
 
   constructor(
     public authService: AuthService,
@@ -53,8 +52,38 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnDest
     public classicRoutesService: ClassicRoutesService
   ) {
     super();
+  }
 
+  ngOnInit() {
     this.uploaderService.init(this.uploadOptions);
+    this.uploaderService.events.subscribe((state: UploadState) => {
+      this.uploadState = state;
+      if (state.status === "added") {
+        this.uploaderService.queue = this.uploaderService.queue.slice(-1);
+
+        const extension = this.utilsService.fileExtension(state.name);
+
+        if (this.uploadOptions.allowedTypes.indexOf(`.${extension}`) > -1) {
+          this.userSubscriptionService.fileSizeAllowed(state.size).subscribe(result => {
+            if (result.allowed) {
+              this.upload = new FileUpload(state);
+            } else {
+              const message =
+                "Sorry, but this image is too large. Under your current subscription plan, the maximum allowed image size is {{max}}.";
+              this.popNotificationsService.error(
+                this.translateService.instant(message, {
+                  max: result.max / 1024 / 1024 + " MB"
+                })
+              );
+            }
+          });
+        } else {
+          this.popNotificationsService.error(
+            this.translateService.instant("File type not supported") + `: ${extension}`
+          );
+        }
+      }
+    });
 
     this._metadataChangesSubscription = this.uploadDataService.metadataChanges$
       .pipe(filter(event => !!event))
@@ -74,37 +103,6 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnDest
 
     this._allowedTypesChangesSubscription = this.uploadDataService.allowedTypesChanges$.subscribe(allowedTypes => {
       this.uploadOptions.allowedTypes = allowedTypes;
-    });
-  }
-
-  onUpload(state$: Observable<UploadState>) {
-    this._uploadEventsSubscription = state$.subscribe((state: UploadState) => {
-      this.uploadState = state;
-      if (state.status === "added") {
-        const extension = this.utilsService.fileExtension(state.name);
-
-        if (this.uploadOptions.allowedTypes.indexOf(`.${extension}`) > -1) {
-          this.userSubscriptionService.fileSizeAllowed(state.size).subscribe(result => {
-            if (result.allowed) {
-              this.upload = new FileUpload(state);
-            } else {
-              const message =
-                "Sorry, but this image is too large. Under your current subscription plan, the maximum allowed image size is {{max}}.";
-              this.popNotificationsService.error(
-                this.translateService.instant(message, {
-                  max: result.max / 1024 / 1024 + " MB"
-                })
-              );
-              this.uploaderService.queue = [];
-            }
-          });
-        } else {
-          this.popNotificationsService.error(
-            this.translateService.instant("File type not supported") + `: ${extension}`
-          );
-          this.uploaderService.queue = [];
-        }
-      }
     });
   }
 
@@ -160,10 +158,6 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnDest
 
     if (this._allowedTypesChangesSubscription) {
       this._allowedTypesChangesSubscription.unsubscribe();
-    }
-
-    if (this._uploadEventsSubscription) {
-      this._uploadEventsSubscription.unsubscribe();
     }
   }
 }
