@@ -139,7 +139,7 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
       if (uploadState.status === "error") {
         this.popNotificationsService.error(`Error: ${uploadState.responseStatus}`);
       } else if (uploadState.status === "complete") {
-        const response = JSON.parse(uploadState.response);
+        const response = JSON.parse(uploadState.response as string);
         const hash = response.hash;
         this.windowRef.nativeWindow.location.assign(`${this.classicRoutesService.EDIT_IMAGE_THUMBNAILS(hash)}?upload`);
       }

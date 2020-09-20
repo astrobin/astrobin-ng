@@ -9,5 +9,10 @@ module.exports = {
   coverageDirectory: "coverage",
   transformIgnorePatterns: ["^.+\\.js$"],
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, { prefix: "<rootDir>/" }),
-  modulePathIgnorePatterns: ["<rootDir>/cypress"]
+  modulePathIgnorePatterns: ["<rootDir>/cypress"],
+  globals: {
+    "ts-jest": {
+      tsConfig: "<rootDir>/src/tsconfig.spec.json"
+    }
+  }
 };

@@ -91,7 +91,7 @@ export class UncompressedSourceUploaderPageComponent extends BaseComponentDirect
       if (uploadState.status === "error") {
         this.popNotificationsService.error(`Error: ${uploadState.responseStatus}`);
       } else if (uploadState.status === "complete") {
-        const response = JSON.parse(uploadState.response);
+        const response = JSON.parse(uploadState.response as string);
         this.imageApiService
           .getImage(response.image)
           .pipe(take(1))

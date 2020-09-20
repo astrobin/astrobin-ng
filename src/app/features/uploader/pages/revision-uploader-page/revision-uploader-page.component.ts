@@ -125,7 +125,7 @@ export class RevisionUploaderPageComponent extends BaseComponentDirective implem
       if (uploadState.status === "error") {
         this.popNotificationsService.error(`Error: ${uploadState.responseStatus}`);
       } else if (uploadState.status === "complete") {
-        const response = JSON.parse(uploadState.response);
+        const response = JSON.parse(uploadState.response as string);
         this.windowRef.nativeWindow.location.assign(this.classicRoutesService.EDIT_IMAGE_REVISION(response.pk));
       }
     });

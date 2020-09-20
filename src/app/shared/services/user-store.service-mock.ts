@@ -1,3 +1,4 @@
+import { Injectable } from "@angular/core";
 import { UserProfileGenerator } from "@shared/generators/user-profile.generator";
 import { UserGenerator } from "@shared/generators/user.generator";
 import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
@@ -5,6 +6,7 @@ import { UserInterface } from "@shared/interfaces/user.interface";
 import { BaseService } from "@shared/services/base.service";
 import { UserStoreServiceInterface } from "@shared/services/user-store.service-interface";
 
+@Injectable()
 export class UserStoreServiceMock extends BaseService implements UserStoreServiceInterface {
   addUser(user: UserInterface): void {}
 
