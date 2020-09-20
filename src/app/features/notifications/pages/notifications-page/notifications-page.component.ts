@@ -2,7 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { NotificationInterface } from "@features/notifications/interfaces/notification.interface";
 import { NotificationsService } from "@features/notifications/services/notifications.service";
 import { TranslateService } from "@ngx-translate/core";
-import { BaseComponent } from "@shared/components/base.component";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { TitleService } from "@shared/services/title/title.service";
 import { take } from "rxjs/operators";
@@ -12,7 +12,7 @@ import { take } from "rxjs/operators";
   templateUrl: "./notifications-page.component.html",
   styleUrls: ["./notifications-page.component.scss"]
 })
-export class NotificationsPageComponent extends BaseComponent implements OnInit {
+export class NotificationsPageComponent extends BaseComponentDirective implements OnInit {
   page = 1;
 
   constructor(

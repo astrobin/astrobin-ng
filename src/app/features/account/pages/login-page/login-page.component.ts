@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { LoginFormComponent } from "@shared/components/auth/login-form/login-form.component";
-import { BaseComponent } from "@shared/components/base.component";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { TitleService } from "@shared/services/title/title.service";
 
@@ -11,7 +11,7 @@ import { TitleService } from "@shared/services/title/title.service";
   templateUrl: "./login-page.component.html",
   styleUrls: ["./login-page.component.scss"]
 })
-export class LoginPageComponent extends BaseComponent implements OnInit {
+export class LoginPageComponent extends BaseComponentDirective implements OnInit {
   redirectUrl: string;
 
   @ViewChild("loginForm") loginForm: LoginFormComponent;

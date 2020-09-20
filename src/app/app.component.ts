@@ -1,7 +1,7 @@
 import { Component } from "@angular/core";
 import { NavigationEnd, Router } from "@angular/router";
 import { NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
-import { BaseComponent } from "@shared/components/base.component";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { ValidationLoaderService } from "@shared/services/validation-loader.service";
 
 declare const gtag: any;
@@ -11,7 +11,7 @@ declare const gtag: any;
   templateUrl: "./app.component.html",
   styleUrls: ["./app.component.scss"]
 })
-export class AppComponent extends BaseComponent {
+export class AppComponent extends BaseComponentDirective {
   constructor(
     public router: Router,
     public paginationConfig: NgbPaginationConfig,

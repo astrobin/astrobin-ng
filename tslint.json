@@ -8,6 +8,9 @@
     "codelyzer"
   ],
   "rules": {
+    "deprecation": {
+      "severity": "warning"
+    },
     "quotemark": [
       true,
       "double"
