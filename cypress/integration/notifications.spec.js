@@ -50,7 +50,7 @@ context("notifications", () => {
         cy.get("#mark-all-as-read").should("not.be.disabled");
         cy.get("ngb-pagination")
           .its("length")
-          .should("be", 2);
+          .should("equal", 2);
         cy.get("#unread-notifications-count").should("contain.text", 1);
         cy.get(".navbar .notifications-list-item .badge").should("contain.text", 1);
       });
