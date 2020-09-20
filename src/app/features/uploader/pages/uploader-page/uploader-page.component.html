@@ -68,9 +68,7 @@
   <form (ngSubmit)="onSubmit()" [formGroup]="form" *ngIf="(uploadAllowed$ | async) !== false; else uploadNotAllowed">
     <formly-form [fields]="fields" [form]="form" [model]="model"></formly-form>
     <div class="form-actions">
-      <a class="btn btn-link" [attr.href]="classicRoutesService.UPLOAD + '?forceClassicUploader'">
-        {{ "Return to the classic uploader" | translate }}
-      </a>
+      <ng-container *ngTemplateOutlet="returnToClassicUploader"></ng-container>
       <button class=" btn btn-lg btn-primary" [disabled]="uploadButtonDisabled()"
         [class.loading]="uploadButtonLoading()" type="submit">{{ "Upload" | translate }}</button>
     </div>
@@ -87,9 +85,13 @@
       <a [attr.href]="classicRoutesService.SUBSCRIPTIONS">{{ "Would you like to upgrade?" | translate }}</a>
     </div>
 
-    <a class="btn btn-link return-to-classic-uploader" [attr.href]="classicRoutesService.UPLOAD +
-    '?forceClassicUploader'">
-      {{ "Return to the classic uploader" | translate }}
-    </a>
+    <ng-container *ngTemplateOutlet="returnToClassicUploader"></ng-container>
   </div>
+</ng-template>
+
+<ng-template #returnToClassicUploader>
+  <a class="btn btn-link return-to-classic-uploader" [attr.href]="classicRoutesService.UPLOAD +
+    '?forceClassicUploader'">
+    {{ "Return to the classic uploader" | translate }}
+  </a>
 </ng-template>
