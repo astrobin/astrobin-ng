@@ -1,6 +1,6 @@
 import { Component, EventEmitter, HostListener, Input, OnInit, Output } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { BaseComponent } from "@shared/components/base.component";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { AuthService } from "@shared/services/auth.service";
 
 @Component({
@@ -8,7 +8,7 @@ import { AuthService } from "@shared/services/auth.service";
   templateUrl: "./login-form.component.html",
   styleUrls: ["./login-form.component.scss"]
 })
-export class LoginFormComponent extends BaseComponent implements OnInit {
+export class LoginFormComponent extends BaseComponentDirective implements OnInit {
   form: FormGroup;
   loading = false;
   error = false;

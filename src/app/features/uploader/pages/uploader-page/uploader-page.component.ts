@@ -2,7 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
-import { BaseComponent } from "@shared/components/base.component";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
 import { AppContextService } from "@shared/services/app-context/app-context.service";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
@@ -20,7 +20,7 @@ import { takeUntil } from "rxjs/operators";
   templateUrl: "./uploader-page.component.html",
   styleUrls: ["./uploader-page.component.scss"]
 })
-export class UploaderPageComponent extends BaseComponent implements OnInit {
+export class UploaderPageComponent extends BaseComponentDirective implements OnInit {
   form = new FormGroup({});
   uploadState: UploadState;
   SubscriptionName: typeof SubscriptionName = SubscriptionName;
@@ -139,7 +139,7 @@ export class UploaderPageComponent extends BaseComponent implements OnInit {
       if (uploadState.status === "error") {
         this.popNotificationsService.error(`Error: ${uploadState.responseStatus}`);
       } else if (uploadState.status === "complete") {
-        const response = JSON.parse(uploadState.response);
+        const response = JSON.parse(uploadState.response as string);
         const hash = response.hash;
         this.windowRef.nativeWindow.location.assign(`${this.classicRoutesService.EDIT_IMAGE_THUMBNAILS(hash)}?upload`);
       }

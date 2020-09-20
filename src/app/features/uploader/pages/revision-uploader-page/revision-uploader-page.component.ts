@@ -4,7 +4,7 @@ import { ActivatedRoute } from "@angular/router";
 import { environment } from "@env/environment";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
-import { BaseComponent } from "@shared/components/base.component";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Constants } from "@shared/constants";
 import { ImageInterface } from "@shared/interfaces/image.interface";
 import { ThumbnailGroupApiService } from "@shared/services/api/classic/images-app/thumbnail-group/thumbnail-group-api.service";
@@ -24,7 +24,7 @@ import { map, takeUntil } from "rxjs/operators";
   templateUrl: "./revision-uploader-page.component.html",
   styleUrls: ["./revision-uploader-page.component.scss"]
 })
-export class RevisionUploaderPageComponent extends BaseComponent implements OnInit {
+export class RevisionUploaderPageComponent extends BaseComponentDirective implements OnInit {
   form = new FormGroup({});
   uploadState: UploadState;
 
@@ -125,7 +125,7 @@ export class RevisionUploaderPageComponent extends BaseComponent implements OnIn
       if (uploadState.status === "error") {
         this.popNotificationsService.error(`Error: ${uploadState.responseStatus}`);
       } else if (uploadState.status === "complete") {
-        const response = JSON.parse(uploadState.response);
+        const response = JSON.parse(uploadState.response as string);
         this.windowRef.nativeWindow.location.assign(this.classicRoutesService.EDIT_IMAGE_REVISION(response.pk));
       }
     });

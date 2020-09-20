@@ -62,7 +62,6 @@ import { UsernameComponent } from "./misc/username/username.component";
     ReactiveFormsModule,
     ReadOnlyModeComponent,
     UsernameComponent
-  ],
-  entryComponents: [LoginModalComponent]
+  ]
 })
 export class ComponentsModule {}

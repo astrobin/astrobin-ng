@@ -2,7 +2,7 @@ import { Component } from "@angular/core";
 import { NotificationsService } from "@features/notifications/services/notifications.service";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { LoginModalComponent } from "@shared/components/auth/login-modal/login-modal.component";
-import { BaseComponent } from "@shared/components/base.component";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { AppContextService } from "@shared/services/app-context/app-context.service";
 import { AuthService } from "@shared/services/auth.service";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
@@ -21,7 +21,7 @@ interface AvailableLanguageInterface {
   templateUrl: "./header.component.html",
   styleUrls: ["./header.component.scss"]
 })
-export class HeaderComponent extends BaseComponent {
+export class HeaderComponent extends BaseComponentDirective {
   isCollapsed = true;
 
   languages: AvailableLanguageInterface[] = [

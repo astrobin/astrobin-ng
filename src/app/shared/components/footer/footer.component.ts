@@ -1,5 +1,5 @@
 import { Component } from "@angular/core";
-import { BaseComponent } from "@shared/components/base.component";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
 
 declare const VERSION: string;
 
@@ -8,7 +8,7 @@ declare const VERSION: string;
   templateUrl: "./footer.component.html",
   styleUrls: ["./footer.component.scss"]
 })
-export class FooterComponent extends BaseComponent {
+export class FooterComponent extends BaseComponentDirective {
   get currentYear(): number {
     return new Date().getFullYear();
   }
