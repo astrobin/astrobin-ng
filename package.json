@@ -85,7 +85,7 @@
     "protractor": "7.0.0",
     "stylelint": "13.7.1",
     "supertest": "4.0.2",
-    "ts-jest": "26.3.0",
+    "ts-jest": "26.4.0",
     "ts-node": "9.0.0",
     "tsconfig-paths": "3.9.0",
     "tslint": "6.1.3",
