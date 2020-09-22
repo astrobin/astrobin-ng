@@ -48,8 +48,6 @@ context("uploader", () => {
 
         cy.get("#title").should("exist");
         cy.get("#image_file").should("exist");
-        cy.get("#is_wip").should("exist");
-        cy.get("#skip_notifications").should("exist");
         cy.get(".accepted-formats").should("contain.text", Constants.ALLOWED_UPLOAD_EXTENSIONS.join(","));
       });
 
@@ -68,8 +66,6 @@ context("uploader", () => {
 
         cy.get("#title").should("exist");
         cy.get("#image_file").should("exist");
-        cy.get("#is_wip").should("exist");
-        cy.get("#skip_notifications").should("exist");
         cy.get(".accepted-formats").should("contain.text", Constants.ALLOWED_UPLOAD_EXTENSIONS.join(","));
       });
 
@@ -88,8 +84,6 @@ context("uploader", () => {
 
         cy.get("#title").should("exist");
         cy.get("#image_file").should("exist");
-        cy.get("#is_wip").should("exist");
-        cy.get("#skip_notifications").should("exist");
         cy.get(".accepted-formats").should("contain.text", Constants.ALLOWED_UPLOAD_EXTENSIONS.join(","));
       });
 
@@ -108,8 +102,6 @@ context("uploader", () => {
 
         cy.get("#title").should("exist");
         cy.get("#image_file").should("exist");
-        cy.get("#is_wip").should("exist");
-        cy.get("#skip_notifications").should("exist");
         cy.get(".accepted-formats").should("contain.text", Constants.ALLOWED_UPLOAD_EXTENSIONS.join(","));
       });
 
@@ -126,8 +118,6 @@ context("uploader", () => {
 
         cy.get("#title").should("exist");
         cy.get("#image_file").should("exist");
-        cy.get("#is_wip").should("exist");
-        cy.get("#skip_notifications").should("exist");
         cy.get(".accepted-formats").should("contain.text", Constants.ALLOWED_UPLOAD_EXTENSIONS.join(","));
       });
     });

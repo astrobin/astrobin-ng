@@ -27,9 +27,7 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
 
   model = {
     title: "",
-    image_file: "",
-    is_wip: false,
-    skip_notifications: false
+    image_file: ""
   };
 
   fields: FormlyFieldConfig[] = [
@@ -52,32 +50,6 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
       },
       validators: {
         validation: [{ name: "file-size", options: { max: 0 } }]
-      }
-    },
-    {
-      key: "is_wip",
-      id: "is_wip",
-      type: "checkbox",
-      templateOptions: {
-        label: this.translate.instant("Upload to your Staging area"),
-        description: this.translate.instant(
-          "This will upload this image to your staging area, making it unlisted. The " +
-            "image will be accessible by anyone with a direct link."
-        ),
-        change: this._onIsWipChange.bind(this)
-      }
-    },
-    {
-      key: "skip_notifications",
-      id: "skip_notifications",
-      type: "checkbox",
-      templateOptions: {
-        label: this.translate.instant("Skip notifications"),
-        description: this.translate.instant("Do not notify your followers about this revision."),
-        change: this._onSkipNotificationsChange.bind(this)
-      },
-      expressionProperties: {
-        "templateOptions.disabled": "model.is_wip"
       }
     }
   ];
@@ -127,6 +99,9 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
   ngOnInit(): void {
     this.titleService.setTitle(this.translate.instant("Uploader") + " (beta)");
 
+    this.uploadDataService.setMetadata("image-upload", { is_wip: true });
+    this.uploadDataService.setMetadata("image-upload", { skip_notifications: true });
+
     this.userSubscriptionService.fileSizeAllowed(0).subscribe(result => {
       const field = this.fields.filter(x => x.key === "image_file")[0];
       const validator = field.validators.validation.filter(x => x.name === "file-size")[0];
@@ -166,14 +141,5 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
 
   private _onTitleChange() {
     this.uploadDataService.setMetadata("image-upload", { title: this.model.title });
-  }
-
-  private _onIsWipChange() {
-    this.form.patchValue({ skip_notifications: true });
-    this.uploadDataService.setMetadata("image-upload", { is_wip: this.model.is_wip });
-  }
-
-  private _onSkipNotificationsChange() {
-    this.uploadDataService.setMetadata("image-upload", { skip_notifications: this.model.skip_notifications });
   }
 }
