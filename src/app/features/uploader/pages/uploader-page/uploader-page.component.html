@@ -67,6 +67,14 @@
 <ng-template #uploaderTemplate>
   <form (ngSubmit)="onSubmit()" [formGroup]="form" *ngIf="(uploadAllowed$ | async) !== false; else uploadNotAllowed">
     <formly-form [fields]="fields" [form]="form" [model]="model"></formly-form>
+
+    <ngb-alert [dismissible]="false" type="info">
+      <p translate>
+        This image will uploaded as a work in progress to your staging area. You can make it public at the end of the
+        process.
+      </p>
+    </ngb-alert>
+
     <div class="form-actions">
       <ng-container *ngTemplateOutlet="returnToClassicUploader"></ng-container>
       <button class=" btn btn-lg btn-primary" [disabled]="uploadButtonDisabled()"
