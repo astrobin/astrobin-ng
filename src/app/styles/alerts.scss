@@ -1,11 +1,36 @@
+@import "../styles/variables";
+
 .alert {
+  box-shadow: 0 0.25rem 1rem rgba(0, 0, 0, .333);
+
+  > fa-icon {
+    display: inline-block;
+    font-weight: bold;
+    margin-right: .5rem;
+    color: $light-grey;
+
+    + p {
+      display: inline-block;
+    }
+  }
+
   > p {
+    font-style: italic;
+
     &:not(:last-child) {
       margin-bottom: .25rem;
     }
 
     &:last-child {
       margin-bottom: 0;
+    }
+  }
+
+  &.alert-info {
+    background-color: $white;
+
+    > p {
+      color: $grey;
     }
   }
 }

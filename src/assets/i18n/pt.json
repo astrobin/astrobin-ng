@@ -12,5 +12,6 @@
   "You have an <strong>AstroBin Free</strong> membership. You have used <strong>{{counter}}</strong> of your <strong>{{slots}}</strong> upload slots.": "Você tem uma assinatura do <strong>AstroBin Grátis</strong>. Você usou <strong>{{counter}}</strong> de seus <strong>{{slots}}</strong> slots de upload.",
   "It looks like you reached the upload limit for your subscription.": "Parece que você atingiu o limite de upload de sua assinatura.",
   "Return to the classic uploader": "Volte ao uploader clássico",
-  "Sorry, but this image is too large. Under your current subscription plan, the maximum allowed image size is {{max}}.": "Desculpe, mas esta imagem é muito grande. No seu plano de assinatura atual, o tamanho máximo de imagem permitido é {{max}}."
+  "Sorry, but this image is too large. Under your current subscription plan, the maximum allowed image size is {{max}}.": "Desculpe, mas esta imagem é muito grande. No seu plano de assinatura atual, o tamanho máximo de imagem permitido é {{max}}.",
+  "This image will uploaded as a work in progress to your staging area. You can make it public at the end of the process.": ""
 }

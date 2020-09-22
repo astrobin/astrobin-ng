@@ -12,5 +12,6 @@
   "You have an <strong>AstroBin Free</strong> membership. You have used <strong>{{counter}}</strong> of your <strong>{{slots}}</strong> upload slots.": "",
   "It looks like you reached the upload limit for your subscription.": "",
   "Return to the classic uploader": "",
-  "Sorry, but this image is too large. Under your current subscription plan, the maximum allowed image size is {{max}}.": ""
+  "Sorry, but this image is too large. Under your current subscription plan, the maximum allowed image size is {{max}}.": "",
+  "This image will uploaded as a work in progress to your staging area. You can make it public at the end of the process.": ""
 }
