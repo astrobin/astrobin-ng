@@ -34,7 +34,8 @@ export class AuthInterceptor implements HttpInterceptor {
     }
 
     request = request.clone({
-      setHeaders: headers
+      setHeaders: headers,
+      withCredentials: true
     });
 
     return next.handle(request).pipe(
