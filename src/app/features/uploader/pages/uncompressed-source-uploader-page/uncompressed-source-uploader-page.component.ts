@@ -110,13 +110,15 @@ export class UncompressedSourceUploaderPageComponent extends BaseComponentDirect
     return (
       !this.form.valid ||
       !this.uploadState ||
-      ["queue", "uploading", "paused", "retry"].indexOf(this.uploadState.status) > -1
+      ["queue", "uploading", "retry", "paused"].indexOf(this.uploadState.status) > -1
     );
   }
 
   uploadButtonLoading(): boolean {
     return (
-      this.form.valid && this.uploadState && ["queue", "uploading", "complete"].indexOf(this.uploadState.status) > -1
+      this.form.valid &&
+      this.uploadState &&
+      ["queue", "uploading", "retry", "complete"].indexOf(this.uploadState.status) > -1
     );
   }
 }

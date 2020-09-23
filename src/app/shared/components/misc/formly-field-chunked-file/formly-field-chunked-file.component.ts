@@ -133,7 +133,7 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
   isUploading(): boolean {
     return (
       this.uploadState &&
-      this.uploadState.status === "uploading" &&
+      ["uploading", "retry"].indexOf(this.uploadState.status) > -1 &&
       this.uploadState.progress &&
       this.uploadState.progress > 0
     );
