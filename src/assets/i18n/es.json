@@ -13,5 +13,5 @@
   "It looks like you reached the upload limit for your subscription.": "Parece que ha alcanzado el límite de las cargas disponibles para su suscripción.",
   "Return to the classic uploader": "Regrese al cargador clásico",
   "Sorry, but this image is too large. Under your current subscription plan, the maximum allowed image size is {{max}}.": "Lo sentimos, pero esta imagen es muy grande. Bajo su actual plan de suscripción, el tamaño de imagen máximo permitido es {{max}}.",
-  "This image will uploaded as a work in progress to your staging area. You can make it public at the end of the process.": ""
+  "This image will be uploaded to your staging area as a work in progress. You can make it public at the end of the process.": ""
 }
