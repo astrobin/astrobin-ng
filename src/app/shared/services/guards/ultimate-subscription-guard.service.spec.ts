@@ -52,10 +52,10 @@ describe("UltimateSubscriptionGuardService", () => {
     });
   });
 
-  it("should redirect to permission denied page if user is Ultimate but not valid", done => {
+  it("should redirect to permission denied page if user is Ultimate but expired", done => {
     const context = AppContextGenerator.default();
     context.currentUserSubscriptions[0].subscription = TestConstants.ASTROBIN_ULTIMATE_2020_ID;
-    context.currentUserSubscriptions[0].valid = false;
+    context.currentUserSubscriptions[0].expires = "1970-01-01";
     service.appContextService.context$ = of(context);
 
     service.canActivate(null, { url: "/foo" } as RouterStateSnapshot).subscribe(result => {

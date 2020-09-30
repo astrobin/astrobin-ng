@@ -6,11 +6,18 @@ export class UserSubscriptionGenerator {
     return {
       id: 1,
       valid: true,
-      expires: null,
+      expires: "2100-12-31",
       active: true,
       cancelled: false,
       user: 1,
       subscription
     };
+  }
+
+  static expiredUserSubscription(subscription = TestConstants.ASTROBIN_ULTIMATE_2020_ID): UserSubscriptionInterface {
+    const userSubscription = this.userSubscription(subscription);
+    userSubscription.expires = "1970-01-01";
+
+    return userSubscription;
   }
 }

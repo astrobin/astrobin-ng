@@ -33,7 +33,11 @@ export class UserSubscriptionService extends BaseService implements UserSubscrip
 
           if (
             appContext.currentUserSubscriptions.filter(userSubscription => {
-              return userSubscription.subscription === subscription.id && userSubscription.valid;
+              return (
+                userSubscription.subscription === subscription.id &&
+                userSubscription.active &&
+                new Date(userSubscription.expires) >= new Date()
+              );
             }).length > 0
           ) {
             return true;
