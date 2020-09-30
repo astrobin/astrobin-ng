@@ -38,6 +38,21 @@ describe("UserSubscriptionService", () => {
         });
     });
 
+    it("should not match expired Ultimate", done => {
+      const context = AppContextGenerator.default();
+      context.currentUserSubscriptions = [
+        UserSubscriptionGenerator.expiredUserSubscription(TestConstants.ASTROBIN_ULTIMATE_2020_ID)
+      ];
+      service.appContextService.context$ = of(context);
+
+      service
+        .hasValidSubscription(context.currentUserProfile, [SubscriptionName.ASTROBIN_ULTIMATE_2020])
+        .subscribe(result => {
+          expect(result).toBe(false);
+          done();
+        });
+    });
+
     it("should match Premium", done => {
       const context = AppContextGenerator.default();
       context.currentUserSubscriptions = [
