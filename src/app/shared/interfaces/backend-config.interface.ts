@@ -1,5 +1,5 @@
 export interface BackendConfigInterface {
-  version: string;
+  version?: string;
   i18nHash: string;
   readOnly: boolean;
   PREMIUM_MAX_IMAGES_FREE: number;
