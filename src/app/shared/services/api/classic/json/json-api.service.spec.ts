@@ -28,12 +28,12 @@ describe("CommonApiService", () => {
   describe("getBackendConfig", () => {
     it("should work", () => {
       service.getBackendConfig$().subscribe(response => {
-        expect(response.version).toEqual("v2.0.0");
+        expect(response.readOnly).toEqual(false);
       });
 
       const req = httpMock.expectOne(`${service.configUrl}/common/app-config/`);
       expect(req.request.method).toBe("GET");
-      req.flush({ version: "v2.0.0" });
+      req.flush({ readOnly: false });
     });
   });
 });
