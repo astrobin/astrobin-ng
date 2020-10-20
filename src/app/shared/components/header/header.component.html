@@ -299,7 +299,12 @@
 
         <a [href]="classicRoutes.GALLERY(ctx.currentUser)" class="dropdown-item">
           <fa-icon icon="image"></fa-icon>
-          {{ "Gallery" | translate }}
+          {{ "Public Gallery" | translate }}
+        </a>
+
+        <a [href]="classicRoutes.STAGING_GALLERY(ctx.currentUser)" class="dropdown-item">
+          <fa-icon icon="lock"></fa-icon>
+          {{ "Staging Area" | translate }}
         </a>
 
         <a [href]="classicRoutes.BOOKMARKS(ctx.currentUser)" class="dropdown-item">
