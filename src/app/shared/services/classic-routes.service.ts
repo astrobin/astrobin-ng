@@ -41,6 +41,8 @@ export class ClassicRoutesService extends BaseService {
 
   GALLERY = (profile: UserInterface) => BASE_URL + `/users/${profile?.username}/`;
 
+  STAGING_GALLERY = (profile: UserInterface) => BASE_URL + `/users/${profile?.username}/?staging`;
+
   BOOKMARKS = (profile: UserInterface) => BASE_URL + `/users/${profile?.username}/bookmarks/`;
 
   PLOTS = (profile: UserInterface) => BASE_URL + `/users/${profile?.username}/plots/`;
