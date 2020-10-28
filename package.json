@@ -84,7 +84,7 @@
     "prettier": "1.19.1",
     "protractor": "7.0.0",
     "stylelint": "13.7.2",
-    "supertest": "5.0.0",
+    "supertest": "6.0.0",
     "ts-jest": "26.4.3",
     "ts-node": "9.0.0",
     "tsconfig-paths": "3.9.0",
