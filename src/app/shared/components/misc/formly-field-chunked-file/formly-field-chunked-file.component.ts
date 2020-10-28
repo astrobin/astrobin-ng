@@ -61,6 +61,14 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
     this.uploaderService.init(this.uploadOptions);
     this.uploaderService.events.subscribe((state: UploadState) => {
       this.uploadState = state;
+
+      if (state.responseStatus === 401) {
+        this.popNotificationsService.error(
+          this.translateService.instant("Authentication error. Please log out and in again.")
+        );
+        return;
+      }
+
       if (state.status === "added") {
         this.uploaderService.queue = this.uploaderService.queue.slice(-1);
 
