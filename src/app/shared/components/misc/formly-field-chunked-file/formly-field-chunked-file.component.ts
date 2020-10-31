@@ -62,14 +62,25 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
     this.uploaderService.events.subscribe((state: UploadState) => {
       this.uploadState = state;
 
-      if (state.responseStatus === 401) {
-        this.popNotificationsService.error(
-          this.translateService.instant("Authentication error. Please log out and in again.")
-        );
-        return;
-      }
+      if (state.status === "error") {
+        let message: string;
 
-      if (state.status === "added") {
+        switch (state.responseStatus) {
+          case 401:
+            message = "Authentication error. Please log out and in again.";
+            break;
+          case 400:
+            message = "Invalid data, please refresh the page and try again.";
+            break;
+          default:
+            message = "Unknown error, please refresh the page and try again.";
+            break;
+        }
+
+        this.popNotificationsService.error(this.translateService.instant(message), null, {
+          disableTimeOut: true
+        });
+      } else if (state.status === "added") {
         this.uploaderService.queue = this.uploaderService.queue.slice(-1);
 
         const extension = this.utilsService.fileExtension(state.name);

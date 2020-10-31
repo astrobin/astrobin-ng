@@ -11,7 +11,6 @@ import { ThumbnailGroupApiService } from "@shared/services/api/classic/images-ap
 import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
 import { AppContextService } from "@shared/services/app-context/app-context.service";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
-import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { TitleService } from "@shared/services/title/title.service";
 import { UploadDataService } from "@shared/services/upload-metadata/upload-data.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
@@ -91,7 +90,6 @@ export class RevisionUploaderPageComponent extends BaseComponentDirective implem
     public translate: TranslateService,
     public uploaderService: UploadxService,
     public uploadDataService: UploadDataService,
-    public popNotificationsService: PopNotificationsService,
     public windowRef: WindowRefService,
     public classicRoutesService: ClassicRoutesService,
     public route: ActivatedRoute,
@@ -122,9 +120,7 @@ export class RevisionUploaderPageComponent extends BaseComponentDirective implem
     this.uploaderService.events.pipe(takeUntil(this.destroyed$)).subscribe(uploadState => {
       this.uploadState = uploadState;
 
-      if (uploadState.status === "error") {
-        this.popNotificationsService.error(`Error: ${uploadState.responseStatus}`);
-      } else if (uploadState.status === "complete") {
+      if (uploadState.status === "complete") {
         const response = JSON.parse(uploadState.response as string);
         this.windowRef.nativeWindow.location.assign(this.classicRoutesService.EDIT_IMAGE_REVISION(response.pk));
       }

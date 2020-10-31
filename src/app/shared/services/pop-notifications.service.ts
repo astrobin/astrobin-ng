@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
-import { ToastrService } from "ngx-toastr";
+import { IndividualConfig, ToastrService } from "ngx-toastr";
 
 @Injectable({
   providedIn: "root"
@@ -16,19 +16,19 @@ export class PopNotificationsService extends BaseService {
     super(loadingService);
   }
 
-  public success(message: string, title?: string): void {
-    this.toastr.success(message, title ? title : this.translate.instant("Success!"));
+  public success(message: string, title?: string, options?: Partial<IndividualConfig>): void {
+    this.toastr.success(message, title ? title : this.translate.instant("Success!"), options);
   }
 
-  public info(message: string, title?: string): void {
-    this.toastr.info(message, title ? title : this.translate.instant("Info"));
+  public info(message: string, title?: string, options?: Partial<IndividualConfig>): void {
+    this.toastr.info(message, title ? title : this.translate.instant("Info"), options);
   }
 
-  public warning(message: string, title?: string): void {
-    this.toastr.warning(message, title ? title : this.translate.instant("Warning!"));
+  public warning(message: string, title?: string, options?: Partial<IndividualConfig>): void {
+    this.toastr.warning(message, title ? title : this.translate.instant("Warning!"), options);
   }
 
-  public error(message: string, title?: string): void {
-    this.toastr.error(message, title ? title : this.translate.instant("Error!"));
+  public error(message: string, title?: string, options?: Partial<IndividualConfig>): void {
+    this.toastr.error(message, title ? title : this.translate.instant("Error!"), options);
   }
 }
