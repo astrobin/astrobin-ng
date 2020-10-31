@@ -6,7 +6,6 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
 import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
 import { AppContextService } from "@shared/services/app-context/app-context.service";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
-import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { TitleService } from "@shared/services/title/title.service";
 import { UploadDataService } from "@shared/services/upload-metadata/upload-data.service";
 import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
@@ -66,7 +65,6 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
     public translate: TranslateService,
     public uploaderService: UploadxService,
     public uploadDataService: UploadDataService,
-    public popNotificationsService: PopNotificationsService,
     public windowRef: WindowRefService,
     public classicRoutesService: ClassicRoutesService,
     public titleService: TitleService,
@@ -111,9 +109,7 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
     this.uploaderService.events.pipe(takeUntil(this.destroyed$)).subscribe(uploadState => {
       this.uploadState = uploadState;
 
-      if (uploadState.status === "error") {
-        this.popNotificationsService.error(`Error: ${uploadState.responseStatus}`);
-      } else if (uploadState.status === "complete") {
+      if (uploadState.status === "complete") {
         const response = JSON.parse(uploadState.response as string);
         const hash = response.hash;
         this.windowRef.nativeWindow.location.assign(`${this.classicRoutesService.EDIT_IMAGE_THUMBNAILS(hash)}?upload`);
