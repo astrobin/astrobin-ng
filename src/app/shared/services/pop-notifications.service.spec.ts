@@ -25,13 +25,13 @@ describe("PopNotificationsService", () => {
     it("should defer to toastr module, with title", () => {
       service.success("message", "title");
 
-      expect(service.toastr.success).toHaveBeenCalledWith("message", "title");
+      expect(service.toastr.success).toHaveBeenCalledWith("message", "title", undefined);
     });
 
     it("should defer to toastr module, without title", () => {
       service.success("message");
 
-      expect(service.toastr.success).toHaveBeenCalledWith("message", "Success!");
+      expect(service.toastr.success).toHaveBeenCalledWith("message", "Success!", undefined);
     });
   });
 
@@ -43,13 +43,13 @@ describe("PopNotificationsService", () => {
     it("should defer to toastr module, with title", () => {
       service.info("message", "title");
 
-      expect(service.toastr.info).toHaveBeenCalledWith("message", "title");
+      expect(service.toastr.info).toHaveBeenCalledWith("message", "title", undefined);
     });
 
     it("should defer to toastr module, without title", () => {
       service.info("message");
 
-      expect(service.toastr.info).toHaveBeenCalledWith("message", "Info");
+      expect(service.toastr.info).toHaveBeenCalledWith("message", "Info", undefined);
     });
   });
 
@@ -61,13 +61,13 @@ describe("PopNotificationsService", () => {
     it("should defer to toastr module, with title", () => {
       service.warning("message", "title");
 
-      expect(service.toastr.warning).toHaveBeenCalledWith("message", "title");
+      expect(service.toastr.warning).toHaveBeenCalledWith("message", "title", undefined);
     });
 
     it("should defer to toastr module, without title", () => {
       service.warning("message");
 
-      expect(service.toastr.warning).toHaveBeenCalledWith("message", "Warning!");
+      expect(service.toastr.warning).toHaveBeenCalledWith("message", "Warning!", undefined);
     });
   });
 
@@ -79,13 +79,13 @@ describe("PopNotificationsService", () => {
     it("should defer to toastr module, with title", () => {
       service.error("message", "title");
 
-      expect(service.toastr.error).toHaveBeenCalledWith("message", "title");
+      expect(service.toastr.error).toHaveBeenCalledWith("message", "title", undefined);
     });
 
     it("should defer to toastr module, without title", () => {
       service.error("message");
 
-      expect(service.toastr.error).toHaveBeenCalledWith("message", "Error!");
+      expect(service.toastr.error).toHaveBeenCalledWith("message", "Error!", undefined);
     });
   });
 });
