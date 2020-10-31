@@ -1,5 +1,4 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
-import { CustomTus } from "@features/uploader/custom-tus";
 import { FieldType } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
 import { FileUpload } from "@shared/components/misc/formly-field-chunked-file/file-upload";
@@ -10,7 +9,7 @@ import { PopNotificationsService } from "@shared/services/pop-notifications.serv
 import { UploadDataService } from "@shared/services/upload-metadata/upload-data.service";
 import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
-import { UploadState, UploadxOptions, UploadxService } from "ngx-uploadx";
+import { Tus, UploadState, UploadxOptions, UploadxService } from "ngx-uploadx";
 import { Subscription } from "rxjs";
 import { filter } from "rxjs/operators";
 
@@ -27,11 +26,15 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
   uploadState: UploadState;
   uploadOptions: UploadxOptions = {
     allowedTypes: Constants.ALLOWED_UPLOAD_EXTENSIONS.join(","),
-    uploaderClass: CustomTus,
+    uploaderClass: Tus,
     chunkSize: 1024 * 1024,
     multiple: false,
     autoUpload: false,
-    token: this.authService.getClassicApiToken(),
+    authorize: req => {
+      const token = this.authService.getClassicApiToken();
+      req.headers.Authorization = `Token ${token}`;
+      return req;
+    },
     metadata: {
       filename: new UtilsService().uuid()
     }
