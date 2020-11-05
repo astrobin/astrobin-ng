@@ -20,11 +20,13 @@ export class ClassicRoutesService extends BaseService {
   FORUM_LATEST = BASE_URL + "/forum/topic/latest/";
   FORUM_SUBSCRIBED = BASE_URL + "/forum/topic/subscribed";
   SEARCH = BASE_URL + "/search/";
+  TOP_PICK_NOMINATIONS = BASE_URL + "/explore/top-pick-nominations/";
   TOP_PICKS = BASE_URL + "/explore/top-picks/";
   IOTD = BASE_URL + "/iotd/archive/";
   GROUPS = BASE_URL + "/groups/";
   REMOTE_ASTROPHOTOGRAPHY = "https://welcome.astrobin.com/remote-astrophotography";
   TRENDING_ASTROPHOTOGRAPHERS = BASE_URL + "/trending-astrophotographers/";
+  REPUTATION_LEADERBOARD = BASE_URL + "/reputation-leaderboard/";
   ABOUT = "https://welcome.astrobin.com/about";
   FAQ = "https://welcome.astrobin.com/faq";
   HELP_API = BASE_URL + "/help/api/";
