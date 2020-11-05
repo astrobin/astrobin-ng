@@ -126,9 +126,14 @@
 
           <div class="dropdown-divider"></div>
 
+          <a [href]="classicRoutes.TOP_PICK_NOMINATIONS" class="dropdown-item">
+            <fa-icon icon="arrow-up"></fa-icon>
+            {{ "Top pick nominations" | translate }}
+          </a>
+
           <a [href]="classicRoutes.TOP_PICKS" class="dropdown-item">
             <fa-icon icon="star"></fa-icon>
-            {{ "Top Picks" | translate }}
+            {{ "Top picks" | translate }}
           </a>
 
           <a [href]="classicRoutes.IOTD" class="dropdown-item">
@@ -153,6 +158,11 @@
           <a [href]="classicRoutes.TRENDING_ASTROPHOTOGRAPHERS" class="dropdown-item">
             <fa-icon icon="list-ol"></fa-icon>
             {{ "Trending astrophotographers" | translate }}
+          </a>
+
+          <a [href]="classicRoutes.REPUTATION_LEADERBOARD" class="dropdown-item">
+            <fa-icon icon="arrow-up"></fa-icon>
+            {{ "Reputation leaderboard" | translate }}
           </a>
         </div>
       </div>
