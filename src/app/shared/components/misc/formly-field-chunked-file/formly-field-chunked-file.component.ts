@@ -83,7 +83,7 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
       } else if (state.status === "added") {
         this.uploaderService.queue = this.uploaderService.queue.slice(-1);
 
-        const extension = this.utilsService.fileExtension(state.name);
+        const extension = this.utilsService.fileExtension(state.name).toLowerCase();
 
         if (this.uploadOptions.allowedTypes.indexOf(`.${extension}`) > -1) {
           this.userSubscriptionService.fileSizeAllowed(state.size).subscribe(result => {
