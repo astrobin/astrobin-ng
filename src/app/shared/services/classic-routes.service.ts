@@ -25,8 +25,8 @@ export class ClassicRoutesService extends BaseService {
   IOTD = BASE_URL + "/iotd/archive/";
   GROUPS = BASE_URL + "/groups/";
   REMOTE_ASTROPHOTOGRAPHY = "https://welcome.astrobin.com/remote-astrophotography";
-  TRENDING_ASTROPHOTOGRAPHERS = BASE_URL + "/trending-astrophotographers/";
-  REPUTATION_LEADERBOARD = BASE_URL + "/reputation-leaderboard/";
+  ASTROPHOTOGRAPHERS_LIST = BASE_URL + "/astrophotographers-list/";
+  CONTRIBUTORS_LIST = BASE_URL + "/contributors-list/";
   ABOUT = "https://welcome.astrobin.com/about";
   FAQ = "https://welcome.astrobin.com/faq";
   HELP_API = BASE_URL + "/help/api/";
