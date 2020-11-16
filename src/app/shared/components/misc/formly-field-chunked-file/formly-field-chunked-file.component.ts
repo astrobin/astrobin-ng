@@ -23,6 +23,7 @@ import { filter, map } from "rxjs/operators";
 })
 export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit, OnDestroy {
   upload: FileUpload;
+  uploadSize: number;
   uploadState: UploadState;
   uploadOptions: UploadxOptions = {
     allowedTypes: Constants.ALLOWED_UPLOAD_EXTENSIONS.join(","),
@@ -90,6 +91,7 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
         }).subscribe(result => {
           if (result.extensionCheck && result.fileSizeCheck) {
             this.upload = new FileUpload(state);
+            this.uploadSize = state.size;
           } else {
             this.formControl.setValue(null);
           }

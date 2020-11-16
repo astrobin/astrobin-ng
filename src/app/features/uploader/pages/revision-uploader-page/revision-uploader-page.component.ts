@@ -120,7 +120,9 @@ export class RevisionUploaderPageComponent extends BaseComponentDirective implem
     this.uploaderService.events.pipe(takeUntil(this.destroyed$)).subscribe(uploadState => {
       this.uploadState = uploadState;
 
-      if (uploadState.status === "complete") {
+      if (uploadState.status === "added") {
+        this._setImageDimensionsMetadata(uploadState.file);
+      } else if (uploadState.status === "complete") {
         const response = JSON.parse(uploadState.response as string);
         this.windowRef.nativeWindow.location.assign(this.classicRoutesService.EDIT_IMAGE_REVISION(response.pk));
       }
@@ -157,5 +159,18 @@ export class RevisionUploaderPageComponent extends BaseComponentDirective implem
 
   private _onMarkAsFinalChange() {
     this.uploadDataService.patchMetadata("image-upload", { mark_as_final: this.model.mark_as_final });
+  }
+
+  private _setImageDimensionsMetadata(file: File): void {
+    const image = new Image();
+
+    image.onload = () => {
+      this.uploadDataService.patchMetadata("image-upload", {
+        width: image.width,
+        height: image.height
+      });
+    };
+
+    image.src = window.URL.createObjectURL(file);
   }
 }
