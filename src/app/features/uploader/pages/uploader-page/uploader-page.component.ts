@@ -109,7 +109,9 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
     this.uploaderService.events.pipe(takeUntil(this.destroyed$)).subscribe(uploadState => {
       this.uploadState = uploadState;
 
-      if (uploadState.status === "complete") {
+      if (uploadState.status === "added") {
+        this._setImageDimensionsMetadata(uploadState.file);
+      } else if (uploadState.status === "complete") {
         const response = JSON.parse(uploadState.response as string);
         const hash = response.hash;
         this.windowRef.nativeWindow.location.assign(`${this.classicRoutesService.EDIT_IMAGE_THUMBNAILS(hash)}?upload`);
@@ -139,5 +141,18 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
 
   private _onTitleChange() {
     this.uploadDataService.setMetadata("image-upload", { title: this.model.title });
+  }
+
+  private _setImageDimensionsMetadata(file: File): void {
+    const image = new Image();
+
+    image.onload = () => {
+      this.uploadDataService.patchMetadata("image-upload", {
+        width: image.width,
+        height: image.height
+      });
+    };
+
+    image.src = window.URL.createObjectURL(file);
   }
 }

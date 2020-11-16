@@ -11,7 +11,7 @@ function fileSizeValidator(
   field: FormlyFieldConfig,
   options: FileSizeValidatorOptionsInterface
 ): ValidationErrors {
-  return control.value[0]?.size < options.max ? null : { "file-size": true };
+  return control.value?.length && control.value[0]?.size < options.max ? null : { "file-size": true };
 }
 
 export const formlyConfig = {

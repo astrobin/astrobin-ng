@@ -8,6 +8,7 @@ import { FormlyModule } from "@ngx-formly/core";
 import { TranslateModule } from "@ngx-translate/core";
 import { FormlyFieldChunkedFileAccessorDirective } from "@shared/components/misc/formly-field-chunked-file/formly-field-chunked-file-accessor.directive";
 import { FormlyFieldChunkedFileComponent } from "@shared/components/misc/formly-field-chunked-file/formly-field-chunked-file.component";
+import { NgxFilesizeModule } from "ngx-filesize";
 import { UploadxModule } from "ngx-uploadx";
 import { PipesModule } from "../pipes/pipes.module";
 import { LoginFormComponent } from "./auth/login-form/login-form.component";
@@ -27,6 +28,7 @@ import { UsernameComponent } from "./misc/username/username.component";
     NgbDropdownModule,
     NgbModalModule,
     NgbTooltipModule,
+    NgxFilesizeModule,
     PipesModule,
     ReactiveFormsModule,
     RouterModule,

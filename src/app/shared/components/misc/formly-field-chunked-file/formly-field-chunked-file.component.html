@@ -6,7 +6,7 @@
 
     <span class="file">
       <ng-container *ngIf="upload && upload.name; else withoutFile">
-        {{ upload.name }}
+        {{ upload.name }} ({{uploadSize | filesize}})
 
         <span class="status">{{ getStatus() | translate }}</span>
       </ng-container>

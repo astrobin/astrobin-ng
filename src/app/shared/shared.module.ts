@@ -21,6 +21,7 @@ import { UserService } from "@shared/services/user.service";
 import { ValidationLoaderService } from "@shared/services/validation-loader.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { CookieService } from "ngx-cookie-service";
+import { NgxFilesizeModule } from "ngx-filesize";
 import { TimeagoModule } from "ngx-timeago";
 import { ToastrModule } from "ngx-toastr";
 import { take } from "rxjs/operators";
@@ -55,6 +56,7 @@ export function appInitializer(appContext: AppContextService, authService: AuthS
     FormlyBootstrapModule,
     NgbModule,
     NgbPaginationModule,
+    NgxFilesizeModule,
     ToastrModule.forRoot(),
     ApiModule,
     PipesModule
@@ -68,6 +70,7 @@ export function appInitializer(appContext: AppContextService, authService: AuthS
     FormlyBootstrapModule,
     NgbModule,
     NgbPaginationModule,
+    NgxFilesizeModule,
     ToastrModule,
     TimeagoModule,
     TranslateModule

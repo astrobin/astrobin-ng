@@ -10,8 +10,8 @@ import { UploadDataService } from "@shared/services/upload-metadata/upload-data.
 import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { Tus, UploadState, UploadxOptions, UploadxService } from "ngx-uploadx";
-import { Subscription } from "rxjs";
-import { filter } from "rxjs/operators";
+import { forkJoin, Observable, of, Subscription } from "rxjs";
+import { filter, map } from "rxjs/operators";
 
 // PLEASE NOTE: due to the usage of the UploaderDataService, there can be only one chunked file upload field on a page
 // at any given time.
@@ -23,6 +23,7 @@ import { filter } from "rxjs/operators";
 })
 export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit, OnDestroy {
   upload: FileUpload;
+  uploadSize: number;
   uploadState: UploadState;
   uploadOptions: UploadxOptions = {
     allowedTypes: Constants.ALLOWED_UPLOAD_EXTENSIONS.join(","),
@@ -81,29 +82,20 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
           disableTimeOut: true
         });
       } else if (state.status === "added") {
+        // We only allow one upload at a time.
         this.uploaderService.queue = this.uploaderService.queue.slice(-1);
 
-        const extension = this.utilsService.fileExtension(state.name).toLowerCase();
-
-        if (this.uploadOptions.allowedTypes.indexOf(`.${extension}`) > -1) {
-          this.userSubscriptionService.fileSizeAllowed(state.size).subscribe(result => {
-            if (result.allowed) {
-              this.upload = new FileUpload(state);
-            } else {
-              const message =
-                "Sorry, but this image is too large. Under your current subscription plan, the maximum allowed image size is {{max}}.";
-              this.popNotificationsService.error(
-                this.translateService.instant(message, {
-                  max: result.max / 1024 / 1024 + " MB"
-                })
-              );
-            }
-          });
-        } else {
-          this.popNotificationsService.error(
-            this.translateService.instant("File type not supported") + `: ${extension}`
-          );
-        }
+        forkJoin({
+          extensionCheck: this._checkFileExtension(state.name),
+          fileSizeCheck: this._checkFileSize(state.size)
+        }).subscribe(result => {
+          if (result.extensionCheck && result.fileSizeCheck) {
+            this.upload = new FileUpload(state);
+            this.uploadSize = state.size;
+          } else {
+            this.formControl.setValue(null);
+          }
+        });
       }
     });
 
@@ -181,5 +173,37 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
     if (this._allowedTypesChangesSubscription) {
       this._allowedTypesChangesSubscription.unsubscribe();
     }
+  }
+
+  private _checkFileExtension(filename: string): Observable<boolean> {
+    const extension = this.utilsService.fileExtension(filename).toLowerCase();
+
+    if (this.uploadOptions.allowedTypes.indexOf(`.${extension}`) > -1) {
+      return of(true);
+    }
+
+    this.popNotificationsService.error(this.translateService.instant("File type not supported") + `: ${extension}`);
+
+    return of(false);
+  }
+
+  private _checkFileSize(size: number): Observable<boolean> {
+    return this.userSubscriptionService.fileSizeAllowed(size).pipe(
+      map(result => {
+        if (result.allowed) {
+          return true;
+        } else {
+          const message =
+            "Sorry, but this image is too large. Under your current subscription plan, the maximum " +
+            "allowed image size is {{max}}.";
+          this.popNotificationsService.error(
+            this.translateService.instant(message, {
+              max: result.max / 1024 / 1024 + " MB"
+            })
+          );
+          return false;
+        }
+      })
+    );
   }
 }
