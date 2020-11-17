@@ -22,4 +22,13 @@ export class UtilsService {
 
     return filename.split(separator).pop();
   }
+
+  isImage(filename: string): boolean {
+    if (!filename) {
+      return false;
+    }
+
+    const extension = this.fileExtension(filename).toLowerCase();
+    return ["png", "jpg", "jpeg", "gif"].indexOf(extension) > -1;
+  }
 }

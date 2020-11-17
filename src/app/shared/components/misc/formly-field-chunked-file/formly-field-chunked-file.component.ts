@@ -194,6 +194,7 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
     return this.userSubscriptionService.fileSizeAllowed(size).pipe(
       map(result => {
         if (result.allowed) {
+          this._warnAboutVeryLargeFile(size);
           return true;
         } else {
           const message =
@@ -211,8 +212,7 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
   }
 
   private _checkImageDimensions(file: File): Observable<boolean> {
-    const extension = this.utilsService.fileExtension(file.name).toLowerCase();
-    if (["png", "jpg", "jpeg", "gif"].indexOf(extension) > -1) {
+    if (this.utilsService.isImage(file.name)) {
       return new Observable<boolean>(observer => {
         const image = new Image();
         image.onload = () => {
@@ -244,5 +244,25 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
     }
 
     return of(true);
+  }
+
+  private _warnAboutVeryLargeFile(size: number): void {
+    const MB = 1024 * 1024;
+    let message;
+
+    if (size > 200 * MB) {
+      message =
+        "Warning! That's a large file you got there! AstroBin does not impose artificial limitation in the file " +
+        "size you can upload with an Ultimate subscription, but we cannot guarantee that all images above 200 MB or " +
+        "~8000x8000 pixels will work. Feel free to give it a shot tho!";
+    } else if (size > 100 * MB) {
+      message =
+        "Heads up! Are you sure you want to upload such a large file? It's okay to do so but probably not many " +
+        "people will want to see it at its full resolution, if it will take too long for them to download it.";
+    }
+
+    if (!!message) {
+      this.popNotificationsService.warning(this.translateService.instant(message));
+    }
   }
 }

@@ -26,4 +26,45 @@ describe("UtilsService", () => {
       expect(service.fileExtension(undefined)).toBeUndefined();
     });
   });
+
+  describe("isImage", () => {
+    it("should be true for image extensions", () => {
+      expect(service.isImage("foo.png")).toBe(true);
+      expect(service.isImage("foo.jpg")).toBe(true);
+      expect(service.isImage("foo.jpeg")).toBe(true);
+      expect(service.isImage("foo.gif")).toBe(true);
+
+      expect(service.isImage("foo.PNG")).toBe(true);
+      expect(service.isImage("foo.JPG")).toBe(true);
+      expect(service.isImage("foo.JPEG")).toBe(true);
+      expect(service.isImage("foo.GIF")).toBe(true);
+    });
+
+    it("should be false for null/undefined extensions", () => {
+      expect(service.isImage(undefined)).toBe(false);
+      expect(service.isImage(null)).toBe(false);
+    });
+
+    it("should be false for TIFF/FITS extensions tho", () => {
+      expect(service.isImage("foo.tif")).toBe(false);
+      expect(service.isImage("foo.tiff")).toBe(false);
+      expect(service.isImage("foo.fit")).toBe(false);
+      expect(service.isImage("foo.fits")).toBe(false);
+      expect(service.isImage("foo.fts")).toBe(false);
+
+      expect(service.isImage("foo.TIF")).toBe(false);
+      expect(service.isImage("foo.TIFF")).toBe(false);
+      expect(service.isImage("foo.FIT")).toBe(false);
+      expect(service.isImage("foo.FITS")).toBe(false);
+      expect(service.isImage("foo.FTS")).toBe(false);
+    });
+
+    it("should be false for non-image extensions", () => {
+      expect(service.isImage("foo.mov")).toBe(false);
+      expect(service.isImage("foo.zip")).toBe(false);
+      expect(service.isImage("foo.mp3")).toBe(false);
+      expect(service.isImage("foo.mp4")).toBe(false);
+      expect(service.isImage("foo.txt")).toBe(false);
+    });
+  });
 });

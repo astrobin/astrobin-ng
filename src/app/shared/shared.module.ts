@@ -58,7 +58,7 @@ export function appInitializer(appContext: AppContextService, authService: AuthS
     NgbPaginationModule,
     NgxFilesizeModule,
     ToastrModule.forRoot({
-      timeOut: 10000
+      timeOut: 20000
     }),
     ApiModule,
     PipesModule
