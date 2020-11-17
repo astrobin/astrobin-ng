@@ -13,5 +13,8 @@
   "It looks like you reached the upload limit for your subscription.": "Parece que você atingiu o limite de upload de sua assinatura.",
   "Return to the classic uploader": "Volte ao uploader clássico",
   "Sorry, but this image is too large. Under your current subscription plan, the maximum allowed image size is {{max}}.": "Desculpe, mas esta imagem é muito grande. No seu plano de assinatura atual, o tamanho máximo de imagem permitido é {{max}}.",
-  "This image will be uploaded to your staging area as a work in progress. You can make it public at the end of the process.": ""
+  "This image will be uploaded to your staging area as a work in progress. You can make it public at the end of the process.": "",
+  "Sorry, but this image is too large. The maximum allowed total number of pixels is {{max}}.": "",
+  "Warning! That's a large file you got there! AstroBin does not impose artificial limitation in the file size you can upload with an Ultimate subscription, but we cannot guarantee that all images above 200 MB or ~8000x8000 pixels will work. Feel free to give it a shot tho!": "",
+  "Heads up! Are you sure you want to upload such a large file? It's okay to do so but probably not many people will want to see it at its full resolution, if it will take too long for them to download it.": ""
 }

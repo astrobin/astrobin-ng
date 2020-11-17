@@ -3,6 +3,7 @@ import { FieldType } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
 import { FileUpload } from "@shared/components/misc/formly-field-chunked-file/file-upload";
 import { Constants } from "@shared/constants";
+import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
 import { AuthService } from "@shared/services/auth.service";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
@@ -11,7 +12,7 @@ import { UserSubscriptionService } from "@shared/services/user-subscription/user
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { Tus, UploadState, UploadxOptions, UploadxService } from "ngx-uploadx";
 import { forkJoin, Observable, of, Subscription } from "rxjs";
-import { filter, map } from "rxjs/operators";
+import { filter, map, take } from "rxjs/operators";
 
 // PLEASE NOTE: due to the usage of the UploaderDataService, there can be only one chunked file upload field on a page
 // at any given time.
@@ -53,7 +54,8 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
     public popNotificationsService: PopNotificationsService,
     public translateService: TranslateService,
     public userSubscriptionService: UserSubscriptionService,
-    public classicRoutesService: ClassicRoutesService
+    public classicRoutesService: ClassicRoutesService,
+    public jsonApiService: JsonApiService
   ) {
     super();
   }
@@ -87,9 +89,10 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
 
         forkJoin({
           extensionCheck: this._checkFileExtension(state.name),
-          fileSizeCheck: this._checkFileSize(state.size)
+          fileSizeCheck: this._checkFileSize(state.size),
+          imageDimensionsCheck: this._checkImageDimensions(state.file)
         }).subscribe(result => {
-          if (result.extensionCheck && result.fileSizeCheck) {
+          if (result.extensionCheck && result.fileSizeCheck && result.imageDimensionsCheck) {
             this.upload = new FileUpload(state);
             this.uploadSize = state.size;
           } else {
@@ -191,6 +194,7 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
     return this.userSubscriptionService.fileSizeAllowed(size).pipe(
       map(result => {
         if (result.allowed) {
+          this._warnAboutVeryLargeFile(size);
           return true;
         } else {
           const message =
@@ -205,5 +209,60 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
         }
       })
     );
+  }
+
+  private _checkImageDimensions(file: File): Observable<boolean> {
+    if (this.utilsService.isImage(file.name)) {
+      return new Observable<boolean>(observer => {
+        const image = new Image();
+        image.onload = () => {
+          this.jsonApiService
+            .getBackendConfig$()
+            .pipe(take(1))
+            .subscribe(backendConfig => {
+              if (image.width * image.height > backendConfig.MAX_IMAGE_PIXELS) {
+                const message =
+                  "Sorry, but this image is too large. The maximum allowed total number of pixels is {{max}}.";
+                this.popNotificationsService.error(
+                  this.translateService.instant(message, {
+                    max: +backendConfig.MAX_IMAGE_PIXELS
+                  })
+                );
+                observer.next(false);
+              } else {
+                this.uploadDataService.patchMetadata("image-upload", {
+                  width: image.width,
+                  height: image.height
+                });
+                observer.next(true);
+              }
+              observer.complete();
+            });
+        };
+        image.src = URL.createObjectURL(file);
+      });
+    }
+
+    return of(true);
+  }
+
+  private _warnAboutVeryLargeFile(size: number): void {
+    const MB = 1024 * 1024;
+    let message;
+
+    if (size > 200 * MB) {
+      message =
+        "Warning! That's a large file you got there! AstroBin does not impose artificial limitation in the file " +
+        "size you can upload with an Ultimate subscription, but we cannot guarantee that all images above 200 MB or " +
+        "~8000x8000 pixels will work. Feel free to give it a shot tho!";
+    } else if (size > 100 * MB) {
+      message =
+        "Heads up! Are you sure you want to upload such a large file? It's okay to do so but probably not many " +
+        "people will want to see it at its full resolution, if it will take too long for them to download it.";
+    }
+
+    if (!!message) {
+      this.popNotificationsService.warning(this.translateService.instant(message));
+    }
   }
 }
