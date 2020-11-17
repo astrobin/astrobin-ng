@@ -13,5 +13,6 @@
   "It looks like you reached the upload limit for your subscription.": "Sembra che tu abbia raggiunto il limite di upload per il tuo abbonamento.",
   "Return to the classic uploader": "Torna all'uploader classico",
   "Sorry, but this image is too large. Under your current subscription plan, the maximum allowed image size is {{max}}.": "Spiacenti, ma questa immagine è troppo pesante. Con il tuo abbonamento, la dimensione massima consentita è di {{max}}.",
-  "This image will be uploaded to your staging area as a work in progress. You can make it public at the end of the process.": "Questa immagine sarà caricata nella tua area privata come lavoro in corso. Puoi renderla pubblica alla fine del processo."
+  "This image will be uploaded to your staging area as a work in progress. You can make it public at the end of the process.": "Questa immagine sarà caricata nella tua area privata come lavoro in corso. Puoi renderla pubblica alla fine del processo.",
+  "Sorry, but this image is too large. The maximum allowed total number of pixels is {{max}}.": "Spiacenti, ma questa immagine è troppo grande. Il massimo numero di pixel complessivi ammesso è {{max}}."
 }
