@@ -14,6 +14,16 @@ export class UserSubscriptionGenerator {
     };
   }
 
+  static nonExpiredButNotActiveUserSubscription(
+    subscription = TestConstants.ASTROBIN_ULTIMATE_2020_ID
+  ): UserSubscriptionInterface {
+    const userSubscription = this.userSubscription(subscription);
+    userSubscription.expires = "3000-01-01";
+    userSubscription.active = false;
+
+    return userSubscription;
+  }
+
   static expiredUserSubscription(subscription = TestConstants.ASTROBIN_ULTIMATE_2020_ID): UserSubscriptionInterface {
     const userSubscription = this.userSubscription(subscription);
     userSubscription.expires = "1970-01-01";
