@@ -28,24 +28,26 @@ describe("HeaderComponent", () => {
   let component: HeaderComponent;
   let fixture: ComponentFixture<HeaderComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: testAppImports,
-      providers: [{ provide: AppContextService, useClass: MockAppContextService }, WindowRefService],
-      declarations: [
-        HeaderComponent,
-        MockComponents(UsernameComponent),
-        MockPipe(IsContentModeratorPipe),
-        MockPipe(IsImageModeratorPipe),
-        MockPipe(IsSuperUserPipe),
-        MockPipe(IsIotdStaffPipe),
-        MockPipe(IsIotdSubmitterPipe),
-        MockPipe(IsIotdReviewerPipe),
-        MockPipe(IsIotdJudgePipe),
-        MockPipe(IsProducerPipe)
-      ]
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: testAppImports,
+        providers: [{ provide: AppContextService, useClass: MockAppContextService }, WindowRefService],
+        declarations: [
+          HeaderComponent,
+          MockComponents(UsernameComponent),
+          MockPipe(IsContentModeratorPipe),
+          MockPipe(IsImageModeratorPipe),
+          MockPipe(IsSuperUserPipe),
+          MockPipe(IsIotdStaffPipe),
+          MockPipe(IsIotdSubmitterPipe),
+          MockPipe(IsIotdReviewerPipe),
+          MockPipe(IsIotdJudgePipe),
+          MockPipe(IsProducerPipe)
+        ]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(HeaderComponent);
