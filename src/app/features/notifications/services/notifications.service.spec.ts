@@ -1,4 +1,4 @@
-import { async, TestBed } from "@angular/core/testing";
+import { TestBed, waitForAsync } from "@angular/core/testing";
 import { NotificationInterfaceGenerator } from "@features/notifications/generators/notification.interface.generator";
 import { NotificationServiceMock } from "@features/notifications/services/notification.service-mock";
 import { NotificationsApiService } from "@features/notifications/services/notifications-api.service";
@@ -37,7 +37,7 @@ describe("NotificationsService", () => {
   });
 
   describe("getUnreadCount", () => {
-    it("should call the API", async(() => {
+    it("should call the API", waitForAsync(() => {
       jest.spyOn(service.api, "getUnreadCount").mockReturnValue(of(10));
 
       service.getUnreadCount().subscribe(value => {
@@ -47,7 +47,7 @@ describe("NotificationsService", () => {
   });
 
   describe("markAsRead", () => {
-    it("should call the API", async(() => {
+    it("should call the API", waitForAsync(() => {
       const notification = NotificationInterfaceGenerator.notification();
       notification.read = false;
 
@@ -59,7 +59,7 @@ describe("NotificationsService", () => {
   });
 
   describe("markAsUnRead", () => {
-    it("should call the API", async(() => {
+    it("should call the API", waitForAsync(() => {
       const notification = NotificationInterfaceGenerator.notification();
       notification.read = true;
 
@@ -71,7 +71,7 @@ describe("NotificationsService", () => {
   });
 
   describe("markAllAsRead", () => {
-    it("should call the API", async(() => {
+    it("should call the API", waitForAsync(() => {
       service.markAllAsRead().subscribe(value => {
         expect(service.api.markAllAsRead).toHaveBeenCalled();
       });

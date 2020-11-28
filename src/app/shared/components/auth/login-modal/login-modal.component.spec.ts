@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
 import { testAppImports } from "@app/test-app.imports";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { LoginFormComponent } from "@shared/components/auth/login-form/login-form.component";
@@ -10,7 +10,7 @@ describe("LoginModalComponent", () => {
   let component: LoginModalComponent;
   let fixture: ComponentFixture<LoginModalComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [testAppImports],
       declarations: [LoginModalComponent, LoginFormComponent],

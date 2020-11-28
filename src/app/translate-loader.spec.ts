@@ -1,5 +1,5 @@
 import { HttpClient } from "@angular/common/http";
-import { async, TestBed } from "@angular/core/testing";
+import { TestBed, waitForAsync } from "@angular/core/testing";
 import { testAppImports } from "@app/test-app.imports";
 import { testAppProviders } from "@app/test-app.providers";
 import { LanguageLoader } from "@app/translate-loader";
@@ -10,7 +10,7 @@ import { of } from "rxjs";
 describe("LanguageLoader", () => {
   let languageLoader: LanguageLoader;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
         ...testAppImports,

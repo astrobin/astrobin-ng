@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
 import { testAppImports } from "@app/test-app.imports";
 import { AuthService } from "@shared/services/auth.service";
 import { AuthServiceMock } from "@shared/services/auth.service-mock";
@@ -9,7 +9,7 @@ describe("LoginFormComponent", () => {
   let component: LoginFormComponent;
   let fixture: ComponentFixture<LoginFormComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [testAppImports],
       declarations: [LoginFormComponent],

@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
 import { testAppImports } from "@app/test-app.imports";
 import { PermissionDeniedPageComponent } from "./permission-denied-page.component";
 
@@ -6,7 +6,7 @@ describe("PermissionDeniedPageComponent", () => {
   let component: PermissionDeniedPageComponent;
   let fixture: ComponentFixture<PermissionDeniedPageComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: testAppImports,
       declarations: [PermissionDeniedPageComponent]

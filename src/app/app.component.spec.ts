@@ -1,5 +1,5 @@
 import { APP_INITIALIZER } from "@angular/core";
-import { async, TestBed } from "@angular/core/testing";
+import { TestBed, waitForAsync } from "@angular/core/testing";
 import { AppComponent } from "@app/app.component";
 import { testAppImports } from "@app/test-app.imports";
 import { testAppProviders } from "@app/test-app.providers";
@@ -11,22 +11,24 @@ import { appInitializer } from "@shared/shared.module";
 import { MockComponents } from "ng-mocks";
 
 describe("AppComponent", () => {
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: testAppImports,
-      providers: [
-        AppContextService,
-        {
-          provide: APP_INITIALIZER,
-          useFactory: appInitializer,
-          multi: true,
-          deps: [AppContextService, AuthService]
-        },
-        ...testAppProviders
-      ],
-      declarations: [AppComponent, MockComponents(HeaderComponent, FooterComponent)]
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: testAppImports,
+        providers: [
+          AppContextService,
+          {
+            provide: APP_INITIALIZER,
+            useFactory: appInitializer,
+            multi: true,
+            deps: [AppContextService, AuthService]
+          },
+          ...testAppProviders
+        ],
+        declarations: [AppComponent, MockComponents(HeaderComponent, FooterComponent)]
+      }).compileComponents();
+    })
+  );
 
   it("should create the app", () => {
     const fixture = TestBed.createComponent(AppComponent);
