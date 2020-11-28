@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
 import { testAppImports } from "@app/test-app.imports";
 import { UsernameComponent } from "@shared/components/misc/username/username.component";
 import { UserProfileGenerator } from "@shared/generators/user-profile.generator";
@@ -28,24 +28,26 @@ describe("HeaderComponent", () => {
   let component: HeaderComponent;
   let fixture: ComponentFixture<HeaderComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: testAppImports,
-      providers: [{ provide: AppContextService, useClass: MockAppContextService }, WindowRefService],
-      declarations: [
-        HeaderComponent,
-        MockComponents(UsernameComponent),
-        MockPipe(IsContentModeratorPipe),
-        MockPipe(IsImageModeratorPipe),
-        MockPipe(IsSuperUserPipe),
-        MockPipe(IsIotdStaffPipe),
-        MockPipe(IsIotdSubmitterPipe),
-        MockPipe(IsIotdReviewerPipe),
-        MockPipe(IsIotdJudgePipe),
-        MockPipe(IsProducerPipe)
-      ]
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: testAppImports,
+        providers: [{ provide: AppContextService, useClass: MockAppContextService }, WindowRefService],
+        declarations: [
+          HeaderComponent,
+          MockComponents(UsernameComponent),
+          MockPipe(IsContentModeratorPipe),
+          MockPipe(IsImageModeratorPipe),
+          MockPipe(IsSuperUserPipe),
+          MockPipe(IsIotdStaffPipe),
+          MockPipe(IsIotdSubmitterPipe),
+          MockPipe(IsIotdReviewerPipe),
+          MockPipe(IsIotdJudgePipe),
+          MockPipe(IsProducerPipe)
+        ]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(HeaderComponent);
