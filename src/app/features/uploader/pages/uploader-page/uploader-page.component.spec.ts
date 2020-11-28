@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
 import { testAppImports } from "@app/test-app.imports";
 import { testAppProviders } from "@app/test-app.providers";
 import { UploaderPageComponent } from "@features/uploader/pages/uploader-page/uploader-page.component";
@@ -9,7 +9,7 @@ describe("Uploader.PageComponent", () => {
   let component: UploaderPageComponent;
   let fixture: ComponentFixture<UploaderPageComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: testAppImports,
       providers: testAppProviders,

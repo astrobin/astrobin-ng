@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
 import { testAppImports } from "@app/test-app.imports";
 import { NotFound404PageComponent } from "./not-found-404-page.component";
 
@@ -6,7 +6,7 @@ describe("NotFoundPageComponent", () => {
   let component: NotFound404PageComponent;
   let fixture: ComponentFixture<NotFound404PageComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [testAppImports],
       declarations: [NotFound404PageComponent]

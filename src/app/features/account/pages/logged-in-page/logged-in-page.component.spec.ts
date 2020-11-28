@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
 import { testAppImports } from "@app/test-app.imports";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { LoggedInPageComponent } from "./logged-in-page.component";
@@ -7,13 +7,15 @@ describe("LoggedInPageComponent", () => {
   let component: LoggedInPageComponent;
   let fixture: ComponentFixture<LoggedInPageComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [testAppImports],
-      declarations: [LoggedInPageComponent],
-      providers: [WindowRefService]
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [testAppImports],
+        declarations: [LoggedInPageComponent],
+        providers: [WindowRefService]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(LoggedInPageComponent);
