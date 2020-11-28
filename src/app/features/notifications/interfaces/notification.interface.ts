@@ -6,9 +6,9 @@ export interface NotificationInterface {
   message: string;
   level: number;
   extraTags: string;
-  created: Date;
-  modified: Date;
+  created: string;
+  modified: string;
   read: boolean;
-  expires?: Date;
+  expires?: string;
   closeTimeout?: number;
 }
