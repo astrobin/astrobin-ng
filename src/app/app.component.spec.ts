@@ -1,38 +1,18 @@
-import { APP_INITIALIZER } from "@angular/core";
-import { TestBed, waitForAsync } from "@angular/core/testing";
-import { AppComponent } from "@app/app.component";
-import { testAppImports } from "@app/test-app.imports";
-import { testAppProviders } from "@app/test-app.providers";
-import { FooterComponent } from "@shared/components/footer/footer.component";
-import { HeaderComponent } from "@shared/components/header/header.component";
-import { AppContextService } from "@shared/services/app-context/app-context.service";
-import { AuthService } from "@shared/services/auth.service";
-import { appInitializer } from "@shared/shared.module";
-import { MockComponents } from "ng-mocks";
+import {RouterModule} from "@angular/router";
+import {RouterTestingModule} from "@angular/router/testing";
+import {AppComponent} from "@app/app.component";
+import {AppModule} from "@app/app.module";
+import {MockBuilder, MockRender} from "ng-mocks";
 
 describe("AppComponent", () => {
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        imports: testAppImports,
-        providers: [
-          AppContextService,
-          {
-            provide: APP_INITIALIZER,
-            useFactory: appInitializer,
-            multi: true,
-            deps: [AppContextService, AuthService]
-          },
-          ...testAppProviders
-        ],
-        declarations: [AppComponent, MockComponents(HeaderComponent, FooterComponent)]
-      }).compileComponents();
-    })
+  beforeEach(() =>
+    MockBuilder(AppComponent, AppModule)
+      .keep(RouterModule)
+      .keep(RouterTestingModule.withRoutes([])),
   );
 
   it("should create the app", () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.debugElement.componentInstance;
-    expect(app).toBeTruthy();
+    const fixture = MockRender(AppComponent);
+    expect(fixture.point.componentInstance).toEqual(jasmine.any(AppComponent));
   });
 });
