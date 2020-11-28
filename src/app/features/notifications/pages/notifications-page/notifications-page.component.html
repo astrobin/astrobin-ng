@@ -22,7 +22,11 @@
             <td class="messages">
               <span [innerHTML]="notification.message | normalizeNotificationLink"></span>
             </td>
-            <td class="created fit text-right">{{ notification.created.toString() | timeago:true }}</td>
+            <td class="created fit text-right">
+              <abbr [attr.title]="notification.created | localDate">
+                {{ notification.created | localDate | timeago:true}}
+              </abbr>
+            </td>
           </tr>
         </tbody>
       </table>

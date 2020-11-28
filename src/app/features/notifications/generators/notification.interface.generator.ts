@@ -9,8 +9,8 @@ export class NotificationInterfaceGenerator {
       message: "Test notification body",
       level: 100,
       extraTags: "-",
-      created: new Date("2010-01-01"),
-      modified: new Date("2010-01-02"),
+      created: new Date("2010-01-01").toISOString(),
+      modified: new Date("2010-01-02").toISOString(),
       read: false
     };
   }
