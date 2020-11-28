@@ -1,40 +1,27 @@
-import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
-import { testAppImports } from "@app/test-app.imports";
-import { NotificationInterfaceGenerator } from "@features/notifications/generators/notification.interface.generator";
-import { NormalizeNotificationLinkPipe } from "@features/notifications/pipes/normalize-notification-link.pipe";
-import { NotificationServiceMock } from "@features/notifications/services/notification.service-mock";
-import { NotificationsService } from "@features/notifications/services/notifications.service";
-import { EmptyListComponent } from "@shared/components/misc/empty-list/empty-list.component";
-import { MockComponents, MockPipe } from "ng-mocks";
-import { TimeagoPipe } from "ngx-timeago";
-import { NotificationsPageComponent } from "./notifications-page.component";
+import {NotificationInterfaceGenerator} from "@features/notifications/generators/notification.interface.generator";
+import {NotificationServiceMock} from "@features/notifications/services/notification.service-mock";
+import {NotificationsService} from "@features/notifications/services/notifications.service";
+import {NotificationsPageComponent} from "./notifications-page.component";
+import {MockBuilder, MockRender} from "ng-mocks";
+import {NotificationsModule} from "@features/notifications/notifications.module";
+import {AppModule} from "@app/app.module";
 
 describe("NotificationsPageComponent", () => {
   let component: NotificationsPageComponent;
-  let fixture: ComponentFixture<NotificationsPageComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [testAppImports],
-      declarations: [
-        NotificationsPageComponent,
-        MockComponents(EmptyListComponent),
-        MockPipe(NormalizeNotificationLinkPipe),
-        MockPipe(TimeagoPipe)
-      ],
-      providers: [
-        {
+  beforeEach((() =>
+    MockBuilder(NotificationsPageComponent, NotificationsModule)
+      .mock(AppModule) // parent module
+      .provide({
           provide: NotificationsService,
           useClass: NotificationServiceMock
-        }
-      ]
-    }).compileComponents();
-  }));
+        },
+      )),
+  );
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(NotificationsPageComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    const fixture = MockRender(NotificationsPageComponent);
+    component = fixture.point.componentInstance;
   });
 
   it("should create", () => {
