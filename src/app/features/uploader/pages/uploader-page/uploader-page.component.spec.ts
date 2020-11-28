@@ -1,26 +1,28 @@
-import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
-import { testAppImports } from "@app/test-app.imports";
-import { testAppProviders } from "@app/test-app.providers";
-import { UploaderPageComponent } from "@features/uploader/pages/uploader-page/uploader-page.component";
-import { ReadOnlyModeComponent } from "@shared/components/misc/read-only-mode/read-only-mode.component";
-import { MockComponents } from "ng-mocks";
+import {UploaderPageComponent} from "@features/uploader/pages/uploader-page/uploader-page.component";
+import {MockBuilder, MockProvider, MockRender} from "ng-mocks";
+import {UploaderModule} from "@features/uploader/uploader.module";
+import {AppModule} from "@app/app.module";
+import {UserSubscriptionService} from "@shared/services/user-subscription/user-subscription.service";
+import {EMPTY} from "rxjs";
+import {UploadxService} from "ngx-uploadx";
 
 describe("Uploader.PageComponent", () => {
   let component: UploaderPageComponent;
-  let fixture: ComponentFixture<UploaderPageComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: testAppImports,
-      providers: testAppProviders,
-      declarations: [UploaderPageComponent, MockComponents(ReadOnlyModeComponent)]
-    }).compileComponents();
-  }));
+  beforeEach(() =>
+    MockBuilder(UploaderPageComponent, UploaderModule)
+      .mock(AppModule)
+      .provide(MockProvider(UserSubscriptionService, {
+        fileSizeAllowed: () => EMPTY,
+      }))
+      .provide(MockProvider(UploadxService, {
+        events: EMPTY,
+      }))
+  );
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(UploaderPageComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    const fixture = MockRender(UploaderPageComponent);
+    component = fixture.point.componentInstance;
   });
 
   it("should create", () => {

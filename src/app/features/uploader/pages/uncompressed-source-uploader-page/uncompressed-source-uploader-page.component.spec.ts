@@ -1,40 +1,44 @@
-import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
-import { ActivatedRoute } from "@angular/router";
-import { testAppImports } from "@app/test-app.imports";
-import { testAppProviders } from "@app/test-app.providers";
-import { UncompressedSourceUploaderPageComponent } from "@features/uploader/pages/uncompressed-source-uploader-page/uncompressed-source-uploader-page.component";
-import { ReadOnlyModeComponent } from "@shared/components/misc/read-only-mode/read-only-mode.component";
-import { ImageGenerator } from "@shared/generators/image.generator";
-import { MockComponents } from "ng-mocks";
+import {ActivatedRoute} from "@angular/router";
+import {UncompressedSourceUploaderPageComponent} from "@features/uploader/pages/uncompressed-source-uploader-page/uncompressed-source-uploader-page.component";
+import {ImageGenerator} from "@shared/generators/image.generator";
+import {MockBuilder, MockProvider, MockRender} from "ng-mocks";
+import {UploaderModule} from "@features/uploader/uploader.module";
+import {AppModule} from "@app/app.module";
+import {ThumbnailGroupApiService} from "@shared/services/api/classic/images-app/thumbnail-group/thumbnail-group-api.service";
+import {EMPTY} from "rxjs";
+import {UploadxService} from "ngx-uploadx";
+import {ImageApiService} from "@shared/services/api/classic/images-app/image/image-api.service";
 
 describe("UncompressedSourceUploader.PageComponent", () => {
   let component: UncompressedSourceUploaderPageComponent;
-  let fixture: ComponentFixture<UncompressedSourceUploaderPageComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: testAppImports,
-      providers: [
-        ...testAppProviders,
-        {
-          provide: ActivatedRoute,
-          useValue: {
-            snapshot: {
-              data: {
-                image: ImageGenerator.image()
-              }
+  beforeEach(() =>
+    MockBuilder(UncompressedSourceUploaderPageComponent, UploaderModule)
+      .mock(AppModule)
+      .provide(MockProvider(ThumbnailGroupApiService, {
+        getThumbnailGroup: () => EMPTY,
+      }))
+      .provide(MockProvider(UploadxService, {
+        events: EMPTY,
+      }))
+      .provide(MockProvider(ImageApiService, {
+        getImage: () => EMPTY,
+      }))
+      .provide({
+        provide: ActivatedRoute,
+        useValue: {
+          snapshot: {
+            data: {
+              image: ImageGenerator.image()
             }
           }
         }
-      ],
-      declarations: [UncompressedSourceUploaderPageComponent, MockComponents(ReadOnlyModeComponent)]
-    }).compileComponents();
-  }));
+      })
+  );
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(UncompressedSourceUploaderPageComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    const fixture = MockRender(UncompressedSourceUploaderPageComponent);
+    component = fixture.point.componentInstance;
   });
 
   it("should create", () => {

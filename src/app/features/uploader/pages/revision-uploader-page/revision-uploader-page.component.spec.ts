@@ -1,21 +1,24 @@
-import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
-import { ActivatedRoute } from "@angular/router";
-import { testAppImports } from "@app/test-app.imports";
-import { testAppProviders } from "@app/test-app.providers";
-import { RevisionUploaderPageComponent } from "@features/uploader/pages/revision-uploader-page/revision-uploader-page.component";
-import { ReadOnlyModeComponent } from "@shared/components/misc/read-only-mode/read-only-mode.component";
-import { ImageGenerator } from "@shared/generators/image.generator";
-import { MockComponents } from "ng-mocks";
+import {ActivatedRoute} from "@angular/router";
+import {RevisionUploaderPageComponent} from "@features/uploader/pages/revision-uploader-page/revision-uploader-page.component";
+import {ImageGenerator} from "@shared/generators/image.generator";
+import {MockBuilder, MockProvider, MockRender} from "ng-mocks";
+import {UploaderModule} from "@features/uploader/uploader.module";
+import {AppModule} from "@app/app.module";
+import {ThumbnailGroupApiService} from "@shared/services/api/classic/images-app/thumbnail-group/thumbnail-group-api.service";
+import {EMPTY} from "rxjs";
+import {UploadxService} from "ngx-uploadx";
 
 describe("RevisionUploader.PageComponent", () => {
-  let component: RevisionUploaderPageComponent;
-  let fixture: ComponentFixture<RevisionUploaderPageComponent>;
-
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: testAppImports,
-      providers: [
-        ...testAppProviders,
+  beforeEach(() =>
+    MockBuilder(RevisionUploaderPageComponent, UploaderModule)
+      .mock(AppModule)
+      .provide(MockProvider(ThumbnailGroupApiService, {
+        getThumbnailGroup: () => EMPTY,
+      }))
+      .provide(MockProvider(UploadxService, {
+        events: EMPTY,
+      }))
+      .provide([
         {
           provide: ActivatedRoute,
           useValue: {
@@ -25,19 +28,12 @@ describe("RevisionUploader.PageComponent", () => {
               }
             }
           }
-        }
-      ],
-      declarations: [RevisionUploaderPageComponent, MockComponents(ReadOnlyModeComponent)]
-    }).compileComponents();
-  }));
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(RevisionUploaderPageComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+        },
+      ])
+  );
 
   it("should create", () => {
-    expect(component).toBeTruthy();
+    const fixture = MockRender(RevisionUploaderPageComponent);
+    expect(fixture.point.componentInstance).toBeTruthy();
   });
 });
