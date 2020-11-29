@@ -1,10 +1,10 @@
+import {AppModule} from "@app/app.module";
+import {ComponentsModule} from "@shared/components/components.module";
 import {UserProfileGenerator} from "@shared/generators/user-profile.generator";
 import {AppContextInterface, AppContextService} from "@shared/services/app-context/app-context.service";
+import {MockBuilder, MockRender} from "ng-mocks";
 import {Observable} from "rxjs";
 import {HeaderComponent} from "./header.component";
-import {MockBuilder, MockRender} from "ng-mocks";
-import {ComponentsModule} from "@shared/components/components.module";
-import {AppModule} from "@app/app.module";
 
 class MockAppContextService {
   context$ = new Observable<AppContextInterface>(observer => {

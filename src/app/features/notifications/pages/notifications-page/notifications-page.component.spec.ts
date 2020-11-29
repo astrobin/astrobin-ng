@@ -1,10 +1,10 @@
+import {AppModule} from "@app/app.module";
 import {NotificationInterfaceGenerator} from "@features/notifications/generators/notification.interface.generator";
+import {NotificationsModule} from "@features/notifications/notifications.module";
 import {NotificationServiceMock} from "@features/notifications/services/notification.service-mock";
 import {NotificationsService} from "@features/notifications/services/notifications.service";
-import {NotificationsPageComponent} from "./notifications-page.component";
 import {MockBuilder, MockRender} from "ng-mocks";
-import {NotificationsModule} from "@features/notifications/notifications.module";
-import {AppModule} from "@app/app.module";
+import {NotificationsPageComponent} from "./notifications-page.component";
 
 describe("NotificationsPageComponent", () => {
   let component: NotificationsPageComponent;
