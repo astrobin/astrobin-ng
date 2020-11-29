@@ -1,13 +1,13 @@
 import {ActivatedRoute} from "@angular/router";
-import {UncompressedSourceUploaderPageComponent} from "@features/uploader/pages/uncompressed-source-uploader-page/uncompressed-source-uploader-page.component";
-import {ImageGenerator} from "@shared/generators/image.generator";
-import {MockBuilder, MockProvider, MockRender} from "ng-mocks";
-import {UploaderModule} from "@features/uploader/uploader.module";
 import {AppModule} from "@app/app.module";
-import {ThumbnailGroupApiService} from "@shared/services/api/classic/images-app/thumbnail-group/thumbnail-group-api.service";
-import {EMPTY} from "rxjs";
-import {UploadxService} from "ngx-uploadx";
+import {UncompressedSourceUploaderPageComponent} from "@features/uploader/pages/uncompressed-source-uploader-page/uncompressed-source-uploader-page.component";
+import {UploaderModule} from "@features/uploader/uploader.module";
+import {ImageGenerator} from "@shared/generators/image.generator";
 import {ImageApiService} from "@shared/services/api/classic/images-app/image/image-api.service";
+import {ThumbnailGroupApiService} from "@shared/services/api/classic/images-app/thumbnail-group/thumbnail-group-api.service";
+import {MockBuilder, MockProvider, MockRender} from "ng-mocks";
+import {UploadxService} from "ngx-uploadx";
+import {EMPTY} from "rxjs";
 
 describe("UncompressedSourceUploader.PageComponent", () => {
   let component: UncompressedSourceUploaderPageComponent;
