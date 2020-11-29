@@ -95,6 +95,7 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
           if (result.extensionCheck && result.fileSizeCheck && result.imageDimensionsCheck) {
             this.upload = new FileUpload(state);
             this.uploadSize = state.size;
+            this.formControl.setValue(this.uploadState.file);
           } else {
             this.formControl.setValue(null);
           }
