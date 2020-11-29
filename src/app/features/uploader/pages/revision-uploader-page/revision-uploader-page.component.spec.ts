@@ -1,12 +1,12 @@
 import {ActivatedRoute} from "@angular/router";
-import {RevisionUploaderPageComponent} from "@features/uploader/pages/revision-uploader-page/revision-uploader-page.component";
-import {ImageGenerator} from "@shared/generators/image.generator";
-import {MockBuilder, MockProvider, MockRender} from "ng-mocks";
-import {UploaderModule} from "@features/uploader/uploader.module";
 import {AppModule} from "@app/app.module";
+import {RevisionUploaderPageComponent} from "@features/uploader/pages/revision-uploader-page/revision-uploader-page.component";
+import {UploaderModule} from "@features/uploader/uploader.module";
+import {ImageGenerator} from "@shared/generators/image.generator";
 import {ThumbnailGroupApiService} from "@shared/services/api/classic/images-app/thumbnail-group/thumbnail-group-api.service";
-import {EMPTY} from "rxjs";
+import {MockBuilder, MockProvider, MockRender} from "ng-mocks";
 import {UploadxService} from "ngx-uploadx";
+import {EMPTY} from "rxjs";
 
 describe("RevisionUploader.PageComponent", () => {
   beforeEach(() =>
