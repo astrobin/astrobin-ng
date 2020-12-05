@@ -10,6 +10,6 @@ import { TitleService } from "@shared/services/title/title.service";
 export class NotFound404PageComponent extends BaseComponentDirective {
   constructor(public titleService: TitleService, public translate: TranslateService) {
     super();
-    titleService.setTitle("404");
+    titleService.setTitle(translate.instant("404"));
   }
 }

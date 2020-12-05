@@ -2,7 +2,6 @@ import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
 import { HasValidUserSubscriptionPipe } from "@shared/pipes/has-valid-user-subscription.pipe";
 import { LocalDatePipe } from "@shared/pipes/local-date.pipe";
-import { YesNoPipe } from "@shared/pipes/yes-no.pipe";
 import { EnsureUrlProtocolPipe } from "./ensure-url-protocol.pipe";
 import { IsContentModeratorPipe } from "./is-content-moderator.pipe";
 import { IsImageModeratorPipe } from "./is-image-moderator.pipe";
@@ -26,8 +25,7 @@ const pipes = [
   IsRetailerPipe,
   IsSuperUserPipe,
   HasValidUserSubscriptionPipe,
-  LocalDatePipe,
-  YesNoPipe
+  LocalDatePipe
 ];
 
 @NgModule({

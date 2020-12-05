@@ -55,7 +55,7 @@
                     (ctx.currentUser | isSuperUser)
                   " [href]="classicRoutes.MODERATE_SPAM_QUEUE" class="dropdown-item">
               <fa-icon icon="flag"></fa-icon>
-              {{ "Spam list" | translate }}
+              {{ "Spam queue" | translate }}
             </a>
 
             <ng-container *ngIf="ctx.currentUser | isIotdStaff">
@@ -121,7 +121,7 @@
         <div aria-labelledby="exploreDropdown" ngbDropdownMenu>
           <a [href]="classicRoutes.SEARCH" class="dropdown-item">
             <fa-icon icon="search"></fa-icon>
-            {{ "The Big Wall" | translate }} / {{ "Advanced search" | translate }}
+            {{ "The Big Wall / Advanced search" | translate }}
           </a>
 
           <div class="dropdown-divider"></div>
@@ -162,7 +162,7 @@
 
           <a [href]="classicRoutes.CONTRIBUTORS_LIST" class="dropdown-item">
             <fa-icon icon="file-alt"></fa-icon>
-            {{ "Contributors list" | translate }} (beta)
+            {{ "Contributors list" | translate }} {{ "(beta)" | translate }}
           </a>
         </div>
       </div>
@@ -192,7 +192,7 @@
 
           <a [href]="classicRoutes.HELP_API" class="dropdown-item">
             <fa-icon icon="key"></fa-icon>
-            API (beta)
+            {{ "API (beta)" | translate }}
           </a>
 
           <a [href]="classicRoutes.SPONSORS" class="dropdown-item">
@@ -288,12 +288,12 @@
       </button>
 
       <div aria-labelledby="user-dropdown" ngbDropdownMenu>
-        <a routerLink="/subscriptions/options" class="dropdown-item">
+        <a [href]="classicRoutes.SUBSCRIPTIONS" class="dropdown-item">
           <fa-icon icon="asterisk"></fa-icon>
           {{ "Subscription plans" | translate }}
         </a>
 
-        <a routerLink="/uploader" class="dropdown-item">
+        <a [href]="classicRoutes.UPLOAD" class="dropdown-item">
           <fa-icon icon="upload"></fa-icon>
           {{ "Upload" | translate }}
         </a>
@@ -359,7 +359,7 @@
 <ng-template #uploadButton>
   <!-- Upload button -->
   <li class="nav-item d-none d-lg-block">
-    <a routerLink="/uploader" class="btn btn-link nav-link">
+    <a [href]="classicRoutes.UPLOAD" class="btn btn-link nav-link">
       <fa-icon icon="upload"></fa-icon>
     </a>
   </li>

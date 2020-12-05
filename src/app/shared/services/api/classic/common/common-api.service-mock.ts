@@ -1,7 +1,6 @@
 import { Injectable } from "@angular/core";
 import { UserProfileGenerator } from "@shared/generators/user-profile.generator";
 import { UserGenerator } from "@shared/generators/user.generator";
-import { PaymentInterface } from "@shared/interfaces/payment.interface";
 import { SubscriptionInterface } from "@shared/interfaces/subscription.interface";
 import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
 import { UserSubscriptionInterface } from "@shared/interfaces/user-subscription.interface";
@@ -28,9 +27,5 @@ export class CommonApiServiceMock extends BaseService implements CommonApiServic
 
   getUserSubscriptions(user?: UserInterface): Observable<UserSubscriptionInterface[]> {
     return of([]);
-  }
-
-  getPayments(): Observable<PaymentInterface[]> {
-    return of(null);
   }
 }

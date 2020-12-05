@@ -1,6 +1,5 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { PaymentInterface } from "@shared/interfaces/payment.interface";
 import { SubscriptionInterface } from "@shared/interfaces/subscription.interface";
 import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
 import { UserSubscriptionInterface } from "@shared/interfaces/user-subscription.interface";
@@ -59,9 +58,5 @@ export class CommonApiService extends BaseClassicApiService implements CommonApi
     }
 
     return this.http.get<UserSubscriptionInterface[]>(url);
-  }
-
-  getPayments(): Observable<PaymentInterface[]> {
-    return this.http.get<PaymentInterface[]>(`${this.configUrl}/payments/`);
   }
 }

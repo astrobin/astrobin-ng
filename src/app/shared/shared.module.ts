@@ -60,7 +60,6 @@ export function appInitializer(appContext: AppContextService, authService: AuthS
     ToastrModule.forRoot({
       timeOut: 20000
     }),
-
     ApiModule,
     PipesModule
   ],

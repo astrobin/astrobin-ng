@@ -1,5 +1,5 @@
 export enum SubscriptionName {
-  ASTROBIN_FREE = "AstroBin Free",
+  ASTROBIN_FREE0 = "AstroBin Free",
   ASTROBIN_LITE = "AstroBin Lite",
   ASTROBIN_LITE_AUTORENEW = "AstroBin Lite (autorenew)",
   ASTROBIN_LITE_2020 = "AstroBin Lite 2020+",

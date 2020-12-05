@@ -73,34 +73,25 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
     super();
   }
 
-  subscriptionWithYearlySlotsMessage(name: string, counter: number, slots: number): string {
-    return this.translate.instant(
-      "You have a <strong>{{0}}</strong> subscription. You have used <strong>{{1}}</strong> of " +
-        "your <strong>{{2}}</strong> yearly upload slots.",
-      {
-        0: name,
-        1: counter,
-        2: slots
-      }
+  get liteMessage(): string {
+    return (
+      "You have an <strong>AstroBin Lite</strong> subscription. You have used <strong>{{counter}}</strong> of " +
+      "your <strong>{{slots}}</strong> yearly upload slots."
     );
   }
 
-  subscriptionWithTotalSlotsMessage(name: string, counter: number, slots: number): string {
-    return this.translate.instant(
-      "You have a <strong>{{0}}</strong> subscription. You have used <strong>{{1}}</strong> of " +
-        "your <strong>{{2}}</strong> upload slots.",
-      {
-        0: name,
-        1: counter,
-        2: slots
-      }
+  get lite2020Message(): string {
+    return (
+      "You have an <strong>AstroBin Lite</strong> subscription. You have used <strong>{{counter}}</strong> of " +
+      "your <strong>{{slots}}</strong> upload slots."
     );
   }
 
-  subscriptionWithUnlimitedSlotsMessage(name: string): string {
-    return this.translate.instant("You have a <strong>{{0}}</strong> subscription. Enjoy your unlimited uploads!", {
-      0: name
-    });
+  get freeMessage(): string {
+    return (
+      "You have an <strong>AstroBin Free</strong> membership. You have used <strong>{{counter}}</strong> of " +
+      "your <strong>{{slots}}</strong> upload slots."
+    );
   }
 
   ngOnInit(): void {

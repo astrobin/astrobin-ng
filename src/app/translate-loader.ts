@@ -2,6 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { environment } from "@env/environment";
 import { TranslatePoHttpLoader } from "@fjnr/ngx-translate-po-http-loader";
+import { TranslateLoader } from "@ngx-translate/core";
 import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
 import { forkJoin, Observable } from "rxjs";
 import { catchError, map, switchMap } from "rxjs/operators";
@@ -9,20 +10,8 @@ import { catchError, map, switchMap } from "rxjs/operators";
 declare const VERSION: string;
 
 @Injectable()
-export class LanguageLoader extends TranslatePoHttpLoader {
-  constructor(public http: HttpClient, public jsonApi: JsonApiService) {
-    super(http);
-  }
-
-  ngJsonTranslations$ = (lang: string): Observable<object> =>
-    this.http.get(`/assets/i18n/${lang}.json?version=${VERSION}`);
-
-  ngTranslations$ = (lang: string): Observable<object> =>
-    this.http
-      .get(`/assets/i18n/${lang}.po?version=${VERSION}`, {
-        responseType: "text"
-      })
-      .pipe(map((contents: string) => this.parse(contents)));
+export class LanguageLoader extends TranslatePoHttpLoader implements TranslateLoader {
+  ngTranslations$ = (lang: string): Observable<object> => this.http.get(`/assets/i18n/${lang}.json?version=${VERSION}`);
 
   classicTranslations$ = (lang: string): Observable<object> =>
     this.jsonApi.getBackendConfig$().pipe(
@@ -35,16 +24,18 @@ export class LanguageLoader extends TranslatePoHttpLoader {
       )
     );
 
+  constructor(public http: HttpClient, public jsonApi: JsonApiService) {
+    super(http);
+  }
+
   getTranslation(lang: string): Observable<any> {
     return forkJoin([
       this.classicTranslations$(lang),
-      this.ngJsonTranslations$(lang).pipe(catchError(() => this.ngJsonTranslations$("en"))),
       this.ngTranslations$(lang).pipe(catchError(() => this.ngTranslations$("en")))
     ]).pipe(
       map(results => {
         const classicTranslations = results[0];
-        const ngJsonTranslations = results[1];
-        const ngTranslations = results[2];
+        const ngTranslations = results[1];
 
         Object.keys(classicTranslations).forEach(key => {
           if (classicTranslations[key] === "") {
@@ -52,22 +43,15 @@ export class LanguageLoader extends TranslatePoHttpLoader {
           }
         });
 
-        Object.keys(ngJsonTranslations).forEach(key => {
-          if (ngJsonTranslations[key] === "") {
-            ngJsonTranslations[key] = key;
-          }
-        });
-
         Object.keys(ngTranslations).forEach(key => {
           if (ngTranslations[key] === "") {
-            ngTranslations[key] = ngJsonTranslations[key];
+            ngTranslations[key] = key;
           }
         });
 
         return {
-          ...ngJsonTranslations,
-          ...ngTranslations,
-          ...classicTranslations
+          ...classicTranslations,
+          ...ngTranslations
         };
       })
     );
