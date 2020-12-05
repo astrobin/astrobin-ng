@@ -9,6 +9,7 @@
   margin: 1rem 0;
   box-shadow: 0 0 16px rgba(0, 0, 0, 0.5);
   transition: opacity .5s ease-in;
+  color: $white;
 
   h1 {
     .beta {
@@ -24,7 +25,22 @@
     margin-bottom: 3rem;
 
     + small {
+      display: block;
       margin-bottom: 3rem;
+      font-size: 1.5rem;
+      color: $lightest-grey;
+
+      strong {
+        color: $white;
+      }
+
+      + small {
+        display: block;
+        font-size: 1rem;
+        color: $lighter-grey;
+        margin-top: -3rem;
+        margin-bottom: 3rem;
+      }
     }
   }
 
@@ -47,12 +63,18 @@
     padding: 4rem;
 
     h1 {
-      font-size: 6rem;
+      font-size: 4rem;
       text-align: center;
 
       + p {
-        font-size: 1.5rem;
+        font-size: 2rem;
         text-align: center;
+        margin-top: -2rem;
+        margin-bottom: 3rem;
+
+        strong {
+          color: $white;
+        }
       }
     }
 
@@ -77,5 +99,10 @@
     background-size: contain;
     height: 8rem;
     margin-bottom: 2rem;
+
+    + h1,
+    + h1 + small {
+      text-align: center;
+    }
   }
 }

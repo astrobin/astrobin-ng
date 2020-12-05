@@ -12,7 +12,7 @@ export class ClassicRoutesService extends BaseService {
   HOME = BASE_URL + "/";
   REGISTER = BASE_URL + "/accounts/register/";
   RESET_PASSWORD = BASE_URL + "/accounts/password/reset";
-  SUBSCRIPTIONS = BASE_URL + "/subscriptions/";
+  PRICING = "https://welcome.astrobin.com/pricing";
   UPLOAD = BASE_URL + "/upload/";
   INBOX = BASE_URL + "/messages/inbox/";
   SETTINGS = BASE_URL + "/profile/edit/basic/";

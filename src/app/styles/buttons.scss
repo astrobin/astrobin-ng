@@ -14,6 +14,15 @@
     }
   }
 
+  fa-icon {
+    margin-right: .5rem;
+  }
+
+  &.btn-xl {
+    padding: .5rem 1.5rem;
+    font-size: 1.1rem;
+  }
+
   &.loading {
     background: url("/assets/images/white-loader.svg") $accent-color no-repeat center !important;
     background-size: 1rem !important;
