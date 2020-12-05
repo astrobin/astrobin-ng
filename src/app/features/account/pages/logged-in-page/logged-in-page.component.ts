@@ -28,8 +28,8 @@ export class LoggedInPageComponent extends BaseComponentDirective implements OnI
     titleService.setTitle(translate.instant("Welcome!"));
   }
 
-  get redirectionMessage(): string {
-    return "You will be redirected in {{seconds}} seconds...";
+  redirectionMessage(seconds: number): string {
+    return this.translate.instant("You will be redirected in {{seconds}} seconds...", { seconds });
   }
 
   ngOnInit(): void {

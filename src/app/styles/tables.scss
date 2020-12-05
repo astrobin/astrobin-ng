@@ -1,4 +1,12 @@
+@import "variables";
+
 .table {
+  thead {
+    th {
+      background: $dark-grey;
+    }
+  }
+
   td.fit,
   th.fit {
     white-space: nowrap;

@@ -1,0 +1,464 @@
+msgid ""
+msgstr ""
+"mime-version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "API Keys"
+msgstr "Chiavi API"
+
+msgid "Accepted formats"
+msgstr "Formati accettati"
+
+msgid "Access denied."
+msgstr "Accesso negato."
+
+msgid "Advanced plate-solving"
+msgstr "Riduzione astrometrica avanzata"
+
+msgid "Advanced search"
+msgstr "Ricerca avanzata"
+
+msgid "Amount"
+msgstr "Importo"
+
+msgid "And much more!"
+msgstr "E molto altro!"
+
+msgid ""
+"AstroBin doesn't support subscription upgrades at the moment, but we're "
+"happy to make it happen manually. If you're on a lower subscription tier "
+"and would like to upgrade to <strong>{{0}}</strong>, please just buy it and "
+"then contact us at {{1}} to get a refund for the unused time on your old "
+"subscription. Thanks!"
+msgstr ""
+"AstroBin al momento non supporta gli aggiornamenti degli abbonamenti, ma "
+"siamo lieti di farlo manualmente. Se sei su un livello di abbonamento "
+"inferiore e vuoi passare a <strong>{{0}}</strong>, acquistalo e poi "
+"contattaci a {{1}} per ottenere un rimborso per il tempo inutilizzato sul "
+"tuo vecchio abbonamento. Grazie!"
+
+msgid "AstroBin index"
+msgstr "Indice AstroBin"
+
+msgid "Astrophotographers list"
+msgstr "Elenco degli astrofotografi"
+
+msgid "Autorenew"
+msgstr "Rinnovo automatico"
+
+msgid "Basic plate-solving"
+msgstr "Riduzione astrometrica di base"
+
+msgid "Basic search"
+msgstr "Ricerca di base"
+
+msgid "Bookmarks"
+msgstr "Bookmark"
+
+msgid "Buy"
+msgstr "Acquista"
+
+msgid "Cancelled"
+msgstr "Annullato"
+
+msgid "Commercial products"
+msgstr "Prodotti commerciali"
+
+msgid "Contact"
+msgstr "Contatti"
+
+msgid "Contributors list"
+msgstr "Lista dei contributrori"
+
+msgid "Date"
+msgstr "Data"
+
+msgid "Description"
+msgstr "Descrizione"
+
+msgid "Do not notify your followers about this revision."
+msgstr "Non notificare i tuoi follower per questa versione."
+
+msgid "Drop file here or click to browse"
+msgstr "Rilascia un file qui o clicca per esplorare"
+
+msgid "Email"
+msgstr "Email"
+
+msgid "Error!"
+msgstr "Errore!"
+
+msgid "Expiration date"
+msgstr "Data di scadenza"
+
+msgid "Explore"
+msgstr "Esplora"
+
+msgid "FAQ"
+msgstr "FAQ"
+
+msgid "File type not supported"
+msgstr "Tipo di file non supportato"
+
+msgid "Followers"
+msgstr "Follower"
+
+msgid ""
+"For more information about this and other subscription plans, please visit "
+"the {{0}}pricing{{1}} page."
+msgstr ""
+"Per ulteriori informazioni su questo ed altri abbonamenti, visita il "
+"{{0}}prezziario{{1}}."
+
+msgid "For more information, please check out our Twitter feed:"
+msgstr "Per ulteriori informazioni, consulta il nostro feed Twitter:"
+
+msgid ""
+"For this reason, you cannot purchase this at the moment, as AstroBin does "
+"not currently offer a downgrade path."
+msgstr ""
+"Per questo motivo, non puoi acquistarlo in questo momento, dato che "
+"AstroBin non offre un percorso di downgrade."
+
+msgid "Forum"
+msgstr "Forum"
+
+msgid "Full search"
+msgstr "Ricerca completa"
+
+msgid "Go back to the home page."
+msgstr "Torna alla home."
+
+msgid "Good bye!"
+msgstr "Arrivederci!"
+
+msgid "Groups"
+msgstr "Gruppi"
+
+msgid "Help"
+msgstr "Aiuto"
+
+msgid "Help with translations!"
+msgstr "Aiuta con le traduzioni!"
+
+msgid "Home"
+msgstr "Home"
+
+msgid "Image of the day"
+msgstr "Foto del giorno"
+
+msgid "Image queue"
+msgstr "Coda delle immagini"
+
+msgid "Images"
+msgstr "Immagini"
+
+msgid "Info"
+msgstr "Informazioni"
+
+msgid "It looks like you reached the upload limit for your subscription."
+msgstr "Pare che tu abbia raggiunto il limite di caricamenti per il tuo abbonamento."
+
+msgid "Judgement queue"
+msgstr "Coda di Elezione"
+
+msgid "Language"
+msgstr "Lingua"
+
+msgid "Latest topics"
+msgstr "Ultimi argomenti"
+
+msgid "Learn more"
+msgstr "Maggiori informazioni"
+
+msgid "Log in"
+msgstr "Accesso"
+
+msgid "Logout"
+msgstr "Esci"
+
+msgid "Mark all as read"
+msgstr "Segna tutti come letti"
+
+msgid "Mark as final"
+msgstr "Segna come finale"
+
+msgid "Mark this revision as the final rendition of your image."
+msgstr "Segna questa revisione come la versione finale della tua immagine."
+
+msgid "Max. {{ max }} MB / image"
+msgstr "Max. {{ max }} MB / immagine"
+
+msgid "Max. {{ max }} total images"
+msgstr "Max. {{ max }} immagini totali"
+
+msgid "Max. {{ max }} uploads"
+msgstr "Max. {{ max }} upload"
+
+msgid "Moderate"
+msgstr "Modera"
+
+msgid "My messages"
+msgstr "I miei messaggi"
+
+msgid "My places"
+msgstr "I miei posti"
+
+msgid "My settings"
+msgstr "Le mie impostazioni"
+
+msgid "Name"
+msgstr "Nome"
+
+msgid "No"
+msgstr "No"
+
+msgid "No plate-solving"
+msgstr "Nessuna riduzione astrometrica"
+
+msgid "Notifications"
+msgstr "Notifiche"
+
+msgid "Password"
+msgstr "Password"
+
+msgid ""
+"Please make a deposit of {{ currency }} {{ amount }} to the following bank "
+"details and then email us at {{ email_prefix }}{{ email }}{{ email_postfix "
+"}} with your username so we may upgrade your account manually."
+msgstr ""
+"Fai un deposito di {{currency}} {{amount}} alle seguenti coordinate "
+"bancarie e poi mandaci una email a {{ email_prefix }}{{ email }}{{ "
+"email_postfix }} con il tuo nome utente, cosicchè possiamo farti "
+"l'aggiornamento dell'account manualmente."
+
+msgid "Please note: you already are on this plan or a higher one."
+msgstr "Nota bene: hai già questo abbonamento o uno superiore."
+
+msgid "Plots"
+msgstr "Grafici"
+
+msgid "Prefer to pay via bank transfer?"
+msgstr "Preferisci pagare con un trasferimento bancario?"
+
+msgid "Price"
+msgstr "Prezzo"
+
+msgid "Public Gallery"
+msgstr "Galleria pubblica"
+
+msgid "Quick search"
+msgstr "Ricerca rapida"
+
+msgid "Register"
+msgstr "Registrati"
+
+msgid "Remote astrophotography"
+msgstr "Astrofotografia remota"
+
+msgid "Reset password"
+msgstr "Reimposta password"
+
+msgid "Return to the classic uploader"
+msgstr "Torna all'uploader classico"
+
+msgid "Review queue"
+msgstr "Coda di revisione"
+
+msgid "Revision uploader"
+msgstr "Uploader di versione"
+
+msgid "Settings"
+msgstr "Impostazioni"
+
+msgid "Skip notifications"
+msgstr "Salta le notifiche"
+
+msgid ""
+"Sorry, but the page you are looking for is not here. If you expected an "
+"image, this means that the author deleted it."
+msgstr ""
+"Spiacenti, ma la pagina che cerchi non è qui. Se ti aspettavi un'immagine, "
+"vuol dire che l'autore l'ha cancellata."
+
+msgid "Spam list"
+msgstr "Elenco dello spam"
+
+msgid "Sponsors & Partners"
+msgstr "Sponsor & partner"
+
+msgid "Staging Area"
+msgstr "Area di lavoro"
+
+msgid "Submission queue"
+msgstr "Coda di proposizione"
+
+msgid "Subscribed topics"
+msgstr "Argomenti a cui sei abbonato"
+
+msgid "Subscription confirmed"
+msgstr "Abbonamento confermato"
+
+msgid "Subscription plans"
+msgstr "Opzioni di abbonamento"
+
+msgid "Subscription process cancelled"
+msgstr "Processo di abbonemanto annullato"
+
+msgid "Success!"
+msgstr "Successo!"
+
+msgid "Target image"
+msgstr "Immagine di destinazione"
+
+msgid "Thank you for supporting AstroBin!"
+msgstr "Grazie per il tuo supporto ad AstroBin!"
+
+msgid "Thanks!"
+msgstr "Grazie!"
+
+msgid "The Big Wall"
+msgstr "Il Grande Muro"
+
+msgid "There doesn't seem to be anything here."
+msgstr "Non sembra esserci niente qui."
+
+msgid "This field is required"
+msgstr "Questo campo è obbligatorio"
+
+msgid ""
+"This image will be uploaded to your staging area as a work in progress. You "
+"can make it public at the end of the process."
+msgstr ""
+"Questa immagine sarà caricata sulla tua area di lavoro. Puoi renderla "
+"pubblica alla fine del processo."
+
+msgid ""
+"This page or operation is not available at the moment, because AstroBin is "
+"in READ ONLY mode."
+msgstr ""
+"Questa pagina o operazione non è disponibile al momento, perché AstroBin è "
+"in modalità SOLA LETTURA."
+
+msgid "Title"
+msgstr "Titolo"
+
+msgid "Top pick nominations"
+msgstr "Nomine Top pick"
+
+msgid "Top picks"
+msgstr "Top pick"
+
+msgid "Uncompressed source uploader"
+msgstr "Uploader di dati sorgenti non compressi"
+
+msgid "Unknown error"
+msgstr "Errore sconosciuto"
+
+msgid "Unlimited images"
+msgstr "Immagini illimitate"
+
+msgid "Unlimited revisions"
+msgstr "Versioni illimitate"
+
+msgid "Unlimited size"
+msgstr "Dimensione illimitata"
+
+msgid "Upload"
+msgstr "Carica"
+
+msgid "Uploader"
+msgstr "Uploader"
+
+msgid "Username"
+msgstr "Nome utente"
+
+msgid "Validity"
+msgstr "Validità"
+
+msgid "Want to upgrade from a lower subscription tier?"
+msgstr "Vuoi fare l'upgrade da un abbonamento inferiore?"
+
+msgid "Warning!"
+msgstr "Attenzione!"
+
+msgid "We could not log you in. Please check your credentials and try again."
+msgstr ""
+"Non è stato possibile fare l'accesso. Controlla il tuo nome utente e "
+"password e riprova."
+
+msgid "We'll never share your email with anyone else."
+msgstr "Non condivideremo mai la tua email con nessuno."
+
+msgid "Welcome!"
+msgstr "Benvenuto!"
+
+msgid "What is this site?"
+msgstr "Cos'è questo sito?"
+
+msgid "Would you like to upgrade?"
+msgstr "Vuoi fare l'upgrade?"
+
+msgid ""
+"You have a <strong>{{0}}</strong> subscription. Enjoy your unlimited "
+"uploads!"
+msgstr "Hai un abbonamento <strong>{{0}}</strong>. Goditi i tuoi upload illimitati!"
+
+msgid ""
+"You have a <strong>{{0}}</strong> subscription. You have used "
+"<strong>{{1}}</strong> of your <strong>{{2}}</strong> upload slots."
+msgstr ""
+"Hai un abbonamento <strong>{{0}}</strong>. Hai usato <strong>{{1}}</strong> "
+"dei tuoi <strong>{{2}}</strong> slot di upload."
+
+msgid ""
+"You have a <strong>{{0}}</strong> subscription. You have used "
+"<strong>{{1}}</strong> of your <strong>{{2}}</strong> yearly upload slots."
+msgstr ""
+"Hai un abbonamento <strong>{{0}}</strong>. Hai usato <strong>{{1}}</strong> "
+"dei tuoi <strong>{{2}}</strong> slot di upload per questo ciclo di "
+"abbonamento."
+
+msgid "You have been logged in."
+msgstr "Hai effettuato l'accesso."
+
+msgid "You have been logged out. Come back soon!"
+msgstr "Sei uscito. Torna presto!"
+
+msgid "You will be redirected in {{seconds}} seconds..."
+msgstr "Sarai rendirizzato in {{seconds}} secondi..."
+
+msgid "Your payments"
+msgstr "I tuoi pagamenti"
+
+msgid ""
+"Your request has been received, and we are awaiting the final confirmation "
+"from the payment processor. Your subscription should be active within a few "
+"minutes!"
+msgstr ""
+"La tua richiesta è stata ricevuta, e stiamo aspettando la conferma finale "
+"dal processore del pagamento. Il tuo abbonamento dovrebbe essere attivato "
+"entro pochi minuti!"
+
+msgid "Your session is invalid, please log in again"
+msgstr "La tua sessione è invalida, fai di nuovo l'accesso!"
+
+msgid "Your subscriptions"
+msgstr "I tuoi abbonamenti"
+
+msgid ""
+"Your transaction with the payment processor has been cancelled, so no "
+"change in your subscription has occurred."
+msgstr ""
+"La tua transazioni con il processore dei pagamenti è stata annullata, "
+"quindi non è avvenuto alcun cambiamento nel tuo abbonamento."
+
+msgid "n/a"
+msgstr "n/d"
+
+msgid "year"
+msgstr "anno"
+
+msgid "{{ max }} revisions / image"
+msgstr "{{ max }} versioni / immagine"

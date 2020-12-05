@@ -11,6 +11,7 @@ import { FormlyModule } from "@ngx-formly/core";
 import { TranslateModule } from "@ngx-translate/core";
 import { FormlyFieldChunkedFileComponent } from "@shared/components/misc/formly-field-chunked-file/formly-field-chunked-file.component";
 import { PipesModule } from "@shared/pipes/pipes.module";
+import { NgxFilesizeModule } from "ngx-filesize";
 import { TimeagoModule } from "ngx-timeago";
 import { ToastrModule } from "ngx-toastr";
 import { UploadxModule } from "ngx-uploadx";
@@ -35,10 +36,11 @@ export const testAppImports = [
   CommonModule,
   FontAwesomeTestingModule,
   HttpClientTestingModule,
-  NgbModule,
   FormlyModule.forRoot(formlyConfig),
   FormlyBootstrapModule,
   FormlyTypesTestModule,
+  NgbModule,
+  NgxFilesizeModule,
   PipesModule,
   ReactiveFormsModule,
   RouterTestingModule,

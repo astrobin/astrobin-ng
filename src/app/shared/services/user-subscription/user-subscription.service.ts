@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import { SubscriptionInterface } from "@shared/interfaces/subscription.interface";
 import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
+import { UserSubscriptionInterface } from "@shared/interfaces/user-subscription.interface";
 import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
 import { AppContextService } from "@shared/services/app-context/app-context.service";
 import { BaseService } from "@shared/services/base.service";
@@ -137,6 +138,22 @@ export class UserSubscriptionService extends BaseService implements UserSubscrip
           allowed: size < backendConfig.PREMIUM_MAX_IMAGE_SIZE_FREE_2020,
           max: backendConfig.PREMIUM_MAX_IMAGE_SIZE_FREE_2020
         };
+      })
+    );
+  }
+
+  getSubscription(userSubscription: UserSubscriptionInterface): Observable<SubscriptionInterface | null> {
+    return this.appContextService.context$.pipe(
+      map(context => {
+        let ret: SubscriptionInterface = null;
+
+        context.subscriptions.forEach(subscription => {
+          if (subscription.id === userSubscription.subscription) {
+            ret = subscription;
+          }
+        });
+
+        return ret;
       })
     );
   }

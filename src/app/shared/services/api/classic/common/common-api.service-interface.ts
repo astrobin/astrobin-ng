@@ -1,3 +1,4 @@
+import { PaymentInterface } from "@shared/interfaces/payment.interface";
 import { SubscriptionInterface } from "@shared/interfaces/subscription.interface";
 import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
 import { UserSubscriptionInterface } from "@shared/interfaces/user-subscription.interface";
@@ -12,4 +13,6 @@ export interface CommonApiServiceInterface {
   getSubscriptions(): Observable<SubscriptionInterface[]>;
 
   getUserSubscriptions(user?: UserInterface): Observable<UserSubscriptionInterface[]>;
+
+  getPayments(): Observable<PaymentInterface[]>;
 }

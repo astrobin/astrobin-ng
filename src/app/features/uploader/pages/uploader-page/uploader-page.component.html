@@ -14,44 +14,37 @@
       <small>
         <span *ngIf="data.appContext.currentUserProfile |
           hasValidUserSubscription:[SubscriptionName.ASTROBIN_ULTIMATE_2020] |
-          async; else noUltimate"
-          [innerHTML]="'You have an <strong>AstroBin Ultimate</strong> subscription. Enjoy your unlimited uploads!' | translate">
+          async; else noUltimate" [innerHTML]="subscriptionWithUnlimitedSlotsMessage('Ultimate')">
         </span>
 
         <ng-template #noUltimate>
           <span *ngIf="data.appContext.currentUserProfile | hasValidUserSubscription:[
             SubscriptionName.ASTROBIN_PREMIUM, SubscriptionName.ASTROBIN_PREMIUM_AUTORENEW,
             SubscriptionName.ASTROBIN_PREMIUM_2020] | async; else noPremium"
-            [innerHTML]="'You have an <strong>AstroBin Premium</strong> subscription. Enjoy your unlimited uploads!' | translate">
+            [innerHTML]="subscriptionWithUnlimitedSlotsMessage('Premium')">
           </span>
         </ng-template>
 
         <ng-template #noPremium>
           <span *ngIf="data.appContext.currentUserProfile | hasValidUserSubscription:[
             SubscriptionName.ASTROBIN_LITE, SubscriptionName.ASTROBIN_LITE_AUTORENEW] | async; else lite2020"
-            [innerHTML]="liteMessage |
-            translate:{
-              counter: data.appContext.currentUserProfile.premiumCounter,
-              slots: data.backendConfig.PREMIUM_MAX_IMAGES_LITE
-            }">
+            [innerHTML]="subscriptionWithYearlySlotsMessage('Lite', data.appContext.currentUserProfile.premiumCounter,
+            data.backendConfig.PREMIUM_MAX_IMAGES_LITE)">
           </span>
         </ng-template>
 
         <ng-template #lite2020>
           <span *ngIf="data.appContext.currentUserProfile | hasValidUserSubscription:[
-            SubscriptionName.ASTROBIN_LITE_2020] | async; else free" [innerHTML]="lite2020Message |
-            translate:{
-              counter: data.appContext.currentUserProfile.premiumCounter,
-              slots: data.backendConfig.PREMIUM_MAX_IMAGES_LITE_2020
-            }">
+            SubscriptionName.ASTROBIN_LITE_2020] | async; else free" [innerHTML]="subscriptionWithTotalSlotsMessage('Lite',
+                data.appContext.currentUserProfile.premiumCounter,
+            data.backendConfig.PREMIUM_MAX_IMAGES_LITE)">
           </span>
         </ng-template>
 
         <ng-template #free>
-          <span [innerHTML]="freeMessage | translate:{
-            counter: data.appContext.currentUserProfile.premiumCounter,
-            slots: data.backendConfig.PREMIUM_MAX_IMAGES_FREE_2020
-          }">
+          <span [innerHTML]="subscriptionWithYearlySlotsMessage('Free',
+          data.appContext.currentUserProfile.premiumCounter,
+            data.backendConfig.PREMIUM_MAX_IMAGES_LITE)">
           </span>
         </ng-template>
 
@@ -90,7 +83,7 @@
 
     <div class="alert alert-warning">
       {{ "It looks like you reached the upload limit for your subscription." | translate }}
-      <a [attr.href]="classicRoutesService.SUBSCRIPTIONS">{{ "Would you like to upgrade?" | translate }}</a>
+      <a [attr.href]="classicRoutesService.PRICING">{{ "Would you like to upgrade?" | translate }}</a>
     </div>
 
     <ng-container *ngTemplateOutlet="returnToClassicUploader"></ng-container>
