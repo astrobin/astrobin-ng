@@ -99,7 +99,7 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
         switchMap(context =>
           this.userSubscriptionService.hasValidSubscription(
             context.currentUserProfile,
-            this.subscriptionsService.getSameTierOrAbove(this.product)
+            this.subscriptionsService.getApplicableSubscriptionNames(this.product)
           )
         )
       );

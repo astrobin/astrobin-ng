@@ -47,29 +47,6 @@ export class SubscriptionsService {
     return resultMap[product];
   }
 
-  getSameTierOrAbove(product: PayableProductInterface): SubscriptionName[] {
-    const resultMap = {
-      [PayableProductInterface.LITE]: [
-        SubscriptionName.ASTROBIN_LITE,
-        SubscriptionName.ASTROBIN_LITE_AUTORENEW,
-        SubscriptionName.ASTROBIN_LITE_2020,
-        SubscriptionName.ASTROBIN_PREMIUM,
-        SubscriptionName.ASTROBIN_PREMIUM_AUTORENEW,
-        SubscriptionName.ASTROBIN_PREMIUM_2020,
-        SubscriptionName.ASTROBIN_ULTIMATE_2020
-      ],
-      [PayableProductInterface.PREMIUM]: [
-        SubscriptionName.ASTROBIN_PREMIUM,
-        SubscriptionName.ASTROBIN_PREMIUM_AUTORENEW,
-        SubscriptionName.ASTROBIN_PREMIUM_2020,
-        SubscriptionName.ASTROBIN_ULTIMATE_2020
-      ],
-      [PayableProductInterface.ULTIMATE]: [SubscriptionName.ASTROBIN_ULTIMATE_2020]
-    };
-
-    return resultMap[product];
-  }
-
   getConversionId(product: PayableProductInterface): string {
     const resultMap = {
       [PayableProductInterface.LITE]: "LddRCIuvv-EBEJS5qawC",
