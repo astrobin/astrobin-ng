@@ -60,13 +60,13 @@ export class LanguageLoader extends TranslatePoHttpLoader {
 
         Object.keys(ngTranslations).forEach(key => {
           if (ngTranslations[key] === "") {
-            ngTranslations[key] = key;
+            ngTranslations[key] = ngJsonTranslations[key];
           }
         });
 
         return {
-          ...ngTranslations,
           ...ngJsonTranslations,
+          ...ngTranslations,
           ...classicTranslations
         };
       })
