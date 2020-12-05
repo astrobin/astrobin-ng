@@ -33,8 +33,7 @@ const routes: Routes = [
   imports: [
     RouterModule.forRoot(routes, {
       onSameUrlNavigation: "reload",
-      relativeLinkResolution: "legacy",
-      enableTracing: true
+      relativeLinkResolution: "legacy"
     })
   ],
   exports: [RouterModule]
