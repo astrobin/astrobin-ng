@@ -16,6 +16,10 @@ const routes: Routes = [
       import("@features/permission-denied/permission-denied.module").then(m => m.PermissionDeniedModule)
   },
   {
+    path: "subscriptions",
+    loadChildren: () => import("@features/subscriptions/subscriptions.module").then(m => m.SubscriptionsModule)
+  },
+  {
     path: "uploader",
     loadChildren: () => import("@features/uploader/uploader.module").then(m => m.UploaderModule)
   },
@@ -26,7 +30,12 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, { onSameUrlNavigation: "reload", relativeLinkResolution: "legacy" })],
+  imports: [
+    RouterModule.forRoot(routes, {
+      onSameUrlNavigation: "reload",
+      relativeLinkResolution: "legacy"
+    })
+  ],
   exports: [RouterModule]
 })
 export class AppRoutingModule {}

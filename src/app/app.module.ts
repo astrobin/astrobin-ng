@@ -3,6 +3,7 @@ import { APP_INITIALIZER, NgModule } from "@angular/core";
 import { BrowserModule, Title } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { AppComponent } from "@app/app.component";
+import { CustomTranslateParser } from "@app/translate-parser";
 import { FaIconLibrary, FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import {
   faAsterisk,
@@ -37,7 +38,7 @@ import {
   faUpload,
   faUsers
 } from "@fortawesome/free-solid-svg-icons";
-import { TranslateLoader, TranslateModule } from "@ngx-translate/core";
+import { MissingTranslationHandler, TranslateLoader, TranslateModule, TranslateParser } from "@ngx-translate/core";
 import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
 import { AppContextService } from "@shared/services/app-context/app-context.service";
 import { AuthService } from "@shared/services/auth.service";
@@ -47,6 +48,7 @@ import { appInitializer, SharedModule } from "@shared/shared.module";
 import { CookieService } from "ngx-cookie-service";
 import { TimeagoCustomFormatter, TimeagoFormatter, TimeagoIntl, TimeagoModule } from "ngx-timeago";
 import { AppRoutingModule } from "./app-routing.module";
+import { CustomMissingTranslationHandler } from "./missing-translation-handler";
 import { LanguageLoader } from "./translate-loader";
 
 export function initFontAwesome(iconLibrary: FaIconLibrary) {
@@ -99,6 +101,14 @@ export function initFontAwesome(iconLibrary: FaIconLibrary) {
       formatter: { provide: TimeagoFormatter, useClass: TimeagoCustomFormatter }
     }),
     TranslateModule.forRoot({
+      missingTranslationHandler: {
+        provide: MissingTranslationHandler,
+        useClass: CustomMissingTranslationHandler
+      },
+      parser: {
+        provide: TranslateParser,
+        useClass: CustomTranslateParser
+      },
       loader: {
         provide: TranslateLoader,
         useClass: LanguageLoader,
