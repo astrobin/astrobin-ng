@@ -40,7 +40,7 @@ msgstr ""
 "non-utilisée de votre ancien abonnement. Merci !"
 
 msgid "AstroBin index"
-msgstr "Index AstroBin"
+msgstr "Indice AstroBin"
 
 msgid "Astrophotographers list"
 msgstr "Liste des astrophotographes"
@@ -350,7 +350,7 @@ msgid "Title"
 msgstr "Titre"
 
 msgid "Top pick nominations"
-msgstr "Nominations Top Picks "
+msgstr "Nominations Top Picks"
 
 msgid "Top picks"
 msgstr "Top Picks"
