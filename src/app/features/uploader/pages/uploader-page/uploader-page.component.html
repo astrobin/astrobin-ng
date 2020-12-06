@@ -78,16 +78,21 @@
 
 
 <ng-template #uploadNotAllowed>
-  <div class="upload-not-allowed">
-    <div class="sad hero-image"></div>
+  <div class="sad hero-image"></div>
 
-    <div class="alert alert-warning">
-      {{ "It looks like you reached the upload limit for your subscription." | translate }}
-      <a [attr.href]="classicRoutesService.PRICING">{{ "Would you like to upgrade?" | translate }}</a>
+  <div class="upload-not-allowed">
+    <div class="alert alert-warning d-flex justify-content-between align-items-baseline">
+      <span class="flex-fill mr-4">
+        {{ "It looks like you reached the upload limit for your subscription." | translate }}
+      </span>
+      <a [attr.href]="classicRoutesService.PRICING" class="btn btn-primary btn-lg">
+        {{ "Would you like to upgrade?" | translate }}
+      </a>
     </div>
 
     <ng-container *ngTemplateOutlet="returnToClassicUploader"></ng-container>
   </div>
+
 </ng-template>
 
 <ng-template #returnToClassicUploader>

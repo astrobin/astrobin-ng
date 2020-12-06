@@ -26,11 +26,24 @@
     }
   }
 
+  a,
+  .alert-link {
+    &.btn {
+      text-decoration: none;
+    }
+  }
+
   &.alert-info {
     background-color: $white;
 
     > p {
       color: $grey;
     }
+  }
+
+  &.alert-warning {
+    background-color: $warning-orange;
+    color: $darkest-grey;
+    text-shadow: 0 1px 1px transparentize($white, .5);
   }
 }
