@@ -5,25 +5,25 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "API Keys"
-msgstr ""
+msgstr "Claves API"
 
 msgid "Accepted formats"
-msgstr ""
+msgstr "Formatos aceptados"
 
 msgid "Access denied."
-msgstr ""
+msgstr "Acceso denegado."
 
 msgid "Advanced plate-solving"
-msgstr ""
+msgstr "Plate solving avanzado"
 
 msgid "Advanced search"
-msgstr ""
+msgstr "Búsqueda avanzada"
 
 msgid "Amount"
-msgstr ""
+msgstr "Cantidad"
 
 msgid "And much more!"
-msgstr ""
+msgstr "¡y mucho más!"
 
 msgid ""
 "AstroBin doesn't support subscription upgrades at the moment, but we're "
@@ -32,402 +32,435 @@ msgid ""
 "then contact us at {{1}} to get a refund for the unused time on your old "
 "subscription. Thanks!"
 msgstr ""
+"El AstroBin no apoya mejoras de suscripción en este momento, pero estamos "
+"felices de hacerlo manualmente. Si está en una gradao de suscripción "
+"inferior y le gustara mejorar <strong>{{0}}</strong>, por favor sólo "
+"cómprelo y luego póngase en contacto con nosotros en {{1}} para conseguir "
+"un reembolso por el tiempo no usado en su vieja suscripción. ¡Gracias!"
 
 msgid "AstroBin index"
-msgstr ""
+msgstr "Índice AstroBin"
 
 msgid "Astrophotographers list"
-msgstr ""
+msgstr "Lista de astrofotógrafos"
 
 msgid "Autorenew"
-msgstr ""
+msgstr "Autorenovar"
 
 msgid "Basic plate-solving"
-msgstr ""
+msgstr "Plate solving básico"
 
 msgid "Basic search"
-msgstr ""
+msgstr "Búsqueda Básica"
 
 msgid "Bookmarks"
-msgstr ""
+msgstr "Favoritos"
 
 msgid "Buy"
-msgstr ""
+msgstr "Comprar"
 
 msgid "Cancelled"
-msgstr ""
+msgstr "Cancelado"
 
 msgid "Commercial products"
-msgstr ""
+msgstr "Productos comerciales"
 
 msgid "Contact"
-msgstr ""
+msgstr "Contacto"
 
 msgid "Contributors list"
-msgstr ""
+msgstr "Lista de colaboradores"
 
 msgid "Date"
-msgstr ""
+msgstr "Fecha"
 
 msgid "Description"
-msgstr ""
+msgstr "Descripción"
 
 msgid "Do not notify your followers about this revision."
-msgstr ""
+msgstr "No notificar a sus seguidores acerca de esta revisión."
 
 msgid "Drop file here or click to browse"
-msgstr ""
+msgstr "Arrastre el archivo aquí o de clic en examinar"
 
 msgid "Email"
-msgstr ""
+msgstr "Correo"
 
 msgid "Error!"
-msgstr ""
+msgstr "¡Error!"
 
 msgid "Expiration date"
-msgstr ""
+msgstr "Fecha de expiración"
 
 msgid "Explore"
-msgstr ""
+msgstr "Explorar"
 
 msgid "FAQ"
-msgstr ""
+msgstr "Preguntas frecuentes"
 
 msgid "File type not supported"
-msgstr ""
+msgstr "Tipo de archivo no soportado"
 
 msgid "Followers"
-msgstr ""
+msgstr "Seguidores"
 
 msgid ""
 "For more information about this and other subscription plans, please visit "
 "the {{0}}pricing{{1}} page."
 msgstr ""
+"Para mayor información sobre esto y otros planes de suscripción, por favor "
+"visite la página {{0}}de los precios{{1}}. "
 
 msgid "For more information, please check out our Twitter feed:"
-msgstr ""
+msgstr "Para mayor información, por favor revise nuestro feed en Twitter:"
 
 msgid ""
 "For this reason, you cannot purchase this at the moment, as AstroBin does "
 "not currently offer a downgrade path."
 msgstr ""
+"Por esta razón, no puede comprarlo en este momento, ya que AstroBin no "
+"ofrece actualmente una ruta de descenso."
 
 msgid "Forum"
-msgstr ""
+msgstr "Foro"
 
 msgid "Full search"
-msgstr ""
+msgstr "Búsqueda completa"
 
 msgid "Go back to the home page."
-msgstr ""
+msgstr "Regresar a la página de inicio"
 
 msgid "Good bye!"
-msgstr ""
+msgstr "¡Adiós!"
 
 msgid "Groups"
-msgstr ""
+msgstr "Grupos"
 
 msgid "Help"
-msgstr ""
+msgstr "Ayuda"
 
 msgid "Help with translations!"
-msgstr ""
+msgstr "¡Ayuda con las traducciones!"
 
 msgid "Home"
-msgstr ""
+msgstr "Inicio"
 
 msgid "Image of the day"
-msgstr ""
+msgstr "Imagen del día"
 
 msgid "Image queue"
-msgstr ""
+msgstr "Cola de imágen"
 
 msgid "Images"
-msgstr ""
+msgstr "Imágenes"
 
 msgid "Info"
-msgstr ""
+msgstr "Información"
 
 msgid "It looks like you reached the upload limit for your subscription."
-msgstr ""
+msgstr "Parece que ha alcanzado el límite de cargas de su suscripción."
 
 msgid "Judgement queue"
-msgstr ""
+msgstr "Cola de juicio"
 
 msgid "Language"
-msgstr ""
+msgstr "Idioma"
 
 msgid "Latest topics"
-msgstr ""
+msgstr "Últimos temas"
 
 msgid "Learn more"
-msgstr ""
+msgstr "Aprenda más"
 
 msgid "Log in"
-msgstr ""
+msgstr "Iniciar sesión"
 
 msgid "Logout"
-msgstr ""
+msgstr "Cerrar sesión"
 
 msgid "Mark all as read"
-msgstr ""
+msgstr "Marcar todos como leídos"
 
 msgid "Mark as final"
-msgstr ""
+msgstr "Marcar como final"
 
 msgid "Mark this revision as the final rendition of your image."
-msgstr ""
+msgstr "Marcar esta revisión como la interpretación final de su imagen. "
 
 msgid "Max. {{ max }} MB / image"
-msgstr ""
+msgstr "Máx. {{ max }} MB / imagen"
 
 msgid "Max. {{ max }} total images"
-msgstr ""
+msgstr "Máx. {{ max }} total de imágenes"
 
 msgid "Max. {{ max }} uploads"
-msgstr ""
+msgstr "Máx. {{ max }} cargas"
 
 msgid "Moderate"
-msgstr ""
+msgstr "Moderado"
 
 msgid "My messages"
-msgstr ""
+msgstr "Mis mensajes"
 
 msgid "My places"
-msgstr ""
+msgstr "Mis sitios"
 
 msgid "My settings"
-msgstr ""
+msgstr "Mi configuración"
 
 msgid "Name"
-msgstr ""
+msgstr "Nombre"
 
 msgid "No"
-msgstr ""
+msgstr "No"
 
 msgid "No plate-solving"
-msgstr ""
+msgstr "Sin plate solving"
 
 msgid "Notifications"
-msgstr ""
+msgstr "Notificaciones"
 
 msgid "Password"
-msgstr ""
+msgstr "Contraseña"
 
 msgid ""
 "Please make a deposit of {{ currency }} {{ amount }} to the following bank "
 "details and then email us at {{ email_prefix }}{{ email }}{{ email_postfix "
 "}} with your username so we may upgrade your account manually."
 msgstr ""
+"Por favor, realice un depósito de {{ currency }} {{ amount }} a los "
+"siguientes datos bancarios y, a continuación, envíenos un correo "
+"electrónico a {{ email_prefix }}{{ email }}{{ email_postfix }} con su "
+"nombre de usuario para que podamos actualizar su cuenta manualmente."
 
 msgid "Please note: you already are on this plan or a higher one."
-msgstr ""
+msgstr "Tenga en cuenta: ya está en este plan o uno más alto."
 
 msgid "Plots"
-msgstr ""
+msgstr "Gráficos"
 
 msgid "Prefer to pay via bank transfer?"
-msgstr ""
+msgstr "¿Prefiere pagar vía transferencia bancaria?"
 
 msgid "Price"
-msgstr ""
+msgstr "Precio"
 
 msgid "Public Gallery"
-msgstr ""
+msgstr "Galería pública"
 
 msgid "Quick search"
-msgstr ""
+msgstr "Búsqueda rápida"
 
 msgid "Register"
-msgstr ""
+msgstr "Registrar"
 
 msgid "Remote astrophotography"
-msgstr ""
+msgstr "Astrofotografía remota"
 
 msgid "Reset password"
-msgstr ""
+msgstr "Restablecer contraseña"
 
 msgid "Return to the classic uploader"
-msgstr ""
+msgstr "Volver al cargador clásico"
 
 msgid "Review queue"
-msgstr ""
+msgstr "Cola de revisión"
 
 msgid "Revision uploader"
-msgstr ""
+msgstr "Cargador de revisión"
 
 msgid "Settings"
-msgstr ""
+msgstr "Configuración"
 
 msgid "Skip notifications"
-msgstr ""
+msgstr "Omitir notificaciones"
 
 msgid ""
 "Sorry, but the page you are looking for is not here. If you expected an "
 "image, this means that the author deleted it."
 msgstr ""
+"Lo sentimos, pero la página que está buscando no se encuentra aquí. Si "
+"esperaba una imagen, significa que el autor la eliminó."
 
 msgid "Spam list"
-msgstr ""
+msgstr "Lista de spam"
 
 msgid "Sponsors & Partners"
-msgstr ""
+msgstr "Patrocinadores y socios"
 
 msgid "Staging Area"
-msgstr ""
+msgstr "Área de ensayo"
 
 msgid "Submission queue"
-msgstr ""
+msgstr "Cola de envío"
 
 msgid "Subscribed topics"
-msgstr ""
+msgstr "Temas suscritos"
 
 msgid "Subscription confirmed"
-msgstr ""
+msgstr "Suscripción confirmada"
 
 msgid "Subscription plans"
-msgstr ""
+msgstr "Planes de suscripción"
 
 msgid "Subscription process cancelled"
-msgstr ""
+msgstr "Proceso de suscripción cancelado"
 
 msgid "Success!"
-msgstr ""
+msgstr "¡Éxito!"
 
 msgid "Target image"
-msgstr ""
+msgstr "Imagen objetivo"
 
 msgid "Thank you for supporting AstroBin!"
-msgstr ""
+msgstr "¡Gracias por apoyar AstroBin!"
 
 msgid "Thanks!"
-msgstr ""
+msgstr "¡Gracias!"
 
 msgid "The Big Wall"
-msgstr ""
+msgstr "El gran muro"
 
 msgid "There doesn't seem to be anything here."
-msgstr ""
+msgstr "No parece que haya algo aquí."
 
 msgid "This field is required"
-msgstr ""
+msgstr "Se requiere este campo"
 
 msgid ""
 "This image will be uploaded to your staging area as a work in progress. You "
 "can make it public at the end of the process."
 msgstr ""
+"Esta imagen se cargará a su área de ensayo como trabajo en progreso. Puede "
+"hacerla pública al final del proceso."
 
 msgid ""
 "This page or operation is not available at the moment, because AstroBin is "
 "in READ ONLY mode."
 msgstr ""
+"Esta página u operación no se encuentran disponibles en el momento, ya que "
+"AstroBin está en modo SOLO LECTURA."
 
 msgid "Title"
-msgstr ""
+msgstr "Título"
 
 msgid "Top pick nominations"
-msgstr ""
+msgstr "Nominaciones a Top pick"
 
 msgid "Top picks"
-msgstr ""
+msgstr "Top pick"
 
 msgid "Uncompressed source uploader"
-msgstr ""
+msgstr "Cargador de fuente sin comprimir"
 
 msgid "Unknown error"
-msgstr ""
+msgstr "Error desconocido"
 
 msgid "Unlimited images"
-msgstr ""
+msgstr "Imágenes ilimitadas"
 
 msgid "Unlimited revisions"
-msgstr ""
+msgstr "Revisiones ilimitadas"
 
 msgid "Unlimited size"
-msgstr ""
+msgstr "Tamaño ilimitado"
 
 msgid "Upload"
-msgstr ""
+msgstr "Subir"
 
 msgid "Uploader"
-msgstr ""
+msgstr "Cargador"
 
 msgid "Username"
-msgstr ""
+msgstr "Nombre de usuario"
 
 msgid "Validity"
-msgstr ""
+msgstr "Validez"
 
 msgid "Want to upgrade from a lower subscription tier?"
-msgstr ""
+msgstr "¿Desea mejorar su nivel bajo de suscripción?"
 
 msgid "Warning!"
-msgstr ""
+msgstr "¡Advertencia!"
 
 msgid "We could not log you in. Please check your credentials and try again."
 msgstr ""
+"No pudimos iniciar sesión. Por favor, revise sus credenciales e intente de "
+"nuevo."
 
 msgid "We'll never share your email with anyone else."
-msgstr ""
+msgstr "Nunca compartiremos su correo electrónico con nadie más."
 
 msgid "Welcome!"
-msgstr ""
+msgstr "¡Bienvenido!"
 
 msgid "What is this site?"
-msgstr ""
+msgstr "¿Qué es este sitio?"
 
 msgid "Would you like to upgrade?"
-msgstr ""
+msgstr "¿Desea una mejora?"
 
 msgid ""
 "You have a <strong>{{0}}</strong> subscription. Enjoy your unlimited "
 "uploads!"
 msgstr ""
+"Tiene una suscripción <strong>{{0}}</strong>. ¡Disfrute de sus cargas "
+"ilimitadas!"
 
 msgid ""
 "You have a <strong>{{0}}</strong> subscription. You have used "
 "<strong>{{1}}</strong> of your <strong>{{2}}</strong> upload slots."
 msgstr ""
+"Tiene una suscripción <strong>{{0}}</strong>. Ha usado "
+"<strong>{{1}}</strong> de sus <strong>{{2}}</strong> cupos para subir."
 
 msgid ""
 "You have a <strong>{{0}}</strong> subscription. You have used "
 "<strong>{{1}}</strong> of your <strong>{{2}}</strong> yearly upload slots."
 msgstr ""
+"Tiene una suscripción <strong>{{0}}</strong>. Ha usado "
+"<strong>{{1}}</strong> de sus <strong>{{2}}</strong> cupos para subir "
+"anuales."
 
 msgid "You have been logged in."
-msgstr ""
+msgstr "Ha iniciado sesión."
 
 msgid "You have been logged out. Come back soon!"
-msgstr ""
+msgstr "Ha cerrado sesión. ¡Vuelva pronto!"
 
 msgid "You will be redirected in {{seconds}} seconds..."
-msgstr ""
+msgstr "Será redirigido en {{seconds}} segundos..."
 
 msgid "Your payments"
-msgstr ""
+msgstr "Sus pagos"
 
 msgid ""
 "Your request has been received, and we are awaiting the final confirmation "
 "from the payment processor. Your subscription should be active within a few "
 "minutes!"
 msgstr ""
+"Su solicitud ha sido recibida y estamos a la espera de la confirmación "
+"final del procesador de pagos. ¡Su suscripción debe activarse en unos "
+"minutos!"
 
 msgid "Your session is invalid, please log in again"
-msgstr ""
+msgstr "Su sesión es inválida, por favor inicie sesión nuevamente"
 
 msgid "Your subscriptions"
-msgstr ""
+msgstr "Sus suscripciones"
 
 msgid ""
 "Your transaction with the payment processor has been cancelled, so no "
 "change in your subscription has occurred."
 msgstr ""
+"Su transacción con el procesador de pagos ha sido cancelada, por lo que no "
+"se ha producido ningún cambio en su suscripción."
 
 msgid "n/a"
-msgstr ""
+msgstr "n/a"
 
 msgid "year"
-msgstr ""
+msgstr "año"
 
 msgid "{{ max }} revisions / image"
-msgstr ""
+msgstr "{{ max }} revisiones / imagen"
