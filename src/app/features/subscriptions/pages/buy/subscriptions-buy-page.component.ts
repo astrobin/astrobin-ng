@@ -6,6 +6,7 @@ import { SubscriptionsService } from "@features/subscriptions/services/subscript
 import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { AppContextService } from "@shared/services/app-context/app-context.service";
+import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { TitleService } from "@shared/services/title/title.service";
@@ -35,7 +36,8 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
     public readonly popNotificationsService: PopNotificationsService,
     public readonly translate: TranslateService,
     public readonly titleService: TitleService,
-    public readonly subscriptionsService: SubscriptionsService
+    public readonly subscriptionsService: SubscriptionsService,
+    public readonly classicRoutesService: ClassicRoutesService
   ) {
     super();
   }
