@@ -48,7 +48,7 @@
     "bootswatch": "4.5.3",
     "class-transformer": "0.3.1",
     "class-validator": "0.12.2",
-    "core-js": "3.8.0",
+    "core-js": "3.8.1",
     "dotenv": "8.1.0",
     "intl": "1.2.5",
     "ngx-cookie-service": "11.0.2",
