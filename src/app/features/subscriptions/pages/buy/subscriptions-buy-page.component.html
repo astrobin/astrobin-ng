@@ -50,9 +50,15 @@ SWIFT / BIC: POFICHBEXXX</pre>
     </a>
 
     <button (click)="buy()" [class.loading]="loadingService.isLoading()" [disabled]="loadingService.isLoading()"
-      class="btn btn-xl btn-primary">
-      <fa-icon icon="shopping-cart"></fa-icon>
+      class="btn btn-xl btn-primary buy">
       {{ "Buy" | translate }}
+      <span class="icons">
+        <img class="icon" src="/assets/images/cc-visa-brands.svg" alt="Visa" />
+        <img class="icon" src="/assets/images/cc-mastercard-brands.svg" alt="Mastercard" />
+        <img class="icon" src="/assets/images/cc-amex-brands.svg" alt="Amex" />
+        <img class="icon" src="/assets/images/apple-pay-brands.svg" alt="Apple Pay" />
+        <img class="icon" src="/assets/images/google-pay-brands.svg" alt="Google Pay" />
+      </span>
     </button>
   </div>
 </ng-template>

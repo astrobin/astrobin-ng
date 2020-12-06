@@ -14,6 +14,7 @@ import {
   faCertificate,
   faChartBar,
   faComments,
+  faCreditCard,
   faEdit,
   faEnvelope,
   faEye,
@@ -83,7 +84,8 @@ export function initFontAwesome(iconLibrary: FaIconLibrary) {
     faTrophy,
     faUpload,
     faUsers,
-    faCertificate
+    faCertificate,
+    faCreditCard
   );
 }
 

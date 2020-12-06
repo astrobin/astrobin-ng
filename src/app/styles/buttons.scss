@@ -14,13 +14,20 @@
     }
   }
 
+  img.icon,
   fa-icon {
-    margin-right: .5rem;
+    margin-right: .25rem;
+    fill: currentColor;
+
+    &:last-of-type {
+      margin-right: .5rem;
+    }
   }
 
   &.btn-xl {
-    padding: .5rem 1.5rem;
-    font-size: 1.1rem;
+    padding: .75rem 1.5rem;
+    font-size: 1.5rem;
+    line-height: 1.5rem;
   }
 
   &.loading {
@@ -30,6 +37,10 @@
     text-shadow: none !important;
     pointer-events: none !important;
     opacity: .65 !important;
+
+    .icons {
+      visibility: hidden;
+    }
   }
 
   &.btn-primary:not(:disabled):not(.disabled) {

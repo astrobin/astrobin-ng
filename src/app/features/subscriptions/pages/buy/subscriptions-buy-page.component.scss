@@ -3,3 +3,16 @@
   display: block;
   margin-bottom: 3rem;
 }
+
+.btn.buy {
+  font-weight: bold;
+
+  .icons {
+    display: block;
+    margin-top: .75rem;
+
+    .icon {
+      height: 1.5rem;
+    }
+  }
+}
