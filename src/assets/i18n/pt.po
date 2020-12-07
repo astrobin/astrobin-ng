@@ -229,9 +229,6 @@ msgstr ""
 msgid "Prefer to pay via bank transfer?"
 msgstr ""
 
-msgid "Price"
-msgstr ""
-
 msgid "Public Gallery"
 msgstr ""
 
@@ -304,6 +301,11 @@ msgid "Thanks!"
 msgstr ""
 
 msgid "The Big Wall"
+msgstr ""
+
+msgid ""
+"The price is shown in Swiss Francs even though you might have paid the "
+"equivalent amount in your country's currency."
 msgstr ""
 
 msgid "There doesn't seem to be anything here."

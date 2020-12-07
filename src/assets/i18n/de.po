@@ -5,25 +5,25 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "API Keys"
-msgstr ""
+msgstr "API-Schlüssel"
 
 msgid "Accepted formats"
-msgstr ""
+msgstr "Akzeptierte Formate"
 
 msgid "Access denied."
-msgstr ""
+msgstr "Zugriff abgelehnt"
 
 msgid "Advanced plate-solving"
-msgstr ""
+msgstr "Erweitertes Plate-Solving"
 
 msgid "Advanced search"
-msgstr ""
+msgstr "Erweiterte Suche"
 
 msgid "Amount"
-msgstr ""
+msgstr "Anzahl"
 
 msgid "And much more!"
-msgstr ""
+msgstr "... und vieles mehr!"
 
 msgid ""
 "AstroBin doesn't support subscription upgrades at the moment, but we're "
@@ -32,187 +32,197 @@ msgid ""
 "then contact us at {{1}} to get a refund for the unused time on your old "
 "subscription. Thanks!"
 msgstr ""
+"AstroBin unterstützt derzeit keine Abonnement-Upgrades, aber wir freuen "
+"uns, dies manuell durchführen zu können. Wenn Sie auf einer niedrigeren "
+"Abonnement-Stufe sind und auf <strong>{{0}}</strong> upgraden möchten, "
+"kaufen Sie es einfach und kontaktieren Sie uns dann unter {{1}}, um eine "
+"Rückerstattung für die ungenutzte Zeit Ihres alten Abonnements zu erhalten. "
+"Vielen Dank!"
 
 msgid "AstroBin index"
-msgstr ""
+msgstr "AstroBin Index"
 
 msgid "Astrophotographers list"
-msgstr ""
+msgstr "Liste der Astrofotografen"
 
 msgid "Autorenew"
-msgstr ""
+msgstr "Automatisch erneuern"
 
 msgid "Basic plate-solving"
-msgstr ""
+msgstr "Standard Plate-Solving"
 
 msgid "Basic search"
-msgstr ""
+msgstr "Standard Suche"
 
 msgid "Bookmarks"
-msgstr ""
+msgstr "Lesezeichen"
 
 msgid "Buy"
-msgstr ""
+msgstr "Kaufen"
 
 msgid "Cancelled"
-msgstr ""
+msgstr "Abgebrochen"
 
 msgid "Commercial products"
-msgstr ""
+msgstr "Kommerzielle Produkte"
 
 msgid "Contact"
-msgstr ""
+msgstr "Kontakt"
 
 msgid "Contributors list"
-msgstr ""
+msgstr "Mitwirkende"
 
 msgid "Date"
-msgstr ""
+msgstr "Datum"
 
 msgid "Description"
-msgstr ""
+msgstr "Beschreibung"
 
 msgid "Do not notify your followers about this revision."
-msgstr ""
+msgstr "Keine Benachrichtigung Ihrer Abonnenten zu dieser Revision"
 
 msgid "Drop file here or click to browse"
-msgstr ""
+msgstr "Datei hier ablegen oder zum Durchsuchen anklicken"
 
 msgid "Email"
-msgstr ""
+msgstr "E-Mail"
 
 msgid "Error!"
-msgstr ""
+msgstr "Fehler!"
 
 msgid "Expiration date"
-msgstr ""
+msgstr "Verfallsdatum"
 
 msgid "Explore"
-msgstr ""
+msgstr "Durchsuchen"
 
 msgid "FAQ"
-msgstr ""
+msgstr "FAQ"
 
 msgid "File type not supported"
-msgstr ""
+msgstr "Der Dateityp wird nicht unterstützt"
 
 msgid "Followers"
-msgstr ""
+msgstr "Abonnenten"
 
 msgid ""
 "For more information about this and other subscription plans, please visit "
 "the {{0}}pricing{{1}} page."
 msgstr ""
+"Weitere Informationen zu diesem und anderen Abonnementsplänen finden Sie in "
+"der {{0}}Preis-Übersicht{{1}}."
 
 msgid "For more information, please check out our Twitter feed:"
-msgstr ""
+msgstr "Für weitere Informationen besuchen Sie bitte unseren Twitter-Feed:"
 
 msgid ""
 "For this reason, you cannot purchase this at the moment, as AstroBin does "
 "not currently offer a downgrade path."
 msgstr ""
+"Deshalb können Sie es im Moment nicht kaufen, da AstroBin derzeit keine "
+"Herabstufung anbietet."
 
 msgid "Forum"
-msgstr ""
+msgstr "Forum"
 
 msgid "Full search"
-msgstr ""
+msgstr "Vollständige Suche"
 
 msgid "Go back to the home page."
-msgstr ""
+msgstr "Zur Startseite gehen"
 
 msgid "Good bye!"
-msgstr ""
+msgstr "Auf Wiedersehen!"
 
 msgid "Groups"
-msgstr ""
+msgstr "Gruppen"
 
 msgid "Help"
-msgstr ""
+msgstr "Hilfe"
 
 msgid "Help with translations!"
-msgstr ""
+msgstr "Hilfe bei den Übersetzungen"
 
 msgid "Home"
-msgstr ""
+msgstr "Startseite"
 
 msgid "Image of the day"
-msgstr ""
+msgstr "Bild des Tages"
 
 msgid "Image queue"
-msgstr ""
+msgstr "Bild-Auswahlliste"
 
 msgid "Images"
-msgstr ""
+msgstr "Bilder"
 
 msgid "Info"
-msgstr ""
+msgstr "Info"
 
 msgid "It looks like you reached the upload limit for your subscription."
-msgstr ""
+msgstr "Wahrscheinlich haben Sie das Upload-Limit für Ihr Abonnement erreicht."
 
 msgid "Judgement queue"
-msgstr ""
+msgstr "Auswahlliste für Richter"
 
 msgid "Language"
-msgstr ""
+msgstr "Sprache"
 
 msgid "Latest topics"
-msgstr ""
+msgstr "Neueste Beiträge"
 
 msgid "Learn more"
-msgstr ""
+msgstr "Mehr erfahren"
 
 msgid "Log in"
-msgstr ""
+msgstr "Anmelden"
 
 msgid "Logout"
-msgstr ""
+msgstr "Abmelden"
 
 msgid "Mark all as read"
-msgstr ""
+msgstr "Alle als gelesen markieren"
 
 msgid "Mark as final"
-msgstr ""
+msgstr "Als finale Version markieren"
 
 msgid "Mark this revision as the final rendition of your image."
-msgstr ""
+msgstr "Markieren Sie diese Version als die finale Ausgabe Ihres Bildes"
 
 msgid "Max. {{ max }} MB / image"
-msgstr ""
+msgstr "Max. {{ max }} MB / Bild"
 
 msgid "Max. {{ max }} total images"
-msgstr ""
+msgstr "Max. {{ max }} für alle Bilder"
 
 msgid "Max. {{ max }} uploads"
-msgstr ""
+msgstr "Max. {{ max }} Uploads"
 
 msgid "Moderate"
-msgstr ""
+msgstr "Moderieren"
 
 msgid "My messages"
-msgstr ""
+msgstr "Meine Nachrichten"
 
 msgid "My places"
-msgstr ""
+msgstr "Meine Orte"
 
 msgid "My settings"
-msgstr ""
+msgstr "Meine Einstellungen "
 
 msgid "Name"
-msgstr ""
+msgstr "Name"
 
 msgid "No"
-msgstr ""
+msgstr "Kein"
 
 msgid "No plate-solving"
-msgstr ""
+msgstr "Kein Plate-Solving"
 
 msgid "Notifications"
-msgstr ""
+msgstr "Benachrichtigungen"
 
 msgid "Password"
-msgstr ""
+msgstr "Passwort"
 
 msgid ""
 "Please make a deposit of {{ currency }} {{ amount }} to the following bank "
@@ -222,212 +232,237 @@ msgstr ""
 
 msgid "Please note: you already are on this plan or a higher one."
 msgstr ""
+"Bitte beachten Sie: Sie befinden sich bereits in diesem oder einem höheren "
+"Abonnement."
 
 msgid "Plots"
-msgstr ""
+msgstr "Graphen"
 
 msgid "Prefer to pay via bank transfer?"
-msgstr ""
-
-msgid "Price"
-msgstr ""
+msgstr "Bevorzugen Sie die Zahlung per Banküberweisung?"
 
 msgid "Public Gallery"
-msgstr ""
+msgstr "Öffentliche Galerie"
 
 msgid "Quick search"
-msgstr ""
+msgstr "Schnellsuche"
 
 msgid "Register"
-msgstr ""
+msgstr "Registrieren"
 
 msgid "Remote astrophotography"
-msgstr ""
+msgstr "Remote Astrofotografie"
 
 msgid "Reset password"
-msgstr ""
+msgstr "Passwort zurücksetzen"
 
 msgid "Return to the classic uploader"
-msgstr ""
+msgstr "Zurück zum bisherigen Upload-Dialog"
 
 msgid "Review queue"
-msgstr ""
+msgstr "Auswahlliste Reviewer"
 
 msgid "Revision uploader"
-msgstr ""
+msgstr "Versions-Uploader"
 
 msgid "Settings"
-msgstr ""
+msgstr "Einstellungen"
 
 msgid "Skip notifications"
-msgstr ""
+msgstr "Benachrichtigungen deaktivieren"
 
 msgid ""
 "Sorry, but the page you are looking for is not here. If you expected an "
 "image, this means that the author deleted it."
 msgstr ""
+"Die gesuchte Seite ist nicht vorhanden. Wenn Sie ein Bild erwartet haben, "
+"bedeutet dies, dass der Autor es gelöscht hat."
 
 msgid "Spam list"
-msgstr ""
+msgstr "Spam Liste"
 
 msgid "Sponsors & Partners"
-msgstr ""
+msgstr "Sponsoren & Partner"
 
 msgid "Staging Area"
-msgstr ""
+msgstr "Wartebereich"
 
 msgid "Submission queue"
-msgstr ""
+msgstr "Auswahlliste Submitter"
 
 msgid "Subscribed topics"
-msgstr ""
+msgstr "Abonnierte Themen"
 
 msgid "Subscription confirmed"
-msgstr ""
+msgstr "Abonnement bestätigt"
 
 msgid "Subscription plans"
-msgstr ""
+msgstr "Abonnement-Optionen"
 
 msgid "Subscription process cancelled"
-msgstr ""
+msgstr "Abonnement-Prozess abgebrochen"
 
 msgid "Success!"
-msgstr ""
+msgstr "Erfolgreich!"
 
 msgid "Target image"
-msgstr ""
+msgstr "Zielbild"
 
 msgid "Thank you for supporting AstroBin!"
-msgstr ""
+msgstr "Vielen Dank, dass Sie AstroBin unterstützen!"
 
 msgid "Thanks!"
-msgstr ""
+msgstr "Danke!"
 
 msgid "The Big Wall"
+msgstr "Die große Wand"
+
+msgid ""
+"The price is shown in Swiss Francs even though you might have paid the "
+"equivalent amount in your country's currency."
 msgstr ""
 
 msgid "There doesn't seem to be anything here."
-msgstr ""
+msgstr "Es scheint hier nichts zu geben."
 
 msgid "This field is required"
-msgstr ""
+msgstr "Dies ist ein erforderliches Feld."
 
 msgid ""
 "This image will be uploaded to your staging area as a work in progress. You "
 "can make it public at the end of the process."
 msgstr ""
+"Dieses Bild wird als \"in Bearbeitung\" in Ihren Wartebereich hochgeladen. "
+"Sie können es am Ende des Prozesses veröffentlichen."
 
 msgid ""
 "This page or operation is not available at the moment, because AstroBin is "
 "in READ ONLY mode."
 msgstr ""
+"Diese Seite oder Operation ist im Moment nicht verfügbar, da sich AstroBin "
+"im \"READ ONLY\"-Modus befindet."
 
 msgid "Title"
-msgstr ""
+msgstr "Titel"
 
 msgid "Top pick nominations"
-msgstr ""
+msgstr "Top pick Vorschläge"
 
 msgid "Top picks"
-msgstr ""
+msgstr "Top picks"
 
 msgid "Uncompressed source uploader"
-msgstr ""
+msgstr "Upload-Dialog für unkomprimierte Ausgangsbilder"
 
 msgid "Unknown error"
-msgstr ""
+msgstr "Unbekannter Fehler"
 
 msgid "Unlimited images"
-msgstr ""
+msgstr "Unbegrenzte Bilder "
 
 msgid "Unlimited revisions"
-msgstr ""
+msgstr "Unbegrenzte Versionen"
 
 msgid "Unlimited size"
-msgstr ""
+msgstr "Unbegrenzte Größe"
 
 msgid "Upload"
-msgstr ""
+msgstr "Hochladen"
 
 msgid "Uploader"
-msgstr ""
+msgstr "Upload-Dialog"
 
 msgid "Username"
-msgstr ""
+msgstr "Benutzername"
 
 msgid "Validity"
-msgstr ""
+msgstr "Gültigkeit"
 
 msgid "Want to upgrade from a lower subscription tier?"
-msgstr ""
+msgstr "Möchten Sie von einer niedrigeren Abonnement Stufe aufwerten?"
 
 msgid "Warning!"
-msgstr ""
+msgstr "Achtung!"
 
 msgid "We could not log you in. Please check your credentials and try again."
 msgstr ""
+"Sie konnten nicht angemeldet werden. Bitte überprüfen Sie Ihre Anmeldedaten "
+"und versuchen Sie es erneut."
 
 msgid "We'll never share your email with anyone else."
-msgstr ""
+msgstr "Wir werden Ihre E-Mail niemals an andere weitergeben."
 
 msgid "Welcome!"
-msgstr ""
+msgstr "Willkommen!"
 
 msgid "What is this site?"
-msgstr ""
+msgstr "Was ist das für eine Website?"
 
 msgid "Would you like to upgrade?"
-msgstr ""
+msgstr "Möchten Sie upgraden?"
 
 msgid ""
 "You have a <strong>{{0}}</strong> subscription. Enjoy your unlimited "
 "uploads!"
 msgstr ""
+"Sie haben ein <strong>{{0}}</strong> Abonnement. Genießen Sie Ihre "
+"unbegrenzten Uploads!"
 
 msgid ""
 "You have a <strong>{{0}}</strong> subscription. You have used "
 "<strong>{{1}}</strong> of your <strong>{{2}}</strong> upload slots."
 msgstr ""
+"Sie haben ein <strong>{{0}}</strong> Abonnement. Sie haben "
+"<strong>{{1}}</strong> von Ihren <strong>{{2}}</strong> Upload-Slots "
+"benutzt."
 
 msgid ""
 "You have a <strong>{{0}}</strong> subscription. You have used "
 "<strong>{{1}}</strong> of your <strong>{{2}}</strong> yearly upload slots."
 msgstr ""
+"Sie haben ein <strong>{{0}}</strong> Abonnement. Sie haben "
+"<strong>{{1}}</strong> Ihrer <strong>{{2}}</strong> jährlichen Upload-Slots "
+"genutzt."
 
 msgid "You have been logged in."
-msgstr ""
+msgstr "Sie wurden angemeldet."
 
 msgid "You have been logged out. Come back soon!"
-msgstr ""
+msgstr "Sie wurden abgemeldet. Kommen Sie bald wieder!"
 
 msgid "You will be redirected in {{seconds}} seconds..."
-msgstr ""
+msgstr "Sie werden in {{seconds}} Sekunden umgeleitet..."
 
 msgid "Your payments"
-msgstr ""
+msgstr "Ihre Zahlungen"
 
 msgid ""
 "Your request has been received, and we are awaiting the final confirmation "
 "from the payment processor. Your subscription should be active within a few "
 "minutes!"
 msgstr ""
+"Ihr Antrag ist eingegangen, und wir warten auf die endgültige Bestätigung "
+"durch den Zahlungsabwickler. Ihr Abonnement sollte innerhalb weniger "
+"Minuten aktiv sein!"
 
 msgid "Your session is invalid, please log in again"
-msgstr ""
+msgstr "Ihre Sitzung ist ungültig, bitte loggen Sie sich erneut ein"
 
 msgid "Your subscriptions"
-msgstr ""
+msgstr "Ihre Abonnements"
 
 msgid ""
 "Your transaction with the payment processor has been cancelled, so no "
 "change in your subscription has occurred."
 msgstr ""
+"Ihre Transaktion mit dem Zahlungsabwickler wurde storniert. Deshalb ist es "
+"zu keiner Änderung Ihres Abonnements gekommen."
 
 msgid "n/a"
-msgstr ""
+msgstr "n.v."
 
 msgid "year"
-msgstr ""
+msgstr "Jahr"
 
 msgid "{{ max }} revisions / image"
-msgstr ""
+msgstr "{{ max }} Versionen / Bild"

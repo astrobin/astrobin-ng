@@ -197,7 +197,7 @@ msgid "Max. {{ max }} total images"
 msgstr "Max. {{ max }} images au total"
 
 msgid "Max. {{ max }} uploads"
-msgstr "Max. {{ max }} mises en ligne"
+msgstr "Max. {{ max }} publications"
 
 msgid "Moderate"
 msgstr "Modération"
@@ -247,9 +247,6 @@ msgstr "Graphiques"
 msgid "Prefer to pay via bank transfer?"
 msgstr "Vous préférez payer par virement bancaire ?"
 
-msgid "Price"
-msgstr "Prix"
-
 msgid "Public Gallery"
 msgstr "Galerie publique"
 
@@ -266,7 +263,7 @@ msgid "Reset password"
 msgstr "Réinitialiser votre mot de passe"
 
 msgid "Return to the classic uploader"
-msgstr "Retour au téléchargement classique"
+msgstr "Retour au module classique de publication"
 
 msgid "Review queue"
 msgstr "Tableau de bord Examinateurs"
@@ -326,6 +323,11 @@ msgstr "Merci !"
 msgid "The Big Wall"
 msgstr "Le Grand Mur"
 
+msgid ""
+"The price is shown in Swiss Francs even though you might have paid the "
+"equivalent amount in your country's currency."
+msgstr ""
+
 msgid "There doesn't seem to be anything here."
 msgstr "Rien à afficher."
 
@@ -356,7 +358,7 @@ msgid "Top picks"
 msgstr "Top Picks"
 
 msgid "Uncompressed source uploader"
-msgstr "Télécharger une source non-compressée"
+msgstr "Téléverser une source non-compressée"
 
 msgid "Unknown error"
 msgstr "Erreur inconnue"
@@ -371,7 +373,7 @@ msgid "Unlimited size"
 msgstr "Taille illimitée"
 
 msgid "Upload"
-msgstr "Télécharger"
+msgstr "Publier"
 
 msgid "Uploader"
 msgstr "Module de publication"

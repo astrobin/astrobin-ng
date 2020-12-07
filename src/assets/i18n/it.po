@@ -242,9 +242,6 @@ msgstr "Grafici"
 msgid "Prefer to pay via bank transfer?"
 msgstr "Preferisci pagare con un trasferimento bancario?"
 
-msgid "Price"
-msgstr "Prezzo"
-
 msgid "Public Gallery"
 msgstr "Galleria pubblica"
 
@@ -320,6 +317,11 @@ msgstr "Grazie!"
 
 msgid "The Big Wall"
 msgstr "Il Grande Muro"
+
+msgid ""
+"The price is shown in Swiss Francs even though you might have paid the "
+"equivalent amount in your country's currency."
+msgstr ""
 
 msgid "There doesn't seem to be anything here."
 msgstr "Non sembra esserci niente qui."

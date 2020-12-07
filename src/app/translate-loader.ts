@@ -41,7 +41,7 @@ export class LanguageLoader extends TranslatePoHttpLoader {
       this.ngTranslations$(lang).pipe(catchError(() => this.ngTranslations$("en")))
     ];
 
-    if (["de", "pt"].indexOf(lang) > -1) {
+    if (["pt"].indexOf(lang) > -1) {
       backends.push(this.ngJsonTranslations$(lang).pipe(catchError(() => this.ngJsonTranslations$("en"))));
     }
 
