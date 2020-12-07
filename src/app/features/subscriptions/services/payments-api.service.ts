@@ -18,10 +18,11 @@ export class PaymentsApiService {
 
   public createCheckoutSession(
     userId: number,
-    product: PayableProductInterface
+    product: PayableProductInterface,
+    currency: string
   ): Observable<PaymentsApiCkeckoutSessionInterface> {
     return this.http.post<PaymentsApiCkeckoutSessionInterface>(
-      `${environment.classicApiUrl}/payments/create-checkout-session/${userId}/${product}/`,
+      `${environment.classicApiUrl}/payments/create-checkout-session/${userId}/${product}/${currency}/`,
       {}
     );
   }
