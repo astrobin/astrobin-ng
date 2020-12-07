@@ -9,7 +9,7 @@
         <div class="card-body">
           <ul class="list-unstyled mt-3 mb-4">
             <li class="price">
-              {{ 0 | currency: "CHF" }}
+              {{ 0 | currency:this.subscriptionsService.currency }}
             </li>
             <li [innerHTML]="subscriptionsService.maxUploadsMessage(10)"></li>
             <li [innerHTML]="subscriptionsService.maxSizeMessage(25)"></li>
@@ -33,7 +33,9 @@
         <div class="card-body">
           <ul class="list-unstyled mt-3 mb-4">
             <li class="price">
-              {{ 20 | currency: "CHF" }} <small class="text-muted">/ {{ "year" | translate }}</small>
+              {{ this.subscriptionsService.getPrice(PayableProductInterface.LITE) | currency:
+              this.subscriptionsService.currency }}
+              <small class="text-muted">/ {{ "year" | translate }}</small>
             </li>
             <li [innerHTML]="subscriptionsService.maxImagesMessage(50)"></li>
             <li [innerHTML]="subscriptionsService.maxSizeMessage(25)"></li>
@@ -57,7 +59,8 @@
         <div class="card-body">
           <ul class="list-unstyled mt-3 mb-4">
             <li class="price">
-              {{ 40 | currency: "CHF" }} <small class="text-muted">/ {{ "year" | translate }}</small>
+              {{ this.subscriptionsService.getPrice(PayableProductInterface.PREMIUM) | currency:
+              this.subscriptionsService.currency }} <small class="text-muted">/ {{ "year" | translate }}</small>
             </li>
             <li>{{ "Unlimited images" | translate }}</li>
             <li [innerHTML]="subscriptionsService.maxSizeMessage(50)"></li>
@@ -81,7 +84,8 @@
         <div class="card-body">
           <ul class="list-unstyled mt-3 mb-4">
             <li class="price">
-              {{ 60 | currency: "CHF" }} <small class="text-muted">/ {{ "year" | translate }}</small>
+              {{ this.subscriptionsService.getPrice(PayableProductInterface.ULTIMATE) | currency:
+              this.subscriptionsService.currency }} <small class="text-muted">/ {{ "year" | translate }}</small>
             </li>
             <li>{{ "Unlimited images" | translate }}</li>
             <li>{{ "Unlimited size" | translate }}</li>

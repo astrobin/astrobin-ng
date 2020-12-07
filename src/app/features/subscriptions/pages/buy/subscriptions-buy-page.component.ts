@@ -5,6 +5,7 @@ import { PaymentsApiService } from "@features/subscriptions/services/payments-ap
 import { SubscriptionsService } from "@features/subscriptions/services/subscriptions.service";
 import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
 import { AppContextService } from "@shared/services/app-context/app-context.service";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { LoadingService } from "@shared/services/loading.service";
@@ -37,7 +38,8 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
     public readonly translate: TranslateService,
     public readonly titleService: TitleService,
     public readonly subscriptionsService: SubscriptionsService,
-    public readonly classicRoutesService: ClassicRoutesService
+    public readonly classicRoutesService: ClassicRoutesService,
+    public readonly jsonApiService: JsonApiService
   ) {
     super();
   }
@@ -66,13 +68,13 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
     );
   }
 
-  get bankDetailsMessage() {
+  get bankDetailsMessage(): string {
     return this.translate.instant(
       "Please make a deposit of {{ currency }} {{ amount }} to the following bank details and then email " +
         "us at {{ email_prefix }}{{ email }}{{ email_postfix }} with your username so we may upgrade your account " +
         "manually.",
       {
-        currency: "CHF",
+        currency: this.subscriptionsService.currency,
         amount: this.subscriptionsService.getPrice(this.product),
         email_prefix: "<a href='mailto:support@astrobin.com'>",
         email: "support@astrobin.com",
@@ -124,7 +126,11 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
               this.stripe = Stripe(config.publicKey);
             }),
             switchMap(config => {
-              return this.paymentsApiService.createCheckoutSession(userId, this.product);
+              return this.paymentsApiService.createCheckoutSession(
+                userId,
+                this.product,
+                this.subscriptionsService.currency
+              );
             })
           )
         )
