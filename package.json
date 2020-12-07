@@ -69,7 +69,7 @@
     "@angular/cli": "11.0.3",
     "@angular/compiler-cli": "11.0.3",
     "@angular/language-service": "11.0.3",
-    "@biesbjerg/ngx-translate-extract": "^7.0.3",
+    "@biesbjerg/ngx-translate-extract": "7.0.3",
     "@types/dotenv": "6.1.1",
     "@types/jest": "26.0.16",
     "@types/node": "12.19.8",
