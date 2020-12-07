@@ -4,7 +4,10 @@
   <thead>
     <tr>
       <th scope="col" translate>Date</th>
-      <th scope="col" translate>Amount</th>
+      <th scope="col">
+        {{ "Amount" | translate }}
+        <span class="help-tooltip" [ngbTooltip]="currencyHelpTooltip">(CHF)</span>
+      </th>
     </tr>
   </thead>
   <tbody>
@@ -23,3 +26,7 @@
     </ng-template>
   </tbody>
 </table>
+
+<ng-template #currencyHelpTooltip>
+  {{ currencyHelpTooltipMessage | translate }}
+</ng-template>

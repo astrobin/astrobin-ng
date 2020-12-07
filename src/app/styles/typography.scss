@@ -29,3 +29,9 @@ h1 {
 strong {
   color: $lightest-grey;
 }
+
+.help-tooltip {
+  font-style: italic;
+  border-bottom: 1px dotted $lightest-grey;
+  cursor: help;
+}
