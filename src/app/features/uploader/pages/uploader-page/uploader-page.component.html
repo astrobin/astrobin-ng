@@ -37,7 +37,7 @@
           <span *ngIf="data.appContext.currentUserProfile | hasValidUserSubscription:[
             SubscriptionName.ASTROBIN_LITE_2020] | async; else free" [innerHTML]="subscriptionWithTotalSlotsMessage('Lite',
                 data.appContext.currentUserProfile.premiumCounter,
-            data.backendConfig.PREMIUM_MAX_IMAGES_LITE)">
+            data.backendConfig.PREMIUM_MAX_IMAGES_LITE_2020)">
           </span>
         </ng-template>
 
