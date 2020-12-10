@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
+import { PaymentsApiConfigInterface } from "@features/subscriptions/interfaces/payments-api-config.interface";
 import { PaymentsApiService } from "@features/subscriptions/services/payments-api.service";
 import { SubscriptionsService } from "@features/subscriptions/services/subscriptions.service";
 import { TranslateService } from "@ngx-translate/core";
@@ -24,8 +25,9 @@ declare var Stripe: any;
 })
 export class SubscriptionsBuyPageComponent extends BaseComponentDirective implements OnInit {
   alreadySubscribed$: Observable<boolean>;
-  stripe: any;
+  price$: Observable<number>;
   product: PayableProductInterface;
+  bankDetailsMessage$: Observable<string>;
 
   constructor(
     public readonly activatedRoute: ActivatedRoute,
@@ -68,22 +70,9 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
     );
   }
 
-  get bankDetailsMessage(): string {
-    return this.translate.instant(
-      "Please make a deposit of {{ currency }} {{ amount }} to the following bank details and then email " +
-        "us at {{ email_prefix }}{{ email }}{{ email_postfix }} with your username so we may upgrade your account " +
-        "manually.",
-      {
-        currency: this.subscriptionsService.currency,
-        amount: this.subscriptionsService.getPrice(this.product),
-        email_prefix: "<a href='mailto:support@astrobin.com'>",
-        email: "support@astrobin.com",
-        email_postfix: "</a>"
-      }
-    );
-  }
-
   ngOnInit(): void {
+    this.loadingService.setLoading(true);
+
     this.activatedRoute.params.pipe(takeUntil(this.destroyed$)).subscribe(params => {
       this.product = params["product"];
 
@@ -107,10 +96,33 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
           )
         )
       );
+
+      this.price$ = this.subscriptionsService
+        .getPrice(this.product)
+        .pipe(tap(() => this.loadingService.setLoading(false)));
+
+      this.bankDetailsMessage$ = this.price$.pipe(
+        switchMap(price =>
+          this.translate.stream(
+            "Please make a deposit of {{ currency }} {{ amount }} to the following bank details and then email " +
+              "us at {{ email_prefix }}{{ email }}{{ email_postfix }} with your username so we may upgrade your " +
+              "account manually.",
+            {
+              currency: this.subscriptionsService.currency,
+              amount: price.toFixed(2),
+              email_prefix: "<a href='mailto:support@astrobin.com'>",
+              email: "support@astrobin.com",
+              email_postfix: "</a>"
+            }
+          )
+        )
+      );
     });
   }
 
   buy(): void {
+    let stripe: any;
+    let config: PaymentsApiConfigInterface;
     let userId: number;
 
     this.loadingService.setLoading(true);
@@ -120,24 +132,19 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
         tap(context => {
           userId = context.currentUser.id;
         }),
-        switchMap(() =>
-          this.paymentsApiService.getConfig().pipe(
-            tap(config => {
-              this.stripe = Stripe(config.publicKey);
-            }),
-            switchMap(config => {
-              return this.paymentsApiService.createCheckoutSession(
-                userId,
-                this.product,
-                this.subscriptionsService.currency
-              );
-            })
-          )
-        )
+        switchMap(() => this.paymentsApiService.getConfig().pipe(tap(_config => (config = _config)))),
+        switchMap(() => {
+          stripe = Stripe(config.publicKey);
+          return this.paymentsApiService.createCheckoutSession(
+            userId,
+            this.product,
+            this.subscriptionsService.currency
+          );
+        })
       )
       .subscribe(response => {
         if (response.sessionId) {
-          this.stripe.redirectToCheckout({ sessionId: response.sessionId });
+          stripe.redirectToCheckout({ sessionId: response.sessionId });
         } else {
           this.popNotificationsService.error(response.error || this.translate.instant("Unknown error"));
           this.loadingService.setLoading(false);

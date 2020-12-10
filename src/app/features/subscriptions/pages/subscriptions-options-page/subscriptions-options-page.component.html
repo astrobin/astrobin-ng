@@ -33,7 +33,7 @@
         <div class="card-body">
           <ul class="list-unstyled mt-3 mb-4">
             <li class="price">
-              {{ this.subscriptionsService.getPrice(PayableProductInterface.LITE) | currency:
+              {{ this.subscriptionsService.getPrice(PayableProductInterface.LITE) | async | currency:
               this.subscriptionsService.currency }}
               <small class="text-muted">/ {{ "year" | translate }}</small>
             </li>
@@ -59,7 +59,7 @@
         <div class="card-body">
           <ul class="list-unstyled mt-3 mb-4">
             <li class="price">
-              {{ this.subscriptionsService.getPrice(PayableProductInterface.PREMIUM) | currency:
+              {{ this.subscriptionsService.getPrice(PayableProductInterface.PREMIUM) | async | currency:
               this.subscriptionsService.currency }} <small class="text-muted">/ {{ "year" | translate }}</small>
             </li>
             <li>{{ "Unlimited images" | translate }}</li>
@@ -84,7 +84,7 @@
         <div class="card-body">
           <ul class="list-unstyled mt-3 mb-4">
             <li class="price">
-              {{ this.subscriptionsService.getPrice(PayableProductInterface.ULTIMATE) | currency:
+              {{ this.subscriptionsService.getPrice(PayableProductInterface.ULTIMATE) | async | currency:
               this.subscriptionsService.currency }} <small class="text-muted">/ {{ "year" | translate }}</small>
             </li>
             <li>{{ "Unlimited images" | translate }}</li>
