@@ -36,7 +36,7 @@
     "@angular/platform-browser-dynamic": "11.0.4",
     "@angular/router": "11.0.4",
     "@fjnr/ngx-translate-po-http-loader": "3.1.5",
-    "@fortawesome/angular-fontawesome": "0.8.0",
+    "@fortawesome/angular-fontawesome": "0.8.1",
     "@fortawesome/fontawesome-svg-core": "1.2.32",
     "@fortawesome/free-solid-svg-icons": "5.15.1",
     "@ng-bootstrap/ng-bootstrap": "8.0.0",
