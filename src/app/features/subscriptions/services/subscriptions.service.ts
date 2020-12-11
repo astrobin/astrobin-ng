@@ -1,9 +1,11 @@
 import { Injectable } from "@angular/core";
 import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
+import { PaymentsApiService } from "@features/subscriptions/services/payments-api.service";
 import { TranslateService } from "@ngx-translate/core";
 import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
 import { SubscriptionName } from "@shared/types/subscription-name.type";
 import * as countryJs from "country-js";
+import { Observable } from "rxjs";
 import { take } from "rxjs/operators";
 
 @Injectable({
@@ -12,7 +14,11 @@ import { take } from "rxjs/operators";
 export class SubscriptionsService {
   currency: string;
 
-  constructor(public readonly translate: TranslateService, public readonly jsonApiService: JsonApiService) {
+  constructor(
+    public readonly translate: TranslateService,
+    public readonly jsonApiService: JsonApiService,
+    public readonly paymentsApiService: PaymentsApiService
+  ) {
     this.jsonApiService
       .getBackendConfig$()
       .pipe(take(1))
@@ -43,41 +49,25 @@ export class SubscriptionsService {
     return resultMap[product];
   }
 
-  getPrice(product: PayableProductInterface): number {
-    const lite = {
-      USD: 22.4,
-      EUR: 18.6,
-      GBP: 17,
-      CAD: 28.8,
-      AUD: 30.4,
-      CHF: 20
+  getPrice(product: PayableProductInterface): Observable<number> {
+    if (!this.currency) {
+      return new Observable<number>(observer => {
+        setTimeout(() => {
+          this.getPrice(product).subscribe(price => {
+            observer.next(price);
+            observer.complete();
+          });
+        }, 100);
+      });
+    }
+
+    const observables = {
+      [PayableProductInterface.LITE]: this.paymentsApiService.getPrice("lite", this.currency),
+      [PayableProductInterface.PREMIUM]: this.paymentsApiService.getPrice("premium", this.currency),
+      [PayableProductInterface.ULTIMATE]: this.paymentsApiService.getPrice("ultimate", this.currency)
     };
 
-    const premium = {
-      USD: 44.8,
-      EUR: 37.2,
-      GBP: 34,
-      CAD: 57.6,
-      AUD: 60.8,
-      CHF: 40
-    };
-
-    const ultimate = {
-      USD: 67.2,
-      EUR: 55.8,
-      GBP: 51,
-      CAD: 86.4,
-      AUD: 91.2,
-      CHF: 60
-    };
-
-    const resultMap = {
-      [PayableProductInterface.LITE]: lite[this.currency],
-      [PayableProductInterface.PREMIUM]: premium[this.currency],
-      [PayableProductInterface.ULTIMATE]: ultimate[this.currency]
-    };
-
-    return resultMap[product];
+    return observables[product];
   }
 
   getSameTierOrAbove(product: PayableProductInterface): SubscriptionName[] {

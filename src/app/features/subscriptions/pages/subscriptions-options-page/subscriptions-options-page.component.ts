@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
 import { SubscriptionsService } from "@features/subscriptions/services/subscriptions.service";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
+import { Observable } from "rxjs";
 
 @Component({
   selector: "astrobin-subscriptions-options-page",
@@ -9,12 +10,18 @@ import { ClassicRoutesService } from "@shared/services/classic-routes.service";
   styleUrls: ["./subscriptions-options-page.component.scss"]
 })
 export class SubscriptionsOptionsPageComponent implements OnInit {
-  PayableProductInterface = PayableProductInterface;
+  litePrice$: Observable<number>;
+  premiumPrice$: Observable<number>;
+  ultimatePrice$: Observable<number>;
 
   constructor(
     public readonly classicRoutesService: ClassicRoutesService,
     public readonly subscriptionsService: SubscriptionsService
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.litePrice$ = this.subscriptionsService.getPrice(PayableProductInterface.LITE);
+    this.premiumPrice$ = this.subscriptionsService.getPrice(PayableProductInterface.PREMIUM);
+    this.ultimatePrice$ = this.subscriptionsService.getPrice(PayableProductInterface.ULTIMATE);
+  }
 }

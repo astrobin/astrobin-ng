@@ -1,7 +1,7 @@
 <h1 class="d-flex align-items-center">
   <span class="flex-fill">{{ subscriptionsService.getName(product) }}</span>
   <span class="price">
-    {{ this.subscriptionsService.getPrice(this.product)|currency:this.subscriptionsService.currency }}
+    {{ price$ | async | currency:this.subscriptionsService.currency }}
   </span>
 </h1>
 
@@ -24,7 +24,7 @@
   <ngb-panel title="{{ 'Prefer to pay via bank transfer?' | translate }}">
     <ng-template ngbPanelContent>
       <p>
-        <span [innerHtml]="bankDetailsMessage"></span>&nbsp;
+        <span [innerHtml]="bankDetailsMessage$ | async"></span>&nbsp;
         <span translate>Thanks!</span>
       </p>
 
