@@ -2,17 +2,22 @@ import { Injectable } from "@angular/core";
 import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
 import { PaymentsApiService } from "@features/subscriptions/services/payments-api.service";
 import { TranslateService } from "@ngx-translate/core";
+import { Constants } from "@shared/constants";
 import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
 import { SubscriptionName } from "@shared/types/subscription-name.type";
 import * as countryJs from "country-js";
-import { Observable } from "rxjs";
+import { BehaviorSubject, Observable } from "rxjs";
 import { take } from "rxjs/operators";
 
 @Injectable({
   providedIn: "root"
 })
 export class SubscriptionsService {
-  currency: string;
+  readonly DEFAULT_CURRENCY = "USD";
+
+  currency: string = this.DEFAULT_CURRENCY;
+  private _currencySubject = new BehaviorSubject<string>(this.DEFAULT_CURRENCY);
+  currency$: Observable<string> = this._currencySubject.asObservable();
 
   constructor(
     public readonly translate: TranslateService,
@@ -25,17 +30,16 @@ export class SubscriptionsService {
       .subscribe(config => {
         const country = config.REQUEST_COUNTRY;
         const results = countryJs.search(country);
-        const defaultCurrency = "USD";
 
-        if (results.length === 0) {
-          this.currency = defaultCurrency;
-        } else {
+        if (results.length !== 0) {
           this.currency = results[0].currency.currencyCode;
         }
 
-        if (["USD", "EUR", "GBP", "CAD", "AUD", "CHF"].indexOf(this.currency) === -1) {
-          this.currency = defaultCurrency;
+        if (Constants.SUPPORTED_CURRENCIES.indexOf(this.currency) === -1) {
+          this.currency = this.DEFAULT_CURRENCY;
         }
+
+        this._currencySubject.next(this.currency);
       });
   }
 

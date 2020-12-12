@@ -1,4 +1,21 @@
+import { registerLocaleData } from "@angular/common";
 import { HttpClient, HttpClientModule } from "@angular/common/http";
+import localeArabic from "@angular/common/locales/ar";
+import localeGerman from "@angular/common/locales/de";
+import localeGreek from "@angular/common/locales/el";
+import localeEnglish from "@angular/common/locales/en";
+import localeBritishEnglish from "@angular/common/locales/en-GB";
+import localeSpanish from "@angular/common/locales/es";
+import localeFinnish from "@angular/common/locales/fi";
+import localeFrench from "@angular/common/locales/fr";
+import localeItalian from "@angular/common/locales/it";
+import localeJapanese from "@angular/common/locales/ja";
+import localeDutch from "@angular/common/locales/nl";
+import localePolish from "@angular/common/locales/pl";
+import localePortuguese from "@angular/common/locales/pt";
+import localeRussian from "@angular/common/locales/ru";
+import localeAlbanian from "@angular/common/locales/sq";
+import localeTurkish from "@angular/common/locales/tr";
 import { APP_INITIALIZER, NgModule } from "@angular/core";
 import { BrowserModule, Title } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
@@ -51,6 +68,26 @@ import { TimeagoCustomFormatter, TimeagoFormatter, TimeagoIntl, TimeagoModule } 
 import { AppRoutingModule } from "./app-routing.module";
 import { CustomMissingTranslationHandler } from "./missing-translation-handler";
 import { LanguageLoader } from "./translate-loader";
+
+// Supported languages
+registerLocaleData(localeEnglish);
+registerLocaleData(localeBritishEnglish);
+registerLocaleData(localeFrench);
+registerLocaleData(localeGerman);
+registerLocaleData(localeItalian);
+registerLocaleData(localeSpanish);
+registerLocaleData(localePortuguese);
+
+// Community languages
+registerLocaleData(localeArabic);
+registerLocaleData(localeGreek);
+registerLocaleData(localeFinnish);
+registerLocaleData(localeJapanese);
+registerLocaleData(localeDutch);
+registerLocaleData(localePolish);
+registerLocaleData(localeRussian);
+registerLocaleData(localeAlbanian);
+registerLocaleData(localeTurkish);
 
 export function initFontAwesome(iconLibrary: FaIconLibrary) {
   iconLibrary.addIconPacks(fas);
