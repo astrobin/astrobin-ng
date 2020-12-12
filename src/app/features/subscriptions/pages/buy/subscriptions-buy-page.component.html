@@ -1,7 +1,7 @@
 <h1 class="d-flex align-items-center">
   <span class="flex-fill">{{ subscriptionsService.getName(product) }}</span>
   <span class="price">
-    {{ price$ | async | currency:this.subscriptionsService.currency }}
+    {{ price$ | async | currency:this.subscriptionsService.currency:'symbol':'1.2-2':translate.currentLang }}
   </span>
 </h1>
 
@@ -9,9 +9,7 @@
   {{ "Validity" | translate }}: <strong>1 {{ "year" | translate }}</strong> &middot;
   {{ "Autorenew" | translate }}: <strong>{{ "No" | translate }}</strong>
 </small>
-<small>
-  <strong [innerHTML]="moreInfoMessage"></strong>
-</small>
+<small [innerHTML]="moreInfoMessage"></small>
 
 <ngb-accordion class="info">
   <ngb-panel *ngIf="product === 'premium' || product==='ultimate'"
@@ -28,11 +26,12 @@
         <span translate>Thanks!</span>
       </p>
 
-      <pre>BANK: PostFinance Switzerland
-ACCOUNT HOLDER: Salvatore Iovene
-ADDRESS: Obstgartenstrasse 32, 8136 Gattikon (Switzerland)
-ACCOUNT # (IBAN):  CH97 0900 0000 6922 3618 4
-SWIFT / BIC: POFICHBEXXX</pre>
+      <label for="bank-location-selector">{{ "Preferred bank location" }}:</label>
+      <ng-select id="bank-location-selector" [items]="bankLocations" bindValue="id" appendTo="body" [clearable]="false"
+        [(ngModel)]="selectedBankLocation">
+      </ng-select>
+
+      <pre [innerHTML]="bankDetails"></pre>
     </ng-template>
   </ngb-panel>
 </ngb-accordion>

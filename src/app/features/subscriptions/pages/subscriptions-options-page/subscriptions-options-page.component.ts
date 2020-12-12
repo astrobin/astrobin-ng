@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
 import { SubscriptionsService } from "@features/subscriptions/services/subscriptions.service";
+import { TranslateService } from "@ngx-translate/core";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { Observable } from "rxjs";
 
@@ -16,7 +17,8 @@ export class SubscriptionsOptionsPageComponent implements OnInit {
 
   constructor(
     public readonly classicRoutesService: ClassicRoutesService,
-    public readonly subscriptionsService: SubscriptionsService
+    public readonly subscriptionsService: SubscriptionsService,
+    public readonly translate: TranslateService
   ) {}
 
   ngOnInit(): void {
