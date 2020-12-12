@@ -4,5 +4,4 @@ export class Constants {
   static readonly ALLOWED_UNCOMPRESSED_SOURCE_UPLOAD_EXTENSIONS = [".xisf", ".fits", ".fit", ".fts", ".tiff", ".psd"];
   static readonly NO_VALUE = "NO_VALUE";
   static readonly ORIGINAL_REVISION = "0";
-  static readonly SUPPORTED_CURRENCIES = ["USD", "EUR", "GBP", "CAD", "AUD", "CHF"];
 }

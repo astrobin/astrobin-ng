@@ -9,7 +9,7 @@
         <div class="card-body">
           <ul class="list-unstyled mt-3 mb-4">
             <li class="price">
-              {{ 0 | currency:this.subscriptionsService.currency:'symbol':'1.2-2':translate.currentLang }}
+              {{ 0 | currency:this.subscriptionsService.currency }}
             </li>
             <li [innerHTML]="subscriptionsService.maxUploadsMessage(10)"></li>
             <li [innerHTML]="subscriptionsService.maxSizeMessage(25)"></li>
@@ -33,7 +33,7 @@
         <div class="card-body">
           <ul class="list-unstyled mt-3 mb-4">
             <li class="price" *ngIf="litePrice$ | async as price">
-              {{ price | currency:this.subscriptionsService.currency:'symbol':'1.2-2':translate.currentLang }}
+              {{ price | currency:this.subscriptionsService.currency }}
               <small class="text-muted">/ {{ "year" | translate }}</small>
             </li>
             <li [innerHTML]="subscriptionsService.maxImagesMessage(50)"></li>
@@ -58,7 +58,7 @@
         <div class="card-body">
           <ul class="list-unstyled mt-3 mb-4">
             <li class="price" *ngIf="premiumPrice$ | async as price">
-              {{ price | currency:this.subscriptionsService.currency:'symbol':'1.2-2':translate.currentLang }}
+              {{ price | currency:this.subscriptionsService.currency }}
               <small class="text-muted">/ {{ "year" | translate }}</small>
             </li>
             <li>{{ "Unlimited images" | translate }}</li>
@@ -83,7 +83,7 @@
         <div class="card-body">
           <ul class="list-unstyled mt-3 mb-4">
             <li class="price" *ngIf="ultimatePrice$ | async as price">
-              {{ price | currency:this.subscriptionsService.currency:'symbol':'1.2-2':translate.currentLang }}
+              {{ price | currency:this.subscriptionsService.currency }}
               <small class="text-muted">/ {{ "year" | translate }}</small>
             </li>
             <li>{{ "Unlimited images" | translate }}</li>

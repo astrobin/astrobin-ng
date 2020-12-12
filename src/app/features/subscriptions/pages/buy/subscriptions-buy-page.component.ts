@@ -1,4 +1,3 @@
-import { CurrencyPipe } from "@angular/common";
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
@@ -15,7 +14,7 @@ import { PopNotificationsService } from "@shared/services/pop-notifications.serv
 import { TitleService } from "@shared/services/title/title.service";
 import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
 import { Observable } from "rxjs";
-import { startWith, switchMap, take, takeUntil, tap } from "rxjs/operators";
+import { switchMap, take, takeUntil, tap } from "rxjs/operators";
 
 declare var Stripe: any;
 
@@ -29,15 +28,6 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
   price$: Observable<number>;
   product: PayableProductInterface;
   bankDetailsMessage$: Observable<string>;
-  bankLocations = [
-    { id: "USA", label: "United States of America" },
-    { id: "EU", label: "Europe" },
-    { id: "GB", label: "Great Britain" },
-    { id: "AUS", label: "Australia" },
-    { id: "CH", label: "Switzerland" }
-  ];
-  selectedBankLocation = "USA";
-  currencyPipe: CurrencyPipe;
 
   constructor(
     public readonly activatedRoute: ActivatedRoute,
@@ -54,12 +44,6 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
     public readonly jsonApiService: JsonApiService
   ) {
     super();
-
-    this.translate.onLangChange
-      .pipe(takeUntil(this.destroyed$), startWith({ lang: this.translate.currentLang }))
-      .subscribe(event => {
-        this.currencyPipe = new CurrencyPipe(event.lang);
-      });
   }
 
   get moreInfoMessage() {
@@ -74,7 +58,7 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
     );
   }
 
-  get upgradeMessage(): string {
+  get upgradeMessage() {
     return this.translate.instant(
       "AstroBin doesn't support subscription upgrades at the moment, but we're happy to make it happen manually. If " +
         "you're on a lower subscription tier and would like to upgrade to <strong>{{0}}</strong>, please just buy it " +
@@ -84,32 +68,6 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
         1: "<a href=\"mailto:support@astrobin.com\">support@astrobin.com</a>"
       }
     );
-  }
-
-  get bankDetails(): string {
-    switch (this.selectedBankLocation) {
-      case "CH":
-        return (
-          "BANK       : PostFinance Switzerland\n" +
-          "BENEFICIARY: Salvatore Iovene\n" +
-          "IBAN       : CH97 0900 0000 6922 3618 4\n" +
-          "SWIFT / BIC: POFICHBEXXX"
-        );
-      case "AU":
-        return "BENEFICIARY: AstroBin\n" + "ACCOUNT #  : 412756021\n" + "BSB CODE   : 802-985";
-      case "GB":
-        return (
-          "BENEFICIARY: AstroBin\n" +
-          "ACCOUNT #  : 52990073\n" +
-          "SORT CODE  : 23-14-70\n" +
-          "IBAN       : GB79 TRWI 2314 7052 9900 73"
-        );
-      case "EU":
-        return "BENEFICIARY: AstroBin\n" + "IBAN       : BE76 9671 5599 8695\n" + "SWIFT / BIC: TRWIBEB1XXX ";
-      case "USA":
-      default:
-        return "WIRE ROUTING NO: 026073008\n" + "ACH ROUTING NO : 026073150\n" + "ACCOUNT NO     : 8310788830";
-    }
   }
 
   ngOnInit(): void {
@@ -139,21 +97,19 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
         )
       );
 
-      this.price$ = this.subscriptionsService.getPrice(this.product).pipe(
-        takeUntil(this.destroyed$),
-        tap(() => this.loadingService.setLoading(false))
-      );
+      this.price$ = this.subscriptionsService
+        .getPrice(this.product)
+        .pipe(tap(() => this.loadingService.setLoading(false)));
 
       this.bankDetailsMessage$ = this.price$.pipe(
-        takeUntil(this.destroyed$),
         switchMap(price =>
           this.translate.stream(
             "Please make a deposit of {{ currency }} {{ amount }} to the following bank details and then email " +
               "us at {{ email_prefix }}{{ email }}{{ email_postfix }} with your username so we may upgrade your " +
               "account manually.",
             {
-              currency: "",
-              amount: `<strong>${this.currencyPipe.transform(price, this.subscriptionsService.currency)}</strong>`,
+              currency: this.subscriptionsService.currency,
+              amount: price.toFixed(2),
               email_prefix: "<a href='mailto:support@astrobin.com'>",
               email: "support@astrobin.com",
               email_postfix: "</a>"
@@ -161,16 +117,6 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
           )
         )
       );
-
-      this.subscriptionsService.currency$.pipe(takeUntil(this.destroyed$)).subscribe(currency => {
-        this.selectedBankLocation = {
-          USD: "USA",
-          EUR: "EU",
-          GBP: "GB",
-          AUD: "AUS",
-          CHF: "CH"
-        }[currency];
-      });
     });
   }
 

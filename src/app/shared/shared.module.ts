@@ -3,7 +3,6 @@ import { HttpClientModule } from "@angular/common/http";
 import { APP_INITIALIZER, ModuleWithProviders, NgModule } from "@angular/core";
 import { formlyConfig } from "@app/formly.config";
 import { NgbModule, NgbPaginationModule } from "@ng-bootstrap/ng-bootstrap";
-import { NgSelectModule } from "@ng-select/ng-select";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FormlyModule } from "@ngx-formly/core";
 import { TranslateModule } from "@ngx-translate/core";
@@ -57,7 +56,6 @@ export function appInitializer(appContext: AppContextService, authService: AuthS
     FormlyBootstrapModule,
     NgbModule,
     NgbPaginationModule,
-    NgSelectModule,
     NgxFilesizeModule,
     ToastrModule.forRoot({
       timeOut: 20000
@@ -75,7 +73,6 @@ export function appInitializer(appContext: AppContextService, authService: AuthS
     FormlyBootstrapModule,
     NgbModule,
     NgbPaginationModule,
-    NgSelectModule,
     NgxFilesizeModule,
     ToastrModule,
     TimeagoModule,
