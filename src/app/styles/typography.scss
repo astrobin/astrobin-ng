@@ -27,7 +27,12 @@ h1 {
 }
 
 strong {
-  color: $lightest-grey;
+  color: $white;
+}
+
+pre {
+  padding: 1rem;
+  background: $dark-grey;
 }
 
 .help-tooltip {
