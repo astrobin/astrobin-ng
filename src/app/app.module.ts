@@ -139,12 +139,12 @@ export function initFontAwesome(iconLibrary: FaIconLibrary) {
     HttpClientModule,
 
     // Dependencies.
-    EffectsModule.forRoot([AppEffects, AuthEffects]),
     StoreModule.forRoot(reducers),
     StoreDevtoolsModule.instrument({
       maxAge: 25, // Retains last 25 states
       logOnly: environment.production // Restrict extension to log-only mode
     }),
+    EffectsModule.forRoot([AppEffects, AuthEffects]),
 
     FontAwesomeModule,
     TimeagoModule.forRoot({
