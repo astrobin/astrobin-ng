@@ -1,24 +1,21 @@
 <div class="page">
 
-  <ng-container *ngIf="{
-    appContext: appContext$ | async,
-    backendConfig: backendConfig$ | async
-    } as data">
+  <ng-container *ngIf="store | async as state">
 
-    <ng-container *ngIf="data.appContext && data.backendConfig">
+    <ng-container *ngIf="state && state.auth.initialized && state.app.backendConfig; else loading">
 
       <h1>
         {{"Uploader" | translate}} <span class="beta">beta</span>
       </h1>
 
       <small>
-        <span *ngIf="data.appContext.currentUserProfile |
+        <span *ngIf="state.auth.userProfile |
           hasValidUserSubscription:[SubscriptionName.ASTROBIN_ULTIMATE_2020] |
           async; else noUltimate" [innerHTML]="subscriptionWithUnlimitedSlotsMessage('Ultimate')">
         </span>
 
         <ng-template #noUltimate>
-          <span *ngIf="data.appContext.currentUserProfile | hasValidUserSubscription:[
+          <span *ngIf="state.auth.userProfile | hasValidUserSubscription:[
             SubscriptionName.ASTROBIN_PREMIUM, SubscriptionName.ASTROBIN_PREMIUM_AUTORENEW,
             SubscriptionName.ASTROBIN_PREMIUM_2020] | async; else noPremium"
             [innerHTML]="subscriptionWithUnlimitedSlotsMessage('Premium')">
@@ -26,33 +23,38 @@
         </ng-template>
 
         <ng-template #noPremium>
-          <span *ngIf="data.appContext.currentUserProfile | hasValidUserSubscription:[
+          <span *ngIf="state.auth.userProfile | hasValidUserSubscription:[
             SubscriptionName.ASTROBIN_LITE, SubscriptionName.ASTROBIN_LITE_AUTORENEW] | async; else lite2020"
-            [innerHTML]="subscriptionWithYearlySlotsMessage('Lite', data.appContext.currentUserProfile.premiumCounter,
-            data.backendConfig.PREMIUM_MAX_IMAGES_LITE)">
+            [innerHTML]="subscriptionWithYearlySlotsMessage('Lite', state.auth.userProfile.premiumCounter,
+            state.app.backendConfig.PREMIUM_MAX_IMAGES_LITE)">
           </span>
         </ng-template>
 
         <ng-template #lite2020>
-          <span *ngIf="data.appContext.currentUserProfile | hasValidUserSubscription:[
+          <span *ngIf="state.auth.userProfile | hasValidUserSubscription:[
             SubscriptionName.ASTROBIN_LITE_2020] | async; else free" [innerHTML]="subscriptionWithTotalSlotsMessage('Lite',
-                data.appContext.currentUserProfile.premiumCounter,
-            data.backendConfig.PREMIUM_MAX_IMAGES_LITE_2020)">
+                state.auth.userProfile.premiumCounter,
+            state.app.backendConfig.PREMIUM_MAX_IMAGES_LITE_2020)">
           </span>
         </ng-template>
 
         <ng-template #free>
           <span [innerHTML]="subscriptionWithTotalSlotsMessage('Free',
-          data.appContext.currentUserProfile.premiumCounter,
-            data.backendConfig.PREMIUM_MAX_IMAGES_FREE_2020)">
+          state.auth.userProfile.premiumCounter,
+            state.app.backendConfig.PREMIUM_MAX_IMAGES_FREE_2020)">
           </span>
         </ng-template>
 
       </small>
 
-      <astrobin-read-only-mode *ngIf="data.backendConfig?.readOnly; else uploaderTemplate"></astrobin-read-only-mode>
+      <astrobin-read-only-mode *ngIf="state.app.backendConfig?.readOnly; else uploaderTemplate">
+      </astrobin-read-only-mode>
 
     </ng-container>
+
+    <ng-template #loading>
+      <astrobin-loading-indicator></astrobin-loading-indicator>
+    </ng-template>
 
   </ng-container>
 </div>

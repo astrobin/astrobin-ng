@@ -1,9 +1,10 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
+import { AppState } from "@app/store/app.states";
+import { Store } from "@ngrx/store";
 import { FieldType } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
 import { FileUpload } from "@shared/components/misc/formly-field-chunked-file/file-upload";
 import { Constants } from "@shared/constants";
-import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
 import { AuthService } from "@shared/services/auth.service";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
@@ -47,15 +48,15 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
   private _allowedTypesChangesSubscription: Subscription;
 
   constructor(
-    public authService: AuthService,
-    public uploaderService: UploadxService,
-    public uploadDataService: UploadDataService,
-    public utilsService: UtilsService,
-    public popNotificationsService: PopNotificationsService,
-    public translateService: TranslateService,
-    public userSubscriptionService: UserSubscriptionService,
-    public classicRoutesService: ClassicRoutesService,
-    public jsonApiService: JsonApiService
+    public readonly store: Store<AppState>,
+    public readonly authService: AuthService,
+    public readonly uploaderService: UploadxService,
+    public readonly uploadDataService: UploadDataService,
+    public readonly utilsService: UtilsService,
+    public readonly popNotificationsService: PopNotificationsService,
+    public readonly translateService: TranslateService,
+    public readonly userSubscriptionService: UserSubscriptionService,
+    public readonly classicRoutesService: ClassicRoutesService
   ) {
     super();
   }
@@ -215,11 +216,14 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
   private _checkImageDimensions(file: File): Observable<boolean> {
     if (this.utilsService.isImage(file.name)) {
       return new Observable<boolean>(observer => {
+        // @ts-ignore
         const image = new Image();
         image.onload = () => {
-          this.jsonApiService
-            .getBackendConfig$()
-            .pipe(take(1))
+          this.store
+            .pipe(
+              take(1),
+              map(state => state.app.backendConfig)
+            )
             .subscribe(backendConfig => {
               if (image.width * image.height > backendConfig.MAX_IMAGE_PIXELS) {
                 const message =

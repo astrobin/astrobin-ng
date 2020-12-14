@@ -1,6 +1,9 @@
 import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+import { AppState } from "@app/store/app.states";
 import { environment } from "@env/environment";
+import { Logout } from "@features/account/store/auth.actions";
+import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { Observable, throwError } from "rxjs";
@@ -12,7 +15,8 @@ export class AuthInterceptor implements HttpInterceptor {
   constructor(
     public popNotificationsService: PopNotificationsService,
     public authService: AuthService,
-    public translate: TranslateService
+    public translate: TranslateService,
+    public readonly store: Store<AppState>
   ) {}
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
@@ -40,7 +44,7 @@ export class AuthInterceptor implements HttpInterceptor {
     return next.handle(request).pipe(
       catchError(error => {
         if (error instanceof HttpErrorResponse && error.status === 401) {
-          this.authService.logout();
+          this.store.dispatch(new Logout());
           this.popNotificationsService.warning(this.translate.instant("Your session is invalid, please log in again"));
         }
 

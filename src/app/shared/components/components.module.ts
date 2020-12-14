@@ -8,6 +8,7 @@ import { FormlyModule } from "@ngx-formly/core";
 import { TranslateModule } from "@ngx-translate/core";
 import { FormlyFieldChunkedFileAccessorDirective } from "@shared/components/misc/formly-field-chunked-file/formly-field-chunked-file-accessor.directive";
 import { FormlyFieldChunkedFileComponent } from "@shared/components/misc/formly-field-chunked-file/formly-field-chunked-file.component";
+import { LoadingIndicatorComponent } from "@shared/components/misc/loading-indicator/loading-indicator.component";
 import { NgxFilesizeModule } from "ngx-filesize";
 import { UploadxModule } from "ngx-uploadx";
 import { PipesModule } from "../pipes/pipes.module";
@@ -18,6 +19,19 @@ import { HeaderComponent } from "./header/header.component";
 import { EmptyListComponent } from "./misc/empty-list/empty-list.component";
 import { ReadOnlyModeComponent } from "./misc/read-only-mode/read-only-mode.component";
 import { UsernameComponent } from "./misc/username/username.component";
+
+const components = [
+  EmptyListComponent,
+  FooterComponent,
+  FormlyFieldChunkedFileAccessorDirective,
+  FormlyFieldChunkedFileComponent,
+  HeaderComponent,
+  LoadingIndicatorComponent,
+  LoginFormComponent,
+  LoginModalComponent,
+  ReadOnlyModeComponent,
+  UsernameComponent
+];
 
 @NgModule({
   imports: [
@@ -36,34 +50,15 @@ import { UsernameComponent } from "./misc/username/username.component";
     FormlyModule,
     UploadxModule
   ],
-  declarations: [
-    EmptyListComponent,
-    FooterComponent,
-    FormlyFieldChunkedFileAccessorDirective,
-    FormlyFieldChunkedFileComponent,
-    HeaderComponent,
-    LoginFormComponent,
-    LoginModalComponent,
-    ReadOnlyModeComponent,
-    UsernameComponent
-  ],
+  declarations: components,
   exports: [
-    EmptyListComponent,
-    FontAwesomeModule,
-    FooterComponent,
-    FormlyFieldChunkedFileComponent,
-    FormsModule,
-    HeaderComponent,
-    LoginFormComponent,
-    LoginModalComponent,
+    ...components,
     NgbCollapseModule,
     NgbDropdownModule,
     NgbModalModule,
     NgbTooltipModule,
     PipesModule,
-    ReactiveFormsModule,
-    ReadOnlyModeComponent,
-    UsernameComponent
+    ReactiveFormsModule
   ]
 })
 export class ComponentsModule {}

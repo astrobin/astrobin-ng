@@ -1,7 +1,11 @@
 import { Component, EventEmitter, HostListener, Input, OnInit, Output } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { AppState } from "@app/store/app.states";
+import { AuthActionTypes, Login } from "@features/account/store/auth.actions";
+import { Actions, ofType } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { AuthService } from "@shared/services/auth.service";
+import { LoadingService } from "@shared/services/loading.service";
 
 @Component({
   selector: "astrobin-login-form",
@@ -10,13 +14,16 @@ import { AuthService } from "@shared/services/auth.service";
 })
 export class LoginFormComponent extends BaseComponentDirective implements OnInit {
   form: FormGroup;
-  loading = false;
   error = false;
 
   @Input() redirectUrl: string;
   @Output() loginSuccessful = new EventEmitter();
 
-  constructor(public readonly formBuilder: FormBuilder, public readonly authService: AuthService) {
+  constructor(
+    public readonly formBuilder: FormBuilder,
+    public readonly store: Store<AppState>,
+    public readonly actions$: Actions
+  ) {
     super();
   }
 
@@ -28,22 +35,21 @@ export class LoginFormComponent extends BaseComponentDirective implements OnInit
   }
 
   @HostListener("document:keydown.enter", ["$event"]) login(): void {
-    this.loading = true;
+    this.store.dispatch(
+      new Login({
+        handle: this.form.get("handle").value,
+        password: this.form.get("password").value,
+        redirectUrl: this.redirectUrl
+      })
+    );
 
-    const onError = () => {
+    this.actions$.pipe(ofType(AuthActionTypes.LOGIN_SUCCESS)).subscribe(() => {
+      this.error = false;
+      this.loginSuccessful.emit();
+    });
+
+    this.actions$.pipe(ofType(AuthActionTypes.LOGIN_FAILURE)).subscribe(() => {
       this.error = true;
-    };
-
-    this.authService
-      .login(this.form.get("handle").value, this.form.get("password").value, this.redirectUrl)
-      .subscribe((loggedIn: boolean) => {
-        if (loggedIn) {
-          this.error = false;
-          this.loginSuccessful.emit();
-        } else {
-          onError();
-        }
-        this.loading = false;
-      });
+    });
   }
 }

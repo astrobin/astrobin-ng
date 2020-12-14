@@ -4,7 +4,7 @@
   <astrobin-login-form #loginForm [redirectUrl]="redirectUrl"></astrobin-login-form>
 
   <div class="buttons-area">
-    <button [class.loading]="loginForm.loading" [disabled]="!loginForm.form.valid || loginForm.loading"
+    <button [class.loading]="loadingService.isLoading()" [disabled]="!loginForm.form.valid || loginForm.loading"
       (click)="loginForm.login()" class="btn btn-primary">
       {{ "Log in" | translate }}
     </button>

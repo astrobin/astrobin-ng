@@ -9,7 +9,7 @@ import { Observable, of } from "rxjs";
   providedIn: "root"
 })
 export class JsonApiServiceMock extends BaseService implements JsonApiServiceInterface {
-  getBackendConfig$(): Observable<BackendConfigInterface> {
+  getBackendConfig(): Observable<BackendConfigInterface> {
     return of(BackendConfigGenerator.backendConfig());
   }
 }

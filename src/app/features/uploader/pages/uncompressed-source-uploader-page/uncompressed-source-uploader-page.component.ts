@@ -1,7 +1,9 @@
 import { Component, OnInit } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
+import { AppState } from "@app/store/app.states";
 import { environment } from "@env/environment";
+import { Store } from "@ngrx/store";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
@@ -10,7 +12,6 @@ import { ImageInterface } from "@shared/interfaces/image.interface";
 import { ImageApiService } from "@shared/services/api/classic/images-app/image/image-api.service";
 import { ThumbnailGroupApiService } from "@shared/services/api/classic/images-app/thumbnail-group/thumbnail-group-api.service";
 import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
-import { AppContextService } from "@shared/services/app-context/app-context.service";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { TitleService } from "@shared/services/title/title.service";
 import { UploadDataService } from "@shared/services/upload-metadata/upload-data.service";
@@ -43,17 +44,12 @@ export class UncompressedSourceUploaderPageComponent extends BaseComponentDirect
     }
   ];
 
-  appContext$ = this.appContext.context$;
-
-  backendConfig$ = this.jsonApiService.getBackendConfig$();
-
   imageThumbnail$: Observable<string>;
 
   image: ImageInterface;
 
   constructor(
-    public appContext: AppContextService,
-    public jsonApiService: JsonApiService,
+    public readonly store: Store<AppState>,
     public translate: TranslateService,
     public uploaderService: UploadxService,
     public uploadDataService: UploadDataService,
@@ -92,6 +88,7 @@ export class UncompressedSourceUploaderPageComponent extends BaseComponentDirect
           .getImage(response.image)
           .pipe(take(1))
           .subscribe(image => {
+            // @ts-ignore
             this.windowRef.nativeWindow.location.assign(this.classicRoutesService.IMAGE(image.hash || "" + image.pk));
           });
       }

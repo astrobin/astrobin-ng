@@ -2,13 +2,18 @@ import { CommonModule } from "@angular/common";
 import { HttpClientModule } from "@angular/common/http";
 import { APP_INITIALIZER, ModuleWithProviders, NgModule } from "@angular/core";
 import { formlyConfig } from "@app/formly.config";
+import { AppActionTypes, InitializeApp } from "@app/store/actions/app.actions";
+import { AppState } from "@app/store/app.states";
+import { AuthActionTypes, InitializeAuth } from "@features/account/store/auth.actions";
+import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { NgbModule, NgbPaginationModule } from "@ng-bootstrap/ng-bootstrap";
 import { NgSelectModule } from "@ng-select/ng-select";
+import { Actions, ofType } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FormlyModule } from "@ngx-formly/core";
 import { TranslateModule } from "@ngx-translate/core";
 import { ApiModule } from "@shared/services/api/api.module";
-import { AppContextService } from "@shared/services/app-context/app-context.service";
 import { AuthService } from "@shared/services/auth.service";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { AuthGuardService } from "@shared/services/guards/auth-guard.service";
@@ -25,25 +30,26 @@ import { CookieService } from "ngx-cookie-service";
 import { NgxFilesizeModule } from "ngx-filesize";
 import { TimeagoModule } from "ngx-timeago";
 import { ToastrModule } from "ngx-toastr";
-import { take } from "rxjs/operators";
+import { switchMap } from "rxjs/operators";
 import { ComponentsModule } from "./components/components.module";
 import { PipesModule } from "./pipes/pipes.module";
 
-export function appInitializer(appContext: AppContextService, authService: AuthService) {
+export function appInitializer(store: Store<AppState>, actions$: Actions) {
   return () =>
     new Promise<any>(resolve => {
-      appContext.load().then(() => {
-        authService
-          .isAuthenticated()
-          .pipe(take(1))
-          .subscribe(authenticated => {
-            if (authenticated) {
-              appContext.loadForUser().then(() => resolve());
-            } else {
-              resolve();
-            }
-          });
-      });
+      store.dispatch(new InitializeApp());
+
+      actions$
+        .pipe(
+          ofType(AppActionTypes.INITIALIZE_SUCCESS),
+          switchMap(() => {
+            store.dispatch(new InitializeAuth());
+            return actions$.pipe(ofType(AuthActionTypes.INITIALIZE_SUCCESS));
+          })
+        )
+        .subscribe(() => {
+          resolve();
+        });
     });
 }
 
@@ -53,6 +59,7 @@ export function appInitializer(appContext: AppContextService, authService: AuthS
     ComponentsModule,
     HttpClientModule,
 
+    FontAwesomeModule,
     FormlyModule.forRoot(formlyConfig),
     FormlyBootstrapModule,
     NgbModule,
@@ -71,6 +78,7 @@ export function appInitializer(appContext: AppContextService, authService: AuthS
     ComponentsModule,
     HttpClientModule,
     PipesModule,
+    FontAwesomeModule,
     FormlyModule,
     FormlyBootstrapModule,
     NgbModule,
@@ -87,7 +95,6 @@ export class SharedModule {
     return {
       ngModule: SharedModule,
       providers: [
-        AppContextService,
         AuthGuardService,
         AuthService,
         ClassicRoutesService,
@@ -105,7 +112,7 @@ export class SharedModule {
           provide: APP_INITIALIZER,
           useFactory: appInitializer,
           multi: true,
-          deps: [AppContextService, AuthService]
+          deps: [Store, Actions]
         }
       ]
     };

@@ -35,8 +35,8 @@
 <ng-template #mainMenu>
   <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
     <!-- Moderate menu -->
-    <ng-container *ngIf="(authService.isAuthenticated() | async) && appContext.context$ | async as ctx">
-      <li *ngIf="ctx.currentUser | isContentModerator" class="nav-item">
+    <ng-container *ngIf="(store | async).auth.user && store | async as state">
+      <li *ngIf="state.auth.user | isContentModerator" class="nav-item">
         <div class="d-inline-block" ngbDropdown>
           <button class="btn btn-link" id="moderateDropdown" ngbDropdownToggle translate>
             Moderate
@@ -44,37 +44,37 @@
           <div aria-labelledby="moderateDropdown" ngbDropdownMenu>
             <h6 class="dropdown-header" translate>Images</h6>
 
-            <a *ngIf="ctx.currentUser | isImageModerator" [href]="classicRoutes.MODERATE_IMAGE_QUEUE"
+            <a *ngIf="state.auth.user | isImageModerator" [href]="classicRoutes.MODERATE_IMAGE_QUEUE"
               class="dropdown-item">
               <fa-icon icon="images"></fa-icon>
               {{ "Image queue" | translate }}
             </a>
 
             <a *ngIf="
-                    (ctx.currentUser | isImageModerator) &&
-                    (ctx.currentUser | isSuperUser)
+                    (state.auth.user | isImageModerator) &&
+                    (state.auth.user | isSuperUser)
                   " [href]="classicRoutes.MODERATE_SPAM_QUEUE" class="dropdown-item">
               <fa-icon icon="flag"></fa-icon>
               {{ "Spam list" | translate }}
             </a>
 
-            <ng-container *ngIf="ctx.currentUser | isIotdStaff">
+            <ng-container *ngIf="state.auth.user | isIotdStaff">
               <div class="dropdown-divider"></div>
               <h6 class="dropdown-header" translate>Image of the day</h6>
 
-              <a *ngIf="ctx.currentUser | isIotdSubmitter" [href]="classicRoutes.IOTD_SUBMISSION_QUEUE"
+              <a *ngIf="state.auth.user | isIotdSubmitter" [href]="classicRoutes.IOTD_SUBMISSION_QUEUE"
                 class="dropdown-item">
                 <fa-icon icon="upload"></fa-icon>
                 {{ "Submission queue" | translate }}
               </a>
 
-              <a *ngIf="ctx.currentUser | isIotdReviewer" [href]="classicRoutes.IOTD_REVIEW_QUEUE"
+              <a *ngIf="state.auth.user | isIotdReviewer" [href]="classicRoutes.IOTD_REVIEW_QUEUE"
                 class="dropdown-item">
                 <fa-icon icon="star"></fa-icon>
                 {{ "Review queue" | translate }}
               </a>
 
-              <a *ngIf="ctx.currentUser | isIotdJudge" [href]="classicRoutes.IOTD_JUDGEMENT_QUEUE"
+              <a *ngIf="state.auth.user | isIotdJudge" [href]="classicRoutes.IOTD_JUDGEMENT_QUEUE"
                 class="dropdown-item">
                 <fa-icon icon="hammer"></fa-icon>
                 {{ "Judgement queue" | translate }}
@@ -271,88 +271,90 @@
 
 <ng-template #userMenu>
   <!-- User menu -->
-  <li *ngIf="(appContext.context$ | async).currentUser && appContext.context$ | async as ctx" class="nav-item">
-    <div class="d-inline-block" ngbDropdown>
-      <button class="btn btn-primary user-dropdown-toggle" id="user-dropdown" ngbDropdownToggle>
-        <astrobin-username [user]="ctx.currentUser"></astrobin-username>
-        <span class="scores">
-          <span *ngIf="!ctx.currentUserProfile?.excludeFromCompetition" class="astrobin-index"
-            ngbTooltip="{{ 'AstroBin index' | translate }}" placement="bottom">
-            {{ ctx.currentUserProfile?.astroBinIndex | number:"1.2-2" }}
-            &middot;
+  <ng-container *ngIf="store | async as state">
+    <li *ngIf="state.auth.user && state.auth.userProfile" class="nav-item">
+      <div class="d-inline-block" ngbDropdown>
+        <button class="btn btn-primary user-dropdown-toggle" id="user-dropdown" ngbDropdownToggle>
+          <astrobin-username [user]="state.auth.user"></astrobin-username>
+          <span class="scores">
+            <span *ngIf="!state.auth.userProfile?.excludeFromCompetition" class="astrobin-index"
+              ngbTooltip="{{ 'AstroBin index' | translate }}" placement="bottom">
+              {{ state.auth.userProfile?.astroBinIndex | number:"1.2-2" }}
+              &middot;
+            </span>
+            <span class="followers" ngbTooltip="{{ 'Followers' | translate }}" placement="bottom">
+              {{ state.auth.userProfile?.followers }}
+            </span>
           </span>
-          <span class="followers" ngbTooltip="{{ 'Followers' | translate }}" placement="bottom">
-            {{ ctx.currentUserProfile?.followers }}
-          </span>
-        </span>
-      </button>
+        </button>
 
-      <div aria-labelledby="user-dropdown" ngbDropdownMenu>
-        <a routerLink="/subscriptions/options" class="dropdown-item">
-          <fa-icon icon="asterisk"></fa-icon>
-          {{ "Subscription plans" | translate }}
-        </a>
+        <div aria-labelledby="user-dropdown" ngbDropdownMenu>
+          <a routerLink="/subscriptions/options" class="dropdown-item">
+            <fa-icon icon="asterisk"></fa-icon>
+            {{ "Subscription plans" | translate }}
+          </a>
 
-        <a routerLink="/uploader" class="dropdown-item">
-          <fa-icon icon="upload"></fa-icon>
-          {{ "Upload" | translate }}
-        </a>
+          <a routerLink="/uploader" class="dropdown-item">
+            <fa-icon icon="upload"></fa-icon>
+            {{ "Upload" | translate }}
+          </a>
 
-        <div class="dropdown-divider"></div>
-        <h6 class="dropdown-header">{{"My places" | translate}}</h6>
+          <div class="dropdown-divider"></div>
+          <h6 class="dropdown-header">{{"My places" | translate}}</h6>
 
-        <a *ngIf="ctx.currentUser | isProducer" [href]="classicRoutes.COMMERCIAL_PRODUCTS(ctx.currentUser)"
-          class="dropdown-item">
-          <fa-icon icon="barcode"></fa-icon>
-          {{ "Commercial products" | translate }}
-        </a>
+          <a *ngIf="state.currentUser | isProducer" [href]="classicRoutes.COMMERCIAL_PRODUCTS(state.currentUser)"
+            class="dropdown-item">
+            <fa-icon icon="barcode"></fa-icon>
+            {{ "Commercial products" | translate }}
+          </a>
 
-        <a [href]="classicRoutes.GALLERY(ctx.currentUser)" class="dropdown-item">
-          <fa-icon icon="image"></fa-icon>
-          {{ "Public Gallery" | translate }}
-        </a>
+          <a [href]="classicRoutes.GALLERY(state.currentUser)" class="dropdown-item">
+            <fa-icon icon="image"></fa-icon>
+            {{ "Public Gallery" | translate }}
+          </a>
 
-        <a [href]="classicRoutes.STAGING_GALLERY(ctx.currentUser)" class="dropdown-item">
-          <fa-icon icon="lock"></fa-icon>
-          {{ "Staging Area" | translate }}
-        </a>
+          <a [href]="classicRoutes.STAGING_GALLERY(state.currentUser)" class="dropdown-item">
+            <fa-icon icon="lock"></fa-icon>
+            {{ "Staging Area" | translate }}
+          </a>
 
-        <a [href]="classicRoutes.BOOKMARKS(ctx.currentUser)" class="dropdown-item">
-          <fa-icon icon="bookmark"></fa-icon>
-          {{ "Bookmarks" | translate }}
-        </a>
+          <a [href]="classicRoutes.BOOKMARKS(state.currentUser)" class="dropdown-item">
+            <fa-icon icon="bookmark"></fa-icon>
+            {{ "Bookmarks" | translate }}
+          </a>
 
-        <a [href]="classicRoutes.PLOTS(ctx.currentUser)" class="dropdown-item">
-          <fa-icon icon="chart-bar"></fa-icon>
-          {{ "Plots" | translate }}
-        </a>
+          <a [href]="classicRoutes.PLOTS(state.currentUser)" class="dropdown-item">
+            <fa-icon icon="chart-bar"></fa-icon>
+            {{ "Plots" | translate }}
+          </a>
 
-        <div class="dropdown-divider"></div>
+          <div class="dropdown-divider"></div>
 
-        <a [href]="classicRoutes.INBOX" class="dropdown-item">
-          <fa-icon icon="inbox"></fa-icon>
-          {{ "My messages" | translate }}
-        </a>
+          <a [href]="classicRoutes.INBOX" class="dropdown-item">
+            <fa-icon icon="inbox"></fa-icon>
+            {{ "My messages" | translate }}
+          </a>
 
-        <a [href]="classicRoutes.API_KEYS(ctx.currentUser)" class="dropdown-item">
-          <fa-icon icon="key"></fa-icon>
-          {{ "API Keys" | translate }}
-        </a>
+          <a [href]="classicRoutes.API_KEYS(state.currentUser)" class="dropdown-item">
+            <fa-icon icon="key"></fa-icon>
+            {{ "API Keys" | translate }}
+          </a>
 
-        <a [href]="classicRoutes.SETTINGS" class="dropdown-item">
-          <fa-icon icon="edit"></fa-icon>
-          {{ "My settings" | translate }}
-        </a>
+          <a [href]="classicRoutes.SETTINGS" class="dropdown-item">
+            <fa-icon icon="edit"></fa-icon>
+            {{ "My settings" | translate }}
+          </a>
 
-        <div class="dropdown-divider"></div>
+          <div class="dropdown-divider"></div>
 
-        <a (click)="logout($event)" class="dropdown-item" href="">
-          <fa-icon icon="sign-out-alt"></fa-icon>
-          {{ "Logout" | translate }}
-        </a>
+          <a (click)="logout($event)" class="dropdown-item" href="">
+            <fa-icon icon="sign-out-alt"></fa-icon>
+            {{ "Logout" | translate }}
+          </a>
+        </div>
       </div>
-    </div>
-  </li>
+    </li>
+  </ng-container>
   <!-- ./User menu -->
 </ng-template>
 
