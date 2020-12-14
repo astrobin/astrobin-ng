@@ -10,7 +10,7 @@
 </div>
 
 <div class="modal-footer">
-  <button [class.loading]="loginForm.loading" [disabled]="!loginForm.form.valid || loginForm.loading"
+  <button [class.loading]="loadingService.isLoading()" [disabled]="!loginForm.form.valid || loadingService.isLoading()"
     (click)="loginForm.login()" class="btn btn-primary">
     {{ "Log in" | translate }}
 

@@ -22,6 +22,6 @@ export class AuthClassicApiService extends BaseClassicApiService implements Auth
         username: handle,
         password
       })
-      .pipe(map(response => (response ? response.token : null)));
+      .pipe(map((response: { token: string }) => (response ? response.token : null)));
   }
 }
