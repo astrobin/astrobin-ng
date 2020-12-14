@@ -1,13 +1,14 @@
 import { TestBed } from "@angular/core/testing";
 
-import { testAppImports } from "@app/test-app.imports";
 import { SubscriptionsService } from "./subscriptions.service";
+import { MockBuilder } from "ng-mocks";
+import { AppModule } from "@app/app.module";
 
 describe("SubscriptionsService", () => {
   let service: SubscriptionsService;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({ imports: testAppImports });
+  beforeEach(async () => {
+    await MockBuilder(SubscriptionsService, AppModule);
     service = TestBed.inject(SubscriptionsService);
   });
 

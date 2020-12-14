@@ -1,13 +1,12 @@
 import { TestBed } from "@angular/core/testing";
 import { WindowRefService } from "@shared/services/window-ref.service";
+import { MockBuilder } from "ng-mocks";
 
 describe(`WindowRefService`, () => {
   let service: WindowRefService;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      providers: [WindowRefService]
-    });
+  beforeEach(async () => {
+    await MockBuilder(WindowRefService);
     service = TestBed.inject(WindowRefService);
   });
 

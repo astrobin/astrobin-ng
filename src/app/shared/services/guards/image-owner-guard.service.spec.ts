@@ -1,33 +1,27 @@
 import { TestBed } from "@angular/core/testing";
 import { ActivatedRouteSnapshot, RouterStateSnapshot } from "@angular/router";
-import { testAppImports } from "@app/test-app.imports";
-import { testAppProviders } from "@app/test-app.providers";
 import { of, throwError } from "rxjs";
 import { AppContextGenerator } from "../../generators/app-context.generator";
 import { ImageGenerator } from "../../generators/image.generator";
 import { UserGenerator } from "../../generators/user.generator";
 import { ImageOwnerGuardService } from "./image-owner-guard.service";
-
-class MockActivatedRouteSnapshot {
-  private _params: any;
-  get params() {
-    return this._params;
-  }
-}
+import { MockBuilder, MockInstance, MockReset, ngMocks } from "ng-mocks";
+import { AppModule } from "@app/app.module";
 
 describe("ImageOwnerGuardService", () => {
   let service: ImageOwnerGuardService;
   let route: ActivatedRouteSnapshot;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      imports: testAppImports,
-      providers: [
-        ...testAppProviders,
-        ImageOwnerGuardService,
-        { provide: ActivatedRouteSnapshot, useClass: MockActivatedRouteSnapshot }
-      ]
-    });
+  beforeEach(() =>
+    MockInstance(ActivatedRouteSnapshot, instance => {
+      ngMocks.stub(instance, "params", "get");
+    })
+  );
+
+  afterEach(MockReset);
+
+  beforeEach(async () => {
+    await MockBuilder(ImageOwnerGuardService, AppModule).mock(ActivatedRouteSnapshot);
     service = TestBed.inject(ImageOwnerGuardService);
     jest.spyOn(service.router, "navigateByUrl").mockImplementation(
       () => new Promise<boolean>(resolve => resolve())

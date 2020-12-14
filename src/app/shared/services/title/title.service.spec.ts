@@ -1,12 +1,13 @@
 import { TestBed } from "@angular/core/testing";
+import { MockBuilder } from "ng-mocks";
 
 import { TitleService } from "./title.service";
 
 describe("TitleService", () => {
   let service: TitleService;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({});
+  beforeEach(async () => {
+    await MockBuilder(TitleService);
     service = TestBed.inject(TitleService);
   });
 

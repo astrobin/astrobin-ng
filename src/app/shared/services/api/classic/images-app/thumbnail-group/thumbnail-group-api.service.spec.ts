@@ -1,20 +1,19 @@
-import { HttpTestingController } from "@angular/common/http/testing";
+import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
-import { testAppImports } from "@app/test-app.imports";
 import { Constants } from "@shared/constants";
 import { ImageGenerator } from "@shared/generators/image.generator";
 import { ThumbnailGroupGenerator } from "@shared/generators/thumbnail-group.generator";
 import { ThumbnailGroupApiService } from "./thumbnail-group-api.service";
+import { MockBuilder } from "ng-mocks";
+import { AppModule } from "@app/app.module";
+import { HttpClientModule } from "@angular/common/http";
 
 describe("ThumbnailGroupApiService", () => {
   let service: ThumbnailGroupApiService;
   let httpMock: HttpTestingController;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      imports: [testAppImports],
-      providers: [ThumbnailGroupApiService]
-    });
+  beforeEach(async () => {
+    await MockBuilder(ThumbnailGroupApiService, AppModule).replace(HttpClientModule, HttpClientTestingModule);
 
     service = TestBed.inject(ThumbnailGroupApiService);
     httpMock = TestBed.inject(HttpTestingController);

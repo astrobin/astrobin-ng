@@ -1,4 +1,5 @@
 import { TestBed } from "@angular/core/testing";
+import { MockBuilder } from "ng-mocks";
 
 import {
   BackendGroupInterface,
@@ -10,8 +11,8 @@ import {
 describe("CommonApiAdaptorService", () => {
   let service: CommonApiAdaptorService;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({});
+  beforeEach(async () => {
+    await MockBuilder(CommonApiAdaptorService);
     service = TestBed.inject(CommonApiAdaptorService);
   });
 

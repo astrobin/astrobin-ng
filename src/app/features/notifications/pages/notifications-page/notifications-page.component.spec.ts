@@ -1,22 +1,14 @@
-import {AppModule} from "@app/app.module";
-import {NotificationInterfaceGenerator} from "@features/notifications/generators/notification.interface.generator";
-import {NotificationsModule} from "@features/notifications/notifications.module";
-import {NotificationServiceMock} from "@features/notifications/services/notification.service-mock";
-import {NotificationsService} from "@features/notifications/services/notifications.service";
-import {MockBuilder, MockRender} from "ng-mocks";
-import {NotificationsPageComponent} from "./notifications-page.component";
+import { AppModule } from "@app/app.module";
+import { NotificationInterfaceGenerator } from "@features/notifications/generators/notification.interface.generator";
+import { NotificationsModule } from "@features/notifications/notifications.module";
+import { MockBuilder, MockRender } from "ng-mocks";
+import { NotificationsPageComponent } from "./notifications-page.component";
 
 describe("NotificationsPageComponent", () => {
   let component: NotificationsPageComponent;
 
-  beforeEach((() =>
-    MockBuilder(NotificationsPageComponent, NotificationsModule)
-      .mock(AppModule) // parent module
-      .provide({
-          provide: NotificationsService,
-          useClass: NotificationServiceMock
-        },
-      )),
+  beforeEach(
+    () => MockBuilder(NotificationsPageComponent, NotificationsModule).mock(AppModule) // parent module
   );
 
   beforeEach(() => {

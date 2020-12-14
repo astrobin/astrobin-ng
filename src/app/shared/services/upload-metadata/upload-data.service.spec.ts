@@ -1,13 +1,14 @@
 import { TestBed } from "@angular/core/testing";
-
+import { MockBuilder } from "ng-mocks";
 import { skip } from "rxjs/operators";
+
 import { UploadDataService, UploadMetadataEventInterface, UploadMetadataInterface } from "./upload-data.service";
 
 describe("UploadMetadataService", () => {
   let service: UploadDataService;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({});
+  beforeEach(async () => {
+    await MockBuilder(UploadDataService);
     service = TestBed.inject(UploadDataService);
   });
 

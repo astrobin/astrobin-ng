@@ -1,27 +1,28 @@
-import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
-import { testAppImports } from "@app/test-app.imports";
-import { WindowRefService } from "@shared/services/window-ref.service";
 import { LoggedInPageComponent } from "./logged-in-page.component";
+import { MockBuilder, MockInstance, MockRender, MockReset, MockService } from "ng-mocks";
+import { AppModule } from "@app/app.module";
+import { ActivatedRoute, ActivatedRouteSnapshot } from "@angular/router";
 
 describe("LoggedInPageComponent", () => {
   let component: LoggedInPageComponent;
-  let fixture: ComponentFixture<LoggedInPageComponent>;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        imports: [testAppImports],
-        declarations: [LoggedInPageComponent],
-        providers: [WindowRefService]
-      }).compileComponents();
-    })
+  beforeEach(() =>
+    MockInstance(ActivatedRoute, () => ({
+      snapshot: MockService(ActivatedRouteSnapshot, {
+        queryParamMap: {
+          has: jest.fn(),
+          get: jest.fn(),
+          getAll: jest.fn(),
+          keys: []
+        }
+      })
+    }))
   );
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(LoggedInPageComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+  afterEach(MockReset);
+
+  beforeEach(() => MockBuilder(LoggedInPageComponent, AppModule));
+  beforeEach(() => (component = MockRender(LoggedInPageComponent).point.componentInstance));
 
   it("should create", () => {
     expect(component).toBeTruthy();

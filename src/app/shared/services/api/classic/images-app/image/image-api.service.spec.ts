@@ -1,18 +1,17 @@
-import { HttpTestingController } from "@angular/common/http/testing";
+import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
-import { testAppImports } from "@app/test-app.imports";
 import { ImageGenerator } from "@shared/generators/image.generator";
 import { ImageApiService } from "./image-api.service";
+import { MockBuilder } from "ng-mocks";
+import { AppModule } from "@app/app.module";
+import { HttpClientModule } from "@angular/common/http";
 
 describe("ImageApiService", () => {
   let service: ImageApiService;
   let httpMock: HttpTestingController;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      imports: [testAppImports],
-      providers: [ImageApiService]
-    });
+  beforeEach(async () => {
+    await MockBuilder(ImageApiService, AppModule).replace(HttpClientModule, HttpClientTestingModule);
 
     service = TestBed.inject(ImageApiService);
     httpMock = TestBed.inject(HttpTestingController);
