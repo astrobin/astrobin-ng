@@ -1,35 +1,12 @@
-import {AppModule} from "@app/app.module";
-import {ComponentsModule} from "@shared/components/components.module";
-import {UserProfileGenerator} from "@shared/generators/user-profile.generator";
-import {AppContextInterface, AppContextService} from "@shared/services/app-context/app-context.service";
-import {MockBuilder, MockRender} from "ng-mocks";
-import {Observable} from "rxjs";
-import {HeaderComponent} from "./header.component";
-
-class MockAppContextService {
-  context$ = new Observable<AppContextInterface>(observer => {
-    observer.next({
-      currentUserProfile: UserProfileGenerator.userProfile()
-    } as AppContextInterface);
-  });
-}
+import { AppModule } from "@app/app.module";
+import { MockBuilder, MockRender } from "ng-mocks";
+import { HeaderComponent } from "./header.component";
 
 describe("HeaderComponent", () => {
   let component: HeaderComponent;
 
-  beforeEach(() =>
-    MockBuilder(HeaderComponent, ComponentsModule)
-      .mock(AppModule)
-      .provide({
-        provide: AppContextService,
-        useClass: MockAppContextService,
-      })
-  );
-
-  beforeEach(() => {
-    const fixture = MockRender(HeaderComponent);
-    component = fixture.point.componentInstance;
-  });
+  beforeEach(() => MockBuilder(HeaderComponent, AppModule));
+  beforeEach(() => (component = MockRender(HeaderComponent).point.componentInstance));
 
   it("should create", () => {
     expect(component).toBeTruthy();

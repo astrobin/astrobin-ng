@@ -1,27 +1,28 @@
-import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
-import { testAppImports } from "@app/test-app.imports";
-import { LoginFormComponent } from "@shared/components/auth/login-form/login-form.component";
-import { WindowRefService } from "@shared/services/window-ref.service";
-import { TimeagoIntl } from "ngx-timeago";
 import { LoginPageComponent } from "./login-page.component";
+import { MockBuilder, MockInstance, MockRender, MockReset, MockService } from "ng-mocks";
+import { AppModule } from "@app/app.module";
+import { ActivatedRoute, ActivatedRouteSnapshot, ParamMap } from "@angular/router";
 
 describe("LoginPageComponent", () => {
   let component: LoginPageComponent;
-  let fixture: ComponentFixture<LoginPageComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [testAppImports],
-      declarations: [LoginPageComponent, LoginFormComponent],
-      providers: [TimeagoIntl, WindowRefService]
-    }).compileComponents();
-  }));
+  beforeEach(() =>
+    MockInstance(ActivatedRoute, () => ({
+      snapshot: MockService(ActivatedRouteSnapshot, {
+        queryParamMap: {
+          has: jest.fn(),
+          get: jest.fn(),
+          getAll: jest.fn(),
+          keys: []
+        }
+      })
+    }))
+  );
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(LoginPageComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+  afterEach(MockReset);
+
+  beforeEach(() => MockBuilder(LoginPageComponent, AppModule));
+  beforeEach(() => (component = MockRender(LoginPageComponent).point.componentInstance));
 
   it("should create", () => {
     expect(component).toBeTruthy();

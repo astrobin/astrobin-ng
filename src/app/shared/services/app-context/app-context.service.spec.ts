@@ -1,29 +1,14 @@
 import { TestBed } from "@angular/core/testing";
-import { testAppImports } from "@app/test-app.imports";
-import { CommonApiServiceMock } from "@shared/services/api/classic/common/common-api.service-mock";
-import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
-import { JsonApiServiceMock } from "@shared/services/api/classic/json/json-api.service-mock";
-import { TimeagoIntl } from "ngx-timeago";
-import { CommonApiService } from "../api/classic/common/common-api.service";
 import { AppContextService } from "./app-context.service";
+import { MockBuilder } from "ng-mocks";
+import { AppModule } from "@app/app.module";
 
 describe("AppContextService", () => {
   let service: AppContextService;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      imports: [testAppImports],
-      providers: [
-        TimeagoIntl,
-        { provide: CommonApiService, useClass: CommonApiServiceMock },
-        { provide: JsonApiService, useClass: JsonApiServiceMock }
-      ]
-    });
+  beforeEach(async () => {
+    await MockBuilder(AppContextService, AppModule);
     service = TestBed.inject(AppContextService);
-  });
-
-  afterAll(() => {
-    TestBed.resetTestingModule();
   });
 
   it("should be created", () => {

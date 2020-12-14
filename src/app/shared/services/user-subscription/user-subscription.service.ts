@@ -35,7 +35,7 @@ export class UserSubscriptionService extends BaseService implements UserSubscrip
           if (
             appContext.currentUserSubscriptions.filter(userSubscription => {
               const expiration = new Date(userSubscription.expires);
-              expiration.setHours(23, 59, 59, 999);
+              expiration.setUTCHours(23, 59, 59, 999);
               return userSubscription.subscription === subscription.id && expiration >= new Date();
             }).length > 0
           ) {

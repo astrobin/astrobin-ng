@@ -1,6 +1,4 @@
 import { TestBed } from "@angular/core/testing";
-import { testAppImports } from "@app/test-app.imports";
-import { testAppProviders } from "@app/test-app.providers";
 import { AppContextGenerator } from "@shared/generators/app-context.generator";
 import { BackendConfigGenerator } from "@shared/generators/backend-config.generator";
 import { UserSubscriptionGenerator } from "@shared/generators/user-subscription.generator";
@@ -8,15 +6,14 @@ import { TestConstants } from "@shared/test-constants";
 import { SubscriptionName } from "@shared/types/subscription-name.type";
 import { of } from "rxjs";
 import { UserSubscriptionService } from "./user-subscription.service";
+import { MockBuilder } from "ng-mocks";
+import { AppModule } from "@app/app.module";
 
 describe("UserSubscriptionService", () => {
   let service: UserSubscriptionService;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      imports: testAppImports,
-      providers: [...testAppProviders, UserSubscriptionService]
-    });
+  beforeEach(async () => {
+    await MockBuilder(UserSubscriptionService, AppModule);
     service = TestBed.inject(UserSubscriptionService);
   });
 

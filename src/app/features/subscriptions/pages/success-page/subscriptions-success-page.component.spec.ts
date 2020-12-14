@@ -1,40 +1,24 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-
 import { ActivatedRoute } from "@angular/router";
-import { testAppImports } from "@app/test-app.imports";
-import { testAppProviders } from "@app/test-app.providers";
-import { ImageGenerator } from "@shared/generators/image.generator";
 import { SubscriptionsSuccessPageComponent } from "./subscriptions-success-page.component";
+import { MockBuilder, MockProvider, MockRender, ngMocks } from "ng-mocks";
+import { AppModule } from "@app/app.module";
 
 describe("SuccessPageComponent", () => {
   let component: SubscriptionsSuccessPageComponent;
-  let fixture: ComponentFixture<SubscriptionsSuccessPageComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [testAppImports],
-      providers: [
-        ...testAppProviders,
-        {
-          provide: ActivatedRoute,
-          useValue: {
-            snapshot: {
-              queryParams: {
-                product: "lite"
-              }
-            }
+  beforeEach(() =>
+    MockBuilder(SubscriptionsSuccessPageComponent, AppModule).provide(
+      MockProvider(ActivatedRoute, {
+        snapshot: {
+          queryParams: {
+            product: "lite"
           }
-        }
-      ],
-      declarations: [SubscriptionsSuccessPageComponent]
-    }).compileComponents();
-  });
+        } as any
+      })
+    )
+  );
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(SubscriptionsSuccessPageComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+  beforeEach(() => (component = MockRender(SubscriptionsSuccessPageComponent).point.componentInstance));
 
   it("should create", () => {
     expect(component).toBeTruthy();

@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { TimeagoIntl } from "ngx-timeago";
 import { BehaviorSubject, forkJoin, Observable, of } from "rxjs";
-import { flatMap, share } from "rxjs/operators";
+import { mergeMap, share } from "rxjs/operators";
 import { SubscriptionInterface } from "../../interfaces/subscription.interface";
 import { UserProfileInterface } from "../../interfaces/user-profile.interface";
 import { UserSubscriptionInterface } from "../../interfaces/user-subscription.interface";
@@ -89,7 +89,7 @@ export class AppContextService extends BaseService implements AppContextServiceI
     .getCurrentUserProfile()
     .pipe(share());
   private _getCurrentUser$: Observable<UserInterface> = this._getCurrentUserProfile$.pipe(
-    flatMap(userProfile => {
+    mergeMap(userProfile => {
       if (userProfile !== null) {
         return this.commonApi.getUser(userProfile.user);
       }
@@ -99,7 +99,7 @@ export class AppContextService extends BaseService implements AppContextServiceI
     share()
   );
   private _getUserSubscriptions$: Observable<UserSubscriptionInterface[]> = this._getCurrentUser$.pipe(
-    flatMap(user => {
+    mergeMap(user => {
       if (user !== null) {
         return this.commonApi.getUserSubscriptions(user);
       }

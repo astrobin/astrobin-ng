@@ -1,22 +1,21 @@
 import { TestBed } from "@angular/core/testing";
 import { RouterStateSnapshot } from "@angular/router";
-import { testAppImports } from "@app/test-app.imports";
-import { testAppProviders } from "@app/test-app.providers";
 import { AppContextGenerator } from "@shared/generators/app-context.generator";
-import { AuthGuardService } from "@shared/services/guards/auth-guard.service";
 import { UltimateSubscriptionGuardService } from "@shared/services/guards/ultimate-subscription-guard.service";
 import { TestConstants } from "@shared/test-constants";
 import { of } from "rxjs";
+import { MockBuilder, NG_MOCKS_GUARDS } from "ng-mocks";
+import { AppModule } from "@app/app.module";
+import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
 
 describe("UltimateSubscriptionGuardService", () => {
   let service: UltimateSubscriptionGuardService;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      imports: testAppImports,
-      providers: [...testAppProviders, AuthGuardService, UltimateSubscriptionGuardService]
-    }).compileComponents();
-  });
+  beforeEach(() =>
+    MockBuilder(UltimateSubscriptionGuardService, AppModule)
+      .exclude(NG_MOCKS_GUARDS)
+      .keep(UserSubscriptionService)
+  );
 
   beforeEach(() => {
     service = TestBed.inject(UltimateSubscriptionGuardService);

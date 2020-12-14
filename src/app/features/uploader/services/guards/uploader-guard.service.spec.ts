@@ -1,25 +1,19 @@
 import { TestBed } from "@angular/core/testing";
 import { RouterStateSnapshot } from "@angular/router";
-import { testAppImports } from "@app/test-app.imports";
-import { testAppProviders } from "@app/test-app.providers";
-import { PremiumSubscriptionGuardService } from "@shared/services/guards/premium-subscription-guard.service";
-import { UltimateSubscriptionGuardService } from "@shared/services/guards/ultimate-subscription-guard.service";
 import { of } from "rxjs";
 import { UploaderGuardService } from "./uploader-guard.service";
+import { MockBuilder } from "ng-mocks";
+import { AppModule } from "@app/app.module";
+import { PremiumSubscriptionGuardService } from "@shared/services/guards/premium-subscription-guard.service";
+import { UltimateSubscriptionGuardService } from "@shared/services/guards/ultimate-subscription-guard.service";
 
 describe("UploaderGuardService", () => {
   let service: UploaderGuardService;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      imports: testAppImports,
-      providers: [
-        ...testAppProviders,
-        UploaderGuardService,
-        PremiumSubscriptionGuardService,
-        UltimateSubscriptionGuardService
-      ]
-    });
+  beforeEach(async () => {
+    await MockBuilder(UploaderGuardService, AppModule)
+      .keep(PremiumSubscriptionGuardService)
+      .keep(UltimateSubscriptionGuardService);
     service = TestBed.inject(UploaderGuardService);
     jest.spyOn(service.router, "navigateByUrl").mockImplementation(
       () => new Promise<boolean>(resolve => resolve())

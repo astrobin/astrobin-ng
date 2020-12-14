@@ -1,20 +1,14 @@
 import { TestBed } from "@angular/core/testing";
 import { RouterStateSnapshot } from "@angular/router";
-import { testAppImports } from "@app/test-app.imports";
-import { testAppProviders } from "@app/test-app.providers";
-import { AuthService } from "@shared/services/auth.service";
 import { AuthGuardService } from "@shared/services/guards/auth-guard.service";
 import { of } from "rxjs";
+import { MockBuilder } from "ng-mocks";
+import { AppModule } from "@app/app.module";
 
 describe("AuthGuardService", () => {
   let service: AuthGuardService;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      imports: testAppImports,
-      providers: [...testAppProviders, AuthGuardService, AuthService]
-    }).compileComponents();
-  });
+  beforeEach(() => MockBuilder(AuthGuardService, AppModule));
 
   beforeEach(() => {
     service = TestBed.inject(AuthGuardService);

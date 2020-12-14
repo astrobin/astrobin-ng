@@ -1,12 +1,13 @@
 import { TestBed } from "@angular/core/testing";
+import { MockBuilder } from "ng-mocks";
 
 import { UtilsService } from "./utils.service";
 
 describe("UtilsService", () => {
   let service: UtilsService;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({});
+  beforeEach(async () => {
+    await MockBuilder(UtilsService);
     service = TestBed.inject(UtilsService);
   });
 

@@ -1,32 +1,14 @@
-import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
-import { testAppImports } from "@app/test-app.imports";
-import { AuthService } from "@shared/services/auth.service";
-import { AuthServiceMock } from "@shared/services/auth.service-mock";
 import { of } from "rxjs";
 import { LoginFormComponent } from "./login-form.component";
+import { MockBuilder, MockRender } from "ng-mocks";
+import { ComponentsModule } from "@shared/components/components.module";
+import { ReactiveFormsModule } from "@angular/forms";
 
 describe("LoginFormComponent", () => {
   let component: LoginFormComponent;
-  let fixture: ComponentFixture<LoginFormComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [testAppImports],
-      declarations: [LoginFormComponent],
-      providers: [
-        {
-          provide: AuthService,
-          useClass: AuthServiceMock
-        }
-      ]
-    }).compileComponents();
-  }));
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(LoginFormComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+  beforeEach(() => MockBuilder(LoginFormComponent, ComponentsModule).keep(ReactiveFormsModule));
+  beforeEach(() => (component = MockRender(LoginFormComponent).point.componentInstance));
 
   it("should create", () => {
     expect(component).toBeTruthy();

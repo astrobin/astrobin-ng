@@ -1,15 +1,13 @@
 import { TestBed } from "@angular/core/testing";
-import { testAppImports } from "@app/test-app.imports";
 import { PopNotificationsService } from "./pop-notifications.service";
+import { MockBuilder } from "ng-mocks";
+import { AppModule } from "@app/app.module";
 
 describe("PopNotificationsService", () => {
   let service: PopNotificationsService;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      imports: [testAppImports]
-    });
-
+  beforeEach(async () => {
+    await MockBuilder(PopNotificationsService, AppModule);
     service = TestBed.inject(PopNotificationsService);
   });
 

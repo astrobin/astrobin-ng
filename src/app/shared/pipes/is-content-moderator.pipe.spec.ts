@@ -1,13 +1,15 @@
 import { TestBed } from "@angular/core/testing";
 import { UserGenerator } from "@shared/generators/user.generator";
-import { UserServiceMock } from "@shared/services/user.service-mock";
 import { IsContentModeratorPipe } from "./is-content-moderator.pipe";
+import { MockBuilder } from "ng-mocks";
+import { AppModule } from "@app/app.module";
 
 describe("IsContentModeratorPipe", () => {
   let pipe: IsContentModeratorPipe;
 
-  beforeAll(() => {
-    pipe = new IsContentModeratorPipe(TestBed.inject(UserServiceMock));
+  beforeEach(async () => {
+    await MockBuilder(IsContentModeratorPipe, AppModule).provide(IsContentModeratorPipe);
+    pipe = TestBed.inject(IsContentModeratorPipe);
   });
 
   it("create an instance", () => {

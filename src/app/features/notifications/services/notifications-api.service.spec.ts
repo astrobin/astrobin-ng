@@ -1,13 +1,10 @@
 import { TestBed } from "@angular/core/testing";
-import { testAppImports } from "@app/test-app.imports";
 import { NotificationsApiService } from "./notifications-api.service";
+import { MockBuilder } from "ng-mocks";
+import { AppModule } from "@app/app.module";
 
 describe("NotificationsApiService", () => {
-  beforeEach(() =>
-    TestBed.configureTestingModule({
-      imports: [testAppImports]
-    })
-  );
+  beforeEach(() => MockBuilder(NotificationsApiService, AppModule));
 
   it("should be created", () => {
     const service: NotificationsApiService = TestBed.inject(NotificationsApiService);

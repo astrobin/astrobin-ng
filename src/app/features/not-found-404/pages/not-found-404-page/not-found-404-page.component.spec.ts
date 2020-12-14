@@ -1,23 +1,12 @@
-import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
-import { testAppImports } from "@app/test-app.imports";
 import { NotFound404PageComponent } from "./not-found-404-page.component";
+import { MockBuilder, MockRender } from "ng-mocks";
+import { AppModule } from "@app/app.module";
 
 describe("NotFoundPageComponent", () => {
   let component: NotFound404PageComponent;
-  let fixture: ComponentFixture<NotFound404PageComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: [testAppImports],
-      declarations: [NotFound404PageComponent]
-    }).compileComponents();
-  }));
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(NotFound404PageComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+  beforeEach(() => MockBuilder(NotFound404PageComponent, AppModule));
+  beforeEach(() => (component = MockRender(NotFound404PageComponent).point.componentInstance));
 
   it("should create", () => {
     expect(component).toBeTruthy();

@@ -1,47 +1,17 @@
-import { HttpClient } from "@angular/common/http";
-import { TestBed, waitForAsync } from "@angular/core/testing";
-import { CustomMissingTranslationHandler } from "@app/missing-translation-handler";
-import { testAppImports } from "@app/test-app.imports";
-import { testAppProviders } from "@app/test-app.providers";
+import { TestBed } from "@angular/core/testing";
 import { LanguageLoader } from "@app/translate-loader";
-import { CustomTranslateParser } from "@app/translate-parser";
-import { MissingTranslationHandler, TranslateLoader, TranslateModule, TranslateParser } from "@ngx-translate/core";
-import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
 import { of } from "rxjs";
-
-declare var VERSION: string;
+import { MockBuilder } from "ng-mocks";
+import { AppModule } from "@app/app.module";
 
 describe("LanguageLoader", () => {
   let languageLoader: LanguageLoader;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        imports: [
-          ...testAppImports,
-          TranslateModule.forRoot({
-            missingTranslationHandler: {
-              provide: MissingTranslationHandler,
-              useClass: CustomMissingTranslationHandler
-            },
-            parser: {
-              provide: TranslateParser,
-              useClass: CustomTranslateParser
-            },
-            loader: {
-              provide: TranslateLoader,
-              useClass: LanguageLoader,
-              deps: [HttpClient, JsonApiService]
-            }
-          })
-        ],
-        providers: [...testAppProviders, LanguageLoader]
-      }).compileComponents();
-
-      (global as any).VERSION = "1";
-      languageLoader = TestBed.inject(LanguageLoader);
-    })
-  );
+  beforeEach(async () => {
+    await MockBuilder(LanguageLoader, AppModule);
+    (global as any).VERSION = "1";
+    languageLoader = TestBed.inject(LanguageLoader);
+  });
 
   describe("getTranslations", () => {
     it("should work under best conditions", done => {

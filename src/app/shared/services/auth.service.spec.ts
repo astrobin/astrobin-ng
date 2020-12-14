@@ -1,19 +1,39 @@
 import { fakeAsync, flush, TestBed } from "@angular/core/testing";
-import { testAppImports } from "@app/test-app.imports";
-import { WindowRefService } from "@shared/services/window-ref.service";
-import { TimeagoIntl } from "ngx-timeago";
 import { of } from "rxjs";
-import { AuthClassicApiService } from "./api/classic/auth/auth-classic-api.service";
 import { AuthService } from "./auth.service";
+import { MockBuilder, MockInstance, MockReset } from "ng-mocks";
+import { AppModule } from "@app/app.module";
+import { AuthClassicApiService } from "@shared/services/api/classic/auth/auth-classic-api.service";
+import { Router } from "@angular/router";
+import { CookieService } from "ngx-cookie-service";
 
 describe("AuthService", () => {
   let service: AuthService;
 
   beforeEach(() =>
-    TestBed.configureTestingModule({
-      imports: [testAppImports],
-      providers: [AuthService, AuthClassicApiService, TimeagoIntl, WindowRefService]
+    MockInstance(CookieService, instance => {
+      let value = "123";
+
+      instance.get = key => (key === AuthService.CLASSIC_AUTH_TOKEN_COOKIE ? value : null);
+      instance.check = key => key === AuthService.CLASSIC_AUTH_TOKEN_COOKIE;
+      instance.delete = key => {
+        if (key === AuthService.CLASSIC_AUTH_TOKEN_COOKIE) {
+          value = null;
+        }
+      };
     })
+  );
+
+  afterEach(MockReset);
+
+  beforeEach(() =>
+    MockBuilder(AuthService, AppModule)
+      .mock(AuthClassicApiService, {
+        login: jest.fn().mockReturnValue(of("123"))
+      })
+      .mock(Router, {
+        navigate: jest.fn().mockReturnValue(Promise.resolve())
+      })
   );
 
   beforeEach(() => {
@@ -25,10 +45,6 @@ describe("AuthService", () => {
   });
 
   describe("account/logout", () => {
-    beforeEach(() => {
-      jest.spyOn(service.authClassicApi, "login").mockReturnValue(of("123"));
-    });
-
     it("should work with classic api", fakeAsync(done => {
       service.login("foo", "bar").subscribe(result => {
         expect(result).toEqual(true);

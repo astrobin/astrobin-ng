@@ -1,18 +1,19 @@
-import { TestBed } from "@angular/core/testing";
 import { UserProfileGenerator } from "@shared/generators/user-profile.generator";
 import { UserGenerator } from "@shared/generators/user.generator";
-import { UserStoreService } from "@shared/services/user-store.service";
-import { UserStoreServiceMock } from "@shared/services/user-store.service-mock";
 import { UsernameService } from "./username.service";
+import { MockBuilder, MockRender, ngMocks } from "ng-mocks";
+import { AppModule } from "@app/app.module";
+import { UsernameComponent } from "@shared/components/misc/username/username.component";
 
 describe("UsernameService", () => {
   let service: UsernameService;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      providers: [UsernameService, { provide: UserStoreService, useClass: UserStoreServiceMock }]
-    });
-    service = TestBed.inject(UsernameService);
+  beforeEach(async () => {
+    await MockBuilder(UsernameService, AppModule);
+    MockRender(UsernameComponent);
+    // Because it's a service of a component,
+    // we need to get it in a special way.
+    service = ngMocks.find(UsernameComponent).injector.get(UsernameService);
   });
 
   it("should be created", () => {

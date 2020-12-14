@@ -1,23 +1,17 @@
 import { TestBed } from "@angular/core/testing";
-import { testAppImports } from "@app/test-app.imports";
-import { testAppProviders } from "@app/test-app.providers";
 import { UserProfileGenerator } from "@shared/generators/user-profile.generator";
 import { HasValidUserSubscriptionPipe } from "@shared/pipes/has-valid-user-subscription.pipe";
-import { UserStoreService } from "@shared/services/user-store.service";
-import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
 import { SubscriptionName } from "@shared/types/subscription-name.type";
 import { of } from "rxjs";
+import { MockBuilder } from "ng-mocks";
+import { AppModule } from "@app/app.module";
 
 describe("HasValidUserSubscriptionPipe", () => {
   let pipe: HasValidUserSubscriptionPipe;
 
-  beforeAll(() => {
-    TestBed.configureTestingModule({
-      imports: testAppImports,
-      providers: testAppProviders
-    });
-
-    pipe = new HasValidUserSubscriptionPipe(TestBed.inject(UserStoreService), TestBed.inject(UserSubscriptionService));
+  beforeAll(async () => {
+    await MockBuilder(HasValidUserSubscriptionPipe, AppModule).provide(HasValidUserSubscriptionPipe);
+    pipe = TestBed.inject(HasValidUserSubscriptionPipe);
   });
 
   it("should create an instance", () => {
