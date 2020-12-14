@@ -1,25 +1,12 @@
-import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
-import { testAppImports } from "@app/test-app.imports";
 import { LoggedOutPageComponent } from "./logged-out-page.component";
+import { MockBuilder, MockRender } from "ng-mocks";
+import { AppModule } from "@app/app.module";
 
 describe("LoggedOutPageComponent", () => {
   let component: LoggedOutPageComponent;
-  let fixture: ComponentFixture<LoggedOutPageComponent>;
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        imports: [testAppImports],
-        declarations: [LoggedOutPageComponent]
-      }).compileComponents();
-    })
-  );
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(LoggedOutPageComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+  beforeEach(() => MockBuilder(LoggedOutPageComponent, AppModule));
+  beforeEach(() => (component = MockRender(LoggedOutPageComponent).point.componentInstance));
 
   it("should create", () => {
     expect(component).toBeTruthy();

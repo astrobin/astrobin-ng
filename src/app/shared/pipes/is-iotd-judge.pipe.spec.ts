@@ -1,13 +1,15 @@
 import { TestBed } from "@angular/core/testing";
 import { UserGenerator } from "@shared/generators/user.generator";
-import { UserServiceMock } from "@shared/services/user.service-mock";
 import { IsIotdJudgePipe } from "./is-iotd-judge.pipe";
+import { MockBuilder } from "ng-mocks";
+import { AppModule } from "@app/app.module";
 
 describe("IsIotdJudgePipe", () => {
   let pipe: IsIotdJudgePipe;
 
-  beforeAll(() => {
-    pipe = new IsIotdJudgePipe(TestBed.inject(UserServiceMock));
+  beforeAll(async () => {
+    await MockBuilder(IsIotdJudgePipe, AppModule).provide(IsIotdJudgePipe);
+    pipe = TestBed.inject(IsIotdJudgePipe);
   });
 
   it("create an instance", () => {

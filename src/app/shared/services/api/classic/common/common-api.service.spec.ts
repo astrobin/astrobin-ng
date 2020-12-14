@@ -1,21 +1,19 @@
-import { HttpTestingController } from "@angular/common/http/testing";
+import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
-import { testAppImports } from "@app/test-app.imports";
 import { UserProfileGenerator } from "@shared/generators/user-profile.generator";
 import { UserGenerator } from "@shared/generators/user.generator";
 import { UserSubscriptionInterface } from "@shared/interfaces/user-subscription.interface";
 import { CommonApiService } from "./common-api.service";
+import { MockBuilder } from "ng-mocks";
+import { AppModule } from "@app/app.module";
+import { HttpClientModule } from "@angular/common/http";
 
 describe("CommonApiService", () => {
   let service: CommonApiService;
   let httpMock: HttpTestingController;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      imports: [testAppImports],
-      providers: [CommonApiService]
-    });
-
+  beforeEach(async () => {
+    await MockBuilder(CommonApiService, AppModule).replace(HttpClientModule, HttpClientTestingModule);
     service = TestBed.inject(CommonApiService);
     httpMock = TestBed.inject(HttpTestingController);
   });

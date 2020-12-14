@@ -1,13 +1,16 @@
 import { TestBed } from "@angular/core/testing";
 import { UserGenerator } from "@shared/generators/user.generator";
-import { UserServiceMock } from "@shared/services/user.service-mock";
 import { IsRetailerPipe } from "./is-retailer.pipe";
+import { MockBuilder } from "ng-mocks";
+import { AppModule } from "@app/app.module";
+import { UserService } from "@shared/services/user.service";
 
 describe("IsRetailerPipe", () => {
   let pipe: IsRetailerPipe;
 
-  beforeAll(() => {
-    pipe = new IsRetailerPipe(TestBed.inject(UserServiceMock));
+  beforeAll(async () => {
+    await MockBuilder(IsRetailerPipe, AppModule).provide(IsRetailerPipe);
+    pipe = TestBed.inject(IsRetailerPipe);
   });
 
   it("create an instance", () => {

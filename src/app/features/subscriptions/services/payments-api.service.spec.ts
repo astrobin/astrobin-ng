@@ -1,13 +1,14 @@
 import { TestBed } from "@angular/core/testing";
 
-import { testAppImports } from "@app/test-app.imports";
 import { PaymentsApiService } from "./payments-api.service";
+import { MockBuilder } from "ng-mocks";
+import { AppModule } from "@app/app.module";
 
 describe("PaymentsApiService", () => {
   let service: PaymentsApiService;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({ imports: [testAppImports] });
+  beforeEach(async () => {
+    await MockBuilder(PaymentsApiService, AppModule);
     service = TestBed.inject(PaymentsApiService);
   });
 

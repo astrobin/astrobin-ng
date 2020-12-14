@@ -1,17 +1,16 @@
-import { HttpTestingController } from "@angular/common/http/testing";
+import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
-import { testAppImports } from "@app/test-app.imports";
 import { JsonApiService } from "./json-api.service";
+import { MockBuilder } from "ng-mocks";
+import { AppModule } from "@app/app.module";
+import { HttpClientModule } from "@angular/common/http";
 
 describe("CommonApiService", () => {
   let service: JsonApiService;
   let httpMock: HttpTestingController;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      imports: [testAppImports],
-      providers: [JsonApiService]
-    });
+  beforeEach(async () => {
+    await MockBuilder(JsonApiService, AppModule).replace(HttpClientModule, HttpClientTestingModule);
 
     service = TestBed.inject(JsonApiService);
     httpMock = TestBed.inject(HttpTestingController);

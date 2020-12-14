@@ -1,26 +1,22 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-
-import { testAppImports } from "@app/test-app.imports";
-import { testAppProviders } from "@app/test-app.providers";
 import { SubscriptionsBuyPageComponent } from "./subscriptions-buy-page.component";
+import { MockBuilder, MockInstance, MockRender, MockReset } from "ng-mocks";
+import { AppModule } from "@app/app.module";
+import { ActivatedRoute } from "@angular/router";
+import { EMPTY } from "rxjs";
 
 describe("BuyLitePageComponent", () => {
   let component: SubscriptionsBuyPageComponent;
-  let fixture: ComponentFixture<SubscriptionsBuyPageComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [testAppImports],
-      providers: [testAppProviders],
-      declarations: [SubscriptionsBuyPageComponent]
-    }).compileComponents();
-  });
+  beforeEach(() =>
+    MockInstance(ActivatedRoute, () => ({
+      params: EMPTY
+    }))
+  );
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(SubscriptionsBuyPageComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+  afterEach(MockReset);
+
+  beforeEach(() => MockBuilder(SubscriptionsBuyPageComponent, AppModule));
+  beforeEach(() => (component = MockRender(SubscriptionsBuyPageComponent).point.componentInstance));
 
   it("should create", () => {
     expect(component).toBeTruthy();

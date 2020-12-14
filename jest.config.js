@@ -12,7 +12,7 @@ module.exports = {
   modulePathIgnorePatterns: ["<rootDir>/cypress"],
   globals: {
     "ts-jest": {
-      tsConfig: "<rootDir>/src/tsconfig.spec.json"
+      tsconfig: "<rootDir>/src/tsconfig.spec.json"
     }
   }
 };

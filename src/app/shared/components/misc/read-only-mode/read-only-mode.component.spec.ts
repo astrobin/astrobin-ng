@@ -1,25 +1,12 @@
-import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
-
-import { testAppImports } from "@app/test-app.imports";
 import { ReadOnlyModeComponent } from "./read-only-mode.component";
+import { MockBuilder, MockRender } from "ng-mocks";
+import { AppModule } from "@app/app.module";
 
 describe("ReadOnlyModeComponent", () => {
   let component: ReadOnlyModeComponent;
-  let fixture: ComponentFixture<ReadOnlyModeComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      imports: testAppImports,
-
-      declarations: [ReadOnlyModeComponent]
-    }).compileComponents();
-  }));
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(ReadOnlyModeComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+  beforeEach(async () => MockBuilder(ReadOnlyModeComponent, AppModule));
+  beforeEach(() => (component = MockRender(ReadOnlyModeComponent).point.componentInstance));
 
   it("should create", () => {
     expect(component).toBeTruthy();

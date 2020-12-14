@@ -1,17 +1,15 @@
-import { HttpTestingController } from "@angular/common/http/testing";
+import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
-import { testAppImports } from "@app/test-app.imports";
 import { AuthClassicApiService } from "./auth-classic-api.service";
+import { MockBuilder } from "ng-mocks";
+import { AppModule } from "@app/app.module";
+import { HttpClientModule } from "@angular/common/http";
 
 describe("AuthApiService", () => {
   let service: AuthClassicApiService;
   let httpMock: HttpTestingController;
 
-  beforeEach(() =>
-    TestBed.configureTestingModule({
-      imports: [testAppImports]
-    })
-  );
+  beforeEach(() => MockBuilder(AuthClassicApiService, AppModule).replace(HttpClientModule, HttpClientTestingModule));
 
   beforeEach(() => {
     service = TestBed.inject(AuthClassicApiService);

@@ -1,14 +1,15 @@
 import { TestBed } from "@angular/core/testing";
-
+import { MockBuilder } from "ng-mocks";
 import { GroupGenerator } from "@shared/generators/group.generator";
 import { UserGenerator } from "@shared/generators/user.generator";
+
 import { UserService } from "./user.service";
 
 describe("UserService", () => {
   let service: UserService;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({});
+  beforeEach(async () => {
+    await MockBuilder(UserService);
     service = TestBed.inject(UserService);
   });
 

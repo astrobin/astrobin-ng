@@ -1,24 +1,12 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-
-import { testAppImports } from "@app/test-app.imports";
 import { SubscriptionsOptionsPageComponent } from "./subscriptions-options-page.component";
+import { MockBuilder, MockRender } from "ng-mocks";
+import { AppModule } from "@app/app.module";
 
 describe("SubscriptionsOptionsPageComponent", () => {
   let component: SubscriptionsOptionsPageComponent;
-  let fixture: ComponentFixture<SubscriptionsOptionsPageComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [testAppImports],
-      declarations: [SubscriptionsOptionsPageComponent]
-    }).compileComponents();
-  });
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(SubscriptionsOptionsPageComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+  beforeEach(() => MockBuilder(SubscriptionsOptionsPageComponent, AppModule));
+  beforeEach(() => (component = MockRender(SubscriptionsOptionsPageComponent).point.componentInstance));
 
   it("should create", () => {
     expect(component).toBeTruthy();

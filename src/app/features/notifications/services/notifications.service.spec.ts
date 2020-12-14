@@ -1,22 +1,15 @@
 import { TestBed, waitForAsync } from "@angular/core/testing";
 import { NotificationInterfaceGenerator } from "@features/notifications/generators/notification.interface.generator";
-import { NotificationServiceMock } from "@features/notifications/services/notification.service-mock";
-import { NotificationsApiService } from "@features/notifications/services/notifications-api.service";
 import { NotificationsService } from "@features/notifications/services/notifications.service";
 import { of } from "rxjs";
+import { MockBuilder } from "ng-mocks";
+import { NotificationsApiService } from "@features/notifications/services/notifications-api.service";
 
 describe("NotificationsService", () => {
   let service: NotificationsService;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      providers: [
-        {
-          provide: NotificationsApiService,
-          useClass: NotificationServiceMock
-        }
-      ]
-    });
+  beforeEach(async () => {
+    await MockBuilder(NotificationsService, NotificationsApiService);
     service = TestBed.inject(NotificationsService);
   });
 
@@ -37,44 +30,56 @@ describe("NotificationsService", () => {
   });
 
   describe("getUnreadCount", () => {
-    it("should call the API", waitForAsync(() => {
-      jest.spyOn(service.api, "getUnreadCount").mockReturnValue(of(10));
+    it(
+      "should call the API",
+      waitForAsync(() => {
+        jest.spyOn(service.api, "getUnreadCount").mockReturnValue(of(10));
 
-      service.getUnreadCount().subscribe(value => {
-        expect(value).toBe(10);
-      });
-    }));
+        service.getUnreadCount().subscribe(value => {
+          expect(value).toBe(10);
+        });
+      })
+    );
   });
 
   describe("markAsRead", () => {
-    it("should call the API", waitForAsync(() => {
-      const notification = NotificationInterfaceGenerator.notification();
-      notification.read = false;
+    it(
+      "should call the API",
+      waitForAsync(() => {
+        const notification = NotificationInterfaceGenerator.notification();
+        notification.read = false;
 
-      service.markAsRead(notification).subscribe(value => {
-        expect(notification.read).toBe(true);
-        expect(service.api.update).toHaveBeenCalledWith(notification);
-      });
-    }));
+        service.markAsRead(notification).subscribe(value => {
+          expect(notification.read).toBe(true);
+          expect(service.api.update).toHaveBeenCalledWith(notification);
+        });
+      })
+    );
   });
 
   describe("markAsUnRead", () => {
-    it("should call the API", waitForAsync(() => {
-      const notification = NotificationInterfaceGenerator.notification();
-      notification.read = true;
+    it(
+      "should call the API",
+      waitForAsync(() => {
+        const notification = NotificationInterfaceGenerator.notification();
+        notification.read = true;
 
-      service.markAsUnread(notification).subscribe(value => {
-        expect(notification.read).toBe(false);
-        expect(service.api.update).toHaveBeenCalledWith(notification);
-      });
-    }));
+        service.markAsUnread(notification).subscribe(value => {
+          expect(notification.read).toBe(false);
+          expect(service.api.update).toHaveBeenCalledWith(notification);
+        });
+      })
+    );
   });
 
   describe("markAllAsRead", () => {
-    it("should call the API", waitForAsync(() => {
-      service.markAllAsRead().subscribe(value => {
-        expect(service.api.markAllAsRead).toHaveBeenCalled();
-      });
-    }));
+    it(
+      "should call the API",
+      waitForAsync(() => {
+        service.markAllAsRead().subscribe(value => {
+          expect(service.api.markAllAsRead).toHaveBeenCalled();
+        });
+      })
+    );
   });
 });
