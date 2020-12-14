@@ -1,11 +1,11 @@
 import { fakeAsync, flush, TestBed } from "@angular/core/testing";
-import { of } from "rxjs";
-import { AuthService } from "./auth.service";
-import { MockBuilder, MockInstance, MockReset } from "ng-mocks";
+import { Router } from "@angular/router";
 import { AppModule } from "@app/app.module";
 import { AuthClassicApiService } from "@shared/services/api/classic/auth/auth-classic-api.service";
-import { Router } from "@angular/router";
+import { MockBuilder, MockInstance, MockReset } from "ng-mocks";
 import { CookieService } from "ngx-cookie-service";
+import { of } from "rxjs";
+import { AuthService } from "./auth.service";
 
 describe("AuthService", () => {
   let service: AuthService;

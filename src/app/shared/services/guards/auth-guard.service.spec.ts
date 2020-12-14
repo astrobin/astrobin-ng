@@ -1,9 +1,9 @@
 import { TestBed } from "@angular/core/testing";
 import { RouterStateSnapshot } from "@angular/router";
-import { AuthGuardService } from "@shared/services/guards/auth-guard.service";
-import { of } from "rxjs";
-import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
+import { AuthGuardService } from "@shared/services/guards/auth-guard.service";
+import { MockBuilder } from "ng-mocks";
+import { of } from "rxjs";
 
 describe("AuthGuardService", () => {
   let service: AuthGuardService;

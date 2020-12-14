@@ -1,8 +1,8 @@
 import { TestBed } from "@angular/core/testing";
-import { LanguageLoader } from "@app/translate-loader";
-import { of } from "rxjs";
-import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
+import { LanguageLoader } from "@app/translate-loader";
+import { MockBuilder } from "ng-mocks";
+import { of } from "rxjs";
 
 describe("LanguageLoader", () => {
   let languageLoader: LanguageLoader;

@@ -1,12 +1,12 @@
 import { TestBed } from "@angular/core/testing";
 import { ActivatedRouteSnapshot, RouterStateSnapshot } from "@angular/router";
+import { AppModule } from "@app/app.module";
+import { MockBuilder, MockInstance, MockReset, ngMocks } from "ng-mocks";
 import { of, throwError } from "rxjs";
 import { AppContextGenerator } from "../../generators/app-context.generator";
 import { ImageGenerator } from "../../generators/image.generator";
 import { UserGenerator } from "../../generators/user.generator";
 import { ImageOwnerGuardService } from "./image-owner-guard.service";
-import { MockBuilder, MockInstance, MockReset, ngMocks } from "ng-mocks";
-import { AppModule } from "@app/app.module";
 
 describe("ImageOwnerGuardService", () => {
   let service: ImageOwnerGuardService;

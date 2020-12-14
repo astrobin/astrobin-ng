@@ -61,7 +61,7 @@ ngMocks.defaultMock(UserSubscriptionService, () => ({
 }));
 
 ngMocks.defaultMock(AuthService, () => ({
-  login: jest.fn().mockReturnValue(of(true)),
+  login: jest.fn().mockReturnValue(of("token-1234567890")),
   isAuthenticated: jest.fn().mockReturnValue(of(true))
 }));
 
@@ -121,7 +121,7 @@ ngMocks.defaultMock(UserService, () => ({
 }));
 
 ngMocks.defaultMock(JsonApiService, () => ({
-  getBackendConfig$: jest.fn().mockReturnValue(EMPTY)
+  getBackendConfig: jest.fn().mockReturnValue(EMPTY)
 }));
 
 ngMocks.defaultMock(LoginFormComponent, () => ({

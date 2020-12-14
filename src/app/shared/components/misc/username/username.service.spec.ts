@@ -1,9 +1,9 @@
-import { UserProfileGenerator } from "@shared/generators/user-profile.generator";
-import { UserGenerator } from "@shared/generators/user.generator";
-import { UsernameService } from "./username.service";
-import { MockBuilder, MockRender, ngMocks } from "ng-mocks";
 import { AppModule } from "@app/app.module";
 import { UsernameComponent } from "@shared/components/misc/username/username.component";
+import { UserProfileGenerator } from "@shared/generators/user-profile.generator";
+import { UserGenerator } from "@shared/generators/user.generator";
+import { MockBuilder, MockRender, ngMocks } from "ng-mocks";
+import { UsernameService } from "./username.service";
 
 describe("UsernameService", () => {
   let service: UsernameService;

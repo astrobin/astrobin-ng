@@ -1,8 +1,8 @@
 import { TestBed } from "@angular/core/testing";
-import { UserGenerator } from "@shared/generators/user.generator";
-import { IsContentModeratorPipe } from "./is-content-moderator.pipe";
-import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
+import { UserGenerator } from "@shared/generators/user.generator";
+import { MockBuilder } from "ng-mocks";
+import { IsContentModeratorPipe } from "./is-content-moderator.pipe";
 
 describe("IsContentModeratorPipe", () => {
   let pipe: IsContentModeratorPipe;

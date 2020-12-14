@@ -1,10 +1,10 @@
 import { TestBed } from "@angular/core/testing";
+import { AppModule } from "@app/app.module";
 import { UserProfileGenerator } from "@shared/generators/user-profile.generator";
 import { HasValidUserSubscriptionPipe } from "@shared/pipes/has-valid-user-subscription.pipe";
 import { SubscriptionName } from "@shared/types/subscription-name.type";
-import { of } from "rxjs";
 import { MockBuilder } from "ng-mocks";
-import { AppModule } from "@app/app.module";
+import { of } from "rxjs";
 
 describe("HasValidUserSubscriptionPipe", () => {
   let pipe: HasValidUserSubscriptionPipe;
