@@ -1,8 +1,8 @@
 // tslint:disable:max-classes-per-file
 
 import { Action } from "@ngrx/store";
-import { SubscriptionInterface } from "@shared/interfaces/subscription.interface";
 import { BackendConfigInterface } from "@shared/interfaces/backend-config.interface";
+import { SubscriptionInterface } from "@shared/interfaces/subscription.interface";
 
 export enum AppActionTypes {
   INITIALIZE = "[App] Initialize",
