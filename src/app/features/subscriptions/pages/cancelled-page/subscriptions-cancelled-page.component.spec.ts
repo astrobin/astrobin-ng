@@ -1,6 +1,6 @@
-import { SubscriptionsCancelledPageComponent } from "./subscriptions-cancelled-page.component";
-import { MockBuilder, MockRender } from "ng-mocks";
 import { AppModule } from "@app/app.module";
+import { MockBuilder, MockRender } from "ng-mocks";
+import { SubscriptionsCancelledPageComponent } from "./subscriptions-cancelled-page.component";
 
 describe("CancelledPageComponent", () => {
   let component: SubscriptionsCancelledPageComponent;

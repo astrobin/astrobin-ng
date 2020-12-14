@@ -1,7 +1,7 @@
 import { TestBed } from "@angular/core/testing";
-import { NotificationsApiService } from "./notifications-api.service";
-import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
+import { MockBuilder } from "ng-mocks";
+import { NotificationsApiService } from "./notifications-api.service";
 
 describe("NotificationsApiService", () => {
   beforeEach(() => MockBuilder(NotificationsApiService, AppModule));

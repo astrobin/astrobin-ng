@@ -1,6 +1,6 @@
-import { SubscriptionsViewSubscriptionsPageComponent } from "./subscriptions-view-subscriptions-page.component";
-import { MockBuilder, MockRender } from "ng-mocks";
 import { AppModule } from "@app/app.module";
+import { MockBuilder, MockRender } from "ng-mocks";
+import { SubscriptionsViewSubscriptionsPageComponent } from "./subscriptions-view-subscriptions-page.component";
 
 describe("SubscriptionsViewSubscriptionsPageComponent", () => {
   let component: SubscriptionsViewSubscriptionsPageComponent;

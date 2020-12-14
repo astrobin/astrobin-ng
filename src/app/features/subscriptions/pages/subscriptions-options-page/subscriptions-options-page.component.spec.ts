@@ -1,6 +1,6 @@
-import { SubscriptionsOptionsPageComponent } from "./subscriptions-options-page.component";
-import { MockBuilder, MockRender } from "ng-mocks";
 import { AppModule } from "@app/app.module";
+import { MockBuilder, MockRender } from "ng-mocks";
+import { SubscriptionsOptionsPageComponent } from "./subscriptions-options-page.component";
 
 describe("SubscriptionsOptionsPageComponent", () => {
   let component: SubscriptionsOptionsPageComponent;

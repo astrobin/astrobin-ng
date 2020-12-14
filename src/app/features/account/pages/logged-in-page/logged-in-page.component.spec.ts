@@ -1,7 +1,7 @@
-import { LoggedInPageComponent } from "./logged-in-page.component";
-import { MockBuilder, MockInstance, MockRender, MockReset, MockService } from "ng-mocks";
-import { AppModule } from "@app/app.module";
 import { ActivatedRoute, ActivatedRouteSnapshot } from "@angular/router";
+import { AppModule } from "@app/app.module";
+import { MockBuilder, MockInstance, MockRender, MockReset, MockService } from "ng-mocks";
+import { LoggedInPageComponent } from "./logged-in-page.component";
 
 describe("LoggedInPageComponent", () => {
   let component: LoggedInPageComponent;

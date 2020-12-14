@@ -1,9 +1,9 @@
 import { TestBed, waitForAsync } from "@angular/core/testing";
 import { NotificationInterfaceGenerator } from "@features/notifications/generators/notification.interface.generator";
-import { NotificationsService } from "@features/notifications/services/notifications.service";
-import { of } from "rxjs";
-import { MockBuilder } from "ng-mocks";
 import { NotificationsApiService } from "@features/notifications/services/notifications-api.service";
+import { NotificationsService } from "@features/notifications/services/notifications.service";
+import { MockBuilder } from "ng-mocks";
+import { of } from "rxjs";
 
 describe("NotificationsService", () => {
   let service: NotificationsService;
