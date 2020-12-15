@@ -206,6 +206,7 @@ describe("UserSubscriptionService", () => {
     it("should be true if user is Lite and has fewer uploads than the limit", done => {
       const state = { ...initialState };
       state.auth.userSubscriptions = [UserSubscriptionGenerator.userSubscription(TestConstants.ASTROBIN_LITE_ID)];
+      state.auth.userProfile.premiumCounter = 0;
       store.setState(state);
 
       service.uploadAllowed().subscribe(allowed => {
@@ -231,6 +232,7 @@ describe("UserSubscriptionService", () => {
       state.auth.userSubscriptions = [
         UserSubscriptionGenerator.userSubscription(TestConstants.ASTROBIN_LITE_AUTORENEW_ID)
       ];
+      state.auth.userProfile.premiumCounter = 0;
       store.setState(state);
 
       service.uploadAllowed().subscribe(allowed => {
@@ -256,6 +258,7 @@ describe("UserSubscriptionService", () => {
     it("should be true if user is Free and has fewer uploads than the limit", done => {
       const state = { ...initialState };
       state.auth.userSubscriptions = [];
+      state.auth.userProfile.premiumCounter = 0;
       store.setState(state);
 
       service.uploadAllowed().subscribe(allowed => {
@@ -279,6 +282,12 @@ describe("UserSubscriptionService", () => {
 
   describe("fileSizeAllowed", () => {
     it("should allow any size if user is Ultimate 2020", done => {
+      const state = { ...initialState };
+      state.auth.userSubscriptions = [
+        UserSubscriptionGenerator.userSubscription(TestConstants.ASTROBIN_ULTIMATE_2020_ID)
+      ];
+      store.setState(state);
+
       service.fileSizeAllowed(Number.MAX_SAFE_INTEGER).subscribe(result => {
         expect(result.allowed).toBe(true);
         done();
