@@ -26,7 +26,7 @@ import { UserService } from "@shared/services/user.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { MockService, ngMocks } from "ng-mocks";
 import { UploadxService } from "ngx-uploadx";
-import { BehaviorSubject, EMPTY, of } from "rxjs";
+import { EMPTY, of } from "rxjs";
 
 ngMocks.defaultMock(NotificationsApiService, () => ({
   getAll: jest.fn().mockReturnValue(of(NotificationListResponseInterfaceGenerator.notificationListResponse())),
