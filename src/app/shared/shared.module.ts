@@ -1,6 +1,7 @@
 import { CommonModule } from "@angular/common";
 import { HttpClientModule } from "@angular/common/http";
 import { APP_INITIALIZER, ModuleWithProviders, NgModule } from "@angular/core";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { formlyConfig } from "@app/formly.config";
 import { AppActionTypes, InitializeApp } from "@app/store/actions/app.actions";
 import { AppState } from "@app/store/app.states";
@@ -58,6 +59,8 @@ export function appInitializer(store: Store<AppState>, actions$: Actions) {
     CommonModule,
     ComponentsModule,
     HttpClientModule,
+    FormsModule,
+    ReactiveFormsModule,
 
     FontAwesomeModule,
     FormlyModule.forRoot(formlyConfig),
@@ -77,7 +80,9 @@ export function appInitializer(store: Store<AppState>, actions$: Actions) {
     CommonModule,
     ComponentsModule,
     HttpClientModule,
-    PipesModule,
+    FormsModule,
+    ReactiveFormsModule,
+
     FontAwesomeModule,
     FormlyModule,
     FormlyBootstrapModule,
@@ -87,7 +92,10 @@ export function appInitializer(store: Store<AppState>, actions$: Actions) {
     NgxFilesizeModule,
     ToastrModule,
     TimeagoModule,
-    TranslateModule
+    TranslateModule,
+
+    ApiModule,
+    PipesModule
   ]
 })
 export class SharedModule {
