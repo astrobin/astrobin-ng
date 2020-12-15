@@ -1,8 +1,8 @@
 import { TestBed } from "@angular/core/testing";
-import { UserGenerator } from "@shared/generators/user.generator";
-import { IsIotdReviewerPipe } from "./is-iotd-reviewer.pipe";
-import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
+import { UserGenerator } from "@shared/generators/user.generator";
+import { MockBuilder } from "ng-mocks";
+import { IsIotdReviewerPipe } from "./is-iotd-reviewer.pipe";
 
 describe("IsIotdReviewerPipe", () => {
   let pipe: IsIotdReviewerPipe;

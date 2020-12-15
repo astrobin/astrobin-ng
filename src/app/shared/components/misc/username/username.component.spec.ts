@@ -1,6 +1,6 @@
-import { UsernameComponent } from "./username.component";
-import { MockBuilder, MockRender } from "ng-mocks";
 import { AppModule } from "@app/app.module";
+import { MockBuilder, MockRender } from "ng-mocks";
+import { UsernameComponent } from "./username.component";
 
 describe("UsernameComponent", () => {
   let component: UsernameComponent;

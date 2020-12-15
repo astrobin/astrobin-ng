@@ -1,9 +1,9 @@
+import { HttpClientModule } from "@angular/common/http";
 import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
-import { AuthClassicApiService } from "./auth-classic-api.service";
-import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
-import { HttpClientModule } from "@angular/common/http";
+import { MockBuilder } from "ng-mocks";
+import { AuthClassicApiService } from "./auth-classic-api.service";
 
 describe("AuthApiService", () => {
   let service: AuthClassicApiService;

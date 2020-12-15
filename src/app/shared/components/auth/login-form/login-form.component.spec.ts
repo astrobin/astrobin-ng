@@ -1,8 +1,8 @@
+import { ReactiveFormsModule } from "@angular/forms";
+import { ComponentsModule } from "@shared/components/components.module";
+import { MockBuilder, MockRender } from "ng-mocks";
 import { of } from "rxjs";
 import { LoginFormComponent } from "./login-form.component";
-import { MockBuilder, MockRender } from "ng-mocks";
-import { ComponentsModule } from "@shared/components/components.module";
-import { ReactiveFormsModule } from "@angular/forms";
 
 describe("LoginFormComponent", () => {
   let component: LoginFormComponent;

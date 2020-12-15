@@ -1,8 +1,8 @@
 import { TestBed } from "@angular/core/testing";
 
-import { SubscriptionsService } from "./subscriptions.service";
-import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
+import { MockBuilder } from "ng-mocks";
+import { SubscriptionsService } from "./subscriptions.service";
 
 describe("SubscriptionsService", () => {
   let service: SubscriptionsService;

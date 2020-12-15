@@ -1,12 +1,12 @@
 import { TestBed } from "@angular/core/testing";
 import { RouterStateSnapshot } from "@angular/router";
+import { AppModule } from "@app/app.module";
 import { AppContextGenerator } from "@shared/generators/app-context.generator";
 import { UltimateSubscriptionGuardService } from "@shared/services/guards/ultimate-subscription-guard.service";
-import { TestConstants } from "@shared/test-constants";
-import { of } from "rxjs";
-import { MockBuilder, NG_MOCKS_GUARDS } from "ng-mocks";
-import { AppModule } from "@app/app.module";
 import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
+import { TestConstants } from "@shared/test-constants";
+import { MockBuilder, NG_MOCKS_GUARDS } from "ng-mocks";
+import { of } from "rxjs";
 
 describe("UltimateSubscriptionGuardService", () => {
   let service: UltimateSubscriptionGuardService;

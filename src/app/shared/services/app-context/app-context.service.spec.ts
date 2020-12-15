@@ -1,7 +1,7 @@
 import { TestBed } from "@angular/core/testing";
-import { AppContextService } from "./app-context.service";
-import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
+import { MockBuilder } from "ng-mocks";
+import { AppContextService } from "./app-context.service";
 
 describe("AppContextService", () => {
   let service: AppContextService;

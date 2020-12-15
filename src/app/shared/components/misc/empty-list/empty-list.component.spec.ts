@@ -1,6 +1,6 @@
-import { EmptyListComponent } from "./empty-list.component";
-import { MockBuilder, MockRender } from "ng-mocks";
 import { AppModule } from "@app/app.module";
+import { MockBuilder, MockRender } from "ng-mocks";
+import { EmptyListComponent } from "./empty-list.component";
 
 describe("EmptyListComponent", () => {
   let component: EmptyListComponent;

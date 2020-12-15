@@ -1,9 +1,9 @@
+import { HttpClientModule } from "@angular/common/http";
 import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
-import { JsonApiService } from "./json-api.service";
-import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
-import { HttpClientModule } from "@angular/common/http";
+import { MockBuilder } from "ng-mocks";
+import { JsonApiService } from "./json-api.service";
 
 describe("CommonApiService", () => {
   let service: JsonApiService;

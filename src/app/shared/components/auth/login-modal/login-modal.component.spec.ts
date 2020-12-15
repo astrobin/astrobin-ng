@@ -1,7 +1,7 @@
-import { LoginModalComponent } from "./login-modal.component";
-import { MockBuilder, MockRender } from "ng-mocks";
 import { AppModule } from "@app/app.module";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
+import { MockBuilder, MockRender } from "ng-mocks";
+import { LoginModalComponent } from "./login-modal.component";
 
 describe("LoginModalComponent", () => {
   let component: LoginModalComponent;
