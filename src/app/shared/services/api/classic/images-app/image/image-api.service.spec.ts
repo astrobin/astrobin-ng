@@ -1,10 +1,10 @@
+import { HttpClientModule } from "@angular/common/http";
 import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
-import { ImageGenerator } from "@shared/generators/image.generator";
-import { ImageApiService } from "./image-api.service";
-import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
-import { HttpClientModule } from "@angular/common/http";
+import { ImageGenerator } from "@shared/generators/image.generator";
+import { MockBuilder } from "ng-mocks";
+import { ImageApiService } from "./image-api.service";
 
 describe("ImageApiService", () => {
   let service: ImageApiService;

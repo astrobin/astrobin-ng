@@ -1,11 +1,11 @@
 import { HTTP_INTERCEPTORS, HttpClientModule } from "@angular/common/http";
 import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
+import { AppModule } from "@app/app.module";
 import { AuthClassicApiService } from "@shared/services/api/classic/auth/auth-classic-api.service";
+import { AuthInterceptor } from "@shared/services/auth.interceptor";
 import { AuthService } from "@shared/services/auth.service";
 import { MockBuilder, NG_MOCKS_INTERCEPTORS } from "ng-mocks";
-import { AppModule } from "@app/app.module";
-import { AuthInterceptor } from "@shared/services/auth.interceptor";
 import { CookieService } from "ngx-cookie-service";
 
 describe(`AuthHttpInterceptor`, () => {

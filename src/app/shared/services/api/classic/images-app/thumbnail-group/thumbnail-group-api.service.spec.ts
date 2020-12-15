@@ -1,12 +1,12 @@
+import { HttpClientModule } from "@angular/common/http";
 import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
+import { AppModule } from "@app/app.module";
 import { Constants } from "@shared/constants";
 import { ImageGenerator } from "@shared/generators/image.generator";
 import { ThumbnailGroupGenerator } from "@shared/generators/thumbnail-group.generator";
-import { ThumbnailGroupApiService } from "./thumbnail-group-api.service";
 import { MockBuilder } from "ng-mocks";
-import { AppModule } from "@app/app.module";
-import { HttpClientModule } from "@angular/common/http";
+import { ThumbnailGroupApiService } from "./thumbnail-group-api.service";
 
 describe("ThumbnailGroupApiService", () => {
   let service: ThumbnailGroupApiService;

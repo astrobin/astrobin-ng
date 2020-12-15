@@ -1,13 +1,13 @@
 import { TestBed } from "@angular/core/testing";
+import { AppModule } from "@app/app.module";
 import { AppContextGenerator } from "@shared/generators/app-context.generator";
 import { BackendConfigGenerator } from "@shared/generators/backend-config.generator";
 import { UserSubscriptionGenerator } from "@shared/generators/user-subscription.generator";
 import { TestConstants } from "@shared/test-constants";
 import { SubscriptionName } from "@shared/types/subscription-name.type";
+import { MockBuilder } from "ng-mocks";
 import { of } from "rxjs";
 import { UserSubscriptionService } from "./user-subscription.service";
-import { MockBuilder } from "ng-mocks";
-import { AppModule } from "@app/app.module";
 
 describe("UserSubscriptionService", () => {
   let service: UserSubscriptionService;

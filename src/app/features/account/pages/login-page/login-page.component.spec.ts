@@ -1,7 +1,7 @@
-import { LoginPageComponent } from "./login-page.component";
-import { MockBuilder, MockInstance, MockRender, MockReset, MockService } from "ng-mocks";
-import { AppModule } from "@app/app.module";
 import { ActivatedRoute, ActivatedRouteSnapshot, ParamMap } from "@angular/router";
+import { AppModule } from "@app/app.module";
+import { MockBuilder, MockInstance, MockRender, MockReset, MockService } from "ng-mocks";
+import { LoginPageComponent } from "./login-page.component";
 
 describe("LoginPageComponent", () => {
   let component: LoginPageComponent;

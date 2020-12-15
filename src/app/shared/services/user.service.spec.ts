@@ -1,7 +1,7 @@
 import { TestBed } from "@angular/core/testing";
-import { MockBuilder } from "ng-mocks";
 import { GroupGenerator } from "@shared/generators/group.generator";
 import { UserGenerator } from "@shared/generators/user.generator";
+import { MockBuilder } from "ng-mocks";
 
 import { UserService } from "./user.service";
 

@@ -1,7 +1,7 @@
 import { TestBed } from "@angular/core/testing";
-import { PopNotificationsService } from "./pop-notifications.service";
-import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
+import { MockBuilder } from "ng-mocks";
+import { PopNotificationsService } from "./pop-notifications.service";
 
 describe("PopNotificationsService", () => {
   let service: PopNotificationsService;
