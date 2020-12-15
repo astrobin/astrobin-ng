@@ -1,5 +1,9 @@
-import { FormGroup } from "@angular/forms";
+import "jest-preset-angular";
+import "ng-mocks/dist/jest";
+
 import "@angular/localize/init";
+
+import { FormGroup } from "@angular/forms";
 import { NotificationListResponseInterfaceGenerator } from "@features/notifications/generators/notification-list-response.interface.generator";
 import { NotificationsApiService } from "@features/notifications/services/notifications-api.service";
 import { NotificationsService } from "@features/notifications/services/notifications.service";
@@ -22,9 +26,7 @@ import { UserStoreService } from "@shared/services/user-store.service";
 import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
 import { UserService } from "@shared/services/user.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
-import "jest-preset-angular";
 import { MockService, ngMocks } from "ng-mocks";
-import "ng-mocks/dist/jest";
 import { UploadxService } from "ngx-uploadx";
 import { BehaviorSubject, EMPTY, of } from "rxjs";
 
