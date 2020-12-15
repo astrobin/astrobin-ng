@@ -5,7 +5,7 @@ import { AppModule } from "@app/app.module";
 import { MockBuilder } from "ng-mocks";
 import { JsonApiService } from "./json-api.service";
 
-describe("CommonApiService", () => {
+describe("JsonApiService", () => {
   let service: JsonApiService;
   let httpMock: HttpTestingController;
 
@@ -26,7 +26,7 @@ describe("CommonApiService", () => {
 
   describe("getBackendConfig", () => {
     it("should work", () => {
-      service.getBackendConfig$().subscribe(response => {
+      service.getBackendConfig().subscribe(response => {
         expect(response.readOnly).toEqual(false);
       });
 

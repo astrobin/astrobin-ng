@@ -1,7 +1,9 @@
 import { Component, OnInit } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
+import { AppState } from "@app/store/app.states";
 import { environment } from "@env/environment";
+import { Store } from "@ngrx/store";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
@@ -9,7 +11,6 @@ import { Constants } from "@shared/constants";
 import { ImageInterface } from "@shared/interfaces/image.interface";
 import { ThumbnailGroupApiService } from "@shared/services/api/classic/images-app/thumbnail-group/thumbnail-group-api.service";
 import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
-import { AppContextService } from "@shared/services/app-context/app-context.service";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { TitleService } from "@shared/services/title/title.service";
 import { UploadDataService } from "@shared/services/upload-metadata/upload-data.service";
@@ -76,17 +77,12 @@ export class RevisionUploaderPageComponent extends BaseComponentDirective implem
     }
   ];
 
-  appContext$ = this.appContext.context$;
-
-  backendConfig$ = this.jsonApiService.getBackendConfig$();
-
   imageThumbnail$: Observable<string>;
 
   image: ImageInterface;
 
   constructor(
-    public appContext: AppContextService,
-    public jsonApiService: JsonApiService,
+    public readonly store: Store<AppState>,
     public translate: TranslateService,
     public uploaderService: UploadxService,
     public uploadDataService: UploadDataService,
@@ -122,6 +118,7 @@ export class RevisionUploaderPageComponent extends BaseComponentDirective implem
 
       if (uploadState.status === "complete") {
         const response = JSON.parse(uploadState.response as string);
+        // @ts-ignore
         this.windowRef.nativeWindow.location.assign(this.classicRoutesService.EDIT_IMAGE_REVISION(response.pk));
       }
     });

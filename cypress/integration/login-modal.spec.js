@@ -37,7 +37,7 @@ context("account-modal", () => {
     cy.route({
       method: "POST",
       url: "**/api-auth-token",
-      statusCode: 400,
+      status: 400,
       response: ""
     }).as("getApiToken");
 

@@ -11,7 +11,6 @@ import { SubscriptionsService } from "@features/subscriptions/services/subscript
 import { TranslateService } from "@ngx-translate/core";
 import { LoginFormComponent } from "@shared/components/auth/login-form/login-form.component";
 import { UsernameService } from "@shared/components/misc/username/username.service";
-import { AppContextGenerator } from "@shared/generators/app-context.generator";
 import { UserProfileGenerator } from "@shared/generators/user-profile.generator";
 import { UserGenerator } from "@shared/generators/user.generator";
 import { UserInterface } from "@shared/interfaces/user.interface";
@@ -19,7 +18,6 @@ import { CommonApiService } from "@shared/services/api/classic/common/common-api
 import { ImageApiService } from "@shared/services/api/classic/images-app/image/image-api.service";
 import { ThumbnailGroupApiService } from "@shared/services/api/classic/images-app/thumbnail-group/thumbnail-group-api.service";
 import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
-import { AppContextInterface, AppContextService } from "@shared/services/app-context/app-context.service";
 import { AuthService } from "@shared/services/auth.service";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { UserStoreService } from "@shared/services/user-store.service";
@@ -63,7 +61,7 @@ ngMocks.defaultMock(UserSubscriptionService, () => ({
 }));
 
 ngMocks.defaultMock(AuthService, () => ({
-  login: jest.fn().mockReturnValue(of(true)),
+  login: jest.fn().mockReturnValue(of("token-1234567890")),
   isAuthenticated: jest.fn().mockReturnValue(of(true))
 }));
 
@@ -87,20 +85,6 @@ ngMocks.defaultMock(ClassicRoutesService, () => ({
   STAGING_GALLERY: jest.fn()
 }));
 
-ngMocks.defaultMock(AppContextService, instance => {
-  const subject = new BehaviorSubject<AppContextInterface>(AppContextGenerator.default());
-
-  instance.context$ = subject.asObservable();
-  instance.load = () => {
-    subject.next(AppContextGenerator.anonymous());
-    return Promise.resolve();
-  };
-  instance.loadForUser = () => {
-    subject.next(AppContextGenerator.default());
-    return Promise.resolve();
-  };
-});
-
 ngMocks.defaultMock(CommonApiService, () => ({
   getUser: jest.fn().mockReturnValue(of(UserGenerator.user())),
   getCurrentUserProfile: jest.fn().mockReturnValue(of(UserProfileGenerator.userProfile())),
@@ -123,7 +107,7 @@ ngMocks.defaultMock(UserService, () => ({
 }));
 
 ngMocks.defaultMock(JsonApiService, () => ({
-  getBackendConfig$: jest.fn().mockReturnValue(EMPTY)
+  getBackendConfig: jest.fn().mockReturnValue(EMPTY)
 }));
 
 ngMocks.defaultMock(LoginFormComponent, () => ({

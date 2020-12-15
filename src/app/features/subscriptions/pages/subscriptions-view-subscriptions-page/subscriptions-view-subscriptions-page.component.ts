@@ -1,24 +1,24 @@
-import { Component, OnInit } from "@angular/core";
+import { Component } from "@angular/core";
+import { AppState } from "@app/store/app.states";
+import { Store } from "@ngrx/store";
 import { UserSubscriptionInterface } from "@shared/interfaces/user-subscription.interface";
-import { AppContextService } from "@shared/services/app-context/app-context.service";
 import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
 import { Observable } from "rxjs";
-import { map } from "rxjs/operators";
+import { map, take } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-subscriptions-view-subscriptions-page",
   templateUrl: "./subscriptions-view-subscriptions-page.component.html",
   styleUrls: ["./subscriptions-view-subscriptions-page.component.scss"]
 })
-export class SubscriptionsViewSubscriptionsPageComponent implements OnInit {
-  userSubscriptions$: Observable<UserSubscriptionInterface[]> = this.appContextService.context$.pipe(
-    map(context => context.currentUserSubscriptions.sort((a, b) => a.expires.localeCompare(b.expires)).reverse())
+export class SubscriptionsViewSubscriptionsPageComponent {
+  userSubscriptions$: Observable<UserSubscriptionInterface[]> = this.store.pipe(
+    take(1),
+    map(state => state.auth.userSubscriptions.sort((a, b) => a.expires.localeCompare(b.expires)).reverse())
   );
 
   constructor(
-    public readonly appContextService: AppContextService,
+    public readonly store: Store<AppState>,
     public readonly userSubscriptionService: UserSubscriptionService
   ) {}
-
-  ngOnInit(): void {}
 }

@@ -1,9 +1,12 @@
 import { TestBed } from "@angular/core/testing";
 import { ActivatedRouteSnapshot, RouterStateSnapshot } from "@angular/router";
 import { AppModule } from "@app/app.module";
+import { AppState } from "@app/store/app.states";
+import { AppGenerator } from "@app/store/generators/app.generator";
+import { AuthGenerator } from "@features/account/store/auth.generator";
+import { MockStore, provideMockStore } from "@ngrx/store/testing";
 import { MockBuilder, MockInstance, MockReset, ngMocks } from "ng-mocks";
 import { of, throwError } from "rxjs";
-import { AppContextGenerator } from "../../generators/app-context.generator";
 import { ImageGenerator } from "../../generators/image.generator";
 import { UserGenerator } from "../../generators/user.generator";
 import { ImageOwnerGuardService } from "./image-owner-guard.service";
@@ -11,7 +14,11 @@ import { ImageOwnerGuardService } from "./image-owner-guard.service";
 describe("ImageOwnerGuardService", () => {
   let service: ImageOwnerGuardService;
   let route: ActivatedRouteSnapshot;
-
+  let store: MockStore;
+  const initialState: AppState = {
+    app: AppGenerator.default(),
+    auth: AuthGenerator.default()
+  };
   beforeEach(() =>
     MockInstance(ActivatedRouteSnapshot, instance => {
       ngMocks.stub(instance, "params", "get");
@@ -21,8 +28,13 @@ describe("ImageOwnerGuardService", () => {
   afterEach(MockReset);
 
   beforeEach(async () => {
-    await MockBuilder(ImageOwnerGuardService, AppModule).mock(ActivatedRouteSnapshot);
+    await MockBuilder(ImageOwnerGuardService, AppModule)
+      .mock(ActivatedRouteSnapshot)
+      .provide(provideMockStore({ initialState }));
+
+    store = TestBed.inject(MockStore);
     service = TestBed.inject(ImageOwnerGuardService);
+
     jest.spyOn(service.router, "navigateByUrl").mockImplementation(
       () => new Promise<boolean>(resolve => resolve())
     );
@@ -63,10 +75,10 @@ describe("ImageOwnerGuardService", () => {
     const image = ImageGenerator.image();
     image.user = 100;
 
-    const context = AppContextGenerator.default();
-    context.currentUser = user;
+    const state = { ...initialState };
+    state.auth.user = user;
+    store.setState(state);
 
-    service.appContextService.context$ = of(context);
     route = TestBed.inject(ActivatedRouteSnapshot);
     jest.spyOn(route, "params", "get").mockReturnValue({ imageId: 1 });
     jest.spyOn(service.authService, "isAuthenticated").mockReturnValue(of(true));
@@ -85,10 +97,10 @@ describe("ImageOwnerGuardService", () => {
     const image = ImageGenerator.image();
     image.user = 99;
 
-    const context = AppContextGenerator.default();
-    context.currentUser = user;
+    const state = { ...initialState };
+    state.auth.user = user;
+    store.setState(state);
 
-    service.appContextService.context$ = of(context);
     route = TestBed.inject(ActivatedRouteSnapshot);
     jest.spyOn(route, "params", "get").mockReturnValue({ imageId: 1 });
     jest.spyOn(service.authService, "isAuthenticated").mockReturnValue(of(true));

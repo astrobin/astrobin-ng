@@ -1,9 +1,10 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
+import { AppState } from "@app/store/app.states";
+import { Store } from "@ngrx/store";
 import { FieldType } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
 import { FileUpload } from "@shared/components/misc/formly-field-chunked-file/file-upload";
 import { Constants } from "@shared/constants";
-import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
 import { AuthService } from "@shared/services/auth.service";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
@@ -47,15 +48,15 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
   private _allowedTypesChangesSubscription: Subscription;
 
   constructor(
-    public authService: AuthService,
-    public uploaderService: UploadxService,
-    public uploadDataService: UploadDataService,
-    public utilsService: UtilsService,
-    public popNotificationsService: PopNotificationsService,
-    public translateService: TranslateService,
-    public userSubscriptionService: UserSubscriptionService,
-    public classicRoutesService: ClassicRoutesService,
-    public jsonApiService: JsonApiService
+    public readonly store: Store<AppState>,
+    public readonly authService: AuthService,
+    public readonly uploaderService: UploadxService,
+    public readonly uploadDataService: UploadDataService,
+    public readonly utilsService: UtilsService,
+    public readonly popNotificationsService: PopNotificationsService,
+    public readonly translateService: TranslateService,
+    public readonly userSubscriptionService: UserSubscriptionService,
+    public readonly classicRoutesService: ClassicRoutesService
   ) {
     super();
   }
@@ -198,13 +199,14 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
           this._warnAboutVeryLargeFile(size);
           return true;
         } else {
-          const message =
-            "Sorry, but this image is too large. Under your current subscription plan, the maximum " +
-            "allowed image size is {{max}}.";
           this.popNotificationsService.error(
-            this.translateService.instant(message, {
-              max: result.max / 1024 / 1024 + " MB"
-            })
+            this.translateService.instant(
+              "Sorry, but this image is too large. Under your current subscription plan, the maximum " +
+                "allowed image size is {{max}}.",
+              {
+                max: result.max / 1024 / 1024 + " MB"
+              }
+            )
           );
           return false;
         }
@@ -215,11 +217,14 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
   private _checkImageDimensions(file: File): Observable<boolean> {
     if (this.utilsService.isImage(file.name)) {
       return new Observable<boolean>(observer => {
+        // @ts-ignore
         const image = new Image();
         image.onload = () => {
-          this.jsonApiService
-            .getBackendConfig$()
-            .pipe(take(1))
+          this.store
+            .pipe(
+              take(1),
+              map(state => state.app.backendConfig)
+            )
             .subscribe(backendConfig => {
               if (image.width * image.height > backendConfig.MAX_IMAGE_PIXELS) {
                 const message =
@@ -252,18 +257,20 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
     let message;
 
     if (size > 200 * MB) {
-      message =
+      message = this.translateService.instant(
         "Warning! That's a large file you got there! AstroBin does not impose artificial limitation in the file " +
-        "size you can upload with an Ultimate subscription, but we cannot guarantee that all images above 200 MB or " +
-        "~8000x8000 pixels will work. Feel free to give it a shot tho!";
+          "size you can upload with an Ultimate subscription, but we cannot guarantee that all images above 200 MB or " +
+          "~8000x8000 pixels will work. Feel free to give it a shot tho!"
+      );
     } else if (size > 100 * MB) {
-      message =
+      message = this.translateService.instant(
         "Heads up! Are you sure you want to upload such a large file? It's okay to do so but probably not many " +
-        "people will want to see it at its full resolution, if it will take too long for them to download it.";
+          "people will want to see it at its full resolution, if it will take too long for them to download it."
+      );
     }
 
     if (!!message) {
-      this.popNotificationsService.warning(this.translateService.instant(message));
+      this.popNotificationsService.warning(message);
     }
   }
 }

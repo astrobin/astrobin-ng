@@ -16,11 +16,13 @@ import localePortuguese from "@angular/common/locales/pt";
 import localeRussian from "@angular/common/locales/ru";
 import localeAlbanian from "@angular/common/locales/sq";
 import localeTurkish from "@angular/common/locales/tr";
-import { APP_INITIALIZER, NgModule } from "@angular/core";
+import { NgModule } from "@angular/core";
 import { BrowserModule, Title } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { AppComponent } from "@app/app.component";
+import { appStateEffects, appStateReducers } from "@app/store/app.states";
 import { CustomTranslateParser } from "@app/translate-parser";
+import { environment } from "@env/environment";
 import { FaIconLibrary, FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import {
   faAsterisk,
@@ -56,13 +58,14 @@ import {
   faUpload,
   faUsers
 } from "@fortawesome/free-solid-svg-icons";
+import { EffectsModule } from "@ngrx/effects";
+import { StoreModule } from "@ngrx/store";
+import { StoreDevtoolsModule } from "@ngrx/store-devtools";
 import { MissingTranslationHandler, TranslateLoader, TranslateModule, TranslateParser } from "@ngx-translate/core";
 import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
-import { AppContextService } from "@shared/services/app-context/app-context.service";
-import { AuthService } from "@shared/services/auth.service";
 import { ValidationLoaderService } from "@shared/services/validation-loader.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
-import { appInitializer, SharedModule } from "@shared/shared.module";
+import { SharedModule } from "@shared/shared.module";
 import { CookieService } from "ngx-cookie-service";
 import { TimeagoCustomFormatter, TimeagoFormatter, TimeagoIntl, TimeagoModule } from "ngx-timeago";
 import { AppRoutingModule } from "./app-routing.module";
@@ -134,6 +137,13 @@ export function initFontAwesome(iconLibrary: FaIconLibrary) {
     HttpClientModule,
 
     // Dependencies.
+    StoreModule.forRoot(appStateReducers),
+    StoreDevtoolsModule.instrument({
+      maxAge: 25, // Retains last 25 states
+      logOnly: environment.production // Restrict extension to log-only mode
+    }),
+    EffectsModule.forRoot(appStateEffects),
+
     FontAwesomeModule,
     TimeagoModule.forRoot({
       intl: TimeagoIntl,
@@ -159,19 +169,7 @@ export function initFontAwesome(iconLibrary: FaIconLibrary) {
     AppRoutingModule,
     SharedModule.forRoot()
   ],
-  providers: [
-    AppContextService,
-    {
-      provide: APP_INITIALIZER,
-      useFactory: appInitializer,
-      multi: true,
-      deps: [AppContextService, AuthService]
-    },
-    CookieService,
-    Title,
-    ValidationLoaderService,
-    WindowRefService
-  ],
+  providers: [CookieService, Title, ValidationLoaderService, WindowRefService],
   declarations: [AppComponent],
   bootstrap: [AppComponent]
 })

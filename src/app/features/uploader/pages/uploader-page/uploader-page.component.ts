@@ -1,10 +1,11 @@
 import { Component, OnInit } from "@angular/core";
 import { FormGroup } from "@angular/forms";
+import { AppState } from "@app/store/app.states";
+import { Store } from "@ngrx/store";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
-import { AppContextService } from "@shared/services/app-context/app-context.service";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { TitleService } from "@shared/services/title/title.service";
 import { UploadDataService } from "@shared/services/upload-metadata/upload-data.service";
@@ -53,15 +54,10 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
     }
   ];
 
-  appContext$ = this.appContext.context$;
-
-  backendConfig$ = this.jsonApiService.getBackendConfig$();
-
   uploadAllowed$ = this.userSubscriptionService.uploadAllowed();
 
   constructor(
-    public appContext: AppContextService,
-    public jsonApiService: JsonApiService,
+    public readonly store: Store<AppState>,
     public translate: TranslateService,
     public uploaderService: UploadxService,
     public uploadDataService: UploadDataService,

@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from "@angular/router";
-import { AppContextService } from "@shared/services/app-context/app-context.service";
+import { AppState } from "@app/store/app.states";
+import { Store } from "@ngrx/store";
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
@@ -11,8 +12,8 @@ import { switchMap, take } from "rxjs/operators";
 @Injectable()
 export class PremiumSubscriptionGuardService extends BaseService implements CanActivate {
   constructor(
+    public readonly store: Store<AppState>,
     public loadingService: LoadingService,
-    public appContextService: AppContextService,
     public userSubscriptionService: UserSubscriptionService,
     public router: Router
   ) {
@@ -21,11 +22,11 @@ export class PremiumSubscriptionGuardService extends BaseService implements CanA
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot, redirect = true): Observable<boolean> {
     return new Observable<boolean>(observer => {
-      this.appContextService.context$
+      this.store
         .pipe(
           take(1),
-          switchMap(context =>
-            this.userSubscriptionService.hasValidSubscription(context.currentUserProfile, [
+          switchMap(storeState =>
+            this.userSubscriptionService.hasValidSubscription(storeState.auth.userProfile, [
               SubscriptionName.ASTROBIN_PREMIUM,
               SubscriptionName.ASTROBIN_PREMIUM_AUTORENEW
             ])

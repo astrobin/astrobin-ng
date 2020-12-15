@@ -1,6 +1,8 @@
 import { Injectable } from "@angular/core";
+import { AppState } from "@app/store/app.states";
 import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
 import { PaymentsApiService } from "@features/subscriptions/services/payments-api.service";
+import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
 import { Constants } from "@shared/constants";
 import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
@@ -21,15 +23,16 @@ export class SubscriptionsService {
   currency$: Observable<string> = this._currencySubject.asObservable();
 
   constructor(
+    public readonly store: Store<AppState>,
     public readonly translate: TranslateService,
     public readonly jsonApiService: JsonApiService,
     public readonly paymentsApiService: PaymentsApiService
   ) {
-    this.jsonApiService
-      .getBackendConfig$()
+    this.store
+      .select(state => state.app)
       .pipe(take(1))
-      .subscribe(config => {
-        const country = config.REQUEST_COUNTRY;
+      .subscribe(state => {
+        const country = state.backendConfig.REQUEST_COUNTRY;
         const results = countryJs.search(country);
 
         if (results.length !== 0) {

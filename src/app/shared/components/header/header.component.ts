@@ -1,15 +1,17 @@
 import { Component } from "@angular/core";
+import { AppState } from "@app/store/app.states";
+import { Logout } from "@features/account/store/auth.actions";
 import { NotificationsService } from "@features/notifications/services/notifications.service";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { Store } from "@ngrx/store";
 import { LoginModalComponent } from "@shared/components/auth/login-modal/login-modal.component";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { AppContextService } from "@shared/services/app-context/app-context.service";
 import { AuthService } from "@shared/services/auth.service";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { Observable } from "rxjs";
-import { map } from "rxjs/operators";
+import { map, take } from "rxjs/operators";
 
 interface AvailableLanguageInterface {
   code: string;
@@ -46,13 +48,13 @@ export class HeaderComponent extends BaseComponentDirective {
   ];
 
   constructor(
-    public appContext: AppContextService,
     public modalService: NgbModal,
     public classicRoutes: ClassicRoutesService,
     public authService: AuthService,
     public notificationsService: NotificationsService,
     public loadingService: LoadingService,
-    public windowRef: WindowRefService
+    public windowRef: WindowRefService,
+    public store: Store<AppState>
   ) {
     super();
   }
@@ -64,10 +66,6 @@ export class HeaderComponent extends BaseComponentDirective {
 
   logout($event) {
     $event.preventDefault();
-    this.authService.logout();
-  }
-
-  currentLanguageCode$(): Observable<string> {
-    return this.appContext.context$.pipe(map(context => context.languageCode));
+    this.store.dispatch(new Logout());
   }
 }

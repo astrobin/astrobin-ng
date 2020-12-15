@@ -1,14 +1,15 @@
 import { CurrencyPipe } from "@angular/common";
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
+import { AppState } from "@app/store/app.states";
 import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
 import { PaymentsApiConfigInterface } from "@features/subscriptions/interfaces/payments-api-config.interface";
 import { PaymentsApiService } from "@features/subscriptions/services/payments-api.service";
 import { SubscriptionsService } from "@features/subscriptions/services/subscriptions.service";
+import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
-import { AppContextService } from "@shared/services/app-context/app-context.service";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
@@ -40,9 +41,9 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
   currencyPipe: CurrencyPipe;
 
   constructor(
+    public readonly store: Store<AppState>,
     public readonly activatedRoute: ActivatedRoute,
     public readonly router: Router,
-    public readonly appContextService: AppContextService,
     public readonly userSubscriptionService: UserSubscriptionService,
     public readonly paymentsApiService: PaymentsApiService,
     public readonly loadingService: LoadingService,
@@ -129,11 +130,11 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
 
       this.titleService.setTitle(this.subscriptionsService.getName(this.product));
 
-      this.alreadySubscribed$ = this.appContextService.context$.pipe(
+      this.alreadySubscribed$ = this.store.pipe(
         take(1),
-        switchMap(context =>
+        switchMap(state =>
           this.userSubscriptionService.hasValidSubscription(
-            context.currentUserProfile,
+            state.auth.userProfile,
             this.subscriptionsService.getSameTierOrAbove(this.product)
           )
         )
@@ -183,10 +184,10 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
 
     this.loadingService.setLoading(true);
 
-    this.appContextService.context$
+    this.store
       .pipe(
-        tap(context => {
-          userId = context.currentUser.id;
+        tap(state => {
+          userId = state.auth.user.id;
         }),
         switchMap(() => this.paymentsApiService.getConfig().pipe(tap(_config => (config = _config)))),
         switchMap(() => {

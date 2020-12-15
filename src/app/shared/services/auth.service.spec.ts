@@ -1,4 +1,4 @@
-import { fakeAsync, flush, TestBed } from "@angular/core/testing";
+import { TestBed } from "@angular/core/testing";
 import { Router } from "@angular/router";
 import { AppModule } from "@app/app.module";
 import { AuthClassicApiService } from "@shared/services/api/classic/auth/auth-classic-api.service";
@@ -45,12 +45,12 @@ describe("AuthService", () => {
   });
 
   describe("account/logout", () => {
-    it("should work with classic api", fakeAsync(done => {
-      service.login("foo", "bar").subscribe(result => {
-        expect(result).toEqual(true);
-        expect(service.getClassicApiToken()).toBe("123");
+    it("should work with classic api", done => {
+      jest.spyOn(service.authClassicApi, "login").mockReturnValue(of("123"));
 
-        flush();
+      service.login("foo", "bar").subscribe(result => {
+        expect(result).toEqual("123");
+        expect(service.getClassicApiToken()).toBe("123");
 
         service.logout();
 
@@ -58,6 +58,6 @@ describe("AuthService", () => {
 
         done();
       });
-    }));
+    });
   });
 });

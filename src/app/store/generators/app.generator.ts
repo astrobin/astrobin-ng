@@ -1,18 +1,14 @@
+import { State } from "@app/store/reducers/app.reducers";
+import { BackendConfigGenerator } from "@shared/generators/backend-config.generator";
 import { SubscriptionGenerator } from "@shared/generators/subscription.generator";
-import { UserProfileGenerator } from "@shared/generators/user-profile.generator";
-import { UserSubscriptionGenerator } from "@shared/generators/user-subscription.generator";
-import { UserGenerator } from "@shared/generators/user.generator";
-import { AppContextInterface } from "@shared/services/app-context/app-context.service";
 import { TestConstants } from "@shared/test-constants";
 import { SubscriptionName } from "@shared/types/subscription-name.type";
 
-export class AppContextGenerator {
-  static default(): AppContextInterface {
+export class AppGenerator {
+  static default(): State {
     return {
-      languageCode: "en",
-      currentUserProfile: UserProfileGenerator.userProfile(),
-      currentUser: UserGenerator.user(),
-      currentUserSubscriptions: [UserSubscriptionGenerator.userSubscription()],
+      initialized: true,
+      language: "en",
       subscriptions: [
         SubscriptionGenerator.subscription(
           TestConstants.ASTROBIN_ULTIMATE_2020_ID,
@@ -33,16 +29,8 @@ export class AppContextGenerator {
           TestConstants.ASTROBIN_LITE_AUTORENEW_ID,
           SubscriptionName.ASTROBIN_LITE_AUTORENEW
         )
-      ]
+      ],
+      backendConfig: BackendConfigGenerator.backendConfig()
     };
-  }
-
-  static anonymous(): AppContextInterface {
-    const context = this.default();
-    context.currentUserSubscriptions = [];
-    context.currentUserProfile = undefined;
-    context.currentUser = undefined;
-
-    return context;
   }
 }

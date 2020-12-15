@@ -4,6 +4,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { LoginFormComponent } from "@shared/components/auth/login-form/login-form.component";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
+import { LoadingService } from "@shared/services/loading.service";
 import { TitleService } from "@shared/services/title/title.service";
 
 @Component({
@@ -17,11 +18,11 @@ export class LoginPageComponent extends BaseComponentDirective implements OnInit
   @ViewChild("loginForm") loginForm: LoginFormComponent;
 
   constructor(
-    public classicRoutesService: ClassicRoutesService,
-    public route: ActivatedRoute,
-    public router: Router,
-    public titleService: TitleService,
-    public translate: TranslateService
+    public readonly classicRoutesService: ClassicRoutesService,
+    public readonly route: ActivatedRoute,
+    public readonly translate: TranslateService,
+    public readonly titleService: TitleService,
+    public readonly loadingService: LoadingService
   ) {
     super();
     titleService.setTitle(translate.instant("Log in"));

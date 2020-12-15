@@ -1,9 +1,10 @@
 import { Injectable } from "@angular/core";
+import { AppState } from "@app/store/app.states";
+import { Store } from "@ngrx/store";
 import { SubscriptionInterface } from "@shared/interfaces/subscription.interface";
 import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
 import { UserSubscriptionInterface } from "@shared/interfaces/user-subscription.interface";
 import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
-import { AppContextService } from "@shared/services/app-context/app-context.service";
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { UserSubscriptionServiceInterface } from "@shared/services/user-subscription/user-subscription.service-interface";
@@ -16,24 +17,24 @@ import { map, switchMap, take } from "rxjs/operators";
 })
 export class UserSubscriptionService extends BaseService implements UserSubscriptionServiceInterface {
   constructor(
+    public readonly store: Store<AppState>,
     public loadingService: LoadingService,
-    public appContextService: AppContextService,
     public jsonApiService: JsonApiService
   ) {
     super(loadingService);
   }
 
   hasValidSubscription(user: UserProfileInterface, subscriptionNames: SubscriptionName[]): Observable<boolean> {
-    return this.appContextService.context$.pipe(
+    return this.store.pipe(
       take(1),
-      map(appContext => {
+      map(state => {
         for (const subscriptionName of subscriptionNames) {
-          const subscription: SubscriptionInterface = appContext.subscriptions.filter(
+          const subscription: SubscriptionInterface = state.app.subscriptions.filter(
             s => s.name === subscriptionName
           )[0];
 
           if (
-            appContext.currentUserSubscriptions.filter(userSubscription => {
+            state.auth.userSubscriptions.filter(userSubscription => {
               const expiration = new Date(userSubscription.expires);
               expiration.setUTCHours(23, 59, 59, 999);
               return userSubscription.subscription === subscription.id && expiration >= new Date();
@@ -49,24 +50,25 @@ export class UserSubscriptionService extends BaseService implements UserSubscrip
   }
 
   uploadAllowed(): Observable<boolean> {
-    return zip(this.appContextService.context$, this.jsonApiService.getBackendConfig$()).pipe(
-      switchMap(([appContext, backendConfig]) =>
+    return this.store.pipe(
+      take(1),
+      switchMap(state =>
         zip(
-          this.hasValidSubscription(appContext.currentUserProfile, [
+          this.hasValidSubscription(state.auth.userProfile, [
             SubscriptionName.ASTROBIN_ULTIMATE_2020,
             SubscriptionName.ASTROBIN_PREMIUM,
             SubscriptionName.ASTROBIN_PREMIUM_AUTORENEW,
             SubscriptionName.ASTROBIN_PREMIUM_2020
           ]),
-          this.hasValidSubscription(appContext.currentUserProfile, [SubscriptionName.ASTROBIN_LITE_2020]),
-          this.hasValidSubscription(appContext.currentUserProfile, [
+          this.hasValidSubscription(state.auth.userProfile, [SubscriptionName.ASTROBIN_LITE_2020]),
+          this.hasValidSubscription(state.auth.userProfile, [
             SubscriptionName.ASTROBIN_LITE,
             SubscriptionName.ASTROBIN_LITE_AUTORENEW
           ])
         ).pipe(
           map(([isUltimateOrPremium, isLite2020, isLite]) => ({
-            premiumCounter: appContext.currentUserProfile.premiumCounter,
-            backendConfig,
+            premiumCounter: state.auth.userProfile.premiumCounter,
+            backendConfig: state.app.backendConfig,
             isUltimateOrPremium,
             isLite2020,
             isLite
@@ -93,21 +95,22 @@ export class UserSubscriptionService extends BaseService implements UserSubscrip
   }
 
   fileSizeAllowed(size: number): Observable<{ allowed: boolean; max: number }> {
-    return zip(this.appContextService.context$, this.jsonApiService.getBackendConfig$()).pipe(
-      switchMap(([appContext, backendConfig]) =>
+    return this.store.pipe(
+      take(1),
+      switchMap(state =>
         zip(
-          this.hasValidSubscription(appContext.currentUserProfile, [
+          this.hasValidSubscription(state.auth.userProfile, [
             SubscriptionName.ASTROBIN_ULTIMATE_2020,
             SubscriptionName.ASTROBIN_PREMIUM,
             SubscriptionName.ASTROBIN_PREMIUM_AUTORENEW,
             SubscriptionName.ASTROBIN_LITE,
             SubscriptionName.ASTROBIN_LITE_AUTORENEW
           ]),
-          this.hasValidSubscription(appContext.currentUserProfile, [SubscriptionName.ASTROBIN_PREMIUM_2020]),
-          this.hasValidSubscription(appContext.currentUserProfile, [SubscriptionName.ASTROBIN_LITE_2020])
+          this.hasValidSubscription(state.auth.userProfile, [SubscriptionName.ASTROBIN_PREMIUM_2020]),
+          this.hasValidSubscription(state.auth.userProfile, [SubscriptionName.ASTROBIN_LITE_2020])
         ).pipe(
           map(([isUltimateOrEquivalent, isPremium, isLite]) => ({
-            backendConfig,
+            backendConfig: state.app.backendConfig,
             isUltimateOrEquivalent,
             isPremium,
             isLite
@@ -143,11 +146,12 @@ export class UserSubscriptionService extends BaseService implements UserSubscrip
   }
 
   getSubscription(userSubscription: UserSubscriptionInterface): Observable<SubscriptionInterface | null> {
-    return this.appContextService.context$.pipe(
-      map(context => {
+    return this.store.pipe(
+      take(1),
+      map(state => {
         let ret: SubscriptionInterface = null;
 
-        context.subscriptions.forEach(subscription => {
+        state.app.subscriptions.forEach(subscription => {
           if (subscription.id === userSubscription.subscription) {
             ret = subscription;
           }
