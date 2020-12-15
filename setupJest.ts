@@ -132,9 +132,9 @@ ngMocks.defaultMock(LoginFormComponent, () => ({
 
 ngMocks.defaultMock(TranslateService, () => ({
   instant: jest.fn().mockImplementation(str => str),
-  onLangChange: EMPTY as any,
+  onLangChange: EMPTY as any
 }));
 
 ngMocks.defaultMock(SubscriptionsService, () => ({
-  currency$: EMPTY,
+  currency$: EMPTY
 }));
