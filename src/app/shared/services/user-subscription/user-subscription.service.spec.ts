@@ -1,6 +1,5 @@
 import { TestBed } from "@angular/core/testing";
 import { AppModule } from "@app/app.module";
-import { AppModule } from "@app/app.module";
 import { AppState } from "@app/store/app.states";
 import { AppGenerator } from "@app/store/generators/app.generator";
 import { AuthGenerator } from "@features/account/store/auth.generator";
@@ -8,7 +7,6 @@ import { MockStore, provideMockStore } from "@ngrx/store/testing";
 import { UserSubscriptionGenerator } from "@shared/generators/user-subscription.generator";
 import { TestConstants } from "@shared/test-constants";
 import { SubscriptionName } from "@shared/types/subscription-name.type";
-import { MockBuilder } from "ng-mocks";
 import { MockBuilder } from "ng-mocks";
 import { UserSubscriptionService } from "./user-subscription.service";
 
@@ -208,7 +206,6 @@ describe("UserSubscriptionService", () => {
     it("should be true if user is Lite and has fewer uploads than the limit", done => {
       const state = { ...initialState };
       state.auth.userSubscriptions = [UserSubscriptionGenerator.userSubscription(TestConstants.ASTROBIN_LITE_ID)];
-      state.auth.userProfile.premiumCounter = 100;
       store.setState(state);
 
       service.uploadAllowed().subscribe(allowed => {

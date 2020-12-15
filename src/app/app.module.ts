@@ -20,11 +20,9 @@ import { NgModule } from "@angular/core";
 import { BrowserModule, Title } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { AppComponent } from "@app/app.component";
-import { reducers } from "@app/store/app.states";
-import { AppEffects } from "@app/store/effects/app.effects";
+import { appStateEffects, appStateReducers } from "@app/store/app.states";
 import { CustomTranslateParser } from "@app/translate-parser";
 import { environment } from "@env/environment";
-import { AuthEffects } from "@features/account/store/auth.effects";
 import { FaIconLibrary, FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import {
   faAsterisk,
@@ -139,12 +137,12 @@ export function initFontAwesome(iconLibrary: FaIconLibrary) {
     HttpClientModule,
 
     // Dependencies.
-    StoreModule.forRoot(reducers),
+    StoreModule.forRoot(appStateReducers),
     StoreDevtoolsModule.instrument({
       maxAge: 25, // Retains last 25 states
       logOnly: environment.production // Restrict extension to log-only mode
     }),
-    EffectsModule.forRoot([AppEffects, AuthEffects]),
+    EffectsModule.forRoot(appStateEffects),
 
     FontAwesomeModule,
     TimeagoModule.forRoot({

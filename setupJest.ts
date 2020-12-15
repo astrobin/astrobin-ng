@@ -11,7 +11,6 @@ import { SubscriptionsService } from "@features/subscriptions/services/subscript
 import { TranslateService } from "@ngx-translate/core";
 import { LoginFormComponent } from "@shared/components/auth/login-form/login-form.component";
 import { UsernameService } from "@shared/components/misc/username/username.service";
-import { AppContextGenerator } from "@shared/generators/app-context.generator";
 import { UserProfileGenerator } from "@shared/generators/user-profile.generator";
 import { UserGenerator } from "@shared/generators/user.generator";
 import { UserInterface } from "@shared/interfaces/user.interface";
@@ -19,7 +18,6 @@ import { CommonApiService } from "@shared/services/api/classic/common/common-api
 import { ImageApiService } from "@shared/services/api/classic/images-app/image/image-api.service";
 import { ThumbnailGroupApiService } from "@shared/services/api/classic/images-app/thumbnail-group/thumbnail-group-api.service";
 import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
-import { AppContextInterface, AppContextService } from "@shared/services/app-context/app-context.service";
 import { AuthService } from "@shared/services/auth.service";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { UserStoreService } from "@shared/services/user-store.service";

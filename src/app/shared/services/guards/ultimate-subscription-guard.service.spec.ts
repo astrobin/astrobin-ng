@@ -1,7 +1,6 @@
 import { TestBed } from "@angular/core/testing";
 import { RouterStateSnapshot } from "@angular/router";
 import { AppModule } from "@app/app.module";
-import { AppModule } from "@app/app.module";
 import { AppState } from "@app/store/app.states";
 import { AppGenerator } from "@app/store/generators/app.generator";
 import { AuthGenerator } from "@features/account/store/auth.generator";
@@ -10,8 +9,6 @@ import { UltimateSubscriptionGuardService } from "@shared/services/guards/ultima
 import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
 import { TestConstants } from "@shared/test-constants";
 import { MockBuilder, NG_MOCKS_GUARDS } from "ng-mocks";
-import { AppModule } from "@app/app.module";
-import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
 
 describe("UltimateSubscriptionGuardService", () => {
   let service: UltimateSubscriptionGuardService;
