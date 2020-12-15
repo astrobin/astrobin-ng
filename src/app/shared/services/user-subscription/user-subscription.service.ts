@@ -51,6 +51,7 @@ export class UserSubscriptionService extends BaseService implements UserSubscrip
 
   uploadAllowed(): Observable<boolean> {
     return this.store.pipe(
+      take(1),
       switchMap(state =>
         zip(
           this.hasValidSubscription(state.auth.userProfile, [
@@ -95,6 +96,7 @@ export class UserSubscriptionService extends BaseService implements UserSubscrip
 
   fileSizeAllowed(size: number): Observable<{ allowed: boolean; max: number }> {
     return this.store.pipe(
+      take(1),
       switchMap(state =>
         zip(
           this.hasValidSubscription(state.auth.userProfile, [
@@ -145,6 +147,7 @@ export class UserSubscriptionService extends BaseService implements UserSubscrip
 
   getSubscription(userSubscription: UserSubscriptionInterface): Observable<SubscriptionInterface | null> {
     return this.store.pipe(
+      take(1),
       map(state => {
         let ret: SubscriptionInterface = null;
 

@@ -199,13 +199,14 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
           this._warnAboutVeryLargeFile(size);
           return true;
         } else {
-          const message =
-            "Sorry, but this image is too large. Under your current subscription plan, the maximum " +
-            "allowed image size is {{max}}.";
           this.popNotificationsService.error(
-            this.translateService.instant(message, {
-              max: result.max / 1024 / 1024 + " MB"
-            })
+            this.translateService.instant(
+              "Sorry, but this image is too large. Under your current subscription plan, the maximum " +
+                "allowed image size is {{max}}.",
+              {
+                max: result.max / 1024 / 1024 + " MB"
+              }
+            )
           );
           return false;
         }
@@ -256,18 +257,20 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
     let message;
 
     if (size > 200 * MB) {
-      message =
+      message = this.translateService.instant(
         "Warning! That's a large file you got there! AstroBin does not impose artificial limitation in the file " +
-        "size you can upload with an Ultimate subscription, but we cannot guarantee that all images above 200 MB or " +
-        "~8000x8000 pixels will work. Feel free to give it a shot tho!";
+          "size you can upload with an Ultimate subscription, but we cannot guarantee that all images above 200 MB or " +
+          "~8000x8000 pixels will work. Feel free to give it a shot tho!"
+      );
     } else if (size > 100 * MB) {
-      message =
+      message = this.translateService.instant(
         "Heads up! Are you sure you want to upload such a large file? It's okay to do so but probably not many " +
-        "people will want to see it at its full resolution, if it will take too long for them to download it.";
+          "people will want to see it at its full resolution, if it will take too long for them to download it."
+      );
     }
 
     if (!!message) {
-      this.popNotificationsService.warning(this.translateService.instant(message));
+      this.popNotificationsService.warning(message);
     }
   }
 }
