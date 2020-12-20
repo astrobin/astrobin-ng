@@ -34,20 +34,4 @@ describe("ImageService", () => {
       );
     });
   });
-
-  describe("getSize", () => {
-    it("should return the same size if both width and height are defined in the alias", done => {
-      service.getSize$({ width: 1000, height: 1000 }, ImageAlias.GALLERY).subscribe(size => {
-        expect(size).toEqual({ width: 130, height: 130 });
-        done();
-      });
-    });
-
-    it("should return the correct size if only the width is defined in the alias", done => {
-      service.getSize$({ width: 1000, height: 1000 }, ImageAlias.REGULAR).subscribe(size => {
-        expect(size).toEqual({ width: 620, height: 384 });
-        done();
-      });
-    });
-  });
 });

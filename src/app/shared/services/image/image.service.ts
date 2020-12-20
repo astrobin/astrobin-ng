@@ -24,36 +24,4 @@ export class ImageService {
 
     return `https://via.placeholder.com/${size.width}x${size.height}/${background}/${foreground}?text=${text}`;
   }
-
-  getSize$(size: ImageSize, alias: ImageAlias): Observable<ImageSize> {
-    return this.store$.pipe(
-      take(1),
-      map(state => {
-        const aliases = state.app.backendConfig.THUMBNAIL_ALIASES;
-        const aliasSize = aliases[alias].size;
-        const aliasWidth = aliasSize[0];
-        const aliasHeight = aliasSize[1];
-
-        if (aliasWidth > 0 && aliasHeight > 0) {
-          return { width: aliasWidth, height: aliasHeight };
-        }
-
-        if (aliasWidth > 0 && aliasHeight === 0) {
-          return {
-            width: aliasWidth,
-            height: Math.round(aliasWidth / (size.height / aliasWidth))
-          };
-        }
-
-        if (aliasWidth > 0 && aliasHeight === 0) {
-          return {
-            width: Math.round(aliasHeight / (size.width / aliasHeight)),
-            height: aliasHeight
-          };
-        }
-
-        return { width: 0, height: 0 };
-      })
-    );
-  }
 }

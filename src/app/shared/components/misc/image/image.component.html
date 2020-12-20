@@ -1,10 +1,8 @@
 <ng-container *ngIf="image && imageThumbnail; else loading">
-  <img
-    [src]="makeUrl(imageThumbnail.url)"
-    [alt]="image.title"
-    [width]="size.width"
-    [height]="size.height"
-  />
+  <div
+    class="astrobin-image"
+    [style.backgroundImage]="'url(' + makeUrl(imageThumbnail.url) + ')'">
+  </div>
 </ng-container>
 
 <ng-template #loading>

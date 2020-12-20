@@ -1,4 +1,4 @@
-context.only("image", () => {
+context("image", () => {
   beforeEach(() => {
     cy.server();
     cy.setupInitializationRoutes();

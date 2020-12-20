@@ -19,7 +19,6 @@ import { map, switchMap, take, tap } from "rxjs/operators";
 export class ImageComponent extends BaseComponentDirective implements OnInit {
   image: ImageInterface;
   imageThumbnail: ImageThumbnailInterface;
-  size: ImageSize;
 
   @Input()
   id: number;
@@ -52,9 +51,6 @@ export class ImageComponent extends BaseComponentDirective implements OnInit {
       })
     );
 
-  private _getSize$ = (image: ImageInterface, alias: ImageAlias): Observable<ImageSize> =>
-    this.imageService.getSize$({ width: image.w, height: image.h }, alias);
-
   constructor(
     public readonly store$: Store<State>,
     public readonly imageApiService: ImageApiService,
@@ -74,15 +70,7 @@ export class ImageComponent extends BaseComponentDirective implements OnInit {
     }
 
     this._getImage$(this.id)
-      .pipe(
-        switchMap(image =>
-          this._getSize$(image, this.alias).pipe(
-            tap(size => (this.size = size)),
-            map(() => image)
-          )
-        ),
-        switchMap(image => this._getThumbnail$(image, this.revision, this.alias))
-      )
+      .pipe(switchMap(image => this._getThumbnail$(image, this.revision, this.alias)))
       .subscribe(thumbnail => {
         if (this.isPlaceholder(thumbnail.url)) {
           this._startGetThumbnailLoop();
@@ -96,7 +84,7 @@ export class ImageComponent extends BaseComponentDirective implements OnInit {
 
   makeUrl(url: string): string {
     if (this.isPlaceholder(url)) {
-      return this.imageService.getPlaceholder({ width: this.size.width, height: this.size.height });
+      return this.imageService.getPlaceholder({ width: this.image.w, height: this.image.h });
     }
 
     return url;
