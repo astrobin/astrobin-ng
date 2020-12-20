@@ -6,4 +6,6 @@ export interface ImageInterface {
   imageFile: string;
   isWip: boolean;
   skipNotifications: boolean;
+  w: number;
+  h: number;
 }

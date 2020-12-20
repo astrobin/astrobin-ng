@@ -2,6 +2,8 @@ import { HttpClientModule } from "@angular/common/http";
 import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
 import { AppModule } from "@app/app.module";
+import { environment } from "@env/environment";
+import { ImageThumbnailGenerator } from "@shared/generators/image-thumbnail.generator";
 import { ImageGenerator } from "@shared/generators/image.generator";
 import { MockBuilder } from "ng-mocks";
 import { ImageApiService } from "./image-api.service";
@@ -25,7 +27,7 @@ describe("ImageApiService", () => {
     expect(service).toBeTruthy();
   });
 
-  it("getThumbnailGroup should work", () => {
+  it("getImage should work", () => {
     const image = ImageGenerator.image();
 
     service.getImage(image.pk).subscribe(response => {
@@ -35,5 +37,27 @@ describe("ImageApiService", () => {
     const req = httpMock.expectOne(`${service.configUrl}/image/${image.pk}/`);
     expect(req.request.method).toBe("GET");
     req.flush(image);
+  });
+
+  it("getThumbnail should work", () => {
+    const image = ImageGenerator.image();
+
+    service.getThumbnail(image.hash, "final", "regular").subscribe(response => {
+      expect(response.url).toEqual("/foo");
+      expect(response.id).toEqual(image.pk);
+      expect(response.revision).toEqual("final");
+      expect(response.alias).toEqual("regular");
+    });
+
+    const req = httpMock.expectOne(`${environment.classicBaseUrl}/${image.hash}/final/thumb/regular/`);
+    expect(req.request.method).toBe("GET");
+    req.flush(
+      ImageThumbnailGenerator.thumbnail({
+        url: "/foo",
+        id: image.pk,
+        revision: "final",
+        alias: "regular"
+      })
+    );
   });
 });

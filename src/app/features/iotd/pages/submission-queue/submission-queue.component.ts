@@ -3,6 +3,7 @@ import { LoadSubmissionQueue } from "@features/iotd/store/submission-queue.actio
 import { State } from "@features/iotd/store/submission-queue.reducer";
 import { selectSubmissionQueue } from "@features/iotd/store/submission-queue.selectors";
 import { select, Store } from "@ngrx/store";
+import { ImageAlias } from "@shared/enums/image-alias.enum";
 import { Observable } from "rxjs";
 
 @Component({
@@ -11,6 +12,7 @@ import { Observable } from "rxjs";
   styleUrls: ["./submission-queue.component.scss"]
 })
 export class SubmissionQueueComponent implements OnInit {
+  ImageAlias = ImageAlias;
   submissionQueue$: Observable<State> = this.store$.pipe(select(selectSubmissionQueue));
 
   constructor(public readonly store$: Store<State>) {}

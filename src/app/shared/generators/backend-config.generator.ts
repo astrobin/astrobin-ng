@@ -1,3 +1,4 @@
+import { ImageAlias } from "@shared/enums/image-alias.enum";
 import { BackendConfigInterface } from "@shared/interfaces/backend-config.interface";
 
 export class BackendConfigGenerator {
@@ -22,7 +23,15 @@ export class BackendConfigGenerator {
       PREMIUM_PRICE_ULTIMATE_2020: 60,
       MAX_IMAGE_PIXELS: 16536 * 16536,
       GOOGLE_ADS_ID: "GOOGLE_ADS_1234",
-      REQUEST_COUNTRY: "us"
+      REQUEST_COUNTRY: "us",
+      THUMBNAIL_ALIASES: {
+        [ImageAlias.REGULAR]: {
+          size: [620, 0]
+        },
+        [ImageAlias.GALLERY]: {
+          size: [130, 130]
+        }
+      }
     };
   }
 }

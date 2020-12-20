@@ -9,7 +9,9 @@ export class ImageGenerator {
       title: "Generated image",
       imageFile: "/media/images/generated.jpg",
       isWip: false,
-      skipNotifications: false
+      skipNotifications: false,
+      w: 1000,
+      h: 1000
     };
   }
 }

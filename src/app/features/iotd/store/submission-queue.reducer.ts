@@ -1,11 +1,11 @@
-import { SubmissionQueueEntryInterface } from "@features/iotd/services/submission-queue-api.service";
+import { ImageInterface } from "@shared/interfaces/image.interface";
 import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
 import { SubmissionQueueActions, SubmissionQueueActionTypes } from "./submission-queue.actions";
 
 export const submissionQueueFeatureKey = "submissionQueue";
 
 // tslint:disable-next-line:no-empty-interface
-export interface SubmissionQueueStoreEntryInterface extends SubmissionQueueEntryInterface {}
+export interface SubmissionQueueStoreEntryInterface extends ImageInterface {}
 
 export interface State {
   entries: PaginatedApiResultInterface<SubmissionQueueStoreEntryInterface> | null;

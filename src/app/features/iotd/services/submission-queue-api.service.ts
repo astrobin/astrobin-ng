@@ -6,18 +6,14 @@ import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/pag
 import { LoadingService } from "@shared/services/loading.service";
 import { Observable } from "rxjs";
 
-export interface SubmissionQueueEntryInterface {
-  image: ImageInterface;
-}
-
 @Injectable()
 export class SubmissionQueueApiService extends BaseClassicApiService {
   constructor(public readonly loadingService: LoadingService, public readonly http: HttpClient) {
     super(loadingService);
   }
 
-  getEntries(page = 1): Observable<PaginatedApiResultInterface<SubmissionQueueEntryInterface>> {
-    return this.http.get<PaginatedApiResultInterface<SubmissionQueueEntryInterface>>(
+  getEntries(page = 1): Observable<PaginatedApiResultInterface<ImageInterface>> {
+    return this.http.get<PaginatedApiResultInterface<ImageInterface>>(
       `${this.baseUrl}/iotd/submission-queue/?page=${page}`
     );
   }

@@ -1,3 +1,10 @@
+export interface ThumbnailAliases {
+  [key: string]: {
+    size: number[];
+    [property: string]: any;
+  };
+}
+
 export interface BackendConfigInterface {
   version?: string;
   i18nHash: string;
@@ -20,4 +27,5 @@ export interface BackendConfigInterface {
   MAX_IMAGE_PIXELS: number;
   GOOGLE_ADS_ID?: string;
   REQUEST_COUNTRY: string;
+  THUMBNAIL_ALIASES: ThumbnailAliases;
 }
