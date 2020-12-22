@@ -10,7 +10,7 @@
   <ng-container *ngIf="!!submissionQueue">
     <ng-container *ngIf="submissionQueue.length > 0; else noEntries">
 
-      <div *ngFor="let entry of submissionQueue" class="row page">
+      <div *ngFor="let entry of submissionQueue" class="row page submission-queue-entry">
 
         <div class="col-sm-12 col-md-6 col-image">
           <astrobin-image
