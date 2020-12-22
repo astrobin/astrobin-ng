@@ -68,4 +68,14 @@ describe("UtilsService", () => {
       expect(service.isImage("foo.txt")).toBe(false);
     });
   });
+
+  describe("arrayUniqueProperty", () => {
+    it("should work", () => {
+      const a = { pk: 1 };
+      const b = { pk: 2 };
+      const c = { pk: 1 };
+
+      expect(service.arrayUniqueProperty([a, b, c], "pk")).toEqual([a, b]);
+    });
+  });
 });

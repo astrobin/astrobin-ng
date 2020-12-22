@@ -1,5 +1,7 @@
 import { Component, HostBinding, Input, OnInit } from "@angular/core";
-import { State } from "@app/store/reducers/app.reducers";
+import { LoadImage } from "@app/store/actions/image.actions";
+import { AppState } from "@app/store/app.states";
+import { selectImage } from "@app/store/selectors/app/image.selectors";
 import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
@@ -9,7 +11,7 @@ import { ImageApiService } from "@shared/services/api/classic/images/image/image
 import { ThumbnailGroupApiService } from "@shared/services/api/classic/images/thumbnail-group/thumbnail-group-api.service";
 import { ImageService } from "@shared/services/image/image.service";
 import { Observable } from "rxjs";
-import { switchMap, take, tap } from "rxjs/operators";
+import { filter, switchMap, take, tap } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-image",
@@ -21,6 +23,7 @@ export class ImageComponent extends BaseComponentDirective implements OnInit {
   imageThumbnail: ImageThumbnailInterface;
 
   @Input()
+  @HostBinding("attr.data-id")
   id: number;
 
   @Input()
@@ -32,35 +35,22 @@ export class ImageComponent extends BaseComponentDirective implements OnInit {
   @HostBinding("class.loading")
   loading = false;
 
-  private _getImage$ = (id: number): Observable<ImageInterface> =>
-    this.imageApiService.getImage(id).pipe(
-      take(1),
-      tap(image => {
-        this.image = image;
-        return image;
-      })
-    );
-
-  private _getThumbnail$ = (
-    image: ImageInterface,
-    revision: string,
-    alias: ImageAlias
-  ): Observable<ImageThumbnailInterface> =>
-    this.imageApiService.getThumbnail(image.hash || image.pk, revision, alias).pipe(
-      take(1),
-      tap(imageThumbnail => {
-        this.imageThumbnail = imageThumbnail;
-        return imageThumbnail;
-      })
-    );
-
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<AppState>,
     public readonly imageApiService: ImageApiService,
     public readonly thumbnailGroupApiService: ThumbnailGroupApiService,
     public readonly imageService: ImageService
   ) {
     super();
+  }
+
+  get backgroundSize(): string {
+    switch (this.alias) {
+      case ImageAlias.REGULAR_CROP_ANONYMIZED:
+        return "initial";
+      default:
+        return "content";
+    }
   }
 
   ngOnInit(): void {
@@ -74,8 +64,14 @@ export class ImageComponent extends BaseComponentDirective implements OnInit {
 
     this.loading = true;
 
-    this._getImage$(this.id)
-      .pipe(switchMap(image => this._getThumbnail$(image, this.revision, this.alias)))
+    this.store$
+      .select(selectImage, this.id)
+      .pipe(
+        filter(image => !!image),
+        take(1),
+        tap(image => (this.image = image)),
+        switchMap(image => this._getThumbnail$(image, this.revision, this.alias))
+      )
       .subscribe(thumbnail => {
         if (this.isPlaceholder(thumbnail.url)) {
           this._startGetThumbnailLoop();
@@ -83,15 +79,8 @@ export class ImageComponent extends BaseComponentDirective implements OnInit {
           this.loading = false;
         }
       });
-  }
 
-  get backgroundSize(): string {
-    switch (this.alias) {
-      case ImageAlias.REGULAR_CROP_ANONYMIZED:
-        return "initial";
-      default:
-        return "content";
-    }
+    this.store$.dispatch(new LoadImage(this.id));
   }
 
   isPlaceholder(url: string): boolean {
@@ -105,6 +94,19 @@ export class ImageComponent extends BaseComponentDirective implements OnInit {
 
     return url;
   }
+
+  private _getThumbnail$ = (
+    image: ImageInterface,
+    revision: string,
+    alias: ImageAlias
+  ): Observable<ImageThumbnailInterface> =>
+    this.imageApiService.getThumbnail(image.hash || image.pk, revision, alias).pipe(
+      take(1),
+      tap(imageThumbnail => {
+        this.imageThumbnail = imageThumbnail;
+        return imageThumbnail;
+      })
+    );
 
   private _startGetThumbnailLoop(): void {
     this._getThumbnail$(this.image, this.revision, this.alias)

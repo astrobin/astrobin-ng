@@ -1,7 +1,8 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { selectCamera, selectTelescope } from "@app/store/app.selectors";
 import { AppState } from "@app/store/app.states";
+import { selectCamera } from "@app/store/selectors/app/camera.selectors";
+import { selectTelescope } from "@app/store/selectors/app/telescope.selectors";
 import { Store } from "@ngrx/store";
 import { CameraInterface } from "@shared/interfaces/camera.interface";
 import { TelescopeInterface } from "@shared/interfaces/telescope.interface";

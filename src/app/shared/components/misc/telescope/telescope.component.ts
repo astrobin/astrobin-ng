@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { LoadTelescope } from "@app/store/actions/telescope.actions";
-import { selectTelescope } from "@app/store/app.selectors";
 import { AppState } from "@app/store/app.states";
+import { selectTelescope } from "@app/store/selectors/app/telescope.selectors";
 import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { TelescopeInterface } from "@shared/interfaces/telescope.interface";

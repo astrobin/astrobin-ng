@@ -1,7 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { selectTelescope } from "@app/store/app.selectors";
 import { AppState } from "@app/store/app.states";
+import { selectTelescope } from "@app/store/selectors/app/telescope.selectors";
 import { Store } from "@ngrx/store";
 import { TelescopeInterface } from "@shared/interfaces/telescope.interface";
 import { BaseClassicApiService } from "@shared/services/api/classic/base-classic-api.service";
