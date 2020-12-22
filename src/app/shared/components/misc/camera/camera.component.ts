@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from "@angular/core";
-import { LoadCamera } from "@app/store/actions/app.actions";
+import { LoadCamera } from "@app/store/actions/camera.actions";
 import { AppState } from "@app/store/app.states";
 import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";

@@ -9,6 +9,7 @@ import { TranslateModule } from "@ngx-translate/core";
 import { CameraComponent } from "@shared/components/misc/camera/camera.component";
 import { FormlyFieldChunkedFileAccessorDirective } from "@shared/components/misc/formly-field-chunked-file/formly-field-chunked-file-accessor.directive";
 import { FormlyFieldChunkedFileComponent } from "@shared/components/misc/formly-field-chunked-file/formly-field-chunked-file.component";
+import { FullscreenImageViewerComponent } from "@shared/components/misc/fullscreen-image-viewer/fullscreen-image-viewer.component";
 import { ImageComponent } from "@shared/components/misc/image/image.component";
 import { LoadingIndicatorComponent } from "@shared/components/misc/loading-indicator/loading-indicator.component";
 import { RefreshButtonComponent } from "@shared/components/misc/refresh-button/refresh-button.component";
@@ -31,6 +32,7 @@ const components = [
   FooterComponent,
   FormlyFieldChunkedFileAccessorDirective,
   FormlyFieldChunkedFileComponent,
+  FullscreenImageViewerComponent,
   HeaderComponent,
   ImageComponent,
   LoadingIndicatorComponent,

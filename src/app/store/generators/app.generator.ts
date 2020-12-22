@@ -31,7 +31,8 @@ export class AppGenerator {
         )
       ],
       backendConfig: BackendConfigGenerator.backendConfig(),
-      telescopes: []
+      telescopes: [],
+      cameras: []
     };
   }
 }

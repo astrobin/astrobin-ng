@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from "@angular/core";
-import { LoadTelescope } from "@app/store/actions/app.actions";
+import { LoadTelescope } from "@app/store/actions/telescope.actions";
+import { selectTelescope } from "@app/store/app.selectors";
 import { AppState } from "@app/store/app.states";
 import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
@@ -27,10 +28,7 @@ export class TelescopeComponent extends BaseComponentDirective implements OnInit
       throw new Error("Attribute 'id' is required");
     }
 
-    this.telescope$ = this.store$.select(state => {
-      const telescopes = state.app.telescopes.filter(telescope => telescope.pk === this.id);
-      return telescopes.length > 0 ? telescopes[0] : null;
-    });
+    this.telescope$ = this.store$.select(selectTelescope, this.id);
 
     this.store$.dispatch(new LoadTelescope(this.id));
   }

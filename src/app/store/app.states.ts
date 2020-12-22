@@ -1,4 +1,6 @@
-import { AppEffects } from "@app/store/effects/app.effects";
+import { CameraEffects } from "@app/store/effects/camera.effects";
+import { InitializeAppEffects } from "@app/store/effects/initialize-app.effects";
+import { TelescopeEffects } from "@app/store/effects/telescope.effects";
 import { AuthEffects } from "@features/account/store/auth.effects";
 import * as auth from "@features/account/store/auth.reducers";
 import * as app from "./reducers/app.reducers";
@@ -13,4 +15,4 @@ export const appStateReducers = {
   auth: auth.reducer
 };
 
-export const appStateEffects = [AppEffects, AuthEffects];
+export const appStateEffects = [InitializeAppEffects, TelescopeEffects, CameraEffects, AuthEffects];
