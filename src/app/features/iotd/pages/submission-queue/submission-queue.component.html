@@ -1,31 +1,40 @@
-<div class="page">
-  <h1>{{ "Submission queue" | translate }}</h1>
+<h1 class="page d-flex justify-content-between">
+  <span class="flex-grow-1">
+    {{ "Submission queue" | translate }}
+  </span>
 
-  <ng-container *ngIf="submissionQueue$ | async as submissionQueue">
-    <ng-container *ngIf="!!submissionQueue.entries; else loading">
-      <ng-container *ngIf="submissionQueue.entries.count > 0; else noEntries">
+  <astrobin-refresh-button (click)="refresh()"></astrobin-refresh-button>
+</h1>
 
-        <div class="row">
-          <div class="col-sm-12 col-md-6">
-            <astrobin-image
-              *ngFor="let result of submissionQueue.entries.results"
-              [id]="result.pk"
-              [alias]="ImageAlias.REGULAR">
-            </astrobin-image>
-          </div>
+<ng-container *ngIf="submissionQueue$ | async as submissionQueue">
+  <ng-container *ngIf="!!submissionQueue.entries; else loading">
+    <ng-container *ngIf="submissionQueue.entries.count > 0; else noEntries">
+
+      <div class="row page" *ngFor="let result of submissionQueue.entries.results">
+        <div class="col-sm-12 col-md-6">
+          <astrobin-image
+            [id]="result.pk"
+            [alias]="ImageAlias.REGULAR_ANONYMIZED">
+          </astrobin-image>
         </div>
+        <div class="col-sm-12 col-md-6">
+          <astrobin-image
+            [id]="result.pk"
+            [alias]="ImageAlias.REGULAR_CROP_ANONYMIZED">
+          </astrobin-image>
+        </div>
+      </div>
 
-      </ng-container>
     </ng-container>
   </ng-container>
-</div>
+</ng-container>
 
 <ng-template #loading>
   <astrobin-loading-indicator></astrobin-loading-indicator>
 </ng-template>
 
 <ng-template #noEntries>
-  <p>
+  <p class="page">
     {{ "The submission queue is currently empty." | translate }}&nbsp;{{ "Please come back later!" | translate }}
   </p>
 </ng-template>

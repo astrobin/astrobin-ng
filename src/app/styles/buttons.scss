@@ -31,7 +31,7 @@
   }
 
   &.loading {
-    background: url("/assets/images/white-loader.svg") $accent-color no-repeat center !important;
+    background: url("/assets/images/white-loader.svg") transparent no-repeat center !important;
     background-size: 1rem !important;
     color: transparent !important;
     text-shadow: none !important;

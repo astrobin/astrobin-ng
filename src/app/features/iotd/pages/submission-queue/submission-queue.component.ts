@@ -18,6 +18,10 @@ export class SubmissionQueueComponent implements OnInit {
   constructor(public readonly store$: Store<State>) {}
 
   ngOnInit(): void {
+    this.refresh();
+  }
+
+  refresh(): void {
     this.store$.dispatch(new LoadSubmissionQueue());
   }
 }

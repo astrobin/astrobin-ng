@@ -10,6 +10,7 @@ import { FormlyFieldChunkedFileAccessorDirective } from "@shared/components/misc
 import { FormlyFieldChunkedFileComponent } from "@shared/components/misc/formly-field-chunked-file/formly-field-chunked-file.component";
 import { ImageComponent } from "@shared/components/misc/image/image.component";
 import { LoadingIndicatorComponent } from "@shared/components/misc/loading-indicator/loading-indicator.component";
+import { RefreshButtonComponent } from "@shared/components/misc/refresh-button/refresh-button.component";
 import { NgxFilesizeModule } from "ngx-filesize";
 import { UploadxModule } from "ngx-uploadx";
 import { PipesModule } from "../pipes/pipes.module";
@@ -32,6 +33,7 @@ const components = [
   LoginFormComponent,
   LoginModalComponent,
   ReadOnlyModeComponent,
+  RefreshButtonComponent,
   UsernameComponent
 ];
 
