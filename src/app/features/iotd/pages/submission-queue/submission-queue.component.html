@@ -7,31 +7,38 @@
 </h1>
 
 <ng-container *ngIf="submissionQueue$ | async as submissionQueue">
-  <ng-container *ngIf="!!submissionQueue.entries; else loading">
+  <ng-container *ngIf="!!submissionQueue.entries">
     <ng-container *ngIf="submissionQueue.entries.count > 0; else noEntries">
 
       <div class="row page" *ngFor="let result of submissionQueue.entries.results">
-        <div class="col-sm-12 col-md-6">
+
+        <div class="col-sm-12 col-md-6 col-image">
           <astrobin-image
             [id]="result.pk"
-            [alias]="ImageAlias.REGULAR_ANONYMIZED">
+            [alias]="ImageAlias.STORY">
           </astrobin-image>
         </div>
-        <div class="col-sm-12 col-md-6">
+
+        <div class="col-sm-12 col-md-6 col-image">
           <astrobin-image
             [id]="result.pk"
             [alias]="ImageAlias.REGULAR_CROP_ANONYMIZED">
           </astrobin-image>
+          <div class="hundred_percent">100%</div>
+        </div>
+
+        <div class="col-12">
+          <div class="mt-5 text-right">
+            <button class="btn btn-primary">
+              {{ "Promote" | translate }}
+            </button>
+          </div>
         </div>
       </div>
 
     </ng-container>
   </ng-container>
 </ng-container>
-
-<ng-template #loading>
-  <astrobin-loading-indicator></astrobin-loading-indicator>
-</ng-template>
 
 <ng-template #noEntries>
   <p class="page">

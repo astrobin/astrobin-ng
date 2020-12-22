@@ -1,5 +1,26 @@
+@import "../../../../styles/variables";
+
 :host {
-  astrobin-image {
-    height: 240px;
+  .col-image {
+    position: relative;
+
+    astrobin-image {
+      height: 320px;
+
+      &.loading + .hundred_percent {
+        display: none;
+      }
+
+      &:not(.loading) + .hundred_percent {
+        display: block;
+        position: absolute;
+        font-size: 2rem;
+        top: .5rem;
+        right: 1.5rem;
+        color: $white;
+        text-shadow: 1px 1px 3px $black;
+        opacity: .3;
+      }
+    }
   }
 }

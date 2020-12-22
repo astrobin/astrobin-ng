@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, HostBinding, Input, OnInit } from "@angular/core";
 import { State } from "@app/store/reducers/app.reducers";
 import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
@@ -7,9 +7,9 @@ import { ImageThumbnailInterface } from "@shared/interfaces/image-thumbnail.inte
 import { ImageInterface } from "@shared/interfaces/image.interface";
 import { ImageApiService } from "@shared/services/api/classic/images-app/image/image-api.service";
 import { ThumbnailGroupApiService } from "@shared/services/api/classic/images-app/thumbnail-group/thumbnail-group-api.service";
-import { ImageService, ImageSize } from "@shared/services/image/image.service";
+import { ImageService } from "@shared/services/image/image.service";
 import { Observable } from "rxjs";
-import { map, switchMap, take, tap } from "rxjs/operators";
+import { switchMap, take, tap } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-image",
@@ -28,6 +28,9 @@ export class ImageComponent extends BaseComponentDirective implements OnInit {
 
   @Input()
   alias: ImageAlias;
+
+  @HostBinding("class.loading")
+  loading = false;
 
   private _getImage$ = (id: number): Observable<ImageInterface> =>
     this.imageApiService.getImage(id).pipe(
@@ -69,13 +72,26 @@ export class ImageComponent extends BaseComponentDirective implements OnInit {
       throw new Error("Attribute 'alias' is required");
     }
 
+    this.loading = true;
+
     this._getImage$(this.id)
       .pipe(switchMap(image => this._getThumbnail$(image, this.revision, this.alias)))
       .subscribe(thumbnail => {
         if (this.isPlaceholder(thumbnail.url)) {
           this._startGetThumbnailLoop();
+        } else {
+          this.loading = false;
         }
       });
+  }
+
+  get backgroundSize(): string {
+    switch (this.alias) {
+      case ImageAlias.REGULAR_CROP_ANONYMIZED:
+        return "initial";
+      default:
+        return "content";
+    }
   }
 
   isPlaceholder(url: string): boolean {
@@ -98,6 +114,8 @@ export class ImageComponent extends BaseComponentDirective implements OnInit {
           setTimeout(() => {
             this._startGetThumbnailLoop();
           }, 500);
+        } else {
+          this.loading = false;
         }
       });
   }

@@ -3,7 +3,9 @@ import { LoadSubmissionQueue } from "@features/iotd/store/submission-queue.actio
 import { State } from "@features/iotd/store/submission-queue.reducer";
 import { selectSubmissionQueue } from "@features/iotd/store/submission-queue.selectors";
 import { select, Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
+import { TitleService } from "@shared/services/title/title.service";
 import { Observable } from "rxjs";
 
 @Component({
@@ -15,9 +17,14 @@ export class SubmissionQueueComponent implements OnInit {
   ImageAlias = ImageAlias;
   submissionQueue$: Observable<State> = this.store$.pipe(select(selectSubmissionQueue));
 
-  constructor(public readonly store$: Store<State>) {}
+  constructor(
+    public readonly store$: Store<State>,
+    public readonly titleService: TitleService,
+    public readonly translate: TranslateService
+  ) {}
 
   ngOnInit(): void {
+    this.titleService.setTitle(this.translate.instant("Submission queue"));
     this.refresh();
   }
 
