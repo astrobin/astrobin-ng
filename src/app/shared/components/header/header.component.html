@@ -302,28 +302,28 @@
           <div class="dropdown-divider"></div>
           <h6 class="dropdown-header">{{"My places" | translate}}</h6>
 
-          <a *ngIf="state.currentUser | isProducer" [href]="classicRoutes.COMMERCIAL_PRODUCTS(state.currentUser)"
+          <a *ngIf="state.auth.user | isProducer" [href]="classicRoutes.COMMERCIAL_PRODUCTS(state.auth.user)"
             class="dropdown-item">
             <fa-icon icon="barcode"></fa-icon>
             {{ "Commercial products" | translate }}
           </a>
 
-          <a [href]="classicRoutes.GALLERY(state.currentUser)" class="dropdown-item">
+          <a [href]="classicRoutes.GALLERY(state.auth.user)" class="dropdown-item">
             <fa-icon icon="image"></fa-icon>
             {{ "Public Gallery" | translate }}
           </a>
 
-          <a [href]="classicRoutes.STAGING_GALLERY(state.currentUser)" class="dropdown-item">
+          <a [href]="classicRoutes.STAGING_GALLERY(state.auth.user)" class="dropdown-item">
             <fa-icon icon="lock"></fa-icon>
             {{ "Staging Area" | translate }}
           </a>
 
-          <a [href]="classicRoutes.BOOKMARKS(state.currentUser)" class="dropdown-item">
+          <a [href]="classicRoutes.BOOKMARKS(state.auth.user)" class="dropdown-item">
             <fa-icon icon="bookmark"></fa-icon>
             {{ "Bookmarks" | translate }}
           </a>
 
-          <a [href]="classicRoutes.PLOTS(state.currentUser)" class="dropdown-item">
+          <a [href]="classicRoutes.PLOTS(state.auth.user)" class="dropdown-item">
             <fa-icon icon="chart-bar"></fa-icon>
             {{ "Plots" | translate }}
           </a>
@@ -335,7 +335,7 @@
             {{ "My messages" | translate }}
           </a>
 
-          <a [href]="classicRoutes.API_KEYS(state.currentUser)" class="dropdown-item">
+          <a [href]="classicRoutes.API_KEYS(state.auth.user)" class="dropdown-item">
             <fa-icon icon="key"></fa-icon>
             {{ "API Keys" | translate }}
           </a>
