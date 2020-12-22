@@ -1,6 +1,6 @@
-import { initialState, reducer } from "./submission-queue.reducer";
+import { initialState, reducer } from "./iotd.reducer";
 
-describe("SubmissionQueue Reducer", () => {
+describe("Iotd Reducer", () => {
   describe("an unknown action", () => {
     it("should return the previous state", () => {
       const action = {} as any;

@@ -30,7 +30,8 @@ export class AppGenerator {
           SubscriptionName.ASTROBIN_LITE_AUTORENEW
         )
       ],
-      backendConfig: BackendConfigGenerator.backendConfig()
+      backendConfig: BackendConfigGenerator.backendConfig(),
+      telescopes: []
     };
   }
 }

@@ -3,11 +3,11 @@ import { Injectable } from "@angular/core";
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from "@angular/router";
 import { AppState } from "@app/store/app.states";
 import { Store } from "@ngrx/store";
+import { ImageApiService } from "@shared/services/api/classic/images/image/image-api.service";
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { EMPTY, Observable, Observer } from "rxjs";
 import { catchError, map, switchMap } from "rxjs/operators";
-import { ImageApiService } from "../api/classic/images-app/image/image-api.service";
 import { AuthService } from "../auth.service";
 
 @Injectable()

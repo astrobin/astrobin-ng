@@ -1,22 +1,18 @@
 import { TestBed } from "@angular/core/testing";
 import { provideMockActions } from "@ngrx/effects/testing";
 import { Observable } from "rxjs";
+import { IotdEffects } from "./iotd.effects";
 
-import { SubmissionQueueEffects } from "./submission-queue.effects";
-
-describe("SubmissionQueueEffects", () => {
+describe("IotdEffects", () => {
   let actions$: Observable<any>;
-  let effects: SubmissionQueueEffects;
+  let effects: IotdEffects;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        SubmissionQueueEffects,
-        provideMockActions(() => actions$)
-      ]
+      providers: [IotdEffects, provideMockActions(() => actions$)]
     });
 
-    effects = TestBed.inject(SubmissionQueueEffects);
+    effects = TestBed.inject(IotdEffects);
   });
 
   it("should be created", () => {

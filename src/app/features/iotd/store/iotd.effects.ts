@@ -2,24 +2,19 @@ import { Injectable } from "@angular/core";
 import { SubmissionQueueApiService } from "@features/iotd/services/submission-queue-api.service";
 import { Actions, Effect, ofType } from "@ngrx/effects";
 import { LoadingService } from "@shared/services/loading.service";
-import { EMPTY, of } from "rxjs";
-import { catchError, concatMap, delay, map, switchMap, tap } from "rxjs/operators";
-import {
-  LoadSubmissionQueueFailure,
-  LoadSubmissionQueueSuccess,
-  SubmissionQueueActions,
-  SubmissionQueueActionTypes
-} from "./submission-queue.actions";
+import { of } from "rxjs";
+import { catchError, map, switchMap, tap } from "rxjs/operators";
+import { IotdActions, IotdActionTypes, LoadSubmissionQueueFailure, LoadSubmissionQueueSuccess } from "./iotd.actions";
 
 @Injectable()
-export class SubmissionQueueEffects {
+export class IotdEffects {
   @Effect()
   loadSubmissionQueue$ = this.actions$.pipe(
-    ofType(SubmissionQueueActionTypes.LOAD_SUBMISSION_QUEUE),
+    ofType(IotdActionTypes.LOAD_SUBMISSION_QUEUE),
     tap(() => this.loadingService.setLoading(true)),
     switchMap(() =>
       this.submissionQueueApiService.getEntries().pipe(
-        map(entries => new LoadSubmissionQueueSuccess({ data: { entries } })),
+        map(entries => new LoadSubmissionQueueSuccess(entries.results)),
         catchError(error => of(new LoadSubmissionQueueFailure()))
       )
     )
@@ -27,18 +22,18 @@ export class SubmissionQueueEffects {
 
   @Effect({ dispatch: false })
   loadSubmissionQueueSuccess$ = this.actions$.pipe(
-    ofType(SubmissionQueueActionTypes.LOAD_SUBMISSION_QUEUE_SUCCESS),
+    ofType(IotdActionTypes.LOAD_SUBMISSION_QUEUE_SUCCESS),
     tap(() => this.loadingService.setLoading(false))
   );
 
   @Effect({ dispatch: false })
   loadSubmissionQueueFailure$ = this.actions$.pipe(
-    ofType(SubmissionQueueActionTypes.LOAD_SUBMISSION_QUEUE_FAILURE),
+    ofType(IotdActionTypes.LOAD_SUBMISSION_QUEUE_FAILURE),
     tap(() => this.loadingService.setLoading(false))
   );
 
   constructor(
-    public readonly actions$: Actions<SubmissionQueueActions>,
+    public readonly actions$: Actions<IotdActions>,
     public readonly submissionQueueApiService: SubmissionQueueApiService,
     public readonly loadingService: LoadingService
   ) {}

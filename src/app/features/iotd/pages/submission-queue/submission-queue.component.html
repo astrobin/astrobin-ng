@@ -7,24 +7,52 @@
 </h1>
 
 <ng-container *ngIf="submissionQueue$ | async as submissionQueue">
-  <ng-container *ngIf="!!submissionQueue.entries">
-    <ng-container *ngIf="submissionQueue.entries.count > 0; else noEntries">
+  <ng-container *ngIf="!!submissionQueue">
+    <ng-container *ngIf="submissionQueue.length > 0; else noEntries">
 
-      <div class="row page" *ngFor="let result of submissionQueue.entries.results">
+      <div *ngFor="let entry of submissionQueue" class="row page">
 
         <div class="col-sm-12 col-md-6 col-image">
           <astrobin-image
-            [id]="result.pk"
-            [alias]="ImageAlias.STORY">
+            [alias]="ImageAlias.STORY"
+            [id]="entry.pk">
           </astrobin-image>
         </div>
 
         <div class="col-sm-12 col-md-6 col-image">
           <astrobin-image
-            [id]="result.pk"
-            [alias]="ImageAlias.REGULAR_CROP_ANONYMIZED">
+            [alias]="ImageAlias.REGULAR_CROP_ANONYMIZED"
+            [id]="entry.pk">
           </astrobin-image>
           <div class="hundred_percent">100%</div>
+        </div>
+
+        <div class="col-12">
+          <div class="gear">
+            <p>
+              <strong>
+                {{ "Imaging telescopes" | translate }}:
+              </strong>
+              <ng-container *ngIf="entry.imagingTelescopes?.length > 0; else noneSpecified">
+                <astrobin-telescope
+                  *ngFor="let telescope of entry.imagingTelescopes"
+                  [id]="telescope">
+                </astrobin-telescope>
+              </ng-container>
+            </p>
+
+            <p>
+              <strong>
+                {{ "Imaging cameras" | translate }}:
+              </strong>
+              <ng-container *ngIf="entry.imagingCameras?.length > 0; else noneSpecified">
+                <astrobin-camera
+                  *ngFor="let camera of entry.imagingCameras"
+                  [id]="camera">
+                </astrobin-camera>
+              </ng-container>
+            </p>
+          </div>
         </div>
 
         <div class="col-12">
@@ -44,4 +72,8 @@
   <p class="page">
     {{ "The submission queue is currently empty." | translate }}&nbsp;{{ "Please come back later!" | translate }}
   </p>
+</ng-template>
+
+<ng-template #noneSpecified>
+  {{ "None specified" | translate }}
 </ng-template>

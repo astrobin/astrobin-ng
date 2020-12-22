@@ -6,16 +6,16 @@ import { EffectsModule } from "@ngrx/effects";
 import { StoreModule } from "@ngrx/store";
 import { SharedModule } from "@shared/shared.module";
 import { SubmissionQueueComponent } from "./pages/submission-queue/submission-queue.component";
-import { SubmissionQueueEffects } from "./store/submission-queue.effects";
-import * as fromSubmissionQueue from "./store/submission-queue.reducer";
+import { IotdEffects } from "./store/iotd.effects";
+import * as fromIotd from "./store/iotd.reducer";
 
 @NgModule({
   declarations: [SubmissionQueueComponent],
   imports: [
     RouterModule.forChild(routes),
     SharedModule,
-    StoreModule.forFeature(fromSubmissionQueue.submissionQueueFeatureKey, fromSubmissionQueue.reducer),
-    EffectsModule.forFeature([SubmissionQueueEffects])
+    StoreModule.forFeature(fromIotd.iotdFeatureKey, fromIotd.reducer),
+    EffectsModule.forFeature([IotdEffects])
   ],
   providers: [SubmissionQueueApiService]
 })

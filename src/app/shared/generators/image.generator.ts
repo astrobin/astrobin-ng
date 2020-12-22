@@ -11,7 +11,9 @@ export class ImageGenerator {
       isWip: false,
       skipNotifications: false,
       w: 1000,
-      h: 1000
+      h: 1000,
+      imagingTelescopes: [],
+      imagingCameras: []
     };
   }
 }

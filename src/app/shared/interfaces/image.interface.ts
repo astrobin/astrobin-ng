@@ -8,4 +8,6 @@ export interface ImageInterface {
   skipNotifications: boolean;
   w: number;
   h: number;
+  imagingTelescopes: number[];
+  imagingCameras: number[];
 }

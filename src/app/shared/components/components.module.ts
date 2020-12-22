@@ -6,11 +6,14 @@ import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { NgbCollapseModule, NgbDropdownModule, NgbModalModule, NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
 import { FormlyModule } from "@ngx-formly/core";
 import { TranslateModule } from "@ngx-translate/core";
+import { CameraComponent } from "@shared/components/misc/camera/camera.component";
 import { FormlyFieldChunkedFileAccessorDirective } from "@shared/components/misc/formly-field-chunked-file/formly-field-chunked-file-accessor.directive";
 import { FormlyFieldChunkedFileComponent } from "@shared/components/misc/formly-field-chunked-file/formly-field-chunked-file.component";
 import { ImageComponent } from "@shared/components/misc/image/image.component";
 import { LoadingIndicatorComponent } from "@shared/components/misc/loading-indicator/loading-indicator.component";
 import { RefreshButtonComponent } from "@shared/components/misc/refresh-button/refresh-button.component";
+import { TelescopeComponent } from "@shared/components/misc/telescope/telescope.component";
+import { TextLoadingIndicatorComponent } from "@shared/components/misc/text-loading-indicator/text-loading-indicator.component";
 import { NgxFilesizeModule } from "ngx-filesize";
 import { UploadxModule } from "ngx-uploadx";
 import { PipesModule } from "../pipes/pipes.module";
@@ -23,6 +26,7 @@ import { ReadOnlyModeComponent } from "./misc/read-only-mode/read-only-mode.comp
 import { UsernameComponent } from "./misc/username/username.component";
 
 const components = [
+  CameraComponent,
   EmptyListComponent,
   FooterComponent,
   FormlyFieldChunkedFileAccessorDirective,
@@ -34,6 +38,8 @@ const components = [
   LoginModalComponent,
   ReadOnlyModeComponent,
   RefreshButtonComponent,
+  TelescopeComponent,
+  TextLoadingIndicatorComponent,
   UsernameComponent
 ];
 

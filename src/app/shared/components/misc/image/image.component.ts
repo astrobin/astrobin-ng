@@ -5,8 +5,8 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
 import { ImageAlias } from "@shared/enums/image-alias.enum";
 import { ImageThumbnailInterface } from "@shared/interfaces/image-thumbnail.interface";
 import { ImageInterface } from "@shared/interfaces/image.interface";
-import { ImageApiService } from "@shared/services/api/classic/images-app/image/image-api.service";
-import { ThumbnailGroupApiService } from "@shared/services/api/classic/images-app/thumbnail-group/thumbnail-group-api.service";
+import { ImageApiService } from "@shared/services/api/classic/images/image/image-api.service";
+import { ThumbnailGroupApiService } from "@shared/services/api/classic/images/thumbnail-group/thumbnail-group-api.service";
 import { ImageService } from "@shared/services/image/image.service";
 import { Observable } from "rxjs";
 import { switchMap, take, tap } from "rxjs/operators";

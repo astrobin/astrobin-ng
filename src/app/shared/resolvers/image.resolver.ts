@@ -1,10 +1,10 @@
 import { Location } from "@angular/common";
 import { Injectable } from "@angular/core";
 import { ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot } from "@angular/router";
+import { ImageApiService } from "@shared/services/api/classic/images/image/image-api.service";
 import { EMPTY, Observable } from "rxjs";
 import { catchError } from "rxjs/operators";
 import { ImageInterface } from "../interfaces/image.interface";
-import { ImageApiService } from "../services/api/classic/images-app/image/image-api.service";
 
 @Injectable({
   providedIn: "root"
