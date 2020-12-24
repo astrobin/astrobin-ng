@@ -1,5 +1,4 @@
 import "jest-preset-angular";
-import "ng-mocks/dist/jest";
 
 import "@angular/localize/init";
 
@@ -27,6 +26,8 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 import { MockService, ngMocks } from "ng-mocks";
 import { UploadxService } from "ngx-uploadx";
 import { EMPTY, of } from "rxjs";
+
+ngMocks.autoSpy("jest");
 
 ngMocks.defaultMock(NotificationsApiService, () => ({
   getAll: jest.fn().mockReturnValue(of(NotificationListResponseInterfaceGenerator.notificationListResponse())),
