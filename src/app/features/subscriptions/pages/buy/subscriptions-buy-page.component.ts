@@ -109,7 +109,14 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
         return "BENEFICIARY: AstroBin\n" + "IBAN       : BE76 9671 5599 8695\n" + "SWIFT / BIC: TRWIBEB1XXX ";
       case "USA":
       default:
-        return "WIRE ROUTING NO: 026073008\n" + "ACH ROUTING NO : 026073150\n" + "ACCOUNT NO     : 8310788830";
+        return (
+          "Paying from inside the USA\n" +
+          "ACCOUNT #: 9600000000061714\n" +
+          "ROUTING #: 084009519\n\n" +
+          "Paying from outside the USA\n" +
+          "ACCOUNT #: 8310788830\n" +
+          "SWIFT/BIC: CMFGUS33"
+        );
     }
   }
 
