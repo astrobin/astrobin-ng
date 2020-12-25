@@ -8,9 +8,6 @@ import { LoadingService } from "@shared/services/loading.service";
   styleUrls: ["./refresh-button.component.scss"]
 })
 export class RefreshButtonComponent extends BaseComponentDirective implements OnInit {
-  @Output()
-  public click = new EventEmitter<void>();
-
   constructor(readonly loadingService: LoadingService) {
     super();
   }
