@@ -11,6 +11,8 @@ export interface AppState {
   // Weather the app has been initialized.
   initialized: boolean;
 
+  currentFullscreenImage: number | null;
+
   // The user's language.
   language: string;
 
@@ -35,6 +37,7 @@ export interface AppState {
 
 export const initialAppState: AppState = {
   initialized: false,
+  currentFullscreenImage: null,
   language: "en",
   subscriptions: [],
   backendConfig: null,
@@ -52,6 +55,20 @@ export function reducer(state = initialAppState, action: All): AppState {
         initialized: true,
         subscriptions: action.payload.subscriptions,
         backendConfig: action.payload.backendConfig
+      };
+    }
+
+    case AppActionTypes.SHOW_FULLSCREEN_IMAGE: {
+      return {
+        ...state,
+        currentFullscreenImage: action.payload
+      };
+    }
+
+    case AppActionTypes.HIDE_FULLSCREEN_IMAGE: {
+      return {
+        ...state,
+        currentFullscreenImage: null
       };
     }
 

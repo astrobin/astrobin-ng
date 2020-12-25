@@ -1,6 +1,11 @@
 // tslint:disable:max-classes-per-file
 
 import { LoadCamera, LoadCameraSuccess } from "@app/store/actions/camera.actions";
+import {
+  HideFullscreenImage,
+  SetHasFullscreenImage,
+  ShowFullscreenImage
+} from "@app/store/actions/fullscreen-image.actions";
 import { LoadImage, LoadImageSuccess } from "@app/store/actions/image.actions";
 import { InitializeApp, InitializeAppSuccess } from "@app/store/actions/initialize-app.actions";
 import { LoadTelescope, LoadTelescopeSuccess } from "@app/store/actions/telescope.actions";
@@ -9,6 +14,10 @@ import { LoadThumbnail, LoadThumbnailSuccess } from "@app/store/actions/thumbnai
 export enum AppActionTypes {
   INITIALIZE = "[App] Initialize",
   INITIALIZE_SUCCESS = "[App] Initialize success",
+
+  SET_HAS_FULLSCREEN_IMAGE = "[App] Set 'has fullscreen content'",
+  SHOW_FULLSCREEN_IMAGE = "[App] Show full screen image",
+  HIDE_FULLSCREEN_IMAGE = "[App] Hide full screen image",
 
   LOAD_IMAGE = "[App] Load image",
   LOAD_IMAGE_SUCCESS = "[App] Load image success",
@@ -26,6 +35,8 @@ export enum AppActionTypes {
 export type All =
   | InitializeApp
   | InitializeAppSuccess
+  | ShowFullscreenImage
+  | HideFullscreenImage
   | LoadImage
   | LoadImageSuccess
   | LoadThumbnail

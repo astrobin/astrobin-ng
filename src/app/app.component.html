@@ -1,6 +1,6 @@
 <astrobin-header></astrobin-header>
 
-<div class="container">
+<div class="container" [class]="{'has-fullscreen-content': (hasFullscreenImage$ | async) === true}">
   <router-outlet></router-outlet>
 </div>
 

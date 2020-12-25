@@ -5,5 +5,12 @@
 
   > .container {
     flex: 1;
+
+    &.has-fullscreen-content {
+      flex: initial;
+      position: absolute;
+      height: 100%;
+      overflow: hidden;
+    }
   }
 }

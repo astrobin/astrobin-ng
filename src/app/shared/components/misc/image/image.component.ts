@@ -13,6 +13,7 @@ import { ImageApiService } from "@shared/services/api/classic/images/image/image
 import { ThumbnailGroupApiService } from "@shared/services/api/classic/images/thumbnail-group/thumbnail-group-api.service";
 import { ImageService } from "@shared/services/image/image.service";
 import { Observable } from "rxjs";
+import { filter, tap } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-image",
@@ -66,11 +67,16 @@ export class ImageComponent extends BaseComponentDirective implements OnInit {
     this.loading = true;
 
     this.image$ = this.store$.select(selectImage, this.id);
-    this.thumbnail$ = this.store$.select(selectThumbnail, {
-      id: this.id,
-      revision: this.revision,
-      alias: this.alias
-    });
+    this.thumbnail$ = this.store$
+      .select(selectThumbnail, {
+        id: this.id,
+        revision: this.revision,
+        alias: this.alias
+      })
+      .pipe(
+        filter(thumbnail => !!thumbnail),
+        tap(() => (this.loading = false))
+      );
 
     this.store$.dispatch(new LoadImage(this.id));
     this.store$.dispatch(new LoadThumbnail({ id: this.id, revision: this.revision, alias: this.alias }));

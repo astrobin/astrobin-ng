@@ -1,4 +1,5 @@
 import { Component, OnInit } from "@angular/core";
+import { ShowFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
 import { LoadSubmissionQueue } from "@features/iotd/store/iotd.actions";
 import { IotdState } from "@features/iotd/store/iotd.reducer";
 import { selectSubmissionQueue } from "@features/iotd/store/iotd.selectors";
@@ -31,5 +32,9 @@ export class SubmissionQueueComponent implements OnInit {
 
   refresh(): void {
     this.store$.dispatch(new LoadSubmissionQueue());
+  }
+
+  viewFullscreen(id: number): void {
+    this.store$.dispatch(new ShowFullscreenImage(id));
   }
 }

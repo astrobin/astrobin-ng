@@ -1,10 +1,10 @@
 <ng-container *ngIf="(thumbnail$ | async) as thumbnail; else loading">
-  <div
-    class="astrobin-image"
-    [style.backgroundImage]="'url(' + thumbnail?.url + ')'"
-    [style.backgroundSize]="'cover'"
-  >
-  </div>
+  <ng-container *ngIf="(show$ | async) === true">
+    <div [style.backgroundImage]="'url(' + thumbnail?.url + ')'" class="astrobin-image"></div>
+    <div (click)="hide()" class="close">
+      <fa-icon icon="times"></fa-icon>
+    </div>
+  </ng-container>
 </ng-container>
 
 <ng-template #loading>

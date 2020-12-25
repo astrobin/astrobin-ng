@@ -11,11 +11,14 @@
     <ng-container *ngIf="submissionQueue.length > 0; else noEntries">
 
       <div *ngFor="let entry of submissionQueue" class="row page submission-queue-entry">
+        <astrobin-fullscreen-image-viewer [id]="entry.pk"></astrobin-fullscreen-image-viewer>
 
         <div class="col-sm-12 col-md-6 col-image">
           <astrobin-image
+            class="submission-image"
             [alias]="ImageAlias.STORY"
-            [id]="entry.pk">
+            [id]="entry.pk"
+            (click)="viewFullscreen(entry.pk)">
           </astrobin-image>
         </div>
 
@@ -56,8 +59,14 @@
         </div>
 
         <div class="col-12">
-          <div class="mt-5 text-right">
+          <div class="mt-5 text-right form-actions">
+            <button class="btn btn-secondary" (click)="viewFullscreen(entry.pk)">
+              <fa-icon icon="search-plus"></fa-icon>
+              {{ "View large" | translate }}
+            </button>
+
             <button class="btn btn-primary">
+              <fa-icon icon="star"></fa-icon>
               {{ "Promote" | translate }}
             </button>
           </div>
