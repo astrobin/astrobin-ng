@@ -69,13 +69,21 @@ describe("UtilsService", () => {
     });
   });
 
-  describe("arrayUniqueProperty", () => {
-    it("should work", () => {
+  describe("arrayUniqueObjects", () => {
+    it("should work with one property", () => {
       const a = { pk: 1 };
       const b = { pk: 2 };
       const c = { pk: 1 };
 
-      expect(service.arrayUniqueProperty([a, b, c], "pk")).toEqual([a, b]);
+      expect(service.arrayUniqueObjects([a, b, c])).toEqual([a, b]);
+    });
+
+    it("should work with multiple property", () => {
+      const a = { pk: 1, foo: "a" };
+      const b = { pk: 1, foo: "b" };
+      const c = { pk: 1, foo: "a" };
+
+      expect(service.arrayUniqueObjects([a, b, c])).toEqual([a, b]);
     });
   });
 });

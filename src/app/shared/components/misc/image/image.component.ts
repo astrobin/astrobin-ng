@@ -1,7 +1,9 @@
 import { Component, HostBinding, Input, OnInit } from "@angular/core";
 import { LoadImage } from "@app/store/actions/image.actions";
+import { LoadThumbnail } from "@app/store/actions/thumbnail.actions";
 import { AppState } from "@app/store/app.states";
 import { selectImage } from "@app/store/selectors/app/image.selectors";
+import { selectThumbnail } from "@app/store/selectors/app/thumbnail.selectors";
 import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
@@ -11,7 +13,6 @@ import { ImageApiService } from "@shared/services/api/classic/images/image/image
 import { ThumbnailGroupApiService } from "@shared/services/api/classic/images/thumbnail-group/thumbnail-group-api.service";
 import { ImageService } from "@shared/services/image/image.service";
 import { Observable } from "rxjs";
-import { filter, switchMap, take, tap } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-image",
@@ -19,8 +20,8 @@ import { filter, switchMap, take, tap } from "rxjs/operators";
   styleUrls: ["./image.component.scss"]
 })
 export class ImageComponent extends BaseComponentDirective implements OnInit {
-  image: ImageInterface;
-  imageThumbnail: ImageThumbnailInterface;
+  image$: Observable<ImageInterface>;
+  thumbnail$: Observable<ImageThumbnailInterface>;
 
   @Input()
   @HostBinding("attr.data-id")
@@ -64,61 +65,14 @@ export class ImageComponent extends BaseComponentDirective implements OnInit {
 
     this.loading = true;
 
-    this.store$
-      .select(selectImage, this.id)
-      .pipe(
-        filter(image => !!image),
-        take(1),
-        tap(image => (this.image = image)),
-        switchMap(image => this._getThumbnail$(image, this.revision, this.alias))
-      )
-      .subscribe(thumbnail => {
-        if (this.isPlaceholder(thumbnail.url)) {
-          this._startGetThumbnailLoop();
-        } else {
-          this.loading = false;
-        }
-      });
+    this.image$ = this.store$.select(selectImage, this.id);
+    this.thumbnail$ = this.store$.select(selectThumbnail, {
+      id: this.id,
+      revision: this.revision,
+      alias: this.alias
+    });
 
     this.store$.dispatch(new LoadImage(this.id));
-  }
-
-  isPlaceholder(url: string): boolean {
-    return url.indexOf("placeholder") !== -1;
-  }
-
-  makeUrl(url: string): string {
-    if (this.isPlaceholder(url)) {
-      return this.imageService.getPlaceholder({ width: this.image.w, height: this.image.h });
-    }
-
-    return url;
-  }
-
-  private _getThumbnail$ = (
-    image: ImageInterface,
-    revision: string,
-    alias: ImageAlias
-  ): Observable<ImageThumbnailInterface> =>
-    this.imageApiService.getThumbnail(image.hash || image.pk, revision, alias).pipe(
-      take(1),
-      tap(imageThumbnail => {
-        this.imageThumbnail = imageThumbnail;
-        return imageThumbnail;
-      })
-    );
-
-  private _startGetThumbnailLoop(): void {
-    this._getThumbnail$(this.image, this.revision, this.alias)
-      .pipe(take(1))
-      .subscribe(thumbnail => {
-        if (this.isPlaceholder(thumbnail.url)) {
-          setTimeout(() => {
-            this._startGetThumbnailLoop();
-          }, 500);
-        } else {
-          this.loading = false;
-        }
-      });
+    this.store$.dispatch(new LoadThumbnail({ id: this.id, revision: this.revision, alias: this.alias }));
   }
 }

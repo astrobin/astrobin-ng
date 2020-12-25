@@ -8,7 +8,7 @@ import { ImageThumbnailInterface } from "@shared/interfaces/image-thumbnail.inte
 import { ImageInterface } from "@shared/interfaces/image.interface";
 import { BaseClassicApiService } from "@shared/services/api/classic/base-classic-api.service";
 import { LoadingService } from "@shared/services/loading.service";
-import { Observable } from "rxjs";
+import { Observable, of } from "rxjs";
 import { ImageApiServiceInterface } from "./image-api.service-interface";
 
 @Injectable({

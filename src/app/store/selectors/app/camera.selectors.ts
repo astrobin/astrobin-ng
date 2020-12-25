@@ -3,7 +3,7 @@ import { selectApp } from "@app/store/selectors/app/app.selectors";
 import { createSelector } from "@ngrx/store";
 import { CameraInterface } from "@shared/interfaces/camera.interface";
 
-export const selectCameras = createSelector(selectApp, (state: State) => state.cameras);
+export const selectCameras = createSelector(selectApp, (state: State): CameraInterface[] => state.cameras);
 
 export const selectCamera = createSelector(
   selectCameras,

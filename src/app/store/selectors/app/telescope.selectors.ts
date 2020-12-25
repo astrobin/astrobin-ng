@@ -3,7 +3,7 @@ import { selectApp } from "@app/store/selectors/app/app.selectors";
 import { createSelector } from "@ngrx/store";
 import { TelescopeInterface } from "@shared/interfaces/telescope.interface";
 
-export const selectTelescopes = createSelector(selectApp, (state: State) => state.telescopes);
+export const selectTelescopes = createSelector(selectApp, (state: State): TelescopeInterface[] => state.telescopes);
 
 export const selectTelescope = createSelector(
   selectTelescopes,

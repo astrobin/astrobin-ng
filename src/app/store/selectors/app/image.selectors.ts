@@ -3,7 +3,7 @@ import { selectApp } from "@app/store/selectors/app/app.selectors";
 import { createSelector } from "@ngrx/store";
 import { ImageInterface } from "@shared/interfaces/image.interface";
 
-export const selectImages = createSelector(selectApp, (state: State) => state.images);
+export const selectImages = createSelector(selectApp, (state: State): ImageInterface[] => state.images);
 
 export const selectImage = createSelector(
   selectImages,

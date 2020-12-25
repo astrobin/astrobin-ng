@@ -32,11 +32,15 @@ export class UtilsService {
     return ["png", "jpg", "jpeg", "gif"].indexOf(extension) > -1;
   }
 
-  arrayUniqueProperty(array: any, property: string): any {
+  /**
+   * Removes duplicates from an array. Items must be able to be stringified using JSON.
+   * @param array
+   */
+  arrayUniqueObjects(array: any): any {
     const a = array.concat();
     for (let i = 0; i < a.length; ++i) {
       for (let j = i + 1; j < a.length; ++j) {
-        if (a[i][property] === a[j][property]) {
+        if (JSON.stringify(a[i]) === JSON.stringify(a[j])) {
           a.splice(j--, 1);
         }
       }

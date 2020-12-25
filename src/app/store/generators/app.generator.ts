@@ -32,6 +32,7 @@ export class AppGenerator {
       ],
       backendConfig: BackendConfigGenerator.backendConfig(),
       images: [],
+      thumbnails: [],
       telescopes: [],
       cameras: []
     };

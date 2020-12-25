@@ -1,6 +1,8 @@
+import { ImageAlias } from "@shared/enums/image-alias.enum";
+
 export interface ImageThumbnailInterface {
-  url: string;
-  alias: string;
   id: number;
   revision: string;
+  alias: ImageAlias;
+  url: string;
 }

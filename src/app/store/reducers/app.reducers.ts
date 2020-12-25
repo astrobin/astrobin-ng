@@ -1,6 +1,7 @@
 import { All, AppActionTypes } from "@app/store/actions/app.actions";
 import { BackendConfigInterface } from "@shared/interfaces/backend-config.interface";
 import { CameraInterface } from "@shared/interfaces/camera.interface";
+import { ImageThumbnailInterface } from "@shared/interfaces/image-thumbnail.interface";
 import { ImageInterface } from "@shared/interfaces/image.interface";
 import { SubscriptionInterface } from "@shared/interfaces/subscription.interface";
 import { TelescopeInterface } from "@shared/interfaces/telescope.interface";
@@ -22,6 +23,9 @@ export interface State {
   // All seen images.
   images: ImageInterface[];
 
+  // All seen thumbnails.
+  thumbnails: ImageThumbnailInterface[];
+
   // All seen telescopes.
   telescopes: TelescopeInterface[];
 
@@ -35,6 +39,7 @@ export const initialState: State = {
   subscriptions: [],
   backendConfig: null,
   images: [],
+  thumbnails: [],
   telescopes: [],
   cameras: []
 };
@@ -53,21 +58,28 @@ export function reducer(state = initialState, action: All): State {
     case AppActionTypes.LOAD_IMAGE_SUCCESS: {
       return {
         ...state,
-        images: new UtilsService().arrayUniqueProperty([...state.images, action.payload], "pk")
+        images: new UtilsService().arrayUniqueObjects([...state.images, action.payload])
+      };
+    }
+
+    case AppActionTypes.LOAD_THUMBNAIL_SUCCESS: {
+      return {
+        ...state,
+        thumbnails: new UtilsService().arrayUniqueObjects([...state.thumbnails, action.payload])
       };
     }
 
     case AppActionTypes.LOAD_TELESCOPE_SUCCESS: {
       return {
         ...state,
-        telescopes: new UtilsService().arrayUniqueProperty([...state.telescopes, action.payload], "pk")
+        telescopes: new UtilsService().arrayUniqueObjects([...state.telescopes, action.payload])
       };
     }
 
     case AppActionTypes.LOAD_CAMERA_SUCCESS: {
       return {
         ...state,
-        cameras: new UtilsService().arrayUniqueProperty([...state.cameras, action.payload], "pk")
+        cameras: new UtilsService().arrayUniqueObjects([...state.cameras, action.payload])
       };
     }
 

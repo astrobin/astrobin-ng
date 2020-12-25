@@ -1,1 +1,12 @@
-<p>fullscreen-image-viewer works!</p>
+<ng-container *ngIf="(imageThumbnail$ | aync) as imageThumbnail; else loading">
+  <div
+    class="astrobin-image"
+    [style.backgroundImage]="'url(' + makeUrl(imageThumbnail.url) + ')'"
+    [style.backgroundSize]="backgroundSize"
+  >
+  </div>
+</ng-container>
+
+<ng-template #loading>
+  <astrobin-loading-indicator></astrobin-loading-indicator>
+</ng-template>

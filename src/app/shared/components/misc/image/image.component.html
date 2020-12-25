@@ -1,7 +1,8 @@
-<ng-container *ngIf="image && imageThumbnail; else loading">
+<ng-container *ngIf="{image: image$ | async, thumbnail: thumbnail$ | async} as data; else loading">
   <div
+    *ngIf="data.image && data.thumbnail; else loading"
     class="astrobin-image"
-    [style.backgroundImage]="'url(' + makeUrl(imageThumbnail.url) + ')'"
+    [style.backgroundImage]="'url(' + data.thumbnail?.url + ')'"
     [style.backgroundSize]="backgroundSize"
   >
   </div>
