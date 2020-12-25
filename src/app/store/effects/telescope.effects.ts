@@ -15,12 +15,12 @@ export class TelescopeEffects {
   LoadTelescope: Observable<LoadTelescopeSuccess> = this.actions$.pipe(
     ofType(AppActionTypes.LOAD_TELESCOPE),
     withLatestFrom(action =>
-      this.store$.select(selectTelescope, action.payload).pipe(map(result => ({ action, result })))
+      this.store$.select(selectTelescope, action.payload).pipe(map(telescopeFromStore => ({ action, result: telescopeFromStore })))
     ),
     switchMap(observable => observable),
-    mergeMap(({ action, result }) =>
-      result !== null
-        ? of(result).pipe(map(telescope => new LoadTelescopeSuccess(telescope)))
+    mergeMap(({ action, result: telescopeFromStore }) =>
+      telescopeFromStore !== null
+        ? of(telescopeFromStore).pipe(map(telescope => new LoadTelescopeSuccess(telescope)))
         : this.telescopeApiService.getTelescope(action.payload).pipe(
             map(telescope => new LoadTelescopeSuccess(telescope)),
             catchError(error => EMPTY)

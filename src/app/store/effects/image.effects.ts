@@ -14,11 +14,13 @@ export class ImageEffects {
   @Effect()
   LoadImage: Observable<LoadImageSuccess> = this.actions$.pipe(
     ofType(AppActionTypes.LOAD_IMAGE),
-    withLatestFrom(action => this.store$.select(selectImage, action.payload).pipe(map(result => ({ action, result })))),
+    withLatestFrom(action =>
+      this.store$.select(selectImage, action.payload).pipe(map(imageFromStore => ({ action, result: imageFromStore })))
+    ),
     switchMap(observable => observable),
-    mergeMap(({ action, result }) =>
-      result !== null
-        ? of(result).pipe(map(image => new LoadImageSuccess(image)))
+    mergeMap(({ action, result: imageFromStore }) =>
+      imageFromStore !== null
+        ? of(imageFromStore).pipe(map(image => new LoadImageSuccess(image)))
         : this.imageApiService.getImage(action.payload).pipe(
             map(image => new LoadImageSuccess(image)),
             catchError(error => EMPTY)

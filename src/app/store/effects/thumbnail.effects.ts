@@ -15,12 +15,14 @@ export class ThumbnailEffects {
   LoadThumbnail: Observable<LoadThumbnail | LoadThumbnailSuccess> = this.actions$.pipe(
     ofType(AppActionTypes.LOAD_THUMBNAIL),
     withLatestFrom(action =>
-      this.store$.select(selectThumbnail, action.payload).pipe(map(result => ({ action, result })))
+      this.store$
+        .select(selectThumbnail, action.payload)
+        .pipe(map(thumbnailFromStore => ({ action, result: thumbnailFromStore })))
     ),
     mergeMap(observable => observable),
-    mergeMap(({ action, result }) =>
-      result !== null
-        ? of(result)
+    mergeMap(({ action, result: thumbnailFromStore }) =>
+      thumbnailFromStore !== null
+        ? of(thumbnailFromStore)
         : this.imageApiService
             .getImage(action.payload.id)
             .pipe(

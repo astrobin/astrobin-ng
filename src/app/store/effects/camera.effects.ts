@@ -15,12 +15,14 @@ export class CameraEffects {
   LoadCamera: Observable<LoadCameraSuccess> = this.actions$.pipe(
     ofType(AppActionTypes.LOAD_CAMERA),
     withLatestFrom(action =>
-      this.store$.select(selectCamera, action.payload).pipe(map(result => ({ action, result })))
+      this.store$
+        .select(selectCamera, action.payload)
+        .pipe(map(cameraFromStore => ({ action, result: cameraFromStore })))
     ),
     switchMap(observable => observable),
-    mergeMap(({ action, result }) =>
-      result !== null
-        ? of(result).pipe(map(camera => new LoadCameraSuccess(camera)))
+    mergeMap(({ action, result: cameraFromStore }) =>
+      cameraFromStore !== null
+        ? of(cameraFromStore).pipe(map(camera => new LoadCameraSuccess(camera)))
         : this.cameraApiService.getCamera(action.payload).pipe(
             map(camera => new LoadCameraSuccess(camera)),
             catchError(error => EMPTY)
