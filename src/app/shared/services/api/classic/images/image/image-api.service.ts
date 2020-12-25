@@ -1,6 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { AppState } from "@app/store/app.states";
+import { State } from "@app/store/state";
 import { environment } from "@env/environment";
 import { Store } from "@ngrx/store";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
@@ -19,7 +19,7 @@ export class ImageApiService extends BaseClassicApiService implements ImageApiSe
 
   constructor(
     public readonly loadingService: LoadingService,
-    public readonly store$: Store<AppState>,
+    public readonly store$: Store<State>,
     public readonly http: HttpClient
   ) {
     super(loadingService);

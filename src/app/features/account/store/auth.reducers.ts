@@ -3,21 +3,21 @@ import { UserProfileInterface } from "@shared/interfaces/user-profile.interface"
 import { UserSubscriptionInterface } from "@shared/interfaces/user-subscription.interface";
 import { UserInterface } from "@shared/interfaces/user.interface";
 
-export interface State {
+export interface AuthState {
   initialized: boolean;
   user: UserInterface | null;
   userProfile: UserProfileInterface | null;
   userSubscriptions: UserSubscriptionInterface[];
 }
 
-export const initialState: State = {
+export const initialAuthState: AuthState = {
   initialized: false,
   user: null,
   userProfile: null,
   userSubscriptions: []
 };
 
-export function reducer(state = initialState, action: All): State {
+export function reducer(state = initialAuthState, action: All): AuthState {
   switch (action.type) {
     case AuthActionTypes.INITIALIZE_SUCCESS:
     case AuthActionTypes.LOGIN_SUCCESS:

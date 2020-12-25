@@ -1,8 +1,8 @@
 import { TestBed } from "@angular/core/testing";
 
 import { AppModule } from "@app/app.module";
-import { AppState, appStateEffects, appStateReducers } from "@app/store/app.states";
 import { AppGenerator } from "@app/store/generators/app.generator";
+import { appStateEffects, appStateReducers, State } from "@app/store/state";
 import { AuthGenerator } from "@features/account/store/auth.generator";
 import { EffectsModule } from "@ngrx/effects";
 import { StoreModule } from "@ngrx/store";
@@ -13,7 +13,7 @@ import { SubscriptionsService } from "./subscriptions.service";
 describe("SubscriptionsService", () => {
   let service: SubscriptionsService;
   let store: MockStore;
-  const initialState: AppState = {
+  const initialState: State = {
     app: AppGenerator.default(),
     auth: AuthGenerator.default()
   };

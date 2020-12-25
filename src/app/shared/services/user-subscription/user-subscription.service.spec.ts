@@ -1,7 +1,7 @@
 import { TestBed } from "@angular/core/testing";
 import { AppModule } from "@app/app.module";
-import { AppState } from "@app/store/app.states";
 import { AppGenerator } from "@app/store/generators/app.generator";
+import { State } from "@app/store/state";
 import { AuthGenerator } from "@features/account/store/auth.generator";
 import { MockStore, provideMockStore } from "@ngrx/store/testing";
 import { UserSubscriptionGenerator } from "@shared/generators/user-subscription.generator";
@@ -13,7 +13,7 @@ import { UserSubscriptionService } from "./user-subscription.service";
 describe("UserSubscriptionService", () => {
   let service: UserSubscriptionService;
   let store: MockStore;
-  const initialState: AppState = {
+  const initialState: State = {
     app: AppGenerator.default(),
     auth: AuthGenerator.default()
   };

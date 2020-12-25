@@ -7,7 +7,7 @@ import { SubscriptionInterface } from "@shared/interfaces/subscription.interface
 import { TelescopeInterface } from "@shared/interfaces/telescope.interface";
 import { UtilsService } from "@shared/services/utils/utils.service";
 
-export interface State {
+export interface AppState {
   // Weather the app has been initialized.
   initialized: boolean;
 
@@ -33,7 +33,7 @@ export interface State {
   cameras: CameraInterface[];
 }
 
-export const initialState: State = {
+export const initialAppState: AppState = {
   initialized: false,
   language: "en",
   subscriptions: [],
@@ -44,7 +44,7 @@ export const initialState: State = {
   cameras: []
 };
 
-export function reducer(state = initialState, action: All): State {
+export function reducer(state = initialAppState, action: All): AppState {
   switch (action.type) {
     case AppActionTypes.INITIALIZE_SUCCESS: {
       return {

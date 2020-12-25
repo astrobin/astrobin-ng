@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { LoadSubmissionQueue } from "@features/iotd/store/iotd.actions";
-import { State } from "@features/iotd/store/iotd.reducer";
+import { IotdState } from "@features/iotd/store/iotd.reducer";
 import { selectSubmissionQueue } from "@features/iotd/store/iotd.selectors";
 import { select, Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
@@ -19,7 +19,7 @@ export class SubmissionQueueComponent implements OnInit {
   submissionQueue$: Observable<ImageInterface[]> = this.store$.pipe(select(selectSubmissionQueue));
 
   constructor(
-    public readonly store$: Store<State>,
+    public readonly store$: Store<IotdState>,
     public readonly titleService: TitleService,
     public readonly translate: TranslateService
   ) {}

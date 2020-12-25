@@ -1,4 +1,4 @@
-import { State } from "@app/store/reducers/app.reducers";
+import { AppState } from "@app/store/reducers/app.reducers";
 import { selectApp } from "@app/store/selectors/app/app.selectors";
 import { createSelector } from "@ngrx/store";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
@@ -6,7 +6,7 @@ import { ImageThumbnailInterface } from "@shared/interfaces/image-thumbnail.inte
 
 export const selectThumbnails = createSelector(
   selectApp,
-  (state: State): ImageThumbnailInterface[] => state.thumbnails
+  (state: AppState): ImageThumbnailInterface[] => state.thumbnails
 );
 
 export const selectThumbnail = createSelector(

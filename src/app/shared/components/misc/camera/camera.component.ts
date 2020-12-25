@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { LoadCamera } from "@app/store/actions/camera.actions";
-import { AppState } from "@app/store/app.states";
+import { State } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { CameraInterface } from "@shared/interfaces/camera.interface";
@@ -18,7 +18,7 @@ export class CameraComponent extends BaseComponentDirective implements OnInit {
   @Input()
   id: number;
 
-  constructor(public readonly store$: Store<AppState>, public readonly gearService: GearService) {
+  constructor(public readonly store$: Store<State>, public readonly gearService: GearService) {
     super();
   }
 

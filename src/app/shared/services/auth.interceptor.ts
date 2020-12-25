@@ -1,6 +1,6 @@
 import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { AppState } from "@app/store/app.states";
+import { State } from "@app/store/state";
 import { environment } from "@env/environment";
 import { Logout } from "@features/account/store/auth.actions";
 import { Store } from "@ngrx/store";
@@ -16,7 +16,7 @@ export class AuthInterceptor implements HttpInterceptor {
     public popNotificationsService: PopNotificationsService,
     public authService: AuthService,
     public translate: TranslateService,
-    public readonly store: Store<AppState>
+    public readonly store: Store<State>
   ) {}
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {

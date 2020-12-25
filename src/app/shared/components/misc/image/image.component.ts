@@ -1,9 +1,9 @@
 import { Component, HostBinding, Input, OnInit } from "@angular/core";
 import { LoadImage } from "@app/store/actions/image.actions";
 import { LoadThumbnail } from "@app/store/actions/thumbnail.actions";
-import { AppState } from "@app/store/app.states";
 import { selectImage } from "@app/store/selectors/app/image.selectors";
 import { selectThumbnail } from "@app/store/selectors/app/thumbnail.selectors";
+import { State } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
@@ -37,7 +37,7 @@ export class ImageComponent extends BaseComponentDirective implements OnInit {
   loading = false;
 
   constructor(
-    public readonly store$: Store<AppState>,
+    public readonly store$: Store<State>,
     public readonly imageApiService: ImageApiService,
     public readonly thumbnailGroupApiService: ThumbnailGroupApiService,
     public readonly imageService: ImageService

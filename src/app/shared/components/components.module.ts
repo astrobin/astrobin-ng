@@ -26,6 +26,23 @@ import { EmptyListComponent } from "./misc/empty-list/empty-list.component";
 import { ReadOnlyModeComponent } from "./misc/read-only-mode/read-only-mode.component";
 import { UsernameComponent } from "./misc/username/username.component";
 
+const modules = [
+  CommonModule,
+  FontAwesomeModule,
+  FormsModule,
+  NgbCollapseModule,
+  NgbDropdownModule,
+  NgbModalModule,
+  NgbTooltipModule,
+  NgxFilesizeModule,
+  PipesModule,
+  ReactiveFormsModule,
+  RouterModule,
+  TranslateModule,
+  FormlyModule,
+  UploadxModule
+];
+
 const components = [
   CameraComponent,
   EmptyListComponent,
@@ -46,31 +63,8 @@ const components = [
 ];
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FontAwesomeModule,
-    FormsModule,
-    NgbCollapseModule,
-    NgbDropdownModule,
-    NgbModalModule,
-    NgbTooltipModule,
-    NgxFilesizeModule,
-    PipesModule,
-    ReactiveFormsModule,
-    RouterModule,
-    TranslateModule,
-    FormlyModule,
-    UploadxModule
-  ],
+  imports: modules,
   declarations: components,
-  exports: [
-    ...components,
-    NgbCollapseModule,
-    NgbDropdownModule,
-    NgbModalModule,
-    NgbTooltipModule,
-    PipesModule,
-    ReactiveFormsModule
-  ]
+  exports: [...modules, ...components]
 })
 export class ComponentsModule {}

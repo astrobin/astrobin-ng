@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from "@angular/core";
-import { AppState } from "@app/store/app.states";
+import { State } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { ImageThumbnailInterface } from "@shared/interfaces/image-thumbnail.interface";
@@ -15,9 +15,9 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   @Input()
   image: ImageInterface;
 
-  thumbnails$: Observable<ImageThumbnailInterface>;
+  thumbnail$: Observable<ImageThumbnailInterface>;
 
-  constructor(public readonly store$: Store<AppState>) {
+  constructor(public readonly store$: Store<State>) {
     super();
   }
 

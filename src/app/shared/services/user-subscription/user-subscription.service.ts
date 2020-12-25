@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { AppState } from "@app/store/app.states";
+import { State } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { SubscriptionInterface } from "@shared/interfaces/subscription.interface";
 import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
@@ -17,7 +17,7 @@ import { map, switchMap, take } from "rxjs/operators";
 })
 export class UserSubscriptionService extends BaseService implements UserSubscriptionServiceInterface {
   constructor(
-    public readonly store: Store<AppState>,
+    public readonly store: Store<State>,
     public loadingService: LoadingService,
     public jsonApiService: JsonApiService
   ) {

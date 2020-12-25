@@ -1,7 +1,7 @@
 import { Location } from "@angular/common";
 import { Injectable } from "@angular/core";
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from "@angular/router";
-import { AppState } from "@app/store/app.states";
+import { State } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { ImageApiService } from "@shared/services/api/classic/images/image/image-api.service";
 import { BaseService } from "@shared/services/base.service";
@@ -13,7 +13,7 @@ import { AuthService } from "../auth.service";
 @Injectable()
 export class ImageOwnerGuardService extends BaseService implements CanActivate {
   constructor(
-    public readonly store: Store<AppState>,
+    public readonly store: Store<State>,
     public loadingService: LoadingService,
     public authService: AuthService,
     public imageApiService: ImageApiService,

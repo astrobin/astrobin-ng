@@ -1,9 +1,9 @@
-import { State } from "@app/store/reducers/app.reducers";
+import { AppState } from "@app/store/reducers/app.reducers";
 import { selectApp } from "@app/store/selectors/app/app.selectors";
 import { createSelector } from "@ngrx/store";
 import { ImageInterface } from "@shared/interfaces/image.interface";
 
-export const selectImages = createSelector(selectApp, (state: State): ImageInterface[] => state.images);
+export const selectImages = createSelector(selectApp, (state: AppState): ImageInterface[] => state.images);
 
 export const selectImage = createSelector(
   selectImages,

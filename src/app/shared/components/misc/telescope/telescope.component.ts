@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { LoadTelescope } from "@app/store/actions/telescope.actions";
-import { AppState } from "@app/store/app.states";
 import { selectTelescope } from "@app/store/selectors/app/telescope.selectors";
+import { State } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { TelescopeInterface } from "@shared/interfaces/telescope.interface";
@@ -19,7 +19,7 @@ export class TelescopeComponent extends BaseComponentDirective implements OnInit
   @Input()
   id: number;
 
-  constructor(public readonly store$: Store<AppState>, public readonly gearService: GearService) {
+  constructor(public readonly store$: Store<State>, public readonly gearService: GearService) {
     super();
   }
 

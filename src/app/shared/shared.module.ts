@@ -5,7 +5,7 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { formlyConfig } from "@app/formly.config";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { InitializeApp } from "@app/store/actions/initialize-app.actions";
-import { AppState } from "@app/store/app.states";
+import { State } from "@app/store/state";
 import { AuthActionTypes, InitializeAuth } from "@features/account/store/auth.actions";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { NgbModule, NgbPaginationModule } from "@ng-bootstrap/ng-bootstrap";
@@ -36,7 +36,7 @@ import { switchMap } from "rxjs/operators";
 import { ComponentsModule } from "./components/components.module";
 import { PipesModule } from "./pipes/pipes.module";
 
-export function appInitializer(store: Store<AppState>, actions$: Actions) {
+export function appInitializer(store: Store<State>, actions$: Actions) {
   return () =>
     new Promise<any>(resolve => {
       store.dispatch(new InitializeApp());

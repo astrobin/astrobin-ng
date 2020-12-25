@@ -1,11 +1,11 @@
-import { State } from "@app/store/reducers/app.reducers";
+import { AppState } from "@app/store/reducers/app.reducers";
 import { BackendConfigGenerator } from "@shared/generators/backend-config.generator";
 import { SubscriptionGenerator } from "@shared/generators/subscription.generator";
 import { TestConstants } from "@shared/test-constants";
 import { SubscriptionName } from "@shared/types/subscription-name.type";
 
 export class AppGenerator {
-  static default(): State {
+  static default(): AppState {
     return {
       initialized: true,
       language: "en",

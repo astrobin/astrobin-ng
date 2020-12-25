@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core";
 import { All, AppActionTypes } from "@app/store/actions/app.actions";
 import { LoadImageSuccess } from "@app/store/actions/image.actions";
-import { AppState } from "@app/store/app.states";
 import { selectImage } from "@app/store/selectors/app/image.selectors";
+import { State } from "@app/store/state";
 import { Actions, Effect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
 import { ImageApiService } from "@shared/services/api/classic/images/image/image-api.service";
@@ -32,7 +32,7 @@ export class ImageEffects {
   LoadImageSuccess: Observable<void> = this.actions$.pipe(ofType(AppActionTypes.LOAD_IMAGE_SUCCESS));
 
   constructor(
-    public readonly store$: Store<AppState>,
+    public readonly store$: Store<State>,
     public readonly actions$: Actions<All>,
     public readonly imageApiService: ImageApiService
   ) {}

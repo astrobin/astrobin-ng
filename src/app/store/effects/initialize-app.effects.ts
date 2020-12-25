@@ -1,10 +1,8 @@
 import { Injectable } from "@angular/core";
 import { All, AppActionTypes } from "@app/store/actions/app.actions";
 import { InitializeAppSuccess } from "@app/store/actions/initialize-app.actions";
-import { AppState } from "@app/store/app.states";
 import { setTimeagoIntl } from "@app/translate-loader";
 import { Actions, Effect, ofType } from "@ngrx/effects";
-import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
 import { CommonApiService } from "@shared/services/api/classic/common/common-api.service";
 import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";

@@ -17,6 +17,7 @@ import * as fromIotd from "./store/iotd.reducer";
     StoreModule.forFeature(fromIotd.iotdFeatureKey, fromIotd.reducer),
     EffectsModule.forFeature([IotdEffects])
   ],
-  providers: [SubmissionQueueApiService]
+  providers: [SubmissionQueueApiService],
+  exports: [RouterModule, SharedModule, StoreModule, EffectsModule]
 })
 export class IotdModule {}

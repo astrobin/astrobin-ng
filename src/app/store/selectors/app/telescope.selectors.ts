@@ -1,9 +1,9 @@
-import { State } from "@app/store/reducers/app.reducers";
+import { AppState } from "@app/store/reducers/app.reducers";
 import { selectApp } from "@app/store/selectors/app/app.selectors";
 import { createSelector } from "@ngrx/store";
 import { TelescopeInterface } from "@shared/interfaces/telescope.interface";
 
-export const selectTelescopes = createSelector(selectApp, (state: State): TelescopeInterface[] => state.telescopes);
+export const selectTelescopes = createSelector(selectApp, (state: AppState): TelescopeInterface[] => state.telescopes);
 
 export const selectTelescope = createSelector(
   selectTelescopes,

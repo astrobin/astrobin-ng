@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core";
 import { All, AppActionTypes } from "@app/store/actions/app.actions";
 import { LoadThumbnail, LoadThumbnailSuccess } from "@app/store/actions/thumbnail.actions";
-import { AppState } from "@app/store/app.states";
 import { selectThumbnail } from "@app/store/selectors/app/thumbnail.selectors";
+import { State } from "@app/store/state";
 import { Actions, Effect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
 import { ImageApiService } from "@shared/services/api/classic/images/image/image-api.service";
@@ -50,7 +50,7 @@ export class ThumbnailEffects {
   LoadThumbnailSuccess: Observable<void> = this.actions$.pipe(ofType(AppActionTypes.LOAD_THUMBNAIL_SUCCESS));
 
   constructor(
-    public readonly store$: Store<AppState>,
+    public readonly store$: Store<State>,
     public readonly actions$: Actions<All>,
     public readonly imageApiService: ImageApiService
   ) {}

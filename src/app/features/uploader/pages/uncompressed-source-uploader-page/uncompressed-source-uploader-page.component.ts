@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
-import { AppState } from "@app/store/app.states";
+import { State } from "@app/store/state";
 import { environment } from "@env/environment";
 import { Store } from "@ngrx/store";
 import { FormlyFieldConfig } from "@ngx-formly/core";
@@ -48,7 +48,7 @@ export class UncompressedSourceUploaderPageComponent extends BaseComponentDirect
   image: ImageInterface;
 
   constructor(
-    public readonly store: Store<AppState>,
+    public readonly store: Store<State>,
     public translate: TranslateService,
     public uploaderService: UploadxService,
     public uploadDataService: UploadDataService,

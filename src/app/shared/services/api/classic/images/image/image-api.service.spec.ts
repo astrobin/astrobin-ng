@@ -3,6 +3,7 @@ import { HttpClientTestingModule, HttpTestingController } from "@angular/common/
 import { TestBed } from "@angular/core/testing";
 import { AppModule } from "@app/app.module";
 import { environment } from "@env/environment";
+import { ImageAlias } from "@shared/enums/image-alias.enum";
 import { ImageThumbnailGenerator } from "@shared/generators/image-thumbnail.generator";
 import { ImageGenerator } from "@shared/generators/image.generator";
 import { MockBuilder } from "ng-mocks";
@@ -42,7 +43,7 @@ describe("ImageApiService", () => {
   it("getThumbnail should work", () => {
     const image = ImageGenerator.image();
 
-    service.getThumbnail(image.hash, "final", "regular").subscribe(response => {
+    service.getThumbnail(image.hash, "final", ImageAlias.REGULAR).subscribe(response => {
       expect(response.url).toEqual("/foo");
       expect(response.id).toEqual(image.pk);
       expect(response.revision).toEqual("final");
@@ -56,7 +57,7 @@ describe("ImageApiService", () => {
         url: "/foo",
         id: image.pk,
         revision: "final",
-        alias: "regular"
+        alias: ImageAlias.REGULAR
       })
     );
   });

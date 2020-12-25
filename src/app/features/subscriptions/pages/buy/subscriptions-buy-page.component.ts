@@ -1,7 +1,7 @@
 import { CurrencyPipe } from "@angular/common";
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { AppState } from "@app/store/app.states";
+import { State } from "@app/store/state";
 import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
 import { PaymentsApiConfigInterface } from "@features/subscriptions/interfaces/payments-api-config.interface";
 import { PaymentsApiService } from "@features/subscriptions/services/payments-api.service";
@@ -41,7 +41,7 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
   currencyPipe: CurrencyPipe;
 
   constructor(
-    public readonly store: Store<AppState>,
+    public readonly store: Store<State>,
     public readonly activatedRoute: ActivatedRoute,
     public readonly router: Router,
     public readonly userSubscriptionService: UserSubscriptionService,

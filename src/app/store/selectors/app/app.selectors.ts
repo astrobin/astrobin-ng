@@ -1,4 +1,4 @@
-import { AppState } from "@app/store/app.states";
-import { State } from "@app/store/reducers/app.reducers";
+import { AppState } from "@app/store/reducers/app.reducers";
+import { State } from "@app/store/state";
 
-export const selectApp = (state: AppState): State => state.app;
+export const selectApp = (state: State): AppState => state.app;

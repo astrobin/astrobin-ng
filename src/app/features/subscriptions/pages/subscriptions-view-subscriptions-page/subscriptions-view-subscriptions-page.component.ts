@@ -1,5 +1,5 @@
 import { Component } from "@angular/core";
-import { AppState } from "@app/store/app.states";
+import { State } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { UserSubscriptionInterface } from "@shared/interfaces/user-subscription.interface";
 import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
@@ -17,8 +17,5 @@ export class SubscriptionsViewSubscriptionsPageComponent {
     map(state => state.auth.userSubscriptions.sort((a, b) => a.expires.localeCompare(b.expires)).reverse())
   );
 
-  constructor(
-    public readonly store: Store<AppState>,
-    public readonly userSubscriptionService: UserSubscriptionService
-  ) {}
+  constructor(public readonly store: Store<State>, public readonly userSubscriptionService: UserSubscriptionService) {}
 }

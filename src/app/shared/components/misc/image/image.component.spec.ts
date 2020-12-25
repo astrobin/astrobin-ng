@@ -1,5 +1,9 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
+import { initialState } from "@app/store/state";
+import { provideMockStore } from "@ngrx/store/testing";
+import { ComponentsModule } from "@shared/components/components.module";
+import { MockBuilder } from "ng-mocks";
 import { ImageComponent } from "./image.component";
 
 describe("ImageComponent", () => {
@@ -7,9 +11,7 @@ describe("ImageComponent", () => {
   let fixture: ComponentFixture<ImageComponent>;
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ImageComponent]
-    }).compileComponents();
+    await MockBuilder(ImageComponent, ComponentsModule).provide(provideMockStore({ initialState }));
   });
 
   beforeEach(() => {
@@ -20,30 +22,5 @@ describe("ImageComponent", () => {
 
   it("should create", () => {
     expect(component).toBeTruthy();
-  });
-
-  describe("isPlaceholder", () => {
-    it("should be true if the url contains the word 'placeholder'", () => {
-      expect(component.isPlaceholder("https://www.astrobin.com/static/images/placeholder-gallery.jpg")).toBe(true);
-    });
-
-    it("should be false if the url does not contain the word 'placeholder'", () => {
-      expect(component.isPlaceholder("https://cdn.astrobin.com/thumbs/llfoDOGMKjw2_1000x380_RSLeFbX4.jpg")).toBe(true);
-    });
-  });
-
-  describe("makeUrl", () => {
-    it("should return a placeholder if the image is not ready", () => {
-      jest.spyOn(component, "isPlaceholder").mockReturnValue(true);
-      jest.spyOn(component.imageService, "getPlaceholder").mockReturnValue("placeholder");
-
-      expect(component.makeUrl("foo")).toEqual("placeholder");
-    });
-
-    it("should return the url itself if the image is ready", () => {
-      jest.spyOn(component, "isPlaceholder").mockReturnValue(false);
-
-      expect(component.makeUrl("foo")).toEqual("foo");
-    });
   });
 });
