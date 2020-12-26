@@ -7,26 +7,24 @@ import { Actions, Effect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
 import { CameraApiService } from "@shared/services/api/classic/gear/camera/camera-api.service";
 import { EMPTY, Observable, of } from "rxjs";
-import { catchError, map, mergeMap, switchMap, withLatestFrom } from "rxjs/operators";
+import { catchError, map, mergeMap } from "rxjs/operators";
 
 @Injectable()
 export class CameraEffects {
   @Effect()
   LoadCamera: Observable<LoadCameraSuccess> = this.actions$.pipe(
     ofType(AppActionTypes.LOAD_CAMERA),
-    withLatestFrom(action =>
-      this.store$
-        .select(selectCamera, action.payload)
-        .pipe(map(cameraFromStore => ({ action, result: cameraFromStore })))
-    ),
-    switchMap(observable => observable),
-    mergeMap(({ action, result: cameraFromStore }) =>
-      cameraFromStore !== null
-        ? of(cameraFromStore).pipe(map(camera => new LoadCameraSuccess(camera)))
-        : this.cameraApiService.getCamera(action.payload).pipe(
-            map(camera => new LoadCameraSuccess(camera)),
-            catchError(error => EMPTY)
-          )
+    mergeMap(action =>
+      this.store$.select(selectCamera, action.payload).pipe(
+        mergeMap(cameraFromStore =>
+          cameraFromStore !== null
+            ? of(cameraFromStore).pipe(map(camera => new LoadCameraSuccess(camera)))
+            : this.cameraApiService.getCamera(action.payload).pipe(
+                map(camera => new LoadCameraSuccess(camera)),
+                catchError(error => EMPTY)
+              )
+        )
+      )
     )
   );
 

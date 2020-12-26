@@ -7,29 +7,33 @@ import { Actions, Effect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
 import { ImageApiService } from "@shared/services/api/classic/images/image/image-api.service";
 import { EMPTY, Observable, of } from "rxjs";
-import { catchError, delay, map, mergeMap, withLatestFrom } from "rxjs/operators";
+import { catchError, delay, map, mergeMap } from "rxjs/operators";
 
 @Injectable()
 export class ThumbnailEffects {
   @Effect()
   LoadThumbnail: Observable<LoadThumbnail | LoadThumbnailSuccess> = this.actions$.pipe(
     ofType(AppActionTypes.LOAD_THUMBNAIL),
-    withLatestFrom(action =>
+    mergeMap(action =>
       this.store$
         .select(selectThumbnail, action.payload)
-        .pipe(map(thumbnailFromStore => ({ action, result: thumbnailFromStore })))
-    ),
-    mergeMap(observable => observable),
-    mergeMap(({ action, result: thumbnailFromStore }) =>
-      thumbnailFromStore !== null
-        ? of(thumbnailFromStore)
-        : this.imageApiService
-            .getImage(action.payload.id)
-            .pipe(
-              mergeMap(image =>
-                this.imageApiService.getThumbnail(image.hash || image.pk, action.payload.revision, action.payload.alias)
-              )
-            )
+        .pipe(
+          mergeMap(thumbnailFromStore =>
+            thumbnailFromStore !== null
+              ? of(thumbnailFromStore)
+              : this.imageApiService
+                  .getImage(action.payload.id)
+                  .pipe(
+                    mergeMap(image =>
+                      this.imageApiService.getThumbnail(
+                        image.hash || image.pk,
+                        action.payload.revision,
+                        action.payload.alias
+                      )
+                    )
+                  )
+          )
+        )
     ),
     mergeMap(thumbnail => {
       if (thumbnail.url.toLowerCase().indexOf("placeholder") !== -1) {
