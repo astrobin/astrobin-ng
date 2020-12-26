@@ -1,5 +1,5 @@
-<ng-container *ngIf="(thumbnail$ | async) as thumbnail; else loading">
-  <ng-container *ngIf="(show$ | async) === true">
+<ng-container *ngIf="(show$ | async) === true">
+  <ng-container *ngIf="(thumbnail$ | async) as thumbnail; else loading">
     <div [style.backgroundImage]="'url(' + thumbnail?.url + ')'" class="astrobin-image"></div>
     <div (click)="hide()" class="close">
       <fa-icon icon="times"></fa-icon>

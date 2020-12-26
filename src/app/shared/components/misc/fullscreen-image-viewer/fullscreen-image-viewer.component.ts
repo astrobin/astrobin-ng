@@ -10,7 +10,7 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
 import { ImageAlias } from "@shared/enums/image-alias.enum";
 import { ImageThumbnailInterface } from "@shared/interfaces/image-thumbnail.interface";
 import { Observable } from "rxjs";
-import { map, tap } from "rxjs/operators";
+import { distinctUntilChanged, map, tap } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-fullscreen-image-viewer",
@@ -53,12 +53,16 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     this.thumbnail$ = this.store$.select(selectThumbnail, options);
     this.show$ = this.store$.select(selectApp).pipe(
       map(state => state.currentFullscreenImage === this.id),
-      tap(result => {
-        this.klass = result ? "d-block" : "d-none";
+      distinctUntilChanged(),
+      tap(show => {
+        if (show) {
+          this.store$.dispatch(new LoadThumbnail(options));
+          this.klass = "d-block";
+        } else {
+          this.klass = "d-none";
+        }
       })
     );
-
-    this.store$.dispatch(new LoadThumbnail(options));
   }
 
   hide(): void {
