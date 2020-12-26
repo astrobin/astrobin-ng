@@ -13,7 +13,8 @@ export class ImageGenerator {
       w: 1000,
       h: 1000,
       imagingTelescopes: [],
-      imagingCameras: []
+      imagingCameras: [],
+      published: new Date().toISOString()
     };
   }
 }

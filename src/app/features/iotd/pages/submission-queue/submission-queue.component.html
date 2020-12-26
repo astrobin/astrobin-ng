@@ -10,12 +10,12 @@
   <ng-container *ngIf="!!submissionQueue">
     <ng-container *ngIf="submissionQueue.length > 0; else noEntries">
 
-      <div *ngFor="let entry of submissionQueue" class="row page submission-queue-entry">
+      <div *ngFor="let entry of submissionQueue" class="row no-gutters page submission-queue-entry">
         <astrobin-fullscreen-image-viewer [id]="entry.pk"></astrobin-fullscreen-image-viewer>
 
         <div class="col-sm-12 col-md-6 col-image">
           <astrobin-image
-            class="submission-image"
+            class="submission-image mb-2 mb-md-0 pr-0 pr-md-1"
             [alias]="ImageAlias.STORY"
             [id]="entry.pk"
             (click)="viewFullscreen(entry.pk)">
@@ -24,6 +24,7 @@
 
         <div class="col-sm-12 col-md-6 col-image">
           <astrobin-image
+            class="pl-0 pl-md-1"
             [alias]="ImageAlias.REGULAR_CROP_ANONYMIZED"
             [id]="entry.pk">
           </astrobin-image>
@@ -31,46 +32,50 @@
         </div>
 
         <div class="col-12">
-          <div class="gear">
-            <p>
-              <strong>
-                {{ "Imaging telescopes" | translate }}:
-              </strong>
-              <ng-container *ngIf="entry.imagingTelescopes?.length > 0; else noneSpecified">
-                <astrobin-telescope
-                  *ngFor="let telescope of entry.imagingTelescopes"
-                  [id]="telescope">
-                </astrobin-telescope>
-              </ng-container>
-            </p>
+          <div class="row align-items-end mt-3">
+            <div class="col-12 col-md-6 col-gear">
+              <p>
+                <strong>{{ "Imaging telescopes" | translate }}:</strong>
+                <ng-container *ngIf="entry.imagingTelescopes?.length > 0; else noneSpecified">
+                  <astrobin-telescope
+                    *ngFor="let telescope of entry.imagingTelescopes"
+                    [id]="telescope">
+                  </astrobin-telescope>
+                </ng-container>
+              </p>
 
-            <p>
-              <strong>
-                {{ "Imaging cameras" | translate }}:
-              </strong>
-              <ng-container *ngIf="entry.imagingCameras?.length > 0; else noneSpecified">
-                <astrobin-camera
-                  *ngFor="let camera of entry.imagingCameras"
-                  [id]="camera">
-                </astrobin-camera>
-              </ng-container>
-            </p>
+              <p>
+                <strong>{{ "Imaging cameras" | translate }}:</strong>
+                <ng-container *ngIf="entry.imagingCameras?.length > 0; else noneSpecified">
+                  <astrobin-camera
+                    *ngFor="let camera of entry.imagingCameras"
+                    [id]="camera">
+                  </astrobin-camera>
+                </ng-container>
+              </p>
+
+              <p>
+                <strong>{{ "Published" | translate }}:</strong>
+                {{ entry.published | timeago:true }}
+              </p>
+            </div>
+
+            <div class="col-12 col-md-6">
+              <div class="text-right form-actions mt-0">
+                <button class="btn btn-secondary" (click)="viewFullscreen(entry.pk)">
+                  <fa-icon icon="search-plus"></fa-icon>
+                  {{ "View large" | translate }}
+                </button>
+
+                <button class="btn btn-primary">
+                  <fa-icon icon="star"></fa-icon>
+                  {{ "Promote" | translate }}
+                </button>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div class="col-12">
-          <div class="mt-5 text-right form-actions">
-            <button class="btn btn-secondary" (click)="viewFullscreen(entry.pk)">
-              <fa-icon icon="search-plus"></fa-icon>
-              {{ "View large" | translate }}
-            </button>
-
-            <button class="btn btn-primary">
-              <fa-icon icon="star"></fa-icon>
-              {{ "Promote" | translate }}
-            </button>
-          </div>
-        </div>
       </div>
 
     </ng-container>

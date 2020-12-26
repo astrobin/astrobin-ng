@@ -10,4 +10,5 @@ export interface ImageInterface {
   h: number;
   imagingTelescopes: number[];
   imagingCameras: number[];
+  published: string;
 }
