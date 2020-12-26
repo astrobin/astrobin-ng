@@ -19,6 +19,7 @@ import { ApiModule } from "@shared/services/api/api.module";
 import { AuthService } from "@shared/services/auth.service";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { AuthGuardService } from "@shared/services/guards/auth-guard.service";
+import { GroupGuardService } from "@shared/services/guards/group-guard.service";
 import { ImageOwnerGuardService } from "@shared/services/guards/image-owner-guard.service";
 import { UltimateSubscriptionGuardService } from "@shared/services/guards/ultimate-subscription-guard.service";
 import { LoadingService } from "@shared/services/loading.service";
@@ -108,6 +109,7 @@ export class SharedModule {
         AuthService,
         ClassicRoutesService,
         CookieService,
+        GroupGuardService,
         ImageOwnerGuardService,
         LoadingService,
         PopNotificationsService,
