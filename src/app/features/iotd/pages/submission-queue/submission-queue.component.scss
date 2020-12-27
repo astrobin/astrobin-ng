@@ -1,6 +1,12 @@
 @import "../../../../styles/variables";
 
 :host {
+  .submission-queue-entry {
+    &.promoted {
+      box-shadow: 0 0 3rem rgba(255,255,255, .5);
+    }
+  }
+
   .col-image {
     position: relative;
 
