@@ -6,9 +6,13 @@ import { selectSubmissions } from "@features/iotd/store/iotd.selectors";
 import { select, Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
-import { LoadingService } from "@shared/services/loading.service";
 import { Observable } from "rxjs";
-import { map } from "rxjs/operators";
+import { take, takeUntil } from "rxjs/operators";
+
+interface Slot {
+  id: number;
+  submission: SubmissionInterface | null;
+}
 
 @Component({
   selector: "astrobin-promotion-slots",
@@ -18,15 +22,29 @@ import { map } from "rxjs/operators";
 export class PromotionSlotsComponent extends BaseComponentDirective {
   ImageAlias = ImageAlias;
   submissions$: Observable<SubmissionInterface[]> = this.store$.select(selectSubmissions);
-  promotionSlots$: Observable<number[]> = this.store$.pipe(
-    select(selectIotdMaxSubmissionsPerDay),
-    map(amount => Array(amount))
-  );
+  slotsCount$: Observable<number> = this.store$.pipe(select(selectIotdMaxSubmissionsPerDay));
+  slots: Slot[] = [];
 
   @Output()
   slotClick = new EventEmitter();
 
   constructor(public readonly store$: Store<State>) {
     super();
+
+    this.slotsCount$.pipe(take(1)).subscribe(count => {
+      for (let i = 0; i < count; ++i) {
+        this.slots.push({
+          id: i,
+          submission: null
+        });
+      }
+    });
+
+    this.submissions$.pipe(takeUntil(this.destroyed$)).subscribe(submissions => {
+      this.slots.forEach(slot => (slot.submission = null));
+      submissions.forEach((submission, i) => {
+        this.slots[i].submission = submission;
+      });
+    });
   }
 }

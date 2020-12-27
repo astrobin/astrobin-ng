@@ -1,19 +1,14 @@
-<ng-container *ngIf="submissions$ | async as submissions">
-  <ng-container *ngIf="promotionSlots$ | async as promotionSlots">
+<div *ngFor="let slot of slots; let i = index" class="promotion-slot" (click)="slotClick.emit(slot.submission.image)">
 
-    <div *ngFor="let slot of promotionSlots; let i = index" class="promotion-slot"
-         (click)="slotClick.emit(submissions[i].image)">
-      <ng-container *ngIf="submissions.length > i; else emptySlot">
-        <astrobin-image
-          [alias]="ImageAlias.STORY"
-          [id]="submissions[i].image">
-        </astrobin-image>
-      </ng-container>
-
-      <ng-template #emptySlot>
-        {{ i + 1 }}
-      </ng-template>
-    </div>
-
+  <ng-container *ngIf="slot.submission; else emptySlot">
+    <astrobin-image
+      [alias]="ImageAlias.STORY"
+      [id]="slot.submission.image">
+    </astrobin-image>
   </ng-container>
-</ng-container>
+
+  <ng-template #emptySlot>
+    {{ i + 1 }}
+  </ng-template>
+
+</div>

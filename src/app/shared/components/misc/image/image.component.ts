@@ -1,4 +1,4 @@
-import { Component, HostBinding, Input, OnInit } from "@angular/core";
+import { AfterViewInit, Component, HostBinding, Input, OnChanges, OnInit, SimpleChanges } from "@angular/core";
 import { LoadImage } from "@app/store/actions/image.actions";
 import { LoadThumbnail } from "@app/store/actions/thumbnail.actions";
 import { selectImage } from "@app/store/selectors/app/image.selectors";
@@ -20,7 +20,7 @@ import { filter, tap } from "rxjs/operators";
   templateUrl: "./image.component.html",
   styleUrls: ["./image.component.scss"]
 })
-export class ImageComponent extends BaseComponentDirective implements OnInit {
+export class ImageComponent extends BaseComponentDirective implements OnInit, OnChanges, AfterViewInit {
   image$: Observable<ImageInterface>;
   thumbnail$: Observable<ImageThumbnailInterface>;
 
@@ -63,7 +63,17 @@ export class ImageComponent extends BaseComponentDirective implements OnInit {
     if (this.alias === null) {
       throw new Error("Attribute 'alias' is required");
     }
+  }
 
+  ngAfterViewInit(): void {
+    this._load();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    this._load();
+  }
+
+  private _load(): void {
     this.loading = true;
 
     this.image$ = this.store$.select(selectImage, this.id);
