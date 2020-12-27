@@ -7,6 +7,7 @@ import { select, Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
 import { ImageInterface } from "@shared/interfaces/image.interface";
+import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
 import { TitleService } from "@shared/services/title/title.service";
 import { Observable } from "rxjs";
 
@@ -16,8 +17,11 @@ import { Observable } from "rxjs";
   styleUrls: ["./submission-queue.component.scss"]
 })
 export class SubmissionQueueComponent implements OnInit {
+  page = 1;
   ImageAlias = ImageAlias;
-  submissionQueue$: Observable<ImageInterface[]> = this.store$.pipe(select(selectSubmissionQueue));
+  submissionQueue$: Observable<PaginatedApiResultInterface<ImageInterface>> = this.store$.pipe(
+    select(selectSubmissionQueue)
+  );
 
   constructor(
     public readonly store$: Store<IotdState>,
@@ -36,5 +40,10 @@ export class SubmissionQueueComponent implements OnInit {
 
   viewFullscreen(id: number): void {
     this.store$.dispatch(new ShowFullscreenImage(id));
+  }
+
+  pageChange(page: number): void {
+    this.page = page;
+    this.store$.dispatch(new LoadSubmissionQueue({ page }));
   }
 }

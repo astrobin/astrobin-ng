@@ -12,9 +12,9 @@ export class IotdEffects {
   loadSubmissionQueue$ = this.actions$.pipe(
     ofType(IotdActionTypes.LOAD_SUBMISSION_QUEUE),
     tap(() => this.loadingService.setLoading(true)),
-    mergeMap(() =>
-      this.submissionQueueApiService.getEntries().pipe(
-        map(entries => new LoadSubmissionQueueSuccess(entries.results)),
+    mergeMap(action =>
+      this.submissionQueueApiService.getEntries(action.payload.page).pipe(
+        map(entries => new LoadSubmissionQueueSuccess(entries)),
         catchError(error => of(new LoadSubmissionQueueFailure()))
       )
     )

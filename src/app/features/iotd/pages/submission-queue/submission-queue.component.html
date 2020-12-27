@@ -7,10 +7,12 @@
 </h1>
 
 <ng-container *ngIf="submissionQueue$ | async as submissionQueue">
-  <ng-container *ngIf="!!submissionQueue">
-    <ng-container *ngIf="submissionQueue.length > 0; else noEntries">
+  <ng-container *ngIf="submissionQueue?.count > 0; else noEntries">
 
-      <div *ngFor="let entry of submissionQueue" class="row no-gutters page submission-queue-entry">
+    <ngb-pagination (pageChange)="pageChange($event)" [(page)]="page" [collectionSize]="submissionQueue.count">
+    </ngb-pagination>
+
+    <div *ngFor="let entry of submissionQueue.results" class="row no-gutters page submission-queue-entry">
         <astrobin-fullscreen-image-viewer [id]="entry.pk"></astrobin-fullscreen-image-viewer>
 
         <div class="col-sm-12 col-md-6 col-image">
@@ -78,7 +80,9 @@
 
       </div>
 
-    </ng-container>
+    <ngb-pagination (pageChange)="pageChange($event)" [(page)]="page" [collectionSize]="submissionQueue.count">
+    </ngb-pagination>
+
   </ng-container>
 </ng-container>
 
