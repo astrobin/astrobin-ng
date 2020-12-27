@@ -10,13 +10,31 @@
   <ng-container *ngIf="submissions$ | async as submissions">
     <ng-container *ngIf="submissionQueue?.count > 0; else noEntries">
 
-    <ngb-pagination *ngIf="paginationService.showPagination(submissionQueue.count)" (pageChange)="pageChange($event)"
-                    [(page)]="page" [collectionSize]="submissionQueue.count">
-    </ngb-pagination>
+      <div *ngIf="promotionSlots$ | async as promotionSlots" class="promotion-slots page">
+        <div *ngFor="let slot of promotionSlots; let i = index" class="promotion-slot">
+          <ng-container *ngIf="submissions.length > i; else emptySlot">
+            <astrobin-image
+              (click)="scrollToEntry(submissions[i].image)"
+              [alias]="ImageAlias.STORY"
+              [id]="submissions[i].image">
+            </astrobin-image>
+          </ng-container>
 
-    <div *ngFor="let entry of submissionQueue.results"
-         class="row no-gutters page submission-queue-entry"
-         [class.promoted]="(isSubmitted$(entry.pk) | async) === true">
+          <ng-template #emptySlot>
+            {{ i + 1 }}
+          </ng-template>
+        </div>
+      </div>
+
+      <ngb-pagination *ngIf="paginationService.showPagination(submissionQueue.count)" (pageChange)="pageChange($event)"
+                      [(page)]="page" [collectionSize]="submissionQueue.count">
+      </ngb-pagination>
+
+      <div *ngFor="let entry of submissionQueue.results"
+           #submissionQueueEntries
+           id="submission-queue-entry-{{entry.pk}}"
+           class="row no-gutters page submission-queue-entry"
+           [class.promoted]="(isSubmitted$(entry.pk) | async) === true">
         <astrobin-fullscreen-image-viewer [id]="entry.pk"></astrobin-fullscreen-image-viewer>
 
         <div class="col-sm-12 col-md-6 col-image">
@@ -98,11 +116,11 @@
 
       </div>
 
-    <ngb-pagination *ngIf="paginationService.showPagination(submissionQueue.count)" (pageChange)="pageChange($event)"
+      <ngb-pagination *ngIf="paginationService.showPagination(submissionQueue.count)" (pageChange)="pageChange($event)"
                     [(page)]="page" [collectionSize]="submissionQueue.count">
     </ngb-pagination>
 
-  </ng-container>
+    </ng-container>
   </ng-container>
 </ng-container>
 

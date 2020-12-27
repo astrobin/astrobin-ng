@@ -31,7 +31,8 @@ export class BackendConfigGenerator {
         [ImageAlias.GALLERY]: {
           size: [130, 130]
         }
-      }
+      },
+      IOTD_SUBMISSION_MAX_PER_DAY: 3
     };
   }
 }

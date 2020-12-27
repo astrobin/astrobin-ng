@@ -1,6 +1,30 @@
 @import "../../../../styles/variables";
 
 :host {
+  .promotion-slots {
+    display: flex;
+    justify-content: space-between;
+
+    .promotion-slot {
+      height: 200px;
+      width: 100%;
+      line-height: 200px;
+      text-align: center;
+      background-color: $grey;
+      border: 2px dashed $light-grey;
+      font-size: 3rem;
+      color: $light-grey;
+
+      &:not(:last-child) {
+        margin-right: .5rem;
+      }
+
+      astrobin-image {
+        cursor: pointer;
+      }
+    }
+  }
+
   .submission-queue-entry {
     &.promoted {
       box-shadow: 0 0 3rem rgba(255,255,255, .5);

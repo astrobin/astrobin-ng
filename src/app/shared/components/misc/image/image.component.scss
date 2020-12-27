@@ -1,5 +1,8 @@
 :host {
   display: block;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
 
   .astrobin-image {
     background-repeat: no-repeat;

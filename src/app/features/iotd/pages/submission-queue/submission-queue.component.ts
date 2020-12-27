@@ -1,5 +1,7 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, ElementRef, OnInit, QueryList, ViewChildren } from "@angular/core";
 import { ShowFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
+import { selectIotdMaxSubmissionsPerDay } from "@app/store/selectors/app/app.selectors";
+import { State } from "@app/store/state";
 import { SubmissionInterface } from "@features/iotd/services/submission-queue-api.service";
 import {
   DeleteSubmission,
@@ -7,7 +9,7 @@ import {
   LoadSubmissions,
   PostSubmission
 } from "@features/iotd/store/iotd.actions";
-import { IotdState, SubmissionImageInterface } from "@features/iotd/store/iotd.reducer";
+import { SubmissionImageInterface } from "@features/iotd/store/iotd.reducer";
 import {
   selectSubmissionForImage,
   selectSubmissionQueue,
@@ -20,8 +22,8 @@ import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/pag
 import { LoadingService } from "@shared/services/loading.service";
 import { PaginationService } from "@shared/services/pagination.service";
 import { TitleService } from "@shared/services/title/title.service";
-import { Observable, of } from "rxjs";
-import { distinctUntilChanged, map, share, take, tap } from "rxjs/operators";
+import { Observable } from "rxjs";
+import { distinctUntilChanged, map, take, tap } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-submission-queue",
@@ -31,13 +33,20 @@ import { distinctUntilChanged, map, share, take, tap } from "rxjs/operators";
 export class SubmissionQueueComponent implements OnInit {
   page = 1;
   ImageAlias = ImageAlias;
-  submissionQueue$: Observable<PaginatedApiResultInterface<SubmissionImageInterface>> = this.store$.pipe(
-    select(selectSubmissionQueue)
+  submissionQueue$: Observable<PaginatedApiResultInterface<SubmissionImageInterface>> = this.store$.select(
+    selectSubmissionQueue
   );
-  submissions$: Observable<SubmissionInterface[]> = this.store$.pipe(select(selectSubmissions));
+  submissions$: Observable<SubmissionInterface[]> = this.store$.select(selectSubmissions);
+  promotionSlots$: Observable<number[]> = this.store$.pipe(
+    select(selectIotdMaxSubmissionsPerDay),
+    map(amount => Array(amount))
+  );
+
+  @ViewChildren("submissionQueueEntries")
+  submissionQueueEntries: QueryList<ElementRef>;
 
   constructor(
-    public readonly store$: Store<IotdState>,
+    public readonly store$: Store<State>,
     public readonly titleService: TitleService,
     public readonly translate: TranslateService,
     public readonly paginationService: PaginationService,
@@ -82,5 +91,12 @@ export class SubmissionQueueComponent implements OnInit {
       map(submission => submission !== null),
       distinctUntilChanged()
     );
+  }
+
+  scrollToEntry(imageId: number): void {
+    const element = this.submissionQueueEntries.filter(
+      entry => entry.nativeElement.id === `submission-queue-entry-${imageId}`
+    )[0].nativeElement;
+    element.scrollIntoView({ behavior: "smooth" });
   }
 }

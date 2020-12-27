@@ -28,4 +28,5 @@ export interface BackendConfigInterface {
   GOOGLE_ADS_ID?: string;
   REQUEST_COUNTRY: string;
   THUMBNAIL_ALIASES: ThumbnailAliases;
+  IOTD_SUBMISSION_MAX_PER_DAY: number;
 }

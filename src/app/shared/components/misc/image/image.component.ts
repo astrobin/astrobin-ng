@@ -51,7 +51,7 @@ export class ImageComponent extends BaseComponentDirective implements OnInit {
       case ImageAlias.REGULAR_CROP_ANONYMIZED:
         return "initial";
       default:
-        return "content";
+        return "cover";
     }
   }
 
