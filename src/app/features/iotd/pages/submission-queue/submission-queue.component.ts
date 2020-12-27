@@ -59,34 +59,9 @@ export class SubmissionQueueComponent implements OnInit {
     this.store$.dispatch(new LoadSubmissions());
   }
 
-  viewFullscreen(imageId: number): void {
-    this.store$.dispatch(new ShowFullscreenImage(imageId));
-  }
-
   pageChange(page: number): void {
     this.page = page;
     this.store$.dispatch(new LoadSubmissionQueue({ page }));
-  }
-
-  postSubmission(imageId: number): void {
-    this.store$.dispatch(new PostSubmission({ imageId }));
-  }
-
-  deleteSubmission(imageId: number): void {
-    this.store$
-      .select(selectSubmissionForImage, imageId)
-      .pipe(
-        take(1),
-        tap(submission => this.store$.dispatch(new DeleteSubmission({ id: submission.id })))
-      )
-      .subscribe();
-  }
-
-  isSubmitted$(imageId: number): Observable<boolean> {
-    return this.store$.select(selectSubmissionForImage, imageId).pipe(
-      map(submission => submission !== null),
-      distinctUntilChanged()
-    );
   }
 
   scrollToEntry(imageId: number): void {

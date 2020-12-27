@@ -1,0 +1,40 @@
+@import "../../../../styles/variables";
+
+.submission-queue-entry {
+  &.promoted {
+    box-shadow: 0 0 3rem rgba(255,255,255, .5);
+  }
+}
+
+.col-image {
+  position: relative;
+
+  astrobin-image {
+    height: 320px;
+
+    &.submission-image:not(.loading) {
+      cursor: zoom-in;
+    }
+
+    &.loading + .hundred_percent {
+      display: none;
+    }
+
+    &:not(.loading) + .hundred_percent {
+      display: block;
+      position: absolute;
+      font-size: 2rem;
+      top: .5rem;
+      right: 1.5rem;
+      color: $white;
+      text-shadow: 1px 1px 3px $black;
+      opacity: .3;
+    }
+  }
+}
+
+.col-gear {
+  p {
+    margin: 0;
+  }
+}
