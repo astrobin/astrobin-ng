@@ -8,6 +8,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
 import { ImageInterface } from "@shared/interfaces/image.interface";
 import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
+import { PaginationService } from "@shared/services/pagination.service";
 import { TitleService } from "@shared/services/title/title.service";
 import { Observable } from "rxjs";
 
@@ -26,7 +27,8 @@ export class SubmissionQueueComponent implements OnInit {
   constructor(
     public readonly store$: Store<IotdState>,
     public readonly titleService: TitleService,
-    public readonly translate: TranslateService
+    public readonly translate: TranslateService,
+    public readonly paginationService: PaginationService
   ) {}
 
   ngOnInit(): void {

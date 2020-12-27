@@ -9,7 +9,8 @@
 <ng-container *ngIf="submissionQueue$ | async as submissionQueue">
   <ng-container *ngIf="submissionQueue?.count > 0; else noEntries">
 
-    <ngb-pagination (pageChange)="pageChange($event)" [(page)]="page" [collectionSize]="submissionQueue.count">
+    <ngb-pagination *ngIf="paginationService.showPagination(submissionQueue.count)" (pageChange)="pageChange($event)"
+                    [(page)]="page" [collectionSize]="submissionQueue.count">
     </ngb-pagination>
 
     <div *ngFor="let entry of submissionQueue.results" class="row no-gutters page submission-queue-entry">
@@ -80,7 +81,8 @@
 
       </div>
 
-    <ngb-pagination (pageChange)="pageChange($event)" [(page)]="page" [collectionSize]="submissionQueue.count">
+    <ngb-pagination *ngIf="paginationService.showPagination(submissionQueue.count)" (pageChange)="pageChange($event)"
+                    [(page)]="page" [collectionSize]="submissionQueue.count">
     </ngb-pagination>
 
   </ng-container>
