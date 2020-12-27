@@ -37,10 +37,6 @@ export class SubmissionQueueComponent implements OnInit {
     selectSubmissionQueue
   );
   submissions$: Observable<SubmissionInterface[]> = this.store$.select(selectSubmissions);
-  promotionSlots$: Observable<number[]> = this.store$.pipe(
-    select(selectIotdMaxSubmissionsPerDay),
-    map(amount => Array(amount))
-  );
 
   @ViewChildren("submissionQueueEntries")
   submissionQueueEntries: QueryList<ElementRef>;

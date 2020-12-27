@@ -10,20 +10,8 @@
   <ng-container *ngIf="submissions$ | async as submissions">
     <ng-container *ngIf="submissionQueue?.count > 0; else noEntries">
 
-      <div *ngIf="promotionSlots$ | async as promotionSlots" class="promotion-slots page">
-        <div *ngFor="let slot of promotionSlots; let i = index" class="promotion-slot">
-          <ng-container *ngIf="submissions.length > i; else emptySlot">
-            <astrobin-image
-              (click)="scrollToEntry(submissions[i].image)"
-              [alias]="ImageAlias.STORY"
-              [id]="submissions[i].image">
-            </astrobin-image>
-          </ng-container>
-
-          <ng-template #emptySlot>
-            {{ i + 1 }}
-          </ng-template>
-        </div>
+      <div class="page">
+        <astrobin-promotion-slots (slotClick)="scrollToEntry($event)"></astrobin-promotion-slots>
       </div>
 
       <ngb-pagination *ngIf="paginationService.showPagination(submissionQueue.count)" (pageChange)="pageChange($event)"

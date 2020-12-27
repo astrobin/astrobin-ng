@@ -5,12 +5,13 @@ import { SubmissionQueueApiService } from "@features/iotd/services/submission-qu
 import { EffectsModule } from "@ngrx/effects";
 import { StoreModule } from "@ngrx/store";
 import { SharedModule } from "@shared/shared.module";
+import { PromotionSlotsComponent } from "./components/promotion-slots/promotion-slots.component";
 import { SubmissionQueueComponent } from "./pages/submission-queue/submission-queue.component";
 import { IotdEffects } from "./store/iotd.effects";
 import * as fromIotd from "./store/iotd.reducer";
 
 @NgModule({
-  declarations: [SubmissionQueueComponent],
+  declarations: [SubmissionQueueComponent, PromotionSlotsComponent],
   imports: [
     RouterModule.forChild(routes),
     SharedModule,
