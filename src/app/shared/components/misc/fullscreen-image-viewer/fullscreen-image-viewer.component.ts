@@ -116,7 +116,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       tap(
         () =>
           (this._zoomReadyNotification = this.popNotificationsService.info(
-            this.translateService.instant("Click on the image scroll to magnify up to 8x."),
+            this.translateService.instant("Click on the image and scroll to magnify up to 8x."),
             null,
             { timeOut: 5000 }
           ))
