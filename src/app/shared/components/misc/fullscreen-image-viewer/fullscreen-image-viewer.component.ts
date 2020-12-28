@@ -31,6 +31,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
   zoomLensSize: number;
   showZoomIndicator = false;
+  isTouchDevice = false;
 
   hdThumbnail$: Observable<string>;
   realThumbnail$: Observable<string>;
@@ -67,6 +68,10 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     }
 
     this._setZoomLensSize();
+
+    if ("ontouchend" in this.windowRef.nativeWindow.document) {
+      this.isTouchDevice = true;
+    }
 
     const hdOptions = {
       id: this.id,
@@ -122,7 +127,9 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       tap(show => {
         if (show) {
           this.store$.dispatch(new LoadThumbnail(hdOptions));
-          this.store$.dispatch(new LoadThumbnail(realOptions));
+          if (!this.isTouchDevice) {
+            this.store$.dispatch(new LoadThumbnail(realOptions));
+          }
           this.klass = "d-block";
         } else {
           this.klass = "d-none";

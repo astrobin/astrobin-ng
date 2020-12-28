@@ -5,7 +5,7 @@
   } as thumbnails">
 
     <ng-container
-      *ngIf="thumbnails.hd && thumbnails.real; else hdOnly"
+      *ngIf="thumbnails.hd && thumbnails.real && !isTouchDevice; else hdOnly"
       [ngTemplateOutlet]="imageZoom"
       [ngTemplateOutletContext]="{hd: thumbnails.hd, real: thumbnails.real}">
     </ng-container>
