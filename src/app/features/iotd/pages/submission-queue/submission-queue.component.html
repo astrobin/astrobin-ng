@@ -18,6 +18,7 @@
 
         <astrobin-promotion-slots
           ngStickyNav stickyClass="sticky-promotion-slots"
+          [availableSubmissionEntries]="submissionQueue.results"
           (slotClick)="scrollToEntry($event)">
         </astrobin-promotion-slots>
 

@@ -42,7 +42,13 @@
     }
 
     astrobin-image {
-      cursor: pointer;
+      &.clickable {
+        cursor: pointer;
+      }
+
+      &:not(.clickable) {
+        cursor: not-allowed;
+      }
     }
   }
 }

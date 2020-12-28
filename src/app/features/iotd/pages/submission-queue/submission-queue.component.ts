@@ -54,10 +54,27 @@ export class SubmissionQueueComponent implements OnInit {
     this.store$.dispatch(new LoadSubmissionQueue({ page }));
   }
 
+  entryExists(imageId: number): boolean {
+    return this._getEntryElement(imageId) !== null;
+  }
+
   scrollToEntry(imageId: number): void {
-    const element = this.submissionQueueEntries.filter(
+    const element = this._getEntryElement(imageId);
+
+    if (element) {
+      element.nativeElement.scrollIntoView({ behavior: "smooth" });
+    }
+  }
+
+  private _getEntryElement(imageId: number): ElementRef | null {
+    const matches = this.submissionQueueEntries.filter(
       entry => entry.nativeElement.id === `submission-queue-entry-${imageId}`
-    )[0].nativeElement;
-    element.scrollIntoView({ behavior: "smooth" });
+    );
+
+    if (matches.length > 0) {
+      return matches[0];
+    }
+
+    return null;
   }
 }

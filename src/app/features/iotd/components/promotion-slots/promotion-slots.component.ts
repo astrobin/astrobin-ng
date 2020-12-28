@@ -1,7 +1,8 @@
-import { Component, EventEmitter, Output } from "@angular/core";
+import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { selectIotdMaxSubmissionsPerDay } from "@app/store/selectors/app/app.selectors";
 import { State } from "@app/store/state";
 import { SubmissionInterface } from "@features/iotd/services/submission-queue-api.service";
+import { SubmissionImageInterface } from "@features/iotd/store/iotd.reducer";
 import { selectSubmissions } from "@features/iotd/store/iotd.selectors";
 import { select, Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
@@ -25,6 +26,9 @@ export class PromotionSlotsComponent extends BaseComponentDirective {
   slotsCount$: Observable<number> = this.store$.pipe(select(selectIotdMaxSubmissionsPerDay));
   slots: Slot[] = [];
 
+  @Input()
+  availableSubmissionEntries: SubmissionImageInterface[] = [];
+
   @Output()
   slotClick = new EventEmitter();
 
@@ -46,5 +50,15 @@ export class PromotionSlotsComponent extends BaseComponentDirective {
         this.slots[i].submission = submission;
       });
     });
+  }
+
+  slotClicked(imageId: number): void {
+    if (this.clickableSlot(imageId)) {
+      this.slotClick.emit(imageId);
+    }
+  }
+
+  clickableSlot(imageId: number): boolean {
+    return this.availableSubmissionEntries.map(submission => submission.pk).indexOf(imageId) !== -1;
   }
 }
