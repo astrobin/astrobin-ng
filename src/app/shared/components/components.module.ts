@@ -16,6 +16,7 @@ import { RefreshButtonComponent } from "@shared/components/misc/refresh-button/r
 import { TelescopeComponent } from "@shared/components/misc/telescope/telescope.component";
 import { TextLoadingIndicatorComponent } from "@shared/components/misc/text-loading-indicator/text-loading-indicator.component";
 import { NgxFilesizeModule } from "ngx-filesize";
+import { NgxImageZoomModule } from "ngx-image-zoom";
 import { UploadxModule } from "ngx-uploadx";
 import { PipesModule } from "../pipes/pipes.module";
 import { LoginFormComponent } from "./auth/login-form/login-form.component";
@@ -35,6 +36,7 @@ const modules = [
   NgbModalModule,
   NgbTooltipModule,
   NgxFilesizeModule,
+  NgxImageZoomModule,
   PipesModule,
   ReactiveFormsModule,
   RouterModule,

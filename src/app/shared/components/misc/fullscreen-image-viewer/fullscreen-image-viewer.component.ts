@@ -1,7 +1,6 @@
-import { Component, HostBinding, HostListener, Input, OnInit } from "@angular/core";
-import { HideFullscreenImage, SetHasFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
+import { Component, HostBinding, HostListener, Input, OnChanges, OnInit, SimpleChanges } from "@angular/core";
+import { HideFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
 import { LoadThumbnail } from "@app/store/actions/thumbnail.actions";
-import { AppState } from "@app/store/reducers/app.reducers";
 import { selectApp } from "@app/store/selectors/app/app.selectors";
 import { selectThumbnail } from "@app/store/selectors/app/thumbnail.selectors";
 import { State } from "@app/store/state";
@@ -9,6 +8,7 @@ import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
 import { ImageThumbnailInterface } from "@shared/interfaces/image-thumbnail.interface";
+import { WindowRefService } from "@shared/services/window-ref.service";
 import { Observable } from "rxjs";
 import { distinctUntilChanged, map, tap } from "rxjs/operators";
 
@@ -17,7 +17,7 @@ import { distinctUntilChanged, map, tap } from "rxjs/operators";
   templateUrl: "./fullscreen-image-viewer.component.html",
   styleUrls: ["./fullscreen-image-viewer.component.scss"]
 })
-export class FullscreenImageViewerComponent extends BaseComponentDirective implements OnInit {
+export class FullscreenImageViewerComponent extends BaseComponentDirective implements OnInit, OnChanges {
   @Input()
   id: number;
 
@@ -27,22 +27,31 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   @HostBinding("class")
   klass = "d-none";
 
+  zoomLensSize: number;
+
   thumbnail$: Observable<ImageThumbnailInterface>;
   show$: Observable<boolean>;
+
+  constructor(public readonly store$: Store<State>, public readonly windowRef: WindowRefService) {
+    super();
+  }
 
   @HostListener("document:keydown.escape", ["$event"])
   onKeydownEscape(event: KeyboardEvent) {
     this.hide();
   }
 
-  constructor(public readonly store$: Store<State>) {
-    super();
+  @HostListener("window:resize", ["$event"])
+  onResize(event) {
+    this._setZoomLensSize();
   }
 
   ngOnInit(): void {
     if (this.id === undefined) {
       throw new Error("Attribute 'id' is required");
     }
+
+    this._setZoomLensSize();
 
     const options = {
       id: this.id,
@@ -65,7 +74,15 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     );
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    this.ngOnInit();
+  }
+
   hide(): void {
     this.store$.dispatch(new HideFullscreenImage());
+  }
+
+  private _setZoomLensSize(): void {
+    this.zoomLensSize = Math.floor(this.windowRef.nativeWindow.innerWidth / 4);
   }
 }

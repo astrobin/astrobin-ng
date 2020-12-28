@@ -1,10 +1,24 @@
 <ng-container *ngIf="(show$ | async) === true">
   <ng-container *ngIf="(thumbnail$ | async) as thumbnail; else loading">
-    <div [style.backgroundImage]="'url(' + thumbnail?.url + ')'" class="astrobin-image"></div>
+
+    <lib-ngx-image-zoom
+      class="image-zoom"
+      [thumbImage]="thumbnail.url"
+      [fullImage]="thumbnail.url"
+      [enableLens]="true"
+      [circularLens]="true"
+      [lensHeight]="zoomLensSize"
+      [lensWidth]="zoomLensSize"
+      [enableScrollZoom]="true"
+      [minZoomRatio]="1"
+      [maxZoomRatio]="4">
+    </lib-ngx-image-zoom>
+
     <div (click)="hide()" class="close">
       <fa-icon icon="times"></fa-icon>
       <span class="esc">ESC</span>
     </div>
+
   </ng-container>
 </ng-container>
 
