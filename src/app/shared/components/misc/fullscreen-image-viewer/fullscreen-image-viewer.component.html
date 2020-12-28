@@ -1,27 +1,52 @@
 <ng-container *ngIf="(show$ | async) === true">
-  <ng-container *ngIf="(thumbnail$ | async) as thumbnail; else loading">
+  <ng-container *ngIf="{
+    hd: hdThumbnail$ | async,
+    real: realThumbnail$ | async
+  } as thumbnails">
 
-    <lib-ngx-image-zoom
-      class="image-zoom"
-      [thumbImage]="thumbnail.url"
-      [fullImage]="thumbnail.url"
-      [enableLens]="true"
-      [circularLens]="true"
-      [lensHeight]="zoomLensSize"
-      [lensWidth]="zoomLensSize"
-      [enableScrollZoom]="true"
-      [minZoomRatio]="1"
-      [maxZoomRatio]="4">
-    </lib-ngx-image-zoom>
+    <ng-container
+      *ngIf="thumbnails.hd && thumbnails.real; else hdOnly"
+      [ngTemplateOutlet]="imageZoom"
+      [ngTemplateOutletContext]="{hd: thumbnails.hd, real: thumbnails.real}">
+    </ng-container>
 
-    <div (click)="hide()" class="close">
-      <fa-icon icon="times"></fa-icon>
-      <span class="esc">ESC</span>
-    </div>
+    <ng-template #hdOnly>
+      <ng-container
+        *ngIf="thumbnails.hd; else loading"
+        [ngTemplateOutlet]="noZoom"
+        [ngTemplateOutletContext]="{url: thumbnails.hd}">
+      </ng-container>
+    </ng-template>
 
   </ng-container>
+
+  <div (click)="hide()" class="close">
+    <fa-icon icon="times"></fa-icon>
+    <span class="esc">ESC</span>
+  </div>
 </ng-container>
 
 <ng-template #loading>
   <astrobin-loading-indicator></astrobin-loading-indicator>
+</ng-template>
+
+<ng-template #imageZoom let-hd="hd" let-real="real">
+  <lib-ngx-image-zoom
+    class="image-zoom"
+    [zoomMode]="'click'"
+    [thumbImage]="hd"
+    [fullImage]="real"
+    [enableLens]="true"
+    [circularLens]="true"
+    [lensHeight]="zoomLensSize"
+    [lensWidth]="zoomLensSize"
+    [enableScrollZoom]="true"
+    [maxZoomRatio]="8">
+</lib-ngx-image-zoom>
+</ng-template>
+
+<ng-template #noZoom let-url="url">
+  <div class="no-zoom">
+    <img [src]="url" alt=""/>
+  </div>
 </ng-template>

@@ -5,12 +5,13 @@ import { selectApp } from "@app/store/selectors/app/app.selectors";
 import { selectThumbnail } from "@app/store/selectors/app/thumbnail.selectors";
 import { State } from "@app/store/state";
 import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
-import { ImageThumbnailInterface } from "@shared/interfaces/image-thumbnail.interface";
+import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { Observable } from "rxjs";
-import { distinctUntilChanged, map, tap } from "rxjs/operators";
+import { distinctUntilChanged, filter, map, switchMap, tap } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-fullscreen-image-viewer",
@@ -29,10 +30,18 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
   zoomLensSize: number;
 
-  thumbnail$: Observable<ImageThumbnailInterface>;
+  hdThumbnail$: Observable<string>;
+  realThumbnail$: Observable<string>;
   show$: Observable<boolean>;
 
-  constructor(public readonly store$: Store<State>, public readonly windowRef: WindowRefService) {
+  private _zoomReadyNotification;
+
+  constructor(
+    public readonly store$: Store<State>,
+    public readonly windowRef: WindowRefService,
+    public readonly popNotificationsService: PopNotificationsService,
+    public readonly translateService: TranslateService
+  ) {
     super();
   }
 
@@ -53,19 +62,61 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
     this._setZoomLensSize();
 
-    const options = {
+    const hdOptions = {
       id: this.id,
       revision: this.revision,
-      alias: ImageAlias.REAL
+      alias: ImageAlias.HD_ANONYMIZED
     };
 
-    this.thumbnail$ = this.store$.select(selectThumbnail, options);
+    const realOptions = {
+      id: this.id,
+      revision: this.revision,
+      alias: ImageAlias.REAL_ANONYMIZED
+    };
+
+    this.hdThumbnail$ = this.store$.select(selectThumbnail, hdOptions).pipe(
+      filter(thumbnail => !!thumbnail),
+      switchMap(
+        thumbnail =>
+          new Observable<string>(observer => {
+            const image = new Image();
+            image.onload = () => {
+              observer.next(thumbnail.url);
+              observer.complete();
+            };
+            image.src = thumbnail.url;
+          })
+      )
+    );
+    this.realThumbnail$ = this.store$.select(selectThumbnail, realOptions).pipe(
+      filter(thumbnail => !!thumbnail),
+      switchMap(
+        thumbnail =>
+          new Observable<string>(observer => {
+            const image = new Image();
+            image.onload = () => {
+              observer.next(thumbnail.url);
+              observer.complete();
+            };
+            image.src = thumbnail.url;
+          })
+      ),
+      tap(
+        () =>
+          (this._zoomReadyNotification = this.popNotificationsService.info(
+            this.translateService.instant("Click on the image scroll to magnify up to 8x."),
+            null,
+            { timeOut: 5000 }
+          ))
+      )
+    );
     this.show$ = this.store$.select(selectApp).pipe(
       map(state => state.currentFullscreenImage === this.id),
       distinctUntilChanged(),
       tap(show => {
         if (show) {
-          this.store$.dispatch(new LoadThumbnail(options));
+          this.store$.dispatch(new LoadThumbnail(hdOptions));
+          this.store$.dispatch(new LoadThumbnail(realOptions));
           this.klass = "d-block";
         } else {
           this.klass = "d-none";
@@ -79,10 +130,14 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   }
 
   hide(): void {
+    if (this._zoomReadyNotification) {
+      this.popNotificationsService.clear(this._zoomReadyNotification.id);
+    }
+
     this.store$.dispatch(new HideFullscreenImage());
   }
 
   private _setZoomLensSize(): void {
-    this.zoomLensSize = Math.floor(this.windowRef.nativeWindow.innerWidth / 4);
+    this.zoomLensSize = Math.floor(this.windowRef.nativeWindow.innerWidth / 3);
   }
 }

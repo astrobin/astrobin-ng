@@ -73,7 +73,8 @@ export function appInitializer(store: Store<State>, actions$: Actions) {
     NgSelectModule,
     NgxFilesizeModule,
     ToastrModule.forRoot({
-      timeOut: 20000
+      timeOut: 20000,
+      progressBar: true
     }),
     StickyNavModule,
 

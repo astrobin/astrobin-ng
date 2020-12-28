@@ -1,5 +1,6 @@
 export enum ImageAlias {
   REAL = "real",
+  REAL_ANONYMIZED = "real_anonymized",
   REAL_INVERTED = "real_inverted",
   HD = "hd",
   HD_ANONYMIZED = "hd_anonymized",

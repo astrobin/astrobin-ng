@@ -21,6 +21,15 @@
     }
   }
 
+  .no-zoom {
+    display: flex;
+    justify-content: center;
+
+    img {
+      max-height: 100vh;
+    }
+  }
+
   .close {
     position: fixed;
     top: 2rem;
@@ -38,6 +47,10 @@
       display: block;
       margin-left: .5rem;
       font-weight: normal;
+
+      @media screen and (max-width: $xs-max) {
+        display: none;
+      }
     }
   }
 }
