@@ -1,9 +1,7 @@
 @import "../../../../styles/variables";
 
-.submission-queue-entry {
-  &.promoted {
-    box-shadow: 0 0 3rem rgba(255,255,255, .5);
-  }
+:host {
+  display: block;
 }
 
 .col-image {

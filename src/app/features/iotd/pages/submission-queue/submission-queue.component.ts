@@ -1,21 +1,11 @@
 import { Component, ElementRef, OnInit, QueryList, ViewChildren } from "@angular/core";
-import { ShowFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
-import { selectIotdMaxSubmissionsPerDay } from "@app/store/selectors/app/app.selectors";
 import { State } from "@app/store/state";
+import { environment } from "@env/environment";
 import { SubmissionInterface } from "@features/iotd/services/submission-queue-api.service";
-import {
-  DeleteSubmission,
-  LoadSubmissionQueue,
-  LoadSubmissions,
-  PostSubmission
-} from "@features/iotd/store/iotd.actions";
+import { LoadSubmissionQueue, LoadSubmissions } from "@features/iotd/store/iotd.actions";
 import { SubmissionImageInterface } from "@features/iotd/store/iotd.reducer";
-import {
-  selectSubmissionForImage,
-  selectSubmissionQueue,
-  selectSubmissions
-} from "@features/iotd/store/iotd.selectors";
-import { select, Store } from "@ngrx/store";
+import { selectSubmissionQueue, selectSubmissions } from "@features/iotd/store/iotd.selectors";
+import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
 import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
@@ -23,7 +13,6 @@ import { LoadingService } from "@shared/services/loading.service";
 import { PaginationService } from "@shared/services/pagination.service";
 import { TitleService } from "@shared/services/title/title.service";
 import { Observable } from "rxjs";
-import { distinctUntilChanged, map, take, tap } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-submission-queue",
@@ -33,6 +22,7 @@ import { distinctUntilChanged, map, take, tap } from "rxjs/operators";
 export class SubmissionQueueComponent implements OnInit {
   page = 1;
   ImageAlias = ImageAlias;
+  classicUrl = `${environment.classicBaseUrl}/iotd/submission-queue`;
   submissionQueue$: Observable<PaginatedApiResultInterface<SubmissionImageInterface>> = this.store$.select(
     selectSubmissionQueue
   );

@@ -1,46 +1,55 @@
-<h1 class="page d-flex justify-content-between">
-  <span class="flex-grow-1">
-    {{ "Submission queue" | translate }}
-  </span>
+<div class="page">
 
-  <astrobin-refresh-button (click)="refresh()"></astrobin-refresh-button>
-</h1>
+  <div class="d-flex justify-content-between">
+    <h1 class="flex-grow-1">
+      {{ "Submission queue" | translate }} <span class="beta">beta</span>
 
-<ng-container *ngIf="submissionQueue$ | async as submissionQueue">
-  <ng-container *ngIf="submissions$ | async as submissions">
-    <ng-container *ngIf="submissionQueue?.count > 0; else noEntries">
+      <a class="return-to-classic" [href]="classicUrl">
+        {{ "Return to the classic submission queue" | translate }}
+      </a>
+    </h1>
 
-      <div class="page row no-gutters" ngStickyNav stickyClass="sticky-promotion-slots">
-        <div class="col-12">
-          <astrobin-promotion-slots
-            (slotClick)="scrollToEntry($event)">
-          </astrobin-promotion-slots>
+    <astrobin-refresh-button (click)="refresh()"></astrobin-refresh-button>
+  </div>
+
+  <ng-container *ngIf="submissionQueue$ | async as submissionQueue">
+    <ng-container *ngIf="submissions$ | async as submissions">
+      <ng-container *ngIf="submissionQueue?.count > 0; else noEntries">
+
+        <astrobin-promotion-slots
+          ngStickyNav stickyClass="sticky-promotion-slots"
+          (slotClick)="scrollToEntry($event)">
+        </astrobin-promotion-slots>
+
+        <ng-container
+          [ngTemplateOutlet]="pagination"
+          [ngTemplateOutletContext]="{count: submissionQueue.count}">
+        </ng-container>
+
+        <div
+          *ngFor="let entry of submissionQueue.results; let i = index"
+          id="submission-queue-entry-{{entry.pk}}"
+          class="mb-5"
+          #submissionQueueEntries>
+          <astrobin-promotion-entry [entry]="entry">
+          </astrobin-promotion-entry>
+
+          <hr *ngIf="i < submissionQueue.results.length - 1" />
         </div>
-      </div>
 
-      <ng-container
-        [ngTemplateOutlet]="pagination"
-        [ngTemplateOutletContext]="{count: submissionQueue.count}">
+        <ng-container
+          [ngTemplateOutlet]="pagination"
+          [ngTemplateOutletContext]="{count: submissionQueue.count}">
+        </ng-container>
+
       </ng-container>
-
-      <astrobin-promotion-entry
-        *ngFor="let entry of submissionQueue.results"
-        #submissionQueueEntries
-        [entry]="entry"
-        id="submission-queue-entry-{{entry.pk}}">
-      </astrobin-promotion-entry>
-
-      <ng-container
-        [ngTemplateOutlet]="pagination"
-        [ngTemplateOutletContext]="{count: submissionQueue.count}">
-      </ng-container>
-
     </ng-container>
-  </ng-container>
 </ng-container>
 
+</div>
+
 <ng-template #noEntries>
-  <p class="page">
+  <p>
     {{ "The submission queue is currently empty." | translate }}&nbsp;{{ "Please come back later!" | translate }}
   </p>
 </ng-template>
