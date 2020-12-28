@@ -62,7 +62,7 @@
               <div class="dropdown-divider"></div>
               <h6 class="dropdown-header" translate>Image of the day</h6>
 
-              <a *ngIf="state.auth.user | isIotdSubmitter" [href]="classicRoutes.IOTD_SUBMISSION_QUEUE"
+              <a *ngIf="state.auth.user | isIotdSubmitter" routerLink="/iotd/submission-queue"
                 class="dropdown-item">
                 <fa-icon icon="upload"></fa-icon>
                 {{ "Submission queue" | translate }}
