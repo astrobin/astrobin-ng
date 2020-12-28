@@ -41,8 +41,15 @@
     [lensHeight]="zoomLensSize"
     [lensWidth]="zoomLensSize"
     [enableScrollZoom]="true"
-    [maxZoomRatio]="8">
-</lib-ngx-image-zoom>
+    [maxZoomRatio]="8"
+    (zoomPosition)="setZoomPosition($event)"
+    (zoomScroll)="setZoomScroll($event)">
+  </lib-ngx-image-zoom>
+
+  <div
+    class="image-zoom-indicator" *ngIf="showZoomIndicator && getZoomPosition()">
+    {{ getZoomScroll() | number:"1.2-2" }}x
+  </div>
 </ng-template>
 
 <ng-template #noZoom let-url="url">
