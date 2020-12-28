@@ -16,7 +16,8 @@
       ],
       "imagingCameras": [
         1
-      ]
+      ],
+      "published": "2020-12-28T21:56:23.741000"
     },
     {
       "user": 1,
@@ -27,7 +28,8 @@
       "w": 1244,
       "h": 1124,
       "imagingTelescopes": [],
-      "imagingCameras": []
+      "imagingCameras": [],
+      "published": "2020-12-28T21:56:23.741000"
     }
   ]
 }

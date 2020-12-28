@@ -36,5 +36,6 @@
         320
       ]
     }
-  }
+  },
+  "IOTD_SUBMISSION_MAX_PER_DAY": 3
 }
