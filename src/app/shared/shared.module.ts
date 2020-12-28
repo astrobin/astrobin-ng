@@ -29,6 +29,7 @@ import { UserStoreService } from "@shared/services/user-store.service";
 import { UserService } from "@shared/services/user.service";
 import { ValidationLoaderService } from "@shared/services/validation-loader.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
+import { StickyNavModule } from "ng2-sticky-nav";
 import { CookieService } from "ngx-cookie-service";
 import { NgxFilesizeModule } from "ngx-filesize";
 import { TimeagoModule } from "ngx-timeago";
@@ -74,6 +75,7 @@ export function appInitializer(store: Store<State>, actions$: Actions) {
     ToastrModule.forRoot({
       timeOut: 20000
     }),
+    StickyNavModule,
 
     ApiModule,
     PipesModule
@@ -95,6 +97,7 @@ export function appInitializer(store: Store<State>, actions$: Actions) {
     ToastrModule,
     TimeagoModule,
     TranslateModule,
+    StickyNavModule,
 
     ApiModule,
     PipesModule

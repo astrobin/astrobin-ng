@@ -10,10 +10,12 @@
   <ng-container *ngIf="submissions$ | async as submissions">
     <ng-container *ngIf="submissionQueue?.count > 0; else noEntries">
 
-      <div class="page">
-        <astrobin-promotion-slots
-          (slotClick)="scrollToEntry($event)">
-        </astrobin-promotion-slots>
+      <div class="page row no-gutters" ngStickyNav stickyClass="sticky-promotion-slots">
+        <div class="col-12">
+          <astrobin-promotion-slots
+            (slotClick)="scrollToEntry($event)">
+          </astrobin-promotion-slots>
+        </div>
       </div>
 
       <ng-container
