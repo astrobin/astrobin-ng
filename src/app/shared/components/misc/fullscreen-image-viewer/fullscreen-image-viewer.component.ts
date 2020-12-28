@@ -69,7 +69,8 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
     this._setZoomLensSize();
 
-    if ("ontouchend" in this.windowRef.nativeWindow.document) {
+    const document = this.windowRef.nativeWindow.document;
+    if (document && "ontouchend" in document) {
       this.isTouchDevice = true;
     }
 
@@ -179,7 +180,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       clearTimeout(this._zoomIndicatorTimeout);
     }
 
-    this._zoomIndicatorTimeout = setTimeout(() => {
+    this._zoomIndicatorTimeout = this.windowRef.nativeWindow.setTimeout(() => {
       this.showZoomIndicator = false;
     }, this._zoomIndicatorTimeoutDuration);
   }
