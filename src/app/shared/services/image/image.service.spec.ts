@@ -25,4 +25,36 @@ describe("ImageService", () => {
   it("should be created", () => {
     expect(service).toBeTruthy();
   });
+
+  describe("calculateDisplayHeight", () => {
+    describe("when the alias specifies a height", () => {
+      it("should work when element width == image width", () => {
+        expect(service.calculateDisplayHeight([100, 100], [100, 100], [100, 100])).toBe(100);
+        expect(service.calculateDisplayHeight([100, 200], [100, 200], [100, 100])).toBe(200);
+      });
+
+      it("should work when element width > image width", () => {
+        expect(service.calculateDisplayHeight([200, 100], [200, 100], [300, 100])).toBe(100);
+      });
+
+      it("should work when element width < image width", () => {
+        expect(service.calculateDisplayHeight([200, 100], [200, 100], [100, 100])).toBe(50);
+      });
+    });
+
+    describe("when the alias does not specify a height", () => {
+      it("should work when element width == image width", () => {
+        expect(service.calculateDisplayHeight([200, 0], [200, 200], [200, 100])).toBe(100);
+        expect(service.calculateDisplayHeight([200, 0], [200, 400], [200, 100])).toBe(100);
+      });
+
+      it("should work when element width > image width", () => {
+        expect(service.calculateDisplayHeight([200, 0], [200, 100], [300, 100])).toBe(100);
+      });
+
+      it("should work when element width < image width", () => {
+        expect(service.calculateDisplayHeight([200, 0], [200, 100], [100, 100])).toBe(50);
+      });
+    });
+  });
 });

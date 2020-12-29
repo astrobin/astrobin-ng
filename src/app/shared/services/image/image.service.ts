@@ -1,16 +1,30 @@
 import { Injectable } from "@angular/core";
-import { State } from "@app/store/state";
-import { Store } from "@ngrx/store";
-import { TranslateService } from "@ngx-translate/core";
-
-export interface ImageSize {
-  width: number;
-  height: number;
-}
 
 @Injectable({
   providedIn: "root"
 })
 export class ImageService {
-  constructor(public readonly translate: TranslateService, public readonly store$: Store<State>) {}
+  calculateDisplayHeight(aliasSize: number[], imageSize: number[], elementSize: number[]): number {
+    const aliasWidth = aliasSize[0];
+    const aliasHeight = aliasSize[1];
+
+    const imageWidth = imageSize[0];
+    const imageHeight = imageSize[1];
+
+    const elementWidth = elementSize[0];
+    const elementHeight = elementSize[1] || aliasHeight;
+
+    const imageRatio = imageWidth / imageHeight;
+    const correctedHeight = Math.floor(aliasWidth / imageRatio);
+
+    if (elementWidth >= aliasWidth) {
+      if (elementHeight === 0) {
+        return correctedHeight;
+      }
+
+      return aliasHeight > 0 ? aliasHeight : elementHeight;
+    }
+
+    return (correctedHeight * elementWidth) / aliasWidth;
+  }
 }

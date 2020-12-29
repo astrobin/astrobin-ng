@@ -1,4 +1,5 @@
 import { Injectable } from "@angular/core";
+import { distinctUntilChanged } from "rxjs/operators";
 
 @Injectable({
   providedIn: "root"
@@ -48,4 +49,8 @@ export class UtilsService {
 
     return a;
   }
+}
+
+export function distinctUntilChangedObj<T>() {
+  return distinctUntilChanged<T>((a, b) => JSON.stringify(a) === JSON.stringify(b));
 }

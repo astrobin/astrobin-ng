@@ -1,8 +1,10 @@
+@import "../../../../styles/variables";
+
 :host {
   display: block;
   width: 100%;
   height: 100%;
-  background-size: cover;
+  overflow: hidden;
 
   .astrobin-image {
     background-repeat: no-repeat;

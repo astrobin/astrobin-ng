@@ -38,7 +38,7 @@ export class ThumbnailEffects {
     mergeMap(thumbnail => {
       if (thumbnail.url.toLowerCase().indexOf("placeholder") !== -1) {
         return of(void 0).pipe(
-          delay(100),
+          delay(1000),
           map(() => new LoadThumbnail({ id: thumbnail.id, revision: thumbnail.revision, alias: thumbnail.alias }))
         );
       } else {

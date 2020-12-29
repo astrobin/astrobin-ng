@@ -22,7 +22,7 @@ context("IOTD Submission queue", () => {
     });
   });
 
-  describe.only("when logged in and in the iotd_submitters_group ", () => {
+  describe("when logged in and in the iotd_submitters_group ", () => {
     beforeEach(() => {
       cy.login();
       cy.route("GET", "**/common/userprofiles/current", "fixture:api/common/userprofile_current_3.json").as(
@@ -36,11 +36,9 @@ context("IOTD Submission queue", () => {
       cy.route("GET", "**/*/final/thumb/story/", "fixture:api/images/image_thumbnail_1_story_loaded.json").as(
         "getImageThumbnail"
       );
-      cy.route(
-        "GET",
-        "**/*/final/thumb/regular_crop_anonymized/",
-        "fixture:api/images/image_thumbnail_1_regular_crop_anonymized_loaded.json"
-      ).as("getImageThumbnail");
+      cy.route("GET", "**/*/final/thumb/story_crop/", "fixture:api/images/image_thumbnail_1_story_crop_loaded.json").as(
+        "getImageThumbnail"
+      );
       cy.route("GET", "**/api/v2/iotd/submission-queue/?page=*", "fixture:api/iotd/submission-queue.json").as(
         "submissionQueue"
       );

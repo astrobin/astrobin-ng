@@ -9,7 +9,6 @@ export enum ImageAlias {
   HD_SHARPENED_INVERTED = "hd_sharpened_inverted",
   REGULAR = "regular",
   REGULAR_ANONYMIZED = "regular_anonymized",
-  REGULAR_CROP_ANONYMIZED = "regular_crop_anonymized",
   REGULAR_INVERTED = "regular_inverted",
   REGULAR_SHARPENED = "regular_sharpened",
   REGULAR_SHARPENED_INVERTED = "regular_sharpened_inverted",
@@ -22,6 +21,7 @@ export enum ImageAlias {
   IOTD_MOBILE = "iotd_mobile",
   IOTD_CANDIDATE = "iotd_candidate",
   STORY = "story",
+  STORY_CROP = "story_crop",
   DUCKDUCKGO = "duckduckgo",
   DUCKDUCKGO_SMALL = "duckduckgo_small",
   INSTAGRAM_STORY = "instagram_story"
