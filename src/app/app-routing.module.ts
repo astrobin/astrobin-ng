@@ -7,6 +7,14 @@ const routes: Routes = [
     loadChildren: () => import("@features/account/account.module").then(m => m.AccountModule)
   },
   {
+    path: "dev",
+    loadChildren: () => import("@features/dev/dev.module").then(m => m.DevModule)
+  },
+  {
+    path: "iotd",
+    loadChildren: () => import("@features/iotd/iotd.module").then(m => m.IotdModule)
+  },
+  {
     path: "notifications",
     loadChildren: () => import("@features/notifications/notifications.module").then(m => m.NotificationsModule)
   },

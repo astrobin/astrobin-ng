@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { FormGroup } from "@angular/forms";
-import { AppState } from "@app/store/app.states";
+import { State } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
@@ -57,7 +57,7 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
   uploadAllowed$ = this.userSubscriptionService.uploadAllowed();
 
   constructor(
-    public readonly store: Store<AppState>,
+    public readonly store: Store<State>,
     public translate: TranslateService,
     public uploaderService: UploadxService,
     public uploadDataService: UploadDataService,

@@ -1,8 +1,8 @@
 import { TestBed } from "@angular/core/testing";
 import { RouterStateSnapshot } from "@angular/router";
 import { AppModule } from "@app/app.module";
-import { AppState } from "@app/store/app.states";
 import { AppGenerator } from "@app/store/generators/app.generator";
+import { State } from "@app/store/state";
 import { AuthGenerator } from "@features/account/store/auth.generator";
 import { MockStore, provideMockStore } from "@ngrx/store/testing";
 import { UltimateSubscriptionGuardService } from "@shared/services/guards/ultimate-subscription-guard.service";
@@ -13,7 +13,7 @@ import { MockBuilder, NG_MOCKS_GUARDS } from "ng-mocks";
 describe("UltimateSubscriptionGuardService", () => {
   let service: UltimateSubscriptionGuardService;
   let store: MockStore;
-  const initialState: AppState = {
+  const initialState: State = {
     app: AppGenerator.default(),
     auth: AuthGenerator.default()
   };

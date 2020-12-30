@@ -31,7 +31,7 @@
   }
 
   &.loading {
-    background: url("/assets/images/white-loader.svg") $accent-color no-repeat center !important;
+    background: url("/assets/images/white-loader.svg") transparent no-repeat center !important;
     background-size: 1rem !important;
     color: transparent !important;
     text-shadow: none !important;
@@ -68,6 +68,11 @@
           darken($accent-color, 5%)
       );
     }
+
+    &.loading {
+      background: url("/assets/images/white-loader.svg") $accent-color no-repeat center !important;
+      background-size: 1rem !important;
+    }
   }
 
   &.btn-secondary:not(:disabled):not(.disabled) {
@@ -95,6 +100,44 @@
           darken($white, 5%)
       );
       color: $darker-grey;
+    }
+
+    &.loading {
+      background: url("/assets/images/white-loader.svg") $white no-repeat center !important;
+      background-size: 1rem !important;
+    }
+  }
+
+  &.btn-danger:not(:disabled):not(.disabled) {
+    background: $error-red linear-gradient(
+        to bottom,
+        $error-red,
+        darken($error-red, 10%)
+    );
+    border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+    color: $white;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+
+    &:hover {
+      background: $error-red linear-gradient(
+          to bottom,
+          lighten($error-red, 5%),
+          darken($error-red, 5%)
+      );
+    }
+
+    &:active {
+      background: $error-red linear-gradient(
+          to top,
+          lighten($error-red, 5%),
+          darken($error-red, 5%)
+      );
+      color: $white;
+    }
+
+    &.loading {
+      background: url("/assets/images/white-loader.svg") $error-red no-repeat center !important;
+      background-size: 1rem !important;
     }
   }
 }

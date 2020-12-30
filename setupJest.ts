@@ -14,8 +14,8 @@ import { UserProfileGenerator } from "@shared/generators/user-profile.generator"
 import { UserGenerator } from "@shared/generators/user.generator";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { CommonApiService } from "@shared/services/api/classic/common/common-api.service";
-import { ImageApiService } from "@shared/services/api/classic/images-app/image/image-api.service";
-import { ThumbnailGroupApiService } from "@shared/services/api/classic/images-app/thumbnail-group/thumbnail-group-api.service";
+import { ImageApiService } from "@shared/services/api/classic/images/image/image-api.service";
+import { ThumbnailGroupApiService } from "@shared/services/api/classic/images/thumbnail-group/thumbnail-group-api.service";
 import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
 import { AuthService } from "@shared/services/auth.service";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";

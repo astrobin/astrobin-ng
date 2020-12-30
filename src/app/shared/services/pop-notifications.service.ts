@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
-import { IndividualConfig, ToastrService } from "ngx-toastr";
+import { ActiveToast, IndividualConfig, ToastrService } from "ngx-toastr";
 
 @Injectable({
   providedIn: "root"
@@ -16,19 +16,23 @@ export class PopNotificationsService extends BaseService {
     super(loadingService);
   }
 
-  public success(message: string, title?: string, options?: Partial<IndividualConfig>): void {
-    this.toastr.success(message, title ? title : this.translate.instant("Success!"), options);
+  public success(message: string, title?: string, options?: Partial<IndividualConfig>): ActiveToast<any> {
+    return this.toastr.success(message, title ? title : this.translate.instant("Success!"), options);
   }
 
-  public info(message: string, title?: string, options?: Partial<IndividualConfig>): void {
-    this.toastr.info(message, title ? title : this.translate.instant("Info"), options);
+  public info(message: string, title?: string, options?: Partial<IndividualConfig>): ActiveToast<any> {
+    return this.toastr.info(message, title ? title : this.translate.instant("Info"), options);
   }
 
-  public warning(message: string, title?: string, options?: Partial<IndividualConfig>): void {
-    this.toastr.warning(message, title ? title : this.translate.instant("Warning!"), options);
+  public warning(message: string, title?: string, options?: Partial<IndividualConfig>): ActiveToast<any> {
+    return this.toastr.warning(message, title ? title : this.translate.instant("Warning!"), options);
   }
 
-  public error(message: string, title?: string, options?: Partial<IndividualConfig>): void {
-    this.toastr.error(message, title ? title : this.translate.instant("Error!"), options);
+  public error(message: string, title?: string, options?: Partial<IndividualConfig>): ActiveToast<any> {
+    return this.toastr.error(message, title ? title : this.translate.instant("Error!"), options);
+  }
+
+  public clear(toastId?: number) {
+    this.toastr.clear(toastId);
   }
 }

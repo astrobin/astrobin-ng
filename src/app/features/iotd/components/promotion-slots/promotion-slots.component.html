@@ -1,0 +1,15 @@
+<div *ngFor="let slot of slots; let i = index" class="promotion-slot" (click)="slotClicked(slot.submission.image)">
+
+  <ng-container *ngIf="slot.submission; else emptySlot">
+    <astrobin-image
+      [alias]="ImageAlias.STORY"
+      [id]="slot.submission.image"
+      [class.clickable]="clickableSlot(slot.submission.image)">
+    </astrobin-image>
+  </ng-container>
+
+  <ng-template #emptySlot>
+    {{ i + 1 }}
+  </ng-template>
+
+</div>

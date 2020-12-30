@@ -3,8 +3,9 @@ import { HttpClientModule } from "@angular/common/http";
 import { APP_INITIALIZER, ModuleWithProviders, NgModule } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { formlyConfig } from "@app/formly.config";
-import { AppActionTypes, InitializeApp } from "@app/store/actions/app.actions";
-import { AppState } from "@app/store/app.states";
+import { AppActionTypes } from "@app/store/actions/app.actions";
+import { InitializeApp } from "@app/store/actions/initialize-app.actions";
+import { State } from "@app/store/state";
 import { AuthActionTypes, InitializeAuth } from "@features/account/store/auth.actions";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { NgbModule, NgbPaginationModule } from "@ng-bootstrap/ng-bootstrap";
@@ -18,6 +19,7 @@ import { ApiModule } from "@shared/services/api/api.module";
 import { AuthService } from "@shared/services/auth.service";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { AuthGuardService } from "@shared/services/guards/auth-guard.service";
+import { GroupGuardService } from "@shared/services/guards/group-guard.service";
 import { ImageOwnerGuardService } from "@shared/services/guards/image-owner-guard.service";
 import { UltimateSubscriptionGuardService } from "@shared/services/guards/ultimate-subscription-guard.service";
 import { LoadingService } from "@shared/services/loading.service";
@@ -27,6 +29,7 @@ import { UserStoreService } from "@shared/services/user-store.service";
 import { UserService } from "@shared/services/user.service";
 import { ValidationLoaderService } from "@shared/services/validation-loader.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
+import { StickyNavModule } from "ng2-sticky-nav";
 import { CookieService } from "ngx-cookie-service";
 import { NgxFilesizeModule } from "ngx-filesize";
 import { TimeagoModule } from "ngx-timeago";
@@ -35,7 +38,7 @@ import { switchMap } from "rxjs/operators";
 import { ComponentsModule } from "./components/components.module";
 import { PipesModule } from "./pipes/pipes.module";
 
-export function appInitializer(store: Store<AppState>, actions$: Actions) {
+export function appInitializer(store: Store<State>, actions$: Actions) {
   return () =>
     new Promise<any>(resolve => {
       store.dispatch(new InitializeApp());
@@ -70,8 +73,12 @@ export function appInitializer(store: Store<AppState>, actions$: Actions) {
     NgSelectModule,
     NgxFilesizeModule,
     ToastrModule.forRoot({
-      timeOut: 20000
+      timeOut: 20000,
+      progressBar: true,
+      preventDuplicates: true,
+      resetTimeoutOnDuplicate: true
     }),
+    StickyNavModule,
 
     ApiModule,
     PipesModule
@@ -93,6 +100,7 @@ export function appInitializer(store: Store<AppState>, actions$: Actions) {
     ToastrModule,
     TimeagoModule,
     TranslateModule,
+    StickyNavModule,
 
     ApiModule,
     PipesModule
@@ -107,6 +115,7 @@ export class SharedModule {
         AuthService,
         ClassicRoutesService,
         CookieService,
+        GroupGuardService,
         ImageOwnerGuardService,
         LoadingService,
         PopNotificationsService,

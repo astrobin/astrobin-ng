@@ -1,6 +1,6 @@
 import { Component, EventEmitter, HostListener, Input, OnInit, Output } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { AppState } from "@app/store/app.states";
+import { State } from "@app/store/state";
 import { AuthActionTypes, Login } from "@features/account/store/auth.actions";
 import { Actions, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
@@ -21,7 +21,7 @@ export class LoginFormComponent extends BaseComponentDirective implements OnInit
 
   constructor(
     public readonly formBuilder: FormBuilder,
-    public readonly store: Store<AppState>,
+    public readonly store: Store<State>,
     public readonly actions$: Actions
   ) {
     super();

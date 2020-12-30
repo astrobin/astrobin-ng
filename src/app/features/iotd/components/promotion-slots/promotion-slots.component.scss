@@ -1,0 +1,54 @@
+@import "../../../../styles/variables";
+
+:host {
+  display: flex;
+  justify-content: space-between;
+
+  .promotion-slot {
+    width: 100%;
+    text-align: center;
+    background-color: $grey;
+    border: 2px dashed $light-grey;
+    font-size: 3rem;
+    color: $light-grey;
+
+    @media screen and (max-width: $xs-max) {
+      height: 100px;
+      line-height: 100px;
+    }
+
+    @media screen and (min-width: $sm-min) {
+      height: 125px;
+      line-height: 125px;
+    }
+
+    @media screen and (min-width: $md-min) {
+      height: 150px;
+      line-height: 150px;
+    }
+
+    @media screen and (min-width: $lg-min) {
+      height: 175px;
+      line-height: 175px;
+    }
+
+    @media screen and (min-width: $xl-min) {
+      height: 200px;
+      line-height: 200px;
+    }
+
+    &:not(:last-child) {
+      margin-right: .5rem;
+    }
+
+    astrobin-image {
+      &.clickable {
+        cursor: pointer;
+      }
+
+      &:not(.clickable) {
+        cursor: not-allowed;
+      }
+    }
+  }
+}

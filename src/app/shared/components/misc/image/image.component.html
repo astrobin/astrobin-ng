@@ -1,0 +1,19 @@
+<ng-container *ngIf="image$ | async as image; else loading">
+  <ng-container *ngIf="height !== undefined; else loading">
+    <ng-container *ngIf="thumbnail$ | async as thumbnail; else loading">
+
+      <div
+        class="astrobin-image"
+        id="image-{{id}}-{{image.hash || 'hashless'}}-{{revision}}-{{alias}}"
+        [style.height.px]="height"
+        [style.backgroundImage]="'url(' + thumbnail.url + ')'"
+        [style.backgroundSize]="'auto'">
+      </div>
+
+    </ng-container>
+  </ng-container>
+</ng-container>
+
+<ng-template #loading>
+  <astrobin-loading-indicator #loadingIndicator></astrobin-loading-indicator>
+</ng-template>

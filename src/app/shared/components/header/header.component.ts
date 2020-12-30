@@ -1,5 +1,5 @@
 import { Component } from "@angular/core";
-import { AppState } from "@app/store/app.states";
+import { State } from "@app/store/state";
 import { Logout } from "@features/account/store/auth.actions";
 import { NotificationsService } from "@features/notifications/services/notifications.service";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
@@ -54,7 +54,7 @@ export class HeaderComponent extends BaseComponentDirective {
     public notificationsService: NotificationsService,
     public loadingService: LoadingService,
     public windowRef: WindowRefService,
-    public store: Store<AppState>
+    public store: Store<State>
   ) {
     super();
   }

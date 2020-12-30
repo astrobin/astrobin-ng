@@ -6,4 +6,9 @@ export interface ImageInterface {
   imageFile: string;
   isWip: boolean;
   skipNotifications: boolean;
+  w: number;
+  h: number;
+  imagingTelescopes: number[];
+  imagingCameras: number[];
+  published: string;
 }

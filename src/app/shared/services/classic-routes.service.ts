@@ -34,7 +34,6 @@ export class ClassicRoutesService extends BaseService {
   CONTACT = BASE_URL + "/contact/";
   MODERATE_IMAGE_QUEUE = BASE_URL + "/moderate/images/";
   MODERATE_SPAM_QUEUE = BASE_URL + "/moderate/spam/";
-  IOTD_SUBMISSION_QUEUE = BASE_URL + "/iotd/submission-queue/";
   IOTD_REVIEW_QUEUE = BASE_URL + "/iotd/review-queue/";
   IOTD_JUDGEMENT_QUEUE = BASE_URL + "/iotd/judgement-queue/";
   NOTIFICATION_SETTINGS = BASE_URL + "/notifications/settings/";

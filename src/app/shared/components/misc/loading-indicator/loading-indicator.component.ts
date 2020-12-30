@@ -3,6 +3,7 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
 
 @Component({
   selector: "astrobin-loading-indicator",
-  templateUrl: "./loading-indicator.component.html"
+  templateUrl: "./loading-indicator.component.html",
+  styleUrls: ["./loading-indicator.component.scss"]
 })
 export class LoadingIndicatorComponent extends BaseComponentDirective {}

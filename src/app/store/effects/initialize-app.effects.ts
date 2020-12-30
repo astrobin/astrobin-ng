@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
-import { AppActionTypes, InitializeAppSuccess } from "@app/store/actions/app.actions";
+import { All, AppActionTypes } from "@app/store/actions/app.actions";
+import { InitializeAppSuccess } from "@app/store/actions/initialize-app.actions";
 import { setTimeagoIntl } from "@app/translate-loader";
 import { Actions, Effect, ofType } from "@ngrx/effects";
 import { TranslateService } from "@ngx-translate/core";
@@ -11,7 +12,7 @@ import { forkJoin, Observable, of } from "rxjs";
 import { map, switchMap } from "rxjs/operators";
 
 @Injectable()
-export class AppEffects {
+export class InitializeAppEffects {
   @Effect()
   InitializeApp: Observable<InitializeAppSuccess> = this.actions$.pipe(
     ofType(AppActionTypes.INITIALIZE),
@@ -44,7 +45,7 @@ export class AppEffects {
   InitializeAppSuccess: Observable<void> = this.actions$.pipe(ofType(AppActionTypes.INITIALIZE_SUCCESS));
 
   constructor(
-    public readonly actions$: Actions,
+    public readonly actions$: Actions<All>,
     public readonly commonApiService: CommonApiService,
     public readonly jsonApiService: JsonApiService,
     public readonly translate: TranslateService,
