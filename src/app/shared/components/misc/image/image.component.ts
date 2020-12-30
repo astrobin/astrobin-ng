@@ -1,6 +1,5 @@
 import {
   AfterViewChecked,
-  AfterViewInit,
   ChangeDetectorRef,
   Component,
   ElementRef,
@@ -34,8 +33,7 @@ import { filter, map, switchMap, take, tap } from "rxjs/operators";
   templateUrl: "./image.component.html",
   styleUrls: ["./image.component.scss"]
 })
-export class ImageComponent extends BaseComponentDirective
-  implements OnInit, OnChanges, AfterViewInit, AfterViewChecked {
+export class ImageComponent extends BaseComponentDirective implements OnInit, OnChanges, AfterViewChecked {
   image$: Observable<ImageInterface>;
   thumbnail$: Observable<ImageThumbnailInterface>;
   height: number;
@@ -77,14 +75,10 @@ export class ImageComponent extends BaseComponentDirective
     }
   }
 
-  ngAfterViewInit(): void {
+  ngOnChanges(changes: SimpleChanges): void {
     setTimeout(() => {
       this._load();
-    }, 10);
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    this._load();
+    }, 1);
   }
 
   ngAfterViewChecked() {
@@ -93,8 +87,23 @@ export class ImageComponent extends BaseComponentDirective
 
   private _load(): void {
     this.loading = true;
+    this._loadImage();
+  }
 
-    this.image$ = this.store$.select(selectImage, this.id);
+  private _loadImage() {
+    this.store$.dispatch(new LoadImage(this.id));
+
+    this.image$ = this.store$.select(selectImage, this.id).pipe(
+      filter(image => !!image),
+      tap(image => {
+        this._loadThumbnail();
+        this._fixHeight(image);
+      })
+    );
+  }
+
+  private _loadThumbnail() {
+    this.store$.dispatch(new LoadThumbnail({ id: this.id, revision: this.revision, alias: this.alias }));
 
     this.thumbnail$ = this.store$
       .select(selectThumbnail, {
@@ -103,42 +112,37 @@ export class ImageComponent extends BaseComponentDirective
         alias: this.alias
       })
       .pipe(
-        distinctUntilChangedObj(),
         filter(thumbnail => !!thumbnail),
         tap(() => (this.loading = false))
       );
+  }
 
+  private _fixHeight(image: ImageInterface) {
     this.store$
       .select(selectApp)
       .pipe(
         take(1),
-        map(state => state.backendConfig),
-        switchMap(backendConfig => this.image$.pipe(map(image => ({ backendConfig, image })))),
-        filter(({ backendConfig, image }) => !!image),
-        tap(({ backendConfig, image }) => {
-          if (this.height !== undefined || this._loadingIndicator === undefined) {
-            return;
-          }
-
-          const aliasSize = backendConfig.THUMBNAIL_ALIASES[this.alias].size;
-          const elementWidth = this.elementRef.nativeElement.offsetWidth;
-          const elementHeight = this.elementRef.nativeElement.offsetHeight;
-          const loadingIndicatorHeight = this._loadingIndicator.nativeElement.querySelector(".loading").offsetHeight;
-
-          if (elementHeight - loadingIndicatorHeight > 0) {
-            this.height = elementHeight;
-          } else {
-            this.height = this.imageService.calculateDisplayHeight(
-              aliasSize,
-              [image.w, image.h],
-              [elementWidth, elementHeight - loadingIndicatorHeight]
-            );
-          }
-        })
+        map(state => state.backendConfig)
       )
-      .subscribe();
+      .subscribe(backendConfig => {
+        if (this.height !== undefined || this._loadingIndicator === undefined) {
+          return;
+        }
 
-    this.store$.dispatch(new LoadImage(this.id));
-    this.store$.dispatch(new LoadThumbnail({ id: this.id, revision: this.revision, alias: this.alias }));
+        const aliasSize = backendConfig.THUMBNAIL_ALIASES[this.alias].size;
+        const elementWidth = this.elementRef.nativeElement.offsetWidth;
+        const elementHeight = this.elementRef.nativeElement.offsetHeight;
+        const loadingIndicatorHeight = this._loadingIndicator.nativeElement.querySelector(".loading").offsetHeight;
+
+        if (elementHeight - loadingIndicatorHeight > 0) {
+          this.height = elementHeight;
+        } else {
+          this.height = this.imageService.calculateDisplayHeight(
+            aliasSize,
+            [image.w, image.h],
+            [elementWidth, elementHeight - loadingIndicatorHeight]
+          );
+        }
+      });
   }
 }

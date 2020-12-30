@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import { All, AppActionTypes } from "@app/store/actions/app.actions";
 import { LoadThumbnail, LoadThumbnailSuccess } from "@app/store/actions/thumbnail.actions";
+import { selectImage } from "@app/store/selectors/app/image.selectors";
 import { selectThumbnail } from "@app/store/selectors/app/thumbnail.selectors";
 import { State } from "@app/store/state";
 import { Actions, Effect, ofType } from "@ngrx/effects";
@@ -21,8 +22,8 @@ export class ThumbnailEffects {
           mergeMap(thumbnailFromStore =>
             thumbnailFromStore !== null
               ? of(thumbnailFromStore)
-              : this.imageApiService
-                  .getImage(action.payload.id)
+              : this.store$
+                  .select(selectImage, action.payload.id)
                   .pipe(
                     mergeMap(image =>
                       this.imageApiService.getThumbnail(
