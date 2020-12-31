@@ -19,7 +19,7 @@ import { distinctUntilChanged, filter, map, switchMap, tap } from "rxjs/operator
   templateUrl: "./fullscreen-image-viewer.component.html",
   styleUrls: ["./fullscreen-image-viewer.component.scss"]
 })
-export class FullscreenImageViewerComponent extends BaseComponentDirective implements OnInit, OnChanges {
+export class FullscreenImageViewerComponent extends BaseComponentDirective implements OnChanges {
   @Input()
   id: number;
 
@@ -62,7 +62,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     this._setZoomLensSize();
   }
 
-  ngOnInit(): void {
+  ngOnChanges(changes: SimpleChanges): void {
     if (this.id === undefined) {
       throw new Error("Attribute 'id' is required");
     }
@@ -100,6 +100,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
           })
       )
     );
+
     this.realThumbnail$ = this.store$.select(selectThumbnail, realOptions).pipe(
       filter(thumbnail => !!thumbnail),
       switchMap(
@@ -122,6 +123,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
           ))
       )
     );
+
     this.show$ = this.store$.select(selectApp).pipe(
       map(state => state.currentFullscreenImage === this.id),
       distinctUntilChanged(),
@@ -131,16 +133,12 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
           if (!this.isTouchDevice) {
             this.store$.dispatch(new LoadThumbnail(realOptions));
           }
-          this.klass = "d-block";
+          this.klass = "d-flex";
         } else {
           this.klass = "d-none";
         }
       })
     );
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    this.ngOnInit();
   }
 
   setZoomPosition(position: Coord) {
