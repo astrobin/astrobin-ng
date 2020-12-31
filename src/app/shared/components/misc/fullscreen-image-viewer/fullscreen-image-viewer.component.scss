@@ -10,6 +10,8 @@
   height: 100vh;
   z-index: 9999;
   background-color: $black;
+  justify-content: center;
+  align-items: center;
 
   .image-zoom ::ng-deep {
     display: flex;

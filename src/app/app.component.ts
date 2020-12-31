@@ -1,12 +1,10 @@
 import { Component } from "@angular/core";
 import { NavigationEnd, Router } from "@angular/router";
-import { selectApp } from "@app/store/selectors/app/app.selectors";
 import { State } from "@app/store/state";
 import { NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
 import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { ValidationLoaderService } from "@shared/services/validation-loader.service";
-import { map } from "rxjs/operators";
 
 declare const gtag: any;
 
@@ -16,8 +14,6 @@ declare const gtag: any;
   styleUrls: ["./app.component.scss"]
 })
 export class AppComponent extends BaseComponentDirective {
-  hasFullscreenImage$ = this.store$.select(selectApp).pipe(map(state => state.currentFullscreenImage !== null));
-
   constructor(
     public readonly router: Router,
     public readonly paginationConfig: NgbPaginationConfig,
