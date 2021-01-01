@@ -3,7 +3,13 @@ import { NgModule } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { RouterModule } from "@angular/router";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
-import { NgbCollapseModule, NgbDropdownModule, NgbModalModule, NgbTooltipModule } from "@ng-bootstrap/ng-bootstrap";
+import {
+  NgbCollapseModule,
+  NgbDropdownModule,
+  NgbModalModule,
+  NgbProgressbarModule,
+  NgbTooltipModule
+} from "@ng-bootstrap/ng-bootstrap";
 import { FormlyModule } from "@ngx-formly/core";
 import { TranslateModule } from "@ngx-translate/core";
 import { CameraComponent } from "@shared/components/misc/camera/camera.component";
@@ -34,6 +40,7 @@ const modules = [
   NgbCollapseModule,
   NgbDropdownModule,
   NgbModalModule,
+  NgbProgressbarModule,
   NgbTooltipModule,
   NgxFilesizeModule,
   NgxImageZoomModule,

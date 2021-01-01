@@ -1,4 +1,5 @@
 import { Component, HostBinding, HostListener, Input, OnChanges, OnInit, SimpleChanges } from "@angular/core";
+import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
 import { HideFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
 import { LoadThumbnail } from "@app/store/actions/thumbnail.actions";
 import { selectApp } from "@app/store/selectors/app/app.selectors";
@@ -8,10 +9,11 @@ import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
+import { ImageService } from "@shared/services/image/image.service";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { Coord } from "ngx-image-zoom";
-import { Observable } from "rxjs";
+import { BehaviorSubject, Observable } from "rxjs";
 import { distinctUntilChanged, filter, map, switchMap, tap } from "rxjs/operators";
 
 @Component({
@@ -33,23 +35,32 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   showZoomIndicator = false;
   isTouchDevice = false;
 
-  hdThumbnail$: Observable<string>;
-  realThumbnail$: Observable<string>;
+  hdThumbnail$: Observable<SafeUrl>;
+  realThumbnail$: Observable<SafeUrl>;
   show$: Observable<boolean>;
+  hdLoadingProgress$: Observable<number>;
+  realLoadingProgress$: Observable<number>;
 
   private _zoomReadyNotification;
   private _zoomPosition: Coord;
   private _zoomScroll = 1;
   private _zoomIndicatorTimeout: number;
   private _zoomIndicatorTimeoutDuration = 3000;
+  private _hdLoadingProgressSubject = new BehaviorSubject<number>(0);
+  private _realLoadingProgressSubject = new BehaviorSubject<number>(0);
 
   constructor(
     public readonly store$: Store<State>,
     public readonly windowRef: WindowRefService,
     public readonly popNotificationsService: PopNotificationsService,
-    public readonly translateService: TranslateService
+    public readonly translateService: TranslateService,
+    public readonly imageService: ImageService,
+    public readonly domSanitizer: DomSanitizer
   ) {
     super();
+
+    this.hdLoadingProgress$ = this._hdLoadingProgressSubject.asObservable();
+    this.realLoadingProgress$ = this._realLoadingProgressSubject.asObservable();
   }
 
   @HostListener("document:keydown.escape", ["$event"])
@@ -88,31 +99,23 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
     this.hdThumbnail$ = this.store$.select(selectThumbnail, hdOptions).pipe(
       filter(thumbnail => !!thumbnail),
-      switchMap(
-        thumbnail =>
-          new Observable<string>(observer => {
-            const image = new Image();
-            image.onload = () => {
-              observer.next(thumbnail.url);
-              observer.complete();
-            };
-            image.src = thumbnail.url;
+      switchMap(thumbnail =>
+        this.imageService
+          .loadImageFile(thumbnail.url, (progress: number) => {
+            this._hdLoadingProgressSubject.next(progress);
           })
+          .pipe(map(url => this.domSanitizer.bypassSecurityTrustUrl(url)))
       )
     );
 
     this.realThumbnail$ = this.store$.select(selectThumbnail, realOptions).pipe(
       filter(thumbnail => !!thumbnail),
-      switchMap(
-        thumbnail =>
-          new Observable<string>(observer => {
-            const image = new Image();
-            image.onload = () => {
-              observer.next(thumbnail.url);
-              observer.complete();
-            };
-            image.src = thumbnail.url;
+      switchMap(thumbnail =>
+        this.imageService
+          .loadImageFile(thumbnail.url, (progress: number) => {
+            this._realLoadingProgressSubject.next(progress);
           })
+          .pipe(map(url => this.domSanitizer.bypassSecurityTrustUrl(url)))
       ),
       tap(
         () =>

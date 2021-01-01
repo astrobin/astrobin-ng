@@ -1,8 +1,15 @@
+@import "../../../../styles/variables";
+
 :host {
   &,
   > div {
     display: block;
     width: 100%;
     height: 100%;
+  }
+
+  .progress {
+    height: 14px;
+    width: 75px;
   }
 }
