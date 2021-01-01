@@ -3,9 +3,13 @@ import { selectApp } from "@app/store/selectors/app/app.selectors";
 import { State } from "@app/store/state";
 import { environment } from "@env/environment";
 import { SubmissionInterface } from "@features/iotd/services/submission-queue-api.service";
-import { LoadSubmissionQueue, LoadSubmissions } from "@features/iotd/store/iotd.actions";
+import { InitHiddenSubmissionEntries, LoadSubmissionQueue, LoadSubmissions } from "@features/iotd/store/iotd.actions";
 import { SubmissionImageInterface } from "@features/iotd/store/iotd.reducer";
-import { selectSubmissionQueue, selectSubmissions } from "@features/iotd/store/iotd.selectors";
+import {
+  selectHiddenSubmissionEntries,
+  selectSubmissionQueue,
+  selectSubmissions
+} from "@features/iotd/store/iotd.selectors";
 import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
@@ -17,7 +21,7 @@ import { PopNotificationsService } from "@shared/services/pop-notifications.serv
 import { TitleService } from "@shared/services/title/title.service";
 import { distinctUntilChangedObj } from "@shared/services/utils/utils.service";
 import { Observable } from "rxjs";
-import { filter, map, switchMap, takeUntil, tap } from "rxjs/operators";
+import { filter, map, switchMap, takeUntil } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-submission-queue",
@@ -31,6 +35,7 @@ export class SubmissionQueueComponent extends BaseComponentDirective implements 
   submissionQueue$: Observable<PaginatedApiResultInterface<SubmissionImageInterface>> = this.store$.select(
     selectSubmissionQueue
   );
+  hiddenSubmissionEntries$: Observable<number[]> = this.store$.select(selectHiddenSubmissionEntries);
   submissions$: Observable<SubmissionInterface[]> = this.store$.select(selectSubmissions);
 
   @ViewChildren("submissionQueueEntries")
@@ -80,6 +85,7 @@ export class SubmissionQueueComponent extends BaseComponentDirective implements 
   }
 
   refresh(): void {
+    this.store$.dispatch(new InitHiddenSubmissionEntries());
     this.store$.dispatch(new LoadSubmissionQueue());
     this.store$.dispatch(new LoadSubmissions());
   }
@@ -99,6 +105,15 @@ export class SubmissionQueueComponent extends BaseComponentDirective implements 
     if (element) {
       element.nativeElement.scrollIntoView({ behavior: "smooth" });
     }
+  }
+
+  filterHiddenSubmissionEntries(
+    submissionEntries: SubmissionImageInterface[],
+    hiddenSubmissionEntries: number[]
+  ): SubmissionImageInterface[] {
+    return submissionEntries.filter(entry => {
+      return hiddenSubmissionEntries.indexOf(entry.pk) === -1;
+    });
   }
 
   private _getEntryElement(imageId: number): ElementRef | null {

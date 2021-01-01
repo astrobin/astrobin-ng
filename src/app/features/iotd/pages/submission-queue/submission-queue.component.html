@@ -13,39 +13,43 @@
   </div>
 
   <ng-container *ngIf="submissionQueue$ | async as submissionQueue">
-    <ng-container *ngIf="submissions$ | async as submissions">
-      <ng-container *ngIf="submissionQueue?.count > 0; else noEntries">
+    <ng-container *ngIf="hiddenSubmissionEntries$ | async as hiddenSubmissionEntries">
+      <ng-container *ngIf="submissions$ | async as submissions">
+        <ng-container *ngIf="submissionQueue?.count > 0; else noEntries">
 
-        <astrobin-promotion-slots
-          ngStickyNav stickyClass="sticky-promotion-slots"
-          [availableSubmissionEntries]="submissionQueue.results"
-          (slotClick)="scrollToEntry($event)">
-        </astrobin-promotion-slots>
+          <astrobin-promotion-slots
+            ngStickyNav stickyClass="sticky-promotion-slots"
+            [availableSubmissionEntries]="submissionQueue.results"
+            (slotClick)="scrollToEntry($event)">
+          </astrobin-promotion-slots>
 
-        <ng-container
-          [ngTemplateOutlet]="pagination"
-          [ngTemplateOutletContext]="{count: submissionQueue.count}">
+          <ng-container
+            [ngTemplateOutlet]="pagination"
+            [ngTemplateOutletContext]="{count: submissionQueue.count}">
+          </ng-container>
+
+          <div
+            *ngFor="
+              let entry of filterHiddenSubmissionEntries(submissionQueue.results, hiddenSubmissionEntries);
+              let i = index"
+            id="submission-queue-entry-{{entry.pk}}"
+            class="mb-5"
+            #submissionQueueEntries>
+            <astrobin-promotion-entry [entry]="entry">
+            </astrobin-promotion-entry>
+
+            <hr *ngIf="i < submissionQueue.results.length - 1" />
+          </div>
+
+          <ng-container
+            [ngTemplateOutlet]="pagination"
+            [ngTemplateOutletContext]="{count: submissionQueue.count}">
+          </ng-container>
+
         </ng-container>
-
-        <div
-          *ngFor="let entry of submissionQueue.results; let i = index"
-          id="submission-queue-entry-{{entry.pk}}"
-          class="mb-5"
-          #submissionQueueEntries>
-          <astrobin-promotion-entry [entry]="entry">
-          </astrobin-promotion-entry>
-
-          <hr *ngIf="i < submissionQueue.results.length - 1" />
-        </div>
-
-        <ng-container
-          [ngTemplateOutlet]="pagination"
-          [ngTemplateOutletContext]="{count: submissionQueue.count}">
-        </ng-container>
-
       </ng-container>
     </ng-container>
-</ng-container>
+  </ng-container>
 
 </div>
 

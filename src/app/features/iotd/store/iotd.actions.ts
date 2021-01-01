@@ -20,7 +20,11 @@ export enum IotdActionTypes {
 
   DELETE_SUBMISSION = "[IOTD Submission queue] Delete submission",
   DELETE_SUBMISSION_SUCCESS = "[IOTD Submission queue] Delete submission success",
-  DELETE_SUBMISSION_FAILURE = "[IOTD Submission queue] Delete submission failure"
+  DELETE_SUBMISSION_FAILURE = "[IOTD Submission queue] Delete submission failure",
+
+  INIT_HIDDEN_SUBMISSION_ENTRIES = "[IOTD Submission queue] Init hidden submissions",
+  INIT_HIDDEN_SUBMISSION_ENTRIES_SUCCESS = "[IOTD Submission queue] Init hidden submissions success",
+  HIDE_SUBMISSION_ENTRY = "[IOTD Submission queue] Hide submission"
 }
 
 export class LoadSubmissionQueue implements Action {
@@ -86,6 +90,22 @@ export class DeleteSubmissionFailure implements Action {
   readonly type = IotdActionTypes.DELETE_SUBMISSION_FAILURE;
 }
 
+export class InitHiddenSubmissionEntries implements Action {
+  readonly type = IotdActionTypes.INIT_HIDDEN_SUBMISSION_ENTRIES;
+}
+
+export class InitHiddenSubmissionEntriesSuccess implements Action {
+  readonly type = IotdActionTypes.INIT_HIDDEN_SUBMISSION_ENTRIES_SUCCESS;
+
+  constructor(public payload: { ids: number[] }) {}
+}
+
+export class HideSubmissionEntry implements Action {
+  readonly type = IotdActionTypes.HIDE_SUBMISSION_ENTRY;
+
+  constructor(public payload: { id: number }) {}
+}
+
 export type IotdActions =
   | LoadSubmissionQueue
   | LoadSubmissionQueueSuccess
@@ -98,4 +118,7 @@ export type IotdActions =
   | PostSubmissionFailure
   | DeleteSubmission
   | DeleteSubmissionSuccess
-  | DeleteSubmissionFailure;
+  | DeleteSubmissionFailure
+  | InitHiddenSubmissionEntries
+  | InitHiddenSubmissionEntriesSuccess
+  | HideSubmissionEntry;

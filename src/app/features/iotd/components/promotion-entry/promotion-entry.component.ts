@@ -1,7 +1,7 @@
 import { Component, Input } from "@angular/core";
 import { ShowFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
 import { State } from "@app/store/state";
-import { DeleteSubmission, PostSubmission } from "@features/iotd/store/iotd.actions";
+import { DeleteSubmission, HideSubmissionEntry, PostSubmission } from "@features/iotd/store/iotd.actions";
 import { SubmissionImageInterface } from "@features/iotd/store/iotd.reducer";
 import { selectSubmissionForImage } from "@features/iotd/store/iotd.selectors";
 import { Store } from "@ngrx/store";
@@ -35,6 +35,14 @@ export class PromotionEntryComponent extends BaseComponentDirective {
 
   viewFullscreen(imageId: number): void {
     this.store$.dispatch(new ShowFullscreenImage(imageId));
+  }
+
+  hide(imageId: number): void {
+    this.store$.dispatch(new HideSubmissionEntry({ id: imageId }));
+  }
+
+  hideDisabled$(imageId: number): Observable<boolean> {
+    return this.store$.select(selectSubmissionForImage, imageId).pipe(map(submission => !!submission));
   }
 
   postSubmission(imageId: number): void {

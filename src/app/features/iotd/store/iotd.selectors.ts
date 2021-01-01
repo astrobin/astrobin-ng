@@ -11,6 +11,11 @@ export const selectSubmissionQueue = createSelector(
   (state: IotdState): PaginatedApiResultInterface<SubmissionImageInterface> => state.submissionQueue
 );
 
+export const selectHiddenSubmissionEntries = createSelector(
+  selectIotdState,
+  (state: IotdState): number[] => state.hiddenSubmissionEntries
+);
+
 export const selectSubmissions = createSelector(
   selectIotdState,
   (state: IotdState): SubmissionInterface[] => state.submissions

@@ -4,11 +4,13 @@ import { Actions, Effect, ofType } from "@ngrx/effects";
 import { TranslateService } from "@ngx-translate/core";
 import { LoadingService } from "@shared/services/loading.service";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
+import { WindowRefService } from "@shared/services/window-ref.service";
 import { of } from "rxjs";
 import { catchError, map, mergeMap, tap } from "rxjs/operators";
 import {
   DeleteSubmissionFailure,
   DeleteSubmissionSuccess,
+  InitHiddenSubmissionEntriesSuccess,
   IotdActions,
   IotdActionTypes,
   LoadSubmissionQueueFailure,
@@ -21,6 +23,8 @@ import {
 
 @Injectable()
 export class IotdEffects {
+  readonly HIDDEN_SUBMISSION_ENTRIES_KEY = "iotd.hidden-submissions";
+
   @Effect()
   loadSubmissionQueue$ = this.actions$.pipe(
     ofType(IotdActionTypes.LOAD_SUBMISSION_QUEUE),
@@ -123,11 +127,38 @@ export class IotdEffects {
     tap(() => this.loadingService.setLoading(false))
   );
 
+  @Effect()
+  initHiddenSubmissionEntries$ = this.actions$.pipe(
+    ofType(IotdActionTypes.INIT_HIDDEN_SUBMISSION_ENTRIES),
+    map(() => {
+      const localStorage = this.windowRef.nativeWindow.localStorage;
+      const value = JSON.parse(localStorage.getItem(this.HIDDEN_SUBMISSION_ENTRIES_KEY)) || [];
+      return new InitHiddenSubmissionEntriesSuccess({ ids: value });
+    })
+  );
+
+  @Effect({ dispatch: false })
+  initHiddenSubmissionEntriesSuccess$ = this.actions$.pipe(
+    ofType(IotdActionTypes.INIT_HIDDEN_SUBMISSION_ENTRIES_SUCCESS)
+  );
+
+  @Effect({ dispatch: false })
+  hideSubmissionEntry$ = this.actions$.pipe(
+    ofType(IotdActionTypes.HIDE_SUBMISSION_ENTRY),
+    map(action => action.payload),
+    tap(payload => {
+      const localStorage = this.windowRef.nativeWindow.localStorage;
+      const current = JSON.parse(localStorage.getItem(this.HIDDEN_SUBMISSION_ENTRIES_KEY)) || [];
+      localStorage.setItem(this.HIDDEN_SUBMISSION_ENTRIES_KEY, JSON.stringify([...current, payload.id]));
+    })
+  );
+
   constructor(
     public readonly actions$: Actions<IotdActions>,
     public readonly submissionQueueApiService: SubmissionQueueApiService,
     public readonly loadingService: LoadingService,
     public readonly popNotificationsService: PopNotificationsService,
-    public readonly translateService: TranslateService
+    public readonly translateService: TranslateService,
+    public readonly windowRef: WindowRefService
   ) {}
 }

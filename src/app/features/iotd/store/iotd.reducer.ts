@@ -10,11 +10,13 @@ export interface SubmissionImageInterface extends ImageInterface {}
 
 export interface IotdState {
   submissionQueue: PaginatedApiResultInterface<SubmissionImageInterface> | null;
+  hiddenSubmissionEntries: number[];
   submissions: SubmissionInterface[];
 }
 
 export const initialIotdState: IotdState = {
   submissionQueue: null,
+  hiddenSubmissionEntries: [],
   submissions: []
 };
 
@@ -42,6 +44,18 @@ export function reducer(state = initialIotdState, action: IotdActions): IotdStat
       return {
         ...state,
         submissions: state.submissions.filter(submission => submission.id !== action.payload.id)
+      };
+
+    case IotdActionTypes.INIT_HIDDEN_SUBMISSION_ENTRIES_SUCCESS:
+      return {
+        ...state,
+        hiddenSubmissionEntries: action.payload.ids
+      };
+
+    case IotdActionTypes.HIDE_SUBMISSION_ENTRY:
+      return {
+        ...state,
+        hiddenSubmissionEntries: [...state.hiddenSubmissionEntries, action.payload.id]
       };
 
     default:
