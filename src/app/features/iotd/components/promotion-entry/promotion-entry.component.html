@@ -55,6 +55,11 @@
             {{ "View large" | translate }}
           </button>
 
+          <button class="btn btn-danger" [disabled]="hideDisabled$(entry.pk) | async" (click)="hide(entry.pk)">
+            <fa-icon icon="minus-circle"></fa-icon>
+            {{ "Hide" | translate }}
+          </button>
+
           <button class="btn btn-primary"
                   *ngIf="(isSubmitted$(entry.pk) | async) === false; else retract"
                   (click)="postSubmission(entry.pk)"

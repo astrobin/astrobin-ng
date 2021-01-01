@@ -1,4 +1,4 @@
-context("IOTD Submission queue", () => {
+context.only("IOTD Submission queue", () => {
   beforeEach(() => {
     cy.server();
     cy.setupInitializationRoutes();
@@ -92,20 +92,38 @@ context("IOTD Submission queue", () => {
         date: new Date().toISOString()
       }).as("postSubmission");
 
-      cy.get("#submission-queue-entry-1 .btn-primary").click();
+      cy.get("#submission-queue-entry-1 .btn")
+        .contains("Promote")
+        .click();
 
+      cy.get("#submission-queue-entry-1 .btn")
+        .contains("Hide")
+        .should("be.disabled");
       cy.get(".promotion-slot astrobin-image[data-id=1]").should("exist");
     });
 
     it("should remove a submission to a slot", () => {
       cy.route("DELETE", "**/api/v2/iotd/submission/1/", {}).as("deleteSubmission");
 
-      cy.get("#submission-queue-entry-1 .btn-danger").click();
+      cy.get("#submission-queue-entry-1 .btn")
+        .contains("Retract promotion")
+        .click();
 
+      cy.get("#submission-queue-entry-1 .btn")
+        .contains("Hide")
+        .should("not.be.disabled");
       cy.get(".promotion-slot astrobin-image[data-id=1]").should("not.exist");
       cy.get(".promotion-slot")
         .contains("1")
         .should("exist");
+    });
+
+    it("should hide a submission entry", () => {
+      cy.get("#submission-queue-entry-1 .btn")
+        .contains("Hide")
+        .click();
+
+      cy.get("#submission-queue-entry-1").should("not.exist");
     });
   });
 });
