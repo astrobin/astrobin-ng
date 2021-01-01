@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, Input } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 
 @Component({
@@ -6,4 +6,7 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
   templateUrl: "./loading-indicator.component.html",
   styleUrls: ["./loading-indicator.component.scss"]
 })
-export class LoadingIndicatorComponent extends BaseComponentDirective {}
+export class LoadingIndicatorComponent extends BaseComponentDirective {
+  @Input()
+  progress: number;
+}

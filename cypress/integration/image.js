@@ -34,6 +34,6 @@ context("image", () => {
 
     cy.get(".astrobin-image")
       .should("have.css", "background-image")
-      .and("contain", "assets/test/images/regular.jpg");
+      .and("contain", "blob:http://localhost:4400/");
   });
 });

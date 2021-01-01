@@ -19,13 +19,11 @@ import { State } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
-import { ImageThumbnailInterface } from "@shared/interfaces/image-thumbnail.interface";
 import { ImageInterface } from "@shared/interfaces/image.interface";
 import { ImageApiService } from "@shared/services/api/classic/images/image/image-api.service";
 import { ThumbnailGroupApiService } from "@shared/services/api/classic/images/thumbnail-group/thumbnail-group-api.service";
 import { ImageService } from "@shared/services/image/image.service";
-import { distinctUntilChangedObj } from "@shared/services/utils/utils.service";
-import { Observable } from "rxjs";
+import { BehaviorSubject, Observable } from "rxjs";
 import { filter, map, switchMap, take, tap } from "rxjs/operators";
 
 @Component({
@@ -35,7 +33,7 @@ import { filter, map, switchMap, take, tap } from "rxjs/operators";
 })
 export class ImageComponent extends BaseComponentDirective implements OnInit, OnChanges, AfterViewChecked {
   image$: Observable<ImageInterface>;
-  thumbnail$: Observable<ImageThumbnailInterface>;
+  thumbnailUrl$: Observable<string>;
   height: number;
 
   @Input()
@@ -51,8 +49,12 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
   @HostBinding("class.loading")
   loading = false;
 
+  loadingProgress$: Observable<number>;
+
   @ViewChild("loadingIndicator", { read: ElementRef })
   private _loadingIndicator: ElementRef;
+
+  private _loadingProgressSubject = new BehaviorSubject<number>(0);
 
   constructor(
     public readonly store$: Store<State>,
@@ -63,6 +65,8 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
     public readonly changeDetector: ChangeDetectorRef
   ) {
     super();
+
+    this.loadingProgress$ = this._loadingProgressSubject.asObservable();
   }
 
   ngOnInit(): void {
@@ -105,7 +109,7 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
   private _loadThumbnail() {
     this.store$.dispatch(new LoadThumbnail({ id: this.id, revision: this.revision, alias: this.alias }));
 
-    this.thumbnail$ = this.store$
+    this.thumbnailUrl$ = this.store$
       .select(selectThumbnail, {
         id: this.id,
         revision: this.revision,
@@ -113,6 +117,11 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
       })
       .pipe(
         filter(thumbnail => !!thumbnail),
+        switchMap(thumbnail =>
+          this.imageService.loadImageFile(thumbnail.url, (progress: number) => {
+            this._loadingProgressSubject.next(progress);
+          })
+        ),
         tap(() => (this.loading = false))
       );
   }
