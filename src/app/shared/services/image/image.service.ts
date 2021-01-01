@@ -59,25 +59,32 @@ export class ImageService extends BaseService {
 
       xhr.onloadend = function() {
         if (!xhr.status.toString().match(/^2/)) {
-          throwError(xhr);
-        } else {
-          if (!notifiedNotComputable) {
-            progressCallback(100);
-          }
-
-          const options: any = {};
-          const headers = xhr.getAllResponseHeaders();
-          const m = headers.match(/^Content-Type:\s*(.*?)$/im);
-
-          if (m && m[1]) {
-            options.type = m[1];
-          }
-
-          const blob = new Blob([this.response], options);
-
-          observer.next((nativeWindow as any).URL.createObjectURL(blob));
-          observer.complete();
+          // Try a more traditional approach.
+          const image = new Image();
+          image.onload = () => {
+            observer.next(url);
+            observer.complete();
+          };
+          image.src = url;
+          return;
         }
+
+        if (!notifiedNotComputable) {
+          progressCallback(100);
+        }
+
+        const options: any = {};
+        const headers = xhr.getAllResponseHeaders();
+        const m = headers.match(/^Content-Type:\s*(.*?)$/im);
+
+        if (m && m[1]) {
+          options.type = m[1];
+        }
+
+        const blob = new Blob([this.response], options);
+
+        observer.next((nativeWindow as any).URL.createObjectURL(blob));
+        observer.complete();
       };
 
       xhr.send();
