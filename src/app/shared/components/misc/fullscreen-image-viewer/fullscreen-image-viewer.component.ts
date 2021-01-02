@@ -14,7 +14,7 @@ import { PopNotificationsService } from "@shared/services/pop-notifications.serv
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { Coord } from "ngx-image-zoom";
 import { BehaviorSubject, Observable } from "rxjs";
-import { distinctUntilChanged, filter, map, switchMap, tap } from "rxjs/operators";
+import { distinctUntilChanged, filter, map, switchMap, take, tap } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-fullscreen-image-viewer",
@@ -61,11 +61,6 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
 
     this.hdLoadingProgress$ = this._hdLoadingProgressSubject.asObservable();
     this.realLoadingProgress$ = this._realLoadingProgressSubject.asObservable();
-  }
-
-  @HostListener("document:keydown.escape", ["$event"])
-  onKeydownEscape(event: KeyboardEvent) {
-    this.hide();
   }
 
   @HostListener("window:resize", ["$event"])
@@ -133,12 +128,22 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       tap(show => {
         if (show) {
           this.store$.dispatch(new LoadThumbnail(hdOptions));
+
           if (!this.isTouchDevice) {
             this.store$.dispatch(new LoadThumbnail(realOptions));
           }
-          this.klass = "d-flex";
+
+          setTimeout(() => {
+            this.klass = "d-flex";
+          }, 1);
         } else {
-          this.klass = "d-none";
+          if (this._zoomReadyNotification) {
+            this.popNotificationsService.clear(this._zoomReadyNotification.id);
+          }
+
+          setTimeout(() => {
+            this.klass = "d-none";
+          }, 1);
         }
       })
     );
@@ -164,12 +169,19 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     return this._zoomScroll;
   }
 
+  @HostListener("document:keyup.escape", ["$event"])
   hide(): void {
-    if (this._zoomReadyNotification) {
-      this.popNotificationsService.clear(this._zoomReadyNotification.id);
-    }
-
-    this.store$.dispatch(new HideFullscreenImage());
+    this.store$
+      .select(selectApp)
+      .pipe(
+        map(state => state.currentFullscreenImage === this.id),
+        take(1)
+      )
+      .subscribe(shown => {
+        if (shown) {
+          this.store$.dispatch(new HideFullscreenImage());
+        }
+      });
   }
 
   private _setZoomLensSize(): void {

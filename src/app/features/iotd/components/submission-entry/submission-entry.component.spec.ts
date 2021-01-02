@@ -5,18 +5,18 @@ import { IotdModule } from "@features/iotd/iotd.module";
 import { provideMockStore } from "@ngrx/store/testing";
 import { ImageGenerator } from "@shared/generators/image.generator";
 import { MockBuilder } from "ng-mocks";
-import { PromotionEntryComponent } from "./promotion-entry.component";
+import { SubmissionEntryComponent } from "./submission-entry.component";
 
-describe("PromotionEntryComponent", () => {
-  let component: PromotionEntryComponent;
-  let fixture: ComponentFixture<PromotionEntryComponent>;
+describe("SubmissionEntryComponent", () => {
+  let component: SubmissionEntryComponent;
+  let fixture: ComponentFixture<SubmissionEntryComponent>;
 
   beforeEach(async () => {
-    await MockBuilder(PromotionEntryComponent, IotdModule).provide(provideMockStore({ initialState }));
+    await MockBuilder(SubmissionEntryComponent, IotdModule).provide(provideMockStore({ initialState }));
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(PromotionEntryComponent);
+    fixture = TestBed.createComponent(SubmissionEntryComponent);
     component = fixture.componentInstance;
     component.entry = ImageGenerator.image();
     fixture.detectChanges();

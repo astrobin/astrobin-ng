@@ -32,7 +32,8 @@ export class BackendConfigGenerator {
           size: [130, 130]
         }
       },
-      IOTD_SUBMISSION_MAX_PER_DAY: 3
+      IOTD_SUBMISSION_MAX_PER_DAY: 3,
+      IOTD_REVIEW_MAX_PER_DAY: 3
     };
   }
 }

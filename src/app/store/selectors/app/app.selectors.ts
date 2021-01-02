@@ -8,3 +8,8 @@ export const selectIotdMaxSubmissionsPerDay = createSelector(
   selectApp,
   (state: AppState): number => state.backendConfig.IOTD_SUBMISSION_MAX_PER_DAY
 );
+
+export const selectIotdMaxReviewsPerDay = createSelector(
+  selectApp,
+  (state: AppState): number => state.backendConfig.IOTD_REVIEW_MAX_PER_DAY
+);

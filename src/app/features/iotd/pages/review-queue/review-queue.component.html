@@ -2,10 +2,10 @@
 
   <div class="d-flex justify-content-between">
     <h1 class="flex-grow-1">
-      {{ "Submission queue" | translate }} <span class="beta">beta</span>
+      {{ "Review queue" | translate }} <span class="beta">beta</span>
 
       <a class="return-to-classic" [href]="classicUrl">
-        {{ "Return to the classic submission queue" | translate }}
+        {{ "Return to the classic review queue" | translate }}
       </a>
     </h1>
 
@@ -17,11 +17,11 @@
       <ng-container *ngIf="promotions$ | async as promotions">
         <ng-container *ngIf="queue?.count > 0; else noEntries">
 
-          <astrobin-submission-slots
+          <astrobin-review-slots
             ngStickyNav stickyClass="sticky-promotion-slots"
             [availableEntries]="queue.results"
             (slotClick)="scrollToEntry($event)">
-          </astrobin-submission-slots>
+          </astrobin-review-slots>
 
           <ng-container
             [ngTemplateOutlet]="pagination"
@@ -35,7 +35,7 @@
             id="promotion-queue-entry-{{entry.pk}}"
             class="mb-5"
             #promotionQueueEntries>
-            <astrobin-submission-entry [entry]="entry"></astrobin-submission-entry>
+            <astrobin-review-entry [entry]="entry"></astrobin-review-entry>
             <hr *ngIf="i < queue.results.length - 1" />
           </div>
 
@@ -53,7 +53,7 @@
 
 <ng-template #noEntries>
   <p>
-    {{ "The submission queue is currently empty." | translate }}&nbsp;{{ "Please come back later!" | translate }}
+    {{ "The review queue is currently empty." | translate }}&nbsp;{{ "Please come back later!" | translate }}
   </p>
 </ng-template>
 

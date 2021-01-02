@@ -29,4 +29,5 @@ export interface BackendConfigInterface {
   REQUEST_COUNTRY: string;
   THUMBNAIL_ALIASES: ThumbnailAliases;
   IOTD_SUBMISSION_MAX_PER_DAY: number;
+  IOTD_REVIEW_MAX_PER_DAY: number;
 }
