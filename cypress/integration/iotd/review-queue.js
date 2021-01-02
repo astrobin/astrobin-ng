@@ -100,7 +100,7 @@ context("IOTD Review queue", () => {
       cy.get(".promotion-slot astrobin-image[data-id=1]").should("exist");
     });
 
-    it("should remove a promotion to a slot", () => {
+    it("should remove a promotion from a slot", () => {
       cy.route("DELETE", "**/api/v2/iotd/vote/1/", {}).as("deleteReview");
 
       cy.get("#promotion-queue-entry-1 .btn")
