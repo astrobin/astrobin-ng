@@ -17,6 +17,7 @@ phases:
     commands:
       - npm run test
       - npm run cy:serve-and-run
+      - aws s3 cp $CODEBUILD_SRC_DIR/cypress s3://astrobin-ng-cypress-output/ --recursive
 
 artifacts:
   files:
