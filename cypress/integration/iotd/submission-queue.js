@@ -109,6 +109,8 @@ context("IOTD Submission queue", () => {
         .contains("Retract promotion")
         .click();
 
+      cy.wait(500);
+
       cy.get("#promotion-queue-entry-1 .btn")
         .contains("Hide")
         .should("not.be.disabled");
