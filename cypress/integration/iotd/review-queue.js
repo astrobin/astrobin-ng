@@ -88,7 +88,7 @@ context("IOTD Review queue", () => {
         submitter: 3,
         image: 1,
         date: new Date().toISOString()
-      }).as("postReview");
+      }).as("postVote");
 
       cy.get("#promotion-queue-entry-1 .btn")
         .contains("Promote")
@@ -101,13 +101,11 @@ context("IOTD Review queue", () => {
     });
 
     it("should remove a promotion from a slot", () => {
-      cy.route("DELETE", "**/api/v2/iotd/vote/1/", {}).as("deleteReview");
+      cy.route("DELETE", "**/api/v2/iotd/vote/1/", {}).as("deleteVote");
 
       cy.get("#promotion-queue-entry-1 .btn")
         .contains("Retract promotion")
         .click();
-
-      cy.wait(500);
 
       cy.get("#promotion-queue-entry-1 .btn")
         .contains("Hide")

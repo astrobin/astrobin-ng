@@ -4,15 +4,6 @@ context("image", () => {
     cy.setupInitializationRoutes();
   });
 
-  describe("when there is no thumbnail group", () => {
-    beforeEach(() => {
-      cy.route("GET", "**/api/v2/images/thumbnail-group/*", {
-        count: 0,
-        results: []
-      }).as("getThumbnailGroup");
-    });
-  });
-
   it("should render placeholder first, then real image", () => {
     cy.route("GET", "**/api/v2/images/image/1/", "fixture:api/images/image_1.json").as("getImage");
     cy.route(
