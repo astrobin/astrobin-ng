@@ -29,11 +29,11 @@ export class SubmissionQueueApiService extends BaseClassicApiService {
     return this.http.get<SubmissionInterface[]>(`${this.baseUrl}/iotd/submission/`);
   }
 
-  postSubmission(imageId: number): Observable<SubmissionInterface> {
+  addSubmission(imageId: number): Observable<SubmissionInterface> {
     return this.http.post<SubmissionInterface>(`${this.baseUrl}/iotd/submission/`, { image: imageId });
   }
 
-  deleteSubmission(id: number): Observable<SubmissionInterface> {
+  retractSubmission(id: number): Observable<SubmissionInterface> {
     return this.http.delete<SubmissionInterface>(`${this.baseUrl}/iotd/submission/${id}/`);
   }
 }

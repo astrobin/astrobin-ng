@@ -2,14 +2,10 @@ import { Component, OnInit } from "@angular/core";
 import { State } from "@app/store/state";
 import { environment } from "@env/environment";
 import { BasePromotionQueueComponent } from "@features/iotd/components/base-promotion-queue/base-promotion-queue.component";
-import { SubmissionInterface } from "@features/iotd/services/submission-queue-api.service";
-import { InitHiddenSubmissionEntries, LoadSubmissionQueue, LoadSubmissions } from "@features/iotd/store/iotd.actions";
-import { SubmissionImageInterface } from "@features/iotd/store/iotd.reducer";
-import {
-  selectHiddenSubmissionEntries,
-  selectSubmissionQueue,
-  selectSubmissions
-} from "@features/iotd/store/iotd.selectors";
+import { VoteInterface } from "@features/iotd/services/review-queue-api.service";
+import { InitHiddenReviewEntries, LoadReviewQueue, LoadVotes } from "@features/iotd/store/iotd.actions";
+import { ReviewImageInterface } from "@features/iotd/store/iotd.reducer";
+import { selectHiddenReviewEntries, selectReviewQueue, selectReviews } from "@features/iotd/store/iotd.selectors";
 import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
 import { BackendConfigInterface } from "@shared/interfaces/backend-config.interface";
@@ -20,15 +16,15 @@ import { TitleService } from "@shared/services/title/title.service";
 import { Observable } from "rxjs";
 
 @Component({
-  selector: "astrobin-submission-queue",
-  templateUrl: "./submission-queue.component.html",
-  styleUrls: ["./submission-queue.component.scss"]
+  selector: "astrobin-review-queue",
+  templateUrl: "./review-queue.component.html",
+  styleUrls: ["./review-queue.component.scss"]
 })
-export class SubmissionQueueComponent extends BasePromotionQueueComponent implements OnInit {
-  classicUrl = `${environment.classicBaseUrl}/iotd/submission-queue`;
-  hiddenEntries$: Observable<number[]> = this.store$.select(selectHiddenSubmissionEntries);
-  queue$: Observable<PaginatedApiResultInterface<SubmissionImageInterface>> = this.store$.select(selectSubmissionQueue);
-  promotions$: Observable<SubmissionInterface[]> = this.store$.select(selectSubmissions);
+export class ReviewQueueComponent extends BasePromotionQueueComponent implements OnInit {
+  classicUrl = `${environment.classicBaseUrl}/iotd/review-queue`;
+  hiddenEntries$: Observable<number[]> = this.store$.select(selectHiddenReviewEntries);
+  queue$: Observable<PaginatedApiResultInterface<ReviewImageInterface>> = this.store$.select(selectReviewQueue);
+  promotions$: Observable<VoteInterface[]> = this.store$.select(selectReviews);
 
   constructor(
     public readonly store$: Store<State>,
@@ -43,22 +39,22 @@ export class SubmissionQueueComponent extends BasePromotionQueueComponent implem
   ngOnInit(): void {
     super.ngOnInit();
 
-    this.titleService.setTitle(this.translateService.instant("Submission queue"));
+    this.titleService.setTitle(this.translateService.instant("Review queue"));
   }
 
   loadQueue(page: number): void {
-    this.store$.dispatch(new LoadSubmissionQueue({ page }));
+    this.store$.dispatch(new LoadReviewQueue({ page }));
   }
 
   loadHiddenEntries(): void {
-    this.store$.dispatch(new InitHiddenSubmissionEntries());
+    this.store$.dispatch(new InitHiddenReviewEntries());
   }
 
   loadPromotions(): void {
-    this.store$.dispatch(new LoadSubmissions());
+    this.store$.dispatch(new LoadVotes());
   }
 
   maxPromotionsPerDay(backendConfig: BackendConfigInterface): number {
-    return backendConfig.IOTD_SUBMISSION_MAX_PER_DAY;
+    return backendConfig.IOTD_REVIEW_MAX_PER_DAY;
   }
 }

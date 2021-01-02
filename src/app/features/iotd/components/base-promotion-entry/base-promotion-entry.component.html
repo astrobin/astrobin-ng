@@ -1,9 +1,9 @@
-<div class="row no-gutters submission-queue-entry" [class.promoted]="(isSubmitted$(entry.pk) | async) === true">
+<div class="row no-gutters promotion-queue-entry" [class.promoted]="(isPromoted$(entry.pk) | async) === true">
   <astrobin-fullscreen-image-viewer [id]="entry.pk"></astrobin-fullscreen-image-viewer>
 
   <div class="col-sm-12 col-md-6 col-image">
     <astrobin-image
-      class="submission-image mb-2 mb-md-0 pr-0 pr-md-1"
+      class="promotion-image mb-2 mb-md-0 pr-0 pr-md-1"
       [alias]="ImageAlias.STORY"
       [id]="entry.pk"
       (click)="viewFullscreen(entry.pk)">
@@ -61,8 +61,8 @@
           </button>
 
           <button class="btn btn-primary"
-                  *ngIf="(isSubmitted$(entry.pk) | async) === false; else retract"
-                  (click)="postSubmission(entry.pk)"
+                  *ngIf="(isPromoted$(entry.pk) | async) === false; else retract"
+                  (click)="promote(entry.pk)"
                   [class.loading]="loadingService.isLoading()">
             <fa-icon icon="star"></fa-icon>
             {{ "Promote" | translate }}
@@ -70,7 +70,7 @@
 
           <ng-template #retract>
             <button class="btn btn-danger"
-                    (click)="deleteSubmission(entry.pk)"
+                    (click)="retractPromotion(entry.pk)"
                     [class.loading]="loadingService.isLoading()">
               <fa-icon icon="undo"></fa-icon>
               {{ "Retract promotion" | translate }}

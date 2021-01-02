@@ -1,4 +1,5 @@
 import { CameraEffects } from "@app/store/effects/camera.effects";
+import { FullscreenImageEffects } from "@app/store/effects/fullscreen-image.effects";
 import { ImageEffects } from "@app/store/effects/image.effects";
 import { InitializeAppEffects } from "@app/store/effects/initialize-app.effects";
 import { TelescopeEffects } from "@app/store/effects/telescope.effects";
@@ -25,10 +26,11 @@ export const appStateReducers = {
 };
 
 export const appStateEffects = [
+  AuthEffects,
+  CameraEffects,
+  FullscreenImageEffects,
   InitializeAppEffects,
   ImageEffects,
   ThumbnailEffects,
-  TelescopeEffects,
-  CameraEffects,
-  AuthEffects
+  TelescopeEffects
 ];

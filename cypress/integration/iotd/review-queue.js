@@ -1,4 +1,4 @@
-context("IOTD Submission queue", () => {
+context("IOTD Review queue", () => {
   beforeEach(() => {
     cy.server();
     cy.setupInitializationRoutes();
@@ -6,29 +6,29 @@ context("IOTD Submission queue", () => {
 
   describe("when not logged in", () => {
     it("should redirect you to the login page", () => {
-      cy.visitPage("/iotd/submission-queue");
+      cy.visitPage("/iotd/review-queue");
       cy.url().should("contain", "http://localhost:4400/account/login");
     });
   });
 
-  describe("when logged in and not in the iotd_submitters group", () => {
+  describe("when logged in and not in the iotd_reviewers group", () => {
     it("should redirect you to the login page", () => {
       cy.login();
-      cy.visitPage("/iotd/submission-queue");
-      cy.url().should("equal", "http://localhost:4400/iotd/submission-queue");
+      cy.visitPage("/iotd/review-queue");
+      cy.url().should("equal", "http://localhost:4400/iotd/review-queue");
       cy.get("h1")
         .contains("403")
         .should("exist");
     });
   });
 
-  describe("when logged in and in the iotd_submitters_group ", () => {
+  describe("when logged in and in the iotd_reviewers ", () => {
     beforeEach(() => {
       cy.login();
       cy.route("GET", "**/common/userprofiles/current", "fixture:api/common/userprofile_current_3.json").as(
         "getCurrentUserProfile"
       );
-      cy.route("GET", "**/common/users/*", "fixture:api/common/users_3_iotd_submitter.json").as("getUser");
+      cy.route("GET", "**/common/users/*", "fixture:api/common/users_3_iotd_reviewer.json").as("getUser");
     });
 
     it("should render page elements", () => {
@@ -39,17 +39,15 @@ context("IOTD Submission queue", () => {
       cy.route("GET", "**/*/final/thumb/story_crop/", "fixture:api/images/image_thumbnail_1_story_crop_loaded.json").as(
         "getImageThumbnail"
       );
-      cy.route("GET", "**/api/v2/iotd/submission-queue/?page=*", "fixture:api/iotd/submission-queue.json").as(
-        "submissionQueue"
-      );
-      cy.route("GET", "**/api/v2/iotd/submission", []).as("submissions");
+      cy.route("GET", "**/api/v2/iotd/review-queue/?page=*", "fixture:api/iotd/review-queue.json").as("reviewQueue");
+      cy.route("GET", "**/api/v2/iotd/vote", []).as("votes");
       cy.route("GET", "**/api/v2/astrobin/telescope/*/", "fixture:api/telescopes/telescope_1.json").as("getTelescope");
       cy.route("GET", "**/api/v2/astrobin/camera/*/", "fixture:api/cameras/camera_1.json").as("getCamera");
 
-      cy.visitPage("/iotd/submission-queue");
+      cy.visitPage("/iotd/review-queue");
 
       cy.get("h1")
-        .contains("Submission queue")
+        .contains("Review queue")
         .should("exist");
 
       cy.get(".promotion-queue-entry")
@@ -85,12 +83,12 @@ context("IOTD Submission queue", () => {
     });
 
     it("should add a promotion to a slot", () => {
-      cy.route("POST", "**/api/v2/iotd/submission/", {
+      cy.route("POST", "**/api/v2/iotd/vote/", {
         id: 1,
         submitter: 3,
         image: 1,
         date: new Date().toISOString()
-      }).as("postSubmission");
+      }).as("postReview");
 
       cy.get("#promotion-queue-entry-1 .btn")
         .contains("Promote")
@@ -103,7 +101,7 @@ context("IOTD Submission queue", () => {
     });
 
     it("should remove a promotion to a slot", () => {
-      cy.route("DELETE", "**/api/v2/iotd/submission/1/", {}).as("deleteSubmission");
+      cy.route("DELETE", "**/api/v2/iotd/vote/1/", {}).as("deleteReview");
 
       cy.get("#promotion-queue-entry-1 .btn")
         .contains("Retract promotion")

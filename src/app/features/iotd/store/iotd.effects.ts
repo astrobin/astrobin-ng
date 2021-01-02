@@ -1,4 +1,5 @@
 import { Injectable } from "@angular/core";
+import { ReviewQueueApiService } from "@features/iotd/services/review-queue-api.service";
 import { SubmissionQueueApiService } from "@features/iotd/services/submission-queue-api.service";
 import { Actions, Effect, ofType } from "@ngrx/effects";
 import { TranslateService } from "@ngx-translate/core";
@@ -10,20 +11,30 @@ import { catchError, map, mergeMap, tap } from "rxjs/operators";
 import {
   DeleteSubmissionFailure,
   DeleteSubmissionSuccess,
+  DeleteVoteFailure,
+  DeleteVoteSuccess,
+  InitHiddenReviewEntriesSuccess,
   InitHiddenSubmissionEntriesSuccess,
   IotdActions,
   IotdActionTypes,
+  LoadReviewQueueFailure,
+  LoadReviewQueueSuccess,
   LoadSubmissionQueueFailure,
   LoadSubmissionQueueSuccess,
   LoadSubmissionsFailure,
   LoadSubmissionsSuccess,
+  LoadVotesFailure,
+  LoadVotesSuccess,
   PostSubmissionFailure,
-  PostSubmissionSuccess
+  PostSubmissionSuccess,
+  PostVoteFailure,
+  PostVoteSuccess
 } from "./iotd.actions";
 
 @Injectable()
 export class IotdEffects {
   readonly HIDDEN_SUBMISSION_ENTRIES_KEY = "iotd.hidden-submissions";
+  readonly HIDDEN_REVIEW_ENTRIES_KEY = "iotd.hidden-review-entries";
 
   @Effect()
   loadSubmissionQueue$ = this.actions$.pipe(
@@ -79,7 +90,7 @@ export class IotdEffects {
     tap(() => this.loadingService.setLoading(true)),
     map(action => action.payload),
     mergeMap(payload =>
-      this.submissionQueueApiService.postSubmission(payload.imageId).pipe(
+      this.submissionQueueApiService.addSubmission(payload.imageId).pipe(
         map(response => new PostSubmissionSuccess(response)),
         catchError(error => of(new PostSubmissionFailure(error)))
       )
@@ -108,7 +119,7 @@ export class IotdEffects {
     tap(() => this.loadingService.setLoading(true)),
     map(action => action.payload),
     mergeMap(payload =>
-      this.submissionQueueApiService.deleteSubmission(payload.id).pipe(
+      this.submissionQueueApiService.retractSubmission(payload.id).pipe(
         map(() => new DeleteSubmissionSuccess({ id: payload.id })),
         catchError(error => of(new DeleteSubmissionFailure()))
       )
@@ -153,9 +164,136 @@ export class IotdEffects {
     })
   );
 
+  @Effect()
+  loadReviewQueue$ = this.actions$.pipe(
+    ofType(IotdActionTypes.LOAD_REVIEW_QUEUE),
+    tap(() => this.loadingService.setLoading(true)),
+    mergeMap(action =>
+      this.reviewQueueApiService.getEntries(action.payload.page).pipe(
+        map(entries => new LoadReviewQueueSuccess(entries)),
+        catchError(() => of(new LoadReviewQueueFailure()))
+      )
+    )
+  );
+
+  @Effect({ dispatch: false })
+  loadReviewQueueSuccess$ = this.actions$.pipe(
+    ofType(IotdActionTypes.LOAD_REVIEW_QUEUE_SUCCESS),
+    tap(() => this.loadingService.setLoading(false))
+  );
+
+  @Effect({ dispatch: false })
+  loadReviewQueueFailure$ = this.actions$.pipe(
+    ofType(IotdActionTypes.LOAD_REVIEW_QUEUE_FAILURE),
+    tap(() => this.loadingService.setLoading(false))
+  );
+
+  @Effect()
+  loadVotes$ = this.actions$.pipe(
+    ofType(IotdActionTypes.LOAD_VOTES),
+    tap(() => this.loadingService.setLoading(true)),
+    mergeMap(action =>
+      this.reviewQueueApiService.getVotes().pipe(
+        map(reviews => new LoadVotesSuccess(reviews)),
+        catchError(error => of(new LoadVotesFailure()))
+      )
+    )
+  );
+
+  @Effect({ dispatch: false })
+  loadVotesSuccess$ = this.actions$.pipe(
+    ofType(IotdActionTypes.LOAD_VOTES_SUCCESS),
+    tap(() => this.loadingService.setLoading(false))
+  );
+
+  @Effect({ dispatch: false })
+  loadVotesFailure$ = this.actions$.pipe(
+    ofType(IotdActionTypes.LOAD_VOTES_FAILURE),
+    tap(() => this.loadingService.setLoading(false))
+  );
+
+  @Effect()
+  postVote$ = this.actions$.pipe(
+    ofType(IotdActionTypes.POST_VOTE),
+    tap(() => this.loadingService.setLoading(true)),
+    map(action => action.payload),
+    mergeMap(payload =>
+      this.reviewQueueApiService.addVote(payload.imageId).pipe(
+        map(response => new PostVoteSuccess(response)),
+        catchError(error => of(new PostVoteFailure(error)))
+      )
+    )
+  );
+
+  @Effect({ dispatch: false })
+  postVoteSuccess$ = this.actions$.pipe(
+    ofType(IotdActionTypes.POST_VOTE_SUCCESS),
+    tap(() => this.loadingService.setLoading(false))
+  );
+
+  @Effect({ dispatch: false })
+  postVoteFailure$ = this.actions$.pipe(
+    ofType(IotdActionTypes.POST_VOTE_FAILURE),
+    map(action => action.payload.error),
+    tap(error => {
+      this.popNotificationsService.error(error);
+      this.loadingService.setLoading(false);
+    })
+  );
+
+  @Effect()
+  deleteVote$ = this.actions$.pipe(
+    ofType(IotdActionTypes.DELETE_VOTE),
+    tap(() => this.loadingService.setLoading(true)),
+    map(action => action.payload),
+    mergeMap(payload =>
+      this.reviewQueueApiService.retractVote(payload.id).pipe(
+        map(() => new DeleteVoteSuccess({ id: payload.id })),
+        catchError(() => of(new DeleteVoteFailure()))
+      )
+    )
+  );
+
+  @Effect({ dispatch: false })
+  deleteVoteSuccess$ = this.actions$.pipe(
+    ofType(IotdActionTypes.DELETE_VOTE_SUCCESS),
+    tap(() => this.loadingService.setLoading(false))
+  );
+
+  @Effect({ dispatch: false })
+  deleteVoteFailure$ = this.actions$.pipe(
+    ofType(IotdActionTypes.DELETE_VOTE_FAILURE),
+    tap(() => this.loadingService.setLoading(false))
+  );
+
+  @Effect()
+  initHiddenReviewEntries$ = this.actions$.pipe(
+    ofType(IotdActionTypes.INIT_HIDDEN_REVIEW_ENTRIES),
+    map(() => {
+      const localStorage = this.windowRef.nativeWindow.localStorage;
+      const value = JSON.parse(localStorage.getItem(this.HIDDEN_REVIEW_ENTRIES_KEY)) || [];
+      return new InitHiddenReviewEntriesSuccess({ ids: value });
+    })
+  );
+
+  @Effect({ dispatch: false })
+  initHiddenReviewEntriesSuccess$ = this.actions$.pipe(ofType(IotdActionTypes.INIT_HIDDEN_REVIEW_ENTRIES_SUCCESS));
+
+  @Effect({ dispatch: false })
+  hideReviewEntry$ = this.actions$.pipe(
+    ofType(IotdActionTypes.HIDE_REVIEW_ENTRY),
+    map(action => action.payload),
+    tap(payload => {
+      const localStorage = this.windowRef.nativeWindow.localStorage;
+      const current = JSON.parse(localStorage.getItem(this.HIDDEN_REVIEW_ENTRIES_KEY)) || [];
+      localStorage.setItem(this.HIDDEN_REVIEW_ENTRIES_KEY, JSON.stringify([...current, payload.id]));
+    })
+  );
+
   constructor(
     public readonly actions$: Actions<IotdActions>,
     public readonly submissionQueueApiService: SubmissionQueueApiService,
+    public readonly reviewQueueApiService: ReviewQueueApiService,
     public readonly loadingService: LoadingService,
     public readonly popNotificationsService: PopNotificationsService,
     public readonly translateService: TranslateService,
