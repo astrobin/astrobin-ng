@@ -29,9 +29,9 @@ export class PaymentsApiService {
     );
   }
 
-  public getPrice(product: string, currency: string): Observable<number> {
-    return this.http
-      .get<PricingInterface>(`${environment.classicApiUrl}/api/v2/payments/pricing/${product}/${currency}/`)
-      .pipe(map(response => response.price));
+  public getPrice(product: string, currency: string): Observable<PricingInterface> {
+    return this.http.get<PricingInterface>(
+      `${environment.classicApiUrl}/api/v2/payments/pricing/${product}/${currency}/`
+    );
   }
 }

@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { State } from "@app/store/state";
 import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
 import { PaymentsApiConfigInterface } from "@features/subscriptions/interfaces/payments-api-config.interface";
+import { PricingInterface } from "@features/subscriptions/interfaces/pricing.interface";
 import { PaymentsApiService } from "@features/subscriptions/services/payments-api.service";
 import { SubscriptionsService } from "@features/subscriptions/services/subscriptions.service";
 import { Store } from "@ngrx/store";
@@ -16,7 +17,7 @@ import { PopNotificationsService } from "@shared/services/pop-notifications.serv
 import { TitleService } from "@shared/services/title/title.service";
 import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
 import { Observable } from "rxjs";
-import { distinctUntilChanged, startWith, switchMap, take, takeUntil, tap } from "rxjs/operators";
+import { distinctUntilChanged, map, startWith, switchMap, take, takeUntil, tap } from "rxjs/operators";
 
 declare var Stripe: any;
 
@@ -27,7 +28,7 @@ declare var Stripe: any;
 })
 export class SubscriptionsBuyPageComponent extends BaseComponentDirective implements OnInit {
   alreadySubscribed$: Observable<boolean>;
-  price$: Observable<number>;
+  pricing$: Observable<PricingInterface>;
   product: PayableProductInterface;
   bankDetailsMessage$: Observable<string>;
   bankLocations = [
@@ -158,13 +159,14 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
             CHF: "CH"
           }[currency];
 
-          this.price$ = this.subscriptionsService.getPrice(this.product).pipe(
+          this.pricing$ = this.subscriptionsService.getPrice(this.product).pipe(
             takeUntil(this.destroyed$),
             tap(() => this.loadingService.setLoading(false))
           );
 
-          this.bankDetailsMessage$ = this.price$.pipe(
+          this.bankDetailsMessage$ = this.pricing$.pipe(
             takeUntil(this.destroyed$),
+            map(pricing => pricing.price),
             switchMap(price =>
               this.translate.stream(
                 "Please make a deposit of {{ currency }} {{ amount }} to the following bank details and then email " +
