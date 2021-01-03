@@ -62,6 +62,9 @@ msgstr "Comprar"
 msgid "Cancelled"
 msgstr "Cancelado"
 
+msgid "Click on the image and scroll to magnify up to 8x."
+msgstr ""
+
 msgid "Commercial products"
 msgstr "Productos comerciales"
 
@@ -136,11 +139,20 @@ msgstr "¡Adiós!"
 msgid "Groups"
 msgstr "Grupos"
 
+msgid ""
+"Heads up! Are you sure you want to upload such a large file? It's okay to "
+"do so but probably not many people will want to see it at its full "
+"resolution, if it will take too long for them to download it."
+msgstr ""
+
 msgid "Help"
 msgstr "Ayuda"
 
 msgid "Help with translations!"
 msgstr "¡Ayuda con las traducciones!"
+
+msgid "Hide"
+msgstr ""
 
 msgid "Home"
 msgstr "Inicio"
@@ -153,6 +165,12 @@ msgstr "Cola de imágen"
 
 msgid "Images"
 msgstr "Imágenes"
+
+msgid "Imaging cameras"
+msgstr ""
+
+msgid "Imaging telescopes"
+msgstr ""
 
 msgid "Info"
 msgstr "Información"
@@ -171,6 +189,9 @@ msgstr "Últimos temas"
 
 msgid "Learn more"
 msgstr "Aprenda más"
+
+msgid "Loading..."
+msgstr ""
 
 msgid "Log in"
 msgstr "Iniciar sesión"
@@ -217,11 +238,17 @@ msgstr "No"
 msgid "No plate-solving"
 msgstr "Sin plate solving"
 
+msgid "None specified"
+msgstr ""
+
 msgid "Notifications"
 msgstr "Notificaciones"
 
 msgid "Password"
 msgstr "Contraseña"
+
+msgid "Please come back later!"
+msgstr ""
 
 msgid ""
 "Please make a deposit of {{ currency }} {{ amount }} to the following bank "
@@ -236,14 +263,25 @@ msgstr ""
 msgid "Please note: you already are on this plan or a higher one."
 msgstr "Tenga en cuenta: ya está en este plan o uno más alto."
 
+msgid ""
+"Please note: you don't <strong>have to</strong> use all your slots. It's ok "
+"to use fewer if you don't think there are that many worthy images today."
+msgstr ""
+
 msgid "Plots"
 msgstr "Gráficos"
 
 msgid "Prefer to pay via bank transfer?"
 msgstr "¿Prefiere pagar vía transferencia bancaria?"
 
+msgid "Promote"
+msgstr ""
+
 msgid "Public Gallery"
 msgstr "Galería pública"
+
+msgid "Published"
+msgstr ""
 
 msgid "Quick search"
 msgstr "Búsqueda rápida"
@@ -256,6 +294,15 @@ msgstr "Astrofotografía remota"
 
 msgid "Reset password"
 msgstr "Restablecer contraseña"
+
+msgid "Retract promotion"
+msgstr ""
+
+msgid "Return to the classic review queue"
+msgstr ""
+
+msgid "Return to the classic submission queue"
+msgstr ""
 
 msgid "Return to the classic uploader"
 msgstr "Volver al cargador clásico"
@@ -278,6 +325,11 @@ msgid ""
 msgstr ""
 "Lo sentimos, pero la página que está buscando no se encuentra aquí. Si "
 "esperaba una imagen, significa que el autor la eliminó."
+
+msgid ""
+"Sorry, but this image is too large. Under your current subscription plan, "
+"the maximum allowed image size is {{max}}."
+msgstr ""
 
 msgid "Spam list"
 msgstr "Lista de spam"
@@ -321,6 +373,12 @@ msgstr "El gran muro"
 msgid ""
 "The price is shown in Swiss Francs even though you might have paid the "
 "equivalent amount in your country's currency."
+msgstr ""
+
+msgid "The review queue is currently empty."
+msgstr ""
+
+msgid "The submission queue is currently empty."
 msgstr ""
 
 msgid "There doesn't seem to be anything here."
@@ -379,11 +437,21 @@ msgstr "Nombre de usuario"
 msgid "Validity"
 msgstr "Validez"
 
+msgid "View large"
+msgstr ""
+
 msgid "Want to upgrade from a lower subscription tier?"
 msgstr "¿Desea mejorar su nivel bajo de suscripción?"
 
 msgid "Warning!"
 msgstr "¡Advertencia!"
+
+msgid ""
+"Warning! That's a large file you got there! AstroBin does not impose "
+"artificial limitation in the file size you can upload with an Ultimate "
+"subscription, but we cannot guarantee that all images above 200 MB or "
+"~8000x8000 pixels will work. Feel free to give it a shot tho!"
+msgstr ""
 
 msgid "We could not log you in. Please check your credentials and try again."
 msgstr ""

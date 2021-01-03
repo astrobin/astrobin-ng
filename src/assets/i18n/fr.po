@@ -63,6 +63,9 @@ msgstr "Acheter"
 msgid "Cancelled"
 msgstr "Annulé"
 
+msgid "Click on the image and scroll to magnify up to 8x."
+msgstr ""
+
 msgid "Commercial products"
 msgstr "Produits commerciaux"
 
@@ -137,11 +140,20 @@ msgstr "A bientôt !"
 msgid "Groups"
 msgstr "Groupes"
 
+msgid ""
+"Heads up! Are you sure you want to upload such a large file? It's okay to "
+"do so but probably not many people will want to see it at its full "
+"resolution, if it will take too long for them to download it."
+msgstr ""
+
 msgid "Help"
 msgstr "Aide"
 
 msgid "Help with translations!"
 msgstr "Contribuez aux traductions !"
+
+msgid "Hide"
+msgstr ""
 
 msgid "Home"
 msgstr "Accueil"
@@ -154,6 +166,12 @@ msgstr "Images en attentes d'examen"
 
 msgid "Images"
 msgstr "Images"
+
+msgid "Imaging cameras"
+msgstr ""
+
+msgid "Imaging telescopes"
+msgstr ""
 
 msgid "Info"
 msgstr "Informations"
@@ -174,6 +192,9 @@ msgstr "Discussions récentes"
 
 msgid "Learn more"
 msgstr "En savoir plus"
+
+msgid "Loading..."
+msgstr ""
 
 msgid "Log in"
 msgstr "Connexion"
@@ -220,11 +241,17 @@ msgstr "Non"
 msgid "No plate-solving"
 msgstr "Pas de réduction astrométrique"
 
+msgid "None specified"
+msgstr ""
+
 msgid "Notifications"
 msgstr "Notifications"
 
 msgid "Password"
 msgstr "Mot de passe"
+
+msgid "Please come back later!"
+msgstr ""
 
 msgid ""
 "Please make a deposit of {{ currency }} {{ amount }} to the following bank "
@@ -241,14 +268,25 @@ msgstr ""
 "A noter : vous avez déjà souscrit à cette formule d'abonnement ou à une "
 "formule supérieure. "
 
+msgid ""
+"Please note: you don't <strong>have to</strong> use all your slots. It's ok "
+"to use fewer if you don't think there are that many worthy images today."
+msgstr ""
+
 msgid "Plots"
 msgstr "Graphiques"
 
 msgid "Prefer to pay via bank transfer?"
 msgstr "Vous préférez payer par virement bancaire ?"
 
+msgid "Promote"
+msgstr ""
+
 msgid "Public Gallery"
 msgstr "Galerie publique"
+
+msgid "Published"
+msgstr ""
 
 msgid "Quick search"
 msgstr "Recherche rapide"
@@ -261,6 +299,15 @@ msgstr "Astrophotographie en remote"
 
 msgid "Reset password"
 msgstr "Réinitialiser votre mot de passe"
+
+msgid "Retract promotion"
+msgstr ""
+
+msgid "Return to the classic review queue"
+msgstr ""
+
+msgid "Return to the classic submission queue"
+msgstr ""
 
 msgid "Return to the classic uploader"
 msgstr "Retour au module classique de publication"
@@ -283,6 +330,11 @@ msgid ""
 msgstr ""
 "Désolé, la page que vous recherchez n'est pas disponible. Si vous attendiez "
 "une image, cela signifie que son auteur l'a supprimée."
+
+msgid ""
+"Sorry, but this image is too large. Under your current subscription plan, "
+"the maximum allowed image size is {{max}}."
+msgstr ""
 
 msgid "Spam list"
 msgstr "Liste de spams"
@@ -326,6 +378,14 @@ msgstr "Le Grand Mur"
 msgid ""
 "The price is shown in Swiss Francs even though you might have paid the "
 "equivalent amount in your country's currency."
+msgstr ""
+"Le prix est indiqué en francs suisses, même si vous avez payé l'équivalent "
+"converti dans votre devise locale."
+
+msgid "The review queue is currently empty."
+msgstr ""
+
+msgid "The submission queue is currently empty."
 msgstr ""
 
 msgid "There doesn't seem to be anything here."
@@ -384,11 +444,21 @@ msgstr "Nom d'utilisateur"
 msgid "Validity"
 msgstr "Validité"
 
+msgid "View large"
+msgstr ""
+
 msgid "Want to upgrade from a lower subscription tier?"
 msgstr "Vous désirez passer à une offre d'abonnement supérieure ?"
 
 msgid "Warning!"
 msgstr "Attention !"
+
+msgid ""
+"Warning! That's a large file you got there! AstroBin does not impose "
+"artificial limitation in the file size you can upload with an Ultimate "
+"subscription, but we cannot guarantee that all images above 200 MB or "
+"~8000x8000 pixels will work. Feel free to give it a shot tho!"
+msgstr ""
 
 msgid "We could not log you in. Please check your credentials and try again."
 msgstr "Connexion impossible. Merci de vérifier vos identifiants et de réessayer."
