@@ -33,7 +33,7 @@ export class ClassicRoutesService extends BaseService {
   SPONSORS = "https://welcome.astrobin.com/sponsors-and-partners";
   CONTACT = BASE_URL + "/contact/";
   MODERATE_IMAGE_QUEUE = BASE_URL + "/moderate/images/";
-  MODERATE_SPAM_QUEUE = BASE_URL + "/moderate/spam/";
+  MODERATE_SPAM_QUEUE = BASE_URL + "/moderate/images/spam/";
   IOTD_JUDGEMENT_QUEUE = BASE_URL + "/iotd/judgement-queue/";
   NOTIFICATION_SETTINGS = BASE_URL + "/notifications/settings/";
 
