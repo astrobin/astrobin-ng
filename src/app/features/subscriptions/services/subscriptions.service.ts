@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import { State } from "@app/store/state";
 import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
+import { PricingInterface } from "@features/subscriptions/interfaces/pricing.interface";
 import { PaymentsApiService } from "@features/subscriptions/services/payments-api.service";
 import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
@@ -57,9 +58,9 @@ export class SubscriptionsService {
     return resultMap[product];
   }
 
-  getPrice(product: PayableProductInterface): Observable<number> {
+  getPrice(product: PayableProductInterface): Observable<PricingInterface> {
     if (!this.currency) {
-      return new Observable<number>(observer => {
+      return new Observable<PricingInterface>(observer => {
         setTimeout(() => {
           this.getPrice(product).subscribe(price => {
             observer.next(price);

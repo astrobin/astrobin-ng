@@ -32,8 +32,11 @@
         </div>
         <div class="card-body">
           <ul class="list-unstyled mt-3 mb-4">
-            <li class="price" *ngIf="litePrice$ | async as price">
-              {{ price | currency:this.subscriptionsService.currency:'symbol':'1.2-2':translate.currentLang }}
+            <li class="price" *ngIf="litePricing$ | async as pricing">
+              <span class="full-price" *ngIf="pricing.discount > 0">
+                {{ pricing.fullPrice | currency:this.subscriptionsService.currency:'symbol':'1.2-2':translate.currentLang }}
+              </span>
+              {{ pricing.price | currency:this.subscriptionsService.currency:'symbol':'1.2-2':translate.currentLang }}
               <small class="text-muted">/ {{ "year" | translate }}</small>
             </li>
             <li [innerHTML]="subscriptionsService.maxImagesMessage(50)"></li>
@@ -57,9 +60,11 @@
         </div>
         <div class="card-body">
           <ul class="list-unstyled mt-3 mb-4">
-            <li class="price" *ngIf="premiumPrice$ | async as price">
-              {{ price | currency:this.subscriptionsService.currency:'symbol':'1.2-2':translate.currentLang }}
-              <small class="text-muted">/ {{ "year" | translate }}</small>
+            <li class="price" *ngIf="premiumPricing$ | async as pricing">
+              <span class="full-price" *ngIf="pricing.discount > 0">
+                {{ pricing.fullPrice | currency:this.subscriptionsService.currency:'symbol':'1.2-2':translate.currentLang }}
+              </span>
+              {{ pricing.price | currency:this.subscriptionsService.currency:'symbol':'1.2-2':translate.currentLang }}              <small class="text-muted">/ {{ "year" | translate }}</small>
             </li>
             <li>{{ "Unlimited images" | translate }}</li>
             <li [innerHTML]="subscriptionsService.maxSizeMessage(50)"></li>
@@ -82,8 +87,11 @@
         </div>
         <div class="card-body">
           <ul class="list-unstyled mt-3 mb-4">
-            <li class="price" *ngIf="ultimatePrice$ | async as price">
-              {{ price | currency:this.subscriptionsService.currency:'symbol':'1.2-2':translate.currentLang }}
+            <li class="price" *ngIf="ultimatePricing$ | async as pricing">
+              <span class="full-price" *ngIf="pricing.discount > 0">
+                {{ pricing.fullPrice | currency:this.subscriptionsService.currency:'symbol':'1.2-2':translate.currentLang }}
+              </span>
+              {{ pricing.price | currency:this.subscriptionsService.currency:'symbol':'1.2-2':translate.currentLang }}
               <small class="text-muted">/ {{ "year" | translate }}</small>
             </li>
             <li>{{ "Unlimited images" | translate }}</li>

@@ -1,7 +1,10 @@
 <h1 class="d-flex align-items-center">
   <span class="flex-fill">{{ subscriptionsService.getName(product) }}</span>
-  <span class="price">
-    {{ price$ | async | currency:this.subscriptionsService.currency:'symbol':'1.2-2':translate.currentLang }}
+  <span class="price" *ngIf="pricing$ | async as pricing">
+    <span class="full-price" *ngIf="pricing.discount > 0">
+        {{ pricing.fullPrice | currency:this.subscriptionsService.currency:'symbol':'1.2-2':translate.currentLang }}
+    </span>
+    {{ pricing.price | currency:this.subscriptionsService.currency:'symbol':'1.2-2':translate.currentLang }}
   </span>
 </h1>
 
