@@ -2,6 +2,14 @@ context("IOTD Review queue", () => {
   beforeEach(() => {
     cy.server();
     cy.setupInitializationRoutes();
+
+    cy.route("GET", "**/api/v2/common/contenttypes/?app_label=astrobin&model=image", {
+      id: 1,
+      appLabel: "astrobin",
+      model: "image"
+    }).as("getContentType");
+
+    cy.route("GET", "**/api/v2/platesolving/solutions/*", []).as("getSolution");
   });
 
   describe("when not logged in", () => {

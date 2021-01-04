@@ -1,5 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
 import { PaymentInterface } from "@shared/interfaces/payment.interface";
 import { SubscriptionInterface } from "@shared/interfaces/subscription.interface";
 import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
@@ -28,6 +29,20 @@ export class CommonApiService extends BaseClassicApiService implements CommonApi
     public commonApiAdaptorService: CommonApiAdaptorService
   ) {
     super(loadingService);
+  }
+
+  getContentType(appLabel: string, model: string): Observable<ContentTypeInterface | null> {
+    return this.http
+      .get<ContentTypeInterface[]>(`${this.configUrl}/contenttypes/?app_label=${appLabel}&model=${model}`)
+      .pipe(
+        map(response => {
+          if (response.length === 0) {
+            return null;
+          }
+
+          return response[0];
+        })
+      );
   }
 
   getUser(id: number): Observable<UserInterface> {

@@ -32,8 +32,10 @@ export class AppGenerator {
       ],
       backendConfig: BackendConfigGenerator.backendConfig(),
       currentFullscreenImage: null,
+      contentTypes: [],
       images: [],
       thumbnails: [],
+      solutions: [],
       telescopes: [],
       cameras: []
     };

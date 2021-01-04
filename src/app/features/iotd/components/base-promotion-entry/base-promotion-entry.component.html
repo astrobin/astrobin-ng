@@ -42,6 +42,13 @@
           </ng-container>
         </p>
 
+        <p *ngIf="solution$ | async as solution">
+          <strong>{{ "Objects in field" | translate }}:</strong>&nbsp;
+          <ng-container *ngIf="!!solution; else notAvailable">
+            <astrobin-objects-in-field [solution]="solution"></astrobin-objects-in-field>
+          </ng-container>
+        </p>
+
         <p>
           <strong>{{ "Published" | translate }}:</strong>
           {{ entry.published | timeago:true }}
@@ -85,4 +92,8 @@
 
 <ng-template #noneSpecified>
   {{ "None specified" | translate }}
+</ng-template>
+
+<ng-template #notAvailable>
+  {{ "n/a" | translate }}
 </ng-template>

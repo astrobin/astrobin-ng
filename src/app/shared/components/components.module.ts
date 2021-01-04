@@ -2,6 +2,7 @@ import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { RouterModule } from "@angular/router";
+import { ObjectsInFieldComponent } from "@app/library/components/misc/objects-in-field/objects-in-field.component";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import {
   NgbCollapseModule,
@@ -64,6 +65,7 @@ const components = [
   LoadingIndicatorComponent,
   LoginFormComponent,
   LoginModalComponent,
+  ObjectsInFieldComponent,
   ReadOnlyModeComponent,
   RefreshButtonComponent,
   TelescopeComponent,
