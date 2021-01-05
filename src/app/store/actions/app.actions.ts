@@ -1,9 +1,11 @@
 // tslint:disable:max-classes-per-file
 
 import { LoadCamera, LoadCameraSuccess } from "@app/store/actions/camera.actions";
+import { LoadContentType, LoadContentTypeSuccess } from "@app/store/actions/content-type.actions";
 import { HideFullscreenImage, ShowFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
 import { LoadImage, LoadImageSuccess } from "@app/store/actions/image.actions";
 import { InitializeApp, InitializeAppSuccess } from "@app/store/actions/initialize-app.actions";
+import { LoadSolution, LoadSolutionSuccess } from "@app/store/actions/solution.actions";
 import { LoadTelescope, LoadTelescopeSuccess } from "@app/store/actions/telescope.actions";
 import { LoadThumbnail, LoadThumbnailSuccess } from "@app/store/actions/thumbnail.actions";
 
@@ -14,11 +16,17 @@ export enum AppActionTypes {
   SHOW_FULLSCREEN_IMAGE = "[App] Show full screen image",
   HIDE_FULLSCREEN_IMAGE = "[App] Hide full screen image",
 
+  LOAD_CONTENT_TYPE = "[App] Load content type",
+  LOAD_CONTENT_TYPE_SUCCESS = "[App] Load content type success",
+
   LOAD_IMAGE = "[App] Load image",
   LOAD_IMAGE_SUCCESS = "[App] Load image success",
 
   LOAD_THUMBNAIL = "[App] Load thumbnail",
   LOAD_THUMBNAIL_SUCCESS = "[App] Load thumbnail success",
+
+  LOAD_SOLUTION = "[App] Load solution",
+  LOAD_SOLUTION_SUCCESS = "[App] Load solution success",
 
   LOAD_TELESCOPE = "[App] Load telescope",
   LOAD_TELESCOPE_SUCCESS = "[App] Load telescope success",
@@ -32,10 +40,14 @@ export type All =
   | InitializeAppSuccess
   | ShowFullscreenImage
   | HideFullscreenImage
+  | LoadContentType
+  | LoadContentTypeSuccess
   | LoadImage
   | LoadImageSuccess
   | LoadThumbnail
   | LoadThumbnailSuccess
+  | LoadSolution
+  | LoadSolutionSuccess
   | LoadTelescope
   | LoadTelescopeSuccess
   | LoadCamera
