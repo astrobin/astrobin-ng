@@ -12,7 +12,7 @@ export const selectContentType = createSelector(
   selectContentTypes,
   (contentTypes: ContentTypeInterface[], data: { appLabel: string; model: string }): ContentTypeInterface => {
     const matching = contentTypes.filter(
-      contentType => contentType.appLabel === data.appLabel && contentType.model === data.model
+      contentType => !!contentType && contentType.appLabel === data.appLabel && contentType.model === data.model
     );
     return matching.length > 0 ? matching[0] : null;
   }
