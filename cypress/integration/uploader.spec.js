@@ -51,6 +51,16 @@ context("uploader", () => {
         cy.get(".accepted-formats").should("contain.text", Constants.ALLOWED_UPLOAD_EXTENSIONS.join(","));
       });
 
+      it("should display error if title is missing and Upload is clicked", () => {
+        cy.visitPage("/uploader");
+
+        cy.get("button")
+          .contains("Upload")
+          .click();
+
+        cy.get(".form-group.has-error label[for='title']").should("exist");
+      });
+
       it("should have all form controls if user is Premium", () => {
         cy.login();
 

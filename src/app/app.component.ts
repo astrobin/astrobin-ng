@@ -4,7 +4,6 @@ import { State } from "@app/store/state";
 import { NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
 import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { ValidationLoaderService } from "@shared/services/validation-loader.service";
 
 declare const gtag: any;
 
@@ -17,13 +16,11 @@ export class AppComponent extends BaseComponentDirective {
   constructor(
     public readonly router: Router,
     public readonly paginationConfig: NgbPaginationConfig,
-    public readonly validationLoaderService: ValidationLoaderService,
     public readonly store$: Store<State>
   ) {
     super();
     this.initRouterEvents();
     this.initPagination();
-    this.validationLoaderService.init();
   }
 
   initPagination(): void {

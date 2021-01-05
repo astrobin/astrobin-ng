@@ -2,6 +2,7 @@ import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { RouterModule } from "@angular/router";
+import { formlyValidationConfig } from "@app/formly.config";
 import { ObjectsInFieldComponent } from "@app/library/components/misc/objects-in-field/objects-in-field.component";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import {
@@ -11,8 +12,8 @@ import {
   NgbProgressbarModule,
   NgbTooltipModule
 } from "@ng-bootstrap/ng-bootstrap";
-import { FormlyModule } from "@ngx-formly/core";
-import { TranslateModule } from "@ngx-translate/core";
+import { FORMLY_CONFIG, FormlyModule } from "@ngx-formly/core";
+import { TranslateModule, TranslateService } from "@ngx-translate/core";
 import { CameraComponent } from "@shared/components/misc/camera/camera.component";
 import { FormlyFieldChunkedFileAccessorDirective } from "@shared/components/misc/formly-field-chunked-file/formly-field-chunked-file-accessor.directive";
 import { FormlyFieldChunkedFileComponent } from "@shared/components/misc/formly-field-chunked-file/formly-field-chunked-file.component";
@@ -22,10 +23,10 @@ import { LoadingIndicatorComponent } from "@shared/components/misc/loading-indic
 import { RefreshButtonComponent } from "@shared/components/misc/refresh-button/refresh-button.component";
 import { TelescopeComponent } from "@shared/components/misc/telescope/telescope.component";
 import { TextLoadingIndicatorComponent } from "@shared/components/misc/text-loading-indicator/text-loading-indicator.component";
+import { PipesModule } from "@shared/pipes/pipes.module";
 import { NgxFilesizeModule } from "ngx-filesize";
 import { NgxImageZoomModule } from "ngx-image-zoom";
 import { UploadxModule } from "ngx-uploadx";
-import { PipesModule } from "../pipes/pipes.module";
 import { LoginFormComponent } from "./auth/login-form/login-form.component";
 import { LoginModalComponent } from "./auth/login-modal/login-modal.component";
 import { FooterComponent } from "./footer/footer.component";
@@ -76,6 +77,14 @@ const components = [
 @NgModule({
   imports: modules,
   declarations: components,
-  exports: [...modules, ...components]
+  exports: components,
+  providers: [
+    {
+      provide: FORMLY_CONFIG,
+      useFactory: formlyValidationConfig,
+      multi: true,
+      deps: [TranslateService]
+    }
+  ]
 })
 export class ComponentsModule {}

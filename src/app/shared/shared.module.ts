@@ -2,7 +2,7 @@ import { CommonModule } from "@angular/common";
 import { HttpClientModule } from "@angular/common/http";
 import { APP_INITIALIZER, ModuleWithProviders, NgModule } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { formlyConfig } from "@app/formly.config";
+import { formlyValidationConfig } from "@app/formly.config";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { InitializeApp } from "@app/store/actions/initialize-app.actions";
 import { State } from "@app/store/state";
@@ -13,8 +13,8 @@ import { NgSelectModule } from "@ng-select/ng-select";
 import { Actions, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
-import { FormlyModule } from "@ngx-formly/core";
-import { TranslateModule } from "@ngx-translate/core";
+import { FORMLY_CONFIG, FormlyModule } from "@ngx-formly/core";
+import { TranslateModule, TranslateService } from "@ngx-translate/core";
 import { ApiModule } from "@shared/services/api/api.module";
 import { AuthService } from "@shared/services/auth.service";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
@@ -27,7 +27,6 @@ import { PopNotificationsService } from "@shared/services/pop-notifications.serv
 import { SessionService } from "@shared/services/session.service";
 import { UserStoreService } from "@shared/services/user-store.service";
 import { UserService } from "@shared/services/user.service";
-import { ValidationLoaderService } from "@shared/services/validation-loader.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { StickyNavModule } from "ng2-sticky-nav";
 import { CookieService } from "ngx-cookie-service";
@@ -66,7 +65,7 @@ export function appInitializer(store: Store<State>, actions$: Actions) {
     ReactiveFormsModule,
 
     FontAwesomeModule,
-    FormlyModule.forRoot(formlyConfig),
+    FormlyModule.forRoot(),
     FormlyBootstrapModule,
     NgbModule,
     NgbPaginationModule,
@@ -125,13 +124,18 @@ export class SharedModule {
         UltimateSubscriptionGuardService,
         UserService,
         UserStoreService,
-        ValidationLoaderService,
         WindowRefService,
         {
           provide: APP_INITIALIZER,
           useFactory: appInitializer,
           multi: true,
           deps: [Store, Actions]
+        },
+        {
+          provide: FORMLY_CONFIG,
+          useFactory: formlyValidationConfig,
+          multi: true,
+          deps: [TranslateService]
         }
       ]
     };
