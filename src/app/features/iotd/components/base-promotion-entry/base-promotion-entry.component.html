@@ -20,8 +20,13 @@
   </div>
 
   <div class="col-12">
-    <div class="row align-items-end mt-3">
+    <div class="row align-items-end dark-box">
       <div class="col-12 col-md-6 col-gear">
+        <p>
+          <strong>{{ "Title" | translate }}:</strong>
+          {{ entry.title }}
+        </p>
+
         <p>
           <strong>{{ "Imaging telescopes" | translate }}:</strong>
           <ng-container *ngIf="entry.imagingTelescopes?.length > 0; else noneSpecified">
@@ -56,7 +61,7 @@
       </div>
 
       <div class="col-12 col-md-6">
-        <div class="text-right form-actions mt-0">
+        <div class="text-right form-actions mt-0 d-sm-flex justify-content-sm-end">
           <button class="btn btn-secondary" (click)="viewFullscreen(entry.pk)">
             <fa-icon icon="search-plus"></fa-icon>
             {{ "View large" | translate }}
