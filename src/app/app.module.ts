@@ -63,7 +63,6 @@ import { StoreModule } from "@ngrx/store";
 import { StoreDevtoolsModule } from "@ngrx/store-devtools";
 import { MissingTranslationHandler, TranslateLoader, TranslateModule, TranslateParser } from "@ngx-translate/core";
 import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
-import { ValidationLoaderService } from "@shared/services/validation-loader.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { SharedModule } from "@shared/shared.module";
 import { CookieService } from "ngx-cookie-service";
@@ -144,7 +143,6 @@ export function initFontAwesome(iconLibrary: FaIconLibrary) {
     }),
     EffectsModule.forRoot(appStateEffects),
 
-    FontAwesomeModule,
     TimeagoModule.forRoot({
       intl: TimeagoIntl,
       formatter: { provide: TimeagoFormatter, useClass: TimeagoCustomFormatter }
@@ -169,7 +167,7 @@ export function initFontAwesome(iconLibrary: FaIconLibrary) {
     AppRoutingModule,
     SharedModule.forRoot()
   ],
-  providers: [CookieService, Title, ValidationLoaderService, WindowRefService],
+  providers: [CookieService, Title, WindowRefService],
   declarations: [AppComponent],
   bootstrap: [AppComponent]
 })

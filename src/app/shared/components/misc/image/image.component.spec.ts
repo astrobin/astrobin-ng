@@ -1,8 +1,7 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-
+import { AppModule } from "@app/app.module";
 import { initialState } from "@app/store/state";
 import { provideMockStore } from "@ngrx/store/testing";
-import { ComponentsModule } from "@shared/components/components.module";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
 import { ImageGenerator } from "@shared/generators/image.generator";
 import { MockBuilder } from "ng-mocks";
@@ -13,7 +12,7 @@ describe("ImageComponent", () => {
   let fixture: ComponentFixture<ImageComponent>;
 
   beforeEach(async () => {
-    await MockBuilder(ImageComponent, ComponentsModule).provide(provideMockStore({ initialState }));
+    await MockBuilder(ImageComponent, AppModule).provide(provideMockStore({ initialState }));
   });
 
   beforeEach(() => {

@@ -95,15 +95,9 @@ export class UncompressedSourceUploaderPageComponent extends BaseComponentDirect
   }
 
   onSubmit() {
-    this.uploaderService.control({ action: "upload" });
-  }
-
-  uploadButtonDisabled(): boolean {
-    return (
-      !this.form.valid ||
-      !this.uploadState ||
-      ["queue", "uploading", "retry", "paused"].indexOf(this.uploadState.status) > -1
-    );
+    if (this.form.valid) {
+      this.uploaderService.control({ action: "upload" });
+    }
   }
 
   uploadButtonLoading(): boolean {

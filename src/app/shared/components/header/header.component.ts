@@ -10,8 +10,6 @@ import { AuthService } from "@shared/services/auth.service";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
-import { Observable } from "rxjs";
-import { map, take } from "rxjs/operators";
 
 interface AvailableLanguageInterface {
   code: string;
