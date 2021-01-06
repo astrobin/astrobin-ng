@@ -1,10 +1,17 @@
 @import "../../../../styles/variables";
 @import "../../../../styles/mixins";
 
-h1 .badge {
-  display: inline-block;
-  font-size: 1rem;
-  transform: translateY(-1rem);
+h1 {
+  .badge {
+    font-size: 1rem;
+    transform: translateY(-2rem);
+  }
+
+  .btn {
+    @media screen and (max-width: $xs-max) {
+      margin-top: 1rem;
+    }
+  }
 }
 
 .table {
