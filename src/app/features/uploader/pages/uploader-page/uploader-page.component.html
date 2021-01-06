@@ -72,8 +72,14 @@
 
     <div class="form-actions">
       <ng-container *ngTemplateOutlet="returnToClassicUploader"></ng-container>
-      <button class=" btn btn-lg btn-primary" [disabled]="uploadButtonLoading()"
-        [class.loading]="uploadButtonLoading()" type="submit">{{ "Upload" | translate }}</button>
+      <button
+        class=" btn btn-lg btn-primary"
+        [disabled]="uploadButtonLoading()"
+        [class.loading]="uploadButtonLoading()"
+        type="submit">
+        <fa-icon icon="upload"></fa-icon>
+        {{ "Upload" | translate }}
+      </button>
     </div>
   </form>
 </ng-template>

@@ -28,8 +28,13 @@
         <formly-form [fields]="fields" [form]="form" [model]="model"></formly-form>
 
         <div class="form-actions">
-          <button [class.loading]="uploadButtonLoading()" [disabled]="uploadButtonLoading()"
-            class="btn btn-lg btn-primary" type="submit">{{ "Upload" | translate }}
+          <button
+            [class.loading]="uploadButtonLoading()"
+            [disabled]="uploadButtonLoading()"
+            class="btn btn-lg btn-primary"
+            type="submit">
+            <fa-icon icon="upload"></fa-icon>
+            {{ "Upload" | translate }}
           </button>
         </div>
       </form>
