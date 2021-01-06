@@ -125,20 +125,20 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
     });
   }
 
-  getStatus(): string | null {
+  get status$(): Observable<string> {
     if (!this.uploadState) {
-      return null;
+      return of("");
     }
 
     if (this.isInitializingUpload()) {
-      return "Initializing upload, please wait...";
+      return this.translateService.stream("Initializing upload, please wait...");
     } else if (this.isUploading()) {
-      return "Uploading...";
+      return this.translateService.stream("Uploading...");
     } else if (this.isFinalizingUpload() || this.isComplete()) {
-      return "Finalizing upload, please wait...";
+      return this.translateService.stream("Finalizing upload, please wait...");
     }
 
-    return null;
+    return of("");
   }
 
   isActive(): boolean {
