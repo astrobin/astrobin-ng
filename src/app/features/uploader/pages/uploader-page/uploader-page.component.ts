@@ -100,7 +100,7 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
   }
 
   ngOnInit(): void {
-    this.titleService.setTitle(this.translate.instant("Uploader") + " (beta)");
+    this.titleService.setTitle(this.translate.instant("Uploader"));
 
     this.uploadDataService.setMetadata("image-upload", { is_wip: true });
     this.uploadDataService.setMetadata("image-upload", { skip_notifications: true });

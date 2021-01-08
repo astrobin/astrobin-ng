@@ -63,7 +63,7 @@ export class UncompressedSourceUploaderPageComponent extends BaseComponentDirect
   }
 
   ngOnInit(): void {
-    this.titleService.setTitle(this.translate.instant("Uncompressed source uploader") + " (beta)");
+    this.titleService.setTitle(this.translate.instant("Uncompressed source uploader"));
 
     this.image = this.route.snapshot.data.image;
     this.uploadDataService.patchMetadata("image-upload", { image_id: this.image.pk });
