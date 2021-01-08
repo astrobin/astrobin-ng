@@ -29,7 +29,7 @@ export class ClassicRoutesService extends BaseService {
   CONTRIBUTORS_LIST = BASE_URL + "/contributors-list/";
   ABOUT = "https://welcome.astrobin.com/about";
   FAQ = "https://welcome.astrobin.com/faq";
-  HELP_API = BASE_URL + "/help/api/";
+  HELP_API = "https://welcome.astrobin.com/application-programming-interface";
   SPONSORS = "https://welcome.astrobin.com/sponsors-and-partners";
   CONTACT = BASE_URL + "/contact/";
   MODERATE_IMAGE_QUEUE = BASE_URL + "/moderate/images/";

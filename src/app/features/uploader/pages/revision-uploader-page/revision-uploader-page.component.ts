@@ -95,7 +95,7 @@ export class RevisionUploaderPageComponent extends BaseComponentDirective implem
   }
 
   ngOnInit(): void {
-    this.titleService.setTitle(this.translate.instant("Revision uploader") + " (beta)");
+    this.titleService.setTitle(this.translate.instant("Revision uploader"));
 
     this.image = this.route.snapshot.data.image;
     this.uploadDataService.patchMetadata("image-upload", { image_id: this.image.pk });
