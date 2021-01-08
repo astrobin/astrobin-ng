@@ -2,11 +2,7 @@
 
   <div class="d-flex justify-content-between">
     <h1 class="flex-grow-1">
-      {{ "Review queue" | translate }} <span class="beta">beta</span>
-
-      <a class="return-to-classic" [href]="classicUrl">
-        {{ "Return to the classic review queue" | translate }}
-      </a>
+      {{ "Review queue" | translate }}
     </h1>
 
     <astrobin-refresh-button (click)="refresh()"></astrobin-refresh-button>

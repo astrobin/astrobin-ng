@@ -25,7 +25,6 @@ import { Observable } from "rxjs";
   styleUrls: ["./submission-queue.component.scss"]
 })
 export class SubmissionQueueComponent extends BasePromotionQueueComponent implements OnInit {
-  classicUrl = `${environment.classicBaseUrl}/iotd/submission-queue`;
   hiddenEntries$: Observable<number[]> = this.store$.select(selectHiddenSubmissionEntries);
   queue$: Observable<PaginatedApiResultInterface<SubmissionImageInterface>> = this.store$.select(selectSubmissionQueue);
   promotions$: Observable<SubmissionInterface[]> = this.store$.select(selectSubmissions);

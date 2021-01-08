@@ -28,7 +28,6 @@ export abstract class BasePromotionQueueComponent extends BaseComponentDirective
   page = 1;
   ImageAlias = ImageAlias;
 
-  abstract classicUrl: string;
   abstract hiddenEntries$: Observable<number[]>;
   abstract queue$: Observable<PaginatedApiResultInterface<SubmissionImageInterface | ReviewImageInterface>>;
   abstract promotions$: Observable<SubmissionInterface[] | VoteInterface[]>;

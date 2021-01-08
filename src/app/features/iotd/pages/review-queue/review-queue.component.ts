@@ -21,7 +21,6 @@ import { Observable } from "rxjs";
   styleUrls: ["./review-queue.component.scss"]
 })
 export class ReviewQueueComponent extends BasePromotionQueueComponent implements OnInit {
-  classicUrl = `${environment.classicBaseUrl}/iotd/review-queue`;
   hiddenEntries$: Observable<number[]> = this.store$.select(selectHiddenReviewEntries);
   queue$: Observable<PaginatedApiResultInterface<ReviewImageInterface>> = this.store$.select(selectReviewQueue);
   promotions$: Observable<VoteInterface[]> = this.store$.select(selectReviews);
