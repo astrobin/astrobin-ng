@@ -216,7 +216,8 @@
     <li class="nav-item quick-search">
       <form [action]="classicRoutes.SEARCH" method="get" ngNoForm>
         <label>
-          <input class="form-control" name="q" placeholder="{{ 'Quick search' | translate }}" type="text" />
+          <input class="form-control" name="q" placeholder="{{ 'Quick search' | translate }}" type="text"
+                 autocomplete="off" />
         </label>
       </form>
     </li>
