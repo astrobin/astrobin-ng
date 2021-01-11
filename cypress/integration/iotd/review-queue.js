@@ -2,13 +2,6 @@ context("IOTD Review queue", () => {
   beforeEach(() => {
     cy.server();
     cy.setupInitializationRoutes();
-
-    cy.route("GET", "**/api/v2/common/contenttypes/?app_label=astrobin&model=image", {
-      id: 1,
-      appLabel: "astrobin",
-      model: "image"
-    }).as("getContentType");
-
     cy.route("GET", "**/api/v2/platesolving/solutions/*", []).as("getSolution");
   });
 
@@ -40,7 +33,7 @@ context("IOTD Review queue", () => {
     });
 
     it("should render page elements", () => {
-      cy.route("GET", "**/api/v2/images/image/*/", "fixture:api/images/image_1.json").as("getImage");
+      cy.route("GET", "**/api/v2/images/image/?ids=1,2", "fixture:api/images/images_1_and_2.json").as("getImages");
       cy.route("GET", "**/*/final/thumb/story/", "fixture:api/images/image_thumbnail_1_story_loaded.json").as(
         "getImageThumbnail"
       );

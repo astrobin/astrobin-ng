@@ -27,6 +27,7 @@ export interface BackendConfigInterface {
   MAX_IMAGE_PIXELS: number;
   GOOGLE_ADS_ID?: string;
   REQUEST_COUNTRY: string;
+  IMAGE_CONTENT_TYPE_ID: number;
   THUMBNAIL_ALIASES: ThumbnailAliases;
   IOTD_SUBMISSION_MAX_PER_DAY: number;
   IOTD_REVIEW_MAX_PER_DAY: number;

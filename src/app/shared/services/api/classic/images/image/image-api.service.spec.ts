@@ -40,6 +40,19 @@ describe("ImageApiService", () => {
     req.flush(image);
   });
 
+  it("getImages should work", () => {
+    const images = [ImageGenerator.image({ pk: 1 }), ImageGenerator.image({ pk: 2 })];
+
+    service.getImages([images[0].pk, images[1].pk]).subscribe(response => {
+      expect(response.results[0]).toEqual(images[0]);
+      expect(response.results[1]).toEqual(images[1]);
+    });
+
+    const req = httpMock.expectOne(`${service.configUrl}/image/?ids=1,2`);
+    expect(req.request.method).toBe("GET");
+    req.flush({ results: images });
+  });
+
   it("getThumbnail should work", () => {
     const image = ImageGenerator.image();
 

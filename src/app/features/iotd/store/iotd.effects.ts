@@ -1,13 +1,17 @@
 import { Injectable } from "@angular/core";
+import { LoadImages } from "@app/store/actions/image.actions";
+import { selectImages } from "@app/store/selectors/app/image.selectors";
+import { State } from "@app/store/state";
 import { ReviewQueueApiService } from "@features/iotd/services/review-queue-api.service";
 import { SubmissionQueueApiService } from "@features/iotd/services/submission-queue-api.service";
 import { Actions, Effect, ofType } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
 import { LoadingService } from "@shared/services/loading.service";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { of } from "rxjs";
-import { catchError, map, mergeMap, tap } from "rxjs/operators";
+import { catchError, map, mergeMap, skip, switchMap, take, tap } from "rxjs/operators";
 import {
   DeleteSubmissionFailure,
   DeleteSubmissionSuccess,
@@ -42,6 +46,14 @@ export class IotdEffects {
     tap(() => this.loadingService.setLoading(true)),
     mergeMap(action =>
       this.submissionQueueApiService.getEntries(action.payload.page).pipe(
+        tap(entries => this.store$.dispatch(new LoadImages(entries.results.map(entry => entry.pk)))),
+        switchMap(entries =>
+          this.store$.select(selectImages).pipe(
+            skip(1),
+            take(1),
+            map(images => entries)
+          )
+        ),
         map(entries => new LoadSubmissionQueueSuccess(entries)),
         catchError(error => of(new LoadSubmissionQueueFailure()))
       )
@@ -170,6 +182,14 @@ export class IotdEffects {
     tap(() => this.loadingService.setLoading(true)),
     mergeMap(action =>
       this.reviewQueueApiService.getEntries(action.payload.page).pipe(
+        tap(entries => this.store$.dispatch(new LoadImages(entries.results.map(entry => entry.pk)))),
+        switchMap(entries =>
+          this.store$.select(selectImages).pipe(
+            skip(1),
+            take(1),
+            map(images => entries)
+          )
+        ),
         map(entries => new LoadReviewQueueSuccess(entries)),
         catchError(() => of(new LoadReviewQueueFailure()))
       )
@@ -291,6 +311,7 @@ export class IotdEffects {
   );
 
   constructor(
+    public readonly store$: Store<State>,
     public readonly actions$: Actions<IotdActions>,
     public readonly submissionQueueApiService: SubmissionQueueApiService,
     public readonly reviewQueueApiService: ReviewQueueApiService,

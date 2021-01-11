@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { All, AppActionTypes } from "@app/store/actions/app.actions";
-import { LoadImageSuccess } from "@app/store/actions/image.actions";
+import { LoadImagesSuccess, LoadImageSuccess } from "@app/store/actions/image.actions";
 import { selectImage } from "@app/store/selectors/app/image.selectors";
 import { State } from "@app/store/state";
 import { Actions, Effect, ofType } from "@ngrx/effects";
@@ -30,6 +30,20 @@ export class ImageEffects {
 
   @Effect({ dispatch: false })
   LoadImageSuccess: Observable<void> = this.actions$.pipe(ofType(AppActionTypes.LOAD_IMAGE_SUCCESS));
+
+  @Effect()
+  LoadImages: Observable<LoadImagesSuccess> = this.actions$.pipe(
+    ofType(AppActionTypes.LOAD_IMAGES),
+    mergeMap(action =>
+      this.imageApiService.getImages(action.payload).pipe(
+        map(response => new LoadImagesSuccess(response)),
+        catchError(error => EMPTY)
+      )
+    )
+  );
+
+  @Effect({ dispatch: false })
+  LoadImagesSuccess: Observable<void> = this.actions$.pipe(ofType(AppActionTypes.LOAD_IMAGES_SUCCESS));
 
   constructor(
     public readonly store$: Store<State>,
