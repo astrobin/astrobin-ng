@@ -17,6 +17,7 @@
   "PREMIUM_PRICE_PREMIUM_2020": 40,
   "PREMIUM_PRICE_ULTIMATE_2020": 60,
   "REQUEST_COUNTRY": "us",
+  "IMAGE_CONTENT_TYPE_ID": 1,
   "THUMBNAIL_ALIASES": {
     "regular": {
       "size": [

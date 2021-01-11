@@ -182,6 +182,14 @@ export class IotdEffects {
     tap(() => this.loadingService.setLoading(true)),
     mergeMap(action =>
       this.reviewQueueApiService.getEntries(action.payload.page).pipe(
+        tap(entries => this.store$.dispatch(new LoadImages(entries.results.map(entry => entry.pk)))),
+        switchMap(entries =>
+          this.store$.select(selectImages).pipe(
+            skip(1),
+            take(1),
+            map(images => entries)
+          )
+        ),
         map(entries => new LoadReviewQueueSuccess(entries)),
         catchError(() => of(new LoadReviewQueueFailure()))
       )
