@@ -3,7 +3,7 @@ import { NgModule } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { RouterModule } from "@angular/router";
 import { formlyValidationConfig } from "@app/formly.config";
-import { ObjectsInFieldComponent } from "@app/library/components/misc/objects-in-field/objects-in-field.component";
+import { ObjectsInFieldComponent } from "@app/shared/components/misc/objects-in-field/objects-in-field.component";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import {
   NgbCollapseModule,
