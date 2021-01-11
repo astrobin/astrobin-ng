@@ -3,7 +3,7 @@
 import { LoadCamera, LoadCameraSuccess } from "@app/store/actions/camera.actions";
 import { LoadContentType, LoadContentTypeSuccess } from "@app/store/actions/content-type.actions";
 import { HideFullscreenImage, ShowFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
-import { LoadImage, LoadImageSuccess } from "@app/store/actions/image.actions";
+import { LoadImage, LoadImages, LoadImagesSuccess, LoadImageSuccess } from "@app/store/actions/image.actions";
 import { InitializeApp, InitializeAppSuccess } from "@app/store/actions/initialize-app.actions";
 import { LoadSolution, LoadSolutionSuccess } from "@app/store/actions/solution.actions";
 import { LoadTelescope, LoadTelescopeSuccess } from "@app/store/actions/telescope.actions";
@@ -21,6 +21,9 @@ export enum AppActionTypes {
 
   LOAD_IMAGE = "[App] Load image",
   LOAD_IMAGE_SUCCESS = "[App] Load image success",
+
+  LOAD_IMAGES = "[App] Load images",
+  LOAD_IMAGES_SUCCESS = "[App] Load images success",
 
   LOAD_THUMBNAIL = "[App] Load thumbnail",
   LOAD_THUMBNAIL_SUCCESS = "[App] Load thumbnail success",
@@ -44,6 +47,8 @@ export type All =
   | LoadContentTypeSuccess
   | LoadImage
   | LoadImageSuccess
+  | LoadImages
+  | LoadImagesSuccess
   | LoadThumbnail
   | LoadThumbnailSuccess
   | LoadSolution

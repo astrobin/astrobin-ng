@@ -7,14 +7,14 @@ import { ImageAlias } from "@shared/enums/image-alias.enum";
 import { ImageThumbnailInterface } from "@shared/interfaces/image-thumbnail.interface";
 import { ImageInterface } from "@shared/interfaces/image.interface";
 import { BaseClassicApiService } from "@shared/services/api/classic/base-classic-api.service";
+import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
 import { LoadingService } from "@shared/services/loading.service";
 import { Observable } from "rxjs";
-import { ImageApiServiceInterface } from "./image-api.service-interface";
 
 @Injectable({
   providedIn: "root"
 })
-export class ImageApiService extends BaseClassicApiService implements ImageApiServiceInterface {
+export class ImageApiService extends BaseClassicApiService {
   configUrl = this.baseUrl + "/images";
 
   constructor(
@@ -27,6 +27,10 @@ export class ImageApiService extends BaseClassicApiService implements ImageApiSe
 
   getImage(id: number): Observable<ImageInterface> {
     return this.http.get<ImageInterface>(`${this.configUrl}/image/${id}/`);
+  }
+
+  getImages(ids: number[]): Observable<PaginatedApiResultInterface<ImageInterface>> {
+    return this.http.get<PaginatedApiResultInterface<ImageInterface>>(`${this.configUrl}/image/?ids=${ids.join(",")}`);
   }
 
   getThumbnail(id: number | string, revision: string, alias: ImageAlias): Observable<ImageThumbnailInterface> {

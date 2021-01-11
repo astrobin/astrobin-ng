@@ -96,6 +96,13 @@ export function reducer(state = initialAppState, action: All): AppState {
       };
     }
 
+    case AppActionTypes.LOAD_IMAGES_SUCCESS: {
+      return {
+        ...state,
+        images: new UtilsService().arrayUniqueObjects([...state.images, ...action.payload.results])
+      };
+    }
+
     case AppActionTypes.LOAD_THUMBNAIL_SUCCESS: {
       return {
         ...state,

@@ -24,6 +24,7 @@ export class BackendConfigGenerator {
       MAX_IMAGE_PIXELS: 16536 * 16536,
       GOOGLE_ADS_ID: "GOOGLE_ADS_1234",
       REQUEST_COUNTRY: "us",
+      IMAGE_CONTENT_TYPE_ID: 1,
       THUMBNAIL_ALIASES: {
         [ImageAlias.REGULAR]: {
           size: [620, 0]
