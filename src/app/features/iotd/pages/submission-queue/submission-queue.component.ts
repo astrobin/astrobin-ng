@@ -14,7 +14,6 @@ import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
 import { BackendConfigInterface } from "@shared/interfaces/backend-config.interface";
 import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
-import { PaginationService } from "@shared/services/pagination.service";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { TitleService } from "@shared/services/title/title.service";
 import { Observable } from "rxjs";
@@ -33,8 +32,7 @@ export class SubmissionQueueComponent extends BasePromotionQueueComponent implem
     public readonly store$: Store<State>,
     public readonly translateService: TranslateService,
     public readonly popNotificationsService: PopNotificationsService,
-    public readonly titleService: TitleService,
-    public readonly paginationService: PaginationService
+    public readonly titleService: TitleService
   ) {
     super(store$, popNotificationsService, translateService);
   }

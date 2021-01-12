@@ -21,7 +21,7 @@
 
           <ng-container
             [ngTemplateOutlet]="pagination"
-            [ngTemplateOutletContext]="{count: queue.count}">
+            [ngTemplateOutletContext]="{queue: queue}">
           </ng-container>
 
           <div
@@ -37,7 +37,7 @@
 
           <ng-container
             [ngTemplateOutlet]="pagination"
-            [ngTemplateOutletContext]="{count: queue.count}">
+            [ngTemplateOutletContext]="{queue: queue}">
           </ng-container>
 
         </ng-container>
@@ -53,12 +53,13 @@
   </p>
 </ng-template>
 
-<ng-template #pagination let-count="count">
+<ng-template #pagination let-queue="queue">
   <ngb-pagination
-    *ngIf="paginationService.showPagination(count)"
+    *ngIf="queue.count > queue.results.length"
     (pageChange)="pageChange($event)"
     [(page)]="page"
-    [collectionSize]="count">
+    [pageSize]="pageSize$ | async"
+    [collectionSize]="queue.count">
   </ngb-pagination>
 </ng-template>
 
