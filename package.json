@@ -87,7 +87,7 @@
     "faker": "5.1.0",
     "jest": "26.6.3",
     "jest-preset-angular": "8.3.2",
-    "js-beautify": "1.13.1",
+    "js-beautify": "1.13.2",
     "ng-mocks": "11.3.1",
     "ngx-build-plus": "11.0.0",
     "nodemon": "1.19.3",
