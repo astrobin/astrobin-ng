@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { All, AppActionTypes } from "@app/store/actions/app.actions";
-import { LoadSolutionSuccess } from "@app/store/actions/solution.actions";
+import { LoadSolutionsSuccess, LoadSolutionSuccess } from "@app/store/actions/solution.actions";
 import { selectSolution } from "@app/store/selectors/app/solution.selectors";
 import { State } from "@app/store/state";
 import { Actions, Effect, ofType } from "@ngrx/effects";
@@ -28,8 +28,16 @@ export class SolutionEffects {
     )
   );
 
-  @Effect({ dispatch: false })
-  LoadSolutionSuccess: Observable<void> = this.actions$.pipe(ofType(AppActionTypes.LOAD_SOLUTION_SUCCESS));
+  @Effect()
+  LoadSolutions: Observable<LoadSolutionsSuccess> = this.actions$.pipe(
+    ofType(AppActionTypes.LOAD_SOLUTIONS),
+    mergeMap(action =>
+      this.solutionApiService.getSolutions(action.payload.contentType, action.payload.objectIds).pipe(
+        map(solutions => new LoadSolutionsSuccess(solutions)),
+        catchError(error => EMPTY)
+      )
+    )
+  );
 
   constructor(
     public readonly store$: Store<State>,
