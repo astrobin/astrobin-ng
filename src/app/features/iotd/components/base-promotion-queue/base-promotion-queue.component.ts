@@ -17,6 +17,7 @@ import { BackendConfigInterface } from "@shared/interfaces/backend-config.interf
 import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { distinctUntilChangedObj } from "@shared/services/utils/utils.service";
+import { WindowRefService } from "@shared/services/window-ref.service";
 import { Observable } from "rxjs";
 import { filter, map, switchMap, takeUntil } from "rxjs/operators";
 
@@ -42,7 +43,8 @@ export abstract class BasePromotionQueueComponent extends BaseComponentDirective
   protected constructor(
     public readonly store$: Store<State>,
     public readonly popNotificationsService: PopNotificationsService,
-    public readonly translateService: TranslateService
+    public readonly translateService: TranslateService,
+    public readonly windowRefService: WindowRefService
   ) {
     super();
   }
@@ -94,6 +96,7 @@ export abstract class BasePromotionQueueComponent extends BaseComponentDirective
   pageChange(page: number): void {
     this.page = page;
     this.loadQueue(page);
+    this.windowRefService.nativeWindow.scroll({ top: 0, behavior: "smooth" });
   }
 
   entryExists(imageId: number): boolean {

@@ -11,6 +11,7 @@ import { BackendConfigInterface } from "@shared/interfaces/backend-config.interf
 import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { TitleService } from "@shared/services/title/title.service";
+import { WindowRefService } from "@shared/services/window-ref.service";
 import { Observable } from "rxjs";
 
 @Component({
@@ -27,9 +28,10 @@ export class ReviewQueueComponent extends BasePromotionQueueComponent implements
     public readonly store$: Store<State>,
     public readonly translateService: TranslateService,
     public readonly popNotificationsService: PopNotificationsService,
-    public readonly titleService: TitleService
+    public readonly titleService: TitleService,
+    public readonly windowRefService: WindowRefService
   ) {
-    super(store$, popNotificationsService, translateService);
+    super(store$, popNotificationsService, translateService, windowRefService);
   }
 
   ngOnInit(): void {
