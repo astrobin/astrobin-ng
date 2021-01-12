@@ -23,8 +23,10 @@ import { ImageInterface } from "@shared/interfaces/image.interface";
 import { ImageApiService } from "@shared/services/api/classic/images/image/image-api.service";
 import { ThumbnailGroupApiService } from "@shared/services/api/classic/images/thumbnail-group/thumbnail-group-api.service";
 import { ImageService } from "@shared/services/image/image.service";
-import { BehaviorSubject, Observable } from "rxjs";
-import { filter, map, switchMap, take, tap } from "rxjs/operators";
+import { UtilsService } from "@shared/services/utils/utils.service";
+import { WindowRefService } from "@shared/services/window-ref.service";
+import { BehaviorSubject, fromEvent, Observable } from "rxjs";
+import { debounceTime, distinctUntilChanged, filter, map, switchMap, take, takeUntil, tap } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-image",
@@ -56,13 +58,17 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
 
   private _loadingProgressSubject = new BehaviorSubject<number>(0);
 
+  private _loaded = false;
+
   constructor(
     public readonly store$: Store<State>,
     public readonly imageApiService: ImageApiService,
     public readonly thumbnailGroupApiService: ThumbnailGroupApiService,
     public readonly imageService: ImageService,
     public readonly elementRef: ElementRef,
-    public readonly changeDetector: ChangeDetectorRef
+    public readonly changeDetector: ChangeDetectorRef,
+    public readonly utilsService: UtilsService,
+    public readonly windowRefService: WindowRefService
   ) {
     super();
 
@@ -77,10 +83,15 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
     if (this.alias === null) {
       throw new Error("Attribute 'alias' is required");
     }
+
+    fromEvent(this.windowRefService.nativeWindow, "scroll")
+      .pipe(takeUntil(this.destroyed$), debounceTime(50), distinctUntilChanged())
+      .subscribe(() => this._load());
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     setTimeout(() => {
+      this._loaded = false;
       this._load();
     }, 1);
   }
@@ -90,8 +101,14 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
   }
 
   private _load(): void {
-    this.loading = true;
-    this._loadImage();
+    if (
+      !this._loaded &&
+      this._loadingIndicator &&
+      this.utilsService.isInViewport(this._loadingIndicator.nativeElement)
+    ) {
+      this.loading = true;
+      this._loadImage();
+    }
   }
 
   private _loadImage() {
@@ -122,7 +139,10 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
             this._loadingProgressSubject.next(progress);
           })
         ),
-        tap(() => (this.loading = false))
+        tap(() => {
+          this.loading = false;
+          this._loaded = true;
+        })
       );
   }
 
