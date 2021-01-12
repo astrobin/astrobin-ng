@@ -1,9 +1,9 @@
 import { SolutionInterface, SolutionStatus } from "@shared/interfaces/solution.interface";
 
 export class SolutionGenerator {
-  static solution(): SolutionInterface {
+  static solution(source: Partial<SolutionInterface> = {}): SolutionInterface {
     return {
-      id: 1,
+      id: source.id || 1,
       status: SolutionStatus.ADVANCED_SUCCESS,
       submission_id: 1,
       object_id: "1",

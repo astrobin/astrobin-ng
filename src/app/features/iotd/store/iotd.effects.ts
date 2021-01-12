@@ -1,6 +1,9 @@
 import { Injectable } from "@angular/core";
 import { LoadImages } from "@app/store/actions/image.actions";
+import { LoadSolutions } from "@app/store/actions/solution.actions";
+import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
 import { selectImages } from "@app/store/selectors/app/image.selectors";
+import { selectSolutions } from "@app/store/selectors/app/solution.selectors";
 import { State } from "@app/store/state";
 import { ReviewQueueApiService } from "@features/iotd/services/review-queue-api.service";
 import { SubmissionQueueApiService } from "@features/iotd/services/submission-queue-api.service";
@@ -48,10 +51,30 @@ export class IotdEffects {
       this.submissionQueueApiService.getEntries(action.payload.page).pipe(
         tap(entries => this.store$.dispatch(new LoadImages(entries.results.map(entry => entry.pk)))),
         switchMap(entries =>
+          this.store$.select(selectBackendConfig).pipe(
+            map(backendConfig => ({
+              entries,
+              contentTypeId: backendConfig.IMAGE_CONTENT_TYPE_ID
+            }))
+          )
+        ),
+        switchMap(({ entries, contentTypeId }) =>
           this.store$.select(selectImages).pipe(
             skip(1),
             take(1),
-            map(images => entries)
+            map(() => ({ entries, contentTypeId }))
+          )
+        ),
+        tap(({ entries, contentTypeId }) =>
+          this.store$.dispatch(
+            new LoadSolutions({ contentType: contentTypeId, objectIds: entries.results.map(entry => "" + entry.pk) })
+          )
+        ),
+        switchMap(({ entries, contentTypeId }) =>
+          this.store$.select(selectSolutions).pipe(
+            skip(1),
+            take(1),
+            map(() => entries)
           )
         ),
         map(entries => new LoadSubmissionQueueSuccess(entries)),
@@ -184,10 +207,30 @@ export class IotdEffects {
       this.reviewQueueApiService.getEntries(action.payload.page).pipe(
         tap(entries => this.store$.dispatch(new LoadImages(entries.results.map(entry => entry.pk)))),
         switchMap(entries =>
+          this.store$.select(selectBackendConfig).pipe(
+            map(backendConfig => ({
+              entries,
+              contentTypeId: backendConfig.IMAGE_CONTENT_TYPE_ID
+            }))
+          )
+        ),
+        switchMap(({ entries, contentTypeId }) =>
           this.store$.select(selectImages).pipe(
             skip(1),
             take(1),
-            map(images => entries)
+            map(() => ({ entries, contentTypeId }))
+          )
+        ),
+        tap(({ entries, contentTypeId }) =>
+          this.store$.dispatch(
+            new LoadSolutions({ contentType: contentTypeId, objectIds: entries.results.map(entry => "" + entry.pk) })
+          )
+        ),
+        switchMap(({ entries, contentTypeId }) =>
+          this.store$.select(selectSolutions).pipe(
+            skip(1),
+            take(1),
+            map(() => entries)
           )
         ),
         map(entries => new LoadReviewQueueSuccess(entries)),

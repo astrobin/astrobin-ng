@@ -117,6 +117,13 @@ export function reducer(state = initialAppState, action: All): AppState {
       };
     }
 
+    case AppActionTypes.LOAD_SOLUTIONS_SUCCESS: {
+      return {
+        ...state,
+        solutions: new UtilsService().arrayUniqueObjects([...state.solutions, ...action.payload])
+      };
+    }
+
     case AppActionTypes.LOAD_TELESCOPE_SUCCESS: {
       return {
         ...state,

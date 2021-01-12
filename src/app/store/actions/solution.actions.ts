@@ -15,3 +15,15 @@ export class LoadSolutionSuccess implements Action {
 
   constructor(public payload: SolutionInterface) {}
 }
+
+export class LoadSolutions implements Action {
+  readonly type = AppActionTypes.LOAD_SOLUTIONS;
+
+  constructor(public payload: { contentType: number; objectIds: string[] }) {}
+}
+
+export class LoadSolutionsSuccess implements Action {
+  readonly type = AppActionTypes.LOAD_SOLUTIONS_SUCCESS;
+
+  constructor(public payload: SolutionInterface[]) {}
+}

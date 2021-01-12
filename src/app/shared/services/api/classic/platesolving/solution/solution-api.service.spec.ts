@@ -38,4 +38,17 @@ describe("SolutionApiService", () => {
     expect(req.request.method).toBe("GET");
     req.flush(solution);
   });
+
+  it("getSolutions should work", () => {
+    const solutions = [SolutionGenerator.solution({ id: 1 }), SolutionGenerator.solution({ id: 2 })];
+
+    service.getSolutions(solutions[0].content_type, ["1", "2"]).subscribe(response => {
+      expect(response[0].id).toEqual(solutions[0].id);
+      expect(response[1].id).toEqual(solutions[1].id);
+    });
+
+    const req = httpMock.expectOne(`${service.configUrl}/?content_type=${solutions[0].content_type}&object_ids=1,2`);
+    expect(req.request.method).toBe("GET");
+    req.flush(solutions);
+  });
 });
