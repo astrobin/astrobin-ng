@@ -13,8 +13,6 @@
   position: relative;
 
   astrobin-image {
-    height: 320px;
-
     &.promotion-image:not(.loading) {
       cursor: zoom-in;
     }
