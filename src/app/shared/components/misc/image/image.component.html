@@ -7,7 +7,7 @@
         id="image-{{id}}{{image.hash ? '-' + image.hash : ''}}-{{revision}}-{{alias}}"
         [style.height.px]="height"
         [style.backgroundImage]="'url(' + thumbnailUrl + ')'"
-        [style.backgroundSize]="'auto'">
+        [style.backgroundSize]="imageService.getBackgroundSize(alias)">
       </div>
 
     </ng-container>
