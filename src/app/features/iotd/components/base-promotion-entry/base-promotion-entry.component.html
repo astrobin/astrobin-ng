@@ -1,22 +1,13 @@
 <div class="row no-gutters promotion-queue-entry" [class.promoted]="(isPromoted$(entry.pk) | async) === true">
   <astrobin-fullscreen-image-viewer [id]="entry.pk"></astrobin-fullscreen-image-viewer>
 
-  <div class="col-sm-12 col-md-6 col-image">
+  <div class="col-12 col-image">
     <astrobin-image
       class="promotion-image mb-2 mb-md-0 pr-0 pr-md-1"
-      [alias]="ImageAlias.STORY"
+      [alias]="ImageAlias.HD_ANONYMIZED"
       [id]="entry.pk"
       (click)="viewFullscreen(entry.pk)">
     </astrobin-image>
-  </div>
-
-  <div class="col-sm-12 col-md-6 col-image">
-    <astrobin-image
-      class="pl-0 pl-md-1"
-      [alias]="ImageAlias.STORY_CROP"
-      [id]="entry.pk">
-    </astrobin-image>
-    <div class="hundred_percent">100%</div>
   </div>
 
   <div class="col-12">

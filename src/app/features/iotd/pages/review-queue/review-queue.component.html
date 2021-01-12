@@ -8,7 +8,7 @@
     <astrobin-refresh-button (click)="refresh()"></astrobin-refresh-button>
   </div>
 
-  <ng-container *ngIf="queue$ | async as queue">
+  <ng-container *ngIf="queue$ | async as queue; else loading">
     <ng-container *ngIf="hiddenEntries$ | async as hiddenEntries">
       <ng-container *ngIf="promotions$ | async as promotions">
         <ng-container *ngIf="queue?.count > 0; else noEntries">
@@ -60,4 +60,8 @@
     [(page)]="page"
     [collectionSize]="count">
   </ngb-pagination>
+</ng-template>
+
+<ng-template #loading>
+  <astrobin-loading-indicator></astrobin-loading-indicator>
 </ng-template>
