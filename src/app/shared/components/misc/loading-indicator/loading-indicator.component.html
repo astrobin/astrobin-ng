@@ -1,7 +1,5 @@
-<div class="d-flex justify-content-center align-items-center">
-  <div *ngIf="progress !== undefined && progress > 0; else noProgress">
-    <ngb-progressbar type="secondary" [value]="progress"></ngb-progressbar>
-  </div>
+<div *ngIf="progress !== undefined && progress > 0; else noProgress">
+  <ngb-progressbar type="secondary" [value]="progress"></ngb-progressbar>
 </div>
 
 <ng-template #noProgress>

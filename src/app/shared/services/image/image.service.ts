@@ -1,8 +1,9 @@
 import { Injectable } from "@angular/core";
+import { ImageAlias } from "@shared/enums/image-alias.enum";
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
-import { Observable, throwError } from "rxjs";
+import { Observable } from "rxjs";
 
 @Injectable({
   providedIn: "root"
@@ -10,6 +11,22 @@ import { Observable, throwError } from "rxjs";
 export class ImageService extends BaseService {
   public constructor(public readonly loadingService: LoadingService, public readonly windowRef: WindowRefService) {
     super(loadingService);
+  }
+
+  getBackgroundSize(alias: ImageAlias): string {
+    switch (alias) {
+      case ImageAlias.GALLERY:
+      case ImageAlias.GALLERY_INVERTED:
+      case ImageAlias.COLLECTION:
+      case ImageAlias.THUMB:
+      case ImageAlias.HISTOGRAM:
+      case ImageAlias.IOTD:
+      case ImageAlias.IOTD_MOBILE:
+      case ImageAlias.STORY:
+        return "cover";
+      default:
+        return "contain";
+    }
   }
 
   calculateDisplayHeight(aliasSize: number[], imageSize: number[], elementSize: number[]): number {
