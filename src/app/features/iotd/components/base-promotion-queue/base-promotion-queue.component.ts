@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnInit, QueryList, ViewChildren } from "@angular/core";
-import { selectApp } from "@app/store/selectors/app/app.selectors";
+import { selectApp, selectBackendConfig } from "@app/store/selectors/app/app.selectors";
 import { State } from "@app/store/state";
 import { VoteInterface } from "@features/iotd/services/review-queue-api.service";
 import { SubmissionInterface } from "@features/iotd/services/submission-queue-api.service";
@@ -25,8 +25,12 @@ import { filter, map, switchMap, takeUntil } from "rxjs/operators";
   template: ""
 })
 export abstract class BasePromotionQueueComponent extends BaseComponentDirective implements OnInit {
-  page = 1;
   ImageAlias = ImageAlias;
+
+  page = 1;
+  pageSize$: Observable<number> = this.store$
+    .select(selectBackendConfig)
+    .pipe(map(backendConfig => backendConfig.IOTD_QUEUES_PAGE_SIZE));
 
   abstract hiddenEntries$: Observable<number[]>;
   abstract queue$: Observable<PaginatedApiResultInterface<SubmissionImageInterface | ReviewImageInterface>>;
