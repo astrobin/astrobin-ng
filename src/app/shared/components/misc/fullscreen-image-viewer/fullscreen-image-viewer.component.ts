@@ -116,8 +116,12 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
         () =>
           (this._zoomReadyNotification = this.popNotificationsService.info(
             this.translateService.instant("Click on the image and scroll to magnify up to 8x."),
-            null,
-            { timeOut: 5000 }
+            this.translateService.instant("Zoom ready"),
+            {
+              progressBar: false,
+              timeOut: 5000,
+              positionClass: "toast-bottom-right"
+            }
           ))
       )
     );
