@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { State } from "@app/store/state";
-import { VoteInterface } from "@features/iotd/services/review-queue-api.service";
-import { SubmissionInterface } from "@features/iotd/services/submission-queue-api.service";
+import { SubmissionInterface, VoteInterface } from "@features/iotd/services/iotd-api.service";
 import { PromotionImageInterface } from "@features/iotd/store/iotd.reducer";
 import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";

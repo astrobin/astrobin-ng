@@ -5,8 +5,7 @@ import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
 import { selectImages } from "@app/store/selectors/app/image.selectors";
 import { selectSolutions } from "@app/store/selectors/app/solution.selectors";
 import { State } from "@app/store/state";
-import { ReviewQueueApiService } from "@features/iotd/services/review-queue-api.service";
-import { SubmissionQueueApiService } from "@features/iotd/services/submission-queue-api.service";
+import { IotdApiService } from "@features/iotd/services/iotd-api.service";
 import { Actions, Effect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
@@ -20,10 +19,10 @@ import {
   DeleteSubmissionSuccess,
   DeleteVoteFailure,
   DeleteVoteSuccess,
-  InitHiddenReviewEntriesSuccess,
-  InitHiddenSubmissionEntriesSuccess,
+  HideImageSuccess,
   IotdActions,
   IotdActionTypes,
+  LoadHiddenImagesSuccess,
   LoadReviewQueueFailure,
   LoadReviewQueueSuccess,
   LoadSubmissionQueueFailure,
@@ -35,20 +34,18 @@ import {
   PostSubmissionFailure,
   PostSubmissionSuccess,
   PostVoteFailure,
-  PostVoteSuccess
+  PostVoteSuccess,
+  ShowImageSuccess
 } from "./iotd.actions";
 
 @Injectable()
 export class IotdEffects {
-  readonly HIDDEN_SUBMISSION_ENTRIES_KEY = "iotd.hidden-submissions";
-  readonly HIDDEN_REVIEW_ENTRIES_KEY = "iotd.hidden-review-entries";
-
   @Effect()
   loadSubmissionQueue$ = this.actions$.pipe(
     ofType(IotdActionTypes.LOAD_SUBMISSION_QUEUE),
     tap(() => this.loadingService.setLoading(true)),
     mergeMap(action =>
-      this.submissionQueueApiService.getEntries(action.payload.page).pipe(
+      this.iotdApiService.getSubmissionQueueEntries(action.payload.page).pipe(
         tap(entries => this.store$.dispatch(new LoadImages(entries.results.map(entry => entry.pk)))),
         switchMap(entries =>
           this.store$.select(selectBackendConfig).pipe(
@@ -100,7 +97,7 @@ export class IotdEffects {
     ofType(IotdActionTypes.LOAD_SUBMISSIONS),
     tap(() => this.loadingService.setLoading(true)),
     mergeMap(action =>
-      this.submissionQueueApiService.getSubmissions().pipe(
+      this.iotdApiService.getSubmissions().pipe(
         map(submissions => new LoadSubmissionsSuccess(submissions)),
         catchError(error => of(new LoadSubmissionsFailure()))
       )
@@ -125,7 +122,7 @@ export class IotdEffects {
     tap(() => this.loadingService.setLoading(true)),
     map(action => action.payload),
     mergeMap(payload =>
-      this.submissionQueueApiService.addSubmission(payload.imageId).pipe(
+      this.iotdApiService.addSubmission(payload.imageId).pipe(
         map(response => new PostSubmissionSuccess(response)),
         catchError(error => of(new PostSubmissionFailure(error)))
       )
@@ -154,7 +151,7 @@ export class IotdEffects {
     tap(() => this.loadingService.setLoading(true)),
     map(action => action.payload),
     mergeMap(payload =>
-      this.submissionQueueApiService.retractSubmission(payload.id).pipe(
+      this.iotdApiService.retractSubmission(payload.id).pipe(
         map(() => new DeleteSubmissionSuccess({ id: payload.id })),
         catchError(error => of(new DeleteSubmissionFailure()))
       )
@@ -174,29 +171,50 @@ export class IotdEffects {
   );
 
   @Effect()
-  initHiddenSubmissionEntries$ = this.actions$.pipe(
-    ofType(IotdActionTypes.INIT_HIDDEN_SUBMISSION_ENTRIES),
-    map(() => {
-      const localStorage = this.windowRef.nativeWindow.localStorage;
-      const value = JSON.parse(localStorage.getItem(this.HIDDEN_SUBMISSION_ENTRIES_KEY)) || [];
-      return new InitHiddenSubmissionEntriesSuccess({ ids: value });
-    })
+  loadHiddenImage$ = this.actions$.pipe(
+    ofType(IotdActionTypes.LOAD_HIDDEN_IMAGES),
+    tap(() => this.loadingService.setLoading(true)),
+    mergeMap(() =>
+      this.iotdApiService.loadHiddenImages().pipe(map(hiddenImages => new LoadHiddenImagesSuccess({ hiddenImages })))
+    )
   );
 
   @Effect({ dispatch: false })
-  initHiddenSubmissionEntriesSuccess$ = this.actions$.pipe(
-    ofType(IotdActionTypes.INIT_HIDDEN_SUBMISSION_ENTRIES_SUCCESS)
+  loadHiddenImagesSuccess$ = this.actions$.pipe(
+    ofType(IotdActionTypes.LOAD_HIDDEN_IMAGES_SUCCESS),
+    tap(() => this.loadingService.setLoading(false))
   );
 
-  @Effect({ dispatch: false })
-  hideSubmissionEntry$ = this.actions$.pipe(
-    ofType(IotdActionTypes.HIDE_SUBMISSION_ENTRY),
+  @Effect()
+  hideImage$ = this.actions$.pipe(
+    ofType(IotdActionTypes.HIDE_IMAGE),
+    tap(() => this.loadingService.setLoading(true)),
     map(action => action.payload),
-    tap(payload => {
-      const localStorage = this.windowRef.nativeWindow.localStorage;
-      const current = JSON.parse(localStorage.getItem(this.HIDDEN_SUBMISSION_ENTRIES_KEY)) || [];
-      localStorage.setItem(this.HIDDEN_SUBMISSION_ENTRIES_KEY, JSON.stringify([...current, payload.id]));
-    })
+    mergeMap(payload =>
+      this.iotdApiService.hideImage(payload.id).pipe(map(hiddenImage => new HideImageSuccess({ hiddenImage })))
+    )
+  );
+
+  @Effect({ dispatch: false })
+  hideImageSuccess$ = this.actions$.pipe(
+    ofType(IotdActionTypes.HIDE_IMAGE_SUCCESS),
+    tap(() => this.loadingService.setLoading(false))
+  );
+
+  @Effect()
+  showImage$ = this.actions$.pipe(
+    ofType(IotdActionTypes.SHOW_IMAGE),
+    tap(() => this.loadingService.setLoading(true)),
+    map(action => action.payload),
+    mergeMap(payload =>
+      this.iotdApiService.showImage(payload.hiddenImage).pipe(map(id => new ShowImageSuccess({ id })))
+    )
+  );
+
+  @Effect({ dispatch: false })
+  showImageSuccess$ = this.actions$.pipe(
+    ofType(IotdActionTypes.SHOW_IMAGE_SUCCESS),
+    tap(() => this.loadingService.setLoading(false))
   );
 
   @Effect()
@@ -204,7 +222,7 @@ export class IotdEffects {
     ofType(IotdActionTypes.LOAD_REVIEW_QUEUE),
     tap(() => this.loadingService.setLoading(true)),
     mergeMap(action =>
-      this.reviewQueueApiService.getEntries(action.payload.page).pipe(
+      this.iotdApiService.getReviewQueueEntries(action.payload.page).pipe(
         tap(entries => this.store$.dispatch(new LoadImages(entries.results.map(entry => entry.pk)))),
         switchMap(entries =>
           this.store$.select(selectBackendConfig).pipe(
@@ -256,7 +274,7 @@ export class IotdEffects {
     ofType(IotdActionTypes.LOAD_VOTES),
     tap(() => this.loadingService.setLoading(true)),
     mergeMap(action =>
-      this.reviewQueueApiService.getVotes().pipe(
+      this.iotdApiService.getVotes().pipe(
         map(reviews => new LoadVotesSuccess(reviews)),
         catchError(error => of(new LoadVotesFailure()))
       )
@@ -281,7 +299,7 @@ export class IotdEffects {
     tap(() => this.loadingService.setLoading(true)),
     map(action => action.payload),
     mergeMap(payload =>
-      this.reviewQueueApiService.addVote(payload.imageId).pipe(
+      this.iotdApiService.addVote(payload.imageId).pipe(
         map(response => new PostVoteSuccess(response)),
         catchError(error => of(new PostVoteFailure(error)))
       )
@@ -310,7 +328,7 @@ export class IotdEffects {
     tap(() => this.loadingService.setLoading(true)),
     map(action => action.payload),
     mergeMap(payload =>
-      this.reviewQueueApiService.retractVote(payload.id).pipe(
+      this.iotdApiService.retractVote(payload.id).pipe(
         map(() => new DeleteVoteSuccess({ id: payload.id })),
         catchError(() => of(new DeleteVoteFailure()))
       )
@@ -329,35 +347,10 @@ export class IotdEffects {
     tap(() => this.loadingService.setLoading(false))
   );
 
-  @Effect()
-  initHiddenReviewEntries$ = this.actions$.pipe(
-    ofType(IotdActionTypes.INIT_HIDDEN_REVIEW_ENTRIES),
-    map(() => {
-      const localStorage = this.windowRef.nativeWindow.localStorage;
-      const value = JSON.parse(localStorage.getItem(this.HIDDEN_REVIEW_ENTRIES_KEY)) || [];
-      return new InitHiddenReviewEntriesSuccess({ ids: value });
-    })
-  );
-
-  @Effect({ dispatch: false })
-  initHiddenReviewEntriesSuccess$ = this.actions$.pipe(ofType(IotdActionTypes.INIT_HIDDEN_REVIEW_ENTRIES_SUCCESS));
-
-  @Effect({ dispatch: false })
-  hideReviewEntry$ = this.actions$.pipe(
-    ofType(IotdActionTypes.HIDE_REVIEW_ENTRY),
-    map(action => action.payload),
-    tap(payload => {
-      const localStorage = this.windowRef.nativeWindow.localStorage;
-      const current = JSON.parse(localStorage.getItem(this.HIDDEN_REVIEW_ENTRIES_KEY)) || [];
-      localStorage.setItem(this.HIDDEN_REVIEW_ENTRIES_KEY, JSON.stringify([...current, payload.id]));
-    })
-  );
-
   constructor(
     public readonly store$: Store<State>,
     public readonly actions$: Actions<IotdActions>,
-    public readonly submissionQueueApiService: SubmissionQueueApiService,
-    public readonly reviewQueueApiService: ReviewQueueApiService,
+    public readonly iotdApiService: IotdApiService,
     public readonly loadingService: LoadingService,
     public readonly popNotificationsService: PopNotificationsService,
     public readonly translateService: TranslateService,

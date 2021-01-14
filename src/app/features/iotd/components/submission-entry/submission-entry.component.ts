@@ -1,7 +1,7 @@
 import { Component } from "@angular/core";
 import { State } from "@app/store/state";
 import { BasePromotionEntryComponent } from "@features/iotd/components/base-promotion-entry/base-promotion-entry.component";
-import { DeleteSubmission, HideSubmissionEntry, PostSubmission } from "@features/iotd/store/iotd.actions";
+import { DeleteSubmission, PostSubmission } from "@features/iotd/store/iotd.actions";
 import { selectSubmissionForImage } from "@features/iotd/store/iotd.selectors";
 import { Store } from "@ngrx/store";
 import { LoadingService } from "@shared/services/loading.service";
@@ -23,10 +23,6 @@ export class SubmissionEntryComponent extends BasePromotionEntryComponent {
       map(submission => submission !== null),
       distinctUntilChanged()
     );
-  }
-
-  hide(imageId: number): void {
-    this.store$.dispatch(new HideSubmissionEntry({ id: imageId }));
   }
 
   hideDisabled$(imageId: number): Observable<boolean> {

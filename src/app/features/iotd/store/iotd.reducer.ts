@@ -1,5 +1,4 @@
-import { VoteInterface } from "@features/iotd/services/review-queue-api.service";
-import { SubmissionInterface } from "@features/iotd/services/submission-queue-api.service";
+import { HiddenImage, SubmissionInterface, VoteInterface } from "@features/iotd/services/iotd-api.service";
 import { ImageInterface } from "@shared/interfaces/image.interface";
 import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
 import { IotdActions, IotdActionTypes } from "./iotd.actions";
@@ -16,22 +15,22 @@ export type PromotionImageInterface = SubmissionImageInterface | ReviewImageInte
 
 export interface IotdState {
   submissionQueue: PaginatedApiResultInterface<SubmissionImageInterface> | null;
-  hiddenSubmissionEntries: number[];
   submissions: SubmissionInterface[];
 
   reviewQueue: PaginatedApiResultInterface<ReviewImageInterface> | null;
-  hiddenReviewEntries: number[];
   votes: VoteInterface[];
+
+  hiddenImages: HiddenImage[];
 }
 
 export const initialIotdState: IotdState = {
   submissionQueue: null,
-  hiddenSubmissionEntries: [],
   submissions: [],
 
   reviewQueue: null,
-  hiddenReviewEntries: [],
-  votes: []
+  votes: [],
+
+  hiddenImages: []
 };
 
 export function reducer(state = initialIotdState, action: IotdActions): IotdState {
@@ -60,16 +59,22 @@ export function reducer(state = initialIotdState, action: IotdActions): IotdStat
         submissions: state.submissions.filter(submission => submission.id !== action.payload.id)
       };
 
-    case IotdActionTypes.INIT_HIDDEN_SUBMISSION_ENTRIES_SUCCESS:
+    case IotdActionTypes.LOAD_HIDDEN_IMAGES_SUCCESS:
       return {
         ...state,
-        hiddenSubmissionEntries: action.payload.ids
+        hiddenImages: action.payload.hiddenImages
       };
 
-    case IotdActionTypes.HIDE_SUBMISSION_ENTRY:
+    case IotdActionTypes.HIDE_IMAGE_SUCCESS:
       return {
         ...state,
-        hiddenSubmissionEntries: [...state.hiddenSubmissionEntries, action.payload.id]
+        hiddenImages: [...state.hiddenImages, action.payload.hiddenImage]
+      };
+
+    case IotdActionTypes.SHOW_IMAGE_SUCCESS:
+      return {
+        ...state,
+        hiddenImages: state.hiddenImages.filter(hiddenImage => hiddenImage.image !== action.payload.id)
       };
 
     case IotdActionTypes.LOAD_REVIEW_QUEUE_SUCCESS:
@@ -94,18 +99,6 @@ export function reducer(state = initialIotdState, action: IotdActions): IotdStat
       return {
         ...state,
         votes: state.votes.filter(review => review.id !== action.payload.id)
-      };
-
-    case IotdActionTypes.INIT_HIDDEN_REVIEW_ENTRIES_SUCCESS:
-      return {
-        ...state,
-        hiddenReviewEntries: action.payload.ids
-      };
-
-    case IotdActionTypes.HIDE_REVIEW_ENTRY:
-      return {
-        ...state,
-        hiddenReviewEntries: [...state.hiddenReviewEntries, action.payload.id]
       };
 
     default:

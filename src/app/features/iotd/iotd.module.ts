@@ -6,8 +6,7 @@ import { SubmissionEntryComponent } from "@features/iotd/components/submission-e
 import { SubmissionSlotsComponent } from "@features/iotd/components/submission-slots/submission-slots.component";
 import { routes } from "@features/iotd/iotd.routing";
 import { ReviewQueueComponent } from "@features/iotd/pages/review-queue/review-queue.component";
-import { ReviewQueueApiService } from "@features/iotd/services/review-queue-api.service";
-import { SubmissionQueueApiService } from "@features/iotd/services/submission-queue-api.service";
+import { IotdApiService } from "@features/iotd/services/iotd-api.service";
 import { EffectsModule } from "@ngrx/effects";
 import { StoreModule } from "@ngrx/store";
 import { SharedModule } from "@shared/shared.module";
@@ -30,7 +29,7 @@ import * as fromIotd from "./store/iotd.reducer";
     StoreModule.forFeature(fromIotd.iotdFeatureKey, fromIotd.reducer),
     EffectsModule.forFeature([IotdEffects])
   ],
-  providers: [ReviewQueueApiService, SubmissionQueueApiService],
+  providers: [IotdApiService],
   exports: [RouterModule, SharedModule, StoreModule, EffectsModule]
 })
 export class IotdModule {}
