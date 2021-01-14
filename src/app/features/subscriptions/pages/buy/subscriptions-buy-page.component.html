@@ -1,7 +1,7 @@
 <h1 class="d-flex align-items-center">
   <span class="flex-fill">{{ subscriptionsService.getName(product) }}</span>
-  <span class="price" *ngIf="pricing$ | async as pricing">
-    <span class="full-price" *ngIf="pricing.discount > 0">
+  <span *ngIf="pricing$ | async as pricing" class="price">
+    <span *ngIf="pricing.discount > 0" class="full-price">
         {{ pricing.fullPrice | currency:this.subscriptionsService.currency:'symbol':'1.2-2':translate.currentLang }}
     </span>
     {{ pricing.price | currency:this.subscriptionsService.currency:'symbol':'1.2-2':translate.currentLang }}
@@ -15,7 +15,8 @@
 <small [innerHTML]="moreInfoMessage"></small>
 
 <ngb-accordion class="info">
-  <ngb-panel *ngIf="product === 'premium' || product==='ultimate'"
+  <ngb-panel
+    *ngIf="product === 'premium' || product==='ultimate'"
     title="{{ 'Want to upgrade from a lower subscription tier?' | translate }}">
     <ng-template ngbPanelContent>
       <p [innerHTML]="upgradeMessage"></p>
@@ -30,8 +31,13 @@
       </p>
 
       <label for="bank-location-selector">{{ "Preferred bank location" }}:</label>
-      <ng-select id="bank-location-selector" [items]="bankLocations" bindValue="id" appendTo="body" [clearable]="false"
-        [(ngModel)]="selectedBankLocation">
+      <ng-select
+        [(ngModel)]="selectedBankLocation"
+        [clearable]="false"
+        [items]="bankLocations"
+        appendTo="body"
+        bindValue="id"
+        id="bank-location-selector">
       </ng-select>
 
       <pre [innerHTML]="bankDetails"></pre>
@@ -46,25 +52,35 @@
     "For this reason, you cannot purchase this at the moment, as AstroBin does not currently offer a downgrade path." | translate
     }}
   </p>
+
+    <p>
+      {{ "Please wait until your subscription expires, then come back to this page." | translate }}
+      {{ "When a paid subscription expires, nothing happens to your images or content." | translate }}
+    </p>
 </div>
 
 <ng-template #buyButton>
   <div class="form-actions">
-    <a [class.disabled]="loadingService.isLoading()" class="btn btn-outline-secondary"
-      [href]="classicRoutesService.PRICING">
+    <a [class.disabled]="loadingService.isLoading()" [href]="classicRoutesService.PRICING"
+       class="btn btn-outline-secondary">
       <fa-icon icon="info"></fa-icon>
       {{ "Learn more" | translate }}
     </a>
 
-    <button (click)="buy()" [class.loading]="loadingService.isLoading()" [disabled]="loadingService.isLoading()"
+    <button
+      (click)="buy()"
+      [class.loading]="loadingService.isLoading()"
+      [disabled]="loadingService.isLoading()"
       class="btn btn-xl btn-primary buy">
       {{ "Buy" | translate }}
       <span class="icons">
-        <img class="icon" src="/assets/images/cc-visa-brands.svg" alt="Visa" />
-        <img class="icon" src="/assets/images/cc-mastercard-brands.svg" alt="Mastercard" />
-        <img class="icon" src="/assets/images/cc-amex-brands.svg" alt="Amex" />
-        <img class="icon" src="/assets/images/apple-pay-brands.svg" alt="Apple Pay" />
-        <img class="icon" src="/assets/images/google-pay-brands.svg" alt="Google Pay" />
+        <img alt="Visa" class="icon" src="/assets/images/cc-visa-brands.svg"/>
+        <img alt="Mastercard" class="icon" src="/assets/images/cc-mastercard-brands.svg"/>
+        <img alt="Amex" class="icon" src="/assets/images/cc-amex-brands.svg"/>
+      </span>
+
+      <span class="stripe-info">
+        {{ "Secure payment by Stripe™" | translate }}
       </span>
     </button>
   </div>

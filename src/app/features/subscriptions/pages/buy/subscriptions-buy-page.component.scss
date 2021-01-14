@@ -21,12 +21,19 @@
   font-weight: bold;
 
   .icons {
-    display: block;
-    margin-top: .75rem;
+    display: inline-block;
+    margin-left: .75rem;
 
     .icon {
       height: 1.5rem;
     }
+  }
+
+  .stripe-info {
+    font-size: .75rem;
+    opacity: .5;
+    display: block;
+    margin-top: .5rem;
   }
 }
 
