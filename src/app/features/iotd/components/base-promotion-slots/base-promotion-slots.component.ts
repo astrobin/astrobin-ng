@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { Component, EventEmitter, HostBinding, Input, OnInit, Output } from "@angular/core";
 import { State } from "@app/store/state";
 import { SubmissionInterface, VoteInterface } from "@features/iotd/services/iotd-api.service";
 import { PromotionImageInterface } from "@features/iotd/store/iotd.reducer";
@@ -32,6 +32,11 @@ export abstract class BasePromotionSlotsComponent extends BaseComponentDirective
 
   protected constructor(public readonly store$: Store<State>) {
     super();
+  }
+
+  @HostBinding("class.is-empty")
+  public get isEmpty(): boolean {
+    return this.slots.filter(slot => !!slot.promotion).length === 0;
   }
 
   ngOnInit() {

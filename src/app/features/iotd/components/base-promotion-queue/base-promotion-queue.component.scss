@@ -14,7 +14,7 @@
   }
 
   .sticky-promotion-slots {
-    z-index: 1;
+    z-index: 2;
     margin-top: 5px;
     transition: .3s ease-in-out;
 
@@ -41,6 +41,14 @@
     @media screen and (min-width: $xl-min) {
       width: 940px;
       transform: scale(.5) translateY(-100px);
+    }
+
+    &.is-empty {
+      top: 2vw !important;
+
+      ::ng-deep .promotion-slot {
+        min-height: 100px;
+      }
     }
   }
 }
