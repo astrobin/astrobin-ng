@@ -1,9 +1,10 @@
-import { Component, EventEmitter, HostBinding, Input, OnInit, Output } from "@angular/core";
+import { Component, EventEmitter, HostBinding, Input, OnInit, Output, QueryList, ViewChildren } from "@angular/core";
 import { State } from "@app/store/state";
 import { SubmissionInterface, VoteInterface } from "@features/iotd/services/iotd-api.service";
 import { PromotionImageInterface } from "@features/iotd/store/iotd.reducer";
 import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { ImageComponent } from "@shared/components/misc/image/image.component";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
 import { Observable } from "rxjs";
 import { take, takeUntil } from "rxjs/operators";
@@ -30,6 +31,9 @@ export abstract class BasePromotionSlotsComponent extends BaseComponentDirective
   @Output()
   slotClick = new EventEmitter();
 
+  @ViewChildren("image")
+  _images = new QueryList<ImageComponent>();
+
   protected constructor(public readonly store$: Store<State>) {
     super();
   }
@@ -54,6 +58,8 @@ export abstract class BasePromotionSlotsComponent extends BaseComponentDirective
       submissions.forEach((promotion, i) => {
         this.slots[i].promotion = promotion;
       });
+
+      this._images.forEach(image => image.refresh());
     });
   }
 

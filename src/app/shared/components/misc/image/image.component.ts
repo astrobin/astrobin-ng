@@ -103,6 +103,12 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
     this.changeDetector.detectChanges();
   }
 
+  refresh(): void {
+    this._loaded = false;
+    this.loading = true;
+    this._loadImage();
+  }
+
   private _load(): void {
     if (
       !this._loaded &&

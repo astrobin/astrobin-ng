@@ -5,6 +5,7 @@
 
   <ng-container *ngIf="slot.promotion; else emptySlot">
     <astrobin-image
+      #image
       [alias]="ImageAlias.STORY"
       [id]="slot.promotion.image"
       [alwaysLoad]="true"
