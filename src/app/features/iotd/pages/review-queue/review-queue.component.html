@@ -9,7 +9,7 @@
   </div>
 
   <ng-container *ngIf="queue$ | async as queue; else loading">
-    <ng-container *ngIf="hiddenEntries$ | async as hiddenEntries">
+    <ng-container *ngIf="hiddenImages$ | async as hiddenImages">
       <ng-container *ngIf="promotions$ | async as promotions">
         <ng-container *ngIf="queue?.count > 0; else noEntries">
 
@@ -25,14 +25,10 @@
           </ng-container>
 
           <div
-            *ngFor="
-              let entry of excludeHiddenEntries(queue.results, hiddenEntries);
-              let i = index"
+            *ngFor="let entry of queue.results"
             id="promotion-queue-entry-{{entry.pk}}"
-            class="mb-5"
             #promotionQueueEntries>
             <astrobin-review-entry [entry]="entry"></astrobin-review-entry>
-            <hr *ngIf="i < queue.results.length - 1" />
           </div>
 
           <ng-container

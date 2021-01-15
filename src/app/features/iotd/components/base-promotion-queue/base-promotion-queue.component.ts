@@ -1,14 +1,14 @@
 import { Component, ElementRef, OnInit, QueryList, ViewChildren } from "@angular/core";
 import { selectApp, selectBackendConfig } from "@app/store/selectors/app/app.selectors";
 import { State } from "@app/store/state";
-import { VoteInterface } from "@features/iotd/services/review-queue-api.service";
-import { SubmissionInterface } from "@features/iotd/services/submission-queue-api.service";
+import { HiddenImage, SubmissionInterface, VoteInterface } from "@features/iotd/services/iotd-api.service";
+import { LoadHiddenImages } from "@features/iotd/store/iotd.actions";
 import {
   PromotionImageInterface,
   ReviewImageInterface,
   SubmissionImageInterface
 } from "@features/iotd/store/iotd.reducer";
-import { selectSubmissions } from "@features/iotd/store/iotd.selectors";
+import { selectHiddenImages, selectSubmissions } from "@features/iotd/store/iotd.selectors";
 import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
@@ -33,7 +33,8 @@ export abstract class BasePromotionQueueComponent extends BaseComponentDirective
     .select(selectBackendConfig)
     .pipe(map(backendConfig => backendConfig.IOTD_QUEUES_PAGE_SIZE));
 
-  abstract hiddenEntries$: Observable<number[]>;
+  hiddenImages$: Observable<HiddenImage[]> = this.store$.select(selectHiddenImages);
+
   abstract queue$: Observable<PaginatedApiResultInterface<SubmissionImageInterface | ReviewImageInterface>>;
   abstract promotions$: Observable<SubmissionInterface[] | VoteInterface[]>;
 
@@ -80,18 +81,20 @@ export abstract class BasePromotionQueueComponent extends BaseComponentDirective
   }
 
   refresh(): void {
-    this.loadHiddenEntries();
+    this.loadHiddenImages();
     this.loadQueue(1);
     this.loadPromotions();
   }
 
   abstract loadQueue(page: number): void;
 
-  abstract loadHiddenEntries(): void;
-
   abstract loadPromotions(): void;
 
   abstract maxPromotionsPerDay(backendConfig: BackendConfigInterface): number;
+
+  loadHiddenImages(): void {
+    this.store$.dispatch(new LoadHiddenImages());
+  }
 
   pageChange(page: number): void {
     this.page = page;
@@ -109,12 +112,6 @@ export abstract class BasePromotionQueueComponent extends BaseComponentDirective
     if (element) {
       element.nativeElement.scrollIntoView({ behavior: "smooth" });
     }
-  }
-
-  excludeHiddenEntries(entries: PromotionImageInterface[], hiddenEntries: number[]): PromotionImageInterface[] {
-    return entries.filter(entry => {
-      return hiddenEntries.indexOf(entry.pk) === -1;
-    });
   }
 
   private _getEntryElement(imageId: number): ElementRef | null {

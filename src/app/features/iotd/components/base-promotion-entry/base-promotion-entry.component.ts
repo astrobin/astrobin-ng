@@ -4,7 +4,9 @@ import { LoadSolution } from "@app/store/actions/solution.actions";
 import { selectApp } from "@app/store/selectors/app/app.selectors";
 import { selectSolution } from "@app/store/selectors/app/solution.selectors";
 import { State } from "@app/store/state";
+import { HideImage, ShowImage } from "@features/iotd/store/iotd.actions";
 import { PromotionImageInterface } from "@features/iotd/store/iotd.reducer";
+import { selectHiddenImageByImageId } from "@features/iotd/store/iotd.selectors";
 import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
@@ -40,9 +42,22 @@ export abstract class BasePromotionEntryComponent extends BaseComponentDirective
     );
   }
 
-  abstract isPromoted$(imageId: number): Observable<boolean>;
+  isHidden$(imageId: number): Observable<boolean> {
+    return this.store$.select(selectHiddenImageByImageId, imageId).pipe(map(hiddenImage => !!hiddenImage));
+  }
 
-  abstract hide(imageId: number): void;
+  hide(imageId: number): void {
+    this.store$.dispatch(new HideImage({ id: imageId }));
+  }
+
+  show(imageId: number): void {
+    this.store$
+      .select(selectHiddenImageByImageId, imageId)
+      .pipe(take(1))
+      .subscribe(hiddenImage => this.store$.dispatch(new ShowImage({ hiddenImage })));
+  }
+
+  abstract isPromoted$(imageId: number): Observable<boolean>;
 
   abstract hideDisabled$(imageId: number): Observable<boolean>;
 

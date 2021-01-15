@@ -1,7 +1,6 @@
 // tslint:disable:max-classes-per-file
 
-import { VoteInterface } from "@features/iotd/services/review-queue-api.service";
-import { SubmissionInterface } from "@features/iotd/services/submission-queue-api.service";
+import { HiddenImage, SubmissionInterface, VoteInterface } from "@features/iotd/services/iotd-api.service";
 import { ReviewImageInterface, SubmissionImageInterface } from "@features/iotd/store/iotd.reducer";
 import { Action } from "@ngrx/store";
 import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
@@ -23,9 +22,12 @@ export enum IotdActionTypes {
   DELETE_SUBMISSION_SUCCESS = "[IOTD Submission queue] Delete submission success",
   DELETE_SUBMISSION_FAILURE = "[IOTD Submission queue] Delete submission failure",
 
-  INIT_HIDDEN_SUBMISSION_ENTRIES = "[IOTD Submission queue] Init hidden submissions",
-  INIT_HIDDEN_SUBMISSION_ENTRIES_SUCCESS = "[IOTD Submission queue] Init hidden submissions success",
-  HIDE_SUBMISSION_ENTRY = "[IOTD Submission queue] Hide submission",
+  LOAD_HIDDEN_IMAGES = "[IOTD] Load hidden images",
+  LOAD_HIDDEN_IMAGES_SUCCESS = "[IOTD] Load hidden images success",
+  HIDE_IMAGE = "[IOTD] Hide image",
+  HIDE_IMAGE_SUCCESS = "[IOTD] Hide image success",
+  SHOW_IMAGE = "[IOTD] Show image",
+  SHOW_IMAGE_SUCCESS = "[IOTD] Show image success",
 
   LOAD_REVIEW_QUEUE = "[IOTD Review queue] Load Review queue",
   LOAD_REVIEW_QUEUE_SUCCESS = "[IOTD Review queue] Load Review queue success",
@@ -111,18 +113,36 @@ export class DeleteSubmissionFailure implements Action {
   readonly type = IotdActionTypes.DELETE_SUBMISSION_FAILURE;
 }
 
-export class InitHiddenSubmissionEntries implements Action {
-  readonly type = IotdActionTypes.INIT_HIDDEN_SUBMISSION_ENTRIES;
+export class LoadHiddenImages implements Action {
+  readonly type = IotdActionTypes.LOAD_HIDDEN_IMAGES;
 }
 
-export class InitHiddenSubmissionEntriesSuccess implements Action {
-  readonly type = IotdActionTypes.INIT_HIDDEN_SUBMISSION_ENTRIES_SUCCESS;
+export class LoadHiddenImagesSuccess implements Action {
+  readonly type = IotdActionTypes.LOAD_HIDDEN_IMAGES_SUCCESS;
 
-  constructor(public payload: { ids: number[] }) {}
+  constructor(public payload: { hiddenImages: HiddenImage[] }) {}
 }
 
-export class HideSubmissionEntry implements Action {
-  readonly type = IotdActionTypes.HIDE_SUBMISSION_ENTRY;
+export class HideImage implements Action {
+  readonly type = IotdActionTypes.HIDE_IMAGE;
+
+  constructor(public payload: { id: number }) {}
+}
+
+export class HideImageSuccess implements Action {
+  readonly type = IotdActionTypes.HIDE_IMAGE_SUCCESS;
+
+  constructor(public payload: { hiddenImage: HiddenImage }) {}
+}
+
+export class ShowImage implements Action {
+  readonly type = IotdActionTypes.SHOW_IMAGE;
+
+  constructor(public payload: { hiddenImage: HiddenImage }) {}
+}
+
+export class ShowImageSuccess implements Action {
+  readonly type = IotdActionTypes.SHOW_IMAGE_SUCCESS;
 
   constructor(public payload: { id: number }) {}
 }
@@ -190,22 +210,6 @@ export class DeleteVoteFailure implements Action {
   readonly type = IotdActionTypes.DELETE_VOTE_FAILURE;
 }
 
-export class InitHiddenReviewEntries implements Action {
-  readonly type = IotdActionTypes.INIT_HIDDEN_REVIEW_ENTRIES;
-}
-
-export class InitHiddenReviewEntriesSuccess implements Action {
-  readonly type = IotdActionTypes.INIT_HIDDEN_REVIEW_ENTRIES_SUCCESS;
-
-  constructor(public payload: { ids: number[] }) {}
-}
-
-export class HideReviewEntry implements Action {
-  readonly type = IotdActionTypes.HIDE_REVIEW_ENTRY;
-
-  constructor(public payload: { id: number }) {}
-}
-
 export type IotdActions =
   | LoadSubmissionQueue
   | LoadSubmissionQueueSuccess
@@ -219,9 +223,12 @@ export type IotdActions =
   | DeleteSubmission
   | DeleteSubmissionSuccess
   | DeleteSubmissionFailure
-  | InitHiddenSubmissionEntries
-  | InitHiddenSubmissionEntriesSuccess
-  | HideSubmissionEntry
+  | LoadHiddenImages
+  | LoadHiddenImagesSuccess
+  | HideImage
+  | HideImageSuccess
+  | ShowImage
+  | ShowImageSuccess
   | LoadReviewQueue
   | LoadReviewQueueSuccess
   | LoadReviewQueueFailure
@@ -233,7 +240,4 @@ export type IotdActions =
   | PostVoteFailure
   | DeleteVote
   | DeleteVoteSuccess
-  | DeleteVoteFailure
-  | InitHiddenReviewEntries
-  | InitHiddenReviewEntriesSuccess
-  | HideReviewEntry;
+  | DeleteVoteFailure;

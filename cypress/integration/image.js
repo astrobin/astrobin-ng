@@ -21,10 +21,10 @@ context("image", () => {
       "getImageThumbnail"
     );
     cy.wait("@getImageThumbnail");
-    cy.wait(2000);
+    cy.wait(500);
 
     cy.get(".astrobin-image")
-      .should("have.css", "background-image")
+      .should("have.attr", "src")
       .and("contain", "blob:http://localhost:4400/");
   });
 });

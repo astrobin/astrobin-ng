@@ -1,10 +1,10 @@
 import { Component, OnInit } from "@angular/core";
 import { State } from "@app/store/state";
 import { BasePromotionQueueComponent } from "@features/iotd/components/base-promotion-queue/base-promotion-queue.component";
-import { VoteInterface } from "@features/iotd/services/review-queue-api.service";
-import { InitHiddenReviewEntries, LoadReviewQueue, LoadVotes } from "@features/iotd/store/iotd.actions";
+import { VoteInterface } from "@features/iotd/services/iotd-api.service";
+import { LoadReviewQueue, LoadVotes } from "@features/iotd/store/iotd.actions";
 import { ReviewImageInterface } from "@features/iotd/store/iotd.reducer";
-import { selectHiddenReviewEntries, selectReviewQueue, selectReviews } from "@features/iotd/store/iotd.selectors";
+import { selectReviewQueue, selectReviews } from "@features/iotd/store/iotd.selectors";
 import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
 import { BackendConfigInterface } from "@shared/interfaces/backend-config.interface";
@@ -20,7 +20,6 @@ import { Observable } from "rxjs";
   styleUrls: ["./review-queue.component.scss"]
 })
 export class ReviewQueueComponent extends BasePromotionQueueComponent implements OnInit {
-  hiddenEntries$: Observable<number[]> = this.store$.select(selectHiddenReviewEntries);
   queue$: Observable<PaginatedApiResultInterface<ReviewImageInterface>> = this.store$.select(selectReviewQueue);
   promotions$: Observable<VoteInterface[]> = this.store$.select(selectReviews);
 
@@ -42,10 +41,6 @@ export class ReviewQueueComponent extends BasePromotionQueueComponent implements
 
   loadQueue(page: number): void {
     this.store$.dispatch(new LoadReviewQueue({ page }));
-  }
-
-  loadHiddenEntries(): void {
-    this.store$.dispatch(new InitHiddenReviewEntries());
   }
 
   loadPromotions(): void {

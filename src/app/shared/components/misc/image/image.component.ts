@@ -10,9 +10,9 @@ import {
   SimpleChanges,
   ViewChild
 } from "@angular/core";
+import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
 import { LoadImage } from "@app/store/actions/image.actions";
 import { LoadThumbnail } from "@app/store/actions/thumbnail.actions";
-import { selectApp } from "@app/store/selectors/app/app.selectors";
 import { selectImage } from "@app/store/selectors/app/image.selectors";
 import { selectThumbnail } from "@app/store/selectors/app/thumbnail.selectors";
 import { State } from "@app/store/state";
@@ -26,7 +26,7 @@ import { ImageService } from "@shared/services/image/image.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { BehaviorSubject, fromEvent, Observable } from "rxjs";
-import { debounceTime, distinctUntilChanged, filter, map, switchMap, take, takeUntil, tap } from "rxjs/operators";
+import { debounceTime, distinctUntilChanged, filter, map, switchMap, takeUntil, tap } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-image",
@@ -35,8 +35,7 @@ import { debounceTime, distinctUntilChanged, filter, map, switchMap, take, takeU
 })
 export class ImageComponent extends BaseComponentDirective implements OnInit, OnChanges, AfterViewChecked {
   image$: Observable<ImageInterface>;
-  thumbnailUrl$: Observable<string>;
-  height: number;
+  thumbnailUrl$: Observable<SafeUrl>;
 
   @Input()
   @HostBinding("attr.data-id")
@@ -47,6 +46,9 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
 
   @Input()
   alias: ImageAlias;
+
+  @Input()
+  alwaysLoad = false;
 
   @HostBinding("class.loading")
   loading = false;
@@ -68,7 +70,8 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
     public readonly elementRef: ElementRef,
     public readonly changeDetector: ChangeDetectorRef,
     public readonly utilsService: UtilsService,
-    public readonly windowRefService: WindowRefService
+    public readonly windowRefService: WindowRefService,
+    public readonly domSanitizer: DomSanitizer
   ) {
     super();
 
@@ -104,7 +107,7 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
     if (
       !this._loaded &&
       this._loadingIndicator &&
-      this.utilsService.isInViewport(this._loadingIndicator.nativeElement)
+      (this.utilsService.isInViewport(this._loadingIndicator.nativeElement) || this.alwaysLoad)
     ) {
       this.loading = true;
       this._loadImage();
@@ -116,9 +119,8 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
 
     this.image$ = this.store$.select(selectImage, this.id).pipe(
       filter(image => !!image),
-      tap(image => {
+      tap(() => {
         this._loadThumbnail();
-        this._fixHeight(image);
       })
     );
   }
@@ -139,39 +141,11 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
             this._loadingProgressSubject.next(progress);
           })
         ),
+        map(url => this.domSanitizer.bypassSecurityTrustUrl(url)),
         tap(() => {
           this.loading = false;
           this._loaded = true;
         })
       );
-  }
-
-  private _fixHeight(image: ImageInterface) {
-    this.store$
-      .select(selectApp)
-      .pipe(
-        take(1),
-        map(state => state.backendConfig)
-      )
-      .subscribe(backendConfig => {
-        if (this.height !== undefined || this._loadingIndicator === undefined) {
-          return;
-        }
-
-        const aliasSize = backendConfig.THUMBNAIL_ALIASES[this.alias].size;
-        const elementWidth = this.elementRef.nativeElement.offsetWidth;
-        const elementHeight = this.elementRef.nativeElement.offsetHeight;
-        const loadingIndicatorHeight = this._loadingIndicator.nativeElement.querySelector(".loading").offsetHeight;
-
-        if (elementHeight - loadingIndicatorHeight > 0) {
-          this.height = elementHeight;
-        } else {
-          this.height = this.imageService.calculateDisplayHeight(
-            aliasSize,
-            [image.w, image.h],
-            [elementWidth, elementHeight - loadingIndicatorHeight]
-          );
-        }
-      });
   }
 }

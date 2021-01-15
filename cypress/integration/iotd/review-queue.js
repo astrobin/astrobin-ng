@@ -41,6 +41,7 @@ context("IOTD Review queue", () => {
         "getImageThumbnail"
       );
       cy.route("GET", "**/api/v2/iotd/review-queue/?page=*", "fixture:api/iotd/review-queue.json").as("reviewQueue");
+      cy.route("GET", "**/api/v2/iotd/hidden-image/", []).as("hiddenImages");
       cy.route("GET", "**/api/v2/iotd/vote", []).as("votes");
       cy.route("GET", "**/api/v2/astrobin/telescope/*/", "fixture:api/telescopes/telescope_1.json").as("getTelescope");
       cy.route("GET", "**/api/v2/astrobin/camera/*/", "fixture:api/cameras/camera_1.json").as("getCamera");
@@ -118,11 +119,29 @@ context("IOTD Review queue", () => {
     });
 
     it("should hide a promotion entry", () => {
+      cy.route("POST", "**/api/v2/iotd/hidden-image/", {
+        id: 1,
+        image: 1,
+        create: new Date().toISOString()
+      }).as("hideImage");
+
       cy.get("#promotion-queue-entry-1 .btn")
         .contains("Hide")
         .click();
 
-      cy.get("#promotion-queue-entry-1").should("not.exist");
+      cy.get("#promotion-queue-entry-1 .promotion-queue-entry").should("have.class", "hidden");
+      cy.get("#promotion-queue-entry-1 .hidden-overlay").should("be.visible");
+    });
+
+    it("should show a promotion entry again", () => {
+      cy.route("DELETE", "**/api/v2/iotd/hidden-image/1", {}).as("showImage");
+
+      cy.get("#promotion-queue-entry-1 .hidden-overlay .btn")
+        .contains("Show")
+        .click();
+
+      cy.get("#promotion-queue-entry-1 .promotion-queue-entry").should("not.have.class", "hidden");
+      cy.get("#promotion-queue-entry-1 .hidden-overlay").should("not.be.visible");
     });
   });
 });
