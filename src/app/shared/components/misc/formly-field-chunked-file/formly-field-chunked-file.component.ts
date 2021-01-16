@@ -61,6 +61,22 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
     super();
   }
 
+  get status$(): Observable<string> {
+    if (!this.uploadState) {
+      return of("");
+    }
+
+    if (this.isInitializingUpload()) {
+      return this.translateService.stream("Initializing upload, please wait...");
+    } else if (this.isUploading()) {
+      return this.translateService.stream("Uploading...");
+    } else if (this.isFinalizingUpload() || this.isComplete()) {
+      return this.translateService.stream("Finalizing upload, please wait...");
+    }
+
+    return of("");
+  }
+
   ngOnInit() {
     this.uploaderService.init(this.uploadOptions);
     this.uploaderService.events.subscribe((state: UploadState) => {
@@ -125,22 +141,6 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
     });
   }
 
-  get status$(): Observable<string> {
-    if (!this.uploadState) {
-      return of("");
-    }
-
-    if (this.isInitializingUpload()) {
-      return this.translateService.stream("Initializing upload, please wait...");
-    } else if (this.isUploading()) {
-      return this.translateService.stream("Uploading...");
-    } else if (this.isFinalizingUpload() || this.isComplete()) {
-      return this.translateService.stream("Finalizing upload, please wait...");
-    }
-
-    return of("");
-  }
-
   isActive(): boolean {
     return !this.uploadState || ["queue", "uploading", "paused", "complete"].indexOf(this.uploadState.status) === -1;
   }
@@ -184,6 +184,7 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
     const extension = this.utilsService.fileExtension(filename).toLowerCase();
 
     if (this.uploadOptions.allowedTypes.indexOf(`.${extension}`) > -1) {
+      this._warnAbout16BitTiff(filename);
       return of(true);
     }
 
@@ -270,6 +271,22 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
     }
 
     if (!!message) {
+      this.popNotificationsService.warning(message);
+    }
+  }
+
+  private _warnAbout16BitTiff(filename: string): void {
+    if (!this.to.experimentalTiffSupportWarning) {
+      return;
+    }
+
+    const extension = this.utilsService.fileExtension(filename).toLowerCase();
+
+    if (extension === "tif" || extension === "tiff") {
+      const message = this.translateService.instant(
+        "Heads up! TIFF support on AstroBin is experimental. 16-bit or floating points formats are currently not" +
+          "supported."
+      );
       this.popNotificationsService.warning(message);
     }
   }

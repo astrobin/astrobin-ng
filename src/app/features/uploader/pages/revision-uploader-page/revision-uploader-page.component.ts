@@ -40,7 +40,8 @@ export class RevisionUploaderPageComponent extends BaseComponentDirective implem
       id: "image_file",
       type: "chunked-file",
       templateOptions: {
-        required: true
+        required: true,
+        experimentalTiffSupportWarning: true
       }
     },
     {

@@ -5,7 +5,6 @@ import { Store } from "@ngrx/store";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { TitleService } from "@shared/services/title/title.service";
 import { UploadDataService } from "@shared/services/upload-metadata/upload-data.service";
@@ -46,7 +45,8 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
       id: "image_file",
       type: "chunked-file",
       templateOptions: {
-        required: true
+        required: true,
+        experimentalTiffSupportWarning: true
       },
       validators: {
         validation: [{ name: "file-size", options: { max: 0 } }]
