@@ -284,8 +284,8 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
 
     if (extension === "tif" || extension === "tiff") {
       const message = this.translateService.instant(
-        "Heads up! TIFF support on AstroBin is experimental. 16-bit or floating points formats are currently not" +
-          "supported."
+        "Heads up! TIFF support on AstroBin is experimental. 16-bit or higher, and floating points formats are " +
+        "currently not supported. If your file is already 8 bits per channel, please ignore this warning message."
       );
       this.popNotificationsService.warning(message);
     }
