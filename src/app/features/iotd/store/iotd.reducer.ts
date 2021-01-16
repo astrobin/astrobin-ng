@@ -1,4 +1,9 @@
-import { HiddenImage, SubmissionInterface, VoteInterface } from "@features/iotd/services/iotd-api.service";
+import {
+  DismissedImage,
+  HiddenImage,
+  SubmissionInterface,
+  VoteInterface
+} from "@features/iotd/services/iotd-api.service";
 import { ImageInterface } from "@shared/interfaces/image.interface";
 import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
 import { IotdActions, IotdActionTypes } from "./iotd.actions";
@@ -21,6 +26,8 @@ export interface IotdState {
   votes: VoteInterface[];
 
   hiddenImages: HiddenImage[];
+  dismissedImages: DismissedImage[];
+  dismissConfirmationSeen: boolean;
 }
 
 export const initialIotdState: IotdState = {
@@ -30,7 +37,9 @@ export const initialIotdState: IotdState = {
   reviewQueue: null,
   votes: [],
 
-  hiddenImages: []
+  hiddenImages: [],
+  dismissedImages: [],
+  dismissConfirmationSeen: false
 };
 
 export function reducer(state = initialIotdState, action: IotdActions): IotdState {
@@ -69,6 +78,24 @@ export function reducer(state = initialIotdState, action: IotdActions): IotdStat
       return {
         ...state,
         hiddenImages: [...state.hiddenImages, action.payload.hiddenImage]
+      };
+
+    case IotdActionTypes.LOAD_DISMISSED_IMAGES_SUCCESS:
+      return {
+        ...state,
+        dismissedImages: action.payload.dismissedImages
+      };
+
+    case IotdActionTypes.DISMISS_IMAGE_SUCCESS:
+      return {
+        ...state,
+        dismissedImages: [...state.dismissedImages, action.payload.dismissedImage]
+      };
+
+    case IotdActionTypes.DISMISS_CONFIRMATION_SEEN:
+      return {
+        ...state,
+        dismissConfirmationSeen: true
       };
 
     case IotdActionTypes.SHOW_IMAGE_SUCCESS:

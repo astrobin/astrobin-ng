@@ -4,9 +4,15 @@ import { LoadSolution } from "@app/store/actions/solution.actions";
 import { selectApp } from "@app/store/selectors/app/app.selectors";
 import { selectSolution } from "@app/store/selectors/app/solution.selectors";
 import { State } from "@app/store/state";
-import { HideImage, ShowImage } from "@features/iotd/store/iotd.actions";
+import { ConfirmDismissModalComponent } from "@features/iotd/components/confirm-dismiss-modal/confirm-dismiss-modal.component";
+import { DismissConfirmationSeen, DismissImage, HideImage, ShowImage } from "@features/iotd/store/iotd.actions";
 import { PromotionImageInterface } from "@features/iotd/store/iotd.reducer";
-import { selectHiddenImageByImageId } from "@features/iotd/store/iotd.selectors";
+import {
+  selectDismissConfirmationSeen,
+  selectDismissedImageByImageId,
+  selectHiddenImageByImageId
+} from "@features/iotd/store/iotd.selectors";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
@@ -25,7 +31,7 @@ export abstract class BasePromotionEntryComponent extends BaseComponentDirective
   @Input()
   entry: PromotionImageInterface;
 
-  protected constructor(public readonly store$: Store<State>) {
+  protected constructor(public readonly store$: Store<State>, public modalService: NgbModal) {
     super();
   }
 
@@ -50,6 +56,31 @@ export abstract class BasePromotionEntryComponent extends BaseComponentDirective
     this.store$.dispatch(new HideImage({ id: imageId }));
   }
 
+  isDismissed$(imageId: number): Observable<boolean> {
+    return this.store$.select(selectDismissedImageByImageId, imageId).pipe(map(dismissedImage => !!dismissedImage));
+  }
+
+  dismiss(imageId: number): void {
+    const _confirmDismiss = () => {
+      this.store$.dispatch(new DismissImage({ id: imageId }));
+    };
+
+    this.store$
+      .select(selectDismissConfirmationSeen)
+      .pipe(take(1))
+      .subscribe(seen => {
+        if (seen) {
+          _confirmDismiss();
+        } else {
+          const modalRef = this.modalService.open(ConfirmDismissModalComponent);
+          modalRef.closed.pipe(take(1)).subscribe(() => {
+            this.store$.dispatch(new DismissConfirmationSeen());
+            _confirmDismiss();
+          });
+        }
+      });
+  }
+
   show(imageId: number): void {
     this.store$
       .select(selectHiddenImageByImageId, imageId)
@@ -59,7 +90,7 @@ export abstract class BasePromotionEntryComponent extends BaseComponentDirective
 
   abstract isPromoted$(imageId: number): Observable<boolean>;
 
-  abstract hideDisabled$(imageId: number): Observable<boolean>;
+  abstract alreadyPromoted$(imageId: number): Observable<boolean>;
 
   abstract promote(imageId: number): void;
 

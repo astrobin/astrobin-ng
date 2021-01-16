@@ -3,6 +3,7 @@ import { State } from "@app/store/state";
 import { BasePromotionEntryComponent } from "@features/iotd/components/base-promotion-entry/base-promotion-entry.component";
 import { DeleteSubmission, PostSubmission } from "@features/iotd/store/iotd.actions";
 import { selectSubmissionForImage } from "@features/iotd/store/iotd.selectors";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Store } from "@ngrx/store";
 import { LoadingService } from "@shared/services/loading.service";
 import { Observable } from "rxjs";
@@ -14,8 +15,12 @@ import { distinctUntilChanged, map, take, tap } from "rxjs/operators";
   styleUrls: ["../base-promotion-entry/base-promotion-entry.component.scss"]
 })
 export class SubmissionEntryComponent extends BasePromotionEntryComponent {
-  constructor(public readonly store$: Store<State>, public readonly loadingService: LoadingService) {
-    super(store$);
+  constructor(
+    public readonly store$: Store<State>,
+    public readonly loadingService: LoadingService,
+    public modalService: NgbModal
+  ) {
+    super(store$, modalService);
   }
 
   isPromoted$(imageId: number): Observable<boolean> {
@@ -25,7 +30,7 @@ export class SubmissionEntryComponent extends BasePromotionEntryComponent {
     );
   }
 
-  hideDisabled$(imageId: number): Observable<boolean> {
+  alreadyPromoted$(imageId: number): Observable<boolean> {
     return this.store$.select(selectSubmissionForImage, imageId).pipe(map(submission => !!submission));
   }
 

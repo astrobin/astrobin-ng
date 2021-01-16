@@ -19,9 +19,11 @@ import {
   DeleteSubmissionSuccess,
   DeleteVoteFailure,
   DeleteVoteSuccess,
+  DismissImageSuccess,
   HideImageSuccess,
   IotdActions,
   IotdActionTypes,
+  LoadDismissedImagesSuccess,
   LoadHiddenImagesSuccess,
   LoadReviewQueueFailure,
   LoadReviewQueueSuccess,
@@ -214,6 +216,41 @@ export class IotdEffects {
   @Effect({ dispatch: false })
   showImageSuccess$ = this.actions$.pipe(
     ofType(IotdActionTypes.SHOW_IMAGE_SUCCESS),
+    tap(() => this.loadingService.setLoading(false))
+  );
+
+  @Effect()
+  loadDismissedImage$ = this.actions$.pipe(
+    ofType(IotdActionTypes.LOAD_DISMISSED_IMAGES),
+    tap(() => this.loadingService.setLoading(true)),
+    mergeMap(() =>
+      this.iotdApiService
+        .loadDismissedImages()
+        .pipe(map(dismissedImages => new LoadDismissedImagesSuccess({ dismissedImages })))
+    )
+  );
+
+  @Effect({ dispatch: false })
+  loadDismissedImagesSuccess$ = this.actions$.pipe(
+    ofType(IotdActionTypes.LOAD_DISMISSED_IMAGES_SUCCESS),
+    tap(() => this.loadingService.setLoading(false))
+  );
+
+  @Effect()
+  dismissImage$ = this.actions$.pipe(
+    ofType(IotdActionTypes.DISMISS_IMAGE),
+    tap(() => this.loadingService.setLoading(true)),
+    map(action => action.payload),
+    mergeMap(payload =>
+      this.iotdApiService
+        .dismissImage(payload.id)
+        .pipe(map(dismissedImage => new DismissImageSuccess({ dismissedImage })))
+    )
+  );
+
+  @Effect({ dispatch: false })
+  dismissImageSuccess$ = this.actions$.pipe(
+    ofType(IotdActionTypes.DISMISS_IMAGE_SUCCESS),
     tap(() => this.loadingService.setLoading(false))
   );
 

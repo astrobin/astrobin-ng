@@ -2,7 +2,7 @@ import { Component, ElementRef, OnInit, QueryList, ViewChildren } from "@angular
 import { selectApp, selectBackendConfig } from "@app/store/selectors/app/app.selectors";
 import { State } from "@app/store/state";
 import { HiddenImage, SubmissionInterface, VoteInterface } from "@features/iotd/services/iotd-api.service";
-import { LoadHiddenImages } from "@features/iotd/store/iotd.actions";
+import { LoadDismissedImages, LoadHiddenImages } from "@features/iotd/store/iotd.actions";
 import {
   PromotionImageInterface,
   ReviewImageInterface,
@@ -81,7 +81,9 @@ export abstract class BasePromotionQueueComponent extends BaseComponentDirective
   }
 
   refresh(): void {
-    this.loadHiddenImages();
+    this.store$.dispatch(new LoadHiddenImages());
+    this.store$.dispatch(new LoadDismissedImages());
+
     this.loadQueue(1);
     this.loadPromotions();
   }
@@ -91,10 +93,6 @@ export abstract class BasePromotionQueueComponent extends BaseComponentDirective
   abstract loadPromotions(): void;
 
   abstract maxPromotionsPerDay(backendConfig: BackendConfigInterface): number;
-
-  loadHiddenImages(): void {
-    this.store$.dispatch(new LoadHiddenImages());
-  }
 
   pageChange(page: number): void {
     this.page = page;
