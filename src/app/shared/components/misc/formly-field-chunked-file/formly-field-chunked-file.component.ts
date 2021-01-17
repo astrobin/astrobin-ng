@@ -87,17 +87,22 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
 
         switch (state.responseStatus) {
           case 401:
-            message = "Authentication error. Please log out and in again.";
+            message = this.translateService.instant("Authentication error. Please log out and in again.");
             break;
           case 400:
-            message = "Invalid data, please refresh the page and try again.";
+            message = this.translateService.instant("Invalid data, please refresh the page and try again.");
+            break;
+          case 415:
+            message = this.translateService.instant(
+              "AstroBin could not read your file as an image. Please try a different format."
+            );
             break;
           default:
-            message = "Unknown error, please refresh the page and try again.";
+            message = this.translateService.instant("Unknown error, please refresh the page and try again.");
             break;
         }
 
-        this.popNotificationsService.error(this.translateService.instant(message), null, {
+        this.popNotificationsService.error(message, null, {
           disableTimeOut: true
         });
       } else if (state.status === "added") {
@@ -285,8 +290,8 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
     if (extension === "tif" || extension === "tiff") {
       const message = this.translateService.instant(
         "Heads up! TIFF support on AstroBin is experimental. Grayscale images that are 16-bit or higher, or " +
-        "with floating points precision, currently are not supported. If your file is a color image, or already an " +
-        "8-bit depth grayscale, please ignore this warning message."
+          "with floating points precision, currently are not supported. If your file is a color image, or already an " +
+          "8-bit depth grayscale, please ignore this warning message."
       );
       this.popNotificationsService.warning(message);
     }
