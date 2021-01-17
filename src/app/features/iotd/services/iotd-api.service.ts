@@ -28,6 +28,13 @@ export interface HiddenImage {
   created: string;
 }
 
+export interface DismissedImage {
+  id: number;
+  user: number;
+  image: number;
+  created: string;
+}
+
 @Injectable()
 export class IotdApiService extends BaseClassicApiService {
   constructor(public readonly loadingService: LoadingService, public readonly http: HttpClient) {
@@ -82,5 +89,13 @@ export class IotdApiService extends BaseClassicApiService {
     return this.http
       .delete<void>(`${this.baseUrl}/iotd/hidden-image/${hiddenImage.id}/`)
       .pipe(map(() => hiddenImage.image));
+  }
+
+  loadDismissedImages(): Observable<DismissedImage[]> {
+    return this.http.get<DismissedImage[]>(`${this.baseUrl}/iotd/dismissed-image/`);
+  }
+
+  dismissImage(id: number): Observable<DismissedImage> {
+    return this.http.post<DismissedImage>(`${this.baseUrl}/iotd/dismissed-image/`, { image: id });
   }
 }

@@ -1,4 +1,9 @@
-import { HiddenImage, SubmissionInterface, VoteInterface } from "@features/iotd/services/iotd-api.service";
+import {
+  DismissedImage,
+  HiddenImage,
+  SubmissionInterface,
+  VoteInterface
+} from "@features/iotd/services/iotd-api.service";
 import { createFeatureSelector, createSelector } from "@ngrx/store";
 import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
 import * as fromIotd from "./iotd.reducer";
@@ -62,4 +67,26 @@ export const selectHiddenImageByImageId = createSelector(
 
     return null;
   }
+);
+
+export const selectDismissedImages = createSelector(
+  selectIotdState,
+  (state: IotdState): DismissedImage[] => state.dismissedImages
+);
+
+export const selectDismissedImageByImageId = createSelector(
+  selectDismissedImages,
+  (dismissedImages: DismissedImage[], imageId: number): DismissedImage => {
+    const matching = dismissedImages.filter(dismissedImage => dismissedImage.image === imageId);
+    if (matching.length === 1) {
+      return matching[0];
+    }
+
+    return null;
+  }
+);
+
+export const selectDismissConfirmationSeen = createSelector(
+  selectIotdState,
+  (state: IotdState): boolean => state.dismissConfirmationSeen
 );

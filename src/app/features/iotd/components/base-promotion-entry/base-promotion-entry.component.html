@@ -1,5 +1,6 @@
 <div
   class="row no-gutters promotion-queue-entry"
+  *ngIf="(isDismissed$(entry.pk) | async) === false"
   [class.promoted]="(isPromoted$(entry.pk) | async) === true"
   [class.hidden]="(isHidden$(entry.pk) | async) === true">
 
@@ -23,7 +24,7 @@
 
   <div class="col-12 col-tools">
     <div class="row align-items-end dark-box">
-      <div class="col-12 col-md-6 col-gear">
+      <div class="col-12 col-md-5 col-gear">
         <p>
           <strong>{{ "Title" | translate }}:</strong>
           {{ entry.title }}
@@ -62,17 +63,23 @@
         </p>
       </div>
 
-      <div class="col-12 col-md-6">
+      <div class="col-12 col-md-7">
         <div class="text-right form-actions mt-0 d-sm-flex justify-content-sm-end">
           <button class="btn btn-secondary" (click)="viewFullscreen(entry.pk)">
             <fa-icon icon="search-plus"></fa-icon>
             {{ "View large" | translate }}
           </button>
 
-          <button class="btn btn-danger" [disabled]="hideDisabled$(entry.pk) | async"
-                  [class.loading]="loadingService.isLoading()" (click)="hide(entry.pk)">
-            <fa-icon icon="minus-circle"></fa-icon>
-            {{ "Hide" | translate }}
+          <button class="btn btn-danger" [disabled]="alreadyPromoted$(entry.pk) | async"
+                  [class.loading]="loadingService.isLoading()" (click)="dismiss(entry.pk)">
+            <fa-icon icon="ban"></fa-icon>
+            {{ "Dismiss" | translate }}
+          </button>
+
+           <button class="btn btn-secondary" [disabled]="alreadyPromoted$(entry.pk) | async"
+                   [class.loading]="loadingService.isLoading()" (click)="hide(entry.pk)">
+            <fa-icon icon="eye-slash"></fa-icon>
+             {{ "Hide" | translate }}
           </button>
 
           <button class="btn btn-primary"

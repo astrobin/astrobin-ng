@@ -1,6 +1,11 @@
 // tslint:disable:max-classes-per-file
 
-import { HiddenImage, SubmissionInterface, VoteInterface } from "@features/iotd/services/iotd-api.service";
+import {
+  DismissedImage,
+  HiddenImage,
+  SubmissionInterface,
+  VoteInterface
+} from "@features/iotd/services/iotd-api.service";
 import { ReviewImageInterface, SubmissionImageInterface } from "@features/iotd/store/iotd.reducer";
 import { Action } from "@ngrx/store";
 import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
@@ -29,6 +34,12 @@ export enum IotdActionTypes {
   SHOW_IMAGE = "[IOTD] Show image",
   SHOW_IMAGE_SUCCESS = "[IOTD] Show image success",
 
+  LOAD_DISMISSED_IMAGES = "[IOTD] Load dismissed images",
+  LOAD_DISMISSED_IMAGES_SUCCESS = "[IOTD] Load dismissed images success",
+  DISMISS_IMAGE = "[IOTD] Dismiss image",
+  DISMISS_IMAGE_SUCCESS = "[IOTD] Dismiss image success",
+  DISMISS_CONFIRMATION_SEEN = "[IOTD] Dismiss confirmation seen",
+
   LOAD_REVIEW_QUEUE = "[IOTD Review queue] Load Review queue",
   LOAD_REVIEW_QUEUE_SUCCESS = "[IOTD Review queue] Load Review queue success",
   LOAD_REVIEW_QUEUE_FAILURE = "[IOTD Review queue] Load Review queue failure",
@@ -43,11 +54,7 @@ export enum IotdActionTypes {
 
   DELETE_VOTE = "[IOTD Review queue] Delete review",
   DELETE_VOTE_SUCCESS = "[IOTD Review queue] Delete review success",
-  DELETE_VOTE_FAILURE = "[IOTD Review queue] Delete review failure",
-
-  INIT_HIDDEN_REVIEW_ENTRIES = "[IOTD Review queue] Init hidden reviews",
-  INIT_HIDDEN_REVIEW_ENTRIES_SUCCESS = "[IOTD Review queue] Init hidden reviews success",
-  HIDE_REVIEW_ENTRY = "[IOTD Review queue] Hide review"
+  DELETE_VOTE_FAILURE = "[IOTD Review queue] Delete review failure"
 }
 
 export class LoadSubmissionQueue implements Action {
@@ -147,6 +154,32 @@ export class ShowImageSuccess implements Action {
   constructor(public payload: { id: number }) {}
 }
 
+export class LoadDismissedImages implements Action {
+  readonly type = IotdActionTypes.LOAD_DISMISSED_IMAGES;
+}
+
+export class LoadDismissedImagesSuccess implements Action {
+  readonly type = IotdActionTypes.LOAD_DISMISSED_IMAGES_SUCCESS;
+
+  constructor(public payload: { dismissedImages: DismissedImage[] }) {}
+}
+
+export class DismissImage implements Action {
+  readonly type = IotdActionTypes.DISMISS_IMAGE;
+
+  constructor(public payload: { id: number }) {}
+}
+
+export class DismissImageSuccess implements Action {
+  readonly type = IotdActionTypes.DISMISS_IMAGE_SUCCESS;
+
+  constructor(public payload: { dismissedImage: DismissedImage }) {}
+}
+
+export class DismissConfirmationSeen implements Action {
+  readonly type = IotdActionTypes.DISMISS_CONFIRMATION_SEEN;
+}
+
 export class LoadReviewQueue implements Action {
   readonly type = IotdActionTypes.LOAD_REVIEW_QUEUE;
 
@@ -229,6 +262,11 @@ export type IotdActions =
   | HideImageSuccess
   | ShowImage
   | ShowImageSuccess
+  | LoadDismissedImages
+  | LoadDismissedImagesSuccess
+  | DismissImage
+  | DismissImageSuccess
+  | DismissConfirmationSeen
   | LoadReviewQueue
   | LoadReviewQueueSuccess
   | LoadReviewQueueFailure
