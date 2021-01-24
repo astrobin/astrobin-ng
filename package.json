@@ -40,7 +40,7 @@
     "@fortawesome/fontawesome-svg-core": "1.2.34",
     "@fortawesome/free-solid-svg-icons": "5.15.2",
     "@ng-bootstrap/ng-bootstrap": "9.0.1",
-    "@ng-select/ng-select": "5.0.15",
+    "@ng-select/ng-select": "5.1.0",
     "@ngrx/effects": "10.1.2",
     "@ngrx/store": "10.1.2",
     "@ngx-formly/bootstrap": "5.10.11",
