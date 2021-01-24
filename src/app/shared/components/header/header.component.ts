@@ -42,7 +42,7 @@ export class HeaderComponent extends BaseComponentDirective {
     { code: "pl", label: "Polski" },
     { code: "ru", label: "Русский" },
     { code: "sq", label: "Shqipe" },
-    { code: "tr", label: "Türk" }
+    { code: "tr", label: "Türkçe" }
   ];
 
   constructor(
