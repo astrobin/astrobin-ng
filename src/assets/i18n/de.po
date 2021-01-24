@@ -25,6 +25,14 @@ msgstr "Anzahl"
 msgid "And much more!"
 msgstr "... und vieles mehr!"
 
+msgid "Are you sure you want to dismiss this image?"
+msgstr ""
+
+msgid ""
+"AstroBin could not read your file as an image. Please try a different "
+"format."
+msgstr ""
+
 msgid ""
 "AstroBin doesn't support subscription upgrades at the moment, but we're "
 "happy to make it happen manually. If you're on a lower subscription tier "
@@ -45,6 +53,9 @@ msgstr "AstroBin Index"
 msgid "Astrophotographers list"
 msgstr "Liste der Astrofotografen"
 
+msgid "Authentication error. Please log out and in again."
+msgstr ""
+
 msgid "Autorenew"
 msgstr "Automatisch erneuern"
 
@@ -59,6 +70,9 @@ msgstr "Lesezeichen"
 
 msgid "Buy"
 msgstr "Kaufen"
+
+msgid "Cancel"
+msgstr ""
 
 msgid "Cancelled"
 msgstr "Abgebrochen"
@@ -80,6 +94,12 @@ msgstr "Datum"
 
 msgid "Description"
 msgstr "Beschreibung"
+
+msgid "Dismiss"
+msgstr ""
+
+msgid "Dismiss image"
+msgstr ""
 
 msgid "Do not notify your followers about this revision."
 msgstr "Keine Benachrichtigung Ihrer Abonnenten zu dieser Revision"
@@ -104,6 +124,9 @@ msgstr "FAQ"
 
 msgid "File type not supported"
 msgstr "Der Dateityp wird nicht unterstützt"
+
+msgid "Finalizing upload, please wait..."
+msgstr ""
 
 msgid "Followers"
 msgstr "Abonnenten"
@@ -146,6 +169,13 @@ msgid ""
 "resolution, if it will take too long for them to download it."
 msgstr ""
 
+msgid ""
+"Heads up! TIFF support on AstroBin is experimental. Grayscale images that "
+"are 16-bit or higher, or with floating points precision, currently are not "
+"supported. If your file is a color image, or already an 8-bit depth "
+"grayscale, please ignore this warning message."
+msgstr ""
+
 msgid "Help"
 msgstr "Hilfe"
 
@@ -175,6 +205,12 @@ msgstr ""
 
 msgid "Info"
 msgstr "Info"
+
+msgid "Initializing upload, please wait..."
+msgstr ""
+
+msgid "Invalid data, please refresh the page and try again."
+msgstr ""
 
 msgid "It looks like you reached the upload limit for your subscription."
 msgstr "Wahrscheinlich haben Sie das Upload-Limit für Ihr Abonnement erreicht."
@@ -245,6 +281,9 @@ msgstr ""
 msgid "Notifications"
 msgstr "Benachrichtigungen"
 
+msgid "Objects in field"
+msgstr ""
+
 msgid "Password"
 msgstr "Passwort"
 
@@ -265,6 +304,9 @@ msgstr ""
 msgid ""
 "Please note: you don't <strong>have to</strong> use all your slots. It's ok "
 "to use fewer if you don't think there are that many worthy images today."
+msgstr ""
+
+msgid "Please wait until your subscription expires, then come back to this page."
 msgstr ""
 
 msgid "Plots"
@@ -297,12 +339,6 @@ msgstr "Passwort zurücksetzen"
 msgid "Retract promotion"
 msgstr ""
 
-msgid "Return to the classic review queue"
-msgstr ""
-
-msgid "Return to the classic submission queue"
-msgstr ""
-
 msgid "Return to the classic uploader"
 msgstr "Zurück zum bisherigen Upload-Dialog"
 
@@ -312,8 +348,14 @@ msgstr "Auswahlliste Reviewer"
 msgid "Revision uploader"
 msgstr "Versions-Uploader"
 
+msgid "Secure payment by Stripe™"
+msgstr ""
+
 msgid "Settings"
 msgstr "Einstellungen"
+
+msgid "Show"
+msgstr ""
 
 msgid "Skip notifications"
 msgstr "Benachrichtigungen deaktivieren"
@@ -369,6 +411,9 @@ msgstr "Danke!"
 msgid "The Big Wall"
 msgstr "Die große Wand"
 
+msgid "The image will permanently disappear from your queue."
+msgstr ""
+
 msgid ""
 "The price is shown in Swiss Francs even though you might have paid the "
 "equivalent amount in your country's currency."
@@ -383,15 +428,15 @@ msgstr ""
 msgid "There doesn't seem to be anything here."
 msgstr "Es scheint hier nichts zu geben."
 
-msgid "This field is required"
-msgstr "Dies ist ein erforderliches Feld."
-
 msgid ""
 "This image will be uploaded to your staging area as a work in progress. You "
 "can make it public at the end of the process."
 msgstr ""
 "Dieses Bild wird als \"in Bearbeitung\" in Ihren Wartebereich hochgeladen. "
 "Sie können es am Ende des Prozesses veröffentlichen."
+
+msgid "This operation can not be undone."
+msgstr ""
 
 msgid ""
 "This page or operation is not available at the moment, because AstroBin is "
@@ -415,6 +460,9 @@ msgstr "Upload-Dialog für unkomprimierte Ausgangsbilder"
 msgid "Unknown error"
 msgstr "Unbekannter Fehler"
 
+msgid "Unknown error, please refresh the page and try again."
+msgstr ""
+
 msgid "Unlimited images"
 msgstr "Unbegrenzte Bilder "
 
@@ -429,6 +477,9 @@ msgstr "Hochladen"
 
 msgid "Uploader"
 msgstr "Upload-Dialog"
+
+msgid "Uploading..."
+msgstr ""
 
 msgid "Username"
 msgstr "Benutzername"
@@ -465,6 +516,9 @@ msgstr "Willkommen!"
 
 msgid "What is this site?"
 msgstr "Was ist das für eine Website?"
+
+msgid "When a paid subscription expires, nothing happens to your images or content."
+msgstr ""
 
 msgid "Would you like to upgrade?"
 msgstr "Möchten Sie upgraden?"
@@ -525,6 +579,9 @@ msgid ""
 msgstr ""
 "Ihre Transaktion mit dem Zahlungsabwickler wurde storniert. Deshalb ist es "
 "zu keiner Änderung Ihres Abonnements gekommen."
+
+msgid "Zoom ready"
+msgstr ""
 
 msgid "n/a"
 msgstr "n.v."

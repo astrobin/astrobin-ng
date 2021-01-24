@@ -25,6 +25,14 @@ msgstr "Quantité"
 msgid "And much more!"
 msgstr "Et plus encore ! "
 
+msgid "Are you sure you want to dismiss this image?"
+msgstr ""
+
+msgid ""
+"AstroBin could not read your file as an image. Please try a different "
+"format."
+msgstr ""
+
 msgid ""
 "AstroBin doesn't support subscription upgrades at the moment, but we're "
 "happy to make it happen manually. If you're on a lower subscription tier "
@@ -45,6 +53,9 @@ msgstr "Indice AstroBin"
 msgid "Astrophotographers list"
 msgstr "Liste des astrophotographes"
 
+msgid "Authentication error. Please log out and in again."
+msgstr ""
+
 msgid "Autorenew"
 msgstr "Renouvellement automatique"
 
@@ -60,11 +71,14 @@ msgstr "Favoris"
 msgid "Buy"
 msgstr "Acheter"
 
+msgid "Cancel"
+msgstr ""
+
 msgid "Cancelled"
 msgstr "Annulé"
 
 msgid "Click on the image and scroll to magnify up to 8x."
-msgstr ""
+msgstr "Cliquez sur l'image et utilisez la molette pour zoomer jusqu'à 8x."
 
 msgid "Commercial products"
 msgstr "Produits commerciaux"
@@ -80,6 +94,12 @@ msgstr "Date"
 
 msgid "Description"
 msgstr "Description"
+
+msgid "Dismiss"
+msgstr ""
+
+msgid "Dismiss image"
+msgstr ""
 
 msgid "Do not notify your followers about this revision."
 msgstr "Ne pas informer vos abonnés de cette nouvelle version."
@@ -104,6 +124,9 @@ msgstr "FAQ"
 
 msgid "File type not supported"
 msgstr "Type de fichier non pris en charge"
+
+msgid "Finalizing upload, please wait..."
+msgstr ""
 
 msgid "Followers"
 msgstr "Abonnés"
@@ -145,6 +168,16 @@ msgid ""
 "do so but probably not many people will want to see it at its full "
 "resolution, if it will take too long for them to download it."
 msgstr ""
+"Attention ! Etes-vous certain de vouloir publier un aussi gros fichier ? "
+"Cela est possible, mais il est probable que peu de personnes ne le "
+"consultent à sa résolution maximale si le temps de chargement est trop long."
+
+msgid ""
+"Heads up! TIFF support on AstroBin is experimental. Grayscale images that "
+"are 16-bit or higher, or with floating points precision, currently are not "
+"supported. If your file is a color image, or already an 8-bit depth "
+"grayscale, please ignore this warning message."
+msgstr ""
 
 msgid "Help"
 msgstr "Aide"
@@ -153,7 +186,7 @@ msgid "Help with translations!"
 msgstr "Contribuez aux traductions !"
 
 msgid "Hide"
-msgstr ""
+msgstr "Masquer"
 
 msgid "Home"
 msgstr "Accueil"
@@ -168,13 +201,19 @@ msgid "Images"
 msgstr "Images"
 
 msgid "Imaging cameras"
-msgstr ""
+msgstr "Caméras d'imagerie"
 
 msgid "Imaging telescopes"
-msgstr ""
+msgstr "Instruments de prise de vue"
 
 msgid "Info"
 msgstr "Informations"
+
+msgid "Initializing upload, please wait..."
+msgstr ""
+
+msgid "Invalid data, please refresh the page and try again."
+msgstr ""
 
 msgid "It looks like you reached the upload limit for your subscription."
 msgstr ""
@@ -194,7 +233,7 @@ msgid "Learn more"
 msgstr "En savoir plus"
 
 msgid "Loading..."
-msgstr ""
+msgstr "Chargement…"
 
 msgid "Log in"
 msgstr "Connexion"
@@ -242,16 +281,19 @@ msgid "No plate-solving"
 msgstr "Pas de réduction astrométrique"
 
 msgid "None specified"
-msgstr ""
+msgstr "Non indiqué"
 
 msgid "Notifications"
 msgstr "Notifications"
+
+msgid "Objects in field"
+msgstr ""
 
 msgid "Password"
 msgstr "Mot de passe"
 
 msgid "Please come back later!"
-msgstr ""
+msgstr "Merci de revenir plus tard !"
 
 msgid ""
 "Please make a deposit of {{ currency }} {{ amount }} to the following bank "
@@ -272,6 +314,12 @@ msgid ""
 "Please note: you don't <strong>have to</strong> use all your slots. It's ok "
 "to use fewer if you don't think there are that many worthy images today."
 msgstr ""
+"A noter : vous n'êtes pas <strong>obligé</strong> de remplir toutes places "
+"disponibles ; en particulier si vous estimez qu'il n'y a pas assez d'images "
+"notables aujourd'hui."
+
+msgid "Please wait until your subscription expires, then come back to this page."
+msgstr ""
 
 msgid "Plots"
 msgstr "Graphiques"
@@ -280,13 +328,13 @@ msgid "Prefer to pay via bank transfer?"
 msgstr "Vous préférez payer par virement bancaire ?"
 
 msgid "Promote"
-msgstr ""
+msgstr "Promouvoir"
 
 msgid "Public Gallery"
 msgstr "Galerie publique"
 
 msgid "Published"
-msgstr ""
+msgstr "Publié"
 
 msgid "Quick search"
 msgstr "Recherche rapide"
@@ -301,13 +349,7 @@ msgid "Reset password"
 msgstr "Réinitialiser votre mot de passe"
 
 msgid "Retract promotion"
-msgstr ""
-
-msgid "Return to the classic review queue"
-msgstr ""
-
-msgid "Return to the classic submission queue"
-msgstr ""
+msgstr "Annuler la promotion"
 
 msgid "Return to the classic uploader"
 msgstr "Retour au module classique de publication"
@@ -318,8 +360,14 @@ msgstr "Tableau de bord Examinateurs"
 msgid "Revision uploader"
 msgstr "Publication d'une nouvelle version"
 
+msgid "Secure payment by Stripe™"
+msgstr ""
+
 msgid "Settings"
 msgstr "Paramètres"
+
+msgid "Show"
+msgstr ""
 
 msgid "Skip notifications"
 msgstr "Pas de notifications"
@@ -335,6 +383,8 @@ msgid ""
 "Sorry, but this image is too large. Under your current subscription plan, "
 "the maximum allowed image size is {{max}}."
 msgstr ""
+"Désolé, mais cette image est trop grande. Votre abonnement actuel vous "
+"autorise une taille d'image maximale de {{max}}."
 
 msgid "Spam list"
 msgstr "Liste de spams"
@@ -375,6 +425,9 @@ msgstr "Merci !"
 msgid "The Big Wall"
 msgstr "Le Grand Mur"
 
+msgid "The image will permanently disappear from your queue."
+msgstr ""
+
 msgid ""
 "The price is shown in Swiss Francs even though you might have paid the "
 "equivalent amount in your country's currency."
@@ -383,16 +436,13 @@ msgstr ""
 "converti dans votre devise locale."
 
 msgid "The review queue is currently empty."
-msgstr ""
+msgstr "Le tableau de bord des Examinateurs est vide pour le moment."
 
 msgid "The submission queue is currently empty."
-msgstr ""
+msgstr "Le tableau de bord des Sélectionneurs est vide pour le moment."
 
 msgid "There doesn't seem to be anything here."
 msgstr "Rien à afficher."
-
-msgid "This field is required"
-msgstr "Ce champ est obligatoire."
 
 msgid ""
 "This image will be uploaded to your staging area as a work in progress. You "
@@ -400,6 +450,9 @@ msgid ""
 msgstr ""
 "Cette image sera publiée dans votre Zone privée en tant que projet. Vous "
 "pourrez la rendre publique au terme du processus. "
+
+msgid "This operation can not be undone."
+msgstr ""
 
 msgid ""
 "This page or operation is not available at the moment, because AstroBin is "
@@ -423,6 +476,9 @@ msgstr "Téléverser une source non-compressée"
 msgid "Unknown error"
 msgstr "Erreur inconnue"
 
+msgid "Unknown error, please refresh the page and try again."
+msgstr ""
+
 msgid "Unlimited images"
 msgstr "Images illimitées"
 
@@ -438,6 +494,9 @@ msgstr "Publier"
 msgid "Uploader"
 msgstr "Module de publication"
 
+msgid "Uploading..."
+msgstr ""
+
 msgid "Username"
 msgstr "Nom d'utilisateur"
 
@@ -445,7 +504,7 @@ msgid "Validity"
 msgstr "Validité"
 
 msgid "View large"
-msgstr ""
+msgstr "Voir en plein écran"
 
 msgid "Want to upgrade from a lower subscription tier?"
 msgstr "Vous désirez passer à une offre d'abonnement supérieure ?"
@@ -459,6 +518,10 @@ msgid ""
 "subscription, but we cannot guarantee that all images above 200 MB or "
 "~8000x8000 pixels will work. Feel free to give it a shot tho!"
 msgstr ""
+"Attention ! Votre image est énorme ! AstroBin n'impose pas de limitation "
+"quant à la taille des images pour les abonnés Ultimate, mais ne peut "
+"garantir que toutes les images supérieures à ~8000x8000 pixels ou 200MB "
+"pourront être correctement publiées. Merci de tenter à nouveau. "
 
 msgid "We could not log you in. Please check your credentials and try again."
 msgstr "Connexion impossible. Merci de vérifier vos identifiants et de réessayer."
@@ -471,6 +534,9 @@ msgstr "Bienvenue !"
 
 msgid "What is this site?"
 msgstr "Astrobin, c'est quoi ?"
+
+msgid "When a paid subscription expires, nothing happens to your images or content."
+msgstr ""
 
 msgid "Would you like to upgrade?"
 msgstr "Vous souhaitez passer à une formule d'abonnement supérieure ?"
@@ -530,6 +596,9 @@ msgid ""
 msgstr ""
 "Votre demande de transaction a été annulée ; votre abonnement n'a donc pas "
 "été modifié. "
+
+msgid "Zoom ready"
+msgstr ""
 
 msgid "n/a"
 msgstr "n/a"
