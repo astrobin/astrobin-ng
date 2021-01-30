@@ -2,6 +2,7 @@ import { FormControl, ValidationErrors } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
 import { FormlyFieldChunkedFileComponent } from "@shared/components/misc/formly-field-chunked-file/formly-field-chunked-file.component";
+import { FormlyFieldStepperComponent } from "@shared/components/misc/formly-field-stepper/formly-field-stepper.component";
 
 export interface FileSizeValidatorOptionsInterface {
   max: number;
@@ -29,6 +30,11 @@ export function formlyValidationConfig(translate: TranslateService) {
         name: "chunked-file",
         component: FormlyFieldChunkedFileComponent,
         wrappers: ["form-field"]
+      },
+      {
+        name: "stepper",
+        component: FormlyFieldStepperComponent,
+        wrappers: []
       }
     ],
     validators: [{ name: "file-size", validation: fileSizeValidator }],

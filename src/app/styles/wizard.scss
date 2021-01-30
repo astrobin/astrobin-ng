@@ -1,0 +1,47 @@
+@import "variables";
+
+.ng-wizard-theme-default {
+  box-shadow: none;
+
+  .nav-tabs {
+    border-bottom-color: $light-grey;
+  }
+
+  .nav-item {
+    margin-right: 1rem;
+
+    .nav-link {
+      font-weight: bold;
+
+      small {
+        font-weight: normal;
+      }
+    }
+
+    &.active .nav-link {
+      color: $accent-color !important;
+
+      &::after {
+        background: $accent-color;
+      }
+    }
+
+    &.done .nav-link {
+      color: $lightest-grey !important;
+
+      &::after {
+        background: $lightest-grey;
+      }
+    }
+  }
+
+  .step-content {
+    background-color: transparent;
+    border: 0;
+    padding: 2rem 0;
+  }
+
+  .ng-wizard-toolbar-bottom {
+    background-color: transparent;
+  }
+}

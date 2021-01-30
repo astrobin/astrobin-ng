@@ -28,6 +28,7 @@ import { SessionService } from "@shared/services/session.service";
 import { UserStoreService } from "@shared/services/user-store.service";
 import { UserService } from "@shared/services/user.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
+import { NgWizardModule, THEME } from "ng-wizard";
 import { StickyNavModule } from "ng2-sticky-nav";
 import { CookieService } from "ngx-cookie-service";
 import { NgxFilesizeModule } from "ngx-filesize";
@@ -72,6 +73,9 @@ export function appInitializer(store: Store<State>, actions$: Actions) {
     NgbProgressbarModule,
     NgSelectModule,
     NgxFilesizeModule,
+    NgWizardModule.forRoot({
+      theme: THEME.default
+    }),
     ToastrModule.forRoot({
       timeOut: 20000,
       progressBar: true,
