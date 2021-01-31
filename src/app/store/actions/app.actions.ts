@@ -1,5 +1,6 @@
 // tslint:disable:max-classes-per-file
 
+import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { LoadCamera, LoadCameraSuccess } from "@app/store/actions/camera.actions";
 import { LoadContentType, LoadContentTypeSuccess } from "@app/store/actions/content-type.actions";
 import { HideFullscreenImage, ShowFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
@@ -17,6 +18,8 @@ import { LoadThumbnail, LoadThumbnailSuccess } from "@app/store/actions/thumbnai
 export enum AppActionTypes {
   INITIALIZE = "[App] Initialize",
   INITIALIZE_SUCCESS = "[App] Initialize success",
+
+  SET_BREADCRUMB = "[App] Set breadcrumb",
 
   SHOW_FULLSCREEN_IMAGE = "[App] Show full screen image",
   HIDE_FULLSCREEN_IMAGE = "[App] Hide full screen image",
@@ -49,6 +52,7 @@ export enum AppActionTypes {
 export type All =
   | InitializeApp
   | InitializeAppSuccess
+  | SetBreadcrumb
   | ShowFullscreenImage
   | HideFullscreenImage
   | LoadContentType

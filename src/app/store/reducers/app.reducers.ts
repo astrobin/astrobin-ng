@@ -1,4 +1,5 @@
 import { All, AppActionTypes } from "@app/store/actions/app.actions";
+import { BreadcrumbInterface } from "@shared/components/misc/breadcrumb/breadcrumb.interface";
 import { BackendConfigInterface } from "@shared/interfaces/backend-config.interface";
 import { CameraInterface } from "@shared/interfaces/camera.interface";
 import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
@@ -12,6 +13,8 @@ import { UtilsService } from "@shared/services/utils/utils.service";
 export interface AppState {
   // Weather the app has been initialized.
   initialized: boolean;
+
+  breadcrumb: BreadcrumbInterface[];
 
   currentFullscreenImage: number | null;
 
@@ -45,6 +48,7 @@ export interface AppState {
 
 export const initialAppState: AppState = {
   initialized: false,
+  breadcrumb: [],
   currentFullscreenImage: null,
   language: "en",
   subscriptions: [],
@@ -65,6 +69,13 @@ export function reducer(state = initialAppState, action: All): AppState {
         initialized: true,
         subscriptions: action.payload.subscriptions,
         backendConfig: action.payload.backendConfig
+      };
+    }
+
+    case AppActionTypes.SET_BREADCRUMB: {
+      return {
+        ...state,
+        breadcrumb: action.payload.breadcrumb
       };
     }
 

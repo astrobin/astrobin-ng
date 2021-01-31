@@ -1,9 +1,7 @@
-<div class="page">
-  <h1>
-    {{"Revision uploader" | translate}}
-  </h1>
+<div class="page has-breadcrumb">
+  <h1>{{ pageTitle }}</h1>
 
-  <ng-container *ngIf="store | async as state">
+  <ng-container *ngIf="store$ | async as state">
     <astrobin-read-only-mode *ngIf="state.app.backendConfig?.readOnly; else uploaderTemplate"></astrobin-read-only-mode>
   </ng-container>
 </div>
@@ -12,7 +10,7 @@
   <div class="row">
     <div class="col-3" *ngIf="(imageThumbnail$ | async) as thumbnail">
       <div class="thumbnail">
-        <img [attr.src]="thumbnail" alt="image.title" />
+        <img [attr.src]="thumbnail" alt="image.label" />
       </div>
     </div>
 

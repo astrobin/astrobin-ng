@@ -1,7 +1,18 @@
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
+import { RedirectGuard } from "@features/redirection/guards/redirect-guard.service";
+import { ClassicRoutesService } from "@shared/services/classic-routes.service";
+import { LoadingService } from "@shared/services/loading.service";
 
 const routes: Routes = [
+  {
+    path: "",
+    canActivate: [RedirectGuard],
+    loadChildren: () => import("@features/redirection/redirection.module").then(m => m.RedirectionModule),
+    data: {
+      externalUrl: new ClassicRoutesService(new LoadingService()).HOME
+    }
+  },
   {
     path: "account",
     loadChildren: () => import("@features/account/account.module").then(m => m.AccountModule)

@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
+import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { State } from "@app/store/state";
 import { environment } from "@env/environment";
 import { Store } from "@ngrx/store";
@@ -26,6 +27,7 @@ import { map, takeUntil } from "rxjs/operators";
 export class RevisionUploaderPageComponent extends BaseComponentDirective implements OnInit {
   form = new FormGroup({});
   uploadState: UploadState;
+  pageTitle = this.translate.instant("Revision uploader");
 
   model = {
     image_file: "",
@@ -82,23 +84,34 @@ export class RevisionUploaderPageComponent extends BaseComponentDirective implem
   image: ImageInterface;
 
   constructor(
-    public readonly store: Store<State>,
-    public translate: TranslateService,
-    public uploaderService: UploadxService,
-    public uploadDataService: UploadDataService,
-    public windowRef: WindowRefService,
-    public classicRoutesService: ClassicRoutesService,
-    public route: ActivatedRoute,
-    public titleService: TitleService,
-    public thumbnailGroupApiService: ThumbnailGroupApiService
+    public readonly store$: Store<State>,
+    public readonly translate: TranslateService,
+    public readonly uploaderService: UploadxService,
+    public readonly uploadDataService: UploadDataService,
+    public readonly windowRef: WindowRefService,
+    public readonly classicRoutesService: ClassicRoutesService,
+    public readonly route: ActivatedRoute,
+    public readonly titleService: TitleService,
+    public readonly thumbnailGroupApiService: ThumbnailGroupApiService
   ) {
     super();
   }
 
   ngOnInit(): void {
-    this.titleService.setTitle(this.translate.instant("Revision uploader"));
-
     this.image = this.route.snapshot.data.image;
+
+    this.titleService.setTitle(this.pageTitle);
+    this.store$.dispatch(
+      new SetBreadcrumb({
+        breadcrumb: [
+          { label: this.translate.instant("Home"), link: "/" },
+          { label: this.translate.instant("Image") },
+          { label: this.image.title },
+          { label: this.pageTitle }
+        ]
+      })
+    );
+
     this.uploadDataService.patchMetadata("image-upload", { image_id: this.image.pk });
     this.uploadDataService.patchMetadata("image-upload", { is_revision: true });
     this.uploadDataService.patchMetadata("image-upload", { description: Constants.NO_VALUE });

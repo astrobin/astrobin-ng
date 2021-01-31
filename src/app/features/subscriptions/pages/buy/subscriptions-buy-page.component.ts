@@ -1,6 +1,7 @@
 import { CurrencyPipe } from "@angular/common";
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
+import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { State } from "@app/store/state";
 import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
 import { PaymentsApiConfigInterface } from "@features/subscriptions/interfaces/payments-api-config.interface";
@@ -42,7 +43,7 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
   currencyPipe: CurrencyPipe;
 
   constructor(
-    public readonly store: Store<State>,
+    public readonly store$: Store<State>,
     public readonly activatedRoute: ActivatedRoute,
     public readonly router: Router,
     public readonly userSubscriptionService: UserSubscriptionService,
@@ -136,9 +137,15 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
         return;
       }
 
-      this.titleService.setTitle(this.subscriptionsService.getName(this.product));
+      const title = this.subscriptionsService.getName(this.product);
+      this.titleService.setTitle(title);
+      this.store$.dispatch(
+        new SetBreadcrumb({
+          breadcrumb: [{ label: "Subscriptions" }, { label: title }]
+        })
+      );
 
-      this.alreadySubscribed$ = this.store.pipe(
+      this.alreadySubscribed$ = this.store$.pipe(
         take(1),
         switchMap(state =>
           this.userSubscriptionService.hasValidSubscription(
@@ -193,7 +200,7 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
 
     this.loadingService.setLoading(true);
 
-    this.store
+    this.store$
       .pipe(
         tap(state => {
           userId = state.auth.user.id;

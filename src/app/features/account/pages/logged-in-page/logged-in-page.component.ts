@@ -1,5 +1,8 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
+import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
+import { State } from "@app/store/state";
+import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
@@ -17,15 +20,15 @@ export class LoggedInPageComponent extends BaseComponentDirective implements OnI
   redirectUrl: string;
 
   constructor(
-    public route: ActivatedRoute,
-    public router: Router,
-    public windowRef: WindowRefService,
-    public classicRoutesService: ClassicRoutesService,
-    public titleService: TitleService,
-    public translate: TranslateService
+    public readonly store$: Store<State>,
+    public readonly route: ActivatedRoute,
+    public readonly router: Router,
+    public readonly windowRef: WindowRefService,
+    public readonly classicRoutesService: ClassicRoutesService,
+    public readonly titleService: TitleService,
+    public readonly translate: TranslateService
   ) {
     super();
-    titleService.setTitle(translate.instant("Welcome!"));
   }
 
   redirectionMessage(seconds: number): string {
@@ -33,6 +36,10 @@ export class LoggedInPageComponent extends BaseComponentDirective implements OnI
   }
 
   ngOnInit(): void {
+    const title = this.translate.instant("Welcome!");
+    this.titleService.setTitle(title);
+    this.store$.dispatch(new SetBreadcrumb({ breadcrumb: [{ label: "Account" }, { label: title }] }));
+
     this.redirectUrl = this.route.snapshot.queryParamMap.get("redirectUrl");
 
     interval(1000)

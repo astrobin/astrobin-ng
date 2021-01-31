@@ -1,12 +1,10 @@
-<div class="page">
+<div class="page has-breadcrumb">
 
-  <ng-container *ngIf="store | async as state">
+  <ng-container *ngIf="store$ | async as state">
 
     <ng-container *ngIf="state && state.auth.initialized && state.app.backendConfig; else loading">
 
-      <h1>
-        {{"Uploader" | translate}}
-      </h1>
+      <h1>{{ pageTitle }}</h1>
 
       <small>
         <span *ngIf="state.auth.userProfile |
