@@ -41,7 +41,7 @@ export class SubmissionQueueComponent extends BasePromotionQueueComponent implem
     this.titleService.setTitle(title);
     this.store$.dispatch(
       new SetBreadcrumb({
-        breadcrumb: [{ label: this.translateService.instant("Home"), link: "/" }, { label: "IOTD" }, { label: title }]
+        breadcrumb: [{ label: "IOTD" }, { label: title }]
       })
     );
   }

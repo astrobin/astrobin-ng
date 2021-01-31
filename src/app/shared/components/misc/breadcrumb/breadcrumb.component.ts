@@ -4,6 +4,7 @@ import { State } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { BreadcrumbInterface } from "@shared/components/misc/breadcrumb/breadcrumb.interface";
+import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { Observable } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 
@@ -15,7 +16,7 @@ import { takeUntil } from "rxjs/operators";
 export class BreadcrumbComponent extends BaseComponentDirective implements OnInit {
   breadcrumb$: Observable<BreadcrumbInterface[]>;
 
-  constructor(public store$: Store<State>) {
+  constructor(public readonly store$: Store<State>, public readonly classicRoutesService: ClassicRoutesService) {
     super();
   }
 

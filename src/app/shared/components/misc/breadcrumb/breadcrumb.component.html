@@ -2,7 +2,7 @@
   <ol *ngIf="breadcrumb.length" class="breadcrumb">
 
     <li class="breadcrumb-item">
-      <a routerLink="/">
+      <a [href]="classicRoutesService.HOME">
         <fa-icon icon="home"></fa-icon>
         {{ "Home" | translate }}
       </a>

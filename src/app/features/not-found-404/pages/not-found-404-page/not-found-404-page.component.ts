@@ -25,7 +25,7 @@ export class NotFound404PageComponent extends BaseComponentDirective implements 
 
     this.store$.dispatch(
       new SetBreadcrumb({
-        breadcrumb: [{ label: this.translateService.instant("Home"), link: "/" }, { label: title }]
+        breadcrumb: [{ label: title }]
       })
     );
   }

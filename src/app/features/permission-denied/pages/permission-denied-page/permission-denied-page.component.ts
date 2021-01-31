@@ -23,7 +23,7 @@ export class PermissionDeniedPageComponent implements OnInit {
     this.titleService.setTitle(title);
     this.store$.dispatch(
       new SetBreadcrumb({
-        breadcrumb: [{ label: this.translateService.instant("Home"), link: "/" }, { label: title }]
+        breadcrumb: [{ label: title }]
       })
     );
   }
