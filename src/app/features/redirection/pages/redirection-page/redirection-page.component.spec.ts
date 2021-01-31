@@ -1,5 +1,7 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
+import { RedirectionModule } from "@features/redirection/redirection.module";
+import { MockBuilder } from "ng-mocks";
 import { RedirectionPageComponent } from "./redirection-page.component";
 
 describe("RedirectionPageComponent", () => {
@@ -7,10 +9,7 @@ describe("RedirectionPageComponent", () => {
   let fixture: ComponentFixture<RedirectionPageComponent>;
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ RedirectionPageComponent ]
-    })
-    .compileComponents();
+    await MockBuilder(RedirectionPageComponent, RedirectionModule);
   });
 
   beforeEach(() => {
