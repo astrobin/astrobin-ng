@@ -42,6 +42,7 @@ context("IOTD Review queue", () => {
       );
       cy.route("GET", "**/api/v2/iotd/review-queue/?page=*", "fixture:api/iotd/review-queue.json").as("reviewQueue");
       cy.route("GET", "**/api/v2/iotd/hidden-image/", []).as("hiddenImages");
+      cy.route("GET", "**/api/v2/iotd/dismissed-image/", []).as("dismissedImages");
       cy.route("GET", "**/api/v2/iotd/vote", []).as("votes");
       cy.route("GET", "**/api/v2/astrobin/telescope/*/", "fixture:api/telescopes/telescope_1.json").as("getTelescope");
       cy.route("GET", "**/api/v2/astrobin/camera/*/", "fixture:api/cameras/camera_1.json").as("getCamera");

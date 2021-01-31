@@ -11,6 +11,12 @@
   transition: opacity .5s ease-in;
   color: $white;
 
+  &.has-breadcrumb {
+    margin-top: 0;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+  }
+
   h1 {
     .beta {
       opacity: .2;

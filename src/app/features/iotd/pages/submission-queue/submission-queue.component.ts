@@ -1,4 +1,5 @@
 import { Component, OnInit } from "@angular/core";
+import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { State } from "@app/store/state";
 import { BasePromotionQueueComponent } from "@features/iotd/components/base-promotion-queue/base-promotion-queue.component";
 import { SubmissionInterface } from "@features/iotd/services/iotd-api.service";
@@ -36,7 +37,13 @@ export class SubmissionQueueComponent extends BasePromotionQueueComponent implem
   ngOnInit(): void {
     super.ngOnInit();
 
-    this.titleService.setTitle(this.translateService.instant("Submission queue"));
+    const title = this.translateService.instant("Submission queue");
+    this.titleService.setTitle(title);
+    this.store$.dispatch(
+      new SetBreadcrumb({
+        breadcrumb: [{ label: "IOTD" }, { label: title }]
+      })
+    );
   }
 
   loadQueue(page: number): void {
