@@ -71,7 +71,6 @@ export class UncompressedSourceUploaderPageComponent extends BaseComponentDirect
     this.store$.dispatch(
       new SetBreadcrumb({
         breadcrumb: [
-          { label: this.translate.instant("Home") },
           { label: this.translate.instant("Image") },
           { label: this.image.title },
           { label: this.pageTitle }

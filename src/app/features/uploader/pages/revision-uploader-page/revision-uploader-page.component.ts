@@ -104,7 +104,6 @@ export class RevisionUploaderPageComponent extends BaseComponentDirective implem
     this.store$.dispatch(
       new SetBreadcrumb({
         breadcrumb: [
-          { label: this.translate.instant("Home"), link: "/" },
           { label: this.translate.instant("Image") },
           { label: this.image.title },
           { label: this.pageTitle }
