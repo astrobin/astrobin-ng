@@ -8,6 +8,7 @@ export class AppGenerator {
   static default(): AppState {
     return {
       initialized: true,
+      breadcrumb: [],
       language: "en",
       subscriptions: [
         SubscriptionGenerator.subscription(

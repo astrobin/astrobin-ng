@@ -1,5 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { FormGroup } from "@angular/forms";
+import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { State } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { FormlyFieldConfig } from "@ngx-formly/core";
@@ -23,6 +24,7 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
   form = new FormGroup({});
   uploadState: UploadState;
   SubscriptionName: typeof SubscriptionName = SubscriptionName;
+  pageTitle = this.translate.instant("Uploader");
 
   model = {
     title: "",
@@ -57,7 +59,7 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
   uploadAllowed$ = this.userSubscriptionService.uploadAllowed();
 
   constructor(
-    public readonly store: Store<State>,
+    public readonly store$: Store<State>,
     public translate: TranslateService,
     public uploaderService: UploadxService,
     public uploadDataService: UploadDataService,
@@ -100,7 +102,12 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
   }
 
   ngOnInit(): void {
-    this.titleService.setTitle(this.translate.instant("Uploader"));
+    this.titleService.setTitle(this.pageTitle);
+    this.store$.dispatch(
+      new SetBreadcrumb({
+        breadcrumb: [{ label: this.pageTitle }]
+      })
+    );
 
     this.uploadDataService.setMetadata("image-upload", { is_wip: true });
     this.uploadDataService.setMetadata("image-upload", { skip_notifications: true });

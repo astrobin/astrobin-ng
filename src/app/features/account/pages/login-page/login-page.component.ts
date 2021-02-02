@@ -1,5 +1,8 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
+import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
+import { State } from "@app/store/state";
+import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
 import { LoginFormComponent } from "@shared/components/auth/login-form/login-form.component";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
@@ -18,6 +21,7 @@ export class LoginPageComponent extends BaseComponentDirective implements OnInit
   @ViewChild("loginForm") loginForm: LoginFormComponent;
 
   constructor(
+    public readonly store$: Store<State>,
     public readonly classicRoutesService: ClassicRoutesService,
     public readonly route: ActivatedRoute,
     public readonly translate: TranslateService,
@@ -25,10 +29,12 @@ export class LoginPageComponent extends BaseComponentDirective implements OnInit
     public readonly loadingService: LoadingService
   ) {
     super();
-    titleService.setTitle(translate.instant("Log in"));
   }
 
   ngOnInit(): void {
+    const title = this.translate.instant("Log in");
+    this.titleService.setTitle(title);
+    this.store$.dispatch(new SetBreadcrumb({ breadcrumb: [{ label: "Account" }, { label: title }] }));
     this.redirectUrl = this.route.snapshot.queryParamMap.get("redirectUrl");
   }
 }

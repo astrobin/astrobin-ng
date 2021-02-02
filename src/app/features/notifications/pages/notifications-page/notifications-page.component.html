@@ -1,7 +1,7 @@
-<div class="page">
+<div class="page has-breadcrumb">
   <h1 class="d-sm-flex justify-content-between align-items-center">
     <span class="flex-fill">
-      {{"Notifications" | translate}}
+      {{ pageTitle }}
       <span *ngIf="notificationsService.unreadCount$ | async as unreadCount" class="badge badge-danger badge-pill"
         id="unread-notifications-count">
         {{ unreadCount }}

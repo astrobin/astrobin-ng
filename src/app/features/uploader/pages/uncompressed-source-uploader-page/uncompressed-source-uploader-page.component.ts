@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
+import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { State } from "@app/store/state";
 import { environment } from "@env/environment";
 import { Store } from "@ngrx/store";
@@ -27,6 +28,7 @@ import { map, take, takeUntil } from "rxjs/operators";
 export class UncompressedSourceUploaderPageComponent extends BaseComponentDirective implements OnInit {
   form = new FormGroup({});
   uploadState: UploadState;
+  pageTitle = this.translate.instant("Uncompressed source uploader");
 
   model = {
     image_file: ""
@@ -48,24 +50,34 @@ export class UncompressedSourceUploaderPageComponent extends BaseComponentDirect
   image: ImageInterface;
 
   constructor(
-    public readonly store: Store<State>,
-    public translate: TranslateService,
-    public uploaderService: UploadxService,
-    public uploadDataService: UploadDataService,
-    public windowRef: WindowRefService,
-    public classicRoutesService: ClassicRoutesService,
-    public route: ActivatedRoute,
-    public titleService: TitleService,
-    public thumbnailGroupApiService: ThumbnailGroupApiService,
-    public imageApiService: ImageApiService
+    public readonly store$: Store<State>,
+    public readonly translate: TranslateService,
+    public readonly uploaderService: UploadxService,
+    public readonly uploadDataService: UploadDataService,
+    public readonly windowRef: WindowRefService,
+    public readonly classicRoutesService: ClassicRoutesService,
+    public readonly route: ActivatedRoute,
+    public readonly titleService: TitleService,
+    public readonly thumbnailGroupApiService: ThumbnailGroupApiService,
+    public readonly imageApiService: ImageApiService
   ) {
     super();
   }
 
   ngOnInit(): void {
-    this.titleService.setTitle(this.translate.instant("Uncompressed source uploader"));
-
     this.image = this.route.snapshot.data.image;
+
+    this.titleService.setTitle(this.pageTitle);
+    this.store$.dispatch(
+      new SetBreadcrumb({
+        breadcrumb: [
+          { label: this.translate.instant("Image") },
+          { label: this.image.title },
+          { label: this.pageTitle }
+        ]
+      })
+    );
+
     this.uploadDataService.patchMetadata("image-upload", { image_id: this.image.pk });
     this.uploadDataService.patchMetadata("image-upload", {
       allowedExtensions: Constants.ALLOWED_UNCOMPRESSED_SOURCE_UPLOAD_EXTENSIONS

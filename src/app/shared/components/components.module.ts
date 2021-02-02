@@ -14,6 +14,7 @@ import {
 } from "@ng-bootstrap/ng-bootstrap";
 import { FORMLY_CONFIG, FormlyModule } from "@ngx-formly/core";
 import { TranslateModule, TranslateService } from "@ngx-translate/core";
+import { BreadcrumbComponent } from "@shared/components/misc/breadcrumb/breadcrumb.component";
 import { CameraComponent } from "@shared/components/misc/camera/camera.component";
 import { FormlyFieldChunkedFileAccessorDirective } from "@shared/components/misc/formly-field-chunked-file/formly-field-chunked-file-accessor.directive";
 import { FormlyFieldChunkedFileComponent } from "@shared/components/misc/formly-field-chunked-file/formly-field-chunked-file.component";
@@ -58,6 +59,7 @@ const modules = [
 ];
 
 const components = [
+  BreadcrumbComponent,
   CameraComponent,
   EmptyListComponent,
   FooterComponent,

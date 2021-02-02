@@ -5,6 +5,8 @@ import { BackendConfigInterface } from "@shared/interfaces/backend-config.interf
 
 export const selectApp = (state: State): AppState => state.app;
 
+export const selectBreadcrumb = createSelector(selectApp, state => state.breadcrumb);
+
 export const selectBackendConfig = createSelector(selectApp, (state): BackendConfigInterface => state.backendConfig);
 
 export const selectIotdMaxSubmissionsPerDay = createSelector(

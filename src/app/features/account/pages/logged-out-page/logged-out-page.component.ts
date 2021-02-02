@@ -1,4 +1,7 @@
-import { Component } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
+import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
+import { State } from "@app/store/state";
+import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { TitleService } from "@shared/services/title/title.service";
@@ -7,9 +10,18 @@ import { TitleService } from "@shared/services/title/title.service";
   selector: "astrobin-logged-out-page",
   templateUrl: "./logged-out-page.component.html"
 })
-export class LoggedOutPageComponent extends BaseComponentDirective {
-  constructor(public titleService: TitleService, public translate: TranslateService) {
+export class LoggedOutPageComponent extends BaseComponentDirective implements OnInit {
+  constructor(
+    public readonly store$: Store<State>,
+    public readonly titleService: TitleService,
+    public readonly translate: TranslateService
+  ) {
     super();
-    titleService.setTitle(translate.instant("Good bye!"));
+  }
+
+  ngOnInit() {
+    const title = this.translate.instant("Good bye!");
+    this.titleService.setTitle(title);
+    this.store$.dispatch(new SetBreadcrumb({ breadcrumb: [{ label: "Account" }, { label: title }] }));
   }
 }

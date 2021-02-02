@@ -23,7 +23,7 @@ import { AppComponent } from "@app/app.component";
 import { appStateEffects, appStateReducers } from "@app/store/state";
 import { CustomTranslateParser } from "@app/translate-parser";
 import { environment } from "@env/environment";
-import { FaIconLibrary, FontAwesomeModule } from "@fortawesome/angular-fontawesome";
+import { FaIconLibrary } from "@fortawesome/angular-fontawesome";
 import {
   faAsterisk,
   faBarcode,
