@@ -74,7 +74,7 @@ export function appInitializer(store: Store<State>, actions$: Actions) {
     NgSelectModule,
     NgxFilesizeModule,
     NgWizardModule.forRoot({
-      theme: THEME.default
+      theme: THEME.arrows
     }),
     ToastrModule.forRoot({
       timeOut: 20000,
@@ -102,6 +102,7 @@ export function appInitializer(store: Store<State>, actions$: Actions) {
     NgbProgressbarModule,
     NgSelectModule,
     NgxFilesizeModule,
+    NgWizardModule,
     ToastrModule,
     TimeagoModule,
     TranslateModule,

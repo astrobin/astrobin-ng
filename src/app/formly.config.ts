@@ -1,4 +1,5 @@
 import { FormControl, ValidationErrors } from "@angular/forms";
+import { FormlyFieldImageEditStepperComponent } from "@features/image/components/formly-field-image-edit-stepper/formly-field-image-edit-stepper.component";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
 import { FormlyFieldChunkedFileComponent } from "@shared/components/misc/formly-field-chunked-file/formly-field-chunked-file.component";
@@ -34,6 +35,11 @@ export function formlyValidationConfig(translate: TranslateService) {
       {
         name: "stepper",
         component: FormlyFieldStepperComponent,
+        wrappers: []
+      },
+      {
+        name: "image-edit-stepper",
+        component: FormlyFieldImageEditStepperComponent,
         wrappers: []
       }
     ],

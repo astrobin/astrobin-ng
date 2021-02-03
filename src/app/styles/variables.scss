@@ -1,4 +1,5 @@
 $accent-color: #cc4b2e;
+$muted-accent-color: #866158;
 $subtle-accent-color: #e0e0e0;
 $secondary-accent-color: #3092cf;
 
@@ -8,15 +9,15 @@ $white: #e9e9e9;
 $grey: #333;
 $black: #101010;
 
-$light-grey: lighten($grey, 10%);
-$lighter-grey: lighten($grey, 25%);
-$lightest-grey: lighten($grey, 50%);
+$light-grey: #555;
+$lighter-grey: #999;
+$lightest-grey: #ccc;
 
-$dark-grey: darken($grey, 10%);
-$darker-grey: darken($grey, 25%);
-$darkest-grey: darken($grey, 50%);
+$dark-grey: #303030;
+$darker-grey: #292929;
+$darkest-grey: #222;
 
-$darkest_background_text_color: #b0b0b0;
+$darkest-background-text-color: #b0b0b0;
 
 $warning-orange: #ff9a28;
 $error-red: #e84545;

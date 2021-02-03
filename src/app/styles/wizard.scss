@@ -1,28 +1,48 @@
 @import "variables";
 
-.ng-wizard-theme-default {
+.ng-wizard-theme-arrows {
   box-shadow: none;
+  border: 0;
 
-  .nav-tabs {
+  > ul.step-anchor {
     border-bottom-color: $light-grey;
+    background: none;
   }
 
   .nav-item {
-    margin-right: 1rem;
-
     .nav-link {
       font-weight: bold;
+      background: $grey !important;
+
+      &::before {
+        border-left-color: $grey;
+      }
+
+      &::after {
+        background: transparent;
+        border-left-color: $grey !important;
+      }
 
       small {
         font-weight: normal;
+        opacity: .85;
+      }
+    }
+
+    &.done .nav-link {
+      color: $white !important;
+      background: darken($accent-color, 10%) !important;
+
+      &::after {
+        border-left-color: darken($accent-color, 10%) !important;
       }
     }
 
     &.active .nav-link {
-      color: $accent-color !important;
+      background: $accent-color !important;
 
       &::after {
-        background: $accent-color;
+        border-left-color: $accent-color !important;
       }
     }
 
@@ -30,7 +50,7 @@
       color: $lightest-grey !important;
 
       &::after {
-        background: $lightest-grey;
+        background: none;
       }
     }
   }
