@@ -28,9 +28,15 @@
 
   a,
   .alert-link {
+    color: inherit;;
+
     &.btn {
       text-decoration: none;
     }
+  }
+
+  strong {
+    color: inherit;
   }
 
   &.alert-info {

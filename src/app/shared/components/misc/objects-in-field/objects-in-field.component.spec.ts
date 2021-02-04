@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { AppModule } from "@app/app.module";
 import { SolutionGenerator } from "@shared/generators/solution.generator";
 import { MockBuilder } from "ng-mocks";
