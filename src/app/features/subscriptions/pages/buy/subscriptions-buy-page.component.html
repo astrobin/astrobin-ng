@@ -60,6 +60,18 @@
 </div>
 
 <ng-template #buyButton>
+  <ng-container *ngIf="product === PayableProductInterface.LITE && numberOfImages$ | async as numberOfImages">
+    <div *ngIf="numberOfImages >= 25" class="lite-limit alert alert-warning">
+      <h5>
+        {{ "Please note" | translate }}
+      </h5>
+      <p>
+        <span [innerHTML]="getLiteLimitMessage(numberOfImages)"></span>&nbsp;
+        <span [innerHTML]="moreInfoMessage"></span>
+      </p>
+    </div>
+  </ng-container>
+
   <div class="form-actions">
     <a [class.disabled]="loadingService.isLoading()" [href]="classicRoutesService.PRICING"
        class="btn btn-outline-secondary">

@@ -2,7 +2,7 @@
 
 context("notifications", () => {
   describe("when logged out", () => {
-    it("should redirect to the account page", () => {
+    it("should redirect to the login page", () => {
       cy.server();
       cy.setupInitializationRoutes();
       cy.route("GET", "**/common/userprofiles/current", []).as("getCurrentUserProfile");
