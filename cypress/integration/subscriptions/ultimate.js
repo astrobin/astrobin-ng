@@ -39,6 +39,7 @@ context("ultimate", () => {
       );
       cy.visitPage("/subscriptions/ultimate");
       cy.get(".already-subscribed.alert").should("not.exist");
+      cy.get(".already-subscribed-higher.alert").should("not.exist");
       cy.get(".buy.btn").should("exist");
     });
 
@@ -48,22 +49,25 @@ context("ultimate", () => {
       );
       cy.visitPage("/subscriptions/ultimate");
       cy.get(".already-subscribed.alert").should("not.exist");
+      cy.get(".already-subscribed-higher.alert").should("not.exist");
       cy.get(".buy.btn").should("exist");
     });
 
-    it("should not allow purchase if the user is already on Ultimate", () => {
+    it("should allow purchase if the user is already on Ultimate", () => {
       cy.route("GET", "**/common/usersubscriptions/?user=*", "fixture:api/common/usersubscriptions_1_ultimate.json").as(
         "getUserSubscriptions"
       );
       cy.visitPage("/subscriptions/ultimate");
       cy.get(".already-subscribed.alert").should("exist");
-      cy.get(".buy.btn").should("not.exist");
+      cy.get(".already-subscribed-higher.alert").should("not.exist");
+      cy.get(".buy.btn").should("exist");
     });
 
     it("should allow purchase if the user is not already subscribed", () => {
       cy.route("GET", "**/common/usersubscriptions/?user=*", []).as("getUserSubscriptions");
       cy.visitPage("/subscriptions/ultimate");
       cy.get(".already-subscribed.alert").should("not.exist");
+      cy.get(".already-subscribed-higher.alert").should("not.exist");
       cy.get(".price").should("contain", "$20.00");
       cy.get(".buy.btn").should("exist");
     });

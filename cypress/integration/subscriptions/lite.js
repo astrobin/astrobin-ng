@@ -33,13 +33,14 @@ context("lite", () => {
         .should("exist");
     });
 
-    it("should not allow purchase if the user is on Lite", () => {
+    it("should allow purchase if the user is on Lite", () => {
       cy.route("GET", "**/common/usersubscriptions/?user=*", "fixture:api/common/usersubscriptions_1_lite.json").as(
         "getUserSubscriptions"
       );
       cy.visitPage("/subscriptions/lite");
       cy.get(".already-subscribed.alert").should("exist");
-      cy.get(".buy.btn").should("not.exist");
+      cy.get(".already-subscribed-higher.alert").should("not.exist");
+      cy.get(".buy.btn").should("exist");
     });
 
     it("should not allow purchase if the user is on Premium", () => {
@@ -47,7 +48,8 @@ context("lite", () => {
         "getUserSubscriptions"
       );
       cy.visitPage("/subscriptions/lite");
-      cy.get(".already-subscribed.alert").should("exist");
+      cy.get(".already-subscribed.alert").should("not.exist");
+      cy.get(".already-subscribed-higher.alert").should("exist");
       cy.get(".buy.btn").should("not.exist");
     });
 
@@ -56,7 +58,8 @@ context("lite", () => {
         "getUserSubscriptions"
       );
       cy.visitPage("/subscriptions/lite");
-      cy.get(".already-subscribed.alert").should("exist");
+      cy.get(".already-subscribed.alert").should("not.exist");
+      cy.get(".already-subscribed-higher.alert").should("exist");
       cy.get(".buy.btn").should("not.exist");
     });
 
@@ -64,6 +67,7 @@ context("lite", () => {
       cy.route("GET", "**/common/usersubscriptions/?user=*", []).as("getUserSubscriptions");
       cy.visitPage("/subscriptions/lite");
       cy.get(".already-subscribed.alert").should("not.exist");
+      cy.get(".already-subscribed-higher.alert").should("not.exist");
       cy.get(".price").should("contain", "$20.00");
       cy.get(".buy.btn").should("exist");
     });
