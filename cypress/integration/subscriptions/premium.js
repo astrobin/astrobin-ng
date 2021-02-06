@@ -39,16 +39,18 @@ context("premium", () => {
       );
       cy.visitPage("/subscriptions/premium");
       cy.get(".already-subscribed.alert").should("not.exist");
+      cy.get(".already-subscribed-higher.alert").should("not.exist");
       cy.get(".buy.btn").should("exist");
     });
 
-    it("should not allow purchase if the user is on Premium", () => {
+    it("should allow purchase if the user is on Premium", () => {
       cy.route("GET", "**/common/usersubscriptions/?user=*", "fixture:api/common/usersubscriptions_1_premium.json").as(
         "getUserSubscriptions"
       );
       cy.visitPage("/subscriptions/premium");
       cy.get(".already-subscribed.alert").should("exist");
-      cy.get(".buy.btn").should("not.exist");
+      cy.get(".already-subscribed-higher.alert").should("not.exist");
+      cy.get(".buy.btn").should("exist");
     });
 
     it("should not allow purchase if the user is on Ultimate", () => {
@@ -56,7 +58,8 @@ context("premium", () => {
         "getUserSubscriptions"
       );
       cy.visitPage("/subscriptions/premium");
-      cy.get(".already-subscribed.alert").should("exist");
+      cy.get(".already-subscribed.alert").should("not.exist");
+      cy.get(".already-subscribed-higher.alert").should("exist");
       cy.get(".buy.btn").should("not.exist");
     });
 
@@ -64,6 +67,7 @@ context("premium", () => {
       cy.route("GET", "**/common/usersubscriptions/?user=*", []).as("getUserSubscriptions");
       cy.visitPage("/subscriptions/premium");
       cy.get(".already-subscribed.alert").should("not.exist");
+      cy.get(".already-subscribed-higher.alert").should("not.exist");
       cy.get(".price").should("contain", "$20.00");
       cy.get(".buy.btn").should("exist");
     });

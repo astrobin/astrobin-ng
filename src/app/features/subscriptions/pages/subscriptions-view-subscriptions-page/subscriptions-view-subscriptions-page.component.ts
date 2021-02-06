@@ -17,7 +17,12 @@ import { map, take } from "rxjs/operators";
 export class SubscriptionsViewSubscriptionsPageComponent implements OnInit {
   userSubscriptions$: Observable<UserSubscriptionInterface[]> = this.store$.pipe(
     take(1),
-    map(state => state.auth.userSubscriptions.sort((a, b) => a.expires.localeCompare(b.expires)).reverse())
+    map(state =>
+      state.auth.userSubscriptions
+        .slice()
+        .sort((a, b) => a.expires.localeCompare(b.expires))
+        .reverse()
+    )
   );
 
   constructor(

@@ -34,6 +34,7 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
   PayableProductInterface = PayableProductInterface;
 
   alreadySubscribed$: Observable<boolean>;
+  alreadySubscribedHigher$: Observable<boolean>;
   numberOfImages$: Observable<number>;
   pricing$: Observable<PricingInterface>;
   product: PayableProductInterface;
@@ -159,7 +160,18 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
           switchMap(userProfile =>
             this.userSubscriptionService.hasValidSubscription(
               userProfile,
-              this.subscriptionsService.getSameTierOrAbove(this.product)
+              this.subscriptionsService.getSameTier(this.product)
+            )
+          )
+        );
+
+      this.alreadySubscribedHigher$ = this.store$
+        .select(selectCurrentUserProfile)
+        .pipe(
+          switchMap(userProfile =>
+            this.userSubscriptionService.hasValidSubscription(
+              userProfile,
+              this.subscriptionsService.getHigherTier(this.product)
             )
           )
         );
