@@ -1,8 +1,10 @@
 import { CurrencyPipe } from "@angular/common";
 import { Component, OnInit } from "@angular/core";
+import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { ActivatedRoute, Router } from "@angular/router";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { State } from "@app/store/state";
+import { selectCurrentUser, selectCurrentUserProfile } from "@features/account/store/auth.selectors";
 import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
 import { PaymentsApiConfigInterface } from "@features/subscriptions/interfaces/payments-api-config.interface";
 import { PricingInterface } from "@features/subscriptions/interfaces/pricing.interface";
@@ -11,6 +13,7 @@ import { SubscriptionsService } from "@features/subscriptions/services/subscript
 import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { ImageApiService } from "@shared/services/api/classic/images/image/image-api.service";
 import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { LoadingService } from "@shared/services/loading.service";
@@ -28,7 +31,11 @@ declare var Stripe: any;
   styleUrls: ["./subscriptions-buy-page.component.scss"]
 })
 export class SubscriptionsBuyPageComponent extends BaseComponentDirective implements OnInit {
+  PayableProductInterface = PayableProductInterface;
+
   alreadySubscribed$: Observable<boolean>;
+  alreadySubscribedHigher$: Observable<boolean>;
+  numberOfImages$: Observable<number>;
   pricing$: Observable<PricingInterface>;
   product: PayableProductInterface;
   bankDetailsMessage$: Observable<string>;
@@ -54,7 +61,9 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
     public readonly titleService: TitleService,
     public readonly subscriptionsService: SubscriptionsService,
     public readonly classicRoutesService: ClassicRoutesService,
-    public readonly jsonApiService: JsonApiService
+    public readonly jsonApiService: JsonApiService,
+    public readonly imageApiService: ImageApiService,
+    public readonly domSanitizer: DomSanitizer
   ) {
     super();
 
@@ -145,15 +154,31 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
         })
       );
 
-      this.alreadySubscribed$ = this.store$.pipe(
-        take(1),
-        switchMap(state =>
-          this.userSubscriptionService.hasValidSubscription(
-            state.auth.userProfile,
-            this.subscriptionsService.getSameTierOrAbove(this.product)
+      this.alreadySubscribed$ = this.store$
+        .select(selectCurrentUserProfile)
+        .pipe(
+          switchMap(userProfile =>
+            this.userSubscriptionService.hasValidSubscription(
+              userProfile,
+              this.subscriptionsService.getSameTier(this.product)
+            )
           )
-        )
-      );
+        );
+
+      this.alreadySubscribedHigher$ = this.store$
+        .select(selectCurrentUserProfile)
+        .pipe(
+          switchMap(userProfile =>
+            this.userSubscriptionService.hasValidSubscription(
+              userProfile,
+              this.subscriptionsService.getHigherTier(this.product)
+            )
+          )
+        );
+
+      this.numberOfImages$ = this.store$
+        .select(selectCurrentUser)
+        .pipe(switchMap(user => this.imageApiService.getImagesByUserId(user.id).pipe(map(response => response.count))));
 
       this.subscriptionsService.currency$
         .pipe(takeUntil(this.destroyed$), distinctUntilChanged())
@@ -191,6 +216,20 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
           );
         });
     });
+  }
+
+  getLiteLimitMessage(numberOfImages): SafeHtml {
+    return this.domSanitizer.bypassSecurityTrustHtml(
+      this.translate.instant(
+        "The Lite plan is capped at <strong>{{maxImagesForLite}}</strong> total images, and you currently have " +
+          "<strong>{{numberOfImages}}</strong> images on AstroBin. For this reason, we recommend that you upgrade to " +
+          "Premium or Ultimate instead.",
+        {
+          maxImagesForLite: 50,
+          numberOfImages
+        }
+      )
+    );
   }
 
   buy(): void {

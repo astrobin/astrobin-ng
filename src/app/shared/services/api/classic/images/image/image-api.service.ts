@@ -46,6 +46,10 @@ export class ImageApiService extends BaseClassicApiService {
     return this.http.get<PaginatedApiResultInterface<ImageInterface>>(`${this.configUrl}/image/?ids=${ids.join(",")}`);
   }
 
+  getImagesByUserId(userId: number): Observable<PaginatedApiResultInterface<ImageInterface>> {
+    return this.http.get<PaginatedApiResultInterface<ImageInterface>>(`${this.configUrl}/image/?user=${userId}`);
+  }
+
   getThumbnail(id: number | string, revision: string, alias: ImageAlias): Observable<ImageThumbnailInterface> {
     return this.http.get<ImageThumbnailInterface>(`${environment.classicBaseUrl}/${id}/${revision}/thumb/${alias}/`);
   }
