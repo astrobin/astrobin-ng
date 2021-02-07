@@ -1,4 +1,4 @@
-import { ImageInterface } from "../interfaces/image.interface";
+import { AcquisitionType, DataSource, ImageInterface, SubjectType } from "../interfaces/image.interface";
 
 export class ImageGenerator {
   static image(source: Partial<ImageInterface> = {}): ImageInterface {
@@ -14,7 +14,15 @@ export class ImageGenerator {
       h: source.h || 1000,
       imagingTelescopes: source.imagingTelescopes || [],
       imagingCameras: source.imagingCameras || [],
-      published: source.published || new Date().toISOString()
+      published: source.published || new Date().toISOString(),
+      license: "",
+      description: undefined,
+      link: undefined,
+      linkToFits: undefined,
+      acquisitionType: AcquisitionType.REGULAR,
+      subjectType: SubjectType.DEEP_SKY,
+      mainSolarSystemSubject: undefined,
+      dataSource: DataSource.BACKYARD
     };
   }
 }

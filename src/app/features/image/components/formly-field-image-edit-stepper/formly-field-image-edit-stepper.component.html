@@ -1,4 +1,4 @@
-<ng-wizard>
+<ng-wizard [config]="config">
   <ng-wizard-step
     *ngFor="let step of field.fieldGroup; let index = index; let last = last"
     [description]="step.templateOptions.label"
@@ -12,6 +12,5 @@
         <formly-field [field]="step"></formly-field>
       </div>
     </div>
-
   </ng-wizard-step>
 </ng-wizard>

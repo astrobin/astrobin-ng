@@ -14,6 +14,7 @@ import { Actions, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FORMLY_CONFIG, FormlyModule } from "@ngx-formly/core";
+import { FormlySelectModule } from "@ngx-formly/core/select";
 import { TranslateModule, TranslateService } from "@ngx-translate/core";
 import { ApiModule } from "@shared/services/api/api.module";
 import { AuthService } from "@shared/services/auth.service";
@@ -68,6 +69,7 @@ export function appInitializer(store: Store<State>, actions$: Actions) {
     FontAwesomeModule,
     FormlyModule.forRoot(),
     FormlyBootstrapModule,
+    FormlySelectModule,
     NgbModule,
     NgbPaginationModule,
     NgbProgressbarModule,

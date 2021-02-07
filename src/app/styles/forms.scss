@@ -12,6 +12,7 @@ label {
     background-color: $darkest-grey;
     border-color: $dark-grey;
     color: $lighter-grey;
+    padding: 1.25rem 1rem;
 
     &::placeholder {
       color: $light-grey !important;
