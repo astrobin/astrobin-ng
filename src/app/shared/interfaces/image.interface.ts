@@ -50,6 +50,42 @@ export enum DataSource {
   UNKNOWN = "UNKNOWN"
 }
 
+export enum RemoteSource {
+  AC = "AstroCamp",
+  AHK = "Astro Hostel Krasnodar",
+  AOWA = "Astro Observatories Western Australia",
+  CS = "ChileScope",
+  DSNM = "Dark Sky New Mexico",
+  DSP = "Dark Sky Portal",
+  DSC = "DeepSkyChile",
+  DSW = "DeepSkyWest",
+  eEyE = "e-EyE Extremadura",
+  EITS = "Eye In The Sky",
+  GFA = "Goldfield Astronomical Observatory",
+  GMO = "Grand Mesa Observatory",
+  HMO = "Heaven's Mirror Observatory",
+  IC = "IC Astronomy Observatories",
+  ITU = "Image The Universe",
+  INS = "Insight Observatory",
+  iT = "iTelescope",
+  LGO = "Lijiang Gemini Observatory",
+  MARIO = "Marathon Remote Imaging Observatory (MaRIO)",
+  NMS = "New Mexico Skies",
+  OES = "Observatorio El Sauce",
+  PSA = "PixelSkies",
+  REM = "RemoteSkies.net",
+  REMSG = "Remote Skygems",
+  RLD = "Riverland Dingo Observatory",
+  ROBO = "RoboScopes",
+  SS = "Sahara Sky",
+  SPVO = "San Pedro Valley Observatory",
+  SRO = "Sierra Remote Observatories",
+  SRO2 = "Sky Ranch Observatory",
+  SPOO = "SkyPi Remote Observatory",
+  SLO = "Slooh",
+  SSLLC = "Stellar Skies LLC"
+}
+
 export interface ImageInterface {
   user: number;
   pk: number;
@@ -71,4 +107,5 @@ export interface ImageInterface {
   subjectType: SubjectType;
   mainSolarSystemSubject?: SolarSystemSubjectType;
   dataSource: DataSource;
+  remoteSource?: string;
 }

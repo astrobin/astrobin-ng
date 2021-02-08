@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, TemplateRef, ViewChild } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
@@ -12,9 +12,12 @@ import {
   AcquisitionType,
   DataSource,
   ImageInterface,
+  RemoteSource,
   SolarSystemSubjectType,
   SubjectType
 } from "@shared/interfaces/image.interface";
+import { RemoteSourceAffiliateInterface } from "@shared/interfaces/remote-source-affiliate.interface";
+import { RemoteSourceAffiliateApiService } from "@shared/services/api/classic/remote-source-affiliation/remote-source-affiliate-api.service";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { TitleService } from "@shared/services/title/title.service";
 
@@ -29,13 +32,21 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
   model: Partial<ImageInterface>;
   form = new FormGroup({});
   fields: FormlyFieldConfig[];
+  remoteSourceAffiliates: RemoteSourceAffiliateInterface[];
+
+  @ViewChild("remoteSourceLabelTemplate")
+  remoteSourceLabelTemplate: TemplateRef<any>;
+
+  @ViewChild("remoteSourceOptionTemplate")
+  remoteSourceOptionTemplate: TemplateRef<any>;
 
   constructor(
     public readonly store$: Store<State>,
     public readonly route: ActivatedRoute,
     public readonly translate: TranslateService,
     public readonly classicRoutesService: ClassicRoutesService,
-    public readonly titleService: TitleService
+    public readonly titleService: TitleService,
+    public readonly remoteSourceAffiliateApiService: RemoteSourceAffiliateApiService
   ) {
     super();
   }
@@ -60,8 +71,25 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
       })
     );
 
-    this._initFields();
     this._initBreadcrumb();
+
+    this.remoteSourceAffiliateApiService.getAll().subscribe(remoteSourceAffiliates => {
+      this.remoteSourceAffiliates = remoteSourceAffiliates;
+      this._initFields();
+    });
+  }
+
+  public isSponsor(code: string): boolean {
+    return (
+      this.remoteSourceAffiliates.filter(affiliate => {
+        const now = new Date();
+        return (
+          affiliate.code === code &&
+          new Date(affiliate.affiliationStart) <= now &&
+          new Date(affiliate.affiliationExpiration) > now
+        );
+      }).length > 0
+    );
   }
 
   onSubmit(): void {}
@@ -230,6 +258,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
       templateOptions: {
         required: true,
         label: this.translate.instant("Data source"),
+        description: this.translate.instant("Where does the data for this image come from?"),
         options: [
           {
             value: DataSource.BACKYARD,
@@ -281,6 +310,37 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     };
   }
 
+  private _getRemoteSourceField(): any {
+    return {
+      key: "remoteSource",
+      type: "ng-select",
+      hideExpression: () => [DataSource.OWN_REMOTE, DataSource.AMATEUR_HOSTING].indexOf(this.model.dataSource) === -1,
+      templateOptions: {
+        required: () => [DataSource.OWN_REMOTE, DataSource.AMATEUR_HOSTING].indexOf(this.model.dataSource) > -1,
+        label: this.translate.instant("Remote data source"),
+        description: this.translate.instant(
+          "Which remote hosting facility did you use to acquire data for this image?"
+        ),
+        labelTemplate: this.remoteSourceLabelTemplate,
+        optionTemplate: this.remoteSourceOptionTemplate,
+        options: [
+          {
+            value: "OWN",
+            label: this.translate.instant("Non-commercial independent facility")
+          },
+          ...Array.from(Object.keys(RemoteSource)).map(key => ({
+            value: key,
+            label: RemoteSource[key]
+          })),
+          {
+            value: "OTHER",
+            label: this.translate.instant("None of the above")
+          }
+        ]
+      }
+    };
+  }
+
   private _initFields(): void {
     this.fields = [
       {
@@ -299,17 +359,14 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
             ]
           },
           {
-            templateOptions: { label: this.translate.instant("Content") },
+            templateOptions: { label: this.translate.instant("Content & source") },
             fieldGroup: [
               this._getAcquisitionTypeField(),
               this._getSubjectTypeField(),
               this._getSolarSystemMainSubjectField(),
-              this._getDataSourceField()
+              this._getDataSourceField(),
+              this._getRemoteSourceField()
             ]
-          },
-          {
-            templateOptions: { label: this.translate.instant("Data source") },
-            fieldGroup: []
           }
         ]
       }

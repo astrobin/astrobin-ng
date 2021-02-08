@@ -22,7 +22,8 @@ export class ImageGenerator {
       acquisitionType: AcquisitionType.REGULAR,
       subjectType: SubjectType.DEEP_SKY,
       mainSolarSystemSubject: undefined,
-      dataSource: DataSource.BACKYARD
+      dataSource: DataSource.BACKYARD,
+      remoteSource: undefined
     };
   }
 }
