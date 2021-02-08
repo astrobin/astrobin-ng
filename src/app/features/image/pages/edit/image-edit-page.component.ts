@@ -324,17 +324,20 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
         labelTemplate: this.remoteSourceLabelTemplate,
         optionTemplate: this.remoteSourceOptionTemplate,
         options: [
-          {
-            value: "OWN",
-            label: this.translate.instant("Non-commercial independent facility")
-          },
           ...Array.from(Object.keys(RemoteSource)).map(key => ({
             value: key,
-            label: RemoteSource[key]
+            label: RemoteSource[key],
+            group: this.translate.instant("Commercial facilities")
           })),
           {
+            value: "OWN",
+            label: this.translate.instant("Non-commercial independent facility"),
+            group: this.translate.instant("Other")
+          },
+          {
             value: "OTHER",
-            label: this.translate.instant("None of the above")
+            label: this.translate.instant("None of the above"),
+            group: this.translate.instant("Other")
           }
         ]
       }
