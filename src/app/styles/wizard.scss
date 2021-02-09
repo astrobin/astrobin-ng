@@ -29,6 +29,11 @@
       }
     }
 
+    &:not(.done) {
+      cursor: pointer;
+      pointer-events: none;
+    }
+
     &.done .nav-link {
       color: $white !important;
       background: darken($accent-color, 10%) !important;
@@ -51,6 +56,15 @@
 
       &::after {
         background: none;
+      }
+    }
+
+    &.danger .nav-link {
+      background: $error-red !important;
+      color: $white !important;
+
+      &::after {
+        border-left-color: $error-red !important;
       }
     }
   }

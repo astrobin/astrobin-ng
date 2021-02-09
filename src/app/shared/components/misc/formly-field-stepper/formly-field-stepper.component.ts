@@ -1,6 +1,7 @@
 import { Component } from "@angular/core";
 import { FieldType, FormlyFieldConfig } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
+import { STEP_STATE } from "ng-wizard";
 
 @Component({
   selector: "astrobin-formly-field-stepper",
@@ -12,8 +13,13 @@ export class FormlyFieldStepperComponent extends FieldType {
     super();
   }
 
-  getStepTitle(stepNumber: number): string {
-    return this.translateService.instant("Step {{ stepNumber }}", { stepNumber });
+  getStepTitle(field: FormlyFieldConfig, stepNumber: number): string {
+    let title = this.translateService.instant("Step {{ stepNumber }}", { stepNumber });
+    if (!this.isValid(field)) {
+      title += " (!)";
+    }
+
+    return title;
   }
 
   isValid(field: FormlyFieldConfig) {
@@ -22,5 +28,13 @@ export class FormlyFieldStepperComponent extends FieldType {
     }
 
     return field.fieldGroup.every(f => this.isValid(f));
+  }
+
+  getState(field: FormlyFieldConfig): STEP_STATE {
+    if (!this.isValid(field)) {
+      return STEP_STATE.error;
+    }
+
+    return STEP_STATE.normal;
   }
 }

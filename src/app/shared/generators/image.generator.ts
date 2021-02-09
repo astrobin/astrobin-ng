@@ -1,4 +1,10 @@
-import { AcquisitionType, DataSource, ImageInterface, SubjectType } from "../interfaces/image.interface";
+import {
+  AcquisitionType,
+  DataSource,
+  ImageInterface,
+  MouseHoverImageOptions,
+  SubjectType
+} from "../interfaces/image.interface";
 
 export class ImageGenerator {
   static image(source: Partial<ImageInterface> = {}): ImageInterface {
@@ -21,10 +27,13 @@ export class ImageGenerator {
       linkToFits: undefined,
       acquisitionType: AcquisitionType.REGULAR,
       subjectType: SubjectType.DEEP_SKY,
-      mainSolarSystemSubject: undefined,
+      solarSystemMainSubject: undefined,
       dataSource: DataSource.BACKYARD,
       remoteSource: undefined,
-      partOfGroupSet: []
+      partOfGroupSet: [],
+      keyValueTags: undefined,
+      mouseHoverImage: MouseHoverImageOptions.SOLUTION,
+      allowComments: true
     };
   }
 }

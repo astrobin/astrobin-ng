@@ -86,6 +86,12 @@ export enum RemoteSource {
   SSLLC = "Stellar Skies LLC"
 }
 
+export enum MouseHoverImageOptions {
+  NOTHING = "NOTHING",
+  SOLUTION = "SOLUTION",
+  INVERTED = "INVERTED"
+}
+
 export interface ImageInterface {
   user: number;
   pk: number;
@@ -105,8 +111,11 @@ export interface ImageInterface {
   linkToFits?: string;
   acquisitionType: AcquisitionType;
   subjectType: SubjectType;
-  mainSolarSystemSubject?: SolarSystemSubjectType;
+  solarSystemMainSubject?: SolarSystemSubjectType;
   dataSource: DataSource;
   remoteSource?: string;
   partOfGroupSet: number[];
+  keyValueTags?: string;
+  mouseHoverImage: MouseHoverImageOptions;
+  allowComments: boolean;
 }

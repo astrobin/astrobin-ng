@@ -13,6 +13,7 @@ import {
   AcquisitionType,
   DataSource,
   ImageInterface,
+  MouseHoverImageOptions,
   RemoteSource,
   SolarSystemSubjectType,
   SubjectType
@@ -59,21 +60,6 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     this.image = this.route.snapshot.data.image;
     this.model = { ...this.image };
     this.titleService.setTitle("Edit image");
-    this.store$.dispatch(
-      new SetBreadcrumb({
-        breadcrumb: [
-          {
-            label: this.translate.instant("Image")
-          },
-          {
-            label: this.image.title
-          },
-          {
-            label: this.translate.instant("Edit")
-          }
-        ]
-      })
-    );
 
     this._initBreadcrumb();
 
@@ -203,6 +189,15 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
           { value: SubjectType.GEAR, label: this.translate.instant("Gear") },
           { value: SubjectType.OTHER, label: this.translate.instant("Other") }
         ]
+      },
+      hooks: {
+        onInit: (field: FormlyFieldConfig) => {
+          field.formControl.valueChanges.subscribe(value => {
+            if (value !== SubjectType.SOLAR_SYSTEM) {
+              this.model.solarSystemMainSubject = null;
+            }
+          });
+        }
       }
     };
   }
@@ -212,8 +207,10 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
       key: "solarSystemMainSubject",
       type: "ng-select",
       hideExpression: () => this.model.subjectType !== SubjectType.SOLAR_SYSTEM,
+      expressionProperties: {
+        "templateOptions.required": "model.subjectType === 'SOLAR_SYSTEM'"
+      },
       templateOptions: {
-        required: () => this.model.subjectType === SubjectType.SOLAR_SYSTEM,
         label: this.translate.instant("Main solar system subject"),
         options: [
           { value: SolarSystemSubjectType.SUN, label: this.translate.instant("Sun") },
@@ -310,6 +307,15 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
             group: this.translate.instant("Other")
           }
         ]
+      },
+      hooks: {
+        onInit: (field: FormlyFieldConfig) => {
+          field.formControl.valueChanges.subscribe(value => {
+            if ([DataSource.OWN_REMOTE, DataSource.AMATEUR_HOSTING].indexOf(value) === -1) {
+              this.model.remoteSource = null;
+            }
+          });
+        }
       }
     };
   }
@@ -319,8 +325,10 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
       key: "remoteSource",
       type: "ng-select",
       hideExpression: () => [DataSource.OWN_REMOTE, DataSource.AMATEUR_HOSTING].indexOf(this.model.dataSource) === -1,
+      expressionProperties: {
+        "templateOptions.required": "model.dataSource === 'OWN_REMOTE' || model.dataSource === 'AMATEUR_HOSTING'"
+      },
       templateOptions: {
-        required: () => [DataSource.OWN_REMOTE, DataSource.AMATEUR_HOSTING].indexOf(this.model.dataSource) > -1,
         label: this.translate.instant("Remote data source"),
         description: this.translate.instant(
           "Which remote hosting facility did you use to acquire data for this image?"
@@ -373,6 +381,62 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     };
   }
 
+  private _getKeyValueTagsField(): any {
+    return {
+      key: "keyValueTags",
+      type: "textarea",
+      templateOptions: {
+        rows: 5,
+        required: false,
+        label: this.translate.instant("Key/value tags"),
+        description: this.translate.instant(
+          "Provide a list of unique key/value pairs to tag this image with. " +
+            "Use the '=' symbol between key and value, and provide one pair per line. These tags can be used to sort " +
+            "images by arbitrary properties."
+        )
+      }
+    };
+  }
+
+  private _getMouseHoverImageField(): any {
+    return {
+      key: "mouseHoverImage",
+      type: "ng-select",
+      templateOptions: {
+        required: true,
+        label: this.translate.instant("Mouse hover image"),
+        description: this.translate.instant(
+          "Choose what will be displayed when somebody hovers the mouse over this image. Please note: only " +
+            "revisions with the same width and height of your original image can be considered."
+        ),
+        options: [
+          {
+            value: MouseHoverImageOptions.NOTHING,
+            label: this.translate.instant("Nothing")
+          },
+          {
+            value: MouseHoverImageOptions.SOLUTION,
+            label: this.translate.instant("Plate-solution annotations (if available)")
+          },
+          {
+            value: MouseHoverImageOptions.INVERTED,
+            label: this.translate.instant("Inverted monochrome")
+          }
+        ]
+      }
+    };
+  }
+
+  private _getAllowCommentsField(): any {
+    return {
+      key: "allowComments",
+      type: "checkbox",
+      templateOptions: {
+        label: this.translate.instant("Allow comments")
+      }
+    };
+  }
+
   private _initFields(): void {
     this.fields = [
       {
@@ -403,12 +467,28 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
           },
           {
             templateOptions: { label: this.translate.instant("Settings") },
-            fieldGroup: []
+            fieldGroup: [this._getKeyValueTagsField(), this._getMouseHoverImageField(), this._getAllowCommentsField()]
           }
         ]
       }
     ];
   }
 
-  private _initBreadcrumb(): void {}
+  private _initBreadcrumb(): void {
+    this.store$.dispatch(
+      new SetBreadcrumb({
+        breadcrumb: [
+          {
+            label: this.translate.instant("Image")
+          },
+          {
+            label: this.image.title
+          },
+          {
+            label: this.translate.instant("Edit")
+          }
+        ]
+      })
+    );
+  }
 }

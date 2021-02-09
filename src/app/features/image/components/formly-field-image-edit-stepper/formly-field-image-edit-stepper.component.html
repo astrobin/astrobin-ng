@@ -2,7 +2,8 @@
   <ng-wizard-step
     *ngFor="let step of field.fieldGroup; let index = index; let last = last"
     [description]="step.templateOptions.label"
-    [title]="getStepTitle(index + 1)"
+    [title]="getStepTitle(step, index + 1)"
+    [state]="getState(step)"
   >
     <div class="row">
       <div class="col-3">
