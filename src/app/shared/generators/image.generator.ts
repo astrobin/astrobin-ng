@@ -23,7 +23,8 @@ export class ImageGenerator {
       subjectType: SubjectType.DEEP_SKY,
       mainSolarSystemSubject: undefined,
       dataSource: DataSource.BACKYARD,
-      remoteSource: undefined
+      remoteSource: undefined,
+      partOfGroupSet: []
     };
   }
 }

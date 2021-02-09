@@ -1,6 +1,7 @@
 <ng-select
   [bindValue]="'value'"
   [items]="to.options | formlySelectOptions: field | async"
+  [multiple]="to.multiple"
   [formControl]="formControl"
   groupBy="group"
 >

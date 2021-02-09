@@ -1,4 +1,4 @@
-import { GroupGenerator } from "@shared/generators/group.generator";
+import { AuthGroupGenerator } from "@shared/generators/auth-group.generator";
 import { SubscriptionInterface } from "@shared/interfaces/subscription.interface";
 
 export class SubscriptionGenerator {
@@ -14,7 +14,7 @@ export class SubscriptionGenerator {
       recurrence_period: 0,
       recurrence_unit: null,
       category: "premium",
-      group: GroupGenerator.group()
+      group: AuthGroupGenerator.group()
     };
   }
 }

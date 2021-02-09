@@ -108,4 +108,5 @@ export interface ImageInterface {
   mainSolarSystemSubject?: SolarSystemSubjectType;
   dataSource: DataSource;
   remoteSource?: string;
+  partOfGroupSet: number[];
 }

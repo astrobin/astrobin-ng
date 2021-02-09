@@ -3,6 +3,7 @@ import { FormGroup } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { State } from "@app/store/state";
+import { selectCurrentUser } from "@features/account/store/auth.selectors";
 import { Store } from "@ngrx/store";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
@@ -17,9 +18,11 @@ import {
   SubjectType
 } from "@shared/interfaces/image.interface";
 import { RemoteSourceAffiliateInterface } from "@shared/interfaces/remote-source-affiliate.interface";
+import { GroupApiService } from "@shared/services/api/classic/groups/group-api.service";
 import { RemoteSourceAffiliateApiService } from "@shared/services/api/classic/remote-source-affiliation/remote-source-affiliate-api.service";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { TitleService } from "@shared/services/title/title.service";
+import { map, switchMap } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-image-edit-page",
@@ -46,7 +49,8 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     public readonly translate: TranslateService,
     public readonly classicRoutesService: ClassicRoutesService,
     public readonly titleService: TitleService,
-    public readonly remoteSourceAffiliateApiService: RemoteSourceAffiliateApiService
+    public readonly remoteSourceAffiliateApiService: RemoteSourceAffiliateApiService,
+    public readonly groupApiService: GroupApiService
   ) {
     super();
   }
@@ -344,6 +348,31 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     };
   }
 
+  private _getGroupsField(): any {
+    return {
+      key: "partOfGroupSet",
+      type: "ng-select",
+      templateOptions: {
+        multiple: true,
+        required: false,
+        label: this.translate.instant("Groups"),
+        description: this.translate.instant("Submit this image to the selected groups."),
+        options: this.store$.select(selectCurrentUser).pipe(
+          switchMap(user =>
+            this.groupApiService.getAll(user.id).pipe(
+              map(groups =>
+                groups.map(group => ({
+                  value: group.id,
+                  label: group.name
+                }))
+              )
+            )
+          )
+        )
+      }
+    };
+  }
+
   private _initFields(): void {
     this.fields = [
       {
@@ -362,14 +391,19 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
             ]
           },
           {
-            templateOptions: { label: this.translate.instant("Content & source") },
+            templateOptions: { label: this.translate.instant("Content") },
             fieldGroup: [
               this._getAcquisitionTypeField(),
               this._getSubjectTypeField(),
               this._getSolarSystemMainSubjectField(),
               this._getDataSourceField(),
-              this._getRemoteSourceField()
+              this._getRemoteSourceField(),
+              this._getGroupsField()
             ]
+          },
+          {
+            templateOptions: { label: this.translate.instant("Settings") },
+            fieldGroup: []
           }
         ]
       }
