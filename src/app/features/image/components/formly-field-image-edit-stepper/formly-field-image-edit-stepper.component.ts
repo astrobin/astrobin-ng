@@ -23,6 +23,17 @@ export class FormlyFieldImageEditStepperComponent extends FormlyFieldStepperComp
       lang: {
         next: this.translateService.instant("Next"),
         previous: this.translateService.instant("Previous")
+      },
+      toolbarSettings: {
+        toolbarExtraButtons: [
+          {
+            text: this.translateService.instant("Save"),
+            class: "btn btn-primary",
+            event: () => {
+              alert("Finished!!!");
+            }
+          }
+        ]
       }
     };
   }
