@@ -26,6 +26,11 @@
 
   <ngb-panel title="{{ 'Prefer to pay via bank transfer?' | translate }}">
     <ng-template ngbPanelContent>
+      <p *ngIf="subscriptionsService.supportsSepaDebitPaymentType" class="alert alert-info">
+          <strong>{{ "Please note" | translate }}</strong>:
+          {{ "For payments in EUR, you can pay with a SEPA direct debit using the Buy button below!" }}
+      </p>
+
       <p>
         <span [innerHtml]="bankDetailsMessage$ | async"></span>&nbsp;
         <span translate>Thanks!</span>
@@ -114,9 +119,18 @@
     >
       {{ "Buy" | translate }}
       <span class="icons">
-        <img alt="Visa" class="icon" src="/assets/images/cc-visa-brands.svg" />
-        <img alt="Mastercard" class="icon" src="/assets/images/cc-mastercard-brands.svg" />
-        <img alt="Amex" class="icon" src="/assets/images/cc-amex-brands.svg" />
+        <img *ngIf="subscriptionsService.supportsAliPayPaymentType" alt="AliPay" class="icon"
+             src="/assets/images/alipay-brands.svg" />
+
+        <img *ngIf="subscriptionsService.supportsCardPaymentType" alt="Visa" class="icon"
+             src="/assets/images/cc-visa-brands.svg" />
+        <img *ngIf="subscriptionsService.supportsCardPaymentType" alt="Mastercard" class="icon"
+             src="/assets/images/cc-mastercard-brands.svg" />
+        <img *ngIf="subscriptionsService.supportsCardPaymentType" alt="Amex" class="icon"
+             src="/assets/images/cc-amex-brands.svg" />
+
+        <img *ngIf="subscriptionsService.supportsSepaDebitPaymentType" alt="SEPA" class="icon"
+             src="/assets/images/bank.svg" />
       </span>
 
       <span class="stripe-info">
