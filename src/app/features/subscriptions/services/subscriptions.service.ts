@@ -57,7 +57,7 @@ export class SubscriptionsService {
   }
 
   get supportsAliPayPaymentType(): boolean {
-    return this.currency === "CNY";
+    return false; // this.currency === "CNY";
   }
 
   getName(product: PayableProductInterface): string {
