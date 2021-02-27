@@ -48,6 +48,18 @@ export class SubscriptionsService {
       });
   }
 
+  get supportsCardPaymentType(): boolean {
+    return true;
+  }
+
+  get supportsSepaDebitPaymentType(): boolean {
+    return this.currency === "EUR";
+  }
+
+  get supportsAliPayPaymentType(): boolean {
+    return false; // this.currency === "CNY";
+  }
+
   getName(product: PayableProductInterface): string {
     const resultMap = {
       [PayableProductInterface.LITE]: "Lite",

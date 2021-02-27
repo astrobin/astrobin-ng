@@ -42,7 +42,7 @@
   &.alert-info {
     background-color: $white;
 
-    > p {
+    > p, & {
       color: $grey;
     }
   }

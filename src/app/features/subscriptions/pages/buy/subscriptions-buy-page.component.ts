@@ -41,10 +41,12 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
   bankDetailsMessage$: Observable<string>;
   bankLocations = [
     { id: "USA", label: "United States of America" },
+    { id: "CA", label: "Canada" },
     { id: "EU", label: "Europe" },
     { id: "GB", label: "Great Britain" },
     { id: "AUS", label: "Australia" },
-    { id: "CH", label: "Switzerland" }
+    { id: "CH", label: "Switzerland" },
+    { id: "CN", label: "China" }
   ];
   selectedBankLocation = "USA";
   currencyPipe: CurrencyPipe;
@@ -116,10 +118,16 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
           "SORT CODE  : 23-14-70\n" +
           "IBAN       : GB79 TRWI 2314 7052 9900 73"
         );
+      case "CA":
+        return (
+          "BENEFICIARY       : AstroBin\n" +
+          "ACCOUNT NUMBER    : 200110016315\n" +
+          "INSTITUTION NUMBER: 621\n" +
+          "TRANSIT NUMBER    : 16001"
+        );
       case "EU":
         return "BENEFICIARY: AstroBin\n" + "IBAN       : BE76 9671 5599 8695\n" + "SWIFT / BIC: TRWIBEB1XXX ";
       case "USA":
-      default:
         return (
           "Paying from inside the USA\n" +
           "ACCOUNT #: 9600000000061714\n" +
@@ -127,6 +135,10 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
           "Paying from outside the USA\n" +
           "ACCOUNT #: 8310788830\n" +
           "SWIFT/BIC: CMFGUS33"
+        );
+      default:
+        return this.translate.instant(
+          "Sorry, unfortunately AstroBin does not have a bank account in the selected territory."
         );
     }
   }
@@ -185,10 +197,12 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
         .subscribe(currency => {
           this.selectedBankLocation = {
             USD: "USA",
+            CAD: "CA",
             EUR: "EU",
             GBP: "GB",
             AUD: "AUS",
-            CHF: "CH"
+            CHF: "CH",
+            CNY: "CN"
           }[currency];
 
           this.pricing$ = this.subscriptionsService.getPrice(this.product).pipe(
