@@ -53,4 +53,8 @@ export class ImageApiService extends BaseClassicApiService {
   getThumbnail(id: number | string, revision: string, alias: ImageAlias): Observable<ImageThumbnailInterface> {
     return this.http.get<ImageThumbnailInterface>(`${environment.classicBaseUrl}/${id}/${revision}/thumb/${alias}/`);
   }
+
+  updateImage(image: ImageInterface): Observable<ImageInterface> {
+    return this.http.put<ImageInterface>(`${this.configUrl}/image/${image.pk}/`, image);
+  }
 }

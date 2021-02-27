@@ -3,6 +3,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { FormlyFieldStepperComponent } from "@shared/components/misc/formly-field-stepper/formly-field-stepper.component";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
 import { ImageInterface } from "@shared/interfaces/image.interface";
+import { ImageApiService } from "@shared/services/api/classic/images/image/image-api.service";
 import { NgWizardConfig } from "ng-wizard";
 
 @Component({
@@ -14,8 +15,12 @@ export class FormlyFieldImageEditStepperComponent extends FormlyFieldStepperComp
   ImageAlias = ImageAlias;
   config: NgWizardConfig;
 
-  constructor(public translateService: TranslateService) {
+  constructor(public readonly translateService: TranslateService, public readonly imageApiService: ImageApiService) {
     super(translateService);
+  }
+
+  get image(): ImageInterface {
+    return this.to.image as ImageInterface;
   }
 
   ngOnInit(): void {
@@ -30,15 +35,11 @@ export class FormlyFieldImageEditStepperComponent extends FormlyFieldStepperComp
             text: this.translateService.instant("Save"),
             class: "btn btn-primary",
             event: () => {
-              alert("Finished!!!");
+              this.imageApiService.updateImage(this.image).subscribe();
             }
           }
         ]
       }
     };
-  }
-
-  get image(): ImageInterface {
-    return this.to.image as ImageInterface;
   }
 }
