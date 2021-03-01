@@ -52,7 +52,7 @@
     "bootswatch": "4.6.0",
     "class-transformer": "0.4.0",
     "class-validator": "0.13.1",
-    "core-js": "3.9.0",
+    "core-js": "3.9.1",
     "country-js": "0.0.9",
     "dotenv": "8.1.0",
     "intl": "1.2.5",
