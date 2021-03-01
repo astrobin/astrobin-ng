@@ -1,7 +1,9 @@
 import { Component, OnInit } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
+import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
 import { State } from "@app/store/state";
+import { environment } from "@env/environment";
 import { Store } from "@ngrx/store";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
@@ -109,8 +111,11 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
       })
     );
 
-    this.uploadDataService.setMetadata("image-upload", { is_wip: true });
-    this.uploadDataService.setMetadata("image-upload", { skip_notifications: true });
+    this.store$.select(selectBackendConfig, backendConfig => {
+      this.uploadDataService.setEndpoint(`${environment.classicBaseUrl}/${backendConfig.IMAGE_UPLOAD_ENDPOINT}`);
+    });
+
+    this.uploadDataService.setMetadata("image-upload", { is_wip: true, skip_notifications: true });
 
     this.userSubscriptionService.fileSizeAllowed(0).subscribe(result => {
       const field = this.fields.filter(x => x.key === "image_file")[0];
