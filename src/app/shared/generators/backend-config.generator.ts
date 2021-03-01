@@ -35,7 +35,8 @@ export class BackendConfigGenerator {
       },
       IOTD_SUBMISSION_MAX_PER_DAY: 3,
       IOTD_REVIEW_MAX_PER_DAY: 3,
-      IOTD_QUEUES_PAGE_SIZE: 10
+      IOTD_QUEUES_PAGE_SIZE: 10,
+      IMAGE_UPLOAD_ENDPOINT: "/api/v2/images/image-upload/"
     };
   }
 }
