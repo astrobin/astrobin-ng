@@ -55,6 +55,30 @@
                 }
               ]
             },
+            "cypress": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.cypress.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                }
+              ]
+            },
             "local-production": {
               "optimization": true,
               "outputHashing": "all",
@@ -83,6 +107,9 @@
           "configurations": {
             "production": {
               "browserTarget": "frontend:build:production"
+            },
+            "cypress": {
+              "browserTarget": "frontend:build:cypress"
             },
             "local-production": {
               "browserTarget": "frontend:build:local-production"
