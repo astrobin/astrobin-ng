@@ -13,7 +13,7 @@
     "start:cypress": "ng serve --host 0.0.0.0 --port 4400 --configuration=cypress --extra-webpack-config webpack.partial.js",
     "build": "ng build --extra-webpack-config webpack.partial.js",
     "build:stats": "ng build --extra-webpack-config webpack.partial.js --stats-json",
-    "build:prod": "ng build --prod --aot--extra-webpack-config webpack.partial.js",
+    "build:prod": "ng build --prod --aot --extra-webpack-config webpack.partial.js",
     "test": "jest --config jest.config.js",
     "test:cov": "jest --config jest.config.js --coverage",
     "cy:wait-run": "./node_modules/.bin/wait-on http-get://localhost:4400/ && cypress run",
