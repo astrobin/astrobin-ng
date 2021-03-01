@@ -1,5 +1,7 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
+import { AppModule } from "@app/app.module";
+import { MockBuilder } from "ng-mocks";
 import { FormlyFieldStepperComponent } from "./formly-field-stepper.component";
 
 describe("FormlyFieldStepperComponent", () => {
@@ -7,10 +9,7 @@ describe("FormlyFieldStepperComponent", () => {
   let fixture: ComponentFixture<FormlyFieldStepperComponent>;
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ FormlyFieldStepperComponent ]
-    })
-    .compileComponents();
+    await MockBuilder(FormlyFieldStepperComponent, AppModule);
   });
 
   beforeEach(() => {

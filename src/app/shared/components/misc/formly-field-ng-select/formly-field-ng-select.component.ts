@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component } from "@angular/core";
 import { FieldType } from "@ngx-formly/core";
 
 @Component({
@@ -6,6 +6,4 @@ import { FieldType } from "@ngx-formly/core";
   templateUrl: "./formly-field-ng-select.component.html",
   styleUrls: ["./formly-field-ng-select.component.scss"]
 })
-export class FormlyFieldNgSelectComponent extends FieldType implements OnInit {
-  ngOnInit(): void {}
-}
+export class FormlyFieldNgSelectComponent extends FieldType {}
