@@ -32,4 +32,6 @@ export interface BackendConfigInterface {
   IOTD_SUBMISSION_MAX_PER_DAY: number;
   IOTD_REVIEW_MAX_PER_DAY: number;
   IOTD_QUEUES_PAGE_SIZE: number;
+  IMAGE_UPLOAD_ENDPOINT: string;
+  IMAGE_REVISION_UPLOAD_ENDPOINT: string;
 }
