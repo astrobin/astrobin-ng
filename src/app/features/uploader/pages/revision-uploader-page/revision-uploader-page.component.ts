@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
+import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
 import { State } from "@app/store/state";
 import { environment } from "@env/environment";
 import { Store } from "@ngrx/store";
@@ -103,11 +104,7 @@ export class RevisionUploaderPageComponent extends BaseComponentDirective implem
     this.titleService.setTitle(this.pageTitle);
     this.store$.dispatch(
       new SetBreadcrumb({
-        breadcrumb: [
-          { label: this.translate.instant("Image") },
-          { label: this.image.title },
-          { label: this.pageTitle }
-        ]
+        breadcrumb: [{ label: this.translate.instant("Image") }, { label: this.image.title }, { label: this.pageTitle }]
       })
     );
 
@@ -123,7 +120,11 @@ export class RevisionUploaderPageComponent extends BaseComponentDirective implem
     this._onSkipNotificationsChange();
     this._onMarkAsFinalChange();
 
-    this.uploadDataService.setEndpoint(`${environment.classicBaseUrl}/api/v2/images/image-revision/`);
+    this.store$.select(selectBackendConfig).subscribe(backendConfig => {
+      this.uploadDataService.setEndpoint(
+        `${environment.classicBaseUrl}/${backendConfig.IMAGE_REVISION_UPLOAD_ENDPOINT}`
+      );
+    });
 
     this.uploaderService.events.pipe(takeUntil(this.destroyed$)).subscribe(uploadState => {
       this.uploadState = uploadState;
