@@ -317,6 +317,7 @@ export function setTimeagoIntl(timeagoIntl: TimeagoIntl, language: string): void
       timeagoIntl.strings = timeagoVi;
       break;
     case "zh-CN":
+    case "zh-hans":
       timeagoIntl.strings = timeagoZhCn;
       break;
     case "zh-TW":

@@ -16,6 +16,7 @@ import localePortuguese from "@angular/common/locales/pt";
 import localeRussian from "@angular/common/locales/ru";
 import localeAlbanian from "@angular/common/locales/sq";
 import localeTurkish from "@angular/common/locales/tr";
+import localeChineseSimplified from "@angular/common/locales/zh-Hans";
 import { NgModule } from "@angular/core";
 import { BrowserModule, Title } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
@@ -79,6 +80,7 @@ registerLocaleData(localeGerman);
 registerLocaleData(localeItalian);
 registerLocaleData(localeSpanish);
 registerLocaleData(localePortuguese);
+registerLocaleData(localeChineseSimplified);
 
 // Community languages
 registerLocaleData(localeArabic);

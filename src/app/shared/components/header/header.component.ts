@@ -33,6 +33,7 @@ export class HeaderComponent extends BaseComponentDirective {
     { code: "fr", label: "Français" },
     { code: "it", label: "Italiano" },
     { code: "pt", label: "Português" },
+    { code: "zh-hans", label: "中文 (简体)" },
     { code: "-", label: "-" },
     { code: "ar", label: "العربية" },
     { code: "el", label: "Ελληνικά" },
@@ -55,6 +56,14 @@ export class HeaderComponent extends BaseComponentDirective {
     public store: Store<State>
   ) {
     super();
+  }
+
+  getSetLanguageUrl(languageCode: string): string {
+    if (languageCode === "zh_Hans") {
+      languageCode = "zh-hans";
+    }
+
+    return this.classicRoutes.SET_LANGUAGE(languageCode, this.windowRef.nativeWindow.location.href);
   }
 
   openLoginModal($event) {
