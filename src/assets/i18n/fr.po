@@ -191,6 +191,9 @@ msgstr "Masquer"
 msgid "Home"
 msgstr "Accueil"
 
+msgid "Image"
+msgstr ""
+
 msgid "Image of the day"
 msgstr "Image du Jour"
 
@@ -292,6 +295,9 @@ msgstr ""
 msgid "Password"
 msgstr "Mot de passe"
 
+msgid "Permission denied"
+msgstr ""
+
 msgid "Please come back later!"
 msgstr "Merci de revenir plus tard !"
 
@@ -305,10 +311,8 @@ msgstr ""
 "email_prefix }}{{ email }}{{ email_postfix }} en précisant votre nom "
 "d'utilisateur afin que nous puissions actualiser votre compte manuellement."
 
-msgid "Please note: you already are on this plan or a higher one."
+msgid "Please note"
 msgstr ""
-"A noter : vous avez déjà souscrit à cette formule d'abonnement ou à une "
-"formule supérieure. "
 
 msgid ""
 "Please note: you don't <strong>have to</strong> use all your slots. It's ok "
@@ -386,6 +390,11 @@ msgstr ""
 "Désolé, mais cette image est trop grande. Votre abonnement actuel vous "
 "autorise une taille d'image maximale de {{max}}."
 
+msgid ""
+"Sorry, unfortunately AstroBin does not have a bank account in the selected "
+"territory."
+msgstr ""
+
 msgid "Spam list"
 msgstr "Liste de spams"
 
@@ -424,6 +433,13 @@ msgstr "Merci !"
 
 msgid "The Big Wall"
 msgstr "Le Grand Mur"
+
+msgid ""
+"The Lite plan is capped at <strong>{{maxImagesForLite}}</strong> total "
+"images, and you currently have <strong>{{numberOfImages}}</strong> images "
+"on AstroBin. For this reason, we recommend that you upgrade to Premium or "
+"Ultimate instead."
+msgstr ""
 
 msgid "The image will permanently disappear from your queue."
 msgstr ""
@@ -540,6 +556,14 @@ msgstr ""
 
 msgid "Would you like to upgrade?"
 msgstr "Vous souhaitez passer à une formule d'abonnement supérieure ?"
+
+msgid ""
+"You are already on this plan. If you buy it again, your expiration date "
+"will be extended by one year."
+msgstr ""
+
+msgid "You are already subscribed to a higher plan."
+msgstr ""
 
 msgid ""
 "You have a <strong>{{0}}</strong> subscription. Enjoy your unlimited "
