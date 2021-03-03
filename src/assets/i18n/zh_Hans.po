@@ -5,33 +5,33 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "API Keys"
-msgstr ""
+msgstr "API Keys"
 
 msgid "Accepted formats"
-msgstr ""
+msgstr "可接受的格式"
 
 msgid "Access denied."
-msgstr ""
+msgstr "拒绝访问。"
 
 msgid "Advanced plate-solving"
-msgstr ""
+msgstr "高级解析"
 
 msgid "Advanced search"
-msgstr ""
+msgstr "高级搜索"
 
 msgid "Amount"
-msgstr ""
+msgstr "数量"
 
 msgid "And much more!"
-msgstr ""
+msgstr "还有更多！"
 
 msgid "Are you sure you want to dismiss this image?"
-msgstr ""
+msgstr "您确定要关闭此图片吗？"
 
 msgid ""
 "AstroBin could not read your file as an image. Please try a different "
 "format."
-msgstr ""
+msgstr "AstroBin无法将您的文件读取为图像。 请尝试其他格式。"
 
 msgid ""
 "AstroBin doesn't support subscription upgrades at the moment, but we're "
@@ -40,124 +40,126 @@ msgid ""
 "then contact us at {{1}} to get a refund for the unused time on your old "
 "subscription. Thanks!"
 msgstr ""
+"AstroBin目前不支持订阅升级，但我们很乐意为您手动操作。如果您当前的订阅级别较低，并且想升级到<strong>{{0}}</"
+"strong>，请先购买此订阅，然后通过 {{1}}与我们联系，申请旧订阅剩余时间的退款，谢谢！"
 
 msgid "AstroBin index"
-msgstr ""
+msgstr "AstroBin索引"
 
 msgid "Astrophotographers list"
-msgstr ""
+msgstr "天文摄影师列表"
 
 msgid "Authentication error. Please log out and in again."
-msgstr ""
+msgstr "授权错误。请注销并再次登录。"
 
 msgid "Autorenew"
-msgstr ""
+msgstr "自动更新"
 
 msgid "Basic plate-solving"
-msgstr ""
+msgstr "基础解析"
 
 msgid "Basic search"
-msgstr ""
+msgstr "基础搜索"
 
 msgid "Bookmarks"
-msgstr ""
+msgstr "书签"
 
 msgid "Buy"
-msgstr ""
+msgstr "购买"
 
 msgid "Cancel"
-msgstr ""
+msgstr "取消"
 
 msgid "Cancelled"
-msgstr ""
+msgstr "已取消的"
 
 msgid "Click on the image and scroll to magnify up to 8x."
-msgstr ""
+msgstr "单击图像并滚动以放大至最大8倍。"
 
 msgid "Commercial products"
-msgstr ""
+msgstr "商业产品"
 
 msgid "Contact"
-msgstr ""
+msgstr "联系我们"
 
 msgid "Contributors list"
-msgstr ""
+msgstr "贡献榜"
 
 msgid "Date"
-msgstr ""
+msgstr "日期"
 
 msgid "Description"
-msgstr ""
+msgstr "描述"
 
 msgid "Dismiss"
-msgstr ""
+msgstr "关闭"
 
 msgid "Dismiss image"
-msgstr ""
+msgstr "关闭图像"
 
 msgid "Do not notify your followers about this revision."
-msgstr ""
+msgstr "不将此次修订通知您的粉丝。"
 
 msgid "Drop file here or click to browse"
-msgstr ""
+msgstr "将文件拖放至此，或点击浏览"
 
 msgid "Email"
-msgstr ""
+msgstr "电子邮件"
 
 msgid "Error!"
-msgstr ""
+msgstr "错误！"
 
 msgid "Expiration date"
-msgstr ""
+msgstr "失效日期"
 
 msgid "Explore"
-msgstr ""
+msgstr "探索"
 
 msgid "FAQ"
-msgstr ""
+msgstr "FAQ"
 
 msgid "File type not supported"
-msgstr ""
+msgstr "不支持此格式"
 
 msgid "Finalizing upload, please wait..."
-msgstr ""
+msgstr "正在完成上传，请稍候..."
 
 msgid "Followers"
-msgstr ""
+msgstr "粉丝"
 
 msgid ""
 "For more information about this and other subscription plans, please visit "
 "the {{0}}pricing{{1}} page."
-msgstr ""
+msgstr "有关此订阅及其他订阅计划的更多信息，请访问{{0}}定价{{1}}页面。"
 
 msgid "For more information, please check out our Twitter feed:"
-msgstr ""
+msgstr "有关更多信息，请查看我们的Twitter feed："
 
 msgid ""
 "For this reason, you cannot purchase this at the moment, as AstroBin does "
 "not currently offer a downgrade path."
-msgstr ""
+msgstr "因此，您目前无法购买，因为AstroBin当前不提供降级服务。"
 
 msgid "Forum"
-msgstr ""
+msgstr "论坛"
 
 msgid "Full search"
-msgstr ""
+msgstr "全局搜索"
 
 msgid "Go back to the home page."
-msgstr ""
+msgstr "回到首页。"
 
 msgid "Good bye!"
-msgstr ""
+msgstr "再见！"
 
 msgid "Groups"
-msgstr ""
+msgstr "小组"
 
 msgid ""
 "Heads up! Are you sure you want to upload such a large file? It's okay to "
 "do so but probably not many people will want to see it at its full "
 "resolution, if it will take too long for them to download it."
-msgstr ""
+msgstr "敲黑板！您确定要上传这么大的文件吗？ 这样做是可以的，但是如果它们加载时间过长，可能没有多少人会希望以完整分辨率查看。"
 
 msgid ""
 "Heads up! TIFF support on AstroBin is experimental. Grayscale images that "
@@ -165,248 +167,252 @@ msgid ""
 "supported. If your file is a color image, or already an 8-bit depth "
 "grayscale, please ignore this warning message."
 msgstr ""
+"敲黑板！AstroBin对TIFF的支持尚在实验阶段。当前不支持16位或更高或具有浮点精度的灰度图像。如果您的文件是彩色图像，或者是8"
+"bit的灰度图像，请忽略此警告消息。"
 
 msgid "Help"
-msgstr ""
+msgstr "帮助"
 
 msgid "Help with translations!"
-msgstr ""
+msgstr "协助翻译！"
 
 msgid "Hide"
-msgstr ""
+msgstr "隐藏"
 
 msgid "Home"
-msgstr ""
+msgstr "主页"
 
 msgid "Image"
-msgstr ""
+msgstr "图像"
 
 msgid "Image of the day"
-msgstr ""
+msgstr "每日一图"
 
 msgid "Image queue"
-msgstr ""
+msgstr "图像列队"
 
 msgid "Images"
-msgstr ""
+msgstr "图像"
 
 msgid "Imaging cameras"
-msgstr ""
+msgstr "主相机"
 
 msgid "Imaging telescopes"
-msgstr ""
+msgstr "主镜"
 
 msgid "Info"
-msgstr ""
+msgstr "信息"
 
 msgid "Initializing upload, please wait..."
-msgstr ""
+msgstr "初始化上传，请稍候..."
 
 msgid "Invalid data, please refresh the page and try again."
-msgstr ""
+msgstr "无效数据，请刷新页面并重试。"
 
 msgid "It looks like you reached the upload limit for your subscription."
-msgstr ""
+msgstr "看起来您已经达到了当前订阅的上传上限。"
 
 msgid "Judgement queue"
-msgstr ""
+msgstr "评审列队"
 
 msgid "Language"
-msgstr ""
+msgstr "语言"
 
 msgid "Latest topics"
-msgstr ""
+msgstr "最新主题"
 
 msgid "Learn more"
-msgstr ""
+msgstr "了解更多"
 
 msgid "Loading..."
-msgstr ""
+msgstr "加载中..."
 
 msgid "Log in"
-msgstr ""
+msgstr "登录"
 
 msgid "Logout"
-msgstr ""
+msgstr "登出"
 
 msgid "Mark all as read"
-msgstr ""
+msgstr "全部标记为已读"
 
 msgid "Mark as final"
-msgstr ""
+msgstr "标记为最终版"
 
 msgid "Mark this revision as the final rendition of your image."
-msgstr ""
+msgstr "将此修订版标记为此系列图像的最终版。"
 
 msgid "Max. {{ max }} MB / image"
-msgstr ""
+msgstr "最大。{{ max }} MB /图片"
 
 msgid "Max. {{ max }} total images"
-msgstr ""
+msgstr "最大。{{ max }} 总图像数"
 
 msgid "Max. {{ max }} uploads"
-msgstr ""
+msgstr "最大。{{ max }} 上传张数"
 
 msgid "Moderate"
-msgstr ""
+msgstr "半公开的"
 
 msgid "My messages"
-msgstr ""
+msgstr "我的消息"
 
 msgid "My places"
-msgstr ""
+msgstr "我的空间"
 
 msgid "My settings"
-msgstr ""
+msgstr "我的设置"
 
 msgid "Name"
-msgstr ""
+msgstr "名称"
 
 msgid "No"
-msgstr ""
+msgstr "没有"
 
 msgid "No plate-solving"
-msgstr ""
+msgstr "无解析数据"
 
 msgid "None specified"
-msgstr ""
+msgstr "未指定"
 
 msgid "Notifications"
-msgstr ""
+msgstr "通知"
 
 msgid "Objects in field"
-msgstr ""
+msgstr "视场中的物体"
 
 msgid "Password"
-msgstr ""
+msgstr "密码"
 
 msgid "Permission denied"
-msgstr ""
+msgstr "没有权限"
 
 msgid "Please come back later!"
-msgstr ""
+msgstr "请稍后再回来！"
 
 msgid ""
 "Please make a deposit of {{ currency }} {{ amount }} to the following bank "
 "details and then email us at {{ email_prefix }}{{ email }}{{ email_postfix "
 "}} with your username so we may upgrade your account manually."
 msgstr ""
+"请在以下银行账户存入{{ currency }} {{ amount }}，然后将您的用户名通过 {{ email_prefix }}{{ email "
+"}}{{ email_postfix }} 给我们，以便我们手动升级您的帐户 。"
 
 msgid "Please note"
-msgstr ""
+msgstr "请注意"
 
 msgid ""
 "Please note: you don't <strong>have to</strong> use all your slots. It's ok "
 "to use fewer if you don't think there are that many worthy images today."
-msgstr ""
+msgstr "请注意：您<strong>不需要</strong>填满所有的空位。如果认为今天有价值的图片不多，则可以只用其中一部分。"
 
 msgid "Please wait until your subscription expires, then come back to this page."
-msgstr ""
+msgstr "请等待您的订阅到期，然后返回此页面。"
 
 msgid "Plots"
-msgstr ""
+msgstr "空位"
 
 msgid "Prefer to pay via bank transfer?"
-msgstr ""
+msgstr "更喜欢通过银行转帐付款？"
 
 msgid "Promote"
-msgstr ""
+msgstr "晋升"
 
 msgid "Public Gallery"
-msgstr ""
+msgstr "公开图库"
 
 msgid "Published"
-msgstr ""
+msgstr "已发布"
 
 msgid "Quick search"
-msgstr ""
+msgstr "快速搜索"
 
 msgid "Register"
-msgstr ""
+msgstr "注册"
 
 msgid "Remote astrophotography"
-msgstr ""
+msgstr "远程天文摄影"
 
 msgid "Reset password"
-msgstr ""
+msgstr "重置密码"
 
 msgid "Retract promotion"
-msgstr ""
+msgstr "撤销晋升"
 
 msgid "Return to the classic uploader"
-msgstr ""
+msgstr "返回旧版上传工具"
 
 msgid "Review queue"
-msgstr ""
+msgstr "审查列队"
 
 msgid "Revision uploader"
-msgstr ""
+msgstr "修订版上传工具"
 
 msgid "Secure payment by Stripe™"
-msgstr ""
+msgstr "Stripe™安全付款"
 
 msgid "Settings"
-msgstr ""
+msgstr "设置"
 
 msgid "Show"
-msgstr ""
+msgstr "显示"
 
 msgid "Skip notifications"
-msgstr ""
+msgstr "跳过通知"
 
 msgid ""
 "Sorry, but the page you are looking for is not here. If you expected an "
 "image, this means that the author deleted it."
-msgstr ""
+msgstr "抱歉，您要查找的页面不在这里。如果这里本应有图片，这意味着作者删除了它。"
 
 msgid ""
 "Sorry, but this image is too large. Under your current subscription plan, "
 "the maximum allowed image size is {{max}}."
-msgstr ""
+msgstr "抱歉，此图像太大。根据您当前的订阅计划，允许的最大图片大小为{{max}}。"
 
 msgid ""
 "Sorry, unfortunately AstroBin does not have a bank account in the selected "
 "territory."
-msgstr ""
+msgstr "抱歉，AstroBin在所选地区没有可用的银行帐户。"
 
 msgid "Spam list"
-msgstr ""
+msgstr "垃圾邮件"
 
 msgid "Sponsors & Partners"
-msgstr ""
+msgstr "赞助商&合作伙伴"
 
 msgid "Staging Area"
-msgstr ""
+msgstr "暂存区"
 
 msgid "Submission queue"
-msgstr ""
+msgstr "提交队列"
 
 msgid "Subscribed topics"
-msgstr ""
+msgstr "订阅的主题"
 
 msgid "Subscription confirmed"
-msgstr ""
+msgstr "订阅已确认"
 
 msgid "Subscription plans"
-msgstr ""
+msgstr "订阅计划"
 
 msgid "Subscription process cancelled"
-msgstr ""
+msgstr "订阅操作已取消"
 
 msgid "Success!"
-msgstr ""
+msgstr "成功！"
 
 msgid "Target image"
-msgstr ""
+msgstr "目标图像"
 
 msgid "Thank you for supporting AstroBin!"
-msgstr ""
+msgstr "感谢您支持AstroBin！"
 
 msgid "Thanks!"
-msgstr ""
+msgstr "感謝！"
 
 msgid "The Big Wall"
-msgstr ""
+msgstr "图片墙"
 
 msgid ""
 "The Lite plan is capped at <strong>{{maxImagesForLite}}</strong> total "
@@ -414,87 +420,89 @@ msgid ""
 "on AstroBin. For this reason, we recommend that you upgrade to Premium or "
 "Ultimate instead."
 msgstr ""
+"Lite订阅的上限是<strong>{{maxImagesForLite}}</strong>张图片，目前您在AstroBin上有 "
+"<strong>{{numberOfImages}}</strong>张图片。因此，我们建议您升级到Premium或Ultimate。"
 
 msgid "The image will permanently disappear from your queue."
-msgstr ""
+msgstr "该图像将从您的队列中永久消失。"
 
 msgid ""
 "The price is shown in Swiss Francs even though you might have paid the "
 "equivalent amount in your country's currency."
-msgstr ""
+msgstr "即使您可能以您所在国家/地区的货币完成了支付，价格仍将以瑞士法郎显示。"
 
 msgid "The review queue is currently empty."
-msgstr ""
+msgstr "审查列队现在是空的。"
 
 msgid "The submission queue is currently empty."
-msgstr ""
+msgstr "提交列队现在是空的。"
 
 msgid "There doesn't seem to be anything here."
-msgstr ""
+msgstr "这里似乎什么也没有。"
 
 msgid ""
 "This image will be uploaded to your staging area as a work in progress. You "
 "can make it public at the end of the process."
-msgstr ""
+msgstr "该图像将作为未完成的作品上传到您的暂存区。您可以在处理结束后时将其公开。"
 
 msgid "This operation can not be undone."
-msgstr ""
+msgstr "此操作无法撤销。"
 
 msgid ""
 "This page or operation is not available at the moment, because AstroBin is "
 "in READ ONLY mode."
-msgstr ""
+msgstr "AstroBin处于“只读”状态，该页面或操作目前不可用。"
 
 msgid "Title"
-msgstr ""
+msgstr "标题"
 
 msgid "Top pick nominations"
-msgstr ""
+msgstr "Top pick提名"
 
 msgid "Top picks"
-msgstr ""
+msgstr "Top picks"
 
 msgid "Uncompressed source uploader"
-msgstr ""
+msgstr "未压缩数据上传工具"
 
 msgid "Unknown error"
-msgstr ""
+msgstr "未知错误"
 
 msgid "Unknown error, please refresh the page and try again."
-msgstr ""
+msgstr "未知错误，请刷新页面并重试。"
 
 msgid "Unlimited images"
-msgstr ""
+msgstr "无限图片数量"
 
 msgid "Unlimited revisions"
-msgstr ""
+msgstr "无限修订版数量"
 
 msgid "Unlimited size"
-msgstr ""
+msgstr "无限大小"
 
 msgid "Upload"
-msgstr ""
+msgstr "上传"
 
 msgid "Uploader"
-msgstr ""
+msgstr "上传工具"
 
 msgid "Uploading..."
-msgstr ""
+msgstr "上传中..."
 
 msgid "Username"
-msgstr ""
+msgstr "用户名"
 
 msgid "Validity"
-msgstr ""
+msgstr "有效性"
 
 msgid "View large"
-msgstr ""
+msgstr "查看大图"
 
 msgid "Want to upgrade from a lower subscription tier?"
-msgstr ""
+msgstr "是否想从低等级订阅升级？"
 
 msgid "Warning!"
-msgstr ""
+msgstr "警告！"
 
 msgid ""
 "Warning! That's a large file you got there! AstroBin does not impose "
@@ -502,85 +510,91 @@ msgid ""
 "subscription, but we cannot guarantee that all images above 200 MB or "
 "~8000x8000 pixels will work. Feel free to give it a shot tho!"
 msgstr ""
+"警告！这文件很大！您是Ultimate订阅用户，AstroBin并未限制你上传文件的大小，但我们不能保证所有200 "
+"MB或〜8000x8000像素以上的图像都可以正常显示。您可以试试看！"
 
 msgid "We could not log you in. Please check your credentials and try again."
-msgstr ""
+msgstr "无法登录。请检查您的凭据然后重试。"
 
 msgid "We'll never share your email with anyone else."
-msgstr ""
+msgstr "我们绝不会将您的电子邮件透露给其他人。"
 
 msgid "Welcome!"
-msgstr ""
+msgstr "欢迎！"
 
 msgid "What is this site?"
-msgstr ""
+msgstr "这是个啥网站？"
 
 msgid "When a paid subscription expires, nothing happens to your images or content."
-msgstr ""
+msgstr "付费订阅到期后，您的图像或内容将不会发生任何变化。"
 
 msgid "Would you like to upgrade?"
-msgstr ""
+msgstr "想要升级吗？"
 
 msgid ""
 "You are already on this plan. If you buy it again, your expiration date "
 "will be extended by one year."
-msgstr ""
+msgstr "您已经在此订阅计划中。 如果您再次购买，则到期日期将延长一年。"
 
 msgid "You are already subscribed to a higher plan."
-msgstr ""
+msgstr "您已经订阅了更高级的计划。"
 
 msgid ""
 "You have a <strong>{{0}}</strong> subscription. Enjoy your unlimited "
 "uploads!"
-msgstr ""
+msgstr "您现已是<strong>{{0}}</strong>订阅用户。畅享无限上传吧！"
 
 msgid ""
 "You have a <strong>{{0}}</strong> subscription. You have used "
 "<strong>{{1}}</strong> of your <strong>{{2}}</strong> upload slots."
 msgstr ""
+"您现在是<strong>{{0}}</strong>订阅用户。目前您已使用<strong>{{2}}</strong>个上传空位中的<strong>{{"
+"1}}</strong>个。"
 
 msgid ""
 "You have a <strong>{{0}}</strong> subscription. You have used "
 "<strong>{{1}}</strong> of your <strong>{{2}}</strong> yearly upload slots."
 msgstr ""
+"您现在是<strong>{{0}}</strong>订阅用户。 "
+"目前您已使用<strong>{{2}}</strong>个年度上传空位中的<strong>{{1}}</strong>个。"
 
 msgid "You have been logged in."
-msgstr ""
+msgstr "您已经成功登录。"
 
 msgid "You have been logged out. Come back soon!"
-msgstr ""
+msgstr "您已登出。快回来哟！"
 
 msgid "You will be redirected in {{seconds}} seconds..."
-msgstr ""
+msgstr "您将在{{seconds}}后跳转..."
 
 msgid "Your payments"
-msgstr ""
+msgstr "付款记录"
 
 msgid ""
 "Your request has been received, and we are awaiting the final confirmation "
 "from the payment processor. Your subscription should be active within a few "
 "minutes!"
-msgstr ""
+msgstr "您的请求已收到，我们正在确认。您的订阅将在几分钟内激活！"
 
 msgid "Your session is invalid, please log in again"
-msgstr ""
+msgstr "您的会话无效，请重新登录"
 
 msgid "Your subscriptions"
-msgstr "as"
+msgstr "您的订阅"
 
 msgid ""
 "Your transaction with the payment processor has been cancelled, so no "
 "change in your subscription has occurred."
-msgstr ""
+msgstr "您与支付平台的交易已取消，因此您的订阅未发生任何更改。"
 
 msgid "Zoom ready"
-msgstr ""
+msgstr "缩放就绪"
 
 msgid "n/a"
-msgstr ""
+msgstr "N/A"
 
 msgid "year"
-msgstr ""
+msgstr "年"
 
 msgid "{{ max }} revisions / image"
-msgstr ""
+msgstr "{{ max }}修订版/图像"
