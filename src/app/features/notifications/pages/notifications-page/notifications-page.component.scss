@@ -40,14 +40,11 @@ h1 {
   }
 
   .message {
-    padding: 0;
+    padding: .5rem 0;
 
     ::ng-deep {
       a {
         @include subtle-accent-link;
-        border-bottom: 0;
-        padding: .5rem;
-        display: block;
 
         &:hover {
           strong {
