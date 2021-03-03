@@ -73,12 +73,17 @@ export class LanguageLoader extends TranslatePoHttpLoader {
   ngJsonTranslations$ = (lang: string): Observable<object> =>
     this.http.get(`/assets/i18n/${lang}.json?version=${VERSION}`);
 
-  ngTranslations$ = (lang: string): Observable<object> =>
-    this.http
+  ngTranslations$ = (lang: string): Observable<object> => {
+    if (lang === "zh-hans") {
+      lang = "zh_Hans";
+    }
+
+    return this.http
       .get(`/assets/i18n/${lang}.po?version=${VERSION}`, {
         responseType: "text"
       })
       .pipe(map((contents: string) => this.parse(contents)));
+  };
 
   classicTranslations$ = (lang: string): Observable<object> =>
     this.jsonApi.getBackendConfig().pipe(
