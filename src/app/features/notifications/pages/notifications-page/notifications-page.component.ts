@@ -8,6 +8,8 @@ import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { TitleService } from "@shared/services/title/title.service";
+import { UtilsService } from "@shared/services/utils/utils.service";
+import { WindowRefService } from "@shared/services/window-ref.service";
 import { take } from "rxjs/operators";
 
 @Component({
@@ -20,11 +22,13 @@ export class NotificationsPageComponent extends BaseComponentDirective implement
   pageTitle = this.translate.instant("Notifications");
 
   constructor(
-    public store$: Store<State>,
-    public notificationsService: NotificationsService,
-    public classicRoutesService: ClassicRoutesService,
-    public titleService: TitleService,
-    public translate: TranslateService
+    public readonly store$: Store<State>,
+    public readonly notificationsService: NotificationsService,
+    public readonly classicRoutesService: ClassicRoutesService,
+    public readonly titleService: TitleService,
+    public readonly translate: TranslateService,
+    public readonly utilsService: UtilsService,
+    public readonly windowRef: WindowRefService
   ) {
     super();
 
@@ -62,5 +66,27 @@ export class NotificationsPageComponent extends BaseComponentDirective implement
       .getAll(page)
       .pipe(take(1))
       .subscribe();
+  }
+
+  notificationClicked(notification: NotificationInterface): boolean {
+    const _openNotificationLink = () => {
+      const links = this.utilsService.getLinksInText(notification.message);
+      if (links.length > 0) {
+        this.utilsService.openInNewTab(this.windowRef.nativeWindow.document, links[0]);
+      }
+    };
+
+    if (!notification.read) {
+      this.notificationsService
+        .markAsRead(notification)
+        .pipe(take(1))
+        .subscribe(() => {
+          _openNotificationLink();
+        });
+    } else {
+      _openNotificationLink();
+    }
+
+    return false;
   }
 }
