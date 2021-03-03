@@ -69,6 +69,23 @@ describe("UtilsService", () => {
     });
   });
 
+  describe("getLinksInText", () => {
+    it("should work if there are no links", () => {
+      const text = "Hello world";
+      expect(service.getLinksInText(text)).toEqual([]);
+    });
+
+    it("should work for single link", () => {
+      const text = "<a href=\"https://a.io/b/#c\">Test</a>";
+      expect(service.getLinksInText(text)).toEqual(["https://a.io/b/#c"]);
+    });
+
+    it("should work for multiple links", () => {
+      const text = "<a href=\"https://a.io/b/#c\">Test</a>, <a href=\"/foo\">Test2</a>";
+      expect(service.getLinksInText(text)).toEqual(["https://a.io/b/#c", "/foo"]);
+    });
+  });
+
   describe("arrayUniqueObjects", () => {
     it("should work with one property", () => {
       const a = { pk: 1 };

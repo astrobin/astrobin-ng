@@ -14,9 +14,21 @@ h1 {
   }
 }
 
-.table {
+.notification {
+  margin: 0;
+  padding: .5rem;
+
+  &:nth-child(odd) {
+    background-color: rgba(0, 0, 0, .1);
+  }
+
+  &:nth-child(even) {
+    background-color: rgba(0, 0, 0, .05);
+  }
+
   .read-indicator {
     cursor: pointer;
+    padding: .5rem;
 
     &.read .read-icon {
       color: $light-grey;
@@ -27,7 +39,25 @@ h1 {
     }
   }
 
-  ::ng-deep a {
-    @include subtle-accent-link;
+  .message {
+    padding: 0;
+
+    ::ng-deep {
+      a {
+        @include subtle-accent-link;
+        border-bottom: 0;
+        padding: .5rem;
+        display: block;
+
+        &:hover {
+          strong {
+            color: $accent-color;
+          }
+        }
+      }
+    }
+  }
+  .created {
+    padding: .5rem;
   }
 }

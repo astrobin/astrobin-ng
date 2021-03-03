@@ -59,6 +59,36 @@ export class UtilsService {
       rect.right <= (window.innerWidth || document.documentElement.clientWidth)
     );
   }
+
+  getLinksInText(text: string): string[] {
+    const regex = /href="(.*?)"/gm;
+    let m;
+    const links = [];
+
+    // tslint:disable-next-line:no-conditional-assignment
+    while ((m = regex.exec(text)) !== null) {
+      // This is necessary to avoid infinite loops with zero-width matches
+      if (m.index === regex.lastIndex) {
+        regex.lastIndex++;
+      }
+
+      // The result can be accessed through the `m`-variable.
+      m.forEach((match, groupIndex) => {
+        if (match.indexOf("href") !== 0) {
+          links.push(match);
+        }
+      });
+    }
+
+    return links;
+  }
+
+  openInNewTab(document: any, url: string) {
+    Object.assign(document.createElement("a"), {
+      target: "_blank",
+      href: url,
+    }).click();
+  }
 }
 
 export function distinctUntilChangedObj<T>() {
