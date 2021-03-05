@@ -83,10 +83,10 @@ export class UtilsService {
     return links;
   }
 
-  openInNewTab(document: any, url: string) {
+  openLink(document: any, url: string, options: { openInNewTab?: boolean } = {}) {
     Object.assign(document.createElement("a"), {
-      target: "_blank",
-      href: url,
+      target: !!options && options.openInNewTab ? "_blank" : "_self",
+      href: url
     }).click();
   }
 }

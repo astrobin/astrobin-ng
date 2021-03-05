@@ -26,6 +26,7 @@ export interface UserProfileInterface {
   defaultWatermarkPosition: number;
   defaultWatermarkOpacity: number;
   acceptTos: boolean;
+  openNotificationsInNewTab: boolean | null;
   receiveNewsletter: boolean;
   receiveImportantCommunications: boolean;
   receiveMarketingAndCommercialMaterial: boolean;

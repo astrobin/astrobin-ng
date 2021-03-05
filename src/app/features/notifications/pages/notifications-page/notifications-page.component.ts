@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { State } from "@app/store/state";
+import { selectCurrentUserProfile } from "@features/account/store/auth.selectors";
 import { NotificationInterface } from "@features/notifications/interfaces/notification.interface";
 import { NotificationsService } from "@features/notifications/services/notifications.service";
 import { Store } from "@ngrx/store";
@@ -72,7 +73,14 @@ export class NotificationsPageComponent extends BaseComponentDirective implement
     const _openNotificationLink = () => {
       const links = this.utilsService.getLinksInText(notification.message);
       if (links.length > 0) {
-        this.utilsService.openInNewTab(this.windowRef.nativeWindow.document, links[0]);
+        this.store$
+          .select(selectCurrentUserProfile)
+          .pipe(take(1))
+          .subscribe(userProfile => {
+            this.utilsService.openLink(this.windowRef.nativeWindow.document, links[0], {
+              openInNewTab: userProfile.openNotificationsInNewTab
+            });
+          });
       }
     };
 
