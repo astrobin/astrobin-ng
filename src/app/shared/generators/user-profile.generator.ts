@@ -30,6 +30,7 @@ export class UserProfileGenerator {
       defaultWatermarkPosition: 0,
       defaultWatermarkOpacity: 0.5,
       acceptTos: true,
+      openNotificationsInNewTab: null,
       receiveNewsletter: true,
       receiveImportantCommunications: true,
       receiveMarketingAndCommercialMaterial: false,
