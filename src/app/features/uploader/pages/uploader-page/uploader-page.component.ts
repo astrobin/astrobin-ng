@@ -9,6 +9,7 @@ import { FormlyFieldConfig } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
+import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { TitleService } from "@shared/services/title/title.service";
 import { UploadDataService } from "@shared/services/upload-metadata/upload-data.service";
 import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
@@ -62,13 +63,14 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
 
   constructor(
     public readonly store$: Store<State>,
-    public translate: TranslateService,
-    public uploaderService: UploadxService,
-    public uploadDataService: UploadDataService,
-    public windowRef: WindowRefService,
-    public classicRoutesService: ClassicRoutesService,
-    public titleService: TitleService,
-    public userSubscriptionService: UserSubscriptionService
+    public readonly translate: TranslateService,
+    public readonly uploaderService: UploadxService,
+    public readonly uploadDataService: UploadDataService,
+    public readonly windowRef: WindowRefService,
+    public readonly classicRoutesService: ClassicRoutesService,
+    public readonly titleService: TitleService,
+    public readonly userSubscriptionService: UserSubscriptionService,
+    public readonly popNotificationsService: PopNotificationsService
   ) {
     super();
   }
@@ -149,6 +151,22 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
   }
 
   private _onTitleChange() {
+    if (this.model.title.toLowerCase().indexOf("crop") > -1) {
+      this.popNotificationsService.warning(
+        this.translate.instant(
+          "Please note: if this file is a crop of another image you already published on AstroBin, the common " +
+            "practice would be to upload it as a new revision. For more info, please " +
+            "<a href='https://welcome.astrobin.com/features/image-revisions' target='_blank'>click here</a>."
+        ),
+        null,
+        {
+          enableHtml: true,
+          closeButton: true,
+          timeOut: 0
+        }
+      );
+    }
+
     this.uploadDataService.setMetadata("image-upload", { title: this.model.title });
   }
 }
