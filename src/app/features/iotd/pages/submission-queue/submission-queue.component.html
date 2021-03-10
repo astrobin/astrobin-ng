@@ -14,26 +14,26 @@
         <ng-container *ngIf="queue?.count > 0; else noEntries">
 
           <astrobin-submission-slots
-            ngStickyNav stickyClass="sticky-promotion-slots"
-            [availableEntries]="queue.results"
-            (slotClick)="scrollToEntry($event)">
+            (slotClick)="scrollToEntry($event)" [availableEntries]="queue.results"
+            ngStickyNav
+            stickyClass="sticky-promotion-slots">
           </astrobin-submission-slots>
 
           <ng-container
-            [ngTemplateOutlet]="pagination"
-            [ngTemplateOutletContext]="{queue: queue}">
+            [ngTemplateOutletContext]="{queue: queue}"
+            [ngTemplateOutlet]="pagination">
           </ng-container>
 
-          <div
+          <astrobin-submission-entry
+            #promotionQueueEntries
             *ngFor="let entry of queue.results"
-            id="promotion-queue-entry-{{entry.pk}}"
-            #promotionQueueEntries>
-            <astrobin-submission-entry [entry]="entry"></astrobin-submission-entry>
-          </div>
+            [entry]="entry"
+            id="promotion-queue-entry-{{entry.pk}}">
+          </astrobin-submission-entry>
 
           <ng-container
-            [ngTemplateOutlet]="pagination"
-            [ngTemplateOutletContext]="{queue: queue}">
+            [ngTemplateOutletContext]="{queue: queue}"
+            [ngTemplateOutlet]="pagination">
           </ng-container>
 
         </ng-container>
@@ -51,11 +51,11 @@
 
 <ng-template #pagination let-queue="queue">
   <ngb-pagination
-    *ngIf="queue.count > queue.results.length"
     (pageChange)="pageChange($event)"
+    *ngIf="queue.count > queue.results.length"
     [(page)]="page"
-    [pageSize]="pageSize$ | async"
-    [collectionSize]="queue.count">
+    [collectionSize]="queue.count"
+    [pageSize]="pageSize$ | async">
   </ngb-pagination>
 </ng-template>
 
