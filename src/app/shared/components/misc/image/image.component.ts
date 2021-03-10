@@ -65,7 +65,6 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
   constructor(
     public readonly store$: Store<State>,
     public readonly imageApiService: ImageApiService,
-    public readonly thumbnailGroupApiService: ThumbnailGroupApiService,
     public readonly imageService: ImageService,
     public readonly elementRef: ElementRef,
     public readonly changeDetector: ChangeDetectorRef,
@@ -89,13 +88,13 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
 
     fromEvent(this.windowRefService.nativeWindow, "scroll")
       .pipe(takeUntil(this.destroyed$), debounceTime(50), distinctUntilChanged())
-      .subscribe(() => this._load());
+      .subscribe(() => this.load());
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     setTimeout(() => {
       this._loaded = false;
-      this._load();
+      this.load();
     }, 1);
   }
 
@@ -103,13 +102,7 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
     this.changeDetector.detectChanges();
   }
 
-  refresh(): void {
-    this._loaded = false;
-    this.loading = true;
-    this._loadImage();
-  }
-
-  private _load(): void {
+  public load(): void {
     if (
       !this._loaded &&
       this._loadingIndicator &&
@@ -118,6 +111,12 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
       this.loading = true;
       this._loadImage();
     }
+  }
+
+  refresh(): void {
+    this._loaded = false;
+    this.loading = true;
+    this._loadImage();
   }
 
   private _loadImage() {
