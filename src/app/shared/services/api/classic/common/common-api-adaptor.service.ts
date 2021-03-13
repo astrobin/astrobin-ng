@@ -58,6 +58,7 @@ export interface BackendUserProfileInterface {
   default_watermark_position: number;
   default_watermark_opacity: number;
   accept_tos: boolean;
+  open_notifications_in_new_tab: boolean | null;
   receive_important_communications: boolean;
   receive_newsletter: boolean;
   receive_marketing_and_commercial_material: boolean;
@@ -152,6 +153,7 @@ export class CommonApiAdaptorService extends BaseService {
       defaultWatermarkSize: userProfile.default_watermark_size,
       defaultWatermarkText: userProfile.default_watermark_text,
       acceptTos: userProfile.accept_tos,
+      openNotificationsInNewTab: userProfile.open_notifications_in_new_tab,
       receiveNewsletter: userProfile.receive_newsletter,
       receiveImportantCommunications: userProfile.receive_important_communications,
       receiveMarketingAndCommercialMaterial: userProfile.receive_marketing_and_commercial_material,

@@ -1,14 +1,8 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2021-01-24 21:44+0000\n"
-"Last-Translator: Salvatore Iovene <salvatore@iovene.com>\n"
-"Language: it\n"
+"mime-version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Pootle 2.8\n"
-"mime-version: 1.0\n"
-"X-POOTLE-MTIME: 1611524661.000000\n"
 
 msgid "API Keys"
 msgstr "Chiavi API"
@@ -62,7 +56,8 @@ msgstr "Elenco degli astrofotografi"
 
 msgid "Authentication error. Please log out and in again."
 msgstr ""
-"Errore di autenticazione. Per favore fai il log out e poi di nuovo il log in."
+"Errore di autenticazione. Per favore fai il log out e poi di nuovo il log "
+"in."
 
 msgid "Autorenew"
 msgstr "Rinnovo automatico"
@@ -188,8 +183,8 @@ msgid ""
 msgstr ""
 "Attenzione! Il supporto TIFF su AstroBin è sperimentale. Le immagini in "
 "scala di grigi a 16-bit o superiore, o con precisione decimele, al memento "
-"non sono supportate. Se il tuo file è a colori, oppure in scala di grigi a 8-"
-"bit, allora ignora questo avvertimento."
+"non sono supportate. Se il tuo file è a colori, oppure in scala di grigi a "
+"8-bit, allora ignora questo avvertimento."
 
 msgid "Help"
 msgstr "Aiuto"
@@ -202,6 +197,9 @@ msgstr "Nascondi"
 
 msgid "Home"
 msgstr "Home"
+
+msgid "Image"
+msgstr "Immagine"
 
 msgid "Image of the day"
 msgstr "Foto del giorno"
@@ -302,6 +300,9 @@ msgstr "Oggetti nel campo"
 msgid "Password"
 msgstr "Password"
 
+msgid "Permission denied"
+msgstr "Autorizzazione negata"
+
 msgid "Please come back later!"
 msgstr "Torna più tardi!"
 
@@ -315,8 +316,8 @@ msgstr ""
 "email_postfix }} con il tuo nome utente, cosicchè possiamo farti "
 "l'aggiornamento dell'account manualmente."
 
-msgid "Please note: you already are on this plan or a higher one."
-msgstr "Nota bene: hai già questo abbonamento o uno superiore."
+msgid "Please note"
+msgstr "Nota bene"
 
 msgid ""
 "Please note: you don't <strong>have to</strong> use all your slots. It's ok "
@@ -396,6 +397,13 @@ msgstr ""
 "Spiacenti, ma questa immagine è troppo pesante. Con il tuo abbonamento "
 "attuale, la dimensione massima permessa è {{max}}."
 
+msgid ""
+"Sorry, unfortunately AstroBin does not have a bank account in the selected "
+"territory."
+msgstr ""
+"Spiacenti, sfortunatamente AstroBin non ha un conto bancario nel territorio "
+"selezionato."
+
 msgid "Spam list"
 msgstr "Elenco dello spam"
 
@@ -434,6 +442,17 @@ msgstr "Grazie!"
 
 msgid "The Big Wall"
 msgstr "Il Grande Muro"
+
+msgid ""
+"The Lite plan is capped at <strong>{{maxImagesForLite}}</strong> total "
+"images, and you currently have <strong>{{numberOfImages}}</strong> images "
+"on AstroBin. For this reason, we recommend that you upgrade to Premium or "
+"Ultimate instead."
+msgstr ""
+"L'abbonamento Lite è limitato a <strong>{{maxImagesForLite}}</strong> in "
+"totale, e al momento tu hai <strong>{{numberOfImages}}</strong> immagini su "
+"AstroBin. Per questo motivo, raccomandiamo che tu faccia l'upgrade a "
+"Premium o Ultimate."
 
 msgid "The image will permanently disappear from your queue."
 msgstr "L'immagine scomparirà permanentemente dalla tua coda."
@@ -554,6 +573,16 @@ msgstr ""
 
 msgid "Would you like to upgrade?"
 msgstr "Vuoi fare l'upgrade?"
+
+msgid ""
+"You are already on this plan. If you buy it again, your expiration date "
+"will be extended by one year."
+msgstr ""
+"Hai già questo abbonamento. Se lo compri di nuovo, la data di scadenza sarà "
+"estesa di un anno."
+
+msgid "You are already subscribed to a higher plan."
+msgstr "Hai già un abbonamento superiore."
 
 msgid ""
 "You have a <strong>{{0}}</strong> subscription. Enjoy your unlimited "

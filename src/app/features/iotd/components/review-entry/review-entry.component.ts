@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, ElementRef } from "@angular/core";
 import { State } from "@app/store/state";
 import { BasePromotionEntryComponent } from "@features/iotd/components/base-promotion-entry/base-promotion-entry.component";
 import { DeleteVote, PostVote } from "@features/iotd/store/iotd.actions";
@@ -16,11 +16,12 @@ import { distinctUntilChanged, map, take, tap } from "rxjs/operators";
 })
 export class ReviewEntryComponent extends BasePromotionEntryComponent {
   constructor(
+    public readonly elementRef: ElementRef,
     public readonly store$: Store<State>,
     public readonly loadingService: LoadingService,
-    public modalService: NgbModal
+    public readonly modalService: NgbModal
   ) {
-    super(store$, modalService);
+    super(elementRef, store$, modalService);
   }
 
   isPromoted$(imageId: number): Observable<boolean> {

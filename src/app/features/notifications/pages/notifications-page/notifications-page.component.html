@@ -15,24 +15,28 @@
       <ngb-pagination (pageChange)="pageChange($event)" [(page)]="page" [collectionSize]="notifications.count">
       </ngb-pagination>
 
-      <table class="table table-striped table-borderless table-responsive-md notifications-table">
-        <tbody>
-          <tr *ngFor="let notification of notifications.results" id="notification-{{notification.id}}">
-            <td [class.read]="notification.read" [class.unread]="!notification.read" class="read-indicator fit">
-              <fa-icon (click)="toggleRead(notification)" class="read-icon" icon="eye">
-              </fa-icon>
-            </td>
-            <td class="messages">
+      <div class="notifications">
+        <div class="notification row"
+             *ngFor="let notification of notifications.results"
+             id="notification-{{notification.id}}">
+
+          <div class="col-2 col-md-1 read-indicator" [class.read]="notification.read"
+               [class.unread]="!notification.read">
+            <fa-icon (click)="toggleRead(notification)" class="read-icon" icon="eye">
+            </fa-icon>
+          </div>
+
+          <div class="col-10 col-md-11 col-lg-7 message" (click)="notificationClicked(notification)">
               <span [innerHTML]="notification.message | normalizeNotificationLink"></span>
-            </td>
-            <td class="created fit text-right">
+          </div>
+
+          <div class="col-12 col-lg-4 offset-2 offset-md-1 offset-lg-0 created text-lg-right">
               <abbr [attr.title]="notification.created | localDate">
                 {{ notification.created | localDate | timeago:true}}
               </abbr>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+            </div>
+        </div>
+      </div>
 
       <ngb-pagination (pageChange)="pageChange($event)" [(page)]="page" [collectionSize]="notifications.count">
       </ngb-pagination>

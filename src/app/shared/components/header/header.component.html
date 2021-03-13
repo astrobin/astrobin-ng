@@ -240,8 +240,7 @@
       </button>
       <div aria-labelledby="languageDropdown" ngbDropdownMenu>
         <ng-container *ngFor="let language of languages">
-          <a *ngIf="language.code !== '-'" [href]="classicRoutes.SET_LANGUAGE(language.code,
-                    windowRef.nativeWindow.location.href)" class="dropdown-item">
+          <a *ngIf="language.code !== '-'" [href]="getSetLanguageUrl(language.code)" class="dropdown-item">
             {{ language.label }}
           </a>
           <div *ngIf="language.code === '-'" class="dropdown-divider"></div>
