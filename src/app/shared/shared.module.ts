@@ -76,7 +76,16 @@ export function appInitializer(store: Store<State>, actions$: Actions) {
     NgSelectModule,
     NgxFilesizeModule,
     NgWizardModule.forRoot({
-      theme: THEME.arrows
+      theme: THEME.default,
+      anchorSettings: {
+        enableAllAnchors: true,
+        markAllPreviousStepsAsDone: false,
+        enableAnchorOnDoneStep: true
+      },
+      toolbarSettings: {
+        showPreviousButton: false,
+        showNextButton: false
+      }
     }),
     ToastrModule.forRoot({
       timeOut: 20000,

@@ -1,70 +1,55 @@
 @import "variables";
 
-.ng-wizard-theme-arrows {
+@mixin defaultNavLink() {
+  color: $lighter-grey !important;
+
+  &::after {
+    background-color: transparent !important;
+  }
+}
+
+.ng-wizard-theme-default {
   box-shadow: none;
   border: 0;
 
   > ul.step-anchor {
-    border-bottom-color: $light-grey;
-    background: none;
+    border-bottom-color: $grey;
+    background: none !important;
   }
 
   .nav-item {
     .nav-link {
-      font-weight: bold;
-      background: $grey !important;
-
-      &::before {
-        border-left-color: $grey;
-      }
-
-      &::after {
-        background: transparent;
-        border-left-color: $grey !important;
-      }
+      @include defaultNavLink;
 
       small {
         font-weight: normal;
-        opacity: .85;
-      }
-    }
-
-    &:not(.done) {
-      cursor: pointer;
-      pointer-events: none;
-    }
-
-    &.done .nav-link {
-      color: $white !important;
-      background: darken($accent-color, 10%) !important;
-
-      &::after {
-        border-left-color: darken($accent-color, 10%) !important;
+        opacity: .75;
       }
     }
 
     &.active .nav-link {
-      background: $accent-color !important;
-
-      &::after {
-        border-left-color: $accent-color !important;
-      }
-    }
-
-    &.done .nav-link {
-      color: $lightest-grey !important;
-
-      &::after {
-        background: none;
-      }
-    }
-
-    &.danger .nav-link {
-      background: $error-red !important;
+      font-weight: bold;
       color: $white !important;
 
       &::after {
-        border-left-color: $error-red !important;
+        background-color: $accent-color !important;
+      }
+    }
+
+    &.danger:not(.done):not(.active) .nav-link {
+      @include defaultNavLink;
+    }
+
+    &.done:not(.danger) .nav-link {
+      @include defaultNavLink;
+    }
+
+    &.clickable {
+      &,
+      &.danger:not(.done):not(.active) {
+        .nav-link:hover {
+          color: $white !important;
+        }
       }
     }
   }
@@ -82,5 +67,12 @@
     .btn-group:last-child {
       margin-right: 0 !important;
     }
+  }
+}
+
+@media (max-width: $xs-max) {
+  .ng-wizard-btn-group {
+    display: block;
+    width: 100%;
   }
 }

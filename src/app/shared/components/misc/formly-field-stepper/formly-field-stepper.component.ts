@@ -1,7 +1,8 @@
 import { Component } from "@angular/core";
 import { FieldType, FormlyFieldConfig } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
-import { STEP_STATE } from "ng-wizard";
+import { WindowRefService } from "@shared/services/window-ref.service";
+import { NgWizardService, STEP_STATE } from "ng-wizard";
 
 @Component({
   selector: "astrobin-formly-field-stepper",
@@ -9,17 +10,16 @@ import { STEP_STATE } from "ng-wizard";
   styleUrls: ["./formly-field-stepper.component.scss"]
 })
 export class FormlyFieldStepperComponent extends FieldType {
-  constructor(public translateService: TranslateService) {
+  constructor(
+    public readonly ngWizardService: NgWizardService,
+    public readonly translateService: TranslateService,
+    public readonly windowRef: WindowRefService
+  ) {
     super();
   }
 
-  getStepTitle(field: FormlyFieldConfig, stepNumber: number): string {
-    let title = this.translateService.instant("Step {{ stepNumber }}", { stepNumber });
-    if (!this.isValid(field)) {
-      title += " (!)";
-    }
-
-    return title;
+  getStepTitle(stepNumber: number): string {
+    return this.translateService.instant("Step {{ stepNumber }}", { stepNumber });
   }
 
   isValid(field: FormlyFieldConfig) {
@@ -37,4 +37,26 @@ export class FormlyFieldStepperComponent extends FieldType {
 
     return STEP_STATE.normal;
   }
+
+  isFirstStep(index): boolean {
+    return index === 0;
+  }
+
+  isLastStep(index): boolean {
+    return index === this.field.fieldGroup.length - 1;
+  }
+
+  goToPreviousStep(event?: Event) {
+    event.preventDefault();
+    this.ngWizardService.previous();
+    this.windowRef.nativeWindow.scroll({ top: 0, behavior: "smooth" });
+  }
+
+  goToNextStep(event?: Event) {
+    event.preventDefault();
+    this.ngWizardService.next();
+    this.windowRef.nativeWindow.scroll({ top: 0, behavior: "smooth" });
+  }
+
+  save() {}
 }

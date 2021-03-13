@@ -440,7 +440,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
   private _initFields(): void {
     this.fields = [
       {
-        type: "image-edit-stepper",
+        type: "stepper",
         templateOptions: {
           image: this.image
         },

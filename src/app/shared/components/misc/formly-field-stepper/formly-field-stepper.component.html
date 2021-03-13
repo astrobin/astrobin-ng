@@ -1,7 +1,24 @@
 <ng-wizard>
   <ng-wizard-step
     *ngFor="let step of field?.fieldGroup; let index = index; let last = last"
-    [title]="getStepTitle(field,index + 1)" [description]="step.templateOptions.label">
-      <formly-field [field]="step"></formly-field>
+    [description]="step.templateOptions.label"
+    [state]="getState(step)"
+    [title]="getStepTitle(index + 1)"
+  >
+    <formly-field [field]="step"></formly-field>
+
+    <div class="form-actions">
+      <button (click)="goToPreviousStep($event)" *ngIf="!isFirstStep(index)" class="btn btn-secondary">
+        {{ "Previous" | translate }}
+      </button>
+
+      <button (click)="goToNextStep($event)" *ngIf="!isLastStep(index)" class="btn btn-secondary">
+        {{ "Next" | translate }}
+      </button>
+
+      <button (click)="save()" *ngIf="isLastStep(index)" class="btn btn-primary">
+        {{ "Save" | translate }}
+      </button>
+    </div>
   </ng-wizard-step>
 </ng-wizard>
