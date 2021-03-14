@@ -35,6 +35,12 @@ $highlight: 3%;
       margin-right: .5rem !important;
     }
   }
+
+  &.ng-select-disabled {
+    .ng-select-container {
+      background: $darker-grey;
+    }
+  }
 }
 
 .ng-dropdown-panel {

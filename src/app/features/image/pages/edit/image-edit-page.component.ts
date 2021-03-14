@@ -369,6 +369,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     return {
       key: "partOfGroupSet",
       type: "ng-select",
+      hideExpression: () => this.image.isWip,
       templateOptions: {
         multiple: true,
         required: false,
