@@ -25,101 +25,90 @@ import { catchError, map, switchMap, tap } from "rxjs/operators";
 
 @Injectable()
 export class AuthEffects {
-  
-  Initialize: Observable<InitializeAuthSuccess> = createEffect(() => this.actions$.pipe(
-    ofType(AuthActionTypes.INITIALIZE),
-    switchMap(() =>
-      new Observable<LoginSuccessInterface>(observer => {
-        if (this.cookieService.check(AuthService.CLASSIC_AUTH_TOKEN_COOKIE)) {
-          this._getData$.subscribe(data => {
-            const successPayload: LoginSuccessInterface = {
-              user: data.user,
-              userProfile: data.userProfile,
-              userSubscriptions: data.userSubscriptions
-            };
+  InitializeSuccess: Observable<InitializeAuthSuccess> = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(AuthActionTypes.INITIALIZE_SUCCESS),
+        tap((action: InitializeAuthSuccess) => {
+          if (action.payload.user && action.payload.userProfile) {
+            this.userStore.addUserProfile(action.payload.userProfile);
+            this.userStore.addUser(action.payload.user);
+          }
+        })
+      ),
+    { dispatch: false }
+  );
 
-            observer.next(successPayload);
-            observer.complete();
-          });
-        } else {
-          observer.next({ user: null, userProfile: null, userSubscriptions: [] });
-          observer.complete();
-        }
-      }).pipe(map(payload => new InitializeAuthSuccess(payload)))
-    )
-  ));
-
-  
-  InitializeSuccess: Observable<InitializeAuthSuccess> = createEffect(() => this.actions$.pipe(
-    ofType(AuthActionTypes.INITIALIZE_SUCCESS),
-    tap(action => {
-      if (action.payload.user && action.payload.userProfile) {
-        this.userStore.addUserProfile(action.payload.userProfile);
-        this.userStore.addUser(action.payload.user);
-      }
-    })
-  ), { dispatch: false });
-
-  
-  Login: Observable<LoginSuccess | LoginFailure> = createEffect(() => this.actions$.pipe(
-    ofType(AuthActionTypes.LOGIN),
-    map((action: Login) => action),
-    tap(action => {
-      this.loadingService.setLoading(true);
-      return action;
-    }),
-    switchMap(action =>
-      this.authService.login(action.payload.handle, action.payload.password, action.payload.redirectUrl).pipe(
-        tap(token => {
-          this.cookieService.set(AuthService.CLASSIC_AUTH_TOKEN_COOKIE, token, 180, "/");
-        }),
-        switchMap(() =>
-          this._getData$.pipe(
-            map(data => ({
-              user: data.user,
-              userProfile: data.userProfile,
-              userSubscriptions: data.userSubscriptions,
-              redirectUrl: action.payload.redirectUrl
-            }))
-          )
-        ),
-        map(payload => new LoginSuccess(payload)),
-        catchError(error => of(new LoginFailure({ error })))
+  Login: Observable<LoginSuccess | LoginFailure> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AuthActionTypes.LOGIN),
+      map((action: Login) => action),
+      tap(action => {
+        this.loadingService.setLoading(true);
+        return action;
+      }),
+      switchMap(action =>
+        this.authService.login(action.payload.handle, action.payload.password, action.payload.redirectUrl).pipe(
+          tap(token => {
+            this.cookieService.set(AuthService.CLASSIC_AUTH_TOKEN_COOKIE, token, 180, "/");
+          }),
+          switchMap(() =>
+            this._getData$.pipe(
+              map(data => ({
+                user: data.user,
+                userProfile: data.userProfile,
+                userSubscriptions: data.userSubscriptions,
+                redirectUrl: action.payload.redirectUrl
+              }))
+            )
+          ),
+          map(payload => new LoginSuccess(payload)),
+          catchError(error => of(new LoginFailure({ error })))
+        )
       )
     )
-  ));
+  );
 
-  
-  LoginSuccess: Observable<LoginSuccess> = createEffect(() => this.actions$.pipe(
-    ofType(AuthActionTypes.LOGIN_SUCCESS),
-    tap(action => {
-      this.userStore.addUserProfile(action.payload.userProfile);
-      this.userStore.addUser(action.payload.user);
+  LoginSuccess: Observable<LoginSuccess> = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(AuthActionTypes.LOGIN_SUCCESS),
+        tap((action: LoginSuccess) => {
+          this.userStore.addUserProfile(action.payload.userProfile);
+          this.userStore.addUser(action.payload.user);
 
-      this.loadingService.setLoading(false);
+          this.loadingService.setLoading(false);
 
-      this.router.navigate(["account", "logged-in"], { queryParams: { redirectUrl: action.payload.redirectUrl } });
-    })
-  ), { dispatch: false });
+          this.router.navigate(["account", "logged-in"], { queryParams: { redirectUrl: action.payload.redirectUrl } });
+        })
+      ),
+    { dispatch: false }
+  );
 
-  
-  LoginFailure: Observable<void> = createEffect(() => this.actions$.pipe(
-    ofType(AuthActionTypes.LOGIN_FAILURE),
-    tap(() => {
-      this.loadingService.setLoading(false);
-    })
-  ), { dispatch: false });
+  LoginFailure: Observable<void> = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(AuthActionTypes.LOGIN_FAILURE),
+        tap(() => {
+          this.loadingService.setLoading(false);
+        })
+      ),
+    { dispatch: false }
+  );
 
-  
-  Logout: Observable<void> = createEffect(() => this.actions$.pipe(
-    ofType(AuthActionTypes.LOGOUT),
-    tap(() => {
-      if (this.cookieService.check(AuthService.CLASSIC_AUTH_TOKEN_COOKIE)) {
-        this.cookieService.delete(AuthService.CLASSIC_AUTH_TOKEN_COOKIE, "/");
-        this.router.navigate(["account", "logged-out"]);
-      }
-    })
-  ), { dispatch: false });
+  Logout: Observable<void> = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(AuthActionTypes.LOGOUT),
+        tap(() => {
+          if (this.cookieService.check(AuthService.CLASSIC_AUTH_TOKEN_COOKIE)) {
+            this.cookieService.delete(AuthService.CLASSIC_AUTH_TOKEN_COOKIE, "/");
+            this.router.navigate(["account", "logged-out"]);
+          }
+        })
+      ),
+    { dispatch: false }
+  );
 
   private _getCurrentUserProfile$: Observable<UserProfileInterface> = this.commonApiService.getCurrentUserProfile();
 
@@ -151,15 +140,30 @@ export class AuthEffects {
     switchMap(data => forkJoin([of(data), this._setLanguage(data.userProfile.language)])),
     map(result => result[0])
   );
+  Initialize: Observable<InitializeAuthSuccess> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AuthActionTypes.INITIALIZE),
+      switchMap(() =>
+        new Observable<LoginSuccessInterface>(observer => {
+          if (this.cookieService.check(AuthService.CLASSIC_AUTH_TOKEN_COOKIE)) {
+            this._getData$.subscribe(data => {
+              const successPayload: LoginSuccessInterface = {
+                user: data.user,
+                userProfile: data.userProfile,
+                userSubscriptions: data.userSubscriptions
+              };
 
-  private _setLanguage(language: string): Observable<any> {
-    this.translate.setDefaultLang(language);
-    return this.translate.use(language).pipe(
-      map(() => {
-        setTimeagoIntl(this.timeagoIntl, language);
-      })
-    );
-  }
+              observer.next(successPayload);
+              observer.complete();
+            });
+          } else {
+            observer.next({ user: null, userProfile: null, userSubscriptions: [] });
+            observer.complete();
+          }
+        }).pipe(map(payload => new InitializeAuthSuccess(payload)))
+      )
+    )
+  );
 
   constructor(
     public readonly actions$: Actions,
@@ -172,4 +176,13 @@ export class AuthEffects {
     public readonly translate: TranslateService,
     public readonly timeagoIntl: TimeagoIntl
   ) {}
+
+  private _setLanguage(language: string): Observable<any> {
+    this.translate.setDefaultLang(language);
+    return this.translate.use(language).pipe(
+      map(() => {
+        setTimeagoIntl(this.timeagoIntl, language);
+      })
+    );
+  }
 }

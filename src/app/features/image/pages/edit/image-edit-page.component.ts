@@ -90,7 +90,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
   }
 
   onSave(): void {
-    this.store$.dispatch(new SaveImage({ image: this.form.value }));
+    this.store$.dispatch(new SaveImage({ pk: this.image.pk, data: { ...this.image, ...this.form.value } }));
   }
 
   private _getTitleField(): any {
