@@ -100,6 +100,7 @@ export function reducer(state = initialAppState, action: All): AppState {
       };
     }
 
+    case AppActionTypes.SET_IMAGE:
     case AppActionTypes.LOAD_IMAGE_SUCCESS: {
       return {
         ...state,

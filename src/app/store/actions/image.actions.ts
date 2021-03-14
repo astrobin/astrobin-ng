@@ -17,6 +17,12 @@ export class LoadImageSuccess implements Action {
   constructor(public payload: ImageInterface) {}
 }
 
+export class SetImage implements Action {
+  readonly type = AppActionTypes.SET_IMAGE;
+
+  constructor(public payload: ImageInterface) {}
+}
+
 export class LoadImages implements Action {
   readonly type = AppActionTypes.LOAD_IMAGES;
 

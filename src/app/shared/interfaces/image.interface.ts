@@ -118,4 +118,5 @@ export interface ImageInterface {
   keyValueTags?: string;
   mouseHoverImage: MouseHoverImageOptions;
   allowComments: boolean;
+  squareCropping: string;
 }

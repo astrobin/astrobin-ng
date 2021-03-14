@@ -1,0 +1,67 @@
+import { Component } from "@angular/core";
+import { FieldType } from "@ngx-formly/core";
+import { UtilsService } from "@shared/services/utils/utils.service";
+import { CropperPosition, Dimensions, ImageCroppedEvent, LoadedImage } from "ngx-image-cropper";
+import { OutputFormat } from "ngx-image-cropper/lib/interfaces/cropper-options.interface";
+
+@Component({
+  selector: "astrobin-formly-field-image-cropper",
+  templateUrl: "./formly-field-image-cropper.component.html",
+  styleUrls: ["./formly-field-image-cropper.component.scss"]
+})
+export class FormlyFieldImageCropperComponent extends FieldType {
+  cropper: CropperPosition = {
+    x1: 0,
+    y1: 0,
+    x2: 0,
+    y2: 0
+  };
+
+  ratio: number;
+
+  showCropper = false;
+
+  constructor(public readonly utilsService: UtilsService) {
+    super();
+  }
+
+  getFormat(url: string): OutputFormat {
+    const ext = this.utilsService.fileExtension(url);
+
+    if (["jpg", "jpeg"].indexOf(ext.toLowerCase()) > -1) {
+      return "jpeg";
+    }
+
+    if (ext === "png") {
+      return "png";
+    }
+
+    throw new Error("File type not supported by image cropper");
+  }
+
+  onCropperReady(dimensions: Dimensions) {
+    const image = this.to.image;
+
+    this.ratio = image.w / dimensions.width;
+
+    this.cropper = {
+      x1: image.squareCropping.split(",")[0] / this.ratio,
+      y1: image.squareCropping.split(",")[1] / this.ratio,
+      x2: image.squareCropping.split(",")[2] / this.ratio,
+      y2: image.squareCropping.split(",")[3] / this.ratio
+    };
+  }
+
+  onImageCropped(event: ImageCroppedEvent) {
+    const x1 = Math.round(event.cropperPosition.x1 * this.ratio);
+    const y1 = Math.round(event.cropperPosition.y1 * this.ratio);
+    const x2 = Math.round(event.cropperPosition.x2 * this.ratio);
+    const y2 = Math.round(event.cropperPosition.y2 * this.ratio);
+
+    this.formControl.setValue(`${x1},${y1},${x2},${y2}`);
+  }
+
+  onImageLoaded(imageLoaded: LoadedImage) {
+    this.showCropper = true;
+  }
+}

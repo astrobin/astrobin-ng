@@ -33,7 +33,8 @@ export class ImageGenerator {
       partOfGroupSet: [],
       keyValueTags: undefined,
       mouseHoverImage: MouseHoverImageOptions.SOLUTION,
-      allowComments: true
+      allowComments: true,
+      squareCropping: `0,0,${source.w || 1000},${source.h || 1000}`
     };
   }
 }

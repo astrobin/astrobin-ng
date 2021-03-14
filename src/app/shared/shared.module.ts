@@ -33,6 +33,7 @@ import { NgWizardModule, THEME } from "ng-wizard";
 import { StickyNavModule } from "ng2-sticky-nav";
 import { CookieService } from "ngx-cookie-service";
 import { NgxFilesizeModule } from "ngx-filesize";
+import { ImageCropperModule } from "ngx-image-cropper";
 import { TimeagoModule } from "ngx-timeago";
 import { ToastrModule } from "ngx-toastr";
 import { switchMap } from "rxjs/operators";
@@ -70,6 +71,7 @@ export function appInitializer(store: Store<State>, actions$: Actions) {
     FormlyModule.forRoot(),
     FormlyBootstrapModule,
     FormlySelectModule,
+    ImageCropperModule,
     NgbModule,
     NgbPaginationModule,
     NgbProgressbarModule,
@@ -79,7 +81,7 @@ export function appInitializer(store: Store<State>, actions$: Actions) {
       theme: THEME.default,
       anchorSettings: {
         enableAllAnchors: true,
-        markAllPreviousStepsAsDone: false,
+        markAllPreviousStepsAsDone: true,
         enableAnchorOnDoneStep: true
       },
       toolbarSettings: {
@@ -108,6 +110,7 @@ export function appInitializer(store: Store<State>, actions$: Actions) {
     FontAwesomeModule,
     FormlyModule,
     FormlyBootstrapModule,
+    ImageCropperModule,
     NgbModule,
     NgbPaginationModule,
     NgbProgressbarModule,

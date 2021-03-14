@@ -2,6 +2,8 @@
 
 @mixin defaultNavLink() {
   color: $lighter-grey !important;
+  font-weight: normal;
+  font-style: normal;
 
   &::after {
     background-color: transparent !important;
@@ -33,6 +35,16 @@
 
       &::after {
         background-color: $accent-color !important;
+      }
+    }
+
+    &.danger .nav-link {
+      font-weight: bold;
+      font-style: italic;
+      color: $error-red !important;
+
+      &::after {
+        background-color: transparent !important;
       }
     }
 

@@ -1,8 +1,16 @@
-import { Component } from "@angular/core";
+import { Component, QueryList, ViewChild, ViewChildren } from "@angular/core";
 import { FieldType, FormlyFieldConfig } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
+import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
-import { NgWizardService, STEP_STATE } from "ng-wizard";
+import {
+  NgWizardComponent,
+  NgWizardService,
+  NgWizardStep,
+  NgWizardStepComponent,
+  STEP_STATE,
+  StepChangedArgs
+} from "ng-wizard";
 
 @Component({
   selector: "astrobin-formly-field-stepper",
@@ -10,16 +18,56 @@ import { NgWizardService, STEP_STATE } from "ng-wizard";
   styleUrls: ["./formly-field-stepper.component.scss"]
 })
 export class FormlyFieldStepperComponent extends FieldType {
+  @ViewChild("wizard")
+  wizard: NgWizardComponent;
+
+  @ViewChildren("wizardSteps")
+  wizardSteps: QueryList<NgWizardStepComponent>;
+
+  highestVisitedStep = 0;
+
   constructor(
     public readonly ngWizardService: NgWizardService,
     public readonly translateService: TranslateService,
-    public readonly windowRef: WindowRefService
+    public readonly windowRef: WindowRefService,
+    public readonly popNotificationsService: PopNotificationsService
   ) {
     super();
   }
 
+  onStepChanged(event?: StepChangedArgs) {
+    this.wizardSteps.forEach((step, index) => {
+      if (index < event.step.index) {
+        (step.status as any) = "done";
+      }
+    });
+
+    if (event.step.index > this.highestVisitedStep) {
+      this.highestVisitedStep = event.step.index;
+    }
+  }
+
+  getStep(stepNumber: number): NgWizardStep {
+    if (!this.wizard) {
+      return null;
+    }
+
+    return this.wizard.steps.get(stepNumber);
+  }
+
+  isStepErrored(stepNumber: number): boolean {
+    const step: NgWizardStep = this.getStep(stepNumber);
+    return step?.state === "error";
+  }
+
   getStepTitle(stepNumber: number): string {
-    return this.translateService.instant("Step {{ stepNumber }}", { stepNumber });
+    let title = this.translateService.instant("Step {{ stepNumber }}", { stepNumber: stepNumber + 1 });
+
+    if (this.isStepErrored(stepNumber)) {
+      title += "*";
+    }
+
+    return title;
   }
 
   isValid(field: FormlyFieldConfig) {
@@ -58,5 +106,18 @@ export class FormlyFieldStepperComponent extends FieldType {
     this.windowRef.nativeWindow.scroll({ top: 0, behavior: "smooth" });
   }
 
-  save() {}
+  onSave(event?: Event) {
+    event.preventDefault();
+
+    if (!this.form.valid) {
+      this.popNotificationsService.error(this.translateService.instant("The form is incomplete or has errors."), null, {
+        timeOut: 10000
+      });
+      return;
+    }
+
+    if (this.to.onSave !== undefined) {
+      this.to.onSave();
+    }
+  }
 }

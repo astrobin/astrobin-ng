@@ -2,6 +2,8 @@ import { Component, OnInit, TemplateRef, ViewChild } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
+import { LoadThumbnail } from "@app/store/actions/thumbnail.actions";
+import { selectThumbnail } from "@app/store/selectors/app/thumbnail.selectors";
 import { State } from "@app/store/state";
 import { selectCurrentUser } from "@features/account/store/auth.selectors";
 import { Store } from "@ngrx/store";
@@ -63,6 +65,8 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
 
     this._initBreadcrumb();
 
+    this.store$.dispatch(new LoadThumbnail({ id: this.image.pk, revision: "0", alias: ImageAlias.HD }));
+
     this.remoteSourceAffiliateApiService.getAll().subscribe(remoteSourceAffiliates => {
       this.remoteSourceAffiliates = remoteSourceAffiliates;
       this._initFields();
@@ -82,7 +86,9 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     );
   }
 
-  onSubmit(): void {}
+  onSave(): void {
+    alert("saved");
+  }
 
   private _getTitleField(): any {
     return {
@@ -381,6 +387,25 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     };
   }
 
+  private _getThumbnailField(): any {
+    return {
+      key: "squareCropping",
+      type: "image-cropper",
+      templateOptions: {
+        required: true,
+        description: this.translate.instant("Select an area of the image to be used as thumbnail in your gallery."),
+        image: this.image,
+        thumbnailURL$: this.store$
+          .select(selectThumbnail, {
+            id: this.image.pk,
+            revision: "0",
+            alias: ImageAlias.HD
+          })
+          .pipe(map(thumbnail => thumbnail.url))
+      }
+    };
+  }
+
   private _getKeyValueTagsField(): any {
     return {
       key: "keyValueTags",
@@ -442,9 +467,14 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
       {
         type: "stepper",
         templateOptions: {
-          image: this.image
+          image: this.image,
+          onSave: () => this.onSave()
         },
         fieldGroup: [
+          {
+            templateOptions: { label: this.translate.instant("Thumbnail") },
+            fieldGroup: [this._getThumbnailField()]
+          },
           {
             templateOptions: { label: this.translate.instant("Basic information") },
             fieldGroup: [

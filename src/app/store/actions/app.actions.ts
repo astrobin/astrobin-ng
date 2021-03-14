@@ -4,7 +4,7 @@ import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { LoadCamera, LoadCameraSuccess } from "@app/store/actions/camera.actions";
 import { LoadContentType, LoadContentTypeSuccess } from "@app/store/actions/content-type.actions";
 import { HideFullscreenImage, ShowFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
-import { LoadImage, LoadImages, LoadImagesSuccess, LoadImageSuccess } from "@app/store/actions/image.actions";
+import { LoadImage, LoadImages, LoadImagesSuccess, LoadImageSuccess, SetImage } from "@app/store/actions/image.actions";
 import { InitializeApp, InitializeAppSuccess } from "@app/store/actions/initialize-app.actions";
 import {
   LoadSolution,
@@ -29,6 +29,8 @@ export enum AppActionTypes {
 
   LOAD_IMAGE = "[App] Load image",
   LOAD_IMAGE_SUCCESS = "[App] Load image success",
+
+  SET_IMAGE = "[App] Set image",
 
   LOAD_IMAGES = "[App] Load images",
   LOAD_IMAGES_SUCCESS = "[App] Load images success",
@@ -59,6 +61,7 @@ export type All =
   | LoadContentTypeSuccess
   | LoadImage
   | LoadImageSuccess
+  | SetImage
   | LoadImages
   | LoadImagesSuccess
   | LoadThumbnail

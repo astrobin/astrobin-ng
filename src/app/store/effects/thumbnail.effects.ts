@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import { All, AppActionTypes } from "@app/store/actions/app.actions";
+import { LoadImage } from "@app/store/actions/image.actions";
 import { LoadThumbnail, LoadThumbnailSuccess } from "@app/store/actions/thumbnail.actions";
 import { selectImage } from "@app/store/selectors/app/image.selectors";
 import { selectThumbnail } from "@app/store/selectors/app/thumbnail.selectors";
@@ -8,7 +9,7 @@ import { Actions, Effect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
 import { ImageApiService } from "@shared/services/api/classic/images/image/image-api.service";
 import { EMPTY, Observable, of } from "rxjs";
-import { catchError, delay, map, mergeMap } from "rxjs/operators";
+import { catchError, delay, filter, map, mergeMap } from "rxjs/operators";
 
 @Injectable()
 export class ThumbnailEffects {
@@ -16,15 +17,24 @@ export class ThumbnailEffects {
   LoadThumbnail: Observable<LoadThumbnail | LoadThumbnailSuccess> = this.actions$.pipe(
     ofType(AppActionTypes.LOAD_THUMBNAIL),
     mergeMap(action =>
-      this.store$
-        .select(selectThumbnail, action.payload)
-        .pipe(
-          mergeMap(thumbnailFromStore =>
-            thumbnailFromStore !== null
-              ? of(thumbnailFromStore)
-              : this.store$
-                  .select(selectImage, action.payload.id)
-                  .pipe(
+      this.store$.select(selectThumbnail, action.payload).pipe(
+        mergeMap(thumbnailFromStore =>
+          thumbnailFromStore !== null
+            ? of(thumbnailFromStore)
+            : this.store$.select(selectImage, action.payload.id).pipe(
+                mergeMap(imageFromStore => {
+                  if (imageFromStore !== null) {
+                    return this.imageApiService.getThumbnail(
+                      imageFromStore.hash || imageFromStore.pk,
+                      action.payload.revision,
+                      action.payload.alias
+                    );
+                  }
+
+                  this.store$.dispatch(new LoadImage(action.payload.id));
+
+                  return this.store$.select(selectImage, action.payload.id).pipe(
+                    filter(image => !!image),
                     mergeMap(image =>
                       this.imageApiService.getThumbnail(
                         image.hash || image.pk,
@@ -32,9 +42,11 @@ export class ThumbnailEffects {
                         action.payload.alias
                       )
                     )
-                  )
-          )
+                  );
+                })
+              )
         )
+      )
     ),
     mergeMap(thumbnail => {
       if (thumbnail.url.toLowerCase().indexOf("placeholder") !== -1) {

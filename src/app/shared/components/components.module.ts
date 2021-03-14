@@ -20,6 +20,7 @@ import { BreadcrumbComponent } from "@shared/components/misc/breadcrumb/breadcru
 import { CameraComponent } from "@shared/components/misc/camera/camera.component";
 import { FormlyFieldChunkedFileAccessorDirective } from "@shared/components/misc/formly-field-chunked-file/formly-field-chunked-file-accessor.directive";
 import { FormlyFieldChunkedFileComponent } from "@shared/components/misc/formly-field-chunked-file/formly-field-chunked-file.component";
+import { FormlyFieldImageCropperComponent } from "@shared/components/misc/formly-field-image-cropper/formly-field-image-cropper.component";
 import { FormlyFieldNgSelectComponent } from "@shared/components/misc/formly-field-ng-select/formly-field-ng-select.component";
 import { FormlyFieldStepperComponent } from "@shared/components/misc/formly-field-stepper/formly-field-stepper.component";
 import { FullscreenImageViewerComponent } from "@shared/components/misc/fullscreen-image-viewer/fullscreen-image-viewer.component";
@@ -31,6 +32,7 @@ import { TextLoadingIndicatorComponent } from "@shared/components/misc/text-load
 import { PipesModule } from "@shared/pipes/pipes.module";
 import { NgWizardModule } from "ng-wizard";
 import { NgxFilesizeModule } from "ngx-filesize";
+import { ImageCropperModule } from "ngx-image-cropper";
 import { NgxImageZoomModule } from "ngx-image-zoom";
 import { UploadxModule } from "ngx-uploadx";
 import { LoginFormComponent } from "./auth/login-form/login-form.component";
@@ -46,6 +48,7 @@ const modules = [
   FontAwesomeModule,
   FormsModule,
   FormlySelectModule,
+  ImageCropperModule,
   NgbCollapseModule,
   NgbDropdownModule,
   NgbModalModule,
@@ -70,6 +73,7 @@ const components = [
   FooterComponent,
   FormlyFieldChunkedFileAccessorDirective,
   FormlyFieldChunkedFileComponent,
+  FormlyFieldImageCropperComponent,
   FormlyFieldNgSelectComponent,
   FormlyFieldStepperComponent,
   FullscreenImageViewerComponent,
