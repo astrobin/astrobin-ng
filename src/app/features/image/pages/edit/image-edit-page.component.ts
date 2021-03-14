@@ -2,6 +2,7 @@ import { Component, OnInit, TemplateRef, ViewChild } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
+import { SaveImage } from "@app/store/actions/image.actions";
 import { LoadThumbnail } from "@app/store/actions/thumbnail.actions";
 import { selectThumbnail } from "@app/store/selectors/app/thumbnail.selectors";
 import { State } from "@app/store/state";
@@ -24,6 +25,7 @@ import { RemoteSourceAffiliateInterface } from "@shared/interfaces/remote-source
 import { GroupApiService } from "@shared/services/api/classic/groups/group-api.service";
 import { RemoteSourceAffiliateApiService } from "@shared/services/api/classic/remote-source-affiliation/remote-source-affiliate-api.service";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
+import { LoadingService } from "@shared/services/loading.service";
 import { TitleService } from "@shared/services/title/title.service";
 import { map, switchMap } from "rxjs/operators";
 
@@ -53,7 +55,8 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     public readonly classicRoutesService: ClassicRoutesService,
     public readonly titleService: TitleService,
     public readonly remoteSourceAffiliateApiService: RemoteSourceAffiliateApiService,
-    public readonly groupApiService: GroupApiService
+    public readonly groupApiService: GroupApiService,
+    public readonly loadingService: LoadingService
   ) {
     super();
   }
@@ -87,7 +90,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
   }
 
   onSave(): void {
-    alert("saved");
+    this.store$.dispatch(new SaveImage({ image: this.form.value }));
   }
 
   private _getTitleField(): any {

@@ -1,6 +1,7 @@
 import { Component, QueryList, ViewChild, ViewChildren } from "@angular/core";
 import { FieldType, FormlyFieldConfig } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
+import { LoadingService } from "@shared/services/loading.service";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import {
@@ -30,7 +31,8 @@ export class FormlyFieldStepperComponent extends FieldType {
     public readonly ngWizardService: NgWizardService,
     public readonly translateService: TranslateService,
     public readonly windowRef: WindowRefService,
-    public readonly popNotificationsService: PopNotificationsService
+    public readonly popNotificationsService: PopNotificationsService,
+    public readonly loadingService: LoadingService
   ) {
     super();
   }

@@ -11,7 +11,6 @@ import { catchError, map, mergeMap } from "rxjs/operators";
 
 @Injectable()
 export class ImageEffects {
-  @Effect()
   LoadImage: Observable<LoadImageSuccess> = this.actions$.pipe(
     ofType(AppActionTypes.LOAD_IMAGE),
     mergeMap(action =>

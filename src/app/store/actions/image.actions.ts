@@ -34,3 +34,21 @@ export class LoadImagesSuccess implements Action {
 
   constructor(public payload: PaginatedApiResultInterface<ImageInterface>) {}
 }
+
+export class SaveImage implements Action {
+  readonly type = AppActionTypes.SAVE_IMAGE;
+
+  constructor(public payload: { image: ImageInterface }) {}
+}
+
+export class SaveImageSuccess implements Action {
+  readonly type = AppActionTypes.SAVE_IMAGE_SUCCESS;
+
+  constructor(public payload: { image: ImageInterface }) {}
+}
+
+export class SaveImageFailure implements Action {
+  readonly type = AppActionTypes.SAVE_IMAGE_FAILURE;
+
+  constructor(public payload: { image: ImageInterface }) {}
+}

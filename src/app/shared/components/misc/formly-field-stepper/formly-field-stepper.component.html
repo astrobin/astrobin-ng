@@ -2,8 +2,8 @@
   <ng-wizard-step
     #wizardSteps
     *ngFor="let step of field?.fieldGroup; let index = index; let last = last"
-    [class.visited]="highestVisitedStep > index"
     [class.error]="isStepErrored(index)"
+    [class.visited]="highestVisitedStep > index"
     [description]="step.templateOptions.label"
     [state]="getState(step)"
     [title]="getStepTitle(index)"
@@ -20,7 +20,12 @@
         {{ "Next" | translate }}
       </button>
 
-      <button (click)="onSave($event)" *ngIf="isLastStep(index)" class="btn btn-primary">
+      <button
+        (click)="onSave($event)"
+        *ngIf="isLastStep(index)"
+        [class.loading]="loadingService.isLoading()"
+        class="btn btn-primary"
+      >
         {{ "Save" | translate }}
       </button>
     </div>
