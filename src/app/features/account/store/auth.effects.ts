@@ -9,7 +9,7 @@ import {
   LoginSuccess
 } from "@features/account/store/auth.actions";
 import { LoginSuccessInterface } from "@features/account/store/auth.actions.interfaces";
-import { Actions, Effect, ofType } from "@ngrx/effects";
+import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { TranslateService } from "@ngx-translate/core";
 import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
 import { UserSubscriptionInterface } from "@shared/interfaces/user-subscription.interface";
@@ -25,8 +25,8 @@ import { catchError, map, switchMap, tap } from "rxjs/operators";
 
 @Injectable()
 export class AuthEffects {
-  @Effect()
-  Initialize: Observable<InitializeAuthSuccess> = this.actions$.pipe(
+  
+  Initialize: Observable<InitializeAuthSuccess> = createEffect(() => this.actions$.pipe(
     ofType(AuthActionTypes.INITIALIZE),
     switchMap(() =>
       new Observable<LoginSuccessInterface>(observer => {
@@ -47,10 +47,10 @@ export class AuthEffects {
         }
       }).pipe(map(payload => new InitializeAuthSuccess(payload)))
     )
-  );
+  ));
 
-  @Effect({ dispatch: false })
-  InitializeSuccess: Observable<InitializeAuthSuccess> = this.actions$.pipe(
+  
+  InitializeSuccess: Observable<InitializeAuthSuccess> = createEffect(() => this.actions$.pipe(
     ofType(AuthActionTypes.INITIALIZE_SUCCESS),
     tap(action => {
       if (action.payload.user && action.payload.userProfile) {
@@ -58,10 +58,10 @@ export class AuthEffects {
         this.userStore.addUser(action.payload.user);
       }
     })
-  );
+  ), { dispatch: false });
 
-  @Effect()
-  Login: Observable<LoginSuccess | LoginFailure> = this.actions$.pipe(
+  
+  Login: Observable<LoginSuccess | LoginFailure> = createEffect(() => this.actions$.pipe(
     ofType(AuthActionTypes.LOGIN),
     map((action: Login) => action),
     tap(action => {
@@ -87,10 +87,10 @@ export class AuthEffects {
         catchError(error => of(new LoginFailure({ error })))
       )
     )
-  );
+  ));
 
-  @Effect({ dispatch: false })
-  LoginSuccess: Observable<LoginSuccess> = this.actions$.pipe(
+  
+  LoginSuccess: Observable<LoginSuccess> = createEffect(() => this.actions$.pipe(
     ofType(AuthActionTypes.LOGIN_SUCCESS),
     tap(action => {
       this.userStore.addUserProfile(action.payload.userProfile);
@@ -100,18 +100,18 @@ export class AuthEffects {
 
       this.router.navigate(["account", "logged-in"], { queryParams: { redirectUrl: action.payload.redirectUrl } });
     })
-  );
+  ), { dispatch: false });
 
-  @Effect({ dispatch: false })
-  LoginFailure: Observable<void> = this.actions$.pipe(
+  
+  LoginFailure: Observable<void> = createEffect(() => this.actions$.pipe(
     ofType(AuthActionTypes.LOGIN_FAILURE),
     tap(() => {
       this.loadingService.setLoading(false);
     })
-  );
+  ), { dispatch: false });
 
-  @Effect({ dispatch: false })
-  Logout: Observable<void> = this.actions$.pipe(
+  
+  Logout: Observable<void> = createEffect(() => this.actions$.pipe(
     ofType(AuthActionTypes.LOGOUT),
     tap(() => {
       if (this.cookieService.check(AuthService.CLASSIC_AUTH_TOKEN_COOKIE)) {
@@ -119,7 +119,7 @@ export class AuthEffects {
         this.router.navigate(["account", "logged-out"]);
       }
     })
-  );
+  ), { dispatch: false });
 
   private _getCurrentUserProfile$: Observable<UserProfileInterface> = this.commonApiService.getCurrentUserProfile();
 
