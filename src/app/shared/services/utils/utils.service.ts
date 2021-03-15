@@ -89,6 +89,40 @@ export class UtilsService {
       href: url
     }).click();
   }
+
+  addOrUpdateUrlParam(url: string, name: string, value: string) {
+    let regex = new RegExp("[&\\?]" + name + "=");
+
+    if (regex.test(url)) {
+      regex = new RegExp("([&\\?])" + name + "=\\S+");
+      return url.replace(regex, "$1" + name + "=" + value);
+    }
+
+    if (url.indexOf("?") > -1) {
+      return url + "&" + name + "=" + value;
+    }
+
+    return url + "?" + name + "=" + value;
+  }
+
+  removeUrlParam(url: string, parameter: string) {
+    const urlParts = url.split("?");
+
+    if (urlParts.length >= 2) {
+      const prefix = encodeURIComponent(parameter) + "=";
+      const pars = urlParts[1].split(/[&;]/g);
+
+      for (let i = pars.length; i-- > 0; ) {
+        if (pars[i].lastIndexOf(prefix, 0) !== -1) {
+          pars.splice(i, 1);
+        }
+      }
+
+      return urlParts[0] + (pars.length > 0 ? "?" + pars.join("&") : "");
+    }
+
+    return url;
+  }
 }
 
 export function distinctUntilChangedObj<T>() {
