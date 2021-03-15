@@ -70,30 +70,29 @@ export class NotificationsPageComponent extends BaseComponentDirective implement
   }
 
   notificationClicked(notification: NotificationInterface): boolean {
-    const _openNotificationLink = () => {
+    const _openNotificationLink = (withNid: boolean, openInNewTab: boolean) => {
       const links = this.utilsService.getLinksInText(notification.message);
       if (links.length > 0) {
-        this.store$
-          .select(selectCurrentUserProfile)
-          .pipe(take(1))
-          .subscribe(userProfile => {
-            this.utilsService.openLink(this.windowRef.nativeWindow.document, links[0], {
-              openInNewTab: userProfile.openNotificationsInNewTab
-            });
-          });
+        const link = withNid ? this.utilsService.addOrUpdateUrlParam(links[0], "nid", "" + notification.id) : links[0];
+        this.utilsService.openLink(this.windowRef.nativeWindow.document, link, {
+          openInNewTab
+        });
       }
     };
 
-    if (!notification.read) {
-      this.notificationsService
-        .markAsRead(notification)
-        .pipe(take(1))
-        .subscribe(() => {
-          _openNotificationLink();
-        });
-    } else {
-      _openNotificationLink();
-    }
+    this.store$
+      .select(selectCurrentUserProfile)
+      .pipe(take(1))
+      .subscribe(userProfile => {
+        _openNotificationLink(!notification.read, userProfile.openNotificationsInNewTab);
+
+        if (!notification.read) {
+          this.notificationsService
+            .markAsRead(notification)
+            .pipe(take(1))
+            .subscribe();
+        }
+      });
 
     return false;
   }

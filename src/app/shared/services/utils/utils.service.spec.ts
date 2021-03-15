@@ -103,4 +103,40 @@ describe("UtilsService", () => {
       expect(service.arrayUniqueObjects([a, b, c])).toEqual([a, b]);
     });
   });
+
+  describe("addOrUpdateUrlParam", () => {
+    it("should work when there are no other params", () => {
+      expect(service.addOrUpdateUrlParam("ab.co", "a", "b")).toEqual("ab.co?a=b");
+    });
+
+    it("should work when there are other params", () => {
+      expect(service.addOrUpdateUrlParam("ab.co?a=b", "c", "d")).toEqual("ab.co?a=b&c=d");
+    });
+
+    it("should work when updating", () => {
+      expect(service.addOrUpdateUrlParam("ab.co?a=b", "a", "c")).toEqual("ab.co?a=c");
+    });
+  });
+
+  describe("removeUrlParam", () => {
+    it("should work when there is no such params", () => {
+      expect(service.removeUrlParam("ab.co", "a")).toEqual("ab.co");
+    });
+
+    it("should work when there is a param", () => {
+      expect(service.removeUrlParam("ab.co?a=b", "a")).toEqual("ab.co");
+    });
+
+    it("should work when there are multiple params and the one to be removed is first", () => {
+      expect(service.removeUrlParam("ab.co?a=b&c=d", "a")).toEqual("ab.co?c=d");
+    });
+
+    it("should work when there are multiple params and the one to be removed is middle", () => {
+      expect(service.removeUrlParam("ab.co?a=b&c=d&e=f", "c")).toEqual("ab.co?a=b&e=f");
+    });
+
+    it("should work when there are multiple params and the one to be removed is last", () => {
+      expect(service.removeUrlParam("ab.co?a=b&c=d&e=f", "e")).toEqual("ab.co?a=b&c=d");
+    });
+  });
 });
