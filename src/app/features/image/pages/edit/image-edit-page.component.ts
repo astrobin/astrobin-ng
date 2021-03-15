@@ -128,6 +128,9 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
         ),
         placeholder: "https://www.example.com/my-page.html",
         required: false
+      },
+      validators: {
+        validation: ["url"]
       }
     };
   }
@@ -145,6 +148,9 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
         ),
         placeholder: "https://www.example.com/my-page.html",
         required: false
+      },
+      validators: {
+        validation: ["url"]
       }
     };
   }
@@ -410,23 +416,6 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     };
   }
 
-  private _getKeyValueTagsField(): any {
-    return {
-      key: "keyValueTags",
-      type: "textarea",
-      templateOptions: {
-        rows: 5,
-        required: false,
-        label: this.translate.instant("Key/value tags"),
-        description: this.translate.instant(
-          "Provide a list of unique key/value pairs to tag this image with. " +
-            "Use the '=' symbol between key and value, and provide one pair per line. These tags can be used to sort " +
-            "images by arbitrary properties."
-        )
-      }
-    };
-  }
-
   private _getMouseHoverImageField(): any {
     return {
       key: "mouseHoverImage",
@@ -501,7 +490,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
           },
           {
             templateOptions: { label: this.translate.instant("Settings") },
-            fieldGroup: [this._getKeyValueTagsField(), this._getMouseHoverImageField(), this._getAllowCommentsField()]
+            fieldGroup: [this._getMouseHoverImageField(), this._getAllowCommentsField()]
           }
         ]
       }

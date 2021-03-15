@@ -31,7 +31,6 @@ export class ImageGenerator {
       dataSource: DataSource.BACKYARD,
       remoteSource: undefined,
       partOfGroupSet: [],
-      keyValueTags: undefined,
       mouseHoverImage: MouseHoverImageOptions.SOLUTION,
       allowComments: true,
       squareCropping: `0,0,${source.w || 1000},${source.h || 1000}`

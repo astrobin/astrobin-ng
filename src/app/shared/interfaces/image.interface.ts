@@ -115,7 +115,6 @@ export interface ImageInterface {
   dataSource: DataSource;
   remoteSource?: string;
   partOfGroupSet: number[];
-  keyValueTags?: string;
   mouseHoverImage: MouseHoverImageOptions;
   allowComments: boolean;
   squareCropping: string;
