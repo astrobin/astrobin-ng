@@ -1,6 +1,7 @@
 import { Component, OnInit, TemplateRef, ViewChild } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
+import { AppActionTypes } from "@app/store/actions/app.actions";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { SaveImage } from "@app/store/actions/image.actions";
 import { LoadThumbnail } from "@app/store/actions/thumbnail.actions";
@@ -8,6 +9,7 @@ import { selectThumbnail } from "@app/store/selectors/app/thumbnail.selectors";
 import { State } from "@app/store/state";
 import { selectCurrentUser } from "@features/account/store/auth.selectors";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { Actions, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
@@ -53,6 +55,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
 
   constructor(
     public readonly store$: Store<State>,
+    public readonly actions$: Actions,
     public readonly route: ActivatedRoute,
     public readonly translate: TranslateService,
     public readonly classicRoutesService: ClassicRoutesService,
@@ -105,6 +108,13 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
 
   onSave() {
     this.store$.dispatch(new SaveImage({ pk: this.image.pk, data: { ...this.image, ...this.form.value } }));
+    this.actions$.pipe(ofType(AppActionTypes.SAVE_IMAGE_SUCCESS)).subscribe(() => {
+      this.loadingService.setLoading(true);
+      this.utilsService.openLink(
+        this.windowRefService.nativeWindow.document,
+        this.classicRoutesService.EDIT_IMAGE_GEAR(this.image.hash || "" + this.image.pk) + "?upload"
+      );
+    });
   }
 
   private _getTitleField(): any {

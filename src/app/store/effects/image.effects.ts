@@ -50,9 +50,9 @@ export class ImageEffects {
   SaveImage: Observable<SaveImageSuccess | SaveImageFailure> = createEffect(() =>
     this.actions$.pipe(
       ofType(AppActionTypes.SAVE_IMAGE),
+      tap(() => this.loadingService.setLoading(true)),
       mergeMap(action =>
         this.imageApiService.updateImage(action.payload.pk, action.payload.data).pipe(
-          tap(() => this.loadingService.setLoading(true)),
           map(() => new SaveImageSuccess({ image: action.payload.data })),
           catchError(error => of(new SaveImageFailure({ error })))
         )
