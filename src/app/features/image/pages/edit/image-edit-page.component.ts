@@ -7,6 +7,7 @@ import { LoadThumbnail } from "@app/store/actions/thumbnail.actions";
 import { selectThumbnail } from "@app/store/selectors/app/thumbnail.selectors";
 import { State } from "@app/store/state";
 import { selectCurrentUser } from "@features/account/store/auth.selectors";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Store } from "@ngrx/store";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
@@ -27,6 +28,8 @@ import { RemoteSourceAffiliateApiService } from "@shared/services/api/classic/re
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { TitleService } from "@shared/services/title/title.service";
+import { UtilsService } from "@shared/services/utils/utils.service";
+import { WindowRefService } from "@shared/services/window-ref.service";
 import { map, switchMap } from "rxjs/operators";
 
 @Component({
@@ -56,7 +59,10 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     public readonly titleService: TitleService,
     public readonly remoteSourceAffiliateApiService: RemoteSourceAffiliateApiService,
     public readonly groupApiService: GroupApiService,
-    public readonly loadingService: LoadingService
+    public readonly loadingService: LoadingService,
+    public readonly modalService: NgbModal,
+    public readonly utilsService: UtilsService,
+    public readonly windowRefService: WindowRefService
   ) {
     super();
   }
@@ -89,7 +95,15 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     );
   }
 
-  onSave(): void {
+  onReturnToClassicEditor() {
+    this.loadingService.setLoading(true);
+    this.utilsService.openLink(
+      this.windowRefService.nativeWindow.document,
+      this.classicRoutesService.EDIT_IMAGE_THUMBNAILS(this.image.hash || "" + this.image.pk) + "?upload"
+    );
+  }
+
+  onSave() {
     this.store$.dispatch(new SaveImage({ pk: this.image.pk, data: { ...this.image, ...this.form.value } }));
   }
 
