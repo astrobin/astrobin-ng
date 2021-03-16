@@ -92,6 +92,22 @@ export enum MouseHoverImageOptions {
   INVERTED = "INVERTED"
 }
 
+export enum WatermarkPositionOptions {
+  CENTER,
+  TOP_LEFT,
+  TOP_CENTER,
+  TOP_RIGHT,
+  BOTTOM_LEFT,
+  BOTTOM_CENTER,
+  BOTTOM_RIGHT
+}
+
+export enum WatermarkSizeOptions {
+  SMALL = "S",
+  MEDIUM = "M",
+  LARGE = "L"
+}
+
 export interface ImageInterface {
   user: number;
   pk: number;
@@ -118,4 +134,9 @@ export interface ImageInterface {
   mouseHoverImage: MouseHoverImageOptions;
   allowComments: boolean;
   squareCropping: string;
+  watermark: boolean;
+  watermarkText?: string;
+  watermarkPosition?: WatermarkPositionOptions;
+  watermarkSize?: WatermarkSizeOptions;
+  watermarkOpacity?: number;
 }

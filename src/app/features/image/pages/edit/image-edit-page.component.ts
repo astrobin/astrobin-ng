@@ -22,7 +22,9 @@ import {
   MouseHoverImageOptions,
   RemoteSource,
   SolarSystemSubjectType,
-  SubjectType
+  SubjectType,
+  WatermarkPositionOptions,
+  WatermarkSizeOptions
 } from "@shared/interfaces/image.interface";
 import { RemoteSourceAffiliateInterface } from "@shared/interfaces/remote-source-affiliate.interface";
 import { GroupApiService } from "@shared/services/api/classic/groups/group-api.service";
@@ -440,6 +442,110 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     };
   }
 
+  private _getWatermarkCheckboxField(): any {
+    return {
+      key: "watermark",
+      type: "checkbox",
+      templateOptions: {
+        label: this.translate.instant("Apply watermark to image"),
+        description: this.translate.instant(
+          "AstroBin can protect your images from theft by applying a watermark to them. Please note: animated GIFs cannot be watermarked at this time."
+        )
+      }
+    };
+  }
+
+  private _getWatermarkTextField(): any {
+    return {
+      key: "watermarkText",
+      type: "input",
+      templateOptions: {
+        label: this.translate.instant("Text")
+      }
+    };
+  }
+
+  private _getWatermarkPosition(): any {
+    return {
+      key: "watermarkPosition",
+      type: "ng-select",
+      templateOptions: {
+        label: this.translate.instant("Position"),
+        options: [
+          {
+            value: WatermarkPositionOptions.CENTER,
+            label: this.translate.instant("Center")
+          },
+          {
+            value: WatermarkPositionOptions.TOP_LEFT,
+            label: this.translate.instant("Top left")
+          },
+          {
+            value: WatermarkPositionOptions.TOP_CENTER,
+            label: this.translate.instant("Top center")
+          },
+          {
+            value: WatermarkPositionOptions.TOP_RIGHT,
+            label: this.translate.instant("Top right")
+          },
+          {
+            value: WatermarkPositionOptions.BOTTOM_LEFT,
+            label: this.translate.instant("Bottom left")
+          },
+          {
+            value: WatermarkPositionOptions.BOTTOM_CENTER,
+            label: this.translate.instant("Bottom center")
+          },
+          {
+            value: WatermarkPositionOptions.BOTTOM_RIGHT,
+            label: this.translate.instant("Bottom right")
+          }
+        ]
+      }
+    };
+  }
+
+  private _getWatermarkTextSize(): any {
+    return {
+      key: "watermarkSize",
+      type: "ng-select",
+      templateOptions: {
+        label: this.translate.instant("Size"),
+        description: this.translate.instant("The final font size will depend on how long your watermark is."),
+        options: [
+          {
+            value: WatermarkSizeOptions.SMALL,
+            label: this.translate.instant("Small")
+          },
+          {
+            value: WatermarkSizeOptions.MEDIUM,
+            label: this.translate.instant("Medium")
+          },
+          {
+            value: WatermarkSizeOptions.LARGE,
+            label: this.translate.instant("Large")
+          }
+        ]
+      }
+    };
+  }
+
+  private _getWatermarkTextOpacity(): any {
+    return {
+      key: "watermarkOpacity",
+      type: "input",
+      templateOptions: {
+        type: "number",
+        min: 0,
+        max: 100,
+        label: this.translate.instant("Opacity") + " (%)",
+        description: this.translate.instant(
+          "0 means invisible; 100 means completely opaque. Recommended values are: 10 if the watermark will appear on the dark sky background, 50 if on some bright object."
+        )
+      }
+    };
+  }
+
   private _getMouseHoverImageField(): any {
     return {
       key: "mouseHoverImage",
@@ -491,6 +597,16 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
           {
             templateOptions: { label: this.translate.instant("Thumbnail") },
             fieldGroup: [this._getThumbnailField()]
+          },
+          {
+            templateOptions: { label: this.translate.instant("Watermark") },
+            fieldGroup: [
+              this._getWatermarkCheckboxField(),
+              this._getWatermarkTextField(),
+              this._getWatermarkPosition(),
+              this._getWatermarkTextSize(),
+              this._getWatermarkTextOpacity()
+            ]
           },
           {
             templateOptions: { label: this.translate.instant("Basic information") },

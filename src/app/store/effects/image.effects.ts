@@ -10,10 +10,12 @@ import { selectImage } from "@app/store/selectors/app/image.selectors";
 import { State } from "@app/store/state";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 import { ImageApiService } from "@shared/services/api/classic/images/image/image-api.service";
 import { LoadingService } from "@shared/services/loading.service";
+import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { EMPTY, Observable, of } from "rxjs";
-import { catchError, delay, map, mergeMap, tap } from "rxjs/operators";
+import { catchError, map, mergeMap, tap } from "rxjs/operators";
 
 @Injectable()
 export class ImageEffects {
@@ -75,7 +77,13 @@ export class ImageEffects {
     () =>
       this.actions$.pipe(
         ofType(AppActionTypes.SAVE_IMAGE_FAILURE),
-        tap(() => this.loadingService.setLoading(false))
+        map(action => action.payload.error),
+        tap(error => {
+          this.loadingService.setLoading(false);
+          this.popNotificationsService.error(
+            this.translateService.instant("The server responded with an error: " + error.statusText)
+          );
+        })
       ),
     {
       dispatch: false
@@ -86,6 +94,8 @@ export class ImageEffects {
     public readonly store$: Store<State>,
     public readonly actions$: Actions<All>,
     public readonly imageApiService: ImageApiService,
-    public readonly loadingService: LoadingService
+    public readonly loadingService: LoadingService,
+    public readonly popNotificationsService: PopNotificationsService,
+    public readonly translateService: TranslateService
   ) {}
 }

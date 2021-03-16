@@ -3,7 +3,9 @@ import {
   DataSource,
   ImageInterface,
   MouseHoverImageOptions,
-  SubjectType
+  SubjectType,
+  WatermarkPositionOptions,
+  WatermarkSizeOptions
 } from "../interfaces/image.interface";
 
 export class ImageGenerator {
@@ -33,7 +35,12 @@ export class ImageGenerator {
       partOfGroupSet: [],
       mouseHoverImage: MouseHoverImageOptions.SOLUTION,
       allowComments: true,
-      squareCropping: `0,0,${source.w || 1000},${source.h || 1000}`
+      squareCropping: `0,0,${source.w || 1000},${source.h || 1000}`,
+      watermark: true,
+      watermarkText: "Copyright AstroBin",
+      watermarkPosition: WatermarkPositionOptions.CENTER,
+      watermarkSize: WatermarkSizeOptions.MEDIUM,
+      watermarkOpacity: 50
     };
   }
 }
