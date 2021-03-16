@@ -1,8 +1,12 @@
 import { Component } from "@angular/core";
 import { FieldType } from "@ngx-formly/core";
+import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
+import { WindowRefService } from "@shared/services/window-ref.service";
 import { CropperPosition, Dimensions, ImageCroppedEvent, LoadedImage } from "ngx-image-cropper";
 import { OutputFormat } from "ngx-image-cropper/lib/interfaces/cropper-options.interface";
+import { fromEvent } from "rxjs";
+import { debounceTime } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-formly-field-image-cropper",
@@ -16,13 +20,27 @@ export class FormlyFieldImageCropperComponent extends FieldType {
     x2: 0,
     y2: 0
   };
-
   ratio: number;
+  cropperReady = false;
+  showCropper = true;
 
-  showCropper = false;
-
-  constructor(public readonly utilsService: UtilsService) {
+  constructor(
+    public readonly utilsService: UtilsService,
+    public readonly windowRefService: WindowRefService,
+    public readonly popNotificationService: PopNotificationsService
+  ) {
     super();
+
+    fromEvent(window, "resize")
+      .pipe(debounceTime(100))
+      .subscribe(() => {
+        // Reset cropper.
+        this.showCropper = false;
+        setTimeout(() => {
+          this.showCropper = true;
+          this.popNotificationService.info("As you resized your window, please check your image crop again.");
+        }, 250);
+      });
   }
 
   getFormat(url: string): OutputFormat {
@@ -62,6 +80,6 @@ export class FormlyFieldImageCropperComponent extends FieldType {
   }
 
   onImageLoaded(imageLoaded: LoadedImage) {
-    this.showCropper = true;
+    this.cropperReady = true;
   }
 }
