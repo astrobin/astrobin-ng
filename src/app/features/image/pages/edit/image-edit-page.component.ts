@@ -152,7 +152,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
         description: this.translate.instant(
           "If you're hosting a copy of this image on your website, put the address here."
         ),
-        placeholder: "https://www.example.com/my-page.html",
+        placeholder: this.translate.instant("e.g.") + " https://www.example.com/my-page.html",
         required: false
       },
       validators: {
@@ -172,7 +172,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
             "Unfortunately, AstroBin cannot offer to store these files at the moment, so you will have to " +
             "host them on your personal space."
         ),
-        placeholder: "https://www.example.com/my-page.html",
+        placeholder: this.translate.instant("e.g.") + " https://www.example.com/my-page.html",
         required: false
       },
       validators: {
@@ -591,7 +591,8 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
         type: "stepper",
         templateOptions: {
           image: this.image,
-          onSave: () => this.onSave()
+          onSave: () => this.onSave(),
+          saveButtonLabel: this.translate.instant("Proceed to gear selection")
         },
         fieldGroup: [
           {

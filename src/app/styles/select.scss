@@ -1,10 +1,14 @@
 @import "variables";
 
 $background: $darkest-grey;
-$foreground: $lightest-grey;
+$foreground: $lighter-grey;
 $highlight: 3%;
 
 .ng-select {
+  .ng-select-container {
+    color: $foreground;
+  }
+
   .ng-arrow-wrapper {
     width: 25px !important;
     padding-right: 5px !important;
@@ -64,7 +68,7 @@ $highlight: 3%;
   box-shadow: .25rem .5rem 1rem rgba(0, 0, 0, .5) !important;
 
   .ng-optgroup {
-    color: $white !important;
+    color: $foreground !important;
     font-weight: bold !important;
     font-style: italic !important;
     padding: .75rem !important;
