@@ -1,4 +1,5 @@
-import { Component, QueryList, ViewChild, ViewChildren } from "@angular/core";
+import { Component, OnInit, QueryList, ViewChild, ViewChildren } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
 import { FieldType, FormlyFieldConfig } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
 import { LoadingService } from "@shared/services/loading.service";
@@ -18,12 +19,14 @@ import {
   templateUrl: "./formly-field-stepper.component.html",
   styleUrls: ["./formly-field-stepper.component.scss"]
 })
-export class FormlyFieldStepperComponent extends FieldType {
+export class FormlyFieldStepperComponent extends FieldType implements OnInit {
   @ViewChild("wizard")
   wizard: NgWizardComponent;
 
   @ViewChildren("wizardSteps")
   wizardSteps: QueryList<NgWizardStepComponent>;
+
+  currentStepIndex = 0;
 
   highestVisitedStep = 0;
 
@@ -32,21 +35,32 @@ export class FormlyFieldStepperComponent extends FieldType {
     public readonly translateService: TranslateService,
     public readonly windowRef: WindowRefService,
     public readonly popNotificationsService: PopNotificationsService,
-    public readonly loadingService: LoadingService
+    public readonly loadingService: LoadingService,
+    public readonly router: Router,
+    public readonly route: ActivatedRoute
   ) {
     super();
   }
 
+  ngOnInit() {
+    this.route.fragment.subscribe((fragment: string) => {
+      this.currentStepIndex = +fragment - 1;
+      this.ngWizardService.show(this.currentStepIndex);
+    });
+  }
+
   onStepChanged(event?: StepChangedArgs) {
-    this.wizardSteps.forEach((step, index) => {
-      if (index < event.step.index) {
-        (step.status as any) = "done";
+    this.router.navigate([], { fragment: "" + (event.step.index + 1) }).then(() => {
+      this.wizardSteps.forEach((step, index) => {
+        if (index < event.step.index) {
+          (step.status as any) = "done";
+        }
+      });
+
+      if (event.step.index > this.highestVisitedStep) {
+        this.highestVisitedStep = event.step.index;
       }
     });
-
-    if (event.step.index > this.highestVisitedStep) {
-      this.highestVisitedStep = event.step.index;
-    }
   }
 
   getStep(stepNumber: number): NgWizardStep {

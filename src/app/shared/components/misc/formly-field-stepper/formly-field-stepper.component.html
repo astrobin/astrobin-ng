@@ -1,4 +1,4 @@
-<ng-wizard #wizard (stepChanged)="onStepChanged($event)">
+<ng-wizard #wizard (stepChanged)="onStepChanged($event)" [config]="{selected: currentStepIndex}">
   <ng-wizard-step
     #wizardSteps
     *ngFor="let step of field?.fieldGroup; let index = index; let last = last"
