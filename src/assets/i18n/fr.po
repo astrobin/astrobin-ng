@@ -26,12 +26,14 @@ msgid "And much more!"
 msgstr "Et plus encore ! "
 
 msgid "Are you sure you want to dismiss this image?"
-msgstr ""
+msgstr "Voulez-vous vraiment rejeter cette image ?"
 
 msgid ""
 "AstroBin could not read your file as an image. Please try a different "
 "format."
 msgstr ""
+"Format d'image non pris en compte par AstroBin. Merci d'essayer un autre "
+"format."
 
 msgid ""
 "AstroBin doesn't support subscription upgrades at the moment, but we're "
@@ -54,7 +56,7 @@ msgid "Astrophotographers list"
 msgstr "Liste des astrophotographes"
 
 msgid "Authentication error. Please log out and in again."
-msgstr ""
+msgstr "Erreur d'authentification. Merci de vous déconnecter et de réessayer. "
 
 msgid "Autorenew"
 msgstr "Renouvellement automatique"
@@ -72,7 +74,7 @@ msgid "Buy"
 msgstr "Acheter"
 
 msgid "Cancel"
-msgstr ""
+msgstr "Annuler"
 
 msgid "Cancelled"
 msgstr "Annulé"
@@ -96,10 +98,10 @@ msgid "Description"
 msgstr "Description"
 
 msgid "Dismiss"
-msgstr ""
+msgstr "Rejeter"
 
 msgid "Dismiss image"
-msgstr ""
+msgstr "Rejeter cette image"
 
 msgid "Do not notify your followers about this revision."
 msgstr "Ne pas informer vos abonnés de cette nouvelle version."
@@ -126,7 +128,7 @@ msgid "File type not supported"
 msgstr "Type de fichier non pris en charge"
 
 msgid "Finalizing upload, please wait..."
-msgstr ""
+msgstr "Finalisation de la mise en ligne, merci de patienter..."
 
 msgid "Followers"
 msgstr "Abonnés"
@@ -178,6 +180,10 @@ msgid ""
 "supported. If your file is a color image, or already an 8-bit depth "
 "grayscale, please ignore this warning message."
 msgstr ""
+"Attention ! La prise en charge du format TIFF sur AstroBin est encore "
+"expérimentale. Les images monochromes en 16 bits ou supérieur, ou en "
+"virgule flottante, ne sont pour l'instant pas pris en charge. Si votre "
+"image est en couleurs, ou monochrome 8 bits, veuillez ignorer ce message."
 
 msgid "Help"
 msgstr "Aide"
@@ -192,7 +198,7 @@ msgid "Home"
 msgstr "Accueil"
 
 msgid "Image"
-msgstr ""
+msgstr "Image"
 
 msgid "Image of the day"
 msgstr "Image du Jour"
@@ -213,10 +219,10 @@ msgid "Info"
 msgstr "Informations"
 
 msgid "Initializing upload, please wait..."
-msgstr ""
+msgstr "Initialisation de la mise en ligne, merci de patienter..."
 
 msgid "Invalid data, please refresh the page and try again."
-msgstr ""
+msgstr "Données non valides, merci de rafraîchir la page et de réessayer."
 
 msgid "It looks like you reached the upload limit for your subscription."
 msgstr ""
@@ -290,13 +296,13 @@ msgid "Notifications"
 msgstr "Notifications"
 
 msgid "Objects in field"
-msgstr ""
+msgstr "Objets dans le champ"
 
 msgid "Password"
 msgstr "Mot de passe"
 
 msgid "Permission denied"
-msgstr ""
+msgstr "Autorisation refusée"
 
 msgid "Please come back later!"
 msgstr "Merci de revenir plus tard !"
@@ -312,6 +318,14 @@ msgstr ""
 "d'utilisateur afin que nous puissions actualiser votre compte manuellement."
 
 msgid "Please note"
+msgstr "Attention"
+
+msgid ""
+"Please note: if this file is a crop of another image you already published "
+"on AstroBin, the common practice would be to upload it as a new revision. "
+"For more info, please <a "
+"href='https://welcome.astrobin.com/features/image-revisions' "
+"target='_blank'>click here</a>."
 msgstr ""
 
 msgid ""
@@ -324,6 +338,8 @@ msgstr ""
 
 msgid "Please wait until your subscription expires, then come back to this page."
 msgstr ""
+"Merci d'attendre l'expiration de votre abonnement avant de revenir sur "
+"cette page."
 
 msgid "Plots"
 msgstr "Graphiques"
@@ -365,13 +381,13 @@ msgid "Revision uploader"
 msgstr "Publication d'une nouvelle version"
 
 msgid "Secure payment by Stripe™"
-msgstr ""
+msgstr "Paiement sécurisé par Stripe"
 
 msgid "Settings"
 msgstr "Paramètres"
 
 msgid "Show"
-msgstr ""
+msgstr "Afficher"
 
 msgid "Skip notifications"
 msgstr "Pas de notifications"
@@ -394,6 +410,8 @@ msgid ""
 "Sorry, unfortunately AstroBin does not have a bank account in the selected "
 "territory."
 msgstr ""
+"Désolé, malheureusement AstroBin ne dispose pas d'un compte bancaire dans "
+"le pays sélectionné."
 
 msgid "Spam list"
 msgstr "Liste de spams"
@@ -440,9 +458,13 @@ msgid ""
 "on AstroBin. For this reason, we recommend that you upgrade to Premium or "
 "Ultimate instead."
 msgstr ""
+"L'abonnement \"Lite\" est limité à un total de "
+"<strong>{{maxImagesForLite}}</strong> images, et vous avez actuellement "
+"publié <strong>{{numberOfImages}}</strong> images sur AstroBin. Nous vous "
+"recommandons de passer à l'abonnement Premium ou Ultimate."
 
 msgid "The image will permanently disappear from your queue."
-msgstr ""
+msgstr "L'image sera définitivement masquée de votre file d'attente."
 
 msgid ""
 "The price is shown in Swiss Francs even though you might have paid the "
@@ -468,7 +490,7 @@ msgstr ""
 "pourrez la rendre publique au terme du processus. "
 
 msgid "This operation can not be undone."
-msgstr ""
+msgstr "Cette opération ne peut pas être annulée. "
 
 msgid ""
 "This page or operation is not available at the moment, because AstroBin is "
@@ -493,7 +515,7 @@ msgid "Unknown error"
 msgstr "Erreur inconnue"
 
 msgid "Unknown error, please refresh the page and try again."
-msgstr ""
+msgstr "Erreur inconnue, merci de rafraîchir la page et de réessayer. "
 
 msgid "Unlimited images"
 msgstr "Images illimitées"
@@ -511,7 +533,7 @@ msgid "Uploader"
 msgstr "Module de publication"
 
 msgid "Uploading..."
-msgstr ""
+msgstr "Envoi en cours..."
 
 msgid "Username"
 msgstr "Nom d'utilisateur"
@@ -552,7 +574,7 @@ msgid "What is this site?"
 msgstr "Astrobin, c'est quoi ?"
 
 msgid "When a paid subscription expires, nothing happens to your images or content."
-msgstr ""
+msgstr "Quand votre abonnement expire, vos images et contenus ne sont pas affectés."
 
 msgid "Would you like to upgrade?"
 msgstr "Vous souhaitez passer à une formule d'abonnement supérieure ?"
@@ -561,9 +583,11 @@ msgid ""
 "You are already on this plan. If you buy it again, your expiration date "
 "will be extended by one year."
 msgstr ""
+"Vous avez déjà souscrit à cette offre d'abonnement. Si vous l'achetez de "
+"nouveau, la durée de votre abonnement sera prolongée d'un an."
 
 msgid "You are already subscribed to a higher plan."
-msgstr ""
+msgstr "Vous avez déjà souscrit à une offre d'abonnement supérieure."
 
 msgid ""
 "You have a <strong>{{0}}</strong> subscription. Enjoy your unlimited "
@@ -622,7 +646,7 @@ msgstr ""
 "été modifié. "
 
 msgid "Zoom ready"
-msgstr ""
+msgstr "Zoom prêt !"
 
 msgid "n/a"
 msgstr "n/a"
