@@ -268,7 +268,7 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
           "size you can upload with an Ultimate subscription, but we cannot guarantee that all images above 200 MB or " +
           "~8000x8000 pixels will work. Feel free to give it a shot tho!"
       );
-    } else if (size > 100 * MB) {
+    } else if (size > 25 * MB) {
       message = this.translateService.instant(
         "Heads up! Are you sure you want to upload such a large file? It's okay to do so but probably not many " +
           "people will want to see it at its full resolution, if it will take too long for them to download it."
