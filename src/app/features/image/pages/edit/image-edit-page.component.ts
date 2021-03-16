@@ -442,6 +442,20 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     };
   }
 
+  private _getSharpenThumbnailsField(): any {
+    return {
+      key: "sharpenThumbnails",
+      type: "checkbox",
+      templateOptions: {
+        label: this.translate.instant("Sharpen thumbnails"),
+        description: this.translate.instant(
+          "If selected, AstroBin will use a resizing algorithm that slightly sharpens the image's thumbnails. " +
+            "This setting applies to all revisions."
+        )
+      }
+    };
+  }
+
   private _getWatermarkCheckboxField(): any {
     return {
       key: "watermark",
@@ -597,7 +611,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
         fieldGroup: [
           {
             templateOptions: { label: this.translate.instant("Thumbnail") },
-            fieldGroup: [this._getThumbnailField()]
+            fieldGroup: [this._getThumbnailField(), this._getSharpenThumbnailsField()]
           },
           {
             templateOptions: { label: this.translate.instant("Watermark") },

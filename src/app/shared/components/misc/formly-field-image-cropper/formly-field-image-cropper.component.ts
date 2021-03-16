@@ -34,12 +34,8 @@ export class FormlyFieldImageCropperComponent extends FieldType {
     fromEvent(window, "resize")
       .pipe(debounceTime(100))
       .subscribe(() => {
-        // Reset cropper.
-        this.showCropper = false;
-        setTimeout(() => {
-          this.showCropper = true;
-          this.popNotificationService.info("As you resized your window, please check your image crop again.");
-        }, 250);
+        this._reset();
+        this.popNotificationService.info("As you resized your window, please check your image crop again.");
       });
   }
 
@@ -81,5 +77,12 @@ export class FormlyFieldImageCropperComponent extends FieldType {
 
   onImageLoaded(imageLoaded: LoadedImage) {
     this.cropperReady = true;
+  }
+
+  private _reset() {
+    this.showCropper = false;
+    setTimeout(() => {
+      this.showCropper = true;
+    }, 250);
   }
 }

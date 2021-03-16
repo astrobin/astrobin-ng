@@ -40,7 +40,8 @@ export class ImageGenerator {
       watermarkText: "Copyright AstroBin",
       watermarkPosition: WatermarkPositionOptions.CENTER,
       watermarkSize: WatermarkSizeOptions.MEDIUM,
-      watermarkOpacity: 50
+      watermarkOpacity: 50,
+      sharpenThumbnails: false
     };
   }
 }

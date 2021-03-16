@@ -139,4 +139,5 @@ export interface ImageInterface {
   watermarkPosition?: WatermarkPositionOptions;
   watermarkSize?: WatermarkSizeOptions;
   watermarkOpacity?: number;
+  sharpenThumbnails: boolean;
 }
