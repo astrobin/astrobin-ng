@@ -18,6 +18,7 @@ $highlight: 3%;
 
   .ng-clear-wrapper {
     color: $light-grey !important;
+
     &:hover .ng-clear {
       color: $lightest-grey !important;
     }
@@ -28,11 +29,25 @@ $highlight: 3%;
   }
 
   &.ng-select-multiple {
-    .ng-value {
+    .ng-select-container .ng-value-container .ng-value {
       background: $grey !important;
       border: 1px dotted $light-grey !important;
       padding: .0625rem .6rem !important;
       margin-right: .5rem !important;
+
+      .ng-value-icon {
+        padding: 0 .5rem;
+
+        &.right {
+          border-left: 1px dotted $light-grey;
+          margin-left: .75rem;
+          margin-right: -.5rem;
+        }
+
+        &:hover {
+          background-color: $light-grey;
+        }
+      }
     }
   }
 
@@ -46,7 +61,7 @@ $highlight: 3%;
 .ng-dropdown-panel {
   background: $background !important;
   border-top: 1px solid lighten($background, $highlight) !important;
-  box-shadow: .25rem .5rem 1rem rgba(0,0,0,.5) !important;
+  box-shadow: .25rem .5rem 1rem rgba(0, 0, 0, .5) !important;
 
   .ng-optgroup {
     color: $white !important;
