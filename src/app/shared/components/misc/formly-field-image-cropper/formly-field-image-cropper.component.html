@@ -1,6 +1,6 @@
 <ng-container *ngIf="to.thumbnailURL$ | async as thumbnailURL; else loading">
   <image-cropper
-    *ngIf="showCropper; else loading"
+    *ngIf="(showCropper$ | async) === true; else loading"
     (cropperReady)="onCropperReady($event)"
     (imageCropped)="onImageCropped($event)"
     (imageLoaded)="onImageLoaded($event)"

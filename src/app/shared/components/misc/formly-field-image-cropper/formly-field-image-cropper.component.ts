@@ -1,4 +1,8 @@
 import { Component } from "@angular/core";
+import { State } from "@app/store/state";
+import { ImageEditorSetCropperShown } from "@features/image/store/image.actions";
+import { selectImageEditorState } from "@features/image/store/image.selectors";
+import { Store } from "@ngrx/store";
 import { FieldType } from "@ngx-formly/core";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
@@ -6,7 +10,7 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 import { CropperPosition, Dimensions, ImageCroppedEvent, LoadedImage } from "ngx-image-cropper";
 import { OutputFormat } from "ngx-image-cropper/lib/interfaces/cropper-options.interface";
 import { fromEvent } from "rxjs";
-import { debounceTime } from "rxjs/operators";
+import { debounceTime, filter, map, take } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-formly-field-image-cropper",
@@ -22,9 +26,10 @@ export class FormlyFieldImageCropperComponent extends FieldType {
   };
   ratio: number;
   cropperReady = false;
-  showCropper = true;
+  showCropper$ = this.store$.select(selectImageEditorState).pipe(map(state => state.cropperShown));
 
   constructor(
+    public readonly store$: Store<State>,
     public readonly utilsService: UtilsService,
     public readonly windowRefService: WindowRefService,
     public readonly popNotificationService: PopNotificationsService
@@ -34,8 +39,15 @@ export class FormlyFieldImageCropperComponent extends FieldType {
     fromEvent(window, "resize")
       .pipe(debounceTime(100))
       .subscribe(() => {
-        this._reset();
-        this.popNotificationService.info("As you resized your window, please check your image crop again.");
+        this.showCropper$
+          .pipe(
+            take(1),
+            filter(showCropper => showCropper)
+          )
+          .subscribe(() => {
+            this._reset();
+            this.popNotificationService.info("As you resized your window, please check your image crop again.");
+          });
       });
   }
 
@@ -80,9 +92,9 @@ export class FormlyFieldImageCropperComponent extends FieldType {
   }
 
   private _reset() {
-    this.showCropper = false;
+    this.store$.dispatch(new ImageEditorSetCropperShown(false));
     setTimeout(() => {
-      this.showCropper = true;
+      this.store$.dispatch(new ImageEditorSetCropperShown(true));
     }, 250);
   }
 }

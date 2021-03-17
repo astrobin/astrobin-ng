@@ -8,6 +8,7 @@ import { LoadThumbnail } from "@app/store/actions/thumbnail.actions";
 import { selectThumbnail } from "@app/store/selectors/app/thumbnail.selectors";
 import { State } from "@app/store/state";
 import { selectCurrentUser } from "@features/account/store/auth.selectors";
+import { ImageEditorSetCropperShown } from "@features/image/store/image.actions";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Actions, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
@@ -80,6 +81,12 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     this._initBreadcrumb();
 
     this.store$.dispatch(new LoadThumbnail({ id: this.image.pk, revision: "0", alias: ImageAlias.HD }));
+
+    this.route.fragment.subscribe((fragment: string) => {
+      if (fragment === "1") {
+        this.store$.dispatch(new ImageEditorSetCropperShown(true));
+      }
+    });
 
     this.remoteSourceAffiliateApiService.getAll().subscribe(remoteSourceAffiliates => {
       this.remoteSourceAffiliates = remoteSourceAffiliates;
