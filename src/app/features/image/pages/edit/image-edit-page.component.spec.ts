@@ -4,6 +4,7 @@ import { ActivatedRoute } from "@angular/router";
 import { AppModule } from "@app/app.module";
 import { ImageGenerator } from "@shared/generators/image.generator";
 import { MockBuilder } from "ng-mocks";
+import { of } from "rxjs";
 import { ImageEditPageComponent } from "./image-edit-page.component";
 
 describe("EditComponent", () => {
@@ -19,7 +20,8 @@ describe("EditComponent", () => {
             data: {
               image: ImageGenerator.image()
             }
-          }
+          },
+          fragment: of("1")
         }
       }
     ]);
