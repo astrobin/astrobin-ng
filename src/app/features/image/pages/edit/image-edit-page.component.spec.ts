@@ -10,6 +10,7 @@ import { ImageEditPageComponent } from "./image-edit-page.component";
 describe("EditComponent", () => {
   let component: ImageEditPageComponent;
   let fixture: ComponentFixture<ImageEditPageComponent>;
+  const image = ImageGenerator.image();
 
   beforeEach(async () => {
     await MockBuilder(ImageEditPageComponent, AppModule).provide([
@@ -18,7 +19,7 @@ describe("EditComponent", () => {
         useValue: {
           snapshot: {
             data: {
-              image: ImageGenerator.image()
+              image
             }
           },
           fragment: of("1")
@@ -35,5 +36,10 @@ describe("EditComponent", () => {
 
   it("should create", () => {
     expect(component).toBeTruthy();
+  });
+
+  it("should initialize data", () => {
+    expect(component.image).toEqual(image);
+    expect(component.model).toEqual(image);
   });
 });
