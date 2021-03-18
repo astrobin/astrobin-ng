@@ -51,15 +51,8 @@ export class FormlyFieldStepperComponent extends FieldType implements OnInit {
 
   onStepChanged(event?: StepChangedArgs) {
     this.router.navigate([], { fragment: "" + (event.step.index + 1) }).then(() => {
-      this.wizardSteps.forEach((step, index) => {
-        if (index < event.step.index) {
-          (step.status as any) = "done";
-        }
-      });
-
-      if (event.step.index > this.highestVisitedStep) {
-        this.highestVisitedStep = event.step.index;
-      }
+      this.markPreviousStepsAsDone(event.step.index);
+      this.setHighestVisitedStep(event.step.index);
     });
   }
 
@@ -94,6 +87,10 @@ export class FormlyFieldStepperComponent extends FieldType implements OnInit {
     return field.fieldGroup.every(f => this.isValid(f));
   }
 
+  isFormValid() {
+    return this.form.valid;
+  }
+
   getState(field: FormlyFieldConfig): STEP_STATE {
     if (!this.isValid(field)) {
       return STEP_STATE.error;
@@ -111,21 +108,29 @@ export class FormlyFieldStepperComponent extends FieldType implements OnInit {
   }
 
   goToPreviousStep(event?: Event) {
-    event.preventDefault();
+    if (event) {
+      event.preventDefault();
+    }
+
     this.ngWizardService.previous();
-    this.windowRef.nativeWindow.scroll({ top: 0, behavior: "smooth" });
+    this.windowRef.scroll({ top: 0, behavior: "smooth" });
   }
 
   goToNextStep(event?: Event) {
-    event.preventDefault();
+    if (event) {
+      event.preventDefault();
+    }
+
     this.ngWizardService.next();
-    this.windowRef.nativeWindow.scroll({ top: 0, behavior: "smooth" });
+    this.windowRef.scroll({ top: 0, behavior: "smooth" });
   }
 
   onSave(event?: Event) {
-    event.preventDefault();
+    if (event) {
+      event.preventDefault();
+    }
 
-    if (!this.form.valid) {
+    if (!this.isFormValid()) {
       this.popNotificationsService.error(this.translateService.instant("The form is incomplete or has errors."), null, {
         timeOut: 10000
       });
@@ -134,6 +139,20 @@ export class FormlyFieldStepperComponent extends FieldType implements OnInit {
 
     if (this.to.onSave !== undefined) {
       this.to.onSave();
+    }
+  }
+
+  public markPreviousStepsAsDone(stepIndex: number) {
+    this.wizardSteps.forEach((step, index) => {
+      if (index < stepIndex) {
+        (step.status as any) = "done";
+      }
+    });
+  }
+
+  public setHighestVisitedStep(stepIndex: number) {
+    if (stepIndex > this.highestVisitedStep) {
+      this.highestVisitedStep = stepIndex;
     }
   }
 }

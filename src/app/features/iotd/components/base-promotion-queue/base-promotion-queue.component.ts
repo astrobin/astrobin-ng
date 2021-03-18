@@ -108,7 +108,7 @@ export abstract class BasePromotionQueueComponent extends BaseComponentDirective
   pageChange(page: number): void {
     this.page = page;
     this.loadQueue(page);
-    this.windowRefService.nativeWindow.scroll({ top: 0, behavior: "smooth" });
+    this.windowRefService.scroll({ top: 0, behavior: "smooth" });
   }
 
   entryExists(imageId: number): boolean {
