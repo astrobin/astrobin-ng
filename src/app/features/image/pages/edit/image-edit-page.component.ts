@@ -56,6 +56,9 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
   @ViewChild("remoteSourceOptionTemplate")
   remoteSourceOptionTemplate: TemplateRef<any>;
 
+  @ViewChild("returnToClassicConfirmationModalTemplate")
+  returnToClassicConfirmationModalTemplate: TemplateRef<any>;
+
   constructor(
     public readonly store$: Store<State>,
     public readonly actions$: Actions,
@@ -127,6 +130,21 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
         this.classicRoutesService.EDIT_IMAGE_GEAR(this.image.hash || "" + this.image.pk) + "?upload"
       );
     });
+  }
+
+  get newImageDataEditorAlert(): string {
+    return this.translate.instant(
+      "Welcome to the new image data editor! In case of problems, please {{0}}let us know{{1}}!",
+      {
+        0: `<a href="${this.classicRoutesService.CONTACT}" target="_blank">`,
+        1: "</a>"
+      }
+    );
+  }
+
+  openClassicEditorRedirectConfirmationModal(): boolean {
+    this.modalService.open(this.returnToClassicConfirmationModalTemplate, { centered: true });
+    return false;
   }
 
   private _getTitleField(): any {

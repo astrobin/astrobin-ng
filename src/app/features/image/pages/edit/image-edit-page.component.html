@@ -1,13 +1,21 @@
 <div class="page has-breadcrumb">
+  <ngb-alert [dismissible]="false" type="info">
+    <div class="row">
+      <div class="col-md-8">
+        <fa-icon icon="info-circle"></fa-icon>
+        <span [innerHTML]="newImageDataEditorAlert" class="col-md-8"></span>
+      </div>
+      <div class="col-md-4 text-md-right">
+        <a href="" (click)="openClassicEditorRedirectConfirmationModal()">
+          [ {{ "Return to the classic editor" | translate }} ]
+        </a>
+      </div>
+    </div>
+  </ngb-alert>
+
   <form (ngSubmit)="onSave()" [formGroup]="form">
     <formly-form [fields]="fields" [form]="form" [model]="model"></formly-form>
   </form>
-
-  <div class="return-to-classic">
-    <button (click)="modalService.open(returnToClassicConfirmationModal, { centered: true })" class="btn btn-link">
-      {{ "Return to the classic editor" | translate }}
-    </button>
-  </div>
 </div>
 
 <ng-template #remoteSourceLabelTemplate let-item="item">
@@ -20,7 +28,7 @@
   <span *ngIf="isSponsor(item.value)" class="remote-affiliate-sponsor">(sponsor)</span>
 </ng-template>
 
-<ng-template #returnToClassicConfirmationModal let-modal>
+<ng-template #returnToClassicConfirmationModalTemplate let-modal>
   <div class="modal-header">
     <h4 class="modal-title">{{ "Are you sure?" | translate }}</h4>
     <button (click)="modal.dismiss()" aria-label="Close" class="close" type="button">
