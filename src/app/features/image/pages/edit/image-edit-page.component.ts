@@ -1,6 +1,6 @@
 import { Component, OnInit, TemplateRef, ViewChild } from "@angular/core";
 import { FormGroup } from "@angular/forms";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { SaveImage } from "@app/store/actions/image.actions";
@@ -60,6 +60,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     public readonly store$: Store<State>,
     public readonly actions$: Actions,
     public readonly route: ActivatedRoute,
+    public readonly router: Router,
     public readonly translate: TranslateService,
     public readonly classicRoutesService: ClassicRoutesService,
     public readonly titleService: TitleService,
@@ -83,7 +84,9 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     this.store$.dispatch(new LoadThumbnail({ id: this.image.pk, revision: "0", alias: ImageAlias.HD }));
 
     this.route.fragment.subscribe((fragment: string) => {
-      if (fragment === "1") {
+      if (!fragment) {
+        this.router.navigate([`/i/${this.image.hash || this.image.pk}/edit`], { fragment: "1" });
+      } else if (fragment === "1") {
         this.store$.dispatch(new ImageEditorSetCropperShown(true));
       }
     });
