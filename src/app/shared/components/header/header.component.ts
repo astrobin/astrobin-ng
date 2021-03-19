@@ -4,6 +4,7 @@ import { Logout } from "@features/account/store/auth.actions";
 import { NotificationsService } from "@features/notifications/services/notifications.service";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Store } from "@ngrx/store";
+import { TranslateService } from "@ngx-translate/core";
 import { LoginModalComponent } from "@shared/components/auth/login-modal/login-modal.component";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { AuthService } from "@shared/services/auth.service";
@@ -46,6 +47,26 @@ export class HeaderComponent extends BaseComponentDirective {
     { code: "tr", label: "Türkçe" }
   ];
 
+  languageCodeDisplays: AvailableLanguageInterface[] = [
+    { code: "en", label: "EN" },
+    { code: "en-GB", label: "EN (GB)" },
+    { code: "de", label: "DE" },
+    { code: "es", label: "ES" },
+    { code: "fr", label: "FR" },
+    { code: "it", label: "IT" },
+    { code: "pt", label: "PT" },
+    { code: "zh-hans", label: "ZH (CN)" },
+    { code: "ar", label: "AR" },
+    { code: "el", label: "EL" },
+    { code: "fi", label: "FI" },
+    { code: "ja", label: "JA" },
+    { code: "nl", label: "NL" },
+    { code: "pl", label: "PL" },
+    { code: "ru", label: "RU" },
+    { code: "sq", label: "SQ" },
+    { code: "tr", label: "TR" }
+  ];
+
   constructor(
     public modalService: NgbModal,
     public classicRoutes: ClassicRoutesService,
@@ -53,9 +74,19 @@ export class HeaderComponent extends BaseComponentDirective {
     public notificationsService: NotificationsService,
     public loadingService: LoadingService,
     public windowRef: WindowRefService,
-    public store: Store<State>
+    public store: Store<State>,
+    public translateService: TranslateService
   ) {
     super();
+  }
+
+  get currentLanguageCodeDisplay(): string {
+    let display = this.languageCodeDisplays.filter(item => item.code === this.translateService.currentLang || "en");
+    if (!display) {
+      display = this.languageCodeDisplays.filter(item => item.code === "en");
+    }
+
+    return display[0].label;
   }
 
   getSetLanguageUrl(languageCode: string): string {
