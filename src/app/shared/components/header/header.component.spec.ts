@@ -20,6 +20,7 @@ describe("HeaderComponent", () => {
   beforeEach(() => {
     store = TestBed.inject(MockStore);
     component = MockRender(HeaderComponent).point.componentInstance;
+    component.translateService.currentLang = "en";
   });
 
   it("should create", () => {
