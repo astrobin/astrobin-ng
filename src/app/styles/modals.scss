@@ -5,6 +5,7 @@
   .modal-content {
     border-radius: 0.4rem;
     box-shadow: 0 0 100px rgba(0, 0, 0, .5);
+    background: url("/assets/images/dark-background.png") repeat;
   }
   .modal-header {
     @include darkest-background-texture;
