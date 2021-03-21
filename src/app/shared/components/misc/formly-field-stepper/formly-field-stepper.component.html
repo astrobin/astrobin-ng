@@ -1,7 +1,8 @@
-<ng-wizard #wizard (stepChanged)="onStepChanged($event)" [config]="{selected: currentStepIndex}">
+<ng-wizard #wizard (stepChanged)="onStepChanged($event)" [attr.id]="field.id" [config]="{ selected: currentStepIndex }">
   <ng-wizard-step
     #wizardSteps
     *ngFor="let step of field?.fieldGroup; let index = index; let last = last"
+    [attr.id]="step.id"
     [class.error]="isStepErrored(index)"
     [class.visited]="highestVisitedStep > index"
     [description]="step.templateOptions.label"

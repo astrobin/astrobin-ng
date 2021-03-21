@@ -1,0 +1,16 @@
+{
+  "count": 1,
+  "next": null,
+  "previous": null,
+  "results": [
+    {
+      "code": "CS",
+      "name": "ChileScope",
+      "url": "www.chilescope.com",
+      "affiliationStart": "2021-01-20T20:03:31",
+      "affiliationExpiration": "2022-01-20",
+      "created": "2021-01-20T20:03:36.769083",
+      "updated": "2021-01-20T21:08:07.761213"
+    }
+  ]
+}

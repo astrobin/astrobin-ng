@@ -151,6 +151,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     return {
       key: "title",
       type: "input",
+      id: "image-title-field",
       templateOptions: {
         label: this.translate.instant("Title"),
         required: true
@@ -162,6 +163,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     return {
       key: "description",
       type: "textarea",
+      id: "image-description-field",
       templateOptions: {
         label: this.translate.instant("Description"),
         description: this.translate.instant("HTML tags are allowed."),
@@ -175,6 +177,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     return {
       key: "link",
       type: "input",
+      id: "image-link-field",
       templateOptions: {
         label: this.translate.instant("Link"),
         description: this.translate.instant(
@@ -193,6 +196,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     return {
       key: "linkToFits",
       type: "input",
+      id: "image-link-to-fits-field",
       templateOptions: {
         label: this.translate.instant("Link to TIFF/FITS"),
         description: this.translate.instant(
@@ -213,6 +217,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     return {
       key: "acquisitionType",
       type: "ng-select",
+      id: "image-acquisition-type-field",
       templateOptions: {
         required: true,
         label: this.translate.instant("Acquisition type"),
@@ -246,6 +251,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     return {
       key: "subjectType",
       type: "ng-select",
+      id: "image-subject-type-field",
       templateOptions: {
         required: true,
         label: this.translate.instant("Subject type"),
@@ -275,6 +281,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     return {
       key: "solarSystemMainSubject",
       type: "ng-select",
+      id: "image-solar-system-main-subject-field",
       hideExpression: () => this.model.subjectType !== SubjectType.SOLAR_SYSTEM,
       expressionProperties: {
         "templateOptions.required": "model.subjectType === 'SOLAR_SYSTEM'"
@@ -325,6 +332,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     return {
       key: "dataSource",
       type: "ng-select",
+      id: "image-data-source-field",
       templateOptions: {
         required: true,
         label: this.translate.instant("Data source"),
@@ -393,6 +401,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     return {
       key: "remoteSource",
       type: "ng-select",
+      id: "image-remote-source-field",
       hideExpression: () => [DataSource.OWN_REMOTE, DataSource.AMATEUR_HOSTING].indexOf(this.model.dataSource) === -1,
       expressionProperties: {
         "templateOptions.required": "model.dataSource === 'OWN_REMOTE' || model.dataSource === 'AMATEUR_HOSTING'"
@@ -429,6 +438,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     return {
       key: "partOfGroupSet",
       type: "ng-select",
+      id: "image-groups-field",
       hideExpression: () => this.image.isWip,
       templateOptions: {
         multiple: true,
@@ -455,6 +465,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     return {
       key: "squareCropping",
       type: "image-cropper",
+      id: "image-cropper-field",
       templateOptions: {
         required: true,
         description: this.translate.instant("Select an area of the image to be used as thumbnail in your gallery."),
@@ -474,6 +485,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     return {
       key: "sharpenThumbnails",
       type: "checkbox",
+      id: "image-sharpen-thumbnails-field",
       templateOptions: {
         label: this.translate.instant("Sharpen thumbnails"),
         description: this.translate.instant(
@@ -488,6 +500,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     return {
       key: "watermark",
       type: "checkbox",
+      id: "image-watermark-field",
       templateOptions: {
         label: this.translate.instant("Apply watermark to image"),
         description: this.translate.instant(
@@ -501,6 +514,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     return {
       key: "watermarkText",
       type: "input",
+      id: "image-watermark-text-field",
       templateOptions: {
         label: this.translate.instant("Text")
       }
@@ -511,6 +525,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     return {
       key: "watermarkPosition",
       type: "ng-select",
+      id: "image-watermark-position-field",
       templateOptions: {
         label: this.translate.instant("Position"),
         options: [
@@ -551,6 +566,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     return {
       key: "watermarkSize",
       type: "ng-select",
+      id: "image-watermark-size-field",
       templateOptions: {
         label: this.translate.instant("Size"),
         description: this.translate.instant("The final font size will depend on how long your watermark is."),
@@ -576,6 +592,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     return {
       key: "watermarkOpacity",
       type: "input",
+      id: "image-watermark-opacity-field",
       templateOptions: {
         type: "number",
         min: 0,
@@ -592,6 +609,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     return {
       key: "mouseHoverImage",
       type: "ng-select",
+      id: "image-mouse-hover-image-field",
       templateOptions: {
         required: true,
         label: this.translate.instant("Mouse hover image"),
@@ -621,6 +639,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     return {
       key: "allowComments",
       type: "checkbox",
+      id: "image-allow-comments-field",
       templateOptions: {
         label: this.translate.instant("Allow comments")
       }
@@ -631,6 +650,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     this.fields = [
       {
         type: "stepper",
+        id: "image-stepper-field",
         templateOptions: {
           image: this.image,
           onSave: () => this.onSave(),
@@ -638,10 +658,12 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
         },
         fieldGroup: [
           {
+            id: "image-stepper-thumbnail",
             templateOptions: { label: this.translate.instant("Thumbnail") },
             fieldGroup: [this._getThumbnailField(), this._getSharpenThumbnailsField()]
           },
           {
+            id: "image-stepper-watermark",
             templateOptions: { label: this.translate.instant("Watermark") },
             fieldGroup: [
               this._getWatermarkCheckboxField(),
@@ -652,6 +674,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
             ]
           },
           {
+            id: "image-stepper-basic-information",
             templateOptions: { label: this.translate.instant("Basic information") },
             fieldGroup: [
               this._getTitleField(),
@@ -661,6 +684,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
             ]
           },
           {
+            id: "image-stepper-content",
             templateOptions: { label: this.translate.instant("Content") },
             fieldGroup: [
               this._getAcquisitionTypeField(),
@@ -672,6 +696,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
             ]
           },
           {
+            id: "image-stepper-settings",
             templateOptions: { label: this.translate.instant("Settings") },
             fieldGroup: [this._getMouseHoverImageField(), this._getAllowCommentsField()]
           }

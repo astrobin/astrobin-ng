@@ -1,4 +1,4 @@
-context("image", () => {
+context("Image component", () => {
   beforeEach(() => {
     cy.server();
     cy.setupInitializationRoutes();

@@ -35,7 +35,7 @@ function urlValidator(control: FormControl, field: FormlyFieldConfig): Validatio
     "^" +
       // protocol identifier (optional)
       // short syntax // still required
-      "(?:(?:(?:https?|ftp):)?\\/\\/)" +
+      "(?:(?:(?:https?|ftps?):)?\\/\\/)" +
       // user:pass BasicAuth (optional)
       "(?:\\S+(?::\\S*)?@)?" +
       "(?:" +

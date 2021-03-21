@@ -1,0 +1,75 @@
+{
+  "count": 3,
+  "next": null,
+  "previous": null,
+  "results": [
+    {
+      "id": 1,
+      "dateCreated": "2020-12-24T18:42:38.101293",
+      "dateUpdated": "2021-02-09T11:28:37.335741",
+      "name": "First test group",
+      "description": "",
+      "category": "INTERNET_COMMUNITY",
+      "public": true,
+      "moderated": false,
+      "autosubmission": false,
+      "creator": 1,
+      "owner": 1,
+      "moderators": [],
+      "members": [
+        1
+      ],
+      "invitedUsers": [],
+      "joinRequests": [],
+      "images": [
+        137
+      ]
+    },
+    {
+      "id": 2,
+      "dateCreated": "2021-02-09T11:38:51.055505",
+      "dateUpdated": "2021-02-09T11:38:51.227141",
+      "name": "Second test group",
+      "description": "My description",
+      "category": "PROFESSIONAL_NETWORK",
+      "public": true,
+      "moderated": false,
+      "autosubmission": false,
+      "creator": 1,
+      "owner": 1,
+      "moderators": [
+        1
+      ],
+      "members": [
+        1
+      ],
+      "invitedUsers": [],
+      "joinRequests": [],
+      "images": [
+      ]
+    },
+    {
+      "id": 3,
+      "dateCreated": "2021-02-09T11:56:32.253311",
+      "dateUpdated": "2021-03-15T21:54:47.418067",
+      "name": "Third test group",
+      "description": "",
+      "category": "GEOGRAPHICAL_AREA",
+      "public": false,
+      "moderated": false,
+      "autosubmission": false,
+      "creator": 1,
+      "owner": 1,
+      "moderators": [
+        1
+      ],
+      "members": [
+        1
+      ],
+      "invitedUsers": [],
+      "joinRequests": [],
+      "images": [
+      ]
+    }
+  ]
+}

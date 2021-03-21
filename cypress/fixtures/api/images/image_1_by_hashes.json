@@ -1,0 +1,44 @@
+{
+  "count": 1,
+  "next": null,
+  "previous": null,
+  "results": [
+    {
+      "user": 1,
+      "pk": 1,
+      "hash": "abc123",
+      "title": "Test image",
+      "isWip": false,
+      "skipNotifications": false,
+      "w": 4000,
+      "h": 4000,
+      "imagingTelescopes": [],
+      "imagingCameras": [],
+      "published": "2021-03-15T21:57:28.994031",
+      "license": 4,
+      "description": "This is a test",
+      "link": "https://www.example.com/1/",
+      "linkToFits": "ftps://www.example.com/file.fits",
+      "acquisitionType": "REGULAR",
+      "subjectType": "DEEP_SKY",
+      "solarSystemMainSubject": null,
+      "dataSource": "BACKYARD",
+      "remoteSource": null,
+      "partOfGroupSet": [
+        1,
+        2,
+        3
+      ],
+      "mouseHoverImage": "INVERTED",
+      "allowComments": true,
+      "uploaderInProgress": null,
+      "squareCropping": "100, 100, 3900, 3900",
+      "watermark": true,
+      "watermarkText": "Copyright astrobin-dev",
+      "watermarkPosition": 4,
+      "watermarkSize": "M",
+      "watermarkOpacity": 50,
+      "sharpenThumbnails": true
+    }
+  ]
+}
