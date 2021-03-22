@@ -8,7 +8,9 @@ export const selectImages = createSelector(selectApp, (state: AppState): ImageIn
 export const selectImage = createSelector(
   selectImages,
   (images: ImageInterface[], id: number | string): ImageInterface => {
-    const matching = images.filter(image => image.pk === id || image.hash === id);
+    const matching = images.filter(
+      image => (!isNaN(Number(id)) && image.pk === +id) || (isNaN(Number(id)) && image.hash === id)
+    );
     return matching.length > 0 ? matching[0] : null;
   }
 );

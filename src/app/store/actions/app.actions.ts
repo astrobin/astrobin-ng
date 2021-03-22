@@ -38,6 +38,7 @@ export enum AppActionTypes {
 
   LOAD_IMAGE = "[App] Load image",
   LOAD_IMAGE_SUCCESS = "[App] Load image success",
+  LOAD_IMAGE_FAILURE = "[App] Load image failure",
 
   SET_IMAGE = "[App] Set image",
 

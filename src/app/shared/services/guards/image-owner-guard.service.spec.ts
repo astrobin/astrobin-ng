@@ -6,31 +6,32 @@ import { State } from "@app/store/state";
 import { AuthGenerator } from "@features/account/store/auth.generator";
 import { MockStore, provideMockStore } from "@ngrx/store/testing";
 import { MockBuilder, MockInstance, MockReset, ngMocks } from "ng-mocks";
-import { of, throwError } from "rxjs";
+import { of, ReplaySubject } from "rxjs";
 import { ImageGenerator } from "../../generators/image.generator";
 import { UserGenerator } from "../../generators/user.generator";
 import { ImageOwnerGuardService } from "./image-owner-guard.service";
+import { provideMockActions } from "@ngrx/effects/testing";
+import { AppActionTypes } from "@app/store/actions/app.actions";
 
 describe("ImageOwnerGuardService", () => {
   let service: ImageOwnerGuardService;
   let route: ActivatedRouteSnapshot;
   let store: MockStore;
+  const actions: ReplaySubject<any> = new ReplaySubject<any>();
+
   const initialState: State = {
     app: AppGenerator.default(),
     auth: AuthGenerator.default()
   };
-  beforeEach(() =>
-    MockInstance(ActivatedRouteSnapshot, instance => {
-      ngMocks.stub(instance, "params", "get");
-    })
-  );
-
-  afterEach(MockReset);
 
   beforeEach(async () => {
+    MockInstance(ActivatedRouteSnapshot, instance => {
+      ngMocks.stub(instance, "params", "get");
+    });
+
     await MockBuilder(ImageOwnerGuardService, AppModule)
       .mock(ActivatedRouteSnapshot)
-      .provide(provideMockStore({ initialState }));
+      .provide([provideMockStore({ initialState }), provideMockActions(() => actions)]);
 
     store = TestBed.inject(MockStore);
     service = TestBed.inject(ImageOwnerGuardService);
@@ -39,6 +40,8 @@ describe("ImageOwnerGuardService", () => {
       () => new Promise<boolean>(resolve => resolve())
     );
   });
+
+  afterEach(MockReset);
 
   it("should be created", () => {
     expect(service).toBeTruthy();
@@ -54,15 +57,18 @@ describe("ImageOwnerGuardService", () => {
   });
 
   it("should not pass if the image doesn't exist", done => {
-    const error = {
-      status: 404,
-      message: "Not found"
-    };
+    const state = { ...initialState };
+    state.auth.user = UserGenerator.user();
+    state.app.images = [];
+    store.setState(state);
 
+    route = TestBed.inject(ActivatedRouteSnapshot);
+    jest.spyOn(route, "params", "get").mockReturnValue({ imageId: 1 });
     jest.spyOn(service.authService, "isAuthenticated").mockReturnValue(of(true));
-    jest.spyOn(service.imageApiService, "getImage").mockReturnValue(throwError(error));
 
-    service.canActivate(null, { url: "/foo" } as RouterStateSnapshot).subscribe(result => {
+    actions.next({ type: AppActionTypes.LOAD_IMAGE_FAILURE });
+
+    service.canActivate(route, { url: "/foo" } as RouterStateSnapshot).subscribe(result => {
       expect(result).toBe(false);
       done();
     });
@@ -75,9 +81,23 @@ describe("ImageOwnerGuardService", () => {
     const image = ImageGenerator.image();
     image.user = 100;
 
-    const state = { ...initialState };
-    state.auth.user = user;
-    store.setState(state);
+    store.setState({
+      ...initialState,
+      ...{
+        auth: {
+          ...initialState.auth,
+          ...{
+            user
+          }
+        },
+        app: {
+          ...initialState.app,
+          ...{
+            images: [image]
+          }
+        }
+      }
+    });
 
     route = TestBed.inject(ActivatedRouteSnapshot);
     jest.spyOn(route, "params", "get").mockReturnValue({ imageId: 1 });
@@ -90,16 +110,30 @@ describe("ImageOwnerGuardService", () => {
     });
   });
 
-  it("should pass if user is not the owner of the image", done => {
+  it("should pass if user is the owner of the image", done => {
     const user = UserGenerator.user();
     user.id = 99;
 
     const image = ImageGenerator.image();
     image.user = 99;
 
-    const state = { ...initialState };
-    state.auth.user = user;
-    store.setState(state);
+    store.setState({
+      ...initialState,
+      ...{
+        auth: {
+          ...initialState.auth,
+          ...{
+            user
+          }
+        },
+        app: {
+          ...initialState.app,
+          ...{
+            images: [image]
+          }
+        }
+      }
+    });
 
     route = TestBed.inject(ActivatedRouteSnapshot);
     jest.spyOn(route, "params", "get").mockReturnValue({ imageId: 1 });
