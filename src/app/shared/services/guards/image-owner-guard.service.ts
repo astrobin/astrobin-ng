@@ -48,7 +48,7 @@ export class ImageOwnerGuardService extends BaseService implements CanActivate {
         this.store
           .pipe(
             switchMap(storeState =>
-              this.imageApiService.getImage(+route.params["imageId"]).pipe(map(image => ({ storeState, image })))
+              this.imageApiService.getImage(route.params["imageId"]).pipe(map(image => ({ storeState, image })))
             ),
             catchError(err => {
               onError(observer, "/404");
