@@ -24,6 +24,15 @@ describe("FormlyFieldStepperComponent", () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(FormlyFieldStepperComponent);
     component = fixture.componentInstance;
+    component.field = {
+      fieldGroup: [
+        {
+          id: "1",
+          templateOptions: { label: "1" },
+          fieldGroup: []
+        }
+      ]
+    };
     fixture.detectChanges();
   });
 
@@ -53,6 +62,12 @@ describe("FormlyFieldStepperComponent", () => {
 
   describe("getStep", () => {
     it("should work when there are no steps", () => {
+      component.field = {
+        fieldGroup: []
+      };
+
+      fixture.detectChanges();
+
       expect(component.getStep(0)).toBeUndefined();
     });
 
