@@ -1,4 +1,5 @@
 import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
+import { WatermarkPositionOptions, WatermarkSizeOptions } from "@shared/interfaces/image.interface";
 
 export class UserProfileGenerator {
   static userProfile(): UserProfileInterface {
@@ -26,8 +27,8 @@ export class UserProfileGenerator {
       defaultLicense: 0,
       defaultWatermark: false,
       defaultWatermarkText: "Copyright Foo Bar",
-      defaultWatermarkSize: "M",
-      defaultWatermarkPosition: 0,
+      defaultWatermarkSize: WatermarkSizeOptions.MEDIUM,
+      defaultWatermarkPosition: WatermarkPositionOptions.CENTER,
       defaultWatermarkOpacity: 0.5,
       acceptTos: true,
       openNotificationsInNewTab: null,

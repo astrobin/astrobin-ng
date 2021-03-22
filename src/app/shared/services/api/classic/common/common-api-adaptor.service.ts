@@ -4,6 +4,7 @@ import { PermissionInterface } from "@shared/interfaces/permission.interface";
 import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { BaseService } from "@shared/services/base.service";
+import { WatermarkPositionOptions, WatermarkSizeOptions } from "@shared/interfaces/image.interface";
 
 export interface BackendPermissionInterface {
   id: number;
@@ -54,8 +55,8 @@ export interface BackendUserProfileInterface {
   default_license: number;
   default_watermark_text: string;
   default_watermark: boolean;
-  default_watermark_size: string;
-  default_watermark_position: number;
+  default_watermark_size: WatermarkSizeOptions;
+  default_watermark_position: WatermarkPositionOptions;
   default_watermark_opacity: number;
   accept_tos: boolean;
   open_notifications_in_new_tab: boolean | null;

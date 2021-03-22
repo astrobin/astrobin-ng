@@ -7,7 +7,7 @@ import { SaveImage } from "@app/store/actions/image.actions";
 import { LoadThumbnail } from "@app/store/actions/thumbnail.actions";
 import { selectThumbnail } from "@app/store/selectors/app/thumbnail.selectors";
 import { State } from "@app/store/state";
-import { selectCurrentUser } from "@features/account/store/auth.selectors";
+import { selectCurrentUser, selectCurrentUserProfile } from "@features/account/store/auth.selectors";
 import { ImageEditorSetCropperShown } from "@features/image/store/image.actions";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Actions, ofType } from "@ngrx/effects";
@@ -35,7 +35,7 @@ import { LoadingService } from "@shared/services/loading.service";
 import { TitleService } from "@shared/services/title/title.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
-import { catchError, map, switchMap } from "rxjs/operators";
+import { catchError, filter, map, switchMap, take } from "rxjs/operators";
 import { retryWithDelay } from "rxjs-boost/lib/operators";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { EMPTY } from "rxjs";
@@ -100,6 +100,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     this.titleService.setTitle("Edit image");
 
     this._initBreadcrumb();
+    this._initWatermarkSettings();
 
     this.store$.dispatch(new LoadThumbnail({ id: this.image.pk, revision: "0", alias: ImageAlias.HD }));
 
@@ -757,5 +758,23 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
         ]
       })
     );
+  }
+
+  private _initWatermarkSettings(): void {
+    if (!this.image.watermarkText) {
+      this.store$
+        .select(selectCurrentUserProfile)
+        .pipe(
+          filter(userProfile => !!userProfile),
+          take(1)
+        )
+        .subscribe(userProfile => {
+          this.model.watermark = userProfile.defaultWatermark;
+          this.model.watermarkText = userProfile.defaultWatermarkText;
+          this.model.watermarkPosition = userProfile.defaultWatermarkPosition;
+          this.model.watermarkSize = userProfile.defaultWatermarkSize;
+          this.model.watermarkOpacity = userProfile.defaultWatermarkOpacity;
+        });
+    }
   }
 }
