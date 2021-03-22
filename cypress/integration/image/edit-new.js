@@ -1,4 +1,4 @@
-context("Image edit", () => {
+context("Image edit (new)", () => {
   beforeEach(() => {
     cy.server();
     cy.setupInitializationRoutes();
