@@ -3,7 +3,7 @@
   [bindValue]="'value'"
   [closeOnSelect]="!to.multiple"
   [formControl]="formControl"
-  [hideSelected]="true"
+  [hideSelected]="to.multiple"
   [items]="to.options | formlySelectOptions: field | async"
   [multiple]="to.multiple"
   groupBy="group"
