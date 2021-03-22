@@ -14,6 +14,10 @@ context("Image edit (existing)", () => {
     cy.route("GET", "**/api/v2/groups/group/?member=1", "fixture:api/groups/groups.json").as("getGroups");
   });
 
+  afterEach(() => {
+    cy.wait(250);
+  });
+
   it("should navigate to the edit page", () => {
     cy.login();
     cy.visitPage("/i/abc123/edit");

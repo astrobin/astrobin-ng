@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import { All, AppActionTypes } from "@app/store/actions/app.actions";
 import {
+  LoadImageFailure,
   LoadImagesSuccess,
   LoadImageSuccess,
   SaveImageFailure,
@@ -19,7 +20,7 @@ import { catchError, map, mergeMap, tap } from "rxjs/operators";
 
 @Injectable()
 export class ImageEffects {
-  LoadImage: Observable<LoadImageSuccess> = createEffect(() =>
+  LoadImage: Observable<LoadImageSuccess | LoadImageFailure> = createEffect(() =>
     this.actions$.pipe(
       ofType(AppActionTypes.LOAD_IMAGE),
       mergeMap(action =>
@@ -29,7 +30,7 @@ export class ImageEffects {
               ? of(imageFromStore).pipe(map(image => new LoadImageSuccess(image)))
               : this.imageApiService.getImage(action.payload).pipe(
                   map(image => new LoadImageSuccess(image)),
-                  catchError(() => EMPTY)
+                  catchError(error => of(new LoadImageFailure(error)))
                 )
           )
         )

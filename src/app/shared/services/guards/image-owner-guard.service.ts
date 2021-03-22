@@ -6,14 +6,20 @@ import { Store } from "@ngrx/store";
 import { ImageApiService } from "@shared/services/api/classic/images/image/image-api.service";
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
-import { EMPTY, Observable, Observer } from "rxjs";
-import { catchError, map, switchMap } from "rxjs/operators";
+import { combineLatest, EMPTY, forkJoin, Observable, Observer } from "rxjs";
+import { catchError, filter, map, switchMap, take, tap } from "rxjs/operators";
 import { AuthService } from "../auth.service";
+import { selectImage } from "@app/store/selectors/app/image.selectors";
+import { selectCurrentUser } from "@features/account/store/auth.selectors";
+import { LoadImage } from "@app/store/actions/image.actions";
+import { Actions, ofType } from "@ngrx/effects";
+import { All, AppActionTypes } from "@app/store/actions/app.actions";
 
 @Injectable()
 export class ImageOwnerGuardService extends BaseService implements CanActivate {
   constructor(
-    public readonly store: Store<State>,
+    public readonly store$: Store<State>,
+    public readonly actions$: Actions<All>,
     public loadingService: LoadingService,
     public authService: AuthService,
     public imageApiService: ImageApiService,
@@ -45,17 +51,15 @@ export class ImageOwnerGuardService extends BaseService implements CanActivate {
           return;
         }
 
-        this.store
-          .pipe(
-            switchMap(storeState =>
-              this.imageApiService.getImage(+route.params["imageId"]).pipe(map(image => ({ storeState, image })))
-            ),
-            catchError(err => {
-              onError(observer, "/404");
-              return EMPTY;
-            }),
-            map(({ storeState, image }) => image.user === storeState.auth.user.id)
-          )
+        const imageId = route.params["imageId"];
+
+        this.store$.dispatch(new LoadImage(imageId));
+
+        combineLatest([
+          this.store$.select(selectCurrentUser).pipe(map(user => user.id)),
+          this.store$.select(selectImage, imageId).pipe(filter(image => !!image))
+        ])
+          .pipe(map(result => result[0] === result[1].user))
           .subscribe(canActivate => {
             if (canActivate) {
               onSuccess(observer);
@@ -63,6 +67,10 @@ export class ImageOwnerGuardService extends BaseService implements CanActivate {
               onError(observer, "/permission-denied");
             }
           });
+
+        this.actions$.pipe(ofType(AppActionTypes.LOAD_IMAGE_FAILURE)).subscribe(error => {
+          onError(observer, "/404");
+        });
       });
     });
   }

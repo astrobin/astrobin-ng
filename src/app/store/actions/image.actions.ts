@@ -4,6 +4,7 @@ import { AppActionTypes } from "@app/store/actions/app.actions";
 import { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
 import { ImageInterface } from "@shared/interfaces/image.interface";
 import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
+import { HttpErrorResponse } from "@angular/common/http";
 
 export class LoadImage implements PayloadActionInterface {
   readonly type = AppActionTypes.LOAD_IMAGE;
@@ -15,6 +16,12 @@ export class LoadImageSuccess implements PayloadActionInterface {
   readonly type = AppActionTypes.LOAD_IMAGE_SUCCESS;
 
   constructor(public payload: ImageInterface) {}
+}
+
+export class LoadImageFailure implements PayloadActionInterface {
+  readonly type = AppActionTypes.LOAD_IMAGE_FAILURE;
+
+  constructor(public payload: HttpErrorResponse) {}
 }
 
 export class SetImage implements PayloadActionInterface {
