@@ -51,20 +51,6 @@ export class FormlyFieldImageCropperComponent extends FieldType {
       });
   }
 
-  getFormat(url: string): OutputFormat {
-    const ext = this.utilsService.fileExtension(url);
-
-    if (["jpg", "jpeg"].indexOf(ext.toLowerCase()) > -1) {
-      return "jpeg";
-    }
-
-    if (ext === "png") {
-      return "png";
-    }
-
-    throw new Error("File type not supported by image cropper");
-  }
-
   onCropperReady(dimensions: Dimensions) {
     const image = this.to.image;
 
