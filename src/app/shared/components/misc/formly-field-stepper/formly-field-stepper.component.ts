@@ -87,10 +87,6 @@ export class FormlyFieldStepperComponent extends FieldType implements OnInit {
     return field.fieldGroup.every(f => this.isValid(f));
   }
 
-  isFormValid() {
-    return this.form.valid;
-  }
-
   getState(field: FormlyFieldConfig): STEP_STATE {
     if (!this.isValid(field)) {
       return STEP_STATE.error;
@@ -123,27 +119,6 @@ export class FormlyFieldStepperComponent extends FieldType implements OnInit {
 
     this.ngWizardService.next();
     this.windowRef.scroll({ top: 0, behavior: "smooth" });
-  }
-
-  onSave(event?: Event) {
-    if (event) {
-      event.preventDefault();
-    }
-
-    if (!this.isFormValid()) {
-      this.popNotificationsService.error(
-        this.translateService.instant("Please check that all required fields have been filled at every step."),
-        "The form is incomplete or has errors.",
-        {
-          timeOut: 10000
-        }
-      );
-      return;
-    }
-
-    if (this.to.onSave !== undefined) {
-      this.to.onSave();
-    }
   }
 
   public markPreviousStepsAsDone(stepIndex: number) {

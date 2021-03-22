@@ -21,14 +21,10 @@
         {{ "Next" | translate }}
       </button>
 
-      <button
-        (click)="onSave($event)"
-        *ngIf="isLastStep(index)"
-        [class.loading]="loadingService.isLoading()"
-        class="btn btn-primary"
-      >
-        {{ to.saveButtonLabel }}
-      </button>
+      <ng-container *ngIf="to.buttonsTemplate" [ngTemplateOutletContext]="{
+        isLastStep: isLastStep(index)
+      }" [ngTemplateOutlet]="to.buttonsTemplate"></ng-container>
     </div>
+
   </ng-wizard-step>
 </ng-wizard>

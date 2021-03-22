@@ -147,17 +147,6 @@ describe("FormlyFieldStepperComponent", () => {
     });
   });
 
-  describe("onSave", () => {
-    it("should show error notification if invalid", () => {
-      jest.spyOn(component.popNotificationsService, "error");
-      jest.spyOn(component, "isFormValid").mockReturnValue(false);
-
-      component.onSave();
-
-      expect(component.popNotificationsService.error).toHaveBeenCalled();
-    });
-  });
-
   describe("setHighestVisitedStep", () => {
     it("should be 0 initially", () => {
       expect(component.highestVisitedStep).toBe(0);

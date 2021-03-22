@@ -1,19 +1,19 @@
 <div class="page has-breadcrumb">
-  <ngb-alert [dismissible]="false" type="info" id="new-editor-alert">
+  <ngb-alert [dismissible]="false" id="new-editor-alert" type="info">
     <div class="row">
       <div class="col-md-8">
         <fa-icon icon="info-circle"></fa-icon>
         <span [innerHTML]="newImageDataEditorAlert" class="col-md-8"></span>
       </div>
       <div class="col-md-4 text-md-right">
-        <a href="" (click)="openClassicEditorRedirectConfirmationModal()">
+        <a (click)="openClassicEditorRedirectConfirmationModal()" href="">
           [ {{ "Return to the classic editor" | translate }} ]
         </a>
       </div>
     </div>
   </ngb-alert>
 
-  <form (ngSubmit)="onSave()" [formGroup]="form">
+  <form [formGroup]="form">
     <formly-form [fields]="fields" [form]="form" [model]="model"></formly-form>
   </form>
 </div>
@@ -52,5 +52,36 @@
     >
       {{ "Proceed" | translate }}
     </button>
+  </div>
+</ng-template>
+
+<ng-template #stepperButtonsTemplate let-isLastStep="isLastStep">
+  <div class="d-inline-block" ngbDropdown>
+    <button
+      *ngIf="isLastStep"
+      [class.loading]="loadingService.isLoading()"
+      class="btn btn-primary"
+      id="save-dropdown"
+      ngbDropdownToggle
+    >
+      {{ "Save" | translate }}
+    </button>
+    <div aria-labelledby="save-dropdown" ngbDropdownMenu>
+      <button
+        (click)="
+          onSave($event, classicRoutesService.EDIT_IMAGE_GEAR(this.image.hash || '' + this.image.pk) + '?upload')
+        "
+        class="dropdown-item"
+      >
+        {{ "Save and proceed to gear selection" | translate }}
+      </button>
+
+      <button
+        (click)="onSave($event, classicRoutesService.IMAGE(this.image.hash || '' + this.image.pk))"
+        class="dropdown-item"
+      >
+        {{ "Save and proceed to image" | translate }}
+      </button>
+    </div>
   </div>
 </ng-template>

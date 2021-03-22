@@ -62,12 +62,15 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
   @ViewChild("returnToClassicConfirmationModalTemplate")
   returnToClassicConfirmationModalTemplate: TemplateRef<any>;
 
+  @ViewChild("stepperButtonsTemplate")
+  stepperButtonsTemplate: TemplateRef<any>;
+
   constructor(
     public readonly store$: Store<State>,
     public readonly actions$: Actions,
     public readonly route: ActivatedRoute,
     public readonly router: Router,
-    public readonly translate: TranslateService,
+    public readonly translateService: TranslateService,
     public readonly classicRoutesService: ClassicRoutesService,
     public readonly titleService: TitleService,
     public readonly remoteSourceAffiliateApiService: RemoteSourceAffiliateApiService,
@@ -76,13 +79,13 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     public readonly modalService: NgbModal,
     public readonly utilsService: UtilsService,
     public readonly windowRefService: WindowRefService,
-    public readonly popNotificationService: PopNotificationsService
+    public readonly popNotificationsService: PopNotificationsService
   ) {
     super();
   }
 
   get newImageDataEditorAlert(): string {
-    return this.translate.instant(
+    return this.translateService.instant(
       "Welcome to the new image data editor! In case of problems, please {{0}}let us know{{1}}!",
       {
         0: `<a href="${this.classicRoutesService.CONTACT}" target="_blank">`,
@@ -135,14 +138,26 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     );
   }
 
-  onSave() {
+  onSave(event: Event, next: string) {
+    if (event) {
+      event.preventDefault();
+    }
+
+    if (!this.form.valid) {
+      this.popNotificationsService.error(
+        this.translateService.instant("Please check that all required fields have been filled at every step."),
+        "The form is incomplete or has errors.",
+        {
+          timeOut: 10000
+        }
+      );
+      return;
+    }
+
     this.store$.dispatch(new SaveImage({ pk: this.image.pk, data: { ...this.image, ...this.form.value } }));
     this.actions$.pipe(ofType(AppActionTypes.SAVE_IMAGE_SUCCESS)).subscribe(() => {
       this.loadingService.setLoading(true);
-      this.utilsService.openLink(
-        this.windowRefService.nativeWindow.document,
-        this.classicRoutesService.EDIT_IMAGE_GEAR(this.image.hash || "" + this.image.pk) + "?upload"
-      );
+      this.utilsService.openLink(this.windowRefService.nativeWindow.document, next);
     });
   }
 
@@ -157,7 +172,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
       type: "input",
       id: "image-title-field",
       templateOptions: {
-        label: this.translate.instant("Title"),
+        label: this.translateService.instant("Title"),
         required: true
       }
     };
@@ -169,8 +184,8 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
       type: "textarea",
       id: "image-description-field",
       templateOptions: {
-        label: this.translate.instant("Description"),
-        description: this.translate.instant("HTML tags are allowed."),
+        label: this.translateService.instant("Description"),
+        description: this.translateService.instant("HTML tags are allowed."),
         required: false,
         rows: 10
       }
@@ -183,11 +198,11 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
       type: "input",
       id: "image-link-field",
       templateOptions: {
-        label: this.translate.instant("Link"),
-        description: this.translate.instant(
+        label: this.translateService.instant("Link"),
+        description: this.translateService.instant(
           "If you're hosting a copy of this image on your website, put the address here."
         ),
-        placeholder: this.translate.instant("e.g.") + " https://www.example.com/my-page.html",
+        placeholder: this.translateService.instant("e.g.") + " https://www.example.com/my-page.html",
         required: false
       },
       validators: {
@@ -202,13 +217,13 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
       type: "input",
       id: "image-link-to-fits-field",
       templateOptions: {
-        label: this.translate.instant("Link to TIFF/FITS"),
-        description: this.translate.instant(
+        label: this.translateService.instant("Link to TIFF/FITS"),
+        description: this.translateService.instant(
           "If you want to share the TIFF or FITS file of your image, put a link to the file here. " +
             "Unfortunately, AstroBin cannot offer to store these files at the moment, so you will have to " +
             "host them on your personal space."
         ),
-        placeholder: this.translate.instant("e.g.") + " https://www.example.com/my-page.html",
+        placeholder: this.translateService.instant("e.g.") + " https://www.example.com/my-page.html",
         required: false
       },
       validators: {
@@ -224,27 +239,29 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
       id: "image-acquisition-type-field",
       templateOptions: {
         required: true,
-        label: this.translate.instant("Acquisition type"),
+        label: this.translateService.instant("Acquisition type"),
         options: [
           {
             value: AcquisitionType.REGULAR,
-            label: this.translate.instant("Regular (e.g. medium/long exposure with a CCD or DSLR)")
+            label: this.translateService.instant("Regular (e.g. medium/long exposure with a CCD or DSLR)")
           },
           {
             value: AcquisitionType.EAA,
-            label: this.translate.instant("Electronically-Assisted Astronomy (EAA, e.g. based on a live video feed)")
+            label: this.translateService.instant(
+              "Electronically-Assisted Astronomy (EAA, e.g. based on a live video feed)"
+            )
           },
           {
             value: AcquisitionType.LUCKY,
-            label: this.translate.instant("Lucky imaging")
+            label: this.translateService.instant("Lucky imaging")
           },
           {
             value: AcquisitionType.DRAWING,
-            label: this.translate.instant("Drawing/Sketch")
+            label: this.translateService.instant("Drawing/Sketch")
           },
           {
             value: AcquisitionType.OTHER,
-            label: this.translate.instant("Other/Unknown")
+            label: this.translateService.instant("Other/Unknown")
           }
         ]
       }
@@ -258,15 +275,15 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
       id: "image-subject-type-field",
       templateOptions: {
         required: true,
-        label: this.translate.instant("Subject type"),
+        label: this.translateService.instant("Subject type"),
         options: [
-          { value: SubjectType.DEEP_SKY, label: this.translate.instant("Deep sky object or field") },
-          { value: SubjectType.SOLAR_SYSTEM, label: this.translate.instant("Solar system body or event") },
-          { value: SubjectType.WIDE_FIELD, label: this.translate.instant("Extremely wide field") },
-          { value: SubjectType.STAR_TRAILS, label: this.translate.instant("Star trails") },
-          { value: SubjectType.NORTHERN_LIGHTS, label: this.translate.instant("Northern lights") },
-          { value: SubjectType.GEAR, label: this.translate.instant("Gear") },
-          { value: SubjectType.OTHER, label: this.translate.instant("Other") }
+          { value: SubjectType.DEEP_SKY, label: this.translateService.instant("Deep sky object or field") },
+          { value: SubjectType.SOLAR_SYSTEM, label: this.translateService.instant("Solar system body or event") },
+          { value: SubjectType.WIDE_FIELD, label: this.translateService.instant("Extremely wide field") },
+          { value: SubjectType.STAR_TRAILS, label: this.translateService.instant("Star trails") },
+          { value: SubjectType.NORTHERN_LIGHTS, label: this.translateService.instant("Northern lights") },
+          { value: SubjectType.GEAR, label: this.translateService.instant("Gear") },
+          { value: SubjectType.OTHER, label: this.translateService.instant("Other") }
         ]
       },
       hooks: {
@@ -291,42 +308,42 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
         "templateOptions.required": "model.subjectType === 'SOLAR_SYSTEM'"
       },
       templateOptions: {
-        label: this.translate.instant("Main solar system subject"),
+        label: this.translateService.instant("Main solar system subject"),
         options: [
-          { value: SolarSystemSubjectType.SUN, label: this.translate.instant("Sun") },
-          { value: SolarSystemSubjectType.MOON, label: this.translate.instant("Earth's Moon") },
-          { value: SolarSystemSubjectType.MERCURY, label: this.translate.instant("Mercury") },
-          { value: SolarSystemSubjectType.VENUS, label: this.translate.instant("Venus") },
-          { value: SolarSystemSubjectType.MARS, label: this.translate.instant("Mars") },
-          { value: SolarSystemSubjectType.JUPITER, label: this.translate.instant("Jupiter") },
-          { value: SolarSystemSubjectType.SATURN, label: this.translate.instant("Saturn") },
-          { value: SolarSystemSubjectType.URANUS, label: this.translate.instant("Uranus") },
-          { value: SolarSystemSubjectType.NEPTUNE, label: this.translate.instant("Neptune") },
-          { value: SolarSystemSubjectType.MINOR_PLANET, label: this.translate.instant("Minor planet") },
-          { value: SolarSystemSubjectType.COMET, label: this.translate.instant("Comet") },
-          { value: SolarSystemSubjectType.OCCULTATION, label: this.translate.instant("Occultation") },
-          { value: SolarSystemSubjectType.CONJUNCTION, label: this.translate.instant("Conjunction") },
+          { value: SolarSystemSubjectType.SUN, label: this.translateService.instant("Sun") },
+          { value: SolarSystemSubjectType.MOON, label: this.translateService.instant("Earth's Moon") },
+          { value: SolarSystemSubjectType.MERCURY, label: this.translateService.instant("Mercury") },
+          { value: SolarSystemSubjectType.VENUS, label: this.translateService.instant("Venus") },
+          { value: SolarSystemSubjectType.MARS, label: this.translateService.instant("Mars") },
+          { value: SolarSystemSubjectType.JUPITER, label: this.translateService.instant("Jupiter") },
+          { value: SolarSystemSubjectType.SATURN, label: this.translateService.instant("Saturn") },
+          { value: SolarSystemSubjectType.URANUS, label: this.translateService.instant("Uranus") },
+          { value: SolarSystemSubjectType.NEPTUNE, label: this.translateService.instant("Neptune") },
+          { value: SolarSystemSubjectType.MINOR_PLANET, label: this.translateService.instant("Minor planet") },
+          { value: SolarSystemSubjectType.COMET, label: this.translateService.instant("Comet") },
+          { value: SolarSystemSubjectType.OCCULTATION, label: this.translateService.instant("Occultation") },
+          { value: SolarSystemSubjectType.CONJUNCTION, label: this.translateService.instant("Conjunction") },
           {
             value: SolarSystemSubjectType.PARTIAL_LUNAR_ECLIPSE,
-            label: this.translate.instant("Partial lunar eclipse")
+            label: this.translateService.instant("Partial lunar eclipse")
           },
           {
             value: SolarSystemSubjectType.TOTAL_LUNAR_ECLIPSE,
-            label: this.translate.instant("Total lunar eclipse")
+            label: this.translateService.instant("Total lunar eclipse")
           },
           {
             value: SolarSystemSubjectType.PARTIAL_SOLAR_ECLIPSE,
-            label: this.translate.instant("Partial solar eclipse")
+            label: this.translateService.instant("Partial solar eclipse")
           },
           {
             value: SolarSystemSubjectType.ANULAR_SOLAR_ECLIPSE,
-            label: this.translate.instant("Anular solar eclipse")
+            label: this.translateService.instant("Anular solar eclipse")
           },
           {
             value: SolarSystemSubjectType.TOTAL_SOLAR_ECLIPSE,
-            label: this.translate.instant("Total solar eclipse")
+            label: this.translateService.instant("Total solar eclipse")
           },
-          { value: SolarSystemSubjectType.OTHER, label: this.translate.instant("Other") }
+          { value: SolarSystemSubjectType.OTHER, label: this.translateService.instant("Other") }
         ]
       }
     };
@@ -339,53 +356,53 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
       id: "image-data-source-field",
       templateOptions: {
         required: true,
-        label: this.translate.instant("Data source"),
-        description: this.translate.instant("Where does the data for this image come from?"),
+        label: this.translateService.instant("Data source"),
+        description: this.translateService.instant("Where does the data for this image come from?"),
         options: [
           {
             value: DataSource.BACKYARD,
-            label: this.translate.instant("Backyard"),
-            group: this.translate.instant("Self acquired")
+            label: this.translateService.instant("Backyard"),
+            group: this.translateService.instant("Self acquired")
           },
           {
             value: DataSource.TRAVELLER,
-            label: this.translate.instant("Traveller"),
-            group: this.translate.instant("Self acquired")
+            label: this.translateService.instant("Traveller"),
+            group: this.translateService.instant("Self acquired")
           },
           {
             value: DataSource.OWN_REMOTE,
-            label: this.translate.instant("Own remote observatory"),
-            group: this.translate.instant("Self acquired")
+            label: this.translateService.instant("Own remote observatory"),
+            group: this.translateService.instant("Self acquired")
           },
           {
             value: DataSource.AMATEUR_HOSTING,
-            label: this.translate.instant("Amateur hosting facility"),
-            group: this.translate.instant("Downloaded")
+            label: this.translateService.instant("Amateur hosting facility"),
+            group: this.translateService.instant("Downloaded")
           },
           {
             value: DataSource.PUBLIC_AMATEUR_DATA,
-            label: this.translate.instant("Public amateur data"),
-            group: this.translate.instant("Downloaded")
+            label: this.translateService.instant("Public amateur data"),
+            group: this.translateService.instant("Downloaded")
           },
           {
             value: DataSource.PRO_DATA,
-            label: this.translate.instant("Professional, scientific grade data"),
-            group: this.translate.instant("Downloaded")
+            label: this.translateService.instant("Professional, scientific grade data"),
+            group: this.translateService.instant("Downloaded")
           },
           {
             value: DataSource.MIX,
-            label: this.translate.instant("Mix of multiple sources"),
-            group: this.translate.instant("Other")
+            label: this.translateService.instant("Mix of multiple sources"),
+            group: this.translateService.instant("Other")
           },
           {
             value: DataSource.OTHER,
-            label: this.translate.instant("None of the above"),
-            group: this.translate.instant("Other")
+            label: this.translateService.instant("None of the above"),
+            group: this.translateService.instant("Other")
           },
           {
             value: DataSource.UNKNOWN,
-            label: this.translate.instant("Unknown"),
-            group: this.translate.instant("Other")
+            label: this.translateService.instant("Unknown"),
+            group: this.translateService.instant("Other")
           }
         ]
       },
@@ -411,8 +428,8 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
         "templateOptions.required": "model.dataSource === 'OWN_REMOTE' || model.dataSource === 'AMATEUR_HOSTING'"
       },
       templateOptions: {
-        label: this.translate.instant("Remote data source"),
-        description: this.translate.instant(
+        label: this.translateService.instant("Remote data source"),
+        description: this.translateService.instant(
           "Which remote hosting facility did you use to acquire data for this image?"
         ),
         labelTemplate: this.remoteSourceLabelTemplate,
@@ -421,17 +438,17 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
           ...Array.from(Object.keys(RemoteSource)).map(key => ({
             value: key,
             label: RemoteSource[key],
-            group: this.translate.instant("Commercial facilities")
+            group: this.translateService.instant("Commercial facilities")
           })),
           {
             value: "OWN",
-            label: this.translate.instant("Non-commercial independent facility"),
-            group: this.translate.instant("Other")
+            label: this.translateService.instant("Non-commercial independent facility"),
+            group: this.translateService.instant("Other")
           },
           {
             value: "OTHER",
-            label: this.translate.instant("None of the above"),
-            group: this.translate.instant("Other")
+            label: this.translateService.instant("None of the above"),
+            group: this.translateService.instant("Other")
           }
         ]
       }
@@ -447,8 +464,8 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
       templateOptions: {
         multiple: true,
         required: false,
-        label: this.translate.instant("Groups"),
-        description: this.translate.instant("Submit this image to the selected groups."),
+        label: this.translateService.instant("Groups"),
+        description: this.translateService.instant("Submit this image to the selected groups."),
         options: this.store$.select(selectCurrentUser).pipe(
           switchMap(user =>
             this.groupApiService.getAll(user.id).pipe(
@@ -472,7 +489,9 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
       id: "image-cropper-field",
       templateOptions: {
         required: true,
-        description: this.translate.instant("Select an area of the image to be used as thumbnail in your gallery."),
+        description: this.translateService.instant(
+          "Select an area of the image to be used as thumbnail in your gallery."
+        ),
         image: this.image,
         thumbnailURL$: this.store$
           .select(selectThumbnail, {
@@ -489,7 +508,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
             }),
             retryWithDelay(1000, 60),
             catchError(() => {
-              this.popNotificationService.error(
+              this.popNotificationsService.error(
                 "Timeout while loading the thumbnail, please refresh the page to try again!"
               );
               return EMPTY;
@@ -505,8 +524,8 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
       type: "checkbox",
       id: "image-sharpen-thumbnails-field",
       templateOptions: {
-        label: this.translate.instant("Sharpen thumbnails"),
-        description: this.translate.instant(
+        label: this.translateService.instant("Sharpen thumbnails"),
+        description: this.translateService.instant(
           "If selected, AstroBin will use a resizing algorithm that slightly sharpens the image's thumbnails. " +
             "This setting applies to all revisions."
         )
@@ -520,8 +539,8 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
       type: "checkbox",
       id: "image-watermark-field",
       templateOptions: {
-        label: this.translate.instant("Apply watermark to image"),
-        description: this.translate.instant(
+        label: this.translateService.instant("Apply watermark to image"),
+        description: this.translateService.instant(
           "AstroBin can protect your images from theft by applying a watermark to them. Please note: animated GIFs cannot be watermarked at this time."
         )
       }
@@ -534,7 +553,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
       type: "input",
       id: "image-watermark-text-field",
       templateOptions: {
-        label: this.translate.instant("Text")
+        label: this.translateService.instant("Text")
       }
     };
   }
@@ -545,35 +564,35 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
       type: "ng-select",
       id: "image-watermark-position-field",
       templateOptions: {
-        label: this.translate.instant("Position"),
+        label: this.translateService.instant("Position"),
         options: [
           {
             value: WatermarkPositionOptions.CENTER,
-            label: this.translate.instant("Center")
+            label: this.translateService.instant("Center")
           },
           {
             value: WatermarkPositionOptions.TOP_LEFT,
-            label: this.translate.instant("Top left")
+            label: this.translateService.instant("Top left")
           },
           {
             value: WatermarkPositionOptions.TOP_CENTER,
-            label: this.translate.instant("Top center")
+            label: this.translateService.instant("Top center")
           },
           {
             value: WatermarkPositionOptions.TOP_RIGHT,
-            label: this.translate.instant("Top right")
+            label: this.translateService.instant("Top right")
           },
           {
             value: WatermarkPositionOptions.BOTTOM_LEFT,
-            label: this.translate.instant("Bottom left")
+            label: this.translateService.instant("Bottom left")
           },
           {
             value: WatermarkPositionOptions.BOTTOM_CENTER,
-            label: this.translate.instant("Bottom center")
+            label: this.translateService.instant("Bottom center")
           },
           {
             value: WatermarkPositionOptions.BOTTOM_RIGHT,
-            label: this.translate.instant("Bottom right")
+            label: this.translateService.instant("Bottom right")
           }
         ]
       }
@@ -586,20 +605,20 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
       type: "ng-select",
       id: "image-watermark-size-field",
       templateOptions: {
-        label: this.translate.instant("Size"),
-        description: this.translate.instant("The final font size will depend on how long your watermark is."),
+        label: this.translateService.instant("Size"),
+        description: this.translateService.instant("The final font size will depend on how long your watermark is."),
         options: [
           {
             value: WatermarkSizeOptions.SMALL,
-            label: this.translate.instant("Small")
+            label: this.translateService.instant("Small")
           },
           {
             value: WatermarkSizeOptions.MEDIUM,
-            label: this.translate.instant("Medium")
+            label: this.translateService.instant("Medium")
           },
           {
             value: WatermarkSizeOptions.LARGE,
-            label: this.translate.instant("Large")
+            label: this.translateService.instant("Large")
           }
         ]
       }
@@ -615,8 +634,8 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
         type: "number",
         min: 0,
         max: 100,
-        label: this.translate.instant("Opacity") + " (%)",
-        description: this.translate.instant(
+        label: this.translateService.instant("Opacity") + " (%)",
+        description: this.translateService.instant(
           "0 means invisible; 100 means completely opaque. Recommended values are: 10 if the watermark will appear on the dark sky background, 50 if on some bright object."
         )
       }
@@ -630,23 +649,23 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
       id: "image-mouse-hover-image-field",
       templateOptions: {
         required: true,
-        label: this.translate.instant("Mouse hover image"),
-        description: this.translate.instant(
+        label: this.translateService.instant("Mouse hover image"),
+        description: this.translateService.instant(
           "Choose what will be displayed when somebody hovers the mouse over this image. Please note: only " +
             "revisions with the same width and height of your original image can be considered."
         ),
         options: [
           {
             value: MouseHoverImageOptions.NOTHING,
-            label: this.translate.instant("Nothing")
+            label: this.translateService.instant("Nothing")
           },
           {
             value: MouseHoverImageOptions.SOLUTION,
-            label: this.translate.instant("Plate-solution annotations (if available)")
+            label: this.translateService.instant("Plate-solution annotations (if available)")
           },
           {
             value: MouseHoverImageOptions.INVERTED,
-            label: this.translate.instant("Inverted monochrome")
+            label: this.translateService.instant("Inverted monochrome")
           }
         ]
       }
@@ -659,7 +678,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
       type: "checkbox",
       id: "image-allow-comments-field",
       templateOptions: {
-        label: this.translate.instant("Allow comments")
+        label: this.translateService.instant("Allow comments")
       }
     };
   }
@@ -671,18 +690,17 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
         id: "image-stepper-field",
         templateOptions: {
           image: this.image,
-          onSave: () => this.onSave(),
-          saveButtonLabel: this.translate.instant("Proceed to gear selection")
+          buttonsTemplate: this.stepperButtonsTemplate
         },
         fieldGroup: [
           {
             id: "image-stepper-thumbnail",
-            templateOptions: { label: this.translate.instant("Thumbnail") },
+            templateOptions: { label: this.translateService.instant("Thumbnail") },
             fieldGroup: [this._getThumbnailField(), this._getSharpenThumbnailsField()]
           },
           {
             id: "image-stepper-watermark",
-            templateOptions: { label: this.translate.instant("Watermark") },
+            templateOptions: { label: this.translateService.instant("Watermark") },
             fieldGroup: [
               this._getWatermarkCheckboxField(),
               this._getWatermarkTextField(),
@@ -693,7 +711,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
           },
           {
             id: "image-stepper-basic-information",
-            templateOptions: { label: this.translate.instant("Basic information") },
+            templateOptions: { label: this.translateService.instant("Basic information") },
             fieldGroup: [
               this._getTitleField(),
               this._getDescriptionField(),
@@ -703,7 +721,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
           },
           {
             id: "image-stepper-content",
-            templateOptions: { label: this.translate.instant("Content") },
+            templateOptions: { label: this.translateService.instant("Content") },
             fieldGroup: [
               this._getAcquisitionTypeField(),
               this._getSubjectTypeField(),
@@ -715,7 +733,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
           },
           {
             id: "image-stepper-settings",
-            templateOptions: { label: this.translate.instant("Settings") },
+            templateOptions: { label: this.translateService.instant("Settings") },
             fieldGroup: [this._getMouseHoverImageField(), this._getAllowCommentsField()]
           }
         ]
@@ -728,13 +746,13 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
       new SetBreadcrumb({
         breadcrumb: [
           {
-            label: this.translate.instant("Image")
+            label: this.translateService.instant("Image")
           },
           {
             label: this.image.title
           },
           {
-            label: this.translate.instant("Edit")
+            label: this.translateService.instant("Edit")
           }
         ]
       })
