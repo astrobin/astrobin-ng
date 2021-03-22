@@ -131,9 +131,13 @@ export class FormlyFieldStepperComponent extends FieldType implements OnInit {
     }
 
     if (!this.isFormValid()) {
-      this.popNotificationsService.error(this.translateService.instant("The form is incomplete or has errors."), null, {
-        timeOut: 10000
-      });
+      this.popNotificationsService.error(
+        this.translateService.instant("Please check that all required fields have been filled at every step."),
+        "The form is incomplete or has errors.",
+        {
+          timeOut: 10000
+        }
+      );
       return;
     }
 
