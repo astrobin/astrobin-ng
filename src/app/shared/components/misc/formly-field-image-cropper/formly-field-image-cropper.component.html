@@ -1,4 +1,4 @@
-<ng-container *ngIf="to.thumbnailURL$ | async as thumbnailURL; else loading">
+<ng-container *ngIf="to.thumbnailURL$ | async as thumbnailURL; else loadingThumbnail">
   <image-cropper
     (cropperReady)="onCropperReady($event)"
     (imageCropped)="onImageCropped($event)"
@@ -17,6 +17,13 @@
 
   <ng-container *ngIf="!cropperReady" [ngTemplateOutlet]="loading"></ng-container>
 </ng-container>
+
+<ng-template #loadingThumbnail>
+  <fa-icon icon="info-circle"></fa-icon>
+  {{ "AstroBin is generating a large thumbnail." | translate }}
+  {{ "This operation could take several seconds, please wait" | translate }}
+  <astrobin-text-loading-indicator></astrobin-text-loading-indicator>
+</ng-template>
 
 <ng-template #loading>
   <astrobin-loading-indicator></astrobin-loading-indicator>
