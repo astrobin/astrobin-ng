@@ -16,7 +16,10 @@ import { UserSubscriptionService } from "@shared/services/user-subscription/user
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { SubscriptionName } from "@shared/types/subscription-name.type";
 import { UploadState, UploadxService } from "ngx-uploadx";
-import { takeUntil } from "rxjs/operators";
+import { take, takeUntil } from "rxjs/operators";
+import { selectCurrentUserProfile } from "@features/account/store/auth.selectors";
+import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
+import { Router } from "@angular/router";
 
 @Component({
   selector: "astrobin-uploader-page",
@@ -70,7 +73,8 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
     public readonly classicRoutesService: ClassicRoutesService,
     public readonly titleService: TitleService,
     public readonly userSubscriptionService: UserSubscriptionService,
-    public readonly popNotificationsService: PopNotificationsService
+    public readonly popNotificationsService: PopNotificationsService,
+    public readonly router: Router
   ) {
     super();
   }
@@ -78,7 +82,7 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
   subscriptionWithYearlySlotsMessage(name: string, counter: number, slots: number): string {
     return this.translate.instant(
       "You have a <strong>{{0}}</strong> subscription. You have used <strong>{{1}}</strong> of " +
-        "your <strong>{{2}}</strong> yearly upload slots.",
+      "your <strong>{{2}}</strong> yearly upload slots.",
       {
         0: name,
         1: counter,
@@ -90,7 +94,7 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
   subscriptionWithTotalSlotsMessage(name: string, counter: number, slots: number): string {
     return this.translate.instant(
       "You have a <strong>{{0}}</strong> subscription. You have used <strong>{{1}}</strong> of " +
-        "your <strong>{{2}}</strong> upload slots.",
+      "your <strong>{{2}}</strong> upload slots.",
       {
         0: name,
         1: counter,
@@ -131,7 +135,20 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
       if (uploadState.status === "complete") {
         const response = JSON.parse(uploadState.response as string);
         const hash = response.hash;
-        this.windowRef.nativeWindow.location.assign(`${this.classicRoutesService.EDIT_IMAGE_THUMBNAILS(hash)}?upload`);
+
+        this.store$
+          .select(selectCurrentUserProfile)
+          .pipe(take(1))
+          .subscribe((userProfile: UserProfileInterface) => {
+            const language = userProfile.language;
+            if (Math.random() <= 0.2 && (language === "en" || language === "en-GB")) {
+              this.router.navigate([`/i/${hash}/edit`]);
+            } else {
+              this.windowRef.nativeWindow.location.assign(
+                `${this.classicRoutesService.EDIT_IMAGE_THUMBNAILS(hash)}?upload`
+              );
+            }
+          });
       }
     });
   }
@@ -155,8 +172,8 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
       this.popNotificationsService.warning(
         this.translate.instant(
           "Please note: if this file is a crop of another image you already published on AstroBin, the common " +
-            "practice would be to upload it as a new revision. For more info, please " +
-            "<a href='https://welcome.astrobin.com/features/image-revisions' target='_blank'>click here</a>."
+          "practice would be to upload it as a new revision. For more info, please " +
+          "<a href='https://welcome.astrobin.com/features/image-revisions' target='_blank'>click here</a>."
         ),
         null,
         {

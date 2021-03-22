@@ -19,17 +19,6 @@
   }
 }
 
-.dropdown-toggle {
-  padding-top: 4px;
-  padding-bottom: 4px;
-  margin-top: 3px;
-
-  &::after {
-    margin-left: 0.5rem;
-    vertical-align: 0.085rem;
-  }
-}
-
 .dropdown-divider {
     border-top-color: $grey;
 }

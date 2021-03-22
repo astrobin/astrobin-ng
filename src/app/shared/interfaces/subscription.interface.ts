@@ -1,4 +1,4 @@
-import { GroupInterface } from "@shared/interfaces/group.interface";
+import { AuthGroupInterface } from "@shared/interfaces/auth-group.interface";
 
 export interface SubscriptionInterface {
   id: number;
@@ -11,5 +11,5 @@ export interface SubscriptionInterface {
   recurrence_period: number;
   recurrence_unit: string;
   category: string;
-  group: GroupInterface;
+  group: AuthGroupInterface;
 }

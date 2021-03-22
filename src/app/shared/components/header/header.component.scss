@@ -141,6 +141,17 @@
   transition: opacity 0.1s ease-in-out;
 }
 
+.dropdown-toggle {
+  padding-top: 4px;
+  padding-bottom: 4px;
+  margin-top: 3px;
+
+  &::after {
+    margin-left: 0.5rem;
+    vertical-align: 0.085rem;
+  }
+}
+
 .notifications-list-item {
   position: relative;
 
@@ -152,3 +163,4 @@
     box-shadow: -2px 2px 4px rgba(0, 0, 0, 0.66);
   }
 }
+

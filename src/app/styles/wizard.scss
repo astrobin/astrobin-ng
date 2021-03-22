@@ -1,0 +1,90 @@
+@import "variables";
+
+@mixin defaultNavLink() {
+  color: $lighter-grey !important;
+  font-weight: normal;
+  font-style: normal;
+
+  &::after {
+    background-color: transparent !important;
+  }
+}
+
+.ng-wizard-theme-default {
+  box-shadow: none;
+  border: 0;
+
+  > ul.step-anchor {
+    border-bottom-color: $grey;
+    background: none !important;
+  }
+
+  .nav-item {
+    .nav-link {
+      @include defaultNavLink;
+
+      small {
+        font-weight: normal;
+        opacity: .75;
+      }
+    }
+
+    &.active .nav-link {
+      font-weight: bold;
+      color: $white !important;
+
+      &::after {
+        background-color: $accent-color !important;
+      }
+    }
+
+    &.danger .nav-link {
+      font-weight: bold;
+      font-style: italic;
+      color: $error-red !important;
+
+      &::after {
+        background-color: transparent !important;
+      }
+    }
+
+    &.danger:not(.done):not(.active) .nav-link {
+      @include defaultNavLink;
+    }
+
+    &.done:not(.danger) .nav-link {
+      @include defaultNavLink;
+    }
+
+    &.clickable {
+      &,
+      &.danger:not(.done):not(.active) {
+        .nav-link:hover {
+          color: $white !important;
+        }
+      }
+    }
+  }
+
+  .step-content {
+    background-color: transparent;
+    border: 0;
+    padding: 2rem 0;
+  }
+
+  .ng-wizard-toolbar-bottom {
+    background-color: transparent;
+    padding: 0;
+
+    .btn-group:last-child {
+      margin-right: 0 !important;
+    }
+  }
+}
+
+@media (max-width: $xs-max) {
+  .ng-wizard-btn-group {
+    display: block;
+    width: 100%;
+  }
+}

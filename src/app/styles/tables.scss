@@ -1,9 +1,11 @@
 @import "variables";
+@import "mixins";
 
 .table {
   thead {
     th {
-      background: $dark-grey;
+      @include darker-background-texture;
+      color: $white;
 
       .help-tooltip {
         color: $lighter-grey;

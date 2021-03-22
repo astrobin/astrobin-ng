@@ -1,5 +1,6 @@
 // tslint:disable:max-classes-per-file
 
+import { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
 import {
   InitializeAuthSuccessInterface,
   LoginFailureInterface,
@@ -21,24 +22,24 @@ export class InitializeAuth implements Action {
   readonly type = AuthActionTypes.INITIALIZE;
 }
 
-export class InitializeAuthSuccess implements Action {
+export class InitializeAuthSuccess implements PayloadActionInterface {
   readonly type = AuthActionTypes.INITIALIZE_SUCCESS;
   constructor(public payload: InitializeAuthSuccessInterface) {}
 }
 
-export class Login implements Action {
+export class Login implements PayloadActionInterface {
   readonly type = AuthActionTypes.LOGIN;
 
   constructor(public payload: LoginPayloadInterface) {}
 }
 
-export class LoginSuccess implements Action {
+export class LoginSuccess implements PayloadActionInterface {
   readonly type = AuthActionTypes.LOGIN_SUCCESS;
 
   constructor(public payload: LoginSuccessInterface) {}
 }
 
-export class LoginFailure implements Action {
+export class LoginFailure implements PayloadActionInterface {
   readonly type = AuthActionTypes.LOGIN_FAILURE;
 
   constructor(public payload: LoginFailureInterface) {}

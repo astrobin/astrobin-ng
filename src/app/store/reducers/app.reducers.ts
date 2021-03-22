@@ -100,7 +100,9 @@ export function reducer(state = initialAppState, action: All): AppState {
       };
     }
 
-    case AppActionTypes.LOAD_IMAGE_SUCCESS: {
+    case AppActionTypes.SET_IMAGE:
+    case AppActionTypes.LOAD_IMAGE_SUCCESS:
+    case AppActionTypes.SAVE_IMAGE_SUCCESS: {
       return {
         ...state,
         images: new UtilsService().arrayUniqueObjects([...state.images, action.payload])

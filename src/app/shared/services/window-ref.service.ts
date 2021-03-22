@@ -15,4 +15,8 @@ export class WindowRefService extends BaseService {
   get nativeWindow(): CustomWindowInterface {
     return getWindow();
   }
+
+  scroll(options: any) {
+    this.nativeWindow.scroll(options);
+  }
 }

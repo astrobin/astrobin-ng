@@ -1,8 +1,11 @@
 @import "variables";
+@import "mixins";
 
 .card {
   .card-header {
-    background-color: $dark-grey;
+    @include darkest-background-texture;
+    color: $white;
+
     .btn-link {
       padding: 0;
       font-size: 1rem;

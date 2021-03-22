@@ -14,6 +14,7 @@ import { Actions, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FORMLY_CONFIG, FormlyModule } from "@ngx-formly/core";
+import { FormlySelectModule } from "@ngx-formly/core/select";
 import { TranslateModule, TranslateService } from "@ngx-translate/core";
 import { ApiModule } from "@shared/services/api/api.module";
 import { AuthService } from "@shared/services/auth.service";
@@ -28,9 +29,11 @@ import { SessionService } from "@shared/services/session.service";
 import { UserStoreService } from "@shared/services/user-store.service";
 import { UserService } from "@shared/services/user.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
+import { NgWizardModule, THEME } from "ng-wizard";
 import { StickyNavModule } from "ng2-sticky-nav";
 import { CookieService } from "ngx-cookie-service";
 import { NgxFilesizeModule } from "ngx-filesize";
+import { ImageCropperModule } from "ngx-image-cropper";
 import { TimeagoModule } from "ngx-timeago";
 import { ToastrModule } from "ngx-toastr";
 import { switchMap } from "rxjs/operators";
@@ -67,11 +70,25 @@ export function appInitializer(store: Store<State>, actions$: Actions) {
     FontAwesomeModule,
     FormlyModule.forRoot(),
     FormlyBootstrapModule,
+    FormlySelectModule,
+    ImageCropperModule,
     NgbModule,
     NgbPaginationModule,
     NgbProgressbarModule,
     NgSelectModule,
     NgxFilesizeModule,
+    NgWizardModule.forRoot({
+      theme: THEME.default,
+      anchorSettings: {
+        enableAllAnchors: true,
+        markAllPreviousStepsAsDone: true,
+        enableAnchorOnDoneStep: true
+      },
+      toolbarSettings: {
+        showPreviousButton: false,
+        showNextButton: false
+      }
+    }),
     ToastrModule.forRoot({
       timeOut: 20000,
       progressBar: true,
@@ -93,11 +110,13 @@ export function appInitializer(store: Store<State>, actions$: Actions) {
     FontAwesomeModule,
     FormlyModule,
     FormlyBootstrapModule,
+    ImageCropperModule,
     NgbModule,
     NgbPaginationModule,
     NgbProgressbarModule,
     NgSelectModule,
     NgxFilesizeModule,
+    NgWizardModule,
     ToastrModule,
     TimeagoModule,
     TranslateModule,

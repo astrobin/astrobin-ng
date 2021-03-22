@@ -6,7 +6,7 @@ import { selectImages } from "@app/store/selectors/app/image.selectors";
 import { selectSolutions } from "@app/store/selectors/app/solution.selectors";
 import { State } from "@app/store/state";
 import { IotdApiService } from "@features/iotd/services/iotd-api.service";
-import { Actions, Effect, ofType } from "@ngrx/effects";
+import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
 import { LoadingService } from "@shared/services/loading.service";
@@ -42,8 +42,8 @@ import {
 
 @Injectable()
 export class IotdEffects {
-  @Effect()
-  loadSubmissionQueue$ = this.actions$.pipe(
+  
+  loadSubmissionQueue$ = createEffect(() => this.actions$.pipe(
     ofType(IotdActionTypes.LOAD_SUBMISSION_QUEUE),
     tap(() => this.loadingService.setLoading(true)),
     mergeMap(action =>
@@ -80,22 +80,22 @@ export class IotdEffects {
         catchError(error => of(new LoadSubmissionQueueFailure()))
       )
     )
-  );
+  ));
 
-  @Effect({ dispatch: false })
-  loadSubmissionQueueSuccess$ = this.actions$.pipe(
+  
+  loadSubmissionQueueSuccess$ = createEffect(() => this.actions$.pipe(
     ofType(IotdActionTypes.LOAD_SUBMISSION_QUEUE_SUCCESS),
     tap(() => this.loadingService.setLoading(false))
-  );
+  ), { dispatch: false });
 
-  @Effect({ dispatch: false })
-  loadSubmissionQueueFailure$ = this.actions$.pipe(
+  
+  loadSubmissionQueueFailure$ = createEffect(() => this.actions$.pipe(
     ofType(IotdActionTypes.LOAD_SUBMISSION_QUEUE_FAILURE),
     tap(() => this.loadingService.setLoading(false))
-  );
+  ), { dispatch: false });
 
-  @Effect()
-  loadSubmissions$ = this.actions$.pipe(
+  
+  loadSubmissions$ = createEffect(() => this.actions$.pipe(
     ofType(IotdActionTypes.LOAD_SUBMISSIONS),
     tap(() => this.loadingService.setLoading(true)),
     mergeMap(action =>
@@ -104,22 +104,22 @@ export class IotdEffects {
         catchError(error => of(new LoadSubmissionsFailure()))
       )
     )
-  );
+  ));
 
-  @Effect({ dispatch: false })
-  loadSubmissionsSuccess$ = this.actions$.pipe(
+  
+  loadSubmissionsSuccess$ = createEffect(() => this.actions$.pipe(
     ofType(IotdActionTypes.LOAD_SUBMISSIONS_SUCCESS),
     tap(() => this.loadingService.setLoading(false))
-  );
+  ), { dispatch: false });
 
-  @Effect({ dispatch: false })
-  loadSubmissionsFailure$ = this.actions$.pipe(
+  
+  loadSubmissionsFailure$ = createEffect(() => this.actions$.pipe(
     ofType(IotdActionTypes.LOAD_SUBMISSIONS_FAILURE),
     tap(() => this.loadingService.setLoading(false))
-  );
+  ), { dispatch: false });
 
-  @Effect()
-  postSubmission$ = this.actions$.pipe(
+  
+  postSubmission$ = createEffect(() => this.actions$.pipe(
     ofType(IotdActionTypes.POST_SUBMISSION),
     tap(() => this.loadingService.setLoading(true)),
     map(action => action.payload),
@@ -129,26 +129,26 @@ export class IotdEffects {
         catchError(error => of(new PostSubmissionFailure(error)))
       )
     )
-  );
+  ));
 
-  @Effect({ dispatch: false })
-  postSubmissionSuccess$ = this.actions$.pipe(
+  
+  postSubmissionSuccess$ = createEffect(() => this.actions$.pipe(
     ofType(IotdActionTypes.POST_SUBMISSION_SUCCESS),
     tap(() => this.loadingService.setLoading(false))
-  );
+  ), { dispatch: false });
 
-  @Effect({ dispatch: false })
-  postSubmissionFailure$ = this.actions$.pipe(
+  
+  postSubmissionFailure$ = createEffect(() => this.actions$.pipe(
     ofType(IotdActionTypes.POST_SUBMISSION_FAILURE),
     map(action => action.payload.error),
     tap(error => {
       this.popNotificationsService.error(error);
       this.loadingService.setLoading(false);
     })
-  );
+  ), { dispatch: false });
 
-  @Effect()
-  deleteSubmission$ = this.actions$.pipe(
+  
+  deleteSubmission$ = createEffect(() => this.actions$.pipe(
     ofType(IotdActionTypes.DELETE_SUBMISSION),
     tap(() => this.loadingService.setLoading(true)),
     map(action => action.payload),
@@ -158,69 +158,69 @@ export class IotdEffects {
         catchError(error => of(new DeleteSubmissionFailure()))
       )
     )
-  );
+  ));
 
-  @Effect({ dispatch: false })
-  deleteSubmissionSuccess$ = this.actions$.pipe(
+  
+  deleteSubmissionSuccess$ = createEffect(() => this.actions$.pipe(
     ofType(IotdActionTypes.DELETE_SUBMISSION_SUCCESS),
     tap(() => this.loadingService.setLoading(false))
-  );
+  ), { dispatch: false });
 
-  @Effect({ dispatch: false })
-  deleteSubmissionFailure$ = this.actions$.pipe(
+  
+  deleteSubmissionFailure$ = createEffect(() => this.actions$.pipe(
     ofType(IotdActionTypes.DELETE_SUBMISSION_FAILURE),
     tap(() => this.loadingService.setLoading(false))
-  );
+  ), { dispatch: false });
 
-  @Effect()
-  loadHiddenImage$ = this.actions$.pipe(
+  
+  loadHiddenImage$ = createEffect(() => this.actions$.pipe(
     ofType(IotdActionTypes.LOAD_HIDDEN_IMAGES),
     tap(() => this.loadingService.setLoading(true)),
     mergeMap(() =>
       this.iotdApiService.loadHiddenImages().pipe(map(hiddenImages => new LoadHiddenImagesSuccess({ hiddenImages })))
     )
-  );
+  ));
 
-  @Effect({ dispatch: false })
-  loadHiddenImagesSuccess$ = this.actions$.pipe(
+  
+  loadHiddenImagesSuccess$ = createEffect(() => this.actions$.pipe(
     ofType(IotdActionTypes.LOAD_HIDDEN_IMAGES_SUCCESS),
     tap(() => this.loadingService.setLoading(false))
-  );
+  ), { dispatch: false });
 
-  @Effect()
-  hideImage$ = this.actions$.pipe(
+  
+  hideImage$ = createEffect(() => this.actions$.pipe(
     ofType(IotdActionTypes.HIDE_IMAGE),
     tap(() => this.loadingService.setLoading(true)),
     map(action => action.payload),
     mergeMap(payload =>
       this.iotdApiService.hideImage(payload.id).pipe(map(hiddenImage => new HideImageSuccess({ hiddenImage })))
     )
-  );
+  ));
 
-  @Effect({ dispatch: false })
-  hideImageSuccess$ = this.actions$.pipe(
+  
+  hideImageSuccess$ = createEffect(() => this.actions$.pipe(
     ofType(IotdActionTypes.HIDE_IMAGE_SUCCESS),
     tap(() => this.loadingService.setLoading(false))
-  );
+  ), { dispatch: false });
 
-  @Effect()
-  showImage$ = this.actions$.pipe(
+  
+  showImage$ = createEffect(() => this.actions$.pipe(
     ofType(IotdActionTypes.SHOW_IMAGE),
     tap(() => this.loadingService.setLoading(true)),
     map(action => action.payload),
     mergeMap(payload =>
       this.iotdApiService.showImage(payload.hiddenImage).pipe(map(id => new ShowImageSuccess({ id })))
     )
-  );
+  ));
 
-  @Effect({ dispatch: false })
-  showImageSuccess$ = this.actions$.pipe(
+  
+  showImageSuccess$ = createEffect(() => this.actions$.pipe(
     ofType(IotdActionTypes.SHOW_IMAGE_SUCCESS),
     tap(() => this.loadingService.setLoading(false))
-  );
+  ), { dispatch: false });
 
-  @Effect()
-  loadDismissedImage$ = this.actions$.pipe(
+  
+  loadDismissedImage$ = createEffect(() => this.actions$.pipe(
     ofType(IotdActionTypes.LOAD_DISMISSED_IMAGES),
     tap(() => this.loadingService.setLoading(true)),
     mergeMap(() =>
@@ -228,16 +228,16 @@ export class IotdEffects {
         .loadDismissedImages()
         .pipe(map(dismissedImages => new LoadDismissedImagesSuccess({ dismissedImages })))
     )
-  );
+  ));
 
-  @Effect({ dispatch: false })
-  loadDismissedImagesSuccess$ = this.actions$.pipe(
+  
+  loadDismissedImagesSuccess$ = createEffect(() => this.actions$.pipe(
     ofType(IotdActionTypes.LOAD_DISMISSED_IMAGES_SUCCESS),
     tap(() => this.loadingService.setLoading(false))
-  );
+  ), { dispatch: false });
 
-  @Effect()
-  dismissImage$ = this.actions$.pipe(
+  
+  dismissImage$ = createEffect(() => this.actions$.pipe(
     ofType(IotdActionTypes.DISMISS_IMAGE),
     tap(() => this.loadingService.setLoading(true)),
     map(action => action.payload),
@@ -246,16 +246,16 @@ export class IotdEffects {
         .dismissImage(payload.id)
         .pipe(map(dismissedImage => new DismissImageSuccess({ dismissedImage })))
     )
-  );
+  ));
 
-  @Effect({ dispatch: false })
-  dismissImageSuccess$ = this.actions$.pipe(
+  
+  dismissImageSuccess$ = createEffect(() => this.actions$.pipe(
     ofType(IotdActionTypes.DISMISS_IMAGE_SUCCESS),
     tap(() => this.loadingService.setLoading(false))
-  );
+  ), { dispatch: false });
 
-  @Effect()
-  loadReviewQueue$ = this.actions$.pipe(
+  
+  loadReviewQueue$ = createEffect(() => this.actions$.pipe(
     ofType(IotdActionTypes.LOAD_REVIEW_QUEUE),
     tap(() => this.loadingService.setLoading(true)),
     mergeMap(action =>
@@ -292,22 +292,22 @@ export class IotdEffects {
         catchError(() => of(new LoadReviewQueueFailure()))
       )
     )
-  );
+  ));
 
-  @Effect({ dispatch: false })
-  loadReviewQueueSuccess$ = this.actions$.pipe(
+  
+  loadReviewQueueSuccess$ = createEffect(() => this.actions$.pipe(
     ofType(IotdActionTypes.LOAD_REVIEW_QUEUE_SUCCESS),
     tap(() => this.loadingService.setLoading(false))
-  );
+  ), { dispatch: false });
 
-  @Effect({ dispatch: false })
-  loadReviewQueueFailure$ = this.actions$.pipe(
+  
+  loadReviewQueueFailure$ = createEffect(() => this.actions$.pipe(
     ofType(IotdActionTypes.LOAD_REVIEW_QUEUE_FAILURE),
     tap(() => this.loadingService.setLoading(false))
-  );
+  ), { dispatch: false });
 
-  @Effect()
-  loadVotes$ = this.actions$.pipe(
+  
+  loadVotes$ = createEffect(() => this.actions$.pipe(
     ofType(IotdActionTypes.LOAD_VOTES),
     tap(() => this.loadingService.setLoading(true)),
     mergeMap(action =>
@@ -316,22 +316,22 @@ export class IotdEffects {
         catchError(error => of(new LoadVotesFailure()))
       )
     )
-  );
+  ));
 
-  @Effect({ dispatch: false })
-  loadVotesSuccess$ = this.actions$.pipe(
+  
+  loadVotesSuccess$ = createEffect(() => this.actions$.pipe(
     ofType(IotdActionTypes.LOAD_VOTES_SUCCESS),
     tap(() => this.loadingService.setLoading(false))
-  );
+  ), { dispatch: false });
 
-  @Effect({ dispatch: false })
-  loadVotesFailure$ = this.actions$.pipe(
+  
+  loadVotesFailure$ = createEffect(() => this.actions$.pipe(
     ofType(IotdActionTypes.LOAD_VOTES_FAILURE),
     tap(() => this.loadingService.setLoading(false))
-  );
+  ), { dispatch: false });
 
-  @Effect()
-  postVote$ = this.actions$.pipe(
+  
+  postVote$ = createEffect(() => this.actions$.pipe(
     ofType(IotdActionTypes.POST_VOTE),
     tap(() => this.loadingService.setLoading(true)),
     map(action => action.payload),
@@ -341,26 +341,26 @@ export class IotdEffects {
         catchError(error => of(new PostVoteFailure(error)))
       )
     )
-  );
+  ));
 
-  @Effect({ dispatch: false })
-  postVoteSuccess$ = this.actions$.pipe(
+  
+  postVoteSuccess$ = createEffect(() => this.actions$.pipe(
     ofType(IotdActionTypes.POST_VOTE_SUCCESS),
     tap(() => this.loadingService.setLoading(false))
-  );
+  ), { dispatch: false });
 
-  @Effect({ dispatch: false })
-  postVoteFailure$ = this.actions$.pipe(
+  
+  postVoteFailure$ = createEffect(() => this.actions$.pipe(
     ofType(IotdActionTypes.POST_VOTE_FAILURE),
     map(action => action.payload.error),
     tap(error => {
       this.popNotificationsService.error(error);
       this.loadingService.setLoading(false);
     })
-  );
+  ), { dispatch: false });
 
-  @Effect()
-  deleteVote$ = this.actions$.pipe(
+  
+  deleteVote$ = createEffect(() => this.actions$.pipe(
     ofType(IotdActionTypes.DELETE_VOTE),
     tap(() => this.loadingService.setLoading(true)),
     map(action => action.payload),
@@ -370,19 +370,19 @@ export class IotdEffects {
         catchError(() => of(new DeleteVoteFailure()))
       )
     )
-  );
+  ));
 
-  @Effect({ dispatch: false })
-  deleteVoteSuccess$ = this.actions$.pipe(
+  
+  deleteVoteSuccess$ = createEffect(() => this.actions$.pipe(
     ofType(IotdActionTypes.DELETE_VOTE_SUCCESS),
     tap(() => this.loadingService.setLoading(false))
-  );
+  ), { dispatch: false });
 
-  @Effect({ dispatch: false })
-  deleteVoteFailure$ = this.actions$.pipe(
+  
+  deleteVoteFailure$ = createEffect(() => this.actions$.pipe(
     ofType(IotdActionTypes.DELETE_VOTE_FAILURE),
     tap(() => this.loadingService.setLoading(false))
-  );
+  ), { dispatch: false });
 
   constructor(
     public readonly store$: Store<State>,

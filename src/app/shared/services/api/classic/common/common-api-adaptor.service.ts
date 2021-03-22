@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { GroupInterface } from "@shared/interfaces/group.interface";
+import { AuthGroupInterface } from "@shared/interfaces/auth-group.interface";
 import { PermissionInterface } from "@shared/interfaces/permission.interface";
 import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
 import { UserInterface } from "@shared/interfaces/user.interface";
@@ -102,7 +102,7 @@ export class CommonApiAdaptorService extends BaseService {
     };
   }
 
-  groupFromBackend(group: BackendGroupInterface): GroupInterface {
+  authGroupFromBackend(group: BackendGroupInterface): AuthGroupInterface {
     return {
       id: group.id,
       name: group.name,
@@ -122,7 +122,7 @@ export class CommonApiAdaptorService extends BaseService {
       isSuperUser: user.is_superuser,
       isStaff: user.is_staff,
       isActive: user.is_active,
-      groups: user.groups.map(group => this.groupFromBackend(group)),
+      groups: user.groups.map(group => this.authGroupFromBackend(group)),
       userPermissions: user.user_permissions.map(permission => this.permissionFromBackend(permission))
     };
   }

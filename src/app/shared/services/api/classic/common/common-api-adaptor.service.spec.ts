@@ -59,7 +59,7 @@ describe("CommonApiAdaptorService", () => {
         ]
       };
 
-      expect(service.groupFromBackend(backendGroup)).toEqual({
+      expect(service.authGroupFromBackend(backendGroup)).toEqual({
         id: 1,
         name: "foo",
         permissions: [

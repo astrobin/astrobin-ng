@@ -1,0 +1,23 @@
+<ng-container *ngIf="to.thumbnailURL$ | async as thumbnailURL; else loading">
+  <image-cropper
+    (cropperReady)="onCropperReady($event)"
+    (imageCropped)="onImageCropped($event)"
+    (imageLoaded)="onImageLoaded($event)"
+    *ngIf="(showCropper$ | async) === true; else loading"
+    [alignImage]="'left'"
+    [aspectRatio]="1"
+    [attr.id]="field.id"
+    [cropperMinWidth]="130"
+    [cropper]="cropper"
+    [imageURL]="thumbnailURL"
+    [maintainAspectRatio]="true"
+    [roundCropper]="false"
+    [style.display]="cropperReady ? null : 'none'"
+  ></image-cropper>
+
+  <ng-container *ngIf="!cropperReady" [ngTemplateOutlet]="loading"></ng-container>
+</ng-container>
+
+<ng-template #loading>
+  <astrobin-loading-indicator></astrobin-loading-indicator>
+</ng-template>

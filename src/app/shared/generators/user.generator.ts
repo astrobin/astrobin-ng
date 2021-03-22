@@ -1,4 +1,4 @@
-import { GroupGenerator } from "@shared/generators/group.generator";
+import { AuthGroupGenerator } from "@shared/generators/auth-group.generator";
 import { UserInterface } from "@shared/interfaces/user.interface";
 
 export class UserGenerator {
@@ -14,7 +14,7 @@ export class UserGenerator {
       isSuperUser: false,
       isStaff: false,
       isActive: true,
-      groups: [GroupGenerator.group()],
+      groups: [AuthGroupGenerator.group()],
       userPermissions: []
     };
   }

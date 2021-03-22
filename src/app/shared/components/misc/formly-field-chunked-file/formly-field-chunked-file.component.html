@@ -1,12 +1,12 @@
-<div class="chunked-file" uploadxDrop>
-  <label class="upload-btn" [class.active]="isActive()">
-    <span class="progress-area" [style.width.%]="uploadState?.progress">
+<div [attr.id]="field.id" class="chunked-file" uploadxDrop>
+  <label [class.active]="isActive()" class="upload-btn">
+    <span [style.width.%]="uploadState?.progress" class="progress-area">
       <span class="background"></span>
     </span>
 
     <span class="file">
       <ng-container *ngIf="upload && upload.name; else withoutFile">
-        {{ upload.name }} ({{uploadSize | filesize}})
+        {{ upload.name }} ({{ uploadSize | filesize }})
 
         <span class="status">{{ status$ | async }}</span>
       </ng-container>
@@ -18,7 +18,12 @@
       </ng-template>
     </span>
 
-    <input [formControl]="formControl" [formlyAttributes]="field" [uploadx]="uploadOptions" type="file"
-      class="chunked" />
+    <input
+      [formControl]="formControl"
+      [formlyAttributes]="field"
+      [uploadx]="uploadOptions"
+      class="chunked"
+      type="file"
+    />
   </label>
 </div>
