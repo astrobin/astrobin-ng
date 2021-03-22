@@ -205,8 +205,8 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
         label: this.translate.instant("Link to TIFF/FITS"),
         description: this.translate.instant(
           "If you want to share the TIFF or FITS file of your image, put a link to the file here. " +
-          "Unfortunately, AstroBin cannot offer to store these files at the moment, so you will have to " +
-          "host them on your personal space."
+            "Unfortunately, AstroBin cannot offer to store these files at the moment, so you will have to " +
+            "host them on your personal space."
         ),
         placeholder: this.translate.instant("e.g.") + " https://www.example.com/my-page.html",
         required: false
@@ -508,7 +508,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
         label: this.translate.instant("Sharpen thumbnails"),
         description: this.translate.instant(
           "If selected, AstroBin will use a resizing algorithm that slightly sharpens the image's thumbnails. " +
-          "This setting applies to all revisions."
+            "This setting applies to all revisions."
         )
       }
     };
@@ -633,7 +633,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
         label: this.translate.instant("Mouse hover image"),
         description: this.translate.instant(
           "Choose what will be displayed when somebody hovers the mouse over this image. Please note: only " +
-          "revisions with the same width and height of your original image can be considered."
+            "revisions with the same width and height of your original image can be considered."
         ),
         options: [
           {
