@@ -35,7 +35,10 @@ import { LoadingService } from "@shared/services/loading.service";
 import { TitleService } from "@shared/services/title/title.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
-import { map, switchMap } from "rxjs/operators";
+import { catchError, map, switchMap } from "rxjs/operators";
+import { retryWithDelay } from "rxjs-boost/lib/operators";
+import { PopNotificationsService } from "@shared/services/pop-notifications.service";
+import { EMPTY } from "rxjs";
 
 @Component({
   selector: "astrobin-image-edit-page",
@@ -72,9 +75,20 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     public readonly loadingService: LoadingService,
     public readonly modalService: NgbModal,
     public readonly utilsService: UtilsService,
-    public readonly windowRefService: WindowRefService
+    public readonly windowRefService: WindowRefService,
+    public readonly popNotificationService: PopNotificationsService
   ) {
     super();
+  }
+
+  get newImageDataEditorAlert(): string {
+    return this.translate.instant(
+      "Welcome to the new image data editor! In case of problems, please {{0}}let us know{{1}}!",
+      {
+        0: `<a href="${this.classicRoutesService.CONTACT}" target="_blank">`,
+        1: "</a>"
+      }
+    );
   }
 
   ngOnInit(): void {
@@ -130,16 +144,6 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
         this.classicRoutesService.EDIT_IMAGE_GEAR(this.image.hash || "" + this.image.pk) + "?upload"
       );
     });
-  }
-
-  get newImageDataEditorAlert(): string {
-    return this.translate.instant(
-      "Welcome to the new image data editor! In case of problems, please {{0}}let us know{{1}}!",
-      {
-        0: `<a href="${this.classicRoutesService.CONTACT}" target="_blank">`,
-        1: "</a>"
-      }
-    );
   }
 
   openClassicEditorRedirectConfirmationModal(): boolean {
@@ -201,8 +205,8 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
         label: this.translate.instant("Link to TIFF/FITS"),
         description: this.translate.instant(
           "If you want to share the TIFF or FITS file of your image, put a link to the file here. " +
-            "Unfortunately, AstroBin cannot offer to store these files at the moment, so you will have to " +
-            "host them on your personal space."
+          "Unfortunately, AstroBin cannot offer to store these files at the moment, so you will have to " +
+          "host them on your personal space."
         ),
         placeholder: this.translate.instant("e.g.") + " https://www.example.com/my-page.html",
         required: false
@@ -476,7 +480,21 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
             revision: "0",
             alias: ImageAlias.HD
           })
-          .pipe(map(thumbnail => thumbnail.url))
+          .pipe(
+            map(thumbnail => {
+              if (!thumbnail) {
+                throw new Error("THUMBNAIL_NOT_READY");
+              }
+              return thumbnail.url;
+            }),
+            retryWithDelay(1000, 60),
+            catchError(() => {
+              this.popNotificationService.error(
+                "Timeout while loading the thumbnail, please refresh the page to try again!"
+              );
+              return EMPTY;
+            })
+          )
       }
     };
   }
@@ -490,7 +508,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
         label: this.translate.instant("Sharpen thumbnails"),
         description: this.translate.instant(
           "If selected, AstroBin will use a resizing algorithm that slightly sharpens the image's thumbnails. " +
-            "This setting applies to all revisions."
+          "This setting applies to all revisions."
         )
       }
     };
@@ -615,7 +633,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
         label: this.translate.instant("Mouse hover image"),
         description: this.translate.instant(
           "Choose what will be displayed when somebody hovers the mouse over this image. Please note: only " +
-            "revisions with the same width and height of your original image can be considered."
+          "revisions with the same width and height of your original image can be considered."
         ),
         options: [
           {
