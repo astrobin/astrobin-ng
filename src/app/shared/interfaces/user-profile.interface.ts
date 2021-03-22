@@ -1,3 +1,5 @@
+import { WatermarkPositionOptions, WatermarkSizeOptions } from "@shared/interfaces/image.interface";
+
 export interface UserProfileInterface {
   id: number;
   deleted: Date;
@@ -22,8 +24,8 @@ export interface UserProfileInterface {
   defaultLicense: number;
   defaultWatermarkText: string;
   defaultWatermark: boolean;
-  defaultWatermarkSize: string;
-  defaultWatermarkPosition: number;
+  defaultWatermarkSize: WatermarkSizeOptions;
+  defaultWatermarkPosition: WatermarkPositionOptions;
   defaultWatermarkOpacity: number;
   acceptTos: boolean;
   openNotificationsInNewTab: boolean | null;
