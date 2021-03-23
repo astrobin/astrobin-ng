@@ -67,6 +67,8 @@
       {{ "Save" | translate }}
     </button>
     <div aria-labelledby="save-dropdown" ngbDropdownMenu>
+      <h6 class="dropdown-header">{{ "Where do you want to go after saving?" | translate }}</h6>
+
       <button
         (click)="
           onSave($event, classicRoutesService.EDIT_IMAGE_GEAR(this.image.hash || '' + this.image.pk) + '?upload')
@@ -74,6 +76,15 @@
         class="dropdown-item"
       >
         {{ "Save and proceed to gear selection" | translate }}
+      </button>
+
+      <button
+        (click)="
+          onSave($event, classicRoutesService.EDIT_IMAGE_ACQUISITION(this.image.hash || '' + this.image.pk) + '?upload')
+        "
+        class="dropdown-item"
+      >
+        {{ "Save and proceed to acquisition details" | translate }}
       </button>
 
       <button
