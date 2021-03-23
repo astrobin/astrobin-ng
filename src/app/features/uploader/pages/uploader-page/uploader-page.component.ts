@@ -83,7 +83,7 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
   subscriptionWithYearlySlotsMessage(name: string, counter: number, slots: number): string {
     return this.translate.instant(
       "You have a <strong>{{0}}</strong> subscription. You have used <strong>{{1}}</strong> of " +
-      "your <strong>{{2}}</strong> yearly upload slots.",
+        "your <strong>{{2}}</strong> yearly upload slots.",
       {
         0: name,
         1: counter,
@@ -95,7 +95,7 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
   subscriptionWithTotalSlotsMessage(name: string, counter: number, slots: number): string {
     return this.translate.instant(
       "You have a <strong>{{0}}</strong> subscription. You have used <strong>{{1}}</strong> of " +
-      "your <strong>{{2}}</strong> upload slots.",
+        "your <strong>{{2}}</strong> upload slots.",
       {
         0: name,
         1: counter,
@@ -143,7 +143,7 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
           .subscribe((userProfile: UserProfileInterface) => {
             const language = userProfile.language;
             const languageMatches = language === "en" || language === "en-GB";
-            const chanceMatches = Math.random() <= 0.5;
+            const chanceMatches = Math.random() <= 0.7;
             const forceNewEditor = this.route.snapshot.queryParams["forceNewEditor"] !== undefined;
             const forceClassicEditor = this.route.snapshot.queryParams["forceClassicEditor"] !== undefined;
 
@@ -178,8 +178,8 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
       this.popNotificationsService.warning(
         this.translate.instant(
           "Please note: if this file is a crop of another image you already published on AstroBin, the common " +
-          "practice would be to upload it as a new revision. For more info, please " +
-          "<a href='https://welcome.astrobin.com/features/image-revisions' target='_blank'>click here</a>."
+            "practice would be to upload it as a new revision. For more info, please " +
+            "<a href='https://welcome.astrobin.com/features/image-revisions' target='_blank'>click here</a>."
         ),
         null,
         {
