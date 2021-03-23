@@ -57,5 +57,7 @@ export class ClassicRoutesService extends BaseService {
 
   EDIT_IMAGE_GEAR = (id: string) => BASE_URL + `/edit/gear/${id}/`;
 
+  EDIT_IMAGE_ACQUISITION = (id: string) => BASE_URL + `/edit/acquisition/${id}/`;
+
   EDIT_IMAGE_REVISION = (id: string) => BASE_URL + `/edit/revision/${id}/`;
 }
