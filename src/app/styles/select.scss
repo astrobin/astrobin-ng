@@ -9,6 +9,12 @@ $highlight: 3%;
     color: $foreground;
   }
 
+  .ng-value-container {
+    .ng-placeholder {
+      color: $light-grey !important;
+    }
+  }
+
   .ng-arrow-wrapper {
     width: 25px !important;
     padding-right: 5px !important;
