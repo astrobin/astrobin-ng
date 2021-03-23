@@ -11,7 +11,7 @@ context("Image edit (new)", () => {
       "**/api/v2/remote-source-affiliation/remote-source-affiliate/",
       "fixture:api/remote-source-affiliation/remote-source-affiliates.json"
     ).as("getRemoteSourceAffiliates");
-    cy.route("GET", "**/api/v2/groups/group/?member=1", "fixture:api/groups/groups.json").as("getGroups");
+    cy.route("GET", "**/api/v2/groups/group/*", "fixture:api/groups/groups.json").as("getGroups");
   });
 
   it("should navigate to the edit page", () => {
@@ -44,11 +44,44 @@ context("Image edit (new)", () => {
 
     cy.url().should("contain", "#2");
 
-    cy.get("#image-watermark-field").should("be.checked");
-    cy.get("#image-watermark-text-field").should("have.value", "Copyright astrobin-dev");
-    cy.get("#image-watermark-position-field .ng-value").should("contain.text", "Bottom left");
+    cy.get("#image-watermark-field").should("not.be.checked");
+    cy.get("#image-watermark-text-field").should("have.value", "Copyright astrobin_dev");
+    cy.get("#image-watermark-position-field .ng-value").should("contain.text", "Center");
     cy.get("#image-watermark-size-field .ng-value").should("contain.text", "Medium");
-    cy.get("#image-watermark-opacity-field").should("have.value", "50");
+    cy.get("#image-watermark-opacity-field").should("have.value", "10");
+  });
+
+  it("should set the watermark checkbox as checked if the watermark text changes", () => {
+    cy.get("#image-watermark-text-field").type("Test");
+    cy.get("#image-watermark-field").should("be.checked");
+  });
+
+  it("should set the watermark checkbox as checked if the watermark position changes", () => {
+    cy.get("[for=image-watermark-field]").click();
+    cy.get("#image-watermark-field").should("not.be.checked");
+    cy.get("#image-watermark-position-field").click();
+    cy.get("#image-watermark-position-field .ng-option")
+      .contains("Top right")
+      .click();
+    cy.get("#image-watermark-field").should("be.checked");
+  });
+
+  it("should set the watermark checkbox as checked if the watermark size changes", () => {
+    cy.get("[for=image-watermark-field]").click();
+    cy.get("#image-watermark-field").should("not.be.checked");
+    cy.get("#image-watermark-size-field").click();
+    cy.get("#image-watermark-size-field .ng-option")
+      .contains("Large")
+      .click();
+    cy.get("#image-watermark-field").should("be.checked");
+  });
+
+  it("should set the watermark checkbox as checked if the watermark opacity changes", () => {
+    cy.get("[for=image-watermark-field]").click();
+    cy.get("#image-watermark-field").should("not.be.checked");
+    cy.get("#image-watermark-opacity-field").clear();
+    cy.get("#image-watermark-opacity-field").type("100");
+    cy.get("#image-watermark-field").should("be.checked");
   });
 
   it("should have prefilled the basic information step", () => {

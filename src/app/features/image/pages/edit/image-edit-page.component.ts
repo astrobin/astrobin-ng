@@ -555,6 +555,13 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
       id: "image-watermark-text-field",
       templateOptions: {
         label: this.translateService.instant("Text")
+      },
+      hooks: {
+        onInit: (field: FormlyFieldConfig) => {
+          field.formControl.valueChanges.subscribe(value => {
+            this._setWatermarkTrue();
+          });
+        }
       }
     };
   }
@@ -596,6 +603,13 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
             label: this.translateService.instant("Bottom right")
           }
         ]
+      },
+      hooks: {
+        onInit: (field: FormlyFieldConfig) => {
+          field.formControl.valueChanges.subscribe(value => {
+            this._setWatermarkTrue();
+          });
+        }
       }
     };
   }
@@ -622,6 +636,13 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
             label: this.translateService.instant("Large")
           }
         ]
+      },
+      hooks: {
+        onInit: (field: FormlyFieldConfig) => {
+          field.formControl.valueChanges.subscribe(value => {
+            this._setWatermarkTrue();
+          });
+        }
       }
     };
   }
@@ -639,6 +660,13 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
         description: this.translateService.instant(
           "0 means invisible; 100 means completely opaque. Recommended values are: 10 if the watermark will appear on the dark sky background, 50 if on some bright object."
         )
+      },
+      hooks: {
+        onInit: (field: FormlyFieldConfig) => {
+          field.formControl.valueChanges.subscribe(value => {
+            this._setWatermarkTrue();
+          });
+        }
       }
     };
   }
@@ -776,5 +804,12 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
           this.model.watermarkOpacity = userProfile.defaultWatermarkOpacity;
         });
     }
+  }
+
+  private _setWatermarkTrue(): void {
+    this.model = {
+      ...this.model,
+      watermark: true
+    };
   }
 }

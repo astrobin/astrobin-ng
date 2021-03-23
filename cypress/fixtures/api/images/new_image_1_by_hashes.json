@@ -30,11 +30,11 @@
       "allowComments": true,
       "uploaderInProgress": null,
       "squareCropping": "100, 100, 3900, 3900",
-      "watermark": true,
-      "watermarkText": "Copyright astrobin-dev",
-      "watermarkPosition": 4,
+      "watermark": false,
+      "watermarkText": null,
+      "watermarkPosition": 0,
       "watermarkSize": "M",
-      "watermarkOpacity": 50,
+      "watermarkOpacity": 10,
       "sharpenThumbnails": true
     }
   ]
