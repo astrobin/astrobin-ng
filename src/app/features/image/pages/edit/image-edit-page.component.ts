@@ -1,5 +1,5 @@
 import { Component, OnInit, TemplateRef, ViewChild } from "@angular/core";
-import { FormGroup } from "@angular/forms";
+import { FormControl, FormGroup, ValidationErrors } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
@@ -39,6 +39,16 @@ import { catchError, filter, map, switchMap, take } from "rxjs/operators";
 import { retryWithDelay } from "rxjs-boost/lib/operators";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { EMPTY } from "rxjs";
+
+export function KeyValueTagsValidator(control: FormControl): ValidationErrors {
+  if (!control.value) {
+    return null;
+  }
+
+  const regex = /^[a-zA-Z]{1,100}=[a-zA-Z0-9]{1,100}(?:(?:\r\n?|\n)[a-zA-Z]{1,100}=[a-zA-Z0-9]{1,100})*$/g;
+
+  return regex.test(control.value) ? null : { keyValueTags: true };
+}
 
 @Component({
   selector: "astrobin-image-edit-page",
@@ -701,6 +711,26 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     };
   }
 
+  private _getKeyValueTagsField(): any {
+    return {
+      key: "keyValueTags",
+      type: "textarea",
+      id: "image-key-value-tags-field",
+      templateOptions: {
+        label: this.translateService.instant("Key/value tags"),
+        description: this.translateService.instant(
+          "Provide a list of unique key/value pairs to tag this image with. Use the '=' symbol between key and " +
+            "value, and provide one pair per line. These tags can be used to sort images by arbitrary properties."
+        ),
+        required: false,
+        rows: 4
+      },
+      validators: {
+        validation: [KeyValueTagsValidator]
+      }
+    };
+  }
+
   private _getAllowCommentsField(): any {
     return {
       key: "allowComments",
@@ -763,7 +793,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
           {
             id: "image-stepper-settings",
             templateOptions: { label: this.translateService.instant("Settings") },
-            fieldGroup: [this._getMouseHoverImageField(), this._getAllowCommentsField()]
+            fieldGroup: [this._getMouseHoverImageField(), this._getKeyValueTagsField(), this._getAllowCommentsField()]
           }
         ]
       }

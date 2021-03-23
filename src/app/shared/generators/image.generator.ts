@@ -41,7 +41,8 @@ export class ImageGenerator {
       watermarkPosition: WatermarkPositionOptions.CENTER,
       watermarkSize: WatermarkSizeOptions.MEDIUM,
       watermarkOpacity: 50,
-      sharpenThumbnails: false
+      sharpenThumbnails: false,
+      keyValueTags: null
     };
   }
 }
