@@ -73,16 +73,23 @@ $highlight: 3%;
   border-top: 1px solid lighten($background, $highlight) !important;
   box-shadow: .25rem .5rem 1rem rgba(0, 0, 0, .5) !important;
 
+  .ng-dropdown-panel-items {
+    max-height: 220px !important;
+  }
+
   .ng-optgroup {
-    color: $foreground !important;
+    color: $white !important;
     font-weight: bold !important;
-    font-style: italic !important;
     padding: .75rem !important;
   }
 
   .ng-option {
     padding: .5rem 1rem !important;
     color: $lightest-grey !important;
+
+    &.ng-option-child {
+      padding-left: 1.5rem !important;
+    }
 
     &.ng-option-marked {
       color: lighten($foreground, $highlight) !important;
