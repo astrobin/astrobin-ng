@@ -141,7 +141,7 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
           .pipe(take(1))
           .subscribe((userProfile: UserProfileInterface) => {
             const language = userProfile.language;
-            if (Math.random() <= 0.2 && (language === "en" || language === "en-GB")) {
+            if (Math.random() <= 0.4 && (language === "en" || language === "en-GB")) {
               this.router.navigate([`/i/${hash}/edit`]);
             } else {
               this.windowRef.nativeWindow.location.assign(
