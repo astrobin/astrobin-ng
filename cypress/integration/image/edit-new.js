@@ -120,7 +120,7 @@ context("Image edit (new)", () => {
     cy.get("#image-subject-type-field .ng-value").should("not.exist");
     cy.get("#image-data-source-field .ng-value").should("not.exist");
 
-    cy.get("#image-groups-field .ng-value").should("not.exist");
+    cy.get("#image-groups-field").should("not.be.visible");
   });
 
   it("should select an acquisition type", () => {
@@ -185,14 +185,6 @@ context("Image edit (new)", () => {
 
   it("should unmark the content step as errored", () => {
     cy.get("#image-stepper-field .nav-item.danger").should("not.exist");
-  });
-
-  it("should add groups", () => {
-    cy.get("#image-groups-field").click();
-    cy.get("#image-groups-field .ng-option")
-      .contains("First")
-      .click();
-    cy.get("#image-groups-field .ng-value").should("contain.text", "First");
   });
 
   it("should have prefilled the settings step", () => {

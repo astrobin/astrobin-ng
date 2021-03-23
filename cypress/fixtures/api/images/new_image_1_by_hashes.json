@@ -8,7 +8,7 @@
       "pk": 1,
       "hash": "abc123",
       "title": "Test image",
-      "isWip": false,
+      "isWip": true,
       "skipNotifications": false,
       "w": 4000,
       "h": 4000,
