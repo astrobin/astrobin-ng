@@ -19,7 +19,7 @@ import { UploadState, UploadxService } from "ngx-uploadx";
 import { take, takeUntil } from "rxjs/operators";
 import { selectCurrentUserProfile } from "@features/account/store/auth.selectors";
 import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
-import { Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 
 @Component({
   selector: "astrobin-uploader-page",
@@ -74,7 +74,8 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
     public readonly titleService: TitleService,
     public readonly userSubscriptionService: UserSubscriptionService,
     public readonly popNotificationsService: PopNotificationsService,
-    public readonly router: Router
+    public readonly router: Router,
+    public readonly route: ActivatedRoute
   ) {
     super();
   }
@@ -141,7 +142,12 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
           .pipe(take(1))
           .subscribe((userProfile: UserProfileInterface) => {
             const language = userProfile.language;
-            if (Math.random() <= 0.4 && (language === "en" || language === "en-GB")) {
+            const languageMatches = language === "en" || language === "en-GB";
+            const chanceMatches = Math.random() <= 0.5;
+            const forceNewEditor = this.route.snapshot.queryParams["forceNewEditor"] !== undefined;
+            const forceClassicEditor = this.route.snapshot.queryParams["forceClassicEditor"] !== undefined;
+
+            if (forceNewEditor || (!forceClassicEditor && chanceMatches && languageMatches)) {
               this.router.navigate([`/i/${hash}/edit`]);
             } else {
               this.windowRef.nativeWindow.location.assign(
