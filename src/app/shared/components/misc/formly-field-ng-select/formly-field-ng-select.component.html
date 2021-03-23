@@ -7,6 +7,7 @@
   [items]="to.options | formlySelectOptions: field | async"
   [multiple]="to.multiple"
   groupBy="group"
+  placeholder="{{ 'Type to search options...' | translate }}"
 >
   <ng-template let-item="item" ng-optgroup-tmp>
     {{ item.label }}
