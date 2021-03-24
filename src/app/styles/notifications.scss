@@ -51,3 +51,10 @@
     color: inherit;
   }
 }
+
+.toast-warning {
+  &,
+  strong {
+    color: $grey;
+  }
+}

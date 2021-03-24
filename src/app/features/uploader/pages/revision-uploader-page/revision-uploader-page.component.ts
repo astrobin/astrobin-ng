@@ -44,7 +44,8 @@ export class RevisionUploaderPageComponent extends BaseComponentDirective implem
       type: "chunked-file",
       templateOptions: {
         required: true,
-        experimentalTiffSupportWarning: true
+        experimentalTiffSupportWarning: true,
+        veryLargeSizeWarning: true
       }
     },
     {
@@ -108,9 +109,11 @@ export class RevisionUploaderPageComponent extends BaseComponentDirective implem
       })
     );
 
-    this.uploadDataService.patchMetadata("image-upload", { image_id: this.image.pk });
-    this.uploadDataService.patchMetadata("image-upload", { is_revision: true });
-    this.uploadDataService.patchMetadata("image-upload", { description: Constants.NO_VALUE });
+    this.uploadDataService.patchMetadata("image-upload", {
+      image_id: this.image.pk,
+      is_revision: true,
+      description: Constants.NO_VALUE
+    });
 
     this.imageThumbnail$ = this.thumbnailGroupApiService
       .getThumbnailGroup(this.image.pk, Constants.ORIGINAL_REVISION)

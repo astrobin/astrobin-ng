@@ -54,7 +54,8 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
       type: "chunked-file",
       templateOptions: {
         required: true,
-        experimentalTiffSupportWarning: true
+        experimentalTiffSupportWarning: true,
+        veryLargeSizeWarning: true
       },
       validators: {
         validation: [{ name: "file-size", options: { max: 0 } }]
@@ -122,7 +123,10 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
       this.uploadDataService.setEndpoint(`${environment.classicBaseUrl}/${backendConfig.IMAGE_UPLOAD_ENDPOINT}`);
     });
 
-    this.uploadDataService.setMetadata("image-upload", { is_wip: true, skip_notifications: true });
+    this.uploadDataService.setMetadata("image-upload", {
+      is_wip: true,
+      skip_notifications: true
+    });
 
     this.userSubscriptionService.fileSizeAllowed(0).subscribe(result => {
       const field = this.fields.filter(x => x.key === "image_file")[0];
