@@ -14,10 +14,6 @@ context("Image edit (existing)", () => {
     cy.route("GET", "**/api/v2/groups/group/?member=1", "fixture:api/groups/groups.json").as("getGroups");
   });
 
-  afterEach(() => {
-    cy.wait(250);
-  });
-
   it("should navigate to the edit page", () => {
     cy.login();
     cy.visitPage("/i/abc123/edit");
@@ -37,27 +33,7 @@ context("Image edit (existing)", () => {
     cy.url().should("contain", "#1");
   });
 
-  it("should have prefilled the watermark step", () => {
-    cy.get("#image-stepper-field .nav-link small")
-      .contains("Watermark")
-      .click();
-
-    cy.url().should("contain", "#2");
-
-    cy.get("#image-watermark-field").should("be.checked");
-    cy.get("#image-watermark-text-field").should("have.value", "Copyright astrobin-dev");
-    cy.get("#image-watermark-position-field .ng-value").should("contain.text", "Bottom left");
-    cy.get("#image-watermark-size-field .ng-value").should("contain.text", "Medium");
-    cy.get("#image-watermark-opacity-field").should("have.value", "50");
-  });
-
   it("should have prefilled the basic information step", () => {
-    cy.get("#image-stepper-field .nav-link small")
-      .contains("Basic information")
-      .click();
-
-    cy.url().should("contain", "#3");
-
     cy.get("#image-title-field").should("have.value", "Test image");
     cy.get("#image-description-field").should("have.value", "This is a test");
     cy.get("#image-link-field").should("have.value", "https://www.example.com/1/");
@@ -69,7 +45,7 @@ context("Image edit (existing)", () => {
       .contains("Content")
       .click();
 
-    cy.url().should("contain", "#4");
+    cy.url().should("contain", "#2");
 
     cy.get("#image-acquisition-type-field .ng-value").should("contain.text", "Regular");
     cy.get("#image-subject-type-field .ng-value").should("contain.text", "Deep sky");
@@ -84,6 +60,20 @@ context("Image edit (existing)", () => {
     cy.get("#image-groups-field .ng-value")
       .contains("Third test group")
       .should("exist");
+  });
+
+  it("should have prefilled the watermark step", () => {
+    cy.get("#image-stepper-field .nav-link small")
+      .contains("Watermark")
+      .click();
+
+    cy.url().should("contain", "#4");
+
+    cy.get("#image-watermark-field").should("be.checked");
+    cy.get("#image-watermark-text-field").should("have.value", "Copyright astrobin-dev");
+    cy.get("#image-watermark-position-field .ng-value").should("contain.text", "Bottom left");
+    cy.get("#image-watermark-size-field .ng-value").should("contain.text", "Medium");
+    cy.get("#image-watermark-opacity-field").should("have.value", "50");
   });
 
   it("should have prefilled the settings step", () => {
