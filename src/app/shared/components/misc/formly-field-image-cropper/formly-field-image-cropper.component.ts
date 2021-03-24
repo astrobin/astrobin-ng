@@ -5,10 +5,8 @@ import { selectImageEditorState } from "@features/image/store/image.selectors";
 import { Store } from "@ngrx/store";
 import { FieldType } from "@ngx-formly/core";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
-import { UtilsService } from "@shared/services/utils/utils.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { CropperPosition, Dimensions, ImageCroppedEvent, LoadedImage } from "ngx-image-cropper";
-import { OutputFormat } from "ngx-image-cropper/lib/interfaces/cropper-options.interface";
 import { fromEvent } from "rxjs";
 import { debounceTime, filter, map, take } from "rxjs/operators";
 
@@ -30,7 +28,6 @@ export class FormlyFieldImageCropperComponent extends FieldType {
 
   constructor(
     public readonly store$: Store<State>,
-    public readonly utilsService: UtilsService,
     public readonly windowRefService: WindowRefService,
     public readonly popNotificationService: PopNotificationsService
   ) {

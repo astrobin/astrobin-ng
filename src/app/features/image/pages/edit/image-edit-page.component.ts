@@ -117,7 +117,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     this.route.fragment.subscribe((fragment: string) => {
       if (!fragment) {
         this.router.navigate([`/i/${this.image.hash || this.image.pk}/edit`], { fragment: "1" });
-      } else if (fragment === "1") {
+      } else if (fragment === "3") {
         this.store$.dispatch(new ImageEditorSetCropperShown(true));
       }
     });
@@ -753,22 +753,6 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
         },
         fieldGroup: [
           {
-            id: "image-stepper-thumbnail",
-            templateOptions: { label: this.translateService.instant("Thumbnail") },
-            fieldGroup: [this._getThumbnailField(), this._getSharpenThumbnailsField()]
-          },
-          {
-            id: "image-stepper-watermark",
-            templateOptions: { label: this.translateService.instant("Watermark") },
-            fieldGroup: [
-              this._getWatermarkCheckboxField(),
-              this._getWatermarkTextField(),
-              this._getWatermarkPosition(),
-              this._getWatermarkTextSize(),
-              this._getWatermarkTextOpacity()
-            ]
-          },
-          {
             id: "image-stepper-basic-information",
             templateOptions: { label: this.translateService.instant("Basic information") },
             fieldGroup: [
@@ -788,6 +772,22 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
               this._getDataSourceField(),
               this._getRemoteSourceField(),
               this._getGroupsField()
+            ]
+          },
+          {
+            id: "image-stepper-thumbnail",
+            templateOptions: { label: this.translateService.instant("Thumbnail") },
+            fieldGroup: [this._getThumbnailField(), this._getSharpenThumbnailsField()]
+          },
+          {
+            id: "image-stepper-watermark",
+            templateOptions: { label: this.translateService.instant("Watermark") },
+            fieldGroup: [
+              this._getWatermarkCheckboxField(),
+              this._getWatermarkTextField(),
+              this._getWatermarkPosition(),
+              this._getWatermarkTextSize(),
+              this._getWatermarkTextOpacity()
             ]
           },
           {
