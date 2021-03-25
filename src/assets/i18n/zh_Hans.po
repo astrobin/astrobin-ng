@@ -8,7 +8,7 @@ msgid ""
 "0 means invisible; 100 means completely opaque. Recommended values are: 10 "
 "if the watermark will appear on the dark sky background, 50 if on some "
 "bright object."
-msgstr ""
+msgstr "0表示不可见的，100表示完全不透明。如果水印出现在暗色天空背景里，推荐值是：10。如果是在一些比较亮天体上，推荐值是：50。"
 
 msgid "API Keys"
 msgstr "API Keys"
@@ -20,7 +20,7 @@ msgid "Access denied."
 msgstr "拒绝访问。"
 
 msgid "Acquisition type"
-msgstr ""
+msgstr "拍摄方法"
 
 msgid "Advanced plate-solving"
 msgstr "高级解析"
@@ -29,10 +29,10 @@ msgid "Advanced search"
 msgstr "高级搜索"
 
 msgid "Allow comments"
-msgstr ""
+msgstr "允许评论"
 
 msgid "Amateur hosting facility"
-msgstr ""
+msgstr "业余托管天文台"
 
 msgid "Amount"
 msgstr "数量"
@@ -41,21 +41,16 @@ msgid "And much more!"
 msgstr "还有更多！"
 
 msgid "Anular solar eclipse"
-msgstr ""
+msgstr "日环食"
 
 msgid "Apply watermark to image"
-msgstr ""
+msgstr "为这幅作品添加水印"
 
 msgid "Are you sure you want to dismiss this image?"
 msgstr "您确定要关闭此图片吗？"
 
-msgid "Are you sure?"
-msgstr ""
-
-msgid ""
-"AstroBin can protect your images from theft by applying a watermark to "
-"them. Please note: animated GIFs cannot be watermarked at this time."
-msgstr ""
+msgid "AstroBin can protect your images from theft by applying a watermark to them."
+msgstr "AstroBin 可以在作品上添加水印，以防止盗图。"
 
 msgid ""
 "AstroBin could not read your file as an image. Please try a different "
@@ -89,10 +84,10 @@ msgid "Autorenew"
 msgstr "自动更新"
 
 msgid "Backyard"
-msgstr ""
+msgstr "后院拍摄"
 
 msgid "Basic information"
-msgstr ""
+msgstr "基本信息"
 
 msgid "Basic plate-solving"
 msgstr "基础解析"
@@ -104,13 +99,13 @@ msgid "Bookmarks"
 msgstr "收藏夹"
 
 msgid "Bottom center"
-msgstr ""
+msgstr "底部中心"
 
 msgid "Bottom left"
-msgstr ""
+msgstr "左下"
 
 msgid "Bottom right"
-msgstr ""
+msgstr "右下"
 
 msgid "Buy"
 msgstr "购买"
@@ -122,19 +117,19 @@ msgid "Cancelled"
 msgstr "已取消的"
 
 msgid "Center"
-msgstr ""
+msgstr "中心"
 
 msgid ""
 "Choose what will be displayed when somebody hovers the mouse over this "
 "image. Please note: only revisions with the same width and height of your "
 "original image can be considered."
-msgstr ""
+msgstr "选择当鼠标悬停在此作品上时，将显示的内容。请注意：只有修订作品与原始作品具有相同宽度和高度时可用。"
 
 msgid "Click on the image and scroll to magnify up to 8x."
 msgstr "单击图像并滚动以放大至最大8倍。"
 
 msgid "Comet"
-msgstr ""
+msgstr "彗星"
 
 msgid "Commercial facilities"
 msgstr ""
@@ -143,7 +138,7 @@ msgid "Commercial products"
 msgstr "商业产品"
 
 msgid "Conjunction"
-msgstr ""
+msgstr "合星"
 
 msgid "Contact"
 msgstr "联系我们"
@@ -155,13 +150,13 @@ msgid "Contributors list"
 msgstr "贡献榜"
 
 msgid "Data source"
-msgstr ""
+msgstr "数据来源"
 
 msgid "Date"
 msgstr "日期"
 
 msgid "Deep sky object or field"
-msgstr ""
+msgstr "深空天体或深空视场"
 
 msgid "Description"
 msgstr "描述"
@@ -176,22 +171,22 @@ msgid "Do not notify your followers about this revision."
 msgstr "不将此次修订通知您的粉丝。"
 
 msgid "Downloaded"
-msgstr ""
+msgstr "远程拍摄下载的"
 
 msgid "Drawing/Sketch"
-msgstr ""
+msgstr "绘画/草图"
 
 msgid "Drop file here or click to browse"
 msgstr "将文件拖放至此，或点击浏览"
 
 msgid "Earth's Moon"
-msgstr ""
+msgstr "月亮"
 
 msgid "Edit"
-msgstr ""
+msgstr "编辑"
 
 msgid "Electronically-Assisted Astronomy (EAA, e.g. based on a live video feed)"
-msgstr ""
+msgstr "电子辅助天文观测（EAA，例如基于实时视传输）"
 
 msgid "Email"
 msgstr "电子邮件"
@@ -206,7 +201,7 @@ msgid "Explore"
 msgstr "探索"
 
 msgid "Extremely wide field"
-msgstr ""
+msgstr "超广角"
 
 msgid "FAQ"
 msgstr "FAQ"
@@ -240,7 +235,7 @@ msgid "Full search"
 msgstr "全局搜索"
 
 msgid "Gear"
-msgstr ""
+msgstr "器材"
 
 msgid "Go back to the home page."
 msgstr "回到首页。"
@@ -252,22 +247,13 @@ msgid "Groups"
 msgstr "小组"
 
 msgid "HTML tags are allowed."
-msgstr ""
+msgstr "允许HTML标签。"
 
 msgid ""
 "Heads up! Are you sure you want to upload such a large file? It's okay to "
 "do so but probably not many people will want to see it at its full "
 "resolution, if it will take too long for them to download it."
 msgstr "敲黑板！您确定要上传这么大的文件吗？ 这样做是可以的，但是如果它们加载时间过长，可能没有多少人会希望以完整分辨率查看。"
-
-msgid ""
-"Heads up! TIFF support on AstroBin is experimental. Grayscale images that "
-"are 16-bit or higher, or with floating points precision, currently are not "
-"supported. If your file is a color image, or already an 8-bit depth "
-"grayscale, please ignore this warning message."
-msgstr ""
-"敲黑板！AstroBin "
-"对TIFF的支持尚在实验阶段。当前不支持16位或更高或具有浮点精度的灰度图像。如果您的文件是彩色图像，或者是8bit的灰度图像，请忽略此警告消息。"
 
 msgid "Help"
 msgstr "帮助"
@@ -284,21 +270,20 @@ msgstr "首页"
 msgid ""
 "If selected, AstroBin will use a resizing algorithm that slightly sharpens "
 "the image's thumbnails. This setting applies to all revisions."
-msgstr ""
-
-msgid "If you made any changes to this form, you will lose them!"
-msgstr ""
+msgstr "如果勾选，AstroBin 将使用大小调整算法，略微锐化缩略图。此设置适用于所有修订图。"
 
 msgid ""
 "If you want to share the TIFF or FITS file of your image, put a link to the "
 "file here. Unfortunately, AstroBin cannot offer to store these files at the "
 "moment, so you will have to host them on your personal space."
 msgstr ""
+"如果想分享您的 TIFF 或 FITS 图像文件，请在这里输入该文件链接。遗憾的是，AstroBin "
+"不能提供保存这些文件，所以您将不得不托管它们到您的个人空间。"
 
 msgid ""
 "If you're hosting a copy of this image on your website, put the address "
 "here."
-msgstr ""
+msgstr "如果您在您自己的网站上发布过该作品，请再这里输入该作品的链接。"
 
 msgid "Image"
 msgstr "图像"
@@ -328,7 +313,7 @@ msgid "Invalid data, please refresh the page and try again."
 msgstr "无效数据，请刷新页面并重试。"
 
 msgid "Inverted monochrome"
-msgstr ""
+msgstr "反转黑白"
 
 msgid "It looks like you reached the upload limit for your subscription."
 msgstr "看起来您已经达到了当前订阅的上传上限。"
@@ -337,16 +322,16 @@ msgid "Judgement queue"
 msgstr "评审列队"
 
 msgid "Jupiter"
-msgstr ""
+msgstr "木星"
 
 msgid "Key/value tags"
-msgstr ""
+msgstr "键/值标签"
 
 msgid "Language"
 msgstr "语言"
 
 msgid "Large"
-msgstr ""
+msgstr "大"
 
 msgid "Latest topics"
 msgstr "最新主题"
@@ -355,10 +340,10 @@ msgid "Learn more"
 msgstr "了解更多"
 
 msgid "Link"
-msgstr ""
+msgstr "链接"
 
 msgid "Link to TIFF/FITS"
-msgstr ""
+msgstr "链接到 TIFF/FITS 文件"
 
 msgid "Loading..."
 msgstr "加载中..."
@@ -370,10 +355,10 @@ msgid "Logout"
 msgstr "登出"
 
 msgid "Lucky imaging"
-msgstr ""
+msgstr "幸运成像"
 
 msgid "Main solar system subject"
-msgstr ""
+msgstr "主要的太阳系目标"
 
 msgid "Mark all as read"
 msgstr "全部标记为已读"
@@ -385,7 +370,7 @@ msgid "Mark this revision as the final rendition of your image."
 msgstr "将此修订版标记为此系列图像的最终版。"
 
 msgid "Mars"
-msgstr ""
+msgstr "火星"
 
 msgid "Max. {{ max }} MB / image"
 msgstr "最大。{{ max }} MB /图片"
@@ -397,22 +382,22 @@ msgid "Max. {{ max }} uploads"
 msgstr "最大。{{ max }} 上传张数"
 
 msgid "Medium"
-msgstr ""
+msgstr "中"
 
 msgid "Mercury"
-msgstr ""
+msgstr "水星"
 
 msgid "Minor planet"
-msgstr ""
+msgstr "小行星"
 
 msgid "Mix of multiple sources"
-msgstr ""
+msgstr "多种素材来源"
 
 msgid "Moderate"
 msgstr "有限制的"
 
 msgid "Mouse hover image"
-msgstr ""
+msgstr "鼠标悬停图像"
 
 msgid "My messages"
 msgstr "我的消息"
@@ -427,7 +412,7 @@ msgid "Name"
 msgstr "名称"
 
 msgid "Neptune"
-msgstr ""
+msgstr "海王星"
 
 msgid "Next"
 msgstr ""
@@ -439,19 +424,19 @@ msgid "No plate-solving"
 msgstr "无解析数据"
 
 msgid "Non-commercial independent facility"
-msgstr ""
+msgstr "非商业性独立机构"
 
 msgid "None of the above"
-msgstr ""
+msgstr "以上都不是"
 
 msgid "None specified"
 msgstr "未指定"
 
 msgid "Northern lights"
-msgstr ""
+msgstr "北极光"
 
 msgid "Nothing"
-msgstr ""
+msgstr "无"
 
 msgid "Notifications"
 msgstr "通知"
@@ -460,25 +445,25 @@ msgid "Objects in field"
 msgstr "视场中的物体"
 
 msgid "Occultation"
-msgstr ""
+msgstr "掩星"
 
 msgid "Opacity"
-msgstr ""
+msgstr "透明度"
 
 msgid "Other"
-msgstr ""
+msgstr "其他"
 
 msgid "Other/Unknown"
-msgstr ""
+msgstr "其他/未知"
 
 msgid "Own remote observatory"
-msgstr ""
+msgstr "自有远程台"
 
 msgid "Partial lunar eclipse"
-msgstr ""
+msgstr "月偏食"
 
 msgid "Partial solar eclipse"
-msgstr ""
+msgstr "日偏食"
 
 msgid "Password"
 msgstr "密码"
@@ -487,7 +472,7 @@ msgid "Permission denied"
 msgstr "没有权限"
 
 msgid "Plate-solution annotations (if available)"
-msgstr ""
+msgstr "解析标注（如果可用）"
 
 msgid "Please check that all required fields have been filled at every step."
 msgstr ""
@@ -505,6 +490,9 @@ msgstr ""
 
 msgid "Please note"
 msgstr "请注意"
+
+msgid "Please note: animated GIFs cannot be watermarked at this time."
+msgstr "请注意：GIF动画现在无法添加水印"
 
 msgid ""
 "Please note: if this file is a crop of another image you already published "
@@ -529,7 +517,7 @@ msgid "Plots"
 msgstr "空位"
 
 msgid "Position"
-msgstr ""
+msgstr "位置"
 
 msgid "Prefer to pay via bank transfer?"
 msgstr "更喜欢通过银行转帐付款？"
@@ -537,11 +525,8 @@ msgstr "更喜欢通过银行转帐付款？"
 msgid "Previous"
 msgstr ""
 
-msgid "Proceed"
-msgstr ""
-
 msgid "Professional, scientific grade data"
-msgstr ""
+msgstr "专业、科研级数据"
 
 msgid "Promote"
 msgstr "晋升"
@@ -550,13 +535,13 @@ msgid ""
 "Provide a list of unique key/value pairs to tag this image with. Use the "
 "'=' symbol between key and value, and provide one pair per line. These tags "
 "can be used to sort images by arbitrary properties."
-msgstr ""
+msgstr "提供一个标记此作品的唯一的键、值列表，在键和值之间使用“=”符号，每一行输入一组。这些标签（tag）可用于按任意属性对作品进行排序。"
 
 msgid "Public Gallery"
 msgstr "公开图库"
 
 msgid "Public amateur data"
-msgstr ""
+msgstr "公开的业余天文台"
 
 msgid "Published"
 msgstr "已发布"
@@ -568,22 +553,19 @@ msgid "Register"
 msgstr "注册"
 
 msgid "Regular (e.g. medium/long exposure with a CCD or DSLR)"
-msgstr ""
+msgstr "常规（例如，使用CCD或DSLR进行中/长时间曝光）"
 
 msgid "Remote astrophotography"
 msgstr "远程天文摄影"
 
 msgid "Remote data source"
-msgstr ""
+msgstr "远程数据来源"
 
 msgid "Reset password"
 msgstr "重置密码"
 
 msgid "Retract promotion"
 msgstr "撤销晋升"
-
-msgid "Return to the classic editor"
-msgstr ""
 
 msgid "Return to the classic uploader"
 msgstr "返回旧版上传工具"
@@ -595,10 +577,10 @@ msgid "Revision uploader"
 msgstr "修订版上传工具"
 
 msgid "Saturn"
-msgstr ""
+msgstr "土星"
 
 msgid "Save"
-msgstr ""
+msgstr "保存"
 
 msgid "Save and proceed to acquisition details"
 msgstr ""
@@ -613,31 +595,31 @@ msgid "Secure payment by Stripe™"
 msgstr "Stripe™安全付款"
 
 msgid "Select an area of the image to be used as thumbnail in your gallery."
-msgstr ""
+msgstr "选择一张图，用作您图库的缩略图。"
 
 msgid "Self acquired"
-msgstr ""
+msgstr "自己拍摄的"
 
 msgid "Settings"
 msgstr "设置"
 
 msgid "Sharpen thumbnails"
-msgstr ""
+msgstr "锐化缩略图"
 
 msgid "Show"
 msgstr "显示"
 
 msgid "Size"
-msgstr ""
+msgstr "大小"
 
 msgid "Skip notifications"
 msgstr "跳过通知"
 
 msgid "Small"
-msgstr ""
+msgstr "小"
 
 msgid "Solar system body or event"
-msgstr ""
+msgstr "太阳系天体或天象"
 
 msgid ""
 "Sorry, but the page you are looking for is not here. If you expected an "
@@ -664,19 +646,19 @@ msgid "Staging Area"
 msgstr "暂存区"
 
 msgid "Star trails"
-msgstr ""
+msgstr "星轨"
 
 msgid "Step {{ stepNumber }}"
 msgstr ""
 
 msgid "Subject type"
-msgstr ""
+msgstr "主题类型"
 
 msgid "Submission queue"
 msgstr "提交队列"
 
 msgid "Submit this image to the selected groups."
-msgstr ""
+msgstr "将此作品提交到选定的小组。"
 
 msgid "Subscribed topics"
 msgstr "订阅的主题"
@@ -694,6 +676,9 @@ msgid "Success!"
 msgstr "成功！"
 
 msgid "Sun"
+msgstr "太阳"
+
+msgid "TIFF support on AstroBin is experimental."
 msgstr ""
 
 msgid "Target image"
@@ -721,7 +706,7 @@ msgstr ""
 "<strong>{{numberOfImages}}</strong>张作品。因此，我们建议您升级到 Premium 或 Ultimate。"
 
 msgid "The final font size will depend on how long your watermark is."
-msgstr ""
+msgstr "字体最终的大小取决于水印长度。"
 
 msgid "The image will permanently disappear from your queue."
 msgstr "该作品将从您的队列中永久消失。"
@@ -748,7 +733,9 @@ msgstr "该作品将作为未完成的作品上传到您的暂存区。您可以
 msgid "This operation can not be undone."
 msgstr "此操作无法撤销。"
 
-msgid "This operation could take several seconds, please wait"
+msgid ""
+"This operation could take several seconds (especially for large images), "
+"please wait"
 msgstr ""
 
 msgid ""
@@ -757,16 +744,16 @@ msgid ""
 msgstr "AstroBin 处于“只读”状态，该页面或操作目前不可用。"
 
 msgid "Thumbnail"
-msgstr ""
+msgstr "缩略图"
 
 msgid "Title"
 msgstr "标题"
 
 msgid "Top center"
-msgstr ""
+msgstr "顶部中心"
 
 msgid "Top left"
-msgstr ""
+msgstr "左上"
 
 msgid "Top pick nominations"
 msgstr "“热门精选”提名"
@@ -775,16 +762,16 @@ msgid "Top picks"
 msgstr "热门精选"
 
 msgid "Top right"
-msgstr ""
+msgstr "右上"
 
 msgid "Total lunar eclipse"
-msgstr ""
+msgstr "月全食"
 
 msgid "Total solar eclipse"
-msgstr ""
+msgstr "日全食"
 
 msgid "Traveller"
-msgstr ""
+msgstr "移动拍摄"
 
 msgid "Type to search options..."
 msgstr ""
@@ -793,7 +780,7 @@ msgid "Uncompressed source uploader"
 msgstr "未压缩数据上传工具"
 
 msgid "Unknown"
-msgstr ""
+msgstr "未知的"
 
 msgid "Unknown error"
 msgstr "未知错误"
@@ -820,7 +807,7 @@ msgid "Uploading..."
 msgstr "上传中..."
 
 msgid "Uranus"
-msgstr ""
+msgstr "天王星"
 
 msgid "Username"
 msgstr "用户名"
@@ -829,7 +816,7 @@ msgid "Validity"
 msgstr "有效性"
 
 msgid "Venus"
-msgstr ""
+msgstr "金星"
 
 msgid "View large"
 msgstr "查看大图"
@@ -850,7 +837,7 @@ msgstr ""
 "MB或〜8000x8000像素以上的作品都可以正常显示。您可以试试看！"
 
 msgid "Watermark"
-msgstr ""
+msgstr "水印"
 
 msgid "We could not log you in. Please check your credentials and try again."
 msgstr "无法登录。请检查您的凭据然后重试。"
@@ -876,10 +863,10 @@ msgid "Where do you want to go after saving?"
 msgstr ""
 
 msgid "Where does the data for this image come from?"
-msgstr ""
+msgstr "作品的素材是从哪里获取的？"
 
 msgid "Which remote hosting facility did you use to acquire data for this image?"
-msgstr ""
+msgstr "您使用哪个远程托管天文台获取此作品的数据？"
 
 msgid "Would you like to upgrade?"
 msgstr "想要升级吗？"
