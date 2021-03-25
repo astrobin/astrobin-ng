@@ -1,6 +1,7 @@
 <ng-select
   [attr.id]="field.id"
   [bindValue]="'value'"
+  [clearable]="to.clearable || false"
   [closeOnSelect]="!to.multiple"
   [formControl]="formControl"
   [hideSelected]="to.multiple"
