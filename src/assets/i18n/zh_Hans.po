@@ -49,10 +49,8 @@ msgstr "为这幅作品添加水印"
 msgid "Are you sure you want to dismiss this image?"
 msgstr "您确定要关闭此图片吗？"
 
-msgid ""
-"AstroBin can protect your images from theft by applying a watermark to "
-"them. Please note: animated GIFs cannot be watermarked at this time."
-msgstr ""
+msgid "AstroBin can protect your images from theft by applying a watermark to them."
+msgstr "AstroBin 可以在作品上添加水印，以防止盗图。"
 
 msgid ""
 "AstroBin could not read your file as an image. Please try a different "
@@ -492,6 +490,9 @@ msgstr ""
 
 msgid "Please note"
 msgstr "请注意"
+
+msgid "Please note: animated GIFs cannot be watermarked at this time."
+msgstr "请注意：GIF动画现在无法添加水印"
 
 msgid ""
 "Please note: if this file is a crop of another image you already published "

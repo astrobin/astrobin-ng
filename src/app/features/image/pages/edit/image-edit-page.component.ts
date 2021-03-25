@@ -548,9 +548,10 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
       templateOptions: {
         required: true,
         label: this.translateService.instant("Apply watermark to image"),
-        description: this.translateService.instant(
-          "AstroBin can protect your images from theft by applying a watermark to them. Please note: animated GIFs cannot be watermarked at this time."
-        )
+        description:
+          this.translateService.instant(
+            "AstroBin can protect your images from theft by applying a watermark to them."
+          ) + this.translateService.instant("Please note: animated GIFs cannot be watermarked at this time.")
       }
     };
   }

@@ -51,10 +51,10 @@ msgstr "Wasserzeichen hinzufügen"
 msgid "Are you sure you want to dismiss this image?"
 msgstr "Sind Sie sicher, dass Sie dieses Bild verwerfen möchten?"
 
-msgid ""
-"AstroBin can protect your images from theft by applying a watermark to "
-"them. Please note: animated GIFs cannot be watermarked at this time."
+msgid "AstroBin can protect your images from theft by applying a watermark to them."
 msgstr ""
+"AstroBin kann Ihre Bilder vor Diebstahl schützen, indem es sie mit einem "
+"Wasserzeichen versieht."
 
 msgid ""
 "AstroBin could not read your file as an image. Please try a different "
@@ -523,6 +523,11 @@ msgstr ""
 
 msgid "Please note"
 msgstr "Bitte beachten Sie"
+
+msgid "Please note: animated GIFs cannot be watermarked at this time."
+msgstr ""
+"Hinweis: animierte GIF's können zur Zeit nicht mit einem Wassezeichen "
+"geschützt werden."
 
 msgid ""
 "Please note: if this file is a crop of another image you already published "

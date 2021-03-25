@@ -52,9 +52,7 @@ msgstr "Aplicar marca de agua a la imagen"
 msgid "Are you sure you want to dismiss this image?"
 msgstr ""
 
-msgid ""
-"AstroBin can protect your images from theft by applying a watermark to "
-"them. Please note: animated GIFs cannot be watermarked at this time."
+msgid "AstroBin can protect your images from theft by applying a watermark to them."
 msgstr ""
 
 msgid ""
@@ -513,6 +511,9 @@ msgstr ""
 
 msgid "Please note"
 msgstr ""
+
+msgid "Please note: animated GIFs cannot be watermarked at this time."
+msgstr "Nota: por el momento no pueden marcarse los GIFs animados. "
 
 msgid ""
 "Please note: if this file is a crop of another image you already published "

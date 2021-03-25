@@ -52,10 +52,10 @@ msgstr "Appliquer un filigrane à l'image"
 msgid "Are you sure you want to dismiss this image?"
 msgstr "Voulez-vous vraiment rejeter cette image ?"
 
-msgid ""
-"AstroBin can protect your images from theft by applying a watermark to "
-"them. Please note: animated GIFs cannot be watermarked at this time."
+msgid "AstroBin can protect your images from theft by applying a watermark to them."
 msgstr ""
+"AstroBin peut prévenir la reprise indélicate de vos images par "
+"l'application d'un filigrane. "
 
 msgid ""
 "AstroBin could not read your file as an image. Please try a different "
@@ -520,6 +520,11 @@ msgstr ""
 
 msgid "Please note"
 msgstr "Attention"
+
+msgid "Please note: animated GIFs cannot be watermarked at this time."
+msgstr ""
+"A noter : il n'est pas possible d'appliquer un filigrane sur les GIF animés "
+"pour le moment."
 
 msgid ""
 "Please note: if this file is a crop of another image you already published "

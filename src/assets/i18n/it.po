@@ -52,10 +52,8 @@ msgstr "Applica un watermark all'immagine"
 msgid "Are you sure you want to dismiss this image?"
 msgstr "Sei sicuro di voler respingere questa immagine?"
 
-msgid ""
-"AstroBin can protect your images from theft by applying a watermark to "
-"them. Please note: animated GIFs cannot be watermarked at this time."
-msgstr ""
+msgid "AstroBin can protect your images from theft by applying a watermark to them."
+msgstr "AstroBin può proteggere le tue immagini dal furto applicandovi un watermark."
 
 msgid ""
 "AstroBin could not read your file as an image. Please try a different "
@@ -522,6 +520,11 @@ msgstr ""
 
 msgid "Please note"
 msgstr "Nota bene"
+
+msgid "Please note: animated GIFs cannot be watermarked at this time."
+msgstr ""
+"Nota bene: al momento non è possibile applicare il watermark alle GIF "
+"animate."
 
 msgid ""
 "Please note: if this file is a crop of another image you already published "
