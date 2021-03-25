@@ -47,7 +47,9 @@
   &.alert-info {
     background-color: $info-blue;
 
-    > p, & {
+    &,
+    fa-icon,
+    > p {
       color: $white;
       text-shadow: 0 -1px 0 rgba(0, 0, 0, .5);
     }

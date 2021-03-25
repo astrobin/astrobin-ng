@@ -9,7 +9,6 @@ import { selectThumbnail } from "@app/store/selectors/app/thumbnail.selectors";
 import { State } from "@app/store/state";
 import { selectCurrentUser, selectCurrentUserProfile } from "@features/account/store/auth.selectors";
 import { ImageEditorSetCropperShown } from "@features/image/store/image.actions";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Actions, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
 import { FormlyFieldConfig } from "@ngx-formly/core";
@@ -86,7 +85,6 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     public readonly remoteSourceAffiliateApiService: RemoteSourceAffiliateApiService,
     public readonly groupApiService: GroupApiService,
     public readonly loadingService: LoadingService,
-    public readonly modalService: NgbModal,
     public readonly utilsService: UtilsService,
     public readonly windowRefService: WindowRefService,
     public readonly popNotificationsService: PopNotificationsService
@@ -170,11 +168,6 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
       this.loadingService.setLoading(true);
       this.utilsService.openLink(this.windowRefService.nativeWindow.document, next);
     });
-  }
-
-  openClassicEditorRedirectConfirmationModal(): boolean {
-    this.modalService.open(this.returnToClassicConfirmationModalTemplate, { centered: true });
-    return false;
   }
 
   private _getTitleField(): any {

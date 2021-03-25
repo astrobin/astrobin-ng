@@ -147,7 +147,7 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
           .subscribe((userProfile: UserProfileInterface) => {
             const language = userProfile.language;
             const languageMatches = language === "en" || language === "en-GB";
-            const chanceMatches = Math.random() <= 0.7;
+            const chanceMatches = Math.random() <= 0.5;
             const forceNewEditor = this.route.snapshot.queryParams["forceNewEditor"] !== undefined;
             const forceClassicEditor = this.route.snapshot.queryParams["forceClassicEditor"] !== undefined;
 
