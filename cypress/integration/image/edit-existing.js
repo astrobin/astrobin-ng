@@ -18,6 +18,7 @@ context("Image edit (existing)", () => {
     cy.login();
     cy.visitPage("/i/abc123/edit");
     cy.wait("@getImage");
+    cy.wait("@getGroups");
     cy.url().should("contain", "/i/abc123/edit");
   });
 
