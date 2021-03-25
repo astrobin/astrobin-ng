@@ -9,6 +9,9 @@ msgid ""
 "if the watermark will appear on the dark sky background, 50 if on some "
 "bright object."
 msgstr ""
+"0 significa invisível; 100 significa completamente opaco. Valores "
+"recomendados: 10 se a marca d'água deve aparecer no plano de fundo escuro, "
+"50 se for aparecer num objeto brilhante."
 
 msgid "API Keys"
 msgstr "Chaves de API"
@@ -20,7 +23,7 @@ msgid "Access denied."
 msgstr "Acesso negado."
 
 msgid "Acquisition type"
-msgstr ""
+msgstr "Tipo de captura"
 
 msgid "Advanced plate-solving"
 msgstr "Resolução avançada de placas"
@@ -29,10 +32,10 @@ msgid "Advanced search"
 msgstr "Busca avançada"
 
 msgid "Allow comments"
-msgstr ""
+msgstr "Permitir comentários"
 
 msgid "Amateur hosting facility"
-msgstr ""
+msgstr "Hospedagem amadora"
 
 msgid "Amount"
 msgstr "Quantia"
@@ -41,15 +44,12 @@ msgid "And much more!"
 msgstr "E muito mais!"
 
 msgid "Anular solar eclipse"
-msgstr ""
+msgstr "Eclipse solar anular"
 
 msgid "Apply watermark to image"
-msgstr ""
+msgstr "Aplicar marca d'água à imagem"
 
 msgid "Are you sure you want to dismiss this image?"
-msgstr ""
-
-msgid "Are you sure?"
 msgstr ""
 
 msgid ""
@@ -92,10 +92,10 @@ msgid "Autorenew"
 msgstr "Renovação automática"
 
 msgid "Backyard"
-msgstr ""
+msgstr "Quintal"
 
 msgid "Basic information"
-msgstr ""
+msgstr "Informações básicas"
 
 msgid "Basic plate-solving"
 msgstr "Resolução básica de placas"
@@ -107,37 +107,40 @@ msgid "Bookmarks"
 msgstr "Favoritos"
 
 msgid "Bottom center"
-msgstr ""
+msgstr "Inferior central"
 
 msgid "Bottom left"
-msgstr ""
+msgstr "Inferior esquerdo"
 
 msgid "Bottom right"
-msgstr ""
+msgstr "Inferior direito"
 
 msgid "Buy"
 msgstr "Comprar"
 
 msgid "Cancel"
-msgstr ""
+msgstr "Cancelar"
 
 msgid "Cancelled"
 msgstr "Cancelado"
 
 msgid "Center"
-msgstr ""
+msgstr "Centro"
 
 msgid ""
 "Choose what will be displayed when somebody hovers the mouse over this "
 "image. Please note: only revisions with the same width and height of your "
 "original image can be considered."
 msgstr ""
+"Escolha o que será exibido quando alguém passar o mouse sobre esta imagem. "
+"Observação: somente revisões com a mesma largura e altura da imagem "
+"original podem ser consideradas."
 
 msgid "Click on the image and scroll to magnify up to 8x."
 msgstr ""
 
 msgid "Comet"
-msgstr ""
+msgstr "Cometa"
 
 msgid "Commercial facilities"
 msgstr ""
@@ -158,13 +161,13 @@ msgid "Contributors list"
 msgstr "Lista de contribuintes"
 
 msgid "Data source"
-msgstr ""
+msgstr "Fonte de dados"
 
 msgid "Date"
 msgstr "Data"
 
 msgid "Deep sky object or field"
-msgstr ""
+msgstr "Objeto ou campo de céu profundo"
 
 msgid "Description"
 msgstr "Descrição"
@@ -179,19 +182,19 @@ msgid "Do not notify your followers about this revision."
 msgstr "Não notificar seus seguidores sobre esta revisão."
 
 msgid "Downloaded"
-msgstr ""
+msgstr "Baixado"
 
 msgid "Drawing/Sketch"
-msgstr ""
+msgstr "Desenho/Esboço"
 
 msgid "Drop file here or click to browse"
 msgstr "Solte o arquivo aqui ou clique para navegar"
 
 msgid "Earth's Moon"
-msgstr ""
+msgstr "Lua terrestre"
 
 msgid "Edit"
-msgstr ""
+msgstr "Editar"
 
 msgid "Electronically-Assisted Astronomy (EAA, e.g. based on a live video feed)"
 msgstr ""
@@ -209,7 +212,7 @@ msgid "Explore"
 msgstr "Explorar"
 
 msgid "Extremely wide field"
-msgstr ""
+msgstr "Campo extremamente grande"
 
 msgid "FAQ"
 msgstr "Perguntas frequentes"
@@ -247,7 +250,7 @@ msgid "Full search"
 msgstr "Busca completa"
 
 msgid "Gear"
-msgstr ""
+msgstr "Equipamento"
 
 msgid "Go back to the home page."
 msgstr "Volte para a página inicial."
@@ -259,19 +262,12 @@ msgid "Groups"
 msgstr "Grupos"
 
 msgid "HTML tags are allowed."
-msgstr ""
+msgstr "Tags HTML são permitidos."
 
 msgid ""
 "Heads up! Are you sure you want to upload such a large file? It's okay to "
 "do so but probably not many people will want to see it at its full "
 "resolution, if it will take too long for them to download it."
-msgstr ""
-
-msgid ""
-"Heads up! TIFF support on AstroBin is experimental. Grayscale images that "
-"are 16-bit or higher, or with floating points precision, currently are not "
-"supported. If your file is a color image, or already an 8-bit depth "
-"grayscale, please ignore this warning message."
 msgstr ""
 
 msgid "Help"
@@ -290,23 +286,29 @@ msgid ""
 "If selected, AstroBin will use a resizing algorithm that slightly sharpens "
 "the image's thumbnails. This setting applies to all revisions."
 msgstr ""
-
-msgid "If you made any changes to this form, you will lose them!"
-msgstr ""
+"Se selecionado, o AstroBin usará um algoritmo de redimensionamento que "
+"aprimora ligeiramente as miniaturas da imagem. Essa configuração se aplica "
+"a todas as revisões."
 
 msgid ""
 "If you want to share the TIFF or FITS file of your image, put a link to the "
 "file here. Unfortunately, AstroBin cannot offer to store these files at the "
 "moment, so you will have to host them on your personal space."
 msgstr ""
+"Se você quiser compartilhar os arquivos TIFF ou FITS da sua imagem, coloque "
+"um link para o arquivo aqui. Infelizmente, o AstroBin não pode oferecer o "
+"armazenamento destes arquivos no momento, portanto você terá que "
+"hospedá-los em seu espaço pessoal."
 
 msgid ""
 "If you're hosting a copy of this image on your website, put the address "
 "here."
 msgstr ""
+"Se você estiver hospedando uma cópia desta imagem no seu website, coloque o "
+"endereço aqui."
 
 msgid "Image"
-msgstr ""
+msgstr "Imagem"
 
 msgid "Image of the day"
 msgstr "Imagem do dia"
@@ -318,10 +320,10 @@ msgid "Images"
 msgstr "Imagens"
 
 msgid "Imaging cameras"
-msgstr ""
+msgstr "Câmeras de captura"
 
 msgid "Imaging telescopes"
-msgstr ""
+msgstr "Telescópios de imagem"
 
 msgid "Info"
 msgstr "Informações"
@@ -333,7 +335,7 @@ msgid "Invalid data, please refresh the page and try again."
 msgstr ""
 
 msgid "Inverted monochrome"
-msgstr ""
+msgstr "Monocromático invertido"
 
 msgid "It looks like you reached the upload limit for your subscription."
 msgstr "Parece que você atingiu o limite de upload de sua assinatura."
@@ -342,16 +344,16 @@ msgid "Judgement queue"
 msgstr "Fila de julgamento"
 
 msgid "Jupiter"
-msgstr ""
+msgstr "Júpiter"
 
 msgid "Key/value tags"
-msgstr ""
+msgstr "Tags de chave/valor"
 
 msgid "Language"
 msgstr "Idioma"
 
 msgid "Large"
-msgstr ""
+msgstr "Grande"
 
 msgid "Latest topics"
 msgstr "Últimos tópicos"
@@ -360,13 +362,13 @@ msgid "Learn more"
 msgstr "Saiba mais"
 
 msgid "Link"
-msgstr ""
+msgstr "Link"
 
 msgid "Link to TIFF/FITS"
-msgstr ""
+msgstr "Link para TIFF/FITS"
 
 msgid "Loading..."
-msgstr ""
+msgstr "Carregando..."
 
 msgid "Log in"
 msgstr "Entrar"
@@ -375,10 +377,10 @@ msgid "Logout"
 msgstr "Sair"
 
 msgid "Lucky imaging"
-msgstr ""
+msgstr "Imagem de sorte"
 
 msgid "Main solar system subject"
-msgstr ""
+msgstr "Assunto principal do sistema solar"
 
 msgid "Mark all as read"
 msgstr "Marcar tudo como lido"
@@ -390,7 +392,7 @@ msgid "Mark this revision as the final rendition of your image."
 msgstr "Marque esta revisão como a versão final de sua imagem."
 
 msgid "Mars"
-msgstr ""
+msgstr "Marte"
 
 msgid "Max. {{ max }} MB / image"
 msgstr "Máx. {{ max }} MB / imagem"
@@ -402,22 +404,22 @@ msgid "Max. {{ max }} uploads"
 msgstr "Máx. {{ max }} uploads"
 
 msgid "Medium"
-msgstr ""
+msgstr "Médio"
 
 msgid "Mercury"
-msgstr ""
+msgstr "Mercúrio"
 
 msgid "Minor planet"
-msgstr ""
+msgstr "Planeta pequeno"
 
 msgid "Mix of multiple sources"
-msgstr ""
+msgstr "Mistura de múltiplas fontes"
 
 msgid "Moderate"
 msgstr "Moderado"
 
 msgid "Mouse hover image"
-msgstr ""
+msgstr "Passar o mouse sobre a imagem"
 
 msgid "My messages"
 msgstr "Minhas mensagens"
@@ -432,7 +434,7 @@ msgid "Name"
 msgstr "Nome"
 
 msgid "Neptune"
-msgstr ""
+msgstr "Netuno"
 
 msgid "Next"
 msgstr ""
@@ -444,46 +446,46 @@ msgid "No plate-solving"
 msgstr "Sem solução de placa"
 
 msgid "Non-commercial independent facility"
-msgstr ""
+msgstr "Instalação independente não comercial"
 
 msgid "None of the above"
-msgstr ""
+msgstr "Nenhuma das opções"
 
 msgid "None specified"
 msgstr ""
 
 msgid "Northern lights"
-msgstr ""
+msgstr "Auroras Boreais"
 
 msgid "Nothing"
-msgstr ""
+msgstr "Nada"
 
 msgid "Notifications"
 msgstr "Notificações"
 
 msgid "Objects in field"
-msgstr ""
+msgstr "Objetos no campo"
 
 msgid "Occultation"
 msgstr ""
 
 msgid "Opacity"
-msgstr ""
+msgstr "Opacidade"
 
 msgid "Other"
-msgstr ""
+msgstr "Outro"
 
 msgid "Other/Unknown"
-msgstr ""
+msgstr "Outro/Desconhecido"
 
 msgid "Own remote observatory"
-msgstr ""
+msgstr "Observatório remoto próprio"
 
 msgid "Partial lunar eclipse"
-msgstr ""
+msgstr "Eclipse lunar parcial"
 
 msgid "Partial solar eclipse"
-msgstr ""
+msgstr "Eclipse solar parcial"
 
 msgid "Password"
 msgstr "Senha"
@@ -492,7 +494,7 @@ msgid "Permission denied"
 msgstr ""
 
 msgid "Plate-solution annotations (if available)"
-msgstr ""
+msgstr "Anotações de solução em placa (se disponível)"
 
 msgid "Please check that all required fields have been filled at every step."
 msgstr ""
@@ -533,7 +535,7 @@ msgid "Plots"
 msgstr "Parcelas"
 
 msgid "Position"
-msgstr ""
+msgstr "Posição"
 
 msgid "Prefer to pay via bank transfer?"
 msgstr "Prefere pagar via transferência bancária?"
@@ -541,11 +543,8 @@ msgstr "Prefere pagar via transferência bancária?"
 msgid "Previous"
 msgstr ""
 
-msgid "Proceed"
-msgstr ""
-
 msgid "Professional, scientific grade data"
-msgstr ""
+msgstr "Dados de nível profissional e científico"
 
 msgid "Promote"
 msgstr ""
@@ -555,12 +554,16 @@ msgid ""
 "'=' symbol between key and value, and provide one pair per line. These tags "
 "can be used to sort images by arbitrary properties."
 msgstr ""
+"Forneça uma lista de pares de chave/valor exclusivos para marcar esta "
+"imagem. Use o símbolo '=' entre chave e valor e forneça um par por linha. "
+"Essas tags podem ser usadas para classificar imagens por propriedades "
+"arbitrárias."
 
 msgid "Public Gallery"
 msgstr "Galeria Pública"
 
 msgid "Public amateur data"
-msgstr ""
+msgstr "Dado amador público"
 
 msgid "Published"
 msgstr ""
@@ -572,21 +575,18 @@ msgid "Register"
 msgstr "Registro"
 
 msgid "Regular (e.g. medium/long exposure with a CCD or DSLR)"
-msgstr ""
+msgstr "Regular (ex. exposição media/longa com um CCD ou DSLR)"
 
 msgid "Remote astrophotography"
 msgstr "Astrofotografia remota"
 
 msgid "Remote data source"
-msgstr ""
+msgstr "Fonte de dados remoto"
 
 msgid "Reset password"
 msgstr "Redefinir senha"
 
 msgid "Retract promotion"
-msgstr ""
-
-msgid "Return to the classic editor"
 msgstr ""
 
 msgid "Return to the classic uploader"
@@ -599,10 +599,10 @@ msgid "Revision uploader"
 msgstr "Uploader de revisão"
 
 msgid "Saturn"
-msgstr ""
+msgstr "Saturno"
 
 msgid "Save"
-msgstr ""
+msgstr "Salvar"
 
 msgid "Save and proceed to acquisition details"
 msgstr ""
@@ -617,31 +617,31 @@ msgid "Secure payment by Stripe™"
 msgstr ""
 
 msgid "Select an area of the image to be used as thumbnail in your gallery."
-msgstr ""
+msgstr "Selecione uma área da imagem a ser usada como miniatura na sua galeria."
 
 msgid "Self acquired"
-msgstr ""
+msgstr "Auto-adquirido"
 
 msgid "Settings"
 msgstr "Configurações"
 
 msgid "Sharpen thumbnails"
-msgstr ""
+msgstr "Aprimorar miniaturas"
 
 msgid "Show"
 msgstr ""
 
 msgid "Size"
-msgstr ""
+msgstr "Tamanho"
 
 msgid "Skip notifications"
 msgstr "Pular notificações"
 
 msgid "Small"
-msgstr ""
+msgstr "Pequeno"
 
 msgid "Solar system body or event"
-msgstr ""
+msgstr "Evento ou corpo do Sistema Solar"
 
 msgid ""
 "Sorry, but the page you are looking for is not here. If you expected an "
@@ -670,19 +670,19 @@ msgid "Staging Area"
 msgstr "Área de Preparação"
 
 msgid "Star trails"
-msgstr ""
+msgstr "Rastros de estrelas"
 
 msgid "Step {{ stepNumber }}"
 msgstr ""
 
 msgid "Subject type"
-msgstr ""
+msgstr "Tipo de assunto"
 
 msgid "Submission queue"
 msgstr "Fila de envio"
 
 msgid "Submit this image to the selected groups."
-msgstr ""
+msgstr "Envie essa imagens para os grupos selecionados."
 
 msgid "Subscribed topics"
 msgstr "Tópicos inscritos"
@@ -700,6 +700,9 @@ msgid "Success!"
 msgstr "Sucesso!"
 
 msgid "Sun"
+msgstr "Sol"
+
+msgid "TIFF support on AstroBin is experimental."
 msgstr ""
 
 msgid "Target image"
@@ -725,7 +728,7 @@ msgid ""
 msgstr ""
 
 msgid "The final font size will depend on how long your watermark is."
-msgstr ""
+msgstr "O tamanho da fonte final dependerá de quão grande é sua marca d'água."
 
 msgid "The image will permanently disappear from your queue."
 msgstr ""
@@ -756,7 +759,9 @@ msgstr ""
 msgid "This operation can not be undone."
 msgstr ""
 
-msgid "This operation could take several seconds, please wait"
+msgid ""
+"This operation could take several seconds (especially for large images), "
+"please wait"
 msgstr ""
 
 msgid ""
@@ -767,16 +772,16 @@ msgstr ""
 "está no modo de LEITURA APENAS."
 
 msgid "Thumbnail"
-msgstr ""
+msgstr "Miniatura"
 
 msgid "Title"
 msgstr "Título"
 
 msgid "Top center"
-msgstr ""
+msgstr "Superior central"
 
 msgid "Top left"
-msgstr ""
+msgstr "Superior esquerdo"
 
 msgid "Top pick nominations"
 msgstr "Indicações das melhores escolhas"
@@ -785,16 +790,16 @@ msgid "Top picks"
 msgstr "Melhores escolhas"
 
 msgid "Top right"
-msgstr ""
+msgstr "Superior direito"
 
 msgid "Total lunar eclipse"
-msgstr ""
+msgstr "Eclipse lunar total"
 
 msgid "Total solar eclipse"
-msgstr ""
+msgstr "Eclipse solar total"
 
 msgid "Traveller"
-msgstr ""
+msgstr "Viajante"
 
 msgid "Type to search options..."
 msgstr ""
@@ -803,7 +808,7 @@ msgid "Uncompressed source uploader"
 msgstr "Uploader de fonte não compactado"
 
 msgid "Unknown"
-msgstr ""
+msgstr "Desconhecido"
 
 msgid "Unknown error"
 msgstr "Erro desconhecido"
@@ -827,10 +832,10 @@ msgid "Uploader"
 msgstr "Uploader"
 
 msgid "Uploading..."
-msgstr ""
+msgstr "Enviando..."
 
 msgid "Uranus"
-msgstr ""
+msgstr "Urano"
 
 msgid "Username"
 msgstr "Nome do usuário"
@@ -839,7 +844,7 @@ msgid "Validity"
 msgstr "Validade"
 
 msgid "Venus"
-msgstr ""
+msgstr "Vênus"
 
 msgid "View large"
 msgstr ""
@@ -858,7 +863,7 @@ msgid ""
 msgstr ""
 
 msgid "Watermark"
-msgstr ""
+msgstr "Marca d'água"
 
 msgid "We could not log you in. Please check your credentials and try again."
 msgstr ""
@@ -886,10 +891,12 @@ msgid "Where do you want to go after saving?"
 msgstr ""
 
 msgid "Where does the data for this image come from?"
-msgstr ""
+msgstr "De onde vêm os dados para esta imagem?"
 
 msgid "Which remote hosting facility did you use to acquire data for this image?"
 msgstr ""
+"Qual instalação de hospedagem remota você usou para adquirir dados para "
+"esta imagem?"
 
 msgid "Would you like to upgrade?"
 msgstr "Você gostaria de atualizar?"
