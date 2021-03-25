@@ -1,8 +1,14 @@
 msgid ""
 msgstr ""
-"mime-version: 1.0\n"
+"PO-Revision-Date: 2021-03-25 20:08+0000\n"
+"Last-Translator: Salvatore Iovene <salvatore@iovene.com>\n"
+"Language: it\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Pootle 2.8\n"
+"mime-version: 1.0\n"
+"X-POOTLE-MTIME: 1616702890.000000\n"
 
 msgid ""
 "0 means invisible; 100 means completely opaque. Recommended values are: 10 "
@@ -79,7 +85,7 @@ msgid "AstroBin index"
 msgstr "Indice AstroBin"
 
 msgid "AstroBin is generating a large thumbnail."
-msgstr ""
+msgstr "AstroBin sta generando una miniatura grande."
 
 msgid "Astrophotographers list"
 msgstr "Elenco degli astrofotografi"
@@ -144,7 +150,7 @@ msgid "Comet"
 msgstr "Cometa"
 
 msgid "Commercial facilities"
-msgstr ""
+msgstr "Entità commerciali"
 
 msgid "Commercial products"
 msgstr "Prodotti commerciali"
@@ -156,7 +162,7 @@ msgid "Contact"
 msgstr "Contatti"
 
 msgid "Content"
-msgstr ""
+msgstr "Contenuto"
 
 msgid "Contributors list"
 msgstr "Lista dei contributrori"
@@ -443,7 +449,7 @@ msgid "Neptune"
 msgstr "Nettuno"
 
 msgid "Next"
-msgstr ""
+msgstr "Successiva"
 
 msgid "No"
 msgstr "No"
@@ -504,6 +510,8 @@ msgstr "Annotazioni astrometriche (se disponibili)"
 
 msgid "Please check that all required fields have been filled at every step."
 msgstr ""
+"Per favore verifica che di aver compilato tutti i campi obbligatori ad ogni "
+"step."
 
 msgid "Please come back later!"
 msgstr "Torna più tardi!"
@@ -562,7 +570,7 @@ msgid "Prefer to pay via bank transfer?"
 msgstr "Preferisci pagare con un trasferimento bancario?"
 
 msgid "Previous"
-msgstr ""
+msgstr "Precedente"
 
 msgid "Professional, scientific grade data"
 msgstr "Dati professionali di qualità scientifica"
@@ -625,13 +633,13 @@ msgid "Save"
 msgstr "Salva"
 
 msgid "Save and proceed to acquisition details"
-msgstr ""
+msgstr "Salva e procedi ai dettagli di acquisizione"
 
 msgid "Save and proceed to gear selection"
-msgstr ""
+msgstr "Salva e procedi alla strumentazione"
 
 msgid "Save and proceed to image"
-msgstr ""
+msgstr "Salva e procedi all'immagine"
 
 msgid "Secure payment by Stripe™"
 msgstr "Pagamenti sicuri via Stripe™"
@@ -697,7 +705,7 @@ msgid "Star trails"
 msgstr "Tracce stellari"
 
 msgid "Step {{ stepNumber }}"
-msgstr ""
+msgstr "Step {{ stepNumber }}"
 
 msgid "Subject type"
 msgstr "Tipo di soggetto"
@@ -727,13 +735,13 @@ msgid "Sun"
 msgstr "Sole"
 
 msgid "TIFF support on AstroBin is experimental."
-msgstr ""
+msgstr "Il supporto ai TIFF su AstroBin è sperimentale."
 
 msgid "Target image"
 msgstr "Immagine di destinazione"
 
 msgid "Text"
-msgstr ""
+msgstr "Testo"
 
 msgid "Thank you for supporting AstroBin!"
 msgstr "Grazie per il tuo supporto ad AstroBin!"
@@ -791,6 +799,8 @@ msgid ""
 "This operation could take several seconds (especially for large images), "
 "please wait"
 msgstr ""
+"Questa operazione potrebbe richiedere svariati secondi (specialmente per "
+"immagini grandi), attendere prego"
 
 msgid ""
 "This page or operation is not available at the moment, because AstroBin is "
@@ -830,7 +840,7 @@ msgid "Traveller"
 msgstr "Itinerante"
 
 msgid "Type to search options..."
-msgstr ""
+msgstr "Digita per cercare tra le opzioni..."
 
 msgid "Uncompressed source uploader"
 msgstr "Uploader di dati sorgenti non compressi"
@@ -909,6 +919,8 @@ msgid ""
 "Welcome to the new image data editor! In case of problems, please {{0}}let "
 "us know{{1}}!"
 msgstr ""
+"Benvenuto al nuovo modulo per i dati dell'immagine! In caso di problemi {{0}}"
+"facci sapere{{1}}!"
 
 msgid "Welcome!"
 msgstr "Benvenuto!"
@@ -922,7 +934,7 @@ msgstr ""
 "o contenuti."
 
 msgid "Where do you want to go after saving?"
-msgstr ""
+msgstr "Dove vuoi andare dopo il salvataggio?"
 
 msgid "Where does the data for this image come from?"
 msgstr "Da dove vengono i dati per questa immagine?"
@@ -1003,7 +1015,7 @@ msgid "Zoom ready"
 msgstr "Zoom pronto"
 
 msgid "e.g."
-msgstr ""
+msgstr "p.e."
 
 msgid "n/a"
 msgstr "n/d"
