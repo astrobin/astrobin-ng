@@ -109,7 +109,7 @@ export class FormlyFieldStepperComponent extends FieldType implements OnInit {
     }
 
     this.ngWizardService.previous();
-    this.windowRef.scroll({ top: 0, behavior: "smooth" });
+    this.windowRef.scroll({ top: 0 });
   }
 
   goToNextStep(event?: Event) {
@@ -118,7 +118,7 @@ export class FormlyFieldStepperComponent extends FieldType implements OnInit {
     }
 
     this.ngWizardService.next();
-    this.windowRef.scroll({ top: 0, behavior: "smooth" });
+    this.windowRef.scroll({ top: 0 });
   }
 
   public markPreviousStepsAsDone(stepIndex: number) {
