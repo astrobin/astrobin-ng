@@ -38,7 +38,7 @@
       }
     }
 
-    &.danger .nav-link {
+    &.danger.done .nav-link {
       font-weight: bold;
       font-style: italic;
       color: $error-red !important;

@@ -250,6 +250,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
       id: "image-acquisition-type-field",
       templateOptions: {
         required: true,
+        clearable: false,
         label: this.translateService.instant("Acquisition type"),
         options: [
           {
@@ -286,6 +287,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
       id: "image-subject-type-field",
       templateOptions: {
         required: true,
+        clearable: false,
         label: this.translateService.instant("Subject type"),
         options: [
           { value: SubjectType.DEEP_SKY, label: this.translateService.instant("Deep sky object or field") },
@@ -367,6 +369,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
       id: "image-data-source-field",
       templateOptions: {
         required: true,
+        clearable: false,
         label: this.translateService.instant("Data source"),
         description: this.translateService.instant("Where does the data for this image come from?"),
         options: [
@@ -550,6 +553,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
       type: "checkbox",
       id: "image-watermark-field",
       templateOptions: {
+        required: true,
         label: this.translateService.instant("Apply watermark to image"),
         description: this.translateService.instant(
           "AstroBin can protect your images from theft by applying a watermark to them. Please note: animated GIFs cannot be watermarked at this time."
@@ -582,6 +586,8 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
       type: "ng-select",
       id: "image-watermark-position-field",
       templateOptions: {
+        required: true,
+        clearable: false,
         label: this.translateService.instant("Position"),
         options: [
           {
@@ -630,6 +636,8 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
       type: "ng-select",
       id: "image-watermark-size-field",
       templateOptions: {
+        required: true,
+        clearable: false,
         label: this.translateService.instant("Size"),
         description: this.translateService.instant("The final font size will depend on how long your watermark is."),
         options: [
@@ -688,6 +696,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
       id: "image-mouse-hover-image-field",
       templateOptions: {
         required: true,
+        clearable: false,
         label: this.translateService.instant("Mouse hover image"),
         description: this.translateService.instant(
           "Choose what will be displayed when somebody hovers the mouse over this image. Please note: only " +
