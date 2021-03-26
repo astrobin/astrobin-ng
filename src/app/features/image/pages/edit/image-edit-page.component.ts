@@ -93,12 +93,15 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
   }
 
   get newImageDataEditorAlert(): string {
-    return this.translateService.instant(
-      "Welcome to the new image data editor! In case of problems, please {{0}}let us know{{1}}!",
-      {
+    return (
+      this.translateService.instant(
+        "We have updated the image data editor to make room for new features coming your way in the near future!"
+      ) +
+      " " +
+      this.translateService.instant("If you have any problems, please {{0}}let us know{{1}}!", {
         0: `<a href="${this.classicRoutesService.CONTACT}" target="_blank">`,
         1: "</a>"
-      }
+      })
     );
   }
 

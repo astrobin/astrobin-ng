@@ -272,6 +272,9 @@ msgid ""
 "the image's thumbnails. This setting applies to all revisions."
 msgstr "如果勾选，AstroBin 将使用大小调整算法，略微锐化缩略图。此设置适用于所有修订图。"
 
+msgid "If you have any problems, please {{0}}let us know{{1}}!"
+msgstr ""
+
 msgid ""
 "If you want to share the TIFF or FITS file of your image, put a link to the "
 "file here. Unfortunately, AstroBin cannot offer to store these files at the "
@@ -842,13 +845,13 @@ msgstr "水印"
 msgid "We could not log you in. Please check your credentials and try again."
 msgstr "无法登录。请检查您的凭据然后重试。"
 
+msgid ""
+"We have updated the image data editor to make room for new features coming "
+"your way in the near future!"
+msgstr ""
+
 msgid "We'll never share your email with anyone else."
 msgstr "我们绝不会将您的电子邮件透露给其他人。"
-
-msgid ""
-"Welcome to the new image data editor! In case of problems, please {{0}}let "
-"us know{{1}}!"
-msgstr ""
 
 msgid "Welcome!"
 msgstr "欢迎！"
