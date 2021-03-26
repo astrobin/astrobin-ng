@@ -297,6 +297,9 @@ msgstr ""
 "der die Miniaturbilder des Bildes leicht schärft. Diese Einstellung gilt "
 "für alle Revisionen."
 
+msgid "If you have any problems, please {{0}}let us know{{1}}!"
+msgstr ""
+
 msgid ""
 "If you want to share the TIFF or FITS file of your image, put a link to the "
 "file here. Unfortunately, AstroBin cannot offer to store these files at the "
@@ -915,13 +918,13 @@ msgstr ""
 "Sie konnten nicht angemeldet werden. Bitte überprüfen Sie Ihre Anmeldedaten "
 "und versuchen Sie es erneut."
 
+msgid ""
+"We have updated the image data editor to make room for new features coming "
+"your way in the near future!"
+msgstr ""
+
 msgid "We'll never share your email with anyone else."
 msgstr "Wir werden Ihre E-Mail niemals an andere weitergeben."
-
-msgid ""
-"Welcome to the new image data editor! In case of problems, please {{0}}let "
-"us know{{1}}!"
-msgstr ""
 
 msgid "Welcome!"
 msgstr "Willkommen!"

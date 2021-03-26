@@ -295,6 +295,9 @@ msgstr ""
 "redimensionnement permettant d'affiner légèrement la vignette de l'image. "
 "Ce paramètre s'applique à toutes les versions."
 
+msgid "If you have any problems, please {{0}}let us know{{1}}!"
+msgstr ""
+
 msgid ""
 "If you want to share the TIFF or FITS file of your image, put a link to the "
 "file here. Unfortunately, AstroBin cannot offer to store these files at the "
@@ -898,13 +901,13 @@ msgstr "Filigrane"
 msgid "We could not log you in. Please check your credentials and try again."
 msgstr "Connexion impossible. Merci de vérifier vos identifiants et de réessayer."
 
+msgid ""
+"We have updated the image data editor to make room for new features coming "
+"your way in the near future!"
+msgstr ""
+
 msgid "We'll never share your email with anyone else."
 msgstr "Nous ne partagerons jamais votre email avec qui que ce soit. "
-
-msgid ""
-"Welcome to the new image data editor! In case of problems, please {{0}}let "
-"us know{{1}}!"
-msgstr ""
 
 msgid "Welcome!"
 msgstr "Bienvenue !"
