@@ -1,8 +1,14 @@
 msgid ""
 msgstr ""
-"mime-version: 1.0\n"
+"PO-Revision-Date: 2021-03-27 16:31+0000\n"
+"Last-Translator: Hartmuth <hk@kinconsult.de>\n"
+"Language: de\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Pootle 2.8\n"
+"mime-version: 1.0\n"
+"X-POOTLE-MTIME: 1616862672.000000\n"
 
 msgid ""
 "0 means invisible; 100 means completely opaque. Recommended values are: 10 "
@@ -81,7 +87,7 @@ msgid "AstroBin index"
 msgstr "AstroBin Index"
 
 msgid "AstroBin is generating a large thumbnail."
-msgstr ""
+msgstr "AstroBin erzeugt ein großes Vorschaubild."
 
 msgid "Astrophotographers list"
 msgstr "Liste der Astrofotografen"
@@ -146,7 +152,7 @@ msgid "Comet"
 msgstr "Komet"
 
 msgid "Commercial facilities"
-msgstr ""
+msgstr "Kommerzielle Einrichtungen"
 
 msgid "Commercial products"
 msgstr "Kommerzielle Produkte"
@@ -158,7 +164,7 @@ msgid "Contact"
 msgstr "Kontakt"
 
 msgid "Content"
-msgstr ""
+msgstr "Inhalt"
 
 msgid "Contributors list"
 msgstr "Mitwirkende"
@@ -299,6 +305,8 @@ msgstr ""
 
 msgid "If you have any problems, please {{0}}let us know{{1}}!"
 msgstr ""
+"Wenn Sie irgendwelche Probleme haben, {{0}}lassen Sie es uns bitte "
+"wissen{{1}}!"
 
 msgid ""
 "If you want to share the TIFF or FITS file of your image, put a link to the "
@@ -449,7 +457,7 @@ msgid "Neptune"
 msgstr "Neptun"
 
 msgid "Next"
-msgstr ""
+msgstr "Nächster"
 
 msgid "No"
 msgstr "Kein"
@@ -510,6 +518,7 @@ msgstr "Anmerkungen zur Astrometrierung (falls verfügbar)"
 
 msgid "Please check that all required fields have been filled at every step."
 msgstr ""
+"Bitte prüfen Sie bei jedem Schritt, ob alle Pflichtfelder ausgefüllt sind."
 
 msgid "Please come back later!"
 msgstr "Bitte kommen Sie später wieder!"
@@ -569,7 +578,7 @@ msgid "Prefer to pay via bank transfer?"
 msgstr "Bevorzugen Sie die Zahlung per Banküberweisung?"
 
 msgid "Previous"
-msgstr ""
+msgstr "Vorheriger"
 
 msgid "Professional, scientific grade data"
 msgstr "Professionelle, wissenschaftliche Daten"
@@ -636,13 +645,13 @@ msgid "Save"
 msgstr "Speichern"
 
 msgid "Save and proceed to acquisition details"
-msgstr ""
+msgstr "Speichern und weiter zu den Aufnahme-Details"
 
 msgid "Save and proceed to gear selection"
-msgstr ""
+msgstr "Speichern und weiter zur Ausrüstung"
 
 msgid "Save and proceed to image"
-msgstr ""
+msgstr "Speichern und weiter zum Bild"
 
 msgid "Secure payment by Stripe™"
 msgstr "Sicheres Bezahlen mit Stripe"
@@ -710,7 +719,7 @@ msgid "Star trails"
 msgstr "Startrails"
 
 msgid "Step {{ stepNumber }}"
-msgstr ""
+msgstr "Schritt {{ stepNumber }}"
 
 msgid "Subject type"
 msgstr "Objekttyp"
@@ -740,13 +749,13 @@ msgid "Sun"
 msgstr "Sonne"
 
 msgid "TIFF support on AstroBin is experimental."
-msgstr ""
+msgstr "Der TIFF-Support auf AstroBin ist experimentell."
 
 msgid "Target image"
 msgstr "Zielbild"
 
 msgid "Text"
-msgstr ""
+msgstr "Text"
 
 msgid "Thank you for supporting AstroBin!"
 msgstr "Vielen Dank, dass Sie AstroBin unterstützen!"
@@ -804,6 +813,8 @@ msgid ""
 "This operation could take several seconds (especially for large images), "
 "please wait"
 msgstr ""
+"Dieser Vorgang kann einige Sekunden dauern (insbesondere bei großen Bildern)"
+". Bitte warten Sie"
 
 msgid ""
 "This page or operation is not available at the moment, because AstroBin is "
@@ -843,7 +854,7 @@ msgid "Traveller"
 msgstr "Mobil"
 
 msgid "Type to search options..."
-msgstr ""
+msgstr "Tippen Sie in die Suchoptionen..."
 
 msgid "Uncompressed source uploader"
 msgstr "Upload-Dialog für unkomprimierte Ausgangsbilder"
@@ -922,6 +933,8 @@ msgid ""
 "We have updated the image data editor to make room for new features coming "
 "your way in the near future!"
 msgstr ""
+"Wir haben den Bilddaten-Editor aktualisiert, um Platz für neue Funktionen zu "
+"schaffen, die in naher Zukunft kommen werden!"
 
 msgid "We'll never share your email with anyone else."
 msgstr "Wir werden Ihre E-Mail niemals an andere weitergeben."
@@ -938,7 +951,7 @@ msgstr ""
 "oder Inhalten."
 
 msgid "Where do you want to go after saving?"
-msgstr ""
+msgstr "Wohin wollen Sie nach dem Speichern gehen?"
 
 msgid "Where does the data for this image come from?"
 msgstr "Woher kommen die Daten für dieses Bild?"
@@ -1022,7 +1035,7 @@ msgid "Zoom ready"
 msgstr "Zoom bereit"
 
 msgid "e.g."
-msgstr ""
+msgstr "z.B."
 
 msgid "n/a"
 msgstr "n.v."
