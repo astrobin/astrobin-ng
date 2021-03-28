@@ -1,8 +1,14 @@
 msgid ""
 msgstr ""
-"mime-version: 1.0\n"
+"PO-Revision-Date: 2021-03-28 21:21+0000\n"
+"Last-Translator: JeanBaptisteAuroux <jbauroux@bbox.fr>\n"
+"Language: fr\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Pootle 2.8\n"
+"mime-version: 1.0\n"
+"X-POOTLE-MTIME: 1616966496.000000\n"
 
 msgid ""
 "0 means invisible; 100 means completely opaque. Recommended values are: 10 "
@@ -82,7 +88,7 @@ msgid "AstroBin index"
 msgstr "Indice AstroBin"
 
 msgid "AstroBin is generating a large thumbnail."
-msgstr ""
+msgstr "Astrobin génère une grande vignette."
 
 msgid "Astrophotographers list"
 msgstr "Liste des astrophotographes"
@@ -145,7 +151,7 @@ msgid "Comet"
 msgstr "Comète"
 
 msgid "Commercial facilities"
-msgstr ""
+msgstr "Services commerciaux"
 
 msgid "Commercial products"
 msgstr "Produits commerciaux"
@@ -157,7 +163,7 @@ msgid "Contact"
 msgstr "Contact"
 
 msgid "Content"
-msgstr ""
+msgstr "Contenu"
 
 msgid "Contributors list"
 msgstr "Liste des contributeurs"
@@ -296,7 +302,7 @@ msgstr ""
 "Ce paramètre s'applique à toutes les versions."
 
 msgid "If you have any problems, please {{0}}let us know{{1}}!"
-msgstr ""
+msgstr "En cas de difficultés, {{0}}faites-le nous savoir{{1}} !"
 
 msgid ""
 "If you want to share the TIFF or FITS file of your image, put a link to the "
@@ -446,7 +452,7 @@ msgid "Neptune"
 msgstr "Neptune"
 
 msgid "Next"
-msgstr ""
+msgstr "Suivant"
 
 msgid "No"
 msgstr "Non"
@@ -507,6 +513,8 @@ msgstr "Annotations de la réduction astrométrique (si disponible)"
 
 msgid "Please check that all required fields have been filled at every step."
 msgstr ""
+"Merci de vérifier que l'ensemble des champs obligatoires ont été complétés à "
+"chacune des étapes."
 
 msgid "Please come back later!"
 msgstr "Merci de revenir plus tard !"
@@ -536,6 +544,10 @@ msgid ""
 "href='https://welcome.astrobin.com/features/image-revisions' "
 "target='_blank'>click here</a>."
 msgstr ""
+"A noter : si cette image est un recadrage d'une image déjà publiée, il est "
+"recommandé de la publier en tant que nouvelle version de cette image. Pour "
+"plus d'informations <a href='https://welcome.astrobin.com/features/image-"
+"revisions' target='_blank'>cliquez ici</a>."
 
 msgid ""
 "Please note: you don't <strong>have to</strong> use all your slots. It's ok "
@@ -560,7 +572,7 @@ msgid "Prefer to pay via bank transfer?"
 msgstr "Vous préférez payer par virement bancaire ?"
 
 msgid "Previous"
-msgstr ""
+msgstr "Précédent"
 
 msgid "Professional, scientific grade data"
 msgstr "Données professionnels ou scientifiques"
@@ -624,13 +636,13 @@ msgid "Save"
 msgstr "Enregistrer"
 
 msgid "Save and proceed to acquisition details"
-msgstr ""
+msgstr "Sauvegarder et passer aux détails d'acquisition"
 
 msgid "Save and proceed to gear selection"
-msgstr ""
+msgstr "Sauvegarder et passer à la sélection du matériel"
 
 msgid "Save and proceed to image"
-msgstr ""
+msgstr "Sauvegarder et passer à l'image"
 
 msgid "Secure payment by Stripe™"
 msgstr "Paiement sécurisé par Stripe"
@@ -698,7 +710,7 @@ msgid "Star trails"
 msgstr "Filé d'étoiles"
 
 msgid "Step {{ stepNumber }}"
-msgstr ""
+msgstr "Etape {{ stepNumber }}"
 
 msgid "Subject type"
 msgstr "Type d'objet"
@@ -728,13 +740,13 @@ msgid "Sun"
 msgstr "Soleil"
 
 msgid "TIFF support on AstroBin is experimental."
-msgstr ""
+msgstr "La prise en charge du format TIFF sur AstroBin est expérimentale."
 
 msgid "Target image"
 msgstr "Image cible"
 
 msgid "Text"
-msgstr ""
+msgstr "Texte"
 
 msgid "Thank you for supporting AstroBin!"
 msgstr "Merci de soutenir AstroBin !"
@@ -792,6 +804,8 @@ msgid ""
 "This operation could take several seconds (especially for large images), "
 "please wait"
 msgstr ""
+"Cette opération peut prendre plusieurs secondes (spécialement pour les "
+"grandes images), merci de patienter"
 
 msgid ""
 "This page or operation is not available at the moment, because AstroBin is "
@@ -831,7 +845,7 @@ msgid "Traveller"
 msgstr "En voyage"
 
 msgid "Type to search options..."
-msgstr ""
+msgstr "Renseignez les options de recherche..."
 
 msgid "Uncompressed source uploader"
 msgstr "Téléverser une source non-compressée"
@@ -905,6 +919,8 @@ msgid ""
 "We have updated the image data editor to make room for new features coming "
 "your way in the near future!"
 msgstr ""
+"L'éditeur de données d'image a été actualisé afin de vous proposer bientôt "
+"de nouvelles fonctionnalités ! "
 
 msgid "We'll never share your email with anyone else."
 msgstr "Nous ne partagerons jamais votre email avec qui que ce soit. "
@@ -919,7 +935,7 @@ msgid "When a paid subscription expires, nothing happens to your images or conte
 msgstr "Quand votre abonnement expire, vos images et contenus ne sont pas affectés."
 
 msgid "Where do you want to go after saving?"
-msgstr ""
+msgstr "Que désirez-vous faire après avoir sauvegardé ?"
 
 msgid "Where does the data for this image come from?"
 msgstr "D'où proviennent les données de cette image ?"
@@ -1002,7 +1018,7 @@ msgid "Zoom ready"
 msgstr "Zoom prêt !"
 
 msgid "e.g."
-msgstr ""
+msgstr "par exemple"
 
 msgid "n/a"
 msgstr "n/a"
