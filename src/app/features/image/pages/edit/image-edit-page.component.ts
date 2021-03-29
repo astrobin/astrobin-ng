@@ -177,6 +177,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     return {
       key: "title",
       type: "input",
+      wrappers: ["default-wrapper"],
       id: "image-title-field",
       templateOptions: {
         label: this.translateService.instant("Title"),
@@ -189,6 +190,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     return {
       key: "description",
       type: "textarea",
+      wrappers: ["default-wrapper"],
       id: "image-description-field",
       templateOptions: {
         label: this.translateService.instant("Description"),
@@ -203,6 +205,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     return {
       key: "link",
       type: "input",
+      wrappers: ["default-wrapper"],
       id: "image-link-field",
       templateOptions: {
         label: this.translateService.instant("Link"),
@@ -222,6 +225,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     return {
       key: "linkToFits",
       type: "input",
+      wrappers: ["default-wrapper"],
       id: "image-link-to-fits-field",
       templateOptions: {
         label: this.translateService.instant("Link to TIFF/FITS"),
@@ -563,6 +567,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     return {
       key: "watermarkText",
       type: "input",
+      wrappers: ["default-wrapper"],
       id: "image-watermark-text-field",
       templateOptions: {
         label: this.translateService.instant("Text")
@@ -666,6 +671,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     return {
       key: "watermarkOpacity",
       type: "input",
+      wrappers: ["default-wrapper"],
       id: "image-watermark-opacity-field",
       templateOptions: {
         type: "number",
@@ -721,13 +727,18 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     return {
       key: "keyValueTags",
       type: "textarea",
+      wrappers: ["default-wrapper"],
       id: "image-key-value-tags-field",
       templateOptions: {
         label: this.translateService.instant("Key/value tags"),
-        description: this.translateService.instant(
-          "Provide a list of unique key/value pairs to tag this image with. Use the '=' symbol between key and " +
-            "value, and provide one pair per line. These tags can be used to sort images by arbitrary properties."
-        ),
+        description:
+          this.translateService.instant(
+            "Provide a list of unique key/value pairs to tag this image with. Use the '=' symbol between key and " +
+              "value, and provide one pair per line. These tags can be used to sort images by arbitrary properties."
+          ) +
+          " <a target='_blank' href='https://welcome.astrobin.com/image-collections'>" +
+          this.translateService.instant("Learn more") +
+          "</a>.",
         required: false,
         rows: 4
       },

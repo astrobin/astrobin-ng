@@ -83,7 +83,7 @@ export function formlyValidationConfig(translate: TranslateService) {
       {
         name: "chunked-file",
         component: FormlyFieldChunkedFileComponent,
-        wrappers: ["form-field"]
+        wrappers: ["default-wrapper"]
       },
       {
         name: "stepper",
@@ -93,12 +93,12 @@ export function formlyValidationConfig(translate: TranslateService) {
       {
         name: "ng-select",
         component: FormlyFieldNgSelectComponent,
-        wrappers: ["form-field"]
+        wrappers: ["default-wrapper"]
       },
       {
         name: "image-cropper",
         component: FormlyFieldImageCropperComponent,
-        wrappers: ["form-field"]
+        wrappers: ["default-wrapper"]
       }
     ],
     validators: [
