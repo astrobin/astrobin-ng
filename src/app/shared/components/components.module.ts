@@ -42,6 +42,7 @@ import { HeaderComponent } from "./header/header.component";
 import { EmptyListComponent } from "./misc/empty-list/empty-list.component";
 import { ReadOnlyModeComponent } from "./misc/read-only-mode/read-only-mode.component";
 import { UsernameComponent } from "./misc/username/username.component";
+import { FormlyWrapperComponent } from "@shared/components/misc/formly-wrapper/formly-wrapper.component";
 
 const modules = [
   CommonModule,
@@ -76,6 +77,7 @@ const components = [
   FormlyFieldImageCropperComponent,
   FormlyFieldNgSelectComponent,
   FormlyFieldStepperComponent,
+  FormlyWrapperComponent,
   FullscreenImageViewerComponent,
   HeaderComponent,
   ImageComponent,

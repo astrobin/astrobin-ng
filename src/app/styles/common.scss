@@ -47,6 +47,11 @@ a {
   &:hover {
     color: lighten($accent-color, 5%);
   }
+
+  &[target="_blank"]:after {
+    content: " \279a";
+    font-size: 0.8em;
+  }
 }
 
 hr {

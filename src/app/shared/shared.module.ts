@@ -39,6 +39,7 @@ import { ToastrModule } from "ngx-toastr";
 import { switchMap } from "rxjs/operators";
 import { ComponentsModule } from "./components/components.module";
 import { PipesModule } from "./pipes/pipes.module";
+import { FormlyWrapperComponent } from "@shared/components/misc/formly-wrapper/formly-wrapper.component";
 
 export function appInitializer(store: Store<State>, actions$: Actions) {
   return () =>
@@ -68,7 +69,9 @@ export function appInitializer(store: Store<State>, actions$: Actions) {
     ReactiveFormsModule,
 
     FontAwesomeModule,
-    FormlyModule.forRoot(),
+    FormlyModule.forRoot({
+      wrappers: [{ name: "default-wrapper", component: FormlyWrapperComponent }]
+    }),
     FormlyBootstrapModule,
     FormlySelectModule,
     ImageCropperModule,
