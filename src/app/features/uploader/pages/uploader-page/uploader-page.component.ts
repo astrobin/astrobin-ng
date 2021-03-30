@@ -148,7 +148,7 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
             const language = userProfile.language;
             const languageMatches =
               language === "en" || language === "en-GB" || language === "it" || language === "de" || language === "fr";
-            const chanceMatches = Math.random() <= 0.5;
+            const chanceMatches = Math.random() <= 0.75;
             const forceNewEditor = this.route.snapshot.queryParams["forceNewEditor"] !== undefined;
             const forceClassicEditor = this.route.snapshot.queryParams["forceClassicEditor"] !== undefined;
 
