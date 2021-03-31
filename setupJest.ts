@@ -1,4 +1,4 @@
-import "jest-preset-angular";
+import "jest-preset-angular/setup-jest";
 
 import "@angular/localize/init";
 
@@ -17,6 +17,7 @@ import { CommonApiService } from "@shared/services/api/classic/common/common-api
 import { ImageApiService } from "@shared/services/api/classic/images/image/image-api.service";
 import { ThumbnailGroupApiService } from "@shared/services/api/classic/images/thumbnail-group/thumbnail-group-api.service";
 import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
+import { RemoteSourceAffiliateApiService } from "@shared/services/api/classic/remote-source-affiliation/remote-source-affiliate-api.service";
 import { AuthService } from "@shared/services/auth.service";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { UserStoreService } from "@shared/services/user-store.service";
@@ -124,4 +125,8 @@ ngMocks.defaultMock(TranslateService, () => ({
 
 ngMocks.defaultMock(SubscriptionsService, () => ({
   currency$: EMPTY
+}));
+
+ngMocks.defaultMock(RemoteSourceAffiliateApiService, () => ({
+  getAll: jest.fn().mockReturnValue(of([]))
 }));

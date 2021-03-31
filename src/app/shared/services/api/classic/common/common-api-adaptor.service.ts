@@ -1,9 +1,10 @@
 import { Injectable } from "@angular/core";
-import { GroupInterface } from "@shared/interfaces/group.interface";
+import { AuthGroupInterface } from "@shared/interfaces/auth-group.interface";
 import { PermissionInterface } from "@shared/interfaces/permission.interface";
 import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { BaseService } from "@shared/services/base.service";
+import { WatermarkPositionOptions, WatermarkSizeOptions } from "@shared/interfaces/image.interface";
 
 export interface BackendPermissionInterface {
   id: number;
@@ -54,10 +55,11 @@ export interface BackendUserProfileInterface {
   default_license: number;
   default_watermark_text: string;
   default_watermark: boolean;
-  default_watermark_size: string;
-  default_watermark_position: number;
+  default_watermark_size: WatermarkSizeOptions;
+  default_watermark_position: WatermarkPositionOptions;
   default_watermark_opacity: number;
   accept_tos: boolean;
+  open_notifications_in_new_tab: boolean | null;
   receive_important_communications: boolean;
   receive_newsletter: boolean;
   receive_marketing_and_commercial_material: boolean;
@@ -101,7 +103,7 @@ export class CommonApiAdaptorService extends BaseService {
     };
   }
 
-  groupFromBackend(group: BackendGroupInterface): GroupInterface {
+  authGroupFromBackend(group: BackendGroupInterface): AuthGroupInterface {
     return {
       id: group.id,
       name: group.name,
@@ -121,7 +123,7 @@ export class CommonApiAdaptorService extends BaseService {
       isSuperUser: user.is_superuser,
       isStaff: user.is_staff,
       isActive: user.is_active,
-      groups: user.groups.map(group => this.groupFromBackend(group)),
+      groups: user.groups.map(group => this.authGroupFromBackend(group)),
       userPermissions: user.user_permissions.map(permission => this.permissionFromBackend(permission))
     };
   }
@@ -152,6 +154,7 @@ export class CommonApiAdaptorService extends BaseService {
       defaultWatermarkSize: userProfile.default_watermark_size,
       defaultWatermarkText: userProfile.default_watermark_text,
       acceptTos: userProfile.accept_tos,
+      openNotificationsInNewTab: userProfile.open_notifications_in_new_tab,
       receiveNewsletter: userProfile.receive_newsletter,
       receiveImportantCommunications: userProfile.receive_important_communications,
       receiveMarketingAndCommercialMaterial: userProfile.receive_marketing_and_commercial_material,

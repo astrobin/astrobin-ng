@@ -4,8 +4,14 @@
 .modal {
   .modal-content {
     border-radius: 0.4rem;
+    box-shadow: 0 0 100px rgba(0, 0, 0, .5);
+    @include dark-background-texture;
   }
   .modal-header {
     @include darkest-background-texture;
   }
+}
+
+.modal-backdrop.show {
+  backdrop-filter: blur(3px);
 }

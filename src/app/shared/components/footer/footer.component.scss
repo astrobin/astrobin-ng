@@ -4,7 +4,7 @@
 .footer {
   @include darkest-background-texture;
   padding: 1rem 0;
-  color: $darkest_background_text_color;
+  color: $darkest-background-text-color;
 }
 
 .build-date {

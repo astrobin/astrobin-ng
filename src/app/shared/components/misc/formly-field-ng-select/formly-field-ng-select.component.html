@@ -1,0 +1,35 @@
+<ng-select
+  [attr.id]="field.id"
+  [bindValue]="'value'"
+  [clearable]="to.clearable || false"
+  [closeOnSelect]="!to.multiple"
+  [formControl]="formControl"
+  [hideSelected]="to.multiple"
+  [items]="to.options | formlySelectOptions: field | async"
+  [multiple]="to.multiple"
+  groupBy="group"
+  placeholder="{{ 'Type to search options...' | translate }}"
+>
+  <ng-template let-item="item" ng-optgroup-tmp>
+    {{ item.label }}
+  </ng-template>
+
+  <ng-template let-clear="clear" let-item="item" ng-label-tmp>
+    <ng-container *ngIf="!to.optionTemplate">{{ item.label }}</ng-container>
+    <ng-container
+      *ngIf="to.labelTemplate"
+      [ngTemplateOutletContext]="{ item: item }"
+      [ngTemplateOutlet]="to.labelTemplate"
+    ></ng-container>
+    <span (click)="clear(item)" aria-hidden="true" class="ng-value-icon right">×</span>
+  </ng-template>
+
+  <ng-template let-item="item" ng-option-tmp>
+    <ng-container *ngIf="!to.optionTemplate">{{ item.label }}</ng-container>
+    <ng-container
+      *ngIf="to.optionTemplate"
+      [ngTemplateOutletContext]="{ item: item }"
+      [ngTemplateOutlet]="to.optionTemplate"
+    ></ng-container>
+  </ng-template>
+</ng-select>

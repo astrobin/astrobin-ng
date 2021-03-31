@@ -1,0 +1,41 @@
+{
+  "count": 1,
+  "next": null,
+  "previous": null,
+  "results": [
+    {
+      "user": 1,
+      "pk": 1,
+      "hash": "abc123",
+      "title": "Test image",
+      "isWip": true,
+      "skipNotifications": false,
+      "w": 4000,
+      "h": 4000,
+      "imagingTelescopes": [],
+      "imagingCameras": [],
+      "published": "2021-03-15T21:57:28.994031",
+      "license": 4,
+      "description": "",
+      "link": "",
+      "linkToFits": "",
+      "acquisitionType": null,
+      "subjectType": null,
+      "solarSystemMainSubject": null,
+      "dataSource": null,
+      "remoteSource": null,
+      "partOfGroupSet": [
+      ],
+      "mouseHoverImage": "SOLUTION",
+      "allowComments": true,
+      "uploaderInProgress": null,
+      "squareCropping": "100, 100, 3900, 3900",
+      "watermark": false,
+      "watermarkText": null,
+      "watermarkPosition": 0,
+      "watermarkSize": "M",
+      "watermarkOpacity": 10,
+      "sharpenThumbnails": true
+    }
+  ]
+}

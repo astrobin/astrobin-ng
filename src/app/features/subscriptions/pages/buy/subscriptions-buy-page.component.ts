@@ -41,6 +41,7 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
   bankDetailsMessage$: Observable<string>;
   bankLocations = [
     { id: "USA", label: "United States of America" },
+    { id: "CA", label: "Canada" },
     { id: "EU", label: "Europe" },
     { id: "GB", label: "Great Britain" },
     { id: "AUS", label: "Australia" },
@@ -117,6 +118,13 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
           "SORT CODE  : 23-14-70\n" +
           "IBAN       : GB79 TRWI 2314 7052 9900 73"
         );
+      case "CA":
+        return (
+          "BENEFICIARY       : AstroBin\n" +
+          "ACCOUNT NUMBER    : 200110016315\n" +
+          "INSTITUTION NUMBER: 621\n" +
+          "TRANSIT NUMBER    : 16001"
+        );
       case "EU":
         return "BENEFICIARY: AstroBin\n" + "IBAN       : BE76 9671 5599 8695\n" + "SWIFT / BIC: TRWIBEB1XXX ";
       case "USA":
@@ -189,6 +197,7 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
         .subscribe(currency => {
           this.selectedBankLocation = {
             USD: "USA",
+            CAD: "CA",
             EUR: "EU",
             GBP: "GB",
             AUD: "AUS",

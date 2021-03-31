@@ -1,19 +1,25 @@
 import { Component, OnInit } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
+import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
 import { State } from "@app/store/state";
+import { environment } from "@env/environment";
 import { Store } from "@ngrx/store";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
+import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { TitleService } from "@shared/services/title/title.service";
 import { UploadDataService } from "@shared/services/upload-metadata/upload-data.service";
 import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { SubscriptionName } from "@shared/types/subscription-name.type";
 import { UploadState, UploadxService } from "ngx-uploadx";
-import { takeUntil } from "rxjs/operators";
+import { take, takeUntil } from "rxjs/operators";
+import { selectCurrentUserProfile } from "@features/account/store/auth.selectors";
+import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
+import { ActivatedRoute, Router } from "@angular/router";
 
 @Component({
   selector: "astrobin-uploader-page",
@@ -48,7 +54,8 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
       type: "chunked-file",
       templateOptions: {
         required: true,
-        experimentalTiffSupportWarning: true
+        experimentalTiffSupportWarning: true,
+        veryLargeSizeWarning: true
       },
       validators: {
         validation: [{ name: "file-size", options: { max: 0 } }]
@@ -60,13 +67,16 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
 
   constructor(
     public readonly store$: Store<State>,
-    public translate: TranslateService,
-    public uploaderService: UploadxService,
-    public uploadDataService: UploadDataService,
-    public windowRef: WindowRefService,
-    public classicRoutesService: ClassicRoutesService,
-    public titleService: TitleService,
-    public userSubscriptionService: UserSubscriptionService
+    public readonly translate: TranslateService,
+    public readonly uploaderService: UploadxService,
+    public readonly uploadDataService: UploadDataService,
+    public readonly windowRef: WindowRefService,
+    public readonly classicRoutesService: ClassicRoutesService,
+    public readonly titleService: TitleService,
+    public readonly userSubscriptionService: UserSubscriptionService,
+    public readonly popNotificationsService: PopNotificationsService,
+    public readonly router: Router,
+    public readonly route: ActivatedRoute
   ) {
     super();
   }
@@ -109,8 +119,14 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
       })
     );
 
-    this.uploadDataService.setMetadata("image-upload", { is_wip: true });
-    this.uploadDataService.setMetadata("image-upload", { skip_notifications: true });
+    this.store$.select(selectBackendConfig).subscribe(backendConfig => {
+      this.uploadDataService.setEndpoint(`${environment.classicBaseUrl}/${backendConfig.IMAGE_UPLOAD_ENDPOINT}`);
+    });
+
+    this.uploadDataService.setMetadata("image-upload", {
+      is_wip: true,
+      skip_notifications: true
+    });
 
     this.userSubscriptionService.fileSizeAllowed(0).subscribe(result => {
       const field = this.fields.filter(x => x.key === "image_file")[0];
@@ -124,7 +140,26 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
       if (uploadState.status === "complete") {
         const response = JSON.parse(uploadState.response as string);
         const hash = response.hash;
-        this.windowRef.nativeWindow.location.assign(`${this.classicRoutesService.EDIT_IMAGE_THUMBNAILS(hash)}?upload`);
+
+        this.store$
+          .select(selectCurrentUserProfile)
+          .pipe(take(1))
+          .subscribe((userProfile: UserProfileInterface) => {
+            const language = userProfile.language;
+            const languageMatches =
+              language === "en" || language === "en-GB" || language === "it" || language === "de" || language === "fr";
+            const chanceMatches = Math.random() <= 0.75;
+            const forceNewEditor = this.route.snapshot.queryParams["forceNewEditor"] !== undefined;
+            const forceClassicEditor = this.route.snapshot.queryParams["forceClassicEditor"] !== undefined;
+
+            if (forceNewEditor || (!forceClassicEditor && chanceMatches && languageMatches)) {
+              this.router.navigate([`/i/${hash}/edit`]);
+            } else {
+              this.windowRef.nativeWindow.location.assign(
+                `${this.classicRoutesService.EDIT_IMAGE_THUMBNAILS(hash)}?upload`
+              );
+            }
+          });
       }
     });
   }
@@ -144,6 +179,22 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
   }
 
   private _onTitleChange() {
+    if (this.model.title.toLowerCase().indexOf("crop") > -1) {
+      this.popNotificationsService.warning(
+        this.translate.instant(
+          "Please note: if this file is a crop of another image you already published on AstroBin, the common " +
+            "practice would be to upload it as a new revision. For more info, please " +
+            "<a href='https://welcome.astrobin.com/features/image-revisions' target='_blank'>click here</a>."
+        ),
+        null,
+        {
+          enableHtml: true,
+          closeButton: true,
+          timeOut: 0
+        }
+      );
+    }
+
     this.uploadDataService.setMetadata("image-upload", { title: this.model.title });
   }
 }

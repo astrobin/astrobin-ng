@@ -40,6 +40,18 @@ describe("ImageApiService", () => {
     req.flush(image);
   });
 
+  it("getImage should work with hash", () => {
+    const image = ImageGenerator.image();
+
+    service.getImage(image.hash).subscribe(response => {
+      expect(response.pk).toEqual(image.pk);
+    });
+
+    const req = httpMock.expectOne(`${service.configUrl}/image/?hashes=${image.hash}`);
+    expect(req.request.method).toBe("GET");
+    req.flush(image);
+  });
+
   it("getImages should work", () => {
     const images = [ImageGenerator.image({ pk: 1 }), ImageGenerator.image({ pk: 2 })];
 

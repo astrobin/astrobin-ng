@@ -3,11 +3,7 @@ import { selectApp, selectBackendConfig } from "@app/store/selectors/app/app.sel
 import { State } from "@app/store/state";
 import { HiddenImage, SubmissionInterface, VoteInterface } from "@features/iotd/services/iotd-api.service";
 import { LoadDismissedImages, LoadHiddenImages } from "@features/iotd/store/iotd.actions";
-import {
-  PromotionImageInterface,
-  ReviewImageInterface,
-  SubmissionImageInterface
-} from "@features/iotd/store/iotd.reducer";
+import { ReviewImageInterface, SubmissionImageInterface } from "@features/iotd/store/iotd.reducer";
 import { selectHiddenImages, selectSubmissions } from "@features/iotd/store/iotd.selectors";
 import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
@@ -19,7 +15,7 @@ import { PopNotificationsService } from "@shared/services/pop-notifications.serv
 import { distinctUntilChangedObj } from "@shared/services/utils/utils.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { Observable } from "rxjs";
-import { filter, map, switchMap, takeUntil } from "rxjs/operators";
+import { filter, map, switchMap, take, takeUntil } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-base-promotion-queue",
@@ -39,7 +35,7 @@ export abstract class BasePromotionQueueComponent extends BaseComponentDirective
   abstract promotions$: Observable<SubmissionInterface[] | VoteInterface[]>;
 
   @ViewChildren("promotionQueueEntries")
-  promotionQueueEntries: QueryList<ElementRef>;
+  promotionQueueEntries: QueryList<any>;
 
   protected constructor(
     public readonly store$: Store<State>,
@@ -77,6 +73,21 @@ export abstract class BasePromotionQueueComponent extends BaseComponentDirective
         }
       });
 
+    this.queue$
+      .pipe(
+        takeUntil(this.destroyed$),
+        filter(queue => !!queue)
+      )
+      .subscribe(() => {
+        this.promotionQueueEntries.changes.pipe(take(1)).subscribe(entries => {
+          entries.forEach((entry, index) => {
+            setTimeout(() => {
+              entry.loadImage();
+            }, index * 500);
+          });
+        });
+      });
+
     this.refresh();
   }
 
@@ -97,7 +108,7 @@ export abstract class BasePromotionQueueComponent extends BaseComponentDirective
   pageChange(page: number): void {
     this.page = page;
     this.loadQueue(page);
-    this.windowRefService.nativeWindow.scroll({ top: 0, behavior: "smooth" });
+    this.windowRefService.scroll({ top: 0, behavior: "smooth" });
   }
 
   entryExists(imageId: number): boolean {
@@ -114,11 +125,11 @@ export abstract class BasePromotionQueueComponent extends BaseComponentDirective
 
   private _getEntryElement(imageId: number): ElementRef | null {
     const matches = this.promotionQueueEntries.filter(
-      entry => entry.nativeElement.id === `promotion-queue-entry-${imageId}`
+      entry => entry.elementRef.nativeElement.id === `promotion-queue-entry-${imageId}`
     );
 
     if (matches.length > 0) {
-      return matches[0];
+      return matches[0].elementRef;
     }
 
     return null;

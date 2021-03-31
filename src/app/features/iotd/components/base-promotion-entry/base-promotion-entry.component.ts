@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, ElementRef, Input, OnInit, ViewChild } from "@angular/core";
 import { ShowFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
 import { LoadSolution } from "@app/store/actions/solution.actions";
 import { selectApp } from "@app/store/selectors/app/app.selectors";
@@ -15,6 +15,7 @@ import {
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { ImageComponent } from "@shared/components/misc/image/image.component";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
 import { SolutionInterface } from "@shared/interfaces/solution.interface";
 import { Observable } from "rxjs";
@@ -31,7 +32,14 @@ export abstract class BasePromotionEntryComponent extends BaseComponentDirective
   @Input()
   entry: PromotionImageInterface;
 
-  protected constructor(public readonly store$: Store<State>, public modalService: NgbModal) {
+  @ViewChild("image", { read: ImageComponent })
+  image: ImageComponent;
+
+  protected constructor(
+    public readonly elementRef: ElementRef,
+    public readonly store$: Store<State>,
+    public readonly modalService: NgbModal
+  ) {
     super();
   }
 
@@ -98,5 +106,10 @@ export abstract class BasePromotionEntryComponent extends BaseComponentDirective
 
   viewFullscreen(imageId: number): void {
     this.store$.dispatch(new ShowFullscreenImage(imageId));
+  }
+
+  loadImage(): void {
+    this.image.alwaysLoad = true;
+    this.image.load();
   }
 }

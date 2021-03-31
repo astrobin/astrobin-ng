@@ -1,11 +1,11 @@
 <div
-  class="row no-gutters promotion-queue-entry"
   *ngIf="(isDismissed$(entry.pk) | async) === false"
+  [class.hidden]="(isHidden$(entry.pk) | async) === true"
   [class.promoted]="(isPromoted$(entry.pk) | async) === true"
-  [class.hidden]="(isHidden$(entry.pk) | async) === true">
+  class="row no-gutters promotion-queue-entry">
 
   <div class="hidden-overlay">
-    <button class="btn btn-outline-primary" [class.loading]="loadingService.isLoading()" (click)="show(entry.pk)">
+    <button (click)="show(entry.pk)" [class.loading]="loadingService.isLoading()" class="btn btn-outline-primary">
       <fa-icon icon="eye"></fa-icon>
       {{ "Show" | translate }}
     </button>
@@ -15,10 +15,11 @@
 
   <div class="col-12 col-image">
     <astrobin-image
-      class="promotion-image"
+      #image
+      (click)="viewFullscreen(entry.pk)"
       [alias]="ImageAlias.HD_ANONYMIZED"
       [id]="entry.pk"
-      (click)="viewFullscreen(entry.pk)">
+      class="promotion-image">
     </astrobin-image>
   </div>
 
@@ -65,35 +66,35 @@
 
       <div class="col-12 col-md-7">
         <div class="text-right form-actions mt-0 d-sm-flex justify-content-sm-end">
-          <button class="btn btn-secondary" (click)="viewFullscreen(entry.pk)">
+          <button (click)="viewFullscreen(entry.pk)" class="btn btn-secondary">
             <fa-icon icon="search-plus"></fa-icon>
             {{ "View large" | translate }}
           </button>
 
-          <button class="btn btn-danger" [disabled]="alreadyPromoted$(entry.pk) | async"
-                  [class.loading]="loadingService.isLoading()" (click)="dismiss(entry.pk)">
+          <button (click)="dismiss(entry.pk)" [class.loading]="loadingService.isLoading()"
+                  [disabled]="alreadyPromoted$(entry.pk) | async" class="btn btn-danger">
             <fa-icon icon="ban"></fa-icon>
             {{ "Dismiss" | translate }}
           </button>
 
-           <button class="btn btn-secondary" [disabled]="alreadyPromoted$(entry.pk) | async"
-                   [class.loading]="loadingService.isLoading()" (click)="hide(entry.pk)">
+           <button (click)="hide(entry.pk)" [class.loading]="loadingService.isLoading()"
+                   [disabled]="alreadyPromoted$(entry.pk) | async" class="btn btn-secondary">
             <fa-icon icon="eye-slash"></fa-icon>
              {{ "Hide" | translate }}
           </button>
 
-          <button class="btn btn-primary"
+          <button (click)="promote(entry.pk)"
                   *ngIf="(isPromoted$(entry.pk) | async) === false; else retract"
-                  (click)="promote(entry.pk)"
-                  [class.loading]="loadingService.isLoading()">
+                  [class.loading]="loadingService.isLoading()"
+                  class="btn btn-primary">
             <fa-icon icon="star"></fa-icon>
             {{ "Promote" | translate }}
           </button>
 
           <ng-template #retract>
-            <button class="btn btn-danger"
-                    (click)="retractPromotion(entry.pk)"
-                    [class.loading]="loadingService.isLoading()">
+            <button (click)="retractPromotion(entry.pk)"
+                    [class.loading]="loadingService.isLoading()"
+                    class="btn btn-danger">
               <fa-icon icon="undo"></fa-icon>
               {{ "Retract promotion" | translate }}
             </button>

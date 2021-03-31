@@ -41,19 +41,16 @@ astrobin-root:empty + .app-loading,
   z-index: 1;
 }
 
-.container {
-  @media screen and (min-width: 1200px) {
-    // Match the classic AstroBin frontend on Bootstrap 2.
-    // TODO: get rid of this eventually.
-    max-width: 1034px;
-  }
-}
-
 a {
   color: $accent-color;
 
   &:hover {
     color: lighten($accent-color, 5%);
+  }
+
+  &[target="_blank"]:after {
+    content: " \279a";
+    font-size: 0.8em;
   }
 }
 

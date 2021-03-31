@@ -1,4 +1,4 @@
-import { GroupInterface } from "@shared/interfaces/group.interface";
+import { AuthGroupInterface } from "@shared/interfaces/auth-group.interface";
 import { PermissionInterface } from "@shared/interfaces/permission.interface";
 
 export interface UserInterface {
@@ -12,6 +12,6 @@ export interface UserInterface {
   isSuperUser: boolean;
   isStaff: boolean;
   isActive: boolean;
-  groups: GroupInterface[];
+  groups: AuthGroupInterface[];
   userPermissions: PermissionInterface[];
 }

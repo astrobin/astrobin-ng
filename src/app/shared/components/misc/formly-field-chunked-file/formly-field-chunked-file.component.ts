@@ -109,6 +109,8 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
         // We only allow one upload at a time.
         this.uploaderService.queue = this.uploaderService.queue.slice(-1);
 
+        this.popNotificationsService.clear();
+
         forkJoin({
           extensionCheck: this._checkFileExtension(state.name),
           fileSizeCheck: this._checkFileSize(state.size),
@@ -262,21 +264,37 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
     const MB = 1024 * 1024;
     let message;
 
+    if (!this.to.veryLargeSizeWarning) {
+      return;
+    }
+
     if (size > 200 * MB) {
-      message = this.translateService.instant(
-        "Warning! That's a large file you got there! AstroBin does not impose artificial limitation in the file " +
-          "size you can upload with an Ultimate subscription, but we cannot guarantee that all images above 200 MB or " +
-          "~8000x8000 pixels will work. Feel free to give it a shot tho!"
-      );
-    } else if (size > 100 * MB) {
-      message = this.translateService.instant(
-        "Heads up! Are you sure you want to upload such a large file? It's okay to do so but probably not many " +
-          "people will want to see it at its full resolution, if it will take too long for them to download it."
-      );
+      message =
+        this.translateService.instant(
+          "Warning! That's a large file you got there! AstroBin does not impose artificial limitation in the file " +
+            "size you can upload with an Ultimate subscription, but we cannot guarantee that all images above 200 MB or " +
+            "~8000x8000 pixels will work. Feel free to give it a shot tho!"
+        ) +
+        " <a class='d-block mt-2' target='_blank' href='https://welcome.astrobin.com/faq#image-limits'>" +
+        this.translateService.instant("Learn more") +
+        "</a>";
+    } else if (size > 25 * MB) {
+      message =
+        this.translateService.instant(
+          "Heads up! Are you sure you want to upload such a large file? It's okay to do so but probably not many " +
+            "people will want to see it at its full resolution, if it will take too long for them to download it."
+        ) +
+        " <a class='d-block mt-2' target='_blank' href='https://welcome.astrobin.com/faq#image-limits'>" +
+        this.translateService.instant("Learn more") +
+        "</a>";
     }
 
     if (!!message) {
-      this.popNotificationsService.warning(message);
+      this.popNotificationsService.warning(message, null, {
+        enableHtml: true,
+        timeOut: 30000,
+        closeButton: true
+      });
     }
   }
 
@@ -288,12 +306,17 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
     const extension = this.utilsService.fileExtension(filename).toLowerCase();
 
     if (extension === "tif" || extension === "tiff") {
-      const message = this.translateService.instant(
-        "Heads up! TIFF support on AstroBin is experimental. Grayscale images that are 16-bit or higher, or " +
-          "with floating points precision, currently are not supported. If your file is a color image, or already an " +
-          "8-bit depth grayscale, please ignore this warning message."
-      );
-      this.popNotificationsService.warning(message);
+      const message =
+        this.translateService.instant("TIFF support on AstroBin is experimental.") +
+        " <a class='d-block mt-2' target='_blank' href='https://welcome.astrobin.com/faq#image-formats'>" +
+        this.translateService.instant("Learn more") +
+        "</a>";
+
+      this.popNotificationsService.warning(message, null, {
+        enableHtml: true,
+        timeOut: 30000,
+        closeButton: true
+      });
     }
   }
 }

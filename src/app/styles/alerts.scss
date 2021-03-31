@@ -28,10 +28,15 @@
 
   a,
   .alert-link {
-    color: inherit;;
+    color: inherit;
+    text-decoration: none;
 
-    &.btn {
-      text-decoration: none;
+    &:not(.btn) {
+      border-bottom: 1px dotted rgba(255, 255, 255, .5);
+
+      &:hover {
+        border-bottom: 1px dotted $accent-color;
+      }
     }
   }
 
@@ -40,10 +45,13 @@
   }
 
   &.alert-info {
-    background-color: $white;
+    background-color: $info-blue;
 
+    &,
+    fa-icon,
     > p, & {
-      color: $grey;
+      color: $white;
+      text-shadow: 0 -1px 0 rgba(0, 0, 0, .5);
     }
   }
 

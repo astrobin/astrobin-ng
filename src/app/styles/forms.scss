@@ -9,9 +9,10 @@ label {
 .form-control {
   &,
   &:focus {
-    background-color: $darker-grey;
+    background-color: $darkest-grey;
     border-color: $dark-grey;
     color: $lighter-grey;
+    padding: 1.25rem 1rem;
 
     &::placeholder {
       color: $light-grey !important;
@@ -35,7 +36,9 @@ label {
 }
 
 .form-text {
-  font-size: .9rem;
+  margin-top: .25rem;
+  font-size: .85rem;
+  color: $muted-accent-color !important;
 }
 
 .form-actions {
@@ -48,6 +51,7 @@ label {
   }
 }
 
+.invalid-feedback,
 .error {
   color: $error-red;
 }

@@ -1,0 +1,30 @@
+<ng-wizard #wizard (stepChanged)="onStepChanged($event)" [attr.id]="field.id" [config]="{ selected: currentStepIndex }">
+  <ng-wizard-step
+    #wizardSteps
+    *ngFor="let step of field?.fieldGroup; let index = index; let last = last"
+    [attr.id]="step.id"
+    [class.error]="isStepErrored(index)"
+    [class.visited]="highestVisitedStep > index"
+    [description]="step.templateOptions.label"
+    [state]="getState(step)"
+    [title]="getStepTitle(index)"
+    class="wizard-step"
+  >
+    <formly-field [field]="step"></formly-field>
+
+    <div class="form-actions">
+      <button (click)="goToPreviousStep($event)" *ngIf="!isFirstStep(index)" class="btn btn-secondary">
+        {{ "Previous" | translate }}
+      </button>
+
+      <button (click)="goToNextStep($event)" *ngIf="!isLastStep(index)" class="btn btn-secondary">
+        {{ "Next" | translate }}
+      </button>
+
+      <ng-container *ngIf="to.buttonsTemplate" [ngTemplateOutletContext]="{
+        isLastStep: isLastStep(index)
+      }" [ngTemplateOutlet]="to.buttonsTemplate"></ng-container>
+    </div>
+
+  </ng-wizard-step>
+</ng-wizard>

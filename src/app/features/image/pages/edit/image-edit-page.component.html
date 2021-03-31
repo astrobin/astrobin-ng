@@ -1,0 +1,62 @@
+<div class="page has-breadcrumb">
+  <ngb-alert [dismissible]="false" id="new-editor-alert" type="info">
+    <fa-icon icon="info-circle"></fa-icon>
+    <span [innerHTML]="newImageDataEditorAlert"></span>
+  </ngb-alert>
+
+  <form [formGroup]="form">
+    <formly-form [fields]="fields" [form]="form" [model]="model"></formly-form>
+  </form>
+</div>
+
+<ng-template #remoteSourceLabelTemplate let-item="item">
+  <span class="code">{{ item.label }}</span>
+  <span *ngIf="isSponsor(item.value)" class="remote-affiliate-sponsor">(sponsor)</span>
+</ng-template>
+
+<ng-template #remoteSourceOptionTemplate let-item="item">
+  <span class="code">{{ item.label }}</span>
+  <span *ngIf="isSponsor(item.value)" class="remote-affiliate-sponsor">(sponsor)</span>
+</ng-template>
+
+<ng-template #stepperButtonsTemplate let-isLastStep="isLastStep">
+  <div class="d-block d-sm-inline-block" ngbDropdown placement="top-right">
+    <button
+      *ngIf="isLastStep"
+      [class.loading]="loadingService.isLoading()"
+      class="btn btn-primary"
+      id="save-dropdown"
+      ngbDropdownToggle
+    >
+      {{ "Save" | translate }}...
+    </button>
+    <div aria-labelledby="save-dropdown" ngbDropdownMenu>
+      <h6 class="dropdown-header">{{ "Where do you want to go after saving?" | translate }}</h6>
+
+      <button
+        (click)="
+          onSave($event, classicRoutesService.EDIT_IMAGE_GEAR(this.image.hash || '' + this.image.pk) + '?upload')
+        "
+        class="dropdown-item"
+      >
+        {{ "Save and proceed to gear selection" | translate }}
+      </button>
+
+      <button
+        (click)="
+          onSave($event, classicRoutesService.EDIT_IMAGE_ACQUISITION(this.image.hash || '' + this.image.pk) + '?upload')
+        "
+        class="dropdown-item"
+      >
+        {{ "Save and proceed to acquisition details" | translate }}
+      </button>
+
+      <button
+        (click)="onSave($event, classicRoutesService.IMAGE(this.image.hash || '' + this.image.pk))"
+        class="dropdown-item"
+      >
+        {{ "Save and proceed to image" | translate }}
+      </button>
+    </div>
+  </div>
+</ng-template>
