@@ -11,6 +11,10 @@ import { AuthService } from "@shared/services/auth.service";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
+import { Observable } from "rxjs";
+import { selectCurrentUser } from "@features/account/store/auth.selectors";
+import { map } from "rxjs/operators";
+import { UserInterface } from "@shared/interfaces/user.interface";
 
 interface AvailableLanguageInterface {
   code: string;
@@ -68,14 +72,14 @@ export class HeaderComponent extends BaseComponentDirective {
   ];
 
   constructor(
-    public modalService: NgbModal,
-    public classicRoutes: ClassicRoutesService,
-    public authService: AuthService,
-    public notificationsService: NotificationsService,
-    public loadingService: LoadingService,
-    public windowRef: WindowRefService,
-    public store: Store<State>,
-    public translateService: TranslateService
+    public readonly store$: Store<State>,
+    public readonly modalService: NgbModal,
+    public readonly classicRoutes: ClassicRoutesService,
+    public readonly authService: AuthService,
+    public readonly notificationsService: NotificationsService,
+    public readonly loadingService: LoadingService,
+    public readonly windowRef: WindowRefService,
+    public readonly translateService: TranslateService
   ) {
     super();
   }
@@ -87,6 +91,20 @@ export class HeaderComponent extends BaseComponentDirective {
     }
 
     return display[0].label;
+  }
+
+  get helpWithTranslationsUrl$(): Observable<string> {
+    return this.store$.select(selectCurrentUser).pipe(
+      map((user: UserInterface) => {
+        let path = `${this.classicRoutes.CONTACT}?subject=Help%20with%20translations`;
+
+        if (!!user) {
+          path += `&username=${user.username}`;
+        }
+
+        return path;
+      })
+    );
   }
 
   getSetLanguageUrl(languageCode: string): string {
@@ -104,6 +122,6 @@ export class HeaderComponent extends BaseComponentDirective {
 
   logout($event) {
     $event.preventDefault();
-    this.store.dispatch(new Logout());
+    this.store$.dispatch(new Logout());
   }
 }

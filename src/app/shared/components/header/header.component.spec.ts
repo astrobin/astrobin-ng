@@ -41,17 +41,17 @@ describe("HeaderComponent", () => {
   });
 
   describe("logout", () => {
-    it("should defer to a store event", () => {
+    it("should defer to a store$ event", () => {
       const mockEvent = {
         preventDefault: jest.fn()
       };
 
-      jest.spyOn(component.store, "dispatch");
+      jest.spyOn(component.store$, "dispatch");
 
       component.logout(mockEvent);
 
       expect(mockEvent.preventDefault).toHaveBeenCalled();
-      expect(component.store.dispatch).toHaveBeenCalled();
+      expect(component.store$.dispatch).toHaveBeenCalled();
     });
   });
 });
