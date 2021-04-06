@@ -35,7 +35,7 @@
 <ng-template #mainMenu>
   <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
     <!-- Moderate menu -->
-    <ng-container *ngIf="(store | async).auth.user && store | async as state">
+    <ng-container *ngIf="(store$ | async).auth.user && store$ | async as state">
       <li *ngIf="state.auth.user | isContentModerator" class="nav-item">
         <div class="d-inline-block" ngbDropdown>
           <button class="btn btn-link" id="moderateDropdown" ngbDropdownToggle translate>
@@ -248,7 +248,7 @@
 
         <div class="dropdown-divider"></div>
 
-        <a class="dropdown-item" href="https://translate.astrobin.com/projects" target="_blank">
+        <a class="dropdown-item" [attr.href]="helpWithTranslationsUrl$ | async" target="_blank">
           <fa-icon icon="tasks"></fa-icon>
           {{ "Help with translations!" | translate }}
         </a>
@@ -279,7 +279,7 @@
 
 <ng-template #userMenu>
   <!-- User menu -->
-  <ng-container *ngIf="store | async as state">
+  <ng-container *ngIf="store$ | async as state">
     <li *ngIf="state.auth.user && state.auth.userProfile" class="nav-item">
       <div class="d-inline-block" ngbDropdown>
         <button class="btn btn-primary user-dropdown-toggle" id="user-dropdown" ngbDropdownToggle>
