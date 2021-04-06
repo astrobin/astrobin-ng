@@ -87,7 +87,7 @@
     "@types/node": "12.20.7",
     "@types/supertest": "2.0.11",
     "codelyzer": "6.0.1",
-    "concurrently": "6.0.0",
+    "concurrently": "6.0.1",
     "cross-var": "1.1.0",
     "cypress": "5.6.0",
     "faker": "5.5.1",
