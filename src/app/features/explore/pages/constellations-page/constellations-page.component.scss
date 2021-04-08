@@ -1,0 +1,21 @@
+@import "../../../../styles/variables";
+
+.constellation-jump-to {
+  margin-bottom: 4rem;
+}
+
+.constellation {
+  &:not(:last-child) {
+    margin-bottom: 4rem;
+  }
+
+  .constellation-image {
+    background: $white;
+    padding: 0.5rem;
+    width: 100%;
+  }
+
+  .constellation-id {
+    color: $light-grey;
+  }
+}

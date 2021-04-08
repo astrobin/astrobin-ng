@@ -129,6 +129,11 @@
             {{ "The Big Wall" | translate }} / {{ "Advanced search" | translate }}
           </a>
 
+          <a [routerLink]="['explore', 'constellations']" class="dropdown-item">
+            <fa-icon icon="star"></fa-icon>
+            {{ "Constellations" | translate }}
+          </a>
+
           <div class="dropdown-divider"></div>
 
           <a [href]="classicRoutes.TOP_PICK_NOMINATIONS" class="dropdown-item">

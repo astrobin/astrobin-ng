@@ -1,0 +1,47 @@
+<div class="page has-breadcrumb">
+  <h1>{{ pageTitle }}</h1>
+
+  <div class="constellation-jump-to">
+    <label for="constellation-selector">{{ "Jump to" | translate }}:</label>
+    <ng-select
+      [clearable]="false"
+      [items]="constellationsService.constellations"
+      appendTo="body"
+      bindValue="id"
+      bindLabel="name"
+      id="constellation-selector"
+      (change)="jumpTo($event)"
+    >
+      <ng-template let-item="item" ng-label-tmp> {{ item.id }}: {{ item.name }} </ng-template>
+
+      <ng-template let-item="item" ng-option-tmp> {{ item.id }}: {{ item.name }} </ng-template>
+    </ng-select>
+  </div>
+
+  <div
+    *ngFor="let constellation of constellationsService.constellations"
+    id="constellation-{{ constellation.id }}"
+    class="constellation"
+  >
+    <ng-container *ngIf="constellation.data$ | async as constellationData">
+      <div class="row align-items-center">
+        <div class="col-12 col-lg-4">
+          <img class="constellation-image" [src]="constellationData.originalimage?.source" [alt]="constellation.name" />
+        </div>
+        <div class="col-12 col-lg-8">
+          <h3 class="mt-4 mt-lg-0">
+            <span class="constellation-id">{{ constellation.id }}</span> {{ constellation.name }}
+          </h3>
+          <p>{{ constellationData.extract }}</p>
+          <a
+            class="btn btn-outline-primary"
+            [class.loading]="loadingService.isLoading()"
+            (click)="findImages(constellation)"
+          >
+            {{ "Find images" | translate }}
+          </a>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</div>

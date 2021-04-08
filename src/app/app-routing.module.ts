@@ -11,6 +11,10 @@ const routes: Routes = [
     loadChildren: () => import("@features/dev/dev.module").then(m => m.DevModule)
   },
   {
+    path: "explore",
+    loadChildren: () => import("@features/explore/explore.module").then(m => m.ExploreModule)
+  },
+  {
     path: "i",
     loadChildren: () => import("@features/image/image.module").then(m => m.ImageModule)
   },
