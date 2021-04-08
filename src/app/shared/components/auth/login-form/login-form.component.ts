@@ -5,7 +5,6 @@ import { AuthActionTypes, Login } from "@features/account/store/auth.actions";
 import { Actions, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { LoadingService } from "@shared/services/loading.service";
 
 @Component({
   selector: "astrobin-login-form",
@@ -25,14 +24,13 @@ export class LoginFormComponent extends BaseComponentDirective implements OnInit
     public readonly actions$: Actions
   ) {
     super();
-  }
-
-  ngOnInit(): void {
     this.form = this.formBuilder.group({
       handle: ["", Validators.required],
       password: ["", Validators.required]
     });
   }
+
+  ngOnInit(): void {}
 
   @HostListener("document:keydown.enter", ["$event"]) login(): void {
     this.store.dispatch(
