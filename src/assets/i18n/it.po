@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: AstroBin Angular App\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-03 14:04+0200\n"
-"PO-Revision-Date: 2021-04-04 23:58+0200\n"
+"PO-Revision-Date: 2021-04-09 15:23+0200\n"
 "Last-Translator: Salvatore Iovene\n"
 "Language-Team: Italian\n"
 "Language: it\n"
@@ -316,7 +316,7 @@ msgstr ""
 
 #: loco:60685a683b0b1d485a736d56
 msgid "Please note: you already are on this plan or a higher one."
-msgstr ""
+msgstr "Nota bene: hai già questo abbonamento o uno superiore."
 
 #: loco:60685a683b0b1d485a736d57
 msgid "Plots"
@@ -328,7 +328,7 @@ msgstr "Preferisci pagare con un trasferimento bancario?"
 
 #: loco:60685a683b0b1d485a736d59
 msgid "Price"
-msgstr ""
+msgstr "Prezzo"
 
 #: loco:60685a683b0b1d485a736d5a
 msgid "Public Gallery"
@@ -436,7 +436,7 @@ msgstr "Non sembra esserci niente qui."
 
 #: loco:60685a683b0b1d485a736d73
 msgid "This field is required"
-msgstr ""
+msgstr "Campo obbligatorio"
 
 #: loco:60685a683b0b1d485a736d74
 msgid ""
@@ -1338,9 +1338,13 @@ msgid ""
 "You have an <strong>AstroBin Premium</strong> subscription. Enjoy your "
 "unlimited uploads!"
 msgstr ""
+"Hai un abbonamento<strong>AstroBin Premium</strong. Goditi i tuoi "
+"caricamenti illimitati!"
 
 #: loco:60685b60c553572a2445b533
 msgid ""
 "You have an <strong>AstroBin Ultimate</strong> subscription. Enjoy your "
 "unlimited uploads!"
 msgstr ""
+"Hai un abbonamento<strong>AstroBin Ultimate</strong. Goditi i tuoi "
+"caricamenti illimitati!"
