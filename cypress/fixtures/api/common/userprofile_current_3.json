@@ -23,7 +23,7 @@
     "exclude_from_competitions": false,
     "default_frontpage_section": "global",
     "default_gallery_sorting": 0,
-    "default_license": 0,
+    "default_license": "ATTRIBUTION_NON_COMMERCIAL_SHARE_ALIKE",
     "default_watermark_text": "Copyright astrobin_dev",
     "default_watermark": false,
     "default_watermark_size": "M",

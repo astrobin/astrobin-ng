@@ -84,6 +84,10 @@ context("Image edit (existing)", () => {
 
     cy.url().should("contain", "#5");
 
+    cy.get("#image-license-field .ng-value").should(
+      "contain.text",
+      "Attribution-NonCommercial-ShareAlike Creative Commons"
+    );
     cy.get("#image-mouse-hover-image-field .ng-value").should("contain.text", "Inverted monochrome");
     cy.get("#image-allow-comments-field").should("be.checked");
   });
