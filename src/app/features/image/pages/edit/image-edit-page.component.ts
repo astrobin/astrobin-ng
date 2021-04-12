@@ -19,6 +19,7 @@ import {
   AcquisitionType,
   DataSource,
   ImageInterface,
+  LicenseOptions,
   MouseHoverImageOptions,
   RemoteSource,
   SolarSystemSubjectType,
@@ -692,6 +693,58 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     };
   }
 
+  private _getLicenseField(): any {
+    return {
+      key: "license",
+      type: "ng-select",
+      id: "image-license-field",
+      templateOptions: {
+        required: true,
+        clearable: false,
+        label: this.translateService.instant("License"),
+        description: this.translateService.instant(
+          "You can associate a Creative Commons license with your content if you wish, to grant " +
+            "people the right to use your work under certain circumstances. For more information on what your options " +
+            "are, please visit the {{0}}Creative Commons website{{1}}.",
+          {
+            0: `<a target="_blank" href="https://creativecommons.org/choose/">`,
+            1: `</a>`
+          }
+        ),
+        options: [
+          {
+            value: LicenseOptions.ALL_RIGHTS_RESERVED,
+            label: this.translateService.instant("None (All rights reserved)")
+          },
+          {
+            value: LicenseOptions.ATTRIBUTION_NON_COMMERCIAL_SHARE_ALIKE,
+            label: this.translateService.instant("Attribution-NonCommercial-ShareAlike Creative Commons")
+          },
+          {
+            value: LicenseOptions.ATTRIBUTION_NON_COMMERCIAL,
+            label: this.translateService.instant("Attribution-NonCommercial Creative Commons")
+          },
+          {
+            value: LicenseOptions.ATTRIBUTION_NON_COMMERCIAL_NO_DERIVS,
+            label: this.translateService.instant("Attribution-NonCommercial-NoDerivs Creative Commons")
+          },
+          {
+            value: LicenseOptions.ATTRIBUTION,
+            label: this.translateService.instant("Attribution Creative Commons")
+          },
+          {
+            value: LicenseOptions.ATTRIBUTION_SHARE_ALIKE,
+            label: this.translateService.instant("Attribution-ShareAlike Creative Commons")
+          },
+          {
+            value: LicenseOptions.ATTRIBUTION_NO_DERIVS,
+            label: this.translateService.instant("Attribution-NoDerivs Creative Commons")
+          }
+        ]
+      }
+    };
+  }
+
   private _getMouseHoverImageField(): any {
     return {
       key: "mouseHoverImage",
@@ -810,7 +863,12 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
           {
             id: "image-stepper-settings",
             templateOptions: { label: this.translateService.instant("Settings") },
-            fieldGroup: [this._getMouseHoverImageField(), this._getKeyValueTagsField(), this._getAllowCommentsField()]
+            fieldGroup: [
+              this._getLicenseField(),
+              this._getMouseHoverImageField(),
+              this._getKeyValueTagsField(),
+              this._getAllowCommentsField()
+            ]
           }
         ]
       }

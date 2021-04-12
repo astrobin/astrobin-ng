@@ -86,6 +86,8 @@ $highlight: 3%;
   .ng-option {
     padding: .5rem 1rem !important;
     color: $lightest-grey !important;
+    white-space: normal !important;
+    line-height: 1.15rem !important;
 
     &.ng-option-child {
       padding-left: 1.5rem !important;
