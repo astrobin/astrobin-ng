@@ -81,6 +81,16 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
     super();
   }
 
+  get imageRevisionEtiquetteMessage(): string {
+    return (
+      `<strong>${this.translate.instant("Please note")}</strong>: ` +
+      this.translate.instant("there is an etiquette regarding uploading a new image versus an image revision.") +
+      " <a href='https://welcome.astrobin.com/features/image-revisions' target='_blank'>" +
+      this.translate.instant("Learn more") +
+      ".</a>"
+    );
+  }
+
   subscriptionWithYearlySlotsMessage(name: string, counter: number, slots: number): string {
     return this.translate.instant(
       "You have a <strong>{{0}}</strong> subscription. You have used <strong>{{1}}</strong> of " +
