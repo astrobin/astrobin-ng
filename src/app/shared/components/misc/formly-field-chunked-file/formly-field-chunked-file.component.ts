@@ -234,7 +234,10 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
               map(state => state.app.backendConfig)
             )
             .subscribe(backendConfig => {
-              if (image.width * image.height > backendConfig.MAX_IMAGE_PIXELS) {
+              const width = image.naturalWidth || image.width;
+              const height = image.naturalHeight || image.height;
+
+              if (width * height > backendConfig.MAX_IMAGE_PIXELS) {
                 const message =
                   "Sorry, but this image is too large. The maximum allowed total number of pixels is {{max}}.";
                 this.popNotificationsService.error(
@@ -245,8 +248,8 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
                 observer.next(false);
               } else {
                 this.uploadDataService.patchMetadata("image-upload", {
-                  width: image.width,
-                  height: image.height
+                  width,
+                  height
                 });
                 observer.next(true);
               }
