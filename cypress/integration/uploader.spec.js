@@ -52,13 +52,22 @@ context("uploader", () => {
       });
 
       it("should display error if title is missing and Upload is clicked", () => {
-        cy.visitPage("/uploader");
-
         cy.get("button")
           .contains("Upload")
           .click();
 
         cy.get(".form-group.has-error label[for='title']").should("exist");
+      });
+
+      it("should display warning if title contains danger word", () => {
+        cy.get("#title").type("M51 crop");
+        cy.get("button")
+          .contains("Upload")
+          .click();
+
+        cy.get(".toast-message")
+          .contains("If this file is a different take")
+          .should("exist");
       });
 
       it("should have all form controls if user is Premium", () => {

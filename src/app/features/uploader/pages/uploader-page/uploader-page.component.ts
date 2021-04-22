@@ -177,12 +177,17 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
   }
 
   private _onTitleChange() {
-    if (this.model.title.toLowerCase().indexOf("crop") > -1) {
+    const dangerWords = ["crop", "cropped", "wider", "reprocess", "reprocessed", "zoom", "rielaborato", "rielaborata"];
+    if (new RegExp(dangerWords.join("|")).test(this.model.title.toLowerCase())) {
       this.popNotificationsService.warning(
         this.translate.instant(
-          "Please note: if this file is a crop of another image you already published on AstroBin, the common " +
-            "practice would be to upload it as a new revision. For more info, please " +
-            "<a href='https://welcome.astrobin.com/features/image-revisions' target='_blank'>click here</a>."
+          "If this file is a different take on the same data as in another image you already published on " +
+            "AstroBin, the common practice would be to upload it as a new revision. For more info, please " +
+            "{{0}}click here{{1}}.",
+          {
+            0: "<a href='https://welcome.astrobin.com/features/image-revisions' target='_blank'>",
+            1: "</a>"
+          }
         ),
         null,
         {
