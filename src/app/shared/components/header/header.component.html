@@ -124,7 +124,7 @@
           Explore
         </button>
         <div aria-labelledby="exploreDropdown" ngbDropdownMenu>
-          <a [href]="classicRoutes.SEARCH" class="dropdown-item">
+          <a [href]="classicRoutes.SEARCH + '?d=i'" class="dropdown-item">
             <fa-icon icon="search"></fa-icon>
             {{ "The Big Wall" | translate }} / {{ "Advanced search" | translate }}
           </a>
@@ -226,6 +226,7 @@
           <input autocomplete="off" class="form-control" name="q" placeholder="{{ 'Quick search' | translate }}"
                  type="text"/>
         </label>
+        <input type="hidden" name="d" value="i"/>
       </form>
     </li>
     <!-- ./Quick search form -->
