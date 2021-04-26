@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: AstroBin Angular App\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-03 14:04+0200\n"
-"PO-Revision-Date: 2021-04-09 17:14+0200\n"
+"PO-Revision-Date: 2021-04-26 21:41+0200\n"
 "Last-Translator: Salvatore Iovene\n"
 "Language-Team: Italian\n"
 "Language: it\n"
@@ -1360,3 +1360,65 @@ msgstr "Trova immagini"
 #: loco:60706f2de8dffc569748c214
 msgid "Jump to"
 msgstr "Salta a"
+
+#: loco:6087167fe1b7bd31c9369682
+msgid "Attribution Creative Commons"
+msgstr "Attribution Creative Commons"
+
+#: loco:6087167fe1b7bd31c9369683
+msgid "Attribution-NoDerivs Creative Commons"
+msgstr "Attribution-NoDerivs Creative Commons"
+
+#: loco:6087167fe1b7bd31c9369684
+msgid "Attribution-NonCommercial Creative Commons"
+msgstr "Attribution-NonCommercial Creative Commons"
+
+#: loco:6087167fe1b7bd31c9369685
+msgid "Attribution-NonCommercial-NoDerivs Creative Commons"
+msgstr "Attribution-NonCommercial-NoDerivs Creative Commons"
+
+#: loco:6087167fe1b7bd31c9369686
+msgid "Attribution-NonCommercial-ShareAlike Creative Commons"
+msgstr "Attribution-NonCommercial-ShareAlike Creative Commons"
+
+#: loco:6087167fe1b7bd31c9369687
+msgid "Attribution-ShareAlike Creative Commons"
+msgstr "Attribution-ShareAlike Creative Commons"
+
+#: loco:6087167fe1b7bd31c9369688
+msgid ""
+"If this file is a different take on the same data as in another image you "
+"already published on AstroBin, the common practice would be to upload it as "
+"a new revision. For more info, please {{0}}click here{{1}}."
+msgstr ""
+"Se questo file rappresenta un approccio diverso agli stessi dati di "
+"un'immagine già caricata su AstroBin, la pratica comune sarebbe di caricarlo "
+"con una nuova versione. Per ulteriori informazioni, {{0}}clicca qui{{1}}."
+
+#: loco:6087167fe1b7bd31c9369689
+msgid "License"
+msgstr "Licenza"
+
+#: loco:6087167fe1b7bd31c936968a
+msgid "None (All rights reserved)"
+msgstr "Nessuna (Tutti i diritti riservati)"
+
+#: loco:6087167fe1b7bd31c936968b
+msgid ""
+"You can associate a Creative Commons license with your content if you wish, "
+"to grant people the right to use your work under certain circumstances. For "
+"more information on what your options are, please visit the {{0}}Creative "
+"Commons website{{1}}."
+msgstr ""
+"Puoi associare una licenza Creative Commons ai tuoi contenuti, se desideri, "
+"per garantide ad altri il diritto di usare il tuo lavoro sotto certe "
+"condizioni. Per ulteriori informazioni su quali siano le tue opzioni, visita "
+"{{0}}il sito Creative Commons{{1}}."
+
+#: loco:6087167fe1b7bd31c936968c
+msgid ""
+"there is an etiquette regarding uploading a new image versus an image "
+"revision."
+msgstr ""
+"c'è una certa etichetta diguardo il caricamento di nuove immagini piuttosto "
+"che versioni d'immagine."
