@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: AstroBin Angular App\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-03 14:04+0200\n"
-"PO-Revision-Date: 2021-04-26 21:41+0200\n"
+"PO-Revision-Date: 2021-05-01 23:34+0200\n"
 "Last-Translator: Salvatore Iovene\n"
 "Language-Team: German\n"
 "Language: de\n"
@@ -14,7 +14,7 @@ msgstr ""
 "X-Generator: Loco https://localise.biz\n"
 "X-Loco-Source-Locale: en\n"
 "X-Loco-Project-Id: 108356\n"
-"X-Loco-Api-Version: 1.0.25 20210310-1"
+"X-Loco-Api-Version: 1.0.25 20210428-1"
 
 #: loco:60685a683b0b1d485a736d12
 msgid "API Keys"
@@ -317,6 +317,8 @@ msgstr ""
 #: loco:60685a683b0b1d485a736d56
 msgid "Please note: you already are on this plan or a higher one."
 msgstr ""
+"Bitte beachten Sie: Sie befinden sich bereits in diesem oder einem höheren "
+"Plan."
 
 #: loco:60685a683b0b1d485a736d57
 msgid "Plots"
@@ -328,7 +330,7 @@ msgstr "Bevorzugen Sie die Zahlung per Banküberweisung?"
 
 #: loco:60685a683b0b1d485a736d59
 msgid "Price"
-msgstr ""
+msgstr "Preis"
 
 #: loco:60685a683b0b1d485a736d5a
 msgid "Public Gallery"
@@ -436,7 +438,7 @@ msgstr "Es scheint hier nichts zu geben."
 
 #: loco:60685a683b0b1d485a736d73
 msgid "This field is required"
-msgstr ""
+msgstr "Dieses Feld wird benötigt"
 
 #: loco:60685a683b0b1d485a736d74
 msgid ""
@@ -1348,48 +1350,52 @@ msgid ""
 "You have an <strong>AstroBin Premium</strong> subscription. Enjoy your "
 "unlimited uploads!"
 msgstr ""
+"Sie haben ein <strong>AstroBin Premium</strong> Abonnement. Genießen Sie "
+"Ihre unbegrenzten Uploads!"
 
 #: loco:60685b60c553572a2445b533
 msgid ""
 "You have an <strong>AstroBin Ultimate</strong> subscription. Enjoy your "
 "unlimited uploads!"
 msgstr ""
+"Sie haben ein <strong>AstroBin Ultimate</strong> Abonnement. Genießen Sie "
+"Ihre unbegrenzten Uploads!"
 
 #: loco:60706f2de8dffc569748c212
 msgid "Constellations"
-msgstr ""
+msgstr "Sternbilder"
 
 #: loco:60706f2de8dffc569748c213
 msgid "Find images"
-msgstr ""
+msgstr "Suche Bilder"
 
 #: loco:60706f2de8dffc569748c214
 msgid "Jump to"
-msgstr ""
+msgstr "Springe zu"
 
 #: loco:6087167fe1b7bd31c9369682
 msgid "Attribution Creative Commons"
-msgstr ""
+msgstr "Namensnennung Creative Commons"
 
 #: loco:6087167fe1b7bd31c9369683
 msgid "Attribution-NoDerivs Creative Commons"
-msgstr ""
+msgstr "Namensnennung-Keine Bearbeitung Creative Commons"
 
 #: loco:6087167fe1b7bd31c9369684
 msgid "Attribution-NonCommercial Creative Commons"
-msgstr ""
+msgstr "Namensnennung-Nicht-Kommerziell Creative Commons"
 
 #: loco:6087167fe1b7bd31c9369685
 msgid "Attribution-NonCommercial-NoDerivs Creative Commons"
-msgstr ""
+msgstr "Namensnennung-NichtKommerziell-KeineBearbeitung Creative Commons"
 
 #: loco:6087167fe1b7bd31c9369686
 msgid "Attribution-NonCommercial-ShareAlike Creative Commons"
-msgstr ""
+msgstr "Namensnennung-Nicht-Kommerziell-Weitergabe unter Creative Commons"
 
 #: loco:6087167fe1b7bd31c9369687
 msgid "Attribution-ShareAlike Creative Commons"
-msgstr ""
+msgstr "Namensnennung-Weitergabe unter gleichen Bedingungen Creative Commons"
 
 #: loco:6087167fe1b7bd31c9369688
 msgid ""
@@ -1397,14 +1403,18 @@ msgid ""
 "already published on AstroBin, the common practice would be to upload it as "
 "a new revision. For more info, please {{0}}click here{{1}}."
 msgstr ""
+"Wenn es sich bei dieser Datei um eine andere Version derselben Daten handelt,"
+" die in einem anderen Bild enthalten sind, das Sie bereits auf AstroBin "
+"veröffentlicht haben, ist es üblich, sie als neue Revision hochzuladen. Für "
+"weitere Informationen klicken Sie bitte {{0}}hier{{1}}."
 
 #: loco:6087167fe1b7bd31c9369689
 msgid "License"
-msgstr ""
+msgstr "Lizenz"
 
 #: loco:6087167fe1b7bd31c936968a
 msgid "None (All rights reserved)"
-msgstr ""
+msgstr "Keine (Alle Rechte vorbehalten)"
 
 #: loco:6087167fe1b7bd31c936968b
 msgid ""
@@ -1413,9 +1423,15 @@ msgid ""
 "more information on what your options are, please visit the {{0}}Creative "
 "Commons website{{1}}."
 msgstr ""
+"Sie können eine Creative-Commons-Lizenz mit Ihren Inhalten verknüpfen, wenn "
+"Sie dies wünschen, um anderen Personen das Recht zu gewähren, Ihre Arbeit "
+"unter bestimmten Umständen zu verwenden. Weitere Informationen über Ihre "
+"Möglichkeiten finden Sie auf der {{0}}Creative Commons-Website{{1}}."
 
 #: loco:6087167fe1b7bd31c936968c
 msgid ""
 "there is an etiquette regarding uploading a new image versus an image "
 "revision."
 msgstr ""
+"Es gibt eine Etikette bezüglich des Hochladens eines neuen Bildes gegenüber "
+"einer neuen Bild-Version."
