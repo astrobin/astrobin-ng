@@ -9,8 +9,6 @@ import { ImageGenerator } from "@shared/generators/image.generator";
 import { MockBuilder, MockRender } from "ng-mocks";
 
 describe("RevisionUploader.PageComponent", () => {
-  let store: MockStore;
-
   beforeEach(() =>
     MockBuilder(RevisionUploaderPageComponent, UploaderModule)
       .mock(AppModule)
@@ -28,9 +26,6 @@ describe("RevisionUploader.PageComponent", () => {
       ])
       .provide(provideMockStore({ initialState }))
   );
-  beforeEach(() => {
-    store = TestBed.inject(MockStore);
-  });
 
   it("should create", () => {
     const fixture = MockRender(RevisionUploaderPageComponent);
