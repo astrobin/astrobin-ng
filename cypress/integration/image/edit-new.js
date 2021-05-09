@@ -67,7 +67,8 @@ context("Image edit (new)", () => {
     cy.get("#image-subject-type-field .ng-value").should("not.exist");
     cy.get("#image-data-source-field .ng-value").should("not.exist");
 
-    cy.get("#image-groups-field").should("not.be.visible");
+    cy.get("#image-groups-field").should("be.visible");
+    cy.get("#image.groups-field .ng-value-container .ng-value").should("have.length", 0);
   });
 
   it("should select an acquisition type", () => {
@@ -111,6 +112,14 @@ context("Image edit (new)", () => {
       .click();
     cy.get("#image-data-source-field .ng-value").should("contain.text", "Backyard");
     cy.get("#image-remote-source-field").should("not.be.visible");
+  });
+
+  it("should select a group", () => {
+    cy.get("#image-groups-field").click();
+    cy.get("#image-groups-field .ng-option")
+      .contains("First test group")
+      .click();
+    cy.get("#image-groups-field .ng-value").should("contain.text", "First test group");
   });
 
   it("should display remote source if data source is remote", () => {

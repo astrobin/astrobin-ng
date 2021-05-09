@@ -44,6 +44,11 @@ label {
   margin-top: .25rem;
   font-size: .85rem;
   color: $muted-accent-color !important;
+
+  strong {
+    color: lighten($muted-accent-color, 20%) !important;
+    font-weight: normal;
+  }
 }
 
 .form-actions {
