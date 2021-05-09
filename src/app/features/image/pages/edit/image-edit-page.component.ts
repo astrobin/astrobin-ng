@@ -471,16 +471,24 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
   }
 
   private _getGroupsField(): any {
+    let description = this.translateService.instant("Submit this image to the selected groups.");
+
+    if (this.image.isWip) {
+      const publicationInfo = this.translateService.instant(
+        "This setting will take affect after the image will be moved to your public area."
+      );
+      description += ` <strong>${publicationInfo}</strong>`;
+    }
+
     return {
       key: "partOfGroupSet",
       type: "ng-select",
       id: "image-groups-field",
-      hideExpression: () => this.image.isWip,
       templateOptions: {
         multiple: true,
         required: false,
         label: this.translateService.instant("Groups"),
-        description: this.translateService.instant("Submit this image to the selected groups."),
+        description,
         options: this.store$.select(selectCurrentUser).pipe(
           switchMap(user =>
             this.groupApiService.getAll(user.id).pipe(
