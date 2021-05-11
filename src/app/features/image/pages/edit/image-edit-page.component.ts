@@ -7,7 +7,7 @@ import { SaveImage } from "@app/store/actions/image.actions";
 import { LoadThumbnail } from "@app/store/actions/thumbnail.actions";
 import { selectThumbnail } from "@app/store/selectors/app/thumbnail.selectors";
 import { State } from "@app/store/state";
-import { selectCurrentUser, selectCurrentUserProfile } from "@features/account/store/auth.selectors";
+import { selectCurrentUserProfile } from "@features/account/store/auth.selectors";
 import { ImageEditorSetCropperShown } from "@features/image/store/image.actions";
 import { Actions, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
@@ -35,10 +35,11 @@ import { LoadingService } from "@shared/services/loading.service";
 import { TitleService } from "@shared/services/title/title.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
-import { catchError, filter, map, switchMap, take } from "rxjs/operators";
+import { catchError, filter, map, take } from "rxjs/operators";
 import { retryWithDelay } from "rxjs-boost/lib/operators";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { EMPTY } from "rxjs";
+import { GroupInterface } from "@shared/interfaces/group.interface";
 
 export function KeyValueTagsValidator(control: FormControl): ValidationErrors {
   if (!control.value) {
@@ -57,6 +58,7 @@ export function KeyValueTagsValidator(control: FormControl): ValidationErrors {
 })
 export class ImageEditPageComponent extends BaseComponentDirective implements OnInit {
   ImageAlias = ImageAlias;
+  groups: GroupInterface[];
   image: ImageInterface;
   model: Partial<ImageInterface>;
   form = new FormGroup({});
@@ -107,6 +109,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
   }
 
   ngOnInit(): void {
+    this.groups = this.route.snapshot.data.groups;
     this.image = this.route.snapshot.data.image;
     this.model = { ...this.image };
     this.titleService.setTitle("Edit image");
@@ -473,7 +476,10 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
   private _getGroupsField(): any {
     let description = this.translateService.instant("Submit this image to the selected groups.");
 
-    if (this.image.isWip) {
+    if (this.groups.length === 0) {
+      const reason = this.translateService.instant("This field is disabled because you haven't joined any groups yet.");
+      description += ` <strong>${reason}</strong>`;
+    } else if (this.image.isWip) {
       const publicationInfo = this.translateService.instant(
         "This setting will take affect after the image will be moved to your public area."
       );
@@ -487,20 +493,13 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
       templateOptions: {
         multiple: true,
         required: false,
+        disabled: this.groups.length === 0,
         label: this.translateService.instant("Groups"),
         description,
-        options: this.store$.select(selectCurrentUser).pipe(
-          switchMap(user =>
-            this.groupApiService.getAll(user.id).pipe(
-              map(groups =>
-                groups.map(group => ({
-                  value: group.id,
-                  label: group.name
-                }))
-              )
-            )
-          )
-        )
+        options: this.groups.map(group => ({
+          value: group.id,
+          label: group.name
+        }))
       }
     };
   }
