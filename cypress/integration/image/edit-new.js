@@ -115,13 +115,6 @@ context("Image edit (new)", () => {
   });
 
   it("should select a group", () => {
-    cy.get(".form-text")
-      .contains("This field is disabled because you haven't joined any groups yet.")
-      .should("not.exist");
-    cy.get(".form-text")
-      .contains("This setting will take affect after the image will be moved to your public area.")
-      .should("exist");
-
     cy.get("#image-groups-field").click();
     cy.get("#image-groups-field .ng-option")
       .contains("First test group")

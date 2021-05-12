@@ -3,7 +3,6 @@ import { ImageEditPageComponent } from "@features/image/pages/edit/image-edit-pa
 import { ImageResolver } from "@shared/resolvers/image.resolver";
 import { AuthGuardService } from "@shared/services/guards/auth-guard.service";
 import { ImageOwnerGuardService } from "@shared/services/guards/image-owner-guard.service";
-import { CurrentUsersGroupsResolver } from "@shared/resolvers/current-users-groups.resolver";
 
 export const routes: Routes = [
   {
@@ -11,8 +10,7 @@ export const routes: Routes = [
     component: ImageEditPageComponent,
     canActivate: [AuthGuardService, ImageOwnerGuardService],
     resolve: {
-      image: ImageResolver,
-      groups: CurrentUsersGroupsResolver
+      image: ImageResolver
     }
   }
 ];
