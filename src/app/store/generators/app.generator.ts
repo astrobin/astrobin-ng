@@ -38,7 +38,8 @@ export class AppGenerator {
       thumbnails: [],
       solutions: [],
       telescopes: [],
-      cameras: []
+      cameras: [],
+      createLocationAddTag: null
     };
   }
 }

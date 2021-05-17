@@ -6,7 +6,9 @@ import {
   InitializeAuthSuccess,
   Login,
   LoginFailure,
-  LoginSuccess
+  LoginSuccess,
+  UpdateCurrentUserProfile,
+  UpdateCurrentUserProfileSuccess
 } from "@features/account/store/auth.actions";
 import { LoginSuccessInterface } from "@features/account/store/auth.actions.interfaces";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
@@ -21,7 +23,10 @@ import { UserStoreService } from "@shared/services/user-store.service";
 import { CookieService } from "ngx-cookie-service";
 import { TimeagoIntl } from "ngx-timeago";
 import { forkJoin, Observable, of } from "rxjs";
-import { catchError, map, switchMap, tap } from "rxjs/operators";
+import { catchError, map, mergeMap, switchMap, take, tap } from "rxjs/operators";
+import { Store } from "@ngrx/store";
+import { State } from "@app/store/state";
+import { selectCurrentUserProfile } from "@features/account/store/auth.selectors";
 
 @Injectable()
 export class AuthEffects {
@@ -110,6 +115,27 @@ export class AuthEffects {
     { dispatch: false }
   );
 
+  UpdateCurrentUserProfile: Observable<UpdateCurrentUserProfileSuccess> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AuthActionTypes.UPDATE_CURRENT_USER_PROFILE),
+      map((action: UpdateCurrentUserProfile) => action.payload),
+      switchMap(payload =>
+        this.store$.select(selectCurrentUserProfile).pipe(
+          take(1),
+          map(userProfile => ({
+            userProfileId: userProfile.id,
+            payload
+          }))
+        )
+      ),
+      switchMap(({ userProfileId, payload }) =>
+        this.commonApiService
+          .updateUserProfile(userProfileId, payload)
+          .pipe(map(result => new UpdateCurrentUserProfileSuccess(result)))
+      )
+    )
+  );
+
   private _getCurrentUserProfile$: Observable<UserProfileInterface> = this.commonApiService.getCurrentUserProfile();
 
   private _getCurrentUser$: Observable<UserInterface> = this._getCurrentUserProfile$.pipe(
@@ -166,6 +192,7 @@ export class AuthEffects {
   );
 
   constructor(
+    public readonly store$: Store<State>,
     public readonly actions$: Actions,
     public readonly authService: AuthService,
     public readonly router: Router,

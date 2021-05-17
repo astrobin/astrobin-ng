@@ -63,6 +63,10 @@ export class CommonApiService extends BaseClassicApiService implements CommonApi
     );
   }
 
+  updateUserProfile(userProfileId: number, data: Partial<UserProfileInterface>): Observable<UserProfileInterface> {
+    return this.http.put<UserProfileInterface>(this.configUrl + `/userprofiles/${userProfileId}/partial/`, data);
+  }
+
   getSubscriptions(): Observable<SubscriptionInterface[]> {
     return this.http.get<SubscriptionInterface[]>(`${this.configUrl}/subscriptions/`);
   }

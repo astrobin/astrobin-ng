@@ -38,7 +38,10 @@
       "watermarkPosition": 4,
       "watermarkSize": "M",
       "watermarkOpacity": 50,
-      "sharpenThumbnails": true
+      "sharpenThumbnails": true,
+      "locations": [
+        1
+      ]
     }
   ]
 }

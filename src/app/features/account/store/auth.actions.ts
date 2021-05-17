@@ -8,6 +8,7 @@ import {
   LoginSuccessInterface
 } from "@features/account/store/auth.actions.interfaces";
 import { Action } from "@ngrx/store";
+import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
 
 export enum AuthActionTypes {
   INITIALIZE = "[Auth] Initialize",
@@ -15,7 +16,9 @@ export enum AuthActionTypes {
   LOGIN = "[Auth] Login",
   LOGIN_SUCCESS = "[Auth] Login success",
   LOGIN_FAILURE = "[Auth] Login failure",
-  LOGOUT = "[Auth] Logout"
+  LOGOUT = "[Auth] Logout",
+  UPDATE_CURRENT_USER_PROFILE = "[Auth] Update current user profile",
+  UPDATE_CURRENT_USER_PROFILE_SUCCESS = "[Auth] Update current user profile success"
 }
 
 export class InitializeAuth implements Action {
@@ -49,4 +52,24 @@ export class Logout implements Action {
   readonly type = AuthActionTypes.LOGOUT;
 }
 
-export type All = InitializeAuth | InitializeAuthSuccess | Login | LoginSuccess | LoginFailure | Logout;
+export class UpdateCurrentUserProfile implements PayloadActionInterface {
+  readonly type = AuthActionTypes.UPDATE_CURRENT_USER_PROFILE;
+
+  constructor(public payload: Partial<UserProfileInterface>) {}
+}
+
+export class UpdateCurrentUserProfileSuccess implements PayloadActionInterface {
+  readonly type = AuthActionTypes.UPDATE_CURRENT_USER_PROFILE_SUCCESS;
+
+  constructor(public payload: UserProfileInterface) {}
+}
+
+export type All =
+  | InitializeAuth
+  | InitializeAuthSuccess
+  | Login
+  | LoginSuccess
+  | LoginFailure
+  | Logout
+  | UpdateCurrentUserProfile
+  | UpdateCurrentUserProfileSuccess;

@@ -12,12 +12,14 @@ context("Image edit (new, with no groups)", () => {
       "fixture:api/remote-source-affiliation/remote-source-affiliates.json"
     ).as("getRemoteSourceAffiliates");
     cy.route("GET", "**/api/v2/groups/group/*", "fixture:api/groups/no_groups.json").as("getGroups");
+    cy.route("GET", "**/api/v2/users/locations/", { count: 0, results: [] }).as("getUsersLocations");
   });
 
   it("should navigate to the edit page", () => {
     cy.login();
     cy.visitPage("/i/abc123/edit#2");
     cy.wait("@getImage");
+    cy.wait("@getUsersLocations");
     cy.url().should("contain", "/i/abc123/edit");
   });
 

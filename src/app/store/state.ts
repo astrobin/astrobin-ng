@@ -11,6 +11,7 @@ import * as auth from "@features/account/store/auth.reducers";
 import { initialAuthState } from "@features/account/store/auth.reducers";
 import * as app from "./reducers/app.reducers";
 import { initialAppState } from "./reducers/app.reducers";
+import { LocationEffects } from "@app/store/effects/location.effects";
 
 export interface State {
   app: app.AppState;
@@ -34,6 +35,7 @@ export const appStateEffects = [
   FullscreenImageEffects,
   InitializeAppEffects,
   ImageEffects,
+  LocationEffects,
   SolutionEffects,
   ThumbnailEffects,
   TelescopeEffects

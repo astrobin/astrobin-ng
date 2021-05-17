@@ -7,9 +7,10 @@ import { EffectsModule } from "@ngrx/effects";
 import { StoreModule } from "@ngrx/store";
 import { SharedModule } from "@shared/shared.module";
 import { ImageEditPageComponent } from "./pages/edit/image-edit-page.component";
+import { CreateLocationModalComponent } from "./components/create-location-modal/create-location-modal.component";
 
 @NgModule({
-  declarations: [ImageEditPageComponent],
+  declarations: [ImageEditPageComponent, CreateLocationModalComponent],
   imports: [
     RouterModule.forChild(routes),
     SharedModule,

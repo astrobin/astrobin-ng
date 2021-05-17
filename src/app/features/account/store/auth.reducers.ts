@@ -28,6 +28,11 @@ export function reducer(state = initialAuthState, action: All): AuthState {
         userProfile: action.payload.userProfile,
         userSubscriptions: action.payload.userSubscriptions
       };
+    case AuthActionTypes.UPDATE_CURRENT_USER_PROFILE_SUCCESS:
+      return {
+        ...state,
+        userProfile: action.payload
+      };
     default: {
       return state;
     }

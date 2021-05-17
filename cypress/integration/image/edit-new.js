@@ -12,12 +12,14 @@ context("Image edit (new)", () => {
       "fixture:api/remote-source-affiliation/remote-source-affiliates.json"
     ).as("getRemoteSourceAffiliates");
     cy.route("GET", "**/api/v2/groups/group/*", "fixture:api/groups/groups.json").as("getGroups");
+    cy.route("GET", "**/api/v2/users/locations/", { count: 0, results: [] }).as("getUsersLocations");
   });
 
   it("should navigate to the edit page", () => {
     cy.login();
     cy.visitPage("/i/abc123/edit");
     cy.wait("@getImage");
+    cy.wait("@getUsersLocations");
     cy.url().should("contain", "/i/abc123/edit");
   });
 
@@ -112,6 +114,54 @@ context("Image edit (new)", () => {
       .click();
     cy.get("#image-data-source-field .ng-value").should("contain.text", "Backyard");
     cy.get("#image-remote-source-field").should("not.be.visible");
+  });
+
+  it("should create a location", () => {
+    cy.mockGeolocation();
+
+    cy.get("#image-locations-field")
+      .click()
+      .type("Home observatory");
+
+    cy.get("#image-locations-field .ng-option").click();
+
+    cy.get("astrobin-create-location-modal").should("be.visible");
+    cy.get("astrobin-create-location-modal .form-control#name").should("have.value", "Home observatory");
+    cy.get("astrobin-create-location-modal .form-control#altitude").type("400");
+
+    const location = {
+      id: 1,
+      name: "Home observatory",
+      city: "Zurich",
+      state: "ZH",
+      country: "CH",
+      lat_deg: 10,
+      lat_min: 11,
+      lat_sec: 12,
+      lat_side: "N",
+      lon_deg: 10,
+      lon_min: 11,
+      lon_sec: 12,
+      lon_side: "E",
+      altitude: 400
+    };
+
+    cy.route("POST", "**/api/v2/astrobin/location/", location).as("createLocation");
+    cy.route("PUT", "**/api/v2/common/userprofiles/1/partial/", {
+      locations: [location]
+    }).as("updateUserProfile");
+
+    cy.get("astrobin-create-location-modal .btn")
+      .contains("Save")
+      .click();
+
+    cy.wait("@createLocation");
+    cy.wait("@updateUserProfile");
+
+    cy.get("astrobin-create-location-modal").should("not.be.visible");
+    cy.get("#image-locations-field .ng-value-container .ng-value")
+      .contains("Home observatory")
+      .should("exist");
   });
 
   it("should select a group", () => {

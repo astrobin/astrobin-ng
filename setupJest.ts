@@ -27,6 +27,7 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 import { MockService, ngMocks } from "ng-mocks";
 import { UploadxService } from "ngx-uploadx";
 import { EMPTY, of } from "rxjs";
+import { GoogleMapsService } from "@shared/services/google-maps/google-maps.service";
 
 ngMocks.autoSpy("jest");
 
@@ -129,4 +130,8 @@ ngMocks.defaultMock(SubscriptionsService, () => ({
 
 ngMocks.defaultMock(RemoteSourceAffiliateApiService, () => ({
   getAll: jest.fn().mockReturnValue(of([]))
+}));
+
+ngMocks.defaultMock(GoogleMapsService, () => ({
+  maps: {}
 }));

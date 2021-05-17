@@ -1,4 +1,6 @@
 <ng-select
+  [addTagText]="'Create new:' | translate"
+  [addTag]="to.addTag"
   [attr.id]="field.id"
   [bindValue]="'value'"
   [clearable]="to.clearable || false"
@@ -7,15 +9,15 @@
   [hideSelected]="to.multiple"
   [items]="to.options | formlySelectOptions: field | async"
   [multiple]="to.multiple"
+  [placeholder]="placeholder"
   groupBy="group"
-  placeholder="{{ 'Type to search options...' | translate }}"
 >
   <ng-template let-item="item" ng-optgroup-tmp>
     {{ item.label }}
   </ng-template>
 
   <ng-template let-clear="clear" let-item="item" ng-label-tmp>
-    <ng-container *ngIf="!to.optionTemplate">{{ item.label }}</ng-container>
+    <ng-container *ngIf="!to.labelTemplate">{{ item.label }}</ng-container>
     <ng-container
       *ngIf="to.labelTemplate"
       [ngTemplateOutletContext]="{ item: item }"
