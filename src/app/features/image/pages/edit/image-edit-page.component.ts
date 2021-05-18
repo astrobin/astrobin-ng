@@ -479,6 +479,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
       key: "locations",
       type: "ng-select",
       id: "image-locations-field",
+      hideExpression: () => Object.keys(RemoteSource).indexOf(this.model.remoteSource) > -1,
       templateOptions: {
         multiple: true,
         required: false,

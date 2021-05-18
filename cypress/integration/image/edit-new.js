@@ -107,13 +107,38 @@ context("Image edit (new)", () => {
     cy.get("#image-solar-system-main-subject-field .ng-value").should("contain.text", "Moon");
   });
 
-  it("should select a data source", () => {
+  it("should select an amateur hosting facility data source", () => {
+    cy.get("#image-data-source-field").click();
+    cy.get("#image-data-source-field .ng-option")
+      .contains("Amateur hosting facility")
+      .click();
+    cy.get("#image-data-source-field .ng-value").should("contain.text", "Amateur hosting facility");
+
+    cy.get("#image-remote-source-field").should("be.visible");
+  });
+
+  it("should select a remote data source", () => {
+    cy.get("#image-remote-source-field").click();
+    cy.get("#image-remote-source-field .ng-option")
+      .contains("DeepSkyWest")
+      .click();
+    cy.get("#image-remote-source-field .ng-value").should("contain.text", "DeepSkyWest");
+
+    cy.get("#image-remote-source-field").should("be.visible");
+  });
+
+  it("should not display the locations field when a commercial remote data source is selected", () => {
+    cy.get("#image-locations-field").should("not.be.visible");
+  });
+
+  it("should select a backyard data source", () => {
     cy.get("#image-data-source-field").click();
     cy.get("#image-data-source-field .ng-option")
       .contains("Backyard")
       .click();
     cy.get("#image-data-source-field .ng-value").should("contain.text", "Backyard");
     cy.get("#image-remote-source-field").should("not.be.visible");
+    cy.get("#image-locations-field").should("be.visible");
   });
 
   it("should create a location", () => {
