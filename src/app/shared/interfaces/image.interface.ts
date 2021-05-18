@@ -151,4 +151,5 @@ export interface ImageInterface {
   watermarkOpacity?: number;
   sharpenThumbnails: boolean;
   keyValueTags: string;
+  locations: number[];
 }

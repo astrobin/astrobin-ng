@@ -56,7 +56,8 @@ export class UserProfileGenerator {
       accessories: [],
       astroBinIndex: 0.0,
       followers: 0,
-      premiumCounter: 0
+      premiumCounter: 0,
+      locations: []
     };
   }
 }

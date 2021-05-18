@@ -34,3 +34,4 @@ import "./wait-for-initialization-routes";
 
 import "./login";
 import "./visit-page";
+import "./mock-geolocation";

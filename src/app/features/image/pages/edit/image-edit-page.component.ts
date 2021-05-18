@@ -40,6 +40,9 @@ import { retryWithDelay } from "rxjs-boost/lib/operators";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { EMPTY } from "rxjs";
 import { GroupInterface } from "@shared/interfaces/group.interface";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { CreateLocationModalComponent } from "@features/image/components/create-location-modal/create-location-modal.component";
+import { CreateLocationAddTag } from "@app/store/actions/location.actions";
 
 export function KeyValueTagsValidator(control: FormControl): ValidationErrors {
   if (!control.value) {
@@ -71,9 +74,6 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
   @ViewChild("remoteSourceOptionTemplate")
   remoteSourceOptionTemplate: TemplateRef<any>;
 
-  @ViewChild("returnToClassicConfirmationModalTemplate")
-  returnToClassicConfirmationModalTemplate: TemplateRef<any>;
-
   @ViewChild("stepperButtonsTemplate")
   stepperButtonsTemplate: TemplateRef<any>;
 
@@ -90,7 +90,8 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     public readonly loadingService: LoadingService,
     public readonly utilsService: UtilsService,
     public readonly windowRefService: WindowRefService,
-    public readonly popNotificationsService: PopNotificationsService
+    public readonly popNotificationsService: PopNotificationsService,
+    public readonly modalService: NgbModal
   ) {
     super();
   }
@@ -473,6 +474,58 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     };
   }
 
+  private _getLocationsField(): any {
+    return {
+      key: "locations",
+      type: "ng-select",
+      id: "image-locations-field",
+      hideExpression: () => Object.keys(RemoteSource).indexOf(this.model.remoteSource) > -1,
+      templateOptions: {
+        multiple: true,
+        required: false,
+        label: this.translateService.instant("Locations"),
+        description: `
+          <strong>${this.translateService.instant("Please note")}: </strong>
+          ${this.translateService.instant("AstroBin does not share your coordinates with anyone.")}
+        `,
+        options: this.route.snapshot.data.locations.map(location => ({
+          value: location.id,
+          label: location.name
+        })),
+        addTag: name => {
+          this.store$.dispatch(new CreateLocationAddTag(name));
+          const modalRef = this.modalService.open(CreateLocationModalComponent);
+          modalRef.result.then(result => {
+            const newItem = {
+              value: result.id,
+              label: result.name
+            };
+
+            const stepperField = this.fields.filter(field => field.id === "image-stepper-field")[0];
+            const contentFieldGroup = stepperField.fieldGroup.filter(group => group.id === "image-stepper-content")[0];
+            const locationsField = contentFieldGroup.fieldGroup.filter(
+              group => group.id === "image-locations-field"
+            )[0];
+
+            setTimeout(() => {
+              locationsField.templateOptions.options = [
+                ...(locationsField.templateOptions.options as { value: number; label: string }[]),
+                ...[newItem]
+              ];
+
+              this.model = {
+                ...this.model,
+                ...{
+                  locations: [...(this.model.locations || []), ...[newItem.value]]
+                }
+              };
+            }, 1);
+          });
+        }
+      }
+    };
+  }
+
   private _getGroupsField(): any {
     let description = this.translateService.instant("Submit this image to the selected groups.");
 
@@ -848,6 +901,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
               this._getSolarSystemMainSubjectField(),
               this._getDataSourceField(),
               this._getRemoteSourceField(),
+              this._getLocationsField(),
               this._getGroupsField()
             ]
           },

@@ -12,12 +12,21 @@ context("Image edit (existing)", () => {
       "fixture:api/remote-source-affiliation/remote-source-affiliates.json"
     ).as("getRemoteSourceAffiliates");
     cy.route("GET", "**/api/v2/groups/group/?member=1", "fixture:api/groups/groups.json").as("getGroups");
+    cy.route("GET", "**/api/v2/users/locations/", { count: 0, results: [] }).as("getUsersLocations");
   });
 
   it("should navigate to the edit page", () => {
     cy.login();
+
+    cy.route(
+      "GET",
+      "**/common/userprofiles/current",
+      "fixture:api/common/userprofile_current_1_with_locations.json"
+    ).as("getCurrentUserProfile");
+
     cy.visitPage("/i/abc123/edit");
     cy.wait("@getImage");
+    cy.wait("@getUsersLocations");
     cy.url().should("contain", "/i/abc123/edit");
   });
 
@@ -59,6 +68,18 @@ context("Image edit (existing)", () => {
       .should("exist");
     cy.get("#image-groups-field .ng-value")
       .contains("Third test group")
+      .should("exist");
+  });
+
+  it("should have locations", () => {
+    cy.get("#image-locations-field").click();
+
+    cy.get("#image-locations-field .ng-value")
+      .contains("Home observatory")
+      .should("exist");
+
+    cy.get("#image-locations-field .ng-option")
+      .contains("Backyard observatory")
       .should("exist");
   });
 

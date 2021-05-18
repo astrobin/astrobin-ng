@@ -44,6 +44,9 @@ export interface AppState {
 
   // All seen cameras.
   cameras: CameraInterface[];
+
+  // This is what's been typed to create a new location.
+  createLocationAddTag: string;
 }
 
 export const initialAppState: AppState = {
@@ -58,7 +61,8 @@ export const initialAppState: AppState = {
   thumbnails: [],
   solutions: [],
   telescopes: [],
-  cameras: []
+  cameras: [],
+  createLocationAddTag: null
 };
 
 export function reducer(state = initialAppState, action: All): AppState {
@@ -148,6 +152,13 @@ export function reducer(state = initialAppState, action: All): AppState {
       return {
         ...state,
         cameras: new UtilsService().arrayUniqueObjects([...state.cameras, action.payload])
+      };
+    }
+
+    case AppActionTypes.CREATE_LOCATION_ADD_TAG: {
+      return {
+        ...state,
+        createLocationAddTag: action.payload
       };
     }
 

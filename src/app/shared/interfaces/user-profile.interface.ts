@@ -1,4 +1,5 @@
 import { WatermarkPositionOptions, WatermarkSizeOptions } from "@shared/interfaces/image.interface";
+import { LocationInterface } from "@shared/interfaces/location.interface";
 
 export interface UserProfileInterface {
   id: number;
@@ -54,4 +55,5 @@ export interface UserProfileInterface {
   astroBinIndex?: number;
   followers?: number;
   premiumCounter: number;
+  locations: LocationInterface[];
 }

@@ -1,11 +1,11 @@
 [
   {
-    "id": 2,
+    "id": 1,
     "astrobin_index": 1.23456789,
     "followers": 123,
     "deleted": null,
     "updated": "2020-04-12T09:51:42.722663",
-    "real_name": "AstroBin Dev 2",
+    "real_name": "AstroBin Dev",
     "website": null,
     "job": null,
     "hobbies": null,
@@ -52,6 +52,39 @@
     "software": [],
     "filters": [],
     "accessories": [],
-    "locations": []
+    "locations": [
+      {
+        "id": 1,
+        "name": "Home observatory",
+        "city": "Zurich",
+        "state": "ZH",
+        "country": "CH",
+        "lat_deg": 10,
+        "lat_min": 11,
+        "lat_sec": 12,
+        "lat_side": "N",
+        "lon_deg": 10,
+        "lon_min": 11,
+        "lon_sec": 12,
+        "lon_side": "E",
+        "altitude": 400
+      },
+      {
+        "id": 2,
+        "name": "Backyard observatory",
+        "city": "Zurich",
+        "state": "ZH",
+        "country": "CH",
+        "lat_deg": 10,
+        "lat_min": 11,
+        "lat_sec": 12,
+        "lat_side": "N",
+        "lon_deg": 10,
+        "lon_min": 11,
+        "lon_sec": 12,
+        "lon_side": "E",
+        "altitude": 400
+      }
+    ]
   }
 ]

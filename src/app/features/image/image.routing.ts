@@ -4,6 +4,7 @@ import { ImageResolver } from "@shared/resolvers/image.resolver";
 import { AuthGuardService } from "@shared/services/guards/auth-guard.service";
 import { ImageOwnerGuardService } from "@shared/services/guards/image-owner-guard.service";
 import { CurrentUsersGroupsResolver } from "@shared/resolvers/current-users-groups.resolver";
+import { CurrentUsersLocationsResolver } from "@shared/resolvers/current-users-locations.resolver";
 
 export const routes: Routes = [
   {
@@ -12,7 +13,8 @@ export const routes: Routes = [
     canActivate: [AuthGuardService, ImageOwnerGuardService],
     resolve: {
       image: ImageResolver,
-      groups: CurrentUsersGroupsResolver
+      groups: CurrentUsersGroupsResolver,
+      locations: CurrentUsersLocationsResolver
     }
   }
 ];

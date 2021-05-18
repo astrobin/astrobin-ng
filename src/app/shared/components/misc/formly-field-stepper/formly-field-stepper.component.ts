@@ -81,7 +81,7 @@ export class FormlyFieldStepperComponent extends FieldType implements OnInit {
 
   isValid(field: FormlyFieldConfig) {
     if (field.key) {
-      return field.formControl.valid;
+      return !field.formControl.invalid && !field.formControl.pending;
     }
 
     return field.fieldGroup.every(f => this.isValid(f));

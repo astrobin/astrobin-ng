@@ -23,6 +23,7 @@ import {
 } from "@app/store/actions/solution.actions";
 import { LoadTelescope, LoadTelescopeSuccess } from "@app/store/actions/telescope.actions";
 import { LoadThumbnail, LoadThumbnailSuccess } from "@app/store/actions/thumbnail.actions";
+import { CreateLocation, CreateLocationAddTag, CreateLocationSuccess } from "@app/store/actions/location.actions";
 
 export enum AppActionTypes {
   INITIALIZE = "[App] Initialize",
@@ -62,7 +63,11 @@ export enum AppActionTypes {
   LOAD_TELESCOPE_SUCCESS = "[App] Load telescope success",
 
   LOAD_CAMERA = "[App] Load camera",
-  LOAD_CAMERA_SUCCESS = "[App] Load camera success"
+  LOAD_CAMERA_SUCCESS = "[App] Load camera success",
+
+  CREATE_LOCATION_ADD_TAG = "[App] Create location add tag",
+  CREATE_LOCATION = "[App] Create location",
+  CREATE_LOCATION_SUCCESS = "[App] Create location success"
 }
 
 export type All =
@@ -90,4 +95,7 @@ export type All =
   | LoadTelescope
   | LoadTelescopeSuccess
   | LoadCamera
-  | LoadCameraSuccess;
+  | LoadCameraSuccess
+  | CreateLocationAddTag
+  | CreateLocation
+  | CreateLocationSuccess;

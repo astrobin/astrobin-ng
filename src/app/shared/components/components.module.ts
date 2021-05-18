@@ -43,6 +43,7 @@ import { EmptyListComponent } from "./misc/empty-list/empty-list.component";
 import { ReadOnlyModeComponent } from "./misc/read-only-mode/read-only-mode.component";
 import { UsernameComponent } from "./misc/username/username.component";
 import { FormlyWrapperComponent } from "@shared/components/misc/formly-wrapper/formly-wrapper.component";
+import { FormlyFieldGoogleMapComponent } from "@shared/components/misc/formly-field-google-map/formly-field-google-map.component";
 
 const modules = [
   CommonModule,
@@ -74,6 +75,7 @@ const components = [
   FooterComponent,
   FormlyFieldChunkedFileAccessorDirective,
   FormlyFieldChunkedFileComponent,
+  FormlyFieldGoogleMapComponent,
   FormlyFieldImageCropperComponent,
   FormlyFieldNgSelectComponent,
   FormlyFieldStepperComponent,

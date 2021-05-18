@@ -3,12 +3,23 @@ import { NotificationInterfaceGenerator } from "@features/notifications/generato
 import { NotificationsModule } from "@features/notifications/notifications.module";
 import { MockBuilder, MockRender } from "ng-mocks";
 import { NotificationsPageComponent } from "./notifications-page.component";
+import { DomSanitizer } from "@angular/platform-browser";
 
 describe("NotificationsPageComponent", () => {
   let component: NotificationsPageComponent;
 
-  beforeEach(
-    () => MockBuilder(NotificationsPageComponent, NotificationsModule).mock(AppModule) // parent module
+  beforeEach(() =>
+    MockBuilder(NotificationsPageComponent, NotificationsModule)
+      .mock(AppModule) // parent module
+      .provide([
+        {
+          provide: DomSanitizer,
+          useValue: {
+            sanitize: () => "safeString",
+            bypassSecurityTrustHtml: () => "safeString"
+          }
+        }
+      ])
   );
 
   beforeEach(() => {

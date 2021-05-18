@@ -5,6 +5,7 @@ import { UserProfileInterface } from "@shared/interfaces/user-profile.interface"
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { BaseService } from "@shared/services/base.service";
 import { WatermarkPositionOptions, WatermarkSizeOptions } from "@shared/interfaces/image.interface";
+import { LocationInterface } from "@shared/interfaces/location.interface";
 
 export interface BackendPermissionInterface {
   id: number;
@@ -88,6 +89,7 @@ export interface BackendUserProfileInterface {
   astrobin_index: number;
   followers: number;
   premium_counter: number;
+  locations: LocationInterface[];
 }
 
 @Injectable({
@@ -182,7 +184,8 @@ export class CommonApiAdaptorService extends BaseService {
       inactiveAccountReminderSent: new Date(userProfile.inactive_account_reminder_sent),
       astroBinIndex: userProfile.astrobin_index,
       followers: userProfile.followers,
-      premiumCounter: userProfile.premium_counter
+      premiumCounter: userProfile.premium_counter,
+      locations: userProfile.locations
     };
   }
 }

@@ -42,7 +42,8 @@ export class ImageGenerator {
       watermarkSize: WatermarkSizeOptions.MEDIUM,
       watermarkOpacity: 50,
       sharpenThumbnails: false,
-      keyValueTags: null
+      keyValueTags: null,
+      locations: []
     };
   }
 }
