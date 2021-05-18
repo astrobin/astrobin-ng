@@ -58,15 +58,15 @@ export class FormlyFieldGoogleMapComponent extends FieldType implements AfterVie
       });
   }
 
-  getLocation(): Observable<Coordinates> {
-    return new Observable<Coordinates>(observer => {
+  getLocation(): Observable<{ latitude: number; longitude: number }> {
+    return new Observable<{ latitude: number; longitude: number }>(observer => {
       const success = position => {
         observer.next(position.coords);
         observer.complete();
       };
 
       const error = () => {
-        observer.next({ latitude: 40.78, longitude: -73.96 } as Coordinates);
+        observer.next({ latitude: 40.78, longitude: -73.96 });
         observer.complete();
       };
 
