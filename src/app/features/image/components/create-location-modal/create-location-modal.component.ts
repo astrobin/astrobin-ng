@@ -93,6 +93,7 @@ export class CreateLocationModalComponent extends BaseComponentDirective impleme
 
   save(): void {
     if (!this.form.valid) {
+      this.form.markAllAsTouched();
       return;
     }
 

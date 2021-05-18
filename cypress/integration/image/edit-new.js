@@ -144,16 +144,6 @@ context("Image edit (new)", () => {
   it("should create a location", () => {
     cy.mockGeolocation();
 
-    cy.get("#image-locations-field")
-      .click()
-      .type("Home observatory");
-
-    cy.get("#image-locations-field .ng-option").click();
-
-    cy.get("astrobin-create-location-modal").should("be.visible");
-    cy.get("astrobin-create-location-modal .form-control#name").should("have.value", "Home observatory");
-    cy.get("astrobin-create-location-modal .form-control#altitude").type("400");
-
     const location = {
       id: 1,
       name: "Home observatory",
@@ -175,6 +165,25 @@ context("Image edit (new)", () => {
     cy.route("PUT", "**/api/v2/common/userprofiles/1/partial/", {
       locations: [location]
     }).as("updateUserProfile");
+
+    cy.get("#image-locations-field")
+      .click()
+      .type("Home observatory");
+
+    cy.get("#image-locations-field .ng-option").click();
+
+    cy.get("astrobin-create-location-modal").should("be.visible");
+    cy.get("astrobin-create-location-modal .form-control#name").should("have.value", "Home observatory");
+
+    cy.get("astrobin-create-location-modal .btn")
+      .contains("Save")
+      .click();
+
+    cy.get("formly-validation-message")
+      .contains("This field is required")
+      .should("exist");
+
+    cy.get("astrobin-create-location-modal .form-control#altitude").type("400");
 
     cy.get("astrobin-create-location-modal .btn")
       .contains("Save")
