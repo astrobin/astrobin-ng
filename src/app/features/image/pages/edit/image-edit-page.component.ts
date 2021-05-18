@@ -507,17 +507,19 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
               group => group.id === "image-locations-field"
             )[0];
 
-            locationsField.templateOptions.options = [
-              ...(locationsField.templateOptions.options as { value: number; label: string }[]),
-              ...[newItem]
-            ];
+            setTimeout(() => {
+              locationsField.templateOptions.options = [
+                ...(locationsField.templateOptions.options as { value: number; label: string }[]),
+                ...[newItem]
+              ];
 
-            this.model = {
-              ...this.model,
-              ...{
-                locations: [...(this.model.locations || []), ...[newItem.value]]
-              }
-            };
+              this.model = {
+                ...this.model,
+                ...{
+                  locations: [...(this.model.locations || []), ...[newItem.value]]
+                }
+              };
+            }, 1);
           });
         }
       }
