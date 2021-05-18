@@ -37,7 +37,7 @@ describe("ImageOwnerGuardService", () => {
     service = TestBed.inject(ImageOwnerGuardService);
 
     jest.spyOn(service.router, "navigateByUrl").mockImplementation(
-      () => new Promise<boolean>(resolve => resolve())
+      () => new Promise<boolean>(resolve => resolve(true))
     );
   });
 
