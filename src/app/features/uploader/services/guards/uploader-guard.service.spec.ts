@@ -16,7 +16,7 @@ describe("UploaderGuardService", () => {
       .keep(UltimateSubscriptionGuardService);
     service = TestBed.inject(UploaderGuardService);
     jest.spyOn(service.router, "navigateByUrl").mockImplementation(
-      () => new Promise<boolean>(resolve => resolve())
+      () => new Promise<boolean>(resolve => resolve(true))
     );
   });
 

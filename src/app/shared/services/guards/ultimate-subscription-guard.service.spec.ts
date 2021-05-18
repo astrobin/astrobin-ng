@@ -29,7 +29,7 @@ describe("UltimateSubscriptionGuardService", () => {
     store = TestBed.inject(MockStore);
     service = TestBed.inject(UltimateSubscriptionGuardService);
     jest.spyOn(service.router, "navigateByUrl").mockImplementation(
-      () => new Promise<boolean>(resolve => resolve())
+      () => new Promise<boolean>(resolve => resolve(true))
     );
   });
 

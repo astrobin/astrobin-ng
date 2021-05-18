@@ -32,7 +32,7 @@ describe("GroupGuardService", () => {
 
     jest.spyOn(route, "data", "get").mockReturnValue({ group: "Test group" });
     jest.spyOn(service.router, "navigateByUrl").mockImplementation(
-      () => new Promise<boolean>(resolve => resolve())
+      () => new Promise<boolean>(resolve => resolve(true))
     );
   });
 

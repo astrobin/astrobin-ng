@@ -30,7 +30,7 @@ describe("PremiumSubscriptionGuardService", () => {
     service = TestBed.inject(PremiumSubscriptionGuardService);
 
     jest.spyOn(service.router, "navigateByUrl").mockImplementation(
-      () => new Promise<boolean>(resolve => resolve())
+      () => new Promise<boolean>(resolve => resolve(true))
     );
   });
 
