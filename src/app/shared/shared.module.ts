@@ -43,7 +43,7 @@ import { FormlyWrapperComponent } from "@shared/components/misc/formly-wrapper/f
 
 export function appInitializer(store: Store<State>, actions$: Actions) {
   return () =>
-    new Promise<any>(resolve => {
+    new Promise<void>(resolve => {
       store.dispatch(new InitializeApp());
 
       actions$
