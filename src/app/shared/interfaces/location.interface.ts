@@ -13,4 +13,5 @@ export interface LocationInterface {
   lon_sec?: number;
   lon_side: "E" | "W";
   altitude?: number;
+  user?: number;
 }

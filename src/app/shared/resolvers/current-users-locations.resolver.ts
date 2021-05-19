@@ -8,6 +8,7 @@ import { selectCurrentUserProfile } from "@features/account/store/auth.selectors
 import { LocationInterface } from "@shared/interfaces/location.interface";
 import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
 import { UsersLocationsApiService } from "@shared/services/api/classic/users/users-locations-api.service";
+import { UtilsService } from "@shared/services/utils/utils.service";
 
 @Injectable({
   providedIn: "root"
@@ -28,9 +29,19 @@ export class CurrentUsersLocationsResolver implements Resolve<LocationInterface[
         )
       ),
       map(({ profileLocations, existingImagesLocations }) =>
-        Array.from(new Set([...profileLocations, ...existingImagesLocations]))
+        this.uniqueValidLocations([...profileLocations, ...existingImagesLocations])
       ),
       first()
     );
+  }
+
+  uniqueValidLocations(allLocations: LocationInterface[]): LocationInterface[] {
+    if (!allLocations || allLocations.length === 0) {
+      return [];
+    }
+
+    const uniques = new UtilsService().arrayUniqueObjects(Array.from(new Set(allLocations)));
+
+    return uniques?.filter(location => !!location.name && location.lat_deg !== null && location.lon_deg !== null);
   }
 }
