@@ -936,13 +936,6 @@ msgstr "Filigrane"
 msgid "We could not log you in. Please check your credentials and try again."
 msgstr "Connexion impossible. Merci de vérifier vos identifiants et de réessayer."
 
-msgid ""
-"We have updated the image data editor to make room for new features coming "
-"your way in the near future!"
-msgstr ""
-"L'éditeur de données d'image a été actualisé afin de vous proposer bientôt "
-"de nouvelles fonctionnalités ! "
-
 msgid "We'll never share your email with anyone else."
 msgstr "Nous ne partagerons jamais votre email avec qui que ce soit. "
 

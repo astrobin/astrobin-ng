@@ -873,11 +873,6 @@ msgstr "水印"
 msgid "We could not log you in. Please check your credentials and try again."
 msgstr "无法登录。请检查您的凭据然后重试。"
 
-msgid ""
-"We have updated the image data editor to make room for new features coming "
-"your way in the near future!"
-msgstr "我们已经更新了作品数据编辑器，以便在不久的将来为您的新功能腾出空间！"
-
 msgid "We'll never share your email with anyone else."
 msgstr "我们绝不会将您的电子邮件透露给其他人。"
 

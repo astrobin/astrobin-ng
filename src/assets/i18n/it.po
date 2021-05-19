@@ -939,13 +939,6 @@ msgstr ""
 "Non è stato possibile fare l'accesso. Controlla il tuo nome utente e "
 "password e riprova."
 
-msgid ""
-"We have updated the image data editor to make room for new features coming "
-"your way in the near future!"
-msgstr ""
-"Abbiamo aggiornato il modulo dati immagine per fare spazio a nuove "
-"funzionalitàche saranno disponibili presto!"
-
 msgid "We'll never share your email with anyone else."
 msgstr "Non condivideremo mai la tua email con nessuno."
 

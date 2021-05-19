@@ -951,13 +951,6 @@ msgstr ""
 "Sie konnten nicht angemeldet werden. Bitte überprüfen Sie Ihre Anmeldedaten "
 "und versuchen Sie es erneut."
 
-msgid ""
-"We have updated the image data editor to make room for new features coming "
-"your way in the near future!"
-msgstr ""
-"Wir haben den Bilddaten-Editor aktualisiert, um Platz für neue Funktionen "
-"zu schaffen, die in naher Zukunft kommen werden!"
-
 msgid "We'll never share your email with anyone else."
 msgstr "Wir werden Ihre E-Mail niemals an andere weitergeben."
 

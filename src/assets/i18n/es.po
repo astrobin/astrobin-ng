@@ -902,11 +902,6 @@ msgstr ""
 "No pudimos iniciar sesión. Por favor, revise sus credenciales e intente de "
 "nuevo."
 
-msgid ""
-"We have updated the image data editor to make room for new features coming "
-"your way in the near future!"
-msgstr ""
-
 msgid "We'll never share your email with anyone else."
 msgstr "Nunca compartiremos su correo electrónico con nadie más."
 
