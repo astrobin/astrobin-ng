@@ -14,6 +14,7 @@ import { UtilsService } from "@shared/services/utils/utils.service";
 import { Tus, UploadState, UploadxOptions, UploadxService } from "ngx-uploadx";
 import { forkJoin, Observable, of, Subscription } from "rxjs";
 import { filter, map, take } from "rxjs/operators";
+import { WindowRefService } from "@shared/services/window-ref.service";
 
 // PLEASE NOTE: due to the usage of the UploaderDataService, there can be only one chunked file upload field on a page
 // at any given time.
@@ -56,7 +57,8 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
     public readonly popNotificationsService: PopNotificationsService,
     public readonly translateService: TranslateService,
     public readonly userSubscriptionService: UserSubscriptionService,
-    public readonly classicRoutesService: ClassicRoutesService
+    public readonly classicRoutesService: ClassicRoutesService,
+    public readonly windowRefService: WindowRefService
   ) {
     super();
   }
@@ -234,8 +236,12 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
               map(state => state.app.backendConfig)
             )
             .subscribe(backendConfig => {
-              const width = image.naturalWidth || image.width;
-              const height = image.naturalHeight || image.height;
+              let width = image.naturalWidth || image.width;
+              let height = image.naturalHeight || image.height;
+
+              if (width === this.windowRefService.nativeWindow.innerWidth) {
+                width = height = 0;
+              }
 
               if (width * height > backendConfig.MAX_IMAGE_PIXELS) {
                 const message =
