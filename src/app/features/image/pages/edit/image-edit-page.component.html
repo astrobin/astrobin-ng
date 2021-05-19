@@ -1,9 +1,4 @@
 <div class="page has-breadcrumb">
-  <ngb-alert [dismissible]="false" id="new-editor-alert" type="info">
-    <fa-icon icon="info-circle"></fa-icon>
-    <span [innerHTML]="newImageDataEditorAlert"></span>
-  </ngb-alert>
-
   <form [formGroup]="form">
     <formly-form [fields]="fields" [form]="form" [model]="model"></formly-form>
   </form>

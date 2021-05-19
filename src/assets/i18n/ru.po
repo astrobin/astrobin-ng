@@ -1222,12 +1222,6 @@ msgstr ""
 msgid "Watermark"
 msgstr ""
 
-#: loco:60685ab727e3d377322f42c1
-msgid ""
-"We have updated the image data editor to make room for new features coming "
-"your way in the near future!"
-msgstr ""
-
 #: loco:60685ab727e3d377322f42c2
 msgid ""
 "When a paid subscription expires, nothing happens to your images or content."

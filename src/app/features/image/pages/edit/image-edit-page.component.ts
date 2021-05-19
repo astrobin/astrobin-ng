@@ -96,19 +96,6 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     super();
   }
 
-  get newImageDataEditorAlert(): string {
-    return (
-      this.translateService.instant(
-        "We have updated the image data editor to make room for new features coming your way in the near future!"
-      ) +
-      " " +
-      this.translateService.instant("If you have any problems, please {{0}}let us know{{1}}!", {
-        0: `<a href="${this.classicRoutesService.CONTACT}" target="_blank">`,
-        1: "</a>"
-      })
-    );
-  }
-
   ngOnInit(): void {
     this.groups = this.route.snapshot.data.groups;
     this.image = this.route.snapshot.data.image;
