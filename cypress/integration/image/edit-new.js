@@ -24,7 +24,7 @@ context("Image edit (new)", () => {
   });
 
   it("should show the 'new editor' alert", () => {
-    cy.get("#new-editor-alert").should("exist");
+    cy.get("#new-editor-alert").should("not.exist");
   });
 
   it("should have all tabs", () => {
