@@ -166,9 +166,11 @@ context("Image edit (new)", () => {
       locations: [location]
     }).as("updateUserProfile");
 
-    cy.get("#image-locations-field")
-      .click()
-      .type("Home observatory");
+    cy.get("#image-locations-field").click();
+    cy.get("#image-locations-field .ng-option.ng-option-disabled")
+      .contains("No items found. Type something to create a new one...")
+      .should("be.visible");
+    cy.get("#image-locations-field").type("Home observatory");
 
     cy.get("#image-locations-field .ng-option").click();
 

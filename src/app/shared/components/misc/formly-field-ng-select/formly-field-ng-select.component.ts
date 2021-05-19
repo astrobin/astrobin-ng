@@ -19,4 +19,16 @@ export class FormlyFieldNgSelectComponent extends FieldType {
 
     return this.translateService.instant("Type to search options...");
   }
+
+  get notFoundText(): string {
+    if (this.to.addTag) {
+      return (
+        this.translateService.instant("No items found.") +
+        " " +
+        this.translateService.instant("Type something to create a new one...")
+      );
+    }
+
+    return this.translateService.instant("No items found.");
+  }
 }
