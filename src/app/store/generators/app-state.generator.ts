@@ -4,7 +4,7 @@ import { SubscriptionGenerator } from "@shared/generators/subscription.generator
 import { TestConstants } from "@shared/test-constants";
 import { SubscriptionName } from "@shared/types/subscription-name.type";
 
-export class AppGenerator {
+export class AppStateGenerator {
   static default(): AppState {
     return {
       initialized: true,

@@ -1,20 +1,16 @@
 import { ActivatedRoute } from "@angular/router";
 import { AppModule } from "@app/app.module";
-import { AppGenerator } from "@app/store/generators/app.generator";
 import { appStateEffects, appStateReducers, State } from "@app/store/state";
-import { AuthGenerator } from "@features/account/store/auth.generator";
 import { EffectsModule } from "@ngrx/effects";
 import { StoreModule } from "@ngrx/store";
 import { provideMockStore } from "@ngrx/store/testing";
-import { MockBuilder, MockProvider, MockRender, ngMocks } from "ng-mocks";
+import { MockBuilder, MockProvider, MockRender } from "ng-mocks";
 import { SubscriptionsSuccessPageComponent } from "./subscriptions-success-page.component";
+import { StateGenerator } from "@app/store/generators/state.generator";
 
 describe("SuccessPageComponent", () => {
   let component: SubscriptionsSuccessPageComponent;
-  const initialState: State = {
-    app: AppGenerator.default(),
-    auth: AuthGenerator.default()
-  };
+  const initialState: State = StateGenerator.default();
 
   beforeEach(() =>
     MockBuilder(SubscriptionsSuccessPageComponent, AppModule)

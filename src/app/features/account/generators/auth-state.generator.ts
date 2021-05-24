@@ -3,7 +3,7 @@ import { UserProfileGenerator } from "@shared/generators/user-profile.generator"
 import { UserSubscriptionGenerator } from "@shared/generators/user-subscription.generator";
 import { UserGenerator } from "@shared/generators/user.generator";
 
-export class AuthGenerator {
+export class AuthStateGenerator {
   static default(): AuthState {
     return {
       initialized: true,
