@@ -1,0 +1,51 @@
+<div class="page has-breadcrumb">
+  <h1>{{ pageTitle | translate }}</h1>
+
+  <div *ngIf="settingCategories$ | async as categories; else loading" class="notification-settings">
+    <ngb-accordion #accordion="ngbAccordion">
+      <ngb-panel *ngFor="let category of categories">
+        <ng-template ngbPanelTitle>
+            {{ category.label }}
+        </ng-template>
+
+        <ng-template ngbPanelContent>
+          <form *ngFor="let item of category.items | keyvalue" class="notification-form form-inline">
+            <div class="form-group">
+              <label>{{ getNotificationTypeById(item.key).display }}</label>
+            </div>
+
+            <div class="form-group">
+              <div class="form-check form-check-inline">
+                <astrobin-toggle-button
+                  (toggle)="notificationSettingChanged(item.value['EMAIL'], $event)"
+                  [attr.id]="'notification-' + item.key + '-email'"
+                  [value]="item.value['EMAIL'].send"
+                  class="mr-2"
+                ></astrobin-toggle-button>
+                <label [attr.for]="'notification-' + item.key + '-email'" class="form-check-label">
+                  {{ "E-mail" | translate }}
+                </label>
+              </div>
+
+              <div class="form-check form-check-inline">
+                <astrobin-toggle-button
+                  (toggle)="notificationSettingChanged(item.value['ON_SITE'], $event)"
+                  [attr.id]="'notification-' + item.key + '-onsite'"
+                  [value]="item.value['ON_SITE'].send"
+                  class="mr-2"
+                ></astrobin-toggle-button>
+                <label [attr.for]="'notification-' + item.key + '-onsite'" class="form-check-label">
+                  {{ "On-site" | translate }}
+                </label>
+              </div>
+            </div>
+          </form>
+        </ng-template>
+      </ngb-panel>
+    </ngb-accordion>
+  </div>
+</div>
+
+<ng-template #loading>
+  <astrobin-loading-indicator></astrobin-loading-indicator>
+</ng-template>
