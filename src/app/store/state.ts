@@ -9,23 +9,29 @@ import { ThumbnailEffects } from "@app/store/effects/thumbnail.effects";
 import { AuthEffects } from "@features/account/store/auth.effects";
 import * as auth from "@features/account/store/auth.reducers";
 import { initialAuthState } from "@features/account/store/auth.reducers";
+import * as notifications from "@features/notifications/store/notifications.reducers";
+import { initialNotificationsState } from "@features/notifications/store/notifications.reducers";
 import * as app from "./reducers/app.reducers";
 import { initialAppState } from "./reducers/app.reducers";
 import { LocationEffects } from "@app/store/effects/location.effects";
+import { NotificationsEffects } from "@features/notifications/store/notifications.effects";
 
 export interface State {
   app: app.AppState;
   auth: auth.AuthState;
+  notifications: notifications.NotificationsState;
 }
 
 export const initialState: State = {
   app: initialAppState,
-  auth: initialAuthState
+  auth: initialAuthState,
+  notifications: initialNotificationsState
 };
 
 export const appStateReducers = {
   app: app.reducer,
-  auth: auth.reducer
+  auth: auth.reducer,
+  notifications: notifications.reducer
 };
 
 export const appStateEffects = [
@@ -36,6 +42,7 @@ export const appStateEffects = [
   InitializeAppEffects,
   ImageEffects,
   LocationEffects,
+  NotificationsEffects,
   SolutionEffects,
   ThumbnailEffects,
   TelescopeEffects

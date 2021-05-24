@@ -44,6 +44,8 @@ import { ReadOnlyModeComponent } from "./misc/read-only-mode/read-only-mode.comp
 import { UsernameComponent } from "./misc/username/username.component";
 import { FormlyWrapperComponent } from "@shared/components/misc/formly-wrapper/formly-wrapper.component";
 import { FormlyFieldGoogleMapComponent } from "@shared/components/misc/formly-field-google-map/formly-field-google-map.component";
+import { ToggleButtonComponent } from "@shared/components/misc/toggle-button/toggle-button.component";
+import { NgToggleModule } from "ng-toggle-button";
 
 const modules = [
   CommonModule,
@@ -57,6 +59,7 @@ const modules = [
   NgbProgressbarModule,
   NgbTooltipModule,
   NgSelectModule,
+  NgToggleModule,
   NgxFilesizeModule,
   NgxImageZoomModule,
   NgWizardModule,
@@ -91,6 +94,7 @@ const components = [
   RefreshButtonComponent,
   TelescopeComponent,
   TextLoadingIndicatorComponent,
+  ToggleButtonComponent,
   UsernameComponent
 ];
 

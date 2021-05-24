@@ -1,0 +1,32 @@
+@import "../../../../styles/variables";
+
+.notification-form {
+  justify-content: space-between;
+  padding: 1rem .75rem;
+
+  label {
+    font-weight: normal;
+  }
+
+  &:nth-child(odd) {
+    background: rgba(255, 255, 255, 0.025);
+  }
+
+  .form-check:not(last-child) {
+    margin-right: 1.5rem;
+  }
+
+  .form-check:last-child {
+    margin-right: 0;
+  }
+
+  @media screen and (max-width: $md-max) {
+    .form-group {
+      flex-basis: 100%;
+
+      &:first-child {
+        margin-bottom: 2rem;
+      }
+    }
+  }
+}
