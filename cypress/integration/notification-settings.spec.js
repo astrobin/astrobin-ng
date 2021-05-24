@@ -90,8 +90,8 @@ context("notifications", () => {
     });
 
     it("should show the toggles", () => {
-      cy.get("#notification-2-email[ng-reflect-value='false']").should("exist");
-      cy.get("#notification-2-onsite[ng-reflect-value='true']").should("exist");
+      cy.get("#notification-2-email[ng-reflect-value='true']").should("exist");
+      cy.get("#notification-2-onsite[ng-reflect-value='false']").should("exist");
       cy.get("#notification-3-email[ng-reflect-value='true']").should("exist");
       cy.get("#notification-3-onsite[ng-reflect-value='true']").should("exist");
     });
