@@ -130,7 +130,7 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
     );
 
     this.store$.select(selectBackendConfig).subscribe(backendConfig => {
-      this.uploadDataService.setEndpoint(`${environment.classicBaseUrl}/${backendConfig.IMAGE_UPLOAD_ENDPOINT}`);
+      this.uploadDataService.setEndpoint(`${environment.classicBaseUrl}${backendConfig.IMAGE_UPLOAD_ENDPOINT}`);
     });
 
     this.uploadDataService.setMetadata("image-upload", {
