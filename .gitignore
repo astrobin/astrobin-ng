@@ -49,5 +49,7 @@ Thumbs.db
 
 *.css
 /dist/
-/cypress/videos
-/cypress/screenshots
+/cypress/videos/*
+!/cypress/videos/.empty
+/cypress/screenshots/*
+!/cypress/screenshots/.empty
