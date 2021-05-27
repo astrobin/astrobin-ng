@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
-  classicBaseUrl: "http://localhost",
-  classicApiUrl: "http://localhost"
+  classicBaseUrl: "http://localhost:8083",
+  classicApiUrl: "http://localhost:8083"
 };
