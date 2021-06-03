@@ -125,7 +125,7 @@ export class RevisionUploaderPageComponent extends BaseComponentDirective implem
 
     this.store$.select(selectBackendConfig).subscribe(backendConfig => {
       this.uploadDataService.setEndpoint(
-        `${environment.classicBaseUrl}/${backendConfig.IMAGE_REVISION_UPLOAD_ENDPOINT}`
+        `${environment.classicBaseUrl}${backendConfig.IMAGE_REVISION_UPLOAD_ENDPOINT}`
       );
     });
 
