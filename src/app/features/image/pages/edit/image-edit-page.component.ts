@@ -864,13 +864,13 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     return {
       key: "fullSizeDisplayLimitation",
       type: "ng-select",
-      id: "image-full-size-display-limitation",
+      id: "image-full-size-display-limitation-field",
       templateOptions: {
         clearable: false,
         label: this.translateService.instant("Allow full-size display"),
         options: [
           {
-            value: null,
+            value: FullSizeLimitationDisplayOptions.EVERYBODY,
             label: this.translateService.instant("Everybody")
           },
           {

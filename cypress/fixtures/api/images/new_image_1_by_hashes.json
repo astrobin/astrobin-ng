@@ -35,7 +35,8 @@
       "watermarkPosition": 0,
       "watermarkSize": "M",
       "watermarkOpacity": 10,
-      "sharpenThumbnails": true
+      "sharpenThumbnails": true,
+      "fullSizeDisplayLimitation": "EVERYBODY"
     }
   ]
 }

@@ -296,5 +296,6 @@ context("Image edit (new)", () => {
     );
     cy.get("#image-mouse-hover-image-field .ng-value").should("contain.text", "Plate-solution");
     cy.get("#image-allow-comments-field").should("be.checked");
+    cy.get("#image-full-size-display-limitation-field .ng-value").should("contain.text", "Everybody");
   });
 });
