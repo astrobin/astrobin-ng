@@ -97,6 +97,10 @@ export class LanguageLoader extends TranslatePoHttpLoader {
     );
 
   getTranslation(lang: string): Observable<any> {
+    if (!lang) {
+      lang = "en";
+    }
+
     const backends = [
       this.classicTranslations$(lang),
       this.ngTranslations$(lang).pipe(catchError(() => this.ngTranslations$("en")))
