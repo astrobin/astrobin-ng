@@ -118,6 +118,13 @@ export enum WatermarkSizeOptions {
   LARGE = "L"
 }
 
+export enum FullSizeLimitationDisplayOptions {
+  PAYING = "PAYING",
+  MEMBERS = "MEMBERS",
+  ME = "ME",
+  NOBODY = "NOBODY"
+}
+
 export interface ImageInterface {
   user: number;
   pk: number;
@@ -152,4 +159,5 @@ export interface ImageInterface {
   sharpenThumbnails: boolean;
   keyValueTags: string;
   locations: number[];
+  fullSizeDisplayLimitation: FullSizeLimitationDisplayOptions | null;
 }

@@ -18,6 +18,7 @@ import { ImageAlias } from "@shared/enums/image-alias.enum";
 import {
   AcquisitionType,
   DataSource,
+  FullSizeLimitationDisplayOptions,
   ImageInterface,
   LicenseOptions,
   MouseHoverImageOptions,
@@ -859,6 +860,40 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     };
   }
 
+  private _getFullSizeDisplayLimitationField(): any {
+    return {
+      key: "fullSizeDisplayLimitation",
+      type: "ng-select",
+      id: "image-full-size-display-limitation",
+      templateOptions: {
+        clearable: false,
+        label: this.translateService.instant("Allow full-size display"),
+        options: [
+          {
+            value: null,
+            label: this.translateService.instant("Everybody")
+          },
+          {
+            value: FullSizeLimitationDisplayOptions.PAYING,
+            label: this.translateService.instant("Paying members only")
+          },
+          {
+            value: FullSizeLimitationDisplayOptions.MEMBERS,
+            label: this.translateService.instant("Members only")
+          },
+          {
+            value: FullSizeLimitationDisplayOptions.ME,
+            label: this.translateService.instant("Me only")
+          },
+          {
+            value: FullSizeLimitationDisplayOptions.NOBODY,
+            label: this.translateService.instant("Nobody")
+          }
+        ]
+      }
+    };
+  }
+
   private _initFields(): void {
     this.fields = [
       {
@@ -915,6 +950,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
               this._getLicenseField(),
               this._getMouseHoverImageField(),
               this._getKeyValueTagsField(),
+              this._getFullSizeDisplayLimitationField(),
               this._getAllowCommentsField()
             ]
           }
