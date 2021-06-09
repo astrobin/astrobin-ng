@@ -155,7 +155,7 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
           .select(selectCurrentUserProfile)
           .pipe(take(1))
           .subscribe((userProfile: UserProfileInterface) => {
-            const language = userProfile.language.toLowerCase();
+            const language = (userProfile.language || "en").toLowerCase();
             const languageMatches = ["en", "en-gb", "it", "de", "fr", "zh-hans"].indexOf(language) > -1;
             const forceNewEditor = this.route.snapshot.queryParams["forceNewEditor"] !== undefined;
             const forceClassicEditor = this.route.snapshot.queryParams["forceClassicEditor"] !== undefined;
