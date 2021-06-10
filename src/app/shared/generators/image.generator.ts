@@ -43,7 +43,8 @@ export class ImageGenerator {
       watermarkOpacity: 50,
       sharpenThumbnails: false,
       keyValueTags: null,
-      locations: []
+      locations: [],
+      fullSizeDisplayLimitation: null
     };
   }
 }

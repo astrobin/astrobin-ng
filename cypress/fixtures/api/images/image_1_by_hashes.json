@@ -41,7 +41,8 @@
       "sharpenThumbnails": true,
       "locations": [
         1
-      ]
+      ],
+      "fullSizeDisplayLimitation": "EVERYBODY"
     }
   ]
 }
