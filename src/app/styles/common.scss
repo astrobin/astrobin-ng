@@ -25,13 +25,13 @@ body {
   &::after {
     content: " ";
     display: block;
-    width: 1.5rem;
-    height: 1.5rem;
+    width: 2rem;
+    height: 2rem;
     margin: 1px;
     border-radius: 50%;
-    border: 1px solid $white;
-    border-color: $white transparent $white transparent;
-    animation: spin 1.2s linear infinite;
+    border: .33rem solid $white;
+    border-color: $white $white $white transparent;
+    animation: spin 1s linear infinite;
   }
 }
 
