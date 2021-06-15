@@ -34,6 +34,12 @@ msgstr "Busca avançada"
 msgid "Allow comments"
 msgstr "Permitir comentários"
 
+msgid "Allow full-size display"
+msgstr ""
+
+msgid "Altitude"
+msgstr ""
+
 msgid "Amateur hosting facility"
 msgstr "Hospedagem amadora"
 
@@ -58,6 +64,9 @@ msgstr ""
 msgid ""
 "AstroBin could not read your file as an image. Please try a different "
 "format."
+msgstr ""
+
+msgid "AstroBin does not share your coordinates with anyone."
 msgstr ""
 
 msgid ""
@@ -158,6 +167,9 @@ msgstr ""
 msgid "Comet"
 msgstr "Cometa"
 
+msgid "Comments"
+msgstr ""
+
 msgid "Commercial facilities"
 msgstr ""
 
@@ -178,6 +190,12 @@ msgstr ""
 
 msgid "Contributors list"
 msgstr "Lista de contribuintes"
+
+msgid "Create new location"
+msgstr ""
+
+msgid "Create new:"
+msgstr ""
 
 msgid "Data source"
 msgstr "Fonte de dados"
@@ -209,6 +227,9 @@ msgstr "Desenho/Esboço"
 msgid "Drop file here or click to browse"
 msgstr "Solte o arquivo aqui ou clique para navegar"
 
+msgid "E-mail"
+msgstr ""
+
 msgid "Earth's Moon"
 msgstr "Lua terrestre"
 
@@ -223,6 +244,9 @@ msgstr "Email"
 
 msgid "Error!"
 msgstr "Erro!"
+
+msgid "Everybody"
+msgstr ""
 
 msgid "Expiration date"
 msgstr "Data de validade"
@@ -268,6 +292,9 @@ msgstr ""
 msgid "Forum"
 msgstr "Fórum"
 
+msgid "Forums"
+msgstr ""
+
 msgid "Full search"
 msgstr "Busca completa"
 
@@ -304,6 +331,9 @@ msgstr ""
 msgid "Home"
 msgstr "Início"
 
+msgid "IOTD/TP Staff"
+msgstr ""
+
 msgid ""
 "If selected, AstroBin will use a resizing algorithm that slightly sharpens "
 "the image's thumbnails. This setting applies to all revisions."
@@ -316,9 +346,6 @@ msgid ""
 "If this file is a different take on the same data as in another image you "
 "already published on AstroBin, the common practice would be to upload it as "
 "a new revision. For more info, please {{0}}click here{{1}}."
-msgstr ""
-
-msgid "If you have any problems, please {{0}}let us know{{1}}!"
 msgstr ""
 
 msgid ""
@@ -340,6 +367,9 @@ msgstr ""
 
 msgid "Image"
 msgstr "Imagem"
+
+msgid "Image of the Day / Top Picks"
+msgstr ""
 
 msgid "Image of the day"
 msgstr "Imagem do dia"
@@ -407,6 +437,9 @@ msgstr "Link para TIFF/FITS"
 msgid "Loading..."
 msgstr "Carregando..."
 
+msgid "Locations"
+msgstr ""
+
 msgid "Log in"
 msgstr "Entrar"
 
@@ -440,11 +473,20 @@ msgstr "Máx. {{ max }} imagens no total"
 msgid "Max. {{ max }} uploads"
 msgstr "Máx. {{ max }} uploads"
 
+msgid "Me only"
+msgstr ""
+
 msgid "Medium"
 msgstr "Médio"
 
+msgid "Members only"
+msgstr ""
+
 msgid "Mercury"
 msgstr "Mercúrio"
+
+msgid "Meters above sea level"
+msgstr ""
 
 msgid "Minor planet"
 msgstr "Planeta pequeno"
@@ -457,6 +499,9 @@ msgstr "Moderado"
 
 msgid "Mouse hover image"
 msgstr "Passar o mouse sobre a imagem"
+
+msgid "Move the map until the marker points at right location"
+msgstr ""
 
 msgid "My messages"
 msgstr "Minhas mensagens"
@@ -479,8 +524,14 @@ msgstr ""
 msgid "No"
 msgstr "Não"
 
+msgid "No items found."
+msgstr ""
+
 msgid "No plate-solving"
 msgstr "Sem solução de placa"
+
+msgid "Nobody"
+msgstr ""
 
 msgid "Non-commercial independent facility"
 msgstr "Instalação independente não comercial"
@@ -500,6 +551,9 @@ msgstr "Auroras Boreais"
 msgid "Nothing"
 msgstr "Nada"
 
+msgid "Notification settings"
+msgstr ""
+
 msgid "Notifications"
 msgstr "Notificações"
 
@@ -507,6 +561,9 @@ msgid "Objects in field"
 msgstr "Objetos no campo"
 
 msgid "Occultation"
+msgstr ""
+
+msgid "On-site"
 msgstr ""
 
 msgid "Opacity"
@@ -529,6 +586,9 @@ msgstr "Eclipse solar parcial"
 
 msgid "Password"
 msgstr "Senha"
+
+msgid "Paying members only"
+msgstr ""
 
 msgid "Permission denied"
 msgstr ""
@@ -576,6 +636,9 @@ msgid "Prefer to pay via bank transfer?"
 msgstr "Prefere pagar via transferência bancária?"
 
 msgid "Previous"
+msgstr ""
+
+msgid "Private messages"
 msgstr ""
 
 msgid "Professional, scientific grade data"
@@ -731,6 +794,9 @@ msgstr "Planos de inscrição"
 msgid "Subscription process cancelled"
 msgstr "Processo de inscrição cancelado"
 
+msgid "Subscriptions"
+msgstr ""
+
 msgid "Success!"
 msgstr "Sucesso!"
 
@@ -784,6 +850,9 @@ msgstr ""
 msgid "There doesn't seem to be anything here."
 msgstr "Não parece haver nada aqui."
 
+msgid "This field is disabled because you haven't joined any groups yet."
+msgstr ""
+
 msgid ""
 "This image will be uploaded to your staging area as a work in progress. You "
 "can make it public at the end of the process."
@@ -805,6 +874,11 @@ msgid ""
 msgstr ""
 "Esta página ou operação não está disponível no momento, porque AstroBin "
 "está no modo de LEITURA APENAS."
+
+msgid ""
+"This setting will take affect after the image will be moved to your public "
+"area."
+msgstr ""
 
 msgid "Thumbnail"
 msgstr "Miniatura"
@@ -835,6 +909,12 @@ msgstr "Eclipse solar total"
 
 msgid "Traveller"
 msgstr "Viajante"
+
+msgid "Type something to create a new one..."
+msgstr ""
+
+msgid "Type to search options or to create a new one..."
+msgstr ""
 
 msgid "Type to search options..."
 msgstr ""
@@ -874,6 +954,9 @@ msgstr "Urano"
 
 msgid "Username"
 msgstr "Nome do usuário"
+
+msgid "Users"
+msgstr ""
 
 msgid "Validity"
 msgstr "Validade"
@@ -1006,6 +1089,9 @@ msgid "Zoom ready"
 msgstr ""
 
 msgid "e.g."
+msgstr ""
+
+msgid "e.g. 'Home observatory'"
 msgstr ""
 
 msgid "n/a"
