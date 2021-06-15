@@ -33,6 +33,12 @@ msgstr "Erweiterte Suche"
 msgid "Allow comments"
 msgstr "Kommentare erlauben"
 
+msgid "Allow full-size display"
+msgstr ""
+
+msgid "Altitude"
+msgstr ""
+
 msgid "Amateur hosting facility"
 msgstr "Amateur-Hosting-Einrichtung"
 
@@ -62,6 +68,9 @@ msgid ""
 msgstr ""
 "AstroBin konnte Ihre Datei nicht als Bild lesen. Bitte versuchen Sie ein "
 "anderes Format."
+
+msgid "AstroBin does not share your coordinates with anyone."
+msgstr ""
 
 msgid ""
 "AstroBin doesn't support subscription upgrades at the moment, but we're "
@@ -163,6 +172,9 @@ msgstr ""
 msgid "Comet"
 msgstr "Komet"
 
+msgid "Comments"
+msgstr ""
+
 msgid "Commercial facilities"
 msgstr "Kommerzielle Einrichtungen"
 
@@ -183,6 +195,12 @@ msgstr "Inhalt"
 
 msgid "Contributors list"
 msgstr "Mitwirkende"
+
+msgid "Create new location"
+msgstr ""
+
+msgid "Create new:"
+msgstr ""
 
 msgid "Data source"
 msgstr "Datenquelle"
@@ -214,6 +232,9 @@ msgstr "Zeichnung/Skizze"
 msgid "Drop file here or click to browse"
 msgstr "Datei hier ablegen oder zum Durchsuchen anklicken"
 
+msgid "E-mail"
+msgstr ""
+
 msgid "Earth's Moon"
 msgstr "Mond"
 
@@ -228,6 +249,9 @@ msgstr "E-Mail"
 
 msgid "Error!"
 msgstr "Fehler!"
+
+msgid "Everybody"
+msgstr ""
 
 msgid "Expiration date"
 msgstr "Verfallsdatum"
@@ -273,6 +297,9 @@ msgstr ""
 msgid "Forum"
 msgstr "Forum"
 
+msgid "Forums"
+msgstr ""
+
 msgid "Full search"
 msgstr "Vollständige Suche"
 
@@ -313,6 +340,9 @@ msgstr "Ausblenden"
 msgid "Home"
 msgstr "Startseite"
 
+msgid "IOTD/TP Staff"
+msgstr ""
+
 msgid ""
 "If selected, AstroBin will use a resizing algorithm that slightly sharpens "
 "the image's thumbnails. This setting applies to all revisions."
@@ -330,11 +360,6 @@ msgstr ""
 "handelt, die in einem anderen Bild enthalten sind, das Sie bereits auf "
 "AstroBin veröffentlicht haben, ist es üblich, sie als neue Revision "
 "hochzuladen. Für weitere Informationen klicken Sie bitte {{0}}hier{{1}}."
-
-msgid "If you have any problems, please {{0}}let us know{{1}}!"
-msgstr ""
-"Wenn Sie irgendwelche Probleme haben, {{0}}lassen Sie es uns bitte "
-"wissen{{1}}!"
 
 msgid ""
 "If you want to share the TIFF or FITS file of your image, put a link to the "
@@ -355,6 +380,9 @@ msgstr ""
 
 msgid "Image"
 msgstr "Bild"
+
+msgid "Image of the Day / Top Picks"
+msgstr ""
 
 msgid "Image of the day"
 msgstr "Bild des Tages"
@@ -424,6 +452,9 @@ msgstr "Link zum TIFF/FITS"
 msgid "Loading..."
 msgstr "Ladevorgang …"
 
+msgid "Locations"
+msgstr ""
+
 msgid "Log in"
 msgstr "Anmelden"
 
@@ -457,11 +488,20 @@ msgstr "Max. {{ max }} für alle Bilder"
 msgid "Max. {{ max }} uploads"
 msgstr "Max. {{ max }} Uploads"
 
+msgid "Me only"
+msgstr ""
+
 msgid "Medium"
 msgstr "Mittel"
 
+msgid "Members only"
+msgstr ""
+
 msgid "Mercury"
 msgstr "Merkur"
+
+msgid "Meters above sea level"
+msgstr ""
 
 msgid "Minor planet"
 msgstr "Kleinplanet"
@@ -474,6 +514,9 @@ msgstr "Moderieren"
 
 msgid "Mouse hover image"
 msgstr "Bild mit Mauszeiger"
+
+msgid "Move the map until the marker points at right location"
+msgstr ""
 
 msgid "My messages"
 msgstr "Meine Nachrichten"
@@ -496,8 +539,14 @@ msgstr "Nächster"
 msgid "No"
 msgstr "Kein"
 
+msgid "No items found."
+msgstr ""
+
 msgid "No plate-solving"
 msgstr "Kein Plate-Solving"
+
+msgid "Nobody"
+msgstr ""
 
 msgid "Non-commercial independent facility"
 msgstr "Nicht-kommerzielle unabhängige Einrichtung"
@@ -517,6 +566,9 @@ msgstr "Polarlichter"
 msgid "Nothing"
 msgstr "Nichts"
 
+msgid "Notification settings"
+msgstr ""
+
 msgid "Notifications"
 msgstr "Benachrichtigungen"
 
@@ -525,6 +577,9 @@ msgstr "Objekte im Feld"
 
 msgid "Occultation"
 msgstr "Bedeckung"
+
+msgid "On-site"
+msgstr ""
 
 msgid "Opacity"
 msgstr "Deckkraft"
@@ -546,6 +601,9 @@ msgstr "Partielle Sonnenfinsternis"
 
 msgid "Password"
 msgstr "Passwort"
+
+msgid "Paying members only"
+msgstr ""
 
 msgid "Permission denied"
 msgstr "Zugriff verboten"
@@ -601,6 +659,9 @@ msgstr "Bevorzugen Sie die Zahlung per Banküberweisung?"
 
 msgid "Previous"
 msgstr "Vorheriger"
+
+msgid "Private messages"
+msgstr ""
 
 msgid "Professional, scientific grade data"
 msgstr "Professionelle, wissenschaftliche Daten"
@@ -764,6 +825,9 @@ msgstr "Abonnement-Optionen"
 msgid "Subscription process cancelled"
 msgstr "Abonnement-Prozess abgebrochen"
 
+msgid "Subscriptions"
+msgstr ""
+
 msgid "Success!"
 msgstr "Erfolgreich!"
 
@@ -821,6 +885,9 @@ msgstr "Die Einreicher-Auswahlliste ist derzeit leer."
 msgid "There doesn't seem to be anything here."
 msgstr "Es scheint hier nichts zu geben."
 
+msgid "This field is disabled because you haven't joined any groups yet."
+msgstr ""
+
 msgid ""
 "This image will be uploaded to your staging area as a work in progress. You "
 "can make it public at the end of the process."
@@ -844,6 +911,11 @@ msgid ""
 msgstr ""
 "Diese Seite oder Operation ist im Moment nicht verfügbar, da sich AstroBin "
 "im \"READ ONLY\"-Modus befindet."
+
+msgid ""
+"This setting will take affect after the image will be moved to your public "
+"area."
+msgstr ""
 
 msgid "Thumbnail"
 msgstr "Vorschau"
@@ -874,6 +946,12 @@ msgstr "Totale Sonnenfinsternis"
 
 msgid "Traveller"
 msgstr "Mobil"
+
+msgid "Type something to create a new one..."
+msgstr ""
+
+msgid "Type to search options or to create a new one..."
+msgstr ""
 
 msgid "Type to search options..."
 msgstr "Tippen Sie in die Suchoptionen..."
@@ -915,6 +993,9 @@ msgstr "Uranus"
 
 msgid "Username"
 msgstr "Benutzername"
+
+msgid "Users"
+msgstr ""
 
 msgid "Validity"
 msgstr "Gültigkeit"
@@ -1062,6 +1143,9 @@ msgstr "Zoom bereit"
 
 msgid "e.g."
 msgstr "z.B."
+
+msgid "e.g. 'Home observatory'"
+msgstr ""
 
 msgid "n/a"
 msgstr "n.v."

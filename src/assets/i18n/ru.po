@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: AstroBin Angular App\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-03 14:04+0200\n"
-"PO-Revision-Date: 2021-05-01 23:34+0200\n"
+"PO-Revision-Date: 2021-06-15 18:22+0200\n"
 "Last-Translator: Salvatore Iovene\n"
 "Language-Team: Russian\n"
 "Language: ru\n"
@@ -15,7 +15,7 @@ msgstr ""
 "X-Generator: Loco https://localise.biz\n"
 "X-Loco-Source-Locale: en\n"
 "X-Loco-Project-Id: 108356\n"
-"X-Loco-Api-Version: 1.0.25 20210428-1"
+"X-Loco-Api-Version: 1.0.25 20210614-1"
 
 #: loco:60685a683b0b1d485a736d12
 msgid "API Keys"
@@ -1222,6 +1222,12 @@ msgstr ""
 msgid "Watermark"
 msgstr ""
 
+#: loco:60685ab727e3d377322f42c1
+msgid ""
+"We have updated the image data editor to make room for new features coming "
+"your way in the near future!"
+msgstr ""
+
 #: loco:60685ab727e3d377322f42c2
 msgid ""
 "When a paid subscription expires, nothing happens to your images or content."
@@ -1337,4 +1343,122 @@ msgstr ""
 msgid ""
 "there is an etiquette regarding uploading a new image versus an image "
 "revision."
+msgstr ""
+
+#: loco:60c8d26b9a9bb6548e02ff33
+msgid "Allow full-size display"
+msgstr ""
+
+#: loco:60c8d26b9a9bb6548e02ff34
+msgid "Altitude"
+msgstr ""
+
+#: loco:60c8d26b9a9bb6548e02ff35
+msgid "AstroBin does not share your coordinates with anyone."
+msgstr ""
+
+#: loco:60c8d26b9a9bb6548e02ff36
+msgid "Comments"
+msgstr ""
+
+#: loco:60c8d26b9a9bb6548e02ff37
+msgid "Create new location"
+msgstr ""
+
+#: loco:60c8d26b9a9bb6548e02ff38
+msgid "Create new:"
+msgstr ""
+
+#: loco:60c8d26b9a9bb6548e02ff39
+msgid "E-mail"
+msgstr ""
+
+#: loco:60c8d26b9a9bb6548e02ff3a
+msgid "Everybody"
+msgstr ""
+
+#: loco:60c8d26b9a9bb6548e02ff3b
+msgid "Forums"
+msgstr ""
+
+#: loco:60c8d26b9a9bb6548e02ff3c
+msgid "IOTD/TP Staff"
+msgstr ""
+
+#: loco:60c8d26b9a9bb6548e02ff3d
+msgid "Image of the Day / Top Picks"
+msgstr ""
+
+#: loco:60c8d26b9a9bb6548e02ff3e
+msgid "Locations"
+msgstr ""
+
+#: loco:60c8d26b9a9bb6548e02ff3f
+msgid "Me only"
+msgstr ""
+
+#: loco:60c8d26b9a9bb6548e02ff40
+msgid "Members only"
+msgstr ""
+
+#: loco:60c8d26b9a9bb6548e02ff41
+msgid "Meters above sea level"
+msgstr ""
+
+#: loco:60c8d26b9a9bb6548e02ff42
+msgid "Move the map until the marker points at right location"
+msgstr ""
+
+#: loco:60c8d26b9a9bb6548e02ff43
+msgid "No items found."
+msgstr ""
+
+#: loco:60c8d26b9a9bb6548e02ff44
+msgid "Nobody"
+msgstr ""
+
+#: loco:60c8d26b9a9bb6548e02ff45
+msgid "Notification settings"
+msgstr ""
+
+#: loco:60c8d26b9a9bb6548e02ff46
+msgid "On-site"
+msgstr ""
+
+#: loco:60c8d26b9a9bb6548e02ff47
+msgid "Paying members only"
+msgstr ""
+
+#: loco:60c8d26b9a9bb6548e02ff48
+msgid "Private messages"
+msgstr ""
+
+#: loco:60c8d26b9a9bb6548e02ff49
+msgid "Subscriptions"
+msgstr ""
+
+#: loco:60c8d26b9a9bb6548e02ff4a
+msgid "This field is disabled because you haven't joined any groups yet."
+msgstr ""
+
+#: loco:60c8d26b9a9bb6548e02ff4b
+msgid ""
+"This setting will take affect after the image will be moved to your public "
+"area."
+msgstr ""
+
+#: loco:60c8d26b9a9bb6548e02ff4c
+msgid "Type something to create a new one..."
+msgstr ""
+
+#: loco:60c8d26b9a9bb6548e02ff4d
+msgid "Type to search options or to create a new one..."
+msgstr ""
+
+#: loco:60c8d26b9a9bb6548e02ff4e
+msgid "Users"
+msgstr ""
+
+#: loco:60c8d26b9a9bb6548e02ff4f
+msgid "e.g. 'Home observatory'"
 msgstr ""
