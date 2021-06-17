@@ -15,6 +15,7 @@ import { Tus, UploadState, UploadxOptions, UploadxService } from "ngx-uploadx";
 import { forkJoin, Observable, of, Subscription } from "rxjs";
 import { filter, map, take } from "rxjs/operators";
 import { WindowRefService } from "@shared/services/window-ref.service";
+import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
 
 // PLEASE NOTE: due to the usage of the UploaderDataService, there can be only one chunked file upload field on a page
 // at any given time.
@@ -31,7 +32,7 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
   uploadOptions: UploadxOptions = {
     allowedTypes: Constants.ALLOWED_UPLOAD_EXTENSIONS.join(","),
     uploaderClass: Tus,
-    chunkSize: 1024 * 1024,
+    maxChunkSize: 10 * 1024 * 1024,
     multiple: false,
     autoUpload: false,
     authorize: req => {
@@ -49,7 +50,7 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
   private _allowedTypesChangesSubscription: Subscription;
 
   constructor(
-    public readonly store: Store<State>,
+    public readonly store$: Store<State>,
     public readonly authService: AuthService,
     public readonly uploaderService: UploadxService,
     public readonly uploadDataService: UploadDataService,
@@ -80,6 +81,58 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
   }
 
   ngOnInit() {
+    this.store$
+      .select(selectBackendConfig)
+      .pipe(
+        filter(backendConfig => !!backendConfig),
+        take(1)
+      )
+      .subscribe(backendConfig => {
+        this.uploadOptions.maxChunkSize = backendConfig.DATA_UPLOAD_MAX_MEMORY_SIZE;
+        this._initUploader();
+      });
+  }
+
+  isActive(): boolean {
+    return !this.uploadState || ["queue", "uploading", "paused", "complete"].indexOf(this.uploadState.status) === -1;
+  }
+
+  isInitializingUpload(): boolean {
+    return this.uploadState && this.uploadState.status === "uploading" && !this.uploadState.progress;
+  }
+
+  isUploading(): boolean {
+    return (
+      this.uploadState &&
+      ["uploading", "retry"].indexOf(this.uploadState.status) > -1 &&
+      this.uploadState.progress &&
+      this.uploadState.progress > 0
+    );
+  }
+
+  isFinalizingUpload(): boolean {
+    return this.uploadState && this.uploadState.status === "uploading" && this.uploadState.progress === 100;
+  }
+
+  isComplete(): boolean {
+    return this.uploadState && this.uploadState.status === "complete";
+  }
+
+  ngOnDestroy(): void {
+    if (this._metadataChangesSubscription) {
+      this._metadataChangesSubscription.unsubscribe();
+    }
+
+    if (this._endpointChangesSubscription) {
+      this._endpointChangesSubscription.unsubscribe();
+    }
+
+    if (this._allowedTypesChangesSubscription) {
+      this._allowedTypesChangesSubscription.unsubscribe();
+    }
+  }
+
+  private _initUploader(): void {
     this.uploaderService.init(this.uploadOptions);
     this.uploaderService.events.subscribe((state: UploadState) => {
       this.uploadState = state;
@@ -150,45 +203,6 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
     });
   }
 
-  isActive(): boolean {
-    return !this.uploadState || ["queue", "uploading", "paused", "complete"].indexOf(this.uploadState.status) === -1;
-  }
-
-  isInitializingUpload(): boolean {
-    return this.uploadState && this.uploadState.status === "uploading" && !this.uploadState.progress;
-  }
-
-  isUploading(): boolean {
-    return (
-      this.uploadState &&
-      ["uploading", "retry"].indexOf(this.uploadState.status) > -1 &&
-      this.uploadState.progress &&
-      this.uploadState.progress > 0
-    );
-  }
-
-  isFinalizingUpload(): boolean {
-    return this.uploadState && this.uploadState.status === "uploading" && this.uploadState.progress === 100;
-  }
-
-  isComplete(): boolean {
-    return this.uploadState && this.uploadState.status === "complete";
-  }
-
-  ngOnDestroy(): void {
-    if (this._metadataChangesSubscription) {
-      this._metadataChangesSubscription.unsubscribe();
-    }
-
-    if (this._endpointChangesSubscription) {
-      this._endpointChangesSubscription.unsubscribe();
-    }
-
-    if (this._allowedTypesChangesSubscription) {
-      this._allowedTypesChangesSubscription.unsubscribe();
-    }
-  }
-
   private _checkFileExtension(filename: string): Observable<boolean> {
     const extension = this.utilsService.fileExtension(filename).toLowerCase();
 
@@ -230,7 +244,7 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
         // @ts-ignore
         const image = new Image();
         image.onload = () => {
-          this.store
+          this.store$
             .pipe(
               take(1),
               map(state => state.app.backendConfig)

@@ -34,4 +34,5 @@ export interface BackendConfigInterface {
   IOTD_QUEUES_PAGE_SIZE: number;
   IMAGE_UPLOAD_ENDPOINT: string;
   IMAGE_REVISION_UPLOAD_ENDPOINT: string;
+  DATA_UPLOAD_MAX_MEMORY_SIZE: number;
 }
