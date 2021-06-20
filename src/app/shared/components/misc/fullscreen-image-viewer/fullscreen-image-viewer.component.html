@@ -57,7 +57,6 @@
 
     <ng-container *ngIf="realLoadingProgress$ | async as progress">
         <astrobin-loading-indicator
-          *ngIf="progress > 0 && progress < 100"
           [progress]="progress">
         </astrobin-loading-indicator>
     </ng-container>

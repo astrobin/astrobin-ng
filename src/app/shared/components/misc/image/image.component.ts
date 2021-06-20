@@ -26,7 +26,7 @@ import { ImageService } from "@shared/services/image/image.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { BehaviorSubject, fromEvent, Observable } from "rxjs";
-import { debounceTime, distinctUntilChanged, filter, map, switchMap, takeUntil, tap } from "rxjs/operators";
+import { debounceTime, distinctUntilChanged, filter, map, switchMap, take, takeUntil, tap } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-image",
@@ -104,6 +104,7 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
 
   public load(): void {
     if (
+      !this.loading &&
       !this._loaded &&
       this._loadingIndicator &&
       (this.utilsService.isInViewport(this._loadingIndicator.nativeElement) || this.alwaysLoad)
@@ -124,6 +125,7 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
 
     this.image$ = this.store$.select(selectImage, this.id).pipe(
       filter(image => !!image),
+      take(1),
       tap(() => {
         this._loadThumbnail();
       })
