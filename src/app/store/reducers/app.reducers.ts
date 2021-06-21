@@ -136,8 +136,8 @@ export function reducer(state = initialAppState, action: All): AppState {
         ...state,
         loadingThumbnails: state.loadingThumbnails.filter(
           thumbnail =>
-            thumbnail.id !== action.payload.id &&
-            thumbnail.revision !== action.payload.revision &&
+            thumbnail.id !== action.payload.id ||
+            thumbnail.revision !== action.payload.revision ||
             thumbnail.alias !== action.payload.alias
         )
       };
@@ -149,8 +149,8 @@ export function reducer(state = initialAppState, action: All): AppState {
         thumbnails: new UtilsService().arrayUniqueObjects([...state.thumbnails, action.payload]),
         loadingThumbnails: state.loadingThumbnails.filter(
           thumbnail =>
-            thumbnail.id !== action.payload.id &&
-            thumbnail.revision !== action.payload.revision &&
+            thumbnail.id !== action.payload.id ||
+            thumbnail.revision !== action.payload.revision ||
             thumbnail.alias !== action.payload.alias
         )
       };
