@@ -50,14 +50,12 @@
     align-items: center;
     height: 100%;
 
-    astrobin-loading-indicator {
-      position: absolute;
-      margin-top: calc(-100vh + 180px);
-      margin-right: calc(-100vw + 185px);
-
-      @media screen and (max-width: $sm-max) {
-        display: none;
-      }
+    .loading-indicator-container {
+      position: fixed;
+      top: 5rem;
+      right: calc(75px / 2);
+      width: 75px;
+      text-align: center;
     }
 
     img {

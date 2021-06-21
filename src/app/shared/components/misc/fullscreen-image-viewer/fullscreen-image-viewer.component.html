@@ -55,8 +55,8 @@
   <div class="no-zoom">
     <img [src]="url" alt=""/>
 
-    <astrobin-loading-indicator
-      [progress]="realLoadingProgress$ | async">
-    </astrobin-loading-indicator>
+    <div class="loading-indicator-container">
+      <astrobin-loading-indicator [progress]="realLoadingProgress$ | async"></astrobin-loading-indicator>
+    </div>
   </div>
 </ng-template>
