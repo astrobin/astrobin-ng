@@ -1,7 +1,7 @@
 import { Component, HostBinding, HostListener, Input, OnChanges, OnInit, SimpleChanges } from "@angular/core";
 import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
 import { HideFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
-import { LoadThumbnail } from "@app/store/actions/thumbnail.actions";
+import { LoadThumbnail, LoadThumbnailCancel } from "@app/store/actions/thumbnail.actions";
 import { selectApp } from "@app/store/selectors/app/app.selectors";
 import { selectThumbnail } from "@app/store/selectors/app/thumbnail.selectors";
 import { State } from "@app/store/state";
@@ -15,6 +15,7 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 import { Coord } from "ngx-image-zoom";
 import { BehaviorSubject, Observable } from "rxjs";
 import { distinctUntilChanged, filter, map, switchMap, take, tap } from "rxjs/operators";
+import { ImageThumbnailInterface } from "@shared/interfaces/image-thumbnail.interface";
 
 @Component({
   selector: "astrobin-fullscreen-image-viewer",
@@ -80,19 +81,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       this.isTouchDevice = true;
     }
 
-    const hdOptions = {
-      id: this.id,
-      revision: this.revision,
-      alias: ImageAlias.HD_ANONYMIZED
-    };
-
-    const realOptions = {
-      id: this.id,
-      revision: this.revision,
-      alias: ImageAlias.REAL_ANONYMIZED
-    };
-
-    this.hdThumbnail$ = this.store$.select(selectThumbnail, hdOptions).pipe(
+    this.hdThumbnail$ = this.store$.select(selectThumbnail, this._getHdOptions()).pipe(
       filter(thumbnail => !!thumbnail),
       switchMap(thumbnail =>
         this.imageService
@@ -103,7 +92,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       )
     );
 
-    this.realThumbnail$ = this.store$.select(selectThumbnail, realOptions).pipe(
+    this.realThumbnail$ = this.store$.select(selectThumbnail, this._getRealOptions()).pipe(
       filter(thumbnail => !!thumbnail),
       switchMap(thumbnail =>
         this.imageService
@@ -131,10 +120,10 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       distinctUntilChanged(),
       tap(show => {
         if (show) {
-          this.store$.dispatch(new LoadThumbnail(hdOptions));
+          this.store$.dispatch(new LoadThumbnail(this._getHdOptions()));
 
           if (!this.isTouchDevice) {
-            this.store$.dispatch(new LoadThumbnail(realOptions));
+            this.store$.dispatch(new LoadThumbnail(this._getRealOptions()));
           }
 
           setTimeout(() => {
@@ -184,6 +173,8 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       .subscribe(shown => {
         if (shown) {
           this.store$.dispatch(new HideFullscreenImage());
+          this.store$.dispatch(new LoadThumbnailCancel(this._getHdOptions()));
+          this.store$.dispatch(new LoadThumbnailCancel(this._getRealOptions()));
         }
       });
   }
@@ -200,5 +191,21 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     this._zoomIndicatorTimeout = this.windowRef.nativeWindow.setTimeout(() => {
       this.showZoomIndicator = false;
     }, this._zoomIndicatorTimeoutDuration);
+  }
+
+  private _getHdOptions(): Omit<ImageThumbnailInterface, "url"> {
+    return {
+      id: this.id,
+      revision: this.revision,
+      alias: ImageAlias.HD_ANONYMIZED
+    };
+  }
+
+  private _getRealOptions(): Omit<ImageThumbnailInterface, "url"> {
+    return {
+      id: this.id,
+      revision: this.revision,
+      alias: ImageAlias.REAL_ANONYMIZED
+    };
   }
 }

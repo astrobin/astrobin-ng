@@ -7,11 +7,23 @@ import { ImageThumbnailInterface } from "@shared/interfaces/image-thumbnail.inte
 export class LoadThumbnail implements PayloadActionInterface {
   readonly type = AppActionTypes.LOAD_THUMBNAIL;
 
-  constructor(public payload: { id; revision; alias }) {}
+  constructor(public payload: Omit<ImageThumbnailInterface, "url">) {}
+}
+
+export class LoadThumbnailCancel implements PayloadActionInterface {
+  readonly type = AppActionTypes.LOAD_THUMBNAIL_CANCEL;
+
+  constructor(public payload: Omit<ImageThumbnailInterface, "url">) {}
 }
 
 export class LoadThumbnailSuccess implements PayloadActionInterface {
   readonly type = AppActionTypes.LOAD_THUMBNAIL_SUCCESS;
 
   constructor(public payload: ImageThumbnailInterface) {}
+}
+
+export class LoadThumbnailCanceled implements PayloadActionInterface {
+  readonly type = AppActionTypes.LOAD_THUMBNAIL_CANCELED;
+
+  constructor(public payload: Omit<ImageThumbnailInterface, "url">) {}
 }

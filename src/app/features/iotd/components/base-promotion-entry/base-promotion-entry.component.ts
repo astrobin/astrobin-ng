@@ -105,7 +105,9 @@ export abstract class BasePromotionEntryComponent extends BaseComponentDirective
   abstract retractPromotion(imageId: number): void;
 
   viewFullscreen(imageId: number): void {
-    this.store$.dispatch(new ShowFullscreenImage(imageId));
+    if (!this.image.loading) {
+      this.store$.dispatch(new ShowFullscreenImage(imageId));
+    }
   }
 
   loadImage(): void {
