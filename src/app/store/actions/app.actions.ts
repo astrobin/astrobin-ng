@@ -22,7 +22,12 @@ import {
   LoadSolutionSuccess
 } from "@app/store/actions/solution.actions";
 import { LoadTelescope, LoadTelescopeSuccess } from "@app/store/actions/telescope.actions";
-import { LoadThumbnail, LoadThumbnailSuccess } from "@app/store/actions/thumbnail.actions";
+import {
+  LoadThumbnail,
+  LoadThumbnailCancel,
+  LoadThumbnailCanceled,
+  LoadThumbnailSuccess
+} from "@app/store/actions/thumbnail.actions";
 import { CreateLocation, CreateLocationAddTag, CreateLocationSuccess } from "@app/store/actions/location.actions";
 
 export enum AppActionTypes {
@@ -51,7 +56,9 @@ export enum AppActionTypes {
   SAVE_IMAGE_FAILURE = "[App] Save image failure",
 
   LOAD_THUMBNAIL = "[App] Load thumbnail",
+  LOAD_THUMBNAIL_CANCEL = "[App] Load thumbnail cancel",
   LOAD_THUMBNAIL_SUCCESS = "[App] Load thumbnail success",
+  LOAD_THUMBNAIL_CANCELED = "[App] Load thumbnail canceled",
 
   LOAD_SOLUTION = "[App] Load solution",
   LOAD_SOLUTION_SUCCESS = "[App] Load solution success",
@@ -87,7 +94,9 @@ export type All =
   | LoadImages
   | LoadImagesSuccess
   | LoadThumbnail
+  | LoadThumbnailCancel
   | LoadThumbnailSuccess
+  | LoadThumbnailCanceled
   | LoadSolution
   | LoadSolutionSuccess
   | LoadSolutions

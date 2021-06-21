@@ -36,6 +36,9 @@ export interface AppState {
   // All seen thumbnails.
   thumbnails: ImageThumbnailInterface[];
 
+  // Thumbnails currently being loaded.
+  loadingThumbnails: Omit<ImageThumbnailInterface, "url">[];
+
   // All seen solutions.
   solutions: SolutionInterface[];
 
@@ -59,6 +62,7 @@ export const initialAppState: AppState = {
   contentTypes: [],
   images: [],
   thumbnails: [],
+  loadingThumbnails: [],
   solutions: [],
   telescopes: [],
   cameras: [],
@@ -120,10 +124,35 @@ export function reducer(state = initialAppState, action: All): AppState {
       };
     }
 
+    case AppActionTypes.LOAD_THUMBNAIL: {
+      return {
+        ...state,
+        loadingThumbnails: new UtilsService().arrayUniqueObjects([...state.loadingThumbnails, action.payload])
+      };
+    }
+
+    case AppActionTypes.LOAD_THUMBNAIL_CANCEL: {
+      return {
+        ...state,
+        loadingThumbnails: state.loadingThumbnails.filter(
+          thumbnail =>
+            thumbnail.id !== action.payload.id &&
+            thumbnail.revision !== action.payload.revision &&
+            thumbnail.alias !== action.payload.alias
+        )
+      };
+    }
+
     case AppActionTypes.LOAD_THUMBNAIL_SUCCESS: {
       return {
         ...state,
-        thumbnails: new UtilsService().arrayUniqueObjects([...state.thumbnails, action.payload])
+        thumbnails: new UtilsService().arrayUniqueObjects([...state.thumbnails, action.payload]),
+        loadingThumbnails: state.loadingThumbnails.filter(
+          thumbnail =>
+            thumbnail.id !== action.payload.id &&
+            thumbnail.revision !== action.payload.revision &&
+            thumbnail.alias !== action.payload.alias
+        )
       };
     }
 

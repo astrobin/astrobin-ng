@@ -1,19 +1,19 @@
 import { Injectable } from "@angular/core";
 import { All, AppActionTypes } from "@app/store/actions/app.actions";
 import { LoadImage } from "@app/store/actions/image.actions";
-import { LoadThumbnail, LoadThumbnailSuccess } from "@app/store/actions/thumbnail.actions";
+import { LoadThumbnail, LoadThumbnailCanceled, LoadThumbnailSuccess } from "@app/store/actions/thumbnail.actions";
 import { selectImage } from "@app/store/selectors/app/image.selectors";
-import { selectThumbnail } from "@app/store/selectors/app/thumbnail.selectors";
+import { selectLoadingThumbnail, selectThumbnail } from "@app/store/selectors/app/thumbnail.selectors";
 import { State } from "@app/store/state";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
 import { ImageApiService } from "@shared/services/api/classic/images/image/image-api.service";
 import { EMPTY, Observable, of } from "rxjs";
-import { catchError, delay, filter, map, mergeMap } from "rxjs/operators";
+import { catchError, delay, filter, map, mergeMap, switchMap } from "rxjs/operators";
 
 @Injectable()
 export class ThumbnailEffects {
-  LoadThumbnail: Observable<LoadThumbnail | LoadThumbnailSuccess> = createEffect(() =>
+  LoadThumbnail: Observable<LoadThumbnail | LoadThumbnailSuccess | LoadThumbnailCanceled> = createEffect(() =>
     this.actions$.pipe(
       ofType(AppActionTypes.LOAD_THUMBNAIL),
       mergeMap(action =>
@@ -52,7 +52,24 @@ export class ThumbnailEffects {
         if (thumbnail.url.toLowerCase().indexOf("placeholder") !== -1) {
           return of(void 0).pipe(
             delay(1000),
-            map(() => new LoadThumbnail({ id: thumbnail.id, revision: thumbnail.revision, alias: thumbnail.alias }))
+            switchMap(() =>
+              this.store$.select(selectLoadingThumbnail, {
+                id: thumbnail.id,
+                revision: thumbnail.revision,
+                alias: thumbnail.alias
+              })
+            ),
+            map(loadingThumbnail => {
+              if (!!loadingThumbnail) {
+                return new LoadThumbnail({ id: thumbnail.id, revision: thumbnail.revision, alias: thumbnail.alias });
+              }
+
+              return new LoadThumbnailCanceled({
+                id: thumbnail.id,
+                revision: thumbnail.revision,
+                alias: thumbnail.alias
+              });
+            })
           );
         } else {
           return of(thumbnail).pipe(
