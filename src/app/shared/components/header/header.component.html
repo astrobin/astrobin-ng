@@ -5,19 +5,26 @@
 <nav class="navbar navbar-expand-lg">
   <div class="container">
     <a [href]="classicRoutes.HOME" class="navbar-brand">
-      <img alt="AstroBin" src="assets/images/nav-logo.png"/>
+      <img alt="AstroBin" src="assets/images/nav-logo.png" />
     </a>
 
-    <button (click)="isCollapsed = !isCollapsed" [attr.aria-expanded]="!isCollapsed"
-            aria-controls="navbarSupportedContent" aria-label="Toggle navigation" class="navbar-toggler"
-            data-target="#navbarSupportedContent" data-toggle="collapse" type="button">
+    <button
+      (click)="isCollapsed = !isCollapsed"
+      [attr.aria-expanded]="!isCollapsed"
+      aria-controls="navbarSupportedContent"
+      aria-label="Toggle navigation"
+      class="navbar-toggler"
+      data-target="#navbarSupportedContent"
+      data-toggle="collapse"
+      type="button"
+    >
       <fa-icon icon="bars"></fa-icon>
     </button>
 
     <div [ngbCollapse]="isCollapsed" class="collapse navbar-collapse" id="navbarSupportedContent">
       <ng-container [ngTemplateOutlet]="mainMenu"></ng-container>
 
-      <ul *ngIf="(authService.isAuthenticated() | async)" class="navbar-nav">
+      <ul *ngIf="authService.isAuthenticated() | async" class="navbar-nav">
         <ng-container [ngTemplateOutlet]="languageSelector"></ng-container>
         <ng-container [ngTemplateOutlet]="notificationsButton"></ng-container>
         <ng-container [ngTemplateOutlet]="userMenu"></ng-container>
@@ -26,7 +33,6 @@
 
       <ng-container *ngIf="(authService.isAuthenticated() | async) === false" [ngTemplateOutlet]="loginAndRegister">
       </ng-container>
-
     </div>
   </div>
   <!-- ./container -->
@@ -44,16 +50,20 @@
           <div aria-labelledby="moderateDropdown" ngbDropdownMenu>
             <h6 class="dropdown-header" translate>Images</h6>
 
-            <a *ngIf="state.auth.user | isImageModerator" [href]="classicRoutes.MODERATE_IMAGE_QUEUE"
-               class="dropdown-item">
+            <a
+              *ngIf="state.auth.user | isImageModerator"
+              [href]="classicRoutes.MODERATE_IMAGE_QUEUE"
+              class="dropdown-item"
+            >
               <fa-icon icon="images"></fa-icon>
               {{ "Image queue" | translate }}
             </a>
 
-            <a *ngIf="
-                    (state.auth.user | isImageModerator) &&
-                    (state.auth.user | isSuperUser)
-                  " [href]="classicRoutes.MODERATE_SPAM_QUEUE" class="dropdown-item">
+            <a
+              *ngIf="(state.auth.user | isImageModerator) && (state.auth.user | isSuperUser)"
+              [href]="classicRoutes.MODERATE_SPAM_QUEUE"
+              class="dropdown-item"
+            >
               <fa-icon icon="flag"></fa-icon>
               {{ "Spam list" | translate }}
             </a>
@@ -66,21 +76,27 @@
                 (click)="isCollapsed = true"
                 *ngIf="state.auth.user | isIotdSubmitter"
                 class="dropdown-item"
-                routerLink="/iotd/submission-queue">
+                routerLink="/iotd/submission-queue"
+              >
                 <fa-icon icon="upload"></fa-icon>
                 {{ "Submission queue" | translate }}
               </a>
 
-              <a (click)="isCollapsed = true"
-                 *ngIf="state.auth.user | isIotdReviewer"
-                 class="dropdown-item"
-                 routerLink="/iotd/review-queue">
+              <a
+                (click)="isCollapsed = true"
+                *ngIf="state.auth.user | isIotdReviewer"
+                class="dropdown-item"
+                routerLink="/iotd/review-queue"
+              >
                 <fa-icon icon="star"></fa-icon>
                 {{ "Review queue" | translate }}
               </a>
 
-              <a *ngIf="state.auth.user | isIotdJudge" [href]="classicRoutes.IOTD_JUDGEMENT_QUEUE"
-                 class="dropdown-item">
+              <a
+                *ngIf="state.auth.user | isIotdJudge"
+                [href]="classicRoutes.IOTD_JUDGEMENT_QUEUE"
+                class="dropdown-item"
+              >
                 <fa-icon icon="hammer"></fa-icon>
                 {{ "Judgement queue" | translate }}
               </a>
@@ -223,15 +239,19 @@
     <li class="nav-item quick-search">
       <form [action]="classicRoutes.SEARCH" method="get" ngNoForm>
         <label>
-          <input autocomplete="off" class="form-control" name="q" placeholder="{{ 'Quick search' | translate }}"
-                 type="text"/>
+          <input
+            autocomplete="off"
+            class="form-control"
+            name="q"
+            placeholder="{{ 'Quick search' | translate }}"
+            type="text"
+          />
         </label>
-        <input type="hidden" name="d" value="i"/>
+        <input type="hidden" name="d" value="i" />
       </form>
     </li>
     <!-- ./Quick search form -->
   </ul>
-
 </ng-template>
 
 <ng-template #languageSelector>
@@ -267,13 +287,10 @@
 <ng-template #notificationsButton>
   <!-- Notifications -->
   <li class="nav-item notifications-list-item">
-    <a
-      (click)="isCollapsed = true"
-      class="btn btn-link nav-link"
-      routerLink="/notifications">
+    <a (click)="isCollapsed = true" class="btn btn-link nav-link" routerLink="/notifications">
       <fa-icon class="d-none d-lg-block" icon="bell"></fa-icon>
       <span class="d-lg-none">{{ "Notifications" | translate }}</span>
-      <ng-container *ngIf="(notificationsService.unreadCount$ | async) as unreadCount">
+      <ng-container *ngIf="notificationsService.unreadCount$ | async as unreadCount">
         <span class="badge badge-danger badge-pill">
           {{ unreadCount }}
         </span>
@@ -283,6 +300,20 @@
   <!-- ./Notifications -->
 </ng-template>
 
+<ng-template #indexesPopoverContent>
+  <ng-container *ngIf="store$ | async as state">
+    <h4>{{ "Image Index" | translate }}: {{ state.auth.userProfile?.astroBinIndex | number: "1.2-2" }}</h4>
+    <div [innerHTML]="imageIndexPopoverInfo"></div>
+
+    <hr />
+
+    <h4>
+      {{ "Contribution Index" | translate }} (beta): {{ state.auth.userProfile?.contributionIndex | number: "1.2-2" }}
+    </h4>
+    <div [innerHTML]="contributionIndexPopoverInfo"></div>
+  </ng-container>
+</ng-template>
+
 <ng-template #userMenu>
   <!-- User menu -->
   <ng-container *ngIf="store$ | async as state">
@@ -290,40 +321,41 @@
       <div class="d-inline-block" ngbDropdown>
         <button class="btn btn-primary user-dropdown-toggle" id="user-dropdown" ngbDropdownToggle>
           <astrobin-username [user]="state.auth.user"></astrobin-username>
-          <span class="scores">
-            <span *ngIf="!state.auth.userProfile?.excludeFromCompetition" class="astrobin-index"
-                  ngbTooltip="{{ 'AstroBin index' | translate }}" placement="bottom">
-              {{ state.auth.userProfile?.astroBinIndex | number:"1.2-2" }}
+          <span
+            class="indexes"
+            *ngIf="!state.auth.userProfile?.excludeFromCompetition"
+            [ngbPopover]="indexesPopoverContent"
+            triggers="mouseenter:click"
+          >
+            <span class="image-index index">
+              {{ state.auth.userProfile?.astroBinIndex | number: "1.2-2" }}
               &middot;
             </span>
-            <span class="followers" ngbTooltip="{{ 'Followers' | translate }}" placement="bottom">
-              {{ state.auth.userProfile?.followers }}
+            <span class="contribution-index index">
+              {{ state.auth.userProfile?.contributionIndex | number: "1.2-2" }}
             </span>
           </span>
         </button>
 
         <div aria-labelledby="user-dropdown" ngbDropdownMenu>
-          <a
-            (click)="isCollapsed = true"
-            class="dropdown-item"
-            routerLink="/subscriptions/options">
+          <a (click)="isCollapsed = true" class="dropdown-item" routerLink="/subscriptions/options">
             <fa-icon icon="asterisk"></fa-icon>
             {{ "Subscription plans" | translate }}
           </a>
 
-          <a
-            (click)="isCollapsed = true"
-            class="dropdown-item"
-            routerLink="/uploader">
+          <a (click)="isCollapsed = true" class="dropdown-item" routerLink="/uploader">
             <fa-icon icon="upload"></fa-icon>
             {{ "Upload" | translate }}
           </a>
 
           <div class="dropdown-divider"></div>
-          <h6 class="dropdown-header">{{"My places" | translate}}</h6>
+          <h6 class="dropdown-header">{{ "My places" | translate }}</h6>
 
-          <a *ngIf="state.auth.user | isProducer" [href]="classicRoutes.COMMERCIAL_PRODUCTS(state.auth.user)"
-             class="dropdown-item">
+          <a
+            *ngIf="state.auth.user | isProducer"
+            [href]="classicRoutes.COMMERCIAL_PRODUCTS(state.auth.user)"
+            class="dropdown-item"
+          >
             <fa-icon icon="barcode"></fa-icon>
             {{ "Commercial products" | translate }}
           </a>
@@ -391,10 +423,10 @@
 <ng-template #loginAndRegister>
   <ul class="navbar-nav">
     <li class="nav-item">
-      <a (click)="openLoginModal($event)" class="nav-link" href="#" id="login-button">{{"Log in" | translate}}</a>
+      <a (click)="openLoginModal($event)" class="nav-link" href="#" id="login-button">{{ "Log in" | translate }}</a>
     </li>
     <li class="nav-item">
-      <a [href]="classicRoutes.REGISTER" class="nav-link">{{"Register" | translate}}</a>
+      <a [href]="classicRoutes.REGISTER" class="nav-link">{{ "Register" | translate }}</a>
     </li>
   </ul>
 </ng-template>

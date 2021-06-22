@@ -77,14 +77,14 @@
   .user-dropdown-toggle {
     margin: 0.75rem 0.5rem;
 
-    .scores {
+    .indexes {
       font-size: 66%;
       color: lighten($accent-color, 25%);
       font-weight: 700;
       padding-left: 4px;
       vertical-align: middle;
 
-      .score {
+      .index {
         border-bottom: 1px dotted lighten($accent-color, 10%);
       }
     }
@@ -97,10 +97,10 @@
       border: 0;
       color: $accent-color;
 
-      .scores {
+      .indexes {
         color: darken($accent-color, 20%);
 
-        .score {
+        .index {
           border-bottom-color: darken($accent-color, 25%);
         }
       }

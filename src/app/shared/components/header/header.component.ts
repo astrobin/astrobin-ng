@@ -15,6 +15,7 @@ import { Observable } from "rxjs";
 import { selectCurrentUser } from "@features/account/store/auth.selectors";
 import { map } from "rxjs/operators";
 import { UserInterface } from "@shared/interfaces/user.interface";
+import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 
 interface AvailableLanguageInterface {
   code: string;
@@ -79,7 +80,8 @@ export class HeaderComponent extends BaseComponentDirective {
     public readonly notificationsService: NotificationsService,
     public readonly loadingService: LoadingService,
     public readonly windowRef: WindowRefService,
-    public readonly translateService: TranslateService
+    public readonly translateService: TranslateService,
+    public readonly domSanitizer: DomSanitizer
   ) {
     super();
   }
@@ -104,6 +106,32 @@ export class HeaderComponent extends BaseComponentDirective {
 
         return path;
       })
+    );
+  }
+
+  get imageIndexPopoverInfo(): SafeHtml {
+    return this.domSanitizer.bypassSecurityTrustHtml(
+      this.translateService.instant(
+        "The <strong>Image Index</strong> is a system based on likes received on images, that incentivizes the " +
+          "most active and liked members of the community. {{_0}}Learn more.{{_1}}",
+        {
+          _0: `<a href="https://welcome.astrobin.com/features/image-index" target="_blank">`,
+          _1: "</a>"
+        }
+      )
+    );
+  }
+
+  get contributionIndexPopoverInfo(): SafeHtml {
+    return this.domSanitizer.bypassSecurityTrustHtml(
+      this.translateService.instant(
+        "The <strong>Contribution Index (beta)</strong> is system to reward informative, constructive, and " +
+          "valuable commentary on AstroBin. {{_0}}Learn more.{{_1}}",
+        {
+          _0: `<a href="https://welcome.astrobin.com/features/contribution-index" target="_blank">`,
+          _1: "</a>"
+        }
+      )
     );
   }
 

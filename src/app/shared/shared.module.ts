@@ -8,7 +8,7 @@ import { InitializeApp } from "@app/store/actions/initialize-app.actions";
 import { State } from "@app/store/state";
 import { AuthActionTypes, InitializeAuth } from "@features/account/store/auth.actions";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
-import { NgbModule, NgbPaginationModule, NgbProgressbarModule } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModule, NgbPaginationModule, NgbPopoverModule, NgbProgressbarModule } from "@ng-bootstrap/ng-bootstrap";
 import { NgSelectModule } from "@ng-select/ng-select";
 import { Actions, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
@@ -77,6 +77,7 @@ export function appInitializer(store: Store<State>, actions$: Actions) {
     ImageCropperModule,
     NgbModule,
     NgbPaginationModule,
+    NgbPopoverModule,
     NgbProgressbarModule,
     NgSelectModule,
     NgxFilesizeModule,
@@ -116,6 +117,7 @@ export function appInitializer(store: Store<State>, actions$: Actions) {
     ImageCropperModule,
     NgbModule,
     NgbPaginationModule,
+    NgbPopoverModule,
     NgbProgressbarModule,
     NgSelectModule,
     NgxFilesizeModule,
