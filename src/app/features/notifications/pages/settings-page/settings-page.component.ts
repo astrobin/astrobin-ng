@@ -209,6 +209,7 @@ export class SettingsPageComponent extends BaseComponentDirective implements OnI
       case "new_forum_post_mention":
       case "new_forum_reply":
       case "new_forum_post_like":
+      case "forum_post_approved":
         return NotificationCategory.FORUMS;
       case "new_comment_mention":
       case "new_comment_reply":
