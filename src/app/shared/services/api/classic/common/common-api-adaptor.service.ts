@@ -87,6 +87,7 @@ export interface BackendUserProfileInterface {
   allow_astronomy_ads: boolean;
   inactive_account_reminder_sent: string;
   astrobin_index: number;
+  contribution_index: number;
   followers: number;
   premium_counter: number;
   locations: LocationInterface[];
@@ -183,6 +184,7 @@ export class CommonApiAdaptorService extends BaseService {
       allowAstronomyAds: userProfile.allow_astronomy_ads,
       inactiveAccountReminderSent: new Date(userProfile.inactive_account_reminder_sent),
       astroBinIndex: userProfile.astrobin_index,
+      contributionIndex: userProfile.contribution_index,
       followers: userProfile.followers,
       premiumCounter: userProfile.premium_counter,
       locations: userProfile.locations

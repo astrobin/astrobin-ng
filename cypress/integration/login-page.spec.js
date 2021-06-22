@@ -61,9 +61,9 @@ context("account-page", () => {
       .contains("AstroBin Dev")
       .should("exist");
 
-    cy.get("#user-dropdown .scores .astrobin-index").should("contain.text", "1.23");
-    cy.get("#user-dropdown .scores .astrobin-index").should("not.contain.text", "1.234");
-    cy.get("#user-dropdown .scores .followers").should("contain.text", "123");
+    cy.get("#user-dropdown .indexes .image-index").should("contain.text", "1.23");
+    cy.get("#user-dropdown .indexes .image-index").should("not.contain.text", "1.234");
+    cy.get("#user-dropdown .indexes .contribution-index").should("contain.text", "0.00");
   });
 
   it("should redirect to front page in case of success (account via enter key)", () => {

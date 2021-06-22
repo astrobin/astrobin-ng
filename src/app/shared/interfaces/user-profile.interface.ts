@@ -53,6 +53,7 @@ export interface UserProfileInterface {
   filters: number[];
   accessories: number[];
   astroBinIndex?: number;
+  contributionIndex?: number;
   followers?: number;
   premiumCounter: number;
   locations: LocationInterface[];

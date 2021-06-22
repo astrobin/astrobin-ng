@@ -9,6 +9,7 @@ import {
   NgbCollapseModule,
   NgbDropdownModule,
   NgbModalModule,
+  NgbPopoverModule,
   NgbProgressbarModule,
   NgbTooltipModule
 } from "@ng-bootstrap/ng-bootstrap";
@@ -56,6 +57,7 @@ const modules = [
   NgbCollapseModule,
   NgbDropdownModule,
   NgbModalModule,
+  NgbPopoverModule,
   NgbProgressbarModule,
   NgbTooltipModule,
   NgSelectModule,
