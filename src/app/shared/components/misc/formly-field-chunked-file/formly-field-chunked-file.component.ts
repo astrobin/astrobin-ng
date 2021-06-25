@@ -32,7 +32,7 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
   uploadOptions: UploadxOptions = {
     allowedTypes: Constants.ALLOWED_UPLOAD_EXTENSIONS.join(","),
     uploaderClass: Tus,
-    maxChunkSize: 10 * 1024 * 1024,
+    maxChunkSize: 2 * 1024 * 1024,
     multiple: false,
     autoUpload: false,
     authorize: req => {
@@ -88,7 +88,10 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
         take(1)
       )
       .subscribe(backendConfig => {
-        this.uploadOptions.maxChunkSize = backendConfig.DATA_UPLOAD_MAX_MEMORY_SIZE;
+        this.uploadOptions.maxChunkSize = Math.min(
+          this.uploadOptions.maxChunkSize,
+          backendConfig.DATA_UPLOAD_MAX_MEMORY_SIZE
+        );
         this._initUploader();
       });
   }
