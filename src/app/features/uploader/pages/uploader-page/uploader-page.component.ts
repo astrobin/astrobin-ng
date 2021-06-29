@@ -187,7 +187,17 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
   }
 
   private _onTitleChange() {
-    const dangerWords = ["crop", "cropped", "wider", "reprocess", "reprocessed", "zoom", "rielaborato", "rielaborata"];
+    const dangerWords = [
+      // English
+      "crop",
+      "wider",
+      "rework",
+      "reprocess",
+      "zoom",
+
+      // Italian
+      "rielaborat"
+    ];
     if (new RegExp(dangerWords.join("|")).test(this.model.title.toLowerCase())) {
       this.popNotificationsService.warning(
         this.translate.instant(
