@@ -246,6 +246,15 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
       return new Observable<boolean>(observer => {
         // @ts-ignore
         const image = new Image();
+
+        image.onerror = () => {
+          const message =
+            "Sorry, but we couldn't detect this file as an image. Are you sure it's a supported image type?";
+          this.popNotificationsService.error(this.translateService.instant(message));
+          observer.next(false);
+          observer.complete();
+        };
+
         image.onload = () => {
           this.store$
             .pipe(
@@ -279,6 +288,7 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
               observer.complete();
             });
         };
+
         image.src = URL.createObjectURL(file);
       });
     }
