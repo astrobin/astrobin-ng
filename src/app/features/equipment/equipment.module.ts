@@ -6,9 +6,10 @@ import { EffectsModule } from "@ngrx/effects";
 import { equipmentFeatureKey, reducer } from "@features/equipment/store/equipment.reducer";
 import { EquipmentEffects } from "@features/equipment/store/equipment.effects";
 import { routes } from "@features/equipment/equipment.routing";
+import { MigrationToolComponent } from "./pages/migration-tool/migration-tool.component";
 
 @NgModule({
-  declarations: [],
+  declarations: [MigrationToolComponent],
   imports: [
     RouterModule.forChild(routes),
     SharedModule,
