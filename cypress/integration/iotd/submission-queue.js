@@ -33,7 +33,7 @@ context("IOTD Submission queue", () => {
     });
 
     it("should render page elements", () => {
-      cy.route("GET", "**/api/v2/images/image/?ids=*", "fixture:api/images/images_1_and_2.json").as("getImages");
+      cy.route("GET", "**/api/v2/images/image/?id=*", "fixture:api/images/images_1_and_2.json").as("getImages");
       cy.route("GET", "**/*/final/thumb/story/", "fixture:api/images/image_thumbnail_1_story_loaded.json").as(
         "getImageThumbnail"
       );
