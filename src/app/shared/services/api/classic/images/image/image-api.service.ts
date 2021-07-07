@@ -28,7 +28,7 @@ export class ImageApiService extends BaseClassicApiService {
 
   getImage(id: number | string): Observable<ImageInterface> {
     if (isNaN(Number(id))) {
-      const url = `${this.configUrl}/image/?hashes=${id}`;
+      const url = `${this.configUrl}/image/?hash=${id}`;
       return this.http.get<PaginatedApiResultInterface<ImageInterface>>(url).pipe(
         map(response => {
           if (response.results.length > 0) {
@@ -43,7 +43,7 @@ export class ImageApiService extends BaseClassicApiService {
   }
 
   getImages(ids: number[]): Observable<PaginatedApiResultInterface<ImageInterface>> {
-    return this.http.get<PaginatedApiResultInterface<ImageInterface>>(`${this.configUrl}/image/?ids=${ids.join(",")}`);
+    return this.http.get<PaginatedApiResultInterface<ImageInterface>>(`${this.configUrl}/image/?id=${ids.join(",")}`);
   }
 
   getImagesByUserId(userId: number): Observable<PaginatedApiResultInterface<ImageInterface>> {
