@@ -47,7 +47,7 @@ describe("ImageApiService", () => {
       expect(response.pk).toEqual(image.pk);
     });
 
-    const req = httpMock.expectOne(`${service.configUrl}/image/?hashes=${image.hash}`);
+    const req = httpMock.expectOne(`${service.configUrl}/image/?hash=${image.hash}`);
     expect(req.request.method).toBe("GET");
     req.flush(image);
   });
@@ -60,7 +60,7 @@ describe("ImageApiService", () => {
       expect(response.results[1]).toEqual(images[1]);
     });
 
-    const req = httpMock.expectOne(`${service.configUrl}/image/?ids=1,2`);
+    const req = httpMock.expectOne(`${service.configUrl}/image/?id=1,2`);
     expect(req.request.method).toBe("GET");
     req.flush({ results: images });
   });
