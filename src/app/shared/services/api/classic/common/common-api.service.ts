@@ -13,8 +13,8 @@ import {
 } from "@shared/services/api/classic/common/common-api-adaptor.service";
 import { CommonApiServiceInterface } from "@shared/services/api/classic/common/common-api.service-interface";
 import { LoadingService } from "@shared/services/loading.service";
-import { Observable } from "rxjs";
-import { map } from "rxjs/operators";
+import { Observable, of } from "rxjs";
+import { catchError, map } from "rxjs/operators";
 import { BaseClassicApiService } from "../base-classic-api.service";
 
 @Injectable({
@@ -59,6 +59,9 @@ export class CommonApiService extends BaseClassicApiService implements CommonApi
         }
 
         return null;
+      }),
+      catchError(() => {
+        return of(null);
       })
     );
   }

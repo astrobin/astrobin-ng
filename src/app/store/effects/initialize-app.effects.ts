@@ -9,7 +9,7 @@ import { JsonApiService } from "@shared/services/api/classic/json/json-api.servi
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { TimeagoIntl } from "ngx-timeago";
 import { forkJoin, Observable, of } from "rxjs";
-import { map, switchMap } from "rxjs/operators";
+import { catchError, map, switchMap } from "rxjs/operators";
 
 @Injectable()
 export class InitializeAppEffects {
@@ -23,7 +23,7 @@ export class InitializeAppEffects {
           language = language.split("-")[0];
         }
 
-        const subscriptions$ = this.commonApiService.getSubscriptions();
+        const subscriptions$ = this.commonApiService.getSubscriptions().pipe(catchError(() => of([])));
         const language$ = of(language);
         const backendConfig$ = this.jsonApiService.getBackendConfig();
 
