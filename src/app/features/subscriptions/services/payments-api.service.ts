@@ -6,7 +6,6 @@ import { PaymentsApiCkeckoutSessionInterface } from "@features/subscriptions/int
 import { PaymentsApiConfigInterface } from "@features/subscriptions/interfaces/payments-api-config.interface";
 import { PricingInterface } from "@features/subscriptions/interfaces/pricing.interface";
 import { Observable } from "rxjs";
-import { map } from "rxjs/operators";
 
 @Injectable({
   providedIn: "root"
