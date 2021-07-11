@@ -2,16 +2,14 @@ context("Image edit (existing)", () => {
   beforeEach(() => {
     cy.server();
     cy.setupInitializationRoutes();
-    cy.route("GET", "**/api/v2/images/image/?hashes=abc123", "fixture:api/images/image_1_by_hashes.json").as(
-      "getImage"
-    );
+    cy.route("GET", "**/api/v2/images/image/?hash=abc123", "fixture:api/images/image_1_by_hashes.json").as("getImage");
     cy.route("GET", "/abc123/0/thumb/hd/", "fixture:api/images/image_thumbnail_1_regular_loaded").as("getThumbnail");
     cy.route(
       "GET",
       "**/api/v2/remote-source-affiliation/remote-source-affiliate/",
       "fixture:api/remote-source-affiliation/remote-source-affiliates.json"
     ).as("getRemoteSourceAffiliates");
-    cy.route("GET", "**/api/v2/groups/group/?member=1", "fixture:api/groups/groups.json").as("getGroups");
+    cy.route("GET", "**/api/v2/groups/group/?members=1", "fixture:api/groups/groups.json").as("getGroups");
     cy.route("GET", "**/api/v2/users/locations/", { count: 0, results: [] }).as("getUsersLocations");
   });
 

@@ -21,7 +21,7 @@ export class GroupApiService extends BaseClassicApiService {
     let url = this.configUrl;
 
     if (memberId !== undefined) {
-      url += "?member=" + memberId;
+      url += "?members=" + memberId;
     }
 
     return this.http.get<PaginatedApiResultInterface<GroupInterface>>(url).pipe(

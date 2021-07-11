@@ -45,7 +45,13 @@ export class AuthInterceptor implements HttpInterceptor {
       catchError(error => {
         if (error instanceof HttpErrorResponse && error.status === 401) {
           this.store.dispatch(new Logout());
-          this.popNotificationsService.warning(this.translate.instant("Your session is invalid, please log in again"));
+
+          const invalidSessionMessage = this.translate.instant("Your session is invalid, please log in again");
+          const login = this.translate.instant("Log in");
+          const openLink = `<a href="/account/login" class="d-inline-block mt-3 btn btn-primary">`;
+          const closeLink = `</a>`;
+          const message = `${invalidSessionMessage}<br/>${openLink}${login}${closeLink}`;
+          this.popNotificationsService.warning(message, null, { enableHtml: true, disableTimeOut: true });
         }
 
         return throwError(error);
