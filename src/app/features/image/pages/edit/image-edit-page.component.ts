@@ -182,12 +182,11 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
   private _getDescriptionField(): any {
     return {
       key: "description",
-      type: "textarea",
+      type: "ckeditor",
       wrappers: ["default-wrapper"],
       id: "image-description-field",
       templateOptions: {
         label: this.translateService.instant("Description"),
-        description: this.translateService.instant("HTML tags are allowed."),
         required: false,
         rows: 10
       }
