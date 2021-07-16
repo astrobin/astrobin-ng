@@ -47,6 +47,7 @@ import { FormlyWrapperComponent } from "@shared/components/misc/formly-wrapper/f
 import { FormlyFieldGoogleMapComponent } from "@shared/components/misc/formly-field-google-map/formly-field-google-map.component";
 import { ToggleButtonComponent } from "@shared/components/misc/toggle-button/toggle-button.component";
 import { NgToggleModule } from "ng-toggle-button";
+import { FormlyFieldCKEditorComponent } from "@shared/components/misc/formly-field-ckeditor/formly-field-ckeditor.component";
 
 const modules = [
   CommonModule,
@@ -80,6 +81,7 @@ const components = [
   FooterComponent,
   FormlyFieldChunkedFileAccessorDirective,
   FormlyFieldChunkedFileComponent,
+  FormlyFieldCKEditorComponent,
   FormlyFieldGoogleMapComponent,
   FormlyFieldImageCropperComponent,
   FormlyFieldNgSelectComponent,
