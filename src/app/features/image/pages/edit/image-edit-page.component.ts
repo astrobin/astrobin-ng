@@ -179,18 +179,40 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     };
   }
 
-  private _getDescriptionField(): any {
+  private _getDescriptionHtmlField(): any {
     return {
       key: "description",
+      type: "textarea",
+      wrappers: ["default-wrapper"],
+      id: "image-description-field",
+      templateOptions: {
+        label: this.translateService.instant("Description"),
+        description: this.translateService.instant("HTML tags are allowed."),
+        required: false,
+        rows: 10
+      }
+    };
+  }
+
+  private _getDescriptionBBCodeField(): any {
+    return {
+      key: "descriptionBbcode",
       type: "ckeditor",
       wrappers: ["default-wrapper"],
       id: "image-description-field",
       templateOptions: {
         label: this.translateService.instant("Description"),
-        required: false,
-        rows: 10
+        required: false
       }
     };
+  }
+
+  private _getDescriptionField(): any {
+    if (this.image.descriptionBbcode || (!this.image.descriptionBbcode && !this.image.description)) {
+      return this._getDescriptionBBCodeField();
+    }
+
+    return this._getDescriptionHtmlField();
   }
 
   private _getLinkField(): any {
