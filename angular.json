@@ -27,7 +27,16 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.scss"
+              {
+                "input": "src/styles.scss",
+                "inject": false,
+                "bundleName": "assets/themes/default"
+              },
+              {
+                "input": "src/styles-high-contrast.scss",
+                "inject": false,
+                "bundleName": "assets/themes/high-contrast"
+              }
             ]
           },
           "configurations": {
