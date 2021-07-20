@@ -35,4 +35,16 @@ describe("JsonApiService", () => {
       req.flush({ readOnly: false });
     });
   });
+
+  describe("toggleUseHighContrastThemeCookie", () => {
+    it("should work", () => {
+      service.toggleUseHighContrastThemeCookie().subscribe(response => {
+        expect(response).toEqual(void 0);
+      });
+
+      const req = httpMock.expectOne(`${service.configUrl}/user/toggle-use-high-contrast-cookie/`);
+      expect(req.request.method).toBe("POST");
+      req.flush(void 0);
+    });
+  });
 });

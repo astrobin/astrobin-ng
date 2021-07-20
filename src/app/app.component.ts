@@ -4,6 +4,7 @@ import { State } from "@app/store/state";
 import { NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
 import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { ThemeService } from "@shared/services/theme.service";
 
 declare const gtag: any;
 
@@ -16,11 +17,13 @@ export class AppComponent extends BaseComponentDirective {
   constructor(
     public readonly router: Router,
     public readonly paginationConfig: NgbPaginationConfig,
-    public readonly store$: Store<State>
+    public readonly store$: Store<State>,
+    public readonly themeService: ThemeService
   ) {
     super();
     this.initRouterEvents();
     this.initPagination();
+    this.themeService.setTheme();
   }
 
   initPagination(): void {
