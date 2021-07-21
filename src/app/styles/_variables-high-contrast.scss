@@ -1,31 +1,32 @@
-$accent-color: green;
+@import "~bootstrap/scss/functions";
+
+$accent-color: #f0f0f0;
 $muted-accent-color: #866158;
 $subtle-accent-color: #e0e0e0;
 $secondary-accent-color: #3092cf;
 
-$bright-white: #ffffff;
-$green: green;
-$white: #e9e9e9;
+$bright-white: #fff;
+$green: #fff;
+$white: #f0f0f0;
 $grey: #333;
-$black: #101010;
+$black: #000;
 
-$light-grey: #555;
-$lighter-grey: #999;
-$lightest-grey: #ccc;
+$light-grey: #999;
+$lighter-grey: #aaa;
+$lightest-grey: #e0e0e0;
 
-$dark-grey: #303030;
-$darker-grey: #292929;
-$darkest-grey: #222;
+$dark-grey: #282828;
+$darker-grey: #222;
+$darkest-grey: #111;
 
 $darkest-background-text-color: #b0b0b0;
 
-$warning-orange: #ff9a28;
-$error-red: #e84545;
-$info-blue: #3a515f;
-$gold: gold;
+$warning-orange: #fff;
+$error-red: #fff;
+$info-blue: #fff;
+$gold: #fff;
 
 // Bootstrap overrides:
-$primary: $accent-color;
 $theme-colors: (
   "primary": $accent-color
 );
