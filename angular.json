@@ -28,12 +28,12 @@
             ],
             "styles": [
               {
-                "input": "src/styles.scss",
+                "input": "src/default-theme.scss",
                 "inject": false,
                 "bundleName": "assets/themes/default"
               },
               {
-                "input": "src/styles-high-contrast.scss",
+                "input": "src/high-contrast-theme.scss",
                 "inject": false,
                 "bundleName": "assets/themes/high-contrast"
               }
