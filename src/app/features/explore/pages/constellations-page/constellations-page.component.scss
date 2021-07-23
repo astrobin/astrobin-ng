@@ -10,12 +10,12 @@
   }
 
   .constellation-image {
-    background: $white;
+    background: var(--white);
     padding: 0.5rem;
     width: 100%;
   }
 
   .constellation-id {
-    color: $light-grey;
+    color: var(--lightGrey);
   }
 }

@@ -31,11 +31,11 @@ h1 {
     padding: .5rem;
 
     &.read .read-icon {
-      color: $light-grey;
+      color: var(--lightGrey);
     }
 
     &.unread .read-icon {
-      color: $accent-color;
+      color: var(--accentColor);
     }
   }
 
@@ -48,7 +48,7 @@ h1 {
 
         &:hover {
           strong {
-            color: $accent-color;
+            color: var(--accentColor);
           }
         }
       }

@@ -5,11 +5,11 @@
   thead {
     th {
       @include darker-background-texture;
-      color: $white;
+      color: var(--white);
 
       .help-tooltip {
-        color: $lighter-grey;
-        border-bottom-color: $lighter-grey;
+        color: var(--lighterGrey);
+        border-bottom-color: var(--lighterGrey);
         margin-left: .5rem;
       }
     }

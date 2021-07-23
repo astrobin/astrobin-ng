@@ -15,11 +15,9 @@ $theme-colors: (
 $dropdown-link-hover-bg: theme-color("primary");
 $enable-gradients: true;
 
-// Define own colors (TODO: replace with CSS variables)
+// Define own colors
 
 // ... shades of grey
-$bright-white: white;
-$white: theme-color("light");
 $lightest-grey: #ccc;
 $lighter-grey: #999;
 $light-grey: #555;
@@ -30,14 +28,18 @@ $darkest-grey: theme-color("dark");
 $black: #101010;
 
 // ... other colors
+$gold: gold;
+
+$info: theme-color("info");
 $success: theme-color("success");
+$successSecondary: lighten($success, 30%);
 $warning: theme-color("warning");
 $error: theme-color("danger");
-$info: theme-color("info");
-$gold: gold;
 
 // ... special colors
 $accent-color: theme-color("primary");
+$lighter-accent-color: lighten($accent-color, 20%);
+$darker-accent-color: darken($accent-color, 20%);
 $muted-accent-color: #866158;
 $subtle-accent-color: #e0e0e0;
 $secondary-accent-color: #3092cf;
@@ -60,28 +62,36 @@ $ng-select-disabled-text: $lightest-grey;
 $ng-select-border: $darker-grey;
 $ng-select-border-radius: 4px;
 $ng-select-bg: $darkest-grey;
-$ng-select-selected: darken($ng-select-highlight, 2);
-$ng-select-marked: darken($ng-select-highlight, 1);
+$ng-select-selected: darken($ng-select-highlight, 2%);
+$ng-select-marked: darken($ng-select-highlight, 1%);
 $ng-select-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 0 3px rgba(0, 126, 255, 0.1);
-$ng-select-placeholder: darken($ng-select-primary-text, 10);
+$ng-select-placeholder: darken($ng-select-primary-text, 10%);
 $ng-select-height: 42px;
 $ng-select-value-padding-left: .5rem;
 $ng-select-value-font-size: 0.9em;
 
 // Define CSS variables
 :root {
-  --accentColor: #{theme-color("primary")};
-  --infoColor: #{theme-color("info")};
+  --accentColor: #{$accent-color};
+  --lighterAccentColor: #{$lighter-accent-color};
+  --darkerAccentColor: #{$darker-accent-color};
 
-  --white: #{$white};
-
+  --brightWhite: #fff;
+  --white: #{theme-color("light")};
   --lightGrey: #{$light-grey};
   --lighgerGrey: #{$lighter-grey};
   --lighgestGrey: #{$lightest-grey};
-
+  --grey: #{$grey};
   --darkGrey: #{$dark-grey};
   --darkerGrey: #{$darker-grey};
   --darkestGrey: #{$darkest-grey};
+  --black: #{$black};
 
+  --gold: #{$gold};
+
+  --infoColor: #{theme-color("info")};
+  --successColor: #{theme-color("success")};
+  --successSecondaryColor: #{$successSecondary};
   --warningColor: #{theme-color("warning")};
+  --dangerColor: #{theme-color("danger")};
 }

@@ -1,7 +1,7 @@
 @import "variables";
 
 @mixin defaultNavLink() {
-  color: $lighter-grey !important;
+  color: var(--lighterGrey) !important;
   font-weight: normal;
   font-style: normal;
 
@@ -15,7 +15,7 @@
   border: 0;
 
   > ul.step-anchor {
-    border-bottom-color: $grey;
+    border-bottom-color: var(--grey);
     background: none !important;
   }
 
@@ -31,17 +31,17 @@
 
     &.active .nav-link {
       font-weight: bold;
-      color: $white !important;
+      color: var(--white) !important;
 
       &::after {
-        background-color: $accent-color !important;
+        background-color: var(--accentColor) !important;
       }
     }
 
     &.danger.done .nav-link {
       font-weight: bold;
       font-style: italic;
-      color: $error !important;
+      color: var(--error) !important;
 
       &::after {
         background-color: transparent !important;
@@ -60,7 +60,7 @@
       &,
       &.danger:not(.done):not(.active) {
         .nav-link:hover {
-          color: $white !important;
+          color: var(--white) !important;
         }
       }
     }

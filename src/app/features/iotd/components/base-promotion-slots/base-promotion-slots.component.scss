@@ -10,10 +10,10 @@
     align-items: center;
     width: 100%;
     text-align: center;
-    background-color: $grey;
-    border: 2px dashed $light-grey;
+    background-color: var(--grey);
+    border: 2px dashed var(--lightGrey);
     font-size: 3rem;
-    color: $light-grey;
+    color: var(--lightGrey);
 
     &:not(:last-child) {
       margin-right: .5rem;

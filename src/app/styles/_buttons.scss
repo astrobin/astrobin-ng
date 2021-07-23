@@ -50,21 +50,21 @@
 
   &.btn-primary {
     &.loading {
-      background: url("/assets/images/white-loader.svg") $accent-color no-repeat center !important;
+      background: url("/assets/images/white-loader.svg") var(--accentColor) no-repeat center !important;
       background-size: 1rem !important;
     }
   }
 
   &.btn-secondary {
     &.loading {
-      background: url("/assets/images/white-loader.svg") $white no-repeat center !important;
+      background: url("/assets/images/white-loader.svg") var(--white) no-repeat center !important;
       background-size: 1rem !important;
     }
   }
 
   &.btn-danger {
     &.loading {
-      background: url("/assets/images/white-loader.svg") $error no-repeat center !important;
+      background: url("/assets/images/white-loader.svg") var(--error) no-repeat center !important;
       background-size: 1rem !important;
     }
   }

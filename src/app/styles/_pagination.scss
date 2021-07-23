@@ -6,8 +6,8 @@
   .page-item {
     .page-link {
       background-color: rgba(0, 0, 0, .1);
-      color: $accent-color;
-      border-color: $grey;
+      color: var(--accentColor);
+      border-color: var(--grey);
     }
 
     &.disabled {
@@ -20,7 +20,7 @@
 
       .page-link {
         font-weight: bold;
-        border-bottom-color: $accent-color;
+        border-bottom-color: var(--accentColor);
       }
     }
   }

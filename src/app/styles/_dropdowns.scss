@@ -15,10 +15,10 @@
 }
 
 .dropdown-divider {
-    border-top-color: $grey;
+    border-top-color: var(--grey);
 }
 
 .dropdown-header {
   font-size: .85rem;
-  color: $lighter-grey;
+  color: var(--lighterGrey);
 }

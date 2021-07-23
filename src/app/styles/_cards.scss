@@ -4,7 +4,7 @@
 .card {
   .card-header {
     @include darkest-background-texture;
-    color: $white;
+    color: var(--white);
 
     .btn-link {
       padding: 0;

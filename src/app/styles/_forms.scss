@@ -3,15 +3,15 @@
 label {
   font-size: 1rem;
   font-weight: bold;
-  color: $white;
+  color: var(--white);
 }
 
 .form-control {
   &,
   &:focus {
-    background-color: $darkest-grey;
-    border-color: $dark-grey;
-    color: $lighter-grey;
+    background-color: var(--darkestGrey);
+    border-color: var(--darkGrey);
+    color: var(--lighterGrey);
     padding: 1.25rem 1rem;
 
     @media screen and (-ms-high-contrast: active), screen and (-ms-high-contrast: none) {
@@ -20,12 +20,12 @@ label {
     }
 
     &::placeholder {
-      color: $light-grey !important;
+      color: var(--lightGrey) !important;
     }
   }
 
   &.is-invalid {
-    border-left: 0.5rem solid $error;
+    border-left: 0.5rem solid var(--error);
     padding-left: calc(0.75rem - 0.5rem + 1px);
   }
 }
@@ -35,7 +35,7 @@ label {
 
   &.has-error {
     label {
-      color: $error;
+      color: var(--error);
     }
   }
 }
@@ -63,5 +63,5 @@ label {
 
 .invalid-feedback,
 .error {
-  color: $error;
+  color: var(--error);
 }

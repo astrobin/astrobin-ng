@@ -9,7 +9,7 @@
   width: 100vw;
   height: 100vh;
   z-index: 9999;
-  background-color: $black;
+  background-color: var(--black);
   justify-content: center;
   align-items: center;
 
@@ -30,7 +30,7 @@
     }
 
     .ngxImageZoomFullContainer.ngxImageZoomLensEnabled {
-      border-color: $white;
+      border-color: var(--white);
     }
   }
 
@@ -38,7 +38,7 @@
     position: fixed;
     top: 2rem;
     left: 2rem;
-    color: $white;
+    color: var(--white);
     background: rgba(0, 0, 0, .5);
     border-radius: 2rem;
     padding: .5rem 1rem;
@@ -68,7 +68,7 @@
     position: fixed;
     top: 2rem;
     right: 2rem;
-    color: $white;
+    color: var(--white);
     background: rgba(0, 0, 0, .5);
     border-radius: 2rem;
     padding: .5rem 1rem;

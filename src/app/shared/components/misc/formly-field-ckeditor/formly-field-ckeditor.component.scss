@@ -6,7 +6,7 @@
     color: #866158;
     font-style: italic;
     margin-bottom: 16px;
-    background: $dark-grey;
+    background: var(--darkGrey);
     padding: 8px;
     border-top: 1px solid #555;
     font-size: 13px;
@@ -18,8 +18,8 @@
   }
 
   .cke_source {
-    background: $darker-grey !important;
-    color: $white !important;
+    background: var(--darkerGrey) !important;
+    color: var(--white) !important;
   }
 
   .cke_chrome {
@@ -32,8 +32,8 @@
   .cke_contents,
   .cke_dialog_body,
   .cke_dialog_contents {
-    background: $darkest-grey !important;
-    color: $white !important;
+    background: var(--darkestGrey) !important;
+    color: var(--white) !important;
     font-size: 14px;
   }
 
@@ -41,7 +41,7 @@
   .cke_toolgroup,
   .cke_combo_button,
   .cke_bottom {
-    background: $black !important;
+    background: var(--black) !important;
   }
 
   .cke_source {
@@ -52,16 +52,16 @@
     box-shadow: 0 0 100px black !important;
 
     .cke_dialog_ui_button_ok {
-      background: $accent-color !important;
+      background: var(--accentColor) !important;
     }
 
     .cke_dialog_ui_fileButton {
-      background: $accent-color !important;
+      background: var(--accentColor) !important;
       padding: 6px 10px;
       margin-top: 10px;
 
       span {
-        color: $white !important;
+        color: var(--white) !important;
         text-shadow: none !important;
       }
     }
@@ -72,16 +72,16 @@
 
       .cke_dialog_tabs {
         width: calc(100% - 20px);
-        border-bottom: 1px solid $dark-grey;
+        border-bottom: 1px solid var(--darkGrey);
 
         .cke_dialog_tab {
-          background: $dark-grey !important;
-          color: $white !important;
+          background: var(--darkGrey) !important;
+          color: var(--white) !important;
           border: 0 !important;
         }
 
         .cke_dialog_tab_selected {
-          background: $dark-grey !important;
+          background: var(--darkGrey) !important;
         }
       }
 
@@ -95,15 +95,15 @@
       }
 
       label {
-        color: $white !important;
+        color: var(--white) !important;
         margin-bottom: .5rem !important;
         display: block !important;
       }
 
       .cke_dialog_title,
       .cke_dialog_footer {
-        background: $black !important;
-        color: $white !important;
+        background: var(--black) !important;
+        color: var(--white) !important;
         padding: 8px 6px !important;
         box-shadow: none !important;
       }
@@ -116,7 +116,7 @@
       }
 
       input[type="file"] {
-        color: $lightest-grey !important;
+        color: var(--lightestGrey) !important;
       }
 
       .ImagePreviewBox {
@@ -128,8 +128,8 @@
         box-shadow: inset 0 0 20px rgba(0, 0, 0, .5);
 
         td {
-          background: $darker-grey !important;
-          color: $light-grey !important;
+          background: var(--darkerGrey) !important;
+          color: var(--lightGrey) !important;
           padding: 10px !important;
 
           img {
@@ -145,17 +145,17 @@
 
       /* Track */
       ::-webkit-scrollbar-track {
-        background: $darker-grey;
+        background: var(--darkerGrey);
       }
 
       /* Handle */
       ::-webkit-scrollbar-thumb {
-        background: $dark-grey;
+        background: var(--darkGrey);
       }
 
       /* Handle on hover */
       ::-webkit-scrollbar-thumb:hover {
-        background: $light-grey;
+        background: var(--lightGrey);
       }
     }
 
@@ -175,15 +175,15 @@
   a.cke_button_disabled:hover,
   a.cke_button_disabled:focus,
   a.cke_button_disabled:active {
-    background: darken($dark-grey, 5%) !important;
+    background: var(--darkestGrey) !important;
   }
 
   .cke_button_on {
-    background: $dark-grey !important;
+    background: var(--darkGrey) !important;
   }
 
   .cke_button_label {
-    color: $accent-color !important;
+    color: var(--accentColor) !important;
     text-shadow: none !important;
   }
 
@@ -200,7 +200,7 @@
   }
 
   .cke_toolbar:not(:last-child) {
-    border-right: 1px solid transparentize($accent-color, .8) !important;
+    border-right: 1px solid var(--darkerAccentColor) !important;
     border-radius: 0 !important;
     padding-right: 4px !important;
     margin-right: 2px !important;
@@ -216,10 +216,10 @@
   input.cke_dialog_ui_input_password,
   textarea.cke_dialog_ui_input_textarea,
   select.cke_dialog_ui_input_select {
-    background: $dark-grey !important;
-    color: $white !important;
+    background: var(--darkGrey) !important;
+    color: var(--white) !important;
     padding: 12px !important;
-    border: 1px $light-grey !important;
+    border: 1px var(--lightGrey) !important;
 
     &:focus {
       box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(204, 75, 46, .6)
@@ -227,7 +227,7 @@
   }
 
   .cke_dialog_background_cover {
-    background: $black !important;
+    background: var(--black) !important;
     opacity: .8 !important;
   }
 
@@ -236,17 +236,17 @@
   }
 
   .cke_dialog_ui_html {
-    color: $light-grey !important;
+    color: var(--lightGrey) !important;
   }
 
   .cke_notifications_area {
-    background: $white;
-    color: $black;
+    background: var(--white);
+    color: var(--black);
     padding: 20px 30px;
     margin-top: 20px;
-    box-shadow: 0 0 20px $black;
+    box-shadow: 0 0 20px var(--black);
     border-radius: 5px;
-    border-top: 30px solid $black;
+    border-top: 30px solid var(--black);
     top: 40px !important;
     right: 20px !important;
     position: fixed !important;
@@ -285,13 +285,13 @@
       }
 
       .realname {
-        color: $darker-grey;
+        color: var(--darkerGrey);
         margin-right: 5px;
       }
 
       .username,
       .title {
-        color: darken($dark-grey, 5%);
+        color: var(--darkestGrey);
       }
 
       &.cke_autocomplete_selected,
@@ -299,42 +299,42 @@
         .realname,
         .username,
         .title {
-          color: $accent-color !important;
+          color: var(--accentColor) !important;
         }
       }
     }
   }
 
   .cke_dark_background {
-    background: $darkest-grey !important;
+    background: var(--darkestGrey) !important;
   }
 
   .cke_specialchar {
     padding: 6px;
 
     &:hover {
-      background: $light-grey;
+      background: var(--lightGrey);
 
       span {
-        color: $darkest-grey;
+        color: var(--darkestGrey);
       }
     }
 
     span {
-      color: $light-grey;
+      color: var(--lightGrey);
       font-size: 18px;
     }
   }
 
   .cke_wysiwyg_frame,
   .cke_wysiwyg_div {
-    background-color: darken($dark-grey, 5%) !important;
-    color: $lighter-grey !important;
+    background-color: var(--darkestGrey) !important;
+    color: var(--lighterGrey) !important;
     padding: 8px !important;
     min-height: 20rem;
 
     a {
-      color: $accent-color !important;
+      color: var(--accentColor) !important;
     }
 
     img {
@@ -351,10 +351,10 @@
     }
 
     blockquote {
-      background-color: $darkest-grey;
+      background-color: var(--darkestGrey);
       margin: 20px 0;
       padding: 10px 20px 10px 60px;
-      border: 1px solid $dark-grey;
+      border: 1px solid var(--darkGrey);
       position: relative;
       min-height: 34px;
 
@@ -365,7 +365,7 @@
         position: absolute;
         left: 4px;
         top: 50px;
-        color: $dark-grey;
+        color: var(--darkGrey);
         font-family: Georgia, serif;
       }
     }
@@ -373,7 +373,7 @@
 
   [data-cke-editorplaceholder]::before {
     margin-top: 0 !important;
-    color: $light-grey !important;
+    color: var(--lightGrey) !important;
     opacity: .5 !important;
   }
 
@@ -382,11 +382,11 @@
     padding-top: 2px !important;
 
     span {
-      color: $accent-color !important;
+      color: var(--accentColor) !important;
       text-shadow: none !important;
 
       .cke_combo_arrow {
-        border-top-color: $accent-color !important;
+        border-top-color: var(--accentColor) !important;
       }
     }
   }

@@ -2,17 +2,17 @@
 
 @mixin dark-background-texture {
   background: url("/assets/images/dark-background.png") repeat;
-  color: $lighter-grey;
+  color: var(--lighterGrey);
 }
 
 @mixin darker-background-texture {
   background: url("/assets/images/darker-background.png") repeat;
-  color: $lighter-grey;
+  color: var(--lighterGrey);
 }
 
 @mixin darkest-background-texture {
   background: url("/assets/images/darkest-background.png") repeat;
-  color: $lighter-grey;
+  color: var(--lighterGrey);
 }
 
 @mixin subtle-accent-link {
@@ -21,8 +21,8 @@
   border-bottom: 1px dotted transparentize($subtle-accent-color, .8);
 
   &:hover {
-    color: $accent-color;
-    border-bottom-color: $accent-color;
+    color: var(--accentColor);
+    border-bottom-color: var(--accentColor);
     text-decoration: none;
   }
 }

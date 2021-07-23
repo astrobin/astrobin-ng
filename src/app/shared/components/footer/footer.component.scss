@@ -8,7 +8,7 @@
 }
 
 .build-date {
-  color: $grey;
+  color: var(--grey);
 
   @media (min-width: $md-min) {
     text-align: right;

@@ -14,7 +14,7 @@ label {
   justify-content: center;
   min-height: 10rem;
   padding: 2rem;
-  border: 2px dashed $light-grey;
+  border: 2px dashed var(--lightGrey);
   background: url("/assets/images/darkest-background.png") repeat;
   opacity: .9;
   border-radius: .25rem;
@@ -37,11 +37,11 @@ label {
       display: block;
       background: repeating-linear-gradient(
           -55deg,
-          lighten($success, 30%) 1px,
-          $success 2px,
-          $success 11px,
-          lighten($success, 30%) 12px,
-          lighten($success, 30%) 20px
+          var(--successSecondaryColor) 1px,
+          var(--successColor) 2px,
+          var(--successColor) 11px,
+          var(--successSecondaryColor) 12px,
+          var(--successSecondaryColor) 20px
       );
       height: 100%;
       width: 200%;
@@ -57,7 +57,7 @@ label {
   .file {
     font-weight: normal;
     text-transform: uppercase;
-    color: $lighter-grey;
+    color: var(--lighterGrey);
     text-align: center;
 
     [icon=upload] {
@@ -67,7 +67,7 @@ label {
 
     .status {
       display: block;
-      color: $lighter-grey;
+      color: var(--lighterGrey);
       font-size: .75rem;
       text-transform: uppercase;
       animation: pulsate 3s ease-out;
@@ -82,7 +82,7 @@ label {
 }
 
 .accepted-formats {
-  color: $light-grey;
+  color: var(--lightGrey);
   font-size: .9rem;
   text-transform: none;
 }
