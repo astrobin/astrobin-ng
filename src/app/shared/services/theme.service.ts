@@ -25,15 +25,17 @@ export class ThemeService {
     const currentLink = this.windowRef.nativeWindow.document.getElementById("astrobin-theme");
     const newLink = this.windowRef.nativeWindow.document.createElement("link");
 
-    if (currentLink) {
-      currentLink.parentElement.removeChild(currentLink);
-    }
-
     newLink.id = "astrobin-theme";
     newLink.type = "text/css";
     newLink.rel = "stylesheet";
     newLink.href = `/assets/themes/${theme}.css?build=${VERSION}`;
 
     head.appendChild(newLink);
+
+    if (currentLink) {
+      setTimeout(() => {
+        currentLink.parentElement.removeChild(currentLink);
+      }, 100);
+    }
   }
 }

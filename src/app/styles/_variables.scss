@@ -1,64 +1,59 @@
 @import "~bootstrap/scss/functions";
 
-$bright-white: #ffffff;
-$green: green;
-$white: #e9e9e9;
-$grey: #333;
-$black: #101010;
-
-$muted-accent-color: #866158;
-$subtle-accent-color: #e0e0e0;
-$secondary-accent-color: #3092cf;
-
-$light-grey: #555;
-$lighter-grey: #999;
-$lightest-grey: #ccc;
-
-$dark-grey: #303030;
-$darker-grey: #292929;
-$darkest-grey: #222;
-
-$darkest-background-text-color: #b0b0b0;
-
-$warning-orange: #ff9a28;
-$error-red: #e84545;
-$info-blue: #3a515f;
-$gold: gold;
-
+// Override Bootstrap variables
 $theme-colors: (
   "primary": #cc4b2e,
   "secondary": #3092cf,
-  "success": $green,
-  "info": $info-blue,
-  "warning": $warning-orange,
-  "danger": $error-red,
-  "light": $white,
-  "dark": $darkest-grey
+  "success": #00ff00,
+  "info": #3a515f,
+  "warning": #ff9a28,
+  "danger": #e84545,
+  "light": #e9e9e9,
+  "dark": #222
 );
 
-$enable-gradients: true;
 $dropdown-link-hover-bg: theme-color("primary");
+$enable-gradients: true;
 
+// Define own colors (TODO: replace with CSS variables)
+
+// ... shades of grey
+$bright-white: white;
+$white: theme-color("light");
+$lightest-grey: #ccc;
+$lighter-grey: #999;
+$light-grey: #555;
+$grey: #333;
+$dark-grey: #303030;
+$darker-grey: #292929;
+$darkest-grey: theme-color("dark");
+$black: #101010;
+
+// ... other colors
+$green: theme-color("success");
+$warning-orange: theme-color("warning");
+$error-red: theme-color("danger");
+$info-blue: theme-color("info");
+$gold: gold;
+
+// ... special colors
 $accent-color: theme-color("primary");
-
-:root {
-  --accentColor: #{theme-color("primary")};
-}
+$muted-accent-color: #866158;
+$subtle-accent-color: #e0e0e0;
+$secondary-accent-color: #3092cf;
+$darkest-background-text-color: #b0b0b0;
 
 // Breakpoints
 $xs-max: 575.98px;
-
 $sm-min: 576px;
 $sm-max: 767.98px;
-
 $md-min: 768px;
 $md-max: 991.98px;
-
 $lg-min: 992px;
 $lg-max: 1199.98px;
-
 $xl-min: 1200px;
 
+// Other variables
 $ng-select-highlight: $darker-grey;
 $ng-select-primary-text: $lightest-grey;
 $ng-select-disabled-text: $lightest-grey;
@@ -72,3 +67,21 @@ $ng-select-placeholder: darken($ng-select-primary-text, 10);
 $ng-select-height: 42px;
 $ng-select-value-padding-left: .5rem;
 $ng-select-value-font-size: 0.9em;
+
+// Define CSS variables
+:root {
+  --accentColor: #{theme-color("primary")};
+  --infoColor: #{theme-color("info")};
+
+  --white: #{$white};
+
+  --lightGrey: #{$light-grey};
+  --lighgerGrey: #{$lighter-grey};
+  --lighgestGrey: #{$lightest-grey};
+
+  --darkGrey: #{$dark-grey};
+  --darkerGrey: #{$darker-grey};
+  --darkestGrey: #{$darkest-grey};
+
+  --warningColor: #{theme-color("warning")};
+}
