@@ -1,5 +1,3 @@
-@import "../../../../styles/variables";
-
 :host {
   .return-to-classic {
     font-size: 1rem;
@@ -22,27 +20,27 @@
     margin-top: 5px;
     transition: .3s ease-in-out;
 
-    @media screen and (max-width: $xs-max) {
+    @media screen and (max-width: var(--xsMax)) {
       width: calc(100% - 94px);
       transform: scale(.5) translateY(-48px);
     }
 
-    @media screen and (min-width: $sm-min) {
+    @media screen and (min-width: var(--smMin)) {
       width: 446px;
       transform: scale(.5) translateY(-62px);
     }
 
-    @media screen and (min-width: $md-min) {
+    @media screen and (min-width: var(--mdMin)) {
       width: 626px;
       transform: scale(.5) translateY(-74px);
     }
 
-    @media screen and (min-width: $lg-min) {
+    @media screen and (min-width: var(--lgMin)) {
       width: 866px;
       transform: scale(.5) translateY(-88px);
     }
 
-    @media screen and (min-width: $xl-min) {
+    @media screen and (min-width: var(--xlMin)) {
       width: 940px;
       transform: scale(.5) translateY(-100px);
     }

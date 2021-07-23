@@ -1,5 +1,4 @@
 @import "mixins";
-@import "variables";
 
 .page {
   @include dark-background-texture;
@@ -60,7 +59,7 @@
     padding-top: 1rem;
     border-top: 1px solid var(--lightGrey);
 
-    @media (min-width: $sm-min) {
+    @media (min-width: var(--smMin)) {
       display: flex;
       justify-content: flex-end;
     }
@@ -89,7 +88,7 @@
       }
     }
 
-    @media (max-width: $sm-max) {
+    @media (max-width: var(--smMax)) {
       padding: 2rem;
 
       .hero-image {

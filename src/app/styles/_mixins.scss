@@ -1,5 +1,3 @@
-@import "variables";
-
 @mixin dark-background-texture {
   background: url("/assets/images/dark-background.png") repeat;
   color: var(--lighterGrey);

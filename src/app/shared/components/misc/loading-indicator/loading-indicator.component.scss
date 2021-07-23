@@ -16,7 +16,7 @@
     display: inline-block;
     height: 100%;
 
-    @media (max-width: $xs-max) {
+    @media (max-width: var(--xsMax)) {
       width: auto;
       padding: 0.375rem 1rem;
     }

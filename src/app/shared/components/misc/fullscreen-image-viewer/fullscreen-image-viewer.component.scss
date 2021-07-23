@@ -82,7 +82,7 @@
       margin-left: .5rem;
       font-weight: normal;
 
-      @media screen and (max-width: $xs-max) {
+      @media screen and (max-width: var(--xsMax)) {
         display: none;
       }
     }

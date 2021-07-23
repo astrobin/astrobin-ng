@@ -8,7 +8,7 @@ h1 {
   }
 
   .btn {
-    @media screen and (max-width: $xs-max) {
+    @media screen and (max-width: var(--xsMax)) {
       margin-top: 1rem;
     }
   }

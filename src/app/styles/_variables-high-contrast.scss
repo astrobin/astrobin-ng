@@ -94,4 +94,13 @@ $ng-select-value-font-size: 0.9em;
   --successSecondaryColor: #{$successSecondary};
   --warningColor: #{theme-color("warning")};
   --dangerColor: #{theme-color("danger")};
+
+  --xsMax: #{$xs-max};
+  --smMin: #{$sm-min};
+  --smMax: #{$sm-max};
+  --mdMin: #{$md-min};
+  --mdMax: #{$md-max};
+  --lgMin: #{$lg-min};
+  --lgMax: #{$lg-max};
+  --xlMin: #{$xl-min};
 }

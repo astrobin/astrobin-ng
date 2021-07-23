@@ -51,7 +51,7 @@
   padding: 0 1rem;
   top: .3rem;
 
-  @media (max-width: $md-min) {
+  @media (max-width: var(--mdMin)) {
     text-align: center;
   }
 }

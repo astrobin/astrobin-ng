@@ -1,5 +1,3 @@
-@import "variables";
-
 @mixin defaultNavLink() {
   color: var(--lighterGrey) !important;
   font-weight: normal;
@@ -82,7 +80,7 @@
   }
 }
 
-@media (max-width: $xs-max) {
+@media (max-width: var(--xsMax)) {
   .ng-wizard-btn-group {
     display: block;
     width: 100%;

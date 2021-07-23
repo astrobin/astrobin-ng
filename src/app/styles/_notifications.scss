@@ -1,5 +1,3 @@
-@import "variables";
-
 @function str-split($string, $separator) {
   $split-arr: ();
   // first index of separator in string

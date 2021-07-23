@@ -20,7 +20,7 @@
     margin-right: 0;
   }
 
-  @media screen and (max-width: $md-max) {
+  @media screen and (max-width: var(--mdMax)) {
     .form-group {
       flex-basis: 100%;
 

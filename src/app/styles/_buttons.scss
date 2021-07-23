@@ -1,9 +1,7 @@
-@import "variables";
-
 .btn {
   font-size: 0.85rem;
 
-  @media (max-width: $xs-max) {
+  @media (max-width: var(--xsMax)) {
     display: block;
     width: 100%;
     padding-top: .75rem;
