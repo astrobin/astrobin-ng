@@ -1,5 +1,24 @@
 @import "~bootstrap/scss/functions";
 
+$theme-colors: (
+  "primary": #f0f0f0,
+  "secondary": #f0f0f0,
+  "success": #f0f0f0,
+  "info": #f0f0f0,
+  "warning": #f0f0f0,
+  "danger": #f0f0f0,
+  "light": #111,
+  "dark": #111
+);
+
+$dropdown-link-hover-bg: theme-color("dark");
+
+$accent-color: theme-color("primary");
+
+:root {
+  --accentColor: #{theme-color("primary")};
+}
+
 $accent-color: #f0f0f0;
 $muted-accent-color: #866158;
 $subtle-accent-color: #e0e0e0;

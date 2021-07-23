@@ -1,13 +1,14 @@
-$accent-color: #cc4b2e;
-$muted-accent-color: #866158;
-$subtle-accent-color: #e0e0e0;
-$secondary-accent-color: #3092cf;
+@import "~bootstrap/scss/functions";
 
 $bright-white: #ffffff;
 $green: green;
 $white: #e9e9e9;
 $grey: #333;
 $black: #101010;
+
+$muted-accent-color: #866158;
+$subtle-accent-color: #e0e0e0;
+$secondary-accent-color: #3092cf;
 
 $light-grey: #555;
 $lighter-grey: #999;
@@ -24,11 +25,25 @@ $error-red: #e84545;
 $info-blue: #3a515f;
 $gold: gold;
 
-// Bootstrap overrides:
-$primary: $accent-color;
 $theme-colors: (
-  "primary": $accent-color
+  "primary": #cc4b2e,
+  "secondary": #3092cf,
+  "success": $green,
+  "info": $info-blue,
+  "warning": $warning-orange,
+  "danger": $error-red,
+  "light": $white,
+  "dark": $darkest-grey
 );
+
+$enable-gradients: true;
+$dropdown-link-hover-bg: theme-color("primary");
+
+$accent-color: theme-color("primary");
+
+:root {
+  --accentColor: #{theme-color("primary")};
+}
 
 // Breakpoints
 $xs-max: 575.98px;
