@@ -37,11 +37,11 @@ label {
       display: block;
       background: repeating-linear-gradient(
           -55deg,
-          lighten($green, 30%) 1px,
-          $green 2px,
-          $green 11px,
-          lighten($green, 30%) 12px,
-          lighten($green, 30%) 20px
+          lighten($success, 30%) 1px,
+          $success 2px,
+          $success 11px,
+          lighten($success, 30%) 12px,
+          lighten($success, 30%) 20px
       );
       height: 100%;
       width: 200%;
