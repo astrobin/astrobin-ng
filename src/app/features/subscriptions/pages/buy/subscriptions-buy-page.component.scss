@@ -1,14 +1,13 @@
-@import "../../../../styles/variables";
 
 .price {
   .full-price {
-    color: $light-grey;
+    color: var(--lightGrey);
     text-decoration: line-through;
     margin-right: .5rem;
   }
 
   font-size: 2.5rem;
-  color: $gold;
+  color: var(--gold);
 }
 
 .already-subscribed,

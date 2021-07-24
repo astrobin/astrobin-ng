@@ -1,8 +1,7 @@
-@import "../../../../styles/variables";
 
 .price {
   .full-price {
-    color: $light-grey;
+    color: var(--lightGrey);
     text-decoration: line-through;
     margin-right: .5rem;
   }

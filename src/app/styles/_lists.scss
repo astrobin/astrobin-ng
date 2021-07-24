@@ -1,16 +1,14 @@
-@import "variables";
-
 .list-group {
   .list-group-item {
-    background-color: $darker-grey;
-    border-color: $dark-grey;
-    color: $light-grey;
+    background-color: var(--darkerGrey);
+    border-color: var(--darkGrey);
+    color: var(--lightGrey);
     overflow-wrap: break-word;
     padding: 1.75rem 1.5rem;
     border-radius: 0.25rem;
 
     &:nth-child(even) {
-      background-color: lighten($darker-grey, 2%);
+      background-color: var(--darkGrey);
     }
 
     &:not(:last-child) {

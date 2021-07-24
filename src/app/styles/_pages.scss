@@ -1,5 +1,5 @@
 @import "mixins";
-@import "variables";
+@import "breakpoints";
 
 .page {
   @include dark-background-texture;
@@ -9,7 +9,7 @@
   margin: 1rem 0;
   box-shadow: 0 0 16px rgba(0, 0, 0, 0.5);
   transition: opacity .5s ease-in;
-  color: $white;
+  color: var(--white);
 
   &.has-breadcrumb {
     margin-top: 0;
@@ -30,8 +30,8 @@
       vertical-align: super;
     }
 
-    text-shadow: 1px 1px 0 $black;
-    border-bottom: 1px solid $light-grey;
+    text-shadow: 1px 1px 0 var(--black);
+    border-bottom: 1px solid var(--lightGrey);
     padding-bottom: .5rem;
     margin-bottom: 3rem;
 
@@ -39,16 +39,16 @@
       display: block;
       margin-bottom: 3rem;
       font-size: 1.5rem;
-      color: $lightest-grey;
+      color: var(--lightestGrey);
 
       strong {
-        color: $white;
+        color: var(--white);
       }
 
       + small {
         display: block;
         font-size: 1rem;
-        color: $lighter-grey;
+        color: var(--lighterGrey);
         margin-top: -3rem;
         margin-bottom: 3rem;
       }
@@ -58,7 +58,7 @@
   > .buttons-area {
     margin-top: 4rem;
     padding-top: 1rem;
-    border-top: 1px solid $light-grey;
+    border-top: 1px solid var(--lightGrey);
 
     @media (min-width: $sm-min) {
       display: flex;
@@ -84,7 +84,7 @@
         margin-bottom: 3rem;
 
         strong {
-          color: $white;
+          color: var(--white);
         }
       }
     }

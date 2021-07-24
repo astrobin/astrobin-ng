@@ -397,6 +397,18 @@
             {{ "My settings" | translate }}
           </a>
 
+          <a (click)="toggleHighContrastTheme()" class="dropdown-item">
+            <fa-icon icon="adjust"></fa-icon>
+
+            <ng-container *ngIf="!useHighContrastTheme(); else highContrastThemeEnabled">
+              {{ "Enable high contrast theme" | translate }}
+            </ng-container>
+
+            <ng-template #highContrastThemeEnabled>
+              {{ "Disable high contrast theme" | translate }}
+            </ng-template>
+          </a>
+
           <div class="dropdown-divider"></div>
 
           <a (click)="logout($event)" class="dropdown-item" href="">

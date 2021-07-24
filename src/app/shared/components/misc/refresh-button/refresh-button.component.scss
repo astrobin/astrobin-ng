@@ -1,12 +1,11 @@
-@import "../../../../styles/variables";
 
 .btn {
-  color: $lighter-grey;
+  color: var(--lighterGrey);
 
   &:hover,
   &:active,
   &:focus {
-    color: $lightest-grey;
+    color: var(--lightestGrey);
     outline: none;
     box-shadow: none;
   }

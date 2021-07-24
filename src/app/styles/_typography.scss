@@ -1,4 +1,4 @@
-@import "variables";
+@import "breakpoints";
 
 h1,
 h2,
@@ -6,7 +6,7 @@ h3,
 h4,
 h5,
 h6 {
-  color: $bright-white;
+  color: var(--brightWhite);
 }
 
 h1 {
@@ -14,7 +14,7 @@ h1 {
 
   + small {
     font-size: 1rem;
-    color: $light-grey;
+    color: var(--lightGrey);
     display: block;
     margin-top: -2rem;
     margin-bottom: 2rem;
@@ -27,16 +27,16 @@ h1 {
 }
 
 strong {
-  color: $white;
+  color: var(--white);
 }
 
 pre {
   padding: 1rem;
-  background: $dark-grey;
+  background: var(--darkGrey);
 }
 
 .help-tooltip {
   font-style: italic;
-  border-bottom: 1px dotted $lightest-grey;
+  border-bottom: 1px dotted var(--lightestGrey);
   cursor: help;
 }
