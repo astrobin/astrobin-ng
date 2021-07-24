@@ -1,3 +1,4 @@
+@import "../../../../styles/breakpoints";
 
 :host {
   position: fixed;
@@ -81,7 +82,7 @@
       margin-left: .5rem;
       font-weight: normal;
 
-      @media screen and (max-width: var(--xsMax)) {
+      @media screen and (max-width: $xs-max) {
         display: none;
       }
     }

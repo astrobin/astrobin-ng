@@ -1,3 +1,6 @@
+@import "../../../../styles/breakpoints";
+
+
 :host {
   display: block;
 }
@@ -21,7 +24,7 @@
       justify-content: center;
       align-items: center;
 
-      @media screen and (max-width: var(--smMax)) {
+      @media screen and (max-width: $sm-max) {
         .btn {
           display: inline-block;
           width: auto;

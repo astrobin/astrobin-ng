@@ -1,3 +1,6 @@
+@import "breakpoints";
+
+
 @mixin defaultNavLink() {
   color: var(--lighterGrey) !important;
   font-weight: normal;
@@ -80,7 +83,7 @@
   }
 }
 
-@media (max-width: var(--xsMax)) {
+@media (max-width: $xs-max) {
   .ng-wizard-btn-group {
     display: block;
     width: 100%;

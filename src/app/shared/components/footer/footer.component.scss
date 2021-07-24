@@ -1,3 +1,4 @@
+@import "../../../styles/breakpoints";
 @import "../../../styles/mixins";
 
 .footer {
@@ -9,7 +10,7 @@
 .build-date {
   color: var(--grey);
 
-  @media (min-width: var(--mdMin)) {
+  @media (min-width: $md-min) {
     text-align: right;
   }
 }

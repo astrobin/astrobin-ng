@@ -1,4 +1,6 @@
 @import "../../../../styles/mixins";
+@import "../../../../styles/breakpoints";
+
 
 h1 {
   .badge {
@@ -7,7 +9,7 @@ h1 {
   }
 
   .btn {
-    @media screen and (max-width: var(--xsMax)) {
+    @media screen and (max-width: $xs-max) {
       margin-top: 1rem;
     }
   }

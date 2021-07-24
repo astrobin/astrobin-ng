@@ -1,4 +1,5 @@
 @import "../../../styles/mixins";
+@import "../../../styles/breakpoints";
 
 .global-loading-indicator {
   position: fixed;
@@ -50,7 +51,7 @@
   padding: 0 1rem;
   top: .3rem;
 
-  @media (max-width: var(--mdMin)) {
+  @media (max-width: $md-min) {
     text-align: center;
   }
 }

@@ -1,4 +1,5 @@
 @import "mixins";
+@import "breakpoints";
 
 .page {
   @include dark-background-texture;
@@ -59,7 +60,7 @@
     padding-top: 1rem;
     border-top: 1px solid var(--lightGrey);
 
-    @media (min-width: var(--smMin)) {
+    @media (min-width: $sm-min) {
       display: flex;
       justify-content: flex-end;
     }
@@ -88,7 +89,7 @@
       }
     }
 
-    @media (max-width: var(--smMax)) {
+    @media (max-width: $sm-max) {
       padding: 2rem;
 
       .hero-image {

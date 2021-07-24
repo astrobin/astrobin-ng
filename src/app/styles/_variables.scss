@@ -47,16 +47,6 @@ $lighter-secondary-accent-color: lighten($secondary-accent-color, 20%);
 $darker-secondary-accent-color: darken($secondary-accent-color, 20%);
 $text-on-secondary-accent-color: $white;
 
-// Breakpoints
-$xs-max: 575.98px;
-$sm-min: 576px;
-$sm-max: 767.98px;
-$md-min: 768px;
-$md-max: 991.98px;
-$lg-min: 992px;
-$lg-max: 1199.98px;
-$xl-min: 1200px;
-
 // Other variables
 $ng-select-highlight: $darker-grey;
 $ng-select-primary-text: $lightest-grey;
@@ -101,13 +91,4 @@ $ng-select-value-font-size: 0.9em;
   --successSecondaryColor: #{$successSecondary};
   --warningColor: #{theme-color("warning")};
   --dangerColor: #{theme-color("danger")};
-
-  --xsMax: #{$xs-max};
-  --smMin: #{$sm-min};
-  --smMax: #{$sm-max};
-  --mdMin: #{$md-min};
-  --mdMax: #{$md-max};
-  --lgMin: #{$lg-min};
-  --lgMax: #{$lg-max};
-  --xlMin: #{$xl-min};
 }

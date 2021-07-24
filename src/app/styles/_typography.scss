@@ -1,3 +1,5 @@
+@import "breakpoints";
+
 h1,
 h2,
 h3,
@@ -18,7 +20,7 @@ h1 {
     margin-bottom: 2rem;
   }
 
-  @media (max-width: var(--smMax)) {
+  @media (max-width: $sm-max) {
     font-size: 2.25rem;
     hyphens: auto;
   }
