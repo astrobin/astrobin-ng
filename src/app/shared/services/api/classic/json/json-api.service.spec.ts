@@ -39,12 +39,12 @@ describe("JsonApiService", () => {
   describe("toggleUseHighContrastThemeCookie", () => {
     it("should work", () => {
       service.toggleUseHighContrastThemeCookie().subscribe(response => {
-        expect(response).toEqual(void 0);
+        expect(response).toEqual({});
       });
 
-      const req = httpMock.expectOne(`${service.configUrl}/user/toggle-use-high-contrast-cookie/`);
+      const req = httpMock.expectOne(`${service.configUrl}/user/toggle-use-high-contrast-theme-cookie/`);
       expect(req.request.method).toBe("POST");
-      req.flush(void 0);
+      req.flush({});
     });
   });
 });
