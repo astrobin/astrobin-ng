@@ -31,16 +31,24 @@ $black: #000;
 // ... other colors
 $gold: #fff;
 
-$info: #fff;
-$success: #fff;
+$info: theme-color("info");
+$text-on-info: theme-color("light");
+
+$success: theme-color("success");
 $successSecondary: darken($success, 30%);
-$warning: #fff;
-$error: #fff;
+
+$warning: theme-color("warning");
+$text-on-warning: theme-color("dark");
+
+$error: theme-color("error");
 
 // ... special colors
 $accent-color: theme-color("primary");
 $lighter-accent-color: lighten($accent-color, 20%);
 $darker-accent-color: darken($accent-color, 20%);
+$muted-accent-color: #eee;
+$text-on-accent-color: theme-color("dark");
+
 $secondary-accent-color: #ddd;
 $lighter-secondary-accent-color: lighten($secondary-accent-color, 20%);
 $darker-secondary-accent-color: darken($secondary-accent-color, 20%);
@@ -66,6 +74,8 @@ $ng-select-value-font-size: 0.9em;
   --accentColor: #{$accent-color};
   --lighterAccentColor: #{$lighter-accent-color};
   --darkerAccentColor: #{$darker-accent-color};
+  --mutedAccentColor: #{$muted-accent-color};
+  --textOnAccentColor: #{$text-on-accent-color};
 
   --secondaryAccentColor: #{$secondary-accent-color};
   --lighterSecondaryAccentColor: #{$lighter-secondary-accent-color};
@@ -86,8 +96,13 @@ $ng-select-value-font-size: 0.9em;
   --gold: #{$gold};
 
   --infoColor: #{theme-color("info")};
+  --textOnInfoColor: #{$text-on-info};
+
   --successColor: #{theme-color("success")};
   --successSecondaryColor: #{$successSecondary};
+
   --warningColor: #{theme-color("warning")};
+  --textOnWarningColor: #{$text-on-warning};
+
   --dangerColor: #{theme-color("danger")};
 }

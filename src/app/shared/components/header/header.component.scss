@@ -79,13 +79,13 @@
 
     .indexes {
       font-size: 66%;
-      color: var(--lighterAccentColor);
+      color: var(--textOnAccentColor);
       font-weight: 700;
       padding-left: 4px;
       vertical-align: middle;
 
       .index {
-        border-bottom: 1px dotted var(--lighterAccentColor);
+        border-bottom: 1px dotted var(--textOnAccentColor);
       }
     }
 

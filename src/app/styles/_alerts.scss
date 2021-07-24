@@ -47,15 +47,20 @@
 
     &,
     fa-icon,
+    h5,
     > p, & {
-      color: var(--white);
-      text-shadow: 0 -1px 0 rgba(0, 0, 0, .5);
+      color: var(--textOnInfoColor);
     }
   }
 
   &.alert-warning {
     background-color: var(--warningColor);
-    color: var(--darkerGrey);
-    text-shadow: 0 1px 1px var(--lightGrey);
+
+    &,
+    fa-icon,
+    h5,
+    > p, & {
+      color: var(--textOnWarningColor);
+    }
   }
 }

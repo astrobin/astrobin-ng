@@ -3,7 +3,7 @@
 // Override Bootstrap variables
 $theme-colors: (
   "primary": #cc4b2e,
-  "secondary": #3092cf,
+  "secondary": #e0e0e0,
   "success": #00ff00,
   "info": #3a515f,
   "warning": #ff9a28,
@@ -32,15 +32,22 @@ $black: #101010;
 $gold: gold;
 
 $info: theme-color("info");
+$text-on-info: $white;
+
 $success: theme-color("success");
 $successSecondary: lighten($success, 30%);
+
 $warning: theme-color("warning");
+$text-on-warning: $black;
+
 $error: theme-color("danger");
 
 // ... special colors
 $accent-color: theme-color("primary");
 $lighter-accent-color: lighten($accent-color, 20%);
 $darker-accent-color: darken($accent-color, 20%);
+$muted-accent-color: #866158;
+$text-on-accent-color: theme-color("light");
 
 $secondary-accent-color: #3092cf;
 $lighter-secondary-accent-color: lighten($secondary-accent-color, 20%);
@@ -67,6 +74,8 @@ $ng-select-value-font-size: 0.9em;
   --accentColor: #{$accent-color};
   --lighterAccentColor: #{$lighter-accent-color};
   --darkerAccentColor: #{$darker-accent-color};
+  --mutedAccentColor: #{$muted-accent-color};
+  --textOnAccentColor: #{$text-on-accent-color};
 
   --secondaryAccentColor: #{$secondary-accent-color};
   --lighterSecondaryAccentColor: #{$lighter-secondary-accent-color};
@@ -87,8 +96,13 @@ $ng-select-value-font-size: 0.9em;
   --gold: #{$gold};
 
   --infoColor: #{theme-color("info")};
+  --textOnInfoColor: #{$text-on-info};
+
   --successColor: #{theme-color("success")};
   --successSecondaryColor: #{$successSecondary};
+
   --warningColor: #{theme-color("warning")};
+  --textOnWarningColor: #{$text-on-warning};
+
   --dangerColor: #{theme-color("danger")};
 }

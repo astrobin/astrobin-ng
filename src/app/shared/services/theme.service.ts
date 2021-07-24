@@ -18,10 +18,15 @@ export class ThemeService {
 
   constructor(public readonly windowRef: WindowRefService, public readonly cookieService: CookieService) {}
 
-  setTheme(): void {
+  currentTheme(): Theme {
     const cookie = this.cookieService.get(Constants.USE_HIGH_CONTRAST_THEME_COOKIE);
-    const theme = cookie ? Theme.HIGH_CONTRAST : Theme.DEFAULT;
+    return cookie ? Theme.HIGH_CONTRAST : Theme.DEFAULT;
+  }
+
+  setTheme(): void {
+    const theme = this.currentTheme();
     const head = document.getElementsByTagName("head")[0];
+    const body = document.getElementsByTagName("body")[0];
     const currentLink = this.windowRef.nativeWindow.document.getElementById("astrobin-theme");
     const newLink = this.windowRef.nativeWindow.document.createElement("link");
 
@@ -31,6 +36,14 @@ export class ThemeService {
     newLink.href = `/assets/themes/${theme}.css?build=${VERSION}`;
 
     head.appendChild(newLink);
+
+    if (theme === Theme.HIGH_CONTRAST) {
+      if (!body.classList.contains("high-contrast")) {
+        body.classList.add("high-contrast");
+      }
+    } else {
+      body.classList.remove("high-contrast");
+    }
 
     if (currentLink) {
       setTimeout(() => {

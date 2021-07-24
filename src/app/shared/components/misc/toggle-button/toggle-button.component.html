@@ -1,9 +1,8 @@
 <ng-toggle
   (ngModelChange)="toggle.emit($event)"
   [(ngModel)]="model"
-  [color]="{
-    checked: '#cc4b2e'
-  }"
+  [color]="color"
+  [switchColor]="switchColor"
   [value]="value"
   height="22"
   width="40"

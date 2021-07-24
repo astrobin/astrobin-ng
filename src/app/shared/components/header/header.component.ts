@@ -17,7 +17,7 @@ import { map, take } from "rxjs/operators";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { CookieService } from "ngx-cookie-service";
-import { ThemeService } from "@shared/services/theme.service";
+import { Theme, ThemeService } from "@shared/services/theme.service";
 import { Constants } from "@shared/constants";
 import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
 
@@ -161,7 +161,7 @@ export class HeaderComponent extends BaseComponentDirective {
   }
 
   useHighContrastTheme(): boolean {
-    return !!this.cookieService.get(Constants.USE_HIGH_CONTRAST_THEME_COOKIE);
+    return this.themeService.currentTheme() === Theme.HIGH_CONTRAST;
   }
 
   toggleHighContrastTheme(): void {
