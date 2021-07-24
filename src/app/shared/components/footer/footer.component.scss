@@ -1,10 +1,9 @@
-@import "../../../styles/variables";
 @import "../../../styles/mixins";
 
 .footer {
   @include darkest-background-texture;
   padding: 1rem 0;
-  color: $darkest-background-text-color;
+  color: var(--lighterGrey);
 }
 
 .build-date {

@@ -14,9 +14,9 @@
 }
 
 @mixin subtle-accent-link {
-  color: $subtle-accent-color;
+  color: var(--lighterAccentColor);
   padding-bottom: 2px;
-  border-bottom: 1px dotted transparentize($subtle-accent-color, .8);
+  border-bottom: var(--lighterAccentColor);
 
   &:hover {
     color: var(--accentColor);

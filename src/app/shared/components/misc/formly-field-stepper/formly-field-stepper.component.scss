@@ -1,4 +1,3 @@
-@import "../../../../styles/variables";
 
 .wizard-step.visited.error ::ng-deep .ng-invalid {
   border: 1px solid var(--error);

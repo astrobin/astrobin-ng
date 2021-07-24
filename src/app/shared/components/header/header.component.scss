@@ -1,4 +1,3 @@
-@import "../../../styles/variables";
 @import "../../../styles/mixins";
 
 .global-loading-indicator {
@@ -9,7 +8,7 @@
   z-index: 1;
 
   .background {
-    background-color: $secondary-accent-color;
+    background-color: var(--secondaryAccentColor);
     height: .3rem;
     width: 100%;
   }
@@ -29,11 +28,11 @@
 
       background: repeating-linear-gradient(
           -55deg,
-          lighten($secondary-accent-color, 30%) 1px,
-          $secondary-accent-color 2px,
-          $secondary-accent-color 11px,
-          lighten($secondary-accent-color, 30%) 12px,
-          lighten($secondary-accent-color, 30%) 20px
+          var(--lighterSecondaryAccentColor) 1px,
+          var(--secondaryAccentColor) 2px,
+          var(--secondaryAccentColor) 11px,
+          var(--lighterSecondaryAccentColor) 12px,
+          var(--lighterSecondaryAccentColor) 20px
       );
 
       animation-name: move-striped-loading-indicator;

@@ -18,6 +18,7 @@ $enable-gradients: true;
 // Define own colors
 
 // ... shades of grey
+$white: theme-color("light");
 $lightest-grey: #ccc;
 $lighter-grey: #999;
 $light-grey: #555;
@@ -40,10 +41,11 @@ $error: theme-color("danger");
 $accent-color: theme-color("primary");
 $lighter-accent-color: lighten($accent-color, 20%);
 $darker-accent-color: darken($accent-color, 20%);
-$muted-accent-color: #866158;
-$subtle-accent-color: #e0e0e0;
+
 $secondary-accent-color: #3092cf;
-$darkest-background-text-color: #b0b0b0;
+$lighter-secondary-accent-color: lighten($secondary-accent-color, 20%);
+$darker-secondary-accent-color: darken($secondary-accent-color, 20%);
+$text-on-secondary-accent-color: $white;
 
 // Breakpoints
 $xs-max: 575.98px;
@@ -75,6 +77,11 @@ $ng-select-value-font-size: 0.9em;
   --accentColor: #{$accent-color};
   --lighterAccentColor: #{$lighter-accent-color};
   --darkerAccentColor: #{$darker-accent-color};
+
+  --secondaryAccentColor: #{$secondary-accent-color};
+  --lighterSecondaryAccentColor: #{$lighter-secondary-accent-color};
+  --darkerSecondaryAccentColor: #{$darker-secondary-accent-color};
+  --textOnSecondaryAccentColor: #{$text-on-secondary-accent-color};
 
   --brightWhite: #fff;
   --white: #{theme-color("light")};

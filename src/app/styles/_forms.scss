@@ -41,10 +41,10 @@ label {
 .form-text {
   margin-top: .25rem;
   font-size: .85rem;
-  color: $muted-accent-color !important;
+  color: var(--darkerAccentColor) !important;
 
   strong {
-    color: lighten($muted-accent-color, 20%) !important;
+    color: var(--darkerAccentColor) !important;
     font-weight: normal;
   }
 }
