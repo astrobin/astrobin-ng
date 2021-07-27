@@ -1,5 +1,3 @@
-@import "../styles/variables";
-
 .alert {
   box-shadow: 0 0.25rem 1rem rgba(0, 0, 0, .333);
 
@@ -7,7 +5,7 @@
     display: inline-block;
     font-weight: bold;
     margin-right: .5rem;
-    color: $light-grey;
+    color: var(--lightGrey);
 
     + p {
       display: inline-block;
@@ -35,7 +33,7 @@
       border-bottom: 1px dotted rgba(255, 255, 255, .5);
 
       &:hover {
-        border-bottom: 1px dotted $accent-color;
+        border-bottom: 1px dotted var(--accentColor);
       }
     }
   }
@@ -45,19 +43,24 @@
   }
 
   &.alert-info {
-    background-color: $info-blue;
+    background-color: var(--infoColor);
 
     &,
     fa-icon,
+    h5,
     > p, & {
-      color: $white;
-      text-shadow: 0 -1px 0 rgba(0, 0, 0, .5);
+      color: var(--textOnInfoColor);
     }
   }
 
   &.alert-warning {
-    background-color: $warning-orange;
-    color: $darkest-grey;
-    text-shadow: 0 1px 1px transparentize($white, .5);
+    background-color: var(--warningColor);
+
+    &,
+    fa-icon,
+    h5,
+    > p, & {
+      color: var(--textOnWarningColor);
+    }
   }
 }

@@ -243,6 +243,7 @@ export class SettingsPageComponent extends BaseComponentDirective implements OnI
       case "new_bookmark":
       case "image_not_solved":
       case "image_solved":
+      case "new_image_description_mention":
         return NotificationCategory.IMAGES;
       case "new_follower":
         return NotificationCategory.USERS;

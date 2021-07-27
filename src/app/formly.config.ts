@@ -6,6 +6,7 @@ import { FormlyFieldImageCropperComponent } from "@shared/components/misc/formly
 import { FormlyFieldNgSelectComponent } from "@shared/components/misc/formly-field-ng-select/formly-field-ng-select.component";
 import { FormlyFieldStepperComponent } from "@shared/components/misc/formly-field-stepper/formly-field-stepper.component";
 import { FormlyFieldGoogleMapComponent } from "@shared/components/misc/formly-field-google-map/formly-field-google-map.component";
+import { FormlyFieldCKEditorComponent } from "@shared/components/misc/formly-field-ckeditor/formly-field-ckeditor.component";
 
 export interface FileSizeValidatorOptionsInterface {
   max: number;
@@ -104,6 +105,11 @@ export function formlyValidationConfig(translate: TranslateService) {
       {
         name: "google-map",
         component: FormlyFieldGoogleMapComponent,
+        wrappers: ["default-wrapper"]
+      },
+      {
+        name: "ckeditor",
+        component: FormlyFieldCKEditorComponent,
         wrappers: ["default-wrapper"]
       }
     ],

@@ -13,9 +13,13 @@ import { LoadingService } from "@shared/services/loading.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { Observable } from "rxjs";
 import { selectCurrentUser } from "@features/account/store/auth.selectors";
-import { map } from "rxjs/operators";
+import { map, take } from "rxjs/operators";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
+import { CookieService } from "ngx-cookie-service";
+import { Theme, ThemeService } from "@shared/services/theme.service";
+import { Constants } from "@shared/constants";
+import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
 
 interface AvailableLanguageInterface {
   code: string;
@@ -81,7 +85,10 @@ export class HeaderComponent extends BaseComponentDirective {
     public readonly loadingService: LoadingService,
     public readonly windowRef: WindowRefService,
     public readonly translateService: TranslateService,
-    public readonly domSanitizer: DomSanitizer
+    public readonly domSanitizer: DomSanitizer,
+    public readonly cookieService: CookieService,
+    public readonly themeService: ThemeService,
+    public readonly jsonApiService: JsonApiService
   ) {
     super();
   }
@@ -151,5 +158,18 @@ export class HeaderComponent extends BaseComponentDirective {
   logout($event) {
     $event.preventDefault();
     this.store$.dispatch(new Logout());
+  }
+
+  useHighContrastTheme(): boolean {
+    return this.themeService.currentTheme() === Theme.HIGH_CONTRAST;
+  }
+
+  toggleHighContrastTheme(): void {
+    this.jsonApiService
+      .toggleUseHighContrastThemeCookie()
+      .pipe(take(1))
+      .subscribe(() => {
+        this.themeService.setTheme();
+      });
   }
 }

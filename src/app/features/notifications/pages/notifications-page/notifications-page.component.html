@@ -53,7 +53,7 @@
 
   <div class="buttons-area">
     <ng-container [ngTemplateOutlet]="markAllAsReadButton"></ng-container>
-    <a [attr.href]="classicRoutesService.NOTIFICATION_SETTINGS" class="btn btn-secondary">
+    <a routerLink="/notifications/settings" class="btn btn-secondary">
       {{"Settings"|translate}}
     </a>
   </div>

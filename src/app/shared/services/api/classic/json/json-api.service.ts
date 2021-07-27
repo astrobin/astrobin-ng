@@ -20,4 +20,12 @@ export class JsonApiService extends BaseClassicApiService implements JsonApiServ
   getBackendConfig(): Observable<BackendConfigInterface> {
     return this.http.get<BackendConfigInterface>(`${this.configUrl}/common/app-config/`);
   }
+
+  toggleUseHighContrastThemeCookie(): Observable<void> {
+    return this.http.post<void>(
+      `${this.configUrl}/user/toggle-use-high-contrast-theme-cookie/`,
+      {},
+      { withCredentials: true }
+    );
+  }
 }

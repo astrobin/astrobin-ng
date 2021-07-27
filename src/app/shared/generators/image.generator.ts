@@ -25,6 +25,7 @@ export class ImageGenerator {
       published: source.published || new Date().toISOString(),
       license: "",
       description: undefined,
+      descriptionBbcode: undefined,
       link: undefined,
       linkToFits: undefined,
       acquisitionType: AcquisitionType.REGULAR,

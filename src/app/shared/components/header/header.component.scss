@@ -1,5 +1,5 @@
-@import "../../../styles/variables";
 @import "../../../styles/mixins";
+@import "../../../styles/breakpoints";
 
 .global-loading-indicator {
   position: fixed;
@@ -9,7 +9,7 @@
   z-index: 1;
 
   .background {
-    background-color: $secondary-accent-color;
+    background-color: var(--secondaryAccentColor);
     height: .3rem;
     width: 100%;
   }
@@ -29,11 +29,11 @@
 
       background: repeating-linear-gradient(
           -55deg,
-          lighten($secondary-accent-color, 30%) 1px,
-          $secondary-accent-color 2px,
-          $secondary-accent-color 11px,
-          lighten($secondary-accent-color, 30%) 12px,
-          lighten($secondary-accent-color, 30%) 20px
+          var(--lighterSecondaryAccentColor) 1px,
+          var(--secondaryAccentColor) 2px,
+          var(--secondaryAccentColor) 11px,
+          var(--lighterSecondaryAccentColor) 12px,
+          var(--lighterSecondaryAccentColor) 20px
       );
 
       animation-name: move-striped-loading-indicator;
@@ -57,7 +57,7 @@
 }
 
 .navbar-toggler {
-  color: $white;
+  color: var(--white);
 }
 
 .nav-item {
@@ -70,7 +70,7 @@
     }
 
     &[aria-expanded="true"] {
-      background: transparentize($white, 0.975);
+      background: var(--darkerGrey);
     }
   }
 
@@ -79,13 +79,13 @@
 
     .indexes {
       font-size: 66%;
-      color: lighten($accent-color, 25%);
+      color: var(--textOnAccentColor);
       font-weight: 700;
       padding-left: 4px;
       vertical-align: middle;
 
       .index {
-        border-bottom: 1px dotted lighten($accent-color, 10%);
+        border-bottom: 1px dotted var(--textOnAccentColor);
       }
     }
 
@@ -95,13 +95,13 @@
       margin-left: 0;
       background: none;
       border: 0;
-      color: $accent-color;
+      color: var(--accentColor);
 
       .indexes {
-        color: darken($accent-color, 20%);
+        color: var(--darkerAccentColor);
 
         .index {
-          border-bottom-color: darken($accent-color, 25%);
+          border-bottom-color: var(--darkerAccentColor);
         }
       }
     }

@@ -1,5 +1,3 @@
-@import "../../../../styles/variables";
-
 :host {
   ::ng-deep {
     ng-wizard .nav-tabs {
@@ -11,7 +9,7 @@
     ng-select {
       .remote-affiliate-sponsor {
         margin-left: .5rem;
-        color: $gold;
+        color: var(--gold);
       }
     }
 

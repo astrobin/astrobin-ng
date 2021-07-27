@@ -13,4 +13,5 @@ export class Constants {
   static readonly NO_VALUE = "NO_VALUE";
   static readonly ORIGINAL_REVISION = "0";
   static readonly SUPPORTED_CURRENCIES = ["USD", "EUR", "GBP", "CAD", "AUD", "CHF", "CNY"];
+  static readonly USE_HIGH_CONTRAST_THEME_COOKIE = "astrobin_use_high_contrast_theme";
 }

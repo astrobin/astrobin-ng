@@ -1,0 +1,108 @@
+@import "~bootstrap/scss/functions";
+
+// Override Bootstrap variables
+$theme-colors: (
+  "primary": #f0f0f0,
+  "secondary": #f0f0f0,
+  "success": #f0f0f0,
+  "info": #222,
+  "warning": #f0f0f0,
+  "danger": #f0f0f0,
+  "light": #f0f0f0,
+  "dark": #111
+);
+
+$dropdown-link-hover-bg: theme-color("dark");
+$enable-gradients: false;
+
+// Define own colors
+
+// ... shades of grey
+$white: theme-color("light");
+$lightest-grey: #e0e0e0;
+$lighter-grey: #aaa;
+$light-grey: #999;
+$grey: #333;
+$dark-grey: #282828;
+$darker-grey: #222;
+$darkest-grey: #111;
+$black: #000;
+
+// ... other colors
+$gold: #fff;
+
+$info: theme-color("info");
+$text-on-info: theme-color("light");
+
+$success: theme-color("success");
+$successSecondary: darken($success, 30%);
+
+$warning: theme-color("warning");
+$text-on-warning: theme-color("dark");
+
+$error: theme-color("error");
+
+// ... special colors
+$accent-color: theme-color("primary");
+$lighter-accent-color: lighten($accent-color, 20%);
+$darker-accent-color: darken($accent-color, 20%);
+$muted-accent-color: #eee;
+$text-on-accent-color: theme-color("dark");
+
+$secondary-accent-color: #ddd;
+$lighter-secondary-accent-color: lighten($secondary-accent-color, 20%);
+$darker-secondary-accent-color: darken($secondary-accent-color, 20%);
+$text-on-secondary-accent-color: $black;
+
+// Other variables
+$ng-select-highlight: $darker-grey;
+$ng-select-primary-text: $lightest-grey;
+$ng-select-disabled-text: $lightest-grey;
+$ng-select-border: $darker-grey;
+$ng-select-border-radius: 4px;
+$ng-select-bg: $darkest-grey;
+$ng-select-selected: darken($ng-select-highlight, 2%);
+$ng-select-marked: darken($ng-select-highlight, 1%);
+$ng-select-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 0 3px rgba(0, 126, 255, 0.1);
+$ng-select-placeholder: darken($ng-select-primary-text, 10%);
+$ng-select-height: 42px;
+$ng-select-value-padding-left: .5rem;
+$ng-select-value-font-size: 0.9em;
+
+// Define CSS variables
+:root {
+  --accentColor: #{$accent-color};
+  --lighterAccentColor: #{$lighter-accent-color};
+  --darkerAccentColor: #{$darker-accent-color};
+  --mutedAccentColor: #{$muted-accent-color};
+  --textOnAccentColor: #{$text-on-accent-color};
+
+  --secondaryAccentColor: #{$secondary-accent-color};
+  --lighterSecondaryAccentColor: #{$lighter-secondary-accent-color};
+  --darkerSecondaryAccentColor: #{$darker-secondary-accent-color};
+  --textOnSecondaryAccentColor: #{$text-on-secondary-accent-color};
+
+  --brightWhite: #fff;
+  --white: #{theme-color("primary")};
+  --lightGrey: #{$light-grey};
+  --lighterGrey: #{$lighter-grey};
+  --lightestGrey: #{$lightest-grey};
+  --grey: #{$grey};
+  --darkGrey: #{$dark-grey};
+  --darkerGrey: #{$darker-grey};
+  --darkestGrey: #{$darkest-grey};
+  --black: #{$black};
+
+  --gold: #{$gold};
+
+  --infoColor: #{theme-color("info")};
+  --textOnInfoColor: #{$text-on-info};
+
+  --successColor: #{theme-color("success")};
+  --successSecondaryColor: #{$successSecondary};
+
+  --warningColor: #{theme-color("warning")};
+  --textOnWarningColor: #{$text-on-warning};
+
+  --dangerColor: #{theme-color("danger")};
+}

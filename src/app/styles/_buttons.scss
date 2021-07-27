@@ -1,0 +1,71 @@
+@import "breakpoints";
+
+.btn {
+  font-size: 0.85rem;
+
+  @media (max-width: $xs-max) {
+    display: block;
+    width: 100%;
+    padding-top: .75rem;
+    padding-bottom: .75rem;
+
+    &:not(:last-child) {
+      margin-bottom: .5rem;
+    }
+  }
+
+  img.icon,
+  fa-icon {
+    margin-right: .25rem;
+    fill: currentColor;
+
+    &:last-of-type {
+      margin-right: .5rem;
+    }
+  }
+
+  &.btn-lg {
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+  }
+
+  &.btn-xl {
+    padding: .75rem 1.5rem;
+    font-size: 1.5rem;
+    line-height: 1.5rem;
+  }
+
+  &.loading {
+    background: url("/assets/images/white-loader.svg") transparent no-repeat center !important;
+    background-size: 1rem !important;
+    color: transparent !important;
+    text-shadow: none !important;
+    pointer-events: none !important;
+    opacity: .65 !important;
+
+    .icons {
+      visibility: hidden;
+    }
+  }
+
+  &.btn-primary {
+    &.loading {
+      background: url("/assets/images/white-loader.svg") var(--accentColor) no-repeat center !important;
+      background-size: 1rem !important;
+    }
+  }
+
+  &.btn-secondary {
+    &.loading {
+      background: url("/assets/images/white-loader.svg") var(--white) no-repeat center !important;
+      background-size: 1rem !important;
+    }
+  }
+
+  &.btn-danger {
+    &.loading {
+      background: url("/assets/images/white-loader.svg") var(--error) no-repeat center !important;
+      background-size: 1rem !important;
+    }
+  }
+}

@@ -1,10 +1,3 @@
-// Include bootswatch variables first.
-@import "./node_modules/bootswatch/dist/cyborg/variables";
-
-// Then override them.
-@import "app/styles/variables";
-
-// Then import bootstrap and bootswatch, that now have the correct variables.
 @import "./node_modules/bootstrap/scss/bootstrap";
 @import "./node_modules/bootswatch/dist/cyborg/bootswatch";
 
@@ -17,6 +10,7 @@
 @import "app/styles/alerts";
 @import "app/styles/buttons";
 @import "app/styles/cards";
+@import "app/styles/ckeditor";
 @import "app/styles/common";
 @import "app/styles/dropdowns";
 @import "app/styles/forms";

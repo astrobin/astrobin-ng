@@ -141,6 +141,7 @@ export interface ImageInterface {
   published: string;
   license: string;
   description?: string;
+  descriptionBbcode?: string;
   link?: string;
   linkToFits?: string;
   acquisitionType: AcquisitionType;
