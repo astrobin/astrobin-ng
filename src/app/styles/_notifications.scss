@@ -56,3 +56,10 @@
     color: var(--grey);
   }
 }
+
+.toast-success {
+  &,
+  strong {
+    color: var(--textOnSuccessColor);
+  }
+}

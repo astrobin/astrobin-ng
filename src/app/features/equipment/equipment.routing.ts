@@ -8,6 +8,6 @@ export const routes: Routes = [
     path: "migration-tool",
     component: MigrationToolComponent,
     canActivate: [AuthGuardService, GroupGuardService],
-    data: { group: "equipment-migration-staff" }
+    data: { group: "equipment_moderators" }
   }
 ];

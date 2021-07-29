@@ -32,7 +32,7 @@ export class GearApiService extends BaseClassicApiService implements MigratableG
     itemType?: EquipmentItemType,
     itemId?: EquipmentItemBaseInterface["id"]
   ) {
-    return this.http.put(`${this.configUrl}/set-migration/${gearId}/`, {
+    return this.http.put(`${this.configUrl}/${gearId}/set-migration/`, {
       migrationFlag,
       itemType,
       itemId

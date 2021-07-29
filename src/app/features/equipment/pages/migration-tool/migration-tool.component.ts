@@ -16,7 +16,7 @@ import { PopNotificationsService } from "@shared/services/pop-notifications.serv
 import { Store } from "@ngrx/store";
 import { EquipmentActionTypes, FindAll, FindAllSuccess, LoadBrand } from "@features/equipment/store/equipment.actions";
 import { Actions, ofType } from "@ngrx/effects";
-import { selectBrands } from "@features/equipment/store/equipment.selectors";
+import { selectBrands, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 
 @Component({
   selector: "astrobin-migration-tool",
@@ -88,11 +88,51 @@ export class MigrationToolComponent implements OnInit, AfterViewInit {
   }
 
   markAsMultiple(object: any) {
-    // TODO: implement
+    this.loadingService.setLoading(true);
+    this.store$
+      .select(selectEquipmentItem, this.selectedMigrationItem)
+      .pipe(switchMap(item => this.legacyGearApi.setMigration(object.pk, MigrationFlag.MULTIPLE_ITEMS)))
+      .subscribe(
+        () => {
+          this.loadingService.setLoading(false);
+          this.migration.inProgress = false;
+          this.skip();
+          this.popNotificationsService.success(
+            `Good job! Item <strong>${object.make} ${object.name}</strong> marked as <strong>multiple items<strong>! Do another one now! 😃`,
+            null,
+            {
+              enableHtml: true
+            }
+          );
+        },
+        error => {
+          this._error(error);
+        }
+      );
   }
 
   markAsDIY(object: any) {
-    // TODO: implement
+    this.loadingService.setLoading(true);
+    this.store$
+      .select(selectEquipmentItem, this.selectedMigrationItem)
+      .pipe(switchMap(item => this.legacyGearApi.setMigration(object.pk, MigrationFlag.DIY)))
+      .subscribe(
+        () => {
+          this.loadingService.setLoading(false);
+          this.migration.inProgress = false;
+          this.skip();
+          this.popNotificationsService.success(
+            `Good job! Item <strong>${object.make} ${object.name}</strong> marked as <strong>DIY</strong>! Do another one now! 😃`,
+            null,
+            {
+              enableHtml: true
+            }
+          );
+        },
+        error => {
+          this._error(error);
+        }
+      );
   }
 
   beginMigration(object: any) {
@@ -101,14 +141,35 @@ export class MigrationToolComponent implements OnInit, AfterViewInit {
 
   confirmMigration(object: any) {
     this.loadingService.setLoading(true);
-    this.legacyGearApi
-      .setMigration(object.id, MigrationFlag.MIGRATE, equipmentItemType(object.item), this.selectedMigrationItem)
-      .subscribe(() => {
-        this.loadingService.setLoading(false);
-        this.popNotificationsService.success(
-          `Item <strong>${object.make} ${object.name}</strong> marked for migration! Do another one now! 😃`
-        );
-      });
+    this.store$
+      .select(selectEquipmentItem, this.selectedMigrationItem)
+      .pipe(
+        switchMap(item =>
+          this.legacyGearApi.setMigration(
+            object.pk,
+            MigrationFlag.MIGRATE,
+            equipmentItemType(item),
+            this.selectedMigrationItem
+          )
+        )
+      )
+      .subscribe(
+        () => {
+          this.loadingService.setLoading(false);
+          this.migration.inProgress = false;
+          this.skip();
+          this.popNotificationsService.success(
+            `Good job! Item <strong>${object.make} ${object.name}</strong> marked for <strong>migration</strong>! Do another one now! 😃`,
+            null,
+            {
+              enableHtml: true
+            }
+          );
+        },
+        error => {
+          this._error(error);
+        }
+      );
   }
 
   _onMigrationSearch(event: { term: string; items: EquipmentItemBaseInterface[] }) {
@@ -148,5 +209,12 @@ export class MigrationToolComponent implements OnInit, AfterViewInit {
         })
       )
     );
+  }
+
+  _error(error) {
+    this.loadingService.setLoading(false);
+    this.popNotificationsService.error(`Sorry, something went wrong: <em>${error.message}</em>`, null, {
+      enableHtml: true
+    });
   }
 }
