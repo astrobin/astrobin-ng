@@ -8,7 +8,7 @@
       </a>
     </li>
 
-    <li *ngFor="let object of breadcrumb; let i = index" class="breadcrumb-item">
+    <li *ngFor="let item of breadcrumb; let i = index" class="breadcrumb-item">
 
       <a *ngIf="item?.link" [routerLink]="item?.link">
         {{ item.label }}
