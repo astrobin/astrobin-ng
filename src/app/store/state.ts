@@ -15,16 +15,20 @@ import * as app from "./reducers/app.reducers";
 import { initialAppState } from "./reducers/app.reducers";
 import { LocationEffects } from "@app/store/effects/location.effects";
 import { NotificationsEffects } from "@features/notifications/store/notifications.effects";
+import * as equipment from "@features/equipment/store/equipment.reducer";
+import { initialEquipmentState } from "@features/equipment/store/equipment.reducer";
 
 export interface State {
   app: app.AppState;
   auth: auth.AuthState;
+  equipment: equipment.EquipmentState;
   notifications: notifications.NotificationsState;
 }
 
 export const initialState: State = {
   app: initialAppState,
   auth: initialAuthState,
+  equipment: initialEquipmentState,
   notifications: initialNotificationsState
 };
 

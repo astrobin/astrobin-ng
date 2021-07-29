@@ -15,6 +15,9 @@ import { BrandInterface } from "@features/equipment/interfaces/brand.interface";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { MigrationFlag } from "@shared/services/api/classic/astrobin/migratable-gear-item.service-interface";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
+import { Store } from "@ngrx/store";
+import { EquipmentActionTypes, FindAll, FindAllSuccess } from "@features/equipment/store/equipment.actions";
+import { Actions, ofType } from "@ngrx/effects";
 
 @Component({
   selector: "astrobin-migration-tool",
@@ -40,6 +43,8 @@ export class MigrationToolComponent implements OnInit, AfterViewInit {
   };
 
   constructor(
+    public readonly store$: Store,
+    public readonly actions$: Actions,
     public readonly loadingService: LoadingService,
     public readonly legacyGearApi: GearApiService,
     public readonly titleService: TitleService,
@@ -117,7 +122,10 @@ export class MigrationToolComponent implements OnInit, AfterViewInit {
     }
 
     const field = this.migration.fields.find(f => f.key === "equipment-item");
-    field.templateOptions.options = this.equipmentApiService.findAll(q).pipe(
+    this.store$.dispatch(new FindAll({ q }));
+    field.templateOptions.options = this.actions$.pipe(
+      ofType(EquipmentActionTypes.FIND_ALL_SUCCESS),
+      map((action: FindAllSuccess) => action.payload.items),
       switchMap(items =>
         forkJoin(items.map(item => this.equipmentApiService.getBrand(item.brand))).pipe(
           map(brands => ({
