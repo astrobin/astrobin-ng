@@ -1,6 +1,8 @@
 import { Component } from "@angular/core";
 import { FieldType } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
+import { UtilsService } from "@shared/services/utils/utils.service";
+import { isObservable, Observable } from "rxjs";
 
 @Component({
   selector: "astrobin-formly-field-ng-select",
@@ -8,8 +10,18 @@ import { TranslateService } from "@ngx-translate/core";
   styleUrls: ["./formly-field-ng-select.component.scss"]
 })
 export class FormlyFieldNgSelectComponent extends FieldType {
-  constructor(public readonly translateService: TranslateService) {
+  constructor(public readonly translateService: TranslateService, public readonly utilsService: UtilsService) {
     super();
+  }
+
+  onSearch(event) {
+    if (this.utilsService.isFunction(this.to.onSearch)) {
+      this.to.onSearch(event);
+    }
+  }
+
+  get hasAsyncItems(): boolean {
+    return isObservable(this.to.options);
   }
 
   get placeholder(): string {

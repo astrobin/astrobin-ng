@@ -1,1 +1,108 @@
-<div class="page">migration-tool works!</div>
+<div class="page">
+  <h1>{{ title }}</h1>
+
+  <ng-container *ngIf="randomNonMigrated$ | async as objects; else loading">
+    <ng-container *ngIf="objects[0] as object">
+      <div class="row">
+        <div class="col-10 offset-1 col-md-8 offset-md-2">
+          <div class="card box-shadow">
+            <div class="card-header">
+              What would you like to do with the following object?
+            </div>
+
+            <div class="card-body">
+              <p>
+                Brand/Make: <strong>{{ object.make || "(no brand)" }}</strong>
+              </p>
+              <p>
+                Name/Model: <strong>{{ object.name || "(no name)" }}</strong>
+              </p>
+            </div>
+
+            <div class="card-footer d-flex justify-content-end flex-column flex-md-row">
+              <button
+                class="btn btn-sm-block btn-secondary"
+                [disabled]="migration.inProgress"
+                [class.loading]="loadingService.isLoading()"
+                (click)="skip()"
+              >
+                Skip
+              </button>
+
+              <button
+                class="btn btn-sm-block btn-secondary"
+                [disabled]="migration.inProgress"
+                [class.loading]="loadingService.isLoading()"
+                (click)="markAsMultiple(object)"
+              >
+                Mark as multiple items
+              </button>
+
+              <button
+                class="btn btn-sm-block btn-secondary"
+                [disabled]="migration.inProgress"
+                [class.loading]="loadingService.isLoading()"
+                (click)="markAsDIY(object)"
+              >
+                Mark as DIY
+              </button>
+
+              <button
+                class="btn btn-sm-block btn-primary"
+                [disabled]="migration.inProgress"
+                [class.loading]="loadingService.isLoading()"
+                (click)="beginMigration(object)"
+              >
+                Migrate...
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row" *ngIf="migration.inProgress">
+        <div class="col-10 offset-1 col-md-8 offset-md-2">
+          <div class="mt-4 mb-4 text-center">
+            <fa-icon icon="arrow-down"></fa-icon>
+          </div>
+
+          <div class="card box-shadow">
+            <div class="card-header">
+              Select equipment object to migrate "<strong>{{ object.make || "(no brand)" }}</strong>
+              {{ object.name || "(no name)" }}" to, or create a new one
+            </div>
+
+            <div class="card-body">
+              <form [formGroup]="migration.form">
+                <formly-form
+                  [fields]="migration.fields"
+                  [form]="migration.form"
+                  [model]="migration.model"
+                ></formly-form>
+              </form>
+            </div>
+
+            <div class="card-footer d-flex justify-content-end flex-column flex-md-row">
+              <button
+                class="btn btn-sm-block btn-primary"
+                [disabled]="!selectedMigrationItem"
+                [class.loading]="loadingService.isLoading()"
+                (click)="confirmMigration(object)"
+              >
+                Confirm migration
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </ng-container>
+</div>
+
+<ng-template #loading>
+  <astrobin-loading-indicator></astrobin-loading-indicator>
+</ng-template>
+
+<ng-template #equipmentItemOptionTemplate let-object="item">
+  <astrobin-equipment-item-summary [item]="object.item" [brand]="object.brand"></astrobin-equipment-item-summary>
+</ng-template>

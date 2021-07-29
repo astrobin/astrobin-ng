@@ -7,9 +7,10 @@ import { equipmentFeatureKey, reducer } from "@features/equipment/store/equipmen
 import { EquipmentEffects } from "@features/equipment/store/equipment.effects";
 import { routes } from "@features/equipment/equipment.routing";
 import { MigrationToolComponent } from "./pages/migration-tool/migration-tool.component";
+import { EquipmentItemSummaryComponent } from './components/equipment-item-summary/equipment-item-summary.component';
 
 @NgModule({
-  declarations: [MigrationToolComponent],
+  declarations: [MigrationToolComponent, EquipmentItemSummaryComponent],
   imports: [
     RouterModule.forChild(routes),
     SharedModule,

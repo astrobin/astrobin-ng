@@ -4,12 +4,12 @@
   </form>
 </div>
 
-<ng-template #remoteSourceLabelTemplate let-item="item">
+<ng-template #remoteSourceLabelTemplate let-object="object">
   <span class="code">{{ item.label }}</span>
   <span *ngIf="isSponsor(item.value)" class="remote-affiliate-sponsor">(sponsor)</span>
 </ng-template>
 
-<ng-template #remoteSourceOptionTemplate let-item="item">
+<ng-template #remoteSourceOptionTemplate let-object="object">
   <span class="code">{{ item.label }}</span>
   <span *ngIf="isSponsor(item.value)" class="remote-affiliate-sponsor">(sponsor)</span>
 </ng-template>

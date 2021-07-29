@@ -10,4 +10,17 @@
       font-size: 1rem;
     }
   }
+
+  .card-footer  {
+    @include darkest-background-texture;
+
+    .btn:not(:last-child) {
+      @media screen and (max-width: $sm-max) {
+        margin-bottom: .5rem;
+      }
+      @media screen and (min-width: $md-min) {
+        margin-right: .5rem;
+      }
+    }
+  }
 }

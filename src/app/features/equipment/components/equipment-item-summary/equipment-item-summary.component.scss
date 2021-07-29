@@ -1,0 +1,34 @@
+.image {
+  float: left;
+  margin-right: 1rem;
+  max-width: 3rem;
+
+  img {
+    width: 100%;
+  }
+}
+
+.properties {
+  margin-top: .25rem;
+
+  .property {
+    white-space: nowrap;
+
+    .property-name {
+      color: var(--lighgerGrey);
+    }
+
+    .property-value {
+      color: var(--lighgestGrey);
+    }
+
+    &:not(:last-child) {
+      margin-right: .5rem;
+
+      &::after {
+        content: '\b7'; /* middot */
+        margin-left: .5rem;
+      }
+    }
+  }
+}

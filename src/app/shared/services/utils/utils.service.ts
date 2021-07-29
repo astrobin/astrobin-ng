@@ -123,6 +123,10 @@ export class UtilsService {
 
     return url;
   }
+
+  isFunction(functionToCheck) {
+    return functionToCheck && {}.toString.call(functionToCheck) === "[object Function]";
+  }
 }
 
 export function distinctUntilChangedObj<T>() {

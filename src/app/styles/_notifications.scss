@@ -6,14 +6,14 @@
   @while $index != null {
     // get the substring from the first character to the separator
     $item: str-slice($string, 1, $index - 1);
-    // push item to array
+    // push object to array
     $split-arr: append($split-arr, $item);
-    // remove item and separator from string
+    // remove object and separator from string
     $string: str-slice($string, $index + 1);
     // find new index of separator
     $index: str-index($string, $separator);
   }
-  // add the remaining string to list (the last item)
+  // add the remaining string to list (the last object)
   $split-arr: append($split-arr, $string);
 
   @return $split-arr;

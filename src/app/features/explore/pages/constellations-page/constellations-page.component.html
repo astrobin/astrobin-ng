@@ -12,9 +12,9 @@
       id="constellation-selector"
       (change)="jumpTo($event)"
     >
-      <ng-template let-item="item" ng-label-tmp> {{ item.id }}: {{ item.name }} </ng-template>
+      <ng-template let-object="object" ng-label-tmp> {{ item.id }}: {{ item.name }} </ng-template>
 
-      <ng-template let-item="item" ng-option-tmp> {{ item.id }}: {{ item.name }} </ng-template>
+      <ng-template let-object="object" ng-option-tmp> {{ item.id }}: {{ item.name }} </ng-template>
     </ng-select>
   </div>
 
