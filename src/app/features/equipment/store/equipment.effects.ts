@@ -19,8 +19,10 @@ export class EquipmentEffects {
   FindAll: Observable<FindAllSuccess> = createEffect(() =>
     this.actions$.pipe(
       ofType(EquipmentActionTypes.FIND_ALL),
-      map((action: FindAll) => action.payload.q),
-      mergeMap(q => this.equipmentApiService.findAll(q).pipe(map(items => new FindAllSuccess({ items }))))
+      map((action: FindAll) => action.payload),
+      mergeMap(payload =>
+        this.equipmentApiService.findAll(payload.q, payload.type).pipe(map(items => new FindAllSuccess({ items })))
+      )
     )
   );
 

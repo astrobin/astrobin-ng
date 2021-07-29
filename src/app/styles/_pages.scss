@@ -17,7 +17,7 @@
     border-top-right-radius: 0;
   }
 
-  .alert:first-child {
+  > .alert:first-child {
     margin: -2rem -2rem 3rem -2rem;
     border-radius: 0;
   }

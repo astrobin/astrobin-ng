@@ -1,11 +1,43 @@
 <div class="page">
   <h1>{{ title }}</h1>
 
-  <ng-container *ngIf="randomNonMigrated$ | async as objects; else loading">
-    <ng-container *ngIf="objects.length > 0; else allDone">
-      <ng-container *ngIf="objects[0] as object">
-        <div class="row">
-          <div class="col-10 offset-1 col-md-8 offset-md-2">
+  <div class="row">
+    <div class="col-md-3">
+      <ul ngbNav #nav="ngbNav" [(activeId)]="activeType" class="nav-pills" orientation="vertical">
+        <li ngbNavItem="camera">
+          <a ngbNavLink routerLink="../camera">Cameras</a>
+        </li>
+
+        <li ngbNavItem="telescope">
+          <a ngbNavLink routerLink="../telescope">Telescopes</a>
+        </li>
+
+        <li ngbNavItem="mount" [disabled]="true">
+          <a ngbNavLink routerLink="../mount">Mounts</a>
+        </li>
+
+        <li ngbNavItem="focal-reducer" [disabled]="true">
+          <a ngbNavLink routerLink="../focal-reducer">Focal reducers</a>
+        </li>
+
+        <li ngbNavItem="filter" [disabled]="true">
+          <a ngbNavLink routerLink="../filter">Filters</a>
+        </li>
+
+        <li ngbNavItem="accessory" [disabled]="true">
+          <a ngbNavLink routerLink="../accessory">Accessories</a>
+        </li>
+
+        <li ngbNavItem="software" [disabled]="true">
+          <a ngbNavLink routerLink="../software">Software</a>
+        </li>
+      </ul>
+    </div>
+
+    <div class="col-md-9">
+      <ng-container *ngIf="randomNonMigrated$ | async as objects; else loading">
+        <ng-container *ngIf="objects.length > 0; else allDone">
+          <ng-container *ngIf="objects[0] as object">
             <div class="card box-shadow">
               <div class="card-header">
                 What would you like to do with the following object?
@@ -67,56 +99,55 @@
                 </button>
               </div>
             </div>
-          </div>
-        </div>
 
-        <div class="row" *ngIf="migration.inProgress">
-          <div class="col-10 offset-1 col-md-8 offset-md-2">
-            <div class="mt-4 mb-4 text-center">
-              <fa-icon icon="arrow-down"></fa-icon>
-            </div>
-
-            <div class="card box-shadow">
-              <div class="card-header">
-                Select equipment object to migrate "<strong>{{ object.make || "(no brand)" }}</strong>
-                {{ object.name || "(no name)" }}" to, or create a new one
+            <ng-container *ngIf="migration.inProgress">
+              <div class="mt-4 mb-4 text-center">
+                <fa-icon icon="arrow-down"></fa-icon>
               </div>
 
-              <div class="card-body">
-                <form [formGroup]="migration.form">
-                  <formly-form
-                    [fields]="migration.fields"
-                    [form]="migration.form"
-                    [model]="migration.model"
-                  ></formly-form>
-                </form>
-              </div>
+              <div class="card box-shadow">
+                <div class="card-header">
+                  Select equipment object to migrate "<strong>{{ object.make || "(no brand)" }}</strong>
+                  {{ object.name || "(no name)" }}" to, or create a new one
+                </div>
 
-              <div class="card-footer d-flex justify-content-end flex-column flex-md-row">
-                <button
-                  class="btn btn-sm-block btn-secondary"
-                  [class.loading]="loadingService.isLoading()"
-                  (click)="cancelMigration()"
-                >
-                  Cancel
-                </button>
+                <div class="card-body">
+                  <form [formGroup]="migration.form">
+                    <formly-form
+                      [fields]="migration.fields"
+                      [form]="migration.form"
+                      [model]="migration.model"
+                    ></formly-form>
+                  </form>
+                </div>
 
-                <button
-                  class="btn btn-sm-block btn-primary"
-                  [disabled]="!selectedMigrationItem"
-                  [class.loading]="loadingService.isLoading()"
-                  (click)="confirmMigration(object)"
-                >
-                  Confirm migration
-                </button>
+                <div class="card-footer d-flex justify-content-end flex-column flex-md-row">
+                  <button
+                    class="btn btn-sm-block btn-secondary"
+                    [class.loading]="loadingService.isLoading()"
+                    (click)="cancelMigration()"
+                  >
+                    Cancel
+                  </button>
+
+                  <button
+                    class="btn btn-sm-block btn-primary"
+                    [disabled]="!selectedMigrationItem"
+                    [class.loading]="loadingService.isLoading()"
+                    (click)="confirmMigration(object)"
+                  >
+                    Confirm migration
+                  </button>
+                </div>
               </div>
-            </div>
-          </div>
-        </div>
+            </ng-container>
+          </ng-container>
+        </ng-container>
       </ng-container>
-    </ng-container>
-  </ng-container>
-</div>
+    </div> <!-- main col -->
+  </div> <!-- main row -->
+
+</div> <!-- page -->
 
 <ng-template #loading>
   <astrobin-loading-indicator></astrobin-loading-indicator>
@@ -125,7 +156,7 @@
 <ng-template #allDone>
   <div class="alert alert-success">
     <h4>Hooray 🎉</h4>
-    <p>There are no more items to migrate, we did it! This was awesome, thank you!</p>
+    <p>There are no more items of this type to migrate, we did it! This was awesome, thank you!</p>
   </div>
 </ng-template>
 

@@ -6,6 +6,10 @@ import { GroupGuardService } from "@shared/services/guards/group-guard.service";
 export const routes: Routes = [
   {
     path: "migration-tool",
+    redirectTo: "migration-tool/cameras"
+  },
+  {
+    path: "migration-tool/:itemType",
     component: MigrationToolComponent,
     canActivate: [AuthGuardService, GroupGuardService],
     data: { group: "equipment_moderators" }

@@ -1,7 +1,10 @@
 // tslint:disable:max-classes-per-file
 
 import { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
-import { EquipmentItemBaseInterface } from "@features/equipment/interfaces/equipment-item-base.interface";
+import {
+  EquipmentItemBaseInterface,
+  EquipmentItemType
+} from "@features/equipment/interfaces/equipment-item-base.interface";
 import { BrandInterface } from "@features/equipment/interfaces/brand.interface";
 
 export enum EquipmentActionTypes {
@@ -26,7 +29,7 @@ export class LoadBrandSuccess implements PayloadActionInterface {
 export class FindAll implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.FIND_ALL;
 
-  constructor(public payload: { q: string }) {}
+  constructor(public payload: { q: string; type: EquipmentItemType }) {}
 }
 
 export class FindAllSuccess implements PayloadActionInterface {
