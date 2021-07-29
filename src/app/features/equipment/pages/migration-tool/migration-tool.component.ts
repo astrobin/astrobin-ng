@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, OnInit, TemplateRef, ViewChild } from "@angular/core";
 import { GearApiService } from "@shared/services/api/classic/astrobin/gear/gear-api.service";
 import { LoadingService } from "@shared/services/loading.service";
-import { map, switchMap, tap } from "rxjs/operators";
+import { filter, map, switchMap, tap } from "rxjs/operators";
 import {
   EquipmentItemBaseInterface,
   equipmentItemType
@@ -10,14 +10,14 @@ import { TitleService } from "@shared/services/title/title.service";
 import { FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
-import { forkJoin, of } from "rxjs";
+import { of } from "rxjs";
 import { BrandInterface } from "@features/equipment/interfaces/brand.interface";
-import { UtilsService } from "@shared/services/utils/utils.service";
 import { MigrationFlag } from "@shared/services/api/classic/astrobin/migratable-gear-item.service-interface";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { Store } from "@ngrx/store";
-import { EquipmentActionTypes, FindAll, FindAllSuccess } from "@features/equipment/store/equipment.actions";
+import { EquipmentActionTypes, FindAll, FindAllSuccess, LoadBrand } from "@features/equipment/store/equipment.actions";
 import { Actions, ofType } from "@ngrx/effects";
+import { selectBrands } from "@features/equipment/store/equipment.selectors";
 
 @Component({
   selector: "astrobin-migration-tool",
@@ -49,7 +49,6 @@ export class MigrationToolComponent implements OnInit, AfterViewInit {
     public readonly legacyGearApi: GearApiService,
     public readonly titleService: TitleService,
     public readonly equipmentApiService: EquipmentApiService,
-    public readonly utilsService: UtilsService,
     public readonly popNotificationsService: PopNotificationsService
   ) {}
 
@@ -126,11 +125,16 @@ export class MigrationToolComponent implements OnInit, AfterViewInit {
     field.templateOptions.options = this.actions$.pipe(
       ofType(EquipmentActionTypes.FIND_ALL_SUCCESS),
       map((action: FindAllSuccess) => action.payload.items),
+      tap(items => {
+        items.forEach(item => this.store$.dispatch(new LoadBrand({ id: item.brand })));
+        return items;
+      }),
       switchMap(items =>
-        forkJoin(items.map(item => this.equipmentApiService.getBrand(item.brand))).pipe(
+        this.store$.select(selectBrands).pipe(
+          filter(brands => brands && brands.length > 0),
           map(brands => ({
-            brands: this.utilsService.arrayUniqueObjects(brands),
-            items: this.utilsService.arrayUniqueObjects(items)
+            brands,
+            items
           }))
         )
       ),

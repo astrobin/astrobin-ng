@@ -1,6 +1,12 @@
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
-import { EquipmentActionTypes, FindAll, FindAllSuccess } from "@features/equipment/store/equipment.actions";
+import {
+  EquipmentActionTypes,
+  FindAll,
+  FindAllSuccess,
+  LoadBrand,
+  LoadBrandSuccess
+} from "@features/equipment/store/equipment.actions";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
@@ -15,6 +21,14 @@ export class EquipmentEffects {
       ofType(EquipmentActionTypes.FIND_ALL),
       map((action: FindAll) => action.payload.q),
       mergeMap(q => this.equipmentApiService.findAll(q).pipe(map(items => new FindAllSuccess({ items }))))
+    )
+  );
+
+  LoadBrand: Observable<LoadBrandSuccess> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(EquipmentActionTypes.LOAD_BRAND),
+      map((action: LoadBrand) => action.payload.id),
+      mergeMap(id => this.equipmentApiService.getBrand(id).pipe(map(brand => new LoadBrandSuccess({ brand }))))
     )
   );
 
