@@ -9,7 +9,6 @@ import {
 import { TitleService } from "@shared/services/title/title.service";
 import { FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
-import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import { of } from "rxjs";
 import { BrandInterface } from "@features/equipment/interfaces/brand.interface";
 import { MigrationFlag } from "@shared/services/api/classic/astrobin/migratable-gear-item.service-interface";
@@ -48,7 +47,6 @@ export class MigrationToolComponent implements OnInit, AfterViewInit {
     public readonly loadingService: LoadingService,
     public readonly legacyGearApi: GearApiService,
     public readonly titleService: TitleService,
-    public readonly equipmentApiService: EquipmentApiService,
     public readonly popNotificationsService: PopNotificationsService
   ) {}
 
