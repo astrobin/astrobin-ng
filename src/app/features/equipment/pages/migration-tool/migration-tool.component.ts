@@ -2,10 +2,7 @@ import { AfterViewInit, Component, OnInit, TemplateRef, ViewChild } from "@angul
 import { GearApiService } from "@shared/services/api/classic/astrobin/gear/gear-api.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { filter, map, switchMap, tap } from "rxjs/operators";
-import {
-  EquipmentItemBaseInterface,
-  equipmentItemType
-} from "@features/equipment/interfaces/equipment-item-base.interface";
+import { EquipmentItemBaseInterface } from "@features/equipment/interfaces/equipment-item-base.interface";
 import { TitleService } from "@shared/services/title/title.service";
 import { FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
@@ -17,6 +14,7 @@ import { Store } from "@ngrx/store";
 import { EquipmentActionTypes, FindAll, FindAllSuccess, LoadBrand } from "@features/equipment/store/equipment.actions";
 import { Actions, ofType } from "@ngrx/effects";
 import { selectBrands, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
+import { HttpStatusCode } from "@angular/common/http";
 
 @Component({
   selector: "astrobin-migration-tool",
@@ -87,52 +85,16 @@ export class MigrationToolComponent implements OnInit, AfterViewInit {
       .pipe(tap(() => this.loadingService.setLoading(false)));
   }
 
+  markAsWrongType(object: any) {
+    this._applyMigration(object, [object.pk, MigrationFlag.WRONG_TYPE], "wrong type");
+  }
+
   markAsMultiple(object: any) {
-    this.loadingService.setLoading(true);
-    this.store$
-      .select(selectEquipmentItem, this.selectedMigrationItem)
-      .pipe(switchMap(item => this.legacyGearApi.setMigration(object.pk, MigrationFlag.MULTIPLE_ITEMS)))
-      .subscribe(
-        () => {
-          this.loadingService.setLoading(false);
-          this.migration.inProgress = false;
-          this.skip();
-          this.popNotificationsService.success(
-            `Good job! Item <strong>${object.make} ${object.name}</strong> marked as <strong>multiple items<strong>! Do another one now! 😃`,
-            null,
-            {
-              enableHtml: true
-            }
-          );
-        },
-        error => {
-          this._error(error);
-        }
-      );
+    this._applyMigration(object, [object.pk, MigrationFlag.MULTIPLE_ITEMS], "multiple items");
   }
 
   markAsDIY(object: any) {
-    this.loadingService.setLoading(true);
-    this.store$
-      .select(selectEquipmentItem, this.selectedMigrationItem)
-      .pipe(switchMap(item => this.legacyGearApi.setMigration(object.pk, MigrationFlag.DIY)))
-      .subscribe(
-        () => {
-          this.loadingService.setLoading(false);
-          this.migration.inProgress = false;
-          this.skip();
-          this.popNotificationsService.success(
-            `Good job! Item <strong>${object.make} ${object.name}</strong> marked as <strong>DIY</strong>! Do another one now! 😃`,
-            null,
-            {
-              enableHtml: true
-            }
-          );
-        },
-        error => {
-          this._error(error);
-        }
-      );
+    this._applyMigration(object, [object.pk, MigrationFlag.DIY], "DIY");
   }
 
   beginMigration(object: any) {
@@ -140,36 +102,11 @@ export class MigrationToolComponent implements OnInit, AfterViewInit {
   }
 
   confirmMigration(object: any) {
-    this.loadingService.setLoading(true);
-    this.store$
-      .select(selectEquipmentItem, this.selectedMigrationItem)
-      .pipe(
-        switchMap(item =>
-          this.legacyGearApi.setMigration(
-            object.pk,
-            MigrationFlag.MIGRATE,
-            equipmentItemType(item),
-            this.selectedMigrationItem
-          )
-        )
-      )
-      .subscribe(
-        () => {
-          this.loadingService.setLoading(false);
-          this.migration.inProgress = false;
-          this.skip();
-          this.popNotificationsService.success(
-            `Good job! Item <strong>${object.make} ${object.name}</strong> marked for <strong>migration</strong>! Do another one now! 😃`,
-            null,
-            {
-              enableHtml: true
-            }
-          );
-        },
-        error => {
-          this._error(error);
-        }
-      );
+    this._applyMigration(object, [object.pk, MigrationFlag.MIGRATE], "ready to migrate");
+  }
+
+  cancelMigration() {
+    this.migration.inProgress = false;
   }
 
   _onMigrationSearch(event: { term: string; items: EquipmentItemBaseInterface[] }) {
@@ -211,10 +148,50 @@ export class MigrationToolComponent implements OnInit, AfterViewInit {
     );
   }
 
-  _error(error) {
+  _applyMigration(object: any, setMigrateArgs: any[], markedAs: string) {
+    this.loadingService.setLoading(true);
+    this.store$
+      .select(selectEquipmentItem, this.selectedMigrationItem)
+      .pipe(switchMap(item => this.legacyGearApi.setMigration.apply(this.legacyGearApi, setMigrateArgs)))
+      .subscribe(
+        () => {
+          this.loadingService.setLoading(false);
+          this.migration.inProgress = false;
+          this.skip();
+          this.popNotificationsService.success(
+            `Good job! Item <strong>${object.make} ${object.name}</strong> marked as <strong>${markedAs}</strong>! Do another one now! 😃`,
+            null,
+            {
+              enableHtml: true
+            }
+          );
+        },
+        error => {
+          this._operationError(error);
+        }
+      );
+  }
+
+  _operationError(error) {
+    let skip = false;
+
     this.loadingService.setLoading(false);
-    this.popNotificationsService.error(`Sorry, something went wrong: <em>${error.message}</em>`, null, {
+
+    let message: string;
+
+    if (error.status === HttpStatusCode.Conflict) {
+      message = "This object was already processed by someone else at the same time. We'll get you another one!";
+      skip = true;
+    } else {
+      message = `Sorry, something went wrong: <em>${error.message}</em>`;
+    }
+
+    this.popNotificationsService.error(message, null, {
       enableHtml: true
     });
+
+    if (skip) {
+      this.skip();
+    }
   }
 }

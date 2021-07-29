@@ -34,6 +34,15 @@
                   class="btn btn-sm-block btn-secondary"
                   [disabled]="migration.inProgress"
                   [class.loading]="loadingService.isLoading()"
+                  (click)="markAsWrongType(object)"
+                >
+                  Mark as wrong type
+                </button>
+
+                <button
+                  class="btn btn-sm-block btn-secondary"
+                  [disabled]="migration.inProgress"
+                  [class.loading]="loadingService.isLoading()"
                   (click)="markAsMultiple(object)"
                 >
                   Mark as multiple items
@@ -84,6 +93,14 @@
               </div>
 
               <div class="card-footer d-flex justify-content-end flex-column flex-md-row">
+                <button
+                  class="btn btn-sm-block btn-secondary"
+                  [class.loading]="loadingService.isLoading()"
+                  (click)="cancelMigration()"
+                >
+                  Cancel
+                </button>
+
                 <button
                   class="btn btn-sm-block btn-primary"
                   [disabled]="!selectedMigrationItem"
