@@ -1,0 +1,9 @@
+<div class="form-group">
+  <input
+    type="file"
+    [formControl]="formControl"
+    [formlyAttributes]="field"
+    (change)="fileChanged($event)"
+    [accept]="to.accept || '*'"
+  />
+</div>

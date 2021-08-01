@@ -47,6 +47,17 @@ export class BrandEditorComponent implements OnInit {
         validators: {
           validation: ["url"]
         }
+      },
+
+      {
+        key: "logo",
+        type: "file",
+        id: "brand-field-logo",
+        templateOptions: {
+          required: false,
+          label: this.translateService.instant("Logo"),
+          accept: "image/jpeg, image/png"
+        }
       }
     ];
   }

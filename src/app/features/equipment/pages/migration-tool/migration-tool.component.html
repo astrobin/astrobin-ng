@@ -105,7 +105,7 @@
                 <fa-icon icon="arrow-down"></fa-icon>
               </div>
 
-              <div class="card box-shadow">
+              <div class="card" id="select-item-to-migrate-to">
                 <div class="card-header">
                   Select equipment object to migrate "<strong>{{ object.make || "(no brand)" }}</strong>
                   {{ object.name || "(no name)" }}" to, or create a new one
@@ -149,7 +149,7 @@
               </div>
 
               <div class="mt-4 mb-4">
-                <div class="card">
+                <div class="card" id="create-new-item">
                   <div class="card-header">
                     Create a new item
                   </div>

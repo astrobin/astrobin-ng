@@ -13,6 +13,7 @@ import { Actions, ofType } from "@ngrx/effects";
 import { map } from "rxjs/operators";
 import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
+import { WindowRefService } from "@shared/services/window-ref.service";
 
 @Component({
   selector: "astrobin-base-equipment-item-editor",
@@ -46,7 +47,8 @@ export class BaseEquipmentItemEditorComponent extends BaseComponentDirective {
   constructor(
     public readonly store$: Store,
     public readonly actions$: Actions,
-    public readonly translateService: TranslateService
+    public readonly translateService: TranslateService,
+    public readonly windowRefService: WindowRefService
   ) {
     super();
   }
@@ -71,6 +73,11 @@ export class BaseEquipmentItemEditorComponent extends BaseComponentDirective {
         optionTemplate: this.brandOptionTemplate,
         addTag: () => {
           this.brandCreation.inProgress = true;
+          setTimeout(() => {
+            this.windowRefService.nativeWindow.document
+              .getElementById("create-new-brand")
+              .scrollIntoView({ behavior: "smooth" });
+          }, 1);
         }
       }
     };

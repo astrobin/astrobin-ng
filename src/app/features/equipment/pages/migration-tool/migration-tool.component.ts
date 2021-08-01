@@ -30,6 +30,7 @@ import { TelescopeApiService } from "@shared/services/api/classic/astrobin/teles
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { TranslateService } from "@ngx-translate/core";
+import { WindowRefService } from "@shared/services/window-ref.service";
 
 @Component({
   selector: "astrobin-migration-tool",
@@ -77,7 +78,8 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
     public readonly legacyTelescopeApi: TelescopeApiService,
     public readonly titleService: TitleService,
     public readonly popNotificationsService: PopNotificationsService,
-    public readonly translateService: TranslateService
+    public readonly translateService: TranslateService,
+    public readonly windowRefService: WindowRefService
   ) {
     super();
   }
@@ -128,6 +130,11 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
           optionTemplate: this.equipmentItemOptionTemplate,
           addTag: () => {
             this.creation.inProgress = true;
+            setTimeout(() => {
+              this.windowRefService.nativeWindow.document
+                .getElementById("create-new-item")
+                .scrollIntoView({ behavior: "smooth" });
+            }, 1);
           }
         }
       }

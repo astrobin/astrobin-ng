@@ -4,6 +4,7 @@ import { Actions } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
 import { BaseEquipmentItemEditorComponent } from "@features/equipment/components/base-equipment-item-editor/base-equipment-item-editor.component";
 import { LoadingService } from "@shared/services/loading.service";
+import { WindowRefService } from "@shared/services/window-ref.service";
 
 @Component({
   selector: "astrobin-camera-editor",
@@ -15,9 +16,10 @@ export class CameraEditorComponent extends BaseEquipmentItemEditorComponent impl
     public readonly store$: Store,
     public readonly actions$: Actions,
     public readonly translateService: TranslateService,
+    public readonly windowRefService: WindowRefService,
     public readonly loadingService: LoadingService
   ) {
-    super(store$, actions$, translateService);
+    super(store$, actions$, translateService, windowRefService);
   }
 
   ngAfterContentInit(): void {

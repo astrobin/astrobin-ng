@@ -7,6 +7,7 @@ import { FormlyFieldNgSelectComponent } from "@shared/components/misc/formly-fie
 import { FormlyFieldStepperComponent } from "@shared/components/misc/formly-field-stepper/formly-field-stepper.component";
 import { FormlyFieldGoogleMapComponent } from "@shared/components/misc/formly-field-google-map/formly-field-google-map.component";
 import { FormlyFieldCKEditorComponent } from "@shared/components/misc/formly-field-ckeditor/formly-field-ckeditor.component";
+import { FormlyFieldFileComponent } from "@shared/components/misc/formly-field-file/formly-field-file.component";
 
 export interface FileSizeValidatorOptionsInterface {
   max: number;
@@ -82,6 +83,11 @@ function urlValidator(control: FormControl, field: FormlyFieldConfig): Validatio
 export function formlyValidationConfig(translate: TranslateService) {
   return {
     types: [
+      {
+        name: "file",
+        component: FormlyFieldFileComponent,
+        wrappers: ["default-wrapper"]
+      },
       {
         name: "chunked-file",
         component: FormlyFieldChunkedFileComponent,
