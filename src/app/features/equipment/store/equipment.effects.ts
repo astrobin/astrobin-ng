@@ -31,7 +31,7 @@ export class EquipmentEffects {
       ofType(EquipmentActionTypes.FIND_ALL_BRANDS),
       map((action: FindAllBrands) => action.payload),
       mergeMap(payload =>
-        this.equipmentApiService.findAllBrands(payload.name).pipe(map(brands => new FindAllBrandsSuccess({ brands })))
+        this.equipmentApiService.findAllBrands(payload.q).pipe(map(brands => new FindAllBrandsSuccess({ brands })))
       )
     )
   );

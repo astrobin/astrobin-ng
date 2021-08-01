@@ -1,3 +1,14 @@
+<ng-container *ngIf="similarBrands$ | async as similarItems">
+  <div class="alert alert-info" *ngIf="similarItems.length > 0">
+    <p>
+      {{ "Did you mean:" | translate }}
+      <span *ngFor="let item of similarItems; let isLast = last">
+        <a href="#" (click)="use($event, item.id)">{{ item.name }}</a>{{ isLast ? "" : ", " }}
+      </span>?
+    </p>
+  </div>
+</ng-container>
+
 <form [formGroup]="form">
   <formly-form [fields]="fields" [form]="form" [model]="model"></formly-form>
 </form>

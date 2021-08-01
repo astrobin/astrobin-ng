@@ -1,4 +1,4 @@
-<form [formGroup]="form">
+<form [formGroup]="form" id="equipment-item-editor-form">
   <formly-form [fields]="fields" [form]="form" [model]="model"></formly-form>
 </form>
 
@@ -13,7 +13,11 @@
     </div>
 
     <div class="card-body">
-      <astrobin-brand-editor [form]="brandCreation.form" [name]="brandCreation.name"></astrobin-brand-editor>
+      <astrobin-brand-editor
+        [form]="brandCreation.form"
+        [name]="brandCreation.name"
+        (created)="onBrandCreated($event)"
+      ></astrobin-brand-editor>
     </div>
 
     <div class="card-footer">

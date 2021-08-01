@@ -27,13 +27,13 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     return this.http.get<BrandInterface>(`${this.configUrl}/brand/${id}/`);
   }
 
-  findAllBrands(name: string): Observable<BrandInterface[]> {
-    if (!name) {
+  findAllBrands(q: string): Observable<BrandInterface[]> {
+    if (!q) {
       return of([]);
     }
 
     return this.http
-      .get<PaginatedApiResultInterface<BrandInterface>>(`${this.configUrl}/brand/?name=${name}`)
+      .get<PaginatedApiResultInterface<BrandInterface>>(`${this.configUrl}/brand/?q=${q}`)
       .pipe(map(response => response.results));
   }
 

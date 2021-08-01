@@ -57,6 +57,24 @@ export class BaseEquipmentItemEditorComponent extends BaseComponentDirective {
     this.brandCreation.inProgress = false;
   }
 
+  onBrandCreated(brand: BrandInterface) {
+    this.cancelBrandCreation();
+    this.fields.find(field => field.key === "brand").templateOptions.options = [
+      {
+        value: brand.id,
+        label: brand.name,
+        brand
+      }
+    ];
+    this.model = { ...this.model, ...{ brand: brand.id } };
+    this.form.controls.brand.setValue(brand.id);
+    setTimeout(() => {
+      this.windowRefService.nativeWindow.document
+        .getElementById("equipment-item-editor-form")
+        .scrollIntoView({ behavior: "smooth" });
+    }, 1);
+  }
+
   protected _getBrandField() {
     return {
       key: "brand",
@@ -73,6 +91,7 @@ export class BaseEquipmentItemEditorComponent extends BaseComponentDirective {
         optionTemplate: this.brandOptionTemplate,
         addTag: () => {
           this.brandCreation.inProgress = true;
+          this.form.controls.brand.setValue(null);
           setTimeout(() => {
             this.windowRefService.nativeWindow.document
               .getElementById("create-new-brand")
@@ -107,7 +126,7 @@ export class BaseEquipmentItemEditorComponent extends BaseComponentDirective {
     }
 
     const field = this.fields.find(f => f.key === "brand");
-    this.store$.dispatch(new FindAllBrands({ name: this.brandCreation.name }));
+    this.store$.dispatch(new FindAllBrands({ q: this.brandCreation.name }));
     field.templateOptions.options = this.actions$.pipe(
       ofType(EquipmentActionTypes.FIND_ALL_BRANDS_SUCCESS),
       map((action: FindAllBrandsSuccess) => action.payload.brands),

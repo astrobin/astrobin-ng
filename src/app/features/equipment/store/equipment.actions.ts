@@ -31,7 +31,7 @@ export class LoadBrandSuccess implements PayloadActionInterface {
 export class FindAllBrands implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.FIND_ALL_BRANDS;
 
-  constructor(public payload: { name: string }) {}
+  constructor(public payload: { q: string }) {}
 }
 
 export class FindAllBrandsSuccess implements PayloadActionInterface {

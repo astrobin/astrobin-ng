@@ -9,10 +9,9 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from "@angular/forms";
 export class FileValueAccessorDirective implements ControlValueAccessor {
   value: any;
 
-  @HostBinding("change")
   onChange = _ => {};
 
-  @HostBinding("blud")
+  @HostBinding("blur")
   onTouched = () => {};
 
   writeValue(value) {}

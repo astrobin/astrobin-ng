@@ -173,6 +173,11 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
 
   beginMigration(object: any) {
     this.migration.inProgress = true;
+    setTimeout(() => {
+      this.windowRefService.nativeWindow.document
+        .getElementById("select-item-to-migrate-to")
+        .scrollIntoView({ behavior: "smooth" });
+    }, 1);
   }
 
   confirmMigration(object: any) {
