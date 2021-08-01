@@ -1,7 +1,7 @@
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { CameraInterface, instanceOfCamera } from "@features/equipment/interfaces/camera.interface";
 import { instanceOfSensor } from "@features/equipment/interfaces/sensor.interface";
-import { instanceOfTelescope } from "@features/equipment/interfaces/telescope.interface";
+import { instanceOfTelescope, TelescopeInterface } from "@features/equipment/interfaces/telescope.interface";
 
 export enum EquipmentItemType {
   SENSOR = "SENSOR",
@@ -19,6 +19,8 @@ export interface EquipmentItemBaseInterface {
   name: string;
   image?: string;
 }
+
+export type AnyEquipmentItemType = CameraInterface & TelescopeInterface;
 
 export function equipmentItemType(item: EquipmentItemBaseInterface): EquipmentItemType | undefined {
   if (instanceOfSensor(item)) {

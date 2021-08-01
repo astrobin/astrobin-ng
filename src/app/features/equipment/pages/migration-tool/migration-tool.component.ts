@@ -15,7 +15,12 @@ import { BrandInterface } from "@features/equipment/interfaces/brand.interface";
 import { MigrationFlag } from "@shared/services/api/classic/astrobin/migratable-gear-item.service-interface";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { Store } from "@ngrx/store";
-import { EquipmentActionTypes, FindAll, FindAllSuccess, LoadBrand } from "@features/equipment/store/equipment.actions";
+import {
+  EquipmentActionTypes,
+  FindAllEquipmentItems,
+  FindAllEquipmentItemsSuccess,
+  LoadBrand
+} from "@features/equipment/store/equipment.actions";
 import { Actions, ofType } from "@ngrx/effects";
 import { selectBrands, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import { HttpStatusCode } from "@angular/common/http";
@@ -38,16 +43,27 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
   title = "Legacy equipment migration tool";
   activeType = this.activatedRoute.snapshot.paramMap.get("itemType");
   randomNonMigrated$ = this.getRandomNonMigrated$();
+
   migration: {
     inProgress: boolean;
     model: Partial<EquipmentItemBaseInterface>;
     form: FormGroup;
     fields: FormlyFieldConfig[];
+    q: string;
   } = {
     inProgress: false,
     model: {},
     form: new FormGroup({}),
-    fields: null
+    fields: null,
+    q: null
+  };
+
+  creation: {
+    inProgress: boolean;
+    form: FormGroup;
+  } = {
+    inProgress: false,
+    form: new FormGroup({})
   };
 
   constructor(
@@ -86,7 +102,10 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
         ]
       })
     );
-    this.router.events.pipe(takeUntil(this.destroyed$)).subscribe(() => this.skip());
+    this.router.events.pipe(takeUntil(this.destroyed$)).subscribe(() => {
+      this.activeType = this.activatedRoute.snapshot.paramMap.get("itemType");
+      this.skip();
+    });
   }
 
   ngAfterViewInit() {
@@ -95,6 +114,9 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
         key: "equipment-item",
         type: "ng-select",
         id: "equipment-item-field",
+        expressionProperties: {
+          "templateOptions.disabled": () => this.creation.inProgress
+        },
         templateOptions: {
           required: true,
           clearable: true,
@@ -103,7 +125,10 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
           onSearch: (event: { term: string; items: EquipmentItemBaseInterface[] }) => {
             this._onMigrationSearch(event);
           },
-          optionTemplate: this.equipmentItemOptionTemplate
+          optionTemplate: this.equipmentItemOptionTemplate,
+          addTag: () => {
+            this.creation.inProgress = true;
+          }
         }
       }
     ];
@@ -157,23 +182,27 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
     this.migration.inProgress = false;
   }
 
-  _onMigrationSearch(event: { term: string; items: EquipmentItemBaseInterface[] }) {
-    const q = event.term;
+  cancelItemCreation() {
+    this.creation.inProgress = false;
+  }
 
-    if (!q || q.length < 3) {
+  _onMigrationSearch(event: { term: string; items: EquipmentItemBaseInterface[] }) {
+    this.migration.q = event.term;
+
+    if (!this.migration.q || this.migration.q.length < 3) {
       return of([]);
     }
 
     const field = this.migration.fields.find(f => f.key === "equipment-item");
     this.store$.dispatch(
-      new FindAll({
-        q,
+      new FindAllEquipmentItems({
+        q: this.migration.q,
         type: EquipmentItemType[this.activatedRoute.snapshot.paramMap.get("itemType").toUpperCase()]
       })
     );
     field.templateOptions.options = this.actions$.pipe(
-      ofType(EquipmentActionTypes.FIND_ALL_SUCCESS),
-      map((action: FindAllSuccess) => action.payload.items),
+      ofType(EquipmentActionTypes.FIND_ALL_EQUIPMENT_ITEMS_SUCCESS),
+      map((action: FindAllEquipmentItemsSuccess) => action.payload.items),
       tap(items => {
         items.forEach(item => this.store$.dispatch(new LoadBrand({ id: item.brand })));
         return items;

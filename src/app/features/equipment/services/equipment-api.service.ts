@@ -23,17 +23,27 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     super(loadingService);
   }
 
-  findAll(q: string, type: EquipmentItemType): Observable<EquipmentItemBaseInterface[]> {
+  getBrand(id: number) {
+    return this.http.get<BrandInterface>(`${this.configUrl}/brand/${id}/`);
+  }
+
+  findAllBrands(name: string): Observable<BrandInterface[]> {
+    if (!name) {
+      return of([]);
+    }
+
+    return this.http
+      .get<PaginatedApiResultInterface<BrandInterface>>(`${this.configUrl}/brand/?name=${name}`)
+      .pipe(map(response => response.results));
+  }
+
+  findAllEquipmentItems(q: string, type: EquipmentItemType): Observable<EquipmentItemBaseInterface[]> {
     if (!q) {
       return of([]);
     }
 
     return this.http
-      .get<PaginatedApiResultInterface<CameraInterface>>(`${this.configUrl}/${type.toLowerCase()}/?q=${q}`)
+      .get<PaginatedApiResultInterface<EquipmentItemBaseInterface>>(`${this.configUrl}/${type.toLowerCase()}/?q=${q}`)
       .pipe(map(response => response.results));
-  }
-
-  getBrand(id: number) {
-    return this.http.get<BrandInterface>(`${this.configUrl}/brand/${id}/`);
   }
 }

@@ -8,7 +8,7 @@
           <a ngbNavLink routerLink="../camera">Cameras</a>
         </li>
 
-        <li ngbNavItem="telescope">
+        <li ngbNavItem="telescope ">
           <a ngbNavLink routerLink="../telescope">Telescopes</a>
         </li>
 
@@ -52,10 +52,10 @@
                 </p>
               </div>
 
-              <div class="card-footer d-flex justify-content-end flex-column flex-md-row">
+              <div class="card-footer">
                 <button
                   class="btn btn-sm-block btn-secondary"
-                  [disabled]="migration.inProgress"
+                  [disabled]="migration.inProgress || creation.inProgress"
                   [class.loading]="loadingService.isLoading()"
                   (click)="skip()"
                 >
@@ -64,7 +64,7 @@
 
                 <button
                   class="btn btn-sm-block btn-secondary"
-                  [disabled]="migration.inProgress"
+                  [disabled]="migration.inProgress || creation.inProgress"
                   [class.loading]="loadingService.isLoading()"
                   (click)="markAsWrongType(object)"
                 >
@@ -73,7 +73,7 @@
 
                 <button
                   class="btn btn-sm-block btn-secondary"
-                  [disabled]="migration.inProgress"
+                  [disabled]="migration.inProgress || creation.inProgress"
                   [class.loading]="loadingService.isLoading()"
                   (click)="markAsMultiple(object)"
                 >
@@ -82,7 +82,7 @@
 
                 <button
                   class="btn btn-sm-block btn-secondary"
-                  [disabled]="migration.inProgress"
+                  [disabled]="migration.inProgress || creation.inProgress"
                   [class.loading]="loadingService.isLoading()"
                   (click)="markAsDIY(object)"
                 >
@@ -91,7 +91,7 @@
 
                 <button
                   class="btn btn-sm-block btn-primary"
-                  [disabled]="migration.inProgress"
+                  [disabled]="migration.inProgress || creation.inProgress"
                   [class.loading]="loadingService.isLoading()"
                   (click)="beginMigration(object)"
                 >
@@ -121,9 +121,10 @@
                   </form>
                 </div>
 
-                <div class="card-footer d-flex justify-content-end flex-column flex-md-row">
+                <div class="card-footer">
                   <button
                     class="btn btn-sm-block btn-secondary"
+                    [disabled]="creation.inProgress"
                     [class.loading]="loadingService.isLoading()"
                     (click)="cancelMigration()"
                   >
@@ -132,7 +133,7 @@
 
                   <button
                     class="btn btn-sm-block btn-primary"
-                    [disabled]="!selectedMigrationItem"
+                    [disabled]="!selectedMigrationItem || creation.inProgress"
                     [class.loading]="loadingService.isLoading()"
                     (click)="confirmMigration(object)"
                   >
@@ -141,13 +142,55 @@
                 </div>
               </div>
             </ng-container>
+
+            <ng-container *ngIf="creation.inProgress">
+              <div class="mt-4 mb-4 text-center">
+                <fa-icon icon="arrow-down"></fa-icon>
+              </div>
+
+              <div class="mt-4 mb-4">
+                <div class="card">
+                  <div class="card-header">
+                    Create a new item
+                  </div>
+
+                  <div class="card-body">
+                    <astrobin-camera-editor
+                      *ngIf="activeType === 'camera'"
+                      [form]="creation.form"
+                      [name]="migration.q"
+                    ></astrobin-camera-editor>
+                  </div>
+
+                  <div class="card-footer">
+                    <button
+                      class="btn btn-sm-block btn-secondary"
+                      [class.loading]="loadingService.isLoading()"
+                      (click)="cancelItemCreation()"
+                    >
+                      Cancel
+                    </button>
+
+                    <button
+                      class="btn btn-sm-block btn-primary"
+                      [disabled]="!creation.form.valid"
+                      [class.loading]="loadingService.isLoading()"
+                    >
+                      Create item
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
           </ng-container>
         </ng-container>
       </ng-container>
-    </div> <!-- main col -->
-  </div> <!-- main row -->
-
-</div> <!-- page -->
+    </div>
+    <!-- main col -->
+  </div>
+  <!-- main row -->
+</div>
+<!-- page -->
 
 <ng-template #loading>
   <astrobin-loading-indicator></astrobin-loading-indicator>

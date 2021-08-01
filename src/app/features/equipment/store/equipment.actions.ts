@@ -10,8 +10,10 @@ import { BrandInterface } from "@features/equipment/interfaces/brand.interface";
 export enum EquipmentActionTypes {
   LOAD_BRAND = "[Equipment] Load brand",
   LOAD_BRAND_SUCCESS = "[Equipment] Load brand success",
-  FIND_ALL = "[Equipment] Find all",
-  FIND_ALL_SUCCESS = "[Equipment] Find all success"
+  FIND_ALL_BRANDS = "[Equipment] Find all brands",
+  FIND_ALL_BRANDS_SUCCESS = "[Equipment] Find all brands success",
+  FIND_ALL_EQUIPMENT_ITEMS = "[Equipment] Find all equipment items",
+  FIND_ALL_EQUIPMENT_ITEMS_SUCCESS = "[Equipment] Find all equipment success"
 }
 
 export class LoadBrand implements PayloadActionInterface {
@@ -26,16 +28,34 @@ export class LoadBrandSuccess implements PayloadActionInterface {
   constructor(public payload: { brand: BrandInterface }) {}
 }
 
-export class FindAll implements PayloadActionInterface {
-  readonly type = EquipmentActionTypes.FIND_ALL;
+export class FindAllBrands implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.FIND_ALL_BRANDS;
+
+  constructor(public payload: { name: string }) {}
+}
+
+export class FindAllBrandsSuccess implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.FIND_ALL_BRANDS_SUCCESS;
+
+  constructor(public payload: { brands: BrandInterface[] }) {}
+}
+
+export class FindAllEquipmentItems implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.FIND_ALL_EQUIPMENT_ITEMS;
 
   constructor(public payload: { q: string; type: EquipmentItemType }) {}
 }
 
-export class FindAllSuccess implements PayloadActionInterface {
-  readonly type = EquipmentActionTypes.FIND_ALL_SUCCESS;
+export class FindAllEquipmentItemsSuccess implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.FIND_ALL_EQUIPMENT_ITEMS_SUCCESS;
 
   constructor(public payload: { items: EquipmentItemBaseInterface[] }) {}
 }
 
-export type EquipmentActions = LoadBrand | LoadBrandSuccess | FindAll | FindAllSuccess;
+export type EquipmentActions =
+  | LoadBrand
+  | LoadBrandSuccess
+  | FindAllBrands
+  | FindAllBrandsSuccess
+  | FindAllEquipmentItems
+  | FindAllEquipmentItemsSuccess;

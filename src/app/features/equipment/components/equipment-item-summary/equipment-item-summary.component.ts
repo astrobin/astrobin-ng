@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, Input } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { EquipmentItemBaseInterface } from "@features/equipment/interfaces/equipment-item-base.interface";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
@@ -13,7 +13,7 @@ export const PLACEHOLDER = "https://via.placeholder.com/50.png/000/fff?text=?";
   templateUrl: "./equipment-item-summary.component.html",
   styleUrls: ["./equipment-item-summary.component.scss"]
 })
-export class EquipmentItemSummaryComponent extends BaseComponentDirective implements OnInit {
+export class EquipmentItemSummaryComponent extends BaseComponentDirective {
   @Input()
   item: EquipmentItemBaseInterface;
 
@@ -57,6 +57,4 @@ export class EquipmentItemSummaryComponent extends BaseComponentDirective implem
 
     return properties.filter(property => property.value !== null && property.value !== undefined);
   }
-
-  ngOnInit(): void {}
 }

@@ -1,6 +1,8 @@
 @import "mixins";
 
 .card {
+  box-shadow: 0 0 .5rem rgba(0, 0, 0, .5);
+
   .card-header {
     @include darkest-background-texture;
     color: var(--white);
@@ -13,6 +15,13 @@
 
   .card-footer  {
     @include darkest-background-texture;
+    display: flex;
+    justify-content: end;
+    flex-direction: column;
+
+    @media screen and (min-width: $md-min) {
+      flex-direction: row;
+    }
 
     .btn:not(:last-child) {
       @media screen and (max-width: $sm-max) {

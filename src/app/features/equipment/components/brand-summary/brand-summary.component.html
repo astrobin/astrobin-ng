@@ -1,0 +1,11 @@
+<div class="logo">
+  <img [src]="logo" alt="" />
+</div>
+
+<div class="label">
+  {{ brand.name }}
+</div>
+
+<div class="website" *ngIf="!!brand.website">
+  <a href="{{ brand.website }}" target="_blank">{{ brand.website }}</a>
+</div>

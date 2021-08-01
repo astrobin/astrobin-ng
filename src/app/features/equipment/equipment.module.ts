@@ -7,10 +7,21 @@ import { equipmentFeatureKey, reducer } from "@features/equipment/store/equipmen
 import { EquipmentEffects } from "@features/equipment/store/equipment.effects";
 import { routes } from "@features/equipment/equipment.routing";
 import { MigrationToolComponent } from "./pages/migration-tool/migration-tool.component";
-import { EquipmentItemSummaryComponent } from './components/equipment-item-summary/equipment-item-summary.component';
+import { EquipmentItemSummaryComponent } from "./components/equipment-item-summary/equipment-item-summary.component";
+import { CameraEditorComponent } from "./components/camera-editor/camera-editor.component";
+import { BrandSummaryComponent } from "./components/brand-summary/brand-summary.component";
+import { BaseEquipmentItemEditorComponent } from "./components/base-equipment-item-editor/base-equipment-item-editor.component";
+import { BrandEditorComponent } from './components/brand-editor/brand-editor.component';
 
 @NgModule({
-  declarations: [MigrationToolComponent, EquipmentItemSummaryComponent],
+  declarations: [
+    MigrationToolComponent,
+    EquipmentItemSummaryComponent,
+    CameraEditorComponent,
+    BrandSummaryComponent,
+    BaseEquipmentItemEditorComponent,
+    BrandEditorComponent
+  ],
   imports: [
     RouterModule.forChild(routes),
     SharedModule,

@@ -25,7 +25,14 @@ export function reducer(state = initialEquipmentState, action: EquipmentActions)
       };
     }
 
-    case EquipmentActionTypes.FIND_ALL_SUCCESS: {
+    case EquipmentActionTypes.FIND_ALL_BRANDS_SUCCESS: {
+      return {
+        ...state,
+        brands: new UtilsService().arrayUniqueObjects([...state.brands, ...action.payload.brands])
+      };
+    }
+
+    case EquipmentActionTypes.FIND_ALL_EQUIPMENT_ITEMS_SUCCESS: {
       return {
         ...state,
         equipmentItems: new UtilsService().arrayUniqueObjects([...state.equipmentItems, ...action.payload.items])

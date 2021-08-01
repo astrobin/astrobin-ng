@@ -2,8 +2,10 @@ import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import {
   EquipmentActionTypes,
-  FindAll,
-  FindAllSuccess,
+  FindAllBrands,
+  FindAllBrandsSuccess,
+  FindAllEquipmentItems,
+  FindAllEquipmentItemsSuccess,
   LoadBrand,
   LoadBrandSuccess
 } from "@features/equipment/store/equipment.actions";
@@ -16,21 +18,33 @@ import { map, mergeMap } from "rxjs/operators";
 
 @Injectable()
 export class EquipmentEffects {
-  FindAll: Observable<FindAllSuccess> = createEffect(() =>
-    this.actions$.pipe(
-      ofType(EquipmentActionTypes.FIND_ALL),
-      map((action: FindAll) => action.payload),
-      mergeMap(payload =>
-        this.equipmentApiService.findAll(payload.q, payload.type).pipe(map(items => new FindAllSuccess({ items })))
-      )
-    )
-  );
-
   LoadBrand: Observable<LoadBrandSuccess> = createEffect(() =>
     this.actions$.pipe(
       ofType(EquipmentActionTypes.LOAD_BRAND),
       map((action: LoadBrand) => action.payload.id),
       mergeMap(id => this.equipmentApiService.getBrand(id).pipe(map(brand => new LoadBrandSuccess({ brand }))))
+    )
+  );
+
+  FindAllBrands: Observable<FindAllBrandsSuccess> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(EquipmentActionTypes.FIND_ALL_BRANDS),
+      map((action: FindAllBrands) => action.payload),
+      mergeMap(payload =>
+        this.equipmentApiService.findAllBrands(payload.name).pipe(map(brands => new FindAllBrandsSuccess({ brands })))
+      )
+    )
+  );
+
+  FindAllEquipmentItems: Observable<FindAllEquipmentItemsSuccess> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(EquipmentActionTypes.FIND_ALL_EQUIPMENT_ITEMS),
+      map((action: FindAllEquipmentItems) => action.payload),
+      mergeMap(payload =>
+        this.equipmentApiService
+          .findAllEquipmentItems(payload.q, payload.type)
+          .pipe(map(items => new FindAllEquipmentItemsSuccess({ items })))
+      )
     )
   );
 
