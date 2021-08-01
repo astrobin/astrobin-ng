@@ -23,8 +23,12 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     super(loadingService);
   }
 
-  getBrand(id: number) {
+  getBrand(id: BrandInterface["id"]) {
     return this.http.get<BrandInterface>(`${this.configUrl}/brand/${id}/`);
+  }
+
+  createBrand(brand: Omit<BrandInterface, "id">) {
+    return this.http.post<BrandInterface>(`${this.configUrl}/brand/`, brand);
   }
 
   findAllBrands(q: string): Observable<BrandInterface[]> {

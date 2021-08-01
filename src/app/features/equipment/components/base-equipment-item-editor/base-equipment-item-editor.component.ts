@@ -8,12 +8,19 @@ import {
 } from "@features/equipment/interfaces/equipment-item-base.interface";
 import { BrandInterface } from "@features/equipment/interfaces/brand.interface";
 import { of } from "rxjs";
-import { EquipmentActionTypes, FindAllBrands, FindAllBrandsSuccess } from "@features/equipment/store/equipment.actions";
+import {
+  CreateBrand,
+  CreateBrandSuccess,
+  EquipmentActionTypes,
+  FindAllBrands,
+  FindAllBrandsSuccess
+} from "@features/equipment/store/equipment.actions";
 import { Actions, ofType } from "@ngrx/effects";
 import { map } from "rxjs/operators";
 import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
 import { WindowRefService } from "@shared/services/window-ref.service";
+import { LoadingService } from "@shared/services/loading.service";
 
 @Component({
   selector: "astrobin-base-equipment-item-editor",
@@ -47,6 +54,7 @@ export class BaseEquipmentItemEditorComponent extends BaseComponentDirective {
   constructor(
     public readonly store$: Store,
     public readonly actions$: Actions,
+    public readonly loadingService: LoadingService,
     public readonly translateService: TranslateService,
     public readonly windowRefService: WindowRefService
   ) {
@@ -57,7 +65,22 @@ export class BaseEquipmentItemEditorComponent extends BaseComponentDirective {
     this.brandCreation.inProgress = false;
   }
 
-  onBrandCreated(brand: BrandInterface) {
+  createBrand() {
+    const { id, ...brand } = this.brandCreation.form.value;
+    this.loadingService.setLoading(true);
+    this.store$.dispatch(new CreateBrand({ brand }));
+    this.actions$
+      .pipe(
+        ofType(EquipmentActionTypes.CREATE_BRAND_SUCCESS),
+        map((action: CreateBrandSuccess) => action.payload.brand)
+      )
+      .subscribe(newBrand => {
+        this.brandCreated(newBrand);
+        this.loadingService.setLoading(false);
+      });
+  }
+
+  brandCreated(brand: BrandInterface) {
     this.cancelBrandCreation();
     this.fields.find(field => field.key === "brand").templateOptions.options = [
       {

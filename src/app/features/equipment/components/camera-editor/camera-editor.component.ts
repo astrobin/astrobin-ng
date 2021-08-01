@@ -15,11 +15,11 @@ export class CameraEditorComponent extends BaseEquipmentItemEditorComponent impl
   constructor(
     public readonly store$: Store,
     public readonly actions$: Actions,
+    public readonly loadingService: LoadingService,
     public readonly translateService: TranslateService,
-    public readonly windowRefService: WindowRefService,
-    public readonly loadingService: LoadingService
+    public readonly windowRefService: WindowRefService
   ) {
-    super(store$, actions$, translateService, windowRefService);
+    super(store$, actions$, loadingService, translateService, windowRefService);
   }
 
   ngAfterContentInit(): void {

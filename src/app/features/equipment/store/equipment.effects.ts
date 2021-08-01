@@ -1,6 +1,8 @@
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import {
+  CreateBrand,
+  CreateBrandSuccess,
   EquipmentActionTypes,
   FindAllBrands,
   FindAllBrandsSuccess,
@@ -23,6 +25,18 @@ export class EquipmentEffects {
       ofType(EquipmentActionTypes.LOAD_BRAND),
       map((action: LoadBrand) => action.payload.id),
       mergeMap(id => this.equipmentApiService.getBrand(id).pipe(map(brand => new LoadBrandSuccess({ brand }))))
+    )
+  );
+
+  CreateBrand: Observable<CreateBrandSuccess> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(EquipmentActionTypes.CREATE_BRAND),
+      map((action: CreateBrand) => action.payload.brand),
+      mergeMap(brand =>
+        this.equipmentApiService
+          .createBrand(brand)
+          .pipe(map(createdBrand => new CreateBrandSuccess({ brand: createdBrand })))
+      )
     )
   );
 

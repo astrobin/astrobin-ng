@@ -29,7 +29,7 @@ export class BrandEditorComponent extends BaseComponentDirective implements OnIn
   name: string;
 
   @Output()
-  created = new EventEmitter<BrandInterface>();
+  suggestionSelected = new EventEmitter<BrandInterface>();
 
   similarBrands$: Observable<BrandInterface[]> = of([]);
 
@@ -100,6 +100,6 @@ export class BrandEditorComponent extends BaseComponentDirective implements OnIn
     this.store$
       .select(selectBrand, brandId)
       .pipe(filter(brand => !!brand))
-      .subscribe(brand => this.created.emit(brand));
+      .subscribe(brand => this.suggestionSelected.emit(brand));
   }
 }

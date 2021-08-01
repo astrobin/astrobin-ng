@@ -10,6 +10,8 @@ import { BrandInterface } from "@features/equipment/interfaces/brand.interface";
 export enum EquipmentActionTypes {
   LOAD_BRAND = "[Equipment] Load brand",
   LOAD_BRAND_SUCCESS = "[Equipment] Load brand success",
+  CREATE_BRAND = "[Equipment] Create brand",
+  CREATE_BRAND_SUCCESS = "[Equipment] Create brand success",
   FIND_ALL_BRANDS = "[Equipment] Find all brands",
   FIND_ALL_BRANDS_SUCCESS = "[Equipment] Find all brands success",
   FIND_ALL_EQUIPMENT_ITEMS = "[Equipment] Find all equipment items",
@@ -24,6 +26,18 @@ export class LoadBrand implements PayloadActionInterface {
 
 export class LoadBrandSuccess implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.LOAD_BRAND_SUCCESS;
+
+  constructor(public payload: { brand: BrandInterface }) {}
+}
+
+export class CreateBrand implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.CREATE_BRAND;
+
+  constructor(public payload: { brand: Omit<BrandInterface, "id"> }) {}
+}
+
+export class CreateBrandSuccess implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.CREATE_BRAND_SUCCESS;
 
   constructor(public payload: { brand: BrandInterface }) {}
 }
@@ -55,6 +69,8 @@ export class FindAllEquipmentItemsSuccess implements PayloadActionInterface {
 export type EquipmentActions =
   | LoadBrand
   | LoadBrandSuccess
+  | CreateBrand
+  | CreateBrandSuccess
   | FindAllBrands
   | FindAllBrandsSuccess
   | FindAllEquipmentItems

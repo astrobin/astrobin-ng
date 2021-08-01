@@ -18,7 +18,8 @@ export const initialEquipmentState: EquipmentState = {
 
 export function reducer(state = initialEquipmentState, action: EquipmentActions): EquipmentState {
   switch (action.type) {
-    case EquipmentActionTypes.LOAD_BRAND_SUCCESS: {
+    case EquipmentActionTypes.LOAD_BRAND_SUCCESS:
+    case EquipmentActionTypes.CREATE_BRAND_SUCCESS: {
       return {
         ...state,
         brands: new UtilsService().arrayUniqueObjects([...state.brands, ...[action.payload.brand]])

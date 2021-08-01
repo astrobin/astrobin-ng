@@ -16,7 +16,7 @@
       <astrobin-brand-editor
         [form]="brandCreation.form"
         [name]="brandCreation.name"
-        (created)="onBrandCreated($event)"
+        (suggestionSelected)="brandSuggestionSelected($event)"
       ></astrobin-brand-editor>
     </div>
 
@@ -33,6 +33,7 @@
         class="btn btn-sm-block btn-primary"
         [disabled]="!brandCreation.form.valid"
         [class.loading]="loadingService.isLoading()"
+        (click)="createBrand()"
       >
         Create
       </button>
