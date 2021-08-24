@@ -12,7 +12,9 @@ export enum MigrationFlag {
 }
 
 export interface MigratableGearItemServiceInterface {
-  getRandomNonMigrated?(): Observable<any>;
+  getRandomNonMigrated?(): Observable<any | null>;
+
+  lockForMigration?(gearId: number): Observable<void>;
 
   setMigration?(
     gearId: number,

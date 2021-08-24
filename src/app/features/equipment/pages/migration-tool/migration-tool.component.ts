@@ -10,7 +10,7 @@ import {
 import { TitleService } from "@shared/services/title/title.service";
 import { FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
-import { Observable, of } from "rxjs";
+import { EMPTY, Observable, of } from "rxjs";
 import { BrandInterface } from "@features/equipment/interfaces/brand.interface";
 import { MigrationFlag } from "@shared/services/api/classic/astrobin/migratable-gear-item.service-interface";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
@@ -141,17 +141,42 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
     ];
   }
 
-  getRandomNonMigrated$(): Observable<EquipmentItemBaseInterface> {
+  getRandomNonMigrated$(): Observable<any[]> {
     const itemType = this.activatedRoute.snapshot.paramMap.get("itemType");
+    let api;
 
     switch (itemType.toLowerCase()) {
       case EquipmentItemType.CAMERA.toLowerCase():
-        return this.legacyCameraApi.getRandomNonMigrated();
+        api = this.legacyCameraApi;
+        break;
       case EquipmentItemType.TELESCOPE.toLowerCase():
-        return this.legacyTelescopeApi.getRandomNonMigrated();
+        api = this.legacyTelescopeApi;
+        break;
       default:
         this.popNotificationsService.error("Wrong item type requested.");
     }
+
+    if (api) {
+      return new Observable<any[]>(observer => {
+        api
+          .getRandomNonMigrated()
+          .pipe(
+            switchMap((items: any[]) => {
+              if (items && items.length === 1) {
+                return this.legacyGearApi.lockForMigration(items[0].pk).pipe(map(() => items));
+              }
+
+              return of(items);
+            })
+          )
+          .subscribe(items => {
+            observer.next(items);
+            observer.complete();
+          });
+      });
+    }
+
+    return EMPTY;
   }
 
   skip() {
