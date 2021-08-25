@@ -37,7 +37,7 @@
         <th scope="row">{{ i + 1 }}</th>
         <td><strong>{{ item.make }}</strong> {{ item.name }}</td>
         <td>{{ item.migrationFlag }}</td>
-        <td>{{ item.migrationFlagModerator }}</td>
+        <td><astrobin-username [user]="getUser$(item.migrationFlagModerator) | async"></astrobin-username></td>
         <td>
           <a [routerLink]="item.pk" class="btn btn-mini btn-primary">Review</a>
         </td>

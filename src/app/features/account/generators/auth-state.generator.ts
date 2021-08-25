@@ -9,7 +9,9 @@ export class AuthStateGenerator {
       initialized: true,
       user: UserGenerator.user(),
       userProfile: UserProfileGenerator.userProfile(),
-      userSubscriptions: [UserSubscriptionGenerator.userSubscription()]
+      userSubscriptions: [UserSubscriptionGenerator.userSubscription()],
+      users: [UserGenerator.user()],
+      userProfiles: [UserProfileGenerator.userProfile()]
     };
   }
 

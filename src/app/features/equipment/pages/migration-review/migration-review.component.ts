@@ -4,11 +4,12 @@ import { Store } from "@ngrx/store";
 import { TitleService } from "@shared/services/title/title.service";
 import { TranslateService } from "@ngx-translate/core";
 import { GearApiService } from "@shared/services/api/classic/astrobin/gear/gear-api.service";
-import { EMPTY, Observable } from "rxjs";
+import { Observable } from "rxjs";
 import { filter, tap } from "rxjs/operators";
 import { LoadUser, LoadUserProfile } from "@features/account/store/auth.actions";
 import { selectUser } from "@features/account/store/auth.selectors";
 import { UserInterface } from "@shared/interfaces/user.interface";
+import { UsernameService } from "@shared/components/misc/username/username.service";
 
 @Component({
   selector: "astrobin-migration-review",
@@ -23,7 +24,8 @@ export class MigrationReviewComponent implements OnInit {
     public readonly store$: Store,
     public readonly titleService: TitleService,
     public readonly translateService: TranslateService,
-    public readonly legacyGearApi: GearApiService
+    public readonly legacyGearApi: GearApiService,
+    public readonly usernameService: UsernameService
   ) {}
 
   ngOnInit(): void {
@@ -59,7 +61,7 @@ export class MigrationReviewComponent implements OnInit {
     );
   }
 
-  getDisplayName$(userId: UserInterface["id"]): Observable<string> {
-    return EMPTY;
+  getUser$(userId: UserInterface["id"]): Observable<UserInterface> {
+    return this.store$.select(selectUser, userId);
   }
 }

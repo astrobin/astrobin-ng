@@ -2,7 +2,10 @@ import { EquipmentItemBaseInterface } from "@features/equipment/interfaces/equip
 import { SensorInterface } from "@features/equipment/interfaces/sensor.interface";
 
 // TODO
-export enum CameraType {}
+export enum CameraType {
+  DSLR = "DSLR",
+  CCD = "CCD"
+}
 
 export interface CameraInterface extends EquipmentItemBaseInterface {
   type: CameraType;

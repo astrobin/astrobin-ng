@@ -3,25 +3,26 @@ import { UsernameServiceInterface } from "@shared/components/misc/username/usern
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
-import { UserStoreService } from "@shared/services/user-store.service";
+import { Store } from "@ngrx/store";
+import { Observable } from "rxjs";
+import { selectUserProfile } from "@features/account/store/auth.selectors";
+import { map } from "rxjs/operators";
 
 @Injectable()
 export class UsernameService extends BaseService implements UsernameServiceInterface {
-  constructor(public loadingService: LoadingService, public userStore: UserStoreService) {
+  constructor(public readonly store$: Store, public readonly loadingService: LoadingService) {
     super(loadingService);
   }
 
-  getDisplayName(user: UserInterface): string {
-    if (!user) {
-      return "";
-    }
+  getDisplayName$(user: UserInterface): Observable<string> {
+    return this.store$.select(selectUserProfile, user.userProfile).pipe(
+      map(userProfile => {
+        if (userProfile && userProfile.realName) {
+          return userProfile.realName;
+        }
 
-    const userProfile = this.userStore.getUserProfile(user.userProfile);
-
-    if (userProfile && userProfile.realName) {
-      return userProfile.realName;
-    }
-
-    return user.username;
+        return user.username;
+      })
+    );
   }
 }

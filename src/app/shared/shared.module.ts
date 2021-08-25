@@ -26,7 +26,6 @@ import { UltimateSubscriptionGuardService } from "@shared/services/guards/ultima
 import { LoadingService } from "@shared/services/loading.service";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { SessionService } from "@shared/services/session.service";
-import { UserStoreService } from "@shared/services/user-store.service";
 import { UserService } from "@shared/services/user.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { NgWizardModule, THEME } from "ng-wizard";
@@ -147,7 +146,6 @@ export class SharedModule {
         SessionService,
         UltimateSubscriptionGuardService,
         UserService,
-        UserStoreService,
         WindowRefService,
         {
           provide: APP_INITIALIZER,

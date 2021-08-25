@@ -23,7 +23,6 @@ import { UserInterface } from "@shared/interfaces/user.interface";
 import { CommonApiService } from "@shared/services/api/classic/common/common-api.service";
 import { AuthService } from "@shared/services/auth.service";
 import { LoadingService } from "@shared/services/loading.service";
-import { UserStoreService } from "@shared/services/user-store.service";
 import { CookieService } from "ngx-cookie-service";
 import { TimeagoIntl } from "ngx-timeago";
 import { EMPTY, forkJoin, Observable, of } from "rxjs";
@@ -34,20 +33,6 @@ import { selectCurrentUserProfile, selectUser, selectUserProfile } from "@featur
 
 @Injectable()
 export class AuthEffects {
-  InitializeSuccess: Observable<InitializeAuthSuccess> = createEffect(
-    () =>
-      this.actions$.pipe(
-        ofType(AuthActionTypes.INITIALIZE_SUCCESS),
-        tap((action: InitializeAuthSuccess) => {
-          if (action.payload.user && action.payload.userProfile) {
-            this.userStore.addUserProfile(action.payload.userProfile);
-            this.userStore.addUser(action.payload.user);
-          }
-        })
-      ),
-    { dispatch: false }
-  );
-
   Login: Observable<LoginSuccess | LoginFailure> = createEffect(() =>
     this.actions$.pipe(
       ofType(AuthActionTypes.LOGIN),
@@ -83,11 +68,7 @@ export class AuthEffects {
       this.actions$.pipe(
         ofType(AuthActionTypes.LOGIN_SUCCESS),
         tap((action: LoginSuccess) => {
-          this.userStore.addUserProfile(action.payload.userProfile);
-          this.userStore.addUser(action.payload.user);
-
           this.loadingService.setLoading(false);
-
           this.router.navigate(["account", "logged-in"], { queryParams: { redirectUrl: action.payload.redirectUrl } });
         })
       ),
@@ -244,7 +225,6 @@ export class AuthEffects {
     public readonly cookieService: CookieService,
     public readonly loadingService: LoadingService,
     public readonly commonApiService: CommonApiService,
-    public readonly userStore: UserStoreService,
     public readonly translate: TranslateService,
     public readonly timeagoIntl: TimeagoIntl
   ) {}

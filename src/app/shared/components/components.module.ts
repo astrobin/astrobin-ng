@@ -50,6 +50,7 @@ import { NgToggleModule } from "ng-toggle-button";
 import { FormlyFieldCKEditorComponent } from "@shared/components/misc/formly-field-ckeditor/formly-field-ckeditor.component";
 import { FileValueAccessorDirective } from "@shared/components/misc/formly-field-file/file-value-accessor.directive";
 import { FormlyFieldFileComponent } from "@shared/components/misc/formly-field-file/formly-field-file.component";
+import { UsernameService } from "@shared/components/misc/username/username.service";
 
 const modules = [
   CommonModule,
@@ -106,6 +107,8 @@ const components = [
   UsernameComponent
 ];
 
+const services = [UsernameService];
+
 @NgModule({
   imports: modules,
   declarations: components,
@@ -116,7 +119,8 @@ const components = [
       useFactory: formlyValidationConfig,
       multi: true,
       deps: [TranslateService]
-    }
+    },
+    ...services
   ]
 })
 export class ComponentsModule {}
