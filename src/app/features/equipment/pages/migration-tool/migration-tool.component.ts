@@ -24,7 +24,7 @@ import {
 import { Actions, ofType } from "@ngrx/effects";
 import { selectBrands, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import { HttpStatusCode } from "@angular/common/http";
-import { ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { CameraApiService } from "@shared/services/api/classic/astrobin/camera/camera-api.service";
 import { TelescopeApiService } from "@shared/services/api/classic/astrobin/telescope/telescope-api.service";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
@@ -44,6 +44,7 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
   title = "Legacy equipment migration tool";
   activeType = this.activatedRoute.snapshot.paramMap.get("itemType");
   randomNonMigrated$ = this.getRandomNonMigrated$();
+  pendingReview$ = this.legacyGearApi.getPendingMigrationReview();
 
   migration: {
     inProgress: boolean;
@@ -92,6 +93,7 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
 
   ngOnInit(): void {
     this.titleService.setTitle(this.title);
+
     this.store$.dispatch(
       new SetBreadcrumb({
         breadcrumb: [
@@ -99,14 +101,17 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
             label: this.translateService.instant("Equipment")
           },
           {
-            label: "Migrate legacy"
+            label: this.title
           }
         ]
       })
     );
-    this.router.events.pipe(takeUntil(this.destroyed$)).subscribe(() => {
-      this.activeType = this.activatedRoute.snapshot.paramMap.get("itemType");
-      this.skip();
+
+    this.router.events.pipe(takeUntil(this.destroyed$)).subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        this.activeType = this.activatedRoute.snapshot.paramMap.get("itemType");
+        this.skip();
+      }
     });
   }
 
@@ -161,6 +166,7 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
         api
           .getRandomNonMigrated()
           .pipe(
+            tap(() => this.loadingService.setLoading(true)),
             switchMap((items: any[]) => {
               if (items && items.length === 1) {
                 return this.legacyGearApi.lockForMigration(items[0].pk).pipe(map(() => items));
@@ -172,6 +178,7 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
           .subscribe(items => {
             observer.next(items);
             observer.complete();
+            this.loadingService.setLoading(false);
           });
       });
     }
@@ -180,8 +187,8 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
   }
 
   skip() {
-    this.loadingService.setLoading(true);
-    this.randomNonMigrated$ = this.getRandomNonMigrated$().pipe(tap(() => this.loadingService.setLoading(false)));
+    this.pendingReview$ = this.legacyGearApi.getPendingMigrationReview();
+    this.randomNonMigrated$ = this.getRandomNonMigrated$();
   }
 
   markAsWrongType(object: any) {

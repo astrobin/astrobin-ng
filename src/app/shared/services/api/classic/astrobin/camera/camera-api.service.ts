@@ -16,6 +16,6 @@ export class CameraApiService extends BaseClassicApiService implements Migratabl
   }
 
   getRandomNonMigrated(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.configUrl}/random-non-migrated`);
+    return this.http.get<any[]>(`${this.configUrl}/random-non-migrated/`);
   }
 }

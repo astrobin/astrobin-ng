@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { MigrationToolComponent } from "./migration-tool.component";
+import { MigrationReviewComponent } from "./migration-review.component";
 import { MockBuilder } from "ng-mocks";
 import { EquipmentModule } from "@features/equipment/equipment.module";
 
-describe("MigrationToolComponent", () => {
-  let component: MigrationToolComponent;
-  let fixture: ComponentFixture<MigrationToolComponent>;
+describe("MigrationReviewComponent", () => {
+  let component: MigrationReviewComponent;
+  let fixture: ComponentFixture<MigrationReviewComponent>;
 
   beforeEach(async () => {
-    await MockBuilder(MigrationToolComponent, EquipmentModule);
+    await MockBuilder(MigrationReviewComponent, EquipmentModule);
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(MigrationToolComponent);
+    fixture = TestBed.createComponent(MigrationReviewComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

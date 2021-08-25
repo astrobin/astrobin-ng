@@ -35,155 +35,16 @@
     </div>
 
     <div class="col-md-9">
-      <ng-container *ngIf="randomNonMigrated$ | async as objects; else loading">
-        <ng-container *ngIf="objects.length > 0; else allDone">
-          <ng-container *ngIf="objects[0] as object">
-            <div class="card box-shadow">
-              <div class="card-header">
-                What would you like to do with the following object?
-              </div>
-
-              <div class="card-body">
-                <p>
-                  Brand/Make: <strong>{{ object.make || "(no brand)" }}</strong>
-                </p>
-                <p>
-                  Name/Model: <strong>{{ object.name || "(no name)" }}</strong>
-                </p>
-              </div>
-
-              <div class="card-footer">
-                <button
-                  class="btn btn-sm-block btn-secondary"
-                  [disabled]="migration.inProgress || creation.inProgress"
-                  [class.loading]="loadingService.isLoading()"
-                  (click)="skip()"
-                >
-                  Skip
-                </button>
-
-                <button
-                  class="btn btn-sm-block btn-secondary"
-                  [disabled]="migration.inProgress || creation.inProgress"
-                  [class.loading]="loadingService.isLoading()"
-                  (click)="markAsWrongType(object)"
-                >
-                  Mark as wrong type
-                </button>
-
-                <button
-                  class="btn btn-sm-block btn-secondary"
-                  [disabled]="migration.inProgress || creation.inProgress"
-                  [class.loading]="loadingService.isLoading()"
-                  (click)="markAsMultiple(object)"
-                >
-                  Mark as multiple items
-                </button>
-
-                <button
-                  class="btn btn-sm-block btn-secondary"
-                  [disabled]="migration.inProgress || creation.inProgress"
-                  [class.loading]="loadingService.isLoading()"
-                  (click)="markAsDIY(object)"
-                >
-                  Mark as DIY
-                </button>
-
-                <button
-                  class="btn btn-sm-block btn-primary"
-                  [disabled]="migration.inProgress || creation.inProgress"
-                  [class.loading]="loadingService.isLoading()"
-                  (click)="beginMigration(object)"
-                >
-                  Migrate...
-                </button>
-              </div>
-            </div>
-
-            <ng-container *ngIf="migration.inProgress">
-              <div class="mt-4 mb-4 text-center">
-                <fa-icon icon="arrow-down"></fa-icon>
-              </div>
-
-              <div class="card" id="select-item-to-migrate-to">
-                <div class="card-header">
-                  Select equipment object to migrate "<strong>{{ object.make || "(no brand)" }}</strong>
-                  {{ object.name || "(no name)" }}" to, or create a new one
-                </div>
-
-                <div class="card-body">
-                  <form [formGroup]="migration.form">
-                    <formly-form
-                      [fields]="migration.fields"
-                      [form]="migration.form"
-                      [model]="migration.model"
-                    ></formly-form>
-                  </form>
-                </div>
-
-                <div class="card-footer">
-                  <button
-                    class="btn btn-sm-block btn-secondary"
-                    [disabled]="creation.inProgress"
-                    [class.loading]="loadingService.isLoading()"
-                    (click)="cancelMigration()"
-                  >
-                    Cancel
-                  </button>
-
-                  <button
-                    class="btn btn-sm-block btn-primary"
-                    [disabled]="!selectedMigrationItem || creation.inProgress"
-                    [class.loading]="loadingService.isLoading()"
-                    (click)="confirmMigration(object)"
-                  >
-                    Confirm migration
-                  </button>
-                </div>
-              </div>
-            </ng-container>
-
-            <ng-container *ngIf="creation.inProgress">
-              <div class="mt-4 mb-4 text-center">
-                <fa-icon icon="arrow-down"></fa-icon>
-              </div>
-
-              <div class="mt-4 mb-4">
-                <div class="card" id="create-new-item">
-                  <div class="card-header">
-                    Create a new item
-                  </div>
-
-                  <div class="card-body">
-                    <astrobin-camera-editor
-                      *ngIf="activeType === 'camera'"
-                      [form]="creation.form"
-                      [name]="migration.q"
-                    ></astrobin-camera-editor>
-                  </div>
-
-                  <div class="card-footer">
-                    <button
-                      class="btn btn-sm-block btn-secondary"
-                      [class.loading]="loadingService.isLoading()"
-                      (click)="cancelItemCreation()"
-                    >
-                      Cancel
-                    </button>
-
-                    <button
-                      class="btn btn-sm-block btn-primary"
-                      [disabled]="!creation.form.valid"
-                      [class.loading]="loadingService.isLoading()"
-                    >
-                      Create item
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </ng-container>
-          </ng-container>
-        </ng-container>
+      <ng-container *ngIf="pendingReview$ | async as pendingReview; else loading">
+        <div class="alert alert-info" *ngIf="pendingReview.length > 0; else randomNonMigrated">
+          <h4>Hold your horses!</h4>
+          <p>
+            You cannot migrate items while the review queue is not empty. This is to prevent creating multiple items
+            representing the same object.
+          </p>
+          <br/>
+          <a routerLink="../../migration-review" class="btn btn-primary">Go to the review queue</a>
+        </div>
       </ng-container>
     </div>
     <!-- main col -->
@@ -205,4 +66,157 @@
 
 <ng-template #equipmentItemOptionTemplate let-object="item">
   <astrobin-equipment-item-summary [item]="object.item" [brand]="object.brand"></astrobin-equipment-item-summary>
+</ng-template>
+
+<ng-template #randomNonMigrated>
+  <ng-container *ngIf="randomNonMigrated$ | async as objects; else loading">
+    <ng-container *ngIf="objects.length > 0; else allDone">
+      <ng-container *ngIf="objects[0] as object">
+        <div class="card box-shadow">
+          <div class="card-header">
+            What would you like to do with the following object?
+          </div>
+
+          <div class="card-body">
+            <p>
+              Brand/Make: <strong>{{ object.make || "(no brand)" }}</strong>
+            </p>
+            <p>
+              Name/Model: <strong>{{ object.name || "(no name)" }}</strong>
+            </p>
+          </div>
+
+          <div class="card-footer">
+            <button
+              class="btn btn-sm-block btn-secondary"
+              [disabled]="migration.inProgress || creation.inProgress"
+              [class.loading]="loadingService.isLoading()"
+              (click)="skip()"
+            >
+              Skip
+            </button>
+
+            <button
+              class="btn btn-sm-block btn-secondary"
+              [disabled]="migration.inProgress || creation.inProgress"
+              [class.loading]="loadingService.isLoading()"
+              (click)="markAsWrongType(object)"
+            >
+              Mark as wrong type
+            </button>
+
+            <button
+              class="btn btn-sm-block btn-secondary"
+              [disabled]="migration.inProgress || creation.inProgress"
+              [class.loading]="loadingService.isLoading()"
+              (click)="markAsMultiple(object)"
+            >
+              Mark as multiple items
+            </button>
+
+            <button
+              class="btn btn-sm-block btn-secondary"
+              [disabled]="migration.inProgress || creation.inProgress"
+              [class.loading]="loadingService.isLoading()"
+              (click)="markAsDIY(object)"
+            >
+              Mark as DIY
+            </button>
+
+            <button
+              class="btn btn-sm-block btn-primary"
+              [disabled]="migration.inProgress || creation.inProgress"
+              [class.loading]="loadingService.isLoading()"
+              (click)="beginMigration(object)"
+            >
+              Migrate...
+            </button>
+          </div>
+        </div>
+
+        <ng-container *ngIf="migration.inProgress">
+          <div class="mt-4 mb-4 text-center">
+            <fa-icon icon="arrow-down"></fa-icon>
+          </div>
+
+          <div class="card" id="select-item-to-migrate-to">
+            <div class="card-header">
+              Select equipment object to migrate "<strong>{{ object.make || "(no brand)" }}</strong>
+              {{ object.name || "(no name)" }}" to, or create a new one
+            </div>
+
+            <div class="card-body">
+              <form [formGroup]="migration.form">
+                <formly-form
+                  [fields]="migration.fields"
+                  [form]="migration.form"
+                  [model]="migration.model"
+                ></formly-form>
+              </form>
+            </div>
+
+            <div class="card-footer">
+              <button
+                class="btn btn-sm-block btn-secondary"
+                [disabled]="creation.inProgress"
+                [class.loading]="loadingService.isLoading()"
+                (click)="cancelMigration()"
+              >
+                Cancel
+              </button>
+
+              <button
+                class="btn btn-sm-block btn-primary"
+                [disabled]="!selectedMigrationItem || creation.inProgress"
+                [class.loading]="loadingService.isLoading()"
+                (click)="confirmMigration(object)"
+              >
+                Confirm migration
+              </button>
+            </div>
+          </div>
+        </ng-container>
+
+        <ng-container *ngIf="creation.inProgress">
+          <div class="mt-4 mb-4 text-center">
+            <fa-icon icon="arrow-down"></fa-icon>
+          </div>
+
+          <div class="mt-4 mb-4">
+            <div class="card" id="create-new-item">
+              <div class="card-header">
+                Create a new item
+              </div>
+
+              <div class="card-body">
+                <astrobin-camera-editor
+                  *ngIf="activeType === 'camera'"
+                  [form]="creation.form"
+                  [name]="migration.q"
+                ></astrobin-camera-editor>
+              </div>
+
+              <div class="card-footer">
+                <button
+                  class="btn btn-sm-block btn-secondary"
+                  [class.loading]="loadingService.isLoading()"
+                  (click)="cancelItemCreation()"
+                >
+                  Cancel
+                </button>
+
+                <button
+                  class="btn btn-sm-block btn-primary"
+                  [disabled]="!creation.form.valid"
+                  [class.loading]="loadingService.isLoading()"
+                >
+                  Create item
+                </button>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </ng-container>
+    </ng-container>
+  </ng-container>
 </ng-template>

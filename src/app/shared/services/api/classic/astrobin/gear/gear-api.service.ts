@@ -23,7 +23,11 @@ export class GearApiService extends BaseClassicApiService implements MigratableG
   }
 
   getRandomNonMigrated(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.configUrl}/random-non-migrated`);
+    return this.http.get<any[]>(`${this.configUrl}/random-non-migrated/`);
+  }
+
+  getPendingMigrationReview(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.configUrl}/pending-migration-review/`);
   }
 
   lockForMigration(gearId: number): Observable<void> {

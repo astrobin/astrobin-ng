@@ -11,7 +11,8 @@ import { EquipmentItemSummaryComponent } from "./components/equipment-item-summa
 import { CameraEditorComponent } from "./components/camera-editor/camera-editor.component";
 import { BrandSummaryComponent } from "./components/brand-summary/brand-summary.component";
 import { BaseEquipmentItemEditorComponent } from "./components/base-equipment-item-editor/base-equipment-item-editor.component";
-import { BrandEditorComponent } from './components/brand-editor/brand-editor.component';
+import { BrandEditorComponent } from "./components/brand-editor/brand-editor.component";
+import { MigrationReviewComponent } from "./pages/migration-review/migration-review.component";
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { BrandEditorComponent } from './components/brand-editor/brand-editor.com
     CameraEditorComponent,
     BrandSummaryComponent,
     BaseEquipmentItemEditorComponent,
-    BrandEditorComponent
+    BrandEditorComponent,
+    MigrationReviewComponent
   ],
   imports: [
     RouterModule.forChild(routes),

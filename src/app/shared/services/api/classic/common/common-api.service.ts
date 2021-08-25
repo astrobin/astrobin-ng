@@ -45,10 +45,16 @@ export class CommonApiService extends BaseClassicApiService implements CommonApi
       );
   }
 
-  getUser(id: number): Observable<UserInterface> {
+  getUser(id: UserInterface["id"]): Observable<UserInterface> {
     return this.http
       .get<BackendUserInterface>(`${this.configUrl}/users/${id}/`)
       .pipe(map((user: BackendUserInterface) => this.commonApiAdaptorService.userFromBackend(user)));
+  }
+
+  getUserProfile(id: UserProfileInterface["id"]): Observable<UserProfileInterface> {
+    return this.http
+      .get<BackendUserProfileInterface>(`${this.configUrl}/userprofiles/${id}/`)
+      .pipe(map((user: BackendUserProfileInterface) => this.commonApiAdaptorService.userProfileFromBackend(user)));
   }
 
   getCurrentUserProfile(): Observable<UserProfileInterface> {
@@ -66,7 +72,10 @@ export class CommonApiService extends BaseClassicApiService implements CommonApi
     );
   }
 
-  updateUserProfile(userProfileId: number, data: Partial<UserProfileInterface>): Observable<UserProfileInterface> {
+  updateUserProfile(
+    userProfileId: UserProfileInterface["id"],
+    data: Partial<UserProfileInterface>
+  ): Observable<UserProfileInterface> {
     return this.http.put<UserProfileInterface>(this.configUrl + `/userprofiles/${userProfileId}/partial/`, data);
   }
 

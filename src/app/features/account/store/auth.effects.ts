@@ -4,6 +4,10 @@ import { setTimeagoIntl } from "@app/translate-loader";
 import {
   AuthActionTypes,
   InitializeAuthSuccess,
+  LoadUser,
+  LoadUserProfile,
+  LoadUserProfileSuccess,
+  LoadUserSuccess,
   Login,
   LoginFailure,
   LoginSuccess,
@@ -22,11 +26,11 @@ import { LoadingService } from "@shared/services/loading.service";
 import { UserStoreService } from "@shared/services/user-store.service";
 import { CookieService } from "ngx-cookie-service";
 import { TimeagoIntl } from "ngx-timeago";
-import { forkJoin, Observable, of } from "rxjs";
+import { EMPTY, forkJoin, Observable, of } from "rxjs";
 import { catchError, map, mergeMap, switchMap, take, tap } from "rxjs/operators";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
-import { selectCurrentUserProfile } from "@features/account/store/auth.selectors";
+import { selectCurrentUserProfile, selectUser, selectUserProfile } from "@features/account/store/auth.selectors";
 
 @Injectable()
 export class AuthEffects {
@@ -129,6 +133,50 @@ export class AuthEffects {
         this.commonApiService
           .updateUserProfile(userProfileId, payload)
           .pipe(map(result => new UpdateCurrentUserProfileSuccess(result)))
+      )
+    )
+  );
+
+  LoadUser: Observable<LoadUserSuccess> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AuthActionTypes.LOAD_USER),
+      map((action: LoadUser) => action.payload),
+      mergeMap(payload =>
+        this.store$.select(selectUser, payload.id).pipe(
+          mergeMap(userFromStore =>
+            userFromStore !== null
+              ? of(userFromStore).pipe(map(user => new LoadUserSuccess({ user: userFromStore })))
+              : this.commonApiService.getUser(payload.id).pipe(
+                  map(
+                    user => new LoadUserSuccess({ user }),
+                    catchError(error => EMPTY)
+                  )
+                )
+          )
+        )
+      )
+    )
+  );
+
+  LoadUserProfile: Observable<LoadUserProfileSuccess> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AuthActionTypes.LOAD_USER_PROFILE),
+      map((action: LoadUserProfile) => action.payload),
+      mergeMap(payload =>
+        this.store$.select(selectUserProfile, payload.id).pipe(
+          mergeMap(userProfileFromStore =>
+            userProfileFromStore !== null
+              ? of(userProfileFromStore).pipe(
+                  map(user => new LoadUserProfileSuccess({ userProfile: userProfileFromStore }))
+                )
+              : this.commonApiService.getUserProfile(payload.id).pipe(
+                  map(
+                    userProfile => new LoadUserProfileSuccess({ userProfile }),
+                    catchError(error => EMPTY)
+                  )
+                )
+          )
+        )
       )
     )
   );

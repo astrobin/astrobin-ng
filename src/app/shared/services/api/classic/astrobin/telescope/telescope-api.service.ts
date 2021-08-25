@@ -16,6 +16,6 @@ export class TelescopeApiService extends BaseClassicApiService implements Migrat
   }
 
   getRandomNonMigrated(): Observable<any | null> {
-    return this.http.get<any[]>(`${this.configUrl}/random-non-migrated`);
+    return this.http.get<any[]>(`${this.configUrl}/random-non-migrated/`);
   }
 }

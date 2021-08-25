@@ -19,4 +19,9 @@
     white-space: nowrap;
     width: 1%;
   }
+
+  td:last-child,
+  th:last-child {
+    text-align: right;
+  }
 }
