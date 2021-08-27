@@ -21,7 +21,7 @@ export interface EquipmentItemBaseInterface {
   image?: string;
 }
 
-export type AnyEquipmentItemType = CameraInterface & TelescopeInterface;
+export type AnyEquipmentItemType = CameraInterface | TelescopeInterface;
 
 export function equipmentItemType(item: EquipmentItemBaseInterface): EquipmentItemType | undefined {
   if (instanceOfSensor(item)) {

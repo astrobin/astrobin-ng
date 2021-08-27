@@ -5,13 +5,18 @@ import { MockBuilder } from "ng-mocks";
 import { EquipmentModule } from "@features/equipment/equipment.module";
 import { provideMockStore } from "@ngrx/store/testing";
 import { initialState } from "@app/store/state";
+import { provideMockActions } from "@ngrx/effects/testing";
+import { ReplaySubject } from "rxjs";
+import { AppModule } from "@app/app.module";
 
 describe("BaseEquipmentItemEditorComponent", () => {
   let component: BaseEquipmentItemEditorComponent;
   let fixture: ComponentFixture<BaseEquipmentItemEditorComponent>;
 
   beforeEach(async () => {
-    await MockBuilder(BaseEquipmentItemEditorComponent, EquipmentModule).provide([provideMockStore({ initialState })]);
+    await MockBuilder(BaseEquipmentItemEditorComponent, EquipmentModule)
+      .mock(AppModule)
+      .provide([provideMockStore({ initialState }), provideMockActions(() => new ReplaySubject<any>())]);
   });
 
   beforeEach(() => {
