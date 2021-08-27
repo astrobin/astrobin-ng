@@ -1,14 +1,16 @@
-<div class="image">
-  <img [src]="image" alt="" />
-</div>
+<ng-container *ngIf="item && brand">
+  <div class="image">
+    <img [src]="image" alt="" />
+  </div>
 
-<div class="label">
-  <strong>{{ brand.name }}</strong> {{ item.name }}
-</div>
+  <div class="label">
+    <strong>{{ brand.name }}</strong> {{ item.name }}
+  </div>
 
-<div class="properties">
-  <span class="property" *ngFor="let property of properties">
-    <span class="property-name">{{ property.name }}</span>:
-    <span class="property-value">{{ property.value }}</span>
-  </span>
-</div>
+  <div class="properties">
+    <span class="property" *ngFor="let property of properties">
+      <span class="property-name">{{ property.name }}</span>:
+      <span class="property-value">{{ property.value }}</span>
+    </span>
+  </div>
+</ng-container>
