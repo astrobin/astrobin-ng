@@ -3,13 +3,12 @@
 
   <ng-container *ngIf="pendingReview$ | async as pendingReview; else loading">
     <div class="alert alert-info" *ngIf="pendingReview.length === 0; else pendingReviewTemplate">
-      <h4>Hold your horses!</h4>
+      <h4>Yay!</h4>
       <p>
-        You cannot migrate items while the review queue is not empty. This is to prevent creating multiple items
-        representing the same object.
+        The review queue is empty.
       </p>
       <br/>
-      <a routerLink="../../migration-review" class="btn btn-primary">Go to the review queue</a>
+      <a routerLink="../../migration-review" class="btn btn-primary">Go to the migration tool</a>
     </div>
   </ng-container>
 </div>
