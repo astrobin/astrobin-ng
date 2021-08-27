@@ -5,13 +5,15 @@ import { Store } from "@ngrx/store";
 import { BaseEquipmentItemEditorComponent } from "@features/equipment/components/base-equipment-item-editor/base-equipment-item-editor.component";
 import { LoadingService } from "@shared/services/loading.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
+import { CameraInterface } from "@features/equipment/interfaces/camera.interface";
 
 @Component({
   selector: "astrobin-camera-editor",
   templateUrl: "./camera-editor.component.html",
   styleUrls: ["./camera-editor.component.scss"]
 })
-export class CameraEditorComponent extends BaseEquipmentItemEditorComponent implements AfterContentInit {
+export class CameraEditorComponent extends BaseEquipmentItemEditorComponent<CameraInterface>
+  implements AfterContentInit {
   constructor(
     public readonly store$: Store,
     public readonly actions$: Actions,

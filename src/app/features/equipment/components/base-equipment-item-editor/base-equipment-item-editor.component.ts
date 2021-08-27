@@ -26,14 +26,14 @@ import { LoadingService } from "@shared/services/loading.service";
   selector: "astrobin-base-equipment-item-editor",
   template: ""
 })
-export class BaseEquipmentItemEditorComponent extends BaseComponentDirective {
+export class BaseEquipmentItemEditorComponent<T extends EquipmentItemBaseInterface> extends BaseComponentDirective {
   fields: FormlyFieldConfig[];
 
   @Input()
   form: FormGroup = new FormGroup({});
 
   @Input()
-  model: Partial<AnyEquipmentItemType> = {};
+  model: Partial<T> = {};
 
   @Input()
   name: string;
