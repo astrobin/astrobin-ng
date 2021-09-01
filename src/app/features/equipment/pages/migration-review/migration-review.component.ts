@@ -10,23 +10,27 @@ import { LoadUser, LoadUserProfile } from "@features/account/store/auth.actions"
 import { selectUser } from "@features/account/store/auth.selectors";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { UsernameService } from "@shared/components/misc/username/username.service";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { State } from "@app/store/state";
 
 @Component({
   selector: "astrobin-migration-review",
   templateUrl: "./migration-review.component.html",
   styleUrls: ["./migration-review.component.scss"]
 })
-export class MigrationReviewComponent implements OnInit {
+export class MigrationReviewComponent extends BaseComponentDirective implements OnInit {
   title = "Equipment migration review tool";
   pendingReview$: Observable<any[]> = this.getPendingMigrationReview$();
 
   constructor(
-    public readonly store$: Store,
+    public readonly store$: Store<State>,
     public readonly titleService: TitleService,
     public readonly translateService: TranslateService,
     public readonly legacyGearApi: GearApiService,
     public readonly usernameService: UsernameService
-  ) {}
+  ) {
+    super(store$);
+  }
 
   ngOnInit(): void {
     this.titleService.setTitle(this.title);

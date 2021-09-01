@@ -13,6 +13,7 @@ import { BrandSummaryComponent } from "./components/brand-summary/brand-summary.
 import { BaseEquipmentItemEditorComponent } from "./components/base-equipment-item-editor/base-equipment-item-editor.component";
 import { BrandEditorComponent } from "./components/brand-editor/brand-editor.component";
 import { MigrationReviewComponent } from "./pages/migration-review/migration-review.component";
+import { MigrationReviewItemComponent } from "./pages/migration-review-item/migration-review-item.component";
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { MigrationReviewComponent } from "./pages/migration-review/migration-rev
     BrandSummaryComponent,
     BaseEquipmentItemEditorComponent,
     BrandEditorComponent,
-    MigrationReviewComponent
+    MigrationReviewComponent,
+    MigrationReviewItemComponent
   ],
   imports: [
     RouterModule.forChild(routes),

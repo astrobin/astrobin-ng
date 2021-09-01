@@ -15,12 +15,13 @@ declare const gtag: any;
 })
 export class AppComponent extends BaseComponentDirective {
   constructor(
+    public readonly store$: Store<State>,
     public readonly router: Router,
     public readonly paginationConfig: NgbPaginationConfig,
-    public readonly store$: Store<State>,
     public readonly themeService: ThemeService
   ) {
-    super();
+    super(store$);
+
     this.initRouterEvents();
     this.initPagination();
     this.themeService.setTheme();

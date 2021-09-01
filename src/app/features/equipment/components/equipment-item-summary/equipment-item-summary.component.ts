@@ -5,6 +5,8 @@ import { EquipmentApiService } from "@features/equipment/services/equipment-api.
 import { BrandInterface } from "@features/equipment/interfaces/brand.interface";
 import { instanceOfCamera } from "@features/equipment/interfaces/camera.interface";
 import { TranslateService } from "@ngx-translate/core";
+import { Store } from "@ngrx/store";
+import { State } from "@app/store/state";
 
 export const PLACEHOLDER = "https://via.placeholder.com/50.png/000/fff?text=?";
 
@@ -21,10 +23,11 @@ export class EquipmentItemSummaryComponent extends BaseComponentDirective {
   brand: BrandInterface;
 
   constructor(
+    public readonly store$: Store<State>,
     public readonly equipmentApiService: EquipmentApiService,
     public readonly translateService: TranslateService
   ) {
-    super();
+    super(store$);
   }
 
   get image(): string {

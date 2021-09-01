@@ -6,6 +6,7 @@ import { BaseEquipmentItemEditorComponent } from "@features/equipment/components
 import { LoadingService } from "@shared/services/loading.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { CameraInterface } from "@features/equipment/interfaces/camera.interface";
+import { State } from "@app/store/state";
 
 @Component({
   selector: "astrobin-camera-editor",
@@ -15,7 +16,7 @@ import { CameraInterface } from "@features/equipment/interfaces/camera.interface
 export class CameraEditorComponent extends BaseEquipmentItemEditorComponent<CameraInterface>
   implements AfterContentInit {
   constructor(
-    public readonly store$: Store,
+    public readonly store$: Store<State>,
     public readonly actions$: Actions,
     public readonly loadingService: LoadingService,
     public readonly translateService: TranslateService,

@@ -152,7 +152,7 @@ export class SettingsPageComponent extends BaseComponentDirective implements OnI
     public readonly titleService: TitleService,
     public readonly translateService: TranslateService
   ) {
-    super();
+    super(store$);
 
     titleService.setTitle(this.pageTitle);
     this.store$.dispatch(

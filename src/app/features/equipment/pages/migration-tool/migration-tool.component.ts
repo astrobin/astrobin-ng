@@ -31,6 +31,7 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { TranslateService } from "@ngx-translate/core";
 import { WindowRefService } from "@shared/services/window-ref.service";
+import { State } from "@app/store/state";
 
 @Component({
   selector: "astrobin-migration-tool",
@@ -69,7 +70,7 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
   };
 
   constructor(
-    public readonly store$: Store,
+    public readonly store$: Store<State>,
     public readonly actions$: Actions,
     public readonly activatedRoute: ActivatedRoute,
     public readonly router: Router,
@@ -82,7 +83,7 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
     public readonly translateService: TranslateService,
     public readonly windowRefService: WindowRefService
   ) {
-    super();
+    super(store$);
   }
 
   get selectedMigrationItem(): number | undefined {

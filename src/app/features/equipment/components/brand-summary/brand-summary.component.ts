@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { BrandInterface } from "@features/equipment/interfaces/brand.interface";
 import { PLACEHOLDER } from "@features/equipment/components/equipment-item-summary/equipment-item-summary.component";
+import { Store } from "@ngrx/store";
 
 @Component({
   selector: "astrobin-brand-summary",
@@ -12,8 +13,8 @@ export class BrandSummaryComponent extends BaseComponentDirective implements OnI
   @Input()
   brand: BrandInterface;
 
-  constructor() {
-    super();
+  constructor(public readonly store$: Store) {
+    super(store$);
   }
 
   get logo(): string {

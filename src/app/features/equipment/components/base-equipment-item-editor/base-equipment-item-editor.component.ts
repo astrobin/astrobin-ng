@@ -21,6 +21,7 @@ import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { LoadingService } from "@shared/services/loading.service";
+import { State } from "@app/store/state";
 
 @Component({
   selector: "astrobin-base-equipment-item-editor",
@@ -52,13 +53,13 @@ export class BaseEquipmentItemEditorComponent<T extends EquipmentItemBaseInterfa
   };
 
   constructor(
-    public readonly store$: Store,
+    public readonly store$: Store<State>,
     public readonly actions$: Actions,
     public readonly loadingService: LoadingService,
     public readonly translateService: TranslateService,
     public readonly windowRefService: WindowRefService
   ) {
-    super();
+    super(store$);
   }
 
   cancelBrandCreation() {

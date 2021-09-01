@@ -7,10 +7,11 @@ import { Store } from "@ngrx/store";
 import { Observable } from "rxjs";
 import { selectUserProfile } from "@features/account/store/auth.selectors";
 import { map } from "rxjs/operators";
+import { State } from "@app/store/state";
 
 @Injectable()
 export class UsernameService extends BaseService implements UsernameServiceInterface {
-  constructor(public readonly store$: Store, public readonly loadingService: LoadingService) {
+  constructor(public readonly store$: Store<State>, public readonly loadingService: LoadingService) {
     super(loadingService);
   }
 

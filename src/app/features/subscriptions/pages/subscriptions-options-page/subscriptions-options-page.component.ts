@@ -29,7 +29,7 @@ export class SubscriptionsOptionsPageComponent extends BaseComponentDirective im
     public readonly translate: TranslateService,
     public readonly titleService: TitleService
   ) {
-    super();
+    super(store$);
   }
 
   ngOnInit(): void {

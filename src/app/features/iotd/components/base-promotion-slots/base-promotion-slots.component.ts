@@ -35,7 +35,7 @@ export abstract class BasePromotionSlotsComponent extends BaseComponentDirective
   _images = new QueryList<ImageComponent>();
 
   protected constructor(public readonly store$: Store<State>) {
-    super();
+    super(store$);
   }
 
   @HostBinding("class.is-empty")

@@ -17,7 +17,7 @@ declare const gtag: any;
 })
 export class SubscriptionsSuccessPageComponent implements OnInit {
   constructor(
-    public readonly store: Store<State>,
+    public readonly store$: Store<State>,
     public readonly titleService: TitleService,
     public readonly translate: TranslateService,
     public readonly activatedRoute: ActivatedRoute,
@@ -30,7 +30,7 @@ export class SubscriptionsSuccessPageComponent implements OnInit {
     const product = this.activatedRoute.snapshot.queryParams["product"];
 
     if (!!product) {
-      this.store.select(selectApp).subscribe(state => {
+      this.store$.select(selectApp).subscribe(state => {
         const googleAdsId = state.backendConfig.GOOGLE_ADS_ID;
         const conversionId = this.subscriptionsService.getConversionId(product);
 

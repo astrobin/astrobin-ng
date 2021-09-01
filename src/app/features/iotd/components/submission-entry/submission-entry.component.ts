@@ -21,7 +21,7 @@ export class SubmissionEntryComponent extends BasePromotionEntryComponent {
     public readonly loadingService: LoadingService,
     public readonly modalService: NgbModal
   ) {
-    super(elementRef, store$, modalService);
+    super(store$, elementRef, modalService);
   }
 
   isPromoted$(imageId: number): Observable<boolean> {

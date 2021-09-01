@@ -10,6 +10,7 @@ import { Store } from "@ngrx/store";
 import { selectBrand } from "@features/equipment/store/equipment.selectors";
 import { LoadBrand } from "@features/equipment/store/equipment.actions";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { State } from "@app/store/state";
 
 @Component({
   selector: "astrobin-brand-editor",
@@ -34,11 +35,11 @@ export class BrandEditorComponent extends BaseComponentDirective implements OnIn
   similarBrands$: Observable<BrandInterface[]> = of([]);
 
   constructor(
-    public readonly store$: Store,
+    public readonly store$: Store<State>,
     public readonly translateService: TranslateService,
     public readonly equipmentApiService: EquipmentApiService
   ) {
-    super();
+    super(store$);
   }
 
   ngOnInit(): void {

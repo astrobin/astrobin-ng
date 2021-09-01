@@ -1,6 +1,8 @@
-import { Component, EventEmitter, OnInit, Output } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { LoadingService } from "@shared/services/loading.service";
+import { Store } from "@ngrx/store";
+import { State } from "@app/store/state";
 
 @Component({
   selector: "astrobin-refresh-button",
@@ -8,8 +10,8 @@ import { LoadingService } from "@shared/services/loading.service";
   styleUrls: ["./refresh-button.component.scss"]
 })
 export class RefreshButtonComponent extends BaseComponentDirective implements OnInit {
-  constructor(readonly loadingService: LoadingService) {
-    super();
+  constructor(public readonly store$: Store<State>, public readonly loadingService: LoadingService) {
+    super(store$);
   }
 
   ngOnInit(): void {}

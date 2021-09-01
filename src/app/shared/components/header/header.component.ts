@@ -18,7 +18,6 @@ import { UserInterface } from "@shared/interfaces/user.interface";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { CookieService } from "ngx-cookie-service";
 import { Theme, ThemeService } from "@shared/services/theme.service";
-import { Constants } from "@shared/constants";
 import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
 
 interface AvailableLanguageInterface {
@@ -90,7 +89,7 @@ export class HeaderComponent extends BaseComponentDirective {
     public readonly themeService: ThemeService,
     public readonly jsonApiService: JsonApiService
   ) {
-    super();
+    super(store$);
   }
 
   get currentLanguageCodeDisplay(): string {

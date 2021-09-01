@@ -22,6 +22,10 @@ export class GearApiService extends BaseClassicApiService implements MigratableG
     super(loadingService);
   }
 
+  get(id: number): Observable<any> {
+    return this.http.get<any>(`${this.configUrl}/${id}/`);
+  }
+
   getRandomNonMigrated(): Observable<any[]> {
     return this.http.get<any[]>(`${this.configUrl}/random-non-migrated/`);
   }

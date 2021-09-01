@@ -36,11 +36,11 @@ export abstract class BasePromotionEntryComponent extends BaseComponentDirective
   image: ImageComponent;
 
   protected constructor(
-    public readonly elementRef: ElementRef,
     public readonly store$: Store<State>,
+    public readonly elementRef: ElementRef,
     public readonly modalService: NgbModal
   ) {
-    super();
+    super(store$);
   }
 
   ngOnInit() {

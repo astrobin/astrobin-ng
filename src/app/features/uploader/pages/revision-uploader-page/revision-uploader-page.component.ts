@@ -96,7 +96,7 @@ export class RevisionUploaderPageComponent extends BaseComponentDirective implem
     public readonly titleService: TitleService,
     public readonly thumbnailGroupApiService: ThumbnailGroupApiService
   ) {
-    super();
+    super(store$);
   }
 
   ngOnInit(): void {

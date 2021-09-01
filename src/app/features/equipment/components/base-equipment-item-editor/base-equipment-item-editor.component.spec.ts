@@ -8,10 +8,11 @@ import { initialState } from "@app/store/state";
 import { provideMockActions } from "@ngrx/effects/testing";
 import { ReplaySubject } from "rxjs";
 import { AppModule } from "@app/app.module";
+import { CameraInterface } from "@features/equipment/interfaces/camera.interface";
 
 describe("BaseEquipmentItemEditorComponent", () => {
-  let component: BaseEquipmentItemEditorComponent;
-  let fixture: ComponentFixture<BaseEquipmentItemEditorComponent>;
+  let component: BaseEquipmentItemEditorComponent<CameraInterface>;
+  let fixture: ComponentFixture<BaseEquipmentItemEditorComponent<CameraInterface>>;
 
   beforeEach(async () => {
     await MockBuilder(BaseEquipmentItemEditorComponent, EquipmentModule)

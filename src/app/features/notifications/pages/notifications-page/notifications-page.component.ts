@@ -31,7 +31,7 @@ export class NotificationsPageComponent extends BaseComponentDirective implement
     public readonly utilsService: UtilsService,
     public readonly windowRef: WindowRefService
   ) {
-    super();
+    super(store$);
 
     titleService.setTitle(this.pageTitle);
     this.store$.dispatch(

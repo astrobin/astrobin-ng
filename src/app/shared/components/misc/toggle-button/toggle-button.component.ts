@@ -1,6 +1,8 @@
 import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Theme, ThemeService } from "@shared/services/theme.service";
+import { Store } from "@ngrx/store";
+import { State } from "@app/store/state";
 
 @Component({
   selector: "astrobin-toggle-button",
@@ -16,8 +18,8 @@ export class ToggleButtonComponent extends BaseComponentDirective {
   @Output()
   toggle = new EventEmitter<boolean>();
 
-  constructor(public readonly themeService: ThemeService) {
-    super();
+  constructor(public readonly store$: Store<State>, public readonly themeService: ThemeService) {
+    super(store$);
   }
 
   get color(): any {

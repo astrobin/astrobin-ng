@@ -78,7 +78,7 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
     public readonly router: Router,
     public readonly route: ActivatedRoute
   ) {
-    super();
+    super(store$);
   }
 
   get imageRevisionEtiquetteMessage(): string {

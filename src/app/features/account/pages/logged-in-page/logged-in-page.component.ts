@@ -28,7 +28,7 @@ export class LoggedInPageComponent extends BaseComponentDirective implements OnI
     public readonly titleService: TitleService,
     public readonly translate: TranslateService
   ) {
-    super();
+    super(store$);
   }
 
   redirectionMessage(seconds: number): string {

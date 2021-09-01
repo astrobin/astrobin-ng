@@ -12,17 +12,17 @@ import { switchMap, take } from "rxjs/operators";
 @Injectable()
 export class UltimateSubscriptionGuardService extends BaseService implements CanActivate {
   constructor(
-    public readonly store: Store<State>,
-    public loadingService: LoadingService,
-    public userSubscriptionService: UserSubscriptionService,
-    public router: Router
+    public readonly store$: Store<State>,
+    public readonly loadingService: LoadingService,
+    public readonly userSubscriptionService: UserSubscriptionService,
+    public readonly router: Router
   ) {
     super(loadingService);
   }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot, redirect = true): Observable<boolean> {
     return new Observable<boolean>(observer => {
-      this.store
+      this.store$
         .pipe(
           take(1),
           switchMap(storeState =>

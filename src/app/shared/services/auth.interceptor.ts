@@ -13,10 +13,10 @@ import { AuthService } from "./auth.service";
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
   constructor(
-    public popNotificationsService: PopNotificationsService,
-    public authService: AuthService,
-    public translate: TranslateService,
-    public readonly store: Store<State>
+    public readonly store$: Store<State>,
+    public readonly popNotificationsService: PopNotificationsService,
+    public readonly authService: AuthService,
+    public readonly translate: TranslateService
   ) {}
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
@@ -44,7 +44,7 @@ export class AuthInterceptor implements HttpInterceptor {
     return next.handle(request).pipe(
       catchError(error => {
         if (error instanceof HttpErrorResponse && error.status === 401) {
-          this.store.dispatch(new Logout());
+          this.store$.dispatch(new Logout());
 
           const invalidSessionMessage = this.translate.instant("Your session is invalid, please log in again");
           const login = this.translate.instant("Log in");
