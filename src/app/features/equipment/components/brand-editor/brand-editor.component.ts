@@ -18,6 +18,8 @@ import { State } from "@app/store/state";
   styleUrls: ["./brand-editor.component.scss"]
 })
 export class BrandEditorComponent extends BaseComponentDirective implements OnInit {
+  static MIN_LENGTH_FOR_SUGGESTONS = 3;
+
   fields: FormlyFieldConfig[];
 
   @Input()
@@ -43,6 +45,10 @@ export class BrandEditorComponent extends BaseComponentDirective implements OnIn
   }
 
   ngOnInit(): void {
+    if (this.name.length >= BrandEditorComponent.MIN_LENGTH_FOR_SUGGESTONS) {
+      this.similarBrands$ = this.equipmentApiService.findAllBrands(this.name);
+    }
+
     this.fields = [
       {
         key: "name",
@@ -58,7 +64,7 @@ export class BrandEditorComponent extends BaseComponentDirective implements OnIn
           onInit: field => {
             return field.formControl.valueChanges.pipe(
               tap(value => {
-                if (value.length >= 3) {
+                if (value.length >= BrandEditorComponent.MIN_LENGTH_FOR_SUGGESTONS) {
                   this.similarBrands$ = this.equipmentApiService.findAllBrands(value);
                 } else {
                   this.similarBrands$ = of([]);

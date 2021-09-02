@@ -8,7 +8,7 @@
         The review queue is empty.
       </p>
       <br />
-      <a routerLink="../../migration-review" class="btn btn-primary">Go to the migration tool</a>
+      <a routerLink="../migration-tool" class="btn btn-primary">Go to the migration tool</a>
     </div>
   </ng-container>
 </div>
@@ -42,7 +42,7 @@
             </td>
             <td>{{ item.migrationFlag }}</td>
             <td>
-              <astrobin-username [user]="getUser$(item.migrationFlagModerator) | async"></astrobin-username>
+              <astrobin-username [user]="userService.getUser$(item.migrationFlagModerator) | async"></astrobin-username>
             </td>
             <td>
               <a

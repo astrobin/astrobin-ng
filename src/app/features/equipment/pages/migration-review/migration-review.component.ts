@@ -12,6 +12,7 @@ import { UserInterface } from "@shared/interfaces/user.interface";
 import { UsernameService } from "@shared/components/misc/username/username.service";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { State } from "@app/store/state";
+import { UserService } from "@shared/services/user.service";
 
 @Component({
   selector: "astrobin-migration-review",
@@ -19,7 +20,7 @@ import { State } from "@app/store/state";
   styleUrls: ["./migration-review.component.scss"]
 })
 export class MigrationReviewComponent extends BaseComponentDirective implements OnInit {
-  title = "Equipment migration review tool";
+  title = "Migration review tool";
   pendingReview$: Observable<any[]> = this.getPendingMigrationReview$();
 
   constructor(
@@ -27,7 +28,8 @@ export class MigrationReviewComponent extends BaseComponentDirective implements 
     public readonly titleService: TitleService,
     public readonly translateService: TranslateService,
     public readonly legacyGearApi: GearApiService,
-    public readonly usernameService: UsernameService
+    public readonly usernameService: UsernameService,
+    public readonly userService: UserService
   ) {
     super(store$);
   }
@@ -63,9 +65,5 @@ export class MigrationReviewComponent extends BaseComponentDirective implements 
         });
       })
     );
-  }
-
-  getUser$(userId: UserInterface["id"]): Observable<UserInterface> {
-    return this.store$.select(selectUser, userId);
   }
 }

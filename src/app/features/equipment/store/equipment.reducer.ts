@@ -22,21 +22,21 @@ export function reducer(state = initialEquipmentState, action: EquipmentActions)
     case EquipmentActionTypes.CREATE_BRAND_SUCCESS: {
       return {
         ...state,
-        brands: new UtilsService().arrayUniqueObjects([...state.brands, ...[action.payload.brand]])
+        brands: UtilsService.arrayUniqueObjects([...state.brands, ...[action.payload.brand]])
       };
     }
 
     case EquipmentActionTypes.FIND_ALL_BRANDS_SUCCESS: {
       return {
         ...state,
-        brands: new UtilsService().arrayUniqueObjects([...state.brands, ...action.payload.brands])
+        brands: UtilsService.arrayUniqueObjects([...state.brands, ...action.payload.brands])
       };
     }
 
     case EquipmentActionTypes.FIND_ALL_EQUIPMENT_ITEMS_SUCCESS: {
       return {
         ...state,
-        equipmentItems: new UtilsService().arrayUniqueObjects([...state.equipmentItems, ...action.payload.items])
+        equipmentItems: UtilsService.arrayUniqueObjects([...state.equipmentItems, ...action.payload.items])
       };
     }
 

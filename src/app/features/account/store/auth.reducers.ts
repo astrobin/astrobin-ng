@@ -36,8 +36,8 @@ export function reducer(state = initialAuthState, action: All): AuthState {
         user: action.payload.user,
         userProfile: action.payload.userProfile,
         userSubscriptions: action.payload.userSubscriptions,
-        users: new UtilsService().arrayUniqueObjects([...state.users, ...[action.payload.user]]),
-        userProfiles: new UtilsService().arrayUniqueObjects([...state.users, ...[action.payload.userProfile]])
+        users: UtilsService.arrayUniqueObjects([...state.users, ...[action.payload.user]]),
+        userProfiles: UtilsService.arrayUniqueObjects([...state.users, ...[action.payload.userProfile]])
       };
     case AuthActionTypes.UPDATE_CURRENT_USER_PROFILE_SUCCESS:
       return {
@@ -47,12 +47,12 @@ export function reducer(state = initialAuthState, action: All): AuthState {
     case AuthActionTypes.LOAD_USER_SUCCESS:
       return {
         ...state,
-        users: new UtilsService().arrayUniqueObjects([...state.users, ...[action.payload.user]])
+        users: UtilsService.arrayUniqueObjects([...state.users, ...[action.payload.user]])
       };
     case AuthActionTypes.LOAD_USER_PROFILE_SUCCESS:
       return {
         ...state,
-        userProfiles: new UtilsService().arrayUniqueObjects([...state.users, ...[action.payload.userProfile]])
+        userProfiles: UtilsService.arrayUniqueObjects([...state.users, ...[action.payload.userProfile]])
       };
     default: {
       return state;

@@ -4,12 +4,14 @@ import { UserGenerator } from "@shared/generators/user.generator";
 import { MockBuilder } from "ng-mocks";
 
 import { UserService } from "./user.service";
+import { provideMockStore } from "@ngrx/store/testing";
+import { initialState } from "@app/store/state";
 
 describe("UserService", () => {
   let service: UserService;
 
   beforeEach(async () => {
-    await MockBuilder(UserService);
+    await MockBuilder(UserService).provide(provideMockStore({ initialState }));
     service = TestBed.inject(UserService);
   });
 

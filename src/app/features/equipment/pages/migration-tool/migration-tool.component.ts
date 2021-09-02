@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, OnInit, TemplateRef, ViewChild } from "@angular/core";
 import { GearApiService } from "@shared/services/api/classic/astrobin/gear/gear-api.service";
 import { LoadingService } from "@shared/services/loading.service";
-import { filter, map, switchMap, takeUntil, tap } from "rxjs/operators";
+import { filter, map, switchMap, take, takeUntil, tap } from "rxjs/operators";
 import {
   EquipmentItemBaseInterface,
   equipmentItemType,
@@ -42,7 +42,7 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
   @ViewChild("equipmentItemOptionTemplate")
   equipmentItemOptionTemplate: TemplateRef<any>;
 
-  title = "Legacy equipment migration tool";
+  title = "Migration tool";
   activeType = this.activatedRoute.snapshot.paramMap.get("itemType");
   randomNonMigrated$ = this.getRandomNonMigrated$();
   pendingReview$ = this.legacyGearApi.getPendingMigrationReview();
@@ -187,9 +187,25 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
     return EMPTY;
   }
 
-  skip() {
-    this.pendingReview$ = this.legacyGearApi.getPendingMigrationReview();
-    this.randomNonMigrated$ = this.getRandomNonMigrated$();
+  skip(object?: any) {
+    this.loadingService.setLoading(true);
+
+    const _doSkip = () => {
+      this.pendingReview$ = this.legacyGearApi.getPendingMigrationReview();
+      this.randomNonMigrated$ = this.getRandomNonMigrated$();
+      this.loadingService.setLoading(false);
+    };
+
+    if (object) {
+      this.legacyGearApi
+        .releaseLockForMigration(object.pk)
+        .pipe(take(1))
+        .subscribe(() => {
+          _doSkip();
+        });
+    } else {
+      _doSkip();
+    }
   }
 
   markAsWrongType(object: any) {
@@ -277,23 +293,26 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
 
   _applyMigration(object: any, setMigrateArgs: any[], markedAs: string) {
     this.loadingService.setLoading(true);
-    this.legacyGearApi.setMigration.apply(this.legacyGearApi, setMigrateArgs).subscribe(
-      () => {
-        this.loadingService.setLoading(false);
-        this.migration.inProgress = false;
-        this.skip();
-        this.popNotificationsService.success(
-          `Good job! Item <strong>${object.make} ${object.name}</strong> marked as <strong>${markedAs}</strong>! Do another one now! 😃`,
-          null,
-          {
-            enableHtml: true
-          }
-        );
-      },
-      error => {
-        this._operationError(error);
-      }
-    );
+    this.legacyGearApi.setMigration
+      .apply(this.legacyGearApi, setMigrateArgs)
+      .pipe(take(1))
+      .subscribe(
+        () => {
+          this.loadingService.setLoading(false);
+          this.migration.inProgress = false;
+          this.skip(object);
+          this.popNotificationsService.success(
+            `Good job! Item <strong>${object.make} ${object.name}</strong> marked as <strong>${markedAs}</strong>! Do another one now! 😃`,
+            null,
+            {
+              enableHtml: true
+            }
+          );
+        },
+        error => {
+          this._operationError(error);
+        }
+      );
   }
 
   _operationError(error) {

@@ -137,7 +137,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
 
   onReturnToClassicEditor() {
     this.loadingService.setLoading(true);
-    this.utilsService.openLink(
+    UtilsService.openLink(
       this.windowRefService.nativeWindow.document,
       this.classicRoutesService.EDIT_IMAGE_THUMBNAILS(this.image.hash || "" + this.image.pk) + "?upload"
     );
@@ -162,7 +162,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     this.store$.dispatch(new SaveImage({ pk: this.image.pk, data: { ...this.image, ...this.form.value } }));
     this.actions$.pipe(ofType(AppActionTypes.SAVE_IMAGE_SUCCESS)).subscribe(() => {
       this.loadingService.setLoading(true);
-      this.utilsService.openLink(this.windowRefService.nativeWindow.document, next);
+      UtilsService.openLink(this.windowRefService.nativeWindow.document, next);
     });
   }
 

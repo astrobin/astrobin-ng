@@ -12,7 +12,7 @@ export const routes: Routes = [
     redirectTo: "migration-tool/camera"
   },
   {
-    path: "migration-tool/:src/app/shared/components/misc/username/username.service.ts:13:45itemType",
+    path: "migration-tool/:itemType",
     component: MigrationToolComponent,
     canActivate: [AuthGuardService, GroupGuardService],
     data: { group: "equipment_moderators" }

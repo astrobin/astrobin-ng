@@ -2,7 +2,9 @@ import { EquipmentItemBaseInterface } from "@features/equipment/interfaces/equip
 import { SensorInterface } from "@features/equipment/interfaces/sensor.interface";
 
 // TODO
-export enum TelescopeType {}
+export enum TelescopeType {
+  REFRACTORS_ACHROMATIC = "REFFRACTORS_ACHROMATIC"
+}
 
 export interface TelescopeInterface extends EquipmentItemBaseInterface {
   type: TelescopeType;

@@ -104,6 +104,9 @@ export class BaseEquipmentItemEditorComponent<T extends EquipmentItemBaseInterfa
       key: "brand",
       type: "ng-select",
       id: "equipment-item-field-brand",
+      expressionProperties: {
+        "templateOptions.disabled": () => this.brandCreation.inProgress
+      },
       templateOptions: {
         required: true,
         clearable: true,
@@ -132,6 +135,9 @@ export class BaseEquipmentItemEditorComponent<T extends EquipmentItemBaseInterfa
       type: "input",
       id: "equipment-item-field-name",
       defaultValue: this.name,
+      expressionProperties: {
+        "templateOptions.disabled": () => this.brandCreation.inProgress
+      },
       templateOptions: {
         required: true,
         label: this.translateService.instant("Name"),

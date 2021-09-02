@@ -2,7 +2,6 @@ import { Injectable } from "@angular/core";
 import { BaseClassicApiService } from "@shared/services/api/classic/base-classic-api.service";
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
-import { CameraInterface } from "@features/equipment/interfaces/camera.interface";
 import { HttpClient } from "@angular/common/http";
 import { Observable, of } from "rxjs";
 import {
@@ -10,8 +9,13 @@ import {
   EquipmentItemType
 } from "@features/equipment/interfaces/equipment-item-base.interface";
 import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
-import { map } from "rxjs/operators";
+import { map, switchMap } from "rxjs/operators";
 import { BrandInterface } from "@features/equipment/interfaces/brand.interface";
+import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
+import { CommonApiService } from "@shared/services/api/classic/common/common-api.service";
+import { CameraInterface } from "@features/equipment/interfaces/camera.interface";
+import { SensorInterface } from "@features/equipment/interfaces/sensor.interface";
+import { TelescopeInterface } from "@features/equipment/interfaces/telescope.interface";
 
 @Injectable({
   providedIn: "root"
@@ -19,7 +23,11 @@ import { BrandInterface } from "@features/equipment/interfaces/brand.interface";
 export class EquipmentApiService extends BaseClassicApiService implements BaseService {
   configUrl = this.baseUrl + "/equipment";
 
-  constructor(public readonly loadingService: LoadingService, public readonly http: HttpClient) {
+  constructor(
+    public readonly loadingService: LoadingService,
+    public readonly http: HttpClient,
+    public readonly commonApiService: CommonApiService
+  ) {
     super(loadingService);
   }
 
@@ -49,5 +57,36 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     return this.http
       .get<PaginatedApiResultInterface<EquipmentItemBaseInterface>>(`${this.configUrl}/${type.toLowerCase()}/?q=${q}`)
       .pipe(map(response => response.results));
+  }
+
+  getByContentTypeAndObjectId(
+    contentTypeId: ContentTypeInterface["id"],
+    objectId: EquipmentItemBaseInterface["id"]
+  ): Observable<EquipmentItemBaseInterface> {
+    return this.commonApiService.getContentTypeById(contentTypeId).pipe(
+      switchMap(contentType => {
+        // TODO: complete
+        switch (contentType.model) {
+          case "camera":
+            return this.getCamera(objectId);
+          case "sensor":
+            return this.getSensor(objectId);
+          case "telescope":
+            return this.getTelescope(objectId);
+        }
+      })
+    );
+  }
+
+  getCamera(id: CameraInterface["id"]): Observable<CameraInterface> {
+    return this.http.get<CameraInterface>(`${this.configUrl}/camera/${id}/`);
+  }
+
+  getSensor(id: SensorInterface["id"]): Observable<SensorInterface> {
+    return this.http.get<SensorInterface>(`${this.configUrl}/sensor/${id}/`);
+  }
+
+  getTelescope(id: TelescopeInterface["id"]): Observable<TelescopeInterface> {
+    return this.http.get<TelescopeInterface>(`${this.configUrl}/telescope/${id}/`);
   }
 }

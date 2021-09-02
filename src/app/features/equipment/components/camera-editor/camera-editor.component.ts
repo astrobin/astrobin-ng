@@ -34,6 +34,9 @@ export class CameraEditorComponent extends BaseEquipmentItemEditorComponent<Came
         type: "checkbox",
         id: "equipment-item-field-cooled",
         defaultValue: false,
+        expressionProperties: {
+          "templateOptions.disabled": () => this.brandCreation.inProgress
+        },
         templateOptions: {
           label: this.translateService.instant("Cooled"),
           description: this.translateService.instant("Whether this camera is equipment with a cooling mechanism.")
@@ -44,6 +47,9 @@ export class CameraEditorComponent extends BaseEquipmentItemEditorComponent<Came
         type: "input",
         id: "equipment-item-field-max-cooling",
         hideExpression: () => !this.model.cooled,
+        expressionProperties: {
+          "templateOptions.disabled": () => this.brandCreation.inProgress
+        },
         templateOptions: {
           type: "number",
           min: 1,
@@ -59,6 +65,9 @@ export class CameraEditorComponent extends BaseEquipmentItemEditorComponent<Came
         key: "backFocus",
         type: "input",
         id: "equipment-item-field-back-focus",
+        expressionProperties: {
+          "templateOptions.disabled": () => this.brandCreation.inProgress
+        },
         templateOptions: {
           type: "number",
           min: 1,

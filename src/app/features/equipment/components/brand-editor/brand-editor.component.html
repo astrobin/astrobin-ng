@@ -1,5 +1,6 @@
 <ng-container *ngIf="similarBrands$ | async as similarItems">
   <div class="alert alert-info" *ngIf="similarItems.length > 0">
+    <h4>{{ "Heads up!" | translate }}</h4>
     <p>
       {{ "Did you mean:" | translate }}
       <span *ngFor="let item of similarItems; let isLast = last">

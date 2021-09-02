@@ -65,7 +65,7 @@
 </ng-template>
 
 <ng-template #equipmentItemOptionTemplate let-object="item">
-  <astrobin-equipment-item-summary [item]="object.item" [brand]="object.brand"></astrobin-equipment-item-summary>
+  <astrobin-equipment-item-summary [item]="object.item"></astrobin-equipment-item-summary>
 </ng-template>
 
 <ng-template #randomNonMigrated>
@@ -91,7 +91,7 @@
               class="btn btn-sm-block btn-secondary"
               [disabled]="migration.inProgress || creation.inProgress"
               [class.loading]="loadingService.isLoading()"
-              (click)="skip()"
+              (click)="skip(object)"
             >
               Skip
             </button>

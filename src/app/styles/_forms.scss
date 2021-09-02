@@ -26,6 +26,13 @@ label {
     border-left: 0.5rem solid var(--error);
     padding-left: calc(0.75rem - 0.5rem + 1px);
   }
+
+  &:disabled,
+  &.disabled,
+  &[readonly],
+  &.readonly {
+    background-color: var(--grey);
+  }
 }
 
 .form-group {

@@ -31,7 +31,14 @@ export class CommonApiService extends BaseClassicApiService implements CommonApi
     super(loadingService);
   }
 
-  getContentType(appLabel: string, model: string): Observable<ContentTypeInterface | null> {
+  getContentTypeById(id: ContentTypeInterface["id"]): Observable<ContentTypeInterface> {
+    return this.http.get<ContentTypeInterface>(`${this.configUrl}/contenttypes/${id}/`);
+  }
+
+  getContentType(
+    appLabel: ContentTypeInterface["appLabel"],
+    model: ContentTypeInterface["model"]
+  ): Observable<ContentTypeInterface | null> {
     return this.http
       .get<ContentTypeInterface[]>(`${this.configUrl}/contenttypes/?app_label=${appLabel}&model=${model}`)
       .pipe(

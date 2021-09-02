@@ -1,1 +1,68 @@
-<p>migration-review-item works!</p>
+<div class="page">
+  <ng-container *ngIf="user$ | async as user">
+    <ng-container *ngIf="item && user; else loading">
+      <h1>{{ title }}</h1>
+
+      <div class="card box-shadow">
+        <div class="card-header">
+          Summary
+        </div>
+
+        <div class="card-body">
+          <dl>
+            <dt>Proposed strategy:</dt>
+            <dd>{{ item.migrationFlag }}</dd>
+
+            <dt>Proposed by:</dt>
+            <dd>
+              <astrobin-username [user]="user"></astrobin-username>
+            </dd>
+
+            <dt>Datetime:</dt>
+            <dd>{{ item.migrationFlagTimestamp | localDate }}</dd>
+          </dl>
+        </div>
+
+        <div class="card-footer" *ngIf="showButtonsOnSummary">
+          <ng-container [ngTemplateOutlet]="buttons"></ng-container>
+        </div>
+      </div>
+
+      <ng-container *ngIf="item.migrationFlag === MigrationFlag.MIGRATE">
+        <div class="mt-4 mb-4 text-center">
+          <fa-icon icon="arrow-down"></fa-icon>
+        </div>
+
+        <div class="card box-shadow">
+          <div class="card-header">
+            The legacy object will be migrated to the following equipment item
+          </div>
+
+          <div class="card-body">
+            <ng-container *ngIf="this.equipmentItem$ | async as equipmentItem; else loading">
+              <astrobin-equipment-item-summary [item]="equipmentItem"></astrobin-equipment-item-summary>
+            </ng-container>
+          </div>
+
+          <div class="card-footer">
+            <ng-container [ngTemplateOutlet]="buttons"></ng-container>
+          </div>
+        </div>
+      </ng-container>
+    </ng-container>
+  </ng-container>
+</div>
+
+<ng-template #loading>
+  <astrobin-loading-indicator></astrobin-loading-indicator>
+</ng-template>
+
+<ng-template #buttons>
+  <button class="btn btn-sm-block btn-success" [class.loading]="loadingService.isLoading()" (click)="accept()">
+    Accept
+  </button>
+
+  <button class="btn btn-sm-block btn-danger" [class.loading]="loadingService.isLoading()" (click)="reject()">
+    Reject
+  </button>
+</ng-template>

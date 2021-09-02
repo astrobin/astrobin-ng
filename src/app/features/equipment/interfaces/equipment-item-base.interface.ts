@@ -4,6 +4,7 @@ import { instanceOfSensor } from "@features/equipment/interfaces/sensor.interfac
 import { instanceOfTelescope, TelescopeInterface } from "@features/equipment/interfaces/telescope.interface";
 import { BrandInterface } from "@features/equipment/interfaces/brand.interface";
 
+// TODO: complete
 export enum EquipmentItemType {
   SENSOR = "SENSOR",
   CAMERA = "CAMERA",

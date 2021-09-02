@@ -10,12 +10,12 @@ import { isObservable, Observable } from "rxjs";
   styleUrls: ["./formly-field-ng-select.component.scss"]
 })
 export class FormlyFieldNgSelectComponent extends FieldType {
-  constructor(public readonly translateService: TranslateService, public readonly utilsService: UtilsService) {
+  constructor(public readonly translateService: TranslateService) {
     super();
   }
 
   onSearch(event) {
-    if (this.utilsService.isFunction(this.to.onSearch)) {
+    if (UtilsService.isFunction(this.to.onSearch)) {
       this.to.onSearch(event);
     }
   }

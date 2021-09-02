@@ -104,7 +104,7 @@ export function reducer(state = initialAppState, action: All): AppState {
     case AppActionTypes.LOAD_CONTENT_TYPE_SUCCESS: {
       return {
         ...state,
-        contentTypes: new UtilsService().arrayUniqueObjects([...state.contentTypes, action.payload])
+        contentTypes: UtilsService.arrayUniqueObjects([...state.contentTypes, action.payload])
       };
     }
 
@@ -113,21 +113,21 @@ export function reducer(state = initialAppState, action: All): AppState {
     case AppActionTypes.SAVE_IMAGE_SUCCESS: {
       return {
         ...state,
-        images: new UtilsService().arrayUniqueObjects([...state.images, action.payload])
+        images: UtilsService.arrayUniqueObjects([...state.images, action.payload])
       };
     }
 
     case AppActionTypes.LOAD_IMAGES_SUCCESS: {
       return {
         ...state,
-        images: new UtilsService().arrayUniqueObjects([...state.images, ...action.payload.results])
+        images: UtilsService.arrayUniqueObjects([...state.images, ...action.payload.results])
       };
     }
 
     case AppActionTypes.LOAD_THUMBNAIL: {
       return {
         ...state,
-        loadingThumbnails: new UtilsService().arrayUniqueObjects([...state.loadingThumbnails, action.payload])
+        loadingThumbnails: UtilsService.arrayUniqueObjects([...state.loadingThumbnails, action.payload])
       };
     }
 
@@ -146,7 +146,7 @@ export function reducer(state = initialAppState, action: All): AppState {
     case AppActionTypes.LOAD_THUMBNAIL_SUCCESS: {
       return {
         ...state,
-        thumbnails: new UtilsService().arrayUniqueObjects([...state.thumbnails, action.payload]),
+        thumbnails: UtilsService.arrayUniqueObjects([...state.thumbnails, action.payload]),
         loadingThumbnails: state.loadingThumbnails.filter(
           thumbnail =>
             thumbnail.id !== action.payload.id ||
@@ -159,28 +159,28 @@ export function reducer(state = initialAppState, action: All): AppState {
     case AppActionTypes.LOAD_SOLUTION_SUCCESS: {
       return {
         ...state,
-        solutions: new UtilsService().arrayUniqueObjects([...state.solutions, action.payload])
+        solutions: UtilsService.arrayUniqueObjects([...state.solutions, action.payload])
       };
     }
 
     case AppActionTypes.LOAD_SOLUTIONS_SUCCESS: {
       return {
         ...state,
-        solutions: new UtilsService().arrayUniqueObjects([...state.solutions, ...action.payload])
+        solutions: UtilsService.arrayUniqueObjects([...state.solutions, ...action.payload])
       };
     }
 
     case AppActionTypes.LOAD_TELESCOPE_SUCCESS: {
       return {
         ...state,
-        telescopes: new UtilsService().arrayUniqueObjects([...state.telescopes, action.payload])
+        telescopes: UtilsService.arrayUniqueObjects([...state.telescopes, action.payload])
       };
     }
 
     case AppActionTypes.LOAD_CAMERA_SUCCESS: {
       return {
         ...state,
-        cameras: new UtilsService().arrayUniqueObjects([...state.cameras, action.payload])
+        cameras: UtilsService.arrayUniqueObjects([...state.cameras, action.payload])
       };
     }
 

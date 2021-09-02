@@ -38,6 +38,10 @@ export class GearApiService extends BaseClassicApiService implements MigratableG
     return this.http.put<void>(`${this.configUrl}/${gearId}/lock-for-migration/`, {});
   }
 
+  releaseLockForMigration(gearId: number): Observable<void> {
+    return this.http.put<void>(`${this.configUrl}/${gearId}/release-lock-for-migration/`, {});
+  }
+
   setMigration(
     gearId: number,
     migrationFlag: MigrationFlag,

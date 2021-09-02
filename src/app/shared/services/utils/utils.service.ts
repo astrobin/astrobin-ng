@@ -1,11 +1,14 @@
 import { Injectable } from "@angular/core";
 import { distinctUntilChanged } from "rxjs/operators";
+import { TranslateService } from "@ngx-translate/core";
 
 @Injectable({
   providedIn: "root"
 })
 export class UtilsService {
-  uuid(): string {
+  constructor(public readonly translateService: TranslateService) {}
+
+  static uuid(): string {
     const S4 = (): string => {
       // tslint:disable-next-line:no-bitwise
       return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
@@ -14,7 +17,7 @@ export class UtilsService {
     return `${S4()}${S4()}-${S4()}-${S4()}-${S4()}-${S4()}${S4()}${S4()}`;
   }
 
-  fileExtension(filename: string): string | undefined {
+  static fileExtension(filename: string): string | undefined {
     const separator = ".";
 
     if (!filename || filename.indexOf(separator) === -1) {
@@ -24,12 +27,12 @@ export class UtilsService {
     return filename.split(separator).pop();
   }
 
-  isImage(filename: string): boolean {
+  static isImage(filename: string): boolean {
     if (!filename) {
       return false;
     }
 
-    const extension = this.fileExtension(filename).toLowerCase();
+    const extension = UtilsService.fileExtension(filename).toLowerCase();
     return ["png", "jpg", "jpeg", "gif"].indexOf(extension) > -1;
   }
 
@@ -37,7 +40,7 @@ export class UtilsService {
    * Removes duplicates from an array. Items must be able to be stringified using JSON.
    * @param array
    */
-  arrayUniqueObjects(array: any): any {
+  static arrayUniqueObjects(array: any): any {
     const a = array.concat();
     for (let i = 0; i < a.length; ++i) {
       for (let j = i + 1; j < a.length; ++j) {
@@ -50,7 +53,7 @@ export class UtilsService {
     return a;
   }
 
-  isInViewport(element: HTMLElement): boolean {
+  static isInViewport(element: HTMLElement): boolean {
     const rect = element.getBoundingClientRect();
     return (
       rect.top >= 0 &&
@@ -60,7 +63,7 @@ export class UtilsService {
     );
   }
 
-  getLinksInText(text: string): string[] {
+  static getLinksInText(text: string): string[] {
     const regex = /href="(.*?)"/gm;
     let m;
     const links = [];
@@ -83,14 +86,14 @@ export class UtilsService {
     return links;
   }
 
-  openLink(document: any, url: string, options: { openInNewTab?: boolean } = {}) {
+  static openLink(document: any, url: string, options: { openInNewTab?: boolean } = {}) {
     Object.assign(document.createElement("a"), {
       target: !!options && options.openInNewTab ? "_blank" : "_self",
       href: url
     }).click();
   }
 
-  addOrUpdateUrlParam(url: string, name: string, value: string) {
+  static addOrUpdateUrlParam(url: string, name: string, value: string) {
     let regex = new RegExp("[&\\?]" + name + "=");
 
     if (regex.test(url)) {
@@ -105,7 +108,7 @@ export class UtilsService {
     return url + "?" + name + "=" + value;
   }
 
-  removeUrlParam(url: string, parameter: string) {
+  static removeUrlParam(url: string, parameter: string) {
     const urlParts = url.split("?");
 
     if (urlParts.length >= 2) {
@@ -124,8 +127,12 @@ export class UtilsService {
     return url;
   }
 
-  isFunction(functionToCheck) {
+  static isFunction(functionToCheck) {
     return functionToCheck && {}.toString.call(functionToCheck) === "[object Function]";
+  }
+
+  yesNo(value) {
+    return value ? this.translateService.instant("Yes") : this.translateService.instant("No");
   }
 }
 

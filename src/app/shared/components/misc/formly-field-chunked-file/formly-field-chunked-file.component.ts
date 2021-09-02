@@ -46,7 +46,7 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
       return req;
     },
     metadata: {
-      filename: new UtilsService().uuid()
+      filename: UtilsService.uuid()
     }
   };
 
@@ -59,7 +59,6 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
     public readonly authService: AuthService,
     public readonly uploaderService: UploadxService,
     public readonly uploadDataService: UploadDataService,
-    public readonly utilsService: UtilsService,
     public readonly popNotificationsService: PopNotificationsService,
     public readonly translateService: TranslateService,
     public readonly userSubscriptionService: UserSubscriptionService,
@@ -212,7 +211,7 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
   }
 
   private _checkFileExtension(filename: string): Observable<boolean> {
-    const extension = this.utilsService.fileExtension(filename).toLowerCase();
+    const extension = UtilsService.fileExtension(filename).toLowerCase();
 
     if (this.uploadOptions.allowedTypes.indexOf(`.${extension}`) > -1) {
       this._warnAbout16BitTiff(filename);
@@ -247,7 +246,7 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
   }
 
   private _checkImageDimensions(file: File): Observable<boolean> {
-    if (this.utilsService.isImage(file.name)) {
+    if (UtilsService.isImage(file.name)) {
       return new Observable<boolean>(observer => {
         // @ts-ignore
         const image = new Image();
@@ -344,7 +343,7 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
       return;
     }
 
-    const extension = this.utilsService.fileExtension(filename).toLowerCase();
+    const extension = UtilsService.fileExtension(filename).toLowerCase();
 
     if (extension === "tif" || extension === "tiff") {
       const message =

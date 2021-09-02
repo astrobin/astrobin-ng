@@ -106,7 +106,7 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
       !this.loading &&
       !this._loaded &&
       this._loadingIndicator &&
-      (this.utilsService.isInViewport(this._loadingIndicator.nativeElement) || this.alwaysLoad)
+      (UtilsService.isInViewport(this._loadingIndicator.nativeElement) || this.alwaysLoad)
     ) {
       this.loading = true;
       this._loadImage();

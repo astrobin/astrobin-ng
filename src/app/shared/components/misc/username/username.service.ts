@@ -4,7 +4,7 @@ import { UserInterface } from "@shared/interfaces/user.interface";
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { Store } from "@ngrx/store";
-import { Observable } from "rxjs";
+import { Observable, of } from "rxjs";
 import { selectUserProfile } from "@features/account/store/auth.selectors";
 import { map } from "rxjs/operators";
 import { State } from "@app/store/state";
@@ -16,6 +16,10 @@ export class UsernameService extends BaseService implements UsernameServiceInter
   }
 
   getDisplayName$(user: UserInterface): Observable<string> {
+    if (!user) {
+      return of(null);
+    }
+
     return this.store$.select(selectUserProfile, user.userProfile).pipe(
       map(userProfile => {
         if (userProfile && userProfile.realName) {

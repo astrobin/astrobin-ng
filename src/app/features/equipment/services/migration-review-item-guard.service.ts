@@ -2,9 +2,9 @@ import { Injectable } from "@angular/core";
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from "@angular/router";
-import { combineLatest, Observable, Observer } from "rxjs";
+import { combineLatest, EMPTY, Observable, Observer } from "rxjs";
 import { GearApiService } from "@shared/services/api/classic/astrobin/gear/gear-api.service";
-import { map } from "rxjs/operators";
+import { catchError, map } from "rxjs/operators";
 import { selectCurrentUser } from "@features/account/store/auth.selectors";
 import { Store } from "@ngrx/store";
 import { Location } from "@angular/common";
@@ -42,7 +42,15 @@ export class MigrationReviewItemGuardService extends BaseService implements CanA
 
     return new Observable<boolean>(observer => {
       combineLatest([this.store$.select(selectCurrentUser).pipe(map(user => user.id)), this.legacyGearApi.get(id)])
-        .pipe(map(result => result[0] !== result[1].migrationFlagModerator && !result[1].migrationFlagReviewerLock))
+        .pipe(
+          map(result => result[0] !== result[1].migrationFlagModerator && !result[1].migrationFlagReviewerLock),
+          catchError(error => {
+            if (error.status === 404) {
+              onError(observer, "/404");
+              return EMPTY;
+            }
+          })
+        )
         .subscribe(canActivate => {
           if (canActivate) {
             onSuccess(observer);
