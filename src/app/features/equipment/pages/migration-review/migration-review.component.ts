@@ -8,11 +8,11 @@ import { Observable } from "rxjs";
 import { filter, tap } from "rxjs/operators";
 import { LoadUser, LoadUserProfile } from "@features/account/store/auth.actions";
 import { selectUser } from "@features/account/store/auth.selectors";
-import { UserInterface } from "@shared/interfaces/user.interface";
 import { UsernameService } from "@shared/components/misc/username/username.service";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { State } from "@app/store/state";
 import { UserService } from "@shared/services/user.service";
+import { MigrationFlag } from "@shared/services/api/classic/astrobin/migratable-gear-item.service-interface";
 
 @Component({
   selector: "astrobin-migration-review",
@@ -65,5 +65,18 @@ export class MigrationReviewComponent extends BaseComponentDirective implements 
         });
       })
     );
+  }
+
+  migrationFlagTooltip(migrationFlag: MigrationFlag): string {
+    switch (migrationFlag) {
+      case MigrationFlag.DIY:
+        return "This legacy item is a DIY object and will migrated as-is automatically.";
+      case MigrationFlag.MIGRATE:
+        return "This legacy item will be migrated to a specific item in the new database.";
+      case MigrationFlag.WRONG_TYPE:
+        return "This item was classified as the wrong type (e.g. a telescope classified as a mount) and will be dealt with later.";
+      case MigrationFlag.MULTIPLE_ITEMS:
+        return "This item actually collates multiple items together (e.g. 'LRGB filters') and will be dealt with later.";
+    }
   }
 }

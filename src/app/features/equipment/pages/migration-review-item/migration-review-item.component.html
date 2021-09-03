@@ -65,4 +65,8 @@
   <button class="btn btn-sm-block btn-danger" [class.loading]="loadingService.isLoading()" (click)="reject()">
     Reject
   </button>
+
+  <a class="btn btn-sm-block btn-secondary" [class.loading]="loadingService.isLoading()" routerLink="..">
+    Back
+  </a>
 </ng-template>

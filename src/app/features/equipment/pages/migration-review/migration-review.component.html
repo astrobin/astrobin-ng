@@ -40,7 +40,12 @@
             <td>
               <strong>{{ item.make }}</strong> {{ item.name }}
             </td>
-            <td>{{ item.migrationFlag }}</td>
+            <td>
+              {{ item.migrationFlag }}
+              <span class="help-tooltip" [ngbTooltip]="migrationFlagTooltip(item.migrationFlag)">
+                <fa-icon icon="question-circle"></fa-icon>
+              </span>
+            </td>
             <td>
               <astrobin-username [user]="userService.getUser$(item.migrationFlagModerator) | async"></astrobin-username>
             </td>
