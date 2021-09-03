@@ -62,5 +62,9 @@
     > p, & {
       color: var(--textOnWarningColor);
     }
+
+    a {
+      border-bottom-color: var(--textOnWarningColor);
+    }
   }
 }

@@ -1,5 +1,4 @@
 <div [class.has-error]="showError" class="form-group">
-
   <label *ngIf="to.label && to.hideLabel !== true" [attr.for]="id">
     {{ to.label }}
     <span *ngIf="to.required && to.hideRequiredMarker !== true">*</span>
@@ -11,10 +10,23 @@
     <formly-validation-message [field]="field"></formly-validation-message>
   </div>
 
-  <div *ngIf="to.warningMessage" [style.display]="'block'" class="warning-feedback">
-    {{ to.warningMessage }}
+  <div
+    class="alert alert-warning warning-feedback"
+    *ngIf="to.warningMessage || (to.warningTemplate && to.warningTemplateData)"
+  >
+    <ng-container *ngIf="to.warningMessage">
+      {{ to.warningMessage }}
+    </ng-container>
+
+    <ng-container
+      *ngIf="to.warningTemplate"
+      [ngTemplateOutlet]="to.warningTemplate"
+      [ngTemplateOutletContext]="{ data: to.warningTemplateData }"
+    >
+    </ng-container>
+
+    <a class="close" (click)="closeWarning()"></a>
   </div>
 
   <small *ngIf="to.description" class="form-text text-muted" [innerHTML]="to.description"></small>
-
 </div>

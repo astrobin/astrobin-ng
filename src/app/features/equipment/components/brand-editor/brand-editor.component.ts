@@ -1,10 +1,10 @@
-import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { Component, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from "@angular/core";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { FormGroup } from "@angular/forms";
 import { TranslateService } from "@ngx-translate/core";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
-import { Observable, of } from "rxjs";
-import { filter, tap } from "rxjs/operators";
+import { of } from "rxjs";
+import { filter, switchMap, take, takeUntil, tap } from "rxjs/operators";
 import { BrandInterface } from "@features/equipment/interfaces/brand.interface";
 import { Store } from "@ngrx/store";
 import { selectBrand } from "@features/equipment/store/equipment.selectors";
@@ -18,7 +18,7 @@ import { State } from "@app/store/state";
   styleUrls: ["./brand-editor.component.scss"]
 })
 export class BrandEditorComponent extends BaseComponentDirective implements OnInit {
-  static MIN_LENGTH_FOR_SUGGESTONS = 3;
+  static MIN_LENGTH_FOR_SUGGESTIONS = 3;
 
   fields: FormlyFieldConfig[];
 
@@ -34,7 +34,8 @@ export class BrandEditorComponent extends BaseComponentDirective implements OnIn
   @Output()
   suggestionSelected = new EventEmitter<BrandInterface>();
 
-  similarBrands$: Observable<BrandInterface[]> = of([]);
+  @ViewChild("similarItemsTemplate")
+  similarItemsTemplate: TemplateRef<any>;
 
   constructor(
     public readonly store$: Store<State>,
@@ -44,15 +45,35 @@ export class BrandEditorComponent extends BaseComponentDirective implements OnIn
     super(store$);
   }
 
+  private _showSimilarBrandsWarning(similarBrands: BrandInterface[]) {
+    const fieldConfig = this.fields.find(fields => fields.key === "name");
+    let template = null;
+    let data = null;
+
+    if (similarBrands.length > 0) {
+      template = this.similarItemsTemplate;
+      data = similarBrands;
+    }
+
+    fieldConfig.templateOptions.warningTemplate = template;
+    fieldConfig.templateOptions.warningTemplateData = data;
+  }
+
   ngOnInit(): void {
-    if (this.name.length >= BrandEditorComponent.MIN_LENGTH_FOR_SUGGESTONS) {
-      this.similarBrands$ = this.equipmentApiService.findAllBrands(this.name);
+    if (this.name.length >= BrandEditorComponent.MIN_LENGTH_FOR_SUGGESTIONS) {
+      this.equipmentApiService
+        .findAllBrands(this.name)
+        .pipe(take(1))
+        .subscribe(similarBrands => {
+          this._showSimilarBrandsWarning(similarBrands);
+        });
     }
 
     this.fields = [
       {
         key: "name",
         type: "input",
+        wrappers: ["default-wrapper"],
         id: "brand-field-name",
         defaultValue: this.name,
         templateOptions: {
@@ -62,15 +83,21 @@ export class BrandEditorComponent extends BaseComponentDirective implements OnIn
         },
         hooks: {
           onInit: field => {
-            return field.formControl.valueChanges.pipe(
-              tap(value => {
-                if (value.length >= BrandEditorComponent.MIN_LENGTH_FOR_SUGGESTONS) {
-                  this.similarBrands$ = this.equipmentApiService.findAllBrands(value);
-                } else {
-                  this.similarBrands$ = of([]);
-                }
-              })
-            );
+            field.formControl.valueChanges
+              .pipe(
+                takeUntil(this.destroyed$),
+                switchMap(value => {
+                  if (value.length >= BrandEditorComponent.MIN_LENGTH_FOR_SUGGESTIONS) {
+                    return this.equipmentApiService.findAllBrands(value);
+                  } else {
+                    return of([]);
+                  }
+                }),
+                tap(similarBrands => {
+                  this._showSimilarBrandsWarning(similarBrands);
+                })
+              )
+              .subscribe();
           }
         }
       },

@@ -1,0 +1,10 @@
+.alert {
+  position: relative;
+
+  .close {
+    position: absolute;
+    top: .5rem;
+    right: .5rem;
+    color: var(--textOnWarningColor);
+  }
+}
