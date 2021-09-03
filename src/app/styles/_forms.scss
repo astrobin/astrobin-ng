@@ -70,3 +70,10 @@ label {
 .error {
   color: var(--error);
 }
+
+.warning-feedback {
+  background-color: var(--warningColor);
+  color: var(--textOnWarningColor);
+  border: 1px;
+  padding: .25rem;
+}

@@ -1,11 +1,20 @@
 <div [class.has-error]="showError" class="form-group">
+
   <label *ngIf="to.label && to.hideLabel !== true" [attr.for]="id">
     {{ to.label }}
     <span *ngIf="to.required && to.hideRequiredMarker !== true">*</span>
   </label>
+
   <ng-template #fieldComponent></ng-template>
+
   <div *ngIf="showError" [style.display]="'block'" class="invalid-feedback">
     <formly-validation-message [field]="field"></formly-validation-message>
   </div>
+
+  <div *ngIf="to.warningMessage" [style.display]="'block'" class="warning-feedback">
+    {{ to.warningMessage }}
+  </div>
+
   <small *ngIf="to.description" class="form-text text-muted" [innerHTML]="to.description"></small>
+
 </div>

@@ -1,11 +1,8 @@
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Component, Input, TemplateRef, ViewChild } from "@angular/core";
-import { FormGroup } from "@angular/forms";
+import { AbstractControl, FormControl, FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
-import {
-  AnyEquipmentItemType,
-  EquipmentItemBaseInterface
-} from "@features/equipment/interfaces/equipment-item-base.interface";
+import { EquipmentItemBaseInterface } from "@features/equipment/interfaces/equipment-item-base.interface";
 import { BrandInterface } from "@features/equipment/interfaces/brand.interface";
 import { of } from "rxjs";
 import {
@@ -16,12 +13,13 @@ import {
   FindAllBrandsSuccess
 } from "@features/equipment/store/equipment.actions";
 import { Actions, ofType } from "@ngrx/effects";
-import { map } from "rxjs/operators";
+import { map, switchMap, takeUntil, tap } from "rxjs/operators";
 import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { State } from "@app/store/state";
+import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 
 @Component({
   selector: "astrobin-base-equipment-item-editor",
@@ -57,7 +55,8 @@ export class BaseEquipmentItemEditorComponent<T extends EquipmentItemBaseInterfa
     public readonly actions$: Actions,
     public readonly loadingService: LoadingService,
     public readonly translateService: TranslateService,
-    public readonly windowRefService: WindowRefService
+    public readonly windowRefService: WindowRefService,
+    public readonly equipmentApiService: EquipmentApiService
   ) {
     super(store$);
   }
@@ -92,6 +91,7 @@ export class BaseEquipmentItemEditorComponent<T extends EquipmentItemBaseInterfa
     ];
     this.model = { ...this.model, ...{ brand: brand.id } };
     this.form.controls.brand.setValue(brand.id);
+    this.brandCreation.name = brand.name;
     setTimeout(() => {
       this.windowRefService.nativeWindow.document
         .getElementById("equipment-item-editor-form")
@@ -125,6 +125,22 @@ export class BaseEquipmentItemEditorComponent<T extends EquipmentItemBaseInterfa
               .scrollIntoView({ behavior: "smooth" });
           }, 1);
         }
+      },
+      hooks: {
+        onInit: (field: FormlyFieldConfig) => {
+          field.formControl.valueChanges
+            .pipe(
+              takeUntil(this.destroyed$),
+              switchMap((value: BrandInterface["id"]) => {
+                return this.equipmentApiService.getBrand(value);
+              }),
+              tap((brand: BrandInterface) => {
+                this.brandCreation.name = brand.name;
+                this._validateBrandInName();
+              })
+            )
+            .subscribe();
+        }
       }
     };
   }
@@ -133,6 +149,7 @@ export class BaseEquipmentItemEditorComponent<T extends EquipmentItemBaseInterfa
     return {
       key: "name",
       type: "input",
+      wrappers: ["default-wrapper"],
       id: "equipment-item-field-name",
       defaultValue: this.name,
       expressionProperties: {
@@ -143,7 +160,20 @@ export class BaseEquipmentItemEditorComponent<T extends EquipmentItemBaseInterfa
         label: this.translateService.instant("Name"),
         description: this.translateService.instant(
           "The name of this product. Do not include the brand's name and make sure it's spelled correctly."
-        )
+        ),
+        warningMessage: null
+      },
+      hooks: {
+        onInit: (field: FormlyFieldConfig) => {
+          field.formControl.valueChanges
+            .pipe(
+              takeUntil(this.destroyed$),
+              tap((value: string) => {
+                this._validateBrandInName();
+              })
+            )
+            .subscribe();
+        }
       }
     };
   }
@@ -170,5 +200,26 @@ export class BaseEquipmentItemEditorComponent<T extends EquipmentItemBaseInterfa
         })
       )
     );
+  }
+
+  private _validateBrandInName() {
+    const brandControl: AbstractControl = this.form.get("brand");
+    const nameControl: AbstractControl = this.form.get("name");
+    const brandFieldConfig: FormlyFieldConfig = this.fields.find(field => field.key === "brand");
+    const nameFieldConfig: FormlyFieldConfig = this.fields.find(field => field.key === "name");
+    let message;
+
+    if (!brandControl.value || !nameControl.value) {
+      return;
+    }
+
+    if (nameControl.value.toLowerCase().indexOf(this.brandCreation.name.toLowerCase()) > -1) {
+      message = "Careful! The item's name contains the brand's name, and it probably shouldn't.";
+    } else {
+      message = null;
+    }
+
+    brandFieldConfig.templateOptions.warningMessage = message;
+    nameFieldConfig.templateOptions.warningMessage = message;
   }
 }

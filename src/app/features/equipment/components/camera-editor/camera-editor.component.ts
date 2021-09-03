@@ -7,6 +7,7 @@ import { LoadingService } from "@shared/services/loading.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { CameraInterface } from "@features/equipment/interfaces/camera.interface";
 import { State } from "@app/store/state";
+import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 
 @Component({
   selector: "astrobin-camera-editor",
@@ -20,9 +21,10 @@ export class CameraEditorComponent extends BaseEquipmentItemEditorComponent<Came
     public readonly actions$: Actions,
     public readonly loadingService: LoadingService,
     public readonly translateService: TranslateService,
-    public readonly windowRefService: WindowRefService
+    public readonly windowRefService: WindowRefService,
+    public readonly equipmentApiService: EquipmentApiService
   ) {
-    super(store$, actions$, loadingService, translateService, windowRefService);
+    super(store$, actions$, loadingService, translateService, windowRefService, equipmentApiService);
   }
 
   ngAfterContentInit(): void {
