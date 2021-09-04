@@ -192,6 +192,7 @@
                 <astrobin-camera-editor
                   *ngIf="activeType === 'camera'"
                   [form]="creation.form"
+                  [model]="creation.model"
                   [name]="migration.q"
                 ></astrobin-camera-editor>
               </div>
@@ -209,6 +210,7 @@
                   class="btn btn-sm-block btn-primary"
                   [disabled]="!creation.form.valid"
                   [class.loading]="loadingService.isLoading()"
+                  (click)="createItem()"
                 >
                   Create item
                 </button>

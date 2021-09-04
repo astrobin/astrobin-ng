@@ -6,6 +6,8 @@ import {
   EquipmentItemType
 } from "@features/equipment/interfaces/equipment-item-base.interface";
 import { BrandInterface } from "@features/equipment/interfaces/brand.interface";
+import { SensorInterface } from "@features/equipment/interfaces/sensor.interface";
+import { CameraInterface } from "@features/equipment/interfaces/camera.interface";
 
 export enum EquipmentActionTypes {
   LOAD_BRAND = "[Equipment] Load brand",
@@ -15,7 +17,11 @@ export enum EquipmentActionTypes {
   FIND_ALL_BRANDS = "[Equipment] Find all brands",
   FIND_ALL_BRANDS_SUCCESS = "[Equipment] Find all brands success",
   FIND_ALL_EQUIPMENT_ITEMS = "[Equipment] Find all equipment items",
-  FIND_ALL_EQUIPMENT_ITEMS_SUCCESS = "[Equipment] Find all equipment success"
+  FIND_ALL_EQUIPMENT_ITEMS_SUCCESS = "[Equipment] Find all equipment success",
+  CREATE_SENSOR = "[Equipment] Create sensor",
+  CREATE_SENSOR_SUCCESS = "[Equipment] Create sensor success",
+  CREATE_CAMERA = "[Equipment] Create camera",
+  CREATE_CAMERA_SUCCESS = "[Equipment] Create camera success"
 }
 
 export class LoadBrand implements PayloadActionInterface {
@@ -66,6 +72,30 @@ export class FindAllEquipmentItemsSuccess implements PayloadActionInterface {
   constructor(public payload: { items: EquipmentItemBaseInterface[] }) {}
 }
 
+export class CreateSensor implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.CREATE_SENSOR;
+
+  constructor(public payload: { sensor: Omit<SensorInterface, "id"> }) {}
+}
+
+export class CreateSensorSuccess implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.CREATE_SENSOR_SUCCESS;
+
+  constructor(public payload: { sensor: SensorInterface }) {}
+}
+
+export class CreateCamera implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.CREATE_CAMERA;
+
+  constructor(public payload: { camera: Omit<CameraInterface, "id"> }) {}
+}
+
+export class CreateCameraSuccess implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.CREATE_CAMERA_SUCCESS;
+
+  constructor(public payload: { camera: CameraInterface }) {}
+}
+
 export type EquipmentActions =
   | LoadBrand
   | LoadBrandSuccess
@@ -74,4 +104,8 @@ export type EquipmentActions =
   | FindAllBrands
   | FindAllBrandsSuccess
   | FindAllEquipmentItems
-  | FindAllEquipmentItemsSuccess;
+  | FindAllEquipmentItemsSuccess
+  | CreateSensor
+  | CreateSensorSuccess
+  | CreateCamera
+  | CreateCameraSuccess;

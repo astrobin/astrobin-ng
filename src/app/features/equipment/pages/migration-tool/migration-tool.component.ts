@@ -14,8 +14,10 @@ import { EMPTY, Observable, of } from "rxjs";
 import { BrandInterface } from "@features/equipment/interfaces/brand.interface";
 import { MigrationFlag } from "@shared/services/api/classic/astrobin/migratable-gear-item.service-interface";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
-import { Store } from "@ngrx/store";
+import { Action, Store } from "@ngrx/store";
 import {
+  CreateCamera,
+  CreateSensor,
   EquipmentActionTypes,
   FindAllEquipmentItems,
   FindAllEquipmentItemsSuccess,
@@ -32,6 +34,8 @@ import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { TranslateService } from "@ngx-translate/core";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { State } from "@app/store/state";
+import { SensorInterface } from "@features/equipment/interfaces/sensor.interface";
+import { CameraInterface } from "@features/equipment/interfaces/camera.interface";
 
 @Component({
   selector: "astrobin-migration-tool",
@@ -64,9 +68,11 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
   creation: {
     inProgress: boolean;
     form: FormGroup;
+    model: Partial<EquipmentItemBaseInterface>;
   } = {
     inProgress: false,
-    form: new FormGroup({})
+    form: new FormGroup({}),
+    model: {}
   };
 
   constructor(
@@ -245,6 +251,35 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
 
   cancelItemCreation() {
     this.creation.inProgress = false;
+  }
+
+  createItem() {
+    const type: EquipmentItemType =
+      EquipmentItemType[this.activatedRoute.snapshot.paramMap.get("itemType").toUpperCase()];
+    const data: EquipmentItemBaseInterface = this.creation.form.value;
+
+    let action: Action;
+    let actionSuccessType: EquipmentActionTypes;
+
+    switch (type) {
+      case EquipmentItemType.SENSOR:
+        action = new CreateSensor({ sensor: data as SensorInterface });
+        actionSuccessType = EquipmentActionTypes.CREATE_SENSOR_SUCCESS;
+        break;
+      case EquipmentItemType.CAMERA:
+        action = new CreateCamera({ camera: data as CameraInterface });
+        actionSuccessType = EquipmentActionTypes.CREATE_CAMERA_SUCCESS;
+        break;
+    }
+
+    if (action) {
+      this.loadingService.setLoading(true);
+      this.store$.dispatch(action);
+      this.actions$.pipe(ofType(actionSuccessType), take(1)).subscribe(() => {
+        this.creation.inProgress = false;
+        this.loadingService.setLoading(false);
+      });
+    }
   }
 
   _onMigrationSearch(event: { term: string; items: EquipmentItemBaseInterface[] }) {

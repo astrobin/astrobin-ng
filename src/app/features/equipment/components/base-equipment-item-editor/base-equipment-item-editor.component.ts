@@ -37,6 +37,9 @@ export class BaseEquipmentItemEditorComponent<T extends EquipmentItemBaseInterfa
   @Input()
   name: string;
 
+  @Input()
+  returnToSelector: string;
+
   @ViewChild("brandOptionTemplate")
   brandOptionTemplate: TemplateRef<any>;
 
@@ -92,11 +95,14 @@ export class BaseEquipmentItemEditorComponent<T extends EquipmentItemBaseInterfa
     this.model = { ...this.model, ...{ brand: brand.id } };
     this.form.controls.brand.setValue(brand.id);
     this.brandCreation.name = brand.name;
-    setTimeout(() => {
-      this.windowRefService.nativeWindow.document
-        .getElementById("equipment-item-editor-form")
-        .scrollIntoView({ behavior: "smooth" });
-    }, 1);
+
+    if (this.returnToSelector) {
+      setTimeout(() => {
+        this.windowRefService.nativeWindow.document
+          .querySelector(this.returnToSelector)
+          .scrollIntoView({ behavior: "smooth" });
+      }, 1);
+    }
   }
 
   protected _getBrandField() {
@@ -118,7 +124,7 @@ export class BaseEquipmentItemEditorComponent<T extends EquipmentItemBaseInterfa
         optionTemplate: this.brandOptionTemplate,
         addTag: () => {
           this.brandCreation.inProgress = true;
-          this.form.controls.brand.setValue(null);
+          this.form.get("brand").setValue(null);
           setTimeout(() => {
             this.windowRefService.nativeWindow.document
               .getElementById("create-new-brand")

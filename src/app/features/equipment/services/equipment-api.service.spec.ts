@@ -51,6 +51,30 @@ describe("EquipmentApiService", () => {
     req.flush(brand);
   });
 
+  it("createSensor should work", () => {
+    const sensor = SensorGenerator.sensor();
+
+    service.createSensor(sensor).subscribe(response => {
+      expect(response.id).toEqual(sensor.id);
+    });
+
+    const req = httpMock.expectOne(`${service.configUrl}/sensor/`);
+    expect(req.request.method).toBe("POST");
+    req.flush(sensor);
+  });
+
+  it("createCamera should work", () => {
+    const camera = CameraGenerator.camera();
+
+    service.createCamera(camera).subscribe(response => {
+      expect(response.id).toEqual(camera.id);
+    });
+
+    const req = httpMock.expectOne(`${service.configUrl}/camera/`);
+    expect(req.request.method).toBe("POST");
+    req.flush(camera);
+  });
+
   it("findAllBrands should work", () => {
     const brands = [BrandGenerator.brand(), BrandGenerator.brand()];
 

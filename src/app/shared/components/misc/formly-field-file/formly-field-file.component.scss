@@ -1,0 +1,95 @@
+.upload-wrapper {
+  padding-bottom: 1.25em;
+
+  .upload-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    height: 3rem;
+    border: 1px dashed var(--grey);
+    border-radius: 5px;
+    background-color: var(--darkestGrey);
+
+    .helper-text {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      .absolute-div {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: absolute;
+        right: 3%;
+        left: 3%;
+
+        div {
+          color: var(--lighterGrey);
+
+          &:hover {
+            cursor: pointer;
+          }
+        }
+      }
+    }
+
+    .mask {
+      justify-content: center;
+      align-items: stretch;
+      flex: 1;
+      border-radius: 5px;
+      padding: 0;
+    }
+
+    &:hover {
+      .mask {
+        background-color: var(--grey);
+        opacity: 0.2;
+        cursor: pointer;
+      }
+    }
+  }
+
+  .file-container {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    align-content: space-between;
+    justify-content: flex-start;
+
+    .file {
+      position: relative;
+      margin-bottom: .5rem;
+
+      img {
+        width: 105px;
+        height: 105px;
+        display: block;
+        border-radius: 5px;
+        object-fit: cover;
+      }
+
+      span {
+        display: none;
+        position: absolute;
+        z-index: 1;
+        left: .5rem;
+        top: .25rem;
+        color: var(--lightestGrey);
+        text-shadow: 1px 1px 0 var(--black);
+        text-align: center;
+
+        &:hover {
+          cursor: pointer;
+        }
+      }
+
+      &:hover {
+        span {
+          display: inherit;
+          cursor: pointer;
+        }
+      }
+    }
+  }
+}

@@ -1,4 +1,11 @@
-import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from "@angular/common/http";
+import {
+  HttpErrorResponse,
+  HttpEvent,
+  HttpHandler,
+  HttpHeaders,
+  HttpInterceptor,
+  HttpRequest
+} from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { State } from "@app/store/state";
 import { environment } from "@env/environment";
@@ -28,17 +35,38 @@ export class AuthInterceptor implements HttpInterceptor {
       authScheme = "Token";
     }
 
-    const headers = {
-      "Content-Type": "application/json; charset=utf-8",
-      Accept: "application/json"
-    };
+    const headers = {};
 
+    // Copy original headers.
+    for (const key of request.headers.keys()) {
+      headers[key] = request.headers.get(key);
+    }
+
+    // Set some default if missing.
+    for (const setIfMissing of [
+      {
+        key: "Content-Type",
+        value: "application/json; charset=utf-8"
+      },
+      {
+        key: "Accept",
+        value: "application/json"
+      }
+    ]) {
+      if (!headers[setIfMissing.key]) {
+        headers[setIfMissing.key] = setIfMissing.value;
+      } else if (headers[setIfMissing.key] === "__unset__") {
+        delete headers[setIfMissing.key];
+      }
+    }
+
+    // Set the Authorization header.
     if (authToken) {
       headers["Authorization"] = `${authScheme} ${authToken}`;
     }
 
     request = request.clone({
-      setHeaders: headers
+      headers: new HttpHeaders(headers)
     });
 
     return next.handle(request).pipe(

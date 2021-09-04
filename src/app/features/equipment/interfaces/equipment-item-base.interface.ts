@@ -19,7 +19,7 @@ export interface EquipmentItemBaseInterface {
   createdBy: UserInterface["id"];
   brand: BrandInterface["id"];
   name: string;
-  image?: string;
+  image?: string | File[];
 }
 
 export type AnyEquipmentItemType = CameraInterface | TelescopeInterface;

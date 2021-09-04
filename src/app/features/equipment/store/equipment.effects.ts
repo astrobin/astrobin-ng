@@ -3,6 +3,10 @@ import { Observable } from "rxjs";
 import {
   CreateBrand,
   CreateBrandSuccess,
+  CreateCamera,
+  CreateCameraSuccess,
+  CreateSensor,
+  CreateSensorSuccess,
   EquipmentActionTypes,
   FindAllBrands,
   FindAllBrandsSuccess,
@@ -58,6 +62,30 @@ export class EquipmentEffects {
         this.equipmentApiService
           .findAllEquipmentItems(payload.q, payload.type)
           .pipe(map(items => new FindAllEquipmentItemsSuccess({ items })))
+      )
+    )
+  );
+
+  CreateSensor: Observable<CreateSensorSuccess> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(EquipmentActionTypes.CREATE_SENSOR),
+      map((action: CreateSensor) => action.payload.sensor),
+      mergeMap(sensor =>
+        this.equipmentApiService
+          .createSensor(sensor)
+          .pipe(map(createdSensor => new CreateSensorSuccess({ sensor: createdSensor })))
+      )
+    )
+  );
+
+  CreateCamera: Observable<CreateCameraSuccess> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(EquipmentActionTypes.CREATE_CAMERA),
+      map((action: CreateCamera) => action.payload.camera),
+      mergeMap(camera =>
+        this.equipmentApiService
+          .createCamera(camera)
+          .pipe(map(createdCamera => new CreateCameraSuccess({ camera: createdCamera })))
       )
     )
   );

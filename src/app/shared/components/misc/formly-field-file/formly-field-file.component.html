@@ -1,9 +1,35 @@
 <div class="form-group">
-  <input
-    type="file"
-    [formControl]="formControl"
-    [formlyAttributes]="field"
-    (change)="fileChanged($event)"
-    [accept]="to.accept || '*'"
-  />
+  <div class="upload-wrapper">
+    <div class="file-container">
+      <div class="file" *ngFor="let file of selectedFiles; let i = index">
+        <img [src]="getSanitizedImageUrl(file)" />
+        <span (click)="onDelete(i)">&times;</span>
+      </div>
+    </div>
+
+    <div class="upload-container" (click)="openFileInput()">
+      <div class="mask"></div>
+      <div class="helper-text">
+        <div class="absolute-div">
+          <div *ngIf="!to.multiple">
+            {{ "Choose file" | translate }}
+          </div>
+          <div *ngIf="to.multiple">
+            {{ "Choose files" | translate }}
+          </div>
+        </div>
+      </div>
+      <input
+        #fileInput
+        [multiple]="to.multiple"
+        id="file-input"
+        type="file"
+        [formControl]="formControl"
+        [formlyAttributes]="field"
+        (change)="onChange($event)"
+        [accept]="to.accept || '*'"
+        style="display: none"
+      />
+    </div>
+  </div>
 </div>

@@ -1,7 +1,5 @@
 import { EquipmentItemBaseInterface } from "@features/equipment/interfaces/equipment-item-base.interface";
 
-export enum CameraType {}
-
 export enum ColorOrMono {
   C = "C",
   M = "M"

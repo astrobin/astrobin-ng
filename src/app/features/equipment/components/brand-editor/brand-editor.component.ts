@@ -113,7 +113,6 @@ export class BrandEditorComponent extends BaseComponentDirective implements OnIn
           validation: ["url"]
         }
       },
-
       {
         key: "logo",
         type: "file",

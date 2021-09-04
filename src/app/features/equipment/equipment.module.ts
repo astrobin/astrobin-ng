@@ -14,12 +14,14 @@ import { BaseEquipmentItemEditorComponent } from "./components/base-equipment-it
 import { BrandEditorComponent } from "./components/brand-editor/brand-editor.component";
 import { MigrationReviewComponent } from "./pages/migration-review/migration-review.component";
 import { MigrationReviewItemComponent } from "./pages/migration-review-item/migration-review-item.component";
+import { SensorEditorComponent } from "@features/equipment/components/sensor-editor/sensor-editor.component";
 
 @NgModule({
   declarations: [
     MigrationToolComponent,
     EquipmentItemSummaryComponent,
     CameraEditorComponent,
+    SensorEditorComponent,
     BrandSummaryComponent,
     BaseEquipmentItemEditorComponent,
     BrandEditorComponent,

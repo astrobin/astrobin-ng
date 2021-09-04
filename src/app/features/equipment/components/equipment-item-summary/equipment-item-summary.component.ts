@@ -36,7 +36,7 @@ export class EquipmentItemSummaryComponent extends BaseComponentDirective implem
   }
 
   get image(): string {
-    return this.item.image || PLACEHOLDER;
+    return (this.item.image as string) || PLACEHOLDER;
   }
 
   get properties(): { name: string; value: any }[] {

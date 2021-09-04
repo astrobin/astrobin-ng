@@ -3,8 +3,11 @@ import { SensorInterface } from "@features/equipment/interfaces/sensor.interface
 
 // TODO
 export enum CameraType {
-  DSLR = "DSLR",
-  CCD = "CCD"
+  DEDICATED_DEEP_SKY = "DEDICATED_DEEP_SKY",
+  DSLR_MIRRORLESS = "DSLR_MIRRORLESS",
+  GUIDER_PLANETARY = "GUIDER_PLANETARY",
+  VIDEO = "VIDEO",
+  FILM = "FILM"
 }
 
 export interface CameraInterface extends EquipmentItemBaseInterface {

@@ -1,4 +1,4 @@
-<form [formGroup]="form" id="camera-editor-form">
+<form [formGroup]="form" id="sensor-editor-form">
   <formly-form [fields]="fields" [form]="form" [model]="model"></formly-form>
 </form>
 
@@ -41,48 +41,6 @@
   </div>
 </ng-container>
 
-<ng-container *ngIf="sensorCreation.inProgress">
-  <div class="mt-4 mb-4 text-center">
-    <fa-icon icon="arrow-down"></fa-icon>
-  </div>
-
-  <div class="card" id="create-new-sensor">
-    <div class="card-header">
-      {{ "Create new sensor" | translate }}
-    </div>
-
-    <div class="card-body">
-      <astrobin-sensor-editor
-        [form]="sensorCreation.form"
-        [name]="sensorCreation.name"
-      ></astrobin-sensor-editor>
-    </div>
-
-    <div class="card-footer">
-      <button
-        class="btn btn-sm-block btn-secondary"
-        [class.loading]="loadingService.isLoading()"
-        (click)="cancelSensorCreation()"
-      >
-        Cancel
-      </button>
-
-      <button
-        class="btn btn-sm-block btn-primary"
-        [disabled]="!brandCreation.form.valid"
-        [class.loading]="loadingService.isLoading()"
-        (click)="createSensor()"
-      >
-        Create
-      </button>
-    </div>
-  </div>
-</ng-container>
-
 <ng-template #brandOptionTemplate let-item="item">
   <astrobin-brand-summary [brand]="item.brand"></astrobin-brand-summary>
-</ng-template>
-
-<ng-template #sensorOptionTemplate let-item="item">
-  <astrobin-equipment-item-summary [item]="item"></astrobin-equipment-item-summary>
 </ng-template>
