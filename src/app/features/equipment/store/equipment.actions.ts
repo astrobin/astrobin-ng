@@ -9,6 +9,10 @@ import { BrandInterface } from "@features/equipment/interfaces/brand.interface";
 import { SensorInterface } from "@features/equipment/interfaces/sensor.interface";
 import { CameraInterface } from "@features/equipment/interfaces/camera.interface";
 
+export interface EquipmentItemCreationSuccessPayloadInterface {
+  item: EquipmentItemBaseInterface;
+}
+
 export enum EquipmentActionTypes {
   LOAD_BRAND = "[Equipment] Load brand",
   LOAD_BRAND_SUCCESS = "[Equipment] Load brand success",
@@ -81,7 +85,7 @@ export class CreateSensor implements PayloadActionInterface {
 export class CreateSensorSuccess implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.CREATE_SENSOR_SUCCESS;
 
-  constructor(public payload: { sensor: SensorInterface }) {}
+  constructor(public payload: EquipmentItemCreationSuccessPayloadInterface) {}
 }
 
 export class CreateCamera implements PayloadActionInterface {
@@ -93,7 +97,7 @@ export class CreateCamera implements PayloadActionInterface {
 export class CreateCameraSuccess implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.CREATE_CAMERA_SUCCESS;
 
-  constructor(public payload: { camera: CameraInterface }) {}
+  constructor(public payload: EquipmentItemCreationSuccessPayloadInterface) {}
 }
 
 export type EquipmentActions =

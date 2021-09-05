@@ -1,10 +1,10 @@
 import { Component, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from "@angular/core";
 import { FormlyFieldConfig } from "@ngx-formly/core";
-import { FormGroup } from "@angular/forms";
+import { FormControl, FormGroup } from "@angular/forms";
 import { TranslateService } from "@ngx-translate/core";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import { of } from "rxjs";
-import { filter, switchMap, take, takeUntil, tap } from "rxjs/operators";
+import { filter, map, switchMap, take, takeUntil, tap } from "rxjs/operators";
 import { BrandInterface } from "@features/equipment/interfaces/brand.interface";
 import { Store } from "@ngrx/store";
 import { selectBrand } from "@features/equipment/store/equipment.selectors";
@@ -43,20 +43,6 @@ export class BrandEditorComponent extends BaseComponentDirective implements OnIn
     public readonly equipmentApiService: EquipmentApiService
   ) {
     super(store$);
-  }
-
-  private _showSimilarBrandsWarning(similarBrands: BrandInterface[]) {
-    const fieldConfig = this.fields.find(fields => fields.key === "name");
-    let template = null;
-    let data = null;
-
-    if (similarBrands.length > 0) {
-      template = this.similarItemsTemplate;
-      data = similarBrands;
-    }
-
-    fieldConfig.templateOptions.warningTemplate = template;
-    fieldConfig.templateOptions.warningTemplateData = data;
   }
 
   ngOnInit(): void {
@@ -99,6 +85,14 @@ export class BrandEditorComponent extends BaseComponentDirective implements OnIn
               )
               .subscribe();
           }
+        },
+        asyncValidators: {
+          unique: {
+            expression: (control: FormControl) => {
+              return this.equipmentApiService.getBrandsByName(control.value).pipe(map(brands => brands.count === 0));
+            },
+            message: this.translateService.instant("A brand with this name already exists.")
+          }
         }
       },
       {
@@ -112,6 +106,14 @@ export class BrandEditorComponent extends BaseComponentDirective implements OnIn
         },
         validators: {
           validation: ["url"]
+        },
+        asyncValidators: {
+          unique: {
+            expression: (control: FormControl) => {
+              return this.equipmentApiService.getBrandsByWebsite(control.value).pipe(map(brands => brands.count === 0));
+            },
+            message: this.translateService.instant("A brand with this website already exists.")
+          }
         }
       },
       {
@@ -135,5 +137,19 @@ export class BrandEditorComponent extends BaseComponentDirective implements OnIn
       .select(selectBrand, brandId)
       .pipe(filter(brand => !!brand))
       .subscribe(brand => this.suggestionSelected.emit(brand));
+  }
+
+  private _showSimilarBrandsWarning(similarBrands: BrandInterface[]) {
+    const fieldConfig = this.fields.find(fields => fields.key === "name");
+    let template = null;
+    let data = null;
+
+    if (similarBrands.length > 0) {
+      template = this.similarItemsTemplate;
+      data = similarBrands;
+    }
+
+    fieldConfig.templateOptions.warningTemplate = template;
+    fieldConfig.templateOptions.warningTemplateData = data;
   }
 }

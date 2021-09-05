@@ -40,17 +40,11 @@ export function reducer(state = initialEquipmentState, action: EquipmentActions)
       };
     }
 
-    case EquipmentActionTypes.CREATE_SENSOR_SUCCESS: {
-      return {
-        ...state,
-        equipmentItems: UtilsService.arrayUniqueObjects([...state.equipmentItems, ...[action.payload.sensor]])
-      };
-    }
-
+    case EquipmentActionTypes.CREATE_SENSOR_SUCCESS:
     case EquipmentActionTypes.CREATE_CAMERA_SUCCESS: {
       return {
         ...state,
-        equipmentItems: UtilsService.arrayUniqueObjects([...state.equipmentItems, ...[action.payload.camera]])
+        equipmentItems: UtilsService.arrayUniqueObjects([...state.equipmentItems, ...[action.payload.item]])
       };
     }
 

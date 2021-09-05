@@ -19,6 +19,7 @@ import {
   CreateCamera,
   CreateSensor,
   EquipmentActionTypes,
+  EquipmentItemCreationSuccessPayloadInterface,
   FindAllEquipmentItems,
   FindAllEquipmentItemsSuccess,
   LoadBrand
@@ -275,11 +276,36 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
     if (action) {
       this.loadingService.setLoading(true);
       this.store$.dispatch(action);
-      this.actions$.pipe(ofType(actionSuccessType), take(1)).subscribe(() => {
-        this.creation.inProgress = false;
-        this.loadingService.setLoading(false);
-      });
+      this.actions$
+        .pipe(
+          ofType(actionSuccessType),
+          take(1),
+          map((result: { payload: EquipmentItemCreationSuccessPayloadInterface }) => result.payload.item)
+        )
+        .subscribe((item: EquipmentItemBaseInterface) => {
+          this.itemCreated(item);
+          this.loadingService.setLoading(false);
+        });
     }
+  }
+
+  itemCreated(item: EquipmentItemBaseInterface) {
+    this.cancelItemCreation();
+    this.migration.fields.find(field => field.key === "equipment-item").templateOptions.options = [
+      {
+        value: item.id,
+        label: item.name,
+        item
+      }
+    ];
+    this.migration.model = { ...this.migration.model, ...{ "equipment-item": item.id } };
+    this.migration.form.get("equipment-item").setValue(item.id);
+
+    setTimeout(() => {
+      this.windowRefService.nativeWindow.document
+        .querySelector("#equipment-item-field")
+        .scrollIntoView({ behavior: "smooth" });
+    }, 1);
   }
 
   _onMigrationSearch(event: { term: string; items: EquipmentItemBaseInterface[] }) {

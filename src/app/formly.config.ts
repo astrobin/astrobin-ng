@@ -26,7 +26,8 @@ function fileSizeValidator(
   } else {
     value = control.value;
   }
-  return value?.size < options.max ? null : { "file-size": true };
+
+  return !value || value.size < options.max ? null : { "file-size": true };
 }
 
 function imageFileValidator(
@@ -41,7 +42,7 @@ function imageFileValidator(
   } else {
     value = control.value;
   }
-  return UtilsService.isImage(value?.name) ? null : { "image-file": true };
+  return !value || UtilsService.isImage(value.name) ? null : { "image-file": true };
 }
 
 function urlValidator(control: FormControl, field: FormlyFieldConfig): ValidationErrors {

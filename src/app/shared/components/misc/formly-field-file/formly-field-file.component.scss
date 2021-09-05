@@ -62,11 +62,11 @@
       margin-bottom: .5rem;
 
       img {
-        width: 105px;
-        height: 105px;
+        max-width: 6.5rem;
+        max-height: 6.5rem;
         display: block;
         border-radius: 5px;
-        object-fit: cover;
+        object-fit: contain;
       }
 
       span {

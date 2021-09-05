@@ -73,7 +73,7 @@ export class EquipmentEffects {
       mergeMap(sensor =>
         this.equipmentApiService
           .createSensor(sensor)
-          .pipe(map(createdSensor => new CreateSensorSuccess({ sensor: createdSensor })))
+          .pipe(map(createdSensor => new CreateSensorSuccess({ item: createdSensor })))
       )
     )
   );
@@ -85,7 +85,7 @@ export class EquipmentEffects {
       mergeMap(camera =>
         this.equipmentApiService
           .createCamera(camera)
-          .pipe(map(createdCamera => new CreateCameraSuccess({ camera: createdCamera })))
+          .pipe(map(createdCamera => new CreateCameraSuccess({ item: createdCamera })))
       )
     )
   );

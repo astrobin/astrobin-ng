@@ -9,7 +9,7 @@ import {
   EquipmentItemType
 } from "@features/equipment/interfaces/equipment-item-base.interface";
 import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
-import { catchError, map, switchMap } from "rxjs/operators";
+import { catchError, map, switchMap, take } from "rxjs/operators";
 import { BrandInterface } from "@features/equipment/interfaces/brand.interface";
 import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
 import { CommonApiService } from "@shared/services/api/classic/common/common-api.service";
@@ -72,12 +72,71 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
   // BRAND API
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  getBrand(id: BrandInterface["id"]) {
+  getBrand(id: BrandInterface["id"]): Observable<BrandInterface> {
     return this.http.get<BrandInterface>(`${this.configUrl}/brand/${id}/`);
   }
 
-  createBrand(brand: Omit<BrandInterface, "id">) {
-    return this.http.post<BrandInterface>(`${this.configUrl}/brand/`, brand);
+  getBrandsByName(name: BrandInterface["name"]): Observable<PaginatedApiResultInterface<BrandInterface>> {
+    return this.http.get<PaginatedApiResultInterface<BrandInterface>>(`${this.configUrl}/brand/?name=${name}`);
+  }
+
+  getBrandsByWebsite(website: BrandInterface["website"]): Observable<PaginatedApiResultInterface<BrandInterface>> {
+    return this.http.get<PaginatedApiResultInterface<BrandInterface>>(`${this.configUrl}/brand/?website=${website}`);
+  }
+
+  createBrand(brand: Omit<BrandInterface, "id">): Observable<BrandInterface> {
+    const { logo, ...brandWithoutLogo } = brand;
+
+    return new Observable<BrandInterface>(observer => {
+      this.http
+        .post<BrandInterface>(`${this.configUrl}/brand/`, brandWithoutLogo)
+        .pipe(take(1))
+        .subscribe(createdBrand => {
+          if (brand.logo && brand.logo.length > 0) {
+            this.uploadBrandLogo(createdBrand.id, (brand.logo as File[])[0])
+              .pipe(
+                take(1),
+                catchError(error => {
+                  let message = "";
+
+                  if (error && error.error && error.error.logo && error.error.logo.length > 0) {
+                    message = error.error.logo[0];
+                  }
+
+                  this.popNotificationService.warning(
+                    this.translateService.instant(
+                      `Something went wrong with uploading the logo, but this brand was created anyway. ${message}`
+                    )
+                  );
+
+                  return of(createdBrand);
+                })
+              )
+              .subscribe(() => {
+                observer.next(createdBrand);
+                observer.complete();
+              });
+          } else {
+            observer.next(createdBrand);
+            observer.complete();
+          }
+        });
+    });
+  }
+
+  uploadBrandLogo(id: BrandInterface["id"], logo: File): Observable<BrandInterface> {
+    const formData: FormData = new FormData();
+    formData.append("logo", logo);
+
+    const httpOptions = {
+      headers: new HttpHeaders({
+        // Unsetting the Content-Type is necessary so it gets set to multipart/form-data with the correct boundary.
+        "Content-Type": "__unset__",
+        "Content-Disposition": `form-data; name="logo"; filename=${logo.name}`
+      })
+    };
+
+    return this.http.put<BrandInterface>(`${this.configUrl}/brand/${id}/logo/`, formData, httpOptions);
   }
 
   findAllBrands(q: string): Observable<BrandInterface[]> {
@@ -109,32 +168,41 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
   createCamera(camera: Omit<CameraInterface, "id">): Observable<CameraInterface> {
     const { image, ...cameraWithoutImage } = camera;
 
-    let creation = this.http.post<CameraInterface>(`${this.configUrl}/camera/`, cameraWithoutImage);
+    return new Observable<CameraInterface>(observer => {
+      this.http
+        .post<CameraInterface>(`${this.configUrl}/camera/`, cameraWithoutImage)
+        .pipe(take(1))
+        .subscribe(createdCamera => {
+          if (camera.image && camera.image.length > 0) {
+            this.uploadCameraImage(createdCamera.id, (camera.image as File[])[0])
+              .pipe(
+                take(1),
+                catchError(error => {
+                  let message = "";
 
-    if (camera.image) {
-      creation = creation.pipe(
-        switchMap(createdCamera =>
-          this.uploadCameraImage(createdCamera.id, (camera.image as File[])[0]).pipe(
-            catchError(error => {
-              let message = "";
+                  if (error && error.error && error.error.image && error.error.image.length > 0) {
+                    message = error.error.image[0];
+                  }
 
-              if (error && error.error && error.error.image && error.error.image.length > 0) {
-                message = error.error.image[0];
-              }
+                  this.popNotificationService.warning(
+                    this.translateService.instant(
+                      `Something went wrong with uploading the image, but this item was created anyway. ${message}`
+                    )
+                  );
 
-              this.popNotificationService.warning(
-                this.translateService.instant(
-                  `Something went wrong with uploading the image, but this item was created anyway. ${message}`
-                )
-              );
-              return of(createdCamera);
-            })
-          )
-        )
-      );
-    }
-
-    return creation;
+                  return of(createdCamera);
+                })
+              )
+              .subscribe(() => {
+                observer.next(createdCamera);
+                observer.complete();
+              });
+          } else {
+            observer.next(createdCamera);
+            observer.complete();
+          }
+        });
+    });
   }
 
   uploadCameraImage(id: CameraInterface["id"], image: File): Observable<CameraInterface> {

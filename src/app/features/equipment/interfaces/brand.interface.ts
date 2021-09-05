@@ -7,6 +7,6 @@ export interface BrandInterface {
   updated: string;
   name: string;
   website?: string;
-  logo?: string;
+  logo?: string | File[];
   createdBy?: UserInterface["id"];
 }

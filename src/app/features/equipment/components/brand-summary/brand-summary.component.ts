@@ -18,7 +18,7 @@ export class BrandSummaryComponent extends BaseComponentDirective implements OnI
   }
 
   get logo(): string {
-    return this.brand.logo || PLACEHOLDER;
+    return (this.brand.logo as string) || PLACEHOLDER;
   }
 
   ngOnInit(): void {}
