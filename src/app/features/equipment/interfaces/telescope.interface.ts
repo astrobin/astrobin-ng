@@ -3,7 +3,7 @@ import { SensorInterface } from "@features/equipment/interfaces/sensor.interface
 
 // TODO
 export enum TelescopeType {
-  REFRACTORS_ACHROMATIC = "REFFRACTORS_ACHROMATIC"
+  REFRACTORS_ACHROMATIC = "REFRACTORS_ACHROMATIC"
 }
 
 export interface TelescopeInterface extends EquipmentItemBaseInterface {

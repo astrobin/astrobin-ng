@@ -5,6 +5,12 @@ import { EquipmentItemServiceInterface } from "@features/equipment/services/equi
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { CameraInterface } from "@features/equipment/interfaces/camera.interface";
 
+export enum CameraDisplayProperty {
+  COOLED,
+  MAX_COOLING,
+  BACK_FOCUS
+}
+
 @Injectable({
   providedIn: "root"
 })
@@ -13,13 +19,13 @@ export class CameraService extends BaseService implements EquipmentItemServiceIn
     super(loadingService);
   }
 
-  getPrintableProperty(item: CameraInterface, property: string): string {
+  getPrintableProperty(item: CameraInterface, property: CameraDisplayProperty): string {
     switch (property) {
-      case "cooled":
+      case CameraDisplayProperty.COOLED:
         return this.utilsService.yesNo(item.cooled);
-      case "maxCooling":
+      case CameraDisplayProperty.MAX_COOLING:
         return item.maxCooling ? `${item.maxCooling} &deg;C` : "";
-      case "backFocus":
+      case CameraDisplayProperty.BACK_FOCUS:
         return item.backFocus ? `${item.backFocus} mm` : "";
       default:
         throw Error(`Invalid property: ${property}`);

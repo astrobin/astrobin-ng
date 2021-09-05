@@ -10,11 +10,13 @@ import { State } from "@app/store/state";
 import { instanceOfTelescope } from "@features/equipment/interfaces/telescope.interface";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { filter, map, switchMap, takeUntil } from "rxjs/operators";
-import { CameraService } from "@features/equipment/services/camera.service";
+import { CameraDisplayProperty, CameraService } from "@features/equipment/services/camera.service";
 import { selectBrand, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import { Observable, of } from "rxjs";
-import { SensorInterface } from "@features/equipment/interfaces/sensor.interface";
+import { instanceOfSensor, SensorInterface } from "@features/equipment/interfaces/sensor.interface";
 import { LoadSensor } from "@features/equipment/store/equipment.actions";
+import { TelescopeDisplayProperty, TelescopeService } from "@features/equipment/services/telescope.service";
+import { SensorDisplayProperty, SensorService } from "@features/equipment/services/sensor.service";
 
 export const PLACEHOLDER = "https://via.placeholder.com/50.png/000/fff?text=?";
 
@@ -34,7 +36,9 @@ export class EquipmentItemSummaryComponent extends BaseComponentDirective implem
     public readonly equipmentApiService: EquipmentApiService,
     public readonly translateService: TranslateService,
     public readonly utilsService: UtilsService,
-    public readonly cameraService: CameraService
+    public readonly cameraService: CameraService,
+    public readonly telescopeService: TelescopeService,
+    public readonly sensorService: SensorService
   ) {
     super(store$);
   }
@@ -56,15 +60,15 @@ export class EquipmentItemSummaryComponent extends BaseComponentDirective implem
         },
         {
           name: this.translateService.instant("Cooled"),
-          value: this.cameraService.getPrintableProperty(this.item, "cooled")
+          value: this.cameraService.getPrintableProperty(this.item, CameraDisplayProperty.COOLED)
         },
         {
           name: this.translateService.instant("Max. cooling"),
-          value: this.cameraService.getPrintableProperty(this.item, "maxCooling")
+          value: this.cameraService.getPrintableProperty(this.item, CameraDisplayProperty.MAX_COOLING)
         },
         {
           name: this.translateService.instant("Back focus"),
-          value: this.cameraService.getPrintableProperty(this.item, "backFocus")
+          value: this.cameraService.getPrintableProperty(this.item, CameraDisplayProperty.BACK_FOCUS)
         }
       ];
 
@@ -98,25 +102,58 @@ export class EquipmentItemSummaryComponent extends BaseComponentDirective implem
         },
         {
           name: this.translateService.instant("Type"),
-          value: this.item.type
+          value: this.telescopeService.getPrintableProperty(this.item, TelescopeDisplayProperty.TYPE)
         },
         {
           name: this.translateService.instant("Aperture"),
-          value:
-            this.item.minAperture === this.item.maxAperture
-              ? `${this.item.maxAperture} mm`
-              : `${this.item.minAperture} - ${this.item.maxAperture} mm`
+          value: this.telescopeService.getPrintableProperty(this.item, TelescopeDisplayProperty.APERTURE)
         },
         {
           name: this.translateService.instant("Focal length"),
-          value:
-            this.item.minFocalLength === this.item.maxFocalLength
-              ? `${this.item.minFocalLength} mm`
-              : `${this.item.minFocalLength} - ${this.item.maxFocalLength} mm`
+          value: this.telescopeService.getPrintableProperty(this.item, TelescopeDisplayProperty.FOCAL_LENGHT)
         },
         {
           name: this.translateService.instant("Weight"),
           value: `${this.item.weight} kg`
+        }
+      ]);
+    } else if (instanceOfSensor(this.item)) {
+      return of([
+        {
+          name: this.translateService.instant("Class"),
+          value: this.translateService.instant("Sensor")
+        },
+        {
+          name: this.translateService.instant("Pixels"),
+          value: this.sensorService.getPrintableProperty(this.item, SensorDisplayProperty.PIXELS)
+        },
+        {
+          name: this.translateService.instant("Pixel size"),
+          value: this.sensorService.getPrintableProperty(this.item, SensorDisplayProperty.PIXEL_SIZE)
+        },
+        {
+          name: this.translateService.instant("Sensor size"),
+          value: this.sensorService.getPrintableProperty(this.item, SensorDisplayProperty.SENSOR_SIZE)
+        },
+        {
+          name: this.translateService.instant("Full well capacity"),
+          value: this.sensorService.getPrintableProperty(this.item, SensorDisplayProperty.FULL_WELL_CAPACITY)
+        },
+        {
+          name: this.translateService.instant("Read noise"),
+          value: this.sensorService.getPrintableProperty(this.item, SensorDisplayProperty.READ_NOISE)
+        },
+        {
+          name: this.translateService.instant("Quantum efficiency"),
+          value: this.sensorService.getPrintableProperty(this.item, SensorDisplayProperty.QUANTUM_EFFICIENCY)
+        },
+        {
+          name: this.translateService.instant("ADC"),
+          value: this.sensorService.getPrintableProperty(this.item, SensorDisplayProperty.ADC)
+        },
+        {
+          name: this.translateService.instant("Color/mono"),
+          value: this.sensorService.getPrintableProperty(this.item, SensorDisplayProperty.COLOR_OR_MONO)
         }
       ]);
     }

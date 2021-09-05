@@ -1,4 +1,4 @@
-import { AfterContentInit, Component, OnInit, TemplateRef, ViewChild } from "@angular/core";
+import { AfterViewInit, Component, OnInit, TemplateRef, ViewChild } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { Actions } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
@@ -15,7 +15,7 @@ import { SensorInterface } from "@features/equipment/interfaces/sensor.interface
   styleUrls: ["./sensor-editor.component.scss"]
 })
 export class SensorEditorComponent extends BaseEquipmentItemEditorComponent<SensorInterface>
-  implements OnInit, AfterContentInit {
+  implements OnInit, AfterViewInit {
   @ViewChild("sensorOptionTemplate")
   sensorOptionTemplate: TemplateRef<any>;
 
@@ -36,7 +36,7 @@ export class SensorEditorComponent extends BaseEquipmentItemEditorComponent<Sens
     }
   }
 
-  ngAfterContentInit(): void {
+  ngAfterViewInit(): void {
     this.fields = [
       this._getBrandField(),
       this._getNameField(),
@@ -53,7 +53,7 @@ export class SensorEditorComponent extends BaseEquipmentItemEditorComponent<Sens
           min: 0.1,
           step: 0.1,
           label: this.translateService.instant("Pixel size (in μm)"),
-          description: this.translateService.instant("The size of the individual pixesl in μm.")
+          description: this.translateService.instant("The size of the individual pixels in μm.")
         }
       },
       {
@@ -114,6 +114,22 @@ export class SensorEditorComponent extends BaseEquipmentItemEditorComponent<Sens
           min: 0.1,
           step: 0.1,
           label: this.translateService.instant("Sensor height (in mm)")
+        }
+      },
+      {
+        key: "quantumEfficiency",
+        type: "input",
+        wrappers: ["default-wrapper"],
+        id: "sensor-field-quantum-efficiency",
+        expressionProperties: {
+          "templateOptions.disabled": () => this.brandCreation.inProgress
+        },
+        templateOptions: {
+          type: "number",
+          min: 0,
+          max: 100,
+          step: 0.1,
+          label: this.translateService.instant("Quantum efficiency (in %)")
         }
       },
       {

@@ -1,4 +1,4 @@
-import { AfterContentInit, Component, OnInit, TemplateRef, ViewChild } from "@angular/core";
+import { AfterViewInit, Component, OnInit, TemplateRef, ViewChild } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { Actions, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
@@ -17,10 +17,12 @@ import {
   EquipmentActionTypes,
   EquipmentItemCreationSuccessPayloadInterface,
   FindAllEquipmentItems,
-  FindAllEquipmentItemsSuccess
+  FindAllEquipmentItemsSuccess,
+  LoadBrand
 } from "@features/equipment/store/equipment.actions";
-import { filter, map, take, takeUntil } from "rxjs/operators";
-import { selectBrand } from "@features/equipment/store/equipment.selectors";
+import { filter, map, switchMap, take, takeUntil, tap } from "rxjs/operators";
+import { selectBrand, selectBrands } from "@features/equipment/store/equipment.selectors";
+import { BrandInterface } from "@features/equipment/interfaces/brand.interface";
 
 @Component({
   selector: "astrobin-camera-editor",
@@ -28,7 +30,7 @@ import { selectBrand } from "@features/equipment/store/equipment.selectors";
   styleUrls: ["./camera-editor.component.scss"]
 })
 export class CameraEditorComponent extends BaseEquipmentItemEditorComponent<CameraInterface>
-  implements OnInit, AfterContentInit {
+  implements OnInit, AfterViewInit {
   sensorCreation: {
     inProgress: boolean;
     form: FormGroup;
@@ -59,7 +61,7 @@ export class CameraEditorComponent extends BaseEquipmentItemEditorComponent<Came
     }
   }
 
-  ngAfterContentInit(): void {
+  ngAfterViewInit(): void {
     this.fields = [
       this._getBrandField(),
       this._getNameField(),
@@ -145,7 +147,7 @@ export class CameraEditorComponent extends BaseEquipmentItemEditorComponent<Came
           label: this.translateService.instant("Max. cooling (Celsius degrees below ambient)"),
           description: this.translateService.instant(
             "A positive whole number that represents how many Celsius below ambient temperature this camera can " +
-              "be cooled."
+            "be cooled."
           )
         }
       },
@@ -232,11 +234,26 @@ export class CameraEditorComponent extends BaseEquipmentItemEditorComponent<Came
     field.templateOptions.options = this.actions$.pipe(
       ofType(EquipmentActionTypes.FIND_ALL_EQUIPMENT_ITEMS_SUCCESS),
       map((action: FindAllEquipmentItemsSuccess) => action.payload.items),
-      map(sensors =>
-        sensors.map(sensor => {
+      tap(items => {
+        items.forEach(item => this.store$.dispatch(new LoadBrand({ id: item.brand })));
+        return items;
+      }),
+      switchMap(items =>
+        this.store$.select(selectBrands).pipe(
+          filter(brands => brands && brands.length > 0),
+          map(brands => ({
+            brands,
+            items
+          }))
+        )
+      ),
+      map((result: { brands: BrandInterface[]; items: SensorInterface[] }) =>
+        result.items.map(sensor => {
+          const brand = result.brands.find(b => b.id === sensor.brand);
           return {
             value: sensor.id,
-            label: sensor.name,
+            label: `${brand.name} ${sensor.name}`,
+            brand,
             sensor
           };
         })

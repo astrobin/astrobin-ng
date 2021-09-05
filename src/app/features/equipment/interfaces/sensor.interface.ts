@@ -6,17 +6,17 @@ export enum ColorOrMono {
 }
 
 export interface SensorInterface extends EquipmentItemBaseInterface {
-  quantumEfficiency: number;
-  pixelSize: number;
-  pixelWidth: number;
-  pixelHeight: number;
-  sensorWidth: number;
-  sensorHeight: number;
-  fullWellCapacity: number;
-  readNoise: number;
-  frameRate: number;
-  adc: number;
-  colorOrMono: ColorOrMono;
+  quantumEfficiency?: number;
+  pixelSize?: number;
+  pixelWidth?: number;
+  pixelHeight?: number;
+  sensorWidth?: number;
+  sensorHeight?: number;
+  fullWellCapacity?: number;
+  readNoise?: number;
+  frameRate?: number;
+  adc?: number;
+  colorOrMono?: ColorOrMono;
 }
 
 export function instanceOfSensor(object: EquipmentItemBaseInterface): object is SensorInterface {
