@@ -22,9 +22,12 @@ import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { All } from "@app/store/actions/app.actions";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
-import { map, mergeMap } from "rxjs/operators";
+import { map, mergeMap, switchMap } from "rxjs/operators";
 import { selectBrand, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import { SensorInterface } from "@features/equipment/interfaces/sensor.interface";
+import { BrandInterface } from "@features/equipment/interfaces/brand.interface";
+import { UtilsService } from "@shared/services/utils/utils.service";
+import { EquipmentItemBaseInterface } from "@features/equipment/interfaces/equipment-item-base.interface";
 
 @Injectable()
 export class EquipmentEffects {
@@ -32,16 +35,16 @@ export class EquipmentEffects {
     this.actions$.pipe(
       ofType(EquipmentActionTypes.LOAD_BRAND),
       map((action: LoadBrand) => action.payload.id),
-      mergeMap(id =>
-        this.store$
-          .select(selectBrand, id)
-          .pipe(
-            mergeMap(brandFromStore =>
-              brandFromStore !== null
-                ? of(brandFromStore).pipe(map(brand => new LoadBrandSuccess({ brand })))
-                : this.equipmentApiService.getBrand(id).pipe(map(brand => new LoadBrandSuccess({ brand })))
-            )
+      switchMap(id =>
+        this.utilsService
+          .getFromStoreOrApiById<BrandInterface>(
+            this.store$,
+            id,
+            selectBrand,
+            this.equipmentApiService.getBrand,
+            this.equipmentApiService
           )
+          .pipe(map(brand => new LoadBrandSuccess({ brand })))
       )
     )
   );
@@ -84,16 +87,16 @@ export class EquipmentEffects {
     this.actions$.pipe(
       ofType(EquipmentActionTypes.LOAD_SENSOR),
       map((action: LoadSensor) => action.payload.id),
-      mergeMap(id =>
-        this.store$
-          .select(selectEquipmentItem, id)
-          .pipe(
-            mergeMap(itemFromStore =>
-              itemFromStore !== null
-                ? of(itemFromStore).pipe(map(item => new LoadSensorSuccess({ item: item as SensorInterface })))
-                : this.equipmentApiService.getSensor(id).pipe(map(item => new LoadSensorSuccess({ item })))
-            )
+      switchMap(id =>
+        this.utilsService
+          .getFromStoreOrApiById<EquipmentItemBaseInterface>(
+            this.store$,
+            id,
+            selectEquipmentItem,
+            this.equipmentApiService.getSensor,
+            this.equipmentApiService
           )
+          .pipe(map(sensor => new LoadSensorSuccess({ item: sensor as SensorInterface })))
       )
     )
   );
@@ -125,6 +128,7 @@ export class EquipmentEffects {
   constructor(
     public readonly store$: Store<State>,
     public readonly actions$: Actions<All>,
-    public readonly equipmentApiService: EquipmentApiService
+    public readonly equipmentApiService: EquipmentApiService,
+    public readonly utilsService: UtilsService
   ) {}
 }

@@ -1,12 +1,16 @@
 import { Injectable } from "@angular/core";
-import { distinctUntilChanged } from "rxjs/operators";
+import { distinctUntilChanged, mergeMap } from "rxjs/operators";
 import { TranslateService } from "@ngx-translate/core";
+import { Store } from "@ngrx/store";
+import { State } from "@app/store/state";
+import { SelectorWithProps } from "@ngrx/store/src/models";
+import { Observable, of } from "rxjs";
 
 @Injectable({
   providedIn: "root"
 })
 export class UtilsService {
-  constructor(public readonly translateService: TranslateService) {}
+  constructor(public readonly store$: Store<State>, public readonly translateService: TranslateService) {}
 
   static uuid(): string {
     const S4 = (): string => {
@@ -133,6 +137,18 @@ export class UtilsService {
 
   yesNo(value) {
     return value ? this.translateService.instant("Yes") : this.translateService.instant("No");
+  }
+
+  // Gets an object by id, first looking in the store via the provided selector, then using the provided API call.
+  getFromStoreOrApiById<T>(
+    store$: Store<State>,
+    id: number,
+    selector: SelectorWithProps<any, number, T>,
+    apiCall: (number) => Observable<T>,
+    apiContext: any
+  ): Observable<T> {
+    const fromApi: Observable<T> = apiCall.apply(apiContext, [id]);
+    return store$.select(selector, id).pipe(mergeMap(fromStore => (fromStore !== null ? of(fromStore) : fromApi)));
   }
 }
 
