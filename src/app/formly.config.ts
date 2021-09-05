@@ -8,6 +8,7 @@ import { FormlyFieldStepperComponent } from "@shared/components/misc/formly-fiel
 import { FormlyFieldGoogleMapComponent } from "@shared/components/misc/formly-field-google-map/formly-field-google-map.component";
 import { FormlyFieldCKEditorComponent } from "@shared/components/misc/formly-field-ckeditor/formly-field-ckeditor.component";
 import { FormlyFieldFileComponent } from "@shared/components/misc/formly-field-file/formly-field-file.component";
+import { UtilsService } from "@shared/services/utils/utils.service";
 
 export interface FileSizeValidatorOptionsInterface {
   max: number;
@@ -20,12 +21,27 @@ function fileSizeValidator(
 ): ValidationErrors {
   let value;
 
-  if (Array.isArray(control.value)) {
+  if (Array.isArray(control.value) || control.value instanceof FileList) {
     value = control.value[0];
   } else {
     value = control.value;
   }
   return value?.size < options.max ? null : { "file-size": true };
+}
+
+function imageFileValidator(
+  control: FormControl,
+  field: FormlyFieldConfig,
+  options: FileSizeValidatorOptionsInterface
+): ValidationErrors {
+  let value;
+
+  if (Array.isArray(control.value) || control.value instanceof FileList) {
+    value = control.value[0];
+  } else {
+    value = control.value;
+  }
+  return UtilsService.isImage(value?.name) ? null : { "image-file": true };
 }
 
 function urlValidator(control: FormControl, field: FormlyFieldConfig): ValidationErrors {
@@ -121,6 +137,7 @@ export function formlyValidationConfig(translate: TranslateService) {
     ],
     validators: [
       { name: "file-size", validation: fileSizeValidator },
+      { name: "image-file", validation: imageFileValidator },
       { name: "url", validation: urlValidator }
     ],
     validationMessages: [
@@ -134,6 +151,20 @@ export function formlyValidationConfig(translate: TranslateService) {
         name: "url",
         message() {
           return translate.stream("This field needs to be a valid URL starting with http(s) or ftp(s)");
+        }
+      },
+      {
+        name: "file-size",
+        message() {
+          return translate.stream(
+            "This file is too large. Please check the size requirement in the field's description."
+          );
+        }
+      },
+      {
+        name: "image-file",
+        message() {
+          return translate.stream("This file is not an image.");
         }
       }
     ]

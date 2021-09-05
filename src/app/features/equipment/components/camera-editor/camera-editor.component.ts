@@ -115,6 +115,7 @@ export class CameraEditorComponent extends BaseEquipmentItemEditorComponent<Came
       {
         key: "cooled",
         type: "checkbox",
+        wrappers: ["default-wrapper"],
         id: "camera-field-cooled",
         defaultValue: false,
         expressionProperties: {
@@ -128,6 +129,7 @@ export class CameraEditorComponent extends BaseEquipmentItemEditorComponent<Came
       {
         key: "maxCooling",
         type: "input",
+        wrappers: ["default-wrapper"],
         id: "camera-field-max-cooling",
         hideExpression: () => !this.model.cooled,
         expressionProperties: {
@@ -147,6 +149,7 @@ export class CameraEditorComponent extends BaseEquipmentItemEditorComponent<Came
       {
         key: "backFocus",
         type: "input",
+        wrappers: ["default-wrapper"],
         id: "camera-field-back-focus",
         expressionProperties: {
           "templateOptions.disabled": () => this.brandCreation.inProgress
@@ -159,16 +162,7 @@ export class CameraEditorComponent extends BaseEquipmentItemEditorComponent<Came
           description: this.translateService.instant("Camera back focus in mm.")
         }
       },
-      {
-        key: "image",
-        type: "file",
-        id: "camera-field-image",
-        templateOptions: {
-          required: false,
-          label: this.translateService.instant("Image"),
-          accept: "image/jpeg, image/png"
-        }
-      }
+      this._getImageField()
     ];
   }
 

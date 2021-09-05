@@ -40,6 +40,7 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
   fields: FormlyFieldConfig[] = [
     {
       key: "title",
+      wrappers: ["default-wrapper"],
       id: "title",
       type: "input",
       templateOptions: {

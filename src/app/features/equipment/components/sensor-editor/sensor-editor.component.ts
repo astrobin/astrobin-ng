@@ -43,6 +43,7 @@ export class SensorEditorComponent extends BaseEquipmentItemEditorComponent<Sens
       {
         key: "pixelSize",
         type: "input",
+        wrappers: ["default-wrapper"],
         id: "sensor-field-pixel-size",
         expressionProperties: {
           "templateOptions.disabled": () => this.brandCreation.inProgress
@@ -58,6 +59,7 @@ export class SensorEditorComponent extends BaseEquipmentItemEditorComponent<Sens
       {
         key: "pixelWidth",
         type: "input",
+        wrappers: ["default-wrapper"],
         id: "sensor-field-pixel-width",
         expressionProperties: {
           "templateOptions.disabled": () => this.brandCreation.inProgress
@@ -72,6 +74,7 @@ export class SensorEditorComponent extends BaseEquipmentItemEditorComponent<Sens
       {
         key: "pixelHeight",
         type: "input",
+        wrappers: ["default-wrapper"],
         id: "sensor-field-pixel-height",
         expressionProperties: {
           "templateOptions.disabled": () => this.brandCreation.inProgress
@@ -86,6 +89,7 @@ export class SensorEditorComponent extends BaseEquipmentItemEditorComponent<Sens
       {
         key: "sensorWidth",
         type: "input",
+        wrappers: ["default-wrapper"],
         id: "sensor-field-sensor-width",
         expressionProperties: {
           "templateOptions.disabled": () => this.brandCreation.inProgress
@@ -100,6 +104,7 @@ export class SensorEditorComponent extends BaseEquipmentItemEditorComponent<Sens
       {
         key: "sensorHeight",
         type: "input",
+        wrappers: ["default-wrapper"],
         id: "sensor-field-sensor-height",
         expressionProperties: {
           "templateOptions.disabled": () => this.brandCreation.inProgress
@@ -114,6 +119,7 @@ export class SensorEditorComponent extends BaseEquipmentItemEditorComponent<Sens
       {
         key: "fullWellCapacity",
         type: "input",
+        wrappers: ["default-wrapper"],
         id: "sensor-field-full-well-capacity",
         expressionProperties: {
           "templateOptions.disabled": () => this.brandCreation.inProgress
@@ -128,6 +134,7 @@ export class SensorEditorComponent extends BaseEquipmentItemEditorComponent<Sens
       {
         key: "readNoise",
         type: "input",
+        wrappers: ["default-wrapper"],
         id: "sensor-field-read-noise",
         expressionProperties: {
           "templateOptions.disabled": () => this.brandCreation.inProgress
@@ -142,6 +149,7 @@ export class SensorEditorComponent extends BaseEquipmentItemEditorComponent<Sens
       {
         key: "frameRate",
         type: "input",
+        wrappers: ["default-wrapper"],
         id: "sensor-field-frame-rate",
         expressionProperties: {
           "templateOptions.disabled": () => this.brandCreation.inProgress
@@ -156,6 +164,7 @@ export class SensorEditorComponent extends BaseEquipmentItemEditorComponent<Sens
       {
         key: "adc",
         type: "input",
+        wrappers: ["default-wrapper"],
         id: "sensor-field-adc",
         expressionProperties: {
           "templateOptions.disabled": () => this.brandCreation.inProgress

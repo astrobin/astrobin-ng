@@ -1,7 +1,10 @@
 <div [class.has-error]="showError" class="form-group">
   <label *ngIf="to.label && to.hideLabel !== true" [attr.for]="id">
     {{ to.label }}
-    <span *ngIf="to.required && to.hideRequiredMarker !== true">*</span>
+    <span class="required-marker" *ngIf="to.required && !to.hideRequiredMarker">*</span>
+    <span class="optional-marker" *ngIf="!to.required && !to.hideOptionalMarker">
+      {{ "(optional)" | translate }}
+    </span>
   </label>
 
   <ng-template #fieldComponent></ng-template>

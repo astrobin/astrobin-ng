@@ -29,6 +29,7 @@ export class FormlyFieldFileComponent extends FieldType implements OnInit {
 
   onChange(event) {
     this.selectedFiles = Array.from(event.target.files);
+    this.formControl.markAsTouched();
   }
 
   getSanitizedImageUrl(file: File) {

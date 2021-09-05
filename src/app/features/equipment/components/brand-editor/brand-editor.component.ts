@@ -104,6 +104,7 @@ export class BrandEditorComponent extends BaseComponentDirective implements OnIn
       {
         key: "website",
         type: "input",
+        wrappers: ["default-wrapper"],
         id: "brand-field-website",
         templateOptions: {
           required: true,

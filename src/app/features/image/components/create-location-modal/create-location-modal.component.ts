@@ -49,6 +49,7 @@ export class CreateLocationModalComponent extends BaseComponentDirective impleme
           this.fields = [
             {
               type: "input",
+              wrappers: ["default-wrapper"],
               id: "name",
               key: "name",
               defaultValue: name,
@@ -75,6 +76,7 @@ export class CreateLocationModalComponent extends BaseComponentDirective impleme
               type: "input",
               id: "altitude",
               key: "altitude",
+              wrappers: ["default-wrapper"],
               templateOptions: {
                 required: true,
                 label: this.translateService.instant("Altitude"),

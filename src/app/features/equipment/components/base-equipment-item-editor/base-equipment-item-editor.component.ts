@@ -184,6 +184,24 @@ export class BaseEquipmentItemEditorComponent<T extends EquipmentItemBaseInterfa
     };
   }
 
+  protected _getImageField() {
+    return {
+      key: "image",
+      type: "file",
+      id: "camera-field-image",
+      templateOptions: {
+        required: false,
+        label: this.translateService.instant("Image"),
+        description: this.translateService.instant("Official (or official looking) product image. Max. 1MB."),
+        accept: "image/jpeg, image/png"
+      },
+
+      validators: {
+        validation: [{ name: "file-size", options: { max: 1024 * 1024 } }, { name: "image-file" }]
+      }
+    };
+  }
+
   protected _onBrandSearch(event: { term: string; items: BrandInterface[] }) {
     this.brandCreation.name = event.term;
 
