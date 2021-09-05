@@ -13,7 +13,7 @@ import {
   FindAllBrandsSuccess
 } from "@features/equipment/store/equipment.actions";
 import { Actions, ofType } from "@ngrx/effects";
-import { map, switchMap, takeUntil, tap } from "rxjs/operators";
+import { filter, map, switchMap, takeUntil, tap } from "rxjs/operators";
 import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
 import { WindowRefService } from "@shared/services/window-ref.service";
@@ -138,6 +138,7 @@ export class BaseEquipmentItemEditorComponent<T extends EquipmentItemBaseInterfa
           field.formControl.valueChanges
             .pipe(
               takeUntil(this.destroyed$),
+              filter(value => !!value),
               switchMap((value: BrandInterface["id"]) => {
                 return this.equipmentApiService.getBrand(value);
               }),
@@ -175,6 +176,7 @@ export class BaseEquipmentItemEditorComponent<T extends EquipmentItemBaseInterfa
           field.formControl.valueChanges
             .pipe(
               takeUntil(this.destroyed$),
+              filter(value => !!value),
               tap((value: string) => {
                 this._validateBrandInName();
               })

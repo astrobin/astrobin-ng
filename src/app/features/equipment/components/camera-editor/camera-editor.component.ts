@@ -13,11 +13,14 @@ import { of } from "rxjs";
 import { EquipmentItemType } from "@features/equipment/interfaces/equipment-item-base.interface";
 import { SensorInterface } from "@features/equipment/interfaces/sensor.interface";
 import {
+  CreateSensor,
   EquipmentActionTypes,
+  EquipmentItemCreationSuccessPayloadInterface,
   FindAllEquipmentItems,
   FindAllEquipmentItemsSuccess
 } from "@features/equipment/store/equipment.actions";
-import { map } from "rxjs/operators";
+import { filter, map, take, takeUntil } from "rxjs/operators";
+import { selectBrand } from "@features/equipment/store/equipment.selectors";
 
 @Component({
   selector: "astrobin-camera-editor",
@@ -142,7 +145,7 @@ export class CameraEditorComponent extends BaseEquipmentItemEditorComponent<Came
           label: this.translateService.instant("Max. cooling (Celsius degrees below ambient)"),
           description: this.translateService.instant(
             "A positive whole number that represents how many Celsius below ambient temperature this camera can " +
-              "be cooled."
+            "be cooled."
           )
         }
       },
@@ -166,15 +169,56 @@ export class CameraEditorComponent extends BaseEquipmentItemEditorComponent<Came
     ];
   }
 
-  sensorCreated(sensor: SensorInterface) {
-    this.cancelSensorCreation();
-  }
-
-  cancelSensorCreation() {
+  resetSensorCreation() {
     this.sensorCreation.inProgress = false;
+    this.sensorCreation.form.reset();
   }
 
-  createSensor() {}
+  createSensor() {
+    const sensor: SensorInterface = this.sensorCreation.form.value;
+
+    this.loadingService.setLoading(true);
+    this.store$.dispatch(new CreateSensor({ sensor }));
+    this.actions$
+      .pipe(
+        ofType(EquipmentActionTypes.CREATE_SENSOR_SUCCESS),
+        take(1),
+        map((result: { payload: EquipmentItemCreationSuccessPayloadInterface }) => result.payload.item)
+      )
+      .subscribe((createdSensor: SensorInterface) => {
+        this.sensorCreated(createdSensor);
+        this.loadingService.setLoading(false);
+      });
+  }
+
+  sensorCreated(sensor: SensorInterface) {
+    this.resetSensorCreation();
+
+    this.store$
+      .select(selectBrand, sensor.brand)
+      .pipe(
+        takeUntil(this.destroyed$),
+        filter(brand => !!brand)
+      )
+      .subscribe(brand => {
+        this.fields.find(field => field.key === "sensor").templateOptions.options = [
+          {
+            value: sensor.id,
+            label: `${brand.name} ${sensor.name}`,
+            sensor
+          }
+        ];
+
+        this.model = { ...this.model, ...{ sensor: sensor.id } };
+        this.form.get("sensor").setValue(sensor.id);
+
+        setTimeout(() => {
+          this.windowRefService.nativeWindow.document
+            .querySelector("#camera-field-sensor")
+            .scrollIntoView({ behavior: "smooth" });
+        }, 1);
+      });
+  }
 
   private _onSensorSearch(term: string) {
     this.sensorCreation.name = term;

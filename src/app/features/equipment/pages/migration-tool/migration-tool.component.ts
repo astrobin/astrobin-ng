@@ -25,7 +25,7 @@ import {
   LoadBrand
 } from "@features/equipment/store/equipment.actions";
 import { Actions, ofType } from "@ngrx/effects";
-import { selectBrands, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
+import { selectBrand, selectBrands, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import { HttpStatusCode } from "@angular/common/http";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { CameraApiService } from "@shared/services/api/classic/astrobin/camera/camera-api.service";
@@ -293,21 +293,30 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
 
   itemCreated(item: EquipmentItemBaseInterface) {
     this.restItemCreation();
-    this.migration.fields.find(field => field.key === "equipment-item").templateOptions.options = [
-      {
-        value: item.id,
-        label: item.name,
-        item
-      }
-    ];
-    this.migration.model = { ...this.migration.model, ...{ "equipment-item": item.id } };
-    this.migration.form.get("equipment-item").setValue(item.id);
 
-    setTimeout(() => {
-      this.windowRefService.nativeWindow.document
-        .querySelector("#equipment-item-field")
-        .scrollIntoView({ behavior: "smooth" });
-    }, 1);
+    this.store$
+      .select(selectBrand, item.brand)
+      .pipe(
+        takeUntil(this.destroyed$),
+        filter(brand => !!brand)
+      )
+      .subscribe(brand => {
+        this.migration.fields.find(field => field.key === "equipment-item").templateOptions.options = [
+          {
+            value: item.id,
+            label: `${brand.name} ${item.name}`,
+            item
+          }
+        ];
+        this.migration.model = { ...this.migration.model, ...{ "equipment-item": item.id } };
+        this.migration.form.get("equipment-item").setValue(item.id);
+
+        setTimeout(() => {
+          this.windowRefService.nativeWindow.document
+            .querySelector("#equipment-item-field")
+            .scrollIntoView({ behavior: "smooth" });
+        }, 1);
+      });
   }
 
   _onMigrationSearch(term: string) {
