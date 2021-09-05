@@ -9,8 +9,9 @@ import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { instanceOfTelescope } from "@features/equipment/interfaces/telescope.interface";
 import { UtilsService } from "@shared/services/utils/utils.service";
-import { take } from "rxjs/operators";
+import { takeUntil } from "rxjs/operators";
 import { CameraService } from "@features/equipment/services/camera.service";
+import { selectBrand } from "@features/equipment/store/equipment.selectors";
 
 export const PLACEHOLDER = "https://via.placeholder.com/50.png/000/fff?text=?";
 
@@ -102,9 +103,9 @@ export class EquipmentItemSummaryComponent extends BaseComponentDirective implem
   }
 
   ngOnInit() {
-    this.equipmentApiService
-      .getBrand(this.item.brand)
-      .pipe(take(1))
+    this.store$
+      .select(selectBrand, this.item.brand)
+      .pipe(takeUntil(this.destroyed$))
       .subscribe(brand => (this.brand = brand));
   }
 }

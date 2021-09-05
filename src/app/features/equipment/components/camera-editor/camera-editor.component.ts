@@ -97,8 +97,8 @@ export class CameraEditorComponent extends BaseEquipmentItemEditorComponent<Came
           required: false,
           clearable: true,
           options: of([]),
-          onSearch: (event: { term: string; items: SensorInterface[] }) => {
-            this._onSensorSearch(event);
+          onSearch: (term: string) => {
+            this._onSensorSearch(term);
           },
           optionTemplate: this.sensorOptionTemplate,
           addTag: () => {
@@ -176,8 +176,8 @@ export class CameraEditorComponent extends BaseEquipmentItemEditorComponent<Came
 
   createSensor() {}
 
-  private _onSensorSearch(event: { term: string; items: SensorInterface[] }) {
-    this.sensorCreation.name = event.term;
+  private _onSensorSearch(term: string) {
+    this.sensorCreation.name = term;
 
     if (!this.sensorCreation.name) {
       return of([]);

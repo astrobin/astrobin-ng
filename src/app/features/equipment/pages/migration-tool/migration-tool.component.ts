@@ -137,8 +137,8 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
           clearable: true,
           label: "Migrate to",
           options: of([]),
-          onSearch: (event: { term: string; items: EquipmentItemBaseInterface[] }) => {
-            this._onMigrationSearch(event);
+          onSearch: (term: string) => {
+            this._onMigrationSearch(term);
           },
           optionTemplate: this.equipmentItemOptionTemplate,
           addTag: () => {
@@ -310,8 +310,8 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
     }, 1);
   }
 
-  _onMigrationSearch(event: { term: string; items: EquipmentItemBaseInterface[] }) {
-    this.migration.q = event.term;
+  _onMigrationSearch(term: string) {
+    this.migration.q = term;
 
     if (!this.migration.q || this.migration.q.length < 3) {
       return of([]);

@@ -21,7 +21,7 @@
     [multiple]="to.multiple"
     [notFoundText]="notFoundText"
     [placeholder]="placeholder"
-    (search)="onSearch($event)"
+    [typeahead]="input$"
     groupBy="group"
   >
     <ng-template let-item="item" ng-optgroup-tmp>

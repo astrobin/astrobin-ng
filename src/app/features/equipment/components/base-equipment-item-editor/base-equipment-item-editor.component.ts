@@ -119,8 +119,8 @@ export class BaseEquipmentItemEditorComponent<T extends EquipmentItemBaseInterfa
         clearable: true,
         label: this.translateService.instant("Brand"),
         options: of([]),
-        onSearch: (event: { term: string; items: EquipmentItemBaseInterface[] }) => {
-          this._onBrandSearch(event);
+        onSearch: (term: string) => {
+          this._onBrandSearch(term);
         },
         optionTemplate: this.brandOptionTemplate,
         addTag: () => {
@@ -203,8 +203,8 @@ export class BaseEquipmentItemEditorComponent<T extends EquipmentItemBaseInterfa
     };
   }
 
-  protected _onBrandSearch(event: { term: string; items: BrandInterface[] }) {
-    this.brandCreation.name = event.term;
+  protected _onBrandSearch(term: string) {
+    this.brandCreation.name = term;
 
     if (!this.brandCreation.name) {
       return of([]);

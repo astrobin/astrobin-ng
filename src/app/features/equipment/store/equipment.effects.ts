@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { Observable } from "rxjs";
+import { Observable, of } from "rxjs";
 import {
   CreateBrand,
   CreateBrandSuccess,
@@ -21,6 +21,7 @@ import { State } from "@app/store/state";
 import { All } from "@app/store/actions/app.actions";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import { map, mergeMap } from "rxjs/operators";
+import { selectBrand } from "@features/equipment/store/equipment.selectors";
 
 @Injectable()
 export class EquipmentEffects {
@@ -28,7 +29,17 @@ export class EquipmentEffects {
     this.actions$.pipe(
       ofType(EquipmentActionTypes.LOAD_BRAND),
       map((action: LoadBrand) => action.payload.id),
-      mergeMap(id => this.equipmentApiService.getBrand(id).pipe(map(brand => new LoadBrandSuccess({ brand }))))
+      mergeMap(id =>
+        this.store$
+          .select(selectBrand, id)
+          .pipe(
+            mergeMap(brandFromStore =>
+              brandFromStore !== null
+                ? of(brandFromStore).pipe(map(brand => new LoadBrandSuccess({ brand })))
+                : this.equipmentApiService.getBrand(id).pipe(map(brand => new LoadBrandSuccess({ brand })))
+            )
+          )
+      )
     )
   );
 
