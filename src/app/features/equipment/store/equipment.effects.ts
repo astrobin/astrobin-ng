@@ -13,7 +13,9 @@ import {
   FindAllEquipmentItems,
   FindAllEquipmentItemsSuccess,
   LoadBrand,
-  LoadBrandSuccess
+  LoadBrandSuccess,
+  LoadSensor,
+  LoadSensorSuccess
 } from "@features/equipment/store/equipment.actions";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
@@ -21,7 +23,8 @@ import { State } from "@app/store/state";
 import { All } from "@app/store/actions/app.actions";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import { map, mergeMap } from "rxjs/operators";
-import { selectBrand } from "@features/equipment/store/equipment.selectors";
+import { selectBrand, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
+import { SensorInterface } from "@features/equipment/interfaces/sensor.interface";
 
 @Injectable()
 export class EquipmentEffects {
@@ -73,6 +76,24 @@ export class EquipmentEffects {
         this.equipmentApiService
           .findAllEquipmentItems(payload.q, payload.type)
           .pipe(map(items => new FindAllEquipmentItemsSuccess({ items })))
+      )
+    )
+  );
+
+  LoadSensor: Observable<LoadSensorSuccess> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(EquipmentActionTypes.LOAD_SENSOR),
+      map((action: LoadSensor) => action.payload.id),
+      mergeMap(id =>
+        this.store$
+          .select(selectEquipmentItem, id)
+          .pipe(
+            mergeMap(itemFromStore =>
+              itemFromStore !== null
+                ? of(itemFromStore).pipe(map(item => new LoadSensorSuccess({ item: item as SensorInterface })))
+                : this.equipmentApiService.getSensor(id).pipe(map(item => new LoadSensorSuccess({ item })))
+            )
+          )
       )
     )
   );

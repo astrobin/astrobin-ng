@@ -9,9 +9,12 @@ import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { instanceOfTelescope } from "@features/equipment/interfaces/telescope.interface";
 import { UtilsService } from "@shared/services/utils/utils.service";
-import { takeUntil } from "rxjs/operators";
+import { filter, map, switchMap, takeUntil } from "rxjs/operators";
 import { CameraService } from "@features/equipment/services/camera.service";
-import { selectBrand } from "@features/equipment/store/equipment.selectors";
+import { selectBrand, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
+import { Observable, of } from "rxjs";
+import { SensorInterface } from "@features/equipment/interfaces/sensor.interface";
+import { LoadSensor } from "@features/equipment/store/equipment.actions";
 
 export const PLACEHOLDER = "https://via.placeholder.com/50.png/000/fff?text=?";
 
@@ -40,11 +43,9 @@ export class EquipmentItemSummaryComponent extends BaseComponentDirective implem
     return (this.item.image as string) || PLACEHOLDER;
   }
 
-  get properties(): { name: string; value: any }[] {
-    let properties: { name: string; value: any }[] = [];
-
+  get properties$(): Observable<{ name: string; value: any }[]> {
     if (instanceOfCamera(this.item)) {
-      properties = [
+      const properties = [
         {
           name: this.translateService.instant("Class"),
           value: this.translateService.instant("Camera")
@@ -66,8 +67,32 @@ export class EquipmentItemSummaryComponent extends BaseComponentDirective implem
           value: this.cameraService.getPrintableProperty(this.item, "backFocus")
         }
       ];
+
+      if (this.item.sensor) {
+        this.store$.dispatch(new LoadSensor({ id: this.item.sensor }));
+        return this.store$.select(selectEquipmentItem, this.item.sensor).pipe(
+          takeUntil(this.destroyed$),
+          filter(sensor => !!sensor),
+          switchMap(sensor =>
+            this.store$.select(selectBrand, sensor.brand).pipe(
+              takeUntil(this.destroyed$),
+              filter(brand => !!brand),
+              map(brand => ({ sensor, brand }))
+            )
+          ),
+          switchMap((result: { sensor: SensorInterface; brand: BrandInterface }) => {
+            properties.push({
+              name: this.translateService.instant("Sensor"),
+              value: `${result.brand.name} ${result.sensor.name}`
+            });
+            return of(properties);
+          })
+        );
+      } else {
+        return of(properties);
+      }
     } else if (instanceOfTelescope(this.item)) {
-      properties = [
+      return of([
         {
           name: this.translateService.instant("Class"),
           value: this.translateService.instant("Telescope")
@@ -94,12 +119,8 @@ export class EquipmentItemSummaryComponent extends BaseComponentDirective implem
           name: this.translateService.instant("Weight"),
           value: `${this.item.weight} kg`
         }
-      ];
+      ]);
     }
-
-    return properties.filter(
-      property => property.value !== null && property.value !== undefined && property.value !== ""
-    );
   }
 
   ngOnInit() {

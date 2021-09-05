@@ -24,6 +24,8 @@ export enum EquipmentActionTypes {
   FIND_ALL_EQUIPMENT_ITEMS_SUCCESS = "[Equipment] Find all equipment success",
   CREATE_SENSOR = "[Equipment] Create sensor",
   CREATE_SENSOR_SUCCESS = "[Equipment] Create sensor success",
+  LOAD_SENSOR = "[Equipment] Load sensor",
+  LOAD_SENSOR_SUCCESS = "[Equipment] Load sensor success",
   CREATE_CAMERA = "[Equipment] Create camera",
   CREATE_CAMERA_SUCCESS = "[Equipment] Create camera success"
 }
@@ -88,6 +90,18 @@ export class CreateSensorSuccess implements PayloadActionInterface {
   constructor(public payload: EquipmentItemCreationSuccessPayloadInterface) {}
 }
 
+export class LoadSensor implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.LOAD_SENSOR;
+
+  constructor(public payload: { id: SensorInterface["id"] }) {}
+}
+
+export class LoadSensorSuccess implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.LOAD_SENSOR_SUCCESS;
+
+  constructor(public payload: { item: SensorInterface }) {}
+}
+
 export class CreateCamera implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.CREATE_CAMERA;
 
@@ -111,5 +125,7 @@ export type EquipmentActions =
   | FindAllEquipmentItemsSuccess
   | CreateSensor
   | CreateSensorSuccess
+  | LoadSensor
+  | LoadSensorSuccess
   | CreateCamera
   | CreateCameraSuccess;
