@@ -250,8 +250,10 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
     this.migration.inProgress = false;
   }
 
-  cancelItemCreation() {
+  restItemCreation() {
     this.creation.inProgress = false;
+    this.creation.model = {};
+    this.creation.form.reset();
   }
 
   createItem() {
@@ -290,7 +292,7 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
   }
 
   itemCreated(item: EquipmentItemBaseInterface) {
-    this.cancelItemCreation();
+    this.restItemCreation();
     this.migration.fields.find(field => field.key === "equipment-item").templateOptions.options = [
       {
         value: item.id,

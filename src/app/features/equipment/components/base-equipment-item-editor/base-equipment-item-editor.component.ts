@@ -64,8 +64,9 @@ export class BaseEquipmentItemEditorComponent<T extends EquipmentItemBaseInterfa
     super(store$);
   }
 
-  cancelBrandCreation() {
+  resetBrandCreation() {
     this.brandCreation.inProgress = false;
+    this.brandCreation.form.reset();
   }
 
   createBrand() {
@@ -84,7 +85,7 @@ export class BaseEquipmentItemEditorComponent<T extends EquipmentItemBaseInterfa
   }
 
   brandCreated(brand: BrandInterface) {
-    this.cancelBrandCreation();
+    this.resetBrandCreation();
     this.fields.find(field => field.key === "brand").templateOptions.options = [
       {
         value: brand.id,
