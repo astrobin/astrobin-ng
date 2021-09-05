@@ -69,7 +69,6 @@ export class EquipmentItemSummaryComponent extends BaseComponentDirective implem
       ];
 
       if (this.item.sensor) {
-        this.store$.dispatch(new LoadSensor({ id: this.item.sensor }));
         return this.store$.select(selectEquipmentItem, this.item.sensor).pipe(
           takeUntil(this.destroyed$),
           filter(sensor => !!sensor),
@@ -128,5 +127,9 @@ export class EquipmentItemSummaryComponent extends BaseComponentDirective implem
       .select(selectBrand, this.item.brand)
       .pipe(takeUntil(this.destroyed$))
       .subscribe(brand => (this.brand = brand));
+
+    if (instanceOfCamera(this.item) && this.item.sensor) {
+      this.store$.dispatch(new LoadSensor({ id: this.item.sensor }));
+    }
   }
 }
