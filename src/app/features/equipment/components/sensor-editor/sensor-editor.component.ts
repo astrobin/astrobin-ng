@@ -192,16 +192,7 @@ export class SensorEditorComponent extends BaseEquipmentItemEditorComponent<Sens
           )
         }
       },
-      {
-        key: "logo",
-        type: "file",
-        id: "sensor-field-logo",
-        templateOptions: {
-          required: false,
-          label: this.translateService.instant("Image"),
-          accept: "image/jpeg, image/png"
-        }
-      }
+      this._getImageField()
     ];
   }
 }

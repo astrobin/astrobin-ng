@@ -154,7 +154,7 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   createSensor(sensor: Omit<SensorInterface, "id">): Observable<SensorInterface> {
-    return this.http.post<SensorInterface>(`${this.configUrl}/sensor/`, sensor);
+    return this._createItem<SensorInterface>(sensor, "sensor");
   }
 
   getSensor(id: SensorInterface["id"]): Observable<SensorInterface> {
@@ -166,15 +166,35 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   createCamera(camera: Omit<CameraInterface, "id">): Observable<CameraInterface> {
-    const { image, ...cameraWithoutImage } = camera;
+    return this._createItem<CameraInterface>(camera, "camera");
+  }
 
-    return new Observable<CameraInterface>(observer => {
+  getCamera(id: CameraInterface["id"]): Observable<CameraInterface> {
+    return this.http.get<CameraInterface>(`${this.configUrl}/camera/${id}/`);
+  }
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // TELESCOPE API
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  getTelescope(id: TelescopeInterface["id"]): Observable<TelescopeInterface> {
+    return this.http.get<TelescopeInterface>(`${this.configUrl}/telescope/${id}/`);
+  }
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // PRIVATE
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  private _createItem<T extends EquipmentItemBaseInterface>(item: Omit<T, "id">, path: string): Observable<T> {
+    const { image, ...itemWithoutImage } = item;
+
+    return new Observable<T>(observer => {
       this.http
-        .post<CameraInterface>(`${this.configUrl}/camera/`, cameraWithoutImage)
+        .post<T>(`${this.configUrl}/${path}/`, itemWithoutImage)
         .pipe(take(1))
-        .subscribe(createdCamera => {
-          if (camera.image && camera.image.length > 0) {
-            this.uploadCameraImage(createdCamera.id, (camera.image as File[])[0])
+        .subscribe(createdItem => {
+          if (item.image && item.image.length > 0) {
+            this._uploadItemImage<CameraInterface>(createdItem.id, (item.image as File[])[0], path)
               .pipe(
                 take(1),
                 catchError(error => {
@@ -190,22 +210,26 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
                     )
                   );
 
-                  return of(createdCamera);
+                  return of(createdItem);
                 })
               )
               .subscribe(() => {
-                observer.next(createdCamera);
+                observer.next(createdItem);
                 observer.complete();
               });
           } else {
-            observer.next(createdCamera);
+            observer.next(createdItem);
             observer.complete();
           }
         });
     });
   }
 
-  uploadCameraImage(id: CameraInterface["id"], image: File): Observable<CameraInterface> {
+  private _uploadItemImage<T extends EquipmentItemBaseInterface>(
+    id: T["id"],
+    image: File,
+    path: string
+  ): Observable<T> {
     const formData: FormData = new FormData();
     formData.append("image", image);
 
@@ -217,18 +241,6 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
       })
     };
 
-    return this.http.put<CameraInterface>(`${this.configUrl}/camera/${id}/image/`, formData, httpOptions);
-  }
-
-  getCamera(id: CameraInterface["id"]): Observable<CameraInterface> {
-    return this.http.get<CameraInterface>(`${this.configUrl}/camera/${id}/`);
-  }
-
-  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  // TELESCOPE API
-  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-  getTelescope(id: TelescopeInterface["id"]): Observable<TelescopeInterface> {
-    return this.http.get<TelescopeInterface>(`${this.configUrl}/telescope/${id}/`);
+    return this.http.put<T>(`${this.configUrl}/${path}/${id}/image/`, formData, httpOptions);
   }
 }

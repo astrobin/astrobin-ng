@@ -145,7 +145,7 @@ export class CameraEditorComponent extends BaseEquipmentItemEditorComponent<Came
           label: this.translateService.instant("Max. cooling (Celsius degrees below ambient)"),
           description: this.translateService.instant(
             "A positive whole number that represents how many Celsius below ambient temperature this camera can " +
-            "be cooled."
+              "be cooled."
           )
         }
       },
