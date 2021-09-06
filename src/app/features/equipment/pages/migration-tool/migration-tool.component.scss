@@ -1,3 +1,16 @@
+.nav-item {
+  position: relative;
+
+  .counter{
+    position: absolute;
+    top: calc(50% - .5rem);
+    right: .5rem;
+    font-size: 1rem;
+    line-height: 1rem;
+    opacity: .5;
+  }
+}
+
 ::ng-deep {
   #equipment-item-field {
     .ng-value {

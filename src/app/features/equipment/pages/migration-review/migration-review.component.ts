@@ -12,7 +12,7 @@ import { UsernameService } from "@shared/components/misc/username/username.servi
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { State } from "@app/store/state";
 import { UserService } from "@shared/services/user.service";
-import { MigrationFlag } from "@shared/services/api/classic/astrobin/migratable-gear-item.service-interface";
+import { MigrationFlag } from "@shared/services/api/classic/astrobin/migratable-gear-item-api.service.interface";
 
 @Component({
   selector: "astrobin-migration-review",

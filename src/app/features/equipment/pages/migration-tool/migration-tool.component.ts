@@ -11,7 +11,7 @@ import { FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { EMPTY, Observable, of } from "rxjs";
 import { BrandInterface } from "@features/equipment/interfaces/brand.interface";
-import { MigrationFlag } from "@shared/services/api/classic/astrobin/migratable-gear-item.service-interface";
+import { MigrationFlag } from "@shared/services/api/classic/astrobin/migratable-gear-item-api.service.interface";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { Action, Store } from "@ngrx/store";
 import {
@@ -84,6 +84,9 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
     inProgress: false
   };
 
+  // TODO: other types
+  nonMigratedCamerasCount$: Observable<number>;
+
   constructor(
     public readonly store$: Store<State>,
     public readonly actions$: Actions,
@@ -131,6 +134,8 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
         this.skip();
       }
     });
+
+    this.nonMigratedCamerasCount$ = this.legacyCameraApi.getNonMigratedCount();
   }
 
   ngAfterViewInit() {
@@ -208,6 +213,7 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
     const _doSkip = () => {
       this.pendingReview$ = this.legacyGearApi.getPendingMigrationReview();
       this.randomNonMigrated$ = this.getRandomNonMigrated$();
+      this.nonMigratedCamerasCount$ = this.legacyCameraApi.getNonMigratedCount();
       this.loadingService.setLoading(false);
     };
 

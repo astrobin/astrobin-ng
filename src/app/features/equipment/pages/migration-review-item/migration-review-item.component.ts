@@ -6,14 +6,13 @@ import { TitleService } from "@shared/services/title/title.service";
 import { TranslateService } from "@ngx-translate/core";
 import { ActivatedRoute } from "@angular/router";
 import { GearApiService } from "@shared/services/api/classic/astrobin/gear/gear-api.service";
-import { catchError, take } from "rxjs/operators";
+import { take } from "rxjs/operators";
 import { GearService } from "@shared/services/gear/gear.service";
 import { UserService } from "@shared/services/user.service";
 import { LoadUser } from "@features/account/store/auth.actions";
-import { MigrationFlag } from "@shared/services/api/classic/astrobin/migratable-gear-item.service-interface";
+import { MigrationFlag } from "@shared/services/api/classic/astrobin/migratable-gear-item-api.service.interface";
 import { LoadingService } from "@shared/services/loading.service";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
-import { EMPTY, of } from "rxjs";
 
 @Component({
   selector: "astrobin-migration-review-item",
@@ -85,7 +84,9 @@ export class MigrationReviewItemComponent extends BaseComponentDirective impleme
       });
   }
 
-  accept() {}
+  accept() {
+  }
 
-  reject() {}
+  reject() {
+  }
 }

@@ -11,8 +11,10 @@ export enum MigrationFlag {
   MIGRATE = "MIGRATE"
 }
 
-export interface MigratableGearItemServiceInterface {
+export interface MigratableGearItemApiServiceInterface {
   getRandomNonMigrated?(): Observable<any[]>;
+
+  getNonMigratedCount?(): Observable<number>;
 
   getPendingMigrationReview?(): Observable<any[]>;
 

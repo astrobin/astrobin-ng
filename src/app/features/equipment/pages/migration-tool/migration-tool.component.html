@@ -6,6 +6,7 @@
       <ul ngbNav #nav="ngbNav" [(activeId)]="activeType" class="nav-pills" orientation="vertical">
         <li ngbNavItem="camera">
           <a ngbNavLink routerLink="../camera">Cameras</a>
+          <span class="counter">{{nonMigratedCamerasCount$ | async}}</span>
         </li>
 
         <li ngbNavItem="telescope" [disabled]="true">
