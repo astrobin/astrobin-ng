@@ -40,5 +40,10 @@ describe("TelescopeService", () => {
       telescope = TelescopeGenerator.telescope({ minFocalLength: 50, maxFocalLength: 50 });
       expect(service.getPrintableProperty(telescope, TelescopeDisplayProperty.FOCAL_LENGHT)).toEqual("50 mm");
     });
+
+    it("should work for 'weight'", () => {
+      const telescope = TelescopeGenerator.telescope({ weight: 50 });
+      expect(service.getPrintableProperty(telescope, TelescopeDisplayProperty.WEIGHT)).toEqual("50 kg");
+    });
   });
 });

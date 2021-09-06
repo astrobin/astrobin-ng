@@ -2,10 +2,9 @@
   <formly-form [fields]="fields" [form]="form" [model]="model"></formly-form>
 </form>
 
-<ng-template #similarItemsTemplate let-data="data">
-  {{ "Did you mean:" | translate }}
-  <span *ngFor="let item of data; let isLast = last">
-    <a href="#" (click)="use($event, item.id)">{{ item.name }}</a
-    >{{ isLast ? "" : ", " }} </span
-  >?
+<ng-template #similarItemsTemplate let-items="data">
+  <astrobin-similar-items-suggestion
+    [items]="items"
+    (itemSelected)="suggestionSelected.emit($event)"
+  ></astrobin-similar-items-suggestion>
 </ng-template>

@@ -8,6 +8,7 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 import { State } from "@app/store/state";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import { SensorInterface } from "@features/equipment/interfaces/sensor.interface";
+import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 
 @Component({
   selector: "astrobin-sensor-editor",
@@ -25,9 +26,18 @@ export class SensorEditorComponent extends BaseEquipmentItemEditorComponent<Sens
     public readonly loadingService: LoadingService,
     public readonly translateService: TranslateService,
     public readonly windowRefService: WindowRefService,
-    public readonly equipmentApiService: EquipmentApiService
+    public readonly equipmentApiService: EquipmentApiService,
+    public readonly equipmentItemService: EquipmentItemService
   ) {
-    super(store$, actions$, loadingService, translateService, windowRefService, equipmentApiService);
+    super(
+      store$,
+      actions$,
+      loadingService,
+      translateService,
+      windowRefService,
+      equipmentApiService,
+      equipmentItemService
+    );
   }
 
   ngOnInit() {

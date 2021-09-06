@@ -7,7 +7,8 @@ import { TelescopeInterface } from "@features/equipment/interfaces/telescope.int
 export enum TelescopeDisplayProperty {
   TYPE,
   APERTURE,
-  FOCAL_LENGHT
+  FOCAL_LENGHT,
+  WEIGHT
 }
 
 @Injectable({
@@ -30,6 +31,8 @@ export class TelescopeService extends BaseService implements EquipmentItemServic
         return item.minFocalLength === item.maxFocalLength
           ? `${item.maxFocalLength} mm`
           : `${item.minFocalLength} - ${item.maxFocalLength} mm`;
+      case TelescopeDisplayProperty.WEIGHT:
+        return item.weight ? `${item.weight} kg` : "";
       default:
         throw Error(`Invalid property: ${property}`);
     }

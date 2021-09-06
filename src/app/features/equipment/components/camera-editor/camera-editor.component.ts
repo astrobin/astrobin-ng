@@ -23,6 +23,7 @@ import {
 import { filter, map, switchMap, take, takeUntil, tap } from "rxjs/operators";
 import { selectBrand, selectBrands } from "@features/equipment/store/equipment.selectors";
 import { BrandInterface } from "@features/equipment/interfaces/brand.interface";
+import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 
 @Component({
   selector: "astrobin-camera-editor",
@@ -50,9 +51,18 @@ export class CameraEditorComponent extends BaseEquipmentItemEditorComponent<Came
     public readonly loadingService: LoadingService,
     public readonly translateService: TranslateService,
     public readonly windowRefService: WindowRefService,
-    public readonly equipmentApiService: EquipmentApiService
+    public readonly equipmentApiService: EquipmentApiService,
+    public readonly equipmentItemService: EquipmentItemService
   ) {
-    super(store$, actions$, loadingService, translateService, windowRefService, equipmentApiService);
+    super(
+      store$,
+      actions$,
+      loadingService,
+      translateService,
+      windowRefService,
+      equipmentApiService,
+      equipmentItemService
+    );
   }
 
   ngOnInit() {
@@ -147,7 +157,7 @@ export class CameraEditorComponent extends BaseEquipmentItemEditorComponent<Came
           label: this.translateService.instant("Max. cooling (Celsius degrees below ambient)"),
           description: this.translateService.instant(
             "A positive whole number that represents how many Celsius below ambient temperature this camera can " +
-            "be cooled."
+              "be cooled."
           )
         }
       },

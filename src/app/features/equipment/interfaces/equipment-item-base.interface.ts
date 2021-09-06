@@ -21,19 +21,3 @@ export interface EquipmentItemBaseInterface {
   name: string;
   image?: string | File[];
 }
-
-export type AnyEquipmentItemType = CameraInterface | TelescopeInterface;
-
-export function equipmentItemType(item: EquipmentItemBaseInterface): EquipmentItemType | undefined {
-  if (instanceOfSensor(item)) {
-    return EquipmentItemType.SENSOR;
-  }
-
-  if (instanceOfCamera(item)) {
-    return EquipmentItemType.CAMERA;
-  }
-
-  if (instanceOfTelescope(item)) {
-    return EquipmentItemType.TELESCOPE;
-  }
-}

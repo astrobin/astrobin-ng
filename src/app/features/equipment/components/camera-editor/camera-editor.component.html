@@ -86,3 +86,10 @@
 <ng-template #sensorOptionTemplate let-item="item">
   <astrobin-equipment-item-summary [item]="item.sensor"></astrobin-equipment-item-summary>
 </ng-template>
+
+<ng-template #similarItemsTemplate let-items="data">
+  <astrobin-similar-items-suggestion
+    [items]="items"
+    (itemSelected)="suggestionSelected.emit($event)"
+  ></astrobin-similar-items-suggestion>
+</ng-template>

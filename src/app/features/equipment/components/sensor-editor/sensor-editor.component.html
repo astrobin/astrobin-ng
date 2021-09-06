@@ -44,3 +44,10 @@
 <ng-template #brandOptionTemplate let-item="item">
   <astrobin-brand-summary [brand]="item.brand"></astrobin-brand-summary>
 </ng-template>
+
+<ng-template #similarItemsTemplate let-items="data">
+  <astrobin-similar-items-suggestion
+    [items]="items"
+    (itemSelected)="suggestionSelected.emit($event)"
+  ></astrobin-similar-items-suggestion>
+</ng-template>

@@ -49,6 +49,20 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
       .pipe(map(response => response.results));
   }
 
+  findSimilarInBrand(
+    brand: BrandInterface["id"],
+    q: string,
+    type: EquipmentItemType
+  ): Observable<EquipmentItemBaseInterface[]> {
+    if (!q) {
+      return of([]);
+    }
+
+    return this.http.get<EquipmentItemBaseInterface[]>(
+      `${this.configUrl}/${type.toLowerCase()}/find-similar-in-brand?brand=${brand}&q=${q}`
+    );
+  }
+
   getByContentTypeAndObjectId(
     contentTypeId: ContentTypeInterface["id"],
     objectId: EquipmentItemBaseInterface["id"]

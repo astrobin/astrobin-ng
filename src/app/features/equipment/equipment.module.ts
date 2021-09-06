@@ -15,6 +15,7 @@ import { BrandEditorComponent } from "./components/brand-editor/brand-editor.com
 import { MigrationReviewComponent } from "./pages/migration-review/migration-review.component";
 import { MigrationReviewItemComponent } from "./pages/migration-review-item/migration-review-item.component";
 import { SensorEditorComponent } from "@features/equipment/components/sensor-editor/sensor-editor.component";
+import { SimilarItemsSuggestionComponent } from "./components/similar-items-suggestion/similar-items-suggestion.component";
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { SensorEditorComponent } from "@features/equipment/components/sensor-edi
     BaseEquipmentItemEditorComponent,
     BrandEditorComponent,
     MigrationReviewComponent,
-    MigrationReviewItemComponent
+    MigrationReviewItemComponent,
+    SimilarItemsSuggestionComponent
   ],
   imports: [
     RouterModule.forChild(routes),
@@ -35,4 +37,5 @@ import { SensorEditorComponent } from "@features/equipment/components/sensor-edi
     EffectsModule.forFeature([EquipmentEffects])
   ]
 })
-export class EquipmentModule {}
+export class EquipmentModule {
+}

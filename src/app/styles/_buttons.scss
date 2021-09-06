@@ -24,6 +24,17 @@
     }
   }
 
+  &.btn-link {
+    padding: 0;
+    border: 0;
+    vertical-align: initial;
+
+    &:active,
+    &:focus {
+      box-shadow: none;
+    }
+  }
+
   &.btn-lg {
     padding: 0.5rem 1rem;
     font-size: 1rem;

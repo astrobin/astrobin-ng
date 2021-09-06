@@ -4,7 +4,6 @@ import { LoadingService } from "@shared/services/loading.service";
 import { filter, map, switchMap, take, takeUntil, tap } from "rxjs/operators";
 import {
   EquipmentItemBaseInterface,
-  equipmentItemType,
   EquipmentItemType
 } from "@features/equipment/interfaces/equipment-item-base.interface";
 import { TitleService } from "@shared/services/title/title.service";
@@ -37,6 +36,7 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 import { State } from "@app/store/state";
 import { SensorInterface } from "@features/equipment/interfaces/sensor.interface";
 import { CameraInterface } from "@features/equipment/interfaces/camera.interface";
+import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 
 @Component({
   selector: "astrobin-migration-tool",
@@ -88,7 +88,8 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
     public readonly titleService: TitleService,
     public readonly popNotificationsService: PopNotificationsService,
     public readonly translateService: TranslateService,
-    public readonly windowRefService: WindowRefService
+    public readonly windowRefService: WindowRefService,
+    public readonly equipmentItemService: EquipmentItemService
   ) {
     super(store$);
   }
@@ -240,7 +241,7 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
     this.store$.select(selectEquipmentItem, this.selectedMigrationItem).subscribe(item => {
       this._applyMigration(
         object,
-        [object.pk, MigrationFlag.MIGRATE, equipmentItemType(item), item.id],
+        [object.pk, MigrationFlag.MIGRATE, this.equipmentItemService.getType(item), item.id],
         "ready to migrate"
       );
     });

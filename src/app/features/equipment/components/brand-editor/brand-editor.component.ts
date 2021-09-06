@@ -7,8 +7,6 @@ import { of } from "rxjs";
 import { filter, map, switchMap, take, takeUntil, tap } from "rxjs/operators";
 import { BrandInterface } from "@features/equipment/interfaces/brand.interface";
 import { Store } from "@ngrx/store";
-import { selectBrand } from "@features/equipment/store/equipment.selectors";
-import { LoadBrand } from "@features/equipment/store/equipment.actions";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { State } from "@app/store/state";
 
@@ -72,6 +70,7 @@ export class BrandEditorComponent extends BaseComponentDirective implements OnIn
             field.formControl.valueChanges
               .pipe(
                 takeUntil(this.destroyed$),
+                filter(value => !!value),
                 switchMap(value => {
                   if (value.length >= BrandEditorComponent.MIN_LENGTH_FOR_SUGGESTIONS) {
                     return this.equipmentApiService.findAllBrands(value);
@@ -127,16 +126,6 @@ export class BrandEditorComponent extends BaseComponentDirective implements OnIn
         }
       }
     ];
-  }
-
-  use(event, brandId: BrandInterface["id"]) {
-    event.preventDefault();
-
-    this.store$.dispatch(new LoadBrand({ id: brandId }));
-    this.store$
-      .select(selectBrand, brandId)
-      .pipe(filter(brand => !!brand))
-      .subscribe(brand => this.suggestionSelected.emit(brand));
   }
 
   private _showSimilarBrandsWarning(similarBrands: BrandInterface[]) {

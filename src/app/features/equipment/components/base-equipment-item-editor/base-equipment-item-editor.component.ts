@@ -1,8 +1,11 @@
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { Component, Input, TemplateRef, ViewChild } from "@angular/core";
-import { AbstractControl, FormControl, FormGroup } from "@angular/forms";
+import { Component, EventEmitter, Input, Output, TemplateRef, ViewChild } from "@angular/core";
+import { AbstractControl, FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
-import { EquipmentItemBaseInterface } from "@features/equipment/interfaces/equipment-item-base.interface";
+import {
+  EquipmentItemBaseInterface,
+  EquipmentItemType
+} from "@features/equipment/interfaces/equipment-item-base.interface";
 import { BrandInterface } from "@features/equipment/interfaces/brand.interface";
 import { of } from "rxjs";
 import {
@@ -10,16 +13,21 @@ import {
   CreateBrandSuccess,
   EquipmentActionTypes,
   FindAllBrands,
-  FindAllBrandsSuccess
+  FindAllBrandsSuccess,
+  FindAllEquipmentItemsSuccess,
+  FindSimilarInBrand,
+  LoadBrand
 } from "@features/equipment/store/equipment.actions";
 import { Actions, ofType } from "@ngrx/effects";
-import { filter, map, switchMap, takeUntil, tap } from "rxjs/operators";
+import { filter, map, switchMap, take, takeUntil, tap } from "rxjs/operators";
 import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { State } from "@app/store/state";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
+import { selectBrand } from "@features/equipment/store/equipment.selectors";
+import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 
 @Component({
   selector: "astrobin-base-equipment-item-editor",
@@ -40,8 +48,14 @@ export class BaseEquipmentItemEditorComponent<T extends EquipmentItemBaseInterfa
   @Input()
   returnToSelector: string;
 
+  @Output()
+  suggestionSelected = new EventEmitter<EquipmentItemBaseInterface>();
+
   @ViewChild("brandOptionTemplate")
   brandOptionTemplate: TemplateRef<any>;
+
+  @ViewChild("similarItemsTemplate")
+  similarItemsTemplate: TemplateRef<any>;
 
   brandCreation: {
     inProgress: boolean;
@@ -59,7 +73,8 @@ export class BaseEquipmentItemEditorComponent<T extends EquipmentItemBaseInterfa
     public readonly loadingService: LoadingService,
     public readonly translateService: TranslateService,
     public readonly windowRefService: WindowRefService,
-    public readonly equipmentApiService: EquipmentApiService
+    public readonly equipmentApiService: EquipmentApiService,
+    public readonly equipmentItemService: EquipmentItemService
   ) {
     super(store$);
   }
@@ -145,6 +160,7 @@ export class BaseEquipmentItemEditorComponent<T extends EquipmentItemBaseInterfa
               tap((brand: BrandInterface) => {
                 this.brandCreation.name = brand.name;
                 this._validateBrandInName();
+                this._similarItemSuggestion();
               })
             )
             .subscribe();
@@ -179,6 +195,7 @@ export class BaseEquipmentItemEditorComponent<T extends EquipmentItemBaseInterfa
               filter(value => !!value),
               tap((value: string) => {
                 this._validateBrandInName();
+                this._similarItemSuggestion();
               })
             )
             .subscribe();
@@ -229,6 +246,37 @@ export class BaseEquipmentItemEditorComponent<T extends EquipmentItemBaseInterfa
     );
   }
 
+  private _similarItemSuggestion() {
+    const brandControl: AbstractControl = this.form.get("brand");
+    const nameControl: AbstractControl = this.form.get("name");
+    const nameFieldConfig: FormlyFieldConfig = this.fields.find(field => field.key === "name");
+    const type: EquipmentItemType = this.equipmentItemService.getType(this.form.value);
+
+    if (!type || !brandControl.value || !nameControl.value) {
+      return;
+    }
+
+    this.store$.dispatch(new FindSimilarInBrand({ brand: brandControl.value, q: nameControl.value, type }));
+    this.actions$
+      .pipe(
+        ofType(EquipmentActionTypes.FIND_SIMILAR_IN_BRAND_SUCCESS),
+        map((action: FindAllEquipmentItemsSuccess) => action.payload.items),
+        take(1)
+      )
+      .subscribe(similarItems => {
+        let template = null;
+        let data = null;
+
+        if (similarItems.length > 1) {
+          template = this.similarItemsTemplate;
+          data = similarItems;
+        }
+
+        nameFieldConfig.templateOptions.warningTemplate = template;
+        nameFieldConfig.templateOptions.warningTemplateData = data;
+      });
+  }
+
   private _validateBrandInName() {
     const brandControl: AbstractControl = this.form.get("brand");
     const nameControl: AbstractControl = this.form.get("name");
@@ -240,13 +288,18 @@ export class BaseEquipmentItemEditorComponent<T extends EquipmentItemBaseInterfa
       return;
     }
 
-    if (nameControl.value.toLowerCase().indexOf(this.brandCreation.name.toLowerCase()) > -1) {
-      message = "Careful! The item's name contains the brand's name, and it probably shouldn't.";
-    } else {
-      message = null;
-    }
+    this.store$
+      .select(selectBrand, brandControl.value)
+      .pipe(filter(brand => !!brand))
+      .subscribe(brand => {
+        if (nameControl.value.toLowerCase().indexOf(brand.name.toLowerCase()) > -1) {
+          message = "Careful! The item's name contains the brand's name, and it probably shouldn't.";
+        } else {
+          message = null;
+        }
 
-    brandFieldConfig.templateOptions.warningMessage = message;
-    nameFieldConfig.templateOptions.warningMessage = message;
+        brandFieldConfig.templateOptions.warningMessage = message;
+        nameFieldConfig.templateOptions.warningMessage = message;
+      });
   }
 }
