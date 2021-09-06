@@ -351,8 +351,13 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
       ofType(EquipmentActionTypes.FIND_ALL_EQUIPMENT_ITEMS_SUCCESS),
       map((action: FindAllEquipmentItemsSuccess) => action.payload.items),
       tap(items => {
-        items.forEach(item => this.store$.dispatch(new LoadBrand({ id: item.brand })));
-        return items;
+        const uniqueBrands: BrandInterface["id"][] = [];
+        for (const item of items) {
+          if (uniqueBrands.indexOf(item.brand) === -1) {
+            uniqueBrands.push(item.brand);
+          }
+        }
+        uniqueBrands.forEach(id => this.store$.dispatch(new LoadBrand({ id })));
       }),
       switchMap(items =>
         this.store$.select(selectBrands).pipe(
