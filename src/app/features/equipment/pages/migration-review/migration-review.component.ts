@@ -54,14 +54,19 @@ export class MigrationReviewComponent extends BaseComponentDirective implements 
   getPendingMigrationReview$(): Observable<any[]> {
     return this.legacyGearApi.getPendingMigrationReview().pipe(
       tap(items => {
+        const uniqueUsers = [];
         items.forEach(item => {
-          this.store$.dispatch(new LoadUser({ id: item.migrationFlagModerator }));
-          this.store$
-            .select(selectUser, item.migrationFlagModerator)
-            .pipe(filter(user => !!user))
-            .subscribe(user => {
-              this.store$.dispatch(new LoadUserProfile({ id: user.userProfile }));
-            });
+          if (uniqueUsers.indexOf(item.migrationFlagModerator) === -1) {
+            this.store$.dispatch(new LoadUser({ id: item.migrationFlagModerator }));
+            this.store$
+              .select(selectUser, item.migrationFlagModerator)
+              .pipe(filter(user => !!user))
+              .subscribe(user => {
+                this.store$.dispatch(new LoadUserProfile({ id: user.userProfile }));
+              });
+
+            uniqueUsers.push(item.migrationFlagModerator);
+          }
         });
       })
     );

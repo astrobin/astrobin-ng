@@ -17,7 +17,7 @@ import { CameraDisplayProperty, CameraService } from "@features/equipment/servic
 import { selectBrand, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import { Observable, of } from "rxjs";
 import { SensorInterface } from "@features/equipment/interfaces/sensor.interface";
-import { LoadSensor } from "@features/equipment/store/equipment.actions";
+import { LoadBrand, LoadSensor } from "@features/equipment/store/equipment.actions";
 import { TelescopeDisplayProperty, TelescopeService } from "@features/equipment/services/telescope.service";
 import { SensorDisplayProperty, SensorService } from "@features/equipment/services/sensor.service";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
@@ -69,6 +69,7 @@ export class EquipmentItemSummaryComponent extends BaseComponentDirective implem
   }
 
   ngOnInit() {
+    this.store$.dispatch(new LoadBrand({ id: this.item.brand }));
     this.store$
       .select(selectBrand, this.item.brand)
       .pipe(takeUntil(this.destroyed$))

@@ -29,7 +29,6 @@
             <th scope="col">#</th>
             <th scope="col">Legacy item</th>
             <th scope="col">Migration strategy</th>
-            <th scope="col">Proposed by</th>
             <th scope="col"></th>
           </tr>
         </thead>
@@ -45,9 +44,6 @@
               <span class="help-tooltip" [ngbTooltip]="migrationFlagTooltip(item.migrationFlag)">
                 <fa-icon icon="question-circle"></fa-icon>
               </span>
-            </td>
-            <td>
-              <astrobin-username [user]="userService.getUser$(item.migrationFlagModerator) | async"></astrobin-username>
             </td>
             <td>
               <a
