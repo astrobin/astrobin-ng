@@ -44,7 +44,7 @@ export class BrandEditorComponent extends BaseComponentDirective implements OnIn
   }
 
   ngOnInit(): void {
-    if (this.name.length >= BrandEditorComponent.MIN_LENGTH_FOR_SUGGESTIONS) {
+    if (this.name?.length >= BrandEditorComponent.MIN_LENGTH_FOR_SUGGESTIONS) {
       this.equipmentApiService
         .findAllBrands(this.name)
         .pipe(take(1))

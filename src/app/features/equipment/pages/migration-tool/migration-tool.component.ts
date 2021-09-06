@@ -78,6 +78,12 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
     model: {}
   };
 
+  subCreation: {
+    inProgress: boolean;
+  } = {
+    inProgress: false
+  };
+
   constructor(
     public readonly store$: Store<State>,
     public readonly actions$: Actions,

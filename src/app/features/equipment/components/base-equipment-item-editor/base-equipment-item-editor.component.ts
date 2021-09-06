@@ -48,6 +48,9 @@ export class BaseEquipmentItemEditorComponent<T extends EquipmentItemBaseInterfa
   returnToSelector: string;
 
   @Output()
+  subCreationInProgress = new EventEmitter<boolean>();
+
+  @Output()
   suggestionSelected = new EventEmitter<EquipmentItemBaseInterface>();
 
   @ViewChild("brandOptionTemplate")
@@ -66,6 +69,12 @@ export class BaseEquipmentItemEditorComponent<T extends EquipmentItemBaseInterfa
     name: null
   };
 
+  subCreation: {
+    inProgress: boolean;
+  } = {
+    inProgress: false
+  };
+
   constructor(
     public readonly store$: Store<State>,
     public readonly actions$: Actions,
@@ -80,6 +89,7 @@ export class BaseEquipmentItemEditorComponent<T extends EquipmentItemBaseInterfa
 
   resetBrandCreation() {
     this.brandCreation.inProgress = false;
+    this.subCreationInProgress.emit(false);
     this.brandCreation.form.reset();
   }
 
@@ -139,6 +149,7 @@ export class BaseEquipmentItemEditorComponent<T extends EquipmentItemBaseInterfa
         optionTemplate: this.brandOptionTemplate,
         addTag: () => {
           this.brandCreation.inProgress = true;
+          this.subCreationInProgress.emit(true);
           this.form.get("brand").setValue(null);
           setTimeout(() => {
             this.windowRefService.nativeWindow.document

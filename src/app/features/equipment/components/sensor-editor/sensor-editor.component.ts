@@ -13,7 +13,10 @@ import { EquipmentItemService } from "@features/equipment/services/equipment-ite
 @Component({
   selector: "astrobin-sensor-editor",
   templateUrl: "./sensor-editor.component.html",
-  styleUrls: ["./sensor-editor.component.scss"]
+  styleUrls: [
+    "./sensor-editor.component.scss",
+    "../base-equipment-item-editor/base-equipment-item-editor.component.scss"
+  ]
 })
 export class SensorEditorComponent extends BaseEquipmentItemEditorComponent<SensorInterface>
   implements OnInit, AfterViewInit {

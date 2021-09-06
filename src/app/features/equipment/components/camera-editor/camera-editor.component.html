@@ -7,7 +7,9 @@
     <fa-icon icon="arrow-down"></fa-icon>
   </div>
 
-  <div class="card" id="create-new-brand">
+  <div class="card" id="create-new-brand" [class.disabled-with-backdrop]="sensorCreation.inProgress">
+    <div class="backdrop"></div>
+
     <div class="card-header">
       {{ "Create new brand" | translate }}
     </div>
@@ -46,7 +48,9 @@
     <fa-icon icon="arrow-down"></fa-icon>
   </div>
 
-  <div class="card" id="create-new-sensor">
+  <div class="card" id="create-new-sensor" [class.disabled-with-backdrop]="subCreation.inProgress">
+    <div class="backdrop"></div>
+
     <div class="card-header">
       {{ "Create new sensor" | translate }}
     </div>
@@ -55,6 +59,7 @@
       <astrobin-sensor-editor
         [form]="sensorCreation.form"
         [name]="sensorCreation.name"
+        (subCreationInProgress)="subCreation.inProgress = $event"
       ></astrobin-sensor-editor>
     </div>
 

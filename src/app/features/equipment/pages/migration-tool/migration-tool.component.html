@@ -72,7 +72,7 @@
   <ng-container *ngIf="randomNonMigrated$ | async as objects; else loading">
     <ng-container *ngIf="objects.length > 0; else allDone">
       <ng-container *ngIf="objects[0] as object">
-        <div class="card box-shadow">
+        <div class="card box-shadow" [class.disabled]="migration.inProgress || creation.inProgress">
           <div class="card-header">
             What would you like to do with the following object?
           </div>
@@ -139,7 +139,7 @@
             <fa-icon icon="arrow-down"></fa-icon>
           </div>
 
-          <div class="card" id="select-item-to-migrate-to">
+          <div class="card" [class.disabled]="creation.inProgress" id="select-item-to-migrate-to">
             <div class="card-header">
               Select equipment object to migrate "<strong>{{ object.make || "(no brand)" }}</strong>
               {{ object.name || "(no name)" }}" to, or create a new one
@@ -183,7 +183,9 @@
           </div>
 
           <div class="mt-4 mb-4">
-            <div class="card" id="create-new-item">
+            <div class="card" [class.disabled-with-backdrop]="subCreation.inProgress" id="create-new-item">
+              <div class="backdrop"></div>
+
               <div class="card-header">
                 Create a new item
               </div>
@@ -194,6 +196,7 @@
                   [form]="creation.form"
                   [model]="creation.model"
                   [name]="migration.q"
+                  (subCreationInProgress)="subCreation.inProgress = $event"
                   (suggestionSelected)="itemCreated($event)"
                 ></astrobin-camera-editor>
               </div>

@@ -29,7 +29,10 @@ import { CameraService } from "@features/equipment/services/camera.service";
 @Component({
   selector: "astrobin-camera-editor",
   templateUrl: "./camera-editor.component.html",
-  styleUrls: ["./camera-editor.component.scss"]
+  styleUrls: [
+    "./camera-editor.component.scss",
+    "../base-equipment-item-editor/base-equipment-item-editor.component.scss"
+  ]
 })
 export class CameraEditorComponent extends BaseEquipmentItemEditorComponent<CameraInterface>
   implements OnInit, AfterViewInit {
@@ -120,6 +123,7 @@ export class CameraEditorComponent extends BaseEquipmentItemEditorComponent<Came
           optionTemplate: this.sensorOptionTemplate,
           addTag: () => {
             this.sensorCreation.inProgress = true;
+            this.subCreationInProgress.emit(true);
             this.form.get("sensor").setValue(null);
             setTimeout(() => {
               this.windowRefService.nativeWindow.document
@@ -185,6 +189,7 @@ export class CameraEditorComponent extends BaseEquipmentItemEditorComponent<Came
 
   resetSensorCreation() {
     this.sensorCreation.inProgress = false;
+    this.subCreationInProgress.emit(false);
     this.sensorCreation.form.reset();
   }
 
