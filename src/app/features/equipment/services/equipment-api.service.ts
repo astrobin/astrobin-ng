@@ -218,7 +218,7 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
         .pipe(take(1))
         .subscribe(createdItem => {
           if (item.image && item.image.length > 0) {
-            this._uploadItemImage<CameraInterface>(createdItem.id, (item.image as File[])[0], path)
+            this._uploadItemImage<T>(createdItem.id, (item.image as File[])[0], path)
               .pipe(
                 take(1),
                 catchError(error => {
@@ -237,8 +237,8 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
                   return of(createdItem);
                 })
               )
-              .subscribe(() => {
-                observer.next(createdItem);
+              .subscribe(createdItemWithImage => {
+                observer.next({ ...createdItem, ...createdItemWithImage });
                 observer.complete();
               });
           } else {

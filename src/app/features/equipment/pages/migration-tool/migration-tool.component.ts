@@ -317,6 +317,8 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
   itemCreated(item: EquipmentItemBaseInterface) {
     this.restItemCreation();
 
+    this.store$.dispatch(new LoadBrand({ id: item.brand }));
+
     this.store$
       .select(selectBrand, item.brand)
       .pipe(
