@@ -84,9 +84,7 @@ export class MigrationReviewItemComponent extends BaseComponentDirective impleme
       });
   }
 
-  accept() {
-  }
+  accept() {}
 
-  reject() {
-  }
+  reject() {}
 }
