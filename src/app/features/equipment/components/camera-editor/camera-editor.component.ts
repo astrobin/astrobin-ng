@@ -97,10 +97,11 @@ export class CameraEditorComponent extends BaseEquipmentItemEditorComponent<Came
               [CameraType.DSLR_MIRRORLESS, this.cameraService.humanizeType(CameraType.DSLR_MIRRORLESS)],
               [CameraType.GUIDER_PLANETARY, this.cameraService.humanizeType(CameraType.GUIDER_PLANETARY)],
               [CameraType.VIDEO, this.cameraService.humanizeType(CameraType.VIDEO)],
-              [CameraType.FILM, this.cameraService.humanizeType(CameraType.FILM)]
+              [CameraType.FILM, this.cameraService.humanizeType(CameraType.FILM)],
+              [CameraType.OTHER, this.cameraService.humanizeType(CameraType.OTHER)]
             ].map(item => ({
               value: item[0],
-              label: this.translateService.instant(item[1])
+              label: item[1]
             }))
           )
         }

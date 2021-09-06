@@ -37,6 +37,8 @@ export class CameraService extends BaseService implements EquipmentItemServiceIn
         return this.translateService.instant("General purpose video camera");
       case CameraType.FILM:
         return this.translateService.instant("Film camera");
+      case CameraType.OTHER:
+        return this.translateService.instant("Other");
     }
   }
 

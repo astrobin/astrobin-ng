@@ -7,7 +7,8 @@ export enum CameraType {
   DSLR_MIRRORLESS = "DSLR_MIRRORLESS",
   GUIDER_PLANETARY = "GUIDER_PLANETARY",
   VIDEO = "VIDEO",
-  FILM = "FILM"
+  FILM = "FILM",
+  OTHER = "OTHER"
 }
 
 export interface CameraInterface extends EquipmentItemBaseInterface {
