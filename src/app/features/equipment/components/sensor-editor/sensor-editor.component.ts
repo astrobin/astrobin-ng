@@ -223,5 +223,7 @@ export class SensorEditorComponent extends BaseEquipmentItemEditorComponent<Sens
       },
       this._getImageField()
     ];
+
+    super.ngAfterViewInit();
   }
 }

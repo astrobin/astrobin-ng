@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from "@angular/core";
+import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from "@angular/core";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { FormControl, FormGroup } from "@angular/forms";
 import { TranslateService } from "@ngx-translate/core";
@@ -9,13 +9,14 @@ import { BrandInterface } from "@features/equipment/interfaces/brand.interface";
 import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { State } from "@app/store/state";
+import { WindowRefService } from "@shared/services/window-ref.service";
 
 @Component({
   selector: "astrobin-brand-editor",
   templateUrl: "./brand-editor.component.html",
   styleUrls: ["./brand-editor.component.scss"]
 })
-export class BrandEditorComponent extends BaseComponentDirective implements OnInit {
+export class BrandEditorComponent extends BaseComponentDirective implements OnInit, AfterViewInit {
   static MIN_LENGTH_FOR_SUGGESTIONS = 3;
 
   fields: FormlyFieldConfig[];
@@ -38,7 +39,8 @@ export class BrandEditorComponent extends BaseComponentDirective implements OnIn
   constructor(
     public readonly store$: Store<State>,
     public readonly translateService: TranslateService,
-    public readonly equipmentApiService: EquipmentApiService
+    public readonly equipmentApiService: EquipmentApiService,
+    public readonly windowRefService: WindowRefService
   ) {
     super(store$);
   }
@@ -126,6 +128,13 @@ export class BrandEditorComponent extends BaseComponentDirective implements OnIn
         }
       }
     ];
+  }
+
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      const document = this.windowRefService.nativeWindow.document;
+      (document.querySelector("#brand-field-name") as HTMLElement).focus();
+    }, 1);
   }
 
   private _showSimilarBrandsWarning(similarBrands: BrandInterface[]) {

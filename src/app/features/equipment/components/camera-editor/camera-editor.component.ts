@@ -185,6 +185,8 @@ export class CameraEditorComponent extends BaseEquipmentItemEditorComponent<Came
       },
       this._getImageField()
     ];
+
+    super.ngAfterViewInit();
   }
 
   resetSensorCreation() {

@@ -1,5 +1,5 @@
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { Component, EventEmitter, Input, Output, TemplateRef, ViewChild } from "@angular/core";
+import { AfterViewInit, Component, EventEmitter, Input, Output, TemplateRef, ViewChild } from "@angular/core";
 import { AbstractControl, FormControl, FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import {
@@ -32,7 +32,8 @@ import { EquipmentItemService } from "@features/equipment/services/equipment-ite
   selector: "astrobin-base-equipment-item-editor",
   template: ""
 })
-export class BaseEquipmentItemEditorComponent<T extends EquipmentItemBaseInterface> extends BaseComponentDirective {
+export class BaseEquipmentItemEditorComponent<T extends EquipmentItemBaseInterface> extends BaseComponentDirective
+  implements AfterViewInit {
   fields: FormlyFieldConfig[];
 
   @Input()
@@ -85,6 +86,13 @@ export class BaseEquipmentItemEditorComponent<T extends EquipmentItemBaseInterfa
     public readonly equipmentItemService: EquipmentItemService
   ) {
     super(store$);
+  }
+
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      const document = this.windowRefService.nativeWindow.document;
+      (document.querySelector("#equipment-item-field-brand .ng-input input") as HTMLElement).focus();
+    }, 1);
   }
 
   resetBrandCreation() {

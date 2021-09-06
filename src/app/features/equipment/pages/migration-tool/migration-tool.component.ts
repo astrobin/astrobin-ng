@@ -240,9 +240,9 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
   beginMigration(object: any) {
     this.migration.inProgress = true;
     setTimeout(() => {
-      this.windowRefService.nativeWindow.document
-        .getElementById("select-item-to-migrate-to")
-        .scrollIntoView({ behavior: "smooth" });
+      const document = this.windowRefService.nativeWindow.document;
+      document.getElementById("select-item-to-migrate-to").scrollIntoView({ behavior: "smooth" });
+      (document.querySelector("#equipment-item-field .ng-input input") as HTMLElement).focus();
     }, 1);
   }
 
