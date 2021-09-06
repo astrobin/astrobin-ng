@@ -104,7 +104,7 @@ export class EquipmentEffects {
     this.actions$.pipe(
       ofType(EquipmentActionTypes.LOAD_SENSOR),
       map((action: LoadSensor) => action.payload.id),
-      switchMap(id =>
+      mergeMap(id =>
         this.utilsService
           .getFromStoreOrApiById<EquipmentItemBaseInterface>(
             this.store$,
