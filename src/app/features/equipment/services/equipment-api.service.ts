@@ -82,6 +82,16 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     );
   }
 
+  getByNameAndType(
+    name: EquipmentItemBaseInterface["name"],
+    type: EquipmentItemType
+  ): Observable<EquipmentItemBaseInterface | null> {
+    const path = EquipmentItemType[type].toLowerCase();
+    return this.http
+      .get<PaginatedApiResultInterface<EquipmentItemBaseInterface>>(`${this.configUrl}/${path}/?name=${name}`)
+      .pipe(map(response => (response.count > 0 ? response.results[0] : null)));
+  }
+
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // BRAND API
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

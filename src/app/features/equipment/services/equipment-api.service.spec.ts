@@ -144,6 +144,45 @@ describe("EquipmentApiService", () => {
     });
   });
 
+  // TODO: complete
+  describe("getByNameAndType", () => {
+    it("should work with sensor", () => {
+      const item = SensorGenerator.sensor();
+
+      service.getByNameAndType(item.name, EquipmentItemType.SENSOR).subscribe(response => {
+        expect(response.id).toEqual(item.id);
+      });
+
+      const req = httpMock.expectOne(`${service.configUrl}/sensor/?name=${item.name}`);
+      expect(req.request.method).toBe("GET");
+      req.flush(item);
+    });
+
+    it("should work with camera", () => {
+      const item = CameraGenerator.camera();
+
+      service.getByNameAndType(item.name, EquipmentItemType.CAMERA).subscribe(response => {
+        expect(response.id).toEqual(item.id);
+      });
+
+      const req = httpMock.expectOne(`${service.configUrl}/camera/?name=${item.name}`);
+      expect(req.request.method).toBe("GET");
+      req.flush(item);
+    });
+
+    it("should work with telescope", () => {
+      const item = TelescopeGenerator.telescope();
+
+      service.getByNameAndType(item.name, EquipmentItemType.TELESCOPE).subscribe(response => {
+        expect(response.id).toEqual(item.id);
+      });
+
+      const req = httpMock.expectOne(`${service.configUrl}/telescope/?name=${item.name}`);
+      expect(req.request.method).toBe("GET");
+      req.flush(item);
+    });
+  });
+
   it("getCamera should work", () => {
     const camera = CameraGenerator.camera();
 

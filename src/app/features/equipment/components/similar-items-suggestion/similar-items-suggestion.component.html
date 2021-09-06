@@ -1,4 +1,4 @@
-{{ "Did you mean any of these similar items?" | translate }}
+{{ "We found the following similar items. Click the correct one to use it, or ignore this message." | translate }}
 <span *ngFor="let item of items; let isLast = last">
   <button class="btn btn-link" (click)="itemSelected.emit(item)">
     {{ item.name }}

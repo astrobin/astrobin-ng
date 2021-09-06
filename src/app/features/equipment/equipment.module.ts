@@ -16,6 +16,7 @@ import { MigrationReviewComponent } from "./pages/migration-review/migration-rev
 import { MigrationReviewItemComponent } from "./pages/migration-review-item/migration-review-item.component";
 import { SensorEditorComponent } from "@features/equipment/components/sensor-editor/sensor-editor.component";
 import { SimilarItemsSuggestionComponent } from "./components/similar-items-suggestion/similar-items-suggestion.component";
+import { ConfirmItemCreationModalComponent } from './components/confirm-item-creation-modal/confirm-item-creation-modal.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import { SimilarItemsSuggestionComponent } from "./components/similar-items-sugg
     BrandEditorComponent,
     MigrationReviewComponent,
     MigrationReviewItemComponent,
-    SimilarItemsSuggestionComponent
+    SimilarItemsSuggestionComponent,
+    ConfirmItemCreationModalComponent
   ],
   imports: [
     RouterModule.forChild(routes),
@@ -37,5 +39,4 @@ import { SimilarItemsSuggestionComponent } from "./components/similar-items-sugg
     EffectsModule.forFeature([EquipmentEffects])
   ]
 })
-export class EquipmentModule {
-}
+export class EquipmentModule {}

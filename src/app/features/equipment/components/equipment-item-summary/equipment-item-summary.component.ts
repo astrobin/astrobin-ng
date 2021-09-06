@@ -33,6 +33,9 @@ export class EquipmentItemSummaryComponent extends BaseComponentDirective implem
   @Input()
   item: EquipmentItemBaseInterface;
 
+  @Input()
+  showImage = true;
+
   brand: BrandInterface;
 
   constructor(

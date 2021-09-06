@@ -12,7 +12,7 @@ export class CameraGenerator {
       brand: source.brand || BrandGenerator.brand().id,
       name: source.name || "Test camera",
       image: source.image || "https://cdn.astrobin.com/images/foo.jpg",
-      type: source.type || CameraType.DSLR,
+      type: source.type || CameraType.DSLR_MIRRORLESS,
       sensor: source.sensor || SensorGenerator.sensor().id,
       cooled: source.cooled !== undefined ? source.cooled : true,
       maxCooling: source.maxCooling !== undefined ? source.maxCooling : 50,

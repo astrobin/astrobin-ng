@@ -1,6 +1,6 @@
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Component, EventEmitter, Input, Output, TemplateRef, ViewChild } from "@angular/core";
-import { AbstractControl, FormGroup } from "@angular/forms";
+import { AbstractControl, FormControl, FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import {
   EquipmentItemBaseInterface,
@@ -15,8 +15,7 @@ import {
   FindAllBrands,
   FindAllBrandsSuccess,
   FindAllEquipmentItemsSuccess,
-  FindSimilarInBrand,
-  LoadBrand
+  FindSimilarInBrand
 } from "@features/equipment/store/equipment.actions";
 import { Actions, ofType } from "@ngrx/effects";
 import { filter, map, switchMap, take, takeUntil, tap } from "rxjs/operators";
@@ -154,6 +153,11 @@ export class BaseEquipmentItemEditorComponent<T extends EquipmentItemBaseInterfa
             .pipe(
               takeUntil(this.destroyed$),
               filter(value => !!value),
+              tap(value => {
+                if (this.form.get("name").value) {
+                  this.form.get("name").markAsTouched();
+                }
+              }),
               switchMap((value: BrandInterface["id"]) => {
                 return this.equipmentApiService.getBrand(value);
               }),
@@ -199,6 +203,15 @@ export class BaseEquipmentItemEditorComponent<T extends EquipmentItemBaseInterfa
               })
             )
             .subscribe();
+        }
+      },
+      asyncValidators: {
+        uniqueForBrand: {
+          expression: (control: FormControl) => {
+            const type: EquipmentItemType = this.equipmentItemService.getType(this.form.value);
+            return this.equipmentApiService.getByNameAndType(control.value, type).pipe(map(item => !item));
+          },
+          message: this.translateService.instant("An item of the same type and the same name already exists.")
         }
       }
     };

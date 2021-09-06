@@ -24,7 +24,7 @@ import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { All } from "@app/store/actions/app.actions";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
-import { map, mergeMap, switchMap } from "rxjs/operators";
+import { filter, map, mergeMap, switchMap } from "rxjs/operators";
 import { selectBrand, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import { SensorInterface } from "@features/equipment/interfaces/sensor.interface";
 import { BrandInterface } from "@features/equipment/interfaces/brand.interface";
@@ -46,7 +46,10 @@ export class EquipmentEffects {
             this.equipmentApiService.getBrand,
             this.equipmentApiService
           )
-          .pipe(map(brand => new LoadBrandSuccess({ brand })))
+          .pipe(
+            filter(brand => !!brand),
+            map(brand => new LoadBrandSuccess({ brand }))
+          )
       )
     )
   );

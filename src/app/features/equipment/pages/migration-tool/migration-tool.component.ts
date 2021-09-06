@@ -37,6 +37,8 @@ import { State } from "@app/store/state";
 import { SensorInterface } from "@features/equipment/interfaces/sensor.interface";
 import { CameraInterface } from "@features/equipment/interfaces/camera.interface";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
+import { ConfirmItemCreationModalComponent } from "@features/equipment/components/confirm-item-creation-modal/confirm-item-creation-modal.component";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
   selector: "astrobin-migration-tool",
@@ -89,7 +91,8 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
     public readonly popNotificationsService: PopNotificationsService,
     public readonly translateService: TranslateService,
     public readonly windowRefService: WindowRefService,
-    public readonly equipmentItemService: EquipmentItemService
+    public readonly equipmentItemService: EquipmentItemService,
+    public readonly modalService: NgbModal
   ) {
     super(store$);
   }
@@ -262,34 +265,43 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
       EquipmentItemType[this.activatedRoute.snapshot.paramMap.get("itemType").toUpperCase()];
     const data: EquipmentItemBaseInterface = this.creation.form.value;
 
-    let action: Action;
-    let actionSuccessType: EquipmentActionTypes;
+    const modalRef = this.modalService.open(ConfirmItemCreationModalComponent);
+    modalRef.componentInstance.item = data;
 
-    switch (type) {
-      case EquipmentItemType.SENSOR:
-        action = new CreateSensor({ sensor: data as SensorInterface });
-        actionSuccessType = EquipmentActionTypes.CREATE_SENSOR_SUCCESS;
-        break;
-      case EquipmentItemType.CAMERA:
-        action = new CreateCamera({ camera: data as CameraInterface });
-        actionSuccessType = EquipmentActionTypes.CREATE_CAMERA_SUCCESS;
-        break;
-    }
+    modalRef.closed.pipe(take(1)).subscribe((item: EquipmentItemBaseInterface) => {
+      if (item.id === undefined) {
+        let action: Action;
+        let actionSuccessType: EquipmentActionTypes;
 
-    if (action) {
-      this.loadingService.setLoading(true);
-      this.store$.dispatch(action);
-      this.actions$
-        .pipe(
-          ofType(actionSuccessType),
-          take(1),
-          map((result: { payload: EquipmentItemCreationSuccessPayloadInterface }) => result.payload.item)
-        )
-        .subscribe((item: EquipmentItemBaseInterface) => {
-          this.itemCreated(item);
-          this.loadingService.setLoading(false);
-        });
-    }
+        switch (type) {
+          case EquipmentItemType.SENSOR:
+            action = new CreateSensor({ sensor: item as SensorInterface });
+            actionSuccessType = EquipmentActionTypes.CREATE_SENSOR_SUCCESS;
+            break;
+          case EquipmentItemType.CAMERA:
+            action = new CreateCamera({ camera: item as CameraInterface });
+            actionSuccessType = EquipmentActionTypes.CREATE_CAMERA_SUCCESS;
+            break;
+        }
+
+        if (action) {
+          this.loadingService.setLoading(true);
+          this.store$.dispatch(action);
+          this.actions$
+            .pipe(
+              ofType(actionSuccessType),
+              take(1),
+              map((result: { payload: EquipmentItemCreationSuccessPayloadInterface }) => result.payload.item)
+            )
+            .subscribe((createdItem: EquipmentItemBaseInterface) => {
+              this.itemCreated(createdItem);
+              this.loadingService.setLoading(false);
+            });
+        }
+      } else {
+        this.itemCreated(item);
+      }
+    });
   }
 
   itemCreated(item: EquipmentItemBaseInterface) {
@@ -335,6 +347,7 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
       })
     );
     field.templateOptions.options = this.actions$.pipe(
+      takeUntil(this.destroyed$),
       ofType(EquipmentActionTypes.FIND_ALL_EQUIPMENT_ITEMS_SUCCESS),
       map((action: FindAllEquipmentItemsSuccess) => action.payload.items),
       tap(items => {
@@ -344,6 +357,15 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
       switchMap(items =>
         this.store$.select(selectBrands).pipe(
           filter(brands => brands && brands.length > 0),
+          filter(brands => {
+            for (const item of items) {
+              if (!brands.find(brand => brand.id === item.brand)) {
+                return false;
+              }
+            }
+
+            return true;
+          }),
           map(brands => ({
             brands,
             items
