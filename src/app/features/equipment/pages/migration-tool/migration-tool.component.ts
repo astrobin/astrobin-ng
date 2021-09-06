@@ -168,12 +168,10 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
     const itemType = this.activatedRoute.snapshot.paramMap.get("itemType");
     let api;
 
+    // TODO: complete
     switch (itemType.toLowerCase()) {
       case EquipmentItemType.CAMERA.toLowerCase():
         api = this.legacyCameraApi;
-        break;
-      case EquipmentItemType.TELESCOPE.toLowerCase():
-        api = this.legacyTelescopeApi;
         break;
       default:
         this.popNotificationsService.error("Wrong item type requested.");
