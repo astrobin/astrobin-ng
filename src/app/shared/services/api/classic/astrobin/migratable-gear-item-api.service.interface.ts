@@ -20,10 +20,18 @@ export interface MigratableGearItemApiServiceInterface {
 
   lockForMigration?(gearId: number): Observable<void>;
 
+  releaseLockForMigration?(gearId: number): Observable<void>;
+
+  lockForMigrationReview?(gearId: number): Observable<void>;
+
+  releaseLockForMigrationReview?(gearId: number): Observable<void>;
+
   setMigration?(
     gearId: number,
     migrationFlag: MigrationFlag,
     itemType?: EquipmentItemType,
     itemId?: EquipmentItemBaseInterface["id"]
   ): void;
+
+  acceptMigration?(gearId: number): Observable<any>;
 }

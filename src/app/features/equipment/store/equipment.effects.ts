@@ -1,6 +1,8 @@
 import { Injectable } from "@angular/core";
 import { Observable, of } from "rxjs";
 import {
+  ApproveEquipmentItem,
+  ApproveEquipmentItemSuccess,
   CreateBrand,
   CreateBrandSuccess,
   CreateCamera,
@@ -17,7 +19,9 @@ import {
   LoadBrand,
   LoadBrandSuccess,
   LoadSensor,
-  LoadSensorSuccess
+  LoadSensorSuccess,
+  RejectEquipmentItem,
+  RejectEquipmentItemSuccess
 } from "@features/equipment/store/equipment.actions";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
@@ -96,6 +100,30 @@ export class EquipmentEffects {
         this.equipmentApiService
           .findSimilarInBrand(payload.brand, payload.q, payload.type)
           .pipe(map(items => new FindSimilarInBrandSuccess({ items })))
+      )
+    )
+  );
+
+  ApproveEquipmentItem: Observable<ApproveEquipmentItemSuccess> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(EquipmentActionTypes.APPROVE_EQUIPMENT_ITEM),
+      map((action: ApproveEquipmentItem) => action.payload),
+      mergeMap(payload =>
+        this.equipmentApiService
+          .approveEquipmentItem(payload.item)
+          .pipe(map(item => new ApproveEquipmentItemSuccess({ item })))
+      )
+    )
+  );
+
+  RejectEquipmentItem: Observable<RejectEquipmentItemSuccess> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(EquipmentActionTypes.REJECT_EQUIPMENT_ITEM),
+      map((action: RejectEquipmentItem) => action.payload),
+      mergeMap(payload =>
+        this.equipmentApiService
+          .rejectEquipmentItem(payload.item, payload.comment)
+          .pipe(map(item => new RejectEquipmentItemSuccess({ item })))
       )
     )
   );

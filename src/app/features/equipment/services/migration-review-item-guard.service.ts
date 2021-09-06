@@ -43,7 +43,16 @@ export class MigrationReviewItemGuardService extends BaseService implements CanA
     return new Observable<boolean>(observer => {
       combineLatest([this.store$.select(selectCurrentUser).pipe(map(user => user.id)), this.legacyGearApi.get(id)])
         .pipe(
-          map(result => result[0] !== result[1].migrationFlagModerator && !result[1].migrationFlagReviewerLock),
+          map(result => {
+            const userId = result[0];
+            const item = result[1];
+
+            return (
+              item.migrationFlagModerator !== userId &&
+              !item.migrationFlagReviewer &&
+              (!item.migrationFlagReviewerLock || item.migrationFlagReviewerLock === userId)
+            );
+          }),
           catchError(error => {
             if (error.status === 404) {
               onError(observer, "/404");

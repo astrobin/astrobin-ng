@@ -24,6 +24,10 @@ export enum EquipmentActionTypes {
   FIND_ALL_EQUIPMENT_ITEMS_SUCCESS = "[Equipment] Find all equipment success",
   FIND_SIMILAR_IN_BRAND = "[Equipment] Find similar in brand",
   FIND_SIMILAR_IN_BRAND_SUCCESS = "[Equipment] Find similar in brand success",
+  APPROVE_EQUIPMENT_ITEM = "[Equipment] Approve item",
+  APPROVE_EQUIPMENT_ITEM_SUCCESS = "[Equipment] Approve item success",
+  REJECT_EQUIPMENT_ITEM = "[Equipment] Reject item",
+  REJECT_EQUIPMENT_ITEM_SUCCESS = "[Equipment] Reject item success",
   CREATE_SENSOR = "[Equipment] Create sensor",
   CREATE_SENSOR_SUCCESS = "[Equipment] Create sensor success",
   LOAD_SENSOR = "[Equipment] Load sensor",
@@ -92,6 +96,30 @@ export class FindSimilarInBrandSuccess implements PayloadActionInterface {
   constructor(public payload: { items: EquipmentItemBaseInterface[] }) {}
 }
 
+export class ApproveEquipmentItem implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.APPROVE_EQUIPMENT_ITEM;
+
+  constructor(public payload: { item: EquipmentItemBaseInterface }) {}
+}
+
+export class ApproveEquipmentItemSuccess implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.APPROVE_EQUIPMENT_ITEM_SUCCESS;
+
+  constructor(public payload: { item: EquipmentItemBaseInterface }) {}
+}
+
+export class RejectEquipmentItem implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.REJECT_EQUIPMENT_ITEM;
+
+  constructor(public payload: { item: EquipmentItemBaseInterface; comment: string }) {}
+}
+
+export class RejectEquipmentItemSuccess implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.REJECT_EQUIPMENT_ITEM_SUCCESS;
+
+  constructor(public payload: { item: EquipmentItemBaseInterface }) {}
+}
+
 export class CreateSensor implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.CREATE_SENSOR;
 
@@ -139,6 +167,10 @@ export type EquipmentActions =
   | FindAllEquipmentItemsSuccess
   | FindSimilarInBrand
   | FindSimilarInBrandSuccess
+  | ApproveEquipmentItem
+  | ApproveEquipmentItemSuccess
+  | RejectEquipmentItem
+  | RejectEquipmentItemSuccess
   | CreateSensor
   | CreateSensorSuccess
   | LoadSensor

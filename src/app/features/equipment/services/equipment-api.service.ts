@@ -18,6 +18,7 @@ import { SensorInterface } from "@features/equipment/interfaces/sensor.interface
 import { TelescopeInterface } from "@features/equipment/interfaces/telescope.interface";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { TranslateService } from "@ngx-translate/core";
+import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 
 @Injectable({
   providedIn: "root"
@@ -30,7 +31,8 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     public readonly http: HttpClient,
     public readonly commonApiService: CommonApiService,
     public readonly popNotificationService: PopNotificationsService,
-    public readonly translateService: TranslateService
+    public readonly translateService: TranslateService,
+    public readonly equipmentItemService: EquipmentItemService
   ) {
     super(loadingService);
   }
@@ -90,6 +92,20 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     return this.http
       .get<PaginatedApiResultInterface<EquipmentItemBaseInterface>>(`${this.configUrl}/${path}/?name=${name}`)
       .pipe(map(response => (response.count > 0 ? response.results[0] : null)));
+  }
+
+  approveEquipmentItem(item: EquipmentItemBaseInterface): Observable<EquipmentItemBaseInterface> {
+    const type = this.equipmentItemService.getType(item);
+    const path = EquipmentItemType[type].toLowerCase();
+
+    return this.http.put<EquipmentItemBaseInterface>(`${this.configUrl}/${path}/${item.id}/approve/`, {});
+  }
+
+  rejectEquipmentItem(item: EquipmentItemBaseInterface, comment: string): Observable<EquipmentItemBaseInterface> {
+    const type = this.equipmentItemService.getType(item);
+    const path = EquipmentItemType[type].toLowerCase();
+
+    return this.http.put<EquipmentItemBaseInterface>(`${this.configUrl}/${path}/${item.id}/reject/`, { comment });
   }
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

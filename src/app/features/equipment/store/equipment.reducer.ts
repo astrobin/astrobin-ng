@@ -41,6 +41,8 @@ export function reducer(state = initialEquipmentState, action: EquipmentActions)
       };
     }
 
+    case EquipmentActionTypes.APPROVE_EQUIPMENT_ITEM_SUCCESS:
+    case EquipmentActionTypes.REJECT_EQUIPMENT_ITEM_SUCCESS:
     case EquipmentActionTypes.CREATE_SENSOR_SUCCESS:
     case EquipmentActionTypes.CREATE_CAMERA_SUCCESS: {
       return {

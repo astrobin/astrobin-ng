@@ -1,6 +1,6 @@
 <div class="page">
   <ng-container *ngIf="user$ | async as user">
-    <ng-container *ngIf="item && user; else loading">
+    <ng-container *ngIf="legacyItem && user; else loading">
       <h1>{{ title }}</h1>
 
       <div class="card box-shadow">
@@ -11,7 +11,7 @@
         <div class="card-body">
           <dl>
             <dt>Proposed strategy:</dt>
-            <dd>{{ item.migrationFlag }}</dd>
+            <dd>{{ legacyItem.migrationFlag }}</dd>
 
             <dt>Proposed by:</dt>
             <dd>
@@ -19,7 +19,7 @@
             </dd>
 
             <dt>Datetime:</dt>
-            <dd>{{ item.migrationFlagTimestamp | localDate }}</dd>
+            <dd>{{ legacyItem.migrationFlagTimestamp | localDate }}</dd>
           </dl>
         </div>
 
@@ -28,7 +28,7 @@
         </div>
       </div>
 
-      <ng-container *ngIf="item.migrationFlag === MigrationFlag.MIGRATE">
+      <ng-container *ngIf="legacyItem.migrationFlag === MigrationFlag.MIGRATE">
         <div class="mt-4 mb-4 text-center">
           <fa-icon icon="arrow-down"></fa-icon>
         </div>
@@ -63,10 +63,10 @@
   </button>
 
   <button class="btn btn-sm-block btn-danger" [class.loading]="loadingService.isLoading()" (click)="reject()">
-    Reject
+    Reject...
   </button>
 
-  <a class="btn btn-sm-block btn-secondary" [class.loading]="loadingService.isLoading()" routerLink="..">
-    Back
-  </a>
+  <button class="btn btn-sm-block btn-secondary" [class.loading]="loadingService.isLoading()" (click)="exit()">
+    Cancel
+  </button>
 </ng-template>

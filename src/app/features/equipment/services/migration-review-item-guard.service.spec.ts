@@ -76,6 +76,26 @@ describe("MigrationReviewItemGuardService", () => {
     });
   });
 
+  it("should not pass if the item is already reviewed", done => {
+    const state = { ...initialState };
+    state.auth.user = UserGenerator.user();
+    store.setState(state);
+
+    const item = {
+      migrationFlagModerator: 999,
+      migrationFlagReviewer: 1000
+    };
+
+    route = TestBed.inject(ActivatedRouteSnapshot);
+    jest.spyOn(route, "params", "get").mockReturnValue({ itemId: 1 });
+    jest.spyOn(service.legacyGearApi, "get").mockReturnValue(of(item));
+
+    service.canActivate(route, { url: "/foo" } as RouterStateSnapshot).subscribe(result => {
+      expect(result).toBe(false);
+      done();
+    });
+  });
+
   it("should pass if the user is not the moderator and the item is not locked for review", done => {
     const state = { ...initialState };
     state.auth.user = UserGenerator.user();
@@ -83,6 +103,26 @@ describe("MigrationReviewItemGuardService", () => {
 
     const item = {
       migrationFlagModerator: 999
+    };
+
+    route = TestBed.inject(ActivatedRouteSnapshot);
+    jest.spyOn(route, "params", "get").mockReturnValue({ itemId: 1 });
+    jest.spyOn(service.legacyGearApi, "get").mockReturnValue(of(item));
+
+    service.canActivate(route, { url: "/foo" } as RouterStateSnapshot).subscribe(result => {
+      expect(result).toBe(true);
+      done();
+    });
+  });
+
+  it("should pass if the user is not the moderator and the item is locked for review by the user", done => {
+    const state = { ...initialState };
+    state.auth.user = UserGenerator.user();
+    store.setState(state);
+
+    const item = {
+      migrationFlagModerator: 999,
+      migrationFlagReviewerLock: state.auth.user.id
     };
 
     route = TestBed.inject(ActivatedRouteSnapshot);
