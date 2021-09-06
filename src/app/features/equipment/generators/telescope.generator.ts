@@ -11,7 +11,7 @@ export class TelescopeGenerator {
       brand: source.brand || BrandGenerator.brand().id,
       name: source.name || "Test telescope",
       image: source.image || "https://cdn.astrobin.com/images/foo.jpg",
-      type: source.type || TelescopeType.REFRACTORS_ACHROMATIC,
+      type: source.type || TelescopeType.REFRACTOR_ACHROMATIC,
       minAperture: source.minAperture || 90,
       maxAperture: source.maxAperture || 90,
       minFocalLength: source.minFocalLength || 450,

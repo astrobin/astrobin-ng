@@ -5,7 +5,7 @@ import { Store } from "@ngrx/store";
 import { BaseEquipmentItemEditorComponent } from "@features/equipment/components/base-equipment-item-editor/base-equipment-item-editor.component";
 import { LoadingService } from "@shared/services/loading.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
-import { CameraInterface } from "@features/equipment/interfaces/camera.interface";
+import { CameraInterface, CameraType } from "@features/equipment/interfaces/camera.interface";
 import { State } from "@app/store/state";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import { FormGroup } from "@angular/forms";
@@ -24,6 +24,7 @@ import { filter, map, switchMap, take, takeUntil, tap } from "rxjs/operators";
 import { selectBrand, selectBrands } from "@features/equipment/store/equipment.selectors";
 import { BrandInterface } from "@features/equipment/interfaces/brand.interface";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
+import { CameraService } from "@features/equipment/services/camera.service";
 
 @Component({
   selector: "astrobin-camera-editor",
@@ -52,7 +53,8 @@ export class CameraEditorComponent extends BaseEquipmentItemEditorComponent<Came
     public readonly translateService: TranslateService,
     public readonly windowRefService: WindowRefService,
     public readonly equipmentApiService: EquipmentApiService,
-    public readonly equipmentItemService: EquipmentItemService
+    public readonly equipmentItemService: EquipmentItemService,
+    public readonly cameraService: CameraService
   ) {
     super(
       store$,
@@ -88,11 +90,11 @@ export class CameraEditorComponent extends BaseEquipmentItemEditorComponent<Came
           clearable: true,
           options: of(
             [
-              ["DEDICATED_DEEP_SKY", "Dedicated deep-sky camera"],
-              ["DSLR_MIRRORLESS", "General purpose DSLR or mirrorless camera"],
-              ["GUIDER_PLANETARY", "Guider/Planetary camera"],
-              ["VIDEO", "General purpose video camera"],
-              ["FILM", "Film camera"]
+              [CameraType.DEDICATED_DEEP_SKY, this.cameraService.humanizeType(CameraType.DEDICATED_DEEP_SKY)],
+              [CameraType.DSLR_MIRRORLESS, this.cameraService.humanizeType(CameraType.DSLR_MIRRORLESS)],
+              [CameraType.GUIDER_PLANETARY, this.cameraService.humanizeType(CameraType.GUIDER_PLANETARY)],
+              [CameraType.VIDEO, this.cameraService.humanizeType(CameraType.VIDEO)],
+              [CameraType.FILM, this.cameraService.humanizeType(CameraType.FILM)]
             ].map(item => ({
               value: item[0],
               label: this.translateService.instant(item[1])

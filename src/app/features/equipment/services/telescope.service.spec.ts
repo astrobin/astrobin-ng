@@ -19,9 +19,9 @@ describe("TelescopeService", () => {
 
   describe("getPrintableProperty", () => {
     it("should work for 'type'", () => {
-      const telescope = TelescopeGenerator.telescope({ type: TelescopeType.REFRACTORS_ACHROMATIC });
+      const telescope = TelescopeGenerator.telescope({ type: TelescopeType.REFRACTOR_ACHROMATIC });
       expect(service.getPrintableProperty(telescope, TelescopeDisplayProperty.TYPE)).toEqual(
-        TelescopeType.REFRACTORS_ACHROMATIC
+        TelescopeType.REFRACTOR_ACHROMATIC
       );
     });
 
@@ -35,10 +35,10 @@ describe("TelescopeService", () => {
 
     it("should work for 'focalLength'", () => {
       let telescope = TelescopeGenerator.telescope({ minFocalLength: 50, maxFocalLength: 200 });
-      expect(service.getPrintableProperty(telescope, TelescopeDisplayProperty.FOCAL_LENGHT)).toEqual("50 - 200 mm");
+      expect(service.getPrintableProperty(telescope, TelescopeDisplayProperty.FOCAL_LENGTH)).toEqual("50 - 200 mm");
 
       telescope = TelescopeGenerator.telescope({ minFocalLength: 50, maxFocalLength: 50 });
-      expect(service.getPrintableProperty(telescope, TelescopeDisplayProperty.FOCAL_LENGHT)).toEqual("50 mm");
+      expect(service.getPrintableProperty(telescope, TelescopeDisplayProperty.FOCAL_LENGTH)).toEqual("50 mm");
     });
 
     it("should work for 'weight'", () => {

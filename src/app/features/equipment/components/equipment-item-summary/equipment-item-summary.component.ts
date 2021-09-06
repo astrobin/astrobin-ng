@@ -130,7 +130,7 @@ export class EquipmentItemSummaryComponent extends BaseComponentDirective implem
       },
       {
         name: this.translateService.instant("Type"),
-        value: item.type
+        value: this.cameraService.getPrintableProperty(item, CameraDisplayProperty.TYPE)
       },
       {
         name: this.translateService.instant("Cooled"),
@@ -188,7 +188,7 @@ export class EquipmentItemSummaryComponent extends BaseComponentDirective implem
       },
       {
         name: this.translateService.instant("Focal length"),
-        value: this.telescopeService.getPrintableProperty(item, TelescopeDisplayProperty.FOCAL_LENGHT)
+        value: this.telescopeService.getPrintableProperty(item, TelescopeDisplayProperty.FOCAL_LENGTH)
       },
       {
         name: this.translateService.instant("Weight"),
