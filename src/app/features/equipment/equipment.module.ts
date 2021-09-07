@@ -41,5 +41,4 @@ import { RejectMigrationModalComponent } from "./components/reject-migration-mod
     EffectsModule.forFeature([EquipmentEffects])
   ]
 })
-export class EquipmentModule {
-}
+export class EquipmentModule {}
