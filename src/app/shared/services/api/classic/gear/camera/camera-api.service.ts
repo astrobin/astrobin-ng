@@ -16,7 +16,7 @@ export class CameraApiService extends BaseClassicApiService implements CameraApi
     super(loadingService);
   }
 
-  getCamera(id: number): Observable<CameraInterface> {
+  get(id: number): Observable<CameraInterface> {
     return this.http.get<CameraInterface>(`${this.configUrl}/${id}/`);
   }
 }

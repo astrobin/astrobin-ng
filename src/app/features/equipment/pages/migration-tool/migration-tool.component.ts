@@ -39,6 +39,7 @@ import { CameraInterface } from "@features/equipment/interfaces/camera.interface
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 import { ConfirmItemCreationModalComponent } from "@features/equipment/components/confirm-item-creation-modal/confirm-item-creation-modal.component";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { GearService } from "@shared/services/gear/gear.service";
 
 @Component({
   selector: "astrobin-migration-tool",
@@ -101,7 +102,8 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
     public readonly translateService: TranslateService,
     public readonly windowRefService: WindowRefService,
     public readonly equipmentItemService: EquipmentItemService,
-    public readonly modalService: NgbModal
+    public readonly modalService: NgbModal,
+    public readonly gearService: GearService
   ) {
     super(store$);
   }

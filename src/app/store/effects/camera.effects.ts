@@ -19,7 +19,7 @@ export class CameraEffects {
           mergeMap(cameraFromStore =>
             cameraFromStore !== null
               ? of(cameraFromStore).pipe(map(camera => new LoadCameraSuccess(camera)))
-              : this.cameraApiService.getCamera(action.payload).pipe(
+              : this.cameraApiService.get(action.payload).pipe(
                   map(camera => new LoadCameraSuccess(camera)),
                   catchError(error => EMPTY)
                 )

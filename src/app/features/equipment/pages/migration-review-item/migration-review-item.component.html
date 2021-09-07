@@ -23,6 +23,17 @@
 
             <div class="card-body">
               <dl>
+                <dt>Brand/Make</dt>
+                <dd>{{ legacyItem.make || "(no brand)" }}</dd>
+
+                <dt>Name/Model</dt>
+                <dd>{{ legacyItem.name || "(no name)" }}</dd>
+
+                <ng-container *ngFor="let key of gearService.getProperAttributes(legacyItem)">
+                  <dt>{{ key | camelCaseToSentenceCase }}</dt>
+                  <dd>{{ legacyItem[key] !== null ? legacyItem[key] : "n/a" }}</dd>
+                </ng-container>
+
                 <dt>Proposed strategy:</dt>
                 <dd>{{ legacyItem.migrationFlag }}</dd>
 

@@ -140,4 +140,14 @@ describe("UtilsService", () => {
       expect(UtilsService.removeUrlParam("ab.co?a=b&c=d&e=f", "e")).toEqual("ab.co?a=b&c=d");
     });
   });
+
+  describe("camelCaseToSentenceCase", () => {
+    it("should work", () => {
+      expect(UtilsService.camelCaseToSentenceCase("helloThere")).toEqual("Hello There");
+      expect(UtilsService.camelCaseToSentenceCase("hello")).toEqual("Hello");
+      expect(UtilsService.camelCaseToSentenceCase("")).toEqual("");
+      expect(UtilsService.camelCaseToSentenceCase(null)).toEqual("");
+      expect(UtilsService.camelCaseToSentenceCase(undefined)).toEqual("");
+    });
+  });
 });

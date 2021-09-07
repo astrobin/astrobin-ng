@@ -40,4 +40,13 @@ describe("GearService", () => {
       expect(service.getDisplayName("foo ", " bar ")).toEqual("foo bar");
     });
   });
+
+  describe("getProperAttributes", () => {
+    it("should work", () => {
+      expect(service.getProperAttributes({ id: 1, foo: "bar", tar: "car", migrationFlag: "MIGRATE" })).toEqual([
+        "foo",
+        "tar"
+      ]);
+    });
+  });
 });

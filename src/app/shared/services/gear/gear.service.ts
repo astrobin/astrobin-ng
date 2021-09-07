@@ -25,4 +25,35 @@ export class GearService extends BaseService {
 
     return `${make.trim()} ${name.trim()}`;
   }
+
+  getProperAttributes(legacyItem: object): string[] {
+    const excludedAttributes = [
+      "id",
+      "pk",
+      "make",
+      "name",
+      "migrationFlag",
+      "migrationFlagTimestamp",
+      "migrationContentType",
+      "migrationObjectId",
+      "migrationFlagModerator",
+      "migrationFlagModeratorLock",
+      "migrationFlagModeratorLockTimestamp",
+      "migrationFlagReviewer",
+      "migrationFlagReviewerLock",
+      "migrationFlagReviewerLockTimestamp",
+      "migrationFlagReviewerDecision",
+      "migrationFlagReviewerRejectionComment"
+    ];
+
+    const attributes = [];
+
+    for (const key of Object.keys(legacyItem)) {
+      if (excludedAttributes.indexOf(key) === -1) {
+        attributes.push(key);
+      }
+    }
+
+    return attributes;
+  }
 }

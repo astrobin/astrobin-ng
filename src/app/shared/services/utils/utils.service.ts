@@ -135,6 +135,15 @@ export class UtilsService {
     return functionToCheck && {}.toString.call(functionToCheck) === "[object Function]";
   }
 
+  static camelCaseToSentenceCase(s: string): string {
+    if (!s) {
+      return "";
+    }
+
+    const result = s.replace(/([A-Z])/g, " $1");
+    return result.charAt(0).toUpperCase() + result.slice(1);
+  }
+
   yesNo(value) {
     return value ? this.translateService.instant("Yes") : this.translateService.instant("No");
   }

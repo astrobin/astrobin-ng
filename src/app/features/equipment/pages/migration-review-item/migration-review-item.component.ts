@@ -20,6 +20,7 @@ import { Observable, of } from "rxjs";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { RejectMigrationModalComponent } from "@features/equipment/components/reject-migration-modal/reject-migration-modal.component";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { CameraApiService } from "@shared/services/api/classic/gear/camera/camera-api.service";
 
 @Component({
   selector: "astrobin-migration-review-item",
@@ -46,7 +47,8 @@ export class MigrationReviewItemComponent extends BaseComponentDirective impleme
     public readonly loadingService: LoadingService,
     public readonly equipmentApiService: EquipmentApiService,
     public readonly router: Router,
-    public readonly modalService: NgbModal
+    public readonly modalService: NgbModal,
+    public readonly legacyCameraApiService: CameraApiService
   ) {
     super(store$);
   }
@@ -66,12 +68,23 @@ export class MigrationReviewItemComponent extends BaseComponentDirective impleme
     const itemId = this.activatedRoute.snapshot.paramMap.get("itemId");
 
     this.legacyGearApiService
-      .get(+itemId)
+      .getType(+itemId)
       .pipe(
+        switchMap((type: string) => {
+          let api: any = this.legacyGearApiService;
+
+          // TODO: complete
+          switch (type) {
+            case "camera":
+              api = this.legacyCameraApiService;
+          }
+
+          return api.get(+itemId);
+        }),
         take(1),
         switchMap(item => this.legacyGearApiService.lockForMigrationReview(+itemId).pipe(map(() => item)))
       )
-      .subscribe(item => {
+      .subscribe((item: any) => {
         this.legacyItem = item;
 
         if (item.migrationFlag === MigrationFlag.MIGRATE) {

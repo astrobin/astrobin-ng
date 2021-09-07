@@ -81,7 +81,7 @@
       <ng-container *ngIf="objects[0] as object">
         <div class="card box-shadow" [class.disabled]="migration.inProgress || creation.inProgress">
           <div class="card-header">
-            What would you like to do with the following object?
+            What would you like to do with the following legacy item?
           </div>
 
           <div class="card-body">
@@ -92,16 +92,25 @@
               Name/Model: <strong>{{ object.name || "(no name)" }}</strong>
             </p>
 
-            <div class="alert alert-info" *ngIf="object.migrationFlagReviewerDecision && object.migrationFlagReviewerDecision !== 'ACCEPTED'">
+            <ng-container *ngFor="let key of gearService.getProperAttributes(object)">
+              <p>
+                {{ key | camelCaseToSentenceCase }}: <strong>{{ object[key] !== null ? object[key] : "n/a" }}</strong>
+              </p>
+            </ng-container>
+
+            <div
+              class="alert alert-info"
+              *ngIf="object.migrationFlagReviewerDecision && object.migrationFlagReviewerDecision !== 'ACCEPTED'"
+            >
               <div>
                 <strong>Please note:</strong> this legacy item has a previous migration proposal that was rejected.
               </div>
               <dl class="mt-3">
                 <dt>Reason</dt>
-                <dd>{{object.migrationFlagReviewerDecision}}</dd>
+                <dd>{{ object.migrationFlagReviewerDecision }}</dd>
 
                 <dt>Comment</dt>
-                <dd>{{object.migrationFlagReviewerRejectionComment || 'n/a'}}</dd>
+                <dd>{{ object.migrationFlagReviewerRejectionComment || "n/a" }}</dd>
               </dl>
             </div>
           </div>
