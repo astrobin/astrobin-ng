@@ -50,9 +50,12 @@ export class MigrationReviewItemComponent extends BaseComponentDirective impleme
 
   get showButtonsOnSummary(): boolean {
     return (
-      [MigrationFlag.DIY, MigrationFlag.MULTIPLE_ITEMS, MigrationFlag.WRONG_TYPE].indexOf(
-        this.legacyItem.migrationFlag
-      ) > -1
+      [
+        MigrationFlag.DIY,
+        MigrationFlag.MULTIPLE_ITEMS,
+        MigrationFlag.WRONG_TYPE,
+        MigrationFlag.NOT_ENOUGH_INFO
+      ].indexOf(this.legacyItem.migrationFlag) > -1
     );
   }
 
