@@ -1,7 +1,4 @@
 import { UserInterface } from "@shared/interfaces/user.interface";
-import { CameraInterface, instanceOfCamera } from "@features/equipment/interfaces/camera.interface";
-import { instanceOfSensor } from "@features/equipment/interfaces/sensor.interface";
-import { instanceOfTelescope, TelescopeInterface } from "@features/equipment/interfaces/telescope.interface";
 import { BrandInterface } from "@features/equipment/interfaces/brand.interface";
 
 // TODO: complete

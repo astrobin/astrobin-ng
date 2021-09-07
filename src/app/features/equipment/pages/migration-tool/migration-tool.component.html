@@ -91,6 +91,19 @@
             <p>
               Name/Model: <strong>{{ object.name || "(no name)" }}</strong>
             </p>
+
+            <div class="alert alert-info" *ngIf="object.migrationFlagReviewerDecision && object.migrationFlagReviewerDecision !== 'ACCEPTED'">
+              <div>
+                <strong>Please note:</strong> this legacy item has a previous migration proposal that was rejected.
+              </div>
+              <dl class="mt-3">
+                <dt>Reason</dt>
+                <dd>{{object.migrationFlagReviewerDecision}}</dd>
+
+                <dt>Comment</dt>
+                <dd>{{object.migrationFlagReviewerRejectionComment || 'n/a'}}</dd>
+              </dl>
+            </div>
           </div>
 
           <div class="card-footer">

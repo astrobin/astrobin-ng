@@ -142,6 +142,10 @@ export class MigrationReviewItemComponent extends BaseComponentDirective impleme
 
     componentInstance.legacyItem = this.legacyItem;
     componentInstance.equipmentItem = this.equipmentItem;
+
+    modal.closed.pipe(take(1)).subscribe(() => {
+      this.exit();
+    });
   }
 
   exit() {

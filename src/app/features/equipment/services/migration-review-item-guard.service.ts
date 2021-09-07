@@ -48,6 +48,7 @@ export class MigrationReviewItemGuardService extends BaseService implements CanA
             const item = result[1];
 
             return (
+              item.migrationFlag &&
               item.migrationFlagModerator !== userId &&
               !item.migrationFlagReviewer &&
               (!item.migrationFlagReviewerLock || item.migrationFlagReviewerLock === userId)

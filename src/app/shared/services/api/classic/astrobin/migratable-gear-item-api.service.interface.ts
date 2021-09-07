@@ -3,6 +3,7 @@ import {
   EquipmentItemBaseInterface,
   EquipmentItemType
 } from "@features/equipment/interfaces/equipment-item-base.interface";
+import { RejectMigrationReason } from "@features/equipment/components/reject-migration-modal/reject-migration-modal.component";
 
 export enum MigrationFlag {
   WRONG_TYPE = "WRONG_TYPE",
@@ -35,4 +36,6 @@ export interface MigratableGearItemApiServiceInterface {
   ): void;
 
   acceptMigration?(gearId: number): Observable<any>;
+
+  rejectMigration?(gearId: number, reason: RejectMigrationReason, comment: string): Observable<any>;
 }

@@ -8,6 +8,7 @@ import { UserGenerator } from "@shared/generators/user.generator";
 import { ActivatedRouteSnapshot, RouterStateSnapshot } from "@angular/router";
 import { AppModule } from "@app/app.module";
 import { of } from "rxjs";
+import { MigrationFlag } from "@shared/services/api/classic/astrobin/migratable-gear-item-api.service.interface";
 
 describe("MigrationReviewItemGuardService", () => {
   let store: MockStore;
@@ -43,6 +44,7 @@ describe("MigrationReviewItemGuardService", () => {
     store.setState(state);
 
     const item = {
+      migrationFlag: MigrationFlag.DIY,
       migrationFlagModerator: state.auth.user.id
     };
 
@@ -62,6 +64,7 @@ describe("MigrationReviewItemGuardService", () => {
     store.setState(state);
 
     const item = {
+      migrationFlag: MigrationFlag.DIY,
       migrationFlagModerator: 999,
       migrationFlagReviewerLock: 999
     };
@@ -82,6 +85,7 @@ describe("MigrationReviewItemGuardService", () => {
     store.setState(state);
 
     const item = {
+      migrationFlag: MigrationFlag.DIY,
       migrationFlagModerator: 999,
       migrationFlagReviewer: 1000
     };
@@ -102,6 +106,7 @@ describe("MigrationReviewItemGuardService", () => {
     store.setState(state);
 
     const item = {
+      migrationFlag: MigrationFlag.DIY,
       migrationFlagModerator: 999
     };
 
@@ -121,6 +126,7 @@ describe("MigrationReviewItemGuardService", () => {
     store.setState(state);
 
     const item = {
+      migrationFlag: MigrationFlag.DIY,
       migrationFlagModerator: 999,
       migrationFlagReviewerLock: state.auth.user.id
     };
@@ -131,6 +137,27 @@ describe("MigrationReviewItemGuardService", () => {
 
     service.canActivate(route, { url: "/foo" } as RouterStateSnapshot).subscribe(result => {
       expect(result).toBe(true);
+      done();
+    });
+  });
+
+  it("should not pass if the item is not reviewable", done => {
+    const state = { ...initialState };
+    state.auth.user = UserGenerator.user();
+    store.setState(state);
+
+    const item = {
+      migrationFlag: null,
+      migrationFlagModerator: 999,
+      migrationFlagReviewerLock: state.auth.user.id
+    };
+
+    route = TestBed.inject(ActivatedRouteSnapshot);
+    jest.spyOn(route, "params", "get").mockReturnValue({ itemId: 1 });
+    jest.spyOn(service.legacyGearApi, "get").mockReturnValue(of(item));
+
+    service.canActivate(route, { url: "/foo" } as RouterStateSnapshot).subscribe(result => {
+      expect(result).toBe(false);
       done();
     });
   });

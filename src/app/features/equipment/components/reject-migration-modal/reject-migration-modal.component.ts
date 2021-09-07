@@ -5,11 +5,19 @@ import { State } from "@app/store/state";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
-import { EquipmentItemBaseInterface } from "@features/equipment/interfaces/equipment-item-base.interface";
+import {
+  EquipmentItemBaseInterface,
+  EquipmentItemReviewerDecision
+} from "@features/equipment/interfaces/equipment-item-base.interface";
 import { MigrationFlag } from "@shared/services/api/classic/astrobin/migratable-gear-item-api.service.interface";
-import { takeUntil } from "rxjs/operators";
+import { switchMap, take, takeUntil } from "rxjs/operators";
+import { LoadingService } from "@shared/services/loading.service";
+import { GearApiService } from "@shared/services/api/classic/astrobin/gear/gear-api.service";
+import { EquipmentActionTypes, RejectEquipmentItem } from "@features/equipment/store/equipment.actions";
+import { Actions, ofType } from "@ngrx/effects";
+import { of } from "rxjs";
 
-enum RejectMigrationReason {
+export enum RejectMigrationReason {
   REJECTED_INCORRECT_STRATEGY = "REJECTED_INCORRECT_STRATEGY",
   REJECTED_WRONG_MIGRATION_TARGET = "REJECTED_WRONG_MIGRATION_TARGET",
   REJECTED_BAD_MIGRATION_TARGET = "REJECTED_BAD_MIGRATION_TARGET",
@@ -32,7 +40,13 @@ export class RejectMigrationModalComponent extends BaseComponentDirective implem
   @Input()
   equipmentItem: EquipmentItemBaseInterface;
 
-  constructor(public readonly store$: Store<State>, public readonly modal: NgbActiveModal) {
+  constructor(
+    public readonly store$: Store<State>,
+    public readonly actions$: Actions,
+    public readonly modal: NgbActiveModal,
+    public readonly loadingService: LoadingService,
+    public readonly legacyGearApiService: GearApiService
+  ) {
     super(store$);
   }
 
@@ -46,15 +60,7 @@ export class RejectMigrationModalComponent extends BaseComponentDirective implem
           label: "Reason",
           required: true,
           clearable: false,
-          options:
-            this.legacyItem.migrationFlag === MigrationFlag.MIGRATE
-              ? [
-                  this._incorrectStrategyOption(),
-                  this._wrongMigrationTargetOption(),
-                  this._badMigrationTargetOption(),
-                  this._otherOption()
-                ]
-              : [this._incorrectStrategyOption(), this._otherOption()]
+          options: this._reasonOptions()
         },
         hooks: {
           onInit: (field: FormlyFieldConfig) => {
@@ -78,9 +84,12 @@ export class RejectMigrationModalComponent extends BaseComponentDirective implem
                     "<strong>Bad migration target</strong> means that the item onto which to perform this migration " +
                     "was created incorrectly.";
                   warning =
-                    "<strong>Please be very careful</strong> with your decision to select this option. You need to " +
-                    "be very sure that the target item has incorrect data. If you select this option, the target " +
-                    "item will be deleted and all the migration proposals associated with it will be undone.";
+                    "<br/><strong>Please be very careful</strong> with your decision to select this option. <br/><br/>" +
+                    "You need to be very sure that the target item has incorrect data. If you select this option, " +
+                    "the target item will be deleted and all the migration proposals associated with it will be " +
+                    "undone. <br/><br/>" +
+                    "Consider using <em>Wrong migration target</em> if the migration target has the correct data " +
+                    "but this legacy item should not be migrated to it.<br/><br/>";
                   break;
                 case RejectMigrationReason.REJECTED_OTHER:
                   description = "Please specify your reason in the comment box below.";
@@ -107,7 +116,50 @@ export class RejectMigrationModalComponent extends BaseComponentDirective implem
     ];
   }
 
-  reject() {}
+  reject() {
+    this.loadingService.setLoading(true);
+
+    const reason: RejectMigrationReason = this.form.get("reason").value;
+    const comment: string = this.form.get("comment").value;
+
+    this.legacyGearApiService
+      .rejectMigration(this.legacyItem.pk, reason, comment)
+      .pipe(
+        switchMap(item => {
+          if (
+            this.legacyItem.migrationFlag === MigrationFlag.MIGRATE &&
+            this.equipmentItem &&
+            reason === RejectMigrationReason.REJECTED_BAD_MIGRATION_TARGET
+          ) {
+            this.store$.dispatch(new RejectEquipmentItem({ item: this.equipmentItem, comment }));
+            return this.actions$.pipe(ofType(EquipmentActionTypes.REJECT_EQUIPMENT_ITEM_SUCCESS), take(1));
+          } else {
+            return of(item);
+          }
+        })
+      )
+      .subscribe(() => {
+        this.loadingService.setLoading(false);
+        this.modal.close();
+      });
+  }
+
+  _reasonOptions(): { value: string; label: string }[] {
+    if (this.legacyItem.migrationFlag === MigrationFlag.MIGRATE) {
+      if (this.equipmentItem.reviewerDecision === EquipmentItemReviewerDecision.ACCEPTED) {
+        return [this._incorrectStrategyOption(), this._wrongMigrationTargetOption(), this._otherOption()];
+      }
+
+      return [
+        this._incorrectStrategyOption(),
+        this._wrongMigrationTargetOption(),
+        this._badMigrationTargetOption(),
+        this._otherOption()
+      ];
+    }
+
+    return [this._incorrectStrategyOption(), this._otherOption()];
+  }
 
   _incorrectStrategyOption(): { value: string; label: string } {
     return {
@@ -119,14 +171,14 @@ export class RejectMigrationModalComponent extends BaseComponentDirective implem
   _wrongMigrationTargetOption(): { value: string; label: string } {
     return {
       value: RejectMigrationReason.REJECTED_WRONG_MIGRATION_TARGET,
-      label: "Wrong migration strategy"
+      label: "Wrong migration target"
     };
   }
 
   _badMigrationTargetOption(): { value: string; label: string } {
     return {
       value: RejectMigrationReason.REJECTED_BAD_MIGRATION_TARGET,
-      label: "Bad migration strategy"
+      label: "Bad migration target"
     };
   }
 
