@@ -18,6 +18,8 @@ import { Actions, ofType } from "@ngrx/effects";
 import { EquipmentItemBaseInterface } from "@features/equipment/interfaces/equipment-item-base.interface";
 import { Observable, of } from "rxjs";
 import { UserInterface } from "@shared/interfaces/user.interface";
+import { RejectMigrationModalComponent } from "@features/equipment/components/reject-migration-modal/reject-migration-modal.component";
+import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
   selector: "astrobin-migration-review-item",
@@ -43,7 +45,8 @@ export class MigrationReviewItemComponent extends BaseComponentDirective impleme
     public readonly userService: UserService,
     public readonly loadingService: LoadingService,
     public readonly equipmentApiService: EquipmentApiService,
-    public readonly router: Router
+    public readonly router: Router,
+    public readonly modalService: NgbModal
   ) {
     super(store$);
   }
@@ -133,7 +136,13 @@ export class MigrationReviewItemComponent extends BaseComponentDirective impleme
       });
   }
 
-  reject() {}
+  reject() {
+    const modal: NgbModalRef = this.modalService.open(RejectMigrationModalComponent);
+    const componentInstance: RejectMigrationModalComponent = modal.componentInstance;
+
+    componentInstance.legacyItem = this.legacyItem;
+    componentInstance.equipmentItem = this.equipmentItem;
+  }
 
   exit() {
     this.router.navigateByUrl("/equipment/migration-review");
