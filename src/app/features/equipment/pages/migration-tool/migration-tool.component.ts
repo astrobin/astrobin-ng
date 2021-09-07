@@ -391,6 +391,7 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
 
             return true;
           }),
+          take(1),
           map(brands => ({
             brands,
             items

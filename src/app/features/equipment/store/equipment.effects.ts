@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { Observable, of } from "rxjs";
+import { Observable } from "rxjs";
 import {
   ApproveEquipmentItem,
   ApproveEquipmentItemSuccess,
@@ -28,7 +28,7 @@ import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { All } from "@app/store/actions/app.actions";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
-import { filter, map, mergeMap, switchMap } from "rxjs/operators";
+import { filter, map, mergeMap } from "rxjs/operators";
 import { selectBrand, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import { SensorInterface } from "@features/equipment/interfaces/sensor.interface";
 import { BrandInterface } from "@features/equipment/interfaces/brand.interface";
@@ -175,5 +175,6 @@ export class EquipmentEffects {
     public readonly actions$: Actions<All>,
     public readonly equipmentApiService: EquipmentApiService,
     public readonly utilsService: UtilsService
-  ) {}
+  ) {
+  }
 }
