@@ -74,14 +74,16 @@ export class MigrationReviewComponent extends BaseComponentDirective implements 
 
   migrationFlagTooltip(migrationFlag: MigrationFlag): string {
     switch (migrationFlag) {
+      case MigrationFlag.WRONG_TYPE:
+        return "This legacy item was classified as the wrong type (e.g. a telescope classified as a mount) and will be dealt with later.";
+      case MigrationFlag.MULTIPLE_ITEMS:
+        return "This legacy item actually collates multiple items together (e.g. 'LRGB filters') and will be dealt with later.";
       case MigrationFlag.DIY:
         return "This legacy item is a DIY object and will migrated as-is automatically.";
+      case MigrationFlag.NOT_ENOUGH_INFO:
+        return "This legacy item doesn't have enough information to decide on a migration strategy.";
       case MigrationFlag.MIGRATE:
         return "This legacy item will be migrated to a specific item in the new database.";
-      case MigrationFlag.WRONG_TYPE:
-        return "This item was classified as the wrong type (e.g. a telescope classified as a mount) and will be dealt with later.";
-      case MigrationFlag.MULTIPLE_ITEMS:
-        return "This item actually collates multiple items together (e.g. 'LRGB filters') and will be dealt with later.";
     }
   }
 }

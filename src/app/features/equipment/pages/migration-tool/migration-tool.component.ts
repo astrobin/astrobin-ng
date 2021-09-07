@@ -229,16 +229,24 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
     }
   }
 
-  markAsWrongType(object: any) {
+  markAsWrongType(event: Event, object: any) {
+    event.preventDefault();
     this._applyMigration(object, [object.pk, MigrationFlag.WRONG_TYPE], "wrong type");
   }
 
-  markAsMultiple(object: any) {
+  markAsMultiple(event: Event, object: any) {
+    event.preventDefault();
     this._applyMigration(object, [object.pk, MigrationFlag.MULTIPLE_ITEMS], "multiple items");
   }
 
-  markAsDIY(object: any) {
+  markAsDIY(event: Event, object: any) {
+    event.preventDefault();
     this._applyMigration(object, [object.pk, MigrationFlag.DIY], "DIY");
+  }
+
+  markAsNotEnoughInfo(event: Event, object: any) {
+    event.preventDefault();
+    this._applyMigration(object, [object.pk, MigrationFlag.NOT_ENOUGH_INFO], "not enough info");
   }
 
   beginMigration(object: any) {

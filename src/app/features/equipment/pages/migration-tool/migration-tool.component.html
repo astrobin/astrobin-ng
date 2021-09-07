@@ -6,7 +6,7 @@
       <ul ngbNav #nav="ngbNav" [(activeId)]="activeType" class="nav-pills" orientation="vertical">
         <li ngbNavItem="camera">
           <a ngbNavLink routerLink="../camera">Cameras</a>
-          <span class="counter">{{nonMigratedCamerasCount$ | async}}</span>
+          <span class="counter">{{ nonMigratedCamerasCount$ | async }}</span>
         </li>
 
         <li ngbNavItem="telescope" [disabled]="true">
@@ -43,7 +43,7 @@
             You cannot migrate items while the review queue is not empty. This is to prevent creating multiple items
             representing the same object.
           </p>
-          <br/>
+          <br />
           <a routerLink="../../migration-review" class="btn btn-primary">Go to the review queue</a>
         </div>
       </ng-container>
@@ -94,35 +94,38 @@
               [class.loading]="loadingService.isLoading()"
               (click)="skip(object)"
             >
-              Skip
+              Skip for now
             </button>
 
-            <button
-              class="btn btn-sm-block btn-secondary"
-              [disabled]="migration.inProgress || creation.inProgress"
-              [class.loading]="loadingService.isLoading()"
-              (click)="markAsWrongType(object)"
-            >
-              Mark as wrong type
-            </button>
+            <div class="d-inline-block" ngbDropdown>
+              <button
+                ngbDropdownToggle
+                id="mark-as-dropdown-button"
+                class="btn btn-sm-block btn-secondary"
+                [disabled]="migration.inProgress || creation.inProgress"
+                [class.loading]="loadingService.isLoading()"
+              >
+                Mark as...
+              </button>
 
-            <button
-              class="btn btn-sm-block btn-secondary"
-              [disabled]="migration.inProgress || creation.inProgress"
-              [class.loading]="loadingService.isLoading()"
-              (click)="markAsMultiple(object)"
-            >
-              Mark as multiple items
-            </button>
+              <div aria-labelledby="mark-as-dropdown-button" ngbDropdownMenu>
+                <a href="" class="dropdown-item" (click)="markAsWrongType($event, object)">
+                  Wrong type
+                </a>
 
-            <button
-              class="btn btn-sm-block btn-secondary"
-              [disabled]="migration.inProgress || creation.inProgress"
-              [class.loading]="loadingService.isLoading()"
-              (click)="markAsDIY(object)"
-            >
-              Mark as DIY
-            </button>
+                <a href="" class="dropdown-item" (click)="markAsMultiple($event, object)">
+                  Multiple items
+                </a>
+
+                <a href="" class="dropdown-item" (click)="markAsDIY($event, object)">
+                  DIY
+                </a>
+
+                <a href="" class="dropdown-item" (click)="markAsNotEnoughInfo($event, object)">
+                  Not enough info
+                </a>
+              </div>
+            </div>
 
             <button
               class="btn btn-sm-block btn-primary"

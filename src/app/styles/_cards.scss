@@ -40,15 +40,15 @@
     justify-content: end;
     flex-direction: column;
 
-    @media screen and (min-width: $md-min) {
+    @media screen and (min-width: $sm-min) {
       flex-direction: row;
     }
 
     .btn:not(:last-child) {
-      @media screen and (max-width: $sm-max) {
+      @media screen and (max-width: $xs-max) {
         margin-bottom: .5rem;
       }
-      @media screen and (min-width: $md-min) {
+      @media screen and (min-width: $sm-min) {
         margin-right: .5rem;
       }
     }
