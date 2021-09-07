@@ -20,9 +20,7 @@ describe("TelescopeService", () => {
   describe("getPrintableProperty", () => {
     it("should work for 'type'", () => {
       const telescope = TelescopeGenerator.telescope({ type: TelescopeType.REFRACTOR_ACHROMATIC });
-      expect(service.getPrintableProperty(telescope, TelescopeDisplayProperty.TYPE)).toEqual(
-        TelescopeType.REFRACTOR_ACHROMATIC
-      );
+      expect(service.getPrintableProperty(telescope, TelescopeDisplayProperty.TYPE)).toEqual("Refractor: achromatic");
     });
 
     it("should work for 'aperture'", () => {

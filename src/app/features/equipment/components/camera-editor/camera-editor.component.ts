@@ -77,6 +77,65 @@ export class CameraEditorComponent extends BaseEquipmentItemEditorComponent<Came
   }
 
   ngAfterViewInit(): void {
+    setTimeout(() => {
+      this._initFields();
+    }, 1);
+    super.ngAfterViewInit();
+  }
+
+  resetSensorCreation() {
+    this.sensorCreation.inProgress = false;
+    this.subCreationInProgress.emit(false);
+    this.sensorCreation.form.reset();
+  }
+
+  createSensor() {
+    const sensor: SensorInterface = this.sensorCreation.form.value;
+
+    this.loadingService.setLoading(true);
+    this.store$.dispatch(new CreateSensor({ sensor }));
+    this.actions$
+      .pipe(
+        ofType(EquipmentActionTypes.CREATE_SENSOR_SUCCESS),
+        take(1),
+        map((result: { payload: EquipmentItemCreationSuccessPayloadInterface }) => result.payload.item)
+      )
+      .subscribe((createdSensor: SensorInterface) => {
+        this.sensorCreated(createdSensor);
+        this.loadingService.setLoading(false);
+      });
+  }
+
+  sensorCreated(sensor: SensorInterface) {
+    this.resetSensorCreation();
+
+    this.store$
+      .select(selectBrand, sensor.brand)
+      .pipe(
+        takeUntil(this.destroyed$),
+        filter(brand => !!brand)
+      )
+      .subscribe(brand => {
+        this.fields.find(field => field.key === "sensor").templateOptions.options = [
+          {
+            value: sensor.id,
+            label: `${brand.name} ${sensor.name}`,
+            sensor
+          }
+        ];
+
+        this.model = { ...this.model, ...{ sensor: sensor.id } };
+        this.form.get("sensor").setValue(sensor.id);
+
+        setTimeout(() => {
+          this.windowRefService.nativeWindow.document
+            .querySelector("#camera-field-sensor")
+            .scrollIntoView({ behavior: "smooth" });
+        }, 1);
+      });
+  }
+
+  private _initFields() {
     this.fields = [
       this._getBrandField(),
       this._getNameField(),
@@ -186,60 +245,6 @@ export class CameraEditorComponent extends BaseEquipmentItemEditorComponent<Came
       },
       this._getImageField()
     ];
-
-    super.ngAfterViewInit();
-  }
-
-  resetSensorCreation() {
-    this.sensorCreation.inProgress = false;
-    this.subCreationInProgress.emit(false);
-    this.sensorCreation.form.reset();
-  }
-
-  createSensor() {
-    const sensor: SensorInterface = this.sensorCreation.form.value;
-
-    this.loadingService.setLoading(true);
-    this.store$.dispatch(new CreateSensor({ sensor }));
-    this.actions$
-      .pipe(
-        ofType(EquipmentActionTypes.CREATE_SENSOR_SUCCESS),
-        take(1),
-        map((result: { payload: EquipmentItemCreationSuccessPayloadInterface }) => result.payload.item)
-      )
-      .subscribe((createdSensor: SensorInterface) => {
-        this.sensorCreated(createdSensor);
-        this.loadingService.setLoading(false);
-      });
-  }
-
-  sensorCreated(sensor: SensorInterface) {
-    this.resetSensorCreation();
-
-    this.store$
-      .select(selectBrand, sensor.brand)
-      .pipe(
-        takeUntil(this.destroyed$),
-        filter(brand => !!brand)
-      )
-      .subscribe(brand => {
-        this.fields.find(field => field.key === "sensor").templateOptions.options = [
-          {
-            value: sensor.id,
-            label: `${brand.name} ${sensor.name}`,
-            sensor
-          }
-        ];
-
-        this.model = { ...this.model, ...{ sensor: sensor.id } };
-        this.form.get("sensor").setValue(sensor.id);
-
-        setTimeout(() => {
-          this.windowRefService.nativeWindow.document
-            .querySelector("#camera-field-sensor")
-            .scrollIntoView({ behavior: "smooth" });
-        }, 1);
-      });
   }
 
   private _onSensorSearch(term: string) {

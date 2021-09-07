@@ -50,6 +50,14 @@ export class SensorEditorComponent extends BaseEquipmentItemEditorComponent<Sens
   }
 
   ngAfterViewInit(): void {
+    setTimeout(() => {
+      this._initFields();
+    }, 1);
+
+    super.ngAfterViewInit();
+  }
+
+  private _initFields() {
     this.fields = [
       this._getBrandField(),
       this._getNameField(),
@@ -223,7 +231,5 @@ export class SensorEditorComponent extends BaseEquipmentItemEditorComponent<Sens
       },
       this._getImageField()
     ];
-
-    super.ngAfterViewInit();
   }
 }
