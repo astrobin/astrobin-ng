@@ -31,8 +31,8 @@
                   <astrobin-username [user]="user"></astrobin-username>
                 </dd>
 
-                <dt>Datetime:</dt>
-                <dd>{{ legacyItem.migrationFlagTimestamp | localDate }}</dd>
+                <dt>When:</dt>
+                <dd>{{ legacyItem.migrationFlagTimestamp | timeago:true }}</dd>
               </dl>
             </div>
 
