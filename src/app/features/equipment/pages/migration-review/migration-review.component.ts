@@ -20,7 +20,7 @@ import { MigrationFlag } from "@shared/services/api/classic/astrobin/migratable-
   styleUrls: ["./migration-review.component.scss"]
 })
 export class MigrationReviewComponent extends BaseComponentDirective implements OnInit {
-  title = "Migration review tool";
+  title = "Migration review";
   pendingReview$: Observable<any[]> = this.getPendingMigrationReview$();
 
   constructor(

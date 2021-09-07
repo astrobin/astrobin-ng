@@ -3,52 +3,67 @@
     <ng-container *ngIf="legacyItem && user; else loading">
       <h1>{{ title }}</h1>
 
-      <div class="card box-shadow">
-        <div class="card-header">
-          Summary
+      <div class="row">
+        <div class="col-md-3">
+          <ul ngbNav #nav="ngbNav" activeId="review" class="nav-pills mb-5" orientation="vertical">
+            <li ngbNavItem="migration">
+              <a ngbNavLink routerLink="/equipment/migration-tool">Migration</a>
+            </li>
+
+            <li ngbNavItem="review">
+              <a ngbNavLink routerLink="/equipment/migration-review">Review</a>
+            </li>
+          </ul>
         </div>
+        <div class="col-md-9">
+          <div class="card box-shadow">
+            <div class="card-header">
+              Summary
+            </div>
 
-        <div class="card-body">
-          <dl>
-            <dt>Proposed strategy:</dt>
-            <dd>{{ legacyItem.migrationFlag }}</dd>
+            <div class="card-body">
+              <dl>
+                <dt>Proposed strategy:</dt>
+                <dd>{{ legacyItem.migrationFlag }}</dd>
 
-            <dt>Proposed by:</dt>
-            <dd>
-              <astrobin-username [user]="user"></astrobin-username>
-            </dd>
+                <dt>Proposed by:</dt>
+                <dd>
+                  <astrobin-username [user]="user"></astrobin-username>
+                </dd>
 
-            <dt>Datetime:</dt>
-            <dd>{{ legacyItem.migrationFlagTimestamp | localDate }}</dd>
-          </dl>
-        </div>
+                <dt>Datetime:</dt>
+                <dd>{{ legacyItem.migrationFlagTimestamp | localDate }}</dd>
+              </dl>
+            </div>
 
-        <div class="card-footer" *ngIf="showButtonsOnSummary">
-          <ng-container [ngTemplateOutlet]="buttons"></ng-container>
+            <div class="card-footer" *ngIf="showButtonsOnSummary">
+              <ng-container [ngTemplateOutlet]="buttons"></ng-container>
+            </div>
+          </div>
+
+          <ng-container *ngIf="legacyItem.migrationFlag === MigrationFlag.MIGRATE">
+            <div class="mt-4 mb-4 text-center">
+              <fa-icon icon="arrow-down"></fa-icon>
+            </div>
+
+            <div class="card box-shadow">
+              <div class="card-header">
+                The legacy object will be migrated to the following equipment item
+              </div>
+
+              <div class="card-body">
+                <ng-container *ngIf="equipmentItem$ | async as equipmentItem; else loading">
+                  <astrobin-equipment-item-summary [item]="equipmentItem"></astrobin-equipment-item-summary>
+                </ng-container>
+              </div>
+
+              <div class="card-footer">
+                <ng-container [ngTemplateOutlet]="buttons"></ng-container>
+              </div>
+            </div>
+          </ng-container>
         </div>
       </div>
-
-      <ng-container *ngIf="legacyItem.migrationFlag === MigrationFlag.MIGRATE">
-        <div class="mt-4 mb-4 text-center">
-          <fa-icon icon="arrow-down"></fa-icon>
-        </div>
-
-        <div class="card box-shadow">
-          <div class="card-header">
-            The legacy object will be migrated to the following equipment item
-          </div>
-
-          <div class="card-body">
-            <ng-container *ngIf="equipmentItem$ | async as equipmentItem; else loading">
-              <astrobin-equipment-item-summary [item]="equipmentItem"></astrobin-equipment-item-summary>
-            </ng-container>
-          </div>
-
-          <div class="card-footer">
-            <ng-container [ngTemplateOutlet]="buttons"></ng-container>
-          </div>
-        </div>
-      </ng-container>
     </ng-container>
   </ng-container>
 </div>

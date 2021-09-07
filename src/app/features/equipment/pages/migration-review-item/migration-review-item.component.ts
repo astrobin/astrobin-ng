@@ -77,7 +77,7 @@ export class MigrationReviewItemComponent extends BaseComponentDirective impleme
         this.user$ = this.userService.getUser$(item.migrationFlagModerator);
         this.store$.dispatch(new LoadUser({ id: item.migrationFlagModerator }));
 
-        this.title = `Migration review for "${this.gearService.getDisplayName(item.make, item.name)}"`;
+        this.title = `Migration review: "${this.gearService.getDisplayName(item.make, item.name)}"`;
 
         this.titleService.setTitle(this.title);
 

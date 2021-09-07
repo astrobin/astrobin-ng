@@ -3,6 +3,16 @@
 
   <div class="row">
     <div class="col-md-3">
+      <ul ngbNav #nav="ngbNav" activeId="migration" class="nav-pills mb-5" orientation="vertical">
+        <li ngbNavItem="migration">
+          <a ngbNavLink routerLink="/equipment/migration-tool">Migration</a>
+        </li>
+
+        <li ngbNavItem="review">
+          <a ngbNavLink routerLink="/equipment/migration-review">Review</a>
+        </li>
+      </ul>
+
       <ul ngbNav #nav="ngbNav" [(activeId)]="activeType" class="nav-pills" orientation="vertical">
         <li ngbNavItem="camera">
           <a ngbNavLink routerLink="../camera">Cameras</a>
