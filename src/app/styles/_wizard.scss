@@ -42,7 +42,7 @@
     &.danger.done .nav-link {
       font-weight: bold;
       font-style: italic;
-      color: var(--error) !important;
+      color: var(--dangerColor) !important;
 
       &::after {
         background-color: transparent !important;

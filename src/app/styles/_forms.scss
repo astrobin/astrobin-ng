@@ -23,7 +23,7 @@ label {
   }
 
   &.is-invalid {
-    border-left: 0.5rem solid var(--error);
+    border-left: 0.5rem solid var(--dangerColor);
     padding-left: calc(0.75rem - 0.5rem + 1px);
   }
 
@@ -40,7 +40,7 @@ label {
 
   &.has-error {
     label {
-      color: var(--error);
+      color: var(--dangerColor);
     }
   }
 }

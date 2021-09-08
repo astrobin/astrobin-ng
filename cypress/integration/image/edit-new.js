@@ -23,7 +23,7 @@ context("Image edit (new)", () => {
     cy.url().should("contain", "/i/abc123/edit");
   });
 
-  it("should show the 'new editor' alert", () => {
+  it("should not show the 'new editor' alert", () => {
     cy.get("#new-editor-alert").should("not.exist");
   });
 
@@ -32,7 +32,7 @@ context("Image edit (new)", () => {
   });
 
   it("should not have any tabs marked as error, since we haven't visited any yet", () => {
-    cy.get("#image-stepper-field .nav-object.danger.done").should("not.exist");
+    cy.get("#image-stepper-field .nav-item.danger.done").should("not.exist");
   });
 
   it("should have the #1 fragment", () => {
@@ -48,12 +48,12 @@ context("Image edit (new)", () => {
 
   it("should mark the step as errored if a required field is cleared", () => {
     cy.get("#image-title-field").clear();
-    cy.get("#image-stepper-field .nav-object.danger .nav-link small")
+    cy.get("#image-stepper-field .nav-item.danger .nav-link small")
       .contains("Basic information")
       .should("exist");
 
     cy.get("#image-title-field").type("Test image");
-    cy.get("#image-stepper-field .nav-object.danger .nav-link small")
+    cy.get("#image-stepper-field .nav-item.danger .nav-link small")
       .contains("Basic information")
       .should("not.exist");
   });
@@ -233,7 +233,7 @@ context("Image edit (new)", () => {
   });
 
   it("should unmark the content step as errored", () => {
-    cy.get("#image-stepper-field .nav-object.danger").should("not.exist");
+    cy.get("#image-stepper-field .nav-item.danger").should("not.exist");
   });
 
   it("should have prefilled the watermark step", () => {

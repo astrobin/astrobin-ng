@@ -79,7 +79,7 @@
 
   &.btn-danger {
     &.loading {
-      background: url("/assets/images/white-loader.svg") var(--error) no-repeat center !important;
+      background: url("/assets/images/white-loader.svg") var(--dangerColor) no-repeat center !important;
       background-size: 1rem !important;
     }
   }
