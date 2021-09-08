@@ -36,8 +36,12 @@ export function reducer(state = initialAuthState, action: All): AuthState {
         user: action.payload.user,
         userProfile: action.payload.userProfile,
         userSubscriptions: action.payload.userSubscriptions,
-        users: UtilsService.arrayUniqueObjects([...state.users, ...[action.payload.user]]),
-        userProfiles: UtilsService.arrayUniqueObjects([...state.users, ...[action.payload.userProfile]])
+        users: action.payload.user
+          ? UtilsService.arrayUniqueObjects([...state.users, ...[action.payload.user]])
+          : state.users,
+        userProfiles: action.payload.userProfile
+          ? UtilsService.arrayUniqueObjects([...state.users, ...[action.payload.userProfile]])
+          : state.userProfiles
       };
     case AuthActionTypes.UPDATE_CURRENT_USER_PROFILE_SUCCESS:
       return {

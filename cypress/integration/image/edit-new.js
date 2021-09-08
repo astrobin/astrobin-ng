@@ -168,7 +168,7 @@ context("Image edit (new)", () => {
 
     cy.get("#image-locations-field").click();
     cy.get("#image-locations-field .ng-option.ng-option-disabled")
-      .contains("No items found. Type something to create a new one...")
+      .contains("Type to search options or to create a new one...")
       .should("be.visible");
     cy.get("#image-locations-field").type("Home observatory");
 

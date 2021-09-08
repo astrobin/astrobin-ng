@@ -52,7 +52,7 @@ context("notifications", () => {
           .its("length")
           .should("equal", 2);
         cy.get("#unread-notifications-count").should("contain.text", 1);
-        cy.get(".navbar .notifications-list-object .badge").should("contain.text", 1);
+        cy.get(".navbar .notifications-list-item .badge").should("contain.text", 1);
       });
 
       it("should fetch count again when marking a notification as read", () => {
@@ -60,7 +60,7 @@ context("notifications", () => {
 
         cy.get("#notification-1 .read-icon").click();
         cy.get("#unread-notifications-count").should("not.exist");
-        cy.get(".navbar .notifications-list-object .badge").should("not.exist");
+        cy.get(".navbar .notifications-list-item .badge").should("not.exist");
         cy.get("#mark-all-as-read").should("be.disabled");
       });
 
@@ -70,7 +70,7 @@ context("notifications", () => {
         cy.get("#mark-all-as-read").click();
 
         cy.get("#unread-notifications-count").should("not.exist");
-        cy.get(".navbar .notifications-list-object .badge").should("not.exist");
+        cy.get(".navbar .notifications-list-item .badge").should("not.exist");
         cy.get("#mark-all-as-read").should("be.disabled");
       });
 
