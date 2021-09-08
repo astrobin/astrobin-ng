@@ -21,7 +21,7 @@ import { PopNotificationsService } from "@shared/services/pop-notifications.serv
 import { TitleService } from "@shared/services/title/title.service";
 import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
 import { Observable } from "rxjs";
-import { distinctUntilChanged, map, startWith, switchMap, take, takeUntil, tap } from "rxjs/operators";
+import { distinctUntilChanged, map, startWith, switchMap, takeUntil, tap } from "rxjs/operators";
 
 declare var Stripe: any;
 
@@ -95,7 +95,7 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
         "and then contact us at {{1}} to get a refund for the unused time on your old subscription. Thanks!",
       {
         0: this.subscriptionsService.getName(this.product),
-        1: '<a href="mailto:support@astrobin.com">support@astrobin.com</a>'
+        1: `<a href="mailto:support@astrobin.com">support@astrobin.com</a>`
       }
     );
   }
