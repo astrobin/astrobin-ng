@@ -22,8 +22,6 @@ import { TelescopeDisplayProperty, TelescopeService } from "@features/equipment/
 import { SensorDisplayProperty, SensorService } from "@features/equipment/services/sensor.service";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 
-export const PLACEHOLDER = "https://via.placeholder.com/50.png/000/fff?text=?";
-
 @Component({
   selector: "astrobin-equipment-item-summary",
   templateUrl: "./equipment-item-summary.component.html",
@@ -52,7 +50,12 @@ export class EquipmentItemSummaryComponent extends BaseComponentDirective implem
   }
 
   get image(): string {
-    return (this.item.image as string) || PLACEHOLDER;
+    return (this.item.image as string) || this.placeholder;
+  }
+
+  get placeholder(): string {
+    const type: EquipmentItemType = this.equipmentItemService.getType(this.item);
+    return `/assets/images/${EquipmentItemType[type].toLowerCase()}-placeholder.png`;
   }
 
   get properties$(): Observable<{ name: string; value: any }[]> {

@@ -227,7 +227,10 @@ export class BaseEquipmentItemEditorComponent<T extends EquipmentItemBaseInterfa
       asyncValidators: {
         uniqueForBrand: {
           expression: (control: FormControl) => {
-            const type: EquipmentItemType = this.equipmentItemService.getType(this.form.value);
+            const type: EquipmentItemType = this.equipmentItemService.getType({
+              ...this.model,
+              ...this.form.value
+            } as EquipmentItemBaseInterface);
             return this.equipmentApiService.getByNameAndType(control.value, type).pipe(map(item => !item));
           },
           message: this.translateService.instant("An item of the same type and the same name already exists.")
@@ -314,7 +317,7 @@ export class BaseEquipmentItemEditorComponent<T extends EquipmentItemBaseInterfa
     const nameControl: AbstractControl = this.form.get("name");
     const brandFieldConfig: FormlyFieldConfig = this.fields.find(field => field.key === "brand");
     const nameFieldConfig: FormlyFieldConfig = this.fields.find(field => field.key === "name");
-    let message;
+    let message = null;
 
     if (!brandControl.value || !nameControl.value) {
       return;
@@ -326,8 +329,12 @@ export class BaseEquipmentItemEditorComponent<T extends EquipmentItemBaseInterfa
       .subscribe(brand => {
         if (nameControl.value.toLowerCase().indexOf(brand.name.toLowerCase()) > -1) {
           message = "Careful! The item's name contains the brand's name, and it probably shouldn't.";
-        } else {
-          message = null;
+        }
+
+        for (const word of nameControl.value.split(" ")) {
+          if (brand.name.toLowerCase().indexOf(word.toLowerCase()) > -1) {
+            message = "Careful! The brand's name contains part of the item's name, and it probably shouldn't.";
+          }
         }
 
         brandFieldConfig.templateOptions.warningMessage = message;

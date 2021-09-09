@@ -1,5 +1,16 @@
 .nav-item {
   position: relative;
+  height: calc(2.5rem + 2px);
+
+  &:not(:last-child) {
+    margin-bottom: .25rem;
+  }
+
+  img {
+    width: 2rem;
+    margin: .25rem;
+    float: left;
+  }
 
   .counter{
     position: absolute;

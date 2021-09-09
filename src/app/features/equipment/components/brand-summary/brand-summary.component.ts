@@ -1,8 +1,9 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { BrandInterface } from "@features/equipment/interfaces/brand.interface";
-import { PLACEHOLDER } from "@features/equipment/components/equipment-item-summary/equipment-item-summary.component";
 import { Store } from "@ngrx/store";
+
+export const PLACEHOLDER = "https://via.placeholder.com/50.png/000/fff?text=?";
 
 @Component({
   selector: "astrobin-brand-summary",

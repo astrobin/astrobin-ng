@@ -11,7 +11,7 @@
     <ng-container *ngFor="let property of properties">
       <span *ngIf="!!property.value" class="property">
         <span class="property-name">{{ property.name }}</span>:
-        <span class="property-value">{{ property.value }}</span>
+        <span class="property-value" [innerHTML]="property.value"></span>
       </span>
     </ng-container>
   </div>
