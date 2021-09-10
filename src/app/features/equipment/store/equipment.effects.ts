@@ -189,6 +189,5 @@ export class EquipmentEffects {
     public readonly actions$: Actions<All>,
     public readonly equipmentApiService: EquipmentApiService,
     public readonly utilsService: UtilsService
-  ) {
-  }
+  ) {}
 }
