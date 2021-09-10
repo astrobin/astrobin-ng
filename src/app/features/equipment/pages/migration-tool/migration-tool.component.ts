@@ -53,7 +53,6 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
   title = "Migration tool";
   activeType = this.activatedRoute.snapshot.paramMap.get("itemType");
   randomNonMigrated$ = this.getRandomNonMigrated$();
-  pendingReview$ = this.legacyGearApi.getPendingMigrationReview();
 
   migration: {
     inProgress: boolean;
@@ -213,9 +212,11 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
     this.loadingService.setLoading(true);
 
     const _doSkip = () => {
-      this.pendingReview$ = this.legacyGearApi.getPendingMigrationReview();
       this.randomNonMigrated$ = this.getRandomNonMigrated$();
       this.nonMigratedCamerasCount$ = this.legacyCameraApi.getNonMigratedCount();
+      this.migration.model = {};
+      this.migration.inProgress = false;
+      this.migration.form.reset();
       this.loadingService.setLoading(false);
     };
 
