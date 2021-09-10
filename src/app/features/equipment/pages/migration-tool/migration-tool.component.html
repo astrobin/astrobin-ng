@@ -48,17 +48,7 @@
     </div>
 
     <div class="col-md-9">
-      <ng-container *ngIf="pendingReview$ | async as pendingReview; else loading">
-        <div class="alert alert-info" *ngIf="pendingReview.length > 0; else randomNonMigrated">
-          <h4>Hold your horses!</h4>
-          <p>
-            You cannot migrate items while the review queue is not empty. This is to prevent creating multiple items
-            representing the same object.
-          </p>
-          <br />
-          <a routerLink="../../migration-review" class="btn btn-primary">Go to the review queue</a>
-        </div>
-      </ng-container>
+      <ng-container [ngTemplateOutlet]="randomNonMigrated"></ng-container>
     </div>
     <!-- main col -->
   </div>
