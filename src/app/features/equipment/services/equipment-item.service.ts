@@ -10,6 +10,22 @@ import { instanceOfSensor } from "@features/equipment/interfaces/sensor.interfac
 import { instanceOfCamera } from "@features/equipment/interfaces/camera.interface";
 import { instanceOfTelescope } from "@features/equipment/interfaces/telescope.interface";
 
+export function getEquipmentItemType(item: EquipmentItemBaseInterface) {
+  if (instanceOfSensor(item)) {
+    return EquipmentItemType.SENSOR;
+  }
+
+  if (instanceOfCamera(item)) {
+    return EquipmentItemType.CAMERA;
+  }
+
+  if (instanceOfTelescope(item)) {
+    return EquipmentItemType.TELESCOPE;
+  }
+
+  // TODO: complete.
+}
+
 @Injectable({
   providedIn: "root"
 })
@@ -19,18 +35,6 @@ export class EquipmentItemService extends BaseService {
   }
 
   getType(item: EquipmentItemBaseInterface): EquipmentItemType {
-    if (instanceOfSensor(item)) {
-      return EquipmentItemType.SENSOR;
-    }
-
-    if (instanceOfCamera(item)) {
-      return EquipmentItemType.CAMERA;
-    }
-
-    if (instanceOfTelescope(item)) {
-      return EquipmentItemType.TELESCOPE;
-    }
-
-    // TODO: complete.
+    return getEquipmentItemType(item);
   }
 }

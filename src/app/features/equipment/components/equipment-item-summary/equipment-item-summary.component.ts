@@ -151,7 +151,7 @@ export class EquipmentItemSummaryComponent extends BaseComponentDirective implem
     ];
 
     if (item.sensor) {
-      return this.store$.select(selectEquipmentItem, item.sensor).pipe(
+      return this.store$.select(selectEquipmentItem, { id: item.sensor, type: EquipmentItemType.SENSOR }).pipe(
         takeUntil(this.destroyed$),
         filter(sensor => !!sensor),
         switchMap(sensor =>

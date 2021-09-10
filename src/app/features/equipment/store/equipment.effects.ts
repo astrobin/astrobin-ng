@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { Observable } from "rxjs";
+import { Observable, of } from "rxjs";
 import {
   ApproveEquipmentItem,
   ApproveEquipmentItemSuccess,
@@ -33,7 +33,22 @@ import { selectBrand, selectEquipmentItem } from "@features/equipment/store/equi
 import { SensorInterface } from "@features/equipment/interfaces/sensor.interface";
 import { BrandInterface } from "@features/equipment/interfaces/brand.interface";
 import { UtilsService } from "@shared/services/utils/utils.service";
-import { EquipmentItemBaseInterface } from "@features/equipment/interfaces/equipment-item-base.interface";
+import { EquipmentItemType } from "@features/equipment/interfaces/equipment-item-base.interface";
+import { SelectorWithProps } from "@ngrx/store/src/models";
+
+function getFromStoreOrApiByIdAndType<T>(
+  store$: Store<State>,
+  id: number,
+  type: EquipmentItemType,
+  selector: SelectorWithProps<any, { id: number; type: EquipmentItemType }, T>,
+  apiCall: (number) => Observable<T>,
+  apiContext: any
+): Observable<T> {
+  const fromApi: Observable<T> = apiCall.apply(apiContext, [id]);
+  return store$
+    .select(selector, { id, type })
+    .pipe(mergeMap(fromStore => (fromStore !== null ? of(fromStore) : fromApi)));
+}
 
 @Injectable()
 export class EquipmentEffects {
@@ -133,15 +148,14 @@ export class EquipmentEffects {
       ofType(EquipmentActionTypes.LOAD_SENSOR),
       map((action: LoadSensor) => action.payload.id),
       mergeMap(id =>
-        this.utilsService
-          .getFromStoreOrApiById<EquipmentItemBaseInterface>(
-            this.store$,
-            id,
-            selectEquipmentItem,
-            this.equipmentApiService.getSensor,
-            this.equipmentApiService
-          )
-          .pipe(map(sensor => new LoadSensorSuccess({ item: sensor as SensorInterface })))
+        getFromStoreOrApiByIdAndType<SensorInterface>(
+          this.store$,
+          id,
+          EquipmentItemType.SENSOR,
+          selectEquipmentItem,
+          this.equipmentApiService.getSensor,
+          this.equipmentApiService
+        ).pipe(map(sensor => new LoadSensorSuccess({ item: sensor as SensorInterface })))
       )
     )
   );

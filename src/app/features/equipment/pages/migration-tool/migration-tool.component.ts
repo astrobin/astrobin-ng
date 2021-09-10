@@ -261,7 +261,9 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
   }
 
   confirmMigration(object: any) {
-    this.store$.select(selectEquipmentItem, this.selectedMigrationItem).subscribe(item => {
+    const type: EquipmentItemType =
+      EquipmentItemType[this.activatedRoute.snapshot.paramMap.get("itemType").toUpperCase()];
+    this.store$.select(selectEquipmentItem, { id: this.selectedMigrationItem, type }).subscribe(item => {
       this._applyMigration(
         object,
         [object.pk, MigrationFlag.MIGRATE, this.equipmentItemService.getType(item), item.id],

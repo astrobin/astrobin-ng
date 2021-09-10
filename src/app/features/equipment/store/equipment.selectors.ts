@@ -1,8 +1,12 @@
 import { EquipmentState } from "@features/equipment/store/equipment.reducer";
 import { State } from "@app/store/state";
 import { createSelector } from "@ngrx/store";
-import { EquipmentItemBaseInterface } from "@features/equipment/interfaces/equipment-item-base.interface";
+import {
+  EquipmentItemBaseInterface,
+  EquipmentItemType
+} from "@features/equipment/interfaces/equipment-item-base.interface";
 import { BrandInterface } from "@features/equipment/interfaces/brand.interface";
+import { getEquipmentItemType } from "@features/equipment/services/equipment-item.service";
 
 export const selectEquipment = (state: State): EquipmentState => state.equipment;
 
@@ -17,8 +21,11 @@ export const selectEquipmentItems = createSelector(selectEquipment, state => sta
 
 export const selectEquipmentItem = createSelector(
   selectEquipmentItems,
-  (items: EquipmentItemBaseInterface[], id: number) => {
-    const matching = items.filter(item => item.id === id);
+  (items: EquipmentItemBaseInterface[], data: { id: number; type: EquipmentItemType }) => {
+    const matching = items.filter(item => {
+      const itemType = getEquipmentItemType(item);
+      return item.id === data.id && itemType === data.type;
+    });
     return matching.length > 0 ? matching[0] : null;
   }
 );
