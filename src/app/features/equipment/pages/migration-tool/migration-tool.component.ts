@@ -217,6 +217,7 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
       this.migration.model = {};
       this.migration.inProgress = false;
       this.migration.form.reset();
+      this.migration.fields.find(field => field.key === "equipment-item").templateOptions.options = of([]);
       this.loadingService.setLoading(false);
     };
 
