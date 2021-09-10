@@ -318,7 +318,15 @@ export class BaseEquipmentItemEditorComponent<T extends EquipmentItemBaseInterfa
     const nameControl: AbstractControl = this.form.get("name");
     const brandFieldConfig: FormlyFieldConfig = this.fields.find(field => field.key === "brand");
     const nameFieldConfig: FormlyFieldConfig = this.fields.find(field => field.key === "name");
-    let message = brandFieldConfig.templateOptions.warningMessage;
+    const message =
+      "<strong>Careful!</strong> The item's name contains the brand's name (or vice versa), and it probably shouldn't.";
+
+    let previousMessage = brandFieldConfig.templateOptions.warningMessage;
+    let newMessage = null;
+
+    if (previousMessage === message) {
+      previousMessage = null;
+    }
 
     if (!brandControl.value || !nameControl.value) {
       return;
@@ -329,21 +337,17 @@ export class BaseEquipmentItemEditorComponent<T extends EquipmentItemBaseInterfa
       .pipe(filter(brand => !!brand))
       .subscribe(brand => {
         if (nameControl.value.toLowerCase().indexOf(brand.name.toLowerCase()) > -1) {
-          message = this.translateService.instant(
-            "<strong>Careful!</strong> The item's name contains the brand's name, and it probably shouldn't."
-          );
+          newMessage = this.translateService.instant(message);
         }
 
         for (const word of nameControl.value.split(" ")) {
-          if (brand.name.toLowerCase().indexOf(word.toLowerCase()) > -1) {
-            message = this.translateService.instant(
-              "<strong>Careful!</strong> The brand's name contains part of the item's name, and it probably shouldn't."
-            );
+          if (brand.name.toLowerCase() === word.toLowerCase()) {
+            newMessage = this.translateService.instant(message);
           }
         }
 
-        brandFieldConfig.templateOptions.warningMessage = message;
-        nameFieldConfig.templateOptions.warningMessage = message;
+        brandFieldConfig.templateOptions.warningMessage = newMessage;
+        nameFieldConfig.templateOptions.warningMessage = newMessage;
       });
   }
 
