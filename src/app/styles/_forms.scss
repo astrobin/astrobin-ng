@@ -31,6 +31,7 @@ label {
 .form-group {
   margin-bottom: 2rem;
 
+  &.error,
   &.has-error {
     label {
       color: var(--dangerColor);
@@ -59,7 +60,6 @@ label {
   }
 }
 
-.invalid-feedback,
-.error {
+.invalid-feedback {
   color: var(--dangerColor);
 }
