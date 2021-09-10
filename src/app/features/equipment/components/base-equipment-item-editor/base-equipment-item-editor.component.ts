@@ -219,6 +219,7 @@ export class BaseEquipmentItemEditorComponent<T extends EquipmentItemBaseInterfa
               tap((value: string) => {
                 this._validateBrandInName();
                 this._similarItemSuggestion();
+                this._checkForDangerousWords(value, field);
               })
             )
             .subscribe();
@@ -317,7 +318,7 @@ export class BaseEquipmentItemEditorComponent<T extends EquipmentItemBaseInterfa
     const nameControl: AbstractControl = this.form.get("name");
     const brandFieldConfig: FormlyFieldConfig = this.fields.find(field => field.key === "brand");
     const nameFieldConfig: FormlyFieldConfig = this.fields.find(field => field.key === "name");
-    let message = null;
+    let message = brandFieldConfig.templateOptions.warningMessage;
 
     if (!brandControl.value || !nameControl.value) {
       return;
@@ -328,17 +329,56 @@ export class BaseEquipmentItemEditorComponent<T extends EquipmentItemBaseInterfa
       .pipe(filter(brand => !!brand))
       .subscribe(brand => {
         if (nameControl.value.toLowerCase().indexOf(brand.name.toLowerCase()) > -1) {
-          message = "Careful! The item's name contains the brand's name, and it probably shouldn't.";
+          message = this.translateService.instant(
+            "<strong>Careful!</strong> The item's name contains the brand's name, and it probably shouldn't."
+          );
         }
 
         for (const word of nameControl.value.split(" ")) {
           if (brand.name.toLowerCase().indexOf(word.toLowerCase()) > -1) {
-            message = "Careful! The brand's name contains part of the item's name, and it probably shouldn't.";
+            message = this.translateService.instant(
+              "<strong>Careful!</strong> The brand's name contains part of the item's name, and it probably shouldn't."
+            );
           }
         }
 
         brandFieldConfig.templateOptions.warningMessage = message;
         nameFieldConfig.templateOptions.warningMessage = message;
       });
+  }
+
+  private _checkForDangerousWords(value: string, field: FormlyFieldConfig) {
+    let message = field.templateOptions.warningMessage;
+
+    const dangerousWords = [
+      "modified",
+      "modded",
+      "upgraded",
+      "sold",
+      "used",
+      "discontinued",
+      "broken",
+      "defective",
+      "returned",
+      "gift",
+      "present",
+      "lost"
+    ];
+
+    for (const word of dangerousWords) {
+      if (value.toLowerCase().indexOf(word) > -1) {
+        message = this.translateService.instant(
+          `<strong>Careful!</strong> Your usage of the word "{{0}}" suggests that you are using this field to
+            specify a property of this item that is only relevant to your own copy. Remember that here you are creating
+            or editing the <strong>generic instance</strong> that will be shared by all owners on AstroBin.`,
+          {
+            "0": word
+          }
+        );
+        break;
+      }
+    }
+
+    field.templateOptions.warningMessage = message;
   }
 }
