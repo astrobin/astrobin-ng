@@ -32,7 +32,6 @@ export class MigrationReviewItemComponent extends BaseComponentDirective impleme
   title = "Migration review";
   legacyItem: any;
   equipmentItem: EquipmentItemBaseInterface;
-  equipmentItem$: Observable<EquipmentItemBaseInterface>;
   user$: Observable<UserInterface>;
 
   constructor(
@@ -88,9 +87,10 @@ export class MigrationReviewItemComponent extends BaseComponentDirective impleme
         this.legacyItem = item;
 
         if (item.migrationFlag === MigrationFlag.MIGRATE) {
-          this.equipmentItem$ = this.equipmentApiService
+          this.equipmentApiService
             .getByContentTypeAndObjectId(item.migrationContentType, item.migrationObjectId)
-            .pipe(map(equipmentItem => (this.equipmentItem = equipmentItem)));
+            .pipe(take(1))
+            .subscribe(equipmentItem => (this.equipmentItem = equipmentItem));
         }
 
         this.user$ = this.userService.getUser$(item.migrationFlagModerator);

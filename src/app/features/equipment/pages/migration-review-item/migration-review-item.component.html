@@ -63,7 +63,7 @@
               </div>
 
               <div class="card-body">
-                <ng-container *ngIf="equipmentItem$ | async as equipmentItem; else loading">
+                <ng-container *ngIf="equipmentItem; else loading">
                   <astrobin-equipment-item-summary [item]="equipmentItem"></astrobin-equipment-item-summary>
                 </ng-container>
               </div>
