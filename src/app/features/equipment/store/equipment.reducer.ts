@@ -44,7 +44,8 @@ export function reducer(state = initialEquipmentState, action: EquipmentActions)
     case EquipmentActionTypes.APPROVE_EQUIPMENT_ITEM_SUCCESS:
     case EquipmentActionTypes.REJECT_EQUIPMENT_ITEM_SUCCESS:
     case EquipmentActionTypes.CREATE_SENSOR_SUCCESS:
-    case EquipmentActionTypes.CREATE_CAMERA_SUCCESS: {
+    case EquipmentActionTypes.CREATE_CAMERA_SUCCESS:
+    case EquipmentActionTypes.LOAD_SENSOR_SUCCESS: {
       return {
         ...state,
         equipmentItems: UtilsService.arrayUniqueObjects([...state.equipmentItems, ...[action.payload.item]])
