@@ -4,8 +4,8 @@ import { Store } from "@ngrx/store";
 import { TitleService } from "@shared/services/title/title.service";
 import { TranslateService } from "@ngx-translate/core";
 import { GearApiService } from "@shared/services/api/classic/astrobin/gear/gear-api.service";
-import { Observable } from "rxjs";
-import { filter, tap } from "rxjs/operators";
+import { combineLatest, Observable, of } from "rxjs";
+import { filter, map, tap } from "rxjs/operators";
 import { LoadUser, LoadUserProfile } from "@features/account/store/auth.actions";
 import { selectUser } from "@features/account/store/auth.selectors";
 import { UsernameService } from "@shared/components/misc/username/username.service";
@@ -92,5 +92,63 @@ export class MigrationReviewComponent extends BaseComponentDirective implements 
   reviewItem($event, itemId) {
     $event.target.classList.add("loading");
     this.router.navigate(["equipment", "migration-review", itemId]);
+  }
+
+  // The legacy item was moderated by the same user, so they cannot review it too.
+  isOwnItem$(legacyItem: any): Observable<boolean> {
+    return this.currentUser$.pipe(
+      map(currentUser => !currentUser || currentUser.id === legacyItem.migrationFlagModerator)
+    );
+  }
+
+  // The item is locked for review by another reviewer.
+  isLocked$(legacyItem: any): Observable<boolean> {
+    return this.currentUser$.pipe(
+      map(
+        currentUser =>
+          !currentUser ||
+          (legacyItem.migrationFlagReviewerLock && legacyItem.migrationFlagReviewerLock === currentUser.id)
+      )
+    );
+  }
+
+  isAlreadyReviewed$(legacyItem: any): Observable<boolean> {
+    return of(legacyItem.migrationFlagReviewer);
+  }
+
+  reviewButtonDisabled$(legacyItem: any): Observable<boolean> {
+    return combineLatest([
+      this.isOwnItem$(legacyItem),
+      this.isLocked$(legacyItem),
+      this.isAlreadyReviewed$(legacyItem)
+    ]).pipe(map(result => result[0] || result[1] || result[2]));
+  }
+
+  reviewButtonIcon$(legacyItem: any): Observable<string> {
+    return combineLatest([
+      this.isOwnItem$(legacyItem),
+      this.isLocked$(legacyItem),
+      this.isAlreadyReviewed$(legacyItem)
+    ]).pipe(
+      map(result => {
+        const isOwnItem: boolean = result[0];
+        const isLocked: boolean = result[1];
+        const isAlreadyReviewed: boolean = result[2];
+
+        if (isOwnItem) {
+          return "ban";
+        }
+
+        if (isLocked) {
+          return "lock";
+        }
+
+        if (isAlreadyReviewed) {
+          return "check";
+        }
+
+        return "arrow-right";
+      })
+    );
   }
 }

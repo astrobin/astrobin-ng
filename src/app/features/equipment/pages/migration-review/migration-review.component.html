@@ -62,11 +62,12 @@
             </td>
             <td>
               <a
-                class="btn btn-mini btn-primary"
-                [class.disabled]="currentUser.id === item.migrationFlagModerator"
+                class="btn btn-mini btn-primary btn-review"
+                [class.disabled]="(reviewButtonDisabled$(item) | async) === true"
                 (click)="reviewItem($event, item.pk)"
               >
                 Review
+                <fa-icon [icon]="reviewButtonIcon$(item) | async"></fa-icon>
               </a>
             </td>
           </tr>

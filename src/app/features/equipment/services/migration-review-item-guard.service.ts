@@ -9,6 +9,7 @@ import { selectCurrentUser } from "@features/account/store/auth.selectors";
 import { Store } from "@ngrx/store";
 import { Location } from "@angular/common";
 import { State } from "@app/store/state";
+import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 
 @Injectable({
   providedIn: "root"
@@ -19,7 +20,8 @@ export class MigrationReviewItemGuardService extends BaseService implements CanA
     public readonly store$: Store<State>,
     public readonly legacyGearApi: GearApiService,
     public readonly router: Router,
-    public readonly location: Location
+    public readonly location: Location,
+    public readonly popNotificationsService: PopNotificationsService
   ) {
     super(loadingService);
   }
@@ -47,12 +49,24 @@ export class MigrationReviewItemGuardService extends BaseService implements CanA
             const userId = result[0];
             const item = result[1];
 
-            return (
-              item.migrationFlag &&
-              item.migrationFlagModerator !== userId &&
-              !item.migrationFlagReviewer &&
-              (!item.migrationFlagReviewerLock || item.migrationFlagReviewerLock === userId)
-            );
+            let message;
+
+            if (!item.migrationFlag) {
+              message = "You cannot review this item: a migration wasn't proposed yet.";
+            } else if (item.migrationFlagModerator === userId) {
+              message = "You cannot review this item: you were the one who proposed a migration for it.";
+            } else if (item.migrationFlagReviewer) {
+              message = "You cannot review this item: it's already been reviewed.";
+            } else if (item.migrationFlagReviewerLock && item.migrationFlagReviewerLock !== userId) {
+              message = "You cannot review this item: it's currently locked by another user.";
+            }
+
+            if (message) {
+              this.popNotificationsService.error(message, null, { timeOut: 0 });
+              return false;
+            }
+
+            return true;
           }),
           catchError(error => {
             if (error.status === 404) {
