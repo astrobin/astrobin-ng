@@ -12,7 +12,7 @@ import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { TelescopeInterface } from "@features/equipment/interfaces/telescope.interface";
 import { UtilsService } from "@shared/services/utils/utils.service";
-import { filter, map, switchMap, takeUntil } from "rxjs/operators";
+import { filter, map, take, takeUntil, tap } from "rxjs/operators";
 import { CameraDisplayProperty, CameraService } from "@features/equipment/services/camera.service";
 import { selectBrand, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import { Observable, of } from "rxjs";
@@ -83,6 +83,29 @@ export class EquipmentItemSummaryComponent extends BaseComponentDirective implem
     }
   }
 
+  public get hasSensor(): boolean {
+    if (!instanceOfCamera(this.item)) {
+      return false;
+    }
+
+    const camera = this.item as CameraInterface;
+    return !!camera.sensor;
+  }
+
+  public get sensor$(): Observable<SensorInterface> {
+    const camera = this.item as CameraInterface;
+    return this.store$
+      .select(selectEquipmentItem, {
+        id: camera.sensor,
+        type: EquipmentItemType.SENSOR
+      })
+      .pipe(
+        takeUntil(this.destroyed$),
+        filter(item => !!item),
+        tap(item => console.log(item))
+      );
+  }
+
   private _sensorProperties(): Observable<{ name: string; value: any }[]> {
     return of([
       {
@@ -127,7 +150,7 @@ export class EquipmentItemSummaryComponent extends BaseComponentDirective implem
   private _cameraProperties(): Observable<{ name: string; value: any }[]> {
     const item: CameraInterface = this.item as CameraInterface;
 
-    const properties = [
+    return of([
       {
         name: this.translateService.instant("Class"),
         value: this.translateService.instant("Camera")
@@ -148,30 +171,7 @@ export class EquipmentItemSummaryComponent extends BaseComponentDirective implem
         name: this.translateService.instant("Back focus"),
         value: this.cameraService.getPrintableProperty(item, CameraDisplayProperty.BACK_FOCUS)
       }
-    ];
-
-    if (item.sensor) {
-      return this.store$.select(selectEquipmentItem, { id: item.sensor, type: EquipmentItemType.SENSOR }).pipe(
-        takeUntil(this.destroyed$),
-        filter(sensor => !!sensor),
-        switchMap(sensor =>
-          this.store$.select(selectBrand, sensor.brand).pipe(
-            takeUntil(this.destroyed$),
-            filter(brand => !!brand),
-            map(brand => ({ sensor, brand }))
-          )
-        ),
-        switchMap((result: { sensor: SensorInterface; brand: BrandInterface }) => {
-          properties.push({
-            name: this.translateService.instant("Sensor"),
-            value: `${result.brand.name} ${result.sensor.name}`
-          });
-          return of(properties);
-        })
-      );
-    } else {
-      return of(properties);
-    }
+    ]);
   }
 
   private _telescopeProperties(): Observable<{ name: string; value: any }[]> {
