@@ -34,7 +34,7 @@ body {
   }
 }
 
-astrobin-root:empty + .app-loading,
+astrobin-root .app-loading,
 .app-loading.active {
   opacity: 1;
   z-index: 1;

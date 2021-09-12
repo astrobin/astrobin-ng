@@ -62,11 +62,12 @@
             </td>
             <td>
               <a
-                [routerLink]="item.pk"
                 class="btn btn-mini btn-primary"
                 [class.disabled]="currentUser.id === item.migrationFlagModerator"
-                >Review</a
+                (click)="reviewItem($event, item.pk)"
               >
+                Review
+              </a>
             </td>
           </tr>
         </tbody>

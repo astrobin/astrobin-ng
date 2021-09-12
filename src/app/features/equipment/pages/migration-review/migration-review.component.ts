@@ -13,6 +13,7 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
 import { State } from "@app/store/state";
 import { UserService } from "@shared/services/user.service";
 import { MigrationFlag } from "@shared/services/api/classic/astrobin/migratable-gear-item-api.service.interface";
+import { Router } from "@angular/router";
 
 @Component({
   selector: "astrobin-migration-review",
@@ -29,7 +30,8 @@ export class MigrationReviewComponent extends BaseComponentDirective implements 
     public readonly translateService: TranslateService,
     public readonly legacyGearApi: GearApiService,
     public readonly usernameService: UsernameService,
-    public readonly userService: UserService
+    public readonly userService: UserService,
+    public readonly router: Router
   ) {
     super(store$);
   }
@@ -85,5 +87,10 @@ export class MigrationReviewComponent extends BaseComponentDirective implements 
       case MigrationFlag.MIGRATE:
         return "This legacy item will be migrated to a specific item in the new database.";
     }
+  }
+
+  reviewItem($event, itemId) {
+    $event.target.classList.add("loading");
+    this.router.navigate(["equipment", "migration-review", itemId]);
   }
 }
