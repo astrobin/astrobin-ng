@@ -12,12 +12,12 @@ import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { TelescopeInterface } from "@features/equipment/interfaces/telescope.interface";
 import { UtilsService } from "@shared/services/utils/utils.service";
-import { filter, map, take, takeUntil, tap } from "rxjs/operators";
+import { filter, takeUntil, takeWhile } from "rxjs/operators";
 import { CameraDisplayProperty, CameraService } from "@features/equipment/services/camera.service";
 import { selectBrand, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import { Observable, of } from "rxjs";
 import { SensorInterface } from "@features/equipment/interfaces/sensor.interface";
-import { LoadBrand, LoadSensor } from "@features/equipment/store/equipment.actions";
+import { LoadSensor } from "@features/equipment/store/equipment.actions";
 import { TelescopeDisplayProperty, TelescopeService } from "@features/equipment/services/telescope.service";
 import { SensorDisplayProperty, SensorService } from "@features/equipment/services/sensor.service";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
@@ -71,18 +71,6 @@ export class EquipmentItemSummaryComponent extends BaseComponentDirective implem
     }
   }
 
-  ngOnInit() {
-    this.store$.dispatch(new LoadBrand({ id: this.item.brand }));
-    this.store$
-      .select(selectBrand, this.item.brand)
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe(brand => (this.brand = brand));
-
-    if (instanceOfCamera(this.item) && this.item.sensor) {
-      this.store$.dispatch(new LoadSensor({ id: this.item.sensor }));
-    }
-  }
-
   public get hasSensor(): boolean {
     if (!instanceOfCamera(this.item)) {
       return false;
@@ -103,6 +91,20 @@ export class EquipmentItemSummaryComponent extends BaseComponentDirective implem
         takeUntil(this.destroyed$),
         filter(item => !!item)
       );
+  }
+
+  ngOnInit() {
+    this.store$
+      .select(selectBrand, this.item.brand)
+      .pipe(
+        filter(brand => !!brand),
+        takeWhile(() => !this.brand)
+      )
+      .subscribe(brand => (this.brand = brand));
+
+    if (instanceOfCamera(this.item) && this.item.sensor) {
+      this.store$.dispatch(new LoadSensor({ id: this.item.sensor }));
+    }
   }
 
   private _sensorProperties(): Observable<{ name: string; value: any }[]> {

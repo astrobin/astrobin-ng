@@ -13,7 +13,7 @@ import { LoadUser } from "@features/account/store/auth.actions";
 import { MigrationFlag } from "@shared/services/api/classic/astrobin/migratable-gear-item-api.service.interface";
 import { LoadingService } from "@shared/services/loading.service";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
-import { ApproveEquipmentItem, EquipmentActionTypes } from "@features/equipment/store/equipment.actions";
+import { ApproveEquipmentItem, EquipmentActionTypes, LoadBrand } from "@features/equipment/store/equipment.actions";
 import { Actions, ofType } from "@ngrx/effects";
 import { EquipmentItemBaseInterface } from "@features/equipment/interfaces/equipment-item-base.interface";
 import { Observable, of } from "rxjs";
@@ -90,7 +90,10 @@ export class MigrationReviewItemComponent extends BaseComponentDirective impleme
           this.equipmentApiService
             .getByContentTypeAndObjectId(item.migrationContentType, item.migrationObjectId)
             .pipe(take(1))
-            .subscribe(equipmentItem => (this.equipmentItem = equipmentItem));
+            .subscribe(equipmentItem => {
+              this.equipmentItem = equipmentItem;
+              this.store$.dispatch(new LoadBrand({ id: equipmentItem.brand }));
+            });
         }
 
         this.user$ = this.userService.getUser$(item.migrationFlagModerator);
