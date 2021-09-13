@@ -1,0 +1,32 @@
+<ul ngbNav #nav="ngbNav" [(activeId)]="activeType" class="nav-pills" orientation="vertical">
+  <li ngbNavItem="camera">
+    <img src="/assets/images/camera-placeholder.png" alt="Cameras" />
+    <a ngbNavLink routerLink="../camera">Cameras</a>
+    <span class="counter">{{ cameraCount | async }}</span>
+  </li>
+
+  <li ngbNavItem="telescope" [disabled]="true">
+    <img src="/assets/images/telescope-placeholder.png" alt="Telescopes" />
+    <a ngbNavLink routerLink="../telescope">Telescopes</a>
+  </li>
+
+  <li ngbNavItem="mount" [disabled]="true">
+    <img src="/assets/images/mount-placeholder.png" alt="Mounts" />
+    <a ngbNavLink routerLink="../mount">Mounts</a>
+  </li>
+
+  <li ngbNavItem="filter" [disabled]="true">
+    <img src="/assets/images/filter-placeholder.png" alt="Filters" />
+    <a ngbNavLink routerLink="../filter">Filters</a>
+  </li>
+
+  <li ngbNavItem="accessory" [disabled]="true">
+    <img src="/assets/images/accessory-placeholder.png" alt="Accessories" />
+    <a ngbNavLink routerLink="../accessory">Accessories</a>
+  </li>
+
+  <li ngbNavItem="software" [disabled]="true">
+    <img src="/assets/images/software-placeholder.png" alt="Software" />
+    <a ngbNavLink routerLink="../software">Software</a>
+  </li>
+</ul>

@@ -1,27 +1,3 @@
-.nav-item {
-  position: relative;
-  height: calc(2.5rem + 2px);
-
-  &:not(:last-child) {
-    margin-bottom: .25rem;
-  }
-
-  img {
-    width: 2rem;
-    margin: .25rem;
-    float: left;
-  }
-
-  .counter{
-    position: absolute;
-    top: calc(50% - .5rem);
-    right: .5rem;
-    font-size: 1rem;
-    line-height: 1rem;
-    opacity: .5;
-  }
-}
-
 ::ng-deep {
   #equipment-item-field {
     .ng-value {

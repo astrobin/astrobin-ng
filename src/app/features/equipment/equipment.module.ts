@@ -18,6 +18,11 @@ import { SensorEditorComponent } from "@features/equipment/components/sensor-edi
 import { SimilarItemsSuggestionComponent } from "./components/similar-items-suggestion/similar-items-suggestion.component";
 import { ConfirmItemCreationModalComponent } from "./components/confirm-item-creation-modal/confirm-item-creation-modal.component";
 import { RejectMigrationModalComponent } from "./components/reject-migration-modal/reject-migration-modal.component";
+import { MigrationExplorerComponent } from "./pages/migration-explorer/migration-explorer.component";
+import { MigrationItemTypeNavComponent } from "./components/migration-item-type-nav/migration-item-type-nav.component";
+import { MigrationNavComponent } from "@features/equipment/components/migration-nav/migration-nav.component";
+import { MigrationCommandmentsComponent } from "./components/migration-commandments/migration-commandments.component";
+import { MigrationTestWarningComponent } from "./components/migration-test-warning/migration-test-warning.component";
 
 @NgModule({
   declarations: [
@@ -32,7 +37,12 @@ import { RejectMigrationModalComponent } from "./components/reject-migration-mod
     MigrationReviewItemComponent,
     SimilarItemsSuggestionComponent,
     ConfirmItemCreationModalComponent,
-    RejectMigrationModalComponent
+    RejectMigrationModalComponent,
+    MigrationExplorerComponent,
+    MigrationItemTypeNavComponent,
+    MigrationNavComponent,
+    MigrationCommandmentsComponent,
+    MigrationTestWarningComponent
   ],
   imports: [
     RouterModule.forChild(routes),

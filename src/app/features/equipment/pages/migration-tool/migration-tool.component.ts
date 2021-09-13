@@ -51,7 +51,6 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
   equipmentItemOptionTemplate: TemplateRef<any>;
 
   title = "Migration tool";
-  activeType = this.activatedRoute.snapshot.paramMap.get("itemType");
   randomNonMigrated$ = this.getRandomNonMigrated$();
 
   migration: {
@@ -145,7 +144,6 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
 
     this.router.events.pipe(takeUntil(this.destroyed$)).subscribe(event => {
       if (event instanceof NavigationEnd) {
-        this.activeType = this.activatedRoute.snapshot.paramMap.get("itemType");
         this.skip();
       }
     });

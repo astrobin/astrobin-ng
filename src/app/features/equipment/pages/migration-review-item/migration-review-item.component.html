@@ -5,15 +5,7 @@
 
       <div class="row">
         <div class="col-md-3">
-          <ul ngbNav #nav="ngbNav" activeId="review" class="nav-pills mb-5" orientation="vertical">
-            <li ngbNavItem="migration">
-              <a ngbNavLink routerLink="/equipment/migration-tool">Migration</a>
-            </li>
-
-            <li ngbNavItem="review">
-              <a ngbNavLink routerLink="/equipment/migration-review">Review</a>
-            </li>
-          </ul>
+          <astrobin-migration-nav></astrobin-migration-nav>
         </div>
         <div class="col-md-9">
           <div class="card box-shadow">

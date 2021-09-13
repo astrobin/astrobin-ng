@@ -5,6 +5,7 @@ import { GroupGuardService } from "@shared/services/guards/group-guard.service";
 import { MigrationReviewComponent } from "@features/equipment/pages/migration-review/migration-review.component";
 import { MigrationReviewItemComponent } from "@features/equipment/pages/migration-review-item/migration-review-item.component";
 import { MigrationReviewItemGuardService } from "@features/equipment/services/migration-review-item-guard.service";
+import { MigrationExplorerComponent } from "@features/equipment/pages/migration-explorer/migration-explorer.component";
 
 export const routes: Routes = [
   {
@@ -27,6 +28,12 @@ export const routes: Routes = [
     path: "migration-review/:itemId",
     component: MigrationReviewItemComponent,
     canActivate: [AuthGuardService, GroupGuardService, MigrationReviewItemGuardService],
+    data: { group: "equipment_moderators" }
+  },
+  {
+    path: "migration-explorer",
+    component: MigrationExplorerComponent,
+    canActivate: [AuthGuardService, GroupGuardService],
     data: { group: "equipment_moderators" }
   }
 ];
