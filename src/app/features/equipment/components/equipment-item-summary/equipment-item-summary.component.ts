@@ -101,8 +101,7 @@ export class EquipmentItemSummaryComponent extends BaseComponentDirective implem
       })
       .pipe(
         takeUntil(this.destroyed$),
-        filter(item => !!item),
-        tap(item => console.log(item))
+        filter(item => !!item)
       );
   }
 

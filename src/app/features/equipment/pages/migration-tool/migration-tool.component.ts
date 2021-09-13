@@ -9,7 +9,7 @@ import {
 import { TitleService } from "@shared/services/title/title.service";
 import { FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
-import { EMPTY, Observable, of } from "rxjs";
+import { EMPTY, forkJoin, Observable, of } from "rxjs";
 import { BrandInterface } from "@features/equipment/interfaces/brand.interface";
 import { MigrationFlag } from "@shared/services/api/classic/astrobin/migratable-gear-item-api.service.interface";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
@@ -66,6 +66,20 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
     form: new FormGroup({}),
     fields: null,
     q: null
+  };
+
+  migrationConfirmation: {
+    inProgress: boolean;
+    model: boolean[];
+    form: FormGroup;
+    fields: FormlyFieldConfig[];
+    similarItems: any[];
+  } = {
+    inProgress: false,
+    model: [],
+    form: new FormGroup({}),
+    fields: null,
+    similarItems: []
   };
 
   creation: {
@@ -262,23 +276,96 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
     }, 1);
   }
 
+  beginMigrationConfirmation(object) {
+    const itemType = this.activatedRoute.snapshot.paramMap.get("itemType");
+    let api;
+
+    // TODO: complete
+    switch (itemType.toLowerCase()) {
+      case EquipmentItemType.CAMERA.toLowerCase():
+        api = this.legacyCameraApi;
+        break;
+      default:
+        this.popNotificationsService.error("Wrong item type requested.");
+    }
+
+    if (api) {
+      this.loadingService.setLoading(true);
+      api
+        .getSimilarNonMigrated(object.pk)
+        .pipe(
+          take(1),
+          switchMap((legacyItems: any[]) => {
+            this.migrationConfirmation.similarItems = legacyItems;
+
+            if (legacyItems.length === 0) {
+              return of(legacyItems);
+            }
+
+            return forkJoin(...[legacyItems.map(item => this.legacyGearApi.lockForMigration(item.pk))]).pipe(
+              map(() => legacyItems)
+            );
+          })
+        )
+        .subscribe(legacyItems => {
+          this.loadingService.setLoading(false);
+
+          if (legacyItems.length === 0) {
+            this.confirmMigration(object);
+          } else {
+            this.migrationConfirmation.inProgress = true;
+            this.migrationConfirmation.model = legacyItems.map(item => item.pk);
+            this.migrationConfirmation.fields = legacyItems.map(item => ({
+              key: `similar-item-${item.pk}`,
+              type: "checkbox",
+              id: `similar-item-${item.pk}`,
+              defaultValue: false,
+              templateOptions: {
+                required: false,
+                label: this.gearService.getDisplayName(item.make, item.name),
+                value: item.pk
+              }
+            }));
+            setTimeout(() => {
+              const document = this.windowRefService.nativeWindow.document;
+              document.getElementById("confirm-migration").scrollIntoView({ behavior: "smooth" });
+            }, 1);
+          }
+        });
+    }
+  }
+
+  resetMigrationConfirmation() {
+    this.migrationConfirmation.inProgress = false;
+    this.migrationConfirmation.model = [];
+    this.migrationConfirmation.form.reset();
+  }
+
   confirmMigration(object: any) {
     const type: EquipmentItemType =
       EquipmentItemType[this.activatedRoute.snapshot.paramMap.get("itemType").toUpperCase()];
-    this.store$.select(selectEquipmentItem, { id: this.selectedMigrationItem, type }).subscribe(item => {
-      this._applyMigration(
-        object,
-        [object.pk, MigrationFlag.MIGRATE, this.equipmentItemService.getType(item), item.id],
-        "ready to migrate"
-      );
-    });
+
+    const selectedSimilarItems = this._getSelectedSimilarItems();
+    const similarItems = this.migrationConfirmation.similarItems.filter(
+      item => selectedSimilarItems.indexOf(item.pk) > -1
+    );
+
+    for (const itemToMigrate of [...[object], ...similarItems]) {
+      this.store$.select(selectEquipmentItem, { id: this.selectedMigrationItem, type }).subscribe(item => {
+        this._applyMigration(
+          itemToMigrate,
+          [itemToMigrate.pk, MigrationFlag.MIGRATE, type, item.id],
+          "ready to migrate"
+        );
+      });
+    }
   }
 
   cancelMigration() {
     this.migration.inProgress = false;
   }
 
-  restItemCreation() {
+  resetItemCreation() {
     this.creation.inProgress = false;
     this.creation.model = {};
     this.creation.form.reset();
@@ -329,7 +416,7 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
   }
 
   itemCreated(item: EquipmentItemBaseInterface) {
-    this.restItemCreation();
+    this.resetItemCreation();
 
     this.store$.dispatch(new LoadBrand({ id: item.brand }));
 
@@ -427,9 +514,13 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
         () => {
           this.loadingService.setLoading(false);
           this.migration.inProgress = false;
+          this.resetMigrationConfirmation();
           this.skip(object);
           this.popNotificationsService.success(
-            `Good job! Item <strong>${object.make} ${object.name}</strong> marked as <strong>${markedAs}</strong>! Do another one now! 😃`,
+            `Good job! Item <strong>${this.gearService.getDisplayName(
+              object.make,
+              object.name
+            )}</strong> marked as <strong>${markedAs}</strong>! Do another one now! 😃`,
             null,
             {
               enableHtml: true
@@ -463,5 +554,20 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
     if (skip) {
       this.skip();
     }
+  }
+
+  _getSelectedSimilarItems() {
+    const items = [];
+
+    for (const key of Object.keys(this.migrationConfirmation.form.value)) {
+      const pk: number = +key.split("similar-item-")[1];
+      const value: boolean = this.migrationConfirmation.form.value[key];
+
+      if (value) {
+        items.push(pk);
+      }
+    }
+
+    return items;
   }
 }

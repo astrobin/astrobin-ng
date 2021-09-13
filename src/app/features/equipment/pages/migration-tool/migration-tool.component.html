@@ -75,7 +75,10 @@
   <ng-container *ngIf="randomNonMigrated$ | async as objects; else loading">
     <ng-container *ngIf="objects.length > 0; else allDone">
       <ng-container *ngIf="objects[0] as object">
-        <div class="card box-shadow" [class.disabled]="migration.inProgress || creation.inProgress">
+        <div
+          class="card box-shadow"
+          [class.disabled]="migration.inProgress || creation.inProgress || migrationConfirmation.inProgress"
+        >
           <div class="card-header">
             What would you like to do with the following legacy item?
           </div>
@@ -114,7 +117,7 @@
           <div class="card-footer">
             <button
               class="btn btn-sm-block btn-secondary"
-              [disabled]="migration.inProgress || creation.inProgress"
+              [disabled]="migration.inProgress || creation.inProgress || migrationConfirmation.inProgress"
               [class.loading]="loadingService.isLoading()"
               (click)="skip(object)"
             >
@@ -126,7 +129,7 @@
                 ngbDropdownToggle
                 id="mark-as-dropdown-button"
                 class="btn btn-sm-block btn-secondary"
-                [disabled]="migration.inProgress || creation.inProgress"
+                [disabled]="migration.inProgress || creation.inProgress || migrationConfirmation.inProgress"
                 [class.loading]="loadingService.isLoading()"
               >
                 Mark as...
@@ -153,7 +156,7 @@
 
             <button
               class="btn btn-sm-block btn-primary"
-              [disabled]="migration.inProgress || creation.inProgress"
+              [disabled]="migration.inProgress || creation.inProgress || migrationConfirmation.inProgress"
               [class.loading]="loadingService.isLoading()"
               (click)="beginMigration(object)"
             >
@@ -167,7 +170,11 @@
             <fa-icon icon="arrow-down"></fa-icon>
           </div>
 
-          <div class="card" [class.disabled]="creation.inProgress" id="select-item-to-migrate-to">
+          <div
+            class="card"
+            [class.disabled]="creation.inProgress || migrationConfirmation.inProgress"
+            id="select-item-to-migrate-to"
+          >
             <div class="card-header">
               Select equipment object to migrate "<strong>{{ object.make || "(no brand)" }}</strong>
               {{ object.name || "(no name)" }}" to, or create a new one
@@ -186,7 +193,7 @@
             <div class="card-footer">
               <button
                 class="btn btn-sm-block btn-secondary"
-                [disabled]="creation.inProgress"
+                [disabled]="creation.inProgress || migrationConfirmation.inProgress"
                 [class.loading]="loadingService.isLoading()"
                 (click)="cancelMigration()"
               >
@@ -195,9 +202,9 @@
 
               <button
                 class="btn btn-sm-block btn-primary"
-                [disabled]="!selectedMigrationItem || creation.inProgress"
+                [disabled]="!selectedMigrationItem || creation.inProgress || migrationConfirmation.inProgress"
                 [class.loading]="loadingService.isLoading()"
-                (click)="confirmMigration(object)"
+                (click)="beginMigrationConfirmation(object)"
               >
                 Confirm migration
               </button>
@@ -233,7 +240,7 @@
                 <button
                   class="btn btn-sm-block btn-secondary"
                   [class.loading]="loadingService.isLoading()"
-                  (click)="restItemCreation()"
+                  (click)="resetItemCreation()"
                 >
                   Cancel
                 </button>
@@ -245,6 +252,73 @@
                   (click)="createItem()"
                 >
                   Create item
+                </button>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+
+        <ng-container *ngIf="migrationConfirmation.inProgress">
+          <div class="mt-4 mb-4 text-center">
+            <fa-icon icon="arrow-down"></fa-icon>
+          </div>
+
+          <div class="mt-4 mb-4">
+            <div class="card" id="confirm-migration">
+              <div class="card-header">
+                Confirm migration
+              </div>
+
+              <div class="card-body">
+                <div class="alert alert-info">
+                  We found more items in the legacy database that are similar to the one you are migrating. Please check
+                  the ones that you want to migrate along! <strong>Please be careful!</strong> Not all items that
+                  AstroBin thinks are similar, are necessarily the same product. Only check the ones that you are sure
+                  of.
+                </div>
+
+                <h5 class="mt-5 mb-4">Legacy item being migrated</h5>
+
+                <div class="custom-control custom-checkbox">
+                  <input
+                    type="checkbox"
+                    class="custom-control-input"
+                    id="legacy-item-being-migrated"
+                    disabled="disabled"
+                    checked
+                  />
+                  <label class="custom-control-label" for="legacy-item-being-migrated">
+                    {{ gearService.getDisplayName(object.make, object.name) }}
+                  </label>
+                </div>
+
+                <h5 class="mt-5 mb-4">Similar legacy items</h5>
+
+                <form [formGroup]="migrationConfirmation.form">
+                  <formly-form
+                    [fields]="migrationConfirmation.fields"
+                    [form]="migrationConfirmation.form"
+                    [model]="migrationConfirmation.model"
+                  ></formly-form>
+                </form>
+              </div>
+
+              <div class="card-footer">
+                <button
+                  class="btn btn-sm-block btn-secondary"
+                  [class.loading]="loadingService.isLoading()"
+                  (click)="resetMigrationConfirmation()"
+                >
+                  Cancel
+                </button>
+
+                <button
+                  class="btn btn-sm-block btn-primary"
+                  [disabled]="!migrationConfirmation.form.valid"
+                  [class.loading]="loadingService.isLoading()"
+                  (click)="confirmMigration(object)"
+                >
+                  Confirm selected migrations
                 </button>
               </div>
             </div>

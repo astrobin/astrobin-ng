@@ -20,6 +20,8 @@ export interface MigratableGearItemApiServiceInterface {
 
   getPendingMigrationReview?(): Observable<any[]>;
 
+  getSimilarNonMigrated?(): Observable<any[]>;
+
   lockForMigration?(gearId: number): Observable<void>;
 
   releaseLockForMigration?(gearId: number): Observable<void>;
