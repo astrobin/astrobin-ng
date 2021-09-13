@@ -52,10 +52,24 @@
       </ul>
     </div>
 
-    <div class="col-md-9">
+    <div class="col-md-7">
       <ng-container [ngTemplateOutlet]="randomNonMigrated"></ng-container>
     </div>
     <!-- main col -->
+
+    <div class="col-md-2">
+      <div class="alert alert-info text-center commandments">
+        <strong>Thou shall follow the rules.</strong> Do read the migration commandments or be cursed!
+        <a
+          target="_blank"
+          class="btn btn-primary btn-block mt-4"
+          href="https://welcome.astrobin.com/equipment-migration-guidelines"
+        >
+          <strong>READ</strong>
+        </a>
+      </div>
+    </div>
+    <!-- guidelines col -->
   </div>
   <!-- main row -->
 </div>
