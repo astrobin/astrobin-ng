@@ -14,15 +14,5 @@
         <span class="property-value" [innerHTML]="property.value"></span>
       </span>
     </ng-container>
-
-    <ng-container *ngIf="hasSensor">
-      <ng-container *ngIf="(sensor$ | async) as sensor">
-        <hr />
-        <div class="sensor">
-          <h5>{{ "Sensor details" | translate }}</h5>
-          <astrobin-equipment-item-summary [item]="sensor" [showImage]="false"></astrobin-equipment-item-summary>
-        </div>
-      </ng-container>
-    </ng-container>
   </div>
 </ng-container>

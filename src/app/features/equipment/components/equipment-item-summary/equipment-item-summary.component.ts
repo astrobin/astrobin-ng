@@ -71,29 +71,6 @@ export class EquipmentItemSummaryComponent extends BaseComponentDirective implem
     }
   }
 
-  public get hasSensor(): boolean {
-    if (!instanceOfCamera(this.item)) {
-      return false;
-    }
-
-    const camera = this.item as CameraInterface;
-    return !!camera.sensor;
-  }
-
-  public get sensor$(): Observable<SensorInterface> {
-    const camera = this.item as CameraInterface;
-    return this.store$
-      .select(selectEquipmentItem, {
-        id: camera.sensor,
-        type: EquipmentItemType.SENSOR
-      })
-      .pipe(
-        filter(item => !!item),
-        take(1),
-        tap(item => this.store$.dispatch(new LoadBrand({ id: item.brand })))
-      );
-  }
-
   ngOnInit() {
     this.store$
       .select(selectBrand, this.item.brand)
