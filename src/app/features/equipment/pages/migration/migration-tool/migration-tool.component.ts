@@ -155,7 +155,11 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
     const _doSkip = () => {
       this.randomNonMigrated$ = this.getRandomNonMigrated$();
       this.nonMigratedCamerasCount$ = this.legacyCameraApi.getNonMigratedCount();
-      this.equipmentItemBrowser.reset();
+
+      if (!!this.equipmentItemBrowser) {
+        this.equipmentItemBrowser.reset();
+      }
+
       this.loadingService.setLoading(false);
     };
 
