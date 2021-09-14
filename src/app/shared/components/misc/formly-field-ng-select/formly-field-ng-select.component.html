@@ -8,8 +8,9 @@
 
 <ng-template #select let-items="items">
   <ng-select
+    #ngSelect
     [addTagText]="'Create new:' | translate"
-    [addTag]="to.addTag"
+    [addTag]="to.addTag ? onAddTag.bind(this) : undefined"
     [attr.id]="field.id"
     [bindValue]="to.bindValue || 'value'"
     [bindLabel]="to.bindLabel || 'label'"

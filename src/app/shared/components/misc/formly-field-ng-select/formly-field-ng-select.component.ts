@@ -1,9 +1,10 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { FieldType } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { isObservable, Observable, Subject, Subscription } from "rxjs";
 import { debounceTime, distinctUntilChanged, takeUntil, tap } from "rxjs/operators";
+import { NgSelectComponent } from "@ng-select/ng-select";
 
 @Component({
   selector: "astrobin-formly-field-ng-select",
@@ -11,6 +12,9 @@ import { debounceTime, distinctUntilChanged, takeUntil, tap } from "rxjs/operato
   styleUrls: ["./formly-field-ng-select.component.scss"]
 })
 export class FormlyFieldNgSelectComponent extends FieldType implements OnInit, OnDestroy {
+  @ViewChild("ngSelect")
+  private _ngSelect: NgSelectComponent;
+
   constructor(public readonly translateService: TranslateService) {
     super();
   }
@@ -36,6 +40,14 @@ export class FormlyFieldNgSelectComponent extends FieldType implements OnInit, O
     if (this.inputSubscription) {
       this.inputSubscription.unsubscribe();
     }
+  }
+
+  onAddTag() {
+    if (this._ngSelect) {
+      this._ngSelect.close();
+    }
+
+    this.to.addTag();
   }
 
   onSearch(value) {
