@@ -198,49 +198,58 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
   }
 
   _setFields() {
-    this.fields = [
-      {
-        key: "equipment-item",
-        type: "ng-select",
-        id: "equipment-item-field",
-        expressionProperties: {
-          "templateOptions.disabled": () => this.creationMode
-        },
-        templateOptions: {
-          required: true,
-          clearable: true,
-          label: this.translateService.instant("Find equipment item"),
-          options: of([]),
-          onSearch: (term: string) => {
-            this._onSearch(term);
-          },
-          optionTemplate: this.equipmentItemOptionTemplate,
-          addTag: () => {
-            this.startCreationMode();
-            setTimeout(() => {
-              this.windowRefService.nativeWindow.document
-                .getElementById("create-new-item")
-                .scrollIntoView({ behavior: "smooth" });
-            }, 1);
-          }
-        },
-        hooks: {
-          onInit: (field: FormlyFieldConfig) => {
-            field.formControl.valueChanges
-              .pipe(
-                takeUntil(this.destroyed$),
-                switchMap((id: EquipmentItemBaseInterface["id"]) =>
-                  this.store$.select(selectEquipmentItem, {
-                    id,
-                    type: this.type
-                  })
-                )
-              )
-              .subscribe((item: EquipmentItemBaseInterface) => this.itemSelected.emit(item));
-          }
-        }
-      }
-    ];
+    const _addTag = () => {
+      this.startCreationMode();
+      setTimeout(() => {
+        this.windowRefService.nativeWindow.document
+          .getElementById("create-new-item")
+          .scrollIntoView({ behavior: "smooth" });
+      }, 1);
+    };
+
+    this.currentUser$
+      .pipe(
+        takeUntil(this.destroyed$),
+        map(currentUser => {
+          this.fields = [
+            {
+              key: "equipment-item",
+              type: "ng-select",
+              id: "equipment-item-field",
+              expressionProperties: {
+                "templateOptions.disabled": () => this.creationMode
+              },
+              templateOptions: {
+                required: true,
+                clearable: true,
+                label: this.translateService.instant("Find equipment item"),
+                options: of([]),
+                onSearch: (term: string) => {
+                  this._onSearch(term);
+                },
+                optionTemplate: this.equipmentItemOptionTemplate,
+                addTag: !!currentUser ? _addTag : undefined
+              },
+              hooks: {
+                onInit: (field: FormlyFieldConfig) => {
+                  field.formControl.valueChanges
+                    .pipe(
+                      takeUntil(this.destroyed$),
+                      switchMap((id: EquipmentItemBaseInterface["id"]) =>
+                        this.store$.select(selectEquipmentItem, {
+                          id,
+                          type: this.type
+                        })
+                      )
+                    )
+                    .subscribe((item: EquipmentItemBaseInterface) => this.itemSelected.emit(item));
+                }
+              }
+            }
+          ];
+        })
+      )
+      .subscribe();
   }
 
   _onSearch(q: string) {

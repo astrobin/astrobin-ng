@@ -80,6 +80,7 @@ context("Equipment", () => {
   context("Explorer", () => {
     context("Create camera with no brand/sensor process", () => {
       it("should start the creation process", () => {
+        cy.login();
         cy.visitPage("/equipment/explorer");
 
         cy.get("#equipment-item-field .ng-input input").type("Test");
