@@ -1,63 +1,63 @@
+const testBrand = {
+  id: 1,
+  deleted: null,
+  created: "2021-09-12T08:09:23.625390",
+  updated: "2021-09-12T08:09:23.625437",
+  name: "Test brand",
+  website: "https://www.test-brand.com",
+  logo: null,
+  createdBy: 1
+};
+
+const testSensor = {
+  id: 1,
+  deleted: null,
+  reviewedTimestamp: null,
+  reviewerDecision: null,
+  reviewerRejectionReason: null,
+  reviewerComment: null,
+  created: "2021-09-14T10:56:10.388669",
+  updated: "2021-09-14T10:56:10.388688",
+  name: "Test sensor",
+  image: null,
+  quantumEfficiency: null,
+  pixelSize: null,
+  pixelWidth: null,
+  pixelHeight: null,
+  sensorWidth: null,
+  sensorHeight: null,
+  fullWellCapacity: null,
+  readNoise: null,
+  frameRate: null,
+  adc: null,
+  colorOrMono: null,
+  createdBy: 1,
+  reviewedBy: null,
+  brand: 1
+};
+
+const testCamera = {
+  id: 1,
+  deleted: null,
+  reviewedTimestamp: null,
+  reviewerDecision: null,
+  reviewerRejectionReason: null,
+  reviewerComment: null,
+  created: "2021-09-12T08:09:58.508643",
+  updated: "2021-09-12T08:09:58.508679",
+  name: "Test",
+  image: null,
+  type: "DEDICATED_DEEP_SKY",
+  cooled: true,
+  maxCooling: null,
+  backFocus: null,
+  createdBy: 1,
+  reviewedBy: null,
+  brand: 1,
+  sensor: 1
+};
+
 context("Equipment", () => {
-  const testBrand = {
-    id: 1,
-    deleted: null,
-    created: "2021-09-12T08:09:23.625390",
-    updated: "2021-09-12T08:09:23.625437",
-    name: "Test brand",
-    website: "https://www.test-brand.com",
-    logo: null,
-    createdBy: 1
-  };
-
-  const testSensor = {
-    id: 1,
-    deleted: null,
-    reviewedTimestamp: null,
-    reviewerDecision: null,
-    reviewerRejectionReason: null,
-    reviewerComment: null,
-    created: "2021-09-14T10:56:10.388669",
-    updated: "2021-09-14T10:56:10.388688",
-    name: "Test sensor",
-    image: null,
-    quantumEfficiency: null,
-    pixelSize: null,
-    pixelWidth: null,
-    pixelHeight: null,
-    sensorWidth: null,
-    sensorHeight: null,
-    fullWellCapacity: null,
-    readNoise: null,
-    frameRate: null,
-    adc: null,
-    colorOrMono: null,
-    createdBy: 1,
-    reviewedBy: null,
-    brand: 1
-  };
-
-  const testCamera = {
-    id: 1,
-    deleted: null,
-    reviewedTimestamp: null,
-    reviewerDecision: null,
-    reviewerRejectionReason: null,
-    reviewerComment: null,
-    created: "2021-09-12T08:09:58.508643",
-    updated: "2021-09-12T08:09:58.508679",
-    name: "Test",
-    image: null,
-    type: "DEDICATED_DEEP_SKY",
-    cooled: true,
-    maxCooling: null,
-    backFocus: null,
-    createdBy: 1,
-    reviewedBy: null,
-    brand: 1,
-    sensor: 1
-  };
-
   beforeEach(() => {
     cy.server();
     cy.setupInitializationRoutes();
@@ -120,34 +120,16 @@ context("Equipment", () => {
         cy.login();
         cy.visitPage("/equipment/explorer");
 
-        cy.get("#equipment-item-field .ng-input input").type("Test");
-        cy.wait("@findCameras");
-
-        cy.get("#equipment-item-field .ng-option").should("have.length", 1);
-        cy.get("#equipment-item-field .ng-option:nth-child(1) span span").should("contain", "Create new");
-        cy.get("#equipment-item-field .ng-option:nth-child(1) span").should("contain", `"Test"`);
-        cy.get("#equipment-item-field .ng-option:nth-child(1)").click();
+        cy.equipmentItemBrowserCreate("#equipment-item-field", "Test", "@findCameras");
       });
 
       it("should create a brand", () => {
-        cy.get("#equipment-item-field-brand .ng-input input").type("Test brand");
-        cy.wait("@findBrands");
-
-        cy.get("#equipment-item-field-brand .ng-option:nth-child(1) span span").should("contain", "Create new");
-        cy.get("#equipment-item-field-brand .ng-option:nth-child(1) span").should("contain", `"Test brand"`);
-        cy.get("#equipment-item-field-brand .ng-option:nth-child(1)").click();
-
-        cy.get("#brand-field-name").should("have.value", "Test brand");
-        cy.get("#brand-field-website").type("https://www.test-brand.com/");
-
-        cy.route("POST", "**/api/v2/equipment/brand/", testBrand).as("createBrand");
-        cy.route("GET", "**/api/v2/equipment/brand/1/", testBrand);
-
-        cy.get("#create-new-brand .btn-primary").click();
-
-        cy.wait("@createBrand");
-
-        cy.get("#equipment-item-field-brand .ng-value").should("contain", "Test brand");
+        cy.equipmentItemBrowserCreateBrand(
+          "#equipment-item-field-brand",
+          "Test brand",
+          "https://www.test-brand.com/",
+          testBrand
+        );
       });
 
       it("should have prefilled the name", () => {
@@ -155,45 +137,19 @@ context("Equipment", () => {
       });
 
       it("should fill the type", () => {
-        cy.get("#camera-field-type .ng-input input").click();
-        cy.get("#camera-field-type .ng-option:nth-child(1)").click();
-        cy.get("#camera-field-type .ng-value").should("contain", "Dedicated deep-sky camera");
+        cy.ngSelectOpen("#camera-field-type");
+        cy.ngSelectOptionClick("#camera-field-type", 1);
+        cy.ngSelectValueShouldContain("#camera-field-type", "Dedicated deep-sky camera");
       });
 
       it("should create a sensor", () => {
-        cy.get("#camera-field-sensor .ng-input input").type("Test sensor");
-        cy.wait("@findSensors");
-        cy.get("#camera-field-sensor .ng-option").should("have.length", 1);
-        cy.get("#camera-field-sensor .ng-option:nth-child(1) span span").should("contain", "Create new");
-        cy.get("#camera-field-sensor .ng-option:nth-child(1) span").should("contain", `"Test sensor"`);
-        cy.get("#camera-field-sensor .ng-option:nth-child(1)").click();
-
-        // CREATE SENSOR BRAND
-        cy.get("#create-new-sensor #equipment-item-field-brand .ng-input input").type("Test brand");
-        cy.wait("@findBrands");
-
-        cy.get("#create-new-sensor #equipment-item-field-brand .ng-option:nth-child(1) span span").should(
-          "contain",
-          "Create new"
+        cy.equipmentItemBrowserCreate("#camera-field-sensor", "Test sensor", "@findSensors");
+        cy.equipmentItemBrowserCreateBrand(
+          "#create-new-sensor #equipment-item-field-brand",
+          "Test brand",
+          "https://www.test-brand.com/",
+          testBrand
         );
-        cy.get("#create-new-sensor #equipment-item-field-brand .ng-option:nth-child(1) span").should(
-          "contain",
-          `"Test brand"`
-        );
-        cy.get("#create-new-sensor #equipment-item-field-brand .ng-option:nth-child(1)").click();
-
-        cy.get("#create-new-sensor #brand-field-name").should("have.value", "Test brand");
-        cy.get("#create-new-sensor #brand-field-website").type("https://www.test-brand.com/");
-
-        cy.route("POST", "**/api/v2/equipment/brand/", testBrand).as("createBrand");
-        cy.route("GET", "**/api/v2/equipment/brand/1/", testBrand);
-
-        cy.get("#create-new-sensor #create-new-brand .btn-primary").click();
-
-        cy.wait("@createBrand");
-
-        cy.get("#create-new-sensor #equipment-item-field-brand .ng-value").should("contain", "Test brand");
-        // END CREATE SENSOR BRAND
 
         cy.get("#create-new-sensor #equipment-item-field-name").should("have.value", "Test sensor");
 
@@ -205,7 +161,7 @@ context("Equipment", () => {
 
         cy.wait("@createSensor");
 
-        cy.get("#camera-field-sensor .ng-value").should("contain", "Test sensor");
+        cy.ngSelectValueShouldContain("#camera-field-sensor", "Test sensor");
       });
 
       it("should show 'Max cooling' only if 'Cooled'", () => {
@@ -228,34 +184,18 @@ context("Equipment", () => {
           .contains("Confirm item creation")
           .should("be.visible");
 
-        cy.get(".modal astrobin-equipment-item-summary .label strong").should("contain", "Test brand");
-        cy.get(".modal astrobin-equipment-item-summary .label").should("contain", "Test");
-        cy.get(".modal astrobin-equipment-item-summary .property")
-          .contains("Class")
-          .find("+.property-value")
-          .should("contain", "Camera");
-        cy.get(".modal astrobin-equipment-item-summary .property")
-          .contains("Type")
-          .find("+.property-value")
-          .should("contain", "Dedicated deep-sky camera");
-        cy.get(".modal astrobin-equipment-item-summary .property")
-          .contains("Cooled")
-          .find("+.property-value")
-          .should("contain", "Yes");
-        cy.get(".modal astrobin-equipment-item-summary .property")
-          .contains("Max. cooling")
-          .find("+.property-value")
-          .should("contain", "20 °C");
-        cy.get(".modal astrobin-equipment-item-summary .property")
-          .contains("Back focus")
-          .find("+.property-value")
-          .should("contain", "20 mm");
+        cy.equipmentItemSummaryShouldHaveItem(".modal", "Test brand", "Test");
+        cy.equipmentItemSummaryShouldHaveProperty(".modal", "Class", "Camera");
+        cy.equipmentItemSummaryShouldHaveProperty(".modal", "Type", "Dedicated deep-sky camera");
+        cy.equipmentItemSummaryShouldHaveProperty(".modal", "Cooled", "Yes");
+        cy.equipmentItemSummaryShouldHaveProperty(".modal", "Max. cooling", "20 °C");
+        cy.equipmentItemSummaryShouldHaveProperty(".modal", "Back focus", "20 mm");
 
         cy.get(".modal-footer .btn-danger").click();
 
         cy.wait("@createCamera");
 
-        cy.get("#equipment-item-field .ng-value").should("contain", "Test brand Test");
+        cy.ngSelectValueShouldContain("#equipment-item-field", "Test brand Test");
       });
     });
   });
