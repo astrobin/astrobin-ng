@@ -281,6 +281,6 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
       })
     };
 
-    return this.http.put<T>(`${this.configUrl}/${path}/${id}/image/`, formData, httpOptions);
+    return this.http.post<T>(`${this.configUrl}/${path}/${id}/image/`, formData, httpOptions);
   }
 }
