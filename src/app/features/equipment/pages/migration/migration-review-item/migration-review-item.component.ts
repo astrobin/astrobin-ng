@@ -18,7 +18,7 @@ import { Actions, ofType } from "@ngrx/effects";
 import { EquipmentItemBaseInterface } from "@features/equipment/interfaces/equipment-item-base.interface";
 import { Observable, of } from "rxjs";
 import { UserInterface } from "@shared/interfaces/user.interface";
-import { RejectMigrationModalComponent } from "@features/equipment/components/reject-migration-modal/reject-migration-modal.component";
+import { RejectMigrationModalComponent } from "@features/equipment/components/migration/reject-migration-modal/reject-migration-modal.component";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { CameraApiService } from "@shared/services/api/classic/gear/camera/camera-api.service";
 

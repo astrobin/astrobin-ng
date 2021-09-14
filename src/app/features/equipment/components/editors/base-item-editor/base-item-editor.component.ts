@@ -32,7 +32,7 @@ import { EquipmentItemService } from "@features/equipment/services/equipment-ite
   selector: "astrobin-base-equipment-item-editor",
   template: ""
 })
-export class BaseEquipmentItemEditorComponent<T extends EquipmentItemBaseInterface> extends BaseComponentDirective
+export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface> extends BaseComponentDirective
   implements AfterViewInit {
   fields: FormlyFieldConfig[];
 
@@ -63,10 +63,12 @@ export class BaseEquipmentItemEditorComponent<T extends EquipmentItemBaseInterfa
   brandCreation: {
     inProgress: boolean;
     form: FormGroup;
+    model: Partial<BrandInterface>;
     name: string;
   } = {
     inProgress: false,
     form: new FormGroup({}),
+    model: {},
     name: null
   };
 
@@ -92,12 +94,18 @@ export class BaseEquipmentItemEditorComponent<T extends EquipmentItemBaseInterfa
     setTimeout(() => {
       const document = this.windowRefService.nativeWindow.document;
       (document.querySelector("#equipment-item-field-brand .ng-input input") as HTMLElement).focus();
-    }, 1);
+    }, 100);
   }
 
-  resetBrandCreation() {
+  startBrandCreation() {
+    this.brandCreation.inProgress = true;
+    this.subCreationInProgress.emit(true);
+  }
+
+  endBrandCreation() {
     this.brandCreation.inProgress = false;
     this.subCreationInProgress.emit(false);
+    this.brandCreation.model = {};
     this.brandCreation.form.reset();
   }
 
@@ -117,7 +125,6 @@ export class BaseEquipmentItemEditorComponent<T extends EquipmentItemBaseInterfa
   }
 
   brandCreated(brand: BrandInterface) {
-    this.resetBrandCreation();
     this.fields.find(field => field.key === "brand").templateOptions.options = [
       {
         value: brand.id,
@@ -128,6 +135,7 @@ export class BaseEquipmentItemEditorComponent<T extends EquipmentItemBaseInterfa
     this.model = { ...this.model, ...{ brand: brand.id } };
     this.form.controls.brand.setValue(brand.id);
     this.brandCreation.name = brand.name;
+    this.endBrandCreation();
 
     if (this.returnToSelector) {
       setTimeout(() => {
@@ -156,8 +164,7 @@ export class BaseEquipmentItemEditorComponent<T extends EquipmentItemBaseInterfa
         },
         optionTemplate: this.brandOptionTemplate,
         addTag: () => {
-          this.brandCreation.inProgress = true;
-          this.subCreationInProgress.emit(true);
+          this.startBrandCreation();
           this.form.get("brand").setValue(null);
           setTimeout(() => {
             this.windowRefService.nativeWindow.document
@@ -171,12 +178,12 @@ export class BaseEquipmentItemEditorComponent<T extends EquipmentItemBaseInterfa
           field.formControl.valueChanges
             .pipe(
               takeUntil(this.destroyed$),
-              filter(value => !!value),
               tap(value => {
-                if (this.form.get("name").value) {
+                if (!!value && this.form.get("name").value) {
                   this.form.get("name").markAsTouched();
                 }
               }),
+              filter(value => !!value),
               switchMap((value: BrandInterface["id"]) => {
                 return this.equipmentApiService.getBrand(value);
               }),

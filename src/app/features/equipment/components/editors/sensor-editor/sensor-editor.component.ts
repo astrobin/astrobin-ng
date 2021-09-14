@@ -2,7 +2,7 @@ import { AfterViewInit, Component, OnInit, TemplateRef, ViewChild } from "@angul
 import { TranslateService } from "@ngx-translate/core";
 import { Actions } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
-import { BaseEquipmentItemEditorComponent } from "@features/equipment/components/base-equipment-item-editor/base-equipment-item-editor.component";
+import { BaseItemEditorComponent } from "@features/equipment/components/editors/base-item-editor/base-item-editor.component";
 import { LoadingService } from "@shared/services/loading.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { State } from "@app/store/state";
@@ -13,13 +13,9 @@ import { EquipmentItemService } from "@features/equipment/services/equipment-ite
 @Component({
   selector: "astrobin-sensor-editor",
   templateUrl: "./sensor-editor.component.html",
-  styleUrls: [
-    "./sensor-editor.component.scss",
-    "../base-equipment-item-editor/base-equipment-item-editor.component.scss"
-  ]
+  styleUrls: ["./sensor-editor.component.scss", "../base-item-editor/base-item-editor.component.scss"]
 })
-export class SensorEditorComponent extends BaseEquipmentItemEditorComponent<SensorInterface>
-  implements OnInit, AfterViewInit {
+export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterface> implements OnInit, AfterViewInit {
   @ViewChild("sensorOptionTemplate")
   sensorOptionTemplate: TemplateRef<any>;
 

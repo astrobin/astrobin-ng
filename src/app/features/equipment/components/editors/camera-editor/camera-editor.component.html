@@ -18,6 +18,7 @@
       <astrobin-brand-editor
         [form]="brandCreation.form"
         [name]="brandCreation.name"
+        [model]="brandCreation.model"
         (suggestionSelected)="brandCreated($event)"
       ></astrobin-brand-editor>
     </div>
@@ -26,7 +27,7 @@
       <button
         class="btn btn-sm-block btn-secondary"
         [class.loading]="loadingService.isLoading()"
-        (click)="resetBrandCreation()"
+        (click)="endBrandCreation()"
       >
         Cancel
       </button>
@@ -58,8 +59,10 @@
     <div class="card-body">
       <astrobin-sensor-editor
         [form]="sensorCreation.form"
+        [model]="sensorCreation.model"
         [name]="sensorCreation.name"
         (subCreationInProgress)="subCreation.inProgress = $event"
+        (suggestionSelected)="sensorCreated($event)"
       ></astrobin-sensor-editor>
     </div>
 
@@ -67,7 +70,7 @@
       <button
         class="btn btn-sm-block btn-secondary"
         [class.loading]="loadingService.isLoading()"
-        (click)="resetSensorCreation()"
+        (click)="endSensorCreation()"
       >
         Cancel
       </button>

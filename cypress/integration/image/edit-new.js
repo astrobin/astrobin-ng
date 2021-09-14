@@ -172,6 +172,10 @@ context("Image edit (new)", () => {
       .should("be.visible");
     cy.get("#image-locations-field").type("Home observatory");
 
+    cy.get("#image-locations-field .ng-option span")
+      .contains("Home observatory")
+      .should("be.visible");
+
     cy.get("#image-locations-field .ng-option").click();
 
     cy.get("astrobin-create-location-modal").should("be.visible");

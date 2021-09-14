@@ -61,7 +61,7 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     }
 
     return this.http.get<EquipmentItemBaseInterface[]>(
-      `${this.configUrl}/${type.toLowerCase()}/find-similar-in-brand?brand=${brand}&q=${q}`
+      `${this.configUrl}/${type.toLowerCase()}/find-similar-in-brand/?brand=${brand}&q=${q}`
     );
   }
 

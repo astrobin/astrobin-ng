@@ -134,7 +134,7 @@ export class BrandEditorComponent extends BaseComponentDirective implements OnIn
     setTimeout(() => {
       const document = this.windowRefService.nativeWindow.document;
       (document.querySelector("#brand-field-name") as HTMLElement).focus();
-    }, 1);
+    }, 100);
   }
 
   private _showSimilarBrandsWarning(similarBrands: BrandInterface[]) {

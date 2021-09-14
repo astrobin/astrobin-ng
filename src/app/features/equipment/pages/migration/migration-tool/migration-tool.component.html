@@ -6,7 +6,7 @@
   <div class="row">
     <div class="col-md-3">
       <astrobin-migration-nav></astrobin-migration-nav>
-      <astrobin-migration-item-type-nav [cameraCount]="nonMigratedCamerasCount$"></astrobin-migration-item-type-nav>
+      <astrobin-equipment-item-type-nav [cameraCount]="nonMigratedCamerasCount$"></astrobin-equipment-item-type-nav>
     </div>
 
     <div class="col-md-7">
@@ -34,17 +34,13 @@
   </div>
 </ng-template>
 
-<ng-template #equipmentItemOptionTemplate let-object="item">
-  <astrobin-equipment-item-summary [item]="object.item"></astrobin-equipment-item-summary>
-</ng-template>
-
 <ng-template #randomNonMigrated>
   <ng-container *ngIf="randomNonMigrated$ | async as objects; else loading">
     <ng-container *ngIf="objects.length > 0; else allDone">
       <ng-container *ngIf="objects[0] as object">
         <div
           class="card box-shadow"
-          [class.disabled]="migration.inProgress || creation.inProgress || migrationConfirmation.inProgress"
+          [class.disabled]="migrationMode || creationMode || migrationConfirmation.inProgress"
         >
           <div class="card-header">
             What would you like to do with the following legacy item?
@@ -84,7 +80,7 @@
           <div class="card-footer">
             <button
               class="btn btn-sm-block btn-secondary"
-              [disabled]="migration.inProgress || creation.inProgress || migrationConfirmation.inProgress"
+              [disabled]="migrationMode || creationMode || migrationConfirmation.inProgress"
               [class.loading]="loadingService.isLoading()"
               (click)="skip(object)"
             >
@@ -96,7 +92,7 @@
                 ngbDropdownToggle
                 id="mark-as-dropdown-button"
                 class="btn btn-sm-block btn-secondary"
-                [disabled]="migration.inProgress || creation.inProgress || migrationConfirmation.inProgress"
+                [disabled]="migrationMode || creationMode || migrationConfirmation.inProgress"
                 [class.loading]="loadingService.isLoading()"
               >
                 Mark as...
@@ -123,44 +119,46 @@
 
             <button
               class="btn btn-sm-block btn-primary"
-              [disabled]="migration.inProgress || creation.inProgress || migrationConfirmation.inProgress"
+              [disabled]="migrationMode || creationMode || migrationConfirmation.inProgress"
               [class.loading]="loadingService.isLoading()"
-              (click)="beginMigration(object)"
+              (click)="beginMigration()"
             >
               Migrate...
             </button>
           </div>
         </div>
 
-        <ng-container *ngIf="migration.inProgress">
+        <ng-container *ngIf="migrationMode">
           <div class="mt-4 mb-4 text-center">
             <fa-icon icon="arrow-down"></fa-icon>
           </div>
 
           <div
             class="card"
-            [class.disabled]="creation.inProgress || migrationConfirmation.inProgress"
+            [class.disabled-with-backdrop]="creationMode || migrationConfirmation.inProgress"
             id="select-item-to-migrate-to"
           >
+            <div class="backdrop"></div>
+
             <div class="card-header">
               Select equipment object to migrate "<strong>{{ object.make || "(no brand)" }}</strong>
               {{ object.name || "(no name)" }}" to, or create a new one
             </div>
 
             <div class="card-body">
-              <form [formGroup]="migration.form">
-                <formly-form
-                  [fields]="migration.fields"
-                  [form]="migration.form"
-                  [model]="migration.model"
-                ></formly-form>
-              </form>
+              <astrobin-equipment-item-browser
+                #equipmentItemBrowser
+                [type]="getActiveType()"
+                (itemSelected)="migrationTarget = $event"
+                (creationModeStarted)="creationMode = true"
+                (creationModeEnded)="creationMode = false"
+              ></astrobin-equipment-item-browser>
             </div>
 
             <div class="card-footer">
               <button
                 class="btn btn-sm-block btn-secondary"
-                [disabled]="creation.inProgress || migrationConfirmation.inProgress"
+                [disabled]="creationMode || migrationConfirmation.inProgress"
                 [class.loading]="loadingService.isLoading()"
                 (click)="cancelMigration()"
               >
@@ -169,58 +167,12 @@
 
               <button
                 class="btn btn-sm-block btn-primary"
-                [disabled]="!selectedMigrationItem || creation.inProgress || migrationConfirmation.inProgress"
+                [disabled]="!migrationTarget || creationMode || migrationConfirmation.inProgress"
                 [class.loading]="loadingService.isLoading()"
                 (click)="beginMigrationConfirmation(object)"
               >
                 Confirm migration
               </button>
-            </div>
-          </div>
-        </ng-container>
-
-        <ng-container *ngIf="creation.inProgress">
-          <div class="mt-4 mb-4 text-center">
-            <fa-icon icon="arrow-down"></fa-icon>
-          </div>
-
-          <div class="mt-4 mb-4">
-            <div class="card" [class.disabled-with-backdrop]="subCreation.inProgress" id="create-new-item">
-              <div class="backdrop"></div>
-
-              <div class="card-header">
-                Create a new item
-              </div>
-
-              <div class="card-body">
-                <astrobin-camera-editor
-                  *ngIf="activeType === 'camera'"
-                  [form]="creation.form"
-                  [model]="creation.model"
-                  [name]="migration.q"
-                  (subCreationInProgress)="subCreation.inProgress = $event"
-                  (suggestionSelected)="itemCreated($event)"
-                ></astrobin-camera-editor>
-              </div>
-
-              <div class="card-footer">
-                <button
-                  class="btn btn-sm-block btn-secondary"
-                  [class.loading]="loadingService.isLoading()"
-                  (click)="resetItemCreation()"
-                >
-                  Cancel
-                </button>
-
-                <button
-                  class="btn btn-sm-block btn-primary"
-                  [disabled]="!creation.form.valid"
-                  [class.loading]="loadingService.isLoading()"
-                  (click)="createItem()"
-                >
-                  Create item
-                </button>
-              </div>
             </div>
           </div>
         </ng-container>

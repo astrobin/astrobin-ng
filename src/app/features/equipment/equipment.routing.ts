@@ -1,11 +1,12 @@
 import { Routes } from "@angular/router";
-import { MigrationToolComponent } from "@features/equipment/pages/migration-tool/migration-tool.component";
+import { MigrationToolComponent } from "@features/equipment/pages/migration/migration-tool/migration-tool.component";
 import { AuthGuardService } from "@shared/services/guards/auth-guard.service";
 import { GroupGuardService } from "@shared/services/guards/group-guard.service";
-import { MigrationReviewComponent } from "@features/equipment/pages/migration-review/migration-review.component";
-import { MigrationReviewItemComponent } from "@features/equipment/pages/migration-review-item/migration-review-item.component";
+import { MigrationReviewComponent } from "@features/equipment/pages/migration/migration-review/migration-review.component";
+import { MigrationReviewItemComponent } from "@features/equipment/pages/migration/migration-review-item/migration-review-item.component";
 import { MigrationReviewItemGuardService } from "@features/equipment/services/migration-review-item-guard.service";
-import { MigrationExplorerComponent } from "@features/equipment/pages/migration-explorer/migration-explorer.component";
+import { MigrationExplorerComponent } from "@features/equipment/pages/migration/migration-explorer/migration-explorer.component";
+import { ExplorerComponent } from "@features/equipment/pages/explorer/explorer.component";
 
 export const routes: Routes = [
   {
@@ -35,5 +36,13 @@ export const routes: Routes = [
     component: MigrationExplorerComponent,
     canActivate: [AuthGuardService, GroupGuardService],
     data: { group: "equipment_moderators" }
+  },
+  {
+    path: "explorer",
+    redirectTo: "explorer/camera"
+  },
+  {
+    path: "explorer/:itemType",
+    component: ExplorerComponent
   }
 ];

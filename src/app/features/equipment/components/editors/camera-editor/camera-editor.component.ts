@@ -2,7 +2,7 @@ import { AfterViewInit, Component, OnInit, TemplateRef, ViewChild } from "@angul
 import { TranslateService } from "@ngx-translate/core";
 import { Actions, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
-import { BaseEquipmentItemEditorComponent } from "@features/equipment/components/base-equipment-item-editor/base-equipment-item-editor.component";
+import { BaseItemEditorComponent } from "@features/equipment/components/editors/base-item-editor/base-item-editor.component";
 import { LoadingService } from "@shared/services/loading.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { CameraInterface, CameraType } from "@features/equipment/interfaces/camera.interface";
@@ -29,20 +29,18 @@ import { CameraService } from "@features/equipment/services/camera.service";
 @Component({
   selector: "astrobin-camera-editor",
   templateUrl: "./camera-editor.component.html",
-  styleUrls: [
-    "./camera-editor.component.scss",
-    "../base-equipment-item-editor/base-equipment-item-editor.component.scss"
-  ]
+  styleUrls: ["./camera-editor.component.scss", "../base-item-editor/base-item-editor.component.scss"]
 })
-export class CameraEditorComponent extends BaseEquipmentItemEditorComponent<CameraInterface>
-  implements OnInit, AfterViewInit {
+export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterface> implements OnInit, AfterViewInit {
   sensorCreation: {
     inProgress: boolean;
     form: FormGroup;
+    model: Partial<SensorInterface>;
     name: string;
   } = {
     inProgress: false,
     form: new FormGroup({}),
+    model: {},
     name: null
   };
 
@@ -83,10 +81,16 @@ export class CameraEditorComponent extends BaseEquipmentItemEditorComponent<Came
     super.ngAfterViewInit();
   }
 
-  resetSensorCreation() {
+  startSensorCreation() {
+    this.sensorCreation.inProgress = true;
+    this.subCreationInProgress.emit(true);
+  }
+
+  endSensorCreation() {
     this.sensorCreation.inProgress = false;
-    this.subCreationInProgress.emit(false);
+    this.sensorCreation.model = {};
     this.sensorCreation.form.reset();
+    this.subCreationInProgress.emit(false);
   }
 
   createSensor() {
@@ -107,8 +111,6 @@ export class CameraEditorComponent extends BaseEquipmentItemEditorComponent<Came
   }
 
   sensorCreated(sensor: SensorInterface) {
-    this.resetSensorCreation();
-
     this.store$
       .select(selectBrand, sensor.brand)
       .pipe(
@@ -126,6 +128,8 @@ export class CameraEditorComponent extends BaseEquipmentItemEditorComponent<Came
 
         this.model = { ...this.model, ...{ sensor: sensor.id } };
         this.form.get("sensor").setValue(sensor.id);
+        this.sensorCreation.name = sensor.name;
+        this.endSensorCreation();
 
         setTimeout(() => {
           this.windowRefService.nativeWindow.document
@@ -182,8 +186,7 @@ export class CameraEditorComponent extends BaseEquipmentItemEditorComponent<Came
           },
           optionTemplate: this.sensorOptionTemplate,
           addTag: () => {
-            this.sensorCreation.inProgress = true;
-            this.subCreationInProgress.emit(true);
+            this.startSensorCreation();
             this.form.get("sensor").setValue(null);
             setTimeout(() => {
               this.windowRefService.nativeWindow.document
@@ -212,7 +215,7 @@ export class CameraEditorComponent extends BaseEquipmentItemEditorComponent<Came
         type: "input",
         wrappers: ["default-wrapper"],
         id: "camera-field-max-cooling",
-        hideExpression: () => !this.model.cooled,
+        hideExpression: () => !this.form.get("cooled").value,
         expressionProperties: {
           "templateOptions.disabled": () => this.brandCreation.inProgress
         },

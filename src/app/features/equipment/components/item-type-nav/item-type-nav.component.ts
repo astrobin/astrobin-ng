@@ -8,11 +8,11 @@ import { Observable } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 
 @Component({
-  selector: "astrobin-migration-item-type-nav",
-  templateUrl: "./migration-item-type-nav.component.html",
-  styleUrls: ["./migration-item-type-nav.component.scss"]
+  selector: "astrobin-equipment-item-type-nav",
+  templateUrl: "./item-type-nav.component.html",
+  styleUrls: ["./item-type-nav.component.scss"]
 })
-export class MigrationItemTypeNavComponent extends BaseComponentDirective implements OnInit {
+export class ItemTypeNavComponent extends BaseComponentDirective implements OnInit {
   @Input()
   cameraCount: Observable<number>;
 
