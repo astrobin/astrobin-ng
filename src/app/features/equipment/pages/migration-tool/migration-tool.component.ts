@@ -49,6 +49,7 @@ import { GearService } from "@shared/services/gear/gear.service";
 export class MigrationToolComponent extends BaseComponentDirective implements OnInit, AfterViewInit {
   @ViewChild("equipmentItemOptionTemplate")
   equipmentItemOptionTemplate: TemplateRef<any>;
+  activeType = this.activatedRoute.snapshot.paramMap.get("itemType");
 
   title = "Migration tool";
   randomNonMigrated$ = this.getRandomNonMigrated$();
