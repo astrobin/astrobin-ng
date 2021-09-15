@@ -1,11 +1,19 @@
 .alert {
   position: relative;
+  padding-right: 1.75rem;
 
   .close {
     position: absolute;
-    top: .5rem;
+    top: .25rem;
     right: .5rem;
+  }
+
+  &.alert-warning .close {
     color: var(--textOnWarningColor);
+  }
+
+  &.alert-info .close {
+    color: var(--textOnInfoColor);
   }
 }
 
