@@ -310,7 +310,7 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface> exten
         let template = null;
         let data = null;
 
-        if (similarItems.length > 1) {
+        if (similarItems.length > 0) {
           template = this.similarItemsTemplate;
           data = similarItems;
         }

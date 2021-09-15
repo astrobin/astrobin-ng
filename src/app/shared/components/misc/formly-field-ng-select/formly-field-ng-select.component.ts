@@ -42,12 +42,9 @@ export class FormlyFieldNgSelectComponent extends FieldType implements OnInit, O
     }
   }
 
-  onAddTag() {
-    if (this._ngSelect) {
-      this._ngSelect.close();
-    }
-
-    this.to.addTag();
+  onAddTag(term: string) {
+    this.to.addTag(this._ngSelect.searchTerm);
+    this._ngSelect.close();
   }
 
   onSearch(value) {

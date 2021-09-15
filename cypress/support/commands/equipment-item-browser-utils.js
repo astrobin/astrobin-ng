@@ -25,6 +25,24 @@ Cypress.Commands.add("equipmentItemBrowserCreateBrand", (selector, name, website
   cy.ngSelectValueShouldContain(selector, name);
 });
 
+Cypress.Commands.add("equipmentItemBrowserCreateBrandUsingSuggestion", (selector, name, brandObject) => {
+  cy.equipmentItemBrowserCreate(selector, name, "@findBrands");
+
+  cy.route("GET", "**/api/v2/equipment/brand/?q=*", { count: 1, results: [brandObject] }).as("findBrands");
+
+  cy.get("#brand-field-name").clear();
+  cy.get("#brand-field-name").type("Test band");
+
+  cy.wait("@findBrands");
+
+  cy.get("astrobin-similar-items-suggestion").should("be.visible");
+  cy.get("astrobin-similar-items-suggestion .btn").click();
+
+  cy.route("GET", "**/api/v2/equipment/brand/1/", brandObject);
+
+  cy.ngSelectValueShouldContain(selector, name);
+});
+
 Cypress.Commands.add("equipmentItemBrowserSelectNthBrand", (selector, brandName, brandObject) => {
   cy.route("GET", "**/api/v2/equipment/brand/?q=*", {
     count: 1,
