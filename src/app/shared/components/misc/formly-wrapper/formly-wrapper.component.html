@@ -31,5 +31,23 @@
     <a class="close" (click)="closeWarning()"></a>
   </div>
 
+  <div
+    class="alert alert-info info-feedback"
+    *ngIf="to.infoMessage || (to.infoTemplate && to.infoTemplateData)"
+  >
+    <ng-container *ngIf="to.infoMessage">
+      <span [innerHTML]="to.infoMessage"></span>
+    </ng-container>
+
+    <ng-container
+      *ngIf="to.infoTemplate"
+      [ngTemplateOutlet]="to.infoTemplate"
+      [ngTemplateOutletContext]="{ data: to.infoTemplateData }"
+    >
+    </ng-container>
+
+    <a class="close" (click)="closeInfo()"></a>
+  </div>
+
   <small *ngIf="to.description" class="form-text text-muted" [innerHTML]="to.description"></small>
 </div>

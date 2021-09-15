@@ -16,6 +16,8 @@ import {
   FindAllEquipmentItemsSuccess,
   FindSimilarInBrand,
   FindSimilarInBrandSuccess,
+  GetOthersInBrand,
+  GetOthersInBrandSuccess,
   LoadBrand,
   LoadBrandSuccess,
   LoadSensor,
@@ -115,6 +117,18 @@ export class EquipmentEffects {
         this.equipmentApiService
           .findSimilarInBrand(payload.brand, payload.q, payload.type)
           .pipe(map(items => new FindSimilarInBrandSuccess({ items })))
+      )
+    )
+  );
+
+  GetOthersInBrand: Observable<GetOthersInBrandSuccess> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(EquipmentActionTypes.FIND_SIMILAR_IN_BRAND),
+      map((action: GetOthersInBrand) => action.payload),
+      mergeMap(payload =>
+        this.equipmentApiService
+          .getOthersInBrand(payload.brand, payload.type)
+          .pipe(map(items => new GetOthersInBrandSuccess({ items })))
       )
     )
   );

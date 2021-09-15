@@ -14,8 +14,10 @@ import {
   EquipmentActionTypes,
   FindAllBrands,
   FindAllBrandsSuccess,
-  FindAllEquipmentItemsSuccess,
-  FindSimilarInBrand
+  FindSimilarInBrand,
+  FindSimilarInBrandSuccess,
+  GetOthersInBrand,
+  GetOthersInBrandSuccess
 } from "@features/equipment/store/equipment.actions";
 import { Actions, ofType } from "@ngrx/effects";
 import { filter, map, switchMap, take, takeUntil, tap } from "rxjs/operators";
@@ -59,6 +61,9 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface> exten
 
   @ViewChild("similarItemsTemplate")
   similarItemsTemplate: TemplateRef<any>;
+
+  @ViewChild("othersInBrandTemplate")
+  othersInBrandTemplate: TemplateRef<any>;
 
   brandCreation: {
     inProgress: boolean;
@@ -191,6 +196,7 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface> exten
                 this.brandCreation.name = brand.name;
                 this._validateBrandInName();
                 this._similarItemSuggestion();
+                this._othersInBrand();
               })
             )
             .subscribe();
@@ -303,7 +309,7 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface> exten
     this.actions$
       .pipe(
         ofType(EquipmentActionTypes.FIND_SIMILAR_IN_BRAND_SUCCESS),
-        map((action: FindAllEquipmentItemsSuccess) => action.payload.items),
+        map((action: FindSimilarInBrandSuccess) => action.payload.items),
         take(1)
       )
       .subscribe(similarItems => {
@@ -317,6 +323,36 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface> exten
 
         nameFieldConfig.templateOptions.warningTemplate = template;
         nameFieldConfig.templateOptions.warningTemplateData = data;
+      });
+  }
+
+  private _othersInBrand() {
+    const brandControl: AbstractControl = this.form.get("brand");
+    const brandFieldConfig: FormlyFieldConfig = this.fields.find(field => field.key === "brand");
+    const type: EquipmentItemType = this.equipmentItemService.getType(this.form.value);
+
+    if (!type || !brandControl.value) {
+      return;
+    }
+
+    this.store$.dispatch(new GetOthersInBrand({ brand: brandControl.value, type }));
+    this.actions$
+      .pipe(
+        ofType(EquipmentActionTypes.GET_OTHERS_IN_BRAND_SUCCESS),
+        map((action: GetOthersInBrandSuccess) => action.payload.items),
+        take(1)
+      )
+      .subscribe(others => {
+        let template = null;
+        let data = null;
+
+        if (others.length > 0) {
+          template = this.othersInBrandTemplate;
+          data = others;
+        }
+
+        brandFieldConfig.templateOptions.infoTemplate = template;
+        brandFieldConfig.templateOptions.infoTemplateData = data;
       });
   }
 

@@ -1,0 +1,21 @@
+.items {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  max-height: 120px;
+  overflow-y: auto;
+
+  .item {
+    &:nth-child(odd) {
+      color: var(--lighterGrey);
+    }
+
+    &:not(:last-child) {
+      margin-right: .25rem;
+
+      &::after {
+        content: '\b7'; /* middot */
+        margin-left: .25rem;
+      }
+    }
+  }
+}

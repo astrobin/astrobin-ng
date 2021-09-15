@@ -56,12 +56,22 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     q: string,
     type: EquipmentItemType
   ): Observable<EquipmentItemBaseInterface[]> {
-    if (!q) {
+    if (!brand || !q) {
       return of([]);
     }
 
     return this.http.get<EquipmentItemBaseInterface[]>(
       `${this.configUrl}/${type.toLowerCase()}/find-similar-in-brand/?brand=${brand}&q=${q}`
+    );
+  }
+
+  getOthersInBrand(brand: BrandInterface["id"], type: EquipmentItemType): Observable<EquipmentItemBaseInterface[]> {
+    if (!brand) {
+      return of([]);
+    }
+
+    return this.http.get<EquipmentItemBaseInterface[]>(
+      `${this.configUrl}/${type.toLowerCase()}/others-in-brand/?brand=${brand}`
     );
   }
 

@@ -12,4 +12,10 @@ export class FormlyWrapperComponent extends FieldWrapper {
     this.to.warningTemplate = null;
     this.to.warningTemplateData = null;
   }
+
+  closeInfo() {
+    this.to.infoMessage = null;
+    this.to.infoTemplate = null;
+    this.to.infoTemplateData = null;
+  }
 }

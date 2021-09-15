@@ -24,6 +24,8 @@ export enum EquipmentActionTypes {
   FIND_ALL_EQUIPMENT_ITEMS_SUCCESS = "[Equipment] Find all equipment success",
   FIND_SIMILAR_IN_BRAND = "[Equipment] Find similar in brand",
   FIND_SIMILAR_IN_BRAND_SUCCESS = "[Equipment] Find similar in brand success",
+  GET_OTHERS_IN_BRAND = "[Equipment] Get others in brand",
+  GET_OTHERS_IN_BRAND_SUCCESS = "[Equipment] Get others in brand success",
   APPROVE_EQUIPMENT_ITEM = "[Equipment] Approve item",
   APPROVE_EQUIPMENT_ITEM_SUCCESS = "[Equipment] Approve item success",
   REJECT_EQUIPMENT_ITEM = "[Equipment] Reject item",
@@ -92,6 +94,18 @@ export class FindSimilarInBrand implements PayloadActionInterface {
 
 export class FindSimilarInBrandSuccess implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.FIND_SIMILAR_IN_BRAND_SUCCESS;
+
+  constructor(public payload: { items: EquipmentItemBaseInterface[] }) {}
+}
+
+export class GetOthersInBrand implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.GET_OTHERS_IN_BRAND;
+
+  constructor(public payload: { brand: BrandInterface["id"]; type: EquipmentItemType }) {}
+}
+
+export class GetOthersInBrandSuccess implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.GET_OTHERS_IN_BRAND_SUCCESS;
 
   constructor(public payload: { items: EquipmentItemBaseInterface[] }) {}
 }
@@ -167,6 +181,8 @@ export type EquipmentActions =
   | FindAllEquipmentItemsSuccess
   | FindSimilarInBrand
   | FindSimilarInBrandSuccess
+  | GetOthersInBrand
+  | GetOthersInBrandSuccess
   | ApproveEquipmentItem
   | ApproveEquipmentItemSuccess
   | RejectEquipmentItem

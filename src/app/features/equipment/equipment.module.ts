@@ -25,6 +25,7 @@ import { MigrationCommandmentsComponent } from "./components/migration/migration
 import { MigrationTestWarningComponent } from "./components/migration/migration-test-warning/migration-test-warning.component";
 import { ItemBrowserComponent } from "./components/item-browser/item-browser.component";
 import { ExplorerComponent } from "./pages/explorer/explorer.component";
+import { OthersInBrandComponent } from "./components/others-in-brand/others-in-brand.component";
 
 @NgModule({
   declarations: [
@@ -46,7 +47,8 @@ import { ExplorerComponent } from "./pages/explorer/explorer.component";
     MigrationCommandmentsComponent,
     MigrationTestWarningComponent,
     ItemBrowserComponent,
-    ExplorerComponent
+    ExplorerComponent,
+    OthersInBrandComponent
   ],
   imports: [
     RouterModule.forChild(routes),
