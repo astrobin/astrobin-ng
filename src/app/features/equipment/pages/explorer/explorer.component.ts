@@ -7,7 +7,8 @@ import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { TitleService } from "@shared/services/title/title.service";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { EquipmentItemType } from "@features/equipment/interfaces/equipment-item-base.interface";
-import { takeUntil } from "rxjs/operators";
+import { map, takeUntil } from "rxjs/operators";
+import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 
 @Component({
   selector: "astrobin-equipment-explorer",
@@ -19,6 +20,11 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit 
 
   title = this.translateService.instant("Equipment explorer");
 
+  cameraCount$ = this.equipmentApiService.getAllEquipmentItems(EquipmentItemType.CAMERA).pipe(
+    takeUntil(this.destroyed$),
+    map(response => response.count)
+  );
+
   private _activeType: string;
 
   constructor(
@@ -26,7 +32,8 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit 
     public readonly translateService: TranslateService,
     public readonly titleService: TitleService,
     public readonly activatedRoute: ActivatedRoute,
-    public readonly router: Router
+    public readonly router: Router,
+    public readonly equipmentApiService: EquipmentApiService
   ) {
     super(store$);
   }

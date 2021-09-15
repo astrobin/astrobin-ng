@@ -41,6 +41,12 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
   // GENERIC API
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+  getAllEquipmentItems(type: EquipmentItemType): Observable<PaginatedApiResultInterface<EquipmentItemBaseInterface>> {
+    return this.http.get<PaginatedApiResultInterface<EquipmentItemBaseInterface>>(
+      `${this.configUrl}/${type.toLowerCase()}/`
+    );
+  }
+
   findAllEquipmentItems(q: string, type: EquipmentItemType): Observable<EquipmentItemBaseInterface[]> {
     if (!q) {
       return of([]);
