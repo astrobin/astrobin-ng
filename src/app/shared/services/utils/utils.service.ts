@@ -144,6 +144,17 @@ export class UtilsService {
     return result.charAt(0).toUpperCase() + result.slice(1);
   }
 
+  static camelCaseToCapsCase(s: string): string {
+    if (!s) {
+      return "";
+    }
+
+    return s
+      .split(/(?=[A-Z])/)
+      .join("_")
+      .toUpperCase();
+  }
+
   yesNo(value) {
     return value ? this.translateService.instant("Yes") : this.translateService.instant("No");
   }

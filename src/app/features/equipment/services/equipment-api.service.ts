@@ -42,6 +42,13 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
   // GENERIC API
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+  getEquipmentItem(
+    id: EquipmentItemBaseInterface["id"],
+    type: EquipmentItemType
+  ): Observable<EquipmentItemBaseInterface> {
+    return this.http.get<EquipmentItemBaseInterface>(`${this.configUrl}/${type.toLowerCase()}/${id}/`);
+  }
+
   getAllEquipmentItems(type: EquipmentItemType): Observable<PaginatedApiResultInterface<EquipmentItemBaseInterface>> {
     return this.http.get<PaginatedApiResultInterface<EquipmentItemBaseInterface>>(
       `${this.configUrl}/${type.toLowerCase()}/`
@@ -123,6 +130,17 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     const path = EquipmentItemType[type].toLowerCase();
 
     return this.http.put<EquipmentItemBaseInterface>(`${this.configUrl}/${path}/${item.id}/reject/`, { comment });
+  }
+
+  findEquipmentItemEditProposals(
+    item: EquipmentItemBaseInterface
+  ): Observable<PaginatedApiResultInterface<EditProposalInterface<EquipmentItemBaseInterface>>> {
+    const type = this.equipmentItemService.getType(item);
+    const path = EquipmentItemType[type].toLowerCase();
+
+    return this.http.get<PaginatedApiResultInterface<EditProposalInterface<EquipmentItemBaseInterface>>>(
+      `${this.configUrl}/${path}-edit-proposal/?editProposalTarget=${item.id}`
+    );
   }
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -6,10 +6,14 @@ import { TelescopeInterface, TelescopeType } from "@features/equipment/interface
 import { TranslateService } from "@ngx-translate/core";
 
 export enum TelescopeDisplayProperty {
-  TYPE,
-  APERTURE,
-  FOCAL_LENGTH,
-  WEIGHT
+  TYPE = "TYPE",
+  APERTURE = "APERTURE",
+  MIN_APERTURE = "MIN_APERTURE",
+  MAX_APERTURE = "MAX_APERTURE",
+  FOCAL_LENGTH = "FOCAL_LENGTH",
+  MIN_FOCAL_LENGTH = "MIN_FOCAL_LENGTH",
+  MAX_FOCAL_LENGTH = "MAX_FOCAL_LENGTH",
+  WEIGHT = "WEIGHT"
 }
 
 @Injectable({
@@ -43,6 +47,33 @@ export class TelescopeService extends BaseService implements EquipmentItemServic
         return item.weight ? `${item.weight} kg` : "";
       default:
         throw Error(`Invalid property: ${property}`);
+    }
+  }
+
+  getPrintablePropertyName(propertyName: TelescopeDisplayProperty, shortForm = false): string {
+    switch (propertyName) {
+      case TelescopeDisplayProperty.TYPE:
+        return this.translateService.instant("Type");
+      case TelescopeDisplayProperty.MIN_APERTURE:
+        return shortForm
+          ? this.translateService.instant("Min. aperture")
+          : this.translateService.instant("Min. aperture") + " (mm)";
+      case TelescopeDisplayProperty.MAX_APERTURE:
+        return shortForm
+          ? this.translateService.instant("Max. aperture")
+          : this.translateService.instant("Max. aperture") + " (mm)";
+      case TelescopeDisplayProperty.MIN_FOCAL_LENGTH:
+        return shortForm
+          ? this.translateService.instant("Min. focal length")
+          : this.translateService.instant("Min. focal length") + " (mm)";
+      case TelescopeDisplayProperty.MAX_FOCAL_LENGTH:
+        return shortForm
+          ? this.translateService.instant("Max. focal length")
+          : this.translateService.instant("Max. focal length") + " (mm)";
+      case TelescopeDisplayProperty.WEIGHT:
+        return shortForm ? this.translateService.instant("Weight") : this.translateService.instant("Weight") + " (kg)";
+      default:
+        throw Error(`Invalid property: ${propertyName}`);
     }
   }
 }

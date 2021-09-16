@@ -19,6 +19,7 @@ import {
   CreateCameraEditProposal,
   CreateSensorEditProposal,
   EquipmentActionTypes,
+  FindEquipmentItemEditProposals,
   LoadBrand
 } from "@features/equipment/store/equipment.actions";
 import { SensorInterface } from "@features/equipment/interfaces/sensor.interface";
@@ -28,6 +29,8 @@ import { EditProposalInterface } from "@features/equipment/interfaces/edit-propo
 import { EquipmentItemEditorMode } from "@features/equipment/components/editors/base-item-editor/base-item-editor.component";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { ItemBrowserComponent } from "@features/equipment/components/item-browser/item-browser.component";
+import { Observable } from "rxjs";
+import { selectEditProposalsForItem } from "@features/equipment/store/equipment.selectors";
 
 @Component({
   selector: "astrobin-equipment-explorer",
@@ -50,6 +53,8 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit 
   editMode = false;
   editForm = new FormGroup({});
   editModel: Partial<EditProposalInterface<EquipmentItemBaseInterface>> = {};
+
+  editProposals$: Observable<EditProposalInterface<EquipmentItemBaseInterface>[]>;
 
   @ViewChild("itemBrowser")
   private _itemBrowser: ItemBrowserComponent;
@@ -118,6 +123,7 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit 
 
   onItemSelected(item: EquipmentItemBaseInterface) {
     this.selectedItem = item;
+    this.loadEditProposals();
   }
 
   onCreationModeStarted() {
@@ -171,6 +177,12 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit 
         "Thanks! Your edit proposal has been submitted and well be reviewed as soon as possible."
       )
     );
+    this.loadEditProposals();
     this.endEditMode();
+  }
+
+  loadEditProposals() {
+    this.store$.dispatch(new FindEquipmentItemEditProposals({ item: this.selectedItem }));
+    this.editProposals$ = this.store$.select(selectEditProposalsForItem, this.selectedItem);
   }
 }

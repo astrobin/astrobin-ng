@@ -18,12 +18,16 @@ import {
   FindAllBrandsSuccess,
   FindAllEquipmentItems,
   FindAllEquipmentItemsSuccess,
+  FindEquipmentItemEditProposals,
+  FindEquipmentItemEditProposalsSuccess,
   FindSimilarInBrand,
   FindSimilarInBrandSuccess,
   GetOthersInBrand,
   GetOthersInBrandSuccess,
   LoadBrand,
   LoadBrandSuccess,
+  LoadEquipmentItem,
+  LoadEquipmentItemSuccess,
   LoadSensor,
   LoadSensorSuccess,
   RejectEquipmentItem,
@@ -39,7 +43,10 @@ import { selectBrand, selectEquipmentItem } from "@features/equipment/store/equi
 import { SensorInterface } from "@features/equipment/interfaces/sensor.interface";
 import { BrandInterface } from "@features/equipment/interfaces/brand.interface";
 import { UtilsService } from "@shared/services/utils/utils.service";
-import { EquipmentItemType } from "@features/equipment/interfaces/equipment-item-base.interface";
+import {
+  EquipmentItemBaseInterface,
+  EquipmentItemType
+} from "@features/equipment/interfaces/equipment-item-base.interface";
 import { SelectorWithProps } from "@ngrx/store/src/models";
 
 function getFromStoreOrApiByIdAndType<T>(
@@ -47,10 +54,10 @@ function getFromStoreOrApiByIdAndType<T>(
   id: number,
   type: EquipmentItemType,
   selector: SelectorWithProps<any, { id: number; type: EquipmentItemType }, T>,
-  apiCall: (number) => Observable<T>,
+  apiCall: (number, EquipmentItemType) => Observable<T>,
   apiContext: any
 ): Observable<T> {
-  const fromApi: Observable<T> = apiCall.apply(apiContext, [id]);
+  const fromApi: Observable<T> = apiCall.apply(apiContext, [id, type]);
   return store$
     .select(selector, { id, type })
     .pipe(mergeMap(fromStore => (fromStore !== null ? of(fromStore) : fromApi)));
@@ -97,6 +104,23 @@ export class EquipmentEffects {
       map((action: FindAllBrands) => action.payload),
       mergeMap(payload =>
         this.equipmentApiService.findAllBrands(payload.q).pipe(map(brands => new FindAllBrandsSuccess({ brands })))
+      )
+    )
+  );
+
+  LoadEquipmentItem: Observable<LoadEquipmentItemSuccess> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(EquipmentActionTypes.LOAD_EQUIPMENT_ITEM),
+      map((action: LoadEquipmentItem) => action.payload),
+      mergeMap(payload =>
+        getFromStoreOrApiByIdAndType<EquipmentItemBaseInterface>(
+          this.store$,
+          payload.id,
+          payload.type,
+          selectEquipmentItem,
+          this.equipmentApiService.getEquipmentItem,
+          this.equipmentApiService
+        ).pipe(map(item => new LoadEquipmentItemSuccess({ item })))
       )
     )
   );
@@ -157,6 +181,18 @@ export class EquipmentEffects {
         this.equipmentApiService
           .rejectEquipmentItem(payload.item, payload.comment)
           .pipe(map(item => new RejectEquipmentItemSuccess({ item })))
+      )
+    )
+  );
+
+  FindEquipmentItemEditProposals: Observable<FindEquipmentItemEditProposalsSuccess> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(EquipmentActionTypes.FIND_EQUIPMENT_ITEM_EDIT_PROPOSALS),
+      map((action: FindEquipmentItemEditProposals) => action.payload),
+      mergeMap(payload =>
+        this.equipmentApiService
+          .findEquipmentItemEditProposals(payload.item)
+          .pipe(map(editProposals => new FindEquipmentItemEditProposalsSuccess({ editProposals })))
       )
     )
   );

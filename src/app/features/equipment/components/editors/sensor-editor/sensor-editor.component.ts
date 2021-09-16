@@ -10,6 +10,7 @@ import { EquipmentApiService } from "@features/equipment/services/equipment-api.
 import { SensorInterface } from "@features/equipment/interfaces/sensor.interface";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 import { FormlyFieldService } from "@shared/services/formly-field.service";
+import { SensorDisplayProperty, SensorService } from "@features/equipment/services/sensor.service";
 
 @Component({
   selector: "astrobin-sensor-editor",
@@ -28,7 +29,8 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
     public readonly windowRefService: WindowRefService,
     public readonly equipmentApiService: EquipmentApiService,
     public readonly equipmentItemService: EquipmentItemService,
-    public readonly formlyFieldService: FormlyFieldService
+    public readonly formlyFieldService: FormlyFieldService,
+    public readonly sensorService: SensorService
   ) {
     super(
       store$,
@@ -88,7 +90,7 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
           type: "number",
           min: 1,
           step: 1,
-          label: this.translateService.instant("Number of pixels across the X axis")
+          label: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.PIXEL_WIDTH)
         }
       },
       {
@@ -103,7 +105,7 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
           type: "number",
           min: 1,
           step: 1,
-          label: this.translateService.instant("Number of pixels across the Y axis")
+          label: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.PIXEL_WIDTH)
         }
       },
       {
@@ -118,7 +120,7 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
           type: "number",
           min: 0.1,
           step: 0.1,
-          label: this.translateService.instant("Sensor width (in mm)")
+          label: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.SENSOR_WIDTH)
         }
       },
       {
@@ -133,7 +135,7 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
           type: "number",
           min: 0.1,
           step: 0.1,
-          label: this.translateService.instant("Sensor height (in mm)")
+          label: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.SENSOR_HEIGHT)
         }
       },
       {
@@ -149,7 +151,7 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
           min: 0,
           max: 100,
           step: 0.1,
-          label: this.translateService.instant("Quantum efficiency (in %)")
+          label: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.QUANTUM_EFFICIENCY)
         }
       },
       {
@@ -164,7 +166,7 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
           type: "number",
           min: 1,
           step: 1,
-          label: this.translateService.instant("Full well capacity (in e-)")
+          label: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.FULL_WELL_CAPACITY)
         }
       },
       {
@@ -179,7 +181,7 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
           type: "number",
           min: 1,
           step: 1,
-          label: this.translateService.instant("Read noise (in e-)")
+          label: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.READ_NOISE)
         }
       },
       {
@@ -194,7 +196,7 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
           type: "number",
           min: 1,
           step: 1,
-          label: this.translateService.instant("Frame rate (in FPS)")
+          label: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.FRAME_RATE)
         }
       },
       {
@@ -209,7 +211,7 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
           type: "number",
           min: 1,
           step: 1,
-          label: this.translateService.instant("ADC (in bits)"),
+          label: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.ADC),
           description: this.translateService.instant("Analog to Digital Converter")
         }
       },
@@ -222,7 +224,7 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
           "templateOptions.disabled": () => this.brandCreation.inProgress
         },
         templateOptions: {
-          label: this.translateService.instant("Color"),
+          label: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.COLOR_OR_MONO),
           description: this.translateService.instant(
             "Tick if this is a color sensor, leave blank if it's a monochromatic one."
           )

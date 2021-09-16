@@ -45,6 +45,7 @@ export function reducer(state = initialEquipmentState, action: EquipmentActions)
       };
     }
 
+    case EquipmentActionTypes.LOAD_EQUIPMENT_ITEM_SUCCESS:
     case EquipmentActionTypes.APPROVE_EQUIPMENT_ITEM_SUCCESS:
     case EquipmentActionTypes.REJECT_EQUIPMENT_ITEM_SUCCESS:
     case EquipmentActionTypes.CREATE_SENSOR_SUCCESS:
@@ -61,6 +62,16 @@ export function reducer(state = initialEquipmentState, action: EquipmentActions)
       return {
         ...state,
         editProposals: UtilsService.arrayUniqueObjects([...state.equipmentItems, ...[action.payload.editProposal]])
+      };
+    }
+
+    case EquipmentActionTypes.FIND_EQUIPMENT_ITEM_EDIT_PROPOSALS_SUCCESS: {
+      return {
+        ...state,
+        editProposals: UtilsService.arrayUniqueObjects([
+          ...state.editProposals,
+          ...action.payload.editProposals.results
+        ])
       };
     }
 

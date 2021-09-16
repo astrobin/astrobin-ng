@@ -1,0 +1,85 @@
+:host {
+  position: relative;
+  display: block;
+  padding: .25rem 1rem;
+  cursor: pointer;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, .025);
+  }
+
+  &:not(:last-child) {
+    border-bottom: 1px dashed var(--grey);
+  }
+}
+
+.edit-proposal {
+  padding-right: 2rem;
+
+  &::after {
+    content: "";
+    position: absolute;
+    right: .5rem;
+    top: calc(1rem - 2px);
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 6px solid var(--lighterGrey);
+    clear: both;
+  }
+
+  &.opened {
+    &::after {
+      border-top: 0;
+      border-bottom: 6px solid var(--lighterGrey);
+    }
+  }
+}
+
+.edit-proposal-details {
+  margin: 1rem;
+  padding: 1rem;
+  color: var(--lighterGrey);
+
+  .changes {
+    margin-top: 1rem;
+    padding-left: 1rem;
+    list-style: none;
+
+    .change {
+      .property-name {
+        margin-right: 1rem;
+        font-weight: bold;
+        color: var(--white);
+      }
+
+      .before {
+        color: var(--lightGrey);
+      }
+    }
+  }
+}
+
+.timeago {
+  color: var(--lightGrey);
+}
+
+.alert-warning {
+  font-size: 0.85rem;
+  padding: .5rem;
+  margin-top: .5rem;
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: -6px;
+    left: 1rem;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 0 6px 6px 6px;
+    border-color: transparent transparent var(--warningColor) transparent;
+    clear: both;
+  }
+}

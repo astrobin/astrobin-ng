@@ -7,10 +7,11 @@ import { CameraInterface, CameraType } from "@features/equipment/interfaces/came
 import { TranslateService } from "@ngx-translate/core";
 
 export enum CameraDisplayProperty {
-  TYPE,
-  COOLED,
-  MAX_COOLING,
-  BACK_FOCUS
+  TYPE = "TYPE",
+  SENSOR = "SENSOR",
+  COOLED = "COOLED",
+  MAX_COOLING = "MAX_COOLING",
+  BACK_FOCUS = "BACK_FOCUS"
 }
 
 @Injectable({
@@ -24,6 +25,7 @@ export class CameraService extends BaseService implements EquipmentItemServiceIn
   ) {
     super(loadingService);
   }
+  "";
 
   humanizeType(type: CameraType) {
     switch (type) {
@@ -46,6 +48,8 @@ export class CameraService extends BaseService implements EquipmentItemServiceIn
     switch (property) {
       case CameraDisplayProperty.TYPE:
         return this.humanizeType(item.type);
+      case CameraDisplayProperty.SENSOR:
+        return item.sensor.toString();
       case CameraDisplayProperty.COOLED:
         return this.utilsService.yesNo(item.cooled);
       case CameraDisplayProperty.MAX_COOLING:
@@ -54,6 +58,29 @@ export class CameraService extends BaseService implements EquipmentItemServiceIn
         return item.backFocus ? `${item.backFocus} mm` : "";
       default:
         throw Error(`Invalid property: ${property}`);
+    }
+  }
+
+  getPrintablePropertyName(propertyName: CameraDisplayProperty, shortForm = false): string {
+    switch (propertyName) {
+      case CameraDisplayProperty.TYPE:
+        return this.translateService.instant("Type");
+      case CameraDisplayProperty.SENSOR:
+        return this.translateService.instant("Sensor");
+      case CameraDisplayProperty.COOLED:
+        return this.translateService.instant("Cooled");
+      case CameraDisplayProperty.MAX_COOLING:
+        return shortForm
+          ? this.translateService.instant("Max. cooling")
+          : `${this.translateService.instant("Max. cooling")} (${this.translateService.instant(
+              "Celsius degrees below ambient"
+            )})`;
+      case CameraDisplayProperty.BACK_FOCUS:
+        return shortForm
+          ? this.translateService.instant("Back focus")
+          : this.translateService.instant("Back focus") + " (mm)";
+      default:
+        throw Error(`Invalid property: ${propertyName}`);
     }
   }
 }

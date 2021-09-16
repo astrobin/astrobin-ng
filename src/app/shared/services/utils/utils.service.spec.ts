@@ -150,4 +150,14 @@ describe("UtilsService", () => {
       expect(UtilsService.camelCaseToSentenceCase(undefined)).toEqual("");
     });
   });
+
+  describe("camelCaseToCapsCase", () => {
+    it("should work", () => {
+      expect(UtilsService.camelCaseToCapsCase("helloThere")).toEqual("HELLO_THERE");
+      expect(UtilsService.camelCaseToCapsCase("hello")).toEqual("HELLO");
+      expect(UtilsService.camelCaseToCapsCase("")).toEqual("");
+      expect(UtilsService.camelCaseToCapsCase(null)).toEqual("");
+      expect(UtilsService.camelCaseToCapsCase(undefined)).toEqual("");
+    });
+  });
 });

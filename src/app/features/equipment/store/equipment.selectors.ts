@@ -7,6 +7,7 @@ import {
 } from "@features/equipment/interfaces/equipment-item-base.interface";
 import { BrandInterface } from "@features/equipment/interfaces/brand.interface";
 import { getEquipmentItemType } from "@features/equipment/services/equipment-item.service";
+import { EditProposalInterface } from "@features/equipment/interfaces/edit-proposal.interface";
 
 export const selectEquipment = (state: State): EquipmentState => state.equipment;
 
@@ -27,5 +28,18 @@ export const selectEquipmentItem = createSelector(
       return item.id === data.id && itemType === data.type;
     });
     return matching.length > 0 ? matching[0] : null;
+  }
+);
+
+export const selectEditProposals = createSelector(selectEquipment, state => state.editProposals);
+
+export const selectEditProposalsForItem = createSelector(
+  selectEditProposals,
+  (editProposals: EditProposalInterface<EquipmentItemBaseInterface>[], item: EquipmentItemBaseInterface) => {
+    const type: EquipmentItemType = getEquipmentItemType(item);
+    return editProposals.filter(editProposal => {
+      const thisType: EquipmentItemType = getEquipmentItemType(editProposal);
+      return item.id === editProposal.editProposalTarget && type === thisType;
+    });
   }
 );

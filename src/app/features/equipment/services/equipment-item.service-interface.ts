@@ -2,5 +2,8 @@ import { EquipmentItemBaseInterface } from "@features/equipment/interfaces/equip
 
 export interface EquipmentItemServiceInterface {
   humanizeType?(type: any);
+
   getPrintableProperty(item: EquipmentItemBaseInterface, property: any): string;
+
+  getPrintablePropertyName(propertyName: any, shortForm: boolean): string;
 }

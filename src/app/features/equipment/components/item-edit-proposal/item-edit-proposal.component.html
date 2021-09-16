@@ -1,0 +1,24 @@
+<ng-container *ngIf="userProposedEditMessage">
+  <div class="edit-proposal d-flex" [class.opened]="opened" (click)="opened = !opened">
+    <span class="flex-grow-1" [innerHTML]="userProposedEditMessage"></span>
+    <span class="pull-right d-none d-lg-inline timeago">{{ editProposal.created | timeago: true }}</span>
+  </div>
+
+  <div class="edit-proposal-details" *ngIf="opened">
+    {{ "The following changes are proposed:" | translate }}
+
+    <ul class="changes">
+      <li *ngFor="let change of changes" class="change">
+        <span class="property-name">{{ getPropertyDisplay(change) }}:</span>
+
+        <span class="before" [innerHTML]="getBeforeDisplay(change) || 'n/a' | translate"></span>&nbsp;&xrarr;
+
+        <span class="after" [innerHTML]="getAfterDisplay(change) || 'n/a' | translate"></span>
+
+        <div *ngIf="change.propertyName === 'name'" class="alert alert-warning">
+          <span [innerHTML]="equipmentItemService.nameChangeWarningMessage()"></span>
+        </div>
+      </li>
+    </ul>
+  </div>
+</ng-container>

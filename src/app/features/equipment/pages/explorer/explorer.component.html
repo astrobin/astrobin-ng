@@ -45,6 +45,13 @@
         </div>
       </div>
 
+      <div class="edit-proposals" *ngIf="selectedItem && (editProposals$ | async) as editProposals">
+        <astrobin-item-edit-proposal
+          *ngFor="let editProposal of editProposals"
+          [editProposal]="editProposal"
+        ></astrobin-item-edit-proposal>
+      </div>
+
       <ng-container *ngIf="editMode">
         <div class="mt-4 mb-4 text-center">
           <fa-icon icon="arrow-down"></fa-icon>

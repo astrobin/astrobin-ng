@@ -278,7 +278,15 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface> exten
               ...this.form.value
             } as EquipmentItemBaseInterface);
 
-            return this.equipmentApiService.getByNameAndType(control.value, type).pipe(map(item => !item));
+            return this.equipmentApiService.getByNameAndType(control.value, type).pipe(
+              map(item => {
+                if (this.editorMode === EquipmentItemEditorMode.CREATION) {
+                  return !item;
+                }
+
+                return !item || item.name === this.model.name;
+              })
+            );
           },
           message: this.translateService.instant("An item of the same type and the same name already exists.")
         }
@@ -478,11 +486,7 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface> exten
       return;
     }
 
-    const message = this.translateService.instant(
-      "<strong>Careful!</strong> Change the name only to fix a typo or the naming convention. This operation will " +
-        "change the name of this equipment item <strong>for all AstroBin images that use it</strong>, so you should " +
-        "not change the name if it becomes a different product."
-    );
+    const message = this.equipmentItemService.nameChangeWarningMessage();
 
     this.formlyFieldService.addMessage(field.templateOptions, {
       level: FormlyFieldMessageLevel.WARNING,

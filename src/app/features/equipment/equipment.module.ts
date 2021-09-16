@@ -26,6 +26,7 @@ import { MigrationTestWarningComponent } from "./components/migration/migration-
 import { ItemBrowserComponent } from "./components/item-browser/item-browser.component";
 import { ExplorerComponent } from "./pages/explorer/explorer.component";
 import { OthersInBrandComponent } from "./components/others-in-brand/others-in-brand.component";
+import { ItemEditProposalComponent } from "./components/item-edit-proposal/item-edit-proposal.component";
 
 @NgModule({
   declarations: [
@@ -48,7 +49,8 @@ import { OthersInBrandComponent } from "./components/others-in-brand/others-in-b
     MigrationTestWarningComponent,
     ItemBrowserComponent,
     ExplorerComponent,
-    OthersInBrandComponent
+    OthersInBrandComponent,
+    ItemEditProposalComponent
   ],
   imports: [
     RouterModule.forChild(routes),

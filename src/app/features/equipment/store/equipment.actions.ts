@@ -9,18 +9,26 @@ import { BrandInterface } from "@features/equipment/interfaces/brand.interface";
 import { SensorInterface } from "@features/equipment/interfaces/sensor.interface";
 import { CameraInterface } from "@features/equipment/interfaces/camera.interface";
 import { EditProposalInterface } from "@features/equipment/interfaces/edit-proposal.interface";
+import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
 
 export interface EquipmentItemCreationSuccessPayloadInterface {
   item: EquipmentItemBaseInterface;
 }
 
 export enum EquipmentActionTypes {
+  // Brands
+
   LOAD_BRAND = "[Equipment] Load brand",
   LOAD_BRAND_SUCCESS = "[Equipment] Load brand success",
   CREATE_BRAND = "[Equipment] Create brand",
   CREATE_BRAND_SUCCESS = "[Equipment] Create brand success",
   FIND_ALL_BRANDS = "[Equipment] Find all brands",
   FIND_ALL_BRANDS_SUCCESS = "[Equipment] Find all brands success",
+
+  // Generic equipment items
+
+  LOAD_EQUIPMENT_ITEM = "[Equipment] Load equipment item",
+  LOAD_EQUIPMENT_ITEM_SUCCESS = "[Equipment] Load equipment item success",
   FIND_ALL_EQUIPMENT_ITEMS = "[Equipment] Find all equipment items",
   FIND_ALL_EQUIPMENT_ITEMS_SUCCESS = "[Equipment] Find all equipment success",
   FIND_SIMILAR_IN_BRAND = "[Equipment] Find similar in brand",
@@ -31,12 +39,20 @@ export enum EquipmentActionTypes {
   APPROVE_EQUIPMENT_ITEM_SUCCESS = "[Equipment] Approve item success",
   REJECT_EQUIPMENT_ITEM = "[Equipment] Reject item",
   REJECT_EQUIPMENT_ITEM_SUCCESS = "[Equipment] Reject item success",
+  FIND_EQUIPMENT_ITEM_EDIT_PROPOSALS = "[Equipment] Find equipment item edit proposals",
+  FIND_EQUIPMENT_ITEM_EDIT_PROPOSALS_SUCCESS = "[Equipment] Find equipment item edit proposals success",
+
+  // Sensors
+
   CREATE_SENSOR = "[Equipment] Create sensor",
   CREATE_SENSOR_SUCCESS = "[Equipment] Create sensor success",
   CREATE_SENSOR_EDIT_PROPOSAL = "[Equipment] Create sensor edit proposal",
   CREATE_SENSOR_EDIT_PROPOSAL_SUCCESS = "[Equipment] Create sensor edit proposal success",
   LOAD_SENSOR = "[Equipment] Load sensor",
   LOAD_SENSOR_SUCCESS = "[Equipment] Load sensor success",
+
+  // Cameras
+
   CREATE_CAMERA = "[Equipment] Create camera",
   CREATE_CAMERA_SUCCESS = "[Equipment] Create camera success",
   CREATE_CAMERA_EDIT_PROPOSAL = "[Equipment] Create camera edit proposal",
@@ -77,6 +93,18 @@ export class FindAllBrandsSuccess implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.FIND_ALL_BRANDS_SUCCESS;
 
   constructor(public payload: { brands: BrandInterface[] }) {}
+}
+
+export class LoadEquipmentItem implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.LOAD_EQUIPMENT_ITEM;
+
+  constructor(public payload: { id: EquipmentItemBaseInterface["id"]; type: EquipmentItemType }) {}
+}
+
+export class LoadEquipmentItemSuccess implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.LOAD_EQUIPMENT_ITEM_SUCCESS;
+
+  constructor(public payload: { item: EquipmentItemBaseInterface }) {}
 }
 
 export class FindAllEquipmentItems implements PayloadActionInterface {
@@ -137,6 +165,20 @@ export class RejectEquipmentItemSuccess implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.REJECT_EQUIPMENT_ITEM_SUCCESS;
 
   constructor(public payload: { item: EquipmentItemBaseInterface }) {}
+}
+
+export class FindEquipmentItemEditProposals implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.FIND_EQUIPMENT_ITEM_EDIT_PROPOSALS;
+
+  constructor(public payload: { item: EquipmentItemBaseInterface }) {}
+}
+
+export class FindEquipmentItemEditProposalsSuccess implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.FIND_EQUIPMENT_ITEM_EDIT_PROPOSALS_SUCCESS;
+
+  constructor(
+    public payload: { editProposals: PaginatedApiResultInterface<EditProposalInterface<EquipmentItemBaseInterface>> }
+  ) {}
 }
 
 export class CreateSensor implements PayloadActionInterface {
@@ -206,6 +248,8 @@ export type EquipmentActions =
   | CreateBrandSuccess
   | FindAllBrands
   | FindAllBrandsSuccess
+  | LoadEquipmentItem
+  | LoadEquipmentItemSuccess
   | FindAllEquipmentItems
   | FindAllEquipmentItemsSuccess
   | FindSimilarInBrand
@@ -216,6 +260,8 @@ export type EquipmentActions =
   | ApproveEquipmentItemSuccess
   | RejectEquipmentItem
   | RejectEquipmentItemSuccess
+  | FindEquipmentItemEditProposals
+  | FindEquipmentItemEditProposalsSuccess
   | CreateSensor
   | CreateSensorSuccess
   | CreateSensorEditProposal

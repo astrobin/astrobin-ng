@@ -8,6 +8,7 @@ import { Observable, of } from "rxjs";
 import { selectUserProfile } from "@features/account/store/auth.selectors";
 import { map } from "rxjs/operators";
 import { State } from "@app/store/state";
+import { LoadUserProfile } from "@features/account/store/auth.actions";
 
 @Injectable()
 export class UsernameService extends BaseService implements UsernameServiceInterface {
@@ -20,6 +21,7 @@ export class UsernameService extends BaseService implements UsernameServiceInter
       return of(null);
     }
 
+    this.store$.dispatch(new LoadUserProfile({ id: user.userProfile }));
     return this.store$.select(selectUserProfile, user.userProfile).pipe(
       map(userProfile => {
         if (userProfile && userProfile.realName) {

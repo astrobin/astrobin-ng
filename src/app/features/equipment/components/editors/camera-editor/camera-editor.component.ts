@@ -24,7 +24,7 @@ import { filter, map, switchMap, take, takeUntil, tap } from "rxjs/operators";
 import { selectBrand, selectBrands, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import { BrandInterface } from "@features/equipment/interfaces/brand.interface";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
-import { CameraService } from "@features/equipment/services/camera.service";
+import { CameraDisplayProperty, CameraService } from "@features/equipment/services/camera.service";
 import { FormlyFieldService } from "@shared/services/formly-field.service";
 
 @Component({
@@ -154,7 +154,7 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
           "templateOptions.disabled": () => this.sensorCreation.inProgress
         },
         templateOptions: {
-          label: this.translateService.instant("Type"),
+          label: this.cameraService.getPrintablePropertyName(CameraDisplayProperty.TYPE),
           required: true,
           clearable: true,
           options: of(
@@ -180,7 +180,7 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
           "templateOptions.disabled": () => this.sensorCreation.inProgress
         },
         templateOptions: {
-          label: this.translateService.instant("Sensor"),
+          label: this.cameraService.getPrintablePropertyName(CameraDisplayProperty.SENSOR),
           required: false,
           clearable: true,
           options:
@@ -229,7 +229,7 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
           "templateOptions.disabled": () => this.brandCreation.inProgress
         },
         templateOptions: {
-          label: this.translateService.instant("Cooled"),
+          label: this.cameraService.getPrintablePropertyName(CameraDisplayProperty.COOLED),
           description: this.translateService.instant("Whether this camera is equipment with a cooling mechanism.")
         }
       },
@@ -246,7 +246,7 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
           type: "number",
           min: 1,
           step: 1,
-          label: this.translateService.instant("Max. cooling (Celsius degrees below ambient)"),
+          label: this.cameraService.getPrintablePropertyName(CameraDisplayProperty.MAX_COOLING),
           description: this.translateService.instant(
             "A positive whole number that represents how many Celsius below ambient temperature this camera can " +
               "be cooled."
@@ -265,7 +265,7 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
           type: "number",
           min: 1,
           step: 0.1,
-          label: this.translateService.instant("Back focus (in mm)"),
+          label: this.cameraService.getPrintablePropertyName(CameraDisplayProperty.BACK_FOCUS),
           description: this.translateService.instant("Camera back focus in mm.")
         }
       },
