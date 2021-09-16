@@ -1,5 +1,6 @@
 import { Component } from "@angular/core";
 import { FieldWrapper } from "@ngx-formly/core";
+import { FormlyFieldMessage, FormlyFieldMessageLevel, FormlyFieldService } from "@shared/services/formly-field.service";
 
 @Component({
   selector: "astrobin-formly-wrapper",
@@ -7,15 +8,11 @@ import { FieldWrapper } from "@ngx-formly/core";
   styleUrls: ["./formly-wrapper.component.scss"]
 })
 export class FormlyWrapperComponent extends FieldWrapper {
-  closeWarning() {
-    this.to.warningMessage = null;
-    this.to.warningTemplate = null;
-    this.to.warningTemplateData = null;
+  constructor(public readonly formlyFieldService: FormlyFieldService) {
+    super();
   }
 
-  closeInfo() {
-    this.to.infoMessage = null;
-    this.to.infoTemplate = null;
-    this.to.infoTemplateData = null;
+  closeMessage(message: FormlyFieldMessage) {
+    this.formlyFieldService.removeMessage(this.to, message);
   }
 }

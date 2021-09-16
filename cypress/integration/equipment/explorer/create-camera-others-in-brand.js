@@ -1,4 +1,4 @@
-import { testBrand, testCamera } from "./test-data";
+import { testBrand, testCamera } from "../../../support/commands/equipment-item-browser-utils";
 
 context("Equipment", () => {
   beforeEach(() => {
@@ -11,6 +11,13 @@ context("Equipment", () => {
       previous: null,
       results: []
     }).as("findCameras");
+
+    cy.route("GET", "**/api/v2/equipment/camera/", {
+      count: 1,
+      next: null,
+      previous: null,
+      results: [testCamera]
+    }).as("getCameras");
 
     cy.route("GET", "**/api/v2/equipment/camera/?name=*", {
       count: 1,
@@ -32,7 +39,7 @@ context("Equipment", () => {
       it("should see 'others in brand' info", () => {
         cy.route("GET", "**/api/v2/equipment/camera/others-in-brand/*", [testCamera]);
 
-        cy.equipmentItemBrowserSelectNthBrand("#equipment-item-field-brand", "Test brand", testBrand);
+        cy.equipmentItemBrowserSelectFirstBrand("#equipment-item-field-brand", "Test brand", testBrand);
 
         cy.get("astrobin-equipment-others-in-brand").should("be.visible");
         cy.get("astrobin-equipment-others-in-brand .item")

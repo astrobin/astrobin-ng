@@ -8,6 +8,7 @@ import {
 import { BrandInterface } from "@features/equipment/interfaces/brand.interface";
 import { SensorInterface } from "@features/equipment/interfaces/sensor.interface";
 import { CameraInterface } from "@features/equipment/interfaces/camera.interface";
+import { EditProposalInterface } from "@features/equipment/interfaces/edit-proposal.interface";
 
 export interface EquipmentItemCreationSuccessPayloadInterface {
   item: EquipmentItemBaseInterface;
@@ -32,10 +33,14 @@ export enum EquipmentActionTypes {
   REJECT_EQUIPMENT_ITEM_SUCCESS = "[Equipment] Reject item success",
   CREATE_SENSOR = "[Equipment] Create sensor",
   CREATE_SENSOR_SUCCESS = "[Equipment] Create sensor success",
+  CREATE_SENSOR_EDIT_PROPOSAL = "[Equipment] Create sensor edit proposal",
+  CREATE_SENSOR_EDIT_PROPOSAL_SUCCESS = "[Equipment] Create sensor edit proposal success",
   LOAD_SENSOR = "[Equipment] Load sensor",
   LOAD_SENSOR_SUCCESS = "[Equipment] Load sensor success",
   CREATE_CAMERA = "[Equipment] Create camera",
-  CREATE_CAMERA_SUCCESS = "[Equipment] Create camera success"
+  CREATE_CAMERA_SUCCESS = "[Equipment] Create camera success",
+  CREATE_CAMERA_EDIT_PROPOSAL = "[Equipment] Create camera edit proposal",
+  CREATE_CAMERA_EDIT_PROPOSAL_SUCCESS = "[Equipment] Create camera edit request proposal"
 }
 
 export class LoadBrand implements PayloadActionInterface {
@@ -146,6 +151,18 @@ export class CreateSensorSuccess implements PayloadActionInterface {
   constructor(public payload: EquipmentItemCreationSuccessPayloadInterface) {}
 }
 
+export class CreateSensorEditProposal implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.CREATE_SENSOR_EDIT_PROPOSAL;
+
+  constructor(public payload: { sensor: Omit<EditProposalInterface<SensorInterface>, "id"> }) {}
+}
+
+export class CreateSensorEditProposalSuccess implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.CREATE_SENSOR_EDIT_PROPOSAL_SUCCESS;
+
+  constructor(public payload: { editProposal: EditProposalInterface<SensorInterface> }) {}
+}
+
 export class LoadSensor implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.LOAD_SENSOR;
 
@@ -170,6 +187,18 @@ export class CreateCameraSuccess implements PayloadActionInterface {
   constructor(public payload: EquipmentItemCreationSuccessPayloadInterface) {}
 }
 
+export class CreateCameraEditProposal implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.CREATE_CAMERA_EDIT_PROPOSAL;
+
+  constructor(public payload: { camera: Omit<EditProposalInterface<CameraInterface>, "id"> }) {}
+}
+
+export class CreateCameraEditProposalSuccess implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.CREATE_CAMERA_EDIT_PROPOSAL_SUCCESS;
+
+  constructor(public payload: { editProposal: EditProposalInterface<CameraInterface> }) {}
+}
+
 export type EquipmentActions =
   | LoadBrand
   | LoadBrandSuccess
@@ -189,7 +218,11 @@ export type EquipmentActions =
   | RejectEquipmentItemSuccess
   | CreateSensor
   | CreateSensorSuccess
+  | CreateSensorEditProposal
+  | CreateSensorEditProposalSuccess
   | LoadSensor
   | LoadSensorSuccess
   | CreateCamera
-  | CreateCameraSuccess;
+  | CreateCameraSuccess
+  | CreateCameraEditProposal
+  | CreateCameraEditProposalSuccess;

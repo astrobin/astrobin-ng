@@ -10,6 +10,7 @@ import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { State } from "@app/store/state";
 import { WindowRefService } from "@shared/services/window-ref.service";
+import { FormlyFieldMessageLevel, FormlyFieldService } from "@shared/services/formly-field.service";
 
 @Component({
   selector: "astrobin-brand-editor",
@@ -40,7 +41,8 @@ export class BrandEditorComponent extends BaseComponentDirective implements OnIn
     public readonly store$: Store<State>,
     public readonly translateService: TranslateService,
     public readonly equipmentApiService: EquipmentApiService,
-    public readonly windowRefService: WindowRefService
+    public readonly windowRefService: WindowRefService,
+    public readonly formlyFieldService: FormlyFieldService
   ) {
     super(store$);
   }
@@ -81,6 +83,7 @@ export class BrandEditorComponent extends BaseComponentDirective implements OnIn
                   }
                 }),
                 tap(similarBrands => {
+                  this.formlyFieldService.clearMessages(field.templateOptions);
                   this._showSimilarBrandsWarning(similarBrands);
                 })
               )
@@ -145,9 +148,12 @@ export class BrandEditorComponent extends BaseComponentDirective implements OnIn
     if (similarBrands.length > 0) {
       template = this.similarItemsTemplate;
       data = similarBrands;
-    }
 
-    fieldConfig.templateOptions.warningTemplate = template;
-    fieldConfig.templateOptions.warningTemplateData = data;
+      this.formlyFieldService.addMessage(fieldConfig.templateOptions, {
+        level: FormlyFieldMessageLevel.WARNING,
+        template,
+        data
+      });
+    }
   }
 }

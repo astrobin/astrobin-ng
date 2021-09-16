@@ -1,3 +1,70 @@
+export const testBrand = {
+  id: 1,
+  deleted: null,
+  created: "2021-09-12T08:09:23.625390",
+  updated: "2021-09-12T08:09:23.625437",
+  name: "Test brand",
+  website: "https://www.test-brand.com",
+  logo: null,
+  createdBy: 1
+};
+
+export const testSensor = {
+  id: 1,
+  deleted: null,
+  reviewedTimestamp: null,
+  reviewerDecision: null,
+  reviewerRejectionReason: null,
+  reviewerComment: null,
+  created: "2021-09-14T10:56:10.388669",
+  updated: "2021-09-14T10:56:10.388688",
+  name: "Test sensor",
+  image: null,
+  quantumEfficiency: null,
+  pixelSize: null,
+  pixelWidth: null,
+  pixelHeight: null,
+  sensorWidth: null,
+  sensorHeight: null,
+  fullWellCapacity: null,
+  readNoise: null,
+  frameRate: null,
+  adc: null,
+  colorOrMono: null,
+  createdBy: 1,
+  reviewedBy: null,
+  brand: 1
+};
+
+export const testCamera = {
+  id: 1,
+  deleted: null,
+  reviewedTimestamp: null,
+  reviewerDecision: null,
+  reviewerRejectionReason: null,
+  reviewerComment: null,
+  created: "2021-09-12T08:09:58.508643",
+  updated: "2021-09-12T08:09:58.508679",
+  name: "Test",
+  image: null,
+  type: "DEDICATED_DEEP_SKY",
+  cooled: true,
+  maxCooling: 20,
+  backFocus: 30,
+  createdBy: 1,
+  reviewedBy: null,
+  brand: 1,
+  sensor: 1
+};
+
+export const testCameraEditProposal = {
+  ...testCamera,
+  ...{
+    editProposalTarget: 1,
+    name: "Test Pro"
+  }
+};
+
 Cypress.Commands.add("equipmentItemBrowserCreate", (selector, text, apiToWait) => {
   cy.ngSelectType(selector, text);
 
@@ -43,7 +110,7 @@ Cypress.Commands.add("equipmentItemBrowserCreateBrandUsingSuggestion", (selector
   cy.ngSelectValueShouldContain(selector, name);
 });
 
-Cypress.Commands.add("equipmentItemBrowserSelectNthBrand", (selector, brandName, brandObject) => {
+Cypress.Commands.add("equipmentItemBrowserSelectFirstBrand", (selector, brandName, brandObject) => {
   cy.route("GET", "**/api/v2/equipment/brand/?q=*", {
     count: 1,
     next: null,
@@ -55,13 +122,29 @@ Cypress.Commands.add("equipmentItemBrowserSelectNthBrand", (selector, brandName,
 
   cy.wait("@findBrands");
 
-  cy.ngSelectShouldHaveOptionsCount(selector, 1);
   cy.ngSelectOptionNumberSelectorShouldContain(selector, 1, "astrobin-brand-summary .label", brandName);
   cy.ngSelectOptionClick(selector, 1);
   cy.ngSelectValueShouldContain(selector, brandName);
 });
 
-Cypress.Commands.add("equipmentItemBrowserSelectNthSensor", (selector, sensorName, sensorObject) => {
+Cypress.Commands.add("equipmentItemBrowserSelectFirstCamera", (selector, cameraName, cameraObject) => {
+  cy.route("GET", "**/api/v2/equipment/camera/?q=*", {
+    count: 1,
+    next: null,
+    previous: null,
+    results: [cameraObject]
+  }).as("findCameras");
+
+  cy.ngSelectType(selector, cameraName);
+
+  cy.wait("@findCameras");
+
+  cy.ngSelectOptionNumberSelectorShouldContain(selector, 1, "astrobin-equipment-item-summary .label", cameraName);
+  cy.ngSelectOptionClick(selector, 1);
+  cy.ngSelectValueShouldContain(selector, cameraName);
+});
+
+Cypress.Commands.add("equipmentItemBrowserSelectFirstSensor", (selector, sensorName, sensorObject) => {
   cy.route("GET", "**/api/v2/equipment/sensor/?q=*", {
     count: 1,
     next: null,
@@ -73,7 +156,6 @@ Cypress.Commands.add("equipmentItemBrowserSelectNthSensor", (selector, sensorNam
 
   cy.wait("@findSensors");
 
-  cy.ngSelectShouldHaveOptionsCount(selector, 2);
   cy.ngSelectOptionNumberSelectorShouldContain(selector, 1, "astrobin-equipment-item-summary .label", sensorName);
   cy.ngSelectOptionClick(selector, 1);
   cy.ngSelectValueShouldContain(selector, sensorName);

@@ -1,4 +1,4 @@
-import { testBrand, testCamera } from "./test-data";
+import { testBrand, testCamera } from "../../../support/commands/equipment-item-browser-utils";
 
 context("Equipment", () => {
   beforeEach(() => {
@@ -11,6 +11,13 @@ context("Equipment", () => {
       previous: null,
       results: []
     }).as("findCameras");
+
+    cy.route("GET", "**/api/v2/equipment/camera/", {
+      count: 1,
+      next: null,
+      previous: null,
+      results: [testCamera]
+    }).as("getCameras");
 
     cy.route("GET", "**/api/v2/equipment/camera/?name=*", {
       count: 1,
@@ -32,7 +39,7 @@ context("Equipment", () => {
       it("should select suggestion", () => {
         cy.route("GET", "**/api/v2/equipment/camera/find-similar-in-brand/*", [testCamera]);
 
-        cy.equipmentItemBrowserSelectNthBrand("#equipment-item-field-brand", "Test brand", testBrand);
+        cy.equipmentItemBrowserSelectFirstBrand("#equipment-item-field-brand", "Test brand", testBrand);
         cy.get("#equipment-item-field-name").should("have.value", "Test");
         cy.get("astrobin-similar-items-suggestion").should("be.visible");
         cy.get("astrobin-similar-items-suggestion .btn").click();

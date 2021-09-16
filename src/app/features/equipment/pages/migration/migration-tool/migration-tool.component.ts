@@ -25,7 +25,6 @@ import { TranslateService } from "@ngx-translate/core";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { State } from "@app/store/state";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { GearService } from "@shared/services/gear/gear.service";
 import { ItemBrowserComponent } from "@features/equipment/components/item-browser/item-browser.component";
 

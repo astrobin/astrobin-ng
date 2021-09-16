@@ -1,18 +1,23 @@
 <ng-container *ngIf="item && brand">
-  <div class="image" *ngIf="showImage">
-    <img [src]="image" alt="" />
-  </div>
+  <div class="row align-items-center">
+    <div [className]="showLargeImage ? 'col-3' : 'col-1'" *ngIf="showImage">
+      <img class="image" [src]="image" alt="" />
+    </div>
 
-  <div class="label">
-    <strong>{{ brand.name }}</strong> {{ item.name }}
-  </div>
+    <div class="col">
+      <div class="label">
+        <strong>{{ brand.name }}</strong> {{ item.name }}
+      </div>
 
-  <div class="properties" *ngIf="properties$ | async as properties">
-    <ng-container *ngFor="let property of properties">
-      <span *ngIf="!!property.value" class="property">
-        <span class="property-name">{{ property.name }}</span>:
-        <span class="property-value" [innerHTML]="property.value"></span>
-      </span>
-    </ng-container>
+      <div class="properties" *ngIf="properties$ | async as properties">
+        <ng-container *ngFor="let property of properties">
+          <span *ngIf="showProperty(property)" class="property">
+            <span class="property-name">{{ property.name }}</span
+            >:
+            <span class="property-value" [innerHTML]="property.value || 'n/a' | translate"></span>
+          </span>
+        </ng-container>
+      </div>
+    </div>
   </div>
 </ng-container>

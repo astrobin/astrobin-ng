@@ -2,6 +2,7 @@ import { EquipmentActions, EquipmentActionTypes } from "./equipment.actions";
 import { EquipmentItemBaseInterface } from "@features/equipment/interfaces/equipment-item-base.interface";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { BrandInterface } from "@features/equipment/interfaces/brand.interface";
+import { EditProposalInterface } from "@features/equipment/interfaces/edit-proposal.interface";
 
 export const equipmentFeatureKey = "equipment";
 
@@ -9,11 +10,13 @@ export const equipmentFeatureKey = "equipment";
 export interface EquipmentState {
   brands: BrandInterface[];
   equipmentItems: EquipmentItemBaseInterface[];
+  editProposals: EditProposalInterface<EquipmentItemBaseInterface>[];
 }
 
 export const initialEquipmentState: EquipmentState = {
   brands: [],
-  equipmentItems: []
+  equipmentItems: [],
+  editProposals: []
 };
 
 export function reducer(state = initialEquipmentState, action: EquipmentActions): EquipmentState {
@@ -50,6 +53,14 @@ export function reducer(state = initialEquipmentState, action: EquipmentActions)
       return {
         ...state,
         equipmentItems: UtilsService.arrayUniqueObjects([...state.equipmentItems, ...[action.payload.item]])
+      };
+    }
+
+    case EquipmentActionTypes.CREATE_SENSOR_EDIT_PROPOSAL_SUCCESS:
+    case EquipmentActionTypes.CREATE_CAMERA_EDIT_PROPOSAL_SUCCESS: {
+      return {
+        ...state,
+        editProposals: UtilsService.arrayUniqueObjects([...state.equipmentItems, ...[action.payload.editProposal]])
       };
     }
 

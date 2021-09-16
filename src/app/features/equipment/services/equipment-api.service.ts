@@ -3,7 +3,7 @@ import { BaseClassicApiService } from "@shared/services/api/classic/base-classic
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { Observable, of } from "rxjs";
+import { EMPTY, Observable, of } from "rxjs";
 import {
   EquipmentItemBaseInterface,
   EquipmentItemType
@@ -19,6 +19,7 @@ import { TelescopeInterface } from "@features/equipment/interfaces/telescope.int
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { TranslateService } from "@ngx-translate/core";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
+import { EditProposalInterface } from "@features/equipment/interfaces/edit-proposal.interface";
 
 @Injectable({
   providedIn: "root"
@@ -213,6 +214,12 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     return this._createItem<SensorInterface>(sensor, "sensor");
   }
 
+  createSensorEditProposal(
+    editProposal: Omit<EditProposalInterface<SensorInterface>, "id">
+  ): Observable<EditProposalInterface<SensorInterface>> {
+    return this._createItemEditProposal<SensorInterface>(editProposal, "sensor");
+  }
+
   getSensor(id: SensorInterface["id"]): Observable<SensorInterface> {
     return this.http.get<SensorInterface>(`${this.configUrl}/sensor/${id}/`);
   }
@@ -223,6 +230,12 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
 
   createCamera(camera: Omit<CameraInterface, "id">): Observable<CameraInterface> {
     return this._createItem<CameraInterface>(camera, "camera");
+  }
+
+  createCameraEditProposal(
+    editProposal: Omit<EditProposalInterface<CameraInterface>, "id">
+  ): Observable<EditProposalInterface<CameraInterface>> {
+    return this._createItemEditProposal<CameraInterface>(editProposal, "camera");
   }
 
   getCamera(id: CameraInterface["id"]): Observable<CameraInterface> {
@@ -298,5 +311,77 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     };
 
     return this.http.post<T>(`${this.configUrl}/${path}/${id}/image/`, formData, httpOptions);
+  }
+
+  private _createItemEditProposal<T extends EquipmentItemBaseInterface>(
+    item: Omit<EditProposalInterface<T>, "id">,
+    path: string
+  ): Observable<EditProposalInterface<T>> {
+    const { image, ...itemWithoutImage } = item;
+
+    return new Observable<EditProposalInterface<T>>(observer => {
+      this.http
+        .post<EditProposalInterface<T>>(`${this.configUrl}/${path}-edit-proposal/`, itemWithoutImage)
+        .pipe(
+          take(1),
+          catchError(error => {
+            this.popNotificationService.error(`Something went wrong: ${JSON.stringify(error.error)}`);
+            return EMPTY;
+          })
+        )
+        .subscribe(createdEditProposal => {
+          if (item.image && item.image.length > 0) {
+            this._uploadEditProposalImage<T>(createdEditProposal.id, (item.image as File[])[0], path)
+              .pipe(
+                take(1),
+                catchError(error => {
+                  let message = "";
+
+                  if (error && error.error && error.error.image && error.error.image.length > 0) {
+                    message = error.error.image[0];
+                  }
+
+                  this.popNotificationService.warning(
+                    this.translateService.instant(
+                      `Something went wrong with uploading the image, but the form was submitted anyway. ${message}`
+                    )
+                  );
+
+                  return of(createdEditProposal);
+                })
+              )
+              .subscribe(createdEditProposalWithImage => {
+                observer.next({ ...createdEditProposal, ...createdEditProposalWithImage });
+                observer.complete();
+              });
+          } else {
+            observer.next(createdEditProposal);
+            observer.complete();
+          }
+        });
+    });
+  }
+
+  private _uploadEditProposalImage<T extends EquipmentItemBaseInterface>(
+    id: T["id"],
+    image: File,
+    path: string
+  ): Observable<EditProposalInterface<T>> {
+    const formData: FormData = new FormData();
+    formData.append("image", image);
+
+    const httpOptions = {
+      headers: new HttpHeaders({
+        // Unsetting the Content-Type is necessary so it gets set to multipart/form-data with the correct boundary.
+        "Content-Type": "__unset__",
+        "Content-Disposition": `form-data; name="image"; filename=${image.name}`
+      })
+    };
+
+    return this.http.post<EditProposalInterface<T>>(
+      `${this.configUrl}/${path}-edit-proposal/${id}/image/`,
+      formData,
+      httpOptions
+    );
   }
 }

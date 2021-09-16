@@ -1,4 +1,4 @@
-import { testBrand, testCamera } from "./test-data";
+import { testBrand, testCamera } from "../../../support/commands/equipment-item-browser-utils";
 
 context("Equipment", () => {
   beforeEach(() => {
@@ -17,6 +17,13 @@ context("Equipment", () => {
           previous: null,
           results: [testCamera]
         }).as("findCameras");
+
+        cy.route("GET", "**/api/v2/equipment/camera/", {
+          count: 1,
+          next: null,
+          previous: null,
+          results: [testCamera]
+        }).as("getCameras");
 
         cy.route("GET", "**/api/v2/equipment/brand/1/", testBrand).as("getBrand");
 

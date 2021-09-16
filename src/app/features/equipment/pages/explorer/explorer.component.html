@@ -7,7 +7,84 @@
     </div>
 
     <div class="col">
-      <astrobin-equipment-item-browser [type]="activeType"></astrobin-equipment-item-browser>
+      <astrobin-equipment-item-browser
+        #itemBrowser
+        [type]="activeType"
+        (itemSelected)="onItemSelected($event)"
+        (creationModeStarted)="onCreationModeStarted()"
+      ></astrobin-equipment-item-browser>
+
+      <div class="card" *ngIf="selectedItem">
+        <div class="card-header">{{ equipmentItemService.humanizeType(activeType) }}</div>
+        <div class="card-body">
+          <astrobin-equipment-item-summary
+            *ngIf="selectedItem"
+            [item]="selectedItem"
+            [showClass]="false"
+            [showEmptyProperties]="true"
+            [showLargeImage]="true"
+          ></astrobin-equipment-item-summary>
+        </div>
+        <div class="card-footer">
+          <button
+            class="btn btn-sm-block btn-outline-secondary"
+            [class.loading]="loadingService.isLoading()"
+            (click)="resetBrowser()"
+          >
+            {{ "Close" | translate }}
+          </button>
+
+          <button
+            class="btn btn-secondary"
+            *ngIf="!!(currentUser$ | async)"
+            data-test="propose-edit"
+            (click)="startEditMode()"
+          >
+            {{ "Propose edit" | translate }}
+          </button>
+        </div>
+      </div>
+
+      <ng-container *ngIf="editMode">
+        <div class="mt-4 mb-4 text-center">
+          <fa-icon icon="arrow-down"></fa-icon>
+        </div>
+
+        <div class="card mt-4 mb-4" id="edit-item">
+          <div class="card-header">
+            {{ "Propose edit" | translate }}
+          </div>
+
+          <div class="card-body">
+            <astrobin-camera-editor
+              *ngIf="activeType === EquipmentItemType.CAMERA"
+              [form]="editForm"
+              [model]="editModel"
+              [editorMode]="EquipmentItemEditorMode.EDIT_PROPOSAL"
+            ></astrobin-camera-editor>
+          </div>
+
+          <div class="card-footer">
+            <button
+              class="btn btn-sm-block btn-secondary"
+              [class.loading]="loadingService.isLoading()"
+              (click)="endEditMode()"
+            >
+              {{ "Cancel" | translate }}
+            </button>
+
+            <button
+              class="btn btn-sm-block btn-primary"
+              data-test="propose-edit-confirm"
+              [disabled]="!editForm.valid"
+              [class.loading]="loadingService.isLoading()"
+              (click)="proposeEdit()"
+            >
+              {{ "Propose edit" | translate }}
+            </button>
+          </div>
+        </div>
+      </ng-container>
     </div>
   </div>
 </div>

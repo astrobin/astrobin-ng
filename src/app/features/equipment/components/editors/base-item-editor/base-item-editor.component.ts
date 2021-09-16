@@ -29,6 +29,12 @@ import { State } from "@app/store/state";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import { selectBrand } from "@features/equipment/store/equipment.selectors";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
+import { FormlyFieldMessageLevel, FormlyFieldService } from "@shared/services/formly-field.service";
+
+export enum EquipmentItemEditorMode {
+  CREATION,
+  EDIT_PROPOSAL
+}
 
 @Component({
   selector: "astrobin-base-equipment-item-editor",
@@ -49,6 +55,9 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface> exten
 
   @Input()
   returnToSelector: string;
+
+  @Input()
+  editorMode = EquipmentItemEditorMode.CREATION;
 
   @Output()
   subCreationInProgress = new EventEmitter<boolean>();
@@ -90,7 +99,8 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface> exten
     public readonly translateService: TranslateService,
     public readonly windowRefService: WindowRefService,
     public readonly equipmentApiService: EquipmentApiService,
-    public readonly equipmentItemService: EquipmentItemService
+    public readonly equipmentItemService: EquipmentItemService,
+    public readonly formlyFieldService: FormlyFieldService
   ) {
     super(store$);
   }
@@ -157,13 +167,31 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface> exten
       type: "ng-select",
       id: "equipment-item-field-brand",
       expressionProperties: {
-        "templateOptions.disabled": () => this.brandCreation.inProgress
+        "templateOptions.disabled": () =>
+          this.brandCreation.inProgress || this.editorMode === EquipmentItemEditorMode.EDIT_PROPOSAL
       },
       templateOptions: {
         required: true,
         clearable: true,
         label: this.translateService.instant("Brand"),
-        options: of([]),
+        description:
+          this.editorMode === EquipmentItemEditorMode.EDIT_PROPOSAL
+            ? this.translateService.instant("Editing the brand is not possible")
+            : null,
+        options:
+          this.model && this.model.brand
+            ? this.store$.select(selectBrand, this.model.brand).pipe(
+                filter(brand => !!brand),
+                take(1),
+                map(brand => [
+                  {
+                    value: brand.id,
+                    label: brand.name,
+                    brand
+                  }
+                ])
+              )
+            : of([]),
         onSearch: (term: string) => {
           this._onBrandSearch(term);
         },
@@ -194,6 +222,9 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface> exten
               }),
               tap((brand: BrandInterface) => {
                 this.brandCreation.name = brand.name;
+
+                this.formlyFieldService.clearMessages(field.templateOptions);
+                this.formlyFieldService.clearMessages(field.templateOptions);
                 this._validateBrandInName();
                 this._similarItemSuggestion();
                 this._othersInBrand();
@@ -220,8 +251,7 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface> exten
         label: this.translateService.instant("Name"),
         description: this.translateService.instant(
           "The name of this product. Do not include the brand's name and make sure it's spelled correctly."
-        ),
-        warningMessage: null
+        )
       },
       hooks: {
         onInit: (field: FormlyFieldConfig) => {
@@ -230,9 +260,11 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface> exten
               takeUntil(this.destroyed$),
               filter(value => !!value),
               tap((value: string) => {
+                this.formlyFieldService.clearMessages(field.templateOptions);
                 this._validateBrandInName();
                 this._similarItemSuggestion();
                 this._checkForDangerousWords(value, field);
+                this._editProposalWarning(field);
               })
             )
             .subscribe();
@@ -245,6 +277,7 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface> exten
               ...this.model,
               ...this.form.value
             } as EquipmentItemBaseInterface);
+
             return this.equipmentApiService.getByNameAndType(control.value, type).pipe(map(item => !item));
           },
           message: this.translateService.instant("An item of the same type and the same name already exists.")
@@ -301,7 +334,7 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface> exten
     const nameFieldConfig: FormlyFieldConfig = this.fields.find(field => field.key === "name");
     const type: EquipmentItemType = this.equipmentItemService.getType(this.form.value);
 
-    if (!type || !brandControl.value || !nameControl.value) {
+    if (!type || !brandControl.value || !nameControl.value || this.editorMode !== EquipmentItemEditorMode.CREATION) {
       return;
     }
 
@@ -321,8 +354,11 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface> exten
           data = similarItems;
         }
 
-        nameFieldConfig.templateOptions.warningTemplate = template;
-        nameFieldConfig.templateOptions.warningTemplateData = data;
+        this.formlyFieldService.addMessage(nameFieldConfig.templateOptions, {
+          level: FormlyFieldMessageLevel.WARNING,
+          template,
+          data
+        });
       });
   }
 
@@ -349,10 +385,12 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface> exten
         if (others.length > 0) {
           template = this.othersInBrandTemplate;
           data = others;
+          this.formlyFieldService.addMessage(brandFieldConfig.templateOptions, {
+            level: FormlyFieldMessageLevel.INFO,
+            template,
+            data
+          });
         }
-
-        brandFieldConfig.templateOptions.infoTemplate = template;
-        brandFieldConfig.templateOptions.infoTemplateData = data;
       });
   }
 
@@ -361,15 +399,9 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface> exten
     const nameControl: AbstractControl = this.form.get("name");
     const brandFieldConfig: FormlyFieldConfig = this.fields.find(field => field.key === "brand");
     const nameFieldConfig: FormlyFieldConfig = this.fields.find(field => field.key === "name");
-    const message =
-      "<strong>Careful!</strong> The item's name contains the brand's name (or vice versa), and it probably shouldn't.";
-
-    let previousMessage = brandFieldConfig.templateOptions.warningMessage;
-    let newMessage = null;
-
-    if (previousMessage === message) {
-      previousMessage = null;
-    }
+    const message = this.translateService.instant(
+      "<strong>Careful!</strong> The item's name contains the brand's name (or vice versa), and it probably shouldn't."
+    );
 
     if (!brandControl.value || !nameControl.value) {
       return;
@@ -380,23 +412,32 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface> exten
       .pipe(filter(brand => !!brand))
       .subscribe(brand => {
         if (nameControl.value.toLowerCase().indexOf(brand.name.toLowerCase()) > -1) {
-          newMessage = this.translateService.instant(message);
+          this.formlyFieldService.addMessage(brandFieldConfig.templateOptions, {
+            level: FormlyFieldMessageLevel.WARNING,
+            text: message
+          });
+          this.formlyFieldService.addMessage(nameFieldConfig.templateOptions, {
+            level: FormlyFieldMessageLevel.WARNING,
+            text: message
+          });
         }
 
         for (const word of nameControl.value.split(" ")) {
           if (brand.name.toLowerCase() === word.toLowerCase()) {
-            newMessage = this.translateService.instant(message);
+            this.formlyFieldService.addMessage(brandFieldConfig.templateOptions, {
+              level: FormlyFieldMessageLevel.WARNING,
+              text: message
+            });
+            this.formlyFieldService.addMessage(nameFieldConfig.templateOptions, {
+              level: FormlyFieldMessageLevel.WARNING,
+              text: message
+            });
           }
         }
-
-        brandFieldConfig.templateOptions.warningMessage = newMessage;
-        nameFieldConfig.templateOptions.warningMessage = newMessage;
       });
   }
 
   private _checkForDangerousWords(value: string, field: FormlyFieldConfig) {
-    let message = field.templateOptions.warningMessage;
-
     const dangerousWords = [
       "modified",
       "modded",
@@ -414,7 +455,7 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface> exten
 
     for (const word of dangerousWords) {
       if (value.toLowerCase().indexOf(word) > -1) {
-        message = this.translateService.instant(
+        const message = this.translateService.instant(
           `<strong>Careful!</strong> Your usage of the word "{{0}}" suggests that you are using this field to
             specify a property of this item that is only relevant to your own copy. Remember that here you are creating
             or editing the <strong>generic instance</strong> that will be shared by all owners on AstroBin.`,
@@ -422,10 +463,30 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface> exten
             "0": word
           }
         );
+
+        this.formlyFieldService.addMessage(field.templateOptions, {
+          level: FormlyFieldMessageLevel.WARNING,
+          text: message
+        });
         break;
       }
     }
+  }
 
-    field.templateOptions.warningMessage = message;
+  private _editProposalWarning(field: FormlyFieldConfig) {
+    if (this.editorMode !== EquipmentItemEditorMode.EDIT_PROPOSAL) {
+      return;
+    }
+
+    const message = this.translateService.instant(
+      "<strong>Careful!</strong> Change the name only to fix a typo or the naming convention. This operation will " +
+        "change the name of this equipment item <strong>for all AstroBin images that use it</strong>, so you should " +
+        "not change the name if it becomes a different product."
+    );
+
+    this.formlyFieldService.addMessage(field.templateOptions, {
+      level: FormlyFieldMessageLevel.WARNING,
+      text: message
+    });
   }
 }

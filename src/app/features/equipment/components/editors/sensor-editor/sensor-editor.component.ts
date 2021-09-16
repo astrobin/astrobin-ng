@@ -9,6 +9,7 @@ import { State } from "@app/store/state";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import { SensorInterface } from "@features/equipment/interfaces/sensor.interface";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
+import { FormlyFieldService } from "@shared/services/formly-field.service";
 
 @Component({
   selector: "astrobin-sensor-editor",
@@ -26,7 +27,8 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
     public readonly translateService: TranslateService,
     public readonly windowRefService: WindowRefService,
     public readonly equipmentApiService: EquipmentApiService,
-    public readonly equipmentItemService: EquipmentItemService
+    public readonly equipmentItemService: EquipmentItemService,
+    public readonly formlyFieldService: FormlyFieldService
   ) {
     super(
       store$,
@@ -35,7 +37,8 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
       translateService,
       windowRefService,
       equipmentApiService,
-      equipmentItemService
+      equipmentItemService,
+      formlyFieldService
     );
   }
 

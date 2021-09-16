@@ -21,10 +21,11 @@ import {
   LoadBrand
 } from "@features/equipment/store/equipment.actions";
 import { filter, map, switchMap, take, takeUntil, tap } from "rxjs/operators";
-import { selectBrand, selectBrands } from "@features/equipment/store/equipment.selectors";
+import { selectBrand, selectBrands, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import { BrandInterface } from "@features/equipment/interfaces/brand.interface";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 import { CameraService } from "@features/equipment/services/camera.service";
+import { FormlyFieldService } from "@shared/services/formly-field.service";
 
 @Component({
   selector: "astrobin-camera-editor",
@@ -55,6 +56,7 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
     public readonly windowRefService: WindowRefService,
     public readonly equipmentApiService: EquipmentApiService,
     public readonly equipmentItemService: EquipmentItemService,
+    public readonly formlyFieldService: FormlyFieldService,
     public readonly cameraService: CameraService
   ) {
     super(
@@ -64,7 +66,8 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
       translateService,
       windowRefService,
       equipmentApiService,
-      equipmentItemService
+      equipmentItemService,
+      formlyFieldService
     );
   }
 
@@ -180,7 +183,27 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
           label: this.translateService.instant("Sensor"),
           required: false,
           clearable: true,
-          options: of([]),
+          options:
+            this.model && this.model.sensor
+              ? this.store$.select(selectEquipmentItem, { id: this.model.sensor, type: EquipmentItemType.SENSOR }).pipe(
+                  filter(sensor => !!sensor),
+                  take(1),
+                  tap(sensor => this.store$.dispatch(new LoadBrand({ id: sensor.brand }))),
+                  switchMap((sensor: SensorInterface) =>
+                    this.store$.select(selectBrand, sensor.brand).pipe(
+                      filter(brand => !!brand),
+                      map(brand => ({ brand, sensor }))
+                    )
+                  ),
+                  map(({ brand, sensor }) => [
+                    {
+                      value: sensor.id,
+                      label: `${brand.name} ${sensor.name}`,
+                      sensor
+                    }
+                  ])
+                )
+              : of([]),
           onSearch: (term: string) => {
             this._onSensorSearch(term);
           },

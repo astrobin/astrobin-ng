@@ -1,14 +1,33 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { Store } from "@ngrx/store";
+import { Action, Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { TitleService } from "@shared/services/title/title.service";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
-import { EquipmentItemType } from "@features/equipment/interfaces/equipment-item-base.interface";
-import { map, takeUntil } from "rxjs/operators";
+import {
+  EquipmentItemBaseInterface,
+  EquipmentItemType
+} from "@features/equipment/interfaces/equipment-item-base.interface";
+import { map, take, takeUntil } from "rxjs/operators";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
+import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
+import { FormGroup } from "@angular/forms";
+import { LoadingService } from "@shared/services/loading.service";
+import {
+  CreateCameraEditProposal,
+  CreateSensorEditProposal,
+  EquipmentActionTypes,
+  LoadBrand
+} from "@features/equipment/store/equipment.actions";
+import { SensorInterface } from "@features/equipment/interfaces/sensor.interface";
+import { CameraInterface } from "@features/equipment/interfaces/camera.interface";
+import { Actions, ofType } from "@ngrx/effects";
+import { EditProposalInterface } from "@features/equipment/interfaces/edit-proposal.interface";
+import { EquipmentItemEditorMode } from "@features/equipment/components/editors/base-item-editor/base-item-editor.component";
+import { PopNotificationsService } from "@shared/services/pop-notifications.service";
+import { ItemBrowserComponent } from "@features/equipment/components/item-browser/item-browser.component";
 
 @Component({
   selector: "astrobin-equipment-explorer",
@@ -17,6 +36,7 @@ import { EquipmentApiService } from "@features/equipment/services/equipment-api.
 })
 export class ExplorerComponent extends BaseComponentDirective implements OnInit {
   EquipmentItemType = EquipmentItemType;
+  EquipmentItemEditorMode = EquipmentItemEditorMode;
 
   title = this.translateService.instant("Equipment explorer");
 
@@ -25,17 +45,34 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit 
     map(response => response.count)
   );
 
-  private _activeType: string;
+  selectedItem: EquipmentItemBaseInterface | null = null;
+
+  editMode = false;
+  editForm = new FormGroup({});
+  editModel: Partial<EditProposalInterface<EquipmentItemBaseInterface>> = {};
+
+  @ViewChild("itemBrowser")
+  private _itemBrowser: ItemBrowserComponent;
 
   constructor(
     public readonly store$: Store<State>,
+    public readonly actions$: Actions,
     public readonly translateService: TranslateService,
     public readonly titleService: TitleService,
     public readonly activatedRoute: ActivatedRoute,
     public readonly router: Router,
-    public readonly equipmentApiService: EquipmentApiService
+    public readonly equipmentApiService: EquipmentApiService,
+    public readonly equipmentItemService: EquipmentItemService,
+    public readonly loadingService: LoadingService,
+    public readonly popNotificationsService: PopNotificationsService
   ) {
     super(store$);
+  }
+
+  private _activeType: string;
+
+  get activeType(): EquipmentItemType {
+    return EquipmentItemType[this._activeType.toUpperCase()];
   }
 
   ngOnInit(): void {
@@ -63,7 +100,77 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit 
     });
   }
 
-  get activeType(): EquipmentItemType {
-    return EquipmentItemType[this._activeType.toUpperCase()];
+  startEditMode() {
+    this.editMode = true;
+    this.editModel = { ...this.selectedItem };
+  }
+
+  endEditMode() {
+    this.editMode = false;
+    this.editModel = {};
+    this.editForm.reset();
+  }
+
+  resetBrowser() {
+    this._itemBrowser.reset();
+    this.selectedItem = null;
+  }
+
+  onItemSelected(item: EquipmentItemBaseInterface) {
+    this.selectedItem = item;
+  }
+
+  onCreationModeStarted() {
+    this.selectedItem = null;
+  }
+
+  proposeEdit() {
+    let action: Action;
+    let actionSuccessType: EquipmentActionTypes;
+
+    // Remove id and set `editModelTarget`.
+    const { id, ...editModelWithTarget } = { ...this.editModel, ...{ editProposalTarget: this.editModel.id } };
+
+    switch (this.activeType) {
+      case EquipmentItemType.SENSOR:
+        action = new CreateSensorEditProposal({
+          sensor: editModelWithTarget as EditProposalInterface<SensorInterface>
+        });
+        actionSuccessType = EquipmentActionTypes.CREATE_SENSOR_EDIT_PROPOSAL_SUCCESS;
+        break;
+      case EquipmentItemType.CAMERA:
+        action = new CreateCameraEditProposal({
+          camera: editModelWithTarget as EditProposalInterface<CameraInterface>
+        });
+        actionSuccessType = EquipmentActionTypes.CREATE_CAMERA_EDIT_PROPOSAL_SUCCESS;
+        break;
+    }
+
+    if (action) {
+      this.loadingService.setLoading(true);
+      this.store$.dispatch(action);
+      this.actions$
+        .pipe(
+          ofType(actionSuccessType),
+          take(1),
+          map(
+            (result: { payload: { editProposal: EditProposalInterface<EquipmentItemBaseInterface> } }) =>
+              result.payload.editProposal
+          )
+        )
+        .subscribe((createdEditProposal: EditProposalInterface<EquipmentItemBaseInterface>) => {
+          this.editProposalCreated(createdEditProposal);
+          this.loadingService.setLoading(false);
+        });
+    }
+  }
+
+  editProposalCreated(editProposal: EditProposalInterface<EquipmentItemBaseInterface>) {
+    this.popNotificationsService.success(
+      this.translateService.instant(
+        "Thanks! Your edit proposal has been submitted and well be reviewed as soon as possible."
+      )
+    );
+    this.endEditMode();
   }
 }

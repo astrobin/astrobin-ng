@@ -13,41 +13,22 @@
     <formly-validation-message [field]="field"></formly-validation-message>
   </div>
 
-  <div
-    class="alert alert-warning warning-feedback"
-    *ngIf="to.warningMessage || (to.warningTemplate && to.warningTemplateData)"
-  >
-    <ng-container *ngIf="to.warningMessage">
-      <span [innerHTML]="to.warningMessage"></span>
-    </ng-container>
+  <ng-container *ngFor="let message of to.messages">
+    <div class="alert alert-{{ message.level.toLowerCase() }} {{ message.level.toLowerCase() }}-feedback">
+      <ng-container *ngIf="message.text">
+        <span [innerHTML]="message.text"></span>
+      </ng-container>
 
-    <ng-container
-      *ngIf="to.warningTemplate"
-      [ngTemplateOutlet]="to.warningTemplate"
-      [ngTemplateOutletContext]="{ data: to.warningTemplateData }"
-    >
-    </ng-container>
+      <ng-container
+        *ngIf="message.template"
+        [ngTemplateOutlet]="message.template"
+        [ngTemplateOutletContext]="{ data: message.data }"
+      >
+      </ng-container>
 
-    <button class="close" (click)="closeWarning()">&times;</button>
-  </div>
-
-  <div
-    class="alert alert-info info-feedback"
-    *ngIf="to.infoMessage || (to.infoTemplate && to.infoTemplateData)"
-  >
-    <ng-container *ngIf="to.infoMessage">
-      <span [innerHTML]="to.infoMessage"></span>
-    </ng-container>
-
-    <ng-container
-      *ngIf="to.infoTemplate"
-      [ngTemplateOutlet]="to.infoTemplate"
-      [ngTemplateOutletContext]="{ data: to.infoTemplateData }"
-    >
-    </ng-container>
-
-    <button class="close" (click)="closeInfo()">&times;</button>
-  </div>
+      <button class="close" (click)="closeMessage(message)">&times;</button>
+    </div>
+  </ng-container>
 
   <small *ngIf="to.description" class="form-text text-muted" [innerHTML]="to.description"></small>
 </div>

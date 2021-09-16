@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, Input, OnChanges, SimpleChanges } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import {
   EquipmentItemBaseInterface,
@@ -26,12 +26,21 @@ import { EquipmentItemService } from "@features/equipment/services/equipment-ite
   templateUrl: "./item-summary.component.html",
   styleUrls: ["./item-summary.component.scss"]
 })
-export class ItemSummaryComponent extends BaseComponentDirective implements OnInit {
+export class ItemSummaryComponent extends BaseComponentDirective implements OnChanges {
   @Input()
   item: EquipmentItemBaseInterface;
 
   @Input()
   showImage = true;
+
+  @Input()
+  showLargeImage = false;
+
+  @Input()
+  showEmptyProperties = false;
+
+  @Input()
+  showClass = true;
 
   brand: BrandInterface;
 
@@ -70,12 +79,12 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnIn
     }
   }
 
-  ngOnInit() {
+  ngOnChanges(changes: SimpleChanges): void {
     this.store$
       .select(selectBrand, this.item.brand)
       .pipe(
         filter(brand => !!brand),
-        takeWhile(() => !this.brand)
+        takeWhile(brand => !this.brand || this.brand.id !== brand.id)
       )
       .subscribe(brand => (this.brand = brand));
 
@@ -84,12 +93,18 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnIn
     }
   }
 
+  showProperty(property: { name: string; value: any }): boolean {
+    return !!property && (!!property.value || this.showEmptyProperties);
+  }
+
   private _sensorProperties(): Observable<{ name: string; value: any }[]> {
     return of([
-      {
-        name: this.translateService.instant("Class"),
-        value: this.translateService.instant("Sensor")
-      },
+      this.showClass
+        ? {
+            name: this.translateService.instant("Class"),
+            value: this.translateService.instant("Sensor")
+          }
+        : null,
       {
         name: this.translateService.instant("Pixels"),
         value: this.sensorService.getPrintableProperty(this.item, SensorDisplayProperty.PIXELS)
@@ -129,10 +144,12 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnIn
     const item: CameraInterface = this.item as CameraInterface;
 
     return of([
-      {
-        name: this.translateService.instant("Class"),
-        value: this.translateService.instant("Camera")
-      },
+      this.showClass
+        ? {
+            name: this.translateService.instant("Class"),
+            value: this.translateService.instant("Camera")
+          }
+        : null,
       {
         name: this.translateService.instant("Type"),
         value: this.cameraService.getPrintableProperty(item, CameraDisplayProperty.TYPE)
@@ -156,10 +173,12 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnIn
     const item: TelescopeInterface = this.item as TelescopeInterface;
 
     return of([
-      {
-        name: this.translateService.instant("Class"),
-        value: this.translateService.instant("Telescope")
-      },
+      this.showClass
+        ? {
+            name: this.translateService.instant("Class"),
+            value: this.translateService.instant("Telescope")
+          }
+        : null,
       {
         name: this.translateService.instant("Type"),
         value: this.telescopeService.getPrintableProperty(item, TelescopeDisplayProperty.TYPE)

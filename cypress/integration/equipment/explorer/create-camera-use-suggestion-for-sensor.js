@@ -1,4 +1,4 @@
-import { testBrand, testSensor } from "./test-data";
+import { testBrand, testCamera, testSensor } from "../../../support/commands/equipment-item-browser-utils";
 
 context("Equipment", () => {
   beforeEach(() => {
@@ -11,6 +11,13 @@ context("Equipment", () => {
       previous: null,
       results: []
     }).as("findCameras");
+
+    cy.route("GET", "**/api/v2/equipment/camera/", {
+      count: 1,
+      next: null,
+      previous: null,
+      results: [testCamera]
+    }).as("getCameras");
 
     cy.route("GET", "**/api/v2/equipment/camera/?name=*", {
       count: 1,
@@ -26,11 +33,14 @@ context("Equipment", () => {
       results: []
     }).as("findSensors");
 
-    cy.route("GET", "**/api/v2/equipment/sensor/?name=*", { count: 1, results: [testSensor] }).as("findSensorsByName");
+    cy.route("GET", "**/api/v2/equipment/sensor/?name=*", { count: 1, results: [] }).as("findSensorsByName");
+    cy.route("GET", "**/api/v2/equipment/sensor/others-in-brand/*", { count: 1, results: [testSensor] }).as(
+      "sensorOthersInBrand"
+    );
   });
 
   context("Explorer", () => {
-    context("Create camera with no brand/sensor process", () => {
+    context("Create camera and use suggestion for sensor", () => {
       it("should start the creation process", () => {
         cy.login();
         cy.visitPage("/equipment/explorer");
@@ -39,13 +49,13 @@ context("Equipment", () => {
       });
 
       it("should select a brand", () => {
-        cy.equipmentItemBrowserSelectNthBrand("#equipment-item-field-brand", "Test brand", testBrand);
+        cy.equipmentItemBrowserSelectFirstBrand("#equipment-item-field-brand", "Test brand", testBrand);
       });
 
       it("should create a sensor", () => {
         cy.equipmentItemBrowserCreate("#camera-field-sensor", "Test sensor", "@findSensors");
 
-        cy.equipmentItemBrowserSelectNthBrand(
+        cy.equipmentItemBrowserSelectFirstBrand(
           "astrobin-sensor-editor #equipment-item-field-brand",
           "Test brand",
           testBrand

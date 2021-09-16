@@ -1,4 +1,4 @@
-import { testBrand, testCamera, testSensor } from "./test-data";
+import { testBrand, testCamera, testSensor } from "../../../support/commands/equipment-item-browser-utils";
 
 context("Equipment", () => {
   beforeEach(() => {
@@ -12,6 +12,13 @@ context("Equipment", () => {
       results: []
     }).as("findCameras");
 
+    cy.route("GET", "**/api/v2/equipment/camera/", {
+      count: 1,
+      next: null,
+      previous: null,
+      results: [testCamera]
+    }).as("getCameras");
+
     cy.route("GET", "**/api/v2/equipment/camera/?name=*", {
       count: 1,
       next: null,
@@ -21,7 +28,7 @@ context("Equipment", () => {
   });
 
   context("Explorer", () => {
-    context("Create camera with no brand/sensor process", () => {
+    context("Create camera without brand/sensor process", () => {
       it("should start the creation process", () => {
         cy.login();
         cy.visitPage("/equipment/explorer");
@@ -30,7 +37,7 @@ context("Equipment", () => {
       });
 
       it("should select a brand", () => {
-        cy.equipmentItemBrowserSelectNthBrand("#equipment-item-field-brand", "Test brand", testBrand);
+        cy.equipmentItemBrowserSelectFirstBrand("#equipment-item-field-brand", "Test brand", testBrand);
       });
 
       it("should have prefilled the name", () => {
@@ -44,7 +51,7 @@ context("Equipment", () => {
       });
 
       it("should select a sensor", () => {
-        cy.equipmentItemBrowserSelectNthSensor("#camera-field-sensor", "Test sensor", testSensor);
+        cy.equipmentItemBrowserSelectFirstSensor("#camera-field-sensor", "Test sensor", testSensor);
       });
 
       it("should show 'Max cooling' only if 'Cooled'", () => {

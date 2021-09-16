@@ -6,8 +6,12 @@ import {
   CreateBrand,
   CreateBrandSuccess,
   CreateCamera,
+  CreateCameraEditProposal,
+  CreateCameraEditProposalSuccess,
   CreateCameraSuccess,
   CreateSensor,
+  CreateSensorEditProposal,
+  CreateSensorEditProposalSuccess,
   CreateSensorSuccess,
   EquipmentActionTypes,
   FindAllBrands,
@@ -186,6 +190,23 @@ export class EquipmentEffects {
     )
   );
 
+  CreateSensorEditProposal: Observable<CreateSensorEditProposalSuccess> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(EquipmentActionTypes.CREATE_SENSOR_EDIT_PROPOSAL),
+      map((action: CreateSensorEditProposal) => action.payload.sensor),
+      mergeMap(sensor =>
+        this.equipmentApiService
+          .createSensorEditProposal(sensor)
+          .pipe(
+            map(
+              createdSensorEditProposal =>
+                new CreateSensorEditProposalSuccess({ editProposal: createdSensorEditProposal })
+            )
+          )
+      )
+    )
+  );
+
   CreateCamera: Observable<CreateCameraSuccess> = createEffect(() =>
     this.actions$.pipe(
       ofType(EquipmentActionTypes.CREATE_CAMERA),
@@ -194,6 +215,23 @@ export class EquipmentEffects {
         this.equipmentApiService
           .createCamera(camera)
           .pipe(map(createdCamera => new CreateCameraSuccess({ item: createdCamera })))
+      )
+    )
+  );
+
+  CreateCameraEditProposal: Observable<CreateCameraEditProposalSuccess> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(EquipmentActionTypes.CREATE_CAMERA_EDIT_PROPOSAL),
+      map((action: CreateCameraEditProposal) => action.payload.camera),
+      mergeMap(camera =>
+        this.equipmentApiService
+          .createCameraEditProposal(camera)
+          .pipe(
+            map(
+              createdCameraEditProposal =>
+                new CreateCameraEditProposalSuccess({ editProposal: createdCameraEditProposal })
+            )
+          )
       )
     )
   );
