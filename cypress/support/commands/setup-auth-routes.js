@@ -5,5 +5,7 @@ Cypress.Commands.add("setupAuthRoutes", () => {
     "getCurrentUserProfile"
   );
 
+  cy.route("GET", "**/common/userprofiles/*", "fixture:api/common/userprofile_current_1.json").as("getUserProfile1");
+
   cy.route("GET", "**/common/users/*", "fixture:api/common/users_1.json").as("getUser");
 });
