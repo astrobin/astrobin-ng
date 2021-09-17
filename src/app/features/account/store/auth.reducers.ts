@@ -40,7 +40,7 @@ export function reducer(state = initialAuthState, action: All): AuthState {
           ? UtilsService.arrayUniqueObjects([...state.users, ...[action.payload.user]])
           : state.users,
         userProfiles: action.payload.userProfile
-          ? UtilsService.arrayUniqueObjects([...state.users, ...[action.payload.userProfile]])
+          ? UtilsService.arrayUniqueObjects([...state.userProfiles, ...[action.payload.userProfile]])
           : state.userProfiles
       };
     case AuthActionTypes.UPDATE_CURRENT_USER_PROFILE_SUCCESS:
@@ -56,7 +56,7 @@ export function reducer(state = initialAuthState, action: All): AuthState {
     case AuthActionTypes.LOAD_USER_PROFILE_SUCCESS:
       return {
         ...state,
-        userProfiles: UtilsService.arrayUniqueObjects([...state.users, ...[action.payload.userProfile]])
+        userProfiles: UtilsService.arrayUniqueObjects([...state.userProfiles, ...[action.payload.userProfile]])
       };
     default: {
       return state;
