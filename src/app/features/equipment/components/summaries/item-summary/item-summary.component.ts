@@ -110,9 +110,9 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
     return of([
       this.showClass
         ? {
-          name: this.translateService.instant("Class"),
-          value: this.translateService.stream("Sensor")
-        }
+            name: this.translateService.instant("Class"),
+            value: this.translateService.stream("Sensor")
+          }
         : null,
       {
         name: this.translateService.instant("Pixels"),
@@ -155,9 +155,9 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
     return of([
       this.showClass
         ? {
-          name: this.translateService.instant("Class"),
-          value: this.translateService.stream("Camera")
-        }
+            name: this.translateService.instant("Class"),
+            value: this.translateService.stream("Camera")
+          }
         : null,
       {
         name: this.translateService.instant("Type"),
@@ -184,9 +184,9 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
     return of([
       this.showClass
         ? {
-          name: this.translateService.instant("Class"),
-          value: this.translateService.stream("Telescope")
-        }
+            name: this.translateService.instant("Class"),
+            value: this.translateService.stream("Telescope")
+          }
         : null,
       {
         name: this.translateService.instant("Type"),
