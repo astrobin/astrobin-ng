@@ -101,16 +101,36 @@ context("Equipment", () => {
 
     it("should submit the form", () => {
       cy.route("POST", "**/api/v2/equipment/camera-edit-proposal/", testCameraEditProposal).as("saveEditProposal");
+      cy.route("GET", "**/api/v2/equipment/camera-edit-proposal/?editProposalTarget=*", {
+        results: [testCameraEditProposal]
+      }).as("getEditProposals");
 
       cy.get("[data-test=propose-edit-confirm]").click();
 
       cy.wait("@saveEditProposal");
+      cy.wait("@getEditProposals");
 
       cy.get(".toast-message")
         .contains("Your edit proposal has been submitted")
         .should("be.visible");
 
       cy.get("astrobin-camera-editor").should("not.be.visible");
+    });
+
+    it("should show the new edit proposal on the page", () => {
+      cy.get("astrobin-item-edit-proposal").should("be.visible");
+      cy.get("astrobin-item-edit-proposal .edit-proposal > span > a").should("contain", "AstroBin Dev");
+      cy.get("astrobin-item-edit-proposal .edit-proposal > span").should("contain", "proposed an edit to this item");
+      cy.get("astrobin-item-edit-proposal").click();
+      cy.get("astrobin-item-edit-proposal .change .property-name")
+        .contains("Name:")
+        .should("be.visible");
+      cy.get("astrobin-item-edit-proposal .change .before")
+        .contains("Test")
+        .should("be.visible");
+      cy.get("astrobin-item-edit-proposal .change .after")
+        .contains("Test Pro")
+        .should("be.visible");
     });
   });
 });

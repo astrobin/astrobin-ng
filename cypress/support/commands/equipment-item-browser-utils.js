@@ -61,6 +61,9 @@ export const testCameraEditProposal = {
   ...testCamera,
   ...{
     editProposalTarget: 1,
+    editProposalBy: 1,
+    editProposalCreated: "2021-09-13T00:00:00",
+    editProposalUpdated: "2021-09-13T00:00:00",
     name: "Test Pro"
   }
 };
