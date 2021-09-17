@@ -4,6 +4,7 @@ import { LoadingService } from "@shared/services/loading.service";
 import { EquipmentItemServiceInterface } from "@features/equipment/services/equipment-item.service-interface";
 import { ColorOrMono, SensorInterface } from "@features/equipment/interfaces/sensor.interface";
 import { TranslateService } from "@ngx-translate/core";
+import { Observable, of } from "rxjs";
 
 export enum SensorDisplayProperty {
   QUANTUM_EFFICIENCY = "QUANTUM_EFFICIENCY",
@@ -28,31 +29,31 @@ export class SensorService extends BaseService implements EquipmentItemServiceIn
     super(loadingService);
   }
 
-  getPrintableProperty(item: SensorInterface, property: SensorDisplayProperty): string {
+  getPrintableProperty$(item: SensorInterface, property: SensorDisplayProperty): Observable<string> {
     switch (property) {
       case SensorDisplayProperty.PIXEL_SIZE:
-        return item.pixelSize ? `${item.pixelSize} μm` : "";
+        return of(item.pixelSize ? `${item.pixelSize} μm` : "");
       case SensorDisplayProperty.PIXELS:
-        return item.pixelWidth && item.pixelHeight ? `${item.pixelWidth} x ${item.pixelHeight}` : "";
+        return of(item.pixelWidth && item.pixelHeight ? `${item.pixelWidth} x ${item.pixelHeight}` : "");
       case SensorDisplayProperty.SENSOR_SIZE:
-        return item.sensorWidth && item.sensorHeight ? `${item.sensorWidth} x ${item.sensorHeight} mm` : "";
+        return of(item.sensorWidth && item.sensorHeight ? `${item.sensorWidth} x ${item.sensorHeight} mm` : "");
       case SensorDisplayProperty.QUANTUM_EFFICIENCY:
-        return item.quantumEfficiency ? `${item.quantumEfficiency}%` : "";
+        return of(item.quantumEfficiency ? `${item.quantumEfficiency}%` : "");
       case SensorDisplayProperty.FULL_WELL_CAPACITY:
-        return item.fullWellCapacity ? `${item.fullWellCapacity} e-` : "";
+        return of(item.fullWellCapacity ? `${item.fullWellCapacity} e-` : "");
       case SensorDisplayProperty.READ_NOISE:
-        return item.readNoise ? `${item.readNoise} e-` : "";
+        return of(item.readNoise ? `${item.readNoise} e-` : "");
       case SensorDisplayProperty.FRAME_RATE:
-        return item.frameRate ? `${item.frameRate} FPS` : "";
+        return of(item.frameRate ? `${item.frameRate} FPS` : "");
       case SensorDisplayProperty.ADC:
-        return item.adc ? `${item.adc}-bit` : "";
+        return of(item.adc ? `${item.adc}-bit` : "");
       case SensorDisplayProperty.COLOR_OR_MONO:
         if (item.colorOrMono === ColorOrMono.C) {
-          return this.translateService.instant("Color");
+          return this.translateService.stream("Color");
         } else if (item.colorOrMono === ColorOrMono.M) {
-          return this.translateService.instant("Mono");
+          return this.translateService.stream("Mono");
         }
-        return "";
+        return of("");
       default:
         throw Error(`Invalid property: ${property}`);
     }

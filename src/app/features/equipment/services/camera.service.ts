@@ -5,6 +5,14 @@ import { EquipmentItemServiceInterface } from "@features/equipment/services/equi
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { CameraInterface, CameraType } from "@features/equipment/interfaces/camera.interface";
 import { TranslateService } from "@ngx-translate/core";
+import { Observable, of } from "rxjs";
+import { Store } from "@ngrx/store";
+import { State } from "@app/store/state";
+import { LoadBrand, LoadEquipmentItem } from "@features/equipment/store/equipment.actions";
+import { EquipmentItemType } from "@features/equipment/interfaces/equipment-item-base.interface";
+import { selectBrand, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
+import { filter, map, switchMap, take, takeWhile, tap } from "rxjs/operators";
+import { SensorInterface } from "@features/equipment/interfaces/sensor.interface";
 
 export enum CameraDisplayProperty {
   TYPE = "TYPE",
@@ -19,13 +27,13 @@ export enum CameraDisplayProperty {
 })
 export class CameraService extends BaseService implements EquipmentItemServiceInterface {
   constructor(
+    public readonly store$: Store<State>,
     public readonly loadingService: LoadingService,
     public readonly utilsService: UtilsService,
     public readonly translateService: TranslateService
   ) {
     super(loadingService);
   }
-  "";
 
   humanizeType(type: CameraType) {
     switch (type) {
@@ -44,18 +52,32 @@ export class CameraService extends BaseService implements EquipmentItemServiceIn
     }
   }
 
-  getPrintableProperty(item: CameraInterface, property: CameraDisplayProperty): string {
+  getPrintableProperty$(item: CameraInterface, property: CameraDisplayProperty): Observable<string> {
     switch (property) {
       case CameraDisplayProperty.TYPE:
-        return this.humanizeType(item.type);
+        return of(this.humanizeType(item.type));
       case CameraDisplayProperty.SENSOR:
-        return item.sensor.toString();
+        const payload = { id: item.sensor, type: EquipmentItemType.SENSOR };
+        this.store$.dispatch(new LoadEquipmentItem(payload));
+        return this.store$.select(selectEquipmentItem, payload).pipe(
+          filter(sensor => !!sensor),
+          take(1),
+          tap(sensor => this.store$.dispatch(new LoadBrand({ id: sensor.brand }))),
+          switchMap((sensor: SensorInterface) =>
+            this.store$.select(selectBrand, sensor.brand).pipe(
+              filter(brand => !!brand),
+              take(1),
+              map(brand => ({ brand, sensor }))
+            )
+          ),
+          map(({ brand, sensor }) => `<strong>${brand.name}</strong> ${sensor.name}`)
+        );
       case CameraDisplayProperty.COOLED:
-        return this.utilsService.yesNo(item.cooled);
+        return of(this.utilsService.yesNo(item.cooled));
       case CameraDisplayProperty.MAX_COOLING:
-        return item.maxCooling ? `${item.maxCooling} &deg;C` : "";
+        return of(item.maxCooling ? `${item.maxCooling} &deg;C` : "");
       case CameraDisplayProperty.BACK_FOCUS:
-        return item.backFocus ? `${item.backFocus} mm` : "";
+        return of(item.backFocus ? `${item.backFocus} mm` : "");
       default:
         throw Error(`Invalid property: ${property}`);
     }

@@ -7,13 +7,13 @@
   <div class="edit-proposal-details" *ngIf="opened">
     {{ "The following changes are proposed:" | translate }}
 
-    <ul class="changes">
+    <ul class="changes" *ngIf="changes; else loading">
       <li *ngFor="let change of changes" class="change">
-        <span class="property-name">{{ getPropertyDisplay(change) }}:</span>
+        <span class="property-name">{{ change.propertyName }}:</span>
 
-        <span class="before" [innerHTML]="getBeforeDisplay(change) || 'n/a' | translate"></span>&nbsp;&xrarr;
+        <span class="before" [innerHTML]="change.before || 'n/a' | translate"></span>&nbsp;&xrarr;
 
-        <span class="after" [innerHTML]="getAfterDisplay(change) || 'n/a' | translate"></span>
+        <span class="after" [innerHTML]="change.after || 'n/a' | translate"></span>
 
         <div *ngIf="change.propertyName === 'name'" class="alert alert-warning">
           <span [innerHTML]="equipmentItemService.nameChangeWarningMessage()"></span>
@@ -22,3 +22,8 @@
     </ul>
   </div>
 </ng-container>
+
+
+<ng-template #loading>
+  <astrobin-loading-indicator></astrobin-loading-indicator>
+</ng-template>

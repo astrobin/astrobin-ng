@@ -4,6 +4,7 @@ import { LoadingService } from "@shared/services/loading.service";
 import { EquipmentItemServiceInterface } from "@features/equipment/services/equipment-item.service-interface";
 import { TelescopeInterface, TelescopeType } from "@features/equipment/interfaces/telescope.interface";
 import { TranslateService } from "@ngx-translate/core";
+import { Observable, of } from "rxjs";
 
 export enum TelescopeDisplayProperty {
   TYPE = "TYPE",
@@ -31,20 +32,24 @@ export class TelescopeService extends BaseService implements EquipmentItemServic
     }
   }
 
-  getPrintableProperty(item: TelescopeInterface, property: TelescopeDisplayProperty): string {
+  getPrintableProperty$(item: TelescopeInterface, property: TelescopeDisplayProperty): Observable<string> {
     switch (property) {
       case TelescopeDisplayProperty.TYPE:
-        return this.humanizeType(item.type);
+        return of(this.humanizeType(item.type));
       case TelescopeDisplayProperty.APERTURE:
-        return item.minAperture === item.maxAperture
-          ? `${item.maxAperture} mm`
-          : `${item.minAperture} - ${item.maxAperture} mm`;
+        return of(
+          item.minAperture === item.maxAperture
+            ? `${item.maxAperture} mm`
+            : `${item.minAperture} - ${item.maxAperture} mm`
+        );
       case TelescopeDisplayProperty.FOCAL_LENGTH:
-        return item.minFocalLength === item.maxFocalLength
-          ? `${item.maxFocalLength} mm`
-          : `${item.minFocalLength} - ${item.maxFocalLength} mm`;
+        return of(
+          item.minFocalLength === item.maxFocalLength
+            ? `${item.maxFocalLength} mm`
+            : `${item.minFocalLength} - ${item.maxFocalLength} mm`
+        );
       case TelescopeDisplayProperty.WEIGHT:
-        return item.weight ? `${item.weight} kg` : "";
+        return of(item.weight ? `${item.weight} kg` : "");
       default:
         throw Error(`Invalid property: ${property}`);
     }

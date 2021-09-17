@@ -4,7 +4,8 @@ export class EquipmentStateGenerator {
   static default(): EquipmentState {
     return {
       brands: [],
-      equipmentItems: []
+      equipmentItems: [],
+      editProposals: []
     };
   }
 }

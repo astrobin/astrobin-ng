@@ -14,6 +14,7 @@ import { EditProposalChange } from "@features/equipment/interfaces/edit-proposal
 import { SensorService } from "@features/equipment/services/sensor.service";
 import { TelescopeService } from "@features/equipment/services/telescope.service";
 import { CameraService } from "@features/equipment/services/camera.service";
+import { Observable, of } from "rxjs";
 
 export function getEquipmentItemType(item: EquipmentItemBaseInterface) {
   if (instanceOfSensor(item)) {
@@ -67,9 +68,13 @@ export class EquipmentItemService extends BaseService {
     }
   }
 
-  getPrintableProperty(item: EquipmentItemBaseInterface, propertyName: any, propertyValue: any): string | null {
+  getPrintableProperty$(
+    item: EquipmentItemBaseInterface,
+    propertyName: any,
+    propertyValue: any
+  ): Observable<string | null> {
     if (propertyValue === undefined || propertyValue === null) {
-      return null;
+      return of(null);
     }
 
     const type: EquipmentItemType = this.getType(item);
@@ -77,19 +82,21 @@ export class EquipmentItemService extends BaseService {
     switch (propertyName) {
       case EquipmentItemDisplayProperty.NAME:
       case EquipmentItemDisplayProperty.BRAND:
-        return propertyValue.toString();
+        return of(propertyValue.toString());
       case EquipmentItemDisplayProperty.IMAGE:
-        return `<a href="${propertyValue}" target="_blank">${this.translateService.instant("Image")}</a>`;
+        return of(`<a href="${propertyValue}" target="_blank">${this.translateService.instant("Image")}</a>`);
     }
 
     switch (type) {
       case EquipmentItemType.CAMERA:
-        return this.cameraService.getPrintableProperty(item as CameraInterface, propertyName);
+        return this.cameraService.getPrintableProperty$(item as CameraInterface, propertyName);
       case EquipmentItemType.SENSOR:
-        return this.sensorService.getPrintableProperty(item as SensorInterface, propertyName);
+        return this.sensorService.getPrintableProperty$(item as SensorInterface, propertyName);
       case EquipmentItemType.TELESCOPE:
-        return this.telescopeService.getPrintableProperty(item as TelescopeInterface, propertyName);
+        return this.telescopeService.getPrintableProperty$(item as TelescopeInterface, propertyName);
     }
+
+    return of(null);
   }
 
   getPrintablePropertyName(type: EquipmentItemType, propertyName: any, shortForm = false): string {
@@ -116,7 +123,7 @@ export class EquipmentItemService extends BaseService {
     return UtilsService.camelCaseToCapsCase(propertyName);
   }
 
-  changes(a: EquipmentItemBaseInterface, b: EquipmentItemBaseInterface) {
+  changes(a: EquipmentItemBaseInterface, b: EquipmentItemBaseInterface): EditProposalChange[] {
     if (this.getType(a) !== this.getType(b)) {
       throw Error("Cannot detect changes for items of different types");
     }

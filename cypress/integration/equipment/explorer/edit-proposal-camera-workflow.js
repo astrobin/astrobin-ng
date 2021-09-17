@@ -34,6 +34,8 @@ context("Equipment", () => {
     cy.route("GET", "**/api/v2/equipment/brand/1/", testBrand).as("getBrand");
 
     cy.route("GET", "**/api/v2/equipment/sensor/1/", testSensor).as("getSensor");
+
+    cy.route("GET", "**/api/v2/equipment/camera-edit-proposal/?editProposalTarget=*", { results: [] });
   });
 
   context("Explorer", () => {

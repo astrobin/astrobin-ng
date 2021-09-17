@@ -2,16 +2,16 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { OthersInBrandComponent } from "./others-in-brand.component";
 import { MockBuilder } from "ng-mocks";
-import { EquipmentModule } from "@features/equipment/equipment.module";
 import { provideMockStore } from "@ngrx/store/testing";
 import { initialState } from "@app/store/state";
+import { AppModule } from "@app/app.module";
 
 describe("OthersInBrandComponent", () => {
   let component: OthersInBrandComponent;
   let fixture: ComponentFixture<OthersInBrandComponent>;
 
   beforeEach(async () => {
-    await MockBuilder(OthersInBrandComponent, EquipmentModule).provide(provideMockStore({ initialState }));
+    await MockBuilder(OthersInBrandComponent, AppModule).provide(provideMockStore({ initialState }));
   });
 
   beforeEach(() => {

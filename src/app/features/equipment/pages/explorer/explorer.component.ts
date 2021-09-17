@@ -43,10 +43,7 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit 
 
   title = this.translateService.instant("Equipment explorer");
 
-  cameraCount$ = this.equipmentApiService.getAllEquipmentItems(EquipmentItemType.CAMERA).pipe(
-    takeUntil(this.destroyed$),
-    map(response => response.count)
-  );
+  cameraCount$: Observable<number>;
 
   selectedItem: EquipmentItemBaseInterface | null = null;
 
@@ -97,6 +94,11 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit 
     );
 
     this._activeType = this.activatedRoute.snapshot.paramMap.get("itemType");
+
+    this.cameraCount$ = this.equipmentApiService.getAllEquipmentItems(EquipmentItemType.CAMERA).pipe(
+      takeUntil(this.destroyed$),
+      map(response => response.count)
+    );
 
     this.router.events.pipe(takeUntil(this.destroyed$)).subscribe(event => {
       if (event instanceof NavigationEnd) {

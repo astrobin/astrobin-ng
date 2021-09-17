@@ -14,8 +14,10 @@ import { UserInterface } from "@shared/interfaces/user.interface";
 import { selectUser } from "@features/account/store/auth.selectors";
 import { LoadUser } from "@features/account/store/auth.actions";
 import { UsernameService } from "@shared/components/misc/username/username.service";
-import { filter, switchMap, take, tap } from "rxjs/operators";
+import { filter, map, switchMap, take, tap } from "rxjs/operators";
 import { TranslateService } from "@ngx-translate/core";
+import { forkJoin, Observable, of } from "rxjs";
+import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 
 @Component({
   selector: "astrobin-item-edit-proposal",
@@ -30,7 +32,6 @@ export class ItemEditProposalComponent extends BaseComponentDirective implements
   type: EquipmentItemType;
   proposedBy: UserInterface;
   userProposedEditMessage: string;
-
   changes: EditProposalChange[] = [];
 
   opened = false;
@@ -39,7 +40,8 @@ export class ItemEditProposalComponent extends BaseComponentDirective implements
     public readonly store$: Store<State>,
     public readonly equipmentItemService: EquipmentItemService,
     public readonly usernameService: UsernameService,
-    public readonly translateService: TranslateService
+    public readonly translateService: TranslateService,
+    public readonly classicRoutesService: ClassicRoutesService
   ) {
     super(store$);
   }
@@ -60,7 +62,17 @@ export class ItemEditProposalComponent extends BaseComponentDirective implements
       .subscribe(item => {
         this.item = item;
         this.type = this.equipmentItemService.getType(this.item);
-        this.changes = this.equipmentItemService.changes(this.item, this.editProposal);
+        this.equipmentItemService.changes(this.item, this.editProposal).forEach(change => {
+          const enumValue = this.equipmentItemService.propertyNameToPropertyEnum(change.propertyName);
+
+          forkJoin({
+            before: this.equipmentItemService.getPrintableProperty$(this.item, enumValue, change.before),
+            after: this.equipmentItemService.getPrintableProperty$(this.editProposal, enumValue, change.after)
+          }).subscribe(({ before, after }) => {
+            const propertyName = this.equipmentItemService.getPrintablePropertyName(this.type, enumValue, true);
+            this.changes.push({ propertyName, before, after });
+          });
+        });
       });
 
     this.store$
@@ -69,29 +81,14 @@ export class ItemEditProposalComponent extends BaseComponentDirective implements
         filter(user => !!user),
         take(1),
         tap(user => (this.proposedBy = user)),
-        switchMap(user => this.usernameService.getDisplayName$(user)),
+        switchMap(user => this.usernameService.getDisplayName$(user).pipe(map(displayName => ({ user, displayName })))),
         tap(
-          displayName =>
+          ({ user, displayName }) =>
             (this.userProposedEditMessage = this.translateService.instant("{{0}} proposed an edit to this item", {
-              0: `<a href="">${displayName}</a>`
+              0: `<a href="${this.classicRoutesService.GALLERY(user)}" target="_blank">${displayName}</a>`
             }))
         )
       )
       .subscribe();
-  }
-
-  getPropertyDisplay(change: EditProposalChange): string {
-    const enumValue = this.equipmentItemService.propertyNameToPropertyEnum(change.propertyName);
-    return this.equipmentItemService.getPrintablePropertyName(this.type, enumValue, true);
-  }
-
-  getBeforeDisplay(change: EditProposalChange): string {
-    const enumValue = this.equipmentItemService.propertyNameToPropertyEnum(change.propertyName);
-    return this.equipmentItemService.getPrintableProperty(this.item, enumValue, change.before);
-  }
-
-  getAfterDisplay(change: EditProposalChange): string {
-    const enumValue = this.equipmentItemService.propertyNameToPropertyEnum(change.propertyName);
-    return this.equipmentItemService.getPrintableProperty(this.editProposal, enumValue, change.after);
   }
 }

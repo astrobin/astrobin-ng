@@ -21,33 +21,43 @@ describe("CameraService", () => {
     it("should work for 'cooled'", () => {
       const yesNoMock = jest.spyOn(service.utilsService, "yesNo");
 
-      service.getPrintableProperty(CameraGenerator.camera({ cooled: true }), CameraDisplayProperty.COOLED);
+      service.getPrintableProperty$(CameraGenerator.camera({ cooled: true }), CameraDisplayProperty.COOLED).subscribe();
       expect(service.utilsService.yesNo).toHaveBeenCalledWith(true);
 
       yesNoMock.mockReset();
 
-      service.getPrintableProperty(CameraGenerator.camera({ cooled: false }), CameraDisplayProperty.COOLED);
+      service
+        .getPrintableProperty$(CameraGenerator.camera({ cooled: false }), CameraDisplayProperty.COOLED)
+        .subscribe();
       expect(service.utilsService.yesNo).toHaveBeenCalledWith(false);
     });
 
     it("should work for 'maxCooling'", () => {
-      expect(
-        service.getPrintableProperty(CameraGenerator.camera({ maxCooling: 10 }), CameraDisplayProperty.MAX_COOLING)
-      ).toEqual("10 &deg;C");
+      service
+        .getPrintableProperty$(CameraGenerator.camera({ maxCooling: 10 }), CameraDisplayProperty.MAX_COOLING)
+        .subscribe(value => {
+          expect(value).toEqual("10 &deg;C");
+        });
 
-      expect(
-        service.getPrintableProperty(CameraGenerator.camera({ maxCooling: null }), CameraDisplayProperty.MAX_COOLING)
-      ).toEqual("");
+      service
+        .getPrintableProperty$(CameraGenerator.camera({ maxCooling: null }), CameraDisplayProperty.MAX_COOLING)
+        .subscribe(value => {
+          expect(value).toEqual("");
+        });
     });
 
     it("should work for 'backFocus'", () => {
-      expect(
-        service.getPrintableProperty(CameraGenerator.camera({ backFocus: 10 }), CameraDisplayProperty.BACK_FOCUS)
-      ).toEqual("10 mm");
+      service
+        .getPrintableProperty$(CameraGenerator.camera({ backFocus: 10 }), CameraDisplayProperty.BACK_FOCUS)
+        .subscribe(value => {
+          expect(value).toEqual("10 mm");
+        });
 
-      expect(
-        service.getPrintableProperty(CameraGenerator.camera({ backFocus: null }), CameraDisplayProperty.BACK_FOCUS)
-      ).toEqual("");
+      service
+        .getPrintableProperty$(CameraGenerator.camera({ backFocus: null }), CameraDisplayProperty.BACK_FOCUS)
+        .subscribe(value => {
+          expect(value).toEqual("");
+        });
     });
   });
 });

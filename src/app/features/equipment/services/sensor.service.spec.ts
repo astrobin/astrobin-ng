@@ -4,6 +4,7 @@ import { AppModule } from "@app/app.module";
 import { SensorDisplayProperty, SensorService } from "@features/equipment/services/sensor.service";
 import { SensorGenerator } from "@features/equipment/generators/sensor.generator";
 import { ColorOrMono } from "@features/equipment/interfaces/sensor.interface";
+import { of } from "rxjs";
 
 describe("SensorService", () => {
   let service: SensorService;
@@ -11,6 +12,8 @@ describe("SensorService", () => {
   beforeEach(async () => {
     await MockBuilder(SensorService, AppModule);
     service = TestBed.inject(SensorService);
+    jest.spyOn(service.translateService, "instant").mockImplementation(s => s);
+    jest.spyOn(service.translateService, "stream").mockImplementation(s => of(s));
   });
 
   it("should be created", () => {
@@ -33,15 +36,41 @@ describe("SensorService", () => {
         colorOrMono: ColorOrMono.M
       });
 
-      expect(service.getPrintableProperty(sensor, SensorDisplayProperty.QUANTUM_EFFICIENCY)).toEqual("10%");
-      expect(service.getPrintableProperty(sensor, SensorDisplayProperty.PIXEL_SIZE)).toEqual("7.4 μm");
-      expect(service.getPrintableProperty(sensor, SensorDisplayProperty.PIXELS)).toEqual("800 x 600");
-      expect(service.getPrintableProperty(sensor, SensorDisplayProperty.SENSOR_SIZE)).toEqual("25 x 20 mm");
-      expect(service.getPrintableProperty(sensor, SensorDisplayProperty.FULL_WELL_CAPACITY)).toEqual("5000 e-");
-      expect(service.getPrintableProperty(sensor, SensorDisplayProperty.READ_NOISE)).toEqual("1000 e-");
-      expect(service.getPrintableProperty(sensor, SensorDisplayProperty.FRAME_RATE)).toEqual("24 FPS");
-      expect(service.getPrintableProperty(sensor, SensorDisplayProperty.ADC)).toEqual("12-bit");
-      expect(service.getPrintableProperty(sensor, SensorDisplayProperty.COLOR_OR_MONO)).toEqual("Mono");
+      service.getPrintableProperty$(sensor, SensorDisplayProperty.QUANTUM_EFFICIENCY).subscribe(value => {
+        expect(value).toEqual("10%");
+      });
+
+      service.getPrintableProperty$(sensor, SensorDisplayProperty.PIXEL_SIZE).subscribe(value => {
+        expect(value).toEqual("7.4 μm");
+      });
+
+      service.getPrintableProperty$(sensor, SensorDisplayProperty.PIXELS).subscribe(value => {
+        expect(value).toEqual("800 x 600");
+      });
+
+      service.getPrintableProperty$(sensor, SensorDisplayProperty.SENSOR_SIZE).subscribe(value => {
+        expect(value).toEqual("25 x 20 mm");
+      });
+
+      service.getPrintableProperty$(sensor, SensorDisplayProperty.FULL_WELL_CAPACITY).subscribe(value => {
+        expect(value).toEqual("5000 e-");
+      });
+
+      service.getPrintableProperty$(sensor, SensorDisplayProperty.READ_NOISE).subscribe(value => {
+        expect(value).toEqual("1000 e-");
+      });
+
+      service.getPrintableProperty$(sensor, SensorDisplayProperty.FRAME_RATE).subscribe(value => {
+        expect(value).toEqual("24 FPS");
+      });
+
+      service.getPrintableProperty$(sensor, SensorDisplayProperty.ADC).subscribe(value => {
+        expect(value).toEqual("12-bit");
+      });
+
+      service.getPrintableProperty$(sensor, SensorDisplayProperty.COLOR_OR_MONO).subscribe(value => {
+        expect(value).toEqual("Mono");
+      });
     });
   });
 });
