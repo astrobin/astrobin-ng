@@ -31,6 +31,7 @@ import { PopNotificationsService } from "@shared/services/pop-notifications.serv
 import { ItemBrowserComponent } from "@features/equipment/components/item-browser/item-browser.component";
 import { Observable } from "rxjs";
 import { selectEditProposalsForItem } from "@features/equipment/store/equipment.selectors";
+import { WindowRefService } from "@shared/services/window-ref.service";
 
 @Component({
   selector: "astrobin-equipment-explorer",
@@ -66,7 +67,8 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit 
     public readonly equipmentApiService: EquipmentApiService,
     public readonly equipmentItemService: EquipmentItemService,
     public readonly loadingService: LoadingService,
-    public readonly popNotificationsService: PopNotificationsService
+    public readonly popNotificationsService: PopNotificationsService,
+    public readonly windowRefService: WindowRefService
   ) {
     super(store$);
   }
@@ -110,6 +112,12 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit 
   startEditMode() {
     this.editMode = true;
     this.editModel = { ...this.selectedItem };
+
+    setTimeout(() => {
+      this.windowRefService.nativeWindow.document
+        .querySelector("#equipment-item-field-name")
+        .scrollIntoView({ behavior: "smooth" });
+    }, 100);
   }
 
   endEditMode() {

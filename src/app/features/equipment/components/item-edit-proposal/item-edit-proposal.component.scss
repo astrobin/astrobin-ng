@@ -2,7 +2,6 @@
   position: relative;
   display: block;
   padding: .25rem 1rem;
-  cursor: pointer;
 
   &:hover {
     background-color: rgba(255, 255, 255, .025);
@@ -14,7 +13,8 @@
 }
 
 .edit-proposal {
-  padding-right: 2rem;
+  padding-right: 1.5rem;
+  cursor: pointer;
 
   &::after {
     content: "";
@@ -35,11 +35,32 @@
       border-bottom: 6px solid var(--lighterGrey);
     }
   }
+
+  .status {
+    &.rejected {
+      color: var(--dangerColor);
+    }
+
+    &.accepted {
+      color: var(--successColor);
+    }
+
+    &.pending {
+      color: var(--warningColor);
+    }
+
+    &.superseded {
+      color: var(--grey);
+    }
+  }
+
+  .timeago {
+    color: var(--lightGrey);
+  }
 }
 
 .edit-proposal-details {
-  margin: 1rem;
-  padding: 1rem;
+  padding: 1rem 0 0;
   color: var(--lighterGrey);
 
   .changes {
@@ -59,10 +80,12 @@
       }
     }
   }
-}
 
-.timeago {
-  color: var(--lightGrey);
+  .form-actions {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    padding: 0;
+  }
 }
 
 .alert-warning {

@@ -1,3 +1,11 @@
-<span class="username">
-  {{ username$ | async }}
-</span>
+<a href="" [target]="linkTarget" *ngIf="link">
+  <ng-container [ngTemplateOutlet]="username"></ng-container>
+</a>
+
+<ng-container [ngTemplateOutlet]="username" *ngIf="!link"></ng-container>
+
+<ng-template #username>
+  <span class="username">
+    {{ username$ | async }}
+  </span>
+</ng-template>

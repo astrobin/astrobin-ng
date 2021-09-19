@@ -320,7 +320,7 @@
     <li *ngIf="userWrapper.user && userWrapper.userProfile" class="nav-item">
       <div class="d-inline-block" ngbDropdown>
         <button class="btn btn-primary user-dropdown-toggle" id="user-dropdown" ngbDropdownToggle>
-          <astrobin-username [user]="userWrapper.user"></astrobin-username>
+          <astrobin-username [user]="userWrapper.user" [link]="false"></astrobin-username>
           <span
             class="indexes"
             *ngIf="!userWrapper.userProfile?.excludeFromCompetition"

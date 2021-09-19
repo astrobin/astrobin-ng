@@ -4,7 +4,8 @@ import { Observable } from "rxjs";
 
 export enum EditProposalReviewStatus {
   ACCEPTED = "ACCEPTED",
-  REJECTEd = "REJECTED"
+  REJECTED = "REJECTED",
+  SUPERSEDED = "SUPERSEDED"
 }
 
 export interface EditProposalChange {

@@ -15,9 +15,13 @@
             <span class="property-name">{{ property.name }}</span
             >:
 
-            <ng-container *ngIf="property.value | async as value">
-              <span class="property-value" [innerHTML]="value || 'n/a' | translate"></span>
+            <ng-container *ngIf="property.value | async as value; else noValue">
+              <span class="property-value" [innerHTML]="value"></span>
             </ng-container>
+
+            <ng-template #noValue>
+              <span class="property-value">{{ "n/a" | translate }}</span>
+            </ng-template>
           </span>
         </ng-container>
       </div>

@@ -3,4 +3,14 @@
   box-shadow: 0 0 1rem var(--black);
   margin-left: 1rem;
   margin-right: 1rem;
+
+  .edit-proposals-header {
+    padding: 1rem 1rem .5rem 1rem;
+    border-bottom: 1px dashed var(--grey);
+    font-weight: bold;
+
+    .row {
+      padding-right: 1.5rem;
+    }
+  }
 }

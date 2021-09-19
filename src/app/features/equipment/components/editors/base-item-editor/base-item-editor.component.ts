@@ -176,7 +176,7 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface> exten
         label: this.translateService.instant("Brand"),
         description:
           this.editorMode === EquipmentItemEditorMode.EDIT_PROPOSAL
-            ? this.translateService.instant("Editing the brand is not possible")
+            ? this.translateService.instant("Editing the brand is not possible.")
             : null,
         options:
           this.model && this.model.brand
@@ -294,11 +294,28 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface> exten
     };
   }
 
+  protected _getEditProposalCommentField() {
+    if (this.editorMode !== EquipmentItemEditorMode.EDIT_PROPOSAL) {
+      return null;
+    }
+
+    return {
+      key: "editProposalComment",
+      type: "textarea",
+      wrappers: ["default-wrapper"],
+      id: "equipment-item-field-edit-proposal-comment",
+      templateOptions: {
+        required: false,
+        label: this.translateService.instant("Edit proposal comment")
+      }
+    };
+  }
+
   protected _getImageField() {
     return {
       key: "image",
       type: "file",
-      id: "camera-field-image",
+      id: "equipment-item-field-image",
       templateOptions: {
         required: false,
         label: this.translateService.instant("Image"),

@@ -119,8 +119,10 @@ context("Equipment", () => {
 
     it("should show the new edit proposal on the page", () => {
       cy.get("astrobin-item-edit-proposal").should("be.visible");
-      cy.get("astrobin-item-edit-proposal .edit-proposal > span > a").should("contain", "AstroBin Dev");
-      cy.get("astrobin-item-edit-proposal .edit-proposal > span").should("contain", "proposed an edit to this item");
+      cy.get("astrobin-item-edit-proposal .edit-proposal astrobin-username .username").should(
+        "contain",
+        "AstroBin Dev"
+      );
       cy.get("astrobin-item-edit-proposal").click();
       cy.get("astrobin-item-edit-proposal .change .property-name")
         .contains("Name:")
@@ -130,6 +132,20 @@ context("Equipment", () => {
         .should("be.visible");
       cy.get("astrobin-item-edit-proposal .change .after")
         .contains("Test Pro")
+        .should("be.visible");
+    });
+
+    it("should have disabled buttons because the proposer cannot review", () => {
+      cy.get("astrobin-item-edit-proposal .btn")
+        .contains("Reject...")
+        .should("be.visible")
+        .should("be.disabled");
+      cy.get("astrobin-item-edit-proposal .btn")
+        .contains("Approve...")
+        .should("be.visible")
+        .should("be.disabled");
+      cy.get("astrobin-item-edit-proposal .alert")
+        .contains("You cannot review this edit proposal because you were the one who proposed it.")
         .should("be.visible");
     });
   });

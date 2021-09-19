@@ -13,7 +13,15 @@ import { State } from "@app/store/state";
   providers: [UsernameService]
 })
 export class UsernameComponent extends BaseComponentDirective implements OnInit {
-  @Input() user: UserInterface;
+  @Input()
+  user: UserInterface;
+
+  @Input()
+  link = true;
+
+  @Input()
+  linkTarget = "_self";
+
   username$: Observable<string>;
 
   constructor(public readonly store$: Store<State>, public readonly usernameService: UsernameService) {

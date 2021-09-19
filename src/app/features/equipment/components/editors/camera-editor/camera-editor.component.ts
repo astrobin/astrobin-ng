@@ -269,7 +269,8 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
           description: this.translateService.instant("Camera back focus in mm.")
         }
       },
-      this._getImageField()
+      this._getImageField(),
+      this._getEditProposalCommentField()
     ];
   }
 
