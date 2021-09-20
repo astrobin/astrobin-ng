@@ -122,14 +122,14 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     const type = this.equipmentItemService.getType(item);
     const path = EquipmentItemType[type].toLowerCase();
 
-    return this.http.put<EquipmentItemBaseInterface>(`${this.configUrl}/${path}/${item.id}/approve/`, {});
+    return this.http.post<EquipmentItemBaseInterface>(`${this.configUrl}/${path}/${item.id}/approve/`, {});
   }
 
   rejectEquipmentItem(item: EquipmentItemBaseInterface, comment: string): Observable<EquipmentItemBaseInterface> {
     const type = this.equipmentItemService.getType(item);
     const path = EquipmentItemType[type].toLowerCase();
 
-    return this.http.put<EquipmentItemBaseInterface>(`${this.configUrl}/${path}/${item.id}/reject/`, { comment });
+    return this.http.post<EquipmentItemBaseInterface>(`${this.configUrl}/${path}/${item.id}/reject/`, { comment });
   }
 
   findEquipmentItemEditProposals(
@@ -211,7 +211,7 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
       })
     };
 
-    return this.http.put<BrandInterface>(`${this.configUrl}/brand/${id}/logo/`, formData, httpOptions);
+    return this.http.post<BrandInterface>(`${this.configUrl}/brand/${id}/logo/`, formData, httpOptions);
   }
 
   findAllBrands(q: string): Observable<BrandInterface[]> {
