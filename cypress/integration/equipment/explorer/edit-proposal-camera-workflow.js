@@ -80,6 +80,10 @@ context("Equipment", () => {
       cy.get("#camera-field-back-focus").should("have.value", testCamera.backFocus);
     });
 
+    it("should the comment field", () => {
+      cy.get("#equipment-item-field-edit-proposal-comment").should("be.visible");
+    });
+
     it("should show warning if name is changed", () => {
       cy.route("GET", "**/api/v2/equipment/camera/?name=*", {
         count: 1,

@@ -232,5 +232,7 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
       },
       this._getImageField()
     ];
+
+    this._addBaseItemEditorFields();
   }
 }

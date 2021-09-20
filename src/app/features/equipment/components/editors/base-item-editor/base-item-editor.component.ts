@@ -1,5 +1,5 @@
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { AfterViewInit, Component, EventEmitter, Input, Output, TemplateRef, ViewChild } from "@angular/core";
+import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from "@angular/core";
 import { AbstractControl, FormControl, FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import {
@@ -294,23 +294,6 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface> exten
     };
   }
 
-  protected _getEditProposalCommentField() {
-    if (this.editorMode !== EquipmentItemEditorMode.EDIT_PROPOSAL) {
-      return null;
-    }
-
-    return {
-      key: "editProposalComment",
-      type: "textarea",
-      wrappers: ["default-wrapper"],
-      id: "equipment-item-field-edit-proposal-comment",
-      templateOptions: {
-        required: false,
-        label: this.translateService.instant("Edit proposal comment")
-      }
-    };
-  }
-
   protected _getImageField() {
     return {
       key: "image",
@@ -327,6 +310,25 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface> exten
         validation: [{ name: "file-size", options: { max: 1024 * 1024 } }, { name: "image-file" }]
       }
     };
+  }
+
+  protected _getEditProposalCommentField() {
+    return {
+      key: "editProposalComment",
+      type: "textarea",
+      wrappers: ["default-wrapper"],
+      id: "equipment-item-field-edit-proposal-comment",
+      templateOptions: {
+        required: false,
+        label: this.translateService.instant("Edit proposal comment")
+      }
+    };
+  }
+
+  protected _addBaseItemEditorFields() {
+    if (this.editorMode === EquipmentItemEditorMode.EDIT_PROPOSAL) {
+      this.fields.push(this._getEditProposalCommentField());
+    }
   }
 
   protected _onBrandSearch(term: string) {

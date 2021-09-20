@@ -81,6 +81,7 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
     setTimeout(() => {
       this._initFields();
     }, 1);
+
     super.ngAfterViewInit();
   }
 
@@ -269,9 +270,10 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
           description: this.translateService.instant("Camera back focus in mm.")
         }
       },
-      this._getImageField(),
-      this._getEditProposalCommentField()
+      this._getImageField()
     ];
+
+    this._addBaseItemEditorFields();
   }
 
   private _onSensorSearch(term: string) {
