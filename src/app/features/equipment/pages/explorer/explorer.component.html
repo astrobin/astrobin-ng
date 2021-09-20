@@ -1,4 +1,4 @@
-<div class="page">
+<div class="page" *ngIf="activeType">
   <h1>{{ title }}</h1>
 
   <div class="row">
@@ -18,7 +18,6 @@
         <div class="card-header">{{ equipmentItemService.humanizeType(activeType) }}</div>
         <div class="card-body">
           <astrobin-equipment-item-summary
-            *ngIf="selectedItem"
             [item]="selectedItem"
             [showClass]="false"
             [showEmptyProperties]="true"

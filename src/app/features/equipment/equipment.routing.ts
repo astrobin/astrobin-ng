@@ -39,10 +39,27 @@ export const routes: Routes = [
   },
   {
     path: "explorer",
-    redirectTo: "explorer/camera"
-  },
-  {
-    path: "explorer/:itemType",
-    component: ExplorerComponent
+    children: [
+      {
+        path: "",
+        pathMatch: "full",
+        redirectTo: "camera"
+      },
+      {
+        path: ":itemType/:itemId/:itemSlug",
+        pathMatch: "full",
+        component: ExplorerComponent
+      },
+      {
+        path: ":itemType/:itemId",
+        pathMatch: "full",
+        component: ExplorerComponent
+      },
+      {
+        path: ":itemType",
+        pathMatch: "full",
+        component: ExplorerComponent
+      }
+    ]
   }
 ];

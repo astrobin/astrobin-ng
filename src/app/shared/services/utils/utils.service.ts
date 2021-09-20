@@ -155,6 +155,21 @@ export class UtilsService {
       .toUpperCase();
   }
 
+  static slugify(s: string): string {
+    if (!s) {
+      return "";
+    }
+
+    return s
+      .toString()
+      .toLowerCase()
+      .replace(/\s+/g, "-") // Replace spaces with -
+      .replace(/[^\w\-]+/g, "") // Remove all non-word chars
+      .replace(/\-\-+/g, "-") // Replace multiple - with single -
+      .replace(/^-+/, "") // Trim - from start of text
+      .replace(/-+$/, ""); // Trim - from end of text
+  }
+
   yesNo(value) {
     return value ? this.translateService.instant("Yes") : this.translateService.instant("No");
   }

@@ -48,6 +48,19 @@ context("Equipment", () => {
         cy.ngSelectOptionClick("#equipment-item-field", 1);
         cy.ngSelectValueShouldContain("#equipment-item-field", "Test brand Test");
       });
+
+      it("should update the URL with ID and slug", () => {
+        cy.url().should("include", `/equipment/explorer/camera/${testCamera.id}/test-brand-test`);
+      });
+
+      it("should show the item", () => {
+        cy.get(".card astrobin-equipment-item-summary .label strong")
+          .contains("Test brand")
+          .should("be.visible");
+        cy.get(".card astrobin-equipment-item-summary .label")
+          .contains("Test")
+          .should("be.visible");
+      });
     });
   });
 });

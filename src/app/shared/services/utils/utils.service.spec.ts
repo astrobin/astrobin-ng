@@ -160,4 +160,14 @@ describe("UtilsService", () => {
       expect(UtilsService.camelCaseToCapsCase(undefined)).toEqual("");
     });
   });
+
+  describe("slugify", () => {
+    it("should work", () => {
+      expect(UtilsService.slugify("helloThere")).toEqual("hellothere");
+      expect(UtilsService.slugify("hello there")).toEqual("hello-there");
+      expect(UtilsService.slugify("")).toEqual("");
+      expect(UtilsService.slugify(null)).toEqual("");
+      expect(UtilsService.slugify(undefined)).toEqual("");
+    });
+  });
 });

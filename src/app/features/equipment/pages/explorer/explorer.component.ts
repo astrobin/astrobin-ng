@@ -10,7 +10,7 @@ import {
   EquipmentItemBaseInterface,
   EquipmentItemType
 } from "@features/equipment/interfaces/equipment-item-base.interface";
-import { map, take, takeUntil } from "rxjs/operators";
+import { filter, map, take, takeUntil } from "rxjs/operators";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 import { FormGroup } from "@angular/forms";
@@ -20,7 +20,8 @@ import {
   CreateSensorEditProposal,
   EquipmentActionTypes,
   FindEquipmentItemEditProposals,
-  LoadBrand
+  LoadBrand,
+  LoadEquipmentItem
 } from "@features/equipment/store/equipment.actions";
 import { SensorInterface } from "@features/equipment/interfaces/sensor.interface";
 import { CameraInterface } from "@features/equipment/interfaces/camera.interface";
@@ -30,8 +31,14 @@ import { EquipmentItemEditorMode } from "@features/equipment/components/editors/
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { ItemBrowserComponent } from "@features/equipment/components/item-browser/item-browser.component";
 import { Observable } from "rxjs";
-import { selectEditProposalsForItem } from "@features/equipment/store/equipment.selectors";
+import {
+  selectBrand,
+  selectEditProposalsForItem,
+  selectEquipmentItem
+} from "@features/equipment/store/equipment.selectors";
 import { WindowRefService } from "@shared/services/window-ref.service";
+import { UtilsService } from "@shared/services/utils/utils.service";
+import { Location } from "@angular/common";
 
 @Component({
   selector: "astrobin-equipment-explorer",
@@ -56,6 +63,7 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit 
 
   @ViewChild("itemBrowser")
   private _itemBrowser: ItemBrowserComponent;
+  private _activeId: EquipmentItemBaseInterface["id"];
 
   constructor(
     public readonly store$: Store<State>,
@@ -68,15 +76,20 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit 
     public readonly equipmentItemService: EquipmentItemService,
     public readonly loadingService: LoadingService,
     public readonly popNotificationsService: PopNotificationsService,
-    public readonly windowRefService: WindowRefService
+    public readonly windowRefService: WindowRefService,
+    public readonly location: Location
   ) {
     super(store$);
   }
 
-  private _activeType: string;
+  private _activeType: EquipmentItemType;
 
   get activeType(): EquipmentItemType {
-    return EquipmentItemType[this._activeType.toUpperCase()];
+    return this._activeType;
+  }
+
+  set activeType(type: string) {
+    this._activeType = EquipmentItemType[type.toUpperCase()];
   }
 
   ngOnInit(): void {
@@ -95,7 +108,20 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit 
       })
     );
 
-    this._activeType = this.activatedRoute.snapshot.paramMap.get("itemType");
+    this.activeType = this.activatedRoute.snapshot.paramMap.get("itemType");
+    this._activeId = parseInt(this.activatedRoute.snapshot.paramMap.get("itemId"), 10);
+
+    if (this._activeId) {
+      this.store$.dispatch(new LoadEquipmentItem({ id: this._activeId, type: this._activeType }));
+
+      this.store$
+        .select(selectEquipmentItem, { id: this._activeId, type: this.activeType })
+        .pipe(
+          filter(item => !!item),
+          take(1)
+        )
+        .subscribe(item => this.setItem(item));
+    }
 
     this.cameraCount$ = this.equipmentApiService.getAllEquipmentItems(EquipmentItemType.CAMERA).pipe(
       takeUntil(this.destroyed$),
@@ -104,7 +130,7 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit 
 
     this.router.events.pipe(takeUntil(this.destroyed$)).subscribe(event => {
       if (event instanceof NavigationEnd) {
-        this._activeType = this.activatedRoute.snapshot.paramMap.get("itemType").toUpperCase();
+        this.activeType = this.activatedRoute.snapshot.paramMap.get("itemType");
       }
     });
   }
@@ -131,9 +157,28 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit 
     this.selectedItem = null;
   }
 
-  onItemSelected(item: EquipmentItemBaseInterface) {
+  setItem(item: EquipmentItemBaseInterface) {
     this.selectedItem = item;
+    this.store$.dispatch(new LoadBrand({ id: item.brand }));
     this.loadEditProposals();
+  }
+
+  onItemSelected(item: EquipmentItemBaseInterface) {
+    if (item) {
+      this.store$
+        .select(selectBrand, item.brand)
+        .pipe(
+          filter(brand => !!brand),
+          take(1)
+        )
+        .subscribe(brand => {
+          const slug = UtilsService.slugify(`${brand.name} ${item.name}`);
+          this.setItem(item);
+          this.location.replaceState(`/equipment/explorer/${this._activeType.toLowerCase()}/${item.id}/${slug}`);
+        });
+    } else {
+      this.location.replaceState(`/equipment/explorer/${this._activeType.toLowerCase()}`);
+    }
   }
 
   onCreationModeStarted() {

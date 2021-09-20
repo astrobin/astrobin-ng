@@ -87,6 +87,10 @@ context("Equipment", () => {
 
         cy.ngSelectValueShouldContain("#equipment-item-field", "Test brand Test");
       });
+
+      it("should update the URL with ID and slug", () => {
+        cy.url().should("include", `/equipment/explorer/camera/${testCamera.id}/test-brand-123`);
+      });
     });
   });
 });

@@ -111,6 +111,28 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
     this.subCreationModeEnded.emit();
   }
 
+  setItem(item: EquipmentItemBaseInterface) {
+    this.store$
+      .select(selectBrand, item.brand)
+      .pipe(
+        filter(brand => !!brand),
+        take(1)
+      )
+      .subscribe(brand => {
+        const fieldConfig = this.fields.find(field => field.key === "equipment-item");
+        fieldConfig.templateOptions.options = [
+          {
+            value: item.id,
+            label: `${brand.name} ${item.name}`,
+            brand,
+            item
+          }
+        ];
+        this.model = { ...this.model, ...{ "equipment-item": item.id } };
+        this.form.get("equipment-item").setValue(item.id);
+      });
+  }
+
   createItem() {
     const data: EquipmentItemBaseInterface = this.creationForm.value;
 
@@ -166,16 +188,7 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
         filter(brand => !!brand)
       )
       .subscribe(brand => {
-        this.fields.find(field => field.key === "equipment-item").templateOptions.options = [
-          {
-            value: item.id,
-            label: `${brand.name} ${item.name}`,
-            item
-          }
-        ];
-        this.model = { ...this.model, ...{ "equipment-item": item.id } };
-        this.form.get("equipment-item").setValue(item.id);
-
+        this.setItem(item);
         setTimeout(() => {
           this.windowRefService.nativeWindow.document
             .querySelector("#equipment-item-field")
