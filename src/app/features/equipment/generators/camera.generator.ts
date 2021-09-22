@@ -27,6 +27,7 @@ export class CameraGenerator {
     return {
       ...CameraGenerator.camera(source),
       ...{
+        editProposalOriginalProperties: source.editProposalOriginalProperties || "",
         editProposalTarget: source.editProposalTarget || 1,
         editProposalBy: source.editProposalBy || 1,
         editProposalCreated: source.editProposalCreated || "1970-01-01",

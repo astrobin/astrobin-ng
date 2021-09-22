@@ -15,6 +15,7 @@ export interface EditProposalChange {
 }
 
 export interface EditProposalInterface<T extends EquipmentItemBaseInterface> extends EquipmentItemBaseInterface {
+  editProposalOriginalProperties: string;
   editProposalTarget: T["id"];
   editProposalBy?: UserInterface["id"];
   editProposalCreated: string;

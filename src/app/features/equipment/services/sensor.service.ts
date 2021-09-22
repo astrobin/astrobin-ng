@@ -29,28 +29,41 @@ export class SensorService extends BaseService implements EquipmentItemServiceIn
     super(loadingService);
   }
 
-  getPrintableProperty$(item: SensorInterface, property: SensorDisplayProperty): Observable<string> {
+  getPrintableProperty$(
+    item: SensorInterface,
+    property: SensorDisplayProperty,
+    propertyValue?: any
+  ): Observable<string> {
     switch (property) {
       case SensorDisplayProperty.PIXEL_SIZE:
-        return of(item.pixelSize ? `${item.pixelSize} μm` : "");
+        return of(propertyValue || item.pixelSize ? `${propertyValue || item.pixelSize} μm` : "");
       case SensorDisplayProperty.PIXELS:
-        return of(item.pixelWidth && item.pixelHeight ? `${item.pixelWidth} x ${item.pixelHeight}` : "");
+        return of(
+          propertyValue || (item.pixelWidth && item.pixelHeight)
+            ? `${propertyValue?.pixelWidth || item.pixelWidth} x ${propertyValue?.pixelHeight || item.pixelHeight}`
+            : ""
+        );
       case SensorDisplayProperty.SENSOR_SIZE:
-        return of(item.sensorWidth && item.sensorHeight ? `${item.sensorWidth} x ${item.sensorHeight} mm` : "");
+        return of(
+          propertyValue || (item.sensorWidth && item.sensorHeight)
+            ? `${propertyValue?.sensorWidth || item.sensorWidth} x ${propertyValue?.sensorHeight ||
+                item.sensorHeight} mm`
+            : ""
+        );
       case SensorDisplayProperty.QUANTUM_EFFICIENCY:
-        return of(item.quantumEfficiency ? `${item.quantumEfficiency}%` : "");
+        return of(propertyValue || item.quantumEfficiency ? `${propertyValue || item.quantumEfficiency}%` : "");
       case SensorDisplayProperty.FULL_WELL_CAPACITY:
-        return of(item.fullWellCapacity ? `${item.fullWellCapacity} e-` : "");
+        return of(propertyValue || item.fullWellCapacity ? `${propertyValue || item.fullWellCapacity} e-` : "");
       case SensorDisplayProperty.READ_NOISE:
-        return of(item.readNoise ? `${item.readNoise} e-` : "");
+        return of(propertyValue || item.readNoise ? `${propertyValue || item.readNoise} e-` : "");
       case SensorDisplayProperty.FRAME_RATE:
-        return of(item.frameRate ? `${item.frameRate} FPS` : "");
+        return of(propertyValue || item.frameRate ? `${propertyValue || item.frameRate} FPS` : "");
       case SensorDisplayProperty.ADC:
-        return of(item.adc ? `${item.adc}-bit` : "");
+        return of(propertyValue || item.adc ? `${propertyValue || item.adc}-bit` : "");
       case SensorDisplayProperty.COLOR_OR_MONO:
-        if (item.colorOrMono === ColorOrMono.C) {
+        if (propertyValue || item.colorOrMono === ColorOrMono.C) {
           return this.translateService.stream("Color");
-        } else if (item.colorOrMono === ColorOrMono.M) {
+        } else if (propertyValue || item.colorOrMono === ColorOrMono.M) {
           return this.translateService.stream("Mono");
         }
         return of("");

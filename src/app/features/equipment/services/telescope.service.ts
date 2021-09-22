@@ -32,24 +32,29 @@ export class TelescopeService extends BaseService implements EquipmentItemServic
     }
   }
 
-  getPrintableProperty$(item: TelescopeInterface, property: TelescopeDisplayProperty): Observable<string> {
+  getPrintableProperty$(
+    item: TelescopeInterface,
+    property: TelescopeDisplayProperty,
+    propertyValue?: any
+  ): Observable<string> {
     switch (property) {
       case TelescopeDisplayProperty.TYPE:
-        return of(this.humanizeType(item.type));
+        return of(this.humanizeType(propertyValue || item.type));
       case TelescopeDisplayProperty.APERTURE:
         return of(
-          item.minAperture === item.maxAperture
-            ? `${item.maxAperture} mm`
-            : `${item.minAperture} - ${item.maxAperture} mm`
+          propertyValue?.minAperture || item.minAperture === propertyValue?.maxAperture || item.maxAperture
+            ? `${propertyValue?.maxAperure || item.maxAperture} mm`
+            : `${propertyValue?.minAperture || item.minAperture} - ${propertyValue?.minAperture || item.maxAperture} mm`
         );
       case TelescopeDisplayProperty.FOCAL_LENGTH:
         return of(
-          item.minFocalLength === item.maxFocalLength
-            ? `${item.maxFocalLength} mm`
-            : `${item.minFocalLength} - ${item.maxFocalLength} mm`
+          propertyValue?.minFocalLength || item.minFocalLength === propertyValue?.maxFocalLength || item.maxFocalLength
+            ? `${propertyValue?.maxFocalLength || item.maxFocalLength} mm`
+            : `${propertyValue?.minFocalLength || item.minFocalLength} - ${propertyValue?.maxFocalLength ||
+                item.maxFocalLength} mm`
         );
       case TelescopeDisplayProperty.WEIGHT:
-        return of(item.weight ? `${item.weight} kg` : "");
+        return of(propertyValue || item.weight ? `${propertyValue || item.weight} kg` : "");
       default:
         throw Error(`Invalid property: ${property}`);
     }

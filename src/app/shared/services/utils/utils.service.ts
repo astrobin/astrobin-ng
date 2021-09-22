@@ -155,6 +155,19 @@ export class UtilsService {
       .toUpperCase();
   }
 
+  static toCamelCase(s: string): string {
+    if (!s) {
+      return "";
+    }
+
+    return s.replace(/([-_][a-z])/gi, $1 => {
+      return $1
+        .toUpperCase()
+        .replace("-", "")
+        .replace("_", "");
+    });
+  }
+
   static slugify(s: string): string {
     if (!s) {
       return "";
@@ -170,8 +183,12 @@ export class UtilsService {
       .replace(/-+$/, ""); // Trim - from end of text
   }
 
-  yesNo(value) {
-    return value ? this.translateService.instant("Yes") : this.translateService.instant("No");
+  yesNo(value: any): string {
+    if (!value || value === "0" || (UtilsService.isFunction(value.toLowerCase) && value.toLowerCase() === "false")) {
+      return this.translateService.instant("No");
+    }
+
+    return this.translateService.instant("Yes");
   }
 
   // Gets an object by id, first looking in the store via the provided selector, then using the provided API call.

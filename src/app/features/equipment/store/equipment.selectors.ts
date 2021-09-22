@@ -6,8 +6,26 @@ import {
   EquipmentItemType
 } from "@features/equipment/interfaces/equipment-item-base.interface";
 import { BrandInterface } from "@features/equipment/interfaces/brand.interface";
-import { getEquipmentItemType } from "@features/equipment/services/equipment-item.service";
 import { EditProposalInterface } from "@features/equipment/interfaces/edit-proposal.interface";
+import { instanceOfSensor } from "@features/equipment/interfaces/sensor.interface";
+import { instanceOfCamera } from "@features/equipment/interfaces/camera.interface";
+import { instanceOfTelescope } from "@features/equipment/interfaces/telescope.interface";
+
+export function getEquipmentItemType(item: EquipmentItemBaseInterface) {
+  if (instanceOfSensor(item)) {
+    return EquipmentItemType.SENSOR;
+  }
+
+  if (instanceOfCamera(item)) {
+    return EquipmentItemType.CAMERA;
+  }
+
+  if (instanceOfTelescope(item)) {
+    return EquipmentItemType.TELESCOPE;
+  }
+
+  // TODO: complete.
+}
 
 export const selectEquipment = (state: State): EquipmentState => state.equipment;
 

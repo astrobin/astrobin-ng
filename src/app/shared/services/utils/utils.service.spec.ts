@@ -161,6 +161,17 @@ describe("UtilsService", () => {
     });
   });
 
+  describe("toCamelCase", () => {
+    it("should work", () => {
+      expect(UtilsService.toCamelCase("hello_there")).toEqual("helloThere");
+      expect(UtilsService.toCamelCase("hello-there")).toEqual("helloThere");
+      expect(UtilsService.toCamelCase("hello")).toEqual("hello");
+      expect(UtilsService.toCamelCase("HelloThere")).toEqual("HelloThere");
+      expect(UtilsService.toCamelCase(null)).toEqual("");
+      expect(UtilsService.toCamelCase(undefined)).toEqual("");
+    });
+  });
+
   describe("slugify", () => {
     it("should work", () => {
       expect(UtilsService.slugify("helloThere")).toEqual("hellothere");

@@ -4,7 +4,7 @@ import { Observable } from "rxjs";
 export interface EquipmentItemServiceInterface {
   humanizeType?(type: any);
 
-  getPrintableProperty$(item: EquipmentItemBaseInterface, property: any): Observable<string>;
+  getPrintableProperty$(item: EquipmentItemBaseInterface, propertyName: any, propertyValue?: any): Observable<string>;
 
   getPrintablePropertyName(propertyName: any, shortForm: boolean): string;
 }

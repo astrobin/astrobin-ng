@@ -52,12 +52,16 @@ export class CameraService extends BaseService implements EquipmentItemServiceIn
     }
   }
 
-  getPrintableProperty$(item: CameraInterface, property: CameraDisplayProperty): Observable<string> {
+  getPrintableProperty$(
+    item: CameraInterface,
+    property: CameraDisplayProperty,
+    propertyValue?: any
+  ): Observable<string> {
     switch (property) {
       case CameraDisplayProperty.TYPE:
-        return of(this.humanizeType(item.type));
+        return of(this.humanizeType(propertyValue || item.type));
       case CameraDisplayProperty.SENSOR:
-        const payload = { id: item.sensor, type: EquipmentItemType.SENSOR };
+        const payload = { id: parseInt(propertyValue, 10) || item.sensor, type: EquipmentItemType.SENSOR };
         this.store$.dispatch(new LoadEquipmentItem(payload));
         return this.store$.select(selectEquipmentItem, payload).pipe(
           filter(sensor => !!sensor),
@@ -73,11 +77,11 @@ export class CameraService extends BaseService implements EquipmentItemServiceIn
           map(({ brand, sensor }) => `<strong>${brand.name}</strong> ${sensor.name}`)
         );
       case CameraDisplayProperty.COOLED:
-        return of(this.utilsService.yesNo(item.cooled));
+        return of(this.utilsService.yesNo(propertyValue || item.cooled));
       case CameraDisplayProperty.MAX_COOLING:
-        return of(item.maxCooling ? `${item.maxCooling} &deg;C` : "");
+        return of(propertyValue || item.maxCooling ? `${propertyValue || item.maxCooling} &deg;C` : "");
       case CameraDisplayProperty.BACK_FOCUS:
-        return of(item.backFocus ? `${item.backFocus} mm` : "");
+        return of(propertyValue || item.backFocus ? `${propertyValue || item.backFocus} mm` : "");
       default:
         throw Error(`Invalid property: ${property}`);
     }
