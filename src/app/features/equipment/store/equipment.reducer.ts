@@ -61,7 +61,22 @@ export function reducer(state = initialEquipmentState, action: EquipmentActions)
     case EquipmentActionTypes.CREATE_CAMERA_EDIT_PROPOSAL_SUCCESS: {
       return {
         ...state,
-        editProposals: UtilsService.arrayUniqueObjects([...state.equipmentItems, ...[action.payload.editProposal]])
+        editProposals: UtilsService.arrayUniqueObjects([...state.editProposals, ...[action.payload.editProposal]]).sort(
+          (
+            a: EditProposalInterface<EquipmentItemBaseInterface>,
+            b: EditProposalInterface<EquipmentItemBaseInterface>
+          ) => {
+            if (a.editProposalCreated < b.editProposalCreated) {
+              return -1;
+            }
+
+            if (a.editProposalCreated > b.editProposalCreated) {
+              return 1;
+            }
+
+            return 0;
+          }
+        )
       };
     }
 
