@@ -44,21 +44,23 @@
         </div>
       </div>
 
-      <div class="edit-proposals" *ngIf="selectedItem && (editProposals$ | async) as editProposals">
-        <div class="edit-proposals-header">
-          <div class="row">
-            <span class="col">{{ "Edit proposal by" | translate }}</span>
-            <span class="col-2 d-none d-lg-inline">{{ "Changes" | translate }}</span>
-            <span class="col-3">{{ "Status" | translate }}</span>
-            <span class="col-3 d-none d-lg-inline">{{ "Time" | translate  }}</span>
+      <ng-container *ngIf="selectedItem && (editProposals$ | async) as editProposals">
+        <div class="edit-proposals" *ngIf="editProposals.length > 0">
+          <div class="edit-proposals-header">
+            <div class="row">
+              <span class="col">{{ "Edit proposal by" | translate }}</span>
+              <span class="col-2 d-none d-lg-inline">{{ "Changes" | translate }}</span>
+              <span class="col-3">{{ "Status" | translate }}</span>
+              <span class="col-3 d-none d-lg-inline">{{ "Time" | translate  }}</span>
+            </div>
           </div>
-        </div>
 
-        <astrobin-item-edit-proposal
-          *ngFor="let editProposal of editProposals"
-          [editProposal]="editProposal"
-        ></astrobin-item-edit-proposal>
-      </div>
+          <astrobin-item-edit-proposal
+            *ngFor="let editProposal of editProposals"
+            [editProposal]="editProposal"
+          ></astrobin-item-edit-proposal>
+        </div>
+      </ng-container>
 
       <ng-container *ngIf="editMode">
         <div class="mt-4 mb-4 text-center">
