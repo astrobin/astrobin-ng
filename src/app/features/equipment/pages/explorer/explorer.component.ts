@@ -1,5 +1,4 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Action, Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
@@ -39,19 +38,18 @@ import {
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { Location } from "@angular/common";
+import { ExplorerBaseComponent } from "@features/equipment/pages/explorer-base/explorer-base.component";
 
 @Component({
   selector: "astrobin-equipment-explorer",
   templateUrl: "./explorer.component.html",
   styleUrls: ["./explorer.component.scss"]
 })
-export class ExplorerComponent extends BaseComponentDirective implements OnInit {
+export class ExplorerComponent extends ExplorerBaseComponent implements OnInit {
   EquipmentItemType = EquipmentItemType;
   EquipmentItemEditorMode = EquipmentItemEditorMode;
 
   title = this.translateService.instant("Equipment explorer");
-
-  cameraCount$: Observable<number>;
 
   selectedItem: EquipmentItemBaseInterface | null = null;
 
@@ -59,7 +57,7 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit 
   editForm = new FormGroup({});
   editModel: Partial<EditProposalInterface<EquipmentItemBaseInterface>> = {};
 
-  editProposals$: Observable<EditProposalInterface<EquipmentItemBaseInterface>[]>;
+  selectedItemEditProposals$: Observable<EditProposalInterface<EquipmentItemBaseInterface>[]>;
 
   @ViewChild("itemBrowser")
   private _itemBrowser: ItemBrowserComponent;
@@ -79,20 +77,12 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit 
     public readonly windowRefService: WindowRefService,
     public readonly location: Location
   ) {
-    super(store$);
-  }
-
-  private _activeType: EquipmentItemType;
-
-  get activeType(): EquipmentItemType {
-    return this._activeType;
-  }
-
-  set activeType(type: string) {
-    this._activeType = EquipmentItemType[type.toUpperCase()];
+    super(store$, actions$, activatedRoute, router);
   }
 
   ngOnInit(): void {
+    super.ngOnInit();
+
     this.titleService.setTitle(this.title);
 
     this.store$.dispatch(
@@ -108,7 +98,6 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit 
       })
     );
 
-    this.activeType = this.activatedRoute.snapshot.paramMap.get("itemType");
     this._activeId = parseInt(this.activatedRoute.snapshot.paramMap.get("itemId"), 10);
 
     if (this._activeId) {
@@ -122,11 +111,6 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit 
         )
         .subscribe(item => this.setItem(item));
     }
-
-    this.cameraCount$ = this.equipmentApiService.getAllEquipmentItems(EquipmentItemType.CAMERA).pipe(
-      takeUntil(this.destroyed$),
-      map(response => response.count)
-    );
 
     this.router.events.pipe(takeUntil(this.destroyed$)).subscribe(event => {
       if (event instanceof NavigationEnd) {
@@ -238,6 +222,6 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit 
 
   loadEditProposals() {
     this.store$.dispatch(new FindEquipmentItemEditProposals({ item: this.selectedItem }));
-    this.editProposals$ = this.store$.select(selectEditProposalsForItem, this.selectedItem);
+    this.selectedItemEditProposals$ = this.store$.select(selectEditProposalsForItem, this.selectedItem);
   }
 }

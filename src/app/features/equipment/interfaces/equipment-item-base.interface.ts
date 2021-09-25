@@ -5,7 +5,11 @@ import { BrandInterface } from "@features/equipment/interfaces/brand.interface";
 export enum EquipmentItemType {
   SENSOR = "SENSOR",
   CAMERA = "CAMERA",
-  TELESCOPE = "TELESCOPE"
+  TELESCOPE = "TELESCOPE",
+  MOUNT = "MOUNT",
+  FILTER = "FILTER",
+  ACCESSORY = "ACCESSORY",
+  SOFTWARE = "SOFTWARE"
 }
 
 export enum EquipmentItemReviewerDecision {

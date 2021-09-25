@@ -4,6 +4,7 @@ context("Equipment", () => {
   beforeEach(() => {
     cy.server();
     cy.setupInitializationRoutes();
+    cy.setupEquipmentDefaultRoutes();
   });
 
   context("Explorer", () => {

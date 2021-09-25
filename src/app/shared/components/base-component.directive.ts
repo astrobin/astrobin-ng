@@ -8,6 +8,7 @@ import { map, withLatestFrom } from "rxjs/operators";
 
 @Directive()
 export class BaseComponentDirective implements OnDestroy {
+  title: string;
   destroyedSubject = new Subject();
   destroyed$ = this.destroyedSubject.asObservable();
 

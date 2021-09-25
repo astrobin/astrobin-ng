@@ -4,64 +4,7 @@ context("Equipment", () => {
   beforeEach(() => {
     cy.server();
     cy.setupInitializationRoutes();
-
-    cy.route("GET", "**/api/v2/equipment/camera/?q=*", {
-      count: 1,
-      next: null,
-      previous: null,
-      results: []
-    }).as("findCameras");
-
-    cy.route("GET", "**/api/v2/equipment/camera/", {
-      count: 1,
-      next: null,
-      previous: null,
-      results: [testCamera]
-    }).as("getCameras");
-
-    cy.route("GET", "**/api/v2/equipment/camera/?name=*", {
-      count: 1,
-      next: null,
-      previous: null,
-      results: []
-    }).as("findCamerasByName");
-
-    cy.route("GET", "**/api/v2/equipment/brand/?q=*", {
-      count: 0,
-      next: null,
-      previous: null,
-      results: []
-    }).as("findBrands");
-
-    cy.route("GET", "**/api/v2/equipment/brand/?name=*", {
-      count: 0,
-      next: null,
-      previous: null,
-      results: []
-    }).as("findBrandsByName");
-
-    cy.route("GET", /.*\/api\/v2\/equipment\/brand\/\?website=.*/, {
-      count: 0,
-      next: null,
-      previous: null,
-      results: []
-    }).as("findBrandsByWebsite");
-
-    cy.route("GET", "**/api/v2/equipment/sensor/?q=*", {
-      count: 0,
-      next: null,
-      previous: null,
-      results: []
-    }).as("findSensors");
-
-    cy.route("GET", "**/api/v2/equipment/sensor/?name=*", {
-      count: 1,
-      next: null,
-      previous: null,
-      results: []
-    }).as("findSensorsByName");
-
-    cy.route("GET", "**/api/v2/equipment/camera/find-similar-in-brand/*", []);
+    cy.setupEquipmentDefaultRoutes();
   });
 
   context("Explorer", () => {

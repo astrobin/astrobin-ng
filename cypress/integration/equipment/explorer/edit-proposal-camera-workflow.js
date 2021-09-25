@@ -9,33 +9,9 @@ context("Equipment", () => {
   beforeEach(() => {
     cy.server();
     cy.setupInitializationRoutes();
+    cy.setupEquipmentDefaultRoutes();
 
-    cy.route("GET", "**/api/v2/equipment/camera/?q=*", {
-      count: 1,
-      next: null,
-      previous: null,
-      results: [testCamera]
-    }).as("findCameras");
-
-    cy.route("GET", "**/api/v2/equipment/camera/?name=*", {
-      count: 1,
-      next: null,
-      previous: null,
-      results: [testCamera]
-    }).as("findCamerasByName");
-
-    cy.route("GET", "**/api/v2/equipment/camera/", {
-      count: 1,
-      next: null,
-      previous: null,
-      results: [testCamera]
-    }).as("getCameras");
-
-    cy.route("GET", "**/api/v2/equipment/brand/1/", testBrand).as("getBrand");
-
-    cy.route("GET", "**/api/v2/equipment/sensor/1/", testSensor).as("getSensor");
-
-    cy.route("GET", "**/api/v2/equipment/camera-edit-proposal/?editProposalTarget=*", { results: [] });
+    cy.route("GET", "**/api/v2/equipment/camera-edit-proposal/?edit_proposal_target=*", { results: [] });
   });
 
   context("Explorer", () => {
@@ -105,7 +81,7 @@ context("Equipment", () => {
 
     it("should submit the form", () => {
       cy.route("POST", "**/api/v2/equipment/camera-edit-proposal/", testCameraEditProposal).as("saveEditProposal");
-      cy.route("GET", "**/api/v2/equipment/camera-edit-proposal/?editProposalTarget=*", {
+      cy.route("GET", "**/api/v2/equipment/camera-edit-proposal/?edit_proposal_target=*", {
         results: [testCameraEditProposal]
       }).as("getEditProposals");
 

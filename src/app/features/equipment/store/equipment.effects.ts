@@ -191,7 +191,7 @@ export class EquipmentEffects {
       map((action: FindEquipmentItemEditProposals) => action.payload),
       mergeMap(payload =>
         this.equipmentApiService
-          .findEquipmentItemEditProposals(payload.item)
+          .getEditProposals(payload.item)
           .pipe(map(editProposals => new FindEquipmentItemEditProposalsSuccess({ editProposals })))
       )
     )

@@ -1,6 +1,5 @@
 .nav-item {
   position: relative;
-  height: calc(2.5rem + 2px);
 
   &:not(:last-child) {
     margin-bottom: .25rem;
@@ -9,15 +8,36 @@
   img {
     width: 2rem;
     margin: .25rem;
-    float: left;
+    position: absolute;
+    left: 0;
+    top: 0;
   }
 
-  .counter{
+  .nav-link {
+    padding-left: 2.5rem;
+  }
+
+  .count {
     position: absolute;
-    top: calc(50% - .5rem);
+    top: .75rem;
     right: .5rem;
     font-size: 1rem;
     line-height: 1rem;
     opacity: .5;
+  }
+
+  .nav-pills {
+    font-size: .9rem;
+    margin: .5rem 0 1rem 1rem;
+
+    .nav-link {
+      padding: .5rem 1rem;
+
+      &.active {
+        background-color: transparent;
+        border-radius: 0;
+        border-bottom: 2px solid #2a9fd6;
+      }
+    }
   }
 }

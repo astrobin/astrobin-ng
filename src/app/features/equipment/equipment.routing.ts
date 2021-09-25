@@ -7,6 +7,8 @@ import { MigrationReviewItemComponent } from "@features/equipment/pages/migratio
 import { MigrationReviewItemGuardService } from "@features/equipment/services/migration-review-item-guard.service";
 import { MigrationExplorerComponent } from "@features/equipment/pages/migration/migration-explorer/migration-explorer.component";
 import { ExplorerComponent } from "@features/equipment/pages/explorer/explorer.component";
+import { PendingEditExplorerComponent } from "@features/equipment/pages/pending-edit-explorer/pending-edit-explorer.component";
+import { PendingReviewExplorerComponent } from "@features/equipment/pages/pending-review-explorer/pending-review-explorer.component";
 
 export const routes: Routes = [
   {
@@ -61,5 +63,13 @@ export const routes: Routes = [
         component: ExplorerComponent
       }
     ]
+  },
+  {
+    path: "pending-review-explorer/:itemType",
+    component: PendingReviewExplorerComponent
+  },
+  {
+    path: "pending-edit-explorer/:itemType",
+    component: PendingEditExplorerComponent
   }
 ];

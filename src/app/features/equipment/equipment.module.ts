@@ -27,6 +27,10 @@ import { ItemBrowserComponent } from "./components/item-browser/item-browser.com
 import { ExplorerComponent } from "./pages/explorer/explorer.component";
 import { OthersInBrandComponent } from "./components/others-in-brand/others-in-brand.component";
 import { ItemEditProposalComponent } from "./components/item-edit-proposal/item-edit-proposal.component";
+import { ExplorerBaseComponent } from "@features/equipment/pages/explorer-base/explorer-base.component";
+import { PendingEditExplorerComponent } from "@features/equipment/pages/pending-edit-explorer/pending-edit-explorer.component";
+import { PendingReviewExplorerComponent } from "@features/equipment/pages/pending-review-explorer/pending-review-explorer.component";
+import { PendingExplorerBaseComponent } from "@features/equipment/pages/explorer-base/pending-explorer-base.component";
 
 @NgModule({
   declarations: [
@@ -48,9 +52,13 @@ import { ItemEditProposalComponent } from "./components/item-edit-proposal/item-
     MigrationCommandmentsComponent,
     MigrationTestWarningComponent,
     ItemBrowserComponent,
-    ExplorerComponent,
     OthersInBrandComponent,
-    ItemEditProposalComponent
+    ItemEditProposalComponent,
+    ExplorerBaseComponent,
+    ExplorerComponent,
+    PendingExplorerBaseComponent,
+    PendingReviewExplorerComponent,
+    PendingEditExplorerComponent
   ],
   imports: [
     RouterModule.forChild(routes),

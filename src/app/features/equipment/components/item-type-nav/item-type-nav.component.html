@@ -1,32 +1,29 @@
 <ul ngbNav #nav="ngbNav" [(activeId)]="activeType" class="nav-pills" orientation="vertical">
-  <li ngbNavItem="camera">
-    <img src="/assets/images/camera-placeholder.png" alt="Cameras" />
-    <a ngbNavLink routerLink="../camera">Cameras</a>
-    <span class="counter">{{ cameraCount | async }}</span>
-  </li>
+  <li *ngFor="let type of types" [ngbNavItem]="type.value.toLowerCase()" [disabled]="type.disabled">
+    <img src="/assets/images/{{ type.value.toLowerCase() }}-placeholder.png" alt="{{ type.label }}" />
+    <a ngbNavLink routerLink="/equipment/explorer/{{ type.value.toLowerCase() }}">{{ type.label }}</a>
+    <span *ngIf="type.count" class="count">{{ type.count | async }}</span>
 
-  <li ngbNavItem="telescope" [disabled]="true">
-    <img src="/assets/images/telescope-placeholder.png" alt="Telescopes" />
-    <a ngbNavLink routerLink="../telescope">Telescopes</a>
-  </li>
-
-  <li ngbNavItem="mount" [disabled]="true">
-    <img src="/assets/images/mount-placeholder.png" alt="Mounts" />
-    <a ngbNavLink routerLink="../mount">Mounts</a>
-  </li>
-
-  <li ngbNavItem="filter" [disabled]="true">
-    <img src="/assets/images/filter-placeholder.png" alt="Filters" />
-    <a ngbNavLink routerLink="../filter">Filters</a>
-  </li>
-
-  <li ngbNavItem="accessory" [disabled]="true">
-    <img src="/assets/images/accessory-placeholder.png" alt="Accessories" />
-    <a ngbNavLink routerLink="../accessory">Accessories</a>
-  </li>
-
-  <li ngbNavItem="software" [disabled]="true">
-    <img src="/assets/images/software-placeholder.png" alt="Software" />
-    <a ngbNavLink routerLink="../software">Software</a>
+    <ul
+      *ngIf="activeType == type.value.toLowerCase()"
+      ngbNav
+      #subnav="ngbNav"
+      [(activeId)]="activeSubNav"
+      class="nav-pills"
+      orientation="vertical"
+    >
+      <li ngbNavItem="pending-review-explorer">
+        <a ngbNavLink routerLink="/equipment/pending-review-explorer/{{ type.value.toLowerCase() }}">{{
+          "Pending review" | translate
+        }}</a>
+        <span *ngIf="type.pendingReviewCount" class="count">{{ type.pendingReviewCount | async }}</span>
+      </li>
+      <li ngbNavItem="pending-edit-explorer">
+        <a ngbNavLink routerLink="/equipment/pending-edit-explorer/{{ type.value.toLowerCase() }}">{{
+          "Pending edit" | translate
+        }}</a>
+        <span *ngIf="type.pendingEditCount" class="count">{{ type.pendingEditCount | async }}</span>
+      </li>
+    </ul>
   </li>
 </ul>

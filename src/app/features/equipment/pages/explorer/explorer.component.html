@@ -3,7 +3,7 @@
 
   <div class="row">
     <div class="col-md-3">
-      <astrobin-equipment-item-type-nav [cameraCount]="cameraCount$"></astrobin-equipment-item-type-nav>
+      <astrobin-equipment-item-type-nav></astrobin-equipment-item-type-nav>
     </div>
 
     <div class="col">
@@ -44,7 +44,7 @@
         </div>
       </div>
 
-      <ng-container *ngIf="selectedItem && (editProposals$ | async) as editProposals">
+      <ng-container *ngIf="selectedItem && (selectedItemEditProposals$ | async) as editProposals">
         <div class="edit-proposals" *ngIf="editProposals.length > 0">
           <div class="edit-proposals-header">
             <div class="row">

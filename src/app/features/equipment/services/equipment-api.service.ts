@@ -55,6 +55,22 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     );
   }
 
+  getAllEquipmentItemsPendingReview(
+    type: EquipmentItemType
+  ): Observable<PaginatedApiResultInterface<EquipmentItemBaseInterface>> {
+    return this.http.get<PaginatedApiResultInterface<EquipmentItemBaseInterface>>(
+      `${this.configUrl}/${type.toLowerCase()}/?pending_review=true`
+    );
+  }
+
+  getAllEquipmentItemsPendingEdit(
+    type: EquipmentItemType
+  ): Observable<PaginatedApiResultInterface<EquipmentItemBaseInterface>> {
+    return this.http.get<PaginatedApiResultInterface<EquipmentItemBaseInterface>>(
+      `${this.configUrl}/${type.toLowerCase()}/?pending_edit=true`
+    );
+  }
+
   findAllEquipmentItems(q: string, type: EquipmentItemType): Observable<EquipmentItemBaseInterface[]> {
     if (!q) {
       return of([]);
@@ -132,14 +148,14 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     return this.http.post<EquipmentItemBaseInterface>(`${this.configUrl}/${path}/${item.id}/reject/`, { comment });
   }
 
-  findEquipmentItemEditProposals(
+  getEditProposals(
     item: EquipmentItemBaseInterface
   ): Observable<PaginatedApiResultInterface<EditProposalInterface<EquipmentItemBaseInterface>>> {
     const type = this.equipmentItemService.getType(item);
     const path = EquipmentItemType[type].toLowerCase();
 
     return this.http.get<PaginatedApiResultInterface<EditProposalInterface<EquipmentItemBaseInterface>>>(
-      `${this.configUrl}/${path}-edit-proposal/?editProposalTarget=${item.id}`
+      `${this.configUrl}/${path}-edit-proposal/?edit_proposal_target=${item.id}`
     );
   }
 
