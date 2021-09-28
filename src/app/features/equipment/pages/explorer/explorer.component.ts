@@ -7,6 +7,7 @@ import { TitleService } from "@shared/services/title/title.service";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import {
   EquipmentItemBaseInterface,
+  EquipmentItemReviewerDecision,
   EquipmentItemType
 } from "@features/equipment/interfaces/equipment-item-base.interface";
 import { filter, map, take, takeUntil } from "rxjs/operators";
@@ -48,6 +49,7 @@ import { ExplorerBaseComponent } from "@features/equipment/pages/explorer-base/e
 export class ExplorerComponent extends ExplorerBaseComponent implements OnInit {
   EquipmentItemType = EquipmentItemType;
   EquipmentItemEditorMode = EquipmentItemEditorMode;
+  EquipmentItemReviewerDecision = EquipmentItemReviewerDecision;
 
   title = this.translateService.instant("Equipment explorer");
 
@@ -135,6 +137,10 @@ export class ExplorerComponent extends ExplorerBaseComponent implements OnInit {
     this.editModel = {};
     this.editForm.reset();
   }
+
+  startRejection() {}
+
+  startAcceptance() {}
 
   resetBrowser() {
     this._itemBrowser.reset();

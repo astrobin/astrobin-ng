@@ -3,6 +3,7 @@
 import { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
 import {
   EquipmentItemBaseInterface,
+  EquipmentItemReviewerRejectionReason,
   EquipmentItemType
 } from "@features/equipment/interfaces/equipment-item-base.interface";
 import { BrandInterface } from "@features/equipment/interfaces/brand.interface";
@@ -158,7 +159,9 @@ export class ApproveEquipmentItemSuccess implements PayloadActionInterface {
 export class RejectEquipmentItem implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.REJECT_EQUIPMENT_ITEM;
 
-  constructor(public payload: { item: EquipmentItemBaseInterface; comment: string }) {}
+  constructor(
+    public payload: { item: EquipmentItemBaseInterface; reason: EquipmentItemReviewerRejectionReason; comment: string }
+  ) {}
 }
 
 export class RejectEquipmentItemSuccess implements PayloadActionInterface {

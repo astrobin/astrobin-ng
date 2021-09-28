@@ -47,13 +47,24 @@ export function reducer(state = initialEquipmentState, action: EquipmentActions)
 
     case EquipmentActionTypes.LOAD_EQUIPMENT_ITEM_SUCCESS:
     case EquipmentActionTypes.APPROVE_EQUIPMENT_ITEM_SUCCESS:
-    case EquipmentActionTypes.REJECT_EQUIPMENT_ITEM_SUCCESS:
     case EquipmentActionTypes.CREATE_SENSOR_SUCCESS:
     case EquipmentActionTypes.CREATE_CAMERA_SUCCESS:
     case EquipmentActionTypes.LOAD_SENSOR_SUCCESS: {
       return {
         ...state,
         equipmentItems: UtilsService.arrayUniqueObjects([...state.equipmentItems, ...[action.payload.item]])
+      };
+    }
+
+    case EquipmentActionTypes.REJECT_EQUIPMENT_ITEM_SUCCESS: {
+      return {
+        ...state,
+        equipmentItems: state.equipmentItems.filter(
+          equipmentItem =>
+            equipmentItem.id !== action.payload.item.id &&
+            equipmentItem.brand !== action.payload.item.brand &&
+            equipmentItem.name !== action.payload.item.name
+        )
       };
     }
 

@@ -7,7 +7,8 @@ import { FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import {
   EquipmentItemBaseInterface,
-  EquipmentItemReviewerDecision
+  EquipmentItemReviewerDecision,
+  EquipmentItemReviewerRejectionReason
 } from "@features/equipment/interfaces/equipment-item-base.interface";
 import { MigrationFlag } from "@shared/services/api/classic/astrobin/migratable-gear-item-api.service.interface";
 import { switchMap, take, takeUntil } from "rxjs/operators";
@@ -16,6 +17,7 @@ import { GearApiService } from "@shared/services/api/classic/astrobin/gear/gear-
 import { EquipmentActionTypes, RejectEquipmentItem } from "@features/equipment/store/equipment.actions";
 import { Actions, ofType } from "@ngrx/effects";
 import { of } from "rxjs";
+import { TranslateService } from "@ngx-translate/core";
 
 export enum RejectMigrationReason {
   REJECTED_INCORRECT_STRATEGY = "REJECTED_INCORRECT_STRATEGY",
@@ -32,7 +34,14 @@ export enum RejectMigrationReason {
 export class RejectMigrationModalComponent extends BaseComponentDirective implements OnInit {
   fields: FormlyFieldConfig[];
   form: FormGroup = new FormGroup({});
-  model: any = {};
+  model: {
+    reason: RejectMigrationReason;
+    badMigrationTargetReason?: EquipmentItemReviewerRejectionReason;
+    comment: string;
+  } = {
+    reason: null,
+    comment: null
+  };
 
   @Input()
   legacyItem: any;
@@ -45,7 +54,8 @@ export class RejectMigrationModalComponent extends BaseComponentDirective implem
     public readonly actions$: Actions,
     public readonly modal: NgbActiveModal,
     public readonly loadingService: LoadingService,
-    public readonly legacyGearApiService: GearApiService
+    public readonly legacyGearApiService: GearApiService,
+    public readonly translateService: TranslateService
   ) {
     super(store$);
   }
@@ -77,7 +87,7 @@ export class RejectMigrationModalComponent extends BaseComponentDirective implem
                 case RejectMigrationReason.REJECTED_WRONG_MIGRATION_TARGET:
                   description =
                     "<strong>Wrong migration target</strong> means that although the migration target was defined " +
-                    "correctly, it is not the correct item onto which to perform this migration";
+                    "correctly, it is not the correct item onto which to perform this migration.";
                   break;
                 case RejectMigrationReason.REJECTED_BAD_MIGRATION_TARGET:
                   description =
@@ -100,6 +110,20 @@ export class RejectMigrationModalComponent extends BaseComponentDirective implem
               field.templateOptions.warningMessage = warning;
             });
           }
+        }
+      },
+      {
+        key: "badMigrationTargetReason",
+        type: "ng-select",
+        id: "bad-migration-target-reason",
+        hideExpression: () => this.model.reason !== RejectMigrationReason.REJECTED_BAD_MIGRATION_TARGET,
+        expressionProperties: {
+          "templateOptions.required": "model.reason === 'REJECTED_BAD_MIGRATION_TARGET'"
+        },
+        templateOptions: {
+          label: "Bad migration target reason",
+          clearable: false,
+          options: this._badMigrationTargetReasonOptions()
         }
       },
       {
@@ -131,7 +155,13 @@ export class RejectMigrationModalComponent extends BaseComponentDirective implem
             this.equipmentItem &&
             reason === RejectMigrationReason.REJECTED_BAD_MIGRATION_TARGET
           ) {
-            this.store$.dispatch(new RejectEquipmentItem({ item: this.equipmentItem, comment }));
+            this.store$.dispatch(
+              new RejectEquipmentItem({
+                item: this.equipmentItem,
+                reason: this.model.badMigrationTargetReason,
+                comment
+              })
+            );
             return this.actions$.pipe(ofType(EquipmentActionTypes.REJECT_EQUIPMENT_ITEM_SUCCESS), take(1));
           } else {
             return of(item);
@@ -187,5 +217,30 @@ export class RejectMigrationModalComponent extends BaseComponentDirective implem
       value: RejectMigrationReason.REJECTED_OTHER,
       label: "Other"
     };
+  }
+
+  _badMigrationTargetReasonOptions(): { value: string; label: string }[] {
+    return [
+      {
+        value: EquipmentItemReviewerRejectionReason.TYPO,
+        label: this.translateService.instant("The target item has a typo in its name")
+      },
+      {
+        value: EquipmentItemReviewerRejectionReason.WRONG_BRAND,
+        label: this.translateService.instant("The target item doesn't seem to have the correct brand")
+      },
+      {
+        value: EquipmentItemReviewerRejectionReason.INACCURATE_DATA,
+        label: this.translateService.instant("The target item has some inaccurate data")
+      },
+      {
+        value: EquipmentItemReviewerRejectionReason.INSUFFICIENT_DATA,
+        label: this.translateService.instant("The target item has insufficient data")
+      },
+      {
+        value: EquipmentItemReviewerRejectionReason.OTHER,
+        label: this.translateService.instant("Other")
+      }
+    ];
   }
 }

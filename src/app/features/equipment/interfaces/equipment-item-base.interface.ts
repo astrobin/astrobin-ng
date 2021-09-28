@@ -17,7 +17,7 @@ export enum EquipmentItemReviewerDecision {
   REJECTED = "REJECTED"
 }
 
-export enum EquipmentItemReviewrRejectionReason {
+export enum EquipmentItemReviewerRejectionReason {
   TYPO = "TYPO",
   WRONG_BRAND = "WRONG_BRAND",
   INACCURATE_DATA = "INACCURATE_DATA",
@@ -34,7 +34,7 @@ export interface EquipmentItemBaseInterface {
   reviewedBy?: UserInterface["id"];
   reviewedTimestamp?: string;
   reviewerDecision?: EquipmentItemReviewerDecision;
-  reviewerRejectionReason?: EquipmentItemReviewrRejectionReason;
+  reviewerRejectionReason?: EquipmentItemReviewerRejectionReason;
   reviewerComment?: string;
   brand: BrandInterface["id"];
   name: string;

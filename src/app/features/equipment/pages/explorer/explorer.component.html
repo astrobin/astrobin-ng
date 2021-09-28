@@ -15,8 +15,17 @@
       ></astrobin-equipment-item-browser>
 
       <div class="card" *ngIf="selectedItem">
-        <div class="card-header">{{ equipmentItemService.humanizeType(activeType) }}</div>
+        <div class="card-header">
+          {{ equipmentItemService.humanizeType(activeType) }}
+        </div>
+
         <div class="card-body">
+          <div *ngIf="selectedItem.reviewerDecision === null" class="alert alert-warning">
+            <fa-icon icon="exclamation-triangle"></fa-icon>
+            <strong>{{ "Warning!" | translate }}</strong>
+            {{ "This item has not been approved yet, so it's not available to be associated with images." | translate }}
+          </div>
+
           <astrobin-equipment-item-summary
             [item]="selectedItem"
             [showClass]="false"
@@ -24,6 +33,7 @@
             [showLargeImage]="true"
           ></astrobin-equipment-item-summary>
         </div>
+
         <div class="card-footer">
           <button
             class="btn btn-sm-block btn-outline-secondary"
@@ -33,14 +43,38 @@
             {{ "Close" | translate }}
           </button>
 
-          <button
-            class="btn btn-secondary"
-            *ngIf="!!(currentUser$ | async)"
-            data-test="propose-edit"
-            (click)="startEditMode()"
-          >
-            {{ "Propose edit" | translate }}
-          </button>
+          <ng-container *ngIf="selectedItem.reviewerDecision === EquipmentItemReviewerDecision.REJECTED; else notRejected">
+            <span class="alert alert-warning">{{ "This item was peer reviewed and rejected." | translate }}</span>
+          </ng-container>
+
+          <ng-template #notRejected>
+            <button
+              class="btn btn-secondary"
+              *ngIf="!!(currentUser$ | async)"
+              data-test="propose-edit"
+              (click)="startEditMode()"
+            >
+              {{ "Propose edit" | translate }}&hellip;
+            </button>
+
+            <button
+              class="btn btn-danger"
+              *ngIf="!!(currentUser$ | async)"
+              data-test="reject"
+              (click)="startRejection()"
+            >
+              {{ "Reject" | translate }}&hellip;
+            </button>
+
+            <button
+              class="btn btn-success"
+              *ngIf="!!(currentUser$ | async)"
+              data-test="reject"
+              (click)="startAcceptance()"
+            >
+              {{ "Accept" | translate }}&hellip;
+            </button>
+          </ng-template>
         </div>
       </div>
 

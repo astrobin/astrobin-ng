@@ -6,6 +6,7 @@ import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { EMPTY, Observable, of } from "rxjs";
 import {
   EquipmentItemBaseInterface,
+  EquipmentItemReviewerRejectionReason,
   EquipmentItemType
 } from "@features/equipment/interfaces/equipment-item-base.interface";
 import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
@@ -141,11 +142,18 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     return this.http.post<EquipmentItemBaseInterface>(`${this.configUrl}/${path}/${item.id}/approve/`, {});
   }
 
-  rejectEquipmentItem(item: EquipmentItemBaseInterface, comment: string): Observable<EquipmentItemBaseInterface> {
+  rejectEquipmentItem(
+    item: EquipmentItemBaseInterface,
+    reason: EquipmentItemReviewerRejectionReason,
+    comment: string
+  ): Observable<EquipmentItemBaseInterface> {
     const type = this.equipmentItemService.getType(item);
     const path = EquipmentItemType[type].toLowerCase();
 
-    return this.http.post<EquipmentItemBaseInterface>(`${this.configUrl}/${path}/${item.id}/reject/`, { comment });
+    return this.http.post<EquipmentItemBaseInterface>(`${this.configUrl}/${path}/${item.id}/reject/`, {
+      reason,
+      comment
+    });
   }
 
   getEditProposals(
