@@ -31,6 +31,8 @@ import {
   LoadSensor,
   LoadSensorSuccess,
   RejectEquipmentItem,
+  RejectEquipmentItemEditProposal,
+  RejectEquipmentItemEditProposalSuccess,
   RejectEquipmentItemSuccess
 } from "@features/equipment/store/equipment.actions";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
@@ -193,6 +195,22 @@ export class EquipmentEffects {
         this.equipmentApiService
           .getEditProposals(payload.item)
           .pipe(map(editProposals => new FindEquipmentItemEditProposalsSuccess({ editProposals })))
+      )
+    )
+  );
+
+  RejectEquipmentItemEditProposal: Observable<RejectEquipmentItemEditProposalSuccess> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(EquipmentActionTypes.REJECT_EQUIPMENT_ITEM_EDIT_PROPOSAL),
+      map((action: RejectEquipmentItemEditProposal) => action.payload),
+      mergeMap(payload =>
+        this.equipmentApiService
+          .rejectEditProposal(payload.editProposal, payload.comment)
+          .pipe(
+            map(
+              rejectedEditProposal => new RejectEquipmentItemEditProposalSuccess({ editProposal: rejectedEditProposal })
+            )
+          )
       )
     )
   );

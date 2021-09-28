@@ -96,12 +96,27 @@ describe("UtilsService", () => {
       expect(UtilsService.arrayUniqueObjects([a, b, c])).toEqual([a, b]);
     });
 
-    it("should work with multiple property", () => {
+    it("should work with multiple properties", () => {
       const a = { pk: 1, foo: "a" };
       const b = { pk: 1, foo: "b" };
       const c = { pk: 1, foo: "a" };
 
       expect(UtilsService.arrayUniqueObjects([a, b, c])).toEqual([a, b]);
+    });
+
+    it("should work with specific property", () => {
+      const a = { pk: 1, foo: "a" };
+      const b = { pk: 1, foo: "b" };
+      const c = { pk: 1, foo: "a" };
+
+      expect(UtilsService.arrayUniqueObjects([a, b, c], "pk")).toEqual([a]);
+    });
+
+    it("should remove earlier entry, not later entry", () => {
+      const a = { pk: 1, foo: "a" };
+      const b = { pk: 1, foo: "b" };
+
+      expect(UtilsService.arrayUniqueObjects([a, b], "pk")).toEqual([b]);
     });
   });
 
@@ -179,6 +194,22 @@ describe("UtilsService", () => {
       expect(UtilsService.slugify("")).toEqual("");
       expect(UtilsService.slugify(null)).toEqual("");
       expect(UtilsService.slugify(undefined)).toEqual("");
+    });
+  });
+
+  describe("compareValuesLoosely", () => {
+    it("should work", () => {
+      expect(UtilsService.compareValuesLoosely(4, 4)).toBe(true);
+      expect(UtilsService.compareValuesLoosely("4", 4)).toBe(true);
+      expect(UtilsService.compareValuesLoosely("4", 4)).toBe(true);
+      expect(UtilsService.compareValuesLoosely(1, 2)).toBe(false);
+      expect(UtilsService.compareValuesLoosely({ a: 1 }, { a: 1 })).toBe(true);
+      expect(UtilsService.compareValuesLoosely({ a: 1 }, { b: 1 })).toBe(false);
+      expect(UtilsService.compareValuesLoosely(true, "True")).toBe(true);
+      expect(UtilsService.compareValuesLoosely(1, "True")).toBe(true);
+      expect(UtilsService.compareValuesLoosely(1, "false")).toBe(false);
+      expect(UtilsService.compareValuesLoosely(1.5, 1.5)).toBe(true);
+      expect(UtilsService.compareValuesLoosely("1.5", 1.5)).toBe(true);
     });
   });
 });

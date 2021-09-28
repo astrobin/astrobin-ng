@@ -1,5 +1,5 @@
 <ng-container *ngIf="item; else loading">
-  <div class="edit-proposal row" [class.opened]="opened" (click)="opened = !opened">
+  <div class="edit-proposal row" [class.opened]="opened" (click)="opened = !opened" [attr.data-id]="item.id">
     <span class="col user">
       <astrobin-username [user]="editProposalBy$ | async" linkTarget="_blank"></astrobin-username>
     </span>
@@ -45,6 +45,7 @@
               class="btn btn-danger"
               [disabled]="buttonsStatus.disabled"
               [class.loading]="loadingService.isLoading()"
+              (click)="rejectEdit()"
             >
               {{ "Reject edit" | translate }}&hellip;
             </button>
@@ -52,6 +53,7 @@
               class="btn btn-success"
               [disabled]="buttonsStatus.disabled"
               [class.loading]="loadingService.isLoading()"
+              (click)="approveEdit()"
             >
               {{ "Approve edit" | translate }}&hellip;
             </button>

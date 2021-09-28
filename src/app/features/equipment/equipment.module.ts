@@ -33,6 +33,7 @@ import { PendingReviewExplorerComponent } from "@features/equipment/pages/pendin
 import { PendingExplorerBaseComponent } from "@features/equipment/pages/explorer-base/pending-explorer-base.component";
 import { RejectItemModalComponent } from "./components/reject-item-modal/reject-item-modal.component";
 import { ApproveItemModalComponent } from "@features/equipment/components/approve-item-modal/approve-item-modal.component";
+import { RejectEditProposalModalComponent } from "@features/equipment/components/reject-edit-proposal-modal/reject-edit-proposal-modal.component";
 
 @NgModule({
   declarations: [
@@ -61,8 +62,9 @@ import { ApproveItemModalComponent } from "@features/equipment/components/approv
     PendingExplorerBaseComponent,
     PendingReviewExplorerComponent,
     PendingEditExplorerComponent,
+    ApproveItemModalComponent,
     RejectItemModalComponent,
-    ApproveItemModalComponent
+    RejectEditProposalModalComponent
   ],
   imports: [
     RouterModule.forChild(routes),

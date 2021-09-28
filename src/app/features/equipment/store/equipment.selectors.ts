@@ -11,7 +11,7 @@ import { instanceOfSensor } from "@features/equipment/interfaces/sensor.interfac
 import { instanceOfCamera } from "@features/equipment/interfaces/camera.interface";
 import { instanceOfTelescope } from "@features/equipment/interfaces/telescope.interface";
 
-export function getEquipmentItemType(item: EquipmentItemBaseInterface) {
+export function getEquipmentItemType(item: EquipmentItemBaseInterface): EquipmentItemType {
   if (instanceOfSensor(item)) {
     return EquipmentItemType.SENSOR;
   }
@@ -25,6 +25,21 @@ export function getEquipmentItemType(item: EquipmentItemBaseInterface) {
   }
 
   // TODO: complete.
+}
+
+export function arrayUniqueEquipmentItems(array: EquipmentItemBaseInterface[]): EquipmentItemBaseInterface[] {
+  // The array is reverser because this algorithm prefers to keep the object appearing later in the array.
+  const a: EquipmentItemBaseInterface[] = array.concat().reverse();
+
+  for (let i = 0; i < a.length; ++i) {
+    for (let j = i + 1; j < a.length; ++j) {
+      if (a[i].id === a[j].id && getEquipmentItemType(a[i]) === getEquipmentItemType(a[j])) {
+        a.splice(j--, 1);
+      }
+    }
+  }
+
+  return a;
 }
 
 export const selectEquipment = (state: State): EquipmentState => state.equipment;

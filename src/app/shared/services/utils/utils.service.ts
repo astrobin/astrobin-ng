@@ -41,14 +41,19 @@ export class UtilsService {
   }
 
   /**
-   * Removes duplicates from an array. Items must be able to be stringified using JSON.
-   * @param array
+   * Removes duplicates from an array. Items must be able to be stringified using JSON, or a key must be provided.
    */
-  static arrayUniqueObjects(array: any): any {
-    const a = array.concat();
+  static arrayUniqueObjects(array: any[], key?: string, reverse = true): any[] {
+    let a = array.concat();
+
+    if (reverse) {
+      // The array is reverser because this algorithm prefers to keep the object appearing later in the array.
+      a = a.reverse();
+    }
+
     for (let i = 0; i < a.length; ++i) {
       for (let j = i + 1; j < a.length; ++j) {
-        if (JSON.stringify(a[i]) === JSON.stringify(a[j])) {
+        if ((!key && JSON.stringify(a[i]) === JSON.stringify(a[j])) || (!!key && a[i][key] === a[j][key])) {
           a.splice(j--, 1);
         }
       }
@@ -185,6 +190,50 @@ export class UtilsService {
       .replace(/\-\-+/g, "-") // Replace multiple - with single -
       .replace(/^-+/, "") // Trim - from start of text
       .replace(/-+$/, ""); // Trim - from end of text
+  }
+
+  static compareValuesLoosely(a: any, b: any): boolean {
+    const parseBool = (value: any): boolean => {
+      if (value === true) {
+        return true;
+      }
+
+      if (value === false) {
+        return false;
+      }
+
+      if (value === 1 || (UtilsService.isString(value) && value.toLowerCase() === "true")) {
+        return true;
+      }
+
+      if (value === 0 || (UtilsService.isString(value) && value.toLowerCase() === "false")) {
+        return false;
+      }
+
+      throw Error("Cannot parse as bool");
+    };
+
+    if (a === b) {
+      return true;
+    }
+
+    if (JSON.stringify(a) === JSON.stringify(b)) {
+      return true;
+    }
+
+    if (parseInt(a, 10) === parseInt(b, 10)) {
+      return true;
+    }
+
+    if (parseFloat(a) === parseFloat(b)) {
+      return true;
+    }
+
+    try {
+      return parseBool(a) === parseBool(b);
+    } catch (e) {
+      return false;
+    }
   }
 
   yesNo(value: any): string {

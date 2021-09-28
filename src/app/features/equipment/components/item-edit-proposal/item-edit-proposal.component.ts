@@ -12,7 +12,12 @@ import {
   EquipmentItemType
 } from "@features/equipment/interfaces/equipment-item-base.interface";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
-import { LoadBrand, LoadEquipmentItem } from "@features/equipment/store/equipment.actions";
+import {
+  EquipmentActionTypes,
+  LoadBrand,
+  LoadEquipmentItem,
+  RejectEquipmentItemEditProposalSuccess
+} from "@features/equipment/store/equipment.actions";
 import { selectEditProposals, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { LoadUser } from "@features/account/store/auth.actions";
@@ -23,6 +28,11 @@ import { forkJoin, Observable } from "rxjs";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { selectUser } from "@features/account/store/auth.selectors";
 import { LoadingService } from "@shared/services/loading.service";
+import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { RejectItemModalComponent } from "@features/equipment/components/reject-item-modal/reject-item-modal.component";
+import { RejectMigrationModalComponent } from "@features/equipment/components/migration/reject-migration-modal/reject-migration-modal.component";
+import { RejectEditProposalModalComponent } from "@features/equipment/components/reject-edit-proposal-modal/reject-edit-proposal-modal.component";
+import { Actions, ofType } from "@ngrx/effects";
 
 @Component({
   selector: "astrobin-item-edit-proposal",
@@ -42,11 +52,13 @@ export class ItemEditProposalComponent extends BaseComponentDirective implements
 
   constructor(
     public readonly store$: Store<State>,
+    public readonly actions$: Actions,
     public readonly equipmentItemService: EquipmentItemService,
     public readonly usernameService: UsernameService,
     public readonly translateService: TranslateService,
     public readonly classicRoutesService: ClassicRoutesService,
-    public readonly loadingService: LoadingService
+    public readonly loadingService: LoadingService,
+    public readonly modalService: NgbModal
   ) {
     super(store$);
   }
@@ -116,7 +128,9 @@ export class ItemEditProposalComponent extends BaseComponentDirective implements
     this.store$.dispatch(new LoadBrand({ id: this.editProposal.brand }));
     this.store$.dispatch(new LoadUser({ id: this.editProposal.editProposalBy }));
 
-    this.editProposalBy$ = this.store$.select(selectUser, this.editProposal.editProposalBy);
+    this.editProposalBy$ = this.store$
+      .select(selectUser, this.editProposal.editProposalBy)
+      .pipe(filter(user => !!user));
 
     this.store$
       .select(selectEquipmentItem, { id: this.editProposal.editProposalTarget, type })
@@ -139,5 +153,22 @@ export class ItemEditProposalComponent extends BaseComponentDirective implements
           });
         });
       });
+  }
+
+  approveEdit() {}
+
+  rejectEdit() {
+    const modal: NgbModalRef = this.modalService.open(RejectEditProposalModalComponent);
+    const componentInstance: RejectEditProposalModalComponent = modal.componentInstance;
+
+    componentInstance.editProposal = this.editProposal;
+
+    this.actions$
+      .pipe(
+        ofType(EquipmentActionTypes.REJECT_EQUIPMENT_ITEM_EDIT_PROPOSAL_SUCCESS),
+        map((action: RejectEquipmentItemEditProposalSuccess) => action.payload.editProposal),
+        take(1)
+      )
+      .subscribe(editProposal => (this.editProposal = editProposal));
   }
 }

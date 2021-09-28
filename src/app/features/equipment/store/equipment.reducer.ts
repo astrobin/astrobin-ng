@@ -3,6 +3,7 @@ import { EquipmentItemBaseInterface } from "@features/equipment/interfaces/equip
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { BrandInterface } from "@features/equipment/interfaces/brand.interface";
 import { EditProposalInterface } from "@features/equipment/interfaces/edit-proposal.interface";
+import { arrayUniqueEquipmentItems } from "@features/equipment/store/equipment.selectors";
 
 export const equipmentFeatureKey = "equipment";
 
@@ -25,14 +26,14 @@ export function reducer(state = initialEquipmentState, action: EquipmentActions)
     case EquipmentActionTypes.CREATE_BRAND_SUCCESS: {
       return {
         ...state,
-        brands: UtilsService.arrayUniqueObjects([...state.brands, ...[action.payload.brand]])
+        brands: UtilsService.arrayUniqueObjects([...state.brands, ...[action.payload.brand]], "id")
       };
     }
 
     case EquipmentActionTypes.FIND_ALL_BRANDS_SUCCESS: {
       return {
         ...state,
-        brands: UtilsService.arrayUniqueObjects([...state.brands, ...action.payload.brands])
+        brands: UtilsService.arrayUniqueObjects([...state.brands, ...action.payload.brands], "id")
       };
     }
 
@@ -41,38 +42,32 @@ export function reducer(state = initialEquipmentState, action: EquipmentActions)
     case EquipmentActionTypes.GET_OTHERS_IN_BRAND_SUCCESS: {
       return {
         ...state,
-        equipmentItems: UtilsService.arrayUniqueObjects([...state.equipmentItems, ...action.payload.items])
+        equipmentItems: arrayUniqueEquipmentItems([...state.equipmentItems, ...action.payload.items])
       };
     }
 
     case EquipmentActionTypes.LOAD_EQUIPMENT_ITEM_SUCCESS:
     case EquipmentActionTypes.APPROVE_EQUIPMENT_ITEM_SUCCESS:
+    case EquipmentActionTypes.REJECT_EQUIPMENT_ITEM_SUCCESS:
     case EquipmentActionTypes.CREATE_SENSOR_SUCCESS:
     case EquipmentActionTypes.CREATE_CAMERA_SUCCESS:
     case EquipmentActionTypes.LOAD_SENSOR_SUCCESS: {
       return {
         ...state,
-        equipmentItems: UtilsService.arrayUniqueObjects([...state.equipmentItems, ...[action.payload.item]])
-      };
-    }
-
-    case EquipmentActionTypes.REJECT_EQUIPMENT_ITEM_SUCCESS: {
-      return {
-        ...state,
-        equipmentItems: state.equipmentItems.filter(
-          equipmentItem =>
-            equipmentItem.id !== action.payload.item.id &&
-            equipmentItem.brand !== action.payload.item.brand &&
-            equipmentItem.name !== action.payload.item.name
-        )
+        equipmentItems: arrayUniqueEquipmentItems([...state.equipmentItems, ...[action.payload.item]])
       };
     }
 
     case EquipmentActionTypes.CREATE_SENSOR_EDIT_PROPOSAL_SUCCESS:
-    case EquipmentActionTypes.CREATE_CAMERA_EDIT_PROPOSAL_SUCCESS: {
+    case EquipmentActionTypes.CREATE_CAMERA_EDIT_PROPOSAL_SUCCESS:
+    case EquipmentActionTypes.APPROVE_EQUIPMENT_ITEM_EDIT_PROPOSAL_SUCCESS:
+    case EquipmentActionTypes.REJECT_EQUIPMENT_ITEM_EDIT_PROPOSAL_SUCCESS: {
       return {
         ...state,
-        editProposals: UtilsService.arrayUniqueObjects([...state.editProposals, ...[action.payload.editProposal]]).sort(
+        editProposals: UtilsService.arrayUniqueObjects(
+          [...state.editProposals, ...[action.payload.editProposal]],
+          "id"
+        ).sort(
           (
             a: EditProposalInterface<EquipmentItemBaseInterface>,
             b: EditProposalInterface<EquipmentItemBaseInterface>
@@ -94,10 +89,10 @@ export function reducer(state = initialEquipmentState, action: EquipmentActions)
     case EquipmentActionTypes.FIND_EQUIPMENT_ITEM_EDIT_PROPOSALS_SUCCESS: {
       return {
         ...state,
-        editProposals: UtilsService.arrayUniqueObjects([
-          ...state.editProposals,
-          ...action.payload.editProposals.results
-        ])
+        editProposals: UtilsService.arrayUniqueObjects(
+          [...state.editProposals, ...action.payload.editProposals.results],
+          "id"
+        )
       };
     }
 

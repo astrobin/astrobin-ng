@@ -57,19 +57,19 @@ export class RejectItemModalComponent extends BaseComponentDirective implements 
           options: [
             {
               value: EquipmentItemReviewerRejectionReason.TYPO,
-              label: this.translateService.instant("The target item has a typo in its name")
+              label: this.translateService.instant("The item has a typo in its name")
             },
             {
               value: EquipmentItemReviewerRejectionReason.WRONG_BRAND,
-              label: this.translateService.instant("The target item doesn't seem to have the correct brand")
+              label: this.translateService.instant("The item doesn't seem to have the correct brand")
             },
             {
               value: EquipmentItemReviewerRejectionReason.INACCURATE_DATA,
-              label: this.translateService.instant("The target item has some inaccurate data")
+              label: this.translateService.instant("The item has some inaccurate data")
             },
             {
               value: EquipmentItemReviewerRejectionReason.INSUFFICIENT_DATA,
-              label: this.translateService.instant("The target item has insufficient data")
+              label: this.translateService.instant("The item has insufficient data")
             },
             {
               value: EquipmentItemReviewerRejectionReason.OTHER,

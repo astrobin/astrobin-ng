@@ -186,7 +186,10 @@ export class EquipmentItemService extends BaseService {
         continue;
       }
 
-      if ((!!originalProperty && originalProperty.value !== editProposal[key]) || item[key] !== editProposal[key]) {
+      if (
+        (!!originalProperty && !UtilsService.compareValuesLoosely(originalProperty.value, editProposal[key])) ||
+        !UtilsService.compareValuesLoosely(item[key], editProposal[key])
+      ) {
         if (!editProposal.editProposalReviewStatus) {
           // The edit proposal is pending: build a diff using the current status of the item.
           changes.push({ propertyName: key, before: item[key], after: editProposal[key] });

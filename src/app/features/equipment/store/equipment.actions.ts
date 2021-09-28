@@ -42,7 +42,10 @@ export enum EquipmentActionTypes {
   REJECT_EQUIPMENT_ITEM_SUCCESS = "[Equipment] Reject item success",
   FIND_EQUIPMENT_ITEM_EDIT_PROPOSALS = "[Equipment] Find equipment item edit proposals",
   FIND_EQUIPMENT_ITEM_EDIT_PROPOSALS_SUCCESS = "[Equipment] Find equipment item edit proposals success",
-
+  APPROVE_EQUIPMENT_ITEM_EDIT_PROPOSAL = "[Equipment] Approve edit proposal",
+  APPROVE_EQUIPMENT_ITEM_EDIT_PROPOSAL_SUCCESS = "[Equipment] Approve edit proposal success",
+  REJECT_EQUIPMENT_ITEM_EDIT_PROPOSAL = "[Equipment] Reject edit proposal",
+  REJECT_EQUIPMENT_ITEM_EDIT_PROPOSAL_SUCCESS = "[Equipment] Reject edit proposal success",
   // Sensors
 
   CREATE_SENSOR = "[Equipment] Create sensor",
@@ -184,6 +187,30 @@ export class FindEquipmentItemEditProposalsSuccess implements PayloadActionInter
   ) {}
 }
 
+export class ApproveEquipmentItemEditProposal implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.APPROVE_EQUIPMENT_ITEM_EDIT_PROPOSAL;
+
+  constructor(public payload: { editProposal: EditProposalInterface<EquipmentItemBaseInterface>; comment: string }) {}
+}
+
+export class ApproveEquipmentItemEditProposalSuccess implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.APPROVE_EQUIPMENT_ITEM_EDIT_PROPOSAL_SUCCESS;
+
+  constructor(public payload: { editProposal: EditProposalInterface<EquipmentItemBaseInterface> }) {}
+}
+
+export class RejectEquipmentItemEditProposal implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.REJECT_EQUIPMENT_ITEM_EDIT_PROPOSAL;
+
+  constructor(public payload: { editProposal: EditProposalInterface<EquipmentItemBaseInterface>; comment: string }) {}
+}
+
+export class RejectEquipmentItemEditProposalSuccess implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.REJECT_EQUIPMENT_ITEM_EDIT_PROPOSAL_SUCCESS;
+
+  constructor(public payload: { editProposal: EditProposalInterface<EquipmentItemBaseInterface> }) {}
+}
+
 export class CreateSensor implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.CREATE_SENSOR;
 
@@ -265,6 +292,10 @@ export type EquipmentActions =
   | RejectEquipmentItemSuccess
   | FindEquipmentItemEditProposals
   | FindEquipmentItemEditProposalsSuccess
+  | ApproveEquipmentItemEditProposal
+  | ApproveEquipmentItemEditProposalSuccess
+  | RejectEquipmentItemEditProposal
+  | RejectEquipmentItemEditProposalSuccess
   | CreateSensor
   | CreateSensorSuccess
   | CreateSensorEditProposal
