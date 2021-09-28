@@ -69,7 +69,7 @@ context("Equipment", () => {
       });
 
       it("should update the URL with ID and slug", () => {
-        cy.url().should("include", `/equipment/explorer/camera/${testCamera.id}/test-brand-123`);
+        cy.url().should("include", `/equipment/explorer/camera/${testCamera.id}/test-brand-test`);
       });
     });
   });

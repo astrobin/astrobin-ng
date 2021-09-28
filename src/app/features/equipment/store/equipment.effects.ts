@@ -167,7 +167,7 @@ export class EquipmentEffects {
       map((action: ApproveEquipmentItem) => action.payload),
       mergeMap(payload =>
         this.equipmentApiService
-          .approveEquipmentItem(payload.item)
+          .approveEquipmentItem(payload.item, payload.comment)
           .pipe(map(item => new ApproveEquipmentItemSuccess({ item })))
       )
     )

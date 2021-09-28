@@ -65,8 +65,8 @@ export class MigratableGearItemApiService extends BaseClassicApiService
     });
   }
 
-  acceptMigration(gearId: number): Observable<any> {
-    return this.http.put(`${this.configUrl}/${gearId}/accept-migration/`, {});
+  approveMigration(gearId: number): Observable<any> {
+    return this.http.put(`${this.configUrl}/${gearId}/approve-migration/`, {});
   }
 
   rejectMigration(gearId: number, reason: RejectMigrationReason, comment: string): Observable<any> {

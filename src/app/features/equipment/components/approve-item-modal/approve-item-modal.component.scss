@@ -1,0 +1,10 @@
+::ng-deep {
+  astrobin-similar-items-suggestion {
+    .btn-link {
+      font-weight: bold;
+      color: var(--textOnWarningColor);
+      pointer-events: none;
+      border: 0 !important;
+    }
+  }
+}

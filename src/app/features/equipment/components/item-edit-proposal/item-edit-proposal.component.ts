@@ -53,8 +53,8 @@ export class ItemEditProposalComponent extends BaseComponentDirective implements
 
   get reviewStatusText(): string {
     switch (this.editProposal.editProposalReviewStatus) {
-      case EditProposalReviewStatus.ACCEPTED:
-        return this.translateService.instant("Accepted");
+      case EditProposalReviewStatus.APPROVED:
+        return this.translateService.instant("Approved");
       case EditProposalReviewStatus.REJECTED:
         return this.translateService.instant("Rejected");
       case EditProposalReviewStatus.SUPERSEDED:

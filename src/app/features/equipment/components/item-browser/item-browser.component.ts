@@ -130,6 +130,7 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
         ];
         this.model = { ...this.model, ...{ "equipment-item": item.id } };
         this.form.get("equipment-item").setValue(item.id);
+        this.itemSelected.emit(item);
       });
   }
 
@@ -253,7 +254,8 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
                           id,
                           type: this.type
                         })
-                      )
+                      ),
+                      filter(item => !!item)
                     )
                     .subscribe((item: EquipmentItemBaseInterface) => this.itemSelected.emit(item));
                 }

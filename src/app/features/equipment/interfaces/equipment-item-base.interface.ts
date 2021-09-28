@@ -13,7 +13,7 @@ export enum EquipmentItemType {
 }
 
 export enum EquipmentItemReviewerDecision {
-  ACCEPTED = "ACCEPTED",
+  APPROVED = "APPROVED",
   REJECTED = "REJECTED"
 }
 

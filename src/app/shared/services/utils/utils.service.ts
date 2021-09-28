@@ -131,7 +131,11 @@ export class UtilsService {
     return url;
   }
 
-  static isFunction(functionToCheck) {
+  static isString(s): boolean {
+    return s && Object.prototype.toString.call(s) === "[object String]";
+  }
+
+  static isFunction(functionToCheck): boolean {
     return functionToCheck && {}.toString.call(functionToCheck) === "[object Function]";
   }
 

@@ -117,11 +117,11 @@ context("Equipment", () => {
 
     it("should have disabled buttons because the proposer cannot review", () => {
       cy.get("astrobin-item-edit-proposal .btn")
-        .contains("Reject...")
+        .contains("Reject edit…")
         .should("be.visible")
         .should("be.disabled");
       cy.get("astrobin-item-edit-proposal .btn")
-        .contains("Approve...")
+        .contains("Approve edit…")
         .should("be.visible")
         .should("be.disabled");
       cy.get("astrobin-item-edit-proposal .alert")

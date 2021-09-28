@@ -21,6 +21,7 @@ import { PopNotificationsService } from "@shared/services/pop-notifications.serv
 import { TranslateService } from "@ngx-translate/core";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 import { EditProposalInterface } from "@features/equipment/interfaces/edit-proposal.interface";
+import { UtilsService } from "@shared/services/utils/utils.service";
 
 @Injectable({
   providedIn: "root"
@@ -135,11 +136,11 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
       .pipe(map(response => (response.count > 0 ? response.results[0] : null)));
   }
 
-  approveEquipmentItem(item: EquipmentItemBaseInterface): Observable<EquipmentItemBaseInterface> {
+  approveEquipmentItem(item: EquipmentItemBaseInterface, comment: string): Observable<EquipmentItemBaseInterface> {
     const type = this.equipmentItemService.getType(item);
     const path = EquipmentItemType[type].toLowerCase();
 
-    return this.http.post<EquipmentItemBaseInterface>(`${this.configUrl}/${path}/${item.id}/approve/`, {});
+    return this.http.post<EquipmentItemBaseInterface>(`${this.configUrl}/${path}/${item.id}/approve/`, { comment });
   }
 
   rejectEquipmentItem(
@@ -372,7 +373,7 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
           })
         )
         .subscribe(createdEditProposal => {
-          if (item.image && item.image.length > 0) {
+          if (item.image && !UtilsService.isString(item.image) && item.image.length > 0) {
             this._uploadEditProposalImage<T>(createdEditProposal.id, (item.image as File[])[0], path)
               .pipe(
                 take(1),

@@ -7,15 +7,15 @@ import { TitleService } from "@shared/services/title/title.service";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import {
   EquipmentItemBaseInterface,
-  EquipmentItemReviewerDecision,
   EquipmentItemType
 } from "@features/equipment/interfaces/equipment-item-base.interface";
-import { filter, map, take, takeUntil } from "rxjs/operators";
+import { filter, map, switchMap, take, takeUntil } from "rxjs/operators";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 import { FormGroup } from "@angular/forms";
 import { LoadingService } from "@shared/services/loading.service";
 import {
+  ApproveEquipmentItemSuccess,
   CreateCameraEditProposal,
   CreateSensorEditProposal,
   EquipmentActionTypes,
@@ -40,6 +40,10 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { Location } from "@angular/common";
 import { ExplorerBaseComponent } from "@features/equipment/pages/explorer-base/explorer-base.component";
+import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { RejectMigrationModalComponent } from "@features/equipment/components/migration/reject-migration-modal/reject-migration-modal.component";
+import { RejectItemModalComponent } from "@features/equipment/components/reject-item-modal/reject-item-modal.component";
+import { ApproveItemModalComponent } from "@features/equipment/components/approve-item-modal/approve-item-modal.component";
 
 @Component({
   selector: "astrobin-equipment-explorer",
@@ -49,7 +53,6 @@ import { ExplorerBaseComponent } from "@features/equipment/pages/explorer-base/e
 export class ExplorerComponent extends ExplorerBaseComponent implements OnInit {
   EquipmentItemType = EquipmentItemType;
   EquipmentItemEditorMode = EquipmentItemEditorMode;
-  EquipmentItemReviewerDecision = EquipmentItemReviewerDecision;
 
   title = this.translateService.instant("Equipment explorer");
 
@@ -77,7 +80,8 @@ export class ExplorerComponent extends ExplorerBaseComponent implements OnInit {
     public readonly loadingService: LoadingService,
     public readonly popNotificationsService: PopNotificationsService,
     public readonly windowRefService: WindowRefService,
-    public readonly location: Location
+    public readonly location: Location,
+    public readonly modalService: NgbModal
   ) {
     super(store$, actions$, activatedRoute, router);
   }
@@ -138,9 +142,34 @@ export class ExplorerComponent extends ExplorerBaseComponent implements OnInit {
     this.editForm.reset();
   }
 
-  startRejection() {}
+  startApproval() {
+    const modal: NgbModalRef = this.modalService.open(ApproveItemModalComponent);
+    const componentInstance: ApproveItemModalComponent = modal.componentInstance;
 
-  startAcceptance() {}
+    componentInstance.equipmentItem = this.selectedItem;
+
+    this.actions$
+      .pipe(
+        ofType(EquipmentActionTypes.APPROVE_EQUIPMENT_ITEM_SUCCESS),
+        map((action: ApproveEquipmentItemSuccess) => action.payload.item),
+        filter(item => item.id === this.selectedItem.id),
+        take(1)
+      )
+      .subscribe(item => {
+        this.setItem(item);
+      });
+  }
+
+  startRejection() {
+    const modal: NgbModalRef = this.modalService.open(RejectItemModalComponent);
+    const componentInstance: RejectMigrationModalComponent = modal.componentInstance;
+
+    componentInstance.equipmentItem = this.selectedItem;
+
+    modal.closed.pipe(take(1)).subscribe(() => {
+      this.resetBrowser();
+    });
+  }
 
   resetBrowser() {
     this._itemBrowser.reset();
@@ -228,6 +257,10 @@ export class ExplorerComponent extends ExplorerBaseComponent implements OnInit {
 
   loadEditProposals() {
     this.store$.dispatch(new FindEquipmentItemEditProposals({ item: this.selectedItem }));
-    this.selectedItemEditProposals$ = this.store$.select(selectEditProposalsForItem, this.selectedItem);
+    this.selectedItemEditProposals$ = this.actions$.pipe(
+      ofType(EquipmentActionTypes.FIND_EQUIPMENT_ITEM_EDIT_PROPOSALS_SUCCESS),
+      take(1),
+      switchMap(() => this.store$.select(selectEditProposalsForItem, this.selectedItem))
+    );
   }
 }

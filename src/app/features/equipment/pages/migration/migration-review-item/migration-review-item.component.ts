@@ -131,15 +131,15 @@ export class MigrationReviewItemComponent extends BaseComponentDirective impleme
     super.ngOnDestroy();
   }
 
-  accept() {
+  approve() {
     this.loadingService.setLoading(true);
 
     this.legacyGearApiService
-      .acceptMigration(this.legacyItem.pk)
+      .approveMigration(this.legacyItem.pk)
       .pipe(
         switchMap(item => {
           if (this.equipmentItem && !this.equipmentItem.reviewedBy) {
-            this.store$.dispatch(new ApproveEquipmentItem({ item: this.equipmentItem }));
+            this.store$.dispatch(new ApproveEquipmentItem({ item: this.equipmentItem, comment: null }));
 
             return this.actions$.pipe(ofType(EquipmentActionTypes.APPROVE_EQUIPMENT_ITEM_SUCCESS), take(1));
           } else {

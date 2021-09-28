@@ -150,6 +150,8 @@ export class EquipmentItemService extends BaseService {
       "editProposalReviewStatus"
     ];
 
+    const nonNullableKeys = ["image"];
+
     const changes: EditProposalChange[] = [];
 
     let originalProperties:
@@ -176,10 +178,15 @@ export class EquipmentItemService extends BaseService {
         originalProperty = originalProperties.find(property => UtilsService.toCamelCase(property.name) === key);
       }
 
-      if (
-        ignoredKeys.indexOf(key) === -1 &&
-        ((!!originalProperty && originalProperty.value !== editProposal[key]) || item[key] !== editProposal[key])
-      ) {
+      if (ignoredKeys.indexOf(key) > -1) {
+        continue;
+      }
+
+      if (nonNullableKeys.indexOf(key) > -1 && (editProposal[key] === null || editProposal[key] === undefined)) {
+        continue;
+      }
+
+      if ((!!originalProperty && originalProperty.value !== editProposal[key]) || item[key] !== editProposal[key]) {
         if (!editProposal.editProposalReviewStatus) {
           // The edit proposal is pending: build a diff using the current status of the item.
           changes.push({ propertyName: key, before: item[key], after: editProposal[key] });

@@ -31,6 +31,8 @@ import { ExplorerBaseComponent } from "@features/equipment/pages/explorer-base/e
 import { PendingEditExplorerComponent } from "@features/equipment/pages/pending-edit-explorer/pending-edit-explorer.component";
 import { PendingReviewExplorerComponent } from "@features/equipment/pages/pending-review-explorer/pending-review-explorer.component";
 import { PendingExplorerBaseComponent } from "@features/equipment/pages/explorer-base/pending-explorer-base.component";
+import { RejectItemModalComponent } from "./components/reject-item-modal/reject-item-modal.component";
+import { ApproveItemModalComponent } from "@features/equipment/components/approve-item-modal/approve-item-modal.component";
 
 @NgModule({
   declarations: [
@@ -58,7 +60,9 @@ import { PendingExplorerBaseComponent } from "@features/equipment/pages/explorer
     ExplorerComponent,
     PendingExplorerBaseComponent,
     PendingReviewExplorerComponent,
-    PendingEditExplorerComponent
+    PendingEditExplorerComponent,
+    RejectItemModalComponent,
+    ApproveItemModalComponent
   ],
   imports: [
     RouterModule.forChild(routes),

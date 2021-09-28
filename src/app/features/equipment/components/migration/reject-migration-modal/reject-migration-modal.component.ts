@@ -176,7 +176,7 @@ export class RejectMigrationModalComponent extends BaseComponentDirective implem
 
   _reasonOptions(): { value: string; label: string }[] {
     if (this.legacyItem.migrationFlag === MigrationFlag.MIGRATE) {
-      if (this.equipmentItem.reviewerDecision === EquipmentItemReviewerDecision.ACCEPTED) {
+      if (this.equipmentItem.reviewerDecision === EquipmentItemReviewerDecision.APPROVED) {
         return [this._incorrectStrategyOption(), this._wrongMigrationTargetOption(), this._otherOption()];
       }
 

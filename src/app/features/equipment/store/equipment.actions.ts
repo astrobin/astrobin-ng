@@ -147,7 +147,7 @@ export class GetOthersInBrandSuccess implements PayloadActionInterface {
 export class ApproveEquipmentItem implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.APPROVE_EQUIPMENT_ITEM;
 
-  constructor(public payload: { item: EquipmentItemBaseInterface }) {}
+  constructor(public payload: { item: EquipmentItemBaseInterface; comment: string }) {}
 }
 
 export class ApproveEquipmentItemSuccess implements PayloadActionInterface {

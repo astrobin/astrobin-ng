@@ -37,7 +37,7 @@ export interface MigratableGearItemApiServiceInterface {
     itemId?: EquipmentItemBaseInterface["id"]
   ): void;
 
-  acceptMigration?(gearId: number): Observable<any>;
+  approveMigration?(gearId: number): Observable<any>;
 
   rejectMigration?(gearId: number, reason: RejectMigrationReason, comment: string): Observable<any>;
 }

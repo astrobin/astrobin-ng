@@ -99,6 +99,10 @@ Cypress.Commands.add("setupEquipmentDefaultRoutes", () => {
     results: [testCamera]
   }).as("getCameras");
 
+  cy.route("GET", "**/api/v2/equipment/camera/find-similar-in-brand/*", []);
+
+  cy.route("GET", "**/api/v2/equipment/camera/others-in-brand/*", { count: 0, results: [] });
+
   cy.route("GET", "**/api/v2/equipment/camera/?name=*", {
     count: 0,
     next: null,
@@ -119,6 +123,10 @@ Cypress.Commands.add("setupEquipmentDefaultRoutes", () => {
     previous: null,
     results: []
   }).as("findCamerasPendingEdit");
+
+  cy.route("GET", "**/api/v2/equipment/camera-edit-proposal/?edit_proposal_target=*", {
+    results: []
+  }).as("getEditProposals");
 
   cy.route("GET", "**/api/v2/equipment/sensor/?q=*", {
     count: 0,

@@ -21,9 +21,13 @@
 
         <div class="card-body">
           <div *ngIf="selectedItem.reviewerDecision === null" class="alert alert-warning">
-            <fa-icon icon="exclamation-triangle"></fa-icon>
-            <strong>{{ "Warning!" | translate }}</strong>
-            {{ "This item has not been approved yet, so it's not available to be associated with images." | translate }}
+            <h5><fa-icon icon="exclamation-triangle"></fa-icon> {{ "Warning!" | translate }}</h5>
+
+            <p>
+              {{
+                "This item has not been approved yet, so it's not available to be associated with images." | translate
+              }}
+            </p>
           </div>
 
           <astrobin-equipment-item-summary
@@ -43,20 +47,16 @@
             {{ "Close" | translate }}
           </button>
 
-          <ng-container *ngIf="selectedItem.reviewerDecision === EquipmentItemReviewerDecision.REJECTED; else notRejected">
-            <span class="alert alert-warning">{{ "This item was peer reviewed and rejected." | translate }}</span>
-          </ng-container>
+          <button
+            class="btn btn-secondary"
+            *ngIf="!!(currentUser$ | async)"
+            data-test="propose-edit"
+            (click)="startEditMode()"
+          >
+            {{ "Propose edit" | translate }}&hellip;
+          </button>
 
-          <ng-template #notRejected>
-            <button
-              class="btn btn-secondary"
-              *ngIf="!!(currentUser$ | async)"
-              data-test="propose-edit"
-              (click)="startEditMode()"
-            >
-              {{ "Propose edit" | translate }}&hellip;
-            </button>
-
+          <ng-container *ngIf="selectedItem.reviewerDecision === null">
             <button
               class="btn btn-danger"
               *ngIf="!!(currentUser$ | async)"
@@ -70,11 +70,11 @@
               class="btn btn-success"
               *ngIf="!!(currentUser$ | async)"
               data-test="reject"
-              (click)="startAcceptance()"
+              (click)="startApproval()"
             >
-              {{ "Accept" | translate }}&hellip;
+              {{ "Approve" | translate }}&hellip;
             </button>
-          </ng-template>
+          </ng-container>
         </div>
       </div>
 
@@ -85,7 +85,7 @@
               <span class="col">{{ "Edit proposal by" | translate }}</span>
               <span class="col-2 d-none d-lg-inline">{{ "Changes" | translate }}</span>
               <span class="col-3">{{ "Status" | translate }}</span>
-              <span class="col-3 d-none d-lg-inline">{{ "Time" | translate  }}</span>
+              <span class="col-3 d-none d-lg-inline">{{ "Time" | translate }}</span>
             </div>
           </div>
 

@@ -1,0 +1,40 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-title">{{ "Approve" | translate }}</h4>
+  <button (click)="modal.dismiss()" aria-describedby="modal-title" class="close" type="button">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body">
+  <ng-container *ngIf="similarItems$ | async as similarItems">
+    <div class="alert alert-warning" *ngIf="similarItems.length > 0">
+      <h5>
+        <fa-icon icon="exclamation-triangle"></fa-icon> {{ "Warning!" | translate }}
+      </h5>
+      <astrobin-similar-items-suggestion
+        [items]="similarItems"
+        [preamble]="similarItemsPreamble"
+      ></astrobin-similar-items-suggestion>
+    </div>
+  </ng-container>
+
+  <form [formGroup]="form">
+    <formly-form [fields]="fields" [form]="form" [model]="model"></formly-form>
+  </form>
+</div>
+
+<div class="modal-footer">
+  <button (click)="modal.dismiss()" class="btn btn-outline-secondary" type="button">
+    {{ "Cancel" | translate }}
+  </button>
+
+  <button
+    (click)="approve()"
+    class="btn btn-danger"
+    type="button"
+    [disabled]="!form.valid"
+    [class.loading]="loadingService.isLoading()"
+  >
+    {{ "Approve" | translate }}
+  </button>
+</div>

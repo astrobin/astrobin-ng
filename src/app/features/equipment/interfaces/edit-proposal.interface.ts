@@ -3,7 +3,7 @@ import { UserInterface } from "@shared/interfaces/user.interface";
 import { Observable } from "rxjs";
 
 export enum EditProposalReviewStatus {
-  ACCEPTED = "ACCEPTED",
+  APPROVED = "APPROVED",
   REJECTED = "REJECTED",
   SUPERSEDED = "SUPERSEDED"
 }
