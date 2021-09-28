@@ -1,10 +1,11 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, Input, OnChanges } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { UsernameService } from "@shared/components/misc/username/username.service";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { Observable } from "rxjs";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
+import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 
 @Component({
   selector: "astrobin-username",
@@ -12,7 +13,7 @@ import { State } from "@app/store/state";
   styleUrls: ["./username.component.scss"],
   providers: [UsernameService]
 })
-export class UsernameComponent extends BaseComponentDirective implements OnInit {
+export class UsernameComponent extends BaseComponentDirective implements OnChanges {
   @Input()
   user: UserInterface;
 
@@ -24,11 +25,15 @@ export class UsernameComponent extends BaseComponentDirective implements OnInit 
 
   username$: Observable<string>;
 
-  constructor(public readonly store$: Store<State>, public readonly usernameService: UsernameService) {
+  constructor(
+    public readonly store$: Store<State>,
+    public readonly usernameService: UsernameService,
+    public readonly classicRoutesService: ClassicRoutesService
+  ) {
     super(store$);
   }
 
-  ngOnInit() {
+  ngOnChanges() {
     this.username$ = this.usernameService.getDisplayName$(this.user);
   }
 }
