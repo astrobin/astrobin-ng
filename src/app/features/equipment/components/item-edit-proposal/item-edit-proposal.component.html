@@ -1,5 +1,5 @@
 <ng-container *ngIf="item; else loading">
-  <div class="edit-proposal row" [class.opened]="opened" (click)="opened = !opened" [attr.data-id]="item.id">
+  <div class="edit-proposal row" [class.opened]="opened" (click)="opened = !opened" [attr.data-id]="editProposal.id">
     <span class="col user">
       <astrobin-username [user]="editProposalBy$ | async" linkTarget="_blank"></astrobin-username>
     </span>
