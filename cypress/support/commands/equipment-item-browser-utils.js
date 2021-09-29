@@ -92,7 +92,7 @@ Cypress.Commands.add("setupEquipmentDefaultRoutes", () => {
     results: []
   }).as("findCameras");
 
-  cy.route("GET", "**/api/v2/equipment/camera/", {
+  cy.route("GET", "**/api/v2/equipment/camera/?page=*", {
     count: 1,
     next: null,
     previous: null,
@@ -110,14 +110,14 @@ Cypress.Commands.add("setupEquipmentDefaultRoutes", () => {
     results: []
   }).as("findCamerasByName");
 
-  cy.route("GET", "**/api/v2/equipment/camera/?pending_review=true", {
+  cy.route("GET", "**/api/v2/equipment/camera/?pending_review=true&page=*", {
     count: 0,
     next: null,
     previous: null,
     results: []
   }).as("findCamerasPendingReview");
 
-  cy.route("GET", "**/api/v2/equipment/camera/?pending_edit=true", {
+  cy.route("GET", "**/api/v2/equipment/camera/?pending_edit=true?page=*", {
     count: 0,
     next: null,
     previous: null,

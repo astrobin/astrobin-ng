@@ -24,7 +24,7 @@ import { MigrationNavComponent } from "@features/equipment/components/migration/
 import { MigrationCommandmentsComponent } from "./components/migration/migration-commandments/migration-commandments.component";
 import { MigrationTestWarningComponent } from "./components/migration/migration-test-warning/migration-test-warning.component";
 import { ItemBrowserComponent } from "./components/item-browser/item-browser.component";
-import { ExplorerComponent } from "./pages/explorer/explorer.component";
+import { ExplorerPageComponent } from "./pages/explorer/explorer-page.component";
 import { OthersInBrandComponent } from "./components/others-in-brand/others-in-brand.component";
 import { ItemEditProposalComponent } from "./components/item-edit-proposal/item-edit-proposal.component";
 import { ExplorerBaseComponent } from "@features/equipment/pages/explorer-base/explorer-base.component";
@@ -35,6 +35,7 @@ import { ApproveItemModalComponent } from "@features/equipment/components/approv
 import { RejectEditProposalModalComponent } from "@features/equipment/components/reject-edit-proposal-modal/reject-edit-proposal-modal.component";
 import { ApproveEditProposalModalComponent } from "@features/equipment/components/approve-edit-proposal-modal/approve-edit-proposal-modal.component";
 import { AZExplorerComponent } from "@features/equipment/pages/a-z-edit-explorer/a-z-explorer.component";
+import { ExplorerComponent } from "@features/equipment/components/explorer/explorer.component";
 
 @NgModule({
   declarations: [
@@ -59,6 +60,7 @@ import { AZExplorerComponent } from "@features/equipment/pages/a-z-edit-explorer
     OthersInBrandComponent,
     ItemEditProposalComponent,
     ExplorerBaseComponent,
+    ExplorerPageComponent,
     ExplorerComponent,
     AZExplorerComponent,
     PendingReviewExplorerComponent,

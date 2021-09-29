@@ -6,7 +6,7 @@ import { MigrationReviewComponent } from "@features/equipment/pages/migration/mi
 import { MigrationReviewItemComponent } from "@features/equipment/pages/migration/migration-review-item/migration-review-item.component";
 import { MigrationReviewItemGuardService } from "@features/equipment/services/migration-review-item-guard.service";
 import { MigrationExplorerComponent } from "@features/equipment/pages/migration/migration-explorer/migration-explorer.component";
-import { ExplorerComponent } from "@features/equipment/pages/explorer/explorer.component";
+import { ExplorerPageComponent } from "@features/equipment/pages/explorer/explorer-page.component";
 import { PendingEditExplorerComponent } from "@features/equipment/pages/pending-edit-explorer/pending-edit-explorer.component";
 import { PendingReviewExplorerComponent } from "@features/equipment/pages/pending-review-explorer/pending-review-explorer.component";
 import { AZExplorerComponent } from "@features/equipment/pages/a-z-edit-explorer/a-z-explorer.component";
@@ -36,9 +36,30 @@ export const routes: Routes = [
   },
   {
     path: "migration-explorer",
-    component: MigrationExplorerComponent,
     canActivate: [AuthGuardService, GroupGuardService],
-    data: { group: "equipment_moderators" }
+    data: { group: "equipment_moderators" },
+    children: [
+      {
+        path: "",
+        pathMatch: "full",
+        redirectTo: "camera"
+      },
+      {
+        path: ":itemType/:itemId/:itemSlug",
+        pathMatch: "full",
+        component: MigrationExplorerComponent
+      },
+      {
+        path: ":itemType/:itemId",
+        pathMatch: "full",
+        component: MigrationExplorerComponent
+      },
+      {
+        path: ":itemType",
+        pathMatch: "full",
+        component: MigrationExplorerComponent
+      }
+    ]
   },
   {
     path: "explorer",
@@ -51,17 +72,17 @@ export const routes: Routes = [
       {
         path: ":itemType/:itemId/:itemSlug",
         pathMatch: "full",
-        component: ExplorerComponent
+        component: ExplorerPageComponent
       },
       {
         path: ":itemType/:itemId",
         pathMatch: "full",
-        component: ExplorerComponent
+        component: ExplorerPageComponent
       },
       {
         path: ":itemType",
         pathMatch: "full",
-        component: ExplorerComponent
+        component: ExplorerPageComponent
       }
     ]
   },

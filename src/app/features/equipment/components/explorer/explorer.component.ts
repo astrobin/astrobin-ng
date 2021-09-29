@@ -1,8 +1,7 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
+import { Component, Input, OnInit, ViewChild } from "@angular/core";
 import { Action, Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
-import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { TitleService } from "@shared/services/title/title.service";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import {
@@ -40,22 +39,29 @@ import {
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { Location } from "@angular/common";
-import { ExplorerBaseComponent } from "@features/equipment/pages/explorer-base/explorer-base.component";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { RejectMigrationModalComponent } from "@features/equipment/components/migration/reject-migration-modal/reject-migration-modal.component";
 import { RejectItemModalComponent } from "@features/equipment/components/reject-item-modal/reject-item-modal.component";
 import { ApproveItemModalComponent } from "@features/equipment/components/approve-item-modal/approve-item-modal.component";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
 
 @Component({
   selector: "astrobin-equipment-explorer",
   templateUrl: "./explorer.component.html",
   styleUrls: ["./explorer.component.scss"]
 })
-export class ExplorerComponent extends ExplorerBaseComponent implements OnInit {
+export class ExplorerComponent extends BaseComponentDirective implements OnInit {
   EquipmentItemType = EquipmentItemType;
   EquipmentItemEditorMode = EquipmentItemEditorMode;
 
-  title = this.translateService.instant("Equipment explorer");
+  @Input()
+  activeType: EquipmentItemType;
+
+  @Input()
+  activeId: EquipmentItemBaseInterface["id"];
+
+  @Input()
+  routingBasePath = "/equipment/explorer";
 
   selectedItem: EquipmentItemBaseInterface | null = null;
 
@@ -67,7 +73,6 @@ export class ExplorerComponent extends ExplorerBaseComponent implements OnInit {
 
   @ViewChild("itemBrowser")
   private _itemBrowser: ItemBrowserComponent;
-  private _activeId: EquipmentItemBaseInterface["id"];
 
   constructor(
     public readonly store$: Store<State>,
@@ -84,47 +89,29 @@ export class ExplorerComponent extends ExplorerBaseComponent implements OnInit {
     public readonly location: Location,
     public readonly modalService: NgbModal
   ) {
-    super(store$, actions$, activatedRoute, router);
+    super(store$);
   }
 
-  ngOnInit(): void {
-    super.ngOnInit();
+  ngOnInit() {
+    this._initActiveId();
+    this._initActions();
+  }
 
-    this.titleService.setTitle(this.title);
-
-    this.store$.dispatch(
-      new SetBreadcrumb({
-        breadcrumb: [
-          {
-            label: this.translateService.instant("Equipment")
-          },
-          {
-            label: this.translateService.instant("Explorer")
-          }
-        ]
-      })
-    );
-
-    this._activeId = parseInt(this.activatedRoute.snapshot.paramMap.get("itemId"), 10);
-
-    if (this._activeId) {
-      this.store$.dispatch(new LoadEquipmentItem({ id: this._activeId, type: this._activeType }));
+  _initActiveId() {
+    if (this.activeId) {
+      this.store$.dispatch(new LoadEquipmentItem({ id: this.activeId, type: this.activeType }));
 
       this.store$
-        .select(selectEquipmentItem, { id: this._activeId, type: this.activeType })
+        .select(selectEquipmentItem, { id: this.activeId, type: this.activeType })
         .pipe(
           filter(item => !!item),
           take(1)
         )
         .subscribe(item => this.setItem(item));
     }
+  }
 
-    this.router.events.pipe(takeUntil(this.destroyed$)).subscribe(event => {
-      if (event instanceof NavigationEnd) {
-        this.activeType = this.activatedRoute.snapshot.paramMap.get("itemType");
-      }
-    });
-
+  _initActions() {
     this.actions$
       .pipe(
         ofType(EquipmentActionTypes.APPROVE_EQUIPMENT_ITEM_EDIT_PROPOSAL_SUCCESS),
@@ -214,10 +201,10 @@ export class ExplorerComponent extends ExplorerBaseComponent implements OnInit {
         .subscribe(brand => {
           const slug = UtilsService.slugify(`${brand.name} ${item.name}`);
           this.setItem(item);
-          this.location.replaceState(`/equipment/explorer/${this._activeType.toLowerCase()}/${item.id}/${slug}`);
+          this.location.replaceState(`${this.routingBasePath}/${this.activeType.toLowerCase()}/${item.id}/${slug}`);
         });
     } else {
-      this.location.replaceState(`/equipment/explorer/${this._activeType.toLowerCase()}`);
+      this.location.replaceState(`${this.routingBasePath}/${this.activeType.toLowerCase()}`);
     }
   }
 
@@ -260,13 +247,13 @@ export class ExplorerComponent extends ExplorerBaseComponent implements OnInit {
           )
         )
         .subscribe((createdEditProposal: EditProposalInterface<EquipmentItemBaseInterface>) => {
-          this.editProposalCreated(createdEditProposal);
+          this.editProposalCreated();
           this.loadingService.setLoading(false);
         });
     }
   }
 
-  editProposalCreated(editProposal: EditProposalInterface<EquipmentItemBaseInterface>) {
+  editProposalCreated() {
     this.popNotificationsService.success(
       this.translateService.instant(
         "Thanks! Your edit proposal has been submitted and well be reviewed as soon as possible."

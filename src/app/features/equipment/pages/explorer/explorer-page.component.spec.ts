@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { ExplorerComponent } from "./explorer.component";
+import { ExplorerPageComponent } from "./explorer-page.component";
 import { MockBuilder } from "ng-mocks";
 import { provideMockStore } from "@ngrx/store/testing";
 import { initialState } from "@app/store/state";
@@ -12,11 +12,11 @@ import { ItemBrowserComponent } from "@features/equipment/components/item-browse
 import { provideMockActions } from "@ngrx/effects/testing";
 
 describe("ExplorerComponent", () => {
-  let component: ExplorerComponent;
-  let fixture: ComponentFixture<ExplorerComponent>;
+  let component: ExplorerPageComponent;
+  let fixture: ComponentFixture<ExplorerPageComponent>;
 
   beforeEach(async () => {
-    await MockBuilder(ExplorerComponent, AppModule)
+    await MockBuilder(ExplorerPageComponent, AppModule)
       .mock(ItemTypeNavComponent)
       .mock(ItemBrowserComponent)
       .provide([
@@ -40,18 +40,8 @@ describe("ExplorerComponent", () => {
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ExplorerComponent);
+    fixture = TestBed.createComponent(ExplorerPageComponent);
     component = fixture.componentInstance;
-
-    jest.spyOn(component.equipmentApiService, "getAllEquipmentItems").mockReturnValue(
-      of({
-        count: 0,
-        next: null,
-        prev: null,
-        results: []
-      })
-    );
-
     fixture.detectChanges();
   });
 

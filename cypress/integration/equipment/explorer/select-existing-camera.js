@@ -19,7 +19,7 @@ context("Equipment", () => {
           results: [testCamera]
         }).as("findCameras");
 
-        cy.route("GET", "**/api/v2/equipment/camera/", {
+        cy.route("GET", "**/api/v2/equipment/camera/?page=*", {
           count: 1,
           next: null,
           previous: null,

@@ -24,6 +24,11 @@
       "id": 3,
       "name": "image_moderators",
       "permissions": []
+    },
+    {
+      "id": 4,
+      "name": "equipment_moderators",
+      "permissions": []
     }
   ],
   "user_permissions": [
