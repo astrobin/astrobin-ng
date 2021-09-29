@@ -7,7 +7,7 @@
 </form>
 
 <ng-template #equipmentItemOptionTemplate let-object="item">
-  <astrobin-equipment-item-summary [item]="object.item"></astrobin-equipment-item-summary>
+  <astrobin-equipment-item-summary [item]="object.item" [showSubItem]="false"></astrobin-equipment-item-summary>
 </ng-template>
 
 <ng-container *ngIf="creationMode">

@@ -23,13 +23,19 @@
       }
     }
   }
+}
 
-  .sensor {
-    margin-left: 4rem;
+.sub-item {
+  padding: 1rem;
+  margin-top: 1rem;
+  border-top: 1px dashed var(--lightGrey);
 
-    h5 {
-      font-size: 1.25rem;
-      color: var(--lighterGrey);
-    }
+  h5 {
+    font-size: 1.1rem;
+    color: var(--lighterGrey);
+  }
+
+  .image {
+    width: 80%;
   }
 }

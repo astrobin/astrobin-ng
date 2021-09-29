@@ -6,7 +6,9 @@
 
     <div class="col">
       <div class="label">
-        <h5><strong>{{ brand.name }}</strong> {{ item.name }}</h5>
+        <h5>
+          <strong>{{ brand.name }}</strong> {{ item.name }}
+        </h5>
       </div>
 
       <div class="properties" *ngIf="properties$ | async as properties">
@@ -24,6 +26,17 @@
             </ng-template>
           </span>
         </ng-container>
+      </div>
+
+      <div *ngIf="showSubItem && !!subItem" class="sub-item">
+        <astrobin-equipment-item-summary
+          [item]="subItem"
+          [showSubItem]="showSubItem"
+          [showClass]="showClass"
+          [showLargeImage]="showLargeImage"
+          [showImage]="showImage"
+          [showEmptyProperties]="showEmptyProperties"
+        ></astrobin-equipment-item-summary>
       </div>
     </div>
   </div>
