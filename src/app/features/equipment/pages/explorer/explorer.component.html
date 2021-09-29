@@ -47,33 +47,22 @@
             {{ "Close" | translate }}
           </button>
 
-          <button
-            class="btn btn-secondary"
-            *ngIf="!!(currentUser$ | async)"
-            data-test="propose-edit"
-            (click)="startEditMode()"
-          >
-            {{ "Propose edit" | translate }}&hellip;
-          </button>
+          <ng-container *ngIf="currentUser$ | async as currentUser">
+            <ng-container *ngIf="!!currentUser">
+              <button class="btn btn-secondary" data-test="propose-edit" (click)="startEditMode()">
+                {{ "Propose edit" | translate }}&hellip;
+              </button>
 
-          <ng-container *ngIf="selectedItem.reviewerDecision === null">
-            <button
-              class="btn btn-danger"
-              *ngIf="!!(currentUser$ | async)"
-              data-test="reject"
-              (click)="startRejection()"
-            >
-              {{ "Reject" | translate }}&hellip;
-            </button>
+              <ng-container *ngIf="selectedItem.reviewerDecision === null && selectedItem.createdBy !== currentUser.id">
+                <button class="btn btn-danger" data-test="reject" (click)="startRejection()">
+                  {{ "Reject" | translate }}&hellip;
+                </button>
 
-            <button
-              class="btn btn-success"
-              *ngIf="!!(currentUser$ | async)"
-              data-test="reject"
-              (click)="startApproval()"
-            >
-              {{ "Approve" | translate }}&hellip;
-            </button>
+                <button class="btn btn-success" data-test="reject" (click)="startApproval()">
+                  {{ "Approve" | translate }}&hellip;
+                </button>
+              </ng-container>
+            </ng-container>
           </ng-container>
         </div>
       </div>

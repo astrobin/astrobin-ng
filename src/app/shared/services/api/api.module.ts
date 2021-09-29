@@ -3,6 +3,10 @@ import { NgModule } from "@angular/core";
 import { AuthInterceptor } from "../auth.interceptor";
 import { AuthClassicApiService } from "./classic/auth/auth-classic-api.service";
 import { CommonApiService } from "./classic/common/common-api.service";
+import { ServerErrorsInterceptor } from "@shared/services/server-errors.interceptor";
+import { TranslateService } from "@ngx-translate/core";
+import { PopNotificationsService } from "@shared/services/pop-notifications.service";
+import { LoadingService } from "@shared/services/loading.service";
 
 @NgModule({
   imports: [HttpClientModule],
@@ -10,6 +14,12 @@ import { CommonApiService } from "./classic/common/common-api.service";
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
+      multi: true
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: ServerErrorsInterceptor,
+      deps: [TranslateService, PopNotificationsService, LoadingService],
       multi: true
     },
     AuthClassicApiService,

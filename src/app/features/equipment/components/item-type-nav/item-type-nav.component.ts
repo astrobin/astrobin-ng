@@ -118,6 +118,11 @@ export class ItemTypeNavComponent extends BaseComponentDirective implements OnIn
     super(store$);
 
     for (const type of this.types) {
+      // TODO: remove when all other types have API.
+      if (type.value !== EquipmentItemType.CAMERA) {
+        continue;
+      }
+
       type.count = this.equipmentApiService.getAllEquipmentItems(type.value).pipe(
         takeUntil(this.destroyed$),
         catchError(() => of({ count: 0 })),
