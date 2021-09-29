@@ -51,10 +51,18 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     return this.http.get<EquipmentItemBaseInterface>(`${this.configUrl}/${type.toLowerCase()}/${id}/`);
   }
 
-  getAllEquipmentItems(type: EquipmentItemType): Observable<PaginatedApiResultInterface<EquipmentItemBaseInterface>> {
-    return this.http.get<PaginatedApiResultInterface<EquipmentItemBaseInterface>>(
-      `${this.configUrl}/${type.toLowerCase()}/`
-    );
+  getAllEquipmentItems(
+    type: EquipmentItemType,
+    page = 1,
+    sort?: string
+  ): Observable<PaginatedApiResultInterface<EquipmentItemBaseInterface>> {
+    let url = `${this.configUrl}/${type.toLowerCase()}/?page=${page}`;
+
+    if (!!sort) {
+      url += `&sort=${sort}`;
+    }
+
+    return this.http.get<PaginatedApiResultInterface<EquipmentItemBaseInterface>>(url);
   }
 
   getAllEquipmentItemsPendingReview(

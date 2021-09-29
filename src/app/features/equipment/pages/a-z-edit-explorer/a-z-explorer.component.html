@@ -8,21 +8,13 @@
 
     <div class="col">
       <ng-container *ngIf="items$ | async as items; else loading">
-        <ng-container *ngFor="let item of items.results">
-          <div class="card">
-            <div class="card-body">
-              <astrobin-equipment-item-summary [item]="item" [showClass]="false"></astrobin-equipment-item-summary>
-            </div>
-            <div class="card-footer">
-              <button
-                class="btn btn-sm-block btn-primary"
-                (click)="viewItem(item)"
-              >
-                {{ "View" | translate }}
-              </button>
-            </div>
-          </div>
-        </ng-container>
+        <ul class="items">
+          <li *ngFor="let item of items.results">
+            <button class="btn btn-link" (click)="viewItem(item)">
+              {{ getItemName$(item) | async }}
+            </button>
+          </li>
+        </ul>
 
         <astrobin-nothing-here *ngIf="items.count === 0"></astrobin-nothing-here>
 
@@ -36,4 +28,3 @@
 <ng-template #loading>
   <astrobin-loading-indicator></astrobin-loading-indicator>
 </ng-template>
-

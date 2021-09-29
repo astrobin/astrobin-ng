@@ -30,11 +30,11 @@ import { ItemEditProposalComponent } from "./components/item-edit-proposal/item-
 import { ExplorerBaseComponent } from "@features/equipment/pages/explorer-base/explorer-base.component";
 import { PendingEditExplorerComponent } from "@features/equipment/pages/pending-edit-explorer/pending-edit-explorer.component";
 import { PendingReviewExplorerComponent } from "@features/equipment/pages/pending-review-explorer/pending-review-explorer.component";
-import { PendingExplorerBaseComponent } from "@features/equipment/pages/explorer-base/pending-explorer-base.component";
 import { RejectItemModalComponent } from "./components/reject-item-modal/reject-item-modal.component";
 import { ApproveItemModalComponent } from "@features/equipment/components/approve-item-modal/approve-item-modal.component";
 import { RejectEditProposalModalComponent } from "@features/equipment/components/reject-edit-proposal-modal/reject-edit-proposal-modal.component";
 import { ApproveEditProposalModalComponent } from "@features/equipment/components/approve-edit-proposal-modal/approve-edit-proposal-modal.component";
+import { AZExplorerComponent } from "@features/equipment/pages/a-z-edit-explorer/a-z-explorer.component";
 
 @NgModule({
   declarations: [
@@ -60,6 +60,7 @@ import { ApproveEditProposalModalComponent } from "@features/equipment/component
     ItemEditProposalComponent,
     ExplorerBaseComponent,
     ExplorerComponent,
+    AZExplorerComponent,
     PendingReviewExplorerComponent,
     PendingEditExplorerComponent,
     ApproveItemModalComponent,

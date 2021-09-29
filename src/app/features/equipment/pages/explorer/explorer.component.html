@@ -21,13 +21,9 @@
 
         <div class="card-body">
           <div *ngIf="selectedItem.reviewerDecision === null" class="alert alert-warning">
-            <h5><fa-icon icon="exclamation-triangle"></fa-icon> {{ "Warning!" | translate }}</h5>
-
-            <p>
               {{
                 "This item has not been approved yet, so it's not available to be associated with images." | translate
               }}
-            </p>
           </div>
 
           <astrobin-equipment-item-summary

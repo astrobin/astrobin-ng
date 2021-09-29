@@ -9,6 +9,7 @@ import { MigrationExplorerComponent } from "@features/equipment/pages/migration/
 import { ExplorerComponent } from "@features/equipment/pages/explorer/explorer.component";
 import { PendingEditExplorerComponent } from "@features/equipment/pages/pending-edit-explorer/pending-edit-explorer.component";
 import { PendingReviewExplorerComponent } from "@features/equipment/pages/pending-review-explorer/pending-review-explorer.component";
+import { AZExplorerComponent } from "@features/equipment/pages/a-z-edit-explorer/a-z-explorer.component";
 
 export const routes: Routes = [
   {
@@ -63,6 +64,10 @@ export const routes: Routes = [
         component: ExplorerComponent
       }
     ]
+  },
+  {
+    path: "a-z-explorer/:itemType",
+    component: AZExplorerComponent
   },
   {
     path: "pending-review-explorer/:itemType",

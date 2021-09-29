@@ -182,7 +182,9 @@ export class ItemTypeNavComponent extends BaseComponentDirective implements OnIn
   }
 
   _setActiveSubNav(url: string) {
-    if (url.indexOf("pending-review-explorer") > -1) {
+    if (url.indexOf("a-z-explorer") > -1) {
+      this.activeSubNav = "a-z-explorer";
+    } else if (url.indexOf("pending-review-explorer") > -1) {
       this.activeSubNav = "pending-review-explorer";
     } else if (url.indexOf("pending-edit-explorer") > -1) {
       this.activeSubNav = "pending-edit-explorer";

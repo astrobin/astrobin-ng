@@ -1,3 +1,13 @@
+.card {
+  .card-body > .alert {
+    margin: -1.25rem;
+    margin-bottom: 1rem;
+    border-radius: 0;
+    padding: .25rem 1rem;
+    font-size: .9rem;
+  }
+}
+
 .loading-edit-proposals {
   font-style: italic;
   font-size: .9rem;
