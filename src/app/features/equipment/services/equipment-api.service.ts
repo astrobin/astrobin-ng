@@ -58,18 +58,20 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
   }
 
   getAllEquipmentItemsPendingReview(
-    type: EquipmentItemType
+    type: EquipmentItemType,
+    page = 1
   ): Observable<PaginatedApiResultInterface<EquipmentItemBaseInterface>> {
     return this.http.get<PaginatedApiResultInterface<EquipmentItemBaseInterface>>(
-      `${this.configUrl}/${type.toLowerCase()}/?pending_review=true`
+      `${this.configUrl}/${type.toLowerCase()}/?pending_review=true&page=${page}`
     );
   }
 
   getAllEquipmentItemsPendingEdit(
-    type: EquipmentItemType
+    type: EquipmentItemType,
+    page = 1
   ): Observable<PaginatedApiResultInterface<EquipmentItemBaseInterface>> {
     return this.http.get<PaginatedApiResultInterface<EquipmentItemBaseInterface>>(
-      `${this.configUrl}/${type.toLowerCase()}/?pending_edit=true`
+      `${this.configUrl}/${type.toLowerCase()}/?pending_edit=true&page=${page}`
     );
   }
 

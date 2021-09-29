@@ -1,12 +1,8 @@
-import { Component, OnInit } from "@angular/core";
-import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { Component } from "@angular/core";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { Actions } from "@ngrx/effects";
-import {
-  EquipmentItemBaseInterface,
-  EquipmentItemType
-} from "@features/equipment/interfaces/equipment-item-base.interface";
+import { EquipmentItemBaseInterface } from "@features/equipment/interfaces/equipment-item-base.interface";
 import { ActivatedRoute, Router } from "@angular/router";
 import { selectBrand } from "@features/equipment/store/equipment.selectors";
 import { take } from "rxjs/operators";
@@ -19,10 +15,10 @@ import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/pag
   selector: "astrobin-equipment-pending-explorer-base",
   templateUrl: "./pending-explorer-base.component.html"
 })
-export class PendingExplorerBaseComponent extends ExplorerBaseComponent {
+export abstract class PendingExplorerBaseComponent extends ExplorerBaseComponent {
   items$: Observable<PaginatedApiResultInterface<EquipmentItemBaseInterface>>;
 
-  constructor(
+  protected constructor(
     public readonly store$: Store<State>,
     public readonly actions$: Actions,
     public readonly activatedRoute: ActivatedRoute,
@@ -45,4 +41,6 @@ export class PendingExplorerBaseComponent extends ExplorerBaseComponent {
         ]);
       });
   }
+
+  abstract pageChange(page: number);
 }

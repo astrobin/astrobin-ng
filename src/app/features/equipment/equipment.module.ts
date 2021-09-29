@@ -60,7 +60,6 @@ import { ApproveEditProposalModalComponent } from "@features/equipment/component
     ItemEditProposalComponent,
     ExplorerBaseComponent,
     ExplorerComponent,
-    PendingExplorerBaseComponent,
     PendingReviewExplorerComponent,
     PendingEditExplorerComponent,
     ApproveItemModalComponent,

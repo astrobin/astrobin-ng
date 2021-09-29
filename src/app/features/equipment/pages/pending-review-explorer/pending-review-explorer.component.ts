@@ -10,7 +10,7 @@ import { Observable } from "rxjs";
 import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
 import { EquipmentItemBaseInterface } from "@features/equipment/interfaces/equipment-item-base.interface";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
-import { tap } from "rxjs/operators";
+import { take, tap } from "rxjs/operators";
 import { LoadBrand } from "@features/equipment/store/equipment.actions";
 import { BrandInterface } from "@features/equipment/interfaces/brand.interface";
 import { PendingExplorerBaseComponent } from "@features/equipment/pages/explorer-base/pending-explorer-base.component";
@@ -66,5 +66,10 @@ export class PendingReviewExplorerComponent extends PendingExplorerBaseComponent
         uniqueBrands.forEach(id => this.store$.dispatch(new LoadBrand({ id })));
       })
     );
+  }
+
+  pageChange(page: number): void {
+    this.page = page;
+    this.items$ = this.equipmentApiService.getAllEquipmentItemsPendingEdit(this._activeType, page);
   }
 }

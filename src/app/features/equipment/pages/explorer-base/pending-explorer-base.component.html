@@ -23,6 +23,11 @@
             </div>
           </div>
         </ng-container>
+
+        <astrobin-nothing-here *ngIf="items.count === 0"></astrobin-nothing-here>
+
+        <ngb-pagination (pageChange)="pageChange($event)" [(page)]="page" [collectionSize]="items.count">
+        </ngb-pagination>
       </ng-container>
     </div>
   </div>

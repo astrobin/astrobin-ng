@@ -17,6 +17,8 @@ import { UtilsService } from "@shared/services/utils/utils.service";
   template: ""
 })
 export class ExplorerBaseComponent extends BaseComponentDirective implements OnInit {
+  public page = 1;
+
   constructor(
     public readonly store$: Store<State>,
     public readonly actions$: Actions,

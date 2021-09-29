@@ -50,6 +50,7 @@ import { FormlyFieldCKEditorComponent } from "@shared/components/misc/formly-fie
 import { FileValueAccessorDirective } from "@shared/components/misc/formly-field-file/file-value-accessor.directive";
 import { FormlyFieldFileComponent } from "@shared/components/misc/formly-field-file/formly-field-file.component";
 import { UsernameService } from "@shared/components/misc/username/username.service";
+import { NothingHereComponent } from "@shared/components/misc/nothing-here/nothing-here.component";
 
 const modules = [
   CommonModule,
@@ -96,6 +97,7 @@ const components = [
   LoadingIndicatorComponent,
   LoginFormComponent,
   LoginModalComponent,
+  NothingHereComponent,
   ObjectsInFieldComponent,
   ReadOnlyModeComponent,
   RefreshButtonComponent,
