@@ -7,7 +7,7 @@
     <span class="col-3 status" [class]="editProposal.editProposalReviewStatus?.toLowerCase() || 'pending'">
       {{ reviewStatusText }}
     </span>
-    <span class="col-3 d-none d-lg-inline timeago">{{ editProposal.created | timeago: true }}</span>
+    <span class="col-3 d-none d-lg-inline timeago">{{ editProposal.created | localDate | timeago: true }}</span>
   </div>
 
   <div class="edit-proposal-details" *ngIf="opened">
