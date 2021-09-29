@@ -124,7 +124,7 @@ export class AuthEffects {
       map((action: LoadUser) => action.payload),
       mergeMap(payload =>
         this.store$.select(selectUser, payload.id).pipe(
-          mergeMap(userFromStore =>
+          switchMap(userFromStore =>
             userFromStore !== null
               ? of(userFromStore).pipe(map(() => new LoadUserSuccess({ user: userFromStore })))
               : this.commonApiService.getUser(payload.id).pipe(
@@ -145,7 +145,7 @@ export class AuthEffects {
       map((action: LoadUserProfile) => action.payload),
       mergeMap(payload =>
         this.store$.select(selectUserProfile, payload.id).pipe(
-          mergeMap(userProfileFromStore =>
+          switchMap(userProfileFromStore =>
             userProfileFromStore !== null
               ? of(userProfileFromStore).pipe(
                   map(() => new LoadUserProfileSuccess({ userProfile: userProfileFromStore }))

@@ -67,22 +67,31 @@
         </div>
       </div>
 
-      <ng-container *ngIf="selectedItem && (selectedItemEditProposals$ | async) as editProposals">
-        <div class="edit-proposals" *ngIf="editProposals.length > 0">
-          <div class="edit-proposals-header">
-            <div class="row">
-              <span class="col">{{ "Edit proposal by" | translate }}</span>
-              <span class="col-2 d-none d-lg-inline">{{ "Changes" | translate }}</span>
-              <span class="col-3">{{ "Status" | translate }}</span>
-              <span class="col-3 d-none d-lg-inline">{{ "Time" | translate }}</span>
+      <ng-container *ngIf="selectedItem">
+        <ng-container *ngIf="selectedItemEditProposals$ | async as editProposals; else loadingEditProposals">
+          <div class="edit-proposals" *ngIf="editProposals.length > 0">
+            <div class="edit-proposals-header">
+              <div class="row">
+                <span class="col">{{ "Edit proposal by" | translate }}</span>
+                <span class="col-2 d-none d-lg-inline">{{ "Changes" | translate }}</span>
+                <span class="col-3">{{ "Status" | translate }}</span>
+                <span class="col-3 d-none d-lg-inline">{{ "Time" | translate }}</span>
+              </div>
             </div>
-          </div>
 
-          <astrobin-item-edit-proposal
-            *ngFor="let editProposal of editProposals"
-            [editProposal]="editProposal"
-          ></astrobin-item-edit-proposal>
-        </div>
+            <astrobin-item-edit-proposal
+              *ngFor="let editProposal of editProposals"
+              [editProposal]="editProposal"
+            ></astrobin-item-edit-proposal>
+          </div>
+        </ng-container>
+
+        <ng-template #loadingEditProposals>
+          <div class="loading-edit-proposals">
+            {{  "Loading edit proposals" | translate }}
+            <astrobin-text-loading-indicator></astrobin-text-loading-indicator>
+          </div>
+        </ng-template>
       </ng-container>
 
       <ng-container *ngIf="editMode">

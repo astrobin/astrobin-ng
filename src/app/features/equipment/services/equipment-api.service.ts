@@ -168,6 +168,19 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     );
   }
 
+  approveEditProposal(
+    editProposal: EditProposalInterface<EquipmentItemBaseInterface>,
+    comment: string
+  ): Observable<EditProposalInterface<EquipmentItemBaseInterface>> {
+    const type = this.equipmentItemService.getType(editProposal);
+    const path = EquipmentItemType[type].toLowerCase();
+
+    return this.http.post<EditProposalInterface<EquipmentItemBaseInterface>>(
+      `${this.configUrl}/${path}-edit-proposal/${editProposal.id}/approve/`,
+      { comment }
+    );
+  }
+
   rejectEditProposal(
     editProposal: EditProposalInterface<EquipmentItemBaseInterface>,
     comment: string

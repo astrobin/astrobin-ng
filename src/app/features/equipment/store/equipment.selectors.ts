@@ -27,9 +27,14 @@ export function getEquipmentItemType(item: EquipmentItemBaseInterface): Equipmen
   // TODO: complete.
 }
 
-export function arrayUniqueEquipmentItems(array: EquipmentItemBaseInterface[]): EquipmentItemBaseInterface[] {
+export function arrayUniqueEquipmentItems(
+  array: (EquipmentItemBaseInterface | EditProposalInterface<EquipmentItemBaseInterface>)[]
+): (EquipmentItemBaseInterface | EditProposalInterface<EquipmentItemBaseInterface>)[] {
   // The array is reverser because this algorithm prefers to keep the object appearing later in the array.
-  const a: EquipmentItemBaseInterface[] = array.concat().reverse();
+  const a: (
+    | EquipmentItemBaseInterface
+    | EditProposalInterface<EquipmentItemBaseInterface>
+  )[] = array.concat().reverse();
 
   for (let i = 0; i < a.length; ++i) {
     for (let j = i + 1; j < a.length; ++j) {

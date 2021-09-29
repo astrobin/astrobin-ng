@@ -2,6 +2,8 @@ import { Injectable } from "@angular/core";
 import { Observable, of } from "rxjs";
 import {
   ApproveEquipmentItem,
+  ApproveEquipmentItemEditProposal,
+  ApproveEquipmentItemEditProposalSuccess,
   ApproveEquipmentItemSuccess,
   CreateBrand,
   CreateBrandSuccess,
@@ -40,7 +42,7 @@ import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { All } from "@app/store/actions/app.actions";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
-import { filter, map, mergeMap } from "rxjs/operators";
+import { filter, map, mergeMap, switchMap } from "rxjs/operators";
 import { selectBrand, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import { SensorInterface } from "@features/equipment/interfaces/sensor.interface";
 import { BrandInterface } from "@features/equipment/interfaces/brand.interface";
@@ -62,7 +64,7 @@ function getFromStoreOrApiByIdAndType<T>(
   const fromApi: Observable<T> = apiCall.apply(apiContext, [id, type]);
   return store$
     .select(selector, { id, type })
-    .pipe(mergeMap(fromStore => (fromStore !== null ? of(fromStore) : fromApi)));
+    .pipe(switchMap(fromStore => (fromStore !== null ? of(fromStore) : fromApi)));
 }
 
 @Injectable()
@@ -195,6 +197,23 @@ export class EquipmentEffects {
         this.equipmentApiService
           .getEditProposals(payload.item)
           .pipe(map(editProposals => new FindEquipmentItemEditProposalsSuccess({ editProposals })))
+      )
+    )
+  );
+
+  ApproveEquipmentItemEditProposal: Observable<ApproveEquipmentItemEditProposalSuccess> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(EquipmentActionTypes.APPROVE_EQUIPMENT_ITEM_EDIT_PROPOSAL),
+      map((action: ApproveEquipmentItemEditProposal) => action.payload),
+      mergeMap(payload =>
+        this.equipmentApiService
+          .approveEditProposal(payload.editProposal, payload.comment)
+          .pipe(
+            map(
+              approvedEditProposal =>
+                new ApproveEquipmentItemEditProposalSuccess({ editProposal: approvedEditProposal })
+            )
+          )
       )
     )
   );

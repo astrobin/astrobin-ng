@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { distinctUntilChanged, mergeMap } from "rxjs/operators";
+import { distinctUntilChanged, mergeMap, switchMap } from "rxjs/operators";
 import { TranslateService } from "@ngx-translate/core";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
@@ -253,7 +253,7 @@ export class UtilsService {
     apiContext: any
   ): Observable<T> {
     const fromApi: Observable<T> = apiCall.apply(apiContext, [id]);
-    return store$.select(selector, id).pipe(mergeMap(fromStore => (fromStore !== null ? of(fromStore) : fromApi)));
+    return store$.select(selector, id).pipe(switchMap(fromStore => (fromStore !== null ? of(fromStore) : fromApi)));
   }
 }
 

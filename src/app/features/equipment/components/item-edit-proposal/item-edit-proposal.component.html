@@ -13,60 +13,60 @@
   <div class="edit-proposal-details" *ngIf="opened">
     <ng-container *ngIf="hasChanges; else noChanges">
       <span>{{ "The following changes are proposed:" | translate }}</span>
+    </ng-container>
 
-      <ul class="changes">
-        <li *ngFor="let change of changes" class="change">
-          <span class="property-name">{{ change.propertyName }}:</span>
+    <ul class="changes">
+      <li *ngFor="let change of changes" class="change">
+        <span class="property-name">{{ change.propertyName }}:</span>
 
-          <span class="before" [innerHTML]="change.before || 'n/a' | translate"></span>&nbsp;&xrarr;
+        <span class="before" [innerHTML]="change.before || 'n/a' | translate"></span>&nbsp;&xrarr;
 
-          <span class="after" [innerHTML]="change.after || 'n/a' | translate"></span>
+        <span class="after" [innerHTML]="change.after || 'n/a' | translate"></span>
 
-          <div *ngIf="change.propertyName === 'name'" class="alert alert-warning">
-            <span [innerHTML]="equipmentItemService.nameChangeWarningMessage()"></span>
-          </div>
-        </li>
+        <div *ngIf="change.propertyName === 'name'" class="alert alert-warning">
+          <span [innerHTML]="equipmentItemService.nameChangeWarningMessage()"></span>
+        </div>
+      </li>
 
-        <li *ngIf="editProposal.editProposalComment" class="change">
-          <span class="property-name">{{ "Proposer's comment" | translate }}:</span>
-          <span class="after">{{ editProposal.editProposalComment }}</span>
-        </li>
+      <li *ngIf="editProposal.editProposalComment" class="change">
+        <span class="property-name">{{ "Proposer's comment" | translate }}:</span>
+        <span class="after">{{ editProposal.editProposalComment }}</span>
+      </li>
 
-        <li *ngIf="editProposal.editProposalReviewComment" class="change">
-          <span class="property-name">{{ "Reviewer's comment" | translate }}:</span>
-          <span class="after">{{ editProposal.editProposalReviewComment }}</span>
-        </li>
-      </ul>
+      <li *ngIf="editProposal.editProposalReviewComment" class="change">
+        <span class="property-name">{{ "Reviewer's comment" | translate }}:</span>
+        <span class="after">{{ editProposal.editProposalReviewComment }}</span>
+      </li>
+    </ul>
 
-      <ng-container *ngIf="showButtons$ | async as showButtons">
-        <ng-container *ngIf="buttonsStatus$ | async as buttonsStatus">
-          <div class="form-actions" *ngIf="showButtons">
-            <button
-              class="btn btn-danger"
-              [disabled]="buttonsStatus.disabled"
-              [class.loading]="loadingService.isLoading()"
-              (click)="rejectEdit()"
-            >
-              {{ "Reject edit" | translate }}&hellip;
-            </button>
-            <button
-              class="btn btn-success"
-              [disabled]="buttonsStatus.disabled"
-              [class.loading]="loadingService.isLoading()"
-              (click)="approveEdit()"
-            >
-              {{ "Approve edit" | translate }}&hellip;
-            </button>
-          </div>
-
-          <div
-            class="alert alert-mini alert-info"
-            *ngIf="showButtons && buttonsStatus.disabled && buttonsStatus.reason"
+    <ng-container *ngIf="showButtons$ | async as showButtons">
+      <ng-container *ngIf="buttonsStatus$ | async as buttonsStatus">
+        <div class="form-actions" *ngIf="showButtons">
+          <button
+            class="btn btn-danger"
+            [disabled]="buttonsStatus.disabled"
+            [class.loading]="loadingService.isLoading()"
+            (click)="rejectEdit()"
           >
-            <fa-icon icon="info-circle"></fa-icon>
-            <span [innerHTML]="buttonsStatus.reason"></span>
-          </div>
-        </ng-container>
+            {{ "Reject edit" | translate }}&hellip;
+          </button>
+          <button
+            class="btn btn-success"
+            [disabled]="buttonsStatus.disabled"
+            [class.loading]="loadingService.isLoading()"
+            (click)="approveEdit()"
+          >
+            {{ "Approve edit" | translate }}&hellip;
+          </button>
+        </div>
+
+        <div
+          class="alert alert-mini alert-info"
+          *ngIf="showButtons && buttonsStatus.disabled && buttonsStatus.reason"
+        >
+          <fa-icon icon="info-circle"></fa-icon>
+          <span [innerHTML]="buttonsStatus.reason"></span>
+        </div>
       </ng-container>
     </ng-container>
   </div>

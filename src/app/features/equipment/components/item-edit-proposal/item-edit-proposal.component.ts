@@ -13,6 +13,7 @@ import {
 } from "@features/equipment/interfaces/equipment-item-base.interface";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 import {
+  ApproveEquipmentItemEditProposalSuccess,
   EquipmentActionTypes,
   LoadBrand,
   LoadEquipmentItem,
@@ -29,10 +30,9 @@ import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { selectUser } from "@features/account/store/auth.selectors";
 import { LoadingService } from "@shared/services/loading.service";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
-import { RejectItemModalComponent } from "@features/equipment/components/reject-item-modal/reject-item-modal.component";
-import { RejectMigrationModalComponent } from "@features/equipment/components/migration/reject-migration-modal/reject-migration-modal.component";
 import { RejectEditProposalModalComponent } from "@features/equipment/components/reject-edit-proposal-modal/reject-edit-proposal-modal.component";
 import { Actions, ofType } from "@ngrx/effects";
+import { ApproveEditProposalModalComponent } from "@features/equipment/components/approve-edit-proposal-modal/approve-edit-proposal-modal.component";
 
 @Component({
   selector: "astrobin-item-edit-proposal",
@@ -155,7 +155,20 @@ export class ItemEditProposalComponent extends BaseComponentDirective implements
       });
   }
 
-  approveEdit() {}
+  approveEdit() {
+    const modal: NgbModalRef = this.modalService.open(ApproveEditProposalModalComponent);
+    const componentInstance: ApproveEditProposalModalComponent = modal.componentInstance;
+
+    componentInstance.editProposal = this.editProposal;
+
+    this.actions$
+      .pipe(
+        ofType(EquipmentActionTypes.APPROVE_EQUIPMENT_ITEM_EDIT_PROPOSAL_SUCCESS),
+        map((action: ApproveEquipmentItemEditProposalSuccess) => action.payload.editProposal),
+        take(1)
+      )
+      .subscribe(editProposal => (this.editProposal = editProposal));
+  }
 
   rejectEdit() {
     const modal: NgbModalRef = this.modalService.open(RejectEditProposalModalComponent);

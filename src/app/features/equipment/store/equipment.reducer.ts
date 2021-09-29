@@ -3,7 +3,7 @@ import { EquipmentItemBaseInterface } from "@features/equipment/interfaces/equip
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { BrandInterface } from "@features/equipment/interfaces/brand.interface";
 import { EditProposalInterface } from "@features/equipment/interfaces/edit-proposal.interface";
-import { arrayUniqueEquipmentItems } from "@features/equipment/store/equipment.selectors";
+import { arrayUniqueEquipmentItems, getEquipmentItemType } from "@features/equipment/store/equipment.selectors";
 
 export const equipmentFeatureKey = "equipment";
 
@@ -60,14 +60,44 @@ export function reducer(state = initialEquipmentState, action: EquipmentActions)
 
     case EquipmentActionTypes.CREATE_SENSOR_EDIT_PROPOSAL_SUCCESS:
     case EquipmentActionTypes.CREATE_CAMERA_EDIT_PROPOSAL_SUCCESS:
-    case EquipmentActionTypes.APPROVE_EQUIPMENT_ITEM_EDIT_PROPOSAL_SUCCESS:
     case EquipmentActionTypes.REJECT_EQUIPMENT_ITEM_EDIT_PROPOSAL_SUCCESS: {
       return {
         ...state,
-        editProposals: UtilsService.arrayUniqueObjects(
-          [...state.editProposals, ...[action.payload.editProposal]],
-          "id"
-        ).sort(
+        editProposals: (arrayUniqueEquipmentItems([
+          ...state.editProposals,
+          ...[action.payload.editProposal]
+        ]) as EditProposalInterface<EquipmentItemBaseInterface>[]).sort(
+          (
+            a: EditProposalInterface<EquipmentItemBaseInterface>,
+            b: EditProposalInterface<EquipmentItemBaseInterface>
+          ) => {
+            if (a.editProposalCreated < b.editProposalCreated) {
+              return -1;
+            }
+
+            if (a.editProposalCreated > b.editProposalCreated) {
+              return 1;
+            }
+
+            return 0;
+          }
+        )
+      };
+    }
+
+    case EquipmentActionTypes.APPROVE_EQUIPMENT_ITEM_EDIT_PROPOSAL_SUCCESS: {
+      return {
+        ...state,
+        equipmentItems: state.equipmentItems.filter(item => {
+          return (
+            item.id !== action.payload.editProposal.editProposalTarget &&
+            getEquipmentItemType(item) !== getEquipmentItemType(action.payload.editProposal)
+          );
+        }),
+        editProposals: (arrayUniqueEquipmentItems([
+          ...state.editProposals,
+          ...[action.payload.editProposal]
+        ]) as EditProposalInterface<EquipmentItemBaseInterface>[]).sort(
           (
             a: EditProposalInterface<EquipmentItemBaseInterface>,
             b: EditProposalInterface<EquipmentItemBaseInterface>

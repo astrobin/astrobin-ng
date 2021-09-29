@@ -9,12 +9,13 @@ import {
   EquipmentItemBaseInterface,
   EquipmentItemType
 } from "@features/equipment/interfaces/equipment-item-base.interface";
-import { filter, map, switchMap, take, takeUntil } from "rxjs/operators";
+import { filter, map, switchMap, take, takeUntil, tap } from "rxjs/operators";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 import { FormGroup } from "@angular/forms";
 import { LoadingService } from "@shared/services/loading.service";
 import {
+  ApproveEquipmentItemEditProposalSuccess,
   ApproveEquipmentItemSuccess,
   CreateCameraEditProposal,
   CreateSensorEditProposal,
@@ -123,6 +124,26 @@ export class ExplorerComponent extends ExplorerBaseComponent implements OnInit {
         this.activeType = this.activatedRoute.snapshot.paramMap.get("itemType");
       }
     });
+
+    this.actions$
+      .pipe(
+        ofType(EquipmentActionTypes.APPROVE_EQUIPMENT_ITEM_EDIT_PROPOSAL_SUCCESS),
+        takeUntil(this.destroyed$),
+        map((action: ApproveEquipmentItemEditProposalSuccess) => action.payload.editProposal),
+        filter(editProposal => editProposal.editProposalTarget === this.selectedItem?.id),
+        tap(editProposal =>
+          this.store$.dispatch(new LoadEquipmentItem({ id: this.selectedItem.id, type: this.activeType }))
+        ),
+        switchMap(() =>
+          this.store$.select(selectEquipmentItem, { id: this.selectedItem.id, type: this.activeType }).pipe(
+            filter(item => !!item),
+            take(1)
+          )
+        )
+      )
+      .subscribe(item => {
+        this.setItem(item);
+      });
   }
 
   startEditMode() {

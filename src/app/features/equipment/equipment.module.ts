@@ -34,6 +34,7 @@ import { PendingExplorerBaseComponent } from "@features/equipment/pages/explorer
 import { RejectItemModalComponent } from "./components/reject-item-modal/reject-item-modal.component";
 import { ApproveItemModalComponent } from "@features/equipment/components/approve-item-modal/approve-item-modal.component";
 import { RejectEditProposalModalComponent } from "@features/equipment/components/reject-edit-proposal-modal/reject-edit-proposal-modal.component";
+import { ApproveEditProposalModalComponent } from "@features/equipment/components/approve-edit-proposal-modal/approve-edit-proposal-modal.component";
 
 @NgModule({
   declarations: [
@@ -64,6 +65,7 @@ import { RejectEditProposalModalComponent } from "@features/equipment/components
     PendingEditExplorerComponent,
     ApproveItemModalComponent,
     RejectItemModalComponent,
+    ApproveEditProposalModalComponent,
     RejectEditProposalModalComponent
   ],
   imports: [
