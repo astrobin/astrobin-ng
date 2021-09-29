@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
-import { Actions } from "@ngrx/effects";
+import { Actions, ofType } from "@ngrx/effects";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { Observable, of } from "rxjs";
 import { catchError, map, takeUntil, tap } from "rxjs/operators";
@@ -10,6 +10,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { EquipmentItemType } from "@features/equipment/interfaces/equipment-item-base.interface";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import { LoadingService } from "@shared/services/loading.service";
+import { EquipmentActionTypes } from "@features/equipment/store/equipment.actions";
 
 @Component({
   selector: "astrobin-equipment-item-type-nav",
@@ -116,7 +117,41 @@ export class ItemTypeNavComponent extends BaseComponentDirective implements OnIn
     public readonly loadingService: LoadingService
   ) {
     super(store$);
+  }
 
+  ngOnInit() {
+    this._setActiveSubNav(this.activatedRoute.snapshot.url.join("/"));
+    this._loadCounts();
+
+    this.router.events.pipe(takeUntil(this.destroyed$)).subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        this.activeType = this.activatedRoute.snapshot.paramMap.get("itemType");
+        this._setActiveSubNav(event.urlAfterRedirects);
+      }
+    });
+
+    this.actions$
+      .pipe(
+        ofType(
+          ...[
+            // TODO: add all CREATE_*_SUCCESS types.
+            EquipmentActionTypes.CREATE_CAMERA_SUCCESS,
+            // TODO: add all CREATE_*_EDIT_PROPOSAL_SUCCESS types.
+            EquipmentActionTypes.CREATE_CAMERA_EDIT_PROPOSAL_SUCCESS,
+            EquipmentActionTypes.APPROVE_EQUIPMENT_ITEM_SUCCESS,
+            EquipmentActionTypes.REJECT_EQUIPMENT_ITEM_SUCCESS,
+            EquipmentActionTypes.APPROVE_EQUIPMENT_ITEM_EDIT_PROPOSAL_SUCCESS,
+            EquipmentActionTypes.REJECT_EQUIPMENT_ITEM_EDIT_PROPOSAL_SUCCESS
+          ]
+        ),
+        takeUntil(this.destroyed$)
+      )
+      .subscribe(() => {
+        this._loadCounts();
+      });
+  }
+
+  _loadCounts() {
     for (const type of this.types) {
       // TODO: remove when all other types have API.
       if (type.value !== EquipmentItemType.CAMERA) {
@@ -144,17 +179,6 @@ export class ItemTypeNavComponent extends BaseComponentDirective implements OnIn
         tap(() => this.loadingService.setLoading(false))
       );
     }
-  }
-
-  ngOnInit(): void {
-    this._setActiveSubNav(this.activatedRoute.snapshot.url.join("/"));
-
-    this.router.events.pipe(takeUntil(this.destroyed$)).subscribe(event => {
-      if (event instanceof NavigationEnd) {
-        this.activeType = this.activatedRoute.snapshot.paramMap.get("itemType");
-        this._setActiveSubNav(event.urlAfterRedirects);
-      }
-    });
   }
 
   _setActiveSubNav(url: string) {
