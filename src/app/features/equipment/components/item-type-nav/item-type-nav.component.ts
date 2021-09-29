@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
@@ -17,7 +17,16 @@ import { EquipmentActionTypes } from "@features/equipment/store/equipment.action
   templateUrl: "./item-type-nav.component.html",
   styleUrls: ["./item-type-nav.component.scss"]
 })
-export class ItemTypeNavComponent extends BaseComponentDirective implements OnInit {
+export class ItemTypeNavComponent extends BaseComponentDirective implements OnInit, OnChanges {
+  @Input()
+  showCounts = true;
+
+  @Input()
+  showSubNavigation = true;
+
+  @Input()
+  routingBasePath = "/equipment/explorer";
+
   @Input()
   cameraCount: Observable<number | null> = null;
   camerasPendingReviewCount: Observable<number | null> = null;
@@ -43,7 +52,8 @@ export class ItemTypeNavComponent extends BaseComponentDirective implements OnIn
   accessoriesPendingReviewCount: Observable<number | null> = null;
   accessoriesPendingEditCount: Observable<number | null> = null;
 
-  @Input() softwareCount: Observable<number | null> = null;
+  @Input()
+  softwareCount: Observable<number | null> = null;
   softwarePendingReviewCount: Observable<number | null> = null;
   softwarePendingEditCount: Observable<number | null> = null;
 
@@ -51,58 +61,11 @@ export class ItemTypeNavComponent extends BaseComponentDirective implements OnIn
     label: string;
     value: EquipmentItemType;
     count: Observable<number | null>;
+    providedCount: Observable<number | null>;
     pendingReviewCount: Observable<number | null>;
     pendingEditCount: Observable<number | null>;
     disabled?: boolean;
-  }[] = [
-    {
-      label: this.translateService.instant("Cameras"),
-      value: EquipmentItemType.CAMERA,
-      count: this.cameraCount,
-      pendingReviewCount: this.camerasPendingReviewCount,
-      pendingEditCount: this.camerasPendingEditCount
-    },
-    {
-      label: this.translateService.instant("Telescopes"),
-      value: EquipmentItemType.TELESCOPE,
-      count: this.telescopeCount,
-      pendingReviewCount: this.telescopesPendingReviewCount,
-      pendingEditCount: this.telescopesPendingEditCount,
-      disabled: true
-    },
-    {
-      label: this.translateService.instant("Mounts"),
-      value: EquipmentItemType.MOUNT,
-      count: this.mountCount,
-      pendingReviewCount: this.mountsPendingReviewCount,
-      pendingEditCount: this.mountsPendingEditCount,
-      disabled: true
-    },
-    {
-      label: this.translateService.instant("Filters"),
-      value: EquipmentItemType.FILTER,
-      count: this.filterCount,
-      pendingReviewCount: this.filtersPendingReviewCount,
-      pendingEditCount: this.filtersPendingEditCount,
-      disabled: true
-    },
-    {
-      label: this.translateService.instant("Accessories"),
-      value: EquipmentItemType.ACCESSORY,
-      count: this.accessoryCount,
-      pendingReviewCount: this.accessoriesPendingReviewCount,
-      pendingEditCount: this.accessoriesPendingEditCount,
-      disabled: true
-    },
-    {
-      label: this.translateService.instant("Software"),
-      value: EquipmentItemType.SOFTWARE,
-      count: this.softwareCount,
-      pendingReviewCount: this.softwarePendingReviewCount,
-      pendingEditCount: this.softwarePendingEditCount,
-      disabled: true
-    }
-  ];
+  }[];
 
   activeType = this.activatedRoute.snapshot.paramMap.get("itemType");
   activeSubNav = "";
@@ -121,15 +84,38 @@ export class ItemTypeNavComponent extends BaseComponentDirective implements OnIn
 
   ngOnInit() {
     this._setActiveSubNav(this.activatedRoute.snapshot.url.join("/"));
+    this._initRouterEvents();
+    this._initActionListeners();
+    this._initTypes();
     this._loadCounts();
+  }
 
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.cameraCount) {
+      this.types.find(type => type.value === EquipmentItemType.CAMERA).count = changes.cameraCount.currentValue;
+    }
+  }
+
+  _setActiveSubNav(url: string) {
+    if (url.indexOf("a-z-explorer") > -1) {
+      this.activeSubNav = "a-z-explorer";
+    } else if (url.indexOf("pending-review-explorer") > -1) {
+      this.activeSubNav = "pending-review-explorer";
+    } else if (url.indexOf("pending-edit-explorer") > -1) {
+      this.activeSubNav = "pending-edit-explorer";
+    }
+  }
+
+  _initRouterEvents() {
     this.router.events.pipe(takeUntil(this.destroyed$)).subscribe(event => {
       if (event instanceof NavigationEnd) {
         this.activeType = this.activatedRoute.snapshot.paramMap.get("itemType");
         this._setActiveSubNav(event.urlAfterRedirects);
       }
     });
+  }
 
+  _initActionListeners() {
     this.actions$
       .pipe(
         ofType(
@@ -151,10 +137,77 @@ export class ItemTypeNavComponent extends BaseComponentDirective implements OnIn
       });
   }
 
+  _initTypes() {
+    this.types = [
+      {
+        label: this.translateService.instant("Cameras"),
+        value: EquipmentItemType.CAMERA,
+        count: this.cameraCount,
+        providedCount: this.cameraCount,
+        pendingReviewCount: this.camerasPendingReviewCount,
+        pendingEditCount: this.camerasPendingEditCount
+      },
+      {
+        label: this.translateService.instant("Telescopes"),
+        value: EquipmentItemType.TELESCOPE,
+        count: this.telescopeCount,
+        providedCount: this.telescopeCount,
+        pendingReviewCount: this.telescopesPendingReviewCount,
+        pendingEditCount: this.telescopesPendingEditCount,
+        disabled: true
+      },
+      {
+        label: this.translateService.instant("Mounts"),
+        value: EquipmentItemType.MOUNT,
+        count: this.mountCount,
+        providedCount: this.mountCount,
+        pendingReviewCount: this.mountsPendingReviewCount,
+        pendingEditCount: this.mountsPendingEditCount,
+        disabled: true
+      },
+      {
+        label: this.translateService.instant("Filters"),
+        value: EquipmentItemType.FILTER,
+        count: this.filterCount,
+        providedCount: this.filterCount,
+        pendingReviewCount: this.filtersPendingReviewCount,
+        pendingEditCount: this.filtersPendingEditCount,
+        disabled: true
+      },
+      {
+        label: this.translateService.instant("Accessories"),
+        value: EquipmentItemType.ACCESSORY,
+        count: this.accessoryCount,
+        providedCount: this.accessoryCount,
+        pendingReviewCount: this.accessoriesPendingReviewCount,
+        pendingEditCount: this.accessoriesPendingEditCount,
+        disabled: true
+      },
+      {
+        label: this.translateService.instant("Software"),
+        value: EquipmentItemType.SOFTWARE,
+        count: this.softwareCount,
+        providedCount: this.softwareCount,
+        pendingReviewCount: this.softwarePendingReviewCount,
+        pendingEditCount: this.softwarePendingEditCount,
+        disabled: true
+      }
+    ];
+  }
+
   _loadCounts() {
+    if (!this.showCounts) {
+      return;
+    }
+
     for (const type of this.types) {
       // TODO: remove when all other types have API.
       if (type.value !== EquipmentItemType.CAMERA) {
+        continue;
+      }
+
+      if (type.providedCount) {
+        // Don't override provided count.
         continue;
       }
 
@@ -178,16 +231,6 @@ export class ItemTypeNavComponent extends BaseComponentDirective implements OnIn
         map(response => response.count),
         tap(() => this.loadingService.setLoading(false))
       );
-    }
-  }
-
-  _setActiveSubNav(url: string) {
-    if (url.indexOf("a-z-explorer") > -1) {
-      this.activeSubNav = "a-z-explorer";
-    } else if (url.indexOf("pending-review-explorer") > -1) {
-      this.activeSubNav = "pending-review-explorer";
-    } else if (url.indexOf("pending-edit-explorer") > -1) {
-      this.activeSubNav = "pending-edit-explorer";
     }
   }
 }
