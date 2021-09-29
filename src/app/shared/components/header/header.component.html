@@ -101,6 +101,20 @@
                 {{ "Judgement queue" | translate }}
               </a>
             </ng-container>
+
+            <ng-container *ngIf="user | isEquipmentModerator">
+              <div class="dropdown-divider"></div>
+              <h6 class="dropdown-header" translate>Equipment</h6>
+
+              <a
+                (click)="isCollapsed = true"
+                class="dropdown-item"
+                routerLink="/equipment/migration-tool"
+              >
+                <fa-icon icon="upload"></fa-icon>
+                Migration tool
+              </a>
+            </ng-container>
           </div>
         </div>
       </li>
@@ -143,6 +157,11 @@
           <a [href]="classicRoutes.SEARCH + '?d=i'" class="dropdown-item">
             <fa-icon icon="search"></fa-icon>
             {{ "The Big Wall" | translate }} / {{ "Advanced search" | translate }}
+          </a>
+
+          <a [routerLink]="['equipment', 'explorer']" class="dropdown-item">
+            <fa-icon icon="camera"></fa-icon>
+            {{ "Equipment explorer" | translate }}
           </a>
 
           <a [routerLink]="['explore', 'constellations']" class="dropdown-item">
