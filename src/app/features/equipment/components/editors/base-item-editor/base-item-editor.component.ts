@@ -224,7 +224,6 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface> exten
                 this.brandCreation.name = brand.name;
 
                 this.formlyFieldService.clearMessages(field.templateOptions);
-                this.formlyFieldService.clearMessages(field.templateOptions);
                 this._validateBrandInName();
                 this._similarItemSuggestion();
                 this._othersInBrand();
