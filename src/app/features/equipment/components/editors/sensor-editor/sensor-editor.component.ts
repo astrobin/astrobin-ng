@@ -7,7 +7,7 @@ import { LoadingService } from "@shared/services/loading.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { State } from "@app/store/state";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
-import { SensorInterface } from "@features/equipment/interfaces/sensor.interface";
+import { ColorOrMono, SensorInterface } from "@features/equipment/interfaces/sensor.interface";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 import { FormlyFieldService } from "@shared/services/formly-field.service";
 import { SensorDisplayProperty, SensorService } from "@features/equipment/services/sensor.service";
@@ -217,7 +217,7 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
       },
       {
         key: "colorOrMono",
-        type: "checkbox",
+        type: "ng-select",
         id: "sensor-field-color-or-mono",
         defaultValue: false,
         expressionProperties: {
@@ -227,7 +227,17 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
           label: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.COLOR_OR_MONO),
           description: this.translateService.instant(
             "Tick if this is a color sensor, leave blank if it's a monochromatic one."
-          )
+          ),
+          options: [
+            {
+              label: this.translateService.instant("Color"),
+              value: ColorOrMono.C
+            },
+            {
+              label: this.translateService.instant("Mono"),
+              value: ColorOrMono.M
+            }
+          ]
         }
       },
       this._getImageField()

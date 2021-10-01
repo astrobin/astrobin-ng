@@ -111,7 +111,7 @@ export class SensorService extends BaseService implements EquipmentItemServiceIn
       case SensorDisplayProperty.ADC:
         return shortForm ? this.translateService.instant("ADC") : this.translateService.instant("ADC") + " (bits)";
       case SensorDisplayProperty.COLOR_OR_MONO:
-        return this.translateService.instant("Color");
+        return this.translateService.instant("Color or mono");
       default:
         throw Error(`Invalid property: ${propertyName}`);
     }
