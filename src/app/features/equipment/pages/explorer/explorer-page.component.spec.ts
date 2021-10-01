@@ -6,10 +6,10 @@ import { provideMockStore } from "@ngrx/store/testing";
 import { initialState } from "@app/store/state";
 import { AppModule } from "@app/app.module";
 import { ActivatedRoute, Router } from "@angular/router";
-import { EMPTY, of, ReplaySubject } from "rxjs";
-import { ItemTypeNavComponent } from "@features/equipment/components/item-type-nav/item-type-nav.component";
-import { ItemBrowserComponent } from "@features/equipment/components/item-browser/item-browser.component";
+import { EMPTY, ReplaySubject } from "rxjs";
 import { provideMockActions } from "@ngrx/effects/testing";
+import { ExplorerComponent } from "@features/equipment/components/explorer/explorer.component";
+import { ItemTypeNavComponent } from "@features/equipment/components/item-type-nav/item-type-nav.component";
 
 describe("ExplorerComponent", () => {
   let component: ExplorerPageComponent;
@@ -18,7 +18,7 @@ describe("ExplorerComponent", () => {
   beforeEach(async () => {
     await MockBuilder(ExplorerPageComponent, AppModule)
       .mock(ItemTypeNavComponent)
-      .mock(ItemBrowserComponent)
+      .mock(ExplorerComponent)
       .provide([
         provideMockStore({ initialState }),
         provideMockActions(() => new ReplaySubject<any>()),

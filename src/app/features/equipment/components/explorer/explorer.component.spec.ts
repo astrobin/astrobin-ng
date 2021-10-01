@@ -8,6 +8,7 @@ import { initialState } from "@app/store/state";
 import { provideMockActions } from "@ngrx/effects/testing";
 import { ReplaySubject } from "rxjs";
 import { ItemBrowserComponent } from "@features/equipment/components/item-browser/item-browser.component";
+import { ItemTypeNavComponent } from "@features/equipment/components/item-type-nav/item-type-nav.component";
 
 describe("ExplorerComponent", () => {
   let component: ExplorerComponent;
@@ -16,6 +17,7 @@ describe("ExplorerComponent", () => {
   beforeEach(async () => {
     await MockBuilder(ExplorerComponent, AppModule)
       .provide([provideMockStore({ initialState }), provideMockActions(() => new ReplaySubject<any>())])
+      .mock(ItemTypeNavComponent)
       .mock(ItemBrowserComponent);
   });
 
