@@ -131,6 +131,7 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface> exten
     this.actions$
       .pipe(
         ofType(EquipmentActionTypes.CREATE_BRAND_SUCCESS),
+        take(1),
         map((action: CreateBrandSuccess) => action.payload.brand)
       )
       .subscribe(newBrand => {
