@@ -36,6 +36,7 @@ import { RejectEditProposalModalComponent } from "@features/equipment/components
 import { ApproveEditProposalModalComponent } from "@features/equipment/components/approve-edit-proposal-modal/approve-edit-proposal-modal.component";
 import { AZExplorerComponent } from "@features/equipment/pages/a-z-edit-explorer/a-z-explorer.component";
 import { ExplorerComponent } from "@features/equipment/components/explorer/explorer.component";
+import { MergeIntoModalComponent } from './components/migration/merge-into-modal/merge-into-modal.component';
 
 @NgModule({
   declarations: [
@@ -68,7 +69,8 @@ import { ExplorerComponent } from "@features/equipment/components/explorer/explo
     ApproveItemModalComponent,
     RejectItemModalComponent,
     ApproveEditProposalModalComponent,
-    RejectEditProposalModalComponent
+    RejectEditProposalModalComponent,
+    MergeIntoModalComponent
   ],
   imports: [
     RouterModule.forChild(routes),

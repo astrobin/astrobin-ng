@@ -12,9 +12,7 @@
 
   <div class="card-body">
     <div *ngIf="selectedItem.reviewerDecision === null" class="alert alert-warning">
-      {{
-      "This item has not been approved yet, so it's not available to be associated with images." | translate
-      }}
+      {{ "This item has not been approved yet, so it's not available to be associated with images." | translate }}
     </div>
 
     <astrobin-equipment-item-summary
@@ -38,6 +36,15 @@
       <ng-container *ngIf="!!currentUser">
         <button class="btn btn-secondary" data-test="propose-edit" (click)="startEditMode()">
           {{ "Propose edit" | translate }}&hellip;
+        </button>
+
+        <button
+          *ngIf="currentUser | isEquipmentModerator"
+          class="btn btn-secondary"
+          data-test="migrate-into"
+          (click)="startMigrationMode()"
+        >
+          {{ "Migrate into" | translate }}&hellip;
         </button>
 
         <ng-container *ngIf="selectedItem.reviewerDecision === null && selectedItem.createdBy !== currentUser.id">
@@ -75,7 +82,7 @@
 
   <ng-template #loadingEditProposals>
     <div class="loading-edit-proposals">
-      {{  "Loading edit proposals" | translate }}
+      {{ "Loading edit proposals" | translate }}
       <astrobin-text-loading-indicator></astrobin-text-loading-indicator>
     </div>
   </ng-template>

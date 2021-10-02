@@ -44,6 +44,7 @@ import { RejectMigrationModalComponent } from "@features/equipment/components/mi
 import { RejectItemModalComponent } from "@features/equipment/components/reject-item-modal/reject-item-modal.component";
 import { ApproveItemModalComponent } from "@features/equipment/components/approve-item-modal/approve-item-modal.component";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { MergeIntoModalComponent } from "@features/equipment/components/migration/merge-into-modal/merge-into-modal.component";
 
 @Component({
   selector: "astrobin-equipment-explorer",
@@ -148,6 +149,14 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit 
     this.editMode = false;
     this.editModel = {};
     this.editForm.reset();
+  }
+
+  startMigrationMode() {
+    const modal: NgbModalRef = this.modalService.open(MergeIntoModalComponent);
+    const componentInstance: MergeIntoModalComponent = modal.componentInstance;
+
+    componentInstance.activeType = this.activeType;
+    componentInstance.equipmentItem = this.selectedItem;
   }
 
   startApproval() {

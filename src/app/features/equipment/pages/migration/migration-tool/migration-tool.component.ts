@@ -280,9 +280,9 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
   confirmMigration(object: any) {
     const type = this.getActiveType();
 
-    const selectedSimilarItems = this._getSelectedSimilarItems();
+    const selectedSimilarItemsPks = this._getSelectedSimilarItemsPks();
     const similarItems = this.migrationConfirmation.similarItems.filter(
-      item => selectedSimilarItems.indexOf(item.pk) > -1
+      item => selectedSimilarItemsPks.indexOf(item.pk) > -1
     );
 
     for (const itemToMigrate of [...[object], ...similarItems]) {
@@ -350,7 +350,7 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
     }
   }
 
-  _getSelectedSimilarItems() {
+  _getSelectedSimilarItemsPks() {
     const items = [];
 
     for (const key of Object.keys(this.migrationConfirmation.form.value)) {
