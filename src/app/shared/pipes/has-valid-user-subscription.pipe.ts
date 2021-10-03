@@ -12,6 +12,6 @@ export class HasValidUserSubscriptionPipe implements PipeTransform {
   constructor(public userStoreService: UserStoreService, public userSubscriptionService: UserSubscriptionService) {}
 
   transform(userProfile: UserProfileInterface, subscriptionNames: SubscriptionName[]): Observable<boolean> {
-    return this.userSubscriptionService.hasValidSubscription(userProfile, subscriptionNames);
+    return this.userSubscriptionService.hasValidSubscription$(userProfile, subscriptionNames);
   }
 }

@@ -16,12 +16,12 @@ import { distinctUntilChanged, map, take, tap } from "rxjs/operators";
 })
 export class ReviewEntryComponent extends BasePromotionEntryComponent {
   constructor(
-    public readonly elementRef: ElementRef,
     public readonly store$: Store<State>,
+    public readonly elementRef: ElementRef,
     public readonly loadingService: LoadingService,
     public readonly modalService: NgbModal
   ) {
-    super(elementRef, store$, modalService);
+    super(store$, elementRef, modalService);
   }
 
   isPromoted$(imageId: number): Observable<boolean> {

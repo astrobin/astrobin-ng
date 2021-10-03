@@ -17,7 +17,7 @@ export class BreadcrumbComponent extends BaseComponentDirective implements OnIni
   breadcrumb$: Observable<BreadcrumbInterface[]>;
 
   constructor(public readonly store$: Store<State>, public readonly classicRoutesService: ClassicRoutesService) {
-    super();
+    super(store$);
   }
 
   ngOnInit(): void {

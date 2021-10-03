@@ -36,7 +36,7 @@ export class CreateLocationModalComponent extends BaseComponentDirective impleme
     public readonly loadingService: LoadingService,
     public readonly googleMapsService: GoogleMapsService
   ) {
-    super();
+    super(store$);
   }
 
   ngOnInit(): void {

@@ -94,7 +94,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     public readonly popNotificationsService: PopNotificationsService,
     public readonly modalService: NgbModal
   ) {
-    super();
+    super(store$);
   }
 
   ngOnInit(): void {

@@ -19,11 +19,12 @@ export class LoginFormComponent extends BaseComponentDirective implements OnInit
   @Output() loginSuccessful = new EventEmitter();
 
   constructor(
+    public readonly store$: Store<State>,
     public readonly formBuilder: FormBuilder,
-    public readonly store: Store<State>,
     public readonly actions$: Actions
   ) {
-    super();
+    super(store$);
+
     this.form = this.formBuilder.group({
       handle: ["", Validators.required],
       password: ["", Validators.required]
@@ -33,7 +34,7 @@ export class LoginFormComponent extends BaseComponentDirective implements OnInit
   ngOnInit(): void {}
 
   @HostListener("document:keydown.enter", ["$event"]) login(): void {
-    this.store.dispatch(
+    this.store$.dispatch(
       new Login({
         handle: this.form.get("handle").value,
         password: this.form.get("password").value,

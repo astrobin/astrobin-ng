@@ -27,7 +27,7 @@ describe("UserSubscriptionService", () => {
   describe("hasValidSubscription", () => {
     it("should match Ultimate", done => {
       service
-        .hasValidSubscription(initialState.auth.userProfile, [SubscriptionName.ASTROBIN_ULTIMATE_2020])
+        .hasValidSubscription$(initialState.auth.userProfile, [SubscriptionName.ASTROBIN_ULTIMATE_2020])
         .subscribe(result => {
           expect(result).toBe(true);
           done();
@@ -40,7 +40,7 @@ describe("UserSubscriptionService", () => {
       store.setState(state);
 
       service
-        .hasValidSubscription(initialState.auth.userProfile, [SubscriptionName.ASTROBIN_ULTIMATE_2020])
+        .hasValidSubscription$(initialState.auth.userProfile, [SubscriptionName.ASTROBIN_ULTIMATE_2020])
         .subscribe(result => {
           expect(result).toBe(true);
           done();
@@ -53,7 +53,7 @@ describe("UserSubscriptionService", () => {
       store.setState(state);
 
       service
-        .hasValidSubscription(initialState.auth.userProfile, [SubscriptionName.ASTROBIN_ULTIMATE_2020])
+        .hasValidSubscription$(initialState.auth.userProfile, [SubscriptionName.ASTROBIN_ULTIMATE_2020])
         .subscribe(result => {
           expect(result).toBe(true);
           done();
@@ -68,7 +68,7 @@ describe("UserSubscriptionService", () => {
       store.setState(state);
 
       service
-        .hasValidSubscription(initialState.auth.userProfile, [SubscriptionName.ASTROBIN_ULTIMATE_2020])
+        .hasValidSubscription$(initialState.auth.userProfile, [SubscriptionName.ASTROBIN_ULTIMATE_2020])
         .subscribe(result => {
           expect(result).toBe(false);
           done();
@@ -83,7 +83,7 @@ describe("UserSubscriptionService", () => {
       store.setState(state);
 
       service
-        .hasValidSubscription(initialState.auth.userProfile, [SubscriptionName.ASTROBIN_PREMIUM_2020])
+        .hasValidSubscription$(initialState.auth.userProfile, [SubscriptionName.ASTROBIN_PREMIUM_2020])
         .subscribe(result => {
           expect(result).toBe(true);
           done();
@@ -98,7 +98,7 @@ describe("UserSubscriptionService", () => {
       store.setState(state);
 
       service
-        .hasValidSubscription(initialState.auth.userProfile, [
+        .hasValidSubscription$(initialState.auth.userProfile, [
           SubscriptionName.ASTROBIN_PREMIUM_AUTORENEW,
           SubscriptionName.ASTROBIN_PREMIUM
         ])
@@ -110,7 +110,7 @@ describe("UserSubscriptionService", () => {
 
     it("should be false when mismatching", done => {
       service
-        .hasValidSubscription(initialState.auth.userProfile, [SubscriptionName.ASTROBIN_PREMIUM_2020])
+        .hasValidSubscription$(initialState.auth.userProfile, [SubscriptionName.ASTROBIN_PREMIUM_2020])
         .subscribe(result => {
           expect(result).toBe(false);
           done();
@@ -123,7 +123,7 @@ describe("UserSubscriptionService", () => {
       store.setState(state);
 
       service
-        .hasValidSubscription(initialState.auth.userProfile, [SubscriptionName.ASTROBIN_ULTIMATE_2020])
+        .hasValidSubscription$(initialState.auth.userProfile, [SubscriptionName.ASTROBIN_ULTIMATE_2020])
         .subscribe(result => {
           expect(result).toBe(false);
           done();

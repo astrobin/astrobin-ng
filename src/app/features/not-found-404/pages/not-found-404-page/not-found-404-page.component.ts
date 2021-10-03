@@ -16,7 +16,7 @@ export class NotFound404PageComponent extends BaseComponentDirective implements 
     public readonly titleService: TitleService,
     public readonly translateService: TranslateService
   ) {
-    super();
+    super(store$);
   }
 
   ngOnInit() {

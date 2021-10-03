@@ -16,7 +16,7 @@ export class LoggedOutPageComponent extends BaseComponentDirective implements On
     public readonly titleService: TitleService,
     public readonly translate: TranslateService
   ) {
-    super();
+    super(store$);
   }
 
   ngOnInit() {

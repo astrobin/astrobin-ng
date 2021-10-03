@@ -6,6 +6,8 @@ import { LoadContentType, LoadContentTypeSuccess } from "@app/store/actions/cont
 import { HideFullscreenImage, ShowFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
 import {
   LoadImage,
+  LoadImageRevisions,
+  LoadImageRevisionsSuccess,
   LoadImages,
   LoadImagesSuccess,
   LoadImageSuccess,
@@ -55,6 +57,9 @@ export enum AppActionTypes {
   SAVE_IMAGE_SUCCESS = "[App] Save image success",
   SAVE_IMAGE_FAILURE = "[App] Save image failure",
 
+  LOAD_IMAGE_REVISIONS = "[App] Load image revisions",
+  LOAD_IMAGE_REVISIONS_SUCCESS = "[App] Load image revisions success",
+
   LOAD_THUMBNAIL = "[App] Load thumbnail",
   LOAD_THUMBNAIL_CANCEL = "[App] Load thumbnail cancel",
   LOAD_THUMBNAIL_SUCCESS = "[App] Load thumbnail success",
@@ -93,6 +98,8 @@ export type All =
   | SaveImageFailure
   | LoadImages
   | LoadImagesSuccess
+  | LoadImageRevisions
+  | LoadImageRevisionsSuccess
   | LoadThumbnail
   | LoadThumbnailCancel
   | LoadThumbnailSuccess

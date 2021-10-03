@@ -43,7 +43,7 @@ export abstract class BasePromotionQueueComponent extends BaseComponentDirective
     public readonly translateService: TranslateService,
     public readonly windowRefService: WindowRefService
   ) {
-    super();
+    super(store$);
   }
 
   ngOnInit(): void {

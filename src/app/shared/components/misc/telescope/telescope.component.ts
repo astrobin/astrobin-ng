@@ -20,7 +20,7 @@ export class TelescopeComponent extends BaseComponentDirective implements OnInit
   id: number;
 
   constructor(public readonly store$: Store<State>, public readonly gearService: GearService) {
-    super();
+    super(store$);
   }
 
   ngOnInit(): void {

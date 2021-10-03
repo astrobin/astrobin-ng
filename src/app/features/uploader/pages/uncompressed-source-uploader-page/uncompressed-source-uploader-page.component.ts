@@ -61,7 +61,7 @@ export class UncompressedSourceUploaderPageComponent extends BaseComponentDirect
     public readonly thumbnailGroupApiService: ThumbnailGroupApiService,
     public readonly imageApiService: ImageApiService
   ) {
-    super();
+    super(store$);
   }
 
   ngOnInit(): void {
@@ -70,11 +70,7 @@ export class UncompressedSourceUploaderPageComponent extends BaseComponentDirect
     this.titleService.setTitle(this.pageTitle);
     this.store$.dispatch(
       new SetBreadcrumb({
-        breadcrumb: [
-          { label: this.translate.instant("Image") },
-          { label: this.image.title },
-          { label: this.pageTitle }
-        ]
+        breadcrumb: [{ label: this.translate.instant("Image") }, { label: this.image.title }, { label: this.pageTitle }]
       })
     );
 
