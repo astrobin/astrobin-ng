@@ -95,7 +95,7 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
         "and then contact us at {{1}} to get a refund for the unused time on your old subscription. Thanks!",
       {
         0: this.subscriptionsService.getName(this.product),
-        1: '<a href="mailto:support@astrobin.com">support@astrobin.com</a>'
+        1: `<a href="mailto:support@astrobin.com">support@astrobin.com</a>`
       }
     );
   }
