@@ -1,5 +1,6 @@
 <div class="page has-breadcrumb">
   <h1>{{ pageTitle }}</h1>
+  <small *ngIf="currentUserProfile$ | async" [innerHTML]="subHeader$ | async"></small>
 
   <ng-container *ngIf="store$ | async as state">
     <astrobin-read-only-mode *ngIf="state.app.backendConfig?.readOnly; else uploaderTemplate"></astrobin-read-only-mode>
@@ -7,8 +8,8 @@
 </div>
 
 <ng-template #uploaderTemplate>
-  <div class="row">
-    <div class="col-3" *ngIf="(imageThumbnail$ | async) as thumbnail">
+  <div class="row" *ngIf="(mayUploadRevision$ | async) === true; else mayNotUpload">
+    <div class="col-sm-12 col-md-3" *ngIf="imageThumbnail$ | async as thumbnail">
       <div class="thumbnail">
         <img [attr.src]="thumbnail" alt="image.title" />
       </div>
@@ -17,23 +18,44 @@
     <div class="col">
       <form (ngSubmit)="onSubmit()" [formGroup]="form">
         <div class="form-group">
-          <label>{{"Target image" | translate}}</label>
-          <p class="d-block mb-4">{{image.title}}</p>
+          <label>{{ "Target image" | translate }}</label>
+          <p class="d-block mb-4">{{ image.title }}</p>
         </div>
 
         <formly-form [fields]="fields" [form]="form" [model]="model"></formly-form>
 
         <div class="form-actions">
+          <a
+            [attr.href]="classicRoutesService.IMAGE(image.hash || (image.pk + '')) + '0/?forceClassicRevisionUploader'"
+            class="btn btn-link return-to-classic-uploader"
+          >
+            {{ "Return to the classic uploader" | translate }}
+          </a>
+
           <button
             [class.loading]="uploadButtonLoading()"
             [disabled]="uploadButtonLoading()"
             class="btn btn-lg btn-primary"
-            type="submit">
+            type="submit"
+          >
             <fa-icon icon="upload"></fa-icon>
             {{ "Upload" | translate }}
           </button>
         </div>
       </form>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #mayNotUpload>
+  <div class="upload-not-allowed">
+    <div class="alert alert-warning d-flex justify-content-between align-items-baseline">
+      <span class="flex-fill mr-4">
+        {{ "It looks like you reached the revision upload limit for your subscription." | translate }}
+      </span>
+      <a [attr.href]="classicRoutesService.PRICING" class="btn btn-primary btn-lg">
+        {{ "Would you like to upgrade?" | translate }}
+      </a>
     </div>
   </div>
 </ng-template>

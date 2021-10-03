@@ -58,7 +58,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     public readonly imageService: ImageService,
     public readonly domSanitizer: DomSanitizer
   ) {
-    super();
+    super(store$);
 
     this.hdLoadingProgress$ = this._hdLoadingProgressSubject.asObservable();
     this.realLoadingProgress$ = this._realLoadingProgressSubject.asObservable();

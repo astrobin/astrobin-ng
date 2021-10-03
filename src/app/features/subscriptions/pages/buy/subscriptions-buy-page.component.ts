@@ -67,7 +67,7 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
     public readonly imageApiService: ImageApiService,
     public readonly domSanitizer: DomSanitizer
   ) {
-    super();
+    super(store$);
 
     this.translate.onLangChange
       .pipe(takeUntil(this.destroyed$), startWith({ lang: this.translate.currentLang }))
@@ -95,7 +95,7 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
         "and then contact us at {{1}} to get a refund for the unused time on your old subscription. Thanks!",
       {
         0: this.subscriptionsService.getName(this.product),
-        1: "<a href=\"mailto:support@astrobin.com\">support@astrobin.com</a>"
+        1: `<a href="mailto:support@astrobin.com">support@astrobin.com</a>`
       }
     );
   }
@@ -170,7 +170,7 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
         .select(selectCurrentUserProfile)
         .pipe(
           switchMap(userProfile =>
-            this.userSubscriptionService.hasValidSubscription(
+            this.userSubscriptionService.hasValidSubscription$(
               userProfile,
               this.subscriptionsService.getSameTier(this.product)
             )
@@ -181,7 +181,7 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
         .select(selectCurrentUserProfile)
         .pipe(
           switchMap(userProfile =>
-            this.userSubscriptionService.hasValidSubscription(
+            this.userSubscriptionService.hasValidSubscription$(
               userProfile,
               this.subscriptionsService.getHigherTier(this.product)
             )

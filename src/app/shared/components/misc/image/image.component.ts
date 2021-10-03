@@ -72,7 +72,7 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
     public readonly windowRefService: WindowRefService,
     public readonly domSanitizer: DomSanitizer
   ) {
-    super();
+    super(store$);
 
     this.loadingProgress$ = this._loadingProgressSubject.asObservable();
   }

@@ -2,7 +2,7 @@
 
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
-import { ImageInterface } from "@shared/interfaces/image.interface";
+import { ImageInterface, ImageRevisionInterface } from "@shared/interfaces/image.interface";
 import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
 import { HttpErrorResponse } from "@angular/common/http";
 
@@ -40,6 +40,18 @@ export class LoadImagesSuccess implements PayloadActionInterface {
   readonly type = AppActionTypes.LOAD_IMAGES_SUCCESS;
 
   constructor(public payload: PaginatedApiResultInterface<ImageInterface>) {}
+}
+
+export class LoadImageRevisions implements PayloadActionInterface {
+  readonly type = AppActionTypes.LOAD_IMAGE_REVISIONS;
+
+  constructor(public payload: { imageId: ImageInterface["pk"] }) {}
+}
+
+export class LoadImageRevisionsSuccess implements PayloadActionInterface {
+  readonly type = AppActionTypes.LOAD_IMAGE_REVISIONS_SUCCESS;
+
+  constructor(public payload: { imageRevisions: PaginatedApiResultInterface<ImageRevisionInterface> }) {}
 }
 
 export class SaveImage implements PayloadActionInterface {

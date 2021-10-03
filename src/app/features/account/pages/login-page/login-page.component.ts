@@ -28,7 +28,7 @@ export class LoginPageComponent extends BaseComponentDirective implements OnInit
     public readonly titleService: TitleService,
     public readonly loadingService: LoadingService
   ) {
-    super();
+    super(store$);
   }
 
   ngOnInit(): void {

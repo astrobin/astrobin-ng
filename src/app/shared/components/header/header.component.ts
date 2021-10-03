@@ -90,7 +90,7 @@ export class HeaderComponent extends BaseComponentDirective {
     public readonly themeService: ThemeService,
     public readonly jsonApiService: JsonApiService
   ) {
-    super();
+    super(store$);
   }
 
   get currentLanguageCodeDisplay(): string {
