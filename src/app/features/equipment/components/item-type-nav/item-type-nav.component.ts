@@ -91,6 +91,10 @@ export class ItemTypeNavComponent extends BaseComponentDirective implements OnIn
   }
 
   ngOnChanges(changes: SimpleChanges) {
+    if (!this.types) {
+      return;
+    }
+
     if (changes.cameraCount) {
       this.types.find(type => type.value === EquipmentItemType.CAMERA).count = changes.cameraCount.currentValue;
     }

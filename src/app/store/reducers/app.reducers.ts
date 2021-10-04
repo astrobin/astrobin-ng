@@ -137,10 +137,10 @@ export function reducer(state = initialAppState, action: All): AppState {
     case AppActionTypes.LOAD_IMAGE_REVISIONS_SUCCESS: {
       return {
         ...state,
-        imageRevisions: new UtilsService().arrayUniqueObjects([
-          ...state.imageRevisions,
-          ...action.payload.imageRevisions.results
-        ])
+        imageRevisions: UtilsService.arrayUniqueObjects(
+          [...state.imageRevisions, ...action.payload.imageRevisions.results],
+          "pk"
+        )
       };
     }
 
