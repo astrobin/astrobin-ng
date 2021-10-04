@@ -19,7 +19,7 @@ export class UserSubscriptionService extends BaseService implements UserSubscrip
     super(loadingService);
   }
 
-  hasValidSubscription(user: UserProfileInterface, subscriptionNames: SubscriptionName[]): Observable<boolean> {
+  hasValidSubscription$(userProfile: UserProfileInterface, subscriptionNames: SubscriptionName[]): Observable<boolean> {
     return this.store$.pipe(
       take(1),
       map(state => {
@@ -29,6 +29,7 @@ export class UserSubscriptionService extends BaseService implements UserSubscrip
           )[0];
 
           if (
+            subscription &&
             state.auth.userSubscriptions.filter(userSubscription => {
               const expiration = new Date(userSubscription.expires);
               expiration.setUTCHours(23, 59, 59, 999);
@@ -49,14 +50,14 @@ export class UserSubscriptionService extends BaseService implements UserSubscrip
       take(1),
       switchMap(state =>
         zip(
-          this.hasValidSubscription(state.auth.userProfile, [
+          this.hasValidSubscription$(state.auth.userProfile, [
             SubscriptionName.ASTROBIN_ULTIMATE_2020,
             SubscriptionName.ASTROBIN_PREMIUM,
             SubscriptionName.ASTROBIN_PREMIUM_AUTORENEW,
             SubscriptionName.ASTROBIN_PREMIUM_2020
           ]),
-          this.hasValidSubscription(state.auth.userProfile, [SubscriptionName.ASTROBIN_LITE_2020]),
-          this.hasValidSubscription(state.auth.userProfile, [
+          this.hasValidSubscription$(state.auth.userProfile, [SubscriptionName.ASTROBIN_LITE_2020]),
+          this.hasValidSubscription$(state.auth.userProfile, [
             SubscriptionName.ASTROBIN_LITE,
             SubscriptionName.ASTROBIN_LITE_AUTORENEW
           ])
@@ -94,15 +95,15 @@ export class UserSubscriptionService extends BaseService implements UserSubscrip
       take(1),
       switchMap(state =>
         zip(
-          this.hasValidSubscription(state.auth.userProfile, [
+          this.hasValidSubscription$(state.auth.userProfile, [
             SubscriptionName.ASTROBIN_ULTIMATE_2020,
             SubscriptionName.ASTROBIN_PREMIUM,
             SubscriptionName.ASTROBIN_PREMIUM_AUTORENEW,
             SubscriptionName.ASTROBIN_LITE,
             SubscriptionName.ASTROBIN_LITE_AUTORENEW
           ]),
-          this.hasValidSubscription(state.auth.userProfile, [SubscriptionName.ASTROBIN_PREMIUM_2020]),
-          this.hasValidSubscription(state.auth.userProfile, [SubscriptionName.ASTROBIN_LITE_2020])
+          this.hasValidSubscription$(state.auth.userProfile, [SubscriptionName.ASTROBIN_PREMIUM_2020]),
+          this.hasValidSubscription$(state.auth.userProfile, [SubscriptionName.ASTROBIN_LITE_2020])
         ).pipe(
           map(([isUltimateOrEquivalent, isPremium, isLite]) => ({
             backendConfig: state.app.backendConfig,

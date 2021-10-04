@@ -154,6 +154,11 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
           case 400:
             message = this.translateService.instant("Invalid data, please refresh the page and try again.");
             break;
+          case 403:
+            message = this.translateService.instant(
+              "Permission denied. You don't have the required subscription level to perform this operation."
+            );
+            break;
           case 415:
             message = this.translateService.instant(
               "AstroBin could not read your file as an image. Please try a different format."

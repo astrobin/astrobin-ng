@@ -1,0 +1,17 @@
+@import "../../../../styles/breakpoints";
+
+.thumbnail {
+  @media screen and (max-width: $sm-max) {
+    img {
+      margin-bottom: 2rem;
+    }
+  }
+
+  @media screen and (min-width: $md-min) {
+    text-align: center;
+
+    img {
+      padding-top: 104px;
+    }
+  }
+}

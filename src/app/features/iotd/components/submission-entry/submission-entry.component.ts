@@ -16,8 +16,8 @@ import { distinctUntilChanged, map, take, tap } from "rxjs/operators";
 })
 export class SubmissionEntryComponent extends BasePromotionEntryComponent {
   constructor(
-    public readonly elementRef: ElementRef,
     public readonly store$: Store<State>,
+    public readonly elementRef: ElementRef,
     public readonly loadingService: LoadingService,
     public readonly modalService: NgbModal
   ) {

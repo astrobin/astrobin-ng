@@ -5,12 +5,13 @@ import { environment } from "@env/environment";
 import { Store } from "@ngrx/store";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
 import { ImageThumbnailInterface } from "@shared/interfaces/image-thumbnail.interface";
-import { ImageInterface } from "@shared/interfaces/image.interface";
+import { ImageInterface, ImageRevisionInterface } from "@shared/interfaces/image.interface";
 import { BaseClassicApiService } from "@shared/services/api/classic/base-classic-api.service";
 import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
 import { LoadingService } from "@shared/services/loading.service";
 import { Observable, throwError } from "rxjs";
 import { map } from "rxjs/operators";
+import { UserInterface } from "@shared/interfaces/user.interface";
 
 @Injectable({
   providedIn: "root"
@@ -26,7 +27,7 @@ export class ImageApiService extends BaseClassicApiService {
     super(loadingService);
   }
 
-  getImage(id: number | string): Observable<ImageInterface> {
+  getImage(id: ImageInterface["pk"] | ImageInterface["hash"]): Observable<ImageInterface> {
     if (isNaN(Number(id))) {
       const url = `${this.configUrl}/image/?hash=${id}`;
       return this.http.get<PaginatedApiResultInterface<ImageInterface>>(url).pipe(
@@ -42,19 +43,29 @@ export class ImageApiService extends BaseClassicApiService {
     return this.http.get<ImageInterface>(`${this.configUrl}/image/${id}/`);
   }
 
-  getImages(ids: number[]): Observable<PaginatedApiResultInterface<ImageInterface>> {
+  getImageRevisions(id: ImageInterface["pk"]): Observable<PaginatedApiResultInterface<ImageRevisionInterface>> {
+    return this.http.get<PaginatedApiResultInterface<ImageRevisionInterface>>(
+      `${this.configUrl}/image-revision/?image=${id}`
+    );
+  }
+
+  getImages(ids: ImageInterface["pk"][]): Observable<PaginatedApiResultInterface<ImageInterface>> {
     return this.http.get<PaginatedApiResultInterface<ImageInterface>>(`${this.configUrl}/image/?id=${ids.join(",")}`);
   }
 
-  getImagesByUserId(userId: number): Observable<PaginatedApiResultInterface<ImageInterface>> {
+  getImagesByUserId(userId: UserInterface["id"]): Observable<PaginatedApiResultInterface<ImageInterface>> {
     return this.http.get<PaginatedApiResultInterface<ImageInterface>>(`${this.configUrl}/image/?user=${userId}`);
   }
 
-  getThumbnail(id: number | string, revision: string, alias: ImageAlias): Observable<ImageThumbnailInterface> {
+  getThumbnail(
+    id: ImageInterface["pk"] | ImageInterface["hash"],
+    revision: string,
+    alias: ImageAlias
+  ): Observable<ImageThumbnailInterface> {
     return this.http.get<ImageThumbnailInterface>(`${environment.classicBaseUrl}/${id}/${revision}/thumb/${alias}/`);
   }
 
-  updateImage(pk: number, data: ImageInterface): Observable<ImageInterface> {
+  updateImage(pk: ImageInterface["pk"], data: ImageInterface): Observable<ImageInterface> {
     return this.http.put<ImageInterface>(`${this.configUrl}/image/${pk}/`, data);
   }
 }

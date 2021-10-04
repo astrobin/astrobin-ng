@@ -4,7 +4,7 @@ import { BackendConfigInterface } from "@shared/interfaces/backend-config.interf
 import { CameraInterface } from "@shared/interfaces/camera.interface";
 import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
 import { ImageThumbnailInterface } from "@shared/interfaces/image-thumbnail.interface";
-import { ImageInterface } from "@shared/interfaces/image.interface";
+import { ImageInterface, ImageRevisionInterface } from "@shared/interfaces/image.interface";
 import { SolutionInterface } from "@shared/interfaces/solution.interface";
 import { SubscriptionInterface } from "@shared/interfaces/subscription.interface";
 import { TelescopeInterface } from "@shared/interfaces/telescope.interface";
@@ -32,6 +32,9 @@ export interface AppState {
 
   // All seen images.
   images: ImageInterface[];
+
+  // All seen image revisions.
+  imageRevisions: ImageRevisionInterface[];
 
   // All seen thumbnails.
   thumbnails: ImageThumbnailInterface[];
@@ -61,6 +64,7 @@ export const initialAppState: AppState = {
   backendConfig: null,
   contentTypes: [],
   images: [],
+  imageRevisions: [],
   thumbnails: [],
   loadingThumbnails: [],
   solutions: [],
@@ -127,6 +131,16 @@ export function reducer(state = initialAppState, action: All): AppState {
       return {
         ...state,
         images: UtilsService.arrayUniqueObjects([...state.images, ...action.payload.results], "pk")
+      };
+    }
+
+    case AppActionTypes.LOAD_IMAGE_REVISIONS_SUCCESS: {
+      return {
+        ...state,
+        imageRevisions: new UtilsService().arrayUniqueObjects([
+          ...state.imageRevisions,
+          ...action.payload.imageRevisions.results
+        ])
       };
     }
 

@@ -19,7 +19,7 @@ describe("HasValidUserSubscriptionPipe", () => {
   });
 
   it("pipe should work", done => {
-    jest.spyOn(pipe.userSubscriptionService, "hasValidSubscription").mockReturnValue(of(true));
+    jest.spyOn(pipe.userSubscriptionService, "hasValidSubscription$").mockReturnValue(of(true));
     pipe
       .transform(UserProfileGenerator.userProfile(), [SubscriptionName.ASTROBIN_PREMIUM_AUTORENEW])
       .subscribe(result => {

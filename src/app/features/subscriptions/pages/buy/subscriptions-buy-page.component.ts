@@ -170,7 +170,7 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
         .select(selectCurrentUserProfile)
         .pipe(
           switchMap(userProfile =>
-            this.userSubscriptionService.hasValidSubscription(
+            this.userSubscriptionService.hasValidSubscription$(
               userProfile,
               this.subscriptionsService.getSameTier(this.product)
             )
@@ -181,7 +181,7 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
         .select(selectCurrentUserProfile)
         .pipe(
           switchMap(userProfile =>
-            this.userSubscriptionService.hasValidSubscription(
+            this.userSubscriptionService.hasValidSubscription$(
               userProfile,
               this.subscriptionsService.getHigherTier(this.product)
             )

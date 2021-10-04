@@ -11,7 +11,6 @@ export const routes: Routes = [
   {
     path: "",
     canActivate: [AuthGuardService],
-    // Using children routes to make the AuthGuardService have priority over the UltimateSubscriptionGuardService.
     children: [
       {
         path: "",
@@ -19,7 +18,7 @@ export const routes: Routes = [
       },
       {
         path: "revision/:imageId",
-        canActivate: [UploaderGuardService, ImageOwnerGuardService],
+        canActivate: [ImageOwnerGuardService],
         component: RevisionUploaderPageComponent,
         resolve: {
           image: ImageResolver

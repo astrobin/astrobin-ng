@@ -35,6 +35,7 @@ export class AppStateGenerator {
       currentFullscreenImage: null,
       contentTypes: [],
       images: [],
+      imageRevisions: [],
       thumbnails: [],
       loadingThumbnails: [],
       solutions: [],

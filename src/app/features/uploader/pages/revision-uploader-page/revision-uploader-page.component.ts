@@ -18,7 +18,12 @@ import { UploadDataService } from "@shared/services/upload-metadata/upload-data.
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { UploadState, UploadxService } from "ngx-uploadx";
 import { Observable } from "rxjs";
-import { map, takeUntil } from "rxjs/operators";
+import { map, switchMap, takeUntil } from "rxjs/operators";
+import { SubscriptionName } from "@shared/types/subscription-name.type";
+import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
+import { LoadImageRevisions } from "@app/store/actions/image.actions";
+import { selectImageRevisionsForImage } from "@app/store/selectors/app/image-revision.selectors";
+import { Actions } from "@ngrx/effects";
 
 @Component({
   selector: "astrobin-revision-uploader-page",
@@ -26,6 +31,8 @@ import { map, takeUntil } from "rxjs/operators";
   styleUrls: ["./revision-uploader-page.component.scss"]
 })
 export class RevisionUploaderPageComponent extends BaseComponentDirective implements OnInit {
+  SubscriptionName = SubscriptionName;
+
   form = new FormGroup({});
   uploadState: UploadState;
   pageTitle = this.translate.instant("Revision uploader");
@@ -85,8 +92,11 @@ export class RevisionUploaderPageComponent extends BaseComponentDirective implem
 
   image: ImageInterface;
 
+  revisionCount: number;
+
   constructor(
     public readonly store$: Store<State>,
+    public readonly actions$: Actions,
     public readonly translate: TranslateService,
     public readonly uploaderService: UploadxService,
     public readonly uploadDataService: UploadDataService,
@@ -94,34 +104,185 @@ export class RevisionUploaderPageComponent extends BaseComponentDirective implem
     public readonly classicRoutesService: ClassicRoutesService,
     public readonly route: ActivatedRoute,
     public readonly titleService: TitleService,
-    public readonly thumbnailGroupApiService: ThumbnailGroupApiService
+    public readonly thumbnailGroupApiService: ThumbnailGroupApiService,
+    public readonly userSubscriptionService: UserSubscriptionService
   ) {
     super(store$);
+  }
+
+  get subHeader$(): Observable<string> {
+    const message = (revisions: number) => {
+      if (revisions < 0) {
+        // Assume infinite.
+        return this.translate.instant("Enjoy your unlimited revisions per image!");
+      }
+
+      if (revisions === 0) {
+        return this.translate.instant("Sorry, revisions are not included at your membership level.");
+      }
+
+      if (revisions === 1) {
+        return this.translate.instant("You may have up to one revision per image.");
+      }
+
+      return this.translate.instant("You may have up to {{0}} revisions per image.", { 0: revisions });
+    };
+
+    return new Observable<string>(observer => {
+      this.currentUserProfile$
+        .pipe(
+          switchMap(currentUserProfile =>
+            this.store$.select(selectBackendConfig).pipe(map(backendConfig => ({ currentUserProfile, backendConfig })))
+          ),
+          map(({ currentUserProfile, backendConfig }) => {
+            this.userSubscriptionService
+              .hasValidSubscription$(currentUserProfile, [
+                SubscriptionName.ASTROBIN_ULTIMATE_2020,
+                SubscriptionName.ASTROBIN_PREMIUM,
+                SubscriptionName.ASTROBIN_PREMIUM_AUTORENEW,
+                SubscriptionName.ASTROBIN_LITE,
+                SubscriptionName.ASTROBIN_LITE_AUTORENEW
+              ])
+              .subscribe(has => {
+                if (has) {
+                  observer.next(message(-1));
+                  observer.complete();
+                }
+              });
+
+            this.userSubscriptionService
+              .hasValidSubscription$(currentUserProfile, [SubscriptionName.ASTROBIN_PREMIUM_2020])
+              .subscribe(has => {
+                if (has) {
+                  observer.next(message(backendConfig.PREMIUM_MAX_REVISIONS_PREMIUM_2020));
+                  observer.complete();
+                }
+              });
+
+            this.userSubscriptionService
+              .hasValidSubscription$(currentUserProfile, [SubscriptionName.ASTROBIN_LITE_2020])
+              .subscribe(has => {
+                if (has) {
+                  observer.next(message(backendConfig.PREMIUM_MAX_REVISIONS_LITE_2020));
+                  observer.complete();
+                }
+              });
+
+            this.userSubscriptionService
+              .hasValidSubscription$(currentUserProfile, Object.values(SubscriptionName))
+              .subscribe(has => {
+                if (!has) {
+                  observer.next(message(backendConfig.PREMIUM_MAX_REVISIONS_FREE_2020));
+                  observer.complete();
+                }
+              });
+          })
+        )
+        .subscribe();
+    });
+  }
+
+  get mayUploadRevision$(): Observable<boolean> {
+    return new Observable<boolean>(observer => {
+      this.currentUserProfile$
+        .pipe(
+          switchMap(currentUserProfile =>
+            this.store$.select(selectBackendConfig).pipe(map(backendConfig => ({ currentUserProfile, backendConfig })))
+          ),
+          map(({ currentUserProfile, backendConfig }) => {
+            this.userSubscriptionService
+              .hasValidSubscription$(currentUserProfile, [
+                SubscriptionName.ASTROBIN_ULTIMATE_2020,
+                SubscriptionName.ASTROBIN_PREMIUM,
+                SubscriptionName.ASTROBIN_PREMIUM_AUTORENEW,
+                SubscriptionName.ASTROBIN_LITE,
+                SubscriptionName.ASTROBIN_LITE_AUTORENEW
+              ])
+              .subscribe(has => {
+                if (has) {
+                  observer.next(true);
+                  observer.complete();
+                }
+              });
+
+            this.userSubscriptionService
+              .hasValidSubscription$(currentUserProfile, [SubscriptionName.ASTROBIN_PREMIUM_2020])
+              .subscribe(has => {
+                if (has) {
+                  observer.next(this.revisionCount < backendConfig.PREMIUM_MAX_REVISIONS_PREMIUM_2020);
+                  observer.complete();
+                }
+              });
+
+            this.userSubscriptionService
+              .hasValidSubscription$(currentUserProfile, [SubscriptionName.ASTROBIN_LITE_2020])
+              .subscribe(has => {
+                if (has) {
+                  observer.next(this.revisionCount < backendConfig.PREMIUM_MAX_REVISIONS_LITE_2020);
+                  observer.complete();
+                }
+              });
+
+            this.userSubscriptionService
+              .hasValidSubscription$(currentUserProfile, Object.values(SubscriptionName))
+              .subscribe(has => {
+                if (!has) {
+                  observer.next(this.revisionCount < backendConfig.PREMIUM_MAX_REVISIONS_FREE_2020);
+                  observer.complete();
+                }
+              });
+          })
+        )
+        .subscribe();
+    });
   }
 
   ngOnInit(): void {
     this.image = this.route.snapshot.data.image;
 
+    this._setTitle();
+    this._setBreadcrumb();
+    this._setUploadData();
+    this._setThumbnail();
+    this._setRevisionCount();
+
+    this._onDescriptionChange();
+    this._onSkipNotificationsChange();
+    this._onMarkAsFinalChange();
+  }
+
+  onSubmit() {
+    if (this.form.valid) {
+      this.uploaderService.control({ action: "upload" });
+    }
+  }
+
+  uploadButtonLoading(): boolean {
+    return (
+      this.form.valid &&
+      this.uploadState &&
+      ["queue", "uploading", "retry", "complete"].indexOf(this.uploadState.status) > -1
+    );
+  }
+
+  private _setTitle() {
     this.titleService.setTitle(this.pageTitle);
+  }
+
+  private _setBreadcrumb() {
     this.store$.dispatch(
       new SetBreadcrumb({
         breadcrumb: [{ label: this.translate.instant("Image") }, { label: this.image.title }, { label: this.pageTitle }]
       })
     );
+  }
 
+  private _setUploadData() {
     this.uploadDataService.patchMetadata("image-upload", {
       image_id: this.image.pk,
       is_revision: true,
       description: Constants.NO_VALUE
     });
-
-    this.imageThumbnail$ = this.thumbnailGroupApiService
-      .getThumbnailGroup(this.image.pk, Constants.ORIGINAL_REVISION)
-      .pipe(map(thumbnailGroup => thumbnailGroup.gallery));
-
-    this._onDescriptionChange();
-    this._onSkipNotificationsChange();
-    this._onMarkAsFinalChange();
 
     this.store$.select(selectBackendConfig).subscribe(backendConfig => {
       this.uploadDataService.setEndpoint(
@@ -140,18 +301,18 @@ export class RevisionUploaderPageComponent extends BaseComponentDirective implem
     });
   }
 
-  onSubmit() {
-    if (this.form.valid) {
-      this.uploaderService.control({ action: "upload" });
-    }
+  private _setThumbnail() {
+    this.imageThumbnail$ = this.thumbnailGroupApiService
+      .getThumbnailGroup(this.image.pk, Constants.ORIGINAL_REVISION)
+      .pipe(map(thumbnailGroup => thumbnailGroup.gallery));
   }
 
-  uploadButtonLoading(): boolean {
-    return (
-      this.form.valid &&
-      this.uploadState &&
-      ["queue", "uploading", "retry", "complete"].indexOf(this.uploadState.status) > -1
-    );
+  private _setRevisionCount() {
+    this.store$.dispatch(new LoadImageRevisions({ imageId: this.image.pk }));
+    this.store$
+      .select(selectImageRevisionsForImage, this.image.pk)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(imageRevisions => (this.revisionCount = imageRevisions.length));
   }
 
   private _onDescriptionChange() {

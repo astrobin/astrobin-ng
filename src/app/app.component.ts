@@ -21,7 +21,6 @@ export class AppComponent extends BaseComponentDirective {
     public readonly themeService: ThemeService
   ) {
     super(store$);
-
     this.initRouterEvents();
     this.initPagination();
     this.themeService.setTheme();

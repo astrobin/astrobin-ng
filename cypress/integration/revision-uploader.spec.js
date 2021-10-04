@@ -7,6 +7,11 @@ context("revision uploader", () => {
     cy.server();
     cy.route("GET", "**/images/image/1", "fixture:api/images/image_1.json").as("getImage");
     cy.route("GET", "**/images/thumbnail-group/?image=1", "fixture:api/images/image_1.json").as("getThumbnailGroup");
+
+    cy.route("GET", "**/images/image/2", "fixture:api/images/image_2.json").as("getImage");
+    cy.route("GET", "**/images/thumbnail-group/?image=2", "fixture:api/images/image_2.json").as("getThumbnailGroup");
+
+    cy.route("GET", "**/api/v2/images/image-revision/?image=*", { count: 0, results: [] });
   });
 
   describe("when logged out", () => {
@@ -49,6 +54,12 @@ context("revision uploader", () => {
         cy.route("GET", "**/images/thumbnail-group/?image=2", "fixture:api/images/image_2.json").as(
           "getThumbnailGroup"
         );
+
+        cy.route(
+          "GET",
+          "**/common/usersubscriptions/?user=*",
+          "fixture:api/common/usersubscriptions_2_ultimate.json"
+        ).as("getUserSubscriptions");
       });
 
       it("should not show the read-only mode alert", () => {
@@ -57,96 +68,420 @@ context("revision uploader", () => {
         cy.get("astrobin-read-only-mode").should("not.exist");
       });
 
-      it("should have all form controls", () => {
-        cy.visitPage("/uploader/revision/2");
+      describe("when the user is on Ultimate", () => {
+        beforeEach(() => {
+          cy.route(
+            "GET",
+            "**/common/usersubscriptions/?user=*",
+            "fixture:api/common/usersubscriptions_2_ultimate.json"
+          ).as("getUserSubscriptions");
 
-        cy.get("#image_file").should("exist");
-        cy.get("#description").should("exist");
-        cy.get("#skip_notifications").should("exist");
-        cy.get("#mark_as_final").should("exist");
-        cy.get(".accepted-formats").should("contain.text", Constants.ALLOWED_UPLOAD_EXTENSIONS.join(","));
+          cy.visitPage("/uploader/revision/2");
+        });
+
+        it("should show the correct messages about number of revisions", () => {
+          cy.get("h1 + small")
+            .contains("Enjoy your unlimited revisions per image!")
+            .should("be.visible");
+        });
+
+        it("should have all form controls", () => {
+          cy.get("#image_file").should("exist");
+          cy.get("#description").should("exist");
+          cy.get("#skip_notifications").should("exist");
+          cy.get("#mark_as_final").should("exist");
+          cy.get(".accepted-formats").should("contain.text", Constants.ALLOWED_UPLOAD_EXTENSIONS.join(","));
+        });
+
+        it("should allow the upload also if the user has a large number of revisions on this image", () => {
+          cy.route("GET", "**/api/v2/image/image-revision/?image=*", {
+            count: 5,
+            results: [
+              {
+                pk: 1,
+                image: 2
+              },
+              {
+                pk: 2,
+                image: 2
+              },
+              {
+                pk: 3,
+                image: 2
+              },
+              {
+                pk: 4,
+                image: 2
+              },
+              {
+                pk: 5,
+                image: 2
+              }
+            ]
+          });
+
+          cy.visitPage("/uploader/revision/2");
+
+          cy.get("#image_file").should("exist");
+          cy.get("upload-not-allowed").should("not.exist");
+        });
       });
 
-      it("should have all form controls if user is Premium", () => {
-        cy.login();
+      describe("when the user is on Premium", () => {
+        beforeEach(() => {
+          cy.route(
+            "GET",
+            "**/common/usersubscriptions/?user=*",
+            "fixture:api/common/usersubscriptions_2_premium.json"
+          ).as("getUserSubscriptions");
 
-        cy.route("GET", "**/common/userprofiles/current", "fixture:api/common/userprofile_current_2.json").as(
-          "getCurrentUserProfile"
-        );
-        cy.route("GET", "**/common/users/*", "fixture:api/common/users_2.json").as("getUser");
-        cy.route("GET", "**/images/image/2", "fixture:api/images/image_2.json").as("getImage");
-        cy.route("GET", "**/images/thumbnail-group/?image=2", "fixture:api/images/image_2.json").as(
-          "getThumbnailGroup"
-        );
-        cy.route(
-          "GET",
-          "**/common/usersubscriptions/?user=*",
-          "fixture:api/common/usersubscriptions_2_premium.json"
-        ).as("getUserSubscriptions");
+          cy.visitPage("/uploader/revision/2");
+        });
 
-        cy.visitPage("/uploader/revision/2");
+        it("should show the correct messages about number of revisions", () => {
+          cy.get("h1 + small")
+            .contains("Enjoy your unlimited revisions per image!")
+            .should("be.visible");
+        });
 
-        cy.get("#image_file").should("exist");
-        cy.get("#description").should("exist");
-        cy.get("#skip_notifications").should("exist");
-        cy.get("#mark_as_final").should("exist");
-        cy.get(".accepted-formats").should("contain.text", Constants.ALLOWED_UPLOAD_EXTENSIONS.join(","));
+        it("should have all form controls", () => {
+          cy.get("#image_file").should("exist");
+          cy.get("#description").should("exist");
+          cy.get("#skip_notifications").should("exist");
+          cy.get("#mark_as_final").should("exist");
+          cy.get(".accepted-formats").should("contain.text", Constants.ALLOWED_UPLOAD_EXTENSIONS.join(","));
+        });
+
+        it("should allow the upload also if the user has a large number of revisions on this image", () => {
+          cy.route("GET", "**/api/v2/images/image-revision/?image=*", {
+            count: 5,
+            results: [
+              {
+                pk: 1,
+                image: 2
+              },
+              {
+                pk: 2,
+                image: 2
+              },
+              {
+                pk: 3,
+                image: 2
+              },
+              {
+                pk: 4,
+                image: 2
+              },
+              {
+                pk: 5,
+                image: 2
+              }
+            ]
+          });
+
+          cy.visitPage("/uploader/revision/2");
+
+          cy.get("#image_file").should("exist");
+          cy.get("upload-not-allowed").should("not.exist");
+        });
       });
 
-      it("should have all form controls if user is Premium (autorenew)", () => {
-        cy.login();
+      describe("when the user is on Premium autorenew", () => {
+        beforeEach(() => {
+          cy.route(
+            "GET",
+            "**/common/usersubscriptions/?user=*",
+            "fixture:api/common/usersubscriptions_2_premium.json"
+          ).as("getUserSubscriptions");
 
-        cy.route("GET", "**/common/userprofiles/current", "fixture:api/common/userprofile_current_2.json").as(
-          "getCurrentUserProfile"
-        );
-        cy.route("GET", "**/common/users/*", "fixture:api/common/users_2.json").as("getUser");
-        cy.route("GET", "**/images/image/2", "fixture:api/images/image_2.json").as("getImage");
-        cy.route("GET", "**/images/thumbnail-group/?image=2", "fixture:api/images/image_2.json").as(
-          "getThumbnailGroup"
-        );
-        cy.route(
-          "GET",
-          "**/common/usersubscriptions/?user=*",
-          "fixture:api/common/usersubscriptions_2_premium_autorenew.json"
-        ).as("getUserSubscriptions");
+          cy.visitPage("/uploader/revision/2");
+        });
 
-        cy.visitPage("/uploader/revision/2");
+        it("should show the correct messages about number of revisions", () => {
+          cy.get("h1 + small")
+            .contains("Enjoy your unlimited revisions per image!")
+            .should("be.visible");
+        });
 
-        cy.get("#image_file").should("exist");
-        cy.get("#description").should("exist");
-        cy.get("#skip_notifications").should("exist");
-        cy.get("#mark_as_final").should("exist");
-        cy.get(".accepted-formats").should("contain.text", Constants.ALLOWED_UPLOAD_EXTENSIONS.join(","));
+        it("should have all form controls", () => {
+          cy.get("#image_file").should("exist");
+          cy.get("#description").should("exist");
+          cy.get("#skip_notifications").should("exist");
+          cy.get("#mark_as_final").should("exist");
+          cy.get(".accepted-formats").should("contain.text", Constants.ALLOWED_UPLOAD_EXTENSIONS.join(","));
+        });
+
+        it("should allow the upload also if the user has a large number of revisions on this image", () => {
+          cy.route("GET", "**/api/v2/image/image-revisions/?image=*", {
+            count: 5,
+            results: [
+              {
+                pk: 1,
+                image: 2
+              },
+              {
+                pk: 2,
+                image: 2
+              },
+              {
+                pk: 3,
+                image: 2
+              },
+              {
+                pk: 4,
+                image: 2
+              },
+              {
+                pk: 5,
+                image: 2
+              }
+            ]
+          });
+
+          cy.visitPage("/uploader/revision/2");
+
+          cy.get("#image_file").should("exist");
+          cy.get("upload-not-allowed").should("not.exist");
+        });
       });
 
-      it("should redirect if user is Premium 2020", () => {
-        cy.login();
+      describe("when the user is on Lite", () => {
+        beforeEach(() => {
+          cy.route("GET", "**/common/usersubscriptions/?user=*", "fixture:api/common/usersubscriptions_2_lite.json").as(
+            "getUserSubscriptions"
+          );
 
-        cy.route(
-          "GET",
-          "**/common/usersubscriptions/?user=*",
-          "fixture:api/common/usersubscriptions_2_premium_2020.json"
-        ).as("getUserSubscriptions");
+          cy.visitPage("/uploader/revision/2");
+        });
 
-        cy.route("GET", "**/common/users/*", "fixture:api/common/users_2.json").as("getUser");
+        it("should show the correct messages about number of revisions", () => {
+          cy.get("h1 + small")
+            .contains("Enjoy your unlimited revisions per image!")
+            .should("be.visible");
+        });
 
-        cy.visitPage("/uploader/revision/2");
+        it("should have all form controls", () => {
+          cy.get("#image_file").should("exist");
+          cy.get("#description").should("exist");
+          cy.get("#skip_notifications").should("exist");
+          cy.get("#mark_as_final").should("exist");
+          cy.get(".accepted-formats").should("contain.text", Constants.ALLOWED_UPLOAD_EXTENSIONS.join(","));
+        });
 
-        cy.url().should("contain", "/permission-denied");
+        it("should allow the upload also if the user has a large number of revisions on this image", () => {
+          cy.route("GET", "**/api/v2/image/image-revisions/?image=*", {
+            count: 5,
+            results: [
+              {
+                pk: 1,
+                image: 2
+              },
+              {
+                pk: 2,
+                image: 2
+              },
+              {
+                pk: 3,
+                image: 2
+              },
+              {
+                pk: 4,
+                image: 2
+              },
+              {
+                pk: 5,
+                image: 2
+              }
+            ]
+          });
+
+          cy.visitPage("/uploader/revision/2");
+
+          cy.get("#image_file").should("exist");
+          cy.get("upload-not-allowed").should("not.exist");
+        });
       });
 
-      it("should redirect if user is Free", () => {
-        cy.login();
+      describe("when the user is on Lite autorenew", () => {
+        beforeEach(() => {
+          cy.route("GET", "**/common/usersubscriptions/?user=*", "fixture:api/common/usersubscriptions_2_lite.json").as(
+            "getUserSubscriptions"
+          );
 
-        cy.route("GET", "**/common/usersubscriptions/?user=*", "fixture:api/common/usersubscriptions_2_free.json").as(
-          "getUserSubscriptions"
-        );
+          cy.visitPage("/uploader/revision/2");
+        });
 
-        cy.route("GET", "**/common/users/*", "fixture:api/common/users_2.json").as("getUser");
+        it("should show the correct messages about number of revisions", () => {
+          cy.get("h1 + small")
+            .contains("Enjoy your unlimited revisions per image!")
+            .should("be.visible");
+        });
 
-        cy.visitPage("/uploader/revision/2");
+        it("should have all form controls", () => {
+          cy.get("#image_file").should("exist");
+          cy.get("#description").should("exist");
+          cy.get("#skip_notifications").should("exist");
+          cy.get("#mark_as_final").should("exist");
+          cy.get(".accepted-formats").should("contain.text", Constants.ALLOWED_UPLOAD_EXTENSIONS.join(","));
+        });
 
-        cy.url().should("contain", "/permission-denied");
+        it("should allow the upload also if the user has a large number of revisions on this image", () => {
+          cy.route("GET", "**/api/v2/image/image-revisions/?image=*", {
+            count: 5,
+            results: [
+              {
+                pk: 1,
+                image: 2
+              },
+              {
+                pk: 2,
+                image: 2
+              },
+              {
+                pk: 3,
+                image: 2
+              },
+              {
+                pk: 4,
+                image: 2
+              },
+              {
+                pk: 5,
+                image: 2
+              }
+            ]
+          });
+
+          cy.visitPage("/uploader/revision/2");
+
+          cy.get("#image_file").should("exist");
+          cy.get(".upload-not-allowed").should("not.exist");
+        });
+      });
+
+      describe("when the user is on Premium 2020", () => {
+        beforeEach(() => {
+          cy.route(
+            "GET",
+            "**/common/usersubscriptions/?user=*",
+            "fixture:api/common/usersubscriptions_2_premium_2020.json"
+          ).as("getUserSubscriptions");
+
+          cy.visitPage("/uploader/revision/2");
+        });
+
+        it("should show the correct messages about number of revisions", () => {
+          cy.get("h1 + small")
+            .contains("You may have up to 5 revisions per image.")
+            .should("be.visible");
+        });
+
+        it("should have all form controls", () => {
+          cy.get("#image_file").should("exist");
+          cy.get("#description").should("exist");
+          cy.get("#skip_notifications").should("exist");
+          cy.get("#mark_as_final").should("exist");
+          cy.get(".accepted-formats").should("contain.text", Constants.ALLOWED_UPLOAD_EXTENSIONS.join(","));
+        });
+
+        it("should not allow the upload if the user has more revisions than allowed", () => {
+          cy.route("GET", "**/api/v2/images/image-revision/?image=*", {
+            count: 5,
+            results: [
+              {
+                pk: 1,
+                image: 2
+              },
+              {
+                pk: 2,
+                image: 2
+              },
+              {
+                pk: 3,
+                image: 2
+              },
+              {
+                pk: 4,
+                image: 2
+              },
+              {
+                pk: 5,
+                image: 2
+              }
+            ]
+          });
+
+          cy.visitPage("/uploader/revision/2");
+
+          cy.get("#image_file").should("not.exist");
+          cy.get(".upload-not-allowed").should("exist");
+        });
+      });
+
+      describe("when the user is on Lite 2020", () => {
+        beforeEach(() => {
+          cy.route(
+            "GET",
+            "**/common/usersubscriptions/?user=*",
+            "fixture:api/common/usersubscriptions_2_lite_2020.json"
+          ).as("getUserSubscriptions");
+
+          cy.visitPage("/uploader/revision/2");
+        });
+
+        it("should show the correct messages about number of revisions", () => {
+          cy.get("h1 + small")
+            .contains("You may have up to one revision per image.")
+            .should("be.visible");
+        });
+
+        it("should have all form controls", () => {
+          cy.get("#image_file").should("exist");
+          cy.get("#description").should("exist");
+          cy.get("#skip_notifications").should("exist");
+          cy.get("#mark_as_final").should("exist");
+          cy.get(".accepted-formats").should("contain.text", Constants.ALLOWED_UPLOAD_EXTENSIONS.join(","));
+        });
+
+        it("should not allow the upload if the user has more revisions than allowed", () => {
+          cy.route("GET", "**/api/v2/images/image-revision/?image=*", {
+            count: 5,
+            results: [
+              {
+                pk: 1,
+                image: 2
+              }
+            ]
+          });
+
+          cy.visitPage("/uploader/revision/2");
+
+          cy.get("#image_file").should("not.exist");
+          cy.get(".upload-not-allowed").should("exist");
+        });
+      });
+
+      describe("when on a free account", () => {
+        beforeEach(() => {
+          cy.route("GET", "**/common/usersubscriptions/?user=*", []).as("getUserSubscriptions");
+
+          cy.visitPage("/uploader/revision/2");
+        });
+
+        it("should show the correct messages about number of revisions", () => {
+          cy.get("h1 + small")
+            .contains("Sorry, revisions are not included at your membership level.")
+            .should("be.visible");
+        });
+
+        it("should not have all form controls", () => {
+          cy.get("#image_file").should("not.exist");
+          cy.get("#description").should("not.exist");
+          cy.get("#skip_notifications").should("not.exist");
+          cy.get("#mark_as_final").should("not.exist");
+
+          cy.get(".upload-not-allowed").should("exist");
+        });
       });
     });
   });

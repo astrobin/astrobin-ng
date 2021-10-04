@@ -164,3 +164,17 @@ export interface ImageInterface {
   locations: number[];
   fullSizeDisplayLimitation: FullSizeLimitationDisplayOptions;
 }
+
+export interface ImageRevisionInterface {
+  pk: number;
+  uploaded: string;
+  image: ImageInterface["pk"];
+  imageFile: string;
+  description: string;
+  skipNotifications: boolean;
+  label: string;
+  isFinal: boolean;
+  w: number;
+  h: number;
+  uploaderInProgress: boolean;
+}

@@ -26,7 +26,7 @@ export class PremiumSubscriptionGuardService extends BaseService implements CanA
         .pipe(
           take(1),
           switchMap(storeState =>
-            this.userSubscriptionService.hasValidSubscription(storeState.auth.userProfile, [
+            this.userSubscriptionService.hasValidSubscription$(storeState.auth.userProfile, [
               SubscriptionName.ASTROBIN_PREMIUM,
               SubscriptionName.ASTROBIN_PREMIUM_AUTORENEW
             ])
