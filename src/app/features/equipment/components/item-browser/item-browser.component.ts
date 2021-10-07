@@ -13,6 +13,7 @@ import { TranslateService } from "@ngx-translate/core";
 import {
   CreateCamera,
   CreateSensor,
+  CreateTelescope,
   EquipmentActionTypes,
   EquipmentItemCreationSuccessPayloadInterface,
   FindAllEquipmentItems,
@@ -29,6 +30,8 @@ import { ConfirmItemCreationModalComponent } from "@features/equipment/component
 import { SensorInterface } from "@features/equipment/interfaces/sensor.interface";
 import { CameraInterface } from "@features/equipment/interfaces/camera.interface";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
+import { TelescopeInterface } from "@features/equipment/interfaces/telescope.interface";
 
 @Component({
   selector: "astrobin-equipment-item-browser",
@@ -76,7 +79,8 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
     public readonly loadingService: LoadingService,
     public readonly translateService: TranslateService,
     public readonly windowRefService: WindowRefService,
-    public readonly modalService: NgbModal
+    public readonly modalService: NgbModal,
+    public readonly equipmentItemService: EquipmentItemService
   ) {
     super(store$);
   }
@@ -135,7 +139,10 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
   }
 
   createItem() {
-    const data: EquipmentItemBaseInterface = this.creationForm.value;
+    const data: EquipmentItemBaseInterface = {
+      ...this.creationModel,
+      ...this.creationForm.value
+    };
 
     const modalRef = this.modalService.open(ConfirmItemCreationModalComponent);
     modalRef.componentInstance.item = data;
@@ -145,6 +152,7 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
         let action: Action;
         let actionSuccessType: EquipmentActionTypes;
 
+        // TODO: complete
         switch (this.type) {
           case EquipmentItemType.SENSOR:
             action = new CreateSensor({ sensor: item as SensorInterface });
@@ -153,6 +161,10 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
           case EquipmentItemType.CAMERA:
             action = new CreateCamera({ camera: item as CameraInterface });
             actionSuccessType = EquipmentActionTypes.CREATE_CAMERA_SUCCESS;
+            break;
+          case EquipmentItemType.TELESCOPE:
+            action = new CreateTelescope({ telescope: item as TelescopeInterface });
+            actionSuccessType = EquipmentActionTypes.CREATE_TELESCOPE_SUCCESS;
             break;
         }
 

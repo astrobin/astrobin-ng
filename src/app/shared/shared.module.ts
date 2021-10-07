@@ -2,7 +2,7 @@ import { CommonModule } from "@angular/common";
 import { HttpClientModule } from "@angular/common/http";
 import { APP_INITIALIZER, ModuleWithProviders, NgModule } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { formlyValidationConfig } from "@app/formly.config";
+import { formlyConfig } from "@app/formly.config";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { InitializeApp } from "@app/store/actions/initialize-app.actions";
 import { State } from "@app/store/state";
@@ -155,7 +155,7 @@ export class SharedModule {
         },
         {
           provide: FORMLY_CONFIG,
-          useFactory: formlyValidationConfig,
+          useFactory: formlyConfig,
           multi: true,
           deps: [TranslateService]
         }

@@ -1,4 +1,4 @@
-import { FormControl, ValidationErrors } from "@angular/forms";
+import { AbstractControl, FormControl, FormGroup, ValidationErrors } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
 import { FormlyFieldChunkedFileComponent } from "@shared/components/misc/formly-field-chunked-file/formly-field-chunked-file.component";
@@ -98,7 +98,25 @@ function urlValidator(control: FormControl, field: FormlyFieldConfig): Validatio
   return regex.test(control.value) ? null : { url: true };
 }
 
-export function formlyValidationConfig(translate: TranslateService) {
+function maxGreaterEqualThanMinValidator(
+  control: AbstractControl,
+  fields: FormlyFieldConfig,
+  options: { minControl: string; maxControl: string; minLabel: string; maxLabel: string }
+): ValidationErrors {
+  if (!control?.value || !control?.value[options.minControl] || !control?.value[options.maxControl]) {
+    return null;
+  }
+
+  if (control.value[options.maxControl] < control.value[options.minControl]) {
+    return {
+      "max-greater-equal-than-min": { minLabel: options.minLabel, maxLabel: options.maxLabel }
+    };
+  }
+
+  return null;
+}
+
+export function formlyConfig(translate: TranslateService) {
   return {
     types: [
       {
@@ -140,7 +158,8 @@ export function formlyValidationConfig(translate: TranslateService) {
     validators: [
       { name: "file-size", validation: fileSizeValidator },
       { name: "image-file", validation: imageFileValidator },
-      { name: "url", validation: urlValidator }
+      { name: "url", validation: urlValidator },
+      { name: "max-greater-equal-than-min", validation: maxGreaterEqualThanMinValidator }
     ],
     validationMessages: [
       {
@@ -167,6 +186,15 @@ export function formlyValidationConfig(translate: TranslateService) {
         name: "image-file",
         message() {
           return translate.stream("This file is not an image.");
+        }
+      },
+      {
+        name: "max-greater-equal-than-min",
+        message(options: { minLabel: string; maxLabel: string }) {
+          return translate.stream(`"{{0}}" cannot be smaller than "{{1}}".`, {
+            0: options.maxLabel,
+            1: options.minLabel
+          });
         }
       }
     ]

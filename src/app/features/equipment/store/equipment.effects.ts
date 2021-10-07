@@ -15,6 +15,10 @@ import {
   CreateSensorEditProposal,
   CreateSensorEditProposalSuccess,
   CreateSensorSuccess,
+  CreateTelescope,
+  CreateTelescopeEditProposal,
+  CreateTelescopeEditProposalSuccess,
+  CreateTelescopeSuccess,
   EquipmentActionTypes,
   FindAllBrands,
   FindAllBrandsSuccess,
@@ -69,6 +73,10 @@ function getFromStoreOrApiByIdAndType<T>(
 
 @Injectable()
 export class EquipmentEffects {
+  /*********************************************************************************************************************
+   * Brands
+   ********************************************************************************************************************/
+
   LoadBrand: Observable<LoadBrandSuccess> = createEffect(() =>
     this.actions$.pipe(
       ofType(EquipmentActionTypes.LOAD_BRAND),
@@ -111,6 +119,10 @@ export class EquipmentEffects {
       )
     )
   );
+
+  /*********************************************************************************************************************
+   * Generic equipment items
+   ********************************************************************************************************************/
 
   LoadEquipmentItem: Observable<LoadEquipmentItemSuccess> = createEffect(() =>
     this.actions$.pipe(
@@ -234,6 +246,10 @@ export class EquipmentEffects {
     )
   );
 
+  /*********************************************************************************************************************
+   * Sensors
+   ********************************************************************************************************************/
+
   LoadSensor: Observable<LoadSensorSuccess> = createEffect(() =>
     this.actions$.pipe(
       ofType(EquipmentActionTypes.LOAD_SENSOR),
@@ -280,6 +296,10 @@ export class EquipmentEffects {
     )
   );
 
+  /*********************************************************************************************************************
+   * Cameras
+   ********************************************************************************************************************/
+
   CreateCamera: Observable<CreateCameraSuccess> = createEffect(() =>
     this.actions$.pipe(
       ofType(EquipmentActionTypes.CREATE_CAMERA),
@@ -303,6 +323,39 @@ export class EquipmentEffects {
             map(
               createdCameraEditProposal =>
                 new CreateCameraEditProposalSuccess({ editProposal: createdCameraEditProposal })
+            )
+          )
+      )
+    )
+  );
+
+  /*********************************************************************************************************************
+   * Telescopes
+   ********************************************************************************************************************/
+
+  CreateTelescope: Observable<CreateTelescopeSuccess> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(EquipmentActionTypes.CREATE_TELESCOPE),
+      map((action: CreateTelescope) => action.payload.telescope),
+      mergeMap(telescope =>
+        this.equipmentApiService
+          .createTelescope(telescope)
+          .pipe(map(createdTelescope => new CreateTelescopeSuccess({ item: createdTelescope })))
+      )
+    )
+  );
+
+  CreateTelescopeEditProposal: Observable<CreateTelescopeEditProposalSuccess> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(EquipmentActionTypes.CREATE_TELESCOPE_EDIT_PROPOSAL),
+      map((action: CreateTelescopeEditProposal) => action.payload.telescope),
+      mergeMap(telescope =>
+        this.equipmentApiService
+          .createTelescopeEditProposal(telescope)
+          .pipe(
+            map(
+              createdTelescopeEditProposal =>
+                new CreateTelescopeEditProposalSuccess({ editProposal: createdTelescopeEditProposal })
             )
           )
       )

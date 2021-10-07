@@ -126,8 +126,10 @@ export class ItemTypeNavComponent extends BaseComponentDirective implements OnIn
           ...[
             // TODO: add all CREATE_*_SUCCESS types.
             EquipmentActionTypes.CREATE_CAMERA_SUCCESS,
+            EquipmentActionTypes.CREATE_TELESCOPE_SUCCESS,
             // TODO: add all CREATE_*_EDIT_PROPOSAL_SUCCESS types.
             EquipmentActionTypes.CREATE_CAMERA_EDIT_PROPOSAL_SUCCESS,
+            EquipmentActionTypes.CREATE_TELESCOPE_EDIT_PROPOSAL_SUCCESS,
             EquipmentActionTypes.APPROVE_EQUIPMENT_ITEM_SUCCESS,
             EquipmentActionTypes.REJECT_EQUIPMENT_ITEM_SUCCESS,
             EquipmentActionTypes.APPROVE_EQUIPMENT_ITEM_EDIT_PROPOSAL_SUCCESS,
@@ -157,8 +159,7 @@ export class ItemTypeNavComponent extends BaseComponentDirective implements OnIn
         count: this.telescopeCount,
         providedCount: this.telescopeCount,
         pendingReviewCount: this.telescopesPendingReviewCount,
-        pendingEditCount: this.telescopesPendingEditCount,
-        disabled: true
+        pendingEditCount: this.telescopesPendingEditCount
       },
       {
         label: this.translateService.instant("Mounts"),
@@ -206,7 +207,7 @@ export class ItemTypeNavComponent extends BaseComponentDirective implements OnIn
 
     for (const type of this.types) {
       // TODO: remove when all other types have API.
-      if (type.value !== EquipmentItemType.CAMERA) {
+      if ([EquipmentItemType.CAMERA, EquipmentItemType.TELESCOPE].indexOf(type.value) === -1) {
         continue;
       }
 

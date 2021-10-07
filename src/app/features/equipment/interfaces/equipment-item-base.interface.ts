@@ -1,7 +1,6 @@
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { BrandInterface } from "@features/equipment/interfaces/brand.interface";
 
-// TODO: complete
 export enum EquipmentItemType {
   SENSOR = "SENSOR",
   CAMERA = "CAMERA",

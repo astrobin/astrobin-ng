@@ -26,12 +26,7 @@ describe("TelescopeService", () => {
     });
 
     it("should work for 'aperture'", () => {
-      let telescope = TelescopeGenerator.telescope({ minAperture: 50, maxAperture: 200 });
-      service.getPrintableProperty$(telescope, TelescopeDisplayProperty.APERTURE).subscribe(value => {
-        expect(value).toEqual("50 - 200 mm");
-      });
-
-      telescope = TelescopeGenerator.telescope({ minAperture: 50, maxAperture: 50 });
+      let telescope = TelescopeGenerator.telescope({ aperture: 50 });
       service.getPrintableProperty$(telescope, TelescopeDisplayProperty.APERTURE).subscribe(value => {
         expect(value).toEqual("50 mm");
       });

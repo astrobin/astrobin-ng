@@ -18,6 +18,7 @@ import {
   ApproveEquipmentItemSuccess,
   CreateCameraEditProposal,
   CreateSensorEditProposal,
+  CreateTelescopeEditProposal,
   EquipmentActionTypes,
   FindEquipmentItemEditProposals,
   LoadBrand,
@@ -45,6 +46,7 @@ import { RejectItemModalComponent } from "@features/equipment/components/reject-
 import { ApproveItemModalComponent } from "@features/equipment/components/approve-item-modal/approve-item-modal.component";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { MergeIntoModalComponent } from "@features/equipment/components/migration/merge-into-modal/merge-into-modal.component";
+import { TelescopeInterface } from "@features/equipment/interfaces/telescope.interface";
 
 @Component({
   selector: "astrobin-equipment-explorer",
@@ -228,6 +230,7 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit 
     // Remove id and set `editModelTarget`.
     const { id, ...editModelWithTarget } = { ...this.editModel, ...{ editProposalTarget: this.editModel.id } };
 
+    // TODO: complete
     switch (this.activeType) {
       case EquipmentItemType.SENSOR:
         action = new CreateSensorEditProposal({
@@ -240,6 +243,12 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit 
           camera: editModelWithTarget as EditProposalInterface<CameraInterface>
         });
         actionSuccessType = EquipmentActionTypes.CREATE_CAMERA_EDIT_PROPOSAL_SUCCESS;
+        break;
+      case EquipmentItemType.TELESCOPE:
+        action = new CreateTelescopeEditProposal({
+          telescope: editModelWithTarget as EditProposalInterface<TelescopeInterface>
+        });
+        actionSuccessType = EquipmentActionTypes.CREATE_TELESCOPE_EDIT_PROPOSAL_SUCCESS;
         break;
     }
 

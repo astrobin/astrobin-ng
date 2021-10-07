@@ -127,35 +127,35 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
           }
         : null,
       {
-        name: this.translateService.instant("Pixels"),
+        name: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.PIXELS, true),
         value: this.sensorService.getPrintableProperty$(this.item, SensorDisplayProperty.PIXELS)
       },
       {
-        name: this.translateService.instant("Pixel size"),
+        name: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.PIXEL_SIZE, true),
         value: this.sensorService.getPrintableProperty$(this.item, SensorDisplayProperty.PIXEL_SIZE)
       },
       {
-        name: this.translateService.instant("Sensor size"),
+        name: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.SENSOR_SIZE, true),
         value: this.sensorService.getPrintableProperty$(this.item, SensorDisplayProperty.SENSOR_SIZE)
       },
       {
-        name: this.translateService.instant("Full well capacity"),
+        name: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.FULL_WELL_CAPACITY, true),
         value: this.sensorService.getPrintableProperty$(this.item, SensorDisplayProperty.FULL_WELL_CAPACITY)
       },
       {
-        name: this.translateService.instant("Read noise"),
+        name: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.READ_NOISE, true),
         value: this.sensorService.getPrintableProperty$(this.item, SensorDisplayProperty.READ_NOISE)
       },
       {
-        name: this.translateService.instant("Quantum efficiency"),
+        name: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.QUANTUM_EFFICIENCY, true),
         value: this.sensorService.getPrintableProperty$(this.item, SensorDisplayProperty.QUANTUM_EFFICIENCY)
       },
       {
-        name: this.translateService.instant("ADC"),
+        name: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.ADC, true),
         value: this.sensorService.getPrintableProperty$(this.item, SensorDisplayProperty.ADC)
       },
       {
-        name: this.translateService.instant("Color/mono"),
+        name: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.COLOR_OR_MONO, true),
         value: this.sensorService.getPrintableProperty$(this.item, SensorDisplayProperty.COLOR_OR_MONO)
       }
     ]);
@@ -172,19 +172,19 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
           }
         : null,
       {
-        name: this.translateService.instant("Type"),
+        name: this.cameraService.getPrintablePropertyName(CameraDisplayProperty.TYPE, true),
         value: this.cameraService.getPrintableProperty$(item, CameraDisplayProperty.TYPE)
       },
       {
-        name: this.translateService.instant("Cooled"),
+        name: this.cameraService.getPrintablePropertyName(CameraDisplayProperty.COOLED, true),
         value: this.cameraService.getPrintableProperty$(item, CameraDisplayProperty.COOLED)
       },
       {
-        name: this.translateService.instant("Max. cooling"),
+        name: this.cameraService.getPrintablePropertyName(CameraDisplayProperty.MAX_COOLING, true),
         value: this.cameraService.getPrintableProperty$(item, CameraDisplayProperty.MAX_COOLING)
       },
       {
-        name: this.translateService.instant("Back focus"),
+        name: this.cameraService.getPrintablePropertyName(CameraDisplayProperty.BACK_FOCUS, true),
         value: this.cameraService.getPrintableProperty$(item, CameraDisplayProperty.BACK_FOCUS)
       }
     ]);
@@ -201,19 +201,19 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
           }
         : null,
       {
-        name: this.translateService.instant("Type"),
+        name: this.telescopeService.getPrintablePropertyName(TelescopeDisplayProperty.TYPE, true),
         value: this.telescopeService.getPrintableProperty$(item, TelescopeDisplayProperty.TYPE)
       },
       {
-        name: this.translateService.instant("Aperture"),
+        name: this.telescopeService.getPrintablePropertyName(TelescopeDisplayProperty.APERTURE, true),
         value: this.telescopeService.getPrintableProperty$(item, TelescopeDisplayProperty.APERTURE)
       },
       {
-        name: this.translateService.instant("Focal length"),
+        name: this.telescopeService.getPrintablePropertyName(TelescopeDisplayProperty.FOCAL_LENGTH, true),
         value: this.telescopeService.getPrintableProperty$(item, TelescopeDisplayProperty.FOCAL_LENGTH)
       },
       {
-        name: this.translateService.instant("Weight"),
+        name: this.telescopeService.getPrintablePropertyName(TelescopeDisplayProperty.WEIGHT, true),
         value: this.telescopeService.getPrintableProperty$(item, TelescopeDisplayProperty.WEIGHT)
       }
     ]);

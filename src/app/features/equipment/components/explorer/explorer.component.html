@@ -99,12 +99,21 @@
     </div>
 
     <div class="card-body">
+      <!-- TODO: complete -->
+
       <astrobin-camera-editor
         *ngIf="activeType === EquipmentItemType.CAMERA"
         [form]="editForm"
         [model]="editModel"
         [editorMode]="EquipmentItemEditorMode.EDIT_PROPOSAL"
       ></astrobin-camera-editor>
+
+      <astrobin-telescope-editor
+        *ngIf="activeType === EquipmentItemType.TELESCOPE"
+        [form]="editForm"
+        [model]="editModel"
+        [editorMode]="EquipmentItemEditorMode.EDIT_PROPOSAL"
+      ></astrobin-telescope-editor>
     </div>
 
     <div class="card-footer">

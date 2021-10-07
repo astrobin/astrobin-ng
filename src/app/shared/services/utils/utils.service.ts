@@ -221,12 +221,14 @@ export class UtilsService {
       return true;
     }
 
-    if (parseInt(a, 10) === parseInt(b, 10)) {
+    if (parseFloat(a) === parseFloat(b)) {
       return true;
     }
 
-    if (parseFloat(a) === parseFloat(b)) {
-      return true;
+    if (!UtilsService.isString(a) || (a.indexOf(".") === -1 && !UtilsService.isString(b) && b.indexOf(".") === -1)) {
+      if (parseInt(a, 10) === parseInt(b, 10)) {
+        return true;
+      }
     }
 
     try {

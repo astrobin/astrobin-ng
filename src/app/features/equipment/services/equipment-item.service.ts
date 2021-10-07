@@ -6,9 +6,6 @@ import {
   EquipmentItemBaseInterface,
   EquipmentItemType
 } from "@features/equipment/interfaces/equipment-item-base.interface";
-import { SensorInterface } from "@features/equipment/interfaces/sensor.interface";
-import { CameraInterface } from "@features/equipment/interfaces/camera.interface";
-import { TelescopeInterface } from "@features/equipment/interfaces/telescope.interface";
 import { TranslateService } from "@ngx-translate/core";
 import { EditProposalChange, EditProposalInterface } from "@features/equipment/interfaces/edit-proposal.interface";
 import { SensorService } from "@features/equipment/services/sensor.service";
@@ -16,6 +13,7 @@ import { TelescopeService } from "@features/equipment/services/telescope.service
 import { CameraService } from "@features/equipment/services/camera.service";
 import { Observable, of } from "rxjs";
 import { getEquipmentItemType } from "@features/equipment/store/equipment.selectors";
+import { EquipmentItemServiceFactory } from "@features/equipment/services/equipment-item.service-factory";
 
 export enum EquipmentItemDisplayProperty {
   NAME = "NAME",
@@ -31,6 +29,7 @@ export class EquipmentItemService extends BaseService {
     public readonly loadingService: LoadingService,
     public readonly utilsService: UtilsService,
     public readonly translateService: TranslateService,
+    public readonly equipmentItemServiceFactory: EquipmentItemServiceFactory,
     public readonly cameraService: CameraService,
     public readonly sensorService: SensorService,
     public readonly telescopeService: TelescopeService
@@ -62,8 +61,6 @@ export class EquipmentItemService extends BaseService {
       return of(null);
     }
 
-    const type: EquipmentItemType = this.getType(item);
-
     switch (propertyName) {
       case EquipmentItemDisplayProperty.NAME:
         return of(propertyValue.toString().replace("=", "="));
@@ -79,16 +76,7 @@ export class EquipmentItemService extends BaseService {
         );
     }
 
-    switch (type) {
-      case EquipmentItemType.CAMERA:
-        return this.cameraService.getPrintableProperty$(item as CameraInterface, propertyName, propertyValue);
-      case EquipmentItemType.SENSOR:
-        return this.sensorService.getPrintableProperty$(item as SensorInterface, propertyName, propertyValue);
-      case EquipmentItemType.TELESCOPE:
-        return this.telescopeService.getPrintableProperty$(item as TelescopeInterface, propertyName, propertyValue);
-    }
-
-    return of(null);
+    return this.equipmentItemServiceFactory.getService(item).getPrintableProperty$(item, propertyName, propertyValue);
   }
 
   getPrintablePropertyName(type: EquipmentItemType, propertyName: any, shortForm = false): string {
@@ -101,14 +89,7 @@ export class EquipmentItemService extends BaseService {
         return this.translateService.instant("Image");
     }
 
-    switch (type) {
-      case EquipmentItemType.CAMERA:
-        return this.cameraService.getPrintablePropertyName(propertyName, shortForm);
-      case EquipmentItemType.SENSOR:
-        return this.sensorService.getPrintablePropertyName(propertyName, shortForm);
-      case EquipmentItemType.TELESCOPE:
-        return this.telescopeService.getPrintablePropertyName(propertyName, shortForm);
-    }
+    return this.equipmentItemServiceFactory.getServiceByType(type).getPrintablePropertyName(propertyName, shortForm);
   }
 
   propertyNameToPropertyEnum(propertyName: string): string {

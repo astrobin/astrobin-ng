@@ -2,7 +2,7 @@ import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { RouterModule } from "@angular/router";
-import { formlyValidationConfig } from "@app/formly.config";
+import { formlyConfig } from "@app/formly.config";
 import { ObjectsInFieldComponent } from "@app/shared/components/misc/objects-in-field/objects-in-field.component";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import {
@@ -116,7 +116,7 @@ const services = [UsernameService];
   providers: [
     {
       provide: FORMLY_CONFIG,
-      useFactory: formlyValidationConfig,
+      useFactory: formlyConfig,
       multi: true,
       deps: [TranslateService]
     },

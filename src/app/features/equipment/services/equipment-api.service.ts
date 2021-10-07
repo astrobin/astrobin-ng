@@ -325,6 +325,16 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
   // TELESCOPE API
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+  createTelescope(telescope: Omit<TelescopeInterface, "id">): Observable<TelescopeInterface> {
+    return this._createItem<TelescopeInterface>(telescope, "telescope");
+  }
+
+  createTelescopeEditProposal(
+    editProposal: Omit<EditProposalInterface<TelescopeInterface>, "id">
+  ): Observable<EditProposalInterface<TelescopeInterface>> {
+    return this._createItemEditProposal<TelescopeInterface>(editProposal, "telescope");
+  }
+
   getTelescope(id: TelescopeInterface["id"]): Observable<TelescopeInterface> {
     return this.http.get<TelescopeInterface>(`${this.configUrl}/telescope/${id}/`);
   }

@@ -19,7 +19,7 @@ export class TelescopeEffects {
           mergeMap(telescopeFromStore =>
             telescopeFromStore !== null
               ? of(telescopeFromStore).pipe(map(telescope => new LoadTelescopeSuccess(telescope)))
-              : this.telescopeApiService.getTelescope(action.payload).pipe(
+              : this.telescopeApiService.get(action.payload).pipe(
                   map(telescope => new LoadTelescopeSuccess(telescope)),
                   catchError(error => EMPTY)
                 )

@@ -11,7 +11,7 @@ import { State } from "@app/store/state";
 import { LoadBrand, LoadEquipmentItem } from "@features/equipment/store/equipment.actions";
 import { EquipmentItemType } from "@features/equipment/interfaces/equipment-item-base.interface";
 import { selectBrand, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
-import { filter, map, switchMap, take, takeWhile, tap } from "rxjs/operators";
+import { filter, map, switchMap, take, tap } from "rxjs/operators";
 import { SensorInterface } from "@features/equipment/interfaces/sensor.interface";
 
 export enum CameraDisplayProperty {
@@ -81,6 +81,7 @@ export class CameraService extends BaseService implements EquipmentItemServiceIn
       case CameraDisplayProperty.MAX_COOLING:
         return of(propertyValue || item.maxCooling ? `${propertyValue || item.maxCooling} &deg;C` : "");
       case CameraDisplayProperty.BACK_FOCUS:
+        propertyValue = parseFloat(propertyValue);
         return of(propertyValue || item.backFocus ? `${propertyValue || item.backFocus} mm` : "");
       default:
         throw Error(`Invalid property: ${property}`);

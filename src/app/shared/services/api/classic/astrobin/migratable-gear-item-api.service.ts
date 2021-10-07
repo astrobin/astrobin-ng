@@ -24,6 +24,14 @@ export class MigratableGearItemApiService extends BaseClassicApiService
     super(loadingService);
   }
 
+  getSimilarNonMigrated(gearId: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.configUrl}/${gearId}/similar-non-migrated/`);
+  }
+
+  getSimilarNonMigratedByMakeAndName(make: string, name: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.configUrl}/similar-non-migrated/?make=${make}&name=${name}`);
+  }
+
   getRandomNonMigrated(): Observable<any[]> {
     return this.http.get<any[]>(`${this.configUrl}/random-non-migrated/`);
   }

@@ -12,8 +12,7 @@ export class TelescopeGenerator {
       name: source.name || "Test telescope",
       image: source.image || "https://cdn.astrobin.com/images/foo.jpg",
       type: source.type || TelescopeType.REFRACTOR_ACHROMATIC,
-      minAperture: source.minAperture || 90,
-      maxAperture: source.maxAperture || 90,
+      aperture: source.aperture || 90,
       minFocalLength: source.minFocalLength || 450,
       maxFocalLength: source.maxFocalLength || 450,
       weight: source.weight || 2

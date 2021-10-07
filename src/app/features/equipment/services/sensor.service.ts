@@ -36,6 +36,7 @@ export class SensorService extends BaseService implements EquipmentItemServiceIn
   ): Observable<string> {
     switch (property) {
       case SensorDisplayProperty.PIXEL_SIZE:
+        propertyValue = parseFloat(propertyValue);
         return of(propertyValue || item.pixelSize ? `${propertyValue || item.pixelSize} μm` : "");
       case SensorDisplayProperty.PIXELS:
         return of(
@@ -44,6 +45,10 @@ export class SensorService extends BaseService implements EquipmentItemServiceIn
             : ""
         );
       case SensorDisplayProperty.SENSOR_SIZE:
+        if (!!propertyValue) {
+          propertyValue.sensorWidth = parseFloat(propertyValue.sensorWidth);
+          propertyValue.sensorHeight = parseFloat(propertyValue.sensorHeight);
+        }
         return of(
           propertyValue || (item.sensorWidth && item.sensorHeight)
             ? `${propertyValue?.sensorWidth || item.sensorWidth} x ${propertyValue?.sensorHeight ||
@@ -51,14 +56,19 @@ export class SensorService extends BaseService implements EquipmentItemServiceIn
             : ""
         );
       case SensorDisplayProperty.QUANTUM_EFFICIENCY:
+        propertyValue = parseFloat(propertyValue);
         return of(propertyValue || item.quantumEfficiency ? `${propertyValue || item.quantumEfficiency}%` : "");
       case SensorDisplayProperty.FULL_WELL_CAPACITY:
+        propertyValue = parseFloat(propertyValue);
         return of(propertyValue || item.fullWellCapacity ? `${propertyValue || item.fullWellCapacity} e-` : "");
       case SensorDisplayProperty.READ_NOISE:
+        propertyValue = parseFloat(propertyValue);
         return of(propertyValue || item.readNoise ? `${propertyValue || item.readNoise} e-` : "");
       case SensorDisplayProperty.FRAME_RATE:
+        propertyValue = parseInt(propertyValue, 10);
         return of(propertyValue || item.frameRate ? `${propertyValue || item.frameRate} FPS` : "");
       case SensorDisplayProperty.ADC:
+        propertyValue = parseInt(propertyValue, 10);
         return of(propertyValue || item.adc ? `${propertyValue || item.adc}-bit` : "");
       case SensorDisplayProperty.COLOR_OR_MONO:
         if (propertyValue || item.colorOrMono === ColorOrMono.C) {

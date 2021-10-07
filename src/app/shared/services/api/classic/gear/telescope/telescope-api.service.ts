@@ -16,7 +16,7 @@ export class TelescopeApiService extends BaseClassicApiService implements Telesc
     super(loadingService);
   }
 
-  getTelescope(id: number): Observable<TelescopeInterface> {
+  get(id: number): Observable<TelescopeInterface> {
     return this.http.get<TelescopeInterface>(`${this.configUrl}/${id}/`);
   }
 }

@@ -15,10 +15,10 @@ import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/pag
   selector: "astrobin-equipment-pending-explorer-base",
   templateUrl: "./pending-explorer-base.component.html"
 })
-export abstract class PendingExplorerBaseComponent extends ExplorerBaseComponent {
+export class PendingExplorerBaseComponent extends ExplorerBaseComponent {
   items$: Observable<PaginatedApiResultInterface<EquipmentItemBaseInterface>>;
 
-  protected constructor(
+  constructor(
     public readonly store$: Store<State>,
     public readonly actions$: Actions,
     public readonly activatedRoute: ActivatedRoute,
@@ -42,5 +42,5 @@ export abstract class PendingExplorerBaseComponent extends ExplorerBaseComponent
       });
   }
 
-  abstract pageChange(page: number);
+  pageChange(page: number) {}
 }

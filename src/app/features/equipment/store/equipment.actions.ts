@@ -11,6 +11,7 @@ import { SensorInterface } from "@features/equipment/interfaces/sensor.interface
 import { CameraInterface } from "@features/equipment/interfaces/camera.interface";
 import { EditProposalInterface } from "@features/equipment/interfaces/edit-proposal.interface";
 import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
+import { TelescopeInterface } from "@features/equipment/interfaces/telescope.interface";
 
 export interface EquipmentItemCreationSuccessPayloadInterface {
   item: EquipmentItemBaseInterface;
@@ -46,6 +47,7 @@ export enum EquipmentActionTypes {
   APPROVE_EQUIPMENT_ITEM_EDIT_PROPOSAL_SUCCESS = "[Equipment] Approve edit proposal success",
   REJECT_EQUIPMENT_ITEM_EDIT_PROPOSAL = "[Equipment] Reject edit proposal",
   REJECT_EQUIPMENT_ITEM_EDIT_PROPOSAL_SUCCESS = "[Equipment] Reject edit proposal success",
+
   // Sensors
 
   CREATE_SENSOR = "[Equipment] Create sensor",
@@ -60,8 +62,19 @@ export enum EquipmentActionTypes {
   CREATE_CAMERA = "[Equipment] Create camera",
   CREATE_CAMERA_SUCCESS = "[Equipment] Create camera success",
   CREATE_CAMERA_EDIT_PROPOSAL = "[Equipment] Create camera edit proposal",
-  CREATE_CAMERA_EDIT_PROPOSAL_SUCCESS = "[Equipment] Create camera edit request proposal"
+  CREATE_CAMERA_EDIT_PROPOSAL_SUCCESS = "[Equipment] Create camera edit request proposal",
+
+  // Telescopes
+
+  CREATE_TELESCOPE = "[Equipment] Create telescope",
+  CREATE_TELESCOPE_SUCCESS = "[Equipment] Create telescope success",
+  CREATE_TELESCOPE_EDIT_PROPOSAL = "[Equipment] Create telescope edit proposal",
+  CREATE_TELESCOPE_EDIT_PROPOSAL_SUCCESS = "[Equipment] Create telescope edit request proposal"
 }
+
+/**********************************************************************************************************************
+ * Brands
+ *********************************************************************************************************************/
 
 export class LoadBrand implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.LOAD_BRAND;
@@ -98,6 +111,10 @@ export class FindAllBrandsSuccess implements PayloadActionInterface {
 
   constructor(public payload: { brands: BrandInterface[] }) {}
 }
+
+/**********************************************************************************************************************
+ * Generic equipment items
+ *********************************************************************************************************************/
 
 export class LoadEquipmentItem implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.LOAD_EQUIPMENT_ITEM;
@@ -211,6 +228,10 @@ export class RejectEquipmentItemEditProposalSuccess implements PayloadActionInte
   constructor(public payload: { editProposal: EditProposalInterface<EquipmentItemBaseInterface> }) {}
 }
 
+/**********************************************************************************************************************
+ * Sensors
+ *********************************************************************************************************************/
+
 export class CreateSensor implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.CREATE_SENSOR;
 
@@ -247,6 +268,10 @@ export class LoadSensorSuccess implements PayloadActionInterface {
   constructor(public payload: { item: SensorInterface }) {}
 }
 
+/**********************************************************************************************************************
+ * Cameras
+ *********************************************************************************************************************/
+
 export class CreateCamera implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.CREATE_CAMERA;
 
@@ -271,13 +296,44 @@ export class CreateCameraEditProposalSuccess implements PayloadActionInterface {
   constructor(public payload: { editProposal: EditProposalInterface<CameraInterface> }) {}
 }
 
+/**********************************************************************************************************************
+ * Telescopes
+ *********************************************************************************************************************/
+
+export class CreateTelescope implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.CREATE_TELESCOPE;
+
+  constructor(public payload: { telescope: Omit<TelescopeInterface, "id"> }) {}
+}
+
+export class CreateTelescopeSuccess implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.CREATE_TELESCOPE_SUCCESS;
+
+  constructor(public payload: EquipmentItemCreationSuccessPayloadInterface) {}
+}
+
+export class CreateTelescopeEditProposal implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.CREATE_TELESCOPE_EDIT_PROPOSAL;
+
+  constructor(public payload: { telescope: Omit<EditProposalInterface<TelescopeInterface>, "id"> }) {}
+}
+
+export class CreateTelescopeEditProposalSuccess implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.CREATE_TELESCOPE_EDIT_PROPOSAL_SUCCESS;
+
+  constructor(public payload: { editProposal: EditProposalInterface<TelescopeInterface> }) {}
+}
+
 export type EquipmentActions =
+  // Brands
   | LoadBrand
   | LoadBrandSuccess
   | CreateBrand
   | CreateBrandSuccess
   | FindAllBrands
   | FindAllBrandsSuccess
+
+  // Generic equipment items
   | LoadEquipmentItem
   | LoadEquipmentItemSuccess
   | FindAllEquipmentItems
@@ -296,13 +352,23 @@ export type EquipmentActions =
   | ApproveEquipmentItemEditProposalSuccess
   | RejectEquipmentItemEditProposal
   | RejectEquipmentItemEditProposalSuccess
+
+  // Sensors
   | CreateSensor
   | CreateSensorSuccess
   | CreateSensorEditProposal
   | CreateSensorEditProposalSuccess
   | LoadSensor
   | LoadSensorSuccess
+
+  // Cameras
   | CreateCamera
   | CreateCameraSuccess
   | CreateCameraEditProposal
-  | CreateCameraEditProposalSuccess;
+  | CreateCameraEditProposalSuccess
+
+  // Telescopes
+  | CreateTelescope
+  | CreateTelescopeSuccess
+  | CreateTelescopeEditProposal
+  | CreateTelescopeEditProposalSuccess;

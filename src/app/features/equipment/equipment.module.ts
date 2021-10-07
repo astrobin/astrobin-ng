@@ -36,7 +36,9 @@ import { RejectEditProposalModalComponent } from "@features/equipment/components
 import { ApproveEditProposalModalComponent } from "@features/equipment/components/approve-edit-proposal-modal/approve-edit-proposal-modal.component";
 import { AZExplorerComponent } from "@features/equipment/pages/a-z-edit-explorer/a-z-explorer.component";
 import { ExplorerComponent } from "@features/equipment/components/explorer/explorer.component";
-import { MergeIntoModalComponent } from './components/migration/merge-into-modal/merge-into-modal.component';
+import { MergeIntoModalComponent } from "./components/migration/merge-into-modal/merge-into-modal.component";
+import { TelescopeEditorComponent } from "@features/equipment/components/editors/telescope-editor/telescope-editor.component";
+import { PendingExplorerBaseComponent } from "@features/equipment/pages/explorer-base/pending-explorer-base.component";
 
 @NgModule({
   declarations: [
@@ -44,6 +46,7 @@ import { MergeIntoModalComponent } from './components/migration/merge-into-modal
     ItemSummaryComponent,
     CameraEditorComponent,
     SensorEditorComponent,
+    TelescopeEditorComponent,
     BrandSummaryComponent,
     BaseItemEditorComponent,
     BrandEditorComponent,
@@ -60,6 +63,7 @@ import { MergeIntoModalComponent } from './components/migration/merge-into-modal
     ItemBrowserComponent,
     OthersInBrandComponent,
     ItemEditProposalComponent,
+    PendingExplorerBaseComponent,
     ExplorerBaseComponent,
     ExplorerPageComponent,
     ExplorerComponent,

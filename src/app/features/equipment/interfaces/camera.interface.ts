@@ -1,7 +1,6 @@
 import { EquipmentItemBaseInterface } from "@features/equipment/interfaces/equipment-item-base.interface";
 import { SensorInterface } from "@features/equipment/interfaces/sensor.interface";
 
-// TODO
 export enum CameraType {
   DEDICATED_DEEP_SKY = "DEDICATED_DEEP_SKY",
   DSLR_MIRRORLESS = "DSLR_MIRRORLESS",

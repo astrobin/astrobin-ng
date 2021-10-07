@@ -21,6 +21,7 @@ import { UserInterface } from "@shared/interfaces/user.interface";
 import { RejectMigrationModalComponent } from "@features/equipment/components/migration/reject-migration-modal/reject-migration-modal.component";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { CameraApiService } from "@shared/services/api/classic/gear/camera/camera-api.service";
+import { TelescopeApiService } from "@shared/services/api/classic/gear/telescope/telescope-api.service";
 
 @Component({
   selector: "astrobin-migration-review-item",
@@ -47,7 +48,8 @@ export class MigrationReviewItemComponent extends BaseComponentDirective impleme
     public readonly equipmentApiService: EquipmentApiService,
     public readonly router: Router,
     public readonly modalService: NgbModal,
-    public readonly legacyCameraApiService: CameraApiService
+    public readonly legacyCameraApiService: CameraApiService,
+    public readonly legacyTelescopeApiService: TelescopeApiService
   ) {
     super(store$);
   }
@@ -76,6 +78,10 @@ export class MigrationReviewItemComponent extends BaseComponentDirective impleme
           switch (type) {
             case "camera":
               api = this.legacyCameraApiService;
+              break;
+            case "telescope":
+              api = this.legacyTelescopeApiService;
+              break;
           }
 
           return api.get(+itemId);

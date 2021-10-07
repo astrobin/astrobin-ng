@@ -210,6 +210,7 @@ describe("UtilsService", () => {
       expect(UtilsService.compareValuesLoosely(1, "false")).toBe(false);
       expect(UtilsService.compareValuesLoosely(1.5, 1.5)).toBe(true);
       expect(UtilsService.compareValuesLoosely("1.5", 1.5)).toBe(true);
+      expect(UtilsService.compareValuesLoosely("1.5", "1.6")).toBe(false);
     });
   });
 });

@@ -62,6 +62,7 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
 
   // TODO: other types
   nonMigratedCamerasCount$: Observable<number>;
+  nonMigratedTelescopesCount$: Observable<number>;
 
   constructor(
     public readonly store$: Store<State>,
@@ -100,11 +101,12 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
 
     this.router.events.pipe(takeUntil(this.destroyed$)).subscribe(event => {
       if (event instanceof NavigationEnd) {
+        this.activeType = this.activatedRoute.snapshot.paramMap.get("itemType");
         this.skip();
       }
     });
 
-    this.nonMigratedCamerasCount$ = this.legacyCameraApi.getNonMigratedCount();
+    this._updateCounts();
   }
 
   getActiveType(): EquipmentItemType {
@@ -118,6 +120,9 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
     switch (this.getActiveType()) {
       case EquipmentItemType.CAMERA:
         api = this.legacyCameraApi;
+        break;
+      case EquipmentItemType.TELESCOPE:
+        api = this.legacyTelescopeApi;
         break;
       default:
         this.popNotificationsService.error("Wrong item type requested.");
@@ -153,7 +158,8 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
 
     const _doSkip = () => {
       this.randomNonMigrated$ = this.getRandomNonMigrated$();
-      this.nonMigratedCamerasCount$ = this.legacyCameraApi.getNonMigratedCount();
+
+      this._updateCounts();
 
       if (!!this.equipmentItemBrowser) {
         this.equipmentItemBrowser.reset();
@@ -221,6 +227,9 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
       case EquipmentItemType.CAMERA:
         api = this.legacyCameraApi;
         break;
+      case EquipmentItemType.TELESCOPE:
+        api = this.legacyTelescopeApi;
+        break;
       default:
         this.popNotificationsService.error("Wrong item type requested.");
     }
@@ -286,18 +295,26 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
     );
 
     for (const itemToMigrate of [...[object], ...similarItems]) {
-      this.store$.select(selectEquipmentItem, { id: this.migrationTarget.id, type }).subscribe(item => {
-        this._applyMigration(
-          itemToMigrate,
-          [itemToMigrate.pk, MigrationFlag.MIGRATE, type, item.id],
-          "ready to migrate"
-        );
-      });
+      this.store$
+        .select(selectEquipmentItem, { id: this.migrationTarget.id, type })
+        .pipe(take(1))
+        .subscribe(item => {
+          this._applyMigration(
+            itemToMigrate,
+            [itemToMigrate.pk, MigrationFlag.MIGRATE, type, item.id],
+            "ready to migrate"
+          );
+        });
     }
   }
 
   cancelMigration() {
     this.migrationMode = false;
+  }
+
+  _updateCounts() {
+    this.nonMigratedCamerasCount$ = this.legacyCameraApi.getNonMigratedCount();
+    this.nonMigratedTelescopesCount$ = this.legacyTelescopeApi.getNonMigratedCount();
   }
 
   _applyMigration(object: any, setMigrateArgs: any[], markedAs: string) {
