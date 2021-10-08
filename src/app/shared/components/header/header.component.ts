@@ -53,6 +53,7 @@ export class HeaderComponent extends BaseComponentDirective {
     { code: "pl", label: "Polski" },
     { code: "ru", label: "Русский" },
     { code: "sq", label: "Shqipe" },
+    { code: "sv", label: "Svenska" },
     { code: "tr", label: "Türkçe" }
   ];
 
@@ -73,6 +74,7 @@ export class HeaderComponent extends BaseComponentDirective {
     { code: "pl", label: "PL" },
     { code: "ru", label: "RU" },
     { code: "sq", label: "SQ" },
+    { code: "sv", label: "SV" },
     { code: "tr", label: "TR" }
   ];
 
