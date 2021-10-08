@@ -150,8 +150,15 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
       if (uploadState.status === "complete") {
         const response = JSON.parse(uploadState.response as string);
         const hash = response.hash;
+        const forceClassicEditor = this.route.snapshot.queryParams["forceClassicEditor"] !== undefined;
 
-        this.router.navigate([`/i/${hash}/edit`]);
+        if (forceClassicEditor) {
+          this.windowRef.nativeWindow.location.assign(
+            `${this.classicRoutesService.EDIT_IMAGE_THUMBNAILS(hash)}?upload`
+          );
+        } else {
+          this.router.navigate([`/i/${hash}/edit`]);
+        }
       }
     });
   }
