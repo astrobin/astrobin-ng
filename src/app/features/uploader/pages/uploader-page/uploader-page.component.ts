@@ -151,23 +151,7 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
         const response = JSON.parse(uploadState.response as string);
         const hash = response.hash;
 
-        this.store$
-          .select(selectCurrentUserProfile)
-          .pipe(take(1))
-          .subscribe((userProfile: UserProfileInterface) => {
-            const language = (userProfile.language || "en").toLowerCase();
-            const languageMatches = ["en", "en-gb", "it", "de", "fr", "zh-hans"].indexOf(language) > -1;
-            const forceNewEditor = this.route.snapshot.queryParams["forceNewEditor"] !== undefined;
-            const forceClassicEditor = this.route.snapshot.queryParams["forceClassicEditor"] !== undefined;
-
-            if (forceNewEditor || (!forceClassicEditor && languageMatches)) {
-              this.router.navigate([`/i/${hash}/edit`]);
-            } else {
-              this.windowRef.nativeWindow.location.assign(
-                `${this.classicRoutesService.EDIT_IMAGE_THUMBNAILS(hash)}?upload`
-              );
-            }
-          });
+        this.router.navigate([`/i/${hash}/edit`]);
       }
     });
   }
