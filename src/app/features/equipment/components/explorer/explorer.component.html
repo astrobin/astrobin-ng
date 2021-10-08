@@ -27,6 +27,7 @@
     <button
       class="btn btn-sm-block btn-outline-secondary"
       [class.loading]="loadingService.isLoading()"
+      [disabled]="editMode"
       (click)="resetBrowser()"
     >
       {{ "Close" | translate }}
@@ -34,7 +35,7 @@
 
     <ng-container *ngIf="currentUser$ | async as currentUser">
       <ng-container *ngIf="!!currentUser">
-        <button class="btn btn-secondary" data-test="propose-edit" (click)="startEditMode()">
+        <button class="btn btn-secondary" data-test="propose-edit" [disabled]="editMode" (click)="startEditMode()">
           {{ "Propose edit" | translate }}&hellip;
         </button>
 
@@ -42,17 +43,18 @@
           *ngIf="currentUser | isEquipmentModerator"
           class="btn btn-secondary"
           data-test="migrate-into"
+          [disabled]="editMode"
           (click)="startMigrationMode()"
         >
           {{ "Migrate into" | translate }}&hellip;
         </button>
 
         <ng-container *ngIf="selectedItem.reviewerDecision === null && selectedItem.createdBy !== currentUser.id">
-          <button class="btn btn-danger" data-test="reject" (click)="startRejection()">
+          <button class="btn btn-danger" data-test="reject" [disabled]="editMode" (click)="startRejection()">
             {{ "Reject" | translate }}&hellip;
           </button>
 
-          <button class="btn btn-success" data-test="reject" (click)="startApproval()">
+          <button class="btn btn-success" data-test="reject" [disabled]="editMode" (click)="startApproval()">
             {{ "Approve" | translate }}&hellip;
           </button>
         </ng-container>
