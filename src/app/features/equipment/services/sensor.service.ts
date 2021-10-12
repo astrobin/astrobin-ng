@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { EquipmentItemServiceInterface } from "@features/equipment/services/equipment-item.service-interface";
-import { ColorOrMono, SensorInterface } from "@features/equipment/interfaces/sensor.interface";
+import { ColorOrMono, SensorInterface } from "@features/equipment/types/sensor.interface";
 import { TranslateService } from "@ngx-translate/core";
 import { Observable, of } from "rxjs";
 
@@ -96,6 +96,8 @@ export class SensorService extends BaseService implements EquipmentItemServiceIn
         return shortForm
           ? this.translateService.instant("Pixels Y")
           : this.translateService.instant("Number of pixels across the Y axis");
+      case SensorDisplayProperty.PIXELS:
+        return shortForm ? this.translateService.instant("Pixels") : this.translateService.instant("Number of pixels");
       case SensorDisplayProperty.SENSOR_WIDTH:
         return shortForm
           ? this.translateService.instant("Sensor width")
@@ -104,6 +106,10 @@ export class SensorService extends BaseService implements EquipmentItemServiceIn
         return shortForm
           ? this.translateService.instant("Sensor height")
           : this.translateService.instant("Sensor height") + " (mm)";
+      case SensorDisplayProperty.SENSOR_SIZE:
+        return shortForm
+          ? this.translateService.instant("Sensor size")
+          : this.translateService.instant("Sensor size") + " (mm)";
       case SensorDisplayProperty.QUANTUM_EFFICIENCY:
         return shortForm ? "QE" : this.translateService.instant("Quantum efficiency") + " (%)";
       case SensorDisplayProperty.FULL_WELL_CAPACITY:

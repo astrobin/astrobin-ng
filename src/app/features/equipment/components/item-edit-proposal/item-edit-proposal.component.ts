@@ -6,11 +6,8 @@ import {
   EditProposalChange,
   EditProposalInterface,
   EditProposalReviewStatus
-} from "@features/equipment/interfaces/edit-proposal.interface";
-import {
-  EquipmentItemBaseInterface,
-  EquipmentItemType
-} from "@features/equipment/interfaces/equipment-item-base.interface";
+} from "@features/equipment/types/edit-proposal.interface";
+import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 import {
   ApproveEquipmentItemEditProposalSuccess,

@@ -5,13 +5,13 @@ import {
   EquipmentItemBaseInterface,
   EquipmentItemReviewerRejectionReason,
   EquipmentItemType
-} from "@features/equipment/interfaces/equipment-item-base.interface";
-import { BrandInterface } from "@features/equipment/interfaces/brand.interface";
-import { SensorInterface } from "@features/equipment/interfaces/sensor.interface";
-import { CameraInterface } from "@features/equipment/interfaces/camera.interface";
-import { EditProposalInterface } from "@features/equipment/interfaces/edit-proposal.interface";
+} from "@features/equipment/types/equipment-item-base.interface";
+import { BrandInterface } from "@features/equipment/types/brand.interface";
+import { SensorInterface } from "@features/equipment/types/sensor.interface";
+import { CameraInterface } from "@features/equipment/types/camera.interface";
+import { EditProposalInterface } from "@features/equipment/types/edit-proposal.interface";
 import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
-import { TelescopeInterface } from "@features/equipment/interfaces/telescope.interface";
+import { TelescopeInterface } from "@features/equipment/types/telescope.interface";
 
 export interface EquipmentItemCreationSuccessPayloadInterface {
   item: EquipmentItemBaseInterface;

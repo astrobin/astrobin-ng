@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
-import { EquipmentItemBaseInterface } from "@features/equipment/interfaces/equipment-item-base.interface";
+import { EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { BrandInterface } from "@features/equipment/interfaces/brand.interface";
+import { BrandInterface } from "@features/equipment/types/brand.interface";
 import { State } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";

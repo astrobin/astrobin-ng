@@ -5,10 +5,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { TitleService } from "@shared/services/title/title.service";
 import { ActivatedRoute, Router } from "@angular/router";
-import {
-  EquipmentItemBaseInterface,
-  EquipmentItemType
-} from "@features/equipment/interfaces/equipment-item-base.interface";
+import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { Actions } from "@ngrx/effects";
 import { EquipmentItemEditorMode } from "@features/equipment/components/editors/base-item-editor/base-item-editor.component";
 import { ExplorerBaseComponent } from "@features/equipment/pages/explorer-base/explorer-base.component";

@@ -1,5 +1,5 @@
-import { EquipmentItemBaseInterface } from "@features/equipment/interfaces/equipment-item-base.interface";
-import { SensorInterface } from "@features/equipment/interfaces/sensor.interface";
+import { EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
+import { SensorInterface } from "@features/equipment/types/sensor.interface";
 
 export enum CameraType {
   DEDICATED_DEEP_SKY = "DEDICATED_DEEP_SKY",
@@ -13,11 +13,11 @@ export enum CameraType {
 export interface CameraInterface extends EquipmentItemBaseInterface {
   type: CameraType;
   sensor: SensorInterface["id"];
-  cooled: boolean;
-  maxCooling: number;
-  backFocus: number;
+  cooled?: boolean;
+  maxCooling?: number;
+  backFocus?: number;
 }
 
 export function instanceOfCamera(object: EquipmentItemBaseInterface): object is CameraInterface {
-  return "sensor" in object;
+  return !!object && "sensor" in object;
 }

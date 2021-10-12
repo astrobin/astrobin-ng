@@ -7,7 +7,7 @@ import { LoadingService } from "@shared/services/loading.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { State } from "@app/store/state";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
-import { ColorOrMono, SensorInterface } from "@features/equipment/interfaces/sensor.interface";
+import { ColorOrMono, SensorInterface } from "@features/equipment/types/sensor.interface";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 import { FormlyFieldService } from "@shared/services/formly-field.service";
 import { SensorDisplayProperty, SensorService } from "@features/equipment/services/sensor.service";

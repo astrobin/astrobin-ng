@@ -2,10 +2,7 @@ import { Component, OnInit, ViewChild } from "@angular/core";
 import { GearApiService } from "@shared/services/api/classic/astrobin/gear/gear-api.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { map, switchMap, take, takeUntil, tap } from "rxjs/operators";
-import {
-  EquipmentItemBaseInterface,
-  EquipmentItemType
-} from "@features/equipment/interfaces/equipment-item-base.interface";
+import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { TitleService } from "@shared/services/title/title.service";
 import { FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";

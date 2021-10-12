@@ -1,4 +1,4 @@
-import { EquipmentItemBaseInterface } from "@features/equipment/interfaces/equipment-item-base.interface";
+import { EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
 import { Observable } from "rxjs";
 
 export interface EquipmentItemServiceInterface {

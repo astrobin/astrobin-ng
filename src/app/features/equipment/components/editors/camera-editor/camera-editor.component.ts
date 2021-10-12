@@ -5,13 +5,13 @@ import { Store } from "@ngrx/store";
 import { BaseItemEditorComponent } from "@features/equipment/components/editors/base-item-editor/base-item-editor.component";
 import { LoadingService } from "@shared/services/loading.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
-import { CameraInterface, CameraType } from "@features/equipment/interfaces/camera.interface";
+import { CameraInterface, CameraType } from "@features/equipment/types/camera.interface";
 import { State } from "@app/store/state";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import { FormGroup } from "@angular/forms";
 import { of } from "rxjs";
-import { EquipmentItemType } from "@features/equipment/interfaces/equipment-item-base.interface";
-import { SensorInterface } from "@features/equipment/interfaces/sensor.interface";
+import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import { SensorInterface } from "@features/equipment/types/sensor.interface";
 import {
   CreateSensor,
   EquipmentActionTypes,
@@ -22,7 +22,7 @@ import {
 } from "@features/equipment/store/equipment.actions";
 import { filter, map, switchMap, take, takeUntil, tap } from "rxjs/operators";
 import { selectBrand, selectBrands, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
-import { BrandInterface } from "@features/equipment/interfaces/brand.interface";
+import { BrandInterface } from "@features/equipment/types/brand.interface";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 import { CameraDisplayProperty, CameraService } from "@features/equipment/services/camera.service";
 import { FormlyFieldService } from "@shared/services/formly-field.service";

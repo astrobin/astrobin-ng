@@ -1,8 +1,8 @@
 import { EquipmentActions, EquipmentActionTypes } from "./equipment.actions";
-import { EquipmentItemBaseInterface } from "@features/equipment/interfaces/equipment-item-base.interface";
+import { EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
 import { UtilsService } from "@shared/services/utils/utils.service";
-import { BrandInterface } from "@features/equipment/interfaces/brand.interface";
-import { EditProposalInterface } from "@features/equipment/interfaces/edit-proposal.interface";
+import { BrandInterface } from "@features/equipment/types/brand.interface";
+import { EditProposalInterface } from "@features/equipment/types/edit-proposal.interface";
 import { arrayUniqueEquipmentItems, getEquipmentItemType } from "@features/equipment/store/equipment.selectors";
 
 export const equipmentFeatureKey = "equipment";

@@ -11,7 +11,7 @@ import { of } from "rxjs";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 import { FormlyFieldService } from "@shared/services/formly-field.service";
 import { TelescopeDisplayProperty, TelescopeService } from "@features/equipment/services/telescope.service";
-import { TelescopeInterface, TelescopeType } from "@features/equipment/interfaces/telescope.interface";
+import { TelescopeInterface, TelescopeType } from "@features/equipment/types/telescope.interface";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { takeUntil } from "rxjs/operators";
 import { AbstractControl } from "@angular/forms";

@@ -15,7 +15,7 @@ import { LoadingService } from "@shared/services/loading.service";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import { ApproveEquipmentItem, EquipmentActionTypes, LoadBrand } from "@features/equipment/store/equipment.actions";
 import { Actions, ofType } from "@ngrx/effects";
-import { EquipmentItemBaseInterface } from "@features/equipment/interfaces/equipment-item-base.interface";
+import { EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
 import { Observable, of } from "rxjs";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { RejectMigrationModalComponent } from "@features/equipment/components/migration/reject-migration-modal/reject-migration-modal.component";

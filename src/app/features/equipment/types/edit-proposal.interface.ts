@@ -1,4 +1,4 @@
-import { EquipmentItemBaseInterface } from "@features/equipment/interfaces/equipment-item-base.interface";
+import { EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { Observable } from "rxjs";
 
@@ -27,4 +27,7 @@ export interface EditProposalInterface<T extends EquipmentItemBaseInterface> ext
   editProposalReviewIp?: string;
   editProposalReviewComment?: string;
   editProposalReviewStatus?: EditProposalReviewStatus;
+
+  // Any property of interfaces extending EquipmentItemBaseInterface.
+  [property: string]: any;
 }

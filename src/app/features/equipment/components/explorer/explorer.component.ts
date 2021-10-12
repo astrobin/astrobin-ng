@@ -4,10 +4,7 @@ import { State } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
 import { TitleService } from "@shared/services/title/title.service";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
-import {
-  EquipmentItemBaseInterface,
-  EquipmentItemType
-} from "@features/equipment/interfaces/equipment-item-base.interface";
+import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { filter, map, switchMap, take, takeUntil, tap } from "rxjs/operators";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
@@ -24,10 +21,10 @@ import {
   LoadBrand,
   LoadEquipmentItem
 } from "@features/equipment/store/equipment.actions";
-import { SensorInterface } from "@features/equipment/interfaces/sensor.interface";
-import { CameraInterface } from "@features/equipment/interfaces/camera.interface";
+import { SensorInterface } from "@features/equipment/types/sensor.interface";
+import { CameraInterface } from "@features/equipment/types/camera.interface";
 import { Actions, ofType } from "@ngrx/effects";
-import { EditProposalInterface } from "@features/equipment/interfaces/edit-proposal.interface";
+import { EditProposalInterface } from "@features/equipment/types/edit-proposal.interface";
 import { EquipmentItemEditorMode } from "@features/equipment/components/editors/base-item-editor/base-item-editor.component";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { ItemBrowserComponent } from "@features/equipment/components/item-browser/item-browser.component";
@@ -46,7 +43,7 @@ import { RejectItemModalComponent } from "@features/equipment/components/reject-
 import { ApproveItemModalComponent } from "@features/equipment/components/approve-item-modal/approve-item-modal.component";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { MergeIntoModalComponent } from "@features/equipment/components/migration/merge-into-modal/merge-into-modal.component";
-import { TelescopeInterface } from "@features/equipment/interfaces/telescope.interface";
+import { TelescopeInterface } from "@features/equipment/types/telescope.interface";
 
 @Component({
   selector: "astrobin-equipment-explorer",
@@ -274,7 +271,7 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit 
   editProposalCreated() {
     this.popNotificationsService.success(
       this.translateService.instant(
-        "Thanks! Your edit proposal has been submitted and well be reviewed as soon as possible."
+        "Thanks! Your edit proposal has been submitted and will be reviewed as soon as possible."
       )
     );
     this.loadEditProposals();

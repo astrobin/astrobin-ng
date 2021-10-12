@@ -3,10 +3,7 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { Actions } from "@ngrx/effects";
-import {
-  EquipmentItemBaseInterface,
-  EquipmentItemType
-} from "@features/equipment/interfaces/equipment-item-base.interface";
+import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { selectBrand } from "@features/equipment/store/equipment.selectors";
 import { take, takeUntil } from "rxjs/operators";

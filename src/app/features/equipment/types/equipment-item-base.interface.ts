@@ -1,5 +1,5 @@
 import { UserInterface } from "@shared/interfaces/user.interface";
-import { BrandInterface } from "@features/equipment/interfaces/brand.interface";
+import { BrandInterface } from "@features/equipment/types/brand.interface";
 
 export enum EquipmentItemType {
   SENSOR = "SENSOR",

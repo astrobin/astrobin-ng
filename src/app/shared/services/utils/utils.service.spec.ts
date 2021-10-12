@@ -3,6 +3,7 @@ import { MockBuilder } from "ng-mocks";
 
 import { UtilsService } from "./utils.service";
 import { AppModule } from "@app/app.module";
+import exp from "constants";
 
 describe("UtilsService", () => {
   let service: UtilsService;
@@ -197,20 +198,24 @@ describe("UtilsService", () => {
     });
   });
 
-  describe("compareValuesLoosely", () => {
+  describe("isString", () => {
     it("should work", () => {
-      expect(UtilsService.compareValuesLoosely(4, 4)).toBe(true);
-      expect(UtilsService.compareValuesLoosely("4", 4)).toBe(true);
-      expect(UtilsService.compareValuesLoosely("4", 4)).toBe(true);
-      expect(UtilsService.compareValuesLoosely(1, 2)).toBe(false);
-      expect(UtilsService.compareValuesLoosely({ a: 1 }, { a: 1 })).toBe(true);
-      expect(UtilsService.compareValuesLoosely({ a: 1 }, { b: 1 })).toBe(false);
-      expect(UtilsService.compareValuesLoosely(true, "True")).toBe(true);
-      expect(UtilsService.compareValuesLoosely(1, "True")).toBe(true);
-      expect(UtilsService.compareValuesLoosely(1, "false")).toBe(false);
-      expect(UtilsService.compareValuesLoosely(1.5, 1.5)).toBe(true);
-      expect(UtilsService.compareValuesLoosely("1.5", 1.5)).toBe(true);
-      expect(UtilsService.compareValuesLoosely("1.5", "1.6")).toBe(false);
+      expect(UtilsService.isString("a")).toBe(true);
+      expect(UtilsService.isString("1")).toBe(true);
+      expect(UtilsService.isString(1)).toBe(false);
+      expect(UtilsService.isString(5.5)).toBe(false);
+      expect(UtilsService.isString(null)).toBe(false);
+      expect(UtilsService.isString(undefined)).toBe(false);
+    });
+  });
+
+  describe("isNumeric", () => {
+    it("should work", () => {
+      expect(UtilsService.isNumeric("a")).toBe(false);
+      expect(UtilsService.isNumeric("1")).toBe(true);
+      expect(UtilsService.isNumeric("5.5")).toBe(true);
+      expect(UtilsService.isNumeric(null)).toBe(false);
+      expect(UtilsService.isNumeric(undefined)).toBe(false);
     });
   });
 });

@@ -8,7 +8,7 @@ import { initialState } from "@app/store/state";
 import { provideMockActions } from "@ngrx/effects/testing";
 import { ReplaySubject } from "rxjs";
 import { AppModule } from "@app/app.module";
-import { CameraInterface } from "@features/equipment/interfaces/camera.interface";
+import { CameraInterface } from "@features/equipment/types/camera.interface";
 
 describe("BaseEquipmentItemEditorComponent", () => {
   let component: BaseItemEditorComponent<CameraInterface>;

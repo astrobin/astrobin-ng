@@ -9,7 +9,7 @@ import { Actions } from "@ngrx/effects";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import { take, tap } from "rxjs/operators";
 import { LoadBrand } from "@features/equipment/store/equipment.actions";
-import { BrandInterface } from "@features/equipment/interfaces/brand.interface";
+import { BrandInterface } from "@features/equipment/types/brand.interface";
 import { PendingExplorerBaseComponent } from "@features/equipment/pages/explorer-base/pending-explorer-base.component";
 
 @Component({

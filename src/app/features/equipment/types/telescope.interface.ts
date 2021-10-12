@@ -1,4 +1,4 @@
-import { EquipmentItemBaseInterface } from "@features/equipment/interfaces/equipment-item-base.interface";
+import { EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
 
 export enum TelescopeType {
   REFRACTOR_ACHROMATIC = "REFRACTOR_ACHROMATIC",
@@ -39,5 +39,5 @@ export interface TelescopeInterface extends EquipmentItemBaseInterface {
 }
 
 export function instanceOfTelescope(object: EquipmentItemBaseInterface): object is TelescopeInterface {
-  return "aperture" in object;
+  return !!object && "aperture" in object;
 }

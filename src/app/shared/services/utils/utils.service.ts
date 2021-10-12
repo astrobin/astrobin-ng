@@ -136,8 +136,12 @@ export class UtilsService {
     return url;
   }
 
-  static isString(s): boolean {
-    return s && Object.prototype.toString.call(s) === "[object String]";
+  static isNumeric(s: string): boolean {
+    return !!s && /^\d+\.\d+$|^\d+$/.test(s);
+  }
+
+  static isString(s: any): boolean {
+    return !!s && Object.prototype.toString.call(s) === "[object String]";
   }
 
   static isFunction(functionToCheck): boolean {
@@ -190,52 +194,6 @@ export class UtilsService {
       .replace(/\-\-+/g, "-") // Replace multiple - with single -
       .replace(/^-+/, "") // Trim - from start of text
       .replace(/-+$/, ""); // Trim - from end of text
-  }
-
-  static compareValuesLoosely(a: any, b: any): boolean {
-    const parseBool = (value: any): boolean => {
-      if (value === true) {
-        return true;
-      }
-
-      if (value === false) {
-        return false;
-      }
-
-      if (value === 1 || (UtilsService.isString(value) && value.toLowerCase() === "true")) {
-        return true;
-      }
-
-      if (value === 0 || (UtilsService.isString(value) && value.toLowerCase() === "false")) {
-        return false;
-      }
-
-      throw Error("Cannot parse as bool");
-    };
-
-    if (a === b) {
-      return true;
-    }
-
-    if (JSON.stringify(a) === JSON.stringify(b)) {
-      return true;
-    }
-
-    if (parseFloat(a) === parseFloat(b)) {
-      return true;
-    }
-
-    if (!UtilsService.isString(a) || (a.indexOf(".") === -1 && !UtilsService.isString(b) && b.indexOf(".") === -1)) {
-      if (parseInt(a, 10) === parseInt(b, 10)) {
-        return true;
-      }
-    }
-
-    try {
-      return parseBool(a) === parseBool(b);
-    } catch (e) {
-      return false;
-    }
   }
 
   yesNo(value: any): string {

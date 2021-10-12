@@ -48,13 +48,10 @@ import { All } from "@app/store/actions/app.actions";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import { filter, map, mergeMap, switchMap } from "rxjs/operators";
 import { selectBrand, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
-import { SensorInterface } from "@features/equipment/interfaces/sensor.interface";
-import { BrandInterface } from "@features/equipment/interfaces/brand.interface";
+import { SensorInterface } from "@features/equipment/types/sensor.interface";
+import { BrandInterface } from "@features/equipment/types/brand.interface";
 import { UtilsService } from "@shared/services/utils/utils.service";
-import {
-  EquipmentItemBaseInterface,
-  EquipmentItemType
-} from "@features/equipment/interfaces/equipment-item-base.interface";
+import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { SelectorWithProps } from "@ngrx/store/src/models";
 
 function getFromStoreOrApiByIdAndType<T>(
@@ -259,7 +256,7 @@ export class EquipmentEffects {
           this.store$,
           id,
           EquipmentItemType.SENSOR,
-          selectEquipmentItem,
+          selectEquipmentItem as SelectorWithProps<any, { id: number; type: EquipmentItemType }, SensorInterface>,
           this.equipmentApiService.getSensor,
           this.equipmentApiService
         ).pipe(map(sensor => new LoadSensorSuccess({ item: sensor as SensorInterface })))

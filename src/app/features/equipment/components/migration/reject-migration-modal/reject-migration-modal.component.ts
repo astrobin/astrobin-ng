@@ -9,7 +9,7 @@ import {
   EquipmentItemBaseInterface,
   EquipmentItemReviewerDecision,
   EquipmentItemReviewerRejectionReason
-} from "@features/equipment/interfaces/equipment-item-base.interface";
+} from "@features/equipment/types/equipment-item-base.interface";
 import { MigrationFlag } from "@shared/services/api/classic/astrobin/migratable-gear-item-api.service.interface";
 import { switchMap, take, takeUntil } from "rxjs/operators";
 import { LoadingService } from "@shared/services/loading.service";

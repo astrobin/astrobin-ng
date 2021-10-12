@@ -1,5 +1,5 @@
 import { BrandGenerator } from "@features/equipment/generators/brand.generator";
-import { TelescopeInterface, TelescopeType } from "@features/equipment/interfaces/telescope.interface";
+import { TelescopeInterface, TelescopeType } from "@features/equipment/types/telescope.interface";
 
 export class TelescopeGenerator {
   static telescope(source: Partial<TelescopeInterface> = {}): TelescopeInterface {

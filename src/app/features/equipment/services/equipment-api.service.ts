@@ -8,19 +8,19 @@ import {
   EquipmentItemBaseInterface,
   EquipmentItemReviewerRejectionReason,
   EquipmentItemType
-} from "@features/equipment/interfaces/equipment-item-base.interface";
+} from "@features/equipment/types/equipment-item-base.interface";
 import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
 import { catchError, map, switchMap, take } from "rxjs/operators";
-import { BrandInterface } from "@features/equipment/interfaces/brand.interface";
+import { BrandInterface } from "@features/equipment/types/brand.interface";
 import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
 import { CommonApiService } from "@shared/services/api/classic/common/common-api.service";
-import { CameraInterface } from "@features/equipment/interfaces/camera.interface";
-import { SensorInterface } from "@features/equipment/interfaces/sensor.interface";
-import { TelescopeInterface } from "@features/equipment/interfaces/telescope.interface";
+import { CameraInterface } from "@features/equipment/types/camera.interface";
+import { SensorInterface } from "@features/equipment/types/sensor.interface";
+import { TelescopeInterface } from "@features/equipment/types/telescope.interface";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { TranslateService } from "@ngx-translate/core";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
-import { EditProposalInterface } from "@features/equipment/interfaces/edit-proposal.interface";
+import { EditProposalInterface } from "@features/equipment/types/edit-proposal.interface";
 import { UtilsService } from "@shared/services/utils/utils.service";
 
 @Injectable({
@@ -48,7 +48,9 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     id: EquipmentItemBaseInterface["id"],
     type: EquipmentItemType
   ): Observable<EquipmentItemBaseInterface> {
-    return this.http.get<EquipmentItemBaseInterface>(`${this.configUrl}/${type.toLowerCase()}/${id}/`);
+    return this.http
+      .get<EquipmentItemBaseInterface>(`${this.configUrl}/${type.toLowerCase()}/${id}/`)
+      .pipe(map(item => this._parseItem(item)));
   }
 
   getAllEquipmentItems(
@@ -62,25 +64,50 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
       url += `&sort=${sort}`;
     }
 
-    return this.http.get<PaginatedApiResultInterface<EquipmentItemBaseInterface>>(url);
+    return this.http.get<PaginatedApiResultInterface<EquipmentItemBaseInterface>>(url).pipe(
+      map(response => ({
+        ...response,
+        ...{
+          results: response.results.map(result => this._parseItem(result))
+        }
+      }))
+    );
   }
 
   getAllEquipmentItemsPendingReview(
     type: EquipmentItemType,
     page = 1
   ): Observable<PaginatedApiResultInterface<EquipmentItemBaseInterface>> {
-    return this.http.get<PaginatedApiResultInterface<EquipmentItemBaseInterface>>(
-      `${this.configUrl}/${type.toLowerCase()}/?pending_review=true&page=${page}`
-    );
+    return this.http
+      .get<PaginatedApiResultInterface<EquipmentItemBaseInterface>>(
+        `${this.configUrl}/${type.toLowerCase()}/?pending_review=true&page=${page}`
+      )
+      .pipe(
+        map(response => ({
+          ...response,
+          ...{
+            results: response.results.map(result => this._parseItem(result))
+          }
+        }))
+      );
   }
 
   getAllEquipmentItemsPendingEdit(
     type: EquipmentItemType,
     page = 1
   ): Observable<PaginatedApiResultInterface<EquipmentItemBaseInterface>> {
-    return this.http.get<PaginatedApiResultInterface<EquipmentItemBaseInterface>>(
-      `${this.configUrl}/${type.toLowerCase()}/?pending_edit=true&page=${page}`
-    );
+    return this.http
+      .get<PaginatedApiResultInterface<EquipmentItemBaseInterface>>(
+        `${this.configUrl}/${type.toLowerCase()}/?pending_edit=true&page=${page}`
+      )
+      .pipe(
+        map(response => ({
+          ...response,
+          ...{
+            results: response.results.map(result => this._parseItem(result))
+          }
+        }))
+      );
   }
 
   findAllEquipmentItems(q: string, type: EquipmentItemType): Observable<EquipmentItemBaseInterface[]> {
@@ -90,7 +117,7 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
 
     return this.http
       .get<PaginatedApiResultInterface<EquipmentItemBaseInterface>>(`${this.configUrl}/${type.toLowerCase()}/?q=${q}`)
-      .pipe(map(response => response.results));
+      .pipe(map(response => response.results.map(item => this._parseItem(item))));
   }
 
   findSimilarInBrand(
@@ -102,9 +129,11 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
       return of([]);
     }
 
-    return this.http.get<EquipmentItemBaseInterface[]>(
-      `${this.configUrl}/${type.toLowerCase()}/find-similar-in-brand/?brand=${brand}&q=${q}`
-    );
+    return this.http
+      .get<EquipmentItemBaseInterface[]>(
+        `${this.configUrl}/${type.toLowerCase()}/find-similar-in-brand/?brand=${brand}&q=${q}`
+      )
+      .pipe(map(items => items.map(item => this._parseItem(item))));
   }
 
   getOthersInBrand(brand: BrandInterface["id"], type: EquipmentItemType): Observable<EquipmentItemBaseInterface[]> {
@@ -112,9 +141,9 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
       return of([]);
     }
 
-    return this.http.get<EquipmentItemBaseInterface[]>(
-      `${this.configUrl}/${type.toLowerCase()}/others-in-brand/?brand=${brand}`
-    );
+    return this.http
+      .get<EquipmentItemBaseInterface[]>(`${this.configUrl}/${type.toLowerCase()}/others-in-brand/?brand=${brand}`)
+      .pipe(map(items => items.map(item => this._parseItem(item))));
   }
 
   getByContentTypeAndObjectId(
@@ -143,14 +172,16 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     const path = EquipmentItemType[type].toLowerCase();
     return this.http
       .get<PaginatedApiResultInterface<EquipmentItemBaseInterface>>(`${this.configUrl}/${path}/?name=${name}`)
-      .pipe(map(response => (response.count > 0 ? response.results[0] : null)));
+      .pipe(map(response => (response.count > 0 ? this._parseItem(response.results[0]) : null)));
   }
 
   approveEquipmentItem(item: EquipmentItemBaseInterface, comment: string): Observable<EquipmentItemBaseInterface> {
     const type = this.equipmentItemService.getType(item);
     const path = EquipmentItemType[type].toLowerCase();
 
-    return this.http.post<EquipmentItemBaseInterface>(`${this.configUrl}/${path}/${item.id}/approve/`, { comment });
+    return this.http
+      .post<EquipmentItemBaseInterface>(`${this.configUrl}/${path}/${item.id}/approve/`, { comment })
+      .pipe(map(item => this._parseItem(item)));
   }
 
   rejectEquipmentItem(
@@ -161,10 +192,12 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     const type = this.equipmentItemService.getType(item);
     const path = EquipmentItemType[type].toLowerCase();
 
-    return this.http.post<EquipmentItemBaseInterface>(`${this.configUrl}/${path}/${item.id}/reject/`, {
-      reason,
-      comment
-    });
+    return this.http
+      .post<EquipmentItemBaseInterface>(`${this.configUrl}/${path}/${item.id}/reject/`, {
+        reason,
+        comment
+      })
+      .pipe(map(item => this._parseItem(item)));
   }
 
   getEditProposals(
@@ -173,9 +206,18 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     const type = this.equipmentItemService.getType(item);
     const path = EquipmentItemType[type].toLowerCase();
 
-    return this.http.get<PaginatedApiResultInterface<EditProposalInterface<EquipmentItemBaseInterface>>>(
-      `${this.configUrl}/${path}-edit-proposal/?edit_proposal_target=${item.id}`
-    );
+    return this.http
+      .get<PaginatedApiResultInterface<EditProposalInterface<EquipmentItemBaseInterface>>>(
+        `${this.configUrl}/${path}-edit-proposal/?edit_proposal_target=${item.id}`
+      )
+      .pipe(
+        map(response => ({
+          ...response,
+          ...{
+            results: response.results.map(result => this._parseItem(result))
+          }
+        }))
+      );
   }
 
   approveEditProposal(
@@ -300,7 +342,9 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
   }
 
   getSensor(id: SensorInterface["id"]): Observable<SensorInterface> {
-    return this.http.get<SensorInterface>(`${this.configUrl}/sensor/${id}/`);
+    return this.http
+      .get<SensorInterface>(`${this.configUrl}/sensor/${id}/`)
+      .pipe(map(sensor => this._parseSensor(sensor)));
   }
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -318,7 +362,9 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
   }
 
   getCamera(id: CameraInterface["id"]): Observable<CameraInterface> {
-    return this.http.get<CameraInterface>(`${this.configUrl}/camera/${id}/`);
+    return this.http
+      .get<CameraInterface>(`${this.configUrl}/camera/${id}/`)
+      .pipe(map(camera => this._parseCamera(camera)));
   }
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -336,12 +382,64 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
   }
 
   getTelescope(id: TelescopeInterface["id"]): Observable<TelescopeInterface> {
-    return this.http.get<TelescopeInterface>(`${this.configUrl}/telescope/${id}/`);
+    return this.http
+      .get<TelescopeInterface>(`${this.configUrl}/telescope/${id}/`)
+      .pipe(map(telescope => this._parseTelescope(telescope)));
   }
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // PRIVATE
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  // django-rest-framework will coerce floats to strings, so with these functions we parse them back.
+
+  private _parseItem<T extends EquipmentItemBaseInterface | EditProposalInterface<EquipmentItemBaseInterface>>(
+    item: T
+  ): T {
+    const type = this.equipmentItemService.getType(item);
+
+    // TODO: complete
+    switch (type) {
+      case EquipmentItemType.SENSOR:
+        return this._parseSensor<any>(item);
+      case EquipmentItemType.CAMERA:
+        return this._parseCamera<any>(item);
+      case EquipmentItemType.TELESCOPE:
+        return this._parseTelescope<any>(item);
+    }
+  }
+
+  private _parseSensor<T extends SensorInterface | EditProposalInterface<SensorInterface>>(item: T): T {
+    return {
+      ...item,
+      ...{
+        pixelSize: parseFloat((item.pixelSize as unknown) as string),
+        sensorWidth: parseFloat((item.sensorWidth as unknown) as string),
+        sensorHeight: parseFloat((item.sensorHeight as unknown) as string),
+        readNoise: parseFloat((item.readNoise as unknown) as string)
+      }
+    };
+  }
+
+  private _parseCamera<T extends CameraInterface | EditProposalInterface<CameraInterface>>(item: T): T {
+    return {
+      ...item,
+      ...{
+        backFocus: parseFloat((item.backFocus as unknown) as string)
+      }
+    };
+  }
+
+  private _parseTelescope<T extends TelescopeInterface | EditProposalInterface<TelescopeInterface>>(item: T): T {
+    return {
+      ...item,
+      ...{
+        aperture: parseFloat((item.aperture as unknown) as string),
+        minFocalLength: parseFloat((item.minFocalLength as unknown) as string),
+        maxFocalLength: parseFloat((item.maxFocalLength as unknown) as string)
+      }
+    };
+  }
 
   private _createItem<T extends EquipmentItemBaseInterface>(item: Omit<T, "id">, path: string): Observable<T> {
     const { image, ...itemWithoutImage } = item;

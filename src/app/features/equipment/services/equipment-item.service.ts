@@ -2,12 +2,9 @@ import { Injectable } from "@angular/core";
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
-import {
-  EquipmentItemBaseInterface,
-  EquipmentItemType
-} from "@features/equipment/interfaces/equipment-item-base.interface";
+import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { TranslateService } from "@ngx-translate/core";
-import { EditProposalChange, EditProposalInterface } from "@features/equipment/interfaces/edit-proposal.interface";
+import { EditProposalChange, EditProposalInterface } from "@features/equipment/types/edit-proposal.interface";
 import { SensorService } from "@features/equipment/services/sensor.service";
 import { TelescopeService } from "@features/equipment/services/telescope.service";
 import { CameraService } from "@features/equipment/services/camera.service";
@@ -145,10 +142,26 @@ export class EquipmentItemService extends BaseService {
     if (editProposal.editProposalOriginalProperties) {
       originalProperties = editProposal.editProposalOriginalProperties.split(",").map(property => {
         const pair = property.split("=");
-        return {
-          name: pair[0],
-          value: pair[1] || null
-        };
+        const name = pair[0];
+        let value: any = pair[1];
+
+        if (value === "null") {
+          value = null;
+        } else if (value?.toLowerCase() === "true") {
+          value = true;
+        } else if (value?.toLowerCase() === "false") {
+          value = false;
+        } else if (UtilsService.isString(value) && UtilsService.isNumeric(value) && value.indexOf(".") > -1) {
+          try {
+            value = parseFloat(value);
+          } catch (e) {}
+        } else if (UtilsService.isString(value) && UtilsService.isNumeric(value)) {
+          try {
+            value = parseInt(value, 10);
+          } catch (e) {}
+        }
+
+        return { name, value };
       });
     }
 
@@ -167,10 +180,7 @@ export class EquipmentItemService extends BaseService {
         continue;
       }
 
-      if (
-        (!!originalProperty && !UtilsService.compareValuesLoosely(originalProperty.value, editProposal[key])) ||
-        !UtilsService.compareValuesLoosely(item[key], editProposal[key])
-      ) {
+      if ((!!originalProperty && originalProperty.value !== editProposal[key]) || item[key] !== editProposal[key]) {
         if (!editProposal.editProposalReviewStatus) {
           // The edit proposal is pending: build a diff using the current status of the item.
           changes.push({ propertyName: key, before: item[key], after: editProposal[key] });

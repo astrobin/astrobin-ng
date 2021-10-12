@@ -7,7 +7,7 @@ import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { Observable, of } from "rxjs";
 import { catchError, map, takeUntil, tap } from "rxjs/operators";
 import { TranslateService } from "@ngx-translate/core";
-import { EquipmentItemType } from "@features/equipment/interfaces/equipment-item-base.interface";
+import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { EquipmentActionTypes } from "@features/equipment/store/equipment.actions";

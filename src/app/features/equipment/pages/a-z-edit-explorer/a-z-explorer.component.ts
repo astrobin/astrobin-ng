@@ -9,9 +9,9 @@ import { Actions } from "@ngrx/effects";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import { filter, map, take, tap } from "rxjs/operators";
 import { LoadBrand } from "@features/equipment/store/equipment.actions";
-import { BrandInterface } from "@features/equipment/interfaces/brand.interface";
+import { BrandInterface } from "@features/equipment/types/brand.interface";
 import { PendingExplorerBaseComponent } from "@features/equipment/pages/explorer-base/pending-explorer-base.component";
-import { EquipmentItemBaseInterface } from "@features/equipment/interfaces/equipment-item-base.interface";
+import { EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
 import { Observable } from "rxjs";
 import { selectBrand } from "@features/equipment/store/equipment.selectors";
 

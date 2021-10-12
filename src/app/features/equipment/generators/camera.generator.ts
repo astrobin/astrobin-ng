@@ -1,7 +1,7 @@
-import { CameraInterface, CameraType } from "@features/equipment/interfaces/camera.interface";
+import { CameraInterface, CameraType } from "@features/equipment/types/camera.interface";
 import { SensorGenerator } from "@features/equipment/generators/sensor.generator";
 import { BrandGenerator } from "@features/equipment/generators/brand.generator";
-import { EditProposalInterface } from "@features/equipment/interfaces/edit-proposal.interface";
+import { EditProposalInterface } from "@features/equipment/types/edit-proposal.interface";
 
 export class CameraGenerator {
   static camera(source: Partial<CameraInterface> = {}): CameraInterface {

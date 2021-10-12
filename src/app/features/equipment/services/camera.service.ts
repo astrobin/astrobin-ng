@@ -3,16 +3,16 @@ import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { EquipmentItemServiceInterface } from "@features/equipment/services/equipment-item.service-interface";
 import { UtilsService } from "@shared/services/utils/utils.service";
-import { CameraInterface, CameraType } from "@features/equipment/interfaces/camera.interface";
+import { CameraInterface, CameraType } from "@features/equipment/types/camera.interface";
 import { TranslateService } from "@ngx-translate/core";
 import { Observable, of } from "rxjs";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { LoadBrand, LoadEquipmentItem } from "@features/equipment/store/equipment.actions";
-import { EquipmentItemType } from "@features/equipment/interfaces/equipment-item-base.interface";
+import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { selectBrand, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import { filter, map, switchMap, take, tap } from "rxjs/operators";
-import { SensorInterface } from "@features/equipment/interfaces/sensor.interface";
+import { SensorInterface } from "@features/equipment/types/sensor.interface";
 
 export enum CameraDisplayProperty {
   TYPE = "TYPE",

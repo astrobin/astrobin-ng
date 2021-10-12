@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { EquipmentItemServiceInterface } from "@features/equipment/services/equipment-item.service-interface";
-import { TelescopeInterface, TelescopeType } from "@features/equipment/interfaces/telescope.interface";
+import { TelescopeInterface, TelescopeType } from "@features/equipment/types/telescope.interface";
 import { TranslateService } from "@ngx-translate/core";
 import { Observable, of } from "rxjs";
 

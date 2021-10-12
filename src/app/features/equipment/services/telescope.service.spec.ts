@@ -3,7 +3,7 @@ import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
 import { TelescopeDisplayProperty, TelescopeService } from "@features/equipment/services/telescope.service";
 import { TelescopeGenerator } from "@features/equipment/generators/telescope.generator";
-import { TelescopeType } from "@features/equipment/interfaces/telescope.interface";
+import { TelescopeType } from "@features/equipment/types/telescope.interface";
 
 describe("TelescopeService", () => {
   let service: TelescopeService;

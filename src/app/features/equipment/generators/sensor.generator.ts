@@ -1,4 +1,4 @@
-import { ColorOrMono, SensorInterface } from "@features/equipment/interfaces/sensor.interface";
+import { ColorOrMono, SensorInterface } from "@features/equipment/types/sensor.interface";
 import { BrandGenerator } from "@features/equipment/generators/brand.generator";
 
 export class SensorGenerator {

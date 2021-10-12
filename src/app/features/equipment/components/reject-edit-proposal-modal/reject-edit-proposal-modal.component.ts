@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { FormGroup } from "@angular/forms";
-import { EquipmentItemBaseInterface } from "@features/equipment/interfaces/equipment-item-base.interface";
+import { EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
@@ -11,7 +11,7 @@ import { LoadingService } from "@shared/services/loading.service";
 import { take } from "rxjs/operators";
 import { EquipmentActionTypes, RejectEquipmentItemEditProposal } from "@features/equipment/store/equipment.actions";
 import { Actions, ofType } from "@ngrx/effects";
-import { EditProposalInterface } from "@features/equipment/interfaces/edit-proposal.interface";
+import { EditProposalInterface } from "@features/equipment/types/edit-proposal.interface";
 
 @Component({
   selector: "astrobin-reject-edit-proposal-modal",

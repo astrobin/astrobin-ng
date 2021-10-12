@@ -7,7 +7,7 @@ import { BrandGenerator } from "@features/equipment/generators/brand.generator";
 import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
 import { HttpClientModule } from "@angular/common/http";
 import { CameraGenerator } from "@features/equipment/generators/camera.generator";
-import { EquipmentItemType } from "@features/equipment/interfaces/equipment-item-base.interface";
+import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { TelescopeGenerator } from "@features/equipment/generators/telescope.generator";
 import { SensorGenerator } from "@features/equipment/generators/sensor.generator";
 import { of } from "rxjs";

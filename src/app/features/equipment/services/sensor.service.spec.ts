@@ -3,7 +3,7 @@ import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
 import { SensorDisplayProperty, SensorService } from "@features/equipment/services/sensor.service";
 import { SensorGenerator } from "@features/equipment/generators/sensor.generator";
-import { ColorOrMono } from "@features/equipment/interfaces/sensor.interface";
+import { ColorOrMono } from "@features/equipment/types/sensor.interface";
 import { of } from "rxjs";
 
 describe("SensorService", () => {

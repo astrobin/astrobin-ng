@@ -2,10 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild 
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { State } from "@app/store/state";
 import { Action, Store } from "@ngrx/store";
-import {
-  EquipmentItemBaseInterface,
-  EquipmentItemType
-} from "@features/equipment/interfaces/equipment-item-base.interface";
+import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { of } from "rxjs";
@@ -22,16 +19,16 @@ import {
 } from "@features/equipment/store/equipment.actions";
 import { filter, map, switchMap, take, takeUntil, tap } from "rxjs/operators";
 import { Actions, ofType } from "@ngrx/effects";
-import { BrandInterface } from "@features/equipment/interfaces/brand.interface";
+import { BrandInterface } from "@features/equipment/types/brand.interface";
 import { selectBrand, selectBrands, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { ConfirmItemCreationModalComponent } from "@features/equipment/components/editors/confirm-item-creation-modal/confirm-item-creation-modal.component";
-import { SensorInterface } from "@features/equipment/interfaces/sensor.interface";
-import { CameraInterface } from "@features/equipment/interfaces/camera.interface";
+import { SensorInterface } from "@features/equipment/types/sensor.interface";
+import { CameraInterface } from "@features/equipment/types/camera.interface";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
-import { TelescopeInterface } from "@features/equipment/interfaces/telescope.interface";
+import { TelescopeInterface } from "@features/equipment/types/telescope.interface";
 
 @Component({
   selector: "astrobin-equipment-item-browser",

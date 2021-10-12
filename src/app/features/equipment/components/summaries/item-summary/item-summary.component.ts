@@ -1,16 +1,13 @@
 import { Component, Input, OnChanges, SimpleChanges } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import {
-  EquipmentItemBaseInterface,
-  EquipmentItemType
-} from "@features/equipment/interfaces/equipment-item-base.interface";
+import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
-import { BrandInterface } from "@features/equipment/interfaces/brand.interface";
-import { CameraInterface, instanceOfCamera } from "@features/equipment/interfaces/camera.interface";
+import { BrandInterface } from "@features/equipment/types/brand.interface";
+import { CameraInterface, instanceOfCamera } from "@features/equipment/types/camera.interface";
 import { TranslateService } from "@ngx-translate/core";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
-import { TelescopeInterface } from "@features/equipment/interfaces/telescope.interface";
+import { TelescopeInterface } from "@features/equipment/types/telescope.interface";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { filter, map, take, takeWhile, tap } from "rxjs/operators";
 import { CameraDisplayProperty, CameraService } from "@features/equipment/services/camera.service";
@@ -20,6 +17,8 @@ import { LoadBrand, LoadSensor } from "@features/equipment/store/equipment.actio
 import { TelescopeDisplayProperty, TelescopeService } from "@features/equipment/services/telescope.service";
 import { SensorDisplayProperty, SensorService } from "@features/equipment/services/sensor.service";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
+import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import { SensorInterface } from "@features/equipment/types/sensor.interface";
 
 interface EquipmentItemProperty {
   name: string;
@@ -33,7 +32,7 @@ interface EquipmentItemProperty {
 })
 export class ItemSummaryComponent extends BaseComponentDirective implements OnChanges {
   @Input()
-  item: EquipmentItemBaseInterface;
+  item: EquipmentItem;
 
   @Input()
   showImage = true;
@@ -128,35 +127,44 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
         : null,
       {
         name: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.PIXELS, true),
-        value: this.sensorService.getPrintableProperty$(this.item, SensorDisplayProperty.PIXELS)
+        value: this.sensorService.getPrintableProperty$(this.item as SensorInterface, SensorDisplayProperty.PIXELS)
       },
       {
         name: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.PIXEL_SIZE, true),
-        value: this.sensorService.getPrintableProperty$(this.item, SensorDisplayProperty.PIXEL_SIZE)
+        value: this.sensorService.getPrintableProperty$(this.item as SensorInterface, SensorDisplayProperty.PIXEL_SIZE)
       },
       {
         name: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.SENSOR_SIZE, true),
-        value: this.sensorService.getPrintableProperty$(this.item, SensorDisplayProperty.SENSOR_SIZE)
+        value: this.sensorService.getPrintableProperty$(this.item as SensorInterface, SensorDisplayProperty.SENSOR_SIZE)
       },
       {
         name: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.FULL_WELL_CAPACITY, true),
-        value: this.sensorService.getPrintableProperty$(this.item, SensorDisplayProperty.FULL_WELL_CAPACITY)
+        value: this.sensorService.getPrintableProperty$(
+          this.item as SensorInterface,
+          SensorDisplayProperty.FULL_WELL_CAPACITY
+        )
       },
       {
         name: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.READ_NOISE, true),
-        value: this.sensorService.getPrintableProperty$(this.item, SensorDisplayProperty.READ_NOISE)
+        value: this.sensorService.getPrintableProperty$(this.item as SensorInterface, SensorDisplayProperty.READ_NOISE)
       },
       {
         name: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.QUANTUM_EFFICIENCY, true),
-        value: this.sensorService.getPrintableProperty$(this.item, SensorDisplayProperty.QUANTUM_EFFICIENCY)
+        value: this.sensorService.getPrintableProperty$(
+          this.item as SensorInterface,
+          SensorDisplayProperty.QUANTUM_EFFICIENCY
+        )
       },
       {
         name: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.ADC, true),
-        value: this.sensorService.getPrintableProperty$(this.item, SensorDisplayProperty.ADC)
+        value: this.sensorService.getPrintableProperty$(this.item as SensorInterface, SensorDisplayProperty.ADC)
       },
       {
         name: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.COLOR_OR_MONO, true),
-        value: this.sensorService.getPrintableProperty$(this.item, SensorDisplayProperty.COLOR_OR_MONO)
+        value: this.sensorService.getPrintableProperty$(
+          this.item as SensorInterface,
+          SensorDisplayProperty.COLOR_OR_MONO
+        )
       }
     ]);
   }

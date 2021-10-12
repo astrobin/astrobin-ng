@@ -4,10 +4,7 @@ import { LoadingService } from "@shared/services/loading.service";
 import { CameraService } from "@features/equipment/services/camera.service";
 import { SensorService } from "@features/equipment/services/sensor.service";
 import { TelescopeService } from "@features/equipment/services/telescope.service";
-import {
-  EquipmentItemBaseInterface,
-  EquipmentItemType
-} from "@features/equipment/interfaces/equipment-item-base.interface";
+import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { getEquipmentItemType } from "@features/equipment/store/equipment.selectors";
 import { EquipmentItemServiceInterface } from "@features/equipment/services/equipment-item.service-interface";
 

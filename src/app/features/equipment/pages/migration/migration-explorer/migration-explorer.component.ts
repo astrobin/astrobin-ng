@@ -7,7 +7,7 @@ import { ExplorerBaseComponent } from "@features/equipment/pages/explorer-base/e
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { TitleService } from "@shared/services/title/title.service";
 import { TranslateService } from "@ngx-translate/core";
-import { EquipmentItemBaseInterface } from "@features/equipment/interfaces/equipment-item-base.interface";
+import { EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
 
 @Component({
   selector: "astrobin-migration-explorer",

@@ -2,11 +2,8 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
 import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from "@angular/core";
 import { AbstractControl, FormControl, FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
-import {
-  EquipmentItemBaseInterface,
-  EquipmentItemType
-} from "@features/equipment/interfaces/equipment-item-base.interface";
-import { BrandInterface } from "@features/equipment/interfaces/brand.interface";
+import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import { BrandInterface } from "@features/equipment/types/brand.interface";
 import { of } from "rxjs";
 import {
   CreateBrand,

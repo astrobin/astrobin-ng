@@ -1,17 +1,17 @@
 import { EquipmentState } from "@features/equipment/store/equipment.reducer";
 import { State } from "@app/store/state";
 import { createSelector } from "@ngrx/store";
-import {
-  EquipmentItemBaseInterface,
-  EquipmentItemType
-} from "@features/equipment/interfaces/equipment-item-base.interface";
-import { BrandInterface } from "@features/equipment/interfaces/brand.interface";
-import { EditProposalInterface } from "@features/equipment/interfaces/edit-proposal.interface";
-import { instanceOfSensor } from "@features/equipment/interfaces/sensor.interface";
-import { instanceOfCamera } from "@features/equipment/interfaces/camera.interface";
-import { instanceOfTelescope } from "@features/equipment/interfaces/telescope.interface";
+import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import { BrandInterface } from "@features/equipment/types/brand.interface";
+import { EditProposalInterface } from "@features/equipment/types/edit-proposal.interface";
+import { instanceOfSensor } from "@features/equipment/types/sensor.interface";
+import { instanceOfCamera } from "@features/equipment/types/camera.interface";
+import { instanceOfTelescope } from "@features/equipment/types/telescope.interface";
+import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 
 export function getEquipmentItemType(item: EquipmentItemBaseInterface): EquipmentItemType {
+  // TODO: complete.
+
   if (instanceOfSensor(item)) {
     return EquipmentItemType.SENSOR;
   }
@@ -24,7 +24,7 @@ export function getEquipmentItemType(item: EquipmentItemBaseInterface): Equipmen
     return EquipmentItemType.TELESCOPE;
   }
 
-  // TODO: complete.
+  throw new Error("Unknown type");
 }
 
 export function arrayUniqueEquipmentItems(
@@ -60,7 +60,7 @@ export const selectEquipmentItems = createSelector(selectEquipment, state => sta
 
 export const selectEquipmentItem = createSelector(
   selectEquipmentItems,
-  (items: EquipmentItemBaseInterface[], data: { id: number; type: EquipmentItemType }) => {
+  (items: EquipmentItem[], data: { id: number; type: EquipmentItemType }) => {
     const matching = items.filter(item => {
       const itemType = getEquipmentItemType(item);
       return item.id === data.id && itemType === data.type;

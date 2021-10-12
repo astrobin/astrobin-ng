@@ -45,6 +45,7 @@ export const testCamera = {
   reviewerComment: null,
   created: "2021-09-12T08:09:58.508643",
   updated: "2021-09-12T08:09:58.508679",
+  brand: 1,
   name: "Test",
   image: null,
   type: "DEDICATED_DEEP_SKY",
@@ -53,7 +54,6 @@ export const testCamera = {
   backFocus: 30,
   createdBy: 1,
   reviewedBy: null,
-  brand: 1,
   sensor: 1
 };
 
@@ -68,7 +68,37 @@ export const testCameraEditProposal = {
   }
 };
 
-Cypress.Commands.add("setupEquipmentDefaultRoutes", () => {
+export const testTelescope = {
+  id: 1,
+  deleted: null,
+  reviewedTimestamp: null,
+  reviewerDecision: null,
+  reviewerRejectionReason: null,
+  reviewerComment: null,
+  created: "2021-09-12T08:09:58.508643",
+  updated: "2021-09-12T08:09:58.508679",
+  brand: 1,
+  name: "Test telescope",
+  image: null,
+  type: "REFRACTOR_ACHROMATIC",
+  aperture: 80,
+  minFocalLength: 600,
+  maxFocalLength: 600,
+  weight: 2
+};
+
+export const testTelescopeEditProposal = {
+  ...testTelescope,
+  ...{
+    editProposalTarget: 1,
+    editProposalBy: 1,
+    editProposalCreated: "2021-09-13T00:00:00",
+    editProposalUpdated: "2021-09-13T00:00:00",
+    name: "Test telescope Pro"
+  }
+};
+
+Cypress.Commands.add("setupEquipmentDefaultRoutesForBrands", () => {
   cy.route("GET", "**/api/v2/equipment/brand/?q=*", {
     count: 0,
     next: null,
@@ -84,7 +114,9 @@ Cypress.Commands.add("setupEquipmentDefaultRoutes", () => {
   }).as("findBrandsByName");
 
   cy.route("GET", /\/api\/v2\/equipment\/brand\/\d+\/$/, testBrand).as("findBrandsByName");
+});
 
+Cypress.Commands.add("setupEquipmentDefaultRoutesForCameras", () => {
   cy.route("GET", "**/api/v2/equipment/camera/?q=*", {
     count: 1,
     next: null,
@@ -127,55 +159,112 @@ Cypress.Commands.add("setupEquipmentDefaultRoutes", () => {
   cy.route("GET", "**/api/v2/equipment/camera-edit-proposal/?edit_proposal_target=*", {
     results: []
   }).as("getEditProposals");
+});
 
+Cypress.Commands.add("setupEquipmentDefaultRoutesForSensors", () => {
+  cy.route("GET", /\/api\/v2\/equipment\/sensor\/\d+\/$/, testSensor).as("getSensor");
+  cy.route("GET", "**/api/v2/equipment/sensor/?name=*", { count: 1, results: [] }).as("findSensorsByName");
   cy.route("GET", "**/api/v2/equipment/sensor/?q=*", {
     count: 0,
     next: null,
     previous: null,
     results: []
   }).as("findSensors");
-
-  cy.route("GET", /\/api\/v2\/equipment\/sensor\/\d+\/$/, testSensor).as("getSensor");
-
-  cy.route("GET", "**/api/v2/equipment/sensor/?name=*", { count: 1, results: [] }).as("findSensorsByName");
   cy.route("GET", "**/api/v2/equipment/sensor/others-in-brand/*", { count: 1, results: [testSensor] }).as(
     "sensorOthersInBrand"
   );
+});
 
-  cy.route("GET", "**/api/v2/equipment/telescope/", {
+Cypress.Commands.add("setupEquipmentDefaultRoutesForTelescopes", () => {
+  cy.route("GET", "**/api/v2/equipment/telescope/?q=*", {
+    count: 1,
+    next: null,
+    previous: null,
+    results: []
+  }).as("findTelescopes");
+
+  cy.route("GET", "**/api/v2/equipment/telescope/?page=*", {
+    count: 1,
+    next: null,
+    previous: null,
+    results: [testTelescope]
+  }).as("getTelescopes");
+
+  cy.route("GET", "**/api/v2/equipment/telescope/find-similar-in-brand/*", []);
+
+  cy.route("GET", "**/api/v2/equipment/telescope/others-in-brand/*", { count: 0, results: [] });
+
+  cy.route("GET", "**/api/v2/equipment/telescope/?name=*", {
     count: 0,
     next: null,
     previous: null,
     results: []
-  }).as("getTelescopes");
+  }).as("findTelescopesByName");
 
+  cy.route("GET", "**/api/v2/equipment/telescope/?pending_review=true&page=*", {
+    count: 0,
+    next: null,
+    previous: null,
+    results: []
+  }).as("findTelescopesPendingReview");
+
+  cy.route("GET", "**/api/v2/equipment/telescope/?pending_edit=true?page=*", {
+    count: 0,
+    next: null,
+    previous: null,
+    results: []
+  }).as("findTelescopesPendingEdit");
+
+  cy.route("GET", "**/api/v2/equipment/telescope-edit-proposal/?edit_proposal_target=*", {
+    results: []
+  }).as("getEditProposals");
+});
+
+Cypress.Commands.add("setupEquipmentDefaultRoutesForMounts", () => {
   cy.route("GET", "**/api/v2/equipment/mount/", {
     count: 0,
     next: null,
     previous: null,
     results: []
   }).as("getMounts");
+});
 
+Cypress.Commands.add("setupEquipmentDefaultRoutesForFilters", () => {
   cy.route("GET", "**/api/v2/equipment/filter/", {
     count: 0,
     next: null,
     previous: null,
     results: []
   }).as("getFilters");
+});
 
+Cypress.Commands.add("setupEquipmentDefaultRoutesForAccessories", () => {
   cy.route("GET", "**/api/v2/equipment/accessory/", {
     count: 0,
     next: null,
     previous: null,
     results: []
   }).as("getAccessories");
+});
 
+Cypress.Commands.add("setupEquipmentDefaultRoutesForSoftware", () => {
   cy.route("GET", "**/api/v2/equipment/software/", {
     count: 0,
     next: null,
     previous: null,
     results: []
   }).as("getSoftware");
+});
+
+Cypress.Commands.add("setupEquipmentDefaultRoutes", () => {
+  cy.setupEquipmentDefaultRoutesForBrands();
+  cy.setupEquipmentDefaultRoutesForCameras();
+  cy.setupEquipmentDefaultRoutesForSensors();
+  cy.setupEquipmentDefaultRoutesForTelescopes();
+  cy.setupEquipmentDefaultRoutesForMounts();
+  cy.setupEquipmentDefaultRoutesForFilters();
+  cy.setupEquipmentDefaultRoutesForAccessories();
+  cy.setupEquipmentDefaultRoutesForSoftware();
 });
 
 Cypress.Commands.add("equipmentItemBrowserCreate", (selector, text, apiToWait) => {
