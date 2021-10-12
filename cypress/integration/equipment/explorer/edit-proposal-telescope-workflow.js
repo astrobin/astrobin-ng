@@ -1,7 +1,7 @@
 import {
   testBrand,
-  testCamera,
-  testCameraEditProposal,
+  testTelescope,
+  testTelescopeEditProposal,
   testSensor
 } from "../../../support/commands/equipment-item-browser-utils";
 
@@ -11,17 +11,17 @@ context("Equipment", () => {
     cy.setupInitializationRoutes();
     cy.setupEquipmentDefaultRoutes();
 
-    cy.route("GET", "**/api/v2/equipment/camera-edit-proposal/?edit_proposal_target=*", { results: [] });
+    cy.route("GET", "**/api/v2/equipment/telescope-edit-proposal/?edit_proposal_target=*", { results: [] });
   });
 
   context("Explorer", () => {
     it("should not have the 'Propose edit' button if logged out", () => {
-      cy.visitPage("/equipment/explorer");
+      cy.visitPage("/equipment/explorer/telescope");
 
-      cy.equipmentItemBrowserSelectFirstCamera("#equipment-item-field", "Test", testCamera);
+      cy.equipmentItemBrowserSelectFirstTelescope("#equipment-item-field", "Test", testTelescope);
 
       cy.get(".card .card-header")
-        .contains("Camera")
+        .contains("Telescope")
         .should("be.visible");
 
       cy.get(".card .card-body astrobin-equipment-item-summary").should("be.visible");
@@ -31,12 +31,12 @@ context("Equipment", () => {
 
     it("should have the 'Propose edit' button if logged in", () => {
       cy.login();
-      cy.visitPage("/equipment/explorer");
+      cy.visitPage("/equipment/explorer/telescope");
 
-      cy.equipmentItemBrowserSelectFirstCamera("#equipment-item-field", "Test", testCamera);
+      cy.equipmentItemBrowserSelectFirstTelescope("#equipment-item-field", "Test", testTelescope);
 
       cy.get(".card .card-header")
-        .contains("Camera")
+        .contains("Telescope")
         .should("be.visible");
 
       cy.get(".card .card-body astrobin-equipment-item-summary").should("be.visible");
@@ -46,14 +46,13 @@ context("Equipment", () => {
 
     it("should show all the prefilled data in the form", () => {
       cy.get("[data-test=propose-edit]").click();
-      cy.get("astrobin-camera-editor").should("be.visible");
+      cy.get("astrobin-telescope-editor").should("be.visible");
       cy.ngSelectValueShouldContain("#equipment-item-field-brand", testBrand.name);
-      cy.get("#equipment-item-field-name").should("have.value", testCamera.name);
-      cy.ngSelectValueShouldContain("#camera-field-type", "Dedicated deep-sky camera");
-      cy.ngSelectValueShouldContain("#camera-field-sensor", `${testBrand.name} ${testSensor.name}`);
-      cy.get("#camera-field-cooled").should("be.checked");
-      cy.get("#camera-field-max-cooling").should("have.value", testCamera.maxCooling);
-      cy.get("#camera-field-back-focus").should("have.value", testCamera.backFocus);
+      cy.get("#equipment-item-field-name").should("have.value", testTelescope.name);
+      cy.ngSelectValueShouldContain("#telescope-field-type", "Refractor: achromatic");
+      cy.get("#telescope-field-aperture").should("have.value", testTelescope.aperture);
+      cy.get("#telescope-field-min-focal-length").should("have.value", testTelescope.minFocalLength);
+      cy.get("#telescope-field-max-focal-length").should("have.value", testTelescope.maxFocalLength);
     });
 
     it("should the comment field", () => {
@@ -61,18 +60,18 @@ context("Equipment", () => {
     });
 
     it("should show warning if name is changed", () => {
-      cy.route("GET", "**/api/v2/equipment/camera/?name=*", {
+      cy.route("GET", "**/api/v2/equipment/telescope/?name=*", {
         count: 0,
         next: null,
         previous: null,
         results: []
-      }).as("findCamerasByName");
+      }).as("findTelescopesByName");
 
       cy.get("#equipment-item-field-name")
         .clear()
         .type("Foo");
 
-      cy.wait("@findCamerasByName");
+      cy.wait("@findTelescopesByName");
 
       cy.get(".alert-warning span")
         .contains("Change the name only to fix a typo")
@@ -80,9 +79,11 @@ context("Equipment", () => {
     });
 
     it("should submit the form", () => {
-      cy.route("POST", "**/api/v2/equipment/camera-edit-proposal/", testCameraEditProposal).as("saveEditProposal");
-      cy.route("GET", "**/api/v2/equipment/camera-edit-proposal/?edit_proposal_target=*", {
-        results: [testCameraEditProposal]
+      cy.route("POST", "**/api/v2/equipment/telescope-edit-proposal/", testTelescopeEditProposal).as(
+        "saveEditProposal"
+      );
+      cy.route("GET", "**/api/v2/equipment/telescope-edit-proposal/?edit_proposal_target=*", {
+        results: [testTelescopeEditProposal]
       }).as("getEditProposals");
 
       cy.get("[data-test=propose-edit-confirm]").click();
@@ -94,7 +95,7 @@ context("Equipment", () => {
         .contains("Your edit proposal has been submitted")
         .should("be.visible");
 
-      cy.get("astrobin-camera-editor").should("not.be.visible");
+      cy.get("astrobin-telescope-editor").should("not.be.visible");
     });
 
     it("should show the new edit proposal on the page", () => {
@@ -108,10 +109,10 @@ context("Equipment", () => {
         .contains("Name:")
         .should("be.visible");
       cy.get("astrobin-item-edit-proposal .change .before")
-        .contains("Test")
+        .contains("Test telescope")
         .should("be.visible");
       cy.get("astrobin-item-edit-proposal .change .after")
-        .contains("Test Pro")
+        .contains("Test telescope Pro")
         .should("be.visible");
     });
 

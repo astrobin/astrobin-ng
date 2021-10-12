@@ -87,6 +87,7 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
           "templateOptions.disabled": () => this.brandCreation.inProgress
         },
         templateOptions: {
+          required: true,
           type: "number",
           min: 1,
           step: 1,
@@ -102,6 +103,7 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
           "templateOptions.disabled": () => this.brandCreation.inProgress
         },
         templateOptions: {
+          required: true,
           type: "number",
           min: 1,
           step: 1,

@@ -44,6 +44,9 @@ context("Equipment", () => {
           testBrand
         );
 
+        cy.get("#sensor-field-pixel-width").type(2000);
+        cy.get("#sensor-field-pixel-height").type(1000);
+
         cy.get("#create-new-sensor #equipment-item-field-name").should("have.value", "Test sensor");
 
         cy.route("POST", "**/api/v2/equipment/sensor/", testSensor).as("createSensor");

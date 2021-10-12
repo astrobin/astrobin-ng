@@ -118,7 +118,7 @@ Cypress.Commands.add("setupEquipmentDefaultRoutesForBrands", () => {
 
 Cypress.Commands.add("setupEquipmentDefaultRoutesForCameras", () => {
   cy.route("GET", "**/api/v2/equipment/camera/?q=*", {
-    count: 1,
+    count: 0,
     next: null,
     previous: null,
     results: []
@@ -133,7 +133,7 @@ Cypress.Commands.add("setupEquipmentDefaultRoutesForCameras", () => {
 
   cy.route("GET", "**/api/v2/equipment/camera/find-similar-in-brand/*", []);
 
-  cy.route("GET", "**/api/v2/equipment/camera/others-in-brand/*", { count: 0, results: [] });
+  cy.route("GET", "**/api/v2/equipment/camera/others-in-brand/*", []);
 
   cy.route("GET", "**/api/v2/equipment/camera/?name=*", {
     count: 0,
@@ -163,21 +163,19 @@ Cypress.Commands.add("setupEquipmentDefaultRoutesForCameras", () => {
 
 Cypress.Commands.add("setupEquipmentDefaultRoutesForSensors", () => {
   cy.route("GET", /\/api\/v2\/equipment\/sensor\/\d+\/$/, testSensor).as("getSensor");
-  cy.route("GET", "**/api/v2/equipment/sensor/?name=*", { count: 1, results: [] }).as("findSensorsByName");
+  cy.route("GET", "**/api/v2/equipment/sensor/?name=*", { count: 0, results: [] }).as("findSensorsByName");
   cy.route("GET", "**/api/v2/equipment/sensor/?q=*", {
     count: 0,
     next: null,
     previous: null,
     results: []
   }).as("findSensors");
-  cy.route("GET", "**/api/v2/equipment/sensor/others-in-brand/*", { count: 1, results: [testSensor] }).as(
-    "sensorOthersInBrand"
-  );
+  cy.route("GET", "**/api/v2/equipment/sensor/others-in-brand/*", [testSensor]).as("sensorOthersInBrand");
 });
 
 Cypress.Commands.add("setupEquipmentDefaultRoutesForTelescopes", () => {
   cy.route("GET", "**/api/v2/equipment/telescope/?q=*", {
-    count: 1,
+    count: 0,
     next: null,
     previous: null,
     results: []
@@ -192,7 +190,7 @@ Cypress.Commands.add("setupEquipmentDefaultRoutesForTelescopes", () => {
 
   cy.route("GET", "**/api/v2/equipment/telescope/find-similar-in-brand/*", []);
 
-  cy.route("GET", "**/api/v2/equipment/telescope/others-in-brand/*", { count: 0, results: [] });
+  cy.route("GET", "**/api/v2/equipment/telescope/others-in-brand/*", []);
 
   cy.route("GET", "**/api/v2/equipment/telescope/?name=*", {
     count: 0,
@@ -361,4 +359,21 @@ Cypress.Commands.add("equipmentItemBrowserSelectFirstSensor", (selector, sensorN
   cy.ngSelectOptionNumberSelectorShouldContain(selector, 1, "astrobin-equipment-item-summary .label", sensorName);
   cy.ngSelectOptionClick(selector, 1);
   cy.ngSelectValueShouldContain(selector, sensorName);
+});
+
+Cypress.Commands.add("equipmentItemBrowserSelectFirstTelescope", (selector, telescopeName, telescopeObject) => {
+  cy.route("GET", "**/api/v2/equipment/telescope/?q=*", {
+    count: 1,
+    next: null,
+    previous: null,
+    results: [telescopeObject]
+  }).as("findTelescopes");
+
+  cy.ngSelectType(selector, telescopeName);
+
+  cy.wait("@findTelescopes");
+
+  cy.ngSelectOptionNumberSelectorShouldContain(selector, 1, "astrobin-equipment-item-summary .label", telescopeName);
+  cy.ngSelectOptionClick(selector, 1);
+  cy.ngSelectValueShouldContain(selector, telescopeName);
 });

@@ -7,10 +7,10 @@ context("Equipment", () => {
 
   context("Explorer", () => {
     it("should not have the 'Add' tag", () => {
-      cy.visitPage("/equipment/explorer");
+      cy.visitPage("/equipment/explorer/telescope");
 
       cy.get("#equipment-item-field .ng-input input").type("Test");
-      cy.wait("@findCameras");
+      cy.wait("@findTelescopes");
 
       cy.get("#equipment-item-field .ng-option").should("have.length", 1);
       cy.get("#equipment-item-field .ng-option:nth-child(1)").should("contain", "No items found");

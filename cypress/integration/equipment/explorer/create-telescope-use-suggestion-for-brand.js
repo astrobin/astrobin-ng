@@ -8,12 +8,12 @@ context("Equipment", () => {
   });
 
   context("Explorer", () => {
-    context("Create camera and use brand suggestion", () => {
+    context("Create telescope and use brand suggestion", () => {
       it("should start the creation process", () => {
         cy.login();
-        cy.visitPage("/equipment/explorer");
+        cy.visitPage("/equipment/explorer/telescope");
 
-        cy.equipmentItemBrowserCreate("#equipment-item-field", "Test", "@findCameras");
+        cy.equipmentItemBrowserCreate("#equipment-item-field", "Test", "@findTelescopes");
       });
 
       it("should select brand suggestion", () => {
