@@ -113,7 +113,7 @@ Cypress.Commands.add("setupEquipmentDefaultRoutesForBrands", () => {
     results: []
   }).as("findBrandsByName");
 
-  cy.route("GET", "**/api/v2/equipment/brand/?website=*", {
+  cy.route("GET", /\/api\/v2\/equipment\/brand\/\?website=*/, {
     count: 0,
     next: null,
     previous: null,
@@ -177,6 +177,7 @@ Cypress.Commands.add("setupEquipmentDefaultRoutesForSensors", () => {
     previous: null,
     results: []
   }).as("findSensors");
+  cy.route("GET", "**/api/v2/equipment/sensor/find-similar-in-brand/*", []);
   cy.route("GET", "**/api/v2/equipment/sensor/others-in-brand/*", [testSensor]).as("sensorOthersInBrand");
 });
 
