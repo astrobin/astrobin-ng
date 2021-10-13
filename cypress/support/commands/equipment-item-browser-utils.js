@@ -113,7 +113,7 @@ Cypress.Commands.add("setupEquipmentDefaultRoutesForBrands", () => {
     results: []
   }).as("findBrandsByName");
 
-  cy.route("GET", /\/api\/v2\/equipment\/brand\/\?website=*/, {
+  cy.route("GET", /\/api\/v2\/equipment\/brand\/\?website=.*/, {
     count: 0,
     next: null,
     previous: null,
