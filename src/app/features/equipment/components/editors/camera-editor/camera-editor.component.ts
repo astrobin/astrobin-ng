@@ -32,19 +32,8 @@ import { FormlyFieldService } from "@shared/services/formly-field.service";
   templateUrl: "./camera-editor.component.html",
   styleUrls: ["./camera-editor.component.scss", "../base-item-editor/base-item-editor.component.scss"]
 })
-export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterface> implements OnInit, AfterViewInit {
-  sensorCreation: {
-    inProgress: boolean;
-    form: FormGroup;
-    model: Partial<SensorInterface>;
-    name: string;
-  } = {
-    inProgress: false,
-    form: new FormGroup({}),
-    model: {},
-    name: null
-  };
-
+export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterface, SensorInterface>
+  implements OnInit, AfterViewInit {
   @ViewChild("sensorOptionTemplate")
   sensorOptionTemplate: TemplateRef<any>;
 
@@ -86,19 +75,19 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
   }
 
   startSensorCreation() {
-    this.sensorCreation.inProgress = true;
+    this.subCreation.inProgress = true;
     this.subCreationInProgress.emit(true);
   }
 
   endSensorCreation() {
-    this.sensorCreation.inProgress = false;
-    this.sensorCreation.model = {};
-    this.sensorCreation.form.reset();
+    this.subCreation.inProgress = false;
+    this.subCreation.model = {};
+    this.subCreation.form.reset();
     this.subCreationInProgress.emit(false);
   }
 
   createSensor() {
-    const sensor: SensorInterface = this.sensorCreation.form.value;
+    const sensor: SensorInterface = this.subCreation.form.value;
 
     this.loadingService.setLoading(true);
     this.store$.dispatch(new CreateSensor({ sensor }));
@@ -132,7 +121,7 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
 
         this.model = { ...this.model, ...{ sensor: sensor.id } };
         this.form.get("sensor").setValue(sensor.id);
-        this.sensorCreation.name = sensor.name;
+        this.subCreation.name = sensor.name;
         this.endSensorCreation();
 
         setTimeout(() => {
@@ -152,7 +141,7 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
         type: "ng-select",
         id: "camera-field-type",
         expressionProperties: {
-          "templateOptions.disabled": () => this.sensorCreation.inProgress
+          "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
         },
         templateOptions: {
           label: this.cameraService.getPrintablePropertyName(CameraDisplayProperty.TYPE),
@@ -178,7 +167,7 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
         type: "ng-select",
         id: "camera-field-sensor",
         expressionProperties: {
-          "templateOptions.disabled": () => this.sensorCreation.inProgress
+          "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
         },
         templateOptions: {
           label: this.cameraService.getPrintablePropertyName(CameraDisplayProperty.SENSOR),
@@ -227,7 +216,7 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
         id: "camera-field-cooled",
         defaultValue: false,
         expressionProperties: {
-          "templateOptions.disabled": () => this.brandCreation.inProgress
+          "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
         },
         templateOptions: {
           label: this.cameraService.getPrintablePropertyName(CameraDisplayProperty.COOLED),
@@ -241,7 +230,7 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
         id: "camera-field-max-cooling",
         hideExpression: () => !this.form.get("cooled").value,
         expressionProperties: {
-          "templateOptions.disabled": () => this.brandCreation.inProgress
+          "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
         },
         templateOptions: {
           type: "number",
@@ -260,7 +249,7 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
         wrappers: ["default-wrapper"],
         id: "camera-field-back-focus",
         expressionProperties: {
-          "templateOptions.disabled": () => this.brandCreation.inProgress
+          "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
         },
         templateOptions: {
           type: "number",
@@ -277,14 +266,14 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
   }
 
   private _onSensorSearch(term: string) {
-    this.sensorCreation.name = term;
+    this.subCreation.name = term;
 
-    if (!this.sensorCreation.name) {
+    if (!this.subCreation.name) {
       return of([]);
     }
 
     const field = this.fields.find(f => f.key === "sensor");
-    this.store$.dispatch(new FindAllEquipmentItems({ q: this.sensorCreation.name, type: EquipmentItemType.SENSOR }));
+    this.store$.dispatch(new FindAllEquipmentItems({ q: this.subCreation.name, type: EquipmentItemType.SENSOR }));
     field.templateOptions.options = this.actions$.pipe(
       ofType(EquipmentActionTypes.FIND_ALL_EQUIPMENT_ITEMS_SUCCESS),
       map((action: FindAllEquipmentItemsSuccess) => action.payload.items),

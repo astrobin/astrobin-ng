@@ -113,6 +113,13 @@ Cypress.Commands.add("setupEquipmentDefaultRoutesForBrands", () => {
     results: []
   }).as("findBrandsByName");
 
+  cy.route("GET", "**/api/v2/equipment/brand/?website=*", {
+    count: 0,
+    next: null,
+    previous: null,
+    results: []
+  }).as("findBrandsByWebsite");
+
   cy.route("GET", /\/api\/v2\/equipment\/brand\/\d+\/$/, testBrand).as("findBrandsByName");
 });
 
@@ -298,7 +305,7 @@ Cypress.Commands.add("equipmentItemBrowserCreateBrandUsingSuggestion", (selector
   cy.route("GET", "**/api/v2/equipment/brand/?q=*", { count: 1, results: [brandObject] }).as("findBrands");
 
   cy.get("#brand-field-name").clear();
-  cy.get("#brand-field-name").type("Test band");
+  cy.get("#brand-field-name").type(name);
 
   cy.wait("@findBrands");
 

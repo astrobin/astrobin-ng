@@ -27,6 +27,7 @@ import { EquipmentApiService } from "@features/equipment/services/equipment-api.
 import { selectBrand } from "@features/equipment/store/equipment.selectors";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 import { FormlyFieldMessageLevel, FormlyFieldService } from "@shared/services/formly-field.service";
+import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 
 export enum EquipmentItemEditorMode {
   CREATION,
@@ -37,7 +38,8 @@ export enum EquipmentItemEditorMode {
   selector: "astrobin-base-equipment-item-editor",
   template: ""
 })
-export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface> extends BaseComponentDirective
+export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB extends EquipmentItemBaseInterface>
+  extends BaseComponentDirective
   implements AfterViewInit {
   fields: FormlyFieldConfig[];
 
@@ -60,7 +62,7 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface> exten
   subCreationInProgress = new EventEmitter<boolean>();
 
   @Output()
-  suggestionSelected = new EventEmitter<EquipmentItemBaseInterface>();
+  suggestionSelected = new EventEmitter<EquipmentItem>();
 
   @ViewChild("brandOptionTemplate")
   brandOptionTemplate: TemplateRef<any>;
@@ -84,6 +86,18 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface> exten
   };
 
   subCreation: {
+    inProgress: boolean;
+    form: FormGroup;
+    model: Partial<SUB>;
+    name: string;
+  } = {
+    inProgress: false,
+    form: new FormGroup({}),
+    model: {},
+    name: null
+  };
+
+  nestedSubCreation: {
     inProgress: boolean;
   } = {
     inProgress: false
@@ -166,7 +180,9 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface> exten
       id: "equipment-item-field-brand",
       expressionProperties: {
         "templateOptions.disabled": () =>
-          this.brandCreation.inProgress || this.editorMode === EquipmentItemEditorMode.EDIT_PROPOSAL
+          this.subCreation.inProgress ||
+          this.brandCreation.inProgress ||
+          this.editorMode === EquipmentItemEditorMode.EDIT_PROPOSAL
       },
       templateOptions: {
         required: true,
@@ -241,7 +257,7 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface> exten
       id: "equipment-item-field-name",
       defaultValue: this.name,
       expressionProperties: {
-        "templateOptions.disabled": () => this.brandCreation.inProgress
+        "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
       },
       templateOptions: {
         required: true,
@@ -296,6 +312,9 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface> exten
       key: "image",
       type: "file",
       id: "equipment-item-field-image",
+      expressionProperties: {
+        "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+      },
       templateOptions: {
         required: false,
         label: this.translateService.instant("Image"),
@@ -356,7 +375,7 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface> exten
     const brandControl: AbstractControl = this.form.get("brand");
     const nameControl: AbstractControl = this.form.get("name");
     const nameFieldConfig: FormlyFieldConfig = this.fields.find(field => field.key === "name");
-    const type: EquipmentItemType = this.equipmentItemService.getType(this.form.value);
+    const type: EquipmentItemType = this.equipmentItemService.getType({ ...this.model, ...this.form.value });
 
     if (!type || !brandControl.value || !nameControl.value || this.editorMode !== EquipmentItemEditorMode.CREATION) {
       return;
@@ -389,7 +408,7 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface> exten
   private _othersInBrand() {
     const brandControl: AbstractControl = this.form.get("brand");
     const brandFieldConfig: FormlyFieldConfig = this.fields.find(field => field.key === "brand");
-    const type: EquipmentItemType = this.equipmentItemService.getType(this.form.value);
+    const type: EquipmentItemType = this.equipmentItemService.getType({ ...this.model, ...this.form.value });
 
     if (!type || !brandControl.value) {
       return;

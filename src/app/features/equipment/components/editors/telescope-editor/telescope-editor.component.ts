@@ -21,7 +21,7 @@ import { AbstractControl } from "@angular/forms";
   templateUrl: "./telescope-editor.component.html",
   styleUrls: ["./telescope-editor.component.scss", "../base-item-editor/base-item-editor.component.scss"]
 })
-export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeInterface>
+export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeInterface, null>
   implements OnInit, AfterViewInit {
   constructor(
     public readonly store$: Store<State>,
@@ -69,7 +69,7 @@ export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeI
         type: "ng-select",
         id: "telescope-field-type",
         expressionProperties: {
-          "templateOptions.disabled": () => this.brandCreation.inProgress
+          "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
         },
         templateOptions: {
           label: this.telescopeService.getPrintablePropertyName(TelescopeDisplayProperty.TYPE),
@@ -89,7 +89,7 @@ export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeI
         wrappers: ["default-wrapper"],
         id: "telescope-field-aperture",
         expressionProperties: {
-          "templateOptions.disabled": () => this.brandCreation.inProgress
+          "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
         },
         templateOptions: {
           type: "number",
@@ -106,7 +106,7 @@ export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeI
         id: "telescope-field-fixed-focal-length",
         defaultValue: this.model.minFocalLength === this.model.maxFocalLength,
         expressionProperties: {
-          "templateOptions.disabled": () => this.brandCreation.inProgress
+          "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
         },
         templateOptions: {
           label: this.translateService.instant("Fixed focal length")
@@ -120,7 +120,7 @@ export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeI
         defaultValue: this.model.minFocalLength === this.model.maxFocalLength ? this.model.minFocalLength : null,
         hideExpression: () => !this.form.get("fixedFocalLength").value,
         expressionProperties: {
-          "templateOptions.disabled": () => this.brandCreation.inProgress
+          "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
         },
         templateOptions: {
           type: "number",
@@ -151,7 +151,7 @@ export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeI
             defaultValue: this.model.minFocalLength,
             hideExpression: () => !!this.form.get("fixedFocalLength").value,
             expressionProperties: {
-              "templateOptions.disabled": () => this.brandCreation.inProgress,
+              "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress,
               "templateOptions.required": model => !model.fixedFocalLength
             },
             templateOptions: {
@@ -189,7 +189,7 @@ export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeI
             defaultValue: this.model.maxFocalLength,
             hideExpression: () => !!this.form.get("fixedFocalLength").value,
             expressionProperties: {
-              "templateOptions.disabled": () => this.brandCreation.inProgress,
+              "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress,
               "templateOptions.required": model => !model.fixedFocalLength
             },
             templateOptions: {
@@ -226,7 +226,7 @@ export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeI
         wrappers: ["default-wrapper"],
         id: "telescope-field-weight",
         expressionProperties: {
-          "templateOptions.disabled": () => this.brandCreation.inProgress
+          "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
         },
         templateOptions: {
           type: "number",
