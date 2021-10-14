@@ -288,6 +288,8 @@ Cypress.Commands.add("equipmentItemBrowserCreateBrand", (selector, name, website
   cy.equipmentItemBrowserCreate(selector, name, "@findBrands");
 
   cy.get("#brand-field-name").should("have.value", name);
+
+  cy.get("#brand-field-website").click();
   cy.get("#brand-field-website").type(website);
 
   cy.route("POST", "**/api/v2/equipment/brand/", brandObject).as("createBrand");
@@ -305,6 +307,7 @@ Cypress.Commands.add("equipmentItemBrowserCreateBrandUsingSuggestion", (selector
 
   cy.route("GET", "**/api/v2/equipment/brand/?q=*", { count: 1, results: [brandObject] }).as("findBrands");
 
+  cy.get("#brand-field-name").click();
   cy.get("#brand-field-name").clear();
   cy.get("#brand-field-name").type(name);
 
