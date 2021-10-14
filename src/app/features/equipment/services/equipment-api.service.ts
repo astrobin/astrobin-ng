@@ -181,7 +181,7 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
 
     return this.http
       .post<EquipmentItemBaseInterface>(`${this.configUrl}/${path}/${item.id}/approve/`, { comment })
-      .pipe(map(item => this._parseItem(item)));
+      .pipe(map(responseItem => this._parseItem(responseItem)));
   }
 
   rejectEquipmentItem(
@@ -197,7 +197,7 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
         reason,
         comment
       })
-      .pipe(map(item => this._parseItem(item)));
+      .pipe(map(responseItem => this._parseItem(responseItem)));
   }
 
   getEditProposals(
