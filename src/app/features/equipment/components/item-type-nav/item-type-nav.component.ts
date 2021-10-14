@@ -154,7 +154,7 @@ export class ItemTypeNavComponent extends BaseComponentDirective implements OnIn
         pendingEditCount: this.camerasPendingEditCount
       },
       {
-        label: this.translateService.instant("Telescopes"),
+        label: this.translateService.instant("Telescopes & lenses"),
         value: EquipmentItemType.TELESCOPE,
         count: this.telescopeCount,
         providedCount: this.telescopeCount,
