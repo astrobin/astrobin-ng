@@ -40,7 +40,7 @@
         </button>
 
         <button
-          *ngIf="currentUser | isEquipmentModerator"
+          *ngIf="(currentUser | isEquipmentModerator) && typeSupportsMigrateInto()"
           class="btn btn-secondary"
           data-test="migrate-into"
           [disabled]="editMode"
@@ -109,6 +109,13 @@
         [model]="editModel"
         [editorMode]="EquipmentItemEditorMode.EDIT_PROPOSAL"
       ></astrobin-camera-editor>
+
+      <astrobin-sensor-editor
+        *ngIf="activeType === EquipmentItemType.SENSOR"
+        [form]="editForm"
+        [model]="editModel"
+        [editorMode]="EquipmentItemEditorMode.EDIT_PROPOSAL"
+      ></astrobin-sensor-editor>
 
       <astrobin-telescope-editor
         *ngIf="activeType === EquipmentItemType.TELESCOPE"

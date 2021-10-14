@@ -44,6 +44,12 @@ export class SensorService extends BaseService implements EquipmentItemServiceIn
             ? `${propertyValue?.pixelWidth || item.pixelWidth} x ${propertyValue?.pixelHeight || item.pixelHeight}`
             : ""
         );
+      case SensorDisplayProperty.PIXEL_WIDTH:
+        propertyValue = parseInt(propertyValue, 10);
+        return of(propertyValue || item.pixelWidth ? `${propertyValue || item.pixelWidth} μm` : "");
+      case SensorDisplayProperty.PIXEL_HEIGHT:
+        propertyValue = parseInt(propertyValue, 10);
+        return of(propertyValue || item.pixelHeight ? `${propertyValue || item.pixelHeight} μm` : "");
       case SensorDisplayProperty.SENSOR_SIZE:
         if (!!propertyValue) {
           propertyValue.sensorWidth = parseFloat(propertyValue.sensorWidth);
@@ -55,6 +61,12 @@ export class SensorService extends BaseService implements EquipmentItemServiceIn
                 item.sensorHeight} mm`
             : ""
         );
+      case SensorDisplayProperty.SENSOR_WIDTH:
+        propertyValue = parseInt(propertyValue, 10);
+        return of(propertyValue || item.sensorWidth ? `${propertyValue || item.sensorWidth} μm` : "");
+      case SensorDisplayProperty.SENSOR_HEIGHT:
+        propertyValue = parseInt(propertyValue, 10);
+        return of(propertyValue || item.sensorHeight ? `${propertyValue || item.sensorHeight} μm` : "");
       case SensorDisplayProperty.QUANTUM_EFFICIENCY:
         propertyValue = parseFloat(propertyValue);
         return of(propertyValue || item.quantumEfficiency ? `${propertyValue || item.quantumEfficiency}%` : "");

@@ -3,7 +3,7 @@ import { Action, Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
 import { TitleService } from "@shared/services/title/title.service";
-import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { filter, map, switchMap, take, takeUntil, tap } from "rxjs/operators";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
@@ -285,5 +285,9 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit 
       take(1),
       switchMap(() => this.store$.select(selectEditProposalsForItem, this.selectedItem))
     );
+  }
+
+  typeSupportsMigrateInto() {
+    return this.activeType !== EquipmentItemType.SENSOR;
   }
 }

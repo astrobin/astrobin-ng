@@ -409,14 +409,16 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     }
   }
 
+  // TODO: complete
+
   private _parseSensor<T extends SensorInterface | EditProposalInterface<SensorInterface>>(item: T): T {
     return {
       ...item,
       ...{
-        pixelSize: parseFloat((item.pixelSize as unknown) as string),
-        sensorWidth: parseFloat((item.sensorWidth as unknown) as string),
-        sensorHeight: parseFloat((item.sensorHeight as unknown) as string),
-        readNoise: parseFloat((item.readNoise as unknown) as string)
+        pixelSize: item.pixelSize !== null ? parseFloat((item.pixelSize as unknown) as string) : null,
+        sensorWidth: item.sensorWidth !== null ? parseFloat((item.sensorWidth as unknown) as string) : null,
+        sensorHeight: item.sensorHeight !== null ? parseFloat((item.sensorHeight as unknown) as string) : null,
+        readNoise: item.readNoise !== null ? parseFloat((item.readNoise as unknown) as string) : null
       }
     };
   }
@@ -425,7 +427,7 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     return {
       ...item,
       ...{
-        backFocus: parseFloat((item.backFocus as unknown) as string)
+        backFocus: item.backFocus !== null ? parseFloat((item.backFocus as unknown) as string) : null
       }
     };
   }
@@ -434,9 +436,9 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     return {
       ...item,
       ...{
-        aperture: parseFloat((item.aperture as unknown) as string),
-        minFocalLength: parseFloat((item.minFocalLength as unknown) as string),
-        maxFocalLength: parseFloat((item.maxFocalLength as unknown) as string)
+        aperture: item.aperture !== null ? parseFloat((item.aperture as unknown) as string) : null,
+        minFocalLength: item.minFocalLength !== null ? parseFloat((item.minFocalLength as unknown) as string) : null,
+        maxFocalLength: item.maxFocalLength !== null ? parseFloat((item.maxFocalLength as unknown) as string) : null
       }
     };
   }

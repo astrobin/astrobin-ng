@@ -33,6 +33,11 @@ export class ItemTypeNavComponent extends BaseComponentDirective implements OnIn
   camerasPendingEditCount: Observable<number | null> = null;
 
   @Input()
+  sensorCount: Observable<number | null> = null;
+  sensorsPendingReviewCount: Observable<number | null> = null;
+  sensorsPendingEditCount: Observable<number | null> = null;
+
+  @Input()
   telescopeCount: Observable<number | null> = null;
   telescopesPendingReviewCount: Observable<number | null> = null;
   telescopesPendingEditCount: Observable<number | null> = null;
@@ -95,8 +100,18 @@ export class ItemTypeNavComponent extends BaseComponentDirective implements OnIn
       return;
     }
 
+    // TODO: complete
+
     if (changes.cameraCount) {
       this.types.find(type => type.value === EquipmentItemType.CAMERA).count = changes.cameraCount.currentValue;
+    }
+
+    if (changes.sensorCount) {
+      this.types.find(type => type.value === EquipmentItemType.SENSOR).count = changes.sensorCount.currentValue;
+    }
+
+    if (changes.telescopeCount) {
+      this.types.find(type => type.value === EquipmentItemType.TELESCOPE).count = changes.telescopeCount.currentValue;
     }
   }
 
@@ -126,10 +141,13 @@ export class ItemTypeNavComponent extends BaseComponentDirective implements OnIn
           ...[
             // TODO: add all CREATE_*_SUCCESS types.
             EquipmentActionTypes.CREATE_CAMERA_SUCCESS,
+            EquipmentActionTypes.CREATE_SENSOR_SUCCESS,
             EquipmentActionTypes.CREATE_TELESCOPE_SUCCESS,
             // TODO: add all CREATE_*_EDIT_PROPOSAL_SUCCESS types.
             EquipmentActionTypes.CREATE_CAMERA_EDIT_PROPOSAL_SUCCESS,
+            EquipmentActionTypes.CREATE_SENSOR_EDIT_PROPOSAL_SUCCESS,
             EquipmentActionTypes.CREATE_TELESCOPE_EDIT_PROPOSAL_SUCCESS,
+
             EquipmentActionTypes.APPROVE_EQUIPMENT_ITEM_SUCCESS,
             EquipmentActionTypes.REJECT_EQUIPMENT_ITEM_SUCCESS,
             EquipmentActionTypes.APPROVE_EQUIPMENT_ITEM_EDIT_PROPOSAL_SUCCESS,
@@ -152,6 +170,14 @@ export class ItemTypeNavComponent extends BaseComponentDirective implements OnIn
         providedCount: this.cameraCount,
         pendingReviewCount: this.camerasPendingReviewCount,
         pendingEditCount: this.camerasPendingEditCount
+      },
+      {
+        label: this.translateService.instant("Sensors"),
+        value: EquipmentItemType.SENSOR,
+        count: this.sensorCount,
+        providedCount: this.sensorCount,
+        pendingReviewCount: this.sensorsPendingReviewCount,
+        pendingEditCount: this.sensorsPendingEditCount
       },
       {
         label: this.translateService.instant("Telescopes & lenses"),
@@ -207,7 +233,9 @@ export class ItemTypeNavComponent extends BaseComponentDirective implements OnIn
 
     for (const type of this.types) {
       // TODO: remove when all other types have API.
-      if ([EquipmentItemType.CAMERA, EquipmentItemType.TELESCOPE].indexOf(type.value) === -1) {
+      if (
+        [EquipmentItemType.CAMERA, EquipmentItemType.SENSOR, EquipmentItemType.TELESCOPE].indexOf(type.value) === -1
+      ) {
         continue;
       }
 
