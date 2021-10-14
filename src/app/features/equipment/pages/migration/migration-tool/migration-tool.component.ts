@@ -31,6 +31,8 @@ import { ItemBrowserComponent } from "@features/equipment/components/item-browse
   styleUrls: ["./migration-tool.component.scss"]
 })
 export class MigrationToolComponent extends BaseComponentDirective implements OnInit {
+  EquipmentItemType = EquipmentItemType;
+
   @ViewChild("equipmentItemBrowser")
   equipmentItemBrowser: ItemBrowserComponent;
 

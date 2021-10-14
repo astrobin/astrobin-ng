@@ -19,6 +19,9 @@ import { EquipmentActionTypes } from "@features/equipment/store/equipment.action
 })
 export class ItemTypeNavComponent extends BaseComponentDirective implements OnInit, OnChanges {
   @Input()
+  excludeTypes: EquipmentItemType[] = [];
+
+  @Input()
   showCounts = true;
 
   @Input()
@@ -223,7 +226,7 @@ export class ItemTypeNavComponent extends BaseComponentDirective implements OnIn
         pendingEditCount: this.softwarePendingEditCount,
         disabled: true
       }
-    ];
+    ].filter(type => this.excludeTypes.indexOf(type.value) === -1);
   }
 
   _loadCounts() {
