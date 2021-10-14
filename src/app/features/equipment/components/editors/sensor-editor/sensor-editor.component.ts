@@ -222,7 +222,6 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
         key: "colorOrMono",
         type: "ng-select",
         id: "sensor-field-color-or-mono",
-        defaultValue: false,
         expressionProperties: {
           "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
         },
