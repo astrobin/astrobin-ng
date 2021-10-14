@@ -33,6 +33,7 @@
   <button
     (click)="migrate()"
     class="btn btn-danger"
+    [class.loading]="loadingService.isLoading()"
     type="button"
     [disabled]="migrateButtonDisabled()"
   >
