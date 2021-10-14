@@ -99,6 +99,8 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
 
   endCreationMode() {
     this.creationMode = false;
+    this.creationForm.reset();
+    this.creationModel = {};
     this.creationModeEnded.emit();
   }
 
