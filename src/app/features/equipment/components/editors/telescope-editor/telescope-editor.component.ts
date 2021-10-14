@@ -134,7 +134,6 @@ export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeI
             field.formControl.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(value => {
               this.model.minFocalLength = value;
               this.model.maxFocalLength = value;
-              this.form.patchValue({ minFocalLength: value, maxFocalLength: value });
             });
           }
         }
