@@ -35,6 +35,15 @@
           (suggestionSelected)="itemCreated($event)"
         ></astrobin-camera-editor>
 
+        <astrobin-sensor-editor
+          *ngIf="type === EquipmentItemType.SENSOR"
+          [form]="creationForm"
+          [model]="creationModel"
+          [name]="q"
+          (subCreationInProgress)="onSubCreationInProgress($event)"
+          (suggestionSelected)="itemCreated($event)"
+        ></astrobin-sensor-editor>
+
         <astrobin-telescope-editor
           *ngIf="type === EquipmentItemType.TELESCOPE"
           [form]="creationForm"
