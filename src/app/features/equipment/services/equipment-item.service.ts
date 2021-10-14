@@ -145,7 +145,7 @@ export class EquipmentItemService extends BaseService {
         const name = pair[0];
         let value: any = pair[1];
 
-        if (value === "null") {
+        if (value === "null" || value === "") {
           value = null;
         } else if (value?.toLowerCase() === "true") {
           value = true;
