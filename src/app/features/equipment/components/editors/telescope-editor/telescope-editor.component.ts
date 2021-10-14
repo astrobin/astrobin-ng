@@ -75,12 +75,10 @@ export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeI
           label: this.telescopeService.getPrintablePropertyName(TelescopeDisplayProperty.TYPE),
           required: true,
           clearable: true,
-          options: of(
-            Object.keys(TelescopeType).map(telescopeType => ({
-              value: TelescopeType[telescopeType],
-              label: this.telescopeService.humanizeType(TelescopeType[telescopeType])
-            }))
-          )
+          options: Object.keys(TelescopeType).map(telescopeType => ({
+            value: TelescopeType[telescopeType],
+            label: this.telescopeService.humanizeType(TelescopeType[telescopeType])
+          }))
         }
       },
       {

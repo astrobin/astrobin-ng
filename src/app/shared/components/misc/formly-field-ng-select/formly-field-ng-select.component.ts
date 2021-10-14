@@ -24,16 +24,18 @@ export class FormlyFieldNgSelectComponent extends FieldType implements OnInit, O
   loading = false;
 
   ngOnInit() {
-    this.inputSubscription = this.input$
-      .pipe(
-        distinctUntilChanged(),
-        tap(() => (this.loading = true)),
-        debounceTime(500)
-      )
-      .subscribe(value => {
-        this.onSearch(value);
-        this.loading = false;
-      });
+    if (this.hasAsyncItems) {
+      this.inputSubscription = this.input$
+        .pipe(
+          distinctUntilChanged(),
+          tap(() => (this.loading = true)),
+          debounceTime(500)
+        )
+        .subscribe(value => {
+          this.onSearch(value);
+          this.loading = false;
+        });
+    }
   }
 
   ngOnDestroy() {

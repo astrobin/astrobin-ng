@@ -39,11 +39,12 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 import { catchError, filter, map, take } from "rxjs/operators";
 import { retryWithDelay } from "rxjs-boost/lib/operators";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
-import { EMPTY } from "rxjs";
+import { EMPTY, Observable } from "rxjs";
 import { GroupInterface } from "@shared/interfaces/group.interface";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { CreateLocationModalComponent } from "@features/image/components/create-location-modal/create-location-modal.component";
 import { CreateLocationAddTag } from "@app/store/actions/location.actions";
+import { of } from "rxjs";
 
 export function KeyValueTagsValidator(control: FormControl): ValidationErrors {
   if (!control.value) {
@@ -497,10 +498,12 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
           <strong>${this.translateService.instant("Please note")}: </strong>
           ${this.translateService.instant("AstroBin does not share your coordinates with anyone.")}
         `,
-        options: this.route.snapshot.data.locations.map(location => ({
-          value: location.id,
-          label: location.name
-        })),
+        options: of(
+          this.route.snapshot.data.locations.map(location => ({
+            value: location.id,
+            label: location.name
+          }))
+        ),
         addTag: name => {
           this.store$.dispatch(new CreateLocationAddTag(name));
           const modalRef = this.modalService.open(CreateLocationModalComponent);
@@ -517,10 +520,14 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
             )[0];
 
             setTimeout(() => {
-              locationsField.templateOptions.options = [
-                ...(locationsField.templateOptions.options as { value: number; label: string }[]),
-                ...[newItem]
-              ];
+              (locationsField.templateOptions.options as Observable<{ value: number; label: string }[]>)
+                .pipe(take(1))
+                .subscribe(currentOptions => {
+                  locationsField.templateOptions.options = of([
+                    ...(currentOptions as { value: number; label: string }[]),
+                    ...[newItem]
+                  ]);
+                });
 
               this.model = {
                 ...this.model,
