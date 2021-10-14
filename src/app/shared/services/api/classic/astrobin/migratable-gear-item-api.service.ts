@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { Observable } from "rxjs";
+import { EMPTY, Observable } from "rxjs";
 import { BaseClassicApiService } from "@shared/services/api/classic/base-classic-api.service";
 import {
   MigratableGearItemApiServiceInterface,
@@ -9,6 +9,7 @@ import { LoadingService } from "@shared/services/loading.service";
 import { HttpClient } from "@angular/common/http";
 import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { RejectMigrationReason } from "@features/equipment/components/migration/reject-migration-modal/reject-migration-modal.component";
+import { catchError } from "rxjs/operators";
 
 @Injectable({
   providedIn: "root"
@@ -46,7 +47,9 @@ export class MigratableGearItemApiService extends BaseClassicApiService
   }
 
   releaseLockForMigration(gearId: number): Observable<void> {
-    return this.http.put<void>(`${this.configUrl}/${gearId}/release-lock-for-migration/`, {});
+    return this.http
+      .put<void>(`${this.configUrl}/${gearId}/release-lock-for-migration/`, {})
+      .pipe(catchError(err => EMPTY));
   }
 
   lockForMigrationReview(gearId: number): Observable<void> {
@@ -54,7 +57,9 @@ export class MigratableGearItemApiService extends BaseClassicApiService
   }
 
   releaseLockForMigrationReview(gearId: number): Observable<void> {
-    return this.http.put<void>(`${this.configUrl}/${gearId}/release-lock-for-migration-review/`, {});
+    return this.http
+      .put<void>(`${this.configUrl}/${gearId}/release-lock-for-migration-review/`, {})
+      .pipe(catchError(err => EMPTY));
   }
 
   setMigration(
