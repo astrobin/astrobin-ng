@@ -127,6 +127,11 @@ export enum FullSizeLimitationDisplayOptions {
   NOBODY = "NOBODY"
 }
 
+export enum DownloadLimitationOptions {
+  EVERYBODY = "EVERYBODY",
+  ME_ONLY = "ME"
+}
+
 export interface ImageInterface {
   user: number;
   pk: number;
@@ -163,6 +168,7 @@ export interface ImageInterface {
   keyValueTags: string;
   locations: number[];
   fullSizeDisplayLimitation: FullSizeLimitationDisplayOptions;
+  downloadLimitation: DownloadLimitationOptions;
 }
 
 export interface ImageRevisionInterface {
