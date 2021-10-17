@@ -1,9 +1,615 @@
 msgid ""
 msgstr ""
-"mime-version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Project-Id-Version: AstroBin Angular App\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-04-03 14:04+0200\n"
+"PO-Revision-Date: 2021-09-27 18:40+0200\n"
+"Last-Translator: Salvatore Iovene\n"
+"Language-Team: Italian\n"
+"Language: it\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Loco https://localise.biz\n"
+"X-Loco-Source-Locale: en\n"
+"X-Loco-Project-Id: 108356\n"
+"X-Loco-Api-Version: 1.0.25 20211001-1"
 
+#: loco:60685a683b0b1d485a736d12
+msgid "API Keys"
+msgstr "Chiavi API"
+
+#: loco:60685a683b0b1d485a736d13
+msgid "Accepted formats"
+msgstr "Formati accettati"
+
+#: loco:60685a683b0b1d485a736d14
+msgid "Access denied."
+msgstr "Accesso negato."
+
+#: loco:60685a683b0b1d485a736d15
+msgid "Advanced plate-solving"
+msgstr "Riduzione astrometrica avanzata"
+
+#: loco:60685a683b0b1d485a736d16
+msgid "Advanced search"
+msgstr "Ricerca avanzata"
+
+#: loco:60685a683b0b1d485a736d17
+msgid "Amount"
+msgstr "Importo"
+
+#: loco:60685a683b0b1d485a736d18
+msgid "And much more!"
+msgstr "E molto altro!"
+
+#: loco:60685a683b0b1d485a736d19
+msgid ""
+"AstroBin doesn't support subscription upgrades at the moment, but we're "
+"happy to make it happen manually. If you're on a lower subscription tier and "
+"would like to upgrade to <strong>{{0}}</strong>, please just buy it and then "
+"contact us at {{1}} to get a refund for the unused time on your old "
+"subscription. Thanks!"
+msgstr ""
+"AstroBin al momento non supporta gli aggiornamenti degli abbonamenti, ma "
+"siamo lieti di farlo manualmente. Se sei su un livello di abbonamento "
+"inferiore e vuoi passare a <strong>{{0}}</strong>, acquistalo e poi "
+"contattaci a {{1}} per ottenere un rimborso per il tempo inutilizzato sul "
+"tuo vecchio abbonamento. Grazie!"
+
+#: loco:60685a683b0b1d485a736d1a
+msgid "AstroBin index"
+msgstr "Indice AstroBin"
+
+#: loco:60685a683b0b1d485a736d1b
+msgid "Astrophotographers list"
+msgstr "Elenco degli astrofotografi"
+
+#: loco:60685a683b0b1d485a736d1c
+msgid "Autorenew"
+msgstr "Rinnovo automatico"
+
+#: loco:60685a683b0b1d485a736d1d
+msgid "Basic plate-solving"
+msgstr "Riduzione astrometrica di base"
+
+#: loco:60685a683b0b1d485a736d1e
+msgid "Basic search"
+msgstr "Ricerca di base"
+
+#: loco:60685a683b0b1d485a736d1f
+msgid "Bookmarks"
+msgstr "Bookmark"
+
+#: loco:60685a683b0b1d485a736d20
+msgid "Buy"
+msgstr "Acquista"
+
+#: loco:60685a683b0b1d485a736d21
+msgid "Cancelled"
+msgstr "Annullato"
+
+#: loco:60685a683b0b1d485a736d22
+msgid "Commercial products"
+msgstr "Prodotti commerciali"
+
+#: loco:60685a683b0b1d485a736d23
+msgid "Contact"
+msgstr "Contatti"
+
+#: loco:60685a683b0b1d485a736d24
+msgid "Contributors list"
+msgstr "Lista dei contributrori"
+
+#: loco:60685a683b0b1d485a736d25
+msgid "Date"
+msgstr "Data"
+
+#: loco:60685a683b0b1d485a736d26
+msgid "Description"
+msgstr "Descrizione"
+
+#: loco:60685a683b0b1d485a736d27
+msgid "Do not notify your followers about this revision."
+msgstr "Non notificare i tuoi follower per questa versione."
+
+#: loco:60685a683b0b1d485a736d28
+msgid "Drop file here or click to browse"
+msgstr "Rilascia un file qui o clicca per esplorare"
+
+#: loco:60685a683b0b1d485a736d29
+msgid "Email"
+msgstr "Email"
+
+#: loco:60685a683b0b1d485a736d2a
+msgid "Error!"
+msgstr "Errore!"
+
+#: loco:60685a683b0b1d485a736d2b
+msgid "Expiration date"
+msgstr "Data di scadenza"
+
+#: loco:60685a683b0b1d485a736d2c
+msgid "Explore"
+msgstr "Esplora"
+
+#: loco:60685a683b0b1d485a736d2d
+msgid "FAQ"
+msgstr "FAQ"
+
+#: loco:60685a683b0b1d485a736d2e
+msgid "File type not supported"
+msgstr "Tipo di file non supportato"
+
+#: loco:60685a683b0b1d485a736d2f
+msgid "Followers"
+msgstr "Follower"
+
+#: loco:60685a683b0b1d485a736d30
+msgid ""
+"For more information about this and other subscription plans, please visit "
+"the {{0}}pricing{{1}} page."
+msgstr ""
+"Per ulteriori informazioni su questo ed altri abbonamenti, visita il {{0}}"
+"prezziario{{1}}."
+
+#: loco:60685a683b0b1d485a736d31
+msgid "For more information, please check out our Twitter feed:"
+msgstr "Per ulteriori informazioni, consulta il nostro feed Twitter:"
+
+#: loco:60685a683b0b1d485a736d32
+msgid ""
+"For this reason, you cannot purchase this at the moment, as AstroBin does "
+"not currently offer a downgrade path."
+msgstr ""
+"Per questo motivo, non puoi acquistarlo in questo momento, dato che AstroBin "
+"non offre un percorso di downgrade."
+
+#: loco:60685a683b0b1d485a736d33
+msgid "Forum"
+msgstr "Forum"
+
+#: loco:60685a683b0b1d485a736d34
+msgid "Full search"
+msgstr "Ricerca completa"
+
+#: loco:60685a683b0b1d485a736d35
+msgid "Go back to the home page."
+msgstr "Torna alla home."
+
+#: loco:60685a683b0b1d485a736d36
+msgid "Good bye!"
+msgstr "Arrivederci!"
+
+#: loco:60685a683b0b1d485a736d37
+msgid "Groups"
+msgstr "Gruppi"
+
+#: loco:60685a683b0b1d485a736d38
+msgid "Help"
+msgstr "Aiuto"
+
+#: loco:60685a683b0b1d485a736d39
+msgid "Help with translations!"
+msgstr "Aiuta con le traduzioni!"
+
+#: loco:60685a683b0b1d485a736d3a
+msgid "Home"
+msgstr "Home"
+
+#: loco:60685a683b0b1d485a736d3b
+msgid "Image of the day"
+msgstr "Foto del giorno"
+
+#: loco:60685a683b0b1d485a736d3c
+msgid "Image queue"
+msgstr "Coda delle immagini"
+
+#: loco:60685a683b0b1d485a736d3d
+msgid "Images"
+msgstr "Immagini"
+
+#: loco:60685a683b0b1d485a736d3e
+msgid "Info"
+msgstr "Informazioni"
+
+#: loco:60685a683b0b1d485a736d3f
+msgid "It looks like you reached the upload limit for your subscription."
+msgstr ""
+"Pare che tu abbia raggiunto il limite di caricamenti per il tuo abbonamento."
+
+#: loco:60685a683b0b1d485a736d40
+msgid "Judgement queue"
+msgstr "Coda di Elezione"
+
+#: loco:60685a683b0b1d485a736d41
+msgid "Language"
+msgstr "Lingua"
+
+#: loco:60685a683b0b1d485a736d42
+msgid "Latest topics"
+msgstr "Ultimi argomenti"
+
+#: loco:60685a683b0b1d485a736d43
+msgid "Learn more"
+msgstr "Maggiori informazioni"
+
+#: loco:60685a683b0b1d485a736d44
+msgid "Log in"
+msgstr "Accesso"
+
+#: loco:60685a683b0b1d485a736d45
+msgid "Logout"
+msgstr "Esci"
+
+#: loco:60685a683b0b1d485a736d46
+msgid "Mark all as read"
+msgstr "Segna tutti come letti"
+
+#: loco:60685a683b0b1d485a736d47
+msgid "Mark as final"
+msgstr "Segna come finale"
+
+#: loco:60685a683b0b1d485a736d48
+msgid "Mark this revision as the final rendition of your image."
+msgstr "Segna questa revisione come la versione finale della tua immagine."
+
+#: loco:60685a683b0b1d485a736d49
+msgid "Max. {{ max }} MB / image"
+msgstr "Max. {{ max }} MB / immagine"
+
+#: loco:60685a683b0b1d485a736d4a
+msgid "Max. {{ max }} total images"
+msgstr "Max. {{ max }} immagini totali"
+
+#: loco:60685a683b0b1d485a736d4b
+msgid "Max. {{ max }} uploads"
+msgstr "Max. {{ max }} upload"
+
+#: loco:60685a683b0b1d485a736d4c
+msgid "Moderate"
+msgstr "Modera"
+
+#: loco:60685a683b0b1d485a736d4d
+msgid "My messages"
+msgstr "I miei messaggi"
+
+#: loco:60685a683b0b1d485a736d4e
+msgid "My places"
+msgstr "I miei posti"
+
+#: loco:60685a683b0b1d485a736d4f
+msgid "My settings"
+msgstr "Le mie impostazioni"
+
+#: loco:60685a683b0b1d485a736d50
+msgid "Name"
+msgstr "Nome"
+
+#: loco:60685a683b0b1d485a736d51
+msgid "No"
+msgstr "No"
+
+#: loco:60685a683b0b1d485a736d52
+msgid "No plate-solving"
+msgstr "Nessuna riduzione astrometrica"
+
+#: loco:60685a683b0b1d485a736d53
+msgid "Notifications"
+msgstr "Notifiche"
+
+#: loco:60685a683b0b1d485a736d54
+msgid "Password"
+msgstr "Password"
+
+#: loco:60685a683b0b1d485a736d55
+msgid ""
+"Please make a deposit of {{ currency }} {{ amount }} to the following bank "
+"details and then email us at {{ email_prefix }}{{ email }}{{ email_postfix }}"
+" with your username so we may upgrade your account manually."
+msgstr ""
+"Fai un deposito di {{currency}} {{amount}} alle seguenti coordinate bancarie "
+"e poi mandaci una email a {{ email_prefix }}{{ email }}{{ email_postfix }} "
+"con il tuo nome utente, cosicchè possiamo farti l'aggiornamento dell'account "
+"manualmente."
+
+#: loco:60685a683b0b1d485a736d56
+msgid "Please note: you already are on this plan or a higher one."
+msgstr "Nota bene: hai già questo abbonamento o uno superiore."
+
+#: loco:60685a683b0b1d485a736d57
+msgid "Plots"
+msgstr "Grafici"
+
+#: loco:60685a683b0b1d485a736d58
+msgid "Prefer to pay via bank transfer?"
+msgstr "Preferisci pagare con un trasferimento bancario?"
+
+#: loco:60685a683b0b1d485a736d59
+msgid "Price"
+msgstr "Prezzo"
+
+#: loco:60685a683b0b1d485a736d5a
+msgid "Public Gallery"
+msgstr "Galleria pubblica"
+
+#: loco:60685a683b0b1d485a736d5b
+msgid "Quick search"
+msgstr "Ricerca rapida"
+
+#: loco:60685a683b0b1d485a736d5c
+msgid "Register"
+msgstr "Registrati"
+
+#: loco:60685a683b0b1d485a736d5d
+msgid "Remote astrophotography"
+msgstr "Astrofotografia remota"
+
+#: loco:60685a683b0b1d485a736d5e
+msgid "Reset password"
+msgstr "Reimposta password"
+
+#: loco:60685a683b0b1d485a736d5f
+msgid "Return to the classic uploader"
+msgstr "Torna all'uploader classico"
+
+#: loco:60685a683b0b1d485a736d60
+msgid "Review queue"
+msgstr "Coda di revisione"
+
+#: loco:60685a683b0b1d485a736d61
+msgid "Revision uploader"
+msgstr "Uploader di versione"
+
+#: loco:60685a683b0b1d485a736d62
+msgid "Settings"
+msgstr "Impostazioni"
+
+#: loco:60685a683b0b1d485a736d63
+msgid "Skip notifications"
+msgstr "Salta le notifiche"
+
+#: loco:60685a683b0b1d485a736d64
+msgid ""
+"Sorry, but the page you are looking for is not here. If you expected an "
+"image, this means that the author deleted it."
+msgstr ""
+"Spiacenti, ma la pagina che cerchi non è qui. Se ti aspettavi un'immagine, "
+"vuol dire che l'autore l'ha cancellata."
+
+#: loco:60685a683b0b1d485a736d65
+msgid "Spam list"
+msgstr "Elenco dello spam"
+
+#: loco:60685a683b0b1d485a736d66
+msgid "Sponsors & Partners"
+msgstr "Sponsor & partner"
+
+#: loco:60685a683b0b1d485a736d67
+msgid "Staging Area"
+msgstr "Area di lavoro"
+
+#: loco:60685a683b0b1d485a736d68
+msgid "Submission queue"
+msgstr "Coda di proposizione"
+
+#: loco:60685a683b0b1d485a736d69
+msgid "Subscribed topics"
+msgstr "Argomenti a cui sei abbonato"
+
+#: loco:60685a683b0b1d485a736d6a
+msgid "Subscription confirmed"
+msgstr "Abbonamento confermato"
+
+#: loco:60685a683b0b1d485a736d6b
+msgid "Subscription plans"
+msgstr "Opzioni di abbonamento"
+
+#: loco:60685a683b0b1d485a736d6c
+msgid "Subscription process cancelled"
+msgstr "Processo di abbonemanto annullato"
+
+#: loco:60685a683b0b1d485a736d6d
+msgid "Success!"
+msgstr "Successo!"
+
+#: loco:60685a683b0b1d485a736d6e
+msgid "Target image"
+msgstr "Immagine di destinazione"
+
+#: loco:60685a683b0b1d485a736d6f
+msgid "Thank you for supporting AstroBin!"
+msgstr "Grazie per il tuo supporto ad AstroBin!"
+
+#: loco:60685a683b0b1d485a736d70
+msgid "Thanks!"
+msgstr "Grazie!"
+
+#: loco:60685a683b0b1d485a736d71
+msgid "The Big Wall"
+msgstr "Il Grande Muro"
+
+#: loco:60685a683b0b1d485a736d72
+msgid "There doesn't seem to be anything here."
+msgstr "Non sembra esserci niente qui."
+
+#: loco:60685a683b0b1d485a736d73
+msgid "This field is required"
+msgstr "Campo obbligatorio"
+
+#: loco:60685a683b0b1d485a736d74
+msgid ""
+"This image will be uploaded to your staging area as a work in progress. You "
+"can make it public at the end of the process."
+msgstr ""
+"Questa immagine sarà caricata sulla tua area di lavoro. Puoi renderla "
+"pubblica alla fine del processo."
+
+#: loco:60685a683b0b1d485a736d75
+msgid ""
+"This page or operation is not available at the moment, because AstroBin is "
+"in READ ONLY mode."
+msgstr ""
+"Questa pagina o operazione non è disponibile al momento, perché AstroBin è "
+"in modalità SOLA LETTURA."
+
+#: loco:60685a683b0b1d485a736d76
+msgid "Title"
+msgstr "Titolo"
+
+#: loco:60685a683b0b1d485a736d77
+msgid "Top pick nominations"
+msgstr "Nomine Top pick"
+
+#: loco:60685a683b0b1d485a736d78
+msgid "Top picks"
+msgstr "Top pick"
+
+#: loco:60685a683b0b1d485a736d79
+msgid "Uncompressed source uploader"
+msgstr "Uploader di dati sorgenti non compressi"
+
+#: loco:60685a683b0b1d485a736d7a
+msgid "Unknown error"
+msgstr "Errore sconosciuto"
+
+#: loco:60685a683b0b1d485a736d7b
+msgid "Unlimited images"
+msgstr "Immagini illimitate"
+
+#: loco:60685a683b0b1d485a736d7c
+msgid "Unlimited revisions"
+msgstr "Versioni illimitate"
+
+#: loco:60685a683b0b1d485a736d7d
+msgid "Unlimited size"
+msgstr "Dimensione illimitata"
+
+#: loco:60685a683b0b1d485a736d7e
+msgid "Upload"
+msgstr "Carica"
+
+#: loco:60685a683b0b1d485a736d7f
+msgid "Uploader"
+msgstr "Uploader"
+
+#: loco:60685a683b0b1d485a736d80
+msgid "Username"
+msgstr "Nome utente"
+
+#: loco:60685a683b0b1d485a736d81
+msgid "Validity"
+msgstr "Validità"
+
+#: loco:60685a683b0b1d485a736d82
+msgid "Want to upgrade from a lower subscription tier?"
+msgstr "Vuoi fare l'upgrade da un abbonamento inferiore?"
+
+#: loco:60685a683b0b1d485a736d83
+msgid "Warning!"
+msgstr "Attenzione!"
+
+#: loco:60685a683b0b1d485a736d84
+msgid "We could not log you in. Please check your credentials and try again."
+msgstr ""
+"Non è stato possibile fare l'accesso. Controlla il tuo nome utente e "
+"password e riprova."
+
+#: loco:60685a683b0b1d485a736d85
+msgid "We'll never share your email with anyone else."
+msgstr "Non condivideremo mai la tua email con nessuno."
+
+#: loco:60685a683b0b1d485a736d86
+msgid "Welcome!"
+msgstr "Benvenuto!"
+
+#: loco:60685a683b0b1d485a736d87
+msgid "What is this site?"
+msgstr "Cos'è questo sito?"
+
+#: loco:60685a683b0b1d485a736d88
+msgid "Would you like to upgrade?"
+msgstr "Vuoi fare l'upgrade?"
+
+#: loco:60685a683b0b1d485a736d89
+msgid ""
+"You have a <strong>{{0}}</strong> subscription. Enjoy your unlimited uploads!"
+msgstr ""
+"Hai un abbonamento <strong>{{0}}</strong>. Goditi i tuoi upload illimitati!"
+
+#: loco:60685a683b0b1d485a736d8a
+msgid ""
+"You have a <strong>{{0}}</strong> subscription. You have used <strong>{{1}}"
+"</strong> of your <strong>{{2}}</strong> upload slots."
+msgstr ""
+"Hai un abbonamento <strong>{{0}}</strong>. Hai usato <strong>{{1}}</strong> "
+"dei tuoi <strong>{{2}}</strong> slot di upload."
+
+#: loco:60685a683b0b1d485a736d8b
+msgid ""
+"You have a <strong>{{0}}</strong> subscription. You have used <strong>{{1}}"
+"</strong> of your <strong>{{2}}</strong> yearly upload slots."
+msgstr ""
+"Hai un abbonamento <strong>{{0}}</strong>. Hai usato <strong>{{1}}</strong> "
+"dei tuoi <strong>{{2}}</strong> slot di upload per questo ciclo di "
+"abbonamento."
+
+#: loco:60685a683b0b1d485a736d8c
+msgid "You have been logged in."
+msgstr "Hai effettuato l'accesso."
+
+#: loco:60685a683b0b1d485a736d8d
+msgid "You have been logged out. Come back soon!"
+msgstr "Sei uscito. Torna presto!"
+
+#: loco:60685a683b0b1d485a736d8e
+msgid "You will be redirected in {{seconds}} seconds..."
+msgstr "Sarai rendirizzato in {{seconds}} secondi..."
+
+#: loco:60685a683b0b1d485a736d8f
+msgid "Your payments"
+msgstr "I tuoi pagamenti"
+
+#: loco:60685a683b0b1d485a736d90
+msgid ""
+"Your request has been received, and we are awaiting the final confirmation "
+"from the payment processor. Your subscription should be active within a few "
+"minutes!"
+msgstr ""
+"La tua richiesta è stata ricevuta, e stiamo aspettando la conferma finale "
+"dal processore del pagamento. Il tuo abbonamento dovrebbe essere attivato "
+"entro pochi minuti!"
+
+#: loco:60685a683b0b1d485a736d91
+msgid "Your session is invalid, please log in again"
+msgstr "La tua sessione è invalida, fai di nuovo l'accesso!"
+
+#: loco:60685a683b0b1d485a736d92
+msgid "Your subscriptions"
+msgstr "I tuoi abbonamenti"
+
+#: loco:60685a683b0b1d485a736d93
+msgid ""
+"Your transaction with the payment processor has been cancelled, so no change "
+"in your subscription has occurred."
+msgstr ""
+"La tua transazioni con il processore dei pagamenti è stata annullata, quindi "
+"non è avvenuto alcun cambiamento nel tuo abbonamento."
+
+#: loco:60685a683b0b1d485a736d94
+msgid "n/a"
+msgstr "n/d"
+
+#: loco:60685a683b0b1d485a736d95
+msgid "year"
+msgstr "anno"
+
+#: loco:60685a683b0b1d485a736d96
+msgid "{{ max }} revisions / image"
+msgstr "{{ max }} versioni / immagine"
+
+#: loco:60685ab727e3d377322f4232
 msgid ""
 "0 means invisible; 100 means completely opaque. Recommended values are: 10 "
 "if the watermark will appear on the dark sky background, 50 if on some "
@@ -13,353 +619,193 @@ msgstr ""
 "raccomandato sono: 10 se il watermark apparirà sul fondo cielo scuro, 50 se "
 "su qualche oggetto luminoso."
 
-msgid "API Keys"
-msgstr "Chiavi API"
-
-msgid "Accepted formats"
-msgstr "Formati accettati"
-
-msgid "Access denied."
-msgstr "Accesso negato."
-
+#: loco:60685ab727e3d377322f4233
 msgid "Acquisition type"
 msgstr "Tipo di acquisizione"
 
-msgid "Advanced plate-solving"
-msgstr "Riduzione astrometrica avanzata"
-
-msgid "Advanced search"
-msgstr "Ricerca avanzata"
-
+#: loco:60685ab727e3d377322f4234
 msgid "Allow comments"
 msgstr "Permetti commenti"
 
-msgid "Allow full-size display"
-msgstr "Permetti visualizzazione a piena risoluzione"
-
-msgid "Altitude"
-msgstr "Altitudine"
-
+#: loco:60685ab727e3d377322f4235
 msgid "Amateur hosting facility"
 msgstr "Struttura di hosting amatoriale"
 
-msgid "Amount"
-msgstr "Importo"
-
-msgid "And much more!"
-msgstr "E molto altro!"
-
+#: loco:60685ab727e3d377322f4236
 msgid "Anular solar eclipse"
 msgstr "Eclisse anulare di Sole"
 
+#: loco:60685ab727e3d377322f4237
 msgid "Apply watermark to image"
 msgstr "Applica un watermark all'immagine"
 
+#: loco:60685ab727e3d377322f4238
 msgid "Are you sure you want to dismiss this image?"
 msgstr "Sei sicuro di voler respingere questa immagine?"
 
-msgid "AstroBin can protect your images from theft by applying a watermark to them."
-msgstr "AstroBin può proteggere le tue immagini dal furto applicandovi un watermark."
-
+#: loco:60685ab727e3d377322f4239
 msgid ""
-"AstroBin could not read your file as an image. Please try a different "
-"format."
+"AstroBin can protect your images from theft by applying a watermark to them."
+msgstr ""
+"AstroBin può proteggere le tue immagini dal furto applicandovi un watermark."
+
+#: loco:60685ab727e3d377322f423a
+msgid ""
+"AstroBin could not read your file as an image. Please try a different format."
 msgstr ""
 "AstroBin non è riuscito ad interpretare il tuo file come immagine. Per "
 "favora prova un altro formato."
 
-msgid "AstroBin does not share your coordinates with anyone."
-msgstr "AstroBin non condivide le tue coordinate con nessuno."
-
-msgid ""
-"AstroBin doesn't support subscription upgrades at the moment, but we're "
-"happy to make it happen manually. If you're on a lower subscription tier "
-"and would like to upgrade to <strong>{{0}}</strong>, please just buy it and "
-"then contact us at {{1}} to get a refund for the unused time on your old "
-"subscription. Thanks!"
-msgstr ""
-"AstroBin al momento non supporta gli aggiornamenti degli abbonamenti, ma "
-"siamo lieti di farlo manualmente. Se sei su un livello di abbonamento "
-"inferiore e vuoi passare a <strong>{{0}}</strong>, acquistalo e poi "
-"contattaci a {{1}} per ottenere un rimborso per il tempo inutilizzato sul "
-"tuo vecchio abbonamento. Grazie!"
-
-msgid "AstroBin index"
-msgstr "Indice AstroBin"
-
+#: loco:60685ab727e3d377322f423b
 msgid "AstroBin is generating a large thumbnail."
 msgstr "AstroBin sta generando una miniatura grande."
 
-msgid "Astrophotographers list"
-msgstr "Elenco degli astrofotografi"
-
-msgid "Attribution Creative Commons"
-msgstr "Attribution Creative Commons"
-
-msgid "Attribution-NoDerivs Creative Commons"
-msgstr "Attribution-NoDerivs Creative Commons"
-
-msgid "Attribution-NonCommercial Creative Commons"
-msgstr "Attribution-NonCommercial Creative Commons"
-
-msgid "Attribution-NonCommercial-NoDerivs Creative Commons"
-msgstr "Attribution-NonCommercial-NoDerivs Creative Commons"
-
-msgid "Attribution-NonCommercial-ShareAlike Creative Commons"
-msgstr "Attribution-NonCommercial-ShareAlike Creative Commons"
-
-msgid "Attribution-ShareAlike Creative Commons"
-msgstr "Attribution-ShareAlike Creative Commons"
-
+#: loco:60685ab727e3d377322f423c
 msgid "Authentication error. Please log out and in again."
 msgstr ""
-"Errore di autenticazione. Per favore fai il log out e poi di nuovo il log "
-"in."
+"Errore di autenticazione. Per favore fai il log out e poi di nuovo il log in."
 
-msgid "Autorenew"
-msgstr "Rinnovo automatico"
-
+#: loco:60685ab727e3d377322f423d
 msgid "Backyard"
 msgstr "Giardino"
 
+#: loco:60685ab727e3d377322f423e
 msgid "Basic information"
 msgstr "Informazioni di base"
 
-msgid "Basic plate-solving"
-msgstr "Riduzione astrometrica di base"
-
-msgid "Basic search"
-msgstr "Ricerca di base"
-
-msgid "Bookmarks"
-msgstr "Bookmark"
-
+#: loco:60685ab727e3d377322f423f
 msgid "Bottom center"
 msgstr "In basso al centro"
 
+#: loco:60685ab727e3d377322f4240
 msgid "Bottom left"
 msgstr "In basso a sinistra"
 
+#: loco:60685ab727e3d377322f4241
 msgid "Bottom right"
 msgstr "In basso a destra"
 
-msgid "Buy"
-msgstr "Acquista"
-
+#: loco:60685ab727e3d377322f4242
 msgid "Cancel"
 msgstr "Annulla"
 
-msgid "Cancelled"
-msgstr "Annullato"
-
+#: loco:60685ab727e3d377322f4243
 msgid "Center"
 msgstr "Al centro"
 
+#: loco:60685ab727e3d377322f4244
 msgid ""
-"Choose what will be displayed when somebody hovers the mouse over this "
-"image. Please note: only revisions with the same width and height of your "
-"original image can be considered."
+"Choose what will be displayed when somebody hovers the mouse over this image."
+" Please note: only revisions with the same width and height of your original "
+"image can be considered."
 msgstr ""
-"Scegli cosa sarà mostrato quando qualcuno passa il mouse su questa "
-"immagine. Nota bene: solo le versioni con le stesse dimensioni della tua "
-"immagine originale possono essere considerate."
+"Scegli cosa sarà mostrato quando qualcuno passa il mouse su questa immagine. "
+"Nota bene: solo le versioni con le stesse dimensioni della tua immagine "
+"originale possono essere considerate."
 
+#: loco:60685ab727e3d377322f4245
 msgid "Click on the image and scroll to magnify up to 8x."
 msgstr "Clicca su un'immagine e scrolla per ingrandire fino a 8x."
 
+#: loco:60685ab727e3d377322f4246
 msgid "Comet"
 msgstr "Cometa"
 
-msgid "Comments"
-msgstr "Commenti"
-
+#: loco:60685ab727e3d377322f4247
 msgid "Commercial facilities"
 msgstr "Entità commerciali"
 
-msgid "Commercial products"
-msgstr "Prodotti commerciali"
-
+#: loco:60685ab727e3d377322f4248
 msgid "Conjunction"
 msgstr "Congiunzione"
 
-msgid "Constellations"
-msgstr "Costellazioni"
-
-msgid "Contact"
-msgstr "Contatti"
-
+#: loco:60685ab727e3d377322f4249
 msgid "Content"
 msgstr "Contenuto"
 
-msgid "Contributors list"
-msgstr "Lista dei contributrori"
-
-msgid "Create new location"
-msgstr "Crea nuovo luogo"
-
-msgid "Create new:"
-msgstr "Crea nuovo/a:"
-
+#: loco:60685ab727e3d377322f424a
 msgid "Data source"
 msgstr "Origine dei dati"
 
-msgid "Date"
-msgstr "Data"
-
+#: loco:60685ab727e3d377322f424b
 msgid "Deep sky object or field"
 msgstr "Oggetto o campo del cielo profondo"
 
-msgid "Description"
-msgstr "Descrizione"
-
+#: loco:60685ab727e3d377322f424c
 msgid "Dismiss"
 msgstr "Respingi"
 
+#: loco:60685ab727e3d377322f424d
 msgid "Dismiss image"
 msgstr "Respingi immagine"
 
-msgid "Do not notify your followers about this revision."
-msgstr "Non notificare i tuoi follower per questa versione."
-
+#: loco:60685ab727e3d377322f424e
 msgid "Downloaded"
 msgstr "Scaricata"
 
+#: loco:60685ab727e3d377322f424f
 msgid "Drawing/Sketch"
 msgstr "Disegno/sketch"
 
-msgid "Drop file here or click to browse"
-msgstr "Rilascia un file qui o clicca per esplorare"
-
-msgid "E-mail"
-msgstr "E-mail"
-
+#: loco:60685ab727e3d377322f4250
 msgid "Earth's Moon"
 msgstr "Luna terrestre"
 
+#: loco:60685ab727e3d377322f4251
 msgid "Edit"
 msgstr "Modifica"
 
-msgid "Electronically-Assisted Astronomy (EAA, e.g. based on a live video feed)"
+#: loco:60685ab727e3d377322f4252
+msgid ""
+"Electronically-Assisted Astronomy (EAA, e.g. based on a live video feed)"
 msgstr ""
 "Astronomia Assistita Elettronicamente (EAA, p.e. basata su un video in "
 "diretta all'oculare)"
 
-msgid "Email"
-msgstr "Email"
-
-msgid "Error!"
-msgstr "Errore!"
-
-msgid "Everybody"
-msgstr "Tutti"
-
-msgid "Expiration date"
-msgstr "Data di scadenza"
-
-msgid "Explore"
-msgstr "Esplora"
-
+#: loco:60685ab727e3d377322f4253
 msgid "Extremely wide field"
 msgstr "Campo molto esteso"
 
-msgid "FAQ"
-msgstr "FAQ"
-
-msgid "File type not supported"
-msgstr "Tipo di file non supportato"
-
+#: loco:60685ab727e3d377322f4254
 msgid "Finalizing upload, please wait..."
 msgstr "Caricamento in fase di completamente, attendi..."
 
-msgid "Find images"
-msgstr "Trova immagini"
-
-msgid "Followers"
-msgstr "Follower"
-
-msgid ""
-"For more information about this and other subscription plans, please visit "
-"the {{0}}pricing{{1}} page."
-msgstr ""
-"Per ulteriori informazioni su questo ed altri abbonamenti, visita il "
-"{{0}}prezziario{{1}}."
-
-msgid "For more information, please check out our Twitter feed:"
-msgstr "Per ulteriori informazioni, consulta il nostro feed Twitter:"
-
-msgid ""
-"For this reason, you cannot purchase this at the moment, as AstroBin does "
-"not currently offer a downgrade path."
-msgstr ""
-"Per questo motivo, non puoi acquistarlo in questo momento, dato che "
-"AstroBin non offre un percorso di downgrade."
-
-msgid "Forum"
-msgstr "Forum"
-
-msgid "Forums"
-msgstr "Forum"
-
-msgid "Full search"
-msgstr "Ricerca completa"
-
+#: loco:60685ab727e3d377322f4255
 msgid "Gear"
 msgstr "Strumentazione"
 
-msgid "Go back to the home page."
-msgstr "Torna alla home."
-
-msgid "Good bye!"
-msgstr "Arrivederci!"
-
-msgid "Groups"
-msgstr "Gruppi"
-
+#: loco:60685ab727e3d377322f4256
 msgid "HTML tags are allowed."
 msgstr "Puoi usare tag HTML."
 
+#: loco:60685ab727e3d377322f4257
 msgid ""
-"Heads up! Are you sure you want to upload such a large file? It's okay to "
-"do so but probably not many people will want to see it at its full "
-"resolution, if it will take too long for them to download it."
+"Heads up! Are you sure you want to upload such a large file? It's okay to do "
+"so but probably not many people will want to see it at its full resolution, "
+"if it will take too long for them to download it."
 msgstr ""
 "Attenzione! Sei certo di voler caricare un file così grande? Va bene però "
-"probabilmente non molte persone vorranno volerlo vedere a piena "
-"risoluzione, gli ci vorrà troppo tempo per scaricarlo."
+"probabilmente non molte persone vorranno volerlo vedere a piena risoluzione, "
+"gli ci vorrà troppo tempo per scaricarlo."
 
-msgid "Help"
-msgstr "Aiuto"
-
-msgid "Help with translations!"
-msgstr "Aiuta con le traduzioni!"
-
+#: loco:60685ab727e3d377322f4258
 msgid "Hide"
 msgstr "Nascondi"
 
-msgid "Home"
-msgstr "Home"
-
-msgid "IOTD/TP Staff"
-msgstr "Staff IOTD/TP"
-
+#: loco:60685ab727e3d377322f4259
 msgid ""
 "If selected, AstroBin will use a resizing algorithm that slightly sharpens "
 "the image's thumbnails. This setting applies to all revisions."
 msgstr ""
-"Se selezionato, AstroBin userà un algoritmo di ridimensionamento che "
-"aumenta leggermente la definizione delle miniature di questa immagine. "
-"L'opzione è valida per tutte le versioni."
+"Se selezionato, AstroBin userà un algoritmo di ridimensionamento che aumenta "
+"leggermente la definizione delle miniature di questa immagine. L'opzione è "
+"valida per tutte le versioni."
 
-msgid ""
-"If this file is a different take on the same data as in another image you "
-"already published on AstroBin, the common practice would be to upload it as "
-"a new revision. For more info, please {{0}}click here{{1}}."
-msgstr ""
-"Se questo file rappresenta un approccio diverso agli stessi dati di "
-"un'immagine già caricata su AstroBin, la pratica comune sarebbe di "
-"caricarlo con una nuova versione. Per ulteriori informazioni, {{0}}clicca "
-"qui{{1}}."
+#: loco:60685ab727e3d377322f425a
+msgid "If you have any problems, please {{0}}let us know{{1}}!"
+msgstr "In caso di problemi, {{0}}facci sapere{{1}}!"
 
+#: loco:60685ab727e3d377322f425b
 msgid ""
 "If you want to share the TIFF or FITS file of your image, put a link to the "
 "file here. Unfortunately, AstroBin cannot offer to store these files at the "
@@ -370,270 +816,194 @@ msgstr ""
 "questi file, al momento, quindi dovrai caricarli su qualche tuo spazio "
 "privato."
 
+#: loco:60685ab727e3d377322f425c
 msgid ""
-"If you're hosting a copy of this image on your website, put the address "
-"here."
+"If you're hosting a copy of this image on your website, put the address here."
 msgstr ""
 "Se hai una copia di questa immagine sul tuo sito personale, metti qui "
 "l'indirizzo."
 
+#: loco:60685ab727e3d377322f425d
 msgid "Image"
 msgstr "Immagine"
 
-msgid "Image of the Day / Top Picks"
-msgstr "Foto del giorno / Top Picks"
-
-msgid "Image of the day"
-msgstr "Foto del giorno"
-
-msgid "Image queue"
-msgstr "Coda delle immagini"
-
-msgid "Images"
-msgstr "Immagini"
-
+#: loco:60685ab727e3d377322f425e
 msgid "Imaging cameras"
 msgstr "Camere di acquisizione"
 
+#: loco:60685ab727e3d377322f425f
 msgid "Imaging telescopes"
 msgstr "Telescopi di acquisizione"
 
-msgid "Info"
-msgstr "Informazioni"
-
+#: loco:60685ab727e3d377322f4260
 msgid "Initializing upload, please wait..."
 msgstr "Inizializzazione del caricamento, attendi..."
 
+#: loco:60685ab727e3d377322f4261
 msgid "Invalid data, please refresh the page and try again."
 msgstr "Dati invalidi, per favore ricarica la pagine e riprova."
 
+#: loco:60685ab727e3d377322f4262
 msgid "Inverted monochrome"
 msgstr "Monocromatica invertita"
 
-msgid "It looks like you reached the upload limit for your subscription."
-msgstr "Pare che tu abbia raggiunto il limite di caricamenti per il tuo abbonamento."
-
-msgid "Judgement queue"
-msgstr "Coda di Elezione"
-
-msgid "Jump to"
-msgstr "Salta a"
-
+#: loco:60685ab727e3d377322f4263
 msgid "Jupiter"
 msgstr "Giove"
 
+#: loco:60685ab727e3d377322f4264
 msgid "Key/value tags"
 msgstr "Tag chiave/valore"
 
-msgid "Language"
-msgstr "Lingua"
-
+#: loco:60685ab727e3d377322f4265
 msgid "Large"
 msgstr "Grande"
 
-msgid "Latest topics"
-msgstr "Ultimi argomenti"
-
-msgid "Learn more"
-msgstr "Maggiori informazioni"
-
-msgid "License"
-msgstr "Licenza"
-
+#: loco:60685ab727e3d377322f4266
 msgid "Link"
 msgstr "Link"
 
+#: loco:60685ab727e3d377322f4267
 msgid "Link to TIFF/FITS"
 msgstr "Link al TIFF/FITS"
 
+#: loco:60685ab727e3d377322f4268
 msgid "Loading..."
 msgstr "Caricamento..."
 
-msgid "Locations"
-msgstr "Luoghi"
-
-msgid "Log in"
-msgstr "Accesso"
-
-msgid "Logout"
-msgstr "Esci"
-
+#: loco:60685ab727e3d377322f4269
 msgid "Lucky imaging"
 msgstr "Lucky imaging"
 
+#: loco:60685ab727e3d377322f426a
 msgid "Main solar system subject"
 msgstr "Corpo del sistema solare principale"
 
-msgid "Mark all as read"
-msgstr "Segna tutti come letti"
-
-msgid "Mark as final"
-msgstr "Segna come finale"
-
-msgid "Mark this revision as the final rendition of your image."
-msgstr "Segna questa revisione come la versione finale della tua immagine."
-
+#: loco:60685ab727e3d377322f426b
 msgid "Mars"
 msgstr "Marte"
 
-msgid "Max. {{ max }} MB / image"
-msgstr "Max. {{ max }} MB / immagine"
-
-msgid "Max. {{ max }} total images"
-msgstr "Max. {{ max }} immagini totali"
-
-msgid "Max. {{ max }} uploads"
-msgstr "Max. {{ max }} upload"
-
-msgid "Me only"
-msgstr "Solo io"
-
+#: loco:60685ab727e3d377322f426c
 msgid "Medium"
 msgstr "Medio"
 
-msgid "Members only"
-msgstr "Solo utenti"
-
+#: loco:60685ab727e3d377322f426d
 msgid "Mercury"
 msgstr "Mercurio"
 
-msgid "Meters above sea level"
-msgstr "Metri sopra il livello del mare"
-
+#: loco:60685ab727e3d377322f426e
 msgid "Minor planet"
 msgstr "Pianeta minore"
 
+#: loco:60685ab727e3d377322f426f
 msgid "Mix of multiple sources"
 msgstr "Mix di origini multiple"
 
-msgid "Moderate"
-msgstr "Modera"
-
+#: loco:60685ab727e3d377322f4270
 msgid "Mouse hover image"
 msgstr "Immagine di passaggio del mouse"
 
-msgid "Move the map until the marker points at right location"
-msgstr "Muovi la mappa fino a che il segno punta al luogo giusto"
-
-msgid "My messages"
-msgstr "I miei messaggi"
-
-msgid "My places"
-msgstr "I miei posti"
-
-msgid "My settings"
-msgstr "Le mie impostazioni"
-
-msgid "Name"
-msgstr "Nome"
-
+#: loco:60685ab727e3d377322f4271
 msgid "Neptune"
 msgstr "Nettuno"
 
+#: loco:60685ab727e3d377322f4272
 msgid "Next"
 msgstr "Successiva"
 
-msgid "No"
-msgstr "No"
-
-msgid "No items found."
-msgstr "Nessun elemento trovato."
-
-msgid "No plate-solving"
-msgstr "Nessuna riduzione astrometrica"
-
-msgid "Nobody"
-msgstr "Nessuno"
-
+#: loco:60685ab727e3d377322f4273
 msgid "Non-commercial independent facility"
 msgstr "Struttura non commerciale indipendente"
 
-msgid "None (All rights reserved)"
-msgstr "Nessuna (Tutti i diritti riservati)"
-
+#: loco:60685ab727e3d377322f4274
 msgid "None of the above"
 msgstr "Nessuna delle precedenti"
 
+#: loco:60685ab727e3d377322f4275
 msgid "None specified"
 msgstr "Nessuno/a specificato/a"
 
+#: loco:60685ab727e3d377322f4276
 msgid "Northern lights"
 msgstr "Aurora boreale"
 
+#: loco:60685ab727e3d377322f4277
 msgid "Nothing"
 msgstr "Niente/nessuno"
 
-msgid "Notification settings"
-msgstr "Impostazioni notifiche"
-
-msgid "Notifications"
-msgstr "Notifiche"
-
+#: loco:60685ab727e3d377322f4278
 msgid "Objects in field"
 msgstr "Oggetti nel campo"
 
+#: loco:60685ab727e3d377322f4279
 msgid "Occultation"
 msgstr "Occultazione"
 
-msgid "On-site"
-msgstr "Sul sito"
-
+#: loco:60685ab727e3d377322f427a
 msgid "Opacity"
 msgstr "Opacità"
 
+#: loco:60685ab727e3d377322f427b
 msgid "Other"
 msgstr "Altro"
 
+#: loco:60685ab727e3d377322f427c
 msgid "Other/Unknown"
 msgstr "Altro/sconosciuto"
 
+#: loco:60685ab727e3d377322f427d
 msgid "Own remote observatory"
 msgstr "Osservatorio remoto di proprietà"
 
+#: loco:60685ab727e3d377322f427e
 msgid "Partial lunar eclipse"
 msgstr "Eclisse parziale di Luna"
 
+#: loco:60685ab727e3d377322f427f
 msgid "Partial solar eclipse"
 msgstr "Eclisse parziale di Sole"
 
-msgid "Password"
-msgstr "Password"
-
-msgid "Paying members only"
-msgstr "Solo utenti paganti"
-
+#: loco:60685ab727e3d377322f4280
 msgid "Permission denied"
 msgstr "Autorizzazione negata"
 
+#: loco:60685ab727e3d377322f4281
 msgid "Plate-solution annotations (if available)"
 msgstr "Annotazioni astrometriche (se disponibili)"
 
+#: loco:60685ab727e3d377322f4282
 msgid "Please check that all required fields have been filled at every step."
 msgstr ""
 "Per favore verifica che di aver compilato tutti i campi obbligatori ad ogni "
 "step."
 
+#: loco:60685ab727e3d377322f4283
 msgid "Please come back later!"
 msgstr "Torna più tardi!"
 
-msgid ""
-"Please make a deposit of {{ currency }} {{ amount }} to the following bank "
-"details and then email us at {{ email_prefix }}{{ email }}{{ email_postfix "
-"}} with your username so we may upgrade your account manually."
-msgstr ""
-"Fai un deposito di {{currency}} {{amount}} alle seguenti coordinate "
-"bancarie e poi mandaci una email a {{ email_prefix }}{{ email }}{{ "
-"email_postfix }} con il tuo nome utente, cosicchè possiamo farti "
-"l'aggiornamento dell'account manualmente."
-
+#: loco:60685ab727e3d377322f4284
 msgid "Please note"
 msgstr "Nota bene"
 
+#: loco:60685ab727e3d377322f4285
 msgid "Please note: animated GIFs cannot be watermarked at this time."
 msgstr ""
 "Nota bene: al momento non è possibile applicare il watermark alle GIF "
 "animate."
 
+#: loco:60685ab727e3d377322f4286
+msgid ""
+"Please note: if this file is a crop of another image you already published "
+"on AstroBin, the common practice would be to upload it as a new revision. "
+"For more info, please <a href='https://welcome.astrobin.com/features/image-"
+"revisions' target='_blank'>click here</a>."
+msgstr ""
+"Nota bene: se questo file è un crop di un'altra immagine che hai già "
+"pubblicato su AstroBin, la procedura corretta sarebbe di caricarlo come "
+"nuova versione. Per ulteriori informazioni, <a href='https://welcome."
+"astrobin.com/features/image-revisions' target='_blank'>clicca qui</a>."
+
+#: loco:60685ab727e3d377322f4287
 msgid ""
 "Please note: you don't <strong>have to</strong> use all your slots. It's ok "
 "to use fewer if you don't think there are that many worthy images today."
@@ -642,132 +1012,113 @@ msgstr ""
 "usarne di meno se non ritieni che ci siano sufficienti immagini meritevoli "
 "oggi."
 
-msgid "Please wait until your subscription expires, then come back to this page."
+#: loco:60685ab727e3d377322f4288
+msgid ""
+"Please wait until your subscription expires, then come back to this page."
 msgstr ""
 "Per favore attendi fino alla scadenza del tuo abbonamento, poi torna su "
 "questa pagina."
 
-msgid "Plots"
-msgstr "Grafici"
-
+#: loco:60685ab727e3d377322f4289
 msgid "Position"
 msgstr "Posizione"
 
-msgid "Prefer to pay via bank transfer?"
-msgstr "Preferisci pagare con un trasferimento bancario?"
-
+#: loco:60685ab727e3d377322f428a
 msgid "Previous"
 msgstr "Precedente"
 
-msgid "Private messages"
-msgstr "Messaggi privati"
-
+#: loco:60685ab727e3d377322f428b
 msgid "Professional, scientific grade data"
 msgstr "Dati professionali di qualità scientifica"
 
+#: loco:60685ab727e3d377322f428c
 msgid "Promote"
 msgstr "Promuovi"
 
+#: loco:60685ab727e3d377322f428d
 msgid ""
-"Provide a list of unique key/value pairs to tag this image with. Use the "
-"'=' symbol between key and value, and provide one pair per line. These tags "
-"can be used to sort images by arbitrary properties."
+"Provide a list of unique key/value pairs to tag this image with. Use the '=' "
+"symbol between key and value, and provide one pair per line. These tags can "
+"be used to sort images by arbitrary properties."
 msgstr ""
 "Fornisci una lista di coppie chiave/valore univoche a questa immagine. Usa "
 "il simbolo '=' tra chiave e valore, e fornisci una coppia per linea. Questi "
 "tag possono essere usuati per ordinare le immagini per proprietà arbitrarie."
 
-msgid "Public Gallery"
-msgstr "Galleria pubblica"
-
+#: loco:60685ab727e3d377322f428e
 msgid "Public amateur data"
 msgstr "Dati pubblici amatoriali"
 
+#: loco:60685ab727e3d377322f428f
 msgid "Published"
 msgstr "Pubblicazione"
 
-msgid "Quick search"
-msgstr "Ricerca rapida"
-
-msgid "Register"
-msgstr "Registrati"
-
+#: loco:60685ab727e3d377322f4290
 msgid "Regular (e.g. medium/long exposure with a CCD or DSLR)"
 msgstr "Regolare (p.e. esposizione media/lunga con CCD o DSLR)"
 
-msgid "Remote astrophotography"
-msgstr "Astrofotografia remota"
-
+#: loco:60685ab727e3d377322f4291
 msgid "Remote data source"
 msgstr "Origine dei dati remoti"
 
-msgid "Reset password"
-msgstr "Reimposta password"
-
+#: loco:60685ab727e3d377322f4292
 msgid "Retract promotion"
 msgstr "Ritira promozione"
 
-msgid "Return to the classic uploader"
-msgstr "Torna all'uploader classico"
-
-msgid "Review queue"
-msgstr "Coda di revisione"
-
-msgid "Revision uploader"
-msgstr "Uploader di versione"
-
+#: loco:60685ab727e3d377322f4293
 msgid "Saturn"
 msgstr "Saturno"
 
+#: loco:60685ab727e3d377322f4294
 msgid "Save"
 msgstr "Salva"
 
+#: loco:60685ab727e3d377322f4295
 msgid "Save and proceed to acquisition details"
 msgstr "Salva e procedi ai dettagli di acquisizione"
 
+#: loco:60685ab727e3d377322f4296
 msgid "Save and proceed to gear selection"
 msgstr "Salva e procedi alla strumentazione"
 
+#: loco:60685ab727e3d377322f4297
 msgid "Save and proceed to image"
 msgstr "Salva e procedi all'immagine"
 
+#: loco:60685ab727e3d377322f4298
 msgid "Secure payment by Stripe™"
 msgstr "Pagamenti sicuri via Stripe™"
 
+#: loco:60685ab727e3d377322f4299
 msgid "Select an area of the image to be used as thumbnail in your gallery."
-msgstr "Seleziona un'area dell'immagine da usare come miniatura nella tua galleria."
+msgstr ""
+"Seleziona un'area dell'immagine da usare come miniatura nella tua galleria."
 
+#: loco:60685ab727e3d377322f429a
 msgid "Self acquired"
 msgstr "Acquisita da sé"
 
-msgid "Settings"
-msgstr "Impostazioni"
-
+#: loco:60685ab727e3d377322f429b
 msgid "Sharpen thumbnails"
 msgstr "Aumenta la definizione delle miniature"
 
+#: loco:60685ab727e3d377322f429c
 msgid "Show"
 msgstr "Mostra"
 
+#: loco:60685ab727e3d377322f429d
 msgid "Size"
 msgstr "Dimensione"
 
-msgid "Skip notifications"
-msgstr "Salta le notifiche"
-
+#: loco:60685ab727e3d377322f429e
 msgid "Small"
 msgstr "Piccolo"
 
+#: loco:60685ab727e3d377322f429f
 msgid "Solar system body or event"
 msgstr "Corpo o evento del sistema solare"
 
-msgid ""
-"Sorry, but the page you are looking for is not here. If you expected an "
-"image, this means that the author deleted it."
-msgstr ""
-"Spiacenti, ma la pagina che cerchi non è qui. Se ti aspettavi un'immagine, "
-"vuol dire che l'autore l'ha cancellata."
-
+#: loco:60685ab727e3d377322f42a0
 msgid ""
 "Sorry, but this image is too large. Under your current subscription plan, "
 "the maximum allowed image size is {{max}}."
@@ -775,6 +1126,7 @@ msgstr ""
 "Spiacenti, ma questa immagine è troppo pesante. Con il tuo abbonamento "
 "attuale, la dimensione massima permessa è {{max}}."
 
+#: loco:60685ab727e3d377322f42a1
 msgid ""
 "Sorry, unfortunately AstroBin does not have a bank account in the selected "
 "territory."
@@ -782,86 +1134,56 @@ msgstr ""
 "Spiacenti, sfortunatamente AstroBin non ha un conto bancario nel territorio "
 "selezionato."
 
-msgid "Spam list"
-msgstr "Elenco dello spam"
-
-msgid "Sponsors & Partners"
-msgstr "Sponsor & partner"
-
-msgid "Staging Area"
-msgstr "Area di lavoro"
-
+#: loco:60685ab727e3d377322f42a2
 msgid "Star trails"
 msgstr "Tracce stellari"
 
+#: loco:60685ab727e3d377322f42a3
 msgid "Step {{ stepNumber }}"
 msgstr "Step {{ stepNumber }}"
 
+#: loco:60685ab727e3d377322f42a4
 msgid "Subject type"
 msgstr "Tipo di soggetto"
 
-msgid "Submission queue"
-msgstr "Coda di proposizione"
-
+#: loco:60685ab727e3d377322f42a5
 msgid "Submit this image to the selected groups."
 msgstr "Proponi questa immagine ai gruppi selezionati."
 
-msgid "Subscribed topics"
-msgstr "Argomenti a cui sei abbonato"
-
-msgid "Subscription confirmed"
-msgstr "Abbonamento confermato"
-
-msgid "Subscription plans"
-msgstr "Opzioni di abbonamento"
-
-msgid "Subscription process cancelled"
-msgstr "Processo di abbonemanto annullato"
-
-msgid "Subscriptions"
-msgstr "Abbonamenti"
-
-msgid "Success!"
-msgstr "Successo!"
-
+#: loco:60685ab727e3d377322f42a6
 msgid "Sun"
 msgstr "Sole"
 
+#: loco:60685ab727e3d377322f42a7
 msgid "TIFF support on AstroBin is experimental."
 msgstr "Il supporto ai TIFF su AstroBin è sperimentale."
 
-msgid "Target image"
-msgstr "Immagine di destinazione"
-
+#: loco:60685ab727e3d377322f42a8
 msgid "Text"
 msgstr "Testo"
 
-msgid "Thank you for supporting AstroBin!"
-msgstr "Grazie per il tuo supporto ad AstroBin!"
-
-msgid "Thanks!"
-msgstr "Grazie!"
-
-msgid "The Big Wall"
-msgstr "Il Grande Muro"
-
+#: loco:60685ab727e3d377322f42a9
 msgid ""
 "The Lite plan is capped at <strong>{{maxImagesForLite}}</strong> total "
-"images, and you currently have <strong>{{numberOfImages}}</strong> images "
-"on AstroBin. For this reason, we recommend that you upgrade to Premium or "
+"images, and you currently have <strong>{{numberOfImages}}</strong> images on "
+"AstroBin. For this reason, we recommend that you upgrade to Premium or "
 "Ultimate instead."
 msgstr ""
 "L'abbonamento Lite è limitato a <strong>{{maxImagesForLite}}</strong> in "
 "totale, e al momento tu hai <strong>{{numberOfImages}}</strong> immagini su "
-"AstroBin. Per questo motivo, raccomandiamo che tu faccia l'upgrade a "
-"Premium o Ultimate."
+"AstroBin. Per questo motivo, raccomandiamo che tu faccia l'upgrade a Premium "
+"o Ultimate."
 
+#: loco:60685ab727e3d377322f42aa
 msgid "The final font size will depend on how long your watermark is."
-msgstr "La dimensione finale del carattere dipende da quanto è lungo il watermark."
+msgstr ""
+"La dimensione finale del carattere dipende da quanto è lungo il watermark."
 
+#: loco:60685ab727e3d377322f42ab
 msgid "The image will permanently disappear from your queue."
 msgstr "L'immagine scomparirà permanentemente dalla tua coda."
 
+#: loco:60685ab727e3d377322f42ac
 msgid ""
 "The price is shown in Swiss Francs even though you might have paid the "
 "equivalent amount in your country's currency."
@@ -869,30 +1191,19 @@ msgstr ""
 "Il prezzo è mostrato in Franchi Svizzeri anche nel caso tu abbia pagato "
 "l'equivalente nella valuta del tuo Paese."
 
+#: loco:60685ab727e3d377322f42ad
 msgid "The review queue is currently empty."
 msgstr "La coda di votazione al momento è vuota."
 
+#: loco:60685ab727e3d377322f42ae
 msgid "The submission queue is currently empty."
 msgstr "La coda di proposte al momento è vuota."
 
-msgid "There doesn't seem to be anything here."
-msgstr "Non sembra esserci niente qui."
-
-msgid "This field is disabled because you haven't joined any groups yet."
-msgstr ""
-"Questo campo è disabilitato perché non ti sei ancora iscritto ad alcun "
-"gruppo."
-
-msgid ""
-"This image will be uploaded to your staging area as a work in progress. You "
-"can make it public at the end of the process."
-msgstr ""
-"Questa immagine sarà caricata sulla tua area di lavoro. Puoi renderla "
-"pubblica alla fine del processo."
-
+#: loco:60685ab727e3d377322f42af
 msgid "This operation can not be undone."
 msgstr "Questa operazione non può essere annullata."
 
+#: loco:60685ab727e3d377322f42b0
 msgid ""
 "This operation could take several seconds (especially for large images), "
 "please wait"
@@ -900,113 +1211,63 @@ msgstr ""
 "Questa operazione potrebbe richiedere svariati secondi (specialmente per "
 "immagini grandi), attendere prego"
 
-msgid ""
-"This page or operation is not available at the moment, because AstroBin is "
-"in READ ONLY mode."
-msgstr ""
-"Questa pagina o operazione non è disponibile al momento, perché AstroBin è "
-"in modalità SOLA LETTURA."
-
-msgid ""
-"This setting will take affect after the image will be moved to your public "
-"area."
-msgstr ""
-"Questo settaggio avrà effetto dopo che l'immagine verrà spostata nella tua "
-"area pubblica."
-
+#: loco:60685ab727e3d377322f42b1
 msgid "Thumbnail"
 msgstr "Miniatura"
 
-msgid "Title"
-msgstr "Titolo"
-
+#: loco:60685ab727e3d377322f42b2
 msgid "Top center"
 msgstr "In alto al centro"
 
+#: loco:60685ab727e3d377322f42b3
 msgid "Top left"
 msgstr "In alto a sinistra"
 
-msgid "Top pick nominations"
-msgstr "Nomine Top pick"
-
-msgid "Top picks"
-msgstr "Top pick"
-
+#: loco:60685ab727e3d377322f42b4
 msgid "Top right"
 msgstr "In alto a destra"
 
+#: loco:60685ab727e3d377322f42b5
 msgid "Total lunar eclipse"
 msgstr "Eclisse totale di Luna"
 
+#: loco:60685ab727e3d377322f42b6
 msgid "Total solar eclipse"
 msgstr "Eclisse totale di Sole"
 
+#: loco:60685ab727e3d377322f42b7
 msgid "Traveller"
 msgstr "Itinerante"
 
-msgid "Type something to create a new one..."
-msgstr "Scrive qualcosa per crearne uno nuovo..."
-
-msgid "Type to search options or to create a new one..."
-msgstr "Scrivi per cercare tra le opzioni o crearne una nuova..."
-
+#: loco:60685ab727e3d377322f42b8
 msgid "Type to search options..."
 msgstr "Digita per cercare tra le opzioni..."
 
-msgid "Uncompressed source uploader"
-msgstr "Uploader di dati sorgenti non compressi"
-
+#: loco:60685ab727e3d377322f42b9
 msgid "Unknown"
 msgstr "Sconosciuta"
 
-msgid "Unknown error"
-msgstr "Errore sconosciuto"
-
+#: loco:60685ab727e3d377322f42ba
 msgid "Unknown error, please refresh the page and try again."
 msgstr "Errore sconosciuto, per favore ricarica la pagina e prova di nuovo."
 
-msgid "Unlimited images"
-msgstr "Immagini illimitate"
-
-msgid "Unlimited revisions"
-msgstr "Versioni illimitate"
-
-msgid "Unlimited size"
-msgstr "Dimensione illimitata"
-
-msgid "Upload"
-msgstr "Carica"
-
-msgid "Uploader"
-msgstr "Uploader"
-
+#: loco:60685ab727e3d377322f42bb
 msgid "Uploading..."
 msgstr "Caricamento..."
 
+#: loco:60685ab727e3d377322f42bc
 msgid "Uranus"
 msgstr "Urano"
 
-msgid "Username"
-msgstr "Nome utente"
-
-msgid "Users"
-msgstr "Utenti"
-
-msgid "Validity"
-msgstr "Validità"
-
+#: loco:60685ab727e3d377322f42bd
 msgid "Venus"
 msgstr "Venere"
 
+#: loco:60685ab727e3d377322f42be
 msgid "View large"
 msgstr "Ingrandisci"
 
-msgid "Want to upgrade from a lower subscription tier?"
-msgstr "Vuoi fare l'upgrade da un abbonamento inferiore?"
-
-msgid "Warning!"
-msgstr "Attenzione!"
-
+#: loco:60685ab727e3d377322f42bf
 msgid ""
 "Warning! That's a large file you got there! AstroBin does not impose "
 "artificial limitation in the file size you can upload with an Ultimate "
@@ -1018,52 +1279,131 @@ msgstr ""
 "Ultimate, ma non possiamo garantire il funzionamento di tutte le immagini "
 "sopra i 200 MB oppure 8000x8000 pixel. Provaci pure se vuoi!"
 
+#: loco:60685ab727e3d377322f42c0
 msgid "Watermark"
 msgstr "Watermark"
 
-msgid "We could not log you in. Please check your credentials and try again."
+#: loco:60685ab727e3d377322f42c1
+msgid ""
+"We have updated the image data editor to make room for new features coming "
+"your way in the near future!"
 msgstr ""
-"Non è stato possibile fare l'accesso. Controlla il tuo nome utente e "
-"password e riprova."
+"Abbiamo aggiornato il modulo dati immagine per fare spazio a nuove "
+"funzionalitàche saranno disponibili presto!"
 
-msgid "We'll never share your email with anyone else."
-msgstr "Non condivideremo mai la tua email con nessuno."
-
-msgid "Welcome!"
-msgstr "Benvenuto!"
-
-msgid "What is this site?"
-msgstr "Cos'è questo sito?"
-
-msgid "When a paid subscription expires, nothing happens to your images or content."
+#: loco:60685ab727e3d377322f42c2
+msgid ""
+"When a paid subscription expires, nothing happens to your images or content."
 msgstr ""
 "Quando un abbonamento a pagamento scade, non accade nulla alle tue immagini "
 "o contenuti."
 
+#: loco:60685ab727e3d377322f42c3
 msgid "Where do you want to go after saving?"
 msgstr "Dove vuoi andare dopo il salvataggio?"
 
+#: loco:60685ab727e3d377322f42c4
 msgid "Where does the data for this image come from?"
 msgstr "Da dove vengono i dati per questa immagine?"
 
-msgid "Which remote hosting facility did you use to acquire data for this image?"
+#: loco:60685ab727e3d377322f42c5
+msgid ""
+"Which remote hosting facility did you use to acquire data for this image?"
 msgstr ""
 "Quale struttura di hosting hai utilizzato per acquisire i dati per questa "
 "immagine?"
 
-msgid "Would you like to upgrade?"
-msgstr "Vuoi fare l'upgrade?"
-
+#: loco:60685ab727e3d377322f42c6
 msgid ""
-"You are already on this plan. If you buy it again, your expiration date "
-"will be extended by one year."
+"You are already on this plan. If you buy it again, your expiration date will "
+"be extended by one year."
 msgstr ""
 "Hai già questo abbonamento. Se lo compri di nuovo, la data di scadenza sarà "
 "estesa di un anno."
 
+#: loco:60685ab727e3d377322f42c7
 msgid "You are already subscribed to a higher plan."
 msgstr "Hai già un abbonamento superiore."
 
+#: loco:60685ab727e3d377322f42c8
+msgid "Zoom ready"
+msgstr "Zoom pronto"
+
+#: loco:60685ab727e3d377322f42c9
+msgid "e.g."
+msgstr "p.e."
+
+#: loco:60685b60c553572a2445b532
+msgid ""
+"You have an <strong>AstroBin Premium</strong> subscription. Enjoy your "
+"unlimited uploads!"
+msgstr ""
+"Hai un abbonamento<strong>AstroBin Premium</strong. Goditi i tuoi "
+"caricamenti illimitati!"
+
+#: loco:60685b60c553572a2445b533
+msgid ""
+"You have an <strong>AstroBin Ultimate</strong> subscription. Enjoy your "
+"unlimited uploads!"
+msgstr ""
+"Hai un abbonamento<strong>AstroBin Ultimate</strong. Goditi i tuoi "
+"caricamenti illimitati!"
+
+#: loco:60706f2de8dffc569748c212
+msgid "Constellations"
+msgstr "Costellazioni"
+
+#: loco:60706f2de8dffc569748c213
+msgid "Find images"
+msgstr "Trova immagini"
+
+#: loco:60706f2de8dffc569748c214
+msgid "Jump to"
+msgstr "Salta a"
+
+#: loco:6087167fe1b7bd31c9369682
+msgid "Attribution Creative Commons"
+msgstr "Attribution Creative Commons"
+
+#: loco:6087167fe1b7bd31c9369683
+msgid "Attribution-NoDerivs Creative Commons"
+msgstr "Attribution-NoDerivs Creative Commons"
+
+#: loco:6087167fe1b7bd31c9369684
+msgid "Attribution-NonCommercial Creative Commons"
+msgstr "Attribution-NonCommercial Creative Commons"
+
+#: loco:6087167fe1b7bd31c9369685
+msgid "Attribution-NonCommercial-NoDerivs Creative Commons"
+msgstr "Attribution-NonCommercial-NoDerivs Creative Commons"
+
+#: loco:6087167fe1b7bd31c9369686
+msgid "Attribution-NonCommercial-ShareAlike Creative Commons"
+msgstr "Attribution-NonCommercial-ShareAlike Creative Commons"
+
+#: loco:6087167fe1b7bd31c9369687
+msgid "Attribution-ShareAlike Creative Commons"
+msgstr "Attribution-ShareAlike Creative Commons"
+
+#: loco:6087167fe1b7bd31c9369688
+msgid ""
+"If this file is a different take on the same data as in another image you "
+"already published on AstroBin, the common practice would be to upload it as "
+"a new revision. For more info, please {{0}}click here{{1}}."
+msgstr ""
+"Se questo file rappresenta un approccio diverso agli stessi dati di "
+"un'immagine già caricata su AstroBin, la pratica comune sarebbe di caricarlo "
+"con una nuova versione. Per ulteriori informazioni, {{0}}clicca qui{{1}}."
+
+#: loco:6087167fe1b7bd31c9369689
+msgid "License"
+msgstr "Licenza"
+
+#: loco:6087167fe1b7bd31c936968a
+msgid "None (All rights reserved)"
+msgstr "Nessuna (Tutti i diritti riservati)"
+
+#: loco:6087167fe1b7bd31c936968b
 msgid ""
 "You can associate a Creative Commons license with your content if you wish, "
 "to grant people the right to use your work under certain circumstances. For "
@@ -1072,75 +1412,10 @@ msgid ""
 msgstr ""
 "Puoi associare una licenza Creative Commons ai tuoi contenuti, se desideri, "
 "per garantide ad altri il diritto di usare il tuo lavoro sotto certe "
-"condizioni. Per ulteriori informazioni su quali siano le tue opzioni, "
-"visita {{0}}il sito Creative Commons{{1}}."
+"condizioni. Per ulteriori informazioni su quali siano le tue opzioni, visita "
+"{{0}}il sito Creative Commons{{1}}."
 
-msgid ""
-"You have a <strong>{{0}}</strong> subscription. Enjoy your unlimited "
-"uploads!"
-msgstr "Hai un abbonamento <strong>{{0}}</strong>. Goditi i tuoi upload illimitati!"
-
-msgid ""
-"You have a <strong>{{0}}</strong> subscription. You have used "
-"<strong>{{1}}</strong> of your <strong>{{2}}</strong> upload slots."
-msgstr ""
-"Hai un abbonamento <strong>{{0}}</strong>. Hai usato <strong>{{1}}</strong> "
-"dei tuoi <strong>{{2}}</strong> slot di upload."
-
-msgid ""
-"You have a <strong>{{0}}</strong> subscription. You have used "
-"<strong>{{1}}</strong> of your <strong>{{2}}</strong> yearly upload slots."
-msgstr ""
-"Hai un abbonamento <strong>{{0}}</strong>. Hai usato <strong>{{1}}</strong> "
-"dei tuoi <strong>{{2}}</strong> slot di upload per questo ciclo di "
-"abbonamento."
-
-msgid "You have been logged in."
-msgstr "Hai effettuato l'accesso."
-
-msgid "You have been logged out. Come back soon!"
-msgstr "Sei uscito. Torna presto!"
-
-msgid "You will be redirected in {{seconds}} seconds..."
-msgstr "Sarai rendirizzato in {{seconds}} secondi..."
-
-msgid "Your payments"
-msgstr "I tuoi pagamenti"
-
-msgid ""
-"Your request has been received, and we are awaiting the final confirmation "
-"from the payment processor. Your subscription should be active within a few "
-"minutes!"
-msgstr ""
-"La tua richiesta è stata ricevuta, e stiamo aspettando la conferma finale "
-"dal processore del pagamento. Il tuo abbonamento dovrebbe essere attivato "
-"entro pochi minuti!"
-
-msgid "Your session is invalid, please log in again"
-msgstr "La tua sessione è invalida, fai di nuovo l'accesso!"
-
-msgid "Your subscriptions"
-msgstr "I tuoi abbonamenti"
-
-msgid ""
-"Your transaction with the payment processor has been cancelled, so no "
-"change in your subscription has occurred."
-msgstr ""
-"La tua transazioni con il processore dei pagamenti è stata annullata, "
-"quindi non è avvenuto alcun cambiamento nel tuo abbonamento."
-
-msgid "Zoom ready"
-msgstr "Zoom pronto"
-
-msgid "e.g."
-msgstr "p.e."
-
-msgid "e.g. 'Home observatory'"
-msgstr "p.e. 'Osservatorio di casa'"
-
-msgid "n/a"
-msgstr "n/d"
-
+#: loco:6087167fe1b7bd31c936968c
 msgid ""
 "there is an etiquette regarding uploading a new image versus an image "
 "revision."
@@ -1148,8 +1423,638 @@ msgstr ""
 "c'è una certa etichetta diguardo il caricamento di nuove immagini piuttosto "
 "che versioni d'immagine."
 
-msgid "year"
-msgstr "anno"
+#: loco:60c8d26b9a9bb6548e02ff33
+msgid "Allow full-size display"
+msgstr "Permetti visualizzazione a piena risoluzione"
 
-msgid "{{ max }} revisions / image"
-msgstr "{{ max }} versioni / immagine"
+#: loco:60c8d26b9a9bb6548e02ff34
+msgid "Altitude"
+msgstr "Altitudine"
+
+#: loco:60c8d26b9a9bb6548e02ff35
+msgid "AstroBin does not share your coordinates with anyone."
+msgstr "AstroBin non condivide le tue coordinate con nessuno."
+
+#: loco:60c8d26b9a9bb6548e02ff36
+msgid "Comments"
+msgstr "Commenti"
+
+#: loco:60c8d26b9a9bb6548e02ff37
+msgid "Create new location"
+msgstr "Crea nuovo luogo"
+
+#: loco:60c8d26b9a9bb6548e02ff38
+msgid "Create new:"
+msgstr "Crea nuovo/a:"
+
+#: loco:60c8d26b9a9bb6548e02ff39
+msgid "E-mail"
+msgstr "E-mail"
+
+#: loco:60c8d26b9a9bb6548e02ff3a
+msgid "Everybody"
+msgstr "Tutti"
+
+#: loco:60c8d26b9a9bb6548e02ff3b
+msgid "Forums"
+msgstr "Forum"
+
+#: loco:60c8d26b9a9bb6548e02ff3c
+msgid "IOTD/TP Staff"
+msgstr "Staff IOTD/TP"
+
+#: loco:60c8d26b9a9bb6548e02ff3d
+msgid "Image of the Day / Top Picks"
+msgstr "Foto del giorno / Top Picks"
+
+#: loco:60c8d26b9a9bb6548e02ff3e
+msgid "Locations"
+msgstr "Luoghi"
+
+#: loco:60c8d26b9a9bb6548e02ff3f
+msgid "Me only"
+msgstr "Solo io"
+
+#: loco:60c8d26b9a9bb6548e02ff40
+msgid "Members only"
+msgstr "Solo utenti"
+
+#: loco:60c8d26b9a9bb6548e02ff41
+msgid "Meters above sea level"
+msgstr "Metri sopra il livello del mare"
+
+#: loco:60c8d26b9a9bb6548e02ff42
+msgid "Move the map until the marker points at right location"
+msgstr "Muovi la mappa fino a che il segno punta al luogo giusto"
+
+#: loco:60c8d26b9a9bb6548e02ff43
+msgid "No items found."
+msgstr "Nessun elemento trovato."
+
+#: loco:60c8d26b9a9bb6548e02ff44
+msgid "Nobody"
+msgstr "Nessuno"
+
+#: loco:60c8d26b9a9bb6548e02ff45
+msgid "Notification settings"
+msgstr "Impostazioni notifiche"
+
+#: loco:60c8d26b9a9bb6548e02ff46
+msgid "On-site"
+msgstr "Sul sito"
+
+#: loco:60c8d26b9a9bb6548e02ff47
+msgid "Paying members only"
+msgstr "Solo utenti paganti"
+
+#: loco:60c8d26b9a9bb6548e02ff48
+msgid "Private messages"
+msgstr "Messaggi privati"
+
+#: loco:60c8d26b9a9bb6548e02ff49
+msgid "Subscriptions"
+msgstr "Abbonamenti"
+
+#: loco:60c8d26b9a9bb6548e02ff4a
+msgid "This field is disabled because you haven't joined any groups yet."
+msgstr ""
+"Questo campo è disabilitato perché non ti sei ancora iscritto ad alcun "
+"gruppo."
+
+#: loco:60c8d26b9a9bb6548e02ff4b
+msgid ""
+"This setting will take affect after the image will be moved to your public "
+"area."
+msgstr ""
+"Questo settaggio avrà effetto dopo che l'immagine verrà spostata nella tua "
+"area pubblica."
+
+#: loco:60c8d26b9a9bb6548e02ff4c
+msgid "Type something to create a new one..."
+msgstr "Scrive qualcosa per crearne uno nuovo..."
+
+#: loco:60c8d26b9a9bb6548e02ff4d
+msgid "Type to search options or to create a new one..."
+msgstr "Scrivi per cercare tra le opzioni o crearne una nuova..."
+
+#: loco:60c8d26b9a9bb6548e02ff4e
+msgid "Users"
+msgstr "Utenti"
+
+#: loco:60c8d26b9a9bb6548e02ff4f
+msgid "e.g. 'Home observatory'"
+msgstr "p.e. 'Osservatorio di casa'"
+
+#: loco:6151f41acae9ba5e6a4b2a23
+msgid "(optional)"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a24
+msgid ""
+"<strong>Careful!</strong> Change the name only to fix a typo or the naming "
+"convention. This operation will change the name of this equipment item "
+"<strong>for all AstroBin images that use it</strong>, so you should not "
+"change the name if it becomes a different product."
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a25
+msgid ""
+"<strong>Careful!</strong> The item's name contains the brand's name (or vice "
+"versa), and it probably shouldn't."
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a26
+msgid ""
+"<strong>Careful!</strong> Your usage of the word \"{{0}}\" suggests that you "
+"are using this field to\n"
+"            specify a property of this item that is only relevant to your "
+"own copy. Remember that here you are creating\n"
+"            or editing the <strong>generic instance</strong> that will be "
+"shared by all owners on AstroBin."
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a27
+msgid "A brand with this name already exists."
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a28
+msgid "A brand with this website already exists."
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a29
+msgid ""
+"A positive whole number that represents how many Celsius below ambient "
+"temperature this camera can be cooled."
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a2a
+msgid "ADC"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a2b
+msgid "Accepted"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a2c
+msgid "Accessories"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a2d
+msgid "An item of the same type and the same name already exists."
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a2e
+msgid "Analog to Digital Converter"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a2f
+msgid "Aperture"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a30
+msgid "Approve..."
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a31
+msgid "Back focus"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a32
+msgid "Brand"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a33
+msgid "Camera"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a34
+msgid "Camera back focus in mm."
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a35
+msgid "Cameras"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a36
+msgid "Celsius degrees below ambient"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a37
+msgid "Changes"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a38
+msgid "Choose file"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a39
+msgid "Choose files"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a3a
+msgid "Class"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a3b
+msgid "Close"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a3c
+msgid "Color"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a3d
+msgid "Color/mono"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a3e
+msgid "Confirm"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a3f
+msgid "Confirm item creation"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a40
+msgid "Contribution Index"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a41
+msgid "Cooled"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a42
+msgid "Create a new item"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a43
+msgid "Create new brand"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a44
+msgid "Create new sensor"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a45
+msgid "Dedicated deep-sky camera"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a46
+msgid "Disable high contrast theme"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a47
+msgid "Edit proposal by"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a48
+msgid "Edit proposal comment"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a49
+msgid "Editing the brand is not possible."
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a4a
+msgid "Enable high contrast theme"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a4b
+msgid "Equipment"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a4c
+msgid "Equipment explorer"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a4d
+msgid "Equipment pending edit"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a4e
+msgid "Equipment pending review"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a4f
+msgid "Explorer"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a50
+msgid "Film camera"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a51
+msgid "Filters"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a52
+msgid "Find equipment item"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a53
+msgid "Focal length"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a54
+msgid "Frame rate"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a55
+msgid "Full well capacity"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a56
+msgid "General purpose DSLR or mirrorless camera"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a57
+msgid "General purpose video camera"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a58
+msgid "Guider or planetary camera"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a59
+msgid "Image Index"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a5a
+msgid "Item summary"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a5b
+msgid "Logo"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a5c
+msgid "Max. aperture"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a5d
+msgid "Max. cooling"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a5e
+msgid "Max. focal length"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a5f
+msgid "Min. aperture"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a60
+msgid "Min. focal length"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a61
+msgid "Mono"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a62
+msgid "Mounts"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a63
+msgid "No changes are proposed."
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a64
+msgid "Number of pixels across the X axis"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a65
+msgid "Number of pixels across the Y axis"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a66
+msgid "Official (or official looking) product image. Max. 1MB."
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a67
+msgid "Pending"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a68
+msgid "Pending edit"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a69
+msgid "Pending review"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a6a
+msgid "Pixel size"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a6b
+msgid "Pixel size (in μm)"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a6c
+msgid "Pixels"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a6d
+msgid "Pixels X"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a6e
+msgid "Pixels Y"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a6f
+msgid "Please make sure that the information you entered is accurate."
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a70
+msgid "Propose edit"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a71
+msgid "Proposer's comment"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a72
+msgid "Quantum efficiency"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a73
+msgid "Read noise"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a74
+msgid "Refractor: achromatic"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a75
+msgid "Reject"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a76
+msgid "Reject..."
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a77
+msgid "Rejected"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a78
+msgid "Reviewer's comment"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a79
+msgid "Sensor"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a7a
+msgid "Sensor height"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a7b
+msgid "Sensor size"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a7c
+msgid "Sensor width"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a7d
+msgid "Software"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a7e
+msgid "Status"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a7f
+msgid "Superseded"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a80
+msgid "Telescope"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a81
+msgid "Telescopes"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a82
+msgid ""
+"Thanks! Your edit proposal has been submitted and well be reviewed as soon "
+"as possible."
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a83
+msgid ""
+"The <strong>Contribution Index (beta)</strong> is system to reward "
+"informative, constructive, and valuable commentary on AstroBin. {{_0}}Learn "
+"more.{{_1}}"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a84
+msgid ""
+"The <strong>Image Index</strong> is a system based on likes received on "
+"images, that incentivizes the most active and liked members of the community."
+" {{_0}}Learn more.{{_1}}"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a85
+msgid "The following changes are proposed:"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a86
+msgid "The name of this brand. Make sure it's spelled correctly."
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a87
+msgid ""
+"The name of this product. Do not include the brand's name and make sure it's "
+"spelled correctly."
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a88
+msgid "The size of the individual pixels in μm."
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a89
+msgid ""
+"This brand has <strong>{{0}}</strong> items in AstroBin's database. Take a "
+"look at them so you can be consistent with the naming conventions:"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a8a
+msgid ""
+"This item will be part of AstorBin's equipment database, and it's very "
+"important that the information is accurate and this item is not the "
+"duplicate of another"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a8b
+msgid ""
+"Tick if this is a color sensor, leave blank if it's a monochromatic one."
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a8c
+msgid "Time"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a8d
+msgid "Type"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a8e
+msgid "Type to search."
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a8f
+msgid ""
+"Use the <strong>#</strong> sign and start typing to insert an image from "
+"your gallery."
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a90
+msgid "Use the <strong>@</strong> sign and start typing to mention any user."
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a91
+msgid "View"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a92
+msgid "We found similar items from the same brand."
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a93
+msgid ""
+"We found the following similar items. Click the correct one to use it, or "
+"ignore this message."
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a94
+msgid "Website"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a95
+msgid "Weight"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a96
+msgid "Whether this camera is equipment with a cooling mechanism."
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a97
+msgid "Yes"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a98
+msgid ""
+"You cannot review this edit proposal because there are previous pending "
+"proposals."
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a99
+msgid ""
+"You cannot review this edit proposal because you were the one who proposed "
+"it."
+msgstr ""
