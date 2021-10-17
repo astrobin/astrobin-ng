@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: AstroBin Angular App\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-03 14:04+0200\n"
-"PO-Revision-Date: 2021-09-27 18:40+0200\n"
+"PO-Revision-Date: 2021-10-17 11:27+0200\n"
 "Last-Translator: Salvatore Iovene\n"
 "Language-Team: Russian\n"
 "Language: ru\n"
@@ -1975,4 +1975,35 @@ msgstr ""
 msgid ""
 "You cannot review this edit proposal because you were the one who proposed "
 "it."
+msgstr ""
+
+#: loco:616beb23b6a5125b01510b92
+msgid "Display download menu"
+msgstr ""
+
+#: loco:616beb23b6a5125b01510b93
+msgid "Enjoy your unlimited revisions per image!"
+msgstr ""
+
+#: loco:616beb23b6a5125b01510b94
+msgid ""
+"It looks like you reached the revision upload limit for your subscription."
+msgstr ""
+
+#: loco:616beb23b6a5125b01510b95
+msgid ""
+"Permission denied. You don't have the required subscription level to perform "
+"this operation."
+msgstr ""
+
+#: loco:616beb23b6a5125b01510b96
+msgid "Sorry, revisions are not included at your membership level."
+msgstr ""
+
+#: loco:616beb23b6a5125b01510b97
+msgid "You may have up to one revision per image."
+msgstr ""
+
+#: loco:616beb23b6a5125b01510b98
+msgid "You may have up to {{0}} revisions per image."
 msgstr ""
