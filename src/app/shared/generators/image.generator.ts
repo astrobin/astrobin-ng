@@ -45,7 +45,8 @@ export class ImageGenerator {
       sharpenThumbnails: false,
       keyValueTags: null,
       locations: [],
-      fullSizeDisplayLimitation: null
+      fullSizeDisplayLimitation: null,
+      downloadLimitation: null
     };
   }
 }

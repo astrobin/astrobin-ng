@@ -18,6 +18,7 @@ import { ImageAlias } from "@shared/enums/image-alias.enum";
 import {
   AcquisitionType,
   DataSource,
+  DownloadLimitationOptions,
   FullSizeLimitationDisplayOptions,
   ImageInterface,
   LicenseOptions,
@@ -922,6 +923,28 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     };
   }
 
+  private _getDownloadLimitationField(): any {
+    return {
+      key: "downloadLimitation",
+      type: "ng-select",
+      id: "image-download-limitation-field",
+      templateOptions: {
+        clearable: false,
+        label: this.translateService.instant("Display download menu"),
+        options: [
+          {
+            value: DownloadLimitationOptions.EVERYBODY,
+            label: this.translateService.instant("Everybody")
+          },
+          {
+            value: DownloadLimitationOptions.ME_ONLY,
+            label: this.translateService.instant("Me only")
+          }
+        ]
+      }
+    };
+  }
+
   private _initFields(): void {
     this.fields = [
       {
@@ -979,6 +1002,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
               this._getMouseHoverImageField(),
               this._getKeyValueTagsField(),
               this._getFullSizeDisplayLimitationField(),
+              this._getDownloadLimitationField(),
               this._getAllowCommentsField()
             ]
           }

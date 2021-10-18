@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: AstroBin Angular App\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-03 14:04+0200\n"
-"PO-Revision-Date: 2021-06-15 18:22+0200\n"
+"PO-Revision-Date: 2021-10-17 11:27+0200\n"
 "Last-Translator: Salvatore Iovene\n"
 "Language-Team: Russian\n"
 "Language: ru\n"
@@ -15,7 +15,7 @@ msgstr ""
 "X-Generator: Loco https://localise.biz\n"
 "X-Loco-Source-Locale: en\n"
 "X-Loco-Project-Id: 108356\n"
-"X-Loco-Api-Version: 1.0.25 20210614-1"
+"X-Loco-Api-Version: 1.0.25 20211001-1"
 
 #: loco:60685a683b0b1d485a736d12
 msgid "API Keys"
@@ -1461,4 +1461,549 @@ msgstr ""
 
 #: loco:60c8d26b9a9bb6548e02ff4f
 msgid "e.g. 'Home observatory'"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a23
+msgid "(optional)"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a24
+msgid ""
+"<strong>Careful!</strong> Change the name only to fix a typo or the naming "
+"convention. This operation will change the name of this equipment item "
+"<strong>for all AstroBin images that use it</strong>, so you should not "
+"change the name if it becomes a different product."
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a25
+msgid ""
+"<strong>Careful!</strong> The item's name contains the brand's name (or vice "
+"versa), and it probably shouldn't."
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a26
+msgid ""
+"<strong>Careful!</strong> Your usage of the word \"{{0}}\" suggests that you "
+"are using this field to\n"
+"            specify a property of this item that is only relevant to your "
+"own copy. Remember that here you are creating\n"
+"            or editing the <strong>generic instance</strong> that will be "
+"shared by all owners on AstroBin."
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a27
+msgid "A brand with this name already exists."
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a28
+msgid "A brand with this website already exists."
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a29
+msgid ""
+"A positive whole number that represents how many Celsius below ambient "
+"temperature this camera can be cooled."
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a2a
+msgid "ADC"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a2b
+msgid "Accepted"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a2c
+msgid "Accessories"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a2d
+msgid "An item of the same type and the same name already exists."
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a2e
+msgid "Analog to Digital Converter"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a2f
+msgid "Aperture"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a30
+msgid "Approve..."
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a31
+msgid "Back focus"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a32
+msgid "Brand"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a33
+msgid "Camera"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a34
+msgid "Camera back focus in mm."
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a35
+msgid "Cameras"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a36
+msgid "Celsius degrees below ambient"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a37
+msgid "Changes"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a38
+msgid "Choose file"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a39
+msgid "Choose files"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a3a
+msgid "Class"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a3b
+msgid "Close"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a3c
+msgid "Color"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a3d
+msgid "Color/mono"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a3e
+msgid "Confirm"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a3f
+msgid "Confirm item creation"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a40
+msgid "Contribution Index"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a41
+msgid "Cooled"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a42
+msgid "Create a new item"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a43
+msgid "Create new brand"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a44
+msgid "Create new sensor"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a45
+msgid "Dedicated deep-sky camera"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a46
+msgid "Disable high contrast theme"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a47
+msgid "Edit proposal by"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a48
+msgid "Edit proposal comment"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a49
+msgid "Editing the brand is not possible."
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a4a
+msgid "Enable high contrast theme"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a4b
+msgid "Equipment"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a4c
+msgid "Equipment explorer"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a4d
+msgid "Equipment pending edit"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a4e
+msgid "Equipment pending review"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a4f
+msgid "Explorer"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a50
+msgid "Film camera"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a51
+msgid "Filters"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a52
+msgid "Find equipment item"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a53
+msgid "Focal length"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a54
+msgid "Frame rate"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a55
+msgid "Full well capacity"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a56
+msgid "General purpose DSLR or mirrorless camera"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a57
+msgid "General purpose video camera"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a58
+msgid "Guider or planetary camera"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a59
+msgid "Image Index"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a5a
+msgid "Item summary"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a5b
+msgid "Logo"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a5c
+msgid "Max. aperture"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a5d
+msgid "Max. cooling"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a5e
+msgid "Max. focal length"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a5f
+msgid "Min. aperture"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a60
+msgid "Min. focal length"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a61
+msgid "Mono"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a62
+msgid "Mounts"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a63
+msgid "No changes are proposed."
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a64
+msgid "Number of pixels across the X axis"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a65
+msgid "Number of pixels across the Y axis"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a66
+msgid "Official (or official looking) product image. Max. 1MB."
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a67
+msgid "Pending"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a68
+msgid "Pending edit"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a69
+msgid "Pending review"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a6a
+msgid "Pixel size"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a6b
+msgid "Pixel size (in μm)"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a6c
+msgid "Pixels"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a6d
+msgid "Pixels X"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a6e
+msgid "Pixels Y"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a6f
+msgid "Please make sure that the information you entered is accurate."
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a70
+msgid "Propose edit"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a71
+msgid "Proposer's comment"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a72
+msgid "Quantum efficiency"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a73
+msgid "Read noise"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a74
+msgid "Refractor: achromatic"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a75
+msgid "Reject"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a76
+msgid "Reject..."
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a77
+msgid "Rejected"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a78
+msgid "Reviewer's comment"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a79
+msgid "Sensor"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a7a
+msgid "Sensor height"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a7b
+msgid "Sensor size"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a7c
+msgid "Sensor width"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a7d
+msgid "Software"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a7e
+msgid "Status"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a7f
+msgid "Superseded"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a80
+msgid "Telescope"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a81
+msgid "Telescopes"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a82
+msgid ""
+"Thanks! Your edit proposal has been submitted and well be reviewed as soon "
+"as possible."
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a83
+msgid ""
+"The <strong>Contribution Index (beta)</strong> is system to reward "
+"informative, constructive, and valuable commentary on AstroBin. {{_0}}Learn "
+"more.{{_1}}"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a84
+msgid ""
+"The <strong>Image Index</strong> is a system based on likes received on "
+"images, that incentivizes the most active and liked members of the community."
+" {{_0}}Learn more.{{_1}}"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a85
+msgid "The following changes are proposed:"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a86
+msgid "The name of this brand. Make sure it's spelled correctly."
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a87
+msgid ""
+"The name of this product. Do not include the brand's name and make sure it's "
+"spelled correctly."
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a88
+msgid "The size of the individual pixels in μm."
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a89
+msgid ""
+"This brand has <strong>{{0}}</strong> items in AstroBin's database. Take a "
+"look at them so you can be consistent with the naming conventions:"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a8a
+msgid ""
+"This item will be part of AstorBin's equipment database, and it's very "
+"important that the information is accurate and this item is not the "
+"duplicate of another"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a8b
+msgid ""
+"Tick if this is a color sensor, leave blank if it's a monochromatic one."
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a8c
+msgid "Time"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a8d
+msgid "Type"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a8e
+msgid "Type to search."
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a8f
+msgid ""
+"Use the <strong>#</strong> sign and start typing to insert an image from "
+"your gallery."
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a90
+msgid "Use the <strong>@</strong> sign and start typing to mention any user."
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a91
+msgid "View"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a92
+msgid "We found similar items from the same brand."
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a93
+msgid ""
+"We found the following similar items. Click the correct one to use it, or "
+"ignore this message."
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a94
+msgid "Website"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a95
+msgid "Weight"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a96
+msgid "Whether this camera is equipment with a cooling mechanism."
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a97
+msgid "Yes"
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a98
+msgid ""
+"You cannot review this edit proposal because there are previous pending "
+"proposals."
+msgstr ""
+
+#: loco:6151f41acae9ba5e6a4b2a99
+msgid ""
+"You cannot review this edit proposal because you were the one who proposed "
+"it."
+msgstr ""
+
+#: loco:616beb23b6a5125b01510b92
+msgid "Display download menu"
+msgstr ""
+
+#: loco:616beb23b6a5125b01510b93
+msgid "Enjoy your unlimited revisions per image!"
+msgstr ""
+
+#: loco:616beb23b6a5125b01510b94
+msgid ""
+"It looks like you reached the revision upload limit for your subscription."
+msgstr ""
+
+#: loco:616beb23b6a5125b01510b95
+msgid ""
+"Permission denied. You don't have the required subscription level to perform "
+"this operation."
+msgstr ""
+
+#: loco:616beb23b6a5125b01510b96
+msgid "Sorry, revisions are not included at your membership level."
+msgstr ""
+
+#: loco:616beb23b6a5125b01510b97
+msgid "You may have up to one revision per image."
+msgstr ""
+
+#: loco:616beb23b6a5125b01510b98
+msgid "You may have up to {{0}} revisions per image."
 msgstr ""
