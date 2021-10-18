@@ -267,7 +267,12 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
 
     return new Observable<BrandInterface>(observer => {
       this.http
-        .post<BrandInterface>(`${this.configUrl}/brand/`, brandWithoutLogo)
+        .post<BrandInterface>(`${this.configUrl}/brand/`, {
+          ...{
+            ...brandWithoutLogo,
+            website: UtilsService.ensureUrlProtocol(brandWithoutLogo.website)
+          }
+        })
         .pipe(take(1))
         .subscribe(createdBrand => {
           if (brand.logo && brand.logo.length > 0) {

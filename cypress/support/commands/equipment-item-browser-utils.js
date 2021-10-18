@@ -120,6 +120,8 @@ Cypress.Commands.add("setupEquipmentDefaultRoutesForBrands", () => {
     results: []
   }).as("findBrandsByWebsite");
 
+  cy.route("GET", /\/json-api\/common\/url-is-available\/\?url=.*/, { available: true });
+
   cy.route("GET", /\/api\/v2\/equipment\/brand\/\d+\/$/, testBrand).as("findBrandsByName");
 });
 
@@ -177,6 +179,12 @@ Cypress.Commands.add("setupEquipmentDefaultRoutesForSensors", () => {
     previous: null,
     results: []
   }).as("findSensors");
+  cy.route("GET", "**/api/v2/equipment/sensor/?page=*", {
+    count: 1,
+    next: null,
+    previous: null,
+    results: [testSensor]
+  }).as("getSensors");
   cy.route("GET", "**/api/v2/equipment/sensor/find-similar-in-brand/*", []);
   cy.route("GET", "**/api/v2/equipment/sensor/others-in-brand/*", [testSensor]).as("sensorOthersInBrand");
 });
@@ -290,7 +298,26 @@ Cypress.Commands.add("equipmentItemBrowserCreateBrand", (selector, name, website
   cy.get("#brand-field-name").should("have.value", name);
 
   cy.get("#brand-field-website").click();
-  cy.get("#brand-field-website").type(website);
+
+  cy.get("#brand-field-website").type("-invalid-website-");
+  cy.get("#brand-field-name").click();
+  cy.get("formly-validation-message")
+    .contains("This does not look like a valid URL.")
+    .should("be.visible");
+
+  cy.route("GET", /\/json-api\/common\/url-is-available\/\?url=.*/, { available: false });
+  cy.get("#brand-field-website")
+    .clear()
+    .type("www.does-not-exist.com");
+  cy.get("#brand-field-name").click();
+  cy.get("formly-validation-message")
+    .contains("AstroBin could not connect to this server.")
+    .should("be.visible");
+
+  cy.route("GET", /\/json-api\/common\/url-is-available\/\?url=.*/, { available: true });
+  cy.get("#brand-field-website")
+    .clear()
+    .type(website);
 
   cy.route("POST", "**/api/v2/equipment/brand/", brandObject).as("createBrand");
   cy.route("GET", "**/api/v2/equipment/brand/1/", brandObject);

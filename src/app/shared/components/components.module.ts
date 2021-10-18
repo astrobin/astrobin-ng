@@ -51,6 +51,7 @@ import { FileValueAccessorDirective } from "@shared/components/misc/formly-field
 import { FormlyFieldFileComponent } from "@shared/components/misc/formly-field-file/formly-field-file.component";
 import { UsernameService } from "@shared/components/misc/username/username.service";
 import { NothingHereComponent } from "@shared/components/misc/nothing-here/nothing-here.component";
+import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
 
 const modules = [
   CommonModule,
@@ -118,7 +119,7 @@ const services = [UsernameService];
       provide: FORMLY_CONFIG,
       useFactory: formlyConfig,
       multi: true,
-      deps: [TranslateService]
+      deps: [TranslateService, JsonApiService]
     },
     ...services
   ]

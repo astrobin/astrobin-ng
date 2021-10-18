@@ -6,6 +6,7 @@ import { JsonApiServiceInterface } from "@shared/services/api/classic/json/json-
 import { LoadingService } from "@shared/services/loading.service";
 import { Observable } from "rxjs";
 import { BaseClassicApiService } from "../base-classic-api.service";
+import { map } from "rxjs/operators";
 
 @Injectable({
   providedIn: "root"
@@ -27,5 +28,11 @@ export class JsonApiService extends BaseClassicApiService implements JsonApiServ
       {},
       { withCredentials: true }
     );
+  }
+
+  urlIsAvailable(url: string): Observable<boolean> {
+    return this.http
+      .get<{ available: boolean }>(`${this.configUrl}/common/url-is-available/?url=${url}`)
+      .pipe(map(response => response.available));
   }
 }

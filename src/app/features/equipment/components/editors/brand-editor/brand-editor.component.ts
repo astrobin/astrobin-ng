@@ -4,7 +4,18 @@ import { FormControl, FormGroup } from "@angular/forms";
 import { TranslateService } from "@ngx-translate/core";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import { of } from "rxjs";
-import { filter, map, switchMap, take, takeUntil, tap } from "rxjs/operators";
+import {
+  debounceTime,
+  distinctUntilChanged,
+  filter,
+  first,
+  map,
+  startWith,
+  switchMap,
+  take,
+  takeUntil,
+  tap
+} from "rxjs/operators";
 import { BrandInterface } from "@features/equipment/types/brand.interface";
 import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
@@ -93,7 +104,14 @@ export class BrandEditorComponent extends BaseComponentDirective implements OnIn
         asyncValidators: {
           unique: {
             expression: (control: FormControl) => {
-              return this.equipmentApiService.getBrandsByName(control.value).pipe(map(brands => brands.count === 0));
+              return control.valueChanges.pipe(
+                startWith(control.value),
+                debounceTime(500),
+                distinctUntilChanged(),
+                switchMap(value => this.equipmentApiService.getBrandsByName(value)),
+                map(brands => brands.count === 0),
+                first()
+              );
             },
             message: this.translateService.instant("A brand with this name already exists.")
           }
@@ -112,9 +130,17 @@ export class BrandEditorComponent extends BaseComponentDirective implements OnIn
           validation: ["url"]
         },
         asyncValidators: {
+          urlIsAvailable: "url-is-available",
           unique: {
             expression: (control: FormControl) => {
-              return this.equipmentApiService.getBrandsByWebsite(control.value).pipe(map(brands => brands.count === 0));
+              return control.valueChanges.pipe(
+                startWith(control.value),
+                debounceTime(500),
+                distinctUntilChanged(),
+                switchMap(value => this.equipmentApiService.getBrandsByWebsite(value)),
+                map(brands => brands.count === 0),
+                first()
+              );
             },
             message: this.translateService.instant("A brand with this website already exists.")
           }

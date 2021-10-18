@@ -7,5 +7,5 @@
 </div>
 
 <div class="website" *ngIf="!!brand.website">
-  <a href="{{ brand.website }}" target="_blank">{{ brand.website }}</a>
+  <a href="{{ brand.website | ensureUrlProtocol }}" target="_blank">{{ brand.website | ensureUrlProtocol }}</a>
 </div>

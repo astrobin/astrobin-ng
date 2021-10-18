@@ -39,6 +39,7 @@ import { switchMap } from "rxjs/operators";
 import { ComponentsModule } from "./components/components.module";
 import { PipesModule } from "./pipes/pipes.module";
 import { FormlyWrapperComponent } from "@shared/components/misc/formly-wrapper/formly-wrapper.component";
+import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
 
 export function appInitializer(store: Store<State>, actions$: Actions) {
   return () =>
@@ -157,7 +158,7 @@ export class SharedModule {
           provide: FORMLY_CONFIG,
           useFactory: formlyConfig,
           multi: true,
-          deps: [TranslateService]
+          deps: [TranslateService, JsonApiService]
         }
       ]
     };

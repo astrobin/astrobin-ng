@@ -7,6 +7,7 @@ import { ServerErrorsInterceptor } from "@shared/services/server-errors.intercep
 import { TranslateService } from "@ngx-translate/core";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { LoadingService } from "@shared/services/loading.service";
+import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
 
 @NgModule({
   imports: [HttpClientModule],
@@ -23,7 +24,8 @@ import { LoadingService } from "@shared/services/loading.service";
       multi: true
     },
     AuthClassicApiService,
-    CommonApiService
+    CommonApiService,
+    JsonApiService
   ]
 })
 export class ApiModule {}

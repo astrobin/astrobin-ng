@@ -198,6 +198,16 @@ describe("UtilsService", () => {
     });
   });
 
+  describe("isNumeric", () => {
+    it("should work", () => {
+      expect(UtilsService.isNumeric("a")).toBe(false);
+      expect(UtilsService.isNumeric("1")).toBe(true);
+      expect(UtilsService.isNumeric("5.5")).toBe(true);
+      expect(UtilsService.isNumeric(null)).toBe(false);
+      expect(UtilsService.isNumeric(undefined)).toBe(false);
+    });
+  });
+
   describe("isString", () => {
     it("should work", () => {
       expect(UtilsService.isString("a")).toBe(true);
@@ -209,13 +219,36 @@ describe("UtilsService", () => {
     });
   });
 
-  describe("isNumeric", () => {
-    it("should work", () => {
-      expect(UtilsService.isNumeric("a")).toBe(false);
-      expect(UtilsService.isNumeric("1")).toBe(true);
-      expect(UtilsService.isNumeric("5.5")).toBe(true);
-      expect(UtilsService.isNumeric(null)).toBe(false);
-      expect(UtilsService.isNumeric(undefined)).toBe(false);
+  describe("isUrl", () => {
+    it("should be true for valid URLs", () => {
+      expect(UtilsService.isUrl("astrobin.com")).toBe(true);
+      expect(UtilsService.isUrl("www.astrobin.com")).toBe(true);
+      expect(UtilsService.isUrl("http://www.astrobin.com")).toBe(true);
+      expect(UtilsService.isUrl("https://www.astrobin.com")).toBe(true);
+      expect(UtilsService.isUrl("https://www.astrobin.com/foo")).toBe(true);
+      expect(UtilsService.isUrl("https://www.astrobin.com/foo/")).toBe(true);
+      expect(UtilsService.isUrl("https://www.astrobin.com/foo/?a=b")).toBe(true);
+      expect(UtilsService.isUrl("https://www.astrobin.com/foo/?a=b#bar")).toBe(true);
+      expect(UtilsService.isUrl("http://userid:password@example.com:8080\n")).toBe(true);
+    });
+
+    it("should be false for invalid URLs", () => {
+      expect(UtilsService.isUrl("www.astrobin")).toBe(false);
+      expect(UtilsService.isUrl("astrobin")).toBe(false);
+    });
+  });
+
+  describe("ensureUrlProtocol", () => {
+    it("should not prefix if already contains a protocol", () => {
+      expect(UtilsService.ensureUrlProtocol("http://www.astrobin.com")).toEqual("http://www.astrobin.com");
+      expect(UtilsService.ensureUrlProtocol("https://www.astrobin.com")).toEqual("https://www.astrobin.com");
+      expect(UtilsService.ensureUrlProtocol("ftp://www.astrobin.com")).toEqual("ftp://www.astrobin.com");
+      expect(UtilsService.ensureUrlProtocol("ssh://www.astrobin.com")).toEqual("ssh://www.astrobin.com");
+    });
+
+    it("should prefix if it does not contains a protocol", () => {
+      expect(UtilsService.ensureUrlProtocol("www.astrobin.com")).toEqual("http://www.astrobin.com");
+      expect(UtilsService.ensureUrlProtocol("astrobin.com")).toEqual("http://astrobin.com");
     });
   });
 });

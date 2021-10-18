@@ -1,4 +1,5 @@
 import { EnsureUrlProtocolPipe } from "./ensure-url-protocol.pipe";
+import { UtilsService } from "@shared/services/utils/utils.service";
 
 describe("EnsureUrlProtocolPipe", () => {
   let pipe: EnsureUrlProtocolPipe;
@@ -11,15 +12,11 @@ describe("EnsureUrlProtocolPipe", () => {
     expect(pipe).toBeTruthy();
   });
 
-  it("should not prefix if already contains a protocol", () => {
-    expect(pipe.transform("http://www.astrobin.com")).toEqual("http://www.astrobin.com");
-    expect(pipe.transform("https://www.astrobin.com")).toEqual("https://www.astrobin.com");
-    expect(pipe.transform("ftp://www.astrobin.com")).toEqual("ftp://www.astrobin.com");
-    expect(pipe.transform("ssh://www.astrobin.com")).toEqual("ssh://www.astrobin.com");
-  });
+  it("should delegate to UtilsService", () => {
+    jest.spyOn(UtilsService, "ensureUrlProtocol");
 
-  it("should prefix if it does not contains a protocol", () => {
-    expect(pipe.transform("www.astrobin.com")).toEqual("http://www.astrobin.com");
-    expect(pipe.transform("astrobin.com")).toEqual("http://astrobin.com");
+    pipe.transform("foo");
+
+    expect(UtilsService.ensureUrlProtocol).toHaveBeenCalledWith("foo");
   });
 });

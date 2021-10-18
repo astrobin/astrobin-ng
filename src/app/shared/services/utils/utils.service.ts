@@ -148,6 +148,12 @@ export class UtilsService {
     return functionToCheck && {}.toString.call(functionToCheck) === "[object Function]";
   }
 
+  static isUrl(s: string): boolean {
+    const regex = /(https?:\/\/)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#()?&//=]*)/;
+
+    return regex.test(s);
+  }
+
   static camelCaseToSentenceCase(s: string): string {
     if (!s) {
       return "";
@@ -179,6 +185,14 @@ export class UtilsService {
         .replace("-", "")
         .replace("_", "");
     });
+  }
+
+  static ensureUrlProtocol(url: string): string {
+    if (url && url.indexOf("://") === -1) {
+      return `http://${url}`;
+    }
+
+    return url;
   }
 
   static slugify(s: string): string {
