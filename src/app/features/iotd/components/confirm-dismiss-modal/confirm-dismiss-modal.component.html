@@ -16,6 +16,11 @@
     {{ "The image will permanently disappear from your queue." | translate }}
     <span class="text-danger">{{ "This operation can not be undone." | translate }}</span>
   </p>
+
+  <p class="alert alert-warning">
+    <strong>{{ "Please note" | translate }}</strong>:
+    <span [innerHTML]="dismissalWarning | async"></span>
+  </p>
 </div>
 
 <div class="modal-footer">
