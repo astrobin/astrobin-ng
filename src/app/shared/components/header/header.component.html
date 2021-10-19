@@ -159,11 +159,12 @@
             {{ "The Big Wall" | translate }} / {{ "Advanced search" | translate }}
           </a>
 
-          <a [routerLink]="['equipment', 'explorer']" class="dropdown-item">
-            <fa-icon icon="camera"></fa-icon>
-            {{ "Equipment explorer" | translate }}
-          </a>
-
+          <ng-container *ngIf="currentUser$ | async as user">
+            <a *ngIf="user | isEquipmentModerator" [routerLink]="['equipment', 'explorer']" class="dropdown-item">
+              <fa-icon icon="camera"></fa-icon>
+              {{ "Equipment explorer" | translate }}
+            </a>
+          </ng-container>
           <a [routerLink]="['explore', 'constellations']" class="dropdown-item">
             <fa-icon icon="star"></fa-icon>
             {{ "Constellations" | translate }}

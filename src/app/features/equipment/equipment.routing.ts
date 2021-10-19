@@ -63,6 +63,8 @@ export const routes: Routes = [
   },
   {
     path: "explorer",
+    canActivate: [AuthGuardService, GroupGuardService],
+    data: { group: "equipment_moderators" },
     children: [
       {
         path: "",
@@ -88,14 +90,20 @@ export const routes: Routes = [
   },
   {
     path: "a-z-explorer/:itemType",
-    component: AZExplorerComponent
+    component: AZExplorerComponent,
+    canActivate: [AuthGuardService, GroupGuardService],
+    data: { group: "equipment_moderators" }
   },
   {
     path: "pending-review-explorer/:itemType",
-    component: PendingReviewExplorerComponent
+    component: PendingReviewExplorerComponent,
+    canActivate: [AuthGuardService, GroupGuardService],
+    data: { group: "equipment_moderators" }
   },
   {
     path: "pending-edit-explorer/:itemType",
-    component: PendingEditExplorerComponent
+    component: PendingEditExplorerComponent,
+    canActivate: [AuthGuardService, GroupGuardService],
+    data: { group: "equipment_moderators" }
   }
 ];
