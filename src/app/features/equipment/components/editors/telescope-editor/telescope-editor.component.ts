@@ -7,7 +7,6 @@ import { LoadingService } from "@shared/services/loading.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { State } from "@app/store/state";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
-import { of } from "rxjs";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 import { FormlyFieldService } from "@shared/services/formly-field.service";
 import { TelescopeDisplayProperty, TelescopeService } from "@features/equipment/services/telescope.service";
@@ -86,6 +85,7 @@ export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeI
         type: "input",
         wrappers: ["default-wrapper"],
         id: "telescope-field-aperture",
+        hideExpression: () => this.model.type === TelescopeType.CAMERA_LENS,
         expressionProperties: {
           "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
         },
