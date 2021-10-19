@@ -35,11 +35,14 @@ context("Equipment", () => {
         cy.ngSelectValueShouldContain("#telescope-field-type", "Refractor: achromatic");
       });
 
-      it("should hide the 'Aperture' if type is 'Camera lens'", () => {
+      it("should hide the 'Aperture' and show naming convention info if type is 'Camera lens'", () => {
         cy.ngSelectOpen("#telescope-field-type");
         cy.ngSelectOptionClick("#telescope-field-type", 23);
 
         cy.get("#telescope-field-aperture").should("not.be.visible");
+        cy.get(".info-feedback span")
+          .contains("The recommended naming convention for camera lenses is")
+          .should("be.visible");
 
         cy.ngSelectOpen("#telescope-field-type");
         cy.ngSelectOptionClick("#telescope-field-type", 1);

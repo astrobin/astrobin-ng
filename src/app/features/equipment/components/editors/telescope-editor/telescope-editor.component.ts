@@ -8,7 +8,7 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 import { State } from "@app/store/state";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
-import { FormlyFieldService } from "@shared/services/formly-field.service";
+import { FormlyFieldMessageLevel, FormlyFieldService } from "@shared/services/formly-field.service";
 import { TelescopeDisplayProperty, TelescopeService } from "@features/equipment/services/telescope.service";
 import { TelescopeInterface, TelescopeType } from "@features/equipment/types/telescope.interface";
 import { FormlyFieldConfig } from "@ngx-formly/core";
@@ -78,6 +78,23 @@ export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeI
             value: TelescopeType[telescopeType],
             label: this.telescopeService.humanizeType(TelescopeType[telescopeType])
           }))
+        },
+        hooks: {
+          onInit: (field: FormlyFieldConfig) => {
+            field.formControl.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(value => {
+              const nameField = this.fields.find(f => f.key === "name");
+              this.formlyFieldService.clearMessages(nameField.templateOptions);
+              if (value === TelescopeType.CAMERA_LENS) {
+                this.formlyFieldService.addMessage(nameField.templateOptions, {
+                  level: FormlyFieldMessageLevel.INFO,
+                  text: this.translateService.instant(
+                    "The recommended naming convention for camera lenses is: optional model name, focal length " +
+                      "range, f-ratio range, additional properties. E.g. <strong>Nikkor Z 28mm f/2.8 (SE)</strong>."
+                  )
+                });
+              }
+            });
+          }
         }
       },
       {
