@@ -10,6 +10,7 @@ context("Equipment", () => {
   context("Explorer", () => {
     context("Select existing", () => {
       it("should select existing item", () => {
+        cy.login();
         cy.visitPage("/equipment/explorer");
 
         cy.route("GET", "**/api/v2/equipment/camera/?q=*", {
@@ -32,7 +33,7 @@ context("Equipment", () => {
         cy.wait("@findCameras");
         cy.wait("@getBrand");
 
-        cy.ngSelectShouldHaveOptionsCount("#equipment-item-field", 1);
+        cy.ngSelectShouldHaveOptionsCount("#equipment-item-field", 2);
         cy.ngSelectOptionNumberSelectorShouldContain(
           "#equipment-item-field",
           1,

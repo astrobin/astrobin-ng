@@ -238,6 +238,7 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
                 this.brandCreation.name = brand.name;
 
                 this.formlyFieldService.clearMessages(field.templateOptions);
+                this.formlyFieldService.clearMessages(this.fields.find(f => f.key === "name").templateOptions);
                 this._validateBrandInName();
                 this._similarItemSuggestion();
                 this._othersInBrand();
@@ -274,6 +275,7 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
               filter(value => !!value),
               tap((value: string) => {
                 this.formlyFieldService.clearMessages(field.templateOptions);
+                this.formlyFieldService.clearMessages(this.fields.find(f => f.key === "brand").templateOptions);
                 this._validateBrandInName();
                 this._similarItemSuggestion();
                 this._checkForDangerousWords(value, field);

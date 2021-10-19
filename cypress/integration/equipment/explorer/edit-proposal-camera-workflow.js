@@ -17,16 +17,18 @@ context("Equipment", () => {
   context("Explorer", () => {
     it("should not have the 'Propose edit' button if logged out", () => {
       cy.visitPage("/equipment/explorer");
+      cy.url().should("contain", "login");
 
-      cy.equipmentItemBrowserSelectFirstCamera("#equipment-item-field", "Test", testCamera);
-
-      cy.get(".card .card-header")
-        .contains("Camera")
-        .should("be.visible");
-
-      cy.get(".card .card-body astrobin-equipment-item-summary").should("be.visible");
-
-      cy.get("[data-test=propose-edit]").should("not.exist");
+      // TODO: replace above with the commented part when the equipment explorer is open to non moderators.
+      // cy.equipmentItemBrowserSelectFirstCamera("#equipment-item-field", "Test", testCamera);
+      //
+      // cy.get(".card .card-header")
+      //   .contains("Camera")
+      //   .should("be.visible");
+      //
+      // cy.get(".card .card-body astrobin-equipment-item-summary").should("be.visible");
+      //
+      // cy.get("[data-test=propose-edit]").should("not.exist");
     });
 
     it("should have the 'Propose edit' button if logged in", () => {
