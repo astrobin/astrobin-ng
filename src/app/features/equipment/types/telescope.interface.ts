@@ -39,5 +39,5 @@ export interface TelescopeInterface extends EquipmentItemBaseInterface {
 }
 
 export function instanceOfTelescope(object: EquipmentItemBaseInterface): object is TelescopeInterface {
-  return !!object && "aperture" in object;
+  return !!object && ("focalLength" in object || "minFocalLength" in object);
 }
