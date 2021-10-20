@@ -148,6 +148,10 @@ export class UtilsService {
     return functionToCheck && {}.toString.call(functionToCheck) === "[object Function]";
   }
 
+  static isObject(obj): boolean {
+    return obj != null && obj.constructor.name === "Object";
+  }
+
   static isUrl(s: string): boolean {
     const regex = /(https?:\/\/)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#()?&//=]*)/;
 

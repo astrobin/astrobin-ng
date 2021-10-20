@@ -42,6 +42,7 @@ $warning: theme-color("warning");
 $text-on-warning: $black;
 
 $error: theme-color("danger");
+$text-on-error: $black;
 
 // ... special colors
 $accent-color: theme-color("primary");
@@ -107,4 +108,5 @@ $ng-select-value-font-size: 0.9em;
   --textOnWarningColor: #{$text-on-warning};
 
   --dangerColor: #{theme-color("danger")};
+  --textOnDangerColor: #{$text-on-error};
 }

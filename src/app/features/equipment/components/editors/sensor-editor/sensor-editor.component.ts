@@ -85,6 +85,12 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
               options: {
                 minValue: 0.1
               }
+            },
+            {
+              name: "max-decimals",
+              options: {
+                value: 2
+              }
             }
           ]
         }
@@ -162,6 +168,12 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
               options: {
                 minValue: 0.1
               }
+            },
+            {
+              name: "max-decimals",
+              options: {
+                value: 2
+              }
             }
           ]
         }
@@ -186,6 +198,12 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
               name: "min-value",
               options: {
                 minValue: 0.1
+              }
+            },
+            {
+              name: "max-decimals",
+              options: {
+                value: 2
               }
             }
           ]
@@ -267,6 +285,12 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
               name: "min-value",
               options: {
                 minValue: 1
+              }
+            },
+            {
+              name: "max-decimals",
+              options: {
+                value: 2
               }
             }
           ]

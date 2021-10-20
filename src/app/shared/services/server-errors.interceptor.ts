@@ -5,6 +5,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { catchError, retry } from "rxjs/operators";
 import { LoadingService } from "@shared/services/loading.service";
+import { UtilsService } from "@shared/services/utils/utils.service";
 
 export class ServerErrorsInterceptor implements HttpInterceptor {
   constructor(
@@ -55,7 +56,14 @@ export class ServerErrorsInterceptor implements HttpInterceptor {
       switch (err.status) {
         case 400:
           errorTitle = this.translateService.instant("Bad request");
-          errorMessage = err.error;
+          if (UtilsService.isString(err.error)) {
+            errorMessage = err.error;
+          } else if (UtilsService.isObject(err.error)) {
+            errorMessage = "";
+            for (const key of Object.keys(err.error)) {
+              errorMessage += `<strong>${key}</strong>: ${err.error[key]}<br/>`;
+            }
+          }
           break;
         case 401:
           errorTitle = this.translateService.instant("Login required");
@@ -98,7 +106,8 @@ export class ServerErrorsInterceptor implements HttpInterceptor {
 
     if (errorTitle && errorMessage) {
       this.popNotificationsService.error(errorMessage, errorTitle, {
-        disableTimeOut: true
+        disableTimeOut: true,
+        enableHtml: true
       });
 
       this.loadingService.setLoading(false);

@@ -223,6 +223,18 @@ describe("UtilsService", () => {
     });
   });
 
+  describe("isObject", () => {
+    it("should work", () => {
+      expect(UtilsService.isObject({ a: 1 })).toBe(true);
+      expect(UtilsService.isObject({})).toBe(true);
+      expect(UtilsService.isObject([])).toBe(false);
+      expect(UtilsService.isObject("hello")).toBe(false);
+      expect(UtilsService.isObject(() => {})).toBe(false);
+      expect(UtilsService.isObject(null)).toBe(false);
+      expect(UtilsService.isObject(undefined)).toBe(false);
+    });
+  });
+
   describe("isUrl", () => {
     it("should be true for valid URLs", () => {
       expect(UtilsService.isUrl("astrobin.com")).toBe(true);

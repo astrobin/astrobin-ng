@@ -63,3 +63,10 @@
     color: var(--textOnSuccessColor);
   }
 }
+
+.toast-error {
+  &,
+  strong {
+    color: var(--textOnDangerColor);
+  }
+}

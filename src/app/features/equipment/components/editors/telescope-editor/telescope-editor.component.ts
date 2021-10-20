@@ -13,7 +13,6 @@ import { TelescopeDisplayProperty, TelescopeService } from "@features/equipment/
 import { TelescopeInterface, TelescopeType } from "@features/equipment/types/telescope.interface";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { takeUntil } from "rxjs/operators";
-import { AbstractControl } from "@angular/forms";
 
 @Component({
   selector: "astrobin-telescope-editor",
@@ -119,6 +118,12 @@ export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeI
               options: {
                 minValue: 0.1
               }
+            },
+            {
+              name: "max-decimals",
+              options: {
+                value: 2
+              }
             }
           ]
         }
@@ -158,6 +163,12 @@ export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeI
               name: "min-value",
               options: {
                 minValue: 0.1
+              }
+            },
+            {
+              name: "max-decimals",
+              options: {
+                value: 2
               }
             }
           ]
@@ -199,6 +210,12 @@ export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeI
                   options: {
                     minValue: 0.1
                   }
+                },
+                {
+                  name: "max-decimals",
+                  options: {
+                    value: 2
+                  }
                 }
               ]
             },
@@ -236,6 +253,12 @@ export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeI
                   name: "min-value",
                   options: {
                     minValue: 0.1
+                  }
+                },
+                {
+                  name: "max-decimals",
+                  options: {
+                    value: 2
                   }
                 },
                 {
@@ -281,6 +304,12 @@ export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeI
               name: "min-value",
               options: {
                 minValue: 0.1
+              }
+            },
+            {
+              name: "max-decimals",
+              options: {
+                value: 2
               }
             }
           ]

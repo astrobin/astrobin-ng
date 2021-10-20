@@ -272,6 +272,12 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
               options: {
                 minValue: 0.1
               }
+            },
+            {
+              name: "max-decimals",
+              options: {
+                value: 2
+              }
             }
           ]
         }

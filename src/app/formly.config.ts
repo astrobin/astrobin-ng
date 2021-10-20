@@ -114,6 +114,14 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
             0: options.maxValue
           });
         }
+      },
+      {
+        name: "max-decimals",
+        message(options: { value: number }) {
+          return translateService.instant("This value must have {{0}} decimal digits or less.", {
+            0: options.value
+          });
+        }
       }
     ],
     validators: [
@@ -244,6 +252,24 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
           }
 
           return parseFloat(control.value) <= options.maxValue ? null : { "max-value": options };
+        }
+      },
+      {
+        name: "max-decimals",
+        validation: (control: FormControl, field: FormlyFieldConfig, options: { value: number }) => {
+          const countDecimals = (num: number) => {
+            if (Math.floor(num) === num) {
+              return 0;
+            }
+
+            return num.toString().split(".")[1].length || 0;
+          };
+
+          if (control.value === null || control.value === undefined) {
+            return null;
+          }
+
+          return countDecimals(control.value) <= options.value ? null : { "max-decimals": options };
         }
       }
     ]
