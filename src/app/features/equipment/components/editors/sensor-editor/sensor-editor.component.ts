@@ -275,16 +275,16 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
         },
         templateOptions: {
           type: "number",
-          step: 1,
+          step: 0.1,
           label: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.READ_NOISE)
         },
         validators: {
           validation: [
-            "whole-number",
+            "number",
             {
               name: "min-value",
               options: {
-                minValue: 1
+                minValue: 0.1
               }
             },
             {
