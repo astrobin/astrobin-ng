@@ -203,6 +203,10 @@ describe("UtilsService", () => {
       expect(UtilsService.isNumeric("a")).toBe(false);
       expect(UtilsService.isNumeric("1")).toBe(true);
       expect(UtilsService.isNumeric("5.5")).toBe(true);
+      expect(UtilsService.isNumeric("-5.5")).toBe(true);
+      expect(UtilsService.isNumeric("+5.5")).toBe(true);
+      expect(UtilsService.isNumeric("-5")).toBe(true);
+      expect(UtilsService.isNumeric("+5")).toBe(true);
       expect(UtilsService.isNumeric(null)).toBe(false);
       expect(UtilsService.isNumeric(undefined)).toBe(false);
     });

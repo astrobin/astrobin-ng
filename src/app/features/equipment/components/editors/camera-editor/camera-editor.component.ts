@@ -231,13 +231,23 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
         },
         templateOptions: {
           type: "number",
-          min: 1,
           step: 1,
           label: this.cameraService.getPrintablePropertyName(CameraDisplayProperty.MAX_COOLING),
           description: this.translateService.instant(
             "A positive whole number that represents how many Celsius below ambient temperature this camera can " +
               "be cooled."
           )
+        },
+        validators: {
+          validation: [
+            "whole-number",
+            {
+              name: "min-value",
+              options: {
+                minValue: 1
+              }
+            }
+          ]
         }
       },
       {
@@ -250,10 +260,20 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
         },
         templateOptions: {
           type: "number",
-          min: 1,
           step: 0.1,
           label: this.cameraService.getPrintablePropertyName(CameraDisplayProperty.BACK_FOCUS),
           description: this.translateService.instant("Camera back focus in mm.")
+        },
+        validators: {
+          validation: [
+            "number",
+            {
+              name: "min-value",
+              options: {
+                minValue: 0.1
+              }
+            }
+          ]
         }
       },
       this._getImageField()

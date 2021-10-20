@@ -40,6 +40,7 @@ import { ComponentsModule } from "./components/components.module";
 import { PipesModule } from "./pipes/pipes.module";
 import { FormlyWrapperComponent } from "@shared/components/misc/formly-wrapper/formly-wrapper.component";
 import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
+import { UtilsService } from "@shared/services/utils/utils.service";
 
 export function appInitializer(store: Store<State>, actions$: Actions) {
   return () =>

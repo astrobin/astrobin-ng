@@ -73,10 +73,20 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
         },
         templateOptions: {
           type: "number",
-          min: 0.1,
           step: 0.1,
           label: this.translateService.instant("Pixel size (in μm)"),
           description: this.translateService.instant("The size of the individual pixels in μm.")
+        },
+        validators: {
+          validation: [
+            "number",
+            {
+              name: "min-value",
+              options: {
+                minValue: 0.1
+              }
+            }
+          ]
         }
       },
       {
@@ -90,9 +100,19 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
         templateOptions: {
           required: true,
           type: "number",
-          min: 1,
           step: 1,
           label: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.PIXEL_WIDTH)
+        },
+        validators: {
+          validation: [
+            "whole-number",
+            {
+              name: "min-value",
+              options: {
+                minValue: 1
+              }
+            }
+          ]
         }
       },
       {
@@ -106,9 +126,19 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
         templateOptions: {
           required: true,
           type: "number",
-          min: 1,
           step: 1,
           label: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.PIXEL_HEIGHT)
+        },
+        validators: {
+          validation: [
+            "whole-number",
+            {
+              name: "min-value",
+              options: {
+                minValue: 1
+              }
+            }
+          ]
         }
       },
       {
@@ -121,9 +151,19 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
         },
         templateOptions: {
           type: "number",
-          min: 0.1,
           step: 0.1,
           label: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.SENSOR_WIDTH)
+        },
+        validators: {
+          validation: [
+            "number",
+            {
+              name: "min-value",
+              options: {
+                minValue: 0.1
+              }
+            }
+          ]
         }
       },
       {
@@ -136,9 +176,19 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
         },
         templateOptions: {
           type: "number",
-          min: 0.1,
           step: 0.1,
           label: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.SENSOR_HEIGHT)
+        },
+        validators: {
+          validation: [
+            "number",
+            {
+              name: "min-value",
+              options: {
+                minValue: 0.1
+              }
+            }
+          ]
         }
       },
       {
@@ -151,10 +201,25 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
         },
         templateOptions: {
           type: "number",
-          min: 0,
-          max: 100,
           step: 0.1,
           label: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.QUANTUM_EFFICIENCY)
+        },
+        validators: {
+          validation: [
+            "number",
+            {
+              name: "min-value",
+              options: {
+                minValue: 0.1
+              }
+            },
+            {
+              name: "max-value",
+              options: {
+                maxValue: 100
+              }
+            }
+          ]
         }
       },
       {
@@ -167,9 +232,19 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
         },
         templateOptions: {
           type: "number",
-          min: 1,
           step: 1,
           label: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.FULL_WELL_CAPACITY)
+        },
+        validators: {
+          validation: [
+            "whole-number",
+            {
+              name: "min-value",
+              options: {
+                minValue: 1
+              }
+            }
+          ]
         }
       },
       {
@@ -182,9 +257,19 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
         },
         templateOptions: {
           type: "number",
-          min: 1,
           step: 1,
           label: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.READ_NOISE)
+        },
+        validators: {
+          validation: [
+            "whole-number",
+            {
+              name: "min-value",
+              options: {
+                minValue: 1
+              }
+            }
+          ]
         }
       },
       {
@@ -197,9 +282,19 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
         },
         templateOptions: {
           type: "number",
-          min: 1,
           step: 1,
           label: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.FRAME_RATE)
+        },
+        validators: {
+          validation: [
+            "whole-number",
+            {
+              name: "min-value",
+              options: {
+                minValue: 1
+              }
+            }
+          ]
         }
       },
       {
@@ -212,10 +307,20 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
         },
         templateOptions: {
           type: "number",
-          min: 1,
           step: 1,
           label: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.ADC),
           description: this.translateService.instant("Analog to Digital Converter")
+        },
+        validators: {
+          validation: [
+            "whole-number",
+            {
+              name: "min-value",
+              options: {
+                minValue: 1
+              }
+            }
+          ]
         }
       },
       {

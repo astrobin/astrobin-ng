@@ -60,7 +60,7 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
       {
         name: "required",
         message() {
-          return translateService.instant("This field is required");
+          return translateService.instant("This field is required.");
         }
       },
       {
@@ -88,6 +88,30 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
           return translateService.instant(`"{{0}}" cannot be smaller than "{{1}}".`, {
             0: options.maxLabel,
             1: options.minLabel
+          });
+        }
+      },
+      {
+        name: "number",
+        message: translateService.instant("This value should be an whole number.")
+      },
+      {
+        name: "whole-number",
+        message: translateService.instant("This value should be an whole number.")
+      },
+      {
+        name: "min-value",
+        message(options: { minValue: number }) {
+          return translateService.instant("This value must be equal to or greater than {{0}}.", {
+            0: options.minValue
+          });
+        }
+      },
+      {
+        name: "max-value",
+        message(options: { maxValue: number }) {
+          return translateService.instant("This value must be equal to or smaller than {{0}}.", {
+            0: options.maxValue
           });
         }
       }
@@ -158,19 +182,68 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
         validation: (
           control: FormControl,
           field: FormlyFieldConfig,
-          options: { minControl: string; maxControl: string; minLabel: string; maxLabel: string }
+          options: { model: any; minValueKey: string; minLabel: string; maxLabel: string }
         ): ValidationErrors => {
-          if (!control?.value || !control?.value[options.minControl] || !control?.value[options.maxControl]) {
+          if (
+            !options.model ||
+            !options.minValueKey ||
+            options.model[options.minValueKey] === null ||
+            options.model[options.minValueKey] === undefined
+          ) {
             return null;
           }
 
-          if (control.value[options.maxControl] < control.value[options.minControl]) {
+          if (control.value < options.model[options.minValueKey]) {
             return {
               "max-greater-equal-than-min": { minLabel: options.minLabel, maxLabel: options.maxLabel }
             };
           }
 
           return null;
+        }
+      },
+      {
+        name: "number",
+        validation: (control: FormControl) => {
+          if (control.value === null || control.value === undefined) {
+            return null;
+          }
+
+          return /^\d+\.\d+$|^\d+$/.test(control.value) ? null : { number: true };
+        }
+      },
+      {
+        name: "whole-number",
+        validation: (control: FormControl) => {
+          if (control.value === null || control.value === undefined) {
+            return null;
+          }
+
+          if (!/^[-+]?\d+\.\d+$|^[-+]?\d+$/.test(control.value)) {
+            return { "whole-number": true };
+          }
+
+          return Number.isInteger(parseFloat(control.value)) ? null : { "whole-number": true };
+        }
+      },
+      {
+        name: "min-value",
+        validation: (control: FormControl, field: FormlyFieldConfig, options: { minValue: number }) => {
+          if (control.value === null || control.value === undefined) {
+            return null;
+          }
+
+          return parseFloat(control.value) >= options.minValue ? null : { "min-value": options };
+        }
+      },
+      {
+        name: "max-value",
+        validation: (control: FormControl, field: FormlyFieldConfig, options: { maxValue: number }) => {
+          if (control.value === null || control.value === undefined) {
+            return null;
+          }
+
+          return parseFloat(control.value) <= options.maxValue ? null : { "max-value": options };
         }
       }
     ]

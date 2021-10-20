@@ -137,7 +137,7 @@
       <button
         class="btn btn-sm-block btn-primary"
         data-test="propose-edit-confirm"
-        [disabled]="!editForm.valid"
+        [disabled]="proposeEditButtonDisabled"
         [class.loading]="loadingService.isLoading()"
         (click)="proposeEdit()"
       >

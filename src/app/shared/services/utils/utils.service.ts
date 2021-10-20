@@ -137,7 +137,7 @@ export class UtilsService {
   }
 
   static isNumeric(s: string): boolean {
-    return !!s && /^\d+\.\d+$|^\d+$/.test(s);
+    return !!s && /^[-+]?\d+\.\d+$|^[-+]?\d+$/.test(s);
   }
 
   static isString(s: any): boolean {

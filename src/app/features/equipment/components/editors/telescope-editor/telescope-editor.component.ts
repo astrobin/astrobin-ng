@@ -108,10 +108,19 @@ export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeI
         },
         templateOptions: {
           type: "number",
-          min: 0,
-          max: 10000,
           step: 0.1,
           label: this.telescopeService.getPrintablePropertyName(TelescopeDisplayProperty.APERTURE)
+        },
+        validators: {
+          validation: [
+            "number",
+            {
+              name: "min-value",
+              options: {
+                minValue: 0.1
+              }
+            }
+          ]
         }
       },
       {
@@ -139,10 +148,19 @@ export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeI
         },
         templateOptions: {
           type: "number",
-          min: 0,
-          max: 10000,
           step: 0.1,
           label: this.telescopeService.getPrintablePropertyName(TelescopeDisplayProperty.FOCAL_LENGTH)
+        },
+        validators: {
+          validation: [
+            "number",
+            {
+              name: "min-value",
+              options: {
+                minValue: 0.1
+              }
+            }
+          ]
         },
         hooks: {
           onInit: (field: FormlyFieldConfig) => {
@@ -170,26 +188,26 @@ export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeI
             },
             templateOptions: {
               type: "number",
-              min: 0,
-              max: 10000,
               step: 0.1,
               label: this.telescopeService.getPrintablePropertyName(TelescopeDisplayProperty.MIN_FOCAL_LENGTH)
             },
             validators: {
-              maxGreaterEqualThanMin: {
-                expression: (control: AbstractControl) => {
-                  return control.value <= this.model.maxFocalLength;
-                },
-                message: this.translateService.instant(`"{{0}}" must be smaller than "{{1}}".`, {
-                  0: this.telescopeService.getPrintablePropertyName(TelescopeDisplayProperty.MIN_FOCAL_LENGTH),
-                  1: this.telescopeService.getPrintablePropertyName(TelescopeDisplayProperty.MAX_FOCAL_LENGTH)
-                })
-              }
+              validation: [
+                "number",
+                {
+                  name: "min-value",
+                  options: {
+                    minValue: 0.1
+                  }
+                }
+              ]
             },
             hooks: {
               onInit: (field: FormlyFieldConfig) => {
                 field.formControl.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(value => {
-                  this.form.get("maxFocalLength")?.updateValueAndValidity({ onlySelf: true, emitEvent: false });
+                  setTimeout(() => {
+                    this.form.get("maxFocalLength")?.updateValueAndValidity({ onlySelf: true, emitEvent: false });
+                  }, 1);
                 });
               }
             }
@@ -208,26 +226,35 @@ export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeI
             },
             templateOptions: {
               type: "number",
-              min: 0,
-              max: 10000,
               step: 0.1,
               label: this.telescopeService.getPrintablePropertyName(TelescopeDisplayProperty.MAX_FOCAL_LENGTH)
             },
             validators: {
-              maxGreaterEqualThanMin: {
-                expression: (control: AbstractControl) => {
-                  return control.value > this.model.minFocalLength;
+              validation: [
+                "number",
+                {
+                  name: "min-value",
+                  options: {
+                    minValue: 0.1
+                  }
                 },
-                message: this.translateService.instant(`"{{0}}" must be smaller than "{{1}}".`, {
-                  0: this.telescopeService.getPrintablePropertyName(TelescopeDisplayProperty.MIN_FOCAL_LENGTH),
-                  1: this.telescopeService.getPrintablePropertyName(TelescopeDisplayProperty.MAX_FOCAL_LENGTH)
-                })
-              }
+                {
+                  name: "max-greater-equal-than-min",
+                  options: {
+                    model: this.model,
+                    minValueKey: "minFocalLength",
+                    minLabel: this.telescopeService.getPrintablePropertyName(TelescopeDisplayProperty.MIN_FOCAL_LENGTH),
+                    maxLabel: this.telescopeService.getPrintablePropertyName(TelescopeDisplayProperty.MAX_FOCAL_LENGTH)
+                  }
+                }
+              ]
             },
             hooks: {
               onInit: (field: FormlyFieldConfig) => {
                 field.formControl.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(value => {
-                  this.form.get("minFocalLength")?.updateValueAndValidity({ onlySelf: true, emitEvent: false });
+                  setTimeout(() => {
+                    this.form.get("minFocalLength")?.updateValueAndValidity({ onlySelf: true, emitEvent: false });
+                  }, 1);
                 });
               }
             }
@@ -244,10 +271,19 @@ export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeI
         },
         templateOptions: {
           type: "number",
-          min: 0,
-          max: 10000,
           step: 0.1,
           label: this.telescopeService.getPrintablePropertyName(TelescopeDisplayProperty.WEIGHT)
+        },
+        validators: {
+          validation: [
+            "number",
+            {
+              name: "min-value",
+              options: {
+                minValue: 0.1
+              }
+            }
+          ]
         }
       },
       this._getImageField()

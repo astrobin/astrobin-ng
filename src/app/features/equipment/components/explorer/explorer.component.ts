@@ -92,6 +92,10 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit 
     super(store$);
   }
 
+  get proposeEditButtonDisabled(): boolean {
+    return !this.editForm.valid;
+  }
+
   ngOnInit() {
     this._initActiveId();
     this._initActions();
