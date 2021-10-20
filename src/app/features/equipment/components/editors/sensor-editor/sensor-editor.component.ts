@@ -108,7 +108,7 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
           type: "number",
           min: 1,
           step: 1,
-          label: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.PIXEL_WIDTH)
+          label: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.PIXEL_HEIGHT)
         }
       },
       {
