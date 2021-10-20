@@ -127,12 +127,6 @@ export class MergeIntoModalComponent extends BaseComponentDirective implements O
       this.loadingService.setLoading(true);
       this.legacyGearApi
         .setMigration(itemToMigrate.pk, MigrationFlag.MIGRATE, this.activeType, this.equipmentItem.id)
-        .pipe(
-          take(1),
-          switchMap(() =>
-            forkJoin(...[similarLegacyItems.map(item => this.legacyGearApi.releaseLockForMigration(item.pk))])
-          )
-        )
         .subscribe(
           () => {
             this.loadingService.setLoading(false);
