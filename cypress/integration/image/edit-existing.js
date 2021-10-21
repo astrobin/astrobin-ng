@@ -48,8 +48,8 @@ context("Image edit (existing)", () => {
   });
 
   it("should have prefilled the content step", () => {
-    cy.get("#image-stepper-field .nav-link small")
-      .contains("Content")
+    cy.get("#image-stepper-basic-information .form-actions .btn")
+      .contains("Next")
       .click();
 
     cy.url().should("contain", "#2");
@@ -82,8 +82,13 @@ context("Image edit (existing)", () => {
   });
 
   it("should have prefilled the watermark step", () => {
-    cy.get("#image-stepper-field .nav-link small")
-      .contains("Watermark")
+    cy.get("#image-stepper-content .form-actions .btn")
+      .contains("Next")
+      .click();
+
+    // Skip over thumbnail step.
+    cy.get("#image-stepper-thumbnail .form-actions .btn")
+      .contains("Next")
       .click();
 
     cy.url().should("contain", "#4");
@@ -96,8 +101,8 @@ context("Image edit (existing)", () => {
   });
 
   it("should have prefilled the settings step", () => {
-    cy.get("#image-stepper-field .nav-link small")
-      .contains("Settings")
+    cy.get("#image-stepper-watermark .form-actions .btn")
+      .contains("Next")
       .click();
 
     cy.url().should("contain", "#5");

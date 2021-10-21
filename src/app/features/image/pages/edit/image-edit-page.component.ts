@@ -952,7 +952,8 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
         id: "image-stepper-field",
         templateOptions: {
           image: this.image,
-          buttonsTemplate: this.stepperButtonsTemplate
+          buttonsTemplate: this.stepperButtonsTemplate,
+          fixed: true
         },
         fieldGroup: [
           {

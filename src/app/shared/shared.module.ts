@@ -40,7 +40,6 @@ import { ComponentsModule } from "./components/components.module";
 import { PipesModule } from "./pipes/pipes.module";
 import { FormlyWrapperComponent } from "@shared/components/misc/formly-wrapper/formly-wrapper.component";
 import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
-import { UtilsService } from "@shared/services/utils/utils.service";
 
 export function appInitializer(store: Store<State>, actions$: Actions) {
   return () =>
@@ -85,7 +84,7 @@ export function appInitializer(store: Store<State>, actions$: Actions) {
     NgWizardModule.forRoot({
       theme: THEME.default,
       anchorSettings: {
-        enableAllAnchors: true,
+        anchorClickable: false,
         markAllPreviousStepsAsDone: true,
         enableAnchorOnDoneStep: true
       },

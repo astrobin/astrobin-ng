@@ -5,6 +5,7 @@
   color: var(--lighterGrey) !important;
   font-weight: normal;
   font-style: normal;
+  cursor: default !important;
 
   &::after {
     background-color: transparent !important;
@@ -79,6 +80,50 @@
 
     .btn-group:last-child {
       margin-right: 0 !important;
+    }
+  }
+}
+
+.wizard-step {
+  .form-actions.fixed {
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    padding: 1rem;
+    background: var(--darkestGrey);
+    border-top: 1px solid var(--lightGrey);
+
+    .form-actions-container {
+      .btn,
+      .dropup {
+        display: inline-block;
+        width: auto;
+        margin-bottom: 0;
+      }
+
+      @media (max-width: $sm-min) {
+        width: 100%;
+      }
+
+      @media (min-width: $sm-min) {
+        width: 485px;
+      }
+
+      @media (min-width: $md-min) {
+        width: 655px;
+      }
+
+      @media (min-width: $lg-min) {
+        width: 895px;
+      }
+
+      @media (min-width: $xl-min) {
+        width: 1080px;
+      }
     }
   }
 }

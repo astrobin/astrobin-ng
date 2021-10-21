@@ -13,6 +13,7 @@ import {
   STEP_STATE,
   StepChangedArgs
 } from "ng-wizard";
+import { AbstractControl, FormGroup } from "@angular/forms";
 
 @Component({
   selector: "astrobin-formly-field-stepper",
@@ -103,25 +104,27 @@ export class FormlyFieldStepperComponent extends FieldType implements OnInit {
     return index === this.field.fieldGroup.length - 1;
   }
 
-  goToPreviousStep(event?: Event) {
+  goToPreviousStep(event: Event, index: number) {
     if (event) {
       event.preventDefault();
     }
 
+    this._markFieldAsTouched(this.field.fieldGroup[index]);
     this.ngWizardService.previous();
     this.windowRef.scroll({ top: 0 });
   }
 
-  goToNextStep(event?: Event) {
+  goToNextStep(event: Event, index: number) {
     if (event) {
       event.preventDefault();
     }
 
+    this._markFieldAsTouched(this.field.fieldGroup[index]);
     this.ngWizardService.next();
     this.windowRef.scroll({ top: 0 });
   }
 
-  public markPreviousStepsAsDone(stepIndex: number) {
+  markPreviousStepsAsDone(stepIndex: number) {
     this.wizardSteps.forEach((step, index) => {
       if (index < stepIndex) {
         (step.status as any) = "done";
@@ -129,9 +132,23 @@ export class FormlyFieldStepperComponent extends FieldType implements OnInit {
     });
   }
 
-  public setHighestVisitedStep(stepIndex: number) {
+  setHighestVisitedStep(stepIndex: number) {
     if (stepIndex > this.highestVisitedStep) {
       this.highestVisitedStep = stepIndex;
+    }
+  }
+
+  _markFieldAsTouched(fieldConfig: FormlyFieldConfig) {
+    if (!fieldConfig) {
+      return;
+    }
+
+    if (!!fieldConfig.fieldGroup) {
+      for (const subFieldConfig of fieldConfig.fieldGroup) {
+        this._markFieldAsTouched(subFieldConfig);
+      }
+    } else {
+      fieldConfig.formControl.markAsTouched({ onlySelf: true });
     }
   }
 }
