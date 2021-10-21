@@ -26,16 +26,21 @@ label {
     border-left: 0.5rem solid var(--dangerColor);
     padding-left: calc(0.75rem - 0.5rem + 1px);
   }
+
+  &:disabled,
+  &.disabled,
+  &[readonly],
+  &.readonly {
+    background-color: var(--grey);
+  }
 }
 
 .form-group {
   margin-bottom: 2rem;
 
   &.error,
-  &.has-error {
-    label {
-      color: var(--dangerColor);
-    }
+  &.has-error label {
+    color: var(--dangerColor);
   }
 }
 
@@ -62,4 +67,11 @@ label {
 
 .invalid-feedback {
   color: var(--dangerColor);
+}
+
+.warning-feedback,
+.info-feedback {
+  padding: .25rem 1rem;
+  margin: .25rem 1px 0 1px;
+  font-size: .9rem;
 }

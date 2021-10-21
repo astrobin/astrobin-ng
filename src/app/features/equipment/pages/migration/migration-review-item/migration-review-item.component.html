@@ -1,0 +1,90 @@
+<div class="page">
+  <ng-container *ngIf="user$ | async as user; else loading">
+    <ng-container *ngIf="legacyItem && user; else loading">
+      <h1>{{ title }}</h1>
+
+      <div class="row">
+        <div class="col-md-3">
+          <astrobin-migration-nav></astrobin-migration-nav>
+        </div>
+        <div class="col-md-9">
+          <div class="card box-shadow">
+            <div class="card-header">
+              Summary
+            </div>
+
+            <div class="card-body">
+              <dl>
+                <dt>Brand/Make</dt>
+                <dd>{{ legacyItem.make || "(no brand)" }}</dd>
+
+                <dt>Name/Model</dt>
+                <dd>{{ legacyItem.name || "(no name)" }}</dd>
+
+                <ng-container *ngFor="let key of gearService.getProperAttributes(legacyItem)">
+                  <dt>{{ key | camelCaseToSentenceCase }}</dt>
+                  <dd>{{ legacyItem[key] !== null ? legacyItem[key] : "n/a" }}</dd>
+                </ng-container>
+
+                <dt>Proposed strategy:</dt>
+                <dd>{{ legacyItem.migrationFlag }}</dd>
+
+                <dt>Proposed by:</dt>
+                <dd>
+                  <astrobin-username [user]="user" linkTarget="_blank"></astrobin-username>
+                </dd>
+
+                <dt>When:</dt>
+                <dd>{{ legacyItem.migrationFlagTimestamp | timeago:true }}</dd>
+              </dl>
+            </div>
+
+            <div class="card-footer" *ngIf="showButtonsOnSummary">
+              <ng-container [ngTemplateOutlet]="buttons"></ng-container>
+            </div>
+          </div>
+
+          <ng-container *ngIf="legacyItem.migrationFlag === MigrationFlag.MIGRATE">
+            <div class="mt-4 mb-4 text-center">
+              <fa-icon icon="arrow-down"></fa-icon>
+            </div>
+
+            <div class="card box-shadow">
+              <div class="card-header">
+                The legacy object will be migrated to the following equipment item
+              </div>
+
+              <div class="card-body">
+                <ng-container *ngIf="equipmentItem; else loading">
+                  <astrobin-equipment-item-summary [item]="equipmentItem"></astrobin-equipment-item-summary>
+                </ng-container>
+              </div>
+
+              <div class="card-footer">
+                <ng-container [ngTemplateOutlet]="buttons"></ng-container>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    </ng-container>
+  </ng-container>
+</div>
+
+<ng-template #loading>
+  <astrobin-loading-indicator></astrobin-loading-indicator>
+</ng-template>
+
+<ng-template #buttons>
+  <button class="btn btn-sm-block btn-success" [class.loading]="loadingService.isLoading()" (click)="approve()">
+    Approve
+  </button>
+
+  <button class="btn btn-sm-block btn-danger" [class.loading]="loadingService.isLoading()" (click)="reject()">
+    Reject...
+  </button>
+
+  <button class="btn btn-sm-block btn-secondary" [class.loading]="loadingService.isLoading()" (click)="exit()">
+    Cancel
+  </button>
+</ng-template>

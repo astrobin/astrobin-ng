@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 
-context("account-page", () => {
+context("login-page", () => {
   beforeEach(() => {
     cy.server();
     cy.setupInitializationRoutes();

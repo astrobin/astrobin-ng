@@ -28,7 +28,7 @@ context("Image edit (existing)", () => {
     cy.url().should("contain", "/i/abc123/edit");
   });
 
-  it("should show the 'new editor' alert", () => {
+  it("should not show the 'new editor' alert", () => {
     cy.get("#new-editor-alert").should("not.exist");
   });
 

@@ -40,7 +40,7 @@ export class CurrentUsersLocationsResolver implements Resolve<LocationInterface[
       return [];
     }
 
-    const uniques = new UtilsService().arrayUniqueObjects(Array.from(new Set(allLocations)));
+    const uniques = UtilsService.arrayUniqueObjects(Array.from(new Set(allLocations)));
 
     return uniques?.filter(location => !!location.name && location.lat_deg !== null && location.lon_deg !== null);
   }

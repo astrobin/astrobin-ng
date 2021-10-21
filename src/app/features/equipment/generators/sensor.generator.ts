@@ -1,0 +1,27 @@
+import { ColorOrMono, SensorInterface } from "@features/equipment/types/sensor.interface";
+import { BrandGenerator } from "@features/equipment/generators/brand.generator";
+
+export class SensorGenerator {
+  static sensor(source: Partial<SensorInterface> = {}): SensorInterface {
+    return {
+      id: source.id || 1,
+      created: source.created || "1970-01-01",
+      updated: source.updated || "1970-01-01",
+      createdBy: source.createdBy || 1,
+      brand: source.brand || BrandGenerator.brand().id,
+      name: source.name || "Test sensor",
+      image: source.image || "https://cdn.astrobin.com/images/foo.jpg",
+      quantumEfficiency: source.quantumEfficiency || 1,
+      pixelSize: source.pixelSize || 1,
+      pixelWidth: source.pixelWidth || 1,
+      pixelHeight: source.pixelHeight || 1,
+      sensorWidth: source.sensorWidth || 1,
+      sensorHeight: source.sensorHeight || 1,
+      fullWellCapacity: source.fullWellCapacity || 1,
+      readNoise: source.readNoise || 1,
+      frameRate: source.frameRate || 1,
+      adc: source.adc || 1,
+      colorOrMono: source.colorOrMono || ColorOrMono.M
+    };
+  }
+}

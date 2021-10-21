@@ -41,8 +41,8 @@
 <ng-template #mainMenu>
   <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
     <!-- Moderate menu -->
-    <ng-container *ngIf="(store$ | async).auth.user && store$ | async as state">
-      <li *ngIf="state.auth.user | isContentModerator" class="nav-item">
+    <ng-container *ngIf="currentUser$ | async as user">
+      <li *ngIf="user | isContentModerator" class="nav-item">
         <div class="d-inline-block" ngbDropdown>
           <button class="btn btn-link" id="moderateDropdown" ngbDropdownToggle translate>
             Moderate
@@ -51,7 +51,7 @@
             <h6 class="dropdown-header" translate>Images</h6>
 
             <a
-              *ngIf="state.auth.user | isImageModerator"
+              *ngIf="user | isImageModerator"
               [href]="classicRoutes.MODERATE_IMAGE_QUEUE"
               class="dropdown-item"
             >
@@ -60,7 +60,7 @@
             </a>
 
             <a
-              *ngIf="(state.auth.user | isImageModerator) && (state.auth.user | isSuperUser)"
+              *ngIf="(user | isImageModerator) && (user | isSuperUser)"
               [href]="classicRoutes.MODERATE_SPAM_QUEUE"
               class="dropdown-item"
             >
@@ -68,13 +68,13 @@
               {{ "Spam list" | translate }}
             </a>
 
-            <ng-container *ngIf="state.auth.user | isIotdStaff">
+            <ng-container *ngIf="user | isIotdStaff">
               <div class="dropdown-divider"></div>
               <h6 class="dropdown-header" translate>Image of the day</h6>
 
               <a
                 (click)="isCollapsed = true"
-                *ngIf="state.auth.user | isIotdSubmitter"
+                *ngIf="user | isIotdSubmitter"
                 class="dropdown-item"
                 routerLink="/iotd/submission-queue"
               >
@@ -84,7 +84,7 @@
 
               <a
                 (click)="isCollapsed = true"
-                *ngIf="state.auth.user | isIotdReviewer"
+                *ngIf="user | isIotdReviewer"
                 class="dropdown-item"
                 routerLink="/iotd/review-queue"
               >
@@ -93,12 +93,26 @@
               </a>
 
               <a
-                *ngIf="state.auth.user | isIotdJudge"
+                *ngIf="user | isIotdJudge"
                 [href]="classicRoutes.IOTD_JUDGEMENT_QUEUE"
                 class="dropdown-item"
               >
                 <fa-icon icon="hammer"></fa-icon>
                 {{ "Judgement queue" | translate }}
+              </a>
+            </ng-container>
+
+            <ng-container *ngIf="user | isEquipmentModerator">
+              <div class="dropdown-divider"></div>
+              <h6 class="dropdown-header" translate>Equipment</h6>
+
+              <a
+                (click)="isCollapsed = true"
+                class="dropdown-item"
+                routerLink="/equipment/migration-tool"
+              >
+                <fa-icon icon="upload"></fa-icon>
+                Migration tool
               </a>
             </ng-container>
           </div>
@@ -145,6 +159,12 @@
             {{ "The Big Wall" | translate }} / {{ "Advanced search" | translate }}
           </a>
 
+          <ng-container *ngIf="currentUser$ | async as user">
+            <a *ngIf="user | isEquipmentModerator" [routerLink]="['equipment', 'explorer']" class="dropdown-item">
+              <fa-icon icon="camera"></fa-icon>
+              {{ "Equipment explorer" | translate }}
+            </a>
+          </ng-container>
           <a [routerLink]="['explore', 'constellations']" class="dropdown-item">
             <fa-icon icon="star"></fa-icon>
             {{ "Constellations" | translate }}
@@ -301,14 +321,14 @@
 </ng-template>
 
 <ng-template #indexesPopoverContent>
-  <ng-container *ngIf="store$ | async as state">
-    <h4>{{ "Image Index" | translate }}: {{ state.auth.userProfile?.astroBinIndex | number: "1.2-2" }}</h4>
+  <ng-container *ngIf="currentUserProfile$ | async as userProfile">
+    <h4>{{ "Image Index" | translate }}: {{ userProfile.astroBinIndex | number: "1.2-2" }}</h4>
     <div [innerHTML]="imageIndexPopoverInfo"></div>
 
     <hr />
 
     <h4>
-      {{ "Contribution Index" | translate }} (beta): {{ state.auth.userProfile?.contributionIndex | number: "1.2-2" }}
+      {{ "Contribution Index" | translate }} (beta): {{ userProfile.contributionIndex | number: "1.2-2" }}
     </h4>
     <div [innerHTML]="contributionIndexPopoverInfo"></div>
   </ng-container>
@@ -316,23 +336,23 @@
 
 <ng-template #userMenu>
   <!-- User menu -->
-  <ng-container *ngIf="store$ | async as state">
-    <li *ngIf="state.auth.user && state.auth.userProfile" class="nav-item">
+  <ng-container *ngIf="currentUserWrapper$ | async as userWrapper">
+    <li *ngIf="userWrapper.user && userWrapper.userProfile" class="nav-item">
       <div class="d-inline-block" ngbDropdown>
         <button class="btn btn-primary user-dropdown-toggle" id="user-dropdown" ngbDropdownToggle>
-          <astrobin-username [user]="state.auth.user"></astrobin-username>
+          <astrobin-username [user]="userWrapper.user" [link]="false"></astrobin-username>
           <span
             class="indexes"
-            *ngIf="!state.auth.userProfile?.excludeFromCompetition"
+            *ngIf="!userWrapper.userProfile?.excludeFromCompetition"
             [ngbPopover]="indexesPopoverContent"
             triggers="mouseenter:click"
           >
             <span class="image-index index">
-              {{ state.auth.userProfile?.astroBinIndex | number: "1.2-2" }}
+              {{ userWrapper.userProfile?.astroBinIndex | number: "1.2-2" }}
               &middot;
             </span>
             <span class="contribution-index index">
-              {{ state.auth.userProfile?.contributionIndex | number: "1.2-2" }}
+              {{ userWrapper.userProfile?.contributionIndex | number: "1.2-2" }}
             </span>
           </span>
         </button>
@@ -352,30 +372,30 @@
           <h6 class="dropdown-header">{{ "My places" | translate }}</h6>
 
           <a
-            *ngIf="state.auth.user | isProducer"
-            [href]="classicRoutes.COMMERCIAL_PRODUCTS(state.auth.user)"
+            *ngIf="userWrapper.user | isProducer"
+            [href]="classicRoutes.COMMERCIAL_PRODUCTS(userWrapper.user)"
             class="dropdown-item"
           >
             <fa-icon icon="barcode"></fa-icon>
             {{ "Commercial products" | translate }}
           </a>
 
-          <a [href]="classicRoutes.GALLERY(state.auth.user)" class="dropdown-item">
+          <a [href]="classicRoutes.GALLERY(userWrapper.user)" class="dropdown-item">
             <fa-icon icon="image"></fa-icon>
             {{ "Public Gallery" | translate }}
           </a>
 
-          <a [href]="classicRoutes.STAGING_GALLERY(state.auth.user)" class="dropdown-item">
+          <a [href]="classicRoutes.STAGING_GALLERY(userWrapper.user)" class="dropdown-item">
             <fa-icon icon="lock"></fa-icon>
             {{ "Staging Area" | translate }}
           </a>
 
-          <a [href]="classicRoutes.BOOKMARKS(state.auth.user)" class="dropdown-item">
+          <a [href]="classicRoutes.BOOKMARKS(userWrapper.user)" class="dropdown-item">
             <fa-icon icon="bookmark"></fa-icon>
             {{ "Bookmarks" | translate }}
           </a>
 
-          <a [href]="classicRoutes.PLOTS(state.auth.user)" class="dropdown-item">
+          <a [href]="classicRoutes.PLOTS(userWrapper.user)" class="dropdown-item">
             <fa-icon icon="chart-bar"></fa-icon>
             {{ "Plots" | translate }}
           </a>
@@ -387,7 +407,7 @@
             {{ "My messages" | translate }}
           </a>
 
-          <a [href]="classicRoutes.API_KEYS(state.auth.user)" class="dropdown-item">
+          <a [href]="classicRoutes.API_KEYS(userWrapper.user)" class="dropdown-item">
             <fa-icon icon="key"></fa-icon>
             {{ "API Keys" | translate }}
           </a>

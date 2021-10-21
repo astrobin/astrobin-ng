@@ -1,0 +1,35 @@
+.card {
+  .card-body > .alert {
+    margin: -1.25rem;
+    margin-bottom: 1rem;
+    border-radius: 0;
+    padding: .25rem 1rem;
+    font-size: .9rem;
+  }
+}
+
+.loading-edit-proposals {
+  font-style: italic;
+  font-size: .9rem;
+  padding: .25rem 1rem;
+  background: var(--darkerGrey);
+  color: var(--lighterGrey);
+  border-radius: 0 0 .25rem .25rem;
+}
+
+.edit-proposals {
+  background: var(--darkestGrey);
+  box-shadow: 0 0 1rem var(--black);
+  margin-left: 1rem;
+  margin-right: 1rem;
+
+  .edit-proposals-header {
+    padding: 1rem 1rem .5rem 1rem;
+    border-bottom: 1px dashed var(--grey);
+    font-weight: bold;
+
+    .row {
+      padding-right: 1.5rem;
+    }
+  }
+}

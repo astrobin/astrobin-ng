@@ -1,0 +1,42 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-title">Merge legacy items into this...</h4>
+  <button (click)="modal.dismiss()" aria-describedby="modal-title" class="close" type="button">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body">
+  <ng-container *ngIf="similarLegacyItems.length > 0; else noSimilarItems">
+    <p class="alert alert-info">
+      We found these items in the legacy database that are similar to this one. Please check the ones that you want to
+      migrate into it. <strong>Please be careful!</strong> Not all items that AstroBin thinks are similar, are
+      necessarily the same product. Only check the ones that you are sure of.
+    </p>
+
+    <form [formGroup]="form" class="mt-4 ml-3">
+      <formly-form [fields]="fields" [form]="form" [model]="model"></formly-form>
+    </form>
+  </ng-container>
+
+  <ng-template #noSimilarItems>
+    <p>
+      We couldn't find any similar items in the legacy database.
+    </p>
+  </ng-template>
+</div>
+
+<div class="modal-footer">
+  <button (click)="modal.dismiss()" class="btn btn-outline-secondary" type="button">
+    {{ "Cancel" | translate }}
+  </button>
+
+  <button
+    (click)="migrate()"
+    class="btn btn-danger"
+    [class.loading]="loadingService.isLoading()"
+    type="button"
+    [disabled]="migrateButtonDisabled()"
+  >
+    {{ "Migrate" | translate }}
+  </button>
+</div>

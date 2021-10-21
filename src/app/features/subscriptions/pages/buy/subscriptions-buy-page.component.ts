@@ -21,7 +21,7 @@ import { PopNotificationsService } from "@shared/services/pop-notifications.serv
 import { TitleService } from "@shared/services/title/title.service";
 import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
 import { Observable } from "rxjs";
-import { distinctUntilChanged, map, startWith, switchMap, take, takeUntil, tap } from "rxjs/operators";
+import { distinctUntilChanged, map, startWith, switchMap, takeUntil, tap } from "rxjs/operators";
 
 declare var Stripe: any;
 

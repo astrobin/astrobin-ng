@@ -1,0 +1,30 @@
+.alert {
+  position: relative;
+  padding-right: 1.75rem;
+
+  .close {
+    position: absolute;
+    top: .25rem;
+    right: .5rem;
+  }
+
+  &.alert-warning .close {
+    color: var(--textOnWarningColor);
+  }
+
+  &.alert-info .close {
+    color: var(--textOnInfoColor);
+  }
+}
+
+.required-marker,
+.optional-marker {
+  display: inline-block;
+  margin-left: .25rem;
+  font-size: .85rem;
+  font-style: italic;
+}
+
+.optional-marker {
+  color: var(--lightGrey);
+}

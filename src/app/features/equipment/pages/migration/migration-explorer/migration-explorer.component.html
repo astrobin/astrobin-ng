@@ -1,0 +1,29 @@
+<div class="page">
+  <h1>{{ title }}</h1>
+
+  <div class="row">
+    <div class="col-md-3">
+      <astrobin-migration-nav></astrobin-migration-nav>
+      <astrobin-equipment-item-type-nav
+        routingBasePath="/equipment/migration-explorer"
+        [showSubNavigation]="false"
+      ></astrobin-equipment-item-type-nav>
+    </div>
+
+    <div class="col-md-7">
+      <astrobin-equipment-explorer
+        routingBasePath="/equipment/migration-explorer"
+        [activeType]="activeType"
+        [activeId]="activeId"
+      ></astrobin-equipment-explorer>
+    </div>
+    <!-- main col -->
+
+    <div class="col-md-2">
+      <astrobin-migration-commandments></astrobin-migration-commandments>
+    </div>
+    <!-- guidelines col -->
+  </div>
+  <!-- main row -->
+</div>
+<!-- page -->

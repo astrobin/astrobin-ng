@@ -2,7 +2,7 @@ import { CommonModule } from "@angular/common";
 import { HttpClientModule } from "@angular/common/http";
 import { APP_INITIALIZER, ModuleWithProviders, NgModule } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { formlyValidationConfig } from "@app/formly.config";
+import { formlyConfig } from "@app/formly.config";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { InitializeApp } from "@app/store/actions/initialize-app.actions";
 import { State } from "@app/store/state";
@@ -26,7 +26,6 @@ import { UltimateSubscriptionGuardService } from "@shared/services/guards/ultima
 import { LoadingService } from "@shared/services/loading.service";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { SessionService } from "@shared/services/session.service";
-import { UserStoreService } from "@shared/services/user-store.service";
 import { UserService } from "@shared/services/user.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { NgWizardModule, THEME } from "ng-wizard";
@@ -40,6 +39,8 @@ import { switchMap } from "rxjs/operators";
 import { ComponentsModule } from "./components/components.module";
 import { PipesModule } from "./pipes/pipes.module";
 import { FormlyWrapperComponent } from "@shared/components/misc/formly-wrapper/formly-wrapper.component";
+import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
+import { UtilsService } from "@shared/services/utils/utils.service";
 
 export function appInitializer(store: Store<State>, actions$: Actions) {
   return () =>
@@ -147,7 +148,6 @@ export class SharedModule {
         SessionService,
         UltimateSubscriptionGuardService,
         UserService,
-        UserStoreService,
         WindowRefService,
         {
           provide: APP_INITIALIZER,
@@ -157,9 +157,9 @@ export class SharedModule {
         },
         {
           provide: FORMLY_CONFIG,
-          useFactory: formlyValidationConfig,
+          useFactory: formlyConfig,
           multi: true,
-          deps: [TranslateService]
+          deps: [TranslateService, JsonApiService]
         }
       ]
     };

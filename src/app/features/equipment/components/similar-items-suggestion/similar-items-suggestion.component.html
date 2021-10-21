@@ -1,0 +1,8 @@
+<span [innerHTML]="preamble"></span>
+&nbsp;
+<span *ngFor="let item of items; let isLast = last">
+  <button class="btn btn-link" (click)="itemSelected.emit(item)">
+    {{ item.name }}
+  </button>
+  {{ isLast ? "" : " &middot; " }}
+</span>

@@ -18,7 +18,6 @@ import { UserInterface } from "@shared/interfaces/user.interface";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { CookieService } from "ngx-cookie-service";
 import { Theme, ThemeService } from "@shared/services/theme.service";
-import { Constants } from "@shared/constants";
 import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
 
 interface AvailableLanguageInterface {

@@ -36,17 +36,17 @@ export class ClassicRoutesService extends BaseService {
   MODERATE_SPAM_QUEUE = BASE_URL + "/moderate/images/spam/";
   IOTD_JUDGEMENT_QUEUE = BASE_URL + "/iotd/judgement-queue/";
 
-  COMMERCIAL_PRODUCTS = (profile: UserInterface) => BASE_URL + `/users/${profile?.username}/commercial/products/`;
+  COMMERCIAL_PRODUCTS = (user: UserInterface) => BASE_URL + `/users/${user?.username}/commercial/products/`;
 
-  GALLERY = (profile: UserInterface) => BASE_URL + `/users/${profile?.username}/`;
+  GALLERY = (user: UserInterface) => BASE_URL + `/users/${user?.username}/`;
 
-  STAGING_GALLERY = (profile: UserInterface) => BASE_URL + `/users/${profile?.username}/?staging`;
+  STAGING_GALLERY = (user: UserInterface) => BASE_URL + `/users/${user?.username}/?staging`;
 
-  BOOKMARKS = (profile: UserInterface) => BASE_URL + `/users/${profile?.username}/bookmarks/`;
+  BOOKMARKS = (user: UserInterface) => BASE_URL + `/users/${user?.username}/bookmarks/`;
 
-  PLOTS = (profile: UserInterface) => BASE_URL + `/users/${profile?.username}/plots/`;
+  PLOTS = (user: UserInterface) => BASE_URL + `/users/${user?.username}/plots/`;
 
-  API_KEYS = (profile: UserInterface) => BASE_URL + `/users/${profile?.username}/apikeys/`;
+  API_KEYS = (user: UserInterface) => BASE_URL + `/users/${user?.username}/apikeys/`;
 
   SET_LANGUAGE = (languageCode: string, next) => BASE_URL + `/language/set/${languageCode}/?next=${next}`;
 

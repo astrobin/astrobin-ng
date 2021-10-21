@@ -2,7 +2,7 @@ import { CommonModule } from "@angular/common";
 import { NgModule } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { RouterModule } from "@angular/router";
-import { formlyValidationConfig } from "@app/formly.config";
+import { formlyConfig } from "@app/formly.config";
 import { ObjectsInFieldComponent } from "@app/shared/components/misc/objects-in-field/objects-in-field.component";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import {
@@ -19,7 +19,6 @@ import { FormlySelectModule } from "@ngx-formly/core/select";
 import { TranslateModule, TranslateService } from "@ngx-translate/core";
 import { BreadcrumbComponent } from "@shared/components/misc/breadcrumb/breadcrumb.component";
 import { CameraComponent } from "@shared/components/misc/camera/camera.component";
-import { FormlyFieldChunkedFileAccessorDirective } from "@shared/components/misc/formly-field-chunked-file/formly-field-chunked-file-accessor.directive";
 import { FormlyFieldChunkedFileComponent } from "@shared/components/misc/formly-field-chunked-file/formly-field-chunked-file.component";
 import { FormlyFieldImageCropperComponent } from "@shared/components/misc/formly-field-image-cropper/formly-field-image-cropper.component";
 import { FormlyFieldNgSelectComponent } from "@shared/components/misc/formly-field-ng-select/formly-field-ng-select.component";
@@ -48,6 +47,11 @@ import { FormlyFieldGoogleMapComponent } from "@shared/components/misc/formly-fi
 import { ToggleButtonComponent } from "@shared/components/misc/toggle-button/toggle-button.component";
 import { NgToggleModule } from "ng-toggle-button";
 import { FormlyFieldCKEditorComponent } from "@shared/components/misc/formly-field-ckeditor/formly-field-ckeditor.component";
+import { FileValueAccessorDirective } from "@shared/components/misc/formly-field-file/file-value-accessor.directive";
+import { FormlyFieldFileComponent } from "@shared/components/misc/formly-field-file/formly-field-file.component";
+import { UsernameService } from "@shared/components/misc/username/username.service";
+import { NothingHereComponent } from "@shared/components/misc/nothing-here/nothing-here.component";
+import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
 
 const modules = [
   CommonModule,
@@ -78,10 +82,11 @@ const components = [
   BreadcrumbComponent,
   CameraComponent,
   EmptyListComponent,
+  FileValueAccessorDirective,
   FooterComponent,
-  FormlyFieldChunkedFileAccessorDirective,
   FormlyFieldChunkedFileComponent,
   FormlyFieldCKEditorComponent,
+  FormlyFieldFileComponent,
   FormlyFieldGoogleMapComponent,
   FormlyFieldImageCropperComponent,
   FormlyFieldNgSelectComponent,
@@ -93,6 +98,7 @@ const components = [
   LoadingIndicatorComponent,
   LoginFormComponent,
   LoginModalComponent,
+  NothingHereComponent,
   ObjectsInFieldComponent,
   ReadOnlyModeComponent,
   RefreshButtonComponent,
@@ -102,6 +108,8 @@ const components = [
   UsernameComponent
 ];
 
+const services = [UsernameService];
+
 @NgModule({
   imports: modules,
   declarations: components,
@@ -109,10 +117,11 @@ const components = [
   providers: [
     {
       provide: FORMLY_CONFIG,
-      useFactory: formlyValidationConfig,
+      useFactory: formlyConfig,
       multi: true,
-      deps: [TranslateService]
-    }
+      deps: [TranslateService, JsonApiService]
+    },
+    ...services
   ]
 })
 export class ComponentsModule {}

@@ -6,7 +6,6 @@ import { PaymentsApiService } from "@features/subscriptions/services/payments-ap
 import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
 import { Constants } from "@shared/constants";
-import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
 import { SubscriptionName } from "@shared/types/subscription-name.type";
 import * as countryJs from "country-js";
 import { BehaviorSubject, Observable } from "rxjs";
@@ -24,12 +23,11 @@ export class SubscriptionsService {
   currency$: Observable<string> = this._currencySubject.asObservable();
 
   constructor(
-    public readonly store: Store<State>,
+    public readonly store$: Store<State>,
     public readonly translate: TranslateService,
-    public readonly jsonApiService: JsonApiService,
     public readonly paymentsApiService: PaymentsApiService
   ) {
-    this.store
+    this.store$
       .select(state => state.app)
       .pipe(take(1))
       .subscribe(state => {

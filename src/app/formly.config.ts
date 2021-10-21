@@ -7,81 +7,24 @@ import { FormlyFieldNgSelectComponent } from "@shared/components/misc/formly-fie
 import { FormlyFieldStepperComponent } from "@shared/components/misc/formly-field-stepper/formly-field-stepper.component";
 import { FormlyFieldGoogleMapComponent } from "@shared/components/misc/formly-field-google-map/formly-field-google-map.component";
 import { FormlyFieldCKEditorComponent } from "@shared/components/misc/formly-field-ckeditor/formly-field-ckeditor.component";
+import { FormlyFieldFileComponent } from "@shared/components/misc/formly-field-file/formly-field-file.component";
+import { UtilsService } from "@shared/services/utils/utils.service";
+import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
+import { debounceTime, distinctUntilChanged, first, startWith, switchMap } from "rxjs/operators";
+import { of } from "rxjs";
 
 export interface FileSizeValidatorOptionsInterface {
   max: number;
 }
 
-function fileSizeValidator(
-  control: FormControl,
-  field: FormlyFieldConfig,
-  options: FileSizeValidatorOptionsInterface
-): ValidationErrors {
-  let value;
-
-  if (Array.isArray(control.value)) {
-    value = control.value[0];
-  } else {
-    value = control.value;
-  }
-  return value?.size < options.max ? null : { "file-size": true };
-}
-
-function urlValidator(control: FormControl, field: FormlyFieldConfig): ValidationErrors {
-  if (!control.value) {
-    return null;
-  }
-
-  // See https://gist.github.com/dperini/729294
-  const regex = new RegExp(
-    "^" +
-      // protocol identifier (optional)
-      // short syntax // still required
-      "(?:(?:(?:https?|ftps?):)?\\/\\/)" +
-      // user:pass BasicAuth (optional)
-      "(?:\\S+(?::\\S*)?@)?" +
-      "(?:" +
-      // IP address exclusion
-      // private & local networks
-      "(?!(?:10|127)(?:\\.\\d{1,3}){3})" +
-      "(?!(?:169\\.254|192\\.168)(?:\\.\\d{1,3}){2})" +
-      "(?!172\\.(?:1[6-9]|2\\d|3[0-1])(?:\\.\\d{1,3}){2})" +
-      // IP address dotted notation octets
-      // excludes loopback network 0.0.0.0
-      // excludes reserved space >= 224.0.0.0
-      // excludes network & broadcast addresses
-      // (first & last IP address of each class)
-      "(?:[1-9]\\d?|1\\d\\d|2[01]\\d|22[0-3])" +
-      "(?:\\.(?:1?\\d{1,2}|2[0-4]\\d|25[0-5])){2}" +
-      "(?:\\.(?:[1-9]\\d?|1\\d\\d|2[0-4]\\d|25[0-4]))" +
-      "|" +
-      // host & domain names, may end with dot
-      // can be replaced by a shortest alternative
-      // (?![-_])(?:[-\\w\\u00a1-\\uffff]{0,63}[^-_]\\.)+
-      "(?:" +
-      "(?:" +
-      "[a-z0-9\\u00a1-\\uffff]" +
-      "[a-z0-9\\u00a1-\\uffff_-]{0,62}" +
-      ")?" +
-      "[a-z0-9\\u00a1-\\uffff]\\." +
-      ")+" +
-      // TLD identifier name, may end with dot
-      "(?:[a-z\\u00a1-\\uffff]{2,}\\.?)" +
-      ")" +
-      // port number (optional)
-      "(?::\\d{2,5})?" +
-      // resource path (optional)
-      "(?:[/?#]\\S*)?" +
-      "$",
-    "i"
-  );
-
-  return regex.test(control.value) ? null : { url: true };
-}
-
-export function formlyValidationConfig(translate: TranslateService) {
+export function formlyConfig(translateService: TranslateService, jsonApiService: JsonApiService) {
   return {
     types: [
+      {
+        name: "file",
+        component: FormlyFieldFileComponent,
+        wrappers: ["default-wrapper"]
+      },
       {
         name: "chunked-file",
         component: FormlyFieldChunkedFileComponent,
@@ -113,21 +56,220 @@ export function formlyValidationConfig(translate: TranslateService) {
         wrappers: ["default-wrapper"]
       }
     ],
-    validators: [
-      { name: "file-size", validation: fileSizeValidator },
-      { name: "url", validation: urlValidator }
-    ],
     validationMessages: [
       {
         name: "required",
         message() {
-          return translate.stream("This field is required");
+          return translateService.instant("This field is required.");
+        }
+      },
+      {
+        name: "file-size",
+        message: () =>
+          translateService.instant(
+            "This file is too large. Please check the size requirement in the field's description."
+          )
+      },
+      {
+        name: "image-file",
+        message: () => translateService.instant("This file is not an image.")
+      },
+      {
+        name: "url",
+        message: () => translateService.instant("This does not look like a valid URL.")
+      },
+      {
+        name: "url-is-available",
+        message: () => translateService.instant("AstroBin could not connect to this server.")
+      },
+      {
+        name: "max-greater-equal-than-min",
+        message(options: { minLabel: string; maxLabel: string }) {
+          return translateService.instant(`"{{0}}" cannot be smaller than "{{1}}".`, {
+            0: options.maxLabel,
+            1: options.minLabel
+          });
+        }
+      },
+      {
+        name: "number",
+        message: translateService.instant("This value should be an whole number.")
+      },
+      {
+        name: "whole-number",
+        message: translateService.instant("This value should be an whole number.")
+      },
+      {
+        name: "min-value",
+        message(options: { minValue: number }) {
+          return translateService.instant("This value must be equal to or greater than {{0}}.", {
+            0: options.minValue
+          });
+        }
+      },
+      {
+        name: "max-value",
+        message(options: { maxValue: number }) {
+          return translateService.instant("This value must be equal to or smaller than {{0}}.", {
+            0: options.maxValue
+          });
+        }
+      },
+      {
+        name: "max-decimals",
+        message(options: { value: number }) {
+          return translateService.instant("This value must have {{0}} decimal digits or less.", {
+            0: options.value
+          });
+        }
+      }
+    ],
+    validators: [
+      {
+        name: "file-size",
+        validation: (
+          control: FormControl,
+          field: FormlyFieldConfig,
+          options: FileSizeValidatorOptionsInterface
+        ): ValidationErrors => {
+          let value;
+
+          if (Array.isArray(control.value) || control.value instanceof FileList) {
+            value = control.value[0];
+          } else {
+            value = control.value;
+          }
+
+          return !value || UtilsService.isString(value) || value?.size < options.max ? null : { "file-size": true };
+        }
+      },
+      {
+        name: "image-file",
+        validation: (control: FormControl, field: FormlyFieldConfig): ValidationErrors => {
+          let value;
+
+          if (Array.isArray(control.value) || control.value instanceof FileList) {
+            value = control.value[0];
+          } else {
+            value = control.value;
+          }
+
+          return !value || UtilsService.isString(value) || UtilsService.isImage(value.name)
+            ? null
+            : { "image-file": true };
         }
       },
       {
         name: "url",
-        message() {
-          return translate.stream("This field needs to be a valid URL starting with http(s) or ftp(s)");
+        validation: (control: FormControl, field: FormlyFieldConfig): ValidationErrors => {
+          if (!control.value) {
+            return null;
+          }
+
+          return UtilsService.isUrl(control.value) ? null : { url: true };
+        }
+      },
+      {
+        name: "url-is-available",
+        validation: (control: FormControl): ValidationErrors => {
+          if (!control.value) {
+            return of(null);
+          }
+
+          return control.valueChanges.pipe(
+            startWith(control.value),
+            debounceTime(500),
+            distinctUntilChanged(),
+            switchMap(value => jsonApiService.urlIsAvailable(value)),
+            first()
+          );
+        }
+      },
+      {
+        name: "max-greater-equal-than-min",
+        validation: (
+          control: FormControl,
+          field: FormlyFieldConfig,
+          options: { model: any; minValueKey: string; minLabel: string; maxLabel: string }
+        ): ValidationErrors => {
+          if (
+            !options.model ||
+            !options.minValueKey ||
+            options.model[options.minValueKey] === null ||
+            options.model[options.minValueKey] === undefined
+          ) {
+            return null;
+          }
+
+          if (control.value < options.model[options.minValueKey]) {
+            return {
+              "max-greater-equal-than-min": { minLabel: options.minLabel, maxLabel: options.maxLabel }
+            };
+          }
+
+          return null;
+        }
+      },
+      {
+        name: "number",
+        validation: (control: FormControl) => {
+          if (control.value === null || control.value === undefined) {
+            return null;
+          }
+
+          return /^\d+\.\d+$|^\d+$/.test(control.value) ? null : { number: true };
+        }
+      },
+      {
+        name: "whole-number",
+        validation: (control: FormControl) => {
+          if (control.value === null || control.value === undefined) {
+            return null;
+          }
+
+          if (!/^[-+]?\d+\.\d+$|^[-+]?\d+$/.test(control.value)) {
+            return { "whole-number": true };
+          }
+
+          return Number.isInteger(parseFloat(control.value)) ? null : { "whole-number": true };
+        }
+      },
+      {
+        name: "min-value",
+        validation: (control: FormControl, field: FormlyFieldConfig, options: { minValue: number }) => {
+          if (control.value === null || control.value === undefined) {
+            return null;
+          }
+
+          return parseFloat(control.value) >= options.minValue ? null : { "min-value": options };
+        }
+      },
+      {
+        name: "max-value",
+        validation: (control: FormControl, field: FormlyFieldConfig, options: { maxValue: number }) => {
+          if (control.value === null || control.value === undefined) {
+            return null;
+          }
+
+          return parseFloat(control.value) <= options.maxValue ? null : { "max-value": options };
+        }
+      },
+      {
+        name: "max-decimals",
+        validation: (control: FormControl, field: FormlyFieldConfig, options: { value: number }) => {
+          const countDecimals = (num: number) => {
+            if (Math.floor(num) === num) {
+              return 0;
+            }
+
+            return num.toString().split(".")[1].length || 0;
+          };
+
+          if (control.value === null || control.value === undefined) {
+            return null;
+          }
+
+          return countDecimals(control.value) <= options.value ? null : { "max-decimals": options };
         }
       }
     ]

@@ -4,7 +4,6 @@ import { Store } from "@ngrx/store";
 import { SubscriptionInterface } from "@shared/interfaces/subscription.interface";
 import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
 import { UserSubscriptionInterface } from "@shared/interfaces/user-subscription.interface";
-import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { UserSubscriptionServiceInterface } from "@shared/services/user-subscription/user-subscription.service-interface";
@@ -16,11 +15,7 @@ import { map, switchMap, take } from "rxjs/operators";
   providedIn: "root"
 })
 export class UserSubscriptionService extends BaseService implements UserSubscriptionServiceInterface {
-  constructor(
-    public readonly store$: Store<State>,
-    public loadingService: LoadingService,
-    public jsonApiService: JsonApiService
-  ) {
+  constructor(public readonly store$: Store<State>, public readonly loadingService: LoadingService) {
     super(loadingService);
   }
 

@@ -28,7 +28,7 @@ describe("CameraApiService", () => {
   it("getCamera should work", () => {
     const camera = CameraGenerator.camera();
 
-    service.getCamera(camera.pk).subscribe(response => {
+    service.get(camera.pk).subscribe(response => {
       expect(response.pk).toEqual(camera.pk);
     });
 

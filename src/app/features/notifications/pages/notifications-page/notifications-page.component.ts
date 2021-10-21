@@ -71,10 +71,10 @@ export class NotificationsPageComponent extends BaseComponentDirective implement
 
   notificationClicked(notification: NotificationInterface): boolean {
     const _openNotificationLink = (withNid: boolean, openInNewTab: boolean) => {
-      const links = this.utilsService.getLinksInText(notification.message);
+      const links = UtilsService.getLinksInText(notification.message);
       if (links.length > 0) {
-        const link = withNid ? this.utilsService.addOrUpdateUrlParam(links[0], "nid", "" + notification.id) : links[0];
-        this.utilsService.openLink(this.windowRef.nativeWindow.document, link, {
+        const link = withNid ? UtilsService.addOrUpdateUrlParam(links[0], "nid", "" + notification.id) : links[0];
+        UtilsService.openLink(this.windowRef.nativeWindow.document, link, {
           openInNewTab
         });
       }

@@ -31,7 +31,14 @@ export class CommonApiService extends BaseClassicApiService implements CommonApi
     super(loadingService);
   }
 
-  getContentType(appLabel: string, model: string): Observable<ContentTypeInterface | null> {
+  getContentTypeById(id: ContentTypeInterface["id"]): Observable<ContentTypeInterface> {
+    return this.http.get<ContentTypeInterface>(`${this.configUrl}/contenttypes/${id}/`);
+  }
+
+  getContentType(
+    appLabel: ContentTypeInterface["appLabel"],
+    model: ContentTypeInterface["model"]
+  ): Observable<ContentTypeInterface | null> {
     return this.http
       .get<ContentTypeInterface[]>(`${this.configUrl}/contenttypes/?app_label=${appLabel}&model=${model}`)
       .pipe(
@@ -45,10 +52,16 @@ export class CommonApiService extends BaseClassicApiService implements CommonApi
       );
   }
 
-  getUser(id: number): Observable<UserInterface> {
+  getUser(id: UserInterface["id"]): Observable<UserInterface> {
     return this.http
       .get<BackendUserInterface>(`${this.configUrl}/users/${id}/`)
       .pipe(map((user: BackendUserInterface) => this.commonApiAdaptorService.userFromBackend(user)));
+  }
+
+  getUserProfile(id: UserProfileInterface["id"]): Observable<UserProfileInterface> {
+    return this.http
+      .get<BackendUserProfileInterface>(`${this.configUrl}/userprofiles/${id}/`)
+      .pipe(map((user: BackendUserProfileInterface) => this.commonApiAdaptorService.userProfileFromBackend(user)));
   }
 
   getCurrentUserProfile(): Observable<UserProfileInterface> {
@@ -66,7 +79,10 @@ export class CommonApiService extends BaseClassicApiService implements CommonApi
     );
   }
 
-  updateUserProfile(userProfileId: number, data: Partial<UserProfileInterface>): Observable<UserProfileInterface> {
+  updateUserProfile(
+    userProfileId: UserProfileInterface["id"],
+    data: Partial<UserProfileInterface>
+  ): Observable<UserProfileInterface> {
     return this.http.put<UserProfileInterface>(this.configUrl + `/userprofiles/${userProfileId}/partial/`, data);
   }
 

@@ -21,7 +21,6 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
 import { ImageAlias } from "@shared/enums/image-alias.enum";
 import { ImageInterface } from "@shared/interfaces/image.interface";
 import { ImageApiService } from "@shared/services/api/classic/images/image/image-api.service";
-import { ThumbnailGroupApiService } from "@shared/services/api/classic/images/thumbnail-group/thumbnail-group-api.service";
 import { ImageService } from "@shared/services/image/image.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
@@ -107,7 +106,7 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
       !this.loading &&
       !this._loaded &&
       this._loadingIndicator &&
-      (this.utilsService.isInViewport(this._loadingIndicator.nativeElement) || this.alwaysLoad)
+      (UtilsService.isInViewport(this._loadingIndicator.nativeElement) || this.alwaysLoad)
     ) {
       this.loading = true;
       this._loadImage();

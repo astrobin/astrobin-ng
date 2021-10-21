@@ -31,7 +31,7 @@ describe("TelescopeApiService", () => {
   it("getTelescope should work", () => {
     const telescope = TelescopeGenerator.telescope();
 
-    service.getTelescope(telescope.pk).subscribe(response => {
+    service.get(telescope.pk).subscribe(response => {
       expect(response.pk).toEqual(telescope.pk);
     });
 

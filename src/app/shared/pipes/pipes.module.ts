@@ -13,8 +13,11 @@ import { IsIotdSubmitterPipe } from "./is-iotd-submitter.pipe";
 import { IsProducerPipe } from "./is-producer.pipe";
 import { IsRetailerPipe } from "./is-retailer.pipe";
 import { IsSuperUserPipe } from "./is-superuser.pipe";
+import { CamelCaseToSentenceCasePipe } from "@shared/pipes/camel-case-to-sentence-case.pipe";
+import { IsEquipmentModeratorPipe } from "@shared/pipes/is-equipment-moderator.pipe";
 
 const pipes = [
+  CamelCaseToSentenceCasePipe,
   EnsureUrlProtocolPipe,
   IsContentModeratorPipe,
   IsImageModeratorPipe,
@@ -22,6 +25,7 @@ const pipes = [
   IsIotdReviewerPipe,
   IsIotdStaffPipe,
   IsIotdSubmitterPipe,
+  IsEquipmentModeratorPipe,
   IsProducerPipe,
   IsRetailerPipe,
   IsSuperUserPipe,

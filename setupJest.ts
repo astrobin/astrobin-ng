@@ -20,7 +20,6 @@ import { JsonApiService } from "@shared/services/api/classic/json/json-api.servi
 import { RemoteSourceAffiliateApiService } from "@shared/services/api/classic/remote-source-affiliation/remote-source-affiliate-api.service";
 import { AuthService } from "@shared/services/auth.service";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
-import { UserStoreService } from "@shared/services/user-store.service";
 import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
 import { UserService } from "@shared/services/user.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
@@ -96,13 +95,8 @@ ngMocks.defaultMock(CommonApiService, () => ({
   getPayments: jest.fn().mockReturnValue(of(null))
 }));
 
-ngMocks.defaultMock(UserStoreService, () => ({
-  getUser: jest.fn().mockReturnValue(UserGenerator.user()),
-  getUserProfile: jest.fn().mockReturnValue(UserProfileGenerator.userProfile())
-}));
-
 ngMocks.defaultMock(UsernameService, () => ({
-  getDisplayName: jest.fn().mockReturnValue("astrobin_dev")
+  getDisplayName$: jest.fn().mockReturnValue(of("astrobin_dev"))
 }));
 
 ngMocks.defaultMock(UserService, () => ({

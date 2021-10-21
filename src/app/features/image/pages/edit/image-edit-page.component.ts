@@ -40,11 +40,12 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 import { catchError, filter, map, take } from "rxjs/operators";
 import { retryWithDelay } from "rxjs-boost/lib/operators";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
-import { EMPTY } from "rxjs";
+import { EMPTY, Observable } from "rxjs";
 import { GroupInterface } from "@shared/interfaces/group.interface";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { CreateLocationModalComponent } from "@features/image/components/create-location-modal/create-location-modal.component";
 import { CreateLocationAddTag } from "@app/store/actions/location.actions";
+import { of } from "rxjs";
 
 export function KeyValueTagsValidator(control: FormControl): ValidationErrors {
   if (!control.value) {
@@ -138,7 +139,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
 
   onReturnToClassicEditor() {
     this.loadingService.setLoading(true);
-    this.utilsService.openLink(
+    UtilsService.openLink(
       this.windowRefService.nativeWindow.document,
       this.classicRoutesService.EDIT_IMAGE_THUMBNAILS(this.image.hash || "" + this.image.pk) + "?upload"
     );
@@ -163,7 +164,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     this.store$.dispatch(new SaveImage({ pk: this.image.pk, data: { ...this.image, ...this.form.value } }));
     this.actions$.pipe(ofType(AppActionTypes.SAVE_IMAGE_SUCCESS)).subscribe(() => {
       this.loadingService.setLoading(true);
-      this.utilsService.openLink(this.windowRefService.nativeWindow.document, next);
+      UtilsService.openLink(this.windowRefService.nativeWindow.document, next);
     });
   }
 
@@ -498,10 +499,12 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
           <strong>${this.translateService.instant("Please note")}: </strong>
           ${this.translateService.instant("AstroBin does not share your coordinates with anyone.")}
         `,
-        options: this.route.snapshot.data.locations.map(location => ({
-          value: location.id,
-          label: location.name
-        })),
+        options: of(
+          this.route.snapshot.data.locations.map(location => ({
+            value: location.id,
+            label: location.name
+          }))
+        ),
         addTag: name => {
           this.store$.dispatch(new CreateLocationAddTag(name));
           const modalRef = this.modalService.open(CreateLocationModalComponent);
@@ -518,10 +521,14 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
             )[0];
 
             setTimeout(() => {
-              locationsField.templateOptions.options = [
-                ...(locationsField.templateOptions.options as { value: number; label: string }[]),
-                ...[newItem]
-              ];
+              (locationsField.templateOptions.options as Observable<{ value: number; label: string }[]>)
+                .pipe(take(1))
+                .subscribe(currentOptions => {
+                  locationsField.templateOptions.options = of([
+                    ...(currentOptions as { value: number; label: string }[]),
+                    ...[newItem]
+                  ]);
+                });
 
               this.model = {
                 ...this.model,

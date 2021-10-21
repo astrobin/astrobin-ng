@@ -35,3 +35,7 @@ import "./wait-for-initialization-routes";
 import "./login";
 import "./visit-page";
 import "./mock-geolocation";
+
+import "./ng-select-utils";
+import "./equipment-item-browser-utils";
+import "./equipment-item-summary-utils";

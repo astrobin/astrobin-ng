@@ -1,0 +1,43 @@
+.nav-item {
+  position: relative;
+
+  &:not(:last-child) {
+    margin-bottom: .25rem;
+  }
+
+  img {
+    width: 2rem;
+    margin: .25rem;
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
+
+  .nav-link {
+    padding-left: 2.5rem;
+  }
+
+  .count {
+    position: absolute;
+    top: .75rem;
+    right: .5rem;
+    font-size: 1rem;
+    line-height: 1rem;
+    opacity: .5;
+  }
+
+  .nav-pills {
+    font-size: .9rem;
+    margin: .5rem 0 1rem 1rem;
+
+    .nav-link {
+      padding: .5rem 1rem;
+
+      &.active {
+        background-color: transparent;
+        border-radius: 0;
+        border-bottom: 2px solid #2a9fd6;
+      }
+    }
+  }
+}

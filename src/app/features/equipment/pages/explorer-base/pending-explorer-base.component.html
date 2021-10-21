@@ -1,0 +1,39 @@
+<div class="page">
+  <h1>{{ title }}</h1>
+
+  <div class="row">
+    <div class="col-md-3">
+      <astrobin-equipment-item-type-nav></astrobin-equipment-item-type-nav>
+    </div>
+
+    <div class="col">
+      <ng-container *ngIf="items$ | async as items; else loading">
+        <ng-container *ngFor="let item of items.results">
+          <div class="card">
+            <div class="card-body">
+              <astrobin-equipment-item-summary [item]="item" [showClass]="false"></astrobin-equipment-item-summary>
+            </div>
+            <div class="card-footer">
+              <button
+                class="btn btn-sm-block btn-primary"
+                (click)="viewItem(item)"
+              >
+                {{ "View" | translate }}
+              </button>
+            </div>
+          </div>
+        </ng-container>
+
+        <astrobin-nothing-here *ngIf="items.count === 0"></astrobin-nothing-here>
+
+        <ngb-pagination (pageChange)="pageChange($event)" [(page)]="page" [collectionSize]="items.count">
+        </ngb-pagination>
+      </ng-container>
+    </div>
+  </div>
+</div>
+
+<ng-template #loading>
+  <astrobin-loading-indicator></astrobin-loading-indicator>
+</ng-template>
+

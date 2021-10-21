@@ -35,12 +35,14 @@ $info: theme-color("info");
 $text-on-info: theme-color("light");
 
 $success: theme-color("success");
+$text-on-success: theme-color("dark");
 $successSecondary: darken($success, 30%);
 
 $warning: theme-color("warning");
 $text-on-warning: theme-color("dark");
 
 $error: theme-color("error");
+$text-on-error: $black;
 
 // ... special colors
 $accent-color: theme-color("primary");
@@ -99,10 +101,12 @@ $ng-select-value-font-size: 0.9em;
   --textOnInfoColor: #{$text-on-info};
 
   --successColor: #{theme-color("success")};
+  --textOnSuccessColor: #{$text-on-success};
   --successSecondaryColor: #{$successSecondary};
 
   --warningColor: #{theme-color("warning")};
   --textOnWarningColor: #{$text-on-warning};
 
   --dangerColor: #{theme-color("danger")};
+  --textOnDangerColor: #{$text-on-error};
 }

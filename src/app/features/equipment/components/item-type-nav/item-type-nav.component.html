@@ -1,0 +1,37 @@
+<ul ngbNav #nav="ngbNav" [(activeId)]="activeType" class="nav-pills" orientation="vertical">
+  <li *ngFor="let type of types" [ngbNavItem]="type.value.toLowerCase()" [disabled]="type.disabled">
+    <img src="/assets/images/{{ type.value.toLowerCase() }}-placeholder.png" alt="{{ type.label }}" />
+    <a ngbNavLink routerLink="{{ routingBasePath }}/{{ type.value.toLowerCase() }}">{{ type.label }}</a>
+    <span *ngIf="type.count && (!showSubNavigation || activeType !== type.value.toLowerCase())" class="count">
+      {{ type.count | async }}
+    </span>
+
+    <ul
+      *ngIf="activeType === type.value.toLowerCase() && showSubNavigation"
+      ngbNav
+      #subnav="ngbNav"
+      [(activeId)]="activeSubNav"
+      class="nav-pills"
+      orientation="vertical"
+    >
+      <li ngbNavItem="a-z-explorer">
+        <a ngbNavLink routerLink="/equipment/a-z-explorer/{{ type.value.toLowerCase() }}">
+          A-Z
+        </a>
+        <span *ngIf="type.count" class="count">{{ type.count | async }}</span>
+      </li>
+      <li ngbNavItem="pending-review-explorer">
+        <a ngbNavLink routerLink="/equipment/pending-review-explorer/{{ type.value.toLowerCase() }}">
+          {{ "Pending review" | translate }}
+        </a>
+        <span *ngIf="type.pendingReviewCount" class="count">{{ type.pendingReviewCount | async }}</span>
+      </li>
+      <li ngbNavItem="pending-edit-explorer">
+        <a ngbNavLink routerLink="/equipment/pending-edit-explorer/{{ type.value.toLowerCase() }}">
+          {{ "Pending edit" | translate }}
+        </a>
+        <span *ngIf="type.pendingEditCount" class="count">{{ type.pendingEditCount | async }}</span>
+      </li>
+    </ul>
+  </li>
+</ul>

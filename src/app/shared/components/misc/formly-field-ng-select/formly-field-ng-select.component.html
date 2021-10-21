@@ -1,38 +1,53 @@
-<ng-select
-  [addTagText]="'Create new:' | translate"
-  [addTag]="to.addTag"
-  [attr.id]="field.id"
-  [bindValue]="'value'"
-  [clearable]="to.clearable || false"
-  [closeOnSelect]="!to.multiple"
-  [formControl]="formControl"
-  [hideSelected]="to.multiple"
-  [items]="to.options | formlySelectOptions: field | async"
-  [multiple]="to.multiple"
-  [notFoundText]="notFoundText"
-  [placeholder]="placeholder"
-  groupBy="group"
->
-  <ng-template let-item="item" ng-optgroup-tmp>
-    {{ item.label }}
-  </ng-template>
+<ng-container *ngIf="hasAsyncItems; else hasSyncItems">
+  <ng-container [ngTemplateOutlet]="select" [ngTemplateOutletContext]="{items: to.options | async}"></ng-container>
+</ng-container>
 
-  <ng-template let-clear="clear" let-item="item" ng-label-tmp>
-    <ng-container *ngIf="!to.labelTemplate">{{ item.label }}</ng-container>
-    <ng-container
-      *ngIf="to.labelTemplate"
-      [ngTemplateOutletContext]="{ item: item }"
-      [ngTemplateOutlet]="to.labelTemplate"
-    ></ng-container>
-    <span (click)="clear(item)" aria-hidden="true" class="ng-value-icon right">×</span>
-  </ng-template>
+<ng-template #hasSyncItems>
+  <ng-container [ngTemplateOutlet]="select" [ngTemplateOutletContext]="{items: to.options}"></ng-container>
+</ng-template>
 
-  <ng-template let-item="item" ng-option-tmp>
-    <ng-container *ngIf="!to.optionTemplate">{{ item.label }}</ng-container>
-    <ng-container
-      *ngIf="to.optionTemplate"
-      [ngTemplateOutletContext]="{ item: item }"
-      [ngTemplateOutlet]="to.optionTemplate"
-    ></ng-container>
-  </ng-template>
-</ng-select>
+<ng-template #select let-items="items">
+  <ng-select
+    #ngSelect
+    [addTagText]="'Create new:' | translate"
+    [addTag]="to.addTag ? onAddTag.bind(this) : undefined"
+    [attr.id]="field.id"
+    [bindValue]="to.bindValue || 'value'"
+    [bindLabel]="to.bindLabel || 'label'"
+    [clearable]="to.clearable || false"
+    [closeOnSelect]="!to.multiple"
+    [formControl]="formControl"
+    [hideSelected]="to.multiple"
+    [items]="items"
+    [loading]="loading"
+    [multiple]="to.multiple"
+    [notFoundText]="notFoundText"
+    [typeToSearchText]="typeToSearchText"
+    [placeholder]="placeholder"
+    [typeahead]="input$"
+    groupBy="group"
+  >
+    <ng-template let-item="item" ng-optgroup-tmp>
+      {{ item.label }}
+    </ng-template>
+
+    <ng-template let-clear="clear" let-item="item" ng-label-tmp>
+      <ng-container *ngIf="!to.labelTemplate">{{ item.label }}</ng-container>
+      <ng-container
+        *ngIf="to.labelTemplate"
+        [ngTemplateOutletContext]="{ item: item }"
+        [ngTemplateOutlet]="to.labelTemplate"
+      ></ng-container>
+      <span (click)="clear(item)" aria-hidden="true" class="ng-value-icon right">×</span>
+    </ng-template>
+
+    <ng-template let-item="item" ng-option-tmp>
+      <ng-container *ngIf="!to.optionTemplate">{{ item.label }}</ng-container>
+      <ng-container
+        *ngIf="to.optionTemplate"
+        [ngTemplateOutletContext]="{ item: item }"
+        [ngTemplateOutlet]="to.optionTemplate"
+      ></ng-container>
+    </ng-template>
+  </ng-select>
+</ng-template>

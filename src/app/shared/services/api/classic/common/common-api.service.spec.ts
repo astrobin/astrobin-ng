@@ -27,6 +27,18 @@ describe("CommonApiService", () => {
     expect(service).toBeTruthy();
   });
 
+  it("getContentTypeById should work", () => {
+    const contentType = ContentTypeGenerator.contentType();
+
+    service.getContentTypeById(contentType.id).subscribe(response => {
+      expect(response.id).toEqual(contentType.id);
+    });
+
+    const req = httpMock.expectOne(`${service.configUrl}/contenttypes/${contentType.id}/`);
+    expect(req.request.method).toBe("GET");
+    req.flush(contentType);
+  });
+
   it("getContentType should work", () => {
     const contentType = ContentTypeGenerator.contentType();
 
