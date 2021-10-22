@@ -15,7 +15,7 @@
 </ng-template>
 
 <ng-template #stepperButtonsTemplate let-isLastStep="isLastStep">
-  <div class="d-block d-sm-inline-block" ngbDropdown placement="top-right">
+  <div ngbDropdown placement="top-right">
     <button
       *ngIf="isLastStep"
       [class.loading]="loadingService.isLoading()"
