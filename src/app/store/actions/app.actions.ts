@@ -19,6 +19,7 @@ import {
 import { InitializeApp, InitializeAppSuccess } from "@app/store/actions/initialize-app.actions";
 import {
   LoadSolution,
+  LoadSolutionFailure,
   LoadSolutions,
   LoadSolutionsSuccess,
   LoadSolutionSuccess
@@ -67,6 +68,7 @@ export enum AppActionTypes {
 
   LOAD_SOLUTION = "[App] Load solution",
   LOAD_SOLUTION_SUCCESS = "[App] Load solution success",
+  LOAD_SOLUTION_FAILURE = "[App] Load solution failure",
 
   LOAD_SOLUTIONS = "[App] Load solutions",
   LOAD_SOLUTIONS_SUCCESS = "[App] Load solutions success",
@@ -106,6 +108,7 @@ export type All =
   | LoadThumbnailCanceled
   | LoadSolution
   | LoadSolutionSuccess
+  | LoadSolutionFailure
   | LoadSolutions
   | LoadSolutionsSuccess
   | LoadTelescope

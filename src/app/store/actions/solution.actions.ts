@@ -3,6 +3,7 @@
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
 import { SolutionInterface } from "@shared/interfaces/solution.interface";
+import { Action } from "@ngrx/store";
 
 export class LoadSolution implements PayloadActionInterface {
   readonly type = AppActionTypes.LOAD_SOLUTION;
@@ -14,6 +15,10 @@ export class LoadSolutionSuccess implements PayloadActionInterface {
   readonly type = AppActionTypes.LOAD_SOLUTION_SUCCESS;
 
   constructor(public payload: SolutionInterface) {}
+}
+
+export class LoadSolutionFailure implements Action {
+  readonly type = AppActionTypes.LOAD_SOLUTION_FAILURE;
 }
 
 export class LoadSolutions implements PayloadActionInterface {

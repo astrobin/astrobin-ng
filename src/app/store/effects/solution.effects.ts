@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { All, AppActionTypes } from "@app/store/actions/app.actions";
-import { LoadSolutionsSuccess, LoadSolutionSuccess } from "@app/store/actions/solution.actions";
+import { LoadSolutionFailure, LoadSolutionsSuccess, LoadSolutionSuccess } from "@app/store/actions/solution.actions";
 import { selectSolution } from "@app/store/selectors/app/solution.selectors";
 import { State } from "@app/store/state";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
@@ -11,7 +11,7 @@ import { catchError, map, mergeMap } from "rxjs/operators";
 
 @Injectable()
 export class SolutionEffects {
-  LoadSolution: Observable<LoadSolutionSuccess> = createEffect(() =>
+  LoadSolution: Observable<LoadSolutionSuccess | LoadSolutionFailure> = createEffect(() =>
     this.actions$.pipe(
       ofType(AppActionTypes.LOAD_SOLUTION),
       mergeMap(action =>
@@ -20,7 +20,7 @@ export class SolutionEffects {
             solutionFromStore !== null
               ? of(solutionFromStore).pipe(map(solution => new LoadSolutionSuccess(solution)))
               : this.solutionApiService.getSolution(action.payload.contentType, action.payload.objectId).pipe(
-                  map(solution => new LoadSolutionSuccess(solution)),
+                  map(solution => (!!solution ? new LoadSolutionSuccess(solution) : new LoadSolutionFailure())),
                   catchError(error => EMPTY)
                 )
           )
