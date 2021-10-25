@@ -33,36 +33,6 @@ import { selectCurrentUserProfile, selectUser, selectUserProfile } from "@featur
 
 @Injectable()
 export class AuthEffects {
-  Login: Observable<LoginSuccess | LoginFailure> = createEffect(() =>
-    this.actions$.pipe(
-      ofType(AuthActionTypes.LOGIN),
-      map((action: Login) => action),
-      tap(action => {
-        this.loadingService.setLoading(true);
-        return action;
-      }),
-      switchMap(action =>
-        this.authService.login(action.payload.handle, action.payload.password, action.payload.redirectUrl).pipe(
-          tap(token => {
-            this.cookieService.set(AuthService.CLASSIC_AUTH_TOKEN_COOKIE, token, 180, "/");
-          }),
-          switchMap(() =>
-            this._getData$.pipe(
-              map(data => ({
-                user: data.user,
-                userProfile: data.userProfile,
-                userSubscriptions: data.userSubscriptions,
-                redirectUrl: action.payload.redirectUrl
-              }))
-            )
-          ),
-          map(payload => new LoginSuccess(payload)),
-          catchError(error => of(new LoginFailure({ error })))
-        )
-      )
-    )
-  );
-
   LoginSuccess: Observable<LoginSuccess> = createEffect(
     () =>
       this.actions$.pipe(
@@ -162,36 +132,37 @@ export class AuthEffects {
     )
   );
 
-  private _getCurrentUserProfile$: Observable<UserProfileInterface> = this.commonApiService.getCurrentUserProfile();
-
-  private _getCurrentUser$: Observable<UserInterface> = this._getCurrentUserProfile$.pipe(
-    switchMap(userProfile => {
-      if (userProfile !== null) {
-        return this.commonApiService.getUser(userProfile.user);
-      }
-
-      return of(null);
-    })
+  Login: Observable<LoginSuccess | LoginFailure> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AuthActionTypes.LOGIN),
+      map((action: Login) => action),
+      tap(action => {
+        this.loadingService.setLoading(true);
+        return action;
+      }),
+      switchMap(action =>
+        this.authService.login(action.payload.handle, action.payload.password, action.payload.redirectUrl).pipe(
+          tap(token => {
+            this.cookieService.set(AuthService.CLASSIC_AUTH_TOKEN_COOKIE, token, 180, "/");
+          }),
+          switchMap(() =>
+            this._getData$.pipe(
+              map(data => ({
+                user: data.user,
+                userProfile: data.userProfile,
+                userSubscriptions: data.userSubscriptions,
+                redirectUrl: action.payload.redirectUrl
+              })),
+              tap(data => this._setLanguage(data.userProfile.language))
+            )
+          ),
+          map(payload => new LoginSuccess(payload)),
+          catchError(error => of(new LoginFailure({ error })))
+        )
+      )
+    )
   );
 
-  private _getUserSubscriptions$: Observable<UserSubscriptionInterface[]> = this._getCurrentUser$.pipe(
-    switchMap(user => {
-      if (user !== null) {
-        return this.commonApiService.getUserSubscriptions(user);
-      }
-
-      return of(null);
-    })
-  );
-
-  private _getData$ = forkJoin({
-    user: this._getCurrentUser$,
-    userProfile: this._getCurrentUserProfile$,
-    userSubscriptions: this._getUserSubscriptions$
-  }).pipe(
-    switchMap(data => forkJoin([of(data), this._setLanguage(data.userProfile.language)])),
-    map(result => result[0])
-  );
   Initialize: Observable<InitializeAuthSuccess> = createEffect(() =>
     this.actions$.pipe(
       ofType(AuthActionTypes.INITIALIZE),
@@ -199,6 +170,14 @@ export class AuthEffects {
         new Observable<LoginSuccessInterface>(observer => {
           if (this.cookieService.check(AuthService.CLASSIC_AUTH_TOKEN_COOKIE)) {
             this._getData$.subscribe(data => {
+              if (!data.user || !data.userProfile || !data.userSubscriptions) {
+                observer.next({ user: null, userProfile: null, userSubscriptions: [] });
+                observer.complete();
+                return;
+              }
+
+              this._setLanguage(data.userProfile.language);
+
               const successPayload: LoginSuccessInterface = {
                 user: data.user,
                 userProfile: data.userProfile,
@@ -228,6 +207,34 @@ export class AuthEffects {
     public readonly translate: TranslateService,
     public readonly timeagoIntl: TimeagoIntl
   ) {}
+
+  private _getCurrentUserProfile$: Observable<UserProfileInterface> = this.commonApiService.getCurrentUserProfile();
+
+  private _getCurrentUser$: Observable<UserInterface> = this._getCurrentUserProfile$.pipe(
+    switchMap(userProfile => {
+      if (userProfile !== null) {
+        return this.commonApiService.getUser(userProfile.user);
+      }
+
+      return of(null);
+    })
+  );
+
+  private _getUserSubscriptions$: Observable<UserSubscriptionInterface[]> = this._getCurrentUser$.pipe(
+    switchMap(user => {
+      if (user !== null) {
+        return this.commonApiService.getUserSubscriptions(user);
+      }
+
+      return of(null);
+    })
+  );
+
+  private _getData$ = forkJoin({
+    user: this._getCurrentUser$,
+    userProfile: this._getCurrentUserProfile$,
+    userSubscriptions: this._getUserSubscriptions$
+  });
 
   private _setLanguage(language: string): Observable<any> {
     this.translate.setDefaultLang(language);

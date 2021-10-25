@@ -8,6 +8,8 @@ import { TranslateService } from "@ngx-translate/core";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
+import { AuthService } from "@shared/services/auth.service";
+import { WindowRefService } from "@shared/services/window-ref.service";
 
 @NgModule({
   imports: [HttpClientModule],
@@ -20,7 +22,7 @@ import { JsonApiService } from "@shared/services/api/classic/json/json-api.servi
     {
       provide: HTTP_INTERCEPTORS,
       useClass: ServerErrorsInterceptor,
-      deps: [TranslateService, PopNotificationsService, LoadingService],
+      deps: [WindowRefService, TranslateService, PopNotificationsService, LoadingService, AuthService],
       multi: true
     },
     AuthClassicApiService,

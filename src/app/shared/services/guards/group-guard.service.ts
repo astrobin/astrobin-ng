@@ -49,7 +49,11 @@ export class GroupGuardService extends BaseService implements CanActivate {
 
         this.store$
           .select(selectCurrentUser)
-          .pipe(map((user: UserInterface) => user.groups.filter(group => group.name === desiredGroup).length > 0))
+          .pipe(
+            map((user: UserInterface) =>
+              user ? user.groups.filter(group => group.name === desiredGroup).length > 0 : false
+            )
+          )
           .subscribe(canActivate => {
             if (canActivate) {
               onSuccess(observer);
