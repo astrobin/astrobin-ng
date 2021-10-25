@@ -3,8 +3,8 @@
 
   <astrobin-login-form #loginForm [redirectUrl]="redirectUrl"></astrobin-login-form>
 
-  <ng-container *ngIf="currentUser$ | async as currentUser">
-    <div *ngIf="!currentUser" class="buttons-area">
+  <ng-container *ngIf="(currentUser$ | async) === null">
+    <div class="buttons-area">
       <button [class.loading]="loadingService.isLoading()" [disabled]="!loginForm.form.valid || loadingService.isLoading()"
         (click)="loginForm.login()" class="btn btn-primary">
         {{ "Log in" | translate }}

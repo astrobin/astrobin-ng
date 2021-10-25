@@ -1,5 +1,5 @@
-<ng-container *ngIf="currentUser$ | async as currentUser">
-  <form *ngIf="!currentUser; else alreadyLoggedIn" [formGroup]="form" id="login-form">
+<ng-container *ngIf="(currentUser$ | async) === null; else alreadyLoggedIn">
+  <form [formGroup]="form" id="login-form">
     <div *ngIf="error" class="form-group error">
       {{ "We could not log you in. Please check your credentials and try again." | translate }}
     </div>
