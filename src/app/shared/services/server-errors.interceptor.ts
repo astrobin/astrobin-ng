@@ -6,12 +6,16 @@ import { PopNotificationsService } from "@shared/services/pop-notifications.serv
 import { catchError, retry } from "rxjs/operators";
 import { LoadingService } from "@shared/services/loading.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
+import { AuthService } from "@shared/services/auth.service";
+import { WindowRefService } from "@shared/services/window-ref.service";
 
 export class ServerErrorsInterceptor implements HttpInterceptor {
   constructor(
+    public readonly windowRefService: WindowRefService,
     public readonly translateService: TranslateService,
     public readonly popNotificationsService: PopNotificationsService,
-    public readonly loadingService: LoadingService
+    public readonly loadingService: LoadingService,
+    public readonly authService: AuthService
   ) {}
 
   public intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
@@ -70,6 +74,13 @@ export class ServerErrorsInterceptor implements HttpInterceptor {
           errorMessage = this.translateService.instant(
             "You tried to access a server resource that's only available to logged in users."
           );
+
+          // Force logout in case of invalid authentication token.
+          this.authService.logout();
+          setTimeout(() => {
+            this.windowRefService.nativeWindow.location.assign("/account/login");
+          }, 3000);
+
           break;
         case 403:
           errorTitle = this.translateService.instant("Permission denied");

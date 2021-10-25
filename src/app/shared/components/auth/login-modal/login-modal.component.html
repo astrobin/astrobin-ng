@@ -10,17 +10,19 @@
 </div>
 
 <div class="modal-footer">
-  <button [class.loading]="loadingService.isLoading()" [disabled]="!loginForm.form.valid || loadingService.isLoading()"
-    (click)="loginForm.login()" class="btn btn-primary">
-    {{ "Log in" | translate }}
+  <ng-container *ngIf="(currentUser$ | async) === null">
+    <button [class.loading]="loadingService.isLoading()"
+            [disabled]="!loginForm.form.valid || loadingService.isLoading()"
+            (click)="loginForm.login()" class="btn btn-primary">
+      {{ "Log in" | translate }}
+    </button>
 
-  </button>
+    <a [attr.href]="classicRoutesService.REGISTER" class="btn btn-secondary">
+      {{ "Register" | translate }}
+    </a>
 
-  <a [attr.href]="classicRoutesService.REGISTER" class="btn btn-secondary">
-    {{ "Register" | translate }}
-  </a>
-
-  <a [attr.href]="classicRoutesService.RESET_PASSWORD" class="btn btn-secondary">
-    {{ "Reset password" | translate }}
-  </a>
+    <a [attr.href]="classicRoutesService.RESET_PASSWORD" class="btn btn-secondary">
+      {{ "Reset password" | translate }}
+    </a>
+  </ng-container>
 </div>

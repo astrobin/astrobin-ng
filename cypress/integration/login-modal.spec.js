@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 
-context("account-modal", () => {
+context("login-modal", () => {
   beforeEach(() => {
     cy.server();
     cy.setupInitializationRoutes();
