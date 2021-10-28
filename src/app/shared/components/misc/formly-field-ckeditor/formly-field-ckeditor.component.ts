@@ -12,6 +12,8 @@ declare const CKEDITOR: any;
   styleUrls: ["./formly-field-ckeditor.component.scss"]
 })
 export class FormlyFieldCKEditorComponent extends FieldType implements AfterViewInit {
+  showEditor = false;
+
   constructor(public readonly translateService: TranslateService, public readonly authService: AuthService) {
     super();
   }
@@ -461,6 +463,10 @@ export class FormlyFieldCKEditorComponent extends FieldType implements AfterView
     if (CKEDITOR && editorBase) {
       const editor = CKEDITOR.replace(this.field.id, this._ckEditorOptions());
       editor.setData(this.formControl.value);
+
+      editor.on("instanceReady", () => {
+        this.showEditor = true;
+      });
     } else {
       setTimeout(() => {
         this._initialize();

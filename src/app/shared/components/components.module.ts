@@ -52,6 +52,9 @@ import { FormlyFieldFileComponent } from "@shared/components/misc/formly-field-f
 import { UsernameService } from "@shared/components/misc/username/username.service";
 import { NothingHereComponent } from "@shared/components/misc/nothing-here/nothing-here.component";
 import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
+import { NestedCommentsComponent } from "@shared/components/misc/nested-comments/nested-comments.component";
+import { NestedCommentComponent } from "@shared/components/misc/nested-comments/nested-comment.component";
+import { TimeagoModule } from "ngx-timeago";
 
 const modules = [
   CommonModule,
@@ -73,6 +76,7 @@ const modules = [
   PipesModule,
   ReactiveFormsModule,
   RouterModule,
+  TimeagoModule,
   TranslateModule,
   FormlyModule,
   UploadxModule
@@ -98,6 +102,8 @@ const components = [
   LoadingIndicatorComponent,
   LoginFormComponent,
   LoginModalComponent,
+  NestedCommentComponent,
+  NestedCommentsComponent,
   NothingHereComponent,
   ObjectsInFieldComponent,
   ReadOnlyModeComponent,
@@ -111,7 +117,7 @@ const components = [
 const services = [UsernameService];
 
 @NgModule({
-  imports: modules,
+  imports: [modules],
   declarations: components,
   exports: components,
   providers: [

@@ -1,13 +1,15 @@
 <ng-container *ngIf="item; else loading">
-  <div class="edit-proposal row" [class.opened]="opened" (click)="opened = !opened" [attr.data-id]="editProposal.id">
-    <span class="col user">
-      <astrobin-username [user]="editProposalBy$ | async" linkTarget="_blank"></astrobin-username>
-    </span>
-    <span class="col-2 d-none d-lg-inline changes">{{ changes.length }}</span>
-    <span class="col-3 status" [class]="editProposal.editProposalReviewStatus?.toLowerCase() || 'pending'">
-      {{ reviewStatusText }}
-    </span>
-    <span class="col-3 d-none d-lg-inline timeago">{{ editProposal.created | localDate | timeago: true }}</span>
+  <div class="edit-proposal" [class.opened]="opened" (click)="opened = !opened" [attr.data-id]="editProposal.id">
+    <div class="row">
+      <span class="col user">
+        <astrobin-username [user]="editProposalBy$ | async" linkTarget="_blank"></astrobin-username>
+      </span>
+      <span class="col-2 d-none d-lg-inline changes">{{ changes.length }}</span>
+      <span class="col-3 status" [class]="editProposal.editProposalReviewStatus?.toLowerCase() || 'pending'">
+        {{ reviewStatusText }}
+      </span>
+      <span class="col-3 d-none d-lg-inline timeago">{{ editProposal.created | localDate | timeago: true }}</span>
+    </div>
   </div>
 
   <div class="edit-proposal-details" *ngIf="opened">
@@ -39,36 +41,45 @@
       </li>
     </ul>
 
-    <ng-container *ngIf="showButtons$ | async as showButtons">
-      <ng-container *ngIf="buttonsStatus$ | async as buttonsStatus">
-        <div class="form-actions" *ngIf="showButtons">
+    <div class="form-actions">
+      <ng-container *ngIf="showReviewButtons$ | async as showReviewButtons">
+        <ng-container *ngIf="reviewButtonsStatus$ | async as reviewButtonsStatus">
+          <div
+            class="alert alert-mini alert-info"
+            *ngIf="showReviewButtons && reviewButtonsStatus.disabled && reviewButtonsStatus.reason"
+          >
+            <fa-icon icon="info-circle"></fa-icon>
+            <span [innerHTML]="reviewButtonsStatus.reason"></span>
+          </div>
+
           <button
+            *ngIf="showReviewButtons"
             class="btn btn-danger"
-            [disabled]="buttonsStatus.disabled"
+            [disabled]="reviewButtonsStatus.disabled"
             [class.loading]="loadingService.isLoading()"
             (click)="rejectEdit()"
           >
             {{ "Reject edit" | translate }}&hellip;
           </button>
           <button
+            *ngIf="showReviewButtons"
             class="btn btn-success"
-            [disabled]="buttonsStatus.disabled"
+            [disabled]="reviewButtonsStatus.disabled"
             [class.loading]="loadingService.isLoading()"
             (click)="approveEdit()"
           >
             {{ "Approve edit" | translate }}&hellip;
           </button>
-        </div>
-
-        <div
-          class="alert alert-mini alert-info"
-          *ngIf="showButtons && buttonsStatus.disabled && buttonsStatus.reason"
-        >
-          <fa-icon icon="info-circle"></fa-icon>
-          <span [innerHTML]="buttonsStatus.reason"></span>
-        </div>
+        </ng-container>
       </ng-container>
-    </ng-container>
+    </div>
+
+    <div *ngIf="contentType$ | async as contentType" class="comments">
+      <astrobin-nested-comments
+        [contentType]="contentType"
+        [objectId]="editProposal.id"
+      ></astrobin-nested-comments>
+    </div>
   </div>
 </ng-container>
 

@@ -61,6 +61,9 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit 
   activeId: EquipmentItemBaseInterface["id"];
 
   @Input()
+  activeEditProposalId: EditProposalInterface<EquipmentItemBaseInterface>["id"];
+
+  @Input()
   routingBasePath = "/equipment/explorer";
 
   selectedItem: EquipmentItemBaseInterface | null = null;

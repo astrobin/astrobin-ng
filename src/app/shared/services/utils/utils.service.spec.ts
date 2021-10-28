@@ -3,7 +3,6 @@ import { MockBuilder } from "ng-mocks";
 
 import { UtilsService } from "./utils.service";
 import { AppModule } from "@app/app.module";
-import exp from "constants";
 
 describe("UtilsService", () => {
   let service: UtilsService;
@@ -167,6 +166,16 @@ describe("UtilsService", () => {
     });
   });
 
+  describe("camelCaseToSnakeCase", () => {
+    it("should work", () => {
+      expect(UtilsService.camelCaseToSnakeCase("helloThere")).toEqual("hello_there");
+      expect(UtilsService.camelCaseToSnakeCase("hello")).toEqual("hello");
+      expect(UtilsService.camelCaseToSnakeCase("")).toEqual("");
+      expect(UtilsService.camelCaseToSnakeCase(null)).toEqual("");
+      expect(UtilsService.camelCaseToSnakeCase(undefined)).toEqual("");
+    });
+  });
+
   describe("camelCaseToCapsCase", () => {
     it("should work", () => {
       expect(UtilsService.camelCaseToCapsCase("helloThere")).toEqual("HELLO_THERE");
@@ -185,6 +194,24 @@ describe("UtilsService", () => {
       expect(UtilsService.toCamelCase("HelloThere")).toEqual("HelloThere");
       expect(UtilsService.toCamelCase(null)).toEqual("");
       expect(UtilsService.toCamelCase(undefined)).toEqual("");
+    });
+  });
+
+  describe("objectToCamelCase", () => {
+    it("should work", () => {
+      expect(UtilsService.objectToCamelCase({ foo_bar: { tar_car: 2 } })).toEqual({ fooBar: { tarCar: 2 } });
+      expect(UtilsService.objectToCamelCase(null)).toEqual(null);
+      expect(UtilsService.objectToCamelCase(undefined)).toEqual(undefined);
+      expect(UtilsService.objectToCamelCase("test")).toEqual("test");
+    });
+  });
+
+  describe("objectToSnakeCase", () => {
+    it("should work", () => {
+      expect(UtilsService.objectToSnakeCase({ fooBar: { tarCar: 2 } })).toEqual({ foo_bar: { tar_car: 2 } });
+      expect(UtilsService.objectToSnakeCase(null)).toEqual(null);
+      expect(UtilsService.objectToSnakeCase(undefined)).toEqual(undefined);
+      expect(UtilsService.objectToSnakeCase("test")).toEqual("test");
     });
   });
 
@@ -265,6 +292,149 @@ describe("UtilsService", () => {
     it("should prefix if it does not contains a protocol", () => {
       expect(UtilsService.ensureUrlProtocol("www.astrobin.com")).toEqual("http://www.astrobin.com");
       expect(UtilsService.ensureUrlProtocol("astrobin.com")).toEqual("http://astrobin.com");
+    });
+  });
+
+  describe("sortParent", () => {
+    it("should handle corner cases", () => {
+      expect(UtilsService.sortParent([])).toEqual([]);
+      expect(UtilsService.sortParent(null)).toEqual(null);
+      expect(UtilsService.sortParent(undefined)).toEqual(undefined);
+    });
+
+    it("should preserve the array when it's flat", () => {
+      const array = [
+        {
+          id: 1,
+          parent: null
+        },
+        {
+          id: 2,
+          parent: null
+        }
+      ];
+
+      expect(UtilsService.sortParent(array)).toEqual(array);
+    });
+
+    it("should preserve the array when it's not flat but already sorted", () => {
+      const array = [
+        {
+          id: 1,
+          parent: null
+        },
+        {
+          id: 2,
+          parent: 1
+        },
+        {
+          id: 3,
+          parent: null
+        }
+      ];
+
+      expect(UtilsService.sortParent(array)).toEqual(array);
+    });
+
+    it("should sort a non-flat array correctly", () => {
+      const array = [
+        {
+          id: 1,
+          parent: null
+        },
+        {
+          id: 2,
+          parent: null
+        },
+        {
+          id: 3,
+          parent: 1
+        }
+      ];
+
+      const expected = [
+        {
+          id: 1,
+          parent: null
+        },
+        {
+          id: 3,
+          parent: 1
+        },
+        {
+          id: 2,
+          parent: null
+        }
+      ];
+
+      expect(UtilsService.sortParent(array)).toEqual(expected);
+    });
+
+    it("should sort a non-flat array correctly when the items have unconventional sorting", () => {
+      const array = [
+        {
+          id: 1,
+          parent: 2
+        },
+        {
+          id: 2,
+          parent: null
+        },
+        {
+          id: 3,
+          parent: null
+        }
+      ];
+
+      const expected = [
+        {
+          id: 2,
+          parent: null
+        },
+        {
+          id: 1,
+          parent: 2
+        },
+        {
+          id: 3,
+          parent: null
+        }
+      ];
+
+      expect(UtilsService.sortParent(array)).toEqual(expected);
+    });
+
+    it("should disregard cyclical loops", () => {
+      const array = [
+        {
+          id: 1,
+          parent: 2
+        },
+        {
+          id: 2,
+          parent: 1
+        },
+        {
+          id: 3,
+          parent: null
+        }
+      ];
+
+      const expected = [
+        {
+          id: 3,
+          parent: null
+        }
+      ];
+
+      expect(UtilsService.sortParent(array)).toEqual(expected);
+    });
+  });
+
+  describe("sortObjectsByProperty", () => {
+    it("should work", () => {
+      expect(UtilsService.sortObjectsByProperty([{ a: 1 }, { a: 2 }], "a")).toEqual([{ a: 1 }, { a: 2 }]);
+      expect(UtilsService.sortObjectsByProperty([{ a: 2 }, { a: 1 }], "a")).toEqual([{ a: 1 }, { a: 2 }]);
     });
   });
 });

@@ -4,7 +4,10 @@ import { Store } from "@ngrx/store";
 import { selectCurrentUser, selectCurrentUserProfile } from "@features/account/store/auth.selectors";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
-import { map, withLatestFrom } from "rxjs/operators";
+import { filter, map, withLatestFrom } from "rxjs/operators";
+import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
+import { LoadContentType } from "@app/store/actions/content-type.actions";
+import { selectContentType } from "@app/store/selectors/app/content-type.selectors";
 
 @Directive()
 export class BaseComponentDirective implements OnDestroy {
@@ -34,5 +37,12 @@ export class BaseComponentDirective implements OnDestroy {
         userProfile
       }))
     );
+  }
+
+  getContentType$(
+    appLabel: ContentTypeInterface["appLabel"],
+    model: ContentTypeInterface["model"]
+  ): Observable<ContentTypeInterface | null> {
+    return this.store$.select(selectContentType, { appLabel, model }).pipe(filter(contentType => !!contentType));
   }
 }

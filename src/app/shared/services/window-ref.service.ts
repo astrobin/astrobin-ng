@@ -19,4 +19,8 @@ export class WindowRefService extends BaseService {
   scroll(options: any) {
     this.nativeWindow.scroll(options);
   }
+
+  getCurrentUrl(): URL {
+    return new URL(this.nativeWindow.document.URL);
+  }
 }

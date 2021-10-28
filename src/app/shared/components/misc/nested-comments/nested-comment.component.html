@@ -1,0 +1,63 @@
+<div class="nested-comment" [class.highlighted]="highlighted" id="c{{ comment.id }}" style="margin-left:{{ comment.depth - 1 }}rem">
+  <div class="meta">
+    <astrobin-username [user]="user$ | async"></astrobin-username>
+
+    <span class="timestamp" [attr.data-test-value]="comment.created">
+      {{ comment.created | localDate | timeago: true }}
+    </span>
+
+    <span
+      *ngIf="comment.likes.length === 1"
+      class="likes"
+      [translate]="'1 like'"
+      [translateParams]="{ '0': comment.likes.length }"
+    >
+    </span>
+
+    <span
+      *ngIf="comment.likes.length > 1"
+      class="likes"
+      [translate]="'{{0}} like'"
+      [translateParams]="{ '0': comment.likes.length }"
+    >
+    </span>
+  </div>
+
+  <div class="text" [innerHTML]="comment.html"></div>
+
+  <div class="actions">
+    <a [href]="getLink()" class="link">
+      <fa-icon icon="link"></fa-icon>
+      {{ "Link" | translate }}
+    </a>
+
+    <button [hidden]="showReplyForm" class="btn btn-primary btn-sm reply" (click)="showReplyForm = true">
+      <fa-icon icon="reply"></fa-icon>
+      {{ "Reply" | translate }}
+    </button>
+  </div>
+
+  <div *ngIf="showReplyForm" class="reply-form">
+    <form [formGroup]="replyForm">
+      <formly-form [fields]="replyFields" [form]="replyForm" [model]="replyModel"></formly-form>
+    </form>
+
+    <button
+      [class.loading]="loadingService.isLoading()"
+      class="btn btn-secondary"
+      (click)="cancelReply()"
+    >
+      {{ "Cancel" | translate }}
+    </button>
+
+
+    <button
+      [disabled]="!replyForm.valid"
+      [class.loading]="loadingService.isLoading()"
+      class="btn btn-primary ml-sm-2"
+      (click)="submitReply()"
+    >
+      {{ "Submit" | translate }}
+    </button>
+  </div>
+</div>

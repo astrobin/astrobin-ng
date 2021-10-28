@@ -32,6 +32,13 @@ import {
   LoadThumbnailSuccess
 } from "@app/store/actions/thumbnail.actions";
 import { CreateLocation, CreateLocationAddTag, CreateLocationSuccess } from "@app/store/actions/location.actions";
+import {
+  LoadNestedComments,
+  LoadNestedCommentsSuccess,
+  CreateNestedComment,
+  CreateNestedCommentFailure,
+  CreateNestedCommentSuccess
+} from "@app/store/actions/nested-comments.actions";
 
 export enum AppActionTypes {
   INITIALIZE = "[App] Initialize",
@@ -81,7 +88,14 @@ export enum AppActionTypes {
 
   CREATE_LOCATION_ADD_TAG = "[App] Create location add tag",
   CREATE_LOCATION = "[App] Create location",
-  CREATE_LOCATION_SUCCESS = "[App] Create location success"
+  CREATE_LOCATION_SUCCESS = "[App] Create location success",
+
+  LOAD_NESTED_COMMENTS = "[App] Load nested comments",
+  LOAD_NESTED_COMMENTS_SUCCESS = "[App] Load nested comments success",
+
+  CREATE_NESTED_COMMENT = "[App] Save nested comment",
+  CREATE_NESTED_COMMENT_SUCCESS = "[App] Save nested comment success",
+  CREATE_NESTED_COMMENT_FAILURE = "[App] Save nested comment failure"
 }
 
 export type All =
@@ -117,4 +131,9 @@ export type All =
   | LoadCameraSuccess
   | CreateLocationAddTag
   | CreateLocation
-  | CreateLocationSuccess;
+  | CreateLocationSuccess
+  | LoadNestedComments
+  | LoadNestedCommentsSuccess
+  | CreateNestedComment
+  | CreateNestedCommentSuccess
+  | CreateNestedCommentFailure;

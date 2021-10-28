@@ -9,6 +9,8 @@ import { SolutionInterface } from "@shared/interfaces/solution.interface";
 import { SubscriptionInterface } from "@shared/interfaces/subscription.interface";
 import { TelescopeInterface } from "@shared/interfaces/telescope.interface";
 import { UtilsService } from "@shared/services/utils/utils.service";
+import { NestedCommentInterface } from "@shared/interfaces/nested-comment.interface";
+import * as Util from "util";
 
 export interface AppState {
   // Weather the app has been initialized.
@@ -53,6 +55,9 @@ export interface AppState {
 
   // This is what's been typed to create a new location.
   createLocationAddTag: string;
+
+  // All seen nested comments.
+  nestedComments: NestedCommentInterface[];
 }
 
 export const initialAppState: AppState = {
@@ -70,7 +75,8 @@ export const initialAppState: AppState = {
   solutions: [],
   telescopes: [],
   cameras: [],
-  createLocationAddTag: null
+  createLocationAddTag: null,
+  nestedComments: []
 };
 
 export function reducer(state = initialAppState, action: All): AppState {
@@ -208,6 +214,26 @@ export function reducer(state = initialAppState, action: All): AppState {
       return {
         ...state,
         createLocationAddTag: action.payload
+      };
+    }
+
+    case AppActionTypes.LOAD_NESTED_COMMENTS_SUCCESS: {
+      return {
+        ...state,
+        nestedComments: UtilsService.sortObjectsByProperty(
+          UtilsService.arrayUniqueObjects([...state.nestedComments, ...action.payload.nestedComments], "id"),
+          "created"
+        )
+      };
+    }
+
+    case AppActionTypes.CREATE_NESTED_COMMENT_SUCCESS: {
+      return {
+        ...state,
+        nestedComments: UtilsService.sortObjectsByProperty(
+          UtilsService.arrayUniqueObjects([...state.nestedComments, ...[action.payload.nestedComment]], "id"),
+          "created"
+        )
       };
     }
 

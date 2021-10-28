@@ -6,8 +6,7 @@ import { ImageAlias } from "@shared/enums/image-alias.enum";
 
 @Component({
   selector: "astrobin-image-test-page",
-  templateUrl: "./image-test-page.component.html",
-  styleUrls: ["./image-test-page.component.scss"]
+  templateUrl: "./image-test-page.component.html"
 })
 export class ImageTestPageComponent implements OnInit {
   readonly id = 1;

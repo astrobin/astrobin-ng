@@ -7,7 +7,6 @@ import { TitleService } from "@shared/services/title/title.service";
 import { ActivatedRoute, Router } from "@angular/router";
 import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { Actions } from "@ngrx/effects";
-import { EquipmentItemEditorMode } from "@features/equipment/components/editors/base-item-editor/base-item-editor.component";
 import { ExplorerBaseComponent } from "@features/equipment/pages/explorer-base/explorer-base.component";
 
 @Component({
@@ -17,7 +16,6 @@ import { ExplorerBaseComponent } from "@features/equipment/pages/explorer-base/e
 })
 export class ExplorerPageComponent extends ExplorerBaseComponent implements OnInit {
   EquipmentItemType = EquipmentItemType;
-  EquipmentItemEditorMode = EquipmentItemEditorMode;
 
   title = this.translateService.instant("Equipment explorer");
 
