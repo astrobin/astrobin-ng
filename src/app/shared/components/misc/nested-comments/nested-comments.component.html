@@ -1,0 +1,62 @@
+<div class="nested-comments card" *ngIf="comments$ | async as comments; else loadingTpl">
+  <div class="card-header">
+    {{ "Comments" | translate }}
+
+    <div class="actions">
+      <astrobin-refresh-button (click)="refresh()"></astrobin-refresh-button>
+    </div>
+  </div>
+
+  <div class="card-body">
+    <ng-container *ngIf="showTopLevelForm" [ngTemplateOutlet]="topLevelFormTpl"></ng-container>
+    <ng-container *ngIf="!showTopLevelForm" [ngTemplateOutlet]="addCommentButtonTpl"></ng-container>
+    <ng-container
+      *ngFor="let comment of comments"
+      [ngTemplateOutlet]="commentsTpl"
+      [ngTemplateOutletContext]="{comment}"
+    ></ng-container>
+    <ng-container *ngIf="comments.length === 0" [ngTemplateOutlet]="noCommentsTpl"></ng-container>
+  </div>
+</div>
+
+<ng-template #loadingTpl>
+  <astrobin-loading-indicator></astrobin-loading-indicator>
+</ng-template>
+
+<ng-template #topLevelFormTpl>
+  <div class="top-level-form">
+    <form [formGroup]="form">
+      <formly-form [fields]="fields" [form]="form" [model]="model"></formly-form>
+    </form>
+
+    <button class="btn btn-secondary" [class.loading]="loadingService.isLoading()" (click)="cancelTopLevelComment()">
+      {{ "Cancel" | translate }}
+    </button>
+
+    <button
+      class="btn btn-primary ml-sm-2"
+      (click)="submitTopLevelComment()"
+      [disabled]="!form.valid"
+      [class.loading]="loadingService.isLoading()"
+    >
+      {{ "Submit" | translate }}
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #addCommentButtonTpl>
+  <button class="btn btn-primary add-comment" (click)="showTopLevelForm = true">
+    <fa-icon icon="comment"></fa-icon>
+    {{ "Add a comment" | translate }}
+  </button>
+</ng-template>
+
+<ng-template #commentsTpl let-comment="comment">
+  <astrobin-nested-comment [comment]="comment"></astrobin-nested-comment>
+</ng-template>
+
+<ng-template #noCommentsTpl>
+  <p data-test="no-comments">
+    {{ "There are no comments yet." | translate }}
+  </p>
+</ng-template>

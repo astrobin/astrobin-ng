@@ -167,7 +167,7 @@ export class UtilsService {
     return result.charAt(0).toUpperCase() + result.slice(1);
   }
 
-  static camelCaseToCapsCase(s: string): string {
+  static camelCaseToSnakeCase(s: string): string {
     if (!s) {
       return "";
     }
@@ -175,7 +175,15 @@ export class UtilsService {
     return s
       .split(/(?=[A-Z])/)
       .join("_")
-      .toUpperCase();
+      .toLowerCase();
+  }
+
+  static camelCaseToCapsCase(s: string): string {
+    if (!s) {
+      return "";
+    }
+
+    return UtilsService.camelCaseToSnakeCase(s).toUpperCase();
   }
 
   static toCamelCase(s: string): string {
@@ -189,6 +197,36 @@ export class UtilsService {
         .replace("-", "")
         .replace("_", "");
     });
+  }
+
+  static objectToCamelCase(obj: any): any {
+    if (typeof obj !== "object" || obj === null || obj === undefined) {
+      return obj;
+    }
+
+    if (obj instanceof Array) {
+      return obj.map(UtilsService.objectToCamelCase);
+    }
+
+    return Object.keys(obj)
+      .filter(prop => obj.hasOwnProperty(prop))
+      .map(prop => ({ [UtilsService.toCamelCase(prop)]: UtilsService.objectToCamelCase(obj[prop]) }))
+      .reduce((prev, current) => ({ ...prev, ...current }));
+  }
+
+  static objectToSnakeCase(obj: any): any {
+    if (typeof obj !== "object" || obj === null || obj === undefined) {
+      return obj;
+    }
+
+    if (obj instanceof Array) {
+      return obj.map(UtilsService.objectToSnakeCase);
+    }
+
+    return Object.keys(obj)
+      .filter(prop => obj.hasOwnProperty(prop))
+      .map(prop => ({ [UtilsService.camelCaseToSnakeCase(prop)]: UtilsService.objectToSnakeCase(obj[prop]) }))
+      .reduce((prev, current) => ({ ...prev, ...current }));
   }
 
   static ensureUrlProtocol(url: string): string {
@@ -212,6 +250,45 @@ export class UtilsService {
       .replace(/\-\-+/g, "-") // Replace multiple - with single -
       .replace(/^-+/, "") // Trim - from start of text
       .replace(/-+$/, ""); // Trim - from end of text
+  }
+
+  static sortParent(
+    array: { id: number; parent: number; [key: string]: any }[],
+    parent: any = null
+  ): { id: number; parent: number; [key: string]: any }[] {
+    if (!array) {
+      return array;
+    }
+
+    const arrayCopy = [...array].reverse();
+    let result: { id: number; parent: number; [key: string]: any }[] = [];
+    let i = arrayCopy.length;
+
+    while (i--) {
+      const item = arrayCopy[i];
+
+      if (item.parent === parent) {
+        result.push(item);
+        arrayCopy.splice(i, 1);
+        result = [...result, ...UtilsService.sortParent(arrayCopy, item.id)];
+      }
+    }
+
+    return result;
+  }
+
+  static sortObjectsByProperty<T>(array: T[], property: string): T[] {
+    return array.sort((a: T, b: T) => {
+      if (a[property] < b[property]) {
+        return -1;
+      }
+
+      if (a[property] > b[property]) {
+        return 1;
+      }
+
+      return 0;
+    });
   }
 
   yesNo(value: any): string {

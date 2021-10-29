@@ -379,6 +379,8 @@
   .cke_combo_button {
     margin: 0 !important;
     padding-top: 2px !important;
+    border-color: transparent !important;
+    box-shadow: none !important;
 
     span {
       color: var(--accentColor) !important;

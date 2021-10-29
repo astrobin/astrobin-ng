@@ -27,8 +27,6 @@ export class EquipmentItemService extends BaseService {
     public readonly utilsService: UtilsService,
     public readonly translateService: TranslateService,
     public readonly equipmentItemServiceFactory: EquipmentItemServiceFactory,
-    public readonly cameraService: CameraService,
-    public readonly sensorService: SensorService,
     public readonly telescopeService: TelescopeService
   ) {
     super(loadingService);

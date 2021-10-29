@@ -215,6 +215,7 @@ export class SettingsPageComponent extends BaseComponentDirective implements OnI
       case "new_comment_reply":
       case "new_comment_like":
       case "new_comment":
+      case "new_comment_to_edit_proposal":
       case "comment_approved":
         return NotificationCategory.COMMENTS;
       case "image_you_promoted_is_iotd":

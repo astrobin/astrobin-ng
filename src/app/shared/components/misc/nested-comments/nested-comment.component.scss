@@ -1,0 +1,53 @@
+.nested-comment {
+  padding: .75rem;
+  border-bottom: 1px dashed var(--grey);
+
+  &.created {
+    animation: bounce .8s ease-out;
+  }
+
+  &.highlighted {
+    background-color: rgba(255, 255, 255, .15);
+  }
+
+  .meta {
+    font-size: .9rem;
+    margin-bottom: .5rem;
+  }
+
+  .timestamp,
+  .likes {
+    color: var(--lightGrey);
+    margin-left: .5rem;
+  }
+
+  .likes {
+    color: var(--lighterGrey);
+  }
+
+  .actions {
+    margin-top: 1rem;
+
+    a,
+    .btn {
+      font-size: .7rem;
+
+      &:not(:first-child) {
+        margin-left: .75rem;
+      }
+    }
+
+    a {
+      color: var(--lightGrey);
+    }
+
+    .btn {
+      padding: .125rem .4rem;
+
+      fa-icon {
+        margin-right: .25rem;
+      }
+    }
+  }
+}
+

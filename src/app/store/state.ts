@@ -17,6 +17,7 @@ import { LocationEffects } from "@app/store/effects/location.effects";
 import { NotificationsEffects } from "@features/notifications/store/notifications.effects";
 import * as equipment from "@features/equipment/store/equipment.reducer";
 import { initialEquipmentState } from "@features/equipment/store/equipment.reducer";
+import { NestedCommentsEffects } from "@app/store/effects/nested-comments.effects";
 
 export interface State {
   app: app.AppState;
@@ -46,6 +47,7 @@ export const appStateEffects = [
   InitializeAppEffects,
   ImageEffects,
   LocationEffects,
+  NestedCommentsEffects,
   NotificationsEffects,
   SolutionEffects,
   ThumbnailEffects,

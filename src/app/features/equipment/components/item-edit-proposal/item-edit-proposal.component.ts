@@ -19,7 +19,6 @@ import {
 import { selectEditProposals, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { LoadUser } from "@features/account/store/auth.actions";
-import { UsernameService } from "@shared/components/misc/username/username.service";
 import { filter, map, switchMap, take } from "rxjs/operators";
 import { TranslateService } from "@ngx-translate/core";
 import { forkJoin, Observable } from "rxjs";
@@ -30,6 +29,8 @@ import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { RejectEditProposalModalComponent } from "@features/equipment/components/reject-edit-proposal-modal/reject-edit-proposal-modal.component";
 import { Actions, ofType } from "@ngrx/effects";
 import { ApproveEditProposalModalComponent } from "@features/equipment/components/approve-edit-proposal-modal/approve-edit-proposal-modal.component";
+import { LoadContentType } from "@app/store/actions/content-type.actions";
+import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
 
 @Component({
   selector: "astrobin-item-edit-proposal",
@@ -40,18 +41,18 @@ export class ItemEditProposalComponent extends BaseComponentDirective implements
   @Input()
   editProposal: EditProposalInterface<EquipmentItemBaseInterface>;
 
+  @Input()
+  opened = false;
+
   editProposalBy$: Observable<UserInterface>;
   item: EquipmentItemBaseInterface;
   type: EquipmentItemType;
   changes: EditProposalChange[] = [];
 
-  opened = false;
-
   constructor(
     public readonly store$: Store<State>,
     public readonly actions$: Actions,
     public readonly equipmentItemService: EquipmentItemService,
-    public readonly usernameService: UsernameService,
     public readonly translateService: TranslateService,
     public readonly classicRoutesService: ClassicRoutesService,
     public readonly loadingService: LoadingService,
@@ -77,11 +78,11 @@ export class ItemEditProposalComponent extends BaseComponentDirective implements
     return this.changes.length > 0;
   }
 
-  get showButtons$(): Observable<boolean> {
+  get showReviewButtons$(): Observable<boolean> {
     return this.currentUser$.pipe(map(currentUser => !!currentUser && !this.editProposal.editProposalReviewStatus));
   }
 
-  get buttonsStatus$(): Observable<{ disabled: boolean; reason: string | null }> {
+  get reviewButtonsStatus$(): Observable<{ disabled: boolean; reason: string | null }> {
     return this.store$.select(selectEditProposals, this.item).pipe(
       map(editProposals =>
         editProposals.filter(
@@ -118,38 +119,15 @@ export class ItemEditProposalComponent extends BaseComponentDirective implements
     );
   }
 
+  get contentType$(): Observable<ContentTypeInterface | null> {
+    return super.getContentType$("astrobin_apps_equipment", `${this.type.toLowerCase()}editproposal`);
+  }
+
   ngOnInit(): void {
     const type: EquipmentItemType = this.equipmentItemService.getType(this.editProposal);
 
-    this.store$.dispatch(new LoadEquipmentItem({ id: this.editProposal.editProposalTarget, type }));
-    this.store$.dispatch(new LoadBrand({ id: this.editProposal.brand }));
-    this.store$.dispatch(new LoadUser({ id: this.editProposal.editProposalBy }));
-
-    this.editProposalBy$ = this.store$
-      .select(selectUser, this.editProposal.editProposalBy)
-      .pipe(filter(user => !!user));
-
-    this.store$
-      .select(selectEquipmentItem, { id: this.editProposal.editProposalTarget, type })
-      .pipe(
-        filter(item => !!item),
-        take(1)
-      )
-      .subscribe(item => {
-        this.item = item;
-        this.type = this.equipmentItemService.getType(this.item);
-        this.equipmentItemService.changes(this.item, this.editProposal).forEach(change => {
-          const enumValue = this.equipmentItemService.propertyNameToPropertyEnum(change.propertyName);
-
-          forkJoin({
-            before: this.equipmentItemService.getPrintableProperty$(this.item, enumValue, change.before),
-            after: this.equipmentItemService.getPrintableProperty$(this.editProposal, enumValue, change.after)
-          }).subscribe(({ before, after }) => {
-            const propertyName = this.equipmentItemService.getPrintablePropertyName(this.type, enumValue, true);
-            this.changes.push({ propertyName, before, after });
-          });
-        });
-      });
+    this._loadData(type);
+    this._loadEquipmentItem(type);
   }
 
   approveEdit() {
@@ -180,5 +158,42 @@ export class ItemEditProposalComponent extends BaseComponentDirective implements
         take(1)
       )
       .subscribe(editProposal => (this.editProposal = editProposal));
+  }
+
+  private _loadData(type: EquipmentItemType) {
+    this.store$.dispatch(new LoadEquipmentItem({ id: this.editProposal.editProposalTarget, type }));
+    this.store$.dispatch(new LoadBrand({ id: this.editProposal.brand }));
+    this.store$.dispatch(new LoadUser({ id: this.editProposal.editProposalBy }));
+    this.store$.dispatch(
+      new LoadContentType({ appLabel: "astrobin_apps_equipment", model: `${type.toLowerCase()}editproposal` })
+    );
+
+    this.editProposalBy$ = this.store$
+      .select(selectUser, this.editProposal.editProposalBy)
+      .pipe(filter(user => !!user));
+  }
+
+  private _loadEquipmentItem(type: EquipmentItemType) {
+    this.store$
+      .select(selectEquipmentItem, { id: this.editProposal.editProposalTarget, type })
+      .pipe(
+        filter(item => !!item),
+        take(1)
+      )
+      .subscribe(item => {
+        this.item = item;
+        this.type = this.equipmentItemService.getType(this.item);
+        this.equipmentItemService.changes(this.item, this.editProposal).forEach(change => {
+          const enumValue = this.equipmentItemService.propertyNameToPropertyEnum(change.propertyName);
+
+          forkJoin({
+            before: this.equipmentItemService.getPrintableProperty$(this.item, enumValue, change.before),
+            after: this.equipmentItemService.getPrintableProperty$(this.editProposal, enumValue, change.after)
+          }).subscribe(({ before, after }) => {
+            const propertyName = this.equipmentItemService.getPrintablePropertyName(this.type, enumValue, true);
+            this.changes.push({ propertyName, before, after });
+          });
+        });
+      });
   }
 }

@@ -41,7 +41,8 @@ export class AppStateGenerator {
       solutions: [],
       telescopes: [],
       cameras: [],
-      createLocationAddTag: null
+      createLocationAddTag: null,
+      nestedComments: []
     };
   }
 }

@@ -8,6 +8,7 @@ import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { selectBrand } from "@features/equipment/store/equipment.selectors";
 import { take, takeUntil } from "rxjs/operators";
 import { UtilsService } from "@shared/services/utils/utils.service";
+import { EditProposalInterface } from "@features/equipment/types/edit-proposal.interface";
 
 @Component({
   selector: "astrobin-equipment-explorer-base",
@@ -15,6 +16,7 @@ import { UtilsService } from "@shared/services/utils/utils.service";
 })
 export class ExplorerBaseComponent extends BaseComponentDirective implements OnInit {
   public page = 1;
+  activeEditProposalId: EditProposalInterface<EquipmentItemBaseInterface>["id"];
 
   constructor(
     public readonly store$: Store<State>,
@@ -37,6 +39,7 @@ export class ExplorerBaseComponent extends BaseComponentDirective implements OnI
 
   ngOnInit() {
     this.activeType = this.activatedRoute.snapshot.paramMap.get("itemType");
+    this.activeEditProposalId = +this.activatedRoute.snapshot.paramMap.get("editProposalId");
 
     this.router.events.pipe(takeUntil(this.destroyed$)).subscribe(event => {
       if (event instanceof NavigationEnd) {

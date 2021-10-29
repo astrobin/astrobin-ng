@@ -35,13 +35,20 @@
 
     <ng-container *ngIf="currentUser$ | async as currentUser">
       <ng-container *ngIf="!!currentUser">
-        <button class="btn btn-secondary" data-test="propose-edit" [disabled]="editMode" (click)="startEditMode()">
+        <button
+          class="btn btn-secondary"
+          data-test="propose-edit"
+          [class.loading]="loadingService.isLoading()"
+          [disabled]="editMode"
+          (click)="startEditMode()"
+        >
           {{ "Propose edit" | translate }}&hellip;
         </button>
 
         <button
           *ngIf="(currentUser | isEquipmentModerator) && typeSupportsMigrateInto()"
           class="btn btn-secondary"
+          [class.loading]="loadingService.isLoading()"
           data-test="migrate-into"
           [disabled]="editMode"
           (click)="startMigrationMode()"
@@ -50,11 +57,23 @@
         </button>
 
         <ng-container *ngIf="selectedItem.reviewerDecision === null && selectedItem.createdBy !== currentUser.id">
-          <button class="btn btn-danger" data-test="reject" [disabled]="editMode" (click)="startRejection()">
+          <button
+            class="btn btn-danger"
+            data-test="reject"
+            [class.loading]="loadingService.isLoading()"
+            [disabled]="editMode"
+            (click)="startRejection()"
+          >
             {{ "Reject" | translate }}&hellip;
           </button>
 
-          <button class="btn btn-success" data-test="reject" [disabled]="editMode" (click)="startApproval()">
+          <button
+            class="btn btn-success"
+            data-test="reject"
+            [class.loading]="loadingService.isLoading()"
+            [disabled]="editMode"
+            (click)="startApproval()"
+          >
             {{ "Approve" | translate }}&hellip;
           </button>
         </ng-container>
@@ -78,6 +97,7 @@
       <astrobin-item-edit-proposal
         *ngFor="let editProposal of editProposals"
         [editProposal]="editProposal"
+        [opened]="activeEditProposalId === editProposal.id"
       ></astrobin-item-edit-proposal>
     </div>
   </ng-container>

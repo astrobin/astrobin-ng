@@ -71,6 +71,12 @@ export const routes: Routes = [
         pathMatch: "full",
         redirectTo: "camera"
       },
+
+      {
+        path: ":itemType/:itemId/:itemSlug/edit-proposals/:editProposalId",
+        pathMatch: "full",
+        component: ExplorerPageComponent
+      },
       {
         path: ":itemType/:itemId/:itemSlug",
         pathMatch: "full",
