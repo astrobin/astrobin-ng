@@ -1,9 +1,11 @@
 import { AppModule } from "@app/app.module";
 import { NotificationInterfaceGenerator } from "@features/notifications/generators/notification.interface.generator";
 import { NotificationsModule } from "@features/notifications/notifications.module";
-import { MockBuilder, MockRender } from "ng-mocks";
+import { MockBuilder, MockInstance, MockRender, MockService } from "ng-mocks";
 import { NotificationsPageComponent } from "./notifications-page.component";
 import { DomSanitizer } from "@angular/platform-browser";
+import { ActivatedRoute, ActivatedRouteSnapshot } from "@angular/router";
+import { fakeAsync, flush } from "@angular/core/testing";
 
 describe("NotificationsPageComponent", () => {
   let component: NotificationsPageComponent;
@@ -23,6 +25,17 @@ describe("NotificationsPageComponent", () => {
   );
 
   beforeEach(() => {
+    MockInstance(ActivatedRoute, () => ({
+      snapshot: MockService(ActivatedRouteSnapshot, {
+        queryParamMap: {
+          has: jest.fn(),
+          get: jest.fn(),
+          getAll: jest.fn(),
+          keys: []
+        }
+      })
+    }));
+
     const fixture = MockRender(NotificationsPageComponent);
     component = fixture.point.componentInstance;
   });
@@ -56,10 +69,16 @@ describe("NotificationsPageComponent", () => {
   });
 
   describe("pageChange", () => {
-    it("should get notification for that page from the service", () => {
+    it("should get notification for that page from the service", fakeAsync(() => {
+      jest.spyOn(component.router, "navigateByUrl").mockImplementation(
+        () => new Promise<boolean>(resolve => resolve(true))
+      );
+
       component.pageChange(2);
 
+      flush();
+
       expect(component.notificationsService.getAll).toHaveBeenCalledWith(2);
-    });
+    }));
   });
 });
