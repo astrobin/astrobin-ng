@@ -12,6 +12,7 @@ import { TitleService } from "@shared/services/title/title.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { take } from "rxjs/operators";
+import { ActivatedRoute, Router } from "@angular/router";
 
 @Component({
   selector: "astrobin-notifications-page",
@@ -19,7 +20,7 @@ import { take } from "rxjs/operators";
   styleUrls: ["./notifications-page.component.scss"]
 })
 export class NotificationsPageComponent extends BaseComponentDirective implements OnInit {
-  page = 1;
+  page;
   pageTitle = this.translate.instant("Notifications");
 
   constructor(
@@ -29,7 +30,9 @@ export class NotificationsPageComponent extends BaseComponentDirective implement
     public readonly titleService: TitleService,
     public readonly translate: TranslateService,
     public readonly utilsService: UtilsService,
-    public readonly windowRef: WindowRefService
+    public readonly windowRef: WindowRefService,
+    public readonly activatedRoute: ActivatedRoute,
+    public readonly router: Router
   ) {
     super(store$);
 
@@ -43,6 +46,7 @@ export class NotificationsPageComponent extends BaseComponentDirective implement
 
   ngOnInit(): void {
     this.notificationsService.refresh();
+    this.page = this.activatedRoute.snapshot.queryParamMap.get("pageNumber") || 1;
   }
 
   toggleRead(notification: NotificationInterface): void {
@@ -63,10 +67,12 @@ export class NotificationsPageComponent extends BaseComponentDirective implement
 
   pageChange(page: number): void {
     this.page = page;
-    this.notificationsService
-      .getAll(page)
-      .pipe(take(1))
-      .subscribe();
+    this.router.navigateByUrl(`/notifications?page=${page}`).then(() => {
+      this.notificationsService
+        .getAll(page)
+        .pipe(take(1))
+        .subscribe();
+    });
   }
 
   notificationClicked(notification: NotificationInterface): boolean {
