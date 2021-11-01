@@ -16,6 +16,7 @@ import { distinctUntilChangedObj } from "@shared/services/utils/utils.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { Observable } from "rxjs";
 import { filter, map, switchMap, take, takeUntil } from "rxjs/operators";
+import { ActivatedRoute, Params, Router } from "@angular/router";
 
 @Component({
   selector: "astrobin-base-promotion-queue",
@@ -24,7 +25,7 @@ import { filter, map, switchMap, take, takeUntil } from "rxjs/operators";
 export abstract class BasePromotionQueueComponent extends BaseComponentDirective implements OnInit {
   ImageAlias = ImageAlias;
 
-  page = 1;
+  page;
   pageSize$: Observable<number> = this.store$
     .select(selectBackendConfig)
     .pipe(map(backendConfig => backendConfig.IOTD_QUEUES_PAGE_SIZE));
@@ -39,6 +40,8 @@ export abstract class BasePromotionQueueComponent extends BaseComponentDirective
 
   protected constructor(
     public readonly store$: Store<State>,
+    public readonly router: Router,
+    public readonly activatedRoute: ActivatedRoute,
     public readonly popNotificationsService: PopNotificationsService,
     public readonly translateService: TranslateService,
     public readonly windowRefService: WindowRefService
@@ -47,6 +50,8 @@ export abstract class BasePromotionQueueComponent extends BaseComponentDirective
   }
 
   ngOnInit(): void {
+    this.page = this.activatedRoute.snapshot.queryParamMap.get("page") || 1;
+
     this.store$
       .select(selectApp)
       .pipe(
@@ -95,7 +100,7 @@ export abstract class BasePromotionQueueComponent extends BaseComponentDirective
     this.store$.dispatch(new LoadHiddenImages());
     this.store$.dispatch(new LoadDismissedImages());
 
-    this.loadQueue(1);
+    this.loadQueue(this.page);
     this.loadPromotions();
   }
 
@@ -107,8 +112,19 @@ export abstract class BasePromotionQueueComponent extends BaseComponentDirective
 
   pageChange(page: number): void {
     this.page = page;
-    this.loadQueue(page);
-    this.windowRefService.scroll({ top: 0, behavior: "smooth" });
+
+    const queryParams: Params = { page };
+
+    this.router
+      .navigate([], {
+        relativeTo: this.activatedRoute,
+        queryParams,
+        queryParamsHandling: "merge"
+      })
+      .then(() => {
+        this.loadQueue(page);
+        this.windowRefService.scroll({ top: 0, behavior: "smooth" });
+      });
   }
 
   entryExists(imageId: number): boolean {

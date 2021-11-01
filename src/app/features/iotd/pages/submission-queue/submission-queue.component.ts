@@ -14,6 +14,7 @@ import { PopNotificationsService } from "@shared/services/pop-notifications.serv
 import { TitleService } from "@shared/services/title/title.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { Observable } from "rxjs";
+import { ActivatedRoute, Router } from "@angular/router";
 
 @Component({
   selector: "astrobin-submission-queue",
@@ -26,12 +27,14 @@ export class SubmissionQueueComponent extends BasePromotionQueueComponent implem
 
   constructor(
     public readonly store$: Store<State>,
+    public readonly router: Router,
+    public readonly activatedRoute: ActivatedRoute,
     public readonly translateService: TranslateService,
     public readonly popNotificationsService: PopNotificationsService,
     public readonly titleService: TitleService,
     public readonly windowRefService: WindowRefService
   ) {
-    super(store$, popNotificationsService, translateService, windowRefService);
+    super(store$, router, activatedRoute, popNotificationsService, translateService, windowRefService);
   }
 
   ngOnInit(): void {
