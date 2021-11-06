@@ -13,13 +13,16 @@ import { EquipmentItemType } from "@features/equipment/types/equipment-item-base
 import { selectBrand, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import { filter, map, switchMap, take, tap } from "rxjs/operators";
 import { SensorInterface } from "@features/equipment/types/sensor.interface";
+import { EditProposalInterface } from "@features/equipment/types/edit-proposal.interface";
 
 export enum CameraDisplayProperty {
   TYPE = "TYPE",
   SENSOR = "SENSOR",
   COOLED = "COOLED",
   MAX_COOLING = "MAX_COOLING",
-  BACK_FOCUS = "BACK_FOCUS"
+  BACK_FOCUS = "BACK_FOCUS",
+  MODIFIED = "MODIFIED",
+  CREATE_MODIFIED_VARIANT = "CREATE_MODIFIED_VARIANT"
 }
 
 @Injectable({
@@ -59,7 +62,9 @@ export class CameraService extends BaseService implements EquipmentItemServiceIn
       CameraDisplayProperty.SENSOR,
       CameraDisplayProperty.COOLED,
       CameraDisplayProperty.MAX_COOLING,
-      CameraDisplayProperty.BACK_FOCUS
+      CameraDisplayProperty.BACK_FOCUS,
+      CameraDisplayProperty.MODIFIED,
+      CameraDisplayProperty.CREATE_MODIFIED_VARIANT
     ];
   }
 
@@ -96,6 +101,16 @@ export class CameraService extends BaseService implements EquipmentItemServiceIn
       case CameraDisplayProperty.BACK_FOCUS:
         propertyValue = parseFloat(propertyValue);
         return of(propertyValue || item.backFocus ? `${propertyValue || item.backFocus} mm` : "");
+      case CameraDisplayProperty.MODIFIED:
+        return of(this.utilsService.yesNo(propertyValue !== undefined ? propertyValue : item.modified));
+      case CameraDisplayProperty.CREATE_MODIFIED_VARIANT:
+        return of(
+          this.utilsService.yesNo(
+            propertyValue !== undefined
+              ? propertyValue
+              : ((item as unknown) as EditProposalInterface<CameraInterface>).createModifiedVariant
+          )
+        );
       default:
         throw Error(`Invalid property: ${property}`);
     }
@@ -113,12 +128,16 @@ export class CameraService extends BaseService implements EquipmentItemServiceIn
         return shortForm
           ? this.translateService.instant("Max. cooling")
           : `${this.translateService.instant("Max. cooling")} (${this.translateService.instant(
-              "Celsius degrees below ambient"
-            )})`;
+            "Celsius degrees below ambient"
+          )})`;
       case CameraDisplayProperty.BACK_FOCUS:
         return shortForm
           ? this.translateService.instant("Back focus")
           : this.translateService.instant("Back focus") + " (mm)";
+      case CameraDisplayProperty.MODIFIED:
+        return this.translateService.instant("Modified");
+      case CameraDisplayProperty.CREATE_MODIFIED_VARIANT:
+        return this.translateService.instant(`Automatically create "modified" variant`);
       default:
         throw Error(`Invalid property: ${propertyName}`);
     }

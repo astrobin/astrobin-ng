@@ -308,7 +308,7 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
               ...this.form.value
             } as EquipmentItemBaseInterface);
 
-            return this.equipmentApiService.getByNameAndType(control.value, type).pipe(
+            return this.equipmentApiService.getByBrandAndName(type, this.model.brand, control.value).pipe(
               map(item => {
                 if (this.editorMode === EquipmentItemEditorMode.CREATION) {
                   return !item;
@@ -318,7 +318,7 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
               })
             );
           },
-          message: this.translateService.instant("An item of the same type and the same name already exists.")
+          message: this.translateService.instant("An item of the same class, brand, and name already exists.")
         },
         prohibitedWords: {
           expression: (control: FormControl) => {

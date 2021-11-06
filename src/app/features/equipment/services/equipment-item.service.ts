@@ -135,7 +135,9 @@ export class EquipmentItemService extends BaseService {
       "editProposalReviewTimestamp",
       "editProposalReviewIp",
       "editProposalReviewComment",
-      "editProposalReviewStatus"
+      "editProposalReviewStatus",
+
+      "modified"
     ];
 
     const nonNullableKeys = ["image"];
@@ -201,6 +203,11 @@ export class EquipmentItemService extends BaseService {
           }
         }
       }
+    }
+
+    // `createModifiedVariant` is a special case for Cameras, as it's not really a property of a Camera.
+    if (editProposal.createModifiedVariant) {
+      changes.push({ propertyName: "createModifiedVariant", before: "false", after: "true" });
     }
 
     return changes;
