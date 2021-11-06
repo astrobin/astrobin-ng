@@ -149,11 +149,13 @@ describe("EquipmentApiService", () => {
     it("should work with sensor", () => {
       const item = SensorGenerator.sensor();
 
-      service.getByNameAndType(item.name, EquipmentItemType.SENSOR).subscribe(response => {
+      service.getByBrandAndName(EquipmentItemType.SENSOR, item.brand, item.name).subscribe(response => {
         expect(response.id).toEqual(item.id);
       });
 
-      const req = httpMock.expectOne(`${service.configUrl}/sensor/?name=${item.name}`);
+      const req = httpMock.expectOne(
+        `${service.configUrl}/sensor/?${new URLSearchParams({ brand: item.brand.toString(), name: item.name })}`
+      );
       expect(req.request.method).toBe("GET");
       req.flush(item);
     });
@@ -161,11 +163,13 @@ describe("EquipmentApiService", () => {
     it("should work with camera", () => {
       const item = CameraGenerator.camera();
 
-      service.getByNameAndType(item.name, EquipmentItemType.CAMERA).subscribe(response => {
+      service.getByBrandAndName(EquipmentItemType.CAMERA, item.brand, item.name).subscribe(response => {
         expect(response.id).toEqual(item.id);
       });
 
-      const req = httpMock.expectOne(`${service.configUrl}/camera/?name=${item.name}`);
+      const req = httpMock.expectOne(
+        `${service.configUrl}/camera/?${new URLSearchParams({ brand: "" + item.brand.toString(), name: item.name })}`
+      );
       expect(req.request.method).toBe("GET");
       req.flush(item);
     });
@@ -173,11 +177,13 @@ describe("EquipmentApiService", () => {
     it("should work with telescope", () => {
       const item = TelescopeGenerator.telescope();
 
-      service.getByNameAndType(item.name, EquipmentItemType.TELESCOPE).subscribe(response => {
+      service.getByBrandAndName(EquipmentItemType.TELESCOPE, item.brand, item.name).subscribe(response => {
         expect(response.id).toEqual(item.id);
       });
 
-      const req = httpMock.expectOne(`${service.configUrl}/telescope/?name=${item.name}`);
+      const req = httpMock.expectOne(
+        `${service.configUrl}/telescope/?${new URLSearchParams({ brand: "" + item.brand.toString(), name: item.name })}`
+      );
       expect(req.request.method).toBe("GET");
       req.flush(item);
     });

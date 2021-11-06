@@ -144,7 +144,7 @@ Cypress.Commands.add("setupEquipmentDefaultRoutesForCameras", () => {
 
   cy.route("GET", "**/api/v2/equipment/camera/others-in-brand/*", []);
 
-  cy.route("GET", "**/api/v2/equipment/camera/?name=*", {
+  cy.route("GET", "**/api/v2/equipment/camera/?brand=*", {
     count: 0,
     next: null,
     previous: null,
@@ -172,7 +172,7 @@ Cypress.Commands.add("setupEquipmentDefaultRoutesForCameras", () => {
 
 Cypress.Commands.add("setupEquipmentDefaultRoutesForSensors", () => {
   cy.route("GET", /\/api\/v2\/equipment\/sensor\/\d+\/$/, testSensor).as("getSensor");
-  cy.route("GET", "**/api/v2/equipment/sensor/?name=*", { count: 0, results: [] }).as("findSensorsByName");
+  cy.route("GET", "**/api/v2/equipment/sensor/?brand=*", { count: 0, results: [] }).as("findSensorsByName");
   cy.route("GET", "**/api/v2/equipment/sensor/?q=*", {
     count: 0,
     next: null,
@@ -208,7 +208,7 @@ Cypress.Commands.add("setupEquipmentDefaultRoutesForTelescopes", () => {
 
   cy.route("GET", "**/api/v2/equipment/telescope/others-in-brand/*", []);
 
-  cy.route("GET", "**/api/v2/equipment/telescope/?name=*", {
+  cy.route("GET", "**/api/v2/equipment/telescope/?brand=*", {
     count: 0,
     next: null,
     previous: null,
