@@ -16,7 +16,10 @@ import { Observable, of } from "rxjs";
 import { LoadBrand, LoadSensor } from "@features/equipment/store/equipment.actions";
 import { TelescopeDisplayProperty, TelescopeService } from "@features/equipment/services/telescope.service";
 import { SensorDisplayProperty, SensorService } from "@features/equipment/services/sensor.service";
-import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
+import {
+  EquipmentItemDisplayProperty,
+  EquipmentItemService
+} from "@features/equipment/services/equipment-item.service";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { SensorInterface } from "@features/equipment/types/sensor.interface";
 

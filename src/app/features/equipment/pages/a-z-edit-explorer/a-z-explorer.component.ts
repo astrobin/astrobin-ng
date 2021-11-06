@@ -7,13 +7,14 @@ import { TitleService } from "@shared/services/title/title.service";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Actions } from "@ngrx/effects";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
-import { filter, map, take, tap } from "rxjs/operators";
+import { filter, map, switchMap, take, tap } from "rxjs/operators";
 import { LoadBrand } from "@features/equipment/store/equipment.actions";
 import { BrandInterface } from "@features/equipment/types/brand.interface";
 import { PendingExplorerBaseComponent } from "@features/equipment/pages/explorer-base/pending-explorer-base.component";
 import { EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
 import { Observable } from "rxjs";
 import { selectBrand } from "@features/equipment/store/equipment.selectors";
+import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 
 @Component({
   selector: "astrobin-a-z-explorer",
@@ -26,11 +27,12 @@ export class AZExplorerComponent extends PendingExplorerBaseComponent implements
   constructor(
     public readonly store$: Store<State>,
     public readonly actions$: Actions,
+    public readonly activatedRoute: ActivatedRoute,
+    public readonly router: Router,
     public readonly translateService: TranslateService,
     public readonly titleService: TitleService,
-    public readonly activatedRoute: ActivatedRoute,
     public readonly equipmentApiService: EquipmentApiService,
-    public readonly router: Router
+    public readonly equipmentItemService: EquipmentItemService
   ) {
     super(store$, actions$, activatedRoute, router);
   }
@@ -64,7 +66,7 @@ export class AZExplorerComponent extends PendingExplorerBaseComponent implements
   getItemName$(item: EquipmentItemBaseInterface): Observable<string> {
     return this.store$.select(selectBrand, item.brand).pipe(
       filter(brand => !!brand),
-      map(brand => `${brand.name} ${item.name}`)
+      switchMap(brand => this.equipmentItemService.getName$(item).pipe(map(name => `${brand.name} ${name}`)))
     );
   }
 

@@ -300,10 +300,10 @@ export class EquipmentEffects {
   CreateCamera: Observable<CreateCameraSuccess> = createEffect(() =>
     this.actions$.pipe(
       ofType(EquipmentActionTypes.CREATE_CAMERA),
-      map((action: CreateCamera) => action.payload.camera),
-      mergeMap(camera =>
+      map((action: CreateCamera) => action.payload),
+      mergeMap(payload =>
         this.equipmentApiService
-          .createCamera(camera)
+          .createCamera(payload.camera, payload.createModifiedVariant)
           .pipe(map(createdCamera => new CreateCameraSuccess({ item: createdCamera })))
       )
     )

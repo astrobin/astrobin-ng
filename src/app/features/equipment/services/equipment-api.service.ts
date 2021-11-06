@@ -3,7 +3,7 @@ import { BaseClassicApiService } from "@shared/services/api/classic/base-classic
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { EMPTY, Observable, of } from "rxjs";
+import { EMPTY, forkJoin, Observable, of } from "rxjs";
 import {
   EquipmentItemBaseInterface,
   EquipmentItemReviewerRejectionReason,
@@ -356,7 +356,14 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
   // CAMERA API
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  createCamera(camera: Omit<CameraInterface, "id">): Observable<CameraInterface> {
+  createCamera(camera: Omit<CameraInterface, "id">, createModifiedVariant: boolean): Observable<CameraInterface> {
+    if (createModifiedVariant) {
+      return forkJoin([
+        this._createItem<CameraInterface>({ ...camera, ...{ modified: false } }, "camera"),
+        this._createItem<CameraInterface>({ ...camera, ...{ modified: true } }, "camera")
+      ]).pipe(map(results => results[0]));
+    }
+
     return this._createItem<CameraInterface>(camera, "camera");
   }
 

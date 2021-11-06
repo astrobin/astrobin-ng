@@ -52,12 +52,25 @@ export class CameraService extends BaseService implements EquipmentItemServiceIn
     }
   }
 
+  getSupportedPrintableProperties(): string[] {
+    return [
+      "NAME", // Does not use EquipmentTypeDisplayProperty.NAME to avoid circular dependency.
+      CameraDisplayProperty.TYPE,
+      CameraDisplayProperty.SENSOR,
+      CameraDisplayProperty.COOLED,
+      CameraDisplayProperty.MAX_COOLING,
+      CameraDisplayProperty.BACK_FOCUS
+    ];
+  }
+
   getPrintableProperty$(
     item: CameraInterface,
-    property: CameraDisplayProperty,
+    property: CameraDisplayProperty | string,
     propertyValue?: any
   ): Observable<string> {
     switch (property) {
+      case "NAME":
+        return of(item.modified ? `${item.name} ${this.translateService.instant("(modified)")}` : item.name);
       case CameraDisplayProperty.TYPE:
         return of(this.humanizeType(propertyValue || item.type));
       case CameraDisplayProperty.SENSOR:
@@ -77,7 +90,7 @@ export class CameraService extends BaseService implements EquipmentItemServiceIn
           map(({ brand, sensor }) => `<strong>${brand.name}</strong> ${sensor.name}`)
         );
       case CameraDisplayProperty.COOLED:
-        return of(this.utilsService.yesNo(propertyValue || item.cooled));
+        return of(this.utilsService.yesNo(propertyValue !== undefined ? propertyValue : item.cooled));
       case CameraDisplayProperty.MAX_COOLING:
         return of(propertyValue || item.maxCooling ? `${propertyValue || item.maxCooling} &deg;C` : "");
       case CameraDisplayProperty.BACK_FOCUS:

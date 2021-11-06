@@ -4,6 +4,7 @@ import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
 import { TranslateService } from "@ngx-translate/core";
+import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 
 @Component({
   selector: "astrobin-equipment-others-in-brand",
@@ -14,7 +15,11 @@ export class OthersInBrandComponent extends BaseComponentDirective {
   @Input()
   items: EquipmentItemBaseInterface[];
 
-  constructor(public readonly store$: Store<State>, public readonly translateService: TranslateService) {
+  constructor(
+    public readonly store$: Store<State>,
+    public readonly translateService: TranslateService,
+    public readonly equipmentItemService: EquipmentItemService
+  ) {
     super(store$);
   }
 

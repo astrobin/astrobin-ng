@@ -158,7 +158,10 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
             actionSuccessType = EquipmentActionTypes.CREATE_SENSOR_SUCCESS;
             break;
           case EquipmentItemType.CAMERA:
-            action = new CreateCamera({ camera: item as CameraInterface });
+            const createModifiedVariant = (data as any).createModifiedVariant || false;
+            delete (data as any).createModifiedVariant;
+
+            action = new CreateCamera({ camera: item as CameraInterface, createModifiedVariant });
             actionSuccessType = EquipmentActionTypes.CREATE_CAMERA_SUCCESS;
             break;
           case EquipmentItemType.TELESCOPE:
