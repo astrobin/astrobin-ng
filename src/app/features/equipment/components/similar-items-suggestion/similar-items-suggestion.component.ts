@@ -5,6 +5,7 @@ import { BrandInterface } from "@features/equipment/types/brand.interface";
 import { State } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
+import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 
 @Component({
   selector: "astrobin-similar-items-suggestion",
@@ -21,7 +22,11 @@ export class SimilarItemsSuggestionComponent extends BaseComponentDirective impl
   @Output()
   itemSelected = new EventEmitter<EquipmentItemBaseInterface | BrandInterface>();
 
-  constructor(public readonly store$: Store<State>, public readonly translateService: TranslateService) {
+  constructor(
+    public readonly store$: Store<State>,
+    public readonly translateService: TranslateService,
+    public readonly equipmentItemService: EquipmentItemService
+  ) {
     super(store$);
   }
 

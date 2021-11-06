@@ -2,7 +2,10 @@ import { AfterViewInit, Component, OnInit, TemplateRef, ViewChild } from "@angul
 import { TranslateService } from "@ngx-translate/core";
 import { Actions, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
-import { BaseItemEditorComponent } from "@features/equipment/components/editors/base-item-editor/base-item-editor.component";
+import {
+  BaseItemEditorComponent,
+  EquipmentItemEditorMode
+} from "@features/equipment/components/editors/base-item-editor/base-item-editor.component";
 import { LoadingService } from "@shared/services/loading.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { CameraInterface, CameraType } from "@features/equipment/types/camera.interface";
@@ -24,7 +27,7 @@ import { selectBrand, selectBrands, selectEquipmentItem } from "@features/equipm
 import { BrandInterface } from "@features/equipment/types/brand.interface";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 import { CameraDisplayProperty, CameraService } from "@features/equipment/services/camera.service";
-import { FormlyFieldService } from "@shared/services/formly-field.service";
+import { FormlyFieldMessageLevel, FormlyFieldService } from "@shared/services/formly-field.service";
 
 @Component({
   selector: "astrobin-camera-editor",
@@ -204,6 +207,36 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
                 .scrollIntoView({ behavior: "smooth" });
             }, 1);
           }
+        }
+      },
+      {
+        key: "createModifiedVariant",
+        type: "checkbox",
+        wrappers: ["default-wrapper"],
+        id: "camera-field-create-modified-variant",
+        defaultValue: false,
+        hideExpression: () =>
+          this.form.get("type").value !== CameraType.DSLR_MIRRORLESS ||
+          this.editorMode !== EquipmentItemEditorMode.CREATION,
+        expressionProperties: {
+          "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+        },
+        templateOptions: {
+          label: this.translateService.instant(`Automatically create "modified" variant`),
+          description: this.translateService.instant(
+            "If selected, AstroBin will automatically create a variant of this object that is labeled as " +
+              "<em>modified for astrophotography</em>."
+          ),
+          messages: [
+            {
+              level: FormlyFieldMessageLevel.INFO,
+              text: this.translateService.instant(
+                "Please only do this for DSLR camera that typically are modified for astrophotography. If this is a " +
+                  "camera that is <em>specifically</em> sold as modified for astrophotography, e.g. the " +
+                  "<strong>Canon EOS 60Da</strong> you <strong>do not</strong> need to use check this option."
+              )
+            }
+          ]
         }
       },
       {

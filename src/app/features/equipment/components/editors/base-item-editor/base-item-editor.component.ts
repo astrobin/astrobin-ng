@@ -495,7 +495,8 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
       "returned",
       "gift",
       "present",
-      "lost"
+      "lost",
+      "cooled"
     ];
 
     for (const word of dangerousWords) {

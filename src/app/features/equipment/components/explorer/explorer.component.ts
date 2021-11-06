@@ -141,6 +141,17 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit 
   }
 
   startEditMode() {
+    if (this.equipmentItemService.getType(this.selectedItem) === EquipmentItemType.CAMERA) {
+      const camera: CameraInterface = this.selectedItem as CameraInterface;
+      if (camera.modified) {
+        this.popNotificationsService.warning(
+          `"Modified" cameras cannot be edited directly. Please find the regular version of this camera and
+          edit that.`
+        );
+        return;
+      }
+    }
+
     this.editMode = true;
     this.editModel = { ...this.selectedItem };
 

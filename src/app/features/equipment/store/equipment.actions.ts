@@ -275,7 +275,7 @@ export class LoadSensorSuccess implements PayloadActionInterface {
 export class CreateCamera implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.CREATE_CAMERA;
 
-  constructor(public payload: { camera: Omit<CameraInterface, "id"> }) {}
+  constructor(public payload: { camera: Omit<CameraInterface, "id">; createModifiedVariant?: boolean }) {}
 }
 
 export class CreateCameraSuccess implements PayloadActionInterface {

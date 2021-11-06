@@ -47,6 +47,10 @@ export class EquipmentItemService extends BaseService {
     }
   }
 
+  getName$(item: EquipmentItemBaseInterface): Observable<string> {
+    return this.getPrintableProperty$(item, EquipmentItemDisplayProperty.NAME, item.name);
+  }
+
   getPrintableProperty$(
     item: EquipmentItemBaseInterface,
     propertyName: any,
@@ -56,9 +60,14 @@ export class EquipmentItemService extends BaseService {
       return of(null);
     }
 
+    const service = this.equipmentItemServiceFactory.getService(item);
+    if (service.getSupportedPrintableProperties().indexOf(propertyName) > -1) {
+      return service.getPrintableProperty$(item, propertyName, propertyValue);
+    }
+
     switch (propertyName) {
       case EquipmentItemDisplayProperty.NAME:
-        return of(propertyValue.toString().replace("=", "="));
+        return of(propertyValue.toString());
       case EquipmentItemDisplayProperty.BRAND:
         return of(propertyValue.toString());
       case EquipmentItemDisplayProperty.IMAGE:
@@ -70,8 +79,6 @@ export class EquipmentItemService extends BaseService {
             : null
         );
     }
-
-    return this.equipmentItemServiceFactory.getService(item).getPrintableProperty$(item, propertyName, propertyValue);
   }
 
   getPrintablePropertyName(type: EquipmentItemType, propertyName: any, shortForm = false): string {
