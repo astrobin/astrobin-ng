@@ -208,11 +208,13 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit 
   resetBrowser() {
     this._itemBrowser.reset();
     this.selectedItem = null;
+    this.endEditMode();
   }
 
   setItem(item: EquipmentItemBaseInterface) {
     this.selectedItem = item;
     this.store$.dispatch(new LoadBrand({ id: item.brand }));
+    this.endEditMode();
     this.loadEditProposals();
   }
 
@@ -236,6 +238,7 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit 
 
   onCreationModeStarted() {
     this.selectedItem = null;
+    this.endEditMode();
   }
 
   proposeEdit() {
