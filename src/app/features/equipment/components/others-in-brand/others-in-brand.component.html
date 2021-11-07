@@ -2,6 +2,6 @@
 
 <div class="items">
   <span class="item" *ngFor="let item of items">
-    {{ item.name }}
+    <span class="name" [innerHTML]="equipmentItemService.getName$(item) | async"></span>
   </span>
 </div>

@@ -13,7 +13,8 @@ export enum CameraType {
 export interface CameraInterface extends EquipmentItemBaseInterface {
   type: CameraType;
   sensor: SensorInterface["id"];
-  cooled?: boolean;
+  modified: boolean;
+  cooled: boolean;
   maxCooling?: number;
   backFocus?: number;
 }

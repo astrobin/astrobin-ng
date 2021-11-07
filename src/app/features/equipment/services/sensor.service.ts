@@ -29,6 +29,24 @@ export class SensorService extends BaseService implements EquipmentItemServiceIn
     super(loadingService);
   }
 
+  getSupportedPrintableProperties(): string[] {
+    return [
+      SensorDisplayProperty.PIXEL_SIZE,
+      SensorDisplayProperty.PIXELS,
+      SensorDisplayProperty.PIXEL_WIDTH,
+      SensorDisplayProperty.PIXEL_HEIGHT,
+      SensorDisplayProperty.SENSOR_SIZE,
+      SensorDisplayProperty.SENSOR_WIDTH,
+      SensorDisplayProperty.SENSOR_HEIGHT,
+      SensorDisplayProperty.QUANTUM_EFFICIENCY,
+      SensorDisplayProperty.FULL_WELL_CAPACITY,
+      SensorDisplayProperty.READ_NOISE,
+      SensorDisplayProperty.FRAME_RATE,
+      SensorDisplayProperty.ADC,
+      SensorDisplayProperty.COLOR_OR_MONO
+    ];
+  }
+
   getPrintableProperty$(
     item: SensorInterface,
     property: SensorDisplayProperty,

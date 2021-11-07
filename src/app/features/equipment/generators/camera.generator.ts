@@ -15,6 +15,7 @@ export class CameraGenerator {
       image: source.image || "https://cdn.astrobin.com/images/foo.jpg",
       type: source.type || CameraType.DSLR_MIRRORLESS,
       sensor: source.sensor || SensorGenerator.sensor().id,
+      modified: source.modified !== undefined ? source.modified : false,
       cooled: source.cooled !== undefined ? source.cooled : true,
       maxCooling: source.maxCooling !== undefined ? source.maxCooling : 50,
       backFocus: source.backFocus !== undefined ? source.backFocus : 10

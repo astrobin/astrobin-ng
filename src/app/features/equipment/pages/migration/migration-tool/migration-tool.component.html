@@ -153,7 +153,7 @@
               <astrobin-equipment-item-browser
                 #equipmentItemBrowser
                 [type]="getActiveType()"
-                (itemSelected)="migrationTarget = $event"
+                (itemSelected)="onItemSelected($event)"
                 (creationModeStarted)="creationMode = true"
                 (creationModeEnded)="creationMode = false"
               ></astrobin-equipment-item-browser>

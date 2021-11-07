@@ -3,7 +3,7 @@ import { BaseClassicApiService } from "@shared/services/api/classic/base-classic
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { EMPTY, Observable, of } from "rxjs";
+import { EMPTY, forkJoin, Observable, of } from "rxjs";
 import {
   EquipmentItemBaseInterface,
   EquipmentItemReviewerRejectionReason,
@@ -165,14 +165,23 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     );
   }
 
-  getByNameAndType(
-    name: EquipmentItemBaseInterface["name"],
-    type: EquipmentItemType
-  ): Observable<EquipmentItemBaseInterface | null> {
+  getByProperties(
+    type: EquipmentItemType,
+    properties: { [key: string]: any }
+  ): Observable<EquipmentItemBaseInterface> | null {
     const path = EquipmentItemType[type].toLowerCase();
+    const queryString = new URLSearchParams(properties);
     return this.http
-      .get<PaginatedApiResultInterface<EquipmentItemBaseInterface>>(`${this.configUrl}/${path}/?name=${name}`)
+      .get<PaginatedApiResultInterface<EquipmentItemBaseInterface>>(`${this.configUrl}/${path}/?${queryString}`)
       .pipe(map(response => (response.count > 0 ? this._parseItem(response.results[0]) : null)));
+  }
+
+  getByBrandAndName(
+    type: EquipmentItemType,
+    brand: EquipmentItemBaseInterface["brand"],
+    name: EquipmentItemBaseInterface["name"]
+  ): Observable<EquipmentItemBaseInterface | null> {
+    return this.getByProperties(type, { brand, name });
   }
 
   approveEquipmentItem(item: EquipmentItemBaseInterface, comment: string): Observable<EquipmentItemBaseInterface> {
@@ -356,7 +365,14 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
   // CAMERA API
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  createCamera(camera: Omit<CameraInterface, "id">): Observable<CameraInterface> {
+  createCamera(camera: Omit<CameraInterface, "id">, createModifiedVariant: boolean): Observable<CameraInterface> {
+    if (createModifiedVariant) {
+      return forkJoin([
+        this._createItem<CameraInterface>({ ...camera, ...{ modified: false } }, "camera"),
+        this._createItem<CameraInterface>({ ...camera, ...{ modified: true } }, "camera")
+      ]).pipe(map(results => results[0]));
+    }
+
     return this._createItem<CameraInterface>(camera, "camera");
   }
 

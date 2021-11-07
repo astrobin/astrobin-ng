@@ -7,7 +7,8 @@
     <div class="col">
       <div class="label">
         <h5>
-          <strong>{{ brand.name }}</strong> {{ item.name }}
+          <strong>{{ brand.name }}</strong>&nbsp;
+          <span class="name" [innerHTML]="equipmentItemService.getName$(item) | async"></span>
         </h5>
       </div>
 

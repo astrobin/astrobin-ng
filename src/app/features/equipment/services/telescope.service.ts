@@ -75,6 +75,17 @@ export class TelescopeService extends BaseService implements EquipmentItemServic
     return map[type];
   }
 
+  getSupportedPrintableProperties(): string[] {
+    return [
+      TelescopeDisplayProperty.TYPE,
+      TelescopeDisplayProperty.APERTURE,
+      TelescopeDisplayProperty.FOCAL_LENGTH,
+      TelescopeDisplayProperty.MIN_FOCAL_LENGTH,
+      TelescopeDisplayProperty.MAX_FOCAL_LENGTH,
+      TelescopeDisplayProperty.WEIGHT
+    ];
+  }
+
   getPrintableProperty$(
     item: TelescopeInterface,
     property: TelescopeDisplayProperty,

@@ -5,12 +5,10 @@ import { UtilsService } from "@shared/services/utils/utils.service";
 import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { TranslateService } from "@ngx-translate/core";
 import { EditProposalChange, EditProposalInterface } from "@features/equipment/types/edit-proposal.interface";
-import { SensorService } from "@features/equipment/services/sensor.service";
-import { TelescopeService } from "@features/equipment/services/telescope.service";
-import { CameraService } from "@features/equipment/services/camera.service";
 import { Observable, of } from "rxjs";
 import { getEquipmentItemType } from "@features/equipment/store/equipment.selectors";
 import { EquipmentItemServiceFactory } from "@features/equipment/services/equipment-item.service-factory";
+import { BrandInterface } from "@features/equipment/types/brand.interface";
 
 export enum EquipmentItemDisplayProperty {
   NAME = "NAME",
@@ -26,8 +24,7 @@ export class EquipmentItemService extends BaseService {
     public readonly loadingService: LoadingService,
     public readonly utilsService: UtilsService,
     public readonly translateService: TranslateService,
-    public readonly equipmentItemServiceFactory: EquipmentItemServiceFactory,
-    public readonly telescopeService: TelescopeService
+    public readonly equipmentItemServiceFactory: EquipmentItemServiceFactory
   ) {
     super(loadingService);
   }
@@ -47,6 +44,18 @@ export class EquipmentItemService extends BaseService {
     }
   }
 
+  getName$(item: EquipmentItemBaseInterface | BrandInterface): Observable<string> {
+    try {
+      return this.getPrintableProperty$(
+        item as EquipmentItemBaseInterface,
+        EquipmentItemDisplayProperty.NAME,
+        item.name
+      );
+    } catch (e) {
+      return of(item.name);
+    }
+  }
+
   getPrintableProperty$(
     item: EquipmentItemBaseInterface,
     propertyName: any,
@@ -56,9 +65,14 @@ export class EquipmentItemService extends BaseService {
       return of(null);
     }
 
+    const service = this.equipmentItemServiceFactory.getService(item);
+    if (service.getSupportedPrintableProperties().indexOf(propertyName) > -1) {
+      return service.getPrintableProperty$(item, propertyName, propertyValue);
+    }
+
     switch (propertyName) {
       case EquipmentItemDisplayProperty.NAME:
-        return of(propertyValue.toString().replace("=", "="));
+        return of(propertyValue.toString());
       case EquipmentItemDisplayProperty.BRAND:
         return of(propertyValue.toString());
       case EquipmentItemDisplayProperty.IMAGE:
@@ -70,8 +84,6 @@ export class EquipmentItemService extends BaseService {
             : null
         );
     }
-
-    return this.equipmentItemServiceFactory.getService(item).getPrintableProperty$(item, propertyName, propertyValue);
   }
 
   getPrintablePropertyName(type: EquipmentItemType, propertyName: any, shortForm = false): string {
@@ -123,7 +135,9 @@ export class EquipmentItemService extends BaseService {
       "editProposalReviewTimestamp",
       "editProposalReviewIp",
       "editProposalReviewComment",
-      "editProposalReviewStatus"
+      "editProposalReviewStatus",
+
+      "modified"
     ];
 
     const nonNullableKeys = ["image"];
@@ -189,6 +203,11 @@ export class EquipmentItemService extends BaseService {
           }
         }
       }
+    }
+
+    // `createModifiedVariant` is a special case for Cameras, as it's not really a property of a Camera.
+    if (editProposal.createModifiedVariant) {
+      changes.push({ propertyName: "createModifiedVariant", before: "false", after: "true" });
     }
 
     return changes;

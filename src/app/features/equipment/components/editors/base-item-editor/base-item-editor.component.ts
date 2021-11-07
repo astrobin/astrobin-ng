@@ -1,5 +1,5 @@
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from "@angular/core";
+import { AfterViewInit, Component, EventEmitter, Input, Output, TemplateRef, ViewChild } from "@angular/core";
 import { AbstractControl, FormControl, FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
@@ -33,6 +33,22 @@ export enum EquipmentItemEditorMode {
   CREATION,
   EDIT_PROPOSAL
 }
+
+const PROHIBITED_WORDS = [
+  "modified",
+  "modded",
+  "upgraded",
+  "sold",
+  "used",
+  "discontinued",
+  "broken",
+  "defective",
+  "returned",
+  "gift",
+  "present",
+  "lost",
+  "cooled"
+];
 
 @Component({
   selector: "astrobin-base-equipment-item-editor",
@@ -278,7 +294,6 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
                 this.formlyFieldService.clearMessages(this.fields.find(f => f.key === "brand").templateOptions);
                 this._validateBrandInName();
                 this._similarItemSuggestion();
-                this._checkForDangerousWords(value, field);
                 this._editProposalWarning(field);
               })
             )
@@ -293,7 +308,7 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
               ...this.form.value
             } as EquipmentItemBaseInterface);
 
-            return this.equipmentApiService.getByNameAndType(control.value, type).pipe(
+            return this.equipmentApiService.getByBrandAndName(type, this.model.brand, control.value).pipe(
               map(item => {
                 if (this.editorMode === EquipmentItemEditorMode.CREATION) {
                   return !item;
@@ -303,7 +318,32 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
               })
             );
           },
-          message: this.translateService.instant("An item of the same type and the same name already exists.")
+          message: this.translateService.instant("An item of the same class, brand, and name already exists.")
+        },
+        prohibitedWords: {
+          expression: (control: FormControl) => {
+            for (const word of PROHIBITED_WORDS) {
+              if (control.value.toLowerCase().indexOf(word) > -1) {
+                return of(false);
+              }
+            }
+
+            return of(true);
+          },
+          message: (error, field: FormlyFieldConfig) => {
+            for (const word of PROHIBITED_WORDS) {
+              if (field.formControl.value.toLowerCase().indexOf(word) > -1) {
+                return this.translateService.instant(
+                  `Your usage of the word "{{0}}" suggests that you are using this field to specify a property ` +
+                    "of this item that is only relevant to your own copy. Remember that here you are creating or editing " +
+                    "the generic instance that will be shared by all owners on AstroBin.",
+                  {
+                    "0": word
+                  }
+                );
+              }
+            }
+          }
         }
       }
     };
@@ -480,42 +520,6 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
           }
         }
       });
-  }
-
-  private _checkForDangerousWords(value: string, field: FormlyFieldConfig) {
-    const dangerousWords = [
-      "modified",
-      "modded",
-      "upgraded",
-      "sold",
-      "used",
-      "discontinued",
-      "broken",
-      "defective",
-      "returned",
-      "gift",
-      "present",
-      "lost"
-    ];
-
-    for (const word of dangerousWords) {
-      if (value.toLowerCase().indexOf(word) > -1) {
-        const message = this.translateService.instant(
-          `<strong>Careful!</strong> Your usage of the word "{{0}}" suggests that you are using this field to
-            specify a property of this item that is only relevant to your own copy. Remember that here you are creating
-            or editing the <strong>generic instance</strong> that will be shared by all owners on AstroBin.`,
-          {
-            "0": word
-          }
-        );
-
-        this.formlyFieldService.addMessage(field.templateOptions, {
-          level: FormlyFieldMessageLevel.WARNING,
-          text: message
-        });
-        break;
-      }
-    }
   }
 
   private _editProposalWarning(field: FormlyFieldConfig) {

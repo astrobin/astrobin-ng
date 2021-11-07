@@ -141,14 +141,32 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit 
   }
 
   startEditMode() {
+    if (this.equipmentItemService.getType(this.selectedItem) === EquipmentItemType.CAMERA) {
+      const camera: CameraInterface = this.selectedItem as CameraInterface;
+      if (camera.modified) {
+        this.popNotificationsService.warning(
+          `"Modified" cameras cannot be edited directly. Please find the regular version of this camera and
+          edit that.`
+        );
+        return;
+      }
+    }
+
     this.editMode = true;
     this.editModel = { ...this.selectedItem };
 
-    setTimeout(() => {
-      this.windowRefService.nativeWindow.document
-        .querySelector("#equipment-item-field-name")
-        .scrollIntoView({ behavior: "smooth" });
-    }, 100);
+    const scrollToName = () => {
+      const $element = this.windowRefService.nativeWindow.document.querySelector("#equipment-item-field-name");
+      if ($element) {
+        $element.scrollIntoView({ behavior: "smooth" });
+      } else {
+        setTimeout(() => {
+          scrollToName();
+        }, 100);
+      }
+    };
+
+    scrollToName();
   }
 
   endEditMode() {
@@ -197,11 +215,13 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit 
   resetBrowser() {
     this._itemBrowser.reset();
     this.selectedItem = null;
+    this.endEditMode();
   }
 
   setItem(item: EquipmentItemBaseInterface) {
     this.selectedItem = item;
     this.store$.dispatch(new LoadBrand({ id: item.brand }));
+    this.endEditMode();
     this.loadEditProposals();
   }
 
@@ -225,6 +245,7 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit 
 
   onCreationModeStarted() {
     this.selectedItem = null;
+    this.endEditMode();
   }
 
   proposeEdit() {
