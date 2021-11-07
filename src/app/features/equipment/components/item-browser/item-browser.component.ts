@@ -49,6 +49,9 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
   creationForm: FormGroup = new FormGroup({});
   creationModel: Partial<EquipmentItemBaseInterface> = {};
 
+  @ViewChild("equipmentItemLabelTemplate")
+  equipmentItemLabelTemplate: TemplateRef<any>;
+
   @ViewChild("equipmentItemOptionTemplate")
   equipmentItemOptionTemplate: TemplateRef<any>;
 
@@ -199,8 +202,8 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
     this.store$
       .select(selectBrand, item.brand)
       .pipe(
-        takeUntil(this.destroyed$),
-        filter(brand => !!brand)
+        filter(brand => !!brand),
+        take(1)
       )
       .subscribe(brand => {
         this.setItem(item);
@@ -255,6 +258,7 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
                 onSearch: (term: string) => {
                   this._onSearch(term);
                 },
+                labelTemplate: this.equipmentItemLabelTemplate,
                 optionTemplate: this.equipmentItemOptionTemplate,
                 addTag: !!currentUser ? _addTag : undefined
               },
@@ -269,7 +273,8 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
                           type: this.type
                         })
                       ),
-                      filter(item => !!item)
+                      filter(item => !!item),
+                      take(1)
                     )
                     .subscribe((item: EquipmentItemBaseInterface) => this.itemSelected.emit(item));
                 }

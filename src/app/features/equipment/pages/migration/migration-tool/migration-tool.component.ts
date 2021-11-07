@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
 import { GearApiService } from "@shared/services/api/classic/astrobin/gear/gear-api.service";
 import { LoadingService } from "@shared/services/loading.service";
-import { map, switchMap, take, takeUntil, tap } from "rxjs/operators";
+import { filter, map, switchMap, take, takeUntil, tap } from "rxjs/operators";
 import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { TitleService } from "@shared/services/title/title.service";
 import { FormGroup } from "@angular/forms";
@@ -11,7 +11,7 @@ import { MigrationFlag } from "@shared/services/api/classic/astrobin/migratable-
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { Store } from "@ngrx/store";
 import { Actions } from "@ngrx/effects";
-import { selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
+import { selectBrand, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import { HttpStatusCode } from "@angular/common/http";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { CameraApiService } from "@shared/services/api/classic/astrobin/camera/camera-api.service";
@@ -24,6 +24,8 @@ import { State } from "@app/store/state";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 import { GearService } from "@shared/services/gear/gear.service";
 import { ItemBrowserComponent } from "@features/equipment/components/item-browser/item-browser.component";
+import { CameraInterface } from "@features/equipment/types/camera.interface";
+import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 
 @Component({
   selector: "astrobin-migration-tool",
@@ -77,6 +79,7 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
     public readonly translateService: TranslateService,
     public readonly windowRefService: WindowRefService,
     public readonly equipmentItemService: EquipmentItemService,
+    public readonly equipmentApiService: EquipmentApiService,
     public readonly gearService: GearService
   ) {
     super(store$);
@@ -309,6 +312,48 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
 
   cancelMigration() {
     this.migrationMode = false;
+  }
+
+  onItemSelected(item: EquipmentItemBaseInterface) {
+    this.migrationTarget = item;
+
+    const type = this.equipmentItemService.getType(item);
+    if (type === EquipmentItemType.CAMERA) {
+      const camera = item as CameraInterface;
+      if (!camera.modified) {
+        this.equipmentApiService
+          .getByProperties(type, { brand: item.brand, name: item.name, modified: true })
+          .pipe(
+            take(1),
+            filter(modifiedCameraVariant => !!modifiedCameraVariant),
+            switchMap(modifiedCameraVariant =>
+              this.store$.select(selectBrand, modifiedCameraVariant.brand).pipe(
+                map(brand => ({ brand, modifiedCameraVariant })),
+                // tslint:disable-next-line:no-shadowed-variable
+                filter(({ brand, modifiedCameraVariant }) => !!brand),
+                take(1)
+              )
+            )
+          )
+          .subscribe(({ brand, modifiedCameraVariant }) => {
+            this.migrationTarget = null;
+            this.equipmentItemBrowser.reset();
+            this.popNotificationsService.info(
+              this.translateService.instant(
+                "Since a regular and a modified variant of {{0}} were created, we didn't prefill the item " +
+                  "selection dropdown, to allow you to select the correct variant for this migration.",
+                {
+                  0: `<strong>${brand.name} ${modifiedCameraVariant.name}</strong>`
+                }
+              ),
+              null,
+              {
+                enableHtml: true
+              }
+            );
+          });
+      }
+    }
   }
 
   _updateCounts() {
