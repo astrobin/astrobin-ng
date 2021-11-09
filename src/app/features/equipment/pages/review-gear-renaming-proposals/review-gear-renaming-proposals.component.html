@@ -7,7 +7,18 @@
     }}
   </small>
 
-  <astrobin-nothing-here *ngIf="proposals.length === 0"></astrobin-nothing-here>
+  <astrobin-nothing-here *ngIf="proposals.length === 0; else hasProposals"></astrobin-nothing-here>
+</div>
+
+<ng-template #hasProposals>
+  <div class="alert alert-info">
+    <fa-icon icon="info-circle"></fa-icon>
+    {{
+      "If you have personal notes that you wish to attach to equipment items, you will be able to do it later on. " +
+        "That fact should not be a reason to reject a renaming proposal by itself." | translate
+    }}
+  </div>
+
   <table class="table" *ngIf="proposals.length > 0">
     <caption>
       {{
@@ -67,4 +78,4 @@
   <div class="alert alert-warning responsive-notice">
     {{ "Please use a device with a minimum horizontal resolution of 1024 pixels to view this content." | translate }}
   </div>
-</div>
+</ng-template>
