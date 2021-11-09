@@ -38,6 +38,8 @@ import { ExplorerComponent } from "@features/equipment/components/explorer/explo
 import { MergeIntoModalComponent } from "./components/migration/merge-into-modal/merge-into-modal.component";
 import { TelescopeEditorComponent } from "@features/equipment/components/editors/telescope-editor/telescope-editor.component";
 import { PendingExplorerBaseComponent } from "@features/equipment/pages/explorer-base/pending-explorer-base.component";
+import { ReviewGearRenamingProposalsComponent } from "./pages/review-gear-renaming-proposals/review-gear-renaming-proposals.component";
+import { RejectReviewGearRenamingProposalsModalComponent } from "@features/equipment/components/reject-review-gear-renaming-proposals-modal/reject-review-gear-renaming-proposals-modal.component";
 
 @NgModule({
   declarations: [
@@ -72,7 +74,9 @@ import { PendingExplorerBaseComponent } from "@features/equipment/pages/explorer
     RejectItemModalComponent,
     ApproveEditProposalModalComponent,
     RejectEditProposalModalComponent,
-    MergeIntoModalComponent
+    MergeIntoModalComponent,
+    ReviewGearRenamingProposalsComponent,
+    RejectReviewGearRenamingProposalsModalComponent
   ],
   imports: [
     RouterModule.forChild(routes),

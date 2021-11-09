@@ -1,0 +1,70 @@
+<div class="page">
+  <h1>{{ "Gear renaming proposals" | translate }}</h1>
+  <small>
+    {{
+      "AstroBin would like to rename some of your gear items in order to be more consistent with naming conventions."
+        | translate
+    }}
+  </small>
+
+  <astrobin-nothing-here *ngIf="proposals.length === 0"></astrobin-nothing-here>
+  <table class="table" *ngIf="proposals.length > 0">
+    <caption>
+      {{
+        "Gear renaming proposals" | translate
+      }}
+    </caption>
+    <colgroup>
+      <col span="2" class="old" />
+      <col />
+      <col span="3" class="new" />
+    </colgroup>
+    <thead>
+      <tr>
+        <th>{{ "Old brand/make" }}</th>
+        <th>{{ "Old name" }}</th>
+        <th></th>
+        <th>{{ "New brand/make" }}</th>
+        <th>{{ "New name" }}</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr
+        *ngFor="let proposal of proposals"
+        [class.approved]="proposal.status == GearRenamingProposalStatus.APPROVED"
+        [class.rejected]="proposal.status == GearRenamingProposalStatus.REJECTED"
+      >
+        <td>{{ proposal.oldMake }}</td>
+        <td>{{ proposal.oldName }}</td>
+        <td>&xrarr;</td>
+        <td>{{ proposal.newMake }}</td>
+        <td>{{ proposal.newName }}</td>
+        <td>
+          <button
+            class="btn btn-xs btn-success mb-2 mb-md-0 mr-lg-2"
+            [class.loading]="this.loadingService.isLoading()"
+            [disabled]="proposal.status !== GearRenamingProposalStatus.PENDING"
+            (click)="approve($event, proposal)"
+          >
+            <fa-icon icon="check" class="d-none d-lg-inline"></fa-icon>
+            {{ "Approve" | translate }}
+          </button>
+          <button
+            class="btn btn-xs btn-danger"
+            [class.loading]="this.loadingService.isLoading()"
+            [disabled]="proposal.status !== GearRenamingProposalStatus.PENDING"
+            (click)="reject($event, proposal)"
+          >
+            <fa-icon icon="times" class="d-none d-lg-inline"></fa-icon>
+            {{ "Reject" | translate }}
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="alert alert-warning responsive-notice">
+    {{ "Please use a device with a minimum horizontal resolution of 1024 pixels to view this content." | translate }}
+  </div>
+</div>

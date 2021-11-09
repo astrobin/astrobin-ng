@@ -10,8 +10,13 @@ import { ExplorerPageComponent } from "@features/equipment/pages/explorer/explor
 import { PendingEditExplorerComponent } from "@features/equipment/pages/pending-edit-explorer/pending-edit-explorer.component";
 import { PendingReviewExplorerComponent } from "@features/equipment/pages/pending-review-explorer/pending-review-explorer.component";
 import { AZExplorerComponent } from "@features/equipment/pages/a-z-edit-explorer/a-z-explorer.component";
+import { ReviewGearRenamingProposalsComponent } from "@features/equipment/pages/review-gear-renaming-proposals/review-gear-renaming-proposals.component";
 
 export const routes: Routes = [
+  {
+    path: "review-gear-renaming-proposals/:itemType",
+    component: ReviewGearRenamingProposalsComponent
+  },
   {
     path: "migration-tool",
     redirectTo: "migration-tool/camera"

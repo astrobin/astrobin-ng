@@ -1,0 +1,33 @@
+@import "../../../../styles/breakpoints";
+
+.table {
+  @media screen and (max-width: $md-max) {
+    display: none;
+  }
+
+  td {
+    vertical-align: middle;
+  }
+
+  col.new {
+    background-color: rgba(255, 255, 255, .05);
+  }
+
+  .rejected {
+    text-decoration: line-through;
+    background-color: rgba(255, 0, 0, .15);
+  }
+
+  .approved {
+    font-weight: bold;
+    background-color: rgba(0, 255, 0, .15);
+  }
+}
+
+.responsive-notice {
+  display: none;
+
+  @media screen and (max-width: $md-max) {
+    display: block;
+  }
+}
