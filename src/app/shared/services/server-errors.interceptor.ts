@@ -92,6 +92,10 @@ export class ServerErrorsInterceptor implements HttpInterceptor {
           errorTitle = this.translateService.instant("The requested resource does not exist");
           errorMessage = err.url;
           break;
+        case 409:
+          errorTitle = this.translateService.instant("Conflict detected");
+          errorMessage = err.error;
+          break;
         case 500:
           errorTitle = this.translateService.instant("Internal server error");
           errorMessage = this.translateService.instant(
