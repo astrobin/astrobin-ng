@@ -5,6 +5,8 @@ import { NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
 import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { ThemeService } from "@shared/services/theme.service";
+import { WindowRefService } from "@shared/services/window-ref.service";
+import { NotificationsApiService } from "@features/notifications/services/notifications-api.service";
 
 declare const gtag: any;
 
@@ -18,11 +20,14 @@ export class AppComponent extends BaseComponentDirective {
     public readonly store$: Store<State>,
     public readonly router: Router,
     public readonly paginationConfig: NgbPaginationConfig,
-    public readonly themeService: ThemeService
+    public readonly themeService: ThemeService,
+    public readonly windowRefService: WindowRefService,
+    public readonly notificationApiService: NotificationsApiService
   ) {
     super(store$);
     this.initRouterEvents();
     this.initPagination();
+    this.markNotificationAsRead();
     this.themeService.setTheme();
   }
 
@@ -45,6 +50,17 @@ export class AppComponent extends BaseComponentDirective {
       gtag("config", "UA-844985-10", {
         page_path: url
       });
+    }
+  }
+
+  markNotificationAsRead() {
+    const url = this.windowRefService.getCurrentUrl();
+
+    if (url.searchParams.get("utm_medium") === "email") {
+      const fromUserPk = url.searchParams.get("from_user");
+      this.notificationApiService
+        .markAsReadByPathAndUser(url.pathname, fromUserPk !== "None" ? +fromUserPk : null)
+        .subscribe();
     }
   }
 }
