@@ -11,6 +11,8 @@ import { ColorOrMono, SensorInterface } from "@features/equipment/types/sensor.i
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 import { FormlyFieldService } from "@shared/services/formly-field.service";
 import { SensorDisplayProperty, SensorService } from "@features/equipment/services/sensor.service";
+import { FormControl } from "@angular/forms";
+import { debounceTime, distinctUntilChanged, first, map, startWith, switchMap } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-sensor-editor",
@@ -356,19 +358,33 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
         },
         templateOptions: {
           label: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.COLOR_OR_MONO),
-          description: this.translateService.instant(
-            "Tick if this is a color sensor, leave blank if it's a monochromatic one."
-          ),
           options: [
+            {
+              label: this.translateService.instant("Mono"),
+              value: ColorOrMono.M
+            },
             {
               label: this.translateService.instant("Color"),
               value: ColorOrMono.C
             },
             {
-              label: this.translateService.instant("Mono"),
-              value: ColorOrMono.M
+              label: this.translateService.instant("Mono/Color"),
+              value: ColorOrMono.MC
             }
           ]
+        }
+      },
+      {
+        key: "specificationUrl",
+        type: "input",
+        wrappers: ["default-wrapper"],
+        id: "sensor-field-specification-url",
+        templateOptions: {
+          required: true,
+          label: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.SPECIFICATION_URL)
+        },
+        validators: {
+          validation: ["url"]
         }
       },
       this._getImageField()

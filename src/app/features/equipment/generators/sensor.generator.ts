@@ -21,7 +21,8 @@ export class SensorGenerator {
       readNoise: source.readNoise || 1,
       frameRate: source.frameRate || 1,
       adc: source.adc || 1,
-      colorOrMono: source.colorOrMono || ColorOrMono.M
+      colorOrMono: source.colorOrMono || ColorOrMono.M,
+      specificationUrl: source.specificationUrl || null
     };
   }
 }

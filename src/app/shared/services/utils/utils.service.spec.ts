@@ -295,6 +295,21 @@ describe("UtilsService", () => {
     });
   });
 
+  describe("shortenUrl", () => {
+    it("should work", () => {
+      expect(UtilsService.shortenUrl("https://www.astrobin.com/foo/bar/tar.jpg")).toEqual("astrobin.com/.../tar.jpg");
+      expect(UtilsService.shortenUrl("ftp://www.astrobin.com/foo/bar/tar.jpg")).toEqual("astrobin.com/.../tar.jpg");
+      expect(UtilsService.shortenUrl("https://www.astrobin.com/foo/bar")).toEqual("astrobin.com/.../bar");
+      expect(UtilsService.shortenUrl("https://www.astrobin.com/foo/")).toEqual("astrobin.com/.../foo");
+      expect(UtilsService.shortenUrl("https://www.astrobin.com/foo")).toEqual("astrobin.com/.../foo");
+      expect(UtilsService.shortenUrl("https://www.astrobin.com")).toEqual("astrobin.com");
+      expect(UtilsService.shortenUrl("www.astrobin.com")).toEqual("astrobin.com");
+      expect(UtilsService.shortenUrl("http://www.astrobin.com")).toEqual("astrobin.com");
+      expect(UtilsService.shortenUrl("ftp://www.astrobin.com")).toEqual("astrobin.com");
+      expect(UtilsService.shortenUrl("astrobin.com")).toEqual("astrobin.com");
+    });
+  });
+
   describe("sortParent", () => {
     it("should handle corner cases", () => {
       expect(UtilsService.sortParent([])).toEqual([]);
