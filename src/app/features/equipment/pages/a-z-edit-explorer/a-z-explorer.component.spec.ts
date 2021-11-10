@@ -11,7 +11,7 @@ import { ItemTypeNavComponent } from "@features/equipment/components/item-type-n
 import { ItemBrowserComponent } from "@features/equipment/components/item-browser/item-browser.component";
 import { provideMockActions } from "@ngrx/effects/testing";
 
-describe("AZProposalExplorerComponent", () => {
+describe("AZExplorerComponent", () => {
   let component: AZExplorerComponent;
   let fixture: ComponentFixture<AZExplorerComponent>;
 
@@ -26,7 +26,13 @@ describe("AZProposalExplorerComponent", () => {
           provide: ActivatedRoute,
           useValue: {
             snapshot: {
-              paramMap: { get: key => "camera" }
+              paramMap: { get: key => "camera" },
+              queryParamMap: {
+                has: jest.fn(),
+                get: jest.fn(),
+                getAll: jest.fn(),
+                keys: []
+              }
             }
           }
         },

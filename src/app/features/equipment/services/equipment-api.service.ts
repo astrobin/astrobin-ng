@@ -346,13 +346,19 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   createSensor(sensor: Omit<SensorInterface, "id">): Observable<SensorInterface> {
-    return this._createItem<SensorInterface>(sensor, "sensor");
+    return this._createItem<SensorInterface>(
+      { ...sensor, specificationUrl: UtilsService.ensureUrlProtocol(sensor.specificationUrl) },
+      "sensor"
+    );
   }
 
   createSensorEditProposal(
     editProposal: Omit<EditProposalInterface<SensorInterface>, "id">
   ): Observable<EditProposalInterface<SensorInterface>> {
-    return this._createItemEditProposal<SensorInterface>(editProposal, "sensor");
+    return this._createItemEditProposal<SensorInterface>(
+      { ...editProposal, specificationUrl: UtilsService.ensureUrlProtocol(editProposal.specificationUrl) },
+      "sensor"
+    );
   }
 
   getSensor(id: SensorInterface["id"]): Observable<SensorInterface> {

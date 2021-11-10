@@ -17,6 +17,7 @@ export interface SensorInterface extends EquipmentItemBaseInterface {
   frameRate?: number;
   adc?: number;
   colorOrMono?: ColorOrMono;
+  specificationUrl?: string;
 }
 
 export function instanceOfSensor(object: EquipmentItemBaseInterface): object is SensorInterface {

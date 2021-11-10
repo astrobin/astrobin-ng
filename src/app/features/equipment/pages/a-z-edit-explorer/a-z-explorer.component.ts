@@ -15,6 +15,7 @@ import { EquipmentItemBaseInterface } from "@features/equipment/types/equipment-
 import { Observable } from "rxjs";
 import { selectBrand } from "@features/equipment/store/equipment.selectors";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
+import { WindowRefService } from "@shared/services/window-ref.service";
 
 @Component({
   selector: "astrobin-a-z-explorer",
@@ -22,7 +23,7 @@ import { EquipmentItemService } from "@features/equipment/services/equipment-ite
   styleUrls: ["./a-z-explorer.component.scss"]
 })
 export class AZExplorerComponent extends PendingExplorerBaseComponent implements OnInit {
-  title = this.translateService.instant("Equipment pending edit");
+  title = this.translateService.instant("A-Z explorer");
 
   constructor(
     public readonly store$: Store<State>,
@@ -32,9 +33,10 @@ export class AZExplorerComponent extends PendingExplorerBaseComponent implements
     public readonly translateService: TranslateService,
     public readonly titleService: TitleService,
     public readonly equipmentApiService: EquipmentApiService,
-    public readonly equipmentItemService: EquipmentItemService
+    public readonly equipmentItemService: EquipmentItemService,
+    public readonly windowRefService: WindowRefService
   ) {
-    super(store$, actions$, activatedRoute, router);
+    super(store$, actions$, activatedRoute, router, windowRefService);
   }
 
   ngOnInit() {
@@ -54,24 +56,10 @@ export class AZExplorerComponent extends PendingExplorerBaseComponent implements
         ]
       })
     );
-
-    this._getItems();
   }
 
-  pageChange(page: number): void {
-    this.page = page;
-    this._getItems(page);
-  }
-
-  getItemName$(item: EquipmentItemBaseInterface): Observable<string> {
-    return this.store$.select(selectBrand, item.brand).pipe(
-      filter(brand => !!brand),
-      switchMap(brand => this.equipmentItemService.getName$(item).pipe(map(name => `${brand.name} ${name}`)))
-    );
-  }
-
-  _getItems(page = 1) {
-    this.items$ = this.equipmentApiService.getAllEquipmentItems(this._activeType, page, "az").pipe(
+  getItems() {
+    this.items$ = this.equipmentApiService.getAllEquipmentItems(this._activeType, this.page, "az").pipe(
       tap(response => {
         const uniqueBrands: BrandInterface["id"][] = [];
         for (const item of response.results) {
@@ -81,6 +69,13 @@ export class AZExplorerComponent extends PendingExplorerBaseComponent implements
         }
         uniqueBrands.forEach(id => this.store$.dispatch(new LoadBrand({ id })));
       })
+    );
+  }
+
+  getItemName$(item: EquipmentItemBaseInterface): Observable<string> {
+    return this.store$.select(selectBrand, item.brand).pipe(
+      filter(brand => !!brand),
+      switchMap(brand => this.equipmentItemService.getName$(item).pipe(map(name => `${brand.name} ${name}`)))
     );
   }
 }

@@ -237,6 +237,24 @@ export class UtilsService {
     return url;
   }
 
+  static shortenUrl(url: string) {
+    const sanitized = UtilsService.ensureUrlProtocol(url)
+      .replace("www.", "") // remove the www part
+      .replace(/\/+/g, "/") // replace consecutive slashes with a single slash
+      .replace(/\/+$/, ""); // remove trailing slashes
+
+    const urlObject = new URL(sanitized);
+    const hostname = urlObject.hostname;
+    const path = urlObject.pathname;
+    const lastElement = path.split("/").pop();
+
+    if (lastElement) {
+      return `${hostname}/.../${lastElement}`;
+    }
+
+    return hostname;
+  }
+
   static slugify(s: string): string {
     if (!s) {
       return "";

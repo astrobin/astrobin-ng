@@ -19,7 +19,8 @@ export enum SensorDisplayProperty {
   READ_NOISE = "READ_NOISE",
   FRAME_RATE = "FRAME_RATE",
   ADC = "ADC",
-  COLOR_OR_MONO = "COLOR_OR_MONO"
+  COLOR_OR_MONO = "COLOR_OR_MONO",
+  SPECIFICATION_URL = "SPECIFICATION_URL"
 }
 @Injectable({
   providedIn: "root"
@@ -43,7 +44,8 @@ export class SensorService extends BaseService implements EquipmentItemServiceIn
       SensorDisplayProperty.READ_NOISE,
       SensorDisplayProperty.FRAME_RATE,
       SensorDisplayProperty.ADC,
-      SensorDisplayProperty.COLOR_OR_MONO
+      SensorDisplayProperty.COLOR_OR_MONO,
+      SensorDisplayProperty.SPECIFICATION_URL
     ];
   }
 
@@ -101,12 +103,14 @@ export class SensorService extends BaseService implements EquipmentItemServiceIn
         propertyValue = parseInt(propertyValue, 10);
         return of(propertyValue || item.adc ? `${propertyValue || item.adc}-bit` : "");
       case SensorDisplayProperty.COLOR_OR_MONO:
-        if (propertyValue || item.colorOrMono === ColorOrMono.C) {
-          return this.translateService.stream("Color");
-        } else if (propertyValue || item.colorOrMono === ColorOrMono.M) {
-          return this.translateService.stream("Mono");
+        if ((propertyValue || item.colorOrMono) === ColorOrMono.C) {
+          return of(this.translateService.instant("Color"));
+        } else if ((propertyValue || item.colorOrMono) === ColorOrMono.M) {
+          return of(this.translateService.instant("Mono"));
         }
         return of("");
+      case SensorDisplayProperty.SPECIFICATION_URL:
+        return of(propertyValue || item.specificationUrl);
       default:
         throw Error(`Invalid property: ${property}`);
     }
@@ -158,6 +162,8 @@ export class SensorService extends BaseService implements EquipmentItemServiceIn
         return shortForm ? this.translateService.instant("ADC") : this.translateService.instant("ADC") + " (bits)";
       case SensorDisplayProperty.COLOR_OR_MONO:
         return this.translateService.instant("Color or mono");
+      case SensorDisplayProperty.SPECIFICATION_URL:
+        return this.translateService.instant("Specification URL");
       default:
         throw Error(`Invalid property: ${propertyName}`);
     }
