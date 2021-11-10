@@ -56,7 +56,7 @@ export class AppComponent extends BaseComponentDirective {
   markNotificationAsRead() {
     const url = this.windowRefService.getCurrentUrl();
 
-    if (url.searchParams.get("utm_medium") === "email") {
+    if (!!url && url.searchParams.get("utm_medium") === "email") {
       const fromUserPk = url.searchParams.get("from_user");
       this.notificationApiService
         .markAsReadByPathAndUser(url.pathname, fromUserPk !== "None" ? +fromUserPk : null)
