@@ -376,7 +376,7 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
         wrappers: ["default-wrapper"],
         id: "sensor-field-specification-url",
         templateOptions: {
-          required: true,
+          required: false,
           label: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.SPECIFICATION_URL)
         },
         validators: {
