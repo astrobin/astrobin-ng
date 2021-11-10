@@ -18,6 +18,7 @@ import { EquipmentActionTypes, RejectEquipmentItem } from "@features/equipment/s
 import { Actions, ofType } from "@ngrx/effects";
 import { of } from "rxjs";
 import { TranslateService } from "@ngx-translate/core";
+import { FormlyFieldMessageLevel, FormlyFieldService } from "@shared/services/formly-field.service";
 
 export enum RejectMigrationReason {
   REJECTED_INCORRECT_STRATEGY = "REJECTED_INCORRECT_STRATEGY",
@@ -55,7 +56,8 @@ export class RejectMigrationModalComponent extends BaseComponentDirective implem
     public readonly modal: NgbActiveModal,
     public readonly loadingService: LoadingService,
     public readonly legacyGearApiService: GearApiService,
-    public readonly translateService: TranslateService
+    public readonly translateService: TranslateService,
+    public readonly formlyFieldService: FormlyFieldService
   ) {
     super(store$);
   }
@@ -107,7 +109,18 @@ export class RejectMigrationModalComponent extends BaseComponentDirective implem
               }
 
               field.templateOptions.description = description;
-              field.templateOptions.warningMessage = warning;
+
+              if (warning) {
+                this.formlyFieldService.addMessage(field.templateOptions, {
+                  level: FormlyFieldMessageLevel.WARNING,
+                  text: warning
+                });
+              } else {
+                this.formlyFieldService.removeMessage(field.templateOptions, {
+                  level: FormlyFieldMessageLevel.WARNING,
+                  text: warning
+                });
+              }
             });
           }
         }

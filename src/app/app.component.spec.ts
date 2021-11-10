@@ -4,9 +4,12 @@ import { AppComponent } from "@app/app.component";
 import { AppModule } from "@app/app.module";
 import { initialState } from "@app/store/state";
 import { provideMockStore } from "@ngrx/store/testing";
-import { MockBuilder, MockRender } from "ng-mocks";
+import { MockBuilder } from "ng-mocks";
+import { TestBed } from "@angular/core/testing";
 
 describe("AppComponent", () => {
+  let component: AppComponent;
+
   beforeEach(() =>
     MockBuilder(AppComponent, AppModule)
       .keep(RouterModule)
@@ -14,8 +17,13 @@ describe("AppComponent", () => {
       .provide(provideMockStore({ initialState }))
   );
 
+  beforeEach(() => {
+    const fixture = TestBed.createComponent(AppComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
   it("should create the app", () => {
-    const fixture = MockRender(AppComponent);
-    expect(fixture.point.componentInstance).toEqual(jasmine.any(AppComponent));
+    expect(component).toEqual(jasmine.any(AppComponent));
   });
 });

@@ -11,9 +11,11 @@ import { State } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { LoadingService } from "@shared/services/loading.service";
-import { take } from "rxjs/operators";
+import { take, takeUntil } from "rxjs/operators";
 import { EquipmentActionTypes, RejectEquipmentItem } from "@features/equipment/store/equipment.actions";
 import { Actions, ofType } from "@ngrx/effects";
+import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
+import { FormlyFieldMessageLevel, FormlyFieldService } from "@shared/services/formly-field.service";
 
 @Component({
   selector: "astrobin-reject-item-modal",
@@ -39,7 +41,9 @@ export class RejectItemModalComponent extends BaseComponentDirective implements 
     public readonly actions$: Actions,
     public readonly loadingService: LoadingService,
     public readonly translateService: TranslateService,
-    public readonly modal: NgbActiveModal
+    public readonly modal: NgbActiveModal,
+    public readonly equipmentItemService: EquipmentItemService,
+    public readonly formlyFieldService: FormlyFieldService
   ) {
     super(store$);
   }
@@ -49,6 +53,7 @@ export class RejectItemModalComponent extends BaseComponentDirective implements 
       {
         key: "reason",
         type: "ng-select",
+        wrappers: ["default-wrapper"],
         id: "reason",
         templateOptions: {
           required: true,
@@ -76,6 +81,28 @@ export class RejectItemModalComponent extends BaseComponentDirective implements 
               label: this.translateService.instant("Other")
             }
           ]
+        },
+        hooks: {
+          onInit: (field: FormlyFieldConfig) => {
+            const message = {
+              level: FormlyFieldMessageLevel.WARNING,
+              text:
+                `${this.translateService.instant("Please note")}:` +
+                this.translateService.instant("consider making an edit proposal instead.")
+            };
+
+            field.formControl.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(value => {
+              switch (value) {
+                case EquipmentItemReviewerRejectionReason.TYPO:
+                case EquipmentItemReviewerRejectionReason.INACCURATE_DATA:
+                case EquipmentItemReviewerRejectionReason.INSUFFICIENT_DATA:
+                  this.formlyFieldService.addMessage(field.templateOptions, message);
+                  break;
+                default:
+                  this.formlyFieldService.removeMessage(field.templateOptions, message);
+              }
+            });
+          }
         }
       },
       {
