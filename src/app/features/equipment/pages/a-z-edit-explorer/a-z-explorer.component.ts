@@ -22,7 +22,7 @@ import { EquipmentItemService } from "@features/equipment/services/equipment-ite
   styleUrls: ["./a-z-explorer.component.scss"]
 })
 export class AZExplorerComponent extends PendingExplorerBaseComponent implements OnInit {
-  title = this.translateService.instant("Equipment pending edit");
+  title = this.translateService.instant("A-Z explorer");
 
   constructor(
     public readonly store$: Store<State>,
