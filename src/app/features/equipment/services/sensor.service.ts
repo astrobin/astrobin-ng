@@ -107,8 +107,6 @@ export class SensorService extends BaseService implements EquipmentItemServiceIn
           return of(this.translateService.instant("Color"));
         } else if ((propertyValue || item.colorOrMono) === ColorOrMono.M) {
           return of(this.translateService.instant("Mono"));
-        } else if ((propertyValue || item.colorOrMono) === ColorOrMono.MC) {
-          return of(this.translateService.instant("Mono/Color"));
         }
         return of("");
       case SensorDisplayProperty.SPECIFICATION_URL:

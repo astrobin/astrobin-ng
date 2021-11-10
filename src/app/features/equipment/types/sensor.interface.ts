@@ -1,9 +1,8 @@
 import { EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
 
 export enum ColorOrMono {
-  M = "M",
   C = "C",
-  MC = "MC"
+  M = "M"
 }
 
 export interface SensorInterface extends EquipmentItemBaseInterface {

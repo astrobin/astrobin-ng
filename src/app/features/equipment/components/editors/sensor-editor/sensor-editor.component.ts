@@ -360,16 +360,12 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
           label: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.COLOR_OR_MONO),
           options: [
             {
-              label: this.translateService.instant("Mono"),
-              value: ColorOrMono.M
-            },
-            {
               label: this.translateService.instant("Color"),
               value: ColorOrMono.C
             },
             {
-              label: this.translateService.instant("Mono/Color"),
-              value: ColorOrMono.MC
+              label: this.translateService.instant("Mono"),
+              value: ColorOrMono.M
             }
           ]
         }
