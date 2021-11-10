@@ -26,7 +26,13 @@ describe("EditProposalExplorerComponent", () => {
           provide: ActivatedRoute,
           useValue: {
             snapshot: {
-              paramMap: { get: key => "camera" }
+              paramMap: { get: key => "camera" },
+              queryParamMap: {
+                has: jest.fn(),
+                get: jest.fn(),
+                getAll: jest.fn(),
+                keys: []
+              }
             }
           }
         },
