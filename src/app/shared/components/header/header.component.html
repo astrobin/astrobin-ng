@@ -111,7 +111,7 @@
                 class="dropdown-item"
                 routerLink="/equipment/migration-tool"
               >
-                <fa-icon icon="upload"></fa-icon>
+                <fa-icon icon="arrow-right"></fa-icon>
                 Migration tool
               </a>
             </ng-container>
@@ -162,7 +162,7 @@
           <ng-container *ngIf="currentUser$ | async as user">
             <a *ngIf="user | isEquipmentModerator" [routerLink]="['equipment', 'explorer']" class="dropdown-item">
               <fa-icon icon="camera"></fa-icon>
-              {{ "Equipment explorer" | translate }}
+              {{ "Equipment" | translate }}
             </a>
           </ng-container>
           <a [routerLink]="['explore', 'constellations']" class="dropdown-item">
