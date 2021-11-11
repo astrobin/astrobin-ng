@@ -92,7 +92,7 @@ export class SensorService extends BaseService implements EquipmentItemServiceIn
         return of(propertyValue || item.quantumEfficiency ? `${propertyValue || item.quantumEfficiency}%` : "");
       case SensorDisplayProperty.FULL_WELL_CAPACITY:
         propertyValue = parseFloat(propertyValue);
-        return of(propertyValue || item.fullWellCapacity ? `${propertyValue || item.fullWellCapacity} e-` : "");
+        return of(propertyValue || item.fullWellCapacity ? `${propertyValue || item.fullWellCapacity} ke-` : "");
       case SensorDisplayProperty.READ_NOISE:
         propertyValue = parseFloat(propertyValue);
         return of(propertyValue || item.readNoise ? `${propertyValue || item.readNoise} e-` : "");
@@ -149,7 +149,7 @@ export class SensorService extends BaseService implements EquipmentItemServiceIn
       case SensorDisplayProperty.FULL_WELL_CAPACITY:
         return shortForm
           ? this.translateService.instant("Full well capacity")
-          : this.translateService.instant("Full well capacity") + " (e-)";
+          : this.translateService.instant("Full well capacity") + " (ke-)";
       case SensorDisplayProperty.READ_NOISE:
         return shortForm
           ? this.translateService.instant("Read noise")

@@ -29,7 +29,7 @@ describe("SensorService", () => {
         pixelHeight: 600,
         sensorWidth: 25,
         sensorHeight: 20,
-        fullWellCapacity: 5000,
+        fullWellCapacity: 5,
         readNoise: 1000,
         frameRate: 24,
         adc: 12,
@@ -53,7 +53,7 @@ describe("SensorService", () => {
       });
 
       service.getPrintableProperty$(sensor, SensorDisplayProperty.FULL_WELL_CAPACITY).subscribe(value => {
-        expect(value).toEqual("5000 e-");
+        expect(value).toEqual("5 ke-");
       });
 
       service.getPrintableProperty$(sensor, SensorDisplayProperty.READ_NOISE).subscribe(value => {
