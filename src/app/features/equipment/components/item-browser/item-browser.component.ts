@@ -268,13 +268,16 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
                     .pipe(
                       takeUntil(this.destroyed$),
                       switchMap((id: EquipmentItemBaseInterface["id"]) =>
-                        this.store$.select(selectEquipmentItem, {
-                          id,
-                          type: this.type
-                        })
-                      ),
-                      filter(item => !!item),
-                      take(1)
+                        this.store$
+                          .select(selectEquipmentItem, {
+                            id,
+                            type: this.type
+                          })
+                          .pipe(
+                            filter(item => !!item),
+                            take(1)
+                          )
+                      )
                     )
                     .subscribe((item: EquipmentItemBaseInterface) => this.itemSelected.emit(item));
                 }
