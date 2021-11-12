@@ -53,6 +53,7 @@ export function reducer(state = initialEquipmentState, action: EquipmentActions)
     case EquipmentActionTypes.CREATE_SENSOR_SUCCESS:
     case EquipmentActionTypes.CREATE_CAMERA_SUCCESS:
     case EquipmentActionTypes.CREATE_TELESCOPE_SUCCESS:
+    case EquipmentActionTypes.CREATE_MOUNT_SUCCESS:
     case EquipmentActionTypes.LOAD_SENSOR_SUCCESS: {
       return {
         ...state,
@@ -64,6 +65,7 @@ export function reducer(state = initialEquipmentState, action: EquipmentActions)
     case EquipmentActionTypes.CREATE_SENSOR_EDIT_PROPOSAL_SUCCESS:
     case EquipmentActionTypes.CREATE_CAMERA_EDIT_PROPOSAL_SUCCESS:
     case EquipmentActionTypes.CREATE_TELESCOPE_EDIT_PROPOSAL_SUCCESS:
+    case EquipmentActionTypes.CREATE_MOUNT_EDIT_PROPOSAL_SUCCESS:
     case EquipmentActionTypes.REJECT_EQUIPMENT_ITEM_EDIT_PROPOSAL_SUCCESS: {
       return {
         ...state,

@@ -40,6 +40,7 @@ import { TelescopeEditorComponent } from "@features/equipment/components/editors
 import { PendingExplorerBaseComponent } from "@features/equipment/pages/explorer-base/pending-explorer-base.component";
 import { ReviewGearRenamingProposalsComponent } from "./pages/review-gear-renaming-proposals/review-gear-renaming-proposals.component";
 import { RejectReviewGearRenamingProposalsModalComponent } from "@features/equipment/components/reject-review-gear-renaming-proposals-modal/reject-review-gear-renaming-proposals-modal.component";
+import { MountEditorComponent } from "@features/equipment/components/editors/mount-editor/mount-editor.component";
 
 @NgModule({
   declarations: [
@@ -48,6 +49,7 @@ import { RejectReviewGearRenamingProposalsModalComponent } from "@features/equip
     CameraEditorComponent,
     SensorEditorComponent,
     TelescopeEditorComponent,
+    MountEditorComponent,
     BrandSummaryComponent,
     BaseItemEditorComponent,
     BrandEditorComponent,

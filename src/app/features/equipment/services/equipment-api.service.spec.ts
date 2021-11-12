@@ -12,6 +12,7 @@ import { TelescopeGenerator } from "@features/equipment/generators/telescope.gen
 import { SensorGenerator } from "@features/equipment/generators/sensor.generator";
 import { of } from "rxjs";
 import { ContentTypeGenerator } from "@shared/generators/content-type.generator";
+import { MountGenerator } from "@features/equipment/generators/mount.generator";
 
 describe("EquipmentApiService", () => {
   let service: EquipmentApiService;
@@ -138,8 +139,22 @@ describe("EquipmentApiService", () => {
       jest.spyOn(service, "getTelescope").mockReturnValue(of(telescope));
 
       service.getByContentTypeAndObjectId(1, telescope.id).subscribe(response => {
-        expect(service.getCamera).toHaveBeenCalledWith(telescope.id);
+        expect(service.getTelescope).toHaveBeenCalledWith(telescope.id);
         expect(response.id).toEqual(telescope.id);
+      });
+    });
+
+    it("should work with mount", () => {
+      const mount = MountGenerator.mount();
+
+      jest
+        .spyOn(service.commonApiService, "getContentTypeById")
+        .mockReturnValue(of(ContentTypeGenerator.contentType({ model: "mount" })));
+      jest.spyOn(service, "getMount").mockReturnValue(of(mount));
+
+      service.getByContentTypeAndObjectId(1, mount.id).subscribe(response => {
+        expect(service.getMount).toHaveBeenCalledWith(mount.id);
+        expect(response.id).toEqual(mount.id);
       });
     });
   });
@@ -187,7 +202,23 @@ describe("EquipmentApiService", () => {
       expect(req.request.method).toBe("GET");
       req.flush(item);
     });
+
+    it("should work with mount", () => {
+      const item = MountGenerator.mount();
+
+      service.getByBrandAndName(EquipmentItemType.MOUNT, item.brand, item.name).subscribe(response => {
+        expect(response.id).toEqual(item.id);
+      });
+
+      const req = httpMock.expectOne(
+        `${service.configUrl}/mount/?${new URLSearchParams({ brand: "" + item.brand.toString(), name: item.name })}`
+      );
+      expect(req.request.method).toBe("GET");
+      req.flush(item);
+    });
   });
+
+  // TODO: complete
 
   it("getCamera should work", () => {
     const camera = CameraGenerator.camera();
@@ -223,5 +254,17 @@ describe("EquipmentApiService", () => {
     const req = httpMock.expectOne(`${service.configUrl}/telescope/${telescope.id}/`);
     expect(req.request.method).toBe("GET");
     req.flush(telescope);
+  });
+
+  it("getMount should work", () => {
+    const mount = MountGenerator.mount();
+
+    service.getMount(mount.id).subscribe(response => {
+      expect(response.id).toEqual(mount.id);
+    });
+
+    const req = httpMock.expectOne(`${service.configUrl}/mount/${mount.id}/`);
+    expect(req.request.method).toBe("GET");
+    req.flush(mount);
   });
 });

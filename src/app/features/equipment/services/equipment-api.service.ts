@@ -22,6 +22,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 import { EditProposalInterface } from "@features/equipment/types/edit-proposal.interface";
 import { UtilsService } from "@shared/services/utils/utils.service";
+import { MountInterface } from "@features/equipment/types/mount.interface";
 
 @Injectable({
   providedIn: "root"
@@ -160,6 +161,8 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
             return this.getSensor(objectId);
           case "telescope":
             return this.getTelescope(objectId);
+          case "mount":
+            return this.getMount(objectId);
         }
       })
     );
@@ -415,6 +418,24 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
   }
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // MOUNT API
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  createMount(mount: Omit<MountInterface, "id">): Observable<MountInterface> {
+    return this._createItem<MountInterface>(mount, "mount");
+  }
+
+  createMountEditProposal(
+    editProposal: Omit<EditProposalInterface<MountInterface>, "id">
+  ): Observable<EditProposalInterface<MountInterface>> {
+    return this._createItemEditProposal<MountInterface>(editProposal, "mount");
+  }
+
+  getMount(id: MountInterface["id"]): Observable<MountInterface> {
+    return this.http.get<MountInterface>(`${this.configUrl}/mount/${id}/`).pipe(map(mount => this._parseMount(mount)));
+  }
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // PRIVATE
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -433,10 +454,14 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
         return this._parseCamera<any>(item);
       case EquipmentItemType.TELESCOPE:
         return this._parseTelescope<any>(item);
+      case EquipmentItemType.MOUNT:
+        return this._parseMount<any>(item);
     }
   }
 
   // TODO: complete
+
+  // The following _parse methods are here because django-rest-framework returns floats as strings (e.g. "1.23")
 
   private _parseSensor<T extends SensorInterface | EditProposalInterface<SensorInterface>>(item: T): T {
     return {
@@ -466,6 +491,15 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
         aperture: item.aperture !== null ? parseFloat((item.aperture as unknown) as string) : null,
         minFocalLength: item.minFocalLength !== null ? parseFloat((item.minFocalLength as unknown) as string) : null,
         maxFocalLength: item.maxFocalLength !== null ? parseFloat((item.maxFocalLength as unknown) as string) : null
+      }
+    };
+  }
+
+  private _parseMount<T extends MountInterface | EditProposalInterface<MountInterface>>(item: T): T {
+    return {
+      ...item,
+      ...{
+        aperture: item.slewSpeed !== null ? parseFloat((item.slewSpeed as unknown) as string) : null
       }
     };
   }

@@ -143,6 +143,13 @@
         [model]="editModel"
         [editorMode]="EquipmentItemEditorMode.EDIT_PROPOSAL"
       ></astrobin-telescope-editor>
+
+      <astrobin-mount-editor
+        *ngIf="activeType === EquipmentItemType.MOUNT"
+        [form]="editForm"
+        [model]="editModel"
+        [editorMode]="EquipmentItemEditorMode.EDIT_PROPOSAL"
+      ></astrobin-mount-editor>
     </div>
 
     <div class="card-footer">
