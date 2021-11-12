@@ -87,6 +87,22 @@ export const testTelescope = {
   weight: 2
 };
 
+export const testMount = {
+  id: 1,
+  deleted: null,
+  reviewedTimestamp: null,
+  reviewerDecision: null,
+  reviewerRejectionReason: null,
+  reviewerComment: null,
+  created: "2021-09-12T08:09:58.508643",
+  updated: "2021-09-12T08:09:58.508679",
+  brand: 1,
+  name: "Test mount",
+  image: null,
+  type: "GERMAN_EQUATORIAL",
+  maxPayload: 80
+};
+
 export const testTelescopeEditProposal = {
   ...testTelescope,
   ...{
@@ -95,6 +111,17 @@ export const testTelescopeEditProposal = {
     editProposalCreated: "2021-09-13T00:00:00",
     editProposalUpdated: "2021-09-13T00:00:00",
     name: "Test telescope Pro"
+  }
+};
+
+export const testMountEditProposal = {
+  ...testMount,
+  ...{
+    editProposalTarget: 1,
+    editProposalBy: 1,
+    editProposalCreated: "2021-09-13T00:00:00",
+    editProposalUpdated: "2021-09-13T00:00:00",
+    name: "Test mount Pro"
   }
 };
 
@@ -235,12 +262,48 @@ Cypress.Commands.add("setupEquipmentDefaultRoutesForTelescopes", () => {
 });
 
 Cypress.Commands.add("setupEquipmentDefaultRoutesForMounts", () => {
-  cy.route("GET", "**/api/v2/equipment/mount/", {
+  cy.route("GET", "**/api/v2/equipment/mount/?q=*", {
     count: 0,
     next: null,
     previous: null,
     results: []
+  }).as("findMounts");
+
+  cy.route("GET", "**/api/v2/equipment/mount/?page=*", {
+    count: 1,
+    next: null,
+    previous: null,
+    results: [testMount]
   }).as("getMounts");
+
+  cy.route("GET", "**/api/v2/equipment/mount/find-similar-in-brand/*", []);
+
+  cy.route("GET", "**/api/v2/equipment/mount/others-in-brand/*", []);
+
+  cy.route("GET", "**/api/v2/equipment/mount/?brand=*", {
+    count: 0,
+    next: null,
+    previous: null,
+    results: []
+  }).as("findMountsByName");
+
+  cy.route("GET", "**/api/v2/equipment/mount/?pending_review=true&page=*", {
+    count: 0,
+    next: null,
+    previous: null,
+    results: []
+  }).as("findMountsPendingReview");
+
+  cy.route("GET", "**/api/v2/equipment/mount/?pending_edit=true?page=*", {
+    count: 0,
+    next: null,
+    previous: null,
+    results: []
+  }).as("findMountsPendingEdit");
+
+  cy.route("GET", "**/api/v2/equipment/mount-edit-proposal/?edit_proposal_target=*", {
+    results: []
+  }).as("getEditProposals");
 });
 
 Cypress.Commands.add("setupEquipmentDefaultRoutesForFilters", () => {
@@ -365,6 +428,8 @@ Cypress.Commands.add("equipmentItemBrowserSelectFirstBrand", (selector, brandNam
   cy.ngSelectValueShouldContain(selector, brandName);
 });
 
+// TODO: complete
+
 Cypress.Commands.add("equipmentItemBrowserSelectFirstCamera", (selector, cameraName, cameraObject) => {
   cy.route("GET", "**/api/v2/equipment/camera/?q=*", {
     count: 1,
@@ -414,4 +479,21 @@ Cypress.Commands.add("equipmentItemBrowserSelectFirstTelescope", (selector, tele
   cy.ngSelectOptionNumberSelectorShouldContain(selector, 1, "astrobin-equipment-item-summary .label", telescopeName);
   cy.ngSelectOptionClick(selector, 1);
   cy.ngSelectValueShouldContain(selector, telescopeName);
+});
+
+Cypress.Commands.add("equipmentItemBrowserSelectFirstMount", (selector, mountName, mountObject) => {
+  cy.route("GET", "**/api/v2/equipment/mount/?q=*", {
+    count: 1,
+    next: null,
+    previous: null,
+    results: [mountObject]
+  }).as("findMounts");
+
+  cy.ngSelectType(selector, mountName);
+
+  cy.wait("@findMounts");
+
+  cy.ngSelectOptionNumberSelectorShouldContain(selector, 1, "astrobin-equipment-item-summary .label", mountName);
+  cy.ngSelectOptionClick(selector, 1);
+  cy.ngSelectValueShouldContain(selector, mountName);
 });

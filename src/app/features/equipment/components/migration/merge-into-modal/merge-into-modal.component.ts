@@ -19,6 +19,7 @@ import { FormGroup } from "@angular/forms";
 import { MigrationFlag } from "@shared/services/api/classic/astrobin/migratable-gear-item-api.service.interface";
 import { HttpStatusCode } from "@angular/common/http";
 import { TelescopeApiService } from "@shared/services/api/classic/astrobin/telescope/telescope-api.service";
+import { MountApiService } from "@shared/services/api/classic/astrobin/mount/mount-api.service";
 
 @Component({
   selector: "astrobin-merge-into-modal",
@@ -47,7 +48,8 @@ export class MergeIntoModalComponent extends BaseComponentDirective implements O
     public readonly legacyGearService: GearService,
     public readonly legacyGearApi: GearApiService,
     public readonly legacyCameraApi: CameraApiService,
-    public readonly legacyTelescopeApi: TelescopeApiService
+    public readonly legacyTelescopeApi: TelescopeApiService,
+    public readonly legacyMountApi: MountApiService
   ) {
     super(store$);
   }
@@ -62,6 +64,9 @@ export class MergeIntoModalComponent extends BaseComponentDirective implements O
         break;
       case EquipmentItemType.TELESCOPE:
         api = this.legacyTelescopeApi;
+        break;
+      case EquipmentItemType.MOUNT:
+        api = this.legacyMountApi;
         break;
       default:
         this.popNotificationsService.error("Wrong item type requested.");

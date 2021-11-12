@@ -12,6 +12,7 @@ import { CameraInterface } from "@features/equipment/types/camera.interface";
 import { EditProposalInterface } from "@features/equipment/types/edit-proposal.interface";
 import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
 import { TelescopeInterface } from "@features/equipment/types/telescope.interface";
+import { MountInterface } from "@features/equipment/types/mount.interface";
 
 export interface EquipmentItemCreationSuccessPayloadInterface {
   item: EquipmentItemBaseInterface;
@@ -69,7 +70,14 @@ export enum EquipmentActionTypes {
   CREATE_TELESCOPE = "[Equipment] Create telescope",
   CREATE_TELESCOPE_SUCCESS = "[Equipment] Create telescope success",
   CREATE_TELESCOPE_EDIT_PROPOSAL = "[Equipment] Create telescope edit proposal",
-  CREATE_TELESCOPE_EDIT_PROPOSAL_SUCCESS = "[Equipment] Create telescope edit request proposal"
+  CREATE_TELESCOPE_EDIT_PROPOSAL_SUCCESS = "[Equipment] Create telescope edit request proposal",
+
+  // Mounts
+
+  CREATE_MOUNT = "[Equipment] Create mount",
+  CREATE_MOUNT_SUCCESS = "[Equipment] Create mount success",
+  CREATE_MOUNT_EDIT_PROPOSAL = "[Equipment] Create mount edit proposal",
+  CREATE_MOUNT_EDIT_PROPOSAL_SUCCESS = "[Equipment] Create mount edit request proposal"
 }
 
 /**********************************************************************************************************************
@@ -324,6 +332,34 @@ export class CreateTelescopeEditProposalSuccess implements PayloadActionInterfac
   constructor(public payload: { editProposal: EditProposalInterface<TelescopeInterface> }) {}
 }
 
+/**********************************************************************************************************************
+ * Mounts
+ *********************************************************************************************************************/
+
+export class CreateMount implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.CREATE_MOUNT;
+
+  constructor(public payload: { mount: Omit<MountInterface, "id"> }) {}
+}
+
+export class CreateMountSuccess implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.CREATE_MOUNT_SUCCESS;
+
+  constructor(public payload: EquipmentItemCreationSuccessPayloadInterface) {}
+}
+
+export class CreateMountEditProposal implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.CREATE_MOUNT_EDIT_PROPOSAL;
+
+  constructor(public payload: { mount: Omit<EditProposalInterface<MountInterface>, "id"> }) {}
+}
+
+export class CreateMountEditProposalSuccess implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.CREATE_MOUNT_EDIT_PROPOSAL_SUCCESS;
+
+  constructor(public payload: { editProposal: EditProposalInterface<MountInterface> }) {}
+}
+
 export type EquipmentActions =
   // Brands
   | LoadBrand
@@ -371,4 +407,10 @@ export type EquipmentActions =
   | CreateTelescope
   | CreateTelescopeSuccess
   | CreateTelescopeEditProposal
-  | CreateTelescopeEditProposalSuccess;
+  | CreateTelescopeEditProposalSuccess
+
+  // Mounts
+  | CreateMount
+  | CreateMountSuccess
+  | CreateMountEditProposal
+  | CreateMountEditProposalSuccess;

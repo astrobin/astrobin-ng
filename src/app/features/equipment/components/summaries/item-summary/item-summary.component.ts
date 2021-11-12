@@ -16,12 +16,11 @@ import { Observable, of } from "rxjs";
 import { LoadBrand, LoadSensor } from "@features/equipment/store/equipment.actions";
 import { TelescopeDisplayProperty, TelescopeService } from "@features/equipment/services/telescope.service";
 import { SensorDisplayProperty, SensorService } from "@features/equipment/services/sensor.service";
-import {
-  EquipmentItemDisplayProperty,
-  EquipmentItemService
-} from "@features/equipment/services/equipment-item.service";
+import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { SensorInterface } from "@features/equipment/types/sensor.interface";
+import { MountInterface } from "@features/equipment/types/mount.interface";
+import { MountDisplayProperty, MountService } from "@features/equipment/services/mount.service";
 
 interface EquipmentItemProperty {
   name: string;
@@ -63,7 +62,8 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
     public readonly equipmentItemService: EquipmentItemService,
     public readonly cameraService: CameraService,
     public readonly telescopeService: TelescopeService,
-    public readonly sensorService: SensorService
+    public readonly sensorService: SensorService,
+    public readonly mountService: MountService
   ) {
     super(store$);
   }
@@ -80,6 +80,7 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
   get properties$(): Observable<EquipmentItemProperty[]> {
     const type: EquipmentItemType = this.equipmentItemService.getType(this.item);
 
+    // TODO: complete
     switch (type) {
       case EquipmentItemType.SENSOR:
         return this._sensorProperties$();
@@ -87,6 +88,8 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
         return this._cameraProperties$();
       case EquipmentItemType.TELESCOPE:
         return this._telescopeProperties$();
+      case EquipmentItemType.MOUNT:
+        return this._mountProperties$();
     }
   }
 
@@ -242,5 +245,52 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
         value: this.telescopeService.getPrintableProperty$(item, TelescopeDisplayProperty.WEIGHT)
       }
     ]);
+  }
+
+  private _mountProperties$(): Observable<EquipmentItemProperty[]> {
+    const item: MountInterface = this.item as MountInterface;
+
+    let properties = [
+      this.showClass
+        ? {
+            name: this.translateService.instant("Class"),
+            value: this.translateService.stream("Mount")
+          }
+        : null,
+      {
+        name: this.mountService.getPrintablePropertyName(MountDisplayProperty.TYPE, true),
+        value: this.mountService.getPrintableProperty$(item, MountDisplayProperty.TYPE)
+      },
+      {
+        name: this.mountService.getPrintablePropertyName(MountDisplayProperty.MAX_PAYLOAD, true),
+        value: this.mountService.getPrintableProperty$(item, MountDisplayProperty.MAX_PAYLOAD)
+      },
+      {
+        name: this.mountService.getPrintablePropertyName(MountDisplayProperty.COMPUTERIZED, true),
+        value: this.mountService.getPrintableProperty$(item, MountDisplayProperty.COMPUTERIZED)
+      }
+    ];
+
+    if (item.computerized) {
+      properties = [
+        ...properties,
+        ...[
+          {
+            name: this.mountService.getPrintablePropertyName(MountDisplayProperty.TRACKING_ACCURACY, true),
+            value: this.mountService.getPrintableProperty$(item, MountDisplayProperty.TRACKING_ACCURACY)
+          },
+          {
+            name: this.mountService.getPrintablePropertyName(MountDisplayProperty.PEC, true),
+            value: this.mountService.getPrintableProperty$(item, MountDisplayProperty.PEC)
+          },
+          {
+            name: this.mountService.getPrintablePropertyName(MountDisplayProperty.SLEW_SPEED, true),
+            value: this.mountService.getPrintableProperty$(item, MountDisplayProperty.SLEW_SPEED)
+          }
+        ]
+      ];
+    }
+
+    return of(properties);
   }
 }

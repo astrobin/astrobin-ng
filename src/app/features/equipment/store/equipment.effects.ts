@@ -11,6 +11,10 @@ import {
   CreateCameraEditProposal,
   CreateCameraEditProposalSuccess,
   CreateCameraSuccess,
+  CreateMount,
+  CreateMountEditProposal,
+  CreateMountEditProposalSuccess,
+  CreateMountSuccess,
   CreateSensor,
   CreateSensorEditProposal,
   CreateSensorEditProposalSuccess,
@@ -243,6 +247,8 @@ export class EquipmentEffects {
     )
   );
 
+  // TODO: complete all item types.
+
   /*********************************************************************************************************************
    * Sensors
    ********************************************************************************************************************/
@@ -353,6 +359,38 @@ export class EquipmentEffects {
             map(
               createdTelescopeEditProposal =>
                 new CreateTelescopeEditProposalSuccess({ editProposal: createdTelescopeEditProposal })
+            )
+          )
+      )
+    )
+  );
+
+  /*********************************************************************************************************************
+   * Mounts
+   ********************************************************************************************************************/
+
+  CreateMount: Observable<CreateMountSuccess> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(EquipmentActionTypes.CREATE_MOUNT),
+      map((action: CreateMount) => action.payload.mount),
+      mergeMap(mount =>
+        this.equipmentApiService
+          .createMount(mount)
+          .pipe(map(createdMount => new CreateMountSuccess({ item: createdMount })))
+      )
+    )
+  );
+
+  CreateMountEditProposal: Observable<CreateMountEditProposalSuccess> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(EquipmentActionTypes.CREATE_MOUNT_EDIT_PROPOSAL),
+      map((action: CreateMountEditProposal) => action.payload.mount),
+      mergeMap(mount =>
+        this.equipmentApiService
+          .createMountEditProposal(mount)
+          .pipe(
+            map(
+              createdMountEditProposal => new CreateMountEditProposalSuccess({ editProposal: createdMountEditProposal })
             )
           )
       )

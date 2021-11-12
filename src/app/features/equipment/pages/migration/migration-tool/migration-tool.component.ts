@@ -16,6 +16,7 @@ import { HttpStatusCode } from "@angular/common/http";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { CameraApiService } from "@shared/services/api/classic/astrobin/camera/camera-api.service";
 import { TelescopeApiService } from "@shared/services/api/classic/astrobin/telescope/telescope-api.service";
+import { MountApiService } from "@shared/services/api/classic/astrobin/mount/mount-api.service";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { TranslateService } from "@ngx-translate/core";
@@ -61,9 +62,10 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
     similarItems: []
   };
 
-  // TODO: other types
+  // TODO: complete other types
   nonMigratedCamerasCount$: Observable<number>;
   nonMigratedTelescopesCount$: Observable<number>;
+  nonMigratedMountsCount$: Observable<number>;
 
   constructor(
     public readonly store$: Store<State>,
@@ -74,6 +76,7 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
     public readonly legacyGearApi: GearApiService,
     public readonly legacyCameraApi: CameraApiService,
     public readonly legacyTelescopeApi: TelescopeApiService,
+    public readonly legacyMountApi: MountApiService,
     public readonly titleService: TitleService,
     public readonly popNotificationsService: PopNotificationsService,
     public readonly translateService: TranslateService,
@@ -125,6 +128,9 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
         break;
       case EquipmentItemType.TELESCOPE:
         api = this.legacyTelescopeApi;
+        break;
+      case EquipmentItemType.MOUNT:
+        api = this.legacyMountApi;
         break;
       default:
         this.popNotificationsService.error("Wrong item type requested.");
@@ -231,6 +237,9 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
         break;
       case EquipmentItemType.TELESCOPE:
         api = this.legacyTelescopeApi;
+        break;
+      case EquipmentItemType.MOUNT:
+        api = this.legacyMountApi;
         break;
       default:
         this.popNotificationsService.error("Wrong item type requested.");
@@ -357,8 +366,10 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
   }
 
   _updateCounts() {
+    // TODO: complete
     this.nonMigratedCamerasCount$ = this.legacyCameraApi.getNonMigratedCount();
     this.nonMigratedTelescopesCount$ = this.legacyTelescopeApi.getNonMigratedCount();
+    this.nonMigratedMountsCount$ = this.legacyMountApi.getNonMigratedCount();
   }
 
   _applyMigration(object: any, setMigrateArgs: any[], markedAs: string) {
