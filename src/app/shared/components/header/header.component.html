@@ -8,6 +8,16 @@
       <img alt="AstroBin" src="assets/images/nav-logo.png" />
     </a>
 
+    <div class="d-lg-none flex-grow-1 mobile-search">
+      <ng-container [ngTemplateOutlet]="quickSearch"></ng-container>
+    </div>
+
+    <div class="search-link">
+      <a [href]="classicRoutes.SEARCH">
+        <fa-icon icon="search"></fa-icon>
+      </a>
+    </div>
+
     <button
       (click)="isCollapsed = !isCollapsed"
       [attr.aria-expanded]="!isCollapsed"
@@ -24,6 +34,10 @@
     <div [ngbCollapse]="isCollapsed" class="collapse navbar-collapse" id="navbarSupportedContent">
       <ng-container [ngTemplateOutlet]="mainMenu"></ng-container>
 
+      <div class="d-none d-lg-inline-block flex-grow-1">
+        <ng-container [ngTemplateOutlet]="quickSearch"></ng-container>
+      </div>
+
       <ul *ngIf="authService.isAuthenticated() | async" class="navbar-nav">
         <ng-container [ngTemplateOutlet]="languageSelector"></ng-container>
         <ng-container [ngTemplateOutlet]="notificationsButton"></ng-container>
@@ -38,8 +52,29 @@
   <!-- ./container -->
 </nav>
 
+<ng-template #quickSearch>
+  <ul class="navbar-nav">
+    <!-- Quick search form -->
+    <li class="nav-item quick-search">
+      <form [action]="classicRoutes.SEARCH" method="get" ngNoForm>
+        <label>
+          <input
+            autocomplete="off"
+            class="form-control"
+            name="q"
+            placeholder="{{ 'Quick search' | translate }}"
+            type="text"
+          />
+        </label>
+        <input type="hidden" name="d" value="i" />
+      </form>
+    </li>
+    <!-- ./Quick search form -->
+  </ul>
+</ng-template>
+
 <ng-template #mainMenu>
-  <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+  <ul class="navbar-nav mt-2 mt-lg-0">
     <!-- Moderate menu -->
     <ng-container *ngIf="currentUser$ | async as user">
       <li *ngIf="user | isContentModerator" class="nav-item">
@@ -254,23 +289,6 @@
       </div>
     </li>
     <!-- ./Help menu -->
-
-    <!-- Quick search form -->
-    <li class="nav-item quick-search">
-      <form [action]="classicRoutes.SEARCH" method="get" ngNoForm>
-        <label>
-          <input
-            autocomplete="off"
-            class="form-control"
-            name="q"
-            placeholder="{{ 'Quick search' | translate }}"
-            type="text"
-          />
-        </label>
-        <input type="hidden" name="d" value="i" />
-      </form>
-    </li>
-    <!-- ./Quick search form -->
   </ul>
 </ng-template>
 

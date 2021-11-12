@@ -54,6 +54,22 @@
   @media (max-width: $md-min) {
     text-align: center;
   }
+
+  .mobile-search {
+    @media screen and (max-width: 340px) {
+      display: none;
+    }
+  }
+
+  .search-link {
+    @media screen and (min-width: 340.1px) {
+      display: none;
+    }
+
+    @media screen and (max-width: 340px) {
+      display: inline-block;
+    }
+  }
 }
 
 .navbar-toggler {
@@ -113,9 +129,11 @@
 
   &.quick-search {
     padding: 0.5rem;
+    width: 100%;
 
     label {
       margin: 0;
+      width: 100%;
     }
   }
 
