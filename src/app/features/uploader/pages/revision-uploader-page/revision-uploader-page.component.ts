@@ -39,6 +39,7 @@ export class RevisionUploaderPageComponent extends BaseComponentDirective implem
 
   model = {
     image_file: "",
+    title: "",
     description: "",
     skip_notifications: false,
     mark_as_final: true
@@ -56,9 +57,25 @@ export class RevisionUploaderPageComponent extends BaseComponentDirective implem
       }
     },
     {
+      key: "title",
+      wrappers: ["default-wrapper"],
+      id: "title",
+      type: "input",
+      templateOptions: {
+        label: this.translate.instant("Title"),
+        description: this.translate.instant(
+          "The revision's title will be shown as an addendum to the original image's title."
+        ),
+        required: false,
+        maxLength: 128,
+        change: this._onTitleChange.bind(this)
+      }
+    },
+    {
       key: "description",
       id: "description",
       type: "textarea",
+      wrappers: ["default-wrapper"],
       templateOptions: {
         label: this.translate.instant("Description"),
         required: false,
@@ -246,6 +263,7 @@ export class RevisionUploaderPageComponent extends BaseComponentDirective implem
     this._setThumbnail();
     this._setRevisionCount();
 
+    this._onTitleChange();
     this._onDescriptionChange();
     this._onSkipNotificationsChange();
     this._onMarkAsFinalChange();
@@ -313,6 +331,10 @@ export class RevisionUploaderPageComponent extends BaseComponentDirective implem
       .select(selectImageRevisionsForImage, this.image.pk)
       .pipe(takeUntil(this.destroyed$))
       .subscribe(imageRevisions => (this.revisionCount = imageRevisions.length));
+  }
+
+  private _onTitleChange() {
+    this.uploadDataService.patchMetadata("image-upload", { title: this.model.title || Constants.NO_VALUE });
   }
 
   private _onDescriptionChange() {
