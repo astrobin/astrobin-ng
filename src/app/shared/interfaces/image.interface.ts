@@ -67,7 +67,7 @@ export enum RemoteSource {
   IC = "IC Astronomy Observatories",
   ITU = "Image The Universe",
   INS = "Insight Observatory",
-  iT = "iTelescope",
+  ITELESCO = "iTelescope",
   LGO = "Lijiang Gemini Observatory",
   MARIO = "Marathon Remote Imaging Observatory (MaRIO)",
   NMS = "New Mexico Skies",
