@@ -176,6 +176,7 @@ export interface ImageRevisionInterface {
   uploaded: string;
   image: ImageInterface["pk"];
   imageFile: string;
+  title: string;
   description: string;
   skipNotifications: boolean;
   label: string;
