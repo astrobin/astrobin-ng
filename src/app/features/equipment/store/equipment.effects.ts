@@ -11,6 +11,10 @@ import {
   CreateCameraEditProposal,
   CreateCameraEditProposalSuccess,
   CreateCameraSuccess,
+  CreateFilter,
+  CreateFilterEditProposal,
+  CreateFilterEditProposalSuccess,
+  CreateFilterSuccess,
   CreateMount,
   CreateMountEditProposal,
   CreateMountEditProposalSuccess,
@@ -391,6 +395,39 @@ export class EquipmentEffects {
           .pipe(
             map(
               createdMountEditProposal => new CreateMountEditProposalSuccess({ editProposal: createdMountEditProposal })
+            )
+          )
+      )
+    )
+  );
+
+  /*********************************************************************************************************************
+   * Filters
+   ********************************************************************************************************************/
+
+  CreateFilter: Observable<CreateFilterSuccess> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(EquipmentActionTypes.CREATE_FILTER),
+      map((action: CreateFilter) => action.payload.filter),
+      mergeMap(filter_ =>
+        this.equipmentApiService
+          .createFilter(filter_)
+          .pipe(map(createdFilter => new CreateFilterSuccess({ item: createdFilter })))
+      )
+    )
+  );
+
+  CreateFilterEditProposal: Observable<CreateFilterEditProposalSuccess> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(EquipmentActionTypes.CREATE_FILTER_EDIT_PROPOSAL),
+      map((action: CreateFilterEditProposal) => action.payload.filter),
+      mergeMap(filter_ =>
+        this.equipmentApiService
+          .createFilterEditProposal(filter_)
+          .pipe(
+            map(
+              createdFilterEditProposal =>
+                new CreateFilterEditProposalSuccess({ editProposal: createdFilterEditProposal })
             )
           )
       )

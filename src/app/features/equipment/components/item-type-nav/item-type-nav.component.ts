@@ -120,6 +120,10 @@ export class ItemTypeNavComponent extends BaseComponentDirective implements OnIn
     if (changes.mountCount) {
       this.types.find(type => type.value === EquipmentItemType.MOUNT).count = changes.mountCount.currentValue;
     }
+
+    if (changes.filterCount) {
+      this.types.find(type => type.value === EquipmentItemType.FILTER).count = changes.filterCount.currentValue;
+    }
   }
 
   _setActiveSubNav(url: string) {
@@ -151,11 +155,13 @@ export class ItemTypeNavComponent extends BaseComponentDirective implements OnIn
             EquipmentActionTypes.CREATE_SENSOR_SUCCESS,
             EquipmentActionTypes.CREATE_TELESCOPE_SUCCESS,
             EquipmentActionTypes.CREATE_MOUNT_SUCCESS,
+            EquipmentActionTypes.CREATE_FILTER_SUCCESS,
             // TODO: complete all CREATE_*_EDIT_PROPOSAL_SUCCESS types.
             EquipmentActionTypes.CREATE_CAMERA_EDIT_PROPOSAL_SUCCESS,
             EquipmentActionTypes.CREATE_SENSOR_EDIT_PROPOSAL_SUCCESS,
             EquipmentActionTypes.CREATE_TELESCOPE_EDIT_PROPOSAL_SUCCESS,
             EquipmentActionTypes.CREATE_MOUNT_EDIT_PROPOSAL_SUCCESS,
+            EquipmentActionTypes.CREATE_FILTER_EDIT_PROPOSAL_SUCCESS,
 
             EquipmentActionTypes.APPROVE_EQUIPMENT_ITEM_SUCCESS,
             EquipmentActionTypes.REJECT_EQUIPMENT_ITEM_SUCCESS,
@@ -171,6 +177,7 @@ export class ItemTypeNavComponent extends BaseComponentDirective implements OnIn
   }
 
   _initTypes() {
+    // TODO: complete -> remove `disabled` as new ones are implemented.
     this.types = [
       {
         label: this.translateService.instant("Cameras"),
@@ -210,8 +217,7 @@ export class ItemTypeNavComponent extends BaseComponentDirective implements OnIn
         count: this.filterCount,
         providedCount: this.filterCount,
         pendingReviewCount: this.filtersPendingReviewCount,
-        pendingEditCount: this.filtersPendingEditCount,
-        disabled: true
+        pendingEditCount: this.filtersPendingEditCount
       },
       {
         label: this.translateService.instant("Accessories"),
@@ -246,7 +252,8 @@ export class ItemTypeNavComponent extends BaseComponentDirective implements OnIn
           EquipmentItemType.CAMERA,
           EquipmentItemType.SENSOR,
           EquipmentItemType.TELESCOPE,
-          EquipmentItemType.MOUNT
+          EquipmentItemType.MOUNT,
+          EquipmentItemType.FILTER
         ].indexOf(type.value) === -1
       ) {
         continue;

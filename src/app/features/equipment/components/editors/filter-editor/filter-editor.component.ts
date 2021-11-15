@@ -9,17 +9,15 @@ import { State } from "@app/store/state";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 import { FormlyFieldService } from "@shared/services/formly-field.service";
-import { MountDisplayProperty, MountService } from "@features/equipment/services/mount.service";
-import { MountInterface, MountType } from "@features/equipment/types/mount.interface";
-import { FormlyFieldConfig } from "@ngx-formly/core";
-import { takeUntil } from "rxjs/operators";
+import { FilterDisplayProperty, FilterService } from "@features/equipment/services/filter.service";
+import { FilterInterface, FilterType } from "@features/equipment/types/filter.interface";
 
 @Component({
-  selector: "astrobin-mount-editor",
-  templateUrl: "./mount-editor.component.html",
-  styleUrls: ["./mount-editor.component.scss", "../base-item-editor/base-item-editor.component.scss"]
+  selector: "astrobin-filter-editor",
+  templateUrl: "./filter-editor.component.html",
+  styleUrls: ["./filter-editor.component.scss", "../base-item-editor/base-item-editor.component.scss"]
 })
-export class MountEditorComponent extends BaseItemEditorComponent<MountInterface, null>
+export class FilterEditorComponent extends BaseItemEditorComponent<FilterInterface, null>
   implements OnInit, AfterViewInit {
   constructor(
     public readonly store$: Store<State>,
@@ -30,7 +28,7 @@ export class MountEditorComponent extends BaseItemEditorComponent<MountInterface
     public readonly equipmentApiService: EquipmentApiService,
     public readonly equipmentItemService: EquipmentItemService,
     public readonly formlyFieldService: FormlyFieldService,
-    public readonly mountService: MountService
+    public readonly filterService: FilterService
   ) {
     super(
       store$,
@@ -46,7 +44,7 @@ export class MountEditorComponent extends BaseItemEditorComponent<MountInterface
 
   ngOnInit() {
     if (!this.returnToSelector) {
-      this.returnToSelector = "#mount-editor-form";
+      this.returnToSelector = "#filter-editor-form";
     }
   }
 
@@ -65,32 +63,32 @@ export class MountEditorComponent extends BaseItemEditorComponent<MountInterface
       {
         key: "type",
         type: "ng-select",
-        id: "mount-field-type",
+        id: "filter-field-type",
         expressionProperties: {
           "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
         },
         templateOptions: {
-          label: this.mountService.getPrintablePropertyName(MountDisplayProperty.TYPE),
+          label: this.filterService.getPrintablePropertyName(FilterDisplayProperty.TYPE),
           required: true,
           clearable: true,
-          options: Object.keys(MountType).map(mountType => ({
-            value: MountType[mountType],
-            label: this.mountService.humanizeType(MountType[mountType])
+          options: Object.keys(FilterType).map(filterType => ({
+            value: FilterType[filterType],
+            label: this.filterService.humanizeType(FilterType[filterType])
           }))
         }
       },
       {
-        key: "maxPayload",
+        key: "bandwidth",
         type: "input",
         wrappers: ["default-wrapper"],
-        id: "mount-field-max-payload",
+        id: "filter-field-bandwidth",
         expressionProperties: {
           "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
         },
         templateOptions: {
           type: "number",
           step: 1,
-          label: this.mountService.getPrintablePropertyName(MountDisplayProperty.MAX_PAYLOAD)
+          label: this.filterService.getPrintablePropertyName(FilterDisplayProperty.BANDWIDTH)
         },
         validators: {
           validation: [
@@ -105,71 +103,17 @@ export class MountEditorComponent extends BaseItemEditorComponent<MountInterface
         }
       },
       {
-        key: "computerized",
-        type: "checkbox",
-        wrappers: ["default-wrapper"],
-        id: "mount-field-computerized",
-        defaultValue: true,
-        expressionProperties: {
-          "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
-        },
-        templateOptions: {
-          label: this.mountService.getPrintablePropertyName(MountDisplayProperty.COMPUTERIZED)
-        }
-      },
-      {
-        key: "trackingAccuracy",
+        key: "size",
         type: "input",
         wrappers: ["default-wrapper"],
-        id: "mount-field-tracking-accuracy",
-        hideExpression: () => !this.model.computerized,
-        expressionProperties: {
-          "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
-        },
-        templateOptions: {
-          type: "number",
-          step: 1,
-          label: this.mountService.getPrintablePropertyName(MountDisplayProperty.TRACKING_ACCURACY)
-        },
-        validators: {
-          validation: [
-            "number",
-            {
-              name: "min-value",
-              options: {
-                minValue: 1
-              }
-            }
-          ]
-        }
-      },
-      {
-        key: "pec",
-        type: "checkbox",
-        wrappers: ["default-wrapper"],
-        id: "mount-field-pec",
-        defaultValue: false,
-        hideExpression: () => !this.model.computerized,
-        expressionProperties: {
-          "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
-        },
-        templateOptions: {
-          label: this.mountService.getPrintablePropertyName(MountDisplayProperty.PEC)
-        }
-      },
-      {
-        key: "slewSpeed",
-        type: "input",
-        wrappers: ["default-wrapper"],
-        id: "mount-field-slew-speed",
-        hideExpression: () => !this.model.computerized,
+        id: "filter-field-size",
         expressionProperties: {
           "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
         },
         templateOptions: {
           type: "number",
           step: 0.1,
-          label: this.mountService.getPrintablePropertyName(MountDisplayProperty.SLEW_SPEED)
+          label: this.filterService.getPrintablePropertyName(FilterDisplayProperty.SIZE)
         },
         validators: {
           validation: [
@@ -178,6 +122,12 @@ export class MountEditorComponent extends BaseItemEditorComponent<MountInterface
               name: "min-value",
               options: {
                 minValue: 0.1
+              }
+            },
+            {
+              name: "max-value",
+              options: {
+                maxValue: 99.99
               }
             },
             {

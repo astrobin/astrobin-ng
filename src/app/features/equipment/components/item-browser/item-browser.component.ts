@@ -9,6 +9,7 @@ import { of } from "rxjs";
 import { TranslateService } from "@ngx-translate/core";
 import {
   CreateCamera,
+  CreateFilter,
   CreateMount,
   CreateSensor,
   CreateTelescope,
@@ -31,6 +32,7 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 import { TelescopeInterface } from "@features/equipment/types/telescope.interface";
 import { MountInterface } from "@features/equipment/types/mount.interface";
+import { FilterInterface } from "@features/equipment/types/filter.interface";
 
 @Component({
   selector: "astrobin-equipment-item-browser",
@@ -176,6 +178,10 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
           case EquipmentItemType.MOUNT:
             action = new CreateMount({ mount: item as MountInterface });
             actionSuccessType = EquipmentActionTypes.CREATE_MOUNT_SUCCESS;
+            break;
+          case EquipmentItemType.FILTER:
+            action = new CreateFilter({ filter: item as FilterInterface });
+            actionSuccessType = EquipmentActionTypes.CREATE_FILTER_SUCCESS;
             break;
         }
 

@@ -23,6 +23,7 @@ import { EquipmentItemService } from "@features/equipment/services/equipment-ite
 import { EditProposalInterface } from "@features/equipment/types/edit-proposal.interface";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { MountInterface } from "@features/equipment/types/mount.interface";
+import { FilterInterface } from "@features/equipment/types/filter.interface";
 
 @Injectable({
   providedIn: "root"
@@ -163,6 +164,8 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
             return this.getTelescope(objectId);
           case "mount":
             return this.getMount(objectId);
+          case "filter":
+            return this.getFilter(objectId);
         }
       })
     );
@@ -436,6 +439,26 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
   }
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // FILTER API
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  createFilter(filter: Omit<FilterInterface, "id">): Observable<FilterInterface> {
+    return this._createItem<FilterInterface>(filter, "filter");
+  }
+
+  createFilterEditProposal(
+    editProposal: Omit<EditProposalInterface<FilterInterface>, "id">
+  ): Observable<EditProposalInterface<FilterInterface>> {
+    return this._createItemEditProposal<FilterInterface>(editProposal, "filter");
+  }
+
+  getFilter(id: FilterInterface["id"]): Observable<FilterInterface> {
+    return this.http
+      .get<FilterInterface>(`${this.configUrl}/filter/${id}/`)
+      .pipe(map(filter => this._parseFilter(filter)));
+  }
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // PRIVATE
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -456,6 +479,8 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
         return this._parseTelescope<any>(item);
       case EquipmentItemType.MOUNT:
         return this._parseMount<any>(item);
+      case EquipmentItemType.FILTER:
+        return this._parseFilter<any>(item);
     }
   }
 
@@ -500,6 +525,15 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
       ...item,
       ...{
         aperture: item.slewSpeed !== null ? parseFloat((item.slewSpeed as unknown) as string) : null
+      }
+    };
+  }
+
+  private _parseFilter<T extends FilterInterface | EditProposalInterface<FilterInterface>>(item: T): T {
+    return {
+      ...item,
+      ...{
+        size: item.size !== null ? parseFloat((item.size as unknown) as string) : null
       }
     };
   }

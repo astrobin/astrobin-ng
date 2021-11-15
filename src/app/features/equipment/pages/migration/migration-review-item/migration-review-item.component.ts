@@ -23,6 +23,7 @@ import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { CameraApiService } from "@shared/services/api/classic/gear/camera/camera-api.service";
 import { TelescopeApiService } from "@shared/services/api/classic/gear/telescope/telescope-api.service";
 import { MountApiService } from "@shared/services/api/classic/gear/mount/mount-api.service";
+import { FilterApiService } from "@shared/services/api/classic/gear/filter/filter-api.service";
 
 @Component({
   selector: "astrobin-migration-review-item",
@@ -51,7 +52,8 @@ export class MigrationReviewItemComponent extends BaseComponentDirective impleme
     public readonly modalService: NgbModal,
     public readonly legacyCameraApiService: CameraApiService,
     public readonly legacyTelescopeApiService: TelescopeApiService,
-    public readonly legacyMountApiService: MountApiService
+    public readonly legacyMountApiService: MountApiService,
+    public readonly legacyFilterApiService: FilterApiService
   ) {
     super(store$);
   }
@@ -86,6 +88,9 @@ export class MigrationReviewItemComponent extends BaseComponentDirective impleme
               break;
             case "mount":
               api = this.legacyMountApiService;
+              break;
+            case "filter":
+              api = this.legacyFilterApiService;
               break;
           }
 
