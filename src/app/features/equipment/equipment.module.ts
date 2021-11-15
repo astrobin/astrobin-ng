@@ -41,6 +41,7 @@ import { PendingExplorerBaseComponent } from "@features/equipment/pages/explorer
 import { ReviewGearRenamingProposalsComponent } from "./pages/review-gear-renaming-proposals/review-gear-renaming-proposals.component";
 import { RejectReviewGearRenamingProposalsModalComponent } from "@features/equipment/components/reject-review-gear-renaming-proposals-modal/reject-review-gear-renaming-proposals-modal.component";
 import { MountEditorComponent } from "@features/equipment/components/editors/mount-editor/mount-editor.component";
+import { FilterEditorComponent } from "@features/equipment/components/editors/filter-editor/filter-editor.component";
 
 @NgModule({
   declarations: [
@@ -50,6 +51,7 @@ import { MountEditorComponent } from "@features/equipment/components/editors/mou
     SensorEditorComponent,
     TelescopeEditorComponent,
     MountEditorComponent,
+    FilterEditorComponent,
     BrandSummaryComponent,
     BaseItemEditorComponent,
     BrandEditorComponent,

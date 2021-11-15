@@ -21,6 +21,8 @@ import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { SensorInterface } from "@features/equipment/types/sensor.interface";
 import { MountInterface } from "@features/equipment/types/mount.interface";
 import { MountDisplayProperty, MountService } from "@features/equipment/services/mount.service";
+import { FilterInterface } from "@features/equipment/types/filter.interface";
+import { FilterDisplayProperty, FilterService } from "@features/equipment/services/filter.service";
 
 interface EquipmentItemProperty {
   name: string;
@@ -63,7 +65,8 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
     public readonly cameraService: CameraService,
     public readonly telescopeService: TelescopeService,
     public readonly sensorService: SensorService,
-    public readonly mountService: MountService
+    public readonly mountService: MountService,
+    public readonly filterService: FilterService
   ) {
     super(store$);
   }
@@ -90,6 +93,8 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
         return this._telescopeProperties$();
       case EquipmentItemType.MOUNT:
         return this._mountProperties$();
+      case EquipmentItemType.FILTER:
+        return this._filterProperties$();
     }
   }
 
@@ -292,5 +297,30 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
     }
 
     return of(properties);
+  }
+
+  private _filterProperties$(): Observable<EquipmentItemProperty[]> {
+    const item: FilterInterface = this.item as FilterInterface;
+
+    return of([
+      this.showClass
+        ? {
+            name: this.translateService.instant("Class"),
+            value: this.translateService.stream("Filter")
+          }
+        : null,
+      {
+        name: this.filterService.getPrintablePropertyName(FilterDisplayProperty.TYPE, true),
+        value: this.filterService.getPrintableProperty$(item, FilterDisplayProperty.TYPE)
+      },
+      {
+        name: this.filterService.getPrintablePropertyName(FilterDisplayProperty.BANDWIDTH, true),
+        value: this.filterService.getPrintableProperty$(item, FilterDisplayProperty.BANDWIDTH)
+      },
+      {
+        name: this.filterService.getPrintablePropertyName(FilterDisplayProperty.SIZE, true),
+        value: this.filterService.getPrintableProperty$(item, FilterDisplayProperty.SIZE)
+      }
+    ]);
   }
 }

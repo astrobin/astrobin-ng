@@ -9,6 +9,7 @@ import { instanceOfCamera } from "@features/equipment/types/camera.interface";
 import { instanceOfTelescope } from "@features/equipment/types/telescope.interface";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { instanceOfMount } from "@features/equipment/types/mount.interface";
+import { instanceOfFilter } from "@features/equipment/types/filter.interface";
 
 export function getEquipmentItemType(item: EquipmentItemBaseInterface): EquipmentItemType {
   // TODO: complete.
@@ -27,6 +28,10 @@ export function getEquipmentItemType(item: EquipmentItemBaseInterface): Equipmen
 
   if (instanceOfMount(item)) {
     return EquipmentItemType.MOUNT;
+  }
+
+  if (instanceOfFilter(item)) {
+    return EquipmentItemType.FILTER;
   }
 
   throw new Error("Unknown type");

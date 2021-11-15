@@ -27,6 +27,7 @@ import { GearService } from "@shared/services/gear/gear.service";
 import { ItemBrowserComponent } from "@features/equipment/components/item-browser/item-browser.component";
 import { CameraInterface } from "@features/equipment/types/camera.interface";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
+import { FilterApiService } from "@shared/services/api/classic/astrobin/filter/filter-api.service";
 
 @Component({
   selector: "astrobin-migration-tool",
@@ -66,6 +67,7 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
   nonMigratedCamerasCount$: Observable<number>;
   nonMigratedTelescopesCount$: Observable<number>;
   nonMigratedMountsCount$: Observable<number>;
+  nonMigratedFiltersCount$: Observable<number>;
 
   constructor(
     public readonly store$: Store<State>,
@@ -77,6 +79,7 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
     public readonly legacyCameraApi: CameraApiService,
     public readonly legacyTelescopeApi: TelescopeApiService,
     public readonly legacyMountApi: MountApiService,
+    public readonly legacyFilterApi: FilterApiService,
     public readonly titleService: TitleService,
     public readonly popNotificationsService: PopNotificationsService,
     public readonly translateService: TranslateService,
@@ -131,6 +134,9 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
         break;
       case EquipmentItemType.MOUNT:
         api = this.legacyMountApi;
+        break;
+      case EquipmentItemType.FILTER:
+        api = this.legacyFilterApi;
         break;
       default:
         this.popNotificationsService.error("Wrong item type requested.");
@@ -240,6 +246,9 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
         break;
       case EquipmentItemType.MOUNT:
         api = this.legacyMountApi;
+        break;
+      case EquipmentItemType.FILTER:
+        api = this.legacyFilterApi;
         break;
       default:
         this.popNotificationsService.error("Wrong item type requested.");
@@ -370,6 +379,7 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
     this.nonMigratedCamerasCount$ = this.legacyCameraApi.getNonMigratedCount();
     this.nonMigratedTelescopesCount$ = this.legacyTelescopeApi.getNonMigratedCount();
     this.nonMigratedMountsCount$ = this.legacyMountApi.getNonMigratedCount();
+    this.nonMigratedFiltersCount$ = this.legacyFilterApi.getNonMigratedCount();
   }
 
   _applyMigration(object: any, setMigrateArgs: any[], markedAs: string) {

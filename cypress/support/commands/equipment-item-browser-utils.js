@@ -103,6 +103,23 @@ export const testMount = {
   maxPayload: 80
 };
 
+export const testFilter = {
+  id: 1,
+  deleted: null,
+  reviewedTimestamp: null,
+  reviewerDecision: null,
+  reviewerRejectionReason: null,
+  reviewerComment: null,
+  created: "2021-09-12T08:09:58.508643",
+  updated: "2021-09-12T08:09:58.508679",
+  brand: 1,
+  name: "Test filter",
+  image: null,
+  type: "L",
+  bandwidth: 12,
+  size: 31
+};
+
 export const testTelescopeEditProposal = {
   ...testTelescope,
   ...{
@@ -122,6 +139,17 @@ export const testMountEditProposal = {
     editProposalCreated: "2021-09-13T00:00:00",
     editProposalUpdated: "2021-09-13T00:00:00",
     name: "Test mount Pro"
+  }
+};
+
+export const testFilterEditProposal = {
+  ...testFilter,
+  ...{
+    editProposalTarget: 1,
+    editProposalBy: 1,
+    editProposalCreated: "2021-09-13T00:00:00",
+    editProposalUpdated: "2021-09-13T00:00:00",
+    name: "Test filter Pro"
   }
 };
 
@@ -307,12 +335,48 @@ Cypress.Commands.add("setupEquipmentDefaultRoutesForMounts", () => {
 });
 
 Cypress.Commands.add("setupEquipmentDefaultRoutesForFilters", () => {
-  cy.route("GET", "**/api/v2/equipment/filter/", {
+  cy.route("GET", "**/api/v2/equipment/filter/?q=*", {
     count: 0,
     next: null,
     previous: null,
     results: []
+  }).as("findFilters");
+
+  cy.route("GET", "**/api/v2/equipment/filter/?page=*", {
+    count: 1,
+    next: null,
+    previous: null,
+    results: [testFilter]
   }).as("getFilters");
+
+  cy.route("GET", "**/api/v2/equipment/filter/find-similar-in-brand/*", []);
+
+  cy.route("GET", "**/api/v2/equipment/filter/others-in-brand/*", []);
+
+  cy.route("GET", "**/api/v2/equipment/filter/?brand=*", {
+    count: 0,
+    next: null,
+    previous: null,
+    results: []
+  }).as("findFiltersByName");
+
+  cy.route("GET", "**/api/v2/equipment/filter/?pending_review=true&page=*", {
+    count: 0,
+    next: null,
+    previous: null,
+    results: []
+  }).as("findFiltersPendingReview");
+
+  cy.route("GET", "**/api/v2/equipment/filter/?pending_edit=true?page=*", {
+    count: 0,
+    next: null,
+    previous: null,
+    results: []
+  }).as("findFiltersPendingEdit");
+
+  cy.route("GET", "**/api/v2/equipment/filter-edit-proposal/?edit_proposal_target=*", {
+    results: []
+  }).as("getEditProposals");
 });
 
 Cypress.Commands.add("setupEquipmentDefaultRoutesForAccessories", () => {
@@ -496,4 +560,21 @@ Cypress.Commands.add("equipmentItemBrowserSelectFirstMount", (selector, mountNam
   cy.ngSelectOptionNumberSelectorShouldContain(selector, 1, "astrobin-equipment-item-summary .label", mountName);
   cy.ngSelectOptionClick(selector, 1);
   cy.ngSelectValueShouldContain(selector, mountName);
+});
+
+Cypress.Commands.add("equipmentItemBrowserSelectFirstFilter", (selector, filterName, filterObject) => {
+  cy.route("GET", "**/api/v2/equipment/filter/?q=*", {
+    count: 1,
+    next: null,
+    previous: null,
+    results: [filterObject]
+  }).as("findFilters");
+
+  cy.ngSelectType(selector, filterName);
+
+  cy.wait("@findFilters");
+
+  cy.ngSelectOptionNumberSelectorShouldContain(selector, 1, "astrobin-equipment-item-summary .label", filterName);
+  cy.ngSelectOptionClick(selector, 1);
+  cy.ngSelectValueShouldContain(selector, filterName);
 });

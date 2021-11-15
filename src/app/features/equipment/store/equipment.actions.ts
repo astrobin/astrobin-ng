@@ -13,6 +13,7 @@ import { EditProposalInterface } from "@features/equipment/types/edit-proposal.i
 import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
 import { TelescopeInterface } from "@features/equipment/types/telescope.interface";
 import { MountInterface } from "@features/equipment/types/mount.interface";
+import { FilterInterface } from "@features/equipment/types/filter.interface";
 
 export interface EquipmentItemCreationSuccessPayloadInterface {
   item: EquipmentItemBaseInterface;
@@ -77,7 +78,14 @@ export enum EquipmentActionTypes {
   CREATE_MOUNT = "[Equipment] Create mount",
   CREATE_MOUNT_SUCCESS = "[Equipment] Create mount success",
   CREATE_MOUNT_EDIT_PROPOSAL = "[Equipment] Create mount edit proposal",
-  CREATE_MOUNT_EDIT_PROPOSAL_SUCCESS = "[Equipment] Create mount edit request proposal"
+  CREATE_MOUNT_EDIT_PROPOSAL_SUCCESS = "[Equipment] Create mount edit request proposal",
+
+  // Filters
+
+  CREATE_FILTER = "[Equipment] Create filter",
+  CREATE_FILTER_SUCCESS = "[Equipment] Create filter success",
+  CREATE_FILTER_EDIT_PROPOSAL = "[Equipment] Create filter edit proposal",
+  CREATE_FILTER_EDIT_PROPOSAL_SUCCESS = "[Equipment] Create filter edit request proposal"
 }
 
 /**********************************************************************************************************************
@@ -360,6 +368,34 @@ export class CreateMountEditProposalSuccess implements PayloadActionInterface {
   constructor(public payload: { editProposal: EditProposalInterface<MountInterface> }) {}
 }
 
+/**********************************************************************************************************************
+ * Filters
+ *********************************************************************************************************************/
+
+export class CreateFilter implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.CREATE_FILTER;
+
+  constructor(public payload: { filter: Omit<FilterInterface, "id"> }) {}
+}
+
+export class CreateFilterSuccess implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.CREATE_FILTER_SUCCESS;
+
+  constructor(public payload: EquipmentItemCreationSuccessPayloadInterface) {}
+}
+
+export class CreateFilterEditProposal implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.CREATE_FILTER_EDIT_PROPOSAL;
+
+  constructor(public payload: { filter: Omit<EditProposalInterface<FilterInterface>, "id"> }) {}
+}
+
+export class CreateFilterEditProposalSuccess implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.CREATE_FILTER_EDIT_PROPOSAL_SUCCESS;
+
+  constructor(public payload: { editProposal: EditProposalInterface<FilterInterface> }) {}
+}
+
 export type EquipmentActions =
   // Brands
   | LoadBrand
@@ -413,4 +449,10 @@ export type EquipmentActions =
   | CreateMount
   | CreateMountSuccess
   | CreateMountEditProposal
-  | CreateMountEditProposalSuccess;
+  | CreateMountEditProposalSuccess
+
+  // Filters
+  | CreateFilter
+  | CreateFilterSuccess
+  | CreateFilterEditProposal
+  | CreateFilterEditProposalSuccess;

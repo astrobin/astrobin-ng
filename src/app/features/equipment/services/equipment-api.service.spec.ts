@@ -13,6 +13,7 @@ import { SensorGenerator } from "@features/equipment/generators/sensor.generator
 import { of } from "rxjs";
 import { ContentTypeGenerator } from "@shared/generators/content-type.generator";
 import { MountGenerator } from "@features/equipment/generators/mount.generator";
+import { FilterGenerator } from "@features/equipment/generators/filter.generator";
 
 describe("EquipmentApiService", () => {
   let service: EquipmentApiService;
@@ -157,6 +158,20 @@ describe("EquipmentApiService", () => {
         expect(response.id).toEqual(mount.id);
       });
     });
+
+    it("should work with filter", () => {
+      const filter = FilterGenerator.filter();
+
+      jest
+        .spyOn(service.commonApiService, "getContentTypeById")
+        .mockReturnValue(of(ContentTypeGenerator.contentType({ model: "filter" })));
+      jest.spyOn(service, "getFilter").mockReturnValue(of(filter));
+
+      service.getByContentTypeAndObjectId(1, filter.id).subscribe(response => {
+        expect(service.getFilter).toHaveBeenCalledWith(filter.id);
+        expect(response.id).toEqual(filter.id);
+      });
+    });
   });
 
   // TODO: complete
@@ -216,6 +231,20 @@ describe("EquipmentApiService", () => {
       expect(req.request.method).toBe("GET");
       req.flush(item);
     });
+
+    it("should work with filter", () => {
+      const item = FilterGenerator.filter();
+
+      service.getByBrandAndName(EquipmentItemType.FILTER, item.brand, item.name).subscribe(response => {
+        expect(response.id).toEqual(item.id);
+      });
+
+      const req = httpMock.expectOne(
+        `${service.configUrl}/filter/?${new URLSearchParams({ brand: "" + item.brand.toString(), name: item.name })}`
+      );
+      expect(req.request.method).toBe("GET");
+      req.flush(item);
+    });
   });
 
   // TODO: complete
@@ -266,5 +295,17 @@ describe("EquipmentApiService", () => {
     const req = httpMock.expectOne(`${service.configUrl}/mount/${mount.id}/`);
     expect(req.request.method).toBe("GET");
     req.flush(mount);
+  });
+
+  it("getFilter should work", () => {
+    const filter = FilterGenerator.filter();
+
+    service.getFilter(filter.id).subscribe(response => {
+      expect(response.id).toEqual(filter.id);
+    });
+
+    const req = httpMock.expectOne(`${service.configUrl}/filter/${filter.id}/`);
+    expect(req.request.method).toBe("GET");
+    req.flush(filter);
   });
 });
