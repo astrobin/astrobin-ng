@@ -14,6 +14,7 @@ import { of } from "rxjs";
 import { ContentTypeGenerator } from "@shared/generators/content-type.generator";
 import { MountGenerator } from "@features/equipment/generators/mount.generator";
 import { FilterGenerator } from "@features/equipment/generators/filter.generator";
+import { AccessoryGenerator } from "@features/equipment/generators/accessory.generator";
 
 describe("EquipmentApiService", () => {
   let service: EquipmentApiService;
@@ -172,6 +173,20 @@ describe("EquipmentApiService", () => {
         expect(response.id).toEqual(filter.id);
       });
     });
+
+    it("should work with accessory", () => {
+      const accessory = AccessoryGenerator.accessory();
+
+      jest
+        .spyOn(service.commonApiService, "getContentTypeById")
+        .mockReturnValue(of(ContentTypeGenerator.contentType({ model: "accessory" })));
+      jest.spyOn(service, "getAccessory").mockReturnValue(of(accessory));
+
+      service.getByContentTypeAndObjectId(1, accessory.id).subscribe(response => {
+        expect(service.getAccessory).toHaveBeenCalledWith(accessory.id);
+        expect(response.id).toEqual(accessory.id);
+      });
+    });
   });
 
   // TODO: complete
@@ -245,6 +260,20 @@ describe("EquipmentApiService", () => {
       expect(req.request.method).toBe("GET");
       req.flush(item);
     });
+
+    it("should work with accessory", () => {
+      const item = AccessoryGenerator.accessory();
+
+      service.getByBrandAndName(EquipmentItemType.ACCESSORY, item.brand, item.name).subscribe(response => {
+        expect(response.id).toEqual(item.id);
+      });
+
+      const req = httpMock.expectOne(
+        `${service.configUrl}/accessory/?${new URLSearchParams({ brand: "" + item.brand.toString(), name: item.name })}`
+      );
+      expect(req.request.method).toBe("GET");
+      req.flush(item);
+    });
   });
 
   // TODO: complete
@@ -307,5 +336,17 @@ describe("EquipmentApiService", () => {
     const req = httpMock.expectOne(`${service.configUrl}/filter/${filter.id}/`);
     expect(req.request.method).toBe("GET");
     req.flush(filter);
+  });
+
+  it("getAccessory should work", () => {
+    const accessory = AccessoryGenerator.accessory();
+
+    service.getAccessory(accessory.id).subscribe(response => {
+      expect(response.id).toEqual(accessory.id);
+    });
+
+    const req = httpMock.expectOne(`${service.configUrl}/accessory/${accessory.id}/`);
+    expect(req.request.method).toBe("GET");
+    req.flush(accessory);
   });
 });

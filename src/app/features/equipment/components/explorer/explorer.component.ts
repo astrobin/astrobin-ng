@@ -13,6 +13,7 @@ import { LoadingService } from "@shared/services/loading.service";
 import {
   ApproveEquipmentItemEditProposalSuccess,
   ApproveEquipmentItemSuccess,
+  CreateAccessoryEditProposal,
   CreateCameraEditProposal,
   CreateFilterEditProposal,
   CreateMountEditProposal,
@@ -48,6 +49,7 @@ import { MergeIntoModalComponent } from "@features/equipment/components/migratio
 import { TelescopeInterface } from "@features/equipment/types/telescope.interface";
 import { MountInterface } from "@features/equipment/types/mount.interface";
 import { FilterInterface } from "@features/equipment/types/filter.interface";
+import { AccessoryInterface } from "@features/equipment/types/accessory.interface";
 
 @Component({
   selector: "astrobin-equipment-explorer",
@@ -290,6 +292,12 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit 
           filter: editModelWithTarget as EditProposalInterface<FilterInterface>
         });
         actionSuccessType = EquipmentActionTypes.CREATE_FILTER_EDIT_PROPOSAL_SUCCESS;
+        break;
+      case EquipmentItemType.ACCESSORY:
+        action = new CreateAccessoryEditProposal({
+          accessory: editModelWithTarget as EditProposalInterface<AccessoryInterface>
+        });
+        actionSuccessType = EquipmentActionTypes.CREATE_ACCESSORY_EDIT_PROPOSAL_SUCCESS;
         break;
     }
 

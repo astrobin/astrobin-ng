@@ -14,6 +14,7 @@ import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/pag
 import { TelescopeInterface } from "@features/equipment/types/telescope.interface";
 import { MountInterface } from "@features/equipment/types/mount.interface";
 import { FilterInterface } from "@features/equipment/types/filter.interface";
+import { AccessoryInterface } from "@features/equipment/types/accessory.interface";
 
 export interface EquipmentItemCreationSuccessPayloadInterface {
   item: EquipmentItemBaseInterface;
@@ -85,7 +86,14 @@ export enum EquipmentActionTypes {
   CREATE_FILTER = "[Equipment] Create filter",
   CREATE_FILTER_SUCCESS = "[Equipment] Create filter success",
   CREATE_FILTER_EDIT_PROPOSAL = "[Equipment] Create filter edit proposal",
-  CREATE_FILTER_EDIT_PROPOSAL_SUCCESS = "[Equipment] Create filter edit request proposal"
+  CREATE_FILTER_EDIT_PROPOSAL_SUCCESS = "[Equipment] Create filter edit request proposal",
+
+  // Accessories
+
+  CREATE_ACCESSORY = "[Equipment] Create accessory",
+  CREATE_ACCESSORY_SUCCESS = "[Equipment] Create accessory success",
+  CREATE_ACCESSORY_EDIT_PROPOSAL = "[Equipment] Create accessory edit proposal",
+  CREATE_ACCESSORY_EDIT_PROPOSAL_SUCCESS = "[Equipment] Create accessory edit request proposal"
 }
 
 /**********************************************************************************************************************
@@ -396,6 +404,34 @@ export class CreateFilterEditProposalSuccess implements PayloadActionInterface {
   constructor(public payload: { editProposal: EditProposalInterface<FilterInterface> }) {}
 }
 
+/**********************************************************************************************************************
+ * Accessories
+ *********************************************************************************************************************/
+
+export class CreateAccessory implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.CREATE_ACCESSORY;
+
+  constructor(public payload: { accessory: Omit<AccessoryInterface, "id"> }) {}
+}
+
+export class CreateAccessorySuccess implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.CREATE_ACCESSORY_SUCCESS;
+
+  constructor(public payload: EquipmentItemCreationSuccessPayloadInterface) {}
+}
+
+export class CreateAccessoryEditProposal implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.CREATE_ACCESSORY_EDIT_PROPOSAL;
+
+  constructor(public payload: { accessory: Omit<EditProposalInterface<AccessoryInterface>, "id"> }) {}
+}
+
+export class CreateAccessoryEditProposalSuccess implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.CREATE_ACCESSORY_EDIT_PROPOSAL_SUCCESS;
+
+  constructor(public payload: { editProposal: EditProposalInterface<AccessoryInterface> }) {}
+}
+
 export type EquipmentActions =
   // Brands
   | LoadBrand
@@ -455,4 +491,10 @@ export type EquipmentActions =
   | CreateFilter
   | CreateFilterSuccess
   | CreateFilterEditProposal
-  | CreateFilterEditProposalSuccess;
+  | CreateFilterEditProposalSuccess
+
+  // Accessories
+  | CreateAccessory
+  | CreateAccessorySuccess
+  | CreateAccessoryEditProposal
+  | CreateAccessoryEditProposalSuccess;

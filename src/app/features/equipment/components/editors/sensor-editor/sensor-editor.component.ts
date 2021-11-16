@@ -11,8 +11,7 @@ import { ColorOrMono, SensorInterface } from "@features/equipment/types/sensor.i
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 import { FormlyFieldService } from "@shared/services/formly-field.service";
 import { SensorDisplayProperty, SensorService } from "@features/equipment/services/sensor.service";
-import { FormControl } from "@angular/forms";
-import { debounceTime, distinctUntilChanged, first, map, startWith, switchMap } from "rxjs/operators";
+import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 
 @Component({
   selector: "astrobin-sensor-editor",
@@ -57,6 +56,8 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
     setTimeout(() => {
       this._initFields();
     }, 1);
+
+    this.model.klass = EquipmentItemType.SENSOR;
 
     super.ngAfterViewInit();
   }

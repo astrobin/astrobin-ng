@@ -1,4 +1,4 @@
-import { EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
+import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 
 export enum FilterType {
   H_ALPHA = "H_ALPHA",
@@ -35,5 +35,5 @@ export interface FilterInterface extends EquipmentItemBaseInterface {
 }
 
 export function instanceOfFilter(object: EquipmentItemBaseInterface): object is FilterInterface {
-  return !!object && "bandwidth" in object;
+  return !!object && object.klass === EquipmentItemType.FILTER;
 }

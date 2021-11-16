@@ -1,4 +1,4 @@
-import { EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
+import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { SensorInterface } from "@features/equipment/types/sensor.interface";
 
 export enum CameraType {
@@ -20,5 +20,5 @@ export interface CameraInterface extends EquipmentItemBaseInterface {
 }
 
 export function instanceOfCamera(object: EquipmentItemBaseInterface): object is CameraInterface {
-  return !!object && "sensor" in object;
+  return !!object && object.klass === EquipmentItemType.CAMERA;
 }

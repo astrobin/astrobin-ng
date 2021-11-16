@@ -1,4 +1,4 @@
-import { EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
+import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 
 export enum MountType {
   ALTAZIMUTH = "ALTAZIMUTH",
@@ -25,8 +25,5 @@ export interface MountInterface extends EquipmentItemBaseInterface {
 }
 
 export function instanceOfMount(object: EquipmentItemBaseInterface): object is MountInterface {
-  return (
-    !!object &&
-    ("trackingAccuracy" in object || "maxPayload" in object || "computerized" in object || "slewSpeed" in object)
-  );
+  return !!object && object.klass === EquipmentItemType.MOUNT;
 }

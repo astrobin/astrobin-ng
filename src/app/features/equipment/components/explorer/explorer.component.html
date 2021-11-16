@@ -157,6 +157,13 @@
         [model]="editModel"
         [editorMode]="EquipmentItemEditorMode.EDIT_PROPOSAL"
       ></astrobin-filter-editor>
+
+      <astrobin-accessory-editor
+        *ngIf="activeType === EquipmentItemType.ACCESSORY"
+        [form]="editForm"
+        [model]="editModel"
+        [editorMode]="EquipmentItemEditorMode.EDIT_PROPOSAL"
+      ></astrobin-accessory-editor>
     </div>
 
     <div class="card-footer">

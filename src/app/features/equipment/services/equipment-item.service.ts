@@ -46,6 +46,8 @@ export class EquipmentItemService extends BaseService {
         return this.translateService.instant("Mount");
       case EquipmentItemType.FILTER:
         return this.translateService.instant("Filter");
+      case EquipmentItemType.ACCESSORY:
+        return this.translateService.instant("Accessory");
     }
   }
 

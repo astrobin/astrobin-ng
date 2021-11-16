@@ -13,6 +13,7 @@ import { TelescopeDisplayProperty, TelescopeService } from "@features/equipment/
 import { TelescopeInterface, TelescopeType } from "@features/equipment/types/telescope.interface";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { takeUntil } from "rxjs/operators";
+import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 
 @Component({
   selector: "astrobin-telescope-editor",
@@ -54,6 +55,8 @@ export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeI
     setTimeout(() => {
       this._initFields();
     }, 1);
+
+    this.model.klass = EquipmentItemType.TELESCOPE;
 
     super.ngAfterViewInit();
   }

@@ -74,6 +74,15 @@
           (subCreationInProgress)="onSubCreationInProgress($event)"
           (suggestionSelected)="itemCreated($event)"
         ></astrobin-filter-editor>
+
+        <astrobin-accessory-editor
+          *ngIf="type === EquipmentItemType.ACCESSORY"
+          [form]="creationForm"
+          [model]="creationModel"
+          [name]="q"
+          (subCreationInProgress)="onSubCreationInProgress($event)"
+          (suggestionSelected)="itemCreated($event)"
+        ></astrobin-accessory-editor>
       </div>
 
       <div class="card-footer">

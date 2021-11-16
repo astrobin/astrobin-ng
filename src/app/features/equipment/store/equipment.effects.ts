@@ -5,6 +5,10 @@ import {
   ApproveEquipmentItemEditProposal,
   ApproveEquipmentItemEditProposalSuccess,
   ApproveEquipmentItemSuccess,
+  CreateAccessory,
+  CreateAccessoryEditProposal,
+  CreateAccessoryEditProposalSuccess,
+  CreateAccessorySuccess,
   CreateBrand,
   CreateBrandSuccess,
   CreateCamera,
@@ -428,6 +432,39 @@ export class EquipmentEffects {
             map(
               createdFilterEditProposal =>
                 new CreateFilterEditProposalSuccess({ editProposal: createdFilterEditProposal })
+            )
+          )
+      )
+    )
+  );
+
+  /*********************************************************************************************************************
+   * Accessories
+   ********************************************************************************************************************/
+
+  CreateAccessory: Observable<CreateAccessorySuccess> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(EquipmentActionTypes.CREATE_ACCESSORY),
+      map((action: CreateAccessory) => action.payload.accessory),
+      mergeMap(accessory =>
+        this.equipmentApiService
+          .createAccessory(accessory)
+          .pipe(map(createdAccessory => new CreateAccessorySuccess({ item: createdAccessory })))
+      )
+    )
+  );
+
+  CreateAccessoryEditProposal: Observable<CreateAccessoryEditProposalSuccess> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(EquipmentActionTypes.CREATE_ACCESSORY_EDIT_PROPOSAL),
+      map((action: CreateAccessoryEditProposal) => action.payload.accessory),
+      mergeMap(accessory =>
+        this.equipmentApiService
+          .createAccessoryEditProposal(accessory)
+          .pipe(
+            map(
+              createdAccessoryEditProposal =>
+                new CreateAccessoryEditProposalSuccess({ editProposal: createdAccessoryEditProposal })
             )
           )
       )

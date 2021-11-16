@@ -1,5 +1,6 @@
 import { ColorOrMono, SensorInterface } from "@features/equipment/types/sensor.interface";
 import { BrandGenerator } from "@features/equipment/generators/brand.generator";
+import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 
 export class SensorGenerator {
   static sensor(source: Partial<SensorInterface> = {}): SensorInterface {
@@ -7,6 +8,7 @@ export class SensorGenerator {
       id: source.id || 1,
       created: source.created || "1970-01-01",
       updated: source.updated || "1970-01-01",
+      klass: EquipmentItemType.SENSOR,
       createdBy: source.createdBy || 1,
       brand: source.brand || BrandGenerator.brand().id,
       name: source.name || "Test sensor",

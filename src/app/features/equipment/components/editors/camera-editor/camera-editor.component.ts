@@ -73,6 +73,8 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
       this._initFields();
     }, 1);
 
+    this.model.klass = EquipmentItemType.CAMERA;
+
     super.ngAfterViewInit();
   }
 

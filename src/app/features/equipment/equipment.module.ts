@@ -42,6 +42,7 @@ import { ReviewGearRenamingProposalsComponent } from "./pages/review-gear-renami
 import { RejectReviewGearRenamingProposalsModalComponent } from "@features/equipment/components/reject-review-gear-renaming-proposals-modal/reject-review-gear-renaming-proposals-modal.component";
 import { MountEditorComponent } from "@features/equipment/components/editors/mount-editor/mount-editor.component";
 import { FilterEditorComponent } from "@features/equipment/components/editors/filter-editor/filter-editor.component";
+import { AccessoryEditorComponent } from "@features/equipment/components/editors/accessory-editor/accessory-editor.component";
 
 @NgModule({
   declarations: [
@@ -52,6 +53,7 @@ import { FilterEditorComponent } from "@features/equipment/components/editors/fi
     TelescopeEditorComponent,
     MountEditorComponent,
     FilterEditorComponent,
+    AccessoryEditorComponent,
     BrandSummaryComponent,
     BaseItemEditorComponent,
     BrandEditorComponent,

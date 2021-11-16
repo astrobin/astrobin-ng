@@ -9,6 +9,7 @@ import { getEquipmentItemType } from "@features/equipment/store/equipment.select
 import { EquipmentItemServiceInterface } from "@features/equipment/services/equipment-item.service-interface";
 import { MountService } from "@features/equipment/services/mount.service";
 import { FilterService } from "@features/equipment/services/filter.service";
+import { AccessoryService } from "@features/equipment/services/accessory.service";
 
 @Injectable({
   providedIn: "root"
@@ -20,7 +21,8 @@ export class EquipmentItemServiceFactory extends BaseService {
     public readonly sensorService: SensorService,
     public readonly telescopeService: TelescopeService,
     public readonly mountService: MountService,
-    public readonly filterService: FilterService
+    public readonly filterService: FilterService,
+    public readonly accessoryService: AccessoryService
   ) {
     super(loadingService);
   }
@@ -38,6 +40,8 @@ export class EquipmentItemServiceFactory extends BaseService {
         return this.mountService;
       case EquipmentItemType.FILTER:
         return this.filterService;
+      case EquipmentItemType.ACCESSORY:
+        return this.accessoryService;
     }
 
     throw Error("Invalid type");
