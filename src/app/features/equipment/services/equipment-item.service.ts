@@ -35,7 +35,6 @@ export class EquipmentItemService extends BaseService {
   }
 
   humanizeType(type: EquipmentItemType) {
-    // TODO: complete
     switch (type) {
       case EquipmentItemType.CAMERA:
         return this.translateService.instant("Camera");
@@ -49,6 +48,8 @@ export class EquipmentItemService extends BaseService {
         return this.translateService.instant("Filter");
       case EquipmentItemType.ACCESSORY:
         return this.translateService.instant("Accessory");
+      case EquipmentItemType.SOFTWARE:
+        return this.translateService.instant("Software");
     }
   }
 

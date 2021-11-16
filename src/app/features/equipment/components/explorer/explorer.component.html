@@ -121,8 +121,6 @@
     </div>
 
     <div class="card-body">
-      <!-- TODO: complete -->
-
       <astrobin-camera-editor
         *ngIf="activeType === EquipmentItemType.CAMERA"
         [form]="editForm"
@@ -164,6 +162,13 @@
         [model]="editModel"
         [editorMode]="EquipmentItemEditorMode.EDIT_PROPOSAL"
       ></astrobin-accessory-editor>
+
+      <astrobin-software-editor
+        *ngIf="activeType === EquipmentItemType.SOFTWARE"
+        [form]="editForm"
+        [model]="editModel"
+        [editorMode]="EquipmentItemEditorMode.EDIT_PROPOSAL"
+      ></astrobin-software-editor>
     </div>
 
     <div class="card-footer">

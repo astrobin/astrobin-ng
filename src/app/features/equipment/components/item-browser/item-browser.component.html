@@ -28,8 +28,6 @@
       </div>
 
       <div class="card-body">
-        <!-- TODO: complete -->
-
         <astrobin-camera-editor
           *ngIf="type === EquipmentItemType.CAMERA"
           [form]="creationForm"
@@ -83,6 +81,15 @@
           (subCreationInProgress)="onSubCreationInProgress($event)"
           (suggestionSelected)="itemCreated($event)"
         ></astrobin-accessory-editor>
+
+        <astrobin-software-editor
+          *ngIf="type === EquipmentItemType.SOFTWARE"
+          [form]="creationForm"
+          [model]="creationModel"
+          [name]="q"
+          (subCreationInProgress)="onSubCreationInProgress($event)"
+          (suggestionSelected)="itemCreated($event)"
+        ></astrobin-software-editor>
       </div>
 
       <div class="card-footer">

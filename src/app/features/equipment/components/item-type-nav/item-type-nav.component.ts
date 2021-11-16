@@ -103,8 +103,6 @@ export class ItemTypeNavComponent extends BaseComponentDirective implements OnIn
       return;
     }
 
-    // TODO: complete
-
     if (changes.cameraCount) {
       this.types.find(type => type.value === EquipmentItemType.CAMERA).count = changes.cameraCount.currentValue;
     }
@@ -127,6 +125,10 @@ export class ItemTypeNavComponent extends BaseComponentDirective implements OnIn
 
     if (changes.accessoryCount) {
       this.types.find(type => type.value === EquipmentItemType.ACCESSORY).count = changes.accessoryCount.currentValue;
+    }
+
+    if (changes.softwareCount) {
+      this.types.find(type => type.value === EquipmentItemType.SOFTWARE).count = changes.softwareCount.currentValue;
     }
   }
 
@@ -154,20 +156,21 @@ export class ItemTypeNavComponent extends BaseComponentDirective implements OnIn
       .pipe(
         ofType(
           ...[
-            // TODO: complete all CREATE_*_SUCCESS types.
             EquipmentActionTypes.CREATE_CAMERA_SUCCESS,
             EquipmentActionTypes.CREATE_SENSOR_SUCCESS,
             EquipmentActionTypes.CREATE_TELESCOPE_SUCCESS,
             EquipmentActionTypes.CREATE_MOUNT_SUCCESS,
             EquipmentActionTypes.CREATE_FILTER_SUCCESS,
             EquipmentActionTypes.CREATE_ACCESSORY_SUCCESS,
-            // TODO: complete all CREATE_*_EDIT_PROPOSAL_SUCCESS types.
+            EquipmentActionTypes.CREATE_SOFTWARE_SUCCESS,
+
             EquipmentActionTypes.CREATE_CAMERA_EDIT_PROPOSAL_SUCCESS,
             EquipmentActionTypes.CREATE_SENSOR_EDIT_PROPOSAL_SUCCESS,
             EquipmentActionTypes.CREATE_TELESCOPE_EDIT_PROPOSAL_SUCCESS,
             EquipmentActionTypes.CREATE_MOUNT_EDIT_PROPOSAL_SUCCESS,
             EquipmentActionTypes.CREATE_FILTER_EDIT_PROPOSAL_SUCCESS,
             EquipmentActionTypes.CREATE_ACCESSORY_EDIT_PROPOSAL_SUCCESS,
+            EquipmentActionTypes.CREATE_SOFTWARE_EDIT_PROPOSAL_SUCCESS,
 
             EquipmentActionTypes.APPROVE_EQUIPMENT_ITEM_SUCCESS,
             EquipmentActionTypes.REJECT_EQUIPMENT_ITEM_SUCCESS,
@@ -183,7 +186,6 @@ export class ItemTypeNavComponent extends BaseComponentDirective implements OnIn
   }
 
   _initTypes() {
-    // TODO: complete -> remove `disabled` as new ones are implemented.
     this.types = [
       {
         label: this.translateService.instant("Cameras"),
@@ -239,8 +241,7 @@ export class ItemTypeNavComponent extends BaseComponentDirective implements OnIn
         count: this.softwareCount,
         providedCount: this.softwareCount,
         pendingReviewCount: this.softwarePendingReviewCount,
-        pendingEditCount: this.softwarePendingEditCount,
-        disabled: true
+        pendingEditCount: this.softwarePendingEditCount
       }
     ].filter(type => this.excludeTypes.indexOf(type.value) === -1);
   }
@@ -251,20 +252,6 @@ export class ItemTypeNavComponent extends BaseComponentDirective implements OnIn
     }
 
     for (const type of this.types) {
-      // TODO: complete (remove when all other types have API).
-      if (
-        [
-          EquipmentItemType.CAMERA,
-          EquipmentItemType.SENSOR,
-          EquipmentItemType.TELESCOPE,
-          EquipmentItemType.MOUNT,
-          EquipmentItemType.FILTER,
-          EquipmentItemType.ACCESSORY
-        ].indexOf(type.value) === -1
-      ) {
-        continue;
-      }
-
       if (type.providedCount) {
         // Don't override provided count.
         continue;

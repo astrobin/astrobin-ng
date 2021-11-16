@@ -22,6 +22,7 @@ import { TelescopeApiService } from "@shared/services/api/classic/astrobin/teles
 import { MountApiService } from "@shared/services/api/classic/astrobin/mount/mount-api.service";
 import { FilterApiService } from "@shared/services/api/classic/astrobin/filter/filter-api.service";
 import { AccessoryApiService } from "@shared/services/api/classic/astrobin/accessory/accessory-api.service";
+import { SoftwareApiService } from "@shared/services/api/classic/astrobin/software/software-api.service";
 
 @Component({
   selector: "astrobin-merge-into-modal",
@@ -53,7 +54,8 @@ export class MergeIntoModalComponent extends BaseComponentDirective implements O
     public readonly legacyTelescopeApi: TelescopeApiService,
     public readonly legacyMountApi: MountApiService,
     public readonly legacyFilterApi: FilterApiService,
-    public readonly legacyAccessoryApi: AccessoryApiService
+    public readonly legacyAccessoryApi: AccessoryApiService,
+    public readonly legacySoftwareApi: SoftwareApiService
   ) {
     super(store$);
   }
@@ -61,7 +63,6 @@ export class MergeIntoModalComponent extends BaseComponentDirective implements O
   ngOnInit() {
     let api;
 
-    // TODO: complete
     switch (this.activeType) {
       case EquipmentItemType.CAMERA:
         api = this.legacyCameraApi;
@@ -77,6 +78,9 @@ export class MergeIntoModalComponent extends BaseComponentDirective implements O
         break;
       case EquipmentItemType.ACCESSORY:
         api = this.legacyAccessoryApi;
+        break;
+      case EquipmentItemType.SOFTWARE:
+        api = this.legacySoftwareApi;
         break;
       default:
         this.popNotificationsService.error("Wrong item type requested.");

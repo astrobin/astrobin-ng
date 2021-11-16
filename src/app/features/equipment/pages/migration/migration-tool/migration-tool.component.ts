@@ -29,6 +29,7 @@ import { CameraInterface } from "@features/equipment/types/camera.interface";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import { FilterApiService } from "@shared/services/api/classic/astrobin/filter/filter-api.service";
 import { AccessoryApiService } from "@shared/services/api/classic/astrobin/accessory/accessory-api.service";
+import { SoftwareApiService } from "@shared/services/api/classic/astrobin/software/software-api.service";
 
 @Component({
   selector: "astrobin-migration-tool",
@@ -64,12 +65,12 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
     similarItems: []
   };
 
-  // TODO: complete other types
   nonMigratedCamerasCount$: Observable<number>;
   nonMigratedTelescopesCount$: Observable<number>;
   nonMigratedMountsCount$: Observable<number>;
   nonMigratedFiltersCount$: Observable<number>;
   nonMigratedAccessoriesCount$: Observable<number>;
+  nonMigratedSoftwareCount$: Observable<number>;
 
   constructor(
     public readonly store$: Store<State>,
@@ -83,6 +84,7 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
     public readonly legacyMountApi: MountApiService,
     public readonly legacyFilterApi: FilterApiService,
     public readonly legacyAccessoryApi: AccessoryApiService,
+    public readonly legacySoftwareApi: SoftwareApiService,
     public readonly titleService: TitleService,
     public readonly popNotificationsService: PopNotificationsService,
     public readonly translateService: TranslateService,
@@ -127,7 +129,6 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
   getRandomNonMigrated$(): Observable<any[]> {
     let api;
 
-    // TODO: complete
     switch (this.getActiveType()) {
       case EquipmentItemType.CAMERA:
         api = this.legacyCameraApi;
@@ -143,6 +144,9 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
         break;
       case EquipmentItemType.ACCESSORY:
         api = this.legacyAccessoryApi;
+        break;
+      case EquipmentItemType.SOFTWARE:
+        api = this.legacySoftwareApi;
         break;
       default:
         this.popNotificationsService.error("Wrong item type requested.");
@@ -242,7 +246,6 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
   beginMigrationConfirmation(object) {
     let api;
 
-    // TODO: complete
     switch (this.getActiveType()) {
       case EquipmentItemType.CAMERA:
         api = this.legacyCameraApi;
@@ -258,6 +261,9 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
         break;
       case EquipmentItemType.ACCESSORY:
         api = this.legacyAccessoryApi;
+        break;
+      case EquipmentItemType.SOFTWARE:
+        api = this.legacySoftwareApi;
         break;
       default:
         this.popNotificationsService.error("Wrong item type requested.");
@@ -384,12 +390,12 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
   }
 
   _updateCounts() {
-    // TODO: complete
     this.nonMigratedCamerasCount$ = this.legacyCameraApi.getNonMigratedCount();
     this.nonMigratedTelescopesCount$ = this.legacyTelescopeApi.getNonMigratedCount();
     this.nonMigratedMountsCount$ = this.legacyMountApi.getNonMigratedCount();
     this.nonMigratedFiltersCount$ = this.legacyFilterApi.getNonMigratedCount();
     this.nonMigratedAccessoriesCount$ = this.legacyAccessoryApi.getNonMigratedCount();
+    this.nonMigratedAccessoriesCount$ = this.legacySoftwareApi.getNonMigratedCount();
   }
 
   _applyMigration(object: any, setMigrateArgs: any[], markedAs: string) {

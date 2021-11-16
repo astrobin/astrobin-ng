@@ -25,6 +25,7 @@ import { TelescopeApiService } from "@shared/services/api/classic/gear/telescope
 import { MountApiService } from "@shared/services/api/classic/gear/mount/mount-api.service";
 import { FilterApiService } from "@shared/services/api/classic/gear/filter/filter-api.service";
 import { AccessoryApiService } from "@shared/services/api/classic/gear/accessory/accessory-api.service";
+import { SoftwareApiService } from "@shared/services/api/classic/gear/software/software-api.service";
 
 @Component({
   selector: "astrobin-migration-review-item",
@@ -55,7 +56,8 @@ export class MigrationReviewItemComponent extends BaseComponentDirective impleme
     public readonly legacyTelescopeApiService: TelescopeApiService,
     public readonly legacyMountApiService: MountApiService,
     public readonly legacyFilterApiService: FilterApiService,
-    public readonly legacyAccessoryApiService: AccessoryApiService
+    public readonly legacyAccessoryApiService: AccessoryApiService,
+    public readonly legacySoftwareApiService: SoftwareApiService
   ) {
     super(store$);
   }
@@ -80,7 +82,6 @@ export class MigrationReviewItemComponent extends BaseComponentDirective impleme
         switchMap((type: string) => {
           let api: any = this.legacyGearApiService;
 
-          // TODO: complete
           switch (type) {
             case "camera":
               api = this.legacyCameraApiService;
@@ -96,6 +97,9 @@ export class MigrationReviewItemComponent extends BaseComponentDirective impleme
               break;
             case "accessory":
               api = this.legacyAccessoryApiService;
+              break;
+            case "software":
+              api = this.legacySoftwareApiService;
               break;
           }
 

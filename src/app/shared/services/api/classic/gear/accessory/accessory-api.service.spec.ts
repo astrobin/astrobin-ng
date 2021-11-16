@@ -25,7 +25,7 @@ describe("accessoryApiService", () => {
     expect(service).toBeTruthy();
   });
 
-  it("getaccessory should work", () => {
+  it("get should work", () => {
     const accessory = AccessoryGenerator.accessory();
 
     service.get(accessory.pk).subscribe(response => {

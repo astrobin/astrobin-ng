@@ -18,6 +18,7 @@ import {
   CreateFilterEditProposal,
   CreateMountEditProposal,
   CreateSensorEditProposal,
+  CreateSoftwareEditProposal,
   CreateTelescopeEditProposal,
   EquipmentActionTypes,
   FindEquipmentItemEditProposals,
@@ -50,6 +51,7 @@ import { TelescopeInterface } from "@features/equipment/types/telescope.interfac
 import { MountInterface } from "@features/equipment/types/mount.interface";
 import { FilterInterface } from "@features/equipment/types/filter.interface";
 import { AccessoryInterface } from "@features/equipment/types/accessory.interface";
+import { SoftwareInterface } from "@features/equipment/types/software.interface";
 
 @Component({
   selector: "astrobin-equipment-explorer",
@@ -261,7 +263,6 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit 
     // Remove id and set `editModelTarget`.
     const { id, ...editModelWithTarget } = { ...this.editModel, ...{ editProposalTarget: this.editModel.id } };
 
-    // TODO: complete
     switch (this.activeType) {
       case EquipmentItemType.SENSOR:
         action = new CreateSensorEditProposal({
@@ -298,6 +299,12 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit 
           accessory: editModelWithTarget as EditProposalInterface<AccessoryInterface>
         });
         actionSuccessType = EquipmentActionTypes.CREATE_ACCESSORY_EDIT_PROPOSAL_SUCCESS;
+        break;
+      case EquipmentItemType.SOFTWARE:
+        action = new CreateSoftwareEditProposal({
+          software: editModelWithTarget as EditProposalInterface<SoftwareInterface>
+        });
+        actionSuccessType = EquipmentActionTypes.CREATE_SOFTWARE_EDIT_PROPOSAL_SUCCESS;
         break;
     }
 
