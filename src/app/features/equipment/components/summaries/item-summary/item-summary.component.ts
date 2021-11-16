@@ -23,6 +23,8 @@ import { MountInterface } from "@features/equipment/types/mount.interface";
 import { MountDisplayProperty, MountService } from "@features/equipment/services/mount.service";
 import { FilterInterface } from "@features/equipment/types/filter.interface";
 import { FilterDisplayProperty, FilterService } from "@features/equipment/services/filter.service";
+import { AccessoryInterface } from "@features/equipment/types/accessory.interface";
+import { AccessoryService } from "@features/equipment/services/accessory.service";
 
 interface EquipmentItemProperty {
   name: string;
@@ -66,7 +68,8 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
     public readonly telescopeService: TelescopeService,
     public readonly sensorService: SensorService,
     public readonly mountService: MountService,
-    public readonly filterService: FilterService
+    public readonly filterService: FilterService,
+    public readonly accessoryService: AccessoryService
   ) {
     super(store$);
   }
@@ -95,6 +98,8 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
         return this._mountProperties$();
       case EquipmentItemType.FILTER:
         return this._filterProperties$();
+      case EquipmentItemType.ACCESSORY:
+        return this._accessoryProperties$();
     }
   }
 
@@ -321,6 +326,19 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
         name: this.filterService.getPrintablePropertyName(FilterDisplayProperty.SIZE, true),
         value: this.filterService.getPrintableProperty$(item, FilterDisplayProperty.SIZE)
       }
+    ]);
+  }
+
+  private _accessoryProperties$(): Observable<EquipmentItemProperty[]> {
+    const item: AccessoryInterface = this.item as AccessoryInterface;
+
+    return of([
+      this.showClass
+        ? {
+            name: this.translateService.instant("Class"),
+            value: this.translateService.stream("Accessory")
+          }
+        : null
     ]);
   }
 }

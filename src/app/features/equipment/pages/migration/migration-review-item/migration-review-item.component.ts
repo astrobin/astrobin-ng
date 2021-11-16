@@ -24,6 +24,7 @@ import { CameraApiService } from "@shared/services/api/classic/gear/camera/camer
 import { TelescopeApiService } from "@shared/services/api/classic/gear/telescope/telescope-api.service";
 import { MountApiService } from "@shared/services/api/classic/gear/mount/mount-api.service";
 import { FilterApiService } from "@shared/services/api/classic/gear/filter/filter-api.service";
+import { AccessoryApiService } from "@shared/services/api/classic/gear/accessory/accessory-api.service";
 
 @Component({
   selector: "astrobin-migration-review-item",
@@ -53,7 +54,8 @@ export class MigrationReviewItemComponent extends BaseComponentDirective impleme
     public readonly legacyCameraApiService: CameraApiService,
     public readonly legacyTelescopeApiService: TelescopeApiService,
     public readonly legacyMountApiService: MountApiService,
-    public readonly legacyFilterApiService: FilterApiService
+    public readonly legacyFilterApiService: FilterApiService,
+    public readonly legacyAccessoryApiService: AccessoryApiService
   ) {
     super(store$);
   }
@@ -91,6 +93,9 @@ export class MigrationReviewItemComponent extends BaseComponentDirective impleme
               break;
             case "filter":
               api = this.legacyFilterApiService;
+              break;
+            case "accessory":
+              api = this.legacyAccessoryApiService;
               break;
           }
 

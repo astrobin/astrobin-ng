@@ -13,6 +13,7 @@ import { MountDisplayProperty, MountService } from "@features/equipment/services
 import { MountInterface, MountType } from "@features/equipment/types/mount.interface";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { takeUntil } from "rxjs/operators";
+import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 
 @Component({
   selector: "astrobin-mount-editor",
@@ -54,6 +55,8 @@ export class MountEditorComponent extends BaseItemEditorComponent<MountInterface
     setTimeout(() => {
       this._initFields();
     }, 1);
+
+    this.model.klass = EquipmentItemType.MOUNT;
 
     super.ngAfterViewInit();
   }

@@ -8,6 +8,7 @@ import { FormlyFieldConfig } from "@ngx-formly/core";
 import { of } from "rxjs";
 import { TranslateService } from "@ngx-translate/core";
 import {
+  CreateAccessory,
   CreateCamera,
   CreateFilter,
   CreateMount,
@@ -33,6 +34,7 @@ import { EquipmentItemService } from "@features/equipment/services/equipment-ite
 import { TelescopeInterface } from "@features/equipment/types/telescope.interface";
 import { MountInterface } from "@features/equipment/types/mount.interface";
 import { FilterInterface } from "@features/equipment/types/filter.interface";
+import { AccessoryInterface } from "@features/equipment/types/accessory.interface";
 
 @Component({
   selector: "astrobin-equipment-item-browser",
@@ -182,6 +184,10 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
           case EquipmentItemType.FILTER:
             action = new CreateFilter({ filter: item as FilterInterface });
             actionSuccessType = EquipmentActionTypes.CREATE_FILTER_SUCCESS;
+            break;
+          case EquipmentItemType.ACCESSORY:
+            action = new CreateAccessory({ accessory: item as AccessoryInterface });
+            actionSuccessType = EquipmentActionTypes.CREATE_ACCESSORY_SUCCESS;
             break;
         }
 

@@ -24,6 +24,7 @@ import { EditProposalInterface } from "@features/equipment/types/edit-proposal.i
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { MountInterface } from "@features/equipment/types/mount.interface";
 import { FilterInterface } from "@features/equipment/types/filter.interface";
+import { AccessoryInterface } from "@features/equipment/types/accessory.interface";
 
 @Injectable({
   providedIn: "root"
@@ -166,6 +167,8 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
             return this.getMount(objectId);
           case "filter":
             return this.getFilter(objectId);
+          case "accessory":
+            return this.getAccessory(objectId);
         }
       })
     );
@@ -459,6 +462,26 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
   }
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // ACCESSORY API
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  createAccessory(accessory: Omit<AccessoryInterface, "id">): Observable<AccessoryInterface> {
+    return this._createItem<AccessoryInterface>(accessory, "accessory");
+  }
+
+  createAccessoryEditProposal(
+    editProposal: Omit<EditProposalInterface<AccessoryInterface>, "id">
+  ): Observable<EditProposalInterface<AccessoryInterface>> {
+    return this._createItemEditProposal<AccessoryInterface>(editProposal, "accessory");
+  }
+
+  getAccessory(id: AccessoryInterface["id"]): Observable<AccessoryInterface> {
+    return this.http
+      .get<AccessoryInterface>(`${this.configUrl}/accessory/${id}/`)
+      .pipe(map(accessory => this._parseAccessory(accessory)));
+  }
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // PRIVATE
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -481,6 +504,8 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
         return this._parseMount<any>(item);
       case EquipmentItemType.FILTER:
         return this._parseFilter<any>(item);
+      case EquipmentItemType.ACCESSORY:
+        return this._parseAccessory<any>(item);
     }
   }
 
@@ -536,6 +561,11 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
         size: item.size !== null ? parseFloat((item.size as unknown) as string) : null
       }
     };
+  }
+
+  private _parseAccessory<T extends AccessoryInterface | EditProposalInterface<AccessoryInterface>>(item: T): T {
+    // Accessories have no float properties, so we don't need to do anything here.
+    return item;
   }
 
   private _createItem<T extends EquipmentItemBaseInterface>(item: Omit<T, "id">, path: string): Observable<T> {

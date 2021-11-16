@@ -12,6 +12,7 @@ export const testBrand = {
 export const testSensor = {
   id: 1,
   deleted: null,
+  klass: "SENSOR",
   reviewedTimestamp: null,
   reviewerDecision: null,
   reviewerRejectionReason: null,
@@ -39,6 +40,7 @@ export const testSensor = {
 export const testCamera = {
   id: 1,
   deleted: null,
+  klass: "CAMERA",
   reviewedTimestamp: null,
   reviewerDecision: null,
   reviewerRejectionReason: null,
@@ -57,20 +59,10 @@ export const testCamera = {
   sensor: 1
 };
 
-export const testCameraEditProposal = {
-  ...testCamera,
-  ...{
-    editProposalTarget: 1,
-    editProposalBy: 1,
-    editProposalCreated: "2021-09-13T00:00:00",
-    editProposalUpdated: "2021-09-13T00:00:00",
-    name: "Test Pro"
-  }
-};
-
 export const testTelescope = {
   id: 1,
   deleted: null,
+  klass: "TELESCOPE",
   reviewedTimestamp: null,
   reviewerDecision: null,
   reviewerRejectionReason: null,
@@ -90,6 +82,7 @@ export const testTelescope = {
 export const testMount = {
   id: 1,
   deleted: null,
+  klass: "MOUNT",
   reviewedTimestamp: null,
   reviewerDecision: null,
   reviewerRejectionReason: null,
@@ -106,6 +99,7 @@ export const testMount = {
 export const testFilter = {
   id: 1,
   deleted: null,
+  klass: "FILTER",
   reviewedTimestamp: null,
   reviewerDecision: null,
   reviewerRejectionReason: null,
@@ -118,6 +112,32 @@ export const testFilter = {
   type: "L",
   bandwidth: 12,
   size: 31
+};
+
+export const testAccessory = {
+  id: 1,
+  deleted: null,
+  klass: "ACCESSORY",
+  reviewedTimestamp: null,
+  reviewerDecision: null,
+  reviewerRejectionReason: null,
+  reviewerComment: null,
+  created: "2021-09-12T08:09:58.508643",
+  updated: "2021-09-12T08:09:58.508679",
+  brand: 1,
+  name: "Test accessory",
+  image: null
+};
+
+export const testCameraEditProposal = {
+  ...testCamera,
+  ...{
+    editProposalTarget: 1,
+    editProposalBy: 1,
+    editProposalCreated: "2021-09-13T00:00:00",
+    editProposalUpdated: "2021-09-13T00:00:00",
+    name: "Test Pro"
+  }
 };
 
 export const testTelescopeEditProposal = {
@@ -150,6 +170,17 @@ export const testFilterEditProposal = {
     editProposalCreated: "2021-09-13T00:00:00",
     editProposalUpdated: "2021-09-13T00:00:00",
     name: "Test filter Pro"
+  }
+};
+
+export const testAccessoryEditProposal = {
+  ...testAccessory,
+  ...{
+    editProposalTarget: 1,
+    editProposalBy: 1,
+    editProposalCreated: "2021-09-13T00:00:00",
+    editProposalUpdated: "2021-09-13T00:00:00",
+    name: "Test accessory Pro"
   }
 };
 
@@ -380,12 +411,48 @@ Cypress.Commands.add("setupEquipmentDefaultRoutesForFilters", () => {
 });
 
 Cypress.Commands.add("setupEquipmentDefaultRoutesForAccessories", () => {
-  cy.route("GET", "**/api/v2/equipment/accessory/", {
+  cy.route("GET", "**/api/v2/equipment/accessory/?q=*", {
     count: 0,
     next: null,
     previous: null,
     results: []
+  }).as("findAccessories");
+
+  cy.route("GET", "**/api/v2/equipment/accessory/?page=*", {
+    count: 1,
+    next: null,
+    previous: null,
+    results: [testAccessory]
   }).as("getAccessories");
+
+  cy.route("GET", "**/api/v2/equipment/accessory/find-similar-in-brand/*", []);
+
+  cy.route("GET", "**/api/v2/equipment/accessory/others-in-brand/*", []);
+
+  cy.route("GET", "**/api/v2/equipment/accessory/?brand=*", {
+    count: 0,
+    next: null,
+    previous: null,
+    results: []
+  }).as("findAccessoriesByName");
+
+  cy.route("GET", "**/api/v2/equipment/accessory/?pending_review=true&page=*", {
+    count: 0,
+    next: null,
+    previous: null,
+    results: []
+  }).as("findAccessoriesPendingReview");
+
+  cy.route("GET", "**/api/v2/equipment/accessory/?pending_edit=true?page=*", {
+    count: 0,
+    next: null,
+    previous: null,
+    results: []
+  }).as("findAccessoriesPendingEdit");
+
+  cy.route("GET", "**/api/v2/equipment/accessory-edit-proposal/?edit_proposal_target=*", {
+    results: []
+  }).as("getEditProposals");
 });
 
 Cypress.Commands.add("setupEquipmentDefaultRoutesForSoftware", () => {
@@ -577,4 +644,21 @@ Cypress.Commands.add("equipmentItemBrowserSelectFirstFilter", (selector, filterN
   cy.ngSelectOptionNumberSelectorShouldContain(selector, 1, "astrobin-equipment-item-summary .label", filterName);
   cy.ngSelectOptionClick(selector, 1);
   cy.ngSelectValueShouldContain(selector, filterName);
+});
+
+Cypress.Commands.add("equipmentItemBrowserSelectFirstAccessory", (selector, accessoryName, accessoryObject) => {
+  cy.route("GET", "**/api/v2/equipment/accessory/?q=*", {
+    count: 1,
+    next: null,
+    previous: null,
+    results: [accessoryObject]
+  }).as("findAccessories");
+
+  cy.ngSelectType(selector, accessoryName);
+
+  cy.wait("@findAccessories");
+
+  cy.ngSelectOptionNumberSelectorShouldContain(selector, 1, "astrobin-equipment-item-summary .label", accessoryName);
+  cy.ngSelectOptionClick(selector, 1);
+  cy.ngSelectValueShouldContain(selector, accessoryName);
 });

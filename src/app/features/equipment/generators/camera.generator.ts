@@ -2,6 +2,7 @@ import { CameraInterface, CameraType } from "@features/equipment/types/camera.in
 import { SensorGenerator } from "@features/equipment/generators/sensor.generator";
 import { BrandGenerator } from "@features/equipment/generators/brand.generator";
 import { EditProposalInterface } from "@features/equipment/types/edit-proposal.interface";
+import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 
 export class CameraGenerator {
   static camera(source: Partial<CameraInterface> = {}): CameraInterface {
@@ -10,6 +11,7 @@ export class CameraGenerator {
       created: source.created || "1970-01-01",
       updated: source.updated || "1970-01-01",
       createdBy: source.createdBy || 1,
+      klass: EquipmentItemType.CAMERA,
       brand: source.brand || BrandGenerator.brand().id,
       name: source.name || "Test camera",
       image: source.image || "https://cdn.astrobin.com/images/foo.jpg",

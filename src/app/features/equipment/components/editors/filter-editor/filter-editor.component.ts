@@ -11,6 +11,7 @@ import { EquipmentItemService } from "@features/equipment/services/equipment-ite
 import { FormlyFieldService } from "@shared/services/formly-field.service";
 import { FilterDisplayProperty, FilterService } from "@features/equipment/services/filter.service";
 import { FilterInterface, FilterType } from "@features/equipment/types/filter.interface";
+import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 
 @Component({
   selector: "astrobin-filter-editor",
@@ -52,6 +53,8 @@ export class FilterEditorComponent extends BaseItemEditorComponent<FilterInterfa
     setTimeout(() => {
       this._initFields();
     }, 1);
+
+    this.model.klass = EquipmentItemType.FILTER;
 
     super.ngAfterViewInit();
   }

@@ -1,4 +1,4 @@
-import { EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
+import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 
 export enum ColorOrMono {
   C = "C",
@@ -21,5 +21,5 @@ export interface SensorInterface extends EquipmentItemBaseInterface {
 }
 
 export function instanceOfSensor(object: EquipmentItemBaseInterface): object is SensorInterface {
-  return !!object && "pixelWidth" in object && "pixelHeight" in object;
+  return !!object && object.klass === EquipmentItemType.SENSOR;
 }
