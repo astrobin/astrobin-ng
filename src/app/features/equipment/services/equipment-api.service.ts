@@ -355,19 +355,13 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   createSensor(sensor: Omit<SensorInterface, "id">): Observable<SensorInterface> {
-    return this._createItem<SensorInterface>(
-      { ...sensor, specificationUrl: UtilsService.ensureUrlProtocol(sensor.specificationUrl) },
-      "sensor"
-    );
+    return this._createItem<SensorInterface>(sensor, "sensor");
   }
 
   createSensorEditProposal(
     editProposal: Omit<EditProposalInterface<SensorInterface>, "id">
   ): Observable<EditProposalInterface<SensorInterface>> {
-    return this._createItemEditProposal<SensorInterface>(
-      { ...editProposal, specificationUrl: UtilsService.ensureUrlProtocol(editProposal.specificationUrl) },
-      "sensor"
-    );
+    return this._createItemEditProposal<SensorInterface>(editProposal, "sensor");
   }
 
   getSensor(id: SensorInterface["id"]): Observable<SensorInterface> {
@@ -573,7 +567,12 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
 
     return new Observable<T>(observer => {
       this.http
-        .post<T>(`${this.configUrl}/${path}/`, itemWithoutImage)
+        .post<T>(`${this.configUrl}/${path}/`, {
+          ...{
+            ...itemWithoutImage,
+            website: UtilsService.ensureUrlProtocol(itemWithoutImage.website)
+          }
+        })
         .pipe(take(1))
         .subscribe(createdItem => {
           if (item.image && item.image.length > 0) {
@@ -635,7 +634,12 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
 
     return new Observable<EditProposalInterface<T>>(observer => {
       this.http
-        .post<EditProposalInterface<T>>(`${this.configUrl}/${path}-edit-proposal/`, itemWithoutImage)
+        .post<EditProposalInterface<T>>(`${this.configUrl}/${path}-edit-proposal/`, {
+          ...{
+            ...itemWithoutImage,
+            website: UtilsService.ensureUrlProtocol(itemWithoutImage.website)
+          }
+        })
         .pipe(
           take(1),
           catchError(error => {

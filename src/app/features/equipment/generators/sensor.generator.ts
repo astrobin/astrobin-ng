@@ -12,6 +12,7 @@ export class SensorGenerator {
       createdBy: source.createdBy || 1,
       brand: source.brand || BrandGenerator.brand().id,
       name: source.name || "Test sensor",
+      website: source.website || "https://www.test-sensor.com",
       image: source.image || "https://cdn.astrobin.com/images/foo.jpg",
       quantumEfficiency: source.quantumEfficiency || 1,
       pixelSize: source.pixelSize || 1,
@@ -23,8 +24,7 @@ export class SensorGenerator {
       readNoise: source.readNoise || 1,
       frameRate: source.frameRate || 1,
       adc: source.adc || 1,
-      colorOrMono: source.colorOrMono || ColorOrMono.M,
-      specificationUrl: source.specificationUrl || null
+      colorOrMono: source.colorOrMono || ColorOrMono.M
     };
   }
 }

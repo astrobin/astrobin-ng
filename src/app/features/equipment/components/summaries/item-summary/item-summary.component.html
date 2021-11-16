@@ -10,6 +10,9 @@
           <strong>{{ brand.name }}</strong>&nbsp;
           <span class="name" [innerHTML]="equipmentItemService.getName$(item) | async"></span>
         </h5>
+        <h6 *ngIf="!!item.website" class="website">
+          <a target="_blank" [href]="item.website">{{ UtilsService.shortenUrl(item.website) }}</a>
+        </h6>
       </div>
 
       <div class="properties" *ngIf="properties$ | async as properties">

@@ -38,5 +38,6 @@ export interface EquipmentItemBaseInterface {
   reviewerComment?: string;
   brand: BrandInterface["id"];
   name: string;
+  website: string;
   image?: string | File[];
 }

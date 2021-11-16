@@ -24,7 +24,6 @@ import { MountDisplayProperty, MountService } from "@features/equipment/services
 import { FilterInterface } from "@features/equipment/types/filter.interface";
 import { FilterDisplayProperty, FilterService } from "@features/equipment/services/filter.service";
 import { AccessoryInterface } from "@features/equipment/types/accessory.interface";
-import { AccessoryService } from "@features/equipment/services/accessory.service";
 
 interface EquipmentItemProperty {
   name: string;
@@ -37,6 +36,8 @@ interface EquipmentItemProperty {
   styleUrls: ["./item-summary.component.scss"]
 })
 export class ItemSummaryComponent extends BaseComponentDirective implements OnChanges {
+  UtilsService = UtilsService;
+
   @Input()
   item: EquipmentItem;
 
@@ -68,8 +69,7 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
     public readonly telescopeService: TelescopeService,
     public readonly sensorService: SensorService,
     public readonly mountService: MountService,
-    public readonly filterService: FilterService,
-    public readonly accessoryService: AccessoryService
+    public readonly filterService: FilterService
   ) {
     super(store$);
   }
@@ -181,20 +181,6 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
           this.item as SensorInterface,
           SensorDisplayProperty.COLOR_OR_MONO
         )
-      },
-      {
-        name: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.SPECIFICATION_URL, true),
-        value: this.sensorService
-          .getPrintableProperty$(this.item as SensorInterface, SensorDisplayProperty.SPECIFICATION_URL)
-          .pipe(
-            map(url => {
-              if (!!url) {
-                return `<a href="${url}" target="_blank">${UtilsService.shortenUrl(url)}</a>`;
-              }
-
-              return null;
-            })
-          )
       }
     ]);
   }

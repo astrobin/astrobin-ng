@@ -11,8 +11,9 @@ import { EquipmentItemServiceFactory } from "@features/equipment/services/equipm
 import { BrandInterface } from "@features/equipment/types/brand.interface";
 
 export enum EquipmentItemDisplayProperty {
-  NAME = "NAME",
   BRAND = "BRAND",
+  NAME = "NAME",
+  WEBSITE = "WEBSITE",
   IMAGE = "IMAGE"
 }
 
@@ -78,9 +79,11 @@ export class EquipmentItemService extends BaseService {
     }
 
     switch (propertyName) {
+      case EquipmentItemDisplayProperty.BRAND:
+        return of(propertyValue.toString());
       case EquipmentItemDisplayProperty.NAME:
         return of(propertyValue.toString());
-      case EquipmentItemDisplayProperty.BRAND:
+      case EquipmentItemDisplayProperty.WEBSITE:
         return of(propertyValue.toString());
       case EquipmentItemDisplayProperty.IMAGE:
         return of(
@@ -95,10 +98,12 @@ export class EquipmentItemService extends BaseService {
 
   getPrintablePropertyName(type: EquipmentItemType, propertyName: any, shortForm = false): string {
     switch (propertyName) {
-      case EquipmentItemDisplayProperty.NAME:
-        return this.translateService.instant("Name");
       case EquipmentItemDisplayProperty.BRAND:
         return this.translateService.instant("Brand");
+      case EquipmentItemDisplayProperty.NAME:
+        return this.translateService.instant("Name");
+      case EquipmentItemDisplayProperty.WEBSITE:
+        return this.translateService.instant("Website");
       case EquipmentItemDisplayProperty.IMAGE:
         return this.translateService.instant("Image");
     }

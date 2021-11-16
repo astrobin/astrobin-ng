@@ -14,6 +14,7 @@ export class CameraGenerator {
       klass: EquipmentItemType.CAMERA,
       brand: source.brand || BrandGenerator.brand().id,
       name: source.name || "Test camera",
+      website: source.website || "https://www.test-camera.com",
       image: source.image || "https://cdn.astrobin.com/images/foo.jpg",
       type: source.type || CameraType.DSLR_MIRRORLESS,
       sensor: source.sensor || SensorGenerator.sensor().id,

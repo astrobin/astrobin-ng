@@ -19,8 +19,7 @@ export enum SensorDisplayProperty {
   READ_NOISE = "READ_NOISE",
   FRAME_RATE = "FRAME_RATE",
   ADC = "ADC",
-  COLOR_OR_MONO = "COLOR_OR_MONO",
-  SPECIFICATION_URL = "SPECIFICATION_URL"
+  COLOR_OR_MONO = "COLOR_OR_MONO"
 }
 @Injectable({
   providedIn: "root"
@@ -44,8 +43,7 @@ export class SensorService extends BaseService implements EquipmentItemServiceIn
       SensorDisplayProperty.READ_NOISE,
       SensorDisplayProperty.FRAME_RATE,
       SensorDisplayProperty.ADC,
-      SensorDisplayProperty.COLOR_OR_MONO,
-      SensorDisplayProperty.SPECIFICATION_URL
+      SensorDisplayProperty.COLOR_OR_MONO
     ];
   }
 
@@ -109,8 +107,6 @@ export class SensorService extends BaseService implements EquipmentItemServiceIn
           return of(this.translateService.instant("Mono"));
         }
         return of("");
-      case SensorDisplayProperty.SPECIFICATION_URL:
-        return of(propertyValue || item.specificationUrl);
       default:
         throw Error(`Invalid property: ${property}`);
     }
@@ -162,8 +158,6 @@ export class SensorService extends BaseService implements EquipmentItemServiceIn
         return shortForm ? this.translateService.instant("ADC") : this.translateService.instant("ADC") + " (bits)";
       case SensorDisplayProperty.COLOR_OR_MONO:
         return this.translateService.instant("Color or mono");
-      case SensorDisplayProperty.SPECIFICATION_URL:
-        return this.translateService.instant("Specification URL");
       default:
         throw Error(`Invalid property: ${propertyName}`);
     }
