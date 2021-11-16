@@ -349,6 +349,28 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
     };
   }
 
+  protected _getWebsiteField() {
+    return {
+      key: "website",
+      type: "input",
+      wrappers: ["default-wrapper"],
+      id: "equipment-item-field-website",
+      expressionProperties: {
+        "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+      },
+      templateOptions: {
+        required: false,
+        label: this.translateService.instant("Website")
+      },
+      validators: {
+        validation: ["url"]
+      },
+      asyncValidators: {
+        urlIsAvailable: "url-is-available"
+      }
+    };
+  }
+
   protected _getImageField() {
     return {
       key: "image",

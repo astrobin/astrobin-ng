@@ -142,7 +142,8 @@ export class FilterEditorComponent extends BaseItemEditorComponent<FilterInterfa
           ]
         }
       },
-      this._getImageField()
+      this._getImageField(),
+      this._getWebsiteField()
     ];
 
     this._addBaseItemEditorFields();

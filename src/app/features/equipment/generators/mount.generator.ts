@@ -12,6 +12,7 @@ export class MountGenerator {
       createdBy: source.createdBy || 1,
       brand: source.brand || BrandGenerator.brand().id,
       name: source.name || "Test mount",
+      website: source.website || "https://www.test-mount.com",
       image: source.image || "https://cdn.astrobin.com/images/foo.jpg",
       type: source.type || MountType.GERMAN_EQUATORIAL,
       trackingAccuracy: source.trackingAccuracy || 1,

@@ -318,6 +318,7 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
             ]
           }
         },
+        this._getWebsiteField(),
         this._getImageField()
       ];
 

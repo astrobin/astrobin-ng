@@ -12,6 +12,7 @@ export class FilterGenerator {
       createdBy: source.createdBy || 1,
       brand: source.brand || BrandGenerator.brand().id,
       name: source.name || "Test filter",
+      website: source.website || "https://www.test-filter.com",
       image: source.image || "https://cdn.astrobin.com/images/foo.jpg",
       type: source.type || FilterType.L,
       bandwidth: source.bandwidth || 12,

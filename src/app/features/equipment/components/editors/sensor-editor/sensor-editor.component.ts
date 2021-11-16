@@ -371,20 +371,8 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
           ]
         }
       },
-      {
-        key: "specificationUrl",
-        type: "input",
-        wrappers: ["default-wrapper"],
-        id: "sensor-field-specification-url",
-        templateOptions: {
-          required: false,
-          label: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.SPECIFICATION_URL)
-        },
-        validators: {
-          validation: ["url"]
-        }
-      },
-      this._getImageField()
+      this._getImageField(),
+      this._getWebsiteField()
     ];
 
     this._addBaseItemEditorFields();

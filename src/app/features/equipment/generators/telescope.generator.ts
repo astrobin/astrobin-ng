@@ -12,6 +12,7 @@ export class TelescopeGenerator {
       createdBy: source.createdBy || 1,
       brand: source.brand || BrandGenerator.brand().id,
       name: source.name || "Test telescope",
+      website: source.website || "https://www.test-telescope.com",
       image: source.image || "https://cdn.astrobin.com/images/foo.jpg",
       type: source.type || TelescopeType.REFRACTOR_ACHROMATIC,
       aperture: source.aperture || 90,
