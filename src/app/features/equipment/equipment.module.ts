@@ -43,6 +43,7 @@ import { RejectReviewGearRenamingProposalsModalComponent } from "@features/equip
 import { MountEditorComponent } from "@features/equipment/components/editors/mount-editor/mount-editor.component";
 import { FilterEditorComponent } from "@features/equipment/components/editors/filter-editor/filter-editor.component";
 import { AccessoryEditorComponent } from "@features/equipment/components/editors/accessory-editor/accessory-editor.component";
+import { SoftwareEditorComponent } from "@features/equipment/components/editors/software-editor/software-editor.component";
 
 @NgModule({
   declarations: [
@@ -54,6 +55,7 @@ import { AccessoryEditorComponent } from "@features/equipment/components/editors
     MountEditorComponent,
     FilterEditorComponent,
     AccessoryEditorComponent,
+    SoftwareEditorComponent,
     BrandSummaryComponent,
     BaseItemEditorComponent,
     BrandEditorComponent,

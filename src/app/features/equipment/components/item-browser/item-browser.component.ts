@@ -13,6 +13,7 @@ import {
   CreateFilter,
   CreateMount,
   CreateSensor,
+  CreateSoftware,
   CreateTelescope,
   EquipmentActionTypes,
   EquipmentItemCreationSuccessPayloadInterface,
@@ -35,6 +36,7 @@ import { TelescopeInterface } from "@features/equipment/types/telescope.interfac
 import { MountInterface } from "@features/equipment/types/mount.interface";
 import { FilterInterface } from "@features/equipment/types/filter.interface";
 import { AccessoryInterface } from "@features/equipment/types/accessory.interface";
+import { SoftwareInterface } from "@features/equipment/types/software.interface";
 
 @Component({
   selector: "astrobin-equipment-item-browser",
@@ -160,7 +162,6 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
         let action: Action;
         let actionSuccessType: EquipmentActionTypes;
 
-        // TODO: complete
         switch (this.type) {
           case EquipmentItemType.SENSOR:
             action = new CreateSensor({ sensor: item as SensorInterface });
@@ -188,6 +189,10 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
           case EquipmentItemType.ACCESSORY:
             action = new CreateAccessory({ accessory: item as AccessoryInterface });
             actionSuccessType = EquipmentActionTypes.CREATE_ACCESSORY_SUCCESS;
+            break;
+          case EquipmentItemType.SOFTWARE:
+            action = new CreateSoftware({ software: item as SoftwareInterface });
+            actionSuccessType = EquipmentActionTypes.CREATE_SOFTWARE_SUCCESS;
             break;
         }
 

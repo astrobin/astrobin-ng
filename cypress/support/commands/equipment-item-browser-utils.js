@@ -129,6 +129,21 @@ export const testAccessory = {
   image: null
 };
 
+export const testSoftware = {
+  id: 1,
+  deleted: null,
+  klass: "SOFTWARE",
+  reviewedTimestamp: null,
+  reviewerDecision: null,
+  reviewerRejectionReason: null,
+  reviewerComment: null,
+  created: "2021-09-12T08:09:58.508643",
+  updated: "2021-09-12T08:09:58.508679",
+  brand: 1,
+  name: "Test software",
+  image: null
+};
+
 export const testCameraEditProposal = {
   ...testCamera,
   ...{
@@ -181,6 +196,17 @@ export const testAccessoryEditProposal = {
     editProposalCreated: "2021-09-13T00:00:00",
     editProposalUpdated: "2021-09-13T00:00:00",
     name: "Test accessory Pro"
+  }
+};
+
+export const testSoftwareEditProposal = {
+  ...testSoftware,
+  ...{
+    editProposalTarget: 1,
+    editProposalBy: 1,
+    editProposalCreated: "2021-09-13T00:00:00",
+    editProposalUpdated: "2021-09-13T00:00:00",
+    name: "Test software Pro"
   }
 };
 
@@ -456,12 +482,48 @@ Cypress.Commands.add("setupEquipmentDefaultRoutesForAccessories", () => {
 });
 
 Cypress.Commands.add("setupEquipmentDefaultRoutesForSoftware", () => {
-  cy.route("GET", "**/api/v2/equipment/software/", {
+  cy.route("GET", "**/api/v2/equipment/software/?q=*", {
     count: 0,
     next: null,
     previous: null,
     results: []
-  }).as("getSoftware");
+  }).as("findSoftwareItems");
+
+  cy.route("GET", "**/api/v2/equipment/software/?page=*", {
+    count: 1,
+    next: null,
+    previous: null,
+    results: [testSoftware]
+  }).as("getSoftwareItems");
+
+  cy.route("GET", "**/api/v2/equipment/software/find-similar-in-brand/*", []);
+
+  cy.route("GET", "**/api/v2/equipment/software/others-in-brand/*", []);
+
+  cy.route("GET", "**/api/v2/equipment/software/?brand=*", {
+    count: 0,
+    next: null,
+    previous: null,
+    results: []
+  }).as("findSoftwareItemsByName");
+
+  cy.route("GET", "**/api/v2/equipment/software/?pending_review=true&page=*", {
+    count: 0,
+    next: null,
+    previous: null,
+    results: []
+  }).as("findSoftwareItemsPendingReview");
+
+  cy.route("GET", "**/api/v2/equipment/software/?pending_edit=true?page=*", {
+    count: 0,
+    next: null,
+    previous: null,
+    results: []
+  }).as("findSoftwareItemsPendingEdit");
+
+  cy.route("GET", "**/api/v2/equipment/software-edit-proposal/?edit_proposal_target=*", {
+    results: []
+  }).as("getEditProposals");
 });
 
 Cypress.Commands.add("setupEquipmentDefaultRoutes", () => {
@@ -558,8 +620,6 @@ Cypress.Commands.add("equipmentItemBrowserSelectFirstBrand", (selector, brandNam
   cy.ngSelectOptionClick(selector, 1);
   cy.ngSelectValueShouldContain(selector, brandName);
 });
-
-// TODO: complete
 
 Cypress.Commands.add("equipmentItemBrowserSelectFirstCamera", (selector, cameraName, cameraObject) => {
   cy.route("GET", "**/api/v2/equipment/camera/?q=*", {
@@ -661,4 +721,21 @@ Cypress.Commands.add("equipmentItemBrowserSelectFirstAccessory", (selector, acce
   cy.ngSelectOptionNumberSelectorShouldContain(selector, 1, "astrobin-equipment-item-summary .label", accessoryName);
   cy.ngSelectOptionClick(selector, 1);
   cy.ngSelectValueShouldContain(selector, accessoryName);
+});
+
+Cypress.Commands.add("equipmentItemBrowserSelectFirstSoftware", (selector, softwareName, softwareObject) => {
+  cy.route("GET", "**/api/v2/equipment/software/?q=*", {
+    count: 1,
+    next: null,
+    previous: null,
+    results: [softwareObject]
+  }).as("findSoftwareItems");
+
+  cy.ngSelectType(selector, softwareName);
+
+  cy.wait("@findSoftwareItems");
+
+  cy.ngSelectOptionNumberSelectorShouldContain(selector, 1, "astrobin-equipment-item-summary .label", softwareName);
+  cy.ngSelectOptionClick(selector, 1);
+  cy.ngSelectValueShouldContain(selector, softwareName);
 });

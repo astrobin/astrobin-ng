@@ -15,6 +15,7 @@ import { TelescopeInterface } from "@features/equipment/types/telescope.interfac
 import { MountInterface } from "@features/equipment/types/mount.interface";
 import { FilterInterface } from "@features/equipment/types/filter.interface";
 import { AccessoryInterface } from "@features/equipment/types/accessory.interface";
+import { SoftwareInterface } from "@features/equipment/types/software.interface";
 
 export interface EquipmentItemCreationSuccessPayloadInterface {
   item: EquipmentItemBaseInterface;
@@ -93,7 +94,14 @@ export enum EquipmentActionTypes {
   CREATE_ACCESSORY = "[Equipment] Create accessory",
   CREATE_ACCESSORY_SUCCESS = "[Equipment] Create accessory success",
   CREATE_ACCESSORY_EDIT_PROPOSAL = "[Equipment] Create accessory edit proposal",
-  CREATE_ACCESSORY_EDIT_PROPOSAL_SUCCESS = "[Equipment] Create accessory edit request proposal"
+  CREATE_ACCESSORY_EDIT_PROPOSAL_SUCCESS = "[Equipment] Create accessory edit request proposal",
+
+  // Software
+
+  CREATE_SOFTWARE = "[Equipment] Create software",
+  CREATE_SOFTWARE_SUCCESS = "[Equipment] Create software success",
+  CREATE_SOFTWARE_EDIT_PROPOSAL = "[Equipment] Create software edit proposal",
+  CREATE_SOFTWARE_EDIT_PROPOSAL_SUCCESS = "[Equipment] Create software edit request proposal"
 }
 
 /**********************************************************************************************************************
@@ -432,6 +440,34 @@ export class CreateAccessoryEditProposalSuccess implements PayloadActionInterfac
   constructor(public payload: { editProposal: EditProposalInterface<AccessoryInterface> }) {}
 }
 
+/**********************************************************************************************************************
+ * Software
+ *********************************************************************************************************************/
+
+export class CreateSoftware implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.CREATE_SOFTWARE;
+
+  constructor(public payload: { software: Omit<SoftwareInterface, "id"> }) {}
+}
+
+export class CreateSoftwareSuccess implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.CREATE_SOFTWARE_SUCCESS;
+
+  constructor(public payload: EquipmentItemCreationSuccessPayloadInterface) {}
+}
+
+export class CreateSoftwareEditProposal implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.CREATE_SOFTWARE_EDIT_PROPOSAL;
+
+  constructor(public payload: { software: Omit<EditProposalInterface<SoftwareInterface>, "id"> }) {}
+}
+
+export class CreateSoftwareEditProposalSuccess implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.CREATE_SOFTWARE_EDIT_PROPOSAL_SUCCESS;
+
+  constructor(public payload: { editProposal: EditProposalInterface<SoftwareInterface> }) {}
+}
+
 export type EquipmentActions =
   // Brands
   | LoadBrand
@@ -497,4 +533,10 @@ export type EquipmentActions =
   | CreateAccessory
   | CreateAccessorySuccess
   | CreateAccessoryEditProposal
-  | CreateAccessoryEditProposalSuccess;
+  | CreateAccessoryEditProposalSuccess
+
+  // Software
+  | CreateSoftware
+  | CreateSoftwareSuccess
+  | CreateSoftwareEditProposal
+  | CreateSoftwareEditProposalSuccess;

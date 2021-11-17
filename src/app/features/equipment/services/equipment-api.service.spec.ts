@@ -15,6 +15,7 @@ import { ContentTypeGenerator } from "@shared/generators/content-type.generator"
 import { MountGenerator } from "@features/equipment/generators/mount.generator";
 import { FilterGenerator } from "@features/equipment/generators/filter.generator";
 import { AccessoryGenerator } from "@features/equipment/generators/accessory.generator";
+import { SoftwareGenerator } from "@features/equipment/generators/software.generator";
 
 describe("EquipmentApiService", () => {
   let service: EquipmentApiService;
@@ -102,7 +103,6 @@ describe("EquipmentApiService", () => {
     req.flush(cameras);
   });
 
-  // TODO: complete
   describe("getByContentTypeAndObjectId", () => {
     it("should work with camera", () => {
       const camera = CameraGenerator.camera();
@@ -187,9 +187,22 @@ describe("EquipmentApiService", () => {
         expect(response.id).toEqual(accessory.id);
       });
     });
+
+    it("should work with software", () => {
+      const software = SoftwareGenerator.software();
+
+      jest
+        .spyOn(service.commonApiService, "getContentTypeById")
+        .mockReturnValue(of(ContentTypeGenerator.contentType({ model: "software" })));
+      jest.spyOn(service, "getSoftware").mockReturnValue(of(software));
+
+      service.getByContentTypeAndObjectId(1, software.id).subscribe(response => {
+        expect(service.getSoftware).toHaveBeenCalledWith(software.id);
+        expect(response.id).toEqual(software.id);
+      });
+    });
   });
 
-  // TODO: complete
   describe("getByNameAndType", () => {
     it("should work with sensor", () => {
       const item = SensorGenerator.sensor();
@@ -274,9 +287,21 @@ describe("EquipmentApiService", () => {
       expect(req.request.method).toBe("GET");
       req.flush(item);
     });
-  });
 
-  // TODO: complete
+    it("should work with software", () => {
+      const item = SoftwareGenerator.software();
+
+      service.getByBrandAndName(EquipmentItemType.SOFTWARE, item.brand, item.name).subscribe(response => {
+        expect(response.id).toEqual(item.id);
+      });
+
+      const req = httpMock.expectOne(
+        `${service.configUrl}/software/?${new URLSearchParams({ brand: "" + item.brand.toString(), name: item.name })}`
+      );
+      expect(req.request.method).toBe("GET");
+      req.flush(item);
+    });
+  });
 
   it("getCamera should work", () => {
     const camera = CameraGenerator.camera();
@@ -348,5 +373,17 @@ describe("EquipmentApiService", () => {
     const req = httpMock.expectOne(`${service.configUrl}/accessory/${accessory.id}/`);
     expect(req.request.method).toBe("GET");
     req.flush(accessory);
+  });
+
+  it("getSoftware should work", () => {
+    const software = SoftwareGenerator.software();
+
+    service.getSoftware(software.id).subscribe(response => {
+      expect(response.id).toEqual(software.id);
+    });
+
+    const req = httpMock.expectOne(`${service.configUrl}/software/${software.id}/`);
+    expect(req.request.method).toBe("GET");
+    req.flush(software);
   });
 });

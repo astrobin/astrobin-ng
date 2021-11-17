@@ -24,6 +24,7 @@ import { MountDisplayProperty, MountService } from "@features/equipment/services
 import { FilterInterface } from "@features/equipment/types/filter.interface";
 import { FilterDisplayProperty, FilterService } from "@features/equipment/services/filter.service";
 import { AccessoryInterface } from "@features/equipment/types/accessory.interface";
+import { SoftwareInterface } from "@features/equipment/types/software.interface";
 
 interface EquipmentItemProperty {
   name: string;
@@ -86,7 +87,6 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
   get properties$(): Observable<EquipmentItemProperty[]> {
     const type: EquipmentItemType = this.equipmentItemService.getType(this.item);
 
-    // TODO: complete
     switch (type) {
       case EquipmentItemType.SENSOR:
         return this._sensorProperties$();
@@ -100,6 +100,8 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
         return this._filterProperties$();
       case EquipmentItemType.ACCESSORY:
         return this._accessoryProperties$();
+      case EquipmentItemType.SOFTWARE:
+        return this._softwareProperties$();
     }
   }
 
@@ -323,6 +325,19 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
         ? {
             name: this.translateService.instant("Class"),
             value: this.translateService.stream("Accessory")
+          }
+        : null
+    ]);
+  }
+
+  private _softwareProperties$(): Observable<EquipmentItemProperty[]> {
+    const item: SoftwareInterface = this.item as SoftwareInterface;
+
+    return of([
+      this.showClass
+        ? {
+            name: this.translateService.instant("Class"),
+            value: this.translateService.stream("Software")
           }
         : null
     ]);

@@ -5,7 +5,6 @@
     <div class="col-md-3">
       <astrobin-migration-nav></astrobin-migration-nav>
 
-      <!-- TODO: complete counts -->
       <astrobin-equipment-item-type-nav
         routingBasePath="/equipment/migration-tool"
         [cameraCount]="nonMigratedCamerasCount$"
@@ -13,6 +12,7 @@
         [mountCount]="nonMigratedMountsCount$"
         [filterCount]="nonMigratedFiltersCount$"
         [accessoryCount]="nonMigratedAccessoriesCount$"
+        [softwareCount]="nonMigratedSoftwareCount$"
         [showSubNavigation]="false"
         [excludeTypes]="[EquipmentItemType.SENSOR]"
       ></astrobin-equipment-item-type-nav>

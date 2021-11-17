@@ -25,6 +25,7 @@ import { UtilsService } from "@shared/services/utils/utils.service";
 import { MountInterface } from "@features/equipment/types/mount.interface";
 import { FilterInterface } from "@features/equipment/types/filter.interface";
 import { AccessoryInterface } from "@features/equipment/types/accessory.interface";
+import { SoftwareInterface } from "@features/equipment/types/software.interface";
 
 @Injectable({
   providedIn: "root"
@@ -155,7 +156,6 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
   ): Observable<EquipmentItemBaseInterface> {
     return this.commonApiService.getContentTypeById(contentTypeId).pipe(
       switchMap(contentType => {
-        // TODO: complete
         switch (contentType.model) {
           case "camera":
             return this.getCamera(objectId);
@@ -169,6 +169,8 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
             return this.getFilter(objectId);
           case "accessory":
             return this.getAccessory(objectId);
+          case "software":
+            return this.getSoftware(objectId);
         }
       })
     );
@@ -476,6 +478,26 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
   }
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // SOFTWARE API
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  createSoftware(software: Omit<SoftwareInterface, "id">): Observable<SoftwareInterface> {
+    return this._createItem<SoftwareInterface>(software, "software");
+  }
+
+  createSoftwareEditProposal(
+    editProposal: Omit<EditProposalInterface<SoftwareInterface>, "id">
+  ): Observable<EditProposalInterface<SoftwareInterface>> {
+    return this._createItemEditProposal<SoftwareInterface>(editProposal, "software");
+  }
+
+  getSoftware(id: SoftwareInterface["id"]): Observable<SoftwareInterface> {
+    return this.http
+      .get<SoftwareInterface>(`${this.configUrl}/software/${id}/`)
+      .pipe(map(software => this._parseSoftware(software)));
+  }
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // PRIVATE
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -486,7 +508,6 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
   ): T {
     const type = this.equipmentItemService.getType(item);
 
-    // TODO: complete
     switch (type) {
       case EquipmentItemType.SENSOR:
         return this._parseSensor<any>(item);
@@ -500,10 +521,10 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
         return this._parseFilter<any>(item);
       case EquipmentItemType.ACCESSORY:
         return this._parseAccessory<any>(item);
+      case EquipmentItemType.SOFTWARE:
+        return this._parseSoftware<any>(item);
     }
   }
-
-  // TODO: complete
 
   // The following _parse methods are here because django-rest-framework returns floats as strings (e.g. "1.23")
 
@@ -559,6 +580,11 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
 
   private _parseAccessory<T extends AccessoryInterface | EditProposalInterface<AccessoryInterface>>(item: T): T {
     // Accessories have no float properties, so we don't need to do anything here.
+    return item;
+  }
+
+  private _parseSoftware<T extends SoftwareInterface | EditProposalInterface<SoftwareInterface>>(item: T): T {
+    // Software items have no float properties, so we don't need to do anything here.
     return item;
   }
 

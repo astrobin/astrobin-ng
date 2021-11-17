@@ -27,6 +27,10 @@ import {
   CreateSensorEditProposal,
   CreateSensorEditProposalSuccess,
   CreateSensorSuccess,
+  CreateSoftware,
+  CreateSoftwareEditProposal,
+  CreateSoftwareEditProposalSuccess,
+  CreateSoftwareSuccess,
   CreateTelescope,
   CreateTelescopeEditProposal,
   CreateTelescopeEditProposalSuccess,
@@ -255,8 +259,6 @@ export class EquipmentEffects {
     )
   );
 
-  // TODO: complete all item types.
-
   /*********************************************************************************************************************
    * Sensors
    ********************************************************************************************************************/
@@ -465,6 +467,39 @@ export class EquipmentEffects {
             map(
               createdAccessoryEditProposal =>
                 new CreateAccessoryEditProposalSuccess({ editProposal: createdAccessoryEditProposal })
+            )
+          )
+      )
+    )
+  );
+
+  /*********************************************************************************************************************
+   * Software
+   ********************************************************************************************************************/
+
+  CreateSoftware: Observable<CreateSoftwareSuccess> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(EquipmentActionTypes.CREATE_SOFTWARE),
+      map((action: CreateSoftware) => action.payload.software),
+      mergeMap(software =>
+        this.equipmentApiService
+          .createSoftware(software)
+          .pipe(map(createdSoftware => new CreateSoftwareSuccess({ item: createdSoftware })))
+      )
+    )
+  );
+
+  CreateSoftwareEditProposal: Observable<CreateSoftwareEditProposalSuccess> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(EquipmentActionTypes.CREATE_SOFTWARE_EDIT_PROPOSAL),
+      map((action: CreateSoftwareEditProposal) => action.payload.software),
+      mergeMap(software =>
+        this.equipmentApiService
+          .createSoftwareEditProposal(software)
+          .pipe(
+            map(
+              createdSoftwareEditProposal =>
+                new CreateSoftwareEditProposalSuccess({ editProposal: createdSoftwareEditProposal })
             )
           )
       )

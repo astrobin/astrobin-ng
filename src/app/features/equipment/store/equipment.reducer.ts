@@ -46,7 +46,6 @@ export function reducer(state = initialEquipmentState, action: EquipmentActions)
       };
     }
 
-    // TODO: complete equipment item types
     case EquipmentActionTypes.LOAD_EQUIPMENT_ITEM_SUCCESS:
     case EquipmentActionTypes.APPROVE_EQUIPMENT_ITEM_SUCCESS:
     case EquipmentActionTypes.REJECT_EQUIPMENT_ITEM_SUCCESS:
@@ -56,6 +55,7 @@ export function reducer(state = initialEquipmentState, action: EquipmentActions)
     case EquipmentActionTypes.CREATE_MOUNT_SUCCESS:
     case EquipmentActionTypes.CREATE_FILTER_SUCCESS:
     case EquipmentActionTypes.CREATE_ACCESSORY_SUCCESS:
+    case EquipmentActionTypes.CREATE_SOFTWARE_SUCCESS:
     case EquipmentActionTypes.LOAD_SENSOR_SUCCESS: {
       return {
         ...state,
@@ -63,13 +63,13 @@ export function reducer(state = initialEquipmentState, action: EquipmentActions)
       };
     }
 
-    // TODO: complete equipment item types
     case EquipmentActionTypes.CREATE_SENSOR_EDIT_PROPOSAL_SUCCESS:
     case EquipmentActionTypes.CREATE_CAMERA_EDIT_PROPOSAL_SUCCESS:
     case EquipmentActionTypes.CREATE_TELESCOPE_EDIT_PROPOSAL_SUCCESS:
     case EquipmentActionTypes.CREATE_MOUNT_EDIT_PROPOSAL_SUCCESS:
     case EquipmentActionTypes.CREATE_FILTER_EDIT_PROPOSAL_SUCCESS:
     case EquipmentActionTypes.CREATE_ACCESSORY_EDIT_PROPOSAL_SUCCESS:
+    case EquipmentActionTypes.CREATE_SOFTWARE_EDIT_PROPOSAL_SUCCESS:
     case EquipmentActionTypes.REJECT_EQUIPMENT_ITEM_EDIT_PROPOSAL_SUCCESS: {
       return {
         ...state,

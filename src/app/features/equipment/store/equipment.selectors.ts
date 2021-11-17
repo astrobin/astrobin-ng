@@ -11,10 +11,9 @@ import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { instanceOfMount } from "@features/equipment/types/mount.interface";
 import { instanceOfFilter } from "@features/equipment/types/filter.interface";
 import { instanceOfAccessory } from "@features/equipment/types/accessory.interface";
+import { instanceOfSoftware } from "@features/equipment/types/software.interface";
 
 export function getEquipmentItemType(item: EquipmentItemBaseInterface): EquipmentItemType {
-  // TODO: complete.
-
   if (instanceOfSensor(item)) {
     return EquipmentItemType.SENSOR;
   }
@@ -37,6 +36,10 @@ export function getEquipmentItemType(item: EquipmentItemBaseInterface): Equipmen
 
   if (instanceOfAccessory(item)) {
     return EquipmentItemType.ACCESSORY;
+  }
+
+  if (instanceOfSoftware(item)) {
+    return EquipmentItemType.SOFTWARE;
   }
 
   throw new Error("Unknown type");
