@@ -11,7 +11,12 @@
 </ng-template>
 
 <ng-template #equipmentItemOptionTemplate let-object="item">
-  <astrobin-equipment-item-summary [item]="object.item" [showSubItem]="false"></astrobin-equipment-item-summary>
+  <astrobin-equipment-item-summary
+    [item]="object.item"
+    [showMeta]="false"
+    [showImage]="false"
+    [showSubItem]="false"
+  ></astrobin-equipment-item-summary>
 </ng-template>
 
 <ng-container *ngIf="creationMode">

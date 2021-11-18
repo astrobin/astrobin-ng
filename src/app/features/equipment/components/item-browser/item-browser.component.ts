@@ -283,7 +283,8 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
                 },
                 labelTemplate: this.equipmentItemLabelTemplate,
                 optionTemplate: this.equipmentItemOptionTemplate,
-                addTag: !!currentUser ? _addTag : undefined
+                addTag: !!currentUser ? _addTag : undefined,
+                striped: true
               },
               hooks: {
                 onInit: (field: FormlyFieldConfig) => {
