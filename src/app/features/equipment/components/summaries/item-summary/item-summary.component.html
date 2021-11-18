@@ -1,7 +1,15 @@
 <ng-container *ngIf="item && brand">
-  <div class="row align-items-center">
-    <div [className]="showLargeImage ? 'col-3' : 'col-2'" *ngIf="showImage">
-      <img class="image" [src]="image" alt="" />
+  <div class="row">
+    <div
+      *ngIf="showImage"
+      class="col-12 col-lg-3"
+    >
+      <div
+        class="image"
+        [class.image-large]="showLargeImage"
+        [style.background-image]="'url(' + image + ')'"
+      >
+      </div>
     </div>
 
     <div class="col">
@@ -15,22 +23,26 @@
         </h6>
       </div>
 
-      <div class="properties" *ngIf="properties$ | async as properties">
+      <table class="table table-sm table-striped properties" *ngIf="properties$ | async as properties">
+        <tbody>
         <ng-container *ngFor="let property of properties">
-          <span *ngIf="(showProperty$(property) | async) === true" class="property">
-            <span class="property-name">{{ property.name }}</span
-            >:
+          <tr *ngIf="(showProperty$(property) | async) === true" class="property">
+            <th class="property-name">
+              {{ property.name }}
+            </th>
+            <td class="property-value">
+              <ng-container *ngIf="property.value | async as value; else noValue">
+                <span class="property-value" [innerHTML]="value"></span>
+              </ng-container>
 
-            <ng-container *ngIf="property.value | async as value; else noValue">
-              <span class="property-value" [innerHTML]="value"></span>
-            </ng-container>
-
-            <ng-template #noValue>
-              <span class="property-value">{{ "n/a" | translate }}</span>
-            </ng-template>
-          </span>
+              <ng-template #noValue>
+                <span class="property-value">{{ "n/a" | translate }}</span>
+              </ng-template>
+            </td>
+          </tr>
         </ng-container>
-      </div>
+        </tbody>
+      </table>
 
       <div *ngIf="showSubItem && !!subItem" class="sub-item">
         <astrobin-equipment-item-summary
