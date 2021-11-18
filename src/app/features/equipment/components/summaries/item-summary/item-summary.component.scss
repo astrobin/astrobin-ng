@@ -1,5 +1,5 @@
 .image {
-    width: 100%;
+  width: 100%;
 }
 
 .website {
@@ -42,5 +42,28 @@
 
   .image {
     width: 80%;
+  }
+}
+
+.meta {
+  padding: .75rem 1.5rem;
+  margin: -1.25rem;
+  margin-top: 1rem;
+  color: var(--lighterGrey);
+  background: var(--grey);
+  font-style: italic;
+  font-size: .85rem;
+
+  strong {
+    color: var(--white);
+    font-weight: normal;
+  }
+
+  p {
+    margin-bottom: .15rem;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
   }
 }

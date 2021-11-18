@@ -40,8 +40,34 @@
           [showLargeImage]="showLargeImage"
           [showImage]="showImage"
           [showEmptyProperties]="showEmptyProperties"
+          [showMeta]="false"
         ></astrobin-equipment-item-summary>
       </div>
     </div>
+  </div>
+
+  <div class="meta" *ngIf="showMeta">
+    <p *ngIf="item.createdBy">
+      <strong>{{ "Created by" | translate }}</strong>:
+      <astrobin-username [user]="getCreatedBy() | async"></astrobin-username>
+      <abbr [attr.title]="item.created | localDate">
+        ({{ item.created | localDate | timeago:true }})
+      </abbr>
+    <p>
+
+    <p *ngIf="item.reviewedBy">
+      <strong>{{ "Reviewed by" | translate }}</strong>:
+      <astrobin-username [user]="getReviewedBy() | async"></astrobin-username>
+      <abbr *ngIf="item.reviewedTimestamp" [attr.title]="item.reviewedTimestamp | localDate">
+        ({{ item.reviewedTimestamp | localDate | timeago:true }})
+      </abbr>
+    </p>
+
+    <p *ngIf="showLastUpdate()">
+      <strong>{{ "Last update" | translate }}:</strong>
+      <abbr [attr.title]="item.updated | localDate">
+        {{ item.updated | localDate | timeago:true }}
+      </abbr>
+    </p>
   </div>
 </ng-container>

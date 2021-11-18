@@ -25,6 +25,9 @@ import { FilterInterface } from "@features/equipment/types/filter.interface";
 import { FilterDisplayProperty, FilterService } from "@features/equipment/services/filter.service";
 import { AccessoryInterface } from "@features/equipment/types/accessory.interface";
 import { SoftwareInterface } from "@features/equipment/types/software.interface";
+import { UserInterface } from "@shared/interfaces/user.interface";
+import { selectUser } from "@features/account/store/auth.selectors";
+import { LoadUser } from "@features/account/store/auth.actions";
 
 interface EquipmentItemProperty {
   name: string;
@@ -56,6 +59,9 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
 
   @Input()
   showSubItem = true;
+
+  @Input()
+  showMeta = true;
 
   brand: BrandInterface;
   subItem: EquipmentItemBaseInterface;
@@ -105,7 +111,34 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
     }
   }
 
+  getCreatedBy(): Observable<UserInterface> {
+    return this.store$.select(selectUser, this.item.createdBy);
+  }
+
+  getReviewedBy(): Observable<UserInterface> {
+    return this.store$.select(selectUser, this.item.reviewedBy);
+  }
+
+  showLastUpdate(): boolean {
+    if (!this.item.updated) {
+      return false;
+    }
+
+    const created = new Date(this.item.created).getTime();
+    const updated = new Date(this.item.updated).getTime();
+
+    return updated - created >= 60000;
+  }
+
   ngOnChanges(changes: SimpleChanges): void {
+    if (this.item.createdBy) {
+      this.store$.dispatch(new LoadUser({ id: this.item.createdBy }));
+    }
+
+    if (this.item.reviewedBy) {
+      this.store$.dispatch(new LoadUser({ id: this.item.reviewedBy }));
+    }
+
     this.store$
       .select(selectBrand, this.item.brand)
       .pipe(
