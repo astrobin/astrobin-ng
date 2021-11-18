@@ -27,4 +27,29 @@ describe("EquipmentItemSummaryComponent", () => {
   it("should create", () => {
     expect(component).toBeTruthy();
   });
+
+  describe("showLastUpdate", () => {
+    it("should be false when `updated` is null", () => {
+      component.item = CameraGenerator.camera({
+        updated: null
+      });
+      expect(component.showLastUpdate()).toBe(false);
+    });
+
+    it("should be false when `created` and `updated` are less than a minute apart", () => {
+      component.item = CameraGenerator.camera({
+        created: "2020-01-01T00:00:00",
+        updated: "2020-01-01T00:00:30"
+      });
+      expect(component.showLastUpdate()).toBe(false);
+    });
+
+    it("should be true when `created` and `updated` are a minute apart or more", () => {
+      component.item = CameraGenerator.camera({
+        created: "2020-01-01T00:00:00",
+        updated: "2020-01-01T00:01:00"
+      });
+      expect(component.showLastUpdate()).toBe(true);
+    });
+  });
 });
