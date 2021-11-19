@@ -395,7 +395,7 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
     this.nonMigratedMountsCount$ = this.legacyMountApi.getNonMigratedCount();
     this.nonMigratedFiltersCount$ = this.legacyFilterApi.getNonMigratedCount();
     this.nonMigratedAccessoriesCount$ = this.legacyAccessoryApi.getNonMigratedCount();
-    this.nonMigratedAccessoriesCount$ = this.legacySoftwareApi.getNonMigratedCount();
+    this.nonMigratedSoftwareCount$ = this.legacySoftwareApi.getNonMigratedCount();
   }
 
   _applyMigration(object: any, setMigrateArgs: any[], markedAs: string) {
