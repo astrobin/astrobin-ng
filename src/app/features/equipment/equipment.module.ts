@@ -21,7 +21,7 @@ import { RejectMigrationModalComponent } from "./components/migration/reject-mig
 import { MigrationExplorerComponent } from "./pages/migration/migration-explorer/migration-explorer.component";
 import { ItemTypeNavComponent } from "./components/item-type-nav/item-type-nav.component";
 import { MigrationNavComponent } from "@features/equipment/components/migration/migration-nav/migration-nav.component";
-import { MigrationCommandmentsComponent } from "./components/migration/migration-commandments/migration-commandments.component";
+import { MigrationGuidelinesComponent } from "./components/migration/migration-guidelines/migration-guidelines.component";
 import { ItemBrowserComponent } from "./components/item-browser/item-browser.component";
 import { ExplorerPageComponent } from "./pages/explorer/explorer-page.component";
 import { OthersInBrandComponent } from "./components/others-in-brand/others-in-brand.component";
@@ -67,7 +67,7 @@ import { SoftwareEditorComponent } from "@features/equipment/components/editors/
     MigrationExplorerComponent,
     ItemTypeNavComponent,
     MigrationNavComponent,
-    MigrationCommandmentsComponent,
+    MigrationGuidelinesComponent,
     ItemBrowserComponent,
     OthersInBrandComponent,
     ItemEditProposalComponent,
