@@ -62,7 +62,7 @@ const PROHIBITED_WORDS = [
   "usato",
   "usata",
   "discontinuato",
-  "discontinuatq",
+  "discontinuata",
   "rotto",
   "rotta",
   "regalo",
