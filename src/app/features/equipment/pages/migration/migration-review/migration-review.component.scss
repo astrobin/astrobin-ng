@@ -9,3 +9,11 @@
 .btn-review fa-icon {
   margin-left: .5rem;
 }
+
+.with-help-tooltip {
+  position: relative;
+
+  .help-tooltip {
+    position: absolute;
+  }
+}

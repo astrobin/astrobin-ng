@@ -42,7 +42,6 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { Location } from "@angular/common";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
-import { RejectMigrationModalComponent } from "@features/equipment/components/migration/reject-migration-modal/reject-migration-modal.component";
 import { RejectItemModalComponent } from "@features/equipment/components/reject-item-modal/reject-item-modal.component";
 import { ApproveItemModalComponent } from "@features/equipment/components/approve-item-modal/approve-item-modal.component";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
@@ -206,12 +205,13 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit 
       )
       .subscribe(item => {
         this.setItem(item);
+        this.popNotificationsService.success(this.translateService.instant("Item approved."));
       });
   }
 
   startRejection() {
     const modal: NgbModalRef = this.modalService.open(RejectItemModalComponent);
-    const componentInstance: RejectMigrationModalComponent = modal.componentInstance;
+    const componentInstance: RejectItemModalComponent = modal.componentInstance;
 
     componentInstance.equipmentItem = this.selectedItem;
 

@@ -44,12 +44,19 @@ describe("MigrationReviewItemGuardService", () => {
     store.setState(state);
 
     const item = {
+      pk: 1,
+      gear: 1
+    };
+
+    const strategy = {
+      pk: 1,
       migrationFlag: MigrationFlag.DIY,
       migrationFlagModerator: state.auth.user.id
     };
 
     route = TestBed.inject(ActivatedRouteSnapshot);
-    jest.spyOn(route, "params", "get").mockReturnValue({ itemId: 1 });
+    jest.spyOn(route, "params", "get").mockReturnValue({ migrationStrategyId: 1 });
+    jest.spyOn(service.migrationStrategyApiService, "get").mockReturnValue(of(strategy));
     jest.spyOn(service.legacyGearApi, "get").mockReturnValue(of(item));
 
     service.canActivate(route, { url: "/foo" } as RouterStateSnapshot).subscribe(result => {
@@ -64,13 +71,20 @@ describe("MigrationReviewItemGuardService", () => {
     store.setState(state);
 
     const item = {
+      pk: 1
+    };
+
+    const strategy = {
+      pk: 1,
+      gear: 1,
       migrationFlag: MigrationFlag.DIY,
       migrationFlagModerator: 999,
       migrationFlagReviewerLock: 999
     };
 
     route = TestBed.inject(ActivatedRouteSnapshot);
-    jest.spyOn(route, "params", "get").mockReturnValue({ itemId: 1 });
+    jest.spyOn(route, "params", "get").mockReturnValue({ migrationStrategyId: 1 });
+    jest.spyOn(service.migrationStrategyApiService, "get").mockReturnValue(of(strategy));
     jest.spyOn(service.legacyGearApi, "get").mockReturnValue(of(item));
 
     service.canActivate(route, { url: "/foo" } as RouterStateSnapshot).subscribe(result => {
@@ -85,13 +99,20 @@ describe("MigrationReviewItemGuardService", () => {
     store.setState(state);
 
     const item = {
+      pk: 1
+    };
+
+    const strategy = {
+      pk: 1,
+      gear: 1,
       migrationFlag: MigrationFlag.DIY,
       migrationFlagModerator: 999,
       migrationFlagReviewer: 1000
     };
 
     route = TestBed.inject(ActivatedRouteSnapshot);
-    jest.spyOn(route, "params", "get").mockReturnValue({ itemId: 1 });
+    jest.spyOn(route, "params", "get").mockReturnValue({ migrationStrategyId: 1 });
+    jest.spyOn(service.migrationStrategyApiService, "get").mockReturnValue(of(strategy));
     jest.spyOn(service.legacyGearApi, "get").mockReturnValue(of(item));
 
     service.canActivate(route, { url: "/foo" } as RouterStateSnapshot).subscribe(result => {
@@ -106,12 +127,19 @@ describe("MigrationReviewItemGuardService", () => {
     store.setState(state);
 
     const item = {
+      pk: 1
+    };
+
+    const strategy = {
+      pk: 1,
+      gear: 1,
       migrationFlag: MigrationFlag.DIY,
       migrationFlagModerator: 999
     };
 
     route = TestBed.inject(ActivatedRouteSnapshot);
-    jest.spyOn(route, "params", "get").mockReturnValue({ itemId: 1 });
+    jest.spyOn(route, "params", "get").mockReturnValue({ migrationStrategyId: 1 });
+    jest.spyOn(service.migrationStrategyApiService, "get").mockReturnValue(of(strategy));
     jest.spyOn(service.legacyGearApi, "get").mockReturnValue(of(item));
 
     service.canActivate(route, { url: "/foo" } as RouterStateSnapshot).subscribe(result => {
@@ -126,13 +154,20 @@ describe("MigrationReviewItemGuardService", () => {
     store.setState(state);
 
     const item = {
+      pk: 1
+    };
+
+    const strategy = {
+      pk: 1,
+      gear: 1,
       migrationFlag: MigrationFlag.DIY,
       migrationFlagModerator: 999,
       migrationFlagReviewerLock: state.auth.user.id
     };
 
     route = TestBed.inject(ActivatedRouteSnapshot);
-    jest.spyOn(route, "params", "get").mockReturnValue({ itemId: 1 });
+    jest.spyOn(route, "params", "get").mockReturnValue({ migrationStrategyId: 1 });
+    jest.spyOn(service.migrationStrategyApiService, "get").mockReturnValue(of(strategy));
     jest.spyOn(service.legacyGearApi, "get").mockReturnValue(of(item));
 
     service.canActivate(route, { url: "/foo" } as RouterStateSnapshot).subscribe(result => {
@@ -147,13 +182,20 @@ describe("MigrationReviewItemGuardService", () => {
     store.setState(state);
 
     const item = {
+      pk: 1
+    };
+
+    const strategy = {
+      pk: 1,
+      gear: 1,
       migrationFlag: null,
       migrationFlagModerator: 999,
       migrationFlagReviewerLock: state.auth.user.id
     };
 
     route = TestBed.inject(ActivatedRouteSnapshot);
-    jest.spyOn(route, "params", "get").mockReturnValue({ itemId: 1 });
+    jest.spyOn(route, "params", "get").mockReturnValue({ migrationStrategyId: 1 });
+    jest.spyOn(service.migrationStrategyApiService, "get").mockReturnValue(of(strategy));
     jest.spyOn(service.legacyGearApi, "get").mockReturnValue(of(item));
 
     service.canActivate(route, { url: "/foo" } as RouterStateSnapshot).subscribe(result => {

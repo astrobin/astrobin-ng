@@ -10,33 +10,74 @@
         <div class="col-md-9">
           <div class="card box-shadow">
             <div class="card-header">
-              Summary
+              {{ "Summary" | translate }}
             </div>
 
             <div class="card-body">
-              <dl>
-                <dt>Brand/Make</dt>
-                <dd>{{ legacyItem.make || "(no brand)" }}</dd>
-
-                <dt>Name/Model</dt>
-                <dd>{{ legacyItem.name || "(no name)" }}</dd>
-
-                <ng-container *ngFor="let key of gearService.getProperAttributes(legacyItem)">
-                  <dt>{{ key | camelCaseToSentenceCase }}</dt>
-                  <dd>{{ legacyItem[key] !== null ? legacyItem[key] : "n/a" }}</dd>
-                </ng-container>
-
-                <dt>Proposed strategy:</dt>
-                <dd>{{ legacyItem.migrationFlag }}</dd>
-
-                <dt>Proposed by:</dt>
-                <dd>
-                  <astrobin-username [user]="user" linkTarget="_blank"></astrobin-username>
-                </dd>
-
-                <dt>When:</dt>
-                <dd>{{ legacyItem.migrationFlagTimestamp | timeago:true }}</dd>
-              </dl>
+              <table class="table table-striped">
+                <tbody>
+                  <tr>
+                    <th scope="col">{{ "Object ID" | translate }}</th>
+                    <td>{{ legacyItem.pk }}</td>
+                  </tr>
+                  <tr>
+                    <th scope="col">{{ "Brand/Make" | translate }}</th>
+                    <td>{{ legacyItem.make || "(no brand)" }}</td>
+                  </tr>
+                  <tr>
+                    <th scope="col">{{ "Name/Model" | translate }}</th>
+                    <td>{{ legacyItem.name || "(no name)" }}</td>
+                  </tr>
+                  <tr *ngFor="let key of gearService.getProperAttributes(legacyItem)">
+                    <th scope="col">{{ key | camelCaseToSentenceCase }}</th>
+                    <td>{{ legacyItem[key] !== null ? legacyItem[key] : "n/a" }}</td>
+                  </tr>
+                  <tr>
+                    <th scope="col">Proposed strategy</th>
+                    <td>{{ migrationStrategy.migrationFlag }}</td>
+                  </tr>
+                  <tr>
+                    <th scope="col">
+                      Global or Personal
+                    </th>
+                    <td>
+                      <ng-container *ngIf="!!migrationStrategy.user">
+                        Global
+                        <span
+                          class="help-tooltip"
+                          ngbTooltip="
+                            Global migrations apply to all owners of the legacy item and were created by a moderator.
+                          "
+                        >
+                          <fa-icon icon="question-circle"></fa-icon>
+                        </span>
+                      </ng-container>
+                      <ng-container *ngIf="!migrationStrategy.user">
+                        Personal
+                        <span
+                          class="help-tooltip"
+                          ngbTooltip="
+                            Personal migrations apply only to legacy items appearing on the images of the end user who
+                            created this migration.
+                          "
+                        >
+                          <fa-icon icon="question-circle"></fa-icon>
+                        </span>
+                      </ng-container>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th scope="col">{{ "Proposed by" | translate }}</th>
+                    <td>
+                      <astrobin-username [user]="user" linkTarget="_blank"></astrobin-username>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th scope="col">{{ "When" | translate }}</th>
+                    <td>{{ migrationStrategy.migrationFlagTimestamp | timeago: true }}</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
 
             <div class="card-footer" *ngIf="showButtonsOnSummary">
@@ -44,7 +85,7 @@
             </div>
           </div>
 
-          <ng-container *ngIf="legacyItem.migrationFlag === MigrationFlag.MIGRATE">
+          <ng-container *ngIf="migrationStrategy.migrationFlag === MigrationFlag.MIGRATE">
             <div class="mt-4 mb-4 text-center">
               <fa-icon icon="arrow-down"></fa-icon>
             </div>
@@ -56,7 +97,11 @@
 
               <div class="card-body">
                 <ng-container *ngIf="equipmentItem; else loading">
-                  <astrobin-equipment-item-summary [item]="equipmentItem"></astrobin-equipment-item-summary>
+                  <astrobin-equipment-item-summary
+                    [item]="equipmentItem"
+                    [showMeta]="true"
+                    [showEmptyProperties]="true"
+                  ></astrobin-equipment-item-summary>
                 </ng-container>
               </div>
 
@@ -77,14 +122,14 @@
 
 <ng-template #buttons>
   <button class="btn btn-sm-block btn-success" [class.loading]="loadingService.isLoading()" (click)="approve()">
-    Approve
+    {{ "Approve" | translate }}
   </button>
 
   <button class="btn btn-sm-block btn-danger" [class.loading]="loadingService.isLoading()" (click)="reject()">
-    Reject...
+    {{ "Reject" | translate }}&hellip;
   </button>
 
   <button class="btn btn-sm-block btn-secondary" [class.loading]="loadingService.isLoading()" (click)="exit()">
-    Cancel
+    {{ "Cancel" | translate }}
   </button>
 </ng-template>

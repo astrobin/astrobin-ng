@@ -35,6 +35,7 @@ export enum EquipmentItemEditorMode {
 }
 
 const PROHIBITED_WORDS = [
+  // English
   "modified",
   "modded",
   "upgraded",
@@ -47,7 +48,32 @@ const PROHIBITED_WORDS = [
   "gift",
   "present",
   "lost",
-  "cooled"
+  "cooled",
+
+  // Italian
+  "modificato",
+  "modificata",
+  "aggiornato",
+  "aggiornata",
+  "migliorato",
+  "migliorata",
+  "venduto",
+  "venduta",
+  "usato",
+  "usata",
+  "discontinuato",
+  "discontinuatq",
+  "rotto",
+  "rotta",
+  "regalo",
+  "regalato",
+  "regalata",
+  "perso",
+  "persa",
+  "perduto",
+  "perduta",
+  "raffreddato",
+  "raffreddata"
 ];
 
 @Component({
@@ -168,6 +194,11 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
   }
 
   brandCreated(brand: BrandInterface) {
+    if (brand === null) {
+      this.endBrandCreation();
+      return;
+    }
+
     this.fields.find(field => field.key === "brand").templateOptions.options = [
       {
         value: brand.id,
@@ -516,7 +547,10 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
 
     this.store$
       .select(selectBrand, brandControl.value)
-      .pipe(filter(brand => !!brand))
+      .pipe(
+        filter(brand => !!brand),
+        take(1)
+      )
       .subscribe(brand => {
         if (nameControl.value.toLowerCase().indexOf(brand.name.toLowerCase()) > -1) {
           this.formlyFieldService.addMessage(brandFieldConfig.templateOptions, {

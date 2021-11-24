@@ -1,5 +1,5 @@
 <div class="page">
-  <h1>{{ title }}</h1>
+  <h1>{{ title }} <em>(beta)</em></h1>
 
   <div class="row">
     <div class="col-md-3">
@@ -9,7 +9,7 @@
     <div class="col">
       <ng-container *ngIf="items$ | async as items; else loading">
         <ul class="items">
-          <li *ngFor="let item of items.results">
+          <li *ngFor="let item of items.results" data-id="{{ item.id }}">
             <button class="btn btn-link" (click)="viewItem(item)">
               {{ getItemName$(item) | async }}
             </button>

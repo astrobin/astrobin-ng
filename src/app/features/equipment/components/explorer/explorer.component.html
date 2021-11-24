@@ -56,7 +56,13 @@
           {{ "Migrate into" | translate }}&hellip;
         </button>
 
-        <ng-container *ngIf="selectedItem.reviewerDecision === null && selectedItem.createdBy !== currentUser.id">
+        <ng-container
+          *ngIf="
+            (currentUser | isEquipmentModerator) &&
+            selectedItem.reviewerDecision === null &&
+            selectedItem.createdBy !== currentUser.id
+          "
+        >
           <button
             class="btn btn-danger"
             data-test="reject"

@@ -30,6 +30,7 @@ import { EquipmentApiService } from "@features/equipment/services/equipment-api.
 import { FilterApiService } from "@shared/services/api/classic/astrobin/filter/filter-api.service";
 import { AccessoryApiService } from "@shared/services/api/classic/astrobin/accessory/accessory-api.service";
 import { SoftwareApiService } from "@shared/services/api/classic/astrobin/software/software-api.service";
+import { isGroupMember } from "@shared/operators/is-group-member.operator";
 
 @Component({
   selector: "astrobin-migration-tool",
@@ -96,6 +97,10 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
     super(store$);
   }
 
+  get isEquipmentModerator(): Observable<boolean> {
+    return this.currentUser$.pipe(isGroupMember("equipment_moderators"));
+  }
+
   ngOnInit(): void {
     this.titleService.setTitle(this.title);
 
@@ -154,9 +159,11 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
 
     if (api) {
       return new Observable<any[]>(observer => {
-        api
-          .getRandomNonMigrated()
+        this.currentUser$
           .pipe(
+            take(1),
+            isGroupMember("equipment_moderators"),
+            switchMap(isEquipmentModerator => api.getRandomNonMigrated(isEquipmentModerator)),
             tap(() => this.loadingService.setLoading(true)),
             switchMap((items: any[]) => {
               if (items && items.length === 1) {
@@ -271,10 +278,12 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
 
     if (api) {
       this.loadingService.setLoading(true);
-      api
-        .getSimilarNonMigrated(object.pk)
+
+      this.currentUser$
         .pipe(
           take(1),
+          isGroupMember("equipment_moderators"),
+          switchMap(isEquipmentModerator => api.getSimilarNonMigrated(object.pk, isEquipmentModerator)),
           switchMap((legacyItems: any[]) => {
             this.migrationConfirmation.similarItems = legacyItems;
 
@@ -390,12 +399,14 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
   }
 
   _updateCounts() {
-    this.nonMigratedCamerasCount$ = this.legacyCameraApi.getNonMigratedCount();
-    this.nonMigratedTelescopesCount$ = this.legacyTelescopeApi.getNonMigratedCount();
-    this.nonMigratedMountsCount$ = this.legacyMountApi.getNonMigratedCount();
-    this.nonMigratedFiltersCount$ = this.legacyFilterApi.getNonMigratedCount();
-    this.nonMigratedAccessoriesCount$ = this.legacyAccessoryApi.getNonMigratedCount();
-    this.nonMigratedSoftwareCount$ = this.legacySoftwareApi.getNonMigratedCount();
+    this.currentUser$.pipe(take(1), isGroupMember("equipment_moderators")).subscribe(isEquipmentModerator => {
+      this.nonMigratedCamerasCount$ = this.legacyCameraApi.getNonMigratedCount(isEquipmentModerator);
+      this.nonMigratedTelescopesCount$ = this.legacyTelescopeApi.getNonMigratedCount(isEquipmentModerator);
+      this.nonMigratedMountsCount$ = this.legacyMountApi.getNonMigratedCount(isEquipmentModerator);
+      this.nonMigratedFiltersCount$ = this.legacyFilterApi.getNonMigratedCount(isEquipmentModerator);
+      this.nonMigratedAccessoriesCount$ = this.legacyAccessoryApi.getNonMigratedCount(isEquipmentModerator);
+      this.nonMigratedSoftwareCount$ = this.legacySoftwareApi.getNonMigratedCount(isEquipmentModerator);
+    });
   }
 
   _applyMigration(object: any, setMigrateArgs: any[], markedAs: string) {

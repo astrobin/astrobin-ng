@@ -23,12 +23,29 @@ import { State } from "@app/store/state";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { FormlyFieldMessageLevel, FormlyFieldService } from "@shared/services/formly-field.service";
 
+const PROHIBITED_WORDS = [
+  // English
+  "diy",
+  "do-it-yourself",
+  "do-it-yourself",
+  "self-made",
+  "self made",
+  "handmade",
+  "handcrafted",
+
+  // Italian
+  "autocostruito",
+  "autocostruita",
+  "fai-da-te",
+  "fai da te"
+];
+
 @Component({
-  selector: "astrobin-brand-editor",
-  templateUrl: "./brand-editor.component.html",
-  styleUrls: ["./brand-editor.component.scss"]
+  selector: "astrobin-brand-editor-form",
+  templateUrl: "./brand-editor-form.component.html",
+  styleUrls: ["./brand-editor-form.component.scss"]
 })
-export class BrandEditorComponent extends BaseComponentDirective implements OnInit, AfterViewInit {
+export class BrandEditorFormComponent extends BaseComponentDirective implements OnInit, AfterViewInit {
   static MIN_LENGTH_FOR_SUGGESTIONS = 3;
 
   fields: FormlyFieldConfig[];
@@ -59,7 +76,7 @@ export class BrandEditorComponent extends BaseComponentDirective implements OnIn
   }
 
   ngOnInit(): void {
-    if (this.name?.length >= BrandEditorComponent.MIN_LENGTH_FOR_SUGGESTIONS) {
+    if (this.name?.length >= BrandEditorFormComponent.MIN_LENGTH_FOR_SUGGESTIONS) {
       this.equipmentApiService
         .findAllBrands(this.name)
         .pipe(take(1))
@@ -87,7 +104,7 @@ export class BrandEditorComponent extends BaseComponentDirective implements OnIn
                 takeUntil(this.destroyed$),
                 filter(value => !!value),
                 switchMap(value => {
-                  if (value.length >= BrandEditorComponent.MIN_LENGTH_FOR_SUGGESTIONS) {
+                  if (value.length >= BrandEditorFormComponent.MIN_LENGTH_FOR_SUGGESTIONS) {
                     return this.equipmentApiService.findAllBrands(value);
                   } else {
                     return of([]);
@@ -102,6 +119,30 @@ export class BrandEditorComponent extends BaseComponentDirective implements OnIn
           }
         },
         asyncValidators: {
+          prohibitedWords: {
+            expression: (control: FormControl) => {
+              for (const word of PROHIBITED_WORDS) {
+                if (control.value.toLowerCase().indexOf(word) > -1) {
+                  return of(false);
+                }
+              }
+
+              return of(true);
+            },
+            message: (error, field: FormlyFieldConfig) => {
+              for (const word of PROHIBITED_WORDS) {
+                if (field.formControl.value.toLowerCase().indexOf(word) > -1) {
+                  return this.translateService.instant(
+                    `Your usage of the word "{{0}}" suggests that you are trying to add a DIY item. The AstroBin
+                    equipment database is meant for products that are on the market and can be purchased.`,
+                    {
+                      "0": word
+                    }
+                  );
+                }
+              }
+            }
+          },
           unique: {
             expression: (control: FormControl) => {
               return control.valueChanges.pipe(

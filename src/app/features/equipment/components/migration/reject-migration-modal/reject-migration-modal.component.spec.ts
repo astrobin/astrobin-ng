@@ -25,7 +25,7 @@ describe("RejectMigrationModalComponent", () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(RejectMigrationModalComponent);
     component = fixture.componentInstance;
-    component.legacyItem = {
+    component.migrationStrategy = {
       migrationFlag: MigrationFlag.DIY
     };
     fixture.detectChanges();

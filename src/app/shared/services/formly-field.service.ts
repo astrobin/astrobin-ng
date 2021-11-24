@@ -42,7 +42,9 @@ export class FormlyFieldService extends BaseService {
   }
 
   removeMessage(templateOptions: any, message: FormlyFieldMessage) {
-    templateOptions.messages = templateOptions.messages.filter(m => !this._equals(m, message));
+    if (!!templateOptions.messages) {
+      templateOptions.messages = templateOptions.messages.filter(m => !this._equals(m, message));
+    }
   }
 
   private _equals(a: FormlyFieldMessage, b: FormlyFieldMessage): boolean {

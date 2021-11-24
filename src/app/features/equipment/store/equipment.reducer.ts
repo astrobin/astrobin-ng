@@ -1,9 +1,10 @@
 import { EquipmentActions, EquipmentActionTypes } from "./equipment.actions";
-import { EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
+import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { BrandInterface } from "@features/equipment/types/brand.interface";
 import { EditProposalInterface } from "@features/equipment/types/edit-proposal.interface";
 import { arrayUniqueEquipmentItems, getEquipmentItemType } from "@features/equipment/store/equipment.selectors";
+import { CameraInterface } from "@features/equipment/types/camera.interface";
 
 export const equipmentFeatureKey = "equipment";
 
@@ -48,7 +49,6 @@ export function reducer(state = initialEquipmentState, action: EquipmentActions)
 
     case EquipmentActionTypes.LOAD_EQUIPMENT_ITEM_SUCCESS:
     case EquipmentActionTypes.APPROVE_EQUIPMENT_ITEM_SUCCESS:
-    case EquipmentActionTypes.REJECT_EQUIPMENT_ITEM_SUCCESS:
     case EquipmentActionTypes.CREATE_SENSOR_SUCCESS:
     case EquipmentActionTypes.CREATE_CAMERA_SUCCESS:
     case EquipmentActionTypes.CREATE_TELESCOPE_SUCCESS:
@@ -60,6 +60,30 @@ export function reducer(state = initialEquipmentState, action: EquipmentActions)
       return {
         ...state,
         equipmentItems: arrayUniqueEquipmentItems([...state.equipmentItems, ...[action.payload.item]])
+      };
+    }
+
+    case EquipmentActionTypes.REJECT_EQUIPMENT_ITEM_SUCCESS: {
+      const rejectedItem = action.payload.item;
+      let equipmentItems = arrayUniqueEquipmentItems([...state.equipmentItems, ...[rejectedItem]]);
+
+      if (rejectedItem.klass === EquipmentItemType.SENSOR) {
+        // Update cameras that used to have this sensors.
+        equipmentItems = equipmentItems.map(equipmentItem => {
+          if (
+            equipmentItem.klass === EquipmentItemType.CAMERA &&
+            (equipmentItem as CameraInterface).sensor === rejectedItem.id
+          ) {
+            (equipmentItem as CameraInterface).sensor = null;
+          }
+
+          return equipmentItem;
+        });
+      }
+
+      return {
+        ...state,
+        equipmentItems
       };
     }
 

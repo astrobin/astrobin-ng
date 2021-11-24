@@ -1,5 +1,14 @@
 <div class="page">
   <h1>{{ title }}</h1>
+  <small>
+    {{
+      "To remove duplication and fragmentation from AstroBin's equipment database, we're asking you to perform a " +
+        "migration of your equipment items."
+    }}
+    <a href="https://welcome.astrobin.com/blog/the-great-equipment-database-migration-of-2021" target="_blank">
+      {{ "Learn more" | translate }}.
+    </a>
+  </small>
 
   <div class="row">
     <div class="col-md-3">
@@ -37,9 +46,8 @@
 </ng-template>
 
 <ng-template #allDone>
-  <div class="alert alert-success">
-    <h4>Hooray 🎉</h4>
-    <p>There are no more items of this type to migrate, we did it! This was awesome, thank you!</p>
+  <div class="alert alert-info">
+    <p>{{ "There are no more items of this type to migrate. Check other equipment types." | translate }}</p>
   </div>
 </ng-template>
 
@@ -51,39 +59,25 @@
           class="card box-shadow"
           [class.disabled]="migrationMode || creationMode || migrationConfirmation.inProgress"
         >
-          <div class="card-header">
-            This <strong>LEGACY</strong> item needs to be migrated:
-          </div>
+          <div class="card-header">{{ "This LEGACY item needs to be migrated" | translate }}:</div>
 
           <div class="card-body">
-            <p>
-              Brand/Make: <strong>{{ object.make || "(no brand)" }}</strong>
-            </p>
-            <p>
-              Name/Model: <strong>{{ object.name || "(no name)" }}</strong>
-            </p>
-
-            <ng-container *ngFor="let key of gearService.getProperAttributes(object)">
-              <p>
-                {{ key | camelCaseToSentenceCase }}: <strong>{{ object[key] !== null ? object[key] : "n/a" }}</strong>
-              </p>
-            </ng-container>
-
-            <div
-              class="alert alert-info"
-              *ngIf="object.migrationFlagReviewerDecision && object.migrationFlagReviewerDecision !== 'APPROVED'"
-            >
-              <div>
-                <strong>Please note:</strong> this legacy item has a previous migration proposal that was rejected.
-              </div>
-              <dl class="mt-3">
-                <dt>Reason</dt>
-                <dd>{{ object.migrationFlagReviewerDecision }}</dd>
-
-                <dt>Comment</dt>
-                <dd>{{ object.migrationFlagReviewerRejectionComment || "n/a" }}</dd>
-              </dl>
-            </div>
+            <table class="table table-striped">
+              <tbody>
+                <tr>
+                  <th scope="col">{{ "Brand/Make" | translate }}</th>
+                  <td>{{ object.make || "n/a" | translate }}</td>
+                </tr>
+                <tr>
+                  <th scope="col">{{ "Name/Model" | translate }}</th>
+                  <td>{{ object.name || "n/a" | translate }}</td>
+                </tr>
+                <tr *ngFor="let key of gearService.getProperAttributes(object)">
+                  <th scope="col">{{ key | camelCaseToSentenceCase }}</th>
+                  <td>{{ object[key] !== null ? object[key] : ("n/a" | translate) }}</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
 
           <div class="card-footer">
@@ -93,7 +87,8 @@
               [class.loading]="loadingService.isLoading()"
               (click)="skip(object)"
             >
-              Skip for now
+              <fa-icon icon="sync"></fa-icon>
+              {{ "Get random" | translate }}
             </button>
 
             <div class="d-inline-block" ngbDropdown>
@@ -104,24 +99,25 @@
                 [disabled]="migrationMode || creationMode || migrationConfirmation.inProgress"
                 [class.loading]="loadingService.isLoading()"
               >
-                Mark as...
+                <fa-icon icon="tag"></fa-icon>
+                {{ "Mark as" | translate }}&hellip;
               </button>
 
               <div aria-labelledby="mark-as-dropdown-button" ngbDropdownMenu>
                 <a href="" class="dropdown-item" (click)="markAsWrongType($event, object)">
-                  Wrong type
+                  {{ "Wrong type" | translate }}
                 </a>
 
                 <a href="" class="dropdown-item" (click)="markAsMultiple($event, object)">
-                  Multiple items
+                  {{ "Multiple items" | translate }}
                 </a>
 
                 <a href="" class="dropdown-item" (click)="markAsDIY($event, object)">
-                  DIY
+                  {{ "DIY" | translate }}
                 </a>
 
                 <a href="" class="dropdown-item" (click)="markAsNotEnoughInfo($event, object)">
-                  Not enough info
+                  {{ "Not enough info" | translate }}
                 </a>
               </div>
             </div>
@@ -132,7 +128,8 @@
               [class.loading]="loadingService.isLoading()"
               (click)="beginMigration()"
             >
-              Migrate...
+              <fa-icon icon="arrow-right"></fa-icon>
+              {{ "Migrate" | translate }}&hellip;
             </button>
           </div>
         </div>
@@ -150,8 +147,7 @@
             <div class="backdrop"></div>
 
             <div class="card-header">
-              Select equipment object to migrate "<strong>{{ object.make || "(no brand)" }}</strong>
-              {{ object.name || "(no name)" }}" to, or create a new one
+              {{ "Select target item for the migration, or create a new one." | translate }}
             </div>
 
             <div class="card-body">
@@ -171,7 +167,7 @@
                 [class.loading]="loadingService.isLoading()"
                 (click)="cancelMigration()"
               >
-                Cancel
+                {{ "Cancel" | translate }}
               </button>
 
               <button
@@ -180,7 +176,7 @@
                 [class.loading]="loadingService.isLoading()"
                 (click)="beginMigrationConfirmation(object)"
               >
-                Confirm migration
+                {{ "Confirm migration" | translate }}
               </button>
             </div>
           </div>
@@ -194,18 +190,21 @@
           <div class="mt-4 mb-4">
             <div class="card" id="confirm-migration">
               <div class="card-header">
-                Confirm migration
+                {{ "Confirm migration" | translate }}
               </div>
 
               <div class="card-body">
-                <div class="alert alert-info">
-                  We found more items in the legacy database that are similar to the one you are migrating. Please check
-                  the ones that you want to migrate along! <strong>Please be careful!</strong> Not all items that
-                  AstroBin thinks are similar, are necessarily the same product. Only check the ones that you are sure
-                  of.
+                <div
+                  class="alert alert-info"
+                  [innerHTML]="
+                    'We found more items in the legacy database that are similar to the one you are migrating. ' +
+                    'Please check the ones that you want to migrate along! <strong>Please be careful!</strong> Not ' +
+                    'all items that AstroBin thinks are similar, are necessarily the same product. Only check the ' +
+                    'ones that you are sure of.' | translate"
+                >
                 </div>
 
-                <h5 class="mt-5 mb-4">Legacy item being migrated</h5>
+                <h5 class="mt-5 mb-4">{{ "Legacy item being migrated" | translate }}</h5>
 
                 <div class="custom-control custom-checkbox">
                   <input
@@ -237,7 +236,7 @@
                   [class.loading]="loadingService.isLoading()"
                   (click)="resetMigrationConfirmation()"
                 >
-                  Cancel
+                  {{ "Cancel" | translate }}
                 </button>
 
                 <button
@@ -246,7 +245,7 @@
                   [class.loading]="loadingService.isLoading()"
                   (click)="confirmMigration(object)"
                 >
-                  Confirm selected migrations
+                  {{ "Confirm selected migrations" | translate }}
                 </button>
               </div>
             </div>
