@@ -27,7 +27,7 @@ const PROHIBITED_WORDS = [
   // English
   "diy",
   "do-it-yourself",
-  "do-it-yourself",
+  "do it yourself",
   "self-made",
   "self made",
   "handmade",
@@ -134,7 +134,8 @@ export class BrandEditorFormComponent extends BaseComponentDirective implements 
                 if (field.formControl.value.toLowerCase().indexOf(word) > -1) {
                   return this.translateService.instant(
                     `Your usage of the word "{{0}}" suggests that you are trying to add a DIY item. The AstroBin
-                    equipment database is meant for products that are on the market and can be purchased.`,
+                    equipment database is meant for products that are (or have been) on the market and can (or could)
+                    be purchased.`,
                     {
                       "0": word
                     }
