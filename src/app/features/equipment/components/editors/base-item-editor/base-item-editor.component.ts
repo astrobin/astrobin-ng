@@ -73,7 +73,22 @@ const PROHIBITED_WORDS = [
   "perduto",
   "perduta",
   "raffreddato",
-  "raffreddata"
+  "raffreddata",
+
+  // German
+  "geändert",
+  "modifiziert",
+  "hinaufgestuft",
+  "verkauft",
+  "gebraucht",
+  "abgesetzt",
+  "kaputt",
+  "defekt",
+  "retourniert",
+  "Geschenk",
+  "gegenwärtig",
+  "verloren",
+  "gekühlt"
 ];
 
 @Component({

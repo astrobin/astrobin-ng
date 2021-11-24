@@ -37,7 +37,14 @@ const PROHIBITED_WORDS = [
   "autocostruito",
   "autocostruita",
   "fai-da-te",
-  "fai da te"
+  "fai da te",
+
+  // German
+  "selbstmachen",
+  "mach-es-selbst",
+  "mach es selbst",
+  "selbstgemacht",
+  "handgemacht"
 ];
 
 @Component({
