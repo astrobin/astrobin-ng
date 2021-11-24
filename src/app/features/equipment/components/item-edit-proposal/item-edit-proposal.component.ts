@@ -19,7 +19,7 @@ import {
 import { selectEditProposals, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { LoadUser } from "@features/account/store/auth.actions";
-import { filter, map, switchMap, take } from "rxjs/operators";
+import { filter, map, switchMap, take, tap } from "rxjs/operators";
 import { TranslateService } from "@ngx-translate/core";
 import { forkJoin, Observable } from "rxjs";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
@@ -178,12 +178,15 @@ export class ItemEditProposalComponent extends BaseComponentDirective implements
       .select(selectEquipmentItem, { id: this.editProposal.editProposalTarget, type })
       .pipe(
         filter(item => !!item),
-        take(1)
+        take(1),
+        tap(item => {
+          this.item = item;
+          this.type = this.equipmentItemService.getType(this.item);
+        }),
+        switchMap(() => this.equipmentItemService.changes(this.item, this.editProposal))
       )
-      .subscribe(item => {
-        this.item = item;
-        this.type = this.equipmentItemService.getType(this.item);
-        this.equipmentItemService.changes(this.item, this.editProposal).forEach(change => {
+      .subscribe(changes => {
+        changes.forEach(change => {
           const enumValue = this.equipmentItemService.propertyNameToPropertyEnum(change.propertyName);
 
           forkJoin({

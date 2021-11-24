@@ -32,18 +32,8 @@ export class GearService extends BaseService {
       "pk",
       "make",
       "name",
-      "migrationFlag",
-      "migrationFlagTimestamp",
-      "migrationContentType",
-      "migrationObjectId",
-      "migrationFlagModerator",
       "migrationFlagModeratorLock",
-      "migrationFlagModeratorLockTimestamp",
-      "migrationFlagReviewer",
-      "migrationFlagReviewerLock",
-      "migrationFlagReviewerLockTimestamp",
-      "migrationFlagReviewerDecision",
-      "migrationFlagReviewerRejectionComment"
+      "migrationFlagModeratorLockTimestamp"
     ];
 
     const attributes = [];

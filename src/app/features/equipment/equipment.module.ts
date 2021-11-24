@@ -11,7 +11,6 @@ import { ItemSummaryComponent } from "./components/summaries/item-summary/item-s
 import { CameraEditorComponent } from "./components/editors/camera-editor/camera-editor.component";
 import { BrandSummaryComponent } from "./components/summaries/brand-summary/brand-summary.component";
 import { BaseItemEditorComponent } from "./components/editors/base-item-editor/base-item-editor.component";
-import { BrandEditorComponent } from "./components/editors/brand-editor/brand-editor.component";
 import { MigrationReviewComponent } from "./pages/migration/migration-review/migration-review.component";
 import { MigrationReviewItemComponent } from "./pages/migration/migration-review-item/migration-review-item.component";
 import { SensorEditorComponent } from "@features/equipment/components/editors/sensor-editor/sensor-editor.component";
@@ -44,6 +43,8 @@ import { MountEditorComponent } from "@features/equipment/components/editors/mou
 import { FilterEditorComponent } from "@features/equipment/components/editors/filter-editor/filter-editor.component";
 import { AccessoryEditorComponent } from "@features/equipment/components/editors/accessory-editor/accessory-editor.component";
 import { SoftwareEditorComponent } from "@features/equipment/components/editors/software-editor/software-editor.component";
+import { BrandEditorFormComponent } from "@features/equipment/components/editors/brand-editor-form/brand-editor-form.component";
+import { BrandEditorCardComponent } from "@features/equipment/components/editors/brand-editor-card/brand-editor-card.component";
 
 @NgModule({
   declarations: [
@@ -58,7 +59,8 @@ import { SoftwareEditorComponent } from "@features/equipment/components/editors/
     SoftwareEditorComponent,
     BrandSummaryComponent,
     BaseItemEditorComponent,
-    BrandEditorComponent,
+    BrandEditorCardComponent,
+    BrandEditorFormComponent,
     MigrationReviewComponent,
     MigrationReviewItemComponent,
     SimilarItemsSuggestionComponent,

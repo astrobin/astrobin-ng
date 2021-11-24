@@ -43,7 +43,7 @@ describe("GearService", () => {
 
   describe("getProperAttributes", () => {
     it("should work", () => {
-      expect(service.getProperAttributes({ id: 1, foo: "bar", tar: "car", migrationFlag: "MIGRATE" })).toEqual([
+      expect(service.getProperAttributes({ id: 1, foo: "bar", tar: "car", migrationFlagModeratorLock: 1 })).toEqual([
         "foo",
         "tar"
       ]);

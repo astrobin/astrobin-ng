@@ -15,6 +15,7 @@ import { IsRetailerPipe } from "./is-retailer.pipe";
 import { IsSuperUserPipe } from "./is-superuser.pipe";
 import { CamelCaseToSentenceCasePipe } from "@shared/pipes/camel-case-to-sentence-case.pipe";
 import { IsEquipmentModeratorPipe } from "@shared/pipes/is-equipment-moderator.pipe";
+import { IsInGroupPipe } from "@shared/pipes/is-in-group.pipe";
 
 const pipes = [
   CamelCaseToSentenceCasePipe,
@@ -29,6 +30,7 @@ const pipes = [
   IsProducerPipe,
   IsRetailerPipe,
   IsSuperUserPipe,
+  IsInGroupPipe,
   HasValidUserSubscriptionPipe,
   LocalDatePipe,
   YesNoPipe

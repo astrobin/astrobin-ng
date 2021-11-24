@@ -8,6 +8,7 @@ import { initialState } from "@app/store/state";
 import { provideMockActions } from "@ngrx/effects/testing";
 import { ReplaySubject } from "rxjs";
 import { AppModule } from "@app/app.module";
+import { BrandEditorCardComponent } from "@features/equipment/components/editors/brand-editor-card/brand-editor-card.component";
 
 describe("SensorEditorComponent", () => {
   let component: SensorEditorComponent;
@@ -16,7 +17,8 @@ describe("SensorEditorComponent", () => {
   beforeEach(async () => {
     await MockBuilder(SensorEditorComponent, EquipmentModule)
       .mock(AppModule)
-      .provide([provideMockStore({ initialState }), provideMockActions(() => new ReplaySubject<any>())]);
+      .provide([provideMockStore({ initialState }), provideMockActions(() => new ReplaySubject<any>())])
+      .mock(BrandEditorCardComponent);
   });
 
   beforeEach(() => {

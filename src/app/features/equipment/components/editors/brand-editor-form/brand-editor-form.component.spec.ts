@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { BrandEditorComponent } from "./brand-editor.component";
+import { BrandEditorFormComponent } from "./brand-editor-form.component";
 import { MockBuilder } from "ng-mocks";
 import { EquipmentModule } from "@features/equipment/equipment.module";
 import { provideMockStore } from "@ngrx/store/testing";
@@ -8,17 +8,17 @@ import { initialState } from "@app/store/state";
 import { AppModule } from "@app/app.module";
 
 describe("BrandEditorComponent", () => {
-  let component: BrandEditorComponent;
-  let fixture: ComponentFixture<BrandEditorComponent>;
+  let component: BrandEditorFormComponent;
+  let fixture: ComponentFixture<BrandEditorFormComponent>;
 
   beforeEach(async () => {
-    await MockBuilder(BrandEditorComponent, EquipmentModule)
+    await MockBuilder(BrandEditorFormComponent, EquipmentModule)
       .mock(AppModule)
       .provide(provideMockStore({ initialState }));
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(BrandEditorComponent);
+    fixture = TestBed.createComponent(BrandEditorFormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

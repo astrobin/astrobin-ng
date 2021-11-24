@@ -84,11 +84,7 @@
           <div aria-labelledby="moderateDropdown" ngbDropdownMenu>
             <h6 class="dropdown-header" translate>Images</h6>
 
-            <a
-              *ngIf="user | isImageModerator"
-              [href]="classicRoutes.MODERATE_IMAGE_QUEUE"
-              class="dropdown-item"
-            >
+            <a *ngIf="user | isImageModerator" [href]="classicRoutes.MODERATE_IMAGE_QUEUE" class="dropdown-item">
               <fa-icon icon="images"></fa-icon>
               {{ "Image queue" | translate }}
             </a>
@@ -126,11 +122,7 @@
                 {{ "Review queue" | translate }}
               </a>
 
-              <a
-                *ngIf="user | isIotdJudge"
-                [href]="classicRoutes.IOTD_JUDGEMENT_QUEUE"
-                class="dropdown-item"
-              >
+              <a *ngIf="user | isIotdJudge" [href]="classicRoutes.IOTD_JUDGEMENT_QUEUE" class="dropdown-item">
                 <fa-icon icon="hammer"></fa-icon>
                 {{ "Judgement queue" | translate }}
               </a>
@@ -138,13 +130,11 @@
 
             <ng-container *ngIf="user | isEquipmentModerator">
               <div class="dropdown-divider"></div>
-              <h6 class="dropdown-header" translate>Equipment</h6>
+              <h6 class="dropdown-header">
+                Equipment
+              </h6>
 
-              <a
-                (click)="isCollapsed = true"
-                class="dropdown-item"
-                routerLink="/equipment/migration-tool"
-              >
+              <a (click)="isCollapsed = true" class="dropdown-item" routerLink="/equipment/migration-tool">
                 <fa-icon icon="arrow-right"></fa-icon>
                 Migration tool
               </a>
@@ -194,9 +184,13 @@
           </a>
 
           <ng-container *ngIf="currentUser$ | async as user">
-            <a *ngIf="user | isEquipmentModerator" [routerLink]="['equipment', 'explorer']" class="dropdown-item">
+            <a
+              *ngIf="(user | isEquipmentModerator) || (user | isInGroup:'own_equipment_migrators')"
+              [routerLink]="['equipment', 'explorer']"
+              class="dropdown-item"
+            >
               <fa-icon icon="camera"></fa-icon>
-              {{ "Equipment" | translate }}
+              {{ "Equipment" | translate }} <em>(beta)</em>
             </a>
           </ng-container>
           <a [routerLink]="['explore', 'constellations']" class="dropdown-item">
@@ -242,7 +236,7 @@
 
           <a [href]="classicRoutes.CONTRIBUTORS_LIST" class="dropdown-item">
             <fa-icon icon="file-alt"></fa-icon>
-            {{ "Contributors list" | translate }} (beta)
+            {{ "Contributors list" | translate }} <em>(beta)</em>
           </a>
         </div>
       </div>
@@ -344,9 +338,7 @@
 
     <hr />
 
-    <h4>
-      {{ "Contribution Index" | translate }} (beta): {{ userProfile.contributionIndex | number: "1.2-2" }}
-    </h4>
+    <h4>{{ "Contribution Index" | translate }} (beta): {{ userProfile.contributionIndex | number: "1.2-2" }}</h4>
     <div [innerHTML]="contributionIndexPopoverInfo"></div>
   </ng-container>
 </ng-template>

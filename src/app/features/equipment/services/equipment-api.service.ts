@@ -19,13 +19,13 @@ import { SensorInterface } from "@features/equipment/types/sensor.interface";
 import { TelescopeInterface } from "@features/equipment/types/telescope.interface";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { TranslateService } from "@ngx-translate/core";
-import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 import { EditProposalInterface } from "@features/equipment/types/edit-proposal.interface";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { MountInterface } from "@features/equipment/types/mount.interface";
 import { FilterInterface } from "@features/equipment/types/filter.interface";
 import { AccessoryInterface } from "@features/equipment/types/accessory.interface";
 import { SoftwareInterface } from "@features/equipment/types/software.interface";
+import { getEquipmentItemType } from "@features/equipment/store/equipment.selectors";
 
 @Injectable({
   providedIn: "root"
@@ -38,8 +38,7 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     public readonly http: HttpClient,
     public readonly commonApiService: CommonApiService,
     public readonly popNotificationService: PopNotificationsService,
-    public readonly translateService: TranslateService,
-    public readonly equipmentItemService: EquipmentItemService
+    public readonly translateService: TranslateService
   ) {
     super(loadingService);
   }
@@ -196,7 +195,7 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
   }
 
   approveEquipmentItem(item: EquipmentItemBaseInterface, comment: string): Observable<EquipmentItemBaseInterface> {
-    const type = this.equipmentItemService.getType(item);
+    const type = getEquipmentItemType(item);
     const path = EquipmentItemType[type].toLowerCase();
 
     return this.http
@@ -209,7 +208,7 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     reason: EquipmentItemReviewerRejectionReason,
     comment: string
   ): Observable<EquipmentItemBaseInterface> {
-    const type = this.equipmentItemService.getType(item);
+    const type = getEquipmentItemType(item);
     const path = EquipmentItemType[type].toLowerCase();
 
     return this.http
@@ -223,7 +222,7 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
   getEditProposals(
     item: EquipmentItemBaseInterface
   ): Observable<PaginatedApiResultInterface<EditProposalInterface<EquipmentItemBaseInterface>>> {
-    const type = this.equipmentItemService.getType(item);
+    const type = getEquipmentItemType(item);
     const path = EquipmentItemType[type].toLowerCase();
 
     return this.http
@@ -244,7 +243,7 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     editProposal: EditProposalInterface<EquipmentItemBaseInterface>,
     comment: string
   ): Observable<EditProposalInterface<EquipmentItemBaseInterface>> {
-    const type = this.equipmentItemService.getType(editProposal);
+    const type = getEquipmentItemType(editProposal);
     const path = EquipmentItemType[type].toLowerCase();
 
     return this.http.post<EditProposalInterface<EquipmentItemBaseInterface>>(
@@ -257,7 +256,7 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     editProposal: EditProposalInterface<EquipmentItemBaseInterface>,
     comment: string
   ): Observable<EditProposalInterface<EquipmentItemBaseInterface>> {
-    const type = this.equipmentItemService.getType(editProposal);
+    const type = getEquipmentItemType(editProposal);
     const path = EquipmentItemType[type].toLowerCase();
 
     return this.http.post<EditProposalInterface<EquipmentItemBaseInterface>>(
@@ -506,7 +505,7 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
   private _parseItem<T extends EquipmentItemBaseInterface | EditProposalInterface<EquipmentItemBaseInterface>>(
     item: T
   ): T {
-    const type = this.equipmentItemService.getType(item);
+    const type = getEquipmentItemType(item);
 
     switch (type) {
       case EquipmentItemType.SENSOR:

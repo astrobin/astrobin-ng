@@ -37,8 +37,6 @@ export class GroupGuardService extends BaseService implements CanActivate {
       });
     };
 
-    const desiredGroup = route.data.group as string;
-
     return new Observable<boolean>(observer => {
       this.authService.isAuthenticated().subscribe(authenticated => {
         if (!authenticated) {
@@ -50,9 +48,27 @@ export class GroupGuardService extends BaseService implements CanActivate {
         this.store$
           .select(selectCurrentUser)
           .pipe(
-            map((user: UserInterface) =>
-              user ? user.groups.filter(group => group.name === desiredGroup).length > 0 : false
-            )
+            map((user: UserInterface) => {
+              if (!user) {
+                return false;
+              }
+
+              if (route.data.group) {
+                return user.groups.filter(group => group.name === route.data.group).length > 0;
+              }
+
+              const intersection = user.groups
+                .map(group => group.name)
+                .filter(value => route.data.anyOfGroups.includes(value));
+
+              if (route.data.anyOfGroups) {
+                return intersection.length > 0;
+              }
+
+              if (route.data.allOfGroups) {
+                return intersection.length === route.data.allOfGroups;
+              }
+            })
           )
           .subscribe(canActivate => {
             if (canActivate) {

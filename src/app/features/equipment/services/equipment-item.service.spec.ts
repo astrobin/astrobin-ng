@@ -23,14 +23,17 @@ describe("EquipmentItemService", () => {
 
   describe("changes", () => {
     describe("for cameras", () => {
-      it("should be empty if there are no changes", () => {
+      it("should be empty if there are no changes", done => {
         const item1 = CameraGenerator.camera();
         const item2 = CameraGenerator.editProposal(item1);
 
-        expect(service.changes(item1, item2)).toEqual([]);
+        service.changes(item1, item2).subscribe(changes => {
+          expect(changes).toEqual([]);
+          done();
+        });
       });
 
-      it("should be empty if the only changes are changes that should be ignored", () => {
+      it("should be empty if the only changes are changes that should be ignored", done => {
         const item1 = CameraGenerator.camera();
         const item2 = {
           ...CameraGenerator.editProposal(item1),
@@ -62,33 +65,39 @@ describe("EquipmentItemService", () => {
           }
         };
 
-        expect(service.changes(item1, item2)).toEqual([]);
+        service.changes(item1, item2).subscribe(changes => {
+          expect(changes).toEqual([]);
+          done();
+        });
       });
 
-      it("should be populated with the changed properties if editProposalOriginalProperties is empty", () => {
+      it("should be populated with the changed properties if editProposalOriginalProperties is empty", done => {
         const item1 = CameraGenerator.camera({ cooled: false, maxCooling: null, backFocus: 40.5 });
         const item2 = CameraGenerator.editProposal({ ...item1, ...{ cooled: true, maxCooling: 20, backFocus: 41 } });
 
-        expect(service.changes(item1, item2)).toEqual([
-          {
-            propertyName: "cooled",
-            before: false,
-            after: true
-          },
-          {
-            propertyName: "maxCooling",
-            before: null,
-            after: 20
-          },
-          {
-            propertyName: "backFocus",
-            before: 40.5,
-            after: 41
-          }
-        ]);
+        service.changes(item1, item2).subscribe(changes => {
+          expect(changes).toEqual([
+            {
+              propertyName: "cooled",
+              before: false,
+              after: true
+            },
+            {
+              propertyName: "maxCooling",
+              before: null,
+              after: 20
+            },
+            {
+              propertyName: "backFocus",
+              before: 40.5,
+              after: 41
+            }
+          ]);
+          done();
+        });
       });
 
-      it("should be populated with the changed properties if editProposalOriginalProperties is non-empty", () => {
+      it("should be populated with the changed properties if editProposalOriginalProperties is non-empty", done => {
         const item1 = CameraGenerator.camera({ cooled: true, maxCooling: 20, backFocus: 41 });
         const item2 = CameraGenerator.editProposal({
           ...item1,
@@ -98,23 +107,26 @@ describe("EquipmentItemService", () => {
           }
         });
 
-        expect(service.changes(item1, item2)).toEqual([
-          {
-            propertyName: "cooled",
-            before: false,
-            after: true
-          },
-          {
-            propertyName: "maxCooling",
-            before: null,
-            after: 20
-          },
-          {
-            propertyName: "backFocus",
-            before: 40.5,
-            after: 41
-          }
-        ]);
+        service.changes(item1, item2).subscribe(changes => {
+          expect(changes).toEqual([
+            {
+              propertyName: "cooled",
+              before: false,
+              after: true
+            },
+            {
+              propertyName: "maxCooling",
+              before: null,
+              after: 20
+            },
+            {
+              propertyName: "backFocus",
+              before: 40.5,
+              after: 41
+            }
+          ]);
+          done();
+        });
       });
     });
   });

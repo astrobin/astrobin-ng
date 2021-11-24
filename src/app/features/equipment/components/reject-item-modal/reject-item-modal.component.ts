@@ -16,6 +16,8 @@ import { EquipmentActionTypes, RejectEquipmentItem } from "@features/equipment/s
 import { Actions, ofType } from "@ngrx/effects";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 import { FormlyFieldMessageLevel, FormlyFieldService } from "@shared/services/formly-field.service";
+import { Router } from "@angular/router";
+import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 
 @Component({
   selector: "astrobin-reject-item-modal",
@@ -43,7 +45,9 @@ export class RejectItemModalComponent extends BaseComponentDirective implements 
     public readonly translateService: TranslateService,
     public readonly modal: NgbActiveModal,
     public readonly equipmentItemService: EquipmentItemService,
-    public readonly formlyFieldService: FormlyFieldService
+    public readonly formlyFieldService: FormlyFieldService,
+    public readonly router: Router,
+    public readonly popNotificationsService: PopNotificationsService
   ) {
     super(store$);
   }
@@ -66,7 +70,10 @@ export class RejectItemModalComponent extends BaseComponentDirective implements 
             },
             {
               value: EquipmentItemReviewerRejectionReason.WRONG_BRAND,
-              label: this.translateService.instant("The item doesn't seem to have the correct brand")
+              label: this.translateService.instant(
+                "The item doesn't seem to have the correct brand, or the brand is misspelled, or it's the " +
+                  "duplicate of an existing brand."
+              )
             },
             {
               value: EquipmentItemReviewerRejectionReason.INACCURATE_DATA,
@@ -136,6 +143,9 @@ export class RejectItemModalComponent extends BaseComponentDirective implements 
     this.actions$.pipe(ofType(EquipmentActionTypes.REJECT_EQUIPMENT_ITEM_SUCCESS), take(1)).subscribe(() => {
       this.loadingService.setLoading(false);
       this.modal.close();
+      this.router.navigateByUrl(`/equipment/explorer`).then(() => {
+        this.popNotificationsService.success(this.translateService.instant("Item rejected."));
+      });
     });
   }
 }

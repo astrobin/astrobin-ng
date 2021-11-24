@@ -95,7 +95,14 @@ export class MergeIntoModalComponent extends BaseComponentDirective implements O
         .select(selectBrand, this.equipmentItem.brand)
         .pipe(
           filter(brand => !!brand),
-          switchMap(brand => api.getSimilarNonMigratedByMakeAndName(brand.name, this.equipmentItem.name)),
+          switchMap(brand => this.currentUser$.pipe(map(user => ({ brand, user })))),
+          switchMap(({ brand, user }) =>
+            api.getSimilarNonMigratedByMakeAndName(
+              brand.name,
+              this.equipmentItem.name,
+              user.groups.filter(group => group.name === "equipment_moderators").length > 0
+            )
+          ),
           switchMap((legacyItems: any[]) => {
             this.similarLegacyItems = legacyItems;
 

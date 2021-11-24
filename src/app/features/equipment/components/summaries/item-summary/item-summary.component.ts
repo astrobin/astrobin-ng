@@ -61,7 +61,7 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
   showSubItem = true;
 
   @Input()
-  showMeta = true;
+  showMeta = false;
 
   brand: BrandInterface;
   subItem: EquipmentItemBaseInterface;
@@ -137,6 +137,10 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
 
     if (this.item.reviewedBy) {
       this.store$.dispatch(new LoadUser({ id: this.item.reviewedBy }));
+    }
+
+    if (!this.item.createdBy) {
+      this.showMeta = false;
     }
 
     this.store$
