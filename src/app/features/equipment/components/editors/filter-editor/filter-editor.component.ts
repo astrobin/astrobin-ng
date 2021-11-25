@@ -61,6 +61,7 @@ export class FilterEditorComponent extends BaseItemEditorComponent<FilterInterfa
 
   private _initFields() {
     this.fields = [
+      this._getDIYField(),
       this._getBrandField(),
       this._getNameField(),
       {

@@ -63,7 +63,7 @@ export class PendingReviewExplorerComponent extends PendingExplorerBaseComponent
       tap(response => {
         const uniqueBrands: BrandInterface["id"][] = [];
         for (const item of response.results) {
-          if (uniqueBrands.indexOf(item.brand) === -1) {
+          if (!!item.brand && uniqueBrands.indexOf(item.brand) === -1) {
             uniqueBrands.push(item.brand);
           }
         }

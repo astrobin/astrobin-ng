@@ -7,7 +7,9 @@
 </form>
 
 <ng-template #equipmentItemLabelTemplate let-object="item">
-  {{object.brand.name}} {{ equipmentItemService.getName$(object.item) | async }}
+  <ng-container *ngIf="!!object.brand">{{ object.brand.name }}</ng-container>
+  <ng-container *ngIf="!object.brand">{{ "(DIY)" | translate }}</ng-container>
+  {{ equipmentItemService.getName$(object.item) | async }}
 </ng-template>
 
 <ng-template #equipmentItemOptionTemplate let-object="item">

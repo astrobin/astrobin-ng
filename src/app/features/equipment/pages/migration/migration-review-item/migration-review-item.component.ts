@@ -135,7 +135,10 @@ export class MigrationReviewItemComponent extends BaseComponentDirective impleme
             .pipe(take(1))
             .subscribe(equipmentItem => {
               this.equipmentItem = equipmentItem;
-              this.store$.dispatch(new LoadBrand({ id: equipmentItem.brand }));
+
+              if (!!equipmentItem.brand) {
+                this.store$.dispatch(new LoadBrand({ id: equipmentItem.brand }));
+              }
             });
         }
 

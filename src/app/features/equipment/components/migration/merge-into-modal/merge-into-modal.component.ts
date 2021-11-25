@@ -63,6 +63,10 @@ export class MergeIntoModalComponent extends BaseComponentDirective implements O
   ngOnInit() {
     let api;
 
+    if (!this.equipmentItem.brand) {
+      return;
+    }
+
     switch (this.activeType) {
       case EquipmentItemType.CAMERA:
         api = this.legacyCameraApi;

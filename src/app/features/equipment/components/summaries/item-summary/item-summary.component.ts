@@ -143,13 +143,15 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
       this.showMeta = false;
     }
 
-    this.store$
-      .select(selectBrand, this.item.brand)
-      .pipe(
-        filter(brand => !!brand),
-        takeWhile(brand => !this.brand || this.brand.id !== brand.id)
-      )
-      .subscribe(brand => (this.brand = brand));
+    if (!!this.item.brand) {
+      this.store$
+        .select(selectBrand, this.item.brand)
+        .pipe(
+          filter(brand => !!brand),
+          takeWhile(brand => !this.brand || this.brand.id !== brand.id)
+        )
+        .subscribe(brand => (this.brand = brand));
+    }
 
     if (instanceOfCamera(this.item) && this.item.sensor) {
       this.store$.dispatch(new LoadSensor({ id: this.item.sensor }));
@@ -158,7 +160,11 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
         .pipe(
           filter(sensor => !!sensor),
           take(1),
-          tap(sensor => this.store$.dispatch(new LoadBrand({ id: sensor.brand })))
+          tap(sensor => {
+            if (!!sensor.brand) {
+              this.store$.dispatch(new LoadBrand({ id: sensor.brand }));
+            }
+          })
         )
         .subscribe(sensor => (this.subItem = sensor));
     }

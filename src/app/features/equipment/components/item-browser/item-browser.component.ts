@@ -126,26 +126,27 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
   }
 
   setItem(item: EquipmentItemBaseInterface) {
-    this.store$
-      .select(selectBrand, item.brand)
-      .pipe(
-        filter(brand => !!brand),
-        take(1)
-      )
-      .subscribe(brand => {
-        const fieldConfig = this.fields.find(field => field.key === "equipment-item");
-        fieldConfig.templateOptions.options = [
-          {
-            value: item.id,
-            label: `${brand.name} ${item.name}`,
-            brand,
-            item
-          }
-        ];
-        this.model = { ...this.model, ...{ "equipment-item": item.id } };
-        this.form.get("equipment-item").setValue(item.id);
-        this.itemSelected.emit(item);
-      });
+    const _doSetItem = brand => {
+      const fieldConfig = this.fields.find(field => field.key === "equipment-item");
+      fieldConfig.templateOptions.options = [this._getNgOptionValue(brand, item)];
+      this.model = { ...this.model, ...{ "equipment-item": item.id } };
+      this.form.get("equipment-item").setValue(item.id);
+      this.itemSelected.emit(item);
+    };
+
+    if (!!item.brand) {
+      this.store$
+        .select(selectBrand, item.brand)
+        .pipe(
+          filter(brand => !!brand),
+          take(1)
+        )
+        .subscribe(brand => {
+          _doSetItem(brand);
+        });
+    } else {
+      _doSetItem(null);
+    }
   }
 
   createItem() {
@@ -220,22 +221,30 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
     this.endCreationMode();
     this.endSubCreationMode();
 
-    this.store$.dispatch(new LoadBrand({ id: item.brand }));
+    const _setItem = () => {
+      this.setItem(item);
+      setTimeout(() => {
+        this.windowRefService.nativeWindow.document
+          .querySelector("#equipment-item-field")
+          .scrollIntoView({ behavior: "smooth" });
+      }, 1);
+    };
 
-    this.store$
-      .select(selectBrand, item.brand)
-      .pipe(
-        filter(brand => !!brand),
-        take(1)
-      )
-      .subscribe(brand => {
-        this.setItem(item);
-        setTimeout(() => {
-          this.windowRefService.nativeWindow.document
-            .querySelector("#equipment-item-field")
-            .scrollIntoView({ behavior: "smooth" });
-        }, 1);
-      });
+    if (!!item.brand) {
+      this.store$.dispatch(new LoadBrand({ id: item.brand }));
+
+      this.store$
+        .select(selectBrand, item.brand)
+        .pipe(
+          filter(brand => !!brand),
+          take(1)
+        )
+        .subscribe(brand => {
+          _setItem();
+        });
+    } else {
+      _setItem();
+    }
   }
 
   onCancel() {
@@ -335,7 +344,7 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
       tap(items => {
         const uniqueBrands: BrandInterface["id"][] = [];
         for (const item of items) {
-          if (uniqueBrands.indexOf(item.brand) === -1) {
+          if (!!item.brand && uniqueBrands.indexOf(item.brand) === -1) {
             uniqueBrands.push(item.brand);
           }
         }
@@ -343,10 +352,9 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
       }),
       switchMap(items =>
         this.store$.select(selectBrands).pipe(
-          filter(brands => brands && brands.length > 0),
           filter(brands => {
             for (const item of items) {
-              if (!brands.find(brand => brand.id === item.brand)) {
+              if (!!item.brand && !brands.find(brand => brand.id === item.brand)) {
                 return false;
               }
             }
@@ -363,14 +371,18 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
       map((result: { brands: BrandInterface[]; items: EquipmentItemBaseInterface[] }) =>
         result.items.map(item => {
           const brand = result.brands.find(b => b.id === item.brand);
-          return {
-            value: item.id,
-            label: `${brand.name} ${item.name}`,
-            brand,
-            item
-          };
+          return this._getNgOptionValue(brand, item);
         })
       )
     );
+  }
+
+  _getNgOptionValue(brand: BrandInterface | null, item: EquipmentItemBaseInterface): any {
+    return {
+      value: item.id,
+      label: `${!!brand ? brand.name : this.translateService.instant("(DIY)")} ${item.name}`,
+      brand,
+      item
+    };
   }
 }

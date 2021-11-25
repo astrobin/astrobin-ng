@@ -162,8 +162,13 @@ export class ItemEditProposalComponent extends BaseComponentDirective implements
 
   private _loadData(type: EquipmentItemType) {
     this.store$.dispatch(new LoadEquipmentItem({ id: this.editProposal.editProposalTarget, type }));
-    this.store$.dispatch(new LoadBrand({ id: this.editProposal.brand }));
+
+    if (!!this.editProposal.brand) {
+      this.store$.dispatch(new LoadBrand({ id: this.editProposal.brand }));
+    }
+
     this.store$.dispatch(new LoadUser({ id: this.editProposal.editProposalBy }));
+
     this.store$.dispatch(
       new LoadContentType({ appLabel: "astrobin_apps_equipment", model: `${type.toLowerCase()}editproposal` })
     );

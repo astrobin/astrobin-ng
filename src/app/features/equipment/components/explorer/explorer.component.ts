@@ -51,6 +51,7 @@ import { MountInterface } from "@features/equipment/types/mount.interface";
 import { FilterInterface } from "@features/equipment/types/filter.interface";
 import { AccessoryInterface } from "@features/equipment/types/accessory.interface";
 import { SoftwareInterface } from "@features/equipment/types/software.interface";
+import { BrandInterface } from "@features/equipment/types/brand.interface";
 
 @Component({
   selector: "astrobin-equipment-explorer",
@@ -228,24 +229,40 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit 
 
   setItem(item: EquipmentItemBaseInterface) {
     this.selectedItem = item;
-    this.store$.dispatch(new LoadBrand({ id: item.brand }));
+
+    if (!!item.brand) {
+      this.store$.dispatch(new LoadBrand({ id: item.brand }));
+    }
+
     this.endEditMode();
     this.loadEditProposals();
   }
 
   onItemSelected(item: EquipmentItemBaseInterface) {
+    const _setItem = (brand: BrandInterface | null) => {
+      const slug = UtilsService.slugify(
+        `${!!brand ? brand.name : this.translateService.instant("(DIY)")} ${item.name}`
+      );
+
+      this.setItem(item);
+
+      this.location.replaceState(`${this.routingBasePath}/${this.activeType.toLowerCase()}/${item.id}/${slug}`);
+    };
+
     if (item) {
-      this.store$
-        .select(selectBrand, item.brand)
-        .pipe(
-          filter(brand => !!brand),
-          take(1)
-        )
-        .subscribe(brand => {
-          const slug = UtilsService.slugify(`${brand.name} ${item.name}`);
-          this.setItem(item);
-          this.location.replaceState(`${this.routingBasePath}/${this.activeType.toLowerCase()}/${item.id}/${slug}`);
-        });
+      if (!!item.brand) {
+        this.store$
+          .select(selectBrand, item.brand)
+          .pipe(
+            filter(brand => !!brand),
+            take(1)
+          )
+          .subscribe(brand => {
+            _setItem(brand);
+          });
+      } else {
+        _setItem(null);
+      }
     } else {
       this.location.replaceState(`${this.routingBasePath}/${this.activeType.toLowerCase()}`);
     }

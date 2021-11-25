@@ -84,15 +84,21 @@ export class CameraService extends BaseService implements EquipmentItemServiceIn
         return this.store$.select(selectEquipmentItem, payload).pipe(
           filter(sensor => !!sensor),
           take(1),
-          tap(sensor => this.store$.dispatch(new LoadBrand({ id: sensor.brand }))),
+          tap(sensor => {
+            if (!!sensor.brand) {
+              this.store$.dispatch(new LoadBrand({ id: sensor.brand }));
+            }
+          }),
           switchMap((sensor: SensorInterface) =>
             this.store$.select(selectBrand, sensor.brand).pipe(
-              filter(brand => !!brand),
               take(1),
               map(brand => ({ brand, sensor }))
             )
           ),
-          map(({ brand, sensor }) => `<strong>${brand.name}</strong> ${sensor.name}`)
+          map(
+            ({ brand, sensor }) =>
+              `<strong>${brand ? brand.name : this.translateService.instant("(DIY)")}</strong> ${sensor.name}`
+          )
         );
       case CameraDisplayProperty.COOLED:
         return of(this.utilsService.yesNo(propertyValue !== undefined ? propertyValue : item.cooled));
@@ -128,8 +134,8 @@ export class CameraService extends BaseService implements EquipmentItemServiceIn
         return shortForm
           ? this.translateService.instant("Max. cooling")
           : `${this.translateService.instant("Max. cooling")} (${this.translateService.instant(
-            "Celsius degrees below ambient"
-          )})`;
+              "Celsius degrees below ambient"
+            )})`;
       case CameraDisplayProperty.BACK_FOCUS:
         return shortForm
           ? this.translateService.instant("Back focus")

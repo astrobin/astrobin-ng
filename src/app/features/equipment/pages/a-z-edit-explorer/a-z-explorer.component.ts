@@ -12,7 +12,7 @@ import { LoadBrand } from "@features/equipment/store/equipment.actions";
 import { BrandInterface } from "@features/equipment/types/brand.interface";
 import { PendingExplorerBaseComponent } from "@features/equipment/pages/explorer-base/pending-explorer-base.component";
 import { EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
-import { Observable } from "rxjs";
+import { Observable, of } from "rxjs";
 import { selectBrand } from "@features/equipment/store/equipment.selectors";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
@@ -63,7 +63,7 @@ export class AZExplorerComponent extends PendingExplorerBaseComponent implements
       tap(response => {
         const uniqueBrands: BrandInterface["id"][] = [];
         for (const item of response.results) {
-          if (uniqueBrands.indexOf(item.brand) === -1) {
+          if (!!item.brand && uniqueBrands.indexOf(item.brand) === -1) {
             uniqueBrands.push(item.brand);
           }
         }
@@ -73,9 +73,13 @@ export class AZExplorerComponent extends PendingExplorerBaseComponent implements
   }
 
   getItemName$(item: EquipmentItemBaseInterface): Observable<string> {
-    return this.store$.select(selectBrand, item.brand).pipe(
-      filter(brand => !!brand),
-      switchMap(brand => this.equipmentItemService.getName$(item).pipe(map(name => `${brand.name} ${name}`)))
-    );
+    if (!!item.brand) {
+      return this.store$.select(selectBrand, item.brand).pipe(
+        filter(brand => !!brand),
+        switchMap(brand => this.equipmentItemService.getName$(item).pipe(map(name => `${brand.name} ${name}`)))
+      );
+    } else {
+      return of(`${this.translateService.instant("(DIY)")} ${item.name}`);
+    }
   }
 }

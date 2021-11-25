@@ -142,7 +142,7 @@ export class BrandEditorFormComponent extends BaseComponentDirective implements 
                   return this.translateService.instant(
                     `Your usage of the word "{{0}}" suggests that you are trying to add a DIY item. The AstroBin
                     equipment database is meant for products that are (or have been) on the market and can (or could)
-                    be purchased.`,
+                    be purchased. To add a DIY item, please use the appropriate checkbox during the item's creation.`,
                     {
                       "0": word
                     }

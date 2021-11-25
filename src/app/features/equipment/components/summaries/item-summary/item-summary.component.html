@@ -1,4 +1,4 @@
-<ng-container *ngIf="item && brand">
+<ng-container *ngIf="item">
   <div class="row">
     <div
       *ngIf="showImage"
@@ -15,7 +15,10 @@
     <div class="col">
       <div class="label">
         <h5>
-          <strong>{{ brand.name }}</strong>&nbsp;
+          <strong>
+            <ng-container *ngIf="!!brand">{{ brand.name }}</ng-container>
+            <ng-container *ngIf="!brand"><em>{{ "(DIY)" | translate }}</em></ng-container>
+          </strong>&nbsp;
           <span class="name" [innerHTML]="equipmentItemService.getName$(item) | async"></span>
         </h5>
         <h6 *ngIf="!!item.website" class="website">
