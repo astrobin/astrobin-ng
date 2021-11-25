@@ -57,7 +57,13 @@ export class SoftwareEditorComponent extends BaseItemEditorComponent<SoftwareInt
   }
 
   private _initFields() {
-    this.fields = [this._getBrandField(), this._getNameField(), this._getWebsiteField(), this._getImageField()];
+    this.fields = [
+      this._getDIYField(),
+      this._getBrandField(),
+      this._getNameField(),
+      this._getWebsiteField(),
+      this._getImageField()
+    ];
 
     this._addBaseItemEditorFields();
   }

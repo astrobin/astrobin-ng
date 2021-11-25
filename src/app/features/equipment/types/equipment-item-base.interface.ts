@@ -36,6 +36,7 @@ export interface EquipmentItemBaseInterface {
   reviewerDecision?: EquipmentItemReviewerDecision;
   reviewerRejectionReason?: EquipmentItemReviewerRejectionReason;
   reviewerComment?: string;
+  diy?: boolean;
   brand: BrandInterface["id"];
   name: string;
   website: string;

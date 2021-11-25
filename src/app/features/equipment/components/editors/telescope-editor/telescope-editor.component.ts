@@ -63,6 +63,7 @@ export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeI
 
   private _initFields() {
     this.fields = [
+      this._getDIYField(),
       this._getBrandField(),
       this._getNameField(),
       {

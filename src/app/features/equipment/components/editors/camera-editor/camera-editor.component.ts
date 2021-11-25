@@ -139,6 +139,7 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
   private _initFields() {
     const _doInitFields = (opts: { hasModifiedVariant?: boolean } = {}) => {
       this.fields = [
+        this._getDIYField(),
         this._getBrandField(),
         this._getNameField(),
         {
@@ -183,7 +184,11 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
                     .pipe(
                       filter(sensor => !!sensor),
                       take(1),
-                      tap(sensor => this.store$.dispatch(new LoadBrand({ id: sensor.brand }))),
+                      tap(sensor => {
+                        if (!!sensor.brand) {
+                          this.store$.dispatch(new LoadBrand({ id: sensor.brand }));
+                        }
+                      }),
                       switchMap((sensor: SensorInterface) =>
                         this.store$.select(selectBrand, sensor.brand).pipe(
                           filter(brand => !!brand),
@@ -353,12 +358,15 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
       ofType(EquipmentActionTypes.FIND_ALL_EQUIPMENT_ITEMS_SUCCESS),
       map((action: FindAllEquipmentItemsSuccess) => action.payload.items),
       tap(items => {
-        items.forEach(item => this.store$.dispatch(new LoadBrand({ id: item.brand })));
+        items.forEach(item => {
+          if (!!item.brand) {
+            this.store$.dispatch(new LoadBrand({ id: item.brand }));
+          }
+        });
         return items;
       }),
       switchMap(items =>
         this.store$.select(selectBrands).pipe(
-          filter(brands => brands && brands.length > 0),
           map(brands => ({
             brands,
             items
@@ -370,7 +378,7 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
           const brand = result.brands.find(b => b.id === sensor.brand);
           return {
             value: sensor.id,
-            label: `${brand.name} ${sensor.name}`,
+            label: `${brand ? brand.name : this.translateService.instant("(DIY)")} ${sensor.name}`,
             brand,
             sensor
           };

@@ -11,6 +11,7 @@ import { ExplorerBaseComponent } from "@features/equipment/pages/explorer-base/e
 import { Observable } from "rxjs";
 import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
 import { WindowRefService } from "@shared/services/window-ref.service";
+import { BrandInterface } from "@features/equipment/types/brand.interface";
 
 @Component({
   selector: "astrobin-equipment-pending-explorer-base",
@@ -35,18 +36,26 @@ export class PendingExplorerBaseComponent extends ExplorerBaseComponent implemen
   }
 
   viewItem(item: EquipmentItemBaseInterface): void {
-    this.store$
-      .select(selectBrand, item.brand)
-      .pipe(take(1))
-      .subscribe(brand => {
-        this.router.navigate([
-          "equipment",
-          "explorer",
-          this.activeType.toLowerCase(),
-          item.id,
-          UtilsService.slugify(`${brand.name} ${item.name}`)
-        ]);
-      });
+    const _doViewItem = (brand: BrandInterface | null) => {
+      this.router.navigate([
+        "equipment",
+        "explorer",
+        this.activeType.toLowerCase(),
+        item.id,
+        UtilsService.slugify(`${brand ? brand.name : "diy"} ${item.name}`)
+      ]);
+    };
+
+    if (!!item.brand) {
+      this.store$
+        .select(selectBrand, item.brand)
+        .pipe(take(1))
+        .subscribe(brand => {
+          _doViewItem(brand);
+        });
+    } else {
+      _doViewItem(null);
+    }
   }
 
   pageChange(page: number) {

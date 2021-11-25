@@ -4,7 +4,7 @@ import { AbstractControl, FormControl, FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { BrandInterface } from "@features/equipment/types/brand.interface";
-import { of } from "rxjs";
+import { EMPTY, of } from "rxjs";
 import {
   CreateBrand,
   CreateBrandSuccess,
@@ -235,6 +235,47 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
     }
   }
 
+  protected _getDIYField() {
+    return {
+      key: "diy",
+      type: "checkbox",
+      id: "equipment-item-field-diy",
+      expressionProperties: {
+        "templateOptions.disabled": () =>
+          this.subCreation.inProgress ||
+          this.brandCreation.inProgress ||
+          this.editorMode === EquipmentItemEditorMode.EDIT_PROPOSAL
+      },
+      defaultValue: false,
+      templateOptions: {
+        required: true,
+        label: this.translateService.instant("Self-made / non-commercial (no brand)"),
+        description:
+          this.editorMode === EquipmentItemEditorMode.EDIT_PROPOSAL
+            ? this.translateService.instant("Editing this field is not possible.")
+            : this.translateService.instant(
+                "Check this box if this item is self-made, and/or was never on the market as a commercial " +
+                  "product, and therefore does not have a brand."
+              )
+      },
+      hooks: {
+        onInit: (field: FormlyFieldConfig) => {
+          field.formControl.valueChanges
+            .pipe(
+              takeUntil(this.destroyed$),
+              tap(value => {
+                if (!!value) {
+                  this.model.brand = null;
+                  this.form.get("brand").setValue(null);
+                }
+              })
+            )
+            .subscribe();
+        }
+      }
+    };
+  }
+
   protected _getBrandField() {
     return {
       key: "brand",
@@ -244,15 +285,16 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
         "templateOptions.disabled": () =>
           this.subCreation.inProgress ||
           this.brandCreation.inProgress ||
-          this.editorMode === EquipmentItemEditorMode.EDIT_PROPOSAL
+          this.editorMode === EquipmentItemEditorMode.EDIT_PROPOSAL ||
+          !!this.model.diy,
+        "templateOptions.required": () => !this.model.diy
       },
       templateOptions: {
-        required: true,
         clearable: true,
         label: this.translateService.instant("Brand"),
         description:
           this.editorMode === EquipmentItemEditorMode.EDIT_PROPOSAL
-            ? this.translateService.instant("Editing the brand is not possible.")
+            ? this.translateService.instant("Editing this field is not possible.")
             : null,
         options:
           this.model && this.model.brand
@@ -288,22 +330,27 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
             .pipe(
               takeUntil(this.destroyed$),
               tap(value => {
+                this.formlyFieldService.clearMessages(field.templateOptions);
+
                 if (!!value && this.form.get("name").value) {
                   this.form.get("name").markAsTouched();
                 }
               }),
-              filter(value => !!value),
               switchMap((value: BrandInterface["id"]) => {
-                return this.equipmentApiService.getBrand(value);
-              }),
-              tap((brand: BrandInterface) => {
-                this.brandCreation.name = brand.name;
+                if (!!value) {
+                  return this.equipmentApiService.getBrand(value).pipe(
+                    tap((brand: BrandInterface) => {
+                      this.brandCreation.name = brand.name;
 
-                this.formlyFieldService.clearMessages(field.templateOptions);
-                this.formlyFieldService.clearMessages(this.fields.find(f => f.key === "name").templateOptions);
-                this._validateBrandInName();
-                this._similarItemSuggestion();
-                this._othersInBrand();
+                      this.formlyFieldService.clearMessages(this.fields.find(f => f.key === "name").templateOptions);
+                      this._validateBrandInName();
+                      this._similarItemSuggestion();
+                      this._othersInBrand();
+                    })
+                  );
+                }
+
+                return EMPTY;
               })
             )
             .subscribe();
@@ -487,7 +534,7 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
     const nameFieldConfig: FormlyFieldConfig = this.fields.find(field => field.key === "name");
     const type: EquipmentItemType = this.equipmentItemService.getType({ ...this.model, ...this.form.value });
 
-    if (!type || !brandControl.value || !nameControl.value || this.editorMode !== EquipmentItemEditorMode.CREATION) {
+    if (!type || !brandControl?.value || !nameControl.value || this.editorMode !== EquipmentItemEditorMode.CREATION) {
       return;
     }
 
@@ -556,7 +603,7 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
       "<strong>Careful!</strong> The item's name contains the brand's name (or vice versa), and it probably shouldn't."
     );
 
-    if (!brandControl.value || !nameControl.value) {
+    if (!brandControl?.value || !nameControl?.value) {
       return;
     }
 
