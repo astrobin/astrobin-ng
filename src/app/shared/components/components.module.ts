@@ -55,6 +55,22 @@ import { JsonApiService } from "@shared/services/api/classic/json/json-api.servi
 import { NestedCommentsComponent } from "@shared/components/misc/nested-comments/nested-comments.component";
 import { NestedCommentComponent } from "@shared/components/misc/nested-comments/nested-comment.component";
 import { TimeagoModule } from "ngx-timeago";
+import { ItemBrowserComponent } from "@shared/components/equipment/item-browser/item-browser.component";
+import { ItemSummaryComponent } from "@shared/components/equipment/summaries/item-summary/item-summary.component";
+import { BrandSummaryComponent } from "@shared/components/equipment/summaries/brand-summary/brand-summary.component";
+import { CameraEditorComponent } from "@shared/components/equipment/editors/camera-editor/camera-editor.component";
+import { SensorEditorComponent } from "@shared/components/equipment/editors/sensor-editor/sensor-editor.component";
+import { TelescopeEditorComponent } from "@shared/components/equipment/editors/telescope-editor/telescope-editor.component";
+import { MountEditorComponent } from "@shared/components/equipment/editors/mount-editor/mount-editor.component";
+import { FilterEditorComponent } from "@shared/components/equipment/editors/filter-editor/filter-editor.component";
+import { SoftwareEditorComponent } from "@shared/components/equipment/editors/software-editor/software-editor.component";
+import { BaseItemEditorComponent } from "@shared/components/equipment/editors/base-item-editor/base-item-editor.component";
+import { BrandEditorCardComponent } from "@shared/components/equipment/editors/brand-editor-card/brand-editor-card.component";
+import { BrandEditorFormComponent } from "@shared/components/equipment/editors/brand-editor-form/brand-editor-form.component";
+import { AccessoryEditorComponent } from "@shared/components/equipment/editors/accessory-editor/accessory-editor.component";
+import { SimilarItemsSuggestionComponent } from "@shared/components/equipment/similar-items-suggestion/similar-items-suggestion.component";
+import { ConfirmItemCreationModalComponent } from "@shared/components/equipment/editors/confirm-item-creation-modal/confirm-item-creation-modal.component";
+import { OthersInBrandComponent } from "@shared/components/equipment/editors/others-in-brand/others-in-brand.component";
 
 const modules = [
   CommonModule,
@@ -111,7 +127,25 @@ const components = [
   TelescopeComponent,
   TextLoadingIndicatorComponent,
   ToggleButtonComponent,
-  UsernameComponent
+  UsernameComponent,
+
+  // Equipment
+  ItemBrowserComponent,
+  ItemSummaryComponent,
+  BrandSummaryComponent,
+  CameraEditorComponent,
+  SensorEditorComponent,
+  TelescopeEditorComponent,
+  MountEditorComponent,
+  FilterEditorComponent,
+  AccessoryEditorComponent,
+  SoftwareEditorComponent,
+  BaseItemEditorComponent,
+  BrandEditorCardComponent,
+  BrandEditorFormComponent,
+  SimilarItemsSuggestionComponent,
+  ConfirmItemCreationModalComponent,
+  OthersInBrandComponent
 ];
 
 const services = [UsernameService];

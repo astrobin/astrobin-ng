@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { MountEditorComponent } from "./mount-editor.component";
+import { CameraEditorComponent } from "./camera-editor.component";
 import { MockBuilder } from "ng-mocks";
 import { EquipmentModule } from "@features/equipment/equipment.module";
 import { provideMockStore } from "@ngrx/store/testing";
@@ -8,21 +8,21 @@ import { initialState } from "@app/store/state";
 import { provideMockActions } from "@ngrx/effects/testing";
 import { ReplaySubject } from "rxjs";
 import { AppModule } from "@app/app.module";
-import { BrandEditorCardComponent } from "@features/equipment/components/editors/brand-editor-card/brand-editor-card.component";
+import { BrandEditorCardComponent } from "@shared/components/equipment/editors/brand-editor-card/brand-editor-card.component";
 
-describe("MountEditorComponent", () => {
-  let component: MountEditorComponent;
-  let fixture: ComponentFixture<MountEditorComponent>;
+describe("CameraEditorComponent", () => {
+  let component: CameraEditorComponent;
+  let fixture: ComponentFixture<CameraEditorComponent>;
 
   beforeEach(async () => {
-    await MockBuilder(MountEditorComponent, EquipmentModule)
+    await MockBuilder(CameraEditorComponent, EquipmentModule)
       .mock(AppModule)
       .provide([provideMockStore({ initialState }), provideMockActions(() => new ReplaySubject<any>())])
       .mock(BrandEditorCardComponent);
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(MountEditorComponent);
+    fixture = TestBed.createComponent(CameraEditorComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

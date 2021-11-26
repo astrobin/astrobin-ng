@@ -24,7 +24,7 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 import { State } from "@app/store/state";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 import { GearService } from "@shared/services/gear/gear.service";
-import { ItemBrowserComponent } from "@features/equipment/components/item-browser/item-browser.component";
+import { ItemBrowserComponent } from "@shared/components/equipment/item-browser/item-browser.component";
 import { CameraInterface } from "@features/equipment/types/camera.interface";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import { FilterApiService } from "@shared/services/api/classic/astrobin/filter/filter-api.service";

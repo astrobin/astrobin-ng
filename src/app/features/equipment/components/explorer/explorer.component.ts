@@ -29,9 +29,9 @@ import { SensorInterface } from "@features/equipment/types/sensor.interface";
 import { CameraInterface } from "@features/equipment/types/camera.interface";
 import { Actions, ofType } from "@ngrx/effects";
 import { EditProposalInterface } from "@features/equipment/types/edit-proposal.interface";
-import { EquipmentItemEditorMode } from "@features/equipment/components/editors/base-item-editor/base-item-editor.component";
+import { EquipmentItemEditorMode } from "@shared/components/equipment/editors/base-item-editor/base-item-editor.component";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
-import { ItemBrowserComponent } from "@features/equipment/components/item-browser/item-browser.component";
+import { ItemBrowserComponent } from "@shared/components/equipment/item-browser/item-browser.component";
 import { Observable } from "rxjs";
 import {
   selectBrand,
