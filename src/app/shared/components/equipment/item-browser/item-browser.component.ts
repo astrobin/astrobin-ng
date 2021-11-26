@@ -27,7 +27,7 @@ import { BrandInterface } from "@features/equipment/types/brand.interface";
 import { selectBrand, selectBrands, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { LoadingService } from "@shared/services/loading.service";
-import { ConfirmItemCreationModalComponent } from "@features/equipment/components/editors/confirm-item-creation-modal/confirm-item-creation-modal.component";
+import { ConfirmItemCreationModalComponent } from "@shared/components/equipment/editors/confirm-item-creation-modal/confirm-item-creation-modal.component";
 import { SensorInterface } from "@features/equipment/types/sensor.interface";
 import { CameraInterface } from "@features/equipment/types/camera.interface";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";

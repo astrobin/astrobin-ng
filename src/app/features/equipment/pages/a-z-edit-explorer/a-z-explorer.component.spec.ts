@@ -8,7 +8,7 @@ import { AppModule } from "@app/app.module";
 import { ActivatedRoute, Router } from "@angular/router";
 import { EMPTY, of, ReplaySubject } from "rxjs";
 import { ItemTypeNavComponent } from "@features/equipment/components/item-type-nav/item-type-nav.component";
-import { ItemBrowserComponent } from "@features/equipment/components/item-browser/item-browser.component";
+import { ItemBrowserComponent } from "@shared/components/equipment/item-browser/item-browser.component";
 import { provideMockActions } from "@ngrx/effects/testing";
 
 describe("AZExplorerComponent", () => {

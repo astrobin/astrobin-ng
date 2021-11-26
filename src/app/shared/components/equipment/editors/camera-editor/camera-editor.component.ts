@@ -5,7 +5,7 @@ import { Store } from "@ngrx/store";
 import {
   BaseItemEditorComponent,
   EquipmentItemEditorMode
-} from "@features/equipment/components/editors/base-item-editor/base-item-editor.component";
+} from "@shared/components/equipment/editors/base-item-editor/base-item-editor.component";
 import { LoadingService } from "@shared/services/loading.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { CameraInterface, CameraType } from "@features/equipment/types/camera.interface";
