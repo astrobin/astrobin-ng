@@ -162,7 +162,8 @@ export function initFontAwesome(iconLibrary: FaIconLibrary) {
         provide: TranslateLoader,
         useClass: LanguageLoader,
         deps: [HttpClient, JsonApiService]
-      }
+      },
+      isolate: false
     }),
 
     // This app.

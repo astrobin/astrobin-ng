@@ -9,6 +9,12 @@ import { ImageEditPageComponent } from "./image-edit-page.component";
 import { WatermarkPositionOptions, WatermarkSizeOptions } from "@shared/interfaces/image.interface";
 import { MockStore, provideMockStore } from "@ngrx/store/testing";
 import { initialState } from "@app/store/state";
+import { ImageEditService } from "@features/image/services/image-edit.service";
+import { ImageEditBasicFieldsService } from "@features/image/services/image-edit-basic-fields.service";
+import { ImageEditContentFieldsService } from "@features/image/services/image-edit-content-fields.service";
+import { ImageEditWatermarkFieldsService } from "@features/image/services/image-edit-watermark-fields.service";
+import { ImageEditThumbnailFieldsService } from "@features/image/services/image-edit-thumbnail-fields.service";
+import { ImageEditSettingsFieldsService } from "@features/image/services/image-edit-settings-fields.service";
 
 describe("EditComponent", () => {
   let component: ImageEditPageComponent;
@@ -18,6 +24,12 @@ describe("EditComponent", () => {
 
   beforeEach(async () => {
     await MockBuilder(ImageEditPageComponent, AppModule).provide([
+      ImageEditService,
+      ImageEditBasicFieldsService,
+      ImageEditContentFieldsService,
+      ImageEditThumbnailFieldsService,
+      ImageEditWatermarkFieldsService,
+      ImageEditSettingsFieldsService,
       provideMockStore({ initialState }),
       {
         provide: ActivatedRoute,
@@ -46,8 +58,8 @@ describe("EditComponent", () => {
   });
 
   it("should initialize data", () => {
-    expect(component.image).toEqual(image);
-    expect(component.model).toEqual(image);
+    expect(component.imageEditService.image).toEqual(image);
+    expect(component.imageEditService.model).toEqual(image);
   });
 
   it("should initialize watermark settings from profile defaults if empty", () => {
@@ -80,10 +92,10 @@ describe("EditComponent", () => {
 
     component.ngOnInit();
 
-    expect(component.model.watermark).toBe(true);
-    expect(component.model.watermarkText).toEqual("My watermark");
-    expect(component.model.watermarkPosition).toEqual(WatermarkPositionOptions.TOP_RIGHT);
-    expect(component.model.watermarkSize).toEqual(WatermarkSizeOptions.SMALL);
-    expect(component.model.watermarkOpacity).toEqual(20);
+    expect(component.imageEditService.model.watermark).toBe(true);
+    expect(component.imageEditService.model.watermarkText).toEqual("My watermark");
+    expect(component.imageEditService.model.watermarkPosition).toEqual(WatermarkPositionOptions.TOP_RIGHT);
+    expect(component.imageEditService.model.watermarkSize).toEqual(WatermarkSizeOptions.SMALL);
+    expect(component.imageEditService.model.watermarkOpacity).toEqual(20);
   });
 });
