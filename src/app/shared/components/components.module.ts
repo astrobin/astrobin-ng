@@ -72,6 +72,7 @@ import { SimilarItemsSuggestionComponent } from "@shared/components/equipment/si
 import { ConfirmItemCreationModalComponent } from "@shared/components/equipment/editors/confirm-item-creation-modal/confirm-item-creation-modal.component";
 import { OthersInBrandComponent } from "@shared/components/equipment/editors/others-in-brand/others-in-brand.component";
 import { FormlyFieldEquipmentItemBrowserComponent } from "@shared/components/misc/formly-field-equipment-item-browser/formly-field-equipment-item-browser.component";
+import { FormlyEquipmentItemBrowserWrapperComponent } from "@shared/components/misc/formly-equipment-item-browser-wrapper/formly-equipment-item-browser-wrapper.component";
 
 const modules = [
   CommonModule,
@@ -114,6 +115,7 @@ const components = [
   FormlyFieldStepperComponent,
   FormlyFieldEquipmentItemBrowserComponent,
   FormlyWrapperComponent,
+  FormlyEquipmentItemBrowserWrapperComponent,
   FullscreenImageViewerComponent,
   HeaderComponent,
   ImageComponent,

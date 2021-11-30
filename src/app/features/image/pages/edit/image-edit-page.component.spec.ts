@@ -15,6 +15,7 @@ import { ImageEditContentFieldsService } from "@features/image/services/image-ed
 import { ImageEditWatermarkFieldsService } from "@features/image/services/image-edit-watermark-fields.service";
 import { ImageEditThumbnailFieldsService } from "@features/image/services/image-edit-thumbnail-fields.service";
 import { ImageEditSettingsFieldsService } from "@features/image/services/image-edit-settings-fields.service";
+import { ImageEditEquipmentFieldsService } from "@features/image/services/image-edit-equipment-fields.service";
 
 describe("EditComponent", () => {
   let component: ImageEditPageComponent;
@@ -29,6 +30,7 @@ describe("EditComponent", () => {
       ImageEditContentFieldsService,
       ImageEditThumbnailFieldsService,
       ImageEditWatermarkFieldsService,
+      ImageEditEquipmentFieldsService,
       ImageEditSettingsFieldsService,
       provideMockStore({ initialState }),
       {

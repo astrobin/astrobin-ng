@@ -49,6 +49,7 @@ import { JsonApiService } from "@shared/services/api/classic/json/json-api.servi
 import { CustomMissingTranslationHandler } from "@app/missing-translation-handler";
 import { CustomTranslateParser } from "@app/translate-parser";
 import { LanguageLoader } from "@app/translate-loader";
+import { FormlyEquipmentItemBrowserWrapperComponent } from "@shared/components/misc/formly-equipment-item-browser-wrapper/formly-equipment-item-browser-wrapper.component";
 
 export function appInitializer(store: Store<State>, actions$: Actions) {
   return () =>
@@ -79,7 +80,10 @@ export function appInitializer(store: Store<State>, actions$: Actions) {
 
     FontAwesomeModule,
     FormlyModule.forRoot({
-      wrappers: [{ name: "default-wrapper", component: FormlyWrapperComponent }]
+      wrappers: [
+        { name: "equipment-item-browser-wrapper", component: FormlyEquipmentItemBrowserWrapperComponent },
+        { name: "default-wrapper", component: FormlyWrapperComponent }
+      ]
     }),
     FormlyBootstrapModule,
     FormlySelectModule,

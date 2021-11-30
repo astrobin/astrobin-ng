@@ -108,6 +108,7 @@ export class ImageEditEquipmentFieldsService extends BaseService {
 
   getShowGuidingEquipment(): FormlyFieldConfig {
     return {
+      className: "d-block mb-4 pb-2 pt-4 pl-lg-5 ml-lg-4 ml-xl-5 ",
       key: "showGuidingEquipment",
       type: "checkbox",
       wrappers: ["default-wrapper"],

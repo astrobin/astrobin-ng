@@ -59,7 +59,7 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
       {
         name: "equipment-item-browser",
         component: FormlyFieldEquipmentItemBrowserComponent,
-        wrappers: ["default-wrapper"]
+        wrappers: ["equipment-item-browser-wrapper"]
       }
     ],
     validationMessages: [

@@ -1,0 +1,15 @@
+.placeholder {
+  width: 100%;
+}
+
+.required-marker,
+.optional-marker {
+  display: inline-block;
+  margin-left: .25rem;
+  font-size: .85rem;
+  font-style: italic;
+}
+
+.optional-marker {
+  color: var(--lightGrey);
+}
