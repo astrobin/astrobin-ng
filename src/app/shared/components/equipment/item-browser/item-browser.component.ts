@@ -5,7 +5,7 @@ import { Action, Store } from "@ngrx/store";
 import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
-import { of } from "rxjs";
+import { forkJoin, Observable, of } from "rxjs";
 import { TranslateService } from "@ngx-translate/core";
 import {
   CreateAccessory,
@@ -19,9 +19,10 @@ import {
   EquipmentItemCreationSuccessPayloadInterface,
   FindAllEquipmentItems,
   FindAllEquipmentItemsSuccess,
-  LoadBrand
+  LoadBrand,
+  LoadEquipmentItem
 } from "@features/equipment/store/equipment.actions";
-import { filter, map, switchMap, take, takeUntil, tap } from "rxjs/operators";
+import { filter, first, map, switchMap, take, takeUntil, tap } from "rxjs/operators";
 import { Actions, ofType } from "@ngrx/effects";
 import { BrandInterface } from "@features/equipment/types/brand.interface";
 import { selectBrand, selectBrands, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
@@ -38,6 +39,9 @@ import { FilterInterface } from "@features/equipment/types/filter.interface";
 import { AccessoryInterface } from "@features/equipment/types/accessory.interface";
 import { SoftwareInterface } from "@features/equipment/types/software.interface";
 
+type Type = EquipmentItemBaseInterface["id"];
+type TypeUnion = Type | Type[] | null;
+
 @Component({
   selector: "astrobin-equipment-item-browser",
   templateUrl: "./item-browser.component.html",
@@ -46,7 +50,25 @@ import { SoftwareInterface } from "@features/equipment/types/software.interface"
 export class ItemBrowserComponent extends BaseComponentDirective implements OnInit {
   EquipmentItemType = EquipmentItemType;
 
-  model: Partial<EquipmentItemBaseInterface> = {};
+  @Input()
+  id = "equipment-item-field";
+
+  @Input()
+  initialValue: TypeUnion = null;
+
+  @Input()
+  label: string;
+
+  @Input()
+  showLabel = true;
+
+  @Input()
+  required = true;
+
+  @Input()
+  multiple = false;
+
+  model: { value: TypeUnion } = { value: null };
   form: FormGroup = new FormGroup({});
   fields: FormlyFieldConfig[] = [];
   creationMode = false;
@@ -79,7 +101,7 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
   subCreationModeEnded = new EventEmitter<void>();
 
   @Output()
-  itemSelected = new EventEmitter<EquipmentItemBaseInterface | null>();
+  valueChanged = new EventEmitter<EquipmentItemBaseInterface | EquipmentItemBaseInterface[] | null>();
 
   constructor(
     public readonly store$: Store<State>,
@@ -98,9 +120,9 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
   }
 
   reset() {
-    this.model = {};
+    this.model = { value: null };
     this.form.reset();
-    this.fields.find(field => field.key === "equipment-item").templateOptions.options = of([]);
+    this.fields[0].templateOptions.options = of([]);
   }
 
   startCreationMode() {
@@ -125,27 +147,84 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
     this.subCreationModeEnded.emit();
   }
 
-  setItem(item: EquipmentItemBaseInterface) {
-    const _doSetItem = brand => {
-      const fieldConfig = this.fields.find(field => field.key === "equipment-item");
-      fieldConfig.templateOptions.options = [this._getNgOptionValue(brand, item)];
-      this.model = { ...this.model, ...{ "equipment-item": item.id } };
-      this.form.get("equipment-item").setValue(item.id);
-      this.itemSelected.emit(item);
-    };
+  setValue(value: TypeUnion) {
+    if (!value) {
+      return;
+    }
 
-    if (!!item.brand) {
-      this.store$
-        .select(selectBrand, item.brand)
-        .pipe(
-          filter(brand => !!brand),
-          take(1)
+    if (this.multiple) {
+      if ((value as Type[]).length === 0) {
+        return;
+      }
+
+      (value as Type[]).forEach(id => this.store$.dispatch(new LoadEquipmentItem({ id, type: this.type })));
+
+      forkJoin(
+        (value as Type[]).map(id =>
+          this.store$.select(selectEquipmentItem, { id, type: this.type }).pipe(
+            filter(item => !!item),
+            tap(item => {
+              if (!!item.brand) {
+                this.store$.dispatch(new LoadBrand({ id: item.brand }));
+              }
+            }),
+            switchMap(item => {
+              if (!!item.brand) {
+                return this.store$.select(selectBrand, item.brand).pipe(
+                  filter(brand => !!brand),
+                  map(brand => ({ item, brand }))
+                );
+              }
+
+              return of({ item, brand: null });
+            }),
+            first()
+          )
         )
-        .subscribe(brand => {
-          _doSetItem(brand);
+      )
+        .pipe(first())
+        .subscribe((results: { item: EquipmentItemBaseInterface; brand: BrandInterface }[]) => {
+          const fieldConfig = this.fields[0];
+
+          fieldConfig.templateOptions.options = of(
+            results.map(result => this._getNgOptionValue(result.brand, result.item))
+          );
+
+          this.model = { value };
+          this.form.get("value").setValue(value);
+          this.valueChanged.emit(results.map(result => result.item));
         });
     } else {
-      _doSetItem(null);
+      this.store$.dispatch(new LoadEquipmentItem({ id: value as Type, type: this.type }));
+      this.store$
+        .select(selectEquipmentItem, { id: value, type: this.type })
+        .pipe(
+          filter(item => !!item),
+          tap(item => {
+            if (!!item.brand) {
+              this.store$.dispatch(new LoadBrand({ id: item.brand }));
+            }
+          }),
+          switchMap(item => {
+            if (!!item.brand) {
+              return this.store$.select(selectBrand, item.brand).pipe(
+                filter(brand => !!brand),
+                map(brand => ({ item, brand }))
+              );
+            }
+
+            return of({ item, brand: null });
+          })
+        )
+        .subscribe(({ item, brand }) => {
+          const fieldConfig = this.fields[0];
+
+          fieldConfig.templateOptions.options = of([this._getNgOptionValue(brand, item)]);
+
+          this.model = { value };
+          this.form.get("value").setValue(value);
+          this.valueChanged.emit(item);
+        });
     }
   }
 
@@ -221,12 +300,15 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
     this.endCreationMode();
     this.endSubCreationMode();
 
-    const _setItem = () => {
-      this.setItem(item);
+    const _addItem = () => {
+      if (this.multiple) {
+        this.setValue([...((this.model.value as Type[]) || []), item.id]);
+      } else {
+        this.setValue(item.id);
+      }
+
       setTimeout(() => {
-        this.windowRefService.nativeWindow.document
-          .querySelector("#equipment-item-field")
-          .scrollIntoView({ behavior: "smooth" });
+        this.windowRefService.nativeWindow.document.querySelector(`#${this.id}`).scrollIntoView({ behavior: "smooth" });
       }, 1);
     };
 
@@ -240,10 +322,10 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
           take(1)
         )
         .subscribe(brand => {
-          _setItem();
+          _addItem();
         });
     } else {
-      _setItem();
+      _addItem();
     }
   }
 
@@ -270,56 +352,151 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
       }, 1);
     };
 
+    this.model = { value: this.initialValue };
+
     this.currentUser$
       .pipe(
         takeUntil(this.destroyed$),
         map(currentUser => {
           this.fields = [
             {
-              key: "equipment-item",
+              key: "value",
               type: "ng-select",
-              id: "equipment-item-field",
+              id: `${this.id}`,
               expressionProperties: {
                 "templateOptions.disabled": () => this.creationMode
               },
+              defaultValue: this.model,
               templateOptions: {
-                required: true,
+                required: this.required,
                 clearable: true,
-                label: this.translateService.instant("Find equipment item"),
-                options: of([]),
+                label: this.showLabel ? this.label || this.translateService.instant("Find equipment item") : null,
+                options: this._getOptions().pipe(takeUntil(this.destroyed$)),
                 onSearch: (term: string) => {
                   this._onSearch(term);
                 },
                 labelTemplate: this.equipmentItemLabelTemplate,
                 optionTemplate: this.equipmentItemOptionTemplate,
                 addTag: !!currentUser ? _addTag : undefined,
-                striped: true
+                striped: true,
+                multiple: this.multiple,
+                closeOnSelect: true
               },
               hooks: {
                 onInit: (field: FormlyFieldConfig) => {
                   field.formControl.valueChanges
                     .pipe(
                       takeUntil(this.destroyed$),
-                      switchMap((id: EquipmentItemBaseInterface["id"]) =>
-                        this.store$
+                      switchMap((value: TypeUnion) => {
+                        if (!value || (Array.isArray(value) && value.length === 0)) {
+                          return of([]);
+                        }
+
+                        if (Array.isArray(value)) {
+                          return forkJoin(
+                            (value as EquipmentItemBaseInterface["id"][]).map(id =>
+                              this.store$
+                                .select(selectEquipmentItem, {
+                                  id,
+                                  type: this.type
+                                })
+                                .pipe(
+                                  filter(item => !!item),
+                                  first()
+                                )
+                            )
+                          ).pipe(filter(items => items.length > 0));
+                        }
+
+                        return this.store$
                           .select(selectEquipmentItem, {
-                            id,
+                            id: value as EquipmentItemBaseInterface["id"],
                             type: this.type
                           })
                           .pipe(
                             filter(item => !!item),
-                            take(1)
-                          )
-                      )
+                            map(item => [item])
+                          );
+                      })
                     )
-                    .subscribe((item: EquipmentItemBaseInterface) => this.itemSelected.emit(item));
+                    .subscribe((items: EquipmentItemBaseInterface[]) => {
+                      this.valueChanged.emit(this.multiple ? items : items[0]);
+                    });
                 }
               }
             }
           ];
         })
       )
-      .subscribe();
+      .subscribe(() => {
+        this.setValue(this.initialValue);
+      });
+  }
+
+  _getOptions(): Observable<any> {
+    if (!this.model.value) {
+      return of([]);
+    }
+
+    if (this.multiple) {
+      const value: Type[] = this.model.value as Type[];
+
+      if (!value || value.length === 0) {
+        return of([]);
+      }
+
+      (value as Type[]).forEach(id => this.store$.dispatch(new LoadEquipmentItem({ id, type: this.type })));
+
+      return forkJoin(
+        value.map(itemId =>
+          this.store$.select(selectEquipmentItem, { id: itemId, type: this.type }).pipe(
+            takeUntil(this.destroyed$),
+            filter(item => !!item),
+            tap(item => {
+              if (!!item.brand) {
+                this.store$.dispatch(new LoadBrand({ id: item.brand }));
+              }
+            }),
+            switchMap(item => {
+              if (!!item.brand) {
+                return this.store$.select(selectBrand, item.brand).pipe(
+                  takeUntil(this.destroyed$),
+                  filter(brand => !!brand),
+                  map(brand => ({ brand, item }))
+                );
+              }
+
+              return of({ brand: null, item });
+            }),
+            map(({ brand, item }) => this._getNgOptionValue(brand, item)),
+            first()
+          )
+        )
+      );
+    }
+
+    this.store$.dispatch(new LoadEquipmentItem({ id: this.model.value as Type, type: this.type }));
+
+    return this.store$.select(selectEquipmentItem, { id: this.model.value, type: this.type }).pipe(
+      filter(item => !!item),
+      tap(item => {
+        if (!!item.brand) {
+          this.store$.dispatch(new LoadBrand({ id: item.brand }));
+        }
+      }),
+      switchMap(item => {
+        if (!!item.brand) {
+          return this.store$.select(selectBrand, item.brand).pipe(
+            takeUntil(this.destroyed$),
+            filter(brand => !!brand),
+            map(brand => ({ brand, item }))
+          );
+        }
+
+        return of({ brand: null, item });
+      }),
+      map(({ brand, item }) => this._getNgOptionValue(brand, item))
+    );
   }
 
   _onSearch(q: string) {
@@ -329,7 +506,7 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
 
     this.q = q;
 
-    const field = this.fields.find(f => f.key === "equipment-item");
+    const field = this.fields[0];
     this.store$.dispatch(
       new FindAllEquipmentItems({
         q,

@@ -11,6 +11,26 @@ context("Image edit (existing)", () => {
     ).as("getRemoteSourceAffiliates");
     cy.route("GET", "**/api/v2/groups/group/?members=1", "fixture:api/groups/groups.json").as("getGroups");
     cy.route("GET", "**/api/v2/users/locations/", { count: 0, results: [] }).as("getUsersLocations");
+
+    cy.route("GET", "**/api/v2/equipment/brand/1/", "fixture:api/equipment_v2/brand_1.json").as("getBrand1");
+    cy.route("GET", "**/api/v2/equipment/telescope/1/", "fixture:api/equipment_v2/telescope_1.json").as(
+      "getTelescope1"
+    );
+    cy.route("GET", "**/api/v2/equipment/telescope/2/", "fixture:api/equipment_v2/telescope_2.json").as(
+      "getTelescope2"
+    );
+    cy.route("GET", "**/api/v2/equipment/telescope/3/", "fixture:api/equipment_v2/telescope_3.json").as(
+      "getTelescope3"
+    );
+    cy.route("GET", "**/api/v2/equipment/camera/1/", "fixture:api/equipment_v2/camera_1.json").as("getCamera1");
+    cy.route("GET", "**/api/v2/equipment/camera/2/", "fixture:api/equipment_v2/camera_2.json").as("getCamera2");
+    cy.route("GET", "**/api/v2/equipment/camera/3/", "fixture:api/equipment_v2/camera_3.json").as("getCamera3");
+    cy.route("GET", "**/api/v2/equipment/mount/1/", "fixture:api/equipment_v2/mount_1.json").as("getMount1");
+    cy.route("GET", "**/api/v2/equipment/filter/1/", "fixture:api/equipment_v2/filter_1.json").as("getFilter1");
+    cy.route("GET", "**/api/v2/equipment/accessory/1/", "fixture:api/equipment_v2/accessory_1.json").as(
+      "getAccessory1"
+    );
+    cy.route("GET", "**/api/v2/equipment/software/1/", "fixture:api/equipment_v2/software_1.json").as("getSoftware1");
   });
 
   it("should navigate to the edit page", () => {
@@ -33,7 +53,7 @@ context("Image edit (existing)", () => {
   });
 
   it("should have all tabs", () => {
-    cy.get("#image-stepper-field .nav-link").should("have.length", 5);
+    cy.get("#image-stepper-field .nav-link").should("have.length", 6);
   });
 
   it("should have the #1 fragment", () => {
@@ -100,12 +120,60 @@ context("Image edit (existing)", () => {
     cy.get("#image-watermark-opacity-field").should("have.value", "50");
   });
 
-  it("should have prefilled the settings step", () => {
+  it("should have prefilled the equipment step", () => {
     cy.get("#image-stepper-watermark .form-actions .btn")
       .contains("Next")
       .click();
 
     cy.url().should("contain", "#5");
+
+    cy.get("#image-imaging-telescopes-field .ng-value")
+      .contains("Test Brand Test Telescope 1")
+      .should("be.visible");
+
+    cy.get("#image-imaging-telescopes-field .ng-value")
+      .contains("Test Brand Test Telescope 2")
+      .should("be.visible");
+
+    cy.get("#image-imaging-cameras-field .ng-value")
+      .contains("Test Brand Test Camera 1")
+      .should("be.visible");
+
+    cy.get("#image-imaging-cameras-field .ng-value")
+      .contains("Test Brand Test Camera 2")
+      .should("be.visible");
+
+    cy.get("#image-mounts-field .ng-value")
+      .contains("Test Brand Test Mount 1")
+      .should("be.visible");
+
+    cy.get("#image-filters-field .ng-value")
+      .contains("Test Brand Test Filter 1")
+      .should("be.visible");
+
+    cy.get("#image-accessories-field .ng-value")
+      .contains("Test Brand Test Accessory 1")
+      .should("be.visible");
+
+    cy.get("#image-software-field .ng-value")
+      .contains("Test Brand Test Software 1")
+      .should("be.visible");
+
+    cy.get("#image-guiding-telescopes-field .ng-value")
+      .contains("Test Brand Test Telescope 3")
+      .should("be.visible");
+
+    cy.get("#image-guiding-cameras-field .ng-value")
+      .contains("Test Brand Test Camera 3")
+      .should("be.visible");
+  });
+
+  it("should have prefilled the settings step", () => {
+    cy.get("#image-stepper-equipment .form-actions .btn")
+      .contains("Next")
+      .click();
+
+    cy.url().should("contain", "#6");
 
     cy.get("#image-license-field .ng-value").should(
       "contain.text",

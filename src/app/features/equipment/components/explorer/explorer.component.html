@@ -1,7 +1,8 @@
 <astrobin-equipment-item-browser
   #itemBrowser
   [type]="activeType"
-  (itemSelected)="onItemSelected($event)"
+  [initialValue]="this.activeId"
+  (valueChanged)="onItemSelected($event)"
   (creationModeStarted)="onCreationModeStarted()"
 ></astrobin-equipment-item-browser>
 

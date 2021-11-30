@@ -15,7 +15,7 @@
     [bindValue]="to.bindValue || 'value'"
     [bindLabel]="to.bindLabel || 'label'"
     [clearable]="to.clearable || false"
-    [closeOnSelect]="!to.multiple"
+    [closeOnSelect]="to.closeOnSelect !== undefined ? to.closeOnSelect : !to.multiple"
     [formControl]="formControl"
     [hideSelected]="to.multiple"
     [items]="items"

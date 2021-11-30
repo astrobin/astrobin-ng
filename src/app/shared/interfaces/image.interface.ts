@@ -144,6 +144,19 @@ export interface ImageInterface {
   h: number;
   imagingTelescopes: number[];
   imagingCameras: number[];
+  guidingTelescopes: number[];
+  guidingCameras: number[];
+  focalReducers: number[];
+  mounts: number[];
+  accessories: number[];
+  software: number[];
+  imagingTelescopes2: number[];
+  imagingCameras2: number[];
+  guidingTelescopes2: number[];
+  guidingCameras2: number[];
+  mounts2: number[];
+  accessories2: number[];
+  software2: number[];
   published: string;
   license: string;
   description?: string;
@@ -169,6 +182,9 @@ export interface ImageInterface {
   locations: number[];
   fullSizeDisplayLimitation: FullSizeLimitationDisplayOptions;
   downloadLimitation: DownloadLimitationOptions;
+
+  // Ephemeral form fields
+  showGuidingEquipment?: boolean;
 }
 
 export interface ImageRevisionInterface {

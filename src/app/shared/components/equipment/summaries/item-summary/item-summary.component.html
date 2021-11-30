@@ -15,10 +15,10 @@
     <div class="col">
       <div class="label">
         <h5>
-          <strong>
+          <span class="brand">
             <ng-container *ngIf="!!brand">{{ brand.name }}</ng-container>
             <ng-container *ngIf="!brand"><em>{{ "(DIY)" | translate }}</em></ng-container>
-          </strong>&nbsp;
+          </span>&nbsp;
           <span class="name" [innerHTML]="equipmentItemService.getName$(item) | async"></span>
         </h5>
         <h6 *ngIf="!!item.website" class="website">
@@ -26,7 +26,7 @@
         </h6>
       </div>
 
-      <table class="table table-sm table-striped properties" *ngIf="properties$ | async as properties">
+      <table class="table table-sm table-striped properties" *ngIf="!!properties">
         <tbody>
         <ng-container *ngFor="let property of properties">
           <tr *ngIf="(showProperty$(property) | async) === true" class="property">

@@ -36,6 +36,23 @@
   }
 }
 
+.label {
+  display: inline-block;
+
+  h5 {
+    margin: 0;
+  }
+
+  .brand {
+    font-weight: bold;
+  }
+
+  .name {
+    font-weight: lighter;
+    margin-left: -.25rem;
+  }
+}
+
 .sub-item {
   padding: 1rem;
   margin-top: 1rem;

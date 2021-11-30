@@ -42,7 +42,15 @@
       "locations": [
         1
       ],
-      "fullSizeDisplayLimitation": "EVERYBODY"
+      "fullSizeDisplayLimitation": "EVERYBODY",
+      "imagingTelescopes2": [1, 2],
+      "guidingTelescopes2": [3],
+      "imagingCameras2": [1, 2],
+      "guidingCameras2": [3],
+      "mounts2": [1],
+      "filters2": [1],
+      "accessories2": [1],
+      "software2": [1]
     }
   ]
 }

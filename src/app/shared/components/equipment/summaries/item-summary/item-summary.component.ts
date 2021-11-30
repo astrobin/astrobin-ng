@@ -65,6 +65,7 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
 
   brand: BrandInterface;
   subItem: EquipmentItemBaseInterface;
+  properties: EquipmentItemProperty[];
 
   constructor(
     public readonly store$: Store<State>,
@@ -168,6 +169,8 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
         )
         .subscribe(sensor => (this.subItem = sensor));
     }
+
+    this.properties$.pipe(take(1)).subscribe(properties => (this.properties = properties));
   }
 
   showProperty$(property: EquipmentItemProperty): Observable<boolean> {

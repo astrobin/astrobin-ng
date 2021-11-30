@@ -18,6 +18,7 @@ import { NotificationsEffects } from "@features/notifications/store/notification
 import * as equipment from "@features/equipment/store/equipment.reducer";
 import { initialEquipmentState } from "@features/equipment/store/equipment.reducer";
 import { NestedCommentsEffects } from "@app/store/effects/nested-comments.effects";
+import { EquipmentEffects } from "@features/equipment/store/equipment.effects";
 
 export interface State {
   app: app.AppState;
@@ -36,6 +37,7 @@ export const initialState: State = {
 export const appStateReducers = {
   app: app.reducer,
   auth: auth.reducer,
+  equipment: equipment.reducer,
   notifications: notifications.reducer
 };
 
@@ -51,5 +53,6 @@ export const appStateEffects = [
   NotificationsEffects,
   SolutionEffects,
   ThumbnailEffects,
-  TelescopeEffects
+  TelescopeEffects,
+  EquipmentEffects
 ];

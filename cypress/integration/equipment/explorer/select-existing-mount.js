@@ -37,13 +37,13 @@ context("Equipment", () => {
         cy.ngSelectOptionNumberSelectorShouldContain(
           "#equipment-item-field",
           1,
-          "astrobin-equipment-item-summary .label strong",
+          "astrobin-equipment-item-summary .label .brand",
           "Test brand"
         );
         cy.ngSelectOptionNumberSelectorShouldContain(
           "#equipment-item-field",
           1,
-          "astrobin-equipment-item-summary .label",
+          "astrobin-equipment-item-summary .label .name",
           "Test"
         );
 
@@ -56,10 +56,10 @@ context("Equipment", () => {
       });
 
       it("should show the item", () => {
-        cy.get(".card astrobin-equipment-item-summary .label strong")
+        cy.get(".card astrobin-equipment-item-summary .label .brand")
           .contains("Test brand")
           .should("be.visible");
-        cy.get(".card astrobin-equipment-item-summary .label")
+        cy.get(".card astrobin-equipment-item-summary .label .name")
           .contains("Test")
           .should("be.visible");
       });

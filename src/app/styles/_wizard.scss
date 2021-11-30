@@ -87,7 +87,7 @@
 .wizard-step {
   .form-actions.fixed {
     position: fixed;
-    z-index: 1;
+    z-index: 1000;
     left: 0;
     bottom: 0;
     display: flex;
