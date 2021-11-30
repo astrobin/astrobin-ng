@@ -14,6 +14,7 @@ import { ImageEditSettingsFieldsService } from "@features/image/services/image-e
 import { ImageEditThumbnailFieldsService } from "@features/image/services/image-edit-thumbnail-fields.service";
 import { ImageEditWatermarkFieldsService } from "@features/image/services/image-edit-watermark-fields.service";
 import { ImageEditService } from "@features/image/services/image-edit.service";
+import { ImageEditEquipmentFieldsService } from "@features/image/services/image-edit-equipment-fields.service";
 
 @NgModule({
   declarations: [ImageEditPageComponent, CreateLocationModalComponent],
@@ -29,6 +30,7 @@ import { ImageEditService } from "@features/image/services/image-edit.service";
     ImageEditContentFieldsService,
     ImageEditSettingsFieldsService,
     ImageEditThumbnailFieldsService,
+    ImageEditEquipmentFieldsService,
     ImageEditWatermarkFieldsService
   ]
 })

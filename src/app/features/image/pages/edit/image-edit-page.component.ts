@@ -26,6 +26,7 @@ import { ImageEditContentFieldsService } from "@features/image/services/image-ed
 import { ImageEditWatermarkFieldsService } from "@features/image/services/image-edit-watermark-fields.service";
 import { ImageEditThumbnailFieldsService } from "@features/image/services/image-edit-thumbnail-fields.service";
 import { ImageEditSettingsFieldsService } from "@features/image/services/image-edit-settings-fields.service";
+import { ImageEditEquipmentFieldsService } from "@features/image/services/image-edit-equipment-fields.service";
 
 @Component({
   selector: "astrobin-image-edit-page",
@@ -55,6 +56,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     public readonly imageEditContentFieldsService: ImageEditContentFieldsService,
     public readonly imageEditWatermarkFieldsService: ImageEditWatermarkFieldsService,
     public readonly imageEditThumbnailFieldsService: ImageEditThumbnailFieldsService,
+    public readonly imageEditEquipmentFieldsService: ImageEditEquipmentFieldsService,
     public readonly imageEditSettingsFieldsService: ImageEditSettingsFieldsService
   ) {
     super(store$);
@@ -190,6 +192,21 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
               this.imageEditWatermarkFieldsService.getWatermarkPosition(),
               this.imageEditWatermarkFieldsService.getWatermarkTextSize(),
               this.imageEditWatermarkFieldsService.getWatermarkTextOpacity()
+            ]
+          },
+          {
+            id: "image-stepper-equipment",
+            templateOptions: { label: this.translateService.instant("Equipment") },
+            fieldGroup: [
+              this.imageEditEquipmentFieldsService.getImagingTelescopes(),
+              this.imageEditEquipmentFieldsService.getImagingCameras(),
+              this.imageEditEquipmentFieldsService.getMounts(),
+              this.imageEditEquipmentFieldsService.getFilters(),
+              this.imageEditEquipmentFieldsService.getAccessories(),
+              this.imageEditEquipmentFieldsService.getSoftware(),
+              this.imageEditEquipmentFieldsService.getShowGuidingEquipment(),
+              this.imageEditEquipmentFieldsService.getGuidingTelescopes(),
+              this.imageEditEquipmentFieldsService.getGuidingCameras()
             ]
           },
           {

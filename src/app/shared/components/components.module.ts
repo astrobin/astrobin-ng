@@ -71,6 +71,7 @@ import { AccessoryEditorComponent } from "@shared/components/equipment/editors/a
 import { SimilarItemsSuggestionComponent } from "@shared/components/equipment/similar-items-suggestion/similar-items-suggestion.component";
 import { ConfirmItemCreationModalComponent } from "@shared/components/equipment/editors/confirm-item-creation-modal/confirm-item-creation-modal.component";
 import { OthersInBrandComponent } from "@shared/components/equipment/editors/others-in-brand/others-in-brand.component";
+import { FormlyFieldEquipmentItemBrowserComponent } from "@shared/components/misc/formly-field-equipment-item-browser/formly-field-equipment-item-browser.component";
 
 const modules = [
   CommonModule,
@@ -111,6 +112,7 @@ const components = [
   FormlyFieldImageCropperComponent,
   FormlyFieldNgSelectComponent,
   FormlyFieldStepperComponent,
+  FormlyFieldEquipmentItemBrowserComponent,
   FormlyWrapperComponent,
   FullscreenImageViewerComponent,
   HeaderComponent,

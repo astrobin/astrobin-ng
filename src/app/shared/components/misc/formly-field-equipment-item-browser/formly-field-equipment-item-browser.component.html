@@ -1,0 +1,10 @@
+<astrobin-equipment-item-browser
+  #itemBrowser
+  [id]="field.id"
+  [initialValue]="formControl.value"
+  [multiple]="true"
+  [required]="to.required"
+  [showLabel]="false"
+  [type]="to.itemType"
+  (valueChanged)="onItemsSelected($event)"
+></astrobin-equipment-item-browser>

@@ -12,6 +12,7 @@ import { UtilsService } from "@shared/services/utils/utils.service";
 import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
 import { debounceTime, distinctUntilChanged, first, startWith, switchMap } from "rxjs/operators";
 import { of } from "rxjs";
+import { FormlyFieldEquipmentItemBrowserComponent } from "@shared/components/misc/formly-field-equipment-item-browser/formly-field-equipment-item-browser.component";
 
 export interface FileSizeValidatorOptionsInterface {
   max: number;
@@ -53,6 +54,11 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
       {
         name: "ckeditor",
         component: FormlyFieldCKEditorComponent,
+        wrappers: ["default-wrapper"]
+      },
+      {
+        name: "equipment-item-browser",
+        component: FormlyFieldEquipmentItemBrowserComponent,
         wrappers: ["default-wrapper"]
       }
     ],
