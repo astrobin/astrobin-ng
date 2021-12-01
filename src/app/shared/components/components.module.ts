@@ -73,6 +73,7 @@ import { ConfirmItemCreationModalComponent } from "@shared/components/equipment/
 import { OthersInBrandComponent } from "@shared/components/equipment/editors/others-in-brand/others-in-brand.component";
 import { FormlyFieldEquipmentItemBrowserComponent } from "@shared/components/misc/formly-field-equipment-item-browser/formly-field-equipment-item-browser.component";
 import { FormlyEquipmentItemBrowserWrapperComponent } from "@shared/components/misc/formly-equipment-item-browser-wrapper/formly-equipment-item-browser-wrapper.component";
+import { ItemSummaryModalComponent } from "@shared/components/equipment/summaries/item-summary-modal/item-summary-modal.component";
 
 const modules = [
   CommonModule,
@@ -136,6 +137,7 @@ const components = [
   // Equipment
   ItemBrowserComponent,
   ItemSummaryComponent,
+  ItemSummaryModalComponent,
   BrandSummaryComponent,
   CameraEditorComponent,
   SensorEditorComponent,

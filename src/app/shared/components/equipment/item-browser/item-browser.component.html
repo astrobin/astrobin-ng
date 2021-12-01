@@ -1,16 +1,22 @@
 <form [formGroup]="form">
-  <formly-form
-    [fields]="fields"
-    [form]="form"
-    [model]="model"
-  ></formly-form>
+  <formly-form [fields]="fields" [form]="form" [model]="model"></formly-form>
 </form>
 
 <ng-template #equipmentItemLabelTemplate let-object="item">
-  <ng-container *ngIf="!!object?.item;">
-    <ng-container *ngIf="!!object.brand; else DIY">{{ object.brand.name }}</ng-container>
-    <ng-template #DIY>{{ "(DIY)" | translate }}</ng-template>
+  <ng-container *ngIf="!!object?.item">
+    <strong>
+      <ng-container *ngIf="!!object.brand; else DIY">{{ object.brand.name }}</ng-container>
+      <ng-template #DIY>{{ "(DIY)" | translate }}</ng-template>
+    </strong>
     {{ equipmentItemService.getName$(object.item) | async }}
+
+    <button
+      *ngIf="enableInfoModal"
+      class="btn btn-link btn-info-modal"
+      (click)="openItemSummaryModal($event, object.item)"
+    >
+      <fa-icon icon="info-circle"></fa-icon>
+    </button>
   </ng-container>
 </ng-template>
 

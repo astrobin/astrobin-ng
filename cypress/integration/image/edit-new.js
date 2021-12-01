@@ -347,6 +347,15 @@ context("Image edit (new)", () => {
       .should("be.visible");
   });
 
+  it("should show the summary modal", () => {
+    cy.get("#image-imaging-telescopes-field .ng-select-container .ng-value .btn-info-modal").click();
+    cy.get(".modal").should("be.visible");
+    cy.get(".modal .btn")
+      .contains("Close")
+      .click();
+    cy.get(".modal").should("be.not.visible");
+  });
+
   it("should create a camera", () => {
     cy.setupEquipmentDefaultRoutes();
     cy.equipmentItemBrowserCreate("#image-imaging-cameras-field", "Test", "@findCameras");
