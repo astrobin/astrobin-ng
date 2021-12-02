@@ -81,7 +81,7 @@ context("Equipment", () => {
 
         cy.wait("@createCamera");
 
-        cy.ngSelectValueShouldContain("#equipment-item-field", "Test brand Test");
+        cy.equipmentItemBrowserShouldContain("#equipment-item-field", "Test brand", "Test camera");
       });
 
       it("should update the URL with ID and slug", () => {

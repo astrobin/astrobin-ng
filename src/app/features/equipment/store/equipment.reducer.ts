@@ -39,6 +39,7 @@ export function reducer(state = initialEquipmentState, action: EquipmentActions)
     }
 
     case EquipmentActionTypes.FIND_ALL_EQUIPMENT_ITEMS_SUCCESS:
+    case EquipmentActionTypes.FIND_RECENTLY_USED_EQUIPMENT_ITEMS_SUCCESS:
     case EquipmentActionTypes.FIND_SIMILAR_IN_BRAND_SUCCESS:
     case EquipmentActionTypes.GET_OTHERS_IN_BRAND_SUCCESS: {
       return {

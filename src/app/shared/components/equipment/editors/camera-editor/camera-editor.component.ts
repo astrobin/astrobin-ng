@@ -36,6 +36,9 @@ import { FormlyFieldMessageLevel, FormlyFieldService } from "@shared/services/fo
 })
 export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterface, SensorInterface>
   implements OnInit, AfterViewInit {
+  @ViewChild("sensorLabelTemplate")
+  sensorLabelTemplate: TemplateRef<any>;
+
   @ViewChild("sensorOptionTemplate")
   sensorOptionTemplate: TemplateRef<any>;
 
@@ -90,52 +93,6 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
     this.subCreationInProgress.emit(false);
   }
 
-  createSensor() {
-    const sensor: SensorInterface = this.subCreation.form.value;
-
-    this.loadingService.setLoading(true);
-    this.store$.dispatch(new CreateSensor({ sensor }));
-    this.actions$
-      .pipe(
-        ofType(EquipmentActionTypes.CREATE_SENSOR_SUCCESS),
-        take(1),
-        map((result: { payload: EquipmentItemCreationSuccessPayloadInterface }) => result.payload.item)
-      )
-      .subscribe((createdSensor: SensorInterface) => {
-        this.sensorCreated(createdSensor);
-        this.loadingService.setLoading(false);
-      });
-  }
-
-  sensorCreated(sensor: SensorInterface) {
-    this.store$
-      .select(selectBrand, sensor.brand)
-      .pipe(
-        takeUntil(this.destroyed$),
-        filter(brand => !!brand)
-      )
-      .subscribe(brand => {
-        this.fields.find(field => field.key === "sensor").templateOptions.options = [
-          {
-            value: sensor.id,
-            label: `${brand.name} ${sensor.name}`,
-            sensor
-          }
-        ];
-
-        this.model = { ...this.model, ...{ sensor: sensor.id } };
-        this.form.get("sensor").setValue(sensor.id);
-        this.subCreation.name = sensor.name;
-        this.endSensorCreation();
-
-        setTimeout(() => {
-          this.windowRefService.nativeWindow.document
-            .querySelector("#camera-field-sensor")
-            .scrollIntoView({ behavior: "smooth" });
-        }, 1);
-      });
-  }
-
   private _initFields() {
     const _doInitFields = (opts: { hasModifiedVariant?: boolean } = {}) => {
       this.fields = [
@@ -168,55 +125,20 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
         },
         {
           key: "sensor",
-          type: "ng-select",
+          type: "equipment-item-browser",
           id: "camera-field-sensor",
           expressionProperties: {
             "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
           },
           templateOptions: {
             label: this.cameraService.getPrintablePropertyName(CameraDisplayProperty.SENSOR),
+            itemType: EquipmentItemType.SENSOR,
+            showQuickAddRecent: false,
+            showPlaceholderImage: false,
             required: false,
-            clearable: true,
-            options:
-              this.model && this.model.sensor
-                ? this.store$
-                    .select(selectEquipmentItem, { id: this.model.sensor, type: EquipmentItemType.SENSOR })
-                    .pipe(
-                      filter(sensor => !!sensor),
-                      take(1),
-                      tap(sensor => {
-                        if (!!sensor.brand) {
-                          this.store$.dispatch(new LoadBrand({ id: sensor.brand }));
-                        }
-                      }),
-                      switchMap((sensor: SensorInterface) =>
-                        this.store$.select(selectBrand, sensor.brand).pipe(
-                          filter(brand => !!brand),
-                          map(brand => ({ brand, sensor }))
-                        )
-                      ),
-                      map(({ brand, sensor }) => [
-                        {
-                          value: sensor.id,
-                          label: `${brand.name} ${sensor.name}`,
-                          sensor
-                        }
-                      ])
-                    )
-                : of([]),
-            onSearch: (term: string) => {
-              this._onSensorSearch(term);
-            },
-            optionTemplate: this.sensorOptionTemplate,
-            addTag: () => {
-              this.startSensorCreation();
-              this.form.get("sensor").setValue(null);
-              setTimeout(() => {
-                this.windowRefService.nativeWindow.document
-                  .getElementById("create-new-sensor")
-                  .scrollIntoView({ behavior: "smooth" });
-              }, 1);
-            }
+            multiple: false,
+            creationModeStarted: this.startSensorCreation.bind(this),
+            creationModeEnded: this.endSensorCreation.bind(this)
           }
         },
         {
@@ -343,47 +265,5 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
           _doInitFields({ hasModifiedVariant: !!camera });
         });
     }
-  }
-
-  private _onSensorSearch(term: string) {
-    this.subCreation.name = term;
-
-    if (!this.subCreation.name) {
-      return of([]);
-    }
-
-    const field = this.fields.find(f => f.key === "sensor");
-    this.store$.dispatch(new FindAllEquipmentItems({ q: this.subCreation.name, type: EquipmentItemType.SENSOR }));
-    field.templateOptions.options = this.actions$.pipe(
-      ofType(EquipmentActionTypes.FIND_ALL_EQUIPMENT_ITEMS_SUCCESS),
-      map((action: FindAllEquipmentItemsSuccess) => action.payload.items),
-      tap(items => {
-        items.forEach(item => {
-          if (!!item.brand) {
-            this.store$.dispatch(new LoadBrand({ id: item.brand }));
-          }
-        });
-        return items;
-      }),
-      switchMap(items =>
-        this.store$.select(selectBrands).pipe(
-          map(brands => ({
-            brands,
-            items
-          }))
-        )
-      ),
-      map((result: { brands: BrandInterface[]; items: SensorInterface[] }) =>
-        result.items.map(sensor => {
-          const brand = result.brands.find(b => b.id === sensor.brand);
-          return {
-            value: sensor.id,
-            label: `${brand ? brand.name : this.translateService.instant("(DIY)")} ${sensor.name}`,
-            brand,
-            sensor
-          };
-        })
-      )
-    );
   }
 }

@@ -4,7 +4,8 @@ import { PayloadActionInterface } from "@app/store/actions/payload-action.interf
 import {
   EquipmentItemBaseInterface,
   EquipmentItemReviewerRejectionReason,
-  EquipmentItemType
+  EquipmentItemType,
+  EquipmentItemUsageType
 } from "@features/equipment/types/equipment-item-base.interface";
 import { BrandInterface } from "@features/equipment/types/brand.interface";
 import { SensorInterface } from "@features/equipment/types/sensor.interface";
@@ -37,6 +38,8 @@ export enum EquipmentActionTypes {
   LOAD_EQUIPMENT_ITEM_SUCCESS = "[Equipment] Load equipment item success",
   FIND_ALL_EQUIPMENT_ITEMS = "[Equipment] Find all equipment items",
   FIND_ALL_EQUIPMENT_ITEMS_SUCCESS = "[Equipment] Find all equipment success",
+  FIND_RECENTLY_USED_EQUIPMENT_ITEMS = "[Equipment] Find recentrly used equipment items",
+  FIND_RECENTLY_USED_EQUIPMENT_ITEMS_SUCCESS = "[Equipment] Find recentrly used equipment items success",
   FIND_SIMILAR_IN_BRAND = "[Equipment] Find similar in brand",
   FIND_SIMILAR_IN_BRAND_SUCCESS = "[Equipment] Find similar in brand success",
   GET_OTHERS_IN_BRAND = "[Equipment] Get others in brand",
@@ -101,7 +104,10 @@ export enum EquipmentActionTypes {
   CREATE_SOFTWARE = "[Equipment] Create software",
   CREATE_SOFTWARE_SUCCESS = "[Equipment] Create software success",
   CREATE_SOFTWARE_EDIT_PROPOSAL = "[Equipment] Create software edit proposal",
-  CREATE_SOFTWARE_EDIT_PROPOSAL_SUCCESS = "[Equipment] Create software edit request proposal"
+  CREATE_SOFTWARE_EDIT_PROPOSAL_SUCCESS = "[Equipment] Create software edit request proposal",
+
+  // Item browser
+  ITEM_BROWSER_ADD = "[Equipment] Item browser add"
 }
 
 /**********************************************************************************************************************
@@ -170,6 +176,24 @@ export class FindAllEquipmentItemsSuccess implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.FIND_ALL_EQUIPMENT_ITEMS_SUCCESS;
 
   constructor(public payload: { items: EquipmentItemBaseInterface[] }) {}
+}
+
+export class FindRecentlyUsedEquipmentItems implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.FIND_RECENTLY_USED_EQUIPMENT_ITEMS;
+
+  constructor(public payload: { type: EquipmentItemType; usageType: EquipmentItemUsageType | null }) {}
+}
+
+export class FindRecentlyUsedEquipmentItemsSuccess implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.FIND_RECENTLY_USED_EQUIPMENT_ITEMS_SUCCESS;
+
+  constructor(
+    public payload: {
+      type: EquipmentItemType;
+      usageType: EquipmentItemUsageType | null;
+      items: EquipmentItemBaseInterface[];
+    }
+  ) {}
 }
 
 export class FindSimilarInBrand implements PayloadActionInterface {
@@ -468,6 +492,18 @@ export class CreateSoftwareEditProposalSuccess implements PayloadActionInterface
   constructor(public payload: { editProposal: EditProposalInterface<SoftwareInterface> }) {}
 }
 
+/**********************************************************************************************************************
+ * Item browser
+ *********************************************************************************************************************/
+
+export class ItemBrowserAdd implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.ITEM_BROWSER_ADD;
+
+  constructor(
+    public payload: { type: EquipmentItemType; usageType: EquipmentItemUsageType; item: EquipmentItemBaseInterface }
+  ) {}
+}
+
 export type EquipmentActions =
   // Brands
   | LoadBrand
@@ -482,6 +518,8 @@ export type EquipmentActions =
   | LoadEquipmentItemSuccess
   | FindAllEquipmentItems
   | FindAllEquipmentItemsSuccess
+  | FindRecentlyUsedEquipmentItems
+  | FindRecentlyUsedEquipmentItemsSuccess
   | FindSimilarInBrand
   | FindSimilarInBrandSuccess
   | GetOthersInBrand
@@ -539,4 +577,7 @@ export type EquipmentActions =
   | CreateSoftware
   | CreateSoftwareSuccess
   | CreateSoftwareEditProposal
-  | CreateSoftwareEditProposalSuccess;
+  | CreateSoftwareEditProposalSuccess
+
+  // Item browser
+  | ItemBrowserAdd;

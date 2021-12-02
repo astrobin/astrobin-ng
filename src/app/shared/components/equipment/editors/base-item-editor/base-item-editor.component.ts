@@ -154,12 +154,6 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
     name: null
   };
 
-  nestedSubCreation: {
-    inProgress: boolean;
-  } = {
-    inProgress: false
-  };
-
   constructor(
     public readonly store$: Store<State>,
     public readonly actions$: Actions,

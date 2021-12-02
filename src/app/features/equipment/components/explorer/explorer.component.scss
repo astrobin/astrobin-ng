@@ -33,3 +33,7 @@
     }
   }
 }
+
+::ng-deep #create-new-item {
+  z-index: 999;
+}

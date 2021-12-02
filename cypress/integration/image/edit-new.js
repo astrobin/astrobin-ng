@@ -15,6 +15,13 @@ context("Image edit (new)", () => {
     ).as("getRemoteSourceAffiliates");
     cy.route("GET", "**/api/v2/groups/group/*", "fixture:api/groups/groups.json").as("getGroups");
     cy.route("GET", "**/api/v2/users/locations/", { count: 0, results: [] }).as("getUsersLocations");
+
+    cy.route("GET", "**/api/v2/equipment/camera/recently-used/*", []);
+    cy.route("GET", "**/api/v2/equipment/telescope/recently-used/*", []);
+    cy.route("GET", "**/api/v2/equipment/mount/recently-used/", []);
+    cy.route("GET", "**/api/v2/equipment/filter/recently-used/", []);
+    cy.route("GET", "**/api/v2/equipment/accessory/recently-used/", []);
+    cy.route("GET", "**/api/v2/equipment/software/recently-used/", []);
   });
 
   it("should navigate to the edit page", () => {
@@ -358,9 +365,9 @@ context("Image edit (new)", () => {
 
   it("should create a camera", () => {
     cy.setupEquipmentDefaultRoutes();
-    cy.equipmentItemBrowserCreate("#image-imaging-cameras-field", "Test", "@findCameras");
+    cy.equipmentItemBrowserCreate("#image-imaging-cameras-field", "Test camera", "@findCameras");
     cy.equipmentItemBrowserSelectFirstBrand("#equipment-item-field-brand", "Test brand", testBrand);
-    cy.get("#equipment-item-field-name").should("have.value", "Test");
+    cy.get("#equipment-item-field-name").should("have.value", "Test camera");
     cy.ngSelectOpen("#camera-field-type");
     cy.ngSelectOptionClick("#camera-field-type", 1);
     cy.ngSelectValueShouldContain("#camera-field-type", "Dedicated deep-sky camera");
@@ -369,12 +376,12 @@ context("Image edit (new)", () => {
     cy.get(".modal-title")
       .contains("Confirm item creation")
       .should("be.visible");
-    cy.equipmentItemSummaryShouldHaveItem(".modal", "Test brand", "Test");
+    cy.equipmentItemSummaryShouldHaveItem(".modal", "Test brand", "Test camera");
     cy.equipmentItemSummaryShouldHaveProperty(".modal", "Class", "Camera");
     cy.equipmentItemSummaryShouldHaveProperty(".modal", "Type", "Dedicated deep-sky camera");
     cy.get(".modal-footer .btn-danger").click();
     cy.wait("@createCamera");
-    cy.ngSelectValueShouldContain("#image-imaging-cameras-field", "Test brand Test");
+    cy.equipmentItemBrowserShouldContain("#image-imaging-cameras-field", "Test brand", "Test camera");
   });
 
   it("should have prefilled the settings step", () => {

@@ -48,7 +48,7 @@ context("Equipment", () => {
         );
 
         cy.ngSelectOptionClick("#equipment-item-field", 1);
-        cy.ngSelectValueShouldContain("#equipment-item-field", "Test brand Test");
+        cy.equipmentItemBrowserShouldContain("#equipment-item-field", "Test brand", "Test filter");
       });
 
       it("should update the URL with ID and slug", () => {

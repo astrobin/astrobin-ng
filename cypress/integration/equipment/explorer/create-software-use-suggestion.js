@@ -23,7 +23,7 @@ context("Equipment", () => {
         cy.get("#equipment-item-field-name").should("have.value", "Test");
         cy.get("astrobin-similar-items-suggestion").should("be.visible");
         cy.get("astrobin-similar-items-suggestion .btn").click();
-        cy.ngSelectValueShouldContain("#equipment-item-field", "Test brand Test");
+        cy.equipmentItemBrowserShouldContain("#equipment-item-field", "Test brand", "Test software");
       });
     });
   });

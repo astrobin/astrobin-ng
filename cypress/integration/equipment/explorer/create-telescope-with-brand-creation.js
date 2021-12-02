@@ -83,7 +83,7 @@ context("Equipment", () => {
 
         cy.wait("@createTelescope");
 
-        cy.ngSelectValueShouldContain("#equipment-item-field", "Test brand Test");
+        cy.equipmentItemBrowserShouldContain("#equipment-item-field", "Test brand", "Test telescope");
       });
     });
   });

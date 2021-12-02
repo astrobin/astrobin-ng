@@ -1,0 +1,14 @@
+<span class="brand" *ngIf="!!brandName; else loading">{{ brandName }}&nbsp;</span>
+<span class="name" *ngIf="!!itemName; else loading">{{ itemName }}</span>
+
+<a
+  *ngIf="enableSummaryModal"
+  href=""
+  class="btn-info-modal"
+  appEventPreventDefault
+  (click)="openItemSummaryModal(item)"
+>
+  <fa-icon icon="info-circle"></fa-icon>
+</a>
+
+<ng-template #loading><astrobin-text-loading-indicator></astrobin-text-loading-indicator></ng-template>

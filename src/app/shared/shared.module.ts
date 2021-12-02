@@ -1,6 +1,6 @@
 import { CommonModule } from "@angular/common";
 import { HttpClient, HttpClientModule } from "@angular/common/http";
-import { APP_INITIALIZER, ModuleWithProviders, NgModule } from "@angular/core";
+import { APP_INITIALIZER, Directive, ModuleWithProviders, NgModule } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { formlyConfig } from "@app/formly.config";
 import { AppActionTypes } from "@app/store/actions/app.actions";
@@ -50,6 +50,7 @@ import { CustomMissingTranslationHandler } from "@app/missing-translation-handle
 import { CustomTranslateParser } from "@app/translate-parser";
 import { LanguageLoader } from "@app/translate-loader";
 import { FormlyEquipmentItemBrowserWrapperComponent } from "@shared/components/misc/formly-equipment-item-browser-wrapper/formly-equipment-item-browser-wrapper.component";
+import { DirectivesModule } from "@shared/directives/directives.module";
 
 export function appInitializer(store: Store<State>, actions$: Actions) {
   return () =>
@@ -74,6 +75,7 @@ export function appInitializer(store: Store<State>, actions$: Actions) {
   imports: [
     CommonModule,
     ComponentsModule,
+    DirectivesModule,
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
@@ -136,6 +138,7 @@ export function appInitializer(store: Store<State>, actions$: Actions) {
   exports: [
     CommonModule,
     ComponentsModule,
+    DirectivesModule,
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,

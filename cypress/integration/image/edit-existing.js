@@ -31,6 +31,13 @@ context("Image edit (existing)", () => {
       "getAccessory1"
     );
     cy.route("GET", "**/api/v2/equipment/software/1/", "fixture:api/equipment_v2/software_1.json").as("getSoftware1");
+
+    cy.route("GET", "**/api/v2/equipment/camera/recently-used/*", []);
+    cy.route("GET", "**/api/v2/equipment/telescope/recently-used/*", []);
+    cy.route("GET", "**/api/v2/equipment/mount/recently-used/", []);
+    cy.route("GET", "**/api/v2/equipment/filter/recently-used/", []);
+    cy.route("GET", "**/api/v2/equipment/accessory/recently-used/", []);
+    cy.route("GET", "**/api/v2/equipment/software/recently-used/", []);
   });
 
   it("should navigate to the edit page", () => {

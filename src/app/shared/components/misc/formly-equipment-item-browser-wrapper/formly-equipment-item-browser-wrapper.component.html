@@ -1,6 +1,6 @@
 <div [class.has-error]="showError" class="form-group">
   <div class="row">
-    <div class="col-1 d-none d-lg-inline">
+    <div class="col-1 d-none d-lg-inline" *ngIf="!!to.showPlaceholderImage">
       <img class="placeholder mt-lg-3 mt-xl-2" src="/assets/images/{{ to.itemType.toLowerCase() }}-placeholder.png" />
     </div>
     <div class="col">

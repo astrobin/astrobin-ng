@@ -39,7 +39,7 @@ context("Equipment", () => {
         cy.get("astrobin-similar-items-suggestion").should("be.visible");
         cy.get("astrobin-similar-items-suggestion .btn").click();
 
-        cy.ngSelectValueShouldContain("#camera-field-sensor", "Test sensor");
+        cy.equipmentItemBrowserShouldContain("#camera-field-sensor", "Test brand", "Test sensor");
       });
     });
   });

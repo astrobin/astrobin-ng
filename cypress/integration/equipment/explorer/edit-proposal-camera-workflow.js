@@ -52,7 +52,7 @@ context("Equipment", () => {
       cy.ngSelectValueShouldContain("#equipment-item-field-brand", testBrand.name);
       cy.get("#equipment-item-field-name").should("have.value", testCamera.name);
       cy.ngSelectValueShouldContain("#camera-field-type", "Dedicated deep-sky camera");
-      cy.ngSelectValueShouldContain("#camera-field-sensor", `${testBrand.name} ${testSensor.name}`);
+      cy.equipmentItemBrowserShouldContain("#camera-field-sensor", "Test brand", "Test sensor");
       cy.get("#camera-field-cooled").should("be.checked");
       cy.get("#camera-field-max-cooling").should("have.value", testCamera.maxCooling);
       cy.get("#camera-field-back-focus").should("have.value", testCamera.backFocus);

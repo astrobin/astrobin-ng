@@ -72,7 +72,7 @@
                   <th scope="col">{{ "Name/Model" | translate }}</th>
                   <td>{{ object.name || "n/a" | translate }}</td>
                 </tr>
-                <tr *ngFor="let key of gearService.getProperAttributes(object)">
+                <tr *ngFor="let key of legacyGearService.getProperAttributes(object)">
                   <th scope="col">{{ key | camelCaseToSentenceCase }}</th>
                   <td>{{ object[key] !== null ? object[key] : ("n/a" | translate) }}</td>
                 </tr>

@@ -2,7 +2,11 @@ import { Component, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild 
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { State } from "@app/store/state";
 import { Action, Store } from "@ngrx/store";
-import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import {
+  EquipmentItemBaseInterface,
+  EquipmentItemType,
+  EquipmentItemUsageType
+} from "@features/equipment/types/equipment-item-base.interface";
 import { FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { forkJoin, Observable, of } from "rxjs";
@@ -19,6 +23,7 @@ import {
   EquipmentItemCreationSuccessPayloadInterface,
   FindAllEquipmentItems,
   FindAllEquipmentItemsSuccess,
+  ItemBrowserAdd,
   LoadBrand,
   LoadEquipmentItem
 } from "@features/equipment/store/equipment.actions";
@@ -31,14 +36,14 @@ import { LoadingService } from "@shared/services/loading.service";
 import { ConfirmItemCreationModalComponent } from "@shared/components/equipment/editors/confirm-item-creation-modal/confirm-item-creation-modal.component";
 import { SensorInterface } from "@features/equipment/types/sensor.interface";
 import { CameraInterface } from "@features/equipment/types/camera.interface";
-import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 import { TelescopeInterface } from "@features/equipment/types/telescope.interface";
 import { MountInterface } from "@features/equipment/types/mount.interface";
 import { FilterInterface } from "@features/equipment/types/filter.interface";
 import { AccessoryInterface } from "@features/equipment/types/accessory.interface";
 import { SoftwareInterface } from "@features/equipment/types/software.interface";
-import { ItemSummaryModalComponent } from "@shared/components/equipment/summaries/item-summary-modal/item-summary-modal.component";
+import { UtilsService } from "@shared/services/utils/utils.service";
 
 type Type = EquipmentItemBaseInterface["id"];
 type TypeUnion = Type | Type[] | null;
@@ -53,6 +58,12 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
 
   @Input()
   id = "equipment-item-field";
+
+  @Input()
+  type: EquipmentItemType;
+
+  @Input()
+  usageType: EquipmentItemUsageType;
 
   @Input()
   initialValue: TypeUnion = null;
@@ -70,7 +81,7 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
   multiple = false;
 
   @Input()
-  enableInfoModal = false;
+  enableSummaryModal = false;
 
   model: { value: TypeUnion } = { value: null };
   form: FormGroup = new FormGroup({});
@@ -88,9 +99,6 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
 
   @ViewChild("equipmentItemOptionTemplate")
   equipmentItemOptionTemplate: TemplateRef<any>;
-
-  @Input()
-  type: EquipmentItemType;
 
   @Output()
   creationModeStarted = new EventEmitter<void>();
@@ -191,7 +199,10 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
           const fieldConfig = this.fields[0];
 
           fieldConfig.templateOptions.options = of(
-            results.map(result => this._getNgOptionValue(result.brand, result.item))
+            UtilsService.arrayUniqueObjects(
+              results.map(result => this._getNgOptionValue(result.brand, result.item)),
+              "value"
+            )
           );
 
           this.model = { value };
@@ -346,13 +357,6 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
     }
   }
 
-  openItemSummaryModal(event: Event, item: EquipmentItemBaseInterface) {
-    event.preventDefault();
-
-    const modal: NgbModalRef = this.modalService.open(ItemSummaryModalComponent);
-    modal.componentInstance.item = item;
-  }
-
   _setFields() {
     const _addTag = () => {
       this.startCreationMode();
@@ -441,6 +445,22 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
       )
       .subscribe(() => {
         this.setValue(this.initialValue);
+      });
+
+    this.actions$
+      .pipe(
+        takeUntil(this.destroyed$),
+        ofType(EquipmentActionTypes.ITEM_BROWSER_ADD),
+        map((action: ItemBrowserAdd) => action.payload),
+        filter(payload => payload.type === this.type && payload.usageType === this.usageType),
+        map(payload => payload.item)
+      )
+      .subscribe(item => {
+        if (this.multiple) {
+          this.setValue([...((this.model.value as Type[]) || []), item.id]);
+        } else {
+          this.setValue(item.id);
+        }
       });
   }
 

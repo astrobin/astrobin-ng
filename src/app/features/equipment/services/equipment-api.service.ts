@@ -7,7 +7,8 @@ import { EMPTY, forkJoin, Observable, of } from "rxjs";
 import {
   EquipmentItemBaseInterface,
   EquipmentItemReviewerRejectionReason,
-  EquipmentItemType
+  EquipmentItemType,
+  EquipmentItemUsageType
 } from "@features/equipment/types/equipment-item-base.interface";
 import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
 import { catchError, map, switchMap, take } from "rxjs/operators";
@@ -121,6 +122,21 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     return this.http
       .get<PaginatedApiResultInterface<EquipmentItemBaseInterface>>(`${this.configUrl}/${type.toLowerCase()}/?q=${q}`)
       .pipe(map(response => response.results.map(item => this._parseItem(item))));
+  }
+
+  findRecentlyUsedEquipmentItems(
+    type: EquipmentItemType,
+    usageType: EquipmentItemUsageType
+  ): Observable<EquipmentItemBaseInterface[]> {
+    let url = `${this.configUrl}/${type.toLowerCase()}/recently-used/`;
+
+    if (!!usageType) {
+      url += `?usage-type=${usageType.toLowerCase()}`;
+    }
+
+    return this.http
+      .get<EquipmentItemBaseInterface[]>(url)
+      .pipe(map(items => items.map(item => this._parseItem(item))));
   }
 
   findSimilarInBrand(

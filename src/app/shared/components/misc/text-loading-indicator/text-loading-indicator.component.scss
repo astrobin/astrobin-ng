@@ -1,4 +1,7 @@
 .text-loading {
+  display: inline-block;
+  width: .66rem;
+
   &:after {
     overflow: hidden;
     display: inline-block;

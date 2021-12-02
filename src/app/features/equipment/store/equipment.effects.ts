@@ -42,6 +42,8 @@ import {
   FindAllEquipmentItemsSuccess,
   FindEquipmentItemEditProposals,
   FindEquipmentItemEditProposalsSuccess,
+  FindRecentlyUsedEquipmentItems,
+  FindRecentlyUsedEquipmentItemsSuccess,
   FindSimilarInBrand,
   FindSimilarInBrandSuccess,
   GetOthersInBrand,
@@ -162,6 +164,23 @@ export class EquipmentEffects {
         this.equipmentApiService
           .findAllEquipmentItems(payload.q, payload.type)
           .pipe(map(items => new FindAllEquipmentItemsSuccess({ items })))
+      )
+    )
+  );
+
+  FindRecentlyUsedEquipmentItems: Observable<FindRecentlyUsedEquipmentItemsSuccess> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(EquipmentActionTypes.FIND_RECENTLY_USED_EQUIPMENT_ITEMS),
+      map((action: FindRecentlyUsedEquipmentItems) => action.payload),
+      mergeMap(payload =>
+        this.equipmentApiService
+          .findRecentlyUsedEquipmentItems(payload.type, payload.usageType)
+          .pipe(
+            map(
+              items =>
+                new FindRecentlyUsedEquipmentItemsSuccess({ type: payload.type, usageType: payload.usageType, items })
+            )
+          )
       )
     )
   );

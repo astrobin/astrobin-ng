@@ -62,7 +62,7 @@ context("Equipment", () => {
 
         cy.wait("@createFilter");
 
-        cy.ngSelectValueShouldContain("#equipment-item-field", "Test brand Test");
+        cy.equipmentItemBrowserShouldContain("#equipment-item-field", "Test brand", "Test filter");
       });
     });
   });

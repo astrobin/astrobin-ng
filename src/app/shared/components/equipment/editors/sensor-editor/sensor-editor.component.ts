@@ -20,9 +20,6 @@ import { EquipmentItemType } from "@features/equipment/types/equipment-item-base
 })
 export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterface, null>
   implements OnInit, AfterViewInit {
-  @ViewChild("sensorOptionTemplate")
-  sensorOptionTemplate: TemplateRef<any>;
-
   constructor(
     public readonly store$: Store<State>,
     public readonly actions$: Actions,

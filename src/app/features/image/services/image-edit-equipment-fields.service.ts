@@ -7,7 +7,7 @@ import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { of } from "rxjs";
-import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import { EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/types/equipment-item-base.interface";
 
 @Injectable({
   providedIn: null
@@ -31,7 +31,10 @@ export class ImageEditEquipmentFieldsService extends BaseService {
         multiple: true,
         required: false,
         label: this.translateService.instant("Telescopes or lenses"),
-        itemType: EquipmentItemType.TELESCOPE
+        itemType: EquipmentItemType.TELESCOPE,
+        usageType: EquipmentItemUsageType.IMAGING,
+        showQuickAddRecent: true,
+        showPlaceholderImage: true
       }
     };
   }
@@ -45,7 +48,10 @@ export class ImageEditEquipmentFieldsService extends BaseService {
         multiple: true,
         required: false,
         label: this.translateService.instant("Cameras"),
-        itemType: EquipmentItemType.CAMERA
+        itemType: EquipmentItemType.CAMERA,
+        usageType: EquipmentItemUsageType.IMAGING,
+        showQuickAddRecent: true,
+        showPlaceholderImage: true
       }
     };
   }
@@ -59,7 +65,9 @@ export class ImageEditEquipmentFieldsService extends BaseService {
         multiple: true,
         required: false,
         label: this.translateService.instant("Mounts"),
-        itemType: EquipmentItemType.MOUNT
+        itemType: EquipmentItemType.MOUNT,
+        showQuickAddRecent: true,
+        showPlaceholderImage: true
       }
     };
   }
@@ -73,7 +81,9 @@ export class ImageEditEquipmentFieldsService extends BaseService {
         multiple: true,
         required: false,
         label: this.translateService.instant("Filters"),
-        itemType: EquipmentItemType.FILTER
+        itemType: EquipmentItemType.FILTER,
+        showQuickAddRecent: true,
+        showPlaceholderImage: true
       }
     };
   }
@@ -87,7 +97,9 @@ export class ImageEditEquipmentFieldsService extends BaseService {
         multiple: true,
         required: false,
         label: this.translateService.instant("Accessories"),
-        itemType: EquipmentItemType.ACCESSORY
+        itemType: EquipmentItemType.ACCESSORY,
+        showQuickAddRecent: true,
+        showPlaceholderImage: true
       }
     };
   }
@@ -101,7 +113,9 @@ export class ImageEditEquipmentFieldsService extends BaseService {
         multiple: true,
         required: false,
         label: this.translateService.instant("Software"),
-        itemType: EquipmentItemType.SOFTWARE
+        itemType: EquipmentItemType.SOFTWARE,
+        showQuickAddRecent: true,
+        showPlaceholderImage: true
       }
     };
   }
@@ -133,7 +147,10 @@ export class ImageEditEquipmentFieldsService extends BaseService {
         multiple: true,
         required: false,
         label: this.translateService.instant("Guiding telescopes or lenses"),
-        itemType: EquipmentItemType.TELESCOPE
+        itemType: EquipmentItemType.TELESCOPE,
+        usageType: EquipmentItemUsageType.GUIDING,
+        showQuickAddRecent: true,
+        showPlaceholderImage: true
       }
     };
   }
@@ -148,7 +165,10 @@ export class ImageEditEquipmentFieldsService extends BaseService {
         multiple: true,
         required: false,
         label: this.translateService.instant("Guiding cameras"),
-        itemType: EquipmentItemType.CAMERA
+        itemType: EquipmentItemType.CAMERA,
+        usageType: EquipmentItemUsageType.GUIDING,
+        showQuickAddRecent: true,
+        showPlaceholderImage: true
       }
     };
   }

@@ -4,19 +4,10 @@
 
 <ng-template #equipmentItemLabelTemplate let-object="item">
   <ng-container *ngIf="!!object?.item">
-    <strong>
-      <ng-container *ngIf="!!object.brand; else DIY">{{ object.brand.name }}</ng-container>
-      <ng-template #DIY>{{ "(DIY)" | translate }}</ng-template>
-    </strong>
-    {{ equipmentItemService.getName$(object.item) | async }}
-
-    <button
-      *ngIf="enableInfoModal"
-      class="btn btn-link btn-info-modal"
-      (click)="openItemSummaryModal($event, object.item)"
-    >
-      <fa-icon icon="info-circle"></fa-icon>
-    </button>
+    <astrobin-equipment-item-display-name
+      [item]="object.item"
+      [enableSummaryModal]="enableSummaryModal"
+    ></astrobin-equipment-item-display-name>
   </ng-container>
 </ng-template>
 

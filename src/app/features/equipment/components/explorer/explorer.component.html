@@ -6,7 +6,9 @@
   (creationModeStarted)="onCreationModeStarted()"
 ></astrobin-equipment-item-browser>
 
-<div class="card" *ngIf="selectedItem">
+<div class="card" [class.disabled-with-backdrop]="subCreationMode" *ngIf="selectedItem">
+  <div class="backdrop"></div>
+
   <div class="card-header">
     {{ equipmentItemService.humanizeType(activeType) }}
   </div>
@@ -122,7 +124,9 @@
     <fa-icon icon="arrow-down"></fa-icon>
   </div>
 
-  <div class="card mt-4 mb-4" id="edit-item">
+  <div class="card mt-4 mb-4"  [class.disabled-with-backdrop]="subCreationMode" id="edit-item">
+    <div class="backdrop"></div>
+
     <div class="card-header">
       {{ "Propose edit" | translate }}
     </div>
@@ -132,6 +136,7 @@
         *ngIf="activeType === EquipmentItemType.CAMERA"
         [form]="editForm"
         [model]="editModel"
+        (subCreationInProgress)="subCreationMode = $event"
         [editorMode]="EquipmentItemEditorMode.EDIT_PROPOSAL"
       ></astrobin-camera-editor>
 
@@ -139,6 +144,7 @@
         *ngIf="activeType === EquipmentItemType.SENSOR"
         [form]="editForm"
         [model]="editModel"
+        (subCreationInProgress)="subCreationMode = $event"
         [editorMode]="EquipmentItemEditorMode.EDIT_PROPOSAL"
       ></astrobin-sensor-editor>
 
@@ -146,6 +152,7 @@
         *ngIf="activeType === EquipmentItemType.TELESCOPE"
         [form]="editForm"
         [model]="editModel"
+        (subCreationInProgress)="subCreationMode = $event"
         [editorMode]="EquipmentItemEditorMode.EDIT_PROPOSAL"
       ></astrobin-telescope-editor>
 
@@ -153,6 +160,7 @@
         *ngIf="activeType === EquipmentItemType.MOUNT"
         [form]="editForm"
         [model]="editModel"
+        (subCreationInProgress)="subCreationMode = $event"
         [editorMode]="EquipmentItemEditorMode.EDIT_PROPOSAL"
       ></astrobin-mount-editor>
 
@@ -160,6 +168,7 @@
         *ngIf="activeType === EquipmentItemType.FILTER"
         [form]="editForm"
         [model]="editModel"
+        (subCreationInProgress)="subCreationMode = $event"
         [editorMode]="EquipmentItemEditorMode.EDIT_PROPOSAL"
       ></astrobin-filter-editor>
 
@@ -167,6 +176,7 @@
         *ngIf="activeType === EquipmentItemType.ACCESSORY"
         [form]="editForm"
         [model]="editModel"
+        (subCreationInProgress)="subCreationMode = $event"
         [editorMode]="EquipmentItemEditorMode.EDIT_PROPOSAL"
       ></astrobin-accessory-editor>
 
@@ -174,6 +184,7 @@
         *ngIf="activeType === EquipmentItemType.SOFTWARE"
         [form]="editForm"
         [model]="editModel"
+        (subCreationInProgress)="subCreationMode = $event"
         [editorMode]="EquipmentItemEditorMode.EDIT_PROPOSAL"
       ></astrobin-software-editor>
     </div>

@@ -80,6 +80,8 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit 
   editForm = new FormGroup({});
   editModel: Partial<EditProposalInterface<EquipmentItemBaseInterface>> = {};
 
+  subCreationMode = false;
+
   selectedItemEditProposals$: Observable<EditProposalInterface<EquipmentItemBaseInterface>[]>;
 
   @ViewChild("itemBrowser")
@@ -270,8 +272,7 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit 
   }
 
   onCreationModeStarted() {
-    this.selectedItem = null;
-    this.endEditMode();
+    this.resetBrowser();
   }
 
   proposeEdit() {

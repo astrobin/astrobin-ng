@@ -92,7 +92,7 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
     public readonly windowRefService: WindowRefService,
     public readonly equipmentItemService: EquipmentItemService,
     public readonly equipmentApiService: EquipmentApiService,
-    public readonly gearService: GearService
+    public readonly legacyGearService: GearService
   ) {
     super(store$);
   }
@@ -311,7 +311,7 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
               defaultValue: false,
               templateOptions: {
                 required: false,
-                label: this.gearService.getDisplayName(item.make, item.name),
+                label: this.legacyGearService.getDisplayName(item.make, item.name),
                 value: item.pk
               }
             }));
@@ -420,7 +420,7 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
           this.cancelMigration(), this.resetMigrationConfirmation();
           this.skip(object);
           this.popNotificationsService.success(
-            `Good job! Item <strong>${this.gearService.getDisplayName(
+            `Good job! Item <strong>${this.legacyGearService.getDisplayName(
               object.make,
               object.name
             )}</strong> marked as <strong>${markedAs}</strong>! Do another one now! 😃`,

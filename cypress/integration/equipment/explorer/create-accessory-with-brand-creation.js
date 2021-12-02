@@ -45,7 +45,7 @@ context("Equipment", () => {
 
         cy.wait("@createAccessory");
 
-        cy.ngSelectValueShouldContain("#equipment-item-field", "Test brand Test");
+        cy.equipmentItemBrowserShouldContain("#equipment-item-field", "Test brand", "Test accessory");
       });
     });
   });

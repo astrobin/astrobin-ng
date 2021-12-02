@@ -74,9 +74,12 @@ import { OthersInBrandComponent } from "@shared/components/equipment/editors/oth
 import { FormlyFieldEquipmentItemBrowserComponent } from "@shared/components/misc/formly-field-equipment-item-browser/formly-field-equipment-item-browser.component";
 import { FormlyEquipmentItemBrowserWrapperComponent } from "@shared/components/misc/formly-equipment-item-browser-wrapper/formly-equipment-item-browser-wrapper.component";
 import { ItemSummaryModalComponent } from "@shared/components/equipment/summaries/item-summary-modal/item-summary-modal.component";
+import { EquipmentItemDisplayNameComponent } from "@shared/components/equipment/equipment-item-display-name/equipment-item-display-name.component";
+import { DirectivesModule } from "@shared/directives/directives.module";
 
 const modules = [
   CommonModule,
+  DirectivesModule,
   FontAwesomeModule,
   FormsModule,
   FormlySelectModule,
@@ -138,6 +141,7 @@ const components = [
   ItemBrowserComponent,
   ItemSummaryComponent,
   ItemSummaryModalComponent,
+  EquipmentItemDisplayNameComponent,
   BrandSummaryComponent,
   CameraEditorComponent,
   SensorEditorComponent,

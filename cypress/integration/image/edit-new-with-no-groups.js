@@ -13,6 +13,13 @@ context("Image edit (new, with no groups)", () => {
     ).as("getRemoteSourceAffiliates");
     cy.route("GET", "**/api/v2/groups/group/*", "fixture:api/groups/no_groups.json").as("getGroups");
     cy.route("GET", "**/api/v2/users/locations/", { count: 0, results: [] }).as("getUsersLocations");
+
+    cy.route("GET", "**/api/v2/equipment/camera/recently-used/*", []);
+    cy.route("GET", "**/api/v2/equipment/telescope/recently-used/*", []);
+    cy.route("GET", "**/api/v2/equipment/mount/recently-used/", []);
+    cy.route("GET", "**/api/v2/equipment/filter/recently-used/", []);
+    cy.route("GET", "**/api/v2/equipment/accessory/recently-used/", []);
+    cy.route("GET", "**/api/v2/equipment/software/recently-used/", []);
   });
 
   it("should navigate to the edit page", () => {

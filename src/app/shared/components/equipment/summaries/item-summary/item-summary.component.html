@@ -15,11 +15,7 @@
     <div class="col">
       <div class="label">
         <h5>
-          <span class="brand">
-            <ng-container *ngIf="!!brand">{{ brand.name }}</ng-container>
-            <ng-container *ngIf="!brand"><em>{{ "(DIY)" | translate }}</em></ng-container>
-          </span>&nbsp;
-          <span class="name" [innerHTML]="equipmentItemService.getName$(item) | async"></span>
+          <astrobin-equipment-item-display-name [item]="item"></astrobin-equipment-item-display-name>
         </h5>
         <h6 *ngIf="!!item.website" class="website">
           <a target="_blank" [href]="item.website">{{ UtilsService.shortenUrl(item.website) }}</a>
