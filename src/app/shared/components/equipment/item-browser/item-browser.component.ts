@@ -237,7 +237,11 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
           fieldConfig.templateOptions.options = of([this._getNgOptionValue(brand, item)]);
 
           this.model = { value };
-          this.form.get("value").setValue(value);
+
+          if (!!this.form.get("value")) {
+            this.form.get("value").setValue(value);
+          }
+
           this.valueChanged.emit(item);
         });
     }
