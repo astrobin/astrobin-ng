@@ -13,7 +13,6 @@ import {
   STEP_STATE,
   StepChangedArgs
 } from "ng-wizard";
-import { AbstractControl, FormGroup } from "@angular/forms";
 
 @Component({
   selector: "astrobin-formly-field-stepper",
