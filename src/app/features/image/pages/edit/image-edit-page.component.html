@@ -21,6 +21,7 @@
 <ng-template #equipmentStepButtonsTemplate>
   <button
     [class.loading]="loadingService.isLoading()"
+    [disabled]="!imageEditService.hasEquipmentItems()"
     id="clear-equipment-btn"
     class="btn btn-outline-danger mr-2"
     (click)="onClearEquipmentClicked()"
@@ -41,11 +42,18 @@
       <div aria-labelledby="load-preset-dropdown" ngbDropdownMenu>
         <ng-container *ngIf="presets$ | async as presets">
           <li *ngIf="presets.length === 0; else hasPresets" class="btn btn-disabled">
-            {{ "You don't have any saved presets." | translate}}
+            {{ "You don't have any saved presets." | translate }}
           </li>
           <ng-template #hasPresets>
             <li *ngFor="let preset of presets">
               <button class="dropdown-item" (click)="onApplyEquipmentPresetClicked(preset)">
+                <fa-icon
+                  *ngIf="(imageEditService.currentEquipmentPreset$() | async)?.name === preset.name; else notCurrentEquipmentPreset"
+                  icon="dot-circle"
+                ></fa-icon>
+                <ng-template #notCurrentEquipmentPreset>
+                  <fa-icon icon="circle"></fa-icon>
+                </ng-template>
                 {{ preset.name }}
               </button>
             </li>
@@ -56,8 +64,10 @@
 
     <button
       [class.loading]="loadingService.isLoading()"
+      [disabled]="!imageEditService.hasEquipmentItems()"
       id="save-preset-btn"
       class="btn btn-outline-secondary"
+      (click)="onSaveEquipmentPresetClicked()"
     >
       {{ "Save preset" | translate }}&hellip;
     </button>

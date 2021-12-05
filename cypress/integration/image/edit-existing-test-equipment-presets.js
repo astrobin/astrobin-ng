@@ -1,3 +1,39 @@
+const testEquipmentPreset = {
+  id: 1,
+  deleted: null,
+  created: "2021-12-04T11:43:49.372996",
+  updated: "2021-12-04T19:14:42.047104",
+  remoteSource: null,
+  name: "Test preset",
+  user: 1,
+  imagingTelescopes: [1, 2],
+  guidingTelescopes: [3],
+  imagingCameras: [1, 2],
+  guidingCameras: [3],
+  mounts: [1],
+  filters: [1],
+  accessories: [1],
+  software: [1]
+};
+
+const testEquipmentPreset2 = {
+  id: 2,
+  deleted: null,
+  created: "2021-12-04T11:43:49.372996",
+  updated: "2021-12-04T19:14:42.047104",
+  remoteSource: null,
+  name: "Test preset 2",
+  user: 1,
+  imagingTelescopes: [4],
+  guidingTelescopes: [],
+  imagingCameras: [],
+  guidingCameras: [],
+  mounts: [],
+  filters: [],
+  accessories: [],
+  software: []
+};
+
 context("Image edit (existing)", () => {
   beforeEach(() => {
     cy.server();
@@ -68,25 +104,7 @@ context("Image edit (existing)", () => {
     cy.route("GET", "**/api/v2/equipment/accessory/recently-used/", []);
     cy.route("GET", "**/api/v2/equipment/software/recently-used/", []);
 
-    cy.route("GET", "**/api/v2/equipment/equipment-preset/", [
-      {
-        id: 1,
-        deleted: null,
-        created: "2021-12-04T11:43:49.372996",
-        updated: "2021-12-04T19:14:42.047104",
-        remoteSource: null,
-        name: "Test preset",
-        user: 1,
-        imagingTelescopes: [1, 2],
-        guidingTelescopes: [3],
-        imagingCameras: [1, 2],
-        guidingCameras: [3],
-        mounts: [1],
-        filters: [1],
-        accessories: [1],
-        software: [1]
-      }
-    ]);
+    cy.route("GET", "**/api/v2/equipment/equipment-preset/", [testEquipmentPreset]);
   });
 
   it("should navigate to the edit page", () => {
@@ -147,5 +165,124 @@ context("Image edit (existing)", () => {
     cy.get("#image-guiding-cameras-field .ng-value")
       .contains("Test Brand Test Camera 3")
       .should("be.visible");
+  });
+
+  it("should prefill the name when saving active preset", () => {
+    cy.get("#save-preset-btn").click();
+    cy.get(".modal .modal-title")
+      .contains("Save equipment preset")
+      .should("be.visible");
+    cy.get(".modal input#name").should("have.value", "Test preset");
+  });
+
+  it("should prompt to overwrite", () => {
+    cy.get(".modal .btn")
+      .contains("Save")
+      .click();
+
+    cy.get(".modal .modal-title")
+      .contains("Are you sure?")
+      .should("be.visible");
+  });
+
+  it("should save", () => {
+    cy.route("PUT", "**/api/v2/equipment/equipment-preset/1/", testEquipmentPreset);
+    cy.get(".modal .btn")
+      .contains("Yes, continue")
+      .click();
+
+    cy.get(".modal").should("not.be.visible");
+    cy.get(".toast-message")
+      .contains("Equipment preset updated.")
+      .should("be.visible");
+  });
+
+  it("should clear the equipment", () => {
+    cy.get("#clear-equipment-btn").click();
+
+    cy.get(".modal .btn")
+      .contains("Yes, continue")
+      .click();
+    cy.get("#clear-equipment-btn").should("be.disabled");
+
+    cy.get("#image-imaging-telescopes-field .ng-value").should("have.length", 0);
+    cy.get("#image-imaging-cameras-field .ng-value").should("have.length", 0);
+    cy.get("#image-mounts-field .ng-value").should("have.length", 0);
+    cy.get("#image-filters-field .ng-value").should("have.length", 0);
+    cy.get("#image-accessories-field .ng-value").should("have.length", 0);
+    cy.get("#image-software-field .ng-value").should("have.length", 0);
+    cy.get("#image-guiding-telescopes-field .ng-value").should("have.length", 0);
+    cy.get("#image-guiding-cameras-field .ng-value").should("have.length", 0);
+
+    cy.get("#save-preset-btn").should("be.disabled");
+  });
+
+  it("should add a telescope", () => {
+    cy.route("GET", "**/api/v2/equipment/telescope/?q=Foo", {
+      count: 1,
+      next: null,
+      previous: null,
+      results: [
+        {
+          id: 4,
+          deleted: null,
+          klass: "TELESCOPE",
+          reviewedTimestamp: null,
+          reviewerDecision: null,
+          reviewerRejectionReason: null,
+          reviewerComment: null,
+          created: "2021-11-26T14:16:42.850333",
+          updated: "2021-11-26T14:16:42.850345",
+          name: "Foo 123",
+          website: null,
+          image: null,
+          type: "REFRACTOR_ACHROMATIC",
+          aperture: "222.00",
+          minFocalLength: "1000.00",
+          maxFocalLength: "1000.00",
+          weight: null,
+          createdBy: 1,
+          reviewedBy: null,
+          brand: 1,
+          group: null
+        }
+      ]
+    }).as("findTelescopes");
+
+    cy.get("#image-imaging-telescopes-field input[type='text']").type("Foo");
+    cy.wait("@findTelescopes");
+
+    cy.get("#image-imaging-telescopes-field .ng-option:first-child").click();
+    cy.get("#image-imaging-telescopes-field .ng-select-container .ng-value")
+      .contains("Test Brand Foo 123")
+      .should("be.visible");
+  });
+
+  it("should save as a new preset", () => {
+    cy.get("#save-preset-btn").click();
+    cy.get(".modal .modal-title")
+      .contains("Save equipment preset")
+      .should("be.visible");
+    cy.get(".modal input#name").should("have.value", "");
+    cy.get(".modal input#name").type("Test preset 2");
+
+    cy.route("POST", "**/api/v2/equipment/equipment-preset/", testEquipmentPreset2);
+    cy.get(".modal .btn")
+      .contains("Save")
+      .click();
+
+    cy.get(".modal").should("not.be.visible");
+    cy.get(".toast-message")
+      .contains("Equipment preset created.")
+      .should("be.visible");
+  });
+
+  it("should have updated the presets dropdown menu", () => {
+    cy.get("#load-preset-dropdown + div .dropdown-item")
+      .contains("Test preset")
+      .should("exist");
+    cy.get("#load-preset-dropdown + div .dropdown-item")
+      .contains("Test preset 2")
+      .should("exist");
   });
 });

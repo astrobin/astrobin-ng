@@ -61,6 +61,10 @@ export enum EquipmentActionTypes {
 
   FIND_EQUIPMENT_PRESETS = "[Equipment] Find equipment presets",
   FIND_EQUIPMENT_PRESETS_SUCCESS = "[Equipment] Find equipment presets success",
+  CREATE_EQUIPMENT_PRESET = "[Equipment] Create equipment preset",
+  CREATE_EQUIPMENT_PRESET_SUCCESS = "[Equipment] Create equipment preset success",
+  UPDATE_EQUIPMENT_PRESET = "[Equipment] Update equipment preset",
+  UPDATE_EQUIPMENT_PRESET_SUCCESS = "[Equipment] Update equipment preset success",
 
   // Sensors
 
@@ -304,6 +308,30 @@ export class FindEquipmentPresetsSuccess implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.FIND_EQUIPMENT_PRESETS_SUCCESS;
 
   constructor(public payload: { presets: EquipmentPresetInterface[] }) {}
+}
+
+export class CreateEquipmentPreset implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.CREATE_EQUIPMENT_PRESET;
+
+  constructor(public payload: { preset: EquipmentPresetInterface }) {}
+}
+
+export class CreateEquipmentPresetSuccess implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.CREATE_EQUIPMENT_PRESET_SUCCESS;
+
+  constructor(public payload: { preset: EquipmentPresetInterface }) {}
+}
+
+export class UpdateEquipmentPreset implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.UPDATE_EQUIPMENT_PRESET;
+
+  constructor(public payload: { preset: EquipmentPresetInterface }) {}
+}
+
+export class UpdateEquipmentPresetSuccess implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.UPDATE_EQUIPMENT_PRESET_SUCCESS;
+
+  constructor(public payload: { preset: EquipmentPresetInterface }) {}
 }
 
 /**********************************************************************************************************************
@@ -568,6 +596,10 @@ export type EquipmentActions =
   // Equipment presets
   | FindEquipmentPresets
   | FindEquipmentPresetsSuccess
+  | CreateEquipmentPreset
+  | CreateEquipmentPresetSuccess
+  | UpdateEquipmentPreset
+  | UpdateEquipmentPresetSuccess
 
   // Sensors
   | CreateSensor

@@ -58,9 +58,13 @@ import {
   RejectEquipmentItem,
   RejectEquipmentItemEditProposal,
   RejectEquipmentItemEditProposalSuccess,
-  RejectEquipmentItemSuccess
+  RejectEquipmentItemSuccess,
+  CreateEquipmentPreset,
+  CreateEquipmentPresetSuccess,
+  UpdateEquipmentPresetSuccess,
+  UpdateEquipmentPreset
 } from "@features/equipment/store/equipment.actions";
-import { Actions, createEffect, ofType } from "@ngrx/effects";
+import { act, Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { All } from "@app/store/actions/app.actions";
@@ -290,6 +294,30 @@ export class EquipmentEffects {
         this.equipmentApiService
           .findEquipmentPresets()
           .pipe(map(presets => new FindEquipmentPresetsSuccess({ presets })))
+      )
+    )
+  );
+
+  CreateEquipmentPreset: Observable<CreateEquipmentPresetSuccess> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(EquipmentActionTypes.CREATE_EQUIPMENT_PRESET),
+      map((action: CreateEquipmentPreset) => action.payload.preset),
+      mergeMap(preset =>
+        this.equipmentApiService
+          .createEquipmentPreset(preset)
+          .pipe(map(savedPreset => new CreateEquipmentPresetSuccess({ preset: savedPreset })))
+      )
+    )
+  );
+
+  UpdateEquipmentPreset: Observable<UpdateEquipmentPresetSuccess> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(EquipmentActionTypes.UPDATE_EQUIPMENT_PRESET),
+      map((action: UpdateEquipmentPreset) => action.payload.preset),
+      mergeMap(preset =>
+        this.equipmentApiService
+          .updateEquipmentPreset(preset)
+          .pipe(map(updatedPreset => new UpdateEquipmentPresetSuccess({ preset: updatedPreset })))
       )
     )
   );
@@ -546,6 +574,5 @@ export class EquipmentEffects {
     public readonly actions$: Actions<All>,
     public readonly equipmentApiService: EquipmentApiService,
     public readonly utilsService: UtilsService
-  ) {
-  }
+  ) {}
 }

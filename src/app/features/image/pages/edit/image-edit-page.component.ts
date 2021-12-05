@@ -30,13 +30,14 @@ import { EquipmentPresetInterface } from "@features/equipment/types/equipment-pr
 import { selectEquipmentItem, selectEquipmentPresets } from "@features/equipment/store/equipment.selectors";
 import { filter, first, take, takeUntil } from "rxjs/operators";
 import { FindEquipmentPresets, ItemBrowserSet, LoadEquipmentItem } from "@features/equipment/store/equipment.actions";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import {
   EquipmentItemBaseInterface,
   EquipmentItemType,
   EquipmentItemUsageType
 } from "@features/equipment/types/equipment-item-base.interface";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
+import { SaveEquipmentPresetModalComponent } from "@features/image/components/save-equipment-preset-modal/save-equipment-preset-modal.component";
 
 @Component({
   selector: "astrobin-image-edit-page",
@@ -276,6 +277,22 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     }
 
     this.applyEquipmentPreset(preset);
+  }
+
+  onSaveEquipmentPresetClicked() {
+    if (this.imageEditService.hasEquipmentItems()) {
+      this.imageEditService
+        .currentEquipmentPreset$()
+        .pipe(take(1))
+        .subscribe(currentEquipmentPreset => {
+          const modalRef: NgbModalRef = this.modalService.open(SaveEquipmentPresetModalComponent);
+          const componentInstance: SaveEquipmentPresetModalComponent = modalRef.componentInstance;
+
+          if (!!currentEquipmentPreset) {
+            componentInstance.model.name = currentEquipmentPreset.name;
+          }
+        });
+    }
   }
 
   onReturnToClassicEditor() {

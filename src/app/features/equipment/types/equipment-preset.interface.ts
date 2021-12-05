@@ -7,12 +7,12 @@ import { AccessoryInterface } from "@features/equipment/types/accessory.interfac
 import { SoftwareInterface } from "@features/equipment/types/software.interface";
 
 export interface EquipmentPresetInterface {
-  id: number;
+  id?: number;
   deleted?: string;
-  created: string;
-  updated: string;
-  user: UserInterface["id"];
-  remoteSource: string;
+  created?: string;
+  updated?: string;
+  user?: UserInterface["id"];
+  remoteSource?: string;
   name: string;
   imagingTelescopes: TelescopeInterface["id"][];
   guidingTelescopes: TelescopeInterface["id"][];

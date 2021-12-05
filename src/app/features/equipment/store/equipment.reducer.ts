@@ -170,6 +170,14 @@ export function reducer(state = initialEquipmentState, action: EquipmentActions)
       };
     }
 
+    case EquipmentActionTypes.CREATE_EQUIPMENT_PRESET_SUCCESS:
+    case EquipmentActionTypes.UPDATE_EQUIPMENT_PRESET_SUCCESS: {
+      return {
+        ...state,
+        presets: UtilsService.arrayUniqueObjects([...state.presets, action.payload.preset], "id")
+      };
+    }
+
     default: {
       return state;
     }

@@ -286,6 +286,14 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     return this.http.get<EquipmentPresetInterface[]>(`${this.configUrl}/equipment-preset/`);
   }
 
+  createEquipmentPreset(preset: EquipmentPresetInterface): Observable<EquipmentPresetInterface> {
+    return this.http.post<EquipmentPresetInterface>(`${this.configUrl}/equipment-preset/`, preset);
+  }
+
+  updateEquipmentPreset(preset: EquipmentPresetInterface): Observable<EquipmentPresetInterface> {
+    return this.http.put<EquipmentPresetInterface>(`${this.configUrl}/equipment-preset/${preset.id}/`, preset);
+  }
+
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // BRAND API
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
