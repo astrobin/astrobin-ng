@@ -38,6 +38,7 @@ import {
 } from "@features/equipment/types/equipment-item-base.interface";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
 import { SaveEquipmentPresetModalComponent } from "@features/image/components/save-equipment-preset-modal/save-equipment-preset-modal.component";
+import { LoadEquipmentPresetModalComponent } from "@features/image/components/load-equipment-preset-modal/load-equipment-preset-modal.component";
 
 @Component({
   selector: "astrobin-image-edit-page",
@@ -197,86 +198,9 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     }
   }
 
-  applyEquipmentPreset(preset: EquipmentPresetInterface) {
-    for (const klass of [
-      {
-        property: "imagingTelescopes",
-        type: EquipmentItemType.TELESCOPE,
-        usageType: EquipmentItemUsageType.IMAGING
-      },
-      {
-        property: "imagingCameras",
-        type: EquipmentItemType.CAMERA,
-        usageType: EquipmentItemUsageType.IMAGING
-      },
-      {
-        property: "mounts",
-        type: EquipmentItemType.MOUNT
-      },
-      {
-        property: "filters",
-        type: EquipmentItemType.FILTER
-      },
-      {
-        property: "accessories",
-        type: EquipmentItemType.ACCESSORY
-      },
-      {
-        property: "software",
-        type: EquipmentItemType.SOFTWARE
-      },
-      {
-        property: "guidingTelescopes",
-        type: EquipmentItemType.TELESCOPE,
-        usageType: EquipmentItemUsageType.GUIDING
-      },
-      {
-        property: "guidingCameras",
-        type: EquipmentItemType.CAMERA,
-        usageType: EquipmentItemUsageType.GUIDING
-      }
-    ]) {
-      const ids = preset[klass.property] as EquipmentItemBaseInterface["id"][];
-      ids.forEach(id => {
-        this.store$.dispatch(new LoadEquipmentItem({ id, type: klass.type }));
-      });
 
-      forkJoin(
-        ids.map(id =>
-          this.store$.select(selectEquipmentItem, { id, type: klass.type }).pipe(
-            filter(item => !!item),
-            first()
-          )
-        )
-      ).subscribe(items => {
-        this.store$.dispatch(
-          new ItemBrowserSet({
-            type: klass.type,
-            usageType: klass.usageType,
-            items
-          })
-        );
-      });
-    }
-  }
-
-  onApplyEquipmentPresetClicked(preset: EquipmentPresetInterface) {
-    if (this.imageEditService.hasEquipmentItems()) {
-      const modalRef = this.modalService.open(ConfirmationDialogComponent);
-      const componentInstance: ConfirmationDialogComponent = modalRef.componentInstance;
-
-      componentInstance.message = this.translateService.instant(
-        "This operation will overwrite the current equipment selection."
-      );
-
-      modalRef.closed.pipe(take(1)).subscribe(() => {
-        this.applyEquipmentPreset(preset);
-      });
-
-      return;
-    }
-
-    this.applyEquipmentPreset(preset);
+  onLoadEquipmentPresetClicked() {
+    this.modalService.open(LoadEquipmentPresetModalComponent);
   }
 
   onSaveEquipmentPresetClicked() {

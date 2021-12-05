@@ -1,3 +1,5 @@
+@import "../../../../styles/breakpoints";
+
 :host {
   ::ng-deep {
     ng-wizard .nav-tabs {
@@ -8,7 +10,7 @@
 
     ng-select {
       .remote-affiliate-sponsor {
-        margin-left: .5rem;
+        margin-left: 0.5rem;
         color: var(--gold);
       }
     }
@@ -16,5 +18,31 @@
     image-cropper {
       padding: 0;
     }
+  }
+}
+
+#load-preset-dropdown + div {
+  @media screen and (min-width: $md-min) {
+    min-width: 400px;
+  }
+
+  @media screen and (max-width: $sm-max) {
+    min-width: 100vw;
+    max-width: 100vw;
+    width: 100vw;
+  }
+
+  .dropdown-item-container {
+    flex: 1;
+
+    .button-label {
+      white-space: initial;
+      display: inline-block;
+      padding-left: 0.5rem;
+    }
+  }
+
+  .trash-btn {
+    flex: 0;
   }
 }

@@ -151,7 +151,7 @@ export class HeaderComponent extends BaseComponentDirective {
 
   openLoginModal($event) {
     $event.preventDefault();
-    this.modalService.open(LoginModalComponent, { centered: true });
+    this.modalService.open(LoginModalComponent);
   }
 
   logout($event) {

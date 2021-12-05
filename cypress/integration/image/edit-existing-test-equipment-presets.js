@@ -116,14 +116,17 @@ context("Image edit (existing)", () => {
 
   it("should have the preset buttons", () => {
     cy.get("#clear-equipment-btn").should("be.visible");
-    cy.get("#load-preset-dropdown").should("be.visible");
+    cy.get("#load-preset-btn").should("be.visible");
     cy.get("#save-preset-btn").should("be.visible");
   });
 
   it("should select a preset", () => {
-    cy.get("#load-preset-dropdown").click();
-    cy.get(".dropdown-item")
+    cy.get("#load-preset-btn").click();
+    cy.get(".custom-radio label")
       .contains("Test preset")
+      .click();
+    cy.get(".btn-primary")
+      .contains("Load")
       .click();
 
     cy.get("#image-imaging-telescopes-field .ng-value")
@@ -277,12 +280,30 @@ context("Image edit (existing)", () => {
       .should("be.visible");
   });
 
-  it("should have updated the presets dropdown menu", () => {
-    cy.get("#load-preset-dropdown + div .dropdown-item")
-      .contains("Test preset")
-      .should("exist");
-    cy.get("#load-preset-dropdown + div .dropdown-item")
+  it("should have updated the presets modal", () => {
+    cy.get("#load-preset-btn").click();
+    cy.get(".custom-radio label")
       .contains("Test preset 2")
-      .should("exist");
+      .should("be.visible");
+  });
+
+  it("should delete a preset", () => {
+    cy.get(".custom-radio label")
+      .contains("Test preset 2")
+      .click();
+
+    cy.get(".btn")
+      .contains("Delete")
+      .click();
+
+    cy.route("DELETE", "**/api/v2/equipment/equipment-preset/2/", {});
+
+    cy.get(".btn")
+      .contains("Yes, continue")
+      .click();
+
+    cy.get(".custom-radio label")
+      .contains("Test preset 2")
+      .should("not.exist");
   });
 });

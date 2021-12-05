@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { FormGroup } from "@angular/forms";
 import { Store } from "@ngrx/store";
@@ -111,7 +111,7 @@ export class SaveEquipmentPresetModalComponent extends BaseComponentDirective im
         const existingPreset = presets.find(preset => preset.name === this.model.name);
 
         if (!!existingPreset) {
-          const modalRef: NgbModalRef = this.modalService.open(ConfirmationDialogComponent);
+          const modalRef: NgbModalRef = this.modalService.open(ConfirmationDialogComponent, { size: "sm" });
           const componentInstance: ConfirmationDialogComponent = modalRef.componentInstance;
 
           componentInstance.message = this.translateService.instant(

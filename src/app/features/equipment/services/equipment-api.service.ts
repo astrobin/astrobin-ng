@@ -294,6 +294,10 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     return this.http.put<EquipmentPresetInterface>(`${this.configUrl}/equipment-preset/${preset.id}/`, preset);
   }
 
+  deleteEquipmentPreset(id: EquipmentPresetInterface["id"]): Observable<void> {
+    return this.http.delete<void>(`${this.configUrl}/equipment-preset/${id}/`);
+  }
+
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // BRAND API
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

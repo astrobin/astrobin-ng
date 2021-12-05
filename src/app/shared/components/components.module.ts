@@ -8,6 +8,7 @@ import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import {
   NgbCollapseModule,
   NgbDropdownModule,
+  NgbModalConfig,
   NgbModalModule,
   NgbPopoverModule,
   NgbProgressbarModule,
@@ -176,4 +177,8 @@ const services = [UsernameService];
     ...services
   ]
 })
-export class ComponentsModule {}
+export class ComponentsModule {
+  constructor(public readonly modalConfig: NgbModalConfig) {
+    modalConfig.centered = true;
+  }
+}

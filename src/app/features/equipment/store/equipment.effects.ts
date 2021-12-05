@@ -62,7 +62,9 @@ import {
   CreateEquipmentPreset,
   CreateEquipmentPresetSuccess,
   UpdateEquipmentPresetSuccess,
-  UpdateEquipmentPreset
+  UpdateEquipmentPreset,
+  DeleteEquipmentPresetSuccess,
+  DeleteEquipmentPreset
 } from "@features/equipment/store/equipment.actions";
 import { act, Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
@@ -318,6 +320,16 @@ export class EquipmentEffects {
         this.equipmentApiService
           .updateEquipmentPreset(preset)
           .pipe(map(updatedPreset => new UpdateEquipmentPresetSuccess({ preset: updatedPreset })))
+      )
+    )
+  );
+
+  DeleteEquipmentPreset: Observable<DeleteEquipmentPresetSuccess> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(EquipmentActionTypes.DELETE_EQUIPMENT_PRESET),
+      map((action: DeleteEquipmentPreset) => action.payload.id),
+      mergeMap(id =>
+        this.equipmentApiService.deleteEquipmentPreset(id).pipe(map(() => new DeleteEquipmentPresetSuccess({ id })))
       )
     )
   );

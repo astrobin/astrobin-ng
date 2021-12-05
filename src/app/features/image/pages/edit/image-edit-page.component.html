@@ -30,37 +30,15 @@
   </button>
 
   <div class="btn-group" role="group">
-    <div ngbDropdown placement="top-right">
-      <button
-        [class.loading]="loadingService.isLoading()"
-        id="load-preset-dropdown"
-        class="btn btn-outline-secondary"
-        ngbDropdownToggle
-      >
-        {{ "Load preset" | translate }}
-      </button>
-      <div aria-labelledby="load-preset-dropdown" ngbDropdownMenu>
-        <ng-container *ngIf="presets$ | async as presets">
-          <li *ngIf="presets.length === 0; else hasPresets" class="btn btn-disabled">
-            {{ "You don't have any saved presets." | translate }}
-          </li>
-          <ng-template #hasPresets>
-            <li *ngFor="let preset of presets">
-              <button class="dropdown-item" (click)="onApplyEquipmentPresetClicked(preset)">
-                <fa-icon
-                  *ngIf="(imageEditService.currentEquipmentPreset$() | async)?.name === preset.name; else notCurrentEquipmentPreset"
-                  icon="dot-circle"
-                ></fa-icon>
-                <ng-template #notCurrentEquipmentPreset>
-                  <fa-icon icon="circle"></fa-icon>
-                </ng-template>
-                {{ preset.name }}
-              </button>
-            </li>
-          </ng-template>
-        </ng-container>
-      </div>
-    </div>
+    <button
+      [class.loading]="loadingService.isLoading()"
+      [disabled]="(presets$ | async)?.length === 0"
+      id="load-preset-btn"
+      class="btn btn-outline-secondary"
+      (click)="onLoadEquipmentPresetClicked()"
+    >
+      {{ "Load preset" | translate }}&hellip;
+    </button>
 
     <button
       [class.loading]="loadingService.isLoading()"

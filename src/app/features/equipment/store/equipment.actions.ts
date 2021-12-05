@@ -65,6 +65,8 @@ export enum EquipmentActionTypes {
   CREATE_EQUIPMENT_PRESET_SUCCESS = "[Equipment] Create equipment preset success",
   UPDATE_EQUIPMENT_PRESET = "[Equipment] Update equipment preset",
   UPDATE_EQUIPMENT_PRESET_SUCCESS = "[Equipment] Update equipment preset success",
+  DELETE_EQUIPMENT_PRESET = "[Equipment] Delete equipment preset",
+  DELETE_EQUIPMENT_PRESET_SUCCESS = "[Equipment] Delete equipment preset success",
 
   // Sensors
 
@@ -334,6 +336,18 @@ export class UpdateEquipmentPresetSuccess implements PayloadActionInterface {
   constructor(public payload: { preset: EquipmentPresetInterface }) {}
 }
 
+export class DeleteEquipmentPreset implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.DELETE_EQUIPMENT_PRESET;
+
+  constructor(public payload: { id: EquipmentPresetInterface["id"] }) {}
+}
+
+export class DeleteEquipmentPresetSuccess implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.DELETE_EQUIPMENT_PRESET_SUCCESS;
+
+  constructor(public payload: { id: EquipmentPresetInterface["id"] }) {}
+}
+
 /**********************************************************************************************************************
  * Sensors
  *********************************************************************************************************************/
@@ -600,6 +614,8 @@ export type EquipmentActions =
   | CreateEquipmentPresetSuccess
   | UpdateEquipmentPreset
   | UpdateEquipmentPresetSuccess
+  | DeleteEquipmentPreset
+  | DeleteEquipmentPresetSuccess
 
   // Sensors
   | CreateSensor

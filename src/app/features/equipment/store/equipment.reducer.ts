@@ -178,6 +178,13 @@ export function reducer(state = initialEquipmentState, action: EquipmentActions)
       };
     }
 
+    case EquipmentActionTypes.DELETE_EQUIPMENT_PRESET_SUCCESS: {
+      return {
+        ...state,
+        presets: state.presets.filter(preset => preset.id !== action.payload.id)
+      };
+    }
+
     default: {
       return state;
     }

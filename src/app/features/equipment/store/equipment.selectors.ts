@@ -12,6 +12,7 @@ import { instanceOfMount } from "@features/equipment/types/mount.interface";
 import { instanceOfFilter } from "@features/equipment/types/filter.interface";
 import { instanceOfAccessory } from "@features/equipment/types/accessory.interface";
 import { instanceOfSoftware } from "@features/equipment/types/software.interface";
+import { EquipmentPresetInterface } from "@features/equipment/types/equipment-preset.interface";
 
 export function getEquipmentItemType(item: EquipmentItemBaseInterface): EquipmentItemType {
   if (instanceOfSensor(item)) {
@@ -101,3 +102,13 @@ export const selectEditProposalsForItem = createSelector(
 );
 
 export const selectEquipmentPresets = createSelector(selectEquipment, state => state.presets);
+
+export const selectEquipmentPreset = createSelector(
+  selectEquipmentPresets,
+  (presets: EquipmentPresetInterface[], data: { id: number }) => {
+    const matching = presets.filter(preset => {
+      return preset.id === data.id;
+    });
+    return matching.length > 0 ? matching[0] : null;
+  }
+);
