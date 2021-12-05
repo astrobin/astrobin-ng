@@ -24,6 +24,7 @@ import {
   FindAllEquipmentItems,
   FindAllEquipmentItemsSuccess,
   ItemBrowserAdd,
+  ItemBrowserSet,
   LoadBrand,
   LoadEquipmentItem
 } from "@features/equipment/store/equipment.actions";
@@ -160,12 +161,48 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
   }
 
   setValue(value: TypeUnion) {
-    if (!value) {
-      return;
-    }
+    const _doSetValue = (brand: BrandInterface, item: EquipmentItemBaseInterface) => {
+      const fieldConfig = this.fields[0];
+      const options = !!item ? [this._getNgOptionValue(brand, item)] : [];
+      const id = !!item ? item.id : null;
+
+      fieldConfig.templateOptions.options = of(options);
+
+      if (!!this.form.get("value")) {
+        this.form.get("value").setValue(id);
+      }
+
+      this.model = { value: id };
+
+      this.valueChanged.emit(item);
+    };
+
+    const _doSetValues = (values: { brand: BrandInterface; item: EquipmentItemBaseInterface }[] = []) => {
+      const fieldConfig = this.fields[0];
+      const options =
+        values.length > 0
+          ? UtilsService.arrayUniqueObjects(
+              values.map(result => this._getNgOptionValue(result.brand, result.item)),
+              "value"
+            )
+          : [];
+      const items = values.map(v => v.item);
+      const ids = items.map(item => item.id);
+
+      fieldConfig.templateOptions.options = of(options);
+
+      this.model = { value: ids };
+
+      if (this.form.get("value")) {
+        this.form.get("value").setValue(ids);
+      }
+
+      this.valueChanged.emit(items);
+    };
 
     if (this.multiple) {
       if ((value as Type[]).length === 0) {
+        _doSetValues([]);
         return;
       }
 
@@ -196,20 +233,14 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
       )
         .pipe(first())
         .subscribe((results: { item: EquipmentItemBaseInterface; brand: BrandInterface }[]) => {
-          const fieldConfig = this.fields[0];
-
-          fieldConfig.templateOptions.options = of(
-            UtilsService.arrayUniqueObjects(
-              results.map(result => this._getNgOptionValue(result.brand, result.item)),
-              "value"
-            )
-          );
-
-          this.model = { value };
-          this.form.get("value").setValue(value);
-          this.valueChanged.emit(results.map(result => result.item));
+          _doSetValues(results);
         });
     } else {
+      if (!value) {
+        _doSetValue(null, null);
+        return;
+      }
+
       this.store$.dispatch(new LoadEquipmentItem({ id: value as Type, type: this.type }));
       this.store$
         .select(selectEquipmentItem, { id: value, type: this.type })
@@ -232,17 +263,7 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
           })
         )
         .subscribe(({ item, brand }) => {
-          const fieldConfig = this.fields[0];
-
-          fieldConfig.templateOptions.options = of([this._getNgOptionValue(brand, item)]);
-
-          this.model = { value };
-
-          if (!!this.form.get("value")) {
-            this.form.get("value").setValue(value);
-          }
-
-          this.valueChanged.emit(item);
+          _doSetValue(brand, item);
         });
     }
   }
@@ -464,6 +485,26 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
           this.setValue([...((this.model.value as Type[]) || []), item.id]);
         } else {
           this.setValue(item.id);
+        }
+      });
+
+    this.actions$
+      .pipe(
+        takeUntil(this.destroyed$),
+        ofType(EquipmentActionTypes.ITEM_BROWSER_SET),
+        map((action: ItemBrowserSet) => action.payload),
+        filter(payload => payload.type === this.type && payload.usageType === this.usageType),
+        map(payload => payload.items)
+      )
+      .subscribe(items => {
+        if (this.multiple) {
+          this.setValue(items.map(item => item.id));
+        } else {
+          if (items.length > 0) {
+            this.setValue(items[0].id);
+          } else {
+            this.setValue(null);
+          }
         }
       });
   }

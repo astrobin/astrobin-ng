@@ -6,7 +6,6 @@ import { ImageEditService } from "@features/image/services/image-edit.service";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { FormlyFieldConfig } from "@ngx-formly/core";
-import { of } from "rxjs";
 import { EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/types/equipment-item-base.interface";
 
 @Injectable({
@@ -151,6 +150,16 @@ export class ImageEditEquipmentFieldsService extends BaseService {
         usageType: EquipmentItemUsageType.GUIDING,
         showQuickAddRecent: true,
         showPlaceholderImage: true
+      },
+      hooks: {
+        onInit: (field: FormlyFieldConfig) => {
+          field.formControl.valueChanges.subscribe(value => {
+            if (value && value.length > 0) {
+              this.imageEditService.model.showGuidingEquipment = true;
+              this.imageEditService.form.get("showGuidingEquipment").setValue(true);
+            }
+          });
+        }
       }
     };
   }
@@ -169,6 +178,16 @@ export class ImageEditEquipmentFieldsService extends BaseService {
         usageType: EquipmentItemUsageType.GUIDING,
         showQuickAddRecent: true,
         showPlaceholderImage: true
+      },
+      hooks: {
+        onInit: (field: FormlyFieldConfig) => {
+          field.formControl.valueChanges.subscribe(value => {
+            if (value && value.length > 0) {
+              this.imageEditService.model.showGuidingEquipment = true;
+              this.imageEditService.form.get("showGuidingEquipment").setValue(true);
+            }
+          });
+        }
       }
     };
   }

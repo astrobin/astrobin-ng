@@ -76,6 +76,7 @@ import { FormlyEquipmentItemBrowserWrapperComponent } from "@shared/components/m
 import { ItemSummaryModalComponent } from "@shared/components/equipment/summaries/item-summary-modal/item-summary-modal.component";
 import { EquipmentItemDisplayNameComponent } from "@shared/components/equipment/equipment-item-display-name/equipment-item-display-name.component";
 import { DirectivesModule } from "@shared/directives/directives.module";
+import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
 
 const modules = [
   CommonModule,
@@ -107,6 +108,7 @@ const modules = [
 const components = [
   BreadcrumbComponent,
   CameraComponent,
+  ConfirmationDialogComponent,
   EmptyListComponent,
   FileValueAccessorDirective,
   FooterComponent,

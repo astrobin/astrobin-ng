@@ -88,4 +88,39 @@
       background-size: 1rem !important;
     }
   }
+
+  &.btn-outline-secondary {
+    border-color: var(--lighterGrey);
+  }
+}
+
+.btn-group:not(.vertical) {
+  .btn-outline-primary,
+  .btn-outline-secondary {
+    border-radius: 0;
+
+    &:first-child {
+      border-top-left-radius: .25rem;
+      border-bottom-left-radius: .25rem;
+
+      border-top-color: var(--lighterGrey);
+      border-left-color: var(--lighterGrey);
+      border-bottom-color: var(--lighterGrey);
+
+    }
+
+    &:last-child {
+      border-top-right-radius: .25rem;
+      border-bottom-right-radius: .25rem;
+
+      border-top-color: var(--lighterGrey);
+      border-left: 0;
+      border-bottom-color: var(--lighterGrey);
+      border-right-color: var(--lighterGrey);
+    }
+
+    &:not(:last-child) {
+      border-right-color: var(--lightGrey);
+    }
+  }
 }

@@ -42,6 +42,7 @@ import {
   FindAllEquipmentItemsSuccess,
   FindEquipmentItemEditProposals,
   FindEquipmentItemEditProposalsSuccess,
+  FindEquipmentPresetsSuccess,
   FindRecentlyUsedEquipmentItems,
   FindRecentlyUsedEquipmentItemsSuccess,
   FindSimilarInBrand,
@@ -274,6 +275,21 @@ export class EquipmentEffects {
               rejectedEditProposal => new RejectEquipmentItemEditProposalSuccess({ editProposal: rejectedEditProposal })
             )
           )
+      )
+    )
+  );
+
+  /*********************************************************************************************************************
+   * Equipment presets
+   ********************************************************************************************************************/
+
+  FindEquipmentPresets: Observable<FindEquipmentPresetsSuccess> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(EquipmentActionTypes.FIND_EQUIPMENT_PRESETS),
+      mergeMap(() =>
+        this.equipmentApiService
+          .findEquipmentPresets()
+          .pipe(map(presets => new FindEquipmentPresetsSuccess({ presets })))
       )
     )
   );
@@ -530,5 +546,6 @@ export class EquipmentEffects {
     public readonly actions$: Actions<All>,
     public readonly equipmentApiService: EquipmentApiService,
     public readonly utilsService: UtilsService
-  ) {}
+  ) {
+  }
 }

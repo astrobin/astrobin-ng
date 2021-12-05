@@ -13,13 +13,17 @@
   >
     <formly-field [field]="step"></formly-field>
 
+    <div *ngIf="!!step.templateOptions.stepActionsTemplate" class="step-actions text-right">
+      <ng-container [ngTemplateOutlet]="step.templateOptions.stepActionsTemplate"></ng-container>
+    </div>
+
     <div class="form-actions" [class.fixed]="field.templateOptions?.fixed">
       <div class="form-actions-container">
         <button (click)="goToPreviousStep($event, index)" *ngIf="!isFirstStep(index)" class="btn btn-secondary">
           {{ "Previous" | translate }}
         </button>
 
-        <button (click)="goToNextStep($event, index)" *ngIf="!isLastStep(index)" class="btn btn-secondary">
+        <button (click)="goToNextStep($event, index)" *ngIf="!isLastStep(index)" class="btn btn-primary">
           {{ "Next" | translate }}
         </button>
 

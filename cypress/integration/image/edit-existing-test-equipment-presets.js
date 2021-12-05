@@ -2,7 +2,11 @@ context("Image edit (existing)", () => {
   beforeEach(() => {
     cy.server();
     cy.setupInitializationRoutes();
-    cy.route("GET", "**/api/v2/images/image/?hash=abc123", "fixture:api/images/image_1_by_hashes.json").as("getImage");
+    cy.route(
+      "GET",
+      "**/api/v2/images/image/?hash=abc123",
+      "fixture:api/images/image_without_equipment_by_hashes.json"
+    ).as("getImage");
     cy.route("GET", "/abc123/0/thumb/hd/", "fixture:api/images/image_thumbnail_1_regular_loaded").as("getThumbnail");
     cy.route(
       "GET",
@@ -33,108 +37,76 @@ context("Image edit (existing)", () => {
     cy.route("GET", "**/api/v2/equipment/software/1/", "fixture:api/equipment_v2/software_1.json").as("getSoftware1");
 
     cy.route("GET", "**/api/v2/equipment/camera/recently-used/*", []);
-    cy.route("GET", "**/api/v2/equipment/telescope/recently-used/*", []);
+    cy.route("GET", "**/api/v2/equipment/telescope/recently-used/?usage-type=imaging", [
+      {
+        id: 3,
+        deleted: null,
+        klass: "TELESCOPE",
+        reviewedTimestamp: null,
+        reviewerDecision: null,
+        reviewerRejectionReason: null,
+        reviewerComment: null,
+        created: "2021-11-26T14:16:42.850333",
+        updated: "2021-11-26T14:16:42.850345",
+        name: "Test Telescope 3",
+        website: null,
+        image: null,
+        type: "REFRACTOR_ACHROMATIC",
+        aperture: "200.00",
+        minFocalLength: "1000.00",
+        maxFocalLength: "1000.00",
+        weight: null,
+        createdBy: 1,
+        reviewedBy: null,
+        brand: 1,
+        group: null
+      }
+    ]);
+    cy.route("GET", "**/api/v2/equipment/telescope/recently-used/?usage-type=guiding", []);
     cy.route("GET", "**/api/v2/equipment/mount/recently-used/", []);
     cy.route("GET", "**/api/v2/equipment/filter/recently-used/", []);
     cy.route("GET", "**/api/v2/equipment/accessory/recently-used/", []);
     cy.route("GET", "**/api/v2/equipment/software/recently-used/", []);
 
-    cy.route("GET", "**/api/v2/equipment/equipment-preset/", []);
+    cy.route("GET", "**/api/v2/equipment/equipment-preset/", [
+      {
+        id: 1,
+        deleted: null,
+        created: "2021-12-04T11:43:49.372996",
+        updated: "2021-12-04T19:14:42.047104",
+        remoteSource: null,
+        name: "Test preset",
+        user: 1,
+        imagingTelescopes: [1, 2],
+        guidingTelescopes: [3],
+        imagingCameras: [1, 2],
+        guidingCameras: [3],
+        mounts: [1],
+        filters: [1],
+        accessories: [1],
+        software: [1]
+      }
+    ]);
   });
 
   it("should navigate to the edit page", () => {
     cy.login();
-
-    cy.route(
-      "GET",
-      "**/common/userprofiles/current",
-      "fixture:api/common/userprofile_current_1_with_locations.json"
-    ).as("getCurrentUserProfile");
-
-    cy.visitPage("/i/abc123/edit");
+    cy.visitPage("/i/abc123/edit#5");
     cy.wait("@getImage");
-    cy.wait("@getUsersLocations");
     cy.url().should("contain", "/i/abc123/edit");
   });
 
-  it("should not show the 'new editor' alert", () => {
-    cy.get("#new-editor-alert").should("not.exist");
+  it("should have the preset buttons", () => {
+    cy.get("#clear-equipment-btn").should("be.visible");
+    cy.get("#load-preset-dropdown").should("be.visible");
+    cy.get("#save-preset-btn").should("be.visible");
   });
 
-  it("should have all tabs", () => {
-    cy.get("#image-stepper-field .nav-link").should("have.length", 6);
-  });
-
-  it("should have the #1 fragment", () => {
-    cy.url().should("contain", "#1");
-  });
-
-  it("should have prefilled the basic information step", () => {
-    cy.get("#image-title-field").should("have.value", "Test image");
-    cy.get("#image-description-field").should("have.value", "This is a test");
-    cy.get("#image-link-field").should("have.value", "https://www.example.com/1/");
-    cy.get("#image-link-to-fits-field").should("have.value", "ftps://www.example.com/file.fits");
-  });
-
-  it("should have prefilled the content step", () => {
-    cy.get("#image-stepper-basic-information .form-actions .btn")
-      .contains("Next")
+  it("should select a preset", () => {
+    cy.get("#load-preset-dropdown").click();
+    cy.get(".dropdown-item")
+      .contains("Test preset")
       .click();
-
-    cy.url().should("contain", "#2");
-
-    cy.get("#image-acquisition-type-field .ng-value").should("contain.text", "Regular");
-    cy.get("#image-subject-type-field .ng-value").should("contain.text", "Deep sky");
-    cy.get("#image-data-source-field .ng-value").should("contain.text", "Backyard");
-
-    cy.get("#image-groups-field .ng-value")
-      .contains("First test group")
-      .should("exist");
-    cy.get("#image-groups-field .ng-value")
-      .contains("Second test group")
-      .should("exist");
-    cy.get("#image-groups-field .ng-value")
-      .contains("Third test group")
-      .should("exist");
-  });
-
-  it("should have locations", () => {
-    cy.get("#image-locations-field").click();
-
-    cy.get("#image-locations-field .ng-value")
-      .contains("Home observatory")
-      .should("exist");
-
-    cy.get("#image-locations-field .ng-option")
-      .contains("Backyard observatory")
-      .should("exist");
-  });
-
-  it("should have prefilled the watermark step", () => {
-    cy.get("#image-stepper-content .form-actions .btn")
-      .contains("Next")
-      .click();
-
-    // Skip over thumbnail step.
-    cy.get("#image-stepper-thumbnail .form-actions .btn")
-      .contains("Next")
-      .click();
-
-    cy.url().should("contain", "#4");
-
-    cy.get("#image-watermark-field").should("be.checked");
-    cy.get("#image-watermark-text-field").should("have.value", "Copyright astrobin-dev");
-    cy.get("#image-watermark-position-field .ng-value").should("contain.text", "Bottom left");
-    cy.get("#image-watermark-size-field .ng-value").should("contain.text", "Medium");
-    cy.get("#image-watermark-opacity-field").should("have.value", "50");
-  });
-
-  it("should have prefilled the equipment step", () => {
-    cy.get("#image-stepper-watermark .form-actions .btn")
-      .contains("Next")
-      .click();
-
-    cy.url().should("contain", "#5");
 
     cy.get("#image-imaging-telescopes-field .ng-value")
       .contains("Test Brand Test Telescope 1")
@@ -175,20 +147,5 @@ context("Image edit (existing)", () => {
     cy.get("#image-guiding-cameras-field .ng-value")
       .contains("Test Brand Test Camera 3")
       .should("be.visible");
-  });
-
-  it("should have prefilled the settings step", () => {
-    cy.get("#image-stepper-equipment .form-actions .btn")
-      .contains("Next")
-      .click();
-
-    cy.url().should("contain", "#6");
-
-    cy.get("#image-license-field .ng-value").should(
-      "contain.text",
-      "Attribution-NonCommercial-ShareAlike Creative Commons"
-    );
-    cy.get("#image-mouse-hover-image-field .ng-value").should("contain.text", "Inverted monochrome");
-    cy.get("#image-allow-comments-field").should("be.checked");
   });
 });

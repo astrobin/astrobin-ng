@@ -5,20 +5,22 @@ import { BrandInterface } from "@features/equipment/types/brand.interface";
 import { EditProposalInterface } from "@features/equipment/types/edit-proposal.interface";
 import { arrayUniqueEquipmentItems, getEquipmentItemType } from "@features/equipment/store/equipment.selectors";
 import { CameraInterface } from "@features/equipment/types/camera.interface";
+import { EquipmentPresetInterface } from "@features/equipment/types/equipment-preset.interface";
 
 export const equipmentFeatureKey = "equipment";
 
-// tslint:disable-next-line:no-empty-interface
 export interface EquipmentState {
   brands: BrandInterface[];
   equipmentItems: EquipmentItemBaseInterface[];
   editProposals: EditProposalInterface<EquipmentItemBaseInterface>[];
+  presets: EquipmentPresetInterface[];
 }
 
 export const initialEquipmentState: EquipmentState = {
   brands: [],
   equipmentItems: [],
-  editProposals: []
+  editProposals: [],
+  presets: []
 };
 
 export function reducer(state = initialEquipmentState, action: EquipmentActions): EquipmentState {
@@ -158,6 +160,13 @@ export function reducer(state = initialEquipmentState, action: EquipmentActions)
           [...state.editProposals, ...action.payload.editProposals.results],
           "id"
         )
+      };
+    }
+
+    case EquipmentActionTypes.FIND_EQUIPMENT_PRESETS_SUCCESS: {
+      return {
+        ...state,
+        presets: UtilsService.arrayUniqueObjects([...state.presets, ...action.payload.presets], "id")
       };
     }
 

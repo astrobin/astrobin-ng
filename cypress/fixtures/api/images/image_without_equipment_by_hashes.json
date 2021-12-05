@@ -1,0 +1,56 @@
+{
+  "count": 1,
+  "next": null,
+  "previous": null,
+  "results": [
+    {
+      "user": 1,
+      "pk": 1,
+      "hash": "abc123",
+      "title": "Test image",
+      "isWip": false,
+      "skipNotifications": false,
+      "w": 4000,
+      "h": 4000,
+      "imagingTelescopes": [],
+      "imagingCameras": [],
+      "published": "2021-03-15T21:57:28.994031",
+      "license": "ATTRIBUTION_NON_COMMERCIAL_SHARE_ALIKE",
+      "description": "This is a test",
+      "link": "https://www.example.com/1/",
+      "linkToFits": "ftps://www.example.com/file.fits",
+      "acquisitionType": "REGULAR",
+      "subjectType": "DEEP_SKY",
+      "solarSystemMainSubject": null,
+      "dataSource": "BACKYARD",
+      "remoteSource": null,
+      "partOfGroupSet": [
+        1,
+        2,
+        3
+      ],
+      "mouseHoverImage": "INVERTED",
+      "allowComments": true,
+      "uploaderInProgress": null,
+      "squareCropping": "100, 100, 3900, 3900",
+      "watermark": true,
+      "watermarkText": "Copyright astrobin-dev",
+      "watermarkPosition": 4,
+      "watermarkSize": "M",
+      "watermarkOpacity": 50,
+      "sharpenThumbnails": true,
+      "locations": [
+        1
+      ],
+      "fullSizeDisplayLimitation": "EVERYBODY",
+      "imagingTelescopes2": [],
+      "guidingTelescopes2": [],
+      "imagingCameras2": [],
+      "guidingCameras2": [],
+      "mounts2": [],
+      "filters2": [],
+      "accessories2": [],
+      "software2": []
+    }
+  ]
+}

@@ -49,4 +49,17 @@ export class ImageEditService extends BaseService {
       }).length > 0
     );
   }
+
+  public hasEquipmentItems(): boolean {
+    return (
+      this.model.imagingTelescopes2.length > 0 ||
+      this.model.imagingCameras2.length > 0 ||
+      this.model.mounts2.length > 0 ||
+      this.model.filters2.length > 0 ||
+      this.model.accessories2.length > 0 ||
+      this.model.software2.length > 0 ||
+      this.model.guidingTelescopes2.length > 0 ||
+      this.model.guidingCameras2.length > 0
+    );
+  }
 }

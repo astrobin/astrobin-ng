@@ -155,6 +155,7 @@ export interface ImageInterface {
   guidingTelescopes2: number[];
   guidingCameras2: number[];
   mounts2: number[];
+  filters2: number[];
   accessories2: number[];
   software2: number[];
   published: string;

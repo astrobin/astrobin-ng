@@ -63,20 +63,14 @@ context("Image edit (existing)", () => {
     cy.route("GET", "**/api/v2/equipment/filter/recently-used/", []);
     cy.route("GET", "**/api/v2/equipment/accessory/recently-used/", []);
     cy.route("GET", "**/api/v2/equipment/software/recently-used/", []);
+
+    cy.route("GET", "**/api/v2/equipment/equipment-preset/", []);
   });
 
   it("should navigate to the edit page", () => {
     cy.login();
-
-    cy.route(
-      "GET",
-      "**/common/userprofiles/current",
-      "fixture:api/common/userprofile_current_1_with_locations.json"
-    ).as("getCurrentUserProfile");
-
     cy.visitPage("/i/abc123/edit#5");
     cy.wait("@getImage");
-    cy.wait("@getUsersLocations");
     cy.url().should("contain", "/i/abc123/edit");
   });
 

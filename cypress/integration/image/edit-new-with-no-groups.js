@@ -20,6 +20,8 @@ context("Image edit (new, with no groups)", () => {
     cy.route("GET", "**/api/v2/equipment/filter/recently-used/", []);
     cy.route("GET", "**/api/v2/equipment/accessory/recently-used/", []);
     cy.route("GET", "**/api/v2/equipment/software/recently-used/", []);
+
+    cy.route("GET", "**/api/v2/equipment/equipment-preset/", []);
   });
 
   it("should navigate to the edit page", () => {

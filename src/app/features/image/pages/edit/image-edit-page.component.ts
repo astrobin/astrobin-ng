@@ -25,6 +25,18 @@ import { ImageEditWatermarkFieldsService } from "@features/image/services/image-
 import { ImageEditThumbnailFieldsService } from "@features/image/services/image-edit-thumbnail-fields.service";
 import { ImageEditSettingsFieldsService } from "@features/image/services/image-edit-settings-fields.service";
 import { ImageEditEquipmentFieldsService } from "@features/image/services/image-edit-equipment-fields.service";
+import { forkJoin, Observable } from "rxjs";
+import { EquipmentPresetInterface } from "@features/equipment/types/equipment-preset.interface";
+import { selectEquipmentItem, selectEquipmentPresets } from "@features/equipment/store/equipment.selectors";
+import { filter, first, take, takeUntil } from "rxjs/operators";
+import { FindEquipmentPresets, ItemBrowserSet, LoadEquipmentItem } from "@features/equipment/store/equipment.actions";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import {
+  EquipmentItemBaseInterface,
+  EquipmentItemType,
+  EquipmentItemUsageType
+} from "@features/equipment/types/equipment-item-base.interface";
+import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
 
 @Component({
   selector: "astrobin-image-edit-page",
@@ -36,6 +48,9 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
 
   @ViewChild("stepperButtonsTemplate")
   stepperButtonsTemplate: TemplateRef<any>;
+
+  @ViewChild("equipmentStepButtonsTemplate")
+  equipmentStepButtonsTemplate: TemplateRef<any>;
 
   constructor(
     public readonly store$: Store<State>,
@@ -55,7 +70,8 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     public readonly imageEditWatermarkFieldsService: ImageEditWatermarkFieldsService,
     public readonly imageEditThumbnailFieldsService: ImageEditThumbnailFieldsService,
     public readonly imageEditEquipmentFieldsService: ImageEditEquipmentFieldsService,
-    public readonly imageEditSettingsFieldsService: ImageEditSettingsFieldsService
+    public readonly imageEditSettingsFieldsService: ImageEditSettingsFieldsService,
+    public readonly modalService: NgbModal
   ) {
     super(store$);
   }
@@ -68,6 +84,10 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
   @ViewChild("remoteSourceOptionTemplate")
   set remoteSourceOptionTemplate(template: TemplateRef<any>) {
     this.imageEditService.remoteSourceOptionTemplate = template;
+  }
+
+  get presets$(): Observable<EquipmentPresetInterface[]> {
+    return this.store$.select(selectEquipmentPresets).pipe(takeUntil(this.destroyed$));
   }
 
   ngOnInit(): void {
@@ -85,6 +105,8 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
       new LoadThumbnail({ id: this.imageEditService.image.pk, revision: "0", alias: ImageAlias.HD })
     );
 
+    this.store$.dispatch(new FindEquipmentPresets());
+
     this.route.fragment.subscribe((fragment: string) => {
       if (!fragment) {
         this.router.navigate([`/i/${this.imageEditService.image.hash || this.imageEditService.image.pk}/edit`], {
@@ -99,6 +121,161 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
       this.imageEditService.remoteSourceAffiliates = remoteSourceAffiliates;
       this._initFields();
     });
+  }
+
+  clearEquipment() {
+    this.store$.dispatch(
+      new ItemBrowserSet({
+        type: EquipmentItemType.TELESCOPE,
+        usageType: EquipmentItemUsageType.IMAGING,
+        items: []
+      })
+    );
+
+    this.store$.dispatch(
+      new ItemBrowserSet({
+        type: EquipmentItemType.CAMERA,
+        usageType: EquipmentItemUsageType.IMAGING,
+        items: []
+      })
+    );
+
+    this.store$.dispatch(
+      new ItemBrowserSet({
+        type: EquipmentItemType.MOUNT,
+        items: []
+      })
+    );
+
+    this.store$.dispatch(
+      new ItemBrowserSet({
+        type: EquipmentItemType.FILTER,
+        items: []
+      })
+    );
+
+    this.store$.dispatch(
+      new ItemBrowserSet({
+        type: EquipmentItemType.ACCESSORY,
+        items: []
+      })
+    );
+
+    this.store$.dispatch(
+      new ItemBrowserSet({
+        type: EquipmentItemType.SOFTWARE,
+        items: []
+      })
+    );
+
+    this.store$.dispatch(
+      new ItemBrowserSet({
+        type: EquipmentItemType.TELESCOPE,
+        usageType: EquipmentItemUsageType.GUIDING,
+        items: []
+      })
+    );
+
+    this.store$.dispatch(
+      new ItemBrowserSet({
+        type: EquipmentItemType.CAMERA,
+        usageType: EquipmentItemUsageType.GUIDING,
+        items: []
+      })
+    );
+  }
+
+  onClearEquipmentClicked() {
+    if (this.imageEditService.hasEquipmentItems()) {
+      this.modalService
+        .open(ConfirmationDialogComponent)
+        .closed.pipe(take(1))
+        .subscribe(() => {
+          this.clearEquipment();
+        });
+    }
+  }
+
+  applyEquipmentPreset(preset: EquipmentPresetInterface) {
+    for (const klass of [
+      {
+        property: "imagingTelescopes",
+        type: EquipmentItemType.TELESCOPE,
+        usageType: EquipmentItemUsageType.IMAGING
+      },
+      {
+        property: "imagingCameras",
+        type: EquipmentItemType.CAMERA,
+        usageType: EquipmentItemUsageType.IMAGING
+      },
+      {
+        property: "mounts",
+        type: EquipmentItemType.MOUNT
+      },
+      {
+        property: "filters",
+        type: EquipmentItemType.FILTER
+      },
+      {
+        property: "accessories",
+        type: EquipmentItemType.ACCESSORY
+      },
+      {
+        property: "software",
+        type: EquipmentItemType.SOFTWARE
+      },
+      {
+        property: "guidingTelescopes",
+        type: EquipmentItemType.TELESCOPE,
+        usageType: EquipmentItemUsageType.GUIDING
+      },
+      {
+        property: "guidingCameras",
+        type: EquipmentItemType.CAMERA,
+        usageType: EquipmentItemUsageType.GUIDING
+      }
+    ]) {
+      const ids = preset[klass.property] as EquipmentItemBaseInterface["id"][];
+      ids.forEach(id => {
+        this.store$.dispatch(new LoadEquipmentItem({ id, type: klass.type }));
+      });
+
+      forkJoin(
+        ids.map(id =>
+          this.store$.select(selectEquipmentItem, { id, type: klass.type }).pipe(
+            filter(item => !!item),
+            first()
+          )
+        )
+      ).subscribe(items => {
+        this.store$.dispatch(
+          new ItemBrowserSet({
+            type: klass.type,
+            usageType: klass.usageType,
+            items
+          })
+        );
+      });
+    }
+  }
+
+  onApplyEquipmentPresetClicked(preset: EquipmentPresetInterface) {
+    if (this.imageEditService.hasEquipmentItems()) {
+      const modalRef = this.modalService.open(ConfirmationDialogComponent);
+      const componentInstance: ConfirmationDialogComponent = modalRef.componentInstance;
+
+      componentInstance.message = this.translateService.instant(
+        "This operation will overwrite the current equipment selection."
+      );
+
+      modalRef.closed.pipe(take(1)).subscribe(() => {
+        this.applyEquipmentPreset(preset);
+      });
+
+      return;
+    }
+
+    this.applyEquipmentPreset(preset);
   }
 
   onReturnToClassicEditor() {
@@ -194,7 +371,10 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
           },
           {
             id: "image-stepper-equipment",
-            templateOptions: { label: this.translateService.instant("Equipment") },
+            templateOptions: {
+              label: this.translateService.instant("Equipment"),
+              stepActionsTemplate: this.equipmentStepButtonsTemplate
+            },
             fieldGroup: [
               this.imageEditEquipmentFieldsService.getImagingTelescopes(),
               this.imageEditEquipmentFieldsService.getImagingCameras(),

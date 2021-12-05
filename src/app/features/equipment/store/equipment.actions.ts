@@ -17,6 +17,8 @@ import { MountInterface } from "@features/equipment/types/mount.interface";
 import { FilterInterface } from "@features/equipment/types/filter.interface";
 import { AccessoryInterface } from "@features/equipment/types/accessory.interface";
 import { SoftwareInterface } from "@features/equipment/types/software.interface";
+import { Action } from "@ngrx/store";
+import { EquipmentPresetInterface } from "@features/equipment/types/equipment-preset.interface";
 
 export interface EquipmentItemCreationSuccessPayloadInterface {
   item: EquipmentItemBaseInterface;
@@ -54,6 +56,11 @@ export enum EquipmentActionTypes {
   APPROVE_EQUIPMENT_ITEM_EDIT_PROPOSAL_SUCCESS = "[Equipment] Approve edit proposal success",
   REJECT_EQUIPMENT_ITEM_EDIT_PROPOSAL = "[Equipment] Reject edit proposal",
   REJECT_EQUIPMENT_ITEM_EDIT_PROPOSAL_SUCCESS = "[Equipment] Reject edit proposal success",
+
+  // Equipment presets
+
+  FIND_EQUIPMENT_PRESETS = "[Equipment] Find equipment presets",
+  FIND_EQUIPMENT_PRESETS_SUCCESS = "[Equipment] Find equipment presets success",
 
   // Sensors
 
@@ -107,7 +114,8 @@ export enum EquipmentActionTypes {
   CREATE_SOFTWARE_EDIT_PROPOSAL_SUCCESS = "[Equipment] Create software edit request proposal",
 
   // Item browser
-  ITEM_BROWSER_ADD = "[Equipment] Item browser add"
+  ITEM_BROWSER_ADD = "[Equipment] Item browser add",
+  ITEM_BROWSER_SET = "[Equipment] Item browser set"
 }
 
 /**********************************************************************************************************************
@@ -282,6 +290,20 @@ export class RejectEquipmentItemEditProposalSuccess implements PayloadActionInte
   readonly type = EquipmentActionTypes.REJECT_EQUIPMENT_ITEM_EDIT_PROPOSAL_SUCCESS;
 
   constructor(public payload: { editProposal: EditProposalInterface<EquipmentItemBaseInterface> }) {}
+}
+
+/**********************************************************************************************************************
+ * Equipment presets
+ *********************************************************************************************************************/
+
+export class FindEquipmentPresets implements Action {
+  readonly type = EquipmentActionTypes.FIND_EQUIPMENT_PRESETS;
+}
+
+export class FindEquipmentPresetsSuccess implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.FIND_EQUIPMENT_PRESETS_SUCCESS;
+
+  constructor(public payload: { presets: EquipmentPresetInterface[] }) {}
 }
 
 /**********************************************************************************************************************
@@ -504,6 +526,14 @@ export class ItemBrowserAdd implements PayloadActionInterface {
   ) {}
 }
 
+export class ItemBrowserSet implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.ITEM_BROWSER_SET;
+
+  constructor(
+    public payload: { type: EquipmentItemType; usageType?: EquipmentItemUsageType; items: EquipmentItemBaseInterface[] }
+  ) {}
+}
+
 export type EquipmentActions =
   // Brands
   | LoadBrand
@@ -534,6 +564,10 @@ export type EquipmentActions =
   | ApproveEquipmentItemEditProposalSuccess
   | RejectEquipmentItemEditProposal
   | RejectEquipmentItemEditProposalSuccess
+
+  // Equipment presets
+  | FindEquipmentPresets
+  | FindEquipmentPresetsSuccess
 
   // Sensors
   | CreateSensor
@@ -580,4 +614,5 @@ export type EquipmentActions =
   | CreateSoftwareEditProposalSuccess
 
   // Item browser
-  | ItemBrowserAdd;
+  | ItemBrowserAdd
+  | ItemBrowserSet;

@@ -33,6 +33,7 @@ export class ImageGenerator {
       guidingTelescopes2: source.guidingTelescopes2 || [],
       guidingCameras2: source.guidingCameras2 || [],
       mounts2: source.mounts2 || [],
+      filters2: source.filters2 || [],
       accessories2: source.accessories2 || [],
       software2: source.software2 || [],
       published: source.published || new Date().toISOString(),

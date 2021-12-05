@@ -27,6 +27,7 @@ import { FilterInterface } from "@features/equipment/types/filter.interface";
 import { AccessoryInterface } from "@features/equipment/types/accessory.interface";
 import { SoftwareInterface } from "@features/equipment/types/software.interface";
 import { getEquipmentItemType } from "@features/equipment/store/equipment.selectors";
+import { EquipmentPresetInterface } from "@features/equipment/types/equipment-preset.interface";
 
 @Injectable({
   providedIn: "root"
@@ -279,6 +280,10 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
       `${this.configUrl}/${path}-edit-proposal/${editProposal.id}/reject/`,
       { comment }
     );
+  }
+
+  findEquipmentPresets(): Observable<EquipmentPresetInterface[]> {
+    return this.http.get<EquipmentPresetInterface[]>(`${this.configUrl}/equipment-preset/`);
   }
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

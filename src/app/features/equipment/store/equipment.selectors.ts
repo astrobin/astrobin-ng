@@ -99,3 +99,5 @@ export const selectEditProposalsForItem = createSelector(
     });
   }
 );
+
+export const selectEquipmentPresets = createSelector(selectEquipment, state => state.presets);
