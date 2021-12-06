@@ -1,22 +1,36 @@
 <ng-container *ngIf="(show$ | async) === true">
-  <ng-container *ngIf="{
-    hd: hdThumbnail$ | async,
-    real: realThumbnail$ | async
-  } as thumbnails">
-
+  <ng-container
+    *ngIf="{
+      hd: hdThumbnail$ | async,
+      real: realThumbnail$ | async
+    } as thumbnails"
+  >
     <ng-container
-      *ngIf="thumbnails.hd && thumbnails.real && !isTouchDevice; else hdOnly"
-      [ngTemplateOutlet]="imageZoom"
-      [ngTemplateOutletContext]="{hd: thumbnails.hd, real: thumbnails.real}">
+      *ngIf="isTouchDevice"
+      [ngTemplateOutlet]="noZoom"
+      [ngTemplateOutletContext]="{
+        url: thumbnails.real ? thumbnails.real : thumbnails.hd
+      }"
+    >
     </ng-container>
 
-    <ng-template #hdOnly>
+    <ng-container *ngIf="!isTouchDevice">
       <ng-container
-        *ngIf="thumbnails.hd; else loading"
-        [ngTemplateOutlet]="noZoom"
-        [ngTemplateOutletContext]="{url: thumbnails.hd}">
+        *ngIf="thumbnails.hd && thumbnails.real; else hdOnly"
+        [ngTemplateOutlet]="imageZoom"
+        [ngTemplateOutletContext]="{ hd: thumbnails.hd, real: thumbnails.real }"
+      >
       </ng-container>
-    </ng-template>
+
+      <ng-template #hdOnly>
+        <ng-container
+          *ngIf="thumbnails.hd; else loading"
+          [ngTemplateOutlet]="noZoom"
+          [ngTemplateOutletContext]="{ url: thumbnails.hd }"
+        >
+        </ng-container>
+      </ng-template>
+    </ng-container>
   </ng-container>
 
   <div (click)="hide()" class="close">
@@ -42,21 +56,24 @@
     [enableScrollZoom]="true"
     [maxZoomRatio]="8"
     (zoomPosition)="setZoomPosition($event)"
-    (zoomScroll)="setZoomScroll($event)">
+    (zoomScroll)="setZoomScroll($event)"
+  >
   </lib-ngx-image-zoom>
 
-  <div
-    class="image-zoom-indicator" *ngIf="showZoomIndicator && getZoomPosition()">
-    {{ getZoomScroll() | number:"1.2-2" }}x
+  <div class="image-zoom-indicator" *ngIf="showZoomIndicator && getZoomPosition()">
+    {{ getZoomScroll() | number: "1.2-2" }}x
   </div>
 </ng-template>
 
 <ng-template #noZoom let-url="url">
   <div class="no-zoom">
-    <img [src]="url" alt=""/>
+    <img [src]="url" alt="" />
+    <ng-container [ngTemplateOutlet]="progress"></ng-container>
+  </div>
+</ng-template>
 
-    <div class="loading-indicator-container">
-      <astrobin-loading-indicator [progress]="realLoadingProgress$ | async"></astrobin-loading-indicator>
-    </div>
+<ng-template #progress>
+  <div *ngIf="realLoadingProgress$ | async as progress" class="loading-indicator-container">
+    <astrobin-loading-indicator *ngIf="progress && progress < 100" [progress]="progress"></astrobin-loading-indicator>
   </div>
 </ng-template>

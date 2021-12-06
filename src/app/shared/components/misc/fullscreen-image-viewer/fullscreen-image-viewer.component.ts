@@ -101,18 +101,21 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
           })
           .pipe(map(url => this.domSanitizer.bypassSecurityTrustUrl(url)))
       ),
-      tap(
-        () =>
-          (this._zoomReadyNotification = this.popNotificationsService.info(
-            this.translateService.instant("Click on the image and scroll to magnify up to 8x."),
-            this.translateService.instant("Zoom ready"),
-            {
-              progressBar: false,
-              timeOut: 5000,
-              positionClass: "toast-bottom-right"
-            }
-          ))
-      )
+      tap(() => {
+        const message = this.isTouchDevice
+          ? this.translateService.instant("Pinch & zoom to view details closer.")
+          : this.translateService.instant("Click on the image and scroll to magnify up to 8x.");
+
+        this._zoomReadyNotification = this.popNotificationsService.info(
+          message,
+          this.translateService.instant("Zoom ready"),
+          {
+            progressBar: false,
+            timeOut: 5000,
+            positionClass: "toast-bottom-right"
+          }
+        );
+      })
     );
 
     this.show$ = this.store$.select(selectApp).pipe(
@@ -121,10 +124,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       tap(show => {
         if (show) {
           this.store$.dispatch(new LoadThumbnail(this._getHdOptions()));
-
-          if (!this.isTouchDevice) {
-            this.store$.dispatch(new LoadThumbnail(this._getRealOptions()));
-          }
+          this.store$.dispatch(new LoadThumbnail(this._getRealOptions()));
 
           setTimeout(() => {
             this.klass = "d-flex";
