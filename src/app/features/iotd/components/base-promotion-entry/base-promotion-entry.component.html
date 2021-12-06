@@ -66,9 +66,10 @@
 
       <div class="col-12 col-md-7">
         <div class="text-right form-actions mt-0 d-sm-flex justify-content-sm-end">
-          <button (click)="viewFullscreen(entry.pk)" class="btn btn-secondary">
-            <fa-icon icon="search-plus"></fa-icon>
-            {{ "View large" | translate }}
+           <button (click)="hide(entry.pk)" [class.loading]="loadingService.isLoading()"
+                   [disabled]="alreadyPromoted$(entry.pk) | async" class="btn btn-outline-secondary">
+            <fa-icon icon="eye-slash"></fa-icon>
+             {{ "Hide" | translate }}
           </button>
 
           <button (click)="dismiss(entry.pk)" [class.loading]="loadingService.isLoading()"
@@ -77,16 +78,10 @@
             {{ "Dismiss" | translate }}
           </button>
 
-           <button (click)="hide(entry.pk)" [class.loading]="loadingService.isLoading()"
-                   [disabled]="alreadyPromoted$(entry.pk) | async" class="btn btn-secondary">
-            <fa-icon icon="eye-slash"></fa-icon>
-             {{ "Hide" | translate }}
-          </button>
-
           <button (click)="promote(entry.pk)"
                   *ngIf="(isPromoted$(entry.pk) | async) === false; else retract"
                   [class.loading]="loadingService.isLoading()"
-                  class="btn btn-primary">
+                  class="btn btn-success">
             <fa-icon icon="star"></fa-icon>
             {{ "Promote" | translate }}
           </button>
