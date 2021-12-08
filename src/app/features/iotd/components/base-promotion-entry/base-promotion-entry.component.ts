@@ -20,6 +20,7 @@ import { ImageAlias } from "@shared/enums/image-alias.enum";
 import { SolutionInterface } from "@shared/interfaces/solution.interface";
 import { Observable } from "rxjs";
 import { map, switchMap, take, tap } from "rxjs/operators";
+import { ImageInterface } from "@shared/interfaces/image.interface";
 
 @Component({
   selector: "astrobin-base-promotion-entry",
@@ -56,19 +57,19 @@ export abstract class BasePromotionEntryComponent extends BaseComponentDirective
     );
   }
 
-  isHidden$(imageId: number): Observable<boolean> {
+  isHidden$(imageId: ImageInterface["pk"]): Observable<boolean> {
     return this.store$.select(selectHiddenImageByImageId, imageId).pipe(map(hiddenImage => !!hiddenImage));
   }
 
-  hide(imageId: number): void {
+  hide(imageId: ImageInterface["pk"]): void {
     this.store$.dispatch(new HideImage({ id: imageId }));
   }
 
-  isDismissed$(imageId: number): Observable<boolean> {
+  isDismissed$(imageId: ImageInterface["pk"]): Observable<boolean> {
     return this.store$.select(selectDismissedImageByImageId, imageId).pipe(map(dismissedImage => !!dismissedImage));
   }
 
-  dismiss(imageId: number): void {
+  dismiss(imageId: ImageInterface["pk"]): void {
     const _confirmDismiss = () => {
       this.store$.dispatch(new DismissImage({ id: imageId }));
     };
@@ -89,22 +90,22 @@ export abstract class BasePromotionEntryComponent extends BaseComponentDirective
       });
   }
 
-  show(imageId: number): void {
+  show(imageId: ImageInterface["pk"]): void {
     this.store$
       .select(selectHiddenImageByImageId, imageId)
       .pipe(take(1))
       .subscribe(hiddenImage => this.store$.dispatch(new ShowImage({ hiddenImage })));
   }
 
-  abstract isPromoted$(imageId: number): Observable<boolean>;
+  abstract isPromoted$(imageId: ImageInterface["pk"]): Observable<boolean>;
 
-  abstract alreadyPromoted$(imageId: number): Observable<boolean>;
+  abstract mayPromote$(imageId: ImageInterface["pk"]): Observable<boolean>;
 
-  abstract promote(imageId: number): void;
+  abstract promote(imageId: ImageInterface["pk"]): void;
 
-  abstract retractPromotion(imageId: number): void;
+  abstract retractPromotion(imageId: ImageInterface["pk"]): void;
 
-  viewFullscreen(imageId: number): void {
+  viewFullscreen(imageId: ImageInterface["pk"]): void {
     if (!this.image.loading) {
       this.store$.dispatch(new ShowFullscreenImage(imageId));
     }
