@@ -2,12 +2,14 @@ import { Component, ElementRef } from "@angular/core";
 import { State } from "@app/store/state";
 import { BasePromotionEntryComponent } from "@features/iotd/components/base-promotion-entry/base-promotion-entry.component";
 import { DeleteSubmission, PostSubmission } from "@features/iotd/store/iotd.actions";
-import { selectSubmissionForImage } from "@features/iotd/store/iotd.selectors";
+import { selectSubmissionForImage, selectSubmissions } from "@features/iotd/store/iotd.selectors";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Store } from "@ngrx/store";
 import { LoadingService } from "@shared/services/loading.service";
-import { Observable } from "rxjs";
-import { distinctUntilChanged, map, take, tap } from "rxjs/operators";
+import { Observable, of } from "rxjs";
+import { distinctUntilChanged, map, switchMap, take, tap } from "rxjs/operators";
+import { selectIotdMaxSubmissionsPerDay } from "@app/store/selectors/app/app.selectors";
+import { ImageInterface } from "@shared/interfaces/image.interface";
 
 @Component({
   selector: "astrobin-submission-entry",
@@ -24,22 +26,36 @@ export class SubmissionEntryComponent extends BasePromotionEntryComponent {
     super(store$, elementRef, modalService);
   }
 
-  isPromoted$(imageId: number): Observable<boolean> {
+  isPromoted$(imageId: ImageInterface["pk"]): Observable<boolean> {
     return this.store$.select(selectSubmissionForImage, imageId).pipe(
       map(submission => submission !== null),
       distinctUntilChanged()
     );
   }
 
-  alreadyPromoted$(imageId: number): Observable<boolean> {
-    return this.store$.select(selectSubmissionForImage, imageId).pipe(map(submission => !!submission));
+  mayPromote$(imageId: ImageInterface["pk"]): Observable<boolean> {
+    const count$ = this.store$.select(selectSubmissions).pipe(map(submissions => submissions.length));
+    const max$ = this.store$.select(selectIotdMaxSubmissionsPerDay);
+
+    return this.isPromoted$(imageId).pipe(
+      take(1),
+      switchMap(isPromoted => {
+        return isPromoted
+          ? of(false)
+          : max$.pipe(
+              take(1),
+              switchMap(max => count$.pipe(map(count => ({ max, count })))),
+              map(({ max, count }) => count < max)
+            );
+      })
+    );
   }
 
-  promote(imageId: number): void {
+  promote(imageId: ImageInterface["pk"]): void {
     this.store$.dispatch(new PostSubmission({ imageId }));
   }
 
-  retractPromotion(imageId: number): void {
+  retractPromotion(imageId: ImageInterface["pk"]): void {
     this.store$
       .select(selectSubmissionForImage, imageId)
       .pipe(
