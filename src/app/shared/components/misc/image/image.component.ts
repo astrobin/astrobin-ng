@@ -3,10 +3,12 @@ import {
   ChangeDetectorRef,
   Component,
   ElementRef,
+  EventEmitter,
   HostBinding,
   Input,
   OnChanges,
   OnInit,
+  Output,
   SimpleChanges,
   ViewChild
 } from "@angular/core";
@@ -48,6 +50,9 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
 
   @Input()
   alwaysLoad = false;
+
+  @Output()
+  loaded = new EventEmitter();
 
   @HostBinding("class.loading")
   loading = false;
