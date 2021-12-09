@@ -1,0 +1,14 @@
+:host {
+  display: block;
+
+  .buttons {
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    padding-bottom: .5rem;
+    border-top: 1px solid var(--white);
+  }
+
+  &.toast-info .buttons {
+    border-top-color: var(--infoLight);
+  }
+}

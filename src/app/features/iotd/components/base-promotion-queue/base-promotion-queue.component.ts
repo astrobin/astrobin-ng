@@ -17,6 +17,9 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 import { Observable } from "rxjs";
 import { filter, map, switchMap, take, takeUntil } from "rxjs/operators";
 import { ActivatedRoute, Params, Router } from "@angular/router";
+import { CookieService } from "ngx-cookie-service";
+
+const FILL_SLOT_REMINDER_COOKIE = "astrobin-iotd-fill-slot-reminder";
 
 @Component({
   selector: "astrobin-base-promotion-queue",
@@ -44,7 +47,8 @@ export abstract class BasePromotionQueueComponent extends BaseComponentDirective
     public readonly activatedRoute: ActivatedRoute,
     public readonly popNotificationsService: PopNotificationsService,
     public readonly translateService: TranslateService,
-    public readonly windowRefService: WindowRefService
+    public readonly windowRefService: WindowRefService,
+    public readonly cookieService: CookieService
   ) {
     super(store$);
   }
@@ -52,29 +56,38 @@ export abstract class BasePromotionQueueComponent extends BaseComponentDirective
   ngOnInit(): void {
     this.page = this.activatedRoute.snapshot.queryParamMap.get("page") || 1;
 
-    this.store$
-      .select(selectApp)
+    this.promotions$
       .pipe(
         takeUntil(this.destroyed$),
-        map(state => state.backendConfig),
-        filter(backendConfig => !!backendConfig),
         distinctUntilChangedObj(),
-        switchMap(backendConfig =>
-          this.store$.select(selectSubmissions).pipe(map(submissions => ({ backendConfig, submissions })))
+        switchMap(promotions =>
+          this.store$.select(selectBackendConfig).pipe(map(backendConfig => ({ promotions, backendConfig })))
         )
       )
-      .subscribe(({ backendConfig, submissions }) => {
-        if (submissions.length === this.maxPromotionsPerDay(backendConfig)) {
-          this.popNotificationsService.info(
-            this.translateService.instant(
-              "Please note: you don't <strong>have to</strong> use all your slots. It's ok to use fewer if you " +
-                "don't think there are that many worthy images today."
-            ),
-            null,
-            {
-              enableHtml: true
-            }
-          );
+      .subscribe(({ promotions, backendConfig }) => {
+        const showInfo = !this.cookieService.check(FILL_SLOT_REMINDER_COOKIE);
+        if (showInfo && promotions.length === this.maxPromotionsPerDay(backendConfig)) {
+          this.popNotificationsService
+            .info(
+              this.translateService.instant(
+                "Please note: you don't <strong>have to</strong> use all your slots. It's ok to use fewer if you " +
+                  "don't think there are that many worthy images today."
+              ),
+              null,
+              {
+                enableHtml: true,
+                buttons: [
+                  {
+                    id: "1",
+                    title: this.translateService.instant("Don't remind me for a month"),
+                    classList: "btn btn-sm btn-secondary"
+                  }
+                ]
+              }
+            )
+            .onAction.subscribe(() => {
+              this.cookieService.set(FILL_SLOT_REMINDER_COOKIE, "1", 30, "/");
+            });
         }
       });
 

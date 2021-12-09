@@ -15,6 +15,7 @@ import { TitleService } from "@shared/services/title/title.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { Observable } from "rxjs";
 import { ActivatedRoute, Router } from "@angular/router";
+import { CookieService } from "ngx-cookie-service";
 
 @Component({
   selector: "astrobin-review-queue",
@@ -32,9 +33,10 @@ export class ReviewQueueComponent extends BasePromotionQueueComponent implements
     public readonly translateService: TranslateService,
     public readonly popNotificationsService: PopNotificationsService,
     public readonly titleService: TitleService,
-    public readonly windowRefService: WindowRefService
+    public readonly windowRefService: WindowRefService,
+    public readonly cookieService: CookieService
   ) {
-    super(store$, router, activatedRoute, popNotificationsService, translateService, windowRefService);
+    super(store$, router, activatedRoute, popNotificationsService, translateService, windowRefService, cookieService);
   }
 
   ngOnInit(): void {
