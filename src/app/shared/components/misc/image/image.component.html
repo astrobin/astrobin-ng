@@ -5,7 +5,9 @@
        id="image-{{id}}{{image.hash ? '-' + image.hash : ''}}-{{revision}}-{{alias}}"
        class="astrobin-image"
        [src]="thumbnailUrl"
-       [alt]="image.title" />
+       [alt]="image.title"
+       (load)="loaded.emit()"
+     />
 
   </ng-container>
 </ng-container>
