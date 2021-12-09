@@ -1,10 +1,10 @@
 import { Component, ElementRef, OnInit, QueryList, ViewChildren } from "@angular/core";
-import { selectApp, selectBackendConfig } from "@app/store/selectors/app/app.selectors";
+import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
 import { State } from "@app/store/state";
 import { HiddenImage, SubmissionInterface, VoteInterface } from "@features/iotd/services/iotd-api.service";
 import { LoadDismissedImages, LoadHiddenImages } from "@features/iotd/store/iotd.actions";
 import { ReviewImageInterface, SubmissionImageInterface } from "@features/iotd/store/iotd.reducer";
-import { selectHiddenImages, selectSubmissions } from "@features/iotd/store/iotd.selectors";
+import { selectHiddenImages } from "@features/iotd/store/iotd.selectors";
 import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
