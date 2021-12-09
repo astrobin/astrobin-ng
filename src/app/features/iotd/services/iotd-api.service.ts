@@ -41,9 +41,12 @@ export class IotdApiService extends BaseClassicApiService {
     super(loadingService);
   }
 
-  getSubmissionQueueEntries(page = 1): Observable<PaginatedApiResultInterface<SubmissionImageInterface>> {
+  getSubmissionQueueEntries(
+    page = 1,
+    sort: "newest" | "oldest" | "default" = "default"
+  ): Observable<PaginatedApiResultInterface<SubmissionImageInterface>> {
     return this.http.get<PaginatedApiResultInterface<SubmissionImageInterface>>(
-      `${this.baseUrl}/iotd/submission-queue/?page=${page}`
+      `${this.baseUrl}/iotd/submission-queue/?page=${page}&sort=${sort}`
     );
   }
 
@@ -59,9 +62,12 @@ export class IotdApiService extends BaseClassicApiService {
     return this.http.delete<SubmissionInterface>(`${this.baseUrl}/iotd/submission/${id}/`);
   }
 
-  getReviewQueueEntries(page = 1): Observable<PaginatedApiResultInterface<ReviewImageInterface>> {
+  getReviewQueueEntries(
+    page = 1,
+    sort: "newest" | "oldest" | "default" = "default"
+  ): Observable<PaginatedApiResultInterface<ReviewImageInterface>> {
     return this.http.get<PaginatedApiResultInterface<ReviewImageInterface>>(
-      `${this.baseUrl}/iotd/review-queue/?page=${page}`
+      `${this.baseUrl}/iotd/review-queue/?page=${page}&sort=${sort}`
     );
   }
 

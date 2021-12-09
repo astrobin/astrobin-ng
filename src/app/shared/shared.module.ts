@@ -49,7 +49,9 @@ import { JsonApiService } from "@shared/services/api/classic/json/json-api.servi
 import { CustomMissingTranslationHandler } from "@app/missing-translation-handler";
 import { CustomTranslateParser } from "@app/translate-parser";
 import { LanguageLoader } from "@app/translate-loader";
+import { DirectivesModule } from "@shared/directives/directives.module";
 import { CustomToastComponent } from "@shared/components/misc/custom-toast/custom-toast.component";
+
 
 export function appInitializer(store: Store<State>, actions$: Actions) {
   return () =>
@@ -74,6 +76,7 @@ export function appInitializer(store: Store<State>, actions$: Actions) {
   imports: [
     CommonModule,
     ComponentsModule,
+    DirectivesModule,
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
@@ -134,6 +137,7 @@ export function appInitializer(store: Store<State>, actions$: Actions) {
   exports: [
     CommonModule,
     ComponentsModule,
+    DirectivesModule,
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,

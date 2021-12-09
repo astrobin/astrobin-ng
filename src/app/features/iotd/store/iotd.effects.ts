@@ -47,7 +47,7 @@ export class IotdEffects {
       ofType(IotdActionTypes.LOAD_SUBMISSION_QUEUE),
       tap(() => this.loadingService.setLoading(true)),
       mergeMap(action =>
-        this.iotdApiService.getSubmissionQueueEntries(action.payload.page).pipe(
+        this.iotdApiService.getSubmissionQueueEntries(action.payload.page, action.payload.sort).pipe(
           tap(entries => this.store$.dispatch(new LoadImages(entries.results.map(entry => entry.pk)))),
           switchMap(entries =>
             this.store$.select(selectBackendConfig).pipe(
@@ -293,7 +293,7 @@ export class IotdEffects {
       ofType(IotdActionTypes.LOAD_REVIEW_QUEUE),
       tap(() => this.loadingService.setLoading(true)),
       mergeMap(action =>
-        this.iotdApiService.getReviewQueueEntries(action.payload.page).pipe(
+        this.iotdApiService.getReviewQueueEntries(action.payload.page, action.payload.sort).pipe(
           tap(entries => this.store$.dispatch(new LoadImages(entries.results.map(entry => entry.pk)))),
           switchMap(entries =>
             this.store$.select(selectBackendConfig).pipe(

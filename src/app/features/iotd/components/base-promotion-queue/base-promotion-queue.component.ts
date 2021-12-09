@@ -109,15 +109,15 @@ export abstract class BasePromotionQueueComponent extends BaseComponentDirective
     this.refresh();
   }
 
-  refresh(): void {
+  refresh(sort: "newest" | "oldest" | "default" = "default"): void {
     this.store$.dispatch(new LoadHiddenImages());
     this.store$.dispatch(new LoadDismissedImages());
 
-    this.loadQueue(this.page);
+    this.loadQueue(this.page, sort);
     this.loadPromotions();
   }
 
-  abstract loadQueue(page: number): void;
+  abstract loadQueue(page: number, sort: "newest" | "oldest" | "default"): void;
 
   abstract loadPromotions(): void;
 
@@ -135,7 +135,7 @@ export abstract class BasePromotionQueueComponent extends BaseComponentDirective
         queryParamsHandling: "merge"
       })
       .then(() => {
-        this.loadQueue(page);
+        this.loadQueue(page, "default");
         this.windowRefService.scroll({ top: 0, behavior: "smooth" });
       });
   }
