@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: AstroBin Angular App\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-03 14:04+0200\n"
-"PO-Revision-Date: 2021-10-17 11:27+0200\n"
+"PO-Revision-Date: 2021-12-09 21:33+0100\n"
 "Last-Translator: Salvatore Iovene\n"
 "Language-Team: Italian\n"
 "Language: it\n"
@@ -14,7 +14,7 @@ msgstr ""
 "X-Generator: Loco https://localise.biz\n"
 "X-Loco-Source-Locale: en\n"
 "X-Loco-Project-Id: 108356\n"
-"X-Loco-Api-Version: 1.0.25 20211001-1"
+"X-Loco-Api-Version: 1.0.25 20211027-1"
 
 #: loco:60685a683b0b1d485a736d12
 msgid "API Keys"
@@ -1556,12 +1556,19 @@ msgid ""
 "<strong>for all AstroBin images that use it</strong>, so you should not "
 "change the name if it becomes a different product."
 msgstr ""
+"<strong>Attento!</strong> Cambia il nome solo per correggere un errore di "
+"battitura oppure la convenzione di denominazione. Questa operazione cambierà "
+"il nome di questo elemento di strumentazione <strong>per tutti le immagini "
+"su AstroBin che lo usano</strong>, quindi non cambiargli il nome se questo "
+"lo rende un prodotto differente."
 
 #: loco:6151f41acae9ba5e6a4b2a25
 msgid ""
 "<strong>Careful!</strong> The item's name contains the brand's name (or vice "
 "versa), and it probably shouldn't."
 msgstr ""
+"<strong>Attento!</strong> Il nome dell'elemento contiene il nome della marca "
+"(o viceversa), e probabilmente non dovrebbe."
 
 #: loco:6151f41acae9ba5e6a4b2a26
 msgid ""
@@ -1572,48 +1579,55 @@ msgid ""
 "            or editing the <strong>generic instance</strong> that will be "
 "shared by all owners on AstroBin."
 msgstr ""
+"Il fatto che tu abbia usato la parola \"{{0}}\" implica che stai usando "
+"questo campo per specificare una proprietà dell'oggetto che è solo rilevante "
+"per la tua copia di esso. Ricorda che stai creato o modificando <strong>"
+"un'istanza generica</strong> che verrà condivisa tra tutti i possessori su "
+"AstroBin."
 
 #: loco:6151f41acae9ba5e6a4b2a27
 msgid "A brand with this name already exists."
-msgstr ""
+msgstr "Una marca con questo nome esiste già."
 
 #: loco:6151f41acae9ba5e6a4b2a28
 msgid "A brand with this website already exists."
-msgstr ""
+msgstr "Una marca con questo sito web esiste già."
 
 #: loco:6151f41acae9ba5e6a4b2a29
 msgid ""
 "A positive whole number that represents how many Celsius below ambient "
 "temperature this camera can be cooled."
 msgstr ""
+"Un numero intero positivo che rappresenta il numero di gradi Celsius sotto "
+"la temperatura ambiente a cui questa camera può essere raffreddata."
 
 #: loco:6151f41acae9ba5e6a4b2a2a
 msgid "ADC"
-msgstr ""
+msgstr "ADC"
 
 #: loco:6151f41acae9ba5e6a4b2a2b
 msgid "Accepted"
-msgstr ""
+msgstr "Accetato"
 
 #: loco:6151f41acae9ba5e6a4b2a2c
 msgid "Accessories"
-msgstr ""
+msgstr "Accessori"
 
 #: loco:6151f41acae9ba5e6a4b2a2d
 msgid "An item of the same type and the same name already exists."
-msgstr ""
+msgstr "Un elemento dello stesso tipo e con lo stesso nome esiste già."
 
 #: loco:6151f41acae9ba5e6a4b2a2e
 msgid "Analog to Digital Converter"
-msgstr ""
+msgstr "Convertitore analogico-digitale"
 
 #: loco:6151f41acae9ba5e6a4b2a2f
 msgid "Aperture"
-msgstr ""
+msgstr "Apertura"
 
 #: loco:6151f41acae9ba5e6a4b2a30
 msgid "Approve..."
-msgstr ""
+msgstr "Approva..."
 
 #: loco:6151f41acae9ba5e6a4b2a31
 msgid "Back focus"
@@ -1621,11 +1635,11 @@ msgstr ""
 
 #: loco:6151f41acae9ba5e6a4b2a32
 msgid "Brand"
-msgstr ""
+msgstr "Marca"
 
 #: loco:6151f41acae9ba5e6a4b2a33
 msgid "Camera"
-msgstr ""
+msgstr "Camera"
 
 #: loco:6151f41acae9ba5e6a4b2a34
 msgid "Camera back focus in mm."
@@ -1633,15 +1647,15 @@ msgstr ""
 
 #: loco:6151f41acae9ba5e6a4b2a35
 msgid "Cameras"
-msgstr ""
+msgstr "Camere"
 
 #: loco:6151f41acae9ba5e6a4b2a36
 msgid "Celsius degrees below ambient"
-msgstr ""
+msgstr "Gradi Celsius sotto la temperatura ambiente"
 
 #: loco:6151f41acae9ba5e6a4b2a37
 msgid "Changes"
-msgstr ""
+msgstr "Modifiche"
 
 #: loco:6151f41acae9ba5e6a4b2a38
 msgid "Choose file"
@@ -1653,7 +1667,7 @@ msgstr "Scegli i file"
 
 #: loco:6151f41acae9ba5e6a4b2a3a
 msgid "Class"
-msgstr ""
+msgstr "Classe"
 
 #: loco:6151f41acae9ba5e6a4b2a3b
 msgid "Close"
@@ -1661,59 +1675,59 @@ msgstr "Chiudi"
 
 #: loco:6151f41acae9ba5e6a4b2a3c
 msgid "Color"
-msgstr ""
+msgstr "Colore"
 
 #: loco:6151f41acae9ba5e6a4b2a3d
 msgid "Color/mono"
-msgstr ""
+msgstr "Colore/mono"
 
 #: loco:6151f41acae9ba5e6a4b2a3e
 msgid "Confirm"
-msgstr ""
+msgstr "Conferma"
 
 #: loco:6151f41acae9ba5e6a4b2a3f
 msgid "Confirm item creation"
-msgstr ""
+msgstr "Conferma creazione elemento"
 
 #: loco:6151f41acae9ba5e6a4b2a40
 msgid "Contribution Index"
-msgstr ""
+msgstr "Indice di Contribuzione"
 
 #: loco:6151f41acae9ba5e6a4b2a41
 msgid "Cooled"
-msgstr ""
+msgstr "Raffreddato/a"
 
 #: loco:6151f41acae9ba5e6a4b2a42
 msgid "Create a new item"
-msgstr ""
+msgstr "Crea nuovo elemento"
 
 #: loco:6151f41acae9ba5e6a4b2a43
 msgid "Create new brand"
-msgstr ""
+msgstr "Crea nuova marca"
 
 #: loco:6151f41acae9ba5e6a4b2a44
 msgid "Create new sensor"
-msgstr ""
+msgstr "Crea nuovo sensore"
 
 #: loco:6151f41acae9ba5e6a4b2a45
 msgid "Dedicated deep-sky camera"
-msgstr ""
+msgstr "Camera specifica per il cielo profondo"
 
 #: loco:6151f41acae9ba5e6a4b2a46
 msgid "Disable high contrast theme"
-msgstr ""
+msgstr "Disabilita il tema ad alto contrasto"
 
 #: loco:6151f41acae9ba5e6a4b2a47
 msgid "Edit proposal by"
-msgstr ""
+msgstr "Modifica proposta da"
 
 #: loco:6151f41acae9ba5e6a4b2a48
 msgid "Edit proposal comment"
-msgstr ""
+msgstr "Commento alla proposta di modifica"
 
 #: loco:6151f41acae9ba5e6a4b2a49
 msgid "Editing the brand is not possible."
-msgstr ""
+msgstr "Non è possibile modificare la marca."
 
 #: loco:6151f41acae9ba5e6a4b2a4a
 msgid "Enable high contrast theme"
@@ -1721,39 +1735,39 @@ msgstr "Abilita modalità ad alto contrasto"
 
 #: loco:6151f41acae9ba5e6a4b2a4b
 msgid "Equipment"
-msgstr ""
+msgstr "Strumentazione"
 
 #: loco:6151f41acae9ba5e6a4b2a4c
 msgid "Equipment explorer"
-msgstr ""
+msgstr "Esploratore di strumentazione"
 
 #: loco:6151f41acae9ba5e6a4b2a4d
 msgid "Equipment pending edit"
-msgstr ""
+msgstr "Strumentazione con modifiche in attesa"
 
 #: loco:6151f41acae9ba5e6a4b2a4e
 msgid "Equipment pending review"
-msgstr ""
+msgstr "Strumentazione in attesa di controllo"
 
 #: loco:6151f41acae9ba5e6a4b2a4f
 msgid "Explorer"
-msgstr ""
+msgstr "Esploratore"
 
 #: loco:6151f41acae9ba5e6a4b2a50
 msgid "Film camera"
-msgstr ""
+msgstr "Camera a pellicola"
 
 #: loco:6151f41acae9ba5e6a4b2a51
 msgid "Filters"
-msgstr ""
+msgstr "Filtri"
 
 #: loco:6151f41acae9ba5e6a4b2a52
 msgid "Find equipment item"
-msgstr ""
+msgstr "Trova elemento di strumentazione"
 
 #: loco:6151f41acae9ba5e6a4b2a53
 msgid "Focal length"
-msgstr ""
+msgstr "Lunghezza focale"
 
 #: loco:6151f41acae9ba5e6a4b2a54
 msgid "Frame rate"
@@ -1765,15 +1779,15 @@ msgstr ""
 
 #: loco:6151f41acae9ba5e6a4b2a56
 msgid "General purpose DSLR or mirrorless camera"
-msgstr ""
+msgstr "Reflex o camera mirrorless"
 
 #: loco:6151f41acae9ba5e6a4b2a57
 msgid "General purpose video camera"
-msgstr ""
+msgstr "Video camera"
 
 #: loco:6151f41acae9ba5e6a4b2a58
 msgid "Guider or planetary camera"
-msgstr ""
+msgstr "Camera planetaria o di guida"
 
 #: loco:6151f41acae9ba5e6a4b2a59
 msgid "Image Index"
@@ -1781,169 +1795,171 @@ msgstr "Indice di immagine"
 
 #: loco:6151f41acae9ba5e6a4b2a5a
 msgid "Item summary"
-msgstr ""
+msgstr "Riassunto dell'elemento"
 
 #: loco:6151f41acae9ba5e6a4b2a5b
 msgid "Logo"
-msgstr ""
+msgstr "Logo"
 
 #: loco:6151f41acae9ba5e6a4b2a5c
 msgid "Max. aperture"
-msgstr ""
+msgstr "Apertura max."
 
 #: loco:6151f41acae9ba5e6a4b2a5d
 msgid "Max. cooling"
-msgstr ""
+msgstr "Raffreddamento max."
 
 #: loco:6151f41acae9ba5e6a4b2a5e
 msgid "Max. focal length"
-msgstr ""
+msgstr "Lunghezza focale max."
 
 #: loco:6151f41acae9ba5e6a4b2a5f
 msgid "Min. aperture"
-msgstr ""
+msgstr "Apertura min."
 
 #: loco:6151f41acae9ba5e6a4b2a60
 msgid "Min. focal length"
-msgstr ""
+msgstr "Lunghezza focale min."
 
 #: loco:6151f41acae9ba5e6a4b2a61
 msgid "Mono"
-msgstr ""
+msgstr "Mono"
 
 #: loco:6151f41acae9ba5e6a4b2a62
 msgid "Mounts"
-msgstr ""
+msgstr "Montature"
 
 #: loco:6151f41acae9ba5e6a4b2a63
 msgid "No changes are proposed."
-msgstr ""
+msgstr "Nessuna modifica proposta."
 
 #: loco:6151f41acae9ba5e6a4b2a64
 msgid "Number of pixels across the X axis"
-msgstr ""
+msgstr "Numero di pixel sull'asse X"
 
 #: loco:6151f41acae9ba5e6a4b2a65
 msgid "Number of pixels across the Y axis"
-msgstr ""
+msgstr "Numero di pixel sull'asse Y"
 
 #: loco:6151f41acae9ba5e6a4b2a66
 msgid "Official (or official looking) product image. Max. 1MB."
-msgstr ""
+msgstr "Immagine prodotto ufficiale (o che lo sembra). Max. 1MB."
 
 #: loco:6151f41acae9ba5e6a4b2a67
 msgid "Pending"
-msgstr ""
+msgstr "In attesa"
 
 #: loco:6151f41acae9ba5e6a4b2a68
 msgid "Pending edit"
-msgstr ""
+msgstr "In attesa di modifiche"
 
 #: loco:6151f41acae9ba5e6a4b2a69
 msgid "Pending review"
-msgstr ""
+msgstr "In attesa di controllo"
 
 #: loco:6151f41acae9ba5e6a4b2a6a
 msgid "Pixel size"
-msgstr ""
+msgstr "Dimensione pixel"
 
 #: loco:6151f41acae9ba5e6a4b2a6b
 msgid "Pixel size (in μm)"
-msgstr ""
+msgstr "Dimensione pixel (in μm)"
 
 #: loco:6151f41acae9ba5e6a4b2a6c
 msgid "Pixels"
-msgstr ""
+msgstr "Pixel"
 
 #: loco:6151f41acae9ba5e6a4b2a6d
 msgid "Pixels X"
-msgstr ""
+msgstr "Pixel X"
 
 #: loco:6151f41acae9ba5e6a4b2a6e
 msgid "Pixels Y"
-msgstr ""
+msgstr "Pixel Y"
 
 #: loco:6151f41acae9ba5e6a4b2a6f
 msgid "Please make sure that the information you entered is accurate."
-msgstr ""
+msgstr "Assicurati di aver inserito informazioni accurate, per favore."
 
 #: loco:6151f41acae9ba5e6a4b2a70
 msgid "Propose edit"
-msgstr ""
+msgstr "Proponi modifica"
 
 #: loco:6151f41acae9ba5e6a4b2a71
 msgid "Proposer's comment"
-msgstr ""
+msgstr "Commento del propositore"
 
 #: loco:6151f41acae9ba5e6a4b2a72
 msgid "Quantum efficiency"
-msgstr ""
+msgstr "Efficienza quantica"
 
 #: loco:6151f41acae9ba5e6a4b2a73
 msgid "Read noise"
-msgstr ""
+msgstr "Rumore di lettura"
 
 #: loco:6151f41acae9ba5e6a4b2a74
 msgid "Refractor: achromatic"
-msgstr ""
+msgstr "Rifrattore: acromatico"
 
 #: loco:6151f41acae9ba5e6a4b2a75
 msgid "Reject"
-msgstr ""
+msgstr "Rifiuta"
 
 #: loco:6151f41acae9ba5e6a4b2a76
 msgid "Reject..."
-msgstr ""
+msgstr "Rifiuta..."
 
 #: loco:6151f41acae9ba5e6a4b2a77
 msgid "Rejected"
-msgstr ""
+msgstr "Rifiutato"
 
 #: loco:6151f41acae9ba5e6a4b2a78
 msgid "Reviewer's comment"
-msgstr ""
+msgstr "Commento del controllore"
 
 #: loco:6151f41acae9ba5e6a4b2a79
 msgid "Sensor"
-msgstr ""
+msgstr "Sensore"
 
 #: loco:6151f41acae9ba5e6a4b2a7a
 msgid "Sensor height"
-msgstr ""
+msgstr "Altezza sensore"
 
 #: loco:6151f41acae9ba5e6a4b2a7b
 msgid "Sensor size"
-msgstr ""
+msgstr "Dimensione sensore"
 
 #: loco:6151f41acae9ba5e6a4b2a7c
 msgid "Sensor width"
-msgstr ""
+msgstr "Larghezza sensore"
 
 #: loco:6151f41acae9ba5e6a4b2a7d
 msgid "Software"
-msgstr ""
+msgstr "Software"
 
 #: loco:6151f41acae9ba5e6a4b2a7e
 msgid "Status"
-msgstr ""
+msgstr "Stato"
 
 #: loco:6151f41acae9ba5e6a4b2a7f
 msgid "Superseded"
-msgstr ""
+msgstr "Sostituito"
 
 #: loco:6151f41acae9ba5e6a4b2a80
 msgid "Telescope"
-msgstr ""
+msgstr "Telescopio"
 
 #: loco:6151f41acae9ba5e6a4b2a81
 msgid "Telescopes"
-msgstr ""
+msgstr "Telescopi"
 
 #: loco:6151f41acae9ba5e6a4b2a82
 msgid ""
 "Thanks! Your edit proposal has been submitted and well be reviewed as soon "
 "as possible."
 msgstr ""
+"Grazie! La tua proposta di modifica è stata registrata e verrà controllata "
+"il prima possibile."
 
 #: loco:6151f41acae9ba5e6a4b2a83
 msgid ""
@@ -1967,27 +1983,31 @@ msgstr ""
 
 #: loco:6151f41acae9ba5e6a4b2a85
 msgid "The following changes are proposed:"
-msgstr ""
+msgstr "Le seguenti modifiche sono state proposte:"
 
 #: loco:6151f41acae9ba5e6a4b2a86
 msgid "The name of this brand. Make sure it's spelled correctly."
-msgstr ""
+msgstr "Il nome di questa marca. Assicurati che sia scritto correttamente."
 
 #: loco:6151f41acae9ba5e6a4b2a87
 msgid ""
 "The name of this product. Do not include the brand's name and make sure it's "
 "spelled correctly."
 msgstr ""
+"Il nome di questo prodotto. Non includere il nome della marca ed assicurati "
+"che sia scritto correttamente."
 
 #: loco:6151f41acae9ba5e6a4b2a88
 msgid "The size of the individual pixels in μm."
-msgstr ""
+msgstr "La dimensione di ciascun pixel in μm."
 
 #: loco:6151f41acae9ba5e6a4b2a89
 msgid ""
 "This brand has <strong>{{0}}</strong> items in AstroBin's database. Take a "
 "look at them so you can be consistent with the naming conventions:"
 msgstr ""
+"Questa marca ha <strong>{{0}}</strong> elementi nel database AstroBin. Dagli "
+"un'occhiata in modo da essere coerente con le convenzioni di denominazione."
 
 #: loco:6151f41acae9ba5e6a4b2a8a
 msgid ""
@@ -1995,19 +2015,23 @@ msgid ""
 "important that the information is accurate and this item is not the "
 "duplicate of another"
 msgstr ""
+"Questo elemento sarà parte del database della strumentazione di AstroBin, ed "
+"è molto importante che le informazioni siano accurate e che questo elemento "
+"non ne duplichi un altro."
 
 #: loco:6151f41acae9ba5e6a4b2a8b
 msgid ""
 "Tick if this is a color sensor, leave blank if it's a monochromatic one."
 msgstr ""
+"Spunta se si tratta di un sensore a colori, lascia vuoto se monocromatico."
 
 #: loco:6151f41acae9ba5e6a4b2a8c
 msgid "Time"
-msgstr ""
+msgstr "Tempo"
 
 #: loco:6151f41acae9ba5e6a4b2a8d
 msgid "Type"
-msgstr ""
+msgstr "Tipo"
 
 #: loco:6151f41acae9ba5e6a4b2a8e
 msgid "Type to search."
@@ -2033,25 +2057,27 @@ msgstr "Visualizza"
 
 #: loco:6151f41acae9ba5e6a4b2a92
 msgid "We found similar items from the same brand."
-msgstr ""
+msgstr "Abbiamo trovato elementi simili dalla stessa marca."
 
 #: loco:6151f41acae9ba5e6a4b2a93
 msgid ""
 "We found the following similar items. Click the correct one to use it, or "
 "ignore this message."
 msgstr ""
+"Abbiamo trovato i seguenti elementi simili. Clicca quello giusto per usarlo, "
+"oppure ignora questo messaggio."
 
 #: loco:6151f41acae9ba5e6a4b2a94
 msgid "Website"
-msgstr ""
+msgstr "Sito web"
 
 #: loco:6151f41acae9ba5e6a4b2a95
 msgid "Weight"
-msgstr ""
+msgstr "Peso"
 
 #: loco:6151f41acae9ba5e6a4b2a96
 msgid "Whether this camera is equipment with a cooling mechanism."
-msgstr ""
+msgstr "Se questa camera possiede un meccanismo di raffreddamento."
 
 #: loco:6151f41acae9ba5e6a4b2a97
 msgid "Yes"
@@ -2062,12 +2088,16 @@ msgid ""
 "You cannot review this edit proposal because there are previous pending "
 "proposals."
 msgstr ""
+"Non puoi controllare questa proposta di modifica perché ci sono proposte "
+"precedenti in attesa di controllo."
 
 #: loco:6151f41acae9ba5e6a4b2a99
 msgid ""
 "You cannot review this edit proposal because you were the one who proposed "
 "it."
 msgstr ""
+"Non puoi controllare questa proposta di modifica perché sei stato tu a fare "
+"la proposta."
 
 #: loco:616beb23b6a5125b01510b92
 msgid "Display download menu"
@@ -2103,3 +2133,793 @@ msgstr "Puoi avere fino ad una versione per immagine."
 #: loco:616beb23b6a5125b01510b98
 msgid "You may have up to {{0}} revisions per image."
 msgstr "Puoi avere fino a {{0}} revisioni per immagini."
+
+#: loco:61b24fc53b045a3393550432
+msgid "(DIY)"
+msgstr "(Fai Da Te)"
+
+#: loco:61b24fc53b045a3393550433
+msgid "(modified)"
+msgstr "(modificato/a)"
+
+#: loco:61b24fc53b045a3393550434
+msgid "1 like"
+msgstr "1 mi piace"
+
+#: loco:61b24fc53b045a3393550435
+msgid "A-Z explorer"
+msgstr "Esploratore A-Z"
+
+#: loco:61b24fc53b045a3393550436
+msgid "Accessory"
+msgstr "Accessorio"
+
+#: loco:61b24fc53b045a3393550437
+msgid "Add a comment"
+msgstr "Aggiungi commento"
+
+#: loco:61b24fc53b045a3393550438
+msgid "Alt-Alt (altitude-altitude)"
+msgstr "Alt-Alt (altitudine-altitudine)"
+
+#: loco:61b24fc53b045a3393550439
+msgid "Alt-Az (altazimuth)"
+msgstr "Alt-Az (altazimutale)"
+
+#: loco:61b24fc53b045a339355043a
+msgid "An error occurred"
+msgstr "C'è stato un errore"
+
+#: loco:61b24fc53b045a339355043b
+msgid "An item of the same class, brand, and name already exists."
+msgstr "Un elemento della stessa class, marca e nome esiste già."
+
+#: loco:61b24fc53b045a339355043c
+msgid "Approve"
+msgstr "Approva"
+
+#: loco:61b24fc53b045a339355043d
+msgid "Approve edit"
+msgstr "Approva modifica"
+
+#: loco:61b24fc53b045a339355043e
+msgid "Approved"
+msgstr "Approvato"
+
+#: loco:61b24fc53b045a339355043f
+msgid "Are you sure?"
+msgstr "Sei sicuro?"
+
+#: loco:61b24fc53b045a3393550440
+msgid ""
+"AstroBin would like to rename some of your gear items in order to be more "
+"consistent with naming conventions."
+msgstr ""
+"AstroBin vorrebbe rinominare alcuni elementi della tua strumentazione per "
+"essere più consistente con le convenzioni di denominazione."
+
+#: loco:61b24fc53b045a3393550441
+msgid "AstroBin's new equipment database is still work in progress."
+msgstr ""
+"Il nuovo database della strumentazione su AstroBin è ancora in allestimento."
+
+#: loco:61b24fc53b045a3393550442
+msgid "Automatically create \"modified\" variant"
+msgstr "Create variante \"modificata\" automaticamente"
+
+#: loco:61b24fc53b045a3393550443
+msgid "Bad request"
+msgstr "Richiesta incorretta"
+
+#: loco:61b24fc53b045a3393550444
+msgid "Bandwidth"
+msgstr "Banda"
+
+#: loco:61b24fc53b045a3393550445
+msgid "Binoculars"
+msgstr "Binicolo"
+
+#: loco:61b24fc53b045a3393550446
+msgid "Blue channel (B)"
+msgstr "Canale blu (B)"
+
+#: loco:61b24fc53b045a3393550447
+msgid "Brand/Make"
+msgstr "Marca"
+
+#: loco:61b24fc53b045a3393550448
+msgid "Camera lens"
+msgstr "Lente"
+
+#: loco:61b24fc53b045a3393550449
+msgid "Catadioptric: ACF Schmidt-Cassegrain"
+msgstr "Catadiottrico: ACF Schmidt-Cassegrain"
+
+#: loco:61b24fc53b045a339355044a
+msgid "Catadioptric: Argunov-Cassegrain"
+msgstr "Catadiottrico: Argunov-Cassegrain"
+
+#: loco:61b24fc53b045a339355044b
+msgid "Catadioptric: Klevtsov-Cassegrain"
+msgstr "Catadiottrico: Klevtsov-Cassegrain"
+
+#: loco:61b24fc53b045a339355044c
+msgid "Catadioptric: Lurie-Houghton"
+msgstr "Catadiottrico: Lurie-Houghton"
+
+#: loco:61b24fc53b045a339355044d
+msgid "Catadioptric: Maksutov"
+msgstr "Catadiottrico: Maksutov"
+
+#: loco:61b24fc53b045a339355044e
+msgid "Catadioptric: Maksutov-Cassegrain"
+msgstr "Catadiottrico: Maksutov-Cassegrain"
+
+#: loco:61b24fc53b045a339355044f
+msgid "Catadioptric: Rowe-Atkinson Schmidt astrograph"
+msgstr "Catadiottrico: astrografo Rowe-Atkinson Schmidt"
+
+#: loco:61b24fc53b045a3393550450
+msgid "Catadioptric: Schmidt camera"
+msgstr "Catadiottrico: camera Schmidt"
+
+#: loco:61b24fc53b045a3393550451
+msgid "Catadioptric: Schmidt-Cassegrain"
+msgstr "Catadiottrico: Schmidt-Cassegrain"
+
+#: loco:61b24fc53b045a3393550452
+msgid "Catadioptric: modified Dall-Kirkham"
+msgstr "Catadiottrico: Dall-Kirkham modificato"
+
+#: loco:61b24fc53b045a3393550453
+msgid ""
+"Check this box if this item is self-made, and/or was never on the market as "
+"a commercial product, and therefore does not have a brand."
+msgstr ""
+"Spunta questa casella se questo elemento è fai-da-te, e/o non è mai stato "
+"reperibile come prodotto commerciale, e di conseguenza non ha una marca."
+
+#: loco:61b24fc53b045a3393550454
+msgid "Color or mono"
+msgstr "Colore o mono"
+
+#: loco:61b24fc53b045a3393550455
+msgid "Cometary"
+msgstr "Comete"
+
+#: loco:61b24fc53b045a3393550456
+msgid "Comment"
+msgstr "Commento"
+
+#: loco:61b24fc53b045a3393550457
+msgid "Computerized"
+msgstr "Computerizzato"
+
+#: loco:61b24fc53b045a3393550458
+msgid "Confirm migration"
+msgstr "Conferma migrazione"
+
+#: loco:61b24fc53b045a3393550459
+msgid "Confirm selected migrations"
+msgstr "Conferma migrazioni selezionate"
+
+#: loco:61b24fc53b045a339355045a
+msgid "Conflict detected"
+msgstr "Conflitto rilevato"
+
+#: loco:61b24fc53b045a339355045b
+msgid "Create"
+msgstr "Crea"
+
+#: loco:61b24fc53b045a339355045c
+msgid "Created by"
+msgstr "Creato da"
+
+#: loco:61b24fc53b045a339355045d
+msgid "DIY"
+msgstr "Fai-Da-Te"
+
+#: loco:61b24fc53b045a339355045e
+msgid "Dobsonian"
+msgstr "Dobsoniano"
+
+#: loco:61b24fc53b045a339355045f
+msgid "Don't remind me for a month"
+msgstr "Non ricordarmelo per un mese"
+
+#: loco:61b24fc53b045a3393550460
+msgid "Editing this field is not possible."
+msgstr "Non è possibile modificare questo campo."
+
+#: loco:61b24fc53b045a3393550461
+msgid "Equatorial"
+msgstr "Equatoriale"
+
+#: loco:61b24fc53b045a3393550462
+msgid "Filter"
+msgstr "Filtro"
+
+#: loco:61b24fc53b045a3393550463
+msgid "Fixed focal length"
+msgstr "Lunghezza focale fissa"
+
+#: loco:61b24fc53b045a3393550464
+msgid "Fork"
+msgstr "Forca"
+
+#: loco:61b24fc53b045a3393550465
+msgid "Gear renaming proposals"
+msgstr "Proposta di rinomina strumentazione"
+
+#: loco:61b24fc53b045a3393550466
+msgid "German equatorial"
+msgstr "Equatoriale alla tedesca"
+
+#: loco:61b24fc53b045a3393550467
+msgid "Get random"
+msgstr "Uno a caso"
+
+#: loco:61b24fc53b045a3393550468
+msgid "Green channel (G)"
+msgstr "Canale verde (G)"
+
+#: loco:61b24fc53b045a3393550469
+msgid "Hexapod"
+msgstr "Hexapode"
+
+#: loco:61b24fc53b045a339355046a
+msgid "Hydrogen-alpha (Hα)"
+msgstr "Idrogeno-alfa (Hα)"
+
+#: loco:61b24fc53b045a339355046b
+msgid "Hydrogen-beta (Hβ)"
+msgstr "Idrogeno-beta (Hβ)"
+
+#: loco:61b24fc53b045a339355046c
+msgid ""
+"If selected, AstroBin will automatically create a variant of this object "
+"that is labeled as <em>modified for astrophotography</em>."
+msgstr ""
+"Se selezionato, AstroBin creerà automaticamente una variante di questo "
+"elemento che è etichettata come <em>modificata per l'astrofotografia</em>."
+
+#: loco:61b24fc53b045a339355046d
+msgid "If you can reproduce this issue reliably, please contact us."
+msgstr ""
+"Se riesci a riprodurre questo problema frequentemente, contattaci per favore."
+
+#: loco:61b24fc53b045a339355046e
+msgid "Infrared (IR)"
+msgstr "Infrarosso (IR)"
+
+#: loco:61b24fc53b045a339355046f
+msgid "Internal server error"
+msgstr "Errore interno"
+
+#: loco:61b24fc53b045a3393550470
+msgid "Item approved."
+msgstr "Elemento approvato."
+
+#: loco:61b24fc53b045a3393550471
+msgid "Item rejected."
+msgstr "Elemento rifiutato."
+
+#: loco:61b24fc53b045a3393550472
+msgid "Last update"
+msgstr "Ultimo aggiornamento"
+
+#: loco:61b24fc53b045a3393550473
+msgid "Legacy item being migrated"
+msgstr "Elementi vecchi in fase di megrazione"
+
+#: loco:61b24fc53b045a3393550474
+msgid "Light pollution suppression"
+msgstr "Riduzione dell'inquinamento luminoso"
+
+#: loco:61b24fc53b045a3393550475
+msgid "Loading edit proposals"
+msgstr "Caricamento delle proposte di modifica"
+
+#: loco:61b24fc53b045a3393550476
+msgid "Login required"
+msgstr "Autenticazione necessaria"
+
+#: loco:61b24fc53b045a3393550477
+msgid "Luminance/clear (L)"
+msgstr "Luminanza/chiaro (L)"
+
+#: loco:61b24fc53b045a3393550478
+msgid "Lunar"
+msgstr "Lunare"
+
+#: loco:61b24fc53b045a3393550479
+msgid "Mark as"
+msgstr "Segna come"
+
+#: loco:61b24fc53b045a339355047a
+msgid "Max. payload"
+msgstr "Carico max."
+
+#: loco:61b24fc53b045a339355047b
+msgid "Migrate"
+msgstr "Migra"
+
+#: loco:61b24fc53b045a339355047c
+msgid "Migrate into"
+msgstr "Migra in"
+
+#: loco:61b24fc53b045a339355047d
+msgid "Modified"
+msgstr "Modificato/a"
+
+#: loco:61b24fc53b045a339355047e
+msgid "Mount"
+msgstr "Montatura"
+
+#: loco:61b24fc53b045a339355047f
+msgid "Multiband"
+msgstr "Multibanda"
+
+#: loco:61b24fc53b045a3393550480
+msgid "Multiple items"
+msgstr "Elementi multipli"
+
+#: loco:61b24fc53b045a3393550481
+msgid "Name/Model"
+msgstr "Nome/Modello"
+
+#: loco:61b24fc53b045a3393550482
+msgid "Neutral density (ND)"
+msgstr "Densità neutra (ND)"
+
+#: loco:61b24fc53b045a3393550483
+msgid "Newest first"
+msgstr "Prima i più nuovi"
+
+#: loco:61b24fc53b045a3393550484
+msgid "Nitrogen-II (NII)"
+msgstr "Nitrogeno-II (NII)"
+
+#: loco:61b24fc53b045a3393550485
+msgid "No changes are proposed, or all proposed changes are outdated."
+msgstr ""
+"Non sono proposti cambiamenti, o tutti i cambiamenti proposti sono obsoleti."
+
+#: loco:61b24fc53b045a3393550486
+msgid "Not enough info"
+msgstr "Informazioni insufficienti"
+
+#: loco:61b24fc53b045a3393550487
+msgid "Number of pixels"
+msgstr "Numero di pixel"
+
+#: loco:61b24fc53b045a3393550488
+msgid "Object ID"
+msgstr "ID oggetto"
+
+#: loco:61b24fc53b045a3393550489
+msgid "Oldest first"
+msgstr "Prima i più vecchi"
+
+#: loco:61b24fc53b045a339355048a
+msgid "Oxygen-III (OIII)"
+msgstr "Ossigeno-III (OIII)"
+
+#: loco:61b24fc53b045a339355048b
+msgid "PEC"
+msgstr "PEC"
+
+#: loco:61b24fc53b045a339355048c
+msgid "Periodic error correction"
+msgstr "Correzione errore periodico"
+
+#: loco:61b24fc53b045a339355048d
+msgid "Photometric Blue"
+msgstr "Blu fotometrico"
+
+#: loco:61b24fc53b045a339355048e
+msgid "Photometric Infrared"
+msgstr "Infrarosso fotometrico"
+
+#: loco:61b24fc53b045a339355048f
+msgid "Photometric Red"
+msgstr "Rosso fotometrico"
+
+#: loco:61b24fc53b045a3393550490
+msgid "Photometric Ultraviolet"
+msgstr "Ultravioletto fotometrico"
+
+#: loco:61b24fc53b045a3393550491
+msgid "Photometric Visual"
+msgstr "Fotometrico visuale"
+
+#: loco:61b24fc53b045a3393550492
+msgid "Pinch & zoom to view details closer."
+msgstr "Pizzica e ingrandisci per vedere i dettagli da vicino."
+
+#: loco:61b24fc53b045a3393550493
+msgid "Please DO NOT approve this item if it's a duplicate of another one!"
+msgstr ""
+"Per favore NON approvare questo elemento se è il duplicato di un altro!"
+
+#: loco:61b24fc53b045a3393550494
+msgid ""
+"Please only do this for DSLR camera that typically are modified for "
+"astrophotography. If this is a camera that is <em>specifically</em> sold as "
+"modified for astrophotography, e.g. the <strong>Canon EOS 60Da</strong> you "
+"<strong>do not</strong> need to use check this option."
+msgstr ""
+"Fai questo solo per le reflex che tipicamente sono modificate per "
+"l'astrofotografia. Se questa è una camera venduta <em>specificamente</em> "
+"come modificata per l'astrofotografia, p.e. la <strong>Canon EOS "
+"60Da</strong> allora <strong>non devi</strong> spuntare questa casella."
+
+#: loco:61b24fc53b045a3393550495
+msgid "Please read the equipment migration guidelines"
+msgstr "Leggi le linee guida della migrazione della strumentazione"
+
+#: loco:61b24fc53b045a3393550496
+msgid ""
+"Please use a device with a minimum horizontal resolution of 1024 pixels to "
+"view this content."
+msgstr ""
+"Usa un dispositivo con una risoluzione orizzontale di minimo 1024 pixel per "
+"visualizzare questo contenuto, per favore."
+
+#: loco:61b24fc53b045a3393550497
+msgid "Portable English"
+msgstr "Inglese portabile"
+
+#: loco:61b24fc53b045a3393550498
+msgid "Proposed by"
+msgstr "Proposto da"
+
+#: loco:61b24fc53b045a3393550499
+msgid "Read"
+msgstr "Leggi"
+
+#: loco:61b24fc53b045a339355049a
+msgid "Reason"
+msgstr "Motivo"
+
+#: loco:61b24fc53b045a339355049b
+msgid "Red channel (R)"
+msgstr "Canale rosso (R)"
+
+#: loco:61b24fc53b045a339355049c
+msgid "Reflector: Dall-Kirkham"
+msgstr "Riflettore: Dall-Kirkham"
+
+#: loco:61b24fc53b045a339355049d
+msgid "Reflector: Gregorian"
+msgstr "Riflettore: Gregoriano"
+
+#: loco:61b24fc53b045a339355049e
+msgid "Reflector: Herschellian"
+msgstr "Riflettore: Herschelliano"
+
+#: loco:61b24fc53b045a339355049f
+msgid "Reflector: Nasmyth"
+msgstr "Riflettore: Nasmyth"
+
+#: loco:61b24fc53b045a33935504a0
+msgid "Reflector: Newtonian"
+msgstr "Riflettore: Newtoniano"
+
+#: loco:61b24fc53b045a33935504a1
+msgid "Reflector: Ritchey Chretien"
+msgstr "Riflettore: Ritchey Chretien"
+
+#: loco:61b24fc53b045a33935504a2
+msgid "Refractor: apochromatic"
+msgstr "Riflettore: apocromatico"
+
+#: loco:61b24fc53b045a33935504a3
+msgid "Refractor: non-achromatic Galilean"
+msgstr "Riflettore: Galileano non-acromatico"
+
+#: loco:61b24fc53b045a33935504a4
+msgid "Refractor: non-acrhmatic Keplerian"
+msgstr "Riflettore: Kepleriano non-acromatico"
+
+#: loco:61b24fc53b045a33935504a5
+msgid "Refractor: semi-apochromatic"
+msgstr "Rifrattore: semi-apocromatico"
+
+#: loco:61b24fc53b045a33935504a6
+msgid "Refractor: superachromat"
+msgstr "Rifrattore: supercromatico"
+
+#: loco:61b24fc53b045a33935504a7
+msgid "Reject edit"
+msgstr "Rifiuta modifica"
+
+#: loco:61b24fc53b045a33935504a8
+msgid "Reply"
+msgstr "Rispondi"
+
+#: loco:61b24fc53b045a33935504a9
+msgid "Reviewed by"
+msgstr "Controllato da"
+
+#: loco:61b24fc53b045a33935504aa
+msgid "Select target item for the migration, or create a new one."
+msgstr ""
+"Selezione elemento di destinazione della migrazione, o creane uno nuovo."
+
+#: loco:61b24fc53b045a33935504ab
+msgid "Self-made / non-commercial (no brand)"
+msgstr "Fai-da-te / non commerciale (senza marca)"
+
+#: loco:61b24fc53b045a33935504ac
+msgid "Sensors"
+msgstr "Sensori"
+
+#: loco:61b24fc53b045a33935504ad
+msgid "Service not available"
+msgstr "Servizio non disponibile"
+
+#: loco:61b24fc53b045a33935504ae
+msgid ""
+"Since a regular and a modified variant of {{0}} were created, we didn't "
+"prefill the item selection dropdown, to allow you to select the correct "
+"variant for this migration."
+msgstr ""
+"Dato che una variante normale ed una modificata di {{0}} sono state create, "
+"non abbiamo preselezionato il menu a tendina, per permetterti di scegliere "
+"la variante corretta per questa migrazione."
+
+#: loco:61b24fc53b045a33935504af
+msgid "Sky glow"
+msgstr "Sky glow"
+
+#: loco:61b24fc53b045a33935504b0
+msgid "Slew speed"
+msgstr "Velocità di puntamento"
+
+#: loco:61b24fc53b045a33935504b1
+msgid "Solar"
+msgstr "Solare"
+
+#: loco:61b24fc53b045a33935504b2
+msgid "Something went wrong"
+msgstr "Qualcosa è andato storto"
+
+#: loco:61b24fc53b045a33935504b3
+msgid "Sort"
+msgstr "Ordina"
+
+#: loco:61b24fc53b045a33935504b4
+msgid "Star tracker"
+msgstr "Star tracker"
+
+#: loco:61b24fc53b045a33935504b5
+msgid "Submit"
+msgstr "Invia"
+
+#: loco:61b24fc53b045a33935504b6
+msgid "Sulfur-II (SII)"
+msgstr "Zolfo-II (SII)"
+
+#: loco:61b24fc53b045a33935504b7
+msgid "Summary"
+msgstr "Riassunto"
+
+#: loco:61b24fc53b045a33935504b8
+msgid "Telescopes & lenses"
+msgstr "Telescopi e obiettivi"
+
+#: loco:61b24fc53b045a33935504b9
+msgid ""
+"Thanks! Your edit proposal has been submitted and will be reviewed as soon "
+"as possible."
+msgstr ""
+"Grazie! La tua proposta di modifica è stata registrata e verrà controllata "
+"il prima possibile."
+
+#: loco:61b24fc53b045a33935504ba
+msgid ""
+"The item doesn't seem to have the correct brand, or the brand is misspelled, "
+"or it's the duplicate of an existing brand."
+msgstr ""
+"L'elemento non sembra avere la marca corretta, o la marca è scritta male, o "
+"è il duplicato di una marca esistente."
+
+#: loco:61b24fc53b045a33935504bb
+msgid "The item has a typo in its name"
+msgstr "Questo elemento ha un errore di battitura nel nome"
+
+#: loco:61b24fc53b045a33935504bc
+msgid "The item has insufficient data"
+msgstr "Questo elemento ha dati insufficienti"
+
+#: loco:61b24fc53b045a33935504bd
+msgid "The item has some inaccurate data"
+msgstr "Questo elemento ha dei dati non corretti"
+
+#: loco:61b24fc53b045a33935504be
+msgid ""
+"The recommended naming convention for camera lenses is: optional model name, "
+"focal length range, f-ratio range, additional properties. E.g. <strong>"
+"Nikkor Z 28mm f/2.8 (SE)</strong>."
+msgstr ""
+"La convenzione di denominazione degli obiettivi fotografici è: nome modello "
+"opzionale, intervallo di lunghezza focale, interfallo di f-stop, proprietà "
+"aggiuntive. P.e. <strong>Nikkor Z 28mm f/2.8 (SE)</strong>."
+
+#: loco:61b24fc53b045a33935504bf
+msgid "The requested resource does not exist"
+msgstr "La risorsa che hai richiesto non esiste."
+
+#: loco:61b24fc53b045a33935504c0
+msgid ""
+"The revision's title will be shown as an addendum to the original image's "
+"title."
+msgstr ""
+"Il titolo della versione verrà mostrato come un'aggiunta al titolo "
+"dell'immagine originale."
+
+#: loco:61b24fc53b045a33935504c1
+msgid "The target item doesn't seem to have the correct brand"
+msgstr "L'elemento di destinazione non sembra avere la marca corretta"
+
+#: loco:61b24fc53b045a33935504c2
+msgid "The target item has a typo in its name"
+msgstr "L'elemento di destinazione ha un errore di battitura nel nome"
+
+#: loco:61b24fc53b045a33935504c3
+msgid "The target item has insufficient data"
+msgstr "L'elemento di destinazione ha dati insufficienti"
+
+#: loco:61b24fc53b045a33935504c4
+msgid "The target item has some inaccurate data"
+msgstr "L'elemento di destinazione ha dei dati non corretti"
+
+#: loco:61b24fc53b045a33935504c5
+msgid "There are no comments yet."
+msgstr "Non ci sono ancora commenti."
+
+#: loco:61b24fc53b045a33935504c6
+msgid ""
+"There are no more items of this type to migrate. Check other equipment types."
+msgstr ""
+"Non ci sono più elementi di questo tipo da migrare. Controlla altri tipi di "
+"sturmentazione."
+
+#: loco:61b24fc53b045a33935504c7
+msgid "This LEGACY item needs to be migrated"
+msgstr "Questo VECCHIO elemento deve essere migrato"
+
+#: loco:61b24fc53b045a33935504c8
+msgid ""
+"This item has not been approved yet, so it's not available to be associated "
+"with images."
+msgstr ""
+"Questo elemento non è stato ancora approvato, e quindi non è possibile "
+"associarlo a immagini."
+
+#: loco:61b24fc53b045a33935504c9
+msgid ""
+"This item will be part of AstorBin's equipment database, and it's very "
+"important that the information is accurate and this item is not the "
+"duplicate of another."
+msgstr ""
+"Questo elemento farà parte del database della strumentazione di AstroBin, ed "
+"è molto importante che le informazioni siano accurate e questo elemento non "
+"ne duplichi un altro."
+
+#: loco:61b24fc53b045a33935504ca
+msgid ""
+"This should never happen. AstroBin's staff has been notified automatically "
+"and will solve the problem as soon as possible."
+msgstr ""
+"Questo non dovrebbe mai accadere. Lo staff di AstroBin è stato notificato "
+"automaticamente e risolverà il problema al più presto."
+
+#: loco:61b24fc53b045a33935504cb
+msgid "This should never happen. If the problem persists, please contact us."
+msgstr ""
+"Questo non dovrebbe mai accadere. Se il problema dovesse persistere, "
+"contattaci per favore."
+
+#: loco:61b24fc53b045a33935504cc
+msgid "Tracking accuracy"
+msgstr "Precisione di inseguimento"
+
+#: loco:61b24fc53b045a33935504cd
+msgid "Transit"
+msgstr "Transito"
+
+#: loco:61b24fc53b045a33935504ce
+msgid "Ultra High Contrast (UHC)"
+msgstr "Contrasto ultra alto (UHC)"
+
+#: loco:61b24fc53b045a33935504cf
+msgid "Ultraviolet (UV)"
+msgstr "Ultravioletto (UV)"
+
+#: loco:61b24fc53b045a33935504d0
+msgid "Validation error"
+msgstr "Errore di validazione"
+
+#: loco:61b24fc53b045a33935504d1
+msgid "We found the following similar items from the same brand."
+msgstr "Abbiamo trovato i seguenti elementi simili della stessa marca."
+
+#: loco:61b24fc53b045a33935504d2
+msgid "Wedged Alt-Az"
+msgstr "Alt-Az con cuneo"
+
+#: loco:61b24fc53b045a33935504d3
+msgid "When"
+msgstr "Quando"
+
+#: loco:61b24fc53b045a33935504d4
+msgid ""
+"When an image is dismissed by {{0}} members of the IOTD/TP staff, it's "
+"automatically removed from all queues. Please only perform this action if "
+"you want to vote against this image advancing in the process."
+msgstr ""
+"Quando un'immagine viene scartata da {{0}} membri dello staff IOTD/TP, viene "
+"automaticamente rimossa da tutte le code. Esegui quest'operazione solo se "
+"vuoi votare per il fatto che questa immagini non avanzi nel processo."
+
+#: loco:61b24fc53b045a33935504d5
+msgid "Wrong type"
+msgstr "Tipo errato"
+
+#: loco:61b24fc53b045a33935504d6
+msgid ""
+"You are already logged in or were logged in automatically from the "
+"application's backend."
+msgstr ""
+"Hai già fatto il login o il backend dell'applicazione ha fatto il login "
+"automaticamente per te."
+
+#: loco:61b24fc53b045a33935504d7
+msgid "You tried to access a server resource that you're not authorized for."
+msgstr ""
+"Hai cercato di accedere ad una risorsa sul server a cui non hai accesso."
+
+#: loco:61b24fc53b045a33935504d8
+msgid ""
+"You tried to access a server resource that's only available to logged in "
+"users."
+msgstr ""
+"Hai cercato di accedere ad una risorsa sul server che è disponibile solo per "
+"gli utenti registrati."
+
+#: loco:61b24fc53b045a33935504d9
+msgid ""
+"Your usage of the word \"{{0}}\" suggests that you are trying to add a DIY "
+"item. The AstroBin\n"
+"                    equipment database is meant for products that are (or "
+"have been) on the market and can (or could)\n"
+"                    be purchased. To add a DIY item, please use the "
+"appropriate checkbox during the item's creation."
+msgstr ""
+"Il fatto che tu abbia usato la parola \"{{0}}\" implica che hai cercato di "
+"aggiungere un elemento fai-da-te. Il database della strumentazione di "
+"AstroBin consiste in prodotto che sono (o sono stati) sul mercato e possono "
+"(o potevano) essere acquistati. Per aggiungere un elemento fai-da-te, spunta "
+"la casella relativa durante il processo di creazione dell'elemento."
+
+#: loco:61b24fc53b045a33935504da
+msgid ""
+"Your usage of the word \"{{0}}\" suggests that you are using this field to "
+"specify a property of this item that is only relevant to your own copy. "
+"Remember that here you are creating or editing the generic instance that "
+"will be shared by all owners on AstroBin."
+msgstr ""
+"Il fatto che tu abbia usato la parola \"{{0}}\" implica che stai usando "
+"questo campo per specificare una proprietà dell'oggetto che è solo rilevante "
+"per la tua copia di esso. Ricorda che stai creato o modificando un'istanza "
+"generica che verrà condivisa tra tutti i possessori su AstroBin."
+
+#: loco:61b24fc53b045a33935504db
+msgid "consider making an edit proposal instead."
+msgstr "considera di fare una proposta di modifica, piuttosto."
+
+#: loco:61b24fc53b045a33935504dc
+msgid "{{0}} like"
+msgstr "{{0}} mi piace"
