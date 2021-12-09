@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: AstroBin Angular App\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-03 14:04+0200\n"
-"PO-Revision-Date: 2021-10-17 11:27+0200\n"
+"PO-Revision-Date: 2021-10-18 21:53+0200\n"
 "Last-Translator: Salvatore Iovene\n"
 "Language-Team: German\n"
 "Language: de\n"
@@ -14,7 +14,7 @@ msgstr ""
 "X-Generator: Loco https://localise.biz\n"
 "X-Loco-Source-Locale: en\n"
 "X-Loco-Project-Id: 108356\n"
-"X-Loco-Api-Version: 1.0.25 20211001-1"
+"X-Loco-Api-Version: 1.0.25 20211027-1"
 
 #: loco:60685a683b0b1d485a736d12
 msgid "API Keys"
@@ -1882,81 +1882,83 @@ msgstr ""
 
 #: loco:6151f41acae9ba5e6a4b2a70
 msgid "Propose edit"
-msgstr ""
+msgstr "Vorschlag bearbeiten"
 
 #: loco:6151f41acae9ba5e6a4b2a71
 msgid "Proposer's comment"
-msgstr ""
+msgstr "Kommentar des Vorschlagenden"
 
 #: loco:6151f41acae9ba5e6a4b2a72
 msgid "Quantum efficiency"
-msgstr ""
+msgstr "Quanteneffizienz"
 
 #: loco:6151f41acae9ba5e6a4b2a73
 msgid "Read noise"
-msgstr ""
+msgstr "Auslöserauschen"
 
 #: loco:6151f41acae9ba5e6a4b2a74
 msgid "Refractor: achromatic"
-msgstr ""
+msgstr "Refraktor: achromatisch"
 
 #: loco:6151f41acae9ba5e6a4b2a75
 msgid "Reject"
-msgstr ""
+msgstr "Ablehnen"
 
 #: loco:6151f41acae9ba5e6a4b2a76
 msgid "Reject..."
-msgstr ""
+msgstr "Ablehnen..."
 
 #: loco:6151f41acae9ba5e6a4b2a77
 msgid "Rejected"
-msgstr ""
+msgstr "Abgelehnt"
 
 #: loco:6151f41acae9ba5e6a4b2a78
 msgid "Reviewer's comment"
-msgstr ""
+msgstr "Kommentar des Prüfers"
 
 #: loco:6151f41acae9ba5e6a4b2a79
 msgid "Sensor"
-msgstr ""
+msgstr "Sensor"
 
 #: loco:6151f41acae9ba5e6a4b2a7a
 msgid "Sensor height"
-msgstr ""
+msgstr "Sensorhöhe"
 
 #: loco:6151f41acae9ba5e6a4b2a7b
 msgid "Sensor size"
-msgstr ""
+msgstr "Sensorgröße"
 
 #: loco:6151f41acae9ba5e6a4b2a7c
 msgid "Sensor width"
-msgstr ""
+msgstr "Sensorbreite"
 
 #: loco:6151f41acae9ba5e6a4b2a7d
 msgid "Software"
-msgstr ""
+msgstr "Software"
 
 #: loco:6151f41acae9ba5e6a4b2a7e
 msgid "Status"
-msgstr ""
+msgstr "Status"
 
 #: loco:6151f41acae9ba5e6a4b2a7f
 msgid "Superseded"
-msgstr ""
+msgstr "Abgelöst"
 
 #: loco:6151f41acae9ba5e6a4b2a80
 msgid "Telescope"
-msgstr ""
+msgstr "Teleskop"
 
 #: loco:6151f41acae9ba5e6a4b2a81
 msgid "Telescopes"
-msgstr ""
+msgstr "Teleskope"
 
 #: loco:6151f41acae9ba5e6a4b2a82
 msgid ""
 "Thanks! Your edit proposal has been submitted and well be reviewed as soon "
 "as possible."
 msgstr ""
+"Vielen Dank! Ihr Bearbeitungsvorschlag wurde eingereicht und wird so bald "
+"wie möglich geprüft."
 
 #: loco:6151f41acae9ba5e6a4b2a83
 msgid ""
@@ -1964,6 +1966,9 @@ msgid ""
 "informative, constructive, and valuable commentary on AstroBin. {{_0}}Learn "
 "more.{{_1}}"
 msgstr ""
+"Der <strong>Beitragsindex (beta)</strong> ist ein System zur Honorierung "
+"informativer, konstruktiver und wertvoller Kommentare auf AstroBin. {{_0}}"
+"Mehr erfahren.{{_1}}"
 
 #: loco:6151f41acae9ba5e6a4b2a84
 msgid ""
@@ -1971,30 +1976,39 @@ msgid ""
 "images, that incentivizes the most active and liked members of the community."
 " {{_0}}Learn more.{{_1}}"
 msgstr ""
+"Der <strong>Bildindex</strong> ist ein System, dass auf den erhaltenen Likes "
+"für Bilder basiert und Anreize für die aktivsten und beliebtesten Mitglieder "
+"der Community bietet. {{_0}}Mehr erfahren.{{_1}}"
 
 #: loco:6151f41acae9ba5e6a4b2a85
 msgid "The following changes are proposed:"
-msgstr ""
+msgstr "Die folgenden Änderungen werden vorgeschlagen:"
 
 #: loco:6151f41acae9ba5e6a4b2a86
 msgid "The name of this brand. Make sure it's spelled correctly."
 msgstr ""
+"Der Name dieser Marke. Achten Sie darauf, dass er richtig geschrieben ist."
 
 #: loco:6151f41acae9ba5e6a4b2a87
 msgid ""
 "The name of this product. Do not include the brand's name and make sure it's "
 "spelled correctly."
 msgstr ""
+"Der Name des Produkts. Lassen Sie den Markennamen weg und achten Sie darauf, "
+"dass er richtig geschrieben ist."
 
 #: loco:6151f41acae9ba5e6a4b2a88
 msgid "The size of the individual pixels in μm."
-msgstr ""
+msgstr "Die Größe der einzelnen Pixel in μm."
 
 #: loco:6151f41acae9ba5e6a4b2a89
 msgid ""
 "This brand has <strong>{{0}}</strong> items in AstroBin's database. Take a "
 "look at them so you can be consistent with the naming conventions:"
 msgstr ""
+"Diese Marke hat <strong>{{0}}</strong> Artikel in der Datenbank von AstroBin."
+" Schauen Sie sich diese an, damit Sie die Namenskonventionen einhalten "
+"können:"
 
 #: loco:6151f41acae9ba5e6a4b2a8a
 msgid ""
@@ -2002,75 +2016,90 @@ msgid ""
 "important that the information is accurate and this item is not the "
 "duplicate of another"
 msgstr ""
+"Dieses Gerät wird in die AstroBin-Gerätedatenbank aufgenommen. Es ist sehr "
+"wichtig, dass die Informationen korrekt sind und dieses Gerät nicht das "
+"Duplikat eines anderen ist"
 
 #: loco:6151f41acae9ba5e6a4b2a8b
 msgid ""
 "Tick if this is a color sensor, leave blank if it's a monochromatic one."
 msgstr ""
+"Markieren Sie dies, wenn es ein Farbsensor ist, lassen Sie es leer, wenn es "
+"ein monochromer Sensor ist."
 
 #: loco:6151f41acae9ba5e6a4b2a8c
 msgid "Time"
-msgstr ""
+msgstr "Zeit"
 
 #: loco:6151f41acae9ba5e6a4b2a8d
 msgid "Type"
-msgstr ""
+msgstr "Eingeben"
 
 #: loco:6151f41acae9ba5e6a4b2a8e
 msgid "Type to search."
-msgstr ""
+msgstr "Eingeben um zu suchen."
 
 #: loco:6151f41acae9ba5e6a4b2a8f
 msgid ""
 "Use the <strong>#</strong> sign and start typing to insert an image from "
 "your gallery."
 msgstr ""
+"Verwenden Sie das Zeichen <strong>#</strong> und beginnen Sie mit der "
+"Eingabe, um ein Bild aus Ihrer Galerie einzufügen."
 
 #: loco:6151f41acae9ba5e6a4b2a90
 msgid "Use the <strong>@</strong> sign and start typing to mention any user."
 msgstr ""
+"Verwenden Sie das Zeichen <strong>@</strong> und beginnen Sie mit der "
+"Eingabe, um einen beliebigen Benutzer zu nennen."
 
 #: loco:6151f41acae9ba5e6a4b2a91
 msgid "View"
-msgstr ""
+msgstr "Ansehen"
 
 #: loco:6151f41acae9ba5e6a4b2a92
 msgid "We found similar items from the same brand."
-msgstr ""
+msgstr "Wir haben ähnliche Modelle der gleichen Marke gefunden."
 
 #: loco:6151f41acae9ba5e6a4b2a93
 msgid ""
 "We found the following similar items. Click the correct one to use it, or "
 "ignore this message."
 msgstr ""
+"Wir haben das folgende ähnliche Produkt gefunden. Klicken Sie auf das "
+"korrekte Produkt, um es zu verwenden, oder ignorieren Sie diese Meldung."
 
 #: loco:6151f41acae9ba5e6a4b2a94
 msgid "Website"
-msgstr ""
+msgstr "Website"
 
 #: loco:6151f41acae9ba5e6a4b2a95
 msgid "Weight"
-msgstr ""
+msgstr "Gewicht"
 
 #: loco:6151f41acae9ba5e6a4b2a96
 msgid "Whether this camera is equipment with a cooling mechanism."
-msgstr ""
+msgstr "Ob diese Kamera einem Kühlmechanismus hat."
 
 #: loco:6151f41acae9ba5e6a4b2a97
 msgid "Yes"
-msgstr ""
+msgstr "Ja"
 
 #: loco:6151f41acae9ba5e6a4b2a98
 msgid ""
 "You cannot review this edit proposal because there are previous pending "
 "proposals."
 msgstr ""
+"Sie können diesen Änderungsvorschlag nicht überprüfen, da bereits andere "
+"Vorschläge anhängig sind."
 
 #: loco:6151f41acae9ba5e6a4b2a99
 msgid ""
 "You cannot review this edit proposal because you were the one who proposed "
 "it."
 msgstr ""
+"Sie können diesen Änderungsvorschlag nicht überprüfen, weil Sie ihn selbst "
+"vorgeschlagen haben."
 
 #: loco:616beb23b6a5125b01510b92
 msgid "Display download menu"
