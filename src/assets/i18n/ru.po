@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: AstroBin Angular App\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-03 14:04+0200\n"
-"PO-Revision-Date: 2021-10-18 21:53+0200\n"
+"PO-Revision-Date: 2021-12-09 21:33+0100\n"
 "Last-Translator: Salvatore Iovene\n"
 "Language-Team: Russian\n"
 "Language: ru\n"
@@ -2006,4 +2006,737 @@ msgstr ""
 
 #: loco:616beb23b6a5125b01510b98
 msgid "You may have up to {{0}} revisions per image."
+msgstr ""
+
+#: loco:61b24fc53b045a3393550432
+msgid "(DIY)"
+msgstr ""
+
+#: loco:61b24fc53b045a3393550433
+msgid "(modified)"
+msgstr ""
+
+#: loco:61b24fc53b045a3393550434
+msgid "1 like"
+msgstr ""
+
+#: loco:61b24fc53b045a3393550435
+msgid "A-Z explorer"
+msgstr ""
+
+#: loco:61b24fc53b045a3393550436
+msgid "Accessory"
+msgstr ""
+
+#: loco:61b24fc53b045a3393550437
+msgid "Add a comment"
+msgstr ""
+
+#: loco:61b24fc53b045a3393550438
+msgid "Alt-Alt (altitude-altitude)"
+msgstr ""
+
+#: loco:61b24fc53b045a3393550439
+msgid "Alt-Az (altazimuth)"
+msgstr ""
+
+#: loco:61b24fc53b045a339355043a
+msgid "An error occurred"
+msgstr ""
+
+#: loco:61b24fc53b045a339355043b
+msgid "An item of the same class, brand, and name already exists."
+msgstr ""
+
+#: loco:61b24fc53b045a339355043c
+msgid "Approve"
+msgstr ""
+
+#: loco:61b24fc53b045a339355043d
+msgid "Approve edit"
+msgstr ""
+
+#: loco:61b24fc53b045a339355043e
+msgid "Approved"
+msgstr ""
+
+#: loco:61b24fc53b045a339355043f
+msgid "Are you sure?"
+msgstr ""
+
+#: loco:61b24fc53b045a3393550440
+msgid ""
+"AstroBin would like to rename some of your gear items in order to be more "
+"consistent with naming conventions."
+msgstr ""
+
+#: loco:61b24fc53b045a3393550441
+msgid "AstroBin's new equipment database is still work in progress."
+msgstr ""
+
+#: loco:61b24fc53b045a3393550442
+msgid "Automatically create \"modified\" variant"
+msgstr ""
+
+#: loco:61b24fc53b045a3393550443
+msgid "Bad request"
+msgstr ""
+
+#: loco:61b24fc53b045a3393550444
+msgid "Bandwidth"
+msgstr ""
+
+#: loco:61b24fc53b045a3393550445
+msgid "Binoculars"
+msgstr ""
+
+#: loco:61b24fc53b045a3393550446
+msgid "Blue channel (B)"
+msgstr ""
+
+#: loco:61b24fc53b045a3393550447
+msgid "Brand/Make"
+msgstr ""
+
+#: loco:61b24fc53b045a3393550448
+msgid "Camera lens"
+msgstr ""
+
+#: loco:61b24fc53b045a3393550449
+msgid "Catadioptric: ACF Schmidt-Cassegrain"
+msgstr ""
+
+#: loco:61b24fc53b045a339355044a
+msgid "Catadioptric: Argunov-Cassegrain"
+msgstr ""
+
+#: loco:61b24fc53b045a339355044b
+msgid "Catadioptric: Klevtsov-Cassegrain"
+msgstr ""
+
+#: loco:61b24fc53b045a339355044c
+msgid "Catadioptric: Lurie-Houghton"
+msgstr ""
+
+#: loco:61b24fc53b045a339355044d
+msgid "Catadioptric: Maksutov"
+msgstr ""
+
+#: loco:61b24fc53b045a339355044e
+msgid "Catadioptric: Maksutov-Cassegrain"
+msgstr ""
+
+#: loco:61b24fc53b045a339355044f
+msgid "Catadioptric: Rowe-Atkinson Schmidt astrograph"
+msgstr ""
+
+#: loco:61b24fc53b045a3393550450
+msgid "Catadioptric: Schmidt camera"
+msgstr ""
+
+#: loco:61b24fc53b045a3393550451
+msgid "Catadioptric: Schmidt-Cassegrain"
+msgstr ""
+
+#: loco:61b24fc53b045a3393550452
+msgid "Catadioptric: modified Dall-Kirkham"
+msgstr ""
+
+#: loco:61b24fc53b045a3393550453
+msgid ""
+"Check this box if this item is self-made, and/or was never on the market as "
+"a commercial product, and therefore does not have a brand."
+msgstr ""
+
+#: loco:61b24fc53b045a3393550454
+msgid "Color or mono"
+msgstr ""
+
+#: loco:61b24fc53b045a3393550455
+msgid "Cometary"
+msgstr ""
+
+#: loco:61b24fc53b045a3393550456
+msgid "Comment"
+msgstr ""
+
+#: loco:61b24fc53b045a3393550457
+msgid "Computerized"
+msgstr ""
+
+#: loco:61b24fc53b045a3393550458
+msgid "Confirm migration"
+msgstr ""
+
+#: loco:61b24fc53b045a3393550459
+msgid "Confirm selected migrations"
+msgstr ""
+
+#: loco:61b24fc53b045a339355045a
+msgid "Conflict detected"
+msgstr ""
+
+#: loco:61b24fc53b045a339355045b
+msgid "Create"
+msgstr ""
+
+#: loco:61b24fc53b045a339355045c
+msgid "Created by"
+msgstr ""
+
+#: loco:61b24fc53b045a339355045d
+msgid "DIY"
+msgstr ""
+
+#: loco:61b24fc53b045a339355045e
+msgid "Dobsonian"
+msgstr ""
+
+#: loco:61b24fc53b045a339355045f
+msgid "Don't remind me for a month"
+msgstr ""
+
+#: loco:61b24fc53b045a3393550460
+msgid "Editing this field is not possible."
+msgstr ""
+
+#: loco:61b24fc53b045a3393550461
+msgid "Equatorial"
+msgstr ""
+
+#: loco:61b24fc53b045a3393550462
+msgid "Filter"
+msgstr ""
+
+#: loco:61b24fc53b045a3393550463
+msgid "Fixed focal length"
+msgstr ""
+
+#: loco:61b24fc53b045a3393550464
+msgid "Fork"
+msgstr ""
+
+#: loco:61b24fc53b045a3393550465
+msgid "Gear renaming proposals"
+msgstr ""
+
+#: loco:61b24fc53b045a3393550466
+msgid "German equatorial"
+msgstr ""
+
+#: loco:61b24fc53b045a3393550467
+msgid "Get random"
+msgstr ""
+
+#: loco:61b24fc53b045a3393550468
+msgid "Green channel (G)"
+msgstr ""
+
+#: loco:61b24fc53b045a3393550469
+msgid "Hexapod"
+msgstr ""
+
+#: loco:61b24fc53b045a339355046a
+msgid "Hydrogen-alpha (Hα)"
+msgstr ""
+
+#: loco:61b24fc53b045a339355046b
+msgid "Hydrogen-beta (Hβ)"
+msgstr ""
+
+#: loco:61b24fc53b045a339355046c
+msgid ""
+"If selected, AstroBin will automatically create a variant of this object "
+"that is labeled as <em>modified for astrophotography</em>."
+msgstr ""
+
+#: loco:61b24fc53b045a339355046d
+msgid "If you can reproduce this issue reliably, please contact us."
+msgstr ""
+
+#: loco:61b24fc53b045a339355046e
+msgid "Infrared (IR)"
+msgstr ""
+
+#: loco:61b24fc53b045a339355046f
+msgid "Internal server error"
+msgstr ""
+
+#: loco:61b24fc53b045a3393550470
+msgid "Item approved."
+msgstr ""
+
+#: loco:61b24fc53b045a3393550471
+msgid "Item rejected."
+msgstr ""
+
+#: loco:61b24fc53b045a3393550472
+msgid "Last update"
+msgstr ""
+
+#: loco:61b24fc53b045a3393550473
+msgid "Legacy item being migrated"
+msgstr ""
+
+#: loco:61b24fc53b045a3393550474
+msgid "Light pollution suppression"
+msgstr ""
+
+#: loco:61b24fc53b045a3393550475
+msgid "Loading edit proposals"
+msgstr ""
+
+#: loco:61b24fc53b045a3393550476
+msgid "Login required"
+msgstr ""
+
+#: loco:61b24fc53b045a3393550477
+msgid "Luminance/clear (L)"
+msgstr ""
+
+#: loco:61b24fc53b045a3393550478
+msgid "Lunar"
+msgstr ""
+
+#: loco:61b24fc53b045a3393550479
+msgid "Mark as"
+msgstr ""
+
+#: loco:61b24fc53b045a339355047a
+msgid "Max. payload"
+msgstr ""
+
+#: loco:61b24fc53b045a339355047b
+msgid "Migrate"
+msgstr ""
+
+#: loco:61b24fc53b045a339355047c
+msgid "Migrate into"
+msgstr ""
+
+#: loco:61b24fc53b045a339355047d
+msgid "Modified"
+msgstr ""
+
+#: loco:61b24fc53b045a339355047e
+msgid "Mount"
+msgstr ""
+
+#: loco:61b24fc53b045a339355047f
+msgid "Multiband"
+msgstr ""
+
+#: loco:61b24fc53b045a3393550480
+msgid "Multiple items"
+msgstr ""
+
+#: loco:61b24fc53b045a3393550481
+msgid "Name/Model"
+msgstr ""
+
+#: loco:61b24fc53b045a3393550482
+msgid "Neutral density (ND)"
+msgstr ""
+
+#: loco:61b24fc53b045a3393550483
+msgid "Newest first"
+msgstr ""
+
+#: loco:61b24fc53b045a3393550484
+msgid "Nitrogen-II (NII)"
+msgstr ""
+
+#: loco:61b24fc53b045a3393550485
+msgid "No changes are proposed, or all proposed changes are outdated."
+msgstr ""
+
+#: loco:61b24fc53b045a3393550486
+msgid "Not enough info"
+msgstr ""
+
+#: loco:61b24fc53b045a3393550487
+msgid "Number of pixels"
+msgstr ""
+
+#: loco:61b24fc53b045a3393550488
+msgid "Object ID"
+msgstr ""
+
+#: loco:61b24fc53b045a3393550489
+msgid "Oldest first"
+msgstr ""
+
+#: loco:61b24fc53b045a339355048a
+msgid "Oxygen-III (OIII)"
+msgstr ""
+
+#: loco:61b24fc53b045a339355048b
+msgid "PEC"
+msgstr ""
+
+#: loco:61b24fc53b045a339355048c
+msgid "Periodic error correction"
+msgstr ""
+
+#: loco:61b24fc53b045a339355048d
+msgid "Photometric Blue"
+msgstr ""
+
+#: loco:61b24fc53b045a339355048e
+msgid "Photometric Infrared"
+msgstr ""
+
+#: loco:61b24fc53b045a339355048f
+msgid "Photometric Red"
+msgstr ""
+
+#: loco:61b24fc53b045a3393550490
+msgid "Photometric Ultraviolet"
+msgstr ""
+
+#: loco:61b24fc53b045a3393550491
+msgid "Photometric Visual"
+msgstr ""
+
+#: loco:61b24fc53b045a3393550492
+msgid "Pinch & zoom to view details closer."
+msgstr ""
+
+#: loco:61b24fc53b045a3393550493
+msgid "Please DO NOT approve this item if it's a duplicate of another one!"
+msgstr ""
+
+#: loco:61b24fc53b045a3393550494
+msgid ""
+"Please only do this for DSLR camera that typically are modified for "
+"astrophotography. If this is a camera that is <em>specifically</em> sold as "
+"modified for astrophotography, e.g. the <strong>Canon EOS 60Da</strong> you "
+"<strong>do not</strong> need to use check this option."
+msgstr ""
+
+#: loco:61b24fc53b045a3393550495
+msgid "Please read the equipment migration guidelines"
+msgstr ""
+
+#: loco:61b24fc53b045a3393550496
+msgid ""
+"Please use a device with a minimum horizontal resolution of 1024 pixels to "
+"view this content."
+msgstr ""
+
+#: loco:61b24fc53b045a3393550497
+msgid "Portable English"
+msgstr ""
+
+#: loco:61b24fc53b045a3393550498
+msgid "Proposed by"
+msgstr ""
+
+#: loco:61b24fc53b045a3393550499
+msgid "Read"
+msgstr ""
+
+#: loco:61b24fc53b045a339355049a
+msgid "Reason"
+msgstr ""
+
+#: loco:61b24fc53b045a339355049b
+msgid "Red channel (R)"
+msgstr ""
+
+#: loco:61b24fc53b045a339355049c
+msgid "Reflector: Dall-Kirkham"
+msgstr ""
+
+#: loco:61b24fc53b045a339355049d
+msgid "Reflector: Gregorian"
+msgstr ""
+
+#: loco:61b24fc53b045a339355049e
+msgid "Reflector: Herschellian"
+msgstr ""
+
+#: loco:61b24fc53b045a339355049f
+msgid "Reflector: Nasmyth"
+msgstr ""
+
+#: loco:61b24fc53b045a33935504a0
+msgid "Reflector: Newtonian"
+msgstr ""
+
+#: loco:61b24fc53b045a33935504a1
+msgid "Reflector: Ritchey Chretien"
+msgstr ""
+
+#: loco:61b24fc53b045a33935504a2
+msgid "Refractor: apochromatic"
+msgstr ""
+
+#: loco:61b24fc53b045a33935504a3
+msgid "Refractor: non-achromatic Galilean"
+msgstr ""
+
+#: loco:61b24fc53b045a33935504a4
+msgid "Refractor: non-acrhmatic Keplerian"
+msgstr ""
+
+#: loco:61b24fc53b045a33935504a5
+msgid "Refractor: semi-apochromatic"
+msgstr ""
+
+#: loco:61b24fc53b045a33935504a6
+msgid "Refractor: superachromat"
+msgstr ""
+
+#: loco:61b24fc53b045a33935504a7
+msgid "Reject edit"
+msgstr ""
+
+#: loco:61b24fc53b045a33935504a8
+msgid "Reply"
+msgstr ""
+
+#: loco:61b24fc53b045a33935504a9
+msgid "Reviewed by"
+msgstr ""
+
+#: loco:61b24fc53b045a33935504aa
+msgid "Select target item for the migration, or create a new one."
+msgstr ""
+
+#: loco:61b24fc53b045a33935504ab
+msgid "Self-made / non-commercial (no brand)"
+msgstr ""
+
+#: loco:61b24fc53b045a33935504ac
+msgid "Sensors"
+msgstr ""
+
+#: loco:61b24fc53b045a33935504ad
+msgid "Service not available"
+msgstr ""
+
+#: loco:61b24fc53b045a33935504ae
+msgid ""
+"Since a regular and a modified variant of {{0}} were created, we didn't "
+"prefill the item selection dropdown, to allow you to select the correct "
+"variant for this migration."
+msgstr ""
+
+#: loco:61b24fc53b045a33935504af
+msgid "Sky glow"
+msgstr ""
+
+#: loco:61b24fc53b045a33935504b0
+msgid "Slew speed"
+msgstr ""
+
+#: loco:61b24fc53b045a33935504b1
+msgid "Solar"
+msgstr ""
+
+#: loco:61b24fc53b045a33935504b2
+msgid "Something went wrong"
+msgstr ""
+
+#: loco:61b24fc53b045a33935504b3
+msgid "Sort"
+msgstr ""
+
+#: loco:61b24fc53b045a33935504b4
+msgid "Star tracker"
+msgstr ""
+
+#: loco:61b24fc53b045a33935504b5
+msgid "Submit"
+msgstr ""
+
+#: loco:61b24fc53b045a33935504b6
+msgid "Sulfur-II (SII)"
+msgstr ""
+
+#: loco:61b24fc53b045a33935504b7
+msgid "Summary"
+msgstr ""
+
+#: loco:61b24fc53b045a33935504b8
+msgid "Telescopes & lenses"
+msgstr ""
+
+#: loco:61b24fc53b045a33935504b9
+msgid ""
+"Thanks! Your edit proposal has been submitted and will be reviewed as soon "
+"as possible."
+msgstr ""
+
+#: loco:61b24fc53b045a33935504ba
+msgid ""
+"The item doesn't seem to have the correct brand, or the brand is misspelled, "
+"or it's the duplicate of an existing brand."
+msgstr ""
+
+#: loco:61b24fc53b045a33935504bb
+msgid "The item has a typo in its name"
+msgstr ""
+
+#: loco:61b24fc53b045a33935504bc
+msgid "The item has insufficient data"
+msgstr ""
+
+#: loco:61b24fc53b045a33935504bd
+msgid "The item has some inaccurate data"
+msgstr ""
+
+#: loco:61b24fc53b045a33935504be
+msgid ""
+"The recommended naming convention for camera lenses is: optional model name, "
+"focal length range, f-ratio range, additional properties. E.g. <strong>"
+"Nikkor Z 28mm f/2.8 (SE)</strong>."
+msgstr ""
+
+#: loco:61b24fc53b045a33935504bf
+msgid "The requested resource does not exist"
+msgstr ""
+
+#: loco:61b24fc53b045a33935504c0
+msgid ""
+"The revision's title will be shown as an addendum to the original image's "
+"title."
+msgstr ""
+
+#: loco:61b24fc53b045a33935504c1
+msgid "The target item doesn't seem to have the correct brand"
+msgstr ""
+
+#: loco:61b24fc53b045a33935504c2
+msgid "The target item has a typo in its name"
+msgstr ""
+
+#: loco:61b24fc53b045a33935504c3
+msgid "The target item has insufficient data"
+msgstr ""
+
+#: loco:61b24fc53b045a33935504c4
+msgid "The target item has some inaccurate data"
+msgstr ""
+
+#: loco:61b24fc53b045a33935504c5
+msgid "There are no comments yet."
+msgstr ""
+
+#: loco:61b24fc53b045a33935504c6
+msgid ""
+"There are no more items of this type to migrate. Check other equipment types."
+msgstr ""
+
+#: loco:61b24fc53b045a33935504c7
+msgid "This LEGACY item needs to be migrated"
+msgstr ""
+
+#: loco:61b24fc53b045a33935504c8
+msgid ""
+"This item has not been approved yet, so it's not available to be associated "
+"with images."
+msgstr ""
+
+#: loco:61b24fc53b045a33935504c9
+msgid ""
+"This item will be part of AstorBin's equipment database, and it's very "
+"important that the information is accurate and this item is not the "
+"duplicate of another."
+msgstr ""
+
+#: loco:61b24fc53b045a33935504ca
+msgid ""
+"This should never happen. AstroBin's staff has been notified automatically "
+"and will solve the problem as soon as possible."
+msgstr ""
+
+#: loco:61b24fc53b045a33935504cb
+msgid "This should never happen. If the problem persists, please contact us."
+msgstr ""
+
+#: loco:61b24fc53b045a33935504cc
+msgid "Tracking accuracy"
+msgstr ""
+
+#: loco:61b24fc53b045a33935504cd
+msgid "Transit"
+msgstr ""
+
+#: loco:61b24fc53b045a33935504ce
+msgid "Ultra High Contrast (UHC)"
+msgstr ""
+
+#: loco:61b24fc53b045a33935504cf
+msgid "Ultraviolet (UV)"
+msgstr ""
+
+#: loco:61b24fc53b045a33935504d0
+msgid "Validation error"
+msgstr ""
+
+#: loco:61b24fc53b045a33935504d1
+msgid "We found the following similar items from the same brand."
+msgstr ""
+
+#: loco:61b24fc53b045a33935504d2
+msgid "Wedged Alt-Az"
+msgstr ""
+
+#: loco:61b24fc53b045a33935504d3
+msgid "When"
+msgstr ""
+
+#: loco:61b24fc53b045a33935504d4
+msgid ""
+"When an image is dismissed by {{0}} members of the IOTD/TP staff, it's "
+"automatically removed from all queues. Please only perform this action if "
+"you want to vote against this image advancing in the process."
+msgstr ""
+
+#: loco:61b24fc53b045a33935504d5
+msgid "Wrong type"
+msgstr ""
+
+#: loco:61b24fc53b045a33935504d6
+msgid ""
+"You are already logged in or were logged in automatically from the "
+"application's backend."
+msgstr ""
+
+#: loco:61b24fc53b045a33935504d7
+msgid "You tried to access a server resource that you're not authorized for."
+msgstr ""
+
+#: loco:61b24fc53b045a33935504d8
+msgid ""
+"You tried to access a server resource that's only available to logged in "
+"users."
+msgstr ""
+
+#: loco:61b24fc53b045a33935504d9
+msgid ""
+"Your usage of the word \"{{0}}\" suggests that you are trying to add a DIY "
+"item. The AstroBin\n"
+"                    equipment database is meant for products that are (or "
+"have been) on the market and can (or could)\n"
+"                    be purchased. To add a DIY item, please use the "
+"appropriate checkbox during the item's creation."
+msgstr ""
+
+#: loco:61b24fc53b045a33935504da
+msgid ""
+"Your usage of the word \"{{0}}\" suggests that you are using this field to "
+"specify a property of this item that is only relevant to your own copy. "
+"Remember that here you are creating or editing the generic instance that "
+"will be shared by all owners on AstroBin."
+msgstr ""
+
+#: loco:61b24fc53b045a33935504db
+msgid "consider making an edit proposal instead."
+msgstr ""
+
+#: loco:61b24fc53b045a33935504dc
+msgid "{{0}} like"
 msgstr ""
