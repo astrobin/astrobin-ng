@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, OnInit, ViewChild } from "@angular/core";
+import { Component, ElementRef, HostBinding, Input, OnInit, ViewChild } from "@angular/core";
 import { ShowFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
 import { LoadSolution } from "@app/store/actions/solution.actions";
 import { selectApp } from "@app/store/selectors/app/app.selectors";
@@ -35,6 +35,8 @@ export abstract class BasePromotionEntryComponent extends BaseComponentDirective
 
   @ViewChild("image", { read: ImageComponent })
   image: ImageComponent;
+
+  @HostBinding("class.card") card = true;
 
   protected constructor(
     public readonly store$: Store<State>,

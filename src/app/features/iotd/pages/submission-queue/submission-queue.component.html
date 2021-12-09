@@ -1,5 +1,4 @@
 <div class="page has-breadcrumb">
-
   <div class="d-flex justify-content-between">
     <h1 class="flex-grow-1">
       {{ "Submission queue" | translate }}
@@ -12,41 +11,33 @@
     <ng-container *ngIf="hiddenImages$ | async as hiddenImages">
       <ng-container *ngIf="promotions$ | async as promotions">
         <ng-container *ngIf="queue?.count > 0; else noEntries">
-
           <astrobin-submission-slots
-            (slotClick)="scrollToEntry($event)" [availableEntries]="queue.results"
+            (slotClick)="scrollToEntry($event)"
+            [availableEntries]="queue.results"
             ngStickyNav
-            stickyClass="sticky-promotion-slots">
+            stickyClass="sticky-promotion-slots"
+          >
           </astrobin-submission-slots>
 
-          <ng-container
-            [ngTemplateOutletContext]="{queue: queue}"
-            [ngTemplateOutlet]="pagination">
-          </ng-container>
+          <ng-container [ngTemplateOutletContext]="{ queue: queue }" [ngTemplateOutlet]="pagination"> </ng-container>
 
           <astrobin-submission-entry
             #promotionQueueEntries
+            id="promotion-queue-entry-{{ entry.pk }}"
             *ngFor="let entry of queue.results"
             [entry]="entry"
-            id="promotion-queue-entry-{{entry.pk}}">
+          >
           </astrobin-submission-entry>
 
-          <ng-container
-            [ngTemplateOutletContext]="{queue: queue}"
-            [ngTemplateOutlet]="pagination">
-          </ng-container>
-
+          <ng-container [ngTemplateOutletContext]="{ queue: queue }" [ngTemplateOutlet]="pagination"> </ng-container>
         </ng-container>
       </ng-container>
     </ng-container>
   </ng-container>
-
 </div>
 
 <ng-template #noEntries>
-  <p>
-    {{ "The submission queue is currently empty." | translate }}&nbsp;{{ "Please come back later!" | translate }}
-  </p>
+  <p>{{ "The submission queue is currently empty." | translate }}&nbsp;{{ "Please come back later!" | translate }}</p>
 </ng-template>
 
 <ng-template #pagination let-queue="queue">
@@ -55,7 +46,8 @@
     *ngIf="queue.count > queue.results.length"
     [(page)]="page"
     [collectionSize]="queue.count"
-    [pageSize]="pageSize$ | async">
+    [pageSize]="pageSize$ | async"
+  >
   </ngb-pagination>
 </ng-template>
 
