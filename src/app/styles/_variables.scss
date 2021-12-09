@@ -33,6 +33,7 @@ $gold: gold;
 
 $info: theme-color("info");
 $text-on-info: $white;
+$info-light: lighten($info, 5%);
 
 $success: theme-color("success");
 $text-on-success: darken(theme-color("success"), 25%);
@@ -99,6 +100,7 @@ $ng-select-value-font-size: 0.9em;
 
   --infoColor: #{theme-color("info")};
   --textOnInfoColor: #{$text-on-info};
+  --infoLight: #{$info-light};
 
   --successColor: #{theme-color("success")};
   --textOnSuccessColor: #{$text-on-success};
