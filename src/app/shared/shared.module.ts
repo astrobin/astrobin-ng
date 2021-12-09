@@ -49,6 +49,7 @@ import { JsonApiService } from "@shared/services/api/classic/json/json-api.servi
 import { CustomMissingTranslationHandler } from "@app/missing-translation-handler";
 import { CustomTranslateParser } from "@app/translate-parser";
 import { LanguageLoader } from "@app/translate-loader";
+import { CustomToastComponent } from "@shared/components/misc/custom-toast/custom-toast.component";
 
 export function appInitializer(store: Store<State>, actions$: Actions) {
   return () =>
@@ -106,7 +107,8 @@ export function appInitializer(store: Store<State>, actions$: Actions) {
       timeOut: 20000,
       progressBar: true,
       preventDuplicates: true,
-      resetTimeoutOnDuplicate: true
+      resetTimeoutOnDuplicate: true,
+      toastComponent: CustomToastComponent
     }),
     TranslateModule.forChild({
       missingTranslationHandler: {

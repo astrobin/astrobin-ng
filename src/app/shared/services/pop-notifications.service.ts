@@ -4,6 +4,16 @@ import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { ActiveToast, IndividualConfig, ToastrService } from "ngx-toastr";
 
+export interface ToastButtonInterface {
+  id: string;
+  title: string;
+  classList: string;
+}
+
+export interface ExtendedIndividualConfig extends IndividualConfig {
+  buttons: ToastButtonInterface[];
+}
+
 @Injectable({
   providedIn: "root"
 })
@@ -16,19 +26,19 @@ export class PopNotificationsService extends BaseService {
     super(loadingService);
   }
 
-  public success(message: string, title?: string, options?: Partial<IndividualConfig>): ActiveToast<any> {
+  public success(message: string, title?: string, options?: Partial<ExtendedIndividualConfig>): ActiveToast<any> {
     return this.toastr.success(message, title ? title : this.translate.instant("Success!"), options);
   }
 
-  public info(message: string, title?: string, options?: Partial<IndividualConfig>): ActiveToast<any> {
+  public info(message: string, title?: string, options?: Partial<ExtendedIndividualConfig>): ActiveToast<any> {
     return this.toastr.info(message, title ? title : this.translate.instant("Info"), options);
   }
 
-  public warning(message: string, title?: string, options?: Partial<IndividualConfig>): ActiveToast<any> {
+  public warning(message: string, title?: string, options?: Partial<ExtendedIndividualConfig>): ActiveToast<any> {
     return this.toastr.warning(message, title ? title : this.translate.instant("Warning!"), options);
   }
 
-  public error(message: string, title?: string, options?: Partial<IndividualConfig>): ActiveToast<any> {
+  public error(message: string, title?: string, options?: Partial<ExtendedIndividualConfig>): ActiveToast<any> {
     return this.toastr.error(message, title ? title : this.translate.instant("Error!"), options);
   }
 
