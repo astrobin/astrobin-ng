@@ -49,8 +49,8 @@ export class SubmissionQueueComponent extends BasePromotionQueueComponent implem
     );
   }
 
-  loadQueue(page: number): void {
-    this.store$.dispatch(new LoadSubmissionQueue({ page }));
+  loadQueue(page: number, sort: "newest" | "oldest" | "default" = "default"): void {
+    this.store$.dispatch(new LoadSubmissionQueue({ page, sort }));
   }
 
   loadPromotions(): void {

@@ -14,6 +14,7 @@ import { ConfirmDismissModalComponent } from "./components/confirm-dismiss-modal
 import { SubmissionQueueComponent } from "./pages/submission-queue/submission-queue.component";
 import { IotdEffects } from "./store/iotd.effects";
 import * as fromIotd from "./store/iotd.reducer";
+import { QueueSortButtonComponent } from "./components/queue-sort-button/queue-sort-button.component";
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import * as fromIotd from "./store/iotd.reducer";
     ReviewSlotsComponent,
     ReviewQueueComponent,
     SubmissionQueueComponent,
-    ConfirmDismissModalComponent
+    ConfirmDismissModalComponent,
+    QueueSortButtonComponent
   ],
   imports: [
     RouterModule.forChild(routes),

@@ -60,7 +60,7 @@ export enum IotdActionTypes {
 export class LoadSubmissionQueue implements Action {
   readonly type = IotdActionTypes.LOAD_SUBMISSION_QUEUE;
 
-  constructor(public payload: { page: number } = { page: 1 }) {}
+  constructor(public payload: { page: number; sort: "newest" | "oldest" | "default" } = { page: 1, sort: "default" }) {}
 }
 
 export class LoadSubmissionQueueSuccess implements Action {
@@ -183,7 +183,9 @@ export class DismissConfirmationSeen implements Action {
 export class LoadReviewQueue implements Action {
   readonly type = IotdActionTypes.LOAD_REVIEW_QUEUE;
 
-  constructor(public payload: { page: number } = { page: 1 }) {}
+  constructor(
+    public payload: { page: number; sort?: "newest" | "oldest" | "default" } = { page: 1, sort: "default" }
+  ) {}
 }
 
 export class LoadReviewQueueSuccess implements Action {

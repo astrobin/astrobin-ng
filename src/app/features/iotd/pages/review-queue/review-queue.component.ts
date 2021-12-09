@@ -49,8 +49,8 @@ export class ReviewQueueComponent extends BasePromotionQueueComponent implements
     );
   }
 
-  loadQueue(page: number): void {
-    this.store$.dispatch(new LoadReviewQueue({ page }));
+  loadQueue(page: number, sort: "newest" | "oldest" | "default" = "default"): void {
+    this.store$.dispatch(new LoadReviewQueue({ page, sort }));
   }
 
   loadPromotions(): void {

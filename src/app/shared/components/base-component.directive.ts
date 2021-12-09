@@ -6,7 +6,6 @@ import { UserInterface } from "@shared/interfaces/user.interface";
 import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
 import { filter, map, withLatestFrom } from "rxjs/operators";
 import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
-import { LoadContentType } from "@app/store/actions/content-type.actions";
 import { selectContentType } from "@app/store/selectors/app/content-type.selectors";
 
 @Directive()

@@ -5,7 +5,10 @@
       {{ "Review queue" | translate }}
     </h1>
 
-    <astrobin-refresh-button (click)="refresh()"></astrobin-refresh-button>
+    <div class="options">
+      <astrobin-queue-sort-button class="mr-2" (selected)="refresh($event)"></astrobin-queue-sort-button>
+      <astrobin-refresh-button (click)="refresh()"></astrobin-refresh-button>
+    </div>
   </div>
 
   <ng-container *ngIf="queue$ | async as queue; else loading">
