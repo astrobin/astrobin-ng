@@ -38,6 +38,8 @@ export abstract class BasePromotionEntryComponent extends BaseComponentDirective
 
   @HostBinding("class.card") card = true;
 
+  @HostBinding("class.hidden") hidden = false;
+
   protected constructor(
     public readonly store$: Store<State>,
     public readonly elementRef: ElementRef,
@@ -60,7 +62,10 @@ export abstract class BasePromotionEntryComponent extends BaseComponentDirective
   }
 
   isHidden$(imageId: ImageInterface["pk"]): Observable<boolean> {
-    return this.store$.select(selectHiddenImageByImageId, imageId).pipe(map(hiddenImage => !!hiddenImage));
+    return this.store$.select(selectHiddenImageByImageId, imageId).pipe(
+      map(hiddenImage => !!hiddenImage),
+      tap(isHidden => (this.hidden = isHidden))
+    );
   }
 
   hide(imageId: ImageInterface["pk"]): void {

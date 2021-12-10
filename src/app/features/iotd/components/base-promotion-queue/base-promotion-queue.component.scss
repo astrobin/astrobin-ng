@@ -7,14 +7,17 @@
   }
 
   astrobin-submission-slots,
-  astrobin-submission-entry,
   astrobin-submission-slots,
-  astrobin-submission-entry,
   astrobin-review-slots,
-  astrobin-review-entry,
-  astrobin-review-slots,
-  astrobin-review-entry {
+  astrobin-review-slots {
     margin-bottom: 2rem;
+  }
+
+  astrobin-submission-entry,
+  astrobin-submission-entry,
+  astrobin-review-entry,
+  astrobin-review-entry {
+    margin-bottom: 1.5rem;
   }
 
   .sticky-promotion-slots {
