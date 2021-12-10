@@ -34,6 +34,8 @@ context("IOTD Submission queue", () => {
         "getCurrentUserProfile"
       );
       cy.route("GET", "**/common/users/*", "fixture:api/common/users_3_iotd_submitter.json").as("getUser");
+
+      cy.route("GET", "**/iotd/staff-member-settings/", { user: 1, queueSortOrder: "OLDEST" });
     });
 
     it("should render page elements", () => {

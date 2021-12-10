@@ -4,21 +4,16 @@ import {
   SubmissionInterface,
   VoteInterface
 } from "@features/iotd/services/iotd-api.service";
-import { ImageInterface } from "@shared/interfaces/image.interface";
 import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
 import { IotdActions, IotdActionTypes } from "./iotd.actions";
+import { SubmissionImageInterface } from "@features/iotd/types/submission-image.interface";
+import { ReviewImageInterface } from "@features/iotd/types/review-image.interface";
+import { QueueSortOrder, StaffMemberSettingsInterface } from "@features/iotd/types/staff-member-settings.interface";
 
 export const iotdFeatureKey = "iotd";
 
-// tslint:disable-next-line:no-empty-interface
-export interface SubmissionImageInterface extends ImageInterface {}
-
-// tslint:disable-next-line:no-empty-interface
-export interface ReviewImageInterface extends ImageInterface {}
-
-export type PromotionImageInterface = SubmissionImageInterface | ReviewImageInterface;
-
 export interface IotdState {
+  staffMemberSettings: StaffMemberSettingsInterface;
   submissionQueue: PaginatedApiResultInterface<SubmissionImageInterface> | null;
   submissions: SubmissionInterface[];
 
@@ -31,6 +26,8 @@ export interface IotdState {
 }
 
 export const initialIotdState: IotdState = {
+  staffMemberSettings: null,
+
   submissionQueue: null,
   submissions: [],
 
@@ -44,6 +41,13 @@ export const initialIotdState: IotdState = {
 
 export function reducer(state = initialIotdState, action: IotdActions): IotdState {
   switch (action.type) {
+    case IotdActionTypes.LOAD_STAFF_MEMBER_SETTINGS_SUCCESS: {
+      return {
+        ...state,
+        staffMemberSettings: action.payload.settings
+      };
+    }
+
     case IotdActionTypes.LOAD_SUBMISSION_QUEUE_SUCCESS:
       return {
         ...state,

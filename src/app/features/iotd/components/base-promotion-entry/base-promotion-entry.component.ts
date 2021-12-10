@@ -6,7 +6,6 @@ import { selectSolution } from "@app/store/selectors/app/solution.selectors";
 import { State } from "@app/store/state";
 import { ConfirmDismissModalComponent } from "@features/iotd/components/confirm-dismiss-modal/confirm-dismiss-modal.component";
 import { DismissConfirmationSeen, DismissImage, HideImage, ShowImage } from "@features/iotd/store/iotd.actions";
-import { PromotionImageInterface } from "@features/iotd/store/iotd.reducer";
 import {
   selectDismissConfirmationSeen,
   selectDismissedImageByImageId,
@@ -21,6 +20,7 @@ import { SolutionInterface } from "@shared/interfaces/solution.interface";
 import { Observable } from "rxjs";
 import { map, switchMap, take, tap } from "rxjs/operators";
 import { ImageInterface } from "@shared/interfaces/image.interface";
+import { PromotionImageInterface } from "@features/iotd/types/promotion-image.interface";
 
 @Component({
   selector: "astrobin-base-promotion-entry",
@@ -37,6 +37,8 @@ export abstract class BasePromotionEntryComponent extends BaseComponentDirective
   image: ImageComponent;
 
   @HostBinding("class.card") card = true;
+
+  @HostBinding("class.hidden") hidden = false;
 
   protected constructor(
     public readonly store$: Store<State>,
@@ -60,7 +62,10 @@ export abstract class BasePromotionEntryComponent extends BaseComponentDirective
   }
 
   isHidden$(imageId: ImageInterface["pk"]): Observable<boolean> {
-    return this.store$.select(selectHiddenImageByImageId, imageId).pipe(map(hiddenImage => !!hiddenImage));
+    return this.store$.select(selectHiddenImageByImageId, imageId).pipe(
+      map(hiddenImage => !!hiddenImage),
+      tap(isHidden => (this.hidden = isHidden))
+    );
   }
 
   hide(imageId: ImageInterface["pk"]): void {

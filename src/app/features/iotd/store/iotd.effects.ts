@@ -2,8 +2,6 @@ import { Injectable } from "@angular/core";
 import { LoadImages } from "@app/store/actions/image.actions";
 import { LoadSolutions } from "@app/store/actions/solution.actions";
 import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
-import { selectImages } from "@app/store/selectors/app/image.selectors";
-import { selectSolutions } from "@app/store/selectors/app/solution.selectors";
 import { State } from "@app/store/state";
 import { IotdApiService } from "@features/iotd/services/iotd-api.service";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
@@ -13,7 +11,7 @@ import { LoadingService } from "@shared/services/loading.service";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { of } from "rxjs";
-import { catchError, map, mergeMap, skip, switchMap, take, tap } from "rxjs/operators";
+import { catchError, map, mergeMap, switchMap, tap } from "rxjs/operators";
 import {
   DeleteSubmissionFailure,
   DeleteSubmissionSuccess,
@@ -27,6 +25,8 @@ import {
   LoadHiddenImagesSuccess,
   LoadReviewQueueFailure,
   LoadReviewQueueSuccess,
+  LoadStaffMemberSettings,
+  LoadStaffMemberSettingsSuccess,
   LoadSubmissionQueueFailure,
   LoadSubmissionQueueSuccess,
   LoadSubmissionsFailure,
@@ -42,6 +42,17 @@ import {
 
 @Injectable()
 export class IotdEffects {
+  loadStaffMemberSettings$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(IotdActionTypes.LOAD_STAFF_MEMBER_SETTINGS),
+      mergeMap(action =>
+        this.iotdApiService
+          .getStaffMemberSettings()
+          .pipe(map(settings => new LoadStaffMemberSettingsSuccess({ settings })))
+      )
+    )
+  );
+
   loadSubmissionQueue$ = createEffect(() =>
     this.actions$.pipe(
       ofType(IotdActionTypes.LOAD_SUBMISSION_QUEUE),
@@ -57,11 +68,15 @@ export class IotdEffects {
               }))
             )
           ),
-          tap(({ entries, contentTypeId }) =>
+          tap(({ entries, contentTypeId }) => {
             this.store$.dispatch(
-              new LoadSolutions({ contentType: contentTypeId, objectIds: entries.results.map(entry => "" + entry.pk) })
-            )
-          ),
+              new LoadSolutions({
+                contentType: contentTypeId,
+                objectIds: entries.results.map(entry => "" + entry.pk)
+              })
+            );
+            this.store$.dispatch(new LoadStaffMemberSettings());
+          }),
           map(({ entries, contentTypeId }) => new LoadSubmissionQueueSuccess(entries)),
           catchError(error => of(new LoadSubmissionQueueFailure()))
         )
@@ -303,11 +318,15 @@ export class IotdEffects {
               }))
             )
           ),
-          tap(({ entries, contentTypeId }) =>
+          tap(({ entries, contentTypeId }) => {
             this.store$.dispatch(
-              new LoadSolutions({ contentType: contentTypeId, objectIds: entries.results.map(entry => "" + entry.pk) })
-            )
-          ),
+              new LoadSolutions({
+                contentType: contentTypeId,
+                objectIds: entries.results.map(entry => "" + entry.pk)
+              })
+            );
+            this.store$.dispatch(new LoadStaffMemberSettings());
+          }),
           map(({ entries, contentTypeId }) => new LoadReviewQueueSuccess(entries)),
           catchError(() => of(new LoadReviewQueueFailure()))
         )

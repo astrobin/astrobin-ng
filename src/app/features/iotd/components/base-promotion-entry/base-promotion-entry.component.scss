@@ -1,8 +1,22 @@
 @import "../../../../styles/breakpoints";
 
-
 :host {
   display: block;
+
+  &.hidden {
+    opacity: 0.5;
+    box-shadow: none;
+
+    .card-header {
+      padding: 0.25rem 1rem;
+      font-size: 0.85rem;
+
+      .btn {
+        font-size: 0.85rem;
+        padding: 0.25rem 0.5rem;
+      }
+    }
+  }
 }
 
 .card-body {
@@ -26,6 +40,6 @@
 .col-gear {
   padding: 1rem;
   p {
-    margin: .25rem;
+    margin: 0.25rem;
   }
 }

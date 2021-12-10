@@ -4,7 +4,6 @@ import { State } from "@app/store/state";
 import { BasePromotionQueueComponent } from "@features/iotd/components/base-promotion-queue/base-promotion-queue.component";
 import { VoteInterface } from "@features/iotd/services/iotd-api.service";
 import { LoadReviewQueue, LoadVotes } from "@features/iotd/store/iotd.actions";
-import { ReviewImageInterface } from "@features/iotd/store/iotd.reducer";
 import { selectReviewQueue, selectReviews } from "@features/iotd/store/iotd.selectors";
 import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
@@ -16,6 +15,8 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 import { Observable } from "rxjs";
 import { ActivatedRoute, Router } from "@angular/router";
 import { CookieService } from "ngx-cookie-service";
+import { ReviewImageInterface } from "@features/iotd/types/review-image.interface";
+import { Actions } from "@ngrx/effects";
 
 @Component({
   selector: "astrobin-review-queue",
@@ -28,6 +29,7 @@ export class ReviewQueueComponent extends BasePromotionQueueComponent implements
 
   constructor(
     public readonly store$: Store<State>,
+    public readonly actions$: Actions,
     public readonly router: Router,
     public readonly activatedRoute: ActivatedRoute,
     public readonly translateService: TranslateService,
@@ -36,7 +38,16 @@ export class ReviewQueueComponent extends BasePromotionQueueComponent implements
     public readonly windowRefService: WindowRefService,
     public readonly cookieService: CookieService
   ) {
-    super(store$, router, activatedRoute, popNotificationsService, translateService, windowRefService, cookieService);
+    super(
+      store$,
+      actions$,
+      router,
+      activatedRoute,
+      popNotificationsService,
+      translateService,
+      windowRefService,
+      cookieService
+    );
   }
 
   ngOnInit(): void {
