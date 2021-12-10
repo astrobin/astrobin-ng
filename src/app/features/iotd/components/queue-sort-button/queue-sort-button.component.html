@@ -10,12 +10,16 @@
   </button>
 
   <div aria-labelledby="sort-dropdown-button" ngbDropdownMenu>
-    <a href="#" appEventPreventDefault class="dropdown-item" (click)="selected.emit('newest')">
+    <button class="dropdown-item" (click)="queueSortOrderChanged.emit('newest')">
+      <fa-icon *ngIf="(newestFirst$ | async) === true" icon="dot-circle"></fa-icon>
+      <fa-icon *ngIf="(newestFirst$ | async) === false" icon="circle"></fa-icon>
       {{ "Newest first" | translate }}
-    </a>
+    </button>
 
-    <a href="#" appEventPreventDefault class="dropdown-item" (click)="selected.emit('oldest')">
+    <button class="dropdown-item" (click)="queueSortOrderChanged.emit('oldest')">
+      <fa-icon *ngIf="(oldestFirst$ | async) === true" icon="dot-circle"></fa-icon>
+      <fa-icon *ngIf="(oldestFirst$ | async) === false" icon="circle"></fa-icon>
       {{ "Oldest first" | translate }}
-    </a>
+    </button>
   </div>
 </div>

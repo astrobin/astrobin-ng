@@ -1,11 +1,13 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { ReviewImageInterface, SubmissionImageInterface } from "@features/iotd/store/iotd.reducer";
 import { BaseClassicApiService } from "@shared/services/api/classic/base-classic-api.service";
 import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
 import { LoadingService } from "@shared/services/loading.service";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
+import { SubmissionImageInterface } from "@features/iotd/types/submission-image.interface";
+import { ReviewImageInterface } from "@features/iotd/types/review-image.interface";
+import { StaffMemberSettingsInterface } from "@features/iotd/types/staff-member-settings.interface";
 
 export interface SubmissionInterface {
   id: number;
@@ -39,6 +41,18 @@ export interface DismissedImage {
 export class IotdApiService extends BaseClassicApiService {
   constructor(public readonly loadingService: LoadingService, public readonly http: HttpClient) {
     super(loadingService);
+  }
+
+  getStaffMemberSettings(): Observable<StaffMemberSettingsInterface | null> {
+    return this.http.get<StaffMemberSettingsInterface[]>(`${this.baseUrl}/iotd/staff-member-settings/`).pipe(
+      map(response => {
+        if (response.length === 0) {
+          return null;
+        }
+
+        return response[0];
+      })
+    );
   }
 
   getSubmissionQueueEntries(

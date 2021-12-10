@@ -6,7 +6,6 @@ import { selectSolution } from "@app/store/selectors/app/solution.selectors";
 import { State } from "@app/store/state";
 import { ConfirmDismissModalComponent } from "@features/iotd/components/confirm-dismiss-modal/confirm-dismiss-modal.component";
 import { DismissConfirmationSeen, DismissImage, HideImage, ShowImage } from "@features/iotd/store/iotd.actions";
-import { PromotionImageInterface } from "@features/iotd/store/iotd.reducer";
 import {
   selectDismissConfirmationSeen,
   selectDismissedImageByImageId,
@@ -21,6 +20,7 @@ import { SolutionInterface } from "@shared/interfaces/solution.interface";
 import { Observable } from "rxjs";
 import { map, switchMap, take, tap } from "rxjs/operators";
 import { ImageInterface } from "@shared/interfaces/image.interface";
+import { PromotionImageInterface } from "@features/iotd/types/promotion-image.interface";
 
 @Component({
   selector: "astrobin-base-promotion-entry",

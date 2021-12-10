@@ -1,13 +1,13 @@
 import { Component, EventEmitter, HostBinding, Input, OnInit, Output, QueryList, ViewChildren } from "@angular/core";
 import { State } from "@app/store/state";
 import { SubmissionInterface, VoteInterface } from "@features/iotd/services/iotd-api.service";
-import { PromotionImageInterface } from "@features/iotd/store/iotd.reducer";
 import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { ImageComponent } from "@shared/components/misc/image/image.component";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
 import { Observable } from "rxjs";
 import { take, takeUntil } from "rxjs/operators";
+import { PromotionImageInterface } from "@features/iotd/types/promotion-image.interface";
 
 interface Slot {
   id: number;

@@ -7,9 +7,17 @@ import {
 import { createFeatureSelector, createSelector } from "@ngrx/store";
 import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
 import * as fromIotd from "./iotd.reducer";
-import { IotdState, ReviewImageInterface, SubmissionImageInterface } from "./iotd.reducer";
+import { IotdState } from "./iotd.reducer";
+import { SubmissionImageInterface } from "@features/iotd/types/submission-image.interface";
+import { ReviewImageInterface } from "@features/iotd/types/review-image.interface";
+import { StaffMemberSettingsInterface } from "@features/iotd/types/staff-member-settings.interface";
 
 export const selectIotdState = createFeatureSelector<fromIotd.IotdState>(fromIotd.iotdFeatureKey);
+
+export const selectStaffMemberSettings = createSelector(
+  selectIotdState,
+  (state: IotdState): StaffMemberSettingsInterface => state.staffMemberSettings
+);
 
 export const selectSubmissionQueue = createSelector(
   selectIotdState,

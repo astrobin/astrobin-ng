@@ -3,7 +3,6 @@ import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
 import { State } from "@app/store/state";
 import { HiddenImage, SubmissionInterface, VoteInterface } from "@features/iotd/services/iotd-api.service";
 import { LoadDismissedImages, LoadHiddenImages } from "@features/iotd/store/iotd.actions";
-import { ReviewImageInterface, SubmissionImageInterface } from "@features/iotd/store/iotd.reducer";
 import { selectHiddenImages } from "@features/iotd/store/iotd.selectors";
 import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
@@ -18,6 +17,9 @@ import { Observable } from "rxjs";
 import { filter, map, switchMap, take, takeUntil } from "rxjs/operators";
 import { ActivatedRoute, Params, Router } from "@angular/router";
 import { CookieService } from "ngx-cookie-service";
+import { SubmissionImageInterface } from "@features/iotd/types/submission-image.interface";
+import { ReviewImageInterface } from "@features/iotd/types/review-image.interface";
+import { Actions } from "@ngrx/effects";
 
 const FILL_SLOT_REMINDER_COOKIE = "astrobin-iotd-fill-slot-reminder";
 
@@ -43,6 +45,7 @@ export abstract class BasePromotionQueueComponent extends BaseComponentDirective
 
   protected constructor(
     public readonly store$: Store<State>,
+    public readonly actions$: Actions,
     public readonly router: Router,
     public readonly activatedRoute: ActivatedRoute,
     public readonly popNotificationsService: PopNotificationsService,

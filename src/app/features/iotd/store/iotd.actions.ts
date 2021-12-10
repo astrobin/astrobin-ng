@@ -6,11 +6,17 @@ import {
   SubmissionInterface,
   VoteInterface
 } from "@features/iotd/services/iotd-api.service";
-import { ReviewImageInterface, SubmissionImageInterface } from "@features/iotd/store/iotd.reducer";
 import { Action } from "@ngrx/store";
 import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
+import { SubmissionImageInterface } from "@features/iotd/types/submission-image.interface";
+import { ReviewImageInterface } from "@features/iotd/types/review-image.interface";
+import { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
+import { StaffMemberSettingsInterface } from "@features/iotd/types/staff-member-settings.interface";
 
 export enum IotdActionTypes {
+  LOAD_STAFF_MEMBER_SETTINGS = "[IOTD] Load staff member settings",
+  LOAD_STAFF_MEMBER_SETTINGS_SUCCESS = "[IOTD] Load staff member settings success",
+
   LOAD_SUBMISSION_QUEUE = "[IOTD Submission queue] Load Submission queue",
   LOAD_SUBMISSION_QUEUE_SUCCESS = "[IOTD Submission queue] Load Submission queue success",
   LOAD_SUBMISSION_QUEUE_FAILURE = "[IOTD Submission queue] Load Submission queue failure",
@@ -57,10 +63,25 @@ export enum IotdActionTypes {
   DELETE_VOTE_FAILURE = "[IOTD Review queue] Delete review failure"
 }
 
+export class LoadStaffMemberSettings implements Action {
+  readonly type = IotdActionTypes.LOAD_STAFF_MEMBER_SETTINGS;
+}
+
+export class LoadStaffMemberSettingsSuccess implements PayloadActionInterface {
+  readonly type = IotdActionTypes.LOAD_STAFF_MEMBER_SETTINGS_SUCCESS;
+
+  constructor(public payload: { settings: StaffMemberSettingsInterface }) {}
+}
+
 export class LoadSubmissionQueue implements Action {
   readonly type = IotdActionTypes.LOAD_SUBMISSION_QUEUE;
 
-  constructor(public payload: { page: number; sort: "newest" | "oldest" | "default" } = { page: 1, sort: "default" }) {}
+  constructor(
+    public payload: { page: number; sort: "newest" | "oldest" | "default" } = {
+      page: 1,
+      sort: "default"
+    }
+  ) {}
 }
 
 export class LoadSubmissionQueueSuccess implements Action {
@@ -184,7 +205,10 @@ export class LoadReviewQueue implements Action {
   readonly type = IotdActionTypes.LOAD_REVIEW_QUEUE;
 
   constructor(
-    public payload: { page: number; sort?: "newest" | "oldest" | "default" } = { page: 1, sort: "default" }
+    public payload: { page: number; sort?: "newest" | "oldest" | "default" } = {
+      page: 1,
+      sort: "default"
+    }
   ) {}
 }
 
@@ -246,6 +270,8 @@ export class DeleteVoteFailure implements Action {
 }
 
 export type IotdActions =
+  | LoadStaffMemberSettings
+  | LoadStaffMemberSettingsSuccess
   | LoadSubmissionQueue
   | LoadSubmissionQueueSuccess
   | LoadSubmissionQueueFailure

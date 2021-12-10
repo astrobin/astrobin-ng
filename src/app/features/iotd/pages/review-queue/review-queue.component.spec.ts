@@ -6,13 +6,16 @@ import { provideMockStore } from "@ngrx/store/testing";
 import { MockBuilder, MockInstance, MockService } from "ng-mocks";
 import { ReviewQueueComponent } from "./review-queue.component";
 import { ActivatedRoute, ActivatedRouteSnapshot } from "@angular/router";
+import { QueueSortButtonComponent } from "@features/iotd/components/queue-sort-button/queue-sort-button.component";
 
 describe("SubmissionQueueComponent", () => {
   let component: ReviewQueueComponent;
   let fixture: ComponentFixture<ReviewQueueComponent>;
 
   beforeEach(async () => {
-    await MockBuilder(ReviewQueueComponent, AppModule).provide(provideMockStore({ initialState }));
+    await MockBuilder(ReviewQueueComponent, AppModule)
+      .provide(provideMockStore({ initialState }))
+      .mock(QueueSortButtonComponent);
   });
 
   beforeEach(() =>
