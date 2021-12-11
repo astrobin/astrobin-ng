@@ -2011,7 +2011,7 @@ msgstr ""
 
 #: loco:6151f41acae9ba5e6a4b2a8a
 msgid ""
-"This item will be part of AstorBin's equipment database, and it's very "
+"This item will be part of AstroBin's equipment database, and it's very "
 "important that the information is accurate and this item is not the "
 "duplicate of another"
 msgstr ""
@@ -2800,7 +2800,7 @@ msgstr ""
 
 #: loco:61b24fc53b045a33935504c9
 msgid ""
-"This item will be part of AstorBin's equipment database, and it's very "
+"This item will be part of AstroBin's equipment database, and it's very "
 "important that the information is accurate and this item is not the "
 "duplicate of another."
 msgstr ""
