@@ -93,8 +93,3 @@ export const selectDismissedImageByImageId = createSelector(
     return null;
   }
 );
-
-export const selectDismissConfirmationSeen = createSelector(
-  selectIotdState,
-  (state: IotdState): boolean => state.dismissConfirmationSeen
-);

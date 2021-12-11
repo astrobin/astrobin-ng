@@ -10,6 +10,7 @@ import { Observable, of } from "rxjs";
 import { distinctUntilChanged, map, switchMap, take, tap } from "rxjs/operators";
 import { selectIotdMaxSubmissionsPerDay } from "@app/store/selectors/app/app.selectors";
 import { ImageInterface } from "@shared/interfaces/image.interface";
+import { CookieService } from "ngx-cookie-service";
 
 @Component({
   selector: "astrobin-submission-entry",
@@ -21,9 +22,10 @@ export class SubmissionEntryComponent extends BasePromotionEntryComponent {
     public readonly store$: Store<State>,
     public readonly elementRef: ElementRef,
     public readonly loadingService: LoadingService,
-    public readonly modalService: NgbModal
+    public readonly modalService: NgbModal,
+    public readonly cookieService: CookieService
   ) {
-    super(store$, elementRef, modalService);
+    super(store$, elementRef, modalService, cookieService);
   }
 
   isPromoted$(imageId: ImageInterface["pk"]): Observable<boolean> {
