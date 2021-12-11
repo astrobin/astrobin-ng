@@ -22,7 +22,6 @@ export interface IotdState {
 
   hiddenImages: HiddenImage[];
   dismissedImages: DismissedImage[];
-  dismissConfirmationSeen: boolean;
 }
 
 export const initialIotdState: IotdState = {
@@ -35,8 +34,7 @@ export const initialIotdState: IotdState = {
   votes: [],
 
   hiddenImages: [],
-  dismissedImages: [],
-  dismissConfirmationSeen: false
+  dismissedImages: []
 };
 
 export function reducer(state = initialIotdState, action: IotdActions): IotdState {
@@ -94,12 +92,6 @@ export function reducer(state = initialIotdState, action: IotdActions): IotdStat
       return {
         ...state,
         dismissedImages: [...state.dismissedImages, action.payload.dismissedImage]
-      };
-
-    case IotdActionTypes.DISMISS_CONFIRMATION_SEEN:
-      return {
-        ...state,
-        dismissConfirmationSeen: true
       };
 
     case IotdActionTypes.SHOW_IMAGE_SUCCESS:

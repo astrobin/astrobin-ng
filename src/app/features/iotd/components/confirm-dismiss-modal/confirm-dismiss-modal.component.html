@@ -20,6 +20,10 @@
   </p>
 
   <p class="text-danger">{{ "This operation can not be undone." | translate }}</p>
+
+  <form [formGroup]="form">
+    <formly-form [fields]="fields" [form]="form" [model]="model"></formly-form>
+  </form>
 </div>
 
 <div class="modal-footer">

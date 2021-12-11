@@ -4,13 +4,12 @@ import { LoadSolution } from "@app/store/actions/solution.actions";
 import { selectApp } from "@app/store/selectors/app/app.selectors";
 import { selectSolution } from "@app/store/selectors/app/solution.selectors";
 import { State } from "@app/store/state";
-import { ConfirmDismissModalComponent } from "@features/iotd/components/confirm-dismiss-modal/confirm-dismiss-modal.component";
-import { DismissConfirmationSeen, DismissImage, HideImage, ShowImage } from "@features/iotd/store/iotd.actions";
 import {
-  selectDismissConfirmationSeen,
-  selectDismissedImageByImageId,
-  selectHiddenImageByImageId
-} from "@features/iotd/store/iotd.selectors";
+  ConfirmDismissModalComponent,
+  DISMISSAL_NOTICE_COOKIE
+} from "@features/iotd/components/confirm-dismiss-modal/confirm-dismiss-modal.component";
+import { DismissImage, HideImage, ShowImage } from "@features/iotd/store/iotd.actions";
+import { selectDismissedImageByImageId, selectHiddenImageByImageId } from "@features/iotd/store/iotd.selectors";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
@@ -21,6 +20,7 @@ import { Observable } from "rxjs";
 import { map, switchMap, take, tap } from "rxjs/operators";
 import { ImageInterface } from "@shared/interfaces/image.interface";
 import { PromotionImageInterface } from "@features/iotd/types/promotion-image.interface";
+import { CookieService } from "ngx-cookie-service";
 
 @Component({
   selector: "astrobin-base-promotion-entry",
@@ -43,7 +43,8 @@ export abstract class BasePromotionEntryComponent extends BaseComponentDirective
   protected constructor(
     public readonly store$: Store<State>,
     public readonly elementRef: ElementRef,
-    public readonly modalService: NgbModal
+    public readonly modalService: NgbModal,
+    public readonly cookieService: CookieService
   ) {
     super(store$);
   }
@@ -81,20 +82,16 @@ export abstract class BasePromotionEntryComponent extends BaseComponentDirective
       this.store$.dispatch(new DismissImage({ id: imageId }));
     };
 
-    this.store$
-      .select(selectDismissConfirmationSeen)
-      .pipe(take(1))
-      .subscribe(seen => {
-        if (seen) {
-          _confirmDismiss();
-        } else {
-          const modalRef = this.modalService.open(ConfirmDismissModalComponent);
-          modalRef.closed.pipe(take(1)).subscribe(() => {
-            this.store$.dispatch(new DismissConfirmationSeen());
-            _confirmDismiss();
-          });
-        }
+    const cookieValue = this.cookieService.get(DISMISSAL_NOTICE_COOKIE);
+
+    if (cookieValue !== "1") {
+      const modalRef = this.modalService.open(ConfirmDismissModalComponent);
+      modalRef.closed.pipe(take(1)).subscribe(() => {
+        _confirmDismiss();
       });
+    } else {
+      _confirmDismiss();
+    }
   }
 
   show(imageId: ImageInterface["pk"]): void {

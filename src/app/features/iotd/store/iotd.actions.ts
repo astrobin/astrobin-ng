@@ -44,7 +44,6 @@ export enum IotdActionTypes {
   LOAD_DISMISSED_IMAGES_SUCCESS = "[IOTD] Load dismissed images success",
   DISMISS_IMAGE = "[IOTD] Dismiss image",
   DISMISS_IMAGE_SUCCESS = "[IOTD] Dismiss image success",
-  DISMISS_CONFIRMATION_SEEN = "[IOTD] Dismiss confirmation seen",
 
   LOAD_REVIEW_QUEUE = "[IOTD Review queue] Load Review queue",
   LOAD_REVIEW_QUEUE_SUCCESS = "[IOTD Review queue] Load Review queue success",
@@ -197,10 +196,6 @@ export class DismissImageSuccess implements Action {
   constructor(public payload: { dismissedImage: DismissedImage }) {}
 }
 
-export class DismissConfirmationSeen implements Action {
-  readonly type = IotdActionTypes.DISMISS_CONFIRMATION_SEEN;
-}
-
 export class LoadReviewQueue implements Action {
   readonly type = IotdActionTypes.LOAD_REVIEW_QUEUE;
 
@@ -294,7 +289,6 @@ export type IotdActions =
   | LoadDismissedImagesSuccess
   | DismissImage
   | DismissImageSuccess
-  | DismissConfirmationSeen
   | LoadReviewQueue
   | LoadReviewQueueSuccess
   | LoadReviewQueueFailure
