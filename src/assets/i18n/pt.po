@@ -1979,7 +1979,7 @@ msgid "Weight"
 msgstr ""
 
 #: loco:6151f41acae9ba5e6a4b2a96
-msgid "Whether this camera is equipment with a cooling mechanism."
+msgid "Whether this camera is equipped with a cooling mechanism."
 msgstr ""
 
 #: loco:6151f41acae9ba5e6a4b2a97
