@@ -33,7 +33,7 @@ export class ThemeService {
     newLink.id = "astrobin-theme";
     newLink.type = "text/css";
     newLink.rel = "stylesheet";
-    newLink.href = `/assets/themes/${theme}.css?build=${VERSION}`;
+    newLink.href = `/${theme}.css?build=${VERSION}`;
 
     head.appendChild(newLink);
 

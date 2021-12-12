@@ -30,14 +30,18 @@
               {
                 "input": "src/default-theme.scss",
                 "inject": false,
-                "bundleName": "assets/themes/default"
+                "bundleName": "default"
               },
               {
                 "input": "src/high-contrast-theme.scss",
                 "inject": false,
-                "bundleName": "assets/themes/high-contrast"
+                "bundleName": "high-contrast"
               }
-            ]
+            ],
+            "sourceMap": {
+              "styles": false,
+              "scripts": false
+            }
           },
           "configurations": {
             "production": {
@@ -53,7 +57,10 @@
               },
               "optimization": true,
               "outputHashing": "all",
-              "sourceMap": false,
+              "sourceMap": {
+                "styles": false,
+                "scripts": false
+              },
               "extractCss": true,
               "namedChunks": false,
               "aot": true,
@@ -81,7 +88,10 @@
               },
               "optimization": true,
               "outputHashing": "all",
-              "sourceMap": false,
+              "sourceMap": {
+                "styles": false,
+                "scripts": false
+              },
               "extractCss": true,
               "namedChunks": false,
               "aot": true,
@@ -109,7 +119,10 @@
               },
               "optimization": true,
               "outputHashing": "all",
-              "sourceMap": false,
+              "sourceMap": {
+                "styles": false,
+                "scripts": false
+              },
               "extractCss": true,
               "namedChunks": false,
               "aot": true,
@@ -127,7 +140,10 @@
             "local-production": {
               "optimization": true,
               "outputHashing": "all",
-              "sourceMap": false,
+              "sourceMap": {
+                "styles": false,
+                "scripts": false
+              },
               "extractCss": true,
               "namedChunks": false,
               "aot": true,
@@ -168,18 +184,6 @@
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
             "browserTarget": "frontend:build"
-          }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": [
-              "src/tsconfig.app.json",
-              "src/tsconfig.spec.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
           }
         }
       }
