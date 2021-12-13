@@ -68,6 +68,15 @@
 
 <div class="card-footer" [hidden]="(isHidden$(entry.pk) | async) === true">
   <button
+    (click)="viewPage(entry.pk)"
+    [class.loading]="loadingService.isLoading()"
+    class="btn btn-outline-secondary"
+  >
+    <fa-icon icon="link"></fa-icon>
+    {{ "View page" | translate }}
+  </button>
+
+  <button
     (click)="hide(entry.pk)"
     [class.loading]="loadingService.isLoading()"
     [disabled]="isPromoted$(entry.pk) | async"
@@ -94,14 +103,14 @@
     [disabled]="(mayPromote$(entry.pk) | async) === false"
     class="btn btn-success"
   >
-    <fa-icon icon="star"></fa-icon>
-    {{ "Promote" | translate }}
+    <fa-icon [icon]="promoteButtonIcon"></fa-icon>
+    {{ promoteButtonLabel }}
   </button>
 
   <ng-template #retract>
     <button (click)="retractPromotion(entry.pk)" [class.loading]="loadingService.isLoading()" class="btn btn-danger">
       <fa-icon icon="undo"></fa-icon>
-      {{ "Retract promotion" | translate }}
+      {{ retractPromotionButtonLabel }}
     </button>
   </ng-template>
 </div>

@@ -11,6 +11,9 @@ import { distinctUntilChanged, map, switchMap, take, tap } from "rxjs/operators"
 import { selectIotdMaxSubmissionsPerDay } from "@app/store/selectors/app/app.selectors";
 import { ImageInterface } from "@shared/interfaces/image.interface";
 import { CookieService } from "ngx-cookie-service";
+import { WindowRefService } from "@shared/services/window-ref.service";
+import { ClassicRoutesService } from "@shared/services/classic-routes.service";
+import { TranslateService } from "@ngx-translate/core";
 
 @Component({
   selector: "astrobin-submission-entry",
@@ -23,9 +26,12 @@ export class SubmissionEntryComponent extends BasePromotionEntryComponent {
     public readonly elementRef: ElementRef,
     public readonly loadingService: LoadingService,
     public readonly modalService: NgbModal,
-    public readonly cookieService: CookieService
+    public readonly cookieService: CookieService,
+    public readonly windowRefService: WindowRefService,
+    public readonly classicRoutesService: ClassicRoutesService,
+    public readonly translateService: TranslateService
   ) {
-    super(store$, elementRef, modalService, cookieService);
+    super(store$, elementRef, modalService, cookieService, windowRefService, classicRoutesService, translateService);
   }
 
   isPromoted$(imageId: ImageInterface["pk"]): Observable<boolean> {

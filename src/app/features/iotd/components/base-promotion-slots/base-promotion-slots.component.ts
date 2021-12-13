@@ -1,6 +1,6 @@
 import { Component, EventEmitter, HostBinding, Input, OnInit, Output, QueryList, ViewChildren } from "@angular/core";
 import { State } from "@app/store/state";
-import { SubmissionInterface, VoteInterface } from "@features/iotd/services/iotd-api.service";
+import { IotdInterface, SubmissionInterface, VoteInterface } from "@features/iotd/services/iotd-api.service";
 import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { ImageComponent } from "@shared/components/misc/image/image.component";
@@ -21,12 +21,15 @@ interface Slot {
 export abstract class BasePromotionSlotsComponent extends BaseComponentDirective implements OnInit {
   ImageAlias = ImageAlias;
 
-  abstract promotions$: Observable<SubmissionInterface[] | VoteInterface[]>;
+  abstract promotions$: Observable<SubmissionInterface[] | VoteInterface[] | IotdInterface[]>;
   abstract slotsCount$: Observable<number>;
   slots: Slot[] = [];
 
   @Input()
   availableEntries: PromotionImageInterface[] = [];
+
+  @Input()
+  slotsAreFutureDate = false;
 
   @Output()
   slotClick = new EventEmitter();
@@ -71,5 +74,11 @@ export abstract class BasePromotionSlotsComponent extends BaseComponentDirective
 
   clickableSlot(imageId: number): boolean {
     return this.availableEntries.map(submission => submission.pk).indexOf(imageId) !== -1;
+  }
+
+  futureDate(slotNumber: number) {
+    const d = new Date();
+    d.setDate(d.getDate() + slotNumber + 1);
+    return d;
   }
 }

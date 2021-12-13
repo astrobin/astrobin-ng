@@ -1,20 +1,22 @@
-<div
-  *ngFor="let slot of slots; let i = index"
-  class="promotion-slot"
-  (click)="slotClicked(slot.promotion.image)">
+<div class="promotion-slot-container" *ngFor="let slot of slots; let i = index">
+  <div class="promotion-slot" (click)="slotClicked(slot.promotion.image)">
+    <ng-container *ngIf="slot.promotion; else emptySlot">
+      <astrobin-image
+        #image
+        [alias]="ImageAlias.STORY"
+        [id]="slot.promotion.image"
+        [alwaysLoad]="true"
+        [class.clickable]="clickableSlot(slot.promotion.image)"
+      >
+      </astrobin-image>
+    </ng-container>
 
-  <ng-container *ngIf="slot.promotion; else emptySlot">
-    <astrobin-image
-      #image
-      [alias]="ImageAlias.STORY"
-      [id]="slot.promotion.image"
-      [alwaysLoad]="true"
-      [class.clickable]="clickableSlot(slot.promotion.image)">
-    </astrobin-image>
-  </ng-container>
+    <ng-template #emptySlot>
+      {{ i + 1 }}
+    </ng-template>
+  </div>
 
-  <ng-template #emptySlot>
-    {{ i + 1 }}
-  </ng-template>
-
+  <div class="futureDate" *ngIf="slotsAreFutureDate">
+    {{ futureDate(i) | date }}
+  </div>
 </div>
