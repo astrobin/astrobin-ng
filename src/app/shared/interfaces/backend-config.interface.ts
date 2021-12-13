@@ -31,6 +31,8 @@ export interface BackendConfigInterface {
   THUMBNAIL_ALIASES: ThumbnailAliases;
   IOTD_SUBMISSION_MAX_PER_DAY: number;
   IOTD_REVIEW_MAX_PER_DAY: number;
+  IOTD_JUDGEMENT_MAX_PER_DAY: number;
+  IOTD_JUDGEMENT_MAX_FUTURE_DAYS: number;
   IOTD_QUEUES_PAGE_SIZE: number;
   IOTD_MAX_DISMISSALS: number;
   IMAGE_UPLOAD_ENDPOINT: string;

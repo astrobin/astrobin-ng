@@ -90,9 +90,9 @@ export class ServerErrorsInterceptor implements HttpInterceptor {
           break;
         case 403:
           errorTitle = this.translateService.instant("Permission denied");
-          errorMessage = this.translateService.instant(
-            "You tried to access a server resource that you're not authorized for."
-          );
+          errorMessage =
+            err.error ||
+            this.translateService.instant("You tried to access a server resource that you're not authorized for.");
           break;
         case 404:
           errorTitle = this.translateService.instant("The requested resource does not exist");

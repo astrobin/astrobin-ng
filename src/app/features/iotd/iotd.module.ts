@@ -15,15 +15,24 @@ import { SubmissionQueueComponent } from "./pages/submission-queue/submission-qu
 import { IotdEffects } from "./store/iotd.effects";
 import * as fromIotd from "./store/iotd.reducer";
 import { QueueSortButtonComponent } from "./components/queue-sort-button/queue-sort-button.component";
+import { JudgementQueueComponent } from "@features/iotd/pages/judgement-queue/judgement-queue.component";
+import { FutureIotdSlotsComponent } from "@features/iotd/components/future-iotd-slots/future-iotd-slots.component";
+import { JudgementEntryComponent } from "@features/iotd/components/judgement-entry/judgement-entry.component";
 
 @NgModule({
   declarations: [
+    SubmissionQueueComponent,
     SubmissionEntryComponent,
     SubmissionSlotsComponent,
+
     ReviewEntryComponent,
     ReviewSlotsComponent,
     ReviewQueueComponent,
-    SubmissionQueueComponent,
+
+    JudgementQueueComponent,
+    JudgementEntryComponent,
+    FutureIotdSlotsComponent,
+
     ConfirmDismissModalComponent,
     QueueSortButtonComponent
   ],

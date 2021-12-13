@@ -3,29 +3,39 @@
   display: flex;
   justify-content: space-between;
 
-  .promotion-slot {
+  .promotion-slot-container {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    width: 100%;
     text-align: center;
-    background-color: var(--grey);
-    border: 2px dashed var(--lightGrey);
-    font-size: 3rem;
-    color: var(--lightGrey);
+    width: 100%;
+
+    .promotion-slot {
+      width: 100%;
+      background-color: var(--grey);
+      border: 2px dashed var(--lightGrey);
+      font-size: 3rem;
+      color: var(--lightGrey);
+
+      astrobin-image {
+        &.clickable {
+          cursor: pointer;
+        }
+
+        &:not(.clickable) {
+          cursor: not-allowed;
+        }
+      }
+    }
+
+    .futureDate {
+      color: var(--lighterGrey);
+      margin-top: 1rem;
+    }
 
     &:not(:last-child) {
       margin-right: .5rem;
-    }
-
-    astrobin-image {
-      &.clickable {
-        cursor: pointer;
-      }
-
-      &:not(.clickable) {
-        cursor: not-allowed;
-      }
     }
   }
 }

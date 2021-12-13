@@ -7,22 +7,20 @@
   }
 
   astrobin-submission-slots,
-  astrobin-submission-slots,
   astrobin-review-slots,
-  astrobin-review-slots {
+  astrobin-future-iotd-slots {
     margin-bottom: 2rem;
   }
 
   astrobin-submission-entry,
-  astrobin-submission-entry,
   astrobin-review-entry,
-  astrobin-review-entry {
+  astrobin-judgement-entry {
     margin-bottom: 1.5rem;
   }
 
   .sticky-promotion-slots {
     z-index: 2;
-    margin-top: 5px;
+    margin-top: 1.5rem;
     transition: .3s ease-in-out;
 
     @media screen and (max-width: $xs-max) {

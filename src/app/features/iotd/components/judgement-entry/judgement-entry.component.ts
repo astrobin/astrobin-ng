@@ -1,26 +1,25 @@
-import { Component, ElementRef } from "@angular/core";
+import { Component, ElementRef, OnInit } from "@angular/core";
 import { State } from "@app/store/state";
 import { BasePromotionEntryComponent } from "@features/iotd/components/base-promotion-entry/base-promotion-entry.component";
-import { DeleteVote, PostVote } from "@features/iotd/store/iotd.actions";
-import { selectReviewForImage, selectReviews, selectSubmissions } from "@features/iotd/store/iotd.selectors";
+import { selectFutureIotdForImage } from "@features/iotd/store/iotd.selectors";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Store } from "@ngrx/store";
 import { LoadingService } from "@shared/services/loading.service";
 import { Observable, of } from "rxjs";
-import { distinctUntilChanged, map, switchMap, take, tap } from "rxjs/operators";
+import { distinctUntilChanged, map, take, tap } from "rxjs/operators";
 import { ImageInterface } from "@shared/interfaces/image.interface";
-import { selectIotdMaxSubmissionsPerDay } from "@app/store/selectors/app/app.selectors";
 import { CookieService } from "ngx-cookie-service";
+import { DeleteIotd, PostIotd } from "@features/iotd/store/iotd.actions";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { TranslateService } from "@ngx-translate/core";
 
 @Component({
-  selector: "astrobin-review-entry",
+  selector: "astrobin-judgement-entry",
   templateUrl: "../base-promotion-entry/base-promotion-entry.component.html",
   styleUrls: ["../base-promotion-entry/base-promotion-entry.component.scss"]
 })
-export class ReviewEntryComponent extends BasePromotionEntryComponent {
+export class JudgementEntryComponent extends BasePromotionEntryComponent implements OnInit {
   constructor(
     public readonly store$: Store<State>,
     public readonly elementRef: ElementRef,
@@ -34,41 +33,36 @@ export class ReviewEntryComponent extends BasePromotionEntryComponent {
     super(store$, elementRef, modalService, cookieService, windowRefService, classicRoutesService, translateService);
   }
 
+  ngOnInit() {
+    super.ngOnInit();
+
+    this.promoteButtonIcon = "trophy";
+    this.promoteButtonLabel = this.translateService.instant("Make IOTD");
+    this.retractPromotionButtonLabel = this.translateService.instant("Retract IOTD");
+  }
+
   isPromoted$(imageId: ImageInterface["pk"]): Observable<boolean> {
-    return this.store$.select(selectReviewForImage, imageId).pipe(
-      map(review => review !== null),
+    return this.store$.select(selectFutureIotdForImage, imageId).pipe(
+      map(iotd => iotd !== null),
       distinctUntilChanged()
     );
   }
 
   mayPromote$(imageId: ImageInterface["pk"]): Observable<boolean> {
-    const count$ = this.store$.select(selectReviews).pipe(map(votes => votes.length));
-    const max$ = this.store$.select(selectIotdMaxSubmissionsPerDay);
-
-    return this.isPromoted$(imageId).pipe(
-      take(1),
-      switchMap(isPromoted => {
-        return isPromoted
-          ? of(false)
-          : max$.pipe(
-              take(1),
-              switchMap(max => count$.pipe(map(count => ({ max, count })))),
-              map(({ max, count }) => count < max)
-            );
-      })
-    );
+    // We're going to let the backend return value determine the flow.
+    return of(true);
   }
 
   promote(imageId: ImageInterface["pk"]): void {
-    this.store$.dispatch(new PostVote({ imageId }));
+    this.store$.dispatch(new PostIotd({ imageId }));
   }
 
   retractPromotion(imageId: ImageInterface["pk"]): void {
     this.store$
-      .select(selectReviewForImage, imageId)
+      .select(selectFutureIotdForImage, imageId)
       .pipe(
         take(1),
-        tap(review => this.store$.dispatch(new DeleteVote({ id: review.id })))
+        tap(iotd => this.store$.dispatch(new DeleteIotd({ id: iotd.id })))
       )
       .subscribe();
   }
