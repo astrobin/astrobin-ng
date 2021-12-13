@@ -103,10 +103,6 @@ export abstract class BasePromotionEntryComponent extends BaseComponentDirective
     this.store$.dispatch(new HideImage({ id: pk }));
   }
 
-  isDismissed$(pk: PromotionImageInterface["pk"]): Observable<boolean> {
-    return this.store$.select(selectDismissedImageByImageId, pk).pipe(map(dismissedImage => !!dismissedImage));
-  }
-
   dismiss(pk: PromotionImageInterface["pk"]): void {
     const _confirmDismiss = () => {
       this.store$.dispatch(new DismissImage({ id: pk }));

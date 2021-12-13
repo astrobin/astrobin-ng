@@ -8,7 +8,7 @@ import {
   VoteInterface
 } from "@features/iotd/services/iotd-api.service";
 import { LoadDismissedImages, LoadHiddenImages } from "@features/iotd/store/iotd.actions";
-import { selectHiddenImages } from "@features/iotd/store/iotd.selectors";
+import { selectDismissedImageByImageId, selectHiddenImages } from "@features/iotd/store/iotd.selectors";
 import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
@@ -25,6 +25,7 @@ import { CookieService } from "ngx-cookie-service";
 import { SubmissionImageInterface } from "@features/iotd/types/submission-image.interface";
 import { ReviewImageInterface } from "@features/iotd/types/review-image.interface";
 import { Actions } from "@ngrx/effects";
+import { PromotionImageInterface } from "@features/iotd/types/promotion-image.interface";
 
 const FILL_SLOT_REMINDER_COOKIE = "astrobin-iotd-fill-slot-reminder";
 
@@ -161,6 +162,10 @@ export abstract class BasePromotionQueueComponent extends BaseComponentDirective
     if (element) {
       element.nativeElement.scrollIntoView({ behavior: "smooth" });
     }
+  }
+
+  isDismissed$(pk: PromotionImageInterface["pk"]): Observable<boolean> {
+    return this.store$.select(selectDismissedImageByImageId, pk).pipe(map(dismissedImage => !!dismissedImage));
   }
 
   private _getEntryElement(imageId: number): ElementRef | null {

@@ -13,11 +13,7 @@
 </div>
 
 <div class="card-body" [hidden]="(isHidden$(entry.pk) | async) === true">
-  <div
-    *ngIf="(isDismissed$(entry.pk) | async) === false"
-    [class.promoted]="(isPromoted$(entry.pk) | async) === true"
-    class="promotion-queue-entry"
-  >
+  <div [class.promoted]="(isPromoted$(entry.pk) | async) === true" class="promotion-queue-entry">
     <astrobin-fullscreen-image-viewer [id]="entry.pk"></astrobin-fullscreen-image-viewer>
 
     <div class="col-image">
@@ -67,11 +63,7 @@
 </div>
 
 <div class="card-footer" [hidden]="(isHidden$(entry.pk) | async) === true">
-  <button
-    (click)="viewPage(entry.pk)"
-    [class.loading]="loadingService.isLoading()"
-    class="btn btn-outline-secondary"
-  >
+  <button (click)="viewPage(entry.pk)" [class.loading]="loadingService.isLoading()" class="btn btn-outline-secondary">
     <fa-icon icon="link"></fa-icon>
     {{ "View page" | translate }}
   </button>
