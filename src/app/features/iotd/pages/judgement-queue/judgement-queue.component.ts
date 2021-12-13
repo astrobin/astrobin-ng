@@ -23,6 +23,7 @@ import { CookieService } from "ngx-cookie-service";
 import { ReviewImageInterface } from "@features/iotd/types/review-image.interface";
 import { Actions } from "@ngrx/effects";
 import { TimeagoClock, TimeagoFormatter, TimeagoIntl, TimeagoPipe } from "ngx-timeago";
+import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 
 @Component({
   selector: "astrobin-judgement-queue",
@@ -49,7 +50,8 @@ export class JudgementQueueComponent extends BasePromotionQueueComponent impleme
     public readonly timeagoIntl: TimeagoIntl,
     public readonly changeDectectorRef: ChangeDetectorRef,
     public readonly timeagoFormatter: TimeagoFormatter,
-    public readonly timeagoClock: TimeagoClock
+    public readonly timeagoClock: TimeagoClock,
+    public readonly classicRoutesService: ClassicRoutesService
   ) {
     super(
       store$,

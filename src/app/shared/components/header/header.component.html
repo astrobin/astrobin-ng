@@ -122,7 +122,12 @@
                 {{ "Review queue" | translate }}
               </a>
 
-              <a *ngIf="user | isIotdJudge" [href]="classicRoutes.IOTD_JUDGEMENT_QUEUE" class="dropdown-item">
+              <a
+                (click)="isCollapsed = true"
+                *ngIf="user | isIotdJudge"
+                class="dropdown-item"
+                routerLink="/iotd/judgement-queue"
+              >
                 <fa-icon icon="hammer"></fa-icon>
                 {{ "Judgement queue" | translate }}
               </a>
