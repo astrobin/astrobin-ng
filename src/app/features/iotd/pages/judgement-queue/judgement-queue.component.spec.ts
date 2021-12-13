@@ -7,6 +7,8 @@ import { MockBuilder, MockInstance, MockService } from "ng-mocks";
 import { JudgementQueueComponent } from "./judgement-queue.component";
 import { ActivatedRoute, ActivatedRouteSnapshot } from "@angular/router";
 import { QueueSortButtonComponent } from "@features/iotd/components/queue-sort-button/queue-sort-button.component";
+import { IotdApiService } from "@features/iotd/services/iotd-api.service";
+import { of } from "rxjs";
 
 describe("SubmissionQueueComponent", () => {
   let component: JudgementQueueComponent;
@@ -14,7 +16,7 @@ describe("SubmissionQueueComponent", () => {
 
   beforeEach(async () => {
     await MockBuilder(JudgementQueueComponent, AppModule)
-      .provide(provideMockStore({ initialState }))
+      .provide([IotdApiService, provideMockStore({ initialState })])
       .mock(QueueSortButtonComponent);
   });
 
@@ -34,6 +36,10 @@ describe("SubmissionQueueComponent", () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(JudgementQueueComponent);
     component = fixture.componentInstance;
+
+    jest.spyOn(component.iotdApiService, "getCannotSelectNowReason").mockReturnValue(of(null));
+    jest.spyOn(component.iotdApiService, "getNextAvailableSelectionTime").mockReturnValue(of(null));
+
     fixture.detectChanges();
   });
 

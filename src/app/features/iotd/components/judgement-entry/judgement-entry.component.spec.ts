@@ -6,13 +6,17 @@ import { provideMockStore } from "@ngrx/store/testing";
 import { ImageGenerator } from "@shared/generators/image.generator";
 import { MockBuilder } from "ng-mocks";
 import { JudgementEntryComponent } from "./judgement-entry.component";
+import { WindowRefService } from "@shared/services/window-ref.service";
 
 describe("JudgementEntryComponent", () => {
   let component: JudgementEntryComponent;
   let fixture: ComponentFixture<JudgementEntryComponent>;
 
   beforeEach(async () => {
-    await MockBuilder(JudgementEntryComponent, IotdModule).provide(provideMockStore({ initialState }));
+    await MockBuilder(JudgementEntryComponent, IotdModule).provide([
+      WindowRefService,
+      provideMockStore({ initialState })
+    ]);
   });
 
   beforeEach(() => {
