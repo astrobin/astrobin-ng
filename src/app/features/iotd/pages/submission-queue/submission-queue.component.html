@@ -27,13 +27,15 @@
 
           <ng-container [ngTemplateOutletContext]="{ queue: queue }" [ngTemplateOutlet]="pagination"> </ng-container>
 
-          <astrobin-submission-entry
-            #promotionQueueEntries
-            id="promotion-queue-entry-{{ entry.pk }}"
-            *ngFor="let entry of queue.results"
-            [entry]="entry"
-          >
-          </astrobin-submission-entry>
+          <ng-container *ngFor="let entry of queue.results">
+            <astrobin-submission-entry
+              #promotionQueueEntries
+              id="promotion-queue-entry-{{ entry.pk }}"
+              *ngIf="(isDismissed$(entry.pk) | async) === false"
+              [entry]="entry"
+            >
+            </astrobin-submission-entry>
+          </ng-container>
 
           <ng-container [ngTemplateOutletContext]="{ queue: queue }" [ngTemplateOutlet]="pagination"> </ng-container>
         </ng-container>
