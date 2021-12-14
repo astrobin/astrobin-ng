@@ -1,13 +1,4 @@
-import {
-  Component,
-  EventEmitter,
-  HostBinding,
-  Input,
-  OnInit,
-  Output,
-  QueryList,
-  ViewChildren
-} from "@angular/core";
+import { Component, EventEmitter, HostBinding, Input, OnInit, Output, QueryList, ViewChildren } from "@angular/core";
 import { State } from "@app/store/state";
 import { IotdInterface, SubmissionInterface, VoteInterface } from "@features/iotd/services/iotd-api.service";
 import { Store } from "@ngrx/store";
@@ -84,10 +75,12 @@ export abstract class BasePromotionSlotsComponent extends BaseComponentDirective
       throw new Error("slotType cannot be undefined");
     }
 
-    this.store$.dispatch(new LoadContentType(contentTypeDescription));
-    this.iotdContentType$ = this.store$
-      .select(selectContentType, contentTypeDescription)
-      .pipe(filter(contentType => !!contentType));
+    if (this.slotType === SlotType.JUDGEMENT) {
+      this.store$.dispatch(new LoadContentType(contentTypeDescription));
+      this.iotdContentType$ = this.store$
+        .select(selectContentType, contentTypeDescription)
+        .pipe(filter(contentType => !!contentType));
+    }
 
     this.slotsCount$.pipe(take(1)).subscribe(count => {
       for (let i = 0; i < count; ++i) {
@@ -129,7 +122,11 @@ export abstract class BasePromotionSlotsComponent extends BaseComponentDirective
 
   openComments(iotd: IotdInterface, highlightId: NestedCommentInterface["id"] = null) {
     this.iotdContentType$.pipe(take(1)).subscribe(contentType => {
-      const modalRef = this.modalService.open(NestedCommentsModalComponent, { size: "xl", centered: true });
+      const modalRef = this.modalService.open(NestedCommentsModalComponent, {
+        size: "xl",
+        centered: true,
+        scrollable: false
+      });
       const componentInstance: NestedCommentsModalComponent = modalRef.componentInstance;
       componentInstance.contentType = contentType;
       componentInstance.objectId = iotd.id;
@@ -141,6 +138,10 @@ export abstract class BasePromotionSlotsComponent extends BaseComponentDirective
   }
 
   private _checkAndOpenComments(slot: Slot) {
+    if (this.slotType !== SlotType.JUDGEMENT) {
+      return;
+    }
+
     this._getCommentFragment().subscribe((fragment: { iotdId: number; commentId: number } | null) => {
       if (fragment) {
         if (slot.promotion && slot.promotion.id === fragment.iotdId) {
@@ -151,6 +152,10 @@ export abstract class BasePromotionSlotsComponent extends BaseComponentDirective
   }
 
   private _checkIfCommentedIotdIsFound() {
+    if (this.slotType !== SlotType.JUDGEMENT) {
+      return;
+    }
+
     this._getCommentFragment().subscribe((fragment: { iotdId: number; commentId: number } | null) => {
       if (fragment) {
         if (!this.slots.find(slot => slot.promotion && slot.promotion.id === fragment.iotdId)) {
