@@ -1,4 +1,3 @@
-
 :host {
   display: flex;
   justify-content: space-between;
@@ -17,6 +16,10 @@
       border: 2px dashed var(--lightGrey);
       font-size: 3rem;
       color: var(--lightGrey);
+      height: 6rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
 
       astrobin-image {
         &.clickable {
@@ -29,13 +32,28 @@
       }
     }
 
+    &:not(:last-child) {
+      margin-right: .5rem;
+    }
+
     .futureDate {
       color: var(--lighterGrey);
       margin-top: 1rem;
     }
 
-    &:not(:last-child) {
-      margin-right: .5rem;
+    .buttons {
+      margin-top: 1rem;
+
+      .btn {
+        font-size: .85rem;
+        position: relative;
+
+        .comments-count {
+          position: absolute;
+          right: -0.5rem;
+          top: -0.5rem;
+        }
+      }
     }
   }
 }

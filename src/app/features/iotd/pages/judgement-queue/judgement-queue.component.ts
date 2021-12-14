@@ -2,14 +2,9 @@ import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { State } from "@app/store/state";
 import { BasePromotionQueueComponent } from "@features/iotd/components/base-promotion-queue/base-promotion-queue.component";
-import { IotdApiService, IotdInterface, VoteInterface } from "@features/iotd/services/iotd-api.service";
-import { LoadFutureIods, LoadJudgementQueue, LoadReviewQueue, LoadVotes } from "@features/iotd/store/iotd.actions";
-import {
-  selectFutureIotds,
-  selectJudgementQueue,
-  selectReviewQueue,
-  selectReviews
-} from "@features/iotd/store/iotd.selectors";
+import { IotdApiService, IotdInterface } from "@features/iotd/services/iotd-api.service";
+import { LoadFutureIods, LoadJudgementQueue } from "@features/iotd/store/iotd.actions";
+import { selectFutureIotds, selectJudgementQueue } from "@features/iotd/store/iotd.selectors";
 import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
 import { BackendConfigInterface } from "@shared/interfaces/backend-config.interface";
@@ -65,8 +60,23 @@ export class JudgementQueueComponent extends BasePromotionQueueComponent impleme
     );
   }
 
+  get cannotSelectMessage(): string {
+    return this.translateService.instant(
+      "Sorry, you cannot select an IOTD right now: <strong>{{ reason }}</strong>. Please try again in <strong>{{ time }}</strong>.",
+      {
+        reason: this.cannotSelectReason,
+        time: new TimeagoPipe(
+          this.timeagoIntl,
+          this.changeDectectorRef,
+          this.timeagoFormatter,
+          this.timeagoClock
+        ).transform(this.nextAvailableSelectionTime)
+      }
+    );
+  }
+
   ngOnInit(): void {
-    super.ngOnInit();
+    this.supportsMaxPromotionsPerDayInfo = false;
 
     const title = this.translateService.instant("Judgement queue");
     this.titleService.setTitle(title);
@@ -76,7 +86,7 @@ export class JudgementQueueComponent extends BasePromotionQueueComponent impleme
       })
     );
 
-    this.supportsMaxPromotionsPerDayInfo = false;
+    super.ngOnInit();
   }
 
   refresh(sort: "newest" | "oldest" | "default" = "default"): void {
@@ -101,20 +111,5 @@ export class JudgementQueueComponent extends BasePromotionQueueComponent impleme
 
   maxPromotionsPerDay(backendConfig: BackendConfigInterface): number {
     return backendConfig.IOTD_JUDGEMENT_MAX_PER_DAY;
-  }
-
-  get cannotSelectMessage(): string {
-    return this.translateService.instant(
-      "Sorry, you cannot select an IOTD right now: <strong>{{ reason }}</strong>. Please try again in <strong>{{ time }}</strong>.",
-      {
-        reason: this.cannotSelectReason,
-        time: new TimeagoPipe(
-          this.timeagoIntl,
-          this.changeDectectorRef,
-          this.timeagoFormatter,
-          this.timeagoClock
-        ).transform(this.nextAvailableSelectionTime)
-      }
-    );
   }
 }
