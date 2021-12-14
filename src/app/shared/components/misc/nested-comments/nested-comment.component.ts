@@ -26,12 +26,14 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
   @Input()
   comment: NestedCommentInterface;
 
+  @Input()
+  highlighted = false;
+
   user$: Observable<UserInterface>;
   replyModel: { topLevelComment: string };
   replyForm = new FormGroup({});
   replyFields: FormlyFieldConfig[];
   showReplyForm = false;
-  highlighted = false;
 
   constructor(
     public readonly store$: Store<State>,
@@ -101,7 +103,9 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
 
     if (hash === `#c${this.comment.id}`) {
       this.highlighted = true;
+    }
 
+    if (this.highlighted) {
       setTimeout(() => {
         this.windowRefService.nativeWindow.document
           .querySelector(`#c${this.comment.id}`)

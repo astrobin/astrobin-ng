@@ -16,7 +16,23 @@
     </ng-template>
   </div>
 
-  <div class="futureDate" *ngIf="slotsAreFutureDate">
-    {{ futureDate(i) | date }}
-  </div>
+  <ng-container *ngIf="slotType === SlotType.JUDGEMENT">
+    <div class="futureDate">
+      {{ futureDate(i) | date }}
+    </div>
+    <div class="buttons">
+      <button class="btn btn-outline-secondary" (click)="openComments(slot.promotion)" [disabled]="!slot.promotion">
+        {{ "Comments" | translate }}
+        <span *ngIf="!!iotdContentType$ && !!slot.promotion">
+          <astrobin-nested-comments-count
+            [contentType]="iotdContentType$ | async"
+            [objectId]="slot.promotion.id"
+            [hideZero]="true"
+            class="comments-count badge badge-danger"
+          ></astrobin-nested-comments-count>
+        </span>
+
+      </button>
+    </div>
+  </ng-container>
 </div>

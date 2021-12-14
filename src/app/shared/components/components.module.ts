@@ -72,6 +72,8 @@ import { SimilarItemsSuggestionComponent } from "@shared/components/equipment/si
 import { ConfirmItemCreationModalComponent } from "@shared/components/equipment/editors/confirm-item-creation-modal/confirm-item-creation-modal.component";
 import { OthersInBrandComponent } from "@shared/components/equipment/editors/others-in-brand/others-in-brand.component";
 import { CustomToastComponent } from "@shared/components/misc/custom-toast/custom-toast.component";
+import { NestedCommentsModalComponent } from "@shared/components/misc/nested-comments-modal/nested-comments-modal.component";
+import { NestedCommentsCountComponent } from "@shared/components/misc/nested-comments-count/nested-comments-count.component";
 
 const modules = [
   CommonModule,
@@ -122,6 +124,8 @@ const components = [
   LoginModalComponent,
   NestedCommentComponent,
   NestedCommentsComponent,
+  NestedCommentsModalComponent,
+  NestedCommentsCountComponent,
   NothingHereComponent,
   ObjectsInFieldComponent,
   ReadOnlyModeComponent,

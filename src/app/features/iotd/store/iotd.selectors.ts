@@ -122,6 +122,18 @@ export const selectFutureIotds = createSelector(
   (state: IotdState): IotdInterface[] => state.futureIotds
 );
 
+export const selectFutureIotd = createSelector(
+  selectFutureIotds,
+  (futureIotds: IotdInterface[], id: number): IotdInterface => {
+    const matching = futureIotds.filter(iotd => iotd.id === id);
+    if (matching.length === 1) {
+      return matching[0];
+    }
+
+    return null;
+  }
+);
+
 export const selectFutureIotdForImage = createSelector(
   selectFutureIotds,
   (futureIotds: IotdInterface[], imageId: number): IotdInterface => {
