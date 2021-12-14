@@ -17,7 +17,7 @@ import { ImageApiService } from "@shared/services/api/classic/images/image/image
 import { LoadingService } from "@shared/services/loading.service";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { EMPTY, Observable, of } from "rxjs";
-import { catchError, map, mergeMap, tap } from "rxjs/operators";
+import { catchError, map, mergeMap, switchMap, tap } from "rxjs/operators";
 
 @Injectable()
 export class ImageEffects {
@@ -26,7 +26,7 @@ export class ImageEffects {
       ofType(AppActionTypes.LOAD_IMAGE),
       mergeMap(action =>
         this.store$.select(selectImage, action.payload).pipe(
-          mergeMap(imageFromStore =>
+          switchMap(imageFromStore =>
             imageFromStore !== null
               ? of(imageFromStore).pipe(map(image => new LoadImageSuccess(image)))
               : this.imageApiService.getImage(action.payload).pipe(
