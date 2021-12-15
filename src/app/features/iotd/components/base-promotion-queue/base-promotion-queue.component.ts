@@ -109,13 +109,15 @@ export abstract class BasePromotionQueueComponent extends BaseComponentDirective
         filter(queue => !!queue)
       )
       .subscribe(() => {
-        this.promotionQueueEntries.changes.pipe(take(1)).subscribe(entries => {
-          entries.forEach((entry, index) => {
-            setTimeout(() => {
-              entry.loadImage();
-            }, (index + 1) * 500);
+        setTimeout(() => {
+          this.promotionQueueEntries.changes.pipe(take(1)).subscribe(entries => {
+            entries.forEach((entry, index) => {
+              setTimeout(() => {
+                entry.loadImage();
+              }, (index + 1) * 500);
+            });
           });
-        });
+        }, 100);
       });
 
     this.refresh();
