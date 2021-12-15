@@ -1,5 +1,4 @@
 import { Injectable } from "@angular/core";
-import { LoadImagesSuccess } from "@app/store/actions/image.actions";
 import { LoadSolutions } from "@app/store/actions/solution.actions";
 import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
 import { State } from "@app/store/state";
@@ -175,32 +174,28 @@ export class IotdEffects {
     this.actions$.pipe(
       ofType(IotdActionTypes.LOAD_SUBMISSION_QUEUE),
       tap(() => this.loadingService.setLoading(true)),
-      mergeMap(action =>
-        this.iotdApiService.getSubmissionQueueEntries(action.payload.page, action.payload.sort).pipe(
-          tap(entries => this.store$.dispatch(new LoadImagesSuccess(entries))),
-          switchMap(entries =>
-            this.store$.select(selectBackendConfig).pipe(
-              map(backendConfig => ({
-                entries,
-                contentTypeId: backendConfig.IMAGE_CONTENT_TYPE_ID
-              }))
-            )
-          ),
-          tap(({ entries, contentTypeId }) => {
-            this.store$.dispatch(new LoadStaffMemberSettings());
-            setTimeout(() => {
-              this.store$.dispatch(
-                new LoadSolutions({
-                  contentType: contentTypeId,
-                  objectIds: entries.results.map(entry => "" + entry.pk)
-                })
-              );
-            }, 500);
-          }),
-          map(({ entries, contentTypeId }) => new LoadSubmissionQueueSuccess(entries)),
-          catchError(error => of(new LoadSubmissionQueueFailure()))
+      mergeMap(action => this.iotdApiService.getSubmissionQueueEntries(action.payload.page, action.payload.sort)),
+      switchMap(entries =>
+        this.store$.select(selectBackendConfig).pipe(
+          map(backendConfig => ({
+            entries,
+            contentTypeId: backendConfig.IMAGE_CONTENT_TYPE_ID
+          }))
         )
-      )
+      ),
+      tap(({ entries, contentTypeId }) => {
+        this.store$.dispatch(new LoadStaffMemberSettings());
+        setTimeout(() => {
+          this.store$.dispatch(
+            new LoadSolutions({
+              contentType: contentTypeId,
+              objectIds: entries.results.map(entry => "" + entry.pk)
+            })
+          );
+        }, 500);
+      }),
+      map(({ entries, contentTypeId }) => new LoadSubmissionQueueSuccess(entries)),
+      catchError(error => of(new LoadSubmissionQueueFailure()))
     )
   );
 
@@ -329,30 +324,26 @@ export class IotdEffects {
     this.actions$.pipe(
       ofType(IotdActionTypes.LOAD_REVIEW_QUEUE),
       tap(() => this.loadingService.setLoading(true)),
-      mergeMap(action =>
-        this.iotdApiService.getReviewQueueEntries(action.payload.page, action.payload.sort).pipe(
-          tap(entries => this.store$.dispatch(new LoadImagesSuccess(entries))),
-          switchMap(entries =>
-            this.store$.select(selectBackendConfig).pipe(
-              map(backendConfig => ({
-                entries,
-                contentTypeId: backendConfig.IMAGE_CONTENT_TYPE_ID
-              }))
-            )
-          ),
-          tap(({ entries, contentTypeId }) => {
-            this.store$.dispatch(
-              new LoadSolutions({
-                contentType: contentTypeId,
-                objectIds: entries.results.map(entry => "" + entry.pk)
-              })
-            );
-            this.store$.dispatch(new LoadStaffMemberSettings());
-          }),
-          map(({ entries, contentTypeId }) => new LoadReviewQueueSuccess(entries)),
-          catchError(() => of(new LoadReviewQueueFailure()))
+      mergeMap(action => this.iotdApiService.getReviewQueueEntries(action.payload.page, action.payload.sort)),
+      switchMap(entries =>
+        this.store$.select(selectBackendConfig).pipe(
+          map(backendConfig => ({
+            entries,
+            contentTypeId: backendConfig.IMAGE_CONTENT_TYPE_ID
+          }))
         )
-      )
+      ),
+      tap(({ entries, contentTypeId }) => {
+        this.store$.dispatch(
+          new LoadSolutions({
+            contentType: contentTypeId,
+            objectIds: entries.results.map(entry => "" + entry.pk)
+          })
+        );
+        this.store$.dispatch(new LoadStaffMemberSettings());
+      }),
+      map(({ entries, contentTypeId }) => new LoadReviewQueueSuccess(entries)),
+      catchError(() => of(new LoadReviewQueueFailure()))
     )
   );
 
@@ -481,30 +472,26 @@ export class IotdEffects {
     this.actions$.pipe(
       ofType(IotdActionTypes.LOAD_JUDGEMENT_QUEUE),
       tap(() => this.loadingService.setLoading(true)),
-      mergeMap(action =>
-        this.iotdApiService.getJudgementQueueEntries(action.payload.page, action.payload.sort).pipe(
-          tap(entries => this.store$.dispatch(new LoadImagesSuccess(entries))),
-          switchMap(entries =>
-            this.store$.select(selectBackendConfig).pipe(
-              map(backendConfig => ({
-                entries,
-                contentTypeId: backendConfig.IMAGE_CONTENT_TYPE_ID
-              }))
-            )
-          ),
-          tap(({ entries, contentTypeId }) => {
-            this.store$.dispatch(
-              new LoadSolutions({
-                contentType: contentTypeId,
-                objectIds: entries.results.map(entry => "" + entry.pk)
-              })
-            );
-            this.store$.dispatch(new LoadStaffMemberSettings());
-          }),
-          map(({ entries, contentTypeId }) => new LoadJudgementQueueSuccess(entries)),
-          catchError(() => of(new LoadJudgementQueueFailure()))
+      mergeMap(action => this.iotdApiService.getJudgementQueueEntries(action.payload.page, action.payload.sort)),
+      switchMap(entries =>
+        this.store$.select(selectBackendConfig).pipe(
+          map(backendConfig => ({
+            entries,
+            contentTypeId: backendConfig.IMAGE_CONTENT_TYPE_ID
+          }))
         )
-      )
+      ),
+      tap(({ entries, contentTypeId }) => {
+        this.store$.dispatch(
+          new LoadSolutions({
+            contentType: contentTypeId,
+            objectIds: entries.results.map(entry => "" + entry.pk)
+          })
+        );
+        this.store$.dispatch(new LoadStaffMemberSettings());
+      }),
+      map(({ entries, contentTypeId }) => new LoadJudgementQueueSuccess(entries)),
+      catchError(() => of(new LoadJudgementQueueFailure()))
     )
   );
 
