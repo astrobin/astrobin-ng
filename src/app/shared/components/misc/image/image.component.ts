@@ -51,6 +51,9 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
   @Input()
   alwaysLoad = false;
 
+  @Input()
+  loadDelay = 0;
+
   @Output()
   loaded = new EventEmitter();
 
@@ -125,8 +128,6 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
   }
 
   private _loadImage() {
-    this.store$.dispatch(new LoadImage(this.id));
-
     this.image$ = this.store$.select(selectImage, this.id).pipe(
       filter(image => !!image),
       take(1),
@@ -134,6 +135,10 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
         this._loadThumbnail();
       })
     );
+
+    setTimeout(() => {
+      this.store$.dispatch(new LoadImage(this.id));
+    }, this.loadDelay);
   }
 
   private _loadThumbnail() {
