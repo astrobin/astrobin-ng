@@ -120,9 +120,25 @@ export function reducer(state = initialAppState, action: All): AppState {
 
     case AppActionTypes.SET_IMAGE:
     case AppActionTypes.LOAD_IMAGE_SUCCESS: {
+      let loadingThumbnails = [...state.loadingThumbnails];
+      const thumbnails = !!action.payload.thumbnails ? [...action.payload.thumbnails] : [];
+
+      if (action.payload.thumbnails) {
+        action.payload.thumbnails.forEach(thumbnail => {
+          loadingThumbnails = loadingThumbnails.filter(
+            loadingThumbnail =>
+              loadingThumbnail.id !== thumbnail.id ||
+              loadingThumbnail.revision !== thumbnail.revision ||
+              loadingThumbnail.alias !== thumbnail.alias
+          );
+        });
+      }
+
       return {
         ...state,
-        images: [...state.images.filter(i => i.pk !== action.payload.pk), action.payload]
+        images: [...state.images.filter(i => i.pk !== action.payload.pk), action.payload],
+        thumbnails: UtilsService.arrayUniqueObjects([...state.thumbnails, ...thumbnails], null, false),
+        loadingThumbnails
       };
     }
 
@@ -134,9 +150,29 @@ export function reducer(state = initialAppState, action: All): AppState {
     }
 
     case AppActionTypes.LOAD_IMAGES_SUCCESS: {
+      let loadingThumbnails = [...state.loadingThumbnails];
+      let thumbnails = [...state.thumbnails];
+
+      action.payload.results.forEach(image => {
+        if (!!image.thumbnails) {
+          image.thumbnails.forEach(thumbnail => {
+            loadingThumbnails = loadingThumbnails.filter(
+              loadingThumbnail =>
+                loadingThumbnail.id !== thumbnail.id ||
+                loadingThumbnail.revision !== thumbnail.revision ||
+                loadingThumbnail.alias !== thumbnail.alias
+            );
+
+            thumbnails = UtilsService.arrayUniqueObjects([...thumbnails, ...image.thumbnails], null, false);
+          });
+        }
+      });
+
       return {
         ...state,
-        images: UtilsService.arrayUniqueObjects([...state.images, ...action.payload.results], "pk")
+        images: UtilsService.arrayUniqueObjects([...state.images, ...action.payload.results], "pk"),
+        thumbnails,
+        loadingThumbnails
       };
     }
 
@@ -185,7 +221,7 @@ export function reducer(state = initialAppState, action: All): AppState {
     case AppActionTypes.LOAD_SOLUTION_SUCCESS: {
       return {
         ...state,
-        solutions: UtilsService.arrayUniqueObjects([...state.solutions, action.payload])
+        solutions: UtilsService.arrayUniqueObjects([...state.solutions, action.payload], "id")
       };
     }
 

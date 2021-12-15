@@ -30,7 +30,6 @@ import { TranslateService } from "@ngx-translate/core";
   template: ""
 })
 export abstract class BasePromotionEntryComponent extends BaseComponentDirective implements OnInit {
-  ImageAlias = ImageAlias;
   solution$: Observable<SolutionInterface>;
 
   @Input()
@@ -47,6 +46,9 @@ export abstract class BasePromotionEntryComponent extends BaseComponentDirective
 
   @Input()
   retractPromotionButtonLabel = this.translateService.instant("Retract promotion");
+
+  @Input()
+  imageAlias = ImageAlias.HD_ANONYMIZED;
 
   @ViewChild("image", { read: ImageComponent })
   image: ImageComponent;

@@ -9,7 +9,7 @@ import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
 import { ImageApiService } from "@shared/services/api/classic/images/image/image-api.service";
 import { EMPTY, Observable, of } from "rxjs";
-import { catchError, delay, filter, map, mergeMap, switchMap } from "rxjs/operators";
+import { catchError, delay, filter, map, mergeMap, switchMap, take } from "rxjs/operators";
 
 @Injectable()
 export class ThumbnailEffects {
@@ -22,6 +22,7 @@ export class ThumbnailEffects {
             thumbnailFromStore !== null
               ? of(thumbnailFromStore)
               : this.store$.select(selectImage, action.payload.id).pipe(
+                  take(1),
                   mergeMap(imageFromStore => {
                     if (imageFromStore !== null) {
                       return this.imageApiService.getThumbnail(

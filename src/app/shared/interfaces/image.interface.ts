@@ -1,3 +1,5 @@
+import { ImageThumbnailInterface } from "@shared/interfaces/image-thumbnail.interface";
+
 export enum AcquisitionType {
   REGULAR = "REGULAR",
   EAA = "EAA",
@@ -170,6 +172,7 @@ export interface ImageInterface {
   locations: number[];
   fullSizeDisplayLimitation: FullSizeLimitationDisplayOptions;
   downloadLimitation: DownloadLimitationOptions;
+  thumbnails: ImageThumbnailInterface[];
 }
 
 export interface ImageRevisionInterface {

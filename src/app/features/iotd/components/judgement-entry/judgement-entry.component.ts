@@ -13,6 +13,7 @@ import { DeleteIotd, PostIotd } from "@features/iotd/store/iotd.actions";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { TranslateService } from "@ngx-translate/core";
+import { ImageAlias } from "@shared/enums/image-alias.enum";
 
 @Component({
   selector: "astrobin-judgement-entry",
@@ -34,11 +35,12 @@ export class JudgementEntryComponent extends BasePromotionEntryComponent impleme
   }
 
   ngOnInit() {
-    super.ngOnInit();
-
     this.promoteButtonIcon = "trophy";
     this.promoteButtonLabel = this.translateService.instant("Make IOTD");
     this.retractPromotionButtonLabel = this.translateService.instant("Retract IOTD");
+    this.imageAlias = ImageAlias.HD;
+
+    super.ngOnInit();
   }
 
   isPromoted$(imageId: ImageInterface["pk"]): Observable<boolean> {
