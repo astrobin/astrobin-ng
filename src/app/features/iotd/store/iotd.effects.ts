@@ -187,13 +187,15 @@ export class IotdEffects {
             )
           ),
           tap(({ entries, contentTypeId }) => {
-            this.store$.dispatch(
-              new LoadSolutions({
-                contentType: contentTypeId,
-                objectIds: entries.results.map(entry => "" + entry.pk)
-              })
-            );
             this.store$.dispatch(new LoadStaffMemberSettings());
+            setTimeout(() => {
+              this.store$.dispatch(
+                new LoadSolutions({
+                  contentType: contentTypeId,
+                  objectIds: entries.results.map(entry => "" + entry.pk)
+                })
+              );
+            }, 500);
           }),
           map(({ entries, contentTypeId }) => new LoadSubmissionQueueSuccess(entries)),
           catchError(error => of(new LoadSubmissionQueueFailure()))

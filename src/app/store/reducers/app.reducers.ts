@@ -11,6 +11,7 @@ import { TelescopeInterface } from "@shared/interfaces/telescope.interface";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { NestedCommentInterface } from "@shared/interfaces/nested-comment.interface";
 import * as Util from "util";
+import { act } from "@ngrx/effects";
 
 export interface AppState {
   // Weather the app has been initialized.
@@ -138,7 +139,9 @@ export function reducer(state = initialAppState, action: All): AppState {
         ...state,
         images: [...state.images.filter(i => i.pk !== action.payload.pk), action.payload],
         thumbnails: UtilsService.arrayUniqueObjects([...state.thumbnails, ...thumbnails], null, false),
-        loadingThumbnails
+        loadingThumbnails,
+        telescopes: UtilsService.arrayUniqueObjects([...state.telescopes, ...action.payload.imagingTelescopes], "pk"),
+        cameras: UtilsService.arrayUniqueObjects([...state.cameras, ...action.payload.imagingCameras], "pk")
       };
     }
 
@@ -172,7 +175,15 @@ export function reducer(state = initialAppState, action: All): AppState {
         ...state,
         images: UtilsService.arrayUniqueObjects([...state.images, ...action.payload.results], "pk"),
         thumbnails,
-        loadingThumbnails
+        loadingThumbnails,
+        telescopes: UtilsService.arrayUniqueObjects(
+          [...state.telescopes, ...action.payload.results.map(image => image.imagingTelescopes)],
+          "pk"
+        ),
+        cameras: UtilsService.arrayUniqueObjects(
+          [...state.cameras, ...action.payload.results.map(image => image.imagingCameras)],
+          "pk"
+        )
       };
     }
 
