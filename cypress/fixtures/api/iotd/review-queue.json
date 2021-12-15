@@ -6,7 +6,7 @@
     {
       "user": 1,
       "pk": 1,
-      "hash": "81op9e",
+      "hash": "000000",
       "title": "Review queue image 1",
       "imageFile": "https://beta-cdn.astrobin.com/images/1/2020/3cc85edc-871d-4882-b94b-498bf20804f5.jpg",
       "w": 2533,
@@ -30,7 +30,7 @@
     {
       "user": 1,
       "pk": 2,
-      "hash": "fap2t7",
+      "hash": "000001",
       "title": "Review queue image 2",
       "imageFile": "https://beta-cdn.astrobin.com/images/1/2020/d3a8f7f9-04cd-48e4-a223-745979857a4b.png",
       "w": 1244,
