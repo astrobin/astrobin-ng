@@ -10,7 +10,7 @@ import { LoadingService } from "@shared/services/loading.service";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { of } from "rxjs";
-import { catchError, map, mergeMap, switchMap, tap } from "rxjs/operators";
+import { catchError, map, mergeMap, switchMap, take, tap } from "rxjs/operators";
 import {
   DeleteIotdFailure,
   DeleteIotdSuccess,
@@ -46,6 +46,8 @@ import {
   PostVoteSuccess,
   ShowImageSuccess
 } from "./iotd.actions";
+import { LoadImagesSuccess } from "@app/store/actions/image.actions";
+import { ImageInterface } from "@shared/interfaces/image.interface";
 
 @Injectable()
 export class IotdEffects {
@@ -183,18 +185,15 @@ export class IotdEffects {
           }))
         )
       ),
-      tap(({ entries, contentTypeId }) => {
-        this.store$.dispatch(new LoadStaffMemberSettings());
-        setTimeout(() => {
-          this.store$.dispatch(
-            new LoadSolutions({
-              contentType: contentTypeId,
-              objectIds: entries.results.map(entry => "" + entry.pk)
-            })
-          );
-        }, 500);
-      }),
-      map(({ entries, contentTypeId }) => new LoadSubmissionQueueSuccess(entries)),
+      mergeMap(({ entries, contentTypeId }) => [
+        new LoadSolutions({
+          contentType: contentTypeId,
+          objectIds: entries.results.map(entry => "" + entry.pk)
+        }),
+        new LoadStaffMemberSettings(),
+        new LoadImagesSuccess({ ...entries, results: entries.results.map(result => result as ImageInterface) }),
+        new LoadSubmissionQueueSuccess(entries)
+      ]),
       catchError(error => of(new LoadSubmissionQueueFailure()))
     )
   );
@@ -333,16 +332,15 @@ export class IotdEffects {
           }))
         )
       ),
-      tap(({ entries, contentTypeId }) => {
-        this.store$.dispatch(
-          new LoadSolutions({
-            contentType: contentTypeId,
-            objectIds: entries.results.map(entry => "" + entry.pk)
-          })
-        );
-        this.store$.dispatch(new LoadStaffMemberSettings());
-      }),
-      map(({ entries, contentTypeId }) => new LoadReviewQueueSuccess(entries)),
+      mergeMap(({ entries, contentTypeId }) => [
+        new LoadSolutions({
+          contentType: contentTypeId,
+          objectIds: entries.results.map(entry => "" + entry.pk)
+        }),
+        new LoadStaffMemberSettings(),
+        new LoadImagesSuccess({ ...entries, results: entries.results.map(result => result as ImageInterface) }),
+        new LoadReviewQueueSuccess(entries)
+      ]),
       catchError(() => of(new LoadReviewQueueFailure()))
     )
   );
@@ -473,24 +471,24 @@ export class IotdEffects {
       ofType(IotdActionTypes.LOAD_JUDGEMENT_QUEUE),
       tap(() => this.loadingService.setLoading(true)),
       mergeMap(action => this.iotdApiService.getJudgementQueueEntries(action.payload.page, action.payload.sort)),
-      switchMap(entries =>
+      mergeMap(entries =>
         this.store$.select(selectBackendConfig).pipe(
+          take(1),
           map(backendConfig => ({
             entries,
             contentTypeId: backendConfig.IMAGE_CONTENT_TYPE_ID
           }))
         )
       ),
-      tap(({ entries, contentTypeId }) => {
-        this.store$.dispatch(
-          new LoadSolutions({
-            contentType: contentTypeId,
-            objectIds: entries.results.map(entry => "" + entry.pk)
-          })
-        );
-        this.store$.dispatch(new LoadStaffMemberSettings());
-      }),
-      map(({ entries, contentTypeId }) => new LoadJudgementQueueSuccess(entries)),
+      mergeMap(({ entries, contentTypeId }) => [
+        new LoadSolutions({
+          contentType: contentTypeId,
+          objectIds: entries.results.map(entry => "" + entry.pk)
+        }),
+        new LoadStaffMemberSettings(),
+        new LoadImagesSuccess({ ...entries, results: entries.results.map(result => result as ImageInterface) }),
+        new LoadJudgementQueueSuccess(entries)
+      ]),
       catchError(() => of(new LoadJudgementQueueFailure()))
     )
   );
