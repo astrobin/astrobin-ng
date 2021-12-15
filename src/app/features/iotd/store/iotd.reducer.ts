@@ -9,7 +9,7 @@ import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/pag
 import { IotdActions, IotdActionTypes } from "./iotd.actions";
 import { SubmissionImageInterface } from "@features/iotd/types/submission-image.interface";
 import { ReviewImageInterface } from "@features/iotd/types/review-image.interface";
-import { QueueSortOrder, StaffMemberSettingsInterface } from "@features/iotd/types/staff-member-settings.interface";
+import { StaffMemberSettingsInterface } from "@features/iotd/types/staff-member-settings.interface";
 import { JudgementImageInterface } from "@features/iotd/types/judgement-image.interface";
 
 export const iotdFeatureKey = "iotd";
