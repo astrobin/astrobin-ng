@@ -121,18 +121,23 @@ export function reducer(state = initialAppState, action: All): AppState {
     case AppActionTypes.SET_IMAGE:
     case AppActionTypes.LOAD_IMAGE_SUCCESS: {
       let loadingThumbnails = [...state.loadingThumbnails];
-      action.payload.thumbnails.forEach(thumbnail => {
-        loadingThumbnails = loadingThumbnails.filter(
-          loadingThumbnail =>
-            loadingThumbnail.id !== thumbnail.id ||
-            loadingThumbnail.revision !== thumbnail.revision ||
-            loadingThumbnail.alias !== thumbnail.alias
-        );
-      });
+      const thumbnails = !!action.payload.thumbnails ? [...action.payload.thumbnails] : [];
+
+      if (action.payload.thumbnails) {
+        action.payload.thumbnails.forEach(thumbnail => {
+          loadingThumbnails = loadingThumbnails.filter(
+            loadingThumbnail =>
+              loadingThumbnail.id !== thumbnail.id ||
+              loadingThumbnail.revision !== thumbnail.revision ||
+              loadingThumbnail.alias !== thumbnail.alias
+          );
+        });
+      }
+
       return {
         ...state,
         images: [...state.images.filter(i => i.pk !== action.payload.pk), action.payload],
-        thumbnails: UtilsService.arrayUniqueObjects([...state.thumbnails, ...action.payload.thumbnails], null, false),
+        thumbnails: UtilsService.arrayUniqueObjects([...state.thumbnails, ...thumbnails], null, false),
         loadingThumbnails
       };
     }
@@ -149,16 +154,18 @@ export function reducer(state = initialAppState, action: All): AppState {
       let thumbnails = [...state.thumbnails];
 
       action.payload.results.forEach(image => {
-        image.thumbnails.forEach(thumbnail => {
-          loadingThumbnails = loadingThumbnails.filter(
-            loadingThumbnail =>
-              loadingThumbnail.id !== thumbnail.id ||
-              loadingThumbnail.revision !== thumbnail.revision ||
-              loadingThumbnail.alias !== thumbnail.alias
-          );
+        if (!!image.thumbnails) {
+          image.thumbnails.forEach(thumbnail => {
+            loadingThumbnails = loadingThumbnails.filter(
+              loadingThumbnail =>
+                loadingThumbnail.id !== thumbnail.id ||
+                loadingThumbnail.revision !== thumbnail.revision ||
+                loadingThumbnail.alias !== thumbnail.alias
+            );
 
-          thumbnails = UtilsService.arrayUniqueObjects([...thumbnails, ...image.thumbnails], null, false);
-        });
+            thumbnails = UtilsService.arrayUniqueObjects([...thumbnails, ...image.thumbnails], null, false);
+          });
+        }
       });
 
       return {
