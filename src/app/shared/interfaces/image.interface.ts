@@ -1,4 +1,6 @@
 import { ImageThumbnailInterface } from "@shared/interfaces/image-thumbnail.interface";
+import { TelescopeInterface } from "@shared/interfaces/telescope.interface";
+import { CameraInterface } from "@shared/interfaces/camera.interface";
 
 export enum AcquisitionType {
   REGULAR = "REGULAR",
@@ -145,8 +147,8 @@ export interface ImageInterface {
   skipNotifications: boolean;
   w: number;
   h: number;
-  imagingTelescopes: number[];
-  imagingCameras: number[];
+  imagingTelescopes: TelescopeInterface[];
+  imagingCameras: CameraInterface[];
   published: string;
   license: string;
   description?: string;

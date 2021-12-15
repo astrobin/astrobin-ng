@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { LoadImages } from "@app/store/actions/image.actions";
+import { LoadImagesSuccess } from "@app/store/actions/image.actions";
 import { LoadSolutions } from "@app/store/actions/solution.actions";
 import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
 import { State } from "@app/store/state";
@@ -177,7 +177,7 @@ export class IotdEffects {
       tap(() => this.loadingService.setLoading(true)),
       mergeMap(action =>
         this.iotdApiService.getSubmissionQueueEntries(action.payload.page, action.payload.sort).pipe(
-          tap(entries => this.store$.dispatch(new LoadImages(entries.results.map(entry => entry.pk)))),
+          tap(entries => this.store$.dispatch(new LoadImagesSuccess(entries))),
           switchMap(entries =>
             this.store$.select(selectBackendConfig).pipe(
               map(backendConfig => ({
@@ -187,13 +187,15 @@ export class IotdEffects {
             )
           ),
           tap(({ entries, contentTypeId }) => {
-            this.store$.dispatch(
-              new LoadSolutions({
-                contentType: contentTypeId,
-                objectIds: entries.results.map(entry => "" + entry.pk)
-              })
-            );
             this.store$.dispatch(new LoadStaffMemberSettings());
+            setTimeout(() => {
+              this.store$.dispatch(
+                new LoadSolutions({
+                  contentType: contentTypeId,
+                  objectIds: entries.results.map(entry => "" + entry.pk)
+                })
+              );
+            }, 500);
           }),
           map(({ entries, contentTypeId }) => new LoadSubmissionQueueSuccess(entries)),
           catchError(error => of(new LoadSubmissionQueueFailure()))
@@ -329,7 +331,7 @@ export class IotdEffects {
       tap(() => this.loadingService.setLoading(true)),
       mergeMap(action =>
         this.iotdApiService.getReviewQueueEntries(action.payload.page, action.payload.sort).pipe(
-          tap(entries => this.store$.dispatch(new LoadImages(entries.results.map(entry => entry.pk)))),
+          tap(entries => this.store$.dispatch(new LoadImagesSuccess(entries))),
           switchMap(entries =>
             this.store$.select(selectBackendConfig).pipe(
               map(backendConfig => ({
@@ -481,7 +483,7 @@ export class IotdEffects {
       tap(() => this.loadingService.setLoading(true)),
       mergeMap(action =>
         this.iotdApiService.getJudgementQueueEntries(action.payload.page, action.payload.sort).pipe(
-          tap(entries => this.store$.dispatch(new LoadImages(entries.results.map(entry => entry.pk)))),
+          tap(entries => this.store$.dispatch(new LoadImagesSuccess(entries))),
           switchMap(entries =>
             this.store$.select(selectBackendConfig).pipe(
               map(backendConfig => ({

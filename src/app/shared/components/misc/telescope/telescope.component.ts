@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { AfterViewInit, Component, Input, OnInit } from "@angular/core";
 import { LoadTelescope } from "@app/store/actions/telescope.actions";
 import { selectTelescope } from "@app/store/selectors/app/telescope.selectors";
 import { State } from "@app/store/state";
@@ -13,11 +13,14 @@ import { Observable } from "rxjs";
   templateUrl: "./telescope.component.html",
   styleUrls: ["./telescope.component.scss"]
 })
-export class TelescopeComponent extends BaseComponentDirective implements OnInit {
+export class TelescopeComponent extends BaseComponentDirective implements OnInit, AfterViewInit {
   telescope$: Observable<TelescopeInterface>;
 
   @Input()
   id: number;
+
+  @Input()
+  loadDelay = 0;
 
   constructor(public readonly store$: Store<State>, public readonly gearService: GearService) {
     super(store$);
@@ -29,7 +32,11 @@ export class TelescopeComponent extends BaseComponentDirective implements OnInit
     }
 
     this.telescope$ = this.store$.select(selectTelescope, this.id);
+  }
 
-    this.store$.dispatch(new LoadTelescope(this.id));
+  ngAfterViewInit() {
+    setTimeout(() => {
+      this.store$.dispatch(new LoadTelescope(this.id));
+    }, this.loadDelay);
   }
 }

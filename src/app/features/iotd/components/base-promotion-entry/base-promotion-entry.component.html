@@ -22,6 +22,7 @@
         (click)="viewFullscreen(entry.pk)"
         [alias]="imageAlias"
         [id]="entry.pk"
+        [loadDelay]="500"
         class="promotion-image"
       >
       </astrobin-image>
@@ -32,7 +33,7 @@
         <p>
           <strong>{{ "Imaging telescopes" | translate }}:</strong>
           <ng-container *ngIf="entry.imagingTelescopes?.length > 0; else noneSpecified">
-            <astrobin-telescope *ngFor="let telescope of entry.imagingTelescopes" [id]="telescope">
+            <astrobin-telescope *ngFor="let telescope of entry.imagingTelescopes" [id]="telescope.pk" [loadDelay]="500">
             </astrobin-telescope>
           </ng-container>
         </p>
@@ -40,7 +41,8 @@
         <p>
           <strong>{{ "Imaging cameras" | translate }}:</strong>
           <ng-container *ngIf="entry.imagingCameras?.length > 0; else noneSpecified">
-            <astrobin-camera *ngFor="let camera of entry.imagingCameras" [id]="camera"> </astrobin-camera>
+            <astrobin-camera *ngFor="let camera of entry.imagingCameras" [id]="camera.pk" [loadDelay]="500">
+            </astrobin-camera>
           </ng-container>
         </p>
 
