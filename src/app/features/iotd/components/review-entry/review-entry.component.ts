@@ -75,6 +75,5 @@ export class ReviewEntryComponent extends BasePromotionEntryComponent {
       .subscribe();
   }
 
-  setExpiration(pk: PromotionImageInterface["pk"]): void {
-  }
+  setExpiration(pk: PromotionImageInterface["pk"]): void {}
 }

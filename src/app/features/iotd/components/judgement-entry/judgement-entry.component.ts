@@ -71,6 +71,5 @@ export class JudgementEntryComponent extends BasePromotionEntryComponent impleme
       .subscribe();
   }
 
-  setExpiration(pk: PromotionImageInterface["pk"]): void {
-  }
+  setExpiration(pk: PromotionImageInterface["pk"]): void {}
 }
