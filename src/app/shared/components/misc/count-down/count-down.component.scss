@@ -1,0 +1,10 @@
+.value {
+  &:not(.days) {
+    margin-left: .5rem;
+  }
+}
+
+.label {
+  color: var(--lighterGrey);
+  margin-left: .125rem;
+}

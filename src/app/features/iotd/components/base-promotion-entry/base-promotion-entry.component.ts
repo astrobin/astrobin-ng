@@ -51,6 +51,8 @@ export abstract class BasePromotionEntryComponent extends BaseComponentDirective
 
   @HostBinding("class.hidden") hidden = false;
 
+  expiration: Date;
+
   protected constructor(
     public readonly store$: Store<State>,
     public readonly elementRef: ElementRef,
@@ -63,7 +65,9 @@ export abstract class BasePromotionEntryComponent extends BaseComponentDirective
     super(store$);
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.setExpiration(this.entry.pk);
+  }
 
   isHidden$(pk: PromotionImageInterface["pk"]): Observable<boolean> {
     return this.store$.select(selectHiddenImageByImageId, pk).pipe(
@@ -119,6 +123,8 @@ export abstract class BasePromotionEntryComponent extends BaseComponentDirective
   abstract promote(pk: PromotionImageInterface["pk"]): void;
 
   abstract retractPromotion(pk: PromotionImageInterface["pk"]): void;
+
+  abstract setExpiration(pk: PromotionImageInterface["pk"]): void;
 
   viewFullscreen(pk: PromotionImageInterface["pk"]): void {
     if (!this.image.loading) {

@@ -74,6 +74,7 @@ import { OthersInBrandComponent } from "@shared/components/equipment/editors/oth
 import { CustomToastComponent } from "@shared/components/misc/custom-toast/custom-toast.component";
 import { NestedCommentsModalComponent } from "@shared/components/misc/nested-comments-modal/nested-comments-modal.component";
 import { NestedCommentsCountComponent } from "@shared/components/misc/nested-comments-count/nested-comments-count.component";
+import { CountDownComponent } from "@shared/components/misc/count-down/count-down.component";
 
 const modules = [
   CommonModule,
@@ -104,6 +105,7 @@ const modules = [
 const components = [
   BreadcrumbComponent,
   CameraComponent,
+  CountDownComponent,
   CustomToastComponent,
   EmptyListComponent,
   FileValueAccessorDirective,

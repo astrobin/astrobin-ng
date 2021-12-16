@@ -1,6 +1,10 @@
 <div class="card-header d-flex justify-content-between align-items-center flex-column flex-sm-row">
   {{ entry.title }}
 
+  <div class="expiration" *ngIf="(isHidden$(entry.pk) | async) === false">
+    <astrobin-count-down [targetDate]="expiration"></astrobin-count-down>
+  </div>
+
   <button
     [hidden]="(isHidden$(entry.pk) | async) === false"
     (click)="show(entry.pk)"

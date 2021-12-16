@@ -7,13 +7,15 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Store } from "@ngrx/store";
 import { LoadingService } from "@shared/services/loading.service";
 import { Observable, of } from "rxjs";
-import { distinctUntilChanged, map, switchMap, take, tap } from "rxjs/operators";
-import { selectIotdMaxSubmissionsPerDay } from "@app/store/selectors/app/app.selectors";
+import { distinctUntilChanged, filter, map, switchMap, take, tap } from "rxjs/operators";
+import { selectBackendConfig, selectIotdMaxSubmissionsPerDay } from "@app/store/selectors/app/app.selectors";
 import { ImageInterface } from "@shared/interfaces/image.interface";
 import { CookieService } from "ngx-cookie-service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { TranslateService } from "@ngx-translate/core";
+import { selectImage } from "@app/store/selectors/app/image.selectors";
+import { PromotionImageInterface } from "@features/iotd/types/promotion-image.interface";
 
 @Component({
   selector: "astrobin-submission-entry",
@@ -71,5 +73,26 @@ export class SubmissionEntryComponent extends BasePromotionEntryComponent {
         tap(submission => this.store$.dispatch(new DeleteSubmission({ id: submission.id })))
       )
       .subscribe();
+  }
+
+  setExpiration(pk: PromotionImageInterface["pk"]): void {
+    this.store$
+      .select(selectImage, pk)
+      .pipe(
+        filter(image => !!image),
+        switchMap(image =>
+          this.store$.select(selectBackendConfig).pipe(map(backendConfig => ({ image, backendConfig })))
+        ),
+        map(({ image, backendConfig }) => {
+          const date = new Date(image.published);
+          date.setDate(date.getDate() + 2);
+          return date;
+        }),
+        take(1)
+      )
+      .subscribe(date => {
+        this.expiration = date;
+        console.log(date);
+      });
   }
 }
