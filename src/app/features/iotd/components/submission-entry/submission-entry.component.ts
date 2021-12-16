@@ -2,7 +2,11 @@ import { Component, ElementRef } from "@angular/core";
 import { State } from "@app/store/state";
 import { BasePromotionEntryComponent } from "@features/iotd/components/base-promotion-entry/base-promotion-entry.component";
 import { DeleteSubmission, PostSubmission } from "@features/iotd/store/iotd.actions";
-import { selectSubmissionForImage, selectSubmissions } from "@features/iotd/store/iotd.selectors";
+import {
+  selectSubmissionForImage,
+  selectSubmissionQueueEntry,
+  selectSubmissions
+} from "@features/iotd/store/iotd.selectors";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Store } from "@ngrx/store";
 import { LoadingService } from "@shared/services/loading.service";
@@ -14,8 +18,7 @@ import { CookieService } from "ngx-cookie-service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { TranslateService } from "@ngx-translate/core";
-import { selectImage } from "@app/store/selectors/app/image.selectors";
-import { PromotionImageInterface } from "@features/iotd/types/promotion-image.interface";
+import { SubmissionImageInterface } from "@features/iotd/types/submission-image.interface";
 
 @Component({
   selector: "astrobin-submission-entry",
@@ -75,17 +78,17 @@ export class SubmissionEntryComponent extends BasePromotionEntryComponent {
       .subscribe();
   }
 
-  setExpiration(pk: PromotionImageInterface["pk"]): void {
+  setExpiration(pk: SubmissionImageInterface["pk"]): void {
     this.store$
-      .select(selectImage, pk)
+      .select(selectSubmissionQueueEntry, pk)
       .pipe(
-        filter(image => !!image),
-        switchMap(image =>
-          this.store$.select(selectBackendConfig).pipe(map(backendConfig => ({ image, backendConfig })))
+        filter(entry => !!entry),
+        switchMap(entry =>
+          this.store$.select(selectBackendConfig).pipe(map(backendConfig => ({ entry, backendConfig })))
         ),
-        map(({ image, backendConfig }) => {
-          const date = new Date(image.published + "Z");
-          date.setDate(date.getDate() + 2);
+        map(({ entry, backendConfig }) => {
+          const date = new Date(entry.published + "Z");
+          date.setDate(date.getDate() + backendConfig.IOTD_SUBMISSION_WINDOW_DAYS);
           return date.toUTCString();
         }),
         take(1)
