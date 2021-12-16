@@ -1,23 +1,19 @@
 import { Component, ElementRef, HostBinding, Input, OnInit, ViewChild } from "@angular/core";
 import { ShowFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
-import { LoadSolution } from "@app/store/actions/solution.actions";
-import { selectApp } from "@app/store/selectors/app/app.selectors";
-import { selectSolution } from "@app/store/selectors/app/solution.selectors";
 import { State } from "@app/store/state";
 import {
   ConfirmDismissModalComponent,
   DISMISSAL_NOTICE_COOKIE
 } from "@features/iotd/components/confirm-dismiss-modal/confirm-dismiss-modal.component";
 import { DismissImage, HideImage, ShowImage } from "@features/iotd/store/iotd.actions";
-import { selectDismissedImageByImageId, selectHiddenImageByImageId } from "@features/iotd/store/iotd.selectors";
+import { selectHiddenImageByImageId } from "@features/iotd/store/iotd.selectors";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { ImageComponent } from "@shared/components/misc/image/image.component";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
-import { SolutionInterface } from "@shared/interfaces/solution.interface";
 import { Observable } from "rxjs";
-import { filter, map, switchMap, take, tap } from "rxjs/operators";
+import { filter, map, take, tap } from "rxjs/operators";
 import { PromotionImageInterface } from "@features/iotd/types/promotion-image.interface";
 import { CookieService } from "ngx-cookie-service";
 import { selectImage } from "@app/store/selectors/app/image.selectors";
@@ -30,8 +26,6 @@ import { TranslateService } from "@ngx-translate/core";
   template: ""
 })
 export abstract class BasePromotionEntryComponent extends BaseComponentDirective implements OnInit {
-  solution$: Observable<SolutionInterface>;
-
   @Input()
   entry: PromotionImageInterface;
 
@@ -69,18 +63,7 @@ export abstract class BasePromotionEntryComponent extends BaseComponentDirective
     super(store$);
   }
 
-  ngOnInit() {
-    this.solution$ = this.store$.select(selectApp).pipe(
-      take(1),
-      map(state => state.backendConfig.IMAGE_CONTENT_TYPE_ID),
-      tap(contentTypeId =>
-        this.store$.dispatch(new LoadSolution({ contentType: contentTypeId, objectId: "" + this.entry.pk }))
-      ),
-      switchMap(contentTypeId =>
-        this.store$.select(selectSolution, { contentType: contentTypeId, objectId: "" + this.entry.pk })
-      )
-    );
-  }
+  ngOnInit() {}
 
   isHidden$(pk: PromotionImageInterface["pk"]): Observable<boolean> {
     return this.store$.select(selectHiddenImageByImageId, pk).pipe(
