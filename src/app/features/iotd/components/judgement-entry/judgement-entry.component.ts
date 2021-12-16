@@ -1,10 +1,7 @@
 import { Component, ElementRef, OnInit } from "@angular/core";
 import { State } from "@app/store/state";
 import { BasePromotionEntryComponent } from "@features/iotd/components/base-promotion-entry/base-promotion-entry.component";
-import {
-  selectFutureIotdForImage,
-  selectJudgementQueueEntry,
-} from "@features/iotd/store/iotd.selectors";
+import { selectFutureIotdForImage, selectJudgementQueueEntry } from "@features/iotd/store/iotd.selectors";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Store } from "@ngrx/store";
 import { LoadingService } from "@shared/services/loading.service";
