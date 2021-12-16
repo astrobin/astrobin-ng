@@ -186,10 +186,6 @@ export class IotdEffects {
         )
       ),
       mergeMap(({ entries, contentTypeId }) => [
-        new LoadSolutions({
-          contentType: contentTypeId,
-          objectIds: entries.results.map(entry => "" + entry.pk)
-        }),
         new LoadStaffMemberSettings(),
         new LoadImagesSuccess({ ...entries, results: entries.results.map(result => result as ImageInterface) }),
         new LoadSubmissionQueueSuccess(entries)
@@ -333,10 +329,6 @@ export class IotdEffects {
         )
       ),
       mergeMap(({ entries, contentTypeId }) => [
-        new LoadSolutions({
-          contentType: contentTypeId,
-          objectIds: entries.results.map(entry => "" + entry.pk)
-        }),
         new LoadStaffMemberSettings(),
         new LoadImagesSuccess({ ...entries, results: entries.results.map(result => result as ImageInterface) }),
         new LoadReviewQueueSuccess(entries)
@@ -481,10 +473,6 @@ export class IotdEffects {
         )
       ),
       mergeMap(({ entries, contentTypeId }) => [
-        new LoadSolutions({
-          contentType: contentTypeId,
-          objectIds: entries.results.map(entry => "" + entry.pk)
-        }),
         new LoadStaffMemberSettings(),
         new LoadImagesSuccess({ ...entries, results: entries.results.map(result => result as ImageInterface) }),
         new LoadJudgementQueueSuccess(entries)
