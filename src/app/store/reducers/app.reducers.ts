@@ -153,6 +153,14 @@ export function reducer(state = initialAppState, action: All): AppState {
     }
 
     case AppActionTypes.LOAD_IMAGES_SUCCESS: {
+      const flatImages = action.payload.results.map(image => ({
+        ...image,
+        imagingTelescopes: [],
+        imagingCameras: [],
+        thumbnails: []
+      }));
+      const images = UtilsService.arrayUniqueObjects([...state.images, ...flatImages], "pk");
+
       let loadingThumbnails = [...state.loadingThumbnails];
       let thumbnails = [...state.thumbnails];
 
@@ -171,19 +179,29 @@ export function reducer(state = initialAppState, action: All): AppState {
         }
       });
 
+      const telescopes = UtilsService.arrayUniqueObjects(
+        [].concat.apply(
+          state.telescopes,
+          action.payload.results.map(image => image.imagingTelescopes)
+        ),
+        "pk"
+      );
+
+      const cameras = UtilsService.arrayUniqueObjects(
+        [].concat.apply(
+          state.cameras,
+          action.payload.results.map(image => image.imagingCameras)
+        ),
+        "pk"
+      );
+
       return {
         ...state,
-        images: UtilsService.arrayUniqueObjects([...state.images, ...action.payload.results], "pk"),
+        images,
         thumbnails,
         loadingThumbnails,
-        telescopes: UtilsService.arrayUniqueObjects(
-          [...state.telescopes, ...action.payload.results.map(image => image.imagingTelescopes)],
-          "pk"
-        ),
-        cameras: UtilsService.arrayUniqueObjects(
-          [...state.cameras, ...action.payload.results.map(image => image.imagingCameras)],
-          "pk"
-        )
+        telescopes,
+        cameras
       };
     }
 
