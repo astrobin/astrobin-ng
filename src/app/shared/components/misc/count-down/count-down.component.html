@@ -1,0 +1,10 @@
+<ng-container *ngIf="daysToTargetDate !== undefined">
+  <ng-container *ngIf="daysToTargetDate > 0">
+    <span class="value days">{{daysToTargetDate}}</span>
+    <span *ngIf="daysToTargetDate === 1" class="label">{{ "day" | translate }}</span>
+    <span *ngIf="daysToTargetDate > 1" class="label">{{ "days" | translate }}</span>
+  </ng-container>
+  <span class="value hours">{{hoursToTargetDate}}</span><span class="label">h</span>
+  <span class="value minutes">{{minutesToTargetDate}}</span><span class="label">'</span>
+  <span class="value seconds">{{secondsToTargetDate}}</span><span class="label">"</span>
+</ng-container>

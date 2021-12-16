@@ -14,6 +14,8 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { TranslateService } from "@ngx-translate/core";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
+import { JudgementImageInterface } from "@features/iotd/types/judgement-image.interface";
+import { PromotionImageInterface } from "@features/iotd/types/promotion-image.interface";
 
 @Component({
   selector: "astrobin-judgement-entry",
@@ -68,4 +70,6 @@ export class JudgementEntryComponent extends BasePromotionEntryComponent impleme
       )
       .subscribe();
   }
+
+  setExpiration(pk: PromotionImageInterface["pk"]): void {}
 }

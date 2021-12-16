@@ -2,7 +2,7 @@ import { Component, ElementRef } from "@angular/core";
 import { State } from "@app/store/state";
 import { BasePromotionEntryComponent } from "@features/iotd/components/base-promotion-entry/base-promotion-entry.component";
 import { DeleteVote, PostVote } from "@features/iotd/store/iotd.actions";
-import { selectReviewForImage, selectReviews, selectSubmissions } from "@features/iotd/store/iotd.selectors";
+import { selectReviewForImage, selectReviews } from "@features/iotd/store/iotd.selectors";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Store } from "@ngrx/store";
 import { LoadingService } from "@shared/services/loading.service";
@@ -14,6 +14,8 @@ import { CookieService } from "ngx-cookie-service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { TranslateService } from "@ngx-translate/core";
+import { ReviewImageInterface } from "@features/iotd/types/review-image.interface";
+import { PromotionImageInterface } from "@features/iotd/types/promotion-image.interface";
 
 @Component({
   selector: "astrobin-review-entry",
@@ -72,4 +74,6 @@ export class ReviewEntryComponent extends BasePromotionEntryComponent {
       )
       .subscribe();
   }
+
+  setExpiration(pk: PromotionImageInterface["pk"]): void {}
 }
