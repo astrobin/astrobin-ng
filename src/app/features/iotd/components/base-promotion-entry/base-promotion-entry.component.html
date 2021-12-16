@@ -2,7 +2,7 @@
   {{ entry.title }}
 
   <div class="expiration" *ngIf="(isHidden$(entry.pk) | async) === false">
-    <astrobin-count-down [targetDate]="expiration"></astrobin-count-down>
+    <astrobin-count-down [targetDate]="expirationDate"></astrobin-count-down>
   </div>
 
   <button
@@ -51,8 +51,10 @@
         </p>
 
         <p>
-          <strong>{{ "Published" | translate }}:</strong>
-          {{ entry.published | timeago: true }}
+          <strong>{{ "Published" | translate }}:</strong>&nbsp;
+          <abbr [title]="entry.published | localDate">
+            {{ entry.published | localDate | timeago: true }}
+          </abbr>
         </p>
       </div>
     </div>

@@ -51,7 +51,7 @@ export abstract class BasePromotionEntryComponent extends BaseComponentDirective
 
   @HostBinding("class.hidden") hidden = false;
 
-  expiration: Date;
+  expirationDate: string;
 
   protected constructor(
     public readonly store$: Store<State>,

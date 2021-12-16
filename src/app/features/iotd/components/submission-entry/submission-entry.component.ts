@@ -84,15 +84,14 @@ export class SubmissionEntryComponent extends BasePromotionEntryComponent {
           this.store$.select(selectBackendConfig).pipe(map(backendConfig => ({ image, backendConfig })))
         ),
         map(({ image, backendConfig }) => {
-          const date = new Date(image.published);
+          const date = new Date(image.published + "Z");
           date.setDate(date.getDate() + 2);
-          return date;
+          return date.toUTCString();
         }),
         take(1)
       )
       .subscribe(date => {
-        this.expiration = date;
-        console.log(date);
+        this.expirationDate = date;
       });
   }
 }

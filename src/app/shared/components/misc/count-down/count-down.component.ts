@@ -19,7 +19,7 @@ export class CountDownComponent extends BaseComponentDirective implements OnInit
   now = new Date();
 
   @Input()
-  targetDate;
+  targetDate: string;
 
   timeDifference;
   secondsToTargetDate;
@@ -44,7 +44,7 @@ export class CountDownComponent extends BaseComponentDirective implements OnInit
   }
 
   private getTimeDifference() {
-    this.timeDifference = this.targetDate.getTime() - new Date().getTime();
+    this.timeDifference = new Date(this.targetDate).getTime() - new Date().getTime();
     this.allocateTimeUnits(this.timeDifference);
   }
 
