@@ -114,7 +114,7 @@ export abstract class BasePromotionQueueComponent extends BaseComponentDirective
             entries.forEach((entry, index) => {
               setTimeout(() => {
                 entry.loadImage();
-              }, (index + 1) * 500);
+              }, (index + 1) * 100);
             });
           });
         }, 100);

@@ -73,7 +73,7 @@ export class UtilsService {
   }
 
   static isNearBelowViewport(element: HTMLElement): boolean {
-    const maxDistance = 300;
+    const maxDistance = 500;
     const rect = element.getBoundingClientRect();
     return (
       rect.top >= 0 &&
