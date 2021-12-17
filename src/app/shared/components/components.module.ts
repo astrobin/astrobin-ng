@@ -75,6 +75,7 @@ import { CustomToastComponent } from "@shared/components/misc/custom-toast/custo
 import { NestedCommentsModalComponent } from "@shared/components/misc/nested-comments-modal/nested-comments-modal.component";
 import { NestedCommentsCountComponent } from "@shared/components/misc/nested-comments-count/nested-comments-count.component";
 import { CountDownComponent } from "@shared/components/misc/count-down/count-down.component";
+import { ScrollToTopComponent } from "@shared/components/misc/scroll-to-top/scroll-to-top.component";
 
 const modules = [
   CommonModule,
@@ -132,6 +133,7 @@ const components = [
   ObjectsInFieldComponent,
   ReadOnlyModeComponent,
   RefreshButtonComponent,
+  ScrollToTopComponent,
   TelescopeComponent,
   TextLoadingIndicatorComponent,
   ToggleButtonComponent,
