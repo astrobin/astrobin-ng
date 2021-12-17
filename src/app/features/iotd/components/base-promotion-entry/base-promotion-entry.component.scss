@@ -17,6 +17,10 @@
       }
     }
   }
+
+  &.dismissed {
+    display: none;
+  }
 }
 
 .card-body {

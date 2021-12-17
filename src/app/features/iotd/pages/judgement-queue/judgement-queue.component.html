@@ -38,7 +38,6 @@
             <div class="col-lg-6" *ngFor="let entry of queue.results">
               <astrobin-judgement-entry
                 #promotionQueueEntries
-                *ngIf="(isDismissed$(entry.pk) | async) === false"
                 [entry]="entry"
                 id="promotion-queue-entry-{{ entry.pk }}"
               >

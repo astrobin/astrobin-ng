@@ -19,6 +19,7 @@ import { ReviewImageInterface } from "@features/iotd/types/review-image.interfac
 import { Actions } from "@ngrx/effects";
 import { TimeagoClock, TimeagoFormatter, TimeagoIntl, TimeagoPipe } from "ngx-timeago";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
+import { takeUntil } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-judgement-queue",
@@ -26,8 +27,10 @@ import { ClassicRoutesService } from "@shared/services/classic-routes.service";
   styleUrls: ["./judgement-queue.component.scss"]
 })
 export class JudgementQueueComponent extends BasePromotionQueueComponent implements OnInit {
-  queue$: Observable<PaginatedApiResultInterface<ReviewImageInterface>> = this.store$.select(selectJudgementQueue);
-  promotions$: Observable<IotdInterface[]> = this.store$.select(selectFutureIotds);
+  queue$: Observable<PaginatedApiResultInterface<ReviewImageInterface>> = this.store$
+    .select(selectJudgementQueue)
+    .pipe(takeUntil(this.destroyed$));
+  promotions$: Observable<IotdInterface[]> = this.store$.select(selectFutureIotds).pipe(takeUntil(this.destroyed$));
   cannotSelectReason: string;
   nextAvailableSelectionTime: string;
 

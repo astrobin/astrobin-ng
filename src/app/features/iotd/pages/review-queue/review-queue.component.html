@@ -30,7 +30,6 @@
           <ng-container *ngFor="let entry of queue.results">
             <astrobin-review-entry
               #promotionQueueEntries
-              *ngIf="(isDismissed$(entry.pk) | async) === false"
               [entry]="entry"
               id="promotion-queue-entry-{{ entry.pk }}"
             >

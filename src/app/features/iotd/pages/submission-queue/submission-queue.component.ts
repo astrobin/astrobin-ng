@@ -17,6 +17,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { CookieService } from "ngx-cookie-service";
 import { SubmissionImageInterface } from "@features/iotd/types/submission-image.interface";
 import { Actions } from "@ngrx/effects";
+import { takeUntil } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-submission-queue",
@@ -24,8 +25,12 @@ import { Actions } from "@ngrx/effects";
   styleUrls: ["./submission-queue.component.scss"]
 })
 export class SubmissionQueueComponent extends BasePromotionQueueComponent implements OnInit {
-  queue$: Observable<PaginatedApiResultInterface<SubmissionImageInterface>> = this.store$.select(selectSubmissionQueue);
-  promotions$: Observable<SubmissionInterface[]> = this.store$.select(selectSubmissions);
+  queue$: Observable<PaginatedApiResultInterface<SubmissionImageInterface>> = this.store$
+    .select(selectSubmissionQueue)
+    .pipe(takeUntil(this.destroyed$));
+  promotions$: Observable<SubmissionInterface[]> = this.store$
+    .select(selectSubmissions)
+    .pipe(takeUntil(this.destroyed$));
 
   constructor(
     public readonly store$: Store<State>,

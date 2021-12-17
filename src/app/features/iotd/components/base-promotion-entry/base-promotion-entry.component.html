@@ -1,12 +1,12 @@
 <div class="card-header d-flex justify-content-between align-items-center flex-column flex-sm-row">
   {{ entry.title }}
 
-  <div class="expiration" *ngIf="(isHidden$(entry.pk) | async) === false">
-    <astrobin-count-down [targetDate]="expirationDate"></astrobin-count-down>
+  <div class="expiration" *ngIf="!hidden">
+    <astrobin-count-down [targetDate]="expirationDate" [showSeconds]="false"></astrobin-count-down>
   </div>
 
   <button
-    [hidden]="(isHidden$(entry.pk) | async) === false"
+    [hidden]="!hidden"
     (click)="show(entry.pk)"
     [class.loading]="loadingService.isLoading()"
     class="btn btn-outline-primary mt-2 mt-sm-0 ml-0 ml-sm-2"
@@ -16,8 +16,8 @@
   </button>
 </div>
 
-<div class="card-body" [hidden]="(isHidden$(entry.pk) | async) === true">
-  <div [class.promoted]="(isPromoted$(entry.pk) | async) === true" class="promotion-queue-entry">
+<div class="card-body" [hidden]="hidden">
+  <div [class.promoted]="isPromoted" class="promotion-queue-entry">
     <astrobin-fullscreen-image-viewer [id]="entry.pk"></astrobin-fullscreen-image-viewer>
 
     <div class="col-image">
@@ -61,7 +61,7 @@
   <!-- promotion-queue-entry -->
 </div>
 
-<div class="card-footer" [hidden]="(isHidden$(entry.pk) | async) === true">
+<div class="card-footer" [hidden]="hidden">
   <button
     *ngIf="showViewButton"
     (click)="viewPage(entry.pk)"
@@ -75,7 +75,7 @@
   <button
     (click)="hide(entry.pk)"
     [class.loading]="loadingService.isLoading()"
-    [disabled]="isPromoted$(entry.pk) | async"
+    [disabled]="isPromoted"
     class="btn btn-outline-secondary"
   >
     <fa-icon icon="eye-slash"></fa-icon>
@@ -85,7 +85,7 @@
   <button
     (click)="dismiss(entry.pk)"
     [class.loading]="loadingService.isLoading()"
-    [disabled]="isPromoted$(entry.pk) | async"
+    [disabled]="isPromoted"
     class="btn btn-danger"
   >
     <fa-icon icon="ban"></fa-icon>
@@ -94,9 +94,9 @@
 
   <button
     (click)="promote(entry.pk)"
-    *ngIf="(isPromoted$(entry.pk) | async) === false; else retract"
+    *ngIf="!isPromoted; else retract"
     [class.loading]="loadingService.isLoading()"
-    [disabled]="(mayPromote$(entry.pk) | async) === false"
+    [disabled]="!mayPromote"
     class="btn btn-success"
   >
     <fa-icon [icon]="promoteButtonIcon"></fa-icon>

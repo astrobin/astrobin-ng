@@ -77,9 +77,10 @@ export abstract class BasePromotionSlotsComponent extends BaseComponentDirective
 
     if (this.slotType === SlotType.JUDGEMENT) {
       this.store$.dispatch(new LoadContentType(contentTypeDescription));
-      this.iotdContentType$ = this.store$
-        .select(selectContentType, contentTypeDescription)
-        .pipe(filter(contentType => !!contentType));
+      this.iotdContentType$ = this.store$.select(selectContentType, contentTypeDescription).pipe(
+        filter(contentType => !!contentType),
+        take(1)
+      );
     }
 
     this.slotsCount$.pipe(take(1)).subscribe(count => {

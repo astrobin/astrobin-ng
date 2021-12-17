@@ -6,14 +6,14 @@ import {
   DISMISSAL_NOTICE_COOKIE
 } from "@features/iotd/components/confirm-dismiss-modal/confirm-dismiss-modal.component";
 import { DismissImage, HideImage, ShowImage } from "@features/iotd/store/iotd.actions";
-import { selectHiddenImageByImageId } from "@features/iotd/store/iotd.selectors";
+import { selectDismissedImageByImageId, selectHiddenImageByImageId } from "@features/iotd/store/iotd.selectors";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { ImageComponent } from "@shared/components/misc/image/image.component";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
 import { Observable } from "rxjs";
-import { filter, map, take, tap } from "rxjs/operators";
+import { filter, map, take, takeUntil, tap } from "rxjs/operators";
 import { PromotionImageInterface } from "@features/iotd/types/promotion-image.interface";
 import { CookieService } from "ngx-cookie-service";
 import { selectImage } from "@app/store/selectors/app/image.selectors";
@@ -50,6 +50,9 @@ export abstract class BasePromotionEntryComponent extends BaseComponentDirective
   @Input()
   showMetadata = true;
 
+  @Input()
+  countdownUpdateRate = 1;
+
   @ViewChild("image", { read: ImageComponent })
   image: ImageComponent;
 
@@ -57,7 +60,11 @@ export abstract class BasePromotionEntryComponent extends BaseComponentDirective
 
   @HostBinding("class.hidden") hidden = false;
 
+  @HostBinding("class.dismissed") dismissed = false;
+
   expirationDate: string;
+  isPromoted: boolean;
+  mayPromote: boolean;
 
   protected constructor(
     public readonly store$: Store<State>,
@@ -73,13 +80,30 @@ export abstract class BasePromotionEntryComponent extends BaseComponentDirective
 
   ngOnInit() {
     this.setExpiration(this.entry.pk);
+
+    this.isHidden$(this.entry.pk)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(hidden => (this.hidden = hidden));
+
+    this.isDismissed$(this.entry.pk)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(dismissed => (this.dismissed = dismissed));
+
+    this.isPromoted$(this.entry.pk)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(isPromoted => (this.isPromoted = isPromoted));
+
+    this.mayPromote$(this.entry.pk)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(mayPromote => (this.mayPromote = mayPromote));
   }
 
   isHidden$(pk: PromotionImageInterface["pk"]): Observable<boolean> {
-    return this.store$.select(selectHiddenImageByImageId, pk).pipe(
-      map(hiddenImage => !!hiddenImage),
-      tap(isHidden => (this.hidden = isHidden))
-    );
+    return this.store$.select(selectHiddenImageByImageId, pk).pipe(map(hiddenImage => !!hiddenImage));
+  }
+
+  isDismissed$(pk: PromotionImageInterface["pk"]): Observable<boolean> {
+    return this.store$.select(selectDismissedImageByImageId, pk).pipe(map(dismissedImage => !!dismissedImage));
   }
 
   viewPage(pk: PromotionImageInterface["pk"]): void {
@@ -136,9 +160,5 @@ export abstract class BasePromotionEntryComponent extends BaseComponentDirective
     if (!this.image.loading) {
       this.store$.dispatch(new ShowFullscreenImage(pk));
     }
-  }
-
-  loadImage(): void {
-    this.image.load();
   }
 }
