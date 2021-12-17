@@ -98,7 +98,7 @@ export abstract class BasePromotionSlotsComponent extends BaseComponentDirective
         this._checkAndOpenComments(this.slots[i]);
       });
 
-      this._images.forEach(image => image.refresh());
+      this._images.forEach(image => image.load());
     });
 
     this._checkIfCommentedIotdIsFound();

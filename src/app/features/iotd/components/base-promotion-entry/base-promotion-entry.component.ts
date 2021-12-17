@@ -44,6 +44,12 @@ export abstract class BasePromotionEntryComponent extends BaseComponentDirective
   @Input()
   imageAlias = ImageAlias.HD_ANONYMIZED;
 
+  @Input()
+  imageAutoHeight = true;
+
+  @Input()
+  showMetadata = true;
+
   @ViewChild("image", { read: ImageComponent })
   image: ImageComponent;
 
@@ -133,7 +139,6 @@ export abstract class BasePromotionEntryComponent extends BaseComponentDirective
   }
 
   loadImage(): void {
-    this.image.alwaysLoad = true;
     this.image.load();
   }
 }
