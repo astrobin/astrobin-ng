@@ -9,15 +9,19 @@ import { ActivatedRoute, ActivatedRouteSnapshot } from "@angular/router";
 import { QueueSortButtonComponent } from "@features/iotd/components/queue-sort-button/queue-sort-button.component";
 import { IotdApiService } from "@features/iotd/services/iotd-api.service";
 import { of } from "rxjs";
+import { FutureIotdSlotsComponent } from "@features/iotd/components/future-iotd-slots/future-iotd-slots.component";
+import { JudgementEntryComponent } from "@features/iotd/components/judgement-entry/judgement-entry.component";
 
-describe("SubmissionQueueComponent", () => {
+describe("JudgementQueueComponent", () => {
   let component: JudgementQueueComponent;
   let fixture: ComponentFixture<JudgementQueueComponent>;
 
   beforeEach(async () => {
     await MockBuilder(JudgementQueueComponent, AppModule)
       .provide([IotdApiService, provideMockStore({ initialState })])
-      .mock(QueueSortButtonComponent);
+      .mock(QueueSortButtonComponent)
+      .mock(FutureIotdSlotsComponent)
+      .mock(JudgementEntryComponent);
   });
 
   beforeEach(() =>
