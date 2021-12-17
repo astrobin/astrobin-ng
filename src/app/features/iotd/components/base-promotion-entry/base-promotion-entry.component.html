@@ -64,9 +64,14 @@
 </div>
 
 <div class="card-footer" [hidden]="(isHidden$(entry.pk) | async) === true">
-  <button (click)="viewPage(entry.pk)" [class.loading]="loadingService.isLoading()" class="btn btn-outline-secondary">
+  <button
+    *ngIf="showViewButton"
+    (click)="viewPage(entry.pk)"
+    [class.loading]="loadingService.isLoading()"
+    class="btn btn-outline-secondary"
+  >
     <fa-icon icon="link"></fa-icon>
-    {{ "View page" | translate }}
+    {{ "View" | translate }}
   </button>
 
   <button

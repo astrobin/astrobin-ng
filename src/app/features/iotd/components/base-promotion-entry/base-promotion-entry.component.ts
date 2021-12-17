@@ -30,7 +30,7 @@ export abstract class BasePromotionEntryComponent extends BaseComponentDirective
   entry: PromotionImageInterface;
 
   @Input()
-  showLinkButton = false;
+  showViewButton = false;
 
   @Input()
   promoteButtonLabel = this.translateService.instant("Promote");
