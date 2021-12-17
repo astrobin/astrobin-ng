@@ -5,10 +5,7 @@
     </h1>
 
     <div class="actions">
-      <astrobin-queue-sort-button
-        class="mr-2"
-        (queueSortOrderChanged)="refresh($event)"
-      ></astrobin-queue-sort-button>
+      <astrobin-queue-sort-button class="mr-2" (queueSortOrderChanged)="refresh($event)"></astrobin-queue-sort-button>
       <astrobin-refresh-button (click)="refresh()"></astrobin-refresh-button>
     </div>
   </div>
@@ -25,7 +22,7 @@
           >
           </astrobin-submission-slots>
 
-          <ng-container [ngTemplateOutletContext]="{ queue: queue }" [ngTemplateOutlet]="pagination"> </ng-container>
+          <ng-container [ngTemplateOutletContext]="{ queue: queue }" [ngTemplateOutlet]="pagination"></ng-container>
 
           <ng-container *ngFor="let entry of queue.results">
             <astrobin-submission-entry
@@ -37,7 +34,9 @@
             </astrobin-submission-entry>
           </ng-container>
 
-          <ng-container [ngTemplateOutletContext]="{ queue: queue }" [ngTemplateOutlet]="pagination"> </ng-container>
+          <ng-container [ngTemplateOutletContext]="{ queue: queue }" [ngTemplateOutlet]="pagination"></ng-container>
+
+          <astrobin-scroll-to-top></astrobin-scroll-to-top>
         </ng-container>
       </ng-container>
     </ng-container>
