@@ -40,7 +40,7 @@ export class JudgementEntryComponent extends BasePromotionEntryComponent impleme
     this.promoteButtonIcon = "trophy";
     this.promoteButtonLabel = this.translateService.instant("Make IOTD");
     this.retractPromotionButtonLabel = this.translateService.instant("Retract IOTD");
-    this.imageAlias = ImageAlias.HD;
+    this.imageAlias = ImageAlias.REGULAR;
 
     super.ngOnInit();
   }

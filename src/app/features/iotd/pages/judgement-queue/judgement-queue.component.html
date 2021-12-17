@@ -34,15 +34,18 @@
             <span [innerHTML]="cannotSelectMessage"></span>
           </div>
 
-          <ng-container *ngFor="let entry of queue.results">
-            <astrobin-judgement-entry
-              #promotionQueueEntries
-              *ngIf="(isDismissed$(entry.pk) | async) === false"
-              [entry]="entry"
-              id="promotion-queue-entry-{{ entry.pk }}"
-            >
-          </astrobin-judgement-entry>
-          </ng-container>
+          <div class="row" *ngFor="let entry of queue.results">
+            <div class="offset-lg-2 col-lg-8">
+              <astrobin-judgement-entry
+                #promotionQueueEntries
+                *ngIf="(isDismissed$(entry.pk) | async) === false"
+                [entry]="entry"
+                id="promotion-queue-entry-{{ entry.pk }}"
+              >
+              </astrobin-judgement-entry>
+            </div>
+            <div class="col-lg-2"></div>
+          </div>
 
           <ng-container [ngTemplateOutletContext]="{ queue: queue }" [ngTemplateOutlet]="pagination"></ng-container>
         </ng-container>
