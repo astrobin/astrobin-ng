@@ -9,6 +9,7 @@ import { provideMockActions } from "@ngrx/effects/testing";
 import { ReplaySubject } from "rxjs";
 import { ItemTypeNavComponent } from "@features/equipment/components/item-type-nav/item-type-nav.component";
 import { ItemBrowserComponent } from "@shared/components/equipment/item-browser/item-browser.component";
+import { ItemEditProposalComponent } from "@features/equipment/components/item-edit-proposal/item-edit-proposal.component";
 
 describe("ExplorerComponent", () => {
   let component: ExplorerComponent;
@@ -18,7 +19,8 @@ describe("ExplorerComponent", () => {
     await MockBuilder(ExplorerComponent, AppModule)
       .provide([provideMockStore({ initialState }), provideMockActions(() => new ReplaySubject<any>())])
       .mock(ItemTypeNavComponent)
-      .mock(ItemBrowserComponent);
+      .mock(ItemBrowserComponent)
+      .mock(ItemEditProposalComponent);
   });
 
   beforeEach(() => {

@@ -7,6 +7,8 @@ import { MockBuilder, MockInstance, MockService } from "ng-mocks";
 import { SubmissionQueueComponent } from "./submission-queue.component";
 import { ActivatedRoute, ActivatedRouteSnapshot } from "@angular/router";
 import { QueueSortButtonComponent } from "@features/iotd/components/queue-sort-button/queue-sort-button.component";
+import { SubmissionEntryComponent } from "@features/iotd/components/submission-entry/submission-entry.component";
+import { SubmissionSlotsComponent } from "@features/iotd/components/submission-slots/submission-slots.component";
 
 describe("SubmissionQueueComponent", () => {
   let component: SubmissionQueueComponent;
@@ -15,7 +17,9 @@ describe("SubmissionQueueComponent", () => {
   beforeEach(async () => {
     await MockBuilder(SubmissionQueueComponent, AppModule)
       .provide(provideMockStore({ initialState }))
-      .mock(QueueSortButtonComponent);
+      .mock(QueueSortButtonComponent)
+      .mock(SubmissionEntryComponent)
+      .mock(SubmissionSlotsComponent);
   });
 
   beforeEach(() =>
