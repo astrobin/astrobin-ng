@@ -17,7 +17,7 @@ import { PopNotificationsService } from "@shared/services/pop-notifications.serv
 @Component({
   selector: "astrobin-future-iotd-slots",
   templateUrl: "../base-promotion-slots/base-promotion-slots.component.html",
-  styleUrls: ["../base-promotion-slots/base-promotion-slots.component.scss"]
+  styleUrls: ["../base-promotion-slots/base-promotion-slots.component.scss", "future-iotd-slots.component.scss"]
 })
 export class FutureIotdSlotsComponent extends BasePromotionSlotsComponent implements OnInit {
   promotions$: Observable<IotdInterface[]> = this.store$.select(selectFutureIotds);

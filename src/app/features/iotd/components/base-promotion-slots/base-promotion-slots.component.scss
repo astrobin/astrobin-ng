@@ -16,7 +16,8 @@
       border: 2px dashed var(--lightGrey);
       font-size: 3rem;
       color: var(--lightGrey);
-      height: 6rem;
+      height: auto;
+      min-height: 10rem;
       display: flex;
       justify-content: center;
       align-items: center;
