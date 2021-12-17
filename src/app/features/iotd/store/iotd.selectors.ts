@@ -68,6 +68,21 @@ export const selectSubmissionQueue = createSelector(
   (state: IotdState): PaginatedApiResultInterface<SubmissionImageInterface> => state.submissionQueue
 );
 
+export const selectSubmissionQueueEntry = createSelector(
+  selectSubmissionQueue,
+  (
+    queue: PaginatedApiResultInterface<SubmissionImageInterface>,
+    pk: SubmissionImageInterface["pk"]
+  ): SubmissionImageInterface => {
+    const matching = queue.results.filter(entry => entry.pk === pk);
+    if (matching.length === 1) {
+      return matching[0];
+    }
+
+    return null;
+  }
+);
+
 export const selectSubmissions = createSelector(
   selectIotdState,
   (state: IotdState): SubmissionInterface[] => state.submissions
@@ -94,6 +109,18 @@ export const selectReviewQueue = createSelector(
   (state: IotdState): PaginatedApiResultInterface<ReviewImageInterface> => state.reviewQueue
 );
 
+export const selectReviewQueueEntry = createSelector(
+  selectReviewQueue,
+  (queue: PaginatedApiResultInterface<ReviewImageInterface>, pk: ReviewImageInterface["pk"]): ReviewImageInterface => {
+    const matching = queue.results.filter(entry => entry.pk === pk);
+    if (matching.length === 1) {
+      return matching[0];
+    }
+
+    return null;
+  }
+);
+
 export const selectReviews = createSelector(selectIotdState, (state: IotdState): VoteInterface[] => state.votes);
 
 export const selectReviewForImage = createSelector(
@@ -115,6 +142,21 @@ export const selectReviewForImage = createSelector(
 export const selectJudgementQueue = createSelector(
   selectIotdState,
   (state: IotdState): PaginatedApiResultInterface<JudgementImageInterface> => state.judgementQueue
+);
+
+export const selectJudgementQueueEntry = createSelector(
+  selectJudgementQueue,
+  (
+    queue: PaginatedApiResultInterface<JudgementImageInterface>,
+    pk: JudgementImageInterface["pk"]
+  ): JudgementImageInterface => {
+    const matching = queue.results.filter(entry => entry.pk === pk);
+    if (matching.length === 1) {
+      return matching[0];
+    }
+
+    return null;
+  }
 );
 
 export const selectFutureIotds = createSelector(

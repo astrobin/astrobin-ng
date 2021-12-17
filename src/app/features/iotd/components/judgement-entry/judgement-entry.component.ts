@@ -1,12 +1,12 @@
 import { Component, ElementRef, OnInit } from "@angular/core";
 import { State } from "@app/store/state";
 import { BasePromotionEntryComponent } from "@features/iotd/components/base-promotion-entry/base-promotion-entry.component";
-import { selectFutureIotdForImage } from "@features/iotd/store/iotd.selectors";
+import { selectFutureIotdForImage, selectJudgementQueueEntry } from "@features/iotd/store/iotd.selectors";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Store } from "@ngrx/store";
 import { LoadingService } from "@shared/services/loading.service";
 import { Observable, of } from "rxjs";
-import { distinctUntilChanged, map, take, tap } from "rxjs/operators";
+import { distinctUntilChanged, filter, map, switchMap, take, tap } from "rxjs/operators";
 import { ImageInterface } from "@shared/interfaces/image.interface";
 import { CookieService } from "ngx-cookie-service";
 import { DeleteIotd, PostIotd } from "@features/iotd/store/iotd.actions";
@@ -15,7 +15,7 @@ import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { TranslateService } from "@ngx-translate/core";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
 import { JudgementImageInterface } from "@features/iotd/types/judgement-image.interface";
-import { PromotionImageInterface } from "@features/iotd/types/promotion-image.interface";
+import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
 
 @Component({
   selector: "astrobin-judgement-entry",
@@ -71,5 +71,23 @@ export class JudgementEntryComponent extends BasePromotionEntryComponent impleme
       .subscribe();
   }
 
-  setExpiration(pk: PromotionImageInterface["pk"]): void {}
+  setExpiration(pk: JudgementImageInterface["pk"]): void {
+    this.store$
+      .select(selectJudgementQueueEntry, pk)
+      .pipe(
+        filter(entry => !!entry),
+        switchMap(entry =>
+          this.store$.select(selectBackendConfig).pipe(map(backendConfig => ({ entry, backendConfig })))
+        ),
+        map(({ entry, backendConfig }) => {
+          const date = new Date(entry.lastVoteTimestamp + "Z");
+          date.setDate(date.getDate() + backendConfig.IOTD_JUDGEMENT_WINDOW_DAYS);
+          return date.toUTCString();
+        }),
+        take(1)
+      )
+      .subscribe(date => {
+        this.expirationDate = date;
+      });
+  }
 }
