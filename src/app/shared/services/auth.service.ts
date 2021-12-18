@@ -4,20 +4,18 @@ import { AuthServiceInterface } from "@shared/services/auth.service-interface";
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { CookieService } from "ngx-cookie-service";
-import { Observable, Subscription } from "rxjs";
+import { Observable } from "rxjs";
 import { AuthClassicApiService } from "./api/classic/auth/auth-classic-api.service";
 import { State } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { selectCurrentUser } from "@features/account/store/auth.selectors";
 import { map } from "rxjs/operators";
-import { Logout } from "@features/account/store/auth.actions";
 
 @Injectable({
   providedIn: "root"
 })
 export class AuthService extends BaseService implements AuthServiceInterface {
   static CLASSIC_AUTH_TOKEN_COOKIE = "classic-auth-token";
-  isAuthenticatedSubscription: Subscription;
 
   constructor(
     public readonly store$: Store<State>,
