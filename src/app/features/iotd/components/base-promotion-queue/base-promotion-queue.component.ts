@@ -8,7 +8,7 @@ import {
   VoteInterface
 } from "@features/iotd/services/iotd-api.service";
 import { LoadDismissedImages, LoadHiddenImages } from "@features/iotd/store/iotd.actions";
-import { selectDismissedImageByImageId, selectHiddenImages } from "@features/iotd/store/iotd.selectors";
+import { selectHiddenImages } from "@features/iotd/store/iotd.selectors";
 import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
@@ -19,13 +19,12 @@ import { PopNotificationsService } from "@shared/services/pop-notifications.serv
 import { distinctUntilChangedObj } from "@shared/services/utils/utils.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { Observable } from "rxjs";
-import { filter, map, switchMap, take, takeUntil } from "rxjs/operators";
+import { map, switchMap, takeUntil } from "rxjs/operators";
 import { ActivatedRoute, Params, Router } from "@angular/router";
 import { CookieService } from "ngx-cookie-service";
 import { SubmissionImageInterface } from "@features/iotd/types/submission-image.interface";
 import { ReviewImageInterface } from "@features/iotd/types/review-image.interface";
 import { Actions } from "@ngrx/effects";
-import { PromotionImageInterface } from "@features/iotd/types/promotion-image.interface";
 
 const FILL_SLOT_REMINDER_COOKIE = "astrobin-iotd-fill-slot-reminder";
 
@@ -40,11 +39,14 @@ export abstract class BasePromotionQueueComponent extends BaseComponentDirective
   supportsMaxPromotionsPerDayInfo = true;
 
   page;
-  pageSize$: Observable<number> = this.store$
-    .select(selectBackendConfig)
-    .pipe(map(backendConfig => backendConfig.IOTD_QUEUES_PAGE_SIZE));
+  pageSize$: Observable<number> = this.store$.select(selectBackendConfig).pipe(
+    takeUntil(this.destroyed$),
+    map(backendConfig => backendConfig.IOTD_QUEUES_PAGE_SIZE)
+  );
 
-  hiddenImages$: Observable<HiddenImage[]> = this.store$.select(selectHiddenImages);
+  hiddenImages$: Observable<HiddenImage[]> = this.store$.select(selectHiddenImages).pipe(takeUntil(this.destroyed$));
+
+  isDismissed: boolean;
 
   abstract queue$: Observable<PaginatedApiResultInterface<SubmissionImageInterface | ReviewImageInterface>>;
   abstract promotions$: Observable<SubmissionInterface[] | VoteInterface[] | IotdInterface[]>;
@@ -103,23 +105,6 @@ export abstract class BasePromotionQueueComponent extends BaseComponentDirective
         }
       });
 
-    this.queue$
-      .pipe(
-        takeUntil(this.destroyed$),
-        filter(queue => !!queue)
-      )
-      .subscribe(() => {
-        setTimeout(() => {
-          this.promotionQueueEntries.changes.pipe(take(1)).subscribe(entries => {
-            entries.forEach((entry, index) => {
-              setTimeout(() => {
-                entry.loadImage();
-              }, (index + 1) * 100);
-            });
-          });
-        }, 100);
-      });
-
     this.refresh();
   }
 
@@ -164,10 +149,6 @@ export abstract class BasePromotionQueueComponent extends BaseComponentDirective
     if (element) {
       element.nativeElement.scrollIntoView({ behavior: "smooth" });
     }
-  }
-
-  isDismissed$(pk: PromotionImageInterface["pk"]): Observable<boolean> {
-    return this.store$.select(selectDismissedImageByImageId, pk).pipe(map(dismissedImage => !!dismissedImage));
   }
 
   private _getEntryElement(imageId: number): ElementRef | null {

@@ -28,7 +28,6 @@
             <astrobin-submission-entry
               #promotionQueueEntries
               id="promotion-queue-entry-{{ entry.pk }}"
-              *ngIf="(isDismissed$(entry.pk) | async) === false"
               [entry]="entry"
             >
             </astrobin-submission-entry>

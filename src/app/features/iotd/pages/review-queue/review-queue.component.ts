@@ -17,6 +17,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { CookieService } from "ngx-cookie-service";
 import { ReviewImageInterface } from "@features/iotd/types/review-image.interface";
 import { Actions } from "@ngrx/effects";
+import { takeUntil } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-review-queue",
@@ -24,8 +25,10 @@ import { Actions } from "@ngrx/effects";
   styleUrls: ["./review-queue.component.scss"]
 })
 export class ReviewQueueComponent extends BasePromotionQueueComponent implements OnInit {
-  queue$: Observable<PaginatedApiResultInterface<ReviewImageInterface>> = this.store$.select(selectReviewQueue);
-  promotions$: Observable<VoteInterface[]> = this.store$.select(selectReviews);
+  queue$: Observable<PaginatedApiResultInterface<ReviewImageInterface>> = this.store$
+    .select(selectReviewQueue)
+    .pipe(takeUntil(this.destroyed$));
+  promotions$: Observable<VoteInterface[]> = this.store$.select(selectReviews).pipe(takeUntil(this.destroyed$));
 
   constructor(
     public readonly store$: Store<State>,

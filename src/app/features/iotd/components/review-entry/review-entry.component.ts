@@ -1,4 +1,4 @@
-import { Component, ElementRef } from "@angular/core";
+import { Component, ElementRef, OnInit } from "@angular/core";
 import { State } from "@app/store/state";
 import { BasePromotionEntryComponent } from "@features/iotd/components/base-promotion-entry/base-promotion-entry.component";
 import { DeleteVote, PostVote } from "@features/iotd/store/iotd.actions";
@@ -7,7 +7,7 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Store } from "@ngrx/store";
 import { LoadingService } from "@shared/services/loading.service";
 import { Observable, of } from "rxjs";
-import { distinctUntilChanged, filter, map, switchMap, take, tap } from "rxjs/operators";
+import { distinctUntilChanged, filter, map, switchMap, take, takeUntil, tap } from "rxjs/operators";
 import { ImageInterface } from "@shared/interfaces/image.interface";
 import { selectBackendConfig, selectIotdMaxSubmissionsPerDay } from "@app/store/selectors/app/app.selectors";
 import { CookieService } from "ngx-cookie-service";
@@ -34,9 +34,8 @@ export class ReviewEntryComponent extends BasePromotionEntryComponent {
   ) {
     super(store$, elementRef, modalService, cookieService, windowRefService, classicRoutesService, translateService);
   }
-
-  isPromoted$(imageId: ImageInterface["pk"]): Observable<boolean> {
-    return this.store$.select(selectReviewForImage, imageId).pipe(
+  isPromoted$(pk: ReviewImageInterface["pk"]): Observable<boolean> {
+    return this.store$.select(selectReviewForImage, pk).pipe(
       map(review => review !== null),
       distinctUntilChanged()
     );

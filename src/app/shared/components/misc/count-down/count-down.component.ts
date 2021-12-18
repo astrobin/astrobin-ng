@@ -21,20 +21,23 @@ export class CountDownComponent extends BaseComponentDirective implements OnInit
   @Input()
   targetDate: string;
 
+  @Input()
+  showSeconds = true;
+
   timeDifference;
   secondsToTargetDate;
   minutesToTargetDate;
   hoursToTargetDate;
   daysToTargetDate;
 
-  private subscription: Subscription;
-
   constructor(public readonly store$: Store<State>) {
     super(store$);
   }
 
   ngOnInit() {
-    this.subscription = interval(1000)
+    this.getTimeDifference();
+
+    interval(this.showSeconds ? 1000 : 60000)
       .pipe(takeUntil(this.destroyed$))
       .subscribe(x => {
         if (!!this.targetDate) {
