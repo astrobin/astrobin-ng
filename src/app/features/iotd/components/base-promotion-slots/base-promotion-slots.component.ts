@@ -17,6 +17,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { ActivatedRoute } from "@angular/router";
 import { NestedCommentInterface } from "@shared/interfaces/nested-comment.interface";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
+import { selectApp } from "@app/store/selectors/app/app.selectors";
 
 interface Slot {
   id: number;
@@ -52,6 +53,8 @@ export abstract class BasePromotionSlotsComponent extends BaseComponentDirective
   @ViewChildren("image")
   _images = new QueryList<ImageComponent>();
 
+  @HostBinding("class.d-none") hasFullScreenImage = false;
+
   slotType: SlotType;
   iotdContentType$: Observable<ContentTypeInterface>;
 
@@ -74,6 +77,14 @@ export abstract class BasePromotionSlotsComponent extends BaseComponentDirective
     if (this.slotType === undefined) {
       throw new Error("slotType cannot be undefined");
     }
+
+    this.store$
+      .select(selectApp)
+      .pipe(
+        takeUntil(this.destroyed$),
+        map(app => !!app.currentFullscreenImage)
+      )
+      .subscribe(hasFullScreenImage => (this.hasFullScreenImage = hasFullScreenImage));
 
     if (this.slotType === SlotType.JUDGEMENT) {
       this.store$.dispatch(new LoadContentType(contentTypeDescription));

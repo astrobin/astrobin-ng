@@ -23,17 +23,12 @@
     margin-top: 1.5rem;
     transition: .3s ease-in-out;
 
-    @media screen and (max-width: $xs-max) {
-      width: calc(100% - 94px);
-      transform: scale(.5) translateY(-48px);
-    }
-
     @media screen and (min-width: $sm-min) {
-      width: 446px;
-      transform: scale(.5) translateY(-62px);
+      display: none;
     }
 
     @media screen and (min-width: $md-min) {
+      display: flex;
       width: 626px;
       transform: scale(.5) translateY(-74px);
     }
