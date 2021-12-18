@@ -1,5 +1,3 @@
-@import "../../../../styles/breakpoints";
-
 :host {
   .return-to-classic {
     font-size: 1rem;
@@ -16,39 +14,5 @@
   astrobin-review-entry,
   astrobin-judgement-entry {
     margin-bottom: 3rem;
-  }
-
-  .sticky-promotion-slots {
-    z-index: 2;
-    margin-top: 1.5rem;
-    transition: .3s ease-in-out;
-
-    @media screen and (min-width: $sm-min) {
-      display: none;
-    }
-
-    @media screen and (min-width: $md-min) {
-      display: flex;
-      width: 626px;
-      transform: scale(.5) translateY(-74px);
-    }
-
-    @media screen and (min-width: $lg-min) {
-      width: 866px;
-      transform: scale(.5) translateY(-88px);
-    }
-
-    @media screen and (min-width: $xl-min) {
-      width: 940px;
-      transform: scale(.5) translateY(-100px);
-    }
-
-    &.is-empty {
-      top: 2vw !important;
-
-      ::ng-deep .promotion-slot {
-        min-height: 100px;
-      }
-    }
   }
 }
