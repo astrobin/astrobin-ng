@@ -18,6 +18,7 @@ export enum AuthActionTypes {
   LOGIN_SUCCESS = "[Auth] Login success",
   LOGIN_FAILURE = "[Auth] Login failure",
   LOGOUT = "[Auth] Logout",
+  LOGOUT_SUCCESS = "[Auth] Logout success",
   UPDATE_CURRENT_USER_PROFILE = "[Auth] Update current user profile",
   UPDATE_CURRENT_USER_PROFILE_SUCCESS = "[Auth] Update current user profile success",
   LOAD_USER = "[Auth] Load user",
@@ -55,6 +56,10 @@ export class LoginFailure implements PayloadActionInterface {
 
 export class Logout implements Action {
   readonly type = AuthActionTypes.LOGOUT;
+}
+
+export class LogoutSuccess implements Action {
+  readonly type = AuthActionTypes.LOGOUT_SUCCESS;
 }
 
 export class UpdateCurrentUserProfile implements PayloadActionInterface {
@@ -100,6 +105,7 @@ export type All =
   | LoginSuccess
   | LoginFailure
   | Logout
+  | LogoutSuccess
   | UpdateCurrentUserProfile
   | UpdateCurrentUserProfileSuccess
   | LoadUser

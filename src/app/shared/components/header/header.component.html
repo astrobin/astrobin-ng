@@ -37,14 +37,14 @@
         <ng-container [ngTemplateOutlet]="quickSearch"></ng-container>
       </div>
 
-      <ul *ngIf="authService.isAuthenticated() | async" class="navbar-nav">
+      <ul *ngIf="isAuthenticated" class="navbar-nav">
         <ng-container [ngTemplateOutlet]="languageSelector"></ng-container>
         <ng-container [ngTemplateOutlet]="notificationsButton"></ng-container>
         <ng-container [ngTemplateOutlet]="userMenu"></ng-container>
         <ng-container [ngTemplateOutlet]="uploadButton"></ng-container>
       </ul>
 
-      <ng-container *ngIf="(authService.isAuthenticated() | async) === false" [ngTemplateOutlet]="loginAndRegister">
+      <ng-container *ngIf="!isAuthenticated" [ngTemplateOutlet]="loginAndRegister">
       </ng-container>
     </div>
   </div>

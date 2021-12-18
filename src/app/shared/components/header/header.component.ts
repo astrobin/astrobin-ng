@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { State } from "@app/store/state";
 import { Logout } from "@features/account/store/auth.actions";
 import { NotificationsService } from "@features/notifications/services/notifications.service";
@@ -13,7 +13,7 @@ import { LoadingService } from "@shared/services/loading.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { Observable } from "rxjs";
 import { selectCurrentUser } from "@features/account/store/auth.selectors";
-import { map, take } from "rxjs/operators";
+import { map, take, takeUntil } from "rxjs/operators";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { CookieService } from "ngx-cookie-service";
@@ -30,8 +30,9 @@ interface AvailableLanguageInterface {
   templateUrl: "./header.component.html",
   styleUrls: ["./header.component.scss"]
 })
-export class HeaderComponent extends BaseComponentDirective {
+export class HeaderComponent extends BaseComponentDirective implements OnInit {
   isCollapsed = true;
+  isAuthenticated = false;
 
   languages: AvailableLanguageInterface[] = [
     { code: "en", label: "English (US)" },
@@ -90,6 +91,13 @@ export class HeaderComponent extends BaseComponentDirective {
     public readonly jsonApiService: JsonApiService
   ) {
     super(store$);
+  }
+
+  ngOnInit() {
+    this.authService
+      .isAuthenticated$()
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(isAuthenticated => (this.isAuthenticated = isAuthenticated));
   }
 
   get currentLanguageCodeDisplay(): string {
