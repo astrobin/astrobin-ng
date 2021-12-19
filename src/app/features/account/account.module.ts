@@ -5,9 +5,10 @@ import { LoggedInPageComponent } from "@features/account/pages/logged-in-page/lo
 import { SharedModule } from "@shared/shared.module";
 import { LoggingOutPageComponent } from "./pages/logging-out-page/logging-out-page.component";
 import { LoginPageComponent } from "./pages/login-page/login-page.component";
+import { LoggingInPageComponent } from "@features/account/pages/logging-in-page/logging-in-page.component";
 
 @NgModule({
-  declarations: [LoginPageComponent, LoggedInPageComponent, LoggingOutPageComponent],
+  declarations: [LoginPageComponent, LoggedInPageComponent, LoggingInPageComponent, LoggingOutPageComponent],
   imports: [RouterModule.forChild(routes), SharedModule]
 })
 export class AccountModule {}

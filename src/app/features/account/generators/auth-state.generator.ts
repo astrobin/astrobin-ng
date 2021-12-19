@@ -7,6 +7,7 @@ export class AuthStateGenerator {
   static default(): AuthState {
     return {
       initialized: true,
+      loggingOutViaBackend: false,
       user: UserGenerator.user(),
       userProfile: UserProfileGenerator.userProfile(),
       userSubscriptions: [UserSubscriptionGenerator.userSubscription()],

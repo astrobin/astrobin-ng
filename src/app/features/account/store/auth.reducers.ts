@@ -6,6 +6,7 @@ import { UtilsService } from "@shared/services/utils/utils.service";
 
 export interface AuthState {
   initialized: boolean;
+  loggingOutViaBackend: boolean;
 
   // Current user
   user: UserInterface | null;
@@ -19,6 +20,7 @@ export interface AuthState {
 
 export const initialAuthState: AuthState = {
   initialized: false,
+  loggingOutViaBackend: false,
   user: null,
   userProfile: null,
   userSubscriptions: [],
@@ -46,6 +48,7 @@ export function reducer(state = initialAuthState, action: All): AuthState {
     case AuthActionTypes.LOGOUT_SUCCESS:
       return {
         ...state,
+        loggingOutViaBackend: true,
         user: null,
         userProfile: null,
         userSubscriptions: []

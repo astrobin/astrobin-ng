@@ -8,7 +8,7 @@ context("IOTD Review queue", () => {
   describe("when not logged in", () => {
     it("should redirect you to the login page", () => {
       cy.visitPage("/iotd/review-queue");
-      cy.url().should("contain", "http://localhost:4400/account/login");
+      cy.url().should("contain", "http://localhost:4400/account/logging-in");
     });
   });
 

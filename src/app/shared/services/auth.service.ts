@@ -50,11 +50,29 @@ export class AuthService extends BaseService implements AuthServiceInterface {
         observer.next();
         observer.complete();
 
-        if (!(this.windowRefService.nativeWindow as any).Cypress) {
-          this.windowRefService.locationAssign(this.classicRoutesService.LOGOUT);
-        }
+        this.redirectToBackendLogout();
       });
     });
+  }
+
+  getLoginUrl(redirectUrl?: string): string {
+    if (redirectUrl === undefined) {
+      redirectUrl = this.windowRefService.getCurrentUrl().toString();
+    }
+
+    return `${this.classicRoutesService.LOGIN}?next=${encodeURIComponent(redirectUrl)}`;
+  }
+
+  redirectToBackendLogin(redirectUrl?: string) {
+    if (!(this.windowRefService.nativeWindow as any).Cypress) {
+      this.windowRefService.locationAssign(this.getLoginUrl(redirectUrl));
+    }
+  }
+
+  redirectToBackendLogout() {
+    if (!(this.windowRefService.nativeWindow as any).Cypress) {
+      this.windowRefService.locationAssign(this.classicRoutesService.LOGOUT);
+    }
   }
 
   isAuthenticated$(): Observable<boolean> {
