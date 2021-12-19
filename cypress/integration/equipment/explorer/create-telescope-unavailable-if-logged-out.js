@@ -8,7 +8,7 @@ context("Equipment", () => {
   context("Explorer", () => {
     it("should not have the 'Add' tag", () => {
       cy.visitPage("/equipment/explorer/telescope");
-      cy.url().should("contain", "login");
+      cy.url().should("contain", "logging-in");
 
       // TODO: replace above with the commented part when the equipment explorer is open to non moderators.
       // cy.get("#equipment-item-field .ng-input input").type("Test");

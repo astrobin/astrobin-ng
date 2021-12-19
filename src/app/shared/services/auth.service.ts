@@ -50,9 +50,7 @@ export class AuthService extends BaseService implements AuthServiceInterface {
         observer.next();
         observer.complete();
 
-        if (!(this.windowRefService.nativeWindow as any).Cypress) {
-          this.redirectToBackendLogout();
-        }
+        this.redirectToBackendLogout();
       });
     });
   }
@@ -66,11 +64,15 @@ export class AuthService extends BaseService implements AuthServiceInterface {
   }
 
   redirectToBackendLogin(redirectUrl?: string) {
-    this.windowRefService.locationAssign(this.getLoginUrl(redirectUrl));
+    if (!(this.windowRefService.nativeWindow as any).Cypress) {
+      this.windowRefService.locationAssign(this.getLoginUrl(redirectUrl));
+    }
   }
 
   redirectToBackendLogout() {
-    this.windowRefService.locationAssign(this.classicRoutesService.LOGOUT);
+    if (!(this.windowRefService.nativeWindow as any).Cypress) {
+      this.windowRefService.locationAssign(this.classicRoutesService.LOGOUT);
+    }
   }
 
   isAuthenticated$(): Observable<boolean> {

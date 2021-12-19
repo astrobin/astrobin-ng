@@ -10,7 +10,7 @@ context("uploader", () => {
       cy.route("GET", "**/common/userprofiles/current", []).as("getCurrentUserProfile");
 
       cy.visitPage("/uploader");
-      cy.url().should("contain", "/account/login?redirectUrl=%2Fuploader");
+      cy.url().should("contain", "/account/logging-in?redirectUrl=%2Fuploader");
     });
   });
 

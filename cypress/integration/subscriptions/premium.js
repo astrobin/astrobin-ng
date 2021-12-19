@@ -7,7 +7,7 @@ context("premium", () => {
       cy.setupInitializationRoutes();
       cy.route("GET", "**/common/userprofiles/current", []).as("getCurrentUserProfile");
       cy.visitPage("/subscriptions/premium");
-      cy.url().should("contain", "/account/login?redirectUrl=%2Fsubscriptions%2Fpremium");
+      cy.url().should("contain", "/account/logging-in?redirectUrl=%2Fsubscriptions%2Fpremium");
     });
   });
 

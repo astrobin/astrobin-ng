@@ -20,7 +20,7 @@ context("revision uploader", () => {
       cy.route("GET", "**/common/userprofiles/current", []).as("getCurrentUserProfile");
 
       cy.visitPage("/uploader/revision/1");
-      cy.url().should("contain", "/account/login?redirectUrl=%2Fuploader%2Frevision%2F1");
+      cy.url().should("contain", "/account/logging-in?redirectUrl=%2Fuploader%2Frevision%2F1");
     });
   });
 
