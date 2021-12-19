@@ -41,7 +41,7 @@ describe("GroupGuardService", () => {
   });
 
   it("should not pass if user is not in the group", done => {
-    jest.spyOn(service.authService, "isAuthenticated").mockReturnValue(of(false));
+    jest.spyOn(service.authService, "isAuthenticated$").mockReturnValue(of(false));
 
     service.canActivate(route, { url: "/foo" } as RouterStateSnapshot).subscribe(result => {
       expect(result).toBe(false);
@@ -56,7 +56,7 @@ describe("GroupGuardService", () => {
     store.setState(state);
 
     route = TestBed.inject(ActivatedRouteSnapshot);
-    jest.spyOn(service.authService, "isAuthenticated").mockReturnValue(of(true));
+    jest.spyOn(service.authService, "isAuthenticated$").mockReturnValue(of(true));
 
     service.canActivate(route, { url: "/foo" } as RouterStateSnapshot).subscribe(result => {
       expect(result).toBe(true);

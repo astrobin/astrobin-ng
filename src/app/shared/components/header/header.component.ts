@@ -1,11 +1,10 @@
-import { Component } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { State } from "@app/store/state";
 import { Logout } from "@features/account/store/auth.actions";
 import { NotificationsService } from "@features/notifications/services/notifications.service";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
-import { LoginModalComponent } from "@shared/components/auth/login-modal/login-modal.component";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { AuthService } from "@shared/services/auth.service";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
@@ -13,7 +12,7 @@ import { LoadingService } from "@shared/services/loading.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { Observable } from "rxjs";
 import { selectCurrentUser } from "@features/account/store/auth.selectors";
-import { map, take } from "rxjs/operators";
+import { map, take, takeUntil } from "rxjs/operators";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { CookieService } from "ngx-cookie-service";
@@ -30,8 +29,10 @@ interface AvailableLanguageInterface {
   templateUrl: "./header.component.html",
   styleUrls: ["./header.component.scss"]
 })
-export class HeaderComponent extends BaseComponentDirective {
+export class HeaderComponent extends BaseComponentDirective implements OnInit {
   isCollapsed = true;
+  isAuthenticated = false;
+  helpWithTranslationsUrl: string;
 
   languages: AvailableLanguageInterface[] = [
     { code: "en", label: "English (US)" },
@@ -82,7 +83,7 @@ export class HeaderComponent extends BaseComponentDirective {
     public readonly authService: AuthService,
     public readonly notificationsService: NotificationsService,
     public readonly loadingService: LoadingService,
-    public readonly windowRef: WindowRefService,
+    public readonly windowRefService: WindowRefService,
     public readonly translateService: TranslateService,
     public readonly domSanitizer: DomSanitizer,
     public readonly cookieService: CookieService,
@@ -141,17 +142,27 @@ export class HeaderComponent extends BaseComponentDirective {
     );
   }
 
+  get loginUrl() {
+    return `${this.classicRoutes.LOGIN}?next=${encodeURIComponent(this.windowRefService.getCurrentUrl().toString())}`;
+  }
+
+  ngOnInit() {
+    this.authService
+      .isAuthenticated$()
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(isAuthenticated => (this.isAuthenticated = isAuthenticated));
+
+    this.helpWithTranslationsUrl$.pipe(takeUntil(this.destroyed$)).subscribe(url => {
+      this.helpWithTranslationsUrl = url;
+    });
+  }
+
   getSetLanguageUrl(languageCode: string): string {
     if (languageCode === "zh_Hans") {
       languageCode = "zh-hans";
     }
 
-    return this.classicRoutes.SET_LANGUAGE(languageCode, this.windowRef.nativeWindow.location.href);
-  }
-
-  openLoginModal($event) {
-    $event.preventDefault();
-    this.modalService.open(LoginModalComponent, { centered: true });
+    return this.classicRoutes.SET_LANGUAGE(languageCode, this.windowRefService.nativeWindow.location.href);
   }
 
   logout($event) {

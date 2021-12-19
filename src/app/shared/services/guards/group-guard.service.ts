@@ -38,7 +38,7 @@ export class GroupGuardService extends BaseService implements CanActivate {
     };
 
     return new Observable<boolean>(observer => {
-      this.authService.isAuthenticated().subscribe(authenticated => {
+      this.authService.isAuthenticated$().subscribe(authenticated => {
         if (!authenticated) {
           observer.next(false);
           observer.complete();
