@@ -8,7 +8,7 @@ context("notifications", () => {
       cy.route("GET", "**/common/userprofiles/current", []).as("getCurrentUserProfile");
 
       cy.visitPage("/notifications");
-      cy.url().should("contain", "/account/logging-in?redirectUrl=%2Fnotifications");
+      cy.url().should("contain", "/account/logging-in");
     });
   });
 

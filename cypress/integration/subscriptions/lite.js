@@ -7,7 +7,7 @@ context("lite", () => {
       cy.setupInitializationRoutes();
       cy.route("GET", "**/common/userprofiles/current", []).as("getCurrentUserProfile");
       cy.visitPage("/subscriptions/lite");
-      cy.url().should("contain", "/account/logging-in?redirectUrl=%2Fsubscriptions%2Flite");
+      cy.url().should("contain", "/account/logging-in");
     });
   });
 

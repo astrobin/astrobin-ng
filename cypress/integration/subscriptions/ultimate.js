@@ -7,7 +7,7 @@ context("ultimate", () => {
       cy.setupInitializationRoutes();
       cy.route("GET", "**/common/userprofiles/current", []).as("getCurrentUserProfile");
       cy.visitPage("/subscriptions/ultimate");
-      cy.url().should("contain", "/account/logging-in?redirectUrl=%2Fsubscriptions%2Fultimate");
+      cy.url().should("contain", "/account/logging-in");
     });
   });
 
