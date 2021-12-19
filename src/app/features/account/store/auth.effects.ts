@@ -60,10 +60,8 @@ export class AuthEffects {
   Logout: Observable<LogoutSuccess> = createEffect(() =>
     this.actions$.pipe(
       ofType(AuthActionTypes.LOGOUT),
-      map(() => new LogoutSuccess()),
-      tap(() => {
-        this.authService.logout();
-      })
+      switchMap(() => this.authService.logout()),
+      map(() => new LogoutSuccess())
     )
   );
 

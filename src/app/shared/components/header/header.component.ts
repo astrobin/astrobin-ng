@@ -5,7 +5,6 @@ import { NotificationsService } from "@features/notifications/services/notificat
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
-import { LoginModalComponent } from "@shared/components/auth/login-modal/login-modal.component";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { AuthService } from "@shared/services/auth.service";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
@@ -83,7 +82,7 @@ export class HeaderComponent extends BaseComponentDirective implements OnInit {
     public readonly authService: AuthService,
     public readonly notificationsService: NotificationsService,
     public readonly loadingService: LoadingService,
-    public readonly windowRef: WindowRefService,
+    public readonly windowRefService: WindowRefService,
     public readonly translateService: TranslateService,
     public readonly domSanitizer: DomSanitizer,
     public readonly cookieService: CookieService,
@@ -91,13 +90,6 @@ export class HeaderComponent extends BaseComponentDirective implements OnInit {
     public readonly jsonApiService: JsonApiService
   ) {
     super(store$);
-  }
-
-  ngOnInit() {
-    this.authService
-      .isAuthenticated$()
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe(isAuthenticated => (this.isAuthenticated = isAuthenticated));
   }
 
   get currentLanguageCodeDisplay(): string {
@@ -149,17 +141,23 @@ export class HeaderComponent extends BaseComponentDirective implements OnInit {
     );
   }
 
+  get loginUrl() {
+    return `${this.classicRoutes.LOGIN}?next=${encodeURIComponent(this.windowRefService.getCurrentUrl().toString())}`;
+  }
+
+  ngOnInit() {
+    this.authService
+      .isAuthenticated$()
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(isAuthenticated => (this.isAuthenticated = isAuthenticated));
+  }
+
   getSetLanguageUrl(languageCode: string): string {
     if (languageCode === "zh_Hans") {
       languageCode = "zh-hans";
     }
 
-    return this.classicRoutes.SET_LANGUAGE(languageCode, this.windowRef.nativeWindow.location.href);
-  }
-
-  openLoginModal($event) {
-    $event.preventDefault();
-    this.modalService.open(LoginModalComponent, { centered: true });
+    return this.classicRoutes.SET_LANGUAGE(languageCode, this.windowRefService.nativeWindow.location.href);
   }
 
   logout($event) {

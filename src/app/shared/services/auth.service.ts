@@ -1,5 +1,4 @@
 import { Injectable } from "@angular/core";
-import { Router } from "@angular/router";
 import { AuthServiceInterface } from "@shared/services/auth.service-interface";
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
@@ -10,6 +9,10 @@ import { State } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { selectCurrentUser } from "@features/account/store/auth.selectors";
 import { map } from "rxjs/operators";
+import { WindowRefService } from "@shared/services/window-ref.service";
+import { ClassicRoutesService } from "@shared/services/classic-routes.service";
+import { Router } from "@angular/router";
+import {} from "@ngrx/store/src/meta-reducers/utils";
 
 @Injectable({
   providedIn: "root"
@@ -21,8 +24,10 @@ export class AuthService extends BaseService implements AuthServiceInterface {
     public readonly store$: Store<State>,
     public readonly loadingService: LoadingService,
     public readonly authClassicApi: AuthClassicApiService,
-    public cookieService: CookieService,
-    public router: Router
+    public readonly cookieService: CookieService,
+    public readonly classicRoutesService: ClassicRoutesService,
+    public readonly windowRefService: WindowRefService,
+    public readonly router: Router
   ) {
     super(loadingService);
   }
@@ -35,13 +40,21 @@ export class AuthService extends BaseService implements AuthServiceInterface {
     return this.authClassicApi.login(handle, password);
   }
 
-  logout(): void {
-    if (this.cookieService.check(AuthService.CLASSIC_AUTH_TOKEN_COOKIE)) {
-      this.cookieService.delete(AuthService.CLASSIC_AUTH_TOKEN_COOKIE, "/");
-      this.cookieService.delete(AuthService.CLASSIC_AUTH_TOKEN_COOKIE, "/", ".localhost");
-      this.cookieService.delete(AuthService.CLASSIC_AUTH_TOKEN_COOKIE, "/", ".astrobin.com");
-      this.router.navigate(["account", "logged-out"]);
-    }
+  logout(): Observable<void> {
+    return new Observable<void>(observer => {
+      this.router.navigate(["account", "logging-out"]).then(() => {
+        for (const domain of [".astrobin.com", "localhost"]) {
+          this.cookieService.delete(AuthService.CLASSIC_AUTH_TOKEN_COOKIE, "/", domain);
+        }
+
+        observer.next();
+        observer.complete();
+
+        if (!(this.windowRefService.nativeWindow as any).Cypress) {
+          this.windowRefService.locationAssign(this.classicRoutesService.LOGOUT);
+        }
+      });
+    });
   }
 
   isAuthenticated$(): Observable<boolean> {
