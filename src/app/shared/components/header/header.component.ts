@@ -32,6 +32,7 @@ interface AvailableLanguageInterface {
 export class HeaderComponent extends BaseComponentDirective implements OnInit {
   isCollapsed = true;
   isAuthenticated = false;
+  helpWithTranslationsUrl: string;
 
   languages: AvailableLanguageInterface[] = [
     { code: "en", label: "English (US)" },
@@ -150,6 +151,10 @@ export class HeaderComponent extends BaseComponentDirective implements OnInit {
       .isAuthenticated$()
       .pipe(takeUntil(this.destroyed$))
       .subscribe(isAuthenticated => (this.isAuthenticated = isAuthenticated));
+
+    this.helpWithTranslationsUrl$.pipe(takeUntil(this.destroyed$)).subscribe(url => {
+      this.helpWithTranslationsUrl = url;
+    });
   }
 
   getSetLanguageUrl(languageCode: string): string {
