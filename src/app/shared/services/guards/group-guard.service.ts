@@ -2,23 +2,23 @@ import { Location } from "@angular/common";
 import { Injectable } from "@angular/core";
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from "@angular/router";
 import { State } from "@app/store/state";
-import { selectCurrentUser } from "@features/account/store/auth.selectors";
+import { selectAuth, selectCurrentUser } from "@features/account/store/auth.selectors";
 import { Store } from "@ngrx/store";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { Observable, Observer } from "rxjs";
-import { map } from "rxjs/operators";
+import { map, take } from "rxjs/operators";
 import { AuthService } from "../auth.service";
 
 @Injectable()
 export class GroupGuardService extends BaseService implements CanActivate {
   constructor(
     public readonly store$: Store<State>,
-    public loadingService: LoadingService,
-    public authService: AuthService,
-    public router: Router,
-    public location: Location
+    public readonly loadingService: LoadingService,
+    public readonly authService: AuthService,
+    public readonly router: Router,
+    public readonly location: Location
   ) {
     super(loadingService);
   }
@@ -30,11 +30,21 @@ export class GroupGuardService extends BaseService implements CanActivate {
     };
 
     const onError = (observer: Observer<boolean>, redirectTo: string) => {
-      this.router.navigateByUrl(redirectTo, { skipLocationChange: true }).then(() => {
-        observer.next(false);
-        observer.complete();
-        this.location.replaceState(routerState.url);
-      });
+      this.store$
+        .select(selectAuth)
+        .pipe(
+          take(1),
+          map(state => state.loggingOutViaBackend)
+        )
+        .subscribe(loggingOutViaBackend => {
+          if (!loggingOutViaBackend) {
+            this.router.navigateByUrl(redirectTo, { skipLocationChange: true }).then(() => {
+              observer.next(false);
+              observer.complete();
+              this.location.replaceState(routerState.url);
+            });
+          }
+        });
     };
 
     return new Observable<boolean>(observer => {

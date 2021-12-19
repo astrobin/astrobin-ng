@@ -469,7 +469,7 @@
 <ng-template #loginAndRegister>
   <ul class="navbar-nav">
     <li class="nav-item">
-      <a [href]="loginUrl" class="nav-link">{{ "Log in" | translate }}</a>
+      <a [href]="authService.getLoginUrl()" class="nav-link">{{ "Log in" | translate }}</a>
     </li>
     <li class="nav-item">
       <a [href]="classicRoutes.REGISTER" class="nav-link">{{ "Register" | translate }}</a>

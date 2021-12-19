@@ -142,10 +142,6 @@ export class HeaderComponent extends BaseComponentDirective implements OnInit {
     );
   }
 
-  get loginUrl() {
-    return `${this.classicRoutes.LOGIN}?next=${encodeURIComponent(this.windowRefService.getCurrentUrl().toString())}`;
-  }
-
   ngOnInit() {
     this.authService
       .isAuthenticated$()
