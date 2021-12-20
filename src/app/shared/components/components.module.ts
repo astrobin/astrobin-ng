@@ -72,6 +72,11 @@ import { AccessoryEditorComponent } from "@shared/components/equipment/editors/a
 import { SimilarItemsSuggestionComponent } from "@shared/components/equipment/similar-items-suggestion/similar-items-suggestion.component";
 import { ConfirmItemCreationModalComponent } from "@shared/components/equipment/editors/confirm-item-creation-modal/confirm-item-creation-modal.component";
 import { OthersInBrandComponent } from "@shared/components/equipment/editors/others-in-brand/others-in-brand.component";
+import { CustomToastComponent } from "@shared/components/misc/custom-toast/custom-toast.component";
+import { NestedCommentsModalComponent } from "@shared/components/misc/nested-comments-modal/nested-comments-modal.component";
+import { NestedCommentsCountComponent } from "@shared/components/misc/nested-comments-count/nested-comments-count.component";
+import { CountDownComponent } from "@shared/components/misc/count-down/count-down.component";
+import { ScrollToTopComponent } from "@shared/components/misc/scroll-to-top/scroll-to-top.component";
 import { FormlyFieldEquipmentItemBrowserComponent } from "@shared/components/misc/formly-field-equipment-item-browser/formly-field-equipment-item-browser.component";
 import { FormlyEquipmentItemBrowserWrapperComponent } from "@shared/components/misc/formly-equipment-item-browser-wrapper/formly-equipment-item-browser-wrapper.component";
 import { ItemSummaryModalComponent } from "@shared/components/equipment/summaries/item-summary-modal/item-summary-modal.component";
@@ -110,6 +115,8 @@ const components = [
   BreadcrumbComponent,
   CameraComponent,
   ConfirmationDialogComponent,
+  CountDownComponent,
+  CustomToastComponent,
   EmptyListComponent,
   FileValueAccessorDirective,
   FooterComponent,
@@ -131,10 +138,13 @@ const components = [
   LoginModalComponent,
   NestedCommentComponent,
   NestedCommentsComponent,
+  NestedCommentsModalComponent,
+  NestedCommentsCountComponent,
   NothingHereComponent,
   ObjectsInFieldComponent,
   ReadOnlyModeComponent,
   RefreshButtonComponent,
+  ScrollToTopComponent,
   TelescopeComponent,
   TextLoadingIndicatorComponent,
   ToggleButtonComponent,

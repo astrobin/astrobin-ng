@@ -11,6 +11,7 @@ import {
   Login,
   LoginFailure,
   LoginSuccess,
+  LogoutSuccess,
   UpdateCurrentUserProfile,
   UpdateCurrentUserProfileSuccess
 } from "@features/account/store/auth.actions";
@@ -56,15 +57,12 @@ export class AuthEffects {
     { dispatch: false }
   );
 
-  Logout: Observable<void> = createEffect(
-    () =>
-      this.actions$.pipe(
-        ofType(AuthActionTypes.LOGOUT),
-        tap(() => {
-          this.authService.logout();
-        })
-      ),
-    { dispatch: false }
+  Logout: Observable<LogoutSuccess> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AuthActionTypes.LOGOUT),
+      switchMap(() => this.authService.logout()),
+      map(() => new LogoutSuccess())
+    )
   );
 
   UpdateCurrentUserProfile: Observable<UpdateCurrentUserProfileSuccess> = createEffect(() =>

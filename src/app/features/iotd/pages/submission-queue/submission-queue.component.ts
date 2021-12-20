@@ -4,7 +4,6 @@ import { State } from "@app/store/state";
 import { BasePromotionQueueComponent } from "@features/iotd/components/base-promotion-queue/base-promotion-queue.component";
 import { SubmissionInterface } from "@features/iotd/services/iotd-api.service";
 import { LoadSubmissionQueue, LoadSubmissions } from "@features/iotd/store/iotd.actions";
-import { SubmissionImageInterface } from "@features/iotd/store/iotd.reducer";
 import { selectSubmissionQueue, selectSubmissions } from "@features/iotd/store/iotd.selectors";
 import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
@@ -15,6 +14,10 @@ import { TitleService } from "@shared/services/title/title.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { Observable } from "rxjs";
 import { ActivatedRoute, Router } from "@angular/router";
+import { CookieService } from "ngx-cookie-service";
+import { SubmissionImageInterface } from "@features/iotd/types/submission-image.interface";
+import { Actions } from "@ngrx/effects";
+import { takeUntil } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-submission-queue",
@@ -22,19 +25,34 @@ import { ActivatedRoute, Router } from "@angular/router";
   styleUrls: ["./submission-queue.component.scss"]
 })
 export class SubmissionQueueComponent extends BasePromotionQueueComponent implements OnInit {
-  queue$: Observable<PaginatedApiResultInterface<SubmissionImageInterface>> = this.store$.select(selectSubmissionQueue);
-  promotions$: Observable<SubmissionInterface[]> = this.store$.select(selectSubmissions);
+  queue$: Observable<PaginatedApiResultInterface<SubmissionImageInterface>> = this.store$
+    .select(selectSubmissionQueue)
+    .pipe(takeUntil(this.destroyed$));
+  promotions$: Observable<SubmissionInterface[]> = this.store$
+    .select(selectSubmissions)
+    .pipe(takeUntil(this.destroyed$));
 
   constructor(
     public readonly store$: Store<State>,
+    public readonly actions$: Actions,
     public readonly router: Router,
     public readonly activatedRoute: ActivatedRoute,
     public readonly translateService: TranslateService,
     public readonly popNotificationsService: PopNotificationsService,
     public readonly titleService: TitleService,
-    public readonly windowRefService: WindowRefService
+    public readonly windowRefService: WindowRefService,
+    public readonly cookieService: CookieService
   ) {
-    super(store$, router, activatedRoute, popNotificationsService, translateService, windowRefService);
+    super(
+      store$,
+      actions$,
+      router,
+      activatedRoute,
+      popNotificationsService,
+      translateService,
+      windowRefService,
+      cookieService
+    );
   }
 
   ngOnInit(): void {
@@ -49,8 +67,8 @@ export class SubmissionQueueComponent extends BasePromotionQueueComponent implem
     );
   }
 
-  loadQueue(page: number): void {
-    this.store$.dispatch(new LoadSubmissionQueue({ page }));
+  loadQueue(page: number, sort: "newest" | "oldest" | "default" = "default"): void {
+    this.store$.dispatch(new LoadSubmissionQueue({ page, sort }));
   }
 
   loadPromotions(): void {

@@ -11,6 +11,8 @@ const BASE_URL = environment.classicBaseUrl;
 export class ClassicRoutesService extends BaseService {
   HOME = BASE_URL + "/";
   REGISTER = BASE_URL + "/accounts/register/";
+  LOGIN = BASE_URL + "/accounts/login/";
+  LOGOUT = BASE_URL + "/accounts/logout/";
   RESET_PASSWORD = BASE_URL + "/accounts/password/reset";
   PRICING = "https://welcome.astrobin.com/pricing";
   UPLOAD = BASE_URL + "/upload/";

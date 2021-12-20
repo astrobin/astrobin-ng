@@ -7,7 +7,7 @@ import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
 import { TelescopeApiService } from "@shared/services/api/classic/gear/telescope/telescope-api.service";
 import { EMPTY, Observable, of } from "rxjs";
-import { catchError, map, mergeMap } from "rxjs/operators";
+import { catchError, map, mergeMap, switchMap, take } from "rxjs/operators";
 
 @Injectable()
 export class TelescopeEffects {
@@ -16,9 +16,12 @@ export class TelescopeEffects {
       ofType(AppActionTypes.LOAD_TELESCOPE),
       mergeMap(action =>
         this.store$.select(selectTelescope, action.payload).pipe(
-          mergeMap(telescopeFromStore =>
+          switchMap(telescopeFromStore =>
             telescopeFromStore !== null
-              ? of(telescopeFromStore).pipe(map(telescope => new LoadTelescopeSuccess(telescope)))
+              ? of(telescopeFromStore).pipe(
+                  take(1),
+                  map(telescope => new LoadTelescopeSuccess(telescope))
+                )
               : this.telescopeApiService.get(action.payload).pipe(
                   map(telescope => new LoadTelescopeSuccess(telescope)),
                   catchError(error => EMPTY)

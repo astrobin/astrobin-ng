@@ -53,3 +53,4 @@ Thumbs.db
 !/cypress/videos/.empty
 /cypress/screenshots/*
 !/cypress/screenshots/.empty
+/.angular/cache/

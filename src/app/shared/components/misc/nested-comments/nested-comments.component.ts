@@ -27,6 +27,12 @@ export class NestedCommentsComponent extends BaseComponentDirective implements O
   @Input()
   objectId: number;
 
+  @Input()
+  highlightId: number;
+
+  @Input()
+  info: string;
+
   comments$: Observable<NestedCommentInterface[]>;
   model: { topLevelComment: string };
   form = new FormGroup({});

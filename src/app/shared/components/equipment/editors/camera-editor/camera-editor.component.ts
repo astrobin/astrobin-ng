@@ -180,7 +180,7 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
           },
           templateOptions: {
             label: this.cameraService.getPrintablePropertyName(CameraDisplayProperty.COOLED),
-            description: this.translateService.instant("Whether this camera is equipment with a cooling mechanism.")
+            description: this.translateService.instant("Whether this camera is equipped with a cooling mechanism.")
           }
         },
         {

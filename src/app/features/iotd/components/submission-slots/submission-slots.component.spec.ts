@@ -5,13 +5,24 @@ import { IotdModule } from "@features/iotd/iotd.module";
 import { provideMockStore } from "@ngrx/store/testing";
 import { MockBuilder } from "ng-mocks";
 import { SubmissionSlotsComponent } from "./submission-slots.component";
+import { ActivatedRoute } from "@angular/router";
+import { of } from "rxjs";
 
 describe("SubmissionSlotsComponent", () => {
   let component: SubmissionSlotsComponent;
   let fixture: ComponentFixture<SubmissionSlotsComponent>;
 
   beforeEach(
-    async () => await MockBuilder(SubmissionSlotsComponent, IotdModule).provide(provideMockStore({ initialState }))
+    async () =>
+      await MockBuilder(SubmissionSlotsComponent, IotdModule).provide([
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            fragment: of("")
+          }
+        },
+        provideMockStore({ initialState })
+      ])
   );
 
   beforeEach(() => {

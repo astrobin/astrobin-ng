@@ -1,72 +1,61 @@
 import {
   DismissedImage,
   HiddenImage,
+  IotdInterface,
   SubmissionInterface,
   VoteInterface
 } from "@features/iotd/services/iotd-api.service";
-import { ImageInterface } from "@shared/interfaces/image.interface";
 import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
 import { IotdActions, IotdActionTypes } from "./iotd.actions";
+import { SubmissionImageInterface } from "@features/iotd/types/submission-image.interface";
+import { ReviewImageInterface } from "@features/iotd/types/review-image.interface";
+import { StaffMemberSettingsInterface } from "@features/iotd/types/staff-member-settings.interface";
+import { JudgementImageInterface } from "@features/iotd/types/judgement-image.interface";
 
 export const iotdFeatureKey = "iotd";
 
-// tslint:disable-next-line:no-empty-interface
-export interface SubmissionImageInterface extends ImageInterface {}
-
-// tslint:disable-next-line:no-empty-interface
-export interface ReviewImageInterface extends ImageInterface {}
-
-export type PromotionImageInterface = SubmissionImageInterface | ReviewImageInterface;
-
 export interface IotdState {
+  staffMemberSettings: StaffMemberSettingsInterface;
+  hiddenImages: HiddenImage[];
+  dismissedImages: DismissedImage[];
+
   submissionQueue: PaginatedApiResultInterface<SubmissionImageInterface> | null;
   submissions: SubmissionInterface[];
 
   reviewQueue: PaginatedApiResultInterface<ReviewImageInterface> | null;
   votes: VoteInterface[];
 
-  hiddenImages: HiddenImage[];
-  dismissedImages: DismissedImage[];
-  dismissConfirmationSeen: boolean;
+  judgementQueue: PaginatedApiResultInterface<JudgementImageInterface> | null;
+  futureIotds: IotdInterface[];
 }
 
 export const initialIotdState: IotdState = {
+  staffMemberSettings: null,
+  hiddenImages: [],
+  dismissedImages: [],
+
   submissionQueue: null,
   submissions: [],
 
   reviewQueue: null,
   votes: [],
 
-  hiddenImages: [],
-  dismissedImages: [],
-  dismissConfirmationSeen: false
+  judgementQueue: null,
+  futureIotds: []
 };
 
 export function reducer(state = initialIotdState, action: IotdActions): IotdState {
   switch (action.type) {
-    case IotdActionTypes.LOAD_SUBMISSION_QUEUE_SUCCESS:
-      return {
-        ...state,
-        submissionQueue: action.payload
-      };
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // GENERIC
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    case IotdActionTypes.LOAD_SUBMISSIONS_SUCCESS:
+    case IotdActionTypes.LOAD_STAFF_MEMBER_SETTINGS_SUCCESS: {
       return {
         ...state,
-        submissions: action.payload
+        staffMemberSettings: action.payload.settings
       };
-
-    case IotdActionTypes.POST_SUBMISSION_SUCCESS:
-      return {
-        ...state,
-        submissions: [...state.submissions, ...[action.payload]]
-      };
-
-    case IotdActionTypes.DELETE_SUBMISSION_SUCCESS:
-      return {
-        ...state,
-        submissions: state.submissions.filter(submission => submission.id !== action.payload.id)
-      };
+    }
 
     case IotdActionTypes.LOAD_HIDDEN_IMAGES_SUCCESS:
       return {
@@ -92,17 +81,43 @@ export function reducer(state = initialIotdState, action: IotdActions): IotdStat
         dismissedImages: [...state.dismissedImages, action.payload.dismissedImage]
       };
 
-    case IotdActionTypes.DISMISS_CONFIRMATION_SEEN:
-      return {
-        ...state,
-        dismissConfirmationSeen: true
-      };
-
     case IotdActionTypes.SHOW_IMAGE_SUCCESS:
       return {
         ...state,
         hiddenImages: state.hiddenImages.filter(hiddenImage => hiddenImage.image !== action.payload.id)
       };
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // SUBMISSIONS
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    case IotdActionTypes.LOAD_SUBMISSION_QUEUE_SUCCESS:
+      return {
+        ...state,
+        submissionQueue: action.payload
+      };
+
+    case IotdActionTypes.LOAD_SUBMISSIONS_SUCCESS:
+      return {
+        ...state,
+        submissions: action.payload
+      };
+
+    case IotdActionTypes.POST_SUBMISSION_SUCCESS:
+      return {
+        ...state,
+        submissions: [...state.submissions, ...[action.payload]]
+      };
+
+    case IotdActionTypes.DELETE_SUBMISSION_SUCCESS:
+      return {
+        ...state,
+        submissions: state.submissions.filter(submission => submission.id !== action.payload.id)
+      };
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // REVIEWS
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     case IotdActionTypes.LOAD_REVIEW_QUEUE_SUCCESS:
       return {
@@ -126,6 +141,34 @@ export function reducer(state = initialIotdState, action: IotdActions): IotdStat
       return {
         ...state,
         votes: state.votes.filter(review => review.id !== action.payload.id)
+      };
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // JUDGEMENT
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    case IotdActionTypes.LOAD_JUDGEMENT_QUEUE_SUCCESS:
+      return {
+        ...state,
+        judgementQueue: action.payload
+      };
+
+    case IotdActionTypes.LOAD_FUTURE_IOTDS_SUCCESS:
+      return {
+        ...state,
+        futureIotds: action.payload.futureIotds
+      };
+
+    case IotdActionTypes.POST_IOTD_SUCCESS:
+      return {
+        ...state,
+        futureIotds: [...state.futureIotds, ...[action.payload]]
+      };
+
+    case IotdActionTypes.DELETE_IOTD_SUCCESS:
+      return {
+        ...state,
+        futureIotds: state.futureIotds.filter(iotd => iotd.id !== action.payload.id)
       };
 
     default:

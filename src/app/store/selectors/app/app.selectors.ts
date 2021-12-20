@@ -18,3 +18,8 @@ export const selectIotdMaxReviewsPerDay = createSelector(
   selectBackendConfig,
   (backendConfig): number => backendConfig.IOTD_REVIEW_MAX_PER_DAY
 );
+
+export const selectIotdMaxFutureIotds = createSelector(
+  selectBackendConfig,
+  (backendConfig): number => backendConfig.IOTD_JUDGEMENT_MAX_FUTURE_DAYS
+);

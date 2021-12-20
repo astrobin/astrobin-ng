@@ -51,6 +51,8 @@ import { CustomTranslateParser } from "@app/translate-parser";
 import { LanguageLoader } from "@app/translate-loader";
 import { FormlyEquipmentItemBrowserWrapperComponent } from "@shared/components/misc/formly-equipment-item-browser-wrapper/formly-equipment-item-browser-wrapper.component";
 import { DirectivesModule } from "@shared/directives/directives.module";
+import { CustomToastComponent } from "@shared/components/misc/custom-toast/custom-toast.component";
+
 
 export function appInitializer(store: Store<State>, actions$: Actions) {
   return () =>
@@ -112,7 +114,8 @@ export function appInitializer(store: Store<State>, actions$: Actions) {
       timeOut: 20000,
       progressBar: true,
       preventDuplicates: true,
-      resetTimeoutOnDuplicate: true
+      resetTimeoutOnDuplicate: true,
+      toastComponent: CustomToastComponent
     }),
     TranslateModule.forChild({
       missingTranslationHandler: {

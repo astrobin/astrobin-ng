@@ -1,3 +1,7 @@
+import { ImageThumbnailInterface } from "@shared/interfaces/image-thumbnail.interface";
+import { TelescopeInterface } from "@shared/interfaces/telescope.interface";
+import { CameraInterface } from "@shared/interfaces/camera.interface";
+
 export enum AcquisitionType {
   REGULAR = "REGULAR",
   EAA = "EAA",
@@ -57,6 +61,7 @@ export enum RemoteSource {
   CS = "ChileScope",
   DSNM = "Dark Sky New Mexico",
   DSP = "Dark Sky Portal",
+  DSV = "Deepsky Villa",
   DSC = "DeepSkyChile",
   DSW = "DeepSkyWest",
   eEyE = "e-EyE Extremadura",
@@ -142,8 +147,8 @@ export interface ImageInterface {
   skipNotifications: boolean;
   w: number;
   h: number;
-  imagingTelescopes: number[];
-  imagingCameras: number[];
+  imagingTelescopes: TelescopeInterface[];
+  imagingCameras: CameraInterface[];
   guidingTelescopes: number[];
   guidingCameras: number[];
   focalReducers: number[];
@@ -183,6 +188,7 @@ export interface ImageInterface {
   locations: number[];
   fullSizeDisplayLimitation: FullSizeLimitationDisplayOptions;
   downloadLimitation: DownloadLimitationOptions;
+  thumbnails: ImageThumbnailInterface[];
 
   // Ephemeral form fields
   showGuidingEquipment?: boolean;

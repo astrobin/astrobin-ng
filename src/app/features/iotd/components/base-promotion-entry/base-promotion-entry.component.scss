@@ -1,56 +1,30 @@
 @import "../../../../styles/breakpoints";
 
-
 :host {
   display: block;
-}
-
-.promotion-queue-entry {
-  position: relative;
-
-  .hidden-overlay {
-    display: none;
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    z-index: 1;
-  }
 
   &.hidden {
-    .hidden-overlay {
-      display: flex;
-      justify-content: center;
-      align-items: center;
+    opacity: 0.5;
+    box-shadow: none;
 
-      @media screen and (max-width: $sm-max) {
-        .btn {
-          display: inline-block;
-          width: auto;
-        }
+    .card-header {
+      padding: 0.25rem 1rem;
+      font-size: 0.85rem;
+
+      .btn {
+        font-size: 0.85rem;
+        padding: 0.25rem 0.5rem;
       }
     }
+  }
 
-    .col-image {
-      opacity: .25;
-      filter: brightness(50%);
-      max-height: 150px;
-
-      ::ng-deep .astrobin-image {
-        background-size: auto;
-      }
-    }
-
-    .col-tools {
-      display: none;
-    }
+  &.dismissed {
+    display: none;
   }
 }
 
-.dark-box {
-  margin: 0;
-  padding: 1rem 0;
+.card-body {
+  padding: 0;
 }
 
 .col-image {
@@ -67,8 +41,9 @@
   }
 }
 
-.col-gear {
+.col-metadata {
+  padding: 1rem;
   p {
-    margin: 0;
+    margin: 0.25rem;
   }
 }

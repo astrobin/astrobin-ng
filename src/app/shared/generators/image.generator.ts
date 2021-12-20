@@ -60,7 +60,8 @@ export class ImageGenerator {
       keyValueTags: null,
       locations: [],
       fullSizeDisplayLimitation: null,
-      downloadLimitation: null
+      downloadLimitation: null,
+      thumbnails: []
     };
   }
 }

@@ -19,14 +19,14 @@ describe("AuthGuardService", () => {
   });
 
   it("should pass if user is authenticated", () => {
-    jest.spyOn(service.authService, "isAuthenticated").mockReturnValue(of(true));
+    jest.spyOn(service.authService, "isAuthenticated$").mockReturnValue(of(true));
     service.canActivate(null, { url: "/foo" } as RouterStateSnapshot).subscribe(result => {
       expect(result).toBe(true);
     });
   });
 
   it("should redirect to login page if user is not authenticated", () => {
-    jest.spyOn(service.authService, "isAuthenticated").mockReturnValue(of(false));
+    jest.spyOn(service.authService, "isAuthenticated$").mockReturnValue(of(false));
     jest.spyOn(service.router, "navigateByUrl").mockImplementation(() => {
       return new Promise<boolean>(resolve => resolve(true));
     });
