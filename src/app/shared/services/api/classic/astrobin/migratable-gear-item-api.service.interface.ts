@@ -11,13 +11,13 @@ export enum MigrationFlag {
 }
 
 export interface MigratableGearItemApiServiceInterface {
-  getRandomNonMigrated?(global: boolean): Observable<any[]>;
+  getRandomNonMigrated?(isGlobal: boolean): Observable<any[]>;
 
-  getNonMigratedCount?(global: boolean): Observable<number>;
+  getNonMigratedCount?(isGlobal: boolean): Observable<number>;
 
-  getSimilarNonMigrated?(gearId: number, global: boolean): Observable<any[]>;
+  getSimilarNonMigrated?(gearId: number, isGlobal: boolean): Observable<any[]>;
 
-  getSimilarNonMigratedByMakeAndName?(make: string, name: string, global: boolean): Observable<any[]>;
+  getSimilarNonMigratedByMakeAndName?(make: string, name: string, isGlobal: boolean): Observable<any[]>;
 
   lockForMigration?(gearId: number): Observable<void>;
 
