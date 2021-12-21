@@ -16,7 +16,7 @@ import { ImageEditWatermarkFieldsService } from "@features/image/services/image-
 import { ImageEditService } from "@features/image/services/image-edit.service";
 import { ImageEditEquipmentFieldsService } from "@features/image/services/image-edit-equipment-fields.service";
 import { SaveEquipmentPresetModalComponent } from "@features/image/components/save-equipment-preset-modal/save-equipment-preset-modal.component";
-import { LoadEquipmentPresetModalComponent } from './components/load-equipment-preset-modal/load-equipment-preset-modal.component';
+import { LoadEquipmentPresetModalComponent } from "./components/load-equipment-preset-modal/load-equipment-preset-modal.component";
 
 @NgModule({
   declarations: [ImageEditPageComponent, CreateLocationModalComponent, SaveEquipmentPresetModalComponent, LoadEquipmentPresetModalComponent],
