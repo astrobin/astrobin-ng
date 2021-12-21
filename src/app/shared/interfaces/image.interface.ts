@@ -1,6 +1,19 @@
 import { ImageThumbnailInterface } from "@shared/interfaces/image-thumbnail.interface";
 import { TelescopeInterface } from "@shared/interfaces/telescope.interface";
 import { CameraInterface } from "@shared/interfaces/camera.interface";
+import { UserInterface } from "@shared/interfaces/user.interface";
+import { FocalReducerInterface } from "@shared/interfaces/focal-reducer.interface";
+import { MountInterface } from "@shared/interfaces/mount.interface";
+import { AccessoryInterface } from "@shared/interfaces/accessory.interface";
+import { SoftwareInterface } from "@shared/interfaces/software.interface";
+
+import { TelescopeInterface as TelescopeInterface2 } from "@features/equipment/types/telescope.interface";
+import { CameraInterface as CameraInterface2 } from "@features/equipment/types/camera.interface";
+import { MountInterface as MountInterface2 } from "@features/equipment/types/mount.interface";
+import { FilterInterface as FilterInterface2 } from "@features/equipment/types/filter.interface";
+import { AccessoryInterface as AccessoryInterface2 } from "@features/equipment/types/accessory.interface";
+import { SoftwareInterface as SoftwareInterface2 } from "@features/equipment/types/software.interface";
+import { GroupInterface } from "@shared/interfaces/group.interface";
 
 export enum AcquisitionType {
   REGULAR = "REGULAR",
@@ -138,8 +151,8 @@ export enum DownloadLimitationOptions {
 }
 
 export interface ImageInterface {
-  user: number;
   pk: number;
+  user: UserInterface["id"];
   hash: string;
   title: string;
   imageFile: string;
@@ -149,20 +162,20 @@ export interface ImageInterface {
   h: number;
   imagingTelescopes: TelescopeInterface[];
   imagingCameras: CameraInterface[];
-  guidingTelescopes: number[];
-  guidingCameras: number[];
-  focalReducers: number[];
-  mounts: number[];
-  accessories: number[];
-  software: number[];
-  imagingTelescopes2: number[];
-  imagingCameras2: number[];
-  guidingTelescopes2: number[];
-  guidingCameras2: number[];
-  mounts2: number[];
-  filters2: number[];
-  accessories2: number[];
-  software2: number[];
+  guidingTelescopes: TelescopeInterface[];
+  guidingCameras: CameraInterface[];
+  focalReducers: FocalReducerInterface[];
+  mounts: MountInterface[];
+  accessories: AccessoryInterface[];
+  software: SoftwareInterface[];
+  imagingTelescopes2: TelescopeInterface2[];
+  imagingCameras2: CameraInterface2[];
+  guidingTelescopes2: TelescopeInterface2[];
+  guidingCameras2: CameraInterface2[];
+  mounts2: MountInterface2[];
+  filters2: FilterInterface2[];
+  accessories2: AccessoryInterface2[];
+  software2: SoftwareInterface2[];
   published: string;
   license: string;
   description?: string;
@@ -174,7 +187,7 @@ export interface ImageInterface {
   solarSystemMainSubject?: SolarSystemSubjectType;
   dataSource: DataSource;
   remoteSource?: string;
-  partOfGroupSet: number[];
+  partOfGroupSet: GroupInterface["id"][];
   mouseHoverImage: MouseHoverImageOptions;
   allowComments: boolean;
   squareCropping: string;

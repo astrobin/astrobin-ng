@@ -100,6 +100,12 @@
       >
         {{ "Save and proceed to image" | translate }}
       </button>
+
+      <hr />
+
+      <button (click)="onSave($event)" class="dropdown-item">
+        {{ "Save and remain on this page" | translate }}
+      </button>
     </div>
   </div>
 </ng-template>

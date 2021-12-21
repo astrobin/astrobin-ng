@@ -78,14 +78,18 @@ export class ImageEditService extends BaseService {
 
         for (const preset of presets) {
           if (
-            JSON.stringify(preset.imagingTelescopes) === JSON.stringify(this.model.imagingTelescopes2) &&
-            JSON.stringify(preset.guidingTelescopes) === JSON.stringify(this.model.guidingTelescopes2) &&
-            JSON.stringify(preset.imagingCameras) === JSON.stringify(this.model.imagingCameras2) &&
-            JSON.stringify(preset.guidingCameras) === JSON.stringify(this.model.guidingCameras2) &&
-            JSON.stringify(preset.mounts) === JSON.stringify(this.model.mounts2) &&
-            JSON.stringify(preset.filters) === JSON.stringify(this.model.filters2) &&
-            JSON.stringify(preset.accessories) === JSON.stringify(this.model.accessories2) &&
-            JSON.stringify(preset.software) === JSON.stringify(this.model.software2)
+            JSON.stringify(preset.imagingTelescopes) ===
+              JSON.stringify(this.model.imagingTelescopes2.map(value => value.id)) &&
+            JSON.stringify(preset.guidingTelescopes) ===
+              JSON.stringify(this.model.guidingTelescopes2.map(value => value.id)) &&
+            JSON.stringify(preset.imagingCameras) ===
+              JSON.stringify(this.model.imagingCameras2.map(value => value.id)) &&
+            JSON.stringify(preset.guidingCameras) ===
+              JSON.stringify(this.model.guidingCameras2.map(value => value.id)) &&
+            JSON.stringify(preset.mounts) === JSON.stringify(this.model.mounts2.map(value => value.id)) &&
+            JSON.stringify(preset.filters) === JSON.stringify(this.model.filters2.map(value => value.id)) &&
+            JSON.stringify(preset.accessories) === JSON.stringify(this.model.accessories2.map(value => value.id)) &&
+            JSON.stringify(preset.software) === JSON.stringify(this.model.software2.map(value => value.id))
           ) {
             return preset;
           }

@@ -469,7 +469,9 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
         })
       )
       .subscribe(() => {
-        this.setValue(this.initialValue);
+        if (!!this.initialValue) {
+          this.setValue(this.initialValue);
+        }
       });
 
     this.actions$
@@ -482,7 +484,11 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
       )
       .subscribe(item => {
         if (this.multiple) {
-          this.setValue([...((this.model.value as Type[]) || []), item.id]);
+          if (!!this.model.value) {
+            this.setValue([...((this.model.value as Type[]) || []), item.id]);
+          } else {
+            this.setValue([item.id]);
+          }
         } else {
           this.setValue(item.id);
         }

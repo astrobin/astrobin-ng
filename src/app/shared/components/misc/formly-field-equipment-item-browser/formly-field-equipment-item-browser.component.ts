@@ -14,6 +14,11 @@ import { filter, map, take } from "rxjs/operators";
 import { TranslateService } from "@ngx-translate/core";
 import { UtilsService } from "@shared/services/utils/utils.service";
 
+export enum FormlyFieldEquipmentItemBrowserMode {
+  ID,
+  OBJECT
+}
+
 @Component({
   selector: "astrobin-formly-field-equipment-item-browser",
   templateUrl: "./formly-field-equipment-item-browser.component.html",
@@ -50,6 +55,22 @@ export class FormlyFieldEquipmentItemBrowserComponent extends FieldType implemen
     }
   }
 
+  get initialValue() {
+    if (this.to.mode === FormlyFieldEquipmentItemBrowserMode.ID) {
+      return this.formControl.value;
+    }
+
+    if (!this.formControl.value) {
+      return null;
+    }
+
+    if (this.to.multiple) {
+      return this.formControl.value.map(value => value.id);
+    }
+
+    return this.formControl.value.id;
+  }
+
   onCreationModeStarted() {
     if (this.to.creationModeStarted && UtilsService.isFunction(this.to.creationModeStarted)) {
       this.to.creationModeStarted();
@@ -67,7 +88,9 @@ export class FormlyFieldEquipmentItemBrowserComponent extends FieldType implemen
       const arrayValue = value as EquipmentItemBaseInterface[];
 
       if (arrayValue.length > 0) {
-        this.formControl.setValue(arrayValue.map(item => item.id));
+        this.formControl.setValue(
+          this.to.mode === FormlyFieldEquipmentItemBrowserMode.ID ? arrayValue.map(item => item.id) : arrayValue
+        );
       } else {
         this.formControl.setValue([]);
       }
@@ -75,7 +98,9 @@ export class FormlyFieldEquipmentItemBrowserComponent extends FieldType implemen
       const singleValue = value as EquipmentItemBaseInterface;
 
       if (!!singleValue) {
-        this.formControl.setValue(singleValue.id);
+        this.formControl.setValue(
+          this.to.mode === FormlyFieldEquipmentItemBrowserMode.ID ? singleValue.id : singleValue
+        );
       } else {
         this.formControl.setValue(null);
       }

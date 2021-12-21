@@ -7,6 +7,7 @@ import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/types/equipment-item-base.interface";
+import { FormlyFieldEquipmentItemBrowserMode } from "@shared/components/misc/formly-field-equipment-item-browser/formly-field-equipment-item-browser.component";
 
 @Injectable({
   providedIn: null
@@ -27,6 +28,7 @@ export class ImageEditEquipmentFieldsService extends BaseService {
       type: "equipment-item-browser",
       id: "image-imaging-telescopes-field",
       templateOptions: {
+        mode: FormlyFieldEquipmentItemBrowserMode.OBJECT,
         multiple: true,
         required: false,
         label: this.translateService.instant("Telescopes or lenses"),
@@ -44,6 +46,7 @@ export class ImageEditEquipmentFieldsService extends BaseService {
       type: "equipment-item-browser",
       id: "image-imaging-cameras-field",
       templateOptions: {
+        mode: FormlyFieldEquipmentItemBrowserMode.OBJECT,
         multiple: true,
         required: false,
         label: this.translateService.instant("Cameras"),
@@ -61,6 +64,7 @@ export class ImageEditEquipmentFieldsService extends BaseService {
       type: "equipment-item-browser",
       id: "image-mounts-field",
       templateOptions: {
+        mode: FormlyFieldEquipmentItemBrowserMode.OBJECT,
         multiple: true,
         required: false,
         label: this.translateService.instant("Mounts"),
@@ -77,6 +81,7 @@ export class ImageEditEquipmentFieldsService extends BaseService {
       type: "equipment-item-browser",
       id: "image-filters-field",
       templateOptions: {
+        mode: FormlyFieldEquipmentItemBrowserMode.OBJECT,
         multiple: true,
         required: false,
         label: this.translateService.instant("Filters"),
@@ -93,6 +98,7 @@ export class ImageEditEquipmentFieldsService extends BaseService {
       type: "equipment-item-browser",
       id: "image-accessories-field",
       templateOptions: {
+        mode: FormlyFieldEquipmentItemBrowserMode.OBJECT,
         multiple: true,
         required: false,
         label: this.translateService.instant("Accessories"),
@@ -109,6 +115,7 @@ export class ImageEditEquipmentFieldsService extends BaseService {
       type: "equipment-item-browser",
       id: "image-software-field",
       templateOptions: {
+        mode: FormlyFieldEquipmentItemBrowserMode.OBJECT,
         multiple: true,
         required: false,
         label: this.translateService.instant("Software"),
@@ -143,6 +150,7 @@ export class ImageEditEquipmentFieldsService extends BaseService {
       id: "image-guiding-telescopes-field",
       hideExpression: () => !this.imageEditService.model.showGuidingEquipment,
       templateOptions: {
+        mode: FormlyFieldEquipmentItemBrowserMode.OBJECT,
         multiple: true,
         required: false,
         label: this.translateService.instant("Guiding telescopes or lenses"),
@@ -171,6 +179,7 @@ export class ImageEditEquipmentFieldsService extends BaseService {
       id: "image-guiding-cameras-field",
       hideExpression: () => !this.imageEditService.model.showGuidingEquipment,
       templateOptions: {
+        mode: FormlyFieldEquipmentItemBrowserMode.OBJECT,
         multiple: true,
         required: false,
         label: this.translateService.instant("Guiding cameras"),

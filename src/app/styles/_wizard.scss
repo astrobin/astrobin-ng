@@ -85,6 +85,10 @@
 }
 
 .wizard-step {
+  .step-actions {
+    margin-top: 3rem;
+  }
+
   .form-actions.fixed {
     position: fixed;
     z-index: 1000;

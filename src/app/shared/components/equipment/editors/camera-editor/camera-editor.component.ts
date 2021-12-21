@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, OnInit, TemplateRef, ViewChild } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
-import { Actions, ofType } from "@ngrx/effects";
+import { Actions } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
 import {
   BaseItemEditorComponent,
@@ -11,23 +11,12 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 import { CameraInterface, CameraType } from "@features/equipment/types/camera.interface";
 import { State } from "@app/store/state";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
-import { of } from "rxjs";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { SensorInterface } from "@features/equipment/types/sensor.interface";
-import {
-  CreateSensor,
-  EquipmentActionTypes,
-  EquipmentItemCreationSuccessPayloadInterface,
-  FindAllEquipmentItems,
-  FindAllEquipmentItemsSuccess,
-  LoadBrand
-} from "@features/equipment/store/equipment.actions";
-import { filter, map, switchMap, take, takeUntil, tap } from "rxjs/operators";
-import { selectBrand, selectBrands, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
-import { BrandInterface } from "@features/equipment/types/brand.interface";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 import { CameraDisplayProperty, CameraService } from "@features/equipment/services/camera.service";
 import { FormlyFieldMessageLevel, FormlyFieldService } from "@shared/services/formly-field.service";
+import { FormlyFieldEquipmentItemBrowserMode } from "@shared/components/misc/formly-field-equipment-item-browser/formly-field-equipment-item-browser.component";
 
 @Component({
   selector: "astrobin-camera-editor",
@@ -131,6 +120,7 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
             "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
           },
           templateOptions: {
+            mode: FormlyFieldEquipmentItemBrowserMode.ID,
             label: this.cameraService.getPrintablePropertyName(CameraDisplayProperty.SENSOR),
             itemType: EquipmentItemType.SENSOR,
             showQuickAddRecent: false,

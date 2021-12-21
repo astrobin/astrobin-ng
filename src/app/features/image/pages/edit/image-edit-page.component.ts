@@ -198,7 +198,6 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     }
   }
 
-
   onLoadEquipmentPresetClicked() {
     this.modalService.open(LoadEquipmentPresetModalComponent);
   }
@@ -229,7 +228,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     );
   }
 
-  onSave(event: Event, next: string) {
+  onSave(event: Event, next?: string) {
     if (event) {
       event.preventDefault();
     }
@@ -251,10 +250,13 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
         data: { ...this.imageEditService.image, ...this.imageEditService.form.value }
       })
     );
-    this.actions$.pipe(ofType(AppActionTypes.SAVE_IMAGE_SUCCESS)).subscribe(() => {
-      this.loadingService.setLoading(true);
-      UtilsService.openLink(this.windowRefService.nativeWindow.document, next);
-    });
+
+    if (!!next) {
+      this.actions$.pipe(ofType(AppActionTypes.SAVE_IMAGE_SUCCESS)).subscribe(() => {
+        this.loadingService.setLoading(true);
+        UtilsService.openLink(this.windowRefService.nativeWindow.document, next);
+      });
+    }
   }
 
   private _initFields(): void {
