@@ -59,12 +59,12 @@ context("Image edit (new)", () => {
 
   it("should mark the step as errored if a required field is cleared", () => {
     cy.get("#image-title-field").clear();
-    cy.get("#image-stepper-field .nav-item.danger .nav-link small")
+    cy.get("#image-stepper-field .nav-item.danger .nav-link")
       .contains("Basic information")
       .should("exist");
 
     cy.get("#image-title-field").type("Test image");
-    cy.get("#image-stepper-field .nav-item.danger .nav-link small")
+    cy.get("#image-stepper-field .nav-item.danger .nav-link")
       .contains("Basic information")
       .should("not.exist");
   });

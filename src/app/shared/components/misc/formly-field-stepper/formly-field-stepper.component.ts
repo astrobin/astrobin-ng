@@ -1,4 +1,14 @@
-import { Component, OnInit, QueryList, ViewChild, ViewChildren } from "@angular/core";
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  OnDestroy,
+  OnInit,
+  QueryList,
+  Renderer2,
+  ViewChild,
+  ViewChildren
+} from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { FieldType, FormlyFieldConfig } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
@@ -19,9 +29,12 @@ import {
   templateUrl: "./formly-field-stepper.component.html",
   styleUrls: ["./formly-field-stepper.component.scss"]
 })
-export class FormlyFieldStepperComponent extends FieldType implements OnInit {
+export class FormlyFieldStepperComponent extends FieldType implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild("wizard")
   wizard: NgWizardComponent;
+
+  @ViewChild("wizard", { read: ElementRef })
+  wizardElement: ElementRef;
 
   @ViewChildren("wizardSteps")
   wizardSteps: QueryList<NgWizardStepComponent>;
@@ -30,6 +43,8 @@ export class FormlyFieldStepperComponent extends FieldType implements OnInit {
 
   highestVisitedStep = 0;
 
+  private _stepClickListeners = [];
+
   constructor(
     public readonly ngWizardService: NgWizardService,
     public readonly translateService: TranslateService,
@@ -37,7 +52,8 @@ export class FormlyFieldStepperComponent extends FieldType implements OnInit {
     public readonly popNotificationsService: PopNotificationsService,
     public readonly loadingService: LoadingService,
     public readonly router: Router,
-    public readonly route: ActivatedRoute
+    public readonly route: ActivatedRoute,
+    public readonly renderer: Renderer2
   ) {
     super();
   }
@@ -46,6 +62,23 @@ export class FormlyFieldStepperComponent extends FieldType implements OnInit {
     this.route.fragment.subscribe((fragment: string) => {
       this.currentStepIndex = +fragment - 1;
       this.ngWizardService.show(this.currentStepIndex);
+    });
+  }
+
+  ngAfterViewInit() {
+    const anchors: HTMLAnchorElement[] = this.wizardElement.nativeElement.querySelectorAll("a");
+    anchors.forEach(anchor => {
+      this._stepClickListeners.push(
+        this.renderer.listen(anchor, "click", (event: Event) => {
+          this._markFieldAsTouched(this.field.fieldGroup[this.currentStepIndex]);
+        })
+      );
+    });
+  }
+
+  ngOnDestroy() {
+    this._stepClickListeners.forEach(listener => {
+      listener();
     });
   }
 
@@ -69,8 +102,8 @@ export class FormlyFieldStepperComponent extends FieldType implements OnInit {
     return step?.state === "error";
   }
 
-  getStepTitle(stepNumber: number): string {
-    let title = this.translateService.instant("Step {{ stepNumber }}", { stepNumber: stepNumber + 1 });
+  getStepTitle(field: FormlyFieldConfig, stepNumber: number): string {
+    let title = field.templateOptions.label;
 
     if (this.isStepErrored(stepNumber)) {
       title += "*";

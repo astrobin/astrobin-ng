@@ -13,22 +13,6 @@ export class ImageService extends BaseService {
     super(loadingService);
   }
 
-  getBackgroundSize(alias: ImageAlias): string {
-    switch (alias) {
-      case ImageAlias.GALLERY:
-      case ImageAlias.GALLERY_INVERTED:
-      case ImageAlias.COLLECTION:
-      case ImageAlias.THUMB:
-      case ImageAlias.HISTOGRAM:
-      case ImageAlias.IOTD:
-      case ImageAlias.IOTD_MOBILE:
-      case ImageAlias.STORY:
-        return "cover";
-      default:
-        return "contain";
-    }
-  }
-
   loadImageFile(url: string, progressCallback: (progress: number) => void): Observable<string> {
     return new Observable<string>(observer => {
       const xhr = new XMLHttpRequest();

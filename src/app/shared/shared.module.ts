@@ -53,7 +53,6 @@ import { FormlyEquipmentItemBrowserWrapperComponent } from "@shared/components/m
 import { DirectivesModule } from "@shared/directives/directives.module";
 import { CustomToastComponent } from "@shared/components/misc/custom-toast/custom-toast.component";
 
-
 export function appInitializer(store: Store<State>, actions$: Actions) {
   return () =>
     new Promise<void>(resolve => {
@@ -101,7 +100,8 @@ export function appInitializer(store: Store<State>, actions$: Actions) {
     NgWizardModule.forRoot({
       theme: THEME.default,
       anchorSettings: {
-        anchorClickable: false,
+        anchorClickable: true,
+        enableAllAnchors: true,
         markAllPreviousStepsAsDone: true,
         enableAnchorOnDoneStep: true
       },

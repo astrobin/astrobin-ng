@@ -5,7 +5,8 @@
   color: var(--lighterGrey) !important;
   font-weight: normal;
   font-style: normal;
-  cursor: default !important;
+  border-radius: 0;
+  padding: 1rem;
 
   &::after {
     background-color: transparent !important;
@@ -18,7 +19,7 @@
 
   > ul.step-anchor {
     border-bottom-color: var(--grey);
-    background: none !important;
+    background: var(--black) !important;
   }
 
   .nav-item {
@@ -43,7 +44,8 @@
     &.danger.done .nav-link {
       font-weight: bold;
       font-style: italic;
-      color: var(--dangerColor) !important;
+      color: var(--lightestGrey) !important;
+      background-color: var(--dangerColor) !important;
 
       &::after {
         background-color: transparent !important;

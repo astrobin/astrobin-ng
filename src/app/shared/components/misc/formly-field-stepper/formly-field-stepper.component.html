@@ -1,23 +1,22 @@
 <ng-wizard #wizard (stepChanged)="onStepChanged($event)" [attr.id]="field.id" [config]="{ selected: currentStepIndex }">
   <ng-wizard-step
     #wizardSteps
-    *ngFor="let step of field?.fieldGroup; let index = index; let last = last"
-    [attr.id]="step.id"
+    *ngFor="let field of field?.fieldGroup; let index = index; let last = last"
+    [attr.id]="field.id"
     [class.error]="isStepErrored(index)"
     [class.visited]="highestVisitedStep > index"
-    [description]="step.templateOptions.label"
-    [state]="getState(step)"
-    [title]="getStepTitle(index)"
+    [state]="getState(field)"
+    [title]="getStepTitle(field, index)"
     [canExit]="!isStepErrored(index)"
     class="wizard-step"
   >
-    <formly-field [field]="step"></formly-field>
+    <formly-field [field]="field"></formly-field>
 
-    <div *ngIf="!!step.templateOptions.stepActionsTemplate" class="step-actions text-right">
-      <ng-container [ngTemplateOutlet]="step.templateOptions.stepActionsTemplate"></ng-container>
+    <div *ngIf="!!field.templateOptions.stepActionsTemplate" class="step-actions text-right">
+      <ng-container [ngTemplateOutlet]="field.templateOptions.stepActionsTemplate"></ng-container>
     </div>
 
-    <div class="form-actions" [class.fixed]="field.templateOptions?.fixed">
+    <div class="form-actions" [class.fixed]="to.fixed">
       <div class="form-actions-container">
         <button (click)="goToPreviousStep($event, index)" *ngIf="!isFirstStep(index)" class="btn btn-secondary">
           {{ "Previous" | translate }}
