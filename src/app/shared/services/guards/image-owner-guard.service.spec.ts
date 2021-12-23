@@ -44,7 +44,7 @@ describe("ImageOwnerGuardService", () => {
   });
 
   it("should not pass if user is not logged in", done => {
-    jest.spyOn(service.authService, "isAuthenticated").mockReturnValue(of(false));
+    jest.spyOn(service.authService, "isAuthenticated$").mockReturnValue(of(false));
 
     service.canActivate(null, { url: "/foo" } as RouterStateSnapshot).subscribe(result => {
       expect(result).toBe(false);
@@ -60,7 +60,7 @@ describe("ImageOwnerGuardService", () => {
 
     route = TestBed.inject(ActivatedRouteSnapshot);
     jest.spyOn(route, "params", "get").mockReturnValue({ imageId: 1 });
-    jest.spyOn(service.authService, "isAuthenticated").mockReturnValue(of(true));
+    jest.spyOn(service.authService, "isAuthenticated$").mockReturnValue(of(true));
 
     actions.next({ type: AppActionTypes.LOAD_IMAGE_FAILURE });
 
@@ -97,7 +97,7 @@ describe("ImageOwnerGuardService", () => {
 
     route = TestBed.inject(ActivatedRouteSnapshot);
     jest.spyOn(route, "params", "get").mockReturnValue({ imageId: 1 });
-    jest.spyOn(service.authService, "isAuthenticated").mockReturnValue(of(true));
+    jest.spyOn(service.authService, "isAuthenticated$").mockReturnValue(of(true));
     jest.spyOn(service.imageApiService, "getImage").mockReturnValue(of(image));
 
     service.canActivate(route, { url: "/foo" } as RouterStateSnapshot).subscribe(result => {
@@ -133,7 +133,7 @@ describe("ImageOwnerGuardService", () => {
 
     route = TestBed.inject(ActivatedRouteSnapshot);
     jest.spyOn(route, "params", "get").mockReturnValue({ imageId: 1 });
-    jest.spyOn(service.authService, "isAuthenticated").mockReturnValue(of(true));
+    jest.spyOn(service.authService, "isAuthenticated$").mockReturnValue(of(true));
     jest.spyOn(service.imageApiService, "getImage").mockReturnValue(of(image));
 
     service.canActivate(route, { url: "/foo" } as RouterStateSnapshot).subscribe(result => {

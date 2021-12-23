@@ -7,7 +7,7 @@ import { ContentTypeInterface } from "@shared/interfaces/content-type.interface"
 export class LoadContentType implements PayloadActionInterface {
   readonly type = AppActionTypes.LOAD_CONTENT_TYPE;
 
-  constructor(public payload: { appLabel: string; model: string }) {}
+  constructor(public payload: Omit<ContentTypeInterface, "id">) {}
 }
 
 export class LoadContentTypeSuccess implements PayloadActionInterface {

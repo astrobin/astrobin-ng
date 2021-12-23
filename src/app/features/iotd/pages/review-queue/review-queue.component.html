@@ -27,15 +27,18 @@
 
           <ng-container [ngTemplateOutletContext]="{ queue: queue }" [ngTemplateOutlet]="pagination"></ng-container>
 
-          <astrobin-review-entry
-            #promotionQueueEntries
-            *ngFor="let entry of queue.results"
-            [entry]="entry"
-            id="promotion-queue-entry-{{ entry.pk }}"
-          >
-          </astrobin-review-entry>
+          <ng-container *ngFor="let entry of queue.results">
+            <astrobin-review-entry
+              #promotionQueueEntries
+              [entry]="entry"
+              id="promotion-queue-entry-{{ entry.pk }}"
+            >
+            </astrobin-review-entry>
+          </ng-container>
 
           <ng-container [ngTemplateOutletContext]="{ queue: queue }" [ngTemplateOutlet]="pagination"></ng-container>
+
+          <astrobin-scroll-to-top></astrobin-scroll-to-top>
         </ng-container>
       </ng-container>
     </ng-container>

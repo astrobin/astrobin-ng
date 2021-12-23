@@ -1,8 +1,12 @@
 <div class="card-header d-flex justify-content-between align-items-center flex-column flex-sm-row">
   {{ entry.title }}
 
+  <div class="expiration" *ngIf="!hidden">
+    <astrobin-count-down [targetDate]="expirationDate" [showSeconds]="false"></astrobin-count-down>
+  </div>
+
   <button
-    [hidden]="(isHidden$(entry.pk) | async) === false"
+    [hidden]="!hidden"
     (click)="show(entry.pk)"
     [class.loading]="loadingService.isLoading()"
     class="btn btn-outline-primary mt-2 mt-sm-0 ml-0 ml-sm-2"
@@ -12,65 +16,66 @@
   </button>
 </div>
 
-<div class="card-body" [hidden]="(isHidden$(entry.pk) | async) === true">
-  <div
-    *ngIf="(isDismissed$(entry.pk) | async) === false"
-    [class.promoted]="(isPromoted$(entry.pk) | async) === true"
-    class="promotion-queue-entry"
-  >
-    <astrobin-fullscreen-image-viewer [id]="entry.pk"></astrobin-fullscreen-image-viewer>
+<div class="card-body" [hidden]="hidden">
+  <div [class.promoted]="isPromoted" class="promotion-queue-entry">
+    <astrobin-fullscreen-image-viewer [id]="entry.pk" [anonymized]="anonymizedThumbnails"></astrobin-fullscreen-image-viewer>
 
     <div class="col-image">
       <astrobin-image
         #image
         (click)="viewFullscreen(entry.pk)"
-        [alias]="ImageAlias.HD_ANONYMIZED"
+        [alias]="imageAlias"
+        [autoHeight]="imageAutoHeight"
         [id]="entry.pk"
         class="promotion-image"
       >
       </astrobin-image>
     </div>
 
-    <div class="col-tools">
-      <div class="col-gear">
-        <p>
-          <strong>{{ "Imaging telescopes" | translate }}:</strong>
-          <ng-container *ngIf="entry.imagingTelescopes?.length > 0; else noneSpecified">
-            <astrobin-telescope *ngFor="let telescope of entry.imagingTelescopes" [id]="telescope">
-            </astrobin-telescope>
-          </ng-container>
-        </p>
+    <div *ngIf="showMetadata" class="col-metadata">
+      <p>
+        <strong>{{ "Imaging telescopes" | translate }}:</strong>
+        <ng-container *ngIf="entry.imagingTelescopes?.length > 0; else noneSpecified">
+          <astrobin-telescope *ngFor="let telescope of entry.imagingTelescopes" [id]="telescope.pk" [loadDelay]="500">
+          </astrobin-telescope>
+        </ng-container>
+      </p>
 
-        <p>
-          <strong>{{ "Imaging cameras" | translate }}:</strong>
-          <ng-container *ngIf="entry.imagingCameras?.length > 0; else noneSpecified">
-            <astrobin-camera *ngFor="let camera of entry.imagingCameras" [id]="camera"> </astrobin-camera>
-          </ng-container>
-        </p>
+      <p>
+        <strong>{{ "Imaging cameras" | translate }}:</strong>
+        <ng-container *ngIf="entry.imagingCameras?.length > 0; else noneSpecified">
+          <astrobin-camera *ngFor="let camera of entry.imagingCameras" [id]="camera.pk" [loadDelay]="500">
+          </astrobin-camera>
+        </ng-container>
+      </p>
 
-        <p *ngIf="solution$ | async as solution">
-          <strong>{{ "Objects in field" | translate }}:</strong>&nbsp;
-          <ng-container *ngIf="!!solution; else notAvailable">
-            <astrobin-objects-in-field [solution]="solution"></astrobin-objects-in-field>
-          </ng-container>
-        </p>
-
-        <p>
-          <strong>{{ "Published" | translate }}:</strong>
-          {{ entry.published | timeago: true }}
-        </p>
-      </div>
+      <p>
+        <strong>{{ "Published" | translate }}:</strong>&nbsp;
+        <abbr [title]="entry.published | localDate">
+          {{ entry.published | localDate | timeago: true }}
+        </abbr>
+      </p>
     </div>
-    <!-- col-tools -->
+    <!-- col-metadata -->
   </div>
   <!-- promotion-queue-entry -->
 </div>
 
-<div class="card-footer" [hidden]="(isHidden$(entry.pk) | async) === true">
+<div class="card-footer" [hidden]="hidden">
+  <button
+    *ngIf="showViewButton"
+    (click)="viewPage(entry.pk)"
+    [class.loading]="loadingService.isLoading()"
+    class="btn btn-outline-secondary"
+  >
+    <fa-icon icon="link"></fa-icon>
+    {{ "View" | translate }}
+  </button>
+
   <button
     (click)="hide(entry.pk)"
     [class.loading]="loadingService.isLoading()"
-    [disabled]="isPromoted$(entry.pk) | async"
+    [disabled]="isPromoted"
     class="btn btn-outline-secondary"
   >
     <fa-icon icon="eye-slash"></fa-icon>
@@ -80,7 +85,7 @@
   <button
     (click)="dismiss(entry.pk)"
     [class.loading]="loadingService.isLoading()"
-    [disabled]="isPromoted$(entry.pk) | async"
+    [disabled]="isPromoted"
     class="btn btn-danger"
   >
     <fa-icon icon="ban"></fa-icon>
@@ -89,19 +94,19 @@
 
   <button
     (click)="promote(entry.pk)"
-    *ngIf="(isPromoted$(entry.pk) | async) === false; else retract"
+    *ngIf="!isPromoted; else retract"
     [class.loading]="loadingService.isLoading()"
-    [disabled]="(mayPromote$(entry.pk) | async) === false"
+    [disabled]="!mayPromote"
     class="btn btn-success"
   >
-    <fa-icon icon="star"></fa-icon>
-    {{ "Promote" | translate }}
+    <fa-icon [icon]="promoteButtonIcon"></fa-icon>
+    {{ promoteButtonLabel }}
   </button>
 
   <ng-template #retract>
     <button (click)="retractPromotion(entry.pk)" [class.loading]="loadingService.isLoading()" class="btn btn-danger">
       <fa-icon icon="undo"></fa-icon>
-      {{ "Retract promotion" | translate }}
+      {{ retractPromotionButtonLabel }}
     </button>
   </ng-template>
 </div>

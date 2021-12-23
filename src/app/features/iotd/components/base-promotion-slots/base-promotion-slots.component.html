@@ -1,20 +1,38 @@
-<div
-  *ngFor="let slot of slots; let i = index"
-  class="promotion-slot"
-  (click)="slotClicked(slot.promotion.image)">
+<div class="promotion-slot-container" *ngFor="let slot of slots; let i = index">
+  <div class="promotion-slot" (click)="slotClicked(slot.promotion.image)">
+    <ng-container *ngIf="slot.promotion; else emptySlot">
+      <astrobin-image
+        #image
+        [alias]="ImageAlias.STORY"
+        [autoHeight]="false"
+        [id]="slot.promotion.image"
+        [class.clickable]="clickableSlot(slot.promotion.image)"
+      >
+      </astrobin-image>
+    </ng-container>
 
-  <ng-container *ngIf="slot.promotion; else emptySlot">
-    <astrobin-image
-      #image
-      [alias]="ImageAlias.STORY"
-      [id]="slot.promotion.image"
-      [alwaysLoad]="true"
-      [class.clickable]="clickableSlot(slot.promotion.image)">
-    </astrobin-image>
+    <ng-template #emptySlot>
+      {{ i + 1 }}
+    </ng-template>
+  </div>
+
+  <ng-container *ngIf="slotType === SlotType.JUDGEMENT">
+    <div class="futureDate">
+      {{ futureDate(i) | date }}
+    </div>
+    <div class="buttons">
+      <button class="btn btn-outline-secondary" (click)="openComments(slot.promotion)" [disabled]="!slot.promotion">
+        {{ "Comments" | translate }}
+        <span *ngIf="!!iotdContentType$ && !!slot.promotion">
+          <astrobin-nested-comments-count
+            [contentType]="iotdContentType$ | async"
+            [objectId]="slot.promotion.id"
+            [hideZero]="true"
+            class="comments-count badge badge-danger"
+          ></astrobin-nested-comments-count>
+        </span>
+
+      </button>
+    </div>
   </ng-container>
-
-  <ng-template #emptySlot>
-    {{ i + 1 }}
-  </ng-template>
-
 </div>

@@ -8,7 +8,7 @@ context("IOTD Review queue", () => {
   describe("when not logged in", () => {
     it("should redirect you to the login page", () => {
       cy.visitPage("/iotd/review-queue");
-      cy.url().should("contain", "http://localhost:4400/account/login");
+      cy.url().should("contain", "http://localhost:4400/account/logging-in");
     });
   });
 
@@ -27,8 +27,11 @@ context("IOTD Review queue", () => {
     beforeEach(() => {
       cy.login();
 
-      cy.route("GET", "**/abc123/final/thumb/hd_anonymized/", "fixture:api/images/image_thumbnail_1_hd_loaded.json");
-      cy.route("GET", "**/abc123/final/thumb/story/", "fixture:api/images/image_thumbnail_1_story_loaded.json");
+      cy.route("GET", "**/000000/final/thumb/hd_anonymized/", "fixture:api/images/image_thumbnail_1_hd_loaded.json");
+      cy.route("GET", "**/000000/final/thumb/story/", "fixture:api/images/image_thumbnail_1_story_loaded.json");
+
+      cy.route("GET", "**/000001/final/thumb/hd_anonymized/", "fixture:api/images/image_thumbnail_1_hd_loaded.json");
+      cy.route("GET", "**/000001/final/thumb/story/", "fixture:api/images/image_thumbnail_1_story_loaded.json");
 
       cy.route("GET", "**/common/userprofiles/current", "fixture:api/common/userprofile_current_3.json").as(
         "getCurrentUserProfile"

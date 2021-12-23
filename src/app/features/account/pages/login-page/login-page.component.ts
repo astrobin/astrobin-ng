@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute } from "@angular/router";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { State } from "@app/store/state";
 import { Store } from "@ngrx/store";

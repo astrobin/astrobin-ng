@@ -1,7 +1,12 @@
-import { Component, ElementRef, OnInit, QueryList, ViewChildren } from "@angular/core";
+import { Component, ElementRef, Input, OnInit, QueryList, ViewChildren } from "@angular/core";
 import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
 import { State } from "@app/store/state";
-import { HiddenImage, SubmissionInterface, VoteInterface } from "@features/iotd/services/iotd-api.service";
+import {
+  HiddenImage,
+  IotdInterface,
+  SubmissionInterface,
+  VoteInterface
+} from "@features/iotd/services/iotd-api.service";
 import { LoadDismissedImages, LoadHiddenImages } from "@features/iotd/store/iotd.actions";
 import { selectHiddenImages } from "@features/iotd/store/iotd.selectors";
 import { Store } from "@ngrx/store";
@@ -14,7 +19,7 @@ import { PopNotificationsService } from "@shared/services/pop-notifications.serv
 import { distinctUntilChangedObj } from "@shared/services/utils/utils.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { Observable } from "rxjs";
-import { filter, map, switchMap, take, takeUntil } from "rxjs/operators";
+import { map, switchMap, takeUntil } from "rxjs/operators";
 import { ActivatedRoute, Params, Router } from "@angular/router";
 import { CookieService } from "ngx-cookie-service";
 import { SubmissionImageInterface } from "@features/iotd/types/submission-image.interface";
@@ -30,15 +35,21 @@ const FILL_SLOT_REMINDER_COOKIE = "astrobin-iotd-fill-slot-reminder";
 export abstract class BasePromotionQueueComponent extends BaseComponentDirective implements OnInit {
   ImageAlias = ImageAlias;
 
-  page;
-  pageSize$: Observable<number> = this.store$
-    .select(selectBackendConfig)
-    .pipe(map(backendConfig => backendConfig.IOTD_QUEUES_PAGE_SIZE));
+  @Input()
+  supportsMaxPromotionsPerDayInfo = true;
 
-  hiddenImages$: Observable<HiddenImage[]> = this.store$.select(selectHiddenImages);
+  page;
+  pageSize$: Observable<number> = this.store$.select(selectBackendConfig).pipe(
+    takeUntil(this.destroyed$),
+    map(backendConfig => backendConfig.IOTD_QUEUES_PAGE_SIZE)
+  );
+
+  hiddenImages$: Observable<HiddenImage[]> = this.store$.select(selectHiddenImages).pipe(takeUntil(this.destroyed$));
+
+  isDismissed: boolean;
 
   abstract queue$: Observable<PaginatedApiResultInterface<SubmissionImageInterface | ReviewImageInterface>>;
-  abstract promotions$: Observable<SubmissionInterface[] | VoteInterface[]>;
+  abstract promotions$: Observable<SubmissionInterface[] | VoteInterface[] | IotdInterface[]>;
 
   @ViewChildren("promotionQueueEntries")
   promotionQueueEntries: QueryList<any>;
@@ -68,7 +79,7 @@ export abstract class BasePromotionQueueComponent extends BaseComponentDirective
         )
       )
       .subscribe(({ promotions, backendConfig }) => {
-        const showInfo = !this.cookieService.check(FILL_SLOT_REMINDER_COOKIE);
+        const showInfo = this.supportsMaxPromotionsPerDayInfo && !this.cookieService.check(FILL_SLOT_REMINDER_COOKIE);
         if (showInfo && promotions.length === this.maxPromotionsPerDay(backendConfig)) {
           this.popNotificationsService
             .info(
@@ -92,21 +103,6 @@ export abstract class BasePromotionQueueComponent extends BaseComponentDirective
               this.cookieService.set(FILL_SLOT_REMINDER_COOKIE, "1", 30, "/");
             });
         }
-      });
-
-    this.queue$
-      .pipe(
-        takeUntil(this.destroyed$),
-        filter(queue => !!queue)
-      )
-      .subscribe(() => {
-        this.promotionQueueEntries.changes.pipe(take(1)).subscribe(entries => {
-          entries.forEach((entry, index) => {
-            setTimeout(() => {
-              entry.loadImage();
-            }, index * 500);
-          });
-        });
       });
 
     this.refresh();

@@ -33,8 +33,13 @@ export class BackendConfigGenerator {
           size: [130, 130]
         }
       },
+      IOTD_JUDGEMENT_WINDOW_DAYS: 2,
       IOTD_SUBMISSION_MAX_PER_DAY: 3,
+      IOTD_REVIEW_WINDOW_DAYS: 5,
       IOTD_REVIEW_MAX_PER_DAY: 3,
+      IOTD_SUBMISSION_WINDOW_DAYS: 7,
+      IOTD_JUDGEMENT_MAX_PER_DAY: 1,
+      IOTD_JUDGEMENT_MAX_FUTURE_DAYS: 7,
       IOTD_QUEUES_PAGE_SIZE: 10,
       IOTD_MAX_DISMISSALS: 5,
       IMAGE_UPLOAD_ENDPOINT: "/api/v2/images/image-upload/",

@@ -7,7 +7,7 @@ import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
 import { CameraApiService } from "@shared/services/api/classic/gear/camera/camera-api.service";
 import { EMPTY, Observable, of } from "rxjs";
-import { catchError, map, mergeMap } from "rxjs/operators";
+import { catchError, map, mergeMap, switchMap, take } from "rxjs/operators";
 
 @Injectable()
 export class CameraEffects {
@@ -16,9 +16,12 @@ export class CameraEffects {
       ofType(AppActionTypes.LOAD_CAMERA),
       mergeMap(action =>
         this.store$.select(selectCamera, action.payload).pipe(
-          mergeMap(cameraFromStore =>
+          switchMap(cameraFromStore =>
             cameraFromStore !== null
-              ? of(cameraFromStore).pipe(map(camera => new LoadCameraSuccess(camera)))
+              ? of(cameraFromStore).pipe(
+                  take(1),
+                  map(camera => new LoadCameraSuccess(camera))
+                )
               : this.cameraApiService.get(action.payload).pipe(
                   map(camera => new LoadCameraSuccess(camera)),
                   catchError(error => EMPTY)

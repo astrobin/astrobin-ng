@@ -52,11 +52,13 @@ describe("AuthService", () => {
         expect(result).toEqual("123");
         expect(service.getClassicApiToken()).toBe("123");
 
-        service.logout();
+        jest.spyOn(service.router, "navigate").mockReturnValue(Promise.resolve(true));
+        jest.spyOn(service.windowRefService, "locationAssign").mockImplementation(() => {});
 
-        expect(service.getClassicApiToken()).toBe(null);
-
-        done();
+        service.logout().subscribe(() => {
+          expect(service.getClassicApiToken()).toBe(null);
+          done();
+        });
       });
     });
   });

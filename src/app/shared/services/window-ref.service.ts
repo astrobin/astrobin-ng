@@ -23,4 +23,8 @@ export class WindowRefService extends BaseService {
   getCurrentUrl(): URL {
     return new URL(this.nativeWindow.document.URL);
   }
+
+  locationAssign(url: string) {
+    this.nativeWindow.location.assign(url);
+  }
 }

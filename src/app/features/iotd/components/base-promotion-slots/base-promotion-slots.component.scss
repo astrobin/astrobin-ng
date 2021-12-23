@@ -1,30 +1,91 @@
+@import "../../../../styles/breakpoints";
 
 :host {
   display: flex;
   justify-content: space-between;
 
-  .promotion-slot {
+  &.sticky-promotion-slots {
+    z-index: 2;
+    margin-top: 1.5rem;
+    transition: .3s ease-in-out;
+    display: none;
+
+    @media screen and (min-width: $md-min) {
+      display: flex;
+      width: 626px;
+      transform: scale(.5) translateY(-74px);
+    }
+
+    @media screen and (min-width: $lg-min) {
+      width: 866px;
+      transform: scale(.5) translateY(-88px);
+    }
+
+    @media screen and (min-width: $xl-min) {
+      width: 940px;
+      transform: scale(.5) translateY(-100px);
+    }
+
+    &.is-empty {
+      top: 2vw !important;
+
+      ::ng-deep .promotion-slot {
+        min-height: 100px;
+      }
+    }
+  }
+
+  .promotion-slot-container {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    width: 100%;
     text-align: center;
-    background-color: var(--grey);
-    border: 2px dashed var(--lightGrey);
-    font-size: 3rem;
-    color: var(--lightGrey);
+    width: 100%;
+
+    .promotion-slot {
+      width: 100%;
+      background-color: var(--grey);
+      border: 2px dashed var(--lightGrey);
+      font-size: 3rem;
+      color: var(--lightGrey);
+      height: auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      astrobin-image {
+        &.clickable {
+          cursor: pointer;
+        }
+
+        &:not(.clickable) {
+          cursor: not-allowed;
+        }
+      }
+    }
 
     &:not(:last-child) {
       margin-right: .5rem;
     }
 
-    astrobin-image {
-      &.clickable {
-        cursor: pointer;
-      }
+    .futureDate {
+      color: var(--lighterGrey);
+      margin-top: 1rem;
+    }
 
-      &:not(.clickable) {
-        cursor: not-allowed;
+    .buttons {
+      margin-top: 1rem;
+
+      .btn {
+        font-size: .85rem;
+        position: relative;
+
+        .comments-count {
+          position: absolute;
+          right: -0.5rem;
+          top: -0.5rem;
+        }
       }
     }
   }

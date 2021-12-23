@@ -5,17 +5,25 @@ import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { Observable } from "rxjs";
 import { take } from "rxjs/operators";
+import { WindowRefService } from "@shared/services/window-ref.service";
+import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 
 @Injectable()
 export class AuthGuardService extends BaseService implements CanActivate {
-  constructor(public loadingService: LoadingService, public authService: AuthService, public router: Router) {
+  constructor(
+    public readonly loadingService: LoadingService,
+    public readonly authService: AuthService,
+    public readonly router: Router,
+    public readonly windowRefService: WindowRefService,
+    public readonly classicRouteService: ClassicRoutesService
+  ) {
     super(loadingService);
   }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
     return new Observable<boolean>(observer => {
       this.authService
-        .isAuthenticated()
+        .isAuthenticated$()
         .pipe(take(1))
         .subscribe(result => {
           if (result) {
@@ -24,13 +32,11 @@ export class AuthGuardService extends BaseService implements CanActivate {
             return;
           }
 
-          const redirectUrl = route["_routerState"]["url"];
-
           this.router
             .navigateByUrl(
-              this.router.createUrlTree(["/account/login"], {
+              this.router.createUrlTree(["/account/logging-in"], {
                 queryParams: {
-                  redirectUrl
+                  redirectUrl: this.windowRefService.getCurrentUrl().toString()
                 }
               })
             )

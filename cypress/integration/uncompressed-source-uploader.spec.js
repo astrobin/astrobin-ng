@@ -15,7 +15,7 @@ context("uncompressed source uploader", () => {
       cy.route("GET", "**/common/userprofiles/current", []).as("getCurrentUserProfile");
 
       cy.visitPage("/uploader/uncompressed-source/1");
-      cy.url().should("contain", "/account/login?redirectUrl=%2Fuploader%2Funcompressed-source%2F1");
+      cy.url().should("contain", "/account/logging-in");
     });
   });
 

@@ -11,6 +11,7 @@ import { TelescopeInterface } from "@shared/interfaces/telescope.interface";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { NestedCommentInterface } from "@shared/interfaces/nested-comment.interface";
 import * as Util from "util";
+import { act } from "@ngrx/effects";
 
 export interface AppState {
   // Weather the app has been initialized.
@@ -120,9 +121,27 @@ export function reducer(state = initialAppState, action: All): AppState {
 
     case AppActionTypes.SET_IMAGE:
     case AppActionTypes.LOAD_IMAGE_SUCCESS: {
+      let loadingThumbnails = [...state.loadingThumbnails];
+      const thumbnails = !!action.payload.thumbnails ? [...action.payload.thumbnails] : [];
+
+      if (action.payload.thumbnails) {
+        action.payload.thumbnails.forEach(thumbnail => {
+          loadingThumbnails = loadingThumbnails.filter(
+            loadingThumbnail =>
+              loadingThumbnail.id !== thumbnail.id ||
+              loadingThumbnail.revision !== thumbnail.revision ||
+              loadingThumbnail.alias !== thumbnail.alias
+          );
+        });
+      }
+
       return {
         ...state,
-        images: [...state.images.filter(i => i.pk !== action.payload.pk), action.payload]
+        images: [...state.images.filter(i => i.pk !== action.payload.pk), action.payload],
+        thumbnails: UtilsService.arrayUniqueObjects([...state.thumbnails, ...thumbnails], null, false),
+        loadingThumbnails,
+        telescopes: UtilsService.arrayUniqueObjects([...state.telescopes, ...action.payload.imagingTelescopes], "pk"),
+        cameras: UtilsService.arrayUniqueObjects([...state.cameras, ...action.payload.imagingCameras], "pk")
       };
     }
 
@@ -134,9 +153,55 @@ export function reducer(state = initialAppState, action: All): AppState {
     }
 
     case AppActionTypes.LOAD_IMAGES_SUCCESS: {
+      const flatImages = action.payload.results.map(image => ({
+        ...image,
+        imagingTelescopes: [],
+        imagingCameras: [],
+        thumbnails: []
+      }));
+      const images = UtilsService.arrayUniqueObjects([...state.images, ...flatImages], "pk");
+
+      let loadingThumbnails = [...state.loadingThumbnails];
+      let thumbnails = [...state.thumbnails];
+
+      action.payload.results.forEach(image => {
+        if (!!image.thumbnails) {
+          image.thumbnails.forEach(thumbnail => {
+            loadingThumbnails = loadingThumbnails.filter(
+              loadingThumbnail =>
+                loadingThumbnail.id !== thumbnail.id ||
+                loadingThumbnail.revision !== thumbnail.revision ||
+                loadingThumbnail.alias !== thumbnail.alias
+            );
+
+            thumbnails = UtilsService.arrayUniqueObjects([...thumbnails, ...image.thumbnails], null, false);
+          });
+        }
+      });
+
+      const telescopes = UtilsService.arrayUniqueObjects(
+        [].concat.apply(
+          state.telescopes,
+          action.payload.results.map(image => image.imagingTelescopes)
+        ),
+        "pk"
+      );
+
+      const cameras = UtilsService.arrayUniqueObjects(
+        [].concat.apply(
+          state.cameras,
+          action.payload.results.map(image => image.imagingCameras)
+        ),
+        "pk"
+      );
+
       return {
         ...state,
-        images: UtilsService.arrayUniqueObjects([...state.images, ...action.payload.results], "pk")
+        images,
+        thumbnails,
+        loadingThumbnails,
+        telescopes,
+        cameras
       };
     }
 
@@ -185,7 +250,7 @@ export function reducer(state = initialAppState, action: All): AppState {
     case AppActionTypes.LOAD_SOLUTION_SUCCESS: {
       return {
         ...state,
-        solutions: UtilsService.arrayUniqueObjects([...state.solutions, action.payload])
+        solutions: UtilsService.arrayUniqueObjects([...state.solutions, action.payload], "id")
       };
     }
 

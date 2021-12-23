@@ -8,6 +8,7 @@ import { map } from "rxjs/operators";
 import { SubmissionImageInterface } from "@features/iotd/types/submission-image.interface";
 import { ReviewImageInterface } from "@features/iotd/types/review-image.interface";
 import { StaffMemberSettingsInterface } from "@features/iotd/types/staff-member-settings.interface";
+import { JudgementImageInterface } from "@features/iotd/types/judgement-image.interface";
 
 export interface SubmissionInterface {
   id: number;
@@ -19,6 +20,13 @@ export interface SubmissionInterface {
 export interface VoteInterface {
   id: number;
   reviewer: number;
+  image: number;
+  date: string;
+}
+
+export interface IotdInterface {
+  id: number;
+  judge: number;
   image: number;
   date: string;
 }
@@ -43,6 +51,10 @@ export class IotdApiService extends BaseClassicApiService {
     super(loadingService);
   }
 
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // GENERIC
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
   getStaffMemberSettings(): Observable<StaffMemberSettingsInterface | null> {
     return this.http.get<StaffMemberSettingsInterface[]>(`${this.baseUrl}/iotd/staff-member-settings/`).pipe(
       map(response => {
@@ -53,48 +65,6 @@ export class IotdApiService extends BaseClassicApiService {
         return response[0];
       })
     );
-  }
-
-  getSubmissionQueueEntries(
-    page = 1,
-    sort: "newest" | "oldest" | "default" = "default"
-  ): Observable<PaginatedApiResultInterface<SubmissionImageInterface>> {
-    return this.http.get<PaginatedApiResultInterface<SubmissionImageInterface>>(
-      `${this.baseUrl}/iotd/submission-queue/?page=${page}&sort=${sort}`
-    );
-  }
-
-  getSubmissions(): Observable<SubmissionInterface[]> {
-    return this.http.get<SubmissionInterface[]>(`${this.baseUrl}/iotd/submission/`);
-  }
-
-  addSubmission(imageId: number): Observable<SubmissionInterface> {
-    return this.http.post<SubmissionInterface>(`${this.baseUrl}/iotd/submission/`, { image: imageId });
-  }
-
-  retractSubmission(id: number): Observable<SubmissionInterface> {
-    return this.http.delete<SubmissionInterface>(`${this.baseUrl}/iotd/submission/${id}/`);
-  }
-
-  getReviewQueueEntries(
-    page = 1,
-    sort: "newest" | "oldest" | "default" = "default"
-  ): Observable<PaginatedApiResultInterface<ReviewImageInterface>> {
-    return this.http.get<PaginatedApiResultInterface<ReviewImageInterface>>(
-      `${this.baseUrl}/iotd/review-queue/?page=${page}&sort=${sort}`
-    );
-  }
-
-  getVotes(): Observable<VoteInterface[]> {
-    return this.http.get<VoteInterface[]>(`${this.baseUrl}/iotd/vote/`);
-  }
-
-  addVote(imageId: number): Observable<VoteInterface> {
-    return this.http.post<VoteInterface>(`${this.baseUrl}/iotd/vote/`, { image: imageId });
-  }
-
-  retractVote(id: number): Observable<VoteInterface> {
-    return this.http.delete<VoteInterface>(`${this.baseUrl}/iotd/vote/${id}/`);
   }
 
   loadHiddenImages(): Observable<HiddenImage[]> {
@@ -117,5 +87,94 @@ export class IotdApiService extends BaseClassicApiService {
 
   dismissImage(id: number): Observable<DismissedImage> {
     return this.http.post<DismissedImage>(`${this.baseUrl}/iotd/dismissed-image/`, { image: id });
+  }
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // SUBMISSIONS
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  getSubmissionQueueEntries(
+    page = 1,
+    sort: "newest" | "oldest" | "default" = "default"
+  ): Observable<PaginatedApiResultInterface<SubmissionImageInterface>> {
+    return this.http.get<PaginatedApiResultInterface<SubmissionImageInterface>>(
+      `${this.baseUrl}/iotd/submission-queue/?page=${page}&sort=${sort}`
+    );
+  }
+
+  getSubmissions(): Observable<SubmissionInterface[]> {
+    return this.http.get<SubmissionInterface[]>(`${this.baseUrl}/iotd/submission/`);
+  }
+
+  addSubmission(imageId: number): Observable<SubmissionInterface> {
+    return this.http.post<SubmissionInterface>(`${this.baseUrl}/iotd/submission/`, { image: imageId });
+  }
+
+  retractSubmission(id: number): Observable<SubmissionInterface> {
+    return this.http.delete<SubmissionInterface>(`${this.baseUrl}/iotd/submission/${id}/`);
+  }
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // REVIEWS
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  getReviewQueueEntries(
+    page = 1,
+    sort: "newest" | "oldest" | "default" = "default"
+  ): Observable<PaginatedApiResultInterface<ReviewImageInterface>> {
+    return this.http.get<PaginatedApiResultInterface<ReviewImageInterface>>(
+      `${this.baseUrl}/iotd/review-queue/?page=${page}&sort=${sort}`
+    );
+  }
+
+  getVotes(): Observable<VoteInterface[]> {
+    return this.http.get<VoteInterface[]>(`${this.baseUrl}/iotd/vote/`);
+  }
+
+  addVote(imageId: number): Observable<VoteInterface> {
+    return this.http.post<VoteInterface>(`${this.baseUrl}/iotd/vote/`, { image: imageId });
+  }
+
+  retractVote(id: number): Observable<VoteInterface> {
+    return this.http.delete<VoteInterface>(`${this.baseUrl}/iotd/vote/${id}/`);
+  }
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // JUDGEMENT
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  getJudgementQueueEntries(
+    page = 1,
+    sort: "newest" | "oldest" | "default" = "default"
+  ): Observable<PaginatedApiResultInterface<JudgementImageInterface>> {
+    return this.http.get<PaginatedApiResultInterface<JudgementImageInterface>>(
+      `${this.baseUrl}/iotd/judgement-queue/?page=${page}&sort=${sort}`
+    );
+  }
+
+  getFutureIotds(): Observable<IotdInterface[]> {
+    return this.http.get<IotdInterface[]>(`${this.baseUrl}/iotd/future-iotds/`);
+  }
+
+  addIotd(imageId: number): Observable<IotdInterface> {
+    return this.http.post<IotdInterface>(`${this.baseUrl}/iotd/future-iotds/`, { image: imageId });
+  }
+
+  retractIotd(id: number): Observable<IotdInterface> {
+    return this.http.delete<IotdInterface>(`${this.baseUrl}/iotd/future-iotds/${id}/`);
+  }
+
+  getCannotSelectNowReason(): Observable<string | null> {
+    return this.http
+      .get<{ reason: string | null }>(`${this.baseUrl}/iotd/judgement-queue/cannot-select-now-reason/`)
+      .pipe(map(response => response.reason));
+  }
+
+  getNextAvailableSelectionTime(): Observable<string | null> {
+    return this.http
+      .get<{ nextAvailableSelectionTime: string | null }>(
+        `${this.baseUrl}/iotd/judgement-queue/next-available-selection-time/`
+      )
+      .pipe(map(response => response.nextAvailableSelectionTime));
   }
 }
