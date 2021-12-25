@@ -69,6 +69,11 @@ context("Image edit (existing)", () => {
     cy.url().should("contain", "#1");
   });
 
+  it("should show the Save button", () => {
+    cy.get("#save-dropdown").should("not.be.visible");
+    cy.get("#save-button").should("be.visible");
+  });
+
   it("should have prefilled the basic information step", () => {
     cy.get("#image-title-field").should("have.value", "Test image");
     cy.get("#image-description-field").should("have.value", "This is a test");

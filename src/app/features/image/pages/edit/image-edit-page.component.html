@@ -52,10 +52,21 @@
   </div>
 </ng-template>
 
-<ng-template #stepperButtonsTemplate let-isLastStep="isLastStep">
-  <div ngbDropdown placement="top-right">
+<ng-template #stepperButtonsTemplate>
+  <button
+    id="save-button"
+    class="btn btn-primary"
+    *ngIf="editingExistingImage"
+    [class.loading]="loadingService.isLoading()"
+    (click)="onSave(
+      $event, classicRoutesService.IMAGE(imageEditService.image.hash || '' + imageEditService.image.pk)
+    )"
+  >
+    {{ "Save" | translate }}
+  </button>
+
+  <div ngbDropdown placement="top-right" *ngIf="!editingExistingImage">
     <button
-      *ngIf="isLastStep"
       [class.loading]="loadingService.isLoading()"
       class="btn btn-primary"
       id="save-dropdown"
@@ -65,19 +76,6 @@
     </button>
     <div aria-labelledby="save-dropdown" ngbDropdownMenu>
       <h6 class="dropdown-header">{{ "Where do you want to go after saving?" | translate }}</h6>
-
-      <button
-        (click)="
-          onSave(
-            $event,
-            classicRoutesService.EDIT_IMAGE_GEAR(imageEditService.image.hash || '' + imageEditService.image.pk) +
-              '?upload'
-          )
-        "
-        class="dropdown-item"
-      >
-        {{ "Save and proceed to gear selection" | translate }}
-      </button>
 
       <button
         (click)="
