@@ -99,7 +99,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
         })
       ),
       map(url => this.domSanitizer.bypassSecurityTrustUrl(url)),
-      tap(() => this.store$.dispatch(new LoadThumbnail(this._getRealOptions())))
+      tap(() => this.store$.dispatch(new LoadThumbnail({ data: this._getRealOptions(), bustCache: false })))
     );
 
     this.realThumbnail$ = this.store$.select(selectThumbnail, this._getRealOptions()).pipe(
@@ -138,7 +138,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
       distinctUntilChanged(),
       tap(show => {
         if (show) {
-          this.store$.dispatch(new LoadThumbnail(this._getHdOptions()));
+          this.store$.dispatch(new LoadThumbnail({ data: this._getHdOptions(), bustCache: false }));
 
           setTimeout(() => {
             this.klass = "d-flex";

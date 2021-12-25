@@ -7,7 +7,7 @@ import { ImageThumbnailInterface } from "@shared/interfaces/image-thumbnail.inte
 export class LoadThumbnail implements PayloadActionInterface {
   readonly type = AppActionTypes.LOAD_THUMBNAIL;
 
-  constructor(public payload: Omit<ImageThumbnailInterface, "url">) {}
+  constructor(public payload: { data: Omit<ImageThumbnailInterface, "url">; bustCache: boolean }) {}
 }
 
 export class LoadThumbnailCancel implements PayloadActionInterface {

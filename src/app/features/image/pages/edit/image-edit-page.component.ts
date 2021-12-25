@@ -80,7 +80,10 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     this.imageEditWatermarkFieldsService.initWatermarkSettings();
 
     this.store$.dispatch(
-      new LoadThumbnail({ id: this.imageEditService.image.pk, revision: "0", alias: ImageAlias.HD })
+      new LoadThumbnail({
+        data: { id: this.imageEditService.image.pk, revision: "0", alias: ImageAlias.HD },
+        bustCache: false
+      })
     );
 
     this.route.fragment.subscribe((fragment: string) => {
