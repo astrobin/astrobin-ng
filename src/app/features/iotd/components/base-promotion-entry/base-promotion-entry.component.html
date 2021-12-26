@@ -18,7 +18,7 @@
 
 <div class="card-body" [hidden]="hidden">
   <div [class.promoted]="isPromoted" class="promotion-queue-entry">
-    <astrobin-fullscreen-image-viewer [id]="entry.pk"></astrobin-fullscreen-image-viewer>
+    <astrobin-fullscreen-image-viewer [id]="entry.pk" [anonymized]="anonymizedThumbnails"></astrobin-fullscreen-image-viewer>
 
     <div class="col-image">
       <astrobin-image

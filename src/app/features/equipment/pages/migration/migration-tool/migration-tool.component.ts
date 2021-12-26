@@ -31,6 +31,7 @@ import { FilterApiService } from "@shared/services/api/classic/astrobin/filter/f
 import { AccessoryApiService } from "@shared/services/api/classic/astrobin/accessory/accessory-api.service";
 import { SoftwareApiService } from "@shared/services/api/classic/astrobin/software/software-api.service";
 import { isGroupMember } from "@shared/operators/is-group-member.operator";
+import { CombinedAccessoryAndFocalReducerApiService } from "@shared/services/api/classic/astrobin/combined-accessory-and-focal-reducer/combined-accessory-and-focal-reducer-api.service";
 
 @Component({
   selector: "astrobin-migration-tool",
@@ -85,6 +86,7 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
     public readonly legacyMountApi: MountApiService,
     public readonly legacyFilterApi: FilterApiService,
     public readonly legacyAccessoryApi: AccessoryApiService,
+    public readonly legacyCombinedAccessoryAndFocalReducerApi: CombinedAccessoryAndFocalReducerApiService,
     public readonly legacySoftwareApi: SoftwareApiService,
     public readonly titleService: TitleService,
     public readonly popNotificationsService: PopNotificationsService,
@@ -148,7 +150,7 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
         api = this.legacyFilterApi;
         break;
       case EquipmentItemType.ACCESSORY:
-        api = this.legacyAccessoryApi;
+        api = this.legacyCombinedAccessoryAndFocalReducerApi;
         break;
       case EquipmentItemType.SOFTWARE:
         api = this.legacySoftwareApi;
@@ -267,7 +269,7 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
         api = this.legacyFilterApi;
         break;
       case EquipmentItemType.ACCESSORY:
-        api = this.legacyAccessoryApi;
+        api = this.legacyCombinedAccessoryAndFocalReducerApi;
         break;
       case EquipmentItemType.SOFTWARE:
         api = this.legacySoftwareApi;
@@ -404,7 +406,9 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
       this.nonMigratedTelescopesCount$ = this.legacyTelescopeApi.getNonMigratedCount(isEquipmentModerator);
       this.nonMigratedMountsCount$ = this.legacyMountApi.getNonMigratedCount(isEquipmentModerator);
       this.nonMigratedFiltersCount$ = this.legacyFilterApi.getNonMigratedCount(isEquipmentModerator);
-      this.nonMigratedAccessoriesCount$ = this.legacyAccessoryApi.getNonMigratedCount(isEquipmentModerator);
+      this.nonMigratedAccessoriesCount$ = this.legacyCombinedAccessoryAndFocalReducerApi.getNonMigratedCount(
+        isEquipmentModerator
+      );
       this.nonMigratedSoftwareCount$ = this.legacySoftwareApi.getNonMigratedCount(isEquipmentModerator);
     });
   }

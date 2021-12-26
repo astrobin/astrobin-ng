@@ -143,7 +143,9 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
         this.loading = false;
       });
 
-    this.store$.dispatch(new LoadThumbnail({ id: this.id, revision: this.revision, alias: this.alias }));
+    this.store$.dispatch(
+      new LoadThumbnail({ data: { id: this.id, revision: this.revision, alias: this.alias }, bustCache: false })
+    );
   }
 
   private _setWidthAndHeight(imageWidth: number, imageHeight: number) {

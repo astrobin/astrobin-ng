@@ -6,8 +6,8 @@ import { MigratableGearItemApiService } from "@shared/services/api/classic/astro
 @Injectable({
   providedIn: "root"
 })
-export class AccessoryApiService extends MigratableGearItemApiService {
-  configUrl = this.baseUrl + "/astrobin/accessory";
+export class FocalReducerApiService extends MigratableGearItemApiService {
+  configUrl = this.baseUrl + "/astrobin/focal-reducer";
 
   constructor(public loadingService: LoadingService, public readonly http: HttpClient) {
     super(loadingService, http);

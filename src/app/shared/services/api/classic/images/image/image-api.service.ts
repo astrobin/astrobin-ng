@@ -60,9 +60,16 @@ export class ImageApiService extends BaseClassicApiService {
   getThumbnail(
     id: ImageInterface["pk"] | ImageInterface["hash"],
     revision: string,
-    alias: ImageAlias
+    alias: ImageAlias,
+    bustCache = false
   ): Observable<ImageThumbnailInterface> {
-    return this.http.get<ImageThumbnailInterface>(`${environment.classicBaseUrl}/${id}/${revision}/thumb/${alias}/`);
+    let url = `${environment.classicBaseUrl}/${id}/${revision}/thumb/${alias}/`;
+
+    if (bustCache) {
+      url = `${url}?t=${new Date().getTime()}`;
+    }
+
+    return this.http.get<ImageThumbnailInterface>(url);
   }
 
   updateImage(pk: ImageInterface["pk"], data: ImageInterface): Observable<ImageInterface> {

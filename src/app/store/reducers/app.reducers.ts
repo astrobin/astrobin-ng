@@ -218,7 +218,11 @@ export function reducer(state = initialAppState, action: All): AppState {
     case AppActionTypes.LOAD_THUMBNAIL: {
       return {
         ...state,
-        loadingThumbnails: UtilsService.arrayUniqueObjects([...state.loadingThumbnails, action.payload], null, false)
+        loadingThumbnails: UtilsService.arrayUniqueObjects(
+          [...state.loadingThumbnails, action.payload.data],
+          null,
+          false
+        )
       };
     }
 

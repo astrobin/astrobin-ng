@@ -22,43 +22,43 @@ export class MigratableGearItemApiService extends BaseClassicApiService
     super(loadingService);
   }
 
-  getSimilarNonMigrated(gearId: number, global: boolean): Observable<any[]> {
+  getSimilarNonMigrated(gearId: number, isGlobal: boolean): Observable<any[]> {
     let url = `${this.configUrl}/${gearId}/similar-non-migrated/`;
 
-    if (global) {
+    if (isGlobal) {
       url = UtilsService.addOrUpdateUrlParam(url, "global", "1");
     }
 
     return this.http.get<any[]>(url);
   }
 
-  getSimilarNonMigratedByMakeAndName(make: string, name: string, global: boolean): Observable<any[]> {
+  getSimilarNonMigratedByMakeAndName(make: string, name: string, isGlobal: boolean): Observable<any[]> {
     let url = `${this.configUrl}/similar-non-migrated/?make=${make}&name=${name}`;
 
     url = UtilsService.addOrUpdateUrlParam(url, "make", make);
     url = UtilsService.addOrUpdateUrlParam(url, "name", name);
 
-    if (global) {
+    if (isGlobal) {
       url = UtilsService.addOrUpdateUrlParam(url, "global", "1");
     }
 
     return this.http.get<any[]>(url);
   }
 
-  getRandomNonMigrated(global: boolean): Observable<any[]> {
+  getRandomNonMigrated(isGlobal: boolean): Observable<any[]> {
     let url = `${this.configUrl}/random-non-migrated/`;
 
-    if (global) {
+    if (isGlobal) {
       url = UtilsService.addOrUpdateUrlParam(url, "global", "1");
     }
 
     return this.http.get<any[]>(url);
   }
 
-  getNonMigratedCount(global: boolean): Observable<number> {
+  getNonMigratedCount(isGlobal: boolean): Observable<number> {
     let url = `${this.configUrl}/non-migrated-count/`;
 
-    if (global) {
+    if (isGlobal) {
       url = UtilsService.addOrUpdateUrlParam(url, "global", "1");
     }
 

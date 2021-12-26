@@ -44,6 +44,7 @@ export class JudgementEntryComponent extends BasePromotionEntryComponent impleme
     this.imageAlias = ImageAlias.STORY;
     this.imageAutoHeight = false;
     this.showMetadata = false;
+    this.anonymizedThumbnails = false;
 
     super.ngOnInit();
   }

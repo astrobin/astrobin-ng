@@ -1,4 +1,4 @@
-import { Component, HostBinding, HostListener, Input, OnChanges, OnInit, SimpleChanges } from "@angular/core";
+import { Component, HostBinding, HostListener, Input, OnChanges, SimpleChanges } from "@angular/core";
 import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
 import { HideFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
 import { LoadThumbnail, LoadThumbnailCancel } from "@app/store/actions/thumbnail.actions";
@@ -14,7 +14,7 @@ import { PopNotificationsService } from "@shared/services/pop-notifications.serv
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { Coord } from "ngx-image-zoom";
 import { BehaviorSubject, Observable } from "rxjs";
-import { distinctUntilChanged, filter, map, switchMap, take, tap } from "rxjs/operators";
+import { distinctUntilChanged, filter, map, switchMap, take, takeUntil, tap } from "rxjs/operators";
 import { ImageThumbnailInterface } from "@shared/interfaces/image-thumbnail.interface";
 
 @Component({
@@ -29,6 +29,9 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   @Input()
   revision = "final";
 
+  @Input()
+  anonymized = false;
+
   @HostBinding("class")
   klass = "d-none";
 
@@ -39,8 +42,10 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   hdThumbnail$: Observable<SafeUrl>;
   realThumbnail$: Observable<SafeUrl>;
   show$: Observable<boolean>;
-  hdLoadingProgress$: Observable<number>;
-  realLoadingProgress$: Observable<number>;
+  hdImageLoadingProgress$: Observable<number>;
+  realImageLoadingProgress$: Observable<number>;
+  hdThumbnailLoading = false;
+  realThumbnailLoading = false;
 
   private _zoomReadyNotification;
   private _zoomPosition: Coord;
@@ -60,8 +65,8 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   ) {
     super(store$);
 
-    this.hdLoadingProgress$ = this._hdLoadingProgressSubject.asObservable();
-    this.realLoadingProgress$ = this._realLoadingProgressSubject.asObservable();
+    this.hdImageLoadingProgress$ = this._hdLoadingProgressSubject.asObservable();
+    this.realImageLoadingProgress$ = this._realLoadingProgressSubject.asObservable();
   }
 
   @HostListener("window:resize", ["$event"])
@@ -82,25 +87,34 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     }
 
     this.hdThumbnail$ = this.store$.select(selectThumbnail, this._getHdOptions()).pipe(
+      takeUntil(this.destroyed$),
+      tap(() => (this.hdThumbnailLoading = true)),
       filter(thumbnail => !!thumbnail),
       switchMap(thumbnail =>
-        this.imageService
-          .loadImageFile(thumbnail.url, (progress: number) => {
-            this._hdLoadingProgressSubject.next(progress);
-          })
-          .pipe(map(url => this.domSanitizer.bypassSecurityTrustUrl(url)))
-      )
+        this.imageService.loadImageFile(thumbnail.url, (progress: number) => {
+          this._hdLoadingProgressSubject.next(progress);
+          if (progress > 0) {
+            this.hdThumbnailLoading = false;
+          }
+        })
+      ),
+      map(url => this.domSanitizer.bypassSecurityTrustUrl(url)),
+      tap(() => this.store$.dispatch(new LoadThumbnail({ data: this._getRealOptions(), bustCache: false })))
     );
 
     this.realThumbnail$ = this.store$.select(selectThumbnail, this._getRealOptions()).pipe(
+      takeUntil(this.destroyed$),
+      tap(() => (this.realThumbnailLoading = true)),
       filter(thumbnail => !!thumbnail),
       switchMap(thumbnail =>
-        this.imageService
-          .loadImageFile(thumbnail.url, (progress: number) => {
-            this._realLoadingProgressSubject.next(progress);
-          })
-          .pipe(map(url => this.domSanitizer.bypassSecurityTrustUrl(url)))
+        this.imageService.loadImageFile(thumbnail.url, (progress: number) => {
+          this._realLoadingProgressSubject.next(progress);
+          if (progress > 0) {
+            this.realThumbnailLoading = false;
+          }
+        })
       ),
+      map(url => this.domSanitizer.bypassSecurityTrustUrl(url)),
       tap(() => {
         const message = this.isTouchDevice
           ? this.translateService.instant("Pinch & zoom to view details closer.")
@@ -119,12 +133,12 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     );
 
     this.show$ = this.store$.select(selectApp).pipe(
+      takeUntil(this.destroyed$),
       map(state => state.currentFullscreenImage === this.id),
       distinctUntilChanged(),
       tap(show => {
         if (show) {
-          this.store$.dispatch(new LoadThumbnail(this._getHdOptions()));
-          this.store$.dispatch(new LoadThumbnail(this._getRealOptions()));
+          this.store$.dispatch(new LoadThumbnail({ data: this._getHdOptions(), bustCache: false }));
 
           setTimeout(() => {
             this.klass = "d-flex";
@@ -197,7 +211,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     return {
       id: this.id,
       revision: this.revision,
-      alias: ImageAlias.HD_ANONYMIZED
+      alias: this.anonymized ? ImageAlias.HD_ANONYMIZED : ImageAlias.HD
     };
   }
 
@@ -205,7 +219,7 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     return {
       id: this.id,
       revision: this.revision,
-      alias: ImageAlias.REAL_ANONYMIZED
+      alias: this.anonymized ? ImageAlias.REAL_ANONYMIZED : ImageAlias.REAL
     };
   }
 }

@@ -53,6 +53,9 @@ export abstract class BasePromotionEntryComponent extends BaseComponentDirective
   @Input()
   countdownUpdateRate = 1;
 
+  @Input()
+  anonymizedThumbnails = true;
+
   @ViewChild("image", { read: ImageComponent })
   image: ImageComponent;
 
