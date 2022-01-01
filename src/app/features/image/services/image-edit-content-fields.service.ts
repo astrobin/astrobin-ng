@@ -147,6 +147,10 @@ export class ImageEditContentFieldsService extends BaseService {
             value: SolarSystemSubjectType.TOTAL_SOLAR_ECLIPSE,
             label: this.translateService.instant("Total solar eclipse")
           },
+          {
+            value: SolarSystemSubjectType.METEOR_SHOWER,
+            label: this.translateService.instant("Meteor shower")
+          },
           { value: SolarSystemSubjectType.OTHER, label: this.translateService.instant("Other") }
         ]
       }
