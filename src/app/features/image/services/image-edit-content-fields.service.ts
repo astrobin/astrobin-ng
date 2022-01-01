@@ -85,6 +85,7 @@ export class ImageEditContentFieldsService extends BaseService {
           { value: SubjectType.WIDE_FIELD, label: this.translateService.instant("Extremely wide field") },
           { value: SubjectType.STAR_TRAILS, label: this.translateService.instant("Star trails") },
           { value: SubjectType.NORTHERN_LIGHTS, label: this.translateService.instant("Northern lights") },
+          { value: SubjectType.NOCTILUCENT_CLOUDS, label: this.translateService.instant("Noctilucent clouds") },
           { value: SubjectType.GEAR, label: this.translateService.instant("Gear") },
           { value: SubjectType.OTHER, label: this.translateService.instant("Other") }
         ]
