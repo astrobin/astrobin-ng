@@ -202,6 +202,7 @@ export class SettingsPageComponent extends BaseComponentDirective implements OnI
 
   private _getCategory(notificationType: NotificationTypeInterface): NotificationCategory {
     switch (notificationType.label) {
+      case "image_submitted_to_iotd_tp":
       case "your_image_is_tpn":
       case "your_image_is_tp":
       case "your_image_is_iotd":
