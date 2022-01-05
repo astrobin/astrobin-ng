@@ -165,7 +165,9 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
             );
             break;
           default:
-            message = this.translateService.instant("Unknown error, please refresh the page and try again.");
+            message = this.translateService.instant(
+              `Unhandled error (code: ${state.responseStatus}), please refresh the page and try again.`
+            );
             break;
         }
 
