@@ -13,8 +13,12 @@ import { LoadingService } from "@shared/services/loading.service";
 import {
   ApproveEquipmentItemEditProposalSuccess,
   ApproveEquipmentItemSuccess,
+  CreateAccessoryEditProposal,
   CreateCameraEditProposal,
+  CreateFilterEditProposal,
+  CreateMountEditProposal,
   CreateSensorEditProposal,
+  CreateSoftwareEditProposal,
   CreateTelescopeEditProposal,
   EquipmentActionTypes,
   FindEquipmentItemEditProposals,
@@ -25,9 +29,9 @@ import { SensorInterface } from "@features/equipment/types/sensor.interface";
 import { CameraInterface } from "@features/equipment/types/camera.interface";
 import { Actions, ofType } from "@ngrx/effects";
 import { EditProposalInterface } from "@features/equipment/types/edit-proposal.interface";
-import { EquipmentItemEditorMode } from "@features/equipment/components/editors/base-item-editor/base-item-editor.component";
+import { EquipmentItemEditorMode } from "@shared/components/equipment/editors/base-item-editor/base-item-editor.component";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
-import { ItemBrowserComponent } from "@features/equipment/components/item-browser/item-browser.component";
+import { ItemBrowserComponent } from "@shared/components/equipment/item-browser/item-browser.component";
 import { Observable } from "rxjs";
 import {
   selectBrand,
@@ -38,12 +42,16 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { Location } from "@angular/common";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
-import { RejectMigrationModalComponent } from "@features/equipment/components/migration/reject-migration-modal/reject-migration-modal.component";
 import { RejectItemModalComponent } from "@features/equipment/components/reject-item-modal/reject-item-modal.component";
 import { ApproveItemModalComponent } from "@features/equipment/components/approve-item-modal/approve-item-modal.component";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { MergeIntoModalComponent } from "@features/equipment/components/migration/merge-into-modal/merge-into-modal.component";
 import { TelescopeInterface } from "@features/equipment/types/telescope.interface";
+import { MountInterface } from "@features/equipment/types/mount.interface";
+import { FilterInterface } from "@features/equipment/types/filter.interface";
+import { AccessoryInterface } from "@features/equipment/types/accessory.interface";
+import { SoftwareInterface } from "@features/equipment/types/software.interface";
+import { BrandInterface } from "@features/equipment/types/brand.interface";
 
 @Component({
   selector: "astrobin-equipment-explorer",
@@ -141,14 +149,32 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit 
   }
 
   startEditMode() {
+    if (this.equipmentItemService.getType(this.selectedItem) === EquipmentItemType.CAMERA) {
+      const camera: CameraInterface = this.selectedItem as CameraInterface;
+      if (camera.modified) {
+        this.popNotificationsService.warning(
+          `"Modified" cameras cannot be edited directly. Please find the regular version of this camera and
+          edit that.`
+        );
+        return;
+      }
+    }
+
     this.editMode = true;
     this.editModel = { ...this.selectedItem };
 
-    setTimeout(() => {
-      this.windowRefService.nativeWindow.document
-        .querySelector("#equipment-item-field-name")
-        .scrollIntoView({ behavior: "smooth" });
-    }, 100);
+    const scrollToName = () => {
+      const $element = this.windowRefService.nativeWindow.document.querySelector("#equipment-item-field-name");
+      if ($element) {
+        $element.scrollIntoView({ behavior: "smooth" });
+      } else {
+        setTimeout(() => {
+          scrollToName();
+        }, 100);
+      }
+    };
+
+    scrollToName();
   }
 
   endEditMode() {
@@ -180,12 +206,13 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit 
       )
       .subscribe(item => {
         this.setItem(item);
+        this.popNotificationsService.success(this.translateService.instant("Item approved."));
       });
   }
 
   startRejection() {
     const modal: NgbModalRef = this.modalService.open(RejectItemModalComponent);
-    const componentInstance: RejectMigrationModalComponent = modal.componentInstance;
+    const componentInstance: RejectItemModalComponent = modal.componentInstance;
 
     componentInstance.equipmentItem = this.selectedItem;
 
@@ -197,27 +224,45 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit 
   resetBrowser() {
     this._itemBrowser.reset();
     this.selectedItem = null;
+    this.endEditMode();
   }
 
   setItem(item: EquipmentItemBaseInterface) {
     this.selectedItem = item;
-    this.store$.dispatch(new LoadBrand({ id: item.brand }));
+
+    if (!!item.brand) {
+      this.store$.dispatch(new LoadBrand({ id: item.brand }));
+    }
+
+    this.endEditMode();
     this.loadEditProposals();
   }
 
   onItemSelected(item: EquipmentItemBaseInterface) {
+    const _setItem = (brand: BrandInterface | null) => {
+      const slug = UtilsService.slugify(
+        `${!!brand ? brand.name : this.translateService.instant("(DIY)")} ${item.name}`
+      );
+
+      this.setItem(item);
+
+      this.location.replaceState(`${this.routingBasePath}/${this.activeType.toLowerCase()}/${item.id}/${slug}`);
+    };
+
     if (item) {
-      this.store$
-        .select(selectBrand, item.brand)
-        .pipe(
-          filter(brand => !!brand),
-          take(1)
-        )
-        .subscribe(brand => {
-          const slug = UtilsService.slugify(`${brand.name} ${item.name}`);
-          this.setItem(item);
-          this.location.replaceState(`${this.routingBasePath}/${this.activeType.toLowerCase()}/${item.id}/${slug}`);
-        });
+      if (!!item.brand) {
+        this.store$
+          .select(selectBrand, item.brand)
+          .pipe(
+            filter(brand => !!brand),
+            take(1)
+          )
+          .subscribe(brand => {
+            _setItem(brand);
+          });
+      } else {
+        _setItem(null);
+      }
     } else {
       this.location.replaceState(`${this.routingBasePath}/${this.activeType.toLowerCase()}`);
     }
@@ -225,6 +270,7 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit 
 
   onCreationModeStarted() {
     this.selectedItem = null;
+    this.endEditMode();
   }
 
   proposeEdit() {
@@ -234,7 +280,6 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit 
     // Remove id and set `editModelTarget`.
     const { id, ...editModelWithTarget } = { ...this.editModel, ...{ editProposalTarget: this.editModel.id } };
 
-    // TODO: complete
     switch (this.activeType) {
       case EquipmentItemType.SENSOR:
         action = new CreateSensorEditProposal({
@@ -253,6 +298,30 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit 
           telescope: editModelWithTarget as EditProposalInterface<TelescopeInterface>
         });
         actionSuccessType = EquipmentActionTypes.CREATE_TELESCOPE_EDIT_PROPOSAL_SUCCESS;
+        break;
+      case EquipmentItemType.MOUNT:
+        action = new CreateMountEditProposal({
+          mount: editModelWithTarget as EditProposalInterface<MountInterface>
+        });
+        actionSuccessType = EquipmentActionTypes.CREATE_MOUNT_EDIT_PROPOSAL_SUCCESS;
+        break;
+      case EquipmentItemType.FILTER:
+        action = new CreateFilterEditProposal({
+          filter: editModelWithTarget as EditProposalInterface<FilterInterface>
+        });
+        actionSuccessType = EquipmentActionTypes.CREATE_FILTER_EDIT_PROPOSAL_SUCCESS;
+        break;
+      case EquipmentItemType.ACCESSORY:
+        action = new CreateAccessoryEditProposal({
+          accessory: editModelWithTarget as EditProposalInterface<AccessoryInterface>
+        });
+        actionSuccessType = EquipmentActionTypes.CREATE_ACCESSORY_EDIT_PROPOSAL_SUCCESS;
+        break;
+      case EquipmentItemType.SOFTWARE:
+        action = new CreateSoftwareEditProposal({
+          software: editModelWithTarget as EditProposalInterface<SoftwareInterface>
+        });
+        actionSuccessType = EquipmentActionTypes.CREATE_SOFTWARE_EDIT_PROPOSAL_SUCCESS;
         break;
     }
 

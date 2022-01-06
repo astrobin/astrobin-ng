@@ -1,0 +1,69 @@
+<div class="page has-breadcrumb">
+  <div class="d-flex justify-content-between">
+    <h1 class="flex-grow-1">
+      {{ "Judgement queue" | translate }}
+    </h1>
+
+    <div class="options">
+      <astrobin-queue-sort-button
+        class="mr-2"
+        (queueSortOrderChanged)="refresh($event)"
+      ></astrobin-queue-sort-button>
+      <astrobin-refresh-button (click)="refresh()"></astrobin-refresh-button>
+    </div>
+  </div>
+
+  <ng-container *ngIf="queue$ | async as queue; else loading">
+    <ng-container *ngIf="hiddenImages$ | async as hiddenImages">
+      <ng-container *ngIf="promotions$ | async as promotions">
+        <ng-container *ngIf="queue?.count > 0; else noEntries">
+          <astrobin-future-iotd-slots
+            (slotClick)="scrollToEntry($event)"
+            [availableEntries]="queue.results"
+          >
+          </astrobin-future-iotd-slots>
+
+          <ng-container [ngTemplateOutletContext]="{ queue: queue }" [ngTemplateOutlet]="pagination"></ng-container>
+
+          <div class="alert alert-warning" *ngIf="!!cannotSelectReason">
+            <span [innerHTML]="cannotSelectMessage"></span>
+          </div>
+
+          <div class="row">
+            <div class="col-lg-6" *ngFor="let entry of queue.results">
+              <astrobin-judgement-entry
+                #promotionQueueEntries
+                [entry]="entry"
+                id="promotion-queue-entry-{{ entry.pk }}"
+              >
+              </astrobin-judgement-entry>
+            </div>
+          </div>
+
+          <ng-container [ngTemplateOutletContext]="{ queue: queue }" [ngTemplateOutlet]="pagination"></ng-container>
+
+          <astrobin-scroll-to-top></astrobin-scroll-to-top>
+        </ng-container>
+      </ng-container>
+    </ng-container>
+  </ng-container>
+</div>
+
+<ng-template #noEntries>
+  <p>{{ "The judgement queue is currently empty." | translate }}&nbsp;{{ "Please come back later!" | translate }}</p>
+</ng-template>
+
+<ng-template #pagination let-queue="queue">
+  <ngb-pagination
+    (pageChange)="pageChange($event)"
+    *ngIf="queue.count > queue.results.length"
+    [(page)]="page"
+    [collectionSize]="queue.count"
+    [pageSize]="pageSize$ | async"
+  >
+  </ngb-pagination>
+</ng-template>
+
+<ng-template #loading>
+  <astrobin-loading-indicator></astrobin-loading-indicator>
+</ng-template>

@@ -12,6 +12,7 @@ export const testBrand = {
 export const testSensor = {
   id: 1,
   deleted: null,
+  klass: "SENSOR",
   reviewedTimestamp: null,
   reviewerDecision: null,
   reviewerRejectionReason: null,
@@ -39,6 +40,7 @@ export const testSensor = {
 export const testCamera = {
   id: 1,
   deleted: null,
+  klass: "CAMERA",
   reviewedTimestamp: null,
   reviewerDecision: null,
   reviewerRejectionReason: null,
@@ -57,20 +59,10 @@ export const testCamera = {
   sensor: 1
 };
 
-export const testCameraEditProposal = {
-  ...testCamera,
-  ...{
-    editProposalTarget: 1,
-    editProposalBy: 1,
-    editProposalCreated: "2021-09-13T00:00:00",
-    editProposalUpdated: "2021-09-13T00:00:00",
-    name: "Test Pro"
-  }
-};
-
 export const testTelescope = {
   id: 1,
   deleted: null,
+  klass: "TELESCOPE",
   reviewedTimestamp: null,
   reviewerDecision: null,
   reviewerRejectionReason: null,
@@ -87,6 +79,82 @@ export const testTelescope = {
   weight: 2
 };
 
+export const testMount = {
+  id: 1,
+  deleted: null,
+  klass: "MOUNT",
+  reviewedTimestamp: null,
+  reviewerDecision: null,
+  reviewerRejectionReason: null,
+  reviewerComment: null,
+  created: "2021-09-12T08:09:58.508643",
+  updated: "2021-09-12T08:09:58.508679",
+  brand: 1,
+  name: "Test mount",
+  image: null,
+  type: "GERMAN_EQUATORIAL",
+  maxPayload: 80
+};
+
+export const testFilter = {
+  id: 1,
+  deleted: null,
+  klass: "FILTER",
+  reviewedTimestamp: null,
+  reviewerDecision: null,
+  reviewerRejectionReason: null,
+  reviewerComment: null,
+  created: "2021-09-12T08:09:58.508643",
+  updated: "2021-09-12T08:09:58.508679",
+  brand: 1,
+  name: "Test filter",
+  image: null,
+  type: "L",
+  bandwidth: 12,
+  size: 31
+};
+
+export const testAccessory = {
+  id: 1,
+  deleted: null,
+  klass: "ACCESSORY",
+  reviewedTimestamp: null,
+  reviewerDecision: null,
+  reviewerRejectionReason: null,
+  reviewerComment: null,
+  created: "2021-09-12T08:09:58.508643",
+  updated: "2021-09-12T08:09:58.508679",
+  brand: 1,
+  name: "Test accessory",
+  image: null
+};
+
+export const testSoftware = {
+  id: 1,
+  deleted: null,
+  klass: "SOFTWARE",
+  reviewedTimestamp: null,
+  reviewerDecision: null,
+  reviewerRejectionReason: null,
+  reviewerComment: null,
+  created: "2021-09-12T08:09:58.508643",
+  updated: "2021-09-12T08:09:58.508679",
+  brand: 1,
+  name: "Test software",
+  image: null
+};
+
+export const testCameraEditProposal = {
+  ...testCamera,
+  ...{
+    editProposalTarget: 1,
+    editProposalBy: 1,
+    editProposalCreated: "2021-09-13T00:00:00",
+    editProposalUpdated: "2021-09-13T00:00:00",
+    name: "Test Pro"
+  }
+};
+
 export const testTelescopeEditProposal = {
   ...testTelescope,
   ...{
@@ -95,6 +163,50 @@ export const testTelescopeEditProposal = {
     editProposalCreated: "2021-09-13T00:00:00",
     editProposalUpdated: "2021-09-13T00:00:00",
     name: "Test telescope Pro"
+  }
+};
+
+export const testMountEditProposal = {
+  ...testMount,
+  ...{
+    editProposalTarget: 1,
+    editProposalBy: 1,
+    editProposalCreated: "2021-09-13T00:00:00",
+    editProposalUpdated: "2021-09-13T00:00:00",
+    name: "Test mount Pro"
+  }
+};
+
+export const testFilterEditProposal = {
+  ...testFilter,
+  ...{
+    editProposalTarget: 1,
+    editProposalBy: 1,
+    editProposalCreated: "2021-09-13T00:00:00",
+    editProposalUpdated: "2021-09-13T00:00:00",
+    name: "Test filter Pro"
+  }
+};
+
+export const testAccessoryEditProposal = {
+  ...testAccessory,
+  ...{
+    editProposalTarget: 1,
+    editProposalBy: 1,
+    editProposalCreated: "2021-09-13T00:00:00",
+    editProposalUpdated: "2021-09-13T00:00:00",
+    name: "Test accessory Pro"
+  }
+};
+
+export const testSoftwareEditProposal = {
+  ...testSoftware,
+  ...{
+    editProposalTarget: 1,
+    editProposalBy: 1,
+    editProposalCreated: "2021-09-13T00:00:00",
+    editProposalUpdated: "2021-09-13T00:00:00",
+    name: "Test software Pro"
   }
 };
 
@@ -144,7 +256,7 @@ Cypress.Commands.add("setupEquipmentDefaultRoutesForCameras", () => {
 
   cy.route("GET", "**/api/v2/equipment/camera/others-in-brand/*", []);
 
-  cy.route("GET", "**/api/v2/equipment/camera/?name=*", {
+  cy.route("GET", "**/api/v2/equipment/camera/?brand=*", {
     count: 0,
     next: null,
     previous: null,
@@ -172,7 +284,7 @@ Cypress.Commands.add("setupEquipmentDefaultRoutesForCameras", () => {
 
 Cypress.Commands.add("setupEquipmentDefaultRoutesForSensors", () => {
   cy.route("GET", /\/api\/v2\/equipment\/sensor\/\d+\/$/, testSensor).as("getSensor");
-  cy.route("GET", "**/api/v2/equipment/sensor/?name=*", { count: 0, results: [] }).as("findSensorsByName");
+  cy.route("GET", "**/api/v2/equipment/sensor/?brand=*", { count: 0, results: [] }).as("findSensorsByName");
   cy.route("GET", "**/api/v2/equipment/sensor/?q=*", {
     count: 0,
     next: null,
@@ -208,7 +320,7 @@ Cypress.Commands.add("setupEquipmentDefaultRoutesForTelescopes", () => {
 
   cy.route("GET", "**/api/v2/equipment/telescope/others-in-brand/*", []);
 
-  cy.route("GET", "**/api/v2/equipment/telescope/?name=*", {
+  cy.route("GET", "**/api/v2/equipment/telescope/?brand=*", {
     count: 0,
     next: null,
     previous: null,
@@ -235,39 +347,183 @@ Cypress.Commands.add("setupEquipmentDefaultRoutesForTelescopes", () => {
 });
 
 Cypress.Commands.add("setupEquipmentDefaultRoutesForMounts", () => {
-  cy.route("GET", "**/api/v2/equipment/mount/", {
+  cy.route("GET", "**/api/v2/equipment/mount/?q=*", {
     count: 0,
     next: null,
     previous: null,
     results: []
+  }).as("findMounts");
+
+  cy.route("GET", "**/api/v2/equipment/mount/?page=*", {
+    count: 1,
+    next: null,
+    previous: null,
+    results: [testMount]
   }).as("getMounts");
+
+  cy.route("GET", "**/api/v2/equipment/mount/find-similar-in-brand/*", []);
+
+  cy.route("GET", "**/api/v2/equipment/mount/others-in-brand/*", []);
+
+  cy.route("GET", "**/api/v2/equipment/mount/?brand=*", {
+    count: 0,
+    next: null,
+    previous: null,
+    results: []
+  }).as("findMountsByName");
+
+  cy.route("GET", "**/api/v2/equipment/mount/?pending_review=true&page=*", {
+    count: 0,
+    next: null,
+    previous: null,
+    results: []
+  }).as("findMountsPendingReview");
+
+  cy.route("GET", "**/api/v2/equipment/mount/?pending_edit=true?page=*", {
+    count: 0,
+    next: null,
+    previous: null,
+    results: []
+  }).as("findMountsPendingEdit");
+
+  cy.route("GET", "**/api/v2/equipment/mount-edit-proposal/?edit_proposal_target=*", {
+    results: []
+  }).as("getEditProposals");
 });
 
 Cypress.Commands.add("setupEquipmentDefaultRoutesForFilters", () => {
-  cy.route("GET", "**/api/v2/equipment/filter/", {
+  cy.route("GET", "**/api/v2/equipment/filter/?q=*", {
     count: 0,
     next: null,
     previous: null,
     results: []
+  }).as("findFilters");
+
+  cy.route("GET", "**/api/v2/equipment/filter/?page=*", {
+    count: 1,
+    next: null,
+    previous: null,
+    results: [testFilter]
   }).as("getFilters");
+
+  cy.route("GET", "**/api/v2/equipment/filter/find-similar-in-brand/*", []);
+
+  cy.route("GET", "**/api/v2/equipment/filter/others-in-brand/*", []);
+
+  cy.route("GET", "**/api/v2/equipment/filter/?brand=*", {
+    count: 0,
+    next: null,
+    previous: null,
+    results: []
+  }).as("findFiltersByName");
+
+  cy.route("GET", "**/api/v2/equipment/filter/?pending_review=true&page=*", {
+    count: 0,
+    next: null,
+    previous: null,
+    results: []
+  }).as("findFiltersPendingReview");
+
+  cy.route("GET", "**/api/v2/equipment/filter/?pending_edit=true?page=*", {
+    count: 0,
+    next: null,
+    previous: null,
+    results: []
+  }).as("findFiltersPendingEdit");
+
+  cy.route("GET", "**/api/v2/equipment/filter-edit-proposal/?edit_proposal_target=*", {
+    results: []
+  }).as("getEditProposals");
 });
 
 Cypress.Commands.add("setupEquipmentDefaultRoutesForAccessories", () => {
-  cy.route("GET", "**/api/v2/equipment/accessory/", {
+  cy.route("GET", "**/api/v2/equipment/accessory/?q=*", {
     count: 0,
     next: null,
     previous: null,
     results: []
+  }).as("findAccessories");
+
+  cy.route("GET", "**/api/v2/equipment/accessory/?page=*", {
+    count: 1,
+    next: null,
+    previous: null,
+    results: [testAccessory]
   }).as("getAccessories");
+
+  cy.route("GET", "**/api/v2/equipment/accessory/find-similar-in-brand/*", []);
+
+  cy.route("GET", "**/api/v2/equipment/accessory/others-in-brand/*", []);
+
+  cy.route("GET", "**/api/v2/equipment/accessory/?brand=*", {
+    count: 0,
+    next: null,
+    previous: null,
+    results: []
+  }).as("findAccessoriesByName");
+
+  cy.route("GET", "**/api/v2/equipment/accessory/?pending_review=true&page=*", {
+    count: 0,
+    next: null,
+    previous: null,
+    results: []
+  }).as("findAccessoriesPendingReview");
+
+  cy.route("GET", "**/api/v2/equipment/accessory/?pending_edit=true?page=*", {
+    count: 0,
+    next: null,
+    previous: null,
+    results: []
+  }).as("findAccessoriesPendingEdit");
+
+  cy.route("GET", "**/api/v2/equipment/accessory-edit-proposal/?edit_proposal_target=*", {
+    results: []
+  }).as("getEditProposals");
 });
 
 Cypress.Commands.add("setupEquipmentDefaultRoutesForSoftware", () => {
-  cy.route("GET", "**/api/v2/equipment/software/", {
+  cy.route("GET", "**/api/v2/equipment/software/?q=*", {
     count: 0,
     next: null,
     previous: null,
     results: []
-  }).as("getSoftware");
+  }).as("findSoftwareItems");
+
+  cy.route("GET", "**/api/v2/equipment/software/?page=*", {
+    count: 1,
+    next: null,
+    previous: null,
+    results: [testSoftware]
+  }).as("getSoftwareItems");
+
+  cy.route("GET", "**/api/v2/equipment/software/find-similar-in-brand/*", []);
+
+  cy.route("GET", "**/api/v2/equipment/software/others-in-brand/*", []);
+
+  cy.route("GET", "**/api/v2/equipment/software/?brand=*", {
+    count: 0,
+    next: null,
+    previous: null,
+    results: []
+  }).as("findSoftwareItemsByName");
+
+  cy.route("GET", "**/api/v2/equipment/software/?pending_review=true&page=*", {
+    count: 0,
+    next: null,
+    previous: null,
+    results: []
+  }).as("findSoftwareItemsPendingReview");
+
+  cy.route("GET", "**/api/v2/equipment/software/?pending_edit=true?page=*", {
+    count: 0,
+    next: null,
+    previous: null,
+    results: []
+  }).as("findSoftwareItemsPendingEdit");
+
+  cy.route("GET", "**/api/v2/equipment/software-edit-proposal/?edit_proposal_target=*", {
+    results: []
+  }).as("getEditProposals");
 });
 
 Cypress.Commands.add("setupEquipmentDefaultRoutes", () => {
@@ -414,4 +670,72 @@ Cypress.Commands.add("equipmentItemBrowserSelectFirstTelescope", (selector, tele
   cy.ngSelectOptionNumberSelectorShouldContain(selector, 1, "astrobin-equipment-item-summary .label", telescopeName);
   cy.ngSelectOptionClick(selector, 1);
   cy.ngSelectValueShouldContain(selector, telescopeName);
+});
+
+Cypress.Commands.add("equipmentItemBrowserSelectFirstMount", (selector, mountName, mountObject) => {
+  cy.route("GET", "**/api/v2/equipment/mount/?q=*", {
+    count: 1,
+    next: null,
+    previous: null,
+    results: [mountObject]
+  }).as("findMounts");
+
+  cy.ngSelectType(selector, mountName);
+
+  cy.wait("@findMounts");
+
+  cy.ngSelectOptionNumberSelectorShouldContain(selector, 1, "astrobin-equipment-item-summary .label", mountName);
+  cy.ngSelectOptionClick(selector, 1);
+  cy.ngSelectValueShouldContain(selector, mountName);
+});
+
+Cypress.Commands.add("equipmentItemBrowserSelectFirstFilter", (selector, filterName, filterObject) => {
+  cy.route("GET", "**/api/v2/equipment/filter/?q=*", {
+    count: 1,
+    next: null,
+    previous: null,
+    results: [filterObject]
+  }).as("findFilters");
+
+  cy.ngSelectType(selector, filterName);
+
+  cy.wait("@findFilters");
+
+  cy.ngSelectOptionNumberSelectorShouldContain(selector, 1, "astrobin-equipment-item-summary .label", filterName);
+  cy.ngSelectOptionClick(selector, 1);
+  cy.ngSelectValueShouldContain(selector, filterName);
+});
+
+Cypress.Commands.add("equipmentItemBrowserSelectFirstAccessory", (selector, accessoryName, accessoryObject) => {
+  cy.route("GET", "**/api/v2/equipment/accessory/?q=*", {
+    count: 1,
+    next: null,
+    previous: null,
+    results: [accessoryObject]
+  }).as("findAccessories");
+
+  cy.ngSelectType(selector, accessoryName);
+
+  cy.wait("@findAccessories");
+
+  cy.ngSelectOptionNumberSelectorShouldContain(selector, 1, "astrobin-equipment-item-summary .label", accessoryName);
+  cy.ngSelectOptionClick(selector, 1);
+  cy.ngSelectValueShouldContain(selector, accessoryName);
+});
+
+Cypress.Commands.add("equipmentItemBrowserSelectFirstSoftware", (selector, softwareName, softwareObject) => {
+  cy.route("GET", "**/api/v2/equipment/software/?q=*", {
+    count: 1,
+    next: null,
+    previous: null,
+    results: [softwareObject]
+  }).as("findSoftwareItems");
+
+  cy.ngSelectType(selector, softwareName);
+
+  cy.wait("@findSoftwareItems");
+
+  cy.ngSelectOptionNumberSelectorShouldContain(selector, 1, "astrobin-equipment-item-summary .label", softwareName);
+  cy.ngSelectOptionClick(selector, 1);
+  cy.ngSelectValueShouldContain(selector, softwareName);
 });

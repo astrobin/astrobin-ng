@@ -1,0 +1,88 @@
+<ng-container *ngIf="item">
+  <div class="row">
+    <div
+      *ngIf="showImage"
+      class="col-12 col-lg-3"
+    >
+      <div
+        class="image"
+        [class.image-large]="showLargeImage"
+        [style.background-image]="'url(' + image + ')'"
+      >
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="label">
+        <h5>
+          <strong>
+            <ng-container *ngIf="!!brand">{{ brand.name }}</ng-container>
+            <ng-container *ngIf="!brand"><em>{{ "(DIY)" | translate }}</em></ng-container>
+          </strong>&nbsp;
+          <span class="name" [innerHTML]="equipmentItemService.getName$(item) | async"></span>
+        </h5>
+        <h6 *ngIf="!!item.website" class="website">
+          <a target="_blank" [href]="item.website">{{ UtilsService.shortenUrl(item.website) }}</a>
+        </h6>
+      </div>
+
+      <table class="table table-sm table-striped properties" *ngIf="properties$ | async as properties">
+        <tbody>
+        <ng-container *ngFor="let property of properties">
+          <tr *ngIf="(showProperty$(property) | async) === true" class="property">
+            <th class="property-name">
+              {{ property.name }}
+            </th>
+            <td class="property-value">
+              <ng-container *ngIf="property.value | async as value; else noValue">
+                <span class="property-value" [innerHTML]="value"></span>
+              </ng-container>
+
+              <ng-template #noValue>
+                <span class="property-value">{{ "n/a" | translate }}</span>
+              </ng-template>
+            </td>
+          </tr>
+        </ng-container>
+        </tbody>
+      </table>
+
+      <div *ngIf="showSubItem && !!subItem" class="sub-item">
+        <astrobin-equipment-item-summary
+          [item]="subItem"
+          [showSubItem]="showSubItem"
+          [showClass]="showClass"
+          [showLargeImage]="showLargeImage"
+          [showImage]="showImage"
+          [showEmptyProperties]="showEmptyProperties"
+          [showMeta]="false"
+        ></astrobin-equipment-item-summary>
+      </div>
+    </div>
+  </div>
+
+  <div class="meta" *ngIf="showMeta">
+    <p *ngIf="item.createdBy">
+      <strong>{{ "Created by" | translate }}</strong>:
+      <astrobin-username [user]="getCreatedBy() | async"></astrobin-username>
+      <abbr [attr.title]="item.created | localDate">
+        ({{ item.created | localDate | timeago:true }})
+      </abbr>
+    <p>
+
+    <p *ngIf="item.reviewedBy">
+      <strong>{{ "Reviewed by" | translate }}</strong>:
+      <astrobin-username [user]="getReviewedBy() | async"></astrobin-username>
+      <abbr *ngIf="item.reviewedTimestamp" [attr.title]="item.reviewedTimestamp | localDate">
+        ({{ item.reviewedTimestamp | localDate | timeago:true }})
+      </abbr>
+    </p>
+
+    <p *ngIf="showLastUpdate()">
+      <strong>{{ "Last update" | translate }}:</strong>
+      <abbr [attr.title]="item.updated | localDate">
+        {{ item.updated | localDate | timeago:true }}
+      </abbr>
+    </p>
+  </div>
+</ng-container>

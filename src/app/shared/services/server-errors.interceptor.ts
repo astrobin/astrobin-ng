@@ -1,6 +1,6 @@
 import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from "@angular/common/http";
 
-import { Observable, of, throwError } from "rxjs";
+import { EMPTY, Observable, of, throwError } from "rxjs";
 import { TranslateService } from "@ngx-translate/core";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { catchError, retry } from "rxjs/operators";
@@ -29,18 +29,24 @@ export class ServerErrorsInterceptor implements HttpInterceptor {
         if (returnedError.error instanceof ErrorEvent) {
           errorMessage = `Error: ${returnedError.error.message}`;
         } else if (returnedError instanceof HttpErrorResponse) {
-          errorMessage = `Error Status ${returnedError.status}: ${returnedError.error.error} - ${returnedError.error.message}`;
+          errorMessage = `Error ${returnedError.status}`;
+          if (returnedError.message) {
+            errorMessage += `: ${returnedError.message}`;
+          } else if (returnedError.error) {
+            errorMessage += `: ${returnedError.error.error} - ${returnedError.error.message}`;
+          }
+
           handled = this.handleError(returnedError);
         }
 
-        if (!handled) {
-          if (errorMessage) {
-            return throwError(errorMessage);
-          } else {
-            return throwError("Unexpected problem occurred");
-          }
-        } else {
+        if (handled) {
           return of(returnedError);
+        }
+
+        if (errorMessage) {
+          return throwError(errorMessage);
+        } else {
+          return throwError("Unexpected problem occurred");
         }
       })
     );
@@ -84,12 +90,16 @@ export class ServerErrorsInterceptor implements HttpInterceptor {
           break;
         case 403:
           errorTitle = this.translateService.instant("Permission denied");
-          errorMessage = this.translateService.instant(
-            "You tried to access a server resource that you're not authorized for."
-          );
+          errorMessage =
+            err.error ||
+            this.translateService.instant("You tried to access a server resource that you're not authorized for.");
           break;
         case 404:
           errorTitle = this.translateService.instant("The requested resource does not exist");
+          errorMessage = err.url;
+          break;
+        case 409:
+          errorTitle = this.translateService.instant("Conflict detected");
           errorMessage = err.url;
           break;
         case 500:

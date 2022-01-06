@@ -37,11 +37,16 @@ h1 {
   margin-bottom: 2rem;
 
   + small {
-    font-size: 1rem;
-    color: var(--lightGrey);
+    font-size: 1.25rem;
+    line-height: 1.5rem;
+    color: var(--lighterGrey);
     display: block;
     margin-top: -2rem;
-    margin-bottom: 2rem;
+    margin-bottom: 3rem;
+
+    strong {
+      color: var(--white);
+    }
   }
 
   @media (max-width: $sm-max) {

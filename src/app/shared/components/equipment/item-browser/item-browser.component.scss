@@ -1,0 +1,15 @@
+:host {
+  position: relative;
+  display: block;
+  z-index: 999;
+}
+
+::ng-deep {
+  .ng-dropdown-panel {
+    box-shadow: 1rem 1rem 2rem rgba(0, 0, 0, 0.9) !important;
+
+    .ng-dropdown-panel-items {
+      max-height: 400px !important;
+    }
+  }
+}

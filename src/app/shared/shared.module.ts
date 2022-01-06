@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { HttpClientModule } from "@angular/common/http";
+import { HttpClient, HttpClientModule } from "@angular/common/http";
 import { APP_INITIALIZER, ModuleWithProviders, NgModule } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { formlyConfig } from "@app/formly.config";
@@ -15,7 +15,13 @@ import { Store } from "@ngrx/store";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FORMLY_CONFIG, FormlyModule } from "@ngx-formly/core";
 import { FormlySelectModule } from "@ngx-formly/core/select";
-import { TranslateModule, TranslateService } from "@ngx-translate/core";
+import {
+  MissingTranslationHandler,
+  TranslateLoader,
+  TranslateModule,
+  TranslateParser,
+  TranslateService
+} from "@ngx-translate/core";
 import { ApiModule } from "@shared/services/api/api.module";
 import { AuthService } from "@shared/services/auth.service";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
@@ -40,6 +46,12 @@ import { ComponentsModule } from "./components/components.module";
 import { PipesModule } from "./pipes/pipes.module";
 import { FormlyWrapperComponent } from "@shared/components/misc/formly-wrapper/formly-wrapper.component";
 import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
+import { CustomMissingTranslationHandler } from "@app/missing-translation-handler";
+import { CustomTranslateParser } from "@app/translate-parser";
+import { LanguageLoader } from "@app/translate-loader";
+import { DirectivesModule } from "@shared/directives/directives.module";
+import { CustomToastComponent } from "@shared/components/misc/custom-toast/custom-toast.component";
+
 
 export function appInitializer(store: Store<State>, actions$: Actions) {
   return () =>
@@ -64,6 +76,7 @@ export function appInitializer(store: Store<State>, actions$: Actions) {
   imports: [
     CommonModule,
     ComponentsModule,
+    DirectivesModule,
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
@@ -97,7 +110,24 @@ export function appInitializer(store: Store<State>, actions$: Actions) {
       timeOut: 20000,
       progressBar: true,
       preventDuplicates: true,
-      resetTimeoutOnDuplicate: true
+      resetTimeoutOnDuplicate: true,
+      toastComponent: CustomToastComponent
+    }),
+    TranslateModule.forChild({
+      missingTranslationHandler: {
+        provide: MissingTranslationHandler,
+        useClass: CustomMissingTranslationHandler
+      },
+      parser: {
+        provide: TranslateParser,
+        useClass: CustomTranslateParser
+      },
+      loader: {
+        provide: TranslateLoader,
+        useClass: LanguageLoader,
+        deps: [HttpClient, JsonApiService]
+      },
+      isolate: false
     }),
     StickyNavModule,
 
@@ -107,6 +137,7 @@ export function appInitializer(store: Store<State>, actions$: Actions) {
   exports: [
     CommonModule,
     ComponentsModule,
+    DirectivesModule,
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,

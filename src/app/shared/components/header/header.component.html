@@ -8,6 +8,16 @@
       <img alt="AstroBin" src="assets/images/nav-logo.png" />
     </a>
 
+    <div class="d-lg-none flex-grow-1 mobile-search">
+      <ng-container [ngTemplateOutlet]="quickSearch"></ng-container>
+    </div>
+
+    <div class="search-link">
+      <a [href]="classicRoutes.SEARCH">
+        <fa-icon icon="search"></fa-icon>
+      </a>
+    </div>
+
     <button
       (click)="isCollapsed = !isCollapsed"
       [attr.aria-expanded]="!isCollapsed"
@@ -23,23 +33,47 @@
 
     <div [ngbCollapse]="isCollapsed" class="collapse navbar-collapse" id="navbarSupportedContent">
       <ng-container [ngTemplateOutlet]="mainMenu"></ng-container>
+      <div class="d-none d-lg-inline-block flex-grow-1">
+        <ng-container [ngTemplateOutlet]="quickSearch"></ng-container>
+      </div>
 
-      <ul *ngIf="authService.isAuthenticated() | async" class="navbar-nav">
+      <ul *ngIf="isAuthenticated" class="navbar-nav">
         <ng-container [ngTemplateOutlet]="languageSelector"></ng-container>
         <ng-container [ngTemplateOutlet]="notificationsButton"></ng-container>
         <ng-container [ngTemplateOutlet]="userMenu"></ng-container>
         <ng-container [ngTemplateOutlet]="uploadButton"></ng-container>
       </ul>
 
-      <ng-container *ngIf="(authService.isAuthenticated() | async) === false" [ngTemplateOutlet]="loginAndRegister">
+      <ng-container *ngIf="!isAuthenticated" [ngTemplateOutlet]="loginAndRegister">
       </ng-container>
     </div>
   </div>
   <!-- ./container -->
 </nav>
 
+<ng-template #quickSearch>
+  <ul class="navbar-nav">
+    <!-- Quick search form -->
+    <li class="nav-item quick-search">
+      <form [action]="classicRoutes.SEARCH" method="get" ngNoForm>
+        <label>
+          <input
+            autocomplete="off"
+            class="form-control"
+            name="q"
+            placeholder="{{ 'Quick search' | translate }}"
+            type="text"
+          />
+        </label>
+        <input type="hidden" name="d" value="i" />
+      </form>
+    </li>
+    <!-- ./Quick search form -->
+  </ul>
+</ng-template>
+
 <ng-template #mainMenu>
-  <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+  <ul class="navbar-nav mt-2 mt-lg-0">
     <!-- Moderate menu -->
     <ng-container *ngIf="currentUser$ | async as user">
       <li *ngIf="user | isContentModerator" class="nav-item">
@@ -50,11 +84,7 @@
           <div aria-labelledby="moderateDropdown" ngbDropdownMenu>
             <h6 class="dropdown-header" translate>Images</h6>
 
-            <a
-              *ngIf="user | isImageModerator"
-              [href]="classicRoutes.MODERATE_IMAGE_QUEUE"
-              class="dropdown-item"
-            >
+            <a *ngIf="user | isImageModerator" [href]="classicRoutes.MODERATE_IMAGE_QUEUE" class="dropdown-item">
               <fa-icon icon="images"></fa-icon>
               {{ "Image queue" | translate }}
             </a>
@@ -93,9 +123,10 @@
               </a>
 
               <a
+                (click)="isCollapsed = true"
                 *ngIf="user | isIotdJudge"
-                [href]="classicRoutes.IOTD_JUDGEMENT_QUEUE"
                 class="dropdown-item"
+                routerLink="/iotd/judgement-queue"
               >
                 <fa-icon icon="hammer"></fa-icon>
                 {{ "Judgement queue" | translate }}
@@ -104,14 +135,12 @@
 
             <ng-container *ngIf="user | isEquipmentModerator">
               <div class="dropdown-divider"></div>
-              <h6 class="dropdown-header" translate>Equipment</h6>
+              <h6 class="dropdown-header">
+                Equipment
+              </h6>
 
-              <a
-                (click)="isCollapsed = true"
-                class="dropdown-item"
-                routerLink="/equipment/migration-tool"
-              >
-                <fa-icon icon="upload"></fa-icon>
+              <a (click)="isCollapsed = true" class="dropdown-item" routerLink="/equipment/migration-tool">
+                <fa-icon icon="arrow-right"></fa-icon>
                 Migration tool
               </a>
             </ng-container>
@@ -160,9 +189,13 @@
           </a>
 
           <ng-container *ngIf="currentUser$ | async as user">
-            <a *ngIf="user | isEquipmentModerator" [routerLink]="['equipment', 'explorer']" class="dropdown-item">
+            <a
+              *ngIf="(user | isEquipmentModerator) || (user | isInGroup:'own_equipment_migrators')"
+              [routerLink]="['equipment', 'explorer']"
+              class="dropdown-item"
+            >
               <fa-icon icon="camera"></fa-icon>
-              {{ "Equipment explorer" | translate }}
+              {{ "Equipment" | translate }} <em>(beta)</em>
             </a>
           </ng-container>
           <a [routerLink]="['explore', 'constellations']" class="dropdown-item">
@@ -208,7 +241,7 @@
 
           <a [href]="classicRoutes.CONTRIBUTORS_LIST" class="dropdown-item">
             <fa-icon icon="file-alt"></fa-icon>
-            {{ "Contributors list" | translate }} (beta)
+            {{ "Contributors list" | translate }} <em>(beta)</em>
           </a>
         </div>
       </div>
@@ -254,23 +287,6 @@
       </div>
     </li>
     <!-- ./Help menu -->
-
-    <!-- Quick search form -->
-    <li class="nav-item quick-search">
-      <form [action]="classicRoutes.SEARCH" method="get" ngNoForm>
-        <label>
-          <input
-            autocomplete="off"
-            class="form-control"
-            name="q"
-            placeholder="{{ 'Quick search' | translate }}"
-            type="text"
-          />
-        </label>
-        <input type="hidden" name="d" value="i" />
-      </form>
-    </li>
-    <!-- ./Quick search form -->
   </ul>
 </ng-template>
 
@@ -294,7 +310,7 @@
 
         <div class="dropdown-divider"></div>
 
-        <a class="dropdown-item" [attr.href]="helpWithTranslationsUrl$ | async" target="_blank">
+        <a class="dropdown-item" [attr.href]="helpWithTranslationsUrl" target="_blank">
           <fa-icon icon="tasks"></fa-icon>
           {{ "Help with translations!" | translate }}
         </a>
@@ -327,9 +343,7 @@
 
     <hr />
 
-    <h4>
-      {{ "Contribution Index" | translate }} (beta): {{ userProfile.contributionIndex | number: "1.2-2" }}
-    </h4>
+    <h4>{{ "Contribution Index" | translate }} (beta): {{ userProfile.contributionIndex | number: "1.2-2" }}</h4>
     <div [innerHTML]="contributionIndexPopoverInfo"></div>
   </ng-container>
 </ng-template>
@@ -455,7 +469,7 @@
 <ng-template #loginAndRegister>
   <ul class="navbar-nav">
     <li class="nav-item">
-      <a (click)="openLoginModal($event)" class="nav-link" href="#" id="login-button">{{ "Log in" | translate }}</a>
+      <a [href]="authService.getLoginUrl()" class="nav-link">{{ "Log in" | translate }}</a>
     </li>
     <li class="nav-item">
       <a [href]="classicRoutes.REGISTER" class="nav-link">{{ "Register" | translate }}</a>

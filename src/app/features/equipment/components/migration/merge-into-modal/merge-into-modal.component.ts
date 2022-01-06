@@ -19,6 +19,10 @@ import { FormGroup } from "@angular/forms";
 import { MigrationFlag } from "@shared/services/api/classic/astrobin/migratable-gear-item-api.service.interface";
 import { HttpStatusCode } from "@angular/common/http";
 import { TelescopeApiService } from "@shared/services/api/classic/astrobin/telescope/telescope-api.service";
+import { MountApiService } from "@shared/services/api/classic/astrobin/mount/mount-api.service";
+import { FilterApiService } from "@shared/services/api/classic/astrobin/filter/filter-api.service";
+import { AccessoryApiService } from "@shared/services/api/classic/astrobin/accessory/accessory-api.service";
+import { SoftwareApiService } from "@shared/services/api/classic/astrobin/software/software-api.service";
 
 @Component({
   selector: "astrobin-merge-into-modal",
@@ -47,7 +51,11 @@ export class MergeIntoModalComponent extends BaseComponentDirective implements O
     public readonly legacyGearService: GearService,
     public readonly legacyGearApi: GearApiService,
     public readonly legacyCameraApi: CameraApiService,
-    public readonly legacyTelescopeApi: TelescopeApiService
+    public readonly legacyTelescopeApi: TelescopeApiService,
+    public readonly legacyMountApi: MountApiService,
+    public readonly legacyFilterApi: FilterApiService,
+    public readonly legacyAccessoryApi: AccessoryApiService,
+    public readonly legacySoftwareApi: SoftwareApiService
   ) {
     super(store$);
   }
@@ -55,13 +63,28 @@ export class MergeIntoModalComponent extends BaseComponentDirective implements O
   ngOnInit() {
     let api;
 
-    // TODO: complete
+    if (!this.equipmentItem.brand) {
+      return;
+    }
+
     switch (this.activeType) {
       case EquipmentItemType.CAMERA:
         api = this.legacyCameraApi;
         break;
       case EquipmentItemType.TELESCOPE:
         api = this.legacyTelescopeApi;
+        break;
+      case EquipmentItemType.MOUNT:
+        api = this.legacyMountApi;
+        break;
+      case EquipmentItemType.FILTER:
+        api = this.legacyFilterApi;
+        break;
+      case EquipmentItemType.ACCESSORY:
+        api = this.legacyAccessoryApi;
+        break;
+      case EquipmentItemType.SOFTWARE:
+        api = this.legacySoftwareApi;
         break;
       default:
         this.popNotificationsService.error("Wrong item type requested.");
@@ -76,7 +99,14 @@ export class MergeIntoModalComponent extends BaseComponentDirective implements O
         .select(selectBrand, this.equipmentItem.brand)
         .pipe(
           filter(brand => !!brand),
-          switchMap(brand => api.getSimilarNonMigratedByMakeAndName(brand.name, this.equipmentItem.name)),
+          switchMap(brand => this.currentUser$.pipe(map(user => ({ brand, user })))),
+          switchMap(({ brand, user }) =>
+            api.getSimilarNonMigratedByMakeAndName(
+              brand.name,
+              this.equipmentItem.name,
+              user.groups.filter(group => group.name === "equipment_moderators").length > 0
+            )
+          ),
           switchMap((legacyItems: any[]) => {
             this.similarLegacyItems = legacyItems;
 

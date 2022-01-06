@@ -4,12 +4,13 @@ import { LoadingService } from "@shared/services/loading.service";
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from "@angular/router";
 import { combineLatest, EMPTY, Observable, Observer } from "rxjs";
 import { GearApiService } from "@shared/services/api/classic/astrobin/gear/gear-api.service";
-import { catchError, map } from "rxjs/operators";
+import { catchError, map, switchMap } from "rxjs/operators";
 import { selectCurrentUser } from "@features/account/store/auth.selectors";
 import { Store } from "@ngrx/store";
 import { Location } from "@angular/common";
 import { State } from "@app/store/state";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
+import { GearMigrationStrategyApiService } from "@shared/services/api/classic/astrobin/grar-migration-strategy/gear-migration-strategy-api.service";
 
 @Injectable({
   providedIn: "root"
@@ -18,6 +19,7 @@ export class MigrationReviewItemGuardService extends BaseService implements CanA
   constructor(
     public readonly loadingService: LoadingService,
     public readonly store$: Store<State>,
+    public readonly migrationStrategyApiService: GearMigrationStrategyApiService,
     public readonly legacyGearApi: GearApiService,
     public readonly router: Router,
     public readonly location: Location,
@@ -40,24 +42,39 @@ export class MigrationReviewItemGuardService extends BaseService implements CanA
       });
     };
 
-    const id = route.params["itemId"];
+    const id = route.params["migrationStrategyId"];
 
     return new Observable<boolean>(observer => {
-      combineLatest([this.store$.select(selectCurrentUser).pipe(map(user => user.id)), this.legacyGearApi.get(id)])
+      combineLatest([
+        this.store$.select(selectCurrentUser).pipe(map(user => user.id)),
+        this.migrationStrategyApiService.get(id)
+      ])
         .pipe(
-          map(result => {
+          switchMap(result => {
             const userId = result[0];
-            const item = result[1];
+            const migrationStrategy = result[1];
 
+            return this.legacyGearApi.get(migrationStrategy.gear).pipe(
+              map(item => ({
+                userId,
+                migrationStrategy,
+                item
+              }))
+            );
+          }),
+          map(({ userId, migrationStrategy, item }) => {
             let message;
 
-            if (!item.migrationFlag) {
+            if (!migrationStrategy.migrationFlag) {
               message = "You cannot review this item: a migration wasn't proposed yet.";
-            } else if (item.migrationFlagModerator === userId) {
+            } else if (migrationStrategy.migrationFlagModerator === userId) {
               message = "You cannot review this item: you were the one who proposed a migration for it.";
-            } else if (item.migrationFlagReviewer) {
+            } else if (migrationStrategy.migrationFlagReviewer) {
               message = "You cannot review this item: it's already been reviewed.";
-            } else if (item.migrationFlagReviewerLock && item.migrationFlagReviewerLock !== userId) {
+            } else if (
+              migrationStrategy.migrationFlagReviewerLock &&
+              migrationStrategy.migrationFlagReviewerLock !== userId
+            ) {
               message = "You cannot review this item: it's currently locked by another user.";
             }
 

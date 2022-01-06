@@ -7,7 +7,7 @@ import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
 import { CommonApiService } from "@shared/services/api/classic/common/common-api.service";
 import { EMPTY, Observable, of } from "rxjs";
-import { catchError, map, mergeMap } from "rxjs/operators";
+import { catchError, map, mergeMap, take } from "rxjs/operators";
 
 @Injectable()
 export class ContentTypeEffects {
@@ -18,7 +18,10 @@ export class ContentTypeEffects {
         this.store$.select(selectContentType, action.payload).pipe(
           mergeMap(fromStore =>
             fromStore !== null
-              ? of(fromStore).pipe(map(contentType => new LoadContentTypeSuccess(contentType)))
+              ? of(fromStore).pipe(
+                  take(1),
+                  map(contentType => new LoadContentTypeSuccess(contentType))
+                )
               : this.commonApiService.getContentType(action.payload.appLabel, action.payload.model).pipe(
                   map(contentType => new LoadContentTypeSuccess(contentType)),
                   catchError(error => EMPTY)

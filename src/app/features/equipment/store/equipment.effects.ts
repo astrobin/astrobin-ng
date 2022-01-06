@@ -5,16 +5,32 @@ import {
   ApproveEquipmentItemEditProposal,
   ApproveEquipmentItemEditProposalSuccess,
   ApproveEquipmentItemSuccess,
+  CreateAccessory,
+  CreateAccessoryEditProposal,
+  CreateAccessoryEditProposalSuccess,
+  CreateAccessorySuccess,
   CreateBrand,
   CreateBrandSuccess,
   CreateCamera,
   CreateCameraEditProposal,
   CreateCameraEditProposalSuccess,
   CreateCameraSuccess,
+  CreateFilter,
+  CreateFilterEditProposal,
+  CreateFilterEditProposalSuccess,
+  CreateFilterSuccess,
+  CreateMount,
+  CreateMountEditProposal,
+  CreateMountEditProposalSuccess,
+  CreateMountSuccess,
   CreateSensor,
   CreateSensorEditProposal,
   CreateSensorEditProposalSuccess,
   CreateSensorSuccess,
+  CreateSoftware,
+  CreateSoftwareEditProposal,
+  CreateSoftwareEditProposalSuccess,
+  CreateSoftwareSuccess,
   CreateTelescope,
   CreateTelescopeEditProposal,
   CreateTelescopeEditProposalSuccess,
@@ -300,10 +316,10 @@ export class EquipmentEffects {
   CreateCamera: Observable<CreateCameraSuccess> = createEffect(() =>
     this.actions$.pipe(
       ofType(EquipmentActionTypes.CREATE_CAMERA),
-      map((action: CreateCamera) => action.payload.camera),
-      mergeMap(camera =>
+      map((action: CreateCamera) => action.payload),
+      mergeMap(payload =>
         this.equipmentApiService
-          .createCamera(camera)
+          .createCamera(payload.camera, payload.createModifiedVariant)
           .pipe(map(createdCamera => new CreateCameraSuccess({ item: createdCamera })))
       )
     )
@@ -353,6 +369,137 @@ export class EquipmentEffects {
             map(
               createdTelescopeEditProposal =>
                 new CreateTelescopeEditProposalSuccess({ editProposal: createdTelescopeEditProposal })
+            )
+          )
+      )
+    )
+  );
+
+  /*********************************************************************************************************************
+   * Mounts
+   ********************************************************************************************************************/
+
+  CreateMount: Observable<CreateMountSuccess> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(EquipmentActionTypes.CREATE_MOUNT),
+      map((action: CreateMount) => action.payload.mount),
+      mergeMap(mount =>
+        this.equipmentApiService
+          .createMount(mount)
+          .pipe(map(createdMount => new CreateMountSuccess({ item: createdMount })))
+      )
+    )
+  );
+
+  CreateMountEditProposal: Observable<CreateMountEditProposalSuccess> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(EquipmentActionTypes.CREATE_MOUNT_EDIT_PROPOSAL),
+      map((action: CreateMountEditProposal) => action.payload.mount),
+      mergeMap(mount =>
+        this.equipmentApiService
+          .createMountEditProposal(mount)
+          .pipe(
+            map(
+              createdMountEditProposal => new CreateMountEditProposalSuccess({ editProposal: createdMountEditProposal })
+            )
+          )
+      )
+    )
+  );
+
+  /*********************************************************************************************************************
+   * Filters
+   ********************************************************************************************************************/
+
+  CreateFilter: Observable<CreateFilterSuccess> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(EquipmentActionTypes.CREATE_FILTER),
+      map((action: CreateFilter) => action.payload.filter),
+      mergeMap(filter_ =>
+        this.equipmentApiService
+          .createFilter(filter_)
+          .pipe(map(createdFilter => new CreateFilterSuccess({ item: createdFilter })))
+      )
+    )
+  );
+
+  CreateFilterEditProposal: Observable<CreateFilterEditProposalSuccess> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(EquipmentActionTypes.CREATE_FILTER_EDIT_PROPOSAL),
+      map((action: CreateFilterEditProposal) => action.payload.filter),
+      mergeMap(filter_ =>
+        this.equipmentApiService
+          .createFilterEditProposal(filter_)
+          .pipe(
+            map(
+              createdFilterEditProposal =>
+                new CreateFilterEditProposalSuccess({ editProposal: createdFilterEditProposal })
+            )
+          )
+      )
+    )
+  );
+
+  /*********************************************************************************************************************
+   * Accessories
+   ********************************************************************************************************************/
+
+  CreateAccessory: Observable<CreateAccessorySuccess> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(EquipmentActionTypes.CREATE_ACCESSORY),
+      map((action: CreateAccessory) => action.payload.accessory),
+      mergeMap(accessory =>
+        this.equipmentApiService
+          .createAccessory(accessory)
+          .pipe(map(createdAccessory => new CreateAccessorySuccess({ item: createdAccessory })))
+      )
+    )
+  );
+
+  CreateAccessoryEditProposal: Observable<CreateAccessoryEditProposalSuccess> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(EquipmentActionTypes.CREATE_ACCESSORY_EDIT_PROPOSAL),
+      map((action: CreateAccessoryEditProposal) => action.payload.accessory),
+      mergeMap(accessory =>
+        this.equipmentApiService
+          .createAccessoryEditProposal(accessory)
+          .pipe(
+            map(
+              createdAccessoryEditProposal =>
+                new CreateAccessoryEditProposalSuccess({ editProposal: createdAccessoryEditProposal })
+            )
+          )
+      )
+    )
+  );
+
+  /*********************************************************************************************************************
+   * Software
+   ********************************************************************************************************************/
+
+  CreateSoftware: Observable<CreateSoftwareSuccess> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(EquipmentActionTypes.CREATE_SOFTWARE),
+      map((action: CreateSoftware) => action.payload.software),
+      mergeMap(software =>
+        this.equipmentApiService
+          .createSoftware(software)
+          .pipe(map(createdSoftware => new CreateSoftwareSuccess({ item: createdSoftware })))
+      )
+    )
+  );
+
+  CreateSoftwareEditProposal: Observable<CreateSoftwareEditProposalSuccess> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(EquipmentActionTypes.CREATE_SOFTWARE_EDIT_PROPOSAL),
+      map((action: CreateSoftwareEditProposal) => action.payload.software),
+      mergeMap(software =>
+        this.equipmentApiService
+          .createSoftwareEditProposal(software)
+          .pipe(
+            map(
+              createdSoftwareEditProposal =>
+                new CreateSoftwareEditProposalSuccess({ editProposal: createdSoftwareEditProposal })
             )
           )
       )

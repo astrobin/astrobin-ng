@@ -1,17 +1,21 @@
 <div class="page has-breadcrumb">
-  <form [formGroup]="form">
-    <formly-form [fields]="fields" [form]="form" [model]="model"></formly-form>
+  <form [formGroup]="imageEditService.form">
+    <formly-form
+      [fields]="imageEditService.fields"
+      [form]="imageEditService.form"
+      [model]="imageEditService.model"
+    ></formly-form>
   </form>
 </div>
 
 <ng-template #remoteSourceLabelTemplate let-item="item">
   <span class="code">{{ item.label }}</span>
-  <span *ngIf="isSponsor(item.value)" class="remote-affiliate-sponsor">(sponsor)</span>
+  <span *ngIf="imageEditService.isSponsor(item.value)" class="remote-affiliate-sponsor">(sponsor)</span>
 </ng-template>
 
 <ng-template #remoteSourceOptionTemplate let-item="item">
   <span class="code">{{ item.label }}</span>
-  <span *ngIf="isSponsor(item.value)" class="remote-affiliate-sponsor">(sponsor)</span>
+  <span *ngIf="imageEditService.isSponsor(item.value)" class="remote-affiliate-sponsor">(sponsor)</span>
 </ng-template>
 
 <ng-template #stepperButtonsTemplate let-isLastStep="isLastStep">
@@ -30,7 +34,11 @@
 
       <button
         (click)="
-          onSave($event, classicRoutesService.EDIT_IMAGE_GEAR(this.image.hash || '' + this.image.pk) + '?upload')
+          onSave(
+            $event,
+            classicRoutesService.EDIT_IMAGE_GEAR(imageEditService.image.hash || '' + imageEditService.image.pk) +
+              '?upload'
+          )
         "
         class="dropdown-item"
       >
@@ -39,7 +47,11 @@
 
       <button
         (click)="
-          onSave($event, classicRoutesService.EDIT_IMAGE_ACQUISITION(this.image.hash || '' + this.image.pk) + '?upload')
+          onSave(
+            $event,
+            classicRoutesService.EDIT_IMAGE_ACQUISITION(imageEditService.image.hash || '' + imageEditService.image.pk) +
+              '?upload'
+          )
         "
         class="dropdown-item"
       >
@@ -47,7 +59,9 @@
       </button>
 
       <button
-        (click)="onSave($event, classicRoutesService.IMAGE(this.image.hash || '' + this.image.pk))"
+        (click)="
+          onSave($event, classicRoutesService.IMAGE(imageEditService.image.hash || '' + imageEditService.image.pk))
+        "
         class="dropdown-item"
       >
         {{ "Save and proceed to image" | translate }}

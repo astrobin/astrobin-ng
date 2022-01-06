@@ -11,23 +11,17 @@ export enum MigrationFlag {
 }
 
 export interface MigratableGearItemApiServiceInterface {
-  getRandomNonMigrated?(): Observable<any[]>;
+  getRandomNonMigrated?(isGlobal: boolean): Observable<any[]>;
 
-  getNonMigratedCount?(): Observable<number>;
+  getNonMigratedCount?(isGlobal: boolean): Observable<number>;
 
-  getPendingMigrationReview?(): Observable<any[]>;
+  getSimilarNonMigrated?(gearId: number, isGlobal: boolean): Observable<any[]>;
 
-  getSimilarNonMigrated?(gearId: number): Observable<any[]>;
-
-  getSimilarNonMigratedByMakeAndName?(make: string, name: string): Observable<any[]>;
+  getSimilarNonMigratedByMakeAndName?(make: string, name: string, isGlobal: boolean): Observable<any[]>;
 
   lockForMigration?(gearId: number): Observable<void>;
 
   releaseLockForMigration?(gearId: number): Observable<void>;
-
-  lockForMigrationReview?(gearId: number): Observable<void>;
-
-  releaseLockForMigrationReview?(gearId: number): Observable<void>;
 
   setMigration?(
     gearId: number,
@@ -35,8 +29,4 @@ export interface MigratableGearItemApiServiceInterface {
     itemType?: EquipmentItemType,
     itemId?: EquipmentItemBaseInterface["id"]
   ): void;
-
-  approveMigration?(gearId: number): Observable<any>;
-
-  rejectMigration?(gearId: number, reason: RejectMigrationReason, comment: string): Observable<any>;
 }

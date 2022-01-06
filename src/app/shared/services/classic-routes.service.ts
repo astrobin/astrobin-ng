@@ -11,6 +11,8 @@ const BASE_URL = environment.classicBaseUrl;
 export class ClassicRoutesService extends BaseService {
   HOME = BASE_URL + "/";
   REGISTER = BASE_URL + "/accounts/register/";
+  LOGIN = BASE_URL + "/accounts/login/";
+  LOGOUT = BASE_URL + "/accounts/logout/";
   RESET_PASSWORD = BASE_URL + "/accounts/password/reset";
   PRICING = "https://welcome.astrobin.com/pricing";
   UPLOAD = BASE_URL + "/upload/";
@@ -34,7 +36,6 @@ export class ClassicRoutesService extends BaseService {
   CONTACT = "https://welcome.astrobin.com/contact";
   MODERATE_IMAGE_QUEUE = BASE_URL + "/moderate/images/";
   MODERATE_SPAM_QUEUE = BASE_URL + "/moderate/images/spam/";
-  IOTD_JUDGEMENT_QUEUE = BASE_URL + "/iotd/judgement-queue/";
 
   COMMERCIAL_PRODUCTS = (user: UserInterface) => BASE_URL + `/users/${user?.username}/commercial/products/`;
 

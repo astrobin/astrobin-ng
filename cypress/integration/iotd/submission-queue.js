@@ -8,7 +8,7 @@ context("IOTD Submission queue", () => {
   describe("when not logged in", () => {
     it("should redirect you to the login page", () => {
       cy.visitPage("/iotd/submission-queue");
-      cy.url().should("contain", "http://localhost:4400/account/login");
+      cy.url().should("contain", "http://localhost:4400/account/logging-in");
     });
   });
 
@@ -26,10 +26,19 @@ context("IOTD Submission queue", () => {
   describe("when logged in and in the iotd_submitters_group ", () => {
     beforeEach(() => {
       cy.login();
+
+      cy.route("GET", "**/000000/final/thumb/hd_anonymized/", "fixture:api/images/image_thumbnail_1_hd_loaded.json");
+      cy.route("GET", "**/000000/final/thumb/story/", "fixture:api/images/image_thumbnail_1_story_loaded.json");
+
+      cy.route("GET", "**/000001/final/thumb/hd_anonymized/", "fixture:api/images/image_thumbnail_1_hd_loaded.json");
+      cy.route("GET", "**/000001/final/thumb/story/", "fixture:api/images/image_thumbnail_1_story_loaded.json");
+
       cy.route("GET", "**/common/userprofiles/current", "fixture:api/common/userprofile_current_3.json").as(
         "getCurrentUserProfile"
       );
       cy.route("GET", "**/common/users/*", "fixture:api/common/users_3_iotd_submitter.json").as("getUser");
+
+      cy.route("GET", "**/iotd/staff-member-settings/", { user: 1, queueSortOrder: "OLDEST" });
     });
 
     it("should render page elements", () => {
@@ -132,19 +141,19 @@ context("IOTD Submission queue", () => {
         .contains("Hide")
         .click();
 
-      cy.get("#promotion-queue-entry-1 .promotion-queue-entry").should("have.class", "hidden");
-      cy.get("#promotion-queue-entry-1 .hidden-overlay").should("be.visible");
+      cy.get("#promotion-queue-entry-1 .card-body").should("not.be.visible");
+      cy.get("#promotion-queue-entry-1 .card-footer").should("not.be.visible");
     });
 
     it("should show a promotion entry again", () => {
       cy.route("DELETE", "**/api/v2/iotd/hidden-image/1", {}).as("showImage");
 
-      cy.get("#promotion-queue-entry-1 .hidden-overlay .btn")
+      cy.get("#promotion-queue-entry-1 .btn")
         .contains("Show")
         .click();
 
-      cy.get("#promotion-queue-entry-1 .promotion-queue-entry").should("not.have.class", "hidden");
-      cy.get("#promotion-queue-entry-1 .hidden-overlay").should("not.be.visible");
+      cy.get("#promotion-queue-entry-1 .card-body").should("be.visible");
+      cy.get("#promotion-queue-entry-1 .card-footer").should("be.visible");
     });
   });
 });

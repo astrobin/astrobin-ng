@@ -33,10 +33,10 @@
           &nbsp;
         </li>
 
-        <li ngbNavItem="view" *ngIf="authService.isAuthenticated() | async">
+        <li ngbNavItem="view" *ngIf="authService.isAuthenticated$() | async">
           <a ngbNavLink routerLink="view" translate>Your subscriptions</a>
         </li>
-        <li ngbNavItem="payments" *ngIf="authService.isAuthenticated() | async">
+        <li ngbNavItem="payments" *ngIf="authService.isAuthenticated$() | async">
           <a ngbNavLink routerLink="payments" translate>Your payments</a>
         </li>
 

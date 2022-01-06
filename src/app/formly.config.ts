@@ -173,7 +173,7 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
         name: "url-is-available",
         validation: (control: FormControl): ValidationErrors => {
           if (!control.value) {
-            return of(null);
+            return of(true);
           }
 
           return control.valueChanges.pipe(

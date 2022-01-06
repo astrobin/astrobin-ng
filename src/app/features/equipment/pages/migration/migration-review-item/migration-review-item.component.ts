@@ -22,6 +22,11 @@ import { RejectMigrationModalComponent } from "@features/equipment/components/mi
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { CameraApiService } from "@shared/services/api/classic/gear/camera/camera-api.service";
 import { TelescopeApiService } from "@shared/services/api/classic/gear/telescope/telescope-api.service";
+import { MountApiService } from "@shared/services/api/classic/gear/mount/mount-api.service";
+import { FilterApiService } from "@shared/services/api/classic/gear/filter/filter-api.service";
+import { AccessoryApiService } from "@shared/services/api/classic/gear/accessory/accessory-api.service";
+import { SoftwareApiService } from "@shared/services/api/classic/gear/software/software-api.service";
+import { GearMigrationStrategyApiService } from "@shared/services/api/classic/astrobin/grar-migration-strategy/gear-migration-strategy-api.service";
 
 @Component({
   selector: "astrobin-migration-review-item",
@@ -31,9 +36,11 @@ import { TelescopeApiService } from "@shared/services/api/classic/gear/telescope
 export class MigrationReviewItemComponent extends BaseComponentDirective implements OnInit, OnDestroy {
   MigrationFlag = MigrationFlag;
   title = "Migration review";
+  migrationStrategy: any;
   legacyItem: any;
   equipmentItem: EquipmentItemBaseInterface;
   user$: Observable<UserInterface>;
+  releaseLockOnDestroy = true;
 
   constructor(
     public readonly store$: Store,
@@ -42,6 +49,7 @@ export class MigrationReviewItemComponent extends BaseComponentDirective impleme
     public readonly translateService: TranslateService,
     public readonly activatedRoute: ActivatedRoute,
     public readonly legacyGearApiService: GearApiService,
+    public readonly gearMigrationStrategyApiService: GearMigrationStrategyApiService,
     public readonly gearService: GearService,
     public readonly userService: UserService,
     public readonly loadingService: LoadingService,
@@ -49,7 +57,11 @@ export class MigrationReviewItemComponent extends BaseComponentDirective impleme
     public readonly router: Router,
     public readonly modalService: NgbModal,
     public readonly legacyCameraApiService: CameraApiService,
-    public readonly legacyTelescopeApiService: TelescopeApiService
+    public readonly legacyTelescopeApiService: TelescopeApiService,
+    public readonly legacyMountApiService: MountApiService,
+    public readonly legacyFilterApiService: FilterApiService,
+    public readonly legacyAccessoryApiService: AccessoryApiService,
+    public readonly legacySoftwareApiService: SoftwareApiService
   ) {
     super(store$);
   }
@@ -61,20 +73,28 @@ export class MigrationReviewItemComponent extends BaseComponentDirective impleme
         MigrationFlag.MULTIPLE_ITEMS,
         MigrationFlag.WRONG_TYPE,
         MigrationFlag.NOT_ENOUGH_INFO
-      ].indexOf(this.legacyItem.migrationFlag) > -1
+      ].indexOf(this.migrationStrategy.migrationFlag) > -1
     );
   }
 
   ngOnInit(): void {
-    const itemId = this.activatedRoute.snapshot.paramMap.get("itemId");
+    const migrationStrategyId = this.activatedRoute.snapshot.paramMap.get("migrationStrategyId");
 
-    this.legacyGearApiService
-      .getType(+itemId)
+    this.gearMigrationStrategyApiService
+      .get(+migrationStrategyId)
       .pipe(
-        switchMap((type: string) => {
+        switchMap(migrationStrategy => {
+          this.migrationStrategy = migrationStrategy;
+          return this.legacyGearApiService.getType(migrationStrategy.gear).pipe(
+            map(type => ({
+              migrationStrategy,
+              type
+            }))
+          );
+        }),
+        switchMap(({ migrationStrategy, type }) => {
           let api: any = this.legacyGearApiService;
 
-          // TODO: complete
           switch (type) {
             case "camera":
               api = this.legacyCameraApiService;
@@ -82,30 +102,53 @@ export class MigrationReviewItemComponent extends BaseComponentDirective impleme
             case "telescope":
               api = this.legacyTelescopeApiService;
               break;
+            case "mount":
+              api = this.legacyMountApiService;
+              break;
+            case "filter":
+              api = this.legacyFilterApiService;
+              break;
+            case "accessory":
+              api = this.legacyAccessoryApiService;
+              break;
+            case "software":
+              api = this.legacySoftwareApiService;
+              break;
           }
 
-          return api.get(+itemId);
+          return api.get(migrationStrategy.gear);
         }),
-        take(1),
-        switchMap(item => this.legacyGearApiService.lockForMigrationReview(+itemId).pipe(map(() => item)))
+        switchMap((item: any) => {
+          this.legacyItem = item;
+          return this.gearMigrationStrategyApiService
+            .lockForMigrationReview(this.migrationStrategy.pk)
+            .pipe(map(() => item));
+        })
       )
-      .subscribe((item: any) => {
-        this.legacyItem = item;
-
-        if (item.migrationFlag === MigrationFlag.MIGRATE) {
+      .subscribe(() => {
+        if (this.migrationStrategy.migrationFlag === MigrationFlag.MIGRATE) {
           this.equipmentApiService
-            .getByContentTypeAndObjectId(item.migrationContentType, item.migrationObjectId)
+            .getByContentTypeAndObjectId(
+              this.migrationStrategy.migrationContentType,
+              this.migrationStrategy.migrationObjectId
+            )
             .pipe(take(1))
             .subscribe(equipmentItem => {
               this.equipmentItem = equipmentItem;
-              this.store$.dispatch(new LoadBrand({ id: equipmentItem.brand }));
+
+              if (!!equipmentItem.brand) {
+                this.store$.dispatch(new LoadBrand({ id: equipmentItem.brand }));
+              }
             });
         }
 
-        this.user$ = this.userService.getUser$(item.migrationFlagModerator);
-        this.store$.dispatch(new LoadUser({ id: item.migrationFlagModerator }));
+        this.user$ = this.userService.getUser$(this.migrationStrategy.migrationFlagModerator);
+        this.store$.dispatch(new LoadUser({ id: this.migrationStrategy.migrationFlagModerator }));
 
-        this.title = `Migration review: "${this.gearService.getDisplayName(item.make, item.name)}"`;
+        this.title = `Migration review: "${this.gearService.getDisplayName(
+          this.legacyItem.make,
+          this.legacyItem.name
+        )}"`;
 
         this.titleService.setTitle(this.title);
 
@@ -125,12 +168,12 @@ export class MigrationReviewItemComponent extends BaseComponentDirective impleme
   }
 
   ngOnDestroy() {
-    const itemId = this.activatedRoute.snapshot.paramMap.get("itemId");
-
-    this.legacyGearApiService
-      .releaseLockForMigrationReview(+itemId)
-      .pipe(take(1))
-      .subscribe();
+    if (this.releaseLockOnDestroy) {
+      this.gearMigrationStrategyApiService
+        .releaseLockForMigrationReview(this.migrationStrategy.pk)
+        .pipe(take(1))
+        .subscribe();
+    }
 
     this.loadingService.setLoading(false);
 
@@ -140,16 +183,16 @@ export class MigrationReviewItemComponent extends BaseComponentDirective impleme
   approve() {
     this.loadingService.setLoading(true);
 
-    this.legacyGearApiService
-      .approveMigration(this.legacyItem.pk)
+    this.gearMigrationStrategyApiService
+      .approve(this.migrationStrategy.pk)
       .pipe(
-        switchMap(item => {
+        switchMap(migrationStrategy => {
           if (this.equipmentItem && !this.equipmentItem.reviewedBy) {
             this.store$.dispatch(new ApproveEquipmentItem({ item: this.equipmentItem, comment: null }));
 
             return this.actions$.pipe(ofType(EquipmentActionTypes.APPROVE_EQUIPMENT_ITEM_SUCCESS), take(1));
           } else {
-            return of(item);
+            return of(migrationStrategy);
           }
         })
       )
@@ -162,10 +205,11 @@ export class MigrationReviewItemComponent extends BaseComponentDirective impleme
     const modal: NgbModalRef = this.modalService.open(RejectMigrationModalComponent);
     const componentInstance: RejectMigrationModalComponent = modal.componentInstance;
 
-    componentInstance.legacyItem = this.legacyItem;
+    componentInstance.migrationStrategy = this.migrationStrategy;
     componentInstance.equipmentItem = this.equipmentItem;
 
     modal.closed.pipe(take(1)).subscribe(() => {
+      this.releaseLockOnDestroy = false;
       this.exit();
     });
   }

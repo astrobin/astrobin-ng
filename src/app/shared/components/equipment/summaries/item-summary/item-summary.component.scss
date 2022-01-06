@@ -1,0 +1,75 @@
+@import "../../../../../styles/breakpoints";
+
+.image {
+  height: 75px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+
+  &.image-large {
+    height: 150px;
+  }
+
+  @media screen and (max-width: $md-max) {
+    margin: 0 auto 2rem;
+    max-width: 150px;
+  }
+}
+
+.website {
+  margin-top: -.25rem;
+  margin-bottom: 1rem;
+}
+
+.properties {
+  margin-top: .5rem;
+
+  .property {
+    .property-name {
+      color: var(--lightestGrey);
+      font-weight: normal;
+    }
+
+    .property-value {
+      color: var(--lighterGrey);
+    }
+  }
+}
+
+.sub-item {
+  padding: 1rem;
+  margin-top: 1rem;
+  border-top: 1px dashed var(--lightGrey);
+
+  h5 {
+    font-size: 1.1rem;
+    color: var(--lighterGrey);
+  }
+
+  .image {
+    width: 80%;
+  }
+}
+
+.meta {
+  padding: .75rem 1.5rem;
+  margin: -1.25rem;
+  margin-top: 1rem;
+  color: var(--lighterGrey);
+  background: var(--grey);
+  font-style: italic;
+  font-size: .85rem;
+
+  strong {
+    color: var(--white);
+    font-weight: normal;
+  }
+
+  p {
+    margin-bottom: .15rem;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}

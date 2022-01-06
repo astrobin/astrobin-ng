@@ -10,10 +10,11 @@ import { Observable } from "rxjs";
 import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
 import { EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
-import { take, tap } from "rxjs/operators";
+import { tap } from "rxjs/operators";
 import { LoadBrand } from "@features/equipment/store/equipment.actions";
 import { BrandInterface } from "@features/equipment/types/brand.interface";
 import { PendingExplorerBaseComponent } from "@features/equipment/pages/explorer-base/pending-explorer-base.component";
+import { WindowRefService } from "@shared/services/window-ref.service";
 
 @Component({
   selector: "astrobin-equipment-pending-review-explorer",
@@ -32,9 +33,10 @@ export class PendingReviewExplorerComponent extends PendingExplorerBaseComponent
     public readonly titleService: TitleService,
     public readonly activatedRoute: ActivatedRoute,
     public readonly equipmentApiService: EquipmentApiService,
-    public readonly router: Router
+    public readonly router: Router,
+    public readonly windowRefService: WindowRefService
   ) {
-    super(store$, actions$, activatedRoute, router);
+    super(store$, actions$, activatedRoute, router, windowRefService);
   }
 
   ngOnInit(): void {
@@ -54,22 +56,19 @@ export class PendingReviewExplorerComponent extends PendingExplorerBaseComponent
         ]
       })
     );
+  }
 
-    this.items$ = this.equipmentApiService.getAllEquipmentItemsPendingReview(this._activeType).pipe(
+  getItems() {
+    this.items$ = this.equipmentApiService.getAllEquipmentItemsPendingReview(this._activeType, this.page).pipe(
       tap(response => {
         const uniqueBrands: BrandInterface["id"][] = [];
         for (const item of response.results) {
-          if (uniqueBrands.indexOf(item.brand) === -1) {
+          if (!!item.brand && uniqueBrands.indexOf(item.brand) === -1) {
             uniqueBrands.push(item.brand);
           }
         }
         uniqueBrands.forEach(id => this.store$.dispatch(new LoadBrand({ id })));
       })
     );
-  }
-
-  pageChange(page: number): void {
-    this.page = page;
-    this.items$ = this.equipmentApiService.getAllEquipmentItemsPendingEdit(this._activeType, page);
   }
 }

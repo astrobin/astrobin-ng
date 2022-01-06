@@ -8,8 +8,8 @@ import {
 import { LoadingService } from "@shared/services/loading.service";
 import { HttpClient } from "@angular/common/http";
 import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import { RejectMigrationReason } from "@features/equipment/components/migration/reject-migration-modal/reject-migration-modal.component";
 import { catchError } from "rxjs/operators";
+import { UtilsService } from "@shared/services/utils/utils.service";
 
 @Injectable({
   providedIn: "root"
@@ -22,24 +22,47 @@ export class MigratableGearItemApiService extends BaseClassicApiService
     super(loadingService);
   }
 
-  getSimilarNonMigrated(gearId: number): Observable<any[]> {
-    return this.http.get<any[]>(`${this.configUrl}/${gearId}/similar-non-migrated/`);
+  getSimilarNonMigrated(gearId: number, isGlobal: boolean): Observable<any[]> {
+    let url = `${this.configUrl}/${gearId}/similar-non-migrated/`;
+
+    if (isGlobal) {
+      url = UtilsService.addOrUpdateUrlParam(url, "global", "1");
+    }
+
+    return this.http.get<any[]>(url);
   }
 
-  getSimilarNonMigratedByMakeAndName(make: string, name: string): Observable<any[]> {
-    return this.http.get<any[]>(`${this.configUrl}/similar-non-migrated/?make=${make}&name=${name}`);
+  getSimilarNonMigratedByMakeAndName(make: string, name: string, isGlobal: boolean): Observable<any[]> {
+    let url = `${this.configUrl}/similar-non-migrated/?make=${make}&name=${name}`;
+
+    url = UtilsService.addOrUpdateUrlParam(url, "make", make);
+    url = UtilsService.addOrUpdateUrlParam(url, "name", name);
+
+    if (isGlobal) {
+      url = UtilsService.addOrUpdateUrlParam(url, "global", "1");
+    }
+
+    return this.http.get<any[]>(url);
   }
 
-  getRandomNonMigrated(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.configUrl}/random-non-migrated/`);
+  getRandomNonMigrated(isGlobal: boolean): Observable<any[]> {
+    let url = `${this.configUrl}/random-non-migrated/`;
+
+    if (isGlobal) {
+      url = UtilsService.addOrUpdateUrlParam(url, "global", "1");
+    }
+
+    return this.http.get<any[]>(url);
   }
 
-  getNonMigratedCount(): Observable<number> {
-    return this.http.get<number>(`${this.configUrl}/non-migrated-count/`);
-  }
+  getNonMigratedCount(isGlobal: boolean): Observable<number> {
+    let url = `${this.configUrl}/non-migrated-count/`;
 
-  getPendingMigrationReview(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.configUrl}/pending-migration-review/`);
+    if (isGlobal) {
+      url = UtilsService.addOrUpdateUrlParam(url, "global", "1");
+    }
+
+    return this.http.get<number>(url);
   }
 
   lockForMigration(gearId: number): Observable<void> {
@@ -49,16 +72,6 @@ export class MigratableGearItemApiService extends BaseClassicApiService
   releaseLockForMigration(gearId: number): Observable<void> {
     return this.http
       .put<void>(`${this.configUrl}/${gearId}/release-lock-for-migration/`, {})
-      .pipe(catchError(err => EMPTY));
-  }
-
-  lockForMigrationReview(gearId: number): Observable<void> {
-    return this.http.put<void>(`${this.configUrl}/${gearId}/lock-for-migration-review/`, {});
-  }
-
-  releaseLockForMigrationReview(gearId: number): Observable<void> {
-    return this.http
-      .put<void>(`${this.configUrl}/${gearId}/release-lock-for-migration-review/`, {})
       .pipe(catchError(err => EMPTY));
   }
 
@@ -73,13 +86,5 @@ export class MigratableGearItemApiService extends BaseClassicApiService
       itemType,
       itemId
     });
-  }
-
-  approveMigration(gearId: number): Observable<any> {
-    return this.http.put(`${this.configUrl}/${gearId}/approve-migration/`, {});
-  }
-
-  rejectMigration(gearId: number, reason: RejectMigrationReason, comment: string): Observable<any> {
-    return this.http.put(`${this.configUrl}/${gearId}/reject-migration/`, { reason, comment });
   }
 }

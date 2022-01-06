@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
 import { GearApiService } from "@shared/services/api/classic/astrobin/gear/gear-api.service";
 import { LoadingService } from "@shared/services/loading.service";
-import { map, switchMap, take, takeUntil, tap } from "rxjs/operators";
+import { filter, map, switchMap, take, takeUntil, tap } from "rxjs/operators";
 import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { TitleService } from "@shared/services/title/title.service";
 import { FormGroup } from "@angular/forms";
@@ -11,11 +11,12 @@ import { MigrationFlag } from "@shared/services/api/classic/astrobin/migratable-
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { Store } from "@ngrx/store";
 import { Actions } from "@ngrx/effects";
-import { selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
+import { selectBrand, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import { HttpStatusCode } from "@angular/common/http";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { CameraApiService } from "@shared/services/api/classic/astrobin/camera/camera-api.service";
 import { TelescopeApiService } from "@shared/services/api/classic/astrobin/telescope/telescope-api.service";
+import { MountApiService } from "@shared/services/api/classic/astrobin/mount/mount-api.service";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { TranslateService } from "@ngx-translate/core";
@@ -23,7 +24,14 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 import { State } from "@app/store/state";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 import { GearService } from "@shared/services/gear/gear.service";
-import { ItemBrowserComponent } from "@features/equipment/components/item-browser/item-browser.component";
+import { ItemBrowserComponent } from "@shared/components/equipment/item-browser/item-browser.component";
+import { CameraInterface } from "@features/equipment/types/camera.interface";
+import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
+import { FilterApiService } from "@shared/services/api/classic/astrobin/filter/filter-api.service";
+import { AccessoryApiService } from "@shared/services/api/classic/astrobin/accessory/accessory-api.service";
+import { SoftwareApiService } from "@shared/services/api/classic/astrobin/software/software-api.service";
+import { isGroupMember } from "@shared/operators/is-group-member.operator";
+import { CombinedAccessoryAndFocalReducerApiService } from "@shared/services/api/classic/astrobin/combined-accessory-and-focal-reducer/combined-accessory-and-focal-reducer-api.service";
 
 @Component({
   selector: "astrobin-migration-tool",
@@ -59,9 +67,12 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
     similarItems: []
   };
 
-  // TODO: other types
   nonMigratedCamerasCount$: Observable<number>;
   nonMigratedTelescopesCount$: Observable<number>;
+  nonMigratedMountsCount$: Observable<number>;
+  nonMigratedFiltersCount$: Observable<number>;
+  nonMigratedAccessoriesCount$: Observable<number>;
+  nonMigratedSoftwareCount$: Observable<number>;
 
   constructor(
     public readonly store$: Store<State>,
@@ -72,14 +83,24 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
     public readonly legacyGearApi: GearApiService,
     public readonly legacyCameraApi: CameraApiService,
     public readonly legacyTelescopeApi: TelescopeApiService,
+    public readonly legacyMountApi: MountApiService,
+    public readonly legacyFilterApi: FilterApiService,
+    public readonly legacyAccessoryApi: AccessoryApiService,
+    public readonly legacyCombinedAccessoryAndFocalReducerApi: CombinedAccessoryAndFocalReducerApiService,
+    public readonly legacySoftwareApi: SoftwareApiService,
     public readonly titleService: TitleService,
     public readonly popNotificationsService: PopNotificationsService,
     public readonly translateService: TranslateService,
     public readonly windowRefService: WindowRefService,
     public readonly equipmentItemService: EquipmentItemService,
+    public readonly equipmentApiService: EquipmentApiService,
     public readonly gearService: GearService
   ) {
     super(store$);
+  }
+
+  get isEquipmentModerator(): Observable<boolean> {
+    return this.currentUser$.pipe(isGroupMember("equipment_moderators"));
   }
 
   ngOnInit(): void {
@@ -115,7 +136,6 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
   getRandomNonMigrated$(): Observable<any[]> {
     let api;
 
-    // TODO: complete
     switch (this.getActiveType()) {
       case EquipmentItemType.CAMERA:
         api = this.legacyCameraApi;
@@ -123,15 +143,29 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
       case EquipmentItemType.TELESCOPE:
         api = this.legacyTelescopeApi;
         break;
+      case EquipmentItemType.MOUNT:
+        api = this.legacyMountApi;
+        break;
+      case EquipmentItemType.FILTER:
+        api = this.legacyFilterApi;
+        break;
+      case EquipmentItemType.ACCESSORY:
+        api = this.legacyCombinedAccessoryAndFocalReducerApi;
+        break;
+      case EquipmentItemType.SOFTWARE:
+        api = this.legacySoftwareApi;
+        break;
       default:
         this.popNotificationsService.error("Wrong item type requested.");
     }
 
     if (api) {
       return new Observable<any[]>(observer => {
-        api
-          .getRandomNonMigrated()
+        this.currentUser$
           .pipe(
+            take(1),
+            isGroupMember("equipment_moderators"),
+            switchMap(isEquipmentModerator => api.getRandomNonMigrated(isEquipmentModerator)),
             tap(() => this.loadingService.setLoading(true)),
             switchMap((items: any[]) => {
               if (items && items.length === 1) {
@@ -221,7 +255,6 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
   beginMigrationConfirmation(object) {
     let api;
 
-    // TODO: complete
     switch (this.getActiveType()) {
       case EquipmentItemType.CAMERA:
         api = this.legacyCameraApi;
@@ -229,16 +262,30 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
       case EquipmentItemType.TELESCOPE:
         api = this.legacyTelescopeApi;
         break;
+      case EquipmentItemType.MOUNT:
+        api = this.legacyMountApi;
+        break;
+      case EquipmentItemType.FILTER:
+        api = this.legacyFilterApi;
+        break;
+      case EquipmentItemType.ACCESSORY:
+        api = this.legacyCombinedAccessoryAndFocalReducerApi;
+        break;
+      case EquipmentItemType.SOFTWARE:
+        api = this.legacySoftwareApi;
+        break;
       default:
         this.popNotificationsService.error("Wrong item type requested.");
     }
 
     if (api) {
       this.loadingService.setLoading(true);
-      api
-        .getSimilarNonMigrated(object.pk)
+
+      this.currentUser$
         .pipe(
           take(1),
+          isGroupMember("equipment_moderators"),
+          switchMap(isEquipmentModerator => api.getSimilarNonMigrated(object.pk, isEquipmentModerator)),
           switchMap((legacyItems: any[]) => {
             this.migrationConfirmation.similarItems = legacyItems;
 
@@ -311,9 +358,59 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
     this.migrationMode = false;
   }
 
+  onItemSelected(item: EquipmentItemBaseInterface) {
+    this.migrationTarget = item;
+
+    const type = this.equipmentItemService.getType(item);
+    if (type === EquipmentItemType.CAMERA) {
+      const camera = item as CameraInterface;
+      if (!camera.modified) {
+        this.equipmentApiService
+          .getByProperties(type, { brand: item.brand, name: item.name, modified: true })
+          .pipe(
+            take(1),
+            filter(modifiedCameraVariant => !!modifiedCameraVariant),
+            switchMap(modifiedCameraVariant =>
+              this.store$.select(selectBrand, modifiedCameraVariant.brand).pipe(
+                map(brand => ({ brand, modifiedCameraVariant })),
+                // tslint:disable-next-line:no-shadowed-variable
+                filter(({ brand, modifiedCameraVariant }) => !!brand),
+                take(1)
+              )
+            )
+          )
+          .subscribe(({ brand, modifiedCameraVariant }) => {
+            this.migrationTarget = null;
+            this.equipmentItemBrowser.reset();
+            this.popNotificationsService.info(
+              this.translateService.instant(
+                "Since a regular and a modified variant of {{0}} were created, we didn't prefill the item " +
+                  "selection dropdown, to allow you to select the correct variant for this migration.",
+                {
+                  0: `<strong>${brand.name} ${modifiedCameraVariant.name}</strong>`
+                }
+              ),
+              null,
+              {
+                enableHtml: true
+              }
+            );
+          });
+      }
+    }
+  }
+
   _updateCounts() {
-    this.nonMigratedCamerasCount$ = this.legacyCameraApi.getNonMigratedCount();
-    this.nonMigratedTelescopesCount$ = this.legacyTelescopeApi.getNonMigratedCount();
+    this.currentUser$.pipe(take(1), isGroupMember("equipment_moderators")).subscribe(isEquipmentModerator => {
+      this.nonMigratedCamerasCount$ = this.legacyCameraApi.getNonMigratedCount(isEquipmentModerator);
+      this.nonMigratedTelescopesCount$ = this.legacyTelescopeApi.getNonMigratedCount(isEquipmentModerator);
+      this.nonMigratedMountsCount$ = this.legacyMountApi.getNonMigratedCount(isEquipmentModerator);
+      this.nonMigratedFiltersCount$ = this.legacyFilterApi.getNonMigratedCount(isEquipmentModerator);
+      this.nonMigratedAccessoriesCount$ = this.legacyCombinedAccessoryAndFocalReducerApi.getNonMigratedCount(
+        isEquipmentModerator
+      );
+      this.nonMigratedSoftwareCount$ = this.legacySoftwareApi.getNonMigratedCount(isEquipmentModerator);
+    });
   }
 
   _applyMigration(object: any, setMigrateArgs: any[], markedAs: string) {

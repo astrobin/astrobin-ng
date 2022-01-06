@@ -4,7 +4,6 @@ import { State } from "@app/store/state";
 import { BasePromotionQueueComponent } from "@features/iotd/components/base-promotion-queue/base-promotion-queue.component";
 import { VoteInterface } from "@features/iotd/services/iotd-api.service";
 import { LoadReviewQueue, LoadVotes } from "@features/iotd/store/iotd.actions";
-import { ReviewImageInterface } from "@features/iotd/store/iotd.reducer";
 import { selectReviewQueue, selectReviews } from "@features/iotd/store/iotd.selectors";
 import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
@@ -15,6 +14,10 @@ import { TitleService } from "@shared/services/title/title.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { Observable } from "rxjs";
 import { ActivatedRoute, Router } from "@angular/router";
+import { CookieService } from "ngx-cookie-service";
+import { ReviewImageInterface } from "@features/iotd/types/review-image.interface";
+import { Actions } from "@ngrx/effects";
+import { takeUntil } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-review-queue",
@@ -22,19 +25,32 @@ import { ActivatedRoute, Router } from "@angular/router";
   styleUrls: ["./review-queue.component.scss"]
 })
 export class ReviewQueueComponent extends BasePromotionQueueComponent implements OnInit {
-  queue$: Observable<PaginatedApiResultInterface<ReviewImageInterface>> = this.store$.select(selectReviewQueue);
-  promotions$: Observable<VoteInterface[]> = this.store$.select(selectReviews);
+  queue$: Observable<PaginatedApiResultInterface<ReviewImageInterface>> = this.store$
+    .select(selectReviewQueue)
+    .pipe(takeUntil(this.destroyed$));
+  promotions$: Observable<VoteInterface[]> = this.store$.select(selectReviews).pipe(takeUntil(this.destroyed$));
 
   constructor(
     public readonly store$: Store<State>,
+    public readonly actions$: Actions,
     public readonly router: Router,
     public readonly activatedRoute: ActivatedRoute,
     public readonly translateService: TranslateService,
     public readonly popNotificationsService: PopNotificationsService,
     public readonly titleService: TitleService,
-    public readonly windowRefService: WindowRefService
+    public readonly windowRefService: WindowRefService,
+    public readonly cookieService: CookieService
   ) {
-    super(store$, router, activatedRoute, popNotificationsService, translateService, windowRefService);
+    super(
+      store$,
+      actions$,
+      router,
+      activatedRoute,
+      popNotificationsService,
+      translateService,
+      windowRefService,
+      cookieService
+    );
   }
 
   ngOnInit(): void {
@@ -49,8 +65,8 @@ export class ReviewQueueComponent extends BasePromotionQueueComponent implements
     );
   }
 
-  loadQueue(page: number): void {
-    this.store$.dispatch(new LoadReviewQueue({ page }));
+  loadQueue(page: number, sort: "newest" | "oldest" | "default" = "default"): void {
+    this.store$.dispatch(new LoadReviewQueue({ page, sort }));
   }
 
   loadPromotions(): void {

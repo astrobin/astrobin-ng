@@ -8,6 +8,11 @@
   </div>
 
   <div class="card-body">
+    <p class="alert alert-info" *ngIf="!!info">
+      <fa-icon icon="info-circle"></fa-icon>
+      <span [innerHTML]="info"></span>
+    </p>
+
     <ng-container *ngIf="showTopLevelForm" [ngTemplateOutlet]="topLevelFormTpl"></ng-container>
     <ng-container *ngIf="!showTopLevelForm" [ngTemplateOutlet]="addCommentButtonTpl"></ng-container>
     <ng-container
@@ -52,7 +57,7 @@
 </ng-template>
 
 <ng-template #commentsTpl let-comment="comment">
-  <astrobin-nested-comment [comment]="comment"></astrobin-nested-comment>
+  <astrobin-nested-comment [comment]="comment" [highlighted]="comment.id === highlightId"></astrobin-nested-comment>
 </ng-template>
 
 <ng-template #noCommentsTpl>

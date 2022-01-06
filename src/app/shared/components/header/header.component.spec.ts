@@ -4,33 +4,29 @@ import { provideMockStore } from "@ngrx/store/testing";
 import { MockBuilder, MockRender } from "ng-mocks";
 import { HeaderComponent } from "./header.component";
 import { StateGenerator } from "@app/store/generators/state.generator";
+import { of } from "rxjs";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 
 describe("HeaderComponent", () => {
+  let fixture: ComponentFixture<HeaderComponent>;
   let component: HeaderComponent;
   const initialState: State = StateGenerator.default();
 
   beforeEach(() => MockBuilder(HeaderComponent, AppModule).provide(provideMockStore({ initialState })));
 
   beforeEach(() => {
-    component = MockRender(HeaderComponent).point.componentInstance;
+    fixture = TestBed.createComponent(HeaderComponent);
+    component = fixture.componentInstance;
+
+    jest.spyOn(component.authService, "isAuthenticated$").mockReturnValue(of(false));
+    jest.spyOn(component.windowRefService, "getCurrentUrl").mockReturnValue(new URL("https://www.astrobin.com/"));
     component.translateService.currentLang = "en";
+
+    fixture.detectChanges();
   });
 
   it("should create", () => {
     expect(component).toBeTruthy();
-  });
-
-  describe("openLoginModal", () => {
-    it("should defer to modalService", () => {
-      const mockEvent = {
-        preventDefault: jest.fn()
-      };
-
-      component.openLoginModal(mockEvent);
-
-      expect(mockEvent.preventDefault).toHaveBeenCalled();
-      expect(component.modalService.open).toHaveBeenCalled();
-    });
   });
 
   describe("logout", () => {

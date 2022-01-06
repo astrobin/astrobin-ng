@@ -23,6 +23,11 @@
   }
 
   h1 {
+    text-shadow: 1px 1px 0 var(--black);
+    border-bottom: 1px solid var(--lightGrey);
+    padding-bottom: .5rem;
+    margin-bottom: 3rem;
+
     .beta {
       opacity: .2;
       font-size: 2rem;
@@ -30,28 +35,9 @@
       vertical-align: super;
     }
 
-    text-shadow: 1px 1px 0 var(--black);
-    border-bottom: 1px solid var(--lightGrey);
-    padding-bottom: .5rem;
-    margin-bottom: 3rem;
-
-    + small {
-      display: block;
-      margin-bottom: 3rem;
-      font-size: 1.5rem;
-      color: var(--lightestGrey);
-
-      strong {
-        color: var(--white);
-      }
-
-      + small {
-        display: block;
-        font-size: 1rem;
-        color: var(--lighterGrey);
-        margin-top: -3rem;
-        margin-bottom: 3rem;
-      }
+    .return-to-classic {
+      margin-top: .5rem;
+      font-style: italic;
     }
   }
 

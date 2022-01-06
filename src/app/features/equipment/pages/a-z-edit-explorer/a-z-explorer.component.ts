@@ -7,13 +7,15 @@ import { TitleService } from "@shared/services/title/title.service";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Actions } from "@ngrx/effects";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
-import { filter, map, take, tap } from "rxjs/operators";
+import { filter, map, switchMap, take, tap } from "rxjs/operators";
 import { LoadBrand } from "@features/equipment/store/equipment.actions";
 import { BrandInterface } from "@features/equipment/types/brand.interface";
 import { PendingExplorerBaseComponent } from "@features/equipment/pages/explorer-base/pending-explorer-base.component";
 import { EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
-import { Observable } from "rxjs";
+import { Observable, of } from "rxjs";
 import { selectBrand } from "@features/equipment/store/equipment.selectors";
+import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
+import { WindowRefService } from "@shared/services/window-ref.service";
 
 @Component({
   selector: "astrobin-a-z-explorer",
@@ -21,18 +23,20 @@ import { selectBrand } from "@features/equipment/store/equipment.selectors";
   styleUrls: ["./a-z-explorer.component.scss"]
 })
 export class AZExplorerComponent extends PendingExplorerBaseComponent implements OnInit {
-  title = this.translateService.instant("Equipment pending edit");
+  title = this.translateService.instant("A-Z explorer");
 
   constructor(
     public readonly store$: Store<State>,
     public readonly actions$: Actions,
+    public readonly activatedRoute: ActivatedRoute,
+    public readonly router: Router,
     public readonly translateService: TranslateService,
     public readonly titleService: TitleService,
-    public readonly activatedRoute: ActivatedRoute,
     public readonly equipmentApiService: EquipmentApiService,
-    public readonly router: Router
+    public readonly equipmentItemService: EquipmentItemService,
+    public readonly windowRefService: WindowRefService
   ) {
-    super(store$, actions$, activatedRoute, router);
+    super(store$, actions$, activatedRoute, router, windowRefService);
   }
 
   ngOnInit() {
@@ -52,33 +56,30 @@ export class AZExplorerComponent extends PendingExplorerBaseComponent implements
         ]
       })
     );
-
-    this._getItems();
   }
 
-  pageChange(page: number): void {
-    this.page = page;
-    this._getItems(page);
-  }
-
-  getItemName$(item: EquipmentItemBaseInterface): Observable<string> {
-    return this.store$.select(selectBrand, item.brand).pipe(
-      filter(brand => !!brand),
-      map(brand => `${brand.name} ${item.name}`)
-    );
-  }
-
-  _getItems(page = 1) {
-    this.items$ = this.equipmentApiService.getAllEquipmentItems(this._activeType, page, "az").pipe(
+  getItems() {
+    this.items$ = this.equipmentApiService.getAllEquipmentItems(this._activeType, this.page, "az").pipe(
       tap(response => {
         const uniqueBrands: BrandInterface["id"][] = [];
         for (const item of response.results) {
-          if (uniqueBrands.indexOf(item.brand) === -1) {
+          if (!!item.brand && uniqueBrands.indexOf(item.brand) === -1) {
             uniqueBrands.push(item.brand);
           }
         }
         uniqueBrands.forEach(id => this.store$.dispatch(new LoadBrand({ id })));
       })
     );
+  }
+
+  getItemName$(item: EquipmentItemBaseInterface): Observable<string> {
+    if (!!item.brand) {
+      return this.store$.select(selectBrand, item.brand).pipe(
+        filter(brand => !!brand),
+        switchMap(brand => this.equipmentItemService.getName$(item).pipe(map(name => `${brand.name} ${name}`)))
+      );
+    } else {
+      return of(`${this.translateService.instant("(DIY)")} ${item.name}`);
+    }
   }
 }

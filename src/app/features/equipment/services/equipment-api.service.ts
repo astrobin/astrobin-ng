@@ -3,7 +3,7 @@ import { BaseClassicApiService } from "@shared/services/api/classic/base-classic
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { EMPTY, Observable, of } from "rxjs";
+import { EMPTY, forkJoin, Observable, of } from "rxjs";
 import {
   EquipmentItemBaseInterface,
   EquipmentItemReviewerRejectionReason,
@@ -19,9 +19,13 @@ import { SensorInterface } from "@features/equipment/types/sensor.interface";
 import { TelescopeInterface } from "@features/equipment/types/telescope.interface";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { TranslateService } from "@ngx-translate/core";
-import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 import { EditProposalInterface } from "@features/equipment/types/edit-proposal.interface";
 import { UtilsService } from "@shared/services/utils/utils.service";
+import { MountInterface } from "@features/equipment/types/mount.interface";
+import { FilterInterface } from "@features/equipment/types/filter.interface";
+import { AccessoryInterface } from "@features/equipment/types/accessory.interface";
+import { SoftwareInterface } from "@features/equipment/types/software.interface";
+import { getEquipmentItemType } from "@features/equipment/store/equipment.selectors";
 
 @Injectable({
   providedIn: "root"
@@ -34,8 +38,7 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     public readonly http: HttpClient,
     public readonly commonApiService: CommonApiService,
     public readonly popNotificationService: PopNotificationsService,
-    public readonly translateService: TranslateService,
-    public readonly equipmentItemService: EquipmentItemService
+    public readonly translateService: TranslateService
   ) {
     super(loadingService);
   }
@@ -152,7 +155,6 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
   ): Observable<EquipmentItemBaseInterface> {
     return this.commonApiService.getContentTypeById(contentTypeId).pipe(
       switchMap(contentType => {
-        // TODO: complete
         switch (contentType.model) {
           case "camera":
             return this.getCamera(objectId);
@@ -160,23 +162,40 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
             return this.getSensor(objectId);
           case "telescope":
             return this.getTelescope(objectId);
+          case "mount":
+            return this.getMount(objectId);
+          case "filter":
+            return this.getFilter(objectId);
+          case "accessory":
+            return this.getAccessory(objectId);
+          case "software":
+            return this.getSoftware(objectId);
         }
       })
     );
   }
 
-  getByNameAndType(
-    name: EquipmentItemBaseInterface["name"],
-    type: EquipmentItemType
-  ): Observable<EquipmentItemBaseInterface | null> {
+  getByProperties(
+    type: EquipmentItemType,
+    properties: { [key: string]: any }
+  ): Observable<EquipmentItemBaseInterface> | null {
     const path = EquipmentItemType[type].toLowerCase();
+    const queryString = new URLSearchParams(properties);
     return this.http
-      .get<PaginatedApiResultInterface<EquipmentItemBaseInterface>>(`${this.configUrl}/${path}/?name=${name}`)
+      .get<PaginatedApiResultInterface<EquipmentItemBaseInterface>>(`${this.configUrl}/${path}/?${queryString}`)
       .pipe(map(response => (response.count > 0 ? this._parseItem(response.results[0]) : null)));
   }
 
+  getByBrandAndName(
+    type: EquipmentItemType,
+    brand: EquipmentItemBaseInterface["brand"],
+    name: EquipmentItemBaseInterface["name"]
+  ): Observable<EquipmentItemBaseInterface | null> {
+    return this.getByProperties(type, { brand, name });
+  }
+
   approveEquipmentItem(item: EquipmentItemBaseInterface, comment: string): Observable<EquipmentItemBaseInterface> {
-    const type = this.equipmentItemService.getType(item);
+    const type = getEquipmentItemType(item);
     const path = EquipmentItemType[type].toLowerCase();
 
     return this.http
@@ -189,7 +208,7 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     reason: EquipmentItemReviewerRejectionReason,
     comment: string
   ): Observable<EquipmentItemBaseInterface> {
-    const type = this.equipmentItemService.getType(item);
+    const type = getEquipmentItemType(item);
     const path = EquipmentItemType[type].toLowerCase();
 
     return this.http
@@ -203,7 +222,7 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
   getEditProposals(
     item: EquipmentItemBaseInterface
   ): Observable<PaginatedApiResultInterface<EditProposalInterface<EquipmentItemBaseInterface>>> {
-    const type = this.equipmentItemService.getType(item);
+    const type = getEquipmentItemType(item);
     const path = EquipmentItemType[type].toLowerCase();
 
     return this.http
@@ -224,7 +243,7 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     editProposal: EditProposalInterface<EquipmentItemBaseInterface>,
     comment: string
   ): Observable<EditProposalInterface<EquipmentItemBaseInterface>> {
-    const type = this.equipmentItemService.getType(editProposal);
+    const type = getEquipmentItemType(editProposal);
     const path = EquipmentItemType[type].toLowerCase();
 
     return this.http.post<EditProposalInterface<EquipmentItemBaseInterface>>(
@@ -237,7 +256,7 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     editProposal: EditProposalInterface<EquipmentItemBaseInterface>,
     comment: string
   ): Observable<EditProposalInterface<EquipmentItemBaseInterface>> {
-    const type = this.equipmentItemService.getType(editProposal);
+    const type = getEquipmentItemType(editProposal);
     const path = EquipmentItemType[type].toLowerCase();
 
     return this.http.post<EditProposalInterface<EquipmentItemBaseInterface>>(
@@ -356,7 +375,14 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
   // CAMERA API
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  createCamera(camera: Omit<CameraInterface, "id">): Observable<CameraInterface> {
+  createCamera(camera: Omit<CameraInterface, "id">, createModifiedVariant: boolean): Observable<CameraInterface> {
+    if (createModifiedVariant) {
+      return forkJoin([
+        this._createItem<CameraInterface>({ ...camera, ...{ modified: false } }, "camera"),
+        this._createItem<CameraInterface>({ ...camera, ...{ modified: true } }, "camera")
+      ]).pipe(map(results => results[0]));
+    }
+
     return this._createItem<CameraInterface>(camera, "camera");
   }
 
@@ -393,6 +419,84 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
   }
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // MOUNT API
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  createMount(mount: Omit<MountInterface, "id">): Observable<MountInterface> {
+    return this._createItem<MountInterface>(mount, "mount");
+  }
+
+  createMountEditProposal(
+    editProposal: Omit<EditProposalInterface<MountInterface>, "id">
+  ): Observable<EditProposalInterface<MountInterface>> {
+    return this._createItemEditProposal<MountInterface>(editProposal, "mount");
+  }
+
+  getMount(id: MountInterface["id"]): Observable<MountInterface> {
+    return this.http.get<MountInterface>(`${this.configUrl}/mount/${id}/`).pipe(map(mount => this._parseMount(mount)));
+  }
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // FILTER API
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  createFilter(filter: Omit<FilterInterface, "id">): Observable<FilterInterface> {
+    return this._createItem<FilterInterface>(filter, "filter");
+  }
+
+  createFilterEditProposal(
+    editProposal: Omit<EditProposalInterface<FilterInterface>, "id">
+  ): Observable<EditProposalInterface<FilterInterface>> {
+    return this._createItemEditProposal<FilterInterface>(editProposal, "filter");
+  }
+
+  getFilter(id: FilterInterface["id"]): Observable<FilterInterface> {
+    return this.http
+      .get<FilterInterface>(`${this.configUrl}/filter/${id}/`)
+      .pipe(map(filter => this._parseFilter(filter)));
+  }
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // ACCESSORY API
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  createAccessory(accessory: Omit<AccessoryInterface, "id">): Observable<AccessoryInterface> {
+    return this._createItem<AccessoryInterface>(accessory, "accessory");
+  }
+
+  createAccessoryEditProposal(
+    editProposal: Omit<EditProposalInterface<AccessoryInterface>, "id">
+  ): Observable<EditProposalInterface<AccessoryInterface>> {
+    return this._createItemEditProposal<AccessoryInterface>(editProposal, "accessory");
+  }
+
+  getAccessory(id: AccessoryInterface["id"]): Observable<AccessoryInterface> {
+    return this.http
+      .get<AccessoryInterface>(`${this.configUrl}/accessory/${id}/`)
+      .pipe(map(accessory => this._parseAccessory(accessory)));
+  }
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // SOFTWARE API
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  createSoftware(software: Omit<SoftwareInterface, "id">): Observable<SoftwareInterface> {
+    return this._createItem<SoftwareInterface>(software, "software");
+  }
+
+  createSoftwareEditProposal(
+    editProposal: Omit<EditProposalInterface<SoftwareInterface>, "id">
+  ): Observable<EditProposalInterface<SoftwareInterface>> {
+    return this._createItemEditProposal<SoftwareInterface>(editProposal, "software");
+  }
+
+  getSoftware(id: SoftwareInterface["id"]): Observable<SoftwareInterface> {
+    return this.http
+      .get<SoftwareInterface>(`${this.configUrl}/software/${id}/`)
+      .pipe(map(software => this._parseSoftware(software)));
+  }
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // PRIVATE
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -401,9 +505,8 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
   private _parseItem<T extends EquipmentItemBaseInterface | EditProposalInterface<EquipmentItemBaseInterface>>(
     item: T
   ): T {
-    const type = this.equipmentItemService.getType(item);
+    const type = getEquipmentItemType(item);
 
-    // TODO: complete
     switch (type) {
       case EquipmentItemType.SENSOR:
         return this._parseSensor<any>(item);
@@ -411,10 +514,18 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
         return this._parseCamera<any>(item);
       case EquipmentItemType.TELESCOPE:
         return this._parseTelescope<any>(item);
+      case EquipmentItemType.MOUNT:
+        return this._parseMount<any>(item);
+      case EquipmentItemType.FILTER:
+        return this._parseFilter<any>(item);
+      case EquipmentItemType.ACCESSORY:
+        return this._parseAccessory<any>(item);
+      case EquipmentItemType.SOFTWARE:
+        return this._parseSoftware<any>(item);
     }
   }
 
-  // TODO: complete
+  // The following _parse methods are here because django-rest-framework returns floats as strings (e.g. "1.23")
 
   private _parseSensor<T extends SensorInterface | EditProposalInterface<SensorInterface>>(item: T): T {
     return {
@@ -448,12 +559,45 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     };
   }
 
+  private _parseMount<T extends MountInterface | EditProposalInterface<MountInterface>>(item: T): T {
+    return {
+      ...item,
+      ...{
+        aperture: item.slewSpeed !== null ? parseFloat((item.slewSpeed as unknown) as string) : null
+      }
+    };
+  }
+
+  private _parseFilter<T extends FilterInterface | EditProposalInterface<FilterInterface>>(item: T): T {
+    return {
+      ...item,
+      ...{
+        size: item.size !== null ? parseFloat((item.size as unknown) as string) : null
+      }
+    };
+  }
+
+  private _parseAccessory<T extends AccessoryInterface | EditProposalInterface<AccessoryInterface>>(item: T): T {
+    // Accessories have no float properties, so we don't need to do anything here.
+    return item;
+  }
+
+  private _parseSoftware<T extends SoftwareInterface | EditProposalInterface<SoftwareInterface>>(item: T): T {
+    // Software items have no float properties, so we don't need to do anything here.
+    return item;
+  }
+
   private _createItem<T extends EquipmentItemBaseInterface>(item: Omit<T, "id">, path: string): Observable<T> {
     const { image, ...itemWithoutImage } = item;
 
     return new Observable<T>(observer => {
       this.http
-        .post<T>(`${this.configUrl}/${path}/`, itemWithoutImage)
+        .post<T>(`${this.configUrl}/${path}/`, {
+          ...{
+            ...itemWithoutImage,
+            website: UtilsService.ensureUrlProtocol(itemWithoutImage.website)
+          }
+        })
         .pipe(take(1))
         .subscribe(createdItem => {
           if (item.image && item.image.length > 0) {
@@ -515,7 +659,12 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
 
     return new Observable<EditProposalInterface<T>>(observer => {
       this.http
-        .post<EditProposalInterface<T>>(`${this.configUrl}/${path}-edit-proposal/`, itemWithoutImage)
+        .post<EditProposalInterface<T>>(`${this.configUrl}/${path}-edit-proposal/`, {
+          ...{
+            ...itemWithoutImage,
+            website: UtilsService.ensureUrlProtocol(itemWithoutImage.website)
+          }
+        })
         .pipe(
           take(1),
           catchError(error => {

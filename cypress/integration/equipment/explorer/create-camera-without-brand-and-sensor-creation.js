@@ -24,6 +24,22 @@ context("Equipment", () => {
         cy.get("#equipment-item-field-name").should("have.value", "Test");
       });
 
+      it("should display error if name contains prohibited word", () => {
+        cy.get("#equipment-item-field-name")
+          .clear()
+          .type("Test modded");
+        cy.get("#equipment-item-field-name")
+          .should("have.class", "is-invalid")
+          .closest(".form-group")
+          .should("have.class", "has-error")
+          .find(".invalid-feedback")
+          .should("be.visible");
+        cy.get("#equipment-item-field-name")
+          .clear()
+          .type("Test");
+        cy.get("#equipment-item-field-name").should("not.have.class", "is-invalid");
+      });
+
       it("should fill the type", () => {
         cy.ngSelectOpen("#camera-field-type");
         cy.ngSelectOptionClick("#camera-field-type", 1);

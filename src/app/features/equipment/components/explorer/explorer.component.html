@@ -56,7 +56,13 @@
           {{ "Migrate into" | translate }}&hellip;
         </button>
 
-        <ng-container *ngIf="selectedItem.reviewerDecision === null && selectedItem.createdBy !== currentUser.id">
+        <ng-container
+          *ngIf="
+            (currentUser | isEquipmentModerator) &&
+            selectedItem.reviewerDecision === null &&
+            selectedItem.createdBy !== currentUser.id
+          "
+        >
           <button
             class="btn btn-danger"
             data-test="reject"
@@ -121,8 +127,6 @@
     </div>
 
     <div class="card-body">
-      <!-- TODO: complete -->
-
       <astrobin-camera-editor
         *ngIf="activeType === EquipmentItemType.CAMERA"
         [form]="editForm"
@@ -143,6 +147,34 @@
         [model]="editModel"
         [editorMode]="EquipmentItemEditorMode.EDIT_PROPOSAL"
       ></astrobin-telescope-editor>
+
+      <astrobin-mount-editor
+        *ngIf="activeType === EquipmentItemType.MOUNT"
+        [form]="editForm"
+        [model]="editModel"
+        [editorMode]="EquipmentItemEditorMode.EDIT_PROPOSAL"
+      ></astrobin-mount-editor>
+
+      <astrobin-filter-editor
+        *ngIf="activeType === EquipmentItemType.FILTER"
+        [form]="editForm"
+        [model]="editModel"
+        [editorMode]="EquipmentItemEditorMode.EDIT_PROPOSAL"
+      ></astrobin-filter-editor>
+
+      <astrobin-accessory-editor
+        *ngIf="activeType === EquipmentItemType.ACCESSORY"
+        [form]="editForm"
+        [model]="editModel"
+        [editorMode]="EquipmentItemEditorMode.EDIT_PROPOSAL"
+      ></astrobin-accessory-editor>
+
+      <astrobin-software-editor
+        *ngIf="activeType === EquipmentItemType.SOFTWARE"
+        [form]="editForm"
+        [model]="editModel"
+        [editorMode]="EquipmentItemEditorMode.EDIT_PROPOSAL"
+      ></astrobin-software-editor>
     </div>
 
     <div class="card-footer">

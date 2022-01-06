@@ -1,3 +1,7 @@
+import { ImageThumbnailInterface } from "@shared/interfaces/image-thumbnail.interface";
+import { TelescopeInterface } from "@shared/interfaces/telescope.interface";
+import { CameraInterface } from "@shared/interfaces/camera.interface";
+
 export enum AcquisitionType {
   REGULAR = "REGULAR",
   EAA = "EAA",
@@ -12,6 +16,7 @@ export enum SubjectType {
   WIDE_FIELD = "WIDE_FIELD",
   STAR_TRAILS = "STAR_TRAILS",
   NORTHERN_LIGHTS = "NORTHERN_LIGHTS",
+  NOCTILUCENT_CLOUDS = "NOCTILUCENT_CLOUDS",
   GEAR = "GEAR",
   OTHER = "OTHER"
 }
@@ -35,6 +40,7 @@ export enum SolarSystemSubjectType {
   PARTIAL_SOLAR_ECLIPSE = "PARTIAL_SOLAR_ECLIPSE",
   ANULAR_SOLAR_ECLIPSE = "ANULAR_SOLAR_ECLIPSE",
   TOTAL_SOLAR_ECLIPSE = "TOTAL_SOLAR_ECLIPSE",
+  METEOR_SHOWER = "METEOR_SHOWER",
   OTHER = "OTHER"
 }
 
@@ -57,6 +63,7 @@ export enum RemoteSource {
   CS = "ChileScope",
   DSNM = "Dark Sky New Mexico",
   DSP = "Dark Sky Portal",
+  DSV = "Deepsky Villa",
   DSC = "DeepSkyChile",
   DSW = "DeepSkyWest",
   eEyE = "e-EyE Extremadura",
@@ -67,7 +74,7 @@ export enum RemoteSource {
   IC = "IC Astronomy Observatories",
   ITU = "Image The Universe",
   INS = "Insight Observatory",
-  iT = "iTelescope",
+  ITELESCO = "iTelescope",
   LGO = "Lijiang Gemini Observatory",
   MARIO = "Marathon Remote Imaging Observatory (MaRIO)",
   NMS = "New Mexico Skies",
@@ -142,8 +149,8 @@ export interface ImageInterface {
   skipNotifications: boolean;
   w: number;
   h: number;
-  imagingTelescopes: number[];
-  imagingCameras: number[];
+  imagingTelescopes: TelescopeInterface[];
+  imagingCameras: CameraInterface[];
   published: string;
   license: string;
   description?: string;
@@ -169,6 +176,7 @@ export interface ImageInterface {
   locations: number[];
   fullSizeDisplayLimitation: FullSizeLimitationDisplayOptions;
   downloadLimitation: DownloadLimitationOptions;
+  thumbnails: ImageThumbnailInterface[];
 }
 
 export interface ImageRevisionInterface {
@@ -176,6 +184,7 @@ export interface ImageRevisionInterface {
   uploaded: string;
   image: ImageInterface["pk"];
   imageFile: string;
+  title: string;
   description: string;
   skipNotifications: boolean;
   label: string;

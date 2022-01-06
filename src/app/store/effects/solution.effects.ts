@@ -7,7 +7,7 @@ import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
 import { SolutionApiService } from "@shared/services/api/classic/platesolving/solution/solution-api.service";
 import { EMPTY, Observable, of } from "rxjs";
-import { catchError, map, mergeMap } from "rxjs/operators";
+import { catchError, map, mergeMap, take } from "rxjs/operators";
 
 @Injectable()
 export class SolutionEffects {
@@ -18,7 +18,10 @@ export class SolutionEffects {
         this.store$.select(selectSolution, action.payload).pipe(
           mergeMap(solutionFromStore =>
             solutionFromStore !== null
-              ? of(solutionFromStore).pipe(map(solution => new LoadSolutionSuccess(solution)))
+              ? of(solutionFromStore).pipe(
+                  take(1),
+                  map(solution => new LoadSolutionSuccess(solution))
+                )
               : this.solutionApiService.getSolution(action.payload.contentType, action.payload.objectId).pipe(
                   map(solution => (!!solution ? new LoadSolutionSuccess(solution) : new LoadSolutionFailure())),
                   catchError(error => EMPTY)

@@ -6,6 +6,7 @@ import { UtilsService } from "@shared/services/utils/utils.service";
 
 export interface AuthState {
   initialized: boolean;
+  loggingOutViaBackend: boolean;
 
   // Current user
   user: UserInterface | null;
@@ -19,6 +20,7 @@ export interface AuthState {
 
 export const initialAuthState: AuthState = {
   initialized: false,
+  loggingOutViaBackend: false,
   user: null,
   userProfile: null,
   userSubscriptions: [],
@@ -42,6 +44,14 @@ export function reducer(state = initialAuthState, action: All): AuthState {
         userProfiles: action.payload.userProfile
           ? UtilsService.arrayUniqueObjects([...state.userProfiles, ...[action.payload.userProfile]], "id")
           : state.userProfiles
+      };
+    case AuthActionTypes.LOGOUT_SUCCESS:
+      return {
+        ...state,
+        loggingOutViaBackend: true,
+        user: null,
+        userProfile: null,
+        userSubscriptions: []
       };
     case AuthActionTypes.UPDATE_CURRENT_USER_PROFILE_SUCCESS:
       return {

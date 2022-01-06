@@ -1,5 +1,8 @@
 <div class="modal-header">
-  <h4 class="modal-title" id="modal-title">{{ "Approve" | translate }}</h4>
+  <h4 class="modal-title" id="modal-title">
+    {{ "Approve" | translate }}: {{ equipmentItemService.getName$(equipmentItem) | async }}
+  </h4>
+
   <button (click)="modal.dismiss()" aria-describedby="modal-title" class="close" type="button">
     <span aria-hidden="true">&times;</span>
   </button>
@@ -30,7 +33,7 @@
 
   <button
     (click)="approve()"
-    class="btn btn-danger"
+    class="btn btn-success"
     type="button"
     [disabled]="!form.valid"
     [class.loading]="loadingService.isLoading()"

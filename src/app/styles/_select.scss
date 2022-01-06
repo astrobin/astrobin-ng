@@ -60,6 +60,12 @@
       background: var(--darkerGrey);
     }
   }
+
+  &.ng-select-striped {
+    .ng-option:nth-child(odd) {
+      background-color: var(--darkerGrey);
+    }
+  }
 }
 
 .ng-dropdown-panel {

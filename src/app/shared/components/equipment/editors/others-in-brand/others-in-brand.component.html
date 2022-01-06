@@ -1,0 +1,7 @@
+<span [innerHTML]="message"></span>
+
+<div class="items">
+  <span class="item" *ngFor="let item of items">
+    <span class="name" [innerHTML]="equipmentItemService.getName$(item) | async"></span>
+  </span>
+</div>

@@ -4,14 +4,16 @@ import { Store } from "@ngrx/store";
 import { TitleService } from "@shared/services/title/title.service";
 import { TranslateService } from "@ngx-translate/core";
 import { GearApiService } from "@shared/services/api/classic/astrobin/gear/gear-api.service";
-import { combineLatest, Observable, of } from "rxjs";
-import { map } from "rxjs/operators";
+import { combineLatest, forkJoin, Observable, of } from "rxjs";
+import { map, switchMap, tap } from "rxjs/operators";
 import { UsernameService } from "@shared/components/misc/username/username.service";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { State } from "@app/store/state";
 import { UserService } from "@shared/services/user.service";
 import { MigrationFlag } from "@shared/services/api/classic/astrobin/migratable-gear-item-api.service.interface";
 import { Router } from "@angular/router";
+import { GearMigrationStrategyApiService } from "@shared/services/api/classic/astrobin/grar-migration-strategy/gear-migration-strategy-api.service";
+import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
 
 @Component({
   selector: "astrobin-migration-review",
@@ -20,13 +22,15 @@ import { Router } from "@angular/router";
 })
 export class MigrationReviewComponent extends BaseComponentDirective implements OnInit {
   title = "Migration review";
-  pendingReview$: Observable<any[]> = this.getPendingMigrationReview$();
+  migrationStrategies: any[];
+  legacyItems = {};
 
   constructor(
     public readonly store$: Store<State>,
     public readonly titleService: TitleService,
     public readonly translateService: TranslateService,
     public readonly legacyGearApi: GearApiService,
+    public readonly gearMigrationStrategyApiService: GearMigrationStrategyApiService,
     public readonly usernameService: UsernameService,
     public readonly userService: UserService,
     public readonly router: Router
@@ -49,10 +53,33 @@ export class MigrationReviewComponent extends BaseComponentDirective implements 
         ]
       })
     );
+
+    this.getMigrationStrategies$().subscribe(response => {
+      this.migrationStrategies = response.results;
+    });
   }
 
-  getPendingMigrationReview$(): Observable<any[]> {
-    return this.legacyGearApi.getPendingMigrationReview();
+  getMigrationStrategies$(): Observable<PaginatedApiResultInterface<any>> {
+    return this.gearMigrationStrategyApiService.getPendingReview().pipe(
+      switchMap(response => {
+        if (response.count === 0) {
+          return of(response);
+        }
+
+        return forkJoin(
+          response.results.map(migrationStrategy =>
+            this.legacyGearApi.get(migrationStrategy.gear).pipe(map(item => ({ migrationStrategy, item })))
+          )
+        ).pipe(
+          tap(results => {
+            for (const result of results) {
+              this.legacyItems[result.migrationStrategy.pk] = result.item;
+            }
+          }),
+          map(() => response)
+        );
+      })
+    );
   }
 
   migrationFlagTooltip(migrationFlag: MigrationFlag): string {
@@ -76,40 +103,41 @@ export class MigrationReviewComponent extends BaseComponentDirective implements 
   }
 
   // The legacy item was moderated by the same user, so they cannot review it too.
-  isOwnItem$(legacyItem: any): Observable<boolean> {
+  isOwnItem$(migrationStrategy: any): Observable<boolean> {
     return this.currentUser$.pipe(
-      map(currentUser => !currentUser || currentUser.id === legacyItem.migrationFlagModerator)
+      map(currentUser => !currentUser || currentUser.id === migrationStrategy.migrationFlagModerator)
     );
   }
 
   // The item is locked for review by another reviewer.
-  isLocked$(legacyItem: any): Observable<boolean> {
+  isLocked$(migrationStrategy: any): Observable<boolean> {
     return this.currentUser$.pipe(
       map(
         currentUser =>
           !currentUser ||
-          (legacyItem.migrationFlagReviewerLock && legacyItem.migrationFlagReviewerLock === currentUser.id)
+          (migrationStrategy.migrationFlagReviewerLock &&
+            migrationStrategy.migrationFlagReviewerLock === currentUser.id)
       )
     );
   }
 
-  isAlreadyReviewed$(legacyItem: any): Observable<boolean> {
-    return of(legacyItem.migrationFlagReviewer);
+  isAlreadyReviewed$(migrationStrategy: any): Observable<boolean> {
+    return of(migrationStrategy.migrationFlagReviewer);
   }
 
-  reviewButtonDisabled$(legacyItem: any): Observable<boolean> {
+  reviewButtonDisabled$(migrationStrategy: any): Observable<boolean> {
     return combineLatest([
-      this.isOwnItem$(legacyItem),
-      this.isLocked$(legacyItem),
-      this.isAlreadyReviewed$(legacyItem)
+      this.isOwnItem$(migrationStrategy),
+      this.isLocked$(migrationStrategy),
+      this.isAlreadyReviewed$(migrationStrategy)
     ]).pipe(map(result => result[0] || result[1] || result[2]));
   }
 
-  reviewButtonIcon$(legacyItem: any): Observable<string> {
+  reviewButtonIcon$(migrationStrategy: any): Observable<string> {
     return combineLatest([
-      this.isOwnItem$(legacyItem),
-      this.isLocked$(legacyItem),
-      this.isAlreadyReviewed$(legacyItem)
+      this.isOwnItem$(migrationStrategy),
+      this.isLocked$(migrationStrategy),
+      this.isAlreadyReviewed$(migrationStrategy)
     ]).pipe(
       map(result => {
         const isOwnItem: boolean = result[0];

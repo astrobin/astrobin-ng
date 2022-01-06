@@ -1,3 +1,11 @@
+@import "../../../../styles/breakpoints";
+
+.nav-pills {
+  @media screen and (max-width: $md-max) {
+    margin-bottom: 3rem;
+  }
+}
+
 .nav-item {
   position: relative;
 

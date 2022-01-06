@@ -1,0 +1,124 @@
+<form [formGroup]="form">
+  <formly-form
+    [fields]="fields"
+    [form]="form"
+    [model]="model"
+  ></formly-form>
+</form>
+
+<ng-template #equipmentItemLabelTemplate let-object="item">
+  <ng-container *ngIf="!!object?.item;">
+    <ng-container *ngIf="!!object.brand; else DIY">{{ object.brand.name }}</ng-container>
+    <ng-template #DIY>{{ "(DIY)" | translate }}</ng-template>
+    {{ equipmentItemService.getName$(object.item) | async }}
+  </ng-container>
+</ng-template>
+
+<ng-template #equipmentItemOptionTemplate let-object="item">
+  <astrobin-equipment-item-summary
+    [item]="object.item"
+    [showMeta]="false"
+    [showImage]="false"
+    [showSubItem]="false"
+  ></astrobin-equipment-item-summary>
+</ng-template>
+
+<ng-container *ngIf="creationMode">
+  <div class="mt-4 mb-4 text-center">
+    <fa-icon icon="arrow-down"></fa-icon>
+  </div>
+
+  <div class="mt-4 mb-4">
+    <div class="card" [class.disabled-with-backdrop]="subCreationMode" id="create-new-item">
+      <div class="backdrop"></div>
+
+      <div class="card-header">
+        {{ "Create a new item" | translate }}
+      </div>
+
+      <div class="card-body">
+        <astrobin-camera-editor
+          *ngIf="type === EquipmentItemType.CAMERA"
+          [form]="creationForm"
+          [model]="creationModel"
+          [name]="q"
+          (subCreationInProgress)="onSubCreationInProgress($event)"
+          (suggestionSelected)="itemCreated($event)"
+        ></astrobin-camera-editor>
+
+        <astrobin-sensor-editor
+          *ngIf="type === EquipmentItemType.SENSOR"
+          [form]="creationForm"
+          [model]="creationModel"
+          [name]="q"
+          (subCreationInProgress)="onSubCreationInProgress($event)"
+          (suggestionSelected)="itemCreated($event)"
+        ></astrobin-sensor-editor>
+
+        <astrobin-telescope-editor
+          *ngIf="type === EquipmentItemType.TELESCOPE"
+          [form]="creationForm"
+          [model]="creationModel"
+          [name]="q"
+          (subCreationInProgress)="onSubCreationInProgress($event)"
+          (suggestionSelected)="itemCreated($event)"
+        ></astrobin-telescope-editor>
+
+        <astrobin-mount-editor
+          *ngIf="type === EquipmentItemType.MOUNT"
+          [form]="creationForm"
+          [model]="creationModel"
+          [name]="q"
+          (subCreationInProgress)="onSubCreationInProgress($event)"
+          (suggestionSelected)="itemCreated($event)"
+        ></astrobin-mount-editor>
+
+        <astrobin-filter-editor
+          *ngIf="type === EquipmentItemType.FILTER"
+          [form]="creationForm"
+          [model]="creationModel"
+          [name]="q"
+          (subCreationInProgress)="onSubCreationInProgress($event)"
+          (suggestionSelected)="itemCreated($event)"
+        ></astrobin-filter-editor>
+
+        <astrobin-accessory-editor
+          *ngIf="type === EquipmentItemType.ACCESSORY"
+          [form]="creationForm"
+          [model]="creationModel"
+          [name]="q"
+          (subCreationInProgress)="onSubCreationInProgress($event)"
+          (suggestionSelected)="itemCreated($event)"
+        ></astrobin-accessory-editor>
+
+        <astrobin-software-editor
+          *ngIf="type === EquipmentItemType.SOFTWARE"
+          [form]="creationForm"
+          [model]="creationModel"
+          [name]="q"
+          (subCreationInProgress)="onSubCreationInProgress($event)"
+          (suggestionSelected)="itemCreated($event)"
+        ></astrobin-software-editor>
+      </div>
+
+      <div class="card-footer">
+        <button
+          class="btn btn-sm-block btn-secondary"
+          [class.loading]="loadingService.isLoading()"
+          (click)="onCancel()"
+        >
+          Cancel
+        </button>
+
+        <button
+          class="btn btn-sm-block btn-primary"
+          [disabled]="!creationForm.valid"
+          [class.loading]="loadingService.isLoading()"
+          (click)="createItem()"
+        >
+          Create item
+        </button>
+      </div>
+    </div>
+  </div>
+</ng-container>

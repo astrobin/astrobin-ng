@@ -72,6 +72,17 @@ export class UtilsService {
     );
   }
 
+  static isNearBelowViewport(element: HTMLElement): boolean {
+    const maxDistance = 500;
+    const rect = element.getBoundingClientRect();
+    return (
+      rect.top >= 0 &&
+      rect.left >= 0 &&
+      rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) + maxDistance &&
+      rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+    );
+  }
+
   static getLinksInText(text: string): string[] {
     const regex = /href="(.*?)"/gm;
     let m;
@@ -235,6 +246,24 @@ export class UtilsService {
     }
 
     return url;
+  }
+
+  static shortenUrl(url: string) {
+    const sanitized = UtilsService.ensureUrlProtocol(url)
+      .replace("www.", "") // remove the www part
+      .replace(/\/+/g, "/") // replace consecutive slashes with a single slash
+      .replace(/\/+$/, ""); // remove trailing slashes
+
+    const urlObject = new URL(sanitized);
+    const hostname = urlObject.hostname;
+    const path = urlObject.pathname;
+    const lastElement = path.split("/").pop();
+
+    if (lastElement) {
+      return `${hostname}/.../${lastElement}`;
+    }
+
+    return hostname;
   }
 
   static slugify(s: string): string {

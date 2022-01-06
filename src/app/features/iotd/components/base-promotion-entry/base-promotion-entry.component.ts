@@ -1,117 +1,167 @@
-import { Component, ElementRef, Input, OnInit, ViewChild } from "@angular/core";
+import { Component, ElementRef, HostBinding, Input, OnInit, ViewChild } from "@angular/core";
 import { ShowFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
-import { LoadSolution } from "@app/store/actions/solution.actions";
-import { selectApp } from "@app/store/selectors/app/app.selectors";
-import { selectSolution } from "@app/store/selectors/app/solution.selectors";
 import { State } from "@app/store/state";
-import { ConfirmDismissModalComponent } from "@features/iotd/components/confirm-dismiss-modal/confirm-dismiss-modal.component";
-import { DismissConfirmationSeen, DismissImage, HideImage, ShowImage } from "@features/iotd/store/iotd.actions";
-import { PromotionImageInterface } from "@features/iotd/store/iotd.reducer";
 import {
-  selectDismissConfirmationSeen,
-  selectDismissedImageByImageId,
-  selectHiddenImageByImageId
-} from "@features/iotd/store/iotd.selectors";
+  ConfirmDismissModalComponent,
+  DISMISSAL_NOTICE_COOKIE
+} from "@features/iotd/components/confirm-dismiss-modal/confirm-dismiss-modal.component";
+import { DismissImage, HideImage, ShowImage } from "@features/iotd/store/iotd.actions";
+import { selectDismissedImageByImageId, selectHiddenImageByImageId } from "@features/iotd/store/iotd.selectors";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { ImageComponent } from "@shared/components/misc/image/image.component";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
-import { SolutionInterface } from "@shared/interfaces/solution.interface";
 import { Observable } from "rxjs";
-import { map, switchMap, take, tap } from "rxjs/operators";
+import { filter, map, take, takeUntil, tap } from "rxjs/operators";
+import { PromotionImageInterface } from "@features/iotd/types/promotion-image.interface";
+import { CookieService } from "ngx-cookie-service";
+import { selectImage } from "@app/store/selectors/app/image.selectors";
+import { WindowRefService } from "@shared/services/window-ref.service";
+import { ClassicRoutesService } from "@shared/services/classic-routes.service";
+import { TranslateService } from "@ngx-translate/core";
 
 @Component({
   selector: "astrobin-base-promotion-entry",
   template: ""
 })
 export abstract class BasePromotionEntryComponent extends BaseComponentDirective implements OnInit {
-  ImageAlias = ImageAlias;
-  solution$: Observable<SolutionInterface>;
-
   @Input()
   entry: PromotionImageInterface;
+
+  @Input()
+  showViewButton = false;
+
+  @Input()
+  promoteButtonLabel = this.translateService.instant("Promote");
+
+  @Input()
+  promoteButtonIcon = "star";
+
+  @Input()
+  retractPromotionButtonLabel = this.translateService.instant("Retract promotion");
+
+  @Input()
+  imageAlias = ImageAlias.HD_ANONYMIZED;
+
+  @Input()
+  imageAutoHeight = true;
+
+  @Input()
+  showMetadata = true;
+
+  @Input()
+  countdownUpdateRate = 1;
+
+  @Input()
+  anonymizedThumbnails = true;
 
   @ViewChild("image", { read: ImageComponent })
   image: ImageComponent;
 
+  @HostBinding("class.card") card = true;
+
+  @HostBinding("class.hidden") hidden = false;
+
+  @HostBinding("class.dismissed") dismissed = false;
+
+  expirationDate: string;
+  isPromoted: boolean;
+  mayPromote: boolean;
+
   protected constructor(
     public readonly store$: Store<State>,
     public readonly elementRef: ElementRef,
-    public readonly modalService: NgbModal
+    public readonly modalService: NgbModal,
+    public readonly cookieService: CookieService,
+    public readonly windowRefService: WindowRefService,
+    public readonly classicRoutesService: ClassicRoutesService,
+    public readonly translateService: TranslateService
   ) {
     super(store$);
   }
 
   ngOnInit() {
-    this.solution$ = this.store$.select(selectApp).pipe(
-      take(1),
-      map(state => state.backendConfig.IMAGE_CONTENT_TYPE_ID),
-      tap(contentTypeId =>
-        this.store$.dispatch(new LoadSolution({ contentType: contentTypeId, objectId: "" + this.entry.pk }))
-      ),
-      switchMap(contentTypeId =>
-        this.store$.select(selectSolution, { contentType: contentTypeId, objectId: "" + this.entry.pk })
-      )
-    );
+    this.setExpiration(this.entry.pk);
+
+    this.isHidden$(this.entry.pk)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(hidden => (this.hidden = hidden));
+
+    this.isDismissed$(this.entry.pk)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(dismissed => (this.dismissed = dismissed));
+
+    this.isPromoted$(this.entry.pk)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(isPromoted => (this.isPromoted = isPromoted));
+
+    this.mayPromote$(this.entry.pk)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(mayPromote => (this.mayPromote = mayPromote));
   }
 
-  isHidden$(imageId: number): Observable<boolean> {
-    return this.store$.select(selectHiddenImageByImageId, imageId).pipe(map(hiddenImage => !!hiddenImage));
+  isHidden$(pk: PromotionImageInterface["pk"]): Observable<boolean> {
+    return this.store$.select(selectHiddenImageByImageId, pk).pipe(map(hiddenImage => !!hiddenImage));
   }
 
-  hide(imageId: number): void {
-    this.store$.dispatch(new HideImage({ id: imageId }));
+  isDismissed$(pk: PromotionImageInterface["pk"]): Observable<boolean> {
+    return this.store$.select(selectDismissedImageByImageId, pk).pipe(map(dismissedImage => !!dismissedImage));
   }
 
-  isDismissed$(imageId: number): Observable<boolean> {
-    return this.store$.select(selectDismissedImageByImageId, imageId).pipe(map(dismissedImage => !!dismissedImage));
-  }
-
-  dismiss(imageId: number): void {
-    const _confirmDismiss = () => {
-      this.store$.dispatch(new DismissImage({ id: imageId }));
-    };
-
+  viewPage(pk: PromotionImageInterface["pk"]): void {
     this.store$
-      .select(selectDismissConfirmationSeen)
-      .pipe(take(1))
-      .subscribe(seen => {
-        if (seen) {
-          _confirmDismiss();
-        } else {
-          const modalRef = this.modalService.open(ConfirmDismissModalComponent);
-          modalRef.closed.pipe(take(1)).subscribe(() => {
-            this.store$.dispatch(new DismissConfirmationSeen());
-            _confirmDismiss();
-          });
-        }
+      .select(selectImage, pk)
+      .pipe(
+        filter(image => !!image),
+        take(1)
+      )
+      .subscribe(image => {
+        this.windowRefService.nativeWindow.open(this.classicRoutesService.IMAGE(image.hash || `${image.pk}`), "_blank");
       });
   }
 
-  show(imageId: number): void {
+  hide(pk: PromotionImageInterface["pk"]): void {
+    this.store$.dispatch(new HideImage({ id: pk }));
+  }
+
+  dismiss(pk: PromotionImageInterface["pk"]): void {
+    const _confirmDismiss = () => {
+      this.store$.dispatch(new DismissImage({ id: pk }));
+    };
+
+    const cookieValue = this.cookieService.get(DISMISSAL_NOTICE_COOKIE);
+
+    if (cookieValue !== "1") {
+      const modalRef = this.modalService.open(ConfirmDismissModalComponent);
+      modalRef.closed.pipe(take(1)).subscribe(() => {
+        _confirmDismiss();
+      });
+    } else {
+      _confirmDismiss();
+    }
+  }
+
+  show(pk: PromotionImageInterface["pk"]): void {
     this.store$
-      .select(selectHiddenImageByImageId, imageId)
+      .select(selectHiddenImageByImageId, pk)
       .pipe(take(1))
       .subscribe(hiddenImage => this.store$.dispatch(new ShowImage({ hiddenImage })));
   }
 
-  abstract isPromoted$(imageId: number): Observable<boolean>;
+  abstract isPromoted$(pk: PromotionImageInterface["pk"]): Observable<boolean>;
 
-  abstract alreadyPromoted$(imageId: number): Observable<boolean>;
+  abstract mayPromote$(pk: PromotionImageInterface["pk"]): Observable<boolean>;
 
-  abstract promote(imageId: number): void;
+  abstract promote(pk: PromotionImageInterface["pk"]): void;
 
-  abstract retractPromotion(imageId: number): void;
+  abstract retractPromotion(pk: PromotionImageInterface["pk"]): void;
 
-  viewFullscreen(imageId: number): void {
+  abstract setExpiration(pk: PromotionImageInterface["pk"]): void;
+
+  viewFullscreen(pk: PromotionImageInterface["pk"]): void {
     if (!this.image.loading) {
-      this.store$.dispatch(new ShowFullscreenImage(imageId));
+      this.store$.dispatch(new ShowFullscreenImage(pk));
     }
-  }
-
-  loadImage(): void {
-    this.image.alwaysLoad = true;
-    this.image.load();
   }
 }

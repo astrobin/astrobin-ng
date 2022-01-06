@@ -1,0 +1,32 @@
+<form [formGroup]="form" id="sensor-editor-form">
+  <formly-form [fields]="fields" [form]="form" [model]="model"></formly-form>
+</form>
+
+<ng-container *ngIf="brandCreation.inProgress">
+  <div class="mt-4 mb-4 text-center">
+    <fa-icon icon="arrow-down"></fa-icon>
+  </div>
+
+  <astrobin-brand-editor-card
+    [form]="brandCreation.form"
+    [model]="brandCreation.model"
+    [name]="brandCreation.name"
+    [disabled]="subCreation.inProgress"
+    (brand)="brandCreated($event)"
+  ></astrobin-brand-editor-card>
+</ng-container>
+
+<ng-template #brandOptionTemplate let-item="item">
+  <astrobin-brand-summary [brand]="item.brand"></astrobin-brand-summary>
+</ng-template>
+
+<ng-template #similarItemsTemplate let-items="data">
+  <astrobin-similar-items-suggestion
+    [items]="items"
+    (itemSelected)="suggestionSelected.emit($event)"
+  ></astrobin-similar-items-suggestion>
+</ng-template>
+
+<ng-template #othersInBrandTemplate let-items="data">
+  <astrobin-equipment-others-in-brand [items]="items"></astrobin-equipment-others-in-brand>
+</ng-template>

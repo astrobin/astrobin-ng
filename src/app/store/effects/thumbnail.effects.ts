@@ -9,7 +9,7 @@ import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
 import { ImageApiService } from "@shared/services/api/classic/images/image/image-api.service";
 import { EMPTY, Observable, of } from "rxjs";
-import { catchError, delay, filter, map, mergeMap, switchMap } from "rxjs/operators";
+import { catchError, delay, filter, map, mergeMap, switchMap, take } from "rxjs/operators";
 
 @Injectable()
 export class ThumbnailEffects {
@@ -17,29 +17,32 @@ export class ThumbnailEffects {
     this.actions$.pipe(
       ofType(AppActionTypes.LOAD_THUMBNAIL),
       mergeMap(action =>
-        this.store$.select(selectThumbnail, action.payload).pipe(
+        this.store$.select(selectThumbnail, action.payload.data).pipe(
           mergeMap(thumbnailFromStore =>
             thumbnailFromStore !== null
               ? of(thumbnailFromStore)
-              : this.store$.select(selectImage, action.payload.id).pipe(
+              : this.store$.select(selectImage, action.payload.data.id).pipe(
+                  take(1),
                   mergeMap(imageFromStore => {
                     if (imageFromStore !== null) {
                       return this.imageApiService.getThumbnail(
                         imageFromStore.hash || imageFromStore.pk,
-                        action.payload.revision,
-                        action.payload.alias
+                        action.payload.data.revision,
+                        action.payload.data.alias,
+                        action.payload.bustCache
                       );
                     }
 
-                    this.store$.dispatch(new LoadImage(action.payload.id));
+                    this.store$.dispatch(new LoadImage(action.payload.data.id));
 
-                    return this.store$.select(selectImage, action.payload.id).pipe(
+                    return this.store$.select(selectImage, action.payload.data.id).pipe(
                       filter(image => !!image),
                       mergeMap(image =>
                         this.imageApiService.getThumbnail(
                           image.hash || image.pk,
-                          action.payload.revision,
-                          action.payload.alias
+                          action.payload.data.revision,
+                          action.payload.data.alias,
+                          action.payload.bustCache
                         )
                       )
                     );
@@ -61,7 +64,10 @@ export class ThumbnailEffects {
             ),
             map(loadingThumbnail => {
               if (!!loadingThumbnail) {
-                return new LoadThumbnail({ id: thumbnail.id, revision: thumbnail.revision, alias: thumbnail.alias });
+                return new LoadThumbnail({
+                  data: { id: thumbnail.id, revision: thumbnail.revision, alias: thumbnail.alias },
+                  bustCache: true
+                });
               }
 
               return new LoadThumbnailCanceled({

@@ -29,6 +29,24 @@ export class SensorService extends BaseService implements EquipmentItemServiceIn
     super(loadingService);
   }
 
+  getSupportedPrintableProperties(): string[] {
+    return [
+      SensorDisplayProperty.PIXEL_SIZE,
+      SensorDisplayProperty.PIXELS,
+      SensorDisplayProperty.PIXEL_WIDTH,
+      SensorDisplayProperty.PIXEL_HEIGHT,
+      SensorDisplayProperty.SENSOR_SIZE,
+      SensorDisplayProperty.SENSOR_WIDTH,
+      SensorDisplayProperty.SENSOR_HEIGHT,
+      SensorDisplayProperty.QUANTUM_EFFICIENCY,
+      SensorDisplayProperty.FULL_WELL_CAPACITY,
+      SensorDisplayProperty.READ_NOISE,
+      SensorDisplayProperty.FRAME_RATE,
+      SensorDisplayProperty.ADC,
+      SensorDisplayProperty.COLOR_OR_MONO
+    ];
+  }
+
   getPrintableProperty$(
     item: SensorInterface,
     property: SensorDisplayProperty,
@@ -72,7 +90,7 @@ export class SensorService extends BaseService implements EquipmentItemServiceIn
         return of(propertyValue || item.quantumEfficiency ? `${propertyValue || item.quantumEfficiency}%` : "");
       case SensorDisplayProperty.FULL_WELL_CAPACITY:
         propertyValue = parseFloat(propertyValue);
-        return of(propertyValue || item.fullWellCapacity ? `${propertyValue || item.fullWellCapacity} e-` : "");
+        return of(propertyValue || item.fullWellCapacity ? `${propertyValue || item.fullWellCapacity} ke-` : "");
       case SensorDisplayProperty.READ_NOISE:
         propertyValue = parseFloat(propertyValue);
         return of(propertyValue || item.readNoise ? `${propertyValue || item.readNoise} e-` : "");
@@ -83,10 +101,10 @@ export class SensorService extends BaseService implements EquipmentItemServiceIn
         propertyValue = parseInt(propertyValue, 10);
         return of(propertyValue || item.adc ? `${propertyValue || item.adc}-bit` : "");
       case SensorDisplayProperty.COLOR_OR_MONO:
-        if (propertyValue || item.colorOrMono === ColorOrMono.C) {
-          return this.translateService.stream("Color");
-        } else if (propertyValue || item.colorOrMono === ColorOrMono.M) {
-          return this.translateService.stream("Mono");
+        if ((propertyValue || item.colorOrMono) === ColorOrMono.C) {
+          return of(this.translateService.instant("Color"));
+        } else if ((propertyValue || item.colorOrMono) === ColorOrMono.M) {
+          return of(this.translateService.instant("Mono"));
         }
         return of("");
       default:
@@ -127,7 +145,7 @@ export class SensorService extends BaseService implements EquipmentItemServiceIn
       case SensorDisplayProperty.FULL_WELL_CAPACITY:
         return shortForm
           ? this.translateService.instant("Full well capacity")
-          : this.translateService.instant("Full well capacity") + " (e-)";
+          : this.translateService.instant("Full well capacity") + " (ke-)";
       case SensorDisplayProperty.READ_NOISE:
         return shortForm
           ? this.translateService.instant("Read noise")

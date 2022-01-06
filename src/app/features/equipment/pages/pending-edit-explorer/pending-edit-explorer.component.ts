@@ -7,10 +7,11 @@ import { TitleService } from "@shared/services/title/title.service";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Actions } from "@ngrx/effects";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
-import { take, tap } from "rxjs/operators";
+import { tap } from "rxjs/operators";
 import { LoadBrand } from "@features/equipment/store/equipment.actions";
 import { BrandInterface } from "@features/equipment/types/brand.interface";
 import { PendingExplorerBaseComponent } from "@features/equipment/pages/explorer-base/pending-explorer-base.component";
+import { WindowRefService } from "@shared/services/window-ref.service";
 
 @Component({
   selector: "astrobin-equipment-pending-edit-explorer",
@@ -27,9 +28,10 @@ export class PendingEditExplorerComponent extends PendingExplorerBaseComponent i
     public readonly titleService: TitleService,
     public readonly activatedRoute: ActivatedRoute,
     public readonly equipmentApiService: EquipmentApiService,
-    public readonly router: Router
+    public readonly router: Router,
+    public readonly windowRefService: WindowRefService
   ) {
-    super(store$, actions$, activatedRoute, router);
+    super(store$, actions$, activatedRoute, router, windowRefService);
   }
 
   ngOnInit() {
@@ -49,22 +51,19 @@ export class PendingEditExplorerComponent extends PendingExplorerBaseComponent i
         ]
       })
     );
+  }
 
+  getItems() {
     this.items$ = this.equipmentApiService.getAllEquipmentItemsPendingEdit(this._activeType).pipe(
       tap(response => {
         const uniqueBrands: BrandInterface["id"][] = [];
         for (const item of response.results) {
-          if (uniqueBrands.indexOf(item.brand) === -1) {
+          if (!!item.brand && uniqueBrands.indexOf(item.brand) === -1) {
             uniqueBrands.push(item.brand);
           }
         }
         uniqueBrands.forEach(id => this.store$.dispatch(new LoadBrand({ id })));
       })
     );
-  }
-
-  pageChange(page: number): void {
-    this.page = page;
-    this.items$ = this.equipmentApiService.getAllEquipmentItemsPendingEdit(this._activeType, page);
   }
 }

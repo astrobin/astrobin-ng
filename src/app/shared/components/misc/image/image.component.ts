@@ -1,14 +1,13 @@
 import {
-  AfterViewChecked,
-  ChangeDetectorRef,
   Component,
   ElementRef,
+  EventEmitter,
   HostBinding,
   Input,
   OnChanges,
   OnInit,
-  SimpleChanges,
-  ViewChild
+  Output,
+  SimpleChanges
 } from "@angular/core";
 import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
 import { LoadImage } from "@app/store/actions/image.actions";
@@ -24,18 +23,15 @@ import { ImageApiService } from "@shared/services/api/classic/images/image/image
 import { ImageService } from "@shared/services/image/image.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
-import { BehaviorSubject, fromEvent, Observable } from "rxjs";
-import { debounceTime, distinctUntilChanged, filter, map, switchMap, take, takeUntil, tap } from "rxjs/operators";
+import { debounceTime, distinctUntilChanged, filter, map, switchMap, take, takeUntil } from "rxjs/operators";
+import { fromEvent } from "rxjs";
 
 @Component({
   selector: "astrobin-image",
   templateUrl: "./image.component.html",
   styleUrls: ["./image.component.scss"]
 })
-export class ImageComponent extends BaseComponentDirective implements OnInit, OnChanges, AfterViewChecked {
-  image$: Observable<ImageInterface>;
-  thumbnailUrl$: Observable<SafeUrl>;
-
+export class ImageComponent extends BaseComponentDirective implements OnInit, OnChanges {
   @Input()
   @HostBinding("attr.data-id")
   id: number;
@@ -47,36 +43,33 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
   alias: ImageAlias;
 
   @Input()
-  alwaysLoad = false;
+  autoHeight = true;
+
+  @Output()
+  loaded = new EventEmitter();
 
   @HostBinding("class.loading")
   loading = false;
 
-  loadingProgress$: Observable<number>;
-
-  @ViewChild("loadingIndicator", { read: ElementRef })
-  private _loadingIndicator: ElementRef;
-
-  private _loadingProgressSubject = new BehaviorSubject<number>(0);
-
-  private _loaded = false;
+  image: ImageInterface;
+  thumbnailUrl: SafeUrl;
+  width: number;
+  height: number;
+  progress = 0;
 
   constructor(
     public readonly store$: Store<State>,
     public readonly imageApiService: ImageApiService,
     public readonly imageService: ImageService,
     public readonly elementRef: ElementRef,
-    public readonly changeDetector: ChangeDetectorRef,
     public readonly utilsService: UtilsService,
     public readonly windowRefService: WindowRefService,
     public readonly domSanitizer: DomSanitizer
   ) {
     super(store$);
-
-    this.loadingProgress$ = this._loadingProgressSubject.asObservable();
   }
 
-  ngOnInit(): void {
+  ngOnInit() {
     if (this.id === null) {
       throw new Error("Attribute 'id' is required");
     }
@@ -90,51 +83,46 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
       .subscribe(() => this.load());
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    setTimeout(() => {
-      this._loaded = false;
-      this.load();
-    }, 1);
+  ngOnChanges(changes: SimpleChanges) {
+    this.load();
   }
 
-  ngAfterViewChecked() {
-    this.changeDetector.detectChanges();
-  }
-
-  public load(): void {
-    if (
-      !this.loading &&
-      !this._loaded &&
-      this._loadingIndicator &&
-      (UtilsService.isInViewport(this._loadingIndicator.nativeElement) || this.alwaysLoad)
-    ) {
-      this.loading = true;
-      this._loadImage();
+  load() {
+    if (!!this.thumbnailUrl) {
+      return;
     }
-  }
 
-  refresh(): void {
-    this._loaded = false;
+    if (this.loading) {
+      return;
+    }
+
+    if (!UtilsService.isNearBelowViewport(this.elementRef.nativeElement)) {
+      return;
+    }
+
     this.loading = true;
-    this._loadImage();
+
+    this.store$
+      .select(selectImage, this.id)
+      .pipe(
+        filter(image => !!image),
+        take(1)
+      )
+      .subscribe(image => {
+        this.image = image;
+        this._setWidthAndHeight(image.w, image.h);
+        this._loadThumbnail();
+      });
+
+    this.store$.dispatch(new LoadImage(this.id));
   }
 
-  private _loadImage() {
-    this.store$.dispatch(new LoadImage(this.id));
-
-    this.image$ = this.store$.select(selectImage, this.id).pipe(
-      filter(image => !!image),
-      take(1),
-      tap(() => {
-        this._loadThumbnail();
-      })
-    );
+  onLoad(event) {
+    this.loaded.emit();
   }
 
   private _loadThumbnail() {
-    this.store$.dispatch(new LoadThumbnail({ id: this.id, revision: this.revision, alias: this.alias }));
-
-    this.thumbnailUrl$ = this.store$
+    this.store$
       .select(selectThumbnail, {
         id: this.id,
         revision: this.revision,
@@ -142,16 +130,33 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
       })
       .pipe(
         filter(thumbnail => !!thumbnail),
+        take(1),
         switchMap(thumbnail =>
           this.imageService.loadImageFile(thumbnail.url, (progress: number) => {
-            this._loadingProgressSubject.next(progress);
+            this.progress = progress;
           })
         ),
-        map(url => this.domSanitizer.bypassSecurityTrustUrl(url)),
-        tap(() => {
-          this.loading = false;
-          this._loaded = true;
-        })
-      );
+        map(url => this.domSanitizer.bypassSecurityTrustUrl(url))
+      )
+      .subscribe(url => {
+        this.thumbnailUrl = url;
+        this.loading = false;
+      });
+
+    this.store$.dispatch(
+      new LoadThumbnail({ data: { id: this.id, revision: this.revision, alias: this.alias }, bustCache: false })
+    );
+  }
+
+  private _setWidthAndHeight(imageWidth: number, imageHeight: number) {
+    const containerWidth = this.elementRef.nativeElement.offsetWidth;
+
+    if (this.autoHeight) {
+      this.width = containerWidth;
+      this.height = (imageHeight / imageWidth) * containerWidth;
+    } else {
+      this.width = containerWidth;
+      this.height = undefined;
+    }
   }
 }

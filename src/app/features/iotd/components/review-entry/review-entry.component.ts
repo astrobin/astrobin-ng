@@ -1,13 +1,20 @@
-import { Component, ElementRef } from "@angular/core";
+import { Component, ElementRef, OnInit } from "@angular/core";
 import { State } from "@app/store/state";
 import { BasePromotionEntryComponent } from "@features/iotd/components/base-promotion-entry/base-promotion-entry.component";
 import { DeleteVote, PostVote } from "@features/iotd/store/iotd.actions";
-import { selectReviewForImage } from "@features/iotd/store/iotd.selectors";
+import { selectReviewForImage, selectReviewQueueEntry, selectReviews } from "@features/iotd/store/iotd.selectors";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Store } from "@ngrx/store";
 import { LoadingService } from "@shared/services/loading.service";
-import { Observable } from "rxjs";
-import { distinctUntilChanged, map, take, tap } from "rxjs/operators";
+import { Observable, of } from "rxjs";
+import { distinctUntilChanged, filter, map, switchMap, take, takeUntil, tap } from "rxjs/operators";
+import { ImageInterface } from "@shared/interfaces/image.interface";
+import { selectBackendConfig, selectIotdMaxSubmissionsPerDay } from "@app/store/selectors/app/app.selectors";
+import { CookieService } from "ngx-cookie-service";
+import { WindowRefService } from "@shared/services/window-ref.service";
+import { ClassicRoutesService } from "@shared/services/classic-routes.service";
+import { TranslateService } from "@ngx-translate/core";
+import { ReviewImageInterface } from "@features/iotd/types/review-image.interface";
 
 @Component({
   selector: "astrobin-review-entry",
@@ -19,27 +26,44 @@ export class ReviewEntryComponent extends BasePromotionEntryComponent {
     public readonly store$: Store<State>,
     public readonly elementRef: ElementRef,
     public readonly loadingService: LoadingService,
-    public readonly modalService: NgbModal
+    public readonly modalService: NgbModal,
+    public readonly cookieService: CookieService,
+    public readonly windowRefService: WindowRefService,
+    public readonly classicRoutesService: ClassicRoutesService,
+    public readonly translateService: TranslateService
   ) {
-    super(store$, elementRef, modalService);
+    super(store$, elementRef, modalService, cookieService, windowRefService, classicRoutesService, translateService);
   }
-
-  isPromoted$(imageId: number): Observable<boolean> {
-    return this.store$.select(selectReviewForImage, imageId).pipe(
+  isPromoted$(pk: ReviewImageInterface["pk"]): Observable<boolean> {
+    return this.store$.select(selectReviewForImage, pk).pipe(
       map(review => review !== null),
       distinctUntilChanged()
     );
   }
 
-  alreadyPromoted$(imageId: number): Observable<boolean> {
-    return this.store$.select(selectReviewForImage, imageId).pipe(map(review => !!review));
+  mayPromote$(imageId: ImageInterface["pk"]): Observable<boolean> {
+    const count$ = this.store$.select(selectReviews).pipe(map(votes => votes.length));
+    const max$ = this.store$.select(selectIotdMaxSubmissionsPerDay);
+
+    return this.isPromoted$(imageId).pipe(
+      take(1),
+      switchMap(isPromoted => {
+        return isPromoted
+          ? of(false)
+          : max$.pipe(
+              take(1),
+              switchMap(max => count$.pipe(map(count => ({ max, count })))),
+              map(({ max, count }) => count < max)
+            );
+      })
+    );
   }
 
-  promote(imageId: number): void {
+  promote(imageId: ImageInterface["pk"]): void {
     this.store$.dispatch(new PostVote({ imageId }));
   }
 
-  retractPromotion(imageId: number): void {
+  retractPromotion(imageId: ImageInterface["pk"]): void {
     this.store$
       .select(selectReviewForImage, imageId)
       .pipe(
@@ -47,5 +71,25 @@ export class ReviewEntryComponent extends BasePromotionEntryComponent {
         tap(review => this.store$.dispatch(new DeleteVote({ id: review.id })))
       )
       .subscribe();
+  }
+
+  setExpiration(pk: ReviewImageInterface["pk"]): void {
+    this.store$
+      .select(selectReviewQueueEntry, pk)
+      .pipe(
+        filter(entry => !!entry),
+        switchMap(entry =>
+          this.store$.select(selectBackendConfig).pipe(map(backendConfig => ({ entry, backendConfig })))
+        ),
+        map(({ entry, backendConfig }) => {
+          const date = new Date(entry.lastSubmissionTimestamp + "Z");
+          date.setDate(date.getDate() + backendConfig.IOTD_REVIEW_WINDOW_DAYS);
+          return date.toUTCString();
+        }),
+        take(1)
+      )
+      .subscribe(date => {
+        this.expirationDate = date;
+      });
   }
 }

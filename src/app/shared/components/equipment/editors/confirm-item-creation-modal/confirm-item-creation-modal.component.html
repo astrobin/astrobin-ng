@@ -1,0 +1,55 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-title">{{ "Confirm item creation" | translate }}</h4>
+  <button
+    (click)="modal.dismiss(ConfirmItemCreationResult.CANCEL)"
+    aria-describedby="modal-title"
+    class="close"
+    type="button"
+  >
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body">
+  <p class="alert alert-info">
+    <strong>
+      {{ "Please make sure that the information you entered is accurate." | translate }}
+    </strong>
+
+    {{
+      "This item will be part of AstroBin's equipment database, and it's very important that the information is accurate and this item is not the duplicate of another."
+        | translate
+    }}
+  </p>
+
+  <div *ngIf="!!item" class="card">
+    <div class="card-header">
+      {{ "Item summary" | translate }}
+    </div>
+    <div class="card-body">
+      <astrobin-equipment-item-summary [item]="item" [showImage]="false"></astrobin-equipment-item-summary>
+    </div>
+  </div>
+
+  <ng-container *ngIf="similarItems$ | async as similarItems">
+    <div *ngIf="similarItems.length > 0" class="alert alert-warning mt-3">
+      <p>
+        <strong>{{ "Warning!" | translate }} {{ "We found similar items from the same brand." | translate }}</strong>
+      </p>
+      <astrobin-similar-items-suggestion
+        [items]="similarItems"
+        (itemSelected)="useSuggestion($event)"
+      ></astrobin-similar-items-suggestion>
+    </div>
+  </ng-container>
+</div>
+
+<div class="modal-footer">
+  <button (click)="modal.dismiss(ConfirmItemCreationResult.CANCEL)" class="btn btn-outline-secondary" type="button">
+    {{ "Cancel" | translate }}
+  </button>
+
+  <button (click)="modal.close(item)" class="btn btn-danger" type="button">
+    {{ "Confirm" | translate }}
+  </button>
+</div>

@@ -8,7 +8,7 @@ import { AppModule } from "@app/app.module";
 import { ActivatedRoute, Router } from "@angular/router";
 import { EMPTY, of, ReplaySubject } from "rxjs";
 import { ItemTypeNavComponent } from "@features/equipment/components/item-type-nav/item-type-nav.component";
-import { ItemBrowserComponent } from "@features/equipment/components/item-browser/item-browser.component";
+import { ItemBrowserComponent } from "@shared/components/equipment/item-browser/item-browser.component";
 import { provideMockActions } from "@ngrx/effects/testing";
 
 describe("EditProposalExplorerComponent", () => {
@@ -26,7 +26,13 @@ describe("EditProposalExplorerComponent", () => {
           provide: ActivatedRoute,
           useValue: {
             snapshot: {
-              paramMap: { get: key => "camera" }
+              paramMap: { get: key => "camera" },
+              queryParamMap: {
+                has: jest.fn(),
+                get: jest.fn(),
+                getAll: jest.fn(),
+                keys: []
+              }
             }
           }
         },

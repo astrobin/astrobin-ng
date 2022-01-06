@@ -46,6 +46,7 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
       templateOptions: {
         label: this.translate.instant("Title"),
         required: true,
+        maxLength: 128,
         change: this._onTitleChange.bind(this)
       }
     },

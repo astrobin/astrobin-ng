@@ -29,13 +29,16 @@ export interface EquipmentItemBaseInterface {
   deleted?: string;
   created: string;
   updated: string;
+  klass: EquipmentItemType;
   createdBy: UserInterface["id"];
   reviewedBy?: UserInterface["id"];
   reviewedTimestamp?: string;
   reviewerDecision?: EquipmentItemReviewerDecision;
   reviewerRejectionReason?: EquipmentItemReviewerRejectionReason;
   reviewerComment?: string;
+  diy?: boolean;
   brand: BrandInterface["id"];
   name: string;
+  website: string;
   image?: string | File[];
 }

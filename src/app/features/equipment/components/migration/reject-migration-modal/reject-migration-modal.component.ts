@@ -13,11 +13,12 @@ import {
 import { MigrationFlag } from "@shared/services/api/classic/astrobin/migratable-gear-item-api.service.interface";
 import { switchMap, take, takeUntil } from "rxjs/operators";
 import { LoadingService } from "@shared/services/loading.service";
-import { GearApiService } from "@shared/services/api/classic/astrobin/gear/gear-api.service";
 import { EquipmentActionTypes, RejectEquipmentItem } from "@features/equipment/store/equipment.actions";
 import { Actions, ofType } from "@ngrx/effects";
 import { of } from "rxjs";
 import { TranslateService } from "@ngx-translate/core";
+import { FormlyFieldMessageLevel, FormlyFieldService } from "@shared/services/formly-field.service";
+import { GearMigrationStrategyApiService } from "@shared/services/api/classic/astrobin/grar-migration-strategy/gear-migration-strategy-api.service";
 
 export enum RejectMigrationReason {
   REJECTED_INCORRECT_STRATEGY = "REJECTED_INCORRECT_STRATEGY",
@@ -44,7 +45,7 @@ export class RejectMigrationModalComponent extends BaseComponentDirective implem
   };
 
   @Input()
-  legacyItem: any;
+  migrationStrategy: any;
 
   @Input()
   equipmentItem: EquipmentItemBaseInterface;
@@ -54,8 +55,9 @@ export class RejectMigrationModalComponent extends BaseComponentDirective implem
     public readonly actions$: Actions,
     public readonly modal: NgbActiveModal,
     public readonly loadingService: LoadingService,
-    public readonly legacyGearApiService: GearApiService,
-    public readonly translateService: TranslateService
+    public readonly gearMigrationStrategyApiService: GearMigrationStrategyApiService,
+    public readonly translateService: TranslateService,
+    public readonly formlyFieldService: FormlyFieldService
   ) {
     super(store$);
   }
@@ -107,7 +109,18 @@ export class RejectMigrationModalComponent extends BaseComponentDirective implem
               }
 
               field.templateOptions.description = description;
-              field.templateOptions.warningMessage = warning;
+
+              if (warning) {
+                this.formlyFieldService.addMessage(field.templateOptions, {
+                  level: FormlyFieldMessageLevel.WARNING,
+                  text: warning
+                });
+              } else {
+                this.formlyFieldService.removeMessage(field.templateOptions, {
+                  level: FormlyFieldMessageLevel.WARNING,
+                  text: warning
+                });
+              }
             });
           }
         }
@@ -146,12 +159,12 @@ export class RejectMigrationModalComponent extends BaseComponentDirective implem
     const reason: RejectMigrationReason = this.form.get("reason").value;
     const comment: string = this.form.get("comment").value;
 
-    this.legacyGearApiService
-      .rejectMigration(this.legacyItem.pk, reason, comment)
+    this.gearMigrationStrategyApiService
+      .reject(this.migrationStrategy.pk, reason, comment)
       .pipe(
         switchMap(item => {
           if (
-            this.legacyItem.migrationFlag === MigrationFlag.MIGRATE &&
+            this.migrationStrategy.migrationFlag === MigrationFlag.MIGRATE &&
             this.equipmentItem &&
             reason === RejectMigrationReason.REJECTED_BAD_MIGRATION_TARGET
           ) {
@@ -175,7 +188,7 @@ export class RejectMigrationModalComponent extends BaseComponentDirective implem
   }
 
   _reasonOptions(): { value: string; label: string }[] {
-    if (this.legacyItem.migrationFlag === MigrationFlag.MIGRATE) {
+    if (this.migrationStrategy.migrationFlag === MigrationFlag.MIGRATE) {
       if (this.equipmentItem.reviewerDecision === EquipmentItemReviewerDecision.APPROVED) {
         return [this._incorrectStrategyOption(), this._wrongMigrationTargetOption(), this._otherOption()];
       }
