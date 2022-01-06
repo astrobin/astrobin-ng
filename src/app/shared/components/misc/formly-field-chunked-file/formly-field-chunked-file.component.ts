@@ -35,6 +35,7 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
     maxChunkSize: 2 * 1024 * 1024,
     multiple: false,
     autoUpload: false,
+    storeIncompleteUploadUrl: false,
     retryConfig: {
       shouldRetry: (code, attempts) => {
         return code === 423 && attempts < 5;
