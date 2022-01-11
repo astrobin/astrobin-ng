@@ -77,7 +77,6 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     this.titleService.setTitle("Edit image");
 
     this._initBreadcrumb();
-    this.imageEditWatermarkFieldsService.initWatermarkSettings();
 
     this.store$.dispatch(
       new LoadThumbnail({
