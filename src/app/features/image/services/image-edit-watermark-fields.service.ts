@@ -168,24 +168,6 @@ export class ImageEditWatermarkFieldsService extends BaseService {
     };
   }
 
-  initWatermarkSettings(): void {
-    if (!this.imageEditService.image.watermarkText) {
-      this.store$
-        .select(selectCurrentUserProfile)
-        .pipe(
-          filter(userProfile => !!userProfile),
-          take(1)
-        )
-        .subscribe(userProfile => {
-          this.imageEditService.model.watermark = userProfile.defaultWatermark;
-          this.imageEditService.model.watermarkText = userProfile.defaultWatermarkText;
-          this.imageEditService.model.watermarkPosition = userProfile.defaultWatermarkPosition;
-          this.imageEditService.model.watermarkSize = userProfile.defaultWatermarkSize;
-          this.imageEditService.model.watermarkOpacity = userProfile.defaultWatermarkOpacity;
-        });
-    }
-  }
-
   private _setWatermarkTrue(): void {
     this.imageEditService.model = {
       ...this.imageEditService.model,

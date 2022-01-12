@@ -6,7 +6,6 @@ import { ImageGenerator } from "@shared/generators/image.generator";
 import { MockBuilder } from "ng-mocks";
 import { of } from "rxjs";
 import { ImageEditPageComponent } from "./image-edit-page.component";
-import { WatermarkPositionOptions, WatermarkSizeOptions } from "@shared/interfaces/image.interface";
 import { MockStore, provideMockStore } from "@ngrx/store/testing";
 import { initialState } from "@app/store/state";
 import { ImageEditService } from "@features/image/services/image-edit.service";
@@ -60,42 +59,5 @@ describe("EditComponent", () => {
   it("should initialize data", () => {
     expect(component.imageEditService.image).toEqual(image);
     expect(component.imageEditService.model).toEqual(image);
-  });
-
-  it("should initialize watermark settings from profile defaults if empty", () => {
-    image.watermark = false;
-    image.watermarkText = null;
-    image.watermarkPosition = WatermarkPositionOptions.CENTER;
-    image.watermarkSize = WatermarkSizeOptions.MEDIUM;
-    image.watermarkOpacity = 10;
-
-    store.setState({
-      ...initialState,
-      ...{
-        auth: {
-          ...initialState.auth,
-          ...{
-            userProfile: {
-              ...initialState.auth.userProfile,
-              ...{
-                defaultWatermark: true,
-                defaultWatermarkText: "My watermark",
-                defaultWatermarkPosition: WatermarkPositionOptions.TOP_RIGHT,
-                defaultWatermarkSize: WatermarkSizeOptions.SMALL,
-                defaultWatermarkOpacity: 20
-              }
-            }
-          }
-        }
-      }
-    });
-
-    component.ngOnInit();
-
-    expect(component.imageEditService.model.watermark).toBe(true);
-    expect(component.imageEditService.model.watermarkText).toEqual("My watermark");
-    expect(component.imageEditService.model.watermarkPosition).toEqual(WatermarkPositionOptions.TOP_RIGHT);
-    expect(component.imageEditService.model.watermarkSize).toEqual(WatermarkSizeOptions.SMALL);
-    expect(component.imageEditService.model.watermarkOpacity).toEqual(20);
   });
 });
