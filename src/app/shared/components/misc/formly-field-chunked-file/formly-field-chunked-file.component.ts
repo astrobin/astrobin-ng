@@ -35,6 +35,7 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
     maxChunkSize: 2 * 1024 * 1024,
     multiple: false,
     autoUpload: false,
+    storeIncompleteUploadUrl: false,
     retryConfig: {
       shouldRetry: (code, attempts) => {
         return code === 423 && attempts < 5;
@@ -159,13 +160,30 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
               "Permission denied. You don't have the required subscription level to perform this operation."
             );
             break;
+          case 413:
+            message = this.translateService.instant(
+              "File too large. If you just upgraded your subscription, please try again in a few minutes. Thanks!"
+            );
+            break;
           case 415:
             message = this.translateService.instant(
               "AstroBin could not read your file as an image. Please try a different format."
             );
             break;
+          case 423:
+            message = this.translateService.instant(
+              "Oops! Your request fell in between two AstroBin servers. Please clear your cache and try again."
+            );
+            break;
+          case 500:
+            message = this.translateService.instant(
+              "AstroBin encountered an internal error. Please try again and contact us if the problem persists!"
+            );
+            break;
           default:
-            message = this.translateService.instant("Unknown error, please refresh the page and try again.");
+            message = this.translateService.instant(
+              `Unhandled error (code: ${state.responseStatus}), please refresh the page and try again.`
+            );
             break;
         }
 
