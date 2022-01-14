@@ -174,10 +174,18 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
   }
 
   ngAfterViewInit(): void {
-    setTimeout(() => {
+    const focusBrandInput = () => {
       const document = this.windowRefService.nativeWindow.document;
-      (document.querySelector("#equipment-item-field-brand .ng-input input") as HTMLElement).focus();
-    }, 100);
+      const element = document.querySelector("#equipment-item-field-brand .ng-input input") as HTMLElement;
+
+      if (!!element) {
+        element.focus();
+      } else {
+        setTimeout(() => focusBrandInput(), 100);
+      }
+    };
+
+    focusBrandInput();
   }
 
   startBrandCreation() {

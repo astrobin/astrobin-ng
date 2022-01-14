@@ -10,8 +10,6 @@ import { SubscriptionInterface } from "@shared/interfaces/subscription.interface
 import { TelescopeInterface } from "@shared/interfaces/telescope.interface";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { NestedCommentInterface } from "@shared/interfaces/nested-comment.interface";
-import * as Util from "util";
-import { act } from "@ngrx/effects";
 
 export interface AppState {
   // Weather the app has been initialized.
