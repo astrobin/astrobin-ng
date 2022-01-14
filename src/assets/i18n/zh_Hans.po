@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: AstroBin Angular App\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-03 14:04+0200\n"
-"PO-Revision-Date: 2021-12-09 21:33+0100\n"
+"PO-Revision-Date: 2022-01-09 12:32+0100\n"
 "Last-Translator: Salvatore Iovene\n"
 "Language-Team: Simplified Chinese\n"
 "Language: zh-Hans\n"
@@ -14,7 +14,7 @@ msgstr ""
 "X-Generator: Loco https://localise.biz\n"
 "X-Loco-Source-Locale: en\n"
 "X-Loco-Project-Id: 108356\n"
-"X-Loco-Api-Version: 1.0.25 20211027-1"
+"X-Loco-Api-Version: 1.0.26 20220113-1"
 
 #: loco:60685a683b0b1d485a736d12
 msgid "API Keys"
@@ -1885,7 +1885,7 @@ msgstr ""
 
 #: loco:6151f41acae9ba5e6a4b2a8a
 msgid ""
-"This item will be part of AstroBin's equipment database, and it's very "
+"This item will be part of AstorBin's equipment database, and it's very "
 "important that the information is accurate and this item is not the "
 "duplicate of another"
 msgstr ""
@@ -1940,7 +1940,7 @@ msgid "Weight"
 msgstr ""
 
 #: loco:6151f41acae9ba5e6a4b2a96
-msgid "Whether this camera is equipped with a cooling mechanism."
+msgid "Whether this camera is equipment with a cooling mechanism."
 msgstr ""
 
 #: loco:6151f41acae9ba5e6a4b2a97
@@ -1992,117 +1992,117 @@ msgstr ""
 
 #: loco:61b24fc53b045a3393550432
 msgid "(DIY)"
-msgstr ""
+msgstr "DIY"
 
 #: loco:61b24fc53b045a3393550433
 msgid "(modified)"
-msgstr ""
+msgstr "定制的"
 
 #: loco:61b24fc53b045a3393550434
 msgid "1 like"
-msgstr ""
+msgstr "1个喜欢"
 
 #: loco:61b24fc53b045a3393550435
 msgid "A-Z explorer"
-msgstr ""
+msgstr "A-Z顺序浏览"
 
 #: loco:61b24fc53b045a3393550436
 msgid "Accessory"
-msgstr ""
+msgstr "附件"
 
 #: loco:61b24fc53b045a3393550437
 msgid "Add a comment"
-msgstr ""
+msgstr "添加评论"
 
 #: loco:61b24fc53b045a3393550438
 msgid "Alt-Alt (altitude-altitude)"
-msgstr ""
+msgstr "高度角-高度角"
 
 #: loco:61b24fc53b045a3393550439
 msgid "Alt-Az (altazimuth)"
-msgstr ""
+msgstr "高度角-方位角"
 
 #: loco:61b24fc53b045a339355043a
 msgid "An error occurred"
-msgstr ""
+msgstr "出错了"
 
 #: loco:61b24fc53b045a339355043b
 msgid "An item of the same class, brand, and name already exists."
-msgstr ""
+msgstr "已经存在同品牌、类型的项目"
 
 #: loco:61b24fc53b045a339355043c
 msgid "Approve"
-msgstr ""
+msgstr "批准"
 
 #: loco:61b24fc53b045a339355043d
 msgid "Approve edit"
-msgstr ""
+msgstr "批准编辑"
 
 #: loco:61b24fc53b045a339355043e
 msgid "Approved"
-msgstr ""
+msgstr "已批准"
 
 #: loco:61b24fc53b045a339355043f
 msgid "Are you sure?"
-msgstr ""
+msgstr "确定？"
 
 #: loco:61b24fc53b045a3393550440
 msgid ""
 "AstroBin would like to rename some of your gear items in order to be more "
 "consistent with naming conventions."
-msgstr ""
+msgstr "AstroBin想重命名一些设备项目，以便统一规范命名。"
 
 #: loco:61b24fc53b045a3393550441
 msgid "AstroBin's new equipment database is still work in progress."
-msgstr ""
+msgstr "AstroBin新设备数据库正在更新中。"
 
 #: loco:61b24fc53b045a3393550442
 msgid "Automatically create \"modified\" variant"
-msgstr ""
+msgstr "自动创建“定制的”变体"
 
 #: loco:61b24fc53b045a3393550443
 msgid "Bad request"
-msgstr ""
+msgstr "错误请求"
 
 #: loco:61b24fc53b045a3393550444
 msgid "Bandwidth"
-msgstr ""
+msgstr "带宽"
 
 #: loco:61b24fc53b045a3393550445
 msgid "Binoculars"
-msgstr ""
+msgstr "双筒望远镜"
 
 #: loco:61b24fc53b045a3393550446
 msgid "Blue channel (B)"
-msgstr ""
+msgstr "蓝色通道（B）"
 
 #: loco:61b24fc53b045a3393550447
 msgid "Brand/Make"
-msgstr ""
+msgstr "品牌/制造商"
 
 #: loco:61b24fc53b045a3393550448
 msgid "Camera lens"
-msgstr ""
+msgstr "相机镜头"
 
 #: loco:61b24fc53b045a3393550449
 msgid "Catadioptric: ACF Schmidt-Cassegrain"
-msgstr ""
+msgstr "折返式：ACF施密特-卡塞格林"
 
 #: loco:61b24fc53b045a339355044a
 msgid "Catadioptric: Argunov-Cassegrain"
-msgstr ""
+msgstr "折反式：阿古诺夫-卡塞格林"
 
 #: loco:61b24fc53b045a339355044b
 msgid "Catadioptric: Klevtsov-Cassegrain"
-msgstr ""
+msgstr "折返式：克列夫佐夫-卡塞格林"
 
 #: loco:61b24fc53b045a339355044c
 msgid "Catadioptric: Lurie-Houghton"
-msgstr ""
+msgstr "折反式：卢丽-霍顿"
 
 #: loco:61b24fc53b045a339355044d
 msgid "Catadioptric: Maksutov"
-msgstr ""
+msgstr "折返式：马克苏托夫"
 
 #: loco:61b24fc53b045a339355044e
 msgid "Catadioptric: Maksutov-Cassegrain"
@@ -2623,7 +2623,7 @@ msgstr ""
 
 #: loco:61b24fc53b045a33935504c9
 msgid ""
-"This item will be part of AstroBin's equipment database, and it's very "
+"This item will be part of AstorBin's equipment database, and it's very "
 "important that the information is accurate and this item is not the "
 "duplicate of another."
 msgstr ""

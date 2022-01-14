@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: AstroBin Angular App\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-03 14:04+0200\n"
-"PO-Revision-Date: 2021-12-09 21:33+0100\n"
+"PO-Revision-Date: 2022-01-09 12:32+0100\n"
 "Last-Translator: Salvatore Iovene\n"
 "Language-Team: Portuguese\n"
 "Language: pt\n"
@@ -14,7 +14,7 @@ msgstr ""
 "X-Generator: Loco https://localise.biz\n"
 "X-Loco-Source-Locale: en\n"
 "X-Loco-Project-Id: 108356\n"
-"X-Loco-Api-Version: 1.0.25 20211027-1"
+"X-Loco-Api-Version: 1.0.26 20220113-1"
 
 #: loco:60685a683b0b1d485a736d12
 msgid "API Keys"
@@ -1924,7 +1924,7 @@ msgstr ""
 
 #: loco:6151f41acae9ba5e6a4b2a8a
 msgid ""
-"This item will be part of AstroBin's equipment database, and it's very "
+"This item will be part of AstorBin's equipment database, and it's very "
 "important that the information is accurate and this item is not the "
 "duplicate of another"
 msgstr ""
@@ -1979,7 +1979,7 @@ msgid "Weight"
 msgstr ""
 
 #: loco:6151f41acae9ba5e6a4b2a96
-msgid "Whether this camera is equipped with a cooling mechanism."
+msgid "Whether this camera is equipment with a cooling mechanism."
 msgstr ""
 
 #: loco:6151f41acae9ba5e6a4b2a97
@@ -2662,7 +2662,7 @@ msgstr ""
 
 #: loco:61b24fc53b045a33935504c9
 msgid ""
-"This item will be part of AstroBin's equipment database, and it's very "
+"This item will be part of AstorBin's equipment database, and it's very "
 "important that the information is accurate and this item is not the "
 "duplicate of another."
 msgstr ""

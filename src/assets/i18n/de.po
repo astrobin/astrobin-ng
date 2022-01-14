@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: AstroBin Angular App\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-03 14:04+0200\n"
-"PO-Revision-Date: 2021-12-09 21:33+0100\n"
+"PO-Revision-Date: 2022-01-09 12:32+0100\n"
 "Last-Translator: Salvatore Iovene\n"
 "Language-Team: German\n"
 "Language: de\n"
@@ -14,7 +14,7 @@ msgstr ""
 "X-Generator: Loco https://localise.biz\n"
 "X-Loco-Source-Locale: en\n"
 "X-Loco-Project-Id: 108356\n"
-"X-Loco-Api-Version: 1.0.25 20211027-1"
+"X-Loco-Api-Version: 1.0.26 20220113-1"
 
 #: loco:60685a683b0b1d485a736d12
 msgid "API Keys"
@@ -1666,219 +1666,221 @@ msgstr ""
 
 #: loco:6151f41acae9ba5e6a4b2a3a
 msgid "Class"
-msgstr ""
+msgstr "Klasse"
 
 #: loco:6151f41acae9ba5e6a4b2a3b
 msgid "Close"
-msgstr ""
+msgstr "Schließen"
 
 #: loco:6151f41acae9ba5e6a4b2a3c
 msgid "Color"
-msgstr ""
+msgstr "Farbe"
 
 #: loco:6151f41acae9ba5e6a4b2a3d
 msgid "Color/mono"
-msgstr ""
+msgstr "Farbe/Mono"
 
 #: loco:6151f41acae9ba5e6a4b2a3e
 msgid "Confirm"
-msgstr ""
+msgstr "Bestätigen"
 
 #: loco:6151f41acae9ba5e6a4b2a3f
 msgid "Confirm item creation"
-msgstr ""
+msgstr "Bestätigen Sie die Erstellung eines Gegenstands."
 
 #: loco:6151f41acae9ba5e6a4b2a40
 msgid "Contribution Index"
-msgstr ""
+msgstr "Beitrags-Index"
 
 #: loco:6151f41acae9ba5e6a4b2a41
 msgid "Cooled"
-msgstr ""
+msgstr "Gekühlt"
 
 #: loco:6151f41acae9ba5e6a4b2a42
 msgid "Create a new item"
-msgstr ""
+msgstr "Einen neuen Gegenstand erstellen"
 
 #: loco:6151f41acae9ba5e6a4b2a43
 msgid "Create new brand"
-msgstr ""
+msgstr "Neue Marke erstellen"
 
 #: loco:6151f41acae9ba5e6a4b2a44
 msgid "Create new sensor"
-msgstr ""
+msgstr "Neuen Sensor erstellen"
 
 #: loco:6151f41acae9ba5e6a4b2a45
 msgid "Dedicated deep-sky camera"
-msgstr ""
+msgstr "Dedizierte Deep-Sky Kamera"
 
 #: loco:6151f41acae9ba5e6a4b2a46
 msgid "Disable high contrast theme"
-msgstr ""
+msgstr "Deaktivieren Sie das Design mit hohem Kontrast"
 
 #: loco:6151f41acae9ba5e6a4b2a47
 msgid "Edit proposal by"
-msgstr ""
+msgstr "Vorschlag bearbeiten von"
 
 #: loco:6151f41acae9ba5e6a4b2a48
 msgid "Edit proposal comment"
-msgstr ""
+msgstr "Vorschlagskommentar bearbeiten"
 
 #: loco:6151f41acae9ba5e6a4b2a49
 msgid "Editing the brand is not possible."
-msgstr ""
+msgstr "Eine Bearbeitung des Markennamens ist nicht möglich."
 
 #: loco:6151f41acae9ba5e6a4b2a4a
 msgid "Enable high contrast theme"
-msgstr ""
+msgstr "Aktivieren Sie das Design mit hohem Kontrast"
 
 #: loco:6151f41acae9ba5e6a4b2a4b
 msgid "Equipment"
-msgstr ""
+msgstr "Ausrüstung"
 
 #: loco:6151f41acae9ba5e6a4b2a4c
 msgid "Equipment explorer"
-msgstr ""
+msgstr "Ausrüstungs-Explorer"
 
 #: loco:6151f41acae9ba5e6a4b2a4d
 msgid "Equipment pending edit"
-msgstr ""
+msgstr "Ausrüstungen warten auf Bearbeitung"
 
 #: loco:6151f41acae9ba5e6a4b2a4e
 msgid "Equipment pending review"
-msgstr ""
+msgstr "Ausrüstung zur Überprüfung"
 
 #: loco:6151f41acae9ba5e6a4b2a4f
 msgid "Explorer"
-msgstr ""
+msgstr "Explorer"
 
 #: loco:6151f41acae9ba5e6a4b2a50
 msgid "Film camera"
-msgstr ""
+msgstr "Film-Kamera"
 
 #: loco:6151f41acae9ba5e6a4b2a51
 msgid "Filters"
-msgstr ""
+msgstr "Filter"
 
 #: loco:6151f41acae9ba5e6a4b2a52
 msgid "Find equipment item"
-msgstr ""
+msgstr "Ausrüstungsgegenstand finden"
 
 #: loco:6151f41acae9ba5e6a4b2a53
 msgid "Focal length"
-msgstr ""
+msgstr "Brennweite"
 
 #: loco:6151f41acae9ba5e6a4b2a54
 msgid "Frame rate"
-msgstr ""
+msgstr "Bildrate"
 
 #: loco:6151f41acae9ba5e6a4b2a55
 msgid "Full well capacity"
-msgstr ""
+msgstr "\"Full well\" Kapazität"
 
 #: loco:6151f41acae9ba5e6a4b2a56
 msgid "General purpose DSLR or mirrorless camera"
-msgstr ""
+msgstr "Universelle DSLR- oder spiegellose Kamera"
 
 #: loco:6151f41acae9ba5e6a4b2a57
 msgid "General purpose video camera"
-msgstr ""
+msgstr "Universelle Videokamera"
 
 #: loco:6151f41acae9ba5e6a4b2a58
 msgid "Guider or planetary camera"
-msgstr ""
+msgstr "Guider oder Planetenkamera"
 
 #: loco:6151f41acae9ba5e6a4b2a59
 msgid "Image Index"
-msgstr ""
+msgstr "Bild-Index"
 
 #: loco:6151f41acae9ba5e6a4b2a5a
 msgid "Item summary"
-msgstr ""
+msgstr "Artikelübersicht"
 
 #: loco:6151f41acae9ba5e6a4b2a5b
 msgid "Logo"
-msgstr ""
+msgstr "Logo"
 
 #: loco:6151f41acae9ba5e6a4b2a5c
 msgid "Max. aperture"
-msgstr ""
+msgstr "Max. Blende"
 
 #: loco:6151f41acae9ba5e6a4b2a5d
 msgid "Max. cooling"
-msgstr ""
+msgstr "Max. Kühlung"
 
 #: loco:6151f41acae9ba5e6a4b2a5e
 msgid "Max. focal length"
-msgstr ""
+msgstr "Max. Brennweite"
 
 #: loco:6151f41acae9ba5e6a4b2a5f
 msgid "Min. aperture"
-msgstr ""
+msgstr "Min. Blende"
 
 #: loco:6151f41acae9ba5e6a4b2a60
 msgid "Min. focal length"
-msgstr ""
+msgstr "Min. Brennweite"
 
 #: loco:6151f41acae9ba5e6a4b2a61
 msgid "Mono"
-msgstr ""
+msgstr "Mono"
 
 #: loco:6151f41acae9ba5e6a4b2a62
 msgid "Mounts"
-msgstr ""
+msgstr "Montierungen"
 
 #: loco:6151f41acae9ba5e6a4b2a63
 msgid "No changes are proposed."
-msgstr ""
+msgstr "Es werden keine Änderungen vorgeschlagen."
 
 #: loco:6151f41acae9ba5e6a4b2a64
 msgid "Number of pixels across the X axis"
-msgstr ""
+msgstr "Anzahl der Pixel auf der X-Achse"
 
 #: loco:6151f41acae9ba5e6a4b2a65
 msgid "Number of pixels across the Y axis"
-msgstr ""
+msgstr "Anzahl der Pixel auf der Y-Achse"
 
 #: loco:6151f41acae9ba5e6a4b2a66
 msgid "Official (or official looking) product image. Max. 1MB."
-msgstr ""
+msgstr "Offizielles (oder offiziell aussehendes) Produktbild. Max. 1MB."
 
 #: loco:6151f41acae9ba5e6a4b2a67
 msgid "Pending"
-msgstr ""
+msgstr "Anstehend"
 
 #: loco:6151f41acae9ba5e6a4b2a68
 msgid "Pending edit"
-msgstr ""
+msgstr "Anstehende Bearbeitung"
 
 #: loco:6151f41acae9ba5e6a4b2a69
 msgid "Pending review"
-msgstr ""
+msgstr "Überprüfung anstehend"
 
 #: loco:6151f41acae9ba5e6a4b2a6a
 msgid "Pixel size"
-msgstr ""
+msgstr "Pixelgröße"
 
 #: loco:6151f41acae9ba5e6a4b2a6b
 msgid "Pixel size (in μm)"
-msgstr ""
+msgstr "Pixelgröße (in μm)"
 
 #: loco:6151f41acae9ba5e6a4b2a6c
 msgid "Pixels"
-msgstr ""
+msgstr "Pixel"
 
 #: loco:6151f41acae9ba5e6a4b2a6d
 msgid "Pixels X"
-msgstr ""
+msgstr "Pixel X"
 
 #: loco:6151f41acae9ba5e6a4b2a6e
 msgid "Pixels Y"
-msgstr ""
+msgstr "Pixel Y"
 
 #: loco:6151f41acae9ba5e6a4b2a6f
 msgid "Please make sure that the information you entered is accurate."
 msgstr ""
+"Bitte vergewissern Sie sich, dass die von Ihnen eingegebenen Informationen "
+"korrekt sind."
 
 #: loco:6151f41acae9ba5e6a4b2a70
 msgid "Propose edit"
@@ -2012,7 +2014,7 @@ msgstr ""
 
 #: loco:6151f41acae9ba5e6a4b2a8a
 msgid ""
-"This item will be part of AstroBin's equipment database, and it's very "
+"This item will be part of AstorBin's equipment database, and it's very "
 "important that the information is accurate and this item is not the "
 "duplicate of another"
 msgstr ""
@@ -2078,7 +2080,7 @@ msgid "Weight"
 msgstr "Gewicht"
 
 #: loco:6151f41acae9ba5e6a4b2a96
-msgid "Whether this camera is equipped with a cooling mechanism."
+msgid "Whether this camera is equipment with a cooling mechanism."
 msgstr "Ob diese Kamera einem Kühlmechanismus hat."
 
 #: loco:6151f41acae9ba5e6a4b2a97
@@ -2765,7 +2767,7 @@ msgstr ""
 
 #: loco:61b24fc53b045a33935504c9
 msgid ""
-"This item will be part of AstroBin's equipment database, and it's very "
+"This item will be part of AstorBin's equipment database, and it's very "
 "important that the information is accurate and this item is not the "
 "duplicate of another."
 msgstr ""
