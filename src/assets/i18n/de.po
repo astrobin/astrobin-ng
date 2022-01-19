@@ -5,10 +5,10 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 msgid "(DIY)"
-msgstr ""
+msgstr "(DIY)"
 
 msgid "(modified)"
-msgstr ""
+msgstr "(geändert)"
 
 msgid "(optional)"
 msgstr ""
@@ -22,7 +22,7 @@ msgstr ""
 "ein Wasserzeichen vor dunklem Himmelshintergrund, 50 bei hellen Motiven."
 
 msgid "1 like"
-msgstr ""
+msgstr "1 Like"
 
 msgid ""
 "<strong>Careful!</strong> Change the name only to fix a typo or the naming "
@@ -48,7 +48,7 @@ msgid ""
 msgstr ""
 
 msgid "A-Z explorer"
-msgstr ""
+msgstr "A-Z Durchsuchen"
 
 msgid "ADC"
 msgstr ""
@@ -66,13 +66,13 @@ msgid "Accessories"
 msgstr ""
 
 msgid "Accessory"
-msgstr ""
+msgstr "Zubehör"
 
 msgid "Acquisition type"
 msgstr "Bildentstehung"
 
 msgid "Add a comment"
-msgstr ""
+msgstr "Einen Kommentar hinzufügen"
 
 msgid "Advanced plate-solving"
 msgstr "Erweitertes Plate-Solving"
@@ -87,10 +87,10 @@ msgid "Allow full-size display"
 msgstr "Anzeige in voller Größe zulassen"
 
 msgid "Alt-Alt (altitude-altitude)"
-msgstr ""
+msgstr "Alt-Alt (Altitude-Altitude)"
 
 msgid "Alt-Az (altazimuth)"
-msgstr ""
+msgstr "Alt-Az (Altazimut)"
 
 msgid "Altitude"
 msgstr "Höhe"
@@ -102,10 +102,12 @@ msgid "Amount"
 msgstr "Anzahl"
 
 msgid "An error occurred"
-msgstr ""
+msgstr "Ein Fehler ist aufgetreten"
 
 msgid "An item of the same class, brand, and name already exists."
 msgstr ""
+"Ein Artikel der gleichen Klasse, Marke und des gleichen Namens ist bereits "
+"vorhanden."
 
 msgid "Analog to Digital Converter"
 msgstr ""
@@ -123,16 +125,16 @@ msgid "Apply watermark to image"
 msgstr "Wasserzeichen hinzufügen"
 
 msgid "Approve"
-msgstr ""
+msgstr "Genehmigen"
 
 msgid "Approve edit"
-msgstr ""
+msgstr "Änderung genehmigen"
 
 msgid "Approved"
-msgstr ""
+msgstr "Genehmigt"
 
 msgid "Are you sure?"
-msgstr ""
+msgstr "Sind sie sicher?"
 
 msgid "AstroBin can protect your images from theft by applying a watermark to them."
 msgstr ""
@@ -167,6 +169,8 @@ msgid ""
 "AstroBin encountered an internal error. Please try again and contact us if "
 "the problem persists!"
 msgstr ""
+"AstroBin ist auf einen internen Fehler gestoßen. Bitte versuchen Sie es "
+"erneut und kontaktieren Sie uns, wenn das Problem weiterhin besteht!"
 
 msgid "AstroBin is generating a large thumbnail."
 msgstr "AstroBin erzeugt ein großes Vorschaubild."
@@ -175,6 +179,8 @@ msgid ""
 "AstroBin would like to rename some of your gear items in order to be more "
 "consistent with naming conventions."
 msgstr ""
+"AstroBin würde gerne einige eurer Ausrüstungsgegenstände umbenennen, um die "
+"Namenskonventionen besser zu erfüllen."
 
 msgid "AstroBin's new equipment database is still work in progress."
 msgstr ""
@@ -349,16 +355,16 @@ msgid "Color"
 msgstr "Farbe"
 
 msgid "Color or mono"
-msgstr ""
+msgstr "Farbe oder Mono"
 
 msgid "Comet"
 msgstr "Komet"
 
 msgid "Cometary"
-msgstr ""
+msgstr "Kometen"
 
 msgid "Comment"
-msgstr ""
+msgstr "Kommentar"
 
 msgid "Comments"
 msgstr "Kommentare"
@@ -478,7 +484,7 @@ msgid "Drop file here or click to browse"
 msgstr "Datei hier ablegen oder zum Durchsuchen anklicken"
 
 msgid "Dual Alt-Az/Equatorial"
-msgstr ""
+msgstr "Dual Alt-Az/Äquatorial"
 
 msgid "E-mail"
 msgstr "E-Mail"
@@ -550,6 +556,8 @@ msgid ""
 "File too large. If you just upgraded your subscription, please try again in "
 "a few minutes. Thanks!"
 msgstr ""
+"Die Datei ist zu groß. Wenn Sie Ihr Abonnement gerade aktualisiert haben, "
+"versuchen Sie es bitte in ein paar Minuten erneut. Vielen Dank!"
 
 msgid "File type not supported"
 msgstr "Der Dateityp wird nicht unterstützt"
@@ -678,7 +686,7 @@ msgid "Hydrogen-beta (Hβ)"
 msgstr ""
 
 msgid "IOTD"
-msgstr ""
+msgstr "IOTD"
 
 msgid "IOTD/TP Staff"
 msgstr "IOTD/TP Mitarbeiter"
@@ -840,10 +848,10 @@ msgid "Log in"
 msgstr "Anmelden"
 
 msgid "Logging you in securely..."
-msgstr ""
+msgstr "Sicheres Einloggen..."
 
 msgid "Logging you out securely..."
-msgstr ""
+msgstr "Sicheres Abmelden..."
 
 msgid "Login required"
 msgstr ""
@@ -912,7 +920,7 @@ msgid "Mercury"
 msgstr "Merkur"
 
 msgid "Meteor shower"
-msgstr ""
+msgstr "Meteoritenschauer"
 
 msgid "Meters above sea level"
 msgstr "Meter über NN"
@@ -1005,7 +1013,7 @@ msgid "Nobody"
 msgstr "Niemand"
 
 msgid "Noctilucent clouds"
-msgstr ""
+msgstr "Nachtleuchtende Wolken"
 
 msgid "Non-commercial independent facility"
 msgstr "Nicht-kommerzielle unabhängige Einrichtung"
@@ -1062,6 +1070,8 @@ msgid ""
 "Oops! Your request fell in between two AstroBin servers. Please clear your "
 "cache and try again."
 msgstr ""
+"Ups! Ihre Anfrage geriet zwischen zwei AstroBin-Servern. Bitte leeren Sie "
+"Ihren Cache und versuchen Sie es erneut."
 
 msgid "Opacity"
 msgstr "Deckkraft"
@@ -1346,7 +1356,7 @@ msgid "Reset password"
 msgstr "Passwort zurücksetzen"
 
 msgid "Retract"
-msgstr ""
+msgstr "Zurückziehen"
 
 msgid "Retract promotion"
 msgstr "Zurückziehen"
@@ -1382,7 +1392,7 @@ msgid "Save and proceed to image"
 msgstr "Speichern und weiter zum Bild"
 
 msgid "Scroll to top"
-msgstr ""
+msgstr "Nach oben scrollen"
 
 msgid "Secure payment by Stripe™"
 msgstr "Sicheres Bezahlen mit Stripe"
@@ -1489,6 +1499,8 @@ msgid ""
 "Sorry, you cannot select an IOTD right now: <strong>{{ reason }}</strong>. "
 "Please try again in <strong>{{ time }}</strong>."
 msgstr ""
+"Sie können derzeit leider kein IOTD auswählen: <strong>{{ reason "
+"}}</strong>. Bitte versuchen Sie es in <strong>{{ time }}</strong> erneut."
 
 msgid "Sort"
 msgstr ""
@@ -1639,9 +1651,11 @@ msgstr ""
 
 msgid "The judge who selected this image will be notified of top-level comments."
 msgstr ""
+"Der Richter, der dieses Bild ausgewählt hat, wird über die Kommentare auf "
+"höchster Ebene informiert."
 
 msgid "The judgement queue is currently empty."
-msgstr ""
+msgstr "Die Auswahlliste für Richter ist derzeit leer."
 
 msgid "The name of this brand. Make sure it's spelled correctly."
 msgstr "Der Name dieser Marke. Achten Sie darauf, dass er richtig geschrieben ist."
@@ -1737,6 +1751,9 @@ msgid ""
 "important that the information is accurate and this item is not the "
 "duplicate of another."
 msgstr ""
+"Dieser Gegenstand wird in die Ausrüstungs-Datenbank von AstroBin "
+"aufgenommen, und es ist sehr wichtig, dass die Informationen korrekt sind "
+"und dieser Gegenstand kein Duplikat eines anderen ist."
 
 msgid "This operation can not be undone."
 msgstr "Dieser Vorgang kann nicht rückgängig gemacht werden."
@@ -1968,7 +1985,7 @@ msgid "Where does the data for this image come from?"
 msgstr "Woher kommen die Daten für dieses Bild?"
 
 msgid "Whether this camera is equipped with a cooling mechanism."
-msgstr ""
+msgstr "Ob die Kamera mit einer Kühlung ausgestattet ist."
 
 msgid "Which remote hosting facility did you use to acquire data for this image?"
 msgstr ""
@@ -2061,6 +2078,9 @@ msgid ""
 "either it became IOTD because the scheduled date has been reached, or it "
 "was retracted."
 msgstr ""
+"Sie haben einen Kommentar zu einem geplanten IOTD angefordert, das nicht "
+"mehr geplant ist: Entweder wurde es zum IOTD, weil das geplante Datum "
+"erreicht wurde, oder er wurde zurückgezogen."
 
 msgid "You tried to access a server resource that you're not authorized for."
 msgstr ""
@@ -2121,10 +2141,10 @@ msgid "consider making an edit proposal instead."
 msgstr ""
 
 msgid "day"
-msgstr ""
+msgstr "Tag"
 
 msgid "days"
-msgstr ""
+msgstr "Tage"
 
 msgid "e.g."
 msgstr "z.B."
