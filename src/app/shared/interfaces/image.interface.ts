@@ -92,6 +92,7 @@ export enum RemoteSource {
   SLO = "Slooh",
   SSLLC = "Stellar Skies LLC",
   TELI = "Telescope Live",
+  WTO = "West Texas Observatory (WTO)",
   YUNLING = "Yunling Observatory"
 }
 
