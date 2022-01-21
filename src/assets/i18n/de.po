@@ -51,7 +51,7 @@ msgid "A-Z explorer"
 msgstr "A-Z Durchsuchen"
 
 msgid "ADC"
-msgstr ""
+msgstr "ADC"
 
 msgid "API Keys"
 msgstr "API-Schlüssel"
@@ -63,7 +63,7 @@ msgid "Access denied."
 msgstr "Zugriff abgelehnt"
 
 msgid "Accessories"
-msgstr ""
+msgstr "Zubehör"
 
 msgid "Accessory"
 msgstr "Zubehör"
@@ -110,7 +110,7 @@ msgstr ""
 "vorhanden."
 
 msgid "Analog to Digital Converter"
-msgstr ""
+msgstr "Analog to Digital Konverter"
 
 msgid "And much more!"
 msgstr "... und vieles mehr!"
@@ -119,7 +119,7 @@ msgid "Anular solar eclipse"
 msgstr "Ringförmige Sonnenfinsternis"
 
 msgid "Aperture"
-msgstr ""
+msgstr "Blende"
 
 msgid "Apply watermark to image"
 msgstr "Wasserzeichen hinzufügen"
@@ -183,7 +183,7 @@ msgstr ""
 "Namenskonventionen besser zu erfüllen."
 
 msgid "AstroBin's new equipment database is still work in progress."
-msgstr ""
+msgstr "Die neue Ausrüstungsdatenbank von AstroBin ist noch im Aufbau."
 
 msgid "Astrophotographers list"
 msgstr "Liste der Astrofotografen"
@@ -210,22 +210,22 @@ msgid "Authentication error. Please log out and in again."
 msgstr "Authentifizierungsfehler. Bitte loggen Sie sich aus und wieder ein."
 
 msgid "Automatically create \"modified\" variant"
-msgstr ""
+msgstr "Automatisch \"geänderte\" Variante erstellen"
 
 msgid "Autorenew"
 msgstr "Automatisch erneuern"
 
 msgid "Back focus"
-msgstr ""
+msgstr "Back focus"
 
 msgid "Backyard"
 msgstr "Gartensternwarte"
 
 msgid "Bad request"
-msgstr ""
+msgstr "Fehlerhafte Anfrage"
 
 msgid "Bandwidth"
-msgstr ""
+msgstr "Bandbreite"
 
 msgid "Basic information"
 msgstr "Grundlegende Information"
@@ -237,10 +237,10 @@ msgid "Basic search"
 msgstr "Standard Suche"
 
 msgid "Binoculars"
-msgstr ""
+msgstr "Binocular"
 
 msgid "Blue channel (B)"
-msgstr ""
+msgstr "Blauer Kanal (B)"
 
 msgid "Bookmarks"
 msgstr "Lesezeichen"
@@ -255,25 +255,25 @@ msgid "Bottom right"
 msgstr "Unten rechts"
 
 msgid "Brand"
-msgstr ""
+msgstr "Marke"
 
 msgid "Brand/Make"
-msgstr ""
+msgstr "Marke/Fabrikat"
 
 msgid "Buy"
 msgstr "Kaufen"
 
 msgid "Camera"
-msgstr ""
+msgstr "Kamera"
 
 msgid "Camera back focus in mm."
-msgstr ""
+msgstr "Back focus der Kamera in mm."
 
 msgid "Camera lens"
-msgstr ""
+msgstr "Kameraobjektiv"
 
 msgid "Cameras"
-msgstr ""
+msgstr "Kameras"
 
 msgid "Cancel"
 msgstr "Abbrechen"
@@ -282,54 +282,57 @@ msgid "Cancelled"
 msgstr "Abgebrochen"
 
 msgid "Catadioptric: ACF Schmidt-Cassegrain"
-msgstr ""
+msgstr "Katadioptrisch: ACF Schmidt-Cassegrain"
 
 msgid "Catadioptric: Argunov-Cassegrain"
-msgstr ""
+msgstr "Katadioptrisch: Argunov-Cassegrain"
 
 msgid "Catadioptric: Klevtsov-Cassegrain"
-msgstr ""
+msgstr "Katadioptrisch: Klevtsov-Cassegrain"
 
 msgid "Catadioptric: Lurie-Houghton"
-msgstr ""
+msgstr "Katadioptrisch: Lurie-Houghton"
 
 msgid "Catadioptric: Maksutov"
-msgstr ""
+msgstr "Katadioptrisch: Maksutov"
 
 msgid "Catadioptric: Maksutov-Cassegrain"
-msgstr ""
+msgstr "Katadioptrisch: Maksutov-Cassegrain"
 
 msgid "Catadioptric: Rowe-Atkinson Schmidt astrograph"
-msgstr ""
+msgstr "Katadioptrisch: Rowe-Atkinson Schmidt astrograph"
 
 msgid "Catadioptric: Schmidt camera"
-msgstr ""
+msgstr "Katadioptrisch: Schmidt-Kamera"
 
 msgid "Catadioptric: Schmidt-Cassegrain"
-msgstr ""
+msgstr "Katadioptrisch: Schmidt-Cassegrain"
 
 msgid "Catadioptric: modified Dall-Kirkham"
-msgstr ""
+msgstr "Katadioptrisch: modifiziertes Dall-Kirkham"
 
 msgid "Celsius degrees below ambient"
-msgstr ""
+msgstr "Grad Celsius unter Umgebungstemperatur"
 
 msgid "Center"
 msgstr "Mitte"
 
 msgid "Changes"
-msgstr ""
+msgstr "Änderungen"
 
 msgid ""
 "Check this box if this item is self-made, and/or was never on the market as "
 "a commercial product, and therefore does not have a brand."
 msgstr ""
+"Kreuzen Sie dieses Kästchen an, wenn der Artikel selbst hergestellt wurde "
+"und/oder es als kommerzielles Produkt auf dem Markt war und daher keine "
+"Marke hat."
 
 msgid "Choose file"
-msgstr ""
+msgstr "Datei wählen"
 
 msgid "Choose files"
-msgstr ""
+msgstr "Dateien wählen"
 
 msgid ""
 "Choose what will be displayed when somebody hovers the mouse over this "
@@ -376,7 +379,7 @@ msgid "Commercial products"
 msgstr "Kommerzielle Produkte"
 
 msgid "Computerized"
-msgstr ""
+msgstr "Computerisiert"
 
 msgid "Confirm"
 msgstr "Bestätigen"
@@ -385,13 +388,13 @@ msgid "Confirm item creation"
 msgstr "Bestätigen Sie die Erstellung eines Gegenstands."
 
 msgid "Confirm migration"
-msgstr ""
+msgstr "Bestätigung der Migration"
 
 msgid "Confirm selected migrations"
-msgstr ""
+msgstr "Ausgewählte Migrationen bestätigen"
 
 msgid "Conflict detected"
-msgstr ""
+msgstr "Konflikt erkannt"
 
 msgid "Conjunction"
 msgstr "Konjunktion"
@@ -415,7 +418,7 @@ msgid "Cooled"
 msgstr "Gekühlt"
 
 msgid "Create"
-msgstr ""
+msgstr "Erstellen"
 
 msgid "Create a new item"
 msgstr "Einen neuen Gegenstand erstellen"
@@ -433,10 +436,10 @@ msgid "Create new:"
 msgstr "Neu erstellen:"
 
 msgid "Created by"
-msgstr ""
+msgstr "Erstellt von"
 
 msgid "DIY"
-msgstr ""
+msgstr "self-made"
 
 msgid "Data source"
 msgstr "Datenquelle"
@@ -469,10 +472,10 @@ msgid "Do not notify your followers about this revision."
 msgstr "Keine Benachrichtigung Ihrer Abonnenten zu dieser Revision"
 
 msgid "Dobsonian"
-msgstr ""
+msgstr "Dobson"
 
 msgid "Don't remind me for a month"
-msgstr ""
+msgstr "Erinnere mich für einen Monat nicht daran"
 
 msgid "Downloaded"
 msgstr "Heruntergeladen"
@@ -502,7 +505,7 @@ msgid "Edit proposal comment"
 msgstr "Vorschlagskommentar bearbeiten"
 
 msgid "Editing this field is not possible."
-msgstr ""
+msgstr "Die Bearbeitung dieses Feldes ist nicht möglich."
 
 msgid "Electronically-Assisted Astronomy (EAA, e.g. based on a live video feed)"
 msgstr "Elektronisch-Assistierte Astronomie (EAA)"
@@ -517,7 +520,7 @@ msgid "Enjoy your unlimited revisions per image!"
 msgstr ""
 
 msgid "Equatorial"
-msgstr ""
+msgstr "Äquatorial"
 
 msgid "Equipment"
 msgstr "Ausrüstung"
@@ -566,7 +569,7 @@ msgid "Film camera"
 msgstr "Film-Kamera"
 
 msgid "Filter"
-msgstr ""
+msgstr "Filter"
 
 msgid "Filters"
 msgstr "Filter"
@@ -581,7 +584,7 @@ msgid "Find images"
 msgstr "Suche Bilder"
 
 msgid "Fixed focal length"
-msgstr ""
+msgstr "Feste Brennweite"
 
 msgid "Focal length"
 msgstr "Brennweite"
@@ -604,7 +607,7 @@ msgstr ""
 "Herabstufung anbietet."
 
 msgid "Fork"
-msgstr ""
+msgstr "Gabel"
 
 msgid "Forum"
 msgstr "Forum"
@@ -625,7 +628,7 @@ msgid "Gear"
 msgstr "Ausrüstung"
 
 msgid "Gear renaming proposals"
-msgstr ""
+msgstr "Vorschläge zur Umbenennung von Ausrüstung"
 
 msgid "General purpose DSLR or mirrorless camera"
 msgstr "Universelle DSLR- oder spiegellose Kamera"
@@ -634,16 +637,16 @@ msgid "General purpose video camera"
 msgstr "Universelle Videokamera"
 
 msgid "German equatorial"
-msgstr ""
+msgstr "Deutsch Äquatorial"
 
 msgid "Get random"
-msgstr ""
+msgstr "Zufällig erhalten"
 
 msgid "Go back to the home page."
 msgstr "Zur Startseite gehen"
 
 msgid "Green channel (G)"
-msgstr ""
+msgstr "Grüner Kanal (G)"
 
 msgid "Groups"
 msgstr "Gruppen"
@@ -671,7 +674,7 @@ msgid "Help with translations!"
 msgstr "Hilfe bei den Übersetzungen"
 
 msgid "Hexapod"
-msgstr ""
+msgstr "Hexapod"
 
 msgid "Hide"
 msgstr "Ausblenden"
@@ -680,10 +683,10 @@ msgid "Home"
 msgstr "Startseite"
 
 msgid "Hydrogen-alpha (Hα)"
-msgstr ""
+msgstr "Hydrogen-alpha (Hα)"
 
 msgid "Hydrogen-beta (Hβ)"
-msgstr ""
+msgstr "Hydrogen-beta (Hβ)"
 
 msgid "IOTD"
 msgstr "IOTD"
@@ -695,6 +698,9 @@ msgid ""
 "If selected, AstroBin will automatically create a variant of this object "
 "that is labeled as <em>modified for astrophotography</em>."
 msgstr ""
+"Wenn diese Option ausgewählt ist, erstellt AstroBin automatisch eine "
+"Variante dieses Objekts, die als <em>Astromodifiziert</em> gekennzeichnet "
+"ist."
 
 msgid ""
 "If selected, AstroBin will use a resizing algorithm that slightly sharpens "
@@ -716,6 +722,8 @@ msgstr ""
 
 msgid "If you can reproduce this issue reliably, please contact us."
 msgstr ""
+"Wenn Sie dieses Problem sicher reproduzieren können, kontaktieren Sie uns "
+"bitte."
 
 msgid ""
 "If you want to share the TIFF or FITS file of your image, put a link to the "
@@ -762,13 +770,13 @@ msgid "Info"
 msgstr "Info"
 
 msgid "Infrared (IR)"
-msgstr ""
+msgstr "Infrarot (IR)"
 
 msgid "Initializing upload, please wait..."
 msgstr "Initialisierung des Uploads, bitte warten..."
 
 msgid "Internal server error"
-msgstr ""
+msgstr "Interner Serverfehler"
 
 msgid "Invalid data, please refresh the page and try again."
 msgstr ""
@@ -785,10 +793,10 @@ msgid "It looks like you reached the upload limit for your subscription."
 msgstr "Wahrscheinlich haben Sie das Upload-Limit für Ihr Abonnement erreicht."
 
 msgid "Item approved."
-msgstr ""
+msgstr "Gegenstand genehmigt."
 
 msgid "Item rejected."
-msgstr ""
+msgstr "Gegenstand abgelehnt."
 
 msgid "Item summary"
 msgstr "Artikelübersicht"
@@ -812,7 +820,7 @@ msgid "Large"
 msgstr "Groß"
 
 msgid "Last update"
-msgstr ""
+msgstr "Letztes Update"
 
 msgid "Latest topics"
 msgstr "Neueste Beiträge"
@@ -821,13 +829,13 @@ msgid "Learn more"
 msgstr "Mehr erfahren"
 
 msgid "Legacy item being migrated"
-msgstr ""
+msgstr "Älterer Gegenstand wird migriert"
 
 msgid "License"
 msgstr "Lizenz"
 
 msgid "Light pollution suppression"
-msgstr ""
+msgstr "Unterdrückung der Lichtverschmutzung"
 
 msgid "Link"
 msgstr "Link"
@@ -836,7 +844,7 @@ msgid "Link to TIFF/FITS"
 msgstr "Link zum TIFF/FITS"
 
 msgid "Loading edit proposals"
-msgstr ""
+msgstr "Laden von Bearbeitungsvorschlägen"
 
 msgid "Loading..."
 msgstr "Ladevorgang …"
@@ -854,7 +862,7 @@ msgid "Logging you out securely..."
 msgstr "Sicheres Abmelden..."
 
 msgid "Login required"
-msgstr ""
+msgstr "Login nötig"
 
 msgid "Logo"
 msgstr "Logo"
@@ -866,10 +874,10 @@ msgid "Lucky imaging"
 msgstr "Lucky imaging"
 
 msgid "Luminance/clear (L)"
-msgstr ""
+msgstr "Luminanz/Klar (L)"
 
 msgid "Lunar"
-msgstr ""
+msgstr "Mond"
 
 msgid "Main solar system subject"
 msgstr "Objekt im Sonnensystem"
@@ -878,7 +886,7 @@ msgid "Mark all as read"
 msgstr "Alle als gelesen markieren"
 
 msgid "Mark as"
-msgstr ""
+msgstr "Kennzeichnen als"
 
 msgid "Mark as final"
 msgstr "Als finale Version markieren"
@@ -896,7 +904,7 @@ msgid "Max. focal length"
 msgstr "Max. Brennweite"
 
 msgid "Max. payload"
-msgstr ""
+msgstr "Max. Nutzlast"
 
 msgid "Max. {{ max }} MB / image"
 msgstr "Max. {{ max }} MB / Bild"
@@ -926,10 +934,10 @@ msgid "Meters above sea level"
 msgstr "Meter über NN"
 
 msgid "Migrate"
-msgstr ""
+msgstr "migrieren"
 
 msgid "Migrate into"
-msgstr ""
+msgstr "migrieren in"
 
 msgid "Min. focal length"
 msgstr "Min. Brennweite"
@@ -944,13 +952,13 @@ msgid "Moderate"
 msgstr "Moderieren"
 
 msgid "Modified"
-msgstr ""
+msgstr "Geändert"
 
 msgid "Mono"
 msgstr "Mono"
 
 msgid "Mount"
-msgstr ""
+msgstr "Montierung"
 
 msgid "Mounts"
 msgstr "Montierungen"
@@ -962,10 +970,10 @@ msgid "Move the map until the marker points at right location"
 msgstr "Verschieben Sie die Karte, bis der Marker auf die richtige Stelle zeigt"
 
 msgid "Multiband"
-msgstr ""
+msgstr "Multiband"
 
 msgid "Multiple items"
-msgstr ""
+msgstr "Mehrere Gegenstände"
 
 msgid "My messages"
 msgstr "Meine Nachrichten"
@@ -980,28 +988,30 @@ msgid "Name"
 msgstr "Name"
 
 msgid "Name/Model"
-msgstr ""
+msgstr "Name/Model"
 
 msgid "Neptune"
 msgstr "Neptun"
 
 msgid "Neutral density (ND)"
-msgstr ""
+msgstr "Neutrale Dichte (ND)"
 
 msgid "Newest first"
-msgstr ""
+msgstr "neuestes zuerst"
 
 msgid "Next"
 msgstr "Nächster"
 
 msgid "Nitrogen-II (NII)"
-msgstr ""
+msgstr "Stickstoff-II (SII)"
 
 msgid "No"
 msgstr "Kein"
 
 msgid "No changes are proposed, or all proposed changes are outdated."
 msgstr ""
+"Es werden keine Änderungen vorgeschlagen, oder alle vorgeschlagenen "
+"Änderungen sind veraltet."
 
 msgid "No items found."
 msgstr "Keine Elemente gefunden."
@@ -1031,7 +1041,7 @@ msgid "Northern lights"
 msgstr "Polarlichter"
 
 msgid "Not enough info"
-msgstr ""
+msgstr "Nicht genug Informationen"
 
 msgid "Nothing"
 msgstr "Nichts"
@@ -1043,7 +1053,7 @@ msgid "Notifications"
 msgstr "Benachrichtigungen"
 
 msgid "Number of pixels"
-msgstr ""
+msgstr "Anzahl der Pixel"
 
 msgid "Number of pixels across the X axis"
 msgstr "Anzahl der Pixel auf der X-Achse"
@@ -1052,7 +1062,7 @@ msgid "Number of pixels across the Y axis"
 msgstr "Anzahl der Pixel auf der Y-Achse"
 
 msgid "Object ID"
-msgstr ""
+msgstr "Objekt ID"
 
 msgid "Occultation"
 msgstr "Bedeckung"
@@ -1061,7 +1071,7 @@ msgid "Official (or official looking) product image. Max. 1MB."
 msgstr "Offizielles (oder offiziell aussehendes) Produktbild. Max. 1MB."
 
 msgid "Oldest first"
-msgstr ""
+msgstr "ältestes zuerst"
 
 msgid "On-site"
 msgstr "Vor Ort"
@@ -1086,10 +1096,10 @@ msgid "Own remote observatory"
 msgstr "Eigene Sternwarte, ferngesteuert"
 
 msgid "Oxygen-III (OIII)"
-msgstr ""
+msgstr "Oxygen-III (OIII)"
 
 msgid "PEC"
-msgstr ""
+msgstr "PEC"
 
 msgid "Partial lunar eclipse"
 msgstr "Partielle Mondfinsternis"
@@ -1113,7 +1123,7 @@ msgid "Pending review"
 msgstr "Überprüfung anstehend"
 
 msgid "Periodic error correction"
-msgstr ""
+msgstr "Korrektur des periodischen Fehlers"
 
 msgid "Permission denied"
 msgstr "Zugriff verboten"
@@ -1124,22 +1134,22 @@ msgid ""
 msgstr ""
 
 msgid "Photometric Blue"
-msgstr ""
+msgstr "Photometrisch Blau"
 
 msgid "Photometric Infrared"
-msgstr ""
+msgstr "Photometrisch Infrarot"
 
 msgid "Photometric Red"
-msgstr ""
+msgstr "Photometrisch Rot"
 
 msgid "Photometric Ultraviolet"
-msgstr ""
+msgstr "Photometrisch Ultraviolet"
 
 msgid "Photometric Visual"
-msgstr ""
+msgstr "Photometrisch Visuell"
 
 msgid "Pinch & zoom to view details closer."
-msgstr ""
+msgstr "Ziehen und zoomen Sie, um Details zu vergrößern."
 
 msgid "Pixel size"
 msgstr "Pixelgröße"
@@ -1161,6 +1171,8 @@ msgstr "Anmerkungen zur Astrometrierung (falls verfügbar)"
 
 msgid "Please DO NOT approve this item if it's a duplicate of another one!"
 msgstr ""
+"Bitte genehmigen Sie diesen Gegenstand NICHT, wenn er ein Duplikat eines "
+"anderen ist!"
 
 msgid "Please check that all required fields have been filled at every step."
 msgstr "Bitte prüfen Sie bei jedem Schritt, ob alle Pflichtfelder ausgefüllt sind."
@@ -1205,14 +1217,21 @@ msgid ""
 "modified for astrophotography, e.g. the <strong>Canon EOS 60Da</strong> you "
 "<strong>do not</strong> need to use check this option."
 msgstr ""
+"Bitte tun Sie dies nur für DSLR-Kameras, die normalerweise für die "
+"Astrofotografie modifiziert sind. Wenn es sich um eine Kamera handelt, die "
+"<em>speziell</em> als modifiziert für die Astrofotografie verkauft wird, "
+"wie z.B. die <strong>Canon EOS 60Da</strong> verwenden Sie diese Option "
+"<strong>nicht</strong> ."
 
 msgid "Please read the equipment migration guidelines"
-msgstr ""
+msgstr "Bitte lesen Sie die Richtlinien zur Migration von Ausrüstung"
 
 msgid ""
 "Please use a device with a minimum horizontal resolution of 1024 pixels to "
 "view this content."
 msgstr ""
+"Bitte verwenden Sie ein Gerät mit einer horizontalen Auflösung von "
+"mindestens 1024 Pixeln, um diesen Inhalt zu sehen."
 
 msgid "Please wait until your subscription expires, then come back to this page."
 msgstr ""
@@ -1223,7 +1242,7 @@ msgid "Plots"
 msgstr "Graphen"
 
 msgid "Portable English"
-msgstr ""
+msgstr "Portable English"
 
 msgid "Position"
 msgstr "Position"
@@ -1247,7 +1266,7 @@ msgid "Propose edit"
 msgstr "Vorschlag bearbeiten"
 
 msgid "Proposed by"
-msgstr ""
+msgstr "Vorgeschlagen von"
 
 msgid "Proposer's comment"
 msgstr "Kommentar des Vorschlagenden"
@@ -1279,16 +1298,16 @@ msgid "Quick search"
 msgstr "Schnellsuche"
 
 msgid "Read"
-msgstr ""
+msgstr "Lesen"
 
 msgid "Read noise"
 msgstr "Auslöserauschen"
 
 msgid "Reason"
-msgstr ""
+msgstr "Grund"
 
 msgid "Red channel (R)"
-msgstr ""
+msgstr "Roter Kanal (R)"
 
 msgid "Reflector: Dall-Kirkham"
 msgstr ""
