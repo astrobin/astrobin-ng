@@ -16,10 +16,12 @@ import { IsSuperUserPipe } from "./is-superuser.pipe";
 import { CamelCaseToSentenceCasePipe } from "@shared/pipes/camel-case-to-sentence-case.pipe";
 import { IsEquipmentModeratorPipe } from "@shared/pipes/is-equipment-moderator.pipe";
 import { IsInGroupPipe } from "@shared/pipes/is-in-group.pipe";
+import { FileSizePipe } from "@shared/pipes/filesize.pipe";
 
 const pipes = [
   CamelCaseToSentenceCasePipe,
   EnsureUrlProtocolPipe,
+  FileSizePipe,
   IsContentModeratorPipe,
   IsImageModeratorPipe,
   IsIotdJudgePipe,

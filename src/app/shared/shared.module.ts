@@ -37,7 +37,6 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 import { NgWizardModule, THEME } from "ng-wizard";
 import { StickyNavModule } from "ng2-sticky-nav";
 import { CookieService } from "ngx-cookie-service";
-import { NgxFilesizeModule } from "ngx-filesize";
 import { ImageCropperModule } from "ngx-image-cropper";
 import { TimeagoModule } from "ngx-timeago";
 import { ToastrModule } from "ngx-toastr";
@@ -51,7 +50,6 @@ import { CustomTranslateParser } from "@app/translate-parser";
 import { LanguageLoader } from "@app/translate-loader";
 import { DirectivesModule } from "@shared/directives/directives.module";
 import { CustomToastComponent } from "@shared/components/misc/custom-toast/custom-toast.component";
-
 
 export function appInitializer(store: Store<State>, actions$: Actions) {
   return () =>
@@ -93,7 +91,6 @@ export function appInitializer(store: Store<State>, actions$: Actions) {
     NgbPopoverModule,
     NgbProgressbarModule,
     NgSelectModule,
-    NgxFilesizeModule,
     NgWizardModule.forRoot({
       theme: THEME.default,
       anchorSettings: {
@@ -151,7 +148,6 @@ export function appInitializer(store: Store<State>, actions$: Actions) {
     NgbPopoverModule,
     NgbProgressbarModule,
     NgSelectModule,
-    NgxFilesizeModule,
     NgWizardModule,
     ToastrModule,
     TimeagoModule,

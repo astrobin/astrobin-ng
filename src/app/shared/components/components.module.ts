@@ -31,7 +31,6 @@ import { TelescopeComponent } from "@shared/components/misc/telescope/telescope.
 import { TextLoadingIndicatorComponent } from "@shared/components/misc/text-loading-indicator/text-loading-indicator.component";
 import { PipesModule } from "@shared/pipes/pipes.module";
 import { NgWizardModule } from "ng-wizard";
-import { NgxFilesizeModule } from "ngx-filesize";
 import { ImageCropperModule } from "ngx-image-cropper";
 import { NgxImageZoomModule } from "ngx-image-zoom";
 import { UploadxModule } from "ngx-uploadx";
@@ -91,7 +90,6 @@ const modules = [
   NgbTooltipModule,
   NgSelectModule,
   NgToggleModule,
-  NgxFilesizeModule,
   NgxImageZoomModule,
   NgWizardModule,
   PipesModule,
