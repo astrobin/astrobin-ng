@@ -11,7 +11,7 @@ msgid "(modified)"
 msgstr "定制的"
 
 msgid "(optional)"
-msgstr ""
+msgstr "（可选的）"
 
 msgid ""
 "0 means invisible; 100 means completely opaque. Recommended values are: 10 "
@@ -28,28 +28,31 @@ msgid ""
 "<strong>for all AstroBin images that use it</strong>, so you should not "
 "change the name if it becomes a different product."
 msgstr ""
+"<strong>小心！</strong>更改名称只是为了更正拼写错误或命名规范。 "
+"此操作将更改此设备项目的名称，并对<strong>所有使用它的AstroBin "
+"图像</strong>的图像生效，因此如果它变成了不同的产品，则您不应更改其名称。"
 
 msgid ""
 "<strong>Careful!</strong> The item's name contains the brand's name (or "
 "vice versa), and it probably shouldn't."
-msgstr ""
+msgstr "<strong>小心！</strong>项目名称中已经包含了品牌名称（或与此相反），实际上它们不应该如此。"
 
 msgid "A brand with this name already exists."
-msgstr ""
+msgstr "同名品牌已存在。"
 
 msgid "A brand with this website already exists."
-msgstr ""
+msgstr "同网站的品牌已经存在。"
 
 msgid ""
 "A positive whole number that represents how many Celsius below ambient "
 "temperature this camera can be cooled."
-msgstr ""
+msgstr "输入一个正整数，表示相机相对环境温度的最大制冷温度（摄氏度）。"
 
 msgid "A-Z explorer"
 msgstr "A-Z顺序浏览"
 
 msgid "ADC"
-msgstr ""
+msgstr "ADC"
 
 msgid "API Keys"
 msgstr "API Keys"
@@ -61,7 +64,7 @@ msgid "Access denied."
 msgstr "拒绝访问。"
 
 msgid "Accessories"
-msgstr ""
+msgstr "配件"
 
 msgid "Accessory"
 msgstr "附件"
@@ -82,7 +85,7 @@ msgid "Allow comments"
 msgstr "允许评论"
 
 msgid "Allow full-size display"
-msgstr ""
+msgstr "允许全尺寸显示"
 
 msgid "Alt-Alt (altitude-altitude)"
 msgstr "高度角-高度角"
@@ -91,7 +94,7 @@ msgid "Alt-Az (altazimuth)"
 msgstr "高度角-方位角"
 
 msgid "Altitude"
-msgstr ""
+msgstr "海拔高度"
 
 msgid "Amateur hosting facility"
 msgstr "业余托管天文台"
@@ -106,7 +109,7 @@ msgid "An item of the same class, brand, and name already exists."
 msgstr "已经存在同品牌、类型的项目"
 
 msgid "Analog to Digital Converter"
-msgstr ""
+msgstr "模拟-数字转换器"
 
 msgid "And much more!"
 msgstr "还有更多！"
@@ -115,19 +118,19 @@ msgid "Anular solar eclipse"
 msgstr "日环食"
 
 msgid "Aperture"
-msgstr ""
+msgstr "光圈"
 
 msgid "Apply watermark to image"
 msgstr "为这幅作品添加水印"
 
 msgid "Approve"
-msgstr "批准"
+msgstr "审核"
 
 msgid "Approve edit"
-msgstr "批准编辑"
+msgstr "审核编辑"
 
 msgid "Approved"
-msgstr "已批准"
+msgstr "已审核"
 
 msgid "Are you sure?"
 msgstr "确定？"
@@ -141,7 +144,7 @@ msgid ""
 msgstr "AstroBin 无法将您的文件读取为图像。 请尝试其他格式。"
 
 msgid "AstroBin does not share your coordinates with anyone."
-msgstr ""
+msgstr "AstroBin 不会向任何人分享您的坐标。"
 
 msgid ""
 "AstroBin doesn't support subscription upgrades at the moment, but we're "
@@ -157,7 +160,7 @@ msgstr ""
 msgid ""
 "AstroBin encountered an internal error. Please try again and contact us if "
 "the problem persists!"
-msgstr ""
+msgstr "AstroBin遇到内部错误。 请再试一次，如果问题仍然存在，请联系我们！"
 
 msgid "AstroBin is generating a large thumbnail."
 msgstr "AstroBin正在生成大缩略图。"
@@ -174,22 +177,22 @@ msgid "Astrophotographers list"
 msgstr "天文摄影师列表"
 
 msgid "Attribution Creative Commons"
-msgstr ""
+msgstr "授权方式"
 
 msgid "Attribution-NoDerivs Creative Commons"
-msgstr ""
+msgstr "禁止演绎"
 
 msgid "Attribution-NonCommercial Creative Commons"
-msgstr ""
+msgstr "非商业性使用"
 
 msgid "Attribution-NonCommercial-NoDerivs Creative Commons"
-msgstr ""
+msgstr "非商业性使用-禁止共享"
 
 msgid "Attribution-NonCommercial-ShareAlike Creative Commons"
-msgstr ""
+msgstr "非商业性使用-相同方式共享"
 
 msgid "Attribution-ShareAlike Creative Commons"
-msgstr ""
+msgstr "相同方式共享"
 
 msgid "Authentication error. Please log out and in again."
 msgstr "授权错误。请注销并再次登录。"
@@ -201,7 +204,7 @@ msgid "Autorenew"
 msgstr "自动更新"
 
 msgid "Back focus"
-msgstr ""
+msgstr "后截距"
 
 msgid "Backyard"
 msgstr "后院拍摄"
@@ -240,7 +243,7 @@ msgid "Bottom right"
 msgstr "右下"
 
 msgid "Brand"
-msgstr ""
+msgstr "品牌"
 
 msgid "Brand/Make"
 msgstr "品牌/制造商"
@@ -249,16 +252,16 @@ msgid "Buy"
 msgstr "购买"
 
 msgid "Camera"
-msgstr ""
+msgstr "相机"
 
 msgid "Camera back focus in mm."
-msgstr ""
+msgstr "相机的后截距（毫米）"
 
 msgid "Camera lens"
 msgstr "相机镜头"
 
 msgid "Cameras"
-msgstr ""
+msgstr "相机"
 
 msgid "Cancel"
 msgstr "取消"
@@ -282,39 +285,39 @@ msgid "Catadioptric: Maksutov"
 msgstr "折返式：马克苏托夫"
 
 msgid "Catadioptric: Maksutov-Cassegrain"
-msgstr ""
+msgstr "折返式：马克苏托夫-卡塞格林"
 
 msgid "Catadioptric: Rowe-Atkinson Schmidt astrograph"
-msgstr ""
+msgstr "折返式：罗-阿特金森-施密特摄星仪（RASA）"
 
 msgid "Catadioptric: Schmidt camera"
-msgstr ""
+msgstr "折返式：施密特相机"
 
 msgid "Catadioptric: Schmidt-Cassegrain"
-msgstr ""
+msgstr "折返式：施密特-卡塞格林"
 
 msgid "Catadioptric: modified Dall-Kirkham"
-msgstr ""
+msgstr "折返式：改正版达尔-科克汉姆（DK）"
 
 msgid "Celsius degrees below ambient"
-msgstr ""
+msgstr "低于环境温度的摄氏度数"
 
 msgid "Center"
 msgstr "中心"
 
 msgid "Changes"
-msgstr ""
+msgstr "更改"
 
 msgid ""
 "Check this box if this item is self-made, and/or was never on the market as "
 "a commercial product, and therefore does not have a brand."
-msgstr ""
+msgstr "如果此项目是自制的，从未作为正式产品发售，因此没有品牌，请勾选此框。"
 
 msgid "Choose file"
-msgstr ""
+msgstr "选择文件"
 
 msgid "Choose files"
-msgstr ""
+msgstr "选择文件"
 
 msgid ""
 "Choose what will be displayed when somebody hovers the mouse over this "
@@ -323,31 +326,31 @@ msgid ""
 msgstr "选择当鼠标悬停在此作品上时，将显示的内容。请注意：只有修订作品与原始作品具有相同宽度和高度时可用。"
 
 msgid "Class"
-msgstr ""
+msgstr "分类"
 
 msgid "Click on the image and scroll to magnify up to 8x."
 msgstr "单击图像并滚动以放大至最大8倍。"
 
 msgid "Close"
-msgstr ""
+msgstr "关闭"
 
 msgid "Color"
-msgstr ""
+msgstr "彩色的"
 
 msgid "Color or mono"
-msgstr ""
+msgstr "彩色或黑白"
 
 msgid "Comet"
 msgstr "彗星"
 
 msgid "Cometary"
-msgstr ""
+msgstr "彗星"
 
 msgid "Comment"
-msgstr ""
+msgstr "评论"
 
 msgid "Comments"
-msgstr ""
+msgstr "评论"
 
 msgid "Commercial facilities"
 msgstr "商业性机构"
@@ -356,28 +359,28 @@ msgid "Commercial products"
 msgstr "商业产品"
 
 msgid "Computerized"
-msgstr ""
+msgstr "计算化的"
 
 msgid "Confirm"
-msgstr ""
+msgstr "确认"
 
 msgid "Confirm item creation"
-msgstr ""
+msgstr "确认创建项目"
 
 msgid "Confirm migration"
-msgstr ""
+msgstr "确认迁移"
 
 msgid "Confirm selected migrations"
-msgstr ""
+msgstr "确认迁移选中的"
 
 msgid "Conflict detected"
-msgstr ""
+msgstr "检测到冲突"
 
 msgid "Conjunction"
 msgstr "合星"
 
 msgid "Constellations"
-msgstr ""
+msgstr "星座"
 
 msgid "Contact"
 msgstr "联系我们"
@@ -386,37 +389,37 @@ msgid "Content"
 msgstr "内容"
 
 msgid "Contribution Index"
-msgstr ""
+msgstr "贡献榜"
 
 msgid "Contributors list"
 msgstr "贡献榜"
 
 msgid "Cooled"
-msgstr ""
+msgstr "制冷的"
 
 msgid "Create"
-msgstr ""
+msgstr "创建"
 
 msgid "Create a new item"
-msgstr ""
+msgstr "创建新项目"
 
 msgid "Create new brand"
-msgstr ""
+msgstr "创建新品牌"
 
 msgid "Create new location"
-msgstr ""
+msgstr "创建新地点"
 
 msgid "Create new sensor"
-msgstr ""
+msgstr "创建新传感器"
 
 msgid "Create new:"
-msgstr ""
+msgstr "创建新的："
 
 msgid "Created by"
-msgstr ""
+msgstr "创建者："
 
 msgid "DIY"
-msgstr ""
+msgstr "DIY"
 
 msgid "Data source"
 msgstr "数据来源"
@@ -425,7 +428,7 @@ msgid "Date"
 msgstr "日期"
 
 msgid "Dedicated deep-sky camera"
-msgstr ""
+msgstr "深空摄影专用相机"
 
 msgid "Deep sky object or field"
 msgstr "深空天体或深空视场"
@@ -434,7 +437,7 @@ msgid "Description"
 msgstr "描述"
 
 msgid "Disable high contrast theme"
-msgstr ""
+msgstr "禁用高对比度主题"
 
 msgid "Dismiss"
 msgstr "关闭"
@@ -443,16 +446,16 @@ msgid "Dismiss image"
 msgstr "关闭图像"
 
 msgid "Display download menu"
-msgstr ""
+msgstr "显示下载菜单"
 
 msgid "Do not notify your followers about this revision."
 msgstr "不将此次修订通知您的粉丝。"
 
 msgid "Dobsonian"
-msgstr ""
+msgstr "道布森"
 
 msgid "Don't remind me for a month"
-msgstr ""
+msgstr "本月不再提示"
 
 msgid "Downloaded"
 msgstr "远程拍摄下载的"
@@ -464,10 +467,10 @@ msgid "Drop file here or click to browse"
 msgstr "将文件拖放至此，或点击浏览"
 
 msgid "Dual Alt-Az/Equatorial"
-msgstr ""
+msgstr "AZ/EQ赤道仪"
 
 msgid "E-mail"
-msgstr ""
+msgstr "电子邮箱"
 
 msgid "Earth's Moon"
 msgstr "月亮"
@@ -476,13 +479,13 @@ msgid "Edit"
 msgstr "编辑"
 
 msgid "Edit proposal by"
-msgstr ""
+msgstr "建议提议人"
 
 msgid "Edit proposal comment"
-msgstr ""
+msgstr "编辑建议评论"
 
 msgid "Editing this field is not possible."
-msgstr ""
+msgstr "无法编辑此字段。"
 
 msgid "Electronically-Assisted Astronomy (EAA, e.g. based on a live video feed)"
 msgstr "电子辅助天文观测（EAA，例如基于实时视传输）"
@@ -491,31 +494,31 @@ msgid "Email"
 msgstr "电子邮件"
 
 msgid "Enable high contrast theme"
-msgstr ""
+msgstr "启用高对比度主题"
 
 msgid "Enjoy your unlimited revisions per image!"
-msgstr ""
+msgstr "享受每幅图像的无限修订吧！"
 
 msgid "Equatorial"
-msgstr ""
+msgstr "赤道仪"
 
 msgid "Equipment"
-msgstr ""
+msgstr "设备"
 
 msgid "Equipment explorer"
-msgstr ""
+msgstr "设备浏览器"
 
 msgid "Equipment pending edit"
-msgstr ""
+msgstr "待编辑设备"
 
 msgid "Equipment pending review"
-msgstr ""
+msgstr "待审核设备"
 
 msgid "Error!"
 msgstr "错误！"
 
 msgid "Everybody"
-msgstr ""
+msgstr "所有人"
 
 msgid "Expiration date"
 msgstr "失效日期"
@@ -524,7 +527,7 @@ msgid "Explore"
 msgstr "探索"
 
 msgid "Explorer"
-msgstr ""
+msgstr "浏览器"
 
 msgid "Extremely wide field"
 msgstr "超广角"
@@ -535,34 +538,34 @@ msgstr "FAQ"
 msgid ""
 "File too large. If you just upgraded your subscription, please try again in "
 "a few minutes. Thanks!"
-msgstr ""
+msgstr "文件太大。如果您刚刚上传了一个修订版，请几分钟之后再次尝试。谢谢！"
 
 msgid "File type not supported"
 msgstr "不支持此格式"
 
 msgid "Film camera"
-msgstr ""
+msgstr "胶片相机"
 
 msgid "Filter"
-msgstr ""
+msgstr "滤镜"
 
 msgid "Filters"
-msgstr ""
+msgstr "滤镜"
 
 msgid "Finalizing upload, please wait..."
 msgstr "正在完成上传，请稍候..."
 
 msgid "Find equipment item"
-msgstr ""
+msgstr "查找设备项目"
 
 msgid "Find images"
-msgstr ""
+msgstr "查找作品"
 
 msgid "Fixed focal length"
-msgstr ""
+msgstr "固定焦距"
 
 msgid "Focal length"
-msgstr ""
+msgstr "焦距"
 
 msgid ""
 "For more information about this and other subscription plans, please visit "
@@ -578,52 +581,52 @@ msgid ""
 msgstr "因此，您目前无法购买，因为 AstroBin 当前不提供降级服务。"
 
 msgid "Fork"
-msgstr ""
+msgstr "叉式"
 
 msgid "Forum"
 msgstr "论坛"
 
 msgid "Forums"
-msgstr ""
+msgstr "论坛"
 
 msgid "Frame rate"
-msgstr ""
+msgstr "帧率"
 
 msgid "Full search"
 msgstr "全局搜索"
 
 msgid "Full well capacity"
-msgstr ""
+msgstr "满阱电荷容量"
 
 msgid "Gear"
 msgstr "器材"
 
 msgid "Gear renaming proposals"
-msgstr ""
+msgstr "设备重命名建议"
 
 msgid "General purpose DSLR or mirrorless camera"
-msgstr ""
+msgstr "通用单反相机或无反相机"
 
 msgid "General purpose video camera"
-msgstr ""
+msgstr "通用摄像机"
 
 msgid "German equatorial"
-msgstr ""
+msgstr "德式赤道仪"
 
 msgid "Get random"
-msgstr ""
+msgstr "随机"
 
 msgid "Go back to the home page."
 msgstr "回到首页。"
 
 msgid "Green channel (G)"
-msgstr ""
+msgstr "绿色通道（G）"
 
 msgid "Groups"
 msgstr "小组"
 
 msgid "Guider or planetary camera"
-msgstr ""
+msgstr "导星或行星相机"
 
 msgid "HTML tags are allowed."
 msgstr "允许HTML标签。"
@@ -641,7 +644,7 @@ msgid "Help with translations!"
 msgstr "协助翻译！"
 
 msgid "Hexapod"
-msgstr ""
+msgstr "六足式"
 
 msgid "Hide"
 msgstr "隐藏"
@@ -650,21 +653,21 @@ msgid "Home"
 msgstr "首页"
 
 msgid "Hydrogen-alpha (Hα)"
-msgstr ""
+msgstr "氢-α（Hα）"
 
 msgid "Hydrogen-beta (Hβ)"
-msgstr ""
+msgstr "氢-β（H-β）"
 
 msgid "IOTD"
-msgstr ""
+msgstr "今日最佳"
 
 msgid "IOTD/TP Staff"
-msgstr ""
+msgstr "今日最佳/热门精选 员工"
 
 msgid ""
 "If selected, AstroBin will automatically create a variant of this object "
 "that is labeled as <em>modified for astrophotography</em>."
-msgstr ""
+msgstr "如果勾选，AstroBin将自动创建该对象的变体，标记为“天文摄影定制”"
 
 msgid ""
 "If selected, AstroBin will use a resizing algorithm that slightly sharpens "
@@ -676,9 +679,11 @@ msgid ""
 "already published on AstroBin, the common practice would be to upload it as "
 "a new revision. For more info, please {{0}}click here{{1}}."
 msgstr ""
+"如果此作品与您发布在AstroBin上的另一幅作品有着相同的数据源，通常的做法是将这幅作品作为之前作品的修订版上传。要了解更多，请 "
+"{{0}}点击这里{{1}}。"
 
 msgid "If you can reproduce this issue reliably, please contact us."
-msgstr ""
+msgstr "如果您能复现此问题，请与我们联系。"
 
 msgid ""
 "If you want to share the TIFF or FITS file of your image, put a link to the "
@@ -697,10 +702,10 @@ msgid "Image"
 msgstr "作品"
 
 msgid "Image Index"
-msgstr ""
+msgstr "作品指数"
 
 msgid "Image of the Day / Top Picks"
-msgstr ""
+msgstr "今日最佳 / 热门精选"
 
 msgid "Image of the day"
 msgstr "今日最佳"
@@ -721,13 +726,13 @@ msgid "Info"
 msgstr "信息"
 
 msgid "Infrared (IR)"
-msgstr ""
+msgstr "红外（IR）"
 
 msgid "Initializing upload, please wait..."
 msgstr "初始化上传，请稍候..."
 
 msgid "Internal server error"
-msgstr ""
+msgstr "内部服务器错误"
 
 msgid "Invalid data, please refresh the page and try again."
 msgstr "无效数据，请刷新页面并重试。"
@@ -736,25 +741,25 @@ msgid "Inverted monochrome"
 msgstr "反转黑白"
 
 msgid "It looks like you reached the revision upload limit for your subscription."
-msgstr ""
+msgstr "看起来您已达到当前订阅的版本上载上传限制。"
 
 msgid "It looks like you reached the upload limit for your subscription."
 msgstr "看起来您已经达到了当前订阅的上传上限。"
 
 msgid "Item approved."
-msgstr ""
+msgstr "项目已通过审核。"
 
 msgid "Item rejected."
-msgstr ""
+msgstr "项目被驳回。"
 
 msgid "Item summary"
-msgstr ""
+msgstr "项目摘要"
 
 msgid "Judgement queue"
 msgstr "评审列队"
 
 msgid "Jump to"
-msgstr ""
+msgstr "跳转至"
 
 msgid "Jupiter"
 msgstr "木星"
@@ -769,7 +774,7 @@ msgid "Large"
 msgstr "大"
 
 msgid "Last update"
-msgstr ""
+msgstr "最近更新"
 
 msgid "Latest topics"
 msgstr "最新主题"
@@ -778,13 +783,13 @@ msgid "Learn more"
 msgstr "了解更多"
 
 msgid "Legacy item being migrated"
-msgstr ""
+msgstr "正在迁移的旧项目"
 
 msgid "License"
-msgstr ""
+msgstr "许可协议"
 
 msgid "Light pollution suppression"
-msgstr ""
+msgstr "光害抑制"
 
 msgid "Link"
 msgstr "链接"
@@ -793,28 +798,28 @@ msgid "Link to TIFF/FITS"
 msgstr "链接到 TIFF/FITS 文件"
 
 msgid "Loading edit proposals"
-msgstr ""
+msgstr "加载编辑建议"
 
 msgid "Loading..."
 msgstr "加载中..."
 
 msgid "Locations"
-msgstr ""
+msgstr "地点"
 
 msgid "Log in"
 msgstr "登录"
 
 msgid "Logging you in securely..."
-msgstr ""
+msgstr "安全登录..."
 
 msgid "Logging you out securely..."
-msgstr ""
+msgstr "安全登出..."
 
 msgid "Login required"
-msgstr ""
+msgstr "需要登录"
 
 msgid "Logo"
-msgstr ""
+msgstr "Logo"
 
 msgid "Logout"
 msgstr "登出"
@@ -823,10 +828,10 @@ msgid "Lucky imaging"
 msgstr "幸运成像"
 
 msgid "Luminance/clear (L)"
-msgstr ""
+msgstr "明度/透明（L）"
 
 msgid "Lunar"
-msgstr ""
+msgstr "月亮"
 
 msgid "Main solar system subject"
 msgstr "主要的太阳系目标"
@@ -835,7 +840,7 @@ msgid "Mark all as read"
 msgstr "全部标记为已读"
 
 msgid "Mark as"
-msgstr ""
+msgstr "标记为"
 
 msgid "Mark as final"
 msgstr "标记为最终版"
@@ -847,13 +852,13 @@ msgid "Mars"
 msgstr "火星"
 
 msgid "Max. cooling"
-msgstr ""
+msgstr "最大制冷"
 
 msgid "Max. focal length"
-msgstr ""
+msgstr "最大焦距"
 
 msgid "Max. payload"
-msgstr ""
+msgstr "最大负载"
 
 msgid "Max. {{ max }} MB / image"
 msgstr "最大。{{ max }} MB /图片"
@@ -865,31 +870,31 @@ msgid "Max. {{ max }} uploads"
 msgstr "最大。{{ max }} 上传张数"
 
 msgid "Me only"
-msgstr ""
+msgstr "仅我可见"
 
 msgid "Medium"
 msgstr "中"
 
 msgid "Members only"
-msgstr ""
+msgstr "仅成员可见"
 
 msgid "Mercury"
 msgstr "水星"
 
 msgid "Meteor shower"
-msgstr ""
+msgstr "流星雨"
 
 msgid "Meters above sea level"
-msgstr ""
+msgstr "海平面以上高度（米）"
 
 msgid "Migrate"
-msgstr ""
+msgstr "迁移"
 
 msgid "Migrate into"
-msgstr ""
+msgstr "迁移至"
 
 msgid "Min. focal length"
-msgstr ""
+msgstr "最小焦距"
 
 msgid "Minor planet"
 msgstr "小行星"
@@ -901,28 +906,28 @@ msgid "Moderate"
 msgstr "有限制的"
 
 msgid "Modified"
-msgstr ""
+msgstr "定制的"
 
 msgid "Mono"
-msgstr ""
+msgstr "单色的"
 
 msgid "Mount"
-msgstr ""
+msgstr "支架"
 
 msgid "Mounts"
-msgstr ""
+msgstr "支架"
 
 msgid "Mouse hover image"
 msgstr "鼠标悬停图像"
 
 msgid "Move the map until the marker points at right location"
-msgstr ""
+msgstr "移动地图，使标记指向正确的位置"
 
 msgid "Multiband"
-msgstr ""
+msgstr "多波段"
 
 msgid "Multiple items"
-msgstr ""
+msgstr "多个项目"
 
 msgid "My messages"
 msgstr "我的消息"
@@ -937,46 +942,46 @@ msgid "Name"
 msgstr "名称"
 
 msgid "Name/Model"
-msgstr ""
+msgstr "名称/型号"
 
 msgid "Neptune"
 msgstr "海王星"
 
 msgid "Neutral density (ND)"
-msgstr ""
+msgstr "中性灰（ND）"
 
 msgid "Newest first"
-msgstr ""
+msgstr "最新在最前"
 
 msgid "Next"
 msgstr "下一步"
 
 msgid "Nitrogen-II (NII)"
-msgstr ""
+msgstr "氮-II（NII）"
 
 msgid "No"
 msgstr "没有"
 
 msgid "No changes are proposed, or all proposed changes are outdated."
-msgstr ""
+msgstr "未提交任何变更，或所有提交的变更均已过期。"
 
 msgid "No items found."
-msgstr ""
+msgstr "未找到任何项目。"
 
 msgid "No plate-solving"
 msgstr "无解析数据"
 
 msgid "Nobody"
-msgstr ""
+msgstr "没有人"
 
 msgid "Noctilucent clouds"
-msgstr ""
+msgstr "夜光云"
 
 msgid "Non-commercial independent facility"
 msgstr "非商业性独立机构"
 
 msgid "None (All rights reserved)"
-msgstr ""
+msgstr "无（保留所有权利）"
 
 msgid "None of the above"
 msgstr "以上都不是"
@@ -988,45 +993,45 @@ msgid "Northern lights"
 msgstr "北极光"
 
 msgid "Not enough info"
-msgstr ""
+msgstr "信息不足"
 
 msgid "Nothing"
 msgstr "无"
 
 msgid "Notification settings"
-msgstr ""
+msgstr "消息提醒设置"
 
 msgid "Notifications"
 msgstr "通知"
 
 msgid "Number of pixels"
-msgstr ""
+msgstr "像素数量"
 
 msgid "Number of pixels across the X axis"
-msgstr ""
+msgstr "X轴上像素数量"
 
 msgid "Number of pixels across the Y axis"
-msgstr ""
+msgstr "Y轴上像素数量"
 
 msgid "Object ID"
-msgstr ""
+msgstr "目标ID"
 
 msgid "Occultation"
 msgstr "掩星"
 
 msgid "Official (or official looking) product image. Max. 1MB."
-msgstr ""
+msgstr "官方发布的（或官方形象）产品图像。最大1MB。"
 
 msgid "Oldest first"
-msgstr ""
+msgstr "最老在最前"
 
 msgid "On-site"
-msgstr ""
+msgstr "现场的"
 
 msgid ""
 "Oops! Your request fell in between two AstroBin servers. Please clear your "
 "cache and try again."
-msgstr ""
+msgstr "糟糕！您的请求发送到了两台服务器之间，请清除缓存并重试。"
 
 msgid "Opacity"
 msgstr "透明度"
@@ -1041,10 +1046,10 @@ msgid "Own remote observatory"
 msgstr "自有远程台"
 
 msgid "Oxygen-III (OIII)"
-msgstr ""
+msgstr "氧-III（OIII）"
 
 msgid "PEC"
-msgstr ""
+msgstr "PEC"
 
 msgid "Partial lunar eclipse"
 msgstr "月偏食"
@@ -1056,19 +1061,19 @@ msgid "Password"
 msgstr "密码"
 
 msgid "Paying members only"
-msgstr ""
+msgstr "仅限付费会员使用"
 
 msgid "Pending"
-msgstr ""
+msgstr "待定"
 
 msgid "Pending edit"
-msgstr ""
+msgstr "待编辑"
 
 msgid "Pending review"
-msgstr ""
+msgstr "待审核"
 
 msgid "Periodic error correction"
-msgstr ""
+msgstr "周期误差校正"
 
 msgid "Permission denied"
 msgstr "没有权限"
@@ -1076,46 +1081,46 @@ msgstr "没有权限"
 msgid ""
 "Permission denied. You don't have the required subscription level to "
 "perform this operation."
-msgstr ""
+msgstr "许可被拒。您没有执行此操作所需的订阅级别。"
 
 msgid "Photometric Blue"
-msgstr ""
+msgstr "蓝色测光"
 
 msgid "Photometric Infrared"
-msgstr ""
+msgstr "红外测光"
 
 msgid "Photometric Red"
-msgstr ""
+msgstr "红色测光"
 
 msgid "Photometric Ultraviolet"
-msgstr ""
+msgstr "紫外测光"
 
 msgid "Photometric Visual"
-msgstr ""
+msgstr "可见光测光"
 
 msgid "Pinch & zoom to view details closer."
-msgstr ""
+msgstr "两指缩放以查看更多细节"
 
 msgid "Pixel size"
-msgstr ""
+msgstr "像元大小"
 
 msgid "Pixel size (in μm)"
-msgstr ""
+msgstr "像元大小（微米）"
 
 msgid "Pixels"
-msgstr ""
+msgstr "像素"
 
 msgid "Pixels X"
-msgstr ""
+msgstr "X像素"
 
 msgid "Pixels Y"
-msgstr ""
+msgstr "Y像素"
 
 msgid "Plate-solution annotations (if available)"
 msgstr "解析标注（如果可用）"
 
 msgid "Please DO NOT approve this item if it's a duplicate of another one!"
-msgstr ""
+msgstr "如果此项目与其他项目重复，请不要通过！"
 
 msgid "Please check that all required fields have been filled at every step."
 msgstr "请再次检查，之前每一步中，所有的必填项目都已完成"
@@ -1132,7 +1137,7 @@ msgstr ""
 "}}{{ email_postfix }} 发送给我们，以便我们手动升级您的帐户 。"
 
 msgid "Please make sure that the information you entered is accurate."
-msgstr ""
+msgstr "请确保您输入的信息准确无误。"
 
 msgid "Please note"
 msgstr "请注意"
@@ -1151,14 +1156,16 @@ msgid ""
 "modified for astrophotography, e.g. the <strong>Canon EOS 60Da</strong> you "
 "<strong>do not</strong> need to use check this option."
 msgstr ""
+"请对非官方改装的相机之行此操作，如果这个相机是作为天文摄影的 <em>官方改机</em> 而发售的， 例如<strong>Canon EOS "
+"60Da</strong> 您<strong>不需要</strong> 勾选此选项。"
 
 msgid "Please read the equipment migration guidelines"
-msgstr ""
+msgstr "请阅读设备迁移指南"
 
 msgid ""
 "Please use a device with a minimum horizontal resolution of 1024 pixels to "
 "view this content."
-msgstr ""
+msgstr "请使用低横向分辨率高于1024像素的设备查看此内容。"
 
 msgid "Please wait until your subscription expires, then come back to this page."
 msgstr "请等待您的订阅到期，然后返回此页面。"
@@ -1167,7 +1174,7 @@ msgid "Plots"
 msgstr "空位"
 
 msgid "Portable English"
-msgstr ""
+msgstr "便携英式"
 
 msgid "Position"
 msgstr "位置"
@@ -1179,7 +1186,7 @@ msgid "Previous"
 msgstr "上一步"
 
 msgid "Private messages"
-msgstr ""
+msgstr "私信"
 
 msgid "Professional, scientific grade data"
 msgstr "专业、科研级数据"
@@ -1188,13 +1195,13 @@ msgid "Promote"
 msgstr "晋级"
 
 msgid "Propose edit"
-msgstr ""
+msgstr "建议编辑"
 
 msgid "Proposed by"
-msgstr ""
+msgstr "提交人"
 
 msgid "Proposer's comment"
-msgstr ""
+msgstr "提议者的评论"
 
 msgid ""
 "Provide a list of unique key/value pairs to tag this image with. Use the "
@@ -1212,58 +1219,58 @@ msgid "Published"
 msgstr "已发布"
 
 msgid "Quantum efficiency"
-msgstr ""
+msgstr "两字效率"
 
 msgid "Quick search"
 msgstr "快速搜索"
 
 msgid "Read"
-msgstr ""
+msgstr "已读"
 
 msgid "Read noise"
-msgstr ""
+msgstr "读出噪声"
 
 msgid "Reason"
-msgstr ""
+msgstr "原因"
 
 msgid "Red channel (R)"
-msgstr ""
+msgstr "红色通道（R）"
 
 msgid "Reflector: Dall-Kirkham"
-msgstr ""
+msgstr "反射式：达尔-科克汉姆（DK）"
 
 msgid "Reflector: Gregorian"
-msgstr ""
+msgstr "反射式：格里高利式"
 
 msgid "Reflector: Herschellian"
-msgstr ""
+msgstr "反射式：赫歇尔式"
 
 msgid "Reflector: Nasmyth"
-msgstr ""
+msgstr "反射式：纳兹米"
 
 msgid "Reflector: Newtonian"
-msgstr ""
+msgstr "反射式：牛顿"
 
 msgid "Reflector: Ritchey Chretien"
-msgstr ""
+msgstr "反射式：里奇-克莱琴"
 
 msgid "Refractor: achromatic"
-msgstr ""
+msgstr "折射式：消色差"
 
 msgid "Refractor: apochromatic"
-msgstr ""
+msgstr "折射式：复消色差"
 
 msgid "Refractor: non-achromatic Galilean"
-msgstr ""
+msgstr "折射式：非消色差伽利略式"
 
 msgid "Refractor: non-acrhmatic Keplerian"
-msgstr ""
+msgstr "折射式：非消色差开普勒式"
 
 msgid "Refractor: semi-apochromatic"
-msgstr ""
+msgstr "折射式：准复消色差"
 
 msgid "Refractor: superachromat"
-msgstr ""
+msgstr "折射式：超级复消色差"
 
 msgid "Register"
 msgstr "注册"
@@ -1272,13 +1279,13 @@ msgid "Regular (e.g. medium/long exposure with a CCD or DSLR)"
 msgstr "常规（例如，使用CCD或DSLR进行中/长时间曝光）"
 
 msgid "Reject"
-msgstr ""
+msgstr "拒绝"
 
 msgid "Reject edit"
-msgstr ""
+msgstr "拒绝编辑"
 
 msgid "Rejected"
-msgstr ""
+msgstr "已被拒绝"
 
 msgid "Remote astrophotography"
 msgstr "远程天文摄影"
@@ -1287,13 +1294,13 @@ msgid "Remote data source"
 msgstr "远程台数据源"
 
 msgid "Reply"
-msgstr ""
+msgstr "回复"
 
 msgid "Reset password"
 msgstr "重置密码"
 
 msgid "Retract"
-msgstr ""
+msgstr "收回"
 
 msgid "Retract promotion"
 msgstr "撤销晋级"
@@ -1305,10 +1312,10 @@ msgid "Review queue"
 msgstr "审查列队"
 
 msgid "Reviewed by"
-msgstr ""
+msgstr "评审人"
 
 msgid "Reviewer's comment"
-msgstr ""
+msgstr "审核人的评论"
 
 msgid "Revision uploader"
 msgstr "修订版上传工具"
@@ -1329,7 +1336,7 @@ msgid "Save and proceed to image"
 msgstr "保存并开始处理作品"
 
 msgid "Scroll to top"
-msgstr ""
+msgstr "滚动到顶部"
 
 msgid "Secure payment by Stripe™"
 msgstr "Stripe™安全付款"
@@ -1338,31 +1345,31 @@ msgid "Select an area of the image to be used as thumbnail in your gallery."
 msgstr "选择一张图，用作您图库的缩略图。"
 
 msgid "Select target item for the migration, or create a new one."
-msgstr ""
+msgstr "选择要迁移的目标项目，或创建一个新的。"
 
 msgid "Self acquired"
 msgstr "自己拍摄的"
 
 msgid "Self-made / non-commercial (no brand)"
-msgstr ""
+msgstr "自制的/未商业发售的（无品牌）"
 
 msgid "Sensor"
-msgstr ""
+msgstr "传感器"
 
 msgid "Sensor height"
-msgstr ""
+msgstr "传感器高度"
 
 msgid "Sensor size"
-msgstr ""
+msgstr "传感器尺寸"
 
 msgid "Sensor width"
-msgstr ""
+msgstr "传感器宽度"
 
 msgid "Sensors"
-msgstr ""
+msgstr "传感器"
 
 msgid "Service not available"
-msgstr ""
+msgstr "服务器不可用"
 
 msgid "Settings"
 msgstr "设置"
@@ -1377,7 +1384,7 @@ msgid ""
 "Since a regular and a modified variant of {{0}} were created, we didn't "
 "prefill the item selection dropdown, to allow you to select the correct "
 "variant for this migration."
-msgstr ""
+msgstr "因为已经创建了{{0}}的常规项目和变体，我们没有预先填充“项目选择”下拉列表，您可以为此迁移至正确的变体。"
 
 msgid "Size"
 msgstr "大小"
@@ -1386,25 +1393,25 @@ msgid "Skip notifications"
 msgstr "跳过通知"
 
 msgid "Sky glow"
-msgstr ""
+msgstr "天空辉光"
 
 msgid "Slew speed"
-msgstr ""
+msgstr "慢速"
 
 msgid "Small"
 msgstr "小"
 
 msgid "Software"
-msgstr ""
+msgstr "软件"
 
 msgid "Solar"
-msgstr ""
+msgstr "太阳"
 
 msgid "Solar system body or event"
 msgstr "太阳系天体或天象"
 
 msgid "Something went wrong"
-msgstr ""
+msgstr "发生了某些错误"
 
 msgid ""
 "Sorry, but the page you are looking for is not here. If you expected an "
@@ -1417,7 +1424,7 @@ msgid ""
 msgstr "抱歉，此作品太大。根据您当前的订阅计划，允许的最大作品大小为{{max}}。"
 
 msgid "Sorry, revisions are not included at your membership level."
-msgstr ""
+msgstr "抱歉，您的会员级别不可使用修订版图像。"
 
 msgid ""
 "Sorry, unfortunately AstroBin does not have a bank account in the selected "
@@ -1428,9 +1435,11 @@ msgid ""
 "Sorry, you cannot select an IOTD right now: <strong>{{ reason }}</strong>. "
 "Please try again in <strong>{{ time }}</strong>."
 msgstr ""
+"抱歉，您现在不能选择“今日最佳”：<strong>{{ reason }}</strong>。请在 <strong>{{ time "
+"}}</strong>后尝试。"
 
 msgid "Sort"
-msgstr ""
+msgstr "分类"
 
 msgid "Spam list"
 msgstr "垃圾邮件"
@@ -1442,13 +1451,13 @@ msgid "Staging Area"
 msgstr "暂存区"
 
 msgid "Star tracker"
-msgstr ""
+msgstr "星体追踪器"
 
 msgid "Star trails"
 msgstr "星轨"
 
 msgid "Status"
-msgstr ""
+msgstr "状态"
 
 msgid "Step {{ stepNumber }}"
 msgstr "步骤 {{ stepNumber }}"
@@ -1460,7 +1469,7 @@ msgid "Submission queue"
 msgstr "提交队列"
 
 msgid "Submit"
-msgstr ""
+msgstr "提交"
 
 msgid "Submit this image to the selected groups."
 msgstr "将此作品提交到选定的小组。"
@@ -1478,22 +1487,22 @@ msgid "Subscription process cancelled"
 msgstr "订阅操作已取消"
 
 msgid "Subscriptions"
-msgstr ""
+msgstr "订阅"
 
 msgid "Success!"
 msgstr "成功！"
 
 msgid "Sulfur-II (SII)"
-msgstr ""
+msgstr "硫-II（SII）"
 
 msgid "Summary"
-msgstr ""
+msgstr "总览"
 
 msgid "Sun"
 msgstr "太阳"
 
 msgid "Superseded"
-msgstr ""
+msgstr "被取代"
 
 msgid "TIFF support on AstroBin is experimental."
 msgstr "当前AstroBin对TIFF格式的支持是实验性的。"
@@ -1502,10 +1511,10 @@ msgid "Target image"
 msgstr "目标作品"
 
 msgid "Telescope"
-msgstr ""
+msgstr "望远镜"
 
 msgid "Telescopes & lenses"
-msgstr ""
+msgstr "望远镜&镜头"
 
 msgid "Text"
 msgstr "文本"
@@ -1519,19 +1528,21 @@ msgstr "感謝！"
 msgid ""
 "Thanks! Your edit proposal has been submitted and will be reviewed as soon "
 "as possible."
-msgstr ""
+msgstr "谢谢！您的编辑建议已提交，审核将很快完成。"
 
 msgid ""
 "The <strong>Contribution Index (beta)</strong> is system to reward "
 "informative, constructive, and valuable commentary on AstroBin. {{_0}}Learn "
 "more.{{_1}}"
 msgstr ""
+"<strong>贡献榜（试运行）</strong>是一个AstroBin中，用于奖励信息丰富、建设性、有价值评论的系统。{{_0}}了解更多。{{_1}"
+"}"
 
 msgid ""
 "The <strong>Image Index</strong> is a system based on likes received on "
 "images, that incentivizes the most active and liked members of the "
 "community. {{_0}}Learn more.{{_1}}"
-msgstr ""
+msgstr "<strong>作品指数</strong>是一个基于作品上收到点赞的系统，用于激励社区中最活跃和最受喜爱的成员。{{_0}}了解更多。{{_1}}"
 
 msgid "The Big Wall"
 msgstr "作品墙"
@@ -1549,7 +1560,7 @@ msgid "The final font size will depend on how long your watermark is."
 msgstr "字体最终的大小取决于水印长度。"
 
 msgid "The following changes are proposed:"
-msgstr ""
+msgstr "建议作出以下修改："
 
 msgid "The image will permanently disappear from your queue."
 msgstr "该作品将从您的队列中永久消失。"
@@ -1557,30 +1568,30 @@ msgstr "该作品将从您的队列中永久消失。"
 msgid ""
 "The item doesn't seem to have the correct brand, or the brand is "
 "misspelled, or it's the duplicate of an existing brand."
-msgstr ""
+msgstr "项目的品牌似乎不正确、拼写错误，或者是已有品牌的另一种名称。"
 
 msgid "The item has a typo in its name"
-msgstr ""
+msgstr "此项目的名称存在拼写错误"
 
 msgid "The item has insufficient data"
-msgstr ""
+msgstr "此项目缺乏足够的数据信息"
 
 msgid "The item has some inaccurate data"
-msgstr ""
+msgstr "此项目的某些信息不正确"
 
 msgid "The judge who selected this image will be notified of top-level comments."
-msgstr ""
+msgstr "选择此图像的评审将收到最高级评论的通知。"
 
 msgid "The judgement queue is currently empty."
-msgstr ""
+msgstr "现在评审列队空闲的。"
 
 msgid "The name of this brand. Make sure it's spelled correctly."
-msgstr ""
+msgstr "这个品牌的名称。请确保拼写正确。"
 
 msgid ""
 "The name of this product. Do not include the brand's name and make sure "
 "it's spelled correctly."
-msgstr ""
+msgstr "此产品的名称。请勿包含品牌名称，并确保拼写正确。"
 
 msgid ""
 "The price is shown in Swiss Francs even though you might have paid the "
@@ -1592,9 +1603,11 @@ msgid ""
 "name, focal length range, f-ratio range, additional properties. E.g. "
 "<strong>Nikkor Z 28mm f/2.8 (SE)</strong>."
 msgstr ""
+"建议的相机镜头命名格式为：可选型号名称、焦距范围、f值范围、其他属性。例如，<strong> Nikkor Z "
+"28mmf/2.8（SE）</strong>。"
 
 msgid "The requested resource does not exist"
-msgstr ""
+msgstr "请求的资源不存在"
 
 msgid "The review queue is currently empty."
 msgstr "审查列队现在是空的。"
@@ -1602,47 +1615,47 @@ msgstr "审查列队现在是空的。"
 msgid ""
 "The revision's title will be shown as an addendum to the original image's "
 "title."
-msgstr ""
+msgstr "修订版的标题将作为原始图像标题的附录显示。"
 
 msgid "The size of the individual pixels in μm."
-msgstr ""
+msgstr "单个像素的大小，以μm为单位。"
 
 msgid "The submission queue is currently empty."
 msgstr "提交列队现在是空的。"
 
 msgid "The target item doesn't seem to have the correct brand"
-msgstr ""
+msgstr "目标项目似乎没有输入正确的品牌"
 
 msgid "The target item has a typo in its name"
-msgstr ""
+msgstr "目标项目的名称存在拼写错误"
 
 msgid "The target item has insufficient data"
-msgstr ""
+msgstr "目标项目缺乏足够的数据信息"
 
 msgid "The target item has some inaccurate data"
-msgstr ""
+msgstr "此项目的某些信息不正确"
 
 msgid "There are no comments yet."
-msgstr ""
+msgstr "目前还没有评论。"
 
 msgid ""
 "There are no more items of this type to migrate. Check other equipment "
 "types."
-msgstr ""
+msgstr "没有其他此类型的项目要迁移。检查其他设备类型。"
 
 msgid "There doesn't seem to be anything here."
 msgstr "这里似乎什么也没有。"
 
 msgid "This LEGACY item needs to be migrated"
-msgstr ""
+msgstr "此旧项目需要迁移"
 
 msgid ""
 "This brand has <strong>{{0}}</strong> items in AstroBin's database. Take a "
 "look at them so you can be consistent with the naming conventions:"
-msgstr ""
+msgstr "AstroBin的数据库中已存在品牌下的 <strong>{{0}}</strong> 个项目。查看这些项目，并确保命名规则的一致性："
 
 msgid "This field is disabled because you haven't joined any groups yet."
-msgstr ""
+msgstr "此字段已禁用，因为您尚未加入任何小组。"
 
 msgid ""
 "This image will be uploaded to your staging area as a work in progress. You "
@@ -1652,13 +1665,13 @@ msgstr "该作品将作为未完成的作品上传到您的暂存区。您可以
 msgid ""
 "This item has not been approved yet, so it's not available to be associated "
 "with images."
-msgstr ""
+msgstr "此项目尚未被审核，因此无法与图像关联。"
 
 msgid ""
 "This item will be part of AstroBin's equipment database, and it's very "
 "important that the information is accurate and this item is not the "
 "duplicate of another."
-msgstr ""
+msgstr "此项目将是AstroBin设备数据库的一部分，并且信息准确、无重复项目，这非常重要。"
 
 msgid "This operation can not be undone."
 msgstr "此操作无法撤销。"
@@ -1676,21 +1689,21 @@ msgstr "AstroBin 处于“只读”状态，该页面或操作目前不可用。
 msgid ""
 "This setting will take affect after the image will be moved to your public "
 "area."
-msgstr ""
+msgstr "此设置将在作品移至公共区域后生效。"
 
 msgid ""
 "This should never happen. AstroBin's staff has been notified automatically "
 "and will solve the problem as soon as possible."
-msgstr ""
+msgstr "异常情况发生，AstroBin的工作人员已被自动通知，并将尽快解决问题。"
 
 msgid "This should never happen. If the problem persists, please contact us."
-msgstr ""
+msgstr "异常情况发生，如问题重复出现，请联系我们。"
 
 msgid "Thumbnail"
 msgstr "缩略图"
 
 msgid "Time"
-msgstr ""
+msgstr "时间"
 
 msgid "Title"
 msgstr "标题"
@@ -1717,34 +1730,34 @@ msgid "Total solar eclipse"
 msgstr "日全食"
 
 msgid "Tracking accuracy"
-msgstr ""
+msgstr "跟踪精度"
 
 msgid "Transit"
-msgstr ""
+msgstr "过境"
 
 msgid "Traveller"
 msgstr "移动拍摄"
 
 msgid "Type"
-msgstr ""
+msgstr "类型"
 
 msgid "Type something to create a new one..."
-msgstr ""
+msgstr "输入任意信息建立一个新的..."
 
 msgid "Type to search options or to create a new one..."
-msgstr ""
+msgstr "输入想要找的选项，或创建新的..."
 
 msgid "Type to search options..."
 msgstr "输入要搜索的选项..."
 
 msgid "Type to search."
-msgstr ""
+msgstr "搜索的类型。"
 
 msgid "Ultra High Contrast (UHC)"
-msgstr ""
+msgstr "超高反差（UHC）"
 
 msgid "Ultraviolet (UV)"
-msgstr ""
+msgstr "紫外（UV）"
 
 msgid "Uncompressed source uploader"
 msgstr "未压缩数据上传工具"
@@ -1779,19 +1792,19 @@ msgstr "天王星"
 msgid ""
 "Use the <strong>#</strong> sign and start typing to insert an image from "
 "your gallery."
-msgstr ""
+msgstr "请输入 <strong>#</strong> 符号，插入图库中的图像。"
 
 msgid "Use the <strong>@</strong> sign and start typing to mention any user."
-msgstr ""
+msgstr "请输入 <strong> @</strong> 符号，并在此后输入信息，以插入图库中的图像。"
 
 msgid "Username"
 msgstr "用户名"
 
 msgid "Users"
-msgstr ""
+msgstr "用户"
 
 msgid "Validation error"
-msgstr ""
+msgstr "验证错误"
 
 msgid "Validity"
 msgstr "有效性"
@@ -1800,7 +1813,7 @@ msgid "Venus"
 msgstr "金星"
 
 msgid "View"
-msgstr ""
+msgstr "查看"
 
 msgid "Want to upgrade from a lower subscription tier?"
 msgstr "是否想从低等级订阅升级？"
@@ -1824,27 +1837,27 @@ msgid "We could not log you in. Please check your credentials and try again."
 msgstr "无法登录。请检查您的凭据然后重试。"
 
 msgid "We found similar items from the same brand."
-msgstr ""
+msgstr "我们发现了相同品牌下另一个类似的项目。"
 
 msgid "We found the following similar items from the same brand."
-msgstr ""
+msgstr "我们发现了以下品牌中类似项目。"
 
 msgid ""
 "We found the following similar items. Click the correct one to use it, or "
 "ignore this message."
-msgstr ""
+msgstr "我们发现了以下相似的项目。单击选择正确的一项，或忽略此消息。"
 
 msgid "We'll never share your email with anyone else."
 msgstr "我们绝不会将您的电子邮件透露给其他人。"
 
 msgid "Website"
-msgstr ""
+msgstr "网站"
 
 msgid "Wedged Alt-Az"
-msgstr ""
+msgstr "带仰角调节的经纬仪（赤道仪模式）"
 
 msgid "Weight"
-msgstr ""
+msgstr "重量"
 
 msgid "Welcome!"
 msgstr "欢迎！"
@@ -1853,7 +1866,7 @@ msgid "What is this site?"
 msgstr "这是个啥网站？"
 
 msgid "When"
-msgstr ""
+msgstr "当"
 
 msgid "When a paid subscription expires, nothing happens to your images or content."
 msgstr "付费订阅到期后，您的作品或内容将不会发生任何变化。"
@@ -1862,7 +1875,7 @@ msgid ""
 "When an image is dismissed by {{0}} members of the IOTD/TP staff, it's "
 "automatically removed from all queues. Please only perform this action if "
 "you want to vote against this image advancing in the process."
-msgstr ""
+msgstr "当图像被{{0}}“今日最佳”热门精选“”工作人员的移除时，它将自动从所有队列中删除。请仅在您想投票反对时进行此操作。"
 
 msgid "Where do you want to go after saving?"
 msgstr "保存之后您想去哪里？"
@@ -1871,7 +1884,7 @@ msgid "Where does the data for this image come from?"
 msgstr "作品的素材是从哪里获取的？"
 
 msgid "Whether this camera is equipped with a cooling mechanism."
-msgstr ""
+msgstr "这个相机是否有制冷组件"
 
 msgid "Which remote hosting facility did you use to acquire data for this image?"
 msgstr "您使用哪个远程托管天文台获取此作品的数据？"
@@ -1880,15 +1893,15 @@ msgid "Would you like to upgrade?"
 msgstr "想要升级吗？"
 
 msgid "Wrong type"
-msgstr ""
+msgstr "类型错误"
 
 msgid "Yes"
-msgstr ""
+msgstr "是"
 
 msgid ""
 "You are already logged in or were logged in automatically from the "
 "application's backend."
-msgstr ""
+msgstr "您已登录或已从应用程序后台自动登录。"
 
 msgid ""
 "You are already on this plan. If you buy it again, your expiration date "
@@ -1904,16 +1917,18 @@ msgid ""
 "more information on what your options are, please visit the {{0}}Creative "
 "Commons website{{1}}."
 msgstr ""
+"如果您愿意，可以将知识共享许可与您的内容相关联，以授予人们在特定情况下使用您的作品的权利。有关您的选项的更多信息，请访问{{0}}知识共享网站{{1}}"
+"。"
 
 msgid ""
 "You cannot review this edit proposal because there are previous pending "
 "proposals."
-msgstr ""
+msgstr "您无法查看此编辑建议，因为存先前的未决建议。"
 
 msgid ""
 "You cannot review this edit proposal because you were the one who proposed "
 "it."
-msgstr ""
+msgstr "您无法审核此编辑建议，因为您是提议人。"
 
 msgid ""
 "You have a <strong>{{0}}</strong> subscription. Enjoy your unlimited "
@@ -1938,24 +1953,24 @@ msgid "You have been logged in."
 msgstr "您已经成功登录。"
 
 msgid "You may have up to one revision per image."
-msgstr ""
+msgstr "您可以最多上传一张修订版图像。"
 
 msgid "You may have up to {{0}} revisions per image."
-msgstr ""
+msgstr "您可以最多上传 {{0}} 张修订版图像。"
 
 msgid ""
 "You requested a comment for a scheduled IOTD that is not scheduled anymore: "
 "either it became IOTD because the scheduled date has been reached, or it "
 "was retracted."
-msgstr ""
+msgstr "您请求对不在日程表中的“今日最佳”发表评论：它可能因为到期到期而被评为“今日最佳”，或者已被撤回。"
 
 msgid "You tried to access a server resource that you're not authorized for."
-msgstr ""
+msgstr "您未被授权访问此内容。"
 
 msgid ""
 "You tried to access a server resource that's only available to logged in "
 "users."
-msgstr ""
+msgstr "您正在访问内容仅对已登录用户开放。"
 
 msgid "You will be redirected in {{seconds}} seconds..."
 msgstr "您将在{{seconds}}后跳转..."
@@ -1988,6 +2003,8 @@ msgid ""
 "                    be purchased. To add a DIY item, please use the "
 "appropriate checkbox during the item's creation."
 msgstr ""
+"您使用单词“{0}}"
+"”表示您正在尝试添加DIY项目。AstroBin设备数据库用于市场上目前在售或曾经发售过的产品。要添加DIY项目，请在项目创建过程中使用相应的复选框。"
 
 msgid ""
 "Your usage of the word \"{{0}}\" suggests that you are using this field to "
@@ -1995,24 +2012,26 @@ msgid ""
 "Remember that here you are creating or editing the generic instance that "
 "will be shared by all owners on AstroBin."
 msgstr ""
+"使用单词“{0}}"
+"”表明您正在使用此字段指定此项的属性，该属性仅与您自己的项目副本相关。请记住，这里您正在创建或编辑AstroBin上所有人共享的设备名称。"
 
 msgid "Zoom ready"
 msgstr "缩放就绪"
 
 msgid "consider making an edit proposal instead."
-msgstr ""
+msgstr "请考虑提出一个编辑建议。"
 
 msgid "day"
-msgstr ""
+msgstr "天"
 
 msgid "days"
-msgstr ""
+msgstr "天"
 
 msgid "e.g."
 msgstr "例如："
 
 msgid "e.g. 'Home observatory'"
-msgstr ""
+msgstr "例如“家庭天文台”"
 
 msgid "n/a"
 msgstr "N/A"
@@ -2020,7 +2039,7 @@ msgstr "N/A"
 msgid ""
 "there is an etiquette regarding uploading a new image versus an image "
 "revision."
-msgstr ""
+msgstr "上传新图像与图像修订版有相应的礼节需要遵守。"
 
 msgid "year"
 msgstr "年"
@@ -2029,4 +2048,4 @@ msgid "{{ max }} revisions / image"
 msgstr "{{ max }}修订版/作品"
 
 msgid "{{0}} like"
-msgstr ""
+msgstr "{{0}} 点赞"
