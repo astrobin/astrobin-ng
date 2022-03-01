@@ -105,6 +105,18 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
     );
   }
 
+  subscriptionWithTotalImagesMessage(name: string, counter: number, images: number): string {
+    return this.translate.instant(
+      "You have a <strong>{{0}}</strong> subscription. You have used <strong>{{1}}</strong> of " +
+        "the <strong>{{2}}</strong> images allowed in your plan.",
+      {
+        0: name,
+        1: counter,
+        2: images
+      }
+    );
+  }
+
   subscriptionWithTotalSlotsMessage(name: string, counter: number, slots: number): string {
     return this.translate.instant(
       "You have a <strong>{{0}}</strong> subscription. You have used <strong>{{1}}</strong> of " +
