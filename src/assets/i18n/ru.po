@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: AstroBin Angular App\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-03 14:04+0200\n"
-"PO-Revision-Date: 2021-12-09 21:33+0100\n"
+"PO-Revision-Date: 2022-01-23 10:49+0100\n"
 "Last-Translator: Salvatore Iovene\n"
 "Language-Team: Russian\n"
 "Language: ru\n"
@@ -15,7 +15,7 @@ msgstr ""
 "X-Generator: Loco https://localise.biz\n"
 "X-Loco-Source-Locale: en\n"
 "X-Loco-Project-Id: 108356\n"
-"X-Loco-Api-Version: 1.0.25 20211027-1"
+"X-Loco-Api-Version: 1.0.26 20220118-1"
 
 #: loco:60685a683b0b1d485a736d12
 msgid "API Keys"
@@ -1903,7 +1903,7 @@ msgstr ""
 
 #: loco:6151f41acae9ba5e6a4b2a8a
 msgid ""
-"This item will be part of AstroBin's equipment database, and it's very "
+"This item will be part of AstorBin's equipment database, and it's very "
 "important that the information is accurate and this item is not the "
 "duplicate of another"
 msgstr ""
@@ -1958,7 +1958,7 @@ msgid "Weight"
 msgstr ""
 
 #: loco:6151f41acae9ba5e6a4b2a96
-msgid "Whether this camera is equipped with a cooling mechanism."
+msgid "Whether this camera is equipment with a cooling mechanism."
 msgstr ""
 
 #: loco:6151f41acae9ba5e6a4b2a97
@@ -2641,7 +2641,7 @@ msgstr ""
 
 #: loco:61b24fc53b045a33935504c9
 msgid ""
-"This item will be part of AstroBin's equipment database, and it's very "
+"This item will be part of AstorBin's equipment database, and it's very "
 "important that the information is accurate and this item is not the "
 "duplicate of another."
 msgstr ""
@@ -2739,4 +2739,95 @@ msgstr ""
 
 #: loco:61b24fc53b045a33935504dc
 msgid "{{0}} like"
+msgstr ""
+
+#: loco:61e176245eeb7825f824d974
+msgid ""
+"AstroBin encountered an internal error. Please try again and contact us if "
+"the problem persists!"
+msgstr ""
+
+#: loco:61e176245eeb7825f824d975
+msgid "Dual Alt-Az/Equatorial"
+msgstr ""
+
+#: loco:61e176245eeb7825f824d976
+msgid ""
+"File too large. If you just upgraded your subscription, please try again in "
+"a few minutes. Thanks!"
+msgstr ""
+
+#: loco:61e176245eeb7825f824d977
+msgid "IOTD"
+msgstr ""
+
+#: loco:61e176245eeb7825f824d978
+msgid "Logging you in securely..."
+msgstr ""
+
+#: loco:61e176245eeb7825f824d979
+msgid "Logging you out securely..."
+msgstr ""
+
+#: loco:61e176245eeb7825f824d97a
+msgid "Meteor shower"
+msgstr ""
+
+#: loco:61e176245eeb7825f824d97b
+msgid "Noctilucent clouds"
+msgstr ""
+
+#: loco:61e176245eeb7825f824d97c
+msgid ""
+"Oops! Your request fell in between two AstroBin servers. Please clear your "
+"cache and try again."
+msgstr ""
+
+#: loco:61e176245eeb7825f824d97d
+msgid "Retract"
+msgstr ""
+
+#: loco:61e176245eeb7825f824d97e
+msgid "Scroll to top"
+msgstr ""
+
+#: loco:61e176245eeb7825f824d97f
+msgid ""
+"Sorry, you cannot select an IOTD right now: <strong>{{ reason }}</strong>. "
+"Please try again in <strong>{{ time }}</strong>."
+msgstr ""
+
+#: loco:61e176245eeb7825f824d980
+msgid ""
+"The judge who selected this image will be notified of top-level comments."
+msgstr ""
+
+#: loco:61e176245eeb7825f824d981
+msgid "The judgement queue is currently empty."
+msgstr ""
+
+#: loco:61e176245eeb7825f824d982
+msgid ""
+"This item will be part of AstroBin's equipment database, and it's very "
+"important that the information is accurate and this item is not the "
+"duplicate of another."
+msgstr ""
+
+#: loco:61e176245eeb7825f824d983
+msgid "Whether this camera is equipped with a cooling mechanism."
+msgstr ""
+
+#: loco:61e176245eeb7825f824d984
+msgid ""
+"You requested a comment for a scheduled IOTD that is not scheduled anymore: "
+"either it became IOTD because the scheduled date has been reached, or it was "
+"retracted."
+msgstr ""
+
+#: loco:61e176245eeb7825f824d985
+msgid "day"
+msgstr ""
+
+#: loco:61e176245eeb7825f824d986
+msgid "days"
 msgstr ""

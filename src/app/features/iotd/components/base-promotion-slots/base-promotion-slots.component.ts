@@ -103,15 +103,27 @@ export abstract class BasePromotionSlotsComponent extends BaseComponentDirective
       }
     });
 
-    this.promotions$.pipe(takeUntil(this.destroyed$)).subscribe(submissions => {
-      this.slots.forEach(slot => (slot.promotion = null));
-      submissions.forEach((promotion, i) => {
-        this.slots[i].promotion = promotion;
-        this._checkAndOpenComments(this.slots[i]);
-      });
+    this.promotions$
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe((promotions: SubmissionInterface[] | VoteInterface[] | IotdInterface[]) => {
+        this.slots.forEach(slot => (slot.promotion = null));
+        this.slots.forEach((slot: Slot, index: number) => {
+          if (this.slotType === SlotType.JUDGEMENT) {
+            const slotDate = this.futureDate(index);
+            slot.promotion = (promotions as IotdInterface[]).find(
+              promotion => new Date(promotion.date).toDateString() === slotDate.toDateString()
+            );
+          } else {
+            this.slots[index].promotion = promotions[index];
+          }
 
-      this._images.forEach(image => image.load());
-    });
+          if (!!this.slots[index].promotion) {
+            this._checkAndOpenComments(this.slots[index]);
+          }
+        });
+
+        this._images.forEach(image => image.load());
+      });
 
     this._checkIfCommentedIotdIsFound();
   }
@@ -126,9 +138,10 @@ export abstract class BasePromotionSlotsComponent extends BaseComponentDirective
     return this.availableEntries.map(submission => submission.pk).indexOf(imageId) !== -1;
   }
 
-  futureDate(slotNumber: number) {
+  futureDate(slotNumber: number): Date {
     const d = new Date();
     d.setDate(d.getDate() + slotNumber + 1);
+    d.setHours(0, 0, 0, 0);
     return d;
   }
 

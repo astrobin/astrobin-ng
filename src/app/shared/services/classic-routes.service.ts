@@ -36,7 +36,6 @@ export class ClassicRoutesService extends BaseService {
   CONTACT = "https://welcome.astrobin.com/contact";
   MODERATE_IMAGE_QUEUE = BASE_URL + "/moderate/images/";
   MODERATE_SPAM_QUEUE = BASE_URL + "/moderate/images/spam/";
-  IOTD_JUDGEMENT_QUEUE = BASE_URL + "/iotd/judgement-queue/";
 
   COMMERCIAL_PRODUCTS = (user: UserInterface) => BASE_URL + `/users/${user?.username}/commercial/products/`;
 

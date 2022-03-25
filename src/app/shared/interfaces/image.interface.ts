@@ -29,6 +29,7 @@ export enum SubjectType {
   WIDE_FIELD = "WIDE_FIELD",
   STAR_TRAILS = "STAR_TRAILS",
   NORTHERN_LIGHTS = "NORTHERN_LIGHTS",
+  NOCTILUCENT_CLOUDS = "NOCTILUCENT_CLOUDS",
   GEAR = "GEAR",
   OTHER = "OTHER"
 }
@@ -52,6 +53,7 @@ export enum SolarSystemSubjectType {
   PARTIAL_SOLAR_ECLIPSE = "PARTIAL_SOLAR_ECLIPSE",
   ANULAR_SOLAR_ECLIPSE = "ANULAR_SOLAR_ECLIPSE",
   TOTAL_SOLAR_ECLIPSE = "TOTAL_SOLAR_ECLIPSE",
+  METEOR_SHOWER = "METEOR_SHOWER",
   OTHER = "OTHER"
 }
 
@@ -102,7 +104,10 @@ export enum RemoteSource {
   SPOO = "SkyPi Remote Observatory",
   SLO = "Slooh",
   SSLLC = "Stellar Skies LLC",
-  TELI = "Telescope Live"
+  TAIYUGE = "TaiYuge Observatory",
+  TELI = "Telescope Live",
+  WTO = "West Texas Observatory (WTO)",
+  YUNLING = "Yunling Observatory"
 }
 
 export enum LicenseOptions {

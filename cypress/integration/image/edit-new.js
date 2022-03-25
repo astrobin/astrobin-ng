@@ -268,7 +268,7 @@ context("Image edit (new)", () => {
     cy.url().should("contain", "#4");
 
     cy.get("#image-watermark-field").should("not.be.checked");
-    cy.get("#image-watermark-text-field").should("have.value", "Copyright astrobin_dev");
+    cy.get("#image-watermark-text-field").should("have.value", "");
     cy.get("#image-watermark-position-field .ng-value").should("contain.text", "Center");
     cy.get("#image-watermark-size-field .ng-value").should("contain.text", "Medium");
     cy.get("#image-watermark-opacity-field").should("have.value", "10");
