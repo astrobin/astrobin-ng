@@ -7,7 +7,8 @@ import { EMPTY, forkJoin, Observable, of } from "rxjs";
 import {
   EquipmentItemBaseInterface,
   EquipmentItemReviewerRejectionReason,
-  EquipmentItemType
+  EquipmentItemType,
+  EquipmentItemUsageType
 } from "@features/equipment/types/equipment-item-base.interface";
 import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
 import { catchError, map, switchMap, take } from "rxjs/operators";
@@ -26,6 +27,7 @@ import { FilterInterface } from "@features/equipment/types/filter.interface";
 import { AccessoryInterface } from "@features/equipment/types/accessory.interface";
 import { SoftwareInterface } from "@features/equipment/types/software.interface";
 import { getEquipmentItemType } from "@features/equipment/store/equipment.selectors";
+import { EquipmentPresetInterface } from "@features/equipment/types/equipment-preset.interface";
 
 @Injectable({
   providedIn: "root"
@@ -121,6 +123,21 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     return this.http
       .get<PaginatedApiResultInterface<EquipmentItemBaseInterface>>(`${this.configUrl}/${type.toLowerCase()}/?q=${q}`)
       .pipe(map(response => response.results.map(item => this._parseItem(item))));
+  }
+
+  findRecentlyUsedEquipmentItems(
+    type: EquipmentItemType,
+    usageType: EquipmentItemUsageType
+  ): Observable<EquipmentItemBaseInterface[]> {
+    let url = `${this.configUrl}/${type.toLowerCase()}/recently-used/`;
+
+    if (!!usageType) {
+      url += `?usage-type=${usageType.toLowerCase()}`;
+    }
+
+    return this.http
+      .get<EquipmentItemBaseInterface[]>(url)
+      .pipe(map(items => items.map(item => this._parseItem(item))));
   }
 
   findSimilarInBrand(
@@ -263,6 +280,22 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
       `${this.configUrl}/${path}-edit-proposal/${editProposal.id}/reject/`,
       { comment }
     );
+  }
+
+  findEquipmentPresets(): Observable<EquipmentPresetInterface[]> {
+    return this.http.get<EquipmentPresetInterface[]>(`${this.configUrl}/equipment-preset/`);
+  }
+
+  createEquipmentPreset(preset: EquipmentPresetInterface): Observable<EquipmentPresetInterface> {
+    return this.http.post<EquipmentPresetInterface>(`${this.configUrl}/equipment-preset/`, preset);
+  }
+
+  updateEquipmentPreset(preset: EquipmentPresetInterface): Observable<EquipmentPresetInterface> {
+    return this.http.put<EquipmentPresetInterface>(`${this.configUrl}/equipment-preset/${preset.id}/`, preset);
+  }
+
+  deleteEquipmentPreset(id: EquipmentPresetInterface["id"]): Observable<void> {
+    return this.http.delete<void>(`${this.configUrl}/equipment-preset/${id}/`);
   }
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

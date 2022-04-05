@@ -29,6 +29,11 @@
       "id": 4,
       "name": "equipment_moderators",
       "permissions": []
+    },
+    {
+      "id": 4,
+      "name": "own_equipment_migrators",
+      "permissions": []
     }
   ],
   "user_permissions": [

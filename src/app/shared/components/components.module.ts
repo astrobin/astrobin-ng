@@ -8,6 +8,7 @@ import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import {
   NgbCollapseModule,
   NgbDropdownModule,
+  NgbModalConfig,
   NgbModalModule,
   NgbPopoverModule,
   NgbProgressbarModule,
@@ -76,9 +77,16 @@ import { NestedCommentsModalComponent } from "@shared/components/misc/nested-com
 import { NestedCommentsCountComponent } from "@shared/components/misc/nested-comments-count/nested-comments-count.component";
 import { CountDownComponent } from "@shared/components/misc/count-down/count-down.component";
 import { ScrollToTopComponent } from "@shared/components/misc/scroll-to-top/scroll-to-top.component";
+import { FormlyFieldEquipmentItemBrowserComponent } from "@shared/components/misc/formly-field-equipment-item-browser/formly-field-equipment-item-browser.component";
+import { FormlyEquipmentItemBrowserWrapperComponent } from "@shared/components/misc/formly-equipment-item-browser-wrapper/formly-equipment-item-browser-wrapper.component";
+import { ItemSummaryModalComponent } from "@shared/components/equipment/summaries/item-summary-modal/item-summary-modal.component";
+import { EquipmentItemDisplayNameComponent } from "@shared/components/equipment/equipment-item-display-name/equipment-item-display-name.component";
+import { DirectivesModule } from "@shared/directives/directives.module";
+import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
 
 const modules = [
   CommonModule,
+  DirectivesModule,
   FontAwesomeModule,
   FormsModule,
   FormlySelectModule,
@@ -106,6 +114,7 @@ const modules = [
 const components = [
   BreadcrumbComponent,
   CameraComponent,
+  ConfirmationDialogComponent,
   CountDownComponent,
   CustomToastComponent,
   EmptyListComponent,
@@ -118,7 +127,9 @@ const components = [
   FormlyFieldImageCropperComponent,
   FormlyFieldNgSelectComponent,
   FormlyFieldStepperComponent,
+  FormlyFieldEquipmentItemBrowserComponent,
   FormlyWrapperComponent,
+  FormlyEquipmentItemBrowserWrapperComponent,
   FullscreenImageViewerComponent,
   HeaderComponent,
   ImageComponent,
@@ -142,6 +153,8 @@ const components = [
   // Equipment
   ItemBrowserComponent,
   ItemSummaryComponent,
+  ItemSummaryModalComponent,
+  EquipmentItemDisplayNameComponent,
   BrandSummaryComponent,
   CameraEditorComponent,
   SensorEditorComponent,
@@ -174,4 +187,8 @@ const services = [UsernameService];
     ...services
   ]
 })
-export class ComponentsModule {}
+export class ComponentsModule {
+  constructor(public readonly modalConfig: NgbModalConfig) {
+    modalConfig.centered = true;
+  }
+}

@@ -1,22 +1,20 @@
 <form [formGroup]="form">
-  <formly-form
-    [fields]="fields"
-    [form]="form"
-    [model]="model"
-  ></formly-form>
+  <formly-form [fields]="fields" [form]="form" [model]="model"></formly-form>
 </form>
 
 <ng-template #equipmentItemLabelTemplate let-object="item">
-  <ng-container *ngIf="!!object?.item;">
-    <ng-container *ngIf="!!object.brand; else DIY">{{ object.brand.name }}</ng-container>
-    <ng-template #DIY>{{ "(DIY)" | translate }}</ng-template>
-    {{ equipmentItemService.getName$(object.item) | async }}
+  <ng-container *ngIf="!!object?.item">
+    <astrobin-equipment-item-display-name
+      [item]="object.item"
+      [enableSummaryModal]="enableSummaryModal"
+    ></astrobin-equipment-item-display-name>
   </ng-container>
 </ng-template>
 
 <ng-template #equipmentItemOptionTemplate let-object="item">
   <astrobin-equipment-item-summary
     [item]="object.item"
+    [showClass]="false"
     [showMeta]="false"
     [showImage]="false"
     [showSubItem]="false"

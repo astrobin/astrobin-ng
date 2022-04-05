@@ -71,15 +71,4 @@ export class AZExplorerComponent extends PendingExplorerBaseComponent implements
       })
     );
   }
-
-  getItemName$(item: EquipmentItemBaseInterface): Observable<string> {
-    if (!!item.brand) {
-      return this.store$.select(selectBrand, item.brand).pipe(
-        filter(brand => !!brand),
-        switchMap(brand => this.equipmentItemService.getName$(item).pipe(map(name => `${brand.name} ${name}`)))
-      );
-    } else {
-      return of(`${this.translateService.instant("(DIY)")} ${item.name}`);
-    }
-  }
 }

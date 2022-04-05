@@ -18,32 +18,64 @@
   <span *ngIf="imageEditService.isSponsor(item.value)" class="remote-affiliate-sponsor">(sponsor)</span>
 </ng-template>
 
-<ng-template #stepperButtonsTemplate let-isLastStep="isLastStep">
-  <div ngbDropdown placement="top-right">
+<ng-template #equipmentStepButtonsTemplate>
+  <button
+    [class.loading]="loadingService.isLoading()"
+    [disabled]="!imageEditService.hasEquipmentItems()"
+    id="clear-equipment-btn"
+    class="btn btn-outline-danger mr-2"
+    (click)="onClearEquipmentClicked()"
+  >
+    {{ "Clear" | translate }}
+  </button>
+
+  <div class="btn-group" role="group">
     <button
-      *ngIf="isLastStep"
+      [class.loading]="loadingService.isLoading()"
+      [disabled]="(presets$ | async)?.length === 0"
+      id="load-preset-btn"
+      class="btn btn-outline-secondary"
+      (click)="onLoadEquipmentPresetClicked()"
+    >
+      {{ "Load preset" | translate }}&hellip;
+    </button>
+
+    <button
+      [class.loading]="loadingService.isLoading()"
+      [disabled]="!imageEditService.hasEquipmentItems()"
+      id="save-preset-btn"
+      class="btn btn-outline-secondary"
+      (click)="onSaveEquipmentPresetClicked()"
+    >
+      {{ "Save preset" | translate }}&hellip;
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #stepperButtonsTemplate>
+  <button
+    id="save-button"
+    class="btn btn-primary"
+    *ngIf="editingExistingImage"
+    [class.loading]="loadingService.isLoading()"
+    (click)="onSave(
+      $event, classicRoutesService.IMAGE(imageEditService.image.hash || '' + imageEditService.image.pk)
+    )"
+  >
+    {{ "Save" | translate }}
+  </button>
+
+  <div ngbDropdown placement="top-right" *ngIf="!editingExistingImage">
+    <button
       [class.loading]="loadingService.isLoading()"
       class="btn btn-primary"
       id="save-dropdown"
       ngbDropdownToggle
     >
-      {{ "Save" | translate }}...
+      {{ "Save" | translate }}&hellip;
     </button>
     <div aria-labelledby="save-dropdown" ngbDropdownMenu>
       <h6 class="dropdown-header">{{ "Where do you want to go after saving?" | translate }}</h6>
-
-      <button
-        (click)="
-          onSave(
-            $event,
-            classicRoutesService.EDIT_IMAGE_GEAR(imageEditService.image.hash || '' + imageEditService.image.pk) +
-              '?upload'
-          )
-        "
-        class="dropdown-item"
-      >
-        {{ "Save and proceed to gear selection" | translate }}
-      </button>
 
       <button
         (click)="
@@ -65,6 +97,12 @@
         class="dropdown-item"
       >
         {{ "Save and proceed to image" | translate }}
+      </button>
+
+      <hr />
+
+      <button (click)="onSave($event)" class="dropdown-item">
+        {{ "Save and remain on this page" | translate }}
       </button>
     </div>
   </div>

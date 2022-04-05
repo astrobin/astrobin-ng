@@ -57,7 +57,7 @@ context("Equipment", () => {
 
         cy.wait("@createMount");
 
-        cy.ngSelectValueShouldContain("#equipment-item-field", "Test brand Test");
+        cy.equipmentItemBrowserShouldContain("#equipment-item-field", "Test brand", "Test mount");
       });
     });
   });

@@ -1,31 +1,42 @@
 <ng-wizard #wizard (stepChanged)="onStepChanged($event)" [attr.id]="field.id" [config]="{ selected: currentStepIndex }">
   <ng-wizard-step
     #wizardSteps
-    *ngFor="let step of field?.fieldGroup; let index = index; let last = last"
-    [attr.id]="step.id"
+    *ngFor="let field of field?.fieldGroup; let index = index; let last = last"
+    [attr.id]="field.id"
     [class.error]="isStepErrored(index)"
     [class.visited]="highestVisitedStep > index"
-    [description]="step.templateOptions.label"
-    [state]="getState(step)"
-    [title]="getStepTitle(index)"
+    [state]="getState(field)"
+    [title]="getStepTitle(field, index)"
     [canExit]="!isStepErrored(index)"
     class="wizard-step"
   >
-    <formly-field [field]="step"></formly-field>
+    <formly-field [field]="field"></formly-field>
 
-    <div class="form-actions" [class.fixed]="field.templateOptions?.fixed">
+    <div *ngIf="!!field.templateOptions.stepActionsTemplate" class="step-actions text-right">
+      <ng-container [ngTemplateOutlet]="field.templateOptions.stepActionsTemplate"></ng-container>
+    </div>
+
+    <div class="form-actions" [class.fixed]="to.fixed">
       <div class="form-actions-container">
-        <button (click)="goToPreviousStep($event, index)" *ngIf="!isFirstStep(index)" class="btn btn-secondary">
+        <button
+          class="btn btn-outline-secondary"
+          [class.loading]="loadingService.isLoading()"
+          [disabled]="isFirstStep(index)"
+          (click)="goToPreviousStep($event, index)"
+        >
           {{ "Previous" | translate }}
         </button>
 
-        <button (click)="goToNextStep($event, index)" *ngIf="!isLastStep(index)" class="btn btn-secondary">
+        <button
+          class="btn btn-outline-primary"
+          [class.loading]="loadingService.isLoading()"
+          [disabled]="isLastStep(index)"
+          (click)="goToNextStep($event, index)"
+        >
           {{ "Next" | translate }}
         </button>
 
-        <ng-container *ngIf="to.buttonsTemplate" [ngTemplateOutletContext]="{
-        isLastStep: isLastStep(index)
-      }" [ngTemplateOutlet]="to.buttonsTemplate"></ng-container>
+        <ng-container *ngIf="to.buttonsTemplate" [ngTemplateOutlet]="to.buttonsTemplate"></ng-container>
       </div>
     </div>
 

@@ -1,0 +1,24 @@
+<div [class.has-error]="showError" class="form-group">
+  <div class="row">
+    <div class="col-1 d-none d-lg-inline" *ngIf="!!to.showPlaceholderImage">
+      <img class="placeholder mt-lg-3 mt-xl-2" src="/assets/images/{{ to.itemType.toLowerCase() }}-placeholder.png" />
+    </div>
+    <div class="col">
+      <label *ngIf="to.label && to.hideLabel !== true" [attr.for]="id">
+        <span [innerHTML]="to.label"></span>
+        <span class="required-marker" *ngIf="to.required && !to.hideRequiredMarker">*</span>
+        <span class="optional-marker" *ngIf="!to.required && !to.hideOptionalMarker">
+          {{ "(optional)" | translate }}
+        </span>
+      </label>
+
+      <ng-template #fieldComponent></ng-template>
+
+      <div *ngIf="showError" [style.display]="'block'" class="invalid-feedback">
+        <formly-validation-message [field]="field"></formly-validation-message>
+      </div>
+
+      <small *ngIf="to.description" class="form-text text-muted" [innerHTML]="to.description"></small>
+    </div>
+  </div>
+</div>

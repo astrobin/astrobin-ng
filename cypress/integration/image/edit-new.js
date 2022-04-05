@@ -1,3 +1,5 @@
+import { testBrand, testCamera } from "../../support/commands/equipment-item-browser-utils";
+
 context("Image edit (new)", () => {
   beforeEach(() => {
     cy.server();
@@ -13,6 +15,15 @@ context("Image edit (new)", () => {
     ).as("getRemoteSourceAffiliates");
     cy.route("GET", "**/api/v2/groups/group/*", "fixture:api/groups/groups.json").as("getGroups");
     cy.route("GET", "**/api/v2/users/locations/", { count: 0, results: [] }).as("getUsersLocations");
+
+    cy.route("GET", "**/api/v2/equipment/camera/recently-used/*", []);
+    cy.route("GET", "**/api/v2/equipment/telescope/recently-used/*", []);
+    cy.route("GET", "**/api/v2/equipment/mount/recently-used/", []);
+    cy.route("GET", "**/api/v2/equipment/filter/recently-used/", []);
+    cy.route("GET", "**/api/v2/equipment/accessory/recently-used/", []);
+    cy.route("GET", "**/api/v2/equipment/software/recently-used/", []);
+
+    cy.route("GET", "**/api/v2/equipment/equipment-preset/", []);
   });
 
   it("should navigate to the edit page", () => {
@@ -28,7 +39,7 @@ context("Image edit (new)", () => {
   });
 
   it("should have all tabs", () => {
-    cy.get("#image-stepper-field .nav-link").should("have.length", 5);
+    cy.get("#image-stepper-field .nav-link").should("have.length", 6);
   });
 
   it("should not have any tabs marked as error, since we haven't visited any yet", () => {
@@ -37,6 +48,10 @@ context("Image edit (new)", () => {
 
   it("should have the #1 fragment", () => {
     cy.url().should("contain", "#1");
+  });
+
+  it("should not show the Save button", () => {
+    cy.get("#save-dropdown").should("be.visible");
   });
 
   it("should have prefilled the basic information step", () => {
@@ -48,12 +63,12 @@ context("Image edit (new)", () => {
 
   it("should mark the step as errored if a required field is cleared", () => {
     cy.get("#image-title-field").clear();
-    cy.get("#image-stepper-field .nav-item.danger .nav-link small")
+    cy.get("#image-stepper-field .nav-item.danger .nav-link")
       .contains("Basic information")
       .should("exist");
 
     cy.get("#image-title-field").type("Test image");
-    cy.get("#image-stepper-field .nav-item.danger .nav-link small")
+    cy.get("#image-stepper-field .nav-item.danger .nav-link")
       .contains("Basic information")
       .should("not.exist");
   });
@@ -292,12 +307,95 @@ context("Image edit (new)", () => {
     cy.get("#image-watermark-field").should("be.checked");
   });
 
-  it("should have prefilled the settings step", () => {
+  it("should have the equipment step", () => {
     cy.get("#image-stepper-watermark .form-actions .btn")
       .contains("Next")
       .click();
 
     cy.url().should("contain", "#5");
+
+    cy.get("#image-show-guiding-equipment-field").should("not.be.checked");
+  });
+
+  it("should add a telescope", () => {
+    cy.route("GET", "**/api/v2/equipment/brand/1/", "fixture:api/equipment_v2/brand_1.json").as("getBrand1");
+    cy.route("GET", "**/api/v2/equipment/telescope/?q=Foo", {
+      count: 1,
+      next: null,
+      previous: null,
+      results: [
+        {
+          id: 4,
+          deleted: null,
+          klass: "TELESCOPE",
+          reviewedTimestamp: null,
+          reviewerDecision: null,
+          reviewerRejectionReason: null,
+          reviewerComment: null,
+          created: "2021-11-26T14:16:42.850333",
+          updated: "2021-11-26T14:16:42.850345",
+          name: "Foo 123",
+          website: null,
+          image: null,
+          type: "REFRACTOR_ACHROMATIC",
+          aperture: "222.00",
+          minFocalLength: "1000.00",
+          maxFocalLength: "1000.00",
+          weight: null,
+          createdBy: 1,
+          reviewedBy: null,
+          brand: 1,
+          group: null
+        }
+      ]
+    }).as("findTelescopes");
+
+    cy.get("#image-imaging-telescopes-field input[type='text']").type("Foo");
+    cy.wait("@findTelescopes");
+    cy.wait("@getBrand1");
+
+    cy.get("#image-imaging-telescopes-field .ng-option:first-child").click();
+    cy.get("#image-imaging-telescopes-field .ng-select-container .ng-value")
+      .contains("Brand Foo 123")
+      .should("be.visible");
+  });
+
+  it("should show the summary modal", () => {
+    cy.get("#image-imaging-telescopes-field .ng-select-container .ng-value .btn-info-modal").click();
+    cy.get(".modal").should("be.visible");
+    cy.get(".modal .btn")
+      .contains("Close")
+      .click();
+    cy.get(".modal").should("be.not.visible");
+  });
+
+  it("should create a camera", () => {
+    cy.setupEquipmentDefaultRoutes();
+    cy.equipmentItemBrowserCreate("#image-imaging-cameras-field", "Test camera", "@findCameras");
+    cy.equipmentItemBrowserSelectFirstBrand("#equipment-item-field-brand", "Test brand", testBrand);
+    cy.get("#equipment-item-field-name").should("have.value", "Test camera");
+    cy.ngSelectOpen("#camera-field-type");
+    cy.ngSelectOptionClick("#camera-field-type", 1);
+    cy.ngSelectValueShouldContain("#camera-field-type", "Dedicated deep-sky camera");
+    cy.route("POST", "**/api/v2/equipment/camera/", testCamera).as("createCamera");
+    cy.get("#create-new-item .btn-primary").click();
+    cy.get(".modal-title")
+      .contains("Confirm item creation")
+      .should("be.visible");
+    cy.equipmentItemSummaryShouldHaveItem(".modal", "Test brand", "Test camera");
+    cy.equipmentItemSummaryShouldHaveProperty(".modal", "Class", "Camera");
+    cy.equipmentItemSummaryShouldHaveProperty(".modal", "Type", "Dedicated deep-sky camera");
+    cy.get(".modal-footer .btn-danger").click();
+    cy.wait("@createCamera");
+    cy.equipmentItemBrowserShouldContain("#image-imaging-cameras-field", "Test brand", "Test camera");
+  });
+
+  it("should have prefilled the settings step", () => {
+    cy.get("#image-stepper-equipment .form-actions .btn")
+      .contains("Next")
+      .click();
+
+    cy.url().should("contain", "#6");
 
     cy.get("#image-license-field .ng-value").should(
       "contain.text",

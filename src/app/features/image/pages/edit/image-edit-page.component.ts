@@ -24,6 +24,18 @@ import { ImageEditContentFieldsService } from "@features/image/services/image-ed
 import { ImageEditWatermarkFieldsService } from "@features/image/services/image-edit-watermark-fields.service";
 import { ImageEditThumbnailFieldsService } from "@features/image/services/image-edit-thumbnail-fields.service";
 import { ImageEditSettingsFieldsService } from "@features/image/services/image-edit-settings-fields.service";
+import { ImageEditEquipmentFieldsService } from "@features/image/services/image-edit-equipment-fields.service";
+import { Observable } from "rxjs";
+import { EquipmentPresetInterface } from "@features/equipment/types/equipment-preset.interface";
+import { selectEquipmentPresets } from "@features/equipment/store/equipment.selectors";
+import { filter, take, takeUntil } from "rxjs/operators";
+import { FindEquipmentPresets, ItemBrowserSet } from "@features/equipment/store/equipment.actions";
+import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/types/equipment-item-base.interface";
+import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
+import { SaveEquipmentPresetModalComponent } from "@features/image/components/save-equipment-preset-modal/save-equipment-preset-modal.component";
+import { LoadEquipmentPresetModalComponent } from "@features/image/components/load-equipment-preset-modal/load-equipment-preset-modal.component";
+import { UserService } from "@shared/services/user.service";
 
 @Component({
   selector: "astrobin-image-edit-page",
@@ -35,6 +47,11 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
 
   @ViewChild("stepperButtonsTemplate")
   stepperButtonsTemplate: TemplateRef<any>;
+
+  @ViewChild("equipmentStepButtonsTemplate")
+  equipmentStepButtonsTemplate: TemplateRef<any>;
+
+  editingExistingImage: boolean;
 
   constructor(
     public readonly store$: Store<State>,
@@ -53,7 +70,10 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     public readonly imageEditContentFieldsService: ImageEditContentFieldsService,
     public readonly imageEditWatermarkFieldsService: ImageEditWatermarkFieldsService,
     public readonly imageEditThumbnailFieldsService: ImageEditThumbnailFieldsService,
-    public readonly imageEditSettingsFieldsService: ImageEditSettingsFieldsService
+    public readonly imageEditEquipmentFieldsService: ImageEditEquipmentFieldsService,
+    public readonly imageEditSettingsFieldsService: ImageEditSettingsFieldsService,
+    public readonly modalService: NgbModal,
+    public readonly userService: UserService
   ) {
     super(store$);
   }
@@ -68,11 +88,17 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     this.imageEditService.remoteSourceOptionTemplate = template;
   }
 
+  get presets$(): Observable<EquipmentPresetInterface[]> {
+    return this.store$.select(selectEquipmentPresets).pipe(takeUntil(this.destroyed$));
+  }
+
   ngOnInit(): void {
     this.imageEditService.image = this.route.snapshot.data.image;
     this.imageEditService.model = { ...this.imageEditService.image };
     this.imageEditService.groups = this.route.snapshot.data.groups;
     this.imageEditService.locations = this.route.snapshot.data.locations;
+
+    this.editingExistingImage = !!this.imageEditService.image.subjectType;
 
     this.titleService.setTitle("Edit image");
 
@@ -84,6 +110,8 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
         bustCache: false
       })
     );
+
+    this.store$.dispatch(new FindEquipmentPresets());
 
     this.route.fragment.subscribe((fragment: string) => {
       if (!fragment) {
@@ -101,6 +129,99 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     });
   }
 
+  clearEquipment() {
+    this.store$.dispatch(
+      new ItemBrowserSet({
+        type: EquipmentItemType.TELESCOPE,
+        usageType: EquipmentItemUsageType.IMAGING,
+        items: []
+      })
+    );
+
+    this.store$.dispatch(
+      new ItemBrowserSet({
+        type: EquipmentItemType.CAMERA,
+        usageType: EquipmentItemUsageType.IMAGING,
+        items: []
+      })
+    );
+
+    this.store$.dispatch(
+      new ItemBrowserSet({
+        type: EquipmentItemType.MOUNT,
+        items: []
+      })
+    );
+
+    this.store$.dispatch(
+      new ItemBrowserSet({
+        type: EquipmentItemType.FILTER,
+        items: []
+      })
+    );
+
+    this.store$.dispatch(
+      new ItemBrowserSet({
+        type: EquipmentItemType.ACCESSORY,
+        items: []
+      })
+    );
+
+    this.store$.dispatch(
+      new ItemBrowserSet({
+        type: EquipmentItemType.SOFTWARE,
+        items: []
+      })
+    );
+
+    this.store$.dispatch(
+      new ItemBrowserSet({
+        type: EquipmentItemType.TELESCOPE,
+        usageType: EquipmentItemUsageType.GUIDING,
+        items: []
+      })
+    );
+
+    this.store$.dispatch(
+      new ItemBrowserSet({
+        type: EquipmentItemType.CAMERA,
+        usageType: EquipmentItemUsageType.GUIDING,
+        items: []
+      })
+    );
+  }
+
+  onClearEquipmentClicked() {
+    if (this.imageEditService.hasEquipmentItems()) {
+      this.modalService
+        .open(ConfirmationDialogComponent)
+        .closed.pipe(take(1))
+        .subscribe(() => {
+          this.clearEquipment();
+        });
+    }
+  }
+
+  onLoadEquipmentPresetClicked() {
+    this.modalService.open(LoadEquipmentPresetModalComponent);
+  }
+
+  onSaveEquipmentPresetClicked() {
+    if (this.imageEditService.hasEquipmentItems()) {
+      this.imageEditService
+        .currentEquipmentPreset$()
+        .pipe(take(1))
+        .subscribe(currentEquipmentPreset => {
+          const modalRef: NgbModalRef = this.modalService.open(SaveEquipmentPresetModalComponent);
+          const componentInstance: SaveEquipmentPresetModalComponent = modalRef.componentInstance;
+
+          if (!!currentEquipmentPreset) {
+            componentInstance.model.name = currentEquipmentPreset.name;
+          }
+        });
+    }
+  }
+
   onReturnToClassicEditor() {
     this.loadingService.setLoading(true);
     UtilsService.openLink(
@@ -111,7 +232,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     );
   }
 
-  onSave(event: Event, next: string) {
+  onSave(event: Event, next?: string) {
     if (event) {
       event.preventDefault();
     }
@@ -133,80 +254,123 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
         data: { ...this.imageEditService.image, ...this.imageEditService.form.value }
       })
     );
+
     this.actions$.pipe(ofType(AppActionTypes.SAVE_IMAGE_SUCCESS)).subscribe(() => {
-      this.loadingService.setLoading(true);
-      UtilsService.openLink(this.windowRefService.nativeWindow.document, next);
+      if (!!next) {
+        this.loadingService.setLoading(true);
+        UtilsService.openLink(this.windowRefService.nativeWindow.document, next);
+      } else {
+        this.popNotificationsService.success(this.translateService.instant("Image saved."));
+      }
     });
   }
 
   private _initFields(): void {
-    this.imageEditService.fields = [
-      {
-        type: "stepper",
-        id: "image-stepper-field",
-        templateOptions: {
-          image: this.imageEditService.image,
-          buttonsTemplate: this.stepperButtonsTemplate,
-          fixed: true
-        },
-        fieldGroup: [
-          {
-            id: "image-stepper-basic-information",
-            templateOptions: { label: this.translateService.instant("Basic information") },
-            fieldGroup: [
-              this.imageEditBasicFieldsService.getTitleField(),
-              this.imageEditBasicFieldsService.getDescriptionField(),
-              this.imageEditBasicFieldsService.getLinkField(),
-              this.imageEditBasicFieldsService.getLinkToFitsField()
-            ]
+    this.currentUser$
+      .pipe(
+        filter(user => !!user),
+        take(1)
+      )
+      .subscribe(user => {
+        const basic = {
+          id: "image-stepper-basic-information",
+          templateOptions: { label: this.translateService.instant("Basic information") },
+          fieldGroup: [
+            this.imageEditBasicFieldsService.getTitleField(),
+            this.imageEditBasicFieldsService.getDescriptionField(),
+            this.imageEditBasicFieldsService.getLinkField(),
+            this.imageEditBasicFieldsService.getLinkToFitsField()
+          ]
+        };
+
+        const content = {
+          id: "image-stepper-content",
+          templateOptions: { label: this.translateService.instant("Content") },
+          fieldGroup: [
+            this.imageEditContentFieldsService.getAcquisitionTypeField(),
+            this.imageEditContentFieldsService.getSubjectTypeField(),
+            this.imageEditContentFieldsService.getSolarSystemMainSubjectField(),
+            this.imageEditContentFieldsService.getDataSourceField(),
+            this.imageEditContentFieldsService.getRemoteSourceField(),
+            this.imageEditContentFieldsService.getLocationsField(),
+            this.imageEditContentFieldsService.getGroupsField()
+          ]
+        };
+
+        const thumbnail = {
+          id: "image-stepper-thumbnail",
+          templateOptions: { label: this.translateService.instant("Thumbnail") },
+          fieldGroup: [
+            this.imageEditThumbnailFieldsService.getThumbnailField(),
+            this.imageEditThumbnailFieldsService.getSharpenThumbnailsField()
+          ]
+        };
+
+        const watermark = {
+          id: "image-stepper-watermark",
+          templateOptions: { label: this.translateService.instant("Watermark") },
+          fieldGroup: [
+            this.imageEditWatermarkFieldsService.getWatermarkCheckboxField(),
+            this.imageEditWatermarkFieldsService.getWatermarkTextField(),
+            this.imageEditWatermarkFieldsService.getWatermarkPosition(),
+            this.imageEditWatermarkFieldsService.getWatermarkTextSize(),
+            this.imageEditWatermarkFieldsService.getWatermarkTextOpacity()
+          ]
+        };
+
+        const equipment = {
+          id: "image-stepper-equipment",
+          templateOptions: {
+            label: this.translateService.instant("Equipment"),
+            stepActionsTemplate: this.equipmentStepButtonsTemplate
           },
+          fieldGroup: [
+            this.imageEditEquipmentFieldsService.getImagingTelescopes(),
+            this.imageEditEquipmentFieldsService.getImagingCameras(),
+            this.imageEditEquipmentFieldsService.getMounts(),
+            this.imageEditEquipmentFieldsService.getFilters(),
+            this.imageEditEquipmentFieldsService.getAccessories(),
+            this.imageEditEquipmentFieldsService.getSoftware(),
+            this.imageEditEquipmentFieldsService.getShowGuidingEquipment(),
+            this.imageEditEquipmentFieldsService.getGuidingTelescopes(),
+            this.imageEditEquipmentFieldsService.getGuidingCameras()
+          ]
+        };
+
+        const settings = {
+          id: "image-stepper-settings",
+          templateOptions: { label: this.translateService.instant("Settings") },
+          fieldGroup: [
+            this.imageEditSettingsFieldsService.getLicenseField(),
+            this.imageEditSettingsFieldsService.getMouseHoverImageField(),
+            this.imageEditSettingsFieldsService.getKeyValueTagsField(),
+            this.imageEditSettingsFieldsService.getFullSizeDisplayLimitationField(),
+            this.imageEditSettingsFieldsService.getDownloadLimitationField(),
+            this.imageEditSettingsFieldsService.getAllowCommentsField()
+          ]
+        };
+
+        const fieldGroup = [basic, content, thumbnail, watermark];
+
+        if (this.userService.isInGroup(user, "own_equipment_migrators")) {
+          fieldGroup.push(equipment);
+        }
+
+        fieldGroup.push(settings);
+
+        this.imageEditService.fields = [
           {
-            id: "image-stepper-content",
-            templateOptions: { label: this.translateService.instant("Content") },
-            fieldGroup: [
-              this.imageEditContentFieldsService.getAcquisitionTypeField(),
-              this.imageEditContentFieldsService.getSubjectTypeField(),
-              this.imageEditContentFieldsService.getSolarSystemMainSubjectField(),
-              this.imageEditContentFieldsService.getDataSourceField(),
-              this.imageEditContentFieldsService.getRemoteSourceField(),
-              this.imageEditContentFieldsService.getLocationsField(),
-              this.imageEditContentFieldsService.getGroupsField()
-            ]
-          },
-          {
-            id: "image-stepper-thumbnail",
-            templateOptions: { label: this.translateService.instant("Thumbnail") },
-            fieldGroup: [
-              this.imageEditThumbnailFieldsService.getThumbnailField(),
-              this.imageEditThumbnailFieldsService.getSharpenThumbnailsField()
-            ]
-          },
-          {
-            id: "image-stepper-watermark",
-            templateOptions: { label: this.translateService.instant("Watermark") },
-            fieldGroup: [
-              this.imageEditWatermarkFieldsService.getWatermarkCheckboxField(),
-              this.imageEditWatermarkFieldsService.getWatermarkTextField(),
-              this.imageEditWatermarkFieldsService.getWatermarkPosition(),
-              this.imageEditWatermarkFieldsService.getWatermarkTextSize(),
-              this.imageEditWatermarkFieldsService.getWatermarkTextOpacity()
-            ]
-          },
-          {
-            id: "image-stepper-settings",
-            templateOptions: { label: this.translateService.instant("Settings") },
-            fieldGroup: [
-              this.imageEditSettingsFieldsService.getLicenseField(),
-              this.imageEditSettingsFieldsService.getMouseHoverImageField(),
-              this.imageEditSettingsFieldsService.getKeyValueTagsField(),
-              this.imageEditSettingsFieldsService.getFullSizeDisplayLimitationField(),
-              this.imageEditSettingsFieldsService.getDownloadLimitationField(),
-              this.imageEditSettingsFieldsService.getAllowCommentsField()
-            ]
+            type: "stepper",
+            id: "image-stepper-field",
+            templateOptions: {
+              image: this.imageEditService.image,
+              buttonsTemplate: this.stepperButtonsTemplate,
+              fixed: true
+            },
+            fieldGroup
           }
-        ]
-      }
-    ];
+        ];
+      });
   }
 
   private _initBreadcrumb(): void {

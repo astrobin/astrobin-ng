@@ -4,6 +4,14 @@ label {
   color: var(--white);
 }
 
+formly-field {
+  display: block;
+
+  &:not(:last-of-type) {
+    margin-bottom: 2rem;
+  }
+}
+
 .form-control {
   &,
   &:focus {
@@ -36,7 +44,13 @@ label {
 }
 
 .form-group {
-  margin-bottom: 2rem;
+  &:not(:last-child) {
+    margin-bottom: 2rem;
+  }
+
+  &:last-child {
+    margin-bottom: 0;
+  }
 
   &.error,
   &.has-error label {
@@ -74,4 +88,12 @@ label {
   padding: .25rem 1rem;
   margin: .25rem 1px 0 1px;
   font-size: .9rem;
+}
+
+.custom-control {
+  &.custom-radio {
+    &:not(:last-child) {
+      margin-bottom: .5rem;
+    }
+  }
 }

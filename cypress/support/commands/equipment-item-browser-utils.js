@@ -48,7 +48,7 @@ export const testCamera = {
   created: "2021-09-12T08:09:58.508643",
   updated: "2021-09-12T08:09:58.508679",
   brand: 1,
-  name: "Test",
+  name: "Test camera",
   image: null,
   type: "DEDICATED_DEEP_SKY",
   cooled: true,
@@ -738,4 +738,9 @@ Cypress.Commands.add("equipmentItemBrowserSelectFirstSoftware", (selector, softw
   cy.ngSelectOptionNumberSelectorShouldContain(selector, 1, "astrobin-equipment-item-summary .label", softwareName);
   cy.ngSelectOptionClick(selector, 1);
   cy.ngSelectValueShouldContain(selector, softwareName);
+});
+
+Cypress.Commands.add("equipmentItemBrowserShouldContain", (selector, brandName, itemName) => {
+  cy.get(`${selector} .ng-value .brand`).should("contain", brandName);
+  cy.get(`${selector} .ng-value .name`).should("contain", itemName);
 });

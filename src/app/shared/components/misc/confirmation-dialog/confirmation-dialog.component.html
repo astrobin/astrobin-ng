@@ -1,0 +1,30 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-title">
+    {{ "Are you sure?" | translate }}
+  </h4>
+  <button (click)="modal.dismiss()" aria-describedby="modal-title" class="close" type="button">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body">
+  <p>
+    {{ message || "This operation requires an additional confirmation." | translate }}
+    {{ "Are you sure that you want to continue?" | translate }}
+  </p>
+</div>
+
+<div class="modal-footer">
+  <button
+    (click)="modal.dismiss()"
+    class="btn btn-outline-secondary"
+    [class.loading]="loadingService.isLoading()"
+    type="button"
+  >
+    {{ "Cancel" | translate }}
+  </button>
+
+  <button (click)="modal.close()" class="btn btn-primary" [class.loading]="loadingService.isLoading()" type="button">
+    {{ "Yes, continue" | translate }}
+  </button>
+</div>

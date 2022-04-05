@@ -1,6 +1,6 @@
 Cypress.Commands.add("equipmentItemSummaryShouldHaveItem", (container, brandName, itemName) => {
-  cy.get(`${container} astrobin-equipment-item-summary .label strong`).should("contain", brandName);
-  cy.get(`${container} astrobin-equipment-item-summary .label`).should("contain", itemName);
+  cy.get(`${container} astrobin-equipment-item-summary .label .brand`).should("contain", brandName);
+  cy.get(`${container} astrobin-equipment-item-summary .label .name`).should("contain", itemName);
 });
 
 Cypress.Commands.add("equipmentItemSummaryShouldHaveProperty", (container, property, value) => {

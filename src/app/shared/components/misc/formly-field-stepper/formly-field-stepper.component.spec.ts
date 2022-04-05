@@ -108,12 +108,12 @@ describe("FormlyFieldStepperComponent", () => {
   describe("getStepTitle", () => {
     it("should show Step {{ stepNumber }} if there is no error", () => {
       jest.spyOn(component, "isStepErrored").mockReturnValue(false);
-      expect(component.getStepTitle(0)).toEqual("Step {{ stepNumber }}");
+      expect(component.getStepTitle({ templateOptions: { label: "foo" } }, 0)).toEqual("foo");
     });
 
     it("should show Step {{ stepNumber }} with a star if there is an error", () => {
       jest.spyOn(component, "isStepErrored").mockReturnValue(true);
-      expect(component.getStepTitle(0)).toEqual("Step {{ stepNumber }}*");
+      expect(component.getStepTitle({ templateOptions: { label: "foo" } }, 0)).toEqual("foo*");
     });
   });
 

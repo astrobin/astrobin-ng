@@ -1,0 +1,27 @@
+<astrobin-equipment-item-browser
+  #itemBrowser
+  [enableSummaryModal]="to.multiple"
+  [id]="field.id"
+  [initialValue]="initialValue"
+  [multiple]="to.multiple"
+  [required]="to.required"
+  [showLabel]="false"
+  [type]="to.itemType"
+  [usageType]="to.usageType"
+  (valueChanged)="onValueChanged($event)"
+  (creationModeStarted)="onCreationModeStarted()"
+  (creationModeEnded)="onCreationModeEnded()"
+></astrobin-equipment-item-browser>
+
+<div *ngIf="to.showQuickAddRecent && recent.length > 0" class="quick-add">
+  <span class="quick-add-label">{{ "Quick-add recent" | translate }}:</span>
+  <ng-container *ngFor="let item of recent; let last = last">
+    <a href="#" class="quick-add-item" appEventPreventDefault (click)="quickAddItem(item)">
+      <astrobin-equipment-item-display-name
+        [item]="item"
+        [enableSummaryModal]="true"
+      ></astrobin-equipment-item-display-name>
+    </a>
+    <span class="quick-add-separator" *ngIf="!last">&middot;</span>
+  </ng-container>
+</div>

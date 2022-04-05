@@ -5,7 +5,8 @@ export class EquipmentStateGenerator {
     return {
       brands: [],
       equipmentItems: [],
-      editProposals: []
+      editProposals: [],
+      presets: []
     };
   }
 }

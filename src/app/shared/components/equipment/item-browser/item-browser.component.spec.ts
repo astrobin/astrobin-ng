@@ -1,16 +1,15 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { ItemBrowserComponent } from "./item-browser.component";
-import { MockBuilder, MockInstance, MockService } from "ng-mocks";
+import { MockBuilder } from "ng-mocks";
 import { provideMockStore } from "@ngrx/store/testing";
 import { initialState } from "@app/store/state";
 import { provideMockActions } from "@ngrx/effects/testing";
-import { EMPTY, ReplaySubject } from "rxjs";
+import { ReplaySubject } from "rxjs";
 import { AppModule } from "@app/app.module";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import { ActivatedRoute, ActivatedRouteSnapshot } from "@angular/router";
 
-describe("EquipmentItemBrowserComponent", () => {
+describe("ItemBrowserComponent", () => {
   let component: ItemBrowserComponent;
   let fixture: ComponentFixture<ItemBrowserComponent>;
 

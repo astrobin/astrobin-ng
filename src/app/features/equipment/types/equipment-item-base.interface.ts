@@ -11,6 +11,11 @@ export enum EquipmentItemType {
   SOFTWARE = "SOFTWARE"
 }
 
+export enum EquipmentItemUsageType {
+  IMAGING = "IMAGING",
+  GUIDING = "GUIDING"
+}
+
 export enum EquipmentItemReviewerDecision {
   APPROVED = "APPROVED",
   REJECTED = "REJECTED"

@@ -14,9 +14,12 @@ import { ImageEditSettingsFieldsService } from "@features/image/services/image-e
 import { ImageEditThumbnailFieldsService } from "@features/image/services/image-edit-thumbnail-fields.service";
 import { ImageEditWatermarkFieldsService } from "@features/image/services/image-edit-watermark-fields.service";
 import { ImageEditService } from "@features/image/services/image-edit.service";
+import { ImageEditEquipmentFieldsService } from "@features/image/services/image-edit-equipment-fields.service";
+import { SaveEquipmentPresetModalComponent } from "@features/image/components/save-equipment-preset-modal/save-equipment-preset-modal.component";
+import { LoadEquipmentPresetModalComponent } from "./components/load-equipment-preset-modal/load-equipment-preset-modal.component";
 
 @NgModule({
-  declarations: [ImageEditPageComponent, CreateLocationModalComponent],
+  declarations: [ImageEditPageComponent, CreateLocationModalComponent, SaveEquipmentPresetModalComponent, LoadEquipmentPresetModalComponent],
   imports: [
     RouterModule.forChild(routes),
     SharedModule,
@@ -29,6 +32,7 @@ import { ImageEditService } from "@features/image/services/image-edit.service";
     ImageEditContentFieldsService,
     ImageEditSettingsFieldsService,
     ImageEditThumbnailFieldsService,
+    ImageEditEquipmentFieldsService,
     ImageEditWatermarkFieldsService
   ]
 })

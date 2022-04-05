@@ -80,6 +80,8 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit 
   editForm = new FormGroup({});
   editModel: Partial<EditProposalInterface<EquipmentItemBaseInterface>> = {};
 
+  subCreationMode = false;
+
   selectedItemEditProposals$: Observable<EditProposalInterface<EquipmentItemBaseInterface>[]>;
 
   @ViewChild("itemBrowser")
@@ -227,10 +229,10 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit 
     this.endEditMode();
   }
 
-  setItem(item: EquipmentItemBaseInterface) {
+  setItem(item: EquipmentItemBaseInterface | null) {
     this.selectedItem = item;
 
-    if (!!item.brand) {
+    if (!!item?.brand) {
       this.store$.dispatch(new LoadBrand({ id: item.brand }));
     }
 
@@ -264,13 +266,13 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit 
         _setItem(null);
       }
     } else {
+      this.setItem(null);
       this.location.replaceState(`${this.routingBasePath}/${this.activeType.toLowerCase()}`);
     }
   }
 
   onCreationModeStarted() {
-    this.selectedItem = null;
-    this.endEditMode();
+    this.resetBrowser();
   }
 
   proposeEdit() {
@@ -355,6 +357,10 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit 
   }
 
   loadEditProposals() {
+    if (!this.selectedItem) {
+      return;
+    }
+
     this.store$.dispatch(new FindEquipmentItemEditProposals({ item: this.selectedItem }));
     this.selectedItemEditProposals$ = this.actions$.pipe(
       ofType(EquipmentActionTypes.FIND_EQUIPMENT_ITEM_EDIT_PROPOSALS_SUCCESS),

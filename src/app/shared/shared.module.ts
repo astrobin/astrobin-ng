@@ -1,6 +1,6 @@
 import { CommonModule } from "@angular/common";
 import { HttpClient, HttpClientModule } from "@angular/common/http";
-import { APP_INITIALIZER, ModuleWithProviders, NgModule } from "@angular/core";
+import { APP_INITIALIZER, Directive, ModuleWithProviders, NgModule } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { formlyConfig } from "@app/formly.config";
 import { AppActionTypes } from "@app/store/actions/app.actions";
@@ -49,9 +49,9 @@ import { JsonApiService } from "@shared/services/api/classic/json/json-api.servi
 import { CustomMissingTranslationHandler } from "@app/missing-translation-handler";
 import { CustomTranslateParser } from "@app/translate-parser";
 import { LanguageLoader } from "@app/translate-loader";
+import { FormlyEquipmentItemBrowserWrapperComponent } from "@shared/components/misc/formly-equipment-item-browser-wrapper/formly-equipment-item-browser-wrapper.component";
 import { DirectivesModule } from "@shared/directives/directives.module";
 import { CustomToastComponent } from "@shared/components/misc/custom-toast/custom-toast.component";
-
 
 export function appInitializer(store: Store<State>, actions$: Actions) {
   return () =>
@@ -83,7 +83,10 @@ export function appInitializer(store: Store<State>, actions$: Actions) {
 
     FontAwesomeModule,
     FormlyModule.forRoot({
-      wrappers: [{ name: "default-wrapper", component: FormlyWrapperComponent }]
+      wrappers: [
+        { name: "equipment-item-browser-wrapper", component: FormlyEquipmentItemBrowserWrapperComponent },
+        { name: "default-wrapper", component: FormlyWrapperComponent }
+      ]
     }),
     FormlyBootstrapModule,
     FormlySelectModule,
@@ -97,7 +100,8 @@ export function appInitializer(store: Store<State>, actions$: Actions) {
     NgWizardModule.forRoot({
       theme: THEME.default,
       anchorSettings: {
-        anchorClickable: false,
+        anchorClickable: true,
+        enableAllAnchors: true,
         markAllPreviousStepsAsDone: true,
         enableAnchorOnDoneStep: true
       },
