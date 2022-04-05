@@ -1,6 +1,6 @@
 import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from "@angular/common/http";
 
-import { EMPTY, Observable, of, throwError } from "rxjs";
+import { Observable, of, throwError } from "rxjs";
 import { TranslateService } from "@ngx-translate/core";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { catchError, retry } from "rxjs/operators";
@@ -66,6 +66,7 @@ export class ServerErrorsInterceptor implements HttpInterceptor {
       switch (err.status) {
         case 400:
           errorTitle = this.translateService.instant("Bad request");
+
           if (UtilsService.isString(err.error)) {
             errorMessage = err.error;
           } else if (UtilsService.isObject(err.error)) {
@@ -74,6 +75,13 @@ export class ServerErrorsInterceptor implements HttpInterceptor {
               errorMessage += `<strong>${key}</strong>: ${err.error[key]}<br/>`;
             }
           }
+
+          if (errorMessage.indexOf("AstroBin stands with Ukraine") > -1) {
+            this.windowRefService.nativeWindow.location.assign(
+              "https://welcome.astrobin.com/astrobin-stands-with-ukraine"
+            );
+          }
+
           break;
         case 401:
           errorTitle = this.translateService.instant("Login required");
