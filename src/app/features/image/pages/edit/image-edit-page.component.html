@@ -69,6 +69,7 @@
     <button
       [class.loading]="loadingService.isLoading()"
       class="btn btn-primary"
+      [disabled]="!imageEditService.form.valid"
       id="save-dropdown"
       ngbDropdownToggle
     >
