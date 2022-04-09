@@ -65,46 +65,62 @@
     {{ "Save" | translate }}
   </button>
 
-  <div ngbDropdown placement="top-right" *ngIf="!editingExistingImage">
-    <button
-      [class.loading]="loadingService.isLoading()"
-      [disabled]="!imageEditService.form.valid"
-      class="btn btn-primary"
-      id="save-dropdown"
-      ngbDropdownToggle
-    >
-      {{ "Save" | translate }}&hellip;
-    </button>
-    <div aria-labelledby="save-dropdown" ngbDropdownMenu>
-      <h6 class="dropdown-header">{{ "Where do you want to go after saving?" | translate }}</h6>
-
+  <ng-container *ngIf="currentUser$ | async as user">
+    <div ngbDropdown placement="top-right" *ngIf="!editingExistingImage">
       <button
-        (click)="
-          onSave(
-            $event,
-            classicRoutesService.EDIT_IMAGE_ACQUISITION(imageEditService.image.hash || '' + imageEditService.image.pk) +
-              '?upload'
-          )
-        "
-        class="dropdown-item"
+        [class.loading]="loadingService.isLoading()"
+        [disabled]="!imageEditService.form.valid"
+        class="btn btn-primary"
+        id="save-dropdown"
+        ngbDropdownToggle
       >
-        {{ "Save and proceed to acquisition details" | translate }}
+        {{ "Save" | translate }}&hellip;
       </button>
+      <div aria-labelledby="save-dropdown" ngbDropdownMenu>
+        <h6 class="dropdown-header">{{ "Where do you want to go after saving?" | translate }}</h6>
 
-      <button
-        (click)="
-          onSave($event, classicRoutesService.IMAGE(imageEditService.image.hash || '' + imageEditService.image.pk))
-        "
-        class="dropdown-item"
-      >
-        {{ "Save and proceed to image" | translate }}
-      </button>
+        <button
+          *ngIf="!(user | isInGroup:'own_equipment_migrators')"
+          (click)="
+            onSave(
+              $event,
+              classicRoutesService.EDIT_IMAGE_GEAR(imageEditService.image.hash || '' + imageEditService.image.pk) +
+                '?upload'
+            )
+          "
+          class="dropdown-item"
+        >
+          {{ "Save and proceed to gear selection" | translate }}
+        </button>
 
-      <hr />
+        <button
+          (click)="
+            onSave(
+              $event,
+              classicRoutesService.EDIT_IMAGE_ACQUISITION(imageEditService.image.hash || '' + imageEditService.image.pk) +
+                '?upload'
+            )
+          "
+          class="dropdown-item"
+        >
+          {{ "Save and proceed to acquisition details" | translate }}
+        </button>
 
-      <button (click)="onSave($event)" class="dropdown-item">
-        {{ "Save and remain on this page" | translate }}
-      </button>
+        <button
+          (click)="
+            onSave($event, classicRoutesService.IMAGE(imageEditService.image.hash || '' + imageEditService.image.pk))
+          "
+          class="dropdown-item"
+        >
+          {{ "Save and proceed to image" | translate }}
+        </button>
+
+        <hr />
+
+        <button (click)="onSave($event)" class="dropdown-item">
+          {{ "Save and remain on this page" | translate }}
+        </button>
+      </div>
     </div>
-  </div>
+  </ng-container>
 </ng-template>
