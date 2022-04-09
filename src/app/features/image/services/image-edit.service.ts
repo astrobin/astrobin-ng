@@ -12,7 +12,7 @@ import { Observable } from "rxjs";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { selectEquipmentPresets } from "@features/equipment/store/equipment.selectors";
-import { map, take } from "rxjs/operators";
+import { map } from "rxjs/operators";
 
 export function KeyValueTagsValidator(control: FormControl): ValidationErrors {
   if (!control.value) {
