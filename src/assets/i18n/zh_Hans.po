@@ -132,6 +132,9 @@ msgstr "审核编辑"
 msgid "Approved"
 msgstr "已审核"
 
+msgid "Are you sure that you want to continue?"
+msgstr ""
+
 msgid "Are you sure?"
 msgstr "确定？"
 
@@ -328,6 +331,9 @@ msgstr "选择当鼠标悬停在此作品上时，将显示的内容。请注意
 msgid "Class"
 msgstr "分类"
 
+msgid "Clear"
+msgstr ""
+
 msgid "Click on the image and scroll to magnify up to 8x."
 msgstr "单击图像并滚动以放大至最大8倍。"
 
@@ -409,9 +415,6 @@ msgstr "创建新品牌"
 msgid "Create new location"
 msgstr "创建新地点"
 
-msgid "Create new sensor"
-msgstr "创建新传感器"
-
 msgid "Create new:"
 msgstr "创建新的："
 
@@ -432,6 +435,9 @@ msgstr "深空摄影专用相机"
 
 msgid "Deep sky object or field"
 msgstr "深空天体或深空视场"
+
+msgid "Delete"
+msgstr ""
 
 msgid "Description"
 msgstr "描述"
@@ -508,11 +514,20 @@ msgstr "设备"
 msgid "Equipment explorer"
 msgstr "设备浏览器"
 
+msgid "Equipment item summary"
+msgstr ""
+
 msgid "Equipment pending edit"
 msgstr "待编辑设备"
 
 msgid "Equipment pending review"
 msgstr "待审核设备"
+
+msgid "Equipment preset created."
+msgstr ""
+
+msgid "Equipment preset updated."
+msgstr ""
 
 msgid "Error!"
 msgstr "错误！"
@@ -628,6 +643,12 @@ msgstr "小组"
 msgid "Guider or planetary camera"
 msgstr "导星或行星相机"
 
+msgid "Guiding cameras"
+msgstr ""
+
+msgid "Guiding telescopes or lenses"
+msgstr ""
+
 msgid "HTML tags are allowed."
 msgstr "允许HTML标签。"
 
@@ -713,6 +734,9 @@ msgstr "今日最佳"
 msgid "Image queue"
 msgstr "作品列队"
 
+msgid "Image saved."
+msgstr ""
+
 msgid "Images"
 msgstr "作品"
 
@@ -796,6 +820,15 @@ msgstr "链接"
 
 msgid "Link to TIFF/FITS"
 msgstr "链接到 TIFF/FITS 文件"
+
+msgid "Load"
+msgstr ""
+
+msgid "Load equipment preset"
+msgstr ""
+
+msgid "Load preset"
+msgstr ""
 
 msgid "Loading edit proposals"
 msgstr "加载编辑建议"
@@ -1224,6 +1257,9 @@ msgstr "两字效率"
 msgid "Quick search"
 msgstr "快速搜索"
 
+msgid "Quick-add recent"
+msgstr ""
+
 msgid "Read"
 msgstr "已读"
 
@@ -1335,6 +1371,15 @@ msgstr "保存并开始填写使用设备情况"
 msgid "Save and proceed to image"
 msgstr "保存并开始处理作品"
 
+msgid "Save and remain on this page"
+msgstr ""
+
+msgid "Save equipment preset"
+msgstr ""
+
+msgid "Save preset"
+msgstr ""
+
 msgid "Scroll to top"
 msgstr "滚动到顶部"
 
@@ -1379,6 +1424,9 @@ msgstr "锐化缩略图"
 
 msgid "Show"
 msgstr "显示"
+
+msgid "Show guiding equipment"
+msgstr ""
 
 msgid ""
 "Since a regular and a modified variant of {{0}} were created, we didn't "
@@ -1459,9 +1507,6 @@ msgstr "星轨"
 msgid "Status"
 msgstr "状态"
 
-msgid "Step {{ stepNumber }}"
-msgstr "步骤 {{ stepNumber }}"
-
 msgid "Subject type"
 msgstr "主题类型"
 
@@ -1515,6 +1560,9 @@ msgstr "望远镜"
 
 msgid "Telescopes & lenses"
 msgstr "望远镜&镜头"
+
+msgid "Telescopes or lenses"
+msgstr ""
 
 msgid "Text"
 msgstr "文本"
@@ -1676,10 +1724,16 @@ msgstr "此项目将是AstroBin设备数据库的一部分，并且信息准确�
 msgid "This operation can not be undone."
 msgstr "此操作无法撤销。"
 
+msgid "This operation cannot be undone."
+msgstr ""
+
 msgid ""
 "This operation could take several seconds (especially for large images), "
 "please wait"
 msgstr "此操作将耗时数秒（尤其大尺寸作品），请稍后"
+
+msgid "This operation will overwrite the current equipment selection."
+msgstr ""
 
 msgid ""
 "This page or operation is not available at the moment, because AstroBin is "
@@ -1898,6 +1952,9 @@ msgstr "类型错误"
 msgid "Yes"
 msgstr "是"
 
+msgid "Yes, continue"
+msgstr ""
+
 msgid ""
 "You are already logged in or were logged in automatically from the "
 "application's backend."
@@ -1934,6 +1991,12 @@ msgid ""
 "You have a <strong>{{0}}</strong> subscription. Enjoy your unlimited "
 "uploads!"
 msgstr "您现已是<strong>{{0}}</strong>订阅用户。畅享无限上传吧！"
+
+msgid ""
+"You have a <strong>{{0}}</strong> subscription. You have used "
+"<strong>{{1}}</strong> of the <strong>{{2}}</strong> images allowed in your "
+"plan."
+msgstr ""
 
 msgid ""
 "You have a <strong>{{0}}</strong> subscription. You have used "
@@ -1974,6 +2037,9 @@ msgstr "您正在访问内容仅对已登录用户开放。"
 
 msgid "You will be redirected in {{seconds}} seconds..."
 msgstr "您将在{{seconds}}后跳转..."
+
+msgid "You will overwrite your existing preset with the same name."
+msgstr ""
 
 msgid "Your payments"
 msgstr "付款记录"

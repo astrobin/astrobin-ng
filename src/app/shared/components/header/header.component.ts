@@ -51,6 +51,7 @@ export class HeaderComponent extends BaseComponentDirective implements OnInit {
     { code: "ja", label: "日本語" },
     { code: "nl", label: "Nederlands" },
     { code: "pl", label: "Polski" },
+    { code: "uk", label: "Українська" },
     { code: "ru", label: "Русский" },
     { code: "sq", label: "Shqipe" },
     { code: "tr", label: "Türkçe" }
@@ -71,6 +72,7 @@ export class HeaderComponent extends BaseComponentDirective implements OnInit {
     { code: "ja", label: "JA" },
     { code: "nl", label: "NL" },
     { code: "pl", label: "PL" },
+    { code: "uk", label: "UK" },
     { code: "ru", label: "RU" },
     { code: "sq", label: "SQ" },
     { code: "tr", label: "TR" }

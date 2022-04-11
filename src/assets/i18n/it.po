@@ -141,6 +141,9 @@ msgstr "Approva modifica"
 msgid "Approved"
 msgstr "Approvato"
 
+msgid "Are you sure that you want to continue?"
+msgstr ""
+
 msgid "Are you sure?"
 msgstr "Sei sicuro?"
 
@@ -350,6 +353,9 @@ msgstr ""
 msgid "Class"
 msgstr "Classe"
 
+msgid "Clear"
+msgstr ""
+
 msgid "Click on the image and scroll to magnify up to 8x."
 msgstr "Clicca su un'immagine e scrolla per ingrandire fino a 8x."
 
@@ -431,9 +437,6 @@ msgstr "Crea nuova marca"
 msgid "Create new location"
 msgstr "Crea nuovo luogo"
 
-msgid "Create new sensor"
-msgstr "Crea nuovo sensore"
-
 msgid "Create new:"
 msgstr "Crea nuovo/a:"
 
@@ -454,6 +457,9 @@ msgstr "Camera specifica per il cielo profondo"
 
 msgid "Deep sky object or field"
 msgstr "Oggetto o campo del cielo profondo"
+
+msgid "Delete"
+msgstr ""
 
 msgid "Description"
 msgstr "Descrizione"
@@ -532,11 +538,20 @@ msgstr "Strumentazione"
 msgid "Equipment explorer"
 msgstr "Esploratore di strumentazione"
 
+msgid "Equipment item summary"
+msgstr ""
+
 msgid "Equipment pending edit"
 msgstr "Strumentazione con modifiche in attesa"
 
 msgid "Equipment pending review"
 msgstr "Strumentazione in attesa di controllo"
+
+msgid "Equipment preset created."
+msgstr ""
+
+msgid "Equipment preset updated."
+msgstr ""
 
 msgid "Error!"
 msgstr "Errore!"
@@ -656,6 +671,12 @@ msgstr "Gruppi"
 msgid "Guider or planetary camera"
 msgstr "Camera planetaria o di guida"
 
+msgid "Guiding cameras"
+msgstr ""
+
+msgid "Guiding telescopes or lenses"
+msgstr ""
+
 msgid "HTML tags are allowed."
 msgstr "Puoi usare tag HTML."
 
@@ -757,6 +778,9 @@ msgstr "Foto del giorno"
 msgid "Image queue"
 msgstr "Coda delle immagini"
 
+msgid "Image saved."
+msgstr ""
+
 msgid "Images"
 msgstr "Immagini"
 
@@ -842,6 +866,15 @@ msgstr "Link"
 
 msgid "Link to TIFF/FITS"
 msgstr "Link al TIFF/FITS"
+
+msgid "Load"
+msgstr ""
+
+msgid "Load equipment preset"
+msgstr ""
+
+msgid "Load preset"
+msgstr ""
 
 msgid "Loading edit proposals"
 msgstr "Caricamento delle proposte di modifica"
@@ -1290,6 +1323,9 @@ msgstr "Efficienza quantica"
 msgid "Quick search"
 msgstr "Ricerca rapida"
 
+msgid "Quick-add recent"
+msgstr ""
+
 msgid "Read"
 msgstr "Leggi"
 
@@ -1401,6 +1437,15 @@ msgstr "Salva e procedi alla strumentazione"
 msgid "Save and proceed to image"
 msgstr "Salva e procedi all'immagine"
 
+msgid "Save and remain on this page"
+msgstr ""
+
+msgid "Save equipment preset"
+msgstr ""
+
+msgid "Save preset"
+msgstr ""
+
 msgid "Scroll to top"
 msgstr ""
 
@@ -1445,6 +1490,9 @@ msgstr "Aumenta la definizione delle miniature"
 
 msgid "Show"
 msgstr "Mostra"
+
+msgid "Show guiding equipment"
+msgstr ""
 
 msgid ""
 "Since a regular and a modified variant of {{0}} were created, we didn't "
@@ -1532,9 +1580,6 @@ msgstr "Tracce stellari"
 msgid "Status"
 msgstr "Stato"
 
-msgid "Step {{ stepNumber }}"
-msgstr "Step {{ stepNumber }}"
-
 msgid "Subject type"
 msgstr "Tipo di soggetto"
 
@@ -1588,6 +1633,9 @@ msgstr "Telescopio"
 
 msgid "Telescopes & lenses"
 msgstr "Telescopi e obiettivi"
+
+msgid "Telescopes or lenses"
+msgstr ""
 
 msgid "Text"
 msgstr "Testo"
@@ -1777,12 +1825,18 @@ msgstr ""
 msgid "This operation can not be undone."
 msgstr "Questa operazione non può essere annullata."
 
+msgid "This operation cannot be undone."
+msgstr ""
+
 msgid ""
 "This operation could take several seconds (especially for large images), "
 "please wait"
 msgstr ""
 "Questa operazione potrebbe richiedere svariati secondi (specialmente per "
 "immagini grandi), attendere prego"
+
+msgid "This operation will overwrite the current equipment selection."
+msgstr ""
 
 msgid ""
 "This page or operation is not available at the moment, because AstroBin is "
@@ -2027,6 +2081,9 @@ msgstr "Tipo errato"
 msgid "Yes"
 msgstr "Sì"
 
+msgid "Yes, continue"
+msgstr ""
+
 msgid ""
 "You are already logged in or were logged in automatically from the "
 "application's backend."
@@ -2076,6 +2133,12 @@ msgstr "Hai un abbonamento <strong>{{0}}</strong>. Goditi i tuoi upload illimita
 
 msgid ""
 "You have a <strong>{{0}}</strong> subscription. You have used "
+"<strong>{{1}}</strong> of the <strong>{{2}}</strong> images allowed in your "
+"plan."
+msgstr ""
+
+msgid ""
+"You have a <strong>{{0}}</strong> subscription. You have used "
 "<strong>{{1}}</strong> of your <strong>{{2}}</strong> upload slots."
 msgstr ""
 "Hai un abbonamento <strong>{{0}}</strong>. Hai usato <strong>{{1}}</strong> "
@@ -2116,6 +2179,9 @@ msgstr ""
 
 msgid "You will be redirected in {{seconds}} seconds..."
 msgstr "Sarai rendirizzato in {{seconds}} secondi..."
+
+msgid "You will overwrite your existing preset with the same name."
+msgstr ""
 
 msgid "Your payments"
 msgstr "I tuoi pagamenti"

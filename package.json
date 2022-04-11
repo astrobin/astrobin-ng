@@ -23,7 +23,7 @@
     "cy:serve-and-run-record": "node_modules/.bin/run-p -r \"start\" \"cy:wait-run-record\"",
     "analyze": "webpack-bundle-analyzer dist/stats-es2015.json",
     "i18n:init": "ngx-translate-extract --input ./src --output ./src/assets/i18n/en.po --replace --format pot --sort",
-    "i18n:extract": "ngx-translate-extract --input ./src --output ./src/assets/i18n/{de,fr,es,it,pt,zh_Hans}.po --clean --format pot --sort"
+    "i18n:extract": "ngx-translate-extract --input ./src --output ./src/assets/i18n/{de,fr,es,it,pt,ru,uk,zh_Hans}.po --clean --format pot --sort"
   },
   "private": true,
   "dependencies": {

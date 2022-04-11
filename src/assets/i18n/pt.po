@@ -132,6 +132,9 @@ msgstr ""
 msgid "Approved"
 msgstr ""
 
+msgid "Are you sure that you want to continue?"
+msgstr ""
+
 msgid "Are you sure?"
 msgstr ""
 
@@ -334,6 +337,9 @@ msgstr ""
 msgid "Class"
 msgstr ""
 
+msgid "Clear"
+msgstr ""
+
 msgid "Click on the image and scroll to magnify up to 8x."
 msgstr ""
 
@@ -415,9 +421,6 @@ msgstr ""
 msgid "Create new location"
 msgstr ""
 
-msgid "Create new sensor"
-msgstr ""
-
 msgid "Create new:"
 msgstr ""
 
@@ -438,6 +441,9 @@ msgstr ""
 
 msgid "Deep sky object or field"
 msgstr "Objeto ou campo de céu profundo"
+
+msgid "Delete"
+msgstr ""
 
 msgid "Description"
 msgstr "Descrição"
@@ -514,10 +520,19 @@ msgstr ""
 msgid "Equipment explorer"
 msgstr ""
 
+msgid "Equipment item summary"
+msgstr ""
+
 msgid "Equipment pending edit"
 msgstr ""
 
 msgid "Equipment pending review"
+msgstr ""
+
+msgid "Equipment preset created."
+msgstr ""
+
+msgid "Equipment preset updated."
 msgstr ""
 
 msgid "Error!"
@@ -638,6 +653,12 @@ msgstr "Grupos"
 msgid "Guider or planetary camera"
 msgstr ""
 
+msgid "Guiding cameras"
+msgstr ""
+
+msgid "Guiding telescopes or lenses"
+msgstr ""
+
 msgid "HTML tags are allowed."
 msgstr "Tags HTML são permitidos."
 
@@ -728,6 +749,9 @@ msgstr "Imagem do dia"
 msgid "Image queue"
 msgstr "Fila de imagens"
 
+msgid "Image saved."
+msgstr ""
+
 msgid "Images"
 msgstr "Imagens"
 
@@ -811,6 +835,15 @@ msgstr "Link"
 
 msgid "Link to TIFF/FITS"
 msgstr "Link para TIFF/FITS"
+
+msgid "Load"
+msgstr ""
+
+msgid "Load equipment preset"
+msgstr ""
+
+msgid "Load preset"
+msgstr ""
 
 msgid "Loading edit proposals"
 msgstr ""
@@ -1243,6 +1276,9 @@ msgstr ""
 msgid "Quick search"
 msgstr "Busca rápida"
 
+msgid "Quick-add recent"
+msgstr ""
+
 msgid "Read"
 msgstr ""
 
@@ -1354,6 +1390,15 @@ msgstr ""
 msgid "Save and proceed to image"
 msgstr ""
 
+msgid "Save and remain on this page"
+msgstr ""
+
+msgid "Save equipment preset"
+msgstr ""
+
+msgid "Save preset"
+msgstr ""
+
 msgid "Scroll to top"
 msgstr ""
 
@@ -1397,6 +1442,9 @@ msgid "Sharpen thumbnails"
 msgstr "Aprimorar miniaturas"
 
 msgid "Show"
+msgstr ""
+
+msgid "Show guiding equipment"
 msgstr ""
 
 msgid ""
@@ -1478,9 +1526,6 @@ msgstr "Rastros de estrelas"
 msgid "Status"
 msgstr ""
 
-msgid "Step {{ stepNumber }}"
-msgstr ""
-
 msgid "Subject type"
 msgstr "Tipo de assunto"
 
@@ -1533,6 +1578,9 @@ msgid "Telescope"
 msgstr ""
 
 msgid "Telescopes & lenses"
+msgstr ""
+
+msgid "Telescopes or lenses"
 msgstr ""
 
 msgid "Text"
@@ -1693,9 +1741,15 @@ msgstr ""
 msgid "This operation can not be undone."
 msgstr ""
 
+msgid "This operation cannot be undone."
+msgstr ""
+
 msgid ""
 "This operation could take several seconds (especially for large images), "
 "please wait"
+msgstr ""
+
+msgid "This operation will overwrite the current equipment selection."
 msgstr ""
 
 msgid ""
@@ -1919,6 +1973,9 @@ msgstr ""
 msgid "Yes"
 msgstr ""
 
+msgid "Yes, continue"
+msgstr ""
+
 msgid ""
 "You are already logged in or were logged in automatically from the "
 "application's backend."
@@ -1955,6 +2012,12 @@ msgid ""
 msgstr ""
 "Você tem uma assinatura <strong>{{0}}</strong>. Aproveite seus uploads "
 "ilimitados!"
+
+msgid ""
+"You have a <strong>{{0}}</strong> subscription. You have used "
+"<strong>{{1}}</strong> of the <strong>{{2}}</strong> images allowed in your "
+"plan."
+msgstr ""
 
 msgid ""
 "You have a <strong>{{0}}</strong> subscription. You have used "
@@ -1996,6 +2059,9 @@ msgstr ""
 
 msgid "You will be redirected in {{seconds}} seconds..."
 msgstr "Você será redirecionado em {{seconds}} segundos..."
+
+msgid "You will overwrite your existing preset with the same name."
+msgstr ""
 
 msgid "Your payments"
 msgstr "Seus pagamentos"

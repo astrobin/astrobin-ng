@@ -1,0 +1,2266 @@
+msgid ""
+msgstr ""
+"mime-version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "(DIY)"
+msgstr "(Зроби сам)"
+
+msgid "(modified)"
+msgstr "(модифіковано)"
+
+msgid "(optional)"
+msgstr "(необов’язково)"
+
+msgid ""
+"0 means invisible; 100 means completely opaque. Recommended values are: 10 "
+"if the watermark will appear on the dark sky background, 50 if on some "
+"bright object."
+msgstr ""
+"0 означає невидимий; 100 означає повністю непрозорий. Рекомендовані "
+"значення: 10, якщо водяний знак з’явиться на темному тлі неба, 50 якщо на "
+"якомусь яскравому об’єкті."
+
+msgid "1 like"
+msgstr "1 лайк"
+
+msgid ""
+"<strong>Careful!</strong> Change the name only to fix a typo or the naming "
+"convention. This operation will change the name of this equipment item "
+"<strong>for all AstroBin images that use it</strong>, so you should not "
+"change the name if it becomes a different product."
+msgstr ""
+"<strong>Обережно!</strong> Змініть назву лише для виправлення друкарської "
+"помилки або умовності найменування. Ця операція змінить назву цього "
+"елемента обладнання <strong>для всіх зображень AstroBin, які його "
+"використовують</strong>, тому вам не слід змінювати назву, якщо це стане "
+"іншим продуктом."
+
+msgid ""
+"<strong>Careful!</strong> The item's name contains the brand's name (or "
+"vice versa), and it probably shouldn't."
+msgstr ""
+"<strong>Обережно!</strong> Назва містить ім‘я бренду (або навпаки), і, "
+"ймовірно, так не повинно бути."
+
+msgid "A brand with this name already exists."
+msgstr "Бренд з такою назвою вже існує."
+
+msgid "A brand with this website already exists."
+msgstr "Бренд із цим веб-сайтом уже існує."
+
+msgid ""
+"A positive whole number that represents how many Celsius below ambient "
+"temperature this camera can be cooled."
+msgstr ""
+"Позитивне ціле число, яке показує, на скільки градусів Цельсія нижче "
+"температури навколишнього середовища можна охолодити цю камеру."
+
+msgid "A-Z explorer"
+msgstr "Від А до Я"
+
+msgid "ADC"
+msgstr "АЦП"
+
+msgid "API Keys"
+msgstr "Ключі API"
+
+msgid "Accepted formats"
+msgstr "Доступні формати"
+
+msgid "Access denied."
+msgstr "Доступ заборонено."
+
+msgid "Accessories"
+msgstr "Аксесуари"
+
+msgid "Accessory"
+msgstr "Аксесуар"
+
+msgid "Acquisition type"
+msgstr "Тип придбання"
+
+msgid "Add a comment"
+msgstr "Коментувати"
+
+msgid "Advanced plate-solving"
+msgstr "Розширене розпізнавання поля"
+
+msgid "Advanced search"
+msgstr "Розширений пошук"
+
+msgid "Allow comments"
+msgstr "Дозволити коментарі"
+
+msgid "Allow full-size display"
+msgstr "Дозволити відображення в повному розмірі"
+
+msgid "Alt-Alt (altitude-altitude)"
+msgstr "Alt-Alt (висота-висота)"
+
+msgid "Alt-Az (altazimuth)"
+msgstr "Alt-Az (альтазимут)"
+
+msgid "Altitude"
+msgstr "Висота"
+
+msgid "Amateur hosting facility"
+msgstr "Аматорський хостинг"
+
+msgid "Amount"
+msgstr "Кількість"
+
+msgid "An error occurred"
+msgstr "Сталася помилка"
+
+msgid "An item of the same class, brand, and name already exists."
+msgstr "Предмет того ж класу, марки та назви вже існує."
+
+msgid "Analog to Digital Converter"
+msgstr "Аналого-цифровий перетворювач"
+
+msgid "And much more!"
+msgstr "Та багато іншого!"
+
+msgid "Anular solar eclipse"
+msgstr "Кільцеве сонячне затемнення"
+
+msgid "Aperture"
+msgstr "Діафрагма"
+
+msgid "Apply watermark to image"
+msgstr "Застосувати водяний знак до зображення"
+
+msgid "Approve"
+msgstr "Затвердити"
+
+msgid "Approve edit"
+msgstr "Схвалити редагування"
+
+msgid "Approved"
+msgstr "Схвалено"
+
+msgid "Are you sure that you want to continue?"
+msgstr ""
+
+msgid "Are you sure?"
+msgstr "Ви впевнені?"
+
+msgid "AstroBin can protect your images from theft by applying a watermark to them."
+msgstr ""
+"AstroBin може захистити ваші зображення від крадіжки, застосувавши до них "
+"водяний знак."
+
+msgid ""
+"AstroBin could not read your file as an image. Please try a different "
+"format."
+msgstr "AstroBin не зміг прочитати ваш файл як зображення. Спробуйте інший формат."
+
+msgid "AstroBin does not share your coordinates with anyone."
+msgstr "AstroBin нікому не передає ваші координати."
+
+msgid ""
+"AstroBin doesn't support subscription upgrades at the moment, but we're "
+"happy to make it happen manually. If you're on a lower subscription tier "
+"and would like to upgrade to <strong>{{0}}</strong>, please just buy it and "
+"then contact us at {{1}} to get a refund for the unused time on your old "
+"subscription. Thanks!"
+msgstr ""
+"AstroBin наразі не підтримує оновлення підписок, але ми будемо раді зробити "
+"це самостійно. Якщо Ви бажаєте підвищити рівень підписки на "
+"<strong>{{0}}</strong>, просто придбайте її, потім звʼяжіться з нами по "
+"{{1}}, щоб отримати відшкодування за невикористаний час за вашою старою "
+"передплатою. Дякуємо!"
+
+msgid ""
+"AstroBin encountered an internal error. Please try again and contact us if "
+"the problem persists!"
+msgstr ""
+"AstroBin зіткнувся з внутрішньою помилкою. Будь ласка, спробуйте ще раз і "
+"зв’яжіться з нами, якщо проблема не зникне!"
+
+msgid "AstroBin is generating a large thumbnail."
+msgstr "AstroBin створює велику мініатюру."
+
+msgid ""
+"AstroBin would like to rename some of your gear items in order to be more "
+"consistent with naming conventions."
+msgstr ""
+"AstroBin хотів би перейменувати деякі з ваших елементів спорядження, щоб "
+"вони відповідали умовам найменування."
+
+msgid "AstroBin's new equipment database is still work in progress."
+msgstr "Нова база даних обладнання AstroBin все ще у роботі."
+
+msgid "Astrophotographers list"
+msgstr "Список астрофотографів"
+
+msgid "Attribution Creative Commons"
+msgstr "Авторство Creative Commons"
+
+msgid "Attribution-NoDerivs Creative Commons"
+msgstr "Авторство NoDerivs Creative Commons"
+
+msgid "Attribution-NonCommercial Creative Commons"
+msgstr "Авторство NonCommercial Creative Commons"
+
+msgid "Attribution-NonCommercial-NoDerivs Creative Commons"
+msgstr "Авторство NonCommercial-NoDerivs Creative Commons"
+
+msgid "Attribution-NonCommercial-ShareAlike Creative Commons"
+msgstr "Авторство NonCommercial-ShareAlike Creative Commons"
+
+msgid "Attribution-ShareAlike Creative Commons"
+msgstr "Авторство ShareAlike Creative Commons"
+
+msgid "Authentication error. Please log out and in again."
+msgstr "Помилка аутентифікації. Будь ласка, вийдіть і знову ввійдіть."
+
+msgid "Automatically create \"modified\" variant"
+msgstr "Автоматично створити «модифікований» варіант"
+
+msgid "Autorenew"
+msgstr "Автооновлення"
+
+msgid "Back focus"
+msgstr "Задній відрізок"
+
+msgid "Backyard"
+msgstr "Задній двір"
+
+msgid "Bad request"
+msgstr "Невірний запит"
+
+msgid "Bandwidth"
+msgstr "Пропускна здатність"
+
+msgid "Basic information"
+msgstr "Загальня інформація"
+
+msgid "Basic plate-solving"
+msgstr "Звичайне розпізнавання поля"
+
+msgid "Basic search"
+msgstr "Звичайний пошук"
+
+msgid "Binoculars"
+msgstr "Бінокль"
+
+msgid "Blue channel (B)"
+msgstr "Синій канал (B)"
+
+msgid "Bookmarks"
+msgstr "Закладки"
+
+msgid "Bottom center"
+msgstr "По центру знизу"
+
+msgid "Bottom left"
+msgstr "Унизу ліворуч"
+
+msgid "Bottom right"
+msgstr "Унизу праворуч"
+
+msgid "Brand"
+msgstr "Бренд"
+
+msgid "Brand/Make"
+msgstr "Бренд/Марка"
+
+msgid "Buy"
+msgstr "Придбати"
+
+msgid "Camera"
+msgstr "Камера"
+
+msgid "Camera back focus in mm."
+msgstr "Задній відрізок камери у мм."
+
+msgid "Camera lens"
+msgstr "Об’єктив камери"
+
+msgid "Cameras"
+msgstr "Камери"
+
+msgid "Cancel"
+msgstr "Скасувати"
+
+msgid "Cancelled"
+msgstr "Скасовано"
+
+msgid "Catadioptric: ACF Schmidt-Cassegrain"
+msgstr "Катадіоптрик: Шмідт-Кассегрен вільний від коми"
+
+msgid "Catadioptric: Argunov-Cassegrain"
+msgstr "Катадіоптрик: Аргунов-Кассегрен"
+
+msgid "Catadioptric: Klevtsov-Cassegrain"
+msgstr "Катадіоптрик: Клевцов-Кассегрен"
+
+msgid "Catadioptric: Lurie-Houghton"
+msgstr "Катадіоптрик: Лурі-Хоутон"
+
+msgid "Catadioptric: Maksutov"
+msgstr "Катадіоптрик: Максутов"
+
+msgid "Catadioptric: Maksutov-Cassegrain"
+msgstr "Катадіоптрик: Максутов-Кассегрен"
+
+msgid "Catadioptric: Rowe-Atkinson Schmidt astrograph"
+msgstr "Катадіоптрик: Рові-Аткінсон Шмидт астрограф"
+
+msgid "Catadioptric: Schmidt camera"
+msgstr "Катадіоптрик: камера Шмідта"
+
+msgid "Catadioptric: Schmidt-Cassegrain"
+msgstr "Катадіоптрик: Шмідт-Кассегрен"
+
+msgid "Catadioptric: modified Dall-Kirkham"
+msgstr "Катадіоптрик: модифікований Долл-Кірхем"
+
+msgid "Celsius degrees below ambient"
+msgstr "Градусів Цельсія нижче температури навколишнього середовища"
+
+msgid "Center"
+msgstr "По центру"
+
+msgid "Changes"
+msgstr "Зміни"
+
+msgid ""
+"Check this box if this item is self-made, and/or was never on the market as "
+"a commercial product, and therefore does not have a brand."
+msgstr ""
+"Поставте помітку, якщо цей предмет саморобний та/або ніколи не був на ринку "
+"як комерційний продукт, а отже, не має бренду."
+
+msgid "Choose file"
+msgstr "Виберіть файл"
+
+msgid "Choose files"
+msgstr "Виберіть файли"
+
+msgid ""
+"Choose what will be displayed when somebody hovers the mouse over this "
+"image. Please note: only revisions with the same width and height of your "
+"original image can be considered."
+msgstr ""
+"Виберіть, що буде відображатися, коли хтось наведе курсор миші на це "
+"зображення. Зверніть увагу: можуть розглядатися лише редакції з такою ж "
+"шириною та висотою вашого оригінального зображення."
+
+msgid "Class"
+msgstr "Класс"
+
+msgid "Clear"
+msgstr ""
+
+msgid "Click on the image and scroll to magnify up to 8x."
+msgstr "Натисніть на зображення та прокрутіть, щоб збільшити до 8 разів."
+
+msgid "Close"
+msgstr "Закрити"
+
+msgid "Color"
+msgstr "Колір"
+
+msgid "Color or mono"
+msgstr "Колір або монохром"
+
+msgid "Comet"
+msgstr "Комета"
+
+msgid "Cometary"
+msgstr "Комета"
+
+msgid "Comment"
+msgstr "Коментар"
+
+msgid "Comments"
+msgstr "Коментарі"
+
+msgid "Commercial facilities"
+msgstr "Комерційні об‘єкти"
+
+msgid "Commercial products"
+msgstr "Комерційні продукти"
+
+msgid "Computerized"
+msgstr "Комп’ютеризований"
+
+msgid "Confirm"
+msgstr "Підтвердити"
+
+msgid "Confirm item creation"
+msgstr "Підтвердьте створення елемента"
+
+msgid "Confirm migration"
+msgstr "Підтвердьте міграцію"
+
+msgid "Confirm selected migrations"
+msgstr "Підтвердьте вибрані міграції"
+
+msgid "Conflict detected"
+msgstr "Виявлено конфлікт"
+
+msgid "Conjunction"
+msgstr "Сполучення"
+
+msgid "Constellations"
+msgstr "Сузір’я"
+
+msgid "Contact"
+msgstr "Зв‘язок"
+
+msgid "Content"
+msgstr "Зміст"
+
+msgid "Contribution Index"
+msgstr "Індекс внеску"
+
+msgid "Contributors list"
+msgstr "Список авторів"
+
+msgid "Cooled"
+msgstr "З охолодженням"
+
+msgid "Create"
+msgstr "Створити"
+
+msgid "Create a new item"
+msgstr "Створити новий елемент"
+
+msgid "Create new brand"
+msgstr "Створити новий бренд"
+
+msgid "Create new location"
+msgstr "Створити нову локацію"
+
+msgid "Create new:"
+msgstr "Створити:"
+
+msgid "Created by"
+msgstr "Створено"
+
+msgid "DIY"
+msgstr "Зроби сам"
+
+msgid "Data source"
+msgstr "Джерело даних"
+
+msgid "Date"
+msgstr "Дата"
+
+msgid "Dedicated deep-sky camera"
+msgstr "Спеціальна deep-sky камера"
+
+msgid "Deep sky object or field"
+msgstr "Об’єкт або поле глибокого космосу"
+
+msgid "Delete"
+msgstr ""
+
+msgid "Description"
+msgstr "Опис"
+
+msgid "Disable high contrast theme"
+msgstr "Вимкнути висококонтрастну тему"
+
+msgid "Dismiss"
+msgstr "Відхилити"
+
+msgid "Dismiss image"
+msgstr "Відхилити зображення"
+
+msgid "Display download menu"
+msgstr "Відобразити меню завантаження"
+
+msgid "Do not notify your followers about this revision."
+msgstr "Не повідомляти Ваших підписників про цю редакцію."
+
+msgid "Dobsonian"
+msgstr "Добсон"
+
+msgid "Don't remind me for a month"
+msgstr "Не нагадувати протягом місяця"
+
+msgid "Downloaded"
+msgstr "Завантажені"
+
+msgid "Drawing/Sketch"
+msgstr "Малюнок/Ескіз"
+
+msgid "Drop file here or click to browse"
+msgstr "Перетягніть сюди файл або натисніть щоб вибрати"
+
+msgid "Dual Alt-Az/Equatorial"
+msgstr "Подвійний Alt-Az/EQ"
+
+msgid "E-mail"
+msgstr "Ел. пошта"
+
+msgid "Earth's Moon"
+msgstr "Місяць Землі"
+
+msgid "Edit"
+msgstr "Редагувати"
+
+msgid "Edit proposal by"
+msgstr "Редагувати пропозицію від"
+
+msgid "Edit proposal comment"
+msgstr "Редагувати коментарі"
+
+msgid "Editing this field is not possible."
+msgstr "Редагувати це поле неможливо."
+
+msgid "Electronically-Assisted Astronomy (EAA, e.g. based on a live video feed)"
+msgstr "Електронна астрономія (EAA, наприклад, на основі живого відео)"
+
+msgid "Email"
+msgstr "Ел. пошта"
+
+msgid "Enable high contrast theme"
+msgstr "Увімнути високий контраст"
+
+msgid "Enjoy your unlimited revisions per image!"
+msgstr "Насолоджуйтесь необмеженою кількістю версій для кожного зображення!"
+
+msgid "Equatorial"
+msgstr "Екваторіальне"
+
+msgid "Equipment"
+msgstr "Обладнання"
+
+msgid "Equipment explorer"
+msgstr "Огляд обладнання"
+
+msgid "Equipment item summary"
+msgstr ""
+
+msgid "Equipment pending edit"
+msgstr "Обладнання очікує на редагування"
+
+msgid "Equipment pending review"
+msgstr "Обладнання очікує на огляд"
+
+msgid "Equipment preset created."
+msgstr ""
+
+msgid "Equipment preset updated."
+msgstr ""
+
+msgid "Error!"
+msgstr "Помилка!"
+
+msgid "Everybody"
+msgstr "Кожен"
+
+msgid "Expiration date"
+msgstr "Дата закінчення"
+
+msgid "Explore"
+msgstr "Огляд"
+
+msgid "Explorer"
+msgstr "Огляд"
+
+msgid "Extremely wide field"
+msgstr "Надзвичайно широке поле"
+
+msgid "FAQ"
+msgstr "Часті питання"
+
+msgid ""
+"File too large. If you just upgraded your subscription, please try again in "
+"a few minutes. Thanks!"
+msgstr ""
+"Файл завеликий. Якщо Ви щойно оновили підписку, спробуйте ще раз за кілька "
+"хвилин. Дякуємо!"
+
+msgid "File type not supported"
+msgstr "Тип файлу не підтримується"
+
+msgid "Film camera"
+msgstr "Плівкова камера"
+
+msgid "Filter"
+msgstr "Фільтр"
+
+msgid "Filters"
+msgstr "Фільтри"
+
+msgid "Finalizing upload, please wait..."
+msgstr "Завершення завантаження, зачекайте…"
+
+msgid "Find equipment item"
+msgstr "Знайти елемент обладнання"
+
+msgid "Find images"
+msgstr "Пошук зображень"
+
+msgid "Fixed focal length"
+msgstr "Фіксована фокусна відстань"
+
+msgid "Focal length"
+msgstr "Фокусна відстань"
+
+msgid ""
+"For more information about this and other subscription plans, please visit "
+"the {{0}}pricing{{1}} page."
+msgstr ""
+"Для отримання додаткової інформації про цю та інші плани передплати "
+"відвідайте сторінку  {{0}}цін{{1}}."
+
+msgid "For more information, please check out our Twitter feed:"
+msgstr ""
+"Для отримання додаткової інформації, будь ласка, перевірте нашу стрічку "
+"Twitter:"
+
+msgid ""
+"For this reason, you cannot purchase this at the moment, as AstroBin does "
+"not currently offer a downgrade path."
+msgstr ""
+"З цієї причини ви не можете придбати це зараз, оскільки AstroBin в даний "
+"час не пропонує можливості переходу на більш дешевший план."
+
+msgid "Fork"
+msgstr "Вилка"
+
+msgid "Forum"
+msgstr "Форум"
+
+msgid "Forums"
+msgstr "Форум"
+
+msgid "Frame rate"
+msgstr "Частота кадрів"
+
+msgid "Full search"
+msgstr "Повний пошук"
+
+msgid "Full well capacity"
+msgstr "Глибина ями"
+
+msgid "Gear"
+msgstr "Обладнання"
+
+msgid "Gear renaming proposals"
+msgstr "Пропозиції перейменування сетапів"
+
+msgid "General purpose DSLR or mirrorless camera"
+msgstr "DSLR або бездзеркальна камера загального призначення"
+
+msgid "General purpose video camera"
+msgstr "Відеокамера загального призначення"
+
+msgid "German equatorial"
+msgstr "Німецька екваторіальна"
+
+msgid "Get random"
+msgstr "Отримати випадково"
+
+msgid "Go back to the home page."
+msgstr "Повернутися на головну."
+
+msgid "Green channel (G)"
+msgstr "Зелений канал (G)"
+
+msgid "Groups"
+msgstr "Групи"
+
+msgid "Guider or planetary camera"
+msgstr "Гід або планетарна камера"
+
+msgid "Guiding cameras"
+msgstr ""
+
+msgid "Guiding telescopes or lenses"
+msgstr ""
+
+msgid "HTML tags are allowed."
+msgstr "HTML-теги дозволені."
+
+msgid ""
+"Heads up! Are you sure you want to upload such a large file? It's okay to "
+"do so but probably not many people will want to see it at its full "
+"resolution, if it will take too long for them to download it."
+msgstr ""
+"Попередження! Ви впевнені, що хочете завантажити такий великий файл? Це "
+"нормально, але, ймовірно, не багато людей захочуть побачити його у повній "
+"роздільній здатності, якщо їм знадобиться занадто багато часу, щоб "
+"завантажити його."
+
+msgid "Help"
+msgstr "Допомога"
+
+msgid "Help with translations!"
+msgstr "Допомога з перекладу!"
+
+msgid "Hexapod"
+msgstr "Гексапод"
+
+msgid "Hide"
+msgstr "Сховати"
+
+msgid "Home"
+msgstr "Головна"
+
+msgid "Hydrogen-alpha (Hα)"
+msgstr "Гідроген-альфа (Hα)"
+
+msgid "Hydrogen-beta (Hβ)"
+msgstr "Гідроген-beta (Hβ)"
+
+msgid "IOTD"
+msgstr "IOTD"
+
+msgid "IOTD/TP Staff"
+msgstr "Персонал IOTD/TP"
+
+msgid ""
+"If selected, AstroBin will automatically create a variant of this object "
+"that is labeled as <em>modified for astrophotography</em>."
+msgstr ""
+"Якщо вибрано, AstroBin автоматично створить варіант цього об’єкта, "
+"позначений як <em>модифікований для астрофотографії</em>."
+
+msgid ""
+"If selected, AstroBin will use a resizing algorithm that slightly sharpens "
+"the image's thumbnails. This setting applies to all revisions."
+msgstr ""
+"Якщо вибрано, AstroBin використовуватиме алгоритм зміни розміру, який трохи "
+"покращує ескізи зображення. Цей параметр застосовується до всіх версій."
+
+msgid ""
+"If this file is a different take on the same data as in another image you "
+"already published on AstroBin, the common practice would be to upload it as "
+"a new revision. For more info, please {{0}}click here{{1}}."
+msgstr ""
+"Якщо цей файл відрізняється від тих самих даних, що й в іншому зображенні, "
+"яке ви вже опублікували на AstroBin, звичайною практикою було б "
+"завантажувати його як нову редакцію. Щоб отримати додаткову інформацію, "
+"{{0}}натисніть тут{{1}}."
+
+msgid "If you can reproduce this issue reliably, please contact us."
+msgstr "Якщо ви можете відтворити цю проблему, зв’яжіться з нами."
+
+msgid ""
+"If you want to share the TIFF or FITS file of your image, put a link to the "
+"file here. Unfortunately, AstroBin cannot offer to store these files at the "
+"moment, so you will have to host them on your personal space."
+msgstr ""
+"Якщо ви хочете поділитися файлом TIFF або FITS свого зображення, розмістіть "
+"тут посилання на файл. На жаль, AstroBin наразі не може запропонувати "
+"зберігати ці файли, тому вам доведеться розмістити їх у своєму особистому "
+"просторі."
+
+msgid ""
+"If you're hosting a copy of this image on your website, put the address "
+"here."
+msgstr ""
+"Якщо ви розміщуєте копію цього зображення на своєму веб-сайті, введіть тут "
+"його адресу."
+
+msgid "Image"
+msgstr "Зображення"
+
+msgid "Image Index"
+msgstr "Індекс зображень"
+
+msgid "Image of the Day / Top Picks"
+msgstr "Зображення Дня / Топ зображення"
+
+msgid "Image of the day"
+msgstr "Зображення дня"
+
+msgid "Image queue"
+msgstr "Черга зображень"
+
+msgid "Image saved."
+msgstr ""
+
+msgid "Images"
+msgstr "Зображення"
+
+msgid "Imaging cameras"
+msgstr "Камери зйомки"
+
+msgid "Imaging telescopes"
+msgstr "Телескопи зйомки"
+
+msgid "Info"
+msgstr "Інформація"
+
+msgid "Infrared (IR)"
+msgstr "Інфрачервоний (ІЧ)"
+
+msgid "Initializing upload, please wait..."
+msgstr "Ініціалізація завантаження, зачекайте…"
+
+msgid "Internal server error"
+msgstr "Внутрішня помилка сервера"
+
+msgid "Invalid data, please refresh the page and try again."
+msgstr "Недійсні дані, оновіть сторінку та повторіть спробу."
+
+msgid "Inverted monochrome"
+msgstr "Перевернутий монохромний"
+
+msgid "It looks like you reached the revision upload limit for your subscription."
+msgstr "Схоже, ви досягли ліміту завантаження версій для своєї підписки."
+
+msgid "It looks like you reached the upload limit for your subscription."
+msgstr "Схоже, що Ви досягли ліміту завантажень для свого плану підписки."
+
+msgid "Item approved."
+msgstr "Елемент затверджено."
+
+msgid "Item rejected."
+msgstr "Елемент відхилено."
+
+msgid "Item summary"
+msgstr "Резюме предмета"
+
+msgid "Judgement queue"
+msgstr "Черга суду"
+
+msgid "Jump to"
+msgstr "Перехід до"
+
+msgid "Jupiter"
+msgstr "Юпітер"
+
+msgid "Key/value tags"
+msgstr "Теги"
+
+msgid "Language"
+msgstr "Мова"
+
+msgid "Large"
+msgstr "Великий"
+
+msgid "Last update"
+msgstr "Останнє оновлення"
+
+msgid "Latest topics"
+msgstr "Останні теми"
+
+msgid "Learn more"
+msgstr "Дізнатись більше"
+
+msgid "Legacy item being migrated"
+msgstr "Застарілий елемент переноситься"
+
+msgid "License"
+msgstr "Ліцензія"
+
+msgid "Light pollution suppression"
+msgstr "Стримування світлового забруднення"
+
+msgid "Link"
+msgstr "Посилання"
+
+msgid "Link to TIFF/FITS"
+msgstr "Посилання на TIFF/FITS"
+
+msgid "Load"
+msgstr ""
+
+msgid "Load equipment preset"
+msgstr ""
+
+msgid "Load preset"
+msgstr ""
+
+msgid "Loading edit proposals"
+msgstr "Завантаження пропозицій редагування"
+
+msgid "Loading..."
+msgstr "Завантаження…"
+
+msgid "Locations"
+msgstr "Локації"
+
+msgid "Log in"
+msgstr "Увійти"
+
+msgid "Logging you in securely..."
+msgstr "Безпечний вхід у систему…"
+
+msgid "Logging you out securely..."
+msgstr "Безпечний вихід із системи…"
+
+msgid "Login required"
+msgstr "Необхідний вхід"
+
+msgid "Logo"
+msgstr "Лого"
+
+msgid "Logout"
+msgstr "Вихід"
+
+msgid "Lucky imaging"
+msgstr "Коротка експозиція"
+
+msgid "Luminance/clear (L)"
+msgstr "Яскравий/чистий (L)"
+
+msgid "Lunar"
+msgstr "Місячний"
+
+msgid "Main solar system subject"
+msgstr "Основна тема Сонячної системи"
+
+msgid "Mark all as read"
+msgstr "Помітити прочитаним"
+
+msgid "Mark as"
+msgstr "Помітити як"
+
+msgid "Mark as final"
+msgstr "Помітити як фінальне"
+
+msgid "Mark this revision as the final rendition of your image."
+msgstr "Помітити цю редакцію як фінальну версію Вашого зображення."
+
+msgid "Mars"
+msgstr "Марс"
+
+msgid "Max. cooling"
+msgstr "Макс. охолодження"
+
+msgid "Max. focal length"
+msgstr "Макс. фокусна відстань"
+
+msgid "Max. payload"
+msgstr "Макс. корисне навантаження"
+
+msgid "Max. {{ max }} MB / image"
+msgstr "Макс. {{ max }} MB / зображення"
+
+msgid "Max. {{ max }} total images"
+msgstr "Макс. {{ max }}  зображень"
+
+msgid "Max. {{ max }} uploads"
+msgstr "Макс. {{ max }}  завантажень"
+
+msgid "Me only"
+msgstr "Тільки я"
+
+msgid "Medium"
+msgstr "Середній"
+
+msgid "Members only"
+msgstr "Тільки користувачі"
+
+msgid "Mercury"
+msgstr "Меркурій"
+
+msgid "Meteor shower"
+msgstr "Метеоритний дощ"
+
+msgid "Meters above sea level"
+msgstr "Метрів над рівнем моря"
+
+msgid "Migrate"
+msgstr "Міграція"
+
+msgid "Migrate into"
+msgstr "Мігрувати"
+
+msgid "Min. focal length"
+msgstr "Мін. фокусна відстань"
+
+msgid "Minor planet"
+msgstr "Мала планета"
+
+msgid "Mix of multiple sources"
+msgstr "Поєднання кількох джерел"
+
+msgid "Moderate"
+msgstr "Модерація"
+
+msgid "Modified"
+msgstr "Модифікований"
+
+msgid "Mono"
+msgstr "Моно"
+
+msgid "Mount"
+msgstr "Монтування"
+
+msgid "Mounts"
+msgstr "Монтування"
+
+msgid "Mouse hover image"
+msgstr "Зображення при наведенні курсора миші"
+
+msgid "Move the map until the marker points at right location"
+msgstr "Переміщуйте карту, доки маркер не вкаже в потрібне місце"
+
+msgid "Multiband"
+msgstr "Багатосмуговий"
+
+msgid "Multiple items"
+msgstr "Кілька елементів"
+
+msgid "My messages"
+msgstr "Мої повідомлення"
+
+msgid "My places"
+msgstr "Мої місця"
+
+msgid "My settings"
+msgstr "Мої налаштування"
+
+msgid "Name"
+msgstr "Ім‘я"
+
+msgid "Name/Model"
+msgstr "Назва/бренд"
+
+msgid "Neptune"
+msgstr "Нептун"
+
+msgid "Neutral density (ND)"
+msgstr "Нейтральна щільність (ND)"
+
+msgid "Newest first"
+msgstr "Спершу новітні"
+
+msgid "Next"
+msgstr "Далі"
+
+msgid "Nitrogen-II (NII)"
+msgstr "Нітроген-II (NII)"
+
+msgid "No"
+msgstr "Ні"
+
+msgid "No changes are proposed, or all proposed changes are outdated."
+msgstr "Зміни не пропонуються, або всі запропоновані зміни застаріли."
+
+msgid "No items found."
+msgstr "Нічого не знайдено."
+
+msgid "No plate-solving"
+msgstr "Без розпізнання поля"
+
+msgid "Nobody"
+msgstr "Ніхто"
+
+msgid "Noctilucent clouds"
+msgstr "Світлові хмари"
+
+msgid "Non-commercial independent facility"
+msgstr "Некомерційний самостійний об’єкт"
+
+msgid "None (All rights reserved)"
+msgstr "Немає (Усі права захищено)"
+
+msgid "None of the above"
+msgstr "Жодне з вищезазначених"
+
+msgid "None specified"
+msgstr "Не зазначено"
+
+msgid "Northern lights"
+msgstr "Північне сяйво"
+
+msgid "Not enough info"
+msgstr "Недостатньо інформації"
+
+msgid "Nothing"
+msgstr "Нічого"
+
+msgid "Notification settings"
+msgstr "Налаштування повідомлень"
+
+msgid "Notifications"
+msgstr "Попередження"
+
+msgid "Number of pixels"
+msgstr "Кількість пікселів"
+
+msgid "Number of pixels across the X axis"
+msgstr "Кількість пікселів по осі X"
+
+msgid "Number of pixels across the Y axis"
+msgstr "Кількість пікселів по осі Y"
+
+msgid "Object ID"
+msgstr "Ідентифікатор об’єкта"
+
+msgid "Occultation"
+msgstr "Затемнення"
+
+msgid "Official (or official looking) product image. Max. 1MB."
+msgstr "Офіційне (або майже офіційне) зображення продукту. Макс. 1 МБ."
+
+msgid "Oldest first"
+msgstr "Спочатку найстаріший"
+
+msgid "On-site"
+msgstr "На сайті"
+
+msgid ""
+"Oops! Your request fell in between two AstroBin servers. Please clear your "
+"cache and try again."
+msgstr ""
+"Ой! Ваш запит потрапив між двома серверами AstroBin. Очистіть кеш і "
+"спробуйте ще раз."
+
+msgid "Opacity"
+msgstr "Непрозорість"
+
+msgid "Other"
+msgstr "Інше"
+
+msgid "Other/Unknown"
+msgstr "Інше/Невідоме"
+
+msgid "Own remote observatory"
+msgstr "Власна дистанційна обсерваторія"
+
+msgid "Oxygen-III (OIII)"
+msgstr "Кисень-III (OIII)"
+
+msgid "PEC"
+msgstr "PEC"
+
+msgid "Partial lunar eclipse"
+msgstr "Часткове місячне затемнення"
+
+msgid "Partial solar eclipse"
+msgstr "Часткове сонячне затемнення"
+
+msgid "Password"
+msgstr "Пароль"
+
+msgid "Paying members only"
+msgstr "Тільки учасники з платною підпискою"
+
+msgid "Pending"
+msgstr "Очікується"
+
+msgid "Pending edit"
+msgstr "Очікується редагування"
+
+msgid "Pending review"
+msgstr "Очікується огляд"
+
+msgid "Periodic error correction"
+msgstr "Періодичне виправлення помилки (PEC)"
+
+msgid "Permission denied"
+msgstr "Немає доступу"
+
+msgid ""
+"Permission denied. You don't have the required subscription level to "
+"perform this operation."
+msgstr ""
+"У доступі відмовлено. У вас немає необхідного рівня підписки для виконання "
+"цієї операції."
+
+msgid "Photometric Blue"
+msgstr "Фотометричний Cиній"
+
+msgid "Photometric Infrared"
+msgstr "Фотометричний Інфрачервоний"
+
+msgid "Photometric Red"
+msgstr "Фотометричний червоний"
+
+msgid "Photometric Ultraviolet"
+msgstr "Фотометричний Ультрафіолетовий"
+
+msgid "Photometric Visual"
+msgstr "Фотометричний Візуальний"
+
+msgid "Pinch & zoom to view details closer."
+msgstr "Розведіть пальці й наблизьте, щоб розглянути деталі ближче."
+
+msgid "Pixel size"
+msgstr "Розмір пікселю"
+
+msgid "Pixel size (in μm)"
+msgstr "Розмір пікселю (у μm)"
+
+msgid "Pixels"
+msgstr "Пікселів"
+
+msgid "Pixels X"
+msgstr "Пікселів по X"
+
+msgid "Pixels Y"
+msgstr "Пікселів по Y"
+
+msgid "Plate-solution annotations (if available)"
+msgstr "Коментар до роспізнавання поля (якщо є)"
+
+msgid "Please DO NOT approve this item if it's a duplicate of another one!"
+msgstr "Будь ласка, НЕ схвалюйте цей елемент, якщо він є копією іншого!"
+
+msgid "Please check that all required fields have been filled at every step."
+msgstr ""
+"Будь ласка, перевірте, чи були заповнені всі обов’язкові поля на кожному "
+"кроці."
+
+msgid "Please come back later!"
+msgstr "Будь ласка, поверніться пізніше!"
+
+msgid ""
+"Please make a deposit of {{ currency }} {{ amount }} to the following bank "
+"details and then email us at {{ email_prefix }}{{ email }}{{ email_postfix "
+"}} with your username so we may upgrade your account manually."
+msgstr ""
+"Внесіть депозит у розмірі {{ currency }} {{ amount }} на наступні "
+"банківські реквізити, а потім напишіть нам за адресою {{ email_prefix }}{{ "
+"email }}{{ email_postfix }} зі своїм ім’ям користувача, щоб ми могли "
+"оновити ваш аккаунт вручну."
+
+msgid "Please make sure that the information you entered is accurate."
+msgstr "Будь ласка, переконайтеся, що введена інформація є точною."
+
+msgid "Please note"
+msgstr "Зверніть увагу"
+
+msgid "Please note: animated GIFs cannot be watermarked at this time."
+msgstr ""
+"Зверніть увагу: анімовані GIF-файли наразі не можуть бути позначені "
+"водяними знаками."
+
+msgid ""
+"Please note: you don't <strong>have to</strong> use all your slots. It's ok "
+"to use fewer if you don't think there are that many worthy images today."
+msgstr ""
+"Зверніть увагу: Вам не <strong>обов’язково</strong> використовувати всі "
+"свої слоти. Можна використовувати менше, якщо ви думаєте, що сьогодні не "
+"так багато гідних зображень."
+
+msgid ""
+"Please only do this for DSLR camera that typically are modified for "
+"astrophotography. If this is a camera that is <em>specifically</em> sold as "
+"modified for astrophotography, e.g. the <strong>Canon EOS 60Da</strong> you "
+"<strong>do not</strong> need to use check this option."
+msgstr ""
+"Робіть це лише для DSLR-камер, які зазвичай модифіковані для "
+"астрофотографії. Якщо це камера, яка <em>спеціально</em> продається як "
+"модифікована для астрофотографії, напр. <strong>Canon EOS 60Da</strong> Вам "
+"<strong>не</strong> потрібно використовувати цей параметр."
+
+msgid "Please read the equipment migration guidelines"
+msgstr "Будь ласка, прочитайте інструкції щодо міграції обладнання"
+
+msgid ""
+"Please use a device with a minimum horizontal resolution of 1024 pixels to "
+"view this content."
+msgstr ""
+"Для перегляду цього контенту використовуйте пристрій із мінімальною "
+"роздільною здатністю по горизонталі 1024 пікселі."
+
+msgid "Please wait until your subscription expires, then come back to this page."
+msgstr ""
+"Будь ласка, зачекайте, поки закінчиться термін дії вашої підписки, а потім "
+"поверніться на цю сторінку."
+
+msgid "Plots"
+msgstr "Графіки"
+
+msgid "Portable English"
+msgstr "Портативна Англійська"
+
+msgid "Position"
+msgstr "Позиція"
+
+msgid "Prefer to pay via bank transfer?"
+msgstr "Бажаєте сплатити за банківським переказом?"
+
+msgid "Previous"
+msgstr "Попереднє"
+
+msgid "Private messages"
+msgstr "Приватні повідомлення"
+
+msgid "Professional, scientific grade data"
+msgstr "Дані професійного, наукового рівня"
+
+msgid "Promote"
+msgstr "Просувати"
+
+msgid "Propose edit"
+msgstr "Запропонувати редагування"
+
+msgid "Proposed by"
+msgstr "Запропоновано"
+
+msgid "Proposer's comment"
+msgstr "Коментар редактора"
+
+msgid ""
+"Provide a list of unique key/value pairs to tag this image with. Use the "
+"'=' symbol between key and value, and provide one pair per line. These tags "
+"can be used to sort images by arbitrary properties."
+msgstr ""
+"Надайте список унікальних пар ключ/значення, щоб позначити це зображення. "
+"Використовуйте символ ‘=‘ між ключем і значенням і вкажіть одну пару на "
+"рядок. Ці теги можна використовувати для сортування зображень за довільними "
+"властивостями."
+
+msgid "Public Gallery"
+msgstr "Публічна галерея"
+
+msgid "Public amateur data"
+msgstr "Публічні аматорські дані"
+
+msgid "Published"
+msgstr "Опубліковано"
+
+msgid "Quantum efficiency"
+msgstr "Квантова ефективність"
+
+msgid "Quick search"
+msgstr "Швидкий пошук"
+
+msgid "Quick-add recent"
+msgstr ""
+
+msgid "Read"
+msgstr "Прочитайте"
+
+msgid "Read noise"
+msgstr "Шум считування"
+
+msgid "Reason"
+msgstr "Причина"
+
+msgid "Red channel (R)"
+msgstr "Червоний канал (R)"
+
+msgid "Reflector: Dall-Kirkham"
+msgstr "Рефлектор: Долл-Кіркхем"
+
+msgid "Reflector: Gregorian"
+msgstr "Рефлектор: Грегорі"
+
+msgid "Reflector: Herschellian"
+msgstr "Рефлектор: Гершель"
+
+msgid "Reflector: Nasmyth"
+msgstr "Рефлектор: Насміт"
+
+msgid "Reflector: Newtonian"
+msgstr "Рефлектор: Ньютон"
+
+msgid "Reflector: Ritchey Chretien"
+msgstr "Рефлектор: Річі-Крітьєн"
+
+msgid "Refractor: achromatic"
+msgstr "Рефрактор: ахромат"
+
+msgid "Refractor: apochromatic"
+msgstr "Рефрактор: апохромат"
+
+msgid "Refractor: non-achromatic Galilean"
+msgstr "Рефрактор: неахроматичний Галілейський"
+
+msgid "Refractor: non-acrhmatic Keplerian"
+msgstr "Рефрактор: неахроматичний Кеплера"
+
+msgid "Refractor: semi-apochromatic"
+msgstr "Рефрактор: напівахромат"
+
+msgid "Refractor: superachromat"
+msgstr "Рефрактор: супер-ахромат"
+
+msgid "Register"
+msgstr "Реєстрація"
+
+msgid "Regular (e.g. medium/long exposure with a CCD or DSLR)"
+msgstr "Регулярна (наприклад, середня/довга експозиція з CCD або DSLR)"
+
+msgid "Reject"
+msgstr "Відхилити"
+
+msgid "Reject edit"
+msgstr "Відхилити редагування"
+
+msgid "Rejected"
+msgstr "Відхилений"
+
+msgid "Remote astrophotography"
+msgstr "Дистанційна астрофотография"
+
+msgid "Remote data source"
+msgstr "Віддалене джерело даних"
+
+msgid "Reply"
+msgstr "Відповісти"
+
+msgid "Reset password"
+msgstr "Скинути пароль"
+
+msgid "Retract"
+msgstr "Втягнути"
+
+msgid "Retract promotion"
+msgstr "Відкликати просування"
+
+msgid "Return to the classic uploader"
+msgstr "Повернутись до класичного завантажувача"
+
+msgid "Review queue"
+msgstr "Перевірити чергу"
+
+msgid "Reviewed by"
+msgstr "Переглянуто"
+
+msgid "Reviewer's comment"
+msgstr "Коментар рецензента"
+
+msgid "Revision uploader"
+msgstr "Завантажувач версії"
+
+msgid "Saturn"
+msgstr "Сатурн"
+
+msgid "Save"
+msgstr "Зберегти"
+
+msgid "Save and proceed to acquisition details"
+msgstr "Зберегти та перейти до деталей придбання"
+
+msgid "Save and proceed to gear selection"
+msgstr "Зберегти та перейти до вибору обладнання"
+
+msgid "Save and proceed to image"
+msgstr "Зберегти та перейти до зображення"
+
+msgid "Save and remain on this page"
+msgstr ""
+
+msgid "Save equipment preset"
+msgstr ""
+
+msgid "Save preset"
+msgstr ""
+
+msgid "Scroll to top"
+msgstr "Прокрутити вгору"
+
+msgid "Secure payment by Stripe™"
+msgstr "Безпечна оплата через Stripe™"
+
+msgid "Select an area of the image to be used as thumbnail in your gallery."
+msgstr ""
+"Виберіть область зображення, яка буде використовуватися як ескіз у вашій "
+"галереї."
+
+msgid "Select target item for the migration, or create a new one."
+msgstr "Виберіть цільовий елемент для міграції або створіть новий."
+
+msgid "Self acquired"
+msgstr "Отримано"
+
+msgid "Self-made / non-commercial (no brand)"
+msgstr "Саморобний / некомерційний (без бренду)"
+
+msgid "Sensor"
+msgstr "Сенсор"
+
+msgid "Sensor height"
+msgstr "Висота сенсора"
+
+msgid "Sensor size"
+msgstr "Розмір сенсора"
+
+msgid "Sensor width"
+msgstr "Ширина сенсора"
+
+msgid "Sensors"
+msgstr "Сенсори"
+
+msgid "Service not available"
+msgstr "Сервіс недоступний"
+
+msgid "Settings"
+msgstr "Налаштування"
+
+msgid "Sharpen thumbnails"
+msgstr "Збільшити різкість мініатюр"
+
+msgid "Show"
+msgstr "Показати"
+
+msgid "Show guiding equipment"
+msgstr ""
+
+msgid ""
+"Since a regular and a modified variant of {{0}} were created, we didn't "
+"prefill the item selection dropdown, to allow you to select the correct "
+"variant for this migration."
+msgstr ""
+"Оскільки було створено звичайний та модифікований варіанти {{0}}, ми не "
+"заповнювали попередньо субменю вибору елемента, щоб ви могли вибрати "
+"правильний варіант для цієї міграції."
+
+msgid "Size"
+msgstr "Розмір"
+
+msgid "Skip notifications"
+msgstr "Пропуск повідомлень"
+
+msgid "Sky glow"
+msgstr "Засвітка неба"
+
+msgid "Slew speed"
+msgstr "Швидкість обертання"
+
+msgid "Small"
+msgstr "Маленьке"
+
+msgid "Software"
+msgstr "Програми"
+
+msgid "Solar"
+msgstr "Сонячна"
+
+msgid "Solar system body or event"
+msgstr "Тіло або подія Сонячної системи"
+
+msgid "Something went wrong"
+msgstr "Щось пішло не так"
+
+msgid ""
+"Sorry, but the page you are looking for is not here. If you expected an "
+"image, this means that the author deleted it."
+msgstr ""
+"Вибачте, але сторінка, яку ви шукаєте, відсутня. Якщо ви очікували "
+"зображення, це означає, що автор його видалив."
+
+msgid ""
+"Sorry, but this image is too large. Under your current subscription plan, "
+"the maximum allowed image size is {{max}}."
+msgstr ""
+"Вибачте, але це зображення завелике. Відповідно до вашого поточного плану "
+"підписки, максимальний дозволений розмір зображення становить {{max}}."
+
+msgid "Sorry, revisions are not included at your membership level."
+msgstr "На жаль, редакції не включаються на рівні вашої підписки."
+
+msgid ""
+"Sorry, unfortunately AstroBin does not have a bank account in the selected "
+"territory."
+msgstr "На жаль, AstroBin не має банківського рахунку на вибраній території."
+
+msgid ""
+"Sorry, you cannot select an IOTD right now: <strong>{{ reason }}</strong>. "
+"Please try again in <strong>{{ time }}</strong>."
+msgstr ""
+"На жаль, наразі не можна вибрати IOTD: <strong>{{ reason }}</strong>. Будь "
+"ласка, спробуйте ще раз через <strong>{{ time }}</strong>."
+
+msgid "Sort"
+msgstr "Сортувати"
+
+msgid "Spam list"
+msgstr "Спам"
+
+msgid "Sponsors & Partners"
+msgstr "Спонсори та Партнери"
+
+msgid "Staging Area"
+msgstr "Студія"
+
+msgid "Star tracker"
+msgstr "Зірковий трекер"
+
+msgid "Star trails"
+msgstr "Зоряні стежки"
+
+msgid "Status"
+msgstr "Статус"
+
+msgid "Subject type"
+msgstr "Тип предмета"
+
+msgid "Submission queue"
+msgstr "Черга відправки"
+
+msgid "Submit"
+msgstr "Надіслати"
+
+msgid "Submit this image to the selected groups."
+msgstr "Надіслати це зображення вибраним групам."
+
+msgid "Subscribed topics"
+msgstr "Теми з підпискою"
+
+msgid "Subscription confirmed"
+msgstr "Підписка підтверджена"
+
+msgid "Subscription plans"
+msgstr "Плани підписок"
+
+msgid "Subscription process cancelled"
+msgstr "Процес підписки скасовано"
+
+msgid "Subscriptions"
+msgstr "Підписки"
+
+msgid "Success!"
+msgstr "Виконано!"
+
+msgid "Sulfur-II (SII)"
+msgstr "Сірка-II (SII)"
+
+msgid "Summary"
+msgstr "Резюме"
+
+msgid "Sun"
+msgstr "Сонце"
+
+msgid "Superseded"
+msgstr "Замінено"
+
+msgid "TIFF support on AstroBin is experimental."
+msgstr "Підтримка TIFF на AstroBin є екперементальною."
+
+msgid "Target image"
+msgstr "Кінцеве зображення"
+
+msgid "Telescope"
+msgstr "Телескоп"
+
+msgid "Telescopes & lenses"
+msgstr "Телескопи та об‘єктиви"
+
+msgid "Telescopes or lenses"
+msgstr ""
+
+msgid "Text"
+msgstr "Текст"
+
+msgid "Thank you for supporting AstroBin!"
+msgstr "Дякуємо за підтримку AstroBin!"
+
+msgid "Thanks!"
+msgstr "Дякуємо!"
+
+msgid ""
+"Thanks! Your edit proposal has been submitted and will be reviewed as soon "
+"as possible."
+msgstr ""
+"Спасибі! Вашу пропозицію редагування надіслано та буде розглянуто "
+"якнайшвидше."
+
+msgid ""
+"The <strong>Contribution Index (beta)</strong> is system to reward "
+"informative, constructive, and valuable commentary on AstroBin. {{_0}}Learn "
+"more.{{_1}}"
+msgstr ""
+"<strong>Індекс внеску (бета)</strong> – це система винагороди за "
+"інформативні, конструктивні та цінні коментарі до AstroBin. "
+"{{_0}}Докладніше.{_1}}"
+
+msgid ""
+"The <strong>Image Index</strong> is a system based on likes received on "
+"images, that incentivizes the most active and liked members of the "
+"community. {{_0}}Learn more.{{_1}}"
+msgstr ""
+"<strong>Індекс зображень</strong> — це система, заснована на отриманих "
+"лайків зображень, яка стимулює найбільш активних членів спільноти, яких "
+"найбільше лайкають. {{_0}}Докладніше.{_1}}"
+
+msgid "The Big Wall"
+msgstr "Велика Стіна"
+
+msgid ""
+"The Lite plan is capped at <strong>{{maxImagesForLite}}</strong> total "
+"images, and you currently have <strong>{{numberOfImages}}</strong> images "
+"on AstroBin. For this reason, we recommend that you upgrade to Premium or "
+"Ultimate instead."
+msgstr ""
+"План Lite обмежений загальним числом зображень "
+"<strong>{{maxImagesForLite}}</strong>, і наразі у вас є "
+"<strong>{{numberOfImages}}</strong> зображень у AstroBin. З цієї причини ми "
+"рекомендуємо вам перейти на Premium або Ultimate."
+
+msgid "The final font size will depend on how long your watermark is."
+msgstr "Остаточний розмір шрифту буде залежати від довжини вашого водяного знака."
+
+msgid "The following changes are proposed:"
+msgstr "Пропонуються такі зміни:"
+
+msgid "The image will permanently disappear from your queue."
+msgstr "Зображення назавжди зникне з черги."
+
+msgid ""
+"The item doesn't seem to have the correct brand, or the brand is "
+"misspelled, or it's the duplicate of an existing brand."
+msgstr ""
+"Схоже, елемент не має правильної марки, або бренд написаний з помилкою, або "
+"це копія існуючої марки."
+
+msgid "The item has a typo in its name"
+msgstr "У назві елементу є помилка"
+
+msgid "The item has insufficient data"
+msgstr "У елементі недостатньо даних"
+
+msgid "The item has some inaccurate data"
+msgstr "Пункт містить деякі неточні дані"
+
+msgid "The judge who selected this image will be notified of top-level comments."
+msgstr ""
+"Суддя, який вибрав це зображення, буде сповіщений про коментарі вищого "
+"рівня."
+
+msgid "The judgement queue is currently empty."
+msgstr "Наразі черга суду порожня."
+
+msgid "The name of this brand. Make sure it's spelled correctly."
+msgstr "Назва цього бренду. Переконайтеся, що його написано правильно."
+
+msgid ""
+"The name of this product. Do not include the brand's name and make sure "
+"it's spelled correctly."
+msgstr ""
+"Назва цього продукту. Не вказуйте назву бренду та переконайтеся, що він "
+"написаний правильно."
+
+msgid ""
+"The price is shown in Swiss Francs even though you might have paid the "
+"equivalent amount in your country's currency."
+msgstr ""
+"Ціна вказана у Швейцарських Франках, навіть якщо Ви могли заплатити "
+"еквівалентну суму у валюті вашої країни."
+
+msgid ""
+"The recommended naming convention for camera lenses is: optional model "
+"name, focal length range, f-ratio range, additional properties. E.g. "
+"<strong>Nikkor Z 28mm f/2.8 (SE)</strong>."
+msgstr ""
+"Рекомендована умова найменування для об’єктивів камери: додаткова назва "
+"моделі, діапазон фокусної відстані, діапазон діафрагми (f/x), додаткові "
+"властивості. напр. <strong>Nikkor Z 28mm f/2.8 (SE)</strong>."
+
+msgid "The requested resource does not exist"
+msgstr "Запитуваного ресурсу не існує"
+
+msgid "The review queue is currently empty."
+msgstr "Наразі черга на огляд порожня."
+
+msgid ""
+"The revision's title will be shown as an addendum to the original image's "
+"title."
+msgstr "Назва редакції буде показана як додаток до назви оригінального зображення."
+
+msgid "The size of the individual pixels in μm."
+msgstr "Розмір окремих пікселів у μm."
+
+msgid "The submission queue is currently empty."
+msgstr "Наразі черга подання порожня."
+
+msgid "The target item doesn't seem to have the correct brand"
+msgstr "Здається, цільовий елемент має некоректну назву бренду"
+
+msgid "The target item has a typo in its name"
+msgstr "У назві цільового елемента є помилка"
+
+msgid "The target item has insufficient data"
+msgstr "Цільовий елемент містить недостатньо даних"
+
+msgid "The target item has some inaccurate data"
+msgstr "Цільовий елемент містить деякі неточні дані"
+
+msgid "There are no comments yet."
+msgstr "Ще немає коментарів."
+
+msgid ""
+"There are no more items of this type to migrate. Check other equipment "
+"types."
+msgstr "Більше немає схожих елементів для міграції. Перевірте інші типи обладнання."
+
+msgid "There doesn't seem to be anything here."
+msgstr "Схоже, тут нічого немає."
+
+msgid "This LEGACY item needs to be migrated"
+msgstr "Цей ЗАСТАРІЛИЙ елемент потрібно перенести"
+
+msgid ""
+"This brand has <strong>{{0}}</strong> items in AstroBin's database. Take a "
+"look at them so you can be consistent with the naming conventions:"
+msgstr ""
+"Цей бренд має <strong>{{0}}</strong> позицій в базі даних AstroBin. "
+"Подивіться на них, щоб ви могли дотримуватися умов імен:"
+
+msgid "This field is disabled because you haven't joined any groups yet."
+msgstr "Це поле вимкнено, оскільки Ви ще не приєдналися до жодної групи."
+
+msgid ""
+"This image will be uploaded to your staging area as a work in progress. You "
+"can make it public at the end of the process."
+msgstr ""
+"Це зображення буде завантажено у вашу студію у процесі роботи. Ви можете "
+"зробити його загальнодоступним наприкінці процесу."
+
+msgid ""
+"This item has not been approved yet, so it's not available to be associated "
+"with images."
+msgstr "Цей елемент ще не схвалено, тому його неможливо пов’язувати із зображеннями."
+
+msgid ""
+"This item will be part of AstroBin's equipment database, and it's very "
+"important that the information is accurate and this item is not the "
+"duplicate of another."
+msgstr ""
+"Цей елемент буде частиною бази даних обладнання AstroBin, і дуже важливо, "
+"щоб інформація була точною, і цей елемент не був дублікатом іншого."
+
+msgid "This operation can not be undone."
+msgstr "Цю операцію неможливо скасувати."
+
+msgid "This operation cannot be undone."
+msgstr ""
+
+msgid ""
+"This operation could take several seconds (especially for large images), "
+"please wait"
+msgstr ""
+"Ця операція може зайняти кілька секунд (особливо для великих зображень). "
+"Зачекайте"
+
+msgid "This operation will overwrite the current equipment selection."
+msgstr ""
+
+msgid ""
+"This page or operation is not available at the moment, because AstroBin is "
+"in READ ONLY mode."
+msgstr ""
+"Ця сторінка або операція зараз недоступні, оскільки AstroBin знаходиться в "
+"режимі ТІЛЬКИ ДЛЯ ЧИТАННЯ."
+
+msgid ""
+"This setting will take affect after the image will be moved to your public "
+"area."
+msgstr ""
+"Це налаштування почне діяти після того, як зображення буде переміщено у "
+"вашу загальнодоступну область."
+
+msgid ""
+"This should never happen. AstroBin's staff has been notified automatically "
+"and will solve the problem as soon as possible."
+msgstr ""
+"Цього ніколи не повинно статися. Співробітники AstroBin були повідомлені "
+"автоматично і вирішить проблему в найкоротші терміни."
+
+msgid "This should never happen. If the problem persists, please contact us."
+msgstr "Цього ніколи не повинно статися. Якщо проблема не зникне, зв’яжіться з нами."
+
+msgid "Thumbnail"
+msgstr "Піктограма"
+
+msgid "Time"
+msgstr "Час"
+
+msgid "Title"
+msgstr "Заголовок"
+
+msgid "Top center"
+msgstr "По центру вгорі"
+
+msgid "Top left"
+msgstr "Вгорі ліворуч"
+
+msgid "Top pick nominations"
+msgstr "Номінації на Найкраще Зображення"
+
+msgid "Top picks"
+msgstr "Кращі зображення"
+
+msgid "Top right"
+msgstr "Вгорі праворуч"
+
+msgid "Total lunar eclipse"
+msgstr "Повне місячне затемнення"
+
+msgid "Total solar eclipse"
+msgstr "Повне сонячне затемнення"
+
+msgid "Tracking accuracy"
+msgstr "Точність відстеження"
+
+msgid "Transit"
+msgstr "Транзит"
+
+msgid "Traveller"
+msgstr "Мандрівник"
+
+msgid "Type"
+msgstr "Тип"
+
+msgid "Type something to create a new one..."
+msgstr "Введіть щось, щоб створити нове…"
+
+msgid "Type to search options or to create a new one..."
+msgstr "Введіть, щоб знайти параметри або створити нові…"
+
+msgid "Type to search options..."
+msgstr "Введіть для пошуку параметрів…"
+
+msgid "Type to search."
+msgstr "Введіть для пошуку."
+
+msgid "Ultra High Contrast (UHC)"
+msgstr "Надвисокий контраст (UHC)"
+
+msgid "Ultraviolet (UV)"
+msgstr "Ультрафіолет (UV)"
+
+msgid "Uncompressed source uploader"
+msgstr "Завантажувач нестисненого початкового коду"
+
+msgid "Unknown"
+msgstr "Невідомо"
+
+msgid "Unknown error"
+msgstr "Невідома помилка"
+
+msgid "Unlimited images"
+msgstr "Необмежена кількість зображень"
+
+msgid "Unlimited revisions"
+msgstr "Необмежена кількість ревізій"
+
+msgid "Unlimited size"
+msgstr "Необмежений розмір"
+
+msgid "Upload"
+msgstr "Завантажити"
+
+msgid "Uploader"
+msgstr "Завантажувач"
+
+msgid "Uploading..."
+msgstr "Завантаження…"
+
+msgid "Uranus"
+msgstr "Уран"
+
+msgid ""
+"Use the <strong>#</strong> sign and start typing to insert an image from "
+"your gallery."
+msgstr ""
+"Використовуйте знак <strong>#</strong> і почніть вводити, щоб вставити "
+"зображення зі своєї галереї."
+
+msgid "Use the <strong>@</strong> sign and start typing to mention any user."
+msgstr ""
+"Використовуйте знак <strong>@</strong> і почніть вводити, щоб згадати "
+"будь-якого користувача."
+
+msgid "Username"
+msgstr "Ім‘я користувача"
+
+msgid "Users"
+msgstr "Користувачі"
+
+msgid "Validation error"
+msgstr "Помилка перевірки"
+
+msgid "Validity"
+msgstr "Термін дії"
+
+msgid "Venus"
+msgstr "Венера"
+
+msgid "View"
+msgstr "Перегляд"
+
+msgid "Want to upgrade from a lower subscription tier?"
+msgstr "Бажаєте перейти з нижчого рівня підписки?"
+
+msgid "Warning!"
+msgstr "Попередження!"
+
+msgid ""
+"Warning! That's a large file you got there! AstroBin does not impose "
+"artificial limitation in the file size you can upload with an Ultimate "
+"subscription, but we cannot guarantee that all images above 200 MB or "
+"~8000x8000 pixels will work. Feel free to give it a shot tho!"
+msgstr ""
+"Увага! У Вас великий файл! AstroBin не накладає штучних обмежень на розмір "
+"файлу, який ви можете завантажити за допомогою підписки Ultimate, але ми не "
+"можемо гарантувати, що всі зображення розміром понад 200 МБ або ~8000x8000 "
+"пікселів будуть працювати. Спробуйте на свій ризик!"
+
+msgid "Watermark"
+msgstr "Водяний знак"
+
+msgid "We could not log you in. Please check your credentials and try again."
+msgstr "Не вдалося увійти до системи. Перевірте облікові дані та повторіть спробу."
+
+msgid "We found similar items from the same brand."
+msgstr "Ми знайшли схожі товари від тієї ж марки."
+
+msgid "We found the following similar items from the same brand."
+msgstr "Ми знайшли такі подібні товари від тієї ж марки."
+
+msgid ""
+"We found the following similar items. Click the correct one to use it, or "
+"ignore this message."
+msgstr ""
+"Ми знайшли такі схожі елементи. Натисніть правильний, щоб використовувати "
+"його, або проігноруйте це повідомлення."
+
+msgid "We'll never share your email with anyone else."
+msgstr "Ми ніколи не надамо Вашу електронну пошту будь кому."
+
+msgid "Website"
+msgstr "Веб-сайт"
+
+msgid "Wedged Alt-Az"
+msgstr "Заклинений Alt-Az"
+
+msgid "Weight"
+msgstr "Вага"
+
+msgid "Welcome!"
+msgstr "Ласкаво просимо!"
+
+msgid "What is this site?"
+msgstr "Що це за сайт?"
+
+msgid "When"
+msgstr "Коли"
+
+msgid "When a paid subscription expires, nothing happens to your images or content."
+msgstr ""
+"Коли закінчується термін дії платної підписки, з Вашими зображеннями чи "
+"вмістом нічого не станеться."
+
+msgid ""
+"When an image is dismissed by {{0}} members of the IOTD/TP staff, it's "
+"automatically removed from all queues. Please only perform this action if "
+"you want to vote against this image advancing in the process."
+msgstr ""
+"Коли зображення відхиляється {{0}} силами IOTD/TP, воно автоматично "
+"видаляється з усіх черг. Будь ласка, виконуйте цю дію, лише якщо ви хочете "
+"проголосувати проти просування цього зображення в процесі."
+
+msgid "Where do you want to go after saving?"
+msgstr "Куди ви хочете перейти після збереження?"
+
+msgid "Where does the data for this image come from?"
+msgstr "Звідки беруться дані для цього зображення?"
+
+msgid "Whether this camera is equipped with a cooling mechanism."
+msgstr "Чи обладнана ця камера механізмом охолодження."
+
+msgid "Which remote hosting facility did you use to acquire data for this image?"
+msgstr ""
+"Який віддалений хостинг ви використовували для отримання даних для цього "
+"зображення?"
+
+msgid "Would you like to upgrade?"
+msgstr "Бажаєте оновити підписку?"
+
+msgid "Wrong type"
+msgstr "Неправильний тип"
+
+msgid "Yes"
+msgstr "Так"
+
+msgid "Yes, continue"
+msgstr ""
+
+msgid ""
+"You are already logged in or were logged in automatically from the "
+"application's backend."
+msgstr "Ви залогінені або ввійшли автоматично до серверної частини програми."
+
+msgid ""
+"You are already on this plan. If you buy it again, your expiration date "
+"will be extended by one year."
+msgstr ""
+"Ви вже на цьому плані. Якщо ви купите знову, його буде продовжено на один "
+"рік."
+
+msgid "You are already subscribed to a higher plan."
+msgstr "Ви вже підписані на більш високий план."
+
+msgid ""
+"You can associate a Creative Commons license with your content if you wish, "
+"to grant people the right to use your work under certain circumstances. For "
+"more information on what your options are, please visit the {{0}}Creative "
+"Commons website{{1}}."
+msgstr ""
+"Ви можете пов’язати ліцензію Creative Commons зі своїм контентом, якщо "
+"хочете, щоб надати людям право використовувати вашу роботу за певних "
+"обставин. Щоб дізнатися більше про ваші варіанти, відвідайте {{0}}веб-сайт "
+"Creative Commons{{1}}."
+
+msgid ""
+"You cannot review this edit proposal because there are previous pending "
+"proposals."
+msgstr ""
+"Ви не можете переглянути цю пропозицію, оскільки є попередні пропозиції, "
+"які очікують на розгляд."
+
+msgid ""
+"You cannot review this edit proposal because you were the one who proposed "
+"it."
+msgstr ""
+"Ви не можете переглянути цю пропозицію редагування, оскільки Ви її "
+"запропонували."
+
+msgid ""
+"You have a <strong>{{0}}</strong> subscription. Enjoy your unlimited "
+"uploads!"
+msgstr ""
+"У Вас <strong>{{0}}</strong> підписка. Насолоджуйтесь необмеженою кількістю "
+"завантажень!"
+
+msgid ""
+"You have a <strong>{{0}}</strong> subscription. You have used "
+"<strong>{{1}}</strong> of the <strong>{{2}}</strong> images allowed in your "
+"plan."
+msgstr ""
+
+msgid ""
+"You have a <strong>{{0}}</strong> subscription. You have used "
+"<strong>{{1}}</strong> of your <strong>{{2}}</strong> upload slots."
+msgstr ""
+"У Вас <strong>{{0}}</strong> підписка. Використано <strong>{{1}}</strong> з "
+"Ваших <strong>{{2}}</strong> завантажень."
+
+msgid ""
+"You have a <strong>{{0}}</strong> subscription. You have used "
+"<strong>{{1}}</strong> of your <strong>{{2}}</strong> yearly upload slots."
+msgstr ""
+"У Вас <strong>{{0}}</strong> підписка. Використано <strong>{{1}}</strong> з "
+"Ваших <strong>{{2}}</strong> завантажень на рік."
+
+msgid "You have been logged in."
+msgstr "Ви увійшли у систему."
+
+msgid "You may have up to one revision per image."
+msgstr "Ви можете мати до однієї редакції на одне зображення."
+
+msgid "You may have up to {{0}} revisions per image."
+msgstr "Ви можете мати до {{0}} версій на одне зображення."
+
+msgid ""
+"You requested a comment for a scheduled IOTD that is not scheduled anymore: "
+"either it became IOTD because the scheduled date has been reached, or it "
+"was retracted."
+msgstr ""
+"Ви запитали коментар до запланованого IOTD, який більше не запланований: "
+"або він став IOTD, оскільки настала запланована дата, або його було "
+"відкликано."
+
+msgid "You tried to access a server resource that you're not authorized for."
+msgstr "Ви намагалися отримати доступ до ресурсу сервера, на який у Вас немає прав."
+
+msgid ""
+"You tried to access a server resource that's only available to logged in "
+"users."
+msgstr ""
+"Ви намагалися отримати доступ до ресурсу сервера, який доступний лише для "
+"користувачів, які ввійшли в систему."
+
+msgid "You will be redirected in {{seconds}} seconds..."
+msgstr "Вас буде переспрямовано через {{seconds}} секунд…"
+
+msgid "You will overwrite your existing preset with the same name."
+msgstr ""
+
+msgid "Your payments"
+msgstr "Ваші платежі"
+
+msgid ""
+"Your request has been received, and we are awaiting the final confirmation "
+"from the payment processor. Your subscription should be active within a few "
+"minutes!"
+msgstr ""
+"Ваш запит отримано, і ми очікуємо на остаточне підтвердження від платіжної "
+"системи. Ваша підписка має бути активною протягом декількох хвилин!"
+
+msgid "Your session is invalid, please log in again"
+msgstr "Ваш сеанс недійсний, будь ласка, увійдіть знову"
+
+msgid "Your subscriptions"
+msgstr "Ваші підписки"
+
+msgid ""
+"Your transaction with the payment processor has been cancelled, so no "
+"change in your subscription has occurred."
+msgstr ""
+"Ваша транзакція з платіжною системою була скасована, тому жодних змін у "
+"вашій підписці не відбулося."
+
+msgid ""
+"Your usage of the word \"{{0}}\" suggests that you are trying to add a DIY "
+"item. The AstroBin\n"
+"                    equipment database is meant for products that are (or "
+"have been) on the market and can (or could)\n"
+"                    be purchased. To add a DIY item, please use the "
+"appropriate checkbox during the item's creation."
+msgstr ""
+"Використання вами слова «{{0}}» означає, що ви намагаєтеся додати предмет "
+"DIY. База\n"
+"                     даних обладнання AstroBin призначена для продуктів, "
+"які є (або були) на ринку та можуть (або могли б)\n"
+"                     бути придбаними. Щоб додати предмет DIY, будь ласка, "
+"встановіть прапорець під час створення елемента."
+
+msgid ""
+"Your usage of the word \"{{0}}\" suggests that you are using this field to "
+"specify a property of this item that is only relevant to your own copy. "
+"Remember that here you are creating or editing the generic instance that "
+"will be shared by all owners on AstroBin."
+msgstr ""
+"Використання вами слова «{{0}}» означає, що ви використовуєте це поле, щоб "
+"вказати властивість цього елемента, яка стосується лише Вашої копії. "
+"Пам’ятайте, що тут ви створюєте або редагуєте загальний екземпляр, який "
+"буде надано всім власникам на AstroBin."
+
+msgid "Zoom ready"
+msgstr "Збільшення готове"
+
+msgid "consider making an edit proposal instead."
+msgstr "натомість розгляньте пропозицію редагування."
+
+msgid "day"
+msgstr "день"
+
+msgid "days"
+msgstr "днів"
+
+msgid "e.g."
+msgstr "напр."
+
+msgid "e.g. 'Home observatory'"
+msgstr "наприклад, «Домашня обсерваторія»"
+
+msgid "n/a"
+msgstr "н/д"
+
+msgid ""
+"there is an etiquette regarding uploading a new image versus an image "
+"revision."
+msgstr ""
+"існує коректність щодо завантаження нового зображення та перегляду "
+"зображення."
+
+msgid "year"
+msgstr "рік"
+
+msgid "{{ max }} revisions / image"
+msgstr "{{ max }} редакцій / зображення"
+
+msgid "{{0}} like"
+msgstr "{{0}} лайк(ів)"
