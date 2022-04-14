@@ -143,7 +143,7 @@ msgid "Approved"
 msgstr "Genehmigt"
 
 msgid "Are you sure that you want to continue?"
-msgstr ""
+msgstr "Sind Sie sicher, dass Sie weitermachen wollen?"
 
 msgid "Are you sure?"
 msgstr "Sind sie sicher?"
@@ -359,7 +359,7 @@ msgid "Class"
 msgstr "Klasse"
 
 msgid "Clear"
-msgstr ""
+msgstr "Leeren"
 
 msgid "Click on the image and scroll to magnify up to 8x."
 msgstr ""
@@ -466,7 +466,7 @@ msgid "Deep sky object or field"
 msgstr "Deep-Sky-Objekte"
 
 msgid "Delete"
-msgstr ""
+msgstr "Löschen"
 
 msgid "Description"
 msgstr "Beschreibung"
@@ -544,7 +544,7 @@ msgid "Equipment explorer"
 msgstr "Ausrüstungs-Explorer"
 
 msgid "Equipment item summary"
-msgstr ""
+msgstr "Zusammenfassung der Ausrüstung"
 
 msgid "Equipment pending edit"
 msgstr "Ausrüstungen warten auf Bearbeitung"
@@ -553,10 +553,10 @@ msgid "Equipment pending review"
 msgstr "Ausrüstung zur Überprüfung"
 
 msgid "Equipment preset created."
-msgstr ""
+msgstr "Ausrüstungsvoreinstellung erstellt."
 
 msgid "Equipment preset updated."
-msgstr ""
+msgstr "Ausrüstungsvoreinstellung aktualisiert."
 
 msgid "Error!"
 msgstr "Fehler!"
@@ -679,10 +679,10 @@ msgid "Guider or planetary camera"
 msgstr "Guider oder Planetenkamera"
 
 msgid "Guiding cameras"
-msgstr ""
+msgstr "Nachführ-Kameras"
 
 msgid "Guiding telescopes or lenses"
-msgstr ""
+msgstr "Nachführ-Teleskope oder Objektive"
 
 msgid "HTML tags are allowed."
 msgstr "HTML Tags sind erlaubt."
@@ -789,6 +789,8 @@ msgstr "Bild-Auswahlliste"
 
 msgid "Image saved."
 msgstr ""
+"Bild gespeichert.\n"
+"\n"
 
 msgid "Images"
 msgstr "Bilder"
@@ -879,13 +881,15 @@ msgid "Link to TIFF/FITS"
 msgstr "Link zum TIFF/FITS"
 
 msgid "Load"
-msgstr ""
+msgstr "Laden"
 
 msgid "Load equipment preset"
 msgstr ""
+"Voreingestellte Ausrüstung laden\n"
+"\n"
 
 msgid "Load preset"
-msgstr ""
+msgstr "Voreinstellung laden"
 
 msgid "Loading edit proposals"
 msgstr "Laden von Bearbeitungsvorschlägen"
@@ -1345,6 +1349,9 @@ msgstr "Schnellsuche"
 
 msgid "Quick-add recent"
 msgstr ""
+"Schnelles Hinzufügen letzte\n"
+"\n"
+"\n"
 
 msgid "Read"
 msgstr "Lesen"
@@ -1461,12 +1468,15 @@ msgstr "Speichern und weiter zum Bild"
 
 msgid "Save and remain on this page"
 msgstr ""
+"Speichern und auf dieser Seite bleiben\n"
+"\n"
+"\n"
 
 msgid "Save equipment preset"
-msgstr ""
+msgstr "Voreingestellte Ausrüstung speichern"
 
 msgid "Save preset"
-msgstr ""
+msgstr "Voreinstellung speichern"
 
 msgid "Scroll to top"
 msgstr "Nach oben scrollen"
@@ -1518,7 +1528,7 @@ msgid "Show"
 msgstr "Zeigen"
 
 msgid "Show guiding equipment"
-msgstr ""
+msgstr "Guiding-Ausrüstung zeigen"
 
 msgid ""
 "Since a regular and a modified variant of {{0}} were created, we didn't "
@@ -1663,7 +1673,7 @@ msgid "Telescopes & lenses"
 msgstr "Teleskope und Objektive"
 
 msgid "Telescopes or lenses"
-msgstr ""
+msgstr "Teleskope oder Objektive"
 
 msgid "Text"
 msgstr "Text"
@@ -1858,7 +1868,7 @@ msgid "This operation can not be undone."
 msgstr "Dieser Vorgang kann nicht rückgängig gemacht werden."
 
 msgid "This operation cannot be undone."
-msgstr ""
+msgstr "Dieser Vorgang kann nicht rückgängig gemacht werden."
 
 msgid ""
 "This operation could take several seconds (especially for large images), "
@@ -1868,7 +1878,7 @@ msgstr ""
 "Bildern). Bitte warten Sie"
 
 msgid "This operation will overwrite the current equipment selection."
-msgstr ""
+msgstr "Dieser Vorgang überschreibt die aktuelle Ausrüstungsauswahl."
 
 msgid ""
 "This page or operation is not available at the moment, because AstroBin is "
@@ -2116,7 +2126,7 @@ msgid "Yes"
 msgstr "Ja"
 
 msgid "Yes, continue"
-msgstr ""
+msgstr "Ja, weiter"
 
 msgid ""
 "You are already logged in or were logged in automatically from the "
@@ -2172,6 +2182,9 @@ msgid ""
 "<strong>{{1}}</strong> of the <strong>{{2}}</strong> images allowed in your "
 "plan."
 msgstr ""
+"Sie haben ein <strong>{{0}}</strong>-Abonnement. Sie haben "
+"<strong>{{1}}</strong> der <strong>{{2}}</strong> Bilder verwendet, die in "
+"Ihrem  Abo zulässig sind."
 
 msgid ""
 "You have a <strong>{{0}}</strong> subscription. You have used "
@@ -2223,7 +2236,7 @@ msgid "You will be redirected in {{seconds}} seconds..."
 msgstr "Sie werden in {{seconds}} Sekunden umgeleitet..."
 
 msgid "You will overwrite your existing preset with the same name."
-msgstr ""
+msgstr "Sie überschreiben damit Ihre bestehende Voreinstellung mit demselben Namen."
 
 msgid "Your payments"
 msgstr "Ihre Zahlungen"
