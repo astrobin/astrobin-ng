@@ -46,7 +46,7 @@
 </div>
 
 <ng-template #noEntries>
-  <p>{{ "The review queue is currently empty." | translate }}&nbsp;{{ "Please come back later!" | translate }}</p>
+  <p>{{ "The review queue is currently empty or being refreshed." | translate }}&nbsp;{{ comeBackInMinutesMessage(15) }}</p>
 </ng-template>
 
 <ng-template #pagination let-queue="queue">

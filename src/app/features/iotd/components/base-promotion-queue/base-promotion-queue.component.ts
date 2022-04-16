@@ -151,6 +151,12 @@ export abstract class BasePromotionQueueComponent extends BaseComponentDirective
     }
   }
 
+  comeBackInMinutesMessage(minutes: number): string {
+    return this.translateService.instant("Please come back in {{0}} minutes!", {
+      0: minutes
+    });
+  }
+
   private _getEntryElement(imageId: number): ElementRef | null {
     const matches = this.promotionQueueEntries.filter(
       entry => entry.elementRef.nativeElement.id === `promotion-queue-entry-${imageId}`
