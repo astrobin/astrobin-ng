@@ -132,6 +132,7 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
     }
 
     return this.store$.select(selectImageRevisionsForImage, image.pk).pipe(
+      take(1),
       map(imageRevisions => {
         const matchingRevisions = imageRevisions.filter(
           imageRevision => (imageRevision.isFinal && this.revision === "final") || imageRevision.label === this.revision
