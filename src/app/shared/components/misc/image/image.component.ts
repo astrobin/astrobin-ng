@@ -26,6 +26,8 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 import { debounceTime, distinctUntilChanged, filter, map, switchMap, take, takeUntil } from "rxjs/operators";
 import { fromEvent, Observable, of } from "rxjs";
 import { selectImageRevisionsForImage } from "@app/store/selectors/app/image-revision.selectors";
+import { Actions, ofType } from "@ngrx/effects";
+import { AppActionTypes } from "@app/store/actions/app.actions";
 
 @Component({
   selector: "astrobin-image",
@@ -60,6 +62,7 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
 
   constructor(
     public readonly store$: Store<State>,
+    public readonly actions$: Actions,
     public readonly imageApiService: ImageApiService,
     public readonly imageService: ImageService,
     public readonly elementRef: ElementRef,
@@ -108,6 +111,13 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
       .pipe(
         filter(image => !!image),
         take(1),
+        switchMap(image =>
+          this.actions$.pipe(
+            ofType(AppActionTypes.LOAD_IMAGE_REVISIONS_SUCCESS),
+            take(1),
+            map(() => image)
+          )
+        ),
         switchMap(image => this._loadRevision(image).pipe(map(revision => ({ image, revision }))))
       )
       .subscribe(({ image, revision }) => {
