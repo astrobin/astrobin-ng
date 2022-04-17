@@ -84,6 +84,10 @@ export class RejectItemModalComponent extends BaseComponentDirective implements 
               label: this.translateService.instant("The item has insufficient data")
             },
             {
+              value: EquipmentItemReviewerRejectionReason.DUPLICATE,
+              label: this.translateService.instant("The item already exists in the database")
+            },
+            {
               value: EquipmentItemReviewerRejectionReason.OTHER,
               label: this.translateService.instant("Other")
             }

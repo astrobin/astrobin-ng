@@ -250,6 +250,11 @@ export class RejectMigrationModalComponent extends BaseComponentDirective implem
         value: EquipmentItemReviewerRejectionReason.INSUFFICIENT_DATA,
         label: this.translateService.instant("The target item has insufficient data")
       },
+
+      {
+        value: EquipmentItemReviewerRejectionReason.DUPLICATE,
+        label: this.translateService.instant("The target item is a duplicate of an existing equipment item")
+      },
       {
         value: EquipmentItemReviewerRejectionReason.OTHER,
         label: this.translateService.instant("Other")
