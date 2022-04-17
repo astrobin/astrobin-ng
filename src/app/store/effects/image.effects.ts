@@ -97,7 +97,7 @@ export class ImageEffects {
       ofType(AppActionTypes.LOAD_IMAGE_REVISIONS),
       mergeMap(action =>
         this.imageApiService.getImageRevisions(action.payload.imageId).pipe(
-          map(response => new LoadImageRevisionsSuccess({ imageRevisions: response })),
+          map(response => new LoadImageRevisionsSuccess({ imageId: action.payload.imageId, imageRevisions: response })),
           catchError(() => EMPTY)
         )
       )

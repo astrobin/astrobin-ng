@@ -10,7 +10,7 @@ import {
   SimpleChanges
 } from "@angular/core";
 import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
-import { LoadImage, LoadImageRevisions } from "@app/store/actions/image.actions";
+import { LoadImage, LoadImageRevisions, LoadImageRevisionsSuccess } from "@app/store/actions/image.actions";
 import { LoadThumbnail } from "@app/store/actions/thumbnail.actions";
 import { selectImage } from "@app/store/selectors/app/image.selectors";
 import { selectThumbnail } from "@app/store/selectors/app/thumbnail.selectors";
@@ -114,6 +114,9 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
         switchMap(image =>
           this.actions$.pipe(
             ofType(AppActionTypes.LOAD_IMAGE_REVISIONS_SUCCESS),
+            filter((action: LoadImageRevisionsSuccess) => {
+              return action.payload.imageId === image.pk;
+            }),
             take(1),
             map(() => image)
           )

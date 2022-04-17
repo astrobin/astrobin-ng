@@ -51,7 +51,12 @@ export class LoadImageRevisions implements PayloadActionInterface {
 export class LoadImageRevisionsSuccess implements PayloadActionInterface {
   readonly type = AppActionTypes.LOAD_IMAGE_REVISIONS_SUCCESS;
 
-  constructor(public payload: { imageRevisions: PaginatedApiResultInterface<ImageRevisionInterface> }) {}
+  constructor(
+    public payload: {
+      imageId: ImageInterface["pk"];
+      imageRevisions: PaginatedApiResultInterface<ImageRevisionInterface>;
+    }
+  ) {}
 }
 
 export class SaveImage implements PayloadActionInterface {
