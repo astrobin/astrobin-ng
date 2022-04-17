@@ -10,7 +10,7 @@ import {
   SimpleChanges
 } from "@angular/core";
 import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
-import { LoadImage, LoadImageRevisions } from "@app/store/actions/image.actions";
+import { LoadImage, LoadImageRevisions, LoadImageRevisionsSuccess } from "@app/store/actions/image.actions";
 import { LoadThumbnail } from "@app/store/actions/thumbnail.actions";
 import { selectImage } from "@app/store/selectors/app/image.selectors";
 import { selectThumbnail } from "@app/store/selectors/app/thumbnail.selectors";
@@ -26,6 +26,8 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 import { debounceTime, distinctUntilChanged, filter, map, switchMap, take, takeUntil } from "rxjs/operators";
 import { fromEvent, Observable, of } from "rxjs";
 import { selectImageRevisionsForImage } from "@app/store/selectors/app/image-revision.selectors";
+import { Actions, ofType } from "@ngrx/effects";
+import { AppActionTypes } from "@app/store/actions/app.actions";
 
 @Component({
   selector: "astrobin-image",
@@ -60,6 +62,7 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
 
   constructor(
     public readonly store$: Store<State>,
+    public readonly actions$: Actions,
     public readonly imageApiService: ImageApiService,
     public readonly imageService: ImageService,
     public readonly elementRef: ElementRef,
@@ -108,6 +111,16 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
       .pipe(
         filter(image => !!image),
         take(1),
+        switchMap(image =>
+          this.actions$.pipe(
+            ofType(AppActionTypes.LOAD_IMAGE_REVISIONS_SUCCESS),
+            filter((action: LoadImageRevisionsSuccess) => {
+              return action.payload.imageId === image.pk;
+            }),
+            take(1),
+            map(() => image)
+          )
+        ),
         switchMap(image => this._loadRevision(image).pipe(map(revision => ({ image, revision }))))
       )
       .subscribe(({ image, revision }) => {
