@@ -65,7 +65,7 @@
     "ngx-image-cropper": "5.0.1",
     "ngx-image-zoom": "0.6.0",
     "ngx-timeago": "2.0.0",
-    "ngx-toastr": "14.1.4",
+    "ngx-toastr": "14.3.0",
     "ngx-uploadx": "4.1.5",
     "reflect-metadata": "0.1.13",
     "rimraf": "3.0.2",
