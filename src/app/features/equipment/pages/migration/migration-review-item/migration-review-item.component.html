@@ -41,7 +41,7 @@
                       Global or Personal
                     </th>
                     <td>
-                      <ng-container *ngIf="!!migrationStrategy.user">
+                      <ng-container *ngIf="!migrationStrategy.user">
                         Global
                         <span
                           class="help-tooltip"
@@ -52,7 +52,7 @@
                           <fa-icon icon="question-circle"></fa-icon>
                         </span>
                       </ng-container>
-                      <ng-container *ngIf="!migrationStrategy.user">
+                      <ng-container *ngIf="!!migrationStrategy.user">
                         Personal
                         <span
                           class="help-tooltip"
