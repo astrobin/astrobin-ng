@@ -215,22 +215,30 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
 
   markAsWrongType(event: Event, object: any) {
     event.preventDefault();
-    this._applyMigration(object, [object.pk, MigrationFlag.WRONG_TYPE], "wrong type");
+    this._applyMigration(object, [object.pk, MigrationFlag.WRONG_TYPE], this.translateService.instant("wrong type"));
   }
 
   markAsMultiple(event: Event, object: any) {
     event.preventDefault();
-    this._applyMigration(object, [object.pk, MigrationFlag.MULTIPLE_ITEMS], "multiple items");
+    this._applyMigration(
+      object,
+      [object.pk, MigrationFlag.MULTIPLE_ITEMS],
+      this.translateService.instant("multiple items")
+    );
   }
 
   markAsDIY(event: Event, object: any) {
     event.preventDefault();
-    this._applyMigration(object, [object.pk, MigrationFlag.DIY], "DIY");
+    this._applyMigration(object, [object.pk, MigrationFlag.DIY], this.translateService.instant("DIY"));
   }
 
   markAsNotEnoughInfo(event: Event, object: any) {
     event.preventDefault();
-    this._applyMigration(object, [object.pk, MigrationFlag.NOT_ENOUGH_INFO], "not enough info");
+    this._applyMigration(
+      object,
+      [object.pk, MigrationFlag.NOT_ENOUGH_INFO],
+      this.translateService.instant("not enough info")
+    );
   }
 
   beginMigration() {
@@ -430,16 +438,22 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
           this.loadingService.setLoading(false);
           this.cancelMigration(), this.resetMigrationConfirmation();
           this.skip(object);
-          this.popNotificationsService.success(
-            `Good job! Item <strong>${this.legacyGearService.getDisplayName(
-              object.make,
-              object.name
-            )}</strong> marked as <strong>${markedAs}</strong>! Do another one now! 😃`,
-            null,
-            {
-              enableHtml: true
-            }
-          );
+
+          let message = this.translateService.instant("Item <strong>{{0}}</strong> marked as <strong>{{1}}</strong>.", {
+            0: this.legacyGearService.getDisplayName(object.make, object.name),
+            1: markedAs
+          });
+
+          if (setMigrateArgs[1] === MigrationFlag.MIGRATE) {
+            message +=
+              "<br/><br/>" +
+              this.translateService.instant(
+                "The migration will be reviewed by a moderator as soon as possible, and you will be notified of " +
+                  "the outcome. If the migration is approved, you will be able to add the equipment item to your images."
+              );
+          }
+
+          this.popNotificationsService.success(message, null, { enableHtml: true });
         },
         error => {
           this._operationError(error);
