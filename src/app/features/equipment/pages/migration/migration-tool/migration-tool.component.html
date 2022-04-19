@@ -57,7 +57,7 @@
       <ng-container *ngIf="objects[0] as object">
         <div
           class="card box-shadow"
-          [class.disabled]="migrationMode || creationMode || migrationConfirmation.inProgress"
+          [class.disabled]="migrationMode || subCreationMode || migrationConfirmation.inProgress"
         >
           <div class="card-header">{{ "This LEGACY item needs to be migrated" | translate }}:</div>
 
@@ -83,7 +83,7 @@
           <div class="card-footer">
             <button
               class="btn btn-sm-block btn-secondary"
-              [disabled]="migrationMode || creationMode || migrationConfirmation.inProgress"
+              [disabled]="migrationMode || subCreationMode || migrationConfirmation.inProgress"
               [class.loading]="loadingService.isLoading()"
               (click)="skip(object)"
             >
@@ -96,7 +96,7 @@
                 ngbDropdownToggle
                 id="mark-as-dropdown-button"
                 class="btn btn-sm-block btn-secondary"
-                [disabled]="migrationMode || creationMode || migrationConfirmation.inProgress"
+                [disabled]="migrationMode || subCreationMode || migrationConfirmation.inProgress"
                 [class.loading]="loadingService.isLoading()"
               >
                 <fa-icon icon="tag"></fa-icon>
@@ -124,7 +124,7 @@
 
             <button
               class="btn btn-sm-block btn-primary"
-              [disabled]="migrationMode || creationMode || migrationConfirmation.inProgress"
+              [disabled]="migrationMode || subCreationMode || migrationConfirmation.inProgress"
               [class.loading]="loadingService.isLoading()"
               (click)="beginMigration()"
             >
@@ -141,7 +141,7 @@
 
           <div
             class="card"
-            [class.disabled-with-backdrop]="creationMode || migrationConfirmation.inProgress"
+            [class.disabled-with-backdrop]="subCreationMode || migrationConfirmation.inProgress"
             id="select-item-to-migrate-to"
           >
             <div class="backdrop"></div>
@@ -155,15 +155,15 @@
                 #equipmentItemBrowser
                 [type]="getActiveType()"
                 (valueChanged)="onItemSelected($event)"
-                (creationModeStarted)="creationMode = true"
-                (creationModeEnded)="creationMode = false"
+                (subCreationModeStarted)="subCreationMode = true"
+                (subCreationModeEnded)="subCreationMode = false"
               ></astrobin-equipment-item-browser>
             </div>
 
             <div class="card-footer">
               <button
                 class="btn btn-sm-block btn-secondary"
-                [disabled]="creationMode || migrationConfirmation.inProgress"
+                [disabled]="subCreationMode || migrationConfirmation.inProgress"
                 [class.loading]="loadingService.isLoading()"
                 (click)="cancelMigration()"
               >
@@ -172,7 +172,7 @@
 
               <button
                 class="btn btn-sm-block btn-primary"
-                [disabled]="!migrationTarget || creationMode || migrationConfirmation.inProgress"
+                [disabled]="!migrationTarget || subCreationMode || migrationConfirmation.inProgress"
                 [class.loading]="loadingService.isLoading()"
                 (click)="beginMigrationConfirmation(object)"
               >

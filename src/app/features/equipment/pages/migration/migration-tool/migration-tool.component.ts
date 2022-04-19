@@ -51,7 +51,7 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
 
   migrationTarget: EquipmentItemBaseInterface = null;
   migrationMode = false;
-  creationMode = false;
+  subCreationMode = false;
 
   migrationConfirmation: {
     inProgress: boolean;
@@ -361,7 +361,14 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
   onItemSelected(item: EquipmentItemBaseInterface) {
     this.migrationTarget = item;
 
-    const type = this.equipmentItemService.getType(item);
+    let type: EquipmentItemType;
+
+    try {
+      type = this.equipmentItemService.getType(item);
+    } catch (e) {
+      return;
+    }
+
     if (type === EquipmentItemType.CAMERA) {
       const camera = item as CameraInterface;
       if (!camera.modified) {
