@@ -6,6 +6,20 @@
 </div>
 
 <div class="modal-body">
+  <p>
+    {{ "Please reject a renaming proposal only if the proposal incorrectly makes the item a different product." | translate }}
+  </p>
+
+  <p>
+    {{ "Do not let your personal preference for a naming convention be a reason for rejection at this time, as data defragmentation is more important than minor spelling concerns that can be fixed later." | translate }}
+  </p>
+
+  <p>
+    {{ "Thank you!" | translate }}
+  </p>
+
+  <hr />
+
   <form [formGroup]="form">
     <formly-form [fields]="fields" [form]="form" [model]="model"></formly-form>
   </form>
