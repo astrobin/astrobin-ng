@@ -35,7 +35,8 @@ enum NotificationCategory {
   OTHER = "OTHER",
   PRIVATE_MESSAGES = "PRIVATE_MESSAGES",
   SUBSCRIPTIONS = "SUBSCRIPTIONS",
-  USERS = "USERS"
+  USERS = "USERS",
+  EQUIPMENT = "EQUIPMENT"
 }
 
 interface NotificationCategoriesInterface {
@@ -84,6 +85,10 @@ export class SettingsPageComponent extends BaseComponentDirective implements OnI
     },
     [NotificationCategory.IOTD]: {
       label: this.translateService.instant("Image of the Day / Top Picks"),
+      items: {}
+    },
+    [NotificationCategory.EQUIPMENT]: {
+      label: this.translateService.instant("Equipment"),
       items: {}
     },
     [NotificationCategory.IOTD_STAFF]: {
@@ -251,6 +256,15 @@ export class SettingsPageComponent extends BaseComponentDirective implements OnI
         return NotificationCategory.IMAGES;
       case "new_follower":
         return NotificationCategory.USERS;
+      case "equipment-item-approved":
+      case "equipment-item-rejected":
+      case "equipment-item-rejected-affected-image":
+      case "equipment-edit-proposal-created":
+      case "equipment-edit-proposal-approved":
+      case "equipment-edit-proposal-rejected":
+      case "equipment-item-migration-approved":
+      case "equipment-item-migration-rejected":
+        return NotificationCategory.EQUIPMENT;
     }
 
     return null;
