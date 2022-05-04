@@ -26,6 +26,7 @@ export interface GearRenamingProposal {
   newName: string;
   status: GearRenamingProposalStatus;
   rejectReason: string;
+  modified: boolean;
 }
 
 export type GearRenamingProposalItemType = "camera";

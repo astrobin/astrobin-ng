@@ -50,7 +50,12 @@
         <td>{{ proposal.oldName }}</td>
         <td>&xrarr;</td>
         <td>{{ proposal.newMake }}</td>
-        <td>{{ proposal.newName }}</td>
+        <td>
+          {{ proposal.newName }}
+          <span class="modified" *ngIf="proposal.modified">
+            {{ "(modified)" | translate }}
+          </span>
+        </td>
         <td>
           <button
             class="btn btn-xs btn-success mb-2 mb-md-0 mr-lg-2"
