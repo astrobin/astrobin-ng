@@ -20,12 +20,16 @@
         </a>
         <span *ngIf="type.count" class="count">{{ type.count | async }}</span>
       </li>
-      <li ngbNavItem="pending-review-explorer">
-        <a ngbNavLink routerLink="/equipment/pending-review-explorer/{{ type.value.toLowerCase() }}">
-          {{ "Pending review" | translate }}
-        </a>
-        <span *ngIf="type.pendingReviewCount" class="count">{{ type.pendingReviewCount | async }}</span>
-      </li>
+
+      <ng-container *ngIf="currentUser$ | async as currentUser">
+        <li ngbNavItem="pending-review-explorer" *ngIf="currentUser | isEquipmentModerator">
+          <a ngbNavLink routerLink="/equipment/pending-review-explorer/{{ type.value.toLowerCase() }}">
+            {{ "Pending review" | translate }}
+          </a>
+          <span *ngIf="type.pendingReviewCount" class="count">{{ type.pendingReviewCount | async }}</span>
+        </li>
+      </ng-container>
+
       <li ngbNavItem="pending-edit-explorer">
         <a ngbNavLink routerLink="/equipment/pending-edit-explorer/{{ type.value.toLowerCase() }}">
           {{ "Pending edit" | translate }}
