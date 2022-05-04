@@ -1,5 +1,18 @@
-<span class="brand" *ngIf="!!brandName; else loading">{{ brandName }}&nbsp;</span>
-<span class="name" *ngIf="!!itemName; else loading">{{ itemName }}</span>
+<span class="brand" *ngIf="!!brandName; else loading">
+  {{ brandName }}&nbsp;
+</span>
+
+<span class="name" *ngIf="!!itemName; else loading">
+  {{ itemName }}
+  <a
+    *ngIf="showItemUnapprovedInfo"
+    href=""
+    appEventPreventDefault
+    (click)="openItemUnapprovedInfoModal(item)"
+  >
+    <fa-icon icon="asterisk"></fa-icon>
+  </a>
+</span>
 
 <a
   *ngIf="enableSummaryModal"

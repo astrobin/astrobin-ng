@@ -8,14 +8,18 @@ import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
   selector: "astrobin-item-summary-modal",
-  templateUrl: "./item-summary-modal.component.html",
-  styleUrls: ["./item-summary-modal.component.scss"]
+  templateUrl: "./item-unapproved-info-modal.component.html",
+  styleUrls: ["./item-unapproved-info-modal.component.scss"]
 })
-export class ItemSummaryModalComponent extends BaseComponentDirective {
+export class ItemUnapprovedInfoModalComponent extends BaseComponentDirective {
   @Input()
   item: EquipmentItemBaseInterface;
 
-  constructor(public readonly store$: Store<State>, public readonly modal: NgbActiveModal) {
+  constructor(
+    public readonly store$: Store<State>,
+    public readonly translateService: TranslateService,
+    public readonly modal: NgbActiveModal
+  ) {
     super(store$);
   }
 }

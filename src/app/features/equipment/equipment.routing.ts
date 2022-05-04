@@ -109,7 +109,7 @@ export const routes: Routes = [
     path: "pending-review-explorer/:itemType",
     component: PendingReviewExplorerComponent,
     canActivate: [AuthGuardService, GroupGuardService],
-    data: { anyOfGroups: ["equipment_moderators", "own_equipment_migrators"] }
+    data: { group: "equipment_moderators" }
   },
   {
     path: "pending-edit-explorer/:itemType",

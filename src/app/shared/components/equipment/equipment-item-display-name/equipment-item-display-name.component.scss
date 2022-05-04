@@ -2,6 +2,12 @@
   font-weight: bold;
 }
 
+.name {
+  [icon=asterisk] {
+    font-size: .5rem;
+    vertical-align: super;
+  }
+}
 
 .btn-info-modal {
   color: var(--lightestGrey);
