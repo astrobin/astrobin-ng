@@ -45,6 +45,7 @@ export class FilterService extends BaseService implements EquipmentItemServiceIn
       [FilterType.SKY_GLOW]: this.translateService.instant("Sky glow"),
       [FilterType.SOLAR]: this.translateService.instant("Solar"),
       [FilterType.LUNAR]: this.translateService.instant("Lunar"),
+      [FilterType.PLANETARY]: this.translateService.instant("Planetary"),
       [FilterType.COMETARY]: this.translateService.instant("Cometary"),
       [FilterType.PHOTOMETRIC_U]: this.translateService.instant("Photometric Ultraviolet"),
       [FilterType.PHOTOMETRIC_B]: this.translateService.instant("Photometric Blue"),
