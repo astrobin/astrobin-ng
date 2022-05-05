@@ -605,7 +605,7 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     return {
       ...item,
       ...{
-        size: item.size !== null ? parseFloat((item.size as unknown) as string) : null
+        otherSize: item.otherSize !== null ? parseFloat((item.otherSize as unknown) as string) : null
       }
     };
   }

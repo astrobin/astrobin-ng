@@ -14,5 +14,7 @@
   "createdBy": 1,
   "reviewedBy": null,
   "brand": 1,
-  "group": null
+  "group": null,
+  "size": "ROUND_1_25_IN",
+  "bandwidth": 3
 }

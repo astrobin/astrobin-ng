@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { EquipmentItemServiceInterface } from "@features/equipment/services/equipment-item.service-interface";
-import { FilterInterface, FilterType } from "@features/equipment/types/filter.interface";
+import { FilterInterface, FilterSize, FilterType } from "@features/equipment/types/filter.interface";
 import { TranslateService } from "@ngx-translate/core";
 import { Observable, of } from "rxjs";
 import { UtilsService } from "@shared/services/utils/utils.service";
@@ -10,7 +10,8 @@ import { UtilsService } from "@shared/services/utils/utils.service";
 export enum FilterDisplayProperty {
   TYPE = "TYPE",
   BANDWIDTH = "BANDWIDTH",
-  SIZE = "SIZE"
+  SIZE = "SIZE",
+  OTHER_SIZE = "OTHER_SIZE"
 }
 
 @Injectable({
@@ -58,8 +59,35 @@ export class FilterService extends BaseService implements EquipmentItemServiceIn
     return map[type];
   }
 
+  humanizeSize(size: FilterSize) {
+    const map = {
+      [FilterSize.ROUND_1_25_IN]: this.translateService.instant("Round") + ` 1.25"`,
+      [FilterSize.ROUND_2_IN]: this.translateService.instant("Round") + ` 2"`,
+      [FilterSize.ROUND_31_MM]: this.translateService.instant("Round") + " 31 mm",
+      [FilterSize.ROUND_36_MM]: this.translateService.instant("Round") + " 36 mm",
+      [FilterSize.ROUND_50_MM]: this.translateService.instant("Round") + " 50 mm",
+      [FilterSize.SQUARE_50_MM]: this.translateService.instant("Square") + " 50x50 mm",
+      [FilterSize.SQUARE_65_MM]: this.translateService.instant("Square") + " 50x50 mm",
+      [FilterSize.EOS_APC_C]: "EOS APC C",
+      [FilterSize.EOS_FULL]: "EOS Full",
+      [FilterSize.EOS_R]: "EOS R",
+      [FilterSize.SONY]: "Sony",
+      [FilterSize.T_THREAD_CELL_M42]: "T-threaded cell (M42 x 0.75)",
+      [FilterSize.M_52]: "M52",
+      [FilterSize.SC_CELL]: "SC-cell",
+      [FilterSize.OTHER]: this.translateService.instant("Other")
+    };
+
+    return map[size];
+  }
+
   getSupportedPrintableProperties(): string[] {
-    return [FilterDisplayProperty.TYPE, FilterDisplayProperty.BANDWIDTH, FilterDisplayProperty.SIZE];
+    return [
+      FilterDisplayProperty.TYPE,
+      FilterDisplayProperty.BANDWIDTH,
+      FilterDisplayProperty.SIZE,
+      FilterDisplayProperty.OTHER_SIZE
+    ];
   }
 
   getPrintableProperty$(
@@ -74,8 +102,10 @@ export class FilterService extends BaseService implements EquipmentItemServiceIn
         propertyValue = parseInt(propertyValue, 10);
         return of(propertyValue || item.bandwidth ? `${propertyValue || item.bandwidth} nm` : "");
       case FilterDisplayProperty.SIZE:
+        return of(this.humanizeSize(propertyValue || item.size));
+      case FilterDisplayProperty.OTHER_SIZE:
         propertyValue = parseFloat(propertyValue);
-        return of(propertyValue || item.size ? `${propertyValue || item.size} mm` : "");
+        return of(propertyValue || item.otherSize ? `${propertyValue || item.otherSize} mm` : "");
       default:
         throw Error(`Invalid property: ${property}`);
     }
@@ -90,7 +120,9 @@ export class FilterService extends BaseService implements EquipmentItemServiceIn
           ? this.translateService.instant("Bandwidth")
           : this.translateService.instant("Bandwidth") + " (nm)";
       case FilterDisplayProperty.SIZE:
-        return shortForm ? this.translateService.instant("Size") : this.translateService.instant("Size") + " (mm)";
+        return this.translateService.instant("Size");
+      case FilterDisplayProperty.OTHER_SIZE:
+        return this.translateService.instant("Size") + " (mm)";
       default:
         throw Error(`Invalid property: ${propertyName}`);
     }
