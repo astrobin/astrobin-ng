@@ -99,7 +99,7 @@ export class FilterService extends BaseService implements EquipmentItemServiceIn
       case FilterDisplayProperty.TYPE:
         return of(this.humanizeType(propertyValue || item.type));
       case FilterDisplayProperty.BANDWIDTH:
-        propertyValue = parseInt(propertyValue, 10);
+        propertyValue = parseFloat(propertyValue);
         return of(propertyValue || item.bandwidth ? `${propertyValue || item.bandwidth} nm` : "");
       case FilterDisplayProperty.SIZE:
         return of(this.humanizeSize(propertyValue || item.size));
