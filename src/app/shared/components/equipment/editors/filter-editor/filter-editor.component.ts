@@ -91,7 +91,7 @@ export class FilterEditorComponent extends BaseItemEditorComponent<FilterInterfa
         },
         templateOptions: {
           type: "number",
-          step: 1,
+          step: 0.1,
           label: this.filterService.getPrintablePropertyName(FilterDisplayProperty.BANDWIDTH)
         },
         validators: {
@@ -101,6 +101,12 @@ export class FilterEditorComponent extends BaseItemEditorComponent<FilterInterfa
               name: "min-value",
               options: {
                 minValue: 1
+              }
+            },
+            {
+              name: "max-decimals",
+              options: {
+                value: 2
               }
             }
           ]
