@@ -3,7 +3,7 @@ import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
 import { FilterDisplayProperty, FilterService } from "@features/equipment/services/filter.service";
 import { FilterGenerator } from "@features/equipment/generators/filter.generator";
-import { FilterType } from "@features/equipment/types/filter.interface";
+import { FilterSize, FilterType } from "@features/equipment/types/filter.interface";
 
 describe("FilterService", () => {
   let service: FilterService;
@@ -33,9 +33,9 @@ describe("FilterService", () => {
     });
 
     it("should work for 'size'", () => {
-      const filter = FilterGenerator.filter({ size: 50 });
+      const filter = FilterGenerator.filter({ size: FilterSize.ROUND_1_25_IN });
       service.getPrintableProperty$(filter, FilterDisplayProperty.SIZE).subscribe(value => {
-        expect(value).toEqual("50 mm");
+        expect(value).toEqual(`Round 1.25"`);
       });
     });
   });
