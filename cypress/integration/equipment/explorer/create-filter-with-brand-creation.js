@@ -40,7 +40,9 @@ context("Equipment", () => {
       });
 
       it("should input the 'Size'", () => {
-        cy.get("#filter-field-size").type("31");
+        cy.ngSelectOpen("#filter-field-size");
+        cy.ngSelectOptionClick("#filter-field-size", 1);
+        cy.ngSelectValueShouldContain("#filter-field-size", 'Round 1.25"');
       });
 
       it("should create the item", () => {
@@ -56,7 +58,7 @@ context("Equipment", () => {
         cy.equipmentItemSummaryShouldHaveProperty(".modal", "Class", "Filter");
         cy.equipmentItemSummaryShouldHaveProperty(".modal", "Type", "Hydrogen-alpha (Hα)");
         cy.equipmentItemSummaryShouldHaveProperty(".modal", "Bandwidth", "3 nm");
-        cy.equipmentItemSummaryShouldHaveProperty(".modal", "Size", "31 mm");
+        cy.equipmentItemSummaryShouldHaveProperty(".modal", "Size", 'Round 1.25"');
 
         cy.get(".modal-footer .btn-danger").click();
 

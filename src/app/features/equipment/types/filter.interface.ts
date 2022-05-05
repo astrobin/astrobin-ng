@@ -19,6 +19,7 @@ export enum FilterType {
   SKY_GLOW = "SKY_GLOW",
   SOLAR = "SOLAR",
   LUNAR = "LUNAR",
+  PLANETARY = "PLANETARY",
   COMETARY = "COMETARY",
   PHOTOMETRIC_U = "PHOTOMETRIC_U",
   PHOTOMETRIC_B = "PHOTOMETRIC_B",
@@ -28,10 +29,29 @@ export enum FilterType {
   OTHER = "OTHER"
 }
 
+export enum FilterSize {
+  ROUND_1_25_IN = "ROUND_1_25_IN",
+  ROUND_2_IN = "ROUND_2_IN",
+  ROUND_31_MM = "ROUND_31_MM",
+  ROUND_36_MM = "ROUND_36_MM",
+  ROUND_50_MM = "ROUND_50_MM",
+  SQUARE_50_MM = "SQUARE_50_MM",
+  SQUARE_65_MM = "SQUARE_65_MM",
+  EOS_APC_C = "EOS_APC_C",
+  EOS_FULL = "EOS_FULL",
+  EOS_R = "EOS_R",
+  SONY = "SONY",
+  T_THREAD_CELL_M42 = "T_THREAD_CELL_M42",
+  M_52 = "M52",
+  SC_CELL = "SC_CELL",
+  OTHER = "OTHER"
+}
+
 export interface FilterInterface extends EquipmentItemBaseInterface {
   type: FilterType;
   bandwidth: number;
-  size: number;
+  size: FilterSize;
+  otherSize: number;
 }
 
 export function instanceOfFilter(object: EquipmentItemBaseInterface): object is FilterInterface {

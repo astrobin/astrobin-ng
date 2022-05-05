@@ -111,7 +111,7 @@ export const testFilter = {
   image: null,
   type: "L",
   bandwidth: 12,
-  size: 31
+  size: "ROUND_1_25_IN"
 };
 
 export const testAccessory = {
