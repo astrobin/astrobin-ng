@@ -21,7 +21,7 @@ import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { SensorInterface } from "@features/equipment/types/sensor.interface";
 import { MountInterface } from "@features/equipment/types/mount.interface";
 import { MountDisplayProperty, MountService } from "@features/equipment/services/mount.service";
-import { FilterInterface } from "@features/equipment/types/filter.interface";
+import { FilterInterface, FilterSize } from "@features/equipment/types/filter.interface";
 import { FilterDisplayProperty, FilterService } from "@features/equipment/services/filter.service";
 import { AccessoryInterface } from "@features/equipment/types/accessory.interface";
 import { SoftwareInterface } from "@features/equipment/types/software.interface";
@@ -341,7 +341,7 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
   private _filterProperties$(): Observable<EquipmentItemProperty[]> {
     const item: FilterInterface = this.item as FilterInterface;
 
-    return of([
+    const properties = [
       this.showClass
         ? {
             name: this.translateService.instant("Class"),
@@ -359,12 +359,17 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
       {
         name: this.filterService.getPrintablePropertyName(FilterDisplayProperty.SIZE, true),
         value: this.filterService.getPrintableProperty$(item, FilterDisplayProperty.SIZE)
-      },
-      {
+      }
+    ];
+
+    if (item.size === FilterSize.OTHER || item.size === null || item.size === undefined) {
+      properties.push({
         name: this.filterService.getPrintablePropertyName(FilterDisplayProperty.OTHER_SIZE, true),
         value: this.filterService.getPrintableProperty$(item, FilterDisplayProperty.OTHER_SIZE)
-      }
-    ]);
+      });
+    }
+
+    return of(properties);
   }
 
   private _accessoryProperties$(): Observable<EquipmentItemProperty[]> {
