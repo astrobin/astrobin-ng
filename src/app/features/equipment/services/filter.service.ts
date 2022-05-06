@@ -71,6 +71,7 @@ export class FilterService extends BaseService implements EquipmentItemServiceIn
       [FilterSize.ROUND_50_MM]: this.translateService.instant("Round") + " 50 mm",
       [FilterSize.ROUND_52_MM]: this.translateService.instant("Round") + " 52 mm",
       [FilterSize.ROUND_62_MM]: this.translateService.instant("Round") + " 62 mm",
+      [FilterSize.ROUND_65_MM]: this.translateService.instant("Round") + " 65 mm",
       [FilterSize.ROUND_67_MM]: this.translateService.instant("Round") + " 67 mm",
       [FilterSize.ROUND_72_MM]: this.translateService.instant("Round") + " 72 mm",
       [FilterSize.ROUND_77_MM]: this.translateService.instant("Round") + " 77 mm",
