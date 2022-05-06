@@ -97,5 +97,13 @@
       color: var(--lightestGrey) !important;
       background: var(--darkGrey) !important;
     }
+
+    &:not([id]):not(.ng-option-disabled) {
+      padding: 1rem 1rem !important;
+      background: var(--accentColor) !important;
+      margin: 2rem 1rem 1.75rem;
+      border-radius: .5rem !important;
+      text-align: center;
+    }
   }
 }
