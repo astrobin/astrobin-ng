@@ -68,7 +68,7 @@ export class FilterService extends BaseService implements EquipmentItemServiceIn
       [FilterSize.ROUND_50_MM]: this.translateService.instant("Round") + " 50 mm",
       [FilterSize.SQUARE_50_MM]: this.translateService.instant("Square") + " 50x50 mm",
       [FilterSize.SQUARE_65_MM]: this.translateService.instant("Square") + " 50x50 mm",
-      [FilterSize.EOS_APC_C]: "EOS APC C",
+      [FilterSize.EOS_APS_C]: "EOS APS-C",
       [FilterSize.EOS_FULL]: "EOS Full",
       [FilterSize.EOS_R]: "EOS R",
       [FilterSize.SONY]: "Sony",

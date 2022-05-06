@@ -37,7 +37,7 @@ export enum FilterSize {
   ROUND_50_MM = "ROUND_50_MM",
   SQUARE_50_MM = "SQUARE_50_MM",
   SQUARE_65_MM = "SQUARE_65_MM",
-  EOS_APC_C = "EOS_APC_C",
+  EOS_APS_C = "EOS_APS_C",
   EOS_FULL = "EOS_FULL",
   EOS_R = "EOS_R",
   SONY = "SONY",
