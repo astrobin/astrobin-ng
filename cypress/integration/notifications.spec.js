@@ -79,7 +79,7 @@ context("notifications", () => {
         cy.route("GET", "**/notifications/notification/get_unread_count", "0");
 
         cy.route({
-          method: "POST",
+          method: "PUT",
           url: "**/notifications/notification/mark_all_as_read",
           response: {},
           delay: 1000
