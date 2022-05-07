@@ -27,11 +27,11 @@ export class NotificationsApiService extends BaseClassicApiService {
   }
 
   markAllAsRead(): Observable<void> {
-    return this.http.post<void>(`${this.configUrl}/notification/mark_all_as_read/`, null);
+    return this.http.put<void>(`${this.configUrl}/notification/mark_all_as_read/`, null);
   }
 
   markAsReadByPathAndUser(path: string, fromUserPk: number): Observable<void> {
-    return this.http.post<void>(`${this.configUrl}/notification/mark-as-read-by-path-and-user/`, {
+    return this.http.put<void>(`${this.configUrl}/notification/mark-as-read-by-path-and-user/`, {
       path,
       fromUserPk
     });
