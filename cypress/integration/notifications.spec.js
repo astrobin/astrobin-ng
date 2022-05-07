@@ -57,6 +57,7 @@ context("notifications", () => {
 
       it("should fetch count again when marking a notification as read", () => {
         cy.route("GET", "**/notifications/notification/get_unread_count", "0");
+        cy.route("PUT", "**/notifications/notification/1/mark-as-read", "");
 
         cy.get("#notification-1 .read-icon").click();
         cy.get("#unread-notifications-count").should("not.exist");
