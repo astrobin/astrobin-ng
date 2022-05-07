@@ -51,12 +51,12 @@ describe("NotificationsPageComponent", () => {
 
       component.toggleRead(notification);
 
-      expect(component.notificationsService.markAsUnread).toHaveBeenCalledWith(notification);
+      expect(component.notificationsService.markAsRead).toHaveBeenCalledWith(notification, false);
 
       notification.read = false;
       component.toggleRead(notification);
 
-      expect(component.notificationsService.markAsRead).toHaveBeenCalledWith(notification);
+      expect(component.notificationsService.markAsRead).toHaveBeenCalledWith(notification, true);
     });
   });
 

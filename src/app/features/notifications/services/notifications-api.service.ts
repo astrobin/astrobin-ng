@@ -26,14 +26,6 @@ export class NotificationsApiService extends BaseClassicApiService {
     return this.http.get<number>(`${this.configUrl}/notification/get_unread_count/`);
   }
 
-  update(notification: NotificationInterface): Observable<void> {
-    if (!notification.extraTags) {
-      notification.extraTags = "-";
-    }
-
-    return this.http.put<void>(`${this.configUrl}/notification/${notification.id}/`, notification);
-  }
-
   markAllAsRead(): Observable<void> {
     return this.http.post<void>(`${this.configUrl}/notification/mark_all_as_read/`, null);
   }
@@ -43,6 +35,10 @@ export class NotificationsApiService extends BaseClassicApiService {
       path,
       fromUserPk
     });
+  }
+
+  markAsRead(notificationId: NotificationInterface["id"], read: boolean): Observable<void> {
+    return this.http.put<void>(`${this.configUrl}/notification/${notificationId}/mark-as-read/`, { read });
   }
 
   getTypes(): Observable<NotificationTypeInterface[]> {

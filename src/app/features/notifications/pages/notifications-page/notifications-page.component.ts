@@ -50,10 +50,8 @@ export class NotificationsPageComponent extends BaseComponentDirective implement
   }
 
   toggleRead(notification: NotificationInterface): void {
-    const method = notification.read ? this.notificationsService.markAsUnread : this.notificationsService.markAsRead;
-
-    method
-      .call(this.notificationsService, notification)
+    this.notificationsService
+      .markAsRead(notification, !notification.read)
       .pipe(take(1))
       .subscribe();
   }
@@ -94,7 +92,7 @@ export class NotificationsPageComponent extends BaseComponentDirective implement
 
         if (!notification.read) {
           this.notificationsService
-            .markAsRead(notification)
+            .markAsRead(notification, true)
             .pipe(take(1))
             .subscribe();
         }
