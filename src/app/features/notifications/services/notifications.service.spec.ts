@@ -49,24 +49,11 @@ describe("NotificationsService", () => {
         const notification = NotificationInterfaceGenerator.notification();
         notification.read = false;
 
-        service.markAsRead(notification).subscribe(value => {
+        jest.spyOn(service.api, "markAsRead").mockReturnValue(of(void 0));
+
+        service.markAsRead(notification, true).subscribe(value => {
           expect(notification.read).toBe(true);
-          expect(service.api.update).toHaveBeenCalledWith(notification);
-        });
-      })
-    );
-  });
-
-  describe("markAsUnRead", () => {
-    it(
-      "should call the API",
-      waitForAsync(() => {
-        const notification = NotificationInterfaceGenerator.notification();
-        notification.read = true;
-
-        service.markAsUnread(notification).subscribe(value => {
-          expect(notification.read).toBe(false);
-          expect(service.api.update).toHaveBeenCalledWith(notification);
+          expect(service.api.markAsRead).toHaveBeenCalledWith(notification.id, true);
         });
       })
     );

@@ -59,19 +59,10 @@ export class NotificationsService extends BaseService implements NotificationSer
     );
   }
 
-  markAsRead(notification: NotificationInterface): Observable<void> {
+  markAsRead(notification: NotificationInterface, read: boolean): Observable<void> {
     this.loadingSubject.next(true);
-    notification.read = true;
-    return this.api.update(notification).pipe(
-      tap(() => this.loadingSubject.next(false)),
-      tap(() => this.refresh(this._lastPage))
-    );
-  }
-
-  markAsUnread(notification: NotificationInterface): Observable<void> {
-    this.loadingSubject.next(true);
-    notification.read = false;
-    return this.api.update(notification).pipe(
+    notification.read = read;
+    return this.api.markAsRead(notification.id, read).pipe(
       tap(() => this.loadingSubject.next(false)),
       tap(() => this.refresh(this._lastPage))
     );

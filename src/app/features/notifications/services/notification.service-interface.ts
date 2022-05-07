@@ -8,9 +8,7 @@ export interface NotificationServiceInterface {
 
   getUnreadCount(): Observable<number>;
 
-  markAsRead(NotificationInterface): Observable<void>;
-
-  markAsUnread(NotificationInterface): Observable<void>;
+  markAsRead(NotificationInterface, read: boolean): Observable<void>;
 
   markAllAsRead(): Observable<void>;
 }
