@@ -76,7 +76,9 @@ export class TelescopeService extends BaseService implements EquipmentItemServic
       ),
 
       [TelescopeType.CAMERA_LENS]: this.translateService.instant("Camera lens"),
-      [TelescopeType.BINOCULARS]: this.translateService.instant("Binoculars")
+      [TelescopeType.BINOCULARS]: this.translateService.instant("Binoculars"),
+
+      [TelescopeType.OTHER]: this.translateService.instant("Other")
     };
 
     return map[type];

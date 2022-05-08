@@ -32,7 +32,9 @@ export enum TelescopeType {
   CATADIOPTRIC_MODIFIED_HARMER_WYNNE = "CATADIOPTRIC_MODIFIED_HARMER_WYNNE",
 
   CAMERA_LENS = "CAMERA_LENS",
-  BINOCULARS = "BINOCULARS"
+  BINOCULARS = "BINOCULARS",
+
+  OTHER = "OTHER"
 }
 
 export interface TelescopeInterface extends EquipmentItemBaseInterface {
