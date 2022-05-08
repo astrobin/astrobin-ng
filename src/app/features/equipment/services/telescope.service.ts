@@ -35,6 +35,7 @@ export class TelescopeService extends BaseService implements EquipmentItemServic
         "Refractor: non-acrhmatic Keplerian"
       ),
       [TelescopeType.REFRACTOR_SUPERACHROMAT]: this.translateService.instant("Refractor: superachromat"),
+      [TelescopeType.REFRACTOR_PETZVAL]: this.translateService.instant("Refractor: Petzval"),
 
       [TelescopeType.REFLECTOR_DALL_KIRKHAM]: this.translateService.instant("Reflector: Dall-Kirkham"),
       [TelescopeType.REFLECTOR_NASMYTH]: this.translateService.instant("Reflector: Nasmyth"),
