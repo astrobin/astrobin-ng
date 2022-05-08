@@ -44,6 +44,7 @@ export class TelescopeService extends BaseService implements EquipmentItemServic
       [TelescopeType.REFLECTOR_HERSCHELLIAN]: this.translateService.instant("Reflector: Herschellian"),
       [TelescopeType.REFLECTOR_NEWTONIAN]: this.translateService.instant("Reflector: Newtonian"),
       [TelescopeType.REFLECTOR_DOBSONIAN]: this.translateService.instant("Reflector: Dobsonian"),
+      [TelescopeType.REFLECTOR_CLASSICAL_CASSEGRAIN]: this.translateService.instant("Reflector: classical Cassegrain"),
 
       [TelescopeType.CATADIOPTRIC_ARGUNOV_CASSEGRAIN]: this.translateService.instant(
         "Catadioptric: Argunov-Cassegrain"
