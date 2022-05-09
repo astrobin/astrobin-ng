@@ -51,7 +51,7 @@ export class SensorService extends BaseService implements EquipmentItemServiceIn
     item: SensorInterface,
     property: SensorDisplayProperty,
     propertyValue?: any
-  ): Observable<string> {
+  ): Observable<string | null> {
     switch (property) {
       case SensorDisplayProperty.PIXEL_SIZE:
         propertyValue = parseFloat(propertyValue);

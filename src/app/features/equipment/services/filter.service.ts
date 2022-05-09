@@ -112,7 +112,7 @@ export class FilterService extends BaseService implements EquipmentItemServiceIn
     item: FilterInterface,
     property: FilterDisplayProperty,
     propertyValue?: any
-  ): Observable<string> {
+  ): Observable<string | null> {
     switch (property) {
       case FilterDisplayProperty.TYPE:
         return of(this.humanizeType(propertyValue || item.type));

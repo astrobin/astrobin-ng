@@ -29,7 +29,7 @@ export class SoftwareService extends BaseService implements EquipmentItemService
     item: SoftwareInterface,
     property: SoftwareDisplayProperty,
     propertyValue?: any
-  ): Observable<string> {
+  ): Observable<string | null> {
     throw Error(`Invalid property: ${property}`);
   }
 
