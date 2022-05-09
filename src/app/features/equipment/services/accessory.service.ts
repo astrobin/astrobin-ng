@@ -29,7 +29,7 @@ export class AccessoryService extends BaseService implements EquipmentItemServic
     item: AccessoryInterface,
     property: AccessoryDisplayProperty,
     propertyValue?: any
-  ): Observable<string> {
+  ): Observable<string | null> {
     throw Error(`Invalid property: ${property}`);
   }
 

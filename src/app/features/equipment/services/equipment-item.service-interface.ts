@@ -6,7 +6,11 @@ export interface EquipmentItemServiceInterface {
 
   getSupportedPrintableProperties(): string[];
 
-  getPrintableProperty$(item: EquipmentItemBaseInterface, propertyName: any, propertyValue?: any): Observable<string>;
+  getPrintableProperty$(
+    item: EquipmentItemBaseInterface,
+    propertyName: any,
+    propertyValue?: any
+  ): Observable<string | null>;
 
   getPrintablePropertyName(propertyName: any, shortForm: boolean): string;
 }

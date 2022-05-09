@@ -99,7 +99,7 @@ export class TelescopeService extends BaseService implements EquipmentItemServic
     item: TelescopeInterface,
     property: TelescopeDisplayProperty,
     propertyValue?: any
-  ): Observable<string> {
+  ): Observable<string | null> {
     switch (property) {
       case TelescopeDisplayProperty.TYPE:
         return of(this.humanizeType(propertyValue || item.type));

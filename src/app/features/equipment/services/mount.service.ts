@@ -56,14 +56,17 @@ export class MountService extends BaseService implements EquipmentItemServiceInt
       MountDisplayProperty.TRACKING_ACCURACY,
       MountDisplayProperty.PEC,
       MountDisplayProperty.WEIGHT,
-      ,
       MountDisplayProperty.MAX_PAYLOAD,
       MountDisplayProperty.COMPUTERIZED,
       MountDisplayProperty.SLEW_SPEED
     ];
   }
 
-  getPrintableProperty$(item: MountInterface, property: MountDisplayProperty, propertyValue?: any): Observable<string> {
+  getPrintableProperty$(
+    item: MountInterface,
+    property: MountDisplayProperty,
+    propertyValue?: any
+  ): Observable<string | null> {
     let result: string;
 
     switch (property) {
@@ -75,8 +78,12 @@ export class MountService extends BaseService implements EquipmentItemServiceInt
         result = propertyValue || item.trackingAccuracy ? `${propertyValue || item.trackingAccuracy} arcsec` : "";
         break;
       case MountDisplayProperty.PEC:
-        const value = propertyValue !== undefined ? propertyValue : item.pec;
-        result = this.utilsService.yesNo(value);
+        const pecValue = propertyValue !== undefined ? propertyValue : item.pec;
+        if (pecValue === null || pecValue === undefined) {
+          result = null;
+        } else {
+          result = this.utilsService.yesNo(pecValue);
+        }
         break;
       case MountDisplayProperty.WEIGHT:
         propertyValue = parseFloat(propertyValue);
@@ -87,7 +94,12 @@ export class MountService extends BaseService implements EquipmentItemServiceInt
         result = propertyValue || item.maxPayload ? `${propertyValue || item.maxPayload} kg` : "";
         break;
       case MountDisplayProperty.COMPUTERIZED:
-        result = this.utilsService.yesNo(propertyValue !== undefined ? propertyValue : item.computerized);
+        const computerizedValue = propertyValue !== undefined ? propertyValue : item.computerized;
+        if (computerizedValue === null || computerizedValue === undefined) {
+          result = null;
+        } else {
+          result = this.utilsService.yesNo(computerizedValue);
+        }
         break;
       case MountDisplayProperty.SLEW_SPEED:
         propertyValue = parseFloat(propertyValue);

@@ -72,7 +72,7 @@ export class CameraService extends BaseService implements EquipmentItemServiceIn
     item: CameraInterface,
     property: CameraDisplayProperty | string,
     propertyValue?: any
-  ): Observable<string> {
+  ): Observable<string | null> {
     switch (property) {
       case "NAME":
         return of(item.modified ? `${item.name} ${this.translateService.instant("(modified)")}` : item.name);
@@ -101,22 +101,31 @@ export class CameraService extends BaseService implements EquipmentItemServiceIn
           )
         );
       case CameraDisplayProperty.COOLED:
-        return of(this.utilsService.yesNo(propertyValue !== undefined ? propertyValue : item.cooled));
+        const cooledValue = propertyValue !== undefined ? propertyValue : item.cooled;
+        if (cooledValue === undefined || cooledValue === null) {
+          return of(null);
+        }
+        return of(this.utilsService.yesNo(cooledValue));
       case CameraDisplayProperty.MAX_COOLING:
         return of(propertyValue || item.maxCooling ? `${propertyValue || item.maxCooling} &deg;C` : "");
       case CameraDisplayProperty.BACK_FOCUS:
         propertyValue = parseFloat(propertyValue);
         return of(propertyValue || item.backFocus ? `${propertyValue || item.backFocus} mm` : "");
       case CameraDisplayProperty.MODIFIED:
-        return of(this.utilsService.yesNo(propertyValue !== undefined ? propertyValue : item.modified));
+        const modifiedValue = propertyValue !== undefined ? propertyValue : item.modified;
+        if (modifiedValue === undefined || modifiedValue === null) {
+          return of(null);
+        }
+        return of(this.utilsService.yesNo(modifiedValue));
       case CameraDisplayProperty.CREATE_MODIFIED_VARIANT:
-        return of(
-          this.utilsService.yesNo(
-            propertyValue !== undefined
-              ? propertyValue
-              : ((item as unknown) as EditProposalInterface<CameraInterface>).createModifiedVariant
-          )
-        );
+        const createModifiedVariantValue =
+          propertyValue !== undefined
+            ? propertyValue
+            : ((item as unknown) as EditProposalInterface<CameraInterface>).createModifiedVariant;
+        if (createModifiedVariantValue === undefined || createModifiedVariantValue === null) {
+          return of(null);
+        }
+        return of(this.utilsService.yesNo(createModifiedVariantValue));
       default:
         throw Error(`Invalid property: ${property}`);
     }
