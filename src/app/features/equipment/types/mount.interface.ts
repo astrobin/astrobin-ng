@@ -13,6 +13,7 @@ export enum MountType {
   TRANSIT = "TRANSIT",
   HEXAPOD = "HEXAPOD",
   DUAL_ALT_AZ_EQ = "DUAL_ALT_AZ_EQ",
+  TRIPOD = "TRIPOD",
   OTHER = "OTHER"
 }
 

@@ -43,6 +43,7 @@ export class MountService extends BaseService implements EquipmentItemServiceInt
       [MountType.TRANSIT]: this.translateService.instant("Transit"),
       [MountType.HEXAPOD]: this.translateService.instant("Hexapod"),
       [MountType.DUAL_ALT_AZ_EQ]: this.translateService.instant("Dual Alt-Az/Equatorial"),
+      [MountType.TRIPOD]: this.translateService.instant("Tripod"),
       [MountType.OTHER]: this.translateService.instant("Other")
     };
 
