@@ -596,7 +596,8 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     return {
       ...item,
       ...{
-        aperture: item.slewSpeed !== null ? parseFloat((item.slewSpeed as unknown) as string) : null
+        weight: item.weight !== null ? parseFloat((item.weight as unknown) as string) : null,
+        maxPayload: item.maxPayload !== null ? parseFloat((item.maxPayload as unknown) as string) : null
       }
     };
   }

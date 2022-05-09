@@ -11,6 +11,7 @@ export enum MountDisplayProperty {
   TYPE = "TYPE",
   TRACKING_ACCURACY = "TRACKING_ACCURACY",
   PEC = "PEC",
+  WEIGHT = "WEIGHT",
   MAX_PAYLOAD = "MAX_PAYLOAD",
   COMPUTERIZED = "COMPUTERIZED",
   SLEW_SPEED = "SLEW_SPEED"
@@ -53,6 +54,8 @@ export class MountService extends BaseService implements EquipmentItemServiceInt
       MountDisplayProperty.TYPE,
       MountDisplayProperty.TRACKING_ACCURACY,
       MountDisplayProperty.PEC,
+      MountDisplayProperty.WEIGHT,
+      ,
       MountDisplayProperty.MAX_PAYLOAD,
       MountDisplayProperty.COMPUTERIZED,
       MountDisplayProperty.SLEW_SPEED
@@ -60,25 +63,40 @@ export class MountService extends BaseService implements EquipmentItemServiceInt
   }
 
   getPrintableProperty$(item: MountInterface, property: MountDisplayProperty, propertyValue?: any): Observable<string> {
+    let result: string;
+
     switch (property) {
       case MountDisplayProperty.TYPE:
-        return of(this.humanizeType(propertyValue || item.type));
+        result = this.humanizeType(propertyValue || item.type);
+        break;
       case MountDisplayProperty.TRACKING_ACCURACY:
         propertyValue = parseInt(propertyValue, 10);
-        return of(propertyValue || item.trackingAccuracy ? `${propertyValue || item.trackingAccuracy} arcsec` : "");
+        result = propertyValue || item.trackingAccuracy ? `${propertyValue || item.trackingAccuracy} arcsec` : "";
+        break;
       case MountDisplayProperty.PEC:
-        return of(this.utilsService.yesNo(propertyValue !== undefined ? propertyValue : item.pec));
+        const value = propertyValue !== undefined ? propertyValue : item.pec;
+        result = this.utilsService.yesNo(value);
+        break;
+      case MountDisplayProperty.WEIGHT:
+        propertyValue = parseFloat(propertyValue);
+        result = propertyValue || item.weight ? `${propertyValue || item.weight} kg` : "";
+        break;
       case MountDisplayProperty.MAX_PAYLOAD:
-        propertyValue = parseInt(propertyValue, 10);
-        return of(propertyValue || item.maxPayload ? `${propertyValue || item.maxPayload} kg` : "");
+        propertyValue = parseFloat(propertyValue);
+        result = propertyValue || item.maxPayload ? `${propertyValue || item.maxPayload} kg` : "";
+        break;
       case MountDisplayProperty.COMPUTERIZED:
-        return of(this.utilsService.yesNo(propertyValue !== undefined ? propertyValue : item.computerized));
+        result = this.utilsService.yesNo(propertyValue !== undefined ? propertyValue : item.computerized);
+        break;
       case MountDisplayProperty.SLEW_SPEED:
         propertyValue = parseFloat(propertyValue);
-        return of(propertyValue || item.slewSpeed ? `${propertyValue || item.slewSpeed} deg/sec` : "");
+        result = propertyValue || item.slewSpeed ? `${propertyValue || item.slewSpeed} deg/sec` : "";
+        break;
       default:
         throw Error(`Invalid property: ${property}`);
     }
+
+    return of(result);
   }
 
   getPrintablePropertyName(propertyName: MountDisplayProperty, shortForm = false): string {
@@ -93,6 +111,8 @@ export class MountService extends BaseService implements EquipmentItemServiceInt
         return shortForm
           ? this.translateService.instant("PEC")
           : this.translateService.instant("Periodic error correction");
+      case MountDisplayProperty.WEIGHT:
+        return shortForm ? this.translateService.instant("Weight") : this.translateService.instant("Weight") + " (kg)";
       case MountDisplayProperty.MAX_PAYLOAD:
         return shortForm
           ? this.translateService.instant("Max. payload")

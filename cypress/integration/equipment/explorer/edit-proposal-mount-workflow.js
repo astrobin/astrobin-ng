@@ -48,6 +48,7 @@ context("Equipment", () => {
       cy.get("#equipment-item-field-name").should("have.value", testMount.name);
       cy.ngSelectValueShouldContain("#mount-field-type", "German equatorial");
       cy.get("#mount-field-max-payload").should("have.value", testMount.maxPayload);
+      cy.get("#mount-field-weight").should("have.value", testMount.weight);
     });
 
     it("should the comment field", () => {

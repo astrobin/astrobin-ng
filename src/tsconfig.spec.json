@@ -1,4 +1,6 @@
 {
+  "sourceMaps": true,
+  "inlineSourceMaps": true,
   "extends": "../tsconfig.json",
   "compilerOptions": {
     "outDir": "../out-tsc/spec",

@@ -18,24 +18,27 @@ describe("FilterService", () => {
   });
 
   describe("getPrintableProperty", () => {
-    it("should work for 'type'", () => {
+    it("should work for 'type'", done => {
       const filter = FilterGenerator.filter({ type: FilterType.L });
       service.getPrintableProperty$(filter, FilterDisplayProperty.TYPE).subscribe(value => {
         expect(value).toEqual("Luminance/clear (L)");
+        done();
       });
     });
 
-    it("should work for 'bandwidth'", () => {
+    it("should work for 'bandwidth'", done => {
       const filter = FilterGenerator.filter({ bandwidth: 3 });
       service.getPrintableProperty$(filter, FilterDisplayProperty.BANDWIDTH).subscribe(value => {
         expect(value).toEqual("3 nm");
+        done();
       });
     });
 
-    it("should work for 'size'", () => {
+    it("should work for 'size'", done => {
       const filter = FilterGenerator.filter({ size: FilterSize.ROUND_1_25_IN });
       service.getPrintableProperty$(filter, FilterDisplayProperty.SIZE).subscribe(value => {
         expect(value).toEqual(`Round 1.25"`);
+        done();
       });
     });
   });

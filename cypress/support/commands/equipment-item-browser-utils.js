@@ -93,6 +93,7 @@ export const testMount = {
   name: "Test mount",
   image: null,
   type: "GERMAN_EQUATORIAL",
+  weight: 50,
   maxPayload: 80
 };
 

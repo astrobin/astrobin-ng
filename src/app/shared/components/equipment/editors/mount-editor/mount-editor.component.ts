@@ -84,6 +84,37 @@ export class MountEditorComponent extends BaseItemEditorComponent<MountInterface
         }
       },
       {
+        key: "weight",
+        type: "input",
+        wrappers: ["default-wrapper"],
+        id: "mount-field-weight",
+        expressionProperties: {
+          "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+        },
+        templateOptions: {
+          type: "number",
+          step: 1,
+          label: this.mountService.getPrintablePropertyName(MountDisplayProperty.WEIGHT)
+        },
+        validators: {
+          validation: [
+            "number",
+            {
+              name: "min-value",
+              options: {
+                minValue: 1
+              }
+            },
+            {
+              name: "max-decimals",
+              options: {
+                value: 2
+              }
+            }
+          ]
+        }
+      },
+      {
         key: "maxPayload",
         type: "input",
         wrappers: ["default-wrapper"],

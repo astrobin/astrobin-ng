@@ -18,36 +18,43 @@ describe("TelescopeService", () => {
   });
 
   describe("getPrintableProperty", () => {
-    it("should work for 'type'", () => {
+    it("should work for 'type'", done => {
       const telescope = TelescopeGenerator.telescope({ type: TelescopeType.REFRACTOR_ACHROMATIC });
       service.getPrintableProperty$(telescope, TelescopeDisplayProperty.TYPE).subscribe(value => {
         expect(value).toEqual("Refractor: achromatic");
+        done();
       });
     });
 
-    it("should work for 'aperture'", () => {
+    it("should work for 'aperture'", done => {
       const telescope = TelescopeGenerator.telescope({ aperture: 50 });
       service.getPrintableProperty$(telescope, TelescopeDisplayProperty.APERTURE).subscribe(value => {
         expect(value).toEqual("50 mm");
+        done();
       });
     });
 
-    it("should work for 'focalLength'", () => {
-      let telescope = TelescopeGenerator.telescope({ minFocalLength: 50, maxFocalLength: 200 });
+    it("should work for 'focalLength'", done => {
+      const telescope = TelescopeGenerator.telescope({ minFocalLength: 50, maxFocalLength: 200 });
       service.getPrintableProperty$(telescope, TelescopeDisplayProperty.FOCAL_LENGTH).subscribe(value => {
         expect(value).toEqual("50 - 200 mm");
-      });
-
-      telescope = TelescopeGenerator.telescope({ minFocalLength: 50, maxFocalLength: 50 });
-      service.getPrintableProperty$(telescope, TelescopeDisplayProperty.FOCAL_LENGTH).subscribe(value => {
-        expect(value).toEqual("50 mm");
+        done();
       });
     });
 
-    it("should work for 'weight'", () => {
+    it("should work for variable 'focalLength'", done => {
+      const telescope = TelescopeGenerator.telescope({ minFocalLength: 50, maxFocalLength: 50 });
+      service.getPrintableProperty$(telescope, TelescopeDisplayProperty.FOCAL_LENGTH).subscribe(value => {
+        expect(value).toEqual("50 mm");
+        done();
+      });
+    });
+
+    it("should work for 'weight'", done => {
       const telescope = TelescopeGenerator.telescope({ weight: 50 });
       service.getPrintableProperty$(telescope, TelescopeDisplayProperty.WEIGHT).subscribe(value => {
         expect(value).toEqual("50 kg");
+        done();
       });
     });
   });

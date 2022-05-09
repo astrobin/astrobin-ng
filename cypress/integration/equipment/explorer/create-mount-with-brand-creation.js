@@ -35,6 +35,10 @@ context("Equipment", () => {
         cy.ngSelectValueShouldContain("#mount-field-type", "Alt-Az (altazimuth)");
       });
 
+      it("should input the 'Weight'", () => {
+        cy.get("#mount-field-weight").type("50");
+      });
+
       it("should input the 'Max. payload'", () => {
         cy.get("#mount-field-max-payload").type("80");
       });
@@ -51,6 +55,7 @@ context("Equipment", () => {
         cy.equipmentItemSummaryShouldHaveItem(".modal", "Test brand", "Test");
         cy.equipmentItemSummaryShouldHaveProperty(".modal", "Class", "Mount");
         cy.equipmentItemSummaryShouldHaveProperty(".modal", "Type", "Alt-Az (altazimuth)");
+        cy.equipmentItemSummaryShouldHaveProperty(".modal", "Weight", "50 kg");
         cy.equipmentItemSummaryShouldHaveProperty(".modal", "Max. payload", "80 kg");
 
         cy.get(".modal-footer .btn-danger").click();

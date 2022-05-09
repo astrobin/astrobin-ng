@@ -306,6 +306,10 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
         value: this.mountService.getPrintableProperty$(item, MountDisplayProperty.TYPE)
       },
       {
+        name: this.mountService.getPrintablePropertyName(MountDisplayProperty.WEIGHT, true),
+        value: this.mountService.getPrintableProperty$(item, MountDisplayProperty.WEIGHT)
+      },
+      {
         name: this.mountService.getPrintablePropertyName(MountDisplayProperty.MAX_PAYLOAD, true),
         value: this.mountService.getPrintableProperty$(item, MountDisplayProperty.MAX_PAYLOAD)
       },

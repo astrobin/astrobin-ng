@@ -18,6 +18,7 @@ export enum MountType {
 
 export interface MountInterface extends EquipmentItemBaseInterface {
   type: MountType;
+  weight: number;
   maxPayload: number;
   computerized: boolean;
   trackingAccuracy: number;
