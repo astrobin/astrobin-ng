@@ -9,7 +9,7 @@ import { UtilsService } from "@shared/services/utils/utils.service";
 
 export enum MountDisplayProperty {
   TYPE = "TYPE",
-  TRACKING_ACCURACY = "TRACKING_ACCURACY",
+  PERIODIC_ERROR = "PERIODIC_ERROR",
   PEC = "PEC",
   WEIGHT = "WEIGHT",
   MAX_PAYLOAD = "MAX_PAYLOAD",
@@ -53,7 +53,7 @@ export class MountService extends BaseService implements EquipmentItemServiceInt
   getSupportedPrintableProperties(): string[] {
     return [
       MountDisplayProperty.TYPE,
-      MountDisplayProperty.TRACKING_ACCURACY,
+      MountDisplayProperty.PERIODIC_ERROR,
       MountDisplayProperty.PEC,
       MountDisplayProperty.WEIGHT,
       MountDisplayProperty.MAX_PAYLOAD,
@@ -73,9 +73,9 @@ export class MountService extends BaseService implements EquipmentItemServiceInt
       case MountDisplayProperty.TYPE:
         result = this.humanizeType(propertyValue || item.type);
         break;
-      case MountDisplayProperty.TRACKING_ACCURACY:
+      case MountDisplayProperty.PERIODIC_ERROR:
         propertyValue = parseInt(propertyValue, 10);
-        result = propertyValue || item.trackingAccuracy ? `${propertyValue || item.trackingAccuracy} arcsec` : "";
+        result = propertyValue || item.periodicError ? `${propertyValue || item.periodicError} arcsec` : "";
         break;
       case MountDisplayProperty.PEC:
         const pecValue = propertyValue !== undefined ? propertyValue : item.pec;
@@ -116,10 +116,10 @@ export class MountService extends BaseService implements EquipmentItemServiceInt
     switch (propertyName) {
       case MountDisplayProperty.TYPE:
         return this.translateService.instant("Type");
-      case MountDisplayProperty.TRACKING_ACCURACY:
+      case MountDisplayProperty.PERIODIC_ERROR:
         return shortForm
-          ? this.translateService.instant("Tracking accuracy")
-          : this.translateService.instant("Tracking accuracy") + " (arcsec)";
+          ? this.translateService.instant("Periodic error")
+          : this.translateService.instant("Periodic error") + " (arcsec)";
       case MountDisplayProperty.PEC:
         return shortForm
           ? this.translateService.instant("PEC")

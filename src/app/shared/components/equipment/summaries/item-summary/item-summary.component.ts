@@ -324,8 +324,8 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
         ...properties,
         ...[
           {
-            name: this.mountService.getPrintablePropertyName(MountDisplayProperty.TRACKING_ACCURACY, true),
-            value: this.mountService.getPrintableProperty$(item, MountDisplayProperty.TRACKING_ACCURACY)
+            name: this.mountService.getPrintablePropertyName(MountDisplayProperty.PERIODIC_ERROR, true),
+            value: this.mountService.getPrintableProperty$(item, MountDisplayProperty.PERIODIC_ERROR)
           },
           {
             name: this.mountService.getPrintablePropertyName(MountDisplayProperty.PEC, true),
