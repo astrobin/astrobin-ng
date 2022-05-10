@@ -22,7 +22,7 @@ export interface MountInterface extends EquipmentItemBaseInterface {
   weight: number;
   maxPayload: number;
   computerized: boolean;
-  trackingAccuracy: number;
+  periodicError: number;
   pec: boolean;
   slewSpeed: number;
 }

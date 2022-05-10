@@ -27,9 +27,9 @@ describe("MountService", () => {
       });
     });
 
-    it("should work for 'trackingAccuracy'", done => {
-      const mount = MountGenerator.mount({ trackingAccuracy: 3 });
-      service.getPrintableProperty$(mount, MountDisplayProperty.TRACKING_ACCURACY).subscribe(value => {
+    it("should work for 'periodicError'", done => {
+      const mount = MountGenerator.mount({ periodicError: 3 });
+      service.getPrintableProperty$(mount, MountDisplayProperty.PERIODIC_ERROR).subscribe(value => {
         expect(value).toEqual("3 arcsec");
         done();
       });

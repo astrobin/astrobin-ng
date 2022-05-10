@@ -153,10 +153,10 @@ export class MountEditorComponent extends BaseItemEditorComponent<MountInterface
         }
       },
       {
-        key: "trackingAccuracy",
+        key: "periodicError",
         type: "input",
         wrappers: ["default-wrapper"],
-        id: "mount-field-tracking-accuracy",
+        id: "mount-field-periodic-error",
         hideExpression: () => !this.model.computerized,
         expressionProperties: {
           "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
@@ -164,7 +164,7 @@ export class MountEditorComponent extends BaseItemEditorComponent<MountInterface
         templateOptions: {
           type: "number",
           step: 1,
-          label: this.mountService.getPrintablePropertyName(MountDisplayProperty.TRACKING_ACCURACY)
+          label: this.mountService.getPrintablePropertyName(MountDisplayProperty.PERIODIC_ERROR)
         },
         validators: {
           validation: [
@@ -172,7 +172,13 @@ export class MountEditorComponent extends BaseItemEditorComponent<MountInterface
             {
               name: "min-value",
               options: {
-                minValue: 1
+                minValue: 0
+              }
+            },
+            {
+              name: "max-decimals",
+              options: {
+                value: 2
               }
             }
           ]

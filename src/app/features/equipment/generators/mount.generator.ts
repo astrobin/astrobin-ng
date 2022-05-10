@@ -15,7 +15,7 @@ export class MountGenerator {
       website: source.website || "https://www.test-mount.com",
       image: source.image || "https://cdn.astrobin.com/images/foo.jpg",
       type: source.type || MountType.GERMAN_EQUATORIAL,
-      trackingAccuracy: source.trackingAccuracy || 1,
+      periodicError: source.periodicError || 1,
       pec: source.pec !== null && source.pec !== undefined ? source.pec : true,
       weight: source.weight || 50,
       maxPayload: source.maxPayload || 450,
