@@ -7,7 +7,7 @@ import { CameraInterface, instanceOfCamera } from "@features/equipment/types/cam
 import { TranslateService } from "@ngx-translate/core";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
-import { TelescopeInterface } from "@features/equipment/types/telescope.interface";
+import { TelescopeInterface, TelescopeType } from "@features/equipment/types/telescope.interface";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { filter, map, take, takeWhile, tap } from "rxjs/operators";
 import { CameraDisplayProperty, CameraService } from "@features/equipment/services/camera.service";
@@ -265,29 +265,37 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
   private _telescopeProperties$(): Observable<EquipmentItemProperty[]> {
     const item: TelescopeInterface = this.item as TelescopeInterface;
 
+    const class_ = {
+      name: this.translateService.instant("Class"),
+      value: this.translateService.stream("Telescope")
+    };
+
+    const type_ = {
+      name: this.telescopeService.getPrintablePropertyName(TelescopeDisplayProperty.TYPE, true),
+      value: this.telescopeService.getPrintableProperty$(item, TelescopeDisplayProperty.TYPE)
+    };
+
+    const aperture = {
+      name: this.telescopeService.getPrintablePropertyName(TelescopeDisplayProperty.APERTURE, true),
+      value: this.telescopeService.getPrintableProperty$(item, TelescopeDisplayProperty.APERTURE)
+    };
+
+    const focalLength = {
+      name: this.telescopeService.getPrintablePropertyName(TelescopeDisplayProperty.FOCAL_LENGTH, true),
+      value: this.telescopeService.getPrintableProperty$(item, TelescopeDisplayProperty.FOCAL_LENGTH)
+    };
+
+    const weight = {
+      name: this.telescopeService.getPrintablePropertyName(TelescopeDisplayProperty.WEIGHT, true),
+      value: this.telescopeService.getPrintableProperty$(item, TelescopeDisplayProperty.WEIGHT)
+    };
+
     return of([
-      this.showClass
-        ? {
-            name: this.translateService.instant("Class"),
-            value: this.translateService.stream("Telescope")
-          }
-        : null,
-      {
-        name: this.telescopeService.getPrintablePropertyName(TelescopeDisplayProperty.TYPE, true),
-        value: this.telescopeService.getPrintableProperty$(item, TelescopeDisplayProperty.TYPE)
-      },
-      {
-        name: this.telescopeService.getPrintablePropertyName(TelescopeDisplayProperty.APERTURE, true),
-        value: this.telescopeService.getPrintableProperty$(item, TelescopeDisplayProperty.APERTURE)
-      },
-      {
-        name: this.telescopeService.getPrintablePropertyName(TelescopeDisplayProperty.FOCAL_LENGTH, true),
-        value: this.telescopeService.getPrintableProperty$(item, TelescopeDisplayProperty.FOCAL_LENGTH)
-      },
-      {
-        name: this.telescopeService.getPrintablePropertyName(TelescopeDisplayProperty.WEIGHT, true),
-        value: this.telescopeService.getPrintableProperty$(item, TelescopeDisplayProperty.WEIGHT)
-      }
+      this.showClass ? class_ : null,
+      type_,
+      item.type !== TelescopeType.CAMERA_LENS ? aperture : null,
+      focalLength,
+      weight
     ]);
   }
 
