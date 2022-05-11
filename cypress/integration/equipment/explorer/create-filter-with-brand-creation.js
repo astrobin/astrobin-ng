@@ -60,7 +60,13 @@ context("Equipment", () => {
         cy.equipmentItemSummaryShouldHaveProperty(".modal", "Bandwidth", "3 nm");
         cy.equipmentItemSummaryShouldHaveProperty(".modal", "Size", 'Round 1.25"');
 
-        cy.get(".modal-footer .btn-danger").click();
+        cy.get("[for=confirm-no-typos]").click();
+        cy.get("[for=confirm-no-duplication]").click();
+        cy.get("[for=confirm-naming-convention]").click();
+        cy.get("[for=confirm-no-personal-information]").click();
+        cy.get(".modal-footer .btn")
+          .contains("Confirm")
+          .click();
 
         cy.wait("@createFilter");
 

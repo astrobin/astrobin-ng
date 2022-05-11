@@ -54,7 +54,12 @@ context("Equipment", () => {
         cy.route("GET", "**/api/v2/equipment/brand/1/", testBrand);
 
         cy.get("#create-new-item #create-new-item .btn-primary").click();
-        cy.get(".modal .btn")
+
+        cy.get("[for=confirm-no-typos]").click();
+        cy.get("[for=confirm-no-duplication]").click();
+        cy.get("[for=confirm-naming-convention]").click();
+        cy.get("[for=confirm-no-personal-information]").click();
+        cy.get(".modal-footer .btn")
           .contains("Confirm")
           .click();
 
@@ -90,7 +95,13 @@ context("Equipment", () => {
         cy.equipmentItemSummaryShouldHaveProperty(".modal", "Max. cooling", "20 °C");
         cy.equipmentItemSummaryShouldHaveProperty(".modal", "Back focus", "20 mm");
 
-        cy.get(".modal-footer .btn-danger").click();
+        cy.get("[for=confirm-no-typos]").click();
+        cy.get("[for=confirm-no-duplication]").click();
+        cy.get("[for=confirm-naming-convention]").click();
+        cy.get("[for=confirm-no-personal-information]").click();
+        cy.get(".modal-footer .btn")
+          .contains("Confirm")
+          .click();
 
         cy.wait("@createCamera");
 
