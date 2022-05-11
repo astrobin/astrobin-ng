@@ -164,7 +164,6 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
           type: "checkbox",
           wrappers: ["default-wrapper"],
           id: "camera-field-cooled",
-          defaultValue: false,
           expressionProperties: {
             "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
           },
