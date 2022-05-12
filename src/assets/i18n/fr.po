@@ -2044,8 +2044,8 @@ msgstr "Connexion impossible. Merci de vérifier vos identifiants et de réessay
 msgid "We found similar items from the same brand."
 msgstr "Nous avons trouvé des éléments similaires de la même marque."
 
-msgid "We found the following similar items from the same brand."
-msgstr "Nous avons trouvé les éléments similaires de la même marque."
+msgid "We found the following similar items from the same brand:"
+msgstr "Nous avons trouvé les éléments similaires de la même marque:"
 
 msgid ""
 "We found the following similar items. Click the correct one to use it, or "

@@ -21,6 +21,10 @@
     </div>
   </ng-container>
 
+  <div class="alert alert-info" *ngIf="othersInBrand.length > 0">
+    <astrobin-equipment-others-in-brand [items]="othersInBrand"></astrobin-equipment-others-in-brand>
+  </div>
+
   <form [formGroup]="form">
     <formly-form [fields]="fields" [form]="form" [model]="model"></formly-form>
   </form>

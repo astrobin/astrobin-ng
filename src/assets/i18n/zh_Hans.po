@@ -1893,8 +1893,8 @@ msgstr "无法登录。请检查您的凭据然后重试。"
 msgid "We found similar items from the same brand."
 msgstr "我们发现了相同品牌下另一个类似的项目。"
 
-msgid "We found the following similar items from the same brand."
-msgstr "我们发现了以下品牌中类似项目。"
+msgid "We found the following similar items from the same brand:"
+msgstr "我们发现了以下品牌中类似项目："
 
 msgid ""
 "We found the following similar items. Click the correct one to use it, or "

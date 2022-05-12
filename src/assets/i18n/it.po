@@ -2012,8 +2012,8 @@ msgstr ""
 msgid "We found similar items from the same brand."
 msgstr "Abbiamo trovato elementi simili dalla stessa marca."
 
-msgid "We found the following similar items from the same brand."
-msgstr "Abbiamo trovato i seguenti elementi simili della stessa marca."
+msgid "We found the following similar items from the same brand:"
+msgstr "Abbiamo trovato i seguenti elementi simili della stessa marca:"
 
 msgid ""
 "We found the following similar items. Click the correct one to use it, or "

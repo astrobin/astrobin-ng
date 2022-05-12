@@ -2056,8 +2056,8 @@ msgstr ""
 msgid "We found similar items from the same brand."
 msgstr "Wir haben ähnliche Modelle der gleichen Marke gefunden."
 
-msgid "We found the following similar items from the same brand."
-msgstr "Wir haben die folgenden ähnlichen Artikel der gleichen Marke gefunden."
+msgid "We found the following similar items from the same brand:"
+msgstr "Wir haben die folgenden ähnlichen Artikel der gleichen Marke gefunden:"
 
 msgid ""
 "We found the following similar items. Click the correct one to use it, or "
