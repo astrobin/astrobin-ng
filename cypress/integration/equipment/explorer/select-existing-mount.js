@@ -31,7 +31,6 @@ context("Equipment", () => {
 
         cy.ngSelectType("#equipment-item-field", "Test");
         cy.wait("@findMounts");
-        cy.wait("@getBrand");
 
         cy.ngSelectShouldHaveOptionsCount("#equipment-item-field", 2);
         cy.ngSelectOptionNumberSelectorShouldContain(

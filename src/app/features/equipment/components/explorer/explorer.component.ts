@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from "@angular/core";
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from "@angular/core";
 import { Action, Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
@@ -73,6 +73,9 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit 
 
   @Input()
   routingBasePath = "/equipment/explorer";
+
+  @Output()
+  valueChanged = new EventEmitter<EquipmentItemBaseInterface | EquipmentItemBaseInterface[] | null>();
 
   selectedItem: EquipmentItemBaseInterface | null = null;
 
@@ -249,6 +252,8 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit 
       this.setItem(item);
 
       this.location.replaceState(`${this.routingBasePath}/${this.activeType.toLowerCase()}/${item.id}/${slug}`);
+
+      this.valueChanged.emit(item);
     };
 
     if (item) {

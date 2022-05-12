@@ -8,6 +8,7 @@ import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { TitleService } from "@shared/services/title/title.service";
 import { TranslateService } from "@ngx-translate/core";
 import { EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
+import { WindowRefService } from "@shared/services/window-ref.service";
 
 @Component({
   selector: "astrobin-migration-explorer",
@@ -25,9 +26,10 @@ export class MigrationExplorerComponent extends ExplorerBaseComponent implements
     public readonly activatedRoute: ActivatedRoute,
     public readonly router: Router,
     public readonly titleService: TitleService,
-    public readonly translateService: TranslateService
+    public readonly translateService: TranslateService,
+    public readonly windowRefService: WindowRefService
   ) {
-    super(store$, actions$, activatedRoute, router);
+    super(store$, actions$, activatedRoute, router, windowRefService);
   }
 
   ngOnInit(): void {
@@ -59,4 +61,6 @@ export class MigrationExplorerComponent extends ExplorerBaseComponent implements
   _setActiveId() {
     this.activeId = parseInt(this.activatedRoute.snapshot.paramMap.get("itemId"), 10);
   }
+
+  getItems() {}
 }
