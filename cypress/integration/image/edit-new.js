@@ -385,7 +385,13 @@ context("Image edit (new)", () => {
     cy.equipmentItemSummaryShouldHaveItem(".modal", "Test brand", "Test camera");
     cy.equipmentItemSummaryShouldHaveProperty(".modal", "Class", "Camera");
     cy.equipmentItemSummaryShouldHaveProperty(".modal", "Type", "Dedicated deep-sky camera");
-    cy.get(".modal-footer .btn-danger").click();
+    cy.get("[for=confirm-no-typos]").click();
+    cy.get("[for=confirm-no-duplication]").click();
+    cy.get("[for=confirm-naming-convention]").click();
+    cy.get("[for=confirm-no-personal-information]").click();
+    cy.get(".modal-footer .btn")
+      .contains("Confirm")
+      .click();
     cy.wait("@createCamera");
     cy.equipmentItemBrowserShouldContain("#image-imaging-cameras-field", "Test brand", "Test camera");
   });

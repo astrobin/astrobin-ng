@@ -41,7 +41,13 @@ context("Equipment", () => {
         cy.equipmentItemSummaryShouldHaveItem(".modal", "Test brand", "Test");
         cy.equipmentItemSummaryShouldHaveProperty(".modal", "Class", "Software");
 
-        cy.get(".modal-footer .btn-danger").click();
+        cy.get("[for=confirm-no-typos]").click();
+        cy.get("[for=confirm-no-duplication]").click();
+        cy.get("[for=confirm-naming-convention]").click();
+        cy.get("[for=confirm-no-personal-information]").click();
+        cy.get(".modal-footer .btn")
+          .contains("Confirm")
+          .click();
 
         cy.wait("@createSoftware");
 

@@ -79,7 +79,13 @@ context("Equipment", () => {
         cy.equipmentItemSummaryShouldHaveProperty(".modal", "Aperture", "80 mm");
         cy.equipmentItemSummaryShouldHaveProperty(".modal", "Focal length", "800 - 1600 mm");
 
-        cy.get(".modal-footer .btn-danger").click();
+        cy.get("[for=confirm-no-typos]").click();
+        cy.get("[for=confirm-no-duplication]").click();
+        cy.get("[for=confirm-naming-convention]").click();
+        cy.get("[for=confirm-no-personal-information]").click();
+        cy.get(".modal-footer .btn")
+          .contains("Confirm")
+          .click();
 
         cy.wait("@createTelescope");
 
