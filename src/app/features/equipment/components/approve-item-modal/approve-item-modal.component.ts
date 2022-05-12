@@ -13,11 +13,15 @@ import {
   ApproveEquipmentItem,
   EquipmentActionTypes,
   FindSimilarInBrand,
-  FindSimilarInBrandSuccess
+  FindSimilarInBrandSuccess,
+  GetOthersInBrand,
+  GetOthersInBrandSuccess
 } from "@features/equipment/store/equipment.actions";
 import { Actions, ofType } from "@ngrx/effects";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 import { Observable } from "rxjs";
+import { FormlyFieldMessageLevel } from "@shared/services/formly-field.service";
+import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 
 @Component({
   selector: "astrobin-approve-item-modal",
@@ -38,6 +42,8 @@ export class ApproveItemModalComponent extends BaseComponentDirective implements
 
   similarItemsPreamble: string;
   similarItems$: Observable<EquipmentItemBaseInterface[]>;
+
+  othersInBrand: EquipmentItem[] = [];
 
   constructor(
     public readonly store$: Store<State>,
@@ -66,11 +72,27 @@ export class ApproveItemModalComponent extends BaseComponentDirective implements
     ];
 
     this.similarItemsPreamble =
-      this.translateService.instant("We found the following similar items from the same brand.") +
+      this.translateService.instant("Please DO NOT approve this item if it's a duplicate of another one!") +
       " " +
-      this.translateService.instant("Please DO NOT approve this item if it's a duplicate of another one!");
+      this.translateService.instant("We found the following similar items from the same brand:");
 
     this._findSimilarItems();
+
+    this.store$.dispatch(
+      new GetOthersInBrand({
+        brand: this.equipmentItem.brand,
+        type: this.equipmentItemService.getType(this.equipmentItem)
+      })
+    );
+    this.actions$
+      .pipe(
+        ofType(EquipmentActionTypes.GET_OTHERS_IN_BRAND_SUCCESS),
+        map((action: GetOthersInBrandSuccess) => action.payload.items),
+        take(1)
+      )
+      .subscribe(othersInBrand => {
+        this.othersInBrand = othersInBrand;
+      });
   }
 
   approve() {

@@ -1912,7 +1912,7 @@ msgstr ""
 msgid "We found similar items from the same brand."
 msgstr ""
 
-msgid "We found the following similar items from the same brand."
+msgid "We found the following similar items from the same brand:"
 msgstr ""
 
 msgid ""

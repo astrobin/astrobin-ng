@@ -2006,8 +2006,8 @@ msgstr "Не вдалося увійти до системи. Перевірте
 msgid "We found similar items from the same brand."
 msgstr "Ми знайшли схожі товари від тієї ж марки."
 
-msgid "We found the following similar items from the same brand."
-msgstr "Ми знайшли такі подібні товари від тієї ж марки."
+msgid "We found the following similar items from the same brand:"
+msgstr "Ми знайшли такі подібні товари від тієї ж марки:"
 
 msgid ""
 "We found the following similar items. Click the correct one to use it, or "
