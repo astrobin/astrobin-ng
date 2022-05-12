@@ -63,6 +63,9 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit 
   EquipmentItemEditorMode = EquipmentItemEditorMode;
 
   @Input()
+  enableBrowser = true;
+
+  @Input()
   activeType: EquipmentItemType;
 
   @Input()
@@ -250,10 +253,15 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit 
       );
 
       this.setItem(item);
-
-      this.location.replaceState(`${this.routingBasePath}/${this.activeType.toLowerCase()}/${item.id}/${slug}`);
-
       this.valueChanged.emit(item);
+
+      if (
+        this.windowRefService.nativeWindow.location.pathname.indexOf(
+          `/${this.activeType.toLowerCase()}/${item.id}/`
+        ) === -1
+      ) {
+        this.location.replaceState(`${this.routingBasePath}/${this.activeType.toLowerCase()}/${item.id}/${slug}`);
+      }
     };
 
     if (item) {
