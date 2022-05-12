@@ -6,7 +6,7 @@ import { provideMockStore } from "@ngrx/store/testing";
 import { initialState } from "@app/store/state";
 import { AppModule } from "@app/app.module";
 import { ActivatedRoute, Router } from "@angular/router";
-import { EMPTY, ReplaySubject } from "rxjs";
+import { EMPTY, of, ReplaySubject } from "rxjs";
 import { provideMockActions } from "@ngrx/effects/testing";
 import { ExplorerComponent } from "@features/equipment/components/explorer/explorer.component";
 import { ItemTypeNavComponent } from "@features/equipment/components/item-type-nav/item-type-nav.component";
@@ -48,6 +48,16 @@ describe("ExplorerComponent", () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(ExplorerPageComponent);
     component = fixture.componentInstance;
+
+    jest.spyOn(component.equipmentApiService, "getAllEquipmentItems").mockReturnValue(
+      of({
+        count: 0,
+        next: null,
+        prev: null,
+        results: []
+      })
+    );
+
     fixture.detectChanges();
   });
 

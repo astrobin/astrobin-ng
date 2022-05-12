@@ -12,7 +12,29 @@
         [activeType]="activeType"
         [activeId]="activeId"
         [activeEditProposalId]="activeEditProposalId"
+        (valueChanged)="activeId = !!$event ? $event.id : null"
       ></astrobin-equipment-explorer>
+
+      <ng-container *ngIf="!activeId">
+        <ng-container *ngIf="items$ | async as items; else loading">
+          <ul class="items">
+            <li *ngFor="let item of items.results" data-id="{{ item.id }}">
+              <a href="#" appEventPreventDefault (click)="viewItem(item)">
+                <astrobin-equipment-item-display-name [item]="item"></astrobin-equipment-item-display-name>
+              </a>
+            </li>
+          </ul>
+
+          <astrobin-nothing-here *ngIf="items.count === 0"></astrobin-nothing-here>
+
+          <ngb-pagination (pageChange)="pageChange($event)" [(page)]="page" [collectionSize]="items.count">
+          </ngb-pagination>
+        </ng-container>
+      </ng-container>
     </div>
   </div>
 </div>
+
+<ng-template #loading>
+  <astrobin-loading-indicator></astrobin-loading-indicator>
+</ng-template>

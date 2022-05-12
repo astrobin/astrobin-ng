@@ -9,7 +9,6 @@ import { MigrationExplorerComponent } from "@features/equipment/pages/migration/
 import { ExplorerPageComponent } from "@features/equipment/pages/explorer/explorer-page.component";
 import { PendingEditExplorerComponent } from "@features/equipment/pages/pending-edit-explorer/pending-edit-explorer.component";
 import { PendingReviewExplorerComponent } from "@features/equipment/pages/pending-review-explorer/pending-review-explorer.component";
-import { AZExplorerComponent } from "@features/equipment/pages/a-z-edit-explorer/a-z-explorer.component";
 import { ReviewGearRenamingProposalsComponent } from "@features/equipment/pages/review-gear-renaming-proposals/review-gear-renaming-proposals.component";
 
 export const routes: Routes = [
@@ -98,12 +97,6 @@ export const routes: Routes = [
         component: ExplorerPageComponent
       }
     ]
-  },
-  {
-    path: "a-z-explorer/:itemType",
-    component: AZExplorerComponent,
-    canActivate: [AuthGuardService, GroupGuardService],
-    data: { anyOfGroups: ["equipment_moderators", "own_equipment_migrators"] }
   },
   {
     path: "pending-review-explorer/:itemType",

@@ -14,13 +14,6 @@
       class="nav-pills"
       orientation="vertical"
     >
-      <li ngbNavItem="a-z-explorer">
-        <a ngbNavLink routerLink="/equipment/a-z-explorer/{{ type.value.toLowerCase() }}">
-          A-Z
-        </a>
-        <span *ngIf="type.count" class="count">{{ type.count | async }}</span>
-      </li>
-
       <ng-container *ngIf="currentUser$ | async as currentUser">
         <li ngbNavItem="pending-review-explorer" *ngIf="currentUser | isEquipmentModerator">
           <a ngbNavLink routerLink="/equipment/pending-review-explorer/{{ type.value.toLowerCase() }}">
