@@ -248,20 +248,23 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit 
 
   onItemSelected(item: EquipmentItemBaseInterface) {
     const _setItem = (brand: BrandInterface | null) => {
-      const slug = UtilsService.slugify(
-        `${!!brand ? brand.name : this.translateService.instant("(DIY)")} ${item.name}`
-      );
+      this.setItem(null);
+      setTimeout(() => {
+        const slug = UtilsService.slugify(
+          `${!!brand ? brand.name : this.translateService.instant("(DIY)")} ${item.name}`
+        );
 
-      this.setItem(item);
-      this.valueChanged.emit(item);
+        this.setItem(item);
+        this.valueChanged.emit(item);
 
-      if (
-        this.windowRefService.nativeWindow.location.pathname.indexOf(
-          `/${this.activeType.toLowerCase()}/${item.id}/`
-        ) === -1
-      ) {
-        this.location.replaceState(`${this.routingBasePath}/${this.activeType.toLowerCase()}/${item.id}/${slug}`);
-      }
+        if (
+          this.windowRefService.nativeWindow.location.pathname.indexOf(
+            `/${this.activeType.toLowerCase()}/${item.id}/`
+          ) === -1
+        ) {
+          this.location.replaceState(`${this.routingBasePath}/${this.activeType.toLowerCase()}/${item.id}/${slug}`);
+        }
+      }, 100);
     };
 
     if (item) {
