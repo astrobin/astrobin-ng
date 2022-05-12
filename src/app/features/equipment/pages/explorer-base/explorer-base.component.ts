@@ -17,12 +17,12 @@ import { WindowRefService } from "@shared/services/window-ref.service";
   selector: "astrobin-equipment-explorer-base",
   template: ""
 })
-export abstract class ExplorerBaseComponent extends BaseComponentDirective implements OnInit {
+export class ExplorerBaseComponent extends BaseComponentDirective implements OnInit {
   public page = 1;
   activeEditProposalId: EditProposalInterface<EquipmentItemBaseInterface>["id"];
   items$: Observable<PaginatedApiResultInterface<EquipmentItemBaseInterface>>;
 
-  protected constructor(
+  constructor(
     public readonly store$: Store<State>,
     public readonly actions$: Actions,
     public readonly activatedRoute: ActivatedRoute,
@@ -89,5 +89,5 @@ export abstract class ExplorerBaseComponent extends BaseComponentDirective imple
       });
   }
 
-  abstract getItems();
+  getItems() {}
 }

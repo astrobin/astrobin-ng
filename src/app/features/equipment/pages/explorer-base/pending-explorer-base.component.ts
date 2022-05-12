@@ -15,8 +15,8 @@ import { BrandInterface } from "@features/equipment/types/brand.interface";
   selector: "astrobin-equipment-pending-explorer-base",
   templateUrl: "./pending-explorer-base.component.html"
 })
-export abstract class PendingExplorerBaseComponent extends ExplorerBaseComponent {
-  protected constructor(
+export class PendingExplorerBaseComponent extends ExplorerBaseComponent {
+  constructor(
     public readonly store$: Store<State>,
     public readonly actions$: Actions,
     public readonly activatedRoute: ActivatedRoute,

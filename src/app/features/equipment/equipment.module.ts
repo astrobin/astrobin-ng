@@ -24,6 +24,8 @@ import { ExplorerComponent } from "@features/equipment/components/explorer/explo
 import { MergeIntoModalComponent } from "./components/migration/merge-into-modal/merge-into-modal.component";
 import { ReviewGearRenamingProposalsComponent } from "./pages/review-gear-renaming-proposals/review-gear-renaming-proposals.component";
 import { RejectReviewGearRenamingProposalsModalComponent } from "@features/equipment/components/reject-review-gear-renaming-proposals-modal/reject-review-gear-renaming-proposals-modal.component";
+import { PendingExplorerBaseComponent } from "@features/equipment/pages/explorer-base/pending-explorer-base.component";
+import { ExplorerBaseComponent } from "@features/equipment/pages/explorer-base/explorer-base.component";
 
 @NgModule({
   declarations: [
@@ -36,6 +38,8 @@ import { RejectReviewGearRenamingProposalsModalComponent } from "@features/equip
     MigrationNavComponent,
     MigrationGuidelinesComponent,
     ItemEditProposalComponent,
+    PendingExplorerBaseComponent,
+    ExplorerBaseComponent,
     ExplorerPageComponent,
     ExplorerComponent,
     PendingReviewExplorerComponent,
