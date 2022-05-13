@@ -83,6 +83,7 @@ export enum RemoteSource {
   EITS = "Eye In The Sky",
   GFA = "Goldfield Astronomical Observatory",
   GMO = "Grand Mesa Observatory",
+  HAKOS = "Hakos Astro Farm",
   HMO = "Heaven's Mirror Observatory",
   IC = "IC Astronomy Observatories",
   ITU = "Image The Universe",
