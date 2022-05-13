@@ -21,6 +21,15 @@
 
 <ng-template #pendingReviewTemplate>
   <ng-container *ngIf="currentUser$ | async as currentUser; else loading">
+    <div class="alert alert-warning">
+      <p>
+        <strong>Warning!</strong> These are migrations created by moderators, and not regular end-user. When you approve
+        migrations on this page, they get applied to all users and images that match that particular equipment items.
+      </p>
+      <p>
+        When a regular end-user create their own migrations, instead, the apply only to their own images.
+      </p>
+    </div>
     <table class="table table-striped">
       <caption>
         Migrations to review
@@ -29,7 +38,6 @@
         <tr>
           <th scope="col">Legacy item</th>
           <th scope="col">Migration strategy</th>
-          <th scope="col">Global or Personal</th>
           <th scope="col"></th>
         </tr>
       </thead>
@@ -44,10 +52,6 @@
             <span class="help-tooltip" [ngbTooltip]="migrationFlagTooltip(migrationStrategy.migrationFlag)">
               <fa-icon icon="question-circle"></fa-icon>
             </span>
-          </td>
-          <td>
-            <ng-container *ngIf="!migrationStrategy.user">Global</ng-container>
-            <ng-container *ngIf="!!migrationStrategy.user">Personal</ng-container>
           </td>
           <td>
             <a
