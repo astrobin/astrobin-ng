@@ -3,8 +3,9 @@
 </form>
 
 <ng-template #equipmentItemLabelTemplate let-object="item">
-  <ng-container *ngIf="!!object?.item">
+  <ng-container *ngIf="model && model.value">
     <astrobin-equipment-item-display-name
+      *ngIf="!!object?.item; else loading"
       [item]="object.item"
       [enableSummaryModal]="enableSummaryModal"
     ></astrobin-equipment-item-display-name>
@@ -120,3 +121,7 @@
     </div>
   </div>
 </ng-container>
+
+<ng-template #loading>
+  <astrobin-loading-indicator></astrobin-loading-indicator>
+</ng-template>
