@@ -430,27 +430,45 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
 
   _applyMigration(object: any, setMigrateArgs: any[], markedAs: string) {
     this.loadingService.setLoading(true);
-    this.legacyGearApi.setMigration
-      .apply(this.legacyGearApi, setMigrateArgs)
-      .pipe(take(1))
+    this.isEquipmentModerator
+      .pipe(
+        take(1),
+        switchMap(isEquipmentModerator =>
+          this.legacyGearApi.setMigration
+            .apply(this.legacyGearApi, setMigrateArgs)
+            .pipe(map(() => isEquipmentModerator))
+        )
+      )
       .subscribe(
-        () => {
+        isEquipmentModerator => {
           this.loadingService.setLoading(false);
-          this.cancelMigration(), this.resetMigrationConfirmation();
+          this.cancelMigration();
+          this.resetMigrationConfirmation();
           this.skip(object);
 
-          let message = this.translateService.instant("Item <strong>{{0}}</strong> marked as <strong>{{1}}</strong>.", {
-            0: this.legacyGearService.getDisplayName(object.make, object.name),
-            1: markedAs
-          });
+          let message: string = this.translateService.instant(
+            "Item <strong>{{0}}</strong> marked as <strong>{{1}}</strong>.",
+            {
+              0: this.legacyGearService.getDisplayName(object.make, object.name),
+              1: markedAs
+            }
+          );
 
           if (setMigrateArgs[1] === MigrationFlag.MIGRATE) {
-            message +=
-              "<br/><br/>" +
-              this.translateService.instant(
-                "The migration will be reviewed by a moderator as soon as possible, and you will be notified of " +
-                  "the outcome. If the migration is approved, you will be able to add the equipment item to your images."
-              );
+            if (isEquipmentModerator) {
+              message +=
+                "<br/><br/>" +
+                this.translateService.instant(
+                  "The migration will be reviewed by a moderator as soon as possible, and you will be notified of " +
+                    "the outcome. If the migration is approved, you will be able to add the equipment item to your images."
+                );
+            } else {
+              message +=
+                "<br/><br/>" +
+                this.translateService.instant(
+                  "The migration will complete within a few moments and your images will be automatically updated."
+                );
+            }
           }
 
           this.popNotificationsService.success(message, null, { enableHtml: true });
