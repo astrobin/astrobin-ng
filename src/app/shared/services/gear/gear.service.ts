@@ -1,12 +1,20 @@
 import { Injectable } from "@angular/core";
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
+import { UserInterface } from "@shared/interfaces/user.interface";
+import { Observable } from "rxjs";
+import { GearUserInfoInterface } from "@shared/interfaces/gear-user-info.interface";
+import { GearUserInfoApiService } from "@shared/services/api/classic/astrobin/gear-user-info/gear-user-info-api.service";
+import { map } from "rxjs/operators";
 
 @Injectable({
   providedIn: "root"
 })
 export class GearService extends BaseService {
-  constructor(loadingService: LoadingService) {
+  constructor(
+    public readonly loadingService: LoadingService,
+    public readonly userInfoApiService: GearUserInfoApiService
+  ) {
     super(loadingService);
   }
 
@@ -45,5 +53,17 @@ export class GearService extends BaseService {
     }
 
     return attributes;
+  }
+
+  getUserInfo(user: UserInterface, gear: any): Observable<GearUserInfoInterface | null> {
+    return this.userInfoApiService.getForUserAndGear(user.id, gear.pk).pipe(
+      map(response => {
+        if (response.count === 0) {
+          return null;
+        }
+
+        return response.results[0];
+      })
+    );
   }
 }

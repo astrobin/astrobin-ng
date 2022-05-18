@@ -1,12 +1,13 @@
 import { TestBed } from "@angular/core/testing";
 import { MockBuilder } from "ng-mocks";
 import { GearService } from "./gear.service";
+import { GearUserInfoApiService } from "@shared/services/api/classic/astrobin/gear-user-info/gear-user-info-api.service";
 
 describe("GearService", () => {
   let service: GearService;
 
-  beforeEach(() => {
-    MockBuilder(GearService);
+  beforeEach(async () => {
+    await MockBuilder(GearService).mock(GearUserInfoApiService);
     service = TestBed.inject(GearService);
   });
 
