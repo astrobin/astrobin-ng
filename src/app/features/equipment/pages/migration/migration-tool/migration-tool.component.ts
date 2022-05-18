@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
 import { GearApiService } from "@shared/services/api/classic/astrobin/gear/gear-api.service";
 import { LoadingService } from "@shared/services/loading.service";
-import { filter, map, switchMap, take, takeUntil, tap } from "rxjs/operators";
+import { filter, map, switchMap, take, takeUntil } from "rxjs/operators";
 import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { TitleService } from "@shared/services/title/title.service";
 import { FormGroup } from "@angular/forms";
@@ -32,6 +32,7 @@ import { AccessoryApiService } from "@shared/services/api/classic/astrobin/acces
 import { SoftwareApiService } from "@shared/services/api/classic/astrobin/software/software-api.service";
 import { isGroupMember } from "@shared/operators/is-group-member.operator";
 import { CombinedAccessoryAndFocalReducerApiService } from "@shared/services/api/classic/astrobin/combined-accessory-and-focal-reducer/combined-accessory-and-focal-reducer-api.service";
+import { GearUserInfoInterface } from "@shared/interfaces/gear-user-info.interface";
 
 @Component({
   selector: "astrobin-migration-tool",
@@ -47,7 +48,7 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
   activeType = this.activatedRoute.snapshot.paramMap.get("itemType");
 
   title = "Migration tool";
-  randomNonMigrated$ = this.getRandomNonMigrated$();
+  randomNonMigrated$: any = this.getRandomNonMigrated$();
 
   migrationTarget: EquipmentItemBaseInterface = null;
   migrationMode = false;
@@ -133,7 +134,7 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
     return EquipmentItemType[this.activeType.toUpperCase()];
   }
 
-  getRandomNonMigrated$(): Observable<any[]> {
+  getRandomNonMigrated$(): Observable<{ item: any; userInfo: GearUserInfoInterface | null }> {
     let api;
 
     switch (this.getActiveType()) {
@@ -160,23 +161,45 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
     }
 
     if (api) {
-      return new Observable<any[]>(observer => {
+      this.loadingService.setLoading(true);
+
+      return new Observable<any>(observer => {
         this.currentUser$
           .pipe(
             take(1),
             isGroupMember("equipment_moderators"),
-            switchMap(isEquipmentModerator => api.getRandomNonMigrated(isEquipmentModerator)),
-            tap(() => this.loadingService.setLoading(true)),
-            switchMap((items: any[]) => {
-              if (items && items.length === 1) {
-                return this.legacyGearApi.lockForMigration(items[0].pk).pipe(map(() => items));
+            switchMap(isEquipmentModerator =>
+              api.getRandomNonMigrated(isEquipmentModerator).pipe(
+                map((items: any[]) => ({
+                  isEquipmentModerator,
+                  item: items.length > 0 ? items[0] : null
+                }))
+              )
+            ),
+            switchMap((result: { isEquipmentModerator: boolean; item: any }) => {
+              if (!!result.item) {
+                return this.legacyGearApi.lockForMigration(result.item.pk).pipe(map(() => result));
               }
 
-              return of(items);
+              return of(result);
+            }),
+            switchMap((result: { isEquipmentModerator: boolean; item: any }) => {
+              if (!!result.item && !result.isEquipmentModerator) {
+                return this.currentUser$.pipe(
+                  take(1),
+                  switchMap(user => this.legacyGearService.getUserInfo(user, result.item)),
+                  map(gearUserInfo => ({
+                    isEquipmentModerator: result.isEquipmentModerator,
+                    item: result.item,
+                    userInfo: gearUserInfo
+                  }))
+                );
+              }
+              return of(result);
             })
           )
-          .subscribe(items => {
-            observer.next(items);
+          .subscribe((result: { isEquipmentModerator: boolean; item: any; userInfo: GearUserInfoInterface | null }) => {
+            observer.next({ item: result.item, userInfo: result.userInfo });
             observer.complete();
             this.loadingService.setLoading(false);
           });

@@ -52,205 +52,215 @@
 </ng-template>
 
 <ng-template #randomNonMigrated>
-  <ng-container *ngIf="randomNonMigrated$ | async as objects; else loading">
-    <ng-container *ngIf="objects.length > 0; else allDone">
-      <ng-container *ngIf="objects[0] as object">
+  <ng-container *ngIf="randomNonMigrated$ | async as randomNonMigrated; else loading">
+    <ng-container *ngIf="!!randomNonMigrated?.item; else allDone">
+      <div
+        class="card box-shadow"
+        [class.disabled]="migrationMode || subCreationMode || migrationConfirmation.inProgress"
+      >
+        <div class="card-header">{{ "This LEGACY item needs to be migrated" | translate }}:</div>
+
+        <div class="card-body">
+          <table class="table table-striped">
+            <tbody>
+              <tr>
+                <th scope="col">{{ "Brand/Make" | translate }}</th>
+                <td>{{ randomNonMigrated.item.make || "n/a" | translate }}</td>
+              </tr>
+              <tr>
+                <th scope="col">{{ "Name/Model" | translate }}</th>
+                <td>{{ randomNonMigrated.item.name || "n/a" | translate }}</td>
+              </tr>
+              <tr *ngIf="randomNonMigrated.userInfo?.alias">
+                <th scope="col">{{ "Alias" | translate }}</th>
+                <td>{{ randomNonMigrated.userInfo.alias || "n/a" | translate }}</td>
+              </tr>
+              <tr *ngIf="randomNonMigrated.userInfo?.comment">
+                <th scope="col">{{ "Comment" | translate }}</th>
+                <td>{{ randomNonMigrated.userInfo.comment || "n/a" | translate }}</td>
+              </tr>
+              <tr *ngIf="randomNonMigrated.userInfo?.modded">
+                <th scope="col">{{ "Modified" | translate }}</th>
+                <td>{{ "Yes" | translate }}</td>
+              </tr>
+              <tr *ngFor="let key of legacyGearService.getProperAttributes(randomNonMigrated.item)">
+                <th scope="col">{{ key | camelCaseToSentenceCase }}</th>
+                <td>{{ randomNonMigrated.item[key] !== null ? randomNonMigrated.item[key] : ("n/a" | translate) }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="card-footer">
+          <button
+            class="btn btn-sm-block btn-secondary"
+            [disabled]="migrationMode || subCreationMode || migrationConfirmation.inProgress"
+            [class.loading]="loadingService.isLoading()"
+            (click)="skip(randomNonMigrated.item)"
+          >
+            <fa-icon icon="sync"></fa-icon>
+            {{ "Get next" | translate }}
+          </button>
+
+          <div class="d-inline-block" ngbDropdown>
+            <button
+              ngbDropdownToggle
+              id="mark-as-dropdown-button"
+              class="btn btn-sm-block btn-secondary"
+              [disabled]="migrationMode || subCreationMode || migrationConfirmation.inProgress"
+              [class.loading]="loadingService.isLoading()"
+            >
+              <fa-icon icon="tag"></fa-icon>
+              {{ "Mark as" | translate }}&hellip;
+            </button>
+
+            <div aria-labelledby="mark-as-dropdown-button" ngbDropdownMenu>
+              <a href="" class="dropdown-item" (click)="markAsWrongType($event, randomNonMigrated.item)">
+                {{ "Wrong type" | translate }}
+              </a>
+
+              <a href="" class="dropdown-item" (click)="markAsMultiple($event, randomNonMigrated.item)">
+                {{ "Multiple items" | translate }}
+              </a>
+
+              <a href="" class="dropdown-item" (click)="markAsDIY($event, randomNonMigrated.item)">
+                {{ "DIY" | translate }}
+              </a>
+
+              <a href="" class="dropdown-item" (click)="markAsNotEnoughInfo($event, randomNonMigrated.item)">
+                {{ "Not enough info" | translate }}
+              </a>
+            </div>
+          </div>
+
+          <button
+            class="btn btn-sm-block btn-primary"
+            [disabled]="migrationMode || subCreationMode || migrationConfirmation.inProgress"
+            [class.loading]="loadingService.isLoading()"
+            (click)="beginMigration()"
+          >
+            <fa-icon icon="arrow-right"></fa-icon>
+            {{ "Migrate" | translate }}&hellip;
+          </button>
+        </div>
+      </div>
+
+      <ng-container *ngIf="migrationMode">
+        <div class="mt-4 mb-4 text-center">
+          <fa-icon icon="arrow-down"></fa-icon>
+        </div>
+
         <div
-          class="card box-shadow"
-          [class.disabled]="migrationMode || subCreationMode || migrationConfirmation.inProgress"
+          class="card"
+          [class.disabled-with-backdrop]="subCreationMode || migrationConfirmation.inProgress"
+          id="select-item-to-migrate-to"
         >
-          <div class="card-header">{{ "This LEGACY item needs to be migrated" | translate }}:</div>
+          <div class="backdrop"></div>
+
+          <div class="card-header">
+            {{ "Select target item for the migration, or create a new one." | translate }}
+          </div>
 
           <div class="card-body">
-            <table class="table table-striped">
-              <tbody>
-                <tr>
-                  <th scope="col">{{ "Brand/Make" | translate }}</th>
-                  <td>{{ object.make || "n/a" | translate }}</td>
-                </tr>
-                <tr>
-                  <th scope="col">{{ "Name/Model" | translate }}</th>
-                  <td>{{ object.name || "n/a" | translate }}</td>
-                </tr>
-                <tr *ngFor="let key of legacyGearService.getProperAttributes(object)">
-                  <th scope="col">{{ key | camelCaseToSentenceCase }}</th>
-                  <td>{{ object[key] !== null ? object[key] : ("n/a" | translate) }}</td>
-                </tr>
-              </tbody>
-            </table>
+            <astrobin-equipment-item-browser
+              #equipmentItemBrowser
+              [type]="getActiveType()"
+              (valueChanged)="onItemSelected($event)"
+              (subCreationModeStarted)="subCreationMode = true"
+              (subCreationModeEnded)="subCreationMode = false"
+            ></astrobin-equipment-item-browser>
           </div>
 
           <div class="card-footer">
             <button
               class="btn btn-sm-block btn-secondary"
-              [disabled]="migrationMode || subCreationMode || migrationConfirmation.inProgress"
+              [disabled]="subCreationMode || migrationConfirmation.inProgress"
               [class.loading]="loadingService.isLoading()"
-              (click)="skip(object)"
+              (click)="cancelMigration()"
             >
-              <fa-icon icon="sync"></fa-icon>
-              {{ "Get next" | translate }}
+              {{ "Cancel" | translate }}
             </button>
-
-            <div class="d-inline-block" ngbDropdown>
-              <button
-                ngbDropdownToggle
-                id="mark-as-dropdown-button"
-                class="btn btn-sm-block btn-secondary"
-                [disabled]="migrationMode || subCreationMode || migrationConfirmation.inProgress"
-                [class.loading]="loadingService.isLoading()"
-              >
-                <fa-icon icon="tag"></fa-icon>
-                {{ "Mark as" | translate }}&hellip;
-              </button>
-
-              <div aria-labelledby="mark-as-dropdown-button" ngbDropdownMenu>
-                <a href="" class="dropdown-item" (click)="markAsWrongType($event, object)">
-                  {{ "Wrong type" | translate }}
-                </a>
-
-                <a href="" class="dropdown-item" (click)="markAsMultiple($event, object)">
-                  {{ "Multiple items" | translate }}
-                </a>
-
-                <a href="" class="dropdown-item" (click)="markAsDIY($event, object)">
-                  {{ "DIY" | translate }}
-                </a>
-
-                <a href="" class="dropdown-item" (click)="markAsNotEnoughInfo($event, object)">
-                  {{ "Not enough info" | translate }}
-                </a>
-              </div>
-            </div>
 
             <button
               class="btn btn-sm-block btn-primary"
-              [disabled]="migrationMode || subCreationMode || migrationConfirmation.inProgress"
+              [disabled]="!migrationTarget || subCreationMode || migrationConfirmation.inProgress"
               [class.loading]="loadingService.isLoading()"
-              (click)="beginMigration()"
+              (click)="beginMigrationConfirmation(randomNonMigrated.item)"
             >
-              <fa-icon icon="arrow-right"></fa-icon>
-              {{ "Migrate" | translate }}&hellip;
+              {{ "Confirm migration" | translate }}
             </button>
           </div>
         </div>
+      </ng-container>
 
-        <ng-container *ngIf="migrationMode">
-          <div class="mt-4 mb-4 text-center">
-            <fa-icon icon="arrow-down"></fa-icon>
-          </div>
+      <ng-container *ngIf="migrationConfirmation.inProgress">
+        <div class="mt-4 mb-4 text-center">
+          <fa-icon icon="arrow-down"></fa-icon>
+        </div>
 
-          <div
-            class="card"
-            [class.disabled-with-backdrop]="subCreationMode || migrationConfirmation.inProgress"
-            id="select-item-to-migrate-to"
-          >
-            <div class="backdrop"></div>
-
+        <div class="mt-4 mb-4">
+          <div class="card" id="confirm-migration">
             <div class="card-header">
-              {{ "Select target item for the migration, or create a new one." | translate }}
+              {{ "Confirm migration" | translate }}
             </div>
 
             <div class="card-body">
-              <astrobin-equipment-item-browser
-                #equipmentItemBrowser
-                [type]="getActiveType()"
-                (valueChanged)="onItemSelected($event)"
-                (subCreationModeStarted)="subCreationMode = true"
-                (subCreationModeEnded)="subCreationMode = false"
-              ></astrobin-equipment-item-browser>
+              <div
+                class="alert alert-info"
+                [innerHTML]="
+                  'We found more items in the legacy database that are similar to the one you are migrating. ' +
+                  'Please check the ones that you want to migrate along! <strong>Please be careful!</strong> Not ' +
+                  'all items that AstroBin thinks are similar, are necessarily the same product. Only check the ' +
+                  'ones that you are sure of.' | translate"
+              >
+              </div>
+
+              <h5 class="mt-5 mb-4">{{ "Legacy item being migrated" | translate }}</h5>
+
+              <div class="custom-control custom-checkbox">
+                <input
+                  type="checkbox"
+                  class="custom-control-input"
+                  id="legacy-item-being-migrated"
+                  disabled="disabled"
+                  checked
+                />
+                <label class="custom-control-label" for="legacy-item-being-migrated">
+                  {{ legacyGearService.getDisplayName(randomNonMigrated.item.make, randomNonMigrated.item.name) }}
+                </label>
+              </div>
+
+              <h5 class="mt-5 mb-4">Similar legacy items</h5>
+
+              <form [formGroup]="migrationConfirmation.form">
+                <formly-form
+                  [fields]="migrationConfirmation.fields"
+                  [form]="migrationConfirmation.form"
+                  [model]="migrationConfirmation.model"
+                ></formly-form>
+              </form>
             </div>
 
             <div class="card-footer">
               <button
                 class="btn btn-sm-block btn-secondary"
-                [disabled]="subCreationMode || migrationConfirmation.inProgress"
                 [class.loading]="loadingService.isLoading()"
-                (click)="cancelMigration()"
+                (click)="resetMigrationConfirmation()"
               >
                 {{ "Cancel" | translate }}
               </button>
 
               <button
                 class="btn btn-sm-block btn-primary"
-                [disabled]="!migrationTarget || subCreationMode || migrationConfirmation.inProgress"
+                [disabled]="!migrationConfirmation.form.valid"
                 [class.loading]="loadingService.isLoading()"
-                (click)="beginMigrationConfirmation(object)"
+                (click)="confirmMigration(randomNonMigrated.item)"
               >
-                {{ "Confirm migration" | translate }}
+                {{ "Confirm selected migrations" | translate }}
               </button>
             </div>
           </div>
-        </ng-container>
-
-        <ng-container *ngIf="migrationConfirmation.inProgress">
-          <div class="mt-4 mb-4 text-center">
-            <fa-icon icon="arrow-down"></fa-icon>
-          </div>
-
-          <div class="mt-4 mb-4">
-            <div class="card" id="confirm-migration">
-              <div class="card-header">
-                {{ "Confirm migration" | translate }}
-              </div>
-
-              <div class="card-body">
-                <div
-                  class="alert alert-info"
-                  [innerHTML]="
-                    'We found more items in the legacy database that are similar to the one you are migrating. ' +
-                    'Please check the ones that you want to migrate along! <strong>Please be careful!</strong> Not ' +
-                    'all items that AstroBin thinks are similar, are necessarily the same product. Only check the ' +
-                    'ones that you are sure of.' | translate"
-                >
-                </div>
-
-                <h5 class="mt-5 mb-4">{{ "Legacy item being migrated" | translate }}</h5>
-
-                <div class="custom-control custom-checkbox">
-                  <input
-                    type="checkbox"
-                    class="custom-control-input"
-                    id="legacy-item-being-migrated"
-                    disabled="disabled"
-                    checked
-                  />
-                  <label class="custom-control-label" for="legacy-item-being-migrated">
-                    {{ gearService.getDisplayName(object.make, object.name) }}
-                  </label>
-                </div>
-
-                <h5 class="mt-5 mb-4">Similar legacy items</h5>
-
-                <form [formGroup]="migrationConfirmation.form">
-                  <formly-form
-                    [fields]="migrationConfirmation.fields"
-                    [form]="migrationConfirmation.form"
-                    [model]="migrationConfirmation.model"
-                  ></formly-form>
-                </form>
-              </div>
-
-              <div class="card-footer">
-                <button
-                  class="btn btn-sm-block btn-secondary"
-                  [class.loading]="loadingService.isLoading()"
-                  (click)="resetMigrationConfirmation()"
-                >
-                  {{ "Cancel" | translate }}
-                </button>
-
-                <button
-                  class="btn btn-sm-block btn-primary"
-                  [disabled]="!migrationConfirmation.form.valid"
-                  [class.loading]="loadingService.isLoading()"
-                  (click)="confirmMigration(object)"
-                >
-                  {{ "Confirm selected migrations" | translate }}
-                </button>
-              </div>
-            </div>
-          </div>
-        </ng-container>
+        </div>
       </ng-container>
     </ng-container>
   </ng-container>
