@@ -1,3 +1,6 @@
+astrobin-equipment-explorer:not(:last-of-type),
 .card:not(:last-child) {
+  display: block;
   margin-bottom: 1.5rem;
 }
+
