@@ -17,12 +17,12 @@
         <h5>
           <astrobin-equipment-item-display-name [item]="item"></astrobin-equipment-item-display-name>
         </h5>
-        <h6 *ngIf="!!item.website" class="website">
+        <h6 *ngIf="showProperties && !!item.website" class="website">
           <a target="_blank" [href]="item.website">{{ UtilsService.shortenUrl(item.website) }}</a>
         </h6>
       </div>
 
-      <table class="table table-sm table-striped properties" *ngIf="!!properties">
+      <table class="table table-sm table-striped properties" *ngIf="showProperties && !!properties">
         <tbody>
         <ng-container *ngFor="let property of properties">
           <tr *ngIf="(showProperty$(property) | async) === true" class="property">
@@ -50,6 +50,7 @@
           [showClass]="showClass"
           [showLargeImage]="showLargeImage"
           [showImage]="showImage"
+          [showProperties]="showProperties"
           [showEmptyProperties]="showEmptyProperties"
           [showMeta]="false"
         ></astrobin-equipment-item-summary>

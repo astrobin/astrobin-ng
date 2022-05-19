@@ -52,6 +52,9 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
   showLargeImage = false;
 
   @Input()
+  showProperties = true;
+
+  @Input()
   showEmptyProperties = false;
 
   @Input()
