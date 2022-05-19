@@ -6,6 +6,9 @@ import { Observable } from "rxjs";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
+import { selectUser } from "@features/account/store/auth.selectors";
+import { filter, switchMap, take, tap } from "rxjs/operators";
+import { LoadUser } from "@features/account/store/auth.actions";
 
 @Component({
   selector: "astrobin-username",
@@ -16,6 +19,9 @@ import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 export class UsernameComponent extends BaseComponentDirective implements OnChanges {
   @Input()
   user: UserInterface;
+
+  @Input()
+  userId: UserInterface["id"];
 
   @Input()
   link = true;
@@ -34,6 +40,16 @@ export class UsernameComponent extends BaseComponentDirective implements OnChang
   }
 
   ngOnChanges() {
-    this.username$ = this.usernameService.getDisplayName$(this.user);
+    if (this.user) {
+      this.username$ = this.usernameService.getDisplayName$(this.user);
+    } else if (this.userId) {
+      this.username$ = this.store$.select(selectUser, this.userId).pipe(
+        filter(user => !!user),
+        tap(user => (this.user = user)),
+        take(1),
+        switchMap(user => this.usernameService.getDisplayName$(user))
+      );
+      this.store$.dispatch(new LoadUser({ id: this.userId }));
+    }
   }
 }

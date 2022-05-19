@@ -35,6 +35,11 @@
         <span class="after">{{ editProposal.editProposalComment }}</span>
       </li>
 
+      <li *ngIf="editProposal.editProposalReviewedBy" class="change">
+        <span class="property-name">{{ "Reviewer" | translate }}:</span>
+        <span class="after"><astrobin-username [userId]="editProposal.editProposalReviewedBy"></astrobin-username></span>
+      </li>
+
       <li *ngIf="editProposal.editProposalReviewComment" class="change">
         <span class="property-name">{{ "Reviewer's comment" | translate }}:</span>
         <span class="after">{{ editProposal.editProposalReviewComment }}</span>
