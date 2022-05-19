@@ -16,7 +16,7 @@ import {
   LoadEquipmentItem,
   RejectEquipmentItemEditProposalSuccess
 } from "@features/equipment/store/equipment.actions";
-import { selectEditProposals, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
+import { selectEditProposalsForItem, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { LoadUser } from "@features/account/store/auth.actions";
 import { filter, map, switchMap, take, tap } from "rxjs/operators";
@@ -83,7 +83,7 @@ export class ItemEditProposalComponent extends BaseComponentDirective implements
   }
 
   get reviewButtonsStatus$(): Observable<{ disabled: boolean; reason: string | null }> {
-    return this.store$.select(selectEditProposals, this.item).pipe(
+    return this.store$.select(selectEditProposalsForItem, this.item).pipe(
       map(editProposals =>
         editProposals.filter(
           editProposal =>
