@@ -152,6 +152,7 @@ export const testCameraEditProposal = {
     editProposalBy: 1,
     editProposalCreated: "2021-09-13T00:00:00",
     editProposalUpdated: "2021-09-13T00:00:00",
+    editProposalReviewStatus: null,
     name: "Test Pro"
   }
 };
@@ -163,6 +164,7 @@ export const testTelescopeEditProposal = {
     editProposalBy: 1,
     editProposalCreated: "2021-09-13T00:00:00",
     editProposalUpdated: "2021-09-13T00:00:00",
+    editProposalReviewStatus: null,
     name: "Test telescope Pro"
   }
 };
@@ -174,6 +176,7 @@ export const testMountEditProposal = {
     editProposalBy: 1,
     editProposalCreated: "2021-09-13T00:00:00",
     editProposalUpdated: "2021-09-13T00:00:00",
+    editProposalReviewStatus: null,
     name: "Test mount Pro"
   }
 };
@@ -185,6 +188,7 @@ export const testFilterEditProposal = {
     editProposalBy: 1,
     editProposalCreated: "2021-09-13T00:00:00",
     editProposalUpdated: "2021-09-13T00:00:00",
+    editProposalReviewStatus: null,
     name: "Test filter Pro"
   }
 };
@@ -196,6 +200,7 @@ export const testAccessoryEditProposal = {
     editProposalBy: 1,
     editProposalCreated: "2021-09-13T00:00:00",
     editProposalUpdated: "2021-09-13T00:00:00",
+    editProposalReviewStatus: null,
     name: "Test accessory Pro"
   }
 };
@@ -207,6 +212,7 @@ export const testSoftwareEditProposal = {
     editProposalBy: 1,
     editProposalCreated: "2021-09-13T00:00:00",
     editProposalUpdated: "2021-09-13T00:00:00",
+    editProposalReviewStatus: null,
     name: "Test software Pro"
   }
 };
