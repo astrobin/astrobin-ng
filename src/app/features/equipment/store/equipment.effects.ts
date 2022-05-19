@@ -206,11 +206,11 @@ export class EquipmentEffects {
 
   GetOthersInBrand: Observable<GetOthersInBrandSuccess> = createEffect(() =>
     this.actions$.pipe(
-      ofType(EquipmentActionTypes.FIND_SIMILAR_IN_BRAND),
+      ofType(EquipmentActionTypes.GET_OTHERS_IN_BRAND),
       map((action: GetOthersInBrand) => action.payload),
       mergeMap(payload =>
         this.equipmentApiService
-          .getOthersInBrand(payload.brand, payload.type)
+          .getOthersInBrand(payload.brand, payload.type, payload.item)
           .pipe(map(items => new GetOthersInBrandSuccess({ items })))
       )
     )

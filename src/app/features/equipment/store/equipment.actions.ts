@@ -225,7 +225,9 @@ export class FindSimilarInBrandSuccess implements PayloadActionInterface {
 export class GetOthersInBrand implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.GET_OTHERS_IN_BRAND;
 
-  constructor(public payload: { brand: BrandInterface["id"]; type: EquipmentItemType }) {}
+  constructor(
+    public payload: { brand: BrandInterface["id"]; type: EquipmentItemType; item: EquipmentItemBaseInterface["id"] }
+  ) {}
 }
 
 export class GetOthersInBrandSuccess implements PayloadActionInterface {
