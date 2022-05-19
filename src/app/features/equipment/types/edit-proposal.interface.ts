@@ -26,7 +26,7 @@ export interface EditProposalInterface<T extends EquipmentItemBaseInterface> ext
   editProposalReviewTimestamp?: string;
   editProposalReviewIp?: string;
   editProposalReviewComment?: string;
-  editProposalReviewStatus?: EditProposalReviewStatus;
+  editProposalReviewStatus?: EditProposalReviewStatus | null;
 
   // Any property of interfaces extending EquipmentItemBaseInterface.
   [property: string]: any;
