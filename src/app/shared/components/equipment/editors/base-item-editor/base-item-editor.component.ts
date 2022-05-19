@@ -565,7 +565,7 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
       return;
     }
 
-    this.store$.dispatch(new GetOthersInBrand({ brand: brandControl.value, type }));
+    this.store$.dispatch(new GetOthersInBrand({ brand: brandControl.value, type, item: this.model?.id }));
     this.actions$
       .pipe(
         ofType(EquipmentActionTypes.GET_OTHERS_IN_BRAND_SUCCESS),

@@ -24,12 +24,17 @@ export class OthersInBrandComponent extends BaseComponentDirective {
   }
 
   get message(): string {
-    return this.translateService.instant(
-      "This brand has <strong>{{0}}</strong> items in AstroBin's database. Take a look at them so you can be " +
-        "consistent with the naming conventions:",
-      {
-        0: this.items?.length
-      }
+    return (
+      this.translateService.instant(
+        "This brand has <strong>{{0}}</strong> items in AstroBin's database, and they are shown below in alphabetical order.",
+        {
+          0: this.items?.length
+        }
+      ) +
+      "<br /><br />" +
+      this.translateService.instant(
+        "Take a look at them so you can be consistent with the naming conventions and prevent the creation of a duplicate item."
+      )
     );
   }
 }

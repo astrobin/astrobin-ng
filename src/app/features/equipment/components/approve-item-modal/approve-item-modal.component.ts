@@ -81,7 +81,8 @@ export class ApproveItemModalComponent extends BaseComponentDirective implements
     this.store$.dispatch(
       new GetOthersInBrand({
         brand: this.equipmentItem.brand,
-        type: this.equipmentItemService.getType(this.equipmentItem)
+        type: this.equipmentItemService.getType(this.equipmentItem),
+        item: this.equipmentItem.id
       })
     );
     this.actions$
