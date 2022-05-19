@@ -32,10 +32,17 @@ astrobin-equipment-item-browser {
     padding: 1rem 1rem .5rem 1rem;
     border-bottom: 1px dashed var(--grey);
     font-weight: bold;
+    cursor: pointer;
 
     .row {
       padding-right: 1.5rem;
     }
+  }
+
+  .edit-proposals-collapsed {
+    padding: 1rem 1rem .5rem 1rem;
+    color: var(--gray);
+    cursor: pointer;
   }
 }
 

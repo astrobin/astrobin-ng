@@ -95,20 +95,31 @@
 <ng-container *ngIf="selectedItem">
   <ng-container *ngIf="selectedItemEditProposals$ | async as editProposals; else loadingEditProposals">
     <div class="edit-proposals" *ngIf="editProposals.length > 0">
-      <div class="edit-proposals-header">
-        <div class="row">
-          <span class="col">{{ "Edit proposal by" | translate }}</span>
-          <span class="col-2 d-none d-lg-inline">{{ "Changes" | translate }}</span>
-          <span class="col-3">{{ "Status" | translate }}</span>
-          <span class="col-3 d-none d-lg-inline">{{ "Time" | translate }}</span>
+      <ng-container *ngIf="pendingProposalsByStatus(editProposals, null)?.length > 0 || !editProposalsCollapsed; else editProposalsCollapsedTemplate">
+        <div class="edit-proposals-header" (click)="editProposalsCollapsed = true">
+          <div class="row">
+            <span class="col">{{ "Edit proposal by" | translate }}</span>
+            <span class="col-2 d-none d-lg-inline">{{ "Changes" | translate }}</span>
+            <span class="col-3">{{ "Status" | translate }}</span>
+            <span class="col-3 d-none d-lg-inline">{{ "Time" | translate }}</span>
+          </div>
         </div>
-      </div>
 
-      <astrobin-item-edit-proposal
-        *ngFor="let editProposal of editProposals"
-        [editProposal]="editProposal"
-        [opened]="activeEditProposalId === editProposal.id"
-      ></astrobin-item-edit-proposal>
+        <astrobin-item-edit-proposal
+          *ngFor="let editProposal of editProposals"
+          [editProposal]="editProposal"
+          [opened]="activeEditProposalId === editProposal.id"
+        ></astrobin-item-edit-proposal>
+      </ng-container>
+
+      <ng-template #editProposalsCollapsedTemplate>
+        <div
+          class="edit-proposals-collapsed"
+          [innerHTML]="collapsedEditProposalsMessage(editProposals)"
+          (click)="editProposalsCollapsed = false"
+        >
+        </div>
+      </ng-template>
     </div>
   </ng-container>
 

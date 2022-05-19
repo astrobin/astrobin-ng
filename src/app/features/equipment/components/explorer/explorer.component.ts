@@ -28,7 +28,7 @@ import {
 import { SensorInterface } from "@features/equipment/types/sensor.interface";
 import { CameraInterface } from "@features/equipment/types/camera.interface";
 import { Actions, ofType } from "@ngrx/effects";
-import { EditProposalInterface } from "@features/equipment/types/edit-proposal.interface";
+import { EditProposalInterface, EditProposalReviewStatus } from "@features/equipment/types/edit-proposal.interface";
 import { EquipmentItemEditorMode } from "@shared/components/equipment/editors/base-item-editor/base-item-editor.component";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { ItemBrowserComponent } from "@shared/components/equipment/item-browser/item-browser.component";
@@ -89,6 +89,8 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit 
   subCreationMode = false;
 
   selectedItemEditProposals$: Observable<EditProposalInterface<EquipmentItemBaseInterface>[]>;
+
+  editProposalsCollapsed = true;
 
   @ViewChild("itemBrowser")
   private _itemBrowser: ItemBrowserComponent;
@@ -381,8 +383,30 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit 
     this.selectedItemEditProposals$ = this.actions$.pipe(
       ofType(EquipmentActionTypes.FIND_EQUIPMENT_ITEM_EDIT_PROPOSALS_SUCCESS),
       take(1),
-      switchMap(() => this.store$.select(selectEditProposalsForItem, this.selectedItem))
+      switchMap(() => this.store$.select(selectEditProposalsForItem, this.selectedItem)),
+      tap(
+        editProposals =>
+          (this.editProposalsCollapsed =
+            this.pendingProposalsByStatus(editProposals, null).length === 0 && !this.activeEditProposalId)
+      )
     );
+  }
+
+  pendingProposalsByStatus(
+    editProposals: EditProposalInterface<EquipmentItemBaseInterface>[],
+    status: EditProposalReviewStatus
+  ): EditProposalInterface<EquipmentItemBaseInterface>[] {
+    if (!editProposals) {
+      return [];
+    }
+
+    return editProposals.filter(editProposal => editProposal.editProposalReviewStatus === status);
+  }
+
+  collapsedEditProposalsMessage(editProposals: EditProposalInterface<EquipmentItemBaseInterface>[]): string {
+    return this.translateService.instant("This item has a history of <strong>{{0}}</strong> approved edit proposals.", {
+      "0": this.pendingProposalsByStatus(editProposals, EditProposalReviewStatus.APPROVED).length
+    });
   }
 
   typeSupportsMigrateInto() {
