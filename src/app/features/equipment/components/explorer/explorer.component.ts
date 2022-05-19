@@ -385,7 +385,9 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit 
       take(1),
       switchMap(() => this.store$.select(selectEditProposalsForItem, this.selectedItem)),
       tap(
-        editProposals => (this.editProposalsCollapsed = this.pendingProposalsByStatus(editProposals, null).length === 0)
+        editProposals =>
+          (this.editProposalsCollapsed =
+            this.pendingProposalsByStatus(editProposals, null).length === 0 && !this.activeEditProposalId)
       )
     );
   }
