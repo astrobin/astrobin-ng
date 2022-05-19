@@ -1,6 +1,19 @@
 .alert {
   box-shadow: 0 0.25rem 1rem rgba(0, 0, 0, .333);
 
+  &.with-triangle {
+    &:after {
+      content: "";
+      display: block;
+      position: absolute;
+      bottom: 100%;
+      width: 0;
+      height: 0;
+      left: 1rem;
+      border: 0.33rem solid transparent;
+    }
+  }
+
   > fa-icon {
     display: inline-block;
     font-weight: bold;
@@ -50,6 +63,12 @@
   &.alert-info {
     background-color: var(--infoColor);
 
+    &.with-triangle {
+      &:after {
+        border-bottom-color: var(--infoColor);
+      }
+    }
+
     &,
     fa-icon,
     h5,
@@ -60,6 +79,12 @@
 
   &.alert-warning {
     background-color: var(--warningColor);
+
+    &.with-triangle {
+      &:after {
+        border-bottom-color: var(--warningColor);
+      }
+    }
 
     &,
     fa-icon,

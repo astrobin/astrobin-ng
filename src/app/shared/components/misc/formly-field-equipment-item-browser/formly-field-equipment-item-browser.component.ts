@@ -1,6 +1,10 @@
 import { Component, OnInit } from "@angular/core";
 import { FieldType } from "@ngx-formly/core";
-import { EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
+import {
+  EquipmentItemBaseInterface,
+  EquipmentItemType,
+  EquipmentItemUsageType
+} from "@features/equipment/types/equipment-item-base.interface";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import {
@@ -25,7 +29,11 @@ export enum FormlyFieldEquipmentItemBrowserMode {
   styleUrls: ["./formly-field-equipment-item-browser.component.scss"]
 })
 export class FormlyFieldEquipmentItemBrowserComponent extends FieldType implements OnInit {
+  EquipmentItemType: typeof EquipmentItemType = EquipmentItemType;
+  EquipmentItemUsageType: typeof EquipmentItemUsageType = EquipmentItemUsageType;
+
   recent: EquipmentItemBaseInterface[] = [];
+  recentLoaded = false;
 
   constructor(
     public readonly store$: Store<State>,
@@ -51,7 +59,10 @@ export class FormlyFieldEquipmentItemBrowserComponent extends FieldType implemen
           take(1),
           map(payload => payload.items)
         )
-        .subscribe(items => (this.recent = items));
+        .subscribe(items => {
+          this.recent = items;
+          this.recentLoaded = true;
+        });
     }
   }
 
