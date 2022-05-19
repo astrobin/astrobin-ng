@@ -254,10 +254,12 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
         name: this.cameraService.getPrintablePropertyName(CameraDisplayProperty.COOLED, true),
         value: this.cameraService.getPrintableProperty$(item, CameraDisplayProperty.COOLED)
       },
-      {
-        name: this.cameraService.getPrintablePropertyName(CameraDisplayProperty.MAX_COOLING, true),
-        value: this.cameraService.getPrintableProperty$(item, CameraDisplayProperty.MAX_COOLING)
-      },
+      item.cooled
+        ? {
+            name: this.cameraService.getPrintablePropertyName(CameraDisplayProperty.MAX_COOLING, true),
+            value: this.cameraService.getPrintableProperty$(item, CameraDisplayProperty.MAX_COOLING)
+          }
+        : null,
       {
         name: this.cameraService.getPrintablePropertyName(CameraDisplayProperty.BACK_FOCUS, true),
         value: this.cameraService.getPrintableProperty$(item, CameraDisplayProperty.BACK_FOCUS)

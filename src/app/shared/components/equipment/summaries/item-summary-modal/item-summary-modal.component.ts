@@ -3,7 +3,6 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
 import { EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
-import { TranslateService } from "@ngx-translate/core";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
