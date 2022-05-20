@@ -53,18 +53,21 @@ export class SoftwareEditorComponent extends BaseItemEditorComponent<SoftwareInt
     }, 1);
 
     this.model.klass = EquipmentItemType.SOFTWARE;
+
     super.ngAfterViewInit();
   }
 
   private _initFields() {
-    this.fields = [
-      this._getDIYField(),
-      this._getBrandField(),
-      this._getNameField(),
-      this._getWebsiteField(),
-      this._getImageField()
-    ];
+    this.initBrandAndName().subscribe(() => {
+      this.fields = [
+        this._getDIYField(),
+        this._getBrandField(),
+        this._getNameField(),
+        this._getWebsiteField(),
+        this._getImageField()
+      ];
 
-    this._addBaseItemEditorFields();
+      this._addBaseItemEditorFields();
+    });
   }
 }

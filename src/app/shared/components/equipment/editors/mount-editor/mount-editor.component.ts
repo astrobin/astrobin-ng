@@ -62,178 +62,180 @@ export class MountEditorComponent extends BaseItemEditorComponent<MountInterface
   }
 
   private _initFields() {
-    this.fields = [
-      this._getDIYField(),
-      this._getBrandField(),
-      this._getNameField(),
-      {
-        key: "type",
-        type: "ng-select",
-        id: "mount-field-type",
-        expressionProperties: {
-          "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+    this.initBrandAndName().subscribe(() => {
+      this.fields = [
+        this._getDIYField(),
+        this._getBrandField(),
+        this._getNameField(),
+        {
+          key: "type",
+          type: "ng-select",
+          id: "mount-field-type",
+          expressionProperties: {
+            "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+          },
+          templateOptions: {
+            label: this.mountService.getPrintablePropertyName(MountDisplayProperty.TYPE),
+            required: true,
+            clearable: true,
+            options: Object.keys(MountType).map(mountType => ({
+              value: MountType[mountType],
+              label: this.mountService.humanizeType(MountType[mountType])
+            }))
+          }
         },
-        templateOptions: {
-          label: this.mountService.getPrintablePropertyName(MountDisplayProperty.TYPE),
-          required: true,
-          clearable: true,
-          options: Object.keys(MountType).map(mountType => ({
-            value: MountType[mountType],
-            label: this.mountService.humanizeType(MountType[mountType])
-          }))
-        }
-      },
-      {
-        key: "weight",
-        type: "input",
-        wrappers: ["default-wrapper"],
-        id: "mount-field-weight",
-        expressionProperties: {
-          "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
-        },
-        templateOptions: {
-          type: "number",
-          step: 1,
-          label: this.mountService.getPrintablePropertyName(MountDisplayProperty.WEIGHT)
-        },
-        validators: {
-          validation: [
-            "number",
-            {
-              name: "min-value",
-              options: {
-                minValue: 1
+        {
+          key: "weight",
+          type: "input",
+          wrappers: ["default-wrapper"],
+          id: "mount-field-weight",
+          expressionProperties: {
+            "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+          },
+          templateOptions: {
+            type: "number",
+            step: 1,
+            label: this.mountService.getPrintablePropertyName(MountDisplayProperty.WEIGHT)
+          },
+          validators: {
+            validation: [
+              "number",
+              {
+                name: "min-value",
+                options: {
+                  minValue: 1
+                }
+              },
+              {
+                name: "max-decimals",
+                options: {
+                  value: 2
+                }
               }
-            },
-            {
-              name: "max-decimals",
-              options: {
-                value: 2
+            ]
+          }
+        },
+        {
+          key: "maxPayload",
+          type: "input",
+          wrappers: ["default-wrapper"],
+          id: "mount-field-max-payload",
+          expressionProperties: {
+            "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+          },
+          templateOptions: {
+            type: "number",
+            step: 1,
+            label: this.mountService.getPrintablePropertyName(MountDisplayProperty.MAX_PAYLOAD)
+          },
+          validators: {
+            validation: [
+              "number",
+              {
+                name: "min-value",
+                options: {
+                  minValue: 1
+                }
               }
-            }
-          ]
-        }
-      },
-      {
-        key: "maxPayload",
-        type: "input",
-        wrappers: ["default-wrapper"],
-        id: "mount-field-max-payload",
-        expressionProperties: {
-          "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+            ]
+          }
         },
-        templateOptions: {
-          type: "number",
-          step: 1,
-          label: this.mountService.getPrintablePropertyName(MountDisplayProperty.MAX_PAYLOAD)
+        {
+          key: "computerized",
+          type: "checkbox",
+          wrappers: ["default-wrapper"],
+          id: "mount-field-computerized",
+          defaultValue: true,
+          expressionProperties: {
+            "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+          },
+          templateOptions: {
+            label: this.mountService.getPrintablePropertyName(MountDisplayProperty.COMPUTERIZED)
+          }
         },
-        validators: {
-          validation: [
-            "number",
-            {
-              name: "min-value",
-              options: {
-                minValue: 1
+        {
+          key: "periodicError",
+          type: "input",
+          wrappers: ["default-wrapper"],
+          id: "mount-field-periodic-error",
+          hideExpression: () => !this.model.computerized,
+          expressionProperties: {
+            "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+          },
+          templateOptions: {
+            type: "number",
+            step: 1,
+            label: this.mountService.getPrintablePropertyName(MountDisplayProperty.PERIODIC_ERROR)
+          },
+          validators: {
+            validation: [
+              "number",
+              {
+                name: "min-value",
+                options: {
+                  minValue: 0
+                }
+              },
+              {
+                name: "max-decimals",
+                options: {
+                  value: 2
+                }
               }
-            }
-          ]
-        }
-      },
-      {
-        key: "computerized",
-        type: "checkbox",
-        wrappers: ["default-wrapper"],
-        id: "mount-field-computerized",
-        defaultValue: true,
-        expressionProperties: {
-          "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+            ]
+          }
         },
-        templateOptions: {
-          label: this.mountService.getPrintablePropertyName(MountDisplayProperty.COMPUTERIZED)
-        }
-      },
-      {
-        key: "periodicError",
-        type: "input",
-        wrappers: ["default-wrapper"],
-        id: "mount-field-periodic-error",
-        hideExpression: () => !this.model.computerized,
-        expressionProperties: {
-          "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+        {
+          key: "pec",
+          type: "checkbox",
+          wrappers: ["default-wrapper"],
+          id: "mount-field-pec",
+          defaultValue: false,
+          hideExpression: () => !this.model.computerized,
+          expressionProperties: {
+            "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+          },
+          templateOptions: {
+            label: this.mountService.getPrintablePropertyName(MountDisplayProperty.PEC)
+          }
         },
-        templateOptions: {
-          type: "number",
-          step: 1,
-          label: this.mountService.getPrintablePropertyName(MountDisplayProperty.PERIODIC_ERROR)
-        },
-        validators: {
-          validation: [
-            "number",
-            {
-              name: "min-value",
-              options: {
-                minValue: 0
+        {
+          key: "slewSpeed",
+          type: "input",
+          wrappers: ["default-wrapper"],
+          id: "mount-field-slew-speed",
+          hideExpression: () => !this.model.computerized,
+          expressionProperties: {
+            "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+          },
+          templateOptions: {
+            type: "number",
+            step: 0.1,
+            label: this.mountService.getPrintablePropertyName(MountDisplayProperty.SLEW_SPEED)
+          },
+          validators: {
+            validation: [
+              "number",
+              {
+                name: "min-value",
+                options: {
+                  minValue: 0.1
+                }
+              },
+              {
+                name: "max-decimals",
+                options: {
+                  value: 2
+                }
               }
-            },
-            {
-              name: "max-decimals",
-              options: {
-                value: 2
-              }
-            }
-          ]
-        }
-      },
-      {
-        key: "pec",
-        type: "checkbox",
-        wrappers: ["default-wrapper"],
-        id: "mount-field-pec",
-        defaultValue: false,
-        hideExpression: () => !this.model.computerized,
-        expressionProperties: {
-          "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+            ]
+          }
         },
-        templateOptions: {
-          label: this.mountService.getPrintablePropertyName(MountDisplayProperty.PEC)
-        }
-      },
-      {
-        key: "slewSpeed",
-        type: "input",
-        wrappers: ["default-wrapper"],
-        id: "mount-field-slew-speed",
-        hideExpression: () => !this.model.computerized,
-        expressionProperties: {
-          "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
-        },
-        templateOptions: {
-          type: "number",
-          step: 0.1,
-          label: this.mountService.getPrintablePropertyName(MountDisplayProperty.SLEW_SPEED)
-        },
-        validators: {
-          validation: [
-            "number",
-            {
-              name: "min-value",
-              options: {
-                minValue: 0.1
-              }
-            },
-            {
-              name: "max-decimals",
-              options: {
-                value: 2
-              }
-            }
-          ]
-        }
-      },
-      this._getImageField(),
-      this._getWebsiteField()
-    ];
+        this._getImageField(),
+        this._getWebsiteField()
+      ];
 
-    this._addBaseItemEditorFields();
+      this._addBaseItemEditorFields();
+    });
   }
 }
