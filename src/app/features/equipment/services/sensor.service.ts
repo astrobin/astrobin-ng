@@ -81,10 +81,10 @@ export class SensorService extends BaseService implements EquipmentItemServiceIn
         );
       case SensorDisplayProperty.SENSOR_WIDTH:
         propertyValue = parseInt(propertyValue, 10);
-        return of(propertyValue || item.sensorWidth ? `${propertyValue || item.sensorWidth} μm` : "");
+        return of(propertyValue || item.sensorWidth ? `${propertyValue || item.sensorWidth} mm` : "");
       case SensorDisplayProperty.SENSOR_HEIGHT:
         propertyValue = parseInt(propertyValue, 10);
-        return of(propertyValue || item.sensorHeight ? `${propertyValue || item.sensorHeight} μm` : "");
+        return of(propertyValue || item.sensorHeight ? `${propertyValue || item.sensorHeight} mm` : "");
       case SensorDisplayProperty.QUANTUM_EFFICIENCY:
         propertyValue = parseFloat(propertyValue);
         return of(propertyValue || item.quantumEfficiency ? `${propertyValue || item.quantumEfficiency}%` : "");
