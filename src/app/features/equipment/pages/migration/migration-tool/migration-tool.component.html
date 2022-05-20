@@ -1,10 +1,13 @@
 <div class="page">
   <h1>{{ title }}</h1>
   <small>
-    {{
-      "To remove duplication and fragmentation from AstroBin's equipment database, we're asking you to perform a " +
-        "migration of your equipment items."
-    }}
+    <span
+      [innerHTML]="
+        'Please migrate <strong>your equipment items</strong> to AstroBin\'s new database, in order to remove ' +
+        'duplication and fragmentation.' | translate
+      "
+    ></span>
+
     <a href="https://welcome.astrobin.com/blog/the-great-equipment-database-migration-of-2021" target="_blank">
       {{ "Learn more" | translate }}.
     </a>
