@@ -591,7 +591,6 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
   private _validateBrandInName() {
     const brandControl: AbstractControl = this.form.get("brand");
     const nameControl: AbstractControl = this.form.get("name");
-    const brandFieldConfig: FormlyFieldConfig = this.fields.find(field => field.key === "brand");
     const nameFieldConfig: FormlyFieldConfig = this.fields.find(field => field.key === "name");
     const message = this.translateService.instant(
       "<strong>Careful!</strong> The item's name contains the brand's name (or vice versa), and it probably shouldn't."
@@ -609,10 +608,6 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
       )
       .subscribe(brand => {
         if (nameControl.value.toLowerCase().indexOf(brand.name.toLowerCase()) > -1) {
-          this.formlyFieldService.addMessage(brandFieldConfig.templateOptions, {
-            level: FormlyFieldMessageLevel.WARNING,
-            text: message
-          });
           this.formlyFieldService.addMessage(nameFieldConfig.templateOptions, {
             level: FormlyFieldMessageLevel.WARNING,
             text: message
@@ -621,10 +616,6 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
 
         for (const word of nameControl.value.split(" ")) {
           if (brand.name.toLowerCase() === word.toLowerCase()) {
-            this.formlyFieldService.addMessage(brandFieldConfig.templateOptions, {
-              level: FormlyFieldMessageLevel.WARNING,
-              text: message
-            });
             this.formlyFieldService.addMessage(nameFieldConfig.templateOptions, {
               level: FormlyFieldMessageLevel.WARNING,
               text: message
