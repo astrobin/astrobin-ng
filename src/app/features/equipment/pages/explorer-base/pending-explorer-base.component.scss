@@ -1,9 +1,12 @@
-astrobin-equipment-explorer:not(:last-of-type),
-.card:not(:last-child) {
-  display: block;
-  margin-bottom: 3rem;
-}
+:host {
+  ::ng-deep {
+    astrobin-equipment-explorer:not(:last-of-type) {
+      display: block;
+      margin-bottom: 3rem;
+    }
 
-.pagination {
-  margin-top: 2rem;
+    .pagination {
+      margin-top: 2rem;
+    }
+  }
 }
