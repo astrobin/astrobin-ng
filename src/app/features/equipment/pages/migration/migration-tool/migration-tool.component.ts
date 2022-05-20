@@ -438,6 +438,13 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
     }
   }
 
+  wrongTypeMessage(): string {
+    const humanizedActiveType: string = this.legacyGearService.humanizeType(this.activeType);
+    return this.translateService.instant(`Not a {{0}}`, {
+      0: humanizedActiveType.toLowerCase()
+    });
+  }
+
   _updateCounts() {
     this.currentUser$.pipe(take(1), isGroupMember("equipment_moderators")).subscribe(isEquipmentModerator => {
       this.nonMigratedCamerasCount$ = this.legacyCameraApi.getNonMigratedCount(isEquipmentModerator);

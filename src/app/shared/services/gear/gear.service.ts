@@ -20,7 +20,7 @@ export class GearService extends BaseService {
     super(loadingService);
   }
 
-  humanizeType(type: string) {
+  humanizeType(type: string): string {
     switch (type) {
       case "camera":
         return this.translateService.instant("Camera");
@@ -35,6 +35,8 @@ export class GearService extends BaseService {
       case "software":
         return this.translateService.instant("Software");
     }
+
+    return this.translateService.instant("n/a");
   }
 
   getDisplayName(make: string, name: string): string {

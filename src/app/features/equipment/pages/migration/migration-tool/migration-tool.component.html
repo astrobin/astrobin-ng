@@ -120,7 +120,7 @@
 
             <div aria-labelledby="mark-as-dropdown-button" ngbDropdownMenu>
               <a href="" class="dropdown-item" (click)="markAsWrongType($event, randomNonMigrated.item)">
-                {{ "Wrong type" | translate }} ({{ "e.g. a telescope classified as a mount" | translate }})
+                {{ wrongTypeMessage() }}
               </a>
 
               <a href="" class="dropdown-item" (click)="markAsMultiple($event, randomNonMigrated.item)">
