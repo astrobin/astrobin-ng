@@ -67,6 +67,10 @@
           <table class="table table-striped">
             <tbody>
               <tr>
+                <th scope="col">{{ "Item class" | translate }}</th>
+                <td>{{ legacyGearService.humanizeType(activeType) }}</td>
+              </tr>
+              <tr>
                 <th scope="col">{{ "Brand/Make" | translate }}</th>
                 <td>{{ randomNonMigrated.item.make || "n/a" | translate }}</td>
               </tr>
@@ -119,7 +123,7 @@
 
             <div aria-labelledby="mark-as-dropdown-button" ngbDropdownMenu>
               <a href="" class="dropdown-item" (click)="markAsWrongType($event, randomNonMigrated.item)">
-                {{ "Wrong type" | translate }} ({{ "e.g. a telescope classified as a mount" | translate }})
+                {{ wrongTypeMessage() }}
               </a>
 
               <a href="" class="dropdown-item" (click)="markAsMultiple($event, randomNonMigrated.item)">
