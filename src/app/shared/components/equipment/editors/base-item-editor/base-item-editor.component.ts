@@ -4,7 +4,7 @@ import { AbstractControl, FormControl, FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { BrandInterface } from "@features/equipment/types/brand.interface";
-import { EMPTY, of } from "rxjs";
+import { EMPTY, Observable, of } from "rxjs";
 import {
   CreateBrand,
   CreateBrandSuccess,
@@ -227,6 +227,36 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
           .scrollIntoView({ behavior: "smooth" });
       }, 1);
     }
+  }
+
+  initBrandAndName(): Observable<void> {
+    return new Observable<void>(observer => {
+      if (this.name) {
+        // Attempt to get the brand from the first few words.
+        const attemptedBrandName = this.name.split(" ")[0];
+        this.store$.dispatch(new FindAllBrands({ q: attemptedBrandName }));
+        this.actions$
+          .pipe(
+            ofType(EquipmentActionTypes.FIND_ALL_BRANDS_SUCCESS),
+            take(1),
+            map((action: FindAllBrandsSuccess) => action.payload.brands)
+          )
+          .subscribe(brands => {
+            if (brands.length > 0) {
+              this.model = {
+                ...this.model,
+                ...{ brand: brands[0].id, name: this.name.replace(attemptedBrandName, "").trim() }
+              };
+            }
+
+            observer.next();
+            observer.complete();
+          });
+      } else {
+        observer.next();
+        observer.complete();
+      }
+    });
   }
 
   protected _getDIYField() {

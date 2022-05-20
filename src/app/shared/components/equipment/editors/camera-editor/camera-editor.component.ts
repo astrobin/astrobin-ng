@@ -242,7 +242,9 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
     };
 
     if (this.editorMode === EquipmentItemEditorMode.CREATION) {
-      _doInitFields();
+      this.initBrandAndName().subscribe(() => {
+        _doInitFields();
+      });
     } else if (this.editorMode === EquipmentItemEditorMode.EDIT_PROPOSAL) {
       this.equipmentApiService
         .getByProperties(EquipmentItemType.CAMERA, {
