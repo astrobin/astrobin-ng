@@ -64,6 +64,10 @@
           <table class="table table-striped">
             <tbody>
               <tr>
+                <th scope="col">{{ "Item class" | translate }}</th>
+                <td>{{ legacyGearService.humanizeType(activeType) }}</td>
+              </tr>
+              <tr>
                 <th scope="col">{{ "Brand/Make" | translate }}</th>
                 <td>{{ randomNonMigrated.item.make || "n/a" | translate }}</td>
               </tr>
