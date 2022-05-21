@@ -4,7 +4,6 @@ import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipme
 export enum MigrationFlag {
   WRONG_TYPE = "WRONG_TYPE",
   MULTIPLE_ITEMS = "MULTIPLE_ITEMS",
-  DIY = "DIY",
   NOT_ENOUGH_INFO = "NOT_ENOUGH_INFO",
   MIGRATE = "MIGRATE"
 }
