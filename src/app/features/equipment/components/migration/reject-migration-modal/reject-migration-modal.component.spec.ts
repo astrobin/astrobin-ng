@@ -26,7 +26,7 @@ describe("RejectMigrationModalComponent", () => {
     fixture = TestBed.createComponent(RejectMigrationModalComponent);
     component = fixture.componentInstance;
     component.migrationStrategy = {
-      migrationFlag: MigrationFlag.DIY
+      migrationFlag: MigrationFlag.NOT_ENOUGH_INFO
     };
     fixture.detectChanges();
   });

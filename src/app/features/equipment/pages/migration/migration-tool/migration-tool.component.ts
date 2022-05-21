@@ -250,11 +250,6 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
     );
   }
 
-  markAsDIY(event: Event, object: any) {
-    event.preventDefault();
-    this._applyMigration(object, [object.pk, MigrationFlag.DIY], this.translateService.instant("DIY"));
-  }
-
   markAsNotEnoughInfo(event: Event, object: any) {
     event.preventDefault();
     this._applyMigration(

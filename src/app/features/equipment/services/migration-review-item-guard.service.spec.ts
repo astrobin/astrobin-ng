@@ -50,7 +50,7 @@ describe("MigrationReviewItemGuardService", () => {
 
     const strategy = {
       pk: 1,
-      migrationFlag: MigrationFlag.DIY,
+      migrationFlag: MigrationFlag.NOT_ENOUGH_INFO,
       migrationFlagModerator: state.auth.user.id
     };
 
@@ -77,7 +77,7 @@ describe("MigrationReviewItemGuardService", () => {
     const strategy = {
       pk: 1,
       gear: 1,
-      migrationFlag: MigrationFlag.DIY,
+      migrationFlag: MigrationFlag.NOT_ENOUGH_INFO,
       migrationFlagModerator: 999,
       migrationFlagReviewerLock: 999
     };
@@ -105,7 +105,7 @@ describe("MigrationReviewItemGuardService", () => {
     const strategy = {
       pk: 1,
       gear: 1,
-      migrationFlag: MigrationFlag.DIY,
+      migrationFlag: MigrationFlag.NOT_ENOUGH_INFO,
       migrationFlagModerator: 999,
       migrationFlagReviewer: 1000
     };
@@ -133,7 +133,7 @@ describe("MigrationReviewItemGuardService", () => {
     const strategy = {
       pk: 1,
       gear: 1,
-      migrationFlag: MigrationFlag.DIY,
+      migrationFlag: MigrationFlag.NOT_ENOUGH_INFO,
       migrationFlagModerator: 999
     };
 
@@ -160,7 +160,7 @@ describe("MigrationReviewItemGuardService", () => {
     const strategy = {
       pk: 1,
       gear: 1,
-      migrationFlag: MigrationFlag.DIY,
+      migrationFlag: MigrationFlag.NOT_ENOUGH_INFO,
       migrationFlagModerator: 999,
       migrationFlagReviewerLock: state.auth.user.id
     };
