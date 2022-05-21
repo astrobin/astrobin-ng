@@ -440,6 +440,25 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
     });
   }
 
+  wrongTypeTooltip(): string {
+    return this.translateService.instant(
+      "The legacy object cannot be migrated because it's not the right kind (e.g. a telescope added as a camera)."
+    );
+  }
+
+  multipleTooltip(): string {
+    return this.translateService.instant(
+      "The legacy object cannot be migrated because it consists of multiple objects in the same item (e.g. " +
+        "LRGB filter set, or multiple unrelated products)."
+    );
+  }
+
+  notEnoughInfoTooltip(): string {
+    return this.translateService.instant(
+      "The legacy object cannot be migrated because the correct target product cannot be unambiguously determined."
+    );
+  }
+
   _updateCounts() {
     this.currentUser$.pipe(take(1), isGroupMember("equipment_moderators")).subscribe(isEquipmentModerator => {
       this.nonMigratedCamerasCount$ = this.legacyCameraApi.getNonMigratedCount(isEquipmentModerator);
