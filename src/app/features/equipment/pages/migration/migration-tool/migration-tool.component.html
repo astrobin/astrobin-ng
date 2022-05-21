@@ -66,34 +66,34 @@
         <div class="card-body">
           <table class="table table-striped">
             <tbody>
-              <tr>
-                <th scope="col">{{ "Item class" | translate }}</th>
-                <td>{{ legacyGearService.humanizeType(activeType) }}</td>
-              </tr>
-              <tr>
-                <th scope="col">{{ "Brand/Make" | translate }}</th>
-                <td>{{ randomNonMigrated.item.make || "n/a" | translate }}</td>
-              </tr>
-              <tr>
-                <th scope="col">{{ "Name/Model" | translate }}</th>
-                <td>{{ randomNonMigrated.item.name || "n/a" | translate }}</td>
-              </tr>
-              <tr *ngIf="randomNonMigrated.userInfo?.alias">
-                <th scope="col">{{ "Alias" | translate }}</th>
-                <td>{{ randomNonMigrated.userInfo.alias || "n/a" | translate }}</td>
-              </tr>
-              <tr *ngIf="randomNonMigrated.userInfo?.comment">
-                <th scope="col">{{ "Comment" | translate }}</th>
-                <td>{{ randomNonMigrated.userInfo.comment || "n/a" | translate }}</td>
-              </tr>
-              <tr *ngIf="randomNonMigrated.userInfo?.modded">
-                <th scope="col">{{ "Modified" | translate }}</th>
-                <td>{{ "Yes" | translate }}</td>
-              </tr>
-              <tr *ngFor="let key of legacyGearService.getProperAttributes(randomNonMigrated.item)">
-                <th scope="col">{{ key | camelCaseToSentenceCase }}</th>
-                <td>{{ randomNonMigrated.item[key] !== null ? randomNonMigrated.item[key] : ("n/a" | translate) }}</td>
-              </tr>
+            <tr>
+              <th scope="col">{{ "Item class" | translate }}</th>
+              <td>{{ legacyGearService.humanizeType(activeType) }}</td>
+            </tr>
+            <tr>
+              <th scope="col">{{ "Brand/Make" | translate }}</th>
+              <td>{{ randomNonMigrated.item.make || "n/a" | translate }}</td>
+            </tr>
+            <tr>
+              <th scope="col">{{ "Name/Model" | translate }}</th>
+              <td>{{ randomNonMigrated.item.name || "n/a" | translate }}</td>
+            </tr>
+            <tr *ngIf="randomNonMigrated.userInfo?.alias">
+              <th scope="col">{{ "Alias" | translate }}</th>
+              <td>{{ randomNonMigrated.userInfo.alias || "n/a" | translate }}</td>
+            </tr>
+            <tr *ngIf="randomNonMigrated.userInfo?.comment">
+              <th scope="col">{{ "Comment" | translate }}</th>
+              <td>{{ randomNonMigrated.userInfo.comment || "n/a" | translate }}</td>
+            </tr>
+            <tr *ngIf="randomNonMigrated.userInfo?.modded">
+              <th scope="col">{{ "Modified" | translate }}</th>
+              <td>{{ "Yes" | translate }}</td>
+            </tr>
+            <tr *ngFor="let key of legacyGearService.getProperAttributes(randomNonMigrated.item)">
+              <th scope="col">{{ key | camelCaseToSentenceCase }}</th>
+              <td>{{ randomNonMigrated.item[key] !== null ? randomNonMigrated.item[key] : ("n/a" | translate) }}</td>
+            </tr>
             </tbody>
           </table>
         </div>
@@ -124,10 +124,16 @@
             <div aria-labelledby="mark-as-dropdown-button" ngbDropdownMenu>
               <a href="" class="dropdown-item" (click)="markAsWrongType($event, randomNonMigrated.item)">
                 {{ wrongTypeMessage() }}
+                <span class="help-tooltip" [ngbTooltip]="wrongTypeTooltip()">
+                  <fa-icon icon="question-circle"></fa-icon>
+                </span>
               </a>
 
               <a href="" class="dropdown-item" (click)="markAsMultiple($event, randomNonMigrated.item)">
                 {{ "Multiple items" | translate }}
+                <span class="help-tooltip" [ngbTooltip]="multipleTooltip()">
+                  <fa-icon icon="question-circle"></fa-icon>
+                </span>
               </a>
 
               <a href="" class="dropdown-item" (click)="markAsDIY($event, randomNonMigrated.item)">
@@ -136,9 +142,14 @@
 
               <a href="" class="dropdown-item" (click)="markAsNotEnoughInfo($event, randomNonMigrated.item)">
                 {{ "Not enough info" | translate }}
+                <span class="help-tooltip" [ngbTooltip]="notEnoughInfoTooltip()">
+                  <fa-icon icon="question-circle"></fa-icon>
+                </span>
               </a>
             </div>
           </div>
+
+          <span class="or d-none d-lg-block">{{ "or" | translate }}</span>
 
           <button
             class="btn btn-sm-block btn-primary"
