@@ -232,7 +232,10 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit 
   }
 
   resetBrowser() {
-    this._itemBrowser.reset();
+    if (!!this._itemBrowser) {
+      this._itemBrowser.reset();
+    }
+
     this.selectedItem = null;
     this.endEditMode();
   }
