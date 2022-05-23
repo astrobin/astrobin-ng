@@ -170,7 +170,11 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
   ngAfterViewInit(): void {
     setTimeout(() => {
       const document = this.windowRefService.nativeWindow.document;
-      (document.querySelector("#equipment-item-field-brand .ng-input input") as HTMLElement).focus();
+      const element = document.querySelector("#equipment-item-field-brand .ng-input input") as HTMLElement;
+
+      if (!!element) {
+        element.focus();
+      }
     }, 100);
   }
 

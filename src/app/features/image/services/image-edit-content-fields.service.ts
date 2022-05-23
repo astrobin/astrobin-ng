@@ -285,6 +285,9 @@ export class ImageEditContentFieldsService extends BaseService {
             label: location.name
           }))
         ),
+        onSearch: (term: string): Observable<void> => {
+          return of(void 0);
+        },
         addTag: name => {
           this.store$.dispatch(new CreateLocationAddTag(name));
           const modalRef = this.modalService.open(CreateLocationModalComponent);

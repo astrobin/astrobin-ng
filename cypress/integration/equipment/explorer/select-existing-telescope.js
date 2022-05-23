@@ -5,6 +5,8 @@ context("Equipment", () => {
     cy.server();
     cy.setupInitializationRoutes();
     cy.setupEquipmentDefaultRoutes();
+
+    cy.route("GET", "**/api/v2/equipment/telescope-edit-proposal/?edit_proposal_target=*", { results: [] });
   });
 
   context("Explorer", () => {
@@ -32,7 +34,7 @@ context("Equipment", () => {
         cy.ngSelectType("#equipment-item-field", "Test");
         cy.wait("@findTelescopes");
 
-        cy.ngSelectShouldHaveOptionsCount("#equipment-item-field", 2);
+        cy.ngSelectShouldHaveOptionsCount("#equipment-item-field", 1);
         cy.ngSelectOptionNumberSelectorShouldContain(
           "#equipment-item-field",
           1,
