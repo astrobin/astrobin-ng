@@ -164,12 +164,14 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
           type: "checkbox",
           wrappers: ["default-wrapper"],
           id: "camera-field-cooled",
+          defaultValue: this.editorMode === EquipmentItemEditorMode.CREATION ? false : null,
           expressionProperties: {
             "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
           },
           templateOptions: {
             label: this.cameraService.getPrintablePropertyName(CameraDisplayProperty.COOLED),
-            description: this.translateService.instant("Whether this camera is equipped with a cooling mechanism.")
+            description: this.translateService.instant("Whether this camera is equipped with a cooling mechanism."),
+            required: this.editorMode === EquipmentItemEditorMode.CREATION
           }
         },
         {
