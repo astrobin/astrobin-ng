@@ -123,7 +123,7 @@ export class RejectItemModalComponent extends BaseComponentDirective implements 
         wrappers: ["default-wrapper"],
         templateOptions: {
           label: this.translateService.instant("Comment"),
-          required: false,
+          required: true,
           rows: 4
         }
       }
