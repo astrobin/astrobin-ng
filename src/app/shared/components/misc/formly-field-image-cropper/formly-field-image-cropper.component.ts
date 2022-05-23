@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, OnDestroy } from "@angular/core";
 import { State } from "@app/store/state";
 import { ImageEditorSetCropperShown } from "@features/image/store/image.actions";
 import { selectImageEditorState } from "@features/image/store/image.selectors";
@@ -7,7 +7,7 @@ import { FieldType } from "@ngx-formly/core";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { CropperPosition, Dimensions, ImageCroppedEvent, LoadedImage } from "ngx-image-cropper";
-import { fromEvent } from "rxjs";
+import { fromEvent, Subscription } from "rxjs";
 import { debounceTime, filter, map, take } from "rxjs/operators";
 
 @Component({
@@ -15,7 +15,7 @@ import { debounceTime, filter, map, take } from "rxjs/operators";
   templateUrl: "./formly-field-image-cropper.component.html",
   styleUrls: ["./formly-field-image-cropper.component.scss"]
 })
-export class FormlyFieldImageCropperComponent extends FieldType {
+export class FormlyFieldImageCropperComponent extends FieldType implements OnDestroy {
   cropper: CropperPosition = {
     x1: 0,
     y1: 0,
@@ -26,6 +26,8 @@ export class FormlyFieldImageCropperComponent extends FieldType {
   cropperReady = false;
   showCropper$ = this.store$.select(selectImageEditorState).pipe(map(state => state.cropperShown));
 
+  private resizeEventSubscription: Subscription;
+
   constructor(
     public readonly store$: Store<State>,
     public readonly windowRefService: WindowRefService,
@@ -33,7 +35,7 @@ export class FormlyFieldImageCropperComponent extends FieldType {
   ) {
     super();
 
-    fromEvent(window, "resize")
+    this.resizeEventSubscription = fromEvent(window, "resize")
       .pipe(debounceTime(100))
       .subscribe(() => {
         this.showCropper$
@@ -46,6 +48,10 @@ export class FormlyFieldImageCropperComponent extends FieldType {
             this.popNotificationService.info("As you resized your window, please check your image crop again.");
           });
       });
+  }
+
+  ngOnDestroy() {
+    this.resizeEventSubscription.unsubscribe();
   }
 
   onCropperReady(dimensions: Dimensions) {
