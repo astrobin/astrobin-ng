@@ -112,8 +112,8 @@ export class ConfirmItemCreationModalComponent extends BaseComponentDirective im
         wrappers: ["default-wrapper"],
         templateOptions: {
           label: this.translateService.instant(
-            "I have not included information that pertain to my personal item " +
-              "(e.g. sold/broken/refurbished...) but this is the general description of a product"
+            "I have not included information that pertains to my personal item " +
+              "(e.g. sold/broken/refurbished...) and this is the general description of a product"
           )
         }
       });
