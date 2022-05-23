@@ -334,8 +334,8 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
                 ])
               )
             : of([]),
-        onSearch: (term: string) => {
-          this._onBrandSearch(term);
+        onSearch: (term: string): Observable<void> => {
+          return this._onBrandSearch(term);
         },
         optionTemplate: this.brandOptionTemplate,
         addTag: () => {
@@ -528,28 +528,36 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
     }
   }
 
-  protected _onBrandSearch(term: string) {
-    this.brandCreation.name = term;
+  protected _onBrandSearch(term: string): Observable<void> {
+    return new Observable<void>(observer => {
+      this.brandCreation.name = term;
 
-    if (!this.brandCreation.name) {
-      return of([]);
-    }
+      if (!this.brandCreation.name) {
+        observer.next();
+        observer.complete();
+        return;
+      }
 
-    const field = this.fields.find(f => f.key === "brand");
-    this.store$.dispatch(new FindAllBrands({ q: this.brandCreation.name }));
-    field.templateOptions.options = this.actions$.pipe(
-      ofType(EquipmentActionTypes.FIND_ALL_BRANDS_SUCCESS),
-      map((action: FindAllBrandsSuccess) => action.payload.brands),
-      map(brands =>
-        brands.map(brand => {
-          return {
-            value: brand.id,
-            label: brand.name,
-            brand
-          };
+      const field = this.fields.find(f => f.key === "brand");
+      this.store$.dispatch(new FindAllBrands({ q: this.brandCreation.name }));
+      field.templateOptions.options = this.actions$.pipe(
+        ofType(EquipmentActionTypes.FIND_ALL_BRANDS_SUCCESS),
+        map((action: FindAllBrandsSuccess) => action.payload.brands),
+        map(brands =>
+          brands.map(brand => {
+            return {
+              value: brand.id,
+              label: brand.name,
+              brand
+            };
+          })
+        ),
+        tap(() => {
+          observer.next();
+          observer.complete();
         })
-      )
-    );
+      );
+    });
   }
 
   private _similarItemSuggestion() {

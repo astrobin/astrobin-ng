@@ -412,8 +412,8 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
                 clearable: true,
                 label: this.showLabel ? this.label || this.translateService.instant("Find equipment item") : null,
                 options: this._getOptions().pipe(takeUntil(this.destroyed$)),
-                onSearch: (term: string) => {
-                  this._onSearch(term);
+                onSearch: (term: string): Observable<void> => {
+                  return this._onSearch(term);
                 },
                 labelTemplate: this.equipmentItemLabelTemplate,
                 optionTemplate: this.equipmentItemOptionTemplate,
@@ -581,59 +581,67 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
     );
   }
 
-  _onSearch(q: string) {
-    if (!q || q.length < 1) {
-      return of([]);
-    }
+  _onSearch(q: string): Observable<void> {
+    return new Observable<void>(observer => {
+      if (!q || q.length < 1) {
+        observer.next();
+        observer.complete();
+        return;
+      }
 
-    this.q = q;
+      this.q = q;
 
-    const field = this.fields[0];
-    this.store$.dispatch(
-      new FindAllEquipmentItems({
-        q,
-        type: this.type
-      })
-    );
-
-    field.templateOptions.options = this.actions$.pipe(
-      ofType(EquipmentActionTypes.FIND_ALL_EQUIPMENT_ITEMS_SUCCESS),
-      take(1),
-      map((action: FindAllEquipmentItemsSuccess) => action.payload.items),
-      tap(items => {
-        const uniqueBrands: BrandInterface["id"][] = [];
-        for (const item of items) {
-          if (!!item.brand && uniqueBrands.indexOf(item.brand) === -1) {
-            uniqueBrands.push(item.brand);
-          }
-        }
-        uniqueBrands.forEach(id => this.store$.dispatch(new LoadBrand({ id })));
-      }),
-      switchMap(items =>
-        this.store$.select(selectBrands).pipe(
-          filter(brands => {
-            for (const item of items) {
-              if (!!item.brand && !brands.find(brand => brand.id === item.brand)) {
-                return false;
-              }
-            }
-
-            return true;
-          }),
-          take(1),
-          map(brands => ({
-            brands,
-            items
-          }))
-        )
-      ),
-      map((result: { brands: BrandInterface[]; items: EquipmentItemBaseInterface[] }) =>
-        result.items.map(item => {
-          const brand = result.brands.find(b => b.id === item.brand);
-          return this._getNgOptionValue(brand, item);
+      const field = this.fields[0];
+      this.store$.dispatch(
+        new FindAllEquipmentItems({
+          q,
+          type: this.type
         })
-      )
-    );
+      );
+
+      field.templateOptions.options = this.actions$.pipe(
+        ofType(EquipmentActionTypes.FIND_ALL_EQUIPMENT_ITEMS_SUCCESS),
+        take(1),
+        map((action: FindAllEquipmentItemsSuccess) => action.payload.items),
+        tap(items => {
+          const uniqueBrands: BrandInterface["id"][] = [];
+          for (const item of items) {
+            if (!!item.brand && uniqueBrands.indexOf(item.brand) === -1) {
+              uniqueBrands.push(item.brand);
+            }
+          }
+          uniqueBrands.forEach(id => this.store$.dispatch(new LoadBrand({ id })));
+        }),
+        switchMap(items =>
+          this.store$.select(selectBrands).pipe(
+            filter(brands => {
+              for (const item of items) {
+                if (!!item.brand && !brands.find(brand => brand.id === item.brand)) {
+                  return false;
+                }
+              }
+
+              return true;
+            }),
+            take(1),
+            map(brands => ({
+              brands,
+              items
+            }))
+          )
+        ),
+        map((result: { brands: BrandInterface[]; items: EquipmentItemBaseInterface[] }) =>
+          result.items.map(item => {
+            const brand = result.brands.find(b => b.id === item.brand);
+            return this._getNgOptionValue(brand, item);
+          })
+        ),
+        tap(() => {
+          observer.next();
+          observer.complete();
+        })
+      );
+    });
   }
 
   _getNgOptionValue(brand: BrandInterface | null, item: EquipmentItemBaseInterface): any {
