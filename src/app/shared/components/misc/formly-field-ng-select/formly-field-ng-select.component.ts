@@ -14,7 +14,7 @@ import { NgSelectComponent } from "@ng-select/ng-select";
 export class FormlyFieldNgSelectComponent extends FieldType implements OnInit, OnDestroy {
   input$ = new Subject<string>();
   inputSubscription: Subscription;
-  loading = true;
+  loading = false;
   @ViewChild("ngSelect")
   private _ngSelect: NgSelectComponent;
 
