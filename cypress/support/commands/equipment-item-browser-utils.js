@@ -549,10 +549,7 @@ Cypress.Commands.add("equipmentItemBrowserCreate", (selector, text, apiToWait) =
 
   cy.wait(apiToWait);
 
-  cy.ngSelectShouldHaveOptionsCount(selector, 1);
-  cy.ngSelectOptionNumberSelectorShouldContain(selector, 1, "span span", "Create new");
-  cy.ngSelectOptionNumberSelectorShouldContain(selector, 1, "span", text);
-  cy.ngSelectOptionClick(selector, 1);
+  cy.get(`${selector} .add-tag`).click();
 });
 
 Cypress.Commands.add("equipmentItemBrowserCreateBrand", (selector, name, website, brandObject) => {

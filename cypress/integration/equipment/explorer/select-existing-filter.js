@@ -32,7 +32,7 @@ context("Equipment", () => {
         cy.ngSelectType("#equipment-item-field", "Test");
         cy.wait("@findFilters");
 
-        cy.ngSelectShouldHaveOptionsCount("#equipment-item-field", 2);
+        cy.ngSelectShouldHaveOptionsCount("#equipment-item-field", 1);
         cy.ngSelectOptionNumberSelectorShouldContain(
           "#equipment-item-field",
           1,
