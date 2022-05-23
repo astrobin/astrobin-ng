@@ -76,7 +76,7 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
   showLabel = true;
 
   @Input()
-  required = true;
+  required = false;
 
   @Input()
   multiple = false;
