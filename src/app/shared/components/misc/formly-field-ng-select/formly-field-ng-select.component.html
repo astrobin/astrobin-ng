@@ -9,8 +9,7 @@
 <ng-template #select let-items="items">
   <ng-select
     #ngSelect
-    [addTagText]="'Create new:' | translate"
-    [addTag]="to.addTag ? onAddTag.bind(this) : undefined"
+    [dropdownPosition]="to.addTag ? 'bottom' : 'auto'"
     [attr.id]="field.id"
     [bindValue]="to.bindValue || 'value'"
     [bindLabel]="to.bindLabel || 'label'"
@@ -49,6 +48,18 @@
         [ngTemplateOutletContext]="{ item: item }"
         [ngTemplateOutlet]="to.optionTemplate"
       ></ng-container>
+    </ng-template>
+
+    <ng-template ng-footer-tmp>
+      <button
+        *ngIf="to.addTag && !!value"
+        href="#"
+        (click)="onAddTag(value)"
+        class="btn btn-primary add-tag"
+        [class.loading]="loading"
+      >
+        {{ "Create new:" | translate }} {{ value }}
+      </button>
     </ng-template>
   </ng-select>
 </ng-template>

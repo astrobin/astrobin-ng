@@ -66,44 +66,44 @@
       background-color: var(--darkerGrey);
     }
   }
-}
 
-.ng-dropdown-panel {
-  background: var(--darkestGrey) !important;
-  border-top: 1px solid var(--darkGrey) !important;
-  box-shadow: .25rem .5rem 1rem rgba(0, 0, 0, .5) !important;
+  .ng-dropdown-panel {
+    background: var(--darkestGrey) !important;
+    border-top: 1px solid var(--darkGrey) !important;
+    box-shadow: .25rem .5rem 1rem rgba(0, 0, 0, .5) !important;
 
-  .ng-dropdown-panel-items {
-    max-height: 220px !important;
-  }
-
-  .ng-optgroup {
-    color: var(--white) !important;
-    font-weight: bold !important;
-    padding: .75rem !important;
-  }
-
-  .ng-option {
-    padding: .5rem 1rem !important;
-    color: var(--lightestGrey) !important;
-    white-space: normal !important;
-    line-height: 1.15rem !important;
-
-    &.ng-option-child {
-      padding-left: 1.5rem !important;
+    .ng-dropdown-panel-items {
+      max-height: 220px !important;
     }
 
-    &.ng-option-marked {
+    .ng-optgroup {
+      color: var(--white) !important;
+      font-weight: bold !important;
+      padding: .75rem !important;
+    }
+
+    .ng-option {
+      padding: .5rem 1rem !important;
       color: var(--lightestGrey) !important;
-      background: var(--darkGrey) !important;
-    }
+      white-space: normal !important;
+      line-height: 1.15rem !important;
 
-    &:not([id]):not(.ng-option-disabled) {
-      padding: 1rem 1rem !important;
-      background: var(--accentColor) !important;
-      margin: 2rem 1rem 1.75rem;
-      border-radius: .5rem !important;
-      text-align: center;
+      &.ng-option-child {
+        padding-left: 1.5rem !important;
+      }
+
+      &.ng-option-marked {
+        color: var(--lightestGrey) !important;
+        background: var(--darkGrey) !important;
+      }
+    }
+  }
+
+  .ng-dropdown-footer {
+    padding: 0;
+
+    .add-tag {
+      margin: 1rem;
     }
   }
 }

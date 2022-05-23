@@ -15,6 +15,8 @@ export class FormlyFieldNgSelectComponent extends FieldType implements OnInit, O
   input$ = new Subject<string>();
   inputSubscription: Subscription;
   loading = false;
+  value = null;
+
   @ViewChild("ngSelect")
   private _ngSelect: NgSelectComponent;
 
@@ -63,6 +65,7 @@ export class FormlyFieldNgSelectComponent extends FieldType implements OnInit, O
           debounceTime(500)
         )
         .subscribe(value => {
+          this.value = value;
           this.onSearch(value);
         });
     }
