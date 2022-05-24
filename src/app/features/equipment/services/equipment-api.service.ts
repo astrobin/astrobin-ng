@@ -15,7 +15,7 @@ import { catchError, map, switchMap, take } from "rxjs/operators";
 import { BrandInterface } from "@features/equipment/types/brand.interface";
 import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
 import { CommonApiService } from "@shared/services/api/classic/common/common-api.service";
-import { CameraInterface } from "@features/equipment/types/camera.interface";
+import { CameraInterface, CameraType } from "@features/equipment/types/camera.interface";
 import { SensorInterface } from "@features/equipment/types/sensor.interface";
 import { TelescopeInterface } from "@features/equipment/types/telescope.interface";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
@@ -53,9 +53,9 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     id: EquipmentItemBaseInterface["id"],
     type: EquipmentItemType
   ): Observable<EquipmentItemBaseInterface> {
-    return this.http
-      .get<EquipmentItemBaseInterface>(`${this.configUrl}/${type.toLowerCase()}/${id}/`)
-      .pipe(map(item => this._parseItem(item)));
+    const url = `${this.configUrl}/${type.toLowerCase()}/${id}/`;
+
+    return this.http.get<EquipmentItemBaseInterface>(url).pipe(map(item => this._parseItem(item)));
   }
 
   getAllEquipmentItems(
@@ -416,14 +416,7 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
   // CAMERA API
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  createCamera(camera: Omit<CameraInterface, "id">, createModifiedVariant: boolean): Observable<CameraInterface> {
-    if (createModifiedVariant) {
-      return forkJoin([
-        this._createItem<CameraInterface>({ ...camera, ...{ modified: false } }, "camera"),
-        this._createItem<CameraInterface>({ ...camera, ...{ modified: true } }, "camera")
-      ]).pipe(map(results => results[0]));
-    }
-
+  createCamera(camera: Omit<CameraInterface, "id">): Observable<CameraInterface> {
     return this._createItem<CameraInterface>(camera, "camera");
   }
 
@@ -437,6 +430,12 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     return this.http
       .get<CameraInterface>(`${this.configUrl}/camera/${id}/`)
       .pipe(map(camera => this._parseCamera(camera)));
+  }
+
+  findCameraVariants(id: CameraInterface["id"]): Observable<CameraInterface[]> {
+    return this.http
+      .get<CameraInterface[]>(`${this.configUrl}/camera/${id}/variants/`)
+      .pipe(map(cameraVariants => cameraVariants.map(cameraVariant => this._parseCamera(cameraVariant))));
   }
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

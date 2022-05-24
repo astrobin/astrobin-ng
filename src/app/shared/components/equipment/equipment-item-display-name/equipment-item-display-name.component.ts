@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, Input, OnChanges, OnInit } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
@@ -20,7 +20,7 @@ import { ItemUnapprovedInfoModalComponent } from "@shared/components/equipment/i
   templateUrl: "./equipment-item-display-name.component.html",
   styleUrls: ["./equipment-item-display-name.component.scss"]
 })
-export class EquipmentItemDisplayNameComponent extends BaseComponentDirective implements OnInit {
+export class EquipmentItemDisplayNameComponent extends BaseComponentDirective implements OnChanges {
   @Input()
   item: EquipmentItemBaseInterface;
 
@@ -40,7 +40,7 @@ export class EquipmentItemDisplayNameComponent extends BaseComponentDirective im
     super(store$);
   }
 
-  ngOnInit(): void {
+  ngOnChanges(): void {
     if (!!this.item.brand) {
       this.store$.dispatch(new LoadBrand({ id: this.item.brand }));
       this.store$

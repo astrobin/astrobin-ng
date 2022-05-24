@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from "@angular/core";
+import { Component, EventEmitter, Input, OnChanges, Output, TemplateRef, ViewChild } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { State } from "@app/store/state";
 import { Action, Store } from "@ngrx/store";
@@ -54,7 +54,7 @@ type TypeUnion = Type | Type[] | null;
   templateUrl: "./item-browser.component.html",
   styleUrls: ["./item-browser.component.scss"]
 })
-export class ItemBrowserComponent extends BaseComponentDirective implements OnInit {
+export class ItemBrowserComponent extends BaseComponentDirective implements OnChanges {
   EquipmentItemType = EquipmentItemType;
 
   @Input()
@@ -128,7 +128,7 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
     super(store$);
   }
 
-  ngOnInit() {
+  ngOnChanges() {
     setTimeout(() => this._setFields(), 1);
   }
 
@@ -288,10 +288,7 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
             actionSuccessType = EquipmentActionTypes.CREATE_SENSOR_SUCCESS;
             break;
           case EquipmentItemType.CAMERA:
-            const createModifiedVariant = (data as any).createModifiedVariant || false;
-            delete (data as any).createModifiedVariant;
-
-            action = new CreateCamera({ camera: item as CameraInterface, createModifiedVariant });
+            action = new CreateCamera({ camera: item as CameraInterface });
             actionSuccessType = EquipmentActionTypes.CREATE_CAMERA_SUCCESS;
             break;
           case EquipmentItemType.TELESCOPE:

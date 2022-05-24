@@ -83,7 +83,7 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
   }
 
   private _initFields() {
-    const _doInitFields = (opts: { hasModifiedVariant?: boolean } = {}) => {
+    const _doInitFields = () => {
       this.fields = [
         this._getDIYField(),
         this._getBrandField(),
@@ -132,38 +132,11 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
           }
         },
         {
-          key: "createModifiedVariant",
-          type: "checkbox",
-          wrappers: ["default-wrapper"],
-          id: "camera-field-create-modified-variant",
-          defaultValue: !!opts.hasModifiedVariant,
-          hideExpression: () => this.form.get("type").value !== CameraType.DSLR_MIRRORLESS || opts.hasModifiedVariant,
-          expressionProperties: {
-            "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
-          },
-          templateOptions: {
-            label: this.cameraService.getPrintablePropertyName(CameraDisplayProperty.CREATE_MODIFIED_VARIANT),
-            description: this.translateService.instant(
-              "If selected, AstroBin will automatically create a variant of this object that is labeled as " +
-                "<em>modified for astrophotography</em>."
-            ),
-            messages: [
-              {
-                level: FormlyFieldMessageLevel.INFO,
-                text: this.translateService.instant(
-                  "Please only do this for DSLR camera that typically are modified for astrophotography. If this is a " +
-                    "camera that is <em>specifically</em> sold as modified for astrophotography, e.g. the " +
-                    "<strong>Canon EOS 60Da</strong> you <strong>do not</strong> need to use check this option."
-                )
-              }
-            ]
-          }
-        },
-        {
           key: "cooled",
           type: "checkbox",
           wrappers: ["default-wrapper"],
           id: "camera-field-cooled",
+          hideExpression: () => this.form.get("type").value !== CameraType.DEDICATED_DEEP_SKY,
           defaultValue: this.editorMode === EquipmentItemEditorMode.CREATION ? false : null,
           expressionProperties: {
             "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
@@ -179,7 +152,7 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
           type: "input",
           wrappers: ["default-wrapper"],
           id: "camera-field-max-cooling",
-          hideExpression: () => !this.form.get("cooled").value,
+          hideExpression: () => !this.form.get("cooled")?.value,
           expressionProperties: {
             "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
           },
@@ -247,16 +220,8 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
       this.initBrandAndName().subscribe(() => {
         _doInitFields();
       });
-    } else if (this.editorMode === EquipmentItemEditorMode.EDIT_PROPOSAL) {
-      this.equipmentApiService
-        .getByProperties(EquipmentItemType.CAMERA, {
-          brand: this.model.brand,
-          name: this.model.name,
-          modified: true
-        })
-        .subscribe(camera => {
-          _doInitFields({ hasModifiedVariant: !!camera });
-        });
+    } else {
+      _doInitFields();
     }
   }
 }

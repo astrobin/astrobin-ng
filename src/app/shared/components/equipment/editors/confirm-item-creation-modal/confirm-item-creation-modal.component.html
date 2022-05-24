@@ -13,6 +13,7 @@
 <div class="modal-body">
   <p class="alert alert-info">
     <strong>
+      <fa-icon icon="info-circle"></fa-icon>
       {{ "Please make sure that the information you entered is accurate." | translate }}
     </strong>
 
@@ -28,14 +29,16 @@
     </div>
     <div class="card-body">
       <astrobin-equipment-item-summary [item]="item" [showImage]="false"></astrobin-equipment-item-summary>
+      <div *ngIf="showModifiedCameraCreationNotice" class="alert alert-info mt-3 mb-0">
+        <strong>
+          <fa-icon icon="info-circle"></fa-icon>
+          {{ "Please note" | translate }}
+        </strong>:
+        {{ "AstroBin will automatically create a variant of this camera marked as \"modified for astrophotography\." | translate }}
+      </div>
     </div>
   </div>
 
-  <div class="mt-4 ml-2">
-    <form [formGroup]="form">
-      <formly-form [fields]="fields" [form]="form" [model]="model"></formly-form>
-    </form>
-  </div>
 
   <ng-container *ngIf="similarItems$ | async as similarItems">
     <div *ngIf="similarItems.length > 0" class="alert alert-warning mt-3">
@@ -48,6 +51,12 @@
       ></astrobin-similar-items-suggestion>
     </div>
   </ng-container>
+
+  <div class="mt-4 ml-2">
+    <form [formGroup]="form">
+      <formly-form [fields]="fields" [form]="form" [model]="model"></formly-form>
+    </form>
+  </div>
 </div>
 
 <div class="modal-footer">

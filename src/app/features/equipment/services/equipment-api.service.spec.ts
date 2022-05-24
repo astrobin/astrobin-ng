@@ -70,7 +70,7 @@ describe("EquipmentApiService", () => {
   it("createCamera should work", () => {
     const camera = CameraGenerator.camera();
 
-    service.createCamera(camera, false).subscribe(response => {
+    service.createCamera(camera).subscribe(response => {
       expect(response.id).toEqual(camera.id);
     });
 

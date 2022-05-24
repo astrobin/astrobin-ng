@@ -16,6 +16,7 @@ import { Observable } from "rxjs";
 import { FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
+import { CameraInterface, CameraType } from "@features/equipment/types/camera.interface";
 
 export enum ConfirmItemCreationResult {
   CANCEL
@@ -37,6 +38,8 @@ export class ConfirmItemCreationModalComponent extends BaseComponentDirective im
   fields: FormlyFieldConfig[];
 
   form: FormGroup = new FormGroup({});
+
+  showModifiedCameraCreationNotice = false;
 
   model: {
     confirmNoTypos: boolean;
@@ -118,6 +121,10 @@ export class ConfirmItemCreationModalComponent extends BaseComponentDirective im
         }
       });
     }
+
+    this.showModifiedCameraCreationNotice =
+      this.equipmentItemService.getType(this.item) === EquipmentItemType.CAMERA &&
+      (this.item as CameraInterface).type === CameraType.DSLR_MIRRORLESS;
   }
 
   useSuggestion(item: EquipmentItemBaseInterface) {

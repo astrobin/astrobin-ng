@@ -3,11 +3,11 @@
   #itemBrowser
   [type]="activeType"
   [initialValue]="this.activeId"
-  (valueChanged)="onItemSelected($event)"
   (creationModeStarted)="onCreationModeStarted()"
+  (valueChanged)="onSelectedItemChanged($event)"
 ></astrobin-equipment-item-browser>
 
-<div class="card" [class.disabled-with-backdrop]="subCreationMode" *ngIf="selectedItem">
+<div class="card" [class.disabled-with-backdrop]="subCreationMode" *ngIf="!!selectedItem">
   <div class="backdrop"></div>
 
   <div class="card-header">
@@ -25,6 +25,23 @@
       [showEmptyProperties]="true"
       [showLargeImage]="true"
     ></astrobin-equipment-item-summary>
+
+    <div *ngIf="cameraVariants.length > 0" class="alert alert-info camera-variants-alert">
+      <p>
+        <strong><fa-icon icon="info-circle"></fa-icon> {{ "Please note" }}:</strong>
+        {{ "This camera is also available in the following variants:" | translate }}
+      </p>
+
+      <div class="camera-variants">
+        <a
+          [routerLink]="['/equipment/explorer/camera', cameraVariant.id]"
+          [innerHTML]="equipmentItemService.getName$(cameraVariant) | async"
+          *ngFor="let cameraVariant of cameraVariants"
+          class="camera-variant"
+        >
+          </a>
+      </div>
+    </div>
   </div>
 
   <div class="card-footer">

@@ -21,8 +21,7 @@ export enum CameraDisplayProperty {
   COOLED = "COOLED",
   MAX_COOLING = "MAX_COOLING",
   BACK_FOCUS = "BACK_FOCUS",
-  MODIFIED = "MODIFIED",
-  CREATE_MODIFIED_VARIANT = "CREATE_MODIFIED_VARIANT"
+  MODIFIED = "MODIFIED"
 }
 
 @Injectable({
@@ -63,8 +62,7 @@ export class CameraService extends BaseService implements EquipmentItemServiceIn
       CameraDisplayProperty.COOLED,
       CameraDisplayProperty.MAX_COOLING,
       CameraDisplayProperty.BACK_FOCUS,
-      CameraDisplayProperty.MODIFIED,
-      CameraDisplayProperty.CREATE_MODIFIED_VARIANT
+      CameraDisplayProperty.MODIFIED
     ];
   }
 
@@ -79,7 +77,10 @@ export class CameraService extends BaseService implements EquipmentItemServiceIn
       case CameraDisplayProperty.TYPE:
         return of(this.humanizeType(propertyValue || item.type));
       case CameraDisplayProperty.SENSOR:
-        const payload = { id: parseInt(propertyValue, 10) || item.sensor, type: EquipmentItemType.SENSOR };
+        const payload = {
+          id: parseInt(propertyValue, 10) || item.sensor,
+          type: EquipmentItemType.SENSOR
+        };
         this.store$.dispatch(new LoadEquipmentItem(payload));
         return this.store$.select(selectEquipmentItem, payload).pipe(
           filter(sensor => !!sensor),
@@ -117,15 +118,6 @@ export class CameraService extends BaseService implements EquipmentItemServiceIn
           return of(null);
         }
         return of(this.utilsService.yesNo(modifiedValue));
-      case CameraDisplayProperty.CREATE_MODIFIED_VARIANT:
-        const createModifiedVariantValue =
-          propertyValue !== undefined
-            ? propertyValue
-            : ((item as unknown) as EditProposalInterface<CameraInterface>).createModifiedVariant;
-        if (createModifiedVariantValue === undefined || createModifiedVariantValue === null) {
-          return of(null);
-        }
-        return of(this.utilsService.yesNo(createModifiedVariantValue));
       default:
         throw Error(`Invalid property: ${property}`);
     }
@@ -151,8 +143,6 @@ export class CameraService extends BaseService implements EquipmentItemServiceIn
           : this.translateService.instant("Back focus") + " (mm)";
       case CameraDisplayProperty.MODIFIED:
         return this.translateService.instant("Modified");
-      case CameraDisplayProperty.CREATE_MODIFIED_VARIANT:
-        return this.translateService.instant(`Automatically create "modified" variant`);
       default:
         throw Error(`Invalid property: ${propertyName}`);
     }

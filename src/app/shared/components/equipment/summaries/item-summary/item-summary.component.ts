@@ -3,7 +3,7 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
 import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import { BrandInterface } from "@features/equipment/types/brand.interface";
-import { CameraInterface, instanceOfCamera } from "@features/equipment/types/camera.interface";
+import { CameraInterface, CameraType, instanceOfCamera } from "@features/equipment/types/camera.interface";
 import { TranslateService } from "@ngx-translate/core";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
@@ -250,11 +250,13 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
         name: this.cameraService.getPrintablePropertyName(CameraDisplayProperty.TYPE, true),
         value: this.cameraService.getPrintableProperty$(item, CameraDisplayProperty.TYPE)
       },
-      {
-        name: this.cameraService.getPrintablePropertyName(CameraDisplayProperty.COOLED, true),
-        value: this.cameraService.getPrintableProperty$(item, CameraDisplayProperty.COOLED)
-      },
-      item.cooled
+      item.type === CameraType.DEDICATED_DEEP_SKY
+        ? {
+            name: this.cameraService.getPrintablePropertyName(CameraDisplayProperty.COOLED, true),
+            value: this.cameraService.getPrintableProperty$(item, CameraDisplayProperty.COOLED)
+          }
+        : null,
+      item.type === CameraType.DEDICATED_DEEP_SKY && item.cooled
         ? {
             name: this.cameraService.getPrintablePropertyName(CameraDisplayProperty.MAX_COOLING, true),
             value: this.cameraService.getPrintableProperty$(item, CameraDisplayProperty.MAX_COOLING)

@@ -157,7 +157,7 @@ export class EquipmentItemService extends BaseService {
 
     const nonNullableKeys = ["image"];
 
-    const _getChanges = (createModifiedVariantChange: boolean): EditProposalChange[] => {
+    const _getChanges = (): EditProposalChange[] => {
       const changes: EditProposalChange[] = [];
 
       let originalProperties:
@@ -221,32 +221,10 @@ export class EquipmentItemService extends BaseService {
         }
       }
 
-      if (createModifiedVariantChange) {
-        changes.push({ propertyName: "createModifiedVariant", before: "false", after: "true" });
-      }
-
       return changes;
     };
 
-    return new Observable<EditProposalChange[]>(observer => {
-      if (this.getType(item) === EquipmentItemType.CAMERA && editProposal.createModifiedVariant) {
-        // We need to make sure we're actually requesting to create a modified variant. The original item does not store
-        // if a modified variant was created, so we need to try and find it.
-        this.equipmentApiService
-          .getByProperties(EquipmentItemType.CAMERA, {
-            brand: item.brand,
-            name: item.name,
-            modified: true
-          })
-          .subscribe(modifiedVariant => {
-            observer.next(_getChanges(!modifiedVariant));
-            observer.complete();
-          });
-      } else {
-        observer.next(_getChanges(false));
-        observer.complete();
-      }
-    });
+    return of(_getChanges());
   }
 
   nameChangeWarningMessage(): string {
