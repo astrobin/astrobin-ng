@@ -49,9 +49,9 @@ context("Equipment", () => {
 
         cy.get("#create-new-item #create-new-item #equipment-item-field-name").should("have.value", "Test sensor");
 
-        cy.route("POST", "**/api/v2/equipment/sensor/", testSensor).as("createSensor");
-        cy.route("GET", "**/api/v2/equipment/sensor/find-similar-in-brand/*", []);
-        cy.route("GET", "**/api/v2/equipment/brand/1/", testBrand);
+        cy.route("post", "**/api/v2/equipment/sensor/", testSensor).as("createSensor");
+        cy.route("get", "**/api/v2/equipment/sensor/find-similar-in-brand/*", []);
+        cy.route("get", "**/api/v2/equipment/brand/1/", testBrand);
 
         cy.get("#create-new-item #create-new-item .btn-primary").click();
 
@@ -80,7 +80,7 @@ context("Equipment", () => {
       });
 
       it("should create the item", () => {
-        cy.route("POST", "**/api/v2/equipment/camera/", testCamera).as("createCamera");
+        cy.route("post", "**/api/v2/equipment/camera/", testCamera).as("createCamera");
 
         cy.get("#create-new-item .btn-primary").click();
 

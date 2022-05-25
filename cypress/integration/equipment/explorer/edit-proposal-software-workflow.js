@@ -10,7 +10,7 @@ context("Equipment", () => {
     cy.setupInitializationRoutes();
     cy.setupEquipmentDefaultRoutes();
 
-    cy.route("GET", "**/api/v2/equipment/software-edit-proposal/?edit_proposal_target=*", { results: [] });
+    cy.route("get", "**/api/v2/equipment/software-edit-proposal/?edit_proposal_target=*", { results: [] });
   });
 
   context("Explorer", () => {
@@ -57,7 +57,7 @@ context("Equipment", () => {
     });
 
     it("should show warning if name is changed", () => {
-      cy.route("GET", "**/api/v2/equipment/software/?name=*", {
+      cy.route("get", "**/api/v2/equipment/software/?name=*", {
         count: 0,
         next: null,
         previous: null,
@@ -76,8 +76,8 @@ context("Equipment", () => {
     });
 
     it("should submit the form", () => {
-      cy.route("POST", "**/api/v2/equipment/software-edit-proposal/", testSoftwareEditProposal).as("saveEditProposal");
-      cy.route("GET", "**/api/v2/equipment/software-edit-proposal/?edit_proposal_target=*", {
+      cy.route("post", "**/api/v2/equipment/software-edit-proposal/", testSoftwareEditProposal).as("saveEditProposal");
+      cy.route("get", "**/api/v2/equipment/software-edit-proposal/?edit_proposal_target=*", {
         results: [testSoftwareEditProposal]
       }).as("getEditProposals");
 

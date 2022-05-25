@@ -7,7 +7,7 @@ context("uploader", () => {
     it("should redirect to the login page", () => {
       cy.server();
       cy.setupInitializationRoutes();
-      cy.route("GET", "**/common/userprofiles/current", []).as("getCurrentUserProfile");
+      cy.route("get", "**/common/userprofiles/current", []).as("getCurrentUserProfile");
 
       cy.visitPage("/uploader");
       cy.url().should("contain", "/account/logging-in");
@@ -23,7 +23,7 @@ context("uploader", () => {
     describe("when the website is in read-only mode", () => {
       beforeEach(() => {
         cy.login();
-        cy.route("GET", "**/json-api/common/app-config/", "fixture:api/json/app-config-read-only.json").as("appConfig");
+        cy.route("get", "**/json-api/common/app-config/", "fixture:api/json/app-config-read-only.json").as("appConfig");
         cy.visitPage("/uploader");
       });
 
@@ -79,7 +79,7 @@ context("uploader", () => {
           "fixture:api/common/usersubscriptions_2_premium.json"
         ).as("getUserSubscriptions");
 
-        cy.route("GET", "**/common/users/*", "fixture:api/common/users_2.json").as("getUser");
+        cy.route("get", "**/common/users/*", "fixture:api/common/users_2.json").as("getUser");
 
         cy.visitPage("/uploader");
 
@@ -97,7 +97,7 @@ context("uploader", () => {
           "fixture:api/common/usersubscriptions_2_premium_autorenew.json"
         ).as("getUserSubscriptions");
 
-        cy.route("GET", "**/common/users/*", "fixture:api/common/users_2.json").as("getUser");
+        cy.route("get", "**/common/users/*", "fixture:api/common/users_2.json").as("getUser");
 
         cy.visitPage("/uploader");
 
@@ -115,7 +115,7 @@ context("uploader", () => {
           "fixture:api/common/usersubscriptions_2_premium_2020.json"
         ).as("getUserSubscriptions");
 
-        cy.route("GET", "**/common/users/*", "fixture:api/common/users_2.json").as("getUser");
+        cy.route("get", "**/common/users/*", "fixture:api/common/users_2.json").as("getUser");
 
         cy.visitPage("/uploader");
 
@@ -127,11 +127,11 @@ context("uploader", () => {
       it("should have all form controls if user is Free", () => {
         cy.login();
 
-        cy.route("GET", "**/common/usersubscriptions/?user=*", "fixture:api/common/usersubscriptions_2_free.json").as(
+        cy.route("get", "**/common/usersubscriptions/?user=*", "fixture:api/common/usersubscriptions_2_free.json").as(
           "getUserSubscriptions"
         );
 
-        cy.route("GET", "**/common/users/*", "fixture:api/common/users_2.json").as("getUser");
+        cy.route("get", "**/common/users/*", "fixture:api/common/users_2.json").as("getUser");
 
         cy.visitPage("/uploader");
 

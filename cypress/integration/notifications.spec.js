@@ -5,7 +5,7 @@ context("notifications", () => {
     it("should redirect to the login page", () => {
       cy.server();
       cy.setupInitializationRoutes();
-      cy.route("GET", "**/common/userprofiles/current", []).as("getCurrentUserProfile");
+      cy.route("get", "**/common/userprofiles/current", []).as("getCurrentUserProfile");
 
       cy.visitPage("/notifications");
       cy.url().should("contain", "/account/logging-in");
@@ -34,11 +34,11 @@ context("notifications", () => {
 
     describe("when there is a notification", () => {
       beforeEach(() => {
-        cy.route("GET", "**/notifications/notification/?page=*", "fixture:api/notifications/notification_one.json").as(
+        cy.route("get", "**/notifications/notification/?page=*", "fixture:api/notifications/notification_one.json").as(
           "getNotificationOne"
         );
 
-        cy.route("GET", "**/notifications/notification/get_unread_count", "1").as("getUnreadNotificationsCount");
+        cy.route("get", "**/notifications/notification/get_unread_count", "1").as("getUnreadNotificationsCount");
 
         cy.login();
         cy.visitPage("/notifications");
@@ -56,8 +56,8 @@ context("notifications", () => {
       });
 
       it("should fetch count again when marking a notification as read", () => {
-        cy.route("GET", "**/notifications/notification/get_unread_count", "0");
-        cy.route("PUT", "**/notifications/notification/1/mark-as-read", "");
+        cy.route("get", "**/notifications/notification/get_unread_count", "0");
+        cy.route("put", "**/notifications/notification/1/mark-as-read", "");
 
         cy.get("#notification-1 .read-icon").click();
         cy.get("#unread-notifications-count").should("not.exist");
@@ -66,7 +66,7 @@ context("notifications", () => {
       });
 
       it("should fetch count again when marking all as read", () => {
-        cy.route("GET", "**/notifications/notification/get_unread_count", "0");
+        cy.route("get", "**/notifications/notification/get_unread_count", "0");
 
         cy.get("#mark-all-as-read").click();
 
@@ -76,7 +76,7 @@ context("notifications", () => {
       });
 
       it("should show the loading stripes when marking as read is slow", () => {
-        cy.route("GET", "**/notifications/notification/get_unread_count", "0");
+        cy.route("get", "**/notifications/notification/get_unread_count", "0");
 
         cy.route({
           method: "PUT",

@@ -6,7 +6,7 @@ context("Equipment", () => {
     cy.setupInitializationRoutes();
     cy.setupEquipmentDefaultRoutes();
 
-    cy.route("GET", "**/api/v2/equipment/camera/?page=*", {
+    cy.route("get", "**/api/v2/equipment/camera/?page=*", {
       count: 1,
       next: null,
       previous: null,

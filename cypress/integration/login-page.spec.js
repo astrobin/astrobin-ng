@@ -5,7 +5,7 @@ context("login-page", () => {
     cy.server();
     cy.setupInitializationRoutes();
 
-    cy.route("GET", "**/common/userprofiles/current", []).as("getCurrentUserProfile");
+    cy.route("get", "**/common/userprofiles/current", []).as("getCurrentUserProfile");
 
     cy.visitPage("/account/login?redirectUrl=%2F");
   });

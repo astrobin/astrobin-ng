@@ -5,19 +5,19 @@ import { Constants } from "../../src/app/shared/constants";
 context("revision uploader", () => {
   beforeEach(() => {
     cy.server();
-    cy.route("GET", "**/images/image/1", "fixture:api/images/image_1.json").as("getImage");
-    cy.route("GET", "**/images/thumbnail-group/?image=1", "fixture:api/images/image_1.json").as("getThumbnailGroup");
+    cy.route("get", "**/images/image/1", "fixture:api/images/image_1.json").as("getImage");
+    cy.route("get", "**/images/thumbnail-group/?image=1", "fixture:api/images/image_1.json").as("getThumbnailGroup");
 
-    cy.route("GET", "**/images/image/2", "fixture:api/images/image_2.json").as("getImage");
-    cy.route("GET", "**/images/thumbnail-group/?image=2", "fixture:api/images/image_2.json").as("getThumbnailGroup");
+    cy.route("get", "**/images/image/2", "fixture:api/images/image_2.json").as("getImage");
+    cy.route("get", "**/images/thumbnail-group/?image=2", "fixture:api/images/image_2.json").as("getThumbnailGroup");
 
-    cy.route("GET", "**/api/v2/images/image-revision/?image=*", { count: 0, results: [] });
+    cy.route("get", "**/api/v2/images/image-revision/?image=*", { count: 0, results: [] });
   });
 
   describe("when logged out", () => {
     it("should redirect to the login page", () => {
       cy.setupInitializationRoutes();
-      cy.route("GET", "**/common/userprofiles/current", []).as("getCurrentUserProfile");
+      cy.route("get", "**/common/userprofiles/current", []).as("getCurrentUserProfile");
 
       cy.visitPage("/uploader/revision/1");
       cy.url().should("contain", "/account/logging-in");
@@ -32,7 +32,7 @@ context("revision uploader", () => {
     describe("when the website is in read-only mode", () => {
       beforeEach(() => {
         cy.login();
-        cy.route("GET", "**/json-api/common/app-config/", "fixture:api/json/app-config-read-only.json").as("appConfig");
+        cy.route("get", "**/json-api/common/app-config/", "fixture:api/json/app-config-read-only.json").as("appConfig");
       });
 
       it("should show the read-only mode alert", () => {
@@ -46,12 +46,12 @@ context("revision uploader", () => {
       beforeEach(() => {
         cy.login();
 
-        cy.route("GET", "**/common/userprofiles/current", "fixture:api/common/userprofile_current_2.json").as(
+        cy.route("get", "**/common/userprofiles/current", "fixture:api/common/userprofile_current_2.json").as(
           "getCurrentUserProfile"
         );
-        cy.route("GET", "**/common/users/*", "fixture:api/common/users_2.json").as("getUser");
-        cy.route("GET", "**/images/image/2", "fixture:api/images/image_2.json").as("getImage");
-        cy.route("GET", "**/images/thumbnail-group/?image=2", "fixture:api/images/image_2.json").as(
+        cy.route("get", "**/common/users/*", "fixture:api/common/users_2.json").as("getUser");
+        cy.route("get", "**/images/image/2", "fixture:api/images/image_2.json").as("getImage");
+        cy.route("get", "**/images/thumbnail-group/?image=2", "fixture:api/images/image_2.json").as(
           "getThumbnailGroup"
         );
 
@@ -94,7 +94,7 @@ context("revision uploader", () => {
         });
 
         it("should allow the upload also if the user has a large number of revisions on this image", () => {
-          cy.route("GET", "**/api/v2/image/image-revision/?image=*", {
+          cy.route("get", "**/api/v2/image/image-revision/?image=*", {
             count: 5,
             results: [
               {
@@ -153,7 +153,7 @@ context("revision uploader", () => {
         });
 
         it("should allow the upload also if the user has a large number of revisions on this image", () => {
-          cy.route("GET", "**/api/v2/images/image-revision/?image=*", {
+          cy.route("get", "**/api/v2/images/image-revision/?image=*", {
             count: 5,
             results: [
               {
@@ -212,7 +212,7 @@ context("revision uploader", () => {
         });
 
         it("should allow the upload also if the user has a large number of revisions on this image", () => {
-          cy.route("GET", "**/api/v2/image/image-revisions/?image=*", {
+          cy.route("get", "**/api/v2/image/image-revisions/?image=*", {
             count: 5,
             results: [
               {
@@ -247,7 +247,7 @@ context("revision uploader", () => {
 
       describe("when the user is on Lite", () => {
         beforeEach(() => {
-          cy.route("GET", "**/common/usersubscriptions/?user=*", "fixture:api/common/usersubscriptions_2_lite.json").as(
+          cy.route("get", "**/common/usersubscriptions/?user=*", "fixture:api/common/usersubscriptions_2_lite.json").as(
             "getUserSubscriptions"
           );
 
@@ -269,7 +269,7 @@ context("revision uploader", () => {
         });
 
         it("should allow the upload also if the user has a large number of revisions on this image", () => {
-          cy.route("GET", "**/api/v2/image/image-revisions/?image=*", {
+          cy.route("get", "**/api/v2/image/image-revisions/?image=*", {
             count: 5,
             results: [
               {
@@ -304,7 +304,7 @@ context("revision uploader", () => {
 
       describe("when the user is on Lite autorenew", () => {
         beforeEach(() => {
-          cy.route("GET", "**/common/usersubscriptions/?user=*", "fixture:api/common/usersubscriptions_2_lite.json").as(
+          cy.route("get", "**/common/usersubscriptions/?user=*", "fixture:api/common/usersubscriptions_2_lite.json").as(
             "getUserSubscriptions"
           );
 
@@ -326,7 +326,7 @@ context("revision uploader", () => {
         });
 
         it("should allow the upload also if the user has a large number of revisions on this image", () => {
-          cy.route("GET", "**/api/v2/image/image-revisions/?image=*", {
+          cy.route("get", "**/api/v2/image/image-revisions/?image=*", {
             count: 5,
             results: [
               {
@@ -385,7 +385,7 @@ context("revision uploader", () => {
         });
 
         it("should not allow the upload if the user has more revisions than allowed", () => {
-          cy.route("GET", "**/api/v2/images/image-revision/?image=*", {
+          cy.route("get", "**/api/v2/images/image-revision/?image=*", {
             count: 5,
             results: [
               {
@@ -444,7 +444,7 @@ context("revision uploader", () => {
         });
 
         it("should not allow the upload if the user has more revisions than allowed", () => {
-          cy.route("GET", "**/api/v2/images/image-revision/?image=*", {
+          cy.route("get", "**/api/v2/images/image-revision/?image=*", {
             count: 5,
             results: [
               {
@@ -463,7 +463,7 @@ context("revision uploader", () => {
 
       describe("when on a free account", () => {
         beforeEach(() => {
-          cy.route("GET", "**/common/usersubscriptions/?user=*", []).as("getUserSubscriptions");
+          cy.route("get", "**/common/usersubscriptions/?user=*", []).as("getUserSubscriptions");
 
           cy.visitPage("/uploader/revision/2");
         });

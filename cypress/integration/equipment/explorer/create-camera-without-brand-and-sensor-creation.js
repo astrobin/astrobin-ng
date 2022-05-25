@@ -62,7 +62,7 @@ context("Equipment", () => {
       });
 
       it("should create the item", () => {
-        cy.route("POST", "**/api/v2/equipment/camera/", testCamera).as("createCamera");
+        cy.route("post", "**/api/v2/equipment/camera/", testCamera).as("createCamera");
 
         cy.get("#create-new-item .btn-primary").click();
 

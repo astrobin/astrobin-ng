@@ -5,14 +5,14 @@ import { Constants } from "../../src/app/shared/constants";
 context("uncompressed source uploader", () => {
   beforeEach(() => {
     cy.server();
-    cy.route("GET", "**/images/image/1", "fixture:api/images/image_1.json").as("getImage");
-    cy.route("GET", "**/images/thumbnail-group/?image=1", "fixture:api/images/image_1.json").as("getThumbnailGroup");
+    cy.route("get", "**/images/image/1", "fixture:api/images/image_1.json").as("getImage");
+    cy.route("get", "**/images/thumbnail-group/?image=1", "fixture:api/images/image_1.json").as("getThumbnailGroup");
   });
 
   describe("when logged out", () => {
     it("should redirect to the login page", () => {
       cy.setupInitializationRoutes();
-      cy.route("GET", "**/common/userprofiles/current", []).as("getCurrentUserProfile");
+      cy.route("get", "**/common/userprofiles/current", []).as("getCurrentUserProfile");
 
       cy.visitPage("/uploader/uncompressed-source/1");
       cy.url().should("contain", "/account/logging-in");
@@ -27,7 +27,7 @@ context("uncompressed source uploader", () => {
     describe("when the website is in read-only mode", () => {
       beforeEach(() => {
         cy.login();
-        cy.route("GET", "**/json-api/common/app-config/", "fixture:api/json/app-config-read-only.json").as("appConfig");
+        cy.route("get", "**/json-api/common/app-config/", "fixture:api/json/app-config-read-only.json").as("appConfig");
       });
 
       it("should show the read-only mode alert", () => {
@@ -41,12 +41,12 @@ context("uncompressed source uploader", () => {
       beforeEach(() => {
         cy.login();
 
-        cy.route("GET", "**/common/userprofiles/current", "fixture:api/common/userprofile_current_2.json").as(
+        cy.route("get", "**/common/userprofiles/current", "fixture:api/common/userprofile_current_2.json").as(
           "getCurrentUserProfile"
         );
-        cy.route("GET", "**/common/users/*", "fixture:api/common/users_2.json").as("getUser");
-        cy.route("GET", "**/images/image/2", "fixture:api/images/image_2.json").as("getImage");
-        cy.route("GET", "**/images/thumbnail-group/?image=2", "fixture:api/images/image_2.json").as(
+        cy.route("get", "**/common/users/*", "fixture:api/common/users_2.json").as("getUser");
+        cy.route("get", "**/images/image/2", "fixture:api/images/image_2.json").as("getImage");
+        cy.route("get", "**/images/thumbnail-group/?image=2", "fixture:api/images/image_2.json").as(
           "getThumbnailGroup"
         );
       });
@@ -70,12 +70,12 @@ context("uncompressed source uploader", () => {
       it("should have all form controls if user is Premium", () => {
         cy.login();
 
-        cy.route("GET", "**/common/userprofiles/current", "fixture:api/common/userprofile_current_2.json").as(
+        cy.route("get", "**/common/userprofiles/current", "fixture:api/common/userprofile_current_2.json").as(
           "getCurrentUserProfile"
         );
-        cy.route("GET", "**/common/users/*", "fixture:api/common/users_2.json").as("getUser");
-        cy.route("GET", "**/images/image/2", "fixture:api/images/image_2.json").as("getImage");
-        cy.route("GET", "**/images/thumbnail-group/?image=2", "fixture:api/images/image_2.json").as(
+        cy.route("get", "**/common/users/*", "fixture:api/common/users_2.json").as("getUser");
+        cy.route("get", "**/images/image/2", "fixture:api/images/image_2.json").as("getImage");
+        cy.route("get", "**/images/thumbnail-group/?image=2", "fixture:api/images/image_2.json").as(
           "getThumbnailGroup"
         );
         cy.route(
@@ -96,12 +96,12 @@ context("uncompressed source uploader", () => {
       it("should have all form controls if user is Premium (autorenew)", () => {
         cy.login();
 
-        cy.route("GET", "**/common/userprofiles/current", "fixture:api/common/userprofile_current_2.json").as(
+        cy.route("get", "**/common/userprofiles/current", "fixture:api/common/userprofile_current_2.json").as(
           "getCurrentUserProfile"
         );
-        cy.route("GET", "**/common/users/*", "fixture:api/common/users_2.json").as("getUser");
-        cy.route("GET", "**/images/image/2", "fixture:api/images/image_2.json").as("getImage");
-        cy.route("GET", "**/images/thumbnail-group/?image=2", "fixture:api/images/image_2.json").as(
+        cy.route("get", "**/common/users/*", "fixture:api/common/users_2.json").as("getUser");
+        cy.route("get", "**/images/image/2", "fixture:api/images/image_2.json").as("getImage");
+        cy.route("get", "**/images/thumbnail-group/?image=2", "fixture:api/images/image_2.json").as(
           "getThumbnailGroup"
         );
         cy.route(
@@ -128,7 +128,7 @@ context("uncompressed source uploader", () => {
           "fixture:api/common/usersubscriptions_2_premium_2020.json"
         ).as("getUserSubscriptions");
 
-        cy.route("GET", "**/common/users/*", "fixture:api/common/users_2.json").as("getUser");
+        cy.route("get", "**/common/users/*", "fixture:api/common/users_2.json").as("getUser");
 
         cy.visitPage("/uploader/uncompressed-source/2");
 
@@ -138,11 +138,11 @@ context("uncompressed source uploader", () => {
       it("should redirect if user is Free", () => {
         cy.login();
 
-        cy.route("GET", "**/common/usersubscriptions/?user=*", "fixture:api/common/usersubscriptions_2_free.json").as(
+        cy.route("get", "**/common/usersubscriptions/?user=*", "fixture:api/common/usersubscriptions_2_free.json").as(
           "getUserSubscriptions"
         );
 
-        cy.route("GET", "**/common/users/*", "fixture:api/common/users_2.json").as("getUser");
+        cy.route("get", "**/common/users/*", "fixture:api/common/users_2.json").as("getUser");
 
         cy.visitPage("/uploader/uncompressed-source/2");
 

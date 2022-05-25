@@ -5,7 +5,7 @@ context("notifications", () => {
     it("should redirect to the login page", () => {
       cy.server();
       cy.setupInitializationRoutes();
-      cy.route("GET", "**/common/userprofiles/current/", []).as("getCurrentUserProfile");
+      cy.route("get", "**/common/userprofiles/current/", []).as("getCurrentUserProfile");
 
       cy.visitPage("/notifications/settings");
       cy.url().should("contain", "/account/logging-in");
@@ -17,12 +17,12 @@ context("notifications", () => {
       cy.server();
       cy.setupInitializationRoutes();
 
-      cy.route("GET", "**/notifications/type/", [
+      cy.route("get", "**/notifications/type/", [
         { id: 1, label: "test_notification", display: "Test notification", description: "" },
         { id: 2, label: "new_follower", display: "You have a new follower", description: "" },
         { id: 3, label: "new_image", display: "New image from a user you follow", description: "" }
       ]).as("getNotificationTypes");
-      cy.route("GET", "**/notifications/setting/", [
+      cy.route("get", "**/notifications/setting/", [
         { id: 1, user: 1, noticeType: 1, medium: 1, send: true },
         { id: 2, user: 1, noticeType: 1, medium: 0, send: true },
         { id: 3, user: 1, noticeType: 2, medium: 1, send: true },

@@ -6,7 +6,7 @@ context("Equipment", () => {
     cy.setupInitializationRoutes();
     cy.setupEquipmentDefaultRoutes();
 
-    cy.route("GET", "**/api/v2/equipment/software-edit-proposal/?edit_proposal_target=*", { results: [] });
+    cy.route("get", "**/api/v2/equipment/software-edit-proposal/?edit_proposal_target=*", { results: [] });
   });
 
   context("Explorer", () => {
@@ -15,21 +15,21 @@ context("Equipment", () => {
         cy.login();
         cy.visitPage("/equipment/explorer/software");
 
-        cy.route("GET", "**/api/v2/equipment/software/?q=*", {
+        cy.route("get", "**/api/v2/equipment/software/?q=*", {
           count: 1,
           next: null,
           previous: null,
           results: [testSoftware]
         }).as("findSoftwareItems");
 
-        cy.route("GET", "**/api/v2/equipment/software/?page=*", {
+        cy.route("get", "**/api/v2/equipment/software/?page=*", {
           count: 1,
           next: null,
           previous: null,
           results: [testSoftware]
         }).as("getSoftwareItems");
 
-        cy.route("GET", "**/api/v2/equipment/brand/1/", testBrand).as("getBrand");
+        cy.route("get", "**/api/v2/equipment/brand/1/", testBrand).as("getBrand");
 
         cy.ngSelectType("#equipment-item-field", "Test");
         cy.wait("@findSoftwareItems");

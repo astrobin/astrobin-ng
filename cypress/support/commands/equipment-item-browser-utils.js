@@ -579,7 +579,7 @@ Cypress.Commands.add("equipmentItemBrowserCreateBrand", (selector, name, website
     .clear()
     .type(website);
 
-  cy.route("POST", "**/api/v2/equipment/brand/", brandObject).as("createBrand");
+  cy.route("post", "**/api/v2/equipment/brand/", brandObject).as("createBrand");
   cy.route("GET", "**/api/v2/equipment/brand/1/", brandObject);
 
   cy.get("#create-new-brand .btn-primary").click();
