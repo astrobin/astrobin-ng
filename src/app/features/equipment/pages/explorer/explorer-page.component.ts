@@ -16,6 +16,8 @@ import { EquipmentApiService } from "@features/equipment/services/equipment-api.
 import { selectBrand, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { Location } from "@angular/common";
+import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
+import { CameraInterface, CameraType } from "@features/equipment/types/camera.interface";
 
 @Component({
   selector: "astrobin-equipment-explorer-page",
@@ -36,7 +38,8 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
     public readonly router: Router,
     public readonly windowRefService: WindowRefService,
     public readonly equipmentApiService: EquipmentApiService,
-    public readonly location: Location
+    public readonly location: Location,
+    public readonly equipmentItemService: EquipmentItemService
   ) {
     super(store$, actions$, activatedRoute, router, windowRefService);
   }
@@ -56,6 +59,7 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
       )
       .subscribe(() => {
         this._setParams();
+        this._setLocation();
       });
   }
 
@@ -85,9 +89,23 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
   _setLocation() {
     const _doSetLocation = (brand: BrandInterface | null, item: EquipmentItemBaseInterface) => {
       setTimeout(() => {
-        const slug = UtilsService.slugify(
+        let slug = UtilsService.slugify(
           `${!!brand ? brand.name : this.translateService.instant("(DIY)")} ${item.name}`
         );
+
+        if (this.equipmentItemService.getType(item) === EquipmentItemType.CAMERA) {
+          const camera = item as CameraInterface;
+
+          if (camera.type === CameraType.DSLR_MIRRORLESS) {
+            if (camera.modified) {
+              slug += "-modified";
+            }
+
+            if (camera.cooled) {
+              slug += "-cooled";
+            }
+          }
+        }
 
         if (
           this.windowRefService.nativeWindow.location.pathname.indexOf(

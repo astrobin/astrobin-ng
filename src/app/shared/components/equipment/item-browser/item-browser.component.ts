@@ -197,7 +197,17 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
       const options = !!item ? [this._getNgOptionValue(brand, item)] : [];
       const id = !!item ? item.id : null;
 
-      fieldConfig.templateOptions.options = of(options);
+      (fieldConfig.templateOptions.options as Observable<any>).subscribe(previousOptions => {
+        let distinctOptions;
+
+        if (Array.isArray(previousOptions)) {
+          distinctOptions = UtilsService.arrayUniqueObjects([...previousOptions, ...options], "value");
+        } else {
+          distinctOptions = UtilsService.arrayUniqueObjects([previousOptions, ...options]);
+        }
+
+        fieldConfig.templateOptions.options = of(distinctOptions);
+      });
 
       if (!!this.form.get("value")) {
         this.form.get("value").setValue(id);

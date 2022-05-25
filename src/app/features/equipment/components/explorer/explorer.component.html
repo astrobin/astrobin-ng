@@ -27,20 +27,62 @@
     ></astrobin-equipment-item-summary>
 
     <div *ngIf="cameraVariants.length > 0" class="alert alert-info camera-variants-alert">
-      <p>
-        <strong><fa-icon icon="info-circle"></fa-icon> {{ "Please note" }}:</strong>
-        {{ "This camera is also available in the following variants:" | translate }}
-      </p>
+      <ng-container *ngIf="isRegularVariant(this.selectedItem); else cameraVariantTemplate">
+        {{ "Also available in the following variants:" | translate }}
 
-      <div class="camera-variants">
-        <a
-          [routerLink]="['/equipment/explorer/camera', cameraVariant.id]"
-          [innerHTML]="equipmentItemService.getName$(cameraVariant) | async"
-          *ngFor="let cameraVariant of cameraVariants"
-          class="camera-variant"
-        >
+        <span class="camera-variants">
+          <a
+            [routerLink]="['/equipment/explorer/camera', cameraVariant.id]"
+            *ngFor="let cameraVariant of cameraVariants"
+            class="camera-variant"
+          >
+            <span *ngIf="!cameraVariant.modified && !cameraVariant.cooled">
+              <fa-icon icon="camera"></fa-icon>
+              {{ "Regular" | translate }}
+            </span>
+
+            <span
+              *ngIf="cameraVariant.modified && !cameraVariant.cooled"
+              [ngbPopover]="modificationPopoverMessage()"
+              [popoverTitle]="modificationTitle()"
+              triggers="mouseenter:mouseleave"
+            >
+              <fa-icon icon="microchip"></fa-icon>
+              {{ modificationTitle() }}
+            </span>
+
+            <span
+              *ngIf="!cameraVariant.modified && cameraVariant.cooled"
+              [ngbPopover]="coolingPopoverMessage()"
+              [popoverTitle]="coolingTitle()"
+              triggers="mouseenter:mouseleave"
+            >
+              <fa-icon icon="icicles"></fa-icon>
+              {{ coolingTitle() }}
+            </span>
+
+            <span
+              *ngIf="cameraVariant.modified && cameraVariant.cooled"
+              [ngbPopover]="modificationPopoverMessage() + ' ' + coolingPopoverMessage()"
+              [popoverTitle]="modificationTitle() + ' + ' + coolingTitle()"
+              triggers="mouseenter:mouseleave"
+            >
+              <fa-icon icon="microchip"></fa-icon> {{ modificationTitle()}}
+              <fa-icon icon="plus"></fa-icon>
+              <fa-icon icon="icicles"></fa-icon> {{ coolingTitle() }}
+            </span>
           </a>
-      </div>
+        </span>
+      </ng-container>
+
+      <ng-template #cameraVariantTemplate>
+        {{ "This is a modified and/or custom-cooled variant of this camera." | translate }}
+        <a
+          [routerLink]="['/equipment/explorer/camera', getRegularVariant(cameraVariants)?.id]"
+        >
+          {{ "Go to regular variant." | translate }}
+        </a>
+      </ng-template>
     </div>
   </div>
 
@@ -112,7 +154,8 @@
 <ng-container *ngIf="selectedItem">
   <ng-container *ngIf="selectedItemEditProposals$ | async as editProposals; else loadingEditProposals">
     <div class="edit-proposals" *ngIf="editProposals.length > 0">
-      <ng-container *ngIf="pendingProposalsByStatus(editProposals, null)?.length > 0 || !editProposalsCollapsed; else editProposalsCollapsedTemplate">
+      <ng-container
+        *ngIf="pendingProposalsByStatus(editProposals, null)?.length > 0 || !editProposalsCollapsed; else editProposalsCollapsedTemplate">
         <div class="edit-proposals-header" (click)="editProposalsCollapsed = true">
           <div class="row">
             <span class="col">{{ "Edit proposal by" | translate }}</span>
@@ -153,7 +196,7 @@
     <fa-icon icon="arrow-down"></fa-icon>
   </div>
 
-  <div class="card mt-4 mb-4"  [class.disabled-with-backdrop]="subCreationMode" id="edit-item">
+  <div class="card mt-4 mb-4" [class.disabled-with-backdrop]="subCreationMode" id="edit-item">
     <div class="backdrop"></div>
 
     <div class="card-header">

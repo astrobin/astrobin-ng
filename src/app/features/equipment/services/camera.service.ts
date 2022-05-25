@@ -13,7 +13,6 @@ import { EquipmentItemType } from "@features/equipment/types/equipment-item-base
 import { selectBrand, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import { filter, map, switchMap, take, tap } from "rxjs/operators";
 import { SensorInterface } from "@features/equipment/types/sensor.interface";
-import { EditProposalInterface } from "@features/equipment/types/edit-proposal.interface";
 
 export enum CameraDisplayProperty {
   TYPE = "TYPE",
@@ -73,7 +72,22 @@ export class CameraService extends BaseService implements EquipmentItemServiceIn
   ): Observable<string | null> {
     switch (property) {
       case "NAME":
-        return of(item.modified ? `${item.name} ${this.translateService.instant("(modified)")}` : item.name);
+        let name: string = item.name;
+
+        if (item.type === CameraType.DSLR_MIRRORLESS) {
+          const modifiedLabel = this.translateService.instant("modified");
+          const cooledLabel = this.translateService.instant("cooled");
+
+          if (item.modified && item.cooled) {
+            name = `${name} (${modifiedLabel}/${cooledLabel})`;
+          } else if (item.modified) {
+            name = `${name} (${modifiedLabel})`;
+          } else if (item.cooled) {
+            name = `${name} (${cooledLabel})`;
+          }
+        }
+
+        return of(name);
       case CameraDisplayProperty.TYPE:
         return of(this.humanizeType(propertyValue || item.type));
       case CameraDisplayProperty.SENSOR:

@@ -52,13 +52,20 @@ astrobin-equipment-item-browser {
   padding: .75rem 1rem !important;
 
   .camera-variant {
-    &:not(:last-child) {
-      margin-right: .25rem;
+    display: block;
+    padding: .33rem;
+    width: 100%;
 
-      &::after {
-        content: '\b7'; /* middot */
-        margin-left: .25rem;
-      }
+    [icon=plus] {
+      margin: 0 .5rem;
+    }
+
+    &:first-child {
+      margin-top: .5rem;
+    }
+
+    &:not(:last-child) {
+      margin-right: 1rem;
     }
   }
 }

@@ -3,7 +3,7 @@ import { Action, Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
 import { TitleService } from "@shared/services/title/title.service";
-import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { filter, map, switchMap, take, takeUntil, tap } from "rxjs/operators";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
@@ -135,6 +135,27 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
     this.activeId = !!item ? item.id : null;
     this.setItem(item);
     this.valueChanged.emit(item);
+  }
+
+  modificationTitle(): string {
+    return this.translateService.instant("Modified for astrophotography");
+  }
+
+  modificationPopoverMessage(): string {
+    return this.translateService.instant(
+      "Modifications typically include LPF2 filter removal, Baader modification, or full-spectrum modification."
+    );
+  }
+
+  coolingTitle(): string {
+    return this.translateService.instant("Custom-cooled");
+  }
+
+  coolingPopoverMessage(): string {
+    return this.translateService.instant(
+      "Custom-cooled cameras are DSLR and mirrorless cameras that are not sold with cooling as stock, but a " +
+        "cooling mechanism is added as a custom modification."
+    );
   }
 
   _initActiveId() {
@@ -291,6 +312,21 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
 
     this.endEditMode();
     this.loadEditProposals();
+  }
+
+  isRegularVariant(item: EquipmentItemBaseInterface) {
+    const camera = item as CameraInterface;
+    return camera.type === CameraType.DSLR_MIRRORLESS && !camera.modified && !camera.cooled;
+  }
+
+  getRegularVariant(cameraVariants: CameraInterface[]) {
+    for (const cameraVariant of cameraVariants) {
+      if (!cameraVariant.modified && !cameraVariant.cooled) {
+        return cameraVariant;
+      }
+    }
+
+    return null;
   }
 
   onCreationModeStarted() {

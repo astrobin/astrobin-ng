@@ -34,11 +34,10 @@
           <fa-icon icon="info-circle"></fa-icon>
           {{ "Please note" | translate }}
         </strong>:
-        {{ "AstroBin will automatically create a variant of this camera marked as \"modified for astrophotography\." | translate }}
+        {{ "AstroBin will automatically create variants of this camera marked as \"modified for astrophotography\" and \"custom-cooled\"." | translate }}
       </div>
     </div>
   </div>
-
 
   <ng-container *ngIf="similarItems$ | async as similarItems">
     <div *ngIf="similarItems.length > 0" class="alert alert-warning mt-3">
