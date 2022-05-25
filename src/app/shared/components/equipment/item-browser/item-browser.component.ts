@@ -1,4 +1,14 @@
-import { Component, EventEmitter, Input, OnChanges, Output, TemplateRef, ViewChild } from "@angular/core";
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  SimpleChanges,
+  TemplateRef,
+  ViewChild
+} from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { State } from "@app/store/state";
 import { Action, Store } from "@ngrx/store";
@@ -54,7 +64,7 @@ type TypeUnion = Type | Type[] | null;
   templateUrl: "./item-browser.component.html",
   styleUrls: ["./item-browser.component.scss"]
 })
-export class ItemBrowserComponent extends BaseComponentDirective implements OnChanges {
+export class ItemBrowserComponent extends BaseComponentDirective implements OnInit, OnChanges {
   EquipmentItemType = EquipmentItemType;
 
   @Input()
@@ -128,8 +138,29 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnCh
     super(store$);
   }
 
-  ngOnChanges() {
+  ngOnInit() {
     setTimeout(() => this._setFields(), 1);
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    let equals = false;
+
+    if (
+      changes.initialValue &&
+      changes.initialValue.previousValue !== undefined &&
+      changes.initialValue.currentValue !== undefined
+    ) {
+      if (this.multiple) {
+        equals =
+          [...changes.initialValue.previousValue].sort() + "" === [...changes.initialValue.currentValue].sort() + "";
+      } else {
+        equals = changes.initialValue.previousValue === changes.initialValue.currentValue;
+      }
+
+      if (!equals) {
+        this._setFields();
+      }
+    }
   }
 
   reset() {
