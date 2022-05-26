@@ -47,7 +47,7 @@ import { LoadingService } from "@shared/services/loading.service";
 import { ConfirmItemCreationModalComponent } from "@shared/components/equipment/editors/confirm-item-creation-modal/confirm-item-creation-modal.component";
 import { SensorInterface } from "@features/equipment/types/sensor.interface";
 import { CameraInterface } from "@features/equipment/types/camera.interface";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 import { TelescopeInterface } from "@features/equipment/types/telescope.interface";
 import { MountInterface } from "@features/equipment/types/mount.interface";
@@ -55,6 +55,7 @@ import { FilterInterface } from "@features/equipment/types/filter.interface";
 import { AccessoryInterface } from "@features/equipment/types/accessory.interface";
 import { SoftwareInterface } from "@features/equipment/types/software.interface";
 import { UtilsService } from "@shared/services/utils/utils.service";
+import { VariantSelectorModalComponent } from "@shared/components/equipment/item-browser/variant-selector-modal/variant-selector-modal.component";
 
 type Type = EquipmentItemBaseInterface["id"];
 type TypeUnion = Type | Type[] | null;
@@ -93,6 +94,9 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
 
   @Input()
   enableSummaryModal = false;
+
+  @Input()
+  enableVariantSelection = false;
 
   model: { value: TypeUnion } = { value: null };
   form: FormGroup = new FormGroup({});
@@ -405,6 +409,28 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
     } else {
       _addItem();
     }
+  }
+
+  onOptionClicked($event, obj): boolean {
+    if (this.enableSummaryModal) {
+      const camera = obj.item as CameraInterface;
+
+      if (camera.variants?.length > 0) {
+        const modal: NgbModalRef = this.modalService.open(VariantSelectorModalComponent);
+        modal.componentInstance.variants = [...[camera], ...camera.variants];
+
+        modal.closed.pipe(take(1)).subscribe((variant: CameraInterface) => {
+          this.store$.dispatch(new ItemBrowserAdd({ type: this.type, usageType: this.usageType, item: variant }));
+        });
+
+        $event.preventDefault();
+        $event.stopPropagation();
+
+        return true;
+      }
+    }
+
+    return false;
   }
 
   onCancel() {

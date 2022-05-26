@@ -53,7 +53,8 @@ export class ImageEditEquipmentFieldsService extends BaseService {
         itemType: EquipmentItemType.CAMERA,
         usageType: EquipmentItemUsageType.IMAGING,
         showQuickAddRecent: true,
-        showPlaceholderImage: true
+        showPlaceholderImage: true,
+        enableVariantSelection: true
       }
     };
   }
