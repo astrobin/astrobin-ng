@@ -26,14 +26,14 @@
       [showLargeImage]="true"
     ></astrobin-equipment-item-summary>
 
-    <div *ngIf="cameraVariants.length > 0" class="alert alert-info camera-variants-alert">
-      <ng-container *ngIf="isRegularVariant(this.selectedItem); else cameraVariantTemplate">
+    <div *ngIf="supportsVariants(selectedItem)" class="alert alert-info camera-variants-alert">
+      <ng-container *ngIf="getVariants(selectedItem)?.length > 0; else cameraVariantTemplate">
         {{ "Also available in the following variants:" | translate }}
 
         <span class="camera-variants">
           <a
             [routerLink]="['/equipment/explorer/camera', cameraVariant.id]"
-            *ngFor="let cameraVariant of cameraVariants"
+            *ngFor="let cameraVariant of getVariants(selectedItem)"
             class="camera-variant"
           >
             <span *ngIf="!cameraVariant.modified && !cameraVariant.cooled">
@@ -78,7 +78,7 @@
       <ng-template #cameraVariantTemplate>
         {{ "This is a modified and/or custom-cooled variant of this camera." | translate }}
         <a
-          [routerLink]="['/equipment/explorer/camera', getRegularVariant(cameraVariants)?.id]"
+          [routerLink]="['/equipment/explorer/camera', getParentVariant(selectedItem).id]"
         >
           {{ "Go to regular variant." | translate }}
         </a>

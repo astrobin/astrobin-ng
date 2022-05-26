@@ -152,7 +152,8 @@ export class EquipmentItemService extends BaseService {
       "editProposalReviewComment",
       "editProposalReviewStatus",
 
-      "modified"
+      "modified",
+      "variants"
     ];
 
     const nonNullableKeys = ["image"];

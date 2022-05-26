@@ -21,8 +21,6 @@ import {
   CreateSoftwareEditProposal,
   CreateTelescopeEditProposal,
   EquipmentActionTypes,
-  FindCameraVariants,
-  FindCameraVariantsSuccess,
   FindEquipmentItemEditProposals,
   LoadBrand,
   LoadEquipmentItem
@@ -303,39 +301,31 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
       this.store$.dispatch(new LoadBrand({ id: item.brand }));
     }
 
-    if (
-      this.activeType === EquipmentItemType.CAMERA &&
-      !!item &&
-      !!item.id &&
-      (item as CameraInterface).type === CameraType.DSLR_MIRRORLESS
-    ) {
-      this.store$.dispatch(new FindCameraVariants({ id: item.id }));
-      this.actions$
-        .pipe(
-          ofType(EquipmentActionTypes.FIND_CAMERA_VARIANTS_SUCCESS),
-          take(1),
-          map((action: FindCameraVariantsSuccess) => action.payload.cameraVariants)
-        )
-        .subscribe(cameraVariants => (this.cameraVariants = cameraVariants));
-    }
-
     this.endEditMode();
     this.loadEditProposals();
   }
 
-  isRegularVariant(item: EquipmentItemBaseInterface) {
-    const camera = item as CameraInterface;
-    return camera.type === CameraType.DSLR_MIRRORLESS && !camera.modified && !camera.cooled;
+  supportsVariants(item: EquipmentItemBaseInterface): boolean {
+    return (
+      this.equipmentItemService.getType(item) === EquipmentItemType.CAMERA &&
+      (item as CameraInterface).type === CameraType.DSLR_MIRRORLESS
+    );
   }
 
-  getRegularVariant(cameraVariants: CameraInterface[]) {
-    for (const cameraVariant of cameraVariants) {
-      if (!cameraVariant.modified && !cameraVariant.cooled) {
-        return cameraVariant;
-      }
+  getVariants(item: EquipmentItemBaseInterface): CameraInterface[] {
+    if (!this.supportsVariants(item)) {
+      throw new Error("Item is not a camera");
     }
 
-    return null;
+    return (item as CameraInterface).variants;
+  }
+
+  getParentVariant(item: EquipmentItemBaseInterface): CameraInterface {
+    if (!this.supportsVariants(item)) {
+      throw new Error("Item is not a camera");
+    }
+
+    return (item as CameraInterface).parentVariant;
   }
 
   onCreationModeStarted() {

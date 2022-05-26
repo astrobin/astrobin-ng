@@ -79,7 +79,7 @@ export class CameraService extends BaseService implements EquipmentItemServiceIn
           const cooledLabel = this.translateService.instant("cooled");
 
           if (item.modified && item.cooled) {
-            name = `${name} (${modifiedLabel}/${cooledLabel})`;
+            name = `${name} (${modifiedLabel} + ${cooledLabel})`;
           } else if (item.modified) {
             name = `${name} (${modifiedLabel})`;
           } else if (item.cooled) {

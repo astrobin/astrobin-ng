@@ -5,6 +5,8 @@
   overflow-y: auto;
 
   .item {
+    display: inline-block;
+
     &:nth-child(odd) {
       color: var(--lighterGrey);
     }
