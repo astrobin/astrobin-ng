@@ -17,6 +17,7 @@ export interface CameraInterface extends EquipmentItemBaseInterface {
   cooled: boolean;
   maxCooling?: number;
   backFocus?: number;
+  variants?: CameraInterface[];
 }
 
 export function instanceOfCamera(object: EquipmentItemBaseInterface): object is CameraInterface {

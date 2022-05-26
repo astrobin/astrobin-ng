@@ -196,25 +196,26 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
       });
   }
 
-  startEditMode() {
+  _verifyCameraVariantCanBeEdited(): boolean {
     if (this.equipmentItemService.getType(this.selectedItem) === EquipmentItemType.CAMERA) {
       const camera: CameraInterface = this.selectedItem as CameraInterface;
 
-      if (camera.modified) {
+      if (camera.modified || (camera.type === CameraType.DSLR_MIRRORLESS && camera.cooled)) {
         this.popNotificationsService.warning(
-          `"Modified" cameras cannot be edited directly. Please find the regular version of this camera and
-          edit that.`
+          `Modified and/or cooled variants of DSLR or mirrorless cameras cannot be
+          edited/approved/rejected directly. Please find the regular version of this camera and perform this action
+          there.`
         );
-        return;
+        return false;
       }
+    }
 
-      if (camera.type === CameraType.DSLR_MIRRORLESS && camera.cooled) {
-        this.popNotificationsService.warning(
-          `Cooled DSLR or mirrorless cameras cannot be edited directly. Please find the regular version of
-          this camera and edit that.`
-        );
-        return;
-      }
+    return true;
+  }
+
+  startEditMode() {
+    if (!this._verifyCameraVariantCanBeEdited()) {
+      return;
     }
 
     this.editMode = true;
@@ -249,6 +250,10 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
   }
 
   startApproval() {
+    if (!this._verifyCameraVariantCanBeEdited()) {
+      return;
+    }
+
     const modal: NgbModalRef = this.modalService.open(ApproveItemModalComponent);
     const componentInstance: ApproveItemModalComponent = modal.componentInstance;
 
@@ -268,6 +273,10 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
   }
 
   startRejection() {
+    if (!this._verifyCameraVariantCanBeEdited()) {
+      return;
+    }
+
     const modal: NgbModalRef = this.modalService.open(RejectItemModalComponent);
     const componentInstance: RejectItemModalComponent = modal.componentInstance;
 

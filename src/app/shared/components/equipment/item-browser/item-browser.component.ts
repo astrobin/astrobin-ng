@@ -420,6 +420,12 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
     }
   }
 
+  variantsMessage(numberOfVariants: number): string {
+    return this.translateService.instant("Available in {{0}} variants.", {
+      0: numberOfVariants
+    });
+  }
+
   _setFields() {
     const _addTag = () => {
       this.startCreationMode();

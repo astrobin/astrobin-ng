@@ -55,6 +55,12 @@ astrobin-equipment-item-browser {
     display: block;
     padding: .33rem;
     width: 100%;
+    border-bottom: 0;
+    margin-left: 1rem;
+
+    &:hover span {
+      border-bottom: 1px dotted rgba(255, 255, 255, .5);
+    }
 
     [icon=plus] {
       margin: 0 .5rem;
@@ -62,10 +68,6 @@ astrobin-equipment-item-browser {
 
     &:first-child {
       margin-top: .5rem;
-    }
-
-    &:not(:last-child) {
-      margin-right: 1rem;
     }
   }
 }

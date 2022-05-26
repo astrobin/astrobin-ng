@@ -21,6 +21,10 @@
     [showSubItem]="false"
     [showProperties]="false"
   ></astrobin-equipment-item-summary>
+
+  <div *ngIf="object.item.variants?.length > 0" class="camera-variants">
+    {{ variantsMessage(object.item.variants.length) }}
+  </div>
 </ng-template>
 
 <ng-container *ngIf="creationMode">
