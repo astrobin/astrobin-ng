@@ -52,11 +52,10 @@
 
     <ng-template ng-footer-tmp>
       <button
-        *ngIf="to.addTag && !!value"
-        href="#"
+        *ngIf="!!value && !!to.addTag && showCreateNewButton"
         (click)="onAddTag(value)"
-        class="btn btn-primary add-tag"
         [class.loading]="loading"
+        class="btn btn-primary add-tag"
       >
         {{ "Create new:" | translate }} {{ value }}
       </button>
