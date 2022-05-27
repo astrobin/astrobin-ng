@@ -113,16 +113,15 @@
           [class.loading]="loadingService.isLoading()"
           (click)="onCancel()"
         >
-          Cancel
+          {{ "Cancel" | translate }}
         </button>
 
         <button
           class="btn btn-sm-block btn-primary"
-          [disabled]="!creationForm.valid"
           [class.loading]="loadingService.isLoading()"
           (click)="createItem()"
         >
-          Create item
+          {{ "Create item" | translate }}
         </button>
       </div>
     </div>

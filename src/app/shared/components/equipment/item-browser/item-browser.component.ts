@@ -56,6 +56,7 @@ import { AccessoryInterface } from "@features/equipment/types/accessory.interfac
 import { SoftwareInterface } from "@features/equipment/types/software.interface";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { VariantSelectorModalComponent } from "@shared/components/equipment/item-browser/variant-selector-modal/variant-selector-modal.component";
+import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 
 type Type = EquipmentItemBaseInterface["id"];
 type TypeUnion = Type | Type[] | null;
@@ -137,7 +138,8 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
     public readonly translateService: TranslateService,
     public readonly windowRefService: WindowRefService,
     public readonly modalService: NgbModal,
-    public readonly equipmentItemService: EquipmentItemService
+    public readonly equipmentItemService: EquipmentItemService,
+    public readonly popNotificationsService: PopNotificationsService
   ) {
     super(store$);
   }
@@ -314,6 +316,14 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
   }
 
   createItem() {
+    if (!this.creationForm.valid) {
+      this.creationForm.markAllAsTouched();
+      this.popNotificationsService.error(
+        this.translateService.instant("The form has errors, please correct them and try again.")
+      );
+      return;
+    }
+
     const data: EquipmentItemBaseInterface = {
       ...this.creationModel,
       ...this.creationForm.value
