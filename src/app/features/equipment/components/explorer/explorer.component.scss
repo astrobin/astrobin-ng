@@ -46,7 +46,7 @@ astrobin-equipment-item-browser {
   }
 }
 
-.camera-variants-alert {
+.camera-variants-container {
   margin-top: 1rem !important;
   margin-bottom: -1.25rem !important;
   padding: .75rem 1rem !important;
@@ -57,10 +57,6 @@ astrobin-equipment-item-browser {
     width: 100%;
     border-bottom: 0;
     margin-left: 1rem;
-
-    &:hover span {
-      border-bottom: 1px dotted rgba(255, 255, 255, .5);
-    }
 
     [icon=plus] {
       margin: 0 .5rem;

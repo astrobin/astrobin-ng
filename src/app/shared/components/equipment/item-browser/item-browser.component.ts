@@ -457,7 +457,7 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
   }
 
   variantsMessage(numberOfVariants: number): string {
-    return this.translateService.instant("Available in {{0}} variants.", {
+    return this.translateService.instant("Available in {{0}} additional variants.", {
       0: numberOfVariants
     });
   }
