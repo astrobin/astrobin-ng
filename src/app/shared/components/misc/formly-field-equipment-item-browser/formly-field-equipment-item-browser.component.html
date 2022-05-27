@@ -1,6 +1,6 @@
 <astrobin-equipment-item-browser
   #itemBrowser
-  [enableSummaryModal]="to.multiple"
+  [enableSummaryModal]="false"
   [id]="field.id"
   [initialValue]="initialValue"
   [multiple]="to.multiple"
@@ -21,7 +21,7 @@
       <a href="#" class="quick-add-item" appEventPreventDefault (click)="quickAddItem(item)">
         <astrobin-equipment-item-display-name
           [item]="item"
-          [enableSummaryModal]="true"
+          [enableSummaryModal]="false"
         ></astrobin-equipment-item-display-name>
       </a>
       <span class="quick-add-separator" *ngIf="!last">&middot;</span>
