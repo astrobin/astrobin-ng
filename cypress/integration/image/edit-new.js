@@ -191,7 +191,7 @@ context("Image edit (new)", () => {
       .contains("Home observatory")
       .should("be.visible");
 
-    cy.get("#image-locations-field .add-tag").click();
+    cy.get("#image-locations-field .add-tag .btn").click();
 
     cy.get("astrobin-create-location-modal").should("be.visible");
     cy.get("astrobin-create-location-modal .form-control#name").should("have.value", "Home observatory");
