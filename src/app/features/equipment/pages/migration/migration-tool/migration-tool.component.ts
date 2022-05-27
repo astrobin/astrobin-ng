@@ -221,6 +221,8 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
         this.equipmentItemBrowser.reset();
       }
 
+      this.cancelMigration();
+
       this.loadingService.setLoading(false);
     };
 
