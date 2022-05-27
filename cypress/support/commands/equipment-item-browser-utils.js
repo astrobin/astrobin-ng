@@ -549,7 +549,7 @@ Cypress.Commands.add("equipmentItemBrowserCreate", (selector, text, apiToWait) =
 
   cy.wait(apiToWait);
 
-  cy.get(`${selector} .add-tag`).click();
+  cy.get(`${selector} .add-tag .btn`).click();
 });
 
 Cypress.Commands.add("equipmentItemBrowserCreateBrand", (selector, name, website, brandObject) => {
