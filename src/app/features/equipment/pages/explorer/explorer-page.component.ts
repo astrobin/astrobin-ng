@@ -60,6 +60,7 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
       .subscribe(() => {
         this._setParams();
         this._setLocation();
+        this.getItems();
       });
   }
 
@@ -84,11 +85,22 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
 
   _setParams() {
     this.activeId = parseInt(this.activatedRoute.snapshot.paramMap.get("itemId"), 10);
+    this.page = parseInt(this.activatedRoute.snapshot.queryParamMap.get("page"), 10) || 1;
   }
 
   _setLocation() {
     const _doSetLocation = (brand: BrandInterface | null, item: EquipmentItemBaseInterface) => {
       setTimeout(() => {
+        if (!item) {
+          let url = `/equipment/explorer/${this.activeType.toLowerCase()}`;
+          if (this.page > 1) {
+            url += `?page=${this.page}`;
+          }
+
+          this.location.replaceState(url);
+          return;
+        }
+
         let slug = UtilsService.slugify(
           `${!!brand ? brand.name : this.translateService.instant("(DIY)")} ${item.name}`
         );
@@ -140,11 +152,11 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
               _doSetLocation(null, item);
             }
           } else {
-            this.location.replaceState(`/equipment/explorer/${this.activeType.toLowerCase()}`);
+            _doSetLocation(null, null);
           }
         });
     } else {
-      this.location.replaceState(`/equipment/explorer/${this.activeType.toLowerCase()}`);
+      _doSetLocation(null, null);
     }
   }
 

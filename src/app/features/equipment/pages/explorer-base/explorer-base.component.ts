@@ -63,11 +63,9 @@ export class ExplorerBaseComponent extends BaseComponentDirective implements OnI
     this.router
       .navigate([], {
         relativeTo: this.activatedRoute,
-        queryParams,
-        queryParamsHandling: "preserve"
+        queryParams
       })
       .then(() => {
-        this.getItems();
         this.windowRefService.scroll({ top: 0 });
       });
   }
