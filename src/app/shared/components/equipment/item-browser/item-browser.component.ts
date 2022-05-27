@@ -492,7 +492,7 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
                 clearable: true,
                 label: this.showLabel ? this.label || this.translateService.instant("Find equipment item") : null,
                 options: this._getOptions().pipe(takeUntil(this.destroyed$)),
-                onSearch: (term: string): Observable<void> => {
+                onSearch: (term: string): Observable<any[]> => {
                   return this._onSearch(term);
                 },
                 labelTemplate: this.equipmentItemLabelTemplate,
@@ -661,8 +661,8 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
     );
   }
 
-  _onSearch(q: string): Observable<void> {
-    return new Observable<void>(observer => {
+  _onSearch(q: string): Observable<any[]> {
+    return new Observable<any[]>(observer => {
       if (!q || q.length < 1) {
         observer.next();
         observer.complete();
@@ -710,14 +710,18 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
             }))
           )
         ),
-        map((result: { brands: BrandInterface[]; items: EquipmentItemBaseInterface[] }) =>
-          result.items.map(item => {
-            const brand = result.brands.find(b => b.id === item.brand);
-            return this._getNgOptionValue(brand, item);
-          })
-        ),
-        tap(() => {
-          observer.next();
+        map((result: { brands: BrandInterface[]; items: EquipmentItemBaseInterface[] }) => {
+          if (result.items.length > 0) {
+            return result.items.map(item => {
+              const brand = result.brands.find(b => b.id === item.brand);
+              return this._getNgOptionValue(brand, item);
+            });
+          }
+
+          return [];
+        }),
+        tap(options => {
+          observer.next(options);
           observer.complete();
         })
       );

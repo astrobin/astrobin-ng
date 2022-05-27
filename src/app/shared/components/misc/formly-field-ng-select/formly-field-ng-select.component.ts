@@ -2,8 +2,8 @@ import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { FieldType } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
 import { UtilsService } from "@shared/services/utils/utils.service";
-import { isObservable, Observable, of, Subject, Subscription } from "rxjs";
-import { debounceTime, distinctUntilChanged, map, skip, take, tap } from "rxjs/operators";
+import { isObservable, Observable, Subject, Subscription } from "rxjs";
+import { debounceTime, distinctUntilChanged, map, take, tap } from "rxjs/operators";
 import { NgSelectComponent } from "@ng-select/ng-select";
 
 @Component({
@@ -88,28 +88,15 @@ export class FormlyFieldNgSelectComponent extends FieldType implements OnInit, O
       this.to
         .onSearch(value)
         .pipe(take(1))
-        .subscribe(() => {
-          const _setShowCreateNewButton = (addTag: any, q: any, options: any[] = []) => {
-            const hasAddTag = !!addTag;
-            const hasValue = !!q;
-            const alreadyInOptions =
-              !!options &&
-              options.filter(option => hasValue && option.label.toLowerCase() === q.toLowerCase()).length > 0;
+        .subscribe(options => {
+          const hasAddTag = !!this.to.addTag;
+          const hasValue = !!this.value;
+          const alreadyInOptions =
+            !!options &&
+            options.filter(option => hasValue && option.label.toLowerCase() === this.value.toLowerCase()).length > 0;
 
-            this.showCreateNewButton = hasAddTag && hasValue && !alreadyInOptions;
-            this.loading = false;
-          };
-
-          if (this.hasAsyncItems) {
-            (this.to.options as Observable<any[]>)
-              .pipe(
-                take(1),
-                map(options => _setShowCreateNewButton(this.to.addTag, this.value, options))
-              )
-              .subscribe();
-          } else {
-            _setShowCreateNewButton(this.to.addTag, this.value, this.to.options as any[]);
-          }
+          this.showCreateNewButton = hasAddTag && hasValue && !alreadyInOptions;
+          this.loading = false;
         });
     }
   }
