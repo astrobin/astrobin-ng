@@ -199,21 +199,11 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
 
   setValue(value: TypeUnion) {
     const _doSetValue = (brand: BrandInterface, item: EquipmentItemBaseInterface) => {
+      const id = !!item ? item.id : null;
       const fieldConfig = this.fields[0];
       const options = !!item ? [this._getNgOptionValue(brand, item)] : [];
-      const id = !!item ? item.id : null;
 
-      (fieldConfig.templateOptions.options as Observable<any>).subscribe(previousOptions => {
-        let distinctOptions;
-
-        if (Array.isArray(previousOptions)) {
-          distinctOptions = UtilsService.arrayUniqueObjects([...previousOptions, ...options], "value");
-        } else {
-          distinctOptions = UtilsService.arrayUniqueObjects([previousOptions, ...options]);
-        }
-
-        fieldConfig.templateOptions.options = of(distinctOptions);
-      });
+      fieldConfig.templateOptions.options = of(options);
 
       if (!!this.form.get("value")) {
         this.form.get("value").setValue(id);
@@ -388,15 +378,30 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
     });
   }
 
-  itemCreated(item: EquipmentItemBaseInterface) {
-    this.endCreationMode();
-    this.endSubCreationMode();
+  addItem(item: EquipmentItemBaseInterface) {
+    const _doAddItem = (itemToAdd: EquipmentItemBaseInterface) => {
+      const _doSetValue = (value: EquipmentItemBaseInterface) => {
+        if (this.multiple) {
+          this.setValue([...((this.model.value as Type[]) || []), value.id]);
+        } else {
+          this.setValue(value.id);
+        }
+      };
 
-    const _addItem = () => {
-      if (this.multiple) {
-        this.setValue([...((this.model.value as Type[]) || []), item.id]);
+      if (!!item.brand) {
+        this.store$.dispatch(new LoadBrand({ id: item.brand }));
+
+        this.store$
+          .select(selectBrand, item.brand)
+          .pipe(
+            filter(brand => !!brand),
+            take(1)
+          )
+          .subscribe(brand => {
+            _doSetValue(itemToAdd);
+          });
       } else {
-        this.setValue(item.id);
+        _doSetValue(itemToAdd);
       }
 
       setTimeout(() => {
@@ -404,40 +409,39 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
       }, 1);
     };
 
-    if (!!item.brand) {
-      this.store$.dispatch(new LoadBrand({ id: item.brand }));
+    if (
+      this.equipmentItemService.getType(item) === EquipmentItemType.CAMERA &&
+      this.enableVariantSelection &&
+      (item as CameraInterface).variants?.length > 0
+    ) {
+      const camera = item as CameraInterface;
+      const modal: NgbModalRef = this.modalService.open(VariantSelectorModalComponent);
+      modal.componentInstance.variants = [...[camera], ...camera.variants];
 
-      this.store$
-        .select(selectBrand, item.brand)
-        .pipe(
-          filter(brand => !!brand),
-          take(1)
-        )
-        .subscribe(brand => {
-          _addItem();
-        });
+      modal.closed.pipe(take(1)).subscribe((variant: CameraInterface) => {
+        _doAddItem(variant as EquipmentItemBaseInterface);
+      });
     } else {
-      _addItem();
+      _doAddItem(item);
     }
   }
 
+  itemCreated(item: EquipmentItemBaseInterface) {
+    this.endCreationMode();
+    this.endSubCreationMode();
+    this.addItem(item);
+  }
+
   onOptionClicked($event, obj): boolean {
-    if (this.enableSummaryModal) {
-      const camera = obj.item as CameraInterface;
-
-      if (camera.variants?.length > 0) {
-        const modal: NgbModalRef = this.modalService.open(VariantSelectorModalComponent);
-        modal.componentInstance.variants = [...[camera], ...camera.variants];
-
-        modal.closed.pipe(take(1)).subscribe((variant: CameraInterface) => {
-          this.store$.dispatch(new ItemBrowserAdd({ type: this.type, usageType: this.usageType, item: variant }));
-        });
-
-        $event.preventDefault();
-        $event.stopPropagation();
-
-        return true;
-      }
+    if (
+      this.equipmentItemService.getType(obj.item) === EquipmentItemType.CAMERA &&
+      this.enableVariantSelection &&
+      (obj.item as CameraInterface).variants?.length > 0
+    ) {
+      $event.preventDefault();
+      $event.stopPropagation();
+      this.addItem(obj.item);
+      return true;
     }
 
     return false;
