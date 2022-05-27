@@ -83,6 +83,8 @@ export enum EquipmentActionTypes {
   CREATE_CAMERA_SUCCESS = "[Equipment] Create camera success",
   CREATE_CAMERA_EDIT_PROPOSAL = "[Equipment] Create camera edit proposal",
   CREATE_CAMERA_EDIT_PROPOSAL_SUCCESS = "[Equipment] Create camera edit request proposal",
+  FIND_CAMERA_VARIANTS = "[Equipment] Find camera variants",
+  FIND_CAMERA_VARIANTS_SUCCESS = "[Equipment] Find camera variants success",
 
   // Telescopes
 
@@ -397,7 +399,7 @@ export class LoadSensorSuccess implements PayloadActionInterface {
 export class CreateCamera implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.CREATE_CAMERA;
 
-  constructor(public payload: { camera: Omit<CameraInterface, "id">; createModifiedVariant?: boolean }) {}
+  constructor(public payload: { camera: Omit<CameraInterface, "id"> }) {}
 }
 
 export class CreateCameraSuccess implements PayloadActionInterface {
@@ -416,6 +418,18 @@ export class CreateCameraEditProposalSuccess implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.CREATE_CAMERA_EDIT_PROPOSAL_SUCCESS;
 
   constructor(public payload: { editProposal: EditProposalInterface<CameraInterface> }) {}
+}
+
+export class FindCameraVariants implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.FIND_CAMERA_VARIANTS;
+
+  constructor(public payload: { id: CameraInterface["id"] }) {}
+}
+
+export class FindCameraVariantsSuccess implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.FIND_CAMERA_VARIANTS_SUCCESS;
+
+  constructor(public payload: { cameraVariants: CameraInterface[] }) {}
 }
 
 /**********************************************************************************************************************
@@ -632,6 +646,8 @@ export type EquipmentActions =
   | CreateCameraSuccess
   | CreateCameraEditProposal
   | CreateCameraEditProposalSuccess
+  | FindCameraVariants
+  | FindCameraVariantsSuccess
 
   // Telescopes
   | CreateTelescope

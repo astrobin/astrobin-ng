@@ -6,7 +6,7 @@ context("Equipment", () => {
     cy.setupInitializationRoutes();
     cy.setupEquipmentDefaultRoutes();
 
-    cy.route("GET", "**/api/v2/equipment/filter-edit-proposal/?edit_proposal_target=*", { results: [] });
+    cy.route("get", "**/api/v2/equipment/filter-edit-proposal/?edit_proposal_target=*", { results: [] });
   });
 
   context("Explorer", () => {
@@ -15,21 +15,21 @@ context("Equipment", () => {
         cy.login();
         cy.visitPage("/equipment/explorer/filter");
 
-        cy.route("GET", "**/api/v2/equipment/filter/?q=*", {
+        cy.route("get", "**/api/v2/equipment/filter/?q=*", {
           count: 1,
           next: null,
           previous: null,
           results: [testFilter]
         }).as("findFilters");
 
-        cy.route("GET", "**/api/v2/equipment/filter/?page=*", {
+        cy.route("get", "**/api/v2/equipment/filter/?page=*", {
           count: 1,
           next: null,
           previous: null,
           results: [testFilter]
         }).as("getFilters");
 
-        cy.route("GET", "**/api/v2/equipment/brand/1/", testBrand).as("getBrand");
+        cy.route("get", "**/api/v2/equipment/brand/1/", testBrand).as("getBrand");
 
         cy.ngSelectType("#equipment-item-field", "Test");
         cy.wait("@findFilters");

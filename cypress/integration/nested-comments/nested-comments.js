@@ -8,7 +8,7 @@ context("Nested comments", () => {
   });
 
   it("should show 'no comments yet' message", () => {
-    cy.route("GET", "**/api/v2/nestedcomments/nestedcomments/*", []).as("findNestedComments");
+    cy.route("get", "**/api/v2/nestedcomments/nestedcomments/*", []).as("findNestedComments");
 
     cy.visitPage("/dev/nested-comments");
 
@@ -16,7 +16,7 @@ context("Nested comments", () => {
   });
 
   it("should show comments", () => {
-    cy.route("GET", "**/api/v2/nestedcomments/nestedcomments/*", [
+    cy.route("get", "**/api/v2/nestedcomments/nestedcomments/*", [
       {
         id: 1,
         author: 2,

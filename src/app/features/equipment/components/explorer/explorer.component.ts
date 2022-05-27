@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from "@angular/core";
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from "@angular/core";
 import { Action, Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
@@ -26,21 +26,15 @@ import {
   LoadEquipmentItem
 } from "@features/equipment/store/equipment.actions";
 import { SensorInterface } from "@features/equipment/types/sensor.interface";
-import { CameraInterface } from "@features/equipment/types/camera.interface";
+import { CameraInterface, CameraType } from "@features/equipment/types/camera.interface";
 import { Actions, ofType } from "@ngrx/effects";
 import { EditProposalInterface, EditProposalReviewStatus } from "@features/equipment/types/edit-proposal.interface";
 import { EquipmentItemEditorMode } from "@shared/components/equipment/editors/base-item-editor/base-item-editor.component";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { ItemBrowserComponent } from "@shared/components/equipment/item-browser/item-browser.component";
 import { Observable } from "rxjs";
-import {
-  selectBrand,
-  selectEditProposalsForItem,
-  selectEquipmentItem
-} from "@features/equipment/store/equipment.selectors";
+import { selectEditProposalsForItem, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import { WindowRefService } from "@shared/services/window-ref.service";
-import { UtilsService } from "@shared/services/utils/utils.service";
-import { Location } from "@angular/common";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { RejectItemModalComponent } from "@features/equipment/components/reject-item-modal/reject-item-modal.component";
 import { ApproveItemModalComponent } from "@features/equipment/components/approve-item-modal/approve-item-modal.component";
@@ -51,14 +45,13 @@ import { MountInterface } from "@features/equipment/types/mount.interface";
 import { FilterInterface } from "@features/equipment/types/filter.interface";
 import { AccessoryInterface } from "@features/equipment/types/accessory.interface";
 import { SoftwareInterface } from "@features/equipment/types/software.interface";
-import { BrandInterface } from "@features/equipment/types/brand.interface";
 
 @Component({
   selector: "astrobin-equipment-explorer",
   templateUrl: "./explorer.component.html",
   styleUrls: ["./explorer.component.scss"]
 })
-export class ExplorerComponent extends BaseComponentDirective implements OnInit {
+export class ExplorerComponent extends BaseComponentDirective implements OnInit, OnChanges {
   EquipmentItemType = EquipmentItemType;
   EquipmentItemEditorMode = EquipmentItemEditorMode;
 
@@ -78,9 +71,10 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit 
   routingBasePath = "/equipment/explorer";
 
   @Output()
-  valueChanged = new EventEmitter<EquipmentItemBaseInterface | EquipmentItemBaseInterface[] | null>();
+  valueChanged = new EventEmitter<EquipmentItemBaseInterface>();
 
   selectedItem: EquipmentItemBaseInterface | null = null;
+  cameraVariants: CameraInterface[] = [];
 
   editMode = false;
   editForm = new FormGroup({});
@@ -107,7 +101,6 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit 
     public readonly loadingService: LoadingService,
     public readonly popNotificationsService: PopNotificationsService,
     public readonly windowRefService: WindowRefService,
-    public readonly location: Location,
     public readonly modalService: NgbModal
   ) {
     super(store$);
@@ -118,8 +111,49 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit 
   }
 
   ngOnInit() {
-    this._initActiveId();
     this._initActions();
+    this._initActiveId();
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    this._initActiveId();
+  }
+
+  onSelectedItemChanged(item: EquipmentItemBaseInterface) {
+    if (!item && !this.selectedItem) {
+      return;
+    }
+
+    if (!!item && !!this.selectedItem) {
+      if (item.id === this.selectedItem.id) {
+        return;
+      }
+    }
+
+    this.activeId = !!item ? item.id : null;
+    this.setItem(item);
+    this.valueChanged.emit(item);
+  }
+
+  modificationTitle(): string {
+    return this.translateService.instant("Modified for astrophotography");
+  }
+
+  modificationPopoverMessage(): string {
+    return this.translateService.instant(
+      "Modifications typically include LPF2 filter removal, Baader modification, or full-spectrum modification."
+    );
+  }
+
+  coolingTitle(): string {
+    return this.translateService.instant("Custom-cooled");
+  }
+
+  coolingPopoverMessage(): string {
+    return this.translateService.instant(
+      "Custom-cooled cameras are DSLR and mirrorless cameras that are not sold with cooling as stock, but a " +
+        "cooling mechanism is added as a custom modification."
+    );
   }
 
   _initActiveId() {
@@ -129,10 +163,12 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit 
       this.store$
         .select(selectEquipmentItem, { id: this.activeId, type: this.activeType })
         .pipe(
-          filter(item => !!item),
+          filter(item => !!item && item.id === this.activeId),
           take(1)
         )
         .subscribe(item => this.setItem(item));
+    } else {
+      this.setItem(null);
     }
   }
 
@@ -158,16 +194,26 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit 
       });
   }
 
-  startEditMode() {
+  _verifyCameraVariantCanBeEdited(): boolean {
     if (this.equipmentItemService.getType(this.selectedItem) === EquipmentItemType.CAMERA) {
       const camera: CameraInterface = this.selectedItem as CameraInterface;
-      if (camera.modified) {
+
+      if (camera.modified || (camera.type === CameraType.DSLR_MIRRORLESS && camera.cooled)) {
         this.popNotificationsService.warning(
-          `"Modified" cameras cannot be edited directly. Please find the regular version of this camera and
-          edit that.`
+          `Modified and/or cooled variants of DSLR or mirrorless cameras cannot be
+          edited/approved/rejected directly. Please find the regular version of this camera and perform this action
+          there.`
         );
-        return;
+        return false;
       }
+    }
+
+    return true;
+  }
+
+  startEditMode() {
+    if (!this._verifyCameraVariantCanBeEdited()) {
+      return;
     }
 
     this.editMode = true;
@@ -202,6 +248,10 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit 
   }
 
   startApproval() {
+    if (!this._verifyCameraVariantCanBeEdited()) {
+      return;
+    }
+
     const modal: NgbModalRef = this.modalService.open(ApproveItemModalComponent);
     const componentInstance: ApproveItemModalComponent = modal.componentInstance;
 
@@ -221,6 +271,10 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit 
   }
 
   startRejection() {
+    if (!this._verifyCameraVariantCanBeEdited()) {
+      return;
+    }
+
     const modal: NgbModalRef = this.modalService.open(RejectItemModalComponent);
     const componentInstance: RejectItemModalComponent = modal.componentInstance;
 
@@ -251,45 +305,27 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit 
     this.loadEditProposals();
   }
 
-  onItemSelected(item: EquipmentItemBaseInterface) {
-    const _setItem = (brand: BrandInterface | null) => {
-      this.setItem(null);
-      setTimeout(() => {
-        const slug = UtilsService.slugify(
-          `${!!brand ? brand.name : this.translateService.instant("(DIY)")} ${item.name}`
-        );
+  supportsVariants(item: EquipmentItemBaseInterface): boolean {
+    return (
+      this.equipmentItemService.getType(item) === EquipmentItemType.CAMERA &&
+      (item as CameraInterface).type === CameraType.DSLR_MIRRORLESS
+    );
+  }
 
-        this.setItem(item);
-        this.valueChanged.emit(item);
-
-        if (
-          this.windowRefService.nativeWindow.location.pathname.indexOf(
-            `/${this.activeType.toLowerCase()}/${item.id}/`
-          ) === -1
-        ) {
-          this.location.replaceState(`${this.routingBasePath}/${this.activeType.toLowerCase()}/${item.id}/${slug}`);
-        }
-      }, 100);
-    };
-
-    if (item) {
-      if (!!item.brand) {
-        this.store$
-          .select(selectBrand, item.brand)
-          .pipe(
-            filter(brand => !!brand),
-            take(1)
-          )
-          .subscribe(brand => {
-            _setItem(brand);
-          });
-      } else {
-        _setItem(null);
-      }
-    } else {
-      this.setItem(null);
-      this.location.replaceState(`${this.routingBasePath}/${this.activeType.toLowerCase()}`);
+  getVariants(item: EquipmentItemBaseInterface): CameraInterface[] {
+    if (!this.supportsVariants(item)) {
+      throw new Error("Item is not a camera");
     }
+
+    return (item as CameraInterface).variants;
+  }
+
+  getParentVariant(item: EquipmentItemBaseInterface): CameraInterface {
+    if (!this.supportsVariants(item)) {
+      throw new Error("Item is not a camera");
+    }
+
+    return (item as CameraInterface).parentVariant;
   }
 
   onCreationModeStarted() {
@@ -387,6 +423,7 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit 
       ofType(EquipmentActionTypes.FIND_EQUIPMENT_ITEM_EDIT_PROPOSALS_SUCCESS),
       take(1),
       switchMap(() => this.store$.select(selectEditProposalsForItem, this.selectedItem)),
+      take(1),
       tap(
         editProposals =>
           (this.editProposalsCollapsed =

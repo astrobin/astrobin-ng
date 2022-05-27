@@ -221,6 +221,8 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
         this.equipmentItemBrowser.reset();
       }
 
+      this.cancelMigration();
+
       this.loadingService.setLoading(false);
     };
 
@@ -382,55 +384,6 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
 
   cancelMigration() {
     this.migrationMode = false;
-  }
-
-  onItemSelected(item: EquipmentItemBaseInterface) {
-    this.migrationTarget = item;
-
-    let type: EquipmentItemType;
-
-    try {
-      type = this.equipmentItemService.getType(item);
-    } catch (e) {
-      return;
-    }
-
-    if (type === EquipmentItemType.CAMERA) {
-      const camera = item as CameraInterface;
-      if (!camera.modified) {
-        this.equipmentApiService
-          .getByProperties(type, { brand: item.brand, name: item.name, modified: true })
-          .pipe(
-            take(1),
-            filter(modifiedCameraVariant => !!modifiedCameraVariant),
-            switchMap(modifiedCameraVariant =>
-              this.store$.select(selectBrand, modifiedCameraVariant.brand).pipe(
-                map(brand => ({ brand, modifiedCameraVariant })),
-                // tslint:disable-next-line:no-shadowed-variable
-                filter(({ brand, modifiedCameraVariant }) => !!brand),
-                take(1)
-              )
-            )
-          )
-          .subscribe(({ brand, modifiedCameraVariant }) => {
-            this.migrationTarget = null;
-            this.equipmentItemBrowser.reset();
-            this.popNotificationsService.info(
-              this.translateService.instant(
-                "Since a regular and a modified variant of {{0}} were created, we didn't prefill the item " +
-                  "selection dropdown, to allow you to select the correct variant for this migration.",
-                {
-                  0: `<strong>${brand.name} ${modifiedCameraVariant.name}</strong>`
-                }
-              ),
-              null,
-              {
-                enableHtml: true
-              }
-            );
-          });
-      }
-    }
   }
 
   wrongTypeMessage(): string {

@@ -30,7 +30,7 @@ context("Equipment", () => {
       });
 
       it("should create the item", () => {
-        cy.route("POST", "**/api/v2/equipment/accessory/", testAccessory).as("createAccessory");
+        cy.route("post", "**/api/v2/equipment/accessory/", testAccessory).as("createAccessory");
 
         cy.get("#create-new-item .btn-primary").click();
 

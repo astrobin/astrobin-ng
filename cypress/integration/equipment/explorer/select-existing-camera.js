@@ -6,7 +6,7 @@ context("Equipment", () => {
     cy.setupInitializationRoutes();
     cy.setupEquipmentDefaultRoutes();
 
-    cy.route("GET", "**/api/v2/equipment/camera-edit-proposal/?edit_proposal_target=*", { results: [] });
+    cy.route("get", "**/api/v2/equipment/camera-edit-proposal/?edit_proposal_target=*", { results: [] });
   });
 
   context("Explorer", () => {
@@ -15,21 +15,21 @@ context("Equipment", () => {
         cy.login();
         cy.visitPage("/equipment/explorer");
 
-        cy.route("GET", "**/api/v2/equipment/camera/?q=*", {
+        cy.route("get", "**/api/v2/equipment/camera/?q=*", {
           count: 1,
           next: null,
           previous: null,
           results: [testCamera]
         }).as("findCameras");
 
-        cy.route("GET", "**/api/v2/equipment/camera/?page=*", {
+        cy.route("get", "**/api/v2/equipment/camera/?page=*", {
           count: 1,
           next: null,
           previous: null,
           results: [testCamera]
         }).as("getCameras");
 
-        cy.route("GET", "**/api/v2/equipment/brand/1/", testBrand).as("getBrand");
+        cy.route("get", "**/api/v2/equipment/brand/1/", testBrand).as("getBrand");
 
         cy.ngSelectType("#equipment-item-field", "Test");
         cy.wait("@findCameras");

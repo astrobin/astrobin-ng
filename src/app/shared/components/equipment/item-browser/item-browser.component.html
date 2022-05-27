@@ -13,14 +13,20 @@
 </ng-template>
 
 <ng-template #equipmentItemOptionTemplate let-object="item">
-  <astrobin-equipment-item-summary
-    [item]="object.item"
-    [showClass]="false"
-    [showMeta]="false"
-    [showImage]="false"
-    [showSubItem]="false"
-    [showProperties]="false"
-  ></astrobin-equipment-item-summary>
+  <div (click)="onOptionClicked($event, object)">
+    <astrobin-equipment-item-summary
+      [item]="object.item"
+      [showClass]="false"
+      [showMeta]="false"
+      [showImage]="false"
+      [showSubItem]="false"
+      [showProperties]="false"
+    ></astrobin-equipment-item-summary>
+
+    <div *ngIf="object.item.variants?.length > 0" class="camera-variants">
+      {{ variantsMessage(object.item.variants.length) }}
+    </div>
+  </div>
 </ng-template>
 
 <ng-container *ngIf="creationMode">
@@ -107,16 +113,15 @@
           [class.loading]="loadingService.isLoading()"
           (click)="onCancel()"
         >
-          Cancel
+          {{ "Cancel" | translate }}
         </button>
 
         <button
           class="btn btn-sm-block btn-primary"
-          [disabled]="!creationForm.valid"
           [class.loading]="loadingService.isLoading()"
           (click)="createItem()"
         >
-          Create item
+          {{ "Create item" | translate }}
         </button>
       </div>
     </div>

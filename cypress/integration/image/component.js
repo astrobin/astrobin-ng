@@ -5,8 +5,8 @@ context("Image component", () => {
   });
 
   it("should render placeholder first, then real image", () => {
-    cy.route("GET", "**/api/v2/images/image/1/", "fixture:api/images/image_1.json").as("getImage");
-    cy.route("GET", "**/api/v2/images/image-revision/?image=1", { results: [] }).as("getImageRevisions");
+    cy.route("get", "**/api/v2/images/image/1/", "fixture:api/images/image_1.json").as("getImage");
+    cy.route("get", "**/api/v2/images/image-revision/?image=1", { results: [] }).as("getImageRevisions");
 
     cy.visitPage("/dev/image");
     cy.wait("@getImage");

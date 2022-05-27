@@ -5,9 +5,7 @@ import { State } from "@app/store/state";
 import { Actions } from "@ngrx/effects";
 import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { ActivatedRoute, NavigationEnd, Params, Router } from "@angular/router";
-import { selectBrand } from "@features/equipment/store/equipment.selectors";
-import { take, takeUntil } from "rxjs/operators";
-import { UtilsService } from "@shared/services/utils/utils.service";
+import { takeUntil } from "rxjs/operators";
 import { EditProposalInterface } from "@features/equipment/types/edit-proposal.interface";
 import { Observable } from "rxjs";
 import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
@@ -55,21 +53,6 @@ export class ExplorerBaseComponent extends BaseComponentDirective implements OnI
     });
 
     this.getItems();
-  }
-
-  viewItem(item: EquipmentItemBaseInterface): void {
-    this.store$
-      .select(selectBrand, item.brand)
-      .pipe(take(1))
-      .subscribe(brand => {
-        this.router.navigate([
-          "equipment",
-          "explorer",
-          this.activeType.toLowerCase(),
-          item.id,
-          UtilsService.slugify(`${brand.name} ${item.name}`)
-        ]);
-      });
   }
 
   pageChange(page: number) {

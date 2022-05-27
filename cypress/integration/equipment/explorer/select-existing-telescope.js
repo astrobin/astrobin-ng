@@ -6,7 +6,7 @@ context("Equipment", () => {
     cy.setupInitializationRoutes();
     cy.setupEquipmentDefaultRoutes();
 
-    cy.route("GET", "**/api/v2/equipment/telescope-edit-proposal/?edit_proposal_target=*", { results: [] });
+    cy.route("get", "**/api/v2/equipment/telescope-edit-proposal/?edit_proposal_target=*", { results: [] });
   });
 
   context("Explorer", () => {
@@ -15,21 +15,21 @@ context("Equipment", () => {
         cy.login();
         cy.visitPage("/equipment/explorer/telescope");
 
-        cy.route("GET", "**/api/v2/equipment/telescope/?q=*", {
+        cy.route("get", "**/api/v2/equipment/telescope/?q=*", {
           count: 1,
           next: null,
           previous: null,
           results: [testTelescope]
         }).as("findTelescopes");
 
-        cy.route("GET", "**/api/v2/equipment/telescope/?page=*", {
+        cy.route("get", "**/api/v2/equipment/telescope/?page=*", {
           count: 1,
           next: null,
           previous: null,
           results: [testTelescope]
         }).as("getTelescopes");
 
-        cy.route("GET", "**/api/v2/equipment/brand/1/", testBrand).as("getBrand");
+        cy.route("get", "**/api/v2/equipment/brand/1/", testBrand).as("getBrand");
 
         cy.ngSelectType("#equipment-item-field", "Test");
         cy.wait("@findTelescopes");

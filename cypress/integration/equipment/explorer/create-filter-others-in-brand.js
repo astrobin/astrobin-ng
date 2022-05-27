@@ -17,7 +17,7 @@ context("Equipment", () => {
       });
 
       it("should see 'others in brand' info", () => {
-        cy.route("GET", "**/api/v2/equipment/filter/others-in-brand/*", [testFilter]);
+        cy.route("get", "**/api/v2/equipment/filter/others-in-brand/*", [testFilter]);
 
         cy.equipmentItemBrowserSelectFirstBrand("#equipment-item-field-brand", "Test brand", testBrand);
 

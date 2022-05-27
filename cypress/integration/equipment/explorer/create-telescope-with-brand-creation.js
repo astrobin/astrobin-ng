@@ -65,7 +65,7 @@ context("Equipment", () => {
       });
 
       it("should create the item", () => {
-        cy.route("POST", "**/api/v2/equipment/telescope/", testTelescope).as("createTelescope");
+        cy.route("post", "**/api/v2/equipment/telescope/", testTelescope).as("createTelescope");
 
         cy.get("#create-new-item .btn-primary").click();
 

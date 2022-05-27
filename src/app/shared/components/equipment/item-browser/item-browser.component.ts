@@ -1,4 +1,14 @@
-import { Component, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from "@angular/core";
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  SimpleChanges,
+  TemplateRef,
+  ViewChild
+} from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { State } from "@app/store/state";
 import { Action, Store } from "@ngrx/store";
@@ -37,7 +47,7 @@ import { LoadingService } from "@shared/services/loading.service";
 import { ConfirmItemCreationModalComponent } from "@shared/components/equipment/editors/confirm-item-creation-modal/confirm-item-creation-modal.component";
 import { SensorInterface } from "@features/equipment/types/sensor.interface";
 import { CameraInterface } from "@features/equipment/types/camera.interface";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 import { TelescopeInterface } from "@features/equipment/types/telescope.interface";
 import { MountInterface } from "@features/equipment/types/mount.interface";
@@ -45,6 +55,8 @@ import { FilterInterface } from "@features/equipment/types/filter.interface";
 import { AccessoryInterface } from "@features/equipment/types/accessory.interface";
 import { SoftwareInterface } from "@features/equipment/types/software.interface";
 import { UtilsService } from "@shared/services/utils/utils.service";
+import { VariantSelectorModalComponent } from "@shared/components/equipment/item-browser/variant-selector-modal/variant-selector-modal.component";
+import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 
 type Type = EquipmentItemBaseInterface["id"];
 type TypeUnion = Type | Type[] | null;
@@ -54,7 +66,7 @@ type TypeUnion = Type | Type[] | null;
   templateUrl: "./item-browser.component.html",
   styleUrls: ["./item-browser.component.scss"]
 })
-export class ItemBrowserComponent extends BaseComponentDirective implements OnInit {
+export class ItemBrowserComponent extends BaseComponentDirective implements OnInit, OnChanges {
   EquipmentItemType = EquipmentItemType;
 
   @Input()
@@ -83,6 +95,9 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
 
   @Input()
   enableSummaryModal = false;
+
+  @Input()
+  enableVariantSelection = false;
 
   model: { value: TypeUnion } = { value: null };
   form: FormGroup = new FormGroup({});
@@ -123,13 +138,35 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
     public readonly translateService: TranslateService,
     public readonly windowRefService: WindowRefService,
     public readonly modalService: NgbModal,
-    public readonly equipmentItemService: EquipmentItemService
+    public readonly equipmentItemService: EquipmentItemService,
+    public readonly popNotificationsService: PopNotificationsService
   ) {
     super(store$);
   }
 
   ngOnInit() {
     setTimeout(() => this._setFields(), 1);
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    let equals = false;
+
+    if (
+      changes.initialValue &&
+      changes.initialValue.previousValue !== undefined &&
+      changes.initialValue.currentValue !== undefined
+    ) {
+      if (this.multiple) {
+        equals =
+          [...changes.initialValue.previousValue].sort() + "" === [...changes.initialValue.currentValue].sort() + "";
+      } else {
+        equals = changes.initialValue.previousValue === changes.initialValue.currentValue;
+      }
+
+      if (!equals) {
+        this._setFields();
+      }
+    }
   }
 
   reset() {
@@ -162,9 +199,9 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
 
   setValue(value: TypeUnion) {
     const _doSetValue = (brand: BrandInterface, item: EquipmentItemBaseInterface) => {
+      const id = !!item ? item.id : null;
       const fieldConfig = this.fields[0];
       const options = !!item ? [this._getNgOptionValue(brand, item)] : [];
-      const id = !!item ? item.id : null;
 
       fieldConfig.templateOptions.options = of(options);
 
@@ -269,6 +306,14 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
   }
 
   createItem() {
+    if (!this.creationForm.valid) {
+      this.creationForm.markAllAsTouched();
+      this.popNotificationsService.error(
+        this.translateService.instant("The form has errors, please correct them and try again.")
+      );
+      return;
+    }
+
     const data: EquipmentItemBaseInterface = {
       ...this.creationModel,
       ...this.creationForm.value
@@ -288,10 +333,7 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
             actionSuccessType = EquipmentActionTypes.CREATE_SENSOR_SUCCESS;
             break;
           case EquipmentItemType.CAMERA:
-            const createModifiedVariant = (data as any).createModifiedVariant || false;
-            delete (data as any).createModifiedVariant;
-
-            action = new CreateCamera({ camera: item as CameraInterface, createModifiedVariant });
+            action = new CreateCamera({ camera: item as CameraInterface });
             actionSuccessType = EquipmentActionTypes.CREATE_CAMERA_SUCCESS;
             break;
           case EquipmentItemType.TELESCOPE:
@@ -336,15 +378,30 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
     });
   }
 
-  itemCreated(item: EquipmentItemBaseInterface) {
-    this.endCreationMode();
-    this.endSubCreationMode();
+  addItem(item: EquipmentItemBaseInterface) {
+    const _doAddItem = (itemToAdd: EquipmentItemBaseInterface) => {
+      const _doSetValue = (value: EquipmentItemBaseInterface) => {
+        if (this.multiple) {
+          this.setValue([...((this.model.value as Type[]) || []), value.id]);
+        } else {
+          this.setValue(value.id);
+        }
+      };
 
-    const _addItem = () => {
-      if (this.multiple) {
-        this.setValue([...((this.model.value as Type[]) || []), item.id]);
+      if (!!item.brand) {
+        this.store$.dispatch(new LoadBrand({ id: item.brand }));
+
+        this.store$
+          .select(selectBrand, item.brand)
+          .pipe(
+            filter(brand => !!brand),
+            take(1)
+          )
+          .subscribe(brand => {
+            _doSetValue(itemToAdd);
+          });
       } else {
-        this.setValue(item.id);
+        _doSetValue(itemToAdd);
       }
 
       setTimeout(() => {
@@ -352,21 +409,42 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
       }, 1);
     };
 
-    if (!!item.brand) {
-      this.store$.dispatch(new LoadBrand({ id: item.brand }));
+    if (
+      this.equipmentItemService.getType(item) === EquipmentItemType.CAMERA &&
+      this.enableVariantSelection &&
+      (item as CameraInterface).variants?.length > 0
+    ) {
+      const camera = item as CameraInterface;
+      const modal: NgbModalRef = this.modalService.open(VariantSelectorModalComponent);
+      modal.componentInstance.variants = [...[camera], ...camera.variants];
 
-      this.store$
-        .select(selectBrand, item.brand)
-        .pipe(
-          filter(brand => !!brand),
-          take(1)
-        )
-        .subscribe(brand => {
-          _addItem();
-        });
+      modal.closed.pipe(take(1)).subscribe((variant: CameraInterface) => {
+        _doAddItem(variant as EquipmentItemBaseInterface);
+      });
     } else {
-      _addItem();
+      _doAddItem(item);
     }
+  }
+
+  itemCreated(item: EquipmentItemBaseInterface) {
+    this.endCreationMode();
+    this.endSubCreationMode();
+    this.addItem(item);
+  }
+
+  onOptionClicked($event, obj): boolean {
+    if (
+      this.equipmentItemService.getType(obj.item) === EquipmentItemType.CAMERA &&
+      this.enableVariantSelection &&
+      (obj.item as CameraInterface).variants?.length > 0
+    ) {
+      $event.preventDefault();
+      $event.stopPropagation();
+      this.addItem(obj.item);
+      return true;
+    }
+
+    return false;
   }
 
   onCancel() {
@@ -380,6 +458,12 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
     } else {
       this.endSubCreationMode();
     }
+  }
+
+  variantsMessage(numberOfVariants: number): string {
+    return this.translateService.instant("Available in {{0}} additional variants.", {
+      0: numberOfVariants
+    });
   }
 
   _setFields() {
@@ -412,7 +496,7 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
                 clearable: true,
                 label: this.showLabel ? this.label || this.translateService.instant("Find equipment item") : null,
                 options: this._getOptions().pipe(takeUntil(this.destroyed$)),
-                onSearch: (term: string): Observable<void> => {
+                onSearch: (term: string): Observable<any[]> => {
                   return this._onSearch(term);
                 },
                 labelTemplate: this.equipmentItemLabelTemplate,
@@ -581,8 +665,8 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
     );
   }
 
-  _onSearch(q: string): Observable<void> {
-    return new Observable<void>(observer => {
+  _onSearch(q: string): Observable<any[]> {
+    return new Observable<any[]>(observer => {
       if (!q || q.length < 1) {
         observer.next();
         observer.complete();
@@ -630,14 +714,18 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
             }))
           )
         ),
-        map((result: { brands: BrandInterface[]; items: EquipmentItemBaseInterface[] }) =>
-          result.items.map(item => {
-            const brand = result.brands.find(b => b.id === item.brand);
-            return this._getNgOptionValue(brand, item);
-          })
-        ),
-        tap(() => {
-          observer.next();
+        map((result: { brands: BrandInterface[]; items: EquipmentItemBaseInterface[] }) => {
+          if (result.items.length > 0) {
+            return result.items.map(item => {
+              const brand = result.brands.find(b => b.id === item.brand);
+              return this._getNgOptionValue(brand, item);
+            });
+          }
+
+          return [];
+        }),
+        tap(options => {
+          observer.next(options);
           observer.complete();
         })
       );

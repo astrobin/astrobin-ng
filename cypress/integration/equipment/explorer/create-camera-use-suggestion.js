@@ -17,7 +17,7 @@ context("Equipment", () => {
       });
 
       it("should select suggestion", () => {
-        cy.route("GET", "**/api/v2/equipment/camera/find-similar-in-brand/*", [testCamera]);
+        cy.route("get", "**/api/v2/equipment/camera/find-similar-in-brand/*", [testCamera]);
 
         cy.equipmentItemBrowserSelectFirstBrand("#equipment-item-field-brand", "Test brand", testBrand);
         cy.get("#equipment-item-field-name").should("have.value", "Test");

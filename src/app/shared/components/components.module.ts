@@ -84,6 +84,7 @@ import { EquipmentItemDisplayNameComponent } from "@shared/components/equipment/
 import { DirectivesModule } from "@shared/directives/directives.module";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
 import { ItemUnapprovedInfoModalComponent } from "@shared/components/equipment/item-unapproved-info-modal/item-unapproved-info-modal.component";
+import { VariantSelectorModalComponent } from "@shared/components/equipment/item-browser/variant-selector-modal/variant-selector-modal.component";
 
 const modules = [
   CommonModule,
@@ -153,6 +154,7 @@ const components = [
 
   // Equipment
   ItemBrowserComponent,
+  VariantSelectorModalComponent,
   ItemSummaryComponent,
   ItemUnapprovedInfoModalComponent,
   ItemSummaryModalComponent,

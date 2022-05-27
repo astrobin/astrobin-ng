@@ -3,11 +3,11 @@
   #itemBrowser
   [type]="activeType"
   [initialValue]="this.activeId"
-  (valueChanged)="onItemSelected($event)"
   (creationModeStarted)="onCreationModeStarted()"
+  (valueChanged)="onSelectedItemChanged($event)"
 ></astrobin-equipment-item-browser>
 
-<div class="card" [class.disabled-with-backdrop]="subCreationMode" *ngIf="selectedItem">
+<div class="card" [class.disabled-with-backdrop]="subCreationMode" *ngIf="!!selectedItem">
   <div class="backdrop"></div>
 
   <div class="card-header">
@@ -25,6 +25,65 @@
       [showEmptyProperties]="true"
       [showLargeImage]="true"
     ></astrobin-equipment-item-summary>
+
+    <div *ngIf="supportsVariants(selectedItem)" class="camera-variants-container">
+      <ng-container *ngIf="getVariants(selectedItem)?.length > 0; else cameraVariantTemplate">
+        {{ "Also available in the following variants:" | translate }}
+
+        <span class="camera-variants">
+          <a
+            [routerLink]="['/equipment/explorer/camera', cameraVariant.id]"
+            *ngFor="let cameraVariant of getVariants(selectedItem)"
+            class="camera-variant"
+          >
+            <span *ngIf="!cameraVariant.modified && !cameraVariant.cooled">
+              <fa-icon icon="camera"></fa-icon>
+              {{ "Regular" | translate }}
+            </span>
+
+            <span
+              *ngIf="cameraVariant.modified && !cameraVariant.cooled"
+              [ngbPopover]="modificationPopoverMessage()"
+              [popoverTitle]="modificationTitle()"
+              triggers="mouseenter:mouseleave"
+            >
+              <fa-icon icon="microchip"></fa-icon>
+              {{ modificationTitle() }}
+            </span>
+
+            <span
+              *ngIf="!cameraVariant.modified && cameraVariant.cooled"
+              [ngbPopover]="coolingPopoverMessage()"
+              [popoverTitle]="coolingTitle()"
+              triggers="mouseenter:mouseleave"
+            >
+              <fa-icon icon="icicles"></fa-icon>
+              {{ coolingTitle() }}
+            </span>
+
+            <span
+              *ngIf="cameraVariant.modified && cameraVariant.cooled"
+              [ngbPopover]="modificationPopoverMessage() + ' ' + coolingPopoverMessage()"
+              [popoverTitle]="modificationTitle() + ' + ' + coolingTitle()"
+              triggers="mouseenter:mouseleave"
+            >
+              <fa-icon icon="microchip"></fa-icon> {{ modificationTitle()}}
+              <fa-icon icon="plus"></fa-icon>
+              <fa-icon icon="icicles"></fa-icon> {{ coolingTitle() }}
+            </span>
+          </a>
+        </span>
+      </ng-container>
+
+      <ng-template #cameraVariantTemplate>
+        {{ "This is a modified and/or custom-cooled variant of this camera." | translate }}
+        <a
+          [routerLink]="['/equipment/explorer/camera', getParentVariant(selectedItem).id]"
+        >
+          {{ "Go to regular variant." | translate }}
+        </a>
+      </ng-template>
+    </div>
   </div>
 
   <div class="card-footer">
@@ -95,7 +154,8 @@
 <ng-container *ngIf="selectedItem">
   <ng-container *ngIf="selectedItemEditProposals$ | async as editProposals; else loadingEditProposals">
     <div class="edit-proposals" *ngIf="editProposals.length > 0">
-      <ng-container *ngIf="pendingProposalsByStatus(editProposals, null)?.length > 0 || !editProposalsCollapsed; else editProposalsCollapsedTemplate">
+      <ng-container
+        *ngIf="pendingProposalsByStatus(editProposals, null)?.length > 0 || !editProposalsCollapsed; else editProposalsCollapsedTemplate">
         <div class="edit-proposals-header" (click)="editProposalsCollapsed = true">
           <div class="row">
             <span class="col">{{ "Edit proposal by" | translate }}</span>
@@ -136,7 +196,7 @@
     <fa-icon icon="arrow-down"></fa-icon>
   </div>
 
-  <div class="card mt-4 mb-4"  [class.disabled-with-backdrop]="subCreationMode" id="edit-item">
+  <div class="card mt-4 mb-4" [class.disabled-with-backdrop]="subCreationMode" id="edit-item">
     <div class="backdrop"></div>
 
     <div class="card-header">

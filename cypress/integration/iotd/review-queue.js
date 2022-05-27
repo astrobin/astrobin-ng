@@ -2,7 +2,7 @@ context("IOTD Review queue", () => {
   beforeEach(() => {
     cy.server();
     cy.setupInitializationRoutes();
-    cy.route("GET", "**/api/v2/platesolving/solutions/*", []).as("getSolution");
+    cy.route("get", "**/api/v2/platesolving/solutions/*", []).as("getSolution");
   });
 
   describe("when not logged in", () => {
@@ -27,36 +27,36 @@ context("IOTD Review queue", () => {
     beforeEach(() => {
       cy.login();
 
-      cy.route("GET", "**/000000/final/thumb/hd_anonymized/", "fixture:api/images/image_thumbnail_1_hd_loaded.json");
-      cy.route("GET", "**/000000/final/thumb/story/", "fixture:api/images/image_thumbnail_1_story_loaded.json");
+      cy.route("get", "**/000000/final/thumb/hd_anonymized/", "fixture:api/images/image_thumbnail_1_hd_loaded.json");
+      cy.route("get", "**/000000/final/thumb/story/", "fixture:api/images/image_thumbnail_1_story_loaded.json");
 
-      cy.route("GET", "**/000001/final/thumb/hd_anonymized/", "fixture:api/images/image_thumbnail_1_hd_loaded.json");
-      cy.route("GET", "**/000001/final/thumb/story/", "fixture:api/images/image_thumbnail_1_story_loaded.json");
+      cy.route("get", "**/000001/final/thumb/hd_anonymized/", "fixture:api/images/image_thumbnail_1_hd_loaded.json");
+      cy.route("get", "**/000001/final/thumb/story/", "fixture:api/images/image_thumbnail_1_story_loaded.json");
 
-      cy.route("GET", "**/api/v2/images/image-revision/?image=*", { results: [] }).as("getImageRevisions");
+      cy.route("get", "**/api/v2/images/image-revision/?image=*", { results: [] }).as("getImageRevisions");
 
-      cy.route("GET", "**/common/userprofiles/current", "fixture:api/common/userprofile_current_3.json").as(
+      cy.route("get", "**/common/userprofiles/current", "fixture:api/common/userprofile_current_3.json").as(
         "getCurrentUserProfile"
       );
-      cy.route("GET", "**/common/users/*", "fixture:api/common/users_3_iotd_reviewer.json").as("getUser");
+      cy.route("get", "**/common/users/*", "fixture:api/common/users_3_iotd_reviewer.json").as("getUser");
 
-      cy.route("GET", "**/iotd/staff-member-settings/", { user: 1, queueSortOrder: "OLDEST" });
+      cy.route("get", "**/iotd/staff-member-settings/", { user: 1, queueSortOrder: "OLDEST" });
     });
 
     it("should render page elements", () => {
-      cy.route("GET", "**/api/v2/images/image/?id=1,2", "fixture:api/images/images_1_and_2.json").as("getImages");
-      cy.route("GET", "**/*/final/thumb/story/", "fixture:api/images/image_thumbnail_1_story_loaded.json").as(
+      cy.route("get", "**/api/v2/images/image/?id=1,2", "fixture:api/images/images_1_and_2.json").as("getImages");
+      cy.route("get", "**/*/final/thumb/story/", "fixture:api/images/image_thumbnail_1_story_loaded.json").as(
         "getImageThumbnail"
       );
-      cy.route("GET", "**/*/final/thumb/story_crop/", "fixture:api/images/image_thumbnail_1_story_crop_loaded.json").as(
+      cy.route("get", "**/*/final/thumb/story_crop/", "fixture:api/images/image_thumbnail_1_story_crop_loaded.json").as(
         "getImageThumbnail"
       );
-      cy.route("GET", "**/api/v2/iotd/review-queue/?page=*", "fixture:api/iotd/review-queue.json").as("reviewQueue");
-      cy.route("GET", "**/api/v2/iotd/hidden-image/", []).as("hiddenImages");
-      cy.route("GET", "**/api/v2/iotd/dismissed-image/", []).as("dismissedImages");
-      cy.route("GET", "**/api/v2/iotd/vote", []).as("votes");
-      cy.route("GET", "**/api/v2/astrobin/telescope/*/", "fixture:api/telescopes/telescope_1.json").as("getTelescope");
-      cy.route("GET", "**/api/v2/astrobin/camera/*/", "fixture:api/cameras/camera_1.json").as("getCamera");
+      cy.route("get", "**/api/v2/iotd/review-queue/?page=*", "fixture:api/iotd/review-queue.json").as("reviewQueue");
+      cy.route("get", "**/api/v2/iotd/hidden-image/", []).as("hiddenImages");
+      cy.route("get", "**/api/v2/iotd/dismissed-image/", []).as("dismissedImages");
+      cy.route("get", "**/api/v2/iotd/vote", []).as("votes");
+      cy.route("get", "**/api/v2/astrobin/telescope/*/", "fixture:api/telescopes/telescope_1.json").as("getTelescope");
+      cy.route("get", "**/api/v2/astrobin/camera/*/", "fixture:api/cameras/camera_1.json").as("getCamera");
 
       cy.visitPage("/iotd/review-queue");
 
@@ -97,7 +97,7 @@ context("IOTD Review queue", () => {
     });
 
     it("should add a promotion to a slot", () => {
-      cy.route("POST", "**/api/v2/iotd/vote/", {
+      cy.route("post", "**/api/v2/iotd/vote/", {
         id: 1,
         submitter: 3,
         image: 1,
@@ -115,7 +115,7 @@ context("IOTD Review queue", () => {
     });
 
     it("should remove a promotion from a slot", () => {
-      cy.route("DELETE", "**/api/v2/iotd/vote/1/", {}).as("deleteVote");
+      cy.route("delete", "**/api/v2/iotd/vote/1/", {}).as("deleteVote");
 
       cy.get("#promotion-queue-entry-1 .btn")
         .contains("Retract promotion")
@@ -131,7 +131,7 @@ context("IOTD Review queue", () => {
     });
 
     it("should hide a promotion entry", () => {
-      cy.route("POST", "**/api/v2/iotd/hidden-image/", {
+      cy.route("post", "**/api/v2/iotd/hidden-image/", {
         id: 1,
         image: 1,
         create: new Date().toISOString()
@@ -146,7 +146,7 @@ context("IOTD Review queue", () => {
     });
 
     it("should show a promotion entry again", () => {
-      cy.route("DELETE", "**/api/v2/iotd/hidden-image/1", {}).as("showImage");
+      cy.route("delete", "**/api/v2/iotd/hidden-image/1", {}).as("showImage");
 
       cy.get("#promotion-queue-entry-1 .btn")
         .contains("Show")

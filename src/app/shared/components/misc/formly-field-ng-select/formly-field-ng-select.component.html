@@ -51,15 +51,18 @@
     </ng-template>
 
     <ng-template ng-footer-tmp>
-      <button
-        *ngIf="to.addTag && !!value"
-        href="#"
-        (click)="onAddTag(value)"
-        class="btn btn-primary add-tag"
-        [class.loading]="loading"
-      >
-        {{ "Create new:" | translate }} {{ value }}
-      </button>
+      <div *ngIf="!!value && !!to.addTag && showCreateNewButton" class="add-tag">
+        <span [innerHTML]="'Can\'t find <strong>{{0}}</strong>?' | translate:{'0': value}"></span>
+
+        <button
+          *ngIf="!!value && !!to.addTag && showCreateNewButton"
+          (click)="onAddTag(value)"
+          [class.loading]="loading"
+          class="btn btn-outline-primary"
+        >
+          {{ "Create new" }}
+        </button>
+      </div>
     </ng-template>
   </ng-select>
 </ng-template>

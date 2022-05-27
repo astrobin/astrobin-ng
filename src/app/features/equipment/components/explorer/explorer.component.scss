@@ -46,6 +46,27 @@ astrobin-equipment-item-browser {
   }
 }
 
+.camera-variants-container {
+  margin-top: 1rem !important;
+  margin-bottom: -1.25rem !important;
+  padding: .75rem 1rem !important;
+
+  .camera-variant {
+    display: block;
+    padding: .33rem;
+    width: 100%;
+    border-bottom: 0;
+    margin-left: 1rem;
+
+    [icon=plus] {
+      margin: 0 .5rem;
+    }
+
+    &:first-child {
+      margin-top: .5rem;
+    }
+  }
+}
 ::ng-deep #create-new-item {
   z-index: 999;
 }

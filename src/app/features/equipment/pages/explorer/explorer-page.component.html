@@ -12,7 +12,7 @@
         [activeType]="activeType"
         [activeId]="activeId"
         [activeEditProposalId]="activeEditProposalId"
-        (valueChanged)="activeId = !!$event ? $event.id : null"
+        (valueChanged)="onSelectedItemChanged($event)"
       ></astrobin-equipment-explorer>
 
       <ng-container *ngIf="!activeId">

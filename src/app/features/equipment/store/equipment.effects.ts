@@ -64,7 +64,9 @@ import {
   UpdateEquipmentPresetSuccess,
   UpdateEquipmentPreset,
   DeleteEquipmentPresetSuccess,
-  DeleteEquipmentPreset
+  DeleteEquipmentPreset,
+  FindCameraVariantsSuccess,
+  FindCameraVariants
 } from "@features/equipment/store/equipment.actions";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
@@ -394,7 +396,7 @@ export class EquipmentEffects {
       map((action: CreateCamera) => action.payload),
       mergeMap(payload =>
         this.equipmentApiService
-          .createCamera(payload.camera, payload.createModifiedVariant)
+          .createCamera(payload.camera)
           .pipe(map(createdCamera => new CreateCameraSuccess({ item: createdCamera })))
       )
     )
@@ -413,6 +415,18 @@ export class EquipmentEffects {
                 new CreateCameraEditProposalSuccess({ editProposal: createdCameraEditProposal })
             )
           )
+      )
+    )
+  );
+
+  FindCameraVariants: Observable<FindCameraVariantsSuccess> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(EquipmentActionTypes.FIND_CAMERA_VARIANTS),
+      map((action: FindCameraVariants) => action.payload.id),
+      mergeMap(id =>
+        this.equipmentApiService
+          .findCameraVariants(id)
+          .pipe(map(cameraVariants => new FindCameraVariantsSuccess({ cameraVariants })))
       )
     )
   );

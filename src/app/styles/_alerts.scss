@@ -44,10 +44,6 @@
 
     &:not(.btn) {
       border-bottom: 1px dotted rgba(255, 255, 255, .5);
-
-      &:hover {
-        border-bottom: 1px dotted var(--accentColor);
-      }
     }
   }
 

@@ -4,26 +4,26 @@ context("Image edit (new)", () => {
   beforeEach(() => {
     cy.server();
     cy.setupInitializationRoutes();
-    cy.route("GET", "**/api/v2/images/image/?hash=abc123", "fixture:api/images/new_image_1_by_hashes.json").as(
+    cy.route("get", "**/api/v2/images/image/?hash=abc123", "fixture:api/images/new_image_1_by_hashes.json").as(
       "getImage"
     );
-    cy.route("GET", "/abc123/0/thumb/hd/", "fixture:api/images/image_thumbnail_1_regular_loaded").as("getThumbnail");
+    cy.route("get", "/abc123/0/thumb/hd/", "fixture:api/images/image_thumbnail_1_regular_loaded").as("getThumbnail");
     cy.route(
       "GET",
       "**/api/v2/remote-source-affiliation/remote-source-affiliate/",
       "fixture:api/remote-source-affiliation/remote-source-affiliates.json"
     ).as("getRemoteSourceAffiliates");
-    cy.route("GET", "**/api/v2/groups/group/*", "fixture:api/groups/groups.json").as("getGroups");
-    cy.route("GET", "**/api/v2/users/locations/", { count: 0, results: [] }).as("getUsersLocations");
+    cy.route("get", "**/api/v2/groups/group/*", "fixture:api/groups/groups.json").as("getGroups");
+    cy.route("get", "**/api/v2/users/locations/", { count: 0, results: [] }).as("getUsersLocations");
 
-    cy.route("GET", "**/api/v2/equipment/camera/recently-used/*", []);
-    cy.route("GET", "**/api/v2/equipment/telescope/recently-used/*", []);
-    cy.route("GET", "**/api/v2/equipment/mount/recently-used/", []);
-    cy.route("GET", "**/api/v2/equipment/filter/recently-used/", []);
-    cy.route("GET", "**/api/v2/equipment/accessory/recently-used/", []);
-    cy.route("GET", "**/api/v2/equipment/software/recently-used/", []);
+    cy.route("get", "**/api/v2/equipment/camera/recently-used/*", []);
+    cy.route("get", "**/api/v2/equipment/telescope/recently-used/*", []);
+    cy.route("get", "**/api/v2/equipment/mount/recently-used/", []);
+    cy.route("get", "**/api/v2/equipment/filter/recently-used/", []);
+    cy.route("get", "**/api/v2/equipment/accessory/recently-used/", []);
+    cy.route("get", "**/api/v2/equipment/software/recently-used/", []);
 
-    cy.route("GET", "**/api/v2/equipment/equipment-preset/", []);
+    cy.route("get", "**/api/v2/equipment/equipment-preset/", []);
   });
 
   it("should navigate to the edit page", () => {
@@ -176,8 +176,8 @@ context("Image edit (new)", () => {
       altitude: 400
     };
 
-    cy.route("POST", "**/api/v2/astrobin/location/", location).as("createLocation");
-    cy.route("PUT", "**/api/v2/common/userprofiles/1/partial/", {
+    cy.route("post", "**/api/v2/astrobin/location/", location).as("createLocation");
+    cy.route("put", "**/api/v2/common/userprofiles/1/partial/", {
       locations: [location]
     }).as("updateUserProfile");
 
@@ -191,7 +191,7 @@ context("Image edit (new)", () => {
       .contains("Home observatory")
       .should("be.visible");
 
-    cy.get("#image-locations-field .add-tag").click();
+    cy.get("#image-locations-field .add-tag .btn").click();
 
     cy.get("astrobin-create-location-modal").should("be.visible");
     cy.get("astrobin-create-location-modal .form-control#name").should("have.value", "Home observatory");
@@ -318,8 +318,8 @@ context("Image edit (new)", () => {
   });
 
   it("should add a telescope", () => {
-    cy.route("GET", "**/api/v2/equipment/brand/1/", "fixture:api/equipment_v2/brand_1.json").as("getBrand1");
-    cy.route("GET", "**/api/v2/equipment/telescope/?q=Foo", {
+    cy.route("get", "**/api/v2/equipment/brand/1/", "fixture:api/equipment_v2/brand_1.json").as("getBrand1");
+    cy.route("get", "**/api/v2/equipment/telescope/?q=Foo", {
       count: 1,
       next: null,
       previous: null,
@@ -360,15 +360,6 @@ context("Image edit (new)", () => {
       .should("be.visible");
   });
 
-  it("should show the summary modal", () => {
-    cy.get("#image-imaging-telescopes-field .ng-select-container .ng-value .btn-info-modal").click();
-    cy.get(".modal").should("be.visible");
-    cy.get(".modal .btn")
-      .contains("Close")
-      .click();
-    cy.get(".modal").should("be.not.visible");
-  });
-
   it("should create a camera", () => {
     cy.setupEquipmentDefaultRoutes();
     cy.equipmentItemBrowserCreate("#image-imaging-cameras-field", "Test camera", "@findCameras");
@@ -377,7 +368,7 @@ context("Image edit (new)", () => {
     cy.ngSelectOpen("#camera-field-type");
     cy.ngSelectOptionClick("#camera-field-type", 1);
     cy.ngSelectValueShouldContain("#camera-field-type", "Dedicated deep-sky camera");
-    cy.route("POST", "**/api/v2/equipment/camera/", testCamera).as("createCamera");
+    cy.route("post", "**/api/v2/equipment/camera/", testCamera).as("createCamera");
     cy.get("#create-new-item .btn-primary").click();
     cy.get(".modal-title")
       .contains("Confirm item creation")

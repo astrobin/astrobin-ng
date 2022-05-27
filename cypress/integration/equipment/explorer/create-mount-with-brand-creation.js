@@ -44,7 +44,7 @@ context("Equipment", () => {
       });
 
       it("should create the item", () => {
-        cy.route("POST", "**/api/v2/equipment/mount/", testMount).as("createMount");
+        cy.route("post", "**/api/v2/equipment/mount/", testMount).as("createMount");
 
         cy.get("#create-new-item .btn-primary").click();
 

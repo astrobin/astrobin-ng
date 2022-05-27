@@ -1,13 +1,37 @@
 .popover {
+  box-shadow: 0 0 1rem var(--black);
+
+  .popover-header {
+    background-color: var(--lightestGrey);
+    color: var(--black);
+    font-weight: bold;
+    border-bottom-color: var(--lighterGrey);
+  }
+
   .popover-body {
     padding: 1.5rem 1rem;
     font-size: .85rem;
     line-height: 1.15rem;
+    background-color: var(--white);
+    color: var(--darkestGrey);
 
     h4 {
       font-size: 1rem;
       font-weight: bold;
       margin-bottom: .75rem;
+      color: var(--black);
+    }
+
+    strong {
+      color: var(--black);
     }
   }
+}
+
+.bs-popover-top > .arrow::after, .bs-popover-auto[x-placement^=top] > .arrow::after {
+  border-top-color: var(--white);
+}
+
+.bs-popover-bottom > .arrow::after, .bs-popover-auto[x-placement^=bottom] > .arrow::after {
+  border-bottom-color: var(--white);
 }

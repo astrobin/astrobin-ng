@@ -29,7 +29,7 @@ context("Equipment", () => {
           testBrand
         );
 
-        cy.route("GET", "**/api/v2/equipment/sensor/find-similar-in-brand/*", [testSensor]).as("findSimilarSensors");
+        cy.route("get", "**/api/v2/equipment/sensor/find-similar-in-brand/*", [testSensor]).as("findSimilarSensors");
 
         cy.get("astrobin-sensor-editor #equipment-item-field-name").clear();
         cy.get("astrobin-sensor-editor #equipment-item-field-name").type("Test sensor");
