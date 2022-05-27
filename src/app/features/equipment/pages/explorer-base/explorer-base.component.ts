@@ -64,7 +64,7 @@ export class ExplorerBaseComponent extends BaseComponentDirective implements OnI
       .navigate([], {
         relativeTo: this.activatedRoute,
         queryParams,
-        queryParamsHandling: "merge"
+        queryParamsHandling: "preserve"
       })
       .then(() => {
         this.getItems();
