@@ -1,7 +1,9 @@
 <ul ngbNav #nav="ngbNav" [(activeId)]="activeType" class="nav-pills" orientation="vertical">
   <li *ngFor="let type of types" [ngbNavItem]="type.value.toLowerCase()" [disabled]="type.disabled">
     <img src="/assets/images/{{ type.value.toLowerCase() }}-placeholder.png" alt="{{ type.label }}" />
-    <a ngbNavLink routerLink="{{ routingBasePath }}/{{ type.value.toLowerCase() }}">{{ type.label }}</a>
+    <a ngbNavLink routerLink="{{ routingBasePath }}/{{ type.value.toLowerCase() }}" [queryParams]="{'page': 1}">
+      {{ type.label }}
+    </a>
     <span *ngIf="type.count && (!showSubNavigation || activeType !== type.value.toLowerCase())" class="count">
       {{ type.count | async }}
     </span>
