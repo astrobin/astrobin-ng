@@ -110,6 +110,15 @@ export class ServerErrorsInterceptor implements HttpInterceptor {
           errorTitle = this.translateService.instant("Conflict detected");
           errorMessage = err.url;
           break;
+        case 429:
+          errorTitle = this.translateService.instant("Too many requests");
+          errorMessage =
+            this.translateService.instant(
+              "You're trying to do this operation too many times in a short period of time."
+            ) +
+            " " +
+            this.translateService.instant("For security reasons, this is not permitted.");
+          break;
         case 500:
           errorTitle = this.translateService.instant("Internal server error");
           errorMessage = this.translateService.instant(
