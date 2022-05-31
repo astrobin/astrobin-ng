@@ -304,7 +304,7 @@ Cypress.Commands.add("setupEquipmentDefaultRoutesForSensors", () => {
     previous: null,
     results: [testSensor]
   }).as("getSensors");
-  cy.route("GET", "**/api/v2/equipment/sensor/find-similar-in-brand/*", []);
+  cy.route("GET", "**/api/v2/equipment/sensor/find-similar-in-brand/*", []).as("findSimilarSensors");
   cy.route("GET", "**/api/v2/equipment/sensor/others-in-brand/*", [testSensor]).as("sensorOthersInBrand");
 });
 

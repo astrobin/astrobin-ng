@@ -68,8 +68,6 @@ context("Equipment", () => {
         .clear()
         .type("Foo");
 
-      cy.wait("@findSoftwareItemsByName");
-
       cy.get(".alert-warning span")
         .contains("Change the name only to fix a typo")
         .should("be.visible");

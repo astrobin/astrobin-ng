@@ -72,8 +72,8 @@ context("Image edit (existing), test equipment presets", () => {
     );
     cy.route("get", "**/api/v2/equipment/software/1/", "fixture:api/equipment_v2/software_1.json").as("getSoftware1");
 
-    cy.route("get", /.*\/api\/v2\/equipment\/camera\/recently-used\/.*/, []);
-    cy.route("get", /.*\/api\/v2\/equipment\/telescope\/recently-used\/.*/, []);
+    cy.route("get", /.*\/api\/v2\/equipment\/camera\/recently-used\/.*/, []).as("getRecentlyUsedCamera");
+    cy.route("get", /.*\/api\/v2\/equipment\/telescope\/recently-used\/.*/, []).as("getRecentlyUsedTelescope");
     cy.route("get", /.*\/api\/v2\/equipment\/telescope\/recently-used\/\?usage-type=imaging/, [
       {
         id: 3,
@@ -98,11 +98,11 @@ context("Image edit (existing), test equipment presets", () => {
         brand: 1,
         group: null
       }
-    ]);
-    cy.route("get", /.*\/api\/v2\/equipment\/mount\/recently-used\//, []);
-    cy.route("get", /.*\/api\/v2\/equipment\/filter\/recently-used\//, []);
-    cy.route("get", /.*\/api\/v2\/equipment\/accessory\/recently-used\//, []);
-    cy.route("get", /.*\/api\/v2\/equipment\/software\/recently-used\//, []);
+    ]).as("getRecentlyUsedTelescopeForImaging");
+    cy.route("get", /.*\/api\/v2\/equipment\/mount\/recently-used\//, []).as("getRecentlyUsedMount");
+    cy.route("get", /.*\/api\/v2\/equipment\/filter\/recently-used\//, []).as("getRecentlyUsedFilter");
+    cy.route("get", /.*\/api\/v2\/equipment\/accessory\/recently-used\//, []).as("getRecentlyUsedAccessory");
+    cy.route("get", /.*\/api\/v2\/equipment\/software\/recently-used\//, []).as("getRecentlyUsedSoftware");
 
     cy.route("get", "**/api/v2/equipment/equipment-preset/", [testEquipmentPreset]);
   });

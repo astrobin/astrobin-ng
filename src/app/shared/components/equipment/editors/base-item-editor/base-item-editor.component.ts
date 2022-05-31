@@ -429,6 +429,10 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
               ...this.form.value
             } as EquipmentItemBaseInterface);
 
+            if (!!this.model.brand || !!control.value) {
+              return of(true);
+            }
+
             return this.equipmentApiService.getByBrandAndName(type, this.model.brand, control.value).pipe(
               map(item => {
                 if (this.editorMode === EquipmentItemEditorMode.CREATION) {
