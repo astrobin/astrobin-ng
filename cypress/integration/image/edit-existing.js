@@ -34,12 +34,12 @@ context("Image edit (existing)", () => {
       "getSoftware1"
     );
 
-    cy.route("get", "**/api/v2/equipment/camera/recently-used/*", []);
-    cy.route("get", "**/api/v2/equipment/telescope/recently-used/*", []);
-    cy.route("get", "**/api/v2/equipment/mount/recently-used/", []);
-    cy.route("get", "**/api/v2/equipment/filter/recently-used/", []);
-    cy.route("get", "**/api/v2/equipment/accessory/recently-used/", []);
-    cy.route("get", "**/api/v2/equipment/software/recently-used/", []);
+    cy.route("get", /.*\/api\/v2\/equipment\/camera\/recently-used\/.*/, []);
+    cy.route("get", /.*\/api\/v2\/equipment\/telescope\/recently-used\/.*/, []);
+    cy.route("get", /.*\/api\/v2\/equipment\/mount\/recently-used\/.*/, []);
+    cy.route("get", /.*\/api\/v2\/equipment\/filter\/recently-used\/.*/, []);
+    cy.route("get", /.*\/api\/v2\/equipment\/accessory\/recently-used\/.*/, []);
+    cy.route("get", /.*\/api\/v2\/equipment\/software\/recently-used\/.*/, []);
 
     cy.route("get", "**/api/v2/equipment/equipment-preset/", []);
 

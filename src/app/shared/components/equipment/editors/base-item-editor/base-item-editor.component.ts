@@ -429,18 +429,18 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
               ...this.form.value
             } as EquipmentItemBaseInterface);
 
-            return (
-              !!this.model.brand &&
-              !!control.value &&
-              this.equipmentApiService.getByBrandAndName(type, this.model.brand, control.value).pipe(
-                map(item => {
-                  if (this.editorMode === EquipmentItemEditorMode.CREATION) {
-                    return !item;
-                  }
+            if (!!this.model.brand || !!control.value) {
+              return of(true);
+            }
 
-                  return !item || item.name === this.model.name;
-                })
-              )
+            return this.equipmentApiService.getByBrandAndName(type, this.model.brand, control.value).pipe(
+              map(item => {
+                if (this.editorMode === EquipmentItemEditorMode.CREATION) {
+                  return !item;
+                }
+
+                return !item || item.name === this.model.name;
+              })
             );
           },
           message: this.translateService.instant("An item of the same class, brand, and name already exists.")
