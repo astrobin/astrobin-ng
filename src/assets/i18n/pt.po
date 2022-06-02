@@ -48,9 +48,6 @@ msgid ""
 "temperature this camera can be cooled."
 msgstr ""
 
-msgid "A-Z explorer"
-msgstr ""
-
 msgid "ADC"
 msgstr ""
 
@@ -81,10 +78,16 @@ msgstr "Resolução avançada de placas"
 msgid "Advanced search"
 msgstr "Busca avançada"
 
+msgid "Alias"
+msgstr ""
+
 msgid "Allow comments"
 msgstr "Permitir comentários"
 
 msgid "Allow full-size display"
+msgstr ""
+
+msgid "Also available in the following variants:"
 msgstr ""
 
 msgid "Alt-Alt (altitude-altitude)"
@@ -172,6 +175,11 @@ msgid "AstroBin is generating a large thumbnail."
 msgstr ""
 
 msgid ""
+"AstroBin will automatically create variants of this camera marked as "
+"\"modified for astrophotography\" and \"custom-cooled\"."
+msgstr ""
+
+msgid ""
 "AstroBin would like to rename some of your gear items in order to be more "
 "consistent with naming conventions."
 msgstr ""
@@ -203,11 +211,11 @@ msgstr ""
 msgid "Authentication error. Please log out and in again."
 msgstr ""
 
-msgid "Automatically create \"modified\" variant"
-msgstr ""
-
 msgid "Autorenew"
 msgstr "Renovação automática"
+
+msgid "Available in {{0}} additional variants."
+msgstr ""
 
 msgid "Back focus"
 msgstr ""
@@ -269,6 +277,9 @@ msgstr ""
 msgid "Cameras"
 msgstr ""
 
+msgid "Can't find <strong>{{0}}</strong>?"
+msgstr ""
+
 msgid "Cancel"
 msgstr "Cancelar"
 
@@ -293,6 +304,9 @@ msgstr ""
 msgid "Catadioptric: Maksutov-Cassegrain"
 msgstr ""
 
+msgid "Catadioptric: Riccardi-Honders"
+msgstr ""
+
 msgid "Catadioptric: Rowe-Atkinson Schmidt astrograph"
 msgstr ""
 
@@ -303,6 +317,9 @@ msgid "Catadioptric: Schmidt-Cassegrain"
 msgstr ""
 
 msgid "Catadioptric: modified Dall-Kirkham"
+msgstr ""
+
+msgid "Catadioptric: modified Harmer-Wynne"
 msgstr ""
 
 msgid "Celsius degrees below ambient"
@@ -415,19 +432,25 @@ msgstr ""
 msgid "Create a new item"
 msgstr ""
 
+msgid "Create item"
+msgstr ""
+
 msgid "Create new brand"
 msgstr ""
 
 msgid "Create new location"
 msgstr ""
 
-msgid "Create new:"
-msgstr ""
-
 msgid "Created by"
 msgstr ""
 
-msgid "DIY"
+msgid "Custom-cooled"
+msgstr ""
+
+msgid ""
+"Custom-cooled cameras are DSLR and mirrorless cameras that are not sold "
+"with cooling as stock, but a cooling mechanism is added as a custom "
+"modification."
 msgstr ""
 
 msgid "Data source"
@@ -458,6 +481,12 @@ msgid "Dismiss image"
 msgstr ""
 
 msgid "Display download menu"
+msgstr ""
+
+msgid ""
+"Do not let your personal preference for a naming convention be a reason for "
+"rejection at this time, as data defragmentation is more important than "
+"minor spelling concerns that can be fixed later."
 msgstr ""
 
 msgid "Do not notify your followers about this revision."
@@ -598,6 +627,9 @@ msgstr ""
 msgid "For more information, please check out our Twitter feed:"
 msgstr "Para obter mais informações, por favor, verifique nosso feed do Twitter:"
 
+msgid "For security reasons, this is not permitted."
+msgstr ""
+
 msgid ""
 "For this reason, you cannot purchase this at the moment, as AstroBin does "
 "not currently offer a downgrade path."
@@ -638,11 +670,14 @@ msgstr ""
 msgid "German equatorial"
 msgstr ""
 
-msgid "Get random"
+msgid "Get next"
 msgstr ""
 
 msgid "Go back to the home page."
 msgstr "Volte para a página inicial."
+
+msgid "Go to regular variant."
+msgstr ""
 
 msgid "Green channel (G)"
 msgstr ""
@@ -689,15 +724,26 @@ msgstr ""
 msgid "Hydrogen-beta (Hβ)"
 msgstr ""
 
+msgid "I have carefully checked for typos"
+msgstr ""
+
+msgid ""
+"I have carefully checked that this item conforms to existing naming "
+"conventions for this brand"
+msgstr ""
+
+msgid "I have carefully checked that this item does not duplicate an existing one"
+msgstr ""
+
+msgid ""
+"I have not included information that pertains to my personal item (e.g. "
+"sold/broken/refurbished...) and this is the general description of a product"
+msgstr ""
+
 msgid "IOTD"
 msgstr ""
 
 msgid "IOTD/TP Staff"
-msgstr ""
-
-msgid ""
-"If selected, AstroBin will automatically create a variant of this object "
-"that is labeled as <em>modified for astrophotography</em>."
 msgstr ""
 
 msgid ""
@@ -785,7 +831,13 @@ msgstr ""
 msgid "It looks like you reached the upload limit for your subscription."
 msgstr "Parece que você atingiu o limite de upload de sua assinatura."
 
+msgid "Item <strong>{{0}}</strong> marked as <strong>{{1}}</strong>."
+msgstr ""
+
 msgid "Item approved."
+msgstr ""
+
+msgid "Item class"
 msgstr ""
 
 msgid "Item rejected."
@@ -953,7 +1005,15 @@ msgstr "Mistura de múltiplas fontes"
 msgid "Moderate"
 msgstr "Moderado"
 
+msgid ""
+"Modifications typically include LPF2 filter removal, Baader modification, "
+"or full-spectrum modification."
+msgstr ""
+
 msgid "Modified"
+msgstr ""
+
+msgid "Modified for astrophotography"
 msgstr ""
 
 msgid "Mono"
@@ -1040,6 +1100,9 @@ msgstr ""
 msgid "Northern lights"
 msgstr "Auroras Boreais"
 
+msgid "Not a {{0}}"
+msgstr ""
+
 msgid "Not enough info"
 msgstr ""
 
@@ -1120,6 +1183,9 @@ msgstr ""
 msgid "Pending review"
 msgstr ""
 
+msgid "Periodic error"
+msgstr ""
+
 msgid "Periodic error correction"
 msgstr ""
 
@@ -1164,6 +1230,9 @@ msgstr ""
 msgid "Pixels Y"
 msgstr ""
 
+msgid "Planetary"
+msgstr ""
+
 msgid "Plate-solution annotations (if available)"
 msgstr "Anotações de solução em placa (se disponível)"
 
@@ -1173,7 +1242,7 @@ msgstr ""
 msgid "Please check that all required fields have been filled at every step."
 msgstr ""
 
-msgid "Please come back later!"
+msgid "Please come back in {{0}} minutes!"
 msgstr ""
 
 msgid ""
@@ -1200,14 +1269,12 @@ msgid ""
 "to use fewer if you don't think there are that many worthy images today."
 msgstr ""
 
-msgid ""
-"Please only do this for DSLR camera that typically are modified for "
-"astrophotography. If this is a camera that is <em>specifically</em> sold as "
-"modified for astrophotography, e.g. the <strong>Canon EOS 60Da</strong> you "
-"<strong>do not</strong> need to use check this option."
+msgid "Please read the equipment migration guidelines"
 msgstr ""
 
-msgid "Please read the equipment migration guidelines"
+msgid ""
+"Please reject a renaming proposal only if the proposal incorrectly makes "
+"the item a different product."
 msgstr ""
 
 msgid ""
@@ -1288,10 +1355,16 @@ msgstr ""
 msgid "Reason"
 msgstr ""
 
+msgid "Rectangular"
+msgstr ""
+
 msgid "Red channel (R)"
 msgstr ""
 
 msgid "Reflector: Dall-Kirkham"
+msgstr ""
+
+msgid "Reflector: Dobsonian"
 msgstr ""
 
 msgid "Reflector: Gregorian"
@@ -1307,6 +1380,12 @@ msgid "Reflector: Newtonian"
 msgstr ""
 
 msgid "Reflector: Ritchey Chretien"
+msgstr ""
+
+msgid "Reflector: classical Cassegrain"
+msgstr ""
+
+msgid "Refractor: Petzval"
 msgstr ""
 
 msgid "Refractor: achromatic"
@@ -1329,6 +1408,9 @@ msgstr ""
 
 msgid "Register"
 msgstr "Registro"
+
+msgid "Regular"
+msgstr ""
 
 msgid "Regular (e.g. medium/long exposure with a CCD or DSLR)"
 msgstr "Regular (ex. exposição media/longa com um CCD ou DSLR)"
@@ -1369,11 +1451,17 @@ msgstr "Fila de revisão"
 msgid "Reviewed by"
 msgstr ""
 
+msgid "Reviewer"
+msgstr ""
+
 msgid "Reviewer's comment"
 msgstr ""
 
 msgid "Revision uploader"
 msgstr "Uploader de revisão"
+
+msgid "Round"
+msgstr ""
 
 msgid "Saturn"
 msgstr "Saturno"
@@ -1405,10 +1493,16 @@ msgstr ""
 msgid "Secure payment by Stripe™"
 msgstr ""
 
+msgid "Seems like it's your first time editing this kind of information!"
+msgstr ""
+
 msgid "Select an area of the image to be used as thumbnail in your gallery."
 msgstr "Selecione uma área da imagem a ser usada como miniatura na sua galeria."
 
 msgid "Select target item for the migration, or create a new one."
+msgstr ""
+
+msgid "Select variant"
 msgstr ""
 
 msgid "Self acquired"
@@ -1441,16 +1535,15 @@ msgstr "Configurações"
 msgid "Sharpen thumbnails"
 msgstr "Aprimorar miniaturas"
 
+msgid ""
+"Should that happen, and you're using this equipment item on one or more of "
+"your images, you will be notified."
+msgstr ""
+
 msgid "Show"
 msgstr ""
 
 msgid "Show guiding equipment"
-msgstr ""
-
-msgid ""
-"Since a regular and a modified variant of {{0}} were created, we didn't "
-"prefill the item selection dropdown, to allow you to select the correct "
-"variant for this migration."
 msgstr ""
 
 msgid "Size"
@@ -1514,6 +1607,9 @@ msgstr "Lista de spam"
 msgid "Sponsors & Partners"
 msgstr "Patrocinadores & parceiros"
 
+msgid "Square"
+msgstr ""
+
 msgid "Staging Area"
 msgstr "Área de Preparação"
 
@@ -1522,6 +1618,9 @@ msgstr ""
 
 msgid "Star trails"
 msgstr "Rastros de estrelas"
+
+msgid "Start typing in the text box to show the dropdown suggestions."
+msgstr ""
 
 msgid "Status"
 msgstr ""
@@ -1571,6 +1670,11 @@ msgstr ""
 msgid "TIFF support on AstroBin is experimental."
 msgstr ""
 
+msgid ""
+"Take a look at them so you can be consistent with the naming conventions "
+"and prevent the creation of a duplicate item."
+msgstr ""
+
 msgid "Target image"
 msgstr "Imagem alvo"
 
@@ -1588,6 +1692,9 @@ msgstr ""
 
 msgid "Thank you for supporting AstroBin!"
 msgstr "Obrigado por apoiar o AstroBin!"
+
+msgid "Thank you!"
+msgstr ""
 
 msgid "Thanks!"
 msgstr "Obrigado!"
@@ -1625,7 +1732,13 @@ msgstr "O tamanho da fonte final dependerá de quão grande é sua marca d'água
 msgid "The following changes are proposed:"
 msgstr ""
 
+msgid "The form has errors, please correct them and try again."
+msgstr ""
+
 msgid "The image will permanently disappear from your queue."
+msgstr ""
+
+msgid "The item already exists in the database"
 msgstr ""
 
 msgid ""
@@ -1645,7 +1758,34 @@ msgstr ""
 msgid "The judge who selected this image will be notified of top-level comments."
 msgstr ""
 
-msgid "The judgement queue is currently empty."
+msgid "The judgement queue is currently empty or being refreshed."
+msgstr ""
+
+msgid ""
+"The legacy object cannot be migrated because it consists of multiple "
+"objects in the same item (e.g. LRGB filter set, or multiple unrelated "
+"products)."
+msgstr ""
+
+msgid ""
+"The legacy object cannot be migrated because it's not the right kind (e.g. "
+"a telescope added as a camera)."
+msgstr ""
+
+msgid ""
+"The legacy object cannot be migrated because the correct target product "
+"cannot be unambiguously determined."
+msgstr ""
+
+msgid ""
+"The migration will be reviewed by a moderator as soon as possible, and you "
+"will be notified of the outcome. If the migration is approved, you will be "
+"able to add the equipment item to your images."
+msgstr ""
+
+msgid ""
+"The migration will complete within a few moments and your images will be "
+"automatically updated."
 msgstr ""
 
 msgid "The name of this brand. Make sure it's spelled correctly."
@@ -1672,7 +1812,7 @@ msgstr ""
 msgid "The requested resource does not exist"
 msgstr ""
 
-msgid "The review queue is currently empty."
+msgid "The review queue is currently empty or being refreshed."
 msgstr ""
 
 msgid ""
@@ -1683,7 +1823,7 @@ msgstr ""
 msgid "The size of the individual pixels in μm."
 msgstr ""
 
-msgid "The submission queue is currently empty."
+msgid "The submission queue is currently empty or being refreshed."
 msgstr ""
 
 msgid "The target item doesn't seem to have the correct brand"
@@ -1696,6 +1836,9 @@ msgid "The target item has insufficient data"
 msgstr ""
 
 msgid "The target item has some inaccurate data"
+msgstr ""
+
+msgid "The target item is a duplicate of an existing equipment item"
 msgstr ""
 
 msgid "There are no comments yet."
@@ -1713,8 +1856,8 @@ msgid "This LEGACY item needs to be migrated"
 msgstr ""
 
 msgid ""
-"This brand has <strong>{{0}}</strong> items in AstroBin's database. Take a "
-"look at them so you can be consistent with the naming conventions:"
+"This brand has <strong>{{0}}</strong> items in AstroBin's database, and "
+"they are shown below in alphabetical order."
 msgstr ""
 
 msgid "This field is disabled because you haven't joined any groups yet."
@@ -1726,6 +1869,20 @@ msgid ""
 msgstr ""
 "Esta imagem será enviada para sua área de teste como um trabalho em "
 "andamento. Você pode torná-lo público no final do processo."
+
+msgid "This is a modified and/or custom-cooled variant of this camera."
+msgstr ""
+
+msgid ""
+"This item as not been approved by a moderator, and could be removed from "
+"the database if rejected."
+msgstr ""
+
+msgid "This item has a history of <strong>{{0}}</strong> approved edit proposals."
+msgstr ""
+
+msgid "This item has not been approved"
+msgstr ""
 
 msgid ""
 "This item has not been approved yet, so it's not available to be associated "
@@ -1781,6 +1938,9 @@ msgstr ""
 msgid "Title"
 msgstr "Título"
 
+msgid "Too many requests"
+msgstr ""
+
 msgid "Top center"
 msgstr "Superior central"
 
@@ -1802,14 +1962,14 @@ msgstr "Eclipse lunar total"
 msgid "Total solar eclipse"
 msgstr "Eclipse solar total"
 
-msgid "Tracking accuracy"
-msgstr ""
-
 msgid "Transit"
 msgstr ""
 
 msgid "Traveller"
 msgstr "Viajante"
+
+msgid "Tripod"
+msgstr ""
 
 msgid "Type"
 msgstr ""
@@ -1967,9 +2127,6 @@ msgstr ""
 msgid "Would you like to upgrade?"
 msgstr "Você gostaria de atualizar?"
 
-msgid "Wrong type"
-msgstr ""
-
 msgid "Yes"
 msgstr ""
 
@@ -2063,6 +2220,9 @@ msgstr "Você será redirecionado em {{seconds}} segundos..."
 msgid "You will overwrite your existing preset with the same name."
 msgstr ""
 
+msgid "You're trying to do this operation too many times in a short period of time."
+msgstr ""
+
 msgid "Your payments"
 msgstr "Seus pagamentos"
 
@@ -2110,6 +2270,9 @@ msgstr ""
 msgid "consider making an edit proposal instead."
 msgstr ""
 
+msgid "cooled"
+msgstr ""
+
 msgid "day"
 msgstr ""
 
@@ -2122,12 +2285,27 @@ msgstr ""
 msgid "e.g. 'Home observatory'"
 msgstr ""
 
+msgid "modified"
+msgstr ""
+
+msgid "multiple items"
+msgstr ""
+
 msgid "n/a"
 msgstr "não aplicável"
+
+msgid "not enough info"
+msgstr ""
+
+msgid "or"
+msgstr ""
 
 msgid ""
 "there is an etiquette regarding uploading a new image versus an image "
 "revision."
+msgstr ""
+
+msgid "wrong type"
 msgstr ""
 
 msgid "year"
