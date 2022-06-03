@@ -47,9 +47,11 @@ astrobin-equipment-item-browser {
 }
 
 .camera-variants-container {
-  margin-top: 1rem !important;
-  margin-bottom: -1.25rem !important;
-  padding: .75rem 1rem !important;
+  padding: .75rem 1.5rem;
+  margin: -1.25rem;
+  margin-top: 1rem;
+  font-size: .85rem;
+  font-style: italic;
 
   .camera-variant {
     display: block;
