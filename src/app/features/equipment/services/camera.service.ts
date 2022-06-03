@@ -72,7 +72,7 @@ export class CameraService extends BaseService implements EquipmentItemServiceIn
   ): Observable<string | null> {
     switch (property) {
       case "NAME":
-        let name: string = item.name;
+        let name: string = propertyValue || item.name;
 
         if (item.type === CameraType.DSLR_MIRRORLESS) {
           const modifiedLabel = this.translateService.instant("modified");

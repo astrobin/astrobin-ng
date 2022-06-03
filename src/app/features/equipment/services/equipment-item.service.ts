@@ -210,15 +210,13 @@ export class EquipmentItemService extends BaseService {
           continue;
         }
 
-        if ((!!originalProperty && originalProperty.value !== editProposal[key]) || item[key] !== editProposal[key]) {
-          if (!editProposal.editProposalReviewStatus) {
-            // The edit proposal is pending: build a diff using the current status of the item.
-            changes.push({ propertyName: key, before: item[key], after: editProposal[key] });
-          } else if (!!originalProperties) {
-            // The edit proposal has been finalized: build a diff using the original edit proposal properties.
-            if (!!originalProperty) {
-              changes.push({ propertyName: key, before: originalProperty.value, after: editProposal[key] });
-            }
+        if (!editProposal.editProposalReviewStatus && item[key] !== editProposal[key]) {
+          // The edit proposal is pending: build a diff using the current status of the item.
+          changes.push({ propertyName: key, before: item[key], after: editProposal[key] });
+        } else if (!!originalProperties) {
+          // The edit proposal has been finalized: build a diff using the original edit proposal properties.
+          if (!!originalProperty && originalProperty.value !== editProposal[key]) {
+            changes.push({ propertyName: key, before: originalProperty.value, after: editProposal[key] });
           }
         }
       }
