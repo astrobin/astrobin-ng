@@ -20,7 +20,6 @@ import {
 import { Actions, ofType } from "@ngrx/effects";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 import { Observable } from "rxjs";
-import { FormlyFieldMessageLevel } from "@shared/services/formly-field.service";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 
 @Component({
