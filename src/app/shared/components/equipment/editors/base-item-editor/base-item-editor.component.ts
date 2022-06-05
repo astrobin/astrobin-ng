@@ -225,11 +225,7 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
     this.endBrandCreation();
 
     if (this.returnToSelector) {
-      setTimeout(() => {
-        this.windowRefService.nativeWindow.document
-          .querySelector(this.returnToSelector)
-          .scrollIntoView({ behavior: "smooth" });
-      }, 1);
+      this.windowRefService.scrollToElement(this.returnToSelector);
     }
   }
 
@@ -345,11 +341,7 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
         addTag: () => {
           this.startBrandCreation();
           this.form.get("brand").setValue(null);
-          setTimeout(() => {
-            this.windowRefService.nativeWindow.document
-              .getElementById("create-new-brand")
-              .scrollIntoView({ behavior: "smooth" });
-          }, 1);
+          this.windowRefService.scrollToElement("#create-new-brand");
         }
       },
       hooks: {

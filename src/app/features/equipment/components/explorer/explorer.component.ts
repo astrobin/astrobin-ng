@@ -225,18 +225,7 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
     this.editMode = true;
     this.editModel = { ...this.selectedItem };
 
-    const scrollToName = () => {
-      const $element = this.windowRefService.nativeWindow.document.querySelector("#equipment-item-field-name");
-      if ($element) {
-        $element.scrollIntoView({ behavior: "smooth" });
-      } else {
-        setTimeout(() => {
-          scrollToName();
-        }, 100);
-      }
-    };
-
-    scrollToName();
+    this.windowRefService.scrollToElement("#equipment-item-field-name");
   }
 
   endEditMode() {

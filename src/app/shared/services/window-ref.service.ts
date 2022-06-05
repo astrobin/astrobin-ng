@@ -20,6 +20,32 @@ export class WindowRefService extends BaseService {
     this.nativeWindow.scroll(options);
   }
 
+  scrollToElement(selector: string, options?: boolean | ScrollIntoViewOptions) {
+    let attempts = 0;
+
+    const _doScroll = () => {
+      const timeout = 100;
+
+      if (attempts >= 5) {
+        return;
+      }
+
+      const $element = this.nativeWindow.document.querySelector(selector);
+      if (!!$element) {
+        setTimeout(() => $element.scrollIntoView(options), timeout);
+      } else {
+        attempts++;
+        setTimeout(() => _doScroll(), timeout);
+      }
+    };
+
+    if (options === null || options === undefined) {
+      options = { behavior: "smooth" };
+    }
+
+    _doScroll();
+  }
+
   getCurrentUrl(): URL {
     return new URL(this.nativeWindow.document.URL);
   }

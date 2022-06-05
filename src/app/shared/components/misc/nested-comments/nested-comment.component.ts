@@ -106,11 +106,7 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
     }
 
     if (this.highlighted) {
-      setTimeout(() => {
-        this.windowRefService.nativeWindow.document
-          .querySelector(`#c${this.comment.id}`)
-          .scrollIntoView({ behavior: "smooth" });
-      }, 1);
+      this.windowRefService.scrollToElement(`#c${this.comment.id}`);
     }
   }
 }

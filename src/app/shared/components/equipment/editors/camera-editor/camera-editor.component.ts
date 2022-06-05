@@ -15,7 +15,7 @@ import { EquipmentItemType } from "@features/equipment/types/equipment-item-base
 import { SensorInterface } from "@features/equipment/types/sensor.interface";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 import { CameraDisplayProperty, CameraService } from "@features/equipment/services/camera.service";
-import { FormlyFieldMessageLevel, FormlyFieldService } from "@shared/services/formly-field.service";
+import { FormlyFieldService } from "@shared/services/formly-field.service";
 import { FormlyFieldEquipmentItemBrowserMode } from "@shared/components/misc/formly-field-equipment-item-browser/formly-field-equipment-item-browser.component";
 
 @Component({
@@ -73,6 +73,7 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
   startSensorCreation() {
     this.subCreation.inProgress = true;
     this.subCreationInProgress.emit(true);
+    this.windowRefService.scrollToElement("astrobin-sensor-editor");
   }
 
   endSensorCreation() {

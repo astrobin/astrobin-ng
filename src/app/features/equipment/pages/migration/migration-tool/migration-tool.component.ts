@@ -268,7 +268,7 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
       const document = this.windowRefService.nativeWindow.document;
 
       if (!!document.querySelector("#equipment-item-field .ng-input input")) {
-        document.getElementById("select-item-to-migrate-to").scrollIntoView({ behavior: "smooth" });
+        this.windowRefService.scrollToElement("#select-item-to-migrate-to");
         (document.querySelector("#equipment-item-field .ng-input input") as HTMLElement).focus();
       } else {
         setTimeout(() => {
@@ -345,10 +345,7 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
                 value: item.pk
               }
             }));
-            setTimeout(() => {
-              const document = this.windowRefService.nativeWindow.document;
-              document.getElementById("confirm-migration").scrollIntoView({ behavior: "smooth" });
-            }, 1);
+            this.windowRefService.scrollToElement("#confirm-migration");
           }
         });
     }
