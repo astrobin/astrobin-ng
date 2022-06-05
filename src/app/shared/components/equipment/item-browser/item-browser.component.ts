@@ -407,9 +407,7 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
         _doSetValue(itemToAdd);
       }
 
-      setTimeout(() => {
-        this.windowRefService.nativeWindow.document.querySelector(`#${this.id}`).scrollIntoView({ behavior: "smooth" });
-      }, 1);
+      this.windowRefService.scrollToElement(`#${this.id}`);
     };
 
     if (
@@ -472,11 +470,7 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
   _setFields() {
     const _addTag = () => {
       this.startCreationMode();
-      setTimeout(() => {
-        this.windowRefService.nativeWindow.document
-          .getElementById("create-new-item")
-          .scrollIntoView({ behavior: "smooth" });
-      }, 1);
+      this.windowRefService.scrollToElement("#create-new-item");
     };
 
     this.model = { value: this.initialValue };
