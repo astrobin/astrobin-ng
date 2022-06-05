@@ -52,7 +52,12 @@
 
     <ng-template ng-footer-tmp>
       <div *ngIf="!!value && !!to.addTag && showCreateNewButton" class="add-tag">
-        <span [innerHTML]="'Can\'t find <strong>{{0}}</strong>?' | translate:{'0': value}"></span>
+        <div [innerHTML]="'Can\'t find <strong>{{0}}</strong>?' | translate:{'0': value}"></div>
+
+        <ng-container *ngIf="to.footerTemplateExtra">
+          <ng-template [ngTemplateOutlet]="to.footerTemplateExtra">
+          </ng-template>
+        </ng-container>
 
         <button
           *ngIf="!!value && !!to.addTag && showCreateNewButton"

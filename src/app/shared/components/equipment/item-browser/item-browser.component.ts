@@ -116,6 +116,9 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
   @ViewChild("equipmentItemOptionTemplate")
   equipmentItemOptionTemplate: TemplateRef<any>;
 
+  @ViewChild("footerTemplateExtra")
+  footerTemplateExtra: TemplateRef<any>;
+
   @Output()
   creationModeStarted = new EventEmitter<void>();
 
@@ -501,6 +504,7 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
                 },
                 labelTemplate: this.equipmentItemLabelTemplate,
                 optionTemplate: this.equipmentItemOptionTemplate,
+                footerTemplateExtra: this.footerTemplateExtra,
                 addTag: !!currentUser ? _addTag : undefined,
                 striped: true,
                 multiple: this.multiple,

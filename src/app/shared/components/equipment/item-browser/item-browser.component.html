@@ -29,6 +29,12 @@
   </div>
 </ng-template>
 
+<ng-template #footerTemplateExtra>
+  <div class="text-muted">
+    {{ "AstroBin's equipment database is entirely maintained by the community. Feel free to make a contribution!" | translate }}
+  </div>
+</ng-template>
+
 <ng-container *ngIf="creationMode">
   <div class="mt-4 mb-4 text-center">
     <fa-icon icon="arrow-down"></fa-icon>

@@ -42,7 +42,7 @@ export class FormlyFieldNgSelectComponent extends FieldType implements OnInit, O
       return (
         this.translateService.instant("No items found.") +
         " " +
-        this.translateService.instant("Type something to create a new one...")
+        this.translateService.instant("You can create a new one using the button below.")
       );
     }
 
