@@ -237,6 +237,20 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
       event.preventDefault();
     }
 
+    if (this.imageEditEquipmentFieldsService.creationMode) {
+      this.popNotificationsService.error(
+        this.translateService.instant(
+          "It looks like you are in the process of creating an equipment item, please complete or cancel that " +
+            "operation before saving the entire form."
+        ),
+        null,
+        {
+          timeOut: 10000
+        }
+      );
+      return;
+    }
+
     if (!this.imageEditService.form.valid) {
       this.popNotificationsService.error(
         this.translateService.instant("Please check that all required fields have been filled at every step."),

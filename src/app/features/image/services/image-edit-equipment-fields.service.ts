@@ -13,6 +13,8 @@ import { FormlyFieldEquipmentItemBrowserMode } from "@shared/components/misc/for
   providedIn: null
 })
 export class ImageEditEquipmentFieldsService extends BaseService {
+  creationMode = false;
+
   constructor(
     public readonly store$: Store<State>,
     public readonly loadingService: LoadingService,
@@ -35,7 +37,9 @@ export class ImageEditEquipmentFieldsService extends BaseService {
         itemType: EquipmentItemType.TELESCOPE,
         usageType: EquipmentItemUsageType.IMAGING,
         showQuickAddRecent: true,
-        showPlaceholderImage: true
+        showPlaceholderImage: true,
+        creationModeStarted: () => (this.creationMode = true),
+        creationModeEnded: () => (this.creationMode = false)
       }
     };
   }
