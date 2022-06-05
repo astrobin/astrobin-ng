@@ -73,6 +73,12 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
   @Output()
   valueChanged = new EventEmitter<EquipmentItemBaseInterface>();
 
+  @Output()
+  approved = new EventEmitter();
+
+  @Output()
+  rejected = new EventEmitter();
+
   selectedItem: EquipmentItemBaseInterface | null = null;
   cameraVariants: CameraInterface[] = [];
 
@@ -266,6 +272,7 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
       )
       .subscribe(item => {
         this.setItem(item);
+        this.approved.emit();
         this.popNotificationsService.success(this.translateService.instant("Item approved."));
       });
   }
@@ -282,6 +289,7 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
 
     modal.closed.pipe(take(1)).subscribe(() => {
       this.resetBrowser();
+      this.rejected.emit();
     });
   }
 
