@@ -147,9 +147,6 @@ export class RejectItemModalComponent extends BaseComponentDirective implements 
     this.actions$.pipe(ofType(EquipmentActionTypes.REJECT_EQUIPMENT_ITEM_SUCCESS), take(1)).subscribe(() => {
       this.loadingService.setLoading(false);
       this.modal.close();
-      this.router.navigateByUrl(`/equipment/explorer`).then(() => {
-        this.popNotificationsService.success(this.translateService.instant("Item rejected."));
-      });
     });
   }
 }
