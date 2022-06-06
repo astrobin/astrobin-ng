@@ -12,6 +12,7 @@ export interface FormlyFieldMessage {
   text?: string;
   template?: TemplateRef<any>;
   data?: any;
+  dismissible?: boolean;
 }
 
 @Injectable({
