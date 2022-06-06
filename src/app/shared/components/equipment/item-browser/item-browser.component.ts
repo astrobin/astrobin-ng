@@ -500,6 +500,9 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
                 optionTemplate: this.equipmentItemOptionTemplate,
                 footerTemplateExtra: this.footerTemplateExtra,
                 addTag: !!currentUser ? _addTag : undefined,
+                addTagPlaceholder: this.translateService.instant(
+                  "Type a brand and/or a model name to search options..."
+                ),
                 striped: true,
                 multiple: this.multiple,
                 closeOnSelect: true

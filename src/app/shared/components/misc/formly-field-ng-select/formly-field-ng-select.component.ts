@@ -31,6 +31,10 @@ export class FormlyFieldNgSelectComponent extends FieldType implements OnInit, O
 
   get placeholder(): string {
     if (this.to.addTag) {
+      if (this.to.addTagPlaceholder) {
+        return this.to.addTagPlaceholder;
+      }
+
       return this.translateService.instant("Type to search options or to create a new one...");
     }
 
@@ -47,14 +51,6 @@ export class FormlyFieldNgSelectComponent extends FieldType implements OnInit, O
     }
 
     return this.translateService.instant("No items found.");
-  }
-
-  get typeToSearchText(): string {
-    if (this.to.addTag) {
-      return this.translateService.instant("Type to search options or to create a new one...");
-    }
-
-    return this.translateService.instant("Type to search.");
   }
 
   ngOnInit() {
