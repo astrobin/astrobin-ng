@@ -90,10 +90,6 @@
               <th scope="col">{{ "Modified" | translate }}</th>
               <td>{{ "Yes" | translate }}</td>
             </tr>
-            <tr *ngFor="let key of legacyGearService.getProperAttributes(randomNonMigrated.item)">
-              <th scope="col">{{ key | camelCaseToSentenceCase }}</th>
-              <td>{{ randomNonMigrated.item[key] !== null ? randomNonMigrated.item[key] : ("n/a" | translate) }}</td>
-            </tr>
             </tbody>
           </table>
         </div>
