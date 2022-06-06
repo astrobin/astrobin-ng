@@ -9,7 +9,7 @@ context("logging-out-page", () => {
   });
 
   it("should redirect to the logged out page", () => {
-    cy.get("#user-dropdown").click();
+    cy.get("#user-dropdown").click("right");
     cy.get(".navbar .dropdown-item")
       .contains("Logout")
       .click();
