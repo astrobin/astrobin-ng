@@ -225,7 +225,7 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
     this.editMode = true;
     this.editModel = { ...this.selectedItem };
 
-    this.windowRefService.scrollToElement("#equipment-item-field-name");
+    this.windowRefService.scrollToElement("#edit-item");
   }
 
   endEditMode() {
