@@ -62,7 +62,7 @@ export class FormlyFieldNgSelectComponent extends FieldType implements OnInit, O
       this.inputSubscription = this.input$
         .pipe(
           debounceTime(500),
-          map(value => value.trim()),
+          map(value => (value ? value.trim() : value)),
           distinctUntilChanged(),
           tap(() => (this.loading = true))
         )
