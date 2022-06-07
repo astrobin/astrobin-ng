@@ -209,6 +209,7 @@ export interface ImageInterface {
   fullSizeDisplayLimitation: FullSizeLimitationDisplayOptions;
   downloadLimitation: DownloadLimitationOptions;
   thumbnails: ImageThumbnailInterface[];
+  submittedForIotdTpConsideration: string | null;
 
   // Ephemeral form fields
   showGuidingEquipment?: boolean;
