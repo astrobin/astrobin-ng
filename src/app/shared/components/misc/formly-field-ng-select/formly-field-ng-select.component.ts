@@ -87,7 +87,9 @@ export class FormlyFieldNgSelectComponent extends FieldType implements OnInit, O
         .pipe(take(1))
         .subscribe(options => {
           setTimeout(() => {
-            (this._ngSelect.dropdownPanel as any)._handleDropdownPosition();
+            if (this._ngSelect && this._ngSelect.dropdownPanel) {
+              (this._ngSelect.dropdownPanel as any)._handleDropdownPosition();
+            }
           }, 1);
 
           const hasAddTag = !!this.to.addTag;
