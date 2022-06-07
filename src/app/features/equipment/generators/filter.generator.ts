@@ -1,5 +1,5 @@
 import { BrandGenerator } from "@features/equipment/generators/brand.generator";
-import { FilterInterface, FilterSize, FilterType } from "@features/equipment/types/filter.interface";
+import { FilterInterface, FilterType } from "@features/equipment/types/filter.interface";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 
 export class FilterGenerator {
@@ -15,9 +15,7 @@ export class FilterGenerator {
       website: source.website || "https://www.test-filter.com",
       image: source.image || "https://cdn.astrobin.com/images/foo.jpg",
       type: source.type || FilterType.L,
-      bandwidth: source.bandwidth || 12,
-      size: source.size || FilterSize.ROUND_1_25_IN,
-      otherSize: null
+      bandwidth: source.bandwidth || 12
     };
   }
 }

@@ -57,6 +57,7 @@ import { SoftwareInterface } from "@features/equipment/types/software.interface"
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { VariantSelectorModalComponent } from "@shared/components/equipment/item-browser/variant-selector-modal/variant-selector-modal.component";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
+import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 
 type Type = EquipmentItemBaseInterface["id"];
 type TypeUnion = Type | Type[] | null;
@@ -111,7 +112,7 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
   q: string = null;
 
   creationForm: FormGroup = new FormGroup({});
-  creationModel: Partial<EquipmentItemBaseInterface> = {};
+  creationModel: Partial<EquipmentItem> = {};
 
   @ViewChild("equipmentItemLabelTemplate")
   equipmentItemLabelTemplate: TemplateRef<any>;

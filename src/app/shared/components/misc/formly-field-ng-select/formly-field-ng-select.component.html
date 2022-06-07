@@ -9,7 +9,6 @@
 <ng-template #select let-items="items">
   <ng-select
     #ngSelect
-    [dropdownPosition]="to.addTag ? 'bottom' : 'auto'"
     [attr.id]="field.id"
     [bindValue]="to.bindValue || 'value'"
     [bindLabel]="to.bindLabel || 'label'"

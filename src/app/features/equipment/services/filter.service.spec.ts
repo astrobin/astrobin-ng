@@ -3,7 +3,7 @@ import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
 import { FilterDisplayProperty, FilterService } from "@features/equipment/services/filter.service";
 import { FilterGenerator } from "@features/equipment/generators/filter.generator";
-import { FilterSize, FilterType } from "@features/equipment/types/filter.interface";
+import { FilterType } from "@features/equipment/types/filter.interface";
 
 describe("FilterService", () => {
   let service: FilterService;
@@ -30,14 +30,6 @@ describe("FilterService", () => {
       const filter = FilterGenerator.filter({ bandwidth: 3 });
       service.getPrintableProperty$(filter, FilterDisplayProperty.BANDWIDTH).subscribe(value => {
         expect(value).toEqual("3 nm");
-        done();
-      });
-    });
-
-    it("should work for 'size'", done => {
-      const filter = FilterGenerator.filter({ size: FilterSize.ROUND_1_25_IN });
-      service.getPrintableProperty$(filter, FilterDisplayProperty.SIZE).subscribe(value => {
-        expect(value).toEqual(`Round 1.25"`);
         done();
       });
     });
