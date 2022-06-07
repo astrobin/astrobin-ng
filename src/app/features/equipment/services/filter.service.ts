@@ -35,6 +35,7 @@ export class FilterService extends BaseService implements EquipmentItemServiceIn
       [FilterType.NII]: this.translateService.instant("Nitrogen-II (NII)"),
       [FilterType.UV]: this.translateService.instant("Ultraviolet (UV)"),
       [FilterType.IR]: this.translateService.instant("Infrared (IR)"),
+      [FilterType.UV_IR_CUT]: "UV/IR Cut",
       [FilterType.MULTIBAND]: this.translateService.instant("Multiband"),
       [FilterType.LP]: this.translateService.instant("Light pollution suppression"),
       [FilterType.L]: this.translateService.instant("Luminance/clear (L)"),

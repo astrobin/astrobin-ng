@@ -8,6 +8,7 @@ export enum FilterType {
   NII = "NII",
   UV = "UV",
   IR = "IR",
+  UV_IR_CUT = "UV_IR_CUT",
   MULTIBAND = "MULTIBAND",
   LP = "LP",
   L = "L",
