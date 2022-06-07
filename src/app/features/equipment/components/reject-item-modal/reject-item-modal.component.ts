@@ -18,6 +18,7 @@ import { EquipmentItemService } from "@features/equipment/services/equipment-ite
 import { FormlyFieldMessageLevel, FormlyFieldService } from "@shared/services/formly-field.service";
 import { Router } from "@angular/router";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
+import { FormlyFieldEquipmentItemBrowserMode } from "@shared/components/misc/formly-field-equipment-item-browser/formly-field-equipment-item-browser.component";
 
 @Component({
   selector: "astrobin-reject-item-modal",
@@ -121,10 +122,32 @@ export class RejectItemModalComponent extends BaseComponentDirective implements 
         type: "textarea",
         id: "comment",
         wrappers: ["default-wrapper"],
+        hideExpression: () => this.model.reason !== EquipmentItemReviewerRejectionReason.OTHER,
+        expressionProperties: {
+          "templateOptions.required": "model.reason === 'OTHER'"
+        },
         templateOptions: {
           label: this.translateService.instant("Comment"),
-          required: true,
           rows: 4
+        }
+      },
+      {
+        key: "duplicateOf",
+        type: "equipment-item-browser",
+        id: "duplicate-of",
+        hideExpression: () => this.model.reason !== EquipmentItemReviewerRejectionReason.DUPLICATE,
+        expressionProperties: {
+          "templateOptions.required": "model.reason === 'DUPLICATE'"
+        },
+        templateOptions: {
+          mode: FormlyFieldEquipmentItemBrowserMode.ID,
+          label: this.translateService.instant("Duplicate of"),
+          itemType: this.equipmentItemService.getType(this.equipmentItem),
+          showQuickAddRecent: false,
+          showPlaceholderImage: false,
+          multiple: false,
+          enableVariantSelection: true,
+          enableCreation: false
         }
       }
     ];
@@ -134,13 +157,15 @@ export class RejectItemModalComponent extends BaseComponentDirective implements 
     this.loadingService.setLoading(true);
 
     const reason: EquipmentItemReviewerRejectionReason = this.form.get("reason").value;
-    const comment: string = this.form.get("comment").value;
+    const comment: string = this.form.get("comment")?.value;
+    const duplicateOf: EquipmentItemBaseInterface["id"] = this.form.get("duplicateOf")?.value;
 
     this.store$.dispatch(
       new RejectEquipmentItem({
         item: this.equipmentItem,
         reason,
-        comment
+        comment,
+        duplicateOf
       })
     );
 

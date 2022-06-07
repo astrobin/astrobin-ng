@@ -231,7 +231,8 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
   rejectEquipmentItem(
     item: EquipmentItemBaseInterface,
     reason: EquipmentItemReviewerRejectionReason,
-    comment: string
+    comment: string | null,
+    duplicateOf: EquipmentItemBaseInterface["id"] | null
   ): Observable<EquipmentItemBaseInterface> {
     const type = getEquipmentItemType(item);
     const path = EquipmentItemType[type].toLowerCase();
@@ -239,7 +240,8 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     return this.http
       .post<EquipmentItemBaseInterface>(`${this.configUrl}/${path}/${item.id}/reject/`, {
         reason,
-        comment
+        comment,
+        duplicateOf
       })
       .pipe(map(responseItem => this._parseItem(responseItem)));
   }
