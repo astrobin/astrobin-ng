@@ -615,8 +615,7 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     return {
       ...item,
       ...{
-        bandwidth: item.bandwidth !== null ? parseFloat((item.bandwidth as unknown) as string) : null,
-        otherSize: item.otherSize !== null ? parseFloat((item.otherSize as unknown) as string) : null
+        bandwidth: item.bandwidth !== null ? parseFloat((item.bandwidth as unknown) as string) : null
       }
     };
   }
