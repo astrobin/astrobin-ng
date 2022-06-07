@@ -14,4 +14,5 @@ export class Constants {
   static readonly ORIGINAL_REVISION = "0";
   static readonly SUPPORTED_CURRENCIES = ["USD", "EUR", "GBP", "CAD", "AUD", "CHF", "CNY"];
   static readonly USE_HIGH_CONTRAST_THEME_COOKIE = "astrobin_use_high_contrast_theme";
+  static readonly KG_TO_LBS = 2.20462;
 }

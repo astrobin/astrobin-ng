@@ -58,7 +58,8 @@ export class UserProfileGenerator {
       contributionIndex: 0.0,
       followers: 0,
       premiumCounter: 0,
-      locations: []
+      locations: [],
+      lastSeenInCountry: "us"
     };
   }
 }

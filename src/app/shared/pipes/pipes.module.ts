@@ -16,23 +16,29 @@ import { IsSuperUserPipe } from "./is-superuser.pipe";
 import { CamelCaseToSentenceCasePipe } from "@shared/pipes/camel-case-to-sentence-case.pipe";
 import { IsEquipmentModeratorPipe } from "@shared/pipes/is-equipment-moderator.pipe";
 import { IsInGroupPipe } from "@shared/pipes/is-in-group.pipe";
+import { WeightUnitLabelPipe } from "@shared/pipes/weight-unit-label.pipe";
+import { WeightUnitPipe } from "@shared/pipes/weight-unit.pipe";
+import { PreferredUserUnitPipe } from "@shared/pipes/preferred-user-unit.pipe";
 
 const pipes = [
   CamelCaseToSentenceCasePipe,
   EnsureUrlProtocolPipe,
+  HasValidUserSubscriptionPipe,
   IsContentModeratorPipe,
+  IsEquipmentModeratorPipe,
   IsImageModeratorPipe,
+  IsInGroupPipe,
   IsIotdJudgePipe,
   IsIotdReviewerPipe,
   IsIotdStaffPipe,
   IsIotdSubmitterPipe,
-  IsEquipmentModeratorPipe,
   IsProducerPipe,
   IsRetailerPipe,
   IsSuperUserPipe,
-  IsInGroupPipe,
-  HasValidUserSubscriptionPipe,
   LocalDatePipe,
+  PreferredUserUnitPipe,
+  WeightUnitLabelPipe,
+  WeightUnitPipe,
   YesNoPipe
 ];
 

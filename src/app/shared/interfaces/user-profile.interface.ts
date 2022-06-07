@@ -57,4 +57,5 @@ export interface UserProfileInterface {
   followers?: number;
   premiumCounter: number;
   locations: LocationInterface[];
+  lastSeenInCountry: string | null;
 }
