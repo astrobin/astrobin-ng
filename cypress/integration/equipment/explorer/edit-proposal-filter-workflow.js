@@ -48,7 +48,6 @@ context("Equipment", () => {
       cy.get("#equipment-item-field-name").should("have.value", testFilter.name);
       cy.ngSelectValueShouldContain("#filter-field-type", "Luminance/clear (L)");
       cy.get("#filter-field-bandwidth").should("have.value", testFilter.bandwidth);
-      cy.ngSelectValueShouldContain("#filter-field-size", 'Round 1.25"');
     });
 
     it("should the comment field", () => {

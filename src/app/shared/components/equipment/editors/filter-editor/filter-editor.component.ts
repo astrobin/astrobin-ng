@@ -10,7 +10,7 @@ import { EquipmentApiService } from "@features/equipment/services/equipment-api.
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 import { FormlyFieldService } from "@shared/services/formly-field.service";
 import { FilterDisplayProperty, FilterService } from "@features/equipment/services/filter.service";
-import { FilterInterface, FilterSize, FilterType } from "@features/equipment/types/filter.interface";
+import { FilterInterface, FilterType } from "@features/equipment/types/filter.interface";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 
 @Component({
@@ -102,61 +102,6 @@ export class FilterEditorComponent extends BaseItemEditorComponent<FilterInterfa
                 name: "min-value",
                 options: {
                   minValue: 1
-                }
-              },
-              {
-                name: "max-decimals",
-                options: {
-                  value: 2
-                }
-              }
-            ]
-          }
-        },
-        {
-          key: "size",
-          type: "ng-select",
-          id: "filter-field-size",
-          expressionProperties: {
-            "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
-          },
-          templateOptions: {
-            label: this.filterService.getPrintablePropertyName(FilterDisplayProperty.SIZE),
-            required: false,
-            clearable: true,
-            options: Object.keys(FilterSize).map(filterSize => ({
-              value: FilterSize[filterSize],
-              label: this.filterService.humanizeSize(FilterSize[filterSize])
-            }))
-          }
-        },
-        {
-          key: "otherSize",
-          type: "input",
-          wrappers: ["default-wrapper"],
-          id: "filter-field-size",
-          hideExpression: () => this.model.size !== FilterSize.OTHER,
-          expressionProperties: {
-            "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
-          },
-          templateOptions: {
-            type: "number",
-            step: 0.1,
-            label: this.filterService.getPrintablePropertyName(FilterDisplayProperty.OTHER_SIZE)
-          },
-          validators: {
-            validation: [
-              "number",
-              {
-                name: "min-value",
-                options: {
-                  minValue: 0.1
-                }
-              },
-              {
-                name: "max-value",
-                options: {
-                  maxValue: 99.99
                 }
               },
               {
