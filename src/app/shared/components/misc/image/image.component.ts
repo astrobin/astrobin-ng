@@ -112,11 +112,7 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
         filter(image => !!image),
         take(1),
         switchMap(image =>
-          this.actions$.pipe(
-            ofType(AppActionTypes.LOAD_IMAGE_REVISIONS_SUCCESS),
-            filter((action: LoadImageRevisionsSuccess) => {
-              return action.payload.imageId === image.pk;
-            }),
+          this.store$.select(selectImageRevisionsForImage, this.id).pipe(
             take(1),
             map(() => image)
           )
