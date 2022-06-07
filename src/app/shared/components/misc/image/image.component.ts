@@ -23,7 +23,15 @@ import { ImageApiService } from "@shared/services/api/classic/images/image/image
 import { ImageService } from "@shared/services/image/image.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
-import { debounceTime, distinctUntilChanged, filter, map, switchMap, take, takeUntil } from "rxjs/operators";
+import {
+  debounceTime,
+  distinctUntilChanged,
+  filter,
+  map,
+  switchMap,
+  take,
+  takeUntil,
+} from "rxjs/operators";
 import { fromEvent, Observable, of } from "rxjs";
 import { selectImageRevisionsForImage } from "@app/store/selectors/app/image-revision.selectors";
 import { Actions, ofType } from "@ngrx/effects";
@@ -112,11 +120,7 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
         filter(image => !!image),
         take(1),
         switchMap(image =>
-          this.actions$.pipe(
-            ofType(AppActionTypes.LOAD_IMAGE_REVISIONS_SUCCESS),
-            filter((action: LoadImageRevisionsSuccess) => {
-              return action.payload.imageId === image.pk;
-            }),
+          this.store$.select(selectImageRevisionsForImage, this.id).pipe(
             take(1),
             map(() => image)
           )
