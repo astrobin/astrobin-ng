@@ -445,7 +445,17 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   createTelescope(telescope: Omit<TelescopeInterface, "id">): Observable<TelescopeInterface> {
-    return this._createItem<TelescopeInterface>(telescope, "telescope");
+    const model = { ...(telescope as any) };
+
+    if (model.fixedFocalLength) {
+      model.minFocalLength = model.focalLength;
+      model.maxFocalLength = model.focalLength;
+      delete model.focalLength;
+    }
+
+    delete model.fixedFocalLength;
+
+    return this._createItem<TelescopeInterface>(model, "telescope");
   }
 
   createTelescopeEditProposal(

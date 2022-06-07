@@ -117,6 +117,10 @@ export class TelescopeService extends BaseService implements EquipmentItemServic
           );
         }
 
+        if ((item as any).focalLength) {
+          return of(`${(item as any).focalLength} mm`);
+        }
+
         if (item.minFocalLength === null || item.maxFocalLength === null) {
           return of(null);
         }
