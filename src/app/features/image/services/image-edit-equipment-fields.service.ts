@@ -39,7 +39,8 @@ export class ImageEditEquipmentFieldsService extends BaseService {
         showQuickAddRecent: true,
         showPlaceholderImage: true,
         creationModeStarted: () => (this.creationMode = true),
-        creationModeEnded: () => (this.creationMode = false)
+        creationModeEnded: () => (this.creationMode = false),
+        enableCreation: true
       }
     };
   }
@@ -58,7 +59,8 @@ export class ImageEditEquipmentFieldsService extends BaseService {
         usageType: EquipmentItemUsageType.IMAGING,
         showQuickAddRecent: true,
         showPlaceholderImage: true,
-        enableVariantSelection: true
+        enableVariantSelection: true,
+        enableCreation: true
       }
     };
   }
@@ -75,7 +77,8 @@ export class ImageEditEquipmentFieldsService extends BaseService {
         label: this.translateService.instant("Mounts"),
         itemType: EquipmentItemType.MOUNT,
         showQuickAddRecent: true,
-        showPlaceholderImage: true
+        showPlaceholderImage: true,
+        enableCreation: true
       }
     };
   }
@@ -92,7 +95,8 @@ export class ImageEditEquipmentFieldsService extends BaseService {
         label: this.translateService.instant("Filters"),
         itemType: EquipmentItemType.FILTER,
         showQuickAddRecent: true,
-        showPlaceholderImage: true
+        showPlaceholderImage: true,
+        enableCreation: true
       }
     };
   }
@@ -109,7 +113,8 @@ export class ImageEditEquipmentFieldsService extends BaseService {
         label: this.translateService.instant("Accessories"),
         itemType: EquipmentItemType.ACCESSORY,
         showQuickAddRecent: true,
-        showPlaceholderImage: true
+        showPlaceholderImage: true,
+        enableCreation: true
       }
     };
   }
@@ -126,7 +131,8 @@ export class ImageEditEquipmentFieldsService extends BaseService {
         label: this.translateService.instant("Software"),
         itemType: EquipmentItemType.SOFTWARE,
         showQuickAddRecent: true,
-        showPlaceholderImage: true
+        showPlaceholderImage: true,
+        enableCreation: true
       }
     };
   }
@@ -162,7 +168,8 @@ export class ImageEditEquipmentFieldsService extends BaseService {
         itemType: EquipmentItemType.TELESCOPE,
         usageType: EquipmentItemUsageType.GUIDING,
         showQuickAddRecent: true,
-        showPlaceholderImage: true
+        showPlaceholderImage: true,
+        enableCreation: true
       },
       hooks: {
         onInit: (field: FormlyFieldConfig) => {
@@ -191,7 +198,8 @@ export class ImageEditEquipmentFieldsService extends BaseService {
         itemType: EquipmentItemType.CAMERA,
         usageType: EquipmentItemUsageType.GUIDING,
         showQuickAddRecent: true,
-        showPlaceholderImage: true
+        showPlaceholderImage: true,
+        enableCreation: true
       },
       hooks: {
         onInit: (field: FormlyFieldConfig) => {

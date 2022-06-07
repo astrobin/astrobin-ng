@@ -254,7 +254,12 @@ export class RejectEquipmentItem implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.REJECT_EQUIPMENT_ITEM;
 
   constructor(
-    public payload: { item: EquipmentItemBaseInterface; reason: EquipmentItemReviewerRejectionReason; comment: string }
+    public payload: {
+      item: EquipmentItemBaseInterface;
+      reason: EquipmentItemReviewerRejectionReason;
+      comment: string | null;
+      duplicateOf: EquipmentItemBaseInterface["id"] | null;
+    }
   ) {}
 }
 

@@ -172,7 +172,8 @@ export class RejectMigrationModalComponent extends BaseComponentDirective implem
               new RejectEquipmentItem({
                 item: this.equipmentItem,
                 reason: this.model.badMigrationTargetReason,
-                comment
+                comment,
+                duplicateOf: null
               })
             );
             return this.actions$.pipe(ofType(EquipmentActionTypes.REJECT_EQUIPMENT_ITEM_SUCCESS), take(1));

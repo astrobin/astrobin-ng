@@ -99,6 +99,9 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
   @Input()
   enableVariantSelection = false;
 
+  @Input()
+  enableCreation = true;
+
   model: { value: TypeUnion } = { value: null };
   form: FormGroup = new FormGroup({});
   fields: FormlyFieldConfig[] = [];
@@ -499,7 +502,7 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
                 labelTemplate: this.equipmentItemLabelTemplate,
                 optionTemplate: this.equipmentItemOptionTemplate,
                 footerTemplateExtra: this.footerTemplateExtra,
-                addTag: !!currentUser ? _addTag : undefined,
+                addTag: !!currentUser && this.enableCreation ? _addTag : undefined,
                 addTagPlaceholder: this.translateService.instant(
                   "Type a brand and/or a model name to search options..."
                 ),
