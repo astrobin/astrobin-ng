@@ -87,7 +87,7 @@ export class SubmissionEntryComponent extends BasePromotionEntryComponent {
           this.store$.select(selectBackendConfig).pipe(map(backendConfig => ({ entry, backendConfig })))
         ),
         map(({ entry, backendConfig }) => {
-          const date = new Date(entry.published + "Z");
+          const date = new Date(entry.submittedForIotdTpConsideration + "Z");
           date.setDate(date.getDate() + backendConfig.IOTD_SUBMISSION_WINDOW_DAYS);
           return date.toUTCString();
         }),

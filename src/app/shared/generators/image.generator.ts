@@ -61,7 +61,8 @@ export class ImageGenerator {
       locations: [],
       fullSizeDisplayLimitation: null,
       downloadLimitation: null,
-      thumbnails: []
+      thumbnails: [],
+      submittedForIotdTpConsideration: null
     };
   }
 }
