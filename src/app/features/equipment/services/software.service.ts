@@ -6,6 +6,7 @@ import { SoftwareInterface } from "@features/equipment/types/software.interface"
 import { TranslateService } from "@ngx-translate/core";
 import { Observable, of } from "rxjs";
 import { UtilsService } from "@shared/services/utils/utils.service";
+import { WeightUnit } from "@shared/types/weight-unit.enum";
 
 export enum SoftwareDisplayProperty {}
 
@@ -28,7 +29,8 @@ export class SoftwareService extends BaseService implements EquipmentItemService
   getPrintableProperty$(
     item: SoftwareInterface,
     property: SoftwareDisplayProperty,
-    propertyValue?: any
+    propertyValue: any,
+    options: { weightUnit?: WeightUnit } = {}
   ): Observable<string | null> {
     throw Error(`Invalid property: ${property}`);
   }

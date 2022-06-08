@@ -9,7 +9,7 @@ import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { TelescopeInterface, TelescopeType } from "@features/equipment/types/telescope.interface";
 import { UtilsService } from "@shared/services/utils/utils.service";
-import { filter, map, take, takeWhile, tap } from "rxjs/operators";
+import { filter, map, switchMap, take, takeWhile, tap } from "rxjs/operators";
 import { CameraDisplayProperty, CameraService } from "@features/equipment/services/camera.service";
 import { selectBrand, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import { Observable, of } from "rxjs";
@@ -23,11 +23,12 @@ import { MountInterface } from "@features/equipment/types/mount.interface";
 import { MountDisplayProperty, MountService } from "@features/equipment/services/mount.service";
 import { FilterInterface } from "@features/equipment/types/filter.interface";
 import { FilterDisplayProperty, FilterService } from "@features/equipment/services/filter.service";
-import { AccessoryInterface } from "@features/equipment/types/accessory.interface";
-import { SoftwareInterface } from "@features/equipment/types/software.interface";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { selectUser } from "@features/account/store/auth.selectors";
 import { LoadUser } from "@features/account/store/auth.actions";
+import { PreferredUserWeightUnitPipe } from "@shared/pipes/preferred-user-unit.pipe";
+import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
+import { WeightUnit } from "@shared/types/weight-unit.enum";
 
 interface EquipmentItemProperty {
   name: string;
@@ -97,22 +98,30 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
   get properties$(): Observable<EquipmentItemProperty[]> {
     const type: EquipmentItemType = this.equipmentItemService.getType(this.item);
 
-    switch (type) {
-      case EquipmentItemType.SENSOR:
-        return this._sensorProperties$();
-      case EquipmentItemType.CAMERA:
-        return this._cameraProperties$();
-      case EquipmentItemType.TELESCOPE:
-        return this._telescopeProperties$();
-      case EquipmentItemType.MOUNT:
-        return this._mountProperties$();
-      case EquipmentItemType.FILTER:
-        return this._filterProperties$();
-      case EquipmentItemType.ACCESSORY:
-        return this._accessoryProperties$();
-      case EquipmentItemType.SOFTWARE:
-        return this._softwareProperties$();
-    }
+    return this.currentUserProfile$.pipe(
+      take(1),
+      map((currentUserProfile: UserProfileInterface) =>
+        new PreferredUserWeightUnitPipe().transform(currentUserProfile)
+      ),
+      switchMap((weightUnit: WeightUnit) => {
+        switch (type) {
+          case EquipmentItemType.SENSOR:
+            return this._sensorProperties$(weightUnit);
+          case EquipmentItemType.CAMERA:
+            return this._cameraProperties$(weightUnit);
+          case EquipmentItemType.TELESCOPE:
+            return this._telescopeProperties$(weightUnit);
+          case EquipmentItemType.MOUNT:
+            return this._mountProperties$(weightUnit);
+          case EquipmentItemType.FILTER:
+            return this._filterProperties$(weightUnit);
+          case EquipmentItemType.ACCESSORY:
+            return this._accessoryProperties$(weightUnit);
+          case EquipmentItemType.SOFTWARE:
+            return this._softwareProperties$(weightUnit);
+        }
+      })
+    );
   }
 
   getCreatedBy(): Observable<UserInterface> {
@@ -184,7 +193,7 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
     return property.value.pipe(map(value => !!value || this.showEmptyProperties));
   }
 
-  private _sensorProperties$(): Observable<EquipmentItemProperty[]> {
+  private _sensorProperties$(weightUnit: WeightUnit): Observable<EquipmentItemProperty[]> {
     return of([
       this.showClass
         ? {
@@ -194,49 +203,72 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
         : null,
       {
         name: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.PIXELS, true),
-        value: this.sensorService.getPrintableProperty$(this.item as SensorInterface, SensorDisplayProperty.PIXELS)
+        value: this.sensorService.getPrintableProperty$(
+          this.item as SensorInterface,
+          SensorDisplayProperty.PIXELS,
+          undefined
+        )
       },
       {
         name: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.PIXEL_SIZE, true),
-        value: this.sensorService.getPrintableProperty$(this.item as SensorInterface, SensorDisplayProperty.PIXEL_SIZE)
+        value: this.sensorService.getPrintableProperty$(
+          this.item as SensorInterface,
+          SensorDisplayProperty.PIXEL_SIZE,
+          undefined
+        )
       },
       {
         name: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.SENSOR_SIZE, true),
-        value: this.sensorService.getPrintableProperty$(this.item as SensorInterface, SensorDisplayProperty.SENSOR_SIZE)
+        value: this.sensorService.getPrintableProperty$(
+          this.item as SensorInterface,
+          SensorDisplayProperty.SENSOR_SIZE,
+          undefined
+        )
       },
       {
         name: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.FULL_WELL_CAPACITY, true),
         value: this.sensorService.getPrintableProperty$(
           this.item as SensorInterface,
-          SensorDisplayProperty.FULL_WELL_CAPACITY
+          SensorDisplayProperty.FULL_WELL_CAPACITY,
+          undefined
         )
       },
       {
         name: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.READ_NOISE, true),
-        value: this.sensorService.getPrintableProperty$(this.item as SensorInterface, SensorDisplayProperty.READ_NOISE)
+        value: this.sensorService.getPrintableProperty$(
+          this.item as SensorInterface,
+          SensorDisplayProperty.READ_NOISE,
+          undefined
+        )
       },
       {
         name: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.QUANTUM_EFFICIENCY, true),
         value: this.sensorService.getPrintableProperty$(
           this.item as SensorInterface,
-          SensorDisplayProperty.QUANTUM_EFFICIENCY
+          SensorDisplayProperty.QUANTUM_EFFICIENCY,
+          undefined
         )
       },
       {
         name: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.ADC, true),
-        value: this.sensorService.getPrintableProperty$(this.item as SensorInterface, SensorDisplayProperty.ADC)
+        value: this.sensorService.getPrintableProperty$(
+          this.item as SensorInterface,
+          SensorDisplayProperty.ADC,
+          undefined
+        )
       },
       {
         name: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.COLOR_OR_MONO, true),
         value: this.sensorService.getPrintableProperty$(
           this.item as SensorInterface,
-          SensorDisplayProperty.COLOR_OR_MONO
+          SensorDisplayProperty.COLOR_OR_MONO,
+          undefined
         )
       }
     ]);
   }
 
-  private _cameraProperties$(): Observable<EquipmentItemProperty[]> {
+  private _cameraProperties$(weightUnit: WeightUnit): Observable<EquipmentItemProperty[]> {
     const item: CameraInterface = this.item as CameraInterface;
 
     return of([
@@ -248,28 +280,28 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
         : null,
       {
         name: this.cameraService.getPrintablePropertyName(CameraDisplayProperty.TYPE, true),
-        value: this.cameraService.getPrintableProperty$(item, CameraDisplayProperty.TYPE)
+        value: this.cameraService.getPrintableProperty$(item, CameraDisplayProperty.TYPE, undefined)
       },
       item.type === CameraType.DEDICATED_DEEP_SKY
         ? {
             name: this.cameraService.getPrintablePropertyName(CameraDisplayProperty.COOLED, true),
-            value: this.cameraService.getPrintableProperty$(item, CameraDisplayProperty.COOLED)
+            value: this.cameraService.getPrintableProperty$(item, CameraDisplayProperty.COOLED, undefined)
           }
         : null,
       item.type === CameraType.DEDICATED_DEEP_SKY && item.cooled
         ? {
             name: this.cameraService.getPrintablePropertyName(CameraDisplayProperty.MAX_COOLING, true),
-            value: this.cameraService.getPrintableProperty$(item, CameraDisplayProperty.MAX_COOLING)
+            value: this.cameraService.getPrintableProperty$(item, CameraDisplayProperty.MAX_COOLING, undefined)
           }
         : null,
       {
         name: this.cameraService.getPrintablePropertyName(CameraDisplayProperty.BACK_FOCUS, true),
-        value: this.cameraService.getPrintableProperty$(item, CameraDisplayProperty.BACK_FOCUS)
+        value: this.cameraService.getPrintableProperty$(item, CameraDisplayProperty.BACK_FOCUS, undefined)
       }
     ]);
   }
 
-  private _telescopeProperties$(): Observable<EquipmentItemProperty[]> {
+  private _telescopeProperties$(weightUnit: WeightUnit): Observable<EquipmentItemProperty[]> {
     const item: TelescopeInterface = this.item as TelescopeInterface;
 
     const class_ = {
@@ -279,22 +311,24 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
 
     const type_ = {
       name: this.telescopeService.getPrintablePropertyName(TelescopeDisplayProperty.TYPE, true),
-      value: this.telescopeService.getPrintableProperty$(item, TelescopeDisplayProperty.TYPE)
+      value: this.telescopeService.getPrintableProperty$(item, TelescopeDisplayProperty.TYPE, undefined)
     };
 
     const aperture = {
       name: this.telescopeService.getPrintablePropertyName(TelescopeDisplayProperty.APERTURE, true),
-      value: this.telescopeService.getPrintableProperty$(item, TelescopeDisplayProperty.APERTURE)
+      value: this.telescopeService.getPrintableProperty$(item, TelescopeDisplayProperty.APERTURE, undefined)
     };
 
     const focalLength = {
       name: this.telescopeService.getPrintablePropertyName(TelescopeDisplayProperty.FOCAL_LENGTH, true),
-      value: this.telescopeService.getPrintableProperty$(item, TelescopeDisplayProperty.FOCAL_LENGTH)
+      value: this.telescopeService.getPrintableProperty$(item, TelescopeDisplayProperty.FOCAL_LENGTH, undefined)
     };
 
     const weight = {
       name: this.telescopeService.getPrintablePropertyName(TelescopeDisplayProperty.WEIGHT, true),
-      value: this.telescopeService.getPrintableProperty$(item, TelescopeDisplayProperty.WEIGHT)
+      value: this.telescopeService.getPrintableProperty$(item, TelescopeDisplayProperty.WEIGHT, undefined, {
+        weightUnit
+      })
     };
 
     return of([
@@ -306,7 +340,7 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
     ]);
   }
 
-  private _mountProperties$(): Observable<EquipmentItemProperty[]> {
+  private _mountProperties$(weightUnit: WeightUnit): Observable<EquipmentItemProperty[]> {
     const item: MountInterface = this.item as MountInterface;
 
     let properties = [
@@ -318,19 +352,21 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
         : null,
       {
         name: this.mountService.getPrintablePropertyName(MountDisplayProperty.TYPE, true),
-        value: this.mountService.getPrintableProperty$(item, MountDisplayProperty.TYPE)
+        value: this.mountService.getPrintableProperty$(item, MountDisplayProperty.TYPE, undefined)
       },
       {
         name: this.mountService.getPrintablePropertyName(MountDisplayProperty.WEIGHT, true),
-        value: this.mountService.getPrintableProperty$(item, MountDisplayProperty.WEIGHT)
+        value: this.mountService.getPrintableProperty$(item, MountDisplayProperty.WEIGHT, undefined, { weightUnit })
       },
       {
         name: this.mountService.getPrintablePropertyName(MountDisplayProperty.MAX_PAYLOAD, true),
-        value: this.mountService.getPrintableProperty$(item, MountDisplayProperty.MAX_PAYLOAD)
+        value: this.mountService.getPrintableProperty$(item, MountDisplayProperty.MAX_PAYLOAD, undefined, {
+          weightUnit
+        })
       },
       {
         name: this.mountService.getPrintablePropertyName(MountDisplayProperty.COMPUTERIZED, true),
-        value: this.mountService.getPrintableProperty$(item, MountDisplayProperty.COMPUTERIZED)
+        value: this.mountService.getPrintableProperty$(item, MountDisplayProperty.COMPUTERIZED, undefined)
       }
     ];
 
@@ -340,15 +376,15 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
         ...[
           {
             name: this.mountService.getPrintablePropertyName(MountDisplayProperty.PERIODIC_ERROR, true),
-            value: this.mountService.getPrintableProperty$(item, MountDisplayProperty.PERIODIC_ERROR)
+            value: this.mountService.getPrintableProperty$(item, MountDisplayProperty.PERIODIC_ERROR, undefined)
           },
           {
             name: this.mountService.getPrintablePropertyName(MountDisplayProperty.PEC, true),
-            value: this.mountService.getPrintableProperty$(item, MountDisplayProperty.PEC)
+            value: this.mountService.getPrintableProperty$(item, MountDisplayProperty.PEC, undefined)
           },
           {
             name: this.mountService.getPrintablePropertyName(MountDisplayProperty.SLEW_SPEED, true),
-            value: this.mountService.getPrintableProperty$(item, MountDisplayProperty.SLEW_SPEED)
+            value: this.mountService.getPrintableProperty$(item, MountDisplayProperty.SLEW_SPEED, undefined)
           }
         ]
       ];
@@ -357,7 +393,7 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
     return of(properties);
   }
 
-  private _filterProperties$(): Observable<EquipmentItemProperty[]> {
+  private _filterProperties$(weightUnit: WeightUnit): Observable<EquipmentItemProperty[]> {
     const item: FilterInterface = this.item as FilterInterface;
 
     const properties = [
@@ -369,18 +405,18 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
         : null,
       {
         name: this.filterService.getPrintablePropertyName(FilterDisplayProperty.TYPE, true),
-        value: this.filterService.getPrintableProperty$(item, FilterDisplayProperty.TYPE)
+        value: this.filterService.getPrintableProperty$(item, FilterDisplayProperty.TYPE, undefined)
       },
       {
         name: this.filterService.getPrintablePropertyName(FilterDisplayProperty.BANDWIDTH, true),
-        value: this.filterService.getPrintableProperty$(item, FilterDisplayProperty.BANDWIDTH)
+        value: this.filterService.getPrintableProperty$(item, FilterDisplayProperty.BANDWIDTH, undefined)
       }
     ];
 
     return of(properties);
   }
 
-  private _accessoryProperties$(): Observable<EquipmentItemProperty[]> {
+  private _accessoryProperties$(weightUnit: WeightUnit): Observable<EquipmentItemProperty[]> {
     return of([
       this.showClass
         ? {
@@ -391,7 +427,7 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
     ]);
   }
 
-  private _softwareProperties$(): Observable<EquipmentItemProperty[]> {
+  private _softwareProperties$(weightUnit: WeightUnit): Observable<EquipmentItemProperty[]> {
     return of([
       this.showClass
         ? {

@@ -5,6 +5,8 @@ import { EquipmentItemServiceInterface } from "@features/equipment/services/equi
 import { TelescopeInterface, TelescopeType } from "@features/equipment/types/telescope.interface";
 import { TranslateService } from "@ngx-translate/core";
 import { Observable, of } from "rxjs";
+import { WeightUnit } from "@shared/types/weight-unit.enum";
+import { WeightUnitPipe } from "@shared/pipes/weight-unit.pipe";
 
 export enum TelescopeDisplayProperty {
   TYPE = "TYPE",
@@ -98,8 +100,11 @@ export class TelescopeService extends BaseService implements EquipmentItemServic
   getPrintableProperty$(
     item: TelescopeInterface,
     property: TelescopeDisplayProperty,
-    propertyValue?: any
+    propertyValue: any,
+    options: { weightUnit?: WeightUnit } = {}
   ): Observable<string | null> {
+    const unit = options?.weightUnit || WeightUnit.KG;
+
     switch (property) {
       case TelescopeDisplayProperty.TYPE:
         return of(this.humanizeType(propertyValue || item.type));
@@ -137,8 +142,8 @@ export class TelescopeService extends BaseService implements EquipmentItemServic
         propertyValue = parseFloat(propertyValue);
         return of(propertyValue || item.maxFocalLength ? `${propertyValue || item.maxFocalLength} mm` : "");
       case TelescopeDisplayProperty.WEIGHT:
-        propertyValue = parseFloat(propertyValue);
-        return of(propertyValue || item.weight ? `${propertyValue || item.weight} kg` : "");
+        propertyValue = new WeightUnitPipe().transform(parseFloat(propertyValue), unit);
+        return of(propertyValue || item.weight ? `${propertyValue || item.weight} ${unit}` : "");
       default:
         throw Error(`Invalid property: ${property}`);
     }

@@ -6,6 +6,7 @@ import { AccessoryInterface } from "@features/equipment/types/accessory.interfac
 import { TranslateService } from "@ngx-translate/core";
 import { Observable, of } from "rxjs";
 import { UtilsService } from "@shared/services/utils/utils.service";
+import { WeightUnit } from "@shared/types/weight-unit.enum";
 
 export enum AccessoryDisplayProperty {}
 
@@ -28,7 +29,8 @@ export class AccessoryService extends BaseService implements EquipmentItemServic
   getPrintableProperty$(
     item: AccessoryInterface,
     property: AccessoryDisplayProperty,
-    propertyValue?: any
+    propertyValue: any,
+    options: { weightUnit?: WeightUnit } = {}
   ): Observable<string | null> {
     throw Error(`Invalid property: ${property}`);
   }

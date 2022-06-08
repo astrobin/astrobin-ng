@@ -10,6 +10,7 @@ import { getEquipmentItemType } from "@features/equipment/store/equipment.select
 import { EquipmentItemServiceFactory } from "@features/equipment/services/equipment-item.service-factory";
 import { BrandInterface } from "@features/equipment/types/brand.interface";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
+import { WeightUnit } from "@shared/types/weight-unit.enum";
 
 export enum EquipmentItemDisplayProperty {
   BRAND = "BRAND",
@@ -70,7 +71,8 @@ export class EquipmentItemService extends BaseService {
   getPrintableProperty$(
     item: EquipmentItemBaseInterface,
     propertyName: any,
-    propertyValue: any
+    propertyValue: any,
+    options: { weightUnit?: WeightUnit } = {}
   ): Observable<string | null> {
     if (propertyValue === undefined || propertyValue === null) {
       return of(null);
@@ -78,7 +80,7 @@ export class EquipmentItemService extends BaseService {
 
     const service = this.equipmentItemServiceFactory.getService(item);
     if (service.getSupportedPrintableProperties().indexOf(propertyName) > -1) {
-      return service.getPrintableProperty$(item, propertyName, propertyValue);
+      return service.getPrintableProperty$(item, propertyName, propertyValue, options);
     }
 
     switch (propertyName) {

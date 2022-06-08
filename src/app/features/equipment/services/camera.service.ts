@@ -13,6 +13,7 @@ import { EquipmentItemType } from "@features/equipment/types/equipment-item-base
 import { selectBrand, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import { filter, map, switchMap, take, tap } from "rxjs/operators";
 import { SensorInterface } from "@features/equipment/types/sensor.interface";
+import { WeightUnit } from "@shared/types/weight-unit.enum";
 
 export enum CameraDisplayProperty {
   TYPE = "TYPE",
@@ -68,7 +69,8 @@ export class CameraService extends BaseService implements EquipmentItemServiceIn
   getPrintableProperty$(
     item: CameraInterface,
     property: CameraDisplayProperty | string,
-    propertyValue?: any
+    propertyValue: any,
+    options: { weightUnit?: WeightUnit } = {}
   ): Observable<string | null> {
     switch (property) {
       case "NAME":

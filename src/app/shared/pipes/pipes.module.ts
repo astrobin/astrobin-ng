@@ -18,7 +18,7 @@ import { IsEquipmentModeratorPipe } from "@shared/pipes/is-equipment-moderator.p
 import { IsInGroupPipe } from "@shared/pipes/is-in-group.pipe";
 import { WeightUnitLabelPipe } from "@shared/pipes/weight-unit-label.pipe";
 import { WeightUnitPipe } from "@shared/pipes/weight-unit.pipe";
-import { PreferredUserUnitPipe } from "@shared/pipes/preferred-user-unit.pipe";
+import { PreferredUserWeightUnitPipe } from "@shared/pipes/preferred-user-unit.pipe";
 
 const pipes = [
   CamelCaseToSentenceCasePipe,
@@ -36,7 +36,7 @@ const pipes = [
   IsRetailerPipe,
   IsSuperUserPipe,
   LocalDatePipe,
-  PreferredUserUnitPipe,
+  PreferredUserWeightUnitPipe,
   WeightUnitLabelPipe,
   WeightUnitPipe,
   YesNoPipe

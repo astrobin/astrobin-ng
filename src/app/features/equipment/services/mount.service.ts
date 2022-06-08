@@ -6,6 +6,8 @@ import { MountInterface, MountType } from "@features/equipment/types/mount.inter
 import { TranslateService } from "@ngx-translate/core";
 import { Observable, of } from "rxjs";
 import { UtilsService } from "@shared/services/utils/utils.service";
+import { WeightUnit } from "@shared/types/weight-unit.enum";
+import { WeightUnitPipe } from "@shared/pipes/weight-unit.pipe";
 
 export enum MountDisplayProperty {
   TYPE = "TYPE",
@@ -65,9 +67,11 @@ export class MountService extends BaseService implements EquipmentItemServiceInt
   getPrintableProperty$(
     item: MountInterface,
     property: MountDisplayProperty,
-    propertyValue?: any
+    propertyValue: any,
+    options: { weightUnit?: WeightUnit } = {}
   ): Observable<string | null> {
     let result: string;
+    const unit = options?.weightUnit || WeightUnit.KG;
 
     switch (property) {
       case MountDisplayProperty.TYPE:
@@ -86,12 +90,18 @@ export class MountService extends BaseService implements EquipmentItemServiceInt
         }
         break;
       case MountDisplayProperty.WEIGHT:
-        propertyValue = parseFloat(propertyValue);
-        result = propertyValue || item.weight ? `${propertyValue || item.weight} kg` : "";
+        propertyValue = new WeightUnitPipe().transform(
+          parseFloat(propertyValue !== undefined ? propertyValue : item.weight),
+          unit
+        );
+        result = propertyValue ? `${propertyValue || item.weight} ${unit}` : "";
         break;
       case MountDisplayProperty.MAX_PAYLOAD:
-        propertyValue = parseFloat(propertyValue);
-        result = propertyValue || item.maxPayload ? `${propertyValue || item.maxPayload} kg` : "";
+        propertyValue = new WeightUnitPipe().transform(
+          parseFloat(propertyValue !== undefined ? propertyValue : item.maxPayload),
+          unit
+        );
+        result = propertyValue ? `${propertyValue} ${unit}` : "";
         break;
       case MountDisplayProperty.COMPUTERIZED:
         const computerizedValue = propertyValue !== undefined ? propertyValue : item.computerized;

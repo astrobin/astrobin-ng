@@ -11,6 +11,6 @@ export class WeightUnitPipe implements PipeTransform {
       return value;
     }
 
-    return value * Constants.KG_TO_LBS;
+    return (value * Constants.KG_TO_LBS).toFixed(2);
   }
 }

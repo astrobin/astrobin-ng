@@ -5,6 +5,7 @@ import { EquipmentItemServiceInterface } from "@features/equipment/services/equi
 import { ColorOrMono, SensorInterface } from "@features/equipment/types/sensor.interface";
 import { TranslateService } from "@ngx-translate/core";
 import { Observable, of } from "rxjs";
+import { WeightUnit } from "@shared/types/weight-unit.enum";
 
 export enum SensorDisplayProperty {
   QUANTUM_EFFICIENCY = "QUANTUM_EFFICIENCY",
@@ -50,7 +51,8 @@ export class SensorService extends BaseService implements EquipmentItemServiceIn
   getPrintableProperty$(
     item: SensorInterface,
     property: SensorDisplayProperty,
-    propertyValue?: any
+    propertyValue: any,
+    options: { weightUnit?: WeightUnit } = {}
   ): Observable<string | null> {
     switch (property) {
       case SensorDisplayProperty.PIXEL_SIZE:

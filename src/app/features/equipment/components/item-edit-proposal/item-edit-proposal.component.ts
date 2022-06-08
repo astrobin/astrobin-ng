@@ -31,6 +31,7 @@ import { Actions, ofType } from "@ngrx/effects";
 import { ApproveEditProposalModalComponent } from "@features/equipment/components/approve-edit-proposal-modal/approve-edit-proposal-modal.component";
 import { LoadContentType } from "@app/store/actions/content-type.actions";
 import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
+import { PreferredUserWeightUnitPipe } from "@shared/pipes/preferred-user-unit.pipe";
 
 @Component({
   selector: "astrobin-item-edit-proposal",
@@ -194,13 +195,25 @@ export class ItemEditProposalComponent extends BaseComponentDirective implements
         changes.forEach(change => {
           const enumValue = this.equipmentItemService.propertyNameToPropertyEnum(change.propertyName);
 
-          forkJoin({
-            before: this.equipmentItemService.getPrintableProperty$(this.item, enumValue, change.before),
-            after: this.equipmentItemService.getPrintableProperty$(this.editProposal, enumValue, change.after)
-          }).subscribe(({ before, after }) => {
-            const propertyName = this.equipmentItemService.getPrintablePropertyName(this.type, enumValue, true);
-            this.changes.push({ propertyName, before, after });
-          });
+          this.currentUserProfile$
+            .pipe(
+              take(1),
+              map(currentUserProfile => new PreferredUserWeightUnitPipe().transform(currentUserProfile)),
+              switchMap(weightUnit =>
+                forkJoin({
+                  before: this.equipmentItemService.getPrintableProperty$(this.item, enumValue, change.before, {
+                    weightUnit
+                  }),
+                  after: this.equipmentItemService.getPrintableProperty$(this.editProposal, enumValue, change.after, {
+                    weightUnit
+                  })
+                })
+              )
+            )
+            .subscribe(({ before, after }) => {
+              const propertyName = this.equipmentItemService.getPrintablePropertyName(this.type, enumValue, true);
+              this.changes.push({ propertyName, before, after });
+            });
         });
       });
   }

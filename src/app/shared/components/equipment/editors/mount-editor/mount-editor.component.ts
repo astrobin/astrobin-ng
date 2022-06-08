@@ -11,8 +11,6 @@ import { EquipmentItemService } from "@features/equipment/services/equipment-ite
 import { FormlyFieldService } from "@shared/services/formly-field.service";
 import { MountDisplayProperty, MountService } from "@features/equipment/services/mount.service";
 import { MountInterface, MountType } from "@features/equipment/types/mount.interface";
-import { FormlyFieldConfig } from "@ngx-formly/core";
-import { takeUntil } from "rxjs/operators";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 
 @Component({

@@ -6,6 +6,7 @@ import { FilterInterface, FilterType } from "@features/equipment/types/filter.in
 import { TranslateService } from "@ngx-translate/core";
 import { Observable, of } from "rxjs";
 import { UtilsService } from "@shared/services/utils/utils.service";
+import { WeightUnit } from "@shared/types/weight-unit.enum";
 
 export enum FilterDisplayProperty {
   TYPE = "TYPE",
@@ -72,7 +73,8 @@ export class FilterService extends BaseService implements EquipmentItemServiceIn
   getPrintableProperty$(
     item: FilterInterface,
     property: FilterDisplayProperty,
-    propertyValue?: any
+    propertyValue: any,
+    options: { weightUnit?: WeightUnit } = {}
   ): Observable<string | null> {
     switch (property) {
       case FilterDisplayProperty.TYPE:
