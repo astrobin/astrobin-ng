@@ -19,6 +19,8 @@ import { AccessoryInterface } from "@features/equipment/types/accessory.interfac
 import { SoftwareInterface } from "@features/equipment/types/software.interface";
 import { Action } from "@ngrx/store";
 import { EquipmentPresetInterface } from "@features/equipment/types/equipment-preset.interface";
+import { UserInterface } from "@shared/interfaces/user.interface";
+import { ImageInterface } from "@shared/interfaces/image.interface";
 
 export interface EquipmentItemCreationSuccessPayloadInterface {
   item: EquipmentItemBaseInterface;
@@ -56,6 +58,10 @@ export enum EquipmentActionTypes {
   APPROVE_EQUIPMENT_ITEM_EDIT_PROPOSAL_SUCCESS = "[Equipment] Approve edit proposal success",
   REJECT_EQUIPMENT_ITEM_EDIT_PROPOSAL = "[Equipment] Reject edit proposal",
   REJECT_EQUIPMENT_ITEM_EDIT_PROPOSAL_SUCCESS = "[Equipment] Reject edit proposal success",
+  GET_USERS = "[Equipment] Get users",
+  GET_USERS_SUCCESS = "[Equipment] Get users success",
+  GET_IMAGES = "[Equipment] Get images",
+  GET_IMAGES_SUCCESS = "[Equipment] Get images success",
 
   // Equipment presets
 
@@ -305,6 +311,34 @@ export class RejectEquipmentItemEditProposalSuccess implements PayloadActionInte
   readonly type = EquipmentActionTypes.REJECT_EQUIPMENT_ITEM_EDIT_PROPOSAL_SUCCESS;
 
   constructor(public payload: { editProposal: EditProposalInterface<EquipmentItemBaseInterface> }) {}
+}
+
+export class GetUsers implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.GET_USERS;
+
+  constructor(public payload: { itemType: EquipmentItemType; itemId: EquipmentItemBaseInterface["id"] }) {}
+}
+
+export class GetUsersSuccess implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.GET_USERS_SUCCESS;
+
+  constructor(
+    public payload: { itemType: EquipmentItemType; itemId: EquipmentItemBaseInterface["id"]; users: UserInterface[] }
+  ) {}
+}
+
+export class GetImages implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.GET_IMAGES;
+
+  constructor(public payload: { itemType: EquipmentItemType; itemId: EquipmentItemBaseInterface["id"] }) {}
+}
+
+export class GetImagesSuccess implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.GET_IMAGES_SUCCESS;
+
+  constructor(
+    public payload: { itemType: EquipmentItemType; itemId: EquipmentItemBaseInterface["id"]; images: ImageInterface[] }
+  ) {}
 }
 
 /**********************************************************************************************************************
@@ -627,6 +661,10 @@ export type EquipmentActions =
   | ApproveEquipmentItemEditProposalSuccess
   | RejectEquipmentItemEditProposal
   | RejectEquipmentItemEditProposalSuccess
+  | GetUsers
+  | GetUsersSuccess
+  | GetImages
+  | GetImagesSuccess
 
   // Equipment presets
   | FindEquipmentPresets

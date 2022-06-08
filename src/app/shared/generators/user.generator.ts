@@ -9,6 +9,7 @@ export class UserGenerator {
       username: "Test",
       firstName: "Test",
       avatar: null,
+      largeAvatar: null,
       lastLogin: new Date("2010-01-01"),
       dateJoined: new Date("2010-01-01"),
       isSuperUser: false,

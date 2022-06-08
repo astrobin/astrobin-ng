@@ -8,6 +8,7 @@ export interface UserInterface {
   username: string;
   firstName: string;
   avatar: string;
+  largeAvatar: string;
   lastLogin: Date;
   dateJoined: Date;
   isSuperUser: boolean;

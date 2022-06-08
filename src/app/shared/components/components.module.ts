@@ -85,6 +85,7 @@ import { DirectivesModule } from "@shared/directives/directives.module";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
 import { ItemUnapprovedInfoModalComponent } from "@shared/components/equipment/item-unapproved-info-modal/item-unapproved-info-modal.component";
 import { VariantSelectorModalComponent } from "@shared/components/equipment/item-browser/variant-selector-modal/variant-selector-modal.component";
+import { AvatarComponent } from "@shared/components/misc/avatar/avatar.component";
 
 const modules = [
   CommonModule,
@@ -114,6 +115,7 @@ const modules = [
 ];
 
 const components = [
+  AvatarComponent,
   BreadcrumbComponent,
   CameraComponent,
   ConfirmationDialogComponent,
