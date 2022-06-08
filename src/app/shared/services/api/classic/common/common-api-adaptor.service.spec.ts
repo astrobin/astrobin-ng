@@ -85,6 +85,7 @@ describe("CommonApiAdaptorService", () => {
       const backendUser: BackendUserInterface = {
         id: 1,
         avatar: "/foo/avatar.jpg",
+        large_avatar: "/foo/large-avatar.jpg",
         userprofile: 1,
         last_login: "2020-04-10T19:05:51.400207",
         is_superuser: true,

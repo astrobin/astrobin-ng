@@ -10,13 +10,11 @@ import { ClassicRoutesService } from "@shared/services/classic-routes.service";
   templateUrl: "./avatar.component.html",
   styleUrls: ["./avatar.component.scss"]
 })
-export class AvatarComponent extends BaseComponentDirective implements OnInit {
+export class AvatarComponent extends BaseComponentDirective {
   @Input()
   user: UserInterface;
 
   constructor(public readonly store$: Store<State>, public readonly classicRoutesService: ClassicRoutesService) {
     super(store$);
   }
-
-  ngOnInit(): void {}
 }
