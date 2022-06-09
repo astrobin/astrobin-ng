@@ -24,7 +24,7 @@ export interface EquipmentState {
   imagesUsingEquipmentItems: {
     itemType: EquipmentItemType;
     itemId: EquipmentItemBaseInterface["id"];
-    users: ImageInterface[];
+    images: ImageInterface[];
   }[];
 }
 
@@ -228,7 +228,7 @@ export function reducer(state = initialEquipmentState, action: EquipmentActions)
             {
               itemType: action.payload.itemType,
               itemId: action.payload.itemId,
-              users: action.payload.images
+              images: action.payload.images
             }
           ]
         ]

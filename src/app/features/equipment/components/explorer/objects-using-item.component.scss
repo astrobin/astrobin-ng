@@ -7,7 +7,6 @@ h5 {
   margin-bottom: 1rem !important;
 }
 
-
 astrobin-avatar {
   display: inline-block;
   width: calc(20% - .25rem);
@@ -16,8 +15,13 @@ astrobin-avatar {
 
 astrobin-image {
   display: inline-block;
-  width: calc(12.5% - .25rem);
-  margin-right: .25rem
+  width: calc(14.2857% - .25rem);
+  margin-right: .25rem;
+  transition: transform .1s ease-in-out;
+
+  &:hover {
+    transform: scale(1.1);
+  }
 }
 
 astrobin-loading-indicator {

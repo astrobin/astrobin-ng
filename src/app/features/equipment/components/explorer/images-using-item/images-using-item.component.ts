@@ -47,7 +47,7 @@ export class ImagesUsingItemComponent extends BaseComponentDirective implements 
         filter(imagesUsingEquipmentItem => !!imagesUsingEquipmentItem)
       )
       .subscribe(imagesUsingEquipmentItem => {
-        this.images = imagesUsingEquipmentItem.users;
+        this.images = imagesUsingEquipmentItem.images.slice(0, 49);
       });
 
     this.store$.dispatch(new GetImages(data));

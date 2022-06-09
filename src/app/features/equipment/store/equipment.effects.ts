@@ -77,13 +77,15 @@ import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { All } from "@app/store/actions/app.actions";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
-import { filter, map, mergeMap, switchMap } from "rxjs/operators";
+import { filter, map, mergeMap, switchMap, tap } from "rxjs/operators";
 import { selectBrand, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import { SensorInterface } from "@features/equipment/types/sensor.interface";
 import { BrandInterface } from "@features/equipment/types/brand.interface";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { SelectorWithProps } from "@ngrx/store/src/models";
+import { ImageInterface } from "@shared/interfaces/image.interface";
+import { LoadImageSuccess } from "@app/store/actions/image.actions";
 
 function getFromStoreOrApiByIdAndType<T>(
   store$: Store<State>,
@@ -313,6 +315,22 @@ export class EquipmentEffects {
           .pipe(map(images => new GetImagesSuccess({ itemType: payload.itemType, itemId: payload.itemId, images })))
       )
     )
+  );
+
+  GetImagesSuccess: Observable<GetImagesSuccess> = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(EquipmentActionTypes.GET_IMAGES_SUCCESS),
+        tap((action: GetImagesSuccess) => {
+          const images: ImageInterface[] = action.payload.images;
+          for (const image of images) {
+            this.store$.dispatch(new LoadImageSuccess(image));
+          }
+        })
+      ),
+    {
+      dispatch: false
+    }
   );
 
   /*********************************************************************************************************************
