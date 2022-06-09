@@ -6,10 +6,15 @@ import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipme
 import { TranslateService } from "@ngx-translate/core";
 import { EditProposalChange, EditProposalInterface } from "@features/equipment/types/edit-proposal.interface";
 import { Observable, of } from "rxjs";
-import { getEquipmentItemType } from "@features/equipment/store/equipment.selectors";
+import { getEquipmentItemType, selectBrand } from "@features/equipment/store/equipment.selectors";
 import { EquipmentItemServiceFactory } from "@features/equipment/services/equipment-item.service-factory";
 import { BrandInterface } from "@features/equipment/types/brand.interface";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
+import { Store } from "@ngrx/store";
+import { State } from "@app/store/state";
+import { LoadBrand } from "@features/equipment/store/equipment.actions";
+import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import { filter, map, switchMap, take } from "rxjs/operators";
 
 export enum EquipmentItemDisplayProperty {
   BRAND = "BRAND",
@@ -23,6 +28,7 @@ export enum EquipmentItemDisplayProperty {
 })
 export class EquipmentItemService extends BaseService {
   constructor(
+    public readonly store$: Store<State>,
     public readonly loadingService: LoadingService,
     public readonly utilsService: UtilsService,
     public readonly translateService: TranslateService,
@@ -53,6 +59,20 @@ export class EquipmentItemService extends BaseService {
       case EquipmentItemType.SOFTWARE:
         return this.translateService.instant("Software");
     }
+  }
+
+  getFullDisplayName$(item: EquipmentItem): Observable<string> {
+    this.store$.dispatch(new LoadBrand({ id: item.brand }));
+    if (!!item.brand) {
+      return this.store$.select(selectBrand, item.brand).pipe(
+        filter(brand => !!brand),
+        take(1),
+        switchMap(brand => this.getName$(item).pipe(map(name => ({ brand: brand.name, name })))),
+        map((data: { brand: string; name: string }) => `${data.brand} ${data.name}`)
+      );
+    }
+
+    return this.getName$(item).pipe(map(name => `${this.translateService.instant("(DIY)")} ${name}`));
   }
 
   getName$(item: EquipmentItemBaseInterface | BrandInterface): Observable<string> {
