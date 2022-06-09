@@ -66,7 +66,11 @@ import {
   DeleteEquipmentPresetSuccess,
   DeleteEquipmentPreset,
   FindCameraVariantsSuccess,
-  FindCameraVariants
+  FindCameraVariants,
+  GetUsersSuccess,
+  GetUsers,
+  GetImagesSuccess,
+  GetImages
 } from "@features/equipment/store/equipment.actions";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
@@ -283,6 +287,30 @@ export class EquipmentEffects {
               rejectedEditProposal => new RejectEquipmentItemEditProposalSuccess({ editProposal: rejectedEditProposal })
             )
           )
+      )
+    )
+  );
+
+  GetUsers: Observable<GetUsersSuccess> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(EquipmentActionTypes.GET_USERS),
+      map((action: GetUsers) => action.payload),
+      mergeMap(payload =>
+        this.equipmentApiService
+          .getUsers(payload.itemType, payload.itemId)
+          .pipe(map(users => new GetUsersSuccess({ itemType: payload.itemType, itemId: payload.itemId, users })))
+      )
+    )
+  );
+
+  GetImages: Observable<GetImagesSuccess> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(EquipmentActionTypes.GET_IMAGES),
+      map((action: GetImages) => action.payload),
+      mergeMap(payload =>
+        this.equipmentApiService
+          .getImages(payload.itemType, payload.itemId)
+          .pipe(map(images => new GetImagesSuccess({ itemType: payload.itemType, itemId: payload.itemId, images })))
       )
     )
   );

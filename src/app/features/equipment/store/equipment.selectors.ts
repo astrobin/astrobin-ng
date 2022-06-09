@@ -112,3 +112,32 @@ export const selectEquipmentPreset = createSelector(
     return matching.length > 0 ? matching[0] : null;
   }
 );
+
+export const selectUsersUsingEquipmentItems = createSelector(selectEquipment, state => state.usersUsingEquipmentItems);
+
+export const selectUsersUsingEquipmentItem = createSelector(
+  selectUsersUsingEquipmentItems,
+  (usersUsingEquipmentItems, data: { itemType: EquipmentItemType; itemId: EquipmentItemBaseInterface["id"] }) => {
+    const matching = usersUsingEquipmentItems.filter(
+      entry => entry.itemType === data.itemType && entry.itemId === data.itemId
+    );
+
+    return matching.length > 0 ? matching[0] : null;
+  }
+);
+
+export const selectImagesUsingEquipmentItems = createSelector(
+  selectEquipment,
+  state => state.imagesUsingEquipmentItems
+);
+
+export const selectImagesUsingEquipmentItem = createSelector(
+  selectImagesUsingEquipmentItems,
+  (imagesUsingEquipmentItems, data: { itemType: EquipmentItemType; itemId: EquipmentItemBaseInterface["id"] }) => {
+    const matching = imagesUsingEquipmentItems.filter(
+      entry => entry.itemType === data.itemType && entry.itemId === data.itemId
+    );
+
+    return matching.length > 0 ? matching[0] : null;
+  }
+);

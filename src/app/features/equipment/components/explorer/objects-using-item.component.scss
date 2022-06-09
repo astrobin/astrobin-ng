@@ -1,0 +1,25 @@
+:host {
+  display: block;
+  text-align: center;
+}
+
+h5 {
+  margin-bottom: 1rem !important;
+}
+
+
+astrobin-avatar {
+  display: inline-block;
+  width: calc(20% - .25rem);
+  margin-right: .25rem
+}
+
+astrobin-image {
+  display: inline-block;
+  width: calc(12.5% - .25rem);
+  margin-right: .25rem
+}
+
+astrobin-loading-indicator {
+  margin-top: 1rem;
+}

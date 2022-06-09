@@ -6,6 +6,8 @@ import { EditProposalInterface } from "@features/equipment/types/edit-proposal.i
 import { arrayUniqueEquipmentItems, getEquipmentItemType } from "@features/equipment/store/equipment.selectors";
 import { CameraInterface } from "@features/equipment/types/camera.interface";
 import { EquipmentPresetInterface } from "@features/equipment/types/equipment-preset.interface";
+import { UserInterface } from "@shared/interfaces/user.interface";
+import { ImageInterface } from "@shared/interfaces/image.interface";
 
 export const equipmentFeatureKey = "equipment";
 
@@ -14,13 +16,25 @@ export interface EquipmentState {
   equipmentItems: EquipmentItemBaseInterface[];
   editProposals: EditProposalInterface<EquipmentItemBaseInterface>[];
   presets: EquipmentPresetInterface[];
+  usersUsingEquipmentItems: {
+    itemType: EquipmentItemType;
+    itemId: EquipmentItemBaseInterface["id"];
+    users: UserInterface[];
+  }[];
+  imagesUsingEquipmentItems: {
+    itemType: EquipmentItemType;
+    itemId: EquipmentItemBaseInterface["id"];
+    users: ImageInterface[];
+  }[];
 }
 
 export const initialEquipmentState: EquipmentState = {
   brands: [],
   equipmentItems: [],
   editProposals: [],
-  presets: []
+  presets: [],
+  usersUsingEquipmentItems: [],
+  imagesUsingEquipmentItems: []
 };
 
 export function reducer(state = initialEquipmentState, action: EquipmentActions): EquipmentState {
@@ -182,6 +196,42 @@ export function reducer(state = initialEquipmentState, action: EquipmentActions)
       return {
         ...state,
         presets: state.presets.filter(preset => preset.id !== action.payload.id)
+      };
+    }
+
+    case EquipmentActionTypes.GET_USERS_SUCCESS: {
+      return {
+        ...state,
+        usersUsingEquipmentItems: [
+          ...state.usersUsingEquipmentItems.filter(
+            entry => entry.itemType !== action.payload.itemType && entry.itemId !== action.payload.itemId
+          ),
+          ...[
+            {
+              itemType: action.payload.itemType,
+              itemId: action.payload.itemId,
+              users: action.payload.users
+            }
+          ]
+        ]
+      };
+    }
+
+    case EquipmentActionTypes.GET_IMAGES_SUCCESS: {
+      return {
+        ...state,
+        imagesUsingEquipmentItems: [
+          ...state.imagesUsingEquipmentItems.filter(
+            entry => entry.itemType !== action.payload.itemType && entry.itemId !== action.payload.itemId
+          ),
+          ...[
+            {
+              itemType: action.payload.itemType,
+              itemId: action.payload.itemId,
+              users: action.payload.images
+            }
+          ]
+        ]
       };
     }
 

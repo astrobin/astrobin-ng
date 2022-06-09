@@ -28,6 +28,8 @@ import { AccessoryInterface } from "@features/equipment/types/accessory.interfac
 import { SoftwareInterface } from "@features/equipment/types/software.interface";
 import { getEquipmentItemType } from "@features/equipment/store/equipment.selectors";
 import { EquipmentPresetInterface } from "@features/equipment/types/equipment-preset.interface";
+import { UserInterface } from "@shared/interfaces/user.interface";
+import { ImageInterface } from "@shared/interfaces/image.interface";
 
 @Injectable({
   providedIn: "root"
@@ -306,6 +308,14 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
 
   deleteEquipmentPreset(id: EquipmentPresetInterface["id"]): Observable<void> {
     return this.http.delete<void>(`${this.configUrl}/equipment-preset/${id}/`);
+  }
+
+  getUsers(itemType: EquipmentItemType, itemId: EquipmentItemBaseInterface["id"]): Observable<UserInterface[]> {
+    return this.http.get<UserInterface[]>(`${this.configUrl}/${itemType.toLowerCase()}/${itemId}/users/`);
+  }
+
+  getImages(itemType: EquipmentItemType, itemId: EquipmentItemBaseInterface["id"]): Observable<ImageInterface[]> {
+    return this.http.get<ImageInterface[]>(`${this.configUrl}/${itemType.toLowerCase()}/${itemId}/images/`);
   }
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

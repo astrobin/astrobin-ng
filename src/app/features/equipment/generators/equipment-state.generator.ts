@@ -6,7 +6,9 @@ export class EquipmentStateGenerator {
       brands: [],
       equipmentItems: [],
       editProposals: [],
-      presets: []
+      presets: [],
+      usersUsingEquipmentItems: [],
+      imagesUsingEquipmentItems: []
     };
   }
 }

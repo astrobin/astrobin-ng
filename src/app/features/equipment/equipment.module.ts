@@ -26,6 +26,8 @@ import { ReviewGearRenamingProposalsComponent } from "./pages/review-gear-renami
 import { RejectReviewGearRenamingProposalsModalComponent } from "@features/equipment/components/reject-review-gear-renaming-proposals-modal/reject-review-gear-renaming-proposals-modal.component";
 import { PendingExplorerBaseComponent } from "@features/equipment/pages/explorer-base/pending-explorer-base.component";
 import { ExplorerBaseComponent } from "@features/equipment/pages/explorer-base/explorer-base.component";
+import { UsersUsingItemComponent } from "./components/explorer/users-using-item/users-using-item.component";
+import { ImagesUsingItemComponent } from "@features/equipment/components/explorer/images-using-item/images-using-item.component";
 
 @NgModule({
   declarations: [
@@ -50,7 +52,9 @@ import { ExplorerBaseComponent } from "@features/equipment/pages/explorer-base/e
     RejectEditProposalModalComponent,
     MergeIntoModalComponent,
     ReviewGearRenamingProposalsComponent,
-    RejectReviewGearRenamingProposalsModalComponent
+    RejectReviewGearRenamingProposalsModalComponent,
+    UsersUsingItemComponent,
+    ImagesUsingItemComponent
   ],
   imports: [RouterModule.forChild(routes), SharedModule, StoreModule.forFeature(equipmentFeatureKey, reducer)]
 })

@@ -15,7 +15,21 @@
         (valueChanged)="onSelectedItemChanged($event)"
       ></astrobin-equipment-explorer>
 
-      <ng-container *ngIf="!activeId">
+      <ng-container *ngIf="!!activeId; else noActiveId">
+        <astrobin-users-using-equipment-item
+          class="mt-5"
+          [itemType]="activeType"
+          [itemId]="activeId"
+        ></astrobin-users-using-equipment-item>
+
+        <astrobin-images-using-equipment-item
+          class="mt-5"
+          [itemType]="activeType"
+          [itemId]="activeId"
+        ></astrobin-images-using-equipment-item>
+      </ng-container>
+
+      <ng-template #noActiveId>
         <ng-container *ngIf="items$ | async as items; else loading">
           <ul class="items">
             <li *ngFor="let item of items.results" data-id="{{ item.id }}">
@@ -35,7 +49,7 @@
           >
           </ngb-pagination>
         </ng-container>
-      </ng-container>
+      </ng-template>
     </div>
   </div>
 </div>
