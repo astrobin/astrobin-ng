@@ -155,8 +155,7 @@
 <ng-container *ngIf="selectedItem">
   <ng-container *ngIf="editProposals !== null; else loadingEditProposals">
     <div class="edit-proposals" *ngIf="editProposals.length > 0">
-      <ng-container
-        *ngIf="editProposalsByStatus(editProposals, null)?.length > 0 || !editProposalsCollapsed; else editProposalsCollapsedTemplate">
+      <ng-container *ngIf="showEditProposals(); else editProposalsCollapsedTemplate">
         <div class="edit-proposals-header" (click)="editProposalsCollapsed = true">
           <div class="row">
             <span class="col">{{ "Edit proposal by" | translate }}</span>
@@ -177,7 +176,7 @@
         <div
           class="edit-proposals-collapsed"
           [innerHTML]="collapsedEditProposalsMessage(editProposals)"
-          (click)="editProposalsCollapsed = false"
+          (click)="expandEditProposals()"
         >
         </div>
       </ng-template>

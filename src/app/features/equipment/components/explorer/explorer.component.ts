@@ -454,6 +454,14 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
     });
   }
 
+  showEditProposals(): boolean {
+    return this.editProposalsByStatus(this.editProposals, null)?.length > 0 || !this.editProposalsCollapsed;
+  }
+
+  expandEditProposals() {
+    this.editProposalsCollapsed = false;
+  }
+
   typeSupportsMigrateInto() {
     return this.activeType !== EquipmentItemType.SENSOR;
   }

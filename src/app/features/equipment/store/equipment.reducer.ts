@@ -41,11 +41,14 @@ function editProposalCompareFunction(
   a: EditProposalInterface<EquipmentItemBaseInterface>,
   b: EditProposalInterface<EquipmentItemBaseInterface>
 ): number {
-  if (a.editProposalCreated < b.editProposalCreated) {
+  const aDate: Date = new Date(a.editProposalCreated + "Z");
+  const bDate: Date = new Date(b.editProposalCreated + "Z");
+
+  if (aDate < bDate) {
     return -1;
   }
 
-  if (a.editProposalCreated > b.editProposalCreated) {
+  if (aDate > bDate) {
     return 1;
   }
 
@@ -132,7 +135,9 @@ export function reducer(state = initialEquipmentState, action: EquipmentActions)
         editProposals: (arrayUniqueEquipmentItems([
           ...state.editProposals,
           ...[action.payload.editProposal]
-        ]) as EditProposalInterface<EquipmentItemBaseInterface>[]).sort(editProposalCompareFunction)
+        ]) as EditProposalInterface<EquipmentItemBaseInterface>[])
+          .sort(editProposalCompareFunction)
+          .reverse()
       };
     }
 
@@ -148,7 +153,9 @@ export function reducer(state = initialEquipmentState, action: EquipmentActions)
         editProposals: (arrayUniqueEquipmentItems([
           ...state.editProposals,
           ...[action.payload.editProposal]
-        ]) as EditProposalInterface<EquipmentItemBaseInterface>[]).sort(editProposalCompareFunction)
+        ]) as EditProposalInterface<EquipmentItemBaseInterface>[])
+          .sort(editProposalCompareFunction)
+          .reverse()
       };
     }
 
@@ -156,7 +163,7 @@ export function reducer(state = initialEquipmentState, action: EquipmentActions)
       return {
         ...state,
         editProposals: UtilsService.arrayUniqueObjects(
-          [...state.editProposals, ...action.payload.editProposals.results].sort(editProposalCompareFunction),
+          [...state.editProposals, ...action.payload.editProposals.results].sort(editProposalCompareFunction).reverse(),
           "id"
         )
       };
