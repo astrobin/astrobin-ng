@@ -133,6 +133,7 @@ describe("CommonApiAdaptorService", () => {
       expect(service.userFromBackend(backendUser)).toEqual({
         id: 1,
         avatar: "/foo/avatar.jpg",
+        largeAvatar: "/foo/large-avatar.jpg",
         userProfile: 1,
         lastLogin: new Date("2020-04-10T19:05:51.400207"),
         isSuperUser: true,
