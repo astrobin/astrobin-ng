@@ -47,4 +47,6 @@ export interface EquipmentItemBaseInterface {
   name: string;
   website: string;
   image?: string | File[];
+  userCount: number | null;
+  imageCount: number | null;
 }
