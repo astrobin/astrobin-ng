@@ -88,8 +88,7 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
 
   subCreationMode = false;
 
-  selectedItemEditProposals$: Observable<EditProposalInterface<EquipmentItemBaseInterface>[]>;
-
+  editProposals: EditProposalInterface<EquipmentItemBaseInterface>[] | null = null;
   editProposalsCollapsed = true;
 
   @ViewChild("itemBrowser")
@@ -185,9 +184,7 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
         takeUntil(this.destroyed$),
         map((action: ApproveEquipmentItemEditProposalSuccess) => action.payload.editProposal),
         filter(editProposal => editProposal.editProposalTarget === this.selectedItem?.id),
-        tap(editProposal =>
-          this.store$.dispatch(new LoadEquipmentItem({ id: this.selectedItem.id, type: this.activeType }))
-        ),
+        tap(() => this.store$.dispatch(new LoadEquipmentItem({ id: this.selectedItem.id, type: this.activeType }))),
         switchMap(() =>
           this.store$.select(selectEquipmentItem, { id: this.selectedItem.id, type: this.activeType }).pipe(
             filter(item => !!item),
@@ -219,6 +216,20 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
 
   startEditMode() {
     if (!this._verifyCameraVariantCanBeEdited()) {
+      return;
+    }
+
+    if (
+      this.editProposals &&
+      this.editProposals.length > 0 &&
+      this.editProposals.filter(editProposal => editProposal.editProposalReviewStatus === null).length > 0
+    ) {
+      this.popNotificationsService.error(
+        this.translateService.instant(
+          "You cannot propose an edit while there is a pending one. Please review the pending edit proposal first, " +
+            "thank you!"
+        )
+      );
       return;
     }
 
@@ -393,7 +404,7 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
               result.payload.editProposal
           )
         )
-        .subscribe((createdEditProposal: EditProposalInterface<EquipmentItemBaseInterface>) => {
+        .subscribe(() => {
           this.editProposalCreated();
           this.loadingService.setLoading(false);
         });
@@ -416,20 +427,17 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
     }
 
     this.store$.dispatch(new FindEquipmentItemEditProposals({ item: this.selectedItem }));
-    this.selectedItemEditProposals$ = this.actions$.pipe(
-      ofType(EquipmentActionTypes.FIND_EQUIPMENT_ITEM_EDIT_PROPOSALS_SUCCESS),
-      take(1),
-      switchMap(() => this.store$.select(selectEditProposalsForItem, this.selectedItem)),
-      take(1),
-      tap(
-        editProposals =>
-          (this.editProposalsCollapsed =
-            this.pendingProposalsByStatus(editProposals, null).length === 0 && !this.activeEditProposalId)
-      )
-    );
+    this.store$
+      .select(selectEditProposalsForItem, this.selectedItem)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(editProposals => {
+        this.editProposals = editProposals;
+        this.editProposalsCollapsed =
+          this.editProposalsByStatus(editProposals, null).length === 0 && !this.activeEditProposalId;
+      });
   }
 
-  pendingProposalsByStatus(
+  editProposalsByStatus(
     editProposals: EditProposalInterface<EquipmentItemBaseInterface>[],
     status: EditProposalReviewStatus
   ): EditProposalInterface<EquipmentItemBaseInterface>[] {
@@ -442,7 +450,7 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
 
   collapsedEditProposalsMessage(editProposals: EditProposalInterface<EquipmentItemBaseInterface>[]): string {
     return this.translateService.instant("This item has a history of <strong>{{0}}</strong> approved edit proposals.", {
-      "0": this.pendingProposalsByStatus(editProposals, EditProposalReviewStatus.APPROVED).length
+      "0": this.editProposalsByStatus(editProposals, EditProposalReviewStatus.APPROVED).length
     });
   }
 
