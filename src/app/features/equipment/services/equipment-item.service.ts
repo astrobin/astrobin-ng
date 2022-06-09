@@ -174,7 +174,9 @@ export class EquipmentItemService extends BaseService {
 
       "modified",
       "variants",
-      "parentVariant"
+      "parentVariant",
+      "userCount",
+      "imageCount"
     ];
 
     const nonNullableKeys = ["image"];

@@ -20,7 +20,9 @@ export class MountGenerator {
       weight: source.weight || 50,
       maxPayload: source.maxPayload || 450,
       computerized: source.computerized !== null && source.computerized !== undefined ? source.computerized : true,
-      slewSpeed: source.slewSpeed || 2
+      slewSpeed: source.slewSpeed || 2,
+      userCount: null,
+      imageCount: null
     };
   }
 }

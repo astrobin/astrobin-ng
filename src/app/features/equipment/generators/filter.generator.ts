@@ -15,7 +15,9 @@ export class FilterGenerator {
       website: source.website || "https://www.test-filter.com",
       image: source.image || "https://cdn.astrobin.com/images/foo.jpg",
       type: source.type || FilterType.L,
-      bandwidth: source.bandwidth || 12
+      bandwidth: source.bandwidth || 12,
+      userCount: null,
+      imageCount: null
     };
   }
 }

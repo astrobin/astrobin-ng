@@ -13,7 +13,9 @@ export class AccessoryGenerator {
       brand: source.brand || BrandGenerator.brand().id,
       name: source.name || "Test accessory",
       website: source.website || "https://www.test-accessory.com",
-      image: source.image || "https://cdn.astrobin.com/images/foo.jpg"
+      image: source.image || "https://cdn.astrobin.com/images/foo.jpg",
+      userCount: null,
+      imageCount: null
     };
   }
 }

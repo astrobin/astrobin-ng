@@ -18,7 +18,9 @@ export class TelescopeGenerator {
       aperture: source.aperture || 90,
       minFocalLength: source.minFocalLength || 450,
       maxFocalLength: source.maxFocalLength || 450,
-      weight: source.weight || 2
+      weight: source.weight || 2,
+      userCount: null,
+      imageCount: null
     };
   }
 }

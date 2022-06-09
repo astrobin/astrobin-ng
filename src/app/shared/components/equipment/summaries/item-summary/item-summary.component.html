@@ -40,6 +40,14 @@
             </td>
           </tr>
         </ng-container>
+        <tr class="property">
+          <th class="property-name">{{ "Users" | translate }}</th>
+          <td class="property-value">{{ item.userCount || 0 }}</td>
+        </tr>
+        <tr class="property">
+          <th class="property-name">{{ "Images" | translate }}</th>
+          <td class="property-value">{{ item.imageCount || 0 }}</td>
+        </tr>
         </tbody>
       </table>
 
