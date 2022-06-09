@@ -24,6 +24,15 @@
     }
   }
 
+  .card-info {
+    margin-bottom: 0;
+    box-shadow: none;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    font-size: .9rem;
+    font-style: italic;
+  }
+
   .card-header {
     @include darkest-background-texture;
     color: var(--white);
