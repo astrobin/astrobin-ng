@@ -1,6 +1,6 @@
 <h5 class="mb-4">{{ "Images acquired using this equipment item" | translate }}</h5>
 
-<div *ngIf="images !== undefined; else loading" class="objects-using">
+<div *ngIf="images !== undefined && item !== undefined && searchUrl !== undefined; else loading" class="objects-using">
   <ng-container *ngIf="images.length > 0; else noImages">
     <a *ngFor="let image of images"
        [href]="classicRoutesService.IMAGE(image.hash || image.pk + '')"
@@ -11,6 +11,12 @@
         [autoHeight]="false"
       ></astrobin-image>
     </a>
+
+    <div *ngIf="images.length > MAX_IMAGES" class="mt-2">
+      <a [attr.href]="searchUrl" class="btn btn-outline-secondary">
+        {{ "View more" | translate }}
+      </a>
+    </div>
   </ng-container>
   <ng-template #noImages>
     <span class="text-muted">
