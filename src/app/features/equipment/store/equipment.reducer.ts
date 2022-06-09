@@ -37,6 +37,21 @@ export const initialEquipmentState: EquipmentState = {
   imagesUsingEquipmentItems: []
 };
 
+function editProposalCompareFunction(
+  a: EditProposalInterface<EquipmentItemBaseInterface>,
+  b: EditProposalInterface<EquipmentItemBaseInterface>
+): number {
+  if (a.editProposalCreated < b.editProposalCreated) {
+    return -1;
+  }
+
+  if (a.editProposalCreated > b.editProposalCreated) {
+    return 1;
+  }
+
+  return 0;
+}
+
 export function reducer(state = initialEquipmentState, action: EquipmentActions): EquipmentState {
   switch (action.type) {
     case EquipmentActionTypes.LOAD_BRAND_SUCCESS:
@@ -117,22 +132,7 @@ export function reducer(state = initialEquipmentState, action: EquipmentActions)
         editProposals: (arrayUniqueEquipmentItems([
           ...state.editProposals,
           ...[action.payload.editProposal]
-        ]) as EditProposalInterface<EquipmentItemBaseInterface>[]).sort(
-          (
-            a: EditProposalInterface<EquipmentItemBaseInterface>,
-            b: EditProposalInterface<EquipmentItemBaseInterface>
-          ) => {
-            if (a.editProposalCreated < b.editProposalCreated) {
-              return -1;
-            }
-
-            if (a.editProposalCreated > b.editProposalCreated) {
-              return 1;
-            }
-
-            return 0;
-          }
-        )
+        ]) as EditProposalInterface<EquipmentItemBaseInterface>[]).sort(editProposalCompareFunction)
       };
     }
 
@@ -148,22 +148,7 @@ export function reducer(state = initialEquipmentState, action: EquipmentActions)
         editProposals: (arrayUniqueEquipmentItems([
           ...state.editProposals,
           ...[action.payload.editProposal]
-        ]) as EditProposalInterface<EquipmentItemBaseInterface>[]).sort(
-          (
-            a: EditProposalInterface<EquipmentItemBaseInterface>,
-            b: EditProposalInterface<EquipmentItemBaseInterface>
-          ) => {
-            if (a.editProposalCreated < b.editProposalCreated) {
-              return -1;
-            }
-
-            if (a.editProposalCreated > b.editProposalCreated) {
-              return 1;
-            }
-
-            return 0;
-          }
-        )
+        ]) as EditProposalInterface<EquipmentItemBaseInterface>[]).sort(editProposalCompareFunction)
       };
     }
 
@@ -171,7 +156,7 @@ export function reducer(state = initialEquipmentState, action: EquipmentActions)
       return {
         ...state,
         editProposals: UtilsService.arrayUniqueObjects(
-          [...state.editProposals, ...action.payload.editProposals.results],
+          [...state.editProposals, ...action.payload.editProposals.results].sort(editProposalCompareFunction),
           "id"
         )
       };
