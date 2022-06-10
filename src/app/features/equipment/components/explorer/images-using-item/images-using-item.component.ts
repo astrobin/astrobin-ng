@@ -32,6 +32,8 @@ export class ImagesUsingItemComponent extends BaseComponentDirective implements 
 
   images: ImageInterface[];
 
+  hasMoreImages = false;
+
   searchUrl: string;
 
   constructor(
@@ -51,6 +53,7 @@ export class ImagesUsingItemComponent extends BaseComponentDirective implements 
       )
       .subscribe(imagesUsingEquipmentItem => {
         this.images = imagesUsingEquipmentItem.images.slice(0, this.MAX_IMAGES);
+        this.hasMoreImages = imagesUsingEquipmentItem.images.length > this.MAX_IMAGES;
       });
 
     this.store$

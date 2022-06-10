@@ -12,7 +12,7 @@
       ></astrobin-image>
     </a>
 
-    <div *ngIf="images.length > MAX_IMAGES" class="mt-2">
+    <div *ngIf="hasMoreImages" class="mt-2">
       <a [attr.href]="searchUrl" class="btn btn-outline-secondary">
         {{ "View more" | translate }}
       </a>
