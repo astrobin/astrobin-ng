@@ -32,7 +32,6 @@ import { EditProposalInterface, EditProposalReviewStatus } from "@features/equip
 import { EquipmentItemEditorMode } from "@shared/components/equipment/editors/base-item-editor/base-item-editor.component";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { ItemBrowserComponent } from "@shared/components/equipment/item-browser/item-browser.component";
-import { Observable } from "rxjs";
 import { selectEditProposalsForItem, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
@@ -52,8 +51,8 @@ import { SoftwareInterface } from "@features/equipment/types/software.interface"
   styleUrls: ["./explorer.component.scss"]
 })
 export class ExplorerComponent extends BaseComponentDirective implements OnInit, OnChanges {
-  EquipmentItemType = EquipmentItemType;
-  EquipmentItemEditorMode = EquipmentItemEditorMode;
+  readonly EquipmentItemType = EquipmentItemType;
+  readonly EquipmentItemEditorMode = EquipmentItemEditorMode;
 
   @Input()
   enableBrowser = true;
