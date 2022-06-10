@@ -19,7 +19,7 @@ import {
 } from "@features/equipment/types/equipment-item-base.interface";
 import { FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
-import { forkJoin, Observable, of } from "rxjs";
+import { forkJoin, Observable, of, Subscription } from "rxjs";
 import { TranslateService } from "@ngx-translate/core";
 import {
   CreateAccessory,
@@ -113,6 +113,10 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
 
   creationForm: FormGroup = new FormGroup({});
   creationModel: Partial<EquipmentItem> = {};
+
+  currentUserSubscription: Subscription;
+  itemBrowserAddSubscription: Subscription;
+  itemBrowserSetSubscription: Subscription;
 
   @ViewChild("equipmentItemLabelTemplate")
   equipmentItemLabelTemplate: TemplateRef<any>;
@@ -217,8 +221,6 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
       }
 
       this.model = { value: id };
-
-      this.valueChanged.emit(item);
     };
 
     const _doSetValues = (values: { brand: BrandInterface; item: EquipmentItemBaseInterface }[] = []) => {
@@ -240,8 +242,6 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
       if (this.form.get("value")) {
         this.form.get("value").setValue(ids);
       }
-
-      this.valueChanged.emit(items);
     };
 
     if (this.multiple) {
@@ -290,6 +290,7 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
         .select(selectEquipmentItem, { id: value, type: this.type })
         .pipe(
           filter(item => !!item),
+          take(1),
           tap(item => {
             if (!!item.brand) {
               this.store$.dispatch(new LoadBrand({ id: item.brand }));
@@ -479,7 +480,11 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
 
     this.model = { value: this.initialValue };
 
-    this.currentUser$
+    if (!!this.currentUserSubscription) {
+      this.currentUserSubscription.unsubscribe();
+      this.currentUserSubscription = null;
+    }
+    this.currentUserSubscription = this.currentUser$
       .pipe(
         takeUntil(this.destroyed$),
         map(currentUser => {
@@ -557,13 +562,13 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
           ];
         })
       )
-      .subscribe(() => {
-        if (!!this.initialValue) {
-          this.setValue(this.initialValue);
-        }
-      });
+      .subscribe(() => {});
 
-    this.actions$
+    if (!!this.itemBrowserAddSubscription) {
+      this.itemBrowserAddSubscription.unsubscribe();
+      this.itemBrowserAddSubscription = null;
+    }
+    this.itemBrowserAddSubscription = this.actions$
       .pipe(
         takeUntil(this.destroyed$),
         ofType(EquipmentActionTypes.ITEM_BROWSER_ADD),
@@ -583,7 +588,11 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
         }
       });
 
-    this.actions$
+    if (!!this.itemBrowserSetSubscription) {
+      this.itemBrowserSetSubscription.unsubscribe();
+      this.itemBrowserSetSubscription = null;
+    }
+    this.itemBrowserSetSubscription = this.actions$
       .pipe(
         takeUntil(this.destroyed$),
         ofType(EquipmentActionTypes.ITEM_BROWSER_SET),
@@ -602,6 +611,8 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
           }
         }
       });
+
+    this.setValue(this.initialValue);
   }
 
   _getOptions(): Observable<any> {
