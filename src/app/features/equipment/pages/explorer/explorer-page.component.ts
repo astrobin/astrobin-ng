@@ -19,15 +19,27 @@ import { Location } from "@angular/common";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 import { CameraInterface, CameraType } from "@features/equipment/types/camera.interface";
 
+enum ExplorerPageSortOrder {
+  AZ = "az",
+  AZ_DESC = "-az",
+  USERS = "users",
+  USERS_DESC = "-users",
+  IMAGES = "images",
+  IMAGES_DESC = "-images"
+}
+
 @Component({
   selector: "astrobin-equipment-explorer-page",
   templateUrl: "./explorer-page.component.html",
   styleUrls: ["./explorer-page.component.scss"]
 })
 export class ExplorerPageComponent extends ExplorerBaseComponent implements OnInit {
-  EquipmentItemType = EquipmentItemType;
+  readonly EquipmentItemType = EquipmentItemType;
+  readonly ExplorerPageSortOrder = ExplorerPageSortOrder;
+
   title = this.translateService.instant("Equipment explorer");
   activeId: EquipmentItemBaseInterface["id"];
+  sortOrder: ExplorerPageSortOrder = ExplorerPageSortOrder.AZ;
 
   constructor(
     public readonly store$: Store<State>,
@@ -50,7 +62,6 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
     this._setTitle();
     this._setBreadcrumb();
     this._setParams();
-    this._setLocation();
 
     this.router.events
       .pipe(
@@ -59,7 +70,6 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
       )
       .subscribe(() => {
         this._setParams();
-        this._setLocation();
         this.getItems();
       });
   }
@@ -94,7 +104,11 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
         if (!item) {
           let url = `/equipment/explorer/${this.activeType.toLowerCase()}`;
           if (this.page > 1) {
-            url += `?page=${this.page}`;
+            url = UtilsService.addOrUpdateUrlParam(url, "page", this.page + "");
+          }
+
+          if (this.sortOrder !== ExplorerPageSortOrder.AZ) {
+            url = UtilsService.addOrUpdateUrlParam(url, "sort", this.sortOrder);
           }
 
           this.location.replaceState(url);
@@ -170,7 +184,8 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
   }
 
   getItems() {
-    this.items$ = this.equipmentApiService.getAllEquipmentItems(this._activeType, this.page, "az").pipe(
+    this._setLocation();
+    this.items$ = this.equipmentApiService.getAllEquipmentItems(this._activeType, this.page, this.sortOrder).pipe(
       tap(response => {
         const uniqueBrands: BrandInterface["id"][] = [];
         for (const item of response.results) {
@@ -181,5 +196,35 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
         uniqueBrands.forEach(id => this.store$.dispatch(new LoadBrand({ id })));
       })
     );
+  }
+
+  toggleAZSorting() {
+    if (this.sortOrder !== ExplorerPageSortOrder.AZ) {
+      this.sortOrder = ExplorerPageSortOrder.AZ;
+    } else {
+      this.sortOrder = ExplorerPageSortOrder.AZ_DESC;
+    }
+
+    this.getItems();
+  }
+
+  toggleUsersSorting() {
+    if (this.sortOrder !== ExplorerPageSortOrder.USERS_DESC) {
+      this.sortOrder = ExplorerPageSortOrder.USERS_DESC;
+    } else {
+      this.sortOrder = ExplorerPageSortOrder.USERS;
+    }
+
+    this.getItems();
+  }
+
+  toggleImagesSorting() {
+    if (this.sortOrder !== ExplorerPageSortOrder.IMAGES_DESC) {
+      this.sortOrder = ExplorerPageSortOrder.IMAGES_DESC;
+    } else {
+      this.sortOrder = ExplorerPageSortOrder.IMAGES;
+    }
+
+    this.getItems();
   }
 }

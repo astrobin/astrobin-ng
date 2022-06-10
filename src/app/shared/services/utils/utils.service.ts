@@ -113,7 +113,7 @@ export class UtilsService {
     }).click();
   }
 
-  static addOrUpdateUrlParam(url: string, name: string, value: string) {
+  static addOrUpdateUrlParam(url: string, name: string, value: string): string {
     let regex = new RegExp("[&\\?]" + name + "=");
 
     if (regex.test(url)) {
@@ -128,7 +128,7 @@ export class UtilsService {
     return url + "?" + name + "=" + value;
   }
 
-  static removeUrlParam(url: string, parameter: string) {
+  static removeUrlParam(url: string, parameter: string): string {
     const urlParts = url.split("?");
 
     if (urlParts.length >= 2) {

@@ -31,13 +31,44 @@
 
       <ng-template #noActiveId>
         <ng-container *ngIf="items$ | async as items; else loading">
-          <ul class="items">
-            <li *ngFor="let item of items.results" data-id="{{ item.id }}">
-              <a href="#" appEventPreventDefault (click)="viewItem(item)">
-                <astrobin-equipment-item-display-name [item]="item"></astrobin-equipment-item-display-name>
-              </a>
-            </li>
-          </ul>
+          <table class="table table-striped table-sm items">
+            <thead>
+            <tr>
+              <th>
+                <button class="btn btn-link" (click)="toggleAZSorting()">
+                  {{ "Name" | translate }}
+                  <fa-icon icon="sort-alpha-down" *ngIf="sortOrder === ExplorerPageSortOrder.AZ_DESC"></fa-icon>
+                  <fa-icon icon="sort-alpha-up" *ngIf="sortOrder === ExplorerPageSortOrder.AZ"></fa-icon>
+                </button>
+              </th>
+              <th>
+                <button class="btn btn-link" (click)="toggleUsersSorting()">
+                  {{ "Users" | translate }}
+                  <fa-icon icon="sort-numeric-down" *ngIf="sortOrder === ExplorerPageSortOrder.USERS_DESC"></fa-icon>
+                  <fa-icon icon="sort-numeric-up" *ngIf="sortOrder === ExplorerPageSortOrder.USERS"></fa-icon>
+                </button>
+              </th>
+              <th>
+                <button class="btn btn-link" (click)="toggleImagesSorting()">
+                  {{ "Images" | translate }}
+                  <fa-icon icon="sort-numeric-down" *ngIf="sortOrder === ExplorerPageSortOrder.IMAGES_DESC"></fa-icon>
+                  <fa-icon icon="sort-numeric-up" *ngIf="sortOrder === ExplorerPageSortOrder.IMAGES"></fa-icon>
+                </button>
+              </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let item of items.results" data-id="{{ item.id }}">
+              <td>
+                <a href="#" appEventPreventDefault (click)="viewItem(item)">
+                  <astrobin-equipment-item-display-name [item]="item"></astrobin-equipment-item-display-name>
+                </a>
+              </td>
+              <td>{{ item.userCount }}</td>
+              <td>{{ item.imageCount }}</td>
+            </tr>
+            </tbody>
+          </table>
 
           <astrobin-nothing-here *ngIf="items.count === 0"></astrobin-nothing-here>
 

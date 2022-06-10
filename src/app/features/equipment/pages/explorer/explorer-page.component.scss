@@ -1,5 +1,16 @@
 .items {
-  li {
-    list-style: circle;
+  th {
+    fa-icon {
+      margin-left: 1rem;
+    }
+  }
+
+  a {
+    color: var(--white);
+
+    &:hover {
+      color: var(--accentColor);
+      text-decoration: none;
+    }
   }
 }
