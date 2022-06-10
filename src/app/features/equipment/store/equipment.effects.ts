@@ -15,6 +15,8 @@ import {
   CreateCameraEditProposal,
   CreateCameraEditProposalSuccess,
   CreateCameraSuccess,
+  CreateEquipmentPreset,
+  CreateEquipmentPresetSuccess,
   CreateFilter,
   CreateFilterEditProposal,
   CreateFilterEditProposalSuccess,
@@ -35,11 +37,15 @@ import {
   CreateTelescopeEditProposal,
   CreateTelescopeEditProposalSuccess,
   CreateTelescopeSuccess,
+  DeleteEquipmentPreset,
+  DeleteEquipmentPresetSuccess,
   EquipmentActionTypes,
   FindAllBrands,
   FindAllBrandsSuccess,
   FindAllEquipmentItems,
   FindAllEquipmentItemsSuccess,
+  FindCameraVariants,
+  FindCameraVariantsSuccess,
   FindEquipmentItemEditProposals,
   FindEquipmentItemEditProposalsSuccess,
   FindEquipmentPresetsSuccess,
@@ -47,8 +53,12 @@ import {
   FindRecentlyUsedEquipmentItemsSuccess,
   FindSimilarInBrand,
   FindSimilarInBrandSuccess,
+  GetImages,
+  GetImagesSuccess,
   GetOthersInBrand,
   GetOthersInBrandSuccess,
+  GetUsers,
+  GetUsersSuccess,
   LoadBrand,
   LoadBrandSuccess,
   LoadEquipmentItem,
@@ -59,18 +69,8 @@ import {
   RejectEquipmentItemEditProposal,
   RejectEquipmentItemEditProposalSuccess,
   RejectEquipmentItemSuccess,
-  CreateEquipmentPreset,
-  CreateEquipmentPresetSuccess,
-  UpdateEquipmentPresetSuccess,
   UpdateEquipmentPreset,
-  DeleteEquipmentPresetSuccess,
-  DeleteEquipmentPreset,
-  FindCameraVariantsSuccess,
-  FindCameraVariants,
-  GetUsersSuccess,
-  GetUsers,
-  GetImagesSuccess,
-  GetImages
+  UpdateEquipmentPresetSuccess
 } from "@features/equipment/store/equipment.actions";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
@@ -111,8 +111,12 @@ export class EquipmentEffects {
     this.actions$.pipe(
       ofType(EquipmentActionTypes.LOAD_BRAND),
       map((action: LoadBrand) => action.payload.id),
-      mergeMap(id =>
-        this.utilsService
+      mergeMap(id => {
+        if (!id) {
+          return of(null);
+        }
+
+        return this.utilsService
           .getFromStoreOrApiById<BrandInterface>(
             this.store$,
             id,
@@ -123,8 +127,8 @@ export class EquipmentEffects {
           .pipe(
             filter(brand => !!brand),
             map(brand => new LoadBrandSuccess({ brand }))
-          )
-      )
+          );
+      })
     )
   );
 
