@@ -10,7 +10,7 @@ import {
   SimpleChanges
 } from "@angular/core";
 import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
-import { LoadImage, LoadImageRevisions, LoadImageRevisionsSuccess } from "@app/store/actions/image.actions";
+import { LoadImage, LoadImageRevisions } from "@app/store/actions/image.actions";
 import { LoadThumbnail } from "@app/store/actions/thumbnail.actions";
 import { selectImage } from "@app/store/selectors/app/image.selectors";
 import { selectThumbnail } from "@app/store/selectors/app/thumbnail.selectors";
@@ -26,8 +26,7 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 import { debounceTime, distinctUntilChanged, filter, map, switchMap, take, takeUntil } from "rxjs/operators";
 import { fromEvent, Observable, of } from "rxjs";
 import { selectImageRevisionsForImage } from "@app/store/selectors/app/image-revision.selectors";
-import { Actions, ofType } from "@ngrx/effects";
-import { AppActionTypes } from "@app/store/actions/app.actions";
+import { Actions } from "@ngrx/effects";
 
 @Component({
   selector: "astrobin-image",
@@ -47,6 +46,9 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
 
   @Input()
   autoHeight = true;
+
+  @Input()
+  autoLoadRevisions = true;
 
   @Output()
   loaded = new EventEmitter();
@@ -128,7 +130,10 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
       });
 
     this.store$.dispatch(new LoadImage(this.id));
-    this.store$.dispatch(new LoadImageRevisions({ imageId: this.id }));
+
+    if (this.autoLoadRevisions) {
+      this.store$.dispatch(new LoadImageRevisions({ imageId: this.id }));
+    }
   }
 
   onLoad(event) {
