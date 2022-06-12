@@ -184,7 +184,6 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
   }
 
   getItems() {
-    this._setLocation();
     this.items$ = this.equipmentApiService.getAllEquipmentItems(this._activeType, this.page, this.sortOrder).pipe(
       tap(response => {
         const uniqueBrands: BrandInterface["id"][] = [];
