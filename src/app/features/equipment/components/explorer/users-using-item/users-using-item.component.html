@@ -1,7 +1,7 @@
 <h5 class="mb-4">{{ "Astrophotographers who have used this equipment item" | translate }}</h5>
 
-<div *ngIf="users !== undefined; else loading" class="objects-using">
-  <ng-container *ngIf="users.length > 0; else noUsers">
+<div *ngIf="!loadingService.isLoading(); else loading" class="objects-using">
+  <ng-container *ngIf="users?.length > 0; else noUsers">
     <astrobin-avatar *ngFor="let user of users" [user]="user"></astrobin-avatar>
   </ng-container>
   <ng-template #noUsers>
