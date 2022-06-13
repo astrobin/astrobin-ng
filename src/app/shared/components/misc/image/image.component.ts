@@ -108,32 +108,35 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
 
     this.loading = true;
 
-    this.store$
-      .select(selectImage, this.id)
-      .pipe(
-        filter(image => !!image),
-        take(1),
-        switchMap(image =>
-          this.store$.select(selectImageRevisionsForImage, this.id).pipe(
-            take(1),
-            map(() => image)
-          )
-        ),
-        switchMap(image => this._loadRevision(image).pipe(map(revision => ({ image, revision }))))
-      )
-      .subscribe(({ image, revision }) => {
-        this.image = image;
-        const w = !!revision ? revision.w : image.w;
-        const h = !!revision ? revision.h : image.h;
-        this._setWidthAndHeight(w, h);
-        this._loadThumbnail();
-      });
+    // 100-200 ms
+    setTimeout(() => {
+      this.store$
+        .select(selectImage, this.id)
+        .pipe(
+          filter(image => !!image),
+          take(1),
+          switchMap(image =>
+            this.store$.select(selectImageRevisionsForImage, this.id).pipe(
+              take(1),
+              map(() => image)
+            )
+          ),
+          switchMap(image => this._loadRevision(image).pipe(map(revision => ({ image, revision }))))
+        )
+        .subscribe(({ image, revision }) => {
+          this.image = image;
+          const w = !!revision ? revision.w : image.w;
+          const h = !!revision ? revision.h : image.h;
+          this._setWidthAndHeight(w, h);
+          this._loadThumbnail();
+        });
 
-    this.store$.dispatch(new LoadImage(this.id));
+      this.store$.dispatch(new LoadImage(this.id));
 
-    if (this.autoLoadRevisions) {
-      this.store$.dispatch(new LoadImageRevisions({ imageId: this.id }));
-    }
+      if (this.autoLoadRevisions) {
+        this.store$.dispatch(new LoadImageRevisions({ imageId: this.id }));
+      }
+    }, Math.floor(Math.random() * 100) + 100);
   }
 
   onLoad(event) {
