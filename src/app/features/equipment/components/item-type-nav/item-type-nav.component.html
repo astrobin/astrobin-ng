@@ -2,18 +2,19 @@
   <li *ngFor="let type of types" [ngbNavItem]="type.value.toLowerCase()" [disabled]="type.disabled">
     <a ngbNavLink routerLink="{{ routingBasePath }}/{{ type.value.toLowerCase() }}" [queryParams]="{'page': 1}">
       <img src="/assets/images/{{ type.value.toLowerCase() }}-placeholder.png" alt="{{ type.label }}" />
-      <ng-container *ngIf="!collapsed">
+      <span [hidden]="collapsed">
         {{ type.label }}
-      </ng-container>
+      </span>
 
-      <span *ngIf="type.count && !collapsed" class="count">
+      <span *ngIf="type.count" [hidden]="collapsed" class="count">
       {{ type.count | async }}
       </span>
     </a>
 
 
     <ul
-      *ngIf="!collapsed && activeType === type.value.toLowerCase() && showSubNavigation"
+      *ngIf="activeType === type.value.toLowerCase() && showSubNavigation"
+      [hidden]="collapsed"
       ngbNav
       #subnav="ngbNav"
       [(activeId)]="activeSubNav"
