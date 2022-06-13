@@ -5,7 +5,7 @@
         <astrobin-username [user]="editProposalBy$ | async" linkTarget="_blank"></astrobin-username>
       </span>
       <span class="col-2 d-none d-lg-inline changes">{{ changes.length }}</span>
-      <span class="col-3 status" [class]="editProposal.editProposalReviewStatus?.toLowerCase() || 'pending'">
+      <span class="col-4 col-lg-3 status" [class]="editProposal.editProposalReviewStatus?.toLowerCase() || 'pending'">
         {{ reviewStatusText }}
       </span>
       <span class="col-3 d-none d-lg-inline timeago">{{ editProposal.created | localDate | timeago: true }}</span>

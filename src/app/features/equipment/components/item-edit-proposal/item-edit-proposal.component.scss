@@ -1,3 +1,5 @@
+@import "../../../../styles/breakpoints";
+
 :host {
   position: relative;
   display: block;
@@ -11,17 +13,19 @@
   padding: .25rem 1rem;
   cursor: pointer;
 
-  &::after {
-    content: "";
-    position: absolute;
-    right: .5rem;
-    top: calc(1rem - 2px);
-    width: 0;
-    height: 0;
-    border-left: 4px solid transparent;
-    border-right: 4px solid transparent;
-    border-top: 6px solid var(--lighterGrey);
-    clear: both;
+  @media (min-width: $lg-min) {
+    &::after {
+      content: "";
+      position: absolute;
+      right: .5rem;
+      top: calc(1rem - 2px);
+      width: 0;
+      height: 0;
+      border-left: 4px solid transparent;
+      border-right: 4px solid transparent;
+      border-top: 6px solid var(--lighterGrey);
+      clear: both;
+    }
   }
 
   &.opened {
