@@ -94,8 +94,10 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
   }
 
   _setParams() {
-    this.activeId = parseInt(this.activatedRoute.snapshot.paramMap.get("itemId"), 10);
     this.page = parseInt(this.activatedRoute.snapshot.queryParamMap.get("page"), 10) || 1;
+    this.activeId = parseInt(this.activatedRoute.snapshot.paramMap.get("itemId"), 10);
+    this.enableNavCollapsing = !!this.activeId;
+    this.navCollapsed = !!this.activeId;
   }
 
   _setLocation() {
@@ -176,6 +178,9 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
 
   onSelectedItemChanged(item: EquipmentItemBaseInterface) {
     this.activeId = !!item ? item.id : null;
+    this.enableNavCollapsing = !!this.activeId;
+    this.navCollapsed = !!this.activeId;
+
     this._setLocation();
   }
 
