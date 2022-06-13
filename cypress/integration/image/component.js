@@ -12,6 +12,6 @@ context("Image component", () => {
     cy.wait("@getImage");
     cy.get(".astrobin-image")
       .should("have.attr", "src")
-      .and("contain", "blob:http://localhost:4400/");
+      .and("contain", "assets/test/images/regular.jpg");
   });
 });
