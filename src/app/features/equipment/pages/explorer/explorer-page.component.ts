@@ -116,7 +116,7 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
             url = UtilsService.addOrUpdateUrlParam(url, "sort", this.sortOrder);
           }
 
-          this.location.replaceState(url);
+          this.location.go(url);
           return;
         }
 
@@ -163,7 +163,7 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
             `/${this.activeType.toLowerCase()}/${item.id}/`
           ) === -1
         ) {
-          this.location.replaceState(`/equipment/explorer/${this.activeType.toLowerCase()}/${item.id}/${slug}${hash}`);
+          this.location.go(`/equipment/explorer/${this.activeType.toLowerCase()}/${item.id}/${slug}${hash}`);
         }
       }, 100);
     };
