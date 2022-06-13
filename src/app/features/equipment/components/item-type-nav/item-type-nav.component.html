@@ -4,12 +4,13 @@
       <img src="/assets/images/{{ type.value.toLowerCase() }}-placeholder.png" alt="{{ type.label }}" />
       <ng-container *ngIf="!collapsed">
         {{ type.label }}
-
       </ng-container>
-    </a>
-    <span *ngIf="!collapsed && type.count && (!showSubNavigation || activeType !== type.value.toLowerCase())" class="count">
+
+      <span *ngIf="type.count" class="count">
       {{ type.count | async }}
-    </span>
+      </span>
+    </a>
+
 
     <ul
       *ngIf="!collapsed && activeType === type.value.toLowerCase() && showSubNavigation"
