@@ -9,6 +9,10 @@
         .ng-option {
           padding: 1rem !important;
 
+          h5 {
+            margin: 0;
+          }
+
           &:not(:last-child) {
             border-bottom: 1px dashed var(--gray);
           }
