@@ -27,6 +27,7 @@ import { debounceTime, distinctUntilChanged, filter, map, switchMap, take, takeU
 import { fromEvent, Observable, of } from "rxjs";
 import { selectImageRevisionsForImage } from "@app/store/selectors/app/image-revision.selectors";
 import { Actions } from "@ngrx/effects";
+import { ImageThumbnailInterface } from "@shared/interfaces/image-thumbnail.interface";
 
 @Component({
   selector: "astrobin-image",
@@ -165,6 +166,16 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
   }
 
   private _loadThumbnail() {
+    const preRenderedThumbnails: ImageThumbnailInterface[] = this.image.thumbnails
+      ? this.image.thumbnails.filter(thumbnail => thumbnail.alias === this.alias)
+      : [];
+
+    if (preRenderedThumbnails.length > 0) {
+      this.thumbnailUrl = preRenderedThumbnails[0].url;
+      this.loading = false;
+      return;
+    }
+
     this.store$
       .select(selectThumbnail, {
         id: this.id,
