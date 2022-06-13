@@ -6,7 +6,7 @@
         {{ type.label }}
       </ng-container>
 
-      <span *ngIf="type.count" class="count">
+      <span *ngIf="type.count && !collapsed" class="count">
       {{ type.count | async }}
       </span>
     </a>
