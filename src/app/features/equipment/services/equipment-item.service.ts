@@ -62,8 +62,8 @@ export class EquipmentItemService extends BaseService {
   }
 
   getFullDisplayName$(item: EquipmentItem): Observable<string> {
-    this.store$.dispatch(new LoadBrand({ id: item.brand }));
     if (!!item.brand) {
+      this.store$.dispatch(new LoadBrand({ id: item.brand }));
       return this.store$.select(selectBrand, item.brand).pipe(
         filter(brand => !!brand),
         take(1),

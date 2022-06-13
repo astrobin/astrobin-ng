@@ -3,7 +3,7 @@ import { BaseClassicApiService } from "@shared/services/api/classic/base-classic
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { EMPTY, forkJoin, Observable, of } from "rxjs";
+import { EMPTY, Observable, of } from "rxjs";
 import {
   EquipmentItemBaseInterface,
   EquipmentItemReviewerRejectionReason,
@@ -15,7 +15,7 @@ import { catchError, map, switchMap, take } from "rxjs/operators";
 import { BrandInterface } from "@features/equipment/types/brand.interface";
 import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
 import { CommonApiService } from "@shared/services/api/classic/common/common-api.service";
-import { CameraInterface, CameraType } from "@features/equipment/types/camera.interface";
+import { CameraInterface } from "@features/equipment/types/camera.interface";
 import { SensorInterface } from "@features/equipment/types/sensor.interface";
 import { TelescopeInterface } from "@features/equipment/types/telescope.interface";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
@@ -652,6 +652,10 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
 
   private _createItem<T extends EquipmentItemBaseInterface>(item: Omit<T, "id">, path: string): Observable<T> {
     const { image, ...itemWithoutImage } = item;
+
+    if (itemWithoutImage.diy) {
+      itemWithoutImage.brand = null;
+    }
 
     return new Observable<T>(observer => {
       this.http

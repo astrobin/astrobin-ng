@@ -123,6 +123,7 @@
         <ng-container
           *ngIf="
             (currentUser | isEquipmentModerator) &&
+            !!selectedItem.brand &&
             selectedItem.reviewerDecision === null &&
             selectedItem.createdBy !== currentUser.id
           "
@@ -288,7 +289,7 @@
   </div>
 </ng-container>
 
-<ng-container *ngIf="selectedItem && !selectedItem.reviewerDecision">
+<ng-container *ngIf="selectedItem && !selectedItem.reviewerDecision && !!selectedItem.brand">
   <div *ngIf="contentType$ | async as contentType" class="comments mt-3">
     <astrobin-nested-comments
       [contentType]="contentType"
