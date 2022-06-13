@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from "@angular/core";
+import { Component, EventEmitter, HostListener, Input, OnChanges, OnInit, Output, SimpleChanges } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
@@ -11,6 +11,7 @@ import { EquipmentItemType } from "@features/equipment/types/equipment-item-base
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { EquipmentActionTypes } from "@features/equipment/store/equipment.actions";
+import { WindowRefService } from "@shared/services/window-ref.service";
 
 @Component({
   selector: "astrobin-equipment-item-type-nav",
@@ -29,6 +30,12 @@ export class ItemTypeNavComponent extends BaseComponentDirective implements OnIn
 
   @Input()
   routingBasePath = "/equipment/explorer";
+
+  @Input()
+  enableCollapsing = false;
+
+  @Input()
+  collapsed = false;
 
   @Input()
   cameraCount: Observable<number | null> = null;
@@ -65,6 +72,9 @@ export class ItemTypeNavComponent extends BaseComponentDirective implements OnIn
   softwarePendingReviewCount: Observable<number | null> = null;
   softwarePendingEditCount: Observable<number | null> = null;
 
+  @Output()
+  collapsedChanged = new EventEmitter<boolean>();
+
   types: {
     label: string;
     value: EquipmentItemType;
@@ -78,6 +88,24 @@ export class ItemTypeNavComponent extends BaseComponentDirective implements OnIn
   activeType = this.activatedRoute.snapshot.paramMap.get("itemType");
   activeSubNav = "";
 
+  @HostListener("mouseover") onMouseHover() {
+    if (!this.enableCollapsing) {
+      return;
+    }
+
+    this.collapsed = false;
+    this.collapsedChanged.emit(this.collapsed);
+  }
+
+  @HostListener("mouseleave") onMouseLeave() {
+    if (!this.enableCollapsing) {
+      return;
+    }
+
+    this.collapsed = true;
+    this.collapsedChanged.emit(this.collapsed);
+  }
+
   constructor(
     public readonly store$: Store<State>,
     public readonly actions$: Actions,
@@ -85,12 +113,14 @@ export class ItemTypeNavComponent extends BaseComponentDirective implements OnIn
     public readonly router: Router,
     public readonly translateService: TranslateService,
     public readonly equipmentApiService: EquipmentApiService,
-    public readonly loadingService: LoadingService
+    public readonly loadingService: LoadingService,
+    public readonly windowRefService: WindowRefService
   ) {
     super(store$);
   }
 
   ngOnInit() {
+    this._initCollapsed();
     this._setActiveSubNav(this.activatedRoute.snapshot.url.join("/"));
     this._initRouterEvents();
     this._initActionListeners();
@@ -99,6 +129,8 @@ export class ItemTypeNavComponent extends BaseComponentDirective implements OnIn
   }
 
   ngOnChanges(changes: SimpleChanges) {
+    this._initCollapsed();
+
     if (!this.types) {
       return;
     }
@@ -130,6 +162,15 @@ export class ItemTypeNavComponent extends BaseComponentDirective implements OnIn
     if (changes.softwareCount) {
       this.types.find(type => type.value === EquipmentItemType.SOFTWARE).count = changes.softwareCount.currentValue;
     }
+  }
+
+  _initCollapsed() {
+    let isTouchDevice: boolean;
+
+    const document = this.windowRefService.nativeWindow.document;
+    isTouchDevice = document && "ontouchend" in document;
+
+    this.collapsed = this.enableCollapsing && !isTouchDevice && this.windowRefService.nativeWindow.outerWidth > 767;
   }
 
   _setActiveSubNav(url: string) {

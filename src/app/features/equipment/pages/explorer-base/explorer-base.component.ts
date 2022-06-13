@@ -19,6 +19,8 @@ export class ExplorerBaseComponent extends BaseComponentDirective implements OnI
   public page = 1;
   activeEditProposalId: EditProposalInterface<EquipmentItemBaseInterface>["id"];
   items$: Observable<PaginatedApiResultInterface<EquipmentItemBaseInterface>>;
+  navCollapsed = false;
+  enableNavCollapsing = false;
 
   constructor(
     public readonly store$: Store<State>,

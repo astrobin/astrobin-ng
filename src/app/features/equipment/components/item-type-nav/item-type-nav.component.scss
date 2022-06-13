@@ -4,10 +4,20 @@
   @media screen and (max-width: $md-max) {
     margin-bottom: 3rem;
   }
+
+  &.collapsed {
+    .nav-link {
+      &.active,
+      &:hover {
+        background-color: transparent;
+      }
+    }
+  }
 }
 
 .nav-item {
   position: relative;
+  min-height: 3rem;
 
   &:not(:last-child) {
     margin-bottom: .25rem;
