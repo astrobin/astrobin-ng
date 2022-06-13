@@ -31,6 +31,7 @@ import { Actions, ofType } from "@ngrx/effects";
 import { ApproveEditProposalModalComponent } from "@features/equipment/components/approve-edit-proposal-modal/approve-edit-proposal-modal.component";
 import { LoadContentType } from "@app/store/actions/content-type.actions";
 import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
+import { selectContentType } from "@app/store/selectors/app/content-type.selectors";
 
 @Component({
   selector: "astrobin-item-edit-proposal",
@@ -120,7 +121,12 @@ export class ItemEditProposalComponent extends BaseComponentDirective implements
   }
 
   get contentType$(): Observable<ContentTypeInterface | null> {
-    return super.getContentType$("astrobin_apps_equipment", `${this.type.toLowerCase()}editproposal`);
+    return this.store$
+      .select(selectContentType, {
+        appLabel: "astrobin_apps_equipment",
+        model: `${this.type.toLowerCase()}editproposal`
+      })
+      .pipe(filter(contentType => !!contentType));
   }
 
   ngOnInit(): void {

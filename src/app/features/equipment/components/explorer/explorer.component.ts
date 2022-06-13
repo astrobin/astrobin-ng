@@ -44,6 +44,10 @@ import { MountInterface } from "@features/equipment/types/mount.interface";
 import { FilterInterface } from "@features/equipment/types/filter.interface";
 import { AccessoryInterface } from "@features/equipment/types/accessory.interface";
 import { SoftwareInterface } from "@features/equipment/types/software.interface";
+import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
+import { Observable } from "rxjs";
+import { selectContentType } from "@app/store/selectors/app/content-type.selectors";
+import { LoadContentType } from "@app/store/actions/content-type.actions";
 
 @Component({
   selector: "astrobin-equipment-explorer",
@@ -90,6 +94,23 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
   editProposals: EditProposalInterface<EquipmentItemBaseInterface>[] | null = null;
   editProposalsCollapsed = true;
 
+  commentsSectionInfoMessage$: Observable<string> = this.currentUser$.pipe(
+    take(1),
+    switchMap(user => {
+      if (user.id === this.selectedItem.createdBy) {
+        return this.translateService.stream(
+          "This comment section is only visible to you and AstroBin equipment moderators, and only while this " +
+            "equipment item is unapproved."
+        );
+      }
+
+      return this.translateService.stream(
+        "This comment section is only visible to AstroBin equipment moderators and the user who created this item, " +
+          "and only while this equipment item is unapproved."
+      );
+    })
+  );
+
   @ViewChild("itemBrowser")
   private _itemBrowser: ItemBrowserComponent;
 
@@ -112,6 +133,12 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
 
   get proposeEditButtonDisabled(): boolean {
     return !this.editForm.valid;
+  }
+
+  get contentType$(): Observable<ContentTypeInterface | null> {
+    return this.store$
+      .select(selectContentType, { appLabel: "astrobin_apps_equipment", model: `${this.activeType.toLowerCase()}` })
+      .pipe(filter(contentType => !!contentType));
   }
 
   ngOnInit() {
@@ -303,6 +330,9 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
 
   setItem(item: EquipmentItemBaseInterface | null) {
     this.selectedItem = item;
+
+    const type = this.equipmentItemService.getType(item);
+    this.store$.dispatch(new LoadContentType({ appLabel: "astrobin_apps_equipment", model: `${type.toLowerCase()}` }));
 
     if (!!item?.brand) {
       this.store$.dispatch(new LoadBrand({ id: item.brand }));
