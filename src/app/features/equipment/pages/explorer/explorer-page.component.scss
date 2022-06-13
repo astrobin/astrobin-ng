@@ -14,3 +14,13 @@
     }
   }
 }
+
+.coming-soon {
+  margin-top: 3rem;
+  text-align: center;
+  padding: 2rem;
+  background: rgba(255,255,255, .025);
+  border: 1px dashed rgba(255, 255, 255, .15);
+  color: var(--lighterGrey);
+  opacity: .66;
+}
