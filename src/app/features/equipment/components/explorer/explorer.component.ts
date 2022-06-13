@@ -331,8 +331,15 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
   setItem(item: EquipmentItemBaseInterface | null) {
     this.selectedItem = item;
 
-    const type = this.equipmentItemService.getType(item);
-    this.store$.dispatch(new LoadContentType({ appLabel: "astrobin_apps_equipment", model: `${type.toLowerCase()}` }));
+    if (!!item) {
+      const type = this.equipmentItemService.getType(item);
+      this.store$.dispatch(
+        new LoadContentType({
+          appLabel: "astrobin_apps_equipment",
+          model: `${type.toLowerCase()}`
+        })
+      );
+    }
 
     if (!!item?.brand) {
       this.store$.dispatch(new LoadBrand({ id: item.brand }));

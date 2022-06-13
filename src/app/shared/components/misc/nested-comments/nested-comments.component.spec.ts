@@ -6,13 +6,18 @@ import { AppModule } from "@app/app.module";
 import { provideMockStore } from "@ngrx/store/testing";
 import { initialState } from "@app/store/state";
 import { ContentTypeGenerator } from "@shared/generators/content-type.generator";
+import { provideMockActions } from "@ngrx/effects/testing";
+import { ReplaySubject } from "rxjs";
 
 describe("NestedCommentsComponent", () => {
   let component: NestedCommentsComponent;
   let fixture: ComponentFixture<NestedCommentsComponent>;
 
   beforeEach(async () => {
-    await MockBuilder(NestedCommentsComponent, AppModule).provide([provideMockStore({ initialState })]);
+    await MockBuilder(NestedCommentsComponent, AppModule).provide([
+      provideMockStore({ initialState }),
+      provideMockActions(() => new ReplaySubject<any>())
+    ]);
   });
 
   beforeEach(() => {
