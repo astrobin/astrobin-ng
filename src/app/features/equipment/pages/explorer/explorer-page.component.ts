@@ -130,6 +130,16 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
           );
         }
 
+        if (
+          this.activatedRoute.snapshot.queryParamMap.get("request-review") === "true" &&
+          item &&
+          !!item.reviewerDecision
+        ) {
+          this.popNotificationsService.warning(
+            this.translateService.instant("This item has already been approved by you or another moderator.")
+          );
+        }
+
         let slug = UtilsService.slugify(
           `${!!brand ? brand.name : this.translateService.instant("(DIY)")} ${item.name}`
         );
