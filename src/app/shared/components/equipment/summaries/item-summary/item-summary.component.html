@@ -16,6 +16,13 @@
       <div class="label">
         <h5>
           <astrobin-equipment-item-display-name [item]="item"></astrobin-equipment-item-display-name>
+          <a
+            *ngIf="showViewLink"
+            [routerLink]="['/equipment/explorer', item.klass.toLowerCase(), item.id]"
+             class="ml-2 btn btn-outline-primary btn-sm"
+          >
+            {{ "View" | translate }}
+          </a>
         </h5>
         <h6 *ngIf="showProperties && !!item.website" class="website">
           <a target="_blank" [href]="item.website">{{ UtilsService.shortenUrl(item.website) }}</a>
@@ -61,6 +68,7 @@
           [showProperties]="showProperties"
           [showEmptyProperties]="showEmptyProperties"
           [showMeta]="false"
+          [showViewLink]="true"
         ></astrobin-equipment-item-summary>
       </div>
     </div>
