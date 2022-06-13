@@ -109,7 +109,7 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
 
     this.loading = true;
 
-    // 100-200 ms
+    // 0-200 ms
     setTimeout(() => {
       this.store$
         .select(selectImage, this.id)
@@ -137,7 +137,7 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
       if (this.autoLoadRevisions) {
         this.store$.dispatch(new LoadImageRevisions({ imageId: this.id }));
       }
-    }, Math.floor(Math.random() * 100) + 100);
+    }, Math.floor(Math.random() * 200));
   }
 
   onLoad(event) {
@@ -171,8 +171,14 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
       : [];
 
     if (preRenderedThumbnails.length > 0) {
-      this.thumbnailUrl = preRenderedThumbnails[0].url;
-      this.loading = false;
+      this.imageService
+        .loadImageFile(preRenderedThumbnails[0].url, (progress: number) => {
+          this.progress = progress;
+        })
+        .subscribe(url => {
+          this.thumbnailUrl = preRenderedThumbnails[0].url;
+          this.loading = false;
+        });
       return;
     }
 
