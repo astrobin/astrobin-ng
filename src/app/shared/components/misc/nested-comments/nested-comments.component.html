@@ -1,4 +1,5 @@
-<div class="nested-comments card" *ngIf="comments$ | async as comments; else loadingTpl">
+<div class="nested-comments card" *ngIf="comments$ | async as comments">
+
   <div class="card-header">
     {{ "Comments" | translate }}
 
@@ -8,20 +9,27 @@
   </div>
 
   <div class="card-body">
+
     <p class="alert alert-info" *ngIf="!!info">
       <fa-icon icon="info-circle"></fa-icon>
       <span [innerHTML]="info"></span>
     </p>
 
     <ng-container *ngIf="showTopLevelForm" [ngTemplateOutlet]="topLevelFormTpl"></ng-container>
+
     <ng-container *ngIf="!showTopLevelForm" [ngTemplateOutlet]="addCommentButtonTpl"></ng-container>
-    <ng-container
-      *ngFor="let comment of comments"
-      [ngTemplateOutlet]="commentsTpl"
-      [ngTemplateOutletContext]="{comment}"
-    ></ng-container>
-    <ng-container *ngIf="comments.length === 0" [ngTemplateOutlet]="noCommentsTpl"></ng-container>
+
+    <ng-container *ngIf="!loadingComments; else loadingTpl">
+      <ng-container
+        *ngFor="let comment of comments"
+        [ngTemplateOutlet]="commentsTpl"
+        [ngTemplateOutletContext]="{comment}"
+      ></ng-container>
+      <ng-container *ngIf="comments.length === 0" [ngTemplateOutlet]="noCommentsTpl"></ng-container>
+    </ng-container>
+
   </div>
+
 </div>
 
 <ng-template #loadingTpl>

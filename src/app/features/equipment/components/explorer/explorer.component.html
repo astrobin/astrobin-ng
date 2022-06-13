@@ -287,3 +287,13 @@
     </div>
   </div>
 </ng-container>
+
+<ng-container *ngIf="selectedItem && !selectedItem.reviewerDecision">
+  <div *ngIf="contentType$ | async as contentType" class="comments mt-3">
+    <astrobin-nested-comments
+      [contentType]="contentType"
+      [objectId]="selectedItem.id"
+      [info]="commentsSectionInfoMessage$ | async"
+    ></astrobin-nested-comments>
+  </div>
+</ng-container>

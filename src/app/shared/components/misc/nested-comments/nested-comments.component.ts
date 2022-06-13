@@ -34,6 +34,7 @@ export class NestedCommentsComponent extends BaseComponentDirective implements O
   info: string;
 
   comments$: Observable<NestedCommentInterface[]>;
+  loadingComments = true;
   model: { topLevelComment: string };
   form = new FormGroup({});
   fields: FormlyFieldConfig[];
@@ -58,6 +59,9 @@ export class NestedCommentsComponent extends BaseComponentDirective implements O
   refresh() {
     this.loadingService.setLoading(true);
     this.store$.dispatch(new LoadNestedComments({ contentTypeId: this.contentType.id, objectId: this.objectId }));
+    this.actions$
+      .pipe(ofType(AppActionTypes.LOAD_NESTED_COMMENTS_SUCCESS), take(1))
+      .subscribe(() => (this.loadingComments = false));
   }
 
   cancelTopLevelComment() {

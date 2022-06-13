@@ -18,6 +18,7 @@ import { UtilsService } from "@shared/services/utils/utils.service";
 import { Location } from "@angular/common";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 import { CameraInterface, CameraType } from "@features/equipment/types/camera.interface";
+import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 
 enum ExplorerPageSortOrder {
   AZ = "az",
@@ -51,7 +52,8 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
     public readonly windowRefService: WindowRefService,
     public readonly equipmentApiService: EquipmentApiService,
     public readonly location: Location,
-    public readonly equipmentItemService: EquipmentItemService
+    public readonly equipmentItemService: EquipmentItemService,
+    public readonly popNotificationsService: PopNotificationsService
   ) {
     super(store$, actions$, activatedRoute, router, windowRefService);
   }
@@ -62,6 +64,7 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
     this._setTitle();
     this._setBreadcrumb();
     this._setParams();
+    this._setLocation();
 
     this.router.events
       .pipe(
@@ -115,6 +118,16 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
           return;
         }
 
+        const hash = this.windowRefService.nativeWindow.location.hash;
+
+        if (hash?.indexOf("#c") > -1 && !!item.reviewerDecision) {
+          this.popNotificationsService.warning(
+            this.translateService.instant(
+              "The comment section for this item is not available anymore, because it's been already approved."
+            )
+          );
+        }
+
         let slug = UtilsService.slugify(
           `${!!brand ? brand.name : this.translateService.instant("(DIY)")} ${item.name}`
         );
@@ -138,7 +151,7 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
             `/${this.activeType.toLowerCase()}/${item.id}/`
           ) === -1
         ) {
-          this.location.replaceState(`/equipment/explorer/${this.activeType.toLowerCase()}/${item.id}/${slug}`);
+          this.location.replaceState(`/equipment/explorer/${this.activeType.toLowerCase()}/${item.id}/${slug}${hash}`);
         }
       }, 100);
     };
