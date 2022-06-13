@@ -264,6 +264,7 @@ export class SettingsPageComponent extends BaseComponentDirective implements OnI
       case "equipment-edit-proposal-rejected":
       case "equipment-item-migration-approved":
       case "equipment-item-migration-rejected":
+      case "new_comment_to_unapproved_equipment_item":
         return NotificationCategory.EQUIPMENT;
     }
 
