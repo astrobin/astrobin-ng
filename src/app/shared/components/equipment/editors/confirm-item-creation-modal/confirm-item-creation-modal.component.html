@@ -28,7 +28,12 @@
       {{ "Item summary" | translate }}
     </div>
     <div class="card-body">
-      <astrobin-equipment-item-summary [item]="item" [showImage]="false"></astrobin-equipment-item-summary>
+      <astrobin-equipment-item-summary
+        [item]="item"
+        [showImage]="false"
+        [showStats]="false"
+      >
+      </astrobin-equipment-item-summary>
       <div *ngIf="showModifiedCameraCreationNotice" class="alert alert-info mt-3 mb-0">
         <strong>
           <fa-icon icon="info-circle"></fa-icon>

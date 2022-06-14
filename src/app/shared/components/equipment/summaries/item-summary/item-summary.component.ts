@@ -65,6 +65,9 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
   showMeta = false;
 
   @Input()
+  showStats = true;
+
+  @Input()
   showViewLink = false;
 
   brand: BrandInterface;
