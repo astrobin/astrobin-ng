@@ -50,6 +50,7 @@
 
       <div class="card-body">
         <astrobin-camera-editor
+          #editor
           *ngIf="type === EquipmentItemType.CAMERA"
           [form]="creationForm"
           [model]="creationModel"
@@ -59,6 +60,7 @@
         ></astrobin-camera-editor>
 
         <astrobin-sensor-editor
+          #editor
           *ngIf="type === EquipmentItemType.SENSOR"
           [form]="creationForm"
           [model]="creationModel"
@@ -68,6 +70,7 @@
         ></astrobin-sensor-editor>
 
         <astrobin-telescope-editor
+          #editor
           *ngIf="type === EquipmentItemType.TELESCOPE"
           [form]="creationForm"
           [model]="creationModel"
@@ -77,6 +80,7 @@
         ></astrobin-telescope-editor>
 
         <astrobin-mount-editor
+          #editor
           *ngIf="type === EquipmentItemType.MOUNT"
           [form]="creationForm"
           [model]="creationModel"
@@ -86,6 +90,7 @@
         ></astrobin-mount-editor>
 
         <astrobin-filter-editor
+          #editor
           *ngIf="type === EquipmentItemType.FILTER"
           [form]="creationForm"
           [model]="creationModel"
@@ -95,6 +100,7 @@
         ></astrobin-filter-editor>
 
         <astrobin-accessory-editor
+          #editor
           *ngIf="type === EquipmentItemType.ACCESSORY"
           [form]="creationForm"
           [model]="creationModel"
@@ -104,6 +110,7 @@
         ></astrobin-accessory-editor>
 
         <astrobin-software-editor
+          #editor
           *ngIf="type === EquipmentItemType.SOFTWARE"
           [form]="creationForm"
           [model]="creationModel"

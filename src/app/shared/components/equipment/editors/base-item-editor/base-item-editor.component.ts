@@ -292,6 +292,8 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
                   this.model.brand = null;
                   this.form.get("brand").setValue(null);
                 }
+
+                this.form.get("name").updateValueAndValidity({ emitEvent: false });
               })
             )
             .subscribe();
@@ -366,6 +368,8 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
                       this._validateBrandInName();
                       this._similarItemSuggestion();
                       this._othersInBrand();
+
+                      this.form.get("name").updateValueAndValidity({ emitEvent: false });
                     })
                   );
                 }
@@ -421,7 +425,7 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
               ...this.form.value
             } as EquipmentItemBaseInterface);
 
-            if (!!this.model.brand || !!control.value) {
+            if (!this.model.brand || !control.value) {
               return of(true);
             }
 
