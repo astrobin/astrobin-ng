@@ -170,7 +170,9 @@ export class ItemTypeNavComponent extends BaseComponentDirective implements OnIn
     const document = this.windowRefService.nativeWindow.document;
     isTouchDevice = document && "ontouchend" in document;
 
-    this.collapsed = this.enableCollapsing && !isTouchDevice && this.windowRefService.nativeWindow.outerWidth > 767;
+    this.collapsed = this.enableCollapsing && !isTouchDevice && this.windowRefService.nativeWindow.innerWidth > 767;
+
+    this.collapsedChanged.emit(this.collapsed);
   }
 
   _setActiveSubNav(url: string) {
