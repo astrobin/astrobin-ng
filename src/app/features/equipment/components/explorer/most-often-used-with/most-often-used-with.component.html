@@ -13,7 +13,7 @@
             <a [routerLink]="['/equipment/explorer', entry.item.klass.toLowerCase(), entry.item.id]">
               <astrobin-equipment-item-display-name
                 [item]="entry.item"
-                [ngbTooltip]="'{{0}} images' | translate:{'0': entry.imageCount}"
+                [ngbTooltip]="'{{0}} images in common' | translate:{'0': entry.imageCount}"
               ></astrobin-equipment-item-display-name>
             </a>
           </td>
