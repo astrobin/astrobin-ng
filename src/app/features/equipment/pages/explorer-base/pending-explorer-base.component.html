@@ -9,6 +9,12 @@
 
     <div class="col">
       <ng-container *ngIf="items$ | async as items; else loading">
+        <div *ngIf="pendingType === PendingType.PENDING_EDIT" class="alert alert-info">
+          <fa-icon icon="info-circle"></fa-icon>
+          {{ "The AstroBin equipment database is a collective community effort similar to Wikipedia." | translate }}
+          {{ "Anybody can review edit proposals made by any other member." | translate }}
+          {{ "Feel free to contribute!" | translate }}
+        </div>
         <ng-container *ngFor="let item of items.results">
           <astrobin-equipment-explorer
             [enableBrowser]="false"

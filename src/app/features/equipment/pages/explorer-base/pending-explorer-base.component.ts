@@ -6,11 +6,19 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { ExplorerBaseComponent } from "@features/equipment/pages/explorer-base/explorer-base.component";
 import { WindowRefService } from "@shared/services/window-ref.service";
 
+export enum PendingType {
+  PENDING_EDIT = "PENDING_EDIT",
+  PENDING_REVIEW = "PENDING_REVIEW"
+}
+
 @Component({
   selector: "astrobin-equipment-pending-explorer-base",
   templateUrl: "./pending-explorer-base.component.html"
 })
 export class PendingExplorerBaseComponent extends ExplorerBaseComponent {
+  readonly PendingType = PendingType;
+  pendingType: PendingType;
+
   constructor(
     public readonly store$: Store<State>,
     public readonly actions$: Actions,

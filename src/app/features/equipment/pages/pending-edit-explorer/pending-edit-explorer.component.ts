@@ -10,7 +10,10 @@ import { EquipmentApiService } from "@features/equipment/services/equipment-api.
 import { tap } from "rxjs/operators";
 import { LoadBrand } from "@features/equipment/store/equipment.actions";
 import { BrandInterface } from "@features/equipment/types/brand.interface";
-import { PendingExplorerBaseComponent } from "@features/equipment/pages/explorer-base/pending-explorer-base.component";
+import {
+  PendingExplorerBaseComponent,
+  PendingType
+} from "@features/equipment/pages/explorer-base/pending-explorer-base.component";
 import { WindowRefService } from "@shared/services/window-ref.service";
 
 @Component({
@@ -32,6 +35,7 @@ export class PendingEditExplorerComponent extends PendingExplorerBaseComponent i
     public readonly windowRefService: WindowRefService
   ) {
     super(store$, actions$, activatedRoute, router, windowRefService);
+    this.pendingType = PendingType.PENDING_EDIT;
   }
 
   ngOnInit() {
