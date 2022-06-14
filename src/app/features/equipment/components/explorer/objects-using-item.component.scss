@@ -12,7 +12,7 @@ h5 {
 astrobin-avatar,
 astrobin-image {
   display: inline-block;
-  width: calc(10% - .25rem);
+  width: calc(20% - .25rem);
   margin-right: .25rem;
   transition: transform .1s ease-in-out;
 
@@ -22,6 +22,14 @@ astrobin-image {
 
   @media screen and (max-width: $md-max) {
     width: calc(20% - .25rem);
+  }
+}
+
+astrobin-image {
+  width: calc(12.5% - .25rem);
+
+  @media screen and (max-width: $md-max) {
+    width: calc(16.666667% - .25rem);
   }
 }
 

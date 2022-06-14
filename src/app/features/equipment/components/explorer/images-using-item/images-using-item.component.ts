@@ -19,7 +19,7 @@ import { Observable } from "rxjs";
   styleUrls: ["../objects-using-item.component.scss"]
 })
 export class ImagesUsingItemComponent extends BaseComponentDirective implements OnChanges, OnInit {
-  readonly MAX_IMAGES = 50;
+  readonly MAX_IMAGES = 24;
   readonly ImageAlias = ImageAlias;
 
   @Input()
@@ -53,7 +53,7 @@ export class ImagesUsingItemComponent extends BaseComponentDirective implements 
       )
       .subscribe(imagesUsingEquipmentItem => {
         this.images = imagesUsingEquipmentItem.images.slice(0, this.MAX_IMAGES);
-        this.hasMoreImages = imagesUsingEquipmentItem.images.length >= this.MAX_IMAGES;
+        this.hasMoreImages = imagesUsingEquipmentItem.images.length > this.MAX_IMAGES;
       });
 
     this.store$
