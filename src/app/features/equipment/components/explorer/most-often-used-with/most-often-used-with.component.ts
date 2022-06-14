@@ -49,9 +49,14 @@ export class MostOftenUsedWithComponent extends BaseComponentDirective implement
           return;
         }
 
-        this.mostOftenUsedWith = [];
+        const keys: string[] = Object.keys(data);
 
-        for (const key of Object.keys(data)) {
+        if (keys.length === 0) {
+          this.mostOftenUsedWith = [];
+          return;
+        }
+
+        for (const key of keys) {
           const [type, id] = key.split("-");
           const itemData = { type: type as EquipmentItemType, id: parseInt(id, 10) };
           this.store$
@@ -60,7 +65,13 @@ export class MostOftenUsedWithComponent extends BaseComponentDirective implement
               filter(item => !!item),
               take(1)
             )
-            .subscribe(item => this.mostOftenUsedWith.push({ item, imageCount: data[key] }));
+            .subscribe(item => {
+              if (this.mostOftenUsedWith === undefined) {
+                this.mostOftenUsedWith = [];
+              }
+
+              this.mostOftenUsedWith.push({ item, imageCount: data[key] });
+            });
           this.store$.dispatch(new LoadEquipmentItem(itemData));
         }
       });
