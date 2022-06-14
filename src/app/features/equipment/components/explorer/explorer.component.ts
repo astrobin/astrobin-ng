@@ -73,6 +73,9 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
   @Input()
   routingBasePath = "/equipment/explorer";
 
+  @Input()
+  navCollapsed = false;
+
   @Output()
   valueChanged = new EventEmitter<EquipmentItemBaseInterface>();
 

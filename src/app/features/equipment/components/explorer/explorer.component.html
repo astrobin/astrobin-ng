@@ -1,37 +1,43 @@
-<astrobin-equipment-item-browser
-  *ngIf="enableBrowser"
-  #itemBrowser
-  [type]="activeType"
-  [initialValue]="this.activeId"
-  (creationModeStarted)="onCreationModeStarted()"
-  (valueChanged)="onSelectedItemChanged($event)"
-></astrobin-equipment-item-browser>
-
-<div class="card" [class.disabled-with-backdrop]="subCreationMode" *ngIf="!!selectedItem">
-  <div class="backdrop"></div>
-
-  <div class="card-header">
-    {{ equipmentItemService.humanizeType(activeType) }}
+<div class="row">
+  <div class="col-12">
+    <astrobin-equipment-item-browser
+      *ngIf="enableBrowser"
+      #itemBrowser
+      [type]="activeType"
+      [initialValue]="this.activeId"
+      (creationModeStarted)="onCreationModeStarted()"
+      (valueChanged)="onSelectedItemChanged($event)"
+    ></astrobin-equipment-item-browser>
   </div>
+</div> <!-- browser row -->
 
-  <div class="card-body">
-    <div *ngIf="selectedItem.reviewerDecision === null && !!selectedItem.brand" class="alert alert-warning">
-      {{ "This item has not been approved yet, so it's not available to be associated with images." | translate }}
-    </div>
+<div class="row">
+  <div class="col order-sm-1 order-lg-0">
+    <div class="card" [class.disabled-with-backdrop]="subCreationMode" *ngIf="!!selectedItem">
+      <div class="backdrop"></div>
 
-    <astrobin-equipment-item-summary
-      [item]="selectedItem"
-      [showClass]="false"
-      [showEmptyProperties]="true"
-      [showLargeImage]="true"
-      [showMeta]="true"
-    ></astrobin-equipment-item-summary>
+      <div class="card-header">
+        {{ equipmentItemService.humanizeType(activeType) }}
+      </div>
 
-    <div *ngIf="supportsVariants(selectedItem)" class="camera-variants-container">
-      <ng-container *ngIf="getVariants(selectedItem)?.length > 0; else cameraVariantTemplate">
-        {{ "Also available in the following variants:" | translate }}
+      <div class="card-body">
+        <div *ngIf="selectedItem.reviewerDecision === null && !!selectedItem.brand" class="alert alert-warning">
+          {{ "This item has not been approved yet, so it's not available to be associated with images." | translate }}
+        </div>
 
-        <span class="camera-variants">
+        <astrobin-equipment-item-summary
+          [item]="selectedItem"
+          [showClass]="false"
+          [showEmptyProperties]="true"
+          [showLargeImage]="true"
+          [showMeta]="true"
+        ></astrobin-equipment-item-summary>
+
+        <div *ngIf="supportsVariants(selectedItem)" class="camera-variants-container">
+          <ng-container *ngIf="getVariants(selectedItem)?.length > 0; else cameraVariantTemplate">
+            {{ "Also available in the following variants:" | translate }}
+
+            <span class="camera-variants">
           <a
             [routerLink]="['/equipment/explorer/camera', cameraVariant.id]"
             *ngFor="let cameraVariant of getVariants(selectedItem)"
@@ -74,229 +80,261 @@
             </span>
           </a>
         </span>
-      </ng-container>
+          </ng-container>
 
-      <ng-template #cameraVariantTemplate>
-        {{ "This is a modified and/or custom-cooled variant of this camera." | translate }}
-        <a
-          [routerLink]="['/equipment/explorer/camera', getParentVariant(selectedItem).id]"
-        >
-          {{ "Go to regular variant." | translate }}
-        </a>
-      </ng-template>
-    </div>
-  </div>
+          <ng-template #cameraVariantTemplate>
+            {{ "This is a modified and/or custom-cooled variant of this camera." | translate }}
+            <a
+              [routerLink]="['/equipment/explorer/camera', getParentVariant(selectedItem).id]"
+            >
+              {{ "Go to regular variant." | translate }}
+            </a>
+          </ng-template>
+        </div>
+      </div>
 
-  <div class="card-footer">
-    <button
-      class="btn btn-sm-block btn-outline-secondary"
-      [class.loading]="loadingService.isLoading()"
-      [disabled]="editMode"
-      (click)="resetBrowser()"
-    >
-      {{ "Close" | translate }}
-    </button>
-
-    <ng-container *ngIf="currentUser$ | async as currentUser">
-      <ng-container *ngIf="!!currentUser">
+      <div class="card-footer">
         <button
-          class="btn btn-secondary"
-          data-test="propose-edit"
+          class="btn btn-sm-block btn-outline-secondary"
           [class.loading]="loadingService.isLoading()"
           [disabled]="editMode"
-          (click)="startEditMode()"
+          (click)="resetBrowser()"
         >
-          {{ "Propose edit" | translate }}&hellip;
+          {{ "Close" | translate }}
         </button>
 
-        <button
-          *ngIf="(currentUser | isEquipmentModerator) && typeSupportsMigrateInto()"
-          class="btn btn-secondary"
-          [class.loading]="loadingService.isLoading()"
-          data-test="migrate-into"
-          [disabled]="editMode"
-          (click)="startMigrationMode()"
-        >
-          {{ "Migrate into" | translate }}&hellip;
-        </button>
+        <ng-container *ngIf="currentUser$ | async as currentUser">
+          <ng-container *ngIf="!!currentUser">
+            <button
+              class="btn btn-secondary"
+              data-test="propose-edit"
+              [class.loading]="loadingService.isLoading()"
+              [disabled]="editMode"
+              (click)="startEditMode()"
+            >
+              {{ "Propose edit" | translate }}&hellip;
+            </button>
 
-        <ng-container
-          *ngIf="
+            <button
+              *ngIf="(currentUser | isEquipmentModerator) && typeSupportsMigrateInto()"
+              class="btn btn-secondary"
+              [class.loading]="loadingService.isLoading()"
+              data-test="migrate-into"
+              [disabled]="editMode"
+              (click)="startMigrationMode()"
+            >
+              {{ "Migrate into" | translate }}&hellip;
+            </button>
+
+            <ng-container
+              *ngIf="
             (currentUser | isEquipmentModerator) &&
             !!selectedItem.brand &&
             selectedItem.reviewerDecision === null &&
             selectedItem.createdBy !== currentUser.id
           "
-        >
-          <button
-            class="btn btn-danger"
-            data-test="reject"
-            [class.loading]="loadingService.isLoading()"
-            [disabled]="editMode"
-            (click)="startRejection()"
-          >
-            {{ "Reject" | translate }}&hellip;
-          </button>
+            >
+              <button
+                class="btn btn-danger"
+                data-test="reject"
+                [class.loading]="loadingService.isLoading()"
+                [disabled]="editMode"
+                (click)="startRejection()"
+              >
+                {{ "Reject" | translate }}&hellip;
+              </button>
 
-          <button
-            class="btn btn-success"
-            data-test="reject"
-            [class.loading]="loadingService.isLoading()"
-            [disabled]="editMode"
-            (click)="startApproval()"
-          >
-            {{ "Approve" | translate }}&hellip;
-          </button>
+              <button
+                class="btn btn-success"
+                data-test="reject"
+                [class.loading]="loadingService.isLoading()"
+                [disabled]="editMode"
+                (click)="startApproval()"
+              >
+                {{ "Approve" | translate }}&hellip;
+              </button>
+            </ng-container>
+          </ng-container>
         </ng-container>
-      </ng-container>
-    </ng-container>
-  </div>
-</div>
+      </div>
+    </div>
 
-<ng-container *ngIf="selectedItem">
-  <ng-container *ngIf="editProposals !== null; else loadingEditProposals">
-    <div class="edit-proposals" *ngIf="editProposals.length > 0">
-      <ng-container *ngIf="showEditProposals(); else editProposalsCollapsedTemplate">
-        <div class="edit-proposals-header" (click)="editProposalsCollapsed = true">
-          <div class="row">
-            <span class="col">{{ "Edit proposal by" | translate }}</span>
-            <span class="col-2 d-none d-lg-inline">{{ "Changes" | translate }}</span>
-            <span class="col-4 col-lg-3">{{ "Status" | translate }}</span>
-            <span class="col-3 d-none d-lg-inline">{{ "Time" | translate }}</span>
-          </div>
+    <ng-container *ngIf="selectedItem">
+      <ng-container *ngIf="editProposals !== null; else loadingEditProposals">
+        <div class="edit-proposals" *ngIf="editProposals.length > 0">
+          <ng-container *ngIf="showEditProposals(); else editProposalsCollapsedTemplate">
+            <div class="edit-proposals-header" (click)="editProposalsCollapsed = true">
+              <div class="row">
+                <span class="col">{{ "Edit proposal by" | translate }}</span>
+                <span class="col-2 d-none d-lg-inline">{{ "Changes" | translate }}</span>
+                <span class="col-4 col-lg-3">{{ "Status" | translate }}</span>
+                <span class="col-3 d-none d-lg-inline">{{ "Time" | translate }}</span>
+              </div>
+            </div>
+
+            <astrobin-item-edit-proposal
+              *ngFor="let editProposal of editProposals"
+              [editProposal]="editProposal"
+              [opened]="activeEditProposalId === editProposal.id"
+            ></astrobin-item-edit-proposal>
+          </ng-container>
+
+          <ng-template #editProposalsCollapsedTemplate>
+            <div
+              class="edit-proposals-collapsed"
+              [innerHTML]="collapsedEditProposalsMessage(editProposals)"
+              (click)="expandEditProposals()"
+            >
+            </div>
+          </ng-template>
         </div>
-
-        <astrobin-item-edit-proposal
-          *ngFor="let editProposal of editProposals"
-          [editProposal]="editProposal"
-          [opened]="activeEditProposalId === editProposal.id"
-        ></astrobin-item-edit-proposal>
       </ng-container>
 
-      <ng-template #editProposalsCollapsedTemplate>
-        <div
-          class="edit-proposals-collapsed"
-          [innerHTML]="collapsedEditProposalsMessage(editProposals)"
-          (click)="expandEditProposals()"
-        >
+      <ng-template #loadingEditProposals>
+        <div class="loading-edit-proposals">
+          {{ "Loading edit proposals" | translate }}
+          <astrobin-text-loading-indicator></astrobin-text-loading-indicator>
         </div>
       </ng-template>
-    </div>
-  </ng-container>
+    </ng-container>
 
-  <ng-template #loadingEditProposals>
-    <div class="loading-edit-proposals">
-      {{ "Loading edit proposals" | translate }}
-      <astrobin-text-loading-indicator></astrobin-text-loading-indicator>
-    </div>
-  </ng-template>
-</ng-container>
+    <ng-container *ngIf="editMode">
+      <div class="mt-4 mb-4 text-center">
+        <fa-icon icon="arrow-down"></fa-icon>
+      </div>
 
-<ng-container *ngIf="editMode">
-  <div class="mt-4 mb-4 text-center">
-    <fa-icon icon="arrow-down"></fa-icon>
-  </div>
+      <div class="card mt-4 mb-4" [class.disabled-with-backdrop]="subCreationMode" id="edit-item">
+        <div class="backdrop"></div>
 
-  <div class="card mt-4 mb-4" [class.disabled-with-backdrop]="subCreationMode" id="edit-item">
-    <div class="backdrop"></div>
+        <div class="card-info alert alert-info">
+          <fa-icon icon="info-circle"></fa-icon>
+          {{ "The AstroBin equipment database is a collective community effort similar to Wikipedia." | translate }}
+          {{ "Any changes you make will be reviewed by other members." | translate }}
+          {{ "Feel free to contribute!" | translate }}
+        </div>
 
-    <div class="card-info alert alert-info">
-      <fa-icon icon="info-circle"></fa-icon>
-      {{ "The AstroBin equipment database is a collective community effort similar to Wikipedia." | translate }}
-      {{ "Any changes you make will be reviewed by other members." | translate }}
-      {{ "Feel free to contribute!" | translate }}
-    </div>
+        <div class="card-header">
+          {{ "Propose edit" | translate }}
+        </div>
 
-    <div class="card-header">
-      {{ "Propose edit" | translate }}
-    </div>
+        <div class="card-body">
+          <astrobin-camera-editor
+            *ngIf="activeType === EquipmentItemType.CAMERA"
+            [form]="editForm"
+            [model]="editModel"
+            (subCreationInProgress)="subCreationMode = $event"
+            [editorMode]="EquipmentItemEditorMode.EDIT_PROPOSAL"
+          ></astrobin-camera-editor>
 
-    <div class="card-body">
-      <astrobin-camera-editor
-        *ngIf="activeType === EquipmentItemType.CAMERA"
-        [form]="editForm"
-        [model]="editModel"
-        (subCreationInProgress)="subCreationMode = $event"
-        [editorMode]="EquipmentItemEditorMode.EDIT_PROPOSAL"
-      ></astrobin-camera-editor>
+          <astrobin-sensor-editor
+            *ngIf="activeType === EquipmentItemType.SENSOR"
+            [form]="editForm"
+            [model]="editModel"
+            (subCreationInProgress)="subCreationMode = $event"
+            [editorMode]="EquipmentItemEditorMode.EDIT_PROPOSAL"
+          ></astrobin-sensor-editor>
 
-      <astrobin-sensor-editor
-        *ngIf="activeType === EquipmentItemType.SENSOR"
-        [form]="editForm"
-        [model]="editModel"
-        (subCreationInProgress)="subCreationMode = $event"
-        [editorMode]="EquipmentItemEditorMode.EDIT_PROPOSAL"
-      ></astrobin-sensor-editor>
+          <astrobin-telescope-editor
+            *ngIf="activeType === EquipmentItemType.TELESCOPE"
+            [form]="editForm"
+            [model]="editModel"
+            (subCreationInProgress)="subCreationMode = $event"
+            [editorMode]="EquipmentItemEditorMode.EDIT_PROPOSAL"
+          ></astrobin-telescope-editor>
 
-      <astrobin-telescope-editor
-        *ngIf="activeType === EquipmentItemType.TELESCOPE"
-        [form]="editForm"
-        [model]="editModel"
-        (subCreationInProgress)="subCreationMode = $event"
-        [editorMode]="EquipmentItemEditorMode.EDIT_PROPOSAL"
-      ></astrobin-telescope-editor>
+          <astrobin-mount-editor
+            *ngIf="activeType === EquipmentItemType.MOUNT"
+            [form]="editForm"
+            [model]="editModel"
+            (subCreationInProgress)="subCreationMode = $event"
+            [editorMode]="EquipmentItemEditorMode.EDIT_PROPOSAL"
+          ></astrobin-mount-editor>
 
-      <astrobin-mount-editor
-        *ngIf="activeType === EquipmentItemType.MOUNT"
-        [form]="editForm"
-        [model]="editModel"
-        (subCreationInProgress)="subCreationMode = $event"
-        [editorMode]="EquipmentItemEditorMode.EDIT_PROPOSAL"
-      ></astrobin-mount-editor>
+          <astrobin-filter-editor
+            *ngIf="activeType === EquipmentItemType.FILTER"
+            [form]="editForm"
+            [model]="editModel"
+            (subCreationInProgress)="subCreationMode = $event"
+            [editorMode]="EquipmentItemEditorMode.EDIT_PROPOSAL"
+          ></astrobin-filter-editor>
 
-      <astrobin-filter-editor
-        *ngIf="activeType === EquipmentItemType.FILTER"
-        [form]="editForm"
-        [model]="editModel"
-        (subCreationInProgress)="subCreationMode = $event"
-        [editorMode]="EquipmentItemEditorMode.EDIT_PROPOSAL"
-      ></astrobin-filter-editor>
+          <astrobin-accessory-editor
+            *ngIf="activeType === EquipmentItemType.ACCESSORY"
+            [form]="editForm"
+            [model]="editModel"
+            (subCreationInProgress)="subCreationMode = $event"
+            [editorMode]="EquipmentItemEditorMode.EDIT_PROPOSAL"
+          ></astrobin-accessory-editor>
 
-      <astrobin-accessory-editor
-        *ngIf="activeType === EquipmentItemType.ACCESSORY"
-        [form]="editForm"
-        [model]="editModel"
-        (subCreationInProgress)="subCreationMode = $event"
-        [editorMode]="EquipmentItemEditorMode.EDIT_PROPOSAL"
-      ></astrobin-accessory-editor>
+          <astrobin-software-editor
+            *ngIf="activeType === EquipmentItemType.SOFTWARE"
+            [form]="editForm"
+            [model]="editModel"
+            (subCreationInProgress)="subCreationMode = $event"
+            [editorMode]="EquipmentItemEditorMode.EDIT_PROPOSAL"
+          ></astrobin-software-editor>
+        </div>
 
-      <astrobin-software-editor
-        *ngIf="activeType === EquipmentItemType.SOFTWARE"
-        [form]="editForm"
-        [model]="editModel"
-        (subCreationInProgress)="subCreationMode = $event"
-        [editorMode]="EquipmentItemEditorMode.EDIT_PROPOSAL"
-      ></astrobin-software-editor>
-    </div>
+        <div class="card-footer">
+          <button
+            class="btn btn-sm-block btn-secondary"
+            [class.loading]="loadingService.isLoading()"
+            (click)="endEditMode()"
+          >
+            {{ "Cancel" | translate }}
+          </button>
 
-    <div class="card-footer">
-      <button
-        class="btn btn-sm-block btn-secondary"
-        [class.loading]="loadingService.isLoading()"
-        (click)="endEditMode()"
-      >
-        {{ "Cancel" | translate }}
-      </button>
+          <button
+            class="btn btn-sm-block btn-primary"
+            data-test="propose-edit-confirm"
+            [disabled]="proposeEditButtonDisabled"
+            [class.loading]="loadingService.isLoading()"
+            (click)="proposeEdit()"
+          >
+            {{ "Propose edit" | translate }}
+          </button>
+        </div>
+      </div>
+    </ng-container>
 
-      <button
-        class="btn btn-sm-block btn-primary"
-        data-test="propose-edit-confirm"
-        [disabled]="proposeEditButtonDisabled"
-        [class.loading]="loadingService.isLoading()"
-        (click)="proposeEdit()"
-      >
-        {{ "Propose edit" | translate }}
-      </button>
-    </div>
-  </div>
-</ng-container>
+    <ng-container *ngIf="selectedItem && !selectedItem.reviewerDecision && !!selectedItem.brand">
+      <div *ngIf="contentType$ | async as contentType" class="comments mt-3">
+        <astrobin-nested-comments
+          [contentType]="contentType"
+          [objectId]="selectedItem.id"
+          [info]="commentsSectionInfoMessage$ | async"
+        ></astrobin-nested-comments>
+      </div>
+    </ng-container>
 
-<ng-container *ngIf="selectedItem && !selectedItem.reviewerDecision && !!selectedItem.brand">
-  <div *ngIf="contentType$ | async as contentType" class="comments mt-3">
-    <astrobin-nested-comments
-      [contentType]="contentType"
-      [objectId]="selectedItem.id"
-      [info]="commentsSectionInfoMessage$ | async"
-    ></astrobin-nested-comments>
-  </div>
-</ng-container>
+    <ng-container *ngIf="activeId">
+      <astrobin-users-using-equipment-item
+        class="mt-5"
+        [itemType]="activeType"
+        [itemId]="activeId"
+      ></astrobin-users-using-equipment-item>
+
+      <astrobin-images-using-equipment-item
+        class="mt-5"
+        [itemType]="activeType"
+        [itemId]="activeId"
+      ></astrobin-images-using-equipment-item>
+
+      <div class="coming-soon">
+        <h3>{{ "Coming soon!" | translate }}</h3>
+        <div class="coming-soon-content">
+          {{
+          "This space will host a forum specific to this equipment item, to connect people who own it or are interested in it." | translate
+          }}
+        </div>
+      </div>
+    </ng-container>
+  </div> <!-- main pane -->
+
+  <div class="col-sm-12 col-lg-3 order-sm-0 order-lg-1 mb-4 mb-lg-0">
+    <astrobin-equipment-item-most-often-used-with
+      *ngIf="selectedItem"
+      [item]="selectedItem"
+    ></astrobin-equipment-item-most-often-used-with>
+  </div> <!-- side pane -->
+</div> <!-- card row -->

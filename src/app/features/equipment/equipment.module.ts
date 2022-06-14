@@ -28,6 +28,7 @@ import { PendingExplorerBaseComponent } from "@features/equipment/pages/explorer
 import { ExplorerBaseComponent } from "@features/equipment/pages/explorer-base/explorer-base.component";
 import { UsersUsingItemComponent } from "./components/explorer/users-using-item/users-using-item.component";
 import { ImagesUsingItemComponent } from "@features/equipment/components/explorer/images-using-item/images-using-item.component";
+import { MostOftenUsedWithComponent } from "./components/explorer/most-often-used-with/most-often-used-with.component";
 
 @NgModule({
   declarations: [
@@ -54,7 +55,8 @@ import { ImagesUsingItemComponent } from "@features/equipment/components/explore
     ReviewGearRenamingProposalsComponent,
     RejectReviewGearRenamingProposalsModalComponent,
     UsersUsingItemComponent,
-    ImagesUsingItemComponent
+    ImagesUsingItemComponent,
+    MostOftenUsedWithComponent
   ],
   imports: [RouterModule.forChild(routes), SharedModule, StoreModule.forFeature(equipmentFeatureKey, reducer)]
 })

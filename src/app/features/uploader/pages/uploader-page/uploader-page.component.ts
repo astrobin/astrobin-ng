@@ -65,7 +65,7 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
     }
   ];
 
-  uploadAllowed$ = this.userSubscriptionService.uploadAllowed();
+  uploadAllowed$ = this.userSubscriptionService.uploadAllowed$();
 
   constructor(
     public readonly store$: Store<State>,

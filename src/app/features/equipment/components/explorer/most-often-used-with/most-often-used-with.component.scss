@@ -1,0 +1,42 @@
+.card-header {
+  padding-left: .75rem;
+}
+
+.card-body {
+  padding: 0;
+  text-align: center;
+}
+
+.table {
+  margin: 0;
+
+  td {
+    text-align: left;
+    padding: .5rem .75rem;
+
+    a {
+      color: var(--lightstGrey);
+
+      &:hover {
+        color: var(--accentColor);
+      }
+    }
+  }
+}
+
+.view-more {
+  margin: .75rem;
+}
+
+astrobin-nothing-here,
+astrobin-loading-indicator {
+  padding: 1.5rem;
+}
+
+astrobin-nothing-here {
+  color: var(--lightGrey);
+}
+
+:host astrobin-nothing-here ::ng-deep p {
+  margin: 0;
+}

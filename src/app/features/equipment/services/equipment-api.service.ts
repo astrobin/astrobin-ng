@@ -30,6 +30,7 @@ import { getEquipmentItemType } from "@features/equipment/store/equipment.select
 import { EquipmentPresetInterface } from "@features/equipment/types/equipment-preset.interface";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { ImageInterface } from "@shared/interfaces/image.interface";
+import { EquipmentItemMostOftenUsedWith } from "@features/equipment/types/equipment-item-most-often-used-with-data.interface";
 
 @Injectable({
   providedIn: "root"
@@ -316,6 +317,15 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
 
   getImages(itemType: EquipmentItemType, itemId: EquipmentItemBaseInterface["id"]): Observable<ImageInterface[]> {
     return this.http.get<ImageInterface[]>(`${this.configUrl}/${itemType.toLowerCase()}/${itemId}/images/`);
+  }
+
+  getMostOftenUsedWith(
+    itemType: EquipmentItemType,
+    itemId: EquipmentItemBaseInterface["id"]
+  ): Observable<EquipmentItemMostOftenUsedWith> {
+    return this.http.get<EquipmentItemMostOftenUsedWith>(
+      `${this.configUrl}/${itemType.toLowerCase()}/${itemId}/most-often-used-with/`
+    );
   }
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

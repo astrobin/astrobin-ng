@@ -13,6 +13,7 @@ import { instanceOfFilter } from "@features/equipment/types/filter.interface";
 import { instanceOfAccessory } from "@features/equipment/types/accessory.interface";
 import { instanceOfSoftware } from "@features/equipment/types/software.interface";
 import { EquipmentPresetInterface } from "@features/equipment/types/equipment-preset.interface";
+import { EquipmentItemMostOftenUsedWithData } from "@features/equipment/types/equipment-item-most-often-used-with-data.interface";
 
 export function getEquipmentItemType(item: EquipmentItemBaseInterface): EquipmentItemType {
   if (instanceOfSensor(item)) {
@@ -139,5 +140,18 @@ export const selectImagesUsingEquipmentItem = createSelector(
     );
 
     return matching.length > 0 ? matching[0] : null;
+  }
+);
+
+export const selectMostOftenUsedWith = createSelector(selectEquipment, state => state.mostOftenUsedWithData);
+
+export const selectMostOftenUsedWithForItem = createSelector(
+  selectMostOftenUsedWith,
+  (
+    mostOftenUsedWith: EquipmentItemMostOftenUsedWithData,
+    data: { itemType: EquipmentItemType; itemId: EquipmentItemBaseInterface["id"] }
+  ) => {
+    const key = `${data.itemType}-${data.itemId}`;
+    return mostOftenUsedWith[key];
   }
 );

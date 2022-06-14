@@ -133,7 +133,7 @@ describe("UserSubscriptionService", () => {
 
   describe("uploadAllowed", () => {
     it("should be true if user is Ultimate 2020", done => {
-      service.uploadAllowed().subscribe(allowed => {
+      service.uploadAllowed$().subscribe(allowed => {
         expect(allowed).toBe(true);
         done();
       });
@@ -146,7 +146,7 @@ describe("UserSubscriptionService", () => {
       ];
       store.setState(state);
 
-      service.uploadAllowed().subscribe(allowed => {
+      service.uploadAllowed$().subscribe(allowed => {
         expect(allowed).toBe(true);
         done();
       });
@@ -157,7 +157,7 @@ describe("UserSubscriptionService", () => {
       state.auth.userSubscriptions = [UserSubscriptionGenerator.userSubscription(TestConstants.ASTROBIN_PREMIUM_ID)];
       store.setState(state);
 
-      service.uploadAllowed().subscribe(allowed => {
+      service.uploadAllowed$().subscribe(allowed => {
         expect(allowed).toBe(true);
         done();
       });
@@ -170,7 +170,7 @@ describe("UserSubscriptionService", () => {
       ];
       store.setState(state);
 
-      service.uploadAllowed().subscribe(allowed => {
+      service.uploadAllowed$().subscribe(allowed => {
         expect(allowed).toBe(true);
         done();
       });
@@ -181,7 +181,7 @@ describe("UserSubscriptionService", () => {
       state.auth.userSubscriptions = [UserSubscriptionGenerator.userSubscription(TestConstants.ASTROBIN_LITE_2020_ID)];
       store.setState(state);
 
-      service.uploadAllowed().subscribe(allowed => {
+      service.uploadAllowed$().subscribe(allowed => {
         expect(allowed).toBe(true);
         done();
       });
@@ -193,7 +193,7 @@ describe("UserSubscriptionService", () => {
       state.auth.userProfile.premiumCounter = 100;
       store.setState(state);
 
-      service.uploadAllowed().subscribe(allowed => {
+      service.uploadAllowed$().subscribe(allowed => {
         expect(allowed).toBe(false);
         done();
       });
@@ -205,7 +205,7 @@ describe("UserSubscriptionService", () => {
       state.auth.userProfile.premiumCounter = 0;
       store.setState(state);
 
-      service.uploadAllowed().subscribe(allowed => {
+      service.uploadAllowed$().subscribe(allowed => {
         expect(allowed).toBe(true);
         done();
       });
@@ -217,7 +217,7 @@ describe("UserSubscriptionService", () => {
       state.auth.userProfile.premiumCounter = 100;
       store.setState(state);
 
-      service.uploadAllowed().subscribe(allowed => {
+      service.uploadAllowed$().subscribe(allowed => {
         expect(allowed).toBe(false);
         done();
       });
@@ -231,7 +231,7 @@ describe("UserSubscriptionService", () => {
       state.auth.userProfile.premiumCounter = 0;
       store.setState(state);
 
-      service.uploadAllowed().subscribe(allowed => {
+      service.uploadAllowed$().subscribe(allowed => {
         expect(allowed).toBe(true);
         done();
       });
@@ -245,7 +245,7 @@ describe("UserSubscriptionService", () => {
       state.auth.userProfile.premiumCounter = 100;
       store.setState(state);
 
-      service.uploadAllowed().subscribe(allowed => {
+      service.uploadAllowed$().subscribe(allowed => {
         expect(allowed).toBe(false);
         done();
       });
@@ -257,7 +257,7 @@ describe("UserSubscriptionService", () => {
       state.auth.userProfile.premiumCounter = 0;
       store.setState(state);
 
-      service.uploadAllowed().subscribe(allowed => {
+      service.uploadAllowed$().subscribe(allowed => {
         expect(allowed).toBe(true);
         done();
       });
@@ -269,7 +269,7 @@ describe("UserSubscriptionService", () => {
       state.auth.userProfile.premiumCounter = 100;
       store.setState(state);
 
-      service.uploadAllowed().subscribe(allowed => {
+      service.uploadAllowed$().subscribe(allowed => {
         expect(allowed).toBe(false);
         done();
       });

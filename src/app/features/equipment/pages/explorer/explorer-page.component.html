@@ -15,33 +15,11 @@
         [activeType]="activeType"
         [activeId]="activeId"
         [activeEditProposalId]="activeEditProposalId"
+        [navCollapsed]="navCollapsed"
         (valueChanged)="onSelectedItemChanged($event)"
       ></astrobin-equipment-explorer>
 
-      <ng-container *ngIf="!!activeId; else noActiveId">
-        <astrobin-users-using-equipment-item
-          class="mt-5"
-          [itemType]="activeType"
-          [itemId]="activeId"
-        ></astrobin-users-using-equipment-item>
-
-        <astrobin-images-using-equipment-item
-          class="mt-5"
-          [itemType]="activeType"
-          [itemId]="activeId"
-        ></astrobin-images-using-equipment-item>
-
-        <div class="coming-soon">
-          <h3>{{ "Coming soon!" | translate }}</h3>
-          <div class="coming-soon-content">
-            {{
-              "This space will host a forum specific to this equipment item, to connect people who own it or are interested in it." | translate
-            }}
-          </div>
-        </div>
-      </ng-container>
-
-      <ng-template #noActiveId>
+      <ng-container *ngIf="!activeId">
         <ng-container *ngIf="items$ | async as items; else loading">
           <table class="table table-striped table-sm items">
             <thead>
@@ -92,8 +70,8 @@
           >
           </ngb-pagination>
         </ng-container>
-      </ng-template>
-    </div>
+      </ng-container>
+    </div> <!-- item div -->
   </div>
 </div>
 
