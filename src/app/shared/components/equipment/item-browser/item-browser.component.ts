@@ -58,6 +58,7 @@ import { UtilsService } from "@shared/services/utils/utils.service";
 import { VariantSelectorModalComponent } from "@shared/components/equipment/item-browser/variant-selector-modal/variant-selector-modal.component";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import { BaseItemEditorComponent } from "@shared/components/equipment/editors/base-item-editor/base-item-editor.component";
 
 type Type = EquipmentItemBaseInterface["id"];
 type TypeUnion = Type | Type[] | null;
@@ -117,6 +118,9 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
   currentUserSubscription: Subscription;
   itemBrowserAddSubscription: Subscription;
   itemBrowserSetSubscription: Subscription;
+
+  @ViewChild("editor")
+  editor: BaseItemEditorComponent<EquipmentItemBaseInterface, null>;
 
   @ViewChild("equipmentItemLabelTemplate")
   equipmentItemLabelTemplate: TemplateRef<any>;
@@ -316,8 +320,25 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
   createItem() {
     if (!this.creationForm.valid) {
       this.creationForm.markAllAsTouched();
+      const errorList: string[] = [];
+      this.editor.fields.forEach(field => {
+        if (field.formControl.errors !== null) {
+          errorList.push(`<li>${field.templateOptions.label}</li>`);
+        }
+      });
       this.popNotificationsService.error(
-        this.translateService.instant("The form has errors, please correct them and try again.")
+        `
+        <p>
+          ${this.translateService.instant("The following form fields have errors, please correct them and try again:")}
+        </p>
+        <ul>
+          ${errorList.join("\n")}
+        </ul>
+        `,
+        null,
+        {
+          enableHtml: true
+        }
       );
       return;
     }
