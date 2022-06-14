@@ -106,6 +106,13 @@ export class CameraService extends BaseService implements EquipmentItemServiceIn
           }),
           switchMap((sensor: SensorInterface) =>
             this.store$.select(selectBrand, sensor.brand).pipe(
+              filter(brand => {
+                if (!!sensor.brand) {
+                  return !!brand;
+                }
+
+                return true;
+              }),
               take(1),
               map(brand => ({ brand, sensor }))
             )
