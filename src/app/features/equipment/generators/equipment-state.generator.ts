@@ -8,7 +8,8 @@ export class EquipmentStateGenerator {
       editProposals: [],
       presets: [],
       usersUsingEquipmentItems: [],
-      imagesUsingEquipmentItems: []
+      imagesUsingEquipmentItems: [],
+      mostOftenUsedWithData: {}
     };
   }
 }
