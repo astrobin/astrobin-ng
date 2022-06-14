@@ -8,10 +8,13 @@
     <ng-container *ngIf="mostOftenUsedWith !== undefined; else loading">
       <table class="table table-sm table-striped">
         <tbody>
-        <tr *ngFor="let item of mostOftenUsedWith">
+        <tr *ngFor="let entry of sortedItems(mostOftenUsedWith)">
           <td>
-            <a [routerLink]="['/equipment/explorer', item.klass.toLowerCase(), item.id]">
-              <astrobin-equipment-item-display-name [item]="item"></astrobin-equipment-item-display-name>
+            <a [routerLink]="['/equipment/explorer', entry.item.klass.toLowerCase(), entry.item.id]">
+              <astrobin-equipment-item-display-name
+                [item]="entry.item"
+                [ngbTooltip]="'{{0}} image(s)' | translate:{'0': entry.imageCount}"
+              ></astrobin-equipment-item-display-name>
             </a>
           </td>
         </tr>

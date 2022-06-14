@@ -23,7 +23,7 @@ export class MostOftenUsedWithComponent extends BaseComponentDirective implement
   item: EquipmentItem;
 
   subscription: Subscription;
-  mostOftenUsedWith: EquipmentItem[];
+  mostOftenUsedWith: { item: EquipmentItem; imageCount: number }[];
   fullSearchAllowed$: Observable<boolean> = this.userSubscriptionService.fullSearchAllowed$();
 
   constructor(
@@ -51,8 +51,8 @@ export class MostOftenUsedWithComponent extends BaseComponentDirective implement
 
         this.mostOftenUsedWith = [];
 
-        for (const dataEntry of Object.keys(data)) {
-          const [type, id] = dataEntry.split("-");
+        for (const key of Object.keys(data)) {
+          const [type, id] = key.split("-");
           const itemData = { type: type as EquipmentItemType, id: parseInt(id, 10) };
           this.store$
             .select(selectEquipmentItem, itemData)
@@ -60,12 +60,16 @@ export class MostOftenUsedWithComponent extends BaseComponentDirective implement
               filter(item => !!item),
               take(1)
             )
-            .subscribe(item => this.mostOftenUsedWith.push(item));
+            .subscribe(item => this.mostOftenUsedWith.push({ item, imageCount: data[key] }));
           this.store$.dispatch(new LoadEquipmentItem(itemData));
         }
       });
 
     this.store$.dispatch(new GetMostOftenUsedWith({ itemType: this.item.klass, itemId: this.item.id }));
+  }
+
+  sortedItems(items: { item: EquipmentItem; imageCount: number }[]): { item: EquipmentItem; imageCount: number }[] {
+    return items.sort((a, b) => b.imageCount - a.imageCount);
   }
 
   onViewMore(): void {
