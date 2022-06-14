@@ -37,7 +37,7 @@ export class MostOftenUsedWithComponent extends BaseComponentDirective implement
   ngOnChanges(): void {
     this.mostOftenUsedWith = undefined;
 
-    if (this.subscription) {
+    if (!!this.subscription) {
       this.subscription.unsubscribe();
     }
 

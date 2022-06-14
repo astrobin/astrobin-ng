@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit } from "@angular/core";
+import { Component, Input, OnChanges } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
@@ -11,14 +11,14 @@ import { ImageInterface } from "@shared/interfaces/image.interface";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
-import { Observable } from "rxjs";
+import { Observable, Subscription } from "rxjs";
 
 @Component({
   selector: "astrobin-images-using-equipment-item",
   templateUrl: "./images-using-item.component.html",
   styleUrls: ["../objects-using-item.component.scss"]
 })
-export class ImagesUsingItemComponent extends BaseComponentDirective implements OnChanges, OnInit {
+export class ImagesUsingItemComponent extends BaseComponentDirective implements OnChanges {
   readonly MAX_IMAGES = 24;
   readonly ImageAlias = ImageAlias;
 
@@ -36,6 +36,10 @@ export class ImagesUsingItemComponent extends BaseComponentDirective implements 
 
   searchUrl: string;
 
+  subscription: Subscription;
+
+  itemSubscription: Subscription;
+
   constructor(
     public readonly store$: Store<State>,
     public readonly equipmentItemService: EquipmentItemService,
@@ -44,7 +48,18 @@ export class ImagesUsingItemComponent extends BaseComponentDirective implements 
     super(store$);
   }
 
-  ngOnInit(): void {
+  ngOnChanges(): void {
+    this.item = undefined;
+    this.images = undefined;
+
+    if (!!this.subscription) {
+      this.subscription.unsubscribe();
+    }
+
+    if (!!this.itemSubscription) {
+      this.itemSubscription.unsubscribe();
+    }
+
     this.store$
       .select(selectImagesUsingEquipmentItem, { itemType: this.itemType, itemId: this.itemId })
       .pipe(
@@ -68,11 +83,6 @@ export class ImagesUsingItemComponent extends BaseComponentDirective implements 
           .pipe(take(1))
           .subscribe(searchUrl => (this.searchUrl = searchUrl));
       });
-  }
-
-  ngOnChanges(): void {
-    this.item = undefined;
-    this.images = undefined;
 
     this.store$.dispatch(new GetImages({ itemType: this.itemType, itemId: this.itemId }));
     this.store$.dispatch(new LoadEquipmentItem({ type: this.itemType, id: this.itemId }));

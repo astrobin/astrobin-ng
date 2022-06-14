@@ -1,10 +1,10 @@
 <h5 class="mb-4">
   {{ "Astrophotographers who have used this equipment item" | translate }}
-  <astrobin-data-does-not-update-in-realtime></astrobin-data-does-not-update-in-realtime>
+  <astrobin-data-does-not-update-in-real-time></astrobin-data-does-not-update-in-real-time>
 </h5>
 
-<div *ngIf="!loadingService.isLoading(); else loading" class="objects-using">
-  <ng-container *ngIf="users?.length > 0; else noUsers">
+<div *ngIf="users !== undefined; else loading" class="objects-using">
+  <ng-container *ngIf="users.length > 0; else noUsers">
     <astrobin-avatar *ngFor="let user of users" [user]="user"></astrobin-avatar>
   </ng-container>
   <ng-template #noUsers>
