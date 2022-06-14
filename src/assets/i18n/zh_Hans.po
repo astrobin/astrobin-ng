@@ -66,6 +66,12 @@ msgstr "配件"
 msgid "Accessory"
 msgstr "附件"
 
+msgid "Acquisition cameras"
+msgstr ""
+
+msgid "Acquisition telescopes or lenses"
+msgstr ""
+
 msgid "Acquisition type"
 msgstr "拍摄方法"
 
@@ -119,6 +125,12 @@ msgstr "还有更多！"
 
 msgid "Anular solar eclipse"
 msgstr "日环食"
+
+msgid "Any changes you make will be reviewed by other members."
+msgstr ""
+
+msgid "Anybody can review edit proposals made by any other member."
+msgstr ""
 
 msgid "Aperture"
 msgstr "光圈"
@@ -181,11 +193,19 @@ msgid ""
 "consistent with naming conventions."
 msgstr "AstroBin想重命名一些设备项目，以便统一规范命名。"
 
+msgid ""
+"AstroBin's equipment database is entirely maintained by the community. Feel "
+"free to make a contribution!"
+msgstr ""
+
 msgid "AstroBin's new equipment database is still work in progress."
 msgstr "AstroBin新设备数据库正在更新中。"
 
 msgid "Astrophotographers list"
 msgstr "天文摄影师列表"
+
+msgid "Astrophotographers who have used this equipment item"
+msgstr ""
 
 msgid "Attribution Creative Commons"
 msgstr "授权方式"
@@ -369,6 +389,9 @@ msgstr "彗星"
 msgid "Cometary"
 msgstr "彗星"
 
+msgid "Coming soon!"
+msgstr ""
+
 msgid "Comment"
 msgstr "评论"
 
@@ -504,6 +527,9 @@ msgstr "将文件拖放至此，或点击浏览"
 msgid "Dual Alt-Az/Equatorial"
 msgstr "AZ/EQ赤道仪"
 
+msgid "Duplicate of"
+msgstr ""
+
 msgid "E-mail"
 msgstr "电子邮箱"
 
@@ -578,6 +604,9 @@ msgstr "超广角"
 
 msgid "FAQ"
 msgstr "FAQ"
+
+msgid "Feel free to contribute!"
+msgstr ""
 
 msgid ""
 "File too large. If you just upgraded your subscription, please try again in "
@@ -765,6 +794,11 @@ msgid ""
 "here."
 msgstr "如果您在您自己的网站上发布过该作品，请再这里输入该作品的链接。"
 
+msgid ""
+"If you're not sure how to use this page, feel free to contact AstroBin or "
+"just skip it and let AstroBin moderators deal with your equipment later."
+msgstr ""
+
 msgid "Image"
 msgstr "作品"
 
@@ -785,6 +819,9 @@ msgstr ""
 
 msgid "Images"
 msgstr "作品"
+
+msgid "Images acquired using this equipment item"
+msgstr ""
 
 msgid "Imaging cameras"
 msgstr "主相机"
@@ -810,6 +847,11 @@ msgstr "无效数据，请刷新页面并重试。"
 msgid "Inverted monochrome"
 msgstr "反转黑白"
 
+msgid ""
+"It looks like you are in the process of creating an equipment item, please "
+"complete or cancel that operation before saving the entire form."
+msgstr ""
+
 msgid "It looks like you reached the revision upload limit for your subscription."
 msgstr "看起来您已达到当前订阅的版本上载上传限制。"
 
@@ -824,9 +866,6 @@ msgstr "项目已通过审核。"
 
 msgid "Item class"
 msgstr ""
-
-msgid "Item rejected."
-msgstr "项目被驳回。"
 
 msgid "Item summary"
 msgstr "项目摘要"
@@ -1066,6 +1105,9 @@ msgstr "无解析数据"
 
 msgid "Nobody"
 msgstr "没有人"
+
+msgid "Nobody is using this equipment item on AstroBin, at the moment."
+msgstr ""
 
 msgid "Noctilucent clouds"
 msgstr "夜光云"
@@ -1334,9 +1376,6 @@ msgstr "读出噪声"
 msgid "Reason"
 msgstr "原因"
 
-msgid "Rectangular"
-msgstr ""
-
 msgid "Red channel (R)"
 msgstr "红色通道（R）"
 
@@ -1438,9 +1477,6 @@ msgstr "审核人的评论"
 
 msgid "Revision uploader"
 msgstr "修订版上传工具"
-
-msgid "Round"
-msgstr ""
 
 msgid "Saturn"
 msgstr "土星"
@@ -1586,9 +1622,6 @@ msgstr "垃圾邮件"
 msgid "Sponsors & Partners"
 msgstr "赞助商&合作伙伴"
 
-msgid "Square"
-msgstr ""
-
 msgid "Staging Area"
 msgstr "暂存区"
 
@@ -1663,9 +1696,6 @@ msgstr "望远镜"
 msgid "Telescopes & lenses"
 msgstr "望远镜&镜头"
 
-msgid "Telescopes or lenses"
-msgstr ""
-
 msgid "Text"
 msgstr "文本"
 
@@ -1697,6 +1727,11 @@ msgid ""
 "community. {{_0}}Learn more.{{_1}}"
 msgstr "<strong>作品指数</strong>是一个基于作品上收到点赞的系统，用于激励社区中最活跃和最受喜爱的成员。{{_0}}了解更多。{{_1}}"
 
+msgid ""
+"The AstroBin equipment database is a collective community effort similar to "
+"Wikipedia."
+msgstr ""
+
 msgid "The Big Wall"
 msgstr "作品墙"
 
@@ -1709,13 +1744,18 @@ msgstr ""
 "Lite 订阅的上限是<strong>{{maxImagesForLite}}</strong>张作品，目前您在 AstroBin 上有 "
 "<strong>{{numberOfImages}}</strong>张作品。因此，我们建议您升级到 Premium 或 Ultimate。"
 
+msgid ""
+"The comment section for this item is not available anymore, because it's "
+"been already approved."
+msgstr ""
+
 msgid "The final font size will depend on how long your watermark is."
 msgstr "字体最终的大小取决于水印长度。"
 
 msgid "The following changes are proposed:"
 msgstr "建议作出以下修改："
 
-msgid "The form has errors, please correct them and try again."
+msgid "The following form fields have errors, please correct them and try again:"
 msgstr ""
 
 msgid "The image will permanently disappear from your queue."
@@ -1828,6 +1868,11 @@ msgid "There are no comments yet."
 msgstr "目前还没有评论。"
 
 msgid ""
+"There are no images on AstroBin acquired using this equipment item, at the "
+"moment."
+msgstr ""
+
+msgid ""
 "There are no more items of this type to migrate. Check other equipment "
 "types."
 msgstr "没有其他此类型的项目要迁移。检查其他设备类型。"
@@ -1841,6 +1886,17 @@ msgstr "此旧项目需要迁移"
 msgid ""
 "This brand has <strong>{{0}}</strong> items in AstroBin's database, and "
 "they are shown below in alphabetical order."
+msgstr ""
+
+msgid ""
+"This comment section is only visible to AstroBin equipment moderators and "
+"the user who created this item, and only while this equipment item is "
+"unapproved."
+msgstr ""
+
+msgid ""
+"This comment section is only visible to you and AstroBin equipment "
+"moderators, and only while this equipment item is unapproved."
 msgstr ""
 
 msgid "This field is disabled because you haven't joined any groups yet."
@@ -1860,6 +1916,9 @@ msgid ""
 msgstr ""
 
 msgid "This item has a history of <strong>{{0}}</strong> approved edit proposals."
+msgstr ""
+
+msgid "This item has already been approved by you or another moderator."
 msgstr ""
 
 msgid "This item has not been approved"
@@ -1908,6 +1967,11 @@ msgstr "异常情况发生，AstroBin的工作人员已被自动通知，并将�
 msgid "This should never happen. If the problem persists, please contact us."
 msgstr "异常情况发生，如问题重复出现，请联系我们。"
 
+msgid ""
+"This space will host a forum specific to this equipment item, to connect "
+"people who own it or are interested in it."
+msgstr ""
+
 msgid "Thumbnail"
 msgstr "缩略图"
 
@@ -1953,17 +2017,14 @@ msgstr ""
 msgid "Type"
 msgstr "类型"
 
-msgid "Type something to create a new one..."
-msgstr "输入任意信息建立一个新的..."
+msgid "Type a brand and/or a model name to search options..."
+msgstr ""
 
 msgid "Type to search options or to create a new one..."
 msgstr "输入想要找的选项，或创建新的..."
 
 msgid "Type to search options..."
 msgstr "输入要搜索的选项..."
-
-msgid "Type to search."
-msgstr "搜索的类型。"
 
 msgid "Ultra High Contrast (UHC)"
 msgstr "超高反差（UHC）"
@@ -2026,6 +2087,9 @@ msgstr "金星"
 
 msgid "View"
 msgstr "查看"
+
+msgid "View more"
+msgstr ""
 
 msgid "Want to upgrade from a lower subscription tier?"
 msgstr "是否想从低等级订阅升级？"
@@ -2131,6 +2195,14 @@ msgid ""
 msgstr ""
 "如果您愿意，可以将知识共享许可与您的内容相关联，以授予人们在特定情况下使用您的作品的权利。有关您的选项的更多信息，请访问{{0}}知识共享网站{{1}}"
 "。"
+
+msgid "You can create a new one using the button below."
+msgstr ""
+
+msgid ""
+"You cannot propose an edit while there is a pending one. Please review the "
+"pending edit proposal first, thank you!"
+msgstr ""
 
 msgid ""
 "You cannot review this edit proposal because there are previous pending "

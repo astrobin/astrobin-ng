@@ -74,6 +74,12 @@ msgstr "Zubehör"
 msgid "Accessory"
 msgstr "Zubehör"
 
+msgid "Acquisition cameras"
+msgstr ""
+
+msgid "Acquisition telescopes or lenses"
+msgstr ""
+
 msgid "Acquisition type"
 msgstr "Bildentstehung"
 
@@ -87,7 +93,7 @@ msgid "Advanced search"
 msgstr "Erweiterte Suche"
 
 msgid "Alias"
-msgstr ""
+msgstr "Alias"
 
 msgid "Allow comments"
 msgstr "Kommentare erlauben"
@@ -96,7 +102,7 @@ msgid "Allow full-size display"
 msgstr "Anzeige in voller Größe zulassen"
 
 msgid "Also available in the following variants:"
-msgstr ""
+msgstr "Auch in folgenden Varianten erhältlich:"
 
 msgid "Alt-Alt (altitude-altitude)"
 msgstr "Alt-Alt (Altitude-Altitude)"
@@ -129,6 +135,12 @@ msgstr "... und vieles mehr!"
 
 msgid "Anular solar eclipse"
 msgstr "Ringförmige Sonnenfinsternis"
+
+msgid "Any changes you make will be reviewed by other members."
+msgstr ""
+
+msgid "Anybody can review edit proposals made by any other member."
+msgstr ""
 
 msgid "Aperture"
 msgstr "Blende"
@@ -194,6 +206,9 @@ msgid ""
 "AstroBin will automatically create variants of this camera marked as "
 "\"modified for astrophotography\" and \"custom-cooled\"."
 msgstr ""
+"AstroBin erstellt automatisch Varianten dieser Kamera, die als "
+"\"modifiziert für Astrofotografie\" und \"benutzerdefiniert gekühlt\" "
+"gekennzeichnet sind."
 
 msgid ""
 "AstroBin would like to rename some of your gear items in order to be more "
@@ -202,11 +217,19 @@ msgstr ""
 "AstroBin würde gerne einige eurer Ausrüstungsgegenstände umbenennen, um die "
 "Namenskonventionen besser zu erfüllen."
 
+msgid ""
+"AstroBin's equipment database is entirely maintained by the community. Feel "
+"free to make a contribution!"
+msgstr ""
+
 msgid "AstroBin's new equipment database is still work in progress."
 msgstr "Die neue Ausrüstungsdatenbank von AstroBin ist noch im Aufbau."
 
 msgid "Astrophotographers list"
 msgstr "Liste der Astrofotografen"
+
+msgid "Astrophotographers who have used this equipment item"
+msgstr ""
 
 msgid "Attribution Creative Commons"
 msgstr "Namensnennung Creative Commons"
@@ -233,7 +256,7 @@ msgid "Autorenew"
 msgstr "Automatisch erneuern"
 
 msgid "Available in {{0}} additional variants."
-msgstr ""
+msgstr "Verfügbar in {{0}} zusätzlichen Varianten."
 
 msgid "Back focus"
 msgstr "Back focus"
@@ -296,7 +319,7 @@ msgid "Cameras"
 msgstr "Kameras"
 
 msgid "Can't find <strong>{{0}}</strong>?"
-msgstr ""
+msgstr "Können Sie <strong>{{0}}</strong> nicht finden?"
 
 msgid "Cancel"
 msgstr "Abbrechen"
@@ -323,7 +346,7 @@ msgid "Catadioptric: Maksutov-Cassegrain"
 msgstr "Katadioptrisch: Maksutov-Cassegrain"
 
 msgid "Catadioptric: Riccardi-Honders"
-msgstr ""
+msgstr "Katadioptrisch: Riccardi-Honders"
 
 msgid "Catadioptric: Rowe-Atkinson Schmidt astrograph"
 msgstr "Katadioptrisch: Rowe-Atkinson Schmidt astrograph"
@@ -338,7 +361,7 @@ msgid "Catadioptric: modified Dall-Kirkham"
 msgstr "Katadioptrisch: modifiziertes Dall-Kirkham"
 
 msgid "Catadioptric: modified Harmer-Wynne"
-msgstr ""
+msgstr "Katadioptrisch: modifiziertes Harmer-Wynne"
 
 msgid "Celsius degrees below ambient"
 msgstr "Grad Celsius unter Umgebungstemperatur"
@@ -398,6 +421,9 @@ msgstr "Komet"
 msgid "Cometary"
 msgstr "Kometen"
 
+msgid "Coming soon!"
+msgstr ""
+
 msgid "Comment"
 msgstr "Kommentar"
 
@@ -456,7 +482,7 @@ msgid "Create a new item"
 msgstr "Einen neuen Gegenstand erstellen"
 
 msgid "Create item"
-msgstr ""
+msgstr "Artikel erstellen"
 
 msgid "Create new brand"
 msgstr "Neue Marke erstellen"
@@ -468,13 +494,16 @@ msgid "Created by"
 msgstr "Erstellt von"
 
 msgid "Custom-cooled"
-msgstr ""
+msgstr "Benutzerspezifisch gekühlt"
 
 msgid ""
 "Custom-cooled cameras are DSLR and mirrorless cameras that are not sold "
 "with cooling as stock, but a cooling mechanism is added as a custom "
 "modification."
 msgstr ""
+"Benutzerspezifisch gekühlte Kameras sind DSLR- und spiegellose Kameras, die "
+"nicht standardmäßig mit Kühlung verkauft werden, aber ein Kühlmechanismus "
+"wird als spezifische Modifikation hinzugefügt."
 
 msgid "Data source"
 msgstr "Datenquelle"
@@ -511,6 +540,10 @@ msgid ""
 "rejection at this time, as data defragmentation is more important than "
 "minor spelling concerns that can be fixed later."
 msgstr ""
+"Lassen Sie Ihre persönliche Vorliebe für eine Namenskonvention zu diesem "
+"Zeitpunkt nicht zu einem Ablehnungsgrund werden, da die "
+"Datendefragmentierung wichtiger ist als kleinere Rechtschreibprobleme, die "
+"später behoben werden können."
 
 msgid "Do not notify your followers about this revision."
 msgstr "Keine Benachrichtigung Ihrer Abonnenten zu dieser Revision"
@@ -532,6 +565,9 @@ msgstr "Datei hier ablegen oder zum Durchsuchen anklicken"
 
 msgid "Dual Alt-Az/Equatorial"
 msgstr "Dual Alt-Az/Äquatorial"
+
+msgid "Duplicate of"
+msgstr ""
 
 msgid "E-mail"
 msgstr "E-Mail"
@@ -608,6 +644,9 @@ msgstr "Extremely wide field"
 msgid "FAQ"
 msgstr "FAQ"
 
+msgid "Feel free to contribute!"
+msgstr ""
+
 msgid ""
 "File too large. If you just upgraded your subscription, please try again in "
 "a few minutes. Thanks!"
@@ -653,7 +692,7 @@ msgid "For more information, please check out our Twitter feed:"
 msgstr "Für weitere Informationen besuchen Sie bitte unseren Twitter-Feed:"
 
 msgid "For security reasons, this is not permitted."
-msgstr ""
+msgstr "Dies ist aus Sicherheitsgründen nicht zulässig."
 
 msgid ""
 "For this reason, you cannot purchase this at the moment, as AstroBin does "
@@ -696,13 +735,13 @@ msgid "German equatorial"
 msgstr "Deutsch Äquatorial"
 
 msgid "Get next"
-msgstr ""
+msgstr "Nächstes nehmen"
 
 msgid "Go back to the home page."
 msgstr "Zur Startseite gehen"
 
 msgid "Go to regular variant."
-msgstr ""
+msgstr "Gehen Sie zur regulären Variante."
 
 msgid "Green channel (G)"
 msgstr "Grüner Kanal (G)"
@@ -754,20 +793,27 @@ msgid "Hydrogen-beta (Hβ)"
 msgstr "Hydrogen-beta (Hβ)"
 
 msgid "I have carefully checked for typos"
-msgstr ""
+msgstr "Ich habe sorgfältig auf Tippfehler geprüft"
 
 msgid ""
 "I have carefully checked that this item conforms to existing naming "
 "conventions for this brand"
 msgstr ""
+"Ich habe sorgfältig geprüft, ob dieser Artikel den bestehenden "
+"Namenskonventionen für diese Marke entspricht"
 
 msgid "I have carefully checked that this item does not duplicate an existing one"
 msgstr ""
+"Ich habe sorgfältig überprüft, dass dieser Artikel kein Duplikat eines "
+"bestehenden Artikels ist"
 
 msgid ""
 "I have not included information that pertains to my personal item (e.g. "
 "sold/broken/refurbished...) and this is the general description of a product"
 msgstr ""
+"Ich habe keine Informationen zu meinem persönlichen Artikel angegeben (z. "
+"B. verkauft/kaputt/überholt...) und dies ist die allgemeine Beschreibung "
+"des Produkts"
 
 msgid "IOTD"
 msgstr "IOTD"
@@ -815,6 +861,11 @@ msgstr ""
 "Falls Du eine Kopie dieses Bildes auf Deiner Webseite hast, füge Deine "
 "Adresse hier ein."
 
+msgid ""
+"If you're not sure how to use this page, feel free to contact AstroBin or "
+"just skip it and let AstroBin moderators deal with your equipment later."
+msgstr ""
+
 msgid "Image"
 msgstr "Bild"
 
@@ -837,6 +888,9 @@ msgstr ""
 
 msgid "Images"
 msgstr "Bilder"
+
+msgid "Images acquired using this equipment item"
+msgstr ""
 
 msgid "Imaging cameras"
 msgstr "Bildgebende Kameras"
@@ -864,6 +918,11 @@ msgstr ""
 msgid "Inverted monochrome"
 msgstr "Monochromes Negativ"
 
+msgid ""
+"It looks like you are in the process of creating an equipment item, please "
+"complete or cancel that operation before saving the entire form."
+msgstr ""
+
 msgid "It looks like you reached the revision upload limit for your subscription."
 msgstr ""
 "Es sieht so aus, als hätten Sie das Limit für das Hochladen von Revisionen "
@@ -879,10 +938,7 @@ msgid "Item approved."
 msgstr "Gegenstand genehmigt."
 
 msgid "Item class"
-msgstr ""
-
-msgid "Item rejected."
-msgstr "Gegenstand abgelehnt."
+msgstr "Artikelklasse"
 
 msgid "Item summary"
 msgstr "Artikelübersicht"
@@ -1052,12 +1108,15 @@ msgid ""
 "Modifications typically include LPF2 filter removal, Baader modification, "
 "or full-spectrum modification."
 msgstr ""
+"Zu den Modifikationen gehören typischerweise das Entfernen des "
+"LPF2-Filters, die Baader-Modifikation oder die \"Full-Spectrum\" "
+"Modifikation."
 
 msgid "Modified"
 msgstr "Geändert"
 
 msgid "Modified for astrophotography"
-msgstr ""
+msgstr "Für Astrofotographie modifiziert."
 
 msgid "Mono"
 msgstr "Mono"
@@ -1127,6 +1186,9 @@ msgstr "Kein Plate-Solving"
 msgid "Nobody"
 msgstr "Niemand"
 
+msgid "Nobody is using this equipment item on AstroBin, at the moment."
+msgstr ""
+
 msgid "Noctilucent clouds"
 msgstr "Nachtleuchtende Wolken"
 
@@ -1146,7 +1208,7 @@ msgid "Northern lights"
 msgstr "Polarlichter"
 
 msgid "Not a {{0}}"
-msgstr ""
+msgstr "Kein {{0}}"
 
 msgid "Not enough info"
 msgstr "Nicht genug Informationen"
@@ -1231,7 +1293,7 @@ msgid "Pending review"
 msgstr "Überprüfung anstehend"
 
 msgid "Periodic error"
-msgstr ""
+msgstr "Periodischer Fehler"
 
 msgid "Periodic error correction"
 msgstr "Korrektur des periodischen Fehlers"
@@ -1280,7 +1342,7 @@ msgid "Pixels Y"
 msgstr "Pixel Y"
 
 msgid "Planetary"
-msgstr ""
+msgstr "Planetarisch"
 
 msgid "Plate-solution annotations (if available)"
 msgstr "Anmerkungen zur Astrometrierung (falls verfügbar)"
@@ -1334,6 +1396,8 @@ msgid ""
 "Please reject a renaming proposal only if the proposal incorrectly makes "
 "the item a different product."
 msgstr ""
+"Bitte lehnen Sie einen Umbenennungsvorschlag nur ab, wenn der Vorschlag den "
+"Artikel fälschlicherweise zu einem anderen Produkt macht."
 
 msgid ""
 "Please use a device with a minimum horizontal resolution of 1024 pixels to "
@@ -1421,9 +1485,6 @@ msgstr "Auslöserauschen"
 msgid "Reason"
 msgstr "Grund"
 
-msgid "Rectangular"
-msgstr ""
-
 msgid "Red channel (R)"
 msgstr "Roter Kanal (R)"
 
@@ -1431,7 +1492,7 @@ msgid "Reflector: Dall-Kirkham"
 msgstr "Reflektor: Dall-Kirkham"
 
 msgid "Reflector: Dobsonian"
-msgstr ""
+msgstr "Reflektor: Dobson"
 
 msgid "Reflector: Gregorian"
 msgstr "Reflektor: Gregorian"
@@ -1449,10 +1510,10 @@ msgid "Reflector: Ritchey Chretien"
 msgstr "Reflektor: Ritchey Chretien"
 
 msgid "Reflector: classical Cassegrain"
-msgstr ""
+msgstr "Reflektor: klassisches Cassegrain"
 
 msgid "Refractor: Petzval"
-msgstr ""
+msgstr "Refraktor: Petzval"
 
 msgid "Refractor: achromatic"
 msgstr "Refraktor: achromatisch"
@@ -1476,7 +1537,7 @@ msgid "Register"
 msgstr "Registrieren"
 
 msgid "Regular"
-msgstr ""
+msgstr "Regulär"
 
 msgid "Regular (e.g. medium/long exposure with a CCD or DSLR)"
 msgstr ""
@@ -1520,16 +1581,13 @@ msgid "Reviewed by"
 msgstr "Überprüft von"
 
 msgid "Reviewer"
-msgstr ""
+msgstr "Rezensent"
 
 msgid "Reviewer's comment"
 msgstr "Kommentar des Prüfers"
 
 msgid "Revision uploader"
 msgstr "Versions-Uploader"
-
-msgid "Round"
-msgstr ""
 
 msgid "Saturn"
 msgstr "Saturn"
@@ -1565,7 +1623,7 @@ msgid "Secure payment by Stripe™"
 msgstr "Sicheres Bezahlen mit Stripe"
 
 msgid "Seems like it's your first time editing this kind of information!"
-msgstr ""
+msgstr "Anscheinend bearbeiten Sie diese Art von Informationen zum ersten Mal!"
 
 msgid "Select an area of the image to be used as thumbnail in your gallery."
 msgstr ""
@@ -1578,7 +1636,7 @@ msgstr ""
 "neues Objekt."
 
 msgid "Select variant"
-msgstr ""
+msgstr "Variante wählen"
 
 msgid "Self acquired"
 msgstr "Selbst aufgenommen"
@@ -1614,6 +1672,8 @@ msgid ""
 "Should that happen, and you're using this equipment item on one or more of "
 "your images, you will be notified."
 msgstr ""
+"Sollte dies der Fall sein und Sie diese Ausrüstung bei einem oder mehreren "
+"Ihrer Bilder verwenden, werden Sie benachrichtigt."
 
 msgid "Show"
 msgstr "Zeigen"
@@ -1688,9 +1748,6 @@ msgstr "Spam Liste"
 msgid "Sponsors & Partners"
 msgstr "Sponsoren & Partner"
 
-msgid "Square"
-msgstr ""
-
 msgid "Staging Area"
 msgstr "Wartebereich"
 
@@ -1701,7 +1758,7 @@ msgid "Star trails"
 msgstr "Startrails"
 
 msgid "Start typing in the text box to show the dropdown suggestions."
-msgstr ""
+msgstr "Starten Sie die Eingabe in das Textfeld, um Dropdown-Vorschläge anzuzeigen."
 
 msgid "Status"
 msgstr "Status"
@@ -1755,6 +1812,8 @@ msgid ""
 "Take a look at them so you can be consistent with the naming conventions "
 "and prevent the creation of a duplicate item."
 msgstr ""
+"Sehen Sie sich das an, um die Namenskonventionen einzuhalten und die "
+"Erstellung eines doppelten Elements zu verhindern."
 
 msgid "Target image"
 msgstr "Zielbild"
@@ -1765,9 +1824,6 @@ msgstr "Teleskop"
 msgid "Telescopes & lenses"
 msgstr "Teleskope und Objektive"
 
-msgid "Telescopes or lenses"
-msgstr "Teleskope oder Objektive"
-
 msgid "Text"
 msgstr "Text"
 
@@ -1775,7 +1831,7 @@ msgid "Thank you for supporting AstroBin!"
 msgstr "Vielen Dank, dass Sie AstroBin unterstützen!"
 
 msgid "Thank you!"
-msgstr ""
+msgstr "Vielen Dank!"
 
 msgid "Thanks!"
 msgstr "Danke!"
@@ -1805,6 +1861,11 @@ msgstr ""
 "Likes für Bilder basiert und Anreize für die aktivsten und beliebtesten "
 "Mitglieder der Community bietet. {{_0}}Mehr erfahren.{{_1}}"
 
+msgid ""
+"The AstroBin equipment database is a collective community effort similar to "
+"Wikipedia."
+msgstr ""
+
 msgid "The Big Wall"
 msgstr "Die große Wand"
 
@@ -1819,13 +1880,18 @@ msgstr ""
 "auf AstroBin. Aus diesem Grund empfehlen wir, dass Sie stattdessen auf "
 "Premium oder Ultimate upgraden."
 
+msgid ""
+"The comment section for this item is not available anymore, because it's "
+"been already approved."
+msgstr ""
+
 msgid "The final font size will depend on how long your watermark is."
 msgstr "Die endgültige Schriftgröße hängt davon ab, wie lang Dein Wasserzeichen ist."
 
 msgid "The following changes are proposed:"
 msgstr "Die folgenden Änderungen werden vorgeschlagen:"
 
-msgid "The form has errors, please correct them and try again."
+msgid "The following form fields have errors, please correct them and try again:"
 msgstr ""
 
 msgid "The image will permanently disappear from your queue."
@@ -1866,16 +1932,23 @@ msgid ""
 "objects in the same item (e.g. LRGB filter set, or multiple unrelated "
 "products)."
 msgstr ""
+"Das Alt-Objekt kann nicht migriert werden, da es aus mehreren Objekten im "
+"selben Element besteht (z. B. LRGB-Filtersatz oder mehrere nicht "
+"zusammengehörige Produkte)."
 
 msgid ""
 "The legacy object cannot be migrated because it's not the right kind (e.g. "
 "a telescope added as a camera)."
 msgstr ""
+"Das Alt-Objekt kann nicht migriert werden, da es nicht der richtige Typ ist "
+"(z. B. ein als Kamera hinzugefügtes Teleskop)."
 
 msgid ""
 "The legacy object cannot be migrated because the correct target product "
 "cannot be unambiguously determined."
 msgstr ""
+"Das Alt-Objekt kann nicht migriert werden, da das richtige Zielprodukt "
+"nicht eindeutig bestimmt werden kann."
 
 msgid ""
 "The migration will be reviewed by a moderator as soon as possible, and you "
@@ -1890,6 +1963,8 @@ msgid ""
 "The migration will complete within a few moments and your images will be "
 "automatically updated."
 msgstr ""
+"Die Migration wird innerhalb weniger Augenblicke abgeschlossen. Ihre Bilder "
+"werden automatisch aktualisiert."
 
 msgid "The name of this brand. Make sure it's spelled correctly."
 msgstr "Der Name dieser Marke. Achten Sie darauf, dass er richtig geschrieben ist."
@@ -1955,6 +2030,11 @@ msgid "There are no comments yet."
 msgstr "Es gibt noch keine Kommentare."
 
 msgid ""
+"There are no images on AstroBin acquired using this equipment item, at the "
+"moment."
+msgstr ""
+
+msgid ""
 "There are no more items of this type to migrate. Check other equipment "
 "types."
 msgstr ""
@@ -1971,6 +2051,19 @@ msgid ""
 "This brand has <strong>{{0}}</strong> items in AstroBin's database, and "
 "they are shown below in alphabetical order."
 msgstr ""
+"Diese Marke hat <strong>{{0}}</strong> Artikel in der Datenbank von "
+"AstroBin. Sie werden unten in alphabetischer Reihenfolge angezeigt."
+
+msgid ""
+"This comment section is only visible to AstroBin equipment moderators and "
+"the user who created this item, and only while this equipment item is "
+"unapproved."
+msgstr ""
+
+msgid ""
+"This comment section is only visible to you and AstroBin equipment "
+"moderators, and only while this equipment item is unapproved."
+msgstr ""
 
 msgid "This field is disabled because you haven't joined any groups yet."
 msgstr "Dieses Feld ist deaktiviert, da Sie noch keiner Gruppe beigetreten sind."
@@ -1984,17 +2077,26 @@ msgstr ""
 
 msgid "This is a modified and/or custom-cooled variant of this camera."
 msgstr ""
+"Dies ist eine modifizierte und/oder speziell gekühlte Variante dieser "
+"Kamera."
 
 msgid ""
 "This item as not been approved by a moderator, and could be removed from "
 "the database if rejected."
 msgstr ""
+"Dieser Artikel wurde von nicht einem Moderator genehmigt und könnte bei "
+"Ablehnung aus der Datenbank entfernt werden."
 
 msgid "This item has a history of <strong>{{0}}</strong> approved edit proposals."
 msgstr ""
+"Dieses Element hat einen Verlauf von <strong>{{0}}</strong> genehmigten "
+"Änderungsvorschlägen."
+
+msgid "This item has already been approved by you or another moderator."
+msgstr ""
 
 msgid "This item has not been approved"
-msgstr ""
+msgstr "Dieser Artikel wurde nicht genehmigt"
 
 msgid ""
 "This item has not been approved yet, so it's not available to be associated "
@@ -2055,6 +2157,11 @@ msgstr ""
 "Dies sollte nie passieren. Wenn das Problem weiterhin besteht, kontaktieren "
 "Sie uns bitte."
 
+msgid ""
+"This space will host a forum specific to this equipment item, to connect "
+"people who own it or are interested in it."
+msgstr ""
+
 msgid "Thumbnail"
 msgstr "Vorschau"
 
@@ -2065,7 +2172,7 @@ msgid "Title"
 msgstr "Titel"
 
 msgid "Too many requests"
-msgstr ""
+msgstr "Zu viele Anfragen"
 
 msgid "Top center"
 msgstr "Oben Mitte"
@@ -2095,22 +2202,19 @@ msgid "Traveller"
 msgstr "Mobil"
 
 msgid "Tripod"
-msgstr ""
+msgstr "Stativ"
 
 msgid "Type"
 msgstr "Eingeben"
 
-msgid "Type something to create a new one..."
-msgstr "Tippen Sie etwas, um neu zu erstellen..."
+msgid "Type a brand and/or a model name to search options..."
+msgstr ""
 
 msgid "Type to search options or to create a new one..."
 msgstr "Tippen Sie, um nach Optionen zu suchen oder zu erstellen..."
 
 msgid "Type to search options..."
 msgstr "Tippen Sie in die Suchoptionen..."
-
-msgid "Type to search."
-msgstr "Eingeben um zu suchen."
 
 msgid "Ultra High Contrast (UHC)"
 msgstr "Ultra High Contrast (UHC)"
@@ -2178,6 +2282,9 @@ msgstr "Venus"
 msgid "View"
 msgstr "Ansehen"
 
+msgid "View more"
+msgstr ""
+
 msgid "Want to upgrade from a lower subscription tier?"
 msgstr "Möchten Sie von einer niedrigeren Abonnement Stufe aufwerten?"
 
@@ -2208,7 +2315,7 @@ msgid "We found similar items from the same brand."
 msgstr "Wir haben ähnliche Modelle der gleichen Marke gefunden."
 
 msgid "We found the following similar items from the same brand:"
-msgstr ""
+msgstr "Wir haben die folgenden ähnlichen Artikel derselben Marke gefunden:"
 
 msgid ""
 "We found the following similar items. Click the correct one to use it, or "
@@ -2304,6 +2411,14 @@ msgstr ""
 "unter bestimmten Umständen zu verwenden. Weitere Informationen über Ihre "
 "Möglichkeiten finden Sie auf der {{0}}Creative Commons-Website{{1}}."
 
+msgid "You can create a new one using the button below."
+msgstr ""
+
+msgid ""
+"You cannot propose an edit while there is a pending one. Please review the "
+"pending edit proposal first, thank you!"
+msgstr ""
+
 msgid ""
 "You cannot review this edit proposal because there are previous pending "
 "proposals."
@@ -2387,7 +2502,7 @@ msgid "You will overwrite your existing preset with the same name."
 msgstr "Sie überschreiben damit Ihre bestehende Voreinstellung mit demselben Namen."
 
 msgid "You're trying to do this operation too many times in a short period of time."
-msgstr ""
+msgstr "Sie versuchen, diesen Vorgang zu oft in kurzer Zeit durchzuführen."
 
 msgid "Your payments"
 msgstr "Ihre Zahlungen"
@@ -2448,7 +2563,7 @@ msgid "consider making an edit proposal instead."
 msgstr "erwägen Sie stattdessen einen Änderungsvorschlag zu machen."
 
 msgid "cooled"
-msgstr ""
+msgstr "gekühlt"
 
 msgid "day"
 msgstr "Tag"
@@ -2463,7 +2578,7 @@ msgid "e.g. 'Home observatory'"
 msgstr "z.B. 'Heimatsternwarte'"
 
 msgid "modified"
-msgstr ""
+msgstr "modifiziert"
 
 msgid "multiple items"
 msgstr "mehrere Artikel"
@@ -2475,7 +2590,7 @@ msgid "not enough info"
 msgstr "nicht genug Infos"
 
 msgid "or"
-msgstr ""
+msgstr "oder"
 
 msgid ""
 "there is an etiquette regarding uploading a new image versus an image "

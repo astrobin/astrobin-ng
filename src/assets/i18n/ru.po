@@ -63,6 +63,12 @@ msgstr ""
 msgid "Accessory"
 msgstr ""
 
+msgid "Acquisition cameras"
+msgstr ""
+
+msgid "Acquisition telescopes or lenses"
+msgstr ""
+
 msgid "Acquisition type"
 msgstr ""
 
@@ -115,6 +121,12 @@ msgid "And much more!"
 msgstr "...и многое другое!"
 
 msgid "Anular solar eclipse"
+msgstr ""
+
+msgid "Any changes you make will be reviewed by other members."
+msgstr ""
+
+msgid "Anybody can review edit proposals made by any other member."
 msgstr ""
 
 msgid "Aperture"
@@ -180,11 +192,19 @@ msgid ""
 "consistent with naming conventions."
 msgstr ""
 
+msgid ""
+"AstroBin's equipment database is entirely maintained by the community. Feel "
+"free to make a contribution!"
+msgstr ""
+
 msgid "AstroBin's new equipment database is still work in progress."
 msgstr ""
 
 msgid "Astrophotographers list"
 msgstr "Список астрофотографов"
+
+msgid "Astrophotographers who have used this equipment item"
+msgstr ""
 
 msgid "Attribution Creative Commons"
 msgstr ""
@@ -368,6 +388,9 @@ msgstr ""
 msgid "Cometary"
 msgstr ""
 
+msgid "Coming soon!"
+msgstr ""
+
 msgid "Comment"
 msgstr ""
 
@@ -503,6 +526,9 @@ msgstr "Перетащите файл сюда или нажмите, чтобы
 msgid "Dual Alt-Az/Equatorial"
 msgstr ""
 
+msgid "Duplicate of"
+msgstr ""
+
 msgid "E-mail"
 msgstr ""
 
@@ -577,6 +603,9 @@ msgstr ""
 
 msgid "FAQ"
 msgstr "ЧАВО"
+
+msgid "Feel free to contribute!"
+msgstr ""
 
 msgid ""
 "File too large. If you just upgraded your subscription, please try again in "
@@ -767,6 +796,11 @@ msgid ""
 "here."
 msgstr ""
 
+msgid ""
+"If you're not sure how to use this page, feel free to contact AstroBin or "
+"just skip it and let AstroBin moderators deal with your equipment later."
+msgstr ""
+
 msgid "Image"
 msgstr ""
 
@@ -787,6 +821,9 @@ msgstr ""
 
 msgid "Images"
 msgstr "Изображения"
+
+msgid "Images acquired using this equipment item"
+msgstr ""
 
 msgid "Imaging cameras"
 msgstr ""
@@ -812,6 +849,11 @@ msgstr ""
 msgid "Inverted monochrome"
 msgstr ""
 
+msgid ""
+"It looks like you are in the process of creating an equipment item, please "
+"complete or cancel that operation before saving the entire form."
+msgstr ""
+
 msgid "It looks like you reached the revision upload limit for your subscription."
 msgstr ""
 
@@ -825,9 +867,6 @@ msgid "Item approved."
 msgstr ""
 
 msgid "Item class"
-msgstr ""
-
-msgid "Item rejected."
 msgstr ""
 
 msgid "Item summary"
@@ -1067,6 +1106,9 @@ msgid "No plate-solving"
 msgstr "Нет распознавания кадра"
 
 msgid "Nobody"
+msgstr ""
+
+msgid "Nobody is using this equipment item on AstroBin, at the moment."
 msgstr ""
 
 msgid "Noctilucent clouds"
@@ -1338,9 +1380,6 @@ msgstr ""
 msgid "Reason"
 msgstr ""
 
-msgid "Rectangular"
-msgstr ""
-
 msgid "Red channel (R)"
 msgstr ""
 
@@ -1442,9 +1481,6 @@ msgstr ""
 
 msgid "Revision uploader"
 msgstr "Загрузчик редакции"
-
-msgid "Round"
-msgstr ""
 
 msgid "Saturn"
 msgstr ""
@@ -1590,9 +1626,6 @@ msgstr "Список спама"
 msgid "Sponsors & Partners"
 msgstr "Спонсоры & Партнёры"
 
-msgid "Square"
-msgstr ""
-
 msgid "Staging Area"
 msgstr "Студия"
 
@@ -1667,9 +1700,6 @@ msgstr ""
 msgid "Telescopes & lenses"
 msgstr ""
 
-msgid "Telescopes or lenses"
-msgstr ""
-
 msgid "Text"
 msgstr ""
 
@@ -1699,6 +1729,11 @@ msgid ""
 "community. {{_0}}Learn more.{{_1}}"
 msgstr ""
 
+msgid ""
+"The AstroBin equipment database is a collective community effort similar to "
+"Wikipedia."
+msgstr ""
+
 msgid "The Big Wall"
 msgstr "Большая Стена"
 
@@ -1709,13 +1744,18 @@ msgid ""
 "Ultimate instead."
 msgstr ""
 
+msgid ""
+"The comment section for this item is not available anymore, because it's "
+"been already approved."
+msgstr ""
+
 msgid "The final font size will depend on how long your watermark is."
 msgstr ""
 
 msgid "The following changes are proposed:"
 msgstr ""
 
-msgid "The form has errors, please correct them and try again."
+msgid "The following form fields have errors, please correct them and try again:"
 msgstr ""
 
 msgid "The image will permanently disappear from your queue."
@@ -1826,6 +1866,11 @@ msgid "There are no comments yet."
 msgstr ""
 
 msgid ""
+"There are no images on AstroBin acquired using this equipment item, at the "
+"moment."
+msgstr ""
+
+msgid ""
 "There are no more items of this type to migrate. Check other equipment "
 "types."
 msgstr ""
@@ -1839,6 +1884,17 @@ msgstr ""
 msgid ""
 "This brand has <strong>{{0}}</strong> items in AstroBin's database, and "
 "they are shown below in alphabetical order."
+msgstr ""
+
+msgid ""
+"This comment section is only visible to AstroBin equipment moderators and "
+"the user who created this item, and only while this equipment item is "
+"unapproved."
+msgstr ""
+
+msgid ""
+"This comment section is only visible to you and AstroBin equipment "
+"moderators, and only while this equipment item is unapproved."
 msgstr ""
 
 msgid "This field is disabled because you haven't joined any groups yet."
@@ -1860,6 +1916,9 @@ msgid ""
 msgstr ""
 
 msgid "This item has a history of <strong>{{0}}</strong> approved edit proposals."
+msgstr ""
+
+msgid "This item has already been approved by you or another moderator."
 msgstr ""
 
 msgid "This item has not been approved"
@@ -1910,6 +1969,11 @@ msgstr ""
 msgid "This should never happen. If the problem persists, please contact us."
 msgstr ""
 
+msgid ""
+"This space will host a forum specific to this equipment item, to connect "
+"people who own it or are interested in it."
+msgstr ""
+
 msgid "Thumbnail"
 msgstr ""
 
@@ -1955,16 +2019,13 @@ msgstr ""
 msgid "Type"
 msgstr ""
 
-msgid "Type something to create a new one..."
+msgid "Type a brand and/or a model name to search options..."
 msgstr ""
 
 msgid "Type to search options or to create a new one..."
 msgstr ""
 
 msgid "Type to search options..."
-msgstr ""
-
-msgid "Type to search."
 msgstr ""
 
 msgid "Ultra High Contrast (UHC)"
@@ -2027,6 +2088,9 @@ msgid "Venus"
 msgstr ""
 
 msgid "View"
+msgstr ""
+
+msgid "View more"
 msgstr ""
 
 msgid "Want to upgrade from a lower subscription tier?"
@@ -2130,6 +2194,14 @@ msgid ""
 "to grant people the right to use your work under certain circumstances. For "
 "more information on what your options are, please visit the {{0}}Creative "
 "Commons website{{1}}."
+msgstr ""
+
+msgid "You can create a new one using the button below."
+msgstr ""
+
+msgid ""
+"You cannot propose an edit while there is a pending one. Please review the "
+"pending edit proposal first, thank you!"
 msgstr ""
 
 msgid ""

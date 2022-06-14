@@ -75,6 +75,12 @@ msgstr "Аксесуари"
 msgid "Accessory"
 msgstr "Аксесуар"
 
+msgid "Acquisition cameras"
+msgstr ""
+
+msgid "Acquisition telescopes or lenses"
+msgstr ""
+
 msgid "Acquisition type"
 msgstr "Тип придбання"
 
@@ -88,7 +94,7 @@ msgid "Advanced search"
 msgstr "Розширений пошук"
 
 msgid "Alias"
-msgstr ""
+msgstr "Псевдонім"
 
 msgid "Allow comments"
 msgstr "Дозволити коментарі"
@@ -97,7 +103,7 @@ msgid "Allow full-size display"
 msgstr "Дозволити відображення в повному розмірі"
 
 msgid "Also available in the following variants:"
-msgstr ""
+msgstr "Також доступне у таких варіантах:"
 
 msgid "Alt-Alt (altitude-altitude)"
 msgstr "Alt-Alt (висота-висота)"
@@ -128,6 +134,12 @@ msgstr "Та багато іншого!"
 
 msgid "Anular solar eclipse"
 msgstr "Кільцеве сонячне затемнення"
+
+msgid "Any changes you make will be reviewed by other members."
+msgstr ""
+
+msgid "Anybody can review edit proposals made by any other member."
+msgstr ""
 
 msgid "Aperture"
 msgstr "Діафрагма"
@@ -190,6 +202,8 @@ msgid ""
 "AstroBin will automatically create variants of this camera marked as "
 "\"modified for astrophotography\" and \"custom-cooled\"."
 msgstr ""
+"Astrobin автоматично створить варіанти цієї камери, яка названа як "
+"\"модифікована для астрофотографії\" та \"саморобне охолодження\"."
 
 msgid ""
 "AstroBin would like to rename some of your gear items in order to be more "
@@ -198,11 +212,19 @@ msgstr ""
 "AstroBin хотів би перейменувати деякі з ваших елементів спорядження, щоб "
 "вони відповідали умовам найменування."
 
+msgid ""
+"AstroBin's equipment database is entirely maintained by the community. Feel "
+"free to make a contribution!"
+msgstr ""
+
 msgid "AstroBin's new equipment database is still work in progress."
 msgstr "Нова база даних обладнання AstroBin все ще у роботі."
 
 msgid "Astrophotographers list"
 msgstr "Список астрофотографів"
+
+msgid "Astrophotographers who have used this equipment item"
+msgstr ""
 
 msgid "Attribution Creative Commons"
 msgstr "Авторство Creative Commons"
@@ -229,7 +251,7 @@ msgid "Autorenew"
 msgstr "Автооновлення"
 
 msgid "Available in {{0}} additional variants."
-msgstr ""
+msgstr "Доступно у {{0}} варіантах"
 
 msgid "Back focus"
 msgstr "Задній відрізок"
@@ -292,7 +314,7 @@ msgid "Cameras"
 msgstr "Камери"
 
 msgid "Can't find <strong>{{0}}</strong>?"
-msgstr ""
+msgstr "Не можете знайти <strong>{{0}}</strong>?"
 
 msgid "Cancel"
 msgstr "Скасувати"
@@ -319,7 +341,7 @@ msgid "Catadioptric: Maksutov-Cassegrain"
 msgstr "Катадіоптрик: Максутов-Кассегрен"
 
 msgid "Catadioptric: Riccardi-Honders"
-msgstr ""
+msgstr "Катадіоптрик: Ріккарді-Хондерс"
 
 msgid "Catadioptric: Rowe-Atkinson Schmidt astrograph"
 msgstr "Катадіоптрик: Рові-Аткінсон Шмидт астрограф"
@@ -334,7 +356,7 @@ msgid "Catadioptric: modified Dall-Kirkham"
 msgstr "Катадіоптрик: модифікований Долл-Кірхем"
 
 msgid "Catadioptric: modified Harmer-Wynne"
-msgstr ""
+msgstr "Катадіоптрик: модифікований Harmer-Wynne"
 
 msgid "Celsius degrees below ambient"
 msgstr "Градусів Цельсія нижче температури навколишнього середовища"
@@ -390,6 +412,9 @@ msgstr "Комета"
 
 msgid "Cometary"
 msgstr "Комета"
+
+msgid "Coming soon!"
+msgstr ""
 
 msgid "Comment"
 msgstr "Коментар"
@@ -449,7 +474,7 @@ msgid "Create a new item"
 msgstr "Створити новий елемент"
 
 msgid "Create item"
-msgstr ""
+msgstr "Створити елемент"
 
 msgid "Create new brand"
 msgstr "Створити новий бренд"
@@ -461,13 +486,16 @@ msgid "Created by"
 msgstr "Створено"
 
 msgid "Custom-cooled"
-msgstr ""
+msgstr "Саморобне охолодження"
 
 msgid ""
 "Custom-cooled cameras are DSLR and mirrorless cameras that are not sold "
 "with cooling as stock, but a cooling mechanism is added as a custom "
 "modification."
 msgstr ""
+"Камери з саморобним охолодженням — це дзеркальні та бездзеркальні камери, "
+"які не продаються з охолодженням, але механізм охолодження додається як "
+"спеціальна модифікація."
 
 msgid "Data source"
 msgstr "Джерело даних"
@@ -504,6 +532,9 @@ msgid ""
 "rejection at this time, as data defragmentation is more important than "
 "minor spelling concerns that can be fixed later."
 msgstr ""
+"Не дозволяйте, щоб Ваші особисті переваги щодо назв були причиною для "
+"відхилення, оскільки дефрагментація даних важливіша за незначні проблеми з "
+"правописом, які можна виправити пізніше."
 
 msgid "Do not notify your followers about this revision."
 msgstr "Не повідомляти Ваших підписників про цю редакцію."
@@ -525,6 +556,9 @@ msgstr "Перетягніть сюди файл або натисніть що�
 
 msgid "Dual Alt-Az/Equatorial"
 msgstr "Подвійний Alt-Az/EQ"
+
+msgid "Duplicate of"
+msgstr ""
 
 msgid "E-mail"
 msgstr "Ел. пошта"
@@ -601,6 +635,9 @@ msgstr "Надзвичайно широке поле"
 msgid "FAQ"
 msgstr "Часті питання"
 
+msgid "Feel free to contribute!"
+msgstr ""
+
 msgid ""
 "File too large. If you just upgraded your subscription, please try again in "
 "a few minutes. Thanks!"
@@ -648,7 +685,7 @@ msgstr ""
 "Twitter:"
 
 msgid "For security reasons, this is not permitted."
-msgstr ""
+msgstr "З міркувань безпеки це заборонено."
 
 msgid ""
 "For this reason, you cannot purchase this at the moment, as AstroBin does "
@@ -691,13 +728,13 @@ msgid "German equatorial"
 msgstr "Німецька екваторіальна"
 
 msgid "Get next"
-msgstr ""
+msgstr "Далі"
 
 msgid "Go back to the home page."
 msgstr "Повернутися на головну."
 
 msgid "Go to regular variant."
-msgstr ""
+msgstr "Перейти до звичайного варіанту."
 
 msgid "Green channel (G)"
 msgstr "Зелений канал (G)"
@@ -749,20 +786,24 @@ msgid "Hydrogen-beta (Hβ)"
 msgstr "Гідроген-beta (Hβ)"
 
 msgid "I have carefully checked for typos"
-msgstr ""
+msgstr "Я ретельно перевірив на наявність помилок"
 
 msgid ""
 "I have carefully checked that this item conforms to existing naming "
 "conventions for this brand"
 msgstr ""
+"Я ретельно перевірив, чи цей елемент відповідає існуючим умовам "
+"найменування для цього бренду"
 
 msgid "I have carefully checked that this item does not duplicate an existing one"
-msgstr ""
+msgstr "Я ретельно перевірив, чи цей елемент не дублює існуючий"
 
 msgid ""
 "I have not included information that pertains to my personal item (e.g. "
 "sold/broken/refurbished...) and this is the general description of a product"
 msgstr ""
+"Я не включив інформацію, яка стосується моєї особистої речі (наприклад, "
+"продано/зламано/відремонтовано...), і це загальний опис продукту"
 
 msgid "IOTD"
 msgstr "IOTD"
@@ -807,6 +848,11 @@ msgstr ""
 "Якщо ви розміщуєте копію цього зображення на своєму веб-сайті, введіть тут "
 "його адресу."
 
+msgid ""
+"If you're not sure how to use this page, feel free to contact AstroBin or "
+"just skip it and let AstroBin moderators deal with your equipment later."
+msgstr ""
+
 msgid "Image"
 msgstr "Зображення"
 
@@ -827,6 +873,9 @@ msgstr "Зображення збережено"
 
 msgid "Images"
 msgstr "Зображення"
+
+msgid "Images acquired using this equipment item"
+msgstr ""
 
 msgid "Imaging cameras"
 msgstr "Камери зйомки"
@@ -852,6 +901,11 @@ msgstr "Недійсні дані, оновіть сторінку та повт
 msgid "Inverted monochrome"
 msgstr "Перевернутий монохромний"
 
+msgid ""
+"It looks like you are in the process of creating an equipment item, please "
+"complete or cancel that operation before saving the entire form."
+msgstr ""
+
 msgid "It looks like you reached the revision upload limit for your subscription."
 msgstr "Схоже, ви досягли ліміту завантаження версій для своєї підписки."
 
@@ -865,10 +919,7 @@ msgid "Item approved."
 msgstr "Елемент затверджено."
 
 msgid "Item class"
-msgstr ""
-
-msgid "Item rejected."
-msgstr "Елемент відхилено."
+msgstr "Клас елементу"
 
 msgid "Item summary"
 msgstr "Резюме предмета"
@@ -1036,12 +1087,14 @@ msgid ""
 "Modifications typically include LPF2 filter removal, Baader modification, "
 "or full-spectrum modification."
 msgstr ""
+"Модифікації зазвичай включають видалення фільтра LPF2, модифікацію Baader "
+"або модифікацію до повного спектру."
 
 msgid "Modified"
 msgstr "Модифікований"
 
 msgid "Modified for astrophotography"
-msgstr ""
+msgstr "Модифікований для астрофотографії"
 
 msgid "Mono"
 msgstr "Моно"
@@ -1109,6 +1162,9 @@ msgstr "Без розпізнання поля"
 msgid "Nobody"
 msgstr "Ніхто"
 
+msgid "Nobody is using this equipment item on AstroBin, at the moment."
+msgstr ""
+
 msgid "Noctilucent clouds"
 msgstr "Світлові хмари"
 
@@ -1128,7 +1184,7 @@ msgid "Northern lights"
 msgstr "Північне сяйво"
 
 msgid "Not a {{0}}"
-msgstr ""
+msgstr "Не {{0}}"
 
 msgid "Not enough info"
 msgstr "Недостатньо інформації"
@@ -1213,7 +1269,7 @@ msgid "Pending review"
 msgstr "Очікується огляд"
 
 msgid "Periodic error"
-msgstr ""
+msgstr "Періодична помилка"
 
 msgid "Periodic error correction"
 msgstr "Періодичне виправлення помилки (PEC)"
@@ -1262,7 +1318,7 @@ msgid "Pixels Y"
 msgstr "Пікселів по Y"
 
 msgid "Planetary"
-msgstr ""
+msgstr "Планетарна"
 
 msgid "Plate-solution annotations (if available)"
 msgstr "Коментар до роспізнавання поля (якщо є)"
@@ -1314,6 +1370,8 @@ msgid ""
 "Please reject a renaming proposal only if the proposal incorrectly makes "
 "the item a different product."
 msgstr ""
+"Будь ласка, відхиліть пропозицію щодо перейменування лише в тому випадку, "
+"якщо пропозиція неправильно робить товар іншим продуктом."
 
 msgid ""
 "Please use a device with a minimum horizontal resolution of 1024 pixels to "
@@ -1397,9 +1455,6 @@ msgstr "Шум считування"
 msgid "Reason"
 msgstr "Причина"
 
-msgid "Rectangular"
-msgstr ""
-
 msgid "Red channel (R)"
 msgstr "Червоний канал (R)"
 
@@ -1407,7 +1462,7 @@ msgid "Reflector: Dall-Kirkham"
 msgstr "Рефлектор: Долл-Кіркхем"
 
 msgid "Reflector: Dobsonian"
-msgstr ""
+msgstr "Рефлектор: Добсона"
 
 msgid "Reflector: Gregorian"
 msgstr "Рефлектор: Грегорі"
@@ -1425,10 +1480,10 @@ msgid "Reflector: Ritchey Chretien"
 msgstr "Рефлектор: Річі-Крітьєн"
 
 msgid "Reflector: classical Cassegrain"
-msgstr ""
+msgstr "Рефлектор: класичний Кассегрен"
 
 msgid "Refractor: Petzval"
-msgstr ""
+msgstr "Рефрактор: Пецваля"
 
 msgid "Refractor: achromatic"
 msgstr "Рефрактор: ахромат"
@@ -1452,7 +1507,7 @@ msgid "Register"
 msgstr "Реєстрація"
 
 msgid "Regular"
-msgstr ""
+msgstr "Звичайний"
 
 msgid "Regular (e.g. medium/long exposure with a CCD or DSLR)"
 msgstr "Регулярна (наприклад, середня/довга експозиція з CCD або DSLR)"
@@ -1494,16 +1549,13 @@ msgid "Reviewed by"
 msgstr "Переглянуто"
 
 msgid "Reviewer"
-msgstr ""
+msgstr "Рецензент"
 
 msgid "Reviewer's comment"
 msgstr "Коментар рецензента"
 
 msgid "Revision uploader"
 msgstr "Завантажувач версії"
-
-msgid "Round"
-msgstr ""
 
 msgid "Saturn"
 msgstr "Сатурн"
@@ -1536,7 +1588,7 @@ msgid "Secure payment by Stripe™"
 msgstr "Безпечна оплата через Stripe™"
 
 msgid "Seems like it's your first time editing this kind of information!"
-msgstr ""
+msgstr "Здається, ви вперше редагуєте таку інформацію!"
 
 msgid "Select an area of the image to be used as thumbnail in your gallery."
 msgstr ""
@@ -1547,7 +1599,7 @@ msgid "Select target item for the migration, or create a new one."
 msgstr "Виберіть цільовий елемент для міграції або створіть новий."
 
 msgid "Select variant"
-msgstr ""
+msgstr "Оберіть варіант"
 
 msgid "Self acquired"
 msgstr "Отримано"
@@ -1583,6 +1635,8 @@ msgid ""
 "Should that happen, and you're using this equipment item on one or more of "
 "your images, you will be notified."
 msgstr ""
+"Якщо це станеться, і Ви використовуєте цей елемент обладнання на одному чи "
+"кількох своїх зображеннях, Ви отримаєте сповіщення."
 
 msgid "Show"
 msgstr "Показати"
@@ -1655,9 +1709,6 @@ msgstr "Спам"
 msgid "Sponsors & Partners"
 msgstr "Спонсори та Партнери"
 
-msgid "Square"
-msgstr ""
-
 msgid "Staging Area"
 msgstr "Студія"
 
@@ -1668,7 +1719,7 @@ msgid "Star trails"
 msgstr "Зоряні стежки"
 
 msgid "Start typing in the text box to show the dropdown suggestions."
-msgstr ""
+msgstr "Почніть вводити текст у текстовому полі, щоб відобразити спадні пропозиції."
 
 msgid "Status"
 msgstr "Статус"
@@ -1722,6 +1773,8 @@ msgid ""
 "Take a look at them so you can be consistent with the naming conventions "
 "and prevent the creation of a duplicate item."
 msgstr ""
+"Подивіться на них, щоб дотримуватись умов імен і запобігти створенню "
+"повторень."
 
 msgid "Target image"
 msgstr "Кінцеве зображення"
@@ -1732,9 +1785,6 @@ msgstr "Телескоп"
 msgid "Telescopes & lenses"
 msgstr "Телескопи та об‘єктиви"
 
-msgid "Telescopes or lenses"
-msgstr "Телескопи або об‘єктиви"
-
 msgid "Text"
 msgstr "Текст"
 
@@ -1742,7 +1792,7 @@ msgid "Thank you for supporting AstroBin!"
 msgstr "Дякуємо за підтримку AstroBin!"
 
 msgid "Thank you!"
-msgstr ""
+msgstr "Дякуємо!"
 
 msgid "Thanks!"
 msgstr "Дякуємо!"
@@ -1772,6 +1822,11 @@ msgstr ""
 "лайків зображень, яка стимулює найбільш активних членів спільноти, яких "
 "найбільше лайкають. {{_0}}Докладніше.{_1}}"
 
+msgid ""
+"The AstroBin equipment database is a collective community effort similar to "
+"Wikipedia."
+msgstr ""
+
 msgid "The Big Wall"
 msgstr "Велика Стіна"
 
@@ -1786,13 +1841,18 @@ msgstr ""
 "<strong>{{numberOfImages}}</strong> зображень у AstroBin. З цієї причини ми "
 "рекомендуємо вам перейти на Premium або Ultimate."
 
+msgid ""
+"The comment section for this item is not available anymore, because it's "
+"been already approved."
+msgstr ""
+
 msgid "The final font size will depend on how long your watermark is."
 msgstr "Остаточний розмір шрифту буде залежати від довжини вашого водяного знака."
 
 msgid "The following changes are proposed:"
 msgstr "Пропонуються такі зміни:"
 
-msgid "The form has errors, please correct them and try again."
+msgid "The following form fields have errors, please correct them and try again:"
 msgstr ""
 
 msgid "The image will permanently disappear from your queue."
@@ -1830,16 +1890,23 @@ msgid ""
 "objects in the same item (e.g. LRGB filter set, or multiple unrelated "
 "products)."
 msgstr ""
+"Застарілий об’єкт не можна перенести, оскільки він складається з кількох "
+"об’єктів в одному елементі (наприклад, набір фільтрів LRGB або кілька "
+"непов’язаних продуктів)."
 
 msgid ""
 "The legacy object cannot be migrated because it's not the right kind (e.g. "
 "a telescope added as a camera)."
 msgstr ""
+"Застарілий об’єкт не можна перемістити, оскільки він невідповідного типу "
+"(наприклад, телескоп додано як камеру)."
 
 msgid ""
 "The legacy object cannot be migrated because the correct target product "
 "cannot be unambiguously determined."
 msgstr ""
+"Застарілий об’єкт не можна перенести, оскільки не можна однозначно "
+"визначити правильний цільовий продукт."
 
 msgid ""
 "The migration will be reviewed by a moderator as soon as possible, and you "
@@ -1854,6 +1921,8 @@ msgid ""
 "The migration will complete within a few moments and your images will be "
 "automatically updated."
 msgstr ""
+"Переміщення завершиться протягом кількох хвилин, і Ваші зображення будуть "
+"автоматично оновлені."
 
 msgid "The name of this brand. Make sure it's spelled correctly."
 msgstr "Назва цього бренду. Переконайтеся, що його написано правильно."
@@ -1917,6 +1986,11 @@ msgid "There are no comments yet."
 msgstr "Ще немає коментарів."
 
 msgid ""
+"There are no images on AstroBin acquired using this equipment item, at the "
+"moment."
+msgstr ""
+
+msgid ""
 "There are no more items of this type to migrate. Check other equipment "
 "types."
 msgstr "Більше немає схожих елементів для міграції. Перевірте інші типи обладнання."
@@ -1931,6 +2005,19 @@ msgid ""
 "This brand has <strong>{{0}}</strong> items in AstroBin's database, and "
 "they are shown below in alphabetical order."
 msgstr ""
+"Цей бренд містить <strong>{{0}}</strong> елементи в базі даних AstroBin, і "
+"вони наведені нижче в алфавітному порядку."
+
+msgid ""
+"This comment section is only visible to AstroBin equipment moderators and "
+"the user who created this item, and only while this equipment item is "
+"unapproved."
+msgstr ""
+
+msgid ""
+"This comment section is only visible to you and AstroBin equipment "
+"moderators, and only while this equipment item is unapproved."
+msgstr ""
 
 msgid "This field is disabled because you haven't joined any groups yet."
 msgstr "Це поле вимкнено, оскільки Ви ще не приєдналися до жодної групи."
@@ -1943,18 +2030,25 @@ msgstr ""
 "зробити його загальнодоступним наприкінці процесу."
 
 msgid "This is a modified and/or custom-cooled variant of this camera."
-msgstr ""
+msgstr "Це модифікований та/або з саморобним офолодженням варіант цієї камери."
 
 msgid ""
 "This item as not been approved by a moderator, and could be removed from "
 "the database if rejected."
 msgstr ""
+"Цей елемент не схвалений модератором, і його можна видалити з бази даних, "
+"якщо його буде відхилено."
 
 msgid "This item has a history of <strong>{{0}}</strong> approved edit proposals."
 msgstr ""
+"Цей елемент має історію <strong>{{0}}</strong> схвалених пропозицій "
+"редагування."
+
+msgid "This item has already been approved by you or another moderator."
+msgstr ""
 
 msgid "This item has not been approved"
-msgstr ""
+msgstr "Цей елемент не затверджено"
 
 msgid ""
 "This item has not been approved yet, so it's not available to be associated "
@@ -2009,6 +2103,11 @@ msgstr ""
 msgid "This should never happen. If the problem persists, please contact us."
 msgstr "Цього ніколи не повинно статися. Якщо проблема не зникне, зв’яжіться з нами."
 
+msgid ""
+"This space will host a forum specific to this equipment item, to connect "
+"people who own it or are interested in it."
+msgstr ""
+
 msgid "Thumbnail"
 msgstr "Піктограма"
 
@@ -2019,7 +2118,7 @@ msgid "Title"
 msgstr "Заголовок"
 
 msgid "Too many requests"
-msgstr ""
+msgstr "Забагато запитів"
 
 msgid "Top center"
 msgstr "По центру вгорі"
@@ -2049,22 +2148,19 @@ msgid "Traveller"
 msgstr "Мандрівник"
 
 msgid "Tripod"
-msgstr ""
+msgstr "Штатив"
 
 msgid "Type"
 msgstr "Тип"
 
-msgid "Type something to create a new one..."
-msgstr "Введіть щось, щоб створити нове…"
+msgid "Type a brand and/or a model name to search options..."
+msgstr ""
 
 msgid "Type to search options or to create a new one..."
 msgstr "Введіть, щоб знайти параметри або створити нові…"
 
 msgid "Type to search options..."
 msgstr "Введіть для пошуку параметрів…"
-
-msgid "Type to search."
-msgstr "Введіть для пошуку."
 
 msgid "Ultra High Contrast (UHC)"
 msgstr "Надвисокий контраст (UHC)"
@@ -2132,6 +2228,9 @@ msgstr "Венера"
 msgid "View"
 msgstr "Перегляд"
 
+msgid "View more"
+msgstr ""
+
 msgid "Want to upgrade from a lower subscription tier?"
 msgstr "Бажаєте перейти з нижчого рівня підписки?"
 
@@ -2159,7 +2258,7 @@ msgid "We found similar items from the same brand."
 msgstr "Ми знайшли схожі товари від тієї ж марки."
 
 msgid "We found the following similar items from the same brand:"
-msgstr ""
+msgstr "Ми знайшли такі подібні товари від тієї ж марки:"
 
 msgid ""
 "We found the following similar items. Click the correct one to use it, or "
@@ -2252,6 +2351,14 @@ msgstr ""
 "обставин. Щоб дізнатися більше про ваші варіанти, відвідайте {{0}}веб-сайт "
 "Creative Commons{{1}}."
 
+msgid "You can create a new one using the button below."
+msgstr ""
+
+msgid ""
+"You cannot propose an edit while there is a pending one. Please review the "
+"pending edit proposal first, thank you!"
+msgstr ""
+
 msgid ""
 "You cannot review this edit proposal because there are previous pending "
 "proposals."
@@ -2332,6 +2439,8 @@ msgstr "Ви перезапишете існуючий пресет з тако�
 
 msgid "You're trying to do this operation too many times in a short period of time."
 msgstr ""
+"Ви намагаєтеся виконати цю операцію занадто багато разів за короткий "
+"проміжок часу."
 
 msgid "Your payments"
 msgstr "Ваші платежі"
@@ -2390,7 +2499,7 @@ msgid "consider making an edit proposal instead."
 msgstr "натомість розгляньте пропозицію редагування."
 
 msgid "cooled"
-msgstr ""
+msgstr "з охолодженням"
 
 msgid "day"
 msgstr "день"
@@ -2405,7 +2514,7 @@ msgid "e.g. 'Home observatory'"
 msgstr "наприклад, «Домашня обсерваторія»"
 
 msgid "modified"
-msgstr ""
+msgstr "модифіковано"
 
 msgid "multiple items"
 msgstr "кілька предметів"
@@ -2417,7 +2526,7 @@ msgid "not enough info"
 msgstr "недостатньо інформації"
 
 msgid "or"
-msgstr ""
+msgstr "або"
 
 msgid ""
 "there is an etiquette regarding uploading a new image versus an image "
