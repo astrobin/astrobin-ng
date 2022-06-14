@@ -155,6 +155,11 @@
         </div>
       </div>
 
+      <div [hidden]="migrationMode || migrationConfirmation.inProgress" class="mt-2 alert alert-info">
+        <fa-icon icon="info-circle"></fa-icon>
+        {{ "If you're not sure how to use this page, feel free to contact AstroBin or just skip it and let AstroBin moderators deal with your equipment later." | translate }}
+      </div>
+
       <ng-container *ngIf="migrationMode">
         <div class="mt-4 mb-4 text-center">
           <fa-icon icon="arrow-down"></fa-icon>
