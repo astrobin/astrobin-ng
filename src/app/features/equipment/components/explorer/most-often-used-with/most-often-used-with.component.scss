@@ -28,6 +28,15 @@
   margin: .75rem;
 }
 
+astrobin-nothing-here,
 astrobin-loading-indicator {
   padding: 1.5rem;
+}
+
+astrobin-nothing-here {
+  color: var(--lightGrey);
+}
+
+:host astrobin-nothing-here ::ng-deep p {
+  margin: 0;
 }

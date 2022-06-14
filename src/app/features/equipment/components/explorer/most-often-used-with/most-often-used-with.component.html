@@ -6,14 +6,14 @@
 
   <div class="card-body">
     <ng-container *ngIf="mostOftenUsedWith !== undefined; else loading">
-      <table class="table table-sm table-striped">
+      <table *ngIf="mostOftenUsedWith.length > 0; else noItems" class="table table-sm table-striped">
         <tbody>
         <tr *ngFor="let entry of sortedItems(mostOftenUsedWith)">
           <td>
             <a [routerLink]="['/equipment/explorer', entry.item.klass.toLowerCase(), entry.item.id]">
               <astrobin-equipment-item-display-name
                 [item]="entry.item"
-                [ngbTooltip]="'{{0}} image(s)' | translate:{'0': entry.imageCount}"
+                [ngbTooltip]="'{{0}} images' | translate:{'0': entry.imageCount}"
               ></astrobin-equipment-item-display-name>
             </a>
           </td>
@@ -29,6 +29,10 @@
     </ng-container>
   </div>
 </div>
+
+<ng-template #noItems>
+  <astrobin-nothing-here [withAlert]="false" [withInfoSign]="false"></astrobin-nothing-here>
+</ng-template>
 
 <ng-template #loading>
   <astrobin-loading-indicator></astrobin-loading-indicator>
