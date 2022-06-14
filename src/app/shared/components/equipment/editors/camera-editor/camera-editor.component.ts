@@ -81,6 +81,9 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
     this.subCreation.model = {};
     this.subCreation.form.reset();
     this.subCreationInProgress.emit(false);
+    setTimeout(() => {
+      this.windowRefService.scrollToElement("#camera-field-sensor");
+    }, 250);
   }
 
   private _initFields() {
