@@ -48,11 +48,17 @@
           </tr>
         </ng-container>
         <tr class="property">
-          <th class="property-name">{{ "Users" | translate }}</th>
+          <th class="property-name">
+            {{ "Users" | translate }}
+            <astrobin-data-does-not-update-in-realtime></astrobin-data-does-not-update-in-realtime>
+          </th>
           <td class="property-value">{{ item.userCount || 0 }}</td>
         </tr>
         <tr class="property">
-          <th class="property-name">{{ "Images" | translate }}</th>
+          <th class="property-name">
+            {{ "Images" | translate }}
+            <astrobin-data-does-not-update-in-realtime></astrobin-data-does-not-update-in-realtime>
+          </th>
           <td class="property-value">{{ item.imageCount || 0 }}</td>
         </tr>
         </tbody>

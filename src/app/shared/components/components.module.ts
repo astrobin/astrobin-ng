@@ -86,6 +86,7 @@ import { ConfirmationDialogComponent } from "@shared/components/misc/confirmatio
 import { ItemUnapprovedInfoModalComponent } from "@shared/components/equipment/item-unapproved-info-modal/item-unapproved-info-modal.component";
 import { VariantSelectorModalComponent } from "@shared/components/equipment/item-browser/variant-selector-modal/variant-selector-modal.component";
 import { AvatarComponent } from "@shared/components/misc/avatar/avatar.component";
+import { DataDoesNotUpdateInRealTimeComponent } from "@shared/components/misc/data-does-not-update-in-real-time/data-does-not-update-in-real-time.component";
 
 const modules = [
   CommonModule,
@@ -121,6 +122,7 @@ const components = [
   ConfirmationDialogComponent,
   CountDownComponent,
   CustomToastComponent,
+  DataDoesNotUpdateInRealTimeComponent,
   EmptyListComponent,
   FileValueAccessorDirective,
   FooterComponent,
