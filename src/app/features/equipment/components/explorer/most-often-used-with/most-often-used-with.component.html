@@ -1,0 +1,32 @@
+<div class="card">
+  <div class="card-header">
+    {{ "Most often used with" | translate }}
+    <astrobin-data-does-not-update-in-realtime></astrobin-data-does-not-update-in-realtime>
+  </div>
+
+  <div class="card-body">
+    <ng-container *ngIf="mostOftenUsedWith !== undefined; else loading">
+      <table class="table table-sm table-striped">
+        <tbody>
+        <tr *ngFor="let item of mostOftenUsedWith">
+          <td>
+            <a [routerLink]="['/equipment/explorer', item.klass.toLowerCase(), item.id]">
+              <astrobin-equipment-item-display-name [item]="item"></astrobin-equipment-item-display-name>
+            </a>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+
+      <ng-container *ngIf="(fullSearchAllowed$ | async) === false">
+        <button class="view-more btn btn-outline-secondary" (click)="onViewMore()">
+          {{ "View more" | translate }}
+        </button>
+      </ng-container>
+    </ng-container>
+  </div>
+</div>
+
+<ng-template #loading>
+  <astrobin-loading-indicator></astrobin-loading-indicator>
+</ng-template>

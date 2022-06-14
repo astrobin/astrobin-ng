@@ -87,6 +87,7 @@ import { ItemUnapprovedInfoModalComponent } from "@shared/components/equipment/i
 import { VariantSelectorModalComponent } from "@shared/components/equipment/item-browser/variant-selector-modal/variant-selector-modal.component";
 import { AvatarComponent } from "@shared/components/misc/avatar/avatar.component";
 import { DataDoesNotUpdateInRealTimeComponent } from "@shared/components/misc/data-does-not-update-in-real-time/data-does-not-update-in-real-time.component";
+import { SubscriptionRequiredModalComponent } from "@shared/components/misc/subscription-required-modal/subscription-required-modal.component";
 
 const modules = [
   CommonModule,
@@ -151,6 +152,7 @@ const components = [
   ReadOnlyModeComponent,
   RefreshButtonComponent,
   ScrollToTopComponent,
+  SubscriptionRequiredModalComponent,
   TelescopeComponent,
   TextLoadingIndicatorComponent,
   ToggleButtonComponent,

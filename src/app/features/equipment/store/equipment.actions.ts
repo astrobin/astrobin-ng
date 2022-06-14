@@ -21,6 +21,7 @@ import { Action } from "@ngrx/store";
 import { EquipmentPresetInterface } from "@features/equipment/types/equipment-preset.interface";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { ImageInterface } from "@shared/interfaces/image.interface";
+import { EquipmentItemMostOftenUsedWith } from "@features/equipment/types/equipment-item-most-often-used-with-data.interface";
 
 export interface EquipmentItemCreationSuccessPayloadInterface {
   item: EquipmentItemBaseInterface;
@@ -62,6 +63,8 @@ export enum EquipmentActionTypes {
   GET_USERS_SUCCESS = "[Equipment] Get users success",
   GET_IMAGES = "[Equipment] Get images",
   GET_IMAGES_SUCCESS = "[Equipment] Get images success",
+  GET_MOST_OFTEN_USED_WITH = "[Equipment] Get most often used with",
+  GET_MOST_OFTEN_USED_WITH_SUCCESS = "[Equipment] Get most often used with success",
 
   // Equipment presets
 
@@ -338,6 +341,24 @@ export class GetImagesSuccess implements PayloadActionInterface {
 
   constructor(
     public payload: { itemType: EquipmentItemType; itemId: EquipmentItemBaseInterface["id"]; images: ImageInterface[] }
+  ) {}
+}
+
+export class GetMostOftenUsedWith implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.GET_MOST_OFTEN_USED_WITH;
+
+  constructor(public payload: { itemType: EquipmentItemType; itemId: EquipmentItemBaseInterface["id"] }) {}
+}
+
+export class GetMostOftenUsedWithSuccess implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.GET_MOST_OFTEN_USED_WITH_SUCCESS;
+
+  constructor(
+    public payload: {
+      itemType: EquipmentItemType;
+      itemId: EquipmentItemBaseInterface["id"];
+      data: EquipmentItemMostOftenUsedWith;
+    }
   ) {}
 }
 
@@ -665,6 +686,8 @@ export type EquipmentActions =
   | GetUsersSuccess
   | GetImages
   | GetImagesSuccess
+  | GetMostOftenUsedWith
+  | GetMostOftenUsedWithSuccess
 
   // Equipment presets
   | FindEquipmentPresets

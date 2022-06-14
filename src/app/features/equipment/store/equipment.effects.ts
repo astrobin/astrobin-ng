@@ -55,6 +55,7 @@ import {
   FindSimilarInBrandSuccess,
   GetImages,
   GetImagesSuccess,
+  GetMostOftenUsedWithSuccess,
   GetOthersInBrand,
   GetOthersInBrandSuccess,
   GetUsers,
@@ -335,6 +336,20 @@ export class EquipmentEffects {
     {
       dispatch: false
     }
+  );
+
+  GetMostOftenUsedWith: Observable<GetMostOftenUsedWithSuccess> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(EquipmentActionTypes.GET_MOST_OFTEN_USED_WITH),
+      map((action: GetImages) => action.payload),
+      mergeMap(payload =>
+        this.equipmentApiService
+          .getMostOftenUsedWith(payload.itemType, payload.itemId)
+          .pipe(
+            map(data => new GetMostOftenUsedWithSuccess({ itemType: payload.itemType, itemId: payload.itemId, data }))
+          )
+      )
+    )
   );
 
   /*********************************************************************************************************************

@@ -10,6 +10,7 @@ import { UserSubscriptionServiceInterface } from "@shared/services/user-subscrip
 import { SubscriptionName } from "@shared/types/subscription-name.type";
 import { Observable, zip } from "rxjs";
 import { map, switchMap, take } from "rxjs/operators";
+import { selectAuth } from "@features/account/store/auth.selectors";
 
 @Injectable({
   providedIn: "root"
@@ -45,7 +46,7 @@ export class UserSubscriptionService extends BaseService implements UserSubscrip
     );
   }
 
-  uploadAllowed(): Observable<boolean> {
+  uploadAllowed$(): Observable<boolean> {
     return this.store$.pipe(
       take(1),
       switchMap(state =>
@@ -87,6 +88,14 @@ export class UserSubscriptionService extends BaseService implements UserSubscrip
         // If we got here, the user is on Free.
         return premiumCounter < backendConfig.PREMIUM_MAX_IMAGES_FREE_2020;
       })
+    );
+  }
+
+  fullSearchAllowed$(): Observable<boolean> {
+    return this.store$.select(selectAuth).pipe(
+      take(1),
+      map(auth => auth.userProfile),
+      switchMap(userProfile => this.hasValidSubscription$(userProfile, [SubscriptionName.ASTROBIN_ULTIMATE_2020]))
     );
   }
 

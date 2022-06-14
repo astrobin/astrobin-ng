@@ -1,0 +1,41 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-title">{{ "Sorry" | translate }} :-(</h4>
+  <button (click)="modal.dismiss()" aria-describedby="modal-title" class="close" type="button">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body">
+  <p
+    *ngIf="minimumSubscription !== SimplifiedSubscriptionName.ASTROBIN_ULTIMATE_2020"
+    [innerHTML]="'To use this feature, you need the <strong>{{0}}</strong> subscription or higher.' | translate: {'0': minimumSubscription}"
+  ></p>
+
+  <p
+    *ngIf="minimumSubscription === SimplifiedSubscriptionName.ASTROBIN_ULTIMATE_2020"
+    [innerHTML]="'To use this feature, you need the <strong>{{0}}</strong> subscription.' | translate: {'0': minimumSubscription}"
+  ></p>
+
+  <p>
+    {{ "Would you be interested in upgrading? AstroBin is a very small business and your support would mean a lot!" | translate }}
+  </p>
+
+  <p class="if-just-upgraded">
+    <fa-icon icon="info-circle"></fa-icon>
+    {{ "If you just upgraded and still see this message, please allow a few minute for your subscription to take effect." | translate }}
+  </p>
+</div>
+
+<div class="modal-footer">
+  <button (click)="modal.dismiss()" class="btn btn-outline-secondary" type="button">
+    {{ "No, thanks" | translate }}
+  </button>
+
+  <a
+    href="https://welcome.astrobin.com/pricing"
+    target="_blank"
+    class="btn btn-primary"
+  >
+    {{ "Tell me more!" | translate }}
+  </a>
+</div>
