@@ -131,7 +131,7 @@
 
         <button
           class="btn btn-sm-block btn-primary"
-          [class.loading]="loadingService.isLoading()"
+          [class.loading]="loadingService.isLoading() || creationForm.pending"
           (click)="createItem()"
         >
           {{ "Create item" | translate }}
