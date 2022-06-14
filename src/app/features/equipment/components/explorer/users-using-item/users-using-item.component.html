@@ -1,4 +1,7 @@
-<h5 class="mb-4">{{ "Astrophotographers who have used this equipment item" | translate }}</h5>
+<h5 class="mb-4">
+  {{ "Astrophotographers who have used this equipment item" | translate }}
+  <astrobin-data-does-not-update-in-realtime></astrobin-data-does-not-update-in-realtime>
+</h5>
 
 <div *ngIf="!loadingService.isLoading(); else loading" class="objects-using">
   <ng-container *ngIf="users?.length > 0; else noUsers">
