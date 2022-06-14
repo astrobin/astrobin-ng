@@ -1,3 +1,5 @@
+@import "../../../../styles/breakpoints";
+
 :host {
   display: block;
   text-align: center;
@@ -7,12 +9,7 @@ h5 {
   margin-bottom: 1rem !important;
 }
 
-astrobin-avatar {
-  display: inline-block;
-  width: calc(14.2857% - .25rem);
-  margin-right: .25rem
-}
-
+astrobin-avatar,
 astrobin-image {
   display: inline-block;
   width: calc(10% - .25rem);
@@ -21,6 +18,10 @@ astrobin-image {
 
   &:hover {
     transform: scale(1.1);
+  }
+
+  @media screen and (max-width: $md-max) {
+    width: calc(20% - .25rem);
   }
 }
 
