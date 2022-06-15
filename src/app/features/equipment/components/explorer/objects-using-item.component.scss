@@ -22,7 +22,7 @@ astrobin-image {
 }
 
 astrobin-image {
-  width: calc(12.5% - .5rem);
+  width: calc(12.5% - 1rem);
   margin: .25rem .5rem;
 
   @media screen and (max-width: $md-max) {
