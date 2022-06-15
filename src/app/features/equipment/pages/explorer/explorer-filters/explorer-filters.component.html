@@ -13,10 +13,10 @@
             (click)="showSubscriptionRequiredModal()"
           >
             <fa-icon icon="lock"></fa-icon>
-          <span
-            [innerHTML]="'To use this feature, you need the <strong>{{0}}</strong> subscription or higher.' | translate: {'0': SimplifiedSubscriptionName.ASTROBIN_ULTIMATE_2020}"
-          >
-          </span>
+            <span
+              [innerHTML]="'To use this feature, you need the <strong>{{0}}</strong> subscription or higher.' | translate: {'0': SimplifiedSubscriptionName.ASTROBIN_ULTIMATE_2020}"
+            >
+            </span>
           </button>
           <button
             *ngFor="let filter of availableFilters"
