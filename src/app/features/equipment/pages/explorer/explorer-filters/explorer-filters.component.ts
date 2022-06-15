@@ -19,6 +19,12 @@ import { UserSubscriptionService } from "@shared/services/user-subscription/user
 import { Observable } from "rxjs";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { SubscriptionRequiredModalComponent } from "@shared/components/misc/subscription-required-modal/subscription-required-modal.component";
+import { TelescopeDisplayProperty, TelescopeService } from "@features/equipment/services/telescope.service";
+import { TelescopeType } from "@features/equipment/types/telescope.interface";
+import { MountDisplayProperty, MountService } from "@features/equipment/services/mount.service";
+import { MountType } from "@features/equipment/types/mount.interface";
+import { FilterDisplayProperty, FilterService } from "@features/equipment/services/filter.service";
+import { FilterType } from "@features/equipment/types/filter.interface";
 
 const COOKIE = "astrobin-equipment-explorer-filter-data";
 
@@ -55,7 +61,23 @@ export enum ExplorerFilterType {
   SENSOR_READ_NOISE = "sensor-read-noise",
   SENSOR_FRAME_RATE = "sensor-frame-rate",
   SENSOR_ADC = "sensor-adc",
-  SENSOR_COLOR_OR_MONO = "sensor-color-or-mono"
+  SENSOR_COLOR_OR_MONO = "sensor-color-or-mono",
+
+  TELESCOPE_TYPE = "telescope-type",
+  TELESCOPE_APERTURE = "telescope-aperture",
+  TELESCOPE_FOCAL_LENGTH = "telescope-focal-length",
+  TELESCOPE_WEIGHT = "telescope-weight",
+
+  MOUNT_TYPE = "mount-type",
+  MOUNT_WEIGHT = "mount-weight",
+  MOUNT_MAX_PAYLOAD = "mount-max-payload",
+  MOUNT_COMPUTERIZED = "mount-computerized",
+  MOUNT_PERIODIC_ERROR = "mount-periodic-error",
+  MOUNT_PEC = "mount-pec",
+  MOUNT_SLEW_SPEED = "mount-slew-speed",
+
+  FILTER_TYPE = "filter-type",
+  FILTER_BANDWIDTH = "filter-bandwidth"
 }
 
 export enum ExplorerFilterValueType {
@@ -108,6 +130,9 @@ export class ExplorerFiltersComponent extends BaseComponentDirective implements 
     public readonly equipmentItemService: EquipmentItemService,
     public readonly cameraService: CameraService,
     public readonly sensorService: SensorService,
+    public readonly telescopeService: TelescopeService,
+    public readonly mountService: MountService,
+    public readonly filterService: FilterService,
     public readonly windowRefService: WindowRefService,
     public readonly location: Location,
     public readonly cookieService: CookieService,
@@ -669,6 +694,223 @@ export class ExplorerFiltersComponent extends BaseComponentDirective implements 
           value: null,
           valueType: ExplorerFilterValueType.OBJECT,
           humanizeValueFunction: this.sensorService.humanizeColorOrMono.bind(this.sensorService)
+        });
+
+        break;
+
+      case EquipmentItemType.TELESCOPE:
+        this.availableFilters.push({
+          type: ExplorerFilterType.TELESCOPE_TYPE,
+          label: this.equipmentItemService.getPrintablePropertyName(
+            EquipmentItemType.TELESCOPE,
+            TelescopeDisplayProperty.TYPE,
+            false
+          ),
+          icon: "bars",
+          widget: ExplorerFilterWidget.SELECT,
+          items: Object.keys(TelescopeType).map(telescopeType => ({
+            value: telescopeType,
+            label: this.telescopeService.humanizeType(telescopeType as TelescopeType)
+          })),
+          value: null,
+          valueType: ExplorerFilterValueType.OBJECT,
+          humanizeValueFunction: this.telescopeService.humanizeType.bind(this.telescopeService)
+        });
+
+        this.availableFilters.push({
+          type: ExplorerFilterType.TELESCOPE_APERTURE,
+          label: this.equipmentItemService.getPrintablePropertyName(
+            EquipmentItemType.TELESCOPE,
+            TelescopeDisplayProperty.APERTURE,
+            false
+          ),
+          icon: "circle",
+          widget: ExplorerFilterWidget.NUMBER_RANGE,
+          value: {
+            from: 0,
+            to: 1000
+          },
+          valueType: ExplorerFilterValueType.OBJECT
+        });
+
+        this.availableFilters.push({
+          type: ExplorerFilterType.TELESCOPE_FOCAL_LENGTH,
+          label: this.equipmentItemService.getPrintablePropertyName(
+            EquipmentItemType.TELESCOPE,
+            TelescopeDisplayProperty.FOCAL_LENGTH,
+            false
+          ),
+          icon: "plus-circle",
+          widget: ExplorerFilterWidget.NUMBER_RANGE,
+          value: {
+            from: 0,
+            to: 10000
+          },
+          valueType: ExplorerFilterValueType.OBJECT
+        });
+
+        this.availableFilters.push({
+          type: ExplorerFilterType.TELESCOPE_WEIGHT,
+          label: this.equipmentItemService.getPrintablePropertyName(
+            EquipmentItemType.TELESCOPE,
+            TelescopeDisplayProperty.WEIGHT,
+            false
+          ),
+          icon: "balance-scale",
+          widget: ExplorerFilterWidget.NUMBER_RANGE,
+          value: {
+            from: 0,
+            to: 1000
+          },
+          valueType: ExplorerFilterValueType.OBJECT
+        });
+
+        break;
+
+      case EquipmentItemType.MOUNT:
+        this.availableFilters.push({
+          type: ExplorerFilterType.MOUNT_TYPE,
+          label: this.equipmentItemService.getPrintablePropertyName(
+            EquipmentItemType.MOUNT,
+            MountDisplayProperty.TYPE,
+            false
+          ),
+          icon: "bars",
+          widget: ExplorerFilterWidget.SELECT,
+          items: Object.keys(MountType).map(mountType => ({
+            value: mountType,
+            label: this.mountService.humanizeType(mountType as MountType)
+          })),
+          value: null,
+          valueType: ExplorerFilterValueType.OBJECT,
+          humanizeValueFunction: this.mountService.humanizeType.bind(this.mountService)
+        });
+
+        this.availableFilters.push({
+          type: ExplorerFilterType.MOUNT_WEIGHT,
+          label: this.equipmentItemService.getPrintablePropertyName(
+            EquipmentItemType.MOUNT,
+            MountDisplayProperty.WEIGHT,
+            false
+          ),
+          icon: "balance-scale",
+          widget: ExplorerFilterWidget.NUMBER_RANGE,
+          value: {
+            from: 0,
+            to: 1000
+          },
+          valueType: ExplorerFilterValueType.OBJECT
+        });
+
+        this.availableFilters.push({
+          type: ExplorerFilterType.MOUNT_MAX_PAYLOAD,
+          label: this.equipmentItemService.getPrintablePropertyName(
+            EquipmentItemType.MOUNT,
+            MountDisplayProperty.MAX_PAYLOAD,
+            false
+          ),
+          icon: "dumbbell",
+          widget: ExplorerFilterWidget.NUMBER_RANGE,
+          value: {
+            from: 0,
+            to: 1000
+          },
+          valueType: ExplorerFilterValueType.OBJECT
+        });
+
+        this.availableFilters.push({
+          type: ExplorerFilterType.MOUNT_COMPUTERIZED,
+          label: this.equipmentItemService.getPrintablePropertyName(
+            EquipmentItemType.MOUNT,
+            MountDisplayProperty.COMPUTERIZED,
+            false
+          ),
+          icon: "laptop",
+          widget: ExplorerFilterWidget.TOGGLE,
+          value: true,
+          valueType: ExplorerFilterValueType.BOOLEAN
+        });
+
+        this.availableFilters.push({
+          type: ExplorerFilterType.MOUNT_PERIODIC_ERROR,
+          label: this.equipmentItemService.getPrintablePropertyName(
+            EquipmentItemType.MOUNT,
+            MountDisplayProperty.PERIODIC_ERROR,
+            false
+          ),
+          icon: "exclamation-triangle",
+          widget: ExplorerFilterWidget.NUMBER_RANGE,
+          value: {
+            from: 0,
+            to: 10
+          },
+          valueType: ExplorerFilterValueType.OBJECT
+        });
+
+        this.availableFilters.push({
+          type: ExplorerFilterType.MOUNT_PEC,
+          label: this.equipmentItemService.getPrintablePropertyName(
+            EquipmentItemType.MOUNT,
+            MountDisplayProperty.PEC,
+            false
+          ),
+          icon: "chart-line",
+          widget: ExplorerFilterWidget.TOGGLE,
+          value: true,
+          valueType: ExplorerFilterValueType.BOOLEAN
+        });
+
+        this.availableFilters.push({
+          type: ExplorerFilterType.MOUNT_SLEW_SPEED,
+          label: this.equipmentItemService.getPrintablePropertyName(
+            EquipmentItemType.MOUNT,
+            MountDisplayProperty.SLEW_SPEED,
+            false
+          ),
+          icon: "tachometer-alt",
+          widget: ExplorerFilterWidget.NUMBER_RANGE,
+          value: {
+            from: 0,
+            to: 10
+          },
+          valueType: ExplorerFilterValueType.OBJECT
+        });
+
+        break;
+
+      case EquipmentItemType.FILTER:
+        this.availableFilters.push({
+          type: ExplorerFilterType.FILTER_TYPE,
+          label: this.equipmentItemService.getPrintablePropertyName(
+            EquipmentItemType.FILTER,
+            FilterDisplayProperty.TYPE,
+            false
+          ),
+          icon: "bars",
+          widget: ExplorerFilterWidget.SELECT,
+          items: Object.keys(FilterType).map(filterType => ({
+            value: filterType,
+            label: this.filterService.humanizeType(filterType as FilterType)
+          })),
+          value: null,
+          valueType: ExplorerFilterValueType.OBJECT,
+          humanizeValueFunction: this.filterService.humanizeType.bind(this.filterService)
+        });
+
+        this.availableFilters.push({
+          type: ExplorerFilterType.FILTER_BANDWIDTH,
+          label: this.equipmentItemService.getPrintablePropertyName(
+            EquipmentItemType.FILTER,
+            FilterDisplayProperty.BANDWIDTH,
+            false
+          ),
+          icon: "filter",
+          widget: ExplorerFilterWidget.NUMBER_RANGE,
+          value: {
+            from: 0,
+            to: 20
+          },
+          valueType: ExplorerFilterValueType.OBJECT
         });
 
         break;
