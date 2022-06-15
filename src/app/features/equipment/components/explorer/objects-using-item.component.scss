@@ -5,10 +5,6 @@
   text-align: center;
 }
 
-h5 {
-  margin-bottom: 1rem !important;
-}
-
 astrobin-avatar,
 astrobin-image {
   display: inline-block;
@@ -26,7 +22,8 @@ astrobin-image {
 }
 
 astrobin-image {
-  width: calc(12.5% - .25rem);
+  width: calc(12.5% - .5rem);
+  margin: .25rem .5rem;
 
   @media screen and (max-width: $md-max) {
     width: calc(16.666667% - .25rem);
