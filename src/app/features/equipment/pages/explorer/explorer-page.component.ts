@@ -19,6 +19,7 @@ import { Location } from "@angular/common";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 import { CameraInterface, CameraType } from "@features/equipment/types/camera.interface";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
+import { CookieService } from "ngx-cookie-service";
 
 enum ExplorerPageSortOrder {
   AZ = "az",
@@ -28,6 +29,8 @@ enum ExplorerPageSortOrder {
   IMAGES = "images",
   IMAGES_DESC = "-images"
 }
+
+const PAGE_SORTING_COOKIE = "astrobin-equipment-page-sorting";
 
 @Component({
   selector: "astrobin-equipment-explorer-page",
@@ -53,7 +56,8 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
     public readonly equipmentApiService: EquipmentApiService,
     public readonly location: Location,
     public readonly equipmentItemService: EquipmentItemService,
-    public readonly popNotificationsService: PopNotificationsService
+    public readonly popNotificationsService: PopNotificationsService,
+    public readonly cookieService: CookieService
   ) {
     super(store$, actions$, activatedRoute, router, windowRefService);
   }
@@ -91,6 +95,8 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
   }
 
   getItems() {
+    this.sortOrder = (this.cookieService.get(PAGE_SORTING_COOKIE) as ExplorerPageSortOrder) || ExplorerPageSortOrder.AZ;
+
     this.items$ = this.equipmentApiService.getAllEquipmentItems(this._activeType, this.page, this.sortOrder).pipe(
       tap(response => {
         const uniqueBrands: BrandInterface["id"][] = [];
@@ -112,6 +118,8 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
       this.sortOrder = ExplorerPageSortOrder.AZ_DESC;
     }
 
+    this.cookieService.set(PAGE_SORTING_COOKIE, this.sortOrder);
+
     this.getItems();
   }
 
@@ -122,6 +130,8 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
       this.sortOrder = ExplorerPageSortOrder.USERS;
     }
 
+    this.cookieService.set(PAGE_SORTING_COOKIE, this.sortOrder);
+
     this.getItems();
   }
 
@@ -131,6 +141,8 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
     } else {
       this.sortOrder = ExplorerPageSortOrder.IMAGES;
     }
+
+    this.cookieService.set(PAGE_SORTING_COOKIE, this.sortOrder);
 
     this.getItems();
   }
