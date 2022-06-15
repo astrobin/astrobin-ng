@@ -312,7 +312,13 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
         .pipe(
           take(1),
           isGroupMember("equipment_moderators"),
-          switchMap(isEquipmentModerator => api.getSimilarNonMigrated(object.pk, isEquipmentModerator)),
+          switchMap(isEquipmentModerator => {
+            if (isEquipmentModerator) {
+              return api.getSimilarNonMigrated(object.pk, isEquipmentModerator);
+            }
+
+            return of([]);
+          }),
           switchMap((legacyItems: any[]) => {
             this.migrationConfirmation.similarItems = legacyItems;
 
