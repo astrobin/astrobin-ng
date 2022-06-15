@@ -40,7 +40,7 @@ export class WindowRefService extends BaseService {
     };
 
     if (options === null || options === undefined) {
-      options = { behavior: "smooth" };
+      options = { behavior: "smooth", block: "start", inline: "nearest" };
     }
 
     _doScroll();

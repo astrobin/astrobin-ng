@@ -72,7 +72,8 @@ export class PendingReviewExplorerComponent extends PendingExplorerBaseComponent
           }
         }
         uniqueBrands.forEach(id => this.store$.dispatch(new LoadBrand({ id })));
-      })
+      }),
+      tap(() => this._scrollToItemBrowser())
     );
   }
 }

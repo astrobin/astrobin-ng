@@ -1,6 +1,10 @@
 <ul ngbNav #nav="ngbNav" [(activeId)]="activeType" class="nav-pills" [class.collapsed]="collapsed" orientation="vertical">
   <li *ngFor="let type of types" [ngbNavItem]="type.value.toLowerCase()" [disabled]="type.disabled">
-    <a ngbNavLink routerLink="{{ routingBasePath }}/{{ type.value.toLowerCase() }}" [queryParams]="{'page': 1}">
+    <a
+      ngbNavLink
+      routerLink="{{ routingBasePath }}/{{ type.value.toLowerCase() }}"
+      [queryParams]="{'page': 1}"
+    >
       <img src="/assets/images/{{ type.value.toLowerCase() }}-placeholder.png" alt="{{ type.label }}" />
       <span [hidden]="collapsed">
         {{ type.label }}

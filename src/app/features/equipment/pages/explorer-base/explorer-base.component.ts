@@ -73,4 +73,10 @@ export class ExplorerBaseComponent extends BaseComponentDirective implements OnI
   }
 
   getItems() {}
+
+  protected _scrollToItemBrowser(): void {
+    if (this.windowRefService.nativeWindow.innerWidth < 768) {
+      this.windowRefService.scrollToElement("astrobin-equipment-item-browser");
+    }
+  }
 }

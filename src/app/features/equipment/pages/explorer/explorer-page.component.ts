@@ -77,11 +77,69 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
       });
   }
 
-  _setTitle() {
+  onSelectedItemChanged(item: EquipmentItemBaseInterface) {
+    this.activeId = !!item ? item.id : null;
+    this.enableNavCollapsing = !!this.activeId;
+    this.navCollapsed = !!this.activeId;
+
+    this._setLocation();
+    this._scrollToItemBrowser();
+  }
+
+  viewItem(item: EquipmentItemBaseInterface): void {
+    this.onSelectedItemChanged(item);
+  }
+
+  getItems() {
+    this.items$ = this.equipmentApiService.getAllEquipmentItems(this._activeType, this.page, this.sortOrder).pipe(
+      tap(response => {
+        const uniqueBrands: BrandInterface["id"][] = [];
+        for (const item of response.results) {
+          if (!!item.brand && uniqueBrands.indexOf(item.brand) === -1) {
+            uniqueBrands.push(item.brand);
+          }
+        }
+        uniqueBrands.forEach(id => this.store$.dispatch(new LoadBrand({ id })));
+      }),
+      tap(() => this._scrollToItemBrowser())
+    );
+  }
+
+  toggleAZSorting() {
+    if (this.sortOrder !== ExplorerPageSortOrder.AZ) {
+      this.sortOrder = ExplorerPageSortOrder.AZ;
+    } else {
+      this.sortOrder = ExplorerPageSortOrder.AZ_DESC;
+    }
+
+    this.getItems();
+  }
+
+  toggleUsersSorting() {
+    if (this.sortOrder !== ExplorerPageSortOrder.USERS_DESC) {
+      this.sortOrder = ExplorerPageSortOrder.USERS_DESC;
+    } else {
+      this.sortOrder = ExplorerPageSortOrder.USERS;
+    }
+
+    this.getItems();
+  }
+
+  toggleImagesSorting() {
+    if (this.sortOrder !== ExplorerPageSortOrder.IMAGES_DESC) {
+      this.sortOrder = ExplorerPageSortOrder.IMAGES_DESC;
+    } else {
+      this.sortOrder = ExplorerPageSortOrder.IMAGES;
+    }
+
+    this.getItems();
+  }
+
+  private _setTitle() {
     this.titleService.setTitle(this.title);
   }
 
-  _setBreadcrumb() {
+  private _setBreadcrumb() {
     this.store$.dispatch(
       new SetBreadcrumb({
         breadcrumb: [
@@ -96,14 +154,14 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
     );
   }
 
-  _setParams() {
+  private _setParams() {
     this.page = parseInt(this.activatedRoute.snapshot.queryParamMap.get("page"), 10) || 1;
     this.activeId = parseInt(this.activatedRoute.snapshot.paramMap.get("itemId"), 10);
     this.enableNavCollapsing = !!this.activeId;
     this.navCollapsed = !!this.activeId;
   }
 
-  _setLocation() {
+  private _setLocation() {
     const _doSetLocation = (brand: BrandInterface | null, item: EquipmentItemBaseInterface) => {
       setTimeout(() => {
         if (!item) {
@@ -197,61 +255,5 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
     } else {
       _doSetLocation(null, null);
     }
-  }
-
-  onSelectedItemChanged(item: EquipmentItemBaseInterface) {
-    this.activeId = !!item ? item.id : null;
-    this.enableNavCollapsing = !!this.activeId;
-    this.navCollapsed = !!this.activeId;
-
-    this._setLocation();
-  }
-
-  viewItem(item: EquipmentItemBaseInterface): void {
-    this.onSelectedItemChanged(item);
-  }
-
-  getItems() {
-    this.items$ = this.equipmentApiService.getAllEquipmentItems(this._activeType, this.page, this.sortOrder).pipe(
-      tap(response => {
-        const uniqueBrands: BrandInterface["id"][] = [];
-        for (const item of response.results) {
-          if (!!item.brand && uniqueBrands.indexOf(item.brand) === -1) {
-            uniqueBrands.push(item.brand);
-          }
-        }
-        uniqueBrands.forEach(id => this.store$.dispatch(new LoadBrand({ id })));
-      })
-    );
-  }
-
-  toggleAZSorting() {
-    if (this.sortOrder !== ExplorerPageSortOrder.AZ) {
-      this.sortOrder = ExplorerPageSortOrder.AZ;
-    } else {
-      this.sortOrder = ExplorerPageSortOrder.AZ_DESC;
-    }
-
-    this.getItems();
-  }
-
-  toggleUsersSorting() {
-    if (this.sortOrder !== ExplorerPageSortOrder.USERS_DESC) {
-      this.sortOrder = ExplorerPageSortOrder.USERS_DESC;
-    } else {
-      this.sortOrder = ExplorerPageSortOrder.USERS;
-    }
-
-    this.getItems();
-  }
-
-  toggleImagesSorting() {
-    if (this.sortOrder !== ExplorerPageSortOrder.IMAGES_DESC) {
-      this.sortOrder = ExplorerPageSortOrder.IMAGES_DESC;
-    } else {
-      this.sortOrder = ExplorerPageSortOrder.IMAGES;
-    }
-
-    this.getItems();
   }
 }
