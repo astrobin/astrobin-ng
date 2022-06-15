@@ -13,6 +13,12 @@ import { UtilsService } from "@shared/services/utils/utils.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { Location } from "@angular/common";
 import { CookieService } from "ngx-cookie-service";
+import { SimplifiedSubscriptionName, SubscriptionName } from "@shared/types/subscription-name.type";
+import { map, switchMap } from "rxjs/operators";
+import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
+import { Observable } from "rxjs";
+import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { SubscriptionRequiredModalComponent } from "@shared/components/misc/subscription-required-modal/subscription-required-modal.component";
 
 const COOKIE = "astrobin-equipment-explorer-filter-data";
 
@@ -63,6 +69,7 @@ export interface ExplorerFilterInterface {
 })
 export class ExplorerFiltersComponent extends BaseComponentDirective implements OnInit, OnChanges {
   readonly FilterWidget = ExplorerFilterWidget;
+  readonly SimplifiedSubscriptionName = SimplifiedSubscriptionName;
 
   @Input()
   type: EquipmentItemType;
@@ -77,6 +84,13 @@ export class ExplorerFiltersComponent extends BaseComponentDirective implements 
 
   changed = false;
 
+  permissions$: Observable<{ mayAccess: boolean }> = this.currentUserProfile$.pipe(
+    switchMap(profile =>
+      this.userSubscriptionService.hasValidSubscription$(profile, [SubscriptionName.ASTROBIN_ULTIMATE_2020])
+    ),
+    map(isUltimate => ({ mayAccess: isUltimate }))
+  );
+
   constructor(
     public readonly store$: Store<State>,
     public readonly equipmentItemService: EquipmentItemService,
@@ -84,7 +98,9 @@ export class ExplorerFiltersComponent extends BaseComponentDirective implements 
     public readonly sensorService: SensorService,
     public readonly windowRefService: WindowRefService,
     public readonly location: Location,
-    public readonly cookieService: CookieService
+    public readonly cookieService: CookieService,
+    public readonly userSubscriptionService: UserSubscriptionService,
+    public readonly modalService: NgbModal
   ) {
     super(store$);
   }
@@ -115,7 +131,7 @@ export class ExplorerFiltersComponent extends BaseComponentDirective implements 
   }
 
   buildFromCookie(): void {
-    const cookieDataJson = this.cookieService.get(`COOKIE-${this.type.toLowerCase()}`);
+    const cookieDataJson = this.cookieService.get(`${COOKIE}-${this.type.toLowerCase()}`);
     if (!!cookieDataJson) {
       const cookieData: { type: ExplorerFilterType; value: any }[] = JSON.parse(cookieDataJson);
 
@@ -136,7 +152,7 @@ export class ExplorerFiltersComponent extends BaseComponentDirective implements 
 
   updateCookie(): void {
     this.cookieService.set(
-      `COOKIE-${this.type.toLowerCase()}`,
+      `${COOKIE}-${this.type.toLowerCase()}`,
       JSON.stringify(this.activeFilters.map(activeFilter => ({ type: activeFilter.type, value: activeFilter.value }))),
       null,
       "/"
@@ -224,6 +240,12 @@ export class ExplorerFiltersComponent extends BaseComponentDirective implements 
     this.updateUrl();
     this.changed = false;
     this.applied.emit(this.activeFilters);
+  }
+
+  showSubscriptionRequiredModal(): void {
+    const modal: NgbModalRef = this.modalService.open(SubscriptionRequiredModalComponent);
+    const component: SubscriptionRequiredModalComponent = modal.componentInstance;
+    component.minimumSubscription = SimplifiedSubscriptionName.ASTROBIN_ULTIMATE_2020;
   }
 
   _buildAvailableFilters(): void {
