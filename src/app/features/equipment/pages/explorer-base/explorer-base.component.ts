@@ -54,7 +54,9 @@ export class ExplorerBaseComponent extends BaseComponentDirective implements OnI
       }
     });
 
-    this.getItems();
+    setTimeout(() => {
+      this.getItems();
+    });
   }
 
   pageChange(page: number) {

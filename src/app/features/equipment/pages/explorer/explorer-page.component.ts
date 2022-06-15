@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
@@ -20,6 +20,10 @@ import { EquipmentItemService } from "@features/equipment/services/equipment-ite
 import { CameraInterface, CameraType } from "@features/equipment/types/camera.interface";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { CookieService } from "ngx-cookie-service";
+import {
+  ExplorerFilterInterface,
+  ExplorerFiltersComponent
+} from "@features/equipment/pages/explorer/explorer-filters/explorer-filters.component";
 
 enum ExplorerPageSortOrder {
   AZ = "az",
@@ -41,9 +45,13 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
   readonly EquipmentItemType = EquipmentItemType;
   readonly ExplorerPageSortOrder = ExplorerPageSortOrder;
 
+  @ViewChild("explorerFilters")
+  explorerFilters: ExplorerFiltersComponent;
+
   title = this.translateService.instant("Equipment explorer");
   activeId: EquipmentItemBaseInterface["id"];
   sortOrder: ExplorerPageSortOrder = ExplorerPageSortOrder.AZ;
+  filters: ExplorerFilterInterface[] = [];
 
   constructor(
     public readonly store$: Store<State>,
@@ -77,7 +85,6 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
       )
       .subscribe(() => {
         this._setParams();
-        this.getItems();
       });
   }
 
@@ -96,19 +103,22 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
 
   getItems() {
     this.sortOrder = (this.cookieService.get(PAGE_SORTING_COOKIE) as ExplorerPageSortOrder) || ExplorerPageSortOrder.AZ;
+    this.filters = this.explorerFilters.activeFilters;
 
-    this.items$ = this.equipmentApiService.getAllEquipmentItems(this._activeType, this.page, this.sortOrder).pipe(
-      tap(response => {
-        const uniqueBrands: BrandInterface["id"][] = [];
-        for (const item of response.results) {
-          if (!!item.brand && uniqueBrands.indexOf(item.brand) === -1) {
-            uniqueBrands.push(item.brand);
+    this.items$ = this.equipmentApiService
+      .getAllEquipmentItems(this._activeType, this.page, this.sortOrder, this.filters)
+      .pipe(
+        tap(response => {
+          const uniqueBrands: BrandInterface["id"][] = [];
+          for (const item of response.results) {
+            if (!!item.brand && uniqueBrands.indexOf(item.brand) === -1) {
+              uniqueBrands.push(item.brand);
+            }
           }
-        }
-        uniqueBrands.forEach(id => this.store$.dispatch(new LoadBrand({ id })));
-      }),
-      tap(() => this._scrollToItemBrowser())
-    );
+          uniqueBrands.forEach(id => this.store$.dispatch(new LoadBrand({ id })));
+        }),
+        tap(() => this._scrollToItemBrowser())
+      );
   }
 
   toggleAZSorting() {
@@ -147,6 +157,10 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
     this.getItems();
   }
 
+  filtersApplied(): void {
+    this.getItems();
+  }
+
   private _setTitle() {
     this.titleService.setTitle(this.title);
   }
@@ -177,7 +191,10 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
     const _doSetLocation = (brand: BrandInterface | null, item: EquipmentItemBaseInterface) => {
       setTimeout(() => {
         if (!item) {
-          let url = `/equipment/explorer/${this.activeType.toLowerCase()}`;
+          const urlObject = this.windowRefService.getCurrentUrl();
+
+          let url = `/equipment/explorer/${this.activeType.toLowerCase()}${urlObject.search}${urlObject.hash}`;
+
           if (this.page > 1) {
             url = UtilsService.addOrUpdateUrlParam(url, "page", this.page + "");
           }
@@ -186,7 +203,7 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
             url = UtilsService.addOrUpdateUrlParam(url, "sort", this.sortOrder);
           }
 
-          this.location.go(url);
+          this.location.replaceState(url);
           return;
         }
 

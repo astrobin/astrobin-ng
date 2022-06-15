@@ -132,6 +132,10 @@ describe("UtilsService", () => {
     it("should work when updating", () => {
       expect(UtilsService.addOrUpdateUrlParam("ab.co?a=b", "a", "c")).toEqual("ab.co?a=c");
     });
+
+    it("should not throw away remaining parameters", () => {
+      expect(UtilsService.addOrUpdateUrlParam("ab.co?a=b&b=c", "a", "c")).toEqual("ab.co?a=c&b=c");
+    });
   });
 
   describe("removeUrlParam", () => {
@@ -153,6 +157,20 @@ describe("UtilsService", () => {
 
     it("should work when there are multiple params and the one to be removed is last", () => {
       expect(UtilsService.removeUrlParam("ab.co?a=b&c=d&e=f", "e")).toEqual("ab.co?a=b&c=d");
+    });
+  });
+
+  describe("getUrlParam", () => {
+    it("should work when there is no such param", () => {
+      expect(UtilsService.getUrlParam("https://app.astrobin.com/foo/bar/", "test")).toBeNull();
+    });
+
+    it("should work when there is such param as first element", () => {
+      expect(UtilsService.getUrlParam("https://app.astrobin.com/foo/bar/?test=1", "test")).toEqual("1");
+    });
+
+    it("should work when there is such param as non-first element", () => {
+      expect(UtilsService.getUrlParam("https://app.astrobin.com/foo/bar/?a=b&test=1", "test")).toEqual("1");
     });
   });
 

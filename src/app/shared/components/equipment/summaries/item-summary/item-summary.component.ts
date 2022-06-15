@@ -227,6 +227,10 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
         )
       },
       {
+        name: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.FRAME_RATE, true),
+        value: this.sensorService.getPrintableProperty$(this.item as SensorInterface, SensorDisplayProperty.FRAME_RATE)
+      },
+      {
         name: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.ADC, true),
         value: this.sensorService.getPrintableProperty$(this.item as SensorInterface, SensorDisplayProperty.ADC)
       },
