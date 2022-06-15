@@ -12,8 +12,8 @@ h5 {
 astrobin-avatar,
 astrobin-image {
   display: inline-block;
-  width: calc(20% - .25rem);
-  margin-right: .25rem;
+  width: calc(20% - 2rem);
+  margin: 1rem;
   transition: transform .1s ease-in-out;
 
   &:hover {
