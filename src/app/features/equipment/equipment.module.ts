@@ -29,7 +29,7 @@ import { ExplorerBaseComponent } from "@features/equipment/pages/explorer-base/e
 import { UsersUsingItemComponent } from "./components/explorer/users-using-item/users-using-item.component";
 import { ImagesUsingItemComponent } from "@features/equipment/components/explorer/images-using-item/images-using-item.component";
 import { MostOftenUsedWithComponent } from "./components/explorer/most-often-used-with/most-often-used-with.component";
-import { ExplorerFiltersComponent } from './pages/explorer/explorer-filters/explorer-filters.component';
+import { ExplorerFiltersComponent } from "./pages/explorer/explorer-filters/explorer-filters.component";
 
 @NgModule({
   declarations: [
