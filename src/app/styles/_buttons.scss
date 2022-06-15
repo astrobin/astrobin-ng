@@ -4,13 +4,15 @@
   font-size: 0.85rem;
 
   @media (max-width: $xs-max) {
-    display: block;
-    width: 100%;
-    padding-top: .75rem;
-    padding-bottom: .75rem;
+    &:not(.btn-no-block) {
+      display: block;
+      width: 100%;
+      padding-top: .75rem;
+      padding-bottom: .75rem;
 
-    &:not(:last-child) {
-      margin-bottom: .5rem;
+      &:not(:last-child) {
+        margin-bottom: .5rem;
+      }
     }
   }
 
