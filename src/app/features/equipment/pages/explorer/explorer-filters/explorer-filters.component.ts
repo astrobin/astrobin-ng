@@ -43,7 +43,19 @@ export enum ExplorerFilterType {
   CAMERA_SENSOR_READ_NOISE = "camera-sensor-read-noise",
   CAMERA_SENSOR_FRAME_RATE = "camera-sensor-frame-rate",
   CAMERA_SENSOR_ADC = "camera-sensor-adc",
-  CAMERA_SENSOR_COLOR_OR_MONO = "camera-sensor-color-or-mono"
+  CAMERA_SENSOR_COLOR_OR_MONO = "camera-sensor-color-or-mono",
+
+  SENSOR_QUANTUM_EFFICIENCY = "sensor-quantum-efficiency",
+  SENSOR_PIXEL_SIZE = "sensor-pixel-size",
+  SENSOR_PIXEL_WIDTH = "sensor-pixel-width",
+  SENSOR_PIXEL_HEIGHT = "sensor-pixel-height",
+  SENSOR_WIDTH = "sensor-width",
+  SENSOR_HEIGHT = "sensor-height",
+  SENSOR_FULL_WELL_CAPACITY = "sensor-full-well-capacity",
+  SENSOR_READ_NOISE = "sensor-read-noise",
+  SENSOR_FRAME_RATE = "sensor-frame-rate",
+  SENSOR_ADC = "sensor-adc",
+  SENSOR_COLOR_OR_MONO = "sensor-color-or-mono"
 }
 
 export enum ExplorerFilterValueType {
@@ -249,6 +261,8 @@ export class ExplorerFiltersComponent extends BaseComponentDirective implements 
   }
 
   _buildAvailableFilters(): void {
+    this.availableFilters = [];
+
     switch (this.type) {
       case EquipmentItemType.CAMERA:
         this.availableFilters.push({
@@ -477,6 +491,188 @@ export class ExplorerFiltersComponent extends BaseComponentDirective implements 
         });
 
         break;
+
+      case EquipmentItemType.SENSOR:
+        this.availableFilters.push({
+          type: ExplorerFilterType.SENSOR_QUANTUM_EFFICIENCY,
+          label: this.equipmentItemService.getPrintablePropertyName(
+            EquipmentItemType.SENSOR,
+            SensorDisplayProperty.QUANTUM_EFFICIENCY,
+            false
+          ),
+          icon: "atom",
+          widget: ExplorerFilterWidget.NUMBER_RANGE,
+          value: {
+            from: 0,
+            to: 100
+          },
+          valueType: ExplorerFilterValueType.OBJECT
+        });
+
+        this.availableFilters.push({
+          type: ExplorerFilterType.SENSOR_PIXEL_SIZE,
+          label: this.equipmentItemService.getPrintablePropertyName(
+            EquipmentItemType.SENSOR,
+            SensorDisplayProperty.PIXEL_SIZE,
+            false
+          ),
+          icon: "ruler",
+          widget: ExplorerFilterWidget.NUMBER_RANGE,
+          value: {
+            from: 0,
+            to: 10
+          },
+          valueType: ExplorerFilterValueType.OBJECT
+        });
+
+        this.availableFilters.push({
+          type: ExplorerFilterType.SENSOR_PIXEL_WIDTH,
+          label: this.equipmentItemService.getPrintablePropertyName(
+            EquipmentItemType.SENSOR,
+            SensorDisplayProperty.PIXEL_WIDTH,
+            true
+          ),
+          icon: "arrow-right",
+          widget: ExplorerFilterWidget.NUMBER_RANGE,
+          value: {
+            from: 0,
+            to: 100000
+          },
+          valueType: ExplorerFilterValueType.OBJECT
+        });
+
+        this.availableFilters.push({
+          type: ExplorerFilterType.SENSOR_PIXEL_HEIGHT,
+          label: this.equipmentItemService.getPrintablePropertyName(
+            EquipmentItemType.SENSOR,
+            SensorDisplayProperty.PIXEL_HEIGHT,
+            true
+          ),
+          icon: "arrow-up",
+          widget: ExplorerFilterWidget.NUMBER_RANGE,
+          value: {
+            from: 0,
+            to: 100000
+          },
+          valueType: ExplorerFilterValueType.OBJECT
+        });
+
+        this.availableFilters.push({
+          type: ExplorerFilterType.SENSOR_WIDTH,
+          label: this.equipmentItemService.getPrintablePropertyName(
+            EquipmentItemType.SENSOR,
+            SensorDisplayProperty.SENSOR_WIDTH,
+            false
+          ),
+          icon: "microchip",
+          widget: ExplorerFilterWidget.NUMBER_RANGE,
+          value: {
+            from: 0,
+            to: 100
+          },
+          valueType: ExplorerFilterValueType.OBJECT
+        });
+
+        this.availableFilters.push({
+          type: ExplorerFilterType.SENSOR_HEIGHT,
+          label: this.equipmentItemService.getPrintablePropertyName(
+            EquipmentItemType.SENSOR,
+            SensorDisplayProperty.SENSOR_HEIGHT,
+            false
+          ),
+          icon: "microchip",
+          widget: ExplorerFilterWidget.NUMBER_RANGE,
+          value: {
+            from: 0,
+            to: 100
+          },
+          valueType: ExplorerFilterValueType.OBJECT
+        });
+
+        this.availableFilters.push({
+          type: ExplorerFilterType.SENSOR_FULL_WELL_CAPACITY,
+          label: this.equipmentItemService.getPrintablePropertyName(
+            EquipmentItemType.SENSOR,
+            SensorDisplayProperty.FULL_WELL_CAPACITY,
+            false
+          ),
+          icon: "eye-dropper",
+          widget: ExplorerFilterWidget.NUMBER_RANGE,
+          value: {
+            from: 0,
+            to: 100000
+          },
+          valueType: ExplorerFilterValueType.OBJECT
+        });
+
+        this.availableFilters.push({
+          type: ExplorerFilterType.SENSOR_READ_NOISE,
+          label: this.equipmentItemService.getPrintablePropertyName(
+            EquipmentItemType.SENSOR,
+            SensorDisplayProperty.READ_NOISE,
+            false
+          ),
+          icon: "fire",
+          widget: ExplorerFilterWidget.NUMBER_RANGE,
+          value: {
+            from: 0,
+            to: 10
+          },
+          valueType: ExplorerFilterValueType.OBJECT
+        });
+
+        this.availableFilters.push({
+          type: ExplorerFilterType.SENSOR_FRAME_RATE,
+          label: this.equipmentItemService.getPrintablePropertyName(
+            EquipmentItemType.SENSOR,
+            SensorDisplayProperty.FRAME_RATE,
+            false
+          ),
+          icon: "video",
+          widget: ExplorerFilterWidget.NUMBER_RANGE,
+          value: {
+            from: 0,
+            to: 1000
+          },
+          valueType: ExplorerFilterValueType.OBJECT
+        });
+
+        this.availableFilters.push({
+          type: ExplorerFilterType.SENSOR_ADC,
+          label: this.equipmentItemService.getPrintablePropertyName(
+            EquipmentItemType.SENSOR,
+            SensorDisplayProperty.ADC,
+            false
+          ),
+          icon: "laptop",
+          widget: ExplorerFilterWidget.NUMBER_RANGE,
+          value: {
+            from: 8,
+            to: 32
+          },
+          valueType: ExplorerFilterValueType.OBJECT
+        });
+
+        this.availableFilters.push({
+          type: ExplorerFilterType.SENSOR_COLOR_OR_MONO,
+          label: this.equipmentItemService.getPrintablePropertyName(
+            EquipmentItemType.SENSOR,
+            SensorDisplayProperty.COLOR_OR_MONO,
+            false
+          ),
+          icon: "rainbow",
+          widget: ExplorerFilterWidget.SELECT,
+          items: Object.keys(ColorOrMono).map(colorOrMono => ({
+            value: colorOrMono,
+            label: this.sensorService.humanizeColorOrMono(colorOrMono as ColorOrMono)
+          })),
+          value: null,
+          valueType: ExplorerFilterValueType.OBJECT,
+          humanizeValueFunction: this.sensorService.humanizeColorOrMono.bind(this.sensorService)
+        });
+
+        break;
+
       default:
         this.availableFilters = [];
         this.activeFilters = [];
