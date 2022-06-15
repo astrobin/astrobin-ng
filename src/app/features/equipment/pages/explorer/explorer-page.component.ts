@@ -193,7 +193,7 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
         if (!item) {
           const urlObject = this.windowRefService.getCurrentUrl();
 
-          let url = `${urlObject.pathname}${urlObject.search}${urlObject.hash}`;
+          let url = `/equipment/explorer/${this.activeType.toLowerCase()}${urlObject.search}${urlObject.hash}`;
 
           if (this.page > 1) {
             url = UtilsService.addOrUpdateUrlParam(url, "page", this.page + "");
