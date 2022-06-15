@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
 import { GearApiService } from "@shared/services/api/classic/astrobin/gear/gear-api.service";
 import { LoadingService } from "@shared/services/loading.service";
-import { filter, map, switchMap, take, takeUntil } from "rxjs/operators";
+import { map, switchMap, take, takeUntil } from "rxjs/operators";
 import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { TitleService } from "@shared/services/title/title.service";
 import { FormGroup } from "@angular/forms";
@@ -11,7 +11,7 @@ import { MigrationFlag } from "@shared/services/api/classic/astrobin/migratable-
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { Store } from "@ngrx/store";
 import { Actions } from "@ngrx/effects";
-import { selectBrand, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
+import { selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import { HttpStatusCode } from "@angular/common/http";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { CameraApiService } from "@shared/services/api/classic/astrobin/camera/camera-api.service";
@@ -25,7 +25,6 @@ import { State } from "@app/store/state";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 import { GearService } from "@shared/services/gear/gear.service";
 import { ItemBrowserComponent } from "@shared/components/equipment/item-browser/item-browser.component";
-import { CameraInterface } from "@features/equipment/types/camera.interface";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import { FilterApiService } from "@shared/services/api/classic/astrobin/filter/filter-api.service";
 import { AccessoryApiService } from "@shared/services/api/classic/astrobin/accessory/accessory-api.service";
@@ -399,7 +398,7 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
   multipleTooltip(): string {
     return this.translateService.instant(
       "The legacy object cannot be migrated because it consists of multiple objects in the same item (e.g. " +
-        "LRGB filter set, or multiple unrelated products)."
+      "LRGB filter set, or multiple unrelated products)."
     );
   }
 
@@ -454,7 +453,7 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
                 "<br/><br/>" +
                 this.translateService.instant(
                   "The migration will be reviewed by a moderator as soon as possible, and you will be notified of " +
-                    "the outcome. If the migration is approved, you will be able to add the equipment item to your images."
+                  "the outcome. If the migration is approved, you will be able to add the equipment item to your images."
                 );
             } else {
               message +=
