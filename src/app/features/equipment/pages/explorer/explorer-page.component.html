@@ -20,7 +20,16 @@
       ></astrobin-equipment-explorer>
 
       <ng-container *ngIf="!activeId">
+        <astrobin-equipment-explorer-filters
+          #explorerFilters
+          [type]="activeType"
+          [activeFilters]="filters"
+          (applied)="filtersApplied()"
+          class="d-block mb-3"
+        ></astrobin-equipment-explorer-filters>
+
         <ng-container *ngIf="items$ | async as items; else loading">
+
           <table class="table table-striped table-sm items">
             <thead>
             <tr>

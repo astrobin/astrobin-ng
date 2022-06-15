@@ -36,7 +36,7 @@ export class CameraService extends BaseService implements EquipmentItemServiceIn
     super(loadingService);
   }
 
-  humanizeType(type: CameraType) {
+  humanizeType(type: CameraType): string {
     switch (type) {
       case CameraType.DEDICATED_DEEP_SKY:
         return this.translateService.instant("Dedicated deep-sky camera");

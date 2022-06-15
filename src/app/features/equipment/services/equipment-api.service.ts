@@ -31,6 +31,7 @@ import { EquipmentPresetInterface } from "@features/equipment/types/equipment-pr
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { ImageInterface } from "@shared/interfaces/image.interface";
 import { EquipmentItemMostOftenUsedWith } from "@features/equipment/types/equipment-item-most-often-used-with-data.interface";
+import { ExplorerFilterInterface } from "@features/equipment/pages/explorer/explorer-filters/explorer-filters.component";
 
 @Injectable({
   providedIn: "root"
@@ -64,12 +65,25 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
   getAllEquipmentItems(
     type: EquipmentItemType,
     page = 1,
-    sort?: string
+    sort?: string,
+    filters?: ExplorerFilterInterface[]
   ): Observable<PaginatedApiResultInterface<EquipmentItemBaseInterface>> {
     let url = `${this.configUrl}/${type.toLowerCase()}/?page=${page}`;
 
     if (!!sort) {
-      url += `&sort=${sort}`;
+      url = UtilsService.addOrUpdateUrlParam(url, "sort", sort);
+    }
+
+    if (!!filters) {
+      for (const filter of filters) {
+        let value = filter.value;
+
+        if (UtilsService.isObject(value)) {
+          value = JSON.stringify(value);
+        }
+
+        url = UtilsService.addOrUpdateUrlParam(url, filter.type, value);
+      }
     }
 
     return this.http.get<PaginatedApiResultInterface<EquipmentItemBaseInterface>>(url).pipe(

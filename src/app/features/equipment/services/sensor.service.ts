@@ -29,6 +29,16 @@ export class SensorService extends BaseService implements EquipmentItemServiceIn
     super(loadingService);
   }
 
+  humanizeColorOrMono(colorOrMono: ColorOrMono): string {
+    if (colorOrMono === ColorOrMono.C) {
+      return this.translateService.instant("Color");
+    } else if (colorOrMono === ColorOrMono.M) {
+      return this.translateService.instant("Mono");
+    }
+
+    return "";
+  }
+
   getSupportedPrintableProperties(): string[] {
     return [
       SensorDisplayProperty.PIXEL_SIZE,
@@ -101,12 +111,7 @@ export class SensorService extends BaseService implements EquipmentItemServiceIn
         propertyValue = parseInt(propertyValue, 10);
         return of(propertyValue || item.adc ? `${propertyValue || item.adc}-bit` : "");
       case SensorDisplayProperty.COLOR_OR_MONO:
-        if ((propertyValue || item.colorOrMono) === ColorOrMono.C) {
-          return of(this.translateService.instant("Color"));
-        } else if ((propertyValue || item.colorOrMono) === ColorOrMono.M) {
-          return of(this.translateService.instant("Mono"));
-        }
-        return of("");
+        return of(this.humanizeColorOrMono(propertyValue || item.colorOrMono));
       default:
         throw Error(`Invalid property: ${property}`);
     }

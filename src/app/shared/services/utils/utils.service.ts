@@ -114,10 +114,10 @@ export class UtilsService {
   }
 
   static addOrUpdateUrlParam(url: string, name: string, value: string): string {
-    let regex = new RegExp("[&\\?]" + name + "=");
+    let regex = new RegExp(`[&\?]${name}=`);
 
     if (regex.test(url)) {
-      regex = new RegExp("([&\\?])" + name + "=\\S+");
+      regex = new RegExp(`([&\?])${name}=.+?(?=&|$)`);
       return url.replace(regex, "$1" + name + "=" + value);
     }
 
@@ -145,6 +145,12 @@ export class UtilsService {
     }
 
     return url;
+  }
+
+  static getUrlParam(url: string, parameter: string): string | null {
+    const paramString = url.split("?")[1];
+    const queryString = new URLSearchParams(paramString);
+    return queryString.get(parameter);
   }
 
   static isNumeric(s: string): boolean {
