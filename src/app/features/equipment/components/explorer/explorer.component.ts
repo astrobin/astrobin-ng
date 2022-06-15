@@ -76,6 +76,18 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
   @Input()
   navCollapsed = false;
 
+  @Input()
+  showMostOftenUsedWith = true;
+
+  @Input()
+  showUsersUsing = true;
+
+  @Input()
+  showImagesUsing = true;
+
+  @Input()
+  showForum = true;
+
   @Output()
   valueChanged = new EventEmitter<EquipmentItemBaseInterface>();
 
@@ -190,8 +202,9 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
     );
   }
 
-  showMostOftenUsedWith(): boolean {
+  doShowMostOftenUsedWith(): boolean {
     return (
+      this.showMostOftenUsedWith &&
       this.selectedItem &&
       [
         EquipmentItemType.CAMERA,

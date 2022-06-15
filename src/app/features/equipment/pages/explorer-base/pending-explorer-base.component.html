@@ -21,6 +21,10 @@
             [activeType]="activeType"
             [activeId]="item.id"
             [activeEditProposalId]="activeEditProposalId"
+            [showMostOftenUsedWith]="false"
+            [showUsersUsing]="false"
+            [showImagesUsing]="false"
+            [showForum]="false"
             (approved)="getItems()"
             (rejected)="getItems()"
           ></astrobin-equipment-explorer>
