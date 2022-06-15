@@ -190,6 +190,18 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
     );
   }
 
+  showMostOftenUsedWith(): boolean {
+    return (
+      this.selectedItem &&
+      [
+        EquipmentItemType.CAMERA,
+        EquipmentItemType.TELESCOPE,
+        EquipmentItemType.MOUNT,
+        EquipmentItemType.FILTER
+      ].indexOf(this.activeType) > -1
+    );
+  }
+
   _initActiveId() {
     if (this.activeId) {
       this.store$.dispatch(new LoadEquipmentItem({ id: this.activeId, type: this.activeType }));

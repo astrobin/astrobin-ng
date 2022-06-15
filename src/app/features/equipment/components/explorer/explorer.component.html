@@ -331,9 +331,8 @@
     </ng-container>
   </div> <!-- main pane -->
 
-  <div class="col-sm-12 col-lg-3 order-sm-0 order-lg-1 mb-4 mb-lg-0">
+  <div *ngIf="showMostOftenUsedWith()" class="col-sm-12 col-lg-3 order-sm-0 order-lg-1 mb-4 mb-lg-0">
     <astrobin-equipment-item-most-often-used-with
-      *ngIf="selectedItem"
       [item]="selectedItem"
     ></astrobin-equipment-item-most-often-used-with>
   </div> <!-- side pane -->
