@@ -17,4 +17,12 @@ export class AvatarComponent extends BaseComponentDirective {
   constructor(public readonly store$: Store<State>, public readonly classicRoutesService: ClassicRoutesService) {
     super(store$);
   }
+
+  get avatar(): string {
+    if (this.user.largeAvatar.indexOf("astrobin-default-avatar") > -1) {
+      return "/assets/images/default-avatar.jpg?v=1";
+    }
+
+    return this.user.largeAvatar;
+  }
 }
