@@ -104,7 +104,7 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
 
   getItems() {
     this.sortOrder = (this.cookieService.get(PAGE_SORTING_COOKIE) as ExplorerPageSortOrder) || ExplorerPageSortOrder.AZ;
-    this.filters = this.explorerFilters.activeFilters;
+    this.filters = this.explorerFilters ? this.explorerFilters.activeFilters : [];
 
     this.items$ = this.equipmentApiService
       .getAllEquipmentItems(this._activeType, this.page, this.sortOrder, this.filters)
