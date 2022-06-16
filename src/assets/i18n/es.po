@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: AstroBin Angular App\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-03 14:04+0200\n"
-"PO-Revision-Date: 2022-06-16 19:07+0200\n"
+"PO-Revision-Date: 2022-06-16 19:11+0200\n"
 "Last-Translator: Salvatore Iovene\n"
 "Language-Team: Spanish\n"
 "Language: es\n"
@@ -3370,4 +3370,98 @@ msgstr ""
 msgid ""
 "You cannot propose an edit while there is a pending one. Please review the "
 "pending edit proposal first, thank you!"
+msgstr ""
+
+#: loco:62ab63ab8f947e59c74f08b2
+msgid "Add filter"
+msgstr ""
+
+#: loco:62ab63ab8f947e59c74f08b3
+msgid "Any"
+msgstr ""
+
+#: loco:62ab63ab8f947e59c74f08b4
+msgid "Apply"
+msgstr ""
+
+#: loco:62ab63ab8f947e59c74f08b5
+msgid "Clear all filters"
+msgstr ""
+
+#: loco:62ab63ab8f947e59c74f08b6
+msgid "From"
+msgstr ""
+
+#: loco:62ab63ab8f947e59c74f08b7
+msgid ""
+"If you just upgraded and still see this message, please allow a few minute "
+"for your subscription to take effect."
+msgstr ""
+
+#: loco:62ab63ab8f947e59c74f08b8
+msgid "Legacy item"
+msgstr ""
+
+#: loco:62ab63ab8f947e59c74f08b9
+msgid "Most often used with"
+msgstr ""
+
+#: loco:62ab63ab8f947e59c74f08ba
+msgid "New item"
+msgstr ""
+
+#: loco:62ab63ab8f947e59c74f08bb
+msgid "No, thanks"
+msgstr ""
+
+#: loco:62ab63ab8f947e59c74f08bc
+msgid "Select"
+msgstr ""
+
+#: loco:62ab63ab8f947e59c74f08bd
+msgid "Sorry"
+msgstr ""
+
+#: loco:62ab63ab8f947e59c74f08be
+msgid "Strategy"
+msgstr ""
+
+#: loco:62ab63ab8f947e59c74f08bf
+msgid "Tell me more!"
+msgstr ""
+
+#: loco:62ab63ab8f947e59c74f08c0
+msgid "To"
+msgstr ""
+
+#: loco:62ab63ab8f947e59c74f08c1
+msgid ""
+"To use this feature, you need the <strong>{{0}}</strong> subscription or "
+"higher."
+msgstr ""
+
+#: loco:62ab63ab8f947e59c74f08c2
+msgid "To use this feature, you need the <strong>{{0}}</strong> subscription."
+msgstr ""
+
+#: loco:62ab63ab8f947e59c74f08c3
+msgid "Undo"
+msgstr ""
+
+#: loco:62ab63ab8f947e59c74f08c4
+msgid ""
+"Would you be interested in upgrading? AstroBin is a very small business and "
+"your support would mean a lot!"
+msgstr ""
+
+#: loco:62ab63ab8f947e59c74f08c5
+msgid "Your most recent applied migrations (all equipment classes)"
+msgstr ""
+
+#: loco:62ab63ab8f947e59c74f08c6
+msgid "random"
+msgstr ""
+
+#: loco:62ab63ab8f947e59c74f08c7
+msgid "{{0}} images in common"
 msgstr ""

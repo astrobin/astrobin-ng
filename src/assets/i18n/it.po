@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: AstroBin Angular App\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-03 14:04+0200\n"
-"PO-Revision-Date: 2022-06-16 19:07+0200\n"
+"PO-Revision-Date: 2022-06-16 19:11+0200\n"
 "Last-Translator: Salvatore Iovene\n"
 "Language-Team: Italian\n"
 "Language: it\n"
@@ -3618,3 +3618,104 @@ msgid ""
 msgstr ""
 "Non puoi proporre una modifica quando ce n'è già una in attesa di "
 "approvazione. Prima controlla quella in attesa, grazie!"
+
+#: loco:62ab63ab8f947e59c74f08b2
+msgid "Add filter"
+msgstr "Aggiungi filtro"
+
+#: loco:62ab63ab8f947e59c74f08b3
+msgid "Any"
+msgstr "Qualunque"
+
+#: loco:62ab63ab8f947e59c74f08b4
+msgid "Apply"
+msgstr "Applica"
+
+#: loco:62ab63ab8f947e59c74f08b5
+msgid "Clear all filters"
+msgstr "Rimuovi tutti i filtri"
+
+#: loco:62ab63ab8f947e59c74f08b6
+msgid "From"
+msgstr "Da"
+
+#: loco:62ab63ab8f947e59c74f08b7
+msgid ""
+"If you just upgraded and still see this message, please allow a few minute "
+"for your subscription to take effect."
+msgstr ""
+"Se hai appena fatto l'upgrade e vedi ancora questo messaggio, per favore "
+"attendi qualche minuto perché il tuo abbonamento prenda effetto."
+
+#: loco:62ab63ab8f947e59c74f08b8
+msgid "Legacy item"
+msgstr "Strumento del vecchio database"
+
+#: loco:62ab63ab8f947e59c74f08b9
+msgid "Most often used with"
+msgstr "Usato più spesso con"
+
+#: loco:62ab63ab8f947e59c74f08ba
+msgid "New item"
+msgstr "Nuovo strumento"
+
+#: loco:62ab63ab8f947e59c74f08bb
+msgid "No, thanks"
+msgstr "No, grazie"
+
+#: loco:62ab63ab8f947e59c74f08bc
+msgid "Select"
+msgstr "Seleziona"
+
+#: loco:62ab63ab8f947e59c74f08bd
+msgid "Sorry"
+msgstr "Spiacente"
+
+#: loco:62ab63ab8f947e59c74f08be
+msgid "Strategy"
+msgstr "Strategia"
+
+#: loco:62ab63ab8f947e59c74f08bf
+msgid "Tell me more!"
+msgstr "Dimmi di più!"
+
+#: loco:62ab63ab8f947e59c74f08c0
+msgid "To"
+msgstr "A"
+
+#: loco:62ab63ab8f947e59c74f08c1
+msgid ""
+"To use this feature, you need the <strong>{{0}}</strong> subscription or "
+"higher."
+msgstr ""
+"Per utilizzare questa funzionalità, ti serve un abbonamento <strong>{{0}}"
+"</strong> o superiore."
+
+#: loco:62ab63ab8f947e59c74f08c2
+msgid "To use this feature, you need the <strong>{{0}}</strong> subscription."
+msgstr "To use this feature, you need the <strong>{{0}}</strong> subscription."
+
+#: loco:62ab63ab8f947e59c74f08c3
+msgid "Undo"
+msgstr "Annulla"
+
+#: loco:62ab63ab8f947e59c74f08c4
+msgid ""
+"Would you be interested in upgrading? AstroBin is a very small business and "
+"your support would mean a lot!"
+msgstr ""
+"Ti interesserebbe fare l'upgrade! AstroBin è una piccola azienda e il tuo "
+"supporto aiuterebbe molto!"
+
+#: loco:62ab63ab8f947e59c74f08c5
+msgid "Your most recent applied migrations (all equipment classes)"
+msgstr ""
+"Le tue migrazioni applicate più recenti (tutte le classi di strumentazione)"
+
+#: loco:62ab63ab8f947e59c74f08c6
+msgid "random"
+msgstr "casuale"
+
+#: loco:62ab63ab8f947e59c74f08c7
+msgid "{{0}} images in common"
+msgstr "{{0}} immagini in comune"

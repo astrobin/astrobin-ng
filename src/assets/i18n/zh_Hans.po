@@ -1,806 +1,768 @@
 msgid ""
 msgstr ""
-"mime-version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Project-Id-Version: AstroBin Angular App\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-04-03 14:04+0200\n"
+"PO-Revision-Date: 2022-06-16 19:11+0200\n"
+"Last-Translator: Salvatore Iovene\n"
+"Language-Team: Simplified Chinese\n"
+"Language: zh-Hans\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Loco https://localise.biz\n"
+"X-Loco-Source-Locale: en\n"
+"X-Loco-Project-Id: 108356\n"
+"X-Loco-Api-Version: 1.0.26 20220328-1"
 
-msgid "(DIY)"
-msgstr "DIY"
+#: loco:60685a683b0b1d485a736d12
+msgid "API Keys"
+msgstr "API Keys"
 
-msgid "(modified)"
-msgstr "定制的"
+#: loco:60685a683b0b1d485a736d13
+msgid "Accepted formats"
+msgstr "支持的格式"
 
-msgid "(optional)"
-msgstr "（可选的）"
+#: loco:60685a683b0b1d485a736d14
+msgid "Access denied."
+msgstr "拒绝访问。"
 
+#: loco:60685a683b0b1d485a736d15
+msgid "Advanced plate-solving"
+msgstr "高级解析"
+
+#: loco:60685a683b0b1d485a736d16
+msgid "Advanced search"
+msgstr "高级搜索"
+
+#: loco:60685a683b0b1d485a736d17
+msgid "Amount"
+msgstr "数量"
+
+#: loco:60685a683b0b1d485a736d18
+msgid "And much more!"
+msgstr "还有更多！"
+
+#: loco:60685a683b0b1d485a736d19
+msgid ""
+"AstroBin doesn't support subscription upgrades at the moment, but we're "
+"happy to make it happen manually. If you're on a lower subscription tier and "
+"would like to upgrade to <strong>{{0}}</strong>, please just buy it and then "
+"contact us at {{1}} to get a refund for the unused time on your old "
+"subscription. Thanks!"
+msgstr ""
+"AstroBin 目前不支持订阅升级，但我们很乐意为您手动操作。如果您当前的订阅级别较低，并且想升级到<strong>{{0}}</strong>"
+"，请先购买此订阅，然后通过 {{1}}与我们联系，申请旧订阅剩余时间的退款，谢谢！"
+
+#: loco:60685a683b0b1d485a736d1a
+msgid "AstroBin index"
+msgstr "AstroBin 指数"
+
+#: loco:60685a683b0b1d485a736d1b
+msgid "Astrophotographers list"
+msgstr "天文摄影师列表"
+
+#: loco:60685a683b0b1d485a736d1c
+msgid "Autorenew"
+msgstr "自动更新"
+
+#: loco:60685a683b0b1d485a736d1d
+msgid "Basic plate-solving"
+msgstr "基础解析"
+
+#: loco:60685a683b0b1d485a736d1e
+msgid "Basic search"
+msgstr "基础搜索"
+
+#: loco:60685a683b0b1d485a736d1f
+msgid "Bookmarks"
+msgstr "收藏夹"
+
+#: loco:60685a683b0b1d485a736d20
+msgid "Buy"
+msgstr "购买"
+
+#: loco:60685a683b0b1d485a736d21
+msgid "Cancelled"
+msgstr "已取消的"
+
+#: loco:60685a683b0b1d485a736d22
+msgid "Commercial products"
+msgstr "商业产品"
+
+#: loco:60685a683b0b1d485a736d23
+msgid "Contact"
+msgstr "联系我们"
+
+#: loco:60685a683b0b1d485a736d24
+msgid "Contributors list"
+msgstr "贡献榜"
+
+#: loco:60685a683b0b1d485a736d25
+msgid "Date"
+msgstr "日期"
+
+#: loco:60685a683b0b1d485a736d26
+msgid "Description"
+msgstr "描述"
+
+#: loco:60685a683b0b1d485a736d27
+msgid "Do not notify your followers about this revision."
+msgstr "不将此次修订通知您的粉丝。"
+
+#: loco:60685a683b0b1d485a736d28
+msgid "Drop file here or click to browse"
+msgstr "将文件拖放至此，或点击浏览"
+
+#: loco:60685a683b0b1d485a736d29
+msgid "Email"
+msgstr "电子邮件"
+
+#: loco:60685a683b0b1d485a736d2a
+msgid "Error!"
+msgstr "错误！"
+
+#: loco:60685a683b0b1d485a736d2b
+msgid "Expiration date"
+msgstr "失效日期"
+
+#: loco:60685a683b0b1d485a736d2c
+msgid "Explore"
+msgstr "探索"
+
+#: loco:60685a683b0b1d485a736d2d
+msgid "FAQ"
+msgstr "FAQ"
+
+#: loco:60685a683b0b1d485a736d2e
+msgid "File type not supported"
+msgstr "不支持此格式"
+
+#: loco:60685a683b0b1d485a736d2f
+msgid "Followers"
+msgstr "粉丝"
+
+#: loco:60685a683b0b1d485a736d30
+msgid ""
+"For more information about this and other subscription plans, please visit "
+"the {{0}}pricing{{1}} page."
+msgstr "有关此订阅及其他订阅计划的更多信息，请访问{{0}}定价{{1}}页面。"
+
+#: loco:60685a683b0b1d485a736d31
+msgid "For more information, please check out our Twitter feed:"
+msgstr "有关更多信息，请查看我们的Twitter feed："
+
+#: loco:60685a683b0b1d485a736d32
+msgid ""
+"For this reason, you cannot purchase this at the moment, as AstroBin does "
+"not currently offer a downgrade path."
+msgstr "因此，您目前无法购买，因为 AstroBin 当前不提供降级服务。"
+
+#: loco:60685a683b0b1d485a736d33
+msgid "Forum"
+msgstr "论坛"
+
+#: loco:60685a683b0b1d485a736d34
+msgid "Full search"
+msgstr "全局搜索"
+
+#: loco:60685a683b0b1d485a736d35
+msgid "Go back to the home page."
+msgstr "回到首页。"
+
+#: loco:60685a683b0b1d485a736d36
+msgid "Good bye!"
+msgstr "再见！"
+
+#: loco:60685a683b0b1d485a736d37
+msgid "Groups"
+msgstr "小组"
+
+#: loco:60685a683b0b1d485a736d38
+msgid "Help"
+msgstr "帮助"
+
+#: loco:60685a683b0b1d485a736d39
+msgid "Help with translations!"
+msgstr "协助翻译！"
+
+#: loco:60685a683b0b1d485a736d3a
+msgid "Home"
+msgstr "首页"
+
+#: loco:60685a683b0b1d485a736d3b
+msgid "Image of the day"
+msgstr "今日最佳"
+
+#: loco:60685a683b0b1d485a736d3c
+msgid "Image queue"
+msgstr "作品列队"
+
+#: loco:60685a683b0b1d485a736d3d
+msgid "Images"
+msgstr "作品"
+
+#: loco:60685a683b0b1d485a736d3e
+msgid "Info"
+msgstr "信息"
+
+#: loco:60685a683b0b1d485a736d3f
+msgid "It looks like you reached the upload limit for your subscription."
+msgstr "看起来您已经达到了当前订阅的上传上限。"
+
+#: loco:60685a683b0b1d485a736d40
+msgid "Judgement queue"
+msgstr "评审列队"
+
+#: loco:60685a683b0b1d485a736d41
+msgid "Language"
+msgstr "语言"
+
+#: loco:60685a683b0b1d485a736d42
+msgid "Latest topics"
+msgstr "最新主题"
+
+#: loco:60685a683b0b1d485a736d43
+msgid "Learn more"
+msgstr "了解更多"
+
+#: loco:60685a683b0b1d485a736d44
+msgid "Log in"
+msgstr "登录"
+
+#: loco:60685a683b0b1d485a736d45
+msgid "Logout"
+msgstr "登出"
+
+#: loco:60685a683b0b1d485a736d46
+msgid "Mark all as read"
+msgstr "全部标记为已读"
+
+#: loco:60685a683b0b1d485a736d47
+msgid "Mark as final"
+msgstr "标记为最终版"
+
+#: loco:60685a683b0b1d485a736d48
+msgid "Mark this revision as the final rendition of your image."
+msgstr "将此修订版标记为此系列图像的最终版。"
+
+#: loco:60685a683b0b1d485a736d49
+msgid "Max. {{ max }} MB / image"
+msgstr "最大。{{ max }} MB /图片"
+
+#: loco:60685a683b0b1d485a736d4a
+msgid "Max. {{ max }} total images"
+msgstr "最大。{{ max }} 总图像数"
+
+#: loco:60685a683b0b1d485a736d4b
+msgid "Max. {{ max }} uploads"
+msgstr "最大。{{ max }} 上传张数"
+
+#: loco:60685a683b0b1d485a736d4c
+msgid "Moderate"
+msgstr "有限制的"
+
+#: loco:60685a683b0b1d485a736d4d
+msgid "My messages"
+msgstr "我的消息"
+
+#: loco:60685a683b0b1d485a736d4e
+msgid "My places"
+msgstr "我的空间"
+
+#: loco:60685a683b0b1d485a736d4f
+msgid "My settings"
+msgstr "我的设置"
+
+#: loco:60685a683b0b1d485a736d50
+msgid "Name"
+msgstr "名称"
+
+#: loco:60685a683b0b1d485a736d51
+msgid "No"
+msgstr "没有"
+
+#: loco:60685a683b0b1d485a736d52
+msgid "No plate-solving"
+msgstr "无解析数据"
+
+#: loco:60685a683b0b1d485a736d53
+msgid "Notifications"
+msgstr "通知"
+
+#: loco:60685a683b0b1d485a736d54
+msgid "Password"
+msgstr "密码"
+
+#: loco:60685a683b0b1d485a736d55
+msgid ""
+"Please make a deposit of {{ currency }} {{ amount }} to the following bank "
+"details and then email us at {{ email_prefix }}{{ email }}{{ email_postfix }}"
+" with your username so we may upgrade your account manually."
+msgstr ""
+"请在以下银行账户存入{{ currency }} {{ amount }}，然后将您的用户名通过 {{ email_prefix }}{{ email }"
+"}{{ email_postfix }} 发送给我们，以便我们手动升级您的帐户 。"
+
+#: loco:60685a683b0b1d485a736d56
+msgid "Please note: you already are on this plan or a higher one."
+msgstr "请注意：您已经在享受这个或是更高的订阅计划了。"
+
+#: loco:60685a683b0b1d485a736d57
+msgid "Plots"
+msgstr "空位"
+
+#: loco:60685a683b0b1d485a736d58
+msgid "Prefer to pay via bank transfer?"
+msgstr "更喜欢通过银行转帐付款？"
+
+#: loco:60685a683b0b1d485a736d59
+msgid "Price"
+msgstr "价格"
+
+#: loco:60685a683b0b1d485a736d5a
+msgid "Public Gallery"
+msgstr "公开图库"
+
+#: loco:60685a683b0b1d485a736d5b
+msgid "Quick search"
+msgstr "快速搜索"
+
+#: loco:60685a683b0b1d485a736d5c
+msgid "Register"
+msgstr "注册"
+
+#: loco:60685a683b0b1d485a736d5d
+msgid "Remote astrophotography"
+msgstr "远程天文摄影"
+
+#: loco:60685a683b0b1d485a736d5e
+msgid "Reset password"
+msgstr "重置密码"
+
+#: loco:60685a683b0b1d485a736d5f
+msgid "Return to the classic uploader"
+msgstr "返回旧版上传工具"
+
+#: loco:60685a683b0b1d485a736d60
+msgid "Review queue"
+msgstr "审查列队"
+
+#: loco:60685a683b0b1d485a736d61
+msgid "Revision uploader"
+msgstr "修订版上传工具"
+
+#: loco:60685a683b0b1d485a736d62
+msgid "Settings"
+msgstr "设置"
+
+#: loco:60685a683b0b1d485a736d63
+msgid "Skip notifications"
+msgstr "跳过通知"
+
+#: loco:60685a683b0b1d485a736d64
+msgid ""
+"Sorry, but the page you are looking for is not here. If you expected an "
+"image, this means that the author deleted it."
+msgstr "抱歉，您要查找的页面不在这里。如果这里本应有作品，这意味着作者删除了它。"
+
+#: loco:60685a683b0b1d485a736d65
+msgid "Spam list"
+msgstr "垃圾邮件"
+
+#: loco:60685a683b0b1d485a736d66
+msgid "Sponsors & Partners"
+msgstr "赞助商&合作伙伴"
+
+#: loco:60685a683b0b1d485a736d67
+msgid "Staging Area"
+msgstr "暂存区"
+
+#: loco:60685a683b0b1d485a736d68
+msgid "Submission queue"
+msgstr "提交队列"
+
+#: loco:60685a683b0b1d485a736d69
+msgid "Subscribed topics"
+msgstr "订阅的主题"
+
+#: loco:60685a683b0b1d485a736d6a
+msgid "Subscription confirmed"
+msgstr "订阅已确认"
+
+#: loco:60685a683b0b1d485a736d6b
+msgid "Subscription plans"
+msgstr "订阅计划"
+
+#: loco:60685a683b0b1d485a736d6c
+msgid "Subscription process cancelled"
+msgstr "订阅操作已取消"
+
+#: loco:60685a683b0b1d485a736d6d
+msgid "Success!"
+msgstr "成功！"
+
+#: loco:60685a683b0b1d485a736d6e
+msgid "Target image"
+msgstr "目标作品"
+
+#: loco:60685a683b0b1d485a736d6f
+msgid "Thank you for supporting AstroBin!"
+msgstr "感谢您支持 AstroBin！"
+
+#: loco:60685a683b0b1d485a736d70
+msgid "Thanks!"
+msgstr "感謝！"
+
+#: loco:60685a683b0b1d485a736d71
+msgid "The Big Wall"
+msgstr "作品墙"
+
+#: loco:60685a683b0b1d485a736d72
+msgid "There doesn't seem to be anything here."
+msgstr "这里似乎什么也没有。"
+
+#: loco:60685a683b0b1d485a736d73
+msgid "This field is required"
+msgstr "此字段为必填项"
+
+#: loco:60685a683b0b1d485a736d74
+msgid ""
+"This image will be uploaded to your staging area as a work in progress. You "
+"can make it public at the end of the process."
+msgstr "该作品将作为未完成的作品上传到您的暂存区。您可以在处理结束后时将其公开。"
+
+#: loco:60685a683b0b1d485a736d75
+msgid ""
+"This page or operation is not available at the moment, because AstroBin is "
+"in READ ONLY mode."
+msgstr "AstroBin 处于“只读”状态，该页面或操作目前不可用。"
+
+#: loco:60685a683b0b1d485a736d76
+msgid "Title"
+msgstr "标题"
+
+#: loco:60685a683b0b1d485a736d77
+msgid "Top pick nominations"
+msgstr "“热门精选”提名"
+
+#: loco:60685a683b0b1d485a736d78
+msgid "Top picks"
+msgstr "热门精选"
+
+#: loco:60685a683b0b1d485a736d79
+msgid "Uncompressed source uploader"
+msgstr "未压缩数据上传工具"
+
+#: loco:60685a683b0b1d485a736d7a
+msgid "Unknown error"
+msgstr "未知错误"
+
+#: loco:60685a683b0b1d485a736d7b
+msgid "Unlimited images"
+msgstr "无限作品数量"
+
+#: loco:60685a683b0b1d485a736d7c
+msgid "Unlimited revisions"
+msgstr "无限修订版数量"
+
+#: loco:60685a683b0b1d485a736d7d
+msgid "Unlimited size"
+msgstr "无限大小"
+
+#: loco:60685a683b0b1d485a736d7e
+msgid "Upload"
+msgstr "上传"
+
+#: loco:60685a683b0b1d485a736d7f
+msgid "Uploader"
+msgstr "上传工具"
+
+#: loco:60685a683b0b1d485a736d80
+msgid "Username"
+msgstr "用户名"
+
+#: loco:60685a683b0b1d485a736d81
+msgid "Validity"
+msgstr "有效性"
+
+#: loco:60685a683b0b1d485a736d82
+msgid "Want to upgrade from a lower subscription tier?"
+msgstr "是否想从低等级订阅升级？"
+
+#: loco:60685a683b0b1d485a736d83
+msgid "Warning!"
+msgstr "警告！"
+
+#: loco:60685a683b0b1d485a736d84
+msgid "We could not log you in. Please check your credentials and try again."
+msgstr "无法登录。请检查您的凭据然后重试。"
+
+#: loco:60685a683b0b1d485a736d85
+msgid "We'll never share your email with anyone else."
+msgstr "我们绝不会将您的电子邮件透露给其他人。"
+
+#: loco:60685a683b0b1d485a736d86
+msgid "Welcome!"
+msgstr "欢迎！"
+
+#: loco:60685a683b0b1d485a736d87
+msgid "What is this site?"
+msgstr "这是个啥网站？"
+
+#: loco:60685a683b0b1d485a736d88
+msgid "Would you like to upgrade?"
+msgstr "想要升级吗？"
+
+#: loco:60685a683b0b1d485a736d89
+msgid ""
+"You have a <strong>{{0}}</strong> subscription. Enjoy your unlimited uploads!"
+msgstr "您现已是<strong>{{0}}</strong>订阅用户。畅享无限上传吧！"
+
+#: loco:60685a683b0b1d485a736d8a
+msgid ""
+"You have a <strong>{{0}}</strong> subscription. You have used <strong>{{1}}"
+"</strong> of your <strong>{{2}}</strong> upload slots."
+msgstr ""
+"您现在是 <strong>{{0}}</strong> 订阅用户。目前您已使用<strong>{{2}}</strong>个上传空位中的<strong>"
+"{{1}}</strong>个。"
+
+#: loco:60685a683b0b1d485a736d8b
+msgid ""
+"You have a <strong>{{0}}</strong> subscription. You have used <strong>{{1}}"
+"</strong> of your <strong>{{2}}</strong> yearly upload slots."
+msgstr ""
+"您现在是 <strong>{{0}}</strong> 订阅用户。 目前您已使用<strong>{{2}}</strong>"
+"个年度上传空位中的<strong>{{1}}</strong>个。"
+
+#: loco:60685a683b0b1d485a736d8c
+msgid "You have been logged in."
+msgstr "您已经成功登录。"
+
+#: loco:60685a683b0b1d485a736d8d
+msgid "You have been logged out. Come back soon!"
+msgstr "您已登出。快回来哟！"
+
+#: loco:60685a683b0b1d485a736d8e
+msgid "You will be redirected in {{seconds}} seconds..."
+msgstr "您将在{{seconds}}后跳转..."
+
+#: loco:60685a683b0b1d485a736d8f
+msgid "Your payments"
+msgstr "付款记录"
+
+#: loco:60685a683b0b1d485a736d90
+msgid ""
+"Your request has been received, and we are awaiting the final confirmation "
+"from the payment processor. Your subscription should be active within a few "
+"minutes!"
+msgstr "您的请求已收到，我们正在确认。您的订阅将在几分钟内激活！"
+
+#: loco:60685a683b0b1d485a736d91
+msgid "Your session is invalid, please log in again"
+msgstr "您的会话无效，请重新登录"
+
+#: loco:60685a683b0b1d485a736d92
+msgid "Your subscriptions"
+msgstr "您的订阅"
+
+#: loco:60685a683b0b1d485a736d93
+msgid ""
+"Your transaction with the payment processor has been cancelled, so no change "
+"in your subscription has occurred."
+msgstr "您与支付平台的交易已取消，因此您的订阅未发生任何更改。"
+
+#: loco:60685a683b0b1d485a736d94
+msgid "n/a"
+msgstr "N/A"
+
+#: loco:60685a683b0b1d485a736d95
+msgid "year"
+msgstr "年"
+
+#: loco:60685a683b0b1d485a736d96
+msgid "{{ max }} revisions / image"
+msgstr "{{ max }}修订版/作品"
+
+#: loco:60685ab727e3d377322f4232
 msgid ""
 "0 means invisible; 100 means completely opaque. Recommended values are: 10 "
 "if the watermark will appear on the dark sky background, 50 if on some "
 "bright object."
 msgstr "0表示不可见的，100表示完全不透明。如果水印出现在暗色天空背景里，推荐值是：10。如果是在一些比较亮天体上，推荐值是：50。"
 
-msgid "1 like"
-msgstr "1个喜欢"
-
-msgid ""
-"<strong>Careful!</strong> Change the name only to fix a typo or the naming "
-"convention. This operation will change the name of this equipment item "
-"<strong>for all AstroBin images that use it</strong>, so you should not "
-"change the name if it becomes a different product."
-msgstr ""
-"<strong>小心！</strong>更改名称只是为了更正拼写错误或命名规范。 "
-"此操作将更改此设备项目的名称，并对<strong>所有使用它的AstroBin "
-"图像</strong>的图像生效，因此如果它变成了不同的产品，则您不应更改其名称。"
-
-msgid ""
-"<strong>Careful!</strong> The item's name contains the brand's name (or "
-"vice versa), and it probably shouldn't."
-msgstr "<strong>小心！</strong>项目名称中已经包含了品牌名称（或与此相反），实际上它们不应该如此。"
-
-msgid "A brand with this name already exists."
-msgstr "同名品牌已存在。"
-
-msgid "A brand with this website already exists."
-msgstr "同网站的品牌已经存在。"
-
-msgid ""
-"A positive whole number that represents how many Celsius below ambient "
-"temperature this camera can be cooled."
-msgstr "输入一个正整数，表示相机相对环境温度的最大制冷温度（摄氏度）。"
-
-msgid "ADC"
-msgstr "ADC"
-
-msgid "API Keys"
-msgstr "API Keys"
-
-msgid "Accepted formats"
-msgstr "支持的格式"
-
-msgid "Access denied."
-msgstr "拒绝访问。"
-
-msgid "Accessories"
-msgstr "配件"
-
-msgid "Accessory"
-msgstr "附件"
-
-msgid "Acquisition cameras"
-msgstr ""
-
-msgid "Acquisition telescopes or lenses"
-msgstr ""
-
+#: loco:60685ab727e3d377322f4233
 msgid "Acquisition type"
 msgstr "拍摄方法"
 
-msgid "Add a comment"
-msgstr "添加评论"
-
-msgid "Add filter"
-msgstr ""
-
-msgid "Advanced plate-solving"
-msgstr "高级解析"
-
-msgid "Advanced search"
-msgstr "高级搜索"
-
-msgid "Alias"
-msgstr ""
-
+#: loco:60685ab727e3d377322f4234
 msgid "Allow comments"
 msgstr "允许评论"
 
-msgid "Allow full-size display"
-msgstr "允许全尺寸显示"
-
-msgid "Also available in the following variants:"
-msgstr ""
-
-msgid "Alt-Alt (altitude-altitude)"
-msgstr "高度角-高度角"
-
-msgid "Alt-Az (altazimuth)"
-msgstr "高度角-方位角"
-
-msgid "Altitude"
-msgstr "海拔高度"
-
+#: loco:60685ab727e3d377322f4235
 msgid "Amateur hosting facility"
 msgstr "业余托管天文台"
 
-msgid "Amount"
-msgstr "数量"
-
-msgid "An error occurred"
-msgstr "出错了"
-
-msgid "An item of the same class, brand, and name already exists."
-msgstr "已经存在同品牌、类型的项目"
-
-msgid "Analog to Digital Converter"
-msgstr "模拟-数字转换器"
-
-msgid "And much more!"
-msgstr "还有更多！"
-
+#: loco:60685ab727e3d377322f4236
 msgid "Anular solar eclipse"
 msgstr "日环食"
 
-msgid "Any"
-msgstr ""
-
-msgid "Any changes you make will be reviewed by other members."
-msgstr ""
-
-msgid "Anybody can review edit proposals made by any other member."
-msgstr ""
-
-msgid "Aperture"
-msgstr "光圈"
-
-msgid "Apply"
-msgstr ""
-
+#: loco:60685ab727e3d377322f4237
 msgid "Apply watermark to image"
 msgstr "为这幅作品添加水印"
 
-msgid "Approve"
-msgstr "审核"
+#: loco:60685ab727e3d377322f4238
+msgid "Are you sure you want to dismiss this image?"
+msgstr "您确定要关闭此图片吗？"
 
-msgid "Approve edit"
-msgstr "审核编辑"
-
-msgid "Approved"
-msgstr "已审核"
-
-msgid "Are you sure that you want to continue?"
-msgstr ""
-
-msgid "Are you sure?"
-msgstr "确定？"
-
-msgid "AstroBin can protect your images from theft by applying a watermark to them."
+#: loco:60685ab727e3d377322f4239
+msgid ""
+"AstroBin can protect your images from theft by applying a watermark to them."
 msgstr "AstroBin 可以在作品上添加水印，以防止盗图。"
 
+#: loco:60685ab727e3d377322f423a
 msgid ""
-"AstroBin could not read your file as an image. Please try a different "
-"format."
+"AstroBin could not read your file as an image. Please try a different format."
 msgstr "AstroBin 无法将您的文件读取为图像。 请尝试其他格式。"
 
-msgid "AstroBin does not share your coordinates with anyone."
-msgstr "AstroBin 不会向任何人分享您的坐标。"
-
-msgid ""
-"AstroBin doesn't support subscription upgrades at the moment, but we're "
-"happy to make it happen manually. If you're on a lower subscription tier "
-"and would like to upgrade to <strong>{{0}}</strong>, please just buy it and "
-"then contact us at {{1}} to get a refund for the unused time on your old "
-"subscription. Thanks!"
-msgstr ""
-"AstroBin "
-"目前不支持订阅升级，但我们很乐意为您手动操作。如果您当前的订阅级别较低，并且想升级到<strong>{{0}}</"
-"strong>，请先购买此订阅，然后通过 {{1}}与我们联系，申请旧订阅剩余时间的退款，谢谢！"
-
-msgid ""
-"AstroBin encountered an internal error. Please try again and contact us if "
-"the problem persists!"
-msgstr "AstroBin遇到内部错误。 请再试一次，如果问题仍然存在，请联系我们！"
-
+#: loco:60685ab727e3d377322f423b
 msgid "AstroBin is generating a large thumbnail."
 msgstr "AstroBin正在生成大缩略图。"
 
-msgid ""
-"AstroBin will automatically create variants of this camera marked as "
-"\"modified for astrophotography\" and \"custom-cooled\"."
-msgstr ""
-
-msgid ""
-"AstroBin would like to rename some of your gear items in order to be more "
-"consistent with naming conventions."
-msgstr "AstroBin想重命名一些设备项目，以便统一规范命名。"
-
-msgid ""
-"AstroBin's equipment database is entirely maintained by the community. Feel "
-"free to make a contribution!"
-msgstr ""
-
-msgid "AstroBin's new equipment database is still work in progress."
-msgstr "AstroBin新设备数据库正在更新中。"
-
-msgid "Astrophotographers list"
-msgstr "天文摄影师列表"
-
-msgid "Astrophotographers who have used this equipment item"
-msgstr ""
-
-msgid "Attribution Creative Commons"
-msgstr "授权方式"
-
-msgid "Attribution-NoDerivs Creative Commons"
-msgstr "禁止演绎"
-
-msgid "Attribution-NonCommercial Creative Commons"
-msgstr "非商业性使用"
-
-msgid "Attribution-NonCommercial-NoDerivs Creative Commons"
-msgstr "非商业性使用-禁止共享"
-
-msgid "Attribution-NonCommercial-ShareAlike Creative Commons"
-msgstr "非商业性使用-相同方式共享"
-
-msgid "Attribution-ShareAlike Creative Commons"
-msgstr "相同方式共享"
-
+#: loco:60685ab727e3d377322f423c
 msgid "Authentication error. Please log out and in again."
 msgstr "授权错误。请注销并再次登录。"
 
-msgid "Autorenew"
-msgstr "自动更新"
-
-msgid "Available in {{0}} additional variants."
-msgstr ""
-
-msgid "Back focus"
-msgstr "后截距"
-
+#: loco:60685ab727e3d377322f423d
 msgid "Backyard"
 msgstr "后院拍摄"
 
-msgid "Bad request"
-msgstr "错误请求"
-
-msgid "Bandwidth"
-msgstr "带宽"
-
+#: loco:60685ab727e3d377322f423e
 msgid "Basic information"
 msgstr "基本信息"
 
-msgid "Basic plate-solving"
-msgstr "基础解析"
-
-msgid "Basic search"
-msgstr "基础搜索"
-
-msgid "Binoculars"
-msgstr "双筒望远镜"
-
-msgid "Blue channel (B)"
-msgstr "蓝色通道（B）"
-
-msgid "Bookmarks"
-msgstr "收藏夹"
-
+#: loco:60685ab727e3d377322f423f
 msgid "Bottom center"
 msgstr "底部中心"
 
+#: loco:60685ab727e3d377322f4240
 msgid "Bottom left"
 msgstr "左下"
 
+#: loco:60685ab727e3d377322f4241
 msgid "Bottom right"
 msgstr "右下"
 
-msgid "Brand"
-msgstr "品牌"
-
-msgid "Brand/Make"
-msgstr "品牌/制造商"
-
-msgid "Buy"
-msgstr "购买"
-
-msgid "Camera"
-msgstr "相机"
-
-msgid "Camera back focus in mm."
-msgstr "相机的后截距（毫米）"
-
-msgid "Camera lens"
-msgstr "相机镜头"
-
-msgid "Cameras"
-msgstr "相机"
-
-msgid "Can't find <strong>{{0}}</strong>?"
-msgstr ""
-
+#: loco:60685ab727e3d377322f4242
 msgid "Cancel"
 msgstr "取消"
 
-msgid "Cancelled"
-msgstr "已取消的"
-
-msgid "Catadioptric: ACF Schmidt-Cassegrain"
-msgstr "折返式：ACF施密特-卡塞格林"
-
-msgid "Catadioptric: Argunov-Cassegrain"
-msgstr "折反式：阿古诺夫-卡塞格林"
-
-msgid "Catadioptric: Klevtsov-Cassegrain"
-msgstr "折返式：克列夫佐夫-卡塞格林"
-
-msgid "Catadioptric: Lurie-Houghton"
-msgstr "折反式：卢丽-霍顿"
-
-msgid "Catadioptric: Maksutov"
-msgstr "折返式：马克苏托夫"
-
-msgid "Catadioptric: Maksutov-Cassegrain"
-msgstr "折返式：马克苏托夫-卡塞格林"
-
-msgid "Catadioptric: Riccardi-Honders"
-msgstr ""
-
-msgid "Catadioptric: Rowe-Atkinson Schmidt astrograph"
-msgstr "折返式：罗-阿特金森-施密特摄星仪（RASA）"
-
-msgid "Catadioptric: Schmidt camera"
-msgstr "折返式：施密特相机"
-
-msgid "Catadioptric: Schmidt-Cassegrain"
-msgstr "折返式：施密特-卡塞格林"
-
-msgid "Catadioptric: modified Dall-Kirkham"
-msgstr "折返式：改正版达尔-科克汉姆（DK）"
-
-msgid "Catadioptric: modified Harmer-Wynne"
-msgstr ""
-
-msgid "Celsius degrees below ambient"
-msgstr "低于环境温度的摄氏度数"
-
+#: loco:60685ab727e3d377322f4243
 msgid "Center"
 msgstr "中心"
 
-msgid "Changes"
-msgstr "更改"
-
+#: loco:60685ab727e3d377322f4244
 msgid ""
-"Check this box if this item is self-made, and/or was never on the market as "
-"a commercial product, and therefore does not have a brand."
-msgstr "如果此项目是自制的，从未作为正式产品发售，因此没有品牌，请勾选此框。"
-
-msgid "Choose file"
-msgstr "选择文件"
-
-msgid "Choose files"
-msgstr "选择文件"
-
-msgid ""
-"Choose what will be displayed when somebody hovers the mouse over this "
-"image. Please note: only revisions with the same width and height of your "
-"original image can be considered."
+"Choose what will be displayed when somebody hovers the mouse over this image."
+" Please note: only revisions with the same width and height of your original "
+"image can be considered."
 msgstr "选择当鼠标悬停在此作品上时，将显示的内容。请注意：只有修订作品与原始作品具有相同宽度和高度时可用。"
 
-msgid "Class"
-msgstr "分类"
-
-msgid "Clear"
-msgstr ""
-
-msgid "Clear all filters"
-msgstr ""
-
+#: loco:60685ab727e3d377322f4245
 msgid "Click on the image and scroll to magnify up to 8x."
 msgstr "单击图像并滚动以放大至最大8倍。"
 
-msgid "Close"
-msgstr "关闭"
-
-msgid "Color"
-msgstr "彩色的"
-
-msgid "Color or mono"
-msgstr "彩色或黑白"
-
+#: loco:60685ab727e3d377322f4246
 msgid "Comet"
 msgstr "彗星"
 
-msgid "Cometary"
-msgstr "彗星"
-
-msgid "Coming soon!"
-msgstr ""
-
-msgid "Comment"
-msgstr "评论"
-
-msgid "Comments"
-msgstr "评论"
-
+#: loco:60685ab727e3d377322f4247
 msgid "Commercial facilities"
 msgstr "商业性机构"
 
-msgid "Commercial products"
-msgstr "商业产品"
-
-msgid "Computerized"
-msgstr "计算化的"
-
-msgid "Confirm"
-msgstr "确认"
-
-msgid "Confirm item creation"
-msgstr "确认创建项目"
-
-msgid "Confirm migration"
-msgstr "确认迁移"
-
-msgid "Confirm selected migrations"
-msgstr "确认迁移选中的"
-
-msgid "Conflict detected"
-msgstr "检测到冲突"
-
+#: loco:60685ab727e3d377322f4248
 msgid "Conjunction"
 msgstr "合星"
 
-msgid "Constellations"
-msgstr "星座"
-
-msgid "Contact"
-msgstr "联系我们"
-
+#: loco:60685ab727e3d377322f4249
 msgid "Content"
 msgstr "内容"
 
-msgid "Contribution Index"
-msgstr "贡献榜"
-
-msgid "Contributors list"
-msgstr "贡献榜"
-
-msgid "Cooled"
-msgstr "制冷的"
-
-msgid "Create"
-msgstr "创建"
-
-msgid "Create a new item"
-msgstr "创建新项目"
-
-msgid "Create item"
-msgstr ""
-
-msgid "Create new brand"
-msgstr "创建新品牌"
-
-msgid "Create new location"
-msgstr "创建新地点"
-
-msgid "Created by"
-msgstr "创建者："
-
-msgid "Custom-cooled"
-msgstr ""
-
-msgid ""
-"Custom-cooled cameras are DSLR and mirrorless cameras that are not sold "
-"with cooling as stock, but a cooling mechanism is added as a custom "
-"modification."
-msgstr ""
-
+#: loco:60685ab727e3d377322f424a
 msgid "Data source"
 msgstr "数据来源"
 
-msgid "Date"
-msgstr "日期"
-
-msgid "Dedicated deep-sky camera"
-msgstr "深空摄影专用相机"
-
+#: loco:60685ab727e3d377322f424b
 msgid "Deep sky object or field"
 msgstr "深空天体或深空视场"
 
-msgid "Delete"
-msgstr ""
-
-msgid "Description"
-msgstr "描述"
-
-msgid "Disable high contrast theme"
-msgstr "禁用高对比度主题"
-
+#: loco:60685ab727e3d377322f424c
 msgid "Dismiss"
 msgstr "关闭"
 
+#: loco:60685ab727e3d377322f424d
 msgid "Dismiss image"
 msgstr "关闭图像"
 
-msgid "Display download menu"
-msgstr "显示下载菜单"
-
-msgid ""
-"Do not let your personal preference for a naming convention be a reason for "
-"rejection at this time, as data defragmentation is more important than "
-"minor spelling concerns that can be fixed later."
-msgstr ""
-
-msgid "Do not notify your followers about this revision."
-msgstr "不将此次修订通知您的粉丝。"
-
-msgid "Dobsonian"
-msgstr "道布森"
-
-msgid "Don't remind me for a month"
-msgstr "本月不再提示"
-
+#: loco:60685ab727e3d377322f424e
 msgid "Downloaded"
 msgstr "远程拍摄下载的"
 
+#: loco:60685ab727e3d377322f424f
 msgid "Drawing/Sketch"
 msgstr "绘画/草图"
 
-msgid "Drop file here or click to browse"
-msgstr "将文件拖放至此，或点击浏览"
-
-msgid "Dual Alt-Az/Equatorial"
-msgstr "AZ/EQ赤道仪"
-
-msgid "Duplicate of"
-msgstr ""
-
-msgid "E-mail"
-msgstr "电子邮箱"
-
+#: loco:60685ab727e3d377322f4250
 msgid "Earth's Moon"
 msgstr "月亮"
 
+#: loco:60685ab727e3d377322f4251
 msgid "Edit"
 msgstr "编辑"
 
-msgid "Edit proposal by"
-msgstr "建议提议人"
-
-msgid "Edit proposal comment"
-msgstr "编辑建议评论"
-
-msgid "Editing this field is not possible."
-msgstr "无法编辑此字段。"
-
-msgid "Electronically-Assisted Astronomy (EAA, e.g. based on a live video feed)"
+#: loco:60685ab727e3d377322f4252
+msgid ""
+"Electronically-Assisted Astronomy (EAA, e.g. based on a live video feed)"
 msgstr "电子辅助天文观测（EAA，例如基于实时视传输）"
 
-msgid "Email"
-msgstr "电子邮件"
-
-msgid "Enable high contrast theme"
-msgstr "启用高对比度主题"
-
-msgid "Enjoy your unlimited revisions per image!"
-msgstr "享受每幅图像的无限修订吧！"
-
-msgid "Equatorial"
-msgstr "赤道仪"
-
-msgid "Equipment"
-msgstr "设备"
-
-msgid "Equipment explorer"
-msgstr "设备浏览器"
-
-msgid "Equipment item summary"
-msgstr ""
-
-msgid "Equipment pending edit"
-msgstr "待编辑设备"
-
-msgid "Equipment pending review"
-msgstr "待审核设备"
-
-msgid "Equipment preset created."
-msgstr ""
-
-msgid "Equipment preset updated."
-msgstr ""
-
-msgid "Error!"
-msgstr "错误！"
-
-msgid "Everybody"
-msgstr "所有人"
-
-msgid "Expiration date"
-msgstr "失效日期"
-
-msgid "Explore"
-msgstr "探索"
-
-msgid "Explorer"
-msgstr "浏览器"
-
+#: loco:60685ab727e3d377322f4253
 msgid "Extremely wide field"
 msgstr "超广角"
 
-msgid "FAQ"
-msgstr "FAQ"
-
-msgid "Feel free to contribute!"
-msgstr ""
-
-msgid ""
-"File too large. If you just upgraded your subscription, please try again in "
-"a few minutes. Thanks!"
-msgstr "文件太大。如果您刚刚上传了一个修订版，请几分钟之后再次尝试。谢谢！"
-
-msgid "File type not supported"
-msgstr "不支持此格式"
-
-msgid "Film camera"
-msgstr "胶片相机"
-
-msgid "Filter"
-msgstr "滤镜"
-
-msgid "Filters"
-msgstr "滤镜"
-
+#: loco:60685ab727e3d377322f4254
 msgid "Finalizing upload, please wait..."
 msgstr "正在完成上传，请稍候..."
 
-msgid "Find equipment item"
-msgstr "查找设备项目"
-
-msgid "Find images"
-msgstr "查找作品"
-
-msgid "Fixed focal length"
-msgstr "固定焦距"
-
-msgid "Focal length"
-msgstr "焦距"
-
-msgid ""
-"For more information about this and other subscription plans, please visit "
-"the {{0}}pricing{{1}} page."
-msgstr "有关此订阅及其他订阅计划的更多信息，请访问{{0}}定价{{1}}页面。"
-
-msgid "For more information, please check out our Twitter feed:"
-msgstr "有关更多信息，请查看我们的Twitter feed："
-
-msgid "For security reasons, this is not permitted."
-msgstr ""
-
-msgid ""
-"For this reason, you cannot purchase this at the moment, as AstroBin does "
-"not currently offer a downgrade path."
-msgstr "因此，您目前无法购买，因为 AstroBin 当前不提供降级服务。"
-
-msgid "Fork"
-msgstr "叉式"
-
-msgid "Forum"
-msgstr "论坛"
-
-msgid "Forums"
-msgstr "论坛"
-
-msgid "Frame rate"
-msgstr "帧率"
-
-msgid "From"
-msgstr ""
-
-msgid "Full search"
-msgstr "全局搜索"
-
-msgid "Full well capacity"
-msgstr "满阱电荷容量"
-
+#: loco:60685ab727e3d377322f4255
 msgid "Gear"
 msgstr "器材"
 
-msgid "Gear renaming proposals"
-msgstr "设备重命名建议"
-
-msgid "General purpose DSLR or mirrorless camera"
-msgstr "通用单反相机或无反相机"
-
-msgid "General purpose video camera"
-msgstr "通用摄像机"
-
-msgid "German equatorial"
-msgstr "德式赤道仪"
-
-msgid "Get next"
-msgstr ""
-
-msgid "Go back to the home page."
-msgstr "回到首页。"
-
-msgid "Go to regular variant."
-msgstr ""
-
-msgid "Green channel (G)"
-msgstr "绿色通道（G）"
-
-msgid "Groups"
-msgstr "小组"
-
-msgid "Guider or planetary camera"
-msgstr "导星或行星相机"
-
-msgid "Guiding cameras"
-msgstr ""
-
-msgid "Guiding telescopes or lenses"
-msgstr ""
-
+#: loco:60685ab727e3d377322f4256
 msgid "HTML tags are allowed."
 msgstr "允许HTML标签。"
 
+#: loco:60685ab727e3d377322f4257
 msgid ""
-"Heads up! Are you sure you want to upload such a large file? It's okay to "
-"do so but probably not many people will want to see it at its full "
-"resolution, if it will take too long for them to download it."
+"Heads up! Are you sure you want to upload such a large file? It's okay to do "
+"so but probably not many people will want to see it at its full resolution, "
+"if it will take too long for them to download it."
 msgstr "敲黑板！您确定要上传这么大的文件吗？ 这样做是可以的，但是如果它们加载时间过长，可能没有多少人会希望以完整分辨率查看。"
 
-msgid "Help"
-msgstr "帮助"
-
-msgid "Help with translations!"
-msgstr "协助翻译！"
-
-msgid "Hexapod"
-msgstr "六足式"
-
+#: loco:60685ab727e3d377322f4258
 msgid "Hide"
 msgstr "隐藏"
 
-msgid "Home"
-msgstr "首页"
-
-msgid "Hydrogen-alpha (Hα)"
-msgstr "氢-α（Hα）"
-
-msgid "Hydrogen-beta (Hβ)"
-msgstr "氢-β（H-β）"
-
-msgid "I have carefully checked for typos"
-msgstr ""
-
-msgid ""
-"I have carefully checked that this item conforms to existing naming "
-"conventions for this brand"
-msgstr ""
-
-msgid "I have carefully checked that this item does not duplicate an existing one"
-msgstr ""
-
-msgid ""
-"I have not included information that pertains to my personal item (e.g. "
-"sold/broken/refurbished...) and this is the general description of a product"
-msgstr ""
-
-msgid "IOTD"
-msgstr "今日最佳"
-
-msgid "IOTD/TP Staff"
-msgstr "今日最佳/热门精选 员工"
-
+#: loco:60685ab727e3d377322f4259
 msgid ""
 "If selected, AstroBin will use a resizing algorithm that slightly sharpens "
 "the image's thumbnails. This setting applies to all revisions."
 msgstr "如果勾选，AstroBin 将使用大小调整算法，略微锐化缩略图。此设置适用于所有修订图。"
 
-msgid ""
-"If this file is a different take on the same data as in another image you "
-"already published on AstroBin, the common practice would be to upload it as "
-"a new revision. For more info, please {{0}}click here{{1}}."
-msgstr ""
-"如果此作品与您发布在AstroBin上的另一幅作品有着相同的数据源，通常的做法是将这幅作品作为之前作品的修订版上传。要了解更多，请 "
-"{{0}}点击这里{{1}}。"
+#: loco:60685ab727e3d377322f425a
+msgid "If you have any problems, please {{0}}let us know{{1}}!"
+msgstr "如果您遇到了任何问题，请{{0}}告知我们{{1}}！"
 
-msgid "If you can reproduce this issue reliably, please contact us."
-msgstr "如果您能复现此问题，请与我们联系。"
-
-msgid ""
-"If you just upgraded and still see this message, please allow a few minute "
-"for your subscription to take effect."
-msgstr ""
-
+#: loco:60685ab727e3d377322f425b
 msgid ""
 "If you want to share the TIFF or FITS file of your image, put a link to the "
 "file here. Unfortunately, AstroBin cannot offer to store these files at the "
@@ -809,1352 +771,430 @@ msgstr ""
 "如果想分享您的 TIFF 或 FITS 作品文件，请在这里输入该文件链接。遗憾的是，AstroBin "
 "不能提供保存这些文件，所以您将不得不托管它们到您的个人空间。"
 
+#: loco:60685ab727e3d377322f425c
 msgid ""
-"If you're hosting a copy of this image on your website, put the address "
-"here."
+"If you're hosting a copy of this image on your website, put the address here."
 msgstr "如果您在您自己的网站上发布过该作品，请再这里输入该作品的链接。"
 
-msgid ""
-"If you're not sure how to use this page, feel free to contact AstroBin or "
-"just skip it and let AstroBin moderators deal with your equipment later."
-msgstr ""
-
+#: loco:60685ab727e3d377322f425d
 msgid "Image"
 msgstr "作品"
 
-msgid "Image Index"
-msgstr "作品指数"
-
-msgid "Image of the Day / Top Picks"
-msgstr "今日最佳 / 热门精选"
-
-msgid "Image of the day"
-msgstr "今日最佳"
-
-msgid "Image queue"
-msgstr "作品列队"
-
-msgid "Image saved."
-msgstr ""
-
-msgid "Images"
-msgstr "作品"
-
-msgid "Images acquired using this equipment item"
-msgstr ""
-
+#: loco:60685ab727e3d377322f425e
 msgid "Imaging cameras"
 msgstr "主相机"
 
+#: loco:60685ab727e3d377322f425f
 msgid "Imaging telescopes"
 msgstr "主镜"
 
-msgid "Info"
-msgstr "信息"
-
-msgid "Infrared (IR)"
-msgstr "红外（IR）"
-
+#: loco:60685ab727e3d377322f4260
 msgid "Initializing upload, please wait..."
 msgstr "初始化上传，请稍候..."
 
-msgid "Internal server error"
-msgstr "内部服务器错误"
-
+#: loco:60685ab727e3d377322f4261
 msgid "Invalid data, please refresh the page and try again."
 msgstr "无效数据，请刷新页面并重试。"
 
+#: loco:60685ab727e3d377322f4262
 msgid "Inverted monochrome"
 msgstr "反转黑白"
 
-msgid ""
-"It looks like you are in the process of creating an equipment item, please "
-"complete or cancel that operation before saving the entire form."
-msgstr ""
-
-msgid "It looks like you reached the revision upload limit for your subscription."
-msgstr "看起来您已达到当前订阅的版本上载上传限制。"
-
-msgid "It looks like you reached the upload limit for your subscription."
-msgstr "看起来您已经达到了当前订阅的上传上限。"
-
-msgid "Item <strong>{{0}}</strong> marked as <strong>{{1}}</strong>."
-msgstr ""
-
-msgid "Item approved."
-msgstr "项目已通过审核。"
-
-msgid "Item class"
-msgstr ""
-
-msgid "Item summary"
-msgstr "项目摘要"
-
-msgid "Judgement queue"
-msgstr "评审列队"
-
-msgid "Jump to"
-msgstr "跳转至"
-
+#: loco:60685ab727e3d377322f4263
 msgid "Jupiter"
 msgstr "木星"
 
+#: loco:60685ab727e3d377322f4264
 msgid "Key/value tags"
 msgstr "键/值标签"
 
-msgid "Language"
-msgstr "语言"
-
+#: loco:60685ab727e3d377322f4265
 msgid "Large"
 msgstr "大"
 
-msgid "Last update"
-msgstr "最近更新"
-
-msgid "Latest topics"
-msgstr "最新主题"
-
-msgid "Learn more"
-msgstr "了解更多"
-
-msgid "Legacy item"
-msgstr ""
-
-msgid "Legacy item being migrated"
-msgstr "正在迁移的旧项目"
-
-msgid "License"
-msgstr "许可协议"
-
-msgid "Light pollution suppression"
-msgstr "光害抑制"
-
+#: loco:60685ab727e3d377322f4266
 msgid "Link"
 msgstr "链接"
 
+#: loco:60685ab727e3d377322f4267
 msgid "Link to TIFF/FITS"
 msgstr "链接到 TIFF/FITS 文件"
 
-msgid "Load"
-msgstr ""
-
-msgid "Load equipment preset"
-msgstr ""
-
-msgid "Load preset"
-msgstr ""
-
-msgid "Loading edit proposals"
-msgstr "加载编辑建议"
-
+#: loco:60685ab727e3d377322f4268
 msgid "Loading..."
 msgstr "加载中..."
 
-msgid "Locations"
-msgstr "地点"
-
-msgid "Log in"
-msgstr "登录"
-
-msgid "Logging you in securely..."
-msgstr "安全登录..."
-
-msgid "Logging you out securely..."
-msgstr "安全登出..."
-
-msgid "Login required"
-msgstr "需要登录"
-
-msgid "Logo"
-msgstr "Logo"
-
-msgid "Logout"
-msgstr "登出"
-
+#: loco:60685ab727e3d377322f4269
 msgid "Lucky imaging"
 msgstr "幸运成像"
 
-msgid "Luminance/clear (L)"
-msgstr "明度/透明（L）"
-
-msgid "Lunar"
-msgstr "月亮"
-
+#: loco:60685ab727e3d377322f426a
 msgid "Main solar system subject"
 msgstr "主要的太阳系目标"
 
-msgid "Mark all as read"
-msgstr "全部标记为已读"
-
-msgid "Mark as"
-msgstr "标记为"
-
-msgid "Mark as final"
-msgstr "标记为最终版"
-
-msgid "Mark this revision as the final rendition of your image."
-msgstr "将此修订版标记为此系列图像的最终版。"
-
+#: loco:60685ab727e3d377322f426b
 msgid "Mars"
 msgstr "火星"
 
-msgid "Max. cooling"
-msgstr "最大制冷"
-
-msgid "Max. focal length"
-msgstr "最大焦距"
-
-msgid "Max. payload"
-msgstr "最大负载"
-
-msgid "Max. {{ max }} MB / image"
-msgstr "最大。{{ max }} MB /图片"
-
-msgid "Max. {{ max }} total images"
-msgstr "最大。{{ max }} 总图像数"
-
-msgid "Max. {{ max }} uploads"
-msgstr "最大。{{ max }} 上传张数"
-
-msgid "Me only"
-msgstr "仅我可见"
-
+#: loco:60685ab727e3d377322f426c
 msgid "Medium"
 msgstr "中"
 
-msgid "Members only"
-msgstr "仅成员可见"
-
+#: loco:60685ab727e3d377322f426d
 msgid "Mercury"
 msgstr "水星"
 
-msgid "Meteor shower"
-msgstr "流星雨"
-
-msgid "Meters above sea level"
-msgstr "海平面以上高度（米）"
-
-msgid "Migrate"
-msgstr "迁移"
-
-msgid "Migrate into"
-msgstr "迁移至"
-
-msgid "Min. focal length"
-msgstr "最小焦距"
-
+#: loco:60685ab727e3d377322f426e
 msgid "Minor planet"
 msgstr "小行星"
 
+#: loco:60685ab727e3d377322f426f
 msgid "Mix of multiple sources"
 msgstr "多种素材来源"
 
-msgid "Moderate"
-msgstr "有限制的"
-
-msgid ""
-"Modifications typically include LPF2 filter removal, Baader modification, "
-"or full-spectrum modification."
-msgstr ""
-
-msgid "Modified"
-msgstr "定制的"
-
-msgid "Modified for astrophotography"
-msgstr ""
-
-msgid "Mono"
-msgstr "单色的"
-
-msgid "Most often used with"
-msgstr ""
-
-msgid "Mount"
-msgstr "支架"
-
-msgid "Mounts"
-msgstr "支架"
-
+#: loco:60685ab727e3d377322f4270
 msgid "Mouse hover image"
 msgstr "鼠标悬停图像"
 
-msgid "Move the map until the marker points at right location"
-msgstr "移动地图，使标记指向正确的位置"
-
-msgid "Multiband"
-msgstr "多波段"
-
-msgid "Multiple items"
-msgstr "多个项目"
-
-msgid "My messages"
-msgstr "我的消息"
-
-msgid "My places"
-msgstr "我的空间"
-
-msgid "My settings"
-msgstr "我的设置"
-
-msgid "Name"
-msgstr "名称"
-
-msgid "Name/Model"
-msgstr "名称/型号"
-
+#: loco:60685ab727e3d377322f4271
 msgid "Neptune"
 msgstr "海王星"
 
-msgid "Neutral density (ND)"
-msgstr "中性灰（ND）"
-
-msgid "New item"
-msgstr ""
-
-msgid "Newest first"
-msgstr "最新在最前"
-
+#: loco:60685ab727e3d377322f4272
 msgid "Next"
 msgstr "下一步"
 
-msgid "Nitrogen-II (NII)"
-msgstr "氮-II（NII）"
-
-msgid "No"
-msgstr "没有"
-
-msgid "No changes are proposed, or all proposed changes are outdated."
-msgstr "未提交任何变更，或所有提交的变更均已过期。"
-
-msgid "No items found."
-msgstr "未找到任何项目。"
-
-msgid "No plate-solving"
-msgstr "无解析数据"
-
-msgid "No, thanks"
-msgstr ""
-
-msgid "Nobody"
-msgstr "没有人"
-
-msgid "Nobody is using this equipment item on AstroBin, at the moment."
-msgstr ""
-
-msgid "Noctilucent clouds"
-msgstr "夜光云"
-
+#: loco:60685ab727e3d377322f4273
 msgid "Non-commercial independent facility"
 msgstr "非商业性独立机构"
 
-msgid "None (All rights reserved)"
-msgstr "无（保留所有权利）"
-
+#: loco:60685ab727e3d377322f4274
 msgid "None of the above"
 msgstr "以上都不是"
 
+#: loco:60685ab727e3d377322f4275
 msgid "None specified"
 msgstr "未指定"
 
+#: loco:60685ab727e3d377322f4276
 msgid "Northern lights"
 msgstr "北极光"
 
-msgid "Not a {{0}}"
-msgstr ""
-
-msgid "Not enough info"
-msgstr "信息不足"
-
+#: loco:60685ab727e3d377322f4277
 msgid "Nothing"
 msgstr "无"
 
-msgid "Notification settings"
-msgstr "消息提醒设置"
+#: loco:60685ab727e3d377322f4278
+msgid "Objects in field"
+msgstr "视场中的物体"
 
-msgid "Notifications"
-msgstr "通知"
-
-msgid "Number of pixels"
-msgstr "像素数量"
-
-msgid "Number of pixels across the X axis"
-msgstr "X轴上像素数量"
-
-msgid "Number of pixels across the Y axis"
-msgstr "Y轴上像素数量"
-
-msgid "Object ID"
-msgstr "目标ID"
-
+#: loco:60685ab727e3d377322f4279
 msgid "Occultation"
 msgstr "掩星"
 
-msgid "Official (or official looking) product image. Max. 1MB."
-msgstr "官方发布的（或官方形象）产品图像。最大1MB。"
-
-msgid "Oldest first"
-msgstr "最老在最前"
-
-msgid "On-site"
-msgstr "现场的"
-
-msgid ""
-"Oops! Your request fell in between two AstroBin servers. Please clear your "
-"cache and try again."
-msgstr "糟糕！您的请求发送到了两台服务器之间，请清除缓存并重试。"
-
+#: loco:60685ab727e3d377322f427a
 msgid "Opacity"
 msgstr "透明度"
 
+#: loco:60685ab727e3d377322f427b
 msgid "Other"
 msgstr "其他"
 
+#: loco:60685ab727e3d377322f427c
 msgid "Other/Unknown"
 msgstr "其他/未知"
 
+#: loco:60685ab727e3d377322f427d
 msgid "Own remote observatory"
 msgstr "自有远程台"
 
-msgid "Oxygen-III (OIII)"
-msgstr "氧-III（OIII）"
-
-msgid "PEC"
-msgstr "PEC"
-
+#: loco:60685ab727e3d377322f427e
 msgid "Partial lunar eclipse"
 msgstr "月偏食"
 
+#: loco:60685ab727e3d377322f427f
 msgid "Partial solar eclipse"
 msgstr "日偏食"
 
-msgid "Password"
-msgstr "密码"
-
-msgid "Paying members only"
-msgstr "仅限付费会员使用"
-
-msgid "Pending"
-msgstr "待定"
-
-msgid "Pending edit"
-msgstr "待编辑"
-
-msgid "Pending review"
-msgstr "待审核"
-
-msgid "Periodic error"
-msgstr ""
-
-msgid "Periodic error correction"
-msgstr "周期误差校正"
-
+#: loco:60685ab727e3d377322f4280
 msgid "Permission denied"
 msgstr "没有权限"
 
-msgid ""
-"Permission denied. You don't have the required subscription level to "
-"perform this operation."
-msgstr "许可被拒。您没有执行此操作所需的订阅级别。"
-
-msgid "Photometric Blue"
-msgstr "蓝色测光"
-
-msgid "Photometric Infrared"
-msgstr "红外测光"
-
-msgid "Photometric Red"
-msgstr "红色测光"
-
-msgid "Photometric Ultraviolet"
-msgstr "紫外测光"
-
-msgid "Photometric Visual"
-msgstr "可见光测光"
-
-msgid "Pinch & zoom to view details closer."
-msgstr "两指缩放以查看更多细节"
-
-msgid "Pixel size"
-msgstr "像元大小"
-
-msgid "Pixel size (in μm)"
-msgstr "像元大小（微米）"
-
-msgid "Pixels"
-msgstr "像素"
-
-msgid "Pixels X"
-msgstr "X像素"
-
-msgid "Pixels Y"
-msgstr "Y像素"
-
-msgid "Planetary"
-msgstr ""
-
+#: loco:60685ab727e3d377322f4281
 msgid "Plate-solution annotations (if available)"
 msgstr "解析标注（如果可用）"
 
-msgid "Please DO NOT approve this item if it's a duplicate of another one!"
-msgstr "如果此项目与其他项目重复，请不要通过！"
-
+#: loco:60685ab727e3d377322f4282
 msgid "Please check that all required fields have been filled at every step."
 msgstr "请再次检查，之前每一步中，所有的必填项目都已完成"
 
-msgid "Please come back in {{0}} minutes!"
-msgstr ""
+#: loco:60685ab727e3d377322f4283
+msgid "Please come back later!"
+msgstr "请稍后再回来！"
 
-msgid ""
-"Please make a deposit of {{ currency }} {{ amount }} to the following bank "
-"details and then email us at {{ email_prefix }}{{ email }}{{ email_postfix "
-"}} with your username so we may upgrade your account manually."
-msgstr ""
-"请在以下银行账户存入{{ currency }} {{ amount }}，然后将您的用户名通过 {{ email_prefix }}{{ email "
-"}}{{ email_postfix }} 发送给我们，以便我们手动升级您的帐户 。"
-
-msgid "Please make sure that the information you entered is accurate."
-msgstr "请确保您输入的信息准确无误。"
-
+#: loco:60685ab727e3d377322f4284
 msgid "Please note"
 msgstr "请注意"
 
+#: loco:60685ab727e3d377322f4285
 msgid "Please note: animated GIFs cannot be watermarked at this time."
 msgstr "请注意：GIF动画现在无法添加水印"
 
+#: loco:60685ab727e3d377322f4286
+msgid ""
+"Please note: if this file is a crop of another image you already published "
+"on AstroBin, the common practice would be to upload it as a new revision. "
+"For more info, please <a href='https://welcome.astrobin.com/features/image-"
+"revisions' target='_blank'>click here</a>."
+msgstr ""
+"请注意：如果此文件是您已经在AstroBin已发布作品的剪裁版，更为常用的做法是将其作为修订版上传。想要了解更多，请 <a href='https:"
+"//welcome.astrobin.com/features/image-revisions' target='_blank'>点击这里</a>。"
+
+#: loco:60685ab727e3d377322f4287
 msgid ""
 "Please note: you don't <strong>have to</strong> use all your slots. It's ok "
 "to use fewer if you don't think there are that many worthy images today."
 msgstr "请注意：您<strong>不需要</strong>填满所有的空位。如果认为今天有价值的作品不多，则可以只用其中一部分。"
 
-msgid "Please read the equipment migration guidelines"
-msgstr "请阅读设备迁移指南"
-
+#: loco:60685ab727e3d377322f4288
 msgid ""
-"Please reject a renaming proposal only if the proposal incorrectly makes "
-"the item a different product."
-msgstr ""
-
-msgid ""
-"Please use a device with a minimum horizontal resolution of 1024 pixels to "
-"view this content."
-msgstr "请使用低横向分辨率高于1024像素的设备查看此内容。"
-
-msgid "Please wait until your subscription expires, then come back to this page."
+"Please wait until your subscription expires, then come back to this page."
 msgstr "请等待您的订阅到期，然后返回此页面。"
 
-msgid "Plots"
-msgstr "空位"
-
-msgid "Portable English"
-msgstr "便携英式"
-
+#: loco:60685ab727e3d377322f4289
 msgid "Position"
 msgstr "位置"
 
-msgid "Prefer to pay via bank transfer?"
-msgstr "更喜欢通过银行转帐付款？"
-
+#: loco:60685ab727e3d377322f428a
 msgid "Previous"
 msgstr "上一步"
 
-msgid "Private messages"
-msgstr "私信"
-
+#: loco:60685ab727e3d377322f428b
 msgid "Professional, scientific grade data"
 msgstr "专业、科研级数据"
 
+#: loco:60685ab727e3d377322f428c
 msgid "Promote"
 msgstr "晋级"
 
-msgid "Propose edit"
-msgstr "建议编辑"
-
-msgid "Proposed by"
-msgstr "提交人"
-
-msgid "Proposer's comment"
-msgstr "提议者的评论"
-
+#: loco:60685ab727e3d377322f428d
 msgid ""
-"Provide a list of unique key/value pairs to tag this image with. Use the "
-"'=' symbol between key and value, and provide one pair per line. These tags "
-"can be used to sort images by arbitrary properties."
+"Provide a list of unique key/value pairs to tag this image with. Use the '=' "
+"symbol between key and value, and provide one pair per line. These tags can "
+"be used to sort images by arbitrary properties."
 msgstr "提供一个标记此作品的唯一的键、值列表，在键和值之间使用“=”符号，每一行输入一组。这些标签（tag）可用于按任意属性对作品进行排序。"
 
-msgid "Public Gallery"
-msgstr "公开图库"
-
+#: loco:60685ab727e3d377322f428e
 msgid "Public amateur data"
 msgstr "公开的业余天文台"
 
+#: loco:60685ab727e3d377322f428f
 msgid "Published"
 msgstr "已发布"
 
-msgid "Quantum efficiency"
-msgstr "两字效率"
-
-msgid "Quick search"
-msgstr "快速搜索"
-
-msgid "Quick-add recent"
-msgstr ""
-
-msgid "Read"
-msgstr "已读"
-
-msgid "Read noise"
-msgstr "读出噪声"
-
-msgid "Reason"
-msgstr "原因"
-
-msgid "Red channel (R)"
-msgstr "红色通道（R）"
-
-msgid "Reflector: Dall-Kirkham"
-msgstr "反射式：达尔-科克汉姆（DK）"
-
-msgid "Reflector: Dobsonian"
-msgstr ""
-
-msgid "Reflector: Gregorian"
-msgstr "反射式：格里高利式"
-
-msgid "Reflector: Herschellian"
-msgstr "反射式：赫歇尔式"
-
-msgid "Reflector: Nasmyth"
-msgstr "反射式：纳兹米"
-
-msgid "Reflector: Newtonian"
-msgstr "反射式：牛顿"
-
-msgid "Reflector: Ritchey Chretien"
-msgstr "反射式：里奇-克莱琴"
-
-msgid "Reflector: classical Cassegrain"
-msgstr ""
-
-msgid "Refractor: Petzval"
-msgstr ""
-
-msgid "Refractor: achromatic"
-msgstr "折射式：消色差"
-
-msgid "Refractor: apochromatic"
-msgstr "折射式：复消色差"
-
-msgid "Refractor: non-achromatic Galilean"
-msgstr "折射式：非消色差伽利略式"
-
-msgid "Refractor: non-acrhmatic Keplerian"
-msgstr "折射式：非消色差开普勒式"
-
-msgid "Refractor: semi-apochromatic"
-msgstr "折射式：准复消色差"
-
-msgid "Refractor: superachromat"
-msgstr "折射式：超级复消色差"
-
-msgid "Register"
-msgstr "注册"
-
-msgid "Regular"
-msgstr ""
-
+#: loco:60685ab727e3d377322f4290
 msgid "Regular (e.g. medium/long exposure with a CCD or DSLR)"
 msgstr "常规（例如，使用CCD或DSLR进行中/长时间曝光）"
 
-msgid "Reject"
-msgstr "拒绝"
-
-msgid "Reject edit"
-msgstr "拒绝编辑"
-
-msgid "Rejected"
-msgstr "已被拒绝"
-
-msgid "Remote astrophotography"
-msgstr "远程天文摄影"
-
+#: loco:60685ab727e3d377322f4291
 msgid "Remote data source"
 msgstr "远程台数据源"
 
-msgid "Reply"
-msgstr "回复"
-
-msgid "Reset password"
-msgstr "重置密码"
-
-msgid "Retract"
-msgstr "收回"
-
+#: loco:60685ab727e3d377322f4292
 msgid "Retract promotion"
 msgstr "撤销晋级"
 
-msgid "Return to the classic uploader"
-msgstr "返回旧版上传工具"
-
-msgid "Review queue"
-msgstr "审查列队"
-
-msgid "Reviewed by"
-msgstr "评审人"
-
-msgid "Reviewer"
-msgstr ""
-
-msgid "Reviewer's comment"
-msgstr "审核人的评论"
-
-msgid "Revision uploader"
-msgstr "修订版上传工具"
-
+#: loco:60685ab727e3d377322f4293
 msgid "Saturn"
 msgstr "土星"
 
+#: loco:60685ab727e3d377322f4294
 msgid "Save"
 msgstr "保存"
 
+#: loco:60685ab727e3d377322f4295
 msgid "Save and proceed to acquisition details"
 msgstr "保存并开始填写拍摄详情"
 
+#: loco:60685ab727e3d377322f4296
 msgid "Save and proceed to gear selection"
 msgstr "保存并开始填写使用设备情况"
 
+#: loco:60685ab727e3d377322f4297
 msgid "Save and proceed to image"
 msgstr "保存并开始处理作品"
 
-msgid "Save and remain on this page"
-msgstr ""
-
-msgid "Save equipment preset"
-msgstr ""
-
-msgid "Save preset"
-msgstr ""
-
-msgid "Scroll to top"
-msgstr "滚动到顶部"
-
+#: loco:60685ab727e3d377322f4298
 msgid "Secure payment by Stripe™"
 msgstr "Stripe™安全付款"
 
-msgid "Seems like it's your first time editing this kind of information!"
-msgstr ""
-
-msgid "Select"
-msgstr ""
-
+#: loco:60685ab727e3d377322f4299
 msgid "Select an area of the image to be used as thumbnail in your gallery."
 msgstr "选择一张图，用作您图库的缩略图。"
 
-msgid "Select target item for the migration, or create a new one."
-msgstr "选择要迁移的目标项目，或创建一个新的。"
-
-msgid "Select variant"
-msgstr ""
-
+#: loco:60685ab727e3d377322f429a
 msgid "Self acquired"
 msgstr "自己拍摄的"
 
-msgid "Self-made / non-commercial (no brand)"
-msgstr "自制的/未商业发售的（无品牌）"
-
-msgid "Sensor"
-msgstr "传感器"
-
-msgid "Sensor height"
-msgstr "传感器高度"
-
-msgid "Sensor size"
-msgstr "传感器尺寸"
-
-msgid "Sensor width"
-msgstr "传感器宽度"
-
-msgid "Sensors"
-msgstr "传感器"
-
-msgid "Service not available"
-msgstr "服务器不可用"
-
-msgid "Settings"
-msgstr "设置"
-
+#: loco:60685ab727e3d377322f429b
 msgid "Sharpen thumbnails"
 msgstr "锐化缩略图"
 
-msgid ""
-"Should that happen, and you're using this equipment item on one or more of "
-"your images, you will be notified."
-msgstr ""
-
+#: loco:60685ab727e3d377322f429c
 msgid "Show"
 msgstr "显示"
 
-msgid "Show guiding equipment"
-msgstr ""
-
+#: loco:60685ab727e3d377322f429d
 msgid "Size"
 msgstr "大小"
 
-msgid "Skip notifications"
-msgstr "跳过通知"
-
-msgid "Sky glow"
-msgstr "天空辉光"
-
-msgid "Slew speed"
-msgstr "慢速"
-
+#: loco:60685ab727e3d377322f429e
 msgid "Small"
 msgstr "小"
 
-msgid "Software"
-msgstr "软件"
-
-msgid "Solar"
-msgstr "太阳"
-
+#: loco:60685ab727e3d377322f429f
 msgid "Solar system body or event"
 msgstr "太阳系天体或天象"
 
-msgid "Something went wrong"
-msgstr "发生了某些错误"
-
-msgid "Sorry"
-msgstr ""
-
-msgid ""
-"Sorry, but the page you are looking for is not here. If you expected an "
-"image, this means that the author deleted it."
-msgstr "抱歉，您要查找的页面不在这里。如果这里本应有作品，这意味着作者删除了它。"
-
+#: loco:60685ab727e3d377322f42a0
 msgid ""
 "Sorry, but this image is too large. Under your current subscription plan, "
 "the maximum allowed image size is {{max}}."
 msgstr "抱歉，此作品太大。根据您当前的订阅计划，允许的最大作品大小为{{max}}。"
 
-msgid "Sorry, revisions are not included at your membership level."
-msgstr "抱歉，您的会员级别不可使用修订版图像。"
-
+#: loco:60685ab727e3d377322f42a1
 msgid ""
 "Sorry, unfortunately AstroBin does not have a bank account in the selected "
 "territory."
 msgstr "抱歉，AstroBin 在所选地区没有可用的银行帐户。"
 
-msgid ""
-"Sorry, you cannot select an IOTD right now: <strong>{{ reason }}</strong>. "
-"Please try again in <strong>{{ time }}</strong>."
-msgstr ""
-"抱歉，您现在不能选择“今日最佳”：<strong>{{ reason }}</strong>。请在 <strong>{{ time "
-"}}</strong>后尝试。"
-
-msgid "Sort"
-msgstr "分类"
-
-msgid "Spam list"
-msgstr "垃圾邮件"
-
-msgid "Sponsors & Partners"
-msgstr "赞助商&合作伙伴"
-
-msgid "Staging Area"
-msgstr "暂存区"
-
-msgid "Star tracker"
-msgstr "星体追踪器"
-
+#: loco:60685ab727e3d377322f42a2
 msgid "Star trails"
 msgstr "星轨"
 
-msgid "Start typing in the text box to show the dropdown suggestions."
-msgstr ""
+#: loco:60685ab727e3d377322f42a3
+msgid "Step {{ stepNumber }}"
+msgstr "步骤 {{ stepNumber }}"
 
-msgid "Status"
-msgstr "状态"
-
-msgid "Strategy"
-msgstr ""
-
+#: loco:60685ab727e3d377322f42a4
 msgid "Subject type"
 msgstr "主题类型"
 
-msgid "Submission queue"
-msgstr "提交队列"
-
-msgid "Submit"
-msgstr "提交"
-
+#: loco:60685ab727e3d377322f42a5
 msgid "Submit this image to the selected groups."
 msgstr "将此作品提交到选定的小组。"
 
-msgid "Subscribed topics"
-msgstr "订阅的主题"
-
-msgid "Subscription confirmed"
-msgstr "订阅已确认"
-
-msgid "Subscription plans"
-msgstr "订阅计划"
-
-msgid "Subscription process cancelled"
-msgstr "订阅操作已取消"
-
-msgid "Subscriptions"
-msgstr "订阅"
-
-msgid "Success!"
-msgstr "成功！"
-
-msgid "Sulfur-II (SII)"
-msgstr "硫-II（SII）"
-
-msgid "Summary"
-msgstr "总览"
-
+#: loco:60685ab727e3d377322f42a6
 msgid "Sun"
 msgstr "太阳"
 
-msgid "Superseded"
-msgstr "被取代"
-
+#: loco:60685ab727e3d377322f42a7
 msgid "TIFF support on AstroBin is experimental."
 msgstr "当前AstroBin对TIFF格式的支持是实验性的。"
 
-msgid ""
-"Take a look at them so you can be consistent with the naming conventions "
-"and prevent the creation of a duplicate item."
-msgstr ""
-
-msgid "Target image"
-msgstr "目标作品"
-
-msgid "Telescope"
-msgstr "望远镜"
-
-msgid "Telescopes & lenses"
-msgstr "望远镜&镜头"
-
-msgid "Tell me more!"
-msgstr ""
-
+#: loco:60685ab727e3d377322f42a8
 msgid "Text"
 msgstr "文本"
 
-msgid "Thank you for supporting AstroBin!"
-msgstr "感谢您支持 AstroBin！"
-
-msgid "Thank you!"
-msgstr ""
-
-msgid "Thanks!"
-msgstr "感謝！"
-
-msgid ""
-"Thanks! Your edit proposal has been submitted and will be reviewed as soon "
-"as possible."
-msgstr "谢谢！您的编辑建议已提交，审核将很快完成。"
-
-msgid ""
-"The <strong>Contribution Index (beta)</strong> is system to reward "
-"informative, constructive, and valuable commentary on AstroBin. {{_0}}Learn "
-"more.{{_1}}"
-msgstr ""
-"<strong>贡献榜（试运行）</strong>是一个AstroBin中，用于奖励信息丰富、建设性、有价值评论的系统。{{_0}}了解更多。{{_1}"
-"}"
-
-msgid ""
-"The <strong>Image Index</strong> is a system based on likes received on "
-"images, that incentivizes the most active and liked members of the "
-"community. {{_0}}Learn more.{{_1}}"
-msgstr "<strong>作品指数</strong>是一个基于作品上收到点赞的系统，用于激励社区中最活跃和最受喜爱的成员。{{_0}}了解更多。{{_1}}"
-
-msgid ""
-"The AstroBin equipment database is a collective community effort similar to "
-"Wikipedia."
-msgstr ""
-
-msgid "The Big Wall"
-msgstr "作品墙"
-
+#: loco:60685ab727e3d377322f42a9
 msgid ""
 "The Lite plan is capped at <strong>{{maxImagesForLite}}</strong> total "
-"images, and you currently have <strong>{{numberOfImages}}</strong> images "
-"on AstroBin. For this reason, we recommend that you upgrade to Premium or "
+"images, and you currently have <strong>{{numberOfImages}}</strong> images on "
+"AstroBin. For this reason, we recommend that you upgrade to Premium or "
 "Ultimate instead."
 msgstr ""
-"Lite 订阅的上限是<strong>{{maxImagesForLite}}</strong>张作品，目前您在 AstroBin 上有 "
-"<strong>{{numberOfImages}}</strong>张作品。因此，我们建议您升级到 Premium 或 Ultimate。"
+"Lite 订阅的上限是<strong>{{maxImagesForLite}}</strong>张作品，目前您在 AstroBin 上有 <strong>"
+"{{numberOfImages}}</strong>张作品。因此，我们建议您升级到 Premium 或 Ultimate。"
 
-msgid ""
-"The comment section for this item is not available anymore, because it's "
-"been already approved."
-msgstr ""
-
+#: loco:60685ab727e3d377322f42aa
 msgid "The final font size will depend on how long your watermark is."
 msgstr "字体最终的大小取决于水印长度。"
 
-msgid "The following changes are proposed:"
-msgstr "建议作出以下修改："
-
-msgid "The following form fields have errors, please correct them and try again:"
-msgstr ""
-
+#: loco:60685ab727e3d377322f42ab
 msgid "The image will permanently disappear from your queue."
 msgstr "该作品将从您的队列中永久消失。"
 
-msgid "The item already exists in the database"
-msgstr ""
-
-msgid ""
-"The item doesn't seem to have the correct brand, or the brand is "
-"misspelled, or it's the duplicate of an existing brand."
-msgstr "项目的品牌似乎不正确、拼写错误，或者是已有品牌的另一种名称。"
-
-msgid "The item has a typo in its name"
-msgstr "此项目的名称存在拼写错误"
-
-msgid "The item has insufficient data"
-msgstr "此项目缺乏足够的数据信息"
-
-msgid "The item has some inaccurate data"
-msgstr "此项目的某些信息不正确"
-
-msgid "The judge who selected this image will be notified of top-level comments."
-msgstr "选择此图像的评审将收到最高级评论的通知。"
-
-msgid "The judgement queue is currently empty or being refreshed."
-msgstr ""
-
-msgid ""
-"The legacy object cannot be migrated because it consists of multiple "
-"objects in the same item (e.g. LRGB filter set, or multiple unrelated "
-"products)."
-msgstr ""
-
-msgid ""
-"The legacy object cannot be migrated because it's not the right kind (e.g. "
-"a telescope added as a camera)."
-msgstr ""
-
-msgid ""
-"The legacy object cannot be migrated because the correct target product "
-"cannot be unambiguously determined."
-msgstr ""
-
-msgid ""
-"The migration will be reviewed by a moderator as soon as possible, and you "
-"will be notified of the outcome. If the migration is approved, you will be "
-"able to add the equipment item to your images."
-msgstr ""
-
-msgid ""
-"The migration will complete within a few moments and your images will be "
-"automatically updated."
-msgstr ""
-
-msgid "The name of this brand. Make sure it's spelled correctly."
-msgstr "这个品牌的名称。请确保拼写正确。"
-
-msgid ""
-"The name of this product. Do not include the brand's name and make sure "
-"it's spelled correctly."
-msgstr "此产品的名称。请勿包含品牌名称，并确保拼写正确。"
-
+#: loco:60685ab727e3d377322f42ac
 msgid ""
 "The price is shown in Swiss Francs even though you might have paid the "
 "equivalent amount in your country's currency."
 msgstr "即使您可能以您所在国家/地区的货币完成了支付，价格仍将以瑞士法郎显示。"
 
-msgid ""
-"The recommended naming convention for camera lenses is: optional model "
-"name, focal length range, f-ratio range, additional properties. E.g. "
-"<strong>Nikkor Z 28mm f/2.8 (SE)</strong>."
-msgstr ""
-"建议的相机镜头命名格式为：可选型号名称、焦距范围、f值范围、其他属性。例如，<strong> Nikkor Z "
-"28mmf/2.8（SE）</strong>。"
+#: loco:60685ab727e3d377322f42ad
+msgid "The review queue is currently empty."
+msgstr "审查列队现在是空的。"
 
-msgid "The requested resource does not exist"
-msgstr "请求的资源不存在"
+#: loco:60685ab727e3d377322f42ae
+msgid "The submission queue is currently empty."
+msgstr "提交列队现在是空的。"
 
-msgid "The review queue is currently empty or being refreshed."
-msgstr ""
-
-msgid ""
-"The revision's title will be shown as an addendum to the original image's "
-"title."
-msgstr "修订版的标题将作为原始图像标题的附录显示。"
-
-msgid "The size of the individual pixels in μm."
-msgstr "单个像素的大小，以μm为单位。"
-
-msgid "The submission queue is currently empty or being refreshed."
-msgstr ""
-
-msgid "The target item doesn't seem to have the correct brand"
-msgstr "目标项目似乎没有输入正确的品牌"
-
-msgid "The target item has a typo in its name"
-msgstr "目标项目的名称存在拼写错误"
-
-msgid "The target item has insufficient data"
-msgstr "目标项目缺乏足够的数据信息"
-
-msgid "The target item has some inaccurate data"
-msgstr "此项目的某些信息不正确"
-
-msgid "The target item is a duplicate of an existing equipment item"
-msgstr ""
-
-msgid "There are no comments yet."
-msgstr "目前还没有评论。"
-
-msgid ""
-"There are no images on AstroBin acquired using this equipment item, at the "
-"moment."
-msgstr ""
-
-msgid ""
-"There are no more items of this type to migrate. Check other equipment "
-"types."
-msgstr "没有其他此类型的项目要迁移。检查其他设备类型。"
-
-msgid "There doesn't seem to be anything here."
-msgstr "这里似乎什么也没有。"
-
-msgid "This LEGACY item needs to be migrated"
-msgstr "此旧项目需要迁移"
-
-msgid ""
-"This brand has <strong>{{0}}</strong> items in AstroBin's database, and "
-"they are shown below in alphabetical order."
-msgstr ""
-
-msgid ""
-"This comment section is only visible to AstroBin equipment moderators and "
-"the user who created this item, and only while this equipment item is "
-"unapproved."
-msgstr ""
-
-msgid ""
-"This comment section is only visible to you and AstroBin equipment "
-"moderators, and only while this equipment item is unapproved."
-msgstr ""
-
-msgid "This field is disabled because you haven't joined any groups yet."
-msgstr "此字段已禁用，因为您尚未加入任何小组。"
-
-msgid ""
-"This image will be uploaded to your staging area as a work in progress. You "
-"can make it public at the end of the process."
-msgstr "该作品将作为未完成的作品上传到您的暂存区。您可以在处理结束后时将其公开。"
-
-msgid "This is a modified and/or custom-cooled variant of this camera."
-msgstr ""
-
-msgid ""
-"This item as not been approved by a moderator, and could be removed from "
-"the database if rejected."
-msgstr ""
-
-msgid "This item has a history of <strong>{{0}}</strong> approved edit proposals."
-msgstr ""
-
-msgid "This item has already been approved by you or another moderator."
-msgstr ""
-
-msgid "This item has not been approved"
-msgstr ""
-
-msgid ""
-"This item has not been approved yet, so it's not available to be associated "
-"with images."
-msgstr "此项目尚未被审核，因此无法与图像关联。"
-
-msgid ""
-"This item will be part of AstroBin's equipment database, and it's very "
-"important that the information is accurate and this item is not the "
-"duplicate of another."
-msgstr "此项目将是AstroBin设备数据库的一部分，并且信息准确、无重复项目，这非常重要。"
-
+#: loco:60685ab727e3d377322f42af
 msgid "This operation can not be undone."
 msgstr "此操作无法撤销。"
 
-msgid "This operation cannot be undone."
-msgstr ""
-
+#: loco:60685ab727e3d377322f42b0
 msgid ""
 "This operation could take several seconds (especially for large images), "
 "please wait"
 msgstr "此操作将耗时数秒（尤其大尺寸作品），请稍后"
 
-msgid "This operation will overwrite the current equipment selection."
-msgstr ""
-
-msgid ""
-"This page or operation is not available at the moment, because AstroBin is "
-"in READ ONLY mode."
-msgstr "AstroBin 处于“只读”状态，该页面或操作目前不可用。"
-
-msgid ""
-"This setting will take affect after the image will be moved to your public "
-"area."
-msgstr "此设置将在作品移至公共区域后生效。"
-
-msgid ""
-"This should never happen. AstroBin's staff has been notified automatically "
-"and will solve the problem as soon as possible."
-msgstr "异常情况发生，AstroBin的工作人员已被自动通知，并将尽快解决问题。"
-
-msgid "This should never happen. If the problem persists, please contact us."
-msgstr "异常情况发生，如问题重复出现，请联系我们。"
-
-msgid ""
-"This space will host a forum specific to this equipment item, to connect "
-"people who own it or are interested in it."
-msgstr ""
-
+#: loco:60685ab727e3d377322f42b1
 msgid "Thumbnail"
 msgstr "缩略图"
 
-msgid "Time"
-msgstr "时间"
-
-msgid "Title"
-msgstr "标题"
-
-msgid "To"
-msgstr ""
-
-msgid ""
-"To use this feature, you need the <strong>{{0}}</strong> subscription or "
-"higher."
-msgstr ""
-
-msgid "To use this feature, you need the <strong>{{0}}</strong> subscription."
-msgstr ""
-
-msgid "Too many requests"
-msgstr ""
-
+#: loco:60685ab727e3d377322f42b2
 msgid "Top center"
 msgstr "顶部中心"
 
+#: loco:60685ab727e3d377322f42b3
 msgid "Top left"
 msgstr "左上"
 
-msgid "Top pick nominations"
-msgstr "“热门精选”提名"
-
-msgid "Top picks"
-msgstr "热门精选"
-
+#: loco:60685ab727e3d377322f42b4
 msgid "Top right"
 msgstr "右上"
 
+#: loco:60685ab727e3d377322f42b5
 msgid "Total lunar eclipse"
 msgstr "月全食"
 
+#: loco:60685ab727e3d377322f42b6
 msgid "Total solar eclipse"
 msgstr "日全食"
 
-msgid "Transit"
-msgstr "过境"
-
+#: loco:60685ab727e3d377322f42b7
 msgid "Traveller"
 msgstr "移动拍摄"
 
-msgid "Tripod"
-msgstr ""
-
-msgid "Type"
-msgstr "类型"
-
-msgid "Type a brand and/or a model name to search options..."
-msgstr ""
-
-msgid "Type to search options or to create a new one..."
-msgstr "输入想要找的选项，或创建新的..."
-
+#: loco:60685ab727e3d377322f42b8
 msgid "Type to search options..."
 msgstr "输入要搜索的选项..."
 
-msgid "Ultra High Contrast (UHC)"
-msgstr "超高反差（UHC）"
-
-msgid "Ultraviolet (UV)"
-msgstr "紫外（UV）"
-
-msgid "Uncompressed source uploader"
-msgstr "未压缩数据上传工具"
-
-msgid "Undo"
-msgstr ""
-
+#: loco:60685ab727e3d377322f42b9
 msgid "Unknown"
 msgstr "未知的"
 
-msgid "Unknown error"
-msgstr "未知错误"
+#: loco:60685ab727e3d377322f42ba
+msgid "Unknown error, please refresh the page and try again."
+msgstr "未知错误，请刷新页面并重试。"
 
-msgid "Unlimited images"
-msgstr "无限作品数量"
-
-msgid "Unlimited revisions"
-msgstr "无限修订版数量"
-
-msgid "Unlimited size"
-msgstr "无限大小"
-
-msgid "Upload"
-msgstr "上传"
-
-msgid "Uploader"
-msgstr "上传工具"
-
+#: loco:60685ab727e3d377322f42bb
 msgid "Uploading..."
 msgstr "上传中..."
 
+#: loco:60685ab727e3d377322f42bc
 msgid "Uranus"
 msgstr "天王星"
 
-msgid ""
-"Use the <strong>#</strong> sign and start typing to insert an image from "
-"your gallery."
-msgstr "请输入 <strong>#</strong> 符号，插入图库中的图像。"
-
-msgid "Use the <strong>@</strong> sign and start typing to mention any user."
-msgstr "请输入 <strong> @</strong> 符号，并在此后输入信息，以插入图库中的图像。"
-
-msgid "Username"
-msgstr "用户名"
-
-msgid "Users"
-msgstr "用户"
-
-msgid "Validation error"
-msgstr "验证错误"
-
-msgid "Validity"
-msgstr "有效性"
-
+#: loco:60685ab727e3d377322f42bd
 msgid "Venus"
 msgstr "金星"
 
-msgid "View"
-msgstr "查看"
+#: loco:60685ab727e3d377322f42be
+msgid "View large"
+msgstr "查看大图"
 
-msgid "View more"
-msgstr ""
-
-msgid "Want to upgrade from a lower subscription tier?"
-msgstr "是否想从低等级订阅升级？"
-
-msgid "Warning!"
-msgstr "警告！"
-
+#: loco:60685ab727e3d377322f42bf
 msgid ""
 "Warning! That's a large file you got there! AstroBin does not impose "
 "artificial limitation in the file size you can upload with an Ultimate "
@@ -2164,199 +1204,1514 @@ msgstr ""
 "警告！这文件很大！您是 Ultimate 订阅用户，AstroBin 并未限制你上传文件的大小，但我们不能保证所有200 "
 "MB或〜8000x8000像素以上的作品都可以正常显示。您可以试试看！"
 
+#: loco:60685ab727e3d377322f42c0
 msgid "Watermark"
 msgstr "水印"
 
-msgid "We could not log you in. Please check your credentials and try again."
-msgstr "无法登录。请检查您的凭据然后重试。"
-
-msgid "We found similar items from the same brand."
-msgstr "我们发现了相同品牌下另一个类似的项目。"
-
-msgid "We found the following similar items from the same brand:"
-msgstr ""
-
+#: loco:60685ab727e3d377322f42c1
 msgid ""
-"We found the following similar items. Click the correct one to use it, or "
-"ignore this message."
-msgstr "我们发现了以下相似的项目。单击选择正确的一项，或忽略此消息。"
+"We have updated the image data editor to make room for new features coming "
+"your way in the near future!"
+msgstr "我们已经更新了作品数据编辑器，以便在不久的将来为您的新功能腾出空间！"
 
-msgid "We'll never share your email with anyone else."
-msgstr "我们绝不会将您的电子邮件透露给其他人。"
-
-msgid "Website"
-msgstr "网站"
-
-msgid "Wedged Alt-Az"
-msgstr "带仰角调节的经纬仪（赤道仪模式）"
-
-msgid "Weight"
-msgstr "重量"
-
-msgid "Welcome!"
-msgstr "欢迎！"
-
-msgid "What is this site?"
-msgstr "这是个啥网站？"
-
-msgid "When"
-msgstr "当"
-
-msgid "When a paid subscription expires, nothing happens to your images or content."
+#: loco:60685ab727e3d377322f42c2
+msgid ""
+"When a paid subscription expires, nothing happens to your images or content."
 msgstr "付费订阅到期后，您的作品或内容将不会发生任何变化。"
 
-msgid ""
-"When an image is dismissed by {{0}} members of the IOTD/TP staff, it's "
-"automatically removed from all queues. Please only perform this action if "
-"you want to vote against this image advancing in the process."
-msgstr "当图像被{{0}}“今日最佳”热门精选“”工作人员的移除时，它将自动从所有队列中删除。请仅在您想投票反对时进行此操作。"
-
+#: loco:60685ab727e3d377322f42c3
 msgid "Where do you want to go after saving?"
 msgstr "保存之后您想去哪里？"
 
+#: loco:60685ab727e3d377322f42c4
 msgid "Where does the data for this image come from?"
 msgstr "作品的素材是从哪里获取的？"
 
-msgid "Whether this camera is equipped with a cooling mechanism."
-msgstr "这个相机是否有制冷组件"
-
-msgid "Which remote hosting facility did you use to acquire data for this image?"
+#: loco:60685ab727e3d377322f42c5
+msgid ""
+"Which remote hosting facility did you use to acquire data for this image?"
 msgstr "您使用哪个远程托管天文台获取此作品的数据？"
 
+#: loco:60685ab727e3d377322f42c6
 msgid ""
-"Would you be interested in upgrading? AstroBin is a very small business and "
-"your support would mean a lot!"
-msgstr ""
-
-msgid "Would you like to upgrade?"
-msgstr "想要升级吗？"
-
-msgid "Yes"
-msgstr "是"
-
-msgid "Yes, continue"
-msgstr ""
-
-msgid ""
-"You are already logged in or were logged in automatically from the "
-"application's backend."
-msgstr "您已登录或已从应用程序后台自动登录。"
-
-msgid ""
-"You are already on this plan. If you buy it again, your expiration date "
-"will be extended by one year."
+"You are already on this plan. If you buy it again, your expiration date will "
+"be extended by one year."
 msgstr "您已经在此订阅计划中。 如果您再次购买，则到期日期将延长一年。"
 
+#: loco:60685ab727e3d377322f42c7
 msgid "You are already subscribed to a higher plan."
 msgstr "您已经订阅了更高级的计划。"
 
+#: loco:60685ab727e3d377322f42c8
+msgid "Zoom ready"
+msgstr "缩放就绪"
+
+#: loco:60685ab727e3d377322f42c9
+msgid "e.g."
+msgstr "例如："
+
+#: loco:60685b60c553572a2445b532
+msgid ""
+"You have an <strong>AstroBin Premium</strong> subscription. Enjoy your "
+"unlimited uploads!"
+msgstr "您已购买 <strong>AstroBin Premium</strong> 订阅。畅享无限上传吧！"
+
+#: loco:60685b60c553572a2445b533
+msgid ""
+"You have an <strong>AstroBin Ultimate</strong> subscription. Enjoy your "
+"unlimited uploads!"
+msgstr "您已购买 <strong>AstroBin Ultimate</strong> 订阅。畅享无限上传吧"
+
+#: loco:60706f2de8dffc569748c212
+msgid "Constellations"
+msgstr "星座"
+
+#: loco:60706f2de8dffc569748c213
+msgid "Find images"
+msgstr "查找作品"
+
+#: loco:60706f2de8dffc569748c214
+msgid "Jump to"
+msgstr "跳转至"
+
+#: loco:6087167fe1b7bd31c9369682
+msgid "Attribution Creative Commons"
+msgstr "授权方式"
+
+#: loco:6087167fe1b7bd31c9369683
+msgid "Attribution-NoDerivs Creative Commons"
+msgstr "禁止演绎"
+
+#: loco:6087167fe1b7bd31c9369684
+msgid "Attribution-NonCommercial Creative Commons"
+msgstr "非商业性使用"
+
+#: loco:6087167fe1b7bd31c9369685
+msgid "Attribution-NonCommercial-NoDerivs Creative Commons"
+msgstr "非商业性使用-禁止共享"
+
+#: loco:6087167fe1b7bd31c9369686
+msgid "Attribution-NonCommercial-ShareAlike Creative Commons"
+msgstr "非商业性使用-相同方式共享"
+
+#: loco:6087167fe1b7bd31c9369687
+msgid "Attribution-ShareAlike Creative Commons"
+msgstr "相同方式共享"
+
+#: loco:6087167fe1b7bd31c9369688
+msgid ""
+"If this file is a different take on the same data as in another image you "
+"already published on AstroBin, the common practice would be to upload it as "
+"a new revision. For more info, please {{0}}click here{{1}}."
+msgstr ""
+"如果此作品与您发布在AstroBin上的另一幅作品有着相同的数据源，通常的做法是将这幅作品作为之前作品的修订版上传。要了解更多，请 {{0}}"
+"点击这里{{1}}。"
+
+#: loco:6087167fe1b7bd31c9369689
+msgid "License"
+msgstr "许可协议"
+
+#: loco:6087167fe1b7bd31c936968a
+msgid "None (All rights reserved)"
+msgstr "无（保留所有权利）"
+
+#: loco:6087167fe1b7bd31c936968b
 msgid ""
 "You can associate a Creative Commons license with your content if you wish, "
 "to grant people the right to use your work under certain circumstances. For "
 "more information on what your options are, please visit the {{0}}Creative "
 "Commons website{{1}}."
 msgstr ""
-"如果您愿意，可以将知识共享许可与您的内容相关联，以授予人们在特定情况下使用您的作品的权利。有关您的选项的更多信息，请访问{{0}}知识共享网站{{1}}"
-"。"
+"如果您愿意，可以将知识共享许可与您的内容相关联，以授予人们在特定情况下使用您的作品的权利。有关您的选项的更多信息，请访问{{0}}知识共享网站{{1}}。"
 
-msgid "You can create a new one using the button below."
-msgstr ""
-
+#: loco:6087167fe1b7bd31c936968c
 msgid ""
-"You cannot propose an edit while there is a pending one. Please review the "
-"pending edit proposal first, thank you!"
-msgstr ""
+"there is an etiquette regarding uploading a new image versus an image "
+"revision."
+msgstr "上传新图像与图像修订版有相应的礼节需要遵守。"
 
+#: loco:60c8d26b9a9bb6548e02ff33
+msgid "Allow full-size display"
+msgstr "允许全尺寸显示"
+
+#: loco:60c8d26b9a9bb6548e02ff34
+msgid "Altitude"
+msgstr "海拔高度"
+
+#: loco:60c8d26b9a9bb6548e02ff35
+msgid "AstroBin does not share your coordinates with anyone."
+msgstr "AstroBin 不会向任何人分享您的坐标。"
+
+#: loco:60c8d26b9a9bb6548e02ff36
+msgid "Comments"
+msgstr "评论"
+
+#: loco:60c8d26b9a9bb6548e02ff37
+msgid "Create new location"
+msgstr "创建新地点"
+
+#: loco:60c8d26b9a9bb6548e02ff38
+msgid "Create new:"
+msgstr "创建新的："
+
+#: loco:60c8d26b9a9bb6548e02ff39
+msgid "E-mail"
+msgstr "电子邮箱"
+
+#: loco:60c8d26b9a9bb6548e02ff3a
+msgid "Everybody"
+msgstr "所有人"
+
+#: loco:60c8d26b9a9bb6548e02ff3b
+msgid "Forums"
+msgstr "论坛"
+
+#: loco:60c8d26b9a9bb6548e02ff3c
+msgid "IOTD/TP Staff"
+msgstr "今日最佳/热门精选 员工"
+
+#: loco:60c8d26b9a9bb6548e02ff3d
+msgid "Image of the Day / Top Picks"
+msgstr "今日最佳 / 热门精选"
+
+#: loco:60c8d26b9a9bb6548e02ff3e
+msgid "Locations"
+msgstr "地点"
+
+#: loco:60c8d26b9a9bb6548e02ff3f
+msgid "Me only"
+msgstr "仅我可见"
+
+#: loco:60c8d26b9a9bb6548e02ff40
+msgid "Members only"
+msgstr "仅成员可见"
+
+#: loco:60c8d26b9a9bb6548e02ff41
+msgid "Meters above sea level"
+msgstr "海平面以上高度（米）"
+
+#: loco:60c8d26b9a9bb6548e02ff42
+msgid "Move the map until the marker points at right location"
+msgstr "移动地图，使标记指向正确的位置"
+
+#: loco:60c8d26b9a9bb6548e02ff43
+msgid "No items found."
+msgstr "未找到任何项目。"
+
+#: loco:60c8d26b9a9bb6548e02ff44
+msgid "Nobody"
+msgstr "没有人"
+
+#: loco:60c8d26b9a9bb6548e02ff45
+msgid "Notification settings"
+msgstr "消息提醒设置"
+
+#: loco:60c8d26b9a9bb6548e02ff46
+msgid "On-site"
+msgstr "现场的"
+
+#: loco:60c8d26b9a9bb6548e02ff47
+msgid "Paying members only"
+msgstr "仅限付费会员使用"
+
+#: loco:60c8d26b9a9bb6548e02ff48
+msgid "Private messages"
+msgstr "私信"
+
+#: loco:60c8d26b9a9bb6548e02ff49
+msgid "Subscriptions"
+msgstr "订阅"
+
+#: loco:60c8d26b9a9bb6548e02ff4a
+msgid "This field is disabled because you haven't joined any groups yet."
+msgstr "此字段已禁用，因为您尚未加入任何小组。"
+
+#: loco:60c8d26b9a9bb6548e02ff4b
+msgid ""
+"This setting will take affect after the image will be moved to your public "
+"area."
+msgstr "此设置将在作品移至公共区域后生效。"
+
+#: loco:60c8d26b9a9bb6548e02ff4c
+msgid "Type something to create a new one..."
+msgstr "输入任意信息建立一个新的..."
+
+#: loco:60c8d26b9a9bb6548e02ff4d
+msgid "Type to search options or to create a new one..."
+msgstr "输入想要找的选项，或创建新的..."
+
+#: loco:60c8d26b9a9bb6548e02ff4e
+msgid "Users"
+msgstr "用户"
+
+#: loco:60c8d26b9a9bb6548e02ff4f
+msgid "e.g. 'Home observatory'"
+msgstr "例如“家庭天文台”"
+
+#: loco:6151f41acae9ba5e6a4b2a23
+msgid "(optional)"
+msgstr "（可选的）"
+
+#: loco:6151f41acae9ba5e6a4b2a24
+msgid ""
+"<strong>Careful!</strong> Change the name only to fix a typo or the naming "
+"convention. This operation will change the name of this equipment item "
+"<strong>for all AstroBin images that use it</strong>, so you should not "
+"change the name if it becomes a different product."
+msgstr ""
+"<strong>小心！</strong>更改名称只是为了更正拼写错误或命名规范。 此操作将更改此设备项目的名称，并对<strong>"
+"所有使用它的AstroBin 图像</strong>的图像生效，因此如果它变成了不同的产品，则您不应更改其名称。"
+
+#: loco:6151f41acae9ba5e6a4b2a25
+msgid ""
+"<strong>Careful!</strong> The item's name contains the brand's name (or vice "
+"versa), and it probably shouldn't."
+msgstr "<strong>小心！</strong>项目名称中已经包含了品牌名称（或与此相反），实际上它们不应该如此。"
+
+#: loco:6151f41acae9ba5e6a4b2a26
+msgid ""
+"<strong>Careful!</strong> Your usage of the word \"{{0}}\" suggests that you "
+"are using this field to\n"
+"            specify a property of this item that is only relevant to your "
+"own copy. Remember that here you are creating\n"
+"            or editing the <strong>generic instance</strong> that will be "
+"shared by all owners on AstroBin."
+msgstr ""
+"<strong>小心！</strong>您使用了“{{0}}”一词，这表明您正在使用此字段\n"
+"             指定您自己的项目，这可能是您自己的某个定制版。 请记住，您正在这里创建\n"
+"             或编辑的项目，是AstroBin上所有用户共享的<strong>通用项目</strong>。"
+
+#: loco:6151f41acae9ba5e6a4b2a27
+msgid "A brand with this name already exists."
+msgstr "同名品牌已存在。"
+
+#: loco:6151f41acae9ba5e6a4b2a28
+msgid "A brand with this website already exists."
+msgstr "同网站的品牌已经存在。"
+
+#: loco:6151f41acae9ba5e6a4b2a29
+msgid ""
+"A positive whole number that represents how many Celsius below ambient "
+"temperature this camera can be cooled."
+msgstr "输入一个正整数，表示相机相对环境温度的最大制冷温度（摄氏度）。"
+
+#: loco:6151f41acae9ba5e6a4b2a2a
+msgid "ADC"
+msgstr "ADC"
+
+#: loco:6151f41acae9ba5e6a4b2a2b
+msgid "Accepted"
+msgstr "接受"
+
+#: loco:6151f41acae9ba5e6a4b2a2c
+msgid "Accessories"
+msgstr "配件"
+
+#: loco:6151f41acae9ba5e6a4b2a2d
+msgid "An item of the same type and the same name already exists."
+msgstr "已经存在同类型、同名的项目。"
+
+#: loco:6151f41acae9ba5e6a4b2a2e
+msgid "Analog to Digital Converter"
+msgstr "模拟-数字转换器"
+
+#: loco:6151f41acae9ba5e6a4b2a2f
+msgid "Aperture"
+msgstr "光圈"
+
+#: loco:6151f41acae9ba5e6a4b2a30
+msgid "Approve..."
+msgstr "审核..."
+
+#: loco:6151f41acae9ba5e6a4b2a31
+msgid "Back focus"
+msgstr "后截距"
+
+#: loco:6151f41acae9ba5e6a4b2a32
+msgid "Brand"
+msgstr "品牌"
+
+#: loco:6151f41acae9ba5e6a4b2a33
+msgid "Camera"
+msgstr "相机"
+
+#: loco:6151f41acae9ba5e6a4b2a34
+msgid "Camera back focus in mm."
+msgstr "相机的后截距（毫米）"
+
+#: loco:6151f41acae9ba5e6a4b2a35
+msgid "Cameras"
+msgstr "相机"
+
+#: loco:6151f41acae9ba5e6a4b2a36
+msgid "Celsius degrees below ambient"
+msgstr "低于环境温度的摄氏度数"
+
+#: loco:6151f41acae9ba5e6a4b2a37
+msgid "Changes"
+msgstr "更改"
+
+#: loco:6151f41acae9ba5e6a4b2a38
+msgid "Choose file"
+msgstr "选择文件"
+
+#: loco:6151f41acae9ba5e6a4b2a39
+msgid "Choose files"
+msgstr "选择文件"
+
+#: loco:6151f41acae9ba5e6a4b2a3a
+msgid "Class"
+msgstr "分类"
+
+#: loco:6151f41acae9ba5e6a4b2a3b
+msgid "Close"
+msgstr "关闭"
+
+#: loco:6151f41acae9ba5e6a4b2a3c
+msgid "Color"
+msgstr "彩色的"
+
+#: loco:6151f41acae9ba5e6a4b2a3d
+msgid "Color/mono"
+msgstr "彩色/黑白"
+
+#: loco:6151f41acae9ba5e6a4b2a3e
+msgid "Confirm"
+msgstr "确认"
+
+#: loco:6151f41acae9ba5e6a4b2a3f
+msgid "Confirm item creation"
+msgstr "确认创建项目"
+
+#: loco:6151f41acae9ba5e6a4b2a40
+msgid "Contribution Index"
+msgstr "贡献榜"
+
+#: loco:6151f41acae9ba5e6a4b2a41
+msgid "Cooled"
+msgstr "制冷的"
+
+#: loco:6151f41acae9ba5e6a4b2a42
+msgid "Create a new item"
+msgstr "创建新项目"
+
+#: loco:6151f41acae9ba5e6a4b2a43
+msgid "Create new brand"
+msgstr "创建新品牌"
+
+#: loco:6151f41acae9ba5e6a4b2a44
+msgid "Create new sensor"
+msgstr "创建新传感器"
+
+#: loco:6151f41acae9ba5e6a4b2a45
+msgid "Dedicated deep-sky camera"
+msgstr "深空摄影专用相机"
+
+#: loco:6151f41acae9ba5e6a4b2a46
+msgid "Disable high contrast theme"
+msgstr "禁用高对比度主题"
+
+#: loco:6151f41acae9ba5e6a4b2a47
+msgid "Edit proposal by"
+msgstr "建议提议人"
+
+#: loco:6151f41acae9ba5e6a4b2a48
+msgid "Edit proposal comment"
+msgstr "编辑建议评论"
+
+#: loco:6151f41acae9ba5e6a4b2a49
+msgid "Editing the brand is not possible."
+msgstr "无法编辑此品牌"
+
+#: loco:6151f41acae9ba5e6a4b2a4a
+msgid "Enable high contrast theme"
+msgstr "启用高对比度主题"
+
+#: loco:6151f41acae9ba5e6a4b2a4b
+msgid "Equipment"
+msgstr "设备"
+
+#: loco:6151f41acae9ba5e6a4b2a4c
+msgid "Equipment explorer"
+msgstr "设备浏览器"
+
+#: loco:6151f41acae9ba5e6a4b2a4d
+msgid "Equipment pending edit"
+msgstr "待编辑设备"
+
+#: loco:6151f41acae9ba5e6a4b2a4e
+msgid "Equipment pending review"
+msgstr "待审核设备"
+
+#: loco:6151f41acae9ba5e6a4b2a4f
+msgid "Explorer"
+msgstr "浏览器"
+
+#: loco:6151f41acae9ba5e6a4b2a50
+msgid "Film camera"
+msgstr "胶片相机"
+
+#: loco:6151f41acae9ba5e6a4b2a51
+msgid "Filters"
+msgstr "滤镜"
+
+#: loco:6151f41acae9ba5e6a4b2a52
+msgid "Find equipment item"
+msgstr "查找设备项目"
+
+#: loco:6151f41acae9ba5e6a4b2a53
+msgid "Focal length"
+msgstr "焦距"
+
+#: loco:6151f41acae9ba5e6a4b2a54
+msgid "Frame rate"
+msgstr "帧率"
+
+#: loco:6151f41acae9ba5e6a4b2a55
+msgid "Full well capacity"
+msgstr "满阱电荷容量"
+
+#: loco:6151f41acae9ba5e6a4b2a56
+msgid "General purpose DSLR or mirrorless camera"
+msgstr "通用单反相机或无反相机"
+
+#: loco:6151f41acae9ba5e6a4b2a57
+msgid "General purpose video camera"
+msgstr "通用摄像机"
+
+#: loco:6151f41acae9ba5e6a4b2a58
+msgid "Guider or planetary camera"
+msgstr "导星或行星相机"
+
+#: loco:6151f41acae9ba5e6a4b2a59
+msgid "Image Index"
+msgstr "作品指数"
+
+#: loco:6151f41acae9ba5e6a4b2a5a
+msgid "Item summary"
+msgstr "项目摘要"
+
+#: loco:6151f41acae9ba5e6a4b2a5b
+msgid "Logo"
+msgstr "Logo"
+
+#: loco:6151f41acae9ba5e6a4b2a5c
+msgid "Max. aperture"
+msgstr "最大光圈"
+
+#: loco:6151f41acae9ba5e6a4b2a5d
+msgid "Max. cooling"
+msgstr "最大制冷"
+
+#: loco:6151f41acae9ba5e6a4b2a5e
+msgid "Max. focal length"
+msgstr "最大焦距"
+
+#: loco:6151f41acae9ba5e6a4b2a5f
+msgid "Min. aperture"
+msgstr "最小光圈"
+
+#: loco:6151f41acae9ba5e6a4b2a60
+msgid "Min. focal length"
+msgstr "最小焦距"
+
+#: loco:6151f41acae9ba5e6a4b2a61
+msgid "Mono"
+msgstr "单色的"
+
+#: loco:6151f41acae9ba5e6a4b2a62
+msgid "Mounts"
+msgstr "支架"
+
+#: loco:6151f41acae9ba5e6a4b2a63
+msgid "No changes are proposed."
+msgstr "未进行任何修改。"
+
+#: loco:6151f41acae9ba5e6a4b2a64
+msgid "Number of pixels across the X axis"
+msgstr "X轴上像素数量"
+
+#: loco:6151f41acae9ba5e6a4b2a65
+msgid "Number of pixels across the Y axis"
+msgstr "Y轴上像素数量"
+
+#: loco:6151f41acae9ba5e6a4b2a66
+msgid "Official (or official looking) product image. Max. 1MB."
+msgstr "官方发布的（或官方形象）产品图像。最大1MB。"
+
+#: loco:6151f41acae9ba5e6a4b2a67
+msgid "Pending"
+msgstr "待定"
+
+#: loco:6151f41acae9ba5e6a4b2a68
+msgid "Pending edit"
+msgstr "待编辑"
+
+#: loco:6151f41acae9ba5e6a4b2a69
+msgid "Pending review"
+msgstr "待审核"
+
+#: loco:6151f41acae9ba5e6a4b2a6a
+msgid "Pixel size"
+msgstr "像元大小"
+
+#: loco:6151f41acae9ba5e6a4b2a6b
+msgid "Pixel size (in μm)"
+msgstr "像元大小（微米）"
+
+#: loco:6151f41acae9ba5e6a4b2a6c
+msgid "Pixels"
+msgstr "像素"
+
+#: loco:6151f41acae9ba5e6a4b2a6d
+msgid "Pixels X"
+msgstr "X像素"
+
+#: loco:6151f41acae9ba5e6a4b2a6e
+msgid "Pixels Y"
+msgstr "Y像素"
+
+#: loco:6151f41acae9ba5e6a4b2a6f
+msgid "Please make sure that the information you entered is accurate."
+msgstr "请确保您输入的信息准确无误。"
+
+#: loco:6151f41acae9ba5e6a4b2a70
+msgid "Propose edit"
+msgstr "建议编辑"
+
+#: loco:6151f41acae9ba5e6a4b2a71
+msgid "Proposer's comment"
+msgstr "提议者的评论"
+
+#: loco:6151f41acae9ba5e6a4b2a72
+msgid "Quantum efficiency"
+msgstr "两字效率"
+
+#: loco:6151f41acae9ba5e6a4b2a73
+msgid "Read noise"
+msgstr "读出噪声"
+
+#: loco:6151f41acae9ba5e6a4b2a74
+msgid "Refractor: achromatic"
+msgstr "折射式：消色差"
+
+#: loco:6151f41acae9ba5e6a4b2a75
+msgid "Reject"
+msgstr "拒绝"
+
+#: loco:6151f41acae9ba5e6a4b2a76
+msgid "Reject..."
+msgstr "拒绝..."
+
+#: loco:6151f41acae9ba5e6a4b2a77
+msgid "Rejected"
+msgstr "已被拒绝"
+
+#: loco:6151f41acae9ba5e6a4b2a78
+msgid "Reviewer's comment"
+msgstr "审核人的评论"
+
+#: loco:6151f41acae9ba5e6a4b2a79
+msgid "Sensor"
+msgstr "传感器"
+
+#: loco:6151f41acae9ba5e6a4b2a7a
+msgid "Sensor height"
+msgstr "传感器高度"
+
+#: loco:6151f41acae9ba5e6a4b2a7b
+msgid "Sensor size"
+msgstr "传感器尺寸"
+
+#: loco:6151f41acae9ba5e6a4b2a7c
+msgid "Sensor width"
+msgstr "传感器宽度"
+
+#: loco:6151f41acae9ba5e6a4b2a7d
+msgid "Software"
+msgstr "软件"
+
+#: loco:6151f41acae9ba5e6a4b2a7e
+msgid "Status"
+msgstr "状态"
+
+#: loco:6151f41acae9ba5e6a4b2a7f
+msgid "Superseded"
+msgstr "被取代"
+
+#: loco:6151f41acae9ba5e6a4b2a80
+msgid "Telescope"
+msgstr "望远镜"
+
+#: loco:6151f41acae9ba5e6a4b2a81
+msgid "Telescopes"
+msgstr "望远镜"
+
+#: loco:6151f41acae9ba5e6a4b2a82
+msgid ""
+"Thanks! Your edit proposal has been submitted and well be reviewed as soon "
+"as possible."
+msgstr "谢谢！您的编辑建议已提交，审核将很快完成。"
+
+#: loco:6151f41acae9ba5e6a4b2a83
+msgid ""
+"The <strong>Contribution Index (beta)</strong> is system to reward "
+"informative, constructive, and valuable commentary on AstroBin. {{_0}}Learn "
+"more.{{_1}}"
+msgstr ""
+"<strong>贡献榜（试运行）</strong>是一个AstroBin中，用于奖励信息丰富、建设性、有价值评论的系统。{{_0}}了解更多。{{_1}}"
+
+#: loco:6151f41acae9ba5e6a4b2a84
+msgid ""
+"The <strong>Image Index</strong> is a system based on likes received on "
+"images, that incentivizes the most active and liked members of the community."
+" {{_0}}Learn more.{{_1}}"
+msgstr ""
+"<strong>作品指数</strong>是一个基于作品上收到点赞的系统，用于激励社区中最活跃和最受喜爱的成员。{{_0}}了解更多。{{_1}}"
+
+#: loco:6151f41acae9ba5e6a4b2a85
+msgid "The following changes are proposed:"
+msgstr "建议作出以下修改："
+
+#: loco:6151f41acae9ba5e6a4b2a86
+msgid "The name of this brand. Make sure it's spelled correctly."
+msgstr "这个品牌的名称。请确保拼写正确。"
+
+#: loco:6151f41acae9ba5e6a4b2a87
+msgid ""
+"The name of this product. Do not include the brand's name and make sure it's "
+"spelled correctly."
+msgstr "此产品的名称。请勿包含品牌名称，并确保拼写正确。"
+
+#: loco:6151f41acae9ba5e6a4b2a88
+msgid "The size of the individual pixels in μm."
+msgstr "单个像素的大小，以μm为单位。"
+
+#: loco:6151f41acae9ba5e6a4b2a89
+msgid ""
+"This brand has <strong>{{0}}</strong> items in AstroBin's database. Take a "
+"look at them so you can be consistent with the naming conventions:"
+msgstr "AstroBin的数据库中已存在品牌下的 <strong>{{0}}</strong> 个项目。查看这些项目，并确保命名规则的一致性："
+
+#: loco:6151f41acae9ba5e6a4b2a8a
+msgid ""
+"This item will be part of AstorBin's equipment database, and it's very "
+"important that the information is accurate and this item is not the "
+"duplicate of another"
+msgstr "该项目将成为AstroBin设备数据库的一部分，项目信息准确性、唯一性（不是其他某个项目的副本）是非常重要的。"
+
+#: loco:6151f41acae9ba5e6a4b2a8b
+msgid ""
+"Tick if this is a color sensor, leave blank if it's a monochromatic one."
+msgstr "如果这是颜色传感器，请勾选；如果是单色传感器，请留空。"
+
+#: loco:6151f41acae9ba5e6a4b2a8c
+msgid "Time"
+msgstr "时间"
+
+#: loco:6151f41acae9ba5e6a4b2a8d
+msgid "Type"
+msgstr "类型"
+
+#: loco:6151f41acae9ba5e6a4b2a8e
+msgid "Type to search."
+msgstr "搜索的类型。"
+
+#: loco:6151f41acae9ba5e6a4b2a8f
+msgid ""
+"Use the <strong>#</strong> sign and start typing to insert an image from "
+"your gallery."
+msgstr "请输入 <strong>#</strong> 符号，插入图库中的图像。"
+
+#: loco:6151f41acae9ba5e6a4b2a90
+msgid "Use the <strong>@</strong> sign and start typing to mention any user."
+msgstr "请输入 <strong> @</strong> 符号，并在此后输入信息，以插入图库中的图像。"
+
+#: loco:6151f41acae9ba5e6a4b2a91
+msgid "View"
+msgstr "查看"
+
+#: loco:6151f41acae9ba5e6a4b2a92
+msgid "We found similar items from the same brand."
+msgstr "我们发现了相同品牌下另一个类似的项目。"
+
+#: loco:6151f41acae9ba5e6a4b2a93
+msgid ""
+"We found the following similar items. Click the correct one to use it, or "
+"ignore this message."
+msgstr "我们发现了以下相似的项目。单击选择正确的一项，或忽略此消息。"
+
+#: loco:6151f41acae9ba5e6a4b2a94
+msgid "Website"
+msgstr "网站"
+
+#: loco:6151f41acae9ba5e6a4b2a95
+msgid "Weight"
+msgstr "重量"
+
+#: loco:6151f41acae9ba5e6a4b2a96
+msgid "Whether this camera is equipment with a cooling mechanism."
+msgstr "此相机是否配备有制冷组件。"
+
+#: loco:6151f41acae9ba5e6a4b2a97
+msgid "Yes"
+msgstr "是"
+
+#: loco:6151f41acae9ba5e6a4b2a98
 msgid ""
 "You cannot review this edit proposal because there are previous pending "
 "proposals."
 msgstr "您无法查看此编辑建议，因为存先前的未决建议。"
 
+#: loco:6151f41acae9ba5e6a4b2a99
 msgid ""
 "You cannot review this edit proposal because you were the one who proposed "
 "it."
 msgstr "您无法审核此编辑建议，因为您是提议人。"
 
+#: loco:616beb23b6a5125b01510b92
+msgid "Display download menu"
+msgstr "显示下载菜单"
+
+#: loco:616beb23b6a5125b01510b93
+msgid "Enjoy your unlimited revisions per image!"
+msgstr "享受每幅图像的无限修订吧！"
+
+#: loco:616beb23b6a5125b01510b94
 msgid ""
-"You have a <strong>{{0}}</strong> subscription. Enjoy your unlimited "
-"uploads!"
-msgstr "您现已是<strong>{{0}}</strong>订阅用户。畅享无限上传吧！"
+"It looks like you reached the revision upload limit for your subscription."
+msgstr "看起来您已达到当前订阅的版本上载上传限制。"
 
+#: loco:616beb23b6a5125b01510b95
 msgid ""
-"You have a <strong>{{0}}</strong> subscription. You have used "
-"<strong>{{1}}</strong> of the <strong>{{2}}</strong> images allowed in your "
-"plan."
-msgstr ""
+"Permission denied. You don't have the required subscription level to perform "
+"this operation."
+msgstr "许可被拒。您没有执行此操作所需的订阅级别。"
 
-msgid ""
-"You have a <strong>{{0}}</strong> subscription. You have used "
-"<strong>{{1}}</strong> of your <strong>{{2}}</strong> upload slots."
-msgstr ""
-"您现在是 <strong>{{0}}</strong> "
-"订阅用户。目前您已使用<strong>{{2}}</strong>个上传空位中的<strong>{{1}}</strong>个。"
+#: loco:616beb23b6a5125b01510b96
+msgid "Sorry, revisions are not included at your membership level."
+msgstr "抱歉，您的会员级别不可使用修订版图像。"
 
-msgid ""
-"You have a <strong>{{0}}</strong> subscription. You have used "
-"<strong>{{1}}</strong> of your <strong>{{2}}</strong> yearly upload slots."
-msgstr ""
-"您现在是 <strong>{{0}}</strong> 订阅用户。 "
-"目前您已使用<strong>{{2}}</strong>个年度上传空位中的<strong>{{1}}</strong>个。"
-
-msgid "You have been logged in."
-msgstr "您已经成功登录。"
-
+#: loco:616beb23b6a5125b01510b97
 msgid "You may have up to one revision per image."
 msgstr "您可以最多上传一张修订版图像。"
 
+#: loco:616beb23b6a5125b01510b98
 msgid "You may have up to {{0}} revisions per image."
 msgstr "您可以最多上传 {{0}} 张修订版图像。"
 
-msgid ""
-"You requested a comment for a scheduled IOTD that is not scheduled anymore: "
-"either it became IOTD because the scheduled date has been reached, or it "
-"was retracted."
-msgstr "您请求对不在日程表中的“今日最佳”发表评论：它可能因为到期到期而被评为“今日最佳”，或者已被撤回。"
+#: loco:61b24fc53b045a3393550432
+msgid "(DIY)"
+msgstr "DIY"
 
+#: loco:61b24fc53b045a3393550433
+msgid "(modified)"
+msgstr "定制的"
+
+#: loco:61b24fc53b045a3393550434
+msgid "1 like"
+msgstr "1个喜欢"
+
+#: loco:61b24fc53b045a3393550435
+msgid "A-Z explorer"
+msgstr "A-Z顺序浏览"
+
+#: loco:61b24fc53b045a3393550436
+msgid "Accessory"
+msgstr "附件"
+
+#: loco:61b24fc53b045a3393550437
+msgid "Add a comment"
+msgstr "添加评论"
+
+#: loco:61b24fc53b045a3393550438
+msgid "Alt-Alt (altitude-altitude)"
+msgstr "高度角-高度角"
+
+#: loco:61b24fc53b045a3393550439
+msgid "Alt-Az (altazimuth)"
+msgstr "高度角-方位角"
+
+#: loco:61b24fc53b045a339355043a
+msgid "An error occurred"
+msgstr "出错了"
+
+#: loco:61b24fc53b045a339355043b
+msgid "An item of the same class, brand, and name already exists."
+msgstr "已经存在同品牌、类型的项目"
+
+#: loco:61b24fc53b045a339355043c
+msgid "Approve"
+msgstr "审核"
+
+#: loco:61b24fc53b045a339355043d
+msgid "Approve edit"
+msgstr "审核编辑"
+
+#: loco:61b24fc53b045a339355043e
+msgid "Approved"
+msgstr "已审核"
+
+#: loco:61b24fc53b045a339355043f
+msgid "Are you sure?"
+msgstr "确定？"
+
+#: loco:61b24fc53b045a3393550440
+msgid ""
+"AstroBin would like to rename some of your gear items in order to be more "
+"consistent with naming conventions."
+msgstr "AstroBin想重命名一些设备项目，以便统一规范命名。"
+
+#: loco:61b24fc53b045a3393550441
+msgid "AstroBin's new equipment database is still work in progress."
+msgstr "AstroBin新设备数据库正在更新中。"
+
+#: loco:61b24fc53b045a3393550442
+msgid "Automatically create \"modified\" variant"
+msgstr "自动创建“定制的”变体"
+
+#: loco:61b24fc53b045a3393550443
+msgid "Bad request"
+msgstr "错误请求"
+
+#: loco:61b24fc53b045a3393550444
+msgid "Bandwidth"
+msgstr "带宽"
+
+#: loco:61b24fc53b045a3393550445
+msgid "Binoculars"
+msgstr "双筒望远镜"
+
+#: loco:61b24fc53b045a3393550446
+msgid "Blue channel (B)"
+msgstr "蓝色通道（B）"
+
+#: loco:61b24fc53b045a3393550447
+msgid "Brand/Make"
+msgstr "品牌/制造商"
+
+#: loco:61b24fc53b045a3393550448
+msgid "Camera lens"
+msgstr "相机镜头"
+
+#: loco:61b24fc53b045a3393550449
+msgid "Catadioptric: ACF Schmidt-Cassegrain"
+msgstr "折返式：ACF施密特-卡塞格林"
+
+#: loco:61b24fc53b045a339355044a
+msgid "Catadioptric: Argunov-Cassegrain"
+msgstr "折反式：阿古诺夫-卡塞格林"
+
+#: loco:61b24fc53b045a339355044b
+msgid "Catadioptric: Klevtsov-Cassegrain"
+msgstr "折返式：克列夫佐夫-卡塞格林"
+
+#: loco:61b24fc53b045a339355044c
+msgid "Catadioptric: Lurie-Houghton"
+msgstr "折反式：卢丽-霍顿"
+
+#: loco:61b24fc53b045a339355044d
+msgid "Catadioptric: Maksutov"
+msgstr "折返式：马克苏托夫"
+
+#: loco:61b24fc53b045a339355044e
+msgid "Catadioptric: Maksutov-Cassegrain"
+msgstr "折返式：马克苏托夫-卡塞格林"
+
+#: loco:61b24fc53b045a339355044f
+msgid "Catadioptric: Rowe-Atkinson Schmidt astrograph"
+msgstr "折返式：罗-阿特金森-施密特摄星仪（RASA）"
+
+#: loco:61b24fc53b045a3393550450
+msgid "Catadioptric: Schmidt camera"
+msgstr "折返式：施密特相机"
+
+#: loco:61b24fc53b045a3393550451
+msgid "Catadioptric: Schmidt-Cassegrain"
+msgstr "折返式：施密特-卡塞格林"
+
+#: loco:61b24fc53b045a3393550452
+msgid "Catadioptric: modified Dall-Kirkham"
+msgstr "折返式：改正版达尔-科克汉姆（DK）"
+
+#: loco:61b24fc53b045a3393550453
+msgid ""
+"Check this box if this item is self-made, and/or was never on the market as "
+"a commercial product, and therefore does not have a brand."
+msgstr "如果此项目是自制的，从未作为正式产品发售，因此没有品牌，请勾选此框。"
+
+#: loco:61b24fc53b045a3393550454
+msgid "Color or mono"
+msgstr "彩色或黑白"
+
+#: loco:61b24fc53b045a3393550455
+msgid "Cometary"
+msgstr "彗星"
+
+#: loco:61b24fc53b045a3393550456
+msgid "Comment"
+msgstr "评论"
+
+#: loco:61b24fc53b045a3393550457
+msgid "Computerized"
+msgstr "计算化的"
+
+#: loco:61b24fc53b045a3393550458
+msgid "Confirm migration"
+msgstr "确认迁移"
+
+#: loco:61b24fc53b045a3393550459
+msgid "Confirm selected migrations"
+msgstr "确认迁移选中的"
+
+#: loco:61b24fc53b045a339355045a
+msgid "Conflict detected"
+msgstr "检测到冲突"
+
+#: loco:61b24fc53b045a339355045b
+msgid "Create"
+msgstr "创建"
+
+#: loco:61b24fc53b045a339355045c
+msgid "Created by"
+msgstr "创建者："
+
+#: loco:61b24fc53b045a339355045d
+msgid "DIY"
+msgstr "DIY"
+
+#: loco:61b24fc53b045a339355045e
+msgid "Dobsonian"
+msgstr "道布森"
+
+#: loco:61b24fc53b045a339355045f
+msgid "Don't remind me for a month"
+msgstr "本月不再提示"
+
+#: loco:61b24fc53b045a3393550460
+msgid "Editing this field is not possible."
+msgstr "无法编辑此字段。"
+
+#: loco:61b24fc53b045a3393550461
+msgid "Equatorial"
+msgstr "赤道仪"
+
+#: loco:61b24fc53b045a3393550462
+msgid "Filter"
+msgstr "滤镜"
+
+#: loco:61b24fc53b045a3393550463
+msgid "Fixed focal length"
+msgstr "固定焦距"
+
+#: loco:61b24fc53b045a3393550464
+msgid "Fork"
+msgstr "叉式"
+
+#: loco:61b24fc53b045a3393550465
+msgid "Gear renaming proposals"
+msgstr "设备重命名建议"
+
+#: loco:61b24fc53b045a3393550466
+msgid "German equatorial"
+msgstr "德式赤道仪"
+
+#: loco:61b24fc53b045a3393550467
+msgid "Get random"
+msgstr "随机"
+
+#: loco:61b24fc53b045a3393550468
+msgid "Green channel (G)"
+msgstr "绿色通道（G）"
+
+#: loco:61b24fc53b045a3393550469
+msgid "Hexapod"
+msgstr "六足式"
+
+#: loco:61b24fc53b045a339355046a
+msgid "Hydrogen-alpha (Hα)"
+msgstr "氢-α（Hα）"
+
+#: loco:61b24fc53b045a339355046b
+msgid "Hydrogen-beta (Hβ)"
+msgstr "氢-β（H-β）"
+
+#: loco:61b24fc53b045a339355046c
+msgid ""
+"If selected, AstroBin will automatically create a variant of this object "
+"that is labeled as <em>modified for astrophotography</em>."
+msgstr "如果勾选，AstroBin将自动创建该对象的变体，标记为“天文摄影定制”"
+
+#: loco:61b24fc53b045a339355046d
+msgid "If you can reproduce this issue reliably, please contact us."
+msgstr "如果您能复现此问题，请与我们联系。"
+
+#: loco:61b24fc53b045a339355046e
+msgid "Infrared (IR)"
+msgstr "红外（IR）"
+
+#: loco:61b24fc53b045a339355046f
+msgid "Internal server error"
+msgstr "内部服务器错误"
+
+#: loco:61b24fc53b045a3393550470
+msgid "Item approved."
+msgstr "项目已通过审核。"
+
+#: loco:61b24fc53b045a3393550471
+msgid "Item rejected."
+msgstr "项目被驳回。"
+
+#: loco:61b24fc53b045a3393550472
+msgid "Last update"
+msgstr "最近更新"
+
+#: loco:61b24fc53b045a3393550473
+msgid "Legacy item being migrated"
+msgstr "正在迁移的旧项目"
+
+#: loco:61b24fc53b045a3393550474
+msgid "Light pollution suppression"
+msgstr "光害抑制"
+
+#: loco:61b24fc53b045a3393550475
+msgid "Loading edit proposals"
+msgstr "加载编辑建议"
+
+#: loco:61b24fc53b045a3393550476
+msgid "Login required"
+msgstr "需要登录"
+
+#: loco:61b24fc53b045a3393550477
+msgid "Luminance/clear (L)"
+msgstr "明度/透明（L）"
+
+#: loco:61b24fc53b045a3393550478
+msgid "Lunar"
+msgstr "月亮"
+
+#: loco:61b24fc53b045a3393550479
+msgid "Mark as"
+msgstr "标记为"
+
+#: loco:61b24fc53b045a339355047a
+msgid "Max. payload"
+msgstr "最大负载"
+
+#: loco:61b24fc53b045a339355047b
+msgid "Migrate"
+msgstr "迁移"
+
+#: loco:61b24fc53b045a339355047c
+msgid "Migrate into"
+msgstr "迁移至"
+
+#: loco:61b24fc53b045a339355047d
+msgid "Modified"
+msgstr "定制的"
+
+#: loco:61b24fc53b045a339355047e
+msgid "Mount"
+msgstr "支架"
+
+#: loco:61b24fc53b045a339355047f
+msgid "Multiband"
+msgstr "多波段"
+
+#: loco:61b24fc53b045a3393550480
+msgid "Multiple items"
+msgstr "多个项目"
+
+#: loco:61b24fc53b045a3393550481
+msgid "Name/Model"
+msgstr "名称/型号"
+
+#: loco:61b24fc53b045a3393550482
+msgid "Neutral density (ND)"
+msgstr "中性灰（ND）"
+
+#: loco:61b24fc53b045a3393550483
+msgid "Newest first"
+msgstr "最新在最前"
+
+#: loco:61b24fc53b045a3393550484
+msgid "Nitrogen-II (NII)"
+msgstr "氮-II（NII）"
+
+#: loco:61b24fc53b045a3393550485
+msgid "No changes are proposed, or all proposed changes are outdated."
+msgstr "未提交任何变更，或所有提交的变更均已过期。"
+
+#: loco:61b24fc53b045a3393550486
+msgid "Not enough info"
+msgstr "信息不足"
+
+#: loco:61b24fc53b045a3393550487
+msgid "Number of pixels"
+msgstr "像素数量"
+
+#: loco:61b24fc53b045a3393550488
+msgid "Object ID"
+msgstr "目标ID"
+
+#: loco:61b24fc53b045a3393550489
+msgid "Oldest first"
+msgstr "最老在最前"
+
+#: loco:61b24fc53b045a339355048a
+msgid "Oxygen-III (OIII)"
+msgstr "氧-III（OIII）"
+
+#: loco:61b24fc53b045a339355048b
+msgid "PEC"
+msgstr "PEC"
+
+#: loco:61b24fc53b045a339355048c
+msgid "Periodic error correction"
+msgstr "周期误差校正"
+
+#: loco:61b24fc53b045a339355048d
+msgid "Photometric Blue"
+msgstr "蓝色测光"
+
+#: loco:61b24fc53b045a339355048e
+msgid "Photometric Infrared"
+msgstr "红外测光"
+
+#: loco:61b24fc53b045a339355048f
+msgid "Photometric Red"
+msgstr "红色测光"
+
+#: loco:61b24fc53b045a3393550490
+msgid "Photometric Ultraviolet"
+msgstr "紫外测光"
+
+#: loco:61b24fc53b045a3393550491
+msgid "Photometric Visual"
+msgstr "可见光测光"
+
+#: loco:61b24fc53b045a3393550492
+msgid "Pinch & zoom to view details closer."
+msgstr "两指缩放以查看更多细节"
+
+#: loco:61b24fc53b045a3393550493
+msgid "Please DO NOT approve this item if it's a duplicate of another one!"
+msgstr "如果此项目与其他项目重复，请不要通过！"
+
+#: loco:61b24fc53b045a3393550494
+msgid ""
+"Please only do this for DSLR camera that typically are modified for "
+"astrophotography. If this is a camera that is <em>specifically</em> sold as "
+"modified for astrophotography, e.g. the <strong>Canon EOS 60Da</strong> you "
+"<strong>do not</strong> need to use check this option."
+msgstr ""
+"请对非官方改装的相机之行此操作，如果这个相机是作为天文摄影的 <em>官方改机</em> 而发售的， 例如<strong>Canon EOS "
+"60Da</strong> 您<strong>不需要</strong> 勾选此选项。"
+
+#: loco:61b24fc53b045a3393550495
+msgid "Please read the equipment migration guidelines"
+msgstr "请阅读设备迁移指南"
+
+#: loco:61b24fc53b045a3393550496
+msgid ""
+"Please use a device with a minimum horizontal resolution of 1024 pixels to "
+"view this content."
+msgstr "请使用低横向分辨率高于1024像素的设备查看此内容。"
+
+#: loco:61b24fc53b045a3393550497
+msgid "Portable English"
+msgstr "便携英式"
+
+#: loco:61b24fc53b045a3393550498
+msgid "Proposed by"
+msgstr "提交人"
+
+#: loco:61b24fc53b045a3393550499
+msgid "Read"
+msgstr "已读"
+
+#: loco:61b24fc53b045a339355049a
+msgid "Reason"
+msgstr "原因"
+
+#: loco:61b24fc53b045a339355049b
+msgid "Red channel (R)"
+msgstr "红色通道（R）"
+
+#: loco:61b24fc53b045a339355049c
+msgid "Reflector: Dall-Kirkham"
+msgstr "反射式：达尔-科克汉姆（DK）"
+
+#: loco:61b24fc53b045a339355049d
+msgid "Reflector: Gregorian"
+msgstr "反射式：格里高利式"
+
+#: loco:61b24fc53b045a339355049e
+msgid "Reflector: Herschellian"
+msgstr "反射式：赫歇尔式"
+
+#: loco:61b24fc53b045a339355049f
+msgid "Reflector: Nasmyth"
+msgstr "反射式：纳兹米"
+
+#: loco:61b24fc53b045a33935504a0
+msgid "Reflector: Newtonian"
+msgstr "反射式：牛顿"
+
+#: loco:61b24fc53b045a33935504a1
+msgid "Reflector: Ritchey Chretien"
+msgstr "反射式：里奇-克莱琴"
+
+#: loco:61b24fc53b045a33935504a2
+msgid "Refractor: apochromatic"
+msgstr "折射式：复消色差"
+
+#: loco:61b24fc53b045a33935504a3
+msgid "Refractor: non-achromatic Galilean"
+msgstr "折射式：非消色差伽利略式"
+
+#: loco:61b24fc53b045a33935504a4
+msgid "Refractor: non-acrhmatic Keplerian"
+msgstr "折射式：非消色差开普勒式"
+
+#: loco:61b24fc53b045a33935504a5
+msgid "Refractor: semi-apochromatic"
+msgstr "折射式：准复消色差"
+
+#: loco:61b24fc53b045a33935504a6
+msgid "Refractor: superachromat"
+msgstr "折射式：超级复消色差"
+
+#: loco:61b24fc53b045a33935504a7
+msgid "Reject edit"
+msgstr "拒绝编辑"
+
+#: loco:61b24fc53b045a33935504a8
+msgid "Reply"
+msgstr "回复"
+
+#: loco:61b24fc53b045a33935504a9
+msgid "Reviewed by"
+msgstr "评审人"
+
+#: loco:61b24fc53b045a33935504aa
+msgid "Select target item for the migration, or create a new one."
+msgstr "选择要迁移的目标项目，或创建一个新的。"
+
+#: loco:61b24fc53b045a33935504ab
+msgid "Self-made / non-commercial (no brand)"
+msgstr "自制的/未商业发售的（无品牌）"
+
+#: loco:61b24fc53b045a33935504ac
+msgid "Sensors"
+msgstr "传感器"
+
+#: loco:61b24fc53b045a33935504ad
+msgid "Service not available"
+msgstr "服务器不可用"
+
+#: loco:61b24fc53b045a33935504ae
+msgid ""
+"Since a regular and a modified variant of {{0}} were created, we didn't "
+"prefill the item selection dropdown, to allow you to select the correct "
+"variant for this migration."
+msgstr "因为已经创建了{{0}}的常规项目和变体，我们没有预先填充“项目选择”下拉列表，您可以为此迁移至正确的变体。"
+
+#: loco:61b24fc53b045a33935504af
+msgid "Sky glow"
+msgstr "天空辉光"
+
+#: loco:61b24fc53b045a33935504b0
+msgid "Slew speed"
+msgstr "慢速"
+
+#: loco:61b24fc53b045a33935504b1
+msgid "Solar"
+msgstr "太阳"
+
+#: loco:61b24fc53b045a33935504b2
+msgid "Something went wrong"
+msgstr "发生了某些错误"
+
+#: loco:61b24fc53b045a33935504b3
+msgid "Sort"
+msgstr "分类"
+
+#: loco:61b24fc53b045a33935504b4
+msgid "Star tracker"
+msgstr "星体追踪器"
+
+#: loco:61b24fc53b045a33935504b5
+msgid "Submit"
+msgstr "提交"
+
+#: loco:61b24fc53b045a33935504b6
+msgid "Sulfur-II (SII)"
+msgstr "硫-II（SII）"
+
+#: loco:61b24fc53b045a33935504b7
+msgid "Summary"
+msgstr "总览"
+
+#: loco:61b24fc53b045a33935504b8
+msgid "Telescopes & lenses"
+msgstr "望远镜&镜头"
+
+#: loco:61b24fc53b045a33935504b9
+msgid ""
+"Thanks! Your edit proposal has been submitted and will be reviewed as soon "
+"as possible."
+msgstr "谢谢！您的编辑建议已提交，审核将很快完成。"
+
+#: loco:61b24fc53b045a33935504ba
+msgid ""
+"The item doesn't seem to have the correct brand, or the brand is misspelled, "
+"or it's the duplicate of an existing brand."
+msgstr "项目的品牌似乎不正确、拼写错误，或者是已有品牌的另一种名称。"
+
+#: loco:61b24fc53b045a33935504bb
+msgid "The item has a typo in its name"
+msgstr "此项目的名称存在拼写错误"
+
+#: loco:61b24fc53b045a33935504bc
+msgid "The item has insufficient data"
+msgstr "此项目缺乏足够的数据信息"
+
+#: loco:61b24fc53b045a33935504bd
+msgid "The item has some inaccurate data"
+msgstr "此项目的某些信息不正确"
+
+#: loco:61b24fc53b045a33935504be
+msgid ""
+"The recommended naming convention for camera lenses is: optional model name, "
+"focal length range, f-ratio range, additional properties. E.g. <strong>"
+"Nikkor Z 28mm f/2.8 (SE)</strong>."
+msgstr ""
+"建议的相机镜头命名格式为：可选型号名称、焦距范围、f值范围、其他属性。例如，<strong> Nikkor Z 28mmf/2."
+"8（SE）</strong>。"
+
+#: loco:61b24fc53b045a33935504bf
+msgid "The requested resource does not exist"
+msgstr "请求的资源不存在"
+
+#: loco:61b24fc53b045a33935504c0
+msgid ""
+"The revision's title will be shown as an addendum to the original image's "
+"title."
+msgstr "修订版的标题将作为原始图像标题的附录显示。"
+
+#: loco:61b24fc53b045a33935504c1
+msgid "The target item doesn't seem to have the correct brand"
+msgstr "目标项目似乎没有输入正确的品牌"
+
+#: loco:61b24fc53b045a33935504c2
+msgid "The target item has a typo in its name"
+msgstr "目标项目的名称存在拼写错误"
+
+#: loco:61b24fc53b045a33935504c3
+msgid "The target item has insufficient data"
+msgstr "目标项目缺乏足够的数据信息"
+
+#: loco:61b24fc53b045a33935504c4
+msgid "The target item has some inaccurate data"
+msgstr "此项目的某些信息不正确"
+
+#: loco:61b24fc53b045a33935504c5
+msgid "There are no comments yet."
+msgstr "目前还没有评论。"
+
+#: loco:61b24fc53b045a33935504c6
+msgid ""
+"There are no more items of this type to migrate. Check other equipment types."
+msgstr "没有其他此类型的项目要迁移。检查其他设备类型。"
+
+#: loco:61b24fc53b045a33935504c7
+msgid "This LEGACY item needs to be migrated"
+msgstr "此旧项目需要迁移"
+
+#: loco:61b24fc53b045a33935504c8
+msgid ""
+"This item has not been approved yet, so it's not available to be associated "
+"with images."
+msgstr "此项目尚未被审核，因此无法与图像关联。"
+
+#: loco:61b24fc53b045a33935504c9
+msgid ""
+"This item will be part of AstorBin's equipment database, and it's very "
+"important that the information is accurate and this item is not the "
+"duplicate of another."
+msgstr "该项目将成为AstrobBin数据库的一部分，确保信息准确、无重复是非常重要的。"
+
+#: loco:61b24fc53b045a33935504ca
+msgid ""
+"This should never happen. AstroBin's staff has been notified automatically "
+"and will solve the problem as soon as possible."
+msgstr "异常情况发生，AstroBin的工作人员已被自动通知，并将尽快解决问题。"
+
+#: loco:61b24fc53b045a33935504cb
+msgid "This should never happen. If the problem persists, please contact us."
+msgstr "异常情况发生，如问题重复出现，请联系我们。"
+
+#: loco:61b24fc53b045a33935504cc
+msgid "Tracking accuracy"
+msgstr "跟踪精度"
+
+#: loco:61b24fc53b045a33935504cd
+msgid "Transit"
+msgstr "过境"
+
+#: loco:61b24fc53b045a33935504ce
+msgid "Ultra High Contrast (UHC)"
+msgstr "超高反差（UHC）"
+
+#: loco:61b24fc53b045a33935504cf
+msgid "Ultraviolet (UV)"
+msgstr "紫外（UV）"
+
+#: loco:61b24fc53b045a33935504d0
+msgid "Validation error"
+msgstr "验证错误"
+
+#: loco:61b24fc53b045a33935504d1
+msgid "We found the following similar items from the same brand."
+msgstr "我们发现了以下品牌中类似项目。"
+
+#: loco:61b24fc53b045a33935504d2
+msgid "Wedged Alt-Az"
+msgstr "带仰角调节的经纬仪（赤道仪模式）"
+
+#: loco:61b24fc53b045a33935504d3
+msgid "When"
+msgstr "当"
+
+#: loco:61b24fc53b045a33935504d4
+msgid ""
+"When an image is dismissed by {{0}} members of the IOTD/TP staff, it's "
+"automatically removed from all queues. Please only perform this action if "
+"you want to vote against this image advancing in the process."
+msgstr "当图像被{{0}}“今日最佳”热门精选“”工作人员的移除时，它将自动从所有队列中删除。请仅在您想投票反对时进行此操作。"
+
+#: loco:61b24fc53b045a33935504d5
+msgid "Wrong type"
+msgstr "类型错误"
+
+#: loco:61b24fc53b045a33935504d6
+msgid ""
+"You are already logged in or were logged in automatically from the "
+"application's backend."
+msgstr "您已登录或已从应用程序后台自动登录。"
+
+#: loco:61b24fc53b045a33935504d7
 msgid "You tried to access a server resource that you're not authorized for."
 msgstr "您未被授权访问此内容。"
 
+#: loco:61b24fc53b045a33935504d8
 msgid ""
 "You tried to access a server resource that's only available to logged in "
 "users."
 msgstr "您正在访问内容仅对已登录用户开放。"
 
-msgid "You will be redirected in {{seconds}} seconds..."
-msgstr "您将在{{seconds}}后跳转..."
-
-msgid "You will overwrite your existing preset with the same name."
-msgstr ""
-
-msgid "You're trying to do this operation too many times in a short period of time."
-msgstr ""
-
-msgid "Your most recent applied migrations (all equipment classes)"
-msgstr ""
-
-msgid "Your payments"
-msgstr "付款记录"
-
-msgid ""
-"Your request has been received, and we are awaiting the final confirmation "
-"from the payment processor. Your subscription should be active within a few "
-"minutes!"
-msgstr "您的请求已收到，我们正在确认。您的订阅将在几分钟内激活！"
-
-msgid "Your session is invalid, please log in again"
-msgstr "您的会话无效，请重新登录"
-
-msgid "Your subscriptions"
-msgstr "您的订阅"
-
-msgid ""
-"Your transaction with the payment processor has been cancelled, so no "
-"change in your subscription has occurred."
-msgstr "您与支付平台的交易已取消，因此您的订阅未发生任何更改。"
-
+#: loco:61b24fc53b045a33935504d9
 msgid ""
 "Your usage of the word \"{{0}}\" suggests that you are trying to add a DIY "
 "item. The AstroBin\n"
@@ -2368,6 +2723,7 @@ msgstr ""
 "您使用单词“{0}}"
 "”表示您正在尝试添加DIY项目。AstroBin设备数据库用于市场上目前在售或曾经发售过的产品。要添加DIY项目，请在项目创建过程中使用相应的复选框。"
 
+#: loco:61b24fc53b045a33935504da
 msgid ""
 "Your usage of the word \"{{0}}\" suggests that you are using this field to "
 "specify a property of this item that is only relevant to your own copy. "
@@ -2377,61 +2733,718 @@ msgstr ""
 "使用单词“{0}}"
 "”表明您正在使用此字段指定此项的属性，该属性仅与您自己的项目副本相关。请记住，这里您正在创建或编辑AstroBin上所有人共享的设备名称。"
 
-msgid "Zoom ready"
-msgstr "缩放就绪"
-
+#: loco:61b24fc53b045a33935504db
 msgid "consider making an edit proposal instead."
 msgstr "请考虑提出一个编辑建议。"
 
-msgid "cooled"
-msgstr ""
+#: loco:61b24fc53b045a33935504dc
+msgid "{{0}} like"
+msgstr "{{0}} 点赞"
 
+#: loco:61e176245eeb7825f824d974
+msgid ""
+"AstroBin encountered an internal error. Please try again and contact us if "
+"the problem persists!"
+msgstr "AstroBin遇到内部错误。 请再试一次，如果问题仍然存在，请联系我们！"
+
+#: loco:61e176245eeb7825f824d975
+msgid "Dual Alt-Az/Equatorial"
+msgstr "AZ/EQ赤道仪"
+
+#: loco:61e176245eeb7825f824d976
+msgid ""
+"File too large. If you just upgraded your subscription, please try again in "
+"a few minutes. Thanks!"
+msgstr "文件太大。如果您刚刚上传了一个修订版，请几分钟之后再次尝试。谢谢！"
+
+#: loco:61e176245eeb7825f824d977
+msgid "IOTD"
+msgstr "今日最佳"
+
+#: loco:61e176245eeb7825f824d978
+msgid "Logging you in securely..."
+msgstr "安全登录..."
+
+#: loco:61e176245eeb7825f824d979
+msgid "Logging you out securely..."
+msgstr "安全登出..."
+
+#: loco:61e176245eeb7825f824d97a
+msgid "Meteor shower"
+msgstr "流星雨"
+
+#: loco:61e176245eeb7825f824d97b
+msgid "Noctilucent clouds"
+msgstr "夜光云"
+
+#: loco:61e176245eeb7825f824d97c
+msgid ""
+"Oops! Your request fell in between two AstroBin servers. Please clear your "
+"cache and try again."
+msgstr "糟糕！您的请求发送到了两台服务器之间，请清除缓存并重试。"
+
+#: loco:61e176245eeb7825f824d97d
+msgid "Retract"
+msgstr "收回"
+
+#: loco:61e176245eeb7825f824d97e
+msgid "Scroll to top"
+msgstr "滚动到顶部"
+
+#: loco:61e176245eeb7825f824d97f
+msgid ""
+"Sorry, you cannot select an IOTD right now: <strong>{{ reason }}</strong>. "
+"Please try again in <strong>{{ time }}</strong>."
+msgstr ""
+"抱歉，您现在不能选择“今日最佳”：<strong>{{ reason }}</strong>。请在 <strong>{{ time }}</strong>"
+"后尝试。"
+
+#: loco:61e176245eeb7825f824d980
+msgid ""
+"The judge who selected this image will be notified of top-level comments."
+msgstr "选择此图像的评审将收到最高级评论的通知。"
+
+#: loco:61e176245eeb7825f824d981
+msgid "The judgement queue is currently empty."
+msgstr "现在评审列队空闲的。"
+
+#: loco:61e176245eeb7825f824d982
+msgid ""
+"This item will be part of AstroBin's equipment database, and it's very "
+"important that the information is accurate and this item is not the "
+"duplicate of another."
+msgstr "此项目将是AstroBin设备数据库的一部分，并且信息准确、无重复项目，这非常重要。"
+
+#: loco:61e176245eeb7825f824d983
+msgid "Whether this camera is equipped with a cooling mechanism."
+msgstr "这个相机是否有制冷组件"
+
+#: loco:61e176245eeb7825f824d984
+msgid ""
+"You requested a comment for a scheduled IOTD that is not scheduled anymore: "
+"either it became IOTD because the scheduled date has been reached, or it was "
+"retracted."
+msgstr "您请求对不在日程表中的“今日最佳”发表评论：它可能因为到期到期而被评为“今日最佳”，或者已被撤回。"
+
+#: loco:61e176245eeb7825f824d985
 msgid "day"
 msgstr "天"
 
+#: loco:61e176245eeb7825f824d986
 msgid "days"
 msgstr "天"
 
-msgid "e.g."
-msgstr "例如："
-
-msgid "e.g. 'Home observatory'"
-msgstr "例如“家庭天文台”"
-
-msgid "modified"
+#: loco:6253f82e9c69105ff42237e2
+msgid "Are you sure that you want to continue?"
 msgstr ""
 
+#: loco:6253f82e9c69105ff42237e3
+msgid "Clear"
+msgstr ""
+
+#: loco:6253f82e9c69105ff42237e4
+msgid "Delete"
+msgstr ""
+
+#: loco:6253f82e9c69105ff42237e5
+msgid "Equipment item summary"
+msgstr ""
+
+#: loco:6253f82e9c69105ff42237e6
+msgid "Equipment preset created."
+msgstr ""
+
+#: loco:6253f82e9c69105ff42237e7
+msgid "Equipment preset updated."
+msgstr ""
+
+#: loco:6253f82e9c69105ff42237e8
+msgid "Guiding cameras"
+msgstr ""
+
+#: loco:6253f82e9c69105ff42237e9
+msgid "Guiding telescopes or lenses"
+msgstr ""
+
+#: loco:6253f82e9c69105ff42237ea
+msgid "Image saved."
+msgstr ""
+
+#: loco:6253f82e9c69105ff42237eb
+msgid "Load"
+msgstr ""
+
+#: loco:6253f82e9c69105ff42237ec
+msgid "Load equipment preset"
+msgstr ""
+
+#: loco:6253f82e9c69105ff42237ed
+msgid "Load preset"
+msgstr ""
+
+#: loco:6253f82e9c69105ff42237ee
+msgid "Quick-add recent"
+msgstr ""
+
+#: loco:6253f82e9c69105ff42237ef
+msgid "Save and remain on this page"
+msgstr ""
+
+#: loco:6253f82e9c69105ff42237f0
+msgid "Save equipment preset"
+msgstr ""
+
+#: loco:6253f82e9c69105ff42237f1
+msgid "Save preset"
+msgstr ""
+
+#: loco:6253f82e9c69105ff42237f2
+msgid "Show guiding equipment"
+msgstr ""
+
+#: loco:6253f82e9c69105ff42237f3
+msgid "Telescopes or lenses"
+msgstr ""
+
+#: loco:6253f82e9c69105ff42237f4
+msgid "This operation cannot be undone."
+msgstr ""
+
+#: loco:6253f82e9c69105ff42237f5
+msgid "This operation will overwrite the current equipment selection."
+msgstr ""
+
+#: loco:6253f82e9c69105ff42237f6
+msgid "Yes, continue"
+msgstr ""
+
+#: loco:6253f82e9c69105ff42237f7
+msgid ""
+"You have a <strong>{{0}}</strong> subscription. You have used <strong>{{1}}"
+"</strong> of the <strong>{{2}}</strong> images allowed in your plan."
+msgstr ""
+
+#: loco:6253f82e9c69105ff42237f8
+msgid "You will overwrite your existing preset with the same name."
+msgstr ""
+
+#: loco:6268fd225fe45c28a865cf02
+msgid "Item <strong>{{0}}</strong> marked as <strong>{{1}}</strong>."
+msgstr ""
+
+#: loco:6268fd225fe45c28a865cf03
+msgid "Please come back in {{0}} minutes!"
+msgstr ""
+
+#: loco:6268fd225fe45c28a865cf04
+msgid "The item already exists in the database"
+msgstr ""
+
+#: loco:6268fd225fe45c28a865cf05
+msgid "The judgement queue is currently empty or being refreshed."
+msgstr ""
+
+#: loco:6268fd225fe45c28a865cf06
+msgid ""
+"The migration will be reviewed by a moderator as soon as possible, and you "
+"will be notified of the outcome. If the migration is approved, you will be "
+"able to add the equipment item to your images."
+msgstr ""
+
+#: loco:6268fd225fe45c28a865cf07
+msgid "The review queue is currently empty or being refreshed."
+msgstr ""
+
+#: loco:6268fd225fe45c28a865cf08
+msgid "The submission queue is currently empty or being refreshed."
+msgstr ""
+
+#: loco:6268fd225fe45c28a865cf09
+msgid "The target item is a duplicate of an existing equipment item"
+msgstr ""
+
+#: loco:6268fd225fe45c28a865cf0a
 msgid "multiple items"
 msgstr ""
 
-msgid "n/a"
-msgstr "N/A"
-
+#: loco:6268fd225fe45c28a865cf0b
 msgid "not enough info"
 msgstr ""
 
-msgid "or"
-msgstr ""
-
-msgid "random"
-msgstr ""
-
-msgid ""
-"there is an etiquette regarding uploading a new image versus an image "
-"revision."
-msgstr "上传新图像与图像修订版有相应的礼节需要遵守。"
-
+#: loco:6268fd225fe45c28a865cf0c
 msgid "wrong type"
 msgstr ""
 
-msgid "year"
-msgstr "年"
-
-msgid "{{ max }} revisions / image"
-msgstr "{{ max }}修订版/作品"
-
-msgid "{{0}} images in common"
+#: loco:629870a92acaf33959349902
+msgid "Alias"
 msgstr ""
 
-msgid "{{0}} like"
-msgstr "{{0}} 点赞"
+#: loco:629870a92acaf33959349903
+msgid "Also available in the following variants:"
+msgstr ""
+
+#: loco:629870a92acaf33959349904
+msgid ""
+"AstroBin will automatically create variants of this camera marked as "
+"\"modified for astrophotography\" and \"custom-cooled\"."
+msgstr ""
+
+#: loco:629870a92acaf33959349905
+msgid "Available in {{0}} additional variants."
+msgstr ""
+
+#: loco:629870a92acaf33959349906
+msgid "Can't find <strong>{{0}}</strong>?"
+msgstr ""
+
+#: loco:629870a92acaf33959349907
+msgid "Catadioptric: Riccardi-Honders"
+msgstr ""
+
+#: loco:629870a92acaf33959349908
+msgid "Catadioptric: modified Harmer-Wynne"
+msgstr ""
+
+#: loco:629870a92acaf33959349909
+msgid "Create item"
+msgstr ""
+
+#: loco:629870a92acaf3395934990a
+msgid "Custom-cooled"
+msgstr ""
+
+#: loco:629870a92acaf3395934990b
+msgid ""
+"Custom-cooled cameras are DSLR and mirrorless cameras that are not sold with "
+"cooling as stock, but a cooling mechanism is added as a custom modification."
+msgstr ""
+
+#: loco:629870a92acaf3395934990c
+msgid ""
+"Do not let your personal preference for a naming convention be a reason for "
+"rejection at this time, as data defragmentation is more important than minor "
+"spelling concerns that can be fixed later."
+msgstr ""
+
+#: loco:629870a92acaf3395934990d
+msgid "For security reasons, this is not permitted."
+msgstr ""
+
+#: loco:629870a92acaf3395934990e
+msgid "Get next"
+msgstr ""
+
+#: loco:629870a92acaf3395934990f
+msgid "Go to regular variant."
+msgstr ""
+
+#: loco:629870a92acaf33959349910
+msgid "I have carefully checked for typos"
+msgstr ""
+
+#: loco:629870a92acaf33959349911
+msgid ""
+"I have carefully checked that this item conforms to existing naming "
+"conventions for this brand"
+msgstr ""
+
+#: loco:629870a92acaf33959349912
+msgid ""
+"I have carefully checked that this item does not duplicate an existing one"
+msgstr ""
+
+#: loco:629870a92acaf33959349913
+msgid ""
+"I have not included information that pertains to my personal item (e.g. "
+"sold/broken/refurbished...) and this is the general description of a product"
+msgstr ""
+
+#: loco:629870a92acaf33959349914
+msgid "Item class"
+msgstr ""
+
+#: loco:629870a92acaf33959349915
+msgid ""
+"Modifications typically include LPF2 filter removal, Baader modification, or "
+"full-spectrum modification."
+msgstr ""
+
+#: loco:629870a92acaf33959349916
+msgid "Modified for astrophotography"
+msgstr ""
+
+#: loco:629870a92acaf33959349917
+msgid "Not a {{0}}"
+msgstr ""
+
+#: loco:629870a92acaf33959349918
+msgid "Periodic error"
+msgstr ""
+
+#: loco:629870a92acaf33959349919
+msgid "Planetary"
+msgstr ""
+
+#: loco:629870a92acaf3395934991a
+msgid ""
+"Please reject a renaming proposal only if the proposal incorrectly makes the "
+"item a different product."
+msgstr ""
+
+#: loco:629870a92acaf3395934991b
+msgid "Rectangular"
+msgstr ""
+
+#: loco:629870a92acaf3395934991c
+msgid "Reflector: Dobsonian"
+msgstr ""
+
+#: loco:629870a92acaf3395934991d
+msgid "Reflector: classical Cassegrain"
+msgstr ""
+
+#: loco:629870a92acaf3395934991e
+msgid "Refractor: Petzval"
+msgstr ""
+
+#: loco:629870a92acaf3395934991f
+msgid "Regular"
+msgstr ""
+
+#: loco:629870a92acaf33959349920
+msgid "Reviewer"
+msgstr ""
+
+#: loco:629870a92acaf33959349921
+msgid "Round"
+msgstr ""
+
+#: loco:629870a92acaf33959349922
+msgid "Seems like it's your first time editing this kind of information!"
+msgstr ""
+
+#: loco:629870a92acaf33959349923
+msgid "Select variant"
+msgstr ""
+
+#: loco:629870a92acaf33959349924
+msgid ""
+"Should that happen, and you're using this equipment item on one or more of "
+"your images, you will be notified."
+msgstr ""
+
+#: loco:629870a92acaf33959349925
+msgid "Square"
+msgstr ""
+
+#: loco:629870a92acaf33959349926
+msgid "Start typing in the text box to show the dropdown suggestions."
+msgstr ""
+
+#: loco:629870a92acaf33959349927
+msgid ""
+"Take a look at them so you can be consistent with the naming conventions and "
+"prevent the creation of a duplicate item."
+msgstr ""
+
+#: loco:629870a92acaf33959349928
+msgid "Thank you!"
+msgstr ""
+
+#: loco:629870a92acaf33959349929
+msgid "The form has errors, please correct them and try again."
+msgstr ""
+
+#: loco:629870a92acaf3395934992a
+msgid ""
+"The legacy object cannot be migrated because it consists of multiple objects "
+"in the same item (e.g. LRGB filter set, or multiple unrelated products)."
+msgstr ""
+
+#: loco:629870a92acaf3395934992b
+msgid ""
+"The legacy object cannot be migrated because it's not the right kind (e.g. a "
+"telescope added as a camera)."
+msgstr ""
+
+#: loco:629870a92acaf3395934992c
+msgid ""
+"The legacy object cannot be migrated because the correct target product "
+"cannot be unambiguously determined."
+msgstr ""
+
+#: loco:629870a92acaf3395934992d
+msgid ""
+"The migration will complete within a few moments and your images will be "
+"automatically updated."
+msgstr ""
+
+#: loco:629870a92acaf3395934992e
+msgid ""
+"This brand has <strong>{{0}}</strong> items in AstroBin's database, and they "
+"are shown below in alphabetical order."
+msgstr ""
+
+#: loco:629870a92acaf3395934992f
+msgid "This is a modified and/or custom-cooled variant of this camera."
+msgstr ""
+
+#: loco:629870a92acaf33959349930
+msgid ""
+"This item as not been approved by a moderator, and could be removed from the "
+"database if rejected."
+msgstr ""
+
+#: loco:629870a92acaf33959349931
+msgid ""
+"This item has a history of <strong>{{0}}</strong> approved edit proposals."
+msgstr ""
+
+#: loco:629870a92acaf33959349932
+msgid "This item has not been approved"
+msgstr ""
+
+#: loco:629870a92acaf33959349933
+msgid "Too many requests"
+msgstr ""
+
+#: loco:629870a92acaf33959349934
+msgid "Tripod"
+msgstr ""
+
+#: loco:629870a92acaf33959349935
+msgid "We found the following similar items from the same brand:"
+msgstr ""
+
+#: loco:629870a92acaf33959349936
+msgid ""
+"You're trying to do this operation too many times in a short period of time."
+msgstr ""
+
+#: loco:629870a92acaf33959349937
+msgid "cooled"
+msgstr ""
+
+#: loco:629870a92acaf33959349938
+msgid "modified"
+msgstr ""
+
+#: loco:629870a92acaf33959349939
+msgid "or"
+msgstr ""
+
+#: loco:62a85e35137a5a5dde260782
+msgid "Acquisition cameras"
+msgstr ""
+
+#: loco:62a85e35137a5a5dde260783
+msgid "Acquisition telescopes or lenses"
+msgstr ""
+
+#: loco:62a85e35137a5a5dde260784
+msgid "Any changes you make will be reviewed by other members."
+msgstr ""
+
+#: loco:62a85e35137a5a5dde260785
+msgid "Anybody can review edit proposals made by any other member."
+msgstr ""
+
+#: loco:62a85e35137a5a5dde260786
+msgid ""
+"AstroBin's equipment database is entirely maintained by the community. Feel "
+"free to make a contribution!"
+msgstr ""
+
+#: loco:62a85e35137a5a5dde260787
+msgid "Astrophotographers who have used this equipment item"
+msgstr ""
+
+#: loco:62a85e35137a5a5dde260788
+msgid "Coming soon!"
+msgstr ""
+
+#: loco:62a85e35137a5a5dde260789
+msgid "Duplicate of"
+msgstr ""
+
+#: loco:62a85e35137a5a5dde26078a
+msgid "Feel free to contribute!"
+msgstr ""
+
+#: loco:62a85e35137a5a5dde26078b
+msgid ""
+"If you're not sure how to use this page, feel free to contact AstroBin or "
+"just skip it and let AstroBin moderators deal with your equipment later."
+msgstr ""
+
+#: loco:62a85e35137a5a5dde26078c
+msgid "Images acquired using this equipment item"
+msgstr ""
+
+#: loco:62a85e35137a5a5dde26078d
+msgid ""
+"It looks like you are in the process of creating an equipment item, please "
+"complete or cancel that operation before saving the entire form."
+msgstr ""
+
+#: loco:62a85e35137a5a5dde26078e
+msgid "Nobody is using this equipment item on AstroBin, at the moment."
+msgstr ""
+
+#: loco:62a85e35137a5a5dde26078f
+msgid ""
+"The AstroBin equipment database is a collective community effort similar to "
+"Wikipedia."
+msgstr ""
+
+#: loco:62a85e35137a5a5dde260790
+msgid ""
+"The comment section for this item is not available anymore, because it's "
+"been already approved."
+msgstr ""
+
+#: loco:62a85e35137a5a5dde260791
+msgid ""
+"The following form fields have errors, please correct them and try again:"
+msgstr ""
+
+#: loco:62a85e35137a5a5dde260792
+msgid ""
+"There are no images on AstroBin acquired using this equipment item, at the "
+"moment."
+msgstr ""
+
+#: loco:62a85e35137a5a5dde260793
+msgid ""
+"This comment section is only visible to AstroBin equipment moderators and "
+"the user who created this item, and only while this equipment item is "
+"unapproved."
+msgstr ""
+
+#: loco:62a85e35137a5a5dde260794
+msgid ""
+"This comment section is only visible to you and AstroBin equipment "
+"moderators, and only while this equipment item is unapproved."
+msgstr ""
+
+#: loco:62a85e35137a5a5dde260795
+msgid "This item has already been approved by you or another moderator."
+msgstr ""
+
+#: loco:62a85e35137a5a5dde260796
+msgid ""
+"This space will host a forum specific to this equipment item, to connect "
+"people who own it or are interested in it."
+msgstr ""
+
+#: loco:62a85e35137a5a5dde260797
+msgid "Type a brand and/or a model name to search options..."
+msgstr ""
+
+#: loco:62a85e35137a5a5dde260798
+msgid "View more"
+msgstr ""
+
+#: loco:62a85e35137a5a5dde260799
+msgid "You can create a new one using the button below."
+msgstr ""
+
+#: loco:62a85e35137a5a5dde26079a
+msgid ""
+"You cannot propose an edit while there is a pending one. Please review the "
+"pending edit proposal first, thank you!"
+msgstr ""
+
+#: loco:62ab63ab8f947e59c74f08b2
+msgid "Add filter"
+msgstr ""
+
+#: loco:62ab63ab8f947e59c74f08b3
+msgid "Any"
+msgstr ""
+
+#: loco:62ab63ab8f947e59c74f08b4
+msgid "Apply"
+msgstr ""
+
+#: loco:62ab63ab8f947e59c74f08b5
+msgid "Clear all filters"
+msgstr ""
+
+#: loco:62ab63ab8f947e59c74f08b6
+msgid "From"
+msgstr ""
+
+#: loco:62ab63ab8f947e59c74f08b7
+msgid ""
+"If you just upgraded and still see this message, please allow a few minute "
+"for your subscription to take effect."
+msgstr ""
+
+#: loco:62ab63ab8f947e59c74f08b8
+msgid "Legacy item"
+msgstr ""
+
+#: loco:62ab63ab8f947e59c74f08b9
+msgid "Most often used with"
+msgstr ""
+
+#: loco:62ab63ab8f947e59c74f08ba
+msgid "New item"
+msgstr ""
+
+#: loco:62ab63ab8f947e59c74f08bb
+msgid "No, thanks"
+msgstr ""
+
+#: loco:62ab63ab8f947e59c74f08bc
+msgid "Select"
+msgstr ""
+
+#: loco:62ab63ab8f947e59c74f08bd
+msgid "Sorry"
+msgstr ""
+
+#: loco:62ab63ab8f947e59c74f08be
+msgid "Strategy"
+msgstr ""
+
+#: loco:62ab63ab8f947e59c74f08bf
+msgid "Tell me more!"
+msgstr ""
+
+#: loco:62ab63ab8f947e59c74f08c0
+msgid "To"
+msgstr ""
+
+#: loco:62ab63ab8f947e59c74f08c1
+msgid ""
+"To use this feature, you need the <strong>{{0}}</strong> subscription or "
+"higher."
+msgstr ""
+
+#: loco:62ab63ab8f947e59c74f08c2
+msgid "To use this feature, you need the <strong>{{0}}</strong> subscription."
+msgstr ""
+
+#: loco:62ab63ab8f947e59c74f08c3
+msgid "Undo"
+msgstr ""
+
+#: loco:62ab63ab8f947e59c74f08c4
+msgid ""
+"Would you be interested in upgrading? AstroBin is a very small business and "
+"your support would mean a lot!"
+msgstr ""
+
+#: loco:62ab63ab8f947e59c74f08c5
+msgid "Your most recent applied migrations (all equipment classes)"
+msgstr ""
+
+#: loco:62ab63ab8f947e59c74f08c6
+msgid "random"
+msgstr ""
+
+#: loco:62ab63ab8f947e59c74f08c7
+msgid "{{0}} images in common"
+msgstr ""
