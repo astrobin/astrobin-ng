@@ -32,6 +32,7 @@
 
     <div class="col-md-7">
       <ng-container [ngTemplateOutlet]="randomNonMigrated"></ng-container>
+      <ng-container [ngTemplateOutlet]="myMigrations"></ng-container>
     </div>
     <!-- main col -->
 
@@ -280,4 +281,50 @@
       </ng-container>
     </ng-container>
   </ng-container>
+</ng-template>
+
+<ng-template #myMigrations>
+  <ng-container *ngIf="allStrategies$ | async as allStrategies; else loading">
+    <div class="card mt-5" *ngIf="!migrationMode && allStrategies.count > 0">
+      <div class="card-header">{{ "Your most recent applied migrations (all equipment classes)" | translate }}</div>
+      <div class="card-body">
+        <table class="table table-striped applied-migrations">
+          <thead>
+          <tr>
+            <td>ID</td>
+            <td>{{ "Legacy item" | translate }}</td>
+            <td>{{ "Strategy" | translate }}</td>
+            <td>{{ "New item" | translate }}</td>
+            <td></td>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let strategy of allStrategies.results">
+            <td>{{ strategy.pk }}</td>
+            <td><strong>{{ strategy.gear.make }}</strong> {{ strategy.gear.name }}</td>
+            <td>{{ strategy.migrationFlag }}</td>
+            <td>
+              <ng-container *ngIf="!!strategy.migrationContentObjectBrand; else notAvailable">
+                <strong>{{ strategy.migrationContentObjectBrand.name }}</strong> {{ strategy.migrationContentObject.name }}
+              </ng-container>
+            </td>
+            <td>
+              <button
+                [class.loading]="loadingService.isLoading()"
+                (click)="undoMigration(strategy)"
+                class="btn btn-sm btn-outline-secondary"
+              >
+                {{ "Undo" | translate }}
+              </button>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </ng-container>
+</ng-template>
+
+<ng-template #notAvailable>
+  <span>{{ "n/a" | translate }}</span>
 </ng-template>
