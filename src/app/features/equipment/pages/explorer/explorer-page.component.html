@@ -17,9 +17,10 @@
         [activeEditProposalId]="activeEditProposalId"
         [navCollapsed]="navCollapsed"
         (valueChanged)="onSelectedItemChanged($event)"
+        (creationMode)="creationMode = $event"
       ></astrobin-equipment-explorer>
 
-      <ng-container *ngIf="!activeId">
+      <ng-container *ngIf="!activeId && !creationMode">
         <astrobin-equipment-explorer-filters
           #explorerFilters
           [type]="activeType"

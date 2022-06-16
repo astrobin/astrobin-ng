@@ -52,6 +52,7 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
   activeId: EquipmentItemBaseInterface["id"];
   sortOrder: ExplorerPageSortOrder = ExplorerPageSortOrder.AZ;
   filters: ExplorerFilterInterface[] = [];
+  creationMode = false;
 
   constructor(
     public readonly store$: Store<State>,

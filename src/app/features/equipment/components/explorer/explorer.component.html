@@ -6,6 +6,7 @@
       [type]="activeType"
       [initialValue]="this.activeId"
       (creationModeStarted)="onCreationModeStarted()"
+      (creationModeEnded)="onCreationModeEnded()"
       (valueChanged)="onSelectedItemChanged($event)"
     ></astrobin-equipment-item-browser>
   </div>

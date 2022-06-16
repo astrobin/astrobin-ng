@@ -97,6 +97,9 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
   @Output()
   rejected = new EventEmitter();
 
+  @Output()
+  creationMode = new EventEmitter<boolean>();
+
   selectedItem: EquipmentItemBaseInterface | null = null;
   cameraVariants: CameraInterface[] = [];
 
@@ -402,6 +405,11 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
 
   onCreationModeStarted() {
     this.resetBrowser();
+    this.creationMode.emit(true);
+  }
+
+  onCreationModeEnded() {
+    this.creationMode.emit(false);
   }
 
   proposeEdit() {
