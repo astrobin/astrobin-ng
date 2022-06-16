@@ -34,6 +34,8 @@ import { CombinedAccessoryAndFocalReducerApiService } from "@shared/services/api
 import { GearUserInfoInterface } from "@shared/interfaces/gear-user-info.interface";
 import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
 import { GearMigrationStrategyApiService } from "@shared/services/api/classic/astrobin/grar-migration-strategy/gear-migration-strategy-api.service";
+import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
   selector: "astrobin-migration-tool",
@@ -99,7 +101,8 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
     public readonly equipmentItemService: EquipmentItemService,
     public readonly equipmentApiService: EquipmentApiService,
     public readonly legacyGearService: GearService,
-    public readonly gearMigrationStrategyApiService: GearMigrationStrategyApiService
+    public readonly gearMigrationStrategyApiService: GearMigrationStrategyApiService,
+    public readonly modalService: NgbModal
   ) {
     super(store$);
   }
@@ -370,25 +373,38 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
   }
 
   confirmMigration(object: any) {
-    const type = this.getActiveType();
-
-    const selectedSimilarItemsPks = this._getSelectedSimilarItemsPks();
-    const similarItems = this.migrationConfirmation.similarItems.filter(
-      item => selectedSimilarItemsPks.indexOf(item.pk) > -1
+    const modalRef = this.modalService.open(ConfirmationDialogComponent, { size: "sm" });
+    const componentInstant: ConfirmationDialogComponent = modalRef.componentInstance;
+    componentInstant.message = this.translateService.instant(
+      "AstroBin will update <strong>all your images</strong> that use the legacy equipment item " +
+        "<strong>{{0}}</strong> to the new one that you selected." +
+        "<br/><br/>" +
+        this.translateService.instant("For this reason, they need to represent the same product."),
+      {
+        0: `${object.make} ${object.name}`
+      }
     );
 
-    for (const itemToMigrate of [...[object], ...similarItems]) {
-      this.store$
-        .select(selectEquipmentItem, { id: this.migrationTarget.id, type })
-        .pipe(take(1))
-        .subscribe(item => {
-          this._applyMigration(
-            itemToMigrate,
-            [itemToMigrate.pk, MigrationFlag.MIGRATE, type, item.id],
-            "ready to migrate"
-          );
-        });
-    }
+    modalRef.closed.pipe(take(1)).subscribe(() => {
+      const type = this.getActiveType();
+      const selectedSimilarItemsPks = this._getSelectedSimilarItemsPks();
+      const similarItems = this.migrationConfirmation.similarItems.filter(
+        item => selectedSimilarItemsPks.indexOf(item.pk) > -1
+      );
+
+      for (const itemToMigrate of [...[object], ...similarItems]) {
+        this.store$
+          .select(selectEquipmentItem, { id: this.migrationTarget.id, type })
+          .pipe(take(1))
+          .subscribe(item => {
+            this._applyMigration(
+              itemToMigrate,
+              [itemToMigrate.pk, MigrationFlag.MIGRATE, type, item.id],
+              "ready to migrate"
+            );
+          });
+      }
+    });
   }
 
   cancelMigration() {

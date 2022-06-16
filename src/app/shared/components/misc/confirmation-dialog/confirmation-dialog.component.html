@@ -8,10 +8,8 @@
 </div>
 
 <div class="modal-body">
-  <p>
-    {{ message || "This operation requires an additional confirmation." | translate }}
-    {{ "Are you sure that you want to continue?" | translate }}
-  </p>
+  <p [innerHTML]="message || 'This operation requires an additional confirmation.' | translate"></p>
+  <p>{{ "Are you sure that you want to continue?" | translate }}</p>
 </div>
 
 <div class="modal-footer">
