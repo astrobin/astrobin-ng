@@ -12,7 +12,7 @@
 </div> <!-- browser row -->
 
 <div class="row">
-  <div class="col order-sm-1 order-lg-0">
+  <div class="col order-last order-lg-first">
     <div class="card" [class.disabled-with-backdrop]="subCreationMode" *ngIf="!!selectedItem">
       <div class="backdrop"></div>
 
@@ -333,7 +333,7 @@
     </ng-container>
   </div> <!-- main pane -->
 
-  <div *ngIf="doShowMostOftenUsedWith()" class="col-sm-12 col-lg-3 order-sm-0 order-lg-1 mb-4 mb-lg-0">
+  <div *ngIf="doShowMostOftenUsedWith()" class="col-sm-12 col-lg-3 order-first order-lg-last mb-4 mb-lg-0">
     <astrobin-equipment-item-most-often-used-with
       [item]="selectedItem"
     ></astrobin-equipment-item-most-often-used-with>
