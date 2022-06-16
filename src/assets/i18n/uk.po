@@ -87,6 +87,9 @@ msgstr "Тип придбання"
 msgid "Add a comment"
 msgstr "Коментувати"
 
+msgid "Add filter"
+msgstr ""
+
 msgid "Advanced plate-solving"
 msgstr "Розширене розпізнавання поля"
 
@@ -135,6 +138,9 @@ msgstr "Та багато іншого!"
 msgid "Anular solar eclipse"
 msgstr "Кільцеве сонячне затемнення"
 
+msgid "Any"
+msgstr ""
+
 msgid "Any changes you make will be reviewed by other members."
 msgstr ""
 
@@ -143,6 +149,9 @@ msgstr ""
 
 msgid "Aperture"
 msgstr "Діафрагма"
+
+msgid "Apply"
+msgstr ""
 
 msgid "Apply watermark to image"
 msgstr "Застосувати водяний знак до зображення"
@@ -394,6 +403,9 @@ msgstr "Класс"
 
 msgid "Clear"
 msgstr "Очистити"
+
+msgid "Clear all filters"
+msgstr ""
 
 msgid "Click on the image and scroll to magnify up to 8x."
 msgstr "Натисніть на зображення та прокрутіть, щоб збільшити до 8 разів."
@@ -706,6 +718,9 @@ msgstr "Форум"
 msgid "Frame rate"
 msgstr "Частота кадрів"
 
+msgid "From"
+msgstr ""
+
 msgid "Full search"
 msgstr "Повний пошук"
 
@@ -832,6 +847,11 @@ msgid "If you can reproduce this issue reliably, please contact us."
 msgstr "Якщо ви можете відтворити цю проблему, зв’яжіться з нами."
 
 msgid ""
+"If you just upgraded and still see this message, please allow a few minute "
+"for your subscription to take effect."
+msgstr ""
+
+msgid ""
 "If you want to share the TIFF or FITS file of your image, put a link to the "
 "file here. Unfortunately, AstroBin cannot offer to store these files at the "
 "moment, so you will have to host them on your personal space."
@@ -950,6 +970,9 @@ msgstr "Останні теми"
 
 msgid "Learn more"
 msgstr "Дізнатись більше"
+
+msgid "Legacy item"
+msgstr ""
 
 msgid "Legacy item being migrated"
 msgstr "Застарілий елемент переноситься"
@@ -1099,6 +1122,9 @@ msgstr "Модифікований для астрофотографії"
 msgid "Mono"
 msgstr "Моно"
 
+msgid "Most often used with"
+msgstr ""
+
 msgid "Mount"
 msgstr "Монтування"
 
@@ -1138,6 +1164,9 @@ msgstr "Нептун"
 msgid "Neutral density (ND)"
 msgstr "Нейтральна щільність (ND)"
 
+msgid "New item"
+msgstr ""
+
 msgid "Newest first"
 msgstr "Спершу новітні"
 
@@ -1158,6 +1187,9 @@ msgstr "Нічого не знайдено."
 
 msgid "No plate-solving"
 msgstr "Без розпізнання поля"
+
+msgid "No, thanks"
+msgstr ""
 
 msgid "Nobody"
 msgstr "Ніхто"
@@ -1590,6 +1622,9 @@ msgstr "Безпечна оплата через Stripe™"
 msgid "Seems like it's your first time editing this kind of information!"
 msgstr "Здається, ви вперше редагуєте таку інформацію!"
 
+msgid "Select"
+msgstr ""
+
 msgid "Select an area of the image to be used as thumbnail in your gallery."
 msgstr ""
 "Виберіть область зображення, яка буде використовуватися як ескіз у вашій "
@@ -1671,6 +1706,9 @@ msgstr "Тіло або подія Сонячної системи"
 msgid "Something went wrong"
 msgstr "Щось пішло не так"
 
+msgid "Sorry"
+msgstr ""
+
 msgid ""
 "Sorry, but the page you are looking for is not here. If you expected an "
 "image, this means that the author deleted it."
@@ -1723,6 +1761,9 @@ msgstr "Почніть вводити текст у текстовому пол�
 
 msgid "Status"
 msgstr "Статус"
+
+msgid "Strategy"
+msgstr ""
 
 msgid "Subject type"
 msgstr "Тип предмета"
@@ -1784,6 +1825,9 @@ msgstr "Телескоп"
 
 msgid "Telescopes & lenses"
 msgstr "Телескопи та об‘єктиви"
+
+msgid "Tell me more!"
+msgstr ""
 
 msgid "Text"
 msgstr "Текст"
@@ -2117,6 +2161,17 @@ msgstr "Час"
 msgid "Title"
 msgstr "Заголовок"
 
+msgid "To"
+msgstr ""
+
+msgid ""
+"To use this feature, you need the <strong>{{0}}</strong> subscription or "
+"higher."
+msgstr ""
+
+msgid "To use this feature, you need the <strong>{{0}}</strong> subscription."
+msgstr ""
+
 msgid "Too many requests"
 msgstr "Забагато запитів"
 
@@ -2170,6 +2225,9 @@ msgstr "Ультрафіолет (UV)"
 
 msgid "Uncompressed source uploader"
 msgstr "Завантажувач нестисненого початкового коду"
+
+msgid "Undo"
+msgstr ""
 
 msgid "Unknown"
 msgstr "Невідомо"
@@ -2316,6 +2374,11 @@ msgstr ""
 "Який віддалений хостинг ви використовували для отримання даних для цього "
 "зображення?"
 
+msgid ""
+"Would you be interested in upgrading? AstroBin is a very small business and "
+"your support would mean a lot!"
+msgstr ""
+
 msgid "Would you like to upgrade?"
 msgstr "Бажаєте оновити підписку?"
 
@@ -2442,6 +2505,9 @@ msgstr ""
 "Ви намагаєтеся виконати цю операцію занадто багато разів за короткий "
 "проміжок часу."
 
+msgid "Your most recent applied migrations (all equipment classes)"
+msgstr ""
+
 msgid "Your payments"
 msgstr "Ваші платежі"
 
@@ -2528,6 +2594,9 @@ msgstr "недостатньо інформації"
 msgid "or"
 msgstr "або"
 
+msgid "random"
+msgstr ""
+
 msgid ""
 "there is an etiquette regarding uploading a new image versus an image "
 "revision."
@@ -2543,6 +2612,9 @@ msgstr "рік"
 
 msgid "{{ max }} revisions / image"
 msgstr "{{ max }} редакцій / зображення"
+
+msgid "{{0}} images in common"
+msgstr ""
 
 msgid "{{0}} like"
 msgstr "{{0}} лайк(ів)"

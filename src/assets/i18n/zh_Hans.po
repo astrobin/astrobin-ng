@@ -78,6 +78,9 @@ msgstr "拍摄方法"
 msgid "Add a comment"
 msgstr "添加评论"
 
+msgid "Add filter"
+msgstr ""
+
 msgid "Advanced plate-solving"
 msgstr "高级解析"
 
@@ -126,6 +129,9 @@ msgstr "还有更多！"
 msgid "Anular solar eclipse"
 msgstr "日环食"
 
+msgid "Any"
+msgstr ""
+
 msgid "Any changes you make will be reviewed by other members."
 msgstr ""
 
@@ -134,6 +140,9 @@ msgstr ""
 
 msgid "Aperture"
 msgstr "光圈"
+
+msgid "Apply"
+msgstr ""
 
 msgid "Apply watermark to image"
 msgstr "为这幅作品添加水印"
@@ -369,6 +378,9 @@ msgid "Class"
 msgstr "分类"
 
 msgid "Clear"
+msgstr ""
+
+msgid "Clear all filters"
 msgstr ""
 
 msgid "Click on the image and scroll to magnify up to 8x."
@@ -668,6 +680,9 @@ msgstr "论坛"
 msgid "Frame rate"
 msgstr "帧率"
 
+msgid "From"
+msgstr ""
+
 msgid "Full search"
 msgstr "全局搜索"
 
@@ -780,6 +795,11 @@ msgstr ""
 
 msgid "If you can reproduce this issue reliably, please contact us."
 msgstr "如果您能复现此问题，请与我们联系。"
+
+msgid ""
+"If you just upgraded and still see this message, please allow a few minute "
+"for your subscription to take effect."
+msgstr ""
 
 msgid ""
 "If you want to share the TIFF or FITS file of your image, put a link to the "
@@ -896,6 +916,9 @@ msgstr "最新主题"
 
 msgid "Learn more"
 msgstr "了解更多"
+
+msgid "Legacy item"
+msgstr ""
 
 msgid "Legacy item being migrated"
 msgstr "正在迁移的旧项目"
@@ -1043,6 +1066,9 @@ msgstr ""
 msgid "Mono"
 msgstr "单色的"
 
+msgid "Most often used with"
+msgstr ""
+
 msgid "Mount"
 msgstr "支架"
 
@@ -1082,6 +1108,9 @@ msgstr "海王星"
 msgid "Neutral density (ND)"
 msgstr "中性灰（ND）"
 
+msgid "New item"
+msgstr ""
+
 msgid "Newest first"
 msgstr "最新在最前"
 
@@ -1102,6 +1131,9 @@ msgstr "未找到任何项目。"
 
 msgid "No plate-solving"
 msgstr "无解析数据"
+
+msgid "No, thanks"
+msgstr ""
 
 msgid "Nobody"
 msgstr "没有人"
@@ -1511,6 +1543,9 @@ msgstr "Stripe™安全付款"
 msgid "Seems like it's your first time editing this kind of information!"
 msgstr ""
 
+msgid "Select"
+msgstr ""
+
 msgid "Select an area of the image to be used as thumbnail in your gallery."
 msgstr "选择一张图，用作您图库的缩略图。"
 
@@ -1588,6 +1623,9 @@ msgstr "太阳系天体或天象"
 msgid "Something went wrong"
 msgstr "发生了某些错误"
 
+msgid "Sorry"
+msgstr ""
+
 msgid ""
 "Sorry, but the page you are looking for is not here. If you expected an "
 "image, this means that the author deleted it."
@@ -1636,6 +1674,9 @@ msgstr ""
 
 msgid "Status"
 msgstr "状态"
+
+msgid "Strategy"
+msgstr ""
 
 msgid "Subject type"
 msgstr "主题类型"
@@ -1695,6 +1736,9 @@ msgstr "望远镜"
 
 msgid "Telescopes & lenses"
 msgstr "望远镜&镜头"
+
+msgid "Tell me more!"
+msgstr ""
 
 msgid "Text"
 msgstr "文本"
@@ -1981,6 +2025,17 @@ msgstr "时间"
 msgid "Title"
 msgstr "标题"
 
+msgid "To"
+msgstr ""
+
+msgid ""
+"To use this feature, you need the <strong>{{0}}</strong> subscription or "
+"higher."
+msgstr ""
+
+msgid "To use this feature, you need the <strong>{{0}}</strong> subscription."
+msgstr ""
+
 msgid "Too many requests"
 msgstr ""
 
@@ -2034,6 +2089,9 @@ msgstr "紫外（UV）"
 
 msgid "Uncompressed source uploader"
 msgstr "未压缩数据上传工具"
+
+msgid "Undo"
+msgstr ""
 
 msgid "Unknown"
 msgstr "未知的"
@@ -2165,6 +2223,11 @@ msgstr "这个相机是否有制冷组件"
 msgid "Which remote hosting facility did you use to acquire data for this image?"
 msgstr "您使用哪个远程托管天文台获取此作品的数据？"
 
+msgid ""
+"Would you be interested in upgrading? AstroBin is a very small business and "
+"your support would mean a lot!"
+msgstr ""
+
 msgid "Would you like to upgrade?"
 msgstr "想要升级吗？"
 
@@ -2271,6 +2334,9 @@ msgstr ""
 msgid "You're trying to do this operation too many times in a short period of time."
 msgstr ""
 
+msgid "Your most recent applied migrations (all equipment classes)"
+msgstr ""
+
 msgid "Your payments"
 msgstr "付款记录"
 
@@ -2347,6 +2413,9 @@ msgstr ""
 msgid "or"
 msgstr ""
 
+msgid "random"
+msgstr ""
+
 msgid ""
 "there is an etiquette regarding uploading a new image versus an image "
 "revision."
@@ -2360,6 +2429,9 @@ msgstr "年"
 
 msgid "{{ max }} revisions / image"
 msgstr "{{ max }}修订版/作品"
+
+msgid "{{0}} images in common"
+msgstr ""
 
 msgid "{{0}} like"
 msgstr "{{0}} 点赞"
