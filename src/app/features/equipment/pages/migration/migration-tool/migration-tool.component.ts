@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
 import { GearApiService } from "@shared/services/api/classic/astrobin/gear/gear-api.service";
 import { LoadingService } from "@shared/services/loading.service";
-import { map, switchMap, take, takeUntil } from "rxjs/operators";
+import { map, switchMap, take, takeUntil, tap } from "rxjs/operators";
 import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { TitleService } from "@shared/services/title/title.service";
 import { FormGroup } from "@angular/forms";
@@ -32,6 +32,8 @@ import { SoftwareApiService } from "@shared/services/api/classic/astrobin/softwa
 import { isGroupMember } from "@shared/operators/is-group-member.operator";
 import { CombinedAccessoryAndFocalReducerApiService } from "@shared/services/api/classic/astrobin/combined-accessory-and-focal-reducer/combined-accessory-and-focal-reducer-api.service";
 import { GearUserInfoInterface } from "@shared/interfaces/gear-user-info.interface";
+import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
+import { GearMigrationStrategyApiService } from "@shared/services/api/classic/astrobin/grar-migration-strategy/gear-migration-strategy-api.service";
 
 @Component({
   selector: "astrobin-migration-tool",
@@ -74,6 +76,8 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
   nonMigratedAccessoriesCount$: Observable<number>;
   nonMigratedSoftwareCount$: Observable<number>;
 
+  allStrategies$: Observable<PaginatedApiResultInterface<any>>;
+
   constructor(
     public readonly store$: Store<State>,
     public readonly actions$: Actions,
@@ -94,7 +98,8 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
     public readonly windowRefService: WindowRefService,
     public readonly equipmentItemService: EquipmentItemService,
     public readonly equipmentApiService: EquipmentApiService,
-    public readonly legacyGearService: GearService
+    public readonly legacyGearService: GearService,
+    public readonly gearMigrationStrategyApiService: GearMigrationStrategyApiService
   ) {
     super(store$);
   }
@@ -127,6 +132,7 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
     });
 
     this._updateCounts();
+    this._updateAppliedMigrations();
   }
 
   getActiveType(): EquipmentItemType {
@@ -215,6 +221,7 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
       this.randomNonMigrated$ = this.getRandomNonMigrated$();
 
       this._updateCounts();
+      this._updateAppliedMigrations();
 
       if (!!this.equipmentItemBrowser) {
         this.equipmentItemBrowser.reset();
@@ -388,6 +395,14 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
     this.migrationMode = false;
   }
 
+  undoMigration(strategy) {
+    this.loadingService.setLoading(true);
+    this.gearMigrationStrategyApiService
+      .undo(strategy.pk)
+      .pipe(tap(() => this.loadingService.setLoading(false)))
+      .subscribe(() => this.skip());
+  }
+
   wrongTypeMessage(): string {
     const humanizedActiveType: string = this.legacyGearService.humanizeType(this.activeType);
     return this.translateService.instant(`Not a {{0}}`, {
@@ -404,7 +419,7 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
   multipleTooltip(): string {
     return this.translateService.instant(
       "The legacy object cannot be migrated because it consists of multiple objects in the same item (e.g. " +
-      "LRGB filter set, or multiple unrelated products)."
+        "LRGB filter set, or multiple unrelated products)."
     );
   }
 
@@ -425,6 +440,10 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
       );
       this.nonMigratedSoftwareCount$ = this.legacySoftwareApi.getNonMigratedCount(isEquipmentModerator);
     });
+  }
+
+  _updateAppliedMigrations() {
+    this.allStrategies$ = this.gearMigrationStrategyApiService.getAll();
   }
 
   _applyMigration(object: any, setMigrateArgs: any[], markedAs: string) {
@@ -459,7 +478,7 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
                 "<br/><br/>" +
                 this.translateService.instant(
                   "The migration will be reviewed by a moderator as soon as possible, and you will be notified of " +
-                  "the outcome. If the migration is approved, you will be able to add the equipment item to your images."
+                    "the outcome. If the migration is approved, you will be able to add the equipment item to your images."
                 );
             } else {
               message +=

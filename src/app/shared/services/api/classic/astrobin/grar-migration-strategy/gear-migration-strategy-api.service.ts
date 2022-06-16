@@ -21,6 +21,10 @@ export class GearMigrationStrategyApiService extends BaseClassicApiService {
     return this.http.get<any>(`${this.configUrl}/${id}/`);
   }
 
+  getAll(): Observable<PaginatedApiResultInterface<any>> {
+    return this.http.get<PaginatedApiResultInterface<any>>(`${this.configUrl}/`);
+  }
+
   getPendingReview(): Observable<PaginatedApiResultInterface<any>> {
     return this.http.get<PaginatedApiResultInterface<any>>(`${this.configUrl}/?pending-review=true`);
   }
@@ -41,5 +45,9 @@ export class GearMigrationStrategyApiService extends BaseClassicApiService {
 
   reject(migrationStrategyId: number, reason: RejectMigrationReason, comment: string): Observable<any> {
     return this.http.put(`${this.configUrl}/${migrationStrategyId}/reject/`, { reason, comment });
+  }
+
+  undo(migrationStrategyId: number): Observable<void> {
+    return this.http.put<void>(`${this.configUrl}/${migrationStrategyId}/undo/`, {});
   }
 }
