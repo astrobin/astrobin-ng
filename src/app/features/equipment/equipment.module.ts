@@ -30,6 +30,7 @@ import { UsersUsingItemComponent } from "./components/explorer/users-using-item/
 import { ImagesUsingItemComponent } from "@features/equipment/components/explorer/images-using-item/images-using-item.component";
 import { MostOftenUsedWithComponent } from "./components/explorer/most-often-used-with/most-often-used-with.component";
 import { ExplorerFiltersComponent } from "./pages/explorer/explorer-filters/explorer-filters.component";
+import { BrandExplorerPageComponent } from './pages/explorer/brand-explorer-page/brand-explorer-page.component';
 
 @NgModule({
   declarations: [
@@ -58,7 +59,8 @@ import { ExplorerFiltersComponent } from "./pages/explorer/explorer-filters/expl
     UsersUsingItemComponent,
     ImagesUsingItemComponent,
     MostOftenUsedWithComponent,
-    ExplorerFiltersComponent
+    ExplorerFiltersComponent,
+    BrandExplorerPageComponent
   ],
   imports: [RouterModule.forChild(routes), SharedModule, StoreModule.forFeature(equipmentFeatureKey, reducer)]
 })

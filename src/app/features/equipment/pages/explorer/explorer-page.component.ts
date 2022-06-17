@@ -7,7 +7,11 @@ import { TitleService } from "@shared/services/title/title.service";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { Actions } from "@ngrx/effects";
-import { ExplorerBaseComponent } from "@features/equipment/pages/explorer-base/explorer-base.component";
+import {
+  ExplorerBaseComponent,
+  ExplorerPageSortOrder,
+  EQUIPMENT_EXPLORER_PAGE_SORTING_COOKIE
+} from "@features/equipment/pages/explorer-base/explorer-base.component";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { filter, take, takeUntil, tap } from "rxjs/operators";
 import { BrandInterface } from "@features/equipment/types/brand.interface";
@@ -25,17 +29,6 @@ import {
   ExplorerFiltersComponent
 } from "@features/equipment/pages/explorer/explorer-filters/explorer-filters.component";
 
-enum ExplorerPageSortOrder {
-  AZ = "az",
-  AZ_DESC = "-az",
-  USERS = "users",
-  USERS_DESC = "-users",
-  IMAGES = "images",
-  IMAGES_DESC = "-images"
-}
-
-const PAGE_SORTING_COOKIE = "astrobin-equipment-page-sorting";
-
 @Component({
   selector: "astrobin-equipment-explorer-page",
   templateUrl: "./explorer-page.component.html",
@@ -50,7 +43,6 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
 
   title = this.translateService.instant("Equipment explorer");
   activeId: EquipmentItemBaseInterface["id"];
-  sortOrder: ExplorerPageSortOrder = ExplorerPageSortOrder.AZ;
   filters: ExplorerFilterInterface[] = [];
   creationMode = false;
 
@@ -68,7 +60,7 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
     public readonly popNotificationsService: PopNotificationsService,
     public readonly cookieService: CookieService
   ) {
-    super(store$, actions$, activatedRoute, router, windowRefService);
+    super(store$, actions$, activatedRoute, router, windowRefService, cookieService);
   }
 
   ngOnInit(): void {
@@ -103,11 +95,13 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
   }
 
   getItems() {
-    this.sortOrder = (this.cookieService.get(PAGE_SORTING_COOKIE) as ExplorerPageSortOrder) || ExplorerPageSortOrder.AZ;
+    this.sortOrder =
+      (this.cookieService.get(EQUIPMENT_EXPLORER_PAGE_SORTING_COOKIE) as ExplorerPageSortOrder) ||
+      ExplorerPageSortOrder.AZ;
     this.filters = this.explorerFilters ? this.explorerFilters.activeFilters : [];
 
     this.items$ = this.equipmentApiService
-      .getAllEquipmentItems(this._activeType, this.page, this.sortOrder, this.filters)
+      .getAllEquipmentItems(this._activeType as EquipmentItemType, this.page, this.sortOrder, this.filters)
       .pipe(
         tap(response => {
           const uniqueBrands: BrandInterface["id"][] = [];
@@ -120,42 +114,6 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
         }),
         tap(() => this._scrollToItemBrowser())
       );
-  }
-
-  toggleAZSorting() {
-    if (this.sortOrder !== ExplorerPageSortOrder.AZ) {
-      this.sortOrder = ExplorerPageSortOrder.AZ;
-    } else {
-      this.sortOrder = ExplorerPageSortOrder.AZ_DESC;
-    }
-
-    this.cookieService.set(PAGE_SORTING_COOKIE, this.sortOrder);
-
-    this.getItems();
-  }
-
-  toggleUsersSorting() {
-    if (this.sortOrder !== ExplorerPageSortOrder.USERS_DESC) {
-      this.sortOrder = ExplorerPageSortOrder.USERS_DESC;
-    } else {
-      this.sortOrder = ExplorerPageSortOrder.USERS;
-    }
-
-    this.cookieService.set(PAGE_SORTING_COOKIE, this.sortOrder);
-
-    this.getItems();
-  }
-
-  toggleImagesSorting() {
-    if (this.sortOrder !== ExplorerPageSortOrder.IMAGES_DESC) {
-      this.sortOrder = ExplorerPageSortOrder.IMAGES_DESC;
-    } else {
-      this.sortOrder = ExplorerPageSortOrder.IMAGES;
-    }
-
-    this.cookieService.set(PAGE_SORTING_COOKIE, this.sortOrder);
-
-    this.getItems();
   }
 
   filtersApplied(): void {

@@ -35,6 +35,7 @@ export interface EquipmentItemBaseInterface {
   deleted?: string;
   created: string;
   updated: string;
+  lastAddedOrRemovedFromImage: string;
   klass: EquipmentItemType;
   createdBy: UserInterface["id"];
   reviewedBy?: UserInterface["id"];

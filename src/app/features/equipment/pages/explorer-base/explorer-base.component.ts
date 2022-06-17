@@ -10,6 +10,19 @@ import { EditProposalInterface } from "@features/equipment/types/edit-proposal.i
 import { Observable } from "rxjs";
 import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
 import { WindowRefService } from "@shared/services/window-ref.service";
+import { BrandInterface } from "@features/equipment/types/brand.interface";
+import { CookieService } from "ngx-cookie-service";
+
+export enum ExplorerPageSortOrder {
+  AZ = "az",
+  AZ_DESC = "-az",
+  USERS = "users",
+  USERS_DESC = "-users",
+  IMAGES = "images",
+  IMAGES_DESC = "-images"
+}
+
+export const EQUIPMENT_EXPLORER_PAGE_SORTING_COOKIE = "astrobin-equipment-explorer-page-sorting";
 
 @Component({
   selector: "astrobin-equipment-explorer-base",
@@ -18,7 +31,8 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 export class ExplorerBaseComponent extends BaseComponentDirective implements OnInit {
   public page = 1;
   activeEditProposalId: EditProposalInterface<EquipmentItemBaseInterface>["id"];
-  items$: Observable<PaginatedApiResultInterface<EquipmentItemBaseInterface>>;
+  items$: Observable<PaginatedApiResultInterface<EquipmentItemBaseInterface> | BrandInterface[]>;
+  sortOrder: ExplorerPageSortOrder = ExplorerPageSortOrder.AZ;
   navCollapsed = false;
   enableNavCollapsing = false;
 
@@ -27,19 +41,29 @@ export class ExplorerBaseComponent extends BaseComponentDirective implements OnI
     public readonly actions$: Actions,
     public readonly activatedRoute: ActivatedRoute,
     public readonly router: Router,
-    public readonly windowRefService: WindowRefService
+    public readonly windowRefService: WindowRefService,
+    public readonly cookieService: CookieService
   ) {
     super(store$);
   }
 
-  protected _activeType: EquipmentItemType;
+  protected _activeType: EquipmentItemType | "BRAND";
 
-  get activeType(): EquipmentItemType {
+  get activeType(): EquipmentItemType | "BRAND" {
     return this._activeType;
   }
 
   set activeType(type: string) {
-    this._activeType = EquipmentItemType[type.toUpperCase()];
+    if (!type) {
+      return;
+    }
+
+    if (type !== "BRAND") {
+      this._activeType = EquipmentItemType[type.toUpperCase()];
+      return;
+    }
+
+    this._activeType = type as "BRAND";
   }
 
   ngOnInit() {
@@ -72,6 +96,42 @@ export class ExplorerBaseComponent extends BaseComponentDirective implements OnI
       .then(() => {
         this.windowRefService.scroll({ top: 0 });
       });
+  }
+
+  toggleAZSorting() {
+    if (this.sortOrder !== ExplorerPageSortOrder.AZ) {
+      this.sortOrder = ExplorerPageSortOrder.AZ;
+    } else {
+      this.sortOrder = ExplorerPageSortOrder.AZ_DESC;
+    }
+
+    this.cookieService.set(EQUIPMENT_EXPLORER_PAGE_SORTING_COOKIE, this.sortOrder, null, "/");
+
+    this.getItems();
+  }
+
+  toggleUsersSorting() {
+    if (this.sortOrder !== ExplorerPageSortOrder.USERS_DESC) {
+      this.sortOrder = ExplorerPageSortOrder.USERS_DESC;
+    } else {
+      this.sortOrder = ExplorerPageSortOrder.USERS;
+    }
+
+    this.cookieService.set(EQUIPMENT_EXPLORER_PAGE_SORTING_COOKIE, this.sortOrder, null, "/");
+
+    this.getItems();
+  }
+
+  toggleImagesSorting() {
+    if (this.sortOrder !== ExplorerPageSortOrder.IMAGES_DESC) {
+      this.sortOrder = ExplorerPageSortOrder.IMAGES_DESC;
+    } else {
+      this.sortOrder = ExplorerPageSortOrder.IMAGES;
+    }
+
+    this.cookieService.set(EQUIPMENT_EXPLORER_PAGE_SORTING_COOKIE, this.sortOrder, null, "/");
+
+    this.getItems();
   }
 
   getItems() {}

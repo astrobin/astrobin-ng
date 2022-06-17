@@ -8,6 +8,7 @@ export class TelescopeGenerator {
       id: source.id || 1,
       created: source.created || "1970-01-01",
       updated: source.updated || "1970-01-01",
+      lastAddedOrRemovedFromImage: source.updated || "1970-01-01",
       klass: EquipmentItemType.TELESCOPE,
       createdBy: source.createdBy || 1,
       brand: source.brand || BrandGenerator.brand().id,

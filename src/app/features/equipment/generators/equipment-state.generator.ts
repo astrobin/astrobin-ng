@@ -4,11 +4,14 @@ export class EquipmentStateGenerator {
   static default(): EquipmentState {
     return {
       brands: [],
+      brandsCount: 0,
       equipmentItems: [],
       editProposals: [],
       presets: [],
       usersUsingEquipmentItems: [],
       imagesUsingEquipmentItems: [],
+      usersUsingEquipmentBrands: [],
+      imagesUsingEquipmentBrands: [],
       mostOftenUsedWithData: {}
     };
   }
