@@ -55,6 +55,8 @@ import {
   FindSimilarInBrandSuccess,
   GetAllBrands,
   GetAllBrandsSuccess,
+  GetAllInBrand,
+  GetAllInBrandSuccess,
   GetImagesUsingBrand,
   GetImagesUsingBrandSuccess,
   GetImagesUsingItem,
@@ -271,6 +273,18 @@ export class EquipmentEffects {
         this.equipmentApiService
           .findSimilarInBrand(payload.brand, payload.q, payload.type)
           .pipe(map(items => new FindSimilarInBrandSuccess({ items })))
+      )
+    )
+  );
+
+  GetAllInBrand: Observable<GetAllInBrandSuccess> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(EquipmentActionTypes.GET_ALL_IN_BRAND),
+      map((action: GetAllInBrand) => action.payload),
+      mergeMap(payload =>
+        this.equipmentApiService
+          .getAllInBrand(payload.brand, payload.type, payload.page)
+          .pipe(map(response => new GetAllInBrandSuccess({ response })))
       )
     )
   );

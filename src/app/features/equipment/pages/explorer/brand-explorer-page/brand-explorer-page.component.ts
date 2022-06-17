@@ -11,8 +11,10 @@ import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { TranslateService } from "@ngx-translate/core";
 import {
+  arrayUniqueEquipmentItems,
   selectBrand,
   selectBrands,
+  selectEquipmentItems,
   selectImagesUsingEquipmentBrand,
   selectUsersUsingEquipmentBrand
 } from "@features/equipment/store/equipment.selectors";
@@ -20,6 +22,8 @@ import {
   EquipmentActionTypes,
   GetAllBrands,
   GetAllBrandsSuccess,
+  GetAllInBrand,
+  GetAllInBrandSuccess,
   GetImagesUsingBrand,
   GetUsersUsingBrand
 } from "@features/equipment/store/equipment.actions";
@@ -31,6 +35,8 @@ import { BrandInterface } from "@features/equipment/types/brand.interface";
 import { Observable } from "rxjs";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { ImageInterface } from "@shared/interfaces/image.interface";
+import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 
 @Component({
   selector: "astrobin-brand-explorer-page",
@@ -44,6 +50,7 @@ export class BrandExplorerPageComponent extends ExplorerBaseComponent implements
   title = this.translateService.instant("Equipment explorer");
   activeId: BrandInterface["id"];
   activeBrand: BrandInterface;
+  itemsInBrand: EquipmentItemBaseInterface[];
 
   usersUsing$: Observable<UserInterface[]>;
   imagesUsing$: Observable<ImageInterface[]>;
@@ -56,7 +63,8 @@ export class BrandExplorerPageComponent extends ExplorerBaseComponent implements
     public readonly windowRefService: WindowRefService,
     public readonly translateService: TranslateService,
     public readonly cookieService: CookieService,
-    public readonly loadingService: LoadingService
+    public readonly loadingService: LoadingService,
+    public readonly equipmentItemService: EquipmentItemService
   ) {
     super(store$, actions$, activatedRoute, router, windowRefService, cookieService);
     this.activeType = "BRAND";
@@ -69,44 +77,9 @@ export class BrandExplorerPageComponent extends ExplorerBaseComponent implements
   ngOnInit(): void {
     super.ngOnInit();
 
-    this.actions$
-      .pipe(
-        ofType(EquipmentActionTypes.GET_ALL_BRANDS_SUCCESS),
-        takeUntil(this.destroyed$),
-        map((action: GetAllBrandsSuccess) => action.payload.response)
-      )
-      .subscribe(response => {
-        if (!response.next) {
-          this.loadingService.setLoading(false);
-          return;
-        }
-
-        const nextUrl = response.next;
-        const nextPage = parseInt(UtilsService.getUrlParam(nextUrl, "page"), 10);
-        this.store$.dispatch(new GetAllBrands({ page: nextPage, sort: this.sortOrder }));
-      });
-
     this._setParams();
-
-    this.store$.dispatch(new GetUsersUsingBrand({ brandId: this.activeId }));
-    this.store$.dispatch(new GetImagesUsingBrand({ brandId: this.activeId }));
-
-    this.usersUsing$ = this.store$.select(selectUsersUsingEquipmentBrand, {
-      brandId: this.activeId
-    });
-
-    this.imagesUsing$ = this.store$.select(selectImagesUsingEquipmentBrand, {
-      brandId: this.activeId
-    });
-
-    this.router.events
-      .pipe(
-        takeUntil(this.destroyed$),
-        filter(event => event instanceof NavigationEnd)
-      )
-      .subscribe(() => {
-        this._setParams();
-      });
+    this._loadAllPages();
+    this._setupRouterEvents();
   }
 
   getItems() {
@@ -128,6 +101,25 @@ export class BrandExplorerPageComponent extends ExplorerBaseComponent implements
     this.router.navigateByUrl("/equipment/explorer/brand/");
   }
 
+  private _loadAllPages() {
+    this.actions$
+      .pipe(
+        ofType(EquipmentActionTypes.GET_ALL_BRANDS_SUCCESS),
+        takeUntil(this.destroyed$),
+        map((action: GetAllBrandsSuccess) => action.payload.response)
+      )
+      .subscribe(response => {
+        if (!response.next) {
+          this.loadingService.setLoading(false);
+          return;
+        }
+
+        const nextUrl = response.next;
+        const nextPage = parseInt(UtilsService.getUrlParam(nextUrl, "page"), 10);
+        this.store$.dispatch(new GetAllBrands({ page: nextPage, sort: this.sortOrder }));
+      });
+  }
+
   private _setParams() {
     this.activeId = parseInt(this.activatedRoute.snapshot.paramMap.get("brandId"), 10);
     if (!!this.activeId) {
@@ -139,7 +131,82 @@ export class BrandExplorerPageComponent extends ExplorerBaseComponent implements
         )
         .subscribe(brand => {
           this.activeBrand = brand;
+          this._loadItemsInBrand();
+          this._loadUsing();
         });
     }
+  }
+
+  private _loadItemsInBrand() {
+    if (!this.activeBrand) {
+      return;
+    }
+    this.actions$
+      .pipe(
+        ofType(EquipmentActionTypes.GET_ALL_IN_BRAND_SUCCESS),
+        takeUntil(this.destroyed$),
+        map((action: GetAllInBrandSuccess) => action.payload.response)
+      )
+      .subscribe(response => {
+        if (!response.next) {
+          this.loadingService.setLoading(false);
+          return;
+        }
+
+        const nextUrl = response.next;
+        const nextPage = parseInt(UtilsService.getUrlParam(nextUrl, "page"), 10);
+        this.store$.dispatch(
+          new GetAllInBrand({ brand: this.activeBrand.id, type: response.results[0].klass, page: nextPage })
+        );
+      });
+
+    for (const itemType of Object.keys(EquipmentItemType)) {
+      this.store$.dispatch(
+        new GetAllInBrand({ brand: this.activeBrand.id, type: itemType as EquipmentItemType, page: 1 })
+      );
+
+      this.store$
+        .select(selectEquipmentItems)
+        .pipe(
+          takeUntil(this.destroyed$),
+          map(items => items.filter(item => item.brand === this.activeBrand.id && item.klass === itemType)),
+          filter(items => items.length > 0)
+        )
+        .subscribe(items => {
+          if (!this.itemsInBrand) {
+            this.itemsInBrand = [];
+          }
+
+          this.itemsInBrand = arrayUniqueEquipmentItems([...this.itemsInBrand, ...items]).sort(
+            (a: EquipmentItemBaseInterface, b: EquipmentItemBaseInterface) => {
+              return a.name.localeCompare(b.name);
+            }
+          );
+        });
+    }
+  }
+
+  private _loadUsing() {
+    this.store$.dispatch(new GetUsersUsingBrand({ brandId: this.activeId }));
+    this.store$.dispatch(new GetImagesUsingBrand({ brandId: this.activeId }));
+
+    this.usersUsing$ = this.store$.select(selectUsersUsingEquipmentBrand, {
+      brandId: this.activeId
+    });
+
+    this.imagesUsing$ = this.store$.select(selectImagesUsingEquipmentBrand, {
+      brandId: this.activeId
+    });
+  }
+
+  private _setupRouterEvents() {
+    this.router.events
+      .pipe(
+        takeUntil(this.destroyed$),
+        filter(event => event instanceof NavigationEnd)
+      )
+      .subscribe(() => {
+        this._setParams();
+      });
   }
 }

@@ -33,6 +33,7 @@ import { ImageInterface } from "@shared/interfaces/image.interface";
 import { EquipmentItemMostOftenUsedWith } from "@features/equipment/types/equipment-item-most-often-used-with-data.interface";
 import { ExplorerFilterInterface } from "@features/equipment/pages/explorer/explorer-filters/explorer-filters.component";
 import { ExplorerPageSortOrder } from "@features/equipment/pages/explorer-base/explorer-base.component";
+import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 
 @Injectable({
   providedIn: "root"
@@ -172,6 +173,16 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
         `${this.configUrl}/${type.toLowerCase()}/find-similar-in-brand/?brand=${brand}&q=${q}`
       )
       .pipe(map(items => items.map(item => this._parseItem(item))));
+  }
+
+  getAllInBrand(
+    brand: BrandInterface["id"],
+    type: EquipmentItemType,
+    page: number = 1
+  ): Observable<PaginatedApiResultInterface<EquipmentItem>> {
+    return this.http.get<PaginatedApiResultInterface<EquipmentItem>>(
+      `${this.configUrl}/${type.toLowerCase()}/?brand=${brand}&page=${page}`
+    );
   }
 
   getOthersInBrand(

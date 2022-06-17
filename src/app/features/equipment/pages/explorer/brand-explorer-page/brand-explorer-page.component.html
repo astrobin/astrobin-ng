@@ -68,6 +68,29 @@
             </div>
           </div>
 
+          <table *ngIf="!!itemsInBrand && itemsInBrand.length > 0" class="table table-sm table-striped items-in-brand">
+            <thead>
+            <tr>
+              <th>{{ "Name" | translate}}</th>
+              <th>{{ "Class" | translate}}</th>
+              <th>{{ "Users" | translate}}</th>
+              <th>{{ "Images" | translate}}</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let item of itemsInBrand">
+              <td>
+                <a [routerLink]="['/equipment/explorer', item.klass.toLowerCase(), item.id]">
+                  {{ item.name }}
+                </a>
+              </td>
+              <td>{{ equipmentItemService.humanizeType(item.klass) }}</td>
+              <td>{{ item.userCount }}</td>
+              <td>{{ item.imageCount }}</td>
+            </tr>
+            </tbody>
+          </table>
+
           <astrobin-users-using-equipment-item
             class="mt-5"
             [users]="usersUsing$ | async"
