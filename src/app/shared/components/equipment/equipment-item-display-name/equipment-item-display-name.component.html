@@ -1,5 +1,9 @@
 <span class="brand" *ngIf="!!brandName; else loading">
-  {{ brandName }}&nbsp;
+  <a *ngIf="enableBrandLink && !!brandLink" [routerLink]="brandLink">{{ brandName }}</a>
+
+  <ng-container *ngIf="!enableBrandLink || !brandLink">
+    {{ brandName }}
+  </ng-container>
 </span>
 
 <span class="name" *ngIf="!!itemName; else loading">

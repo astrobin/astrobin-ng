@@ -14,6 +14,7 @@ import { EquipmentItemService } from "@features/equipment/services/equipment-ite
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { ItemSummaryModalComponent } from "@shared/components/equipment/summaries/item-summary-modal/item-summary-modal.component";
 import { ItemUnapprovedInfoModalComponent } from "@shared/components/equipment/item-unapproved-info-modal/item-unapproved-info-modal.component";
+import { UtilsService } from "@shared/services/utils/utils.service";
 
 @Component({
   selector: "astrobin-equipment-item-display-name",
@@ -27,7 +28,11 @@ export class EquipmentItemDisplayNameComponent extends BaseComponentDirective im
   @Input()
   enableSummaryModal = false;
 
+  @Input()
+  enableBrandLink = false;
+
   brandName: string;
+  brandLink: string;
   itemName: string;
   showItemUnapprovedInfo: boolean;
 
@@ -49,9 +54,13 @@ export class EquipmentItemDisplayNameComponent extends BaseComponentDirective im
           takeUntil(this.destroyed$),
           filter(brand => !!brand)
         )
-        .subscribe(brand => (this.brandName = brand.name));
+        .subscribe(brand => {
+          this.brandName = brand.name;
+          this.brandLink = `/equipment/explorer/brand/${brand.id}/${UtilsService.slugify(brand.name)}`;
+        });
     } else {
       this.brandName = this.translateService.instant("(DIY)");
+      this.brandLink = undefined;
     }
 
     this.equipmentItemService

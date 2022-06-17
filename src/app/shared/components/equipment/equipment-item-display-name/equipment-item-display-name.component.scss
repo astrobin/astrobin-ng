@@ -1,5 +1,17 @@
 .brand {
   font-weight: bold;
+  margin-right: .25rem;
+
+  a {
+    color: var(--white);
+    border-bottom: 1px solid var(--lighterGrey);
+
+    &:hover {
+      text-decoration: none;
+      color: var(--accentColor);
+      border-color: var(--accentColor);
+    }
+  }
 }
 
 .name {

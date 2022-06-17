@@ -15,7 +15,10 @@
     <div class="col">
       <div class="label">
         <h5>
-          <astrobin-equipment-item-display-name [item]="item"></astrobin-equipment-item-display-name>
+          <astrobin-equipment-item-display-name
+            [item]="item"
+            [enableBrandLink]="enableBrandLink"
+          ></astrobin-equipment-item-display-name>
           <a
             *ngIf="showViewLink"
             [routerLink]="['/equipment/explorer', item.klass.toLowerCase(), item.id]"
@@ -78,6 +81,7 @@
           [showEmptyProperties]="showEmptyProperties"
           [showMeta]="false"
           [showViewLink]="true"
+          [enableBrandLink]="enableBrandLink"
         ></astrobin-equipment-item-summary>
       </div>
     </div>
