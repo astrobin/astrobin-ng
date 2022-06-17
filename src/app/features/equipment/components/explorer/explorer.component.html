@@ -312,15 +312,14 @@
       <astrobin-users-using-equipment-item
         *ngIf="showUsersUsing"
         class="mt-5"
-        [itemType]="activeType"
-        [itemId]="activeId"
+        [users]="usersUsing$ | async"
       ></astrobin-users-using-equipment-item>
 
       <astrobin-images-using-equipment-item
         *ngIf="showImagesUsing"
         class="mt-5"
-        [itemType]="activeType"
-        [itemId]="activeId"
+        [images]="imagesUsing$ | async"
+        [item]="selectedItem"
       ></astrobin-images-using-equipment-item>
 
       <div *ngIf="showForum" class="coming-soon">

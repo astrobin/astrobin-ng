@@ -9,11 +9,13 @@ import { EquipmentPresetInterface } from "@features/equipment/types/equipment-pr
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { ImageInterface } from "@shared/interfaces/image.interface";
 import { EquipmentItemMostOftenUsedWithData } from "@features/equipment/types/equipment-item-most-often-used-with-data.interface";
+import { ExplorerPageSortOrder } from "@features/equipment/pages/explorer-base/explorer-base.component";
 
 export const equipmentFeatureKey = "equipment";
 
 export interface EquipmentState {
   brands: BrandInterface[];
+  brandsCount: number;
   equipmentItems: EquipmentItemBaseInterface[];
   editProposals: EditProposalInterface<EquipmentItemBaseInterface>[];
   presets: EquipmentPresetInterface[];
@@ -27,16 +29,27 @@ export interface EquipmentState {
     itemId: EquipmentItemBaseInterface["id"];
     images: ImageInterface[];
   }[];
+  usersUsingEquipmentBrands: {
+    brandId: EquipmentItemBaseInterface["id"];
+    users: UserInterface[];
+  }[];
+  imagesUsingEquipmentBrands: {
+    brandId: EquipmentItemBaseInterface["id"];
+    images: ImageInterface[];
+  }[];
   mostOftenUsedWithData: EquipmentItemMostOftenUsedWithData | {};
 }
 
 export const initialEquipmentState: EquipmentState = {
   brands: [],
+  brandsCount: null,
   equipmentItems: [],
   editProposals: [],
   presets: [],
   usersUsingEquipmentItems: [],
   imagesUsingEquipmentItems: [],
+  usersUsingEquipmentBrands: [],
+  imagesUsingEquipmentBrands: [],
   mostOftenUsedWithData: {}
 };
 
@@ -60,6 +73,38 @@ function editProposalCompareFunction(
 
 export function reducer(state = initialEquipmentState, action: EquipmentActions): EquipmentState {
   switch (action.type) {
+    case EquipmentActionTypes.GET_ALL_BRANDS_SUCCESS:
+      return {
+        ...state,
+        brands: UtilsService.arrayUniqueObjects([...state.brands, ...action.payload.response.results], "id").sort(
+          (a: BrandInterface, b: BrandInterface) => {
+            let diff: number;
+
+            switch (action.payload.sort) {
+              case ExplorerPageSortOrder.AZ:
+                return a.name.localeCompare(b.name);
+              case ExplorerPageSortOrder.AZ_DESC:
+                return b.name.localeCompare(a.name);
+              case ExplorerPageSortOrder.IMAGES:
+                diff = a.imageCount - b.imageCount;
+                return diff === 0 ? a.name.localeCompare(b.name) : diff;
+              case ExplorerPageSortOrder.IMAGES_DESC:
+                diff = b.imageCount - a.imageCount;
+                return diff === 0 ? a.name.localeCompare(b.name) : diff;
+              case ExplorerPageSortOrder.USERS:
+                diff = a.userCount - b.userCount;
+                return diff === 0 ? a.name.localeCompare(b.name) : diff;
+              case ExplorerPageSortOrder.USERS_DESC:
+                diff = b.userCount - a.userCount;
+                return diff === 0 ? a.name.localeCompare(b.name) : diff;
+            }
+
+            return 0;
+          }
+        ),
+        brandsCount: action.payload.response.count
+      };
+
     case EquipmentActionTypes.LOAD_BRAND_SUCCESS:
     case EquipmentActionTypes.CREATE_BRAND_SUCCESS: {
       return {
@@ -194,7 +239,7 @@ export function reducer(state = initialEquipmentState, action: EquipmentActions)
       };
     }
 
-    case EquipmentActionTypes.GET_USERS_SUCCESS: {
+    case EquipmentActionTypes.GET_USERS_USING_ITEM_SUCCESS: {
       return {
         ...state,
         usersUsingEquipmentItems: [
@@ -212,7 +257,7 @@ export function reducer(state = initialEquipmentState, action: EquipmentActions)
       };
     }
 
-    case EquipmentActionTypes.GET_IMAGES_SUCCESS: {
+    case EquipmentActionTypes.GET_IMAGES_USING_ITEM_SUCCESS: {
       return {
         ...state,
         imagesUsingEquipmentItems: [
@@ -240,6 +285,36 @@ export function reducer(state = initialEquipmentState, action: EquipmentActions)
             [key]: action.payload.data
           }
         }
+      };
+    }
+
+    case EquipmentActionTypes.GET_USERS_USING_BRAND_SUCCESS: {
+      return {
+        ...state,
+        usersUsingEquipmentBrands: [
+          ...state.usersUsingEquipmentBrands.filter(entry => entry.brandId !== action.payload.brandId),
+          ...[
+            {
+              brandId: action.payload.brandId,
+              users: action.payload.users
+            }
+          ]
+        ]
+      };
+    }
+
+    case EquipmentActionTypes.GET_IMAGES_USING_BRAND_SUCCESS: {
+      return {
+        ...state,
+        imagesUsingEquipmentBrands: [
+          ...state.imagesUsingEquipmentBrands.filter(entry => entry.brandId !== action.payload.brandId),
+          ...[
+            {
+              brandId: action.payload.brandId,
+              images: action.payload.images
+            }
+          ]
+        ]
       };
     }
 

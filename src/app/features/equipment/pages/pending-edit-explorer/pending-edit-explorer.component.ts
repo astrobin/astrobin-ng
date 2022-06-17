@@ -15,6 +15,8 @@ import {
   PendingType
 } from "@features/equipment/pages/explorer-base/pending-explorer-base.component";
 import { WindowRefService } from "@shared/services/window-ref.service";
+import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import { CookieService } from "ngx-cookie-service";
 
 @Component({
   selector: "astrobin-equipment-pending-edit-explorer",
@@ -32,9 +34,10 @@ export class PendingEditExplorerComponent extends PendingExplorerBaseComponent i
     public readonly activatedRoute: ActivatedRoute,
     public readonly equipmentApiService: EquipmentApiService,
     public readonly router: Router,
-    public readonly windowRefService: WindowRefService
+    public readonly windowRefService: WindowRefService,
+    public readonly cookieService: CookieService
   ) {
-    super(store$, actions$, activatedRoute, router, windowRefService);
+    super(store$, actions$, activatedRoute, router, windowRefService, cookieService);
     this.pendingType = PendingType.PENDING_EDIT;
   }
 
@@ -58,7 +61,7 @@ export class PendingEditExplorerComponent extends PendingExplorerBaseComponent i
   }
 
   getItems() {
-    this.items$ = this.equipmentApiService.getAllEquipmentItemsPendingEdit(this._activeType).pipe(
+    this.items$ = this.equipmentApiService.getAllEquipmentItemsPendingEdit(this._activeType as EquipmentItemType).pipe(
       tap(response => {
         const uniqueBrands: BrandInterface["id"][] = [];
         for (const item of response.results) {

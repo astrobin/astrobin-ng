@@ -32,6 +32,7 @@ import { UserInterface } from "@shared/interfaces/user.interface";
 import { ImageInterface } from "@shared/interfaces/image.interface";
 import { EquipmentItemMostOftenUsedWith } from "@features/equipment/types/equipment-item-most-often-used-with-data.interface";
 import { ExplorerFilterInterface } from "@features/equipment/pages/explorer/explorer-filters/explorer-filters.component";
+import { ExplorerPageSortOrder } from "@features/equipment/pages/explorer-base/explorer-base.component";
 
 @Injectable({
   providedIn: "root"
@@ -325,11 +326,17 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     return this.http.delete<void>(`${this.configUrl}/equipment-preset/${id}/`);
   }
 
-  getUsers(itemType: EquipmentItemType, itemId: EquipmentItemBaseInterface["id"]): Observable<UserInterface[]> {
+  getUsersUsingItem(
+    itemType: EquipmentItemType,
+    itemId: EquipmentItemBaseInterface["id"]
+  ): Observable<UserInterface[]> {
     return this.http.get<UserInterface[]>(`${this.configUrl}/${itemType.toLowerCase()}/${itemId}/users/`);
   }
 
-  getImages(itemType: EquipmentItemType, itemId: EquipmentItemBaseInterface["id"]): Observable<ImageInterface[]> {
+  getImagesUsingItem(
+    itemType: EquipmentItemType,
+    itemId: EquipmentItemBaseInterface["id"]
+  ): Observable<ImageInterface[]> {
     return this.http.get<ImageInterface[]>(`${this.configUrl}/${itemType.toLowerCase()}/${itemId}/images/`);
   }
 
@@ -345,6 +352,12 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // BRAND API
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  getAllBrands(page = 1, sort = ExplorerPageSortOrder.AZ): Observable<PaginatedApiResultInterface<BrandInterface>> {
+    return this.http.get<PaginatedApiResultInterface<BrandInterface>>(
+      `${this.configUrl}/brand/?page=${page}&sort=${sort}`
+    );
+  }
 
   getBrand(id: BrandInterface["id"]): Observable<BrandInterface> {
     return this.http.get<BrandInterface>(`${this.configUrl}/brand/${id}/`);
@@ -426,6 +439,14 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     return this.http
       .get<PaginatedApiResultInterface<BrandInterface>>(`${this.configUrl}/brand/?q=${q}`)
       .pipe(map(response => response.results));
+  }
+
+  getUsersUsingBrand(brandId: BrandInterface["id"]): Observable<UserInterface[]> {
+    return this.http.get<UserInterface[]>(`${this.configUrl}/brand/${brandId}/users/`);
+  }
+
+  getImagesUsingBrand(brandId: BrandInterface["id"]): Observable<ImageInterface[]> {
+    return this.http.get<ImageInterface[]>(`${this.configUrl}/brand/${brandId}/images/`);
   }
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
