@@ -22,6 +22,8 @@ import {
   CreateTelescopeEditProposal,
   EquipmentActionTypes,
   FindEquipmentItemEditProposals,
+  GetImagesUsingItem,
+  GetUsersUsingItem,
   LoadBrand,
   LoadEquipmentItem
 } from "@features/equipment/store/equipment.actions";
@@ -32,7 +34,12 @@ import { EditProposalInterface, EditProposalReviewStatus } from "@features/equip
 import { EquipmentItemEditorMode } from "@shared/components/equipment/editors/base-item-editor/base-item-editor.component";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { ItemBrowserComponent } from "@shared/components/equipment/item-browser/item-browser.component";
-import { selectEditProposalsForItem, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
+import {
+  selectEditProposalsForItem,
+  selectEquipmentItem,
+  selectImagesUsingEquipmentItem,
+  selectUsersUsingEquipmentItem
+} from "@features/equipment/store/equipment.selectors";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { RejectItemModalComponent } from "@features/equipment/components/reject-item-modal/reject-item-modal.component";
@@ -48,6 +55,8 @@ import { ContentTypeInterface } from "@shared/interfaces/content-type.interface"
 import { Observable } from "rxjs";
 import { selectContentType } from "@app/store/selectors/app/content-type.selectors";
 import { LoadContentType } from "@app/store/actions/content-type.actions";
+import { UserInterface } from "@shared/interfaces/user.interface";
+import { ImageInterface } from "@shared/interfaces/image.interface";
 
 @Component({
   selector: "astrobin-equipment-explorer",
@@ -112,6 +121,9 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
   editProposals: EditProposalInterface<EquipmentItemBaseInterface>[] | null = null;
   editProposalsCollapsed = true;
 
+  usersUsing$: Observable<UserInterface[]>;
+  imagesUsing$: Observable<ImageInterface[]>;
+
   commentsSectionInfoMessage$: Observable<string> = this.currentUser$.pipe(
     take(1),
     switchMap(user => {
@@ -165,7 +177,9 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    this._initActiveId();
+    if (!!changes.activeId && !changes.activeId.firstChange) {
+      this._initActiveId();
+    }
   }
 
   onSelectedItemChanged(item: EquipmentItemBaseInterface) {
@@ -221,6 +235,18 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
   _initActiveId() {
     if (this.activeId) {
       this.store$.dispatch(new LoadEquipmentItem({ id: this.activeId, type: this.activeType }));
+      this.store$.dispatch(new GetUsersUsingItem({ itemType: this.activeType, itemId: this.activeId }));
+      this.store$.dispatch(new GetImagesUsingItem({ itemType: this.activeType, itemId: this.activeId }));
+
+      this.usersUsing$ = this.store$.select(selectUsersUsingEquipmentItem, {
+        itemType: this.activeType,
+        itemId: this.activeId
+      });
+
+      this.imagesUsing$ = this.store$.select(selectImagesUsingEquipmentItem, {
+        itemType: this.activeType,
+        itemId: this.activeId
+      });
 
       this.store$
         .select(selectEquipmentItem, { id: this.activeId, type: this.activeType })

@@ -5,6 +5,7 @@ import { Actions } from "@ngrx/effects";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ExplorerBaseComponent } from "@features/equipment/pages/explorer-base/explorer-base.component";
 import { WindowRefService } from "@shared/services/window-ref.service";
+import { CookieService } from "ngx-cookie-service";
 
 export enum PendingType {
   PENDING_EDIT = "PENDING_EDIT",
@@ -24,8 +25,9 @@ export class PendingExplorerBaseComponent extends ExplorerBaseComponent {
     public readonly actions$: Actions,
     public readonly activatedRoute: ActivatedRoute,
     public readonly router: Router,
-    public readonly windowRefService: WindowRefService
+    public readonly windowRefService: WindowRefService,
+    public readonly cookieService: CookieService
   ) {
-    super(store$, actions$, activatedRoute, router, windowRefService);
+    super(store$, actions$, activatedRoute, router, windowRefService, cookieService);
   }
 }

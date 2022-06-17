@@ -1,0 +1,23 @@
+@import "../../../../../styles/breakpoints";
+
+.image {
+  height: 100px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+
+  @media screen and (max-width: $md-max) {
+    margin: 0 auto 2rem;
+    max-width: 150px;
+  }
+}
+
+.label {
+  display: inline-block;
+  margin-bottom: 1rem;
+
+  h5 {
+    color: var(--white);
+    font-weight: bold;
+  }
+}

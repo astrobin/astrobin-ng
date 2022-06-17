@@ -1,17 +1,15 @@
-import { Component, Input, OnChanges } from "@angular/core";
+import { Component, Input, OnChanges, SimpleChanges } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
-import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import { GetImages, LoadEquipmentItem } from "@features/equipment/store/equipment.actions";
-import { selectEquipmentItem, selectImagesUsingEquipmentItem } from "@features/equipment/store/equipment.selectors";
-import { filter, map, take, takeUntil } from "rxjs/operators";
+import { map, take } from "rxjs/operators";
 import { ImageInterface } from "@shared/interfaces/image.interface";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
-import { Observable, Subscription } from "rxjs";
+import { Observable } from "rxjs";
+import { BrandInterface } from "@features/equipment/types/brand.interface";
 
 @Component({
   selector: "astrobin-images-using-equipment-item",
@@ -23,22 +21,15 @@ export class ImagesUsingItemComponent extends BaseComponentDirective implements 
   readonly ImageAlias = ImageAlias;
 
   @Input()
-  itemType: EquipmentItemType;
-
-  @Input()
-  itemId: EquipmentItemBaseInterface["id"];
-
-  item: EquipmentItem;
-
   images: ImageInterface[];
 
-  hasMoreImages = false;
+  @Input()
+  item: EquipmentItem;
+
+  @Input()
+  brand: BrandInterface;
 
   searchUrl: string;
-
-  subscription: Subscription;
-
-  itemSubscription: Subscription;
 
   constructor(
     public readonly store$: Store<State>,
@@ -48,50 +39,27 @@ export class ImagesUsingItemComponent extends BaseComponentDirective implements 
     super(store$);
   }
 
-  ngOnChanges(): void {
-    this.item = undefined;
-    this.images = undefined;
-
-    if (!!this.subscription) {
-      this.subscription.unsubscribe();
+  ngOnChanges(changes: SimpleChanges): void {
+    if (!!changes.item && changes.item.currentValue) {
+      this.setSearchUrlForItem$(this.item);
     }
 
-    if (!!this.itemSubscription) {
-      this.itemSubscription.unsubscribe();
+    if (!!changes.brand && changes.brand.currentValue) {
+      this.setSearchUrlForBrand(this.brand);
     }
-
-    this.store$
-      .select(selectImagesUsingEquipmentItem, { itemType: this.itemType, itemId: this.itemId })
-      .pipe(
-        takeUntil(this.destroyed$),
-        filter(imagesUsingEquipmentItem => !!imagesUsingEquipmentItem)
-      )
-      .subscribe(imagesUsingEquipmentItem => {
-        this.images = imagesUsingEquipmentItem.images.slice(0, this.MAX_IMAGES);
-        this.hasMoreImages = imagesUsingEquipmentItem.images.length > this.MAX_IMAGES;
-      });
-
-    this.store$
-      .select(selectEquipmentItem, { type: this.itemType, id: this.itemId })
-      .pipe(
-        takeUntil(this.destroyed$),
-        filter(item => !!item)
-      )
-      .subscribe(item => {
-        this.item = item;
-        this.getSearchUrl$(item)
-          .pipe(take(1))
-          .subscribe(searchUrl => (this.searchUrl = searchUrl));
-      });
-
-    this.store$.dispatch(new GetImages({ itemType: this.itemType, itemId: this.itemId }));
-    this.store$.dispatch(new LoadEquipmentItem({ type: this.itemType, id: this.itemId }));
   }
 
-  getSearchUrl$(item: EquipmentItem): Observable<string> {
-    return this.equipmentItemService.getFullDisplayName$(item).pipe(
-      take(1),
-      map(name => `${this.classicRoutesService.SEARCH}?d=i&sort=-likes&q="${encodeURIComponent(name)}"`)
-    );
+  setSearchUrlForItem$(item: EquipmentItem): void {
+    this.equipmentItemService
+      .getFullDisplayName$(item)
+      .pipe(
+        take(1),
+        map(name => `${this.classicRoutesService.SEARCH}?d=i&sort=-likes&q="${encodeURIComponent(name)}"`)
+      )
+      .subscribe(url => (this.searchUrl = url));
+  }
+
+  setSearchUrlForBrand(brand: BrandInterface): void {
+    this.searchUrl = `${this.classicRoutesService.SEARCH}?d=i&sort=-likes&q="${encodeURIComponent(brand.name)}"`;
   }
 }

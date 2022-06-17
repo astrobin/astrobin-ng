@@ -8,7 +8,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { Actions } from "@ngrx/effects";
 import { Observable } from "rxjs";
 import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
-import { EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
+import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import { tap } from "rxjs/operators";
 import { LoadBrand } from "@features/equipment/store/equipment.actions";
@@ -18,6 +18,7 @@ import {
   PendingType
 } from "@features/equipment/pages/explorer-base/pending-explorer-base.component";
 import { WindowRefService } from "@shared/services/window-ref.service";
+import { CookieService } from "ngx-cookie-service";
 
 @Component({
   selector: "astrobin-equipment-pending-review-explorer",
@@ -37,9 +38,10 @@ export class PendingReviewExplorerComponent extends PendingExplorerBaseComponent
     public readonly activatedRoute: ActivatedRoute,
     public readonly equipmentApiService: EquipmentApiService,
     public readonly router: Router,
-    public readonly windowRefService: WindowRefService
+    public readonly windowRefService: WindowRefService,
+    public readonly cookieService: CookieService
   ) {
-    super(store$, actions$, activatedRoute, router, windowRefService);
+    super(store$, actions$, activatedRoute, router, windowRefService, cookieService);
     this.pendingType = PendingType.PENDING_REVIEW;
   }
 
@@ -63,17 +65,19 @@ export class PendingReviewExplorerComponent extends PendingExplorerBaseComponent
   }
 
   getItems() {
-    this.items$ = this.equipmentApiService.getAllEquipmentItemsPendingReview(this._activeType, this.page).pipe(
-      tap(response => {
-        const uniqueBrands: BrandInterface["id"][] = [];
-        for (const item of response.results) {
-          if (!!item.brand && uniqueBrands.indexOf(item.brand) === -1) {
-            uniqueBrands.push(item.brand);
+    this.items$ = this.equipmentApiService
+      .getAllEquipmentItemsPendingReview(this._activeType as EquipmentItemType, this.page)
+      .pipe(
+        tap(response => {
+          const uniqueBrands: BrandInterface["id"][] = [];
+          for (const item of response.results) {
+            if (!!item.brand && uniqueBrands.indexOf(item.brand) === -1) {
+              uniqueBrands.push(item.brand);
+            }
           }
-        }
-        uniqueBrands.forEach(id => this.store$.dispatch(new LoadBrand({ id })));
-      }),
-      tap(() => this._scrollToItemBrowser())
-    );
+          uniqueBrands.forEach(id => this.store$.dispatch(new LoadBrand({ id })));
+        }),
+        tap(() => this._scrollToItemBrowser())
+      );
   }
 }

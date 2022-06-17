@@ -10,8 +10,10 @@ import { TranslateService } from "@ngx-translate/core";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import { LoadingService } from "@shared/services/loading.service";
-import { EquipmentActionTypes } from "@features/equipment/store/equipment.actions";
+import { EquipmentActionTypes, GetAllBrands } from "@features/equipment/store/equipment.actions";
 import { WindowRefService } from "@shared/services/window-ref.service";
+import { selectEquipment } from "@features/equipment/store/equipment.selectors";
+import { ExplorerPageSortOrder } from "@features/equipment/pages/explorer-base/explorer-base.component";
 
 @Component({
   selector: "astrobin-equipment-item-type-nav",
@@ -74,6 +76,8 @@ export class ItemTypeNavComponent extends BaseComponentDirective implements OnIn
 
   @Output()
   collapsedChanged = new EventEmitter<boolean>();
+
+  brandCount$: Observable<number | null> = this.store$.select(selectEquipment).pipe(map(state => state.brandsCount));
 
   types: {
     label: string;
@@ -293,6 +297,8 @@ export class ItemTypeNavComponent extends BaseComponentDirective implements OnIn
     if (!this.showCounts) {
       return;
     }
+
+    this.store$.dispatch(new GetAllBrands({ page: 1, sort: ExplorerPageSortOrder.AZ }));
 
     for (const type of this.types) {
       if (type.providedCount) {

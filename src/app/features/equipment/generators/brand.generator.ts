@@ -6,7 +6,10 @@ export class BrandGenerator {
       id: 1,
       created: "1970-01-01",
       updated: "1970-01-01",
-      name: "Test brand"
+      lastAddedOrRemovedFromImage: "1970-01-01",
+      name: "Test brand",
+      userCount: 0,
+      imageCount: 0
     };
   }
 }

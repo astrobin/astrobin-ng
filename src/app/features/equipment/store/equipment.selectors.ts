@@ -123,7 +123,7 @@ export const selectUsersUsingEquipmentItem = createSelector(
       entry => entry.itemType === data.itemType && entry.itemId === data.itemId
     );
 
-    return matching.length > 0 ? matching[0] : null;
+    return matching.length > 0 ? matching[0].users : null;
   }
 );
 
@@ -139,7 +139,7 @@ export const selectImagesUsingEquipmentItem = createSelector(
       entry => entry.itemType === data.itemType && entry.itemId === data.itemId
     );
 
-    return matching.length > 0 ? matching[0] : null;
+    return matching.length > 0 ? matching[0].images : null;
   }
 );
 
@@ -153,5 +153,33 @@ export const selectMostOftenUsedWithForItem = createSelector(
   ) => {
     const key = `${data.itemType}-${data.itemId}`;
     return mostOftenUsedWith[key];
+  }
+);
+
+export const selectUsersUsingEquipmentBrands = createSelector(
+  selectEquipment,
+  state => state.usersUsingEquipmentBrands
+);
+
+export const selectUsersUsingEquipmentBrand = createSelector(
+  selectUsersUsingEquipmentBrands,
+  (usersUsingEquipmentBrands, data: { brandId: BrandInterface["id"] }) => {
+    const matching = usersUsingEquipmentBrands.filter(entry => entry.brandId === data.brandId);
+
+    return matching.length > 0 ? matching[0].users : null;
+  }
+);
+
+export const selectImagesUsingEquipmentBrands = createSelector(
+  selectEquipment,
+  state => state.imagesUsingEquipmentBrands
+);
+
+export const selectImagesUsingEquipmentBrand = createSelector(
+  selectImagesUsingEquipmentBrands,
+  (imagesUsingEquipmentBrands, data: { brandId: BrandInterface["id"] }) => {
+    const matching = imagesUsingEquipmentBrands.filter(entry => entry.brandId === data.brandId);
+
+    return matching.length > 0 ? matching[0].images : null;
   }
 );

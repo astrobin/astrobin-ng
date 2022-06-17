@@ -22,6 +22,7 @@ import { EquipmentPresetInterface } from "@features/equipment/types/equipment-pr
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { ImageInterface } from "@shared/interfaces/image.interface";
 import { EquipmentItemMostOftenUsedWith } from "@features/equipment/types/equipment-item-most-often-used-with-data.interface";
+import { ExplorerPageSortOrder } from "@features/equipment/pages/explorer-base/explorer-base.component";
 
 export interface EquipmentItemCreationSuccessPayloadInterface {
   item: EquipmentItemBaseInterface;
@@ -30,13 +31,18 @@ export interface EquipmentItemCreationSuccessPayloadInterface {
 export enum EquipmentActionTypes {
   // Brands
 
+  GET_ALL_BRANDS = "[Equipment] Get all brands",
+  GET_ALL_BRANDS_SUCCESS = "[Equipment] Get all brands success",
   LOAD_BRAND = "[Equipment] Load brand",
   LOAD_BRAND_SUCCESS = "[Equipment] Load brand success",
   CREATE_BRAND = "[Equipment] Create brand",
   CREATE_BRAND_SUCCESS = "[Equipment] Create brand success",
   FIND_ALL_BRANDS = "[Equipment] Find all brands",
   FIND_ALL_BRANDS_SUCCESS = "[Equipment] Find all brands success",
-
+  GET_USERS_USING_BRAND = "[Equipment] Get users using brand",
+  GET_USERS_USING_BRAND_SUCCESS = "[Equipment] Get users using brand success",
+  GET_IMAGES_USING_BRAND = "[Equipment] Get images using brand",
+  GET_IMAGES_USING_BRAND_SUCCESS = "[Equipment] Get images using brand success",
   // Generic equipment items
 
   LOAD_EQUIPMENT_ITEM = "[Equipment] Load equipment item",
@@ -59,10 +65,10 @@ export enum EquipmentActionTypes {
   APPROVE_EQUIPMENT_ITEM_EDIT_PROPOSAL_SUCCESS = "[Equipment] Approve edit proposal success",
   REJECT_EQUIPMENT_ITEM_EDIT_PROPOSAL = "[Equipment] Reject edit proposal",
   REJECT_EQUIPMENT_ITEM_EDIT_PROPOSAL_SUCCESS = "[Equipment] Reject edit proposal success",
-  GET_USERS = "[Equipment] Get users",
-  GET_USERS_SUCCESS = "[Equipment] Get users success",
-  GET_IMAGES = "[Equipment] Get images",
-  GET_IMAGES_SUCCESS = "[Equipment] Get images success",
+  GET_USERS_USING_ITEM = "[Equipment] Get users using item",
+  GET_USERS_USING_ITEM_SUCCESS = "[Equipment] Get users using item success",
+  GET_IMAGES_USING_ITEM = "[Equipment] Get images using item",
+  GET_IMAGES_USING_ITEM_SUCCESS = "[Equipment] Get images using item success",
   GET_MOST_OFTEN_USED_WITH = "[Equipment] Get most often used with",
   GET_MOST_OFTEN_USED_WITH_SUCCESS = "[Equipment] Get most often used with success",
 
@@ -139,6 +145,18 @@ export enum EquipmentActionTypes {
  * Brands
  *********************************************************************************************************************/
 
+export class GetAllBrands implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.GET_ALL_BRANDS;
+
+  constructor(public payload: { page: number; sort: ExplorerPageSortOrder }) {}
+}
+
+export class GetAllBrandsSuccess implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.GET_ALL_BRANDS_SUCCESS;
+
+  constructor(public payload: { response: PaginatedApiResultInterface<BrandInterface>; sort: ExplorerPageSortOrder }) {}
+}
+
 export class LoadBrand implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.LOAD_BRAND;
 
@@ -173,6 +191,30 @@ export class FindAllBrandsSuccess implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.FIND_ALL_BRANDS_SUCCESS;
 
   constructor(public payload: { brands: BrandInterface[] }) {}
+}
+
+export class GetUsersUsingBrand implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.GET_USERS_USING_BRAND;
+
+  constructor(public payload: { brandId: BrandInterface["id"] }) {}
+}
+
+export class GetUsersUsingBrandSuccess implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.GET_USERS_USING_BRAND_SUCCESS;
+
+  constructor(public payload: { brandId: BrandInterface["id"]; users: UserInterface[] }) {}
+}
+
+export class GetImagesUsingBrand implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.GET_IMAGES_USING_BRAND;
+
+  constructor(public payload: { brandId: BrandInterface["id"] }) {}
+}
+
+export class GetImagesUsingBrandSuccess implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.GET_IMAGES_USING_BRAND_SUCCESS;
+
+  constructor(public payload: { brandId: BrandInterface["id"]; images: ImageInterface[] }) {}
 }
 
 /**********************************************************************************************************************
@@ -316,28 +358,28 @@ export class RejectEquipmentItemEditProposalSuccess implements PayloadActionInte
   constructor(public payload: { editProposal: EditProposalInterface<EquipmentItemBaseInterface> }) {}
 }
 
-export class GetUsers implements PayloadActionInterface {
-  readonly type = EquipmentActionTypes.GET_USERS;
+export class GetUsersUsingItem implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.GET_USERS_USING_ITEM;
 
   constructor(public payload: { itemType: EquipmentItemType; itemId: EquipmentItemBaseInterface["id"] }) {}
 }
 
-export class GetUsersSuccess implements PayloadActionInterface {
-  readonly type = EquipmentActionTypes.GET_USERS_SUCCESS;
+export class GetUsersUsingItemSuccess implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.GET_USERS_USING_ITEM_SUCCESS;
 
   constructor(
     public payload: { itemType: EquipmentItemType; itemId: EquipmentItemBaseInterface["id"]; users: UserInterface[] }
   ) {}
 }
 
-export class GetImages implements PayloadActionInterface {
-  readonly type = EquipmentActionTypes.GET_IMAGES;
+export class GetImagesUsingItem implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.GET_IMAGES_USING_ITEM;
 
   constructor(public payload: { itemType: EquipmentItemType; itemId: EquipmentItemBaseInterface["id"] }) {}
 }
 
-export class GetImagesSuccess implements PayloadActionInterface {
-  readonly type = EquipmentActionTypes.GET_IMAGES_SUCCESS;
+export class GetImagesUsingItemSuccess implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.GET_IMAGES_USING_ITEM_SUCCESS;
 
   constructor(
     public payload: { itemType: EquipmentItemType; itemId: EquipmentItemBaseInterface["id"]; images: ImageInterface[] }
@@ -654,12 +696,18 @@ export class ItemBrowserSet implements PayloadActionInterface {
 
 export type EquipmentActions =
   // Brands
+  | GetAllBrands
+  | GetAllBrandsSuccess
   | LoadBrand
   | LoadBrandSuccess
   | CreateBrand
   | CreateBrandSuccess
   | FindAllBrands
   | FindAllBrandsSuccess
+  | GetUsersUsingBrand
+  | GetUsersUsingBrandSuccess
+  | GetImagesUsingBrand
+  | GetImagesUsingBrandSuccess
 
   // Generic equipment items
   | LoadEquipmentItem
@@ -682,10 +730,10 @@ export type EquipmentActions =
   | ApproveEquipmentItemEditProposalSuccess
   | RejectEquipmentItemEditProposal
   | RejectEquipmentItemEditProposalSuccess
-  | GetUsers
-  | GetUsersSuccess
-  | GetImages
-  | GetImagesSuccess
+  | GetUsersUsingItem
+  | GetUsersUsingItemSuccess
+  | GetImagesUsingItem
+  | GetImagesUsingItemSuccess
   | GetMostOftenUsedWith
   | GetMostOftenUsedWithSuccess
 

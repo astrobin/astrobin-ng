@@ -53,13 +53,19 @@ import {
   FindRecentlyUsedEquipmentItemsSuccess,
   FindSimilarInBrand,
   FindSimilarInBrandSuccess,
-  GetImages,
-  GetImagesSuccess,
+  GetAllBrands,
+  GetAllBrandsSuccess,
+  GetImagesUsingBrand,
+  GetImagesUsingBrandSuccess,
+  GetImagesUsingItem,
+  GetImagesUsingItemSuccess,
   GetMostOftenUsedWithSuccess,
   GetOthersInBrand,
   GetOthersInBrandSuccess,
-  GetUsers,
-  GetUsersSuccess,
+  GetUsersUsingBrand,
+  GetUsersUsingBrandSuccess,
+  GetUsersUsingItem,
+  GetUsersUsingItemSuccess,
   LoadBrand,
   LoadBrandSuccess,
   LoadEquipmentItem,
@@ -108,6 +114,18 @@ export class EquipmentEffects {
    * Brands
    ********************************************************************************************************************/
 
+  GetAllBrands: Observable<GetAllBrandsSuccess> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(EquipmentActionTypes.GET_ALL_BRANDS),
+      map((action: GetAllBrands) => action.payload),
+      mergeMap(payload =>
+        this.equipmentApiService
+          .getAllBrands(payload.page, payload.sort)
+          .pipe(map(response => new GetAllBrandsSuccess({ response, sort: payload.sort })))
+      )
+    )
+  );
+
   LoadBrand: Observable<LoadBrandSuccess> = createEffect(() =>
     this.actions$.pipe(
       ofType(EquipmentActionTypes.LOAD_BRAND),
@@ -153,6 +171,46 @@ export class EquipmentEffects {
         this.equipmentApiService.findAllBrands(payload.q).pipe(map(brands => new FindAllBrandsSuccess({ brands })))
       )
     )
+  );
+
+  GetUsersUsingBrand: Observable<GetUsersUsingBrandSuccess> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(EquipmentActionTypes.GET_USERS_USING_BRAND),
+      map((action: GetUsersUsingBrand) => action.payload),
+      mergeMap(payload =>
+        this.equipmentApiService
+          .getUsersUsingBrand(payload.brandId)
+          .pipe(map(users => new GetUsersUsingBrandSuccess({ brandId: payload.brandId, users })))
+      )
+    )
+  );
+
+  GetImagesUsingBrand: Observable<GetImagesUsingBrandSuccess> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(EquipmentActionTypes.GET_IMAGES_USING_BRAND),
+      map((action: GetImagesUsingBrand) => action.payload),
+      mergeMap(payload =>
+        this.equipmentApiService
+          .getImagesUsingBrand(payload.brandId)
+          .pipe(map(images => new GetImagesUsingBrandSuccess({ brandId: payload.brandId, images })))
+      )
+    )
+  );
+
+  GetImagesUsingBrandSuccess: Observable<GetImagesUsingBrandSuccess> = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(EquipmentActionTypes.GET_IMAGES_USING_BRAND_SUCCESS),
+        tap((action: GetImagesUsingBrandSuccess) => {
+          const images: ImageInterface[] = action.payload.images;
+          for (const image of images) {
+            this.store$.dispatch(new LoadImageSuccess(image));
+          }
+        })
+      ),
+    {
+      dispatch: false
+    }
   );
 
   /*********************************************************************************************************************
@@ -298,35 +356,39 @@ export class EquipmentEffects {
     )
   );
 
-  GetUsers: Observable<GetUsersSuccess> = createEffect(() =>
+  GetUsersUsingItem: Observable<GetUsersUsingItemSuccess> = createEffect(() =>
     this.actions$.pipe(
-      ofType(EquipmentActionTypes.GET_USERS),
-      map((action: GetUsers) => action.payload),
+      ofType(EquipmentActionTypes.GET_USERS_USING_ITEM),
+      map((action: GetUsersUsingItem) => action.payload),
       mergeMap(payload =>
         this.equipmentApiService
-          .getUsers(payload.itemType, payload.itemId)
-          .pipe(map(users => new GetUsersSuccess({ itemType: payload.itemType, itemId: payload.itemId, users })))
+          .getUsersUsingItem(payload.itemType, payload.itemId)
+          .pipe(
+            map(users => new GetUsersUsingItemSuccess({ itemType: payload.itemType, itemId: payload.itemId, users }))
+          )
       )
     )
   );
 
-  GetImages: Observable<GetImagesSuccess> = createEffect(() =>
+  GetImagesUsingItem: Observable<GetImagesUsingItemSuccess> = createEffect(() =>
     this.actions$.pipe(
-      ofType(EquipmentActionTypes.GET_IMAGES),
-      map((action: GetImages) => action.payload),
+      ofType(EquipmentActionTypes.GET_IMAGES_USING_ITEM),
+      map((action: GetImagesUsingItem) => action.payload),
       mergeMap(payload =>
         this.equipmentApiService
-          .getImages(payload.itemType, payload.itemId)
-          .pipe(map(images => new GetImagesSuccess({ itemType: payload.itemType, itemId: payload.itemId, images })))
+          .getImagesUsingItem(payload.itemType, payload.itemId)
+          .pipe(
+            map(images => new GetImagesUsingItemSuccess({ itemType: payload.itemType, itemId: payload.itemId, images }))
+          )
       )
     )
   );
 
-  GetImagesSuccess: Observable<GetImagesSuccess> = createEffect(
+  GetImagesUsingItemSuccess: Observable<GetImagesUsingItemSuccess> = createEffect(
     () =>
       this.actions$.pipe(
-        ofType(EquipmentActionTypes.GET_IMAGES_SUCCESS),
-        tap((action: GetImagesSuccess) => {
+        ofType(EquipmentActionTypes.GET_IMAGES_USING_ITEM_SUCCESS),
+        tap((action: GetImagesUsingItemSuccess) => {
           const images: ImageInterface[] = action.payload.images;
           for (const image of images) {
             this.store$.dispatch(new LoadImageSuccess(image));
@@ -341,7 +403,7 @@ export class EquipmentEffects {
   GetMostOftenUsedWith: Observable<GetMostOftenUsedWithSuccess> = createEffect(() =>
     this.actions$.pipe(
       ofType(EquipmentActionTypes.GET_MOST_OFTEN_USED_WITH),
-      map((action: GetImages) => action.payload),
+      map((action: GetImagesUsingItem) => action.payload),
       mergeMap(payload =>
         this.equipmentApiService
           .getMostOftenUsedWith(payload.itemType, payload.itemId)

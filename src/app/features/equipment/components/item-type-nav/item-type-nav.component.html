@@ -1,4 +1,23 @@
 <ul ngbNav #nav="ngbNav" [(activeId)]="activeType" class="nav-pills" [class.collapsed]="collapsed" orientation="vertical">
+  <li [ngbNavItem]="'brand'">
+    <a
+      ngbNavLink
+      routerLink="{{ routingBasePath }}/brand"
+      [queryParams]="{'page': 1}"
+    >
+      <img src="/assets/images/brand-placeholder.png" [alt]="'Brands' | translate" />
+      <span [hidden]="collapsed">
+        {{ 'Brands' | translate }}
+      </span>
+
+      <span *ngIf="brandCount$" [hidden]="collapsed" class="count">
+      {{ brandCount$ | async }}
+      </span>
+    </a>
+  </li>
+
+  <li class="nav-item-separator"></li>
+
   <li *ngFor="let type of types" [ngbNavItem]="type.value.toLowerCase()" [disabled]="type.disabled">
     <a
       ngbNavLink
