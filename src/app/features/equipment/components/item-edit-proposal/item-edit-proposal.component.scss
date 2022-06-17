@@ -21,10 +21,11 @@
       top: calc(1rem - 2px);
       width: 0;
       height: 0;
-      border-left: 4px solid transparent;
-      border-right: 4px solid transparent;
-      border-top: 6px solid var(--lighterGrey);
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 5px solid var(--white);
       clear: both;
+      animation: tinyBounce 1s ease-out infinite;
     }
   }
 
