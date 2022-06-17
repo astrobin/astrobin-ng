@@ -22,12 +22,8 @@
   }
 }
 
+.brands,
 .items-in-brand {
-  @media screen and (min-width: $lg-min) {
-    margin: 0 auto;
-    width: calc(100% - 2rem);
-  }
-
   a {
     color: var(--white);
     font-weight: bold;
@@ -36,5 +32,12 @@
       color: var(--accentColor);
       text-decoration: none;
     }
+  }
+}
+
+.items-in-brand {
+  @media screen and (min-width: $lg-min) {
+    margin: 0 auto;
+    width: calc(100% - 2rem);
   }
 }

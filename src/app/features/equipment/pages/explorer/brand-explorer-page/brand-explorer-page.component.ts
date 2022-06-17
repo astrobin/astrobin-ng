@@ -89,6 +89,10 @@ export class BrandExplorerPageComponent extends ExplorerBaseComponent implements
       (this.cookieService.get(EQUIPMENT_EXPLORER_PAGE_SORTING_COOKIE) as ExplorerPageSortOrder) ||
       ExplorerPageSortOrder.AZ;
 
+    if (!!this.activeBrand) {
+      return this._loadItemsInBrand();
+    }
+
     this.items$ = this.store$.select(selectBrands).pipe(
       map(brands =>
         [...brands].sort((a: BrandInterface, b: BrandInterface) => {
@@ -125,7 +129,7 @@ export class BrandExplorerPageComponent extends ExplorerBaseComponent implements
     this.router.navigateByUrl(`/equipment/explorer/brand/${brand.id}/${UtilsService.slugify(brand.name)}`);
   }
 
-  closeBrand(brand: BrandInterface) {
+  closeBrand() {
     this.router.navigateByUrl("/equipment/explorer/brand/");
   }
 
@@ -169,6 +173,7 @@ export class BrandExplorerPageComponent extends ExplorerBaseComponent implements
     if (!this.activeBrand) {
       return;
     }
+
     this.actions$
       .pipe(
         ofType(EquipmentActionTypes.GET_ALL_IN_BRAND_SUCCESS),
@@ -207,7 +212,28 @@ export class BrandExplorerPageComponent extends ExplorerBaseComponent implements
 
           this.itemsInBrand = arrayUniqueEquipmentItems([...this.itemsInBrand, ...items]).sort(
             (a: EquipmentItemBaseInterface, b: EquipmentItemBaseInterface) => {
-              return a.name.localeCompare(b.name);
+              let diff: number;
+
+              switch (this.sortOrder) {
+                case ExplorerPageSortOrder.AZ:
+                  return a.name.localeCompare(b.name);
+                case ExplorerPageSortOrder.AZ_DESC:
+                  return b.name.localeCompare(a.name);
+                case ExplorerPageSortOrder.IMAGES:
+                  diff = a.imageCount - b.imageCount;
+                  return diff === 0 ? a.name.localeCompare(b.name) : diff;
+                case ExplorerPageSortOrder.IMAGES_DESC:
+                  diff = b.imageCount - a.imageCount;
+                  return diff === 0 ? a.name.localeCompare(b.name) : diff;
+                case ExplorerPageSortOrder.USERS:
+                  diff = a.userCount - b.userCount;
+                  return diff === 0 ? a.name.localeCompare(b.name) : diff;
+                case ExplorerPageSortOrder.USERS_DESC:
+                  diff = b.userCount - a.userCount;
+                  return diff === 0 ? a.name.localeCompare(b.name) : diff;
+              }
+
+              return 0;
             }
           );
         });
