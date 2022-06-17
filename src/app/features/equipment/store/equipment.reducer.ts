@@ -76,32 +76,7 @@ export function reducer(state = initialEquipmentState, action: EquipmentActions)
     case EquipmentActionTypes.GET_ALL_BRANDS_SUCCESS:
       return {
         ...state,
-        brands: UtilsService.arrayUniqueObjects([...state.brands, ...action.payload.response.results], "id").sort(
-          (a: BrandInterface, b: BrandInterface) => {
-            let diff: number;
-
-            switch (action.payload.sort) {
-              case ExplorerPageSortOrder.AZ:
-                return a.name.localeCompare(b.name);
-              case ExplorerPageSortOrder.AZ_DESC:
-                return b.name.localeCompare(a.name);
-              case ExplorerPageSortOrder.IMAGES:
-                diff = a.imageCount - b.imageCount;
-                return diff === 0 ? a.name.localeCompare(b.name) : diff;
-              case ExplorerPageSortOrder.IMAGES_DESC:
-                diff = b.imageCount - a.imageCount;
-                return diff === 0 ? a.name.localeCompare(b.name) : diff;
-              case ExplorerPageSortOrder.USERS:
-                diff = a.userCount - b.userCount;
-                return diff === 0 ? a.name.localeCompare(b.name) : diff;
-              case ExplorerPageSortOrder.USERS_DESC:
-                diff = b.userCount - a.userCount;
-                return diff === 0 ? a.name.localeCompare(b.name) : diff;
-            }
-
-            return 0;
-          }
-        ),
+        brands: UtilsService.arrayUniqueObjects([...state.brands, ...action.payload.response.results], "id"),
         brandsCount: action.payload.response.count
       };
 
