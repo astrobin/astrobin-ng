@@ -5,8 +5,6 @@ import { FormlyFieldConfig } from "@ngx-formly/core";
 import { WatermarkPositionOptions, WatermarkSizeOptions } from "@shared/interfaces/image.interface";
 import { TranslateService } from "@ngx-translate/core";
 import { ImageEditService } from "@features/image/services/image-edit.service";
-import { selectCurrentUserProfile } from "@features/account/store/auth.selectors";
-import { filter, take } from "rxjs/operators";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 
