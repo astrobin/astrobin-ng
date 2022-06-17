@@ -40,6 +40,9 @@ export class ItemTypeNavComponent extends BaseComponentDirective implements OnIn
   collapsed = false;
 
   @Input()
+  showBrands = true;
+
+  @Input()
   cameraCount: Observable<number | null> = null;
   camerasPendingReviewCount: Observable<number | null> = null;
   camerasPendingEditCount: Observable<number | null> = null;
