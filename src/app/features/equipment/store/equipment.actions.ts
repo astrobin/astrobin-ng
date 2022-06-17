@@ -23,6 +23,7 @@ import { UserInterface } from "@shared/interfaces/user.interface";
 import { ImageInterface } from "@shared/interfaces/image.interface";
 import { EquipmentItemMostOftenUsedWith } from "@features/equipment/types/equipment-item-most-often-used-with-data.interface";
 import { ExplorerPageSortOrder } from "@features/equipment/pages/explorer-base/explorer-base.component";
+import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 
 export interface EquipmentItemCreationSuccessPayloadInterface {
   item: EquipmentItemBaseInterface;
@@ -43,6 +44,7 @@ export enum EquipmentActionTypes {
   GET_USERS_USING_BRAND_SUCCESS = "[Equipment] Get users using brand success",
   GET_IMAGES_USING_BRAND = "[Equipment] Get images using brand",
   GET_IMAGES_USING_BRAND_SUCCESS = "[Equipment] Get images using brand success",
+
   // Generic equipment items
 
   LOAD_EQUIPMENT_ITEM = "[Equipment] Load equipment item",
@@ -53,6 +55,8 @@ export enum EquipmentActionTypes {
   FIND_RECENTLY_USED_EQUIPMENT_ITEMS_SUCCESS = "[Equipment] Find recentrly used equipment items success",
   FIND_SIMILAR_IN_BRAND = "[Equipment] Find similar in brand",
   FIND_SIMILAR_IN_BRAND_SUCCESS = "[Equipment] Find similar in brand success",
+  GET_ALL_IN_BRAND = "[Equipment] Get all in brand",
+  GET_ALL_IN_BRAND_SUCCESS = "[Equipment] Get all in brand success",
   GET_OTHERS_IN_BRAND = "[Equipment] Get others in brand",
   GET_OTHERS_IN_BRAND_SUCCESS = "[Equipment] Get others in brand success",
   APPROVE_EQUIPMENT_ITEM = "[Equipment] Approve item",
@@ -273,6 +277,18 @@ export class FindSimilarInBrandSuccess implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.FIND_SIMILAR_IN_BRAND_SUCCESS;
 
   constructor(public payload: { items: EquipmentItemBaseInterface[] }) {}
+}
+
+export class GetAllInBrand implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.GET_ALL_IN_BRAND;
+
+  constructor(public payload: { brand: BrandInterface["id"]; type: EquipmentItemType; page: number }) {}
+}
+
+export class GetAllInBrandSuccess implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.GET_ALL_IN_BRAND_SUCCESS;
+
+  constructor(public payload: { response: PaginatedApiResultInterface<EquipmentItem> }) {}
 }
 
 export class GetOthersInBrand implements PayloadActionInterface {
@@ -718,6 +734,8 @@ export type EquipmentActions =
   | FindRecentlyUsedEquipmentItemsSuccess
   | FindSimilarInBrand
   | FindSimilarInBrandSuccess
+  | GetAllInBrand
+  | GetAllInBrandSuccess
   | GetOthersInBrand
   | GetOthersInBrandSuccess
   | ApproveEquipmentItem

@@ -21,3 +21,20 @@
     font-weight: bold;
   }
 }
+
+.items-in-brand {
+  @media screen and (min-width: $lg-min) {
+    margin: 0 auto;
+    width: calc(100% - 2rem);
+  }
+
+  a {
+    color: var(--white);
+    font-weight: bold;
+
+    &:hover {
+      color: var(--accentColor);
+      text-decoration: none;
+    }
+  }
+}

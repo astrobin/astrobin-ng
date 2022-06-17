@@ -105,6 +105,13 @@ export function reducer(state = initialEquipmentState, action: EquipmentActions)
       };
     }
 
+    case EquipmentActionTypes.GET_ALL_IN_BRAND_SUCCESS: {
+      return {
+        ...state,
+        equipmentItems: arrayUniqueEquipmentItems([...state.equipmentItems, ...action.payload.response.results])
+      };
+    }
+
     case EquipmentActionTypes.LOAD_EQUIPMENT_ITEM_SUCCESS:
     case EquipmentActionTypes.APPROVE_EQUIPMENT_ITEM_SUCCESS:
     case EquipmentActionTypes.CREATE_SENSOR_SUCCESS:
