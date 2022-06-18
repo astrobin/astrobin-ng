@@ -11,7 +11,7 @@ export class BaseService implements OnDestroy {
   loadingSubject = new Subject<boolean>();
   loading$: Observable<boolean> = this.loadingSubject.asObservable().pipe(debounceTime(LoadingService.DEBOUNCE_TIME));
 
-  constructor(public loadingService: LoadingService) {
+  constructor(public readonly loadingService: LoadingService) {
     this.loading$.subscribe(value => this.loadingService.setLoading(value));
   }
 
