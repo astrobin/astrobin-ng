@@ -249,25 +249,62 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
 
   markAsWrongType(event: Event, object: any) {
     event.preventDefault();
-    this._applyMigration(object, [object.pk, MigrationFlag.WRONG_TYPE], this.translateService.instant("wrong type"));
+
+    const modalRef = this.modalService.open(ConfirmationDialogComponent, { size: "sm" });
+    const componentInstant: ConfirmationDialogComponent = modalRef.componentInstance;
+    componentInstant.message = this.translateService.instant(
+      "Only do this if the legacy item is not of the equipment class you are currently migrating (see the selected " +
+        "menu entry in the sidebar, e.g. Camera / Telescope / Mount / etc). Sometimes this happens if you added an OAG as " +
+        "a telescope instead of an accessory back when you created this equipment item."
+    );
+
+    modalRef.closed.pipe(take(1)).subscribe(() => {
+      this._applyMigration(object, [object.pk, MigrationFlag.WRONG_TYPE], this.translateService.instant("wrong type"));
+    });
   }
 
   markAsMultiple(event: Event, object: any) {
     event.preventDefault();
-    this._applyMigration(
-      object,
-      [object.pk, MigrationFlag.MULTIPLE_ITEMS],
-      this.translateService.instant("multiple items")
+
+    const modalRef = this.modalService.open(ConfirmationDialogComponent, { size: "sm" });
+    const componentInstant: ConfirmationDialogComponent = modalRef.componentInstance;
+    componentInstant.message = this.translateService.instant(
+      "Only do this if the legacy item is actually multiple products lumped together under the same name. " +
+        "This typically happens for LRGB filter sets when you didn't create individual filters back when you added " +
+        "this legacy item to the database. Sometimes this happens when you actually added multiple products using the " +
+        "same text box (e.g. 'Canon 70D / Canon 80D')."
     );
+
+    modalRef.closed.pipe(take(1)).subscribe(() => {
+      this._applyMigration(
+        object,
+        [object.pk, MigrationFlag.MULTIPLE_ITEMS],
+        this.translateService.instant("multiple items")
+      );
+    });
   }
 
   markAsNotEnoughInfo(event: Event, object: any) {
     event.preventDefault();
-    this._applyMigration(
-      object,
-      [object.pk, MigrationFlag.NOT_ENOUGH_INFO],
-      this.translateService.instant("not enough info")
+
+    const modalRef = this.modalService.open(ConfirmationDialogComponent, { size: "sm" });
+    const componentInstant: ConfirmationDialogComponent = modalRef.componentInstance;
+    componentInstant.message = this.translateService.instant(
+      "Only do this if the legacy item cannot be determined unambiguously. Sometimes this happens if back when you " +
+        "added this legacy item to the equipment database, you didn't specify a key property in its name, e.g. color vs " +
+        "mono, and then you used it for several images indiscriminately of that property. E.g. have an Atik 4000 Color " +
+        "and an Atik 4000 Mono, and you added a generic 'Atik 4000' and used it both for color and mono images. You " +
+        "cannot migrate it to either the color or mono variant of the new database entry, because some of your images " +
+        "will present the wrong information once their equipment association is changed."
     );
+
+    modalRef.closed.pipe(take(1)).subscribe(() => {
+      this._applyMigration(
+        object,
+        [object.pk, MigrationFlag.NOT_ENOUGH_INFO],
+        this.translateService.instant("not enough info")
+      );
+    });
   }
 
   beginMigration() {
