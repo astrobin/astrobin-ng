@@ -126,47 +126,49 @@
           ></astrobin-images-using-equipment-item>
         </ng-container>
 
-        <ng-container *ngIf="items$ | async as brands; else loading">
-          <table class="table table-striped table-sm brands" *ngIf="!activeBrand">
-            <thead>
-            <tr>
-              <th>
-                <button class="btn btn-link" (click)="toggleAZSorting()">
-                  {{ "Name" | translate }}
-                  <fa-icon icon="sort-alpha-down" *ngIf="sortOrder === ExplorerPageSortOrder.AZ_DESC"></fa-icon>
-                  <fa-icon icon="sort-alpha-up" *ngIf="sortOrder === ExplorerPageSortOrder.AZ"></fa-icon>
-                </button>
-              </th>
-              <th>
-                <button class="btn btn-link" (click)="toggleUsersSorting()">
-                  {{ "Users" | translate }}
-                  <fa-icon icon="sort-numeric-down" *ngIf="sortOrder === ExplorerPageSortOrder.USERS_DESC"></fa-icon>
-                  <fa-icon icon="sort-numeric-up" *ngIf="sortOrder === ExplorerPageSortOrder.USERS"></fa-icon>
-                </button>
-              </th>
-              <th>
-                <button class="btn btn-link" (click)="toggleImagesSorting()">
-                  {{ "Images" | translate }}
-                  <fa-icon icon="sort-numeric-down" *ngIf="sortOrder === ExplorerPageSortOrder.IMAGES_DESC"></fa-icon>
-                  <fa-icon icon="sort-numeric-up" *ngIf="sortOrder === ExplorerPageSortOrder.IMAGES"></fa-icon>
-                </button>
-              </th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr *ngFor="let brand of brands" data-id="{{ brand.id }}">
-              <td>
-                <a href="#" appEventPreventDefault (click)="viewBrand(brand)">{{ brand.name }}</a>
-              </td>
-              <td>{{ brand.userCount }}</td>
-              <td>{{ brand.imageCount }}</td>
-            </tr>
-            </tbody>
-          </table>
+        <ng-container *ngIf="!activeBrand">
+          <ng-container *ngIf="items$ | async as brands; else loading">
+            <table class="table table-striped table-sm brands" *ngIf="!activeBrand">
+              <thead>
+              <tr>
+                <th>
+                  <button class="btn btn-link" (click)="toggleAZSorting()">
+                    {{ "Name" | translate }}
+                    <fa-icon icon="sort-alpha-down" *ngIf="sortOrder === ExplorerPageSortOrder.AZ_DESC"></fa-icon>
+                    <fa-icon icon="sort-alpha-up" *ngIf="sortOrder === ExplorerPageSortOrder.AZ"></fa-icon>
+                  </button>
+                </th>
+                <th>
+                  <button class="btn btn-link" (click)="toggleUsersSorting()">
+                    {{ "Users" | translate }}
+                    <fa-icon icon="sort-numeric-down" *ngIf="sortOrder === ExplorerPageSortOrder.USERS_DESC"></fa-icon>
+                    <fa-icon icon="sort-numeric-up" *ngIf="sortOrder === ExplorerPageSortOrder.USERS"></fa-icon>
+                  </button>
+                </th>
+                <th>
+                  <button class="btn btn-link" (click)="toggleImagesSorting()">
+                    {{ "Images" | translate }}
+                    <fa-icon icon="sort-numeric-down" *ngIf="sortOrder === ExplorerPageSortOrder.IMAGES_DESC"></fa-icon>
+                    <fa-icon icon="sort-numeric-up" *ngIf="sortOrder === ExplorerPageSortOrder.IMAGES"></fa-icon>
+                  </button>
+                </th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let brand of brands" data-id="{{ brand.id }}">
+                <td>
+                  <a href="#" appEventPreventDefault (click)="viewBrand(brand)">{{ brand.name }}</a>
+                </td>
+                <td>{{ brand.userCount }}</td>
+                <td>{{ brand.imageCount }}</td>
+              </tr>
+              </tbody>
+            </table>
 
-          <astrobin-nothing-here *ngIf="brands.count === 0"></astrobin-nothing-here>
-        </ng-container>
-      </ng-container>
+            <astrobin-nothing-here *ngIf="brands.count === 0"></astrobin-nothing-here>
+          </ng-container> <!-- items$ -->
+        </ng-container> <!-- !activeBrand -->
+      </ng-container> <!-- !loading -->
 
     </div>
 
