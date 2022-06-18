@@ -49,7 +49,7 @@ export class EquipmentItemService extends BaseService {
       case EquipmentItemType.SENSOR:
         return this.translateService.instant("Sensor");
       case EquipmentItemType.TELESCOPE:
-        return this.translateService.instant("Telescope");
+        return this.translateService.instant("Telescope or lens");
       case EquipmentItemType.MOUNT:
         return this.translateService.instant("Mount");
       case EquipmentItemType.FILTER:
