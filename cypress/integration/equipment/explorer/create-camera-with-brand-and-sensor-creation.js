@@ -58,6 +58,7 @@ context("Equipment", () => {
         cy.get("[for=confirm-no-typos]").click();
         cy.get("[for=confirm-no-duplication]").click();
         cy.get("[for=confirm-naming-convention]").click();
+        cy.get("[for=confirm-unambiguous]").click();
         cy.get("[for=confirm-no-personal-information]").click();
         cy.get(".modal-footer .btn")
           .contains("Confirm")
@@ -98,6 +99,7 @@ context("Equipment", () => {
         cy.get("[for=confirm-no-typos]").click();
         cy.get("[for=confirm-no-duplication]").click();
         cy.get("[for=confirm-naming-convention]").click();
+        cy.get("[for=confirm-unambiguous]").click();
         cy.get("[for=confirm-no-personal-information]").click();
         cy.get(".modal-footer .btn")
           .contains("Confirm")
