@@ -17,7 +17,7 @@ import {
   GetOthersInBrandSuccess
 } from "@features/equipment/store/equipment.actions";
 import { Actions, ofType } from "@ngrx/effects";
-import { filter, map, switchMap, take, takeUntil, tap } from "rxjs/operators";
+import { debounceTime, distinctUntilChanged, filter, map, switchMap, take, takeUntil, tap } from "rxjs/operators";
 import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
 import { WindowRefService } from "@shared/services/window-ref.service";
@@ -406,12 +406,15 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
             .pipe(
               takeUntil(this.destroyed$),
               filter(value => !!value),
+              debounceTime(500),
+              distinctUntilChanged(),
               tap((value: string) => {
                 this.formlyFieldService.clearMessages(field.templateOptions);
                 this.formlyFieldService.clearMessages(this.fields.find(f => f.key === "brand").templateOptions);
                 this._validateBrandInName();
                 this._similarItemSuggestion();
                 this._editProposalWarning(field);
+                this._customNameChangesValidations(field, value);
               })
             )
             .subscribe();
@@ -562,6 +565,10 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
         })
       );
     });
+  }
+
+  protected _customNameChangesValidations(field: FormlyFieldConfig, value: string) {
+    // Override this method in editor components to perform actions when the name changes.
   }
 
   private _similarItemSuggestion() {
