@@ -45,11 +45,13 @@ export class ConfirmItemCreationModalComponent extends BaseComponentDirective im
     confirmNoTypos: boolean;
     confirmNoDuplication: boolean;
     confirmNamingConvention: boolean;
+    confirmUnambiguous: boolean;
     confirmNoPersonalInformation: boolean;
   } = {
     confirmNoTypos: false,
     confirmNoDuplication: false,
     confirmNamingConvention: false,
+    confirmUnambiguous: false,
     confirmNoPersonalInformation: false
   };
 
@@ -104,6 +106,22 @@ export class ConfirmItemCreationModalComponent extends BaseComponentDirective im
             "I have carefully checked that this item conforms to existing naming conventions for this brand"
           )
         }
+      },
+      {
+        key: "confirmUnambiguous",
+        type: "checkbox",
+        id: "confirm-unambiguous",
+        wrappers: ["default-wrapper"],
+        templateOptions: {
+          label: this.translateService.instant(
+            "The name of this product identifies it in a manner that is sufficiently unambiguous"
+          ),
+          description: this.translateService.instant(
+            "You want to be precise enough that this product's name distinguishes it from similar products that " +
+              "people might want to search for on AstroBin, but not so precise as to create too many variants of " +
+              "what is essentially the same product."
+          )
+        }
       }
     ];
 
@@ -137,10 +155,16 @@ export class ConfirmItemCreationModalComponent extends BaseComponentDirective im
         this.model.confirmNoTypos &&
         this.model.confirmNoDuplication &&
         this.model.confirmNamingConvention &&
+        this.model.confirmUnambiguous &&
         this.model.confirmNoPersonalInformation
       );
     }
 
-    return this.model.confirmNoTypos && this.model.confirmNoDuplication && this.model.confirmNamingConvention;
+    return (
+      this.model.confirmNoTypos &&
+      this.model.confirmNoDuplication &&
+      this.model.confirmNamingConvention &&
+      this.model.confirmUnambiguous
+    );
   }
 }

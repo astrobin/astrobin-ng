@@ -12,6 +12,12 @@ formly-field {
   }
 }
 
+formly-field-checkbox {
+  +.form-text {
+    padding-left: 1.5rem;
+  }
+}
+
 .form-control {
   &,
   &:focus {
