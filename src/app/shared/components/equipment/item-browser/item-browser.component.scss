@@ -4,13 +4,14 @@
       box-shadow: 1rem 1rem 2rem rgba(0, 0, 0, 0.9) !important;
 
       .ng-dropdown-panel-items {
-        max-height: 400px !important;
+        max-height: 300px !important;
 
         .ng-option {
-          padding: 1rem !important;
+          padding: .75rem 1rem !important;
 
           h5 {
             margin: 0;
+            font-size: 1rem;
           }
 
           &:not(:last-child) {
