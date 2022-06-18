@@ -8,9 +8,10 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 import { State } from "@app/store/state";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
-import { FormlyFieldService } from "@shared/services/formly-field.service";
+import { FormlyFieldMessageLevel, FormlyFieldService } from "@shared/services/formly-field.service";
 import { SoftwareInterface } from "@features/equipment/types/software.interface";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import { FormlyFieldConfig } from "@ngx-formly/core";
 
 @Component({
   selector: "astrobin-software-editor",
@@ -55,6 +56,20 @@ export class SoftwareEditorComponent extends BaseItemEditorComponent<SoftwareInt
     this.model.klass = EquipmentItemType.SOFTWARE;
 
     super.ngAfterViewInit();
+  }
+
+  protected _customNameChangesValidations(field: FormlyFieldConfig, value: string) {
+    const hasNumbers: boolean = /\d/.test(value);
+
+    if (hasNumbers) {
+      this.formlyFieldService.addMessage(field.templateOptions, {
+        level: FormlyFieldMessageLevel.INFO,
+        text: this.translateService.instant(
+          "The AstroBin equipment database does not attempt to track version numbers of software. " +
+            "If that number is a version number, please remove it, thanks!"
+        )
+      });
+    }
   }
 
   private _initFields() {
