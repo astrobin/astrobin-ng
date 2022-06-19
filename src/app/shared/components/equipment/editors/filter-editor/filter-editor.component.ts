@@ -64,7 +64,7 @@ export class FilterEditorComponent extends BaseItemEditorComponent<FilterInterfa
   }
 
   protected _customNameChangesValidations(field: FormlyFieldConfig, value: string) {
-    const hasSize: boolean = /(\d+[.|,]?\d*\")|(\d+[.|,]?\d*mm)/.test(value);
+    const hasSize: boolean = /\d+[.|,]?\d*"|\d+[.|,]?\d*mm|m\d+|aps|full|eos|sct/.test(value.toLowerCase());
 
     if (hasSize) {
       this.formlyFieldService.addMessage(field.templateOptions, {
