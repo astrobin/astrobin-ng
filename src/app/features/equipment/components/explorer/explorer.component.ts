@@ -588,6 +588,10 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
     return this.editProposalsByStatus(this.editProposals, null)?.length > 0 || !this.editProposalsCollapsed;
   }
 
+  collapseEditProposals() {
+    this.editProposalsCollapsed = true;
+  }
+
   expandEditProposals() {
     this.editProposalsCollapsed = false;
   }
