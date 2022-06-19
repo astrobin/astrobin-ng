@@ -319,7 +319,14 @@ export class EquipmentEffects {
       map((action: RejectEquipmentItem) => action.payload),
       mergeMap(payload =>
         this.equipmentApiService
-          .rejectEquipmentItem(payload.item, payload.reason, payload.comment, payload.duplicateOf)
+          .rejectEquipmentItem(
+            payload.item,
+            payload.reason,
+            payload.comment,
+            payload.duplicateOf,
+            payload.duplicateOfKlass,
+            payload.duplicateOfUsageType
+          )
           .pipe(map(item => new RejectEquipmentItemSuccess({ item })))
       )
     )

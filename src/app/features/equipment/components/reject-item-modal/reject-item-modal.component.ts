@@ -3,7 +3,9 @@ import { FormlyFieldConfig } from "@ngx-formly/core";
 import { FormGroup } from "@angular/forms";
 import {
   EquipmentItemBaseInterface,
-  EquipmentItemReviewerRejectionReason
+  EquipmentItemReviewerRejectionReason,
+  EquipmentItemType,
+  EquipmentItemUsageType
 } from "@features/equipment/types/equipment-item-base.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
@@ -19,6 +21,7 @@ import { FormlyFieldMessageLevel, FormlyFieldService } from "@shared/services/fo
 import { Router } from "@angular/router";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { FormlyFieldEquipmentItemBrowserMode } from "@shared/components/misc/formly-field-equipment-item-browser/formly-field-equipment-item-browser.component";
+import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 
 @Component({
   selector: "astrobin-reject-item-modal",
@@ -30,6 +33,9 @@ export class RejectItemModalComponent extends BaseComponentDirective implements 
   form: FormGroup = new FormGroup({});
   model: {
     reason?: EquipmentItemReviewerRejectionReason;
+    duplicateOf?: EquipmentItem["id"];
+    duplicateOfKlass?: EquipmentItemType;
+    duplicateOfUsageType?: EquipmentItemUsageType;
     comment: string;
   } = {
     reason: null,
@@ -132,24 +138,56 @@ export class RejectItemModalComponent extends BaseComponentDirective implements 
         }
       },
       {
-        key: "duplicateOf",
-        type: "equipment-item-browser",
-        id: "duplicate-of",
+        key: "duplicateOfKlass",
+        type: "ng-select",
+        id: "duplicate-of-klass",
         hideExpression: () => this.model.reason !== EquipmentItemReviewerRejectionReason.DUPLICATE,
         expressionProperties: {
           "templateOptions.required": "model.reason === 'DUPLICATE'"
         },
+        defaultValue: EquipmentItemType[this.equipmentItem.klass],
         templateOptions: {
-          mode: FormlyFieldEquipmentItemBrowserMode.ID,
-          label: this.translateService.instant("Duplicate of"),
-          itemType: this.equipmentItemService.getType(this.equipmentItem),
-          showQuickAddRecent: false,
-          showPlaceholderImage: false,
-          multiple: false,
-          enableVariantSelection: true,
-          enableCreation: false
+          label: this.translateService.instant("Item class"),
+          clearable: false,
+          options: Object.keys(EquipmentItemType).map(itemType => ({
+            value: itemType as EquipmentItemType,
+            label: this.equipmentItemService.humanizeType(itemType as EquipmentItemType)
+          }))
+        },
+        hooks: {
+          onInit: (field: FormlyFieldConfig) => {
+            field.formControl.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(value => {
+              const duplicateOfField = this._duplicateOfField();
+
+              this.fields = this.fields.filter(x => x.key !== duplicateOfField.key);
+
+              duplicateOfField.templateOptions.itemType = value;
+              this.fields.push(duplicateOfField);
+            });
+          }
         }
-      }
+      },
+      {
+        key: "duplicateOfUsageType",
+        type: "ng-select",
+        id: "duplicate-of-usage-type",
+        hideExpression: () =>
+          this.model.reason !== EquipmentItemReviewerRejectionReason.DUPLICATE ||
+          [EquipmentItemType.TELESCOPE, EquipmentItemType.CAMERA].indexOf(this.model.duplicateOfKlass) === -1,
+        expressionProperties: {
+          "templateOptions.required": "model.reason === 'DUPLICATE'"
+        },
+        defaultValue: EquipmentItemUsageType.GUIDING,
+        templateOptions: {
+          label: this.translateService.instant("Usage type"),
+          clearable: false,
+          options: Object.keys(EquipmentItemUsageType).map(usageType => ({
+            value: usageType as EquipmentItemUsageType,
+            label: this.equipmentItemService.humanizeUsageType(usageType as EquipmentItemUsageType)
+          }))
+        }
+      },
+      this._duplicateOfField()
     ];
   }
 
@@ -159,13 +197,17 @@ export class RejectItemModalComponent extends BaseComponentDirective implements 
     const reason: EquipmentItemReviewerRejectionReason = this.form.get("reason").value;
     const comment: string = this.form.get("comment")?.value;
     const duplicateOf: EquipmentItemBaseInterface["id"] = this.form.get("duplicateOf")?.value;
+    const duplicateOfKlass: EquipmentItemType = this.form.get("duplicateOfKlass")?.value;
+    const duplicateOfUsageType: EquipmentItemUsageType = this.form.get("duplicateOfUsageType")?.value;
 
     this.store$.dispatch(
       new RejectEquipmentItem({
         item: this.equipmentItem,
         reason,
         comment,
-        duplicateOf
+        duplicateOf,
+        duplicateOfKlass,
+        duplicateOfUsageType
       })
     );
 
@@ -173,5 +215,27 @@ export class RejectItemModalComponent extends BaseComponentDirective implements 
       this.loadingService.setLoading(false);
       this.modal.close();
     });
+  }
+
+  private _duplicateOfField(): FormlyFieldConfig {
+    return {
+      key: "duplicateOf",
+      type: "equipment-item-browser",
+      id: "duplicate-of",
+      hideExpression: () => this.model.reason !== EquipmentItemReviewerRejectionReason.DUPLICATE,
+      expressionProperties: {
+        "templateOptions.required": "model.reason === 'DUPLICATE'"
+      },
+      templateOptions: {
+        mode: FormlyFieldEquipmentItemBrowserMode.ID,
+        label: this.translateService.instant("Duplicate of"),
+        itemType: this.equipmentItemService.getType(this.equipmentItem),
+        showQuickAddRecent: false,
+        showPlaceholderImage: false,
+        multiple: false,
+        enableVariantSelection: true,
+        enableCreation: false
+      }
+    };
   }
 }
