@@ -88,6 +88,7 @@ import { VariantSelectorModalComponent } from "@shared/components/equipment/item
 import { AvatarComponent } from "@shared/components/misc/avatar/avatar.component";
 import { DataDoesNotUpdateInRealTimeComponent } from "@shared/components/misc/data-does-not-update-in-real-time/data-does-not-update-in-real-time.component";
 import { SubscriptionRequiredModalComponent } from "@shared/components/misc/subscription-required-modal/subscription-required-modal.component";
+import { InformationDialogComponent } from "@shared/components/misc/information-dialog/information-dialog.component";
 
 const modules = [
   CommonModule,
@@ -140,6 +141,7 @@ const components = [
   FullscreenImageViewerComponent,
   HeaderComponent,
   ImageComponent,
+  InformationDialogComponent,
   LoadingIndicatorComponent,
   LoginFormComponent,
   LoginModalComponent,

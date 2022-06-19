@@ -14,6 +14,7 @@ import { TelescopeInterface, TelescopeType } from "@features/equipment/types/tel
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { takeUntil } from "rxjs/operators";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
   selector: "astrobin-telescope-editor",
@@ -31,7 +32,8 @@ export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeI
     public readonly equipmentApiService: EquipmentApiService,
     public readonly equipmentItemService: EquipmentItemService,
     public readonly formlyFieldService: FormlyFieldService,
-    public readonly telescopeService: TelescopeService
+    public readonly telescopeService: TelescopeService,
+    public readonly modalService: NgbModal
   ) {
     super(
       store$,
@@ -41,7 +43,8 @@ export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeI
       windowRefService,
       equipmentApiService,
       equipmentItemService,
-      formlyFieldService
+      formlyFieldService,
+      modalService
     );
   }
 

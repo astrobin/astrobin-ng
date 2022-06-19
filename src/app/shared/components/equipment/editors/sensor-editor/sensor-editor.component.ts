@@ -12,6 +12,7 @@ import { EquipmentItemService } from "@features/equipment/services/equipment-ite
 import { FormlyFieldService } from "@shared/services/formly-field.service";
 import { SensorDisplayProperty, SensorService } from "@features/equipment/services/sensor.service";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
   selector: "astrobin-sensor-editor",
@@ -29,7 +30,8 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
     public readonly equipmentApiService: EquipmentApiService,
     public readonly equipmentItemService: EquipmentItemService,
     public readonly formlyFieldService: FormlyFieldService,
-    public readonly sensorService: SensorService
+    public readonly sensorService: SensorService,
+    public readonly modalService: NgbModal
   ) {
     super(
       store$,
@@ -39,7 +41,8 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
       windowRefService,
       equipmentApiService,
       equipmentItemService,
-      formlyFieldService
+      formlyFieldService,
+      modalService
     );
   }
 

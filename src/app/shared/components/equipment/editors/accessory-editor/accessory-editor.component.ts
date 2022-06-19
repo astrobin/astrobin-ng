@@ -11,6 +11,7 @@ import { EquipmentItemService } from "@features/equipment/services/equipment-ite
 import { FormlyFieldService } from "@shared/services/formly-field.service";
 import { AccessoryInterface } from "@features/equipment/types/accessory.interface";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
   selector: "astrobin-accessory-editor",
@@ -27,7 +28,8 @@ export class AccessoryEditorComponent extends BaseItemEditorComponent<AccessoryI
     public readonly windowRefService: WindowRefService,
     public readonly equipmentApiService: EquipmentApiService,
     public readonly equipmentItemService: EquipmentItemService,
-    public readonly formlyFieldService: FormlyFieldService
+    public readonly formlyFieldService: FormlyFieldService,
+    public readonly modalService: NgbModal
   ) {
     super(
       store$,
@@ -37,7 +39,8 @@ export class AccessoryEditorComponent extends BaseItemEditorComponent<AccessoryI
       windowRefService,
       equipmentApiService,
       equipmentItemService,
-      formlyFieldService
+      formlyFieldService,
+      modalService
     );
   }
 

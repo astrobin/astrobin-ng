@@ -12,6 +12,7 @@ import { FormlyFieldService } from "@shared/services/formly-field.service";
 import { FilterDisplayProperty, FilterService } from "@features/equipment/services/filter.service";
 import { FilterInterface, FilterType } from "@features/equipment/types/filter.interface";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
   selector: "astrobin-filter-editor",
@@ -29,7 +30,8 @@ export class FilterEditorComponent extends BaseItemEditorComponent<FilterInterfa
     public readonly equipmentApiService: EquipmentApiService,
     public readonly equipmentItemService: EquipmentItemService,
     public readonly formlyFieldService: FormlyFieldService,
-    public readonly filterService: FilterService
+    public readonly filterService: FilterService,
+    public readonly modalService: NgbModal
   ) {
     super(
       store$,
@@ -39,7 +41,8 @@ export class FilterEditorComponent extends BaseItemEditorComponent<FilterInterfa
       windowRefService,
       equipmentApiService,
       equipmentItemService,
-      formlyFieldService
+      formlyFieldService,
+      modalService
     );
   }
 

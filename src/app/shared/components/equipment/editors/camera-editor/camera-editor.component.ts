@@ -17,6 +17,7 @@ import { EquipmentItemService } from "@features/equipment/services/equipment-ite
 import { CameraDisplayProperty, CameraService } from "@features/equipment/services/camera.service";
 import { FormlyFieldService } from "@shared/services/formly-field.service";
 import { FormlyFieldEquipmentItemBrowserMode } from "@shared/components/misc/formly-field-equipment-item-browser/formly-field-equipment-item-browser.component";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
   selector: "astrobin-camera-editor",
@@ -40,7 +41,8 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
     public readonly equipmentApiService: EquipmentApiService,
     public readonly equipmentItemService: EquipmentItemService,
     public readonly formlyFieldService: FormlyFieldService,
-    public readonly cameraService: CameraService
+    public readonly cameraService: CameraService,
+    public readonly modalService: NgbModal
   ) {
     super(
       store$,
@@ -50,7 +52,8 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
       windowRefService,
       equipmentApiService,
       equipmentItemService,
-      formlyFieldService
+      formlyFieldService,
+      modalService
     );
   }
 

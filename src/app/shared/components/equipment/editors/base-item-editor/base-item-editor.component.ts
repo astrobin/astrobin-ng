@@ -28,6 +28,8 @@ import { selectBrand } from "@features/equipment/store/equipment.selectors";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 import { FormlyFieldMessageLevel, FormlyFieldService } from "@shared/services/formly-field.service";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { InformationDialogComponent } from "@shared/components/misc/information-dialog/information-dialog.component";
 
 export enum EquipmentItemEditorMode {
   CREATION,
@@ -162,7 +164,8 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
     public readonly windowRefService: WindowRefService,
     public readonly equipmentApiService: EquipmentApiService,
     public readonly equipmentItemService: EquipmentItemService,
-    public readonly formlyFieldService: FormlyFieldService
+    public readonly formlyFieldService: FormlyFieldService,
+    public readonly modalService: NgbModal
   ) {
     super(store$);
   }
@@ -289,8 +292,19 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
               takeUntil(this.destroyed$),
               tap(value => {
                 if (!!value) {
-                  this.model.brand = null;
-                  this.form.get("brand").setValue(null);
+                  const informationModalRef: NgbModalRef = this.modalService.open(InformationDialogComponent);
+                  const informationModalInstance: InformationDialogComponent = informationModalRef.componentInstance;
+
+                  informationModalInstance.message = this.translateService.instant(
+                    "Marking an item as DIY (i.e. self-made) means that you, or someone on your behalf, actually " +
+                      "made this equipment item, and it's something unique that other people literally cannot " +
+                      "obtain. This item will not be available to others to add to their images."
+                  );
+
+                  informationModalRef.closed.pipe(take(1)).subscribe(() => {
+                    this.model.brand = null;
+                    this.form.get("brand").setValue(null);
+                  });
                 }
 
                 this.form.get("name").updateValueAndValidity({ emitEvent: false });
