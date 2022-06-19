@@ -4,6 +4,7 @@ import { AppModule } from "@app/app.module";
 import { RejectItemModalComponent } from "./reject-item-modal.component";
 import { MockBuilder } from "ng-mocks";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
+import { CameraGenerator } from "@features/equipment/generators/camera.generator";
 
 describe("RejectItemModalComponent", () => {
   let component: RejectItemModalComponent;
@@ -16,6 +17,7 @@ describe("RejectItemModalComponent", () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(RejectItemModalComponent);
     component = fixture.componentInstance;
+    component.equipmentItem = CameraGenerator.camera();
     fixture.detectChanges();
   });
 
