@@ -31,7 +31,10 @@ import { SensorInterface } from "@features/equipment/types/sensor.interface";
 import { CameraInterface, CameraType } from "@features/equipment/types/camera.interface";
 import { Actions, ofType } from "@ngrx/effects";
 import { EditProposalInterface, EditProposalReviewStatus } from "@features/equipment/types/edit-proposal.interface";
-import { EquipmentItemEditorMode } from "@shared/components/equipment/editors/base-item-editor/base-item-editor.component";
+import {
+  BaseItemEditorComponent,
+  EquipmentItemEditorMode
+} from "@shared/components/equipment/editors/base-item-editor/base-item-editor.component";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { ItemBrowserComponent } from "@shared/components/equipment/item-browser/item-browser.component";
 import {
@@ -109,6 +112,9 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
   @Output()
   creationMode = new EventEmitter<boolean>();
 
+  @ViewChild("editor")
+  editor: BaseItemEditorComponent<EquipmentItemBaseInterface, null>;
+
   selectedItem: EquipmentItemBaseInterface | null = null;
   cameraVariants: CameraInterface[] = [];
 
@@ -159,10 +165,6 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
     public readonly modalService: NgbModal
   ) {
     super(store$);
-  }
-
-  get proposeEditButtonDisabled(): boolean {
-    return !this.editForm.valid;
   }
 
   get contentType$(): Observable<ContentTypeInterface | null> {
@@ -439,6 +441,36 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
   }
 
   proposeEdit() {
+    if (this.editForm.invalid) {
+      this.editForm.markAllAsTouched();
+      const errorList: string[] = [];
+      this.editor.fields.forEach(field => {
+        if (field.formControl.errors !== null) {
+          errorList.push(`<li>${field.templateOptions.label}</li>`);
+        }
+      });
+      this.popNotificationsService.error(
+        `
+        <p>
+          ${this.translateService.instant("The following form fields have errors, please correct them and try again:")}
+        </p>
+        <ul>
+          ${errorList.join("\n")}
+        </ul>
+        `,
+        null,
+        {
+          enableHtml: true
+        }
+      );
+      return;
+    }
+
+    if (this.editForm.untouched || this.editForm.pristine) {
+      this.popNotificationsService.error("In order to make an edit proposal, you need to edit some properties.");
+      return;
+    }
+
     let action: Action;
     let actionSuccessType: EquipmentActionTypes;
 

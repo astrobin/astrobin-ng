@@ -221,6 +221,7 @@
 
         <div class="card-body">
           <astrobin-camera-editor
+            #editor
             *ngIf="activeType === EquipmentItemType.CAMERA"
             [form]="editForm"
             [model]="editModel"
@@ -229,6 +230,7 @@
           ></astrobin-camera-editor>
 
           <astrobin-sensor-editor
+            #editor
             *ngIf="activeType === EquipmentItemType.SENSOR"
             [form]="editForm"
             [model]="editModel"
@@ -237,6 +239,7 @@
           ></astrobin-sensor-editor>
 
           <astrobin-telescope-editor
+            #editor
             *ngIf="activeType === EquipmentItemType.TELESCOPE"
             [form]="editForm"
             [model]="editModel"
@@ -245,6 +248,7 @@
           ></astrobin-telescope-editor>
 
           <astrobin-mount-editor
+            #editor
             *ngIf="activeType === EquipmentItemType.MOUNT"
             [form]="editForm"
             [model]="editModel"
@@ -253,6 +257,7 @@
           ></astrobin-mount-editor>
 
           <astrobin-filter-editor
+            #editor
             *ngIf="activeType === EquipmentItemType.FILTER"
             [form]="editForm"
             [model]="editModel"
@@ -261,6 +266,7 @@
           ></astrobin-filter-editor>
 
           <astrobin-accessory-editor
+            #editor
             *ngIf="activeType === EquipmentItemType.ACCESSORY"
             [form]="editForm"
             [model]="editModel"
@@ -269,6 +275,7 @@
           ></astrobin-accessory-editor>
 
           <astrobin-software-editor
+            #editor
             *ngIf="activeType === EquipmentItemType.SOFTWARE"
             [form]="editForm"
             [model]="editModel"
@@ -289,8 +296,7 @@
           <button
             class="btn btn-sm-block btn-primary"
             data-test="propose-edit-confirm"
-            [disabled]="proposeEditButtonDisabled"
-            [class.loading]="loadingService.isLoading()"
+            [class.loading]="loadingService.isLoading() || editForm.pending"
             (click)="proposeEdit()"
           >
             {{ "Propose edit" | translate }}
