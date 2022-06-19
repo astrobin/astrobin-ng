@@ -2,7 +2,11 @@ import { Injectable } from "@angular/core";
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
-import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import {
+  EquipmentItemBaseInterface,
+  EquipmentItemType,
+  EquipmentItemUsageType
+} from "@features/equipment/types/equipment-item-base.interface";
 import { TranslateService } from "@ngx-translate/core";
 import { EditProposalChange, EditProposalInterface } from "@features/equipment/types/edit-proposal.interface";
 import { Observable, of } from "rxjs";
@@ -42,8 +46,8 @@ export class EquipmentItemService extends BaseService {
     return getEquipmentItemType(item);
   }
 
-  humanizeType(type: EquipmentItemType) {
-    switch (type) {
+  humanizeType(itemType: EquipmentItemType) {
+    switch (itemType) {
       case EquipmentItemType.CAMERA:
         return this.translateService.instant("Camera");
       case EquipmentItemType.SENSOR:
@@ -58,6 +62,15 @@ export class EquipmentItemService extends BaseService {
         return this.translateService.instant("Accessory");
       case EquipmentItemType.SOFTWARE:
         return this.translateService.instant("Software");
+    }
+  }
+
+  humanizeUsageType(usageType: EquipmentItemUsageType) {
+    switch (usageType) {
+      case EquipmentItemUsageType.IMAGING:
+        return this.translateService.instant("Imaging");
+      case EquipmentItemUsageType.GUIDING:
+        return this.translateService.instant("Guiding");
     }
   }
 

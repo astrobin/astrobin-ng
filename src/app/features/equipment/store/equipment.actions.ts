@@ -326,6 +326,8 @@ export class RejectEquipmentItem implements PayloadActionInterface {
       reason: EquipmentItemReviewerRejectionReason;
       comment: string | null;
       duplicateOf: EquipmentItemBaseInterface["id"] | null;
+      duplicateOfKlass: EquipmentItemType | null;
+      duplicateOfUsageType: EquipmentItemUsageType | null;
     }
   ) {}
 }
