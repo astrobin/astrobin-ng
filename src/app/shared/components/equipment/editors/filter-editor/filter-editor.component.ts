@@ -8,12 +8,11 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 import { State } from "@app/store/state";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
-import { FormlyFieldMessageLevel, FormlyFieldService } from "@shared/services/formly-field.service";
+import { FormlyFieldService } from "@shared/services/formly-field.service";
 import { FilterDisplayProperty, FilterService } from "@features/equipment/services/filter.service";
 import { FilterInterface, FilterType } from "@features/equipment/types/filter.interface";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { FormlyFieldConfig } from "@ngx-formly/core";
 
 @Component({
   selector: "astrobin-filter-editor",
@@ -61,20 +60,6 @@ export class FilterEditorComponent extends BaseItemEditorComponent<FilterInterfa
     this.model.klass = EquipmentItemType.FILTER;
 
     super.ngAfterViewInit();
-  }
-
-  protected _customNameChangesValidations(field: FormlyFieldConfig, value: string) {
-    const hasSize: boolean = /\d+[.|,]?\d*"|\d+[.|,]?\d*mm|m\d+|aps|full|eos|sct/.test(value.toLowerCase());
-
-    if (hasSize) {
-      this.formlyFieldService.addMessage(field.templateOptions, {
-        level: FormlyFieldMessageLevel.WARNING,
-        text: this.translateService.instant(
-          `The AstroBin equipment database does not attempt to track filter sizes, because it would become too ` +
-            `noisy. If you added a size (e.g. 2", 50mm, etc), please remove it, thanks!`
-        )
-      });
-    }
   }
 
   private _initFields() {
