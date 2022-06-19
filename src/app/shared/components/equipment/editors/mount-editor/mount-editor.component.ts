@@ -11,9 +11,8 @@ import { EquipmentItemService } from "@features/equipment/services/equipment-ite
 import { FormlyFieldService } from "@shared/services/formly-field.service";
 import { MountDisplayProperty, MountService } from "@features/equipment/services/mount.service";
 import { MountInterface, MountType } from "@features/equipment/types/mount.interface";
-import { FormlyFieldConfig } from "@ngx-formly/core";
-import { takeUntil } from "rxjs/operators";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
   selector: "astrobin-mount-editor",
@@ -31,7 +30,8 @@ export class MountEditorComponent extends BaseItemEditorComponent<MountInterface
     public readonly equipmentApiService: EquipmentApiService,
     public readonly equipmentItemService: EquipmentItemService,
     public readonly formlyFieldService: FormlyFieldService,
-    public readonly mountService: MountService
+    public readonly mountService: MountService,
+    public readonly modalService: NgbModal
   ) {
     super(
       store$,
@@ -41,7 +41,8 @@ export class MountEditorComponent extends BaseItemEditorComponent<MountInterface
       windowRefService,
       equipmentApiService,
       equipmentItemService,
-      formlyFieldService
+      formlyFieldService,
+      modalService
     );
   }
 

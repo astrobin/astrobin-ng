@@ -12,6 +12,7 @@ import { FormlyFieldMessageLevel, FormlyFieldService } from "@shared/services/fo
 import { SoftwareInterface } from "@features/equipment/types/software.interface";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { FormlyFieldConfig } from "@ngx-formly/core";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
   selector: "astrobin-software-editor",
@@ -28,7 +29,8 @@ export class SoftwareEditorComponent extends BaseItemEditorComponent<SoftwareInt
     public readonly windowRefService: WindowRefService,
     public readonly equipmentApiService: EquipmentApiService,
     public readonly equipmentItemService: EquipmentItemService,
-    public readonly formlyFieldService: FormlyFieldService
+    public readonly formlyFieldService: FormlyFieldService,
+    public readonly modalService: NgbModal
   ) {
     super(
       store$,
@@ -38,7 +40,8 @@ export class SoftwareEditorComponent extends BaseItemEditorComponent<SoftwareInt
       windowRefService,
       equipmentApiService,
       equipmentItemService,
-      formlyFieldService
+      formlyFieldService,
+      modalService
     );
   }
 
