@@ -25,7 +25,12 @@
       border-right: 5px solid transparent;
       border-top: 5px solid var(--white);
       clear: both;
-      animation: tinyBounce 1s ease-out infinite;
+    }
+
+    &.pending:not(.opened) {
+      &::after {
+        animation: tinyBounce .9s ease-out infinite;
+      }
     }
   }
 
