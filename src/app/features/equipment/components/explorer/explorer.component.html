@@ -164,7 +164,7 @@
     <ng-container *ngIf="selectedItem">
       <ng-container *ngIf="editProposals !== null; else loadingEditProposals">
         <div class="edit-proposals" *ngIf="editProposals.length > 0">
-          <div [hidden]="!showEditProposals()">
+          <ng-container *ngIf="editProposalsCollapsed; else editProposalsCollapsedTemplate">
             <div class="edit-proposals-header" (click)="collapseEditProposals()">
               <div class="row">
                 <span class="col">{{ "Edit proposal by" | translate }}</span>
@@ -179,15 +179,16 @@
               [editProposal]="editProposal"
               [opened]="activeEditProposalId === editProposal.id"
             ></astrobin-item-edit-proposal>
-          </div>
+          </ng-container>
 
-          <div
-            class="edit-proposals-collapsed"
-            [hidden]="showEditProposals()"
-            [innerHTML]="collapsedEditProposalsMessage(editProposals)"
-            (click)="expandEditProposals()"
-          >
-          </div>
+          <ng-template #editProposalsCollapsedTemplate>
+            <div
+              class="edit-proposals-collapsed"
+              [innerHTML]="collapsedEditProposalsMessage(editProposals)"
+              (click)="expandEditProposals()"
+            >
+            </div>
+          </ng-template>
         </div>
       </ng-container>
 

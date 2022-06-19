@@ -55,7 +55,7 @@ import { FilterInterface } from "@features/equipment/types/filter.interface";
 import { AccessoryInterface } from "@features/equipment/types/accessory.interface";
 import { SoftwareInterface } from "@features/equipment/types/software.interface";
 import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
-import { Observable } from "rxjs";
+import { Observable, Subscription } from "rxjs";
 import { selectContentType } from "@app/store/selectors/app/content-type.selectors";
 import { LoadContentType } from "@app/store/actions/content-type.actions";
 import { UserInterface } from "@shared/interfaces/user.interface";
@@ -124,6 +124,7 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
 
   subCreationMode = false;
 
+  editProposalsSubscription: Subscription;
   editProposals: EditProposalInterface<EquipmentItemBaseInterface>[] | null = null;
   editProposalsCollapsed = true;
 
@@ -556,8 +557,11 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
       return;
     }
 
-    this.store$.dispatch(new FindEquipmentItemEditProposals({ item: this.selectedItem }));
-    this.store$
+    if (!!this.editProposalsSubscription) {
+      this.editProposalsSubscription.unsubscribe();
+    }
+
+    this.editProposalsSubscription = this.store$
       .select(selectEditProposalsForItem, this.selectedItem)
       .pipe(takeUntil(this.destroyed$))
       .subscribe(editProposals => {
@@ -565,6 +569,8 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
         this.editProposalsCollapsed =
           this.editProposalsByStatus(editProposals, null).length === 0 && !this.activeEditProposalId;
       });
+
+    this.store$.dispatch(new FindEquipmentItemEditProposals({ item: this.selectedItem }));
   }
 
   editProposalsByStatus(
@@ -582,10 +588,6 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
     return this.translateService.instant("This item has a history of <strong>{{0}}</strong> approved edit proposals.", {
       "0": this.editProposalsByStatus(editProposals, EditProposalReviewStatus.APPROVED).length
     });
-  }
-
-  showEditProposals(): boolean {
-    return this.editProposalsByStatus(this.editProposals, null)?.length > 0 || !this.editProposalsCollapsed;
   }
 
   collapseEditProposals() {
