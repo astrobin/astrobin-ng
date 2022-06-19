@@ -104,7 +104,9 @@
             <tr *ngFor="let item of itemsInBrand">
               <td>
                 <a [routerLink]="['/equipment/explorer', item.klass.toLowerCase(), item.id]">
-                  {{ item.name }}
+                  <astrobin-equipment-item-display-name
+                    [item]="item"
+                  ></astrobin-equipment-item-display-name>
                 </a>
               </td>
               <td>{{ equipmentItemService.humanizeType(item.klass) }}</td>
