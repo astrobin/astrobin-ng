@@ -10,8 +10,9 @@
   {{ itemName }}
   <a
     *ngIf="showItemUnapprovedInfo"
-    href=""
+    href="#"
     appEventPreventDefault
+    appEventStopPropagation
     (click)="openItemUnapprovedInfoModal(item)"
   >
     <fa-icon icon="asterisk"></fa-icon>
