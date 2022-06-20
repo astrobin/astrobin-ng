@@ -168,14 +168,6 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
 
         const hash = this.windowRefService.nativeWindow.location.hash;
 
-        if (hash?.indexOf("#c") > -1 && !!item.reviewerDecision) {
-          this.popNotificationsService.warning(
-            this.translateService.instant(
-              "The comment section for this item is not available anymore, because it's been already approved."
-            )
-          );
-        }
-
         if (
           this.activatedRoute.snapshot.queryParamMap.get("request-review") === "true" &&
           item &&

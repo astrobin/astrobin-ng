@@ -305,14 +305,16 @@
       </div>
     </ng-container>
 
-    <ng-container *ngIf="selectedItem && !selectedItem.reviewerDecision && !!selectedItem.brand">
-      <div *ngIf="contentType$ | async as contentType" class="comments mt-3">
-        <astrobin-nested-comments
-          [contentType]="contentType"
-          [objectId]="selectedItem.id"
-          [info]="commentsSectionInfoMessage$ | async"
-        ></astrobin-nested-comments>
-      </div>
+    <ng-container *ngIf="currentUser$ | async as currentUser">
+      <ng-container *ngIf="selectedItem && (currentUser.id === selectedItem.createdBy || (currentUser | isEquipmentModerator))">
+        <div *ngIf="contentType$ | async as contentType" class="comments mt-3">
+          <astrobin-nested-comments
+            [contentType]="contentType"
+            [objectId]="selectedItem.id"
+            [info]="commentsSectionInfoMessage$ | async"
+          ></astrobin-nested-comments>
+        </div>
+      </ng-container>
     </ng-container>
 
     <ng-container *ngIf="activeId">
