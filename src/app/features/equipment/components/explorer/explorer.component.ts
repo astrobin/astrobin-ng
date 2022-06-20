@@ -137,14 +137,12 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
     switchMap(user => {
       if (user.id === this.selectedItem.createdBy) {
         return this.translateService.stream(
-          "This comment section is only visible to you and AstroBin equipment moderators, and only while this " +
-            "equipment item is unapproved."
+          "This comment section is only visible to you and AstroBin equipment moderators."
         );
       }
 
       return this.translateService.stream(
-        "This comment section is only visible to AstroBin equipment moderators and the user who created this item, " +
-          "and only while this equipment item is unapproved."
+        "This comment section is only visible to AstroBin equipment moderators and the user who created this item."
       );
     })
   );
