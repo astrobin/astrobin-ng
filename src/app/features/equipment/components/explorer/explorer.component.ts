@@ -60,6 +60,7 @@ import { selectContentType } from "@app/store/selectors/app/content-type.selecto
 import { LoadContentType } from "@app/store/actions/content-type.actions";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { ImageInterface } from "@shared/interfaces/image.interface";
+import { distinctUntilChangedObj } from "@shared/services/utils/utils.service";
 
 @Component({
   selector: "astrobin-equipment-explorer",
@@ -563,7 +564,7 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
 
     this.editProposalsSubscription = this.store$
       .select(selectEditProposalsForItem, this.selectedItem)
-      .pipe(takeUntil(this.destroyed$))
+      .pipe(distinctUntilChangedObj(), takeUntil(this.destroyed$))
       .subscribe(editProposals => {
         this.editProposals = editProposals;
         this.editProposalsCollapsed =
@@ -596,6 +597,10 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
 
   expandEditProposals() {
     this.editProposalsCollapsed = false;
+  }
+
+  showEditProposals(): boolean {
+    return this.editProposalsByStatus(this.editProposals, null)?.length > 0 || !this.editProposalsCollapsed;
   }
 
   typeSupportsMigrateInto() {

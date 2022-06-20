@@ -11,7 +11,7 @@ import { catchError, map, mergeMap, take } from "rxjs/operators";
 
 @Injectable()
 export class ContentTypeEffects {
-  LoadCamera: Observable<LoadContentTypeSuccess> = createEffect(() =>
+  LoadContentType: Observable<LoadContentTypeSuccess> = createEffect(() =>
     this.actions$.pipe(
       ofType(AppActionTypes.LOAD_CONTENT_TYPE),
       mergeMap(action =>

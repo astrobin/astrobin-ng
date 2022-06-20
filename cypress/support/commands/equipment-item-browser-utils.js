@@ -218,6 +218,13 @@ export const testSoftwareEditProposal = {
 };
 
 Cypress.Commands.add("setupEquipmentDefaultRoutesForBrands", () => {
+  cy.route("GET", "**/api/v2/equipment/brand/?page=*&sort=*", {
+    count: 0,
+    next: null,
+    previous: null,
+    results: []
+  }).as("getAllBrands");
+
   cy.route("GET", "**/api/v2/equipment/brand/?q=*", {
     count: 0,
     next: null,
@@ -242,6 +249,13 @@ Cypress.Commands.add("setupEquipmentDefaultRoutesForBrands", () => {
   cy.route("GET", /\/json-api\/common\/url-is-available\/\?url=.*/, { available: true });
 
   cy.route("GET", /\/api\/v2\/equipment\/brand\/\d+\/$/, testBrand).as("findBrandsByName");
+});
+
+Cypress.Commands.add("setupEquipmentDefaultRoutesForAllClasses", () => {
+  cy.route("GET", "**/api/v2/equipment/**/users/", []).as("getUsers");
+  cy.route("GET", "**/api/v2/equipment/**/images/", []).as("getImages");
+  cy.route("GET", "**/api/v2/equipment/**/most-often-used-with/", []).as("getMostOftenUsedWith");
+  cy.route("GET", "**/api/v2/nestedcomments/nestedcomments/**", []).as("getComments");
 });
 
 Cypress.Commands.add("setupEquipmentDefaultRoutesForCameras", () => {
@@ -287,6 +301,14 @@ Cypress.Commands.add("setupEquipmentDefaultRoutesForCameras", () => {
   cy.route("GET", "**/api/v2/equipment/camera-edit-proposal/?edit_proposal_target=*", {
     results: []
   }).as("getEditProposals");
+
+  cy.route("GET", "**/api/v2/common/contenttypes/**", [
+    {
+      id: 1,
+      appLabel: "astrobin_apps_equipment",
+      model: "camera"
+    }
+  ]).as("getContentType");
 });
 
 Cypress.Commands.add("setupEquipmentDefaultRoutesForSensors", () => {
@@ -306,6 +328,14 @@ Cypress.Commands.add("setupEquipmentDefaultRoutesForSensors", () => {
   }).as("getSensors");
   cy.route("GET", "**/api/v2/equipment/sensor/find-similar-in-brand/*", []).as("findSimilarSensors");
   cy.route("GET", "**/api/v2/equipment/sensor/others-in-brand/*", [testSensor]).as("sensorOthersInBrand");
+
+  cy.route("GET", "**/api/v2/common/contenttypes/**", [
+    {
+      id: 1,
+      appLabel: "astrobin_apps_equipment",
+      model: "sensor"
+    }
+  ]).as("getContentType");
 });
 
 Cypress.Commands.add("setupEquipmentDefaultRoutesForTelescopes", () => {
@@ -351,6 +381,14 @@ Cypress.Commands.add("setupEquipmentDefaultRoutesForTelescopes", () => {
   cy.route("GET", "**/api/v2/equipment/telescope-edit-proposal/?edit_proposal_target=*", {
     results: []
   }).as("getEditProposals");
+
+  cy.route("GET", "**/api/v2/common/contenttypes/**", [
+    {
+      id: 1,
+      appLabel: "astrobin_apps_equipment",
+      model: "telescope"
+    }
+  ]).as("getContentType");
 });
 
 Cypress.Commands.add("setupEquipmentDefaultRoutesForMounts", () => {
@@ -396,6 +434,14 @@ Cypress.Commands.add("setupEquipmentDefaultRoutesForMounts", () => {
   cy.route("GET", "**/api/v2/equipment/mount-edit-proposal/?edit_proposal_target=*", {
     results: []
   }).as("getEditProposals");
+
+  cy.route("GET", "**/api/v2/common/contenttypes/**", [
+    {
+      id: 1,
+      appLabel: "astrobin_apps_equipment",
+      model: "mount"
+    }
+  ]).as("getContentType");
 });
 
 Cypress.Commands.add("setupEquipmentDefaultRoutesForFilters", () => {
@@ -441,6 +487,14 @@ Cypress.Commands.add("setupEquipmentDefaultRoutesForFilters", () => {
   cy.route("GET", "**/api/v2/equipment/filter-edit-proposal/?edit_proposal_target=*", {
     results: []
   }).as("getEditProposals");
+
+  cy.route("GET", "**/api/v2/common/contenttypes/**", [
+    {
+      id: 1,
+      appLabel: "astrobin_apps_equipment",
+      model: "filter"
+    }
+  ]).as("getContentType");
 });
 
 Cypress.Commands.add("setupEquipmentDefaultRoutesForAccessories", () => {
@@ -486,6 +540,14 @@ Cypress.Commands.add("setupEquipmentDefaultRoutesForAccessories", () => {
   cy.route("GET", "**/api/v2/equipment/accessory-edit-proposal/?edit_proposal_target=*", {
     results: []
   }).as("getEditProposals");
+
+  cy.route("GET", "**/api/v2/common/contenttypes/**", [
+    {
+      id: 1,
+      appLabel: "astrobin_apps_equipment",
+      model: "accessory"
+    }
+  ]).as("getContentType");
 });
 
 Cypress.Commands.add("setupEquipmentDefaultRoutesForSoftware", () => {
@@ -531,10 +593,19 @@ Cypress.Commands.add("setupEquipmentDefaultRoutesForSoftware", () => {
   cy.route("GET", "**/api/v2/equipment/software-edit-proposal/?edit_proposal_target=*", {
     results: []
   }).as("getEditProposals");
+
+  cy.route("GET", "**/api/v2/common/contenttypes/**", [
+    {
+      id: 1,
+      appLabel: "astrobin_apps_equipment",
+      model: "software"
+    }
+  ]).as("getContentType");
 });
 
 Cypress.Commands.add("setupEquipmentDefaultRoutes", () => {
   cy.setupEquipmentDefaultRoutesForBrands();
+  cy.setupEquipmentDefaultRoutesForAllClasses();
   cy.setupEquipmentDefaultRoutesForCameras();
   cy.setupEquipmentDefaultRoutesForSensors();
   cy.setupEquipmentDefaultRoutesForTelescopes();
