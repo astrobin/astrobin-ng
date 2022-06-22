@@ -15,7 +15,7 @@ context("Equipment", () => {
         cy.login();
         cy.visitPage("/equipment/explorer/accessory");
 
-        cy.route("get", "**/api/v2/equipment/accessory/?q=*", {
+        cy.route("get", /\/api\/v2\/equipment\/accessory\/.*/, {
           count: 1,
           next: null,
           previous: null,

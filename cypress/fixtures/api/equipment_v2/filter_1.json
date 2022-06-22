@@ -16,5 +16,7 @@
   "brand": 1,
   "group": null,
   "size": "ROUND_1_25_IN",
-  "bandwidth": 3
+  "bandwidth": 3,
+  "variantOf": null,
+  "variants": []
 }

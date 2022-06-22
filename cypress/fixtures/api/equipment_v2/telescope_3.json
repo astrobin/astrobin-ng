@@ -8,7 +8,7 @@
   "reviewerComment": null,
   "created": "2021-11-26T14:16:42.850333",
   "updated": "2021-11-26T14:16:42.850345",
-  "name": "Test Telescope 3",
+//  "name": "Test Telescope 3",
   "website": null,
   "image": null,
   "type": "REFRACTOR_ACHROMATIC",
@@ -19,5 +19,7 @@
   "createdBy": 1,
   "reviewedBy": null,
   "brand": 1,
-  "group": null
+  "group": null,
+  "variantOf": null,
+  "variants": []
 }
