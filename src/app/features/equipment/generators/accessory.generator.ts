@@ -16,7 +16,9 @@ export class AccessoryGenerator {
       website: source.website || "https://www.test-accessory.com",
       image: source.image || "https://cdn.astrobin.com/images/foo.jpg",
       userCount: null,
-      imageCount: null
+      imageCount: null,
+      variantOf: null,
+      variants: []
     };
   }
 }

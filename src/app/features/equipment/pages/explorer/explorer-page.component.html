@@ -66,7 +66,7 @@
                   <astrobin-equipment-item-display-name [item]="item"></astrobin-equipment-item-display-name>
                   <span
                     *ngIf="item.variants?.length > 0"
-                    [innerHTML]="'(' + ('{{numVariants}} variants' | translate:{numVariants: item.variants.length}) + ')'"
+                    [innerHTML]="'+ {{numVariants}} variants' | translate:{numVariants: item.variants.length}"
                     class="variant-count"
                   >
                   </span>

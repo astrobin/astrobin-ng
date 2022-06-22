@@ -94,13 +94,13 @@ describe("EquipmentApiService", () => {
   it("findAllEquipmentItems should work", () => {
     const cameras = [CameraGenerator.camera(), CameraGenerator.camera()];
 
-    service.findAllEquipmentItems("foo", EquipmentItemType.CAMERA).subscribe(response => {
-      expect(response.length).toEqual(2);
+    service.findAllEquipmentItems(EquipmentItemType.CAMERA, { query: "foo" }).subscribe(response => {
+      expect(response.results.length).toEqual(2);
     });
 
     const req = httpMock.expectOne(`${service.configUrl}/camera/?q=foo`);
     expect(req.request.method).toBe("GET");
-    req.flush(cameras);
+    req.flush({ results: cameras });
   });
 
   describe("getByContentTypeAndObjectId", () => {
