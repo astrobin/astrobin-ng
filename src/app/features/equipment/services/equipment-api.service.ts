@@ -32,24 +32,8 @@ import { UserInterface } from "@shared/interfaces/user.interface";
 import { ImageInterface } from "@shared/interfaces/image.interface";
 import { EquipmentItemMostOftenUsedWith } from "@features/equipment/types/equipment-item-most-often-used-with-data.interface";
 import { ExplorerFilterInterface } from "@features/equipment/pages/explorer/explorer-filters/explorer-filters.component";
+import { ExplorerPageSortOrder } from "@features/equipment/pages/explorer-base/explorer-base.component";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
-
-export interface AllEquipmentItemsOptionsInterface {
-  query?: string;
-  sortOrder?: string;
-  filters?: ExplorerFilterInterface[];
-  page?: number;
-  includeVariants?: boolean;
-}
-
-export enum EquipmentItemsSortOrder {
-  AZ = "az",
-  AZ_DESC = "-az",
-  USERS = "users",
-  USERS_DESC = "-users",
-  IMAGES = "images",
-  IMAGES_DESC = "-images"
-}
 
 @Injectable({
   providedIn: "root"
@@ -80,18 +64,20 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     return this.http.get<EquipmentItemBaseInterface>(url).pipe(map(item => this._parseItem(item)));
   }
 
-  findAllEquipmentItems(
+  getAllEquipmentItems(
     type: EquipmentItemType,
-    options: AllEquipmentItemsOptionsInterface
+    page = 1,
+    sort?: string,
+    filters?: ExplorerFilterInterface[]
   ): Observable<PaginatedApiResultInterface<EquipmentItemBaseInterface>> {
-    let url = `${this.configUrl}/${type.toLowerCase()}/`;
+    let url = `${this.configUrl}/${type.toLowerCase()}/?page=${page}`;
 
-    url = UtilsService.addOrUpdateUrlParam(url, "page", String(options.page || 1));
-    url = UtilsService.addOrUpdateUrlParam(url, "sort", options.sortOrder || EquipmentItemsSortOrder.AZ);
-    url = UtilsService.addOrUpdateUrlParam(url, "q", options.query || "");
+    if (!!sort) {
+      url = UtilsService.addOrUpdateUrlParam(url, "sort", sort);
+    }
 
-    if (!!options.filters) {
-      for (const filter of options.filters) {
+    if (!!filters) {
+      for (const filter of filters) {
         let value = filter.value;
 
         if (UtilsService.isObject(value)) {
@@ -101,8 +87,6 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
         url = UtilsService.addOrUpdateUrlParam(url, filter.type, value);
       }
     }
-
-    url = UtilsService.addOrUpdateUrlParam(url, "include-variants", String(options.includeVariants || false));
 
     return this.http.get<PaginatedApiResultInterface<EquipmentItemBaseInterface>>(url).pipe(
       map(response => ({
@@ -150,6 +134,16 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
       );
   }
 
+  findAllEquipmentItems(q: string, type: EquipmentItemType): Observable<EquipmentItemBaseInterface[]> {
+    if (!q) {
+      return of([]);
+    }
+
+    return this.http
+      .get<PaginatedApiResultInterface<EquipmentItemBaseInterface>>(`${this.configUrl}/${type.toLowerCase()}/?q=${q}`)
+      .pipe(map(response => response.results.map(item => this._parseItem(item))));
+  }
+
   findRecentlyUsedEquipmentItems(
     type: EquipmentItemType,
     usageType: EquipmentItemUsageType
@@ -187,7 +181,7 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     page: number = 1
   ): Observable<PaginatedApiResultInterface<EquipmentItem>> {
     return this.http.get<PaginatedApiResultInterface<EquipmentItem>>(
-      `${this.configUrl}/${type.toLowerCase()}/?brand=${brand}&page=${page}&include-variants=false`
+      `${this.configUrl}/${type.toLowerCase()}/?brand=${brand}&page=${page}`
     );
   }
 
@@ -374,7 +368,7 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
   // BRAND API
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  getAllBrands(page = 1, sort = EquipmentItemsSortOrder.AZ): Observable<PaginatedApiResultInterface<BrandInterface>> {
+  getAllBrands(page = 1, sort = ExplorerPageSortOrder.AZ): Observable<PaginatedApiResultInterface<BrandInterface>> {
     return this.http.get<PaginatedApiResultInterface<BrandInterface>>(
       `${this.configUrl}/brand/?page=${page}&sort=${sort}`
     );

@@ -24,9 +24,7 @@ export class CameraGenerator {
       maxCooling: source.maxCooling !== undefined ? source.maxCooling : 50,
       backFocus: source.backFocus !== undefined ? source.backFocus : 10,
       userCount: null,
-      imageCount: null,
-      variantOf: null,
-      variants: []
+      imageCount: null
     };
   }
 

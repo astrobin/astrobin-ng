@@ -31,3 +31,8 @@
   }
 }
 
+::ng-deep {
+  astrobin-equipment-item-summary + .camera-variants {
+    margin-top: .25rem !important;
+  }
+}

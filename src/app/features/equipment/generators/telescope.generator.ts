@@ -21,9 +21,7 @@ export class TelescopeGenerator {
       maxFocalLength: source.maxFocalLength || 450,
       weight: source.weight || 2,
       userCount: null,
-      imageCount: null,
-      variantOf: null,
-      variants: []
+      imageCount: null
     };
   }
 }

@@ -18,9 +18,7 @@ export class FilterGenerator {
       type: source.type || FilterType.L,
       bandwidth: source.bandwidth || 12,
       userCount: null,
-      imageCount: null,
-      variantOf: null,
-      variants: []
+      imageCount: null
     };
   }
 }

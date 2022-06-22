@@ -27,9 +27,7 @@ export class SensorGenerator {
       adc: source.adc || 1,
       colorOrMono: source.colorOrMono || ColorOrMono.M,
       userCount: null,
-      imageCount: null,
-      variantOf: null,
-      variants: []
+      imageCount: null
     };
   }
 }

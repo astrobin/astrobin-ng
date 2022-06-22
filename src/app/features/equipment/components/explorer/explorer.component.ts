@@ -299,10 +299,6 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
     return true;
   }
 
-  asCamera(item: EquipmentItemBaseInterface): CameraInterface {
-    return (item as unknown) as CameraInterface;
-  }
-
   startEditMode() {
     if (!this._verifyCameraVariantCanBeEdited()) {
       return;
@@ -410,6 +406,29 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
 
     this.endEditMode();
     this.loadEditProposals();
+  }
+
+  supportsVariants(item: EquipmentItemBaseInterface): boolean {
+    return (
+      this.equipmentItemService.getType(item) === EquipmentItemType.CAMERA &&
+      (item as CameraInterface).type === CameraType.DSLR_MIRRORLESS
+    );
+  }
+
+  getVariants(item: EquipmentItemBaseInterface): CameraInterface[] {
+    if (!this.supportsVariants(item)) {
+      throw new Error("Item is not a camera");
+    }
+
+    return (item as CameraInterface).variants;
+  }
+
+  getParentVariant(item: EquipmentItemBaseInterface): CameraInterface {
+    if (!this.supportsVariants(item)) {
+      throw new Error("Item is not a camera");
+    }
+
+    return (item as CameraInterface).parentVariant;
   }
 
   onCreationModeStarted() {

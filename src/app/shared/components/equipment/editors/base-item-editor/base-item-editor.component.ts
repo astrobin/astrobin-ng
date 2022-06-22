@@ -14,8 +14,7 @@ import {
   FindSimilarInBrand,
   FindSimilarInBrandSuccess,
   GetOthersInBrand,
-  GetOthersInBrandSuccess,
-  LoadEquipmentItem
+  GetOthersInBrandSuccess
 } from "@features/equipment/store/equipment.actions";
 import { Actions, ofType } from "@ngrx/effects";
 import { debounceTime, distinctUntilChanged, filter, map, switchMap, take, takeUntil, tap } from "rxjs/operators";
@@ -25,16 +24,12 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { State } from "@app/store/state";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
-import { selectBrand, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
-import {
-  EquipmentItemDisplayProperty,
-  EquipmentItemService
-} from "@features/equipment/services/equipment-item.service";
+import { selectBrand } from "@features/equipment/store/equipment.selectors";
+import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 import { FormlyFieldMessageLevel, FormlyFieldService } from "@shared/services/formly-field.service";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { InformationDialogComponent } from "@shared/components/misc/information-dialog/information-dialog.component";
-import { FormlyFieldEquipmentItemBrowserMode } from "@shared/components/misc/formly-field-equipment-item-browser/formly-field-equipment-item-browser.component";
 
 export enum EquipmentItemEditorMode {
   CREATION,
@@ -389,7 +384,6 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
                       this._othersInBrand();
 
                       this.form.get("name").updateValueAndValidity({ emitEvent: false });
-                      this.form.get("variantOf").updateValueAndValidity({ emitEvent: false });
                     })
                   );
                 }
@@ -488,55 +482,6 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
               }
             }
           }
-        }
-      }
-    };
-  }
-
-  protected _getVariantOfField(itemType: EquipmentItemType) {
-    return {
-      key: "variantOf",
-      type: "equipment-item-browser",
-      wrappers: ["default-wrapper"],
-      id: "equipment-item-field-variant-of",
-      hideExpression: () => !!this.model.diy || !this.model.brand,
-      expressionProperties: {
-        "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
-      },
-      templateOptions: {
-        mode: FormlyFieldEquipmentItemBrowserMode.ID,
-        label: this.equipmentItemService.getPrintablePropertyName(itemType, EquipmentItemDisplayProperty.VARIANT_OF),
-        description: this.translateService.instant(
-          "If this item is a variant of another product, please select it here. This is typically used for " +
-            "products that have multiple versions (e.g. filter size, filter wheel size and number of slots, software " +
-            "versions...) and AstroBin will use this information to group certain pieces of data (e.g. search results)."
-        ),
-        itemType,
-        showQuickAddRecent: false,
-        showPlaceholderImage: false,
-        required: false,
-        multiple: false,
-        enableCreation: false,
-        enableVariantSelection: false
-      },
-      asyncValidators: {
-        sameBrand: {
-          expression: (control: FormControl) => {
-            if (!control.value) {
-              return of(true);
-            }
-
-            const payload = { id: control.value, type: itemType };
-            this.store$.dispatch(new LoadEquipmentItem(payload));
-            return this.store$.select(selectEquipmentItem, payload).pipe(
-              filter(variantOf => !!variantOf),
-              take(1),
-              map(variantOf => variantOf.brand === this.model.brand)
-            );
-          },
-          message: this.translateService.instant(
-            `The "Variant of" field must be an item with the same brand as this one.`
-          )
         }
       }
     };

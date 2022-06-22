@@ -242,8 +242,8 @@ export class EquipmentEffects {
       map((action: FindAllEquipmentItems) => action.payload),
       mergeMap(payload =>
         this.equipmentApiService
-          .findAllEquipmentItems(payload.type, payload.options)
-          .pipe(map(response => new FindAllEquipmentItemsSuccess({ items: response.results })))
+          .findAllEquipmentItems(payload.q, payload.type)
+          .pipe(map(items => new FindAllEquipmentItemsSuccess({ items })))
       )
     )
   );

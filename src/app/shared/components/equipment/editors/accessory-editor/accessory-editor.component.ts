@@ -66,7 +66,6 @@ export class AccessoryEditorComponent extends BaseItemEditorComponent<AccessoryI
         this._getDIYField(),
         this._getBrandField(),
         this._getNameField(),
-        this._getVariantOfField(EquipmentItemType.ACCESSORY),
         this._getWebsiteField(),
         this._getImageField()
       ];

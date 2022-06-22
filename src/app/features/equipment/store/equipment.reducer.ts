@@ -9,7 +9,7 @@ import { EquipmentPresetInterface } from "@features/equipment/types/equipment-pr
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { ImageInterface } from "@shared/interfaces/image.interface";
 import { EquipmentItemMostOftenUsedWithData } from "@features/equipment/types/equipment-item-most-often-used-with-data.interface";
-import { EquipmentItemsSortOrder } from "@features/equipment/services/equipment-api.service";
+import { ExplorerPageSortOrder } from "@features/equipment/pages/explorer-base/explorer-base.component";
 
 export const equipmentFeatureKey = "equipment";
 

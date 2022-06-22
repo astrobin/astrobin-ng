@@ -221,7 +221,7 @@ context("Image edit (existing), test equipment presets", () => {
   });
 
   it("should add a telescope", () => {
-    cy.route("get", "**/api/v2/equipment/telescope/*", {
+    cy.route("get", "**/api/v2/equipment/telescope/?q=Foo", {
       count: 1,
       next: null,
       previous: null,

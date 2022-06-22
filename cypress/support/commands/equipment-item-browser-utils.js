@@ -34,9 +34,7 @@ export const testSensor = {
   colorOrMono: null,
   createdBy: 1,
   reviewedBy: null,
-  brand: 1,
-  variantOf: null,
-  variants: []
+  brand: 1
 };
 
 export const testCamera = {
@@ -58,9 +56,7 @@ export const testCamera = {
   backFocus: 30,
   createdBy: 1,
   reviewedBy: null,
-  sensor: 1,
-  variantOf: null,
-  variants: []
+  sensor: 1
 };
 
 export const testTelescope = {
@@ -80,9 +76,7 @@ export const testTelescope = {
   aperture: 80,
   minFocalLength: 600,
   maxFocalLength: 600,
-  weight: 2,
-  variantOf: null,
-  variants: []
+  weight: 2
 };
 
 export const testMount = {
@@ -100,9 +94,7 @@ export const testMount = {
   image: null,
   type: "GERMAN_EQUATORIAL",
   weight: 50,
-  maxPayload: 80,
-  variantOf: null,
-  variants: []
+  maxPayload: 80
 };
 
 export const testFilter = {
@@ -120,9 +112,7 @@ export const testFilter = {
   image: null,
   type: "L",
   bandwidth: 12,
-  size: "ROUND_1_25_IN",
-  variantOf: null,
-  variants: []
+  size: "ROUND_1_25_IN"
 };
 
 export const testAccessory = {
@@ -137,9 +127,7 @@ export const testAccessory = {
   updated: "2021-09-12T08:09:58.508679",
   brand: 1,
   name: "Test accessory",
-  image: null,
-  variantOf: null,
-  variants: []
+  image: null
 };
 
 export const testSoftware = {
@@ -154,9 +142,7 @@ export const testSoftware = {
   updated: "2021-09-12T08:09:58.508679",
   brand: 1,
   name: "Test software",
-  image: null,
-  variantOf: null,
-  variants: []
+  image: null
 };
 
 export const testCameraEditProposal = {
@@ -273,12 +259,19 @@ Cypress.Commands.add("setupEquipmentDefaultRoutesForAllClasses", () => {
 });
 
 Cypress.Commands.add("setupEquipmentDefaultRoutesForCameras", () => {
+  cy.route("GET", "**/api/v2/equipment/camera/?q=*", {
+    count: 0,
+    next: null,
+    previous: null,
+    results: []
+  }).as("findCameras");
+
   cy.route("GET", "**/api/v2/equipment/camera/?page=*", {
     count: 1,
     next: null,
     previous: null,
     results: [testCamera]
-  }).as("findCameras");
+  }).as("getCameras");
 
   cy.route("GET", "**/api/v2/equipment/camera/find-similar-in-brand/*", []);
 
@@ -321,12 +314,18 @@ Cypress.Commands.add("setupEquipmentDefaultRoutesForCameras", () => {
 Cypress.Commands.add("setupEquipmentDefaultRoutesForSensors", () => {
   cy.route("GET", /\/api\/v2\/equipment\/sensor\/\d+\/$/, testSensor).as("getSensor");
   cy.route("GET", "**/api/v2/equipment/sensor/?brand=*", { count: 0, results: [] }).as("findSensorsByName");
+  cy.route("GET", "**/api/v2/equipment/sensor/?q=*", {
+    count: 0,
+    next: null,
+    previous: null,
+    results: []
+  }).as("findSensors");
   cy.route("GET", "**/api/v2/equipment/sensor/?page=*", {
     count: 1,
     next: null,
     previous: null,
     results: [testSensor]
-  }).as("findSensors");
+  }).as("getSensors");
   cy.route("GET", "**/api/v2/equipment/sensor/find-similar-in-brand/*", []).as("findSimilarSensors");
   cy.route("GET", "**/api/v2/equipment/sensor/others-in-brand/*", [testSensor]).as("sensorOthersInBrand");
 
@@ -340,12 +339,19 @@ Cypress.Commands.add("setupEquipmentDefaultRoutesForSensors", () => {
 });
 
 Cypress.Commands.add("setupEquipmentDefaultRoutesForTelescopes", () => {
+  cy.route("GET", "**/api/v2/equipment/telescope/?q=*", {
+    count: 0,
+    next: null,
+    previous: null,
+    results: []
+  }).as("findTelescopes");
+
   cy.route("GET", "**/api/v2/equipment/telescope/?page=*", {
     count: 1,
     next: null,
     previous: null,
     results: [testTelescope]
-  }).as("findTelescopes");
+  }).as("getTelescopes");
 
   cy.route("GET", "**/api/v2/equipment/telescope/find-similar-in-brand/*", []);
 
@@ -386,12 +392,19 @@ Cypress.Commands.add("setupEquipmentDefaultRoutesForTelescopes", () => {
 });
 
 Cypress.Commands.add("setupEquipmentDefaultRoutesForMounts", () => {
+  cy.route("GET", "**/api/v2/equipment/mount/?q=*", {
+    count: 0,
+    next: null,
+    previous: null,
+    results: []
+  }).as("findMounts");
+
   cy.route("GET", "**/api/v2/equipment/mount/?page=*", {
     count: 1,
     next: null,
     previous: null,
     results: [testMount]
-  }).as("findMounts");
+  }).as("getMounts");
 
   cy.route("GET", "**/api/v2/equipment/mount/find-similar-in-brand/*", []);
 
@@ -432,12 +445,19 @@ Cypress.Commands.add("setupEquipmentDefaultRoutesForMounts", () => {
 });
 
 Cypress.Commands.add("setupEquipmentDefaultRoutesForFilters", () => {
+  cy.route("GET", "**/api/v2/equipment/filter/?q=*", {
+    count: 0,
+    next: null,
+    previous: null,
+    results: []
+  }).as("findFilters");
+
   cy.route("GET", "**/api/v2/equipment/filter/?page=*", {
     count: 1,
     next: null,
     previous: null,
     results: [testFilter]
-  }).as("findFilters");
+  }).as("getFilters");
 
   cy.route("GET", "**/api/v2/equipment/filter/find-similar-in-brand/*", []);
 
@@ -478,12 +498,19 @@ Cypress.Commands.add("setupEquipmentDefaultRoutesForFilters", () => {
 });
 
 Cypress.Commands.add("setupEquipmentDefaultRoutesForAccessories", () => {
+  cy.route("GET", "**/api/v2/equipment/accessory/?q=*", {
+    count: 0,
+    next: null,
+    previous: null,
+    results: []
+  }).as("findAccessories");
+
   cy.route("GET", "**/api/v2/equipment/accessory/?page=*", {
     count: 1,
     next: null,
     previous: null,
     results: [testAccessory]
-  }).as("findAccessories");
+  }).as("getAccessories");
 
   cy.route("GET", "**/api/v2/equipment/accessory/find-similar-in-brand/*", []);
 
@@ -524,12 +551,19 @@ Cypress.Commands.add("setupEquipmentDefaultRoutesForAccessories", () => {
 });
 
 Cypress.Commands.add("setupEquipmentDefaultRoutesForSoftware", () => {
+  cy.route("GET", "**/api/v2/equipment/software/?q=*", {
+    count: 0,
+    next: null,
+    previous: null,
+    results: []
+  }).as("findSoftwareItems");
+
   cy.route("GET", "**/api/v2/equipment/software/?page=*", {
     count: 1,
     next: null,
     previous: null,
     results: [testSoftware]
-  }).as("findSoftwareItems");
+  }).as("getSoftwareItems");
 
   cy.route("GET", "**/api/v2/equipment/software/find-similar-in-brand/*", []);
 
@@ -748,7 +782,7 @@ Cypress.Commands.add("equipmentItemBrowserSelectFirstFilter", (selector, filterN
 });
 
 Cypress.Commands.add("equipmentItemBrowserSelectFirstAccessory", (selector, accessoryName, accessoryObject) => {
-  cy.route("GET", "**/api/v2/equipment/accessory/.*", {
+  cy.route("GET", "**/api/v2/equipment/accessory/?q=*", {
     count: 1,
     next: null,
     previous: null,

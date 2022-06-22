@@ -20,7 +20,5 @@
   "reviewedBy": null,
   "brand": 1,
   "group": null,
-  "sensor": null,
-  "variantOf": null,
-  "variants": []
+  "sensor": null
 }

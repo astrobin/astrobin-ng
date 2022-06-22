@@ -233,6 +233,7 @@ export class RejectItemModalComponent extends BaseComponentDirective implements 
         showQuickAddRecent: false,
         showPlaceholderImage: false,
         multiple: false,
+        enableVariantSelection: true,
         enableCreation: false
       }
     };

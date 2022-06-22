@@ -319,7 +319,7 @@ context("Image edit (new)", () => {
 
   it("should add a telescope", () => {
     cy.route("get", "**/api/v2/equipment/brand/1/", "fixture:api/equipment_v2/brand_1.json").as("getBrand1");
-    cy.route("get", "**/api/v2/equipment/telescope/*", {
+    cy.route("get", "**/api/v2/equipment/telescope/?q=Foo", {
       count: 1,
       next: null,
       previous: null,

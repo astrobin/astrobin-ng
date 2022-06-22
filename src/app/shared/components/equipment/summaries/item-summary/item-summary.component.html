@@ -40,21 +40,9 @@
               {{ property.name }}
             </th>
             <td class="property-value">
-              <ng-container *ngIf="!!property.link; else noLink">
-                <a [routerLink]="property.link">
-                  <ng-container *ngTemplateOutlet="propertyValueTemplate"></ng-container>
-                </a>
+              <ng-container *ngIf="property.value | async as value; else noValue">
+                <span class="property-value" [innerHTML]="value"></span>
               </ng-container>
-
-              <ng-template #noLink>
-                <ng-container *ngTemplateOutlet="propertyValueTemplate"></ng-container>
-              </ng-template>
-
-              <ng-template #propertyValueTemplate>
-                <ng-container *ngIf="property.value | async as value; else noValue">
-                  <span class="property-value" [innerHTML]="value"></span>
-                </ng-container>
-              </ng-template>
 
               <ng-template #noValue>
                 <span class="property-value">{{ "n/a" | translate }}</span>

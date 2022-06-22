@@ -16,9 +16,7 @@ export class SoftwareGenerator {
       website: source.website || "https://www.test-software.com",
       image: source.image || "https://cdn.astrobin.com/images/foo.jpg",
       userCount: null,
-      imageCount: null,
-      variantOf: null,
-      variants: []
+      imageCount: null
     };
   }
 }

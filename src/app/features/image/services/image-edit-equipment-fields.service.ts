@@ -59,6 +59,7 @@ export class ImageEditEquipmentFieldsService extends BaseService {
         usageType: EquipmentItemUsageType.IMAGING,
         showQuickAddRecent: true,
         showPlaceholderImage: true,
+        enableVariantSelection: true,
         enableCreation: true
       }
     };

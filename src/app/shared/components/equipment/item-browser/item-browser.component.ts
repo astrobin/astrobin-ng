@@ -99,7 +99,7 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
   enableSummaryModal = false;
 
   @Input()
-  enableVariantSelection = true;
+  enableVariantSelection = false;
 
   @Input()
   enableCreation = true;
@@ -436,12 +436,17 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
       this.windowRefService.scrollToElement(`#${this.id}`);
     };
 
-    if (this.enableVariantSelection && item.variants?.length > 0) {
+    if (
+      this.equipmentItemService.getType(item) === EquipmentItemType.CAMERA &&
+      this.enableVariantSelection &&
+      (item as CameraInterface).variants?.length > 0
+    ) {
+      const camera = item as CameraInterface;
       const modal: NgbModalRef = this.modalService.open(VariantSelectorModalComponent);
-      modal.componentInstance.variants = [...[item], ...item.variants];
+      modal.componentInstance.variants = [...[camera], ...camera.variants];
 
-      modal.closed.pipe(take(1)).subscribe((variant: EquipmentItem) => {
-        _doAddItem(variant);
+      modal.closed.pipe(take(1)).subscribe((variant: CameraInterface) => {
+        _doAddItem(variant as EquipmentItemBaseInterface);
       });
     } else {
       _doAddItem(item);
@@ -455,7 +460,11 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
   }
 
   onOptionClicked($event, obj): boolean {
-    if (this.enableVariantSelection && obj.item.variants?.length > 0) {
+    if (
+      this.equipmentItemService.getType(obj.item) === EquipmentItemType.CAMERA &&
+      this.enableVariantSelection &&
+      (obj.item as CameraInterface).variants?.length > 0
+    ) {
       $event.preventDefault();
       $event.stopPropagation();
       this.addItem(obj.item);
@@ -479,7 +488,7 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
   }
 
   variantsMessage(numberOfVariants: number): string {
-    return this.translateService.instant("Available in {{0}} additional variants:", {
+    return this.translateService.instant("Available in {{0}} additional variants.", {
       0: numberOfVariants
     });
   }
@@ -706,10 +715,8 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
       const field = this.fields[0];
       this.store$.dispatch(
         new FindAllEquipmentItems({
-          type: this.type,
-          options: {
-            query: q
-          }
+          q,
+          type: this.type
         })
       );
 

@@ -23,9 +23,7 @@ export class MountGenerator {
       computerized: source.computerized !== null && source.computerized !== undefined ? source.computerized : true,
       slewSpeed: source.slewSpeed || 2,
       userCount: null,
-      imageCount: null,
-      variantOf: null,
-      variants: []
+      imageCount: null
     };
   }
 }

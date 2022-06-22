@@ -49,7 +49,7 @@ describe("ExplorerComponent", () => {
     fixture = TestBed.createComponent(ExplorerPageComponent);
     component = fixture.componentInstance;
 
-    jest.spyOn(component.equipmentApiService, "findAllEquipmentItems").mockReturnValue(
+    jest.spyOn(component.equipmentApiService, "getAllEquipmentItems").mockReturnValue(
       of({
         count: 0,
         next: null,

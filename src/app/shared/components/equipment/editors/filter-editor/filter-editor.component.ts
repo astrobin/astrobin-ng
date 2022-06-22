@@ -68,7 +68,6 @@ export class FilterEditorComponent extends BaseItemEditorComponent<FilterInterfa
         this._getDIYField(),
         this._getBrandField(),
         this._getNameField(),
-        this._getVariantOfField(EquipmentItemType.FILTER),
         {
           key: "type",
           type: "ng-select",

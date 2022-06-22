@@ -68,7 +68,6 @@ export class MountEditorComponent extends BaseItemEditorComponent<MountInterface
         this._getDIYField(),
         this._getBrandField(),
         this._getNameField(),
-        this._getVariantOfField(EquipmentItemType.MOUNT),
         {
           key: "type",
           type: "ng-select",

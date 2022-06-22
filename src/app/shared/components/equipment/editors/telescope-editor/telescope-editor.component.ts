@@ -70,7 +70,6 @@ export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeI
         this._getDIYField(),
         this._getBrandField(),
         this._getNameField(),
-        this._getVariantOfField(EquipmentItemType.TELESCOPE),
         {
           key: "type",
           type: "ng-select",

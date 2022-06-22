@@ -12,7 +12,15 @@ import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/pag
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { BrandInterface } from "@features/equipment/types/brand.interface";
 import { CookieService } from "ngx-cookie-service";
-import { EquipmentItemsSortOrder } from "@features/equipment/services/equipment-api.service";
+
+export enum ExplorerPageSortOrder {
+  AZ = "az",
+  AZ_DESC = "-az",
+  USERS = "users",
+  USERS_DESC = "-users",
+  IMAGES = "images",
+  IMAGES_DESC = "-images"
+}
 
 export const EQUIPMENT_EXPLORER_PAGE_SORTING_COOKIE = "astrobin-equipment-explorer-page-sorting";
 
@@ -24,7 +32,7 @@ export class ExplorerBaseComponent extends BaseComponentDirective implements OnI
   public page = 1;
   activeEditProposalId: EditProposalInterface<EquipmentItemBaseInterface>["id"];
   items$: Observable<PaginatedApiResultInterface<EquipmentItemBaseInterface> | BrandInterface[]>;
-  sortOrder: EquipmentItemsSortOrder = EquipmentItemsSortOrder.AZ;
+  sortOrder: ExplorerPageSortOrder = ExplorerPageSortOrder.AZ;
   navCollapsed = false;
   enableNavCollapsing = false;
 
@@ -91,10 +99,10 @@ export class ExplorerBaseComponent extends BaseComponentDirective implements OnI
   }
 
   toggleAZSorting() {
-    if (this.sortOrder !== EquipmentItemsSortOrder.AZ) {
-      this.sortOrder = EquipmentItemsSortOrder.AZ;
+    if (this.sortOrder !== ExplorerPageSortOrder.AZ) {
+      this.sortOrder = ExplorerPageSortOrder.AZ;
     } else {
-      this.sortOrder = EquipmentItemsSortOrder.AZ_DESC;
+      this.sortOrder = ExplorerPageSortOrder.AZ_DESC;
     }
 
     this.cookieService.set(EQUIPMENT_EXPLORER_PAGE_SORTING_COOKIE, this.sortOrder, null, "/");
@@ -103,10 +111,10 @@ export class ExplorerBaseComponent extends BaseComponentDirective implements OnI
   }
 
   toggleUsersSorting() {
-    if (this.sortOrder !== EquipmentItemsSortOrder.USERS_DESC) {
-      this.sortOrder = EquipmentItemsSortOrder.USERS_DESC;
+    if (this.sortOrder !== ExplorerPageSortOrder.USERS_DESC) {
+      this.sortOrder = ExplorerPageSortOrder.USERS_DESC;
     } else {
-      this.sortOrder = EquipmentItemsSortOrder.USERS;
+      this.sortOrder = ExplorerPageSortOrder.USERS;
     }
 
     this.cookieService.set(EQUIPMENT_EXPLORER_PAGE_SORTING_COOKIE, this.sortOrder, null, "/");
@@ -115,10 +123,10 @@ export class ExplorerBaseComponent extends BaseComponentDirective implements OnI
   }
 
   toggleImagesSorting() {
-    if (this.sortOrder !== EquipmentItemsSortOrder.IMAGES_DESC) {
-      this.sortOrder = EquipmentItemsSortOrder.IMAGES_DESC;
+    if (this.sortOrder !== ExplorerPageSortOrder.IMAGES_DESC) {
+      this.sortOrder = ExplorerPageSortOrder.IMAGES_DESC;
     } else {
-      this.sortOrder = EquipmentItemsSortOrder.IMAGES;
+      this.sortOrder = ExplorerPageSortOrder.IMAGES;
     }
 
     this.cookieService.set(EQUIPMENT_EXPLORER_PAGE_SORTING_COOKIE, this.sortOrder, null, "/");
