@@ -33,6 +33,10 @@
     .property-value {
       color: var(--lighterGrey);
     }
+
+    a > .property-value {
+      color: inherit;
+    }
   }
 }
 

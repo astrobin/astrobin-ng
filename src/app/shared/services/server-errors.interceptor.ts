@@ -69,6 +69,11 @@ export class ServerErrorsInterceptor implements HttpInterceptor {
 
           if (UtilsService.isString(err.error)) {
             errorMessage = err.error;
+          } else if (Array.isArray(err.error)) {
+            errorMessage = "";
+            for (const error of err.error) {
+              errorMessage += `${error}<br/>`;
+            }
           } else if (UtilsService.isObject(err.error)) {
             errorMessage = "";
             for (const key of Object.keys(err.error)) {

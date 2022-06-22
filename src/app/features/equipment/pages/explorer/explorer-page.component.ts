@@ -9,14 +9,13 @@ import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipme
 import { Actions } from "@ngrx/effects";
 import {
   ExplorerBaseComponent,
-  ExplorerPageSortOrder,
   EQUIPMENT_EXPLORER_PAGE_SORTING_COOKIE
 } from "@features/equipment/pages/explorer-base/explorer-base.component";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { filter, take, takeUntil, tap } from "rxjs/operators";
 import { BrandInterface } from "@features/equipment/types/brand.interface";
 import { LoadBrand } from "@features/equipment/store/equipment.actions";
-import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
+import { EquipmentApiService, EquipmentItemsSortOrder } from "@features/equipment/services/equipment-api.service";
 import { selectBrand, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { Location } from "@angular/common";
@@ -36,7 +35,7 @@ import {
 })
 export class ExplorerPageComponent extends ExplorerBaseComponent implements OnInit {
   readonly EquipmentItemType = EquipmentItemType;
-  readonly ExplorerPageSortOrder = ExplorerPageSortOrder;
+  readonly ExplorerPageSortOrder = EquipmentItemsSortOrder;
 
   @ViewChild("explorerFilters")
   explorerFilters: ExplorerFiltersComponent;
@@ -96,12 +95,16 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
 
   getItems() {
     this.sortOrder =
-      (this.cookieService.get(EQUIPMENT_EXPLORER_PAGE_SORTING_COOKIE) as ExplorerPageSortOrder) ||
-      ExplorerPageSortOrder.AZ;
+      (this.cookieService.get(EQUIPMENT_EXPLORER_PAGE_SORTING_COOKIE) as EquipmentItemsSortOrder) ||
+      EquipmentItemsSortOrder.AZ;
     this.filters = this.explorerFilters ? this.explorerFilters.activeFilters : [];
 
     this.items$ = this.equipmentApiService
-      .getAllEquipmentItems(this._activeType as EquipmentItemType, this.page, this.sortOrder, this.filters)
+      .findAllEquipmentItems(this._activeType as EquipmentItemType, {
+        page: this.page,
+        sortOrder: this.sortOrder,
+        filters: this.filters
+      })
       .pipe(
         tap(response => {
           const uniqueBrands: BrandInterface["id"][] = [];
@@ -158,7 +161,7 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
             url = UtilsService.addOrUpdateUrlParam(url, "page", this.page + "");
           }
 
-          if (this.sortOrder !== ExplorerPageSortOrder.AZ) {
+          if (this.sortOrder !== EquipmentItemsSortOrder.AZ) {
             url = UtilsService.addOrUpdateUrlParam(url, "sort", this.sortOrder);
           }
 

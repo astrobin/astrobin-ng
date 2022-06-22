@@ -95,6 +95,7 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
         this._getDIYField(),
         this._getBrandField(),
         this._getNameField(),
+        this._getVariantOfField(EquipmentItemType.CAMERA),
         {
           key: "type",
           type: "ng-select",

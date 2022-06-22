@@ -9,14 +9,17 @@ import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { TelescopeInterface, TelescopeType } from "@features/equipment/types/telescope.interface";
 import { UtilsService } from "@shared/services/utils/utils.service";
-import { filter, map, take, takeWhile, tap } from "rxjs/operators";
+import { filter, map, switchMap, take, takeWhile, tap } from "rxjs/operators";
 import { CameraDisplayProperty, CameraService } from "@features/equipment/services/camera.service";
 import { selectBrand, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import { Observable, of } from "rxjs";
-import { LoadBrand, LoadSensor } from "@features/equipment/store/equipment.actions";
+import { LoadBrand, LoadEquipmentItem, LoadSensor } from "@features/equipment/store/equipment.actions";
 import { TelescopeDisplayProperty, TelescopeService } from "@features/equipment/services/telescope.service";
 import { SensorDisplayProperty, SensorService } from "@features/equipment/services/sensor.service";
-import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
+import {
+  EquipmentItemDisplayProperty,
+  EquipmentItemService
+} from "@features/equipment/services/equipment-item.service";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { SensorInterface } from "@features/equipment/types/sensor.interface";
 import { MountInterface } from "@features/equipment/types/mount.interface";
@@ -30,6 +33,7 @@ import { LoadUser } from "@features/account/store/auth.actions";
 interface EquipmentItemProperty {
   name: string;
   value: Observable<string | number>;
+  link?: string;
 }
 
 @Component({
@@ -103,23 +107,38 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
 
   get properties$(): Observable<EquipmentItemProperty[]> {
     const type: EquipmentItemType = this.equipmentItemService.getType(this.item);
+    const variantOf = this.item.variantOf;
 
-    switch (type) {
-      case EquipmentItemType.SENSOR:
-        return this._sensorProperties$();
-      case EquipmentItemType.CAMERA:
-        return this._cameraProperties$();
-      case EquipmentItemType.TELESCOPE:
-        return this._telescopeProperties$();
-      case EquipmentItemType.MOUNT:
-        return this._mountProperties$();
-      case EquipmentItemType.FILTER:
-        return this._filterProperties$();
-      case EquipmentItemType.ACCESSORY:
-        return this._accessoryProperties$();
-      case EquipmentItemType.SOFTWARE:
-        return this._softwareProperties$();
+    const _properties$ = (variantOfItem: EquipmentItem | null): Observable<EquipmentItemProperty[]> => {
+      switch (type) {
+        case EquipmentItemType.SENSOR:
+          return this._sensorProperties$(variantOfItem);
+        case EquipmentItemType.CAMERA:
+          return this._cameraProperties$(variantOfItem);
+        case EquipmentItemType.TELESCOPE:
+          return this._telescopeProperties$(variantOfItem);
+        case EquipmentItemType.MOUNT:
+          return this._mountProperties$(variantOfItem);
+        case EquipmentItemType.FILTER:
+          return this._filterProperties$(variantOfItem);
+        case EquipmentItemType.ACCESSORY:
+          return this._accessoryProperties$(variantOfItem);
+        case EquipmentItemType.SOFTWARE:
+          return this._softwareProperties$(variantOfItem);
+      }
+    };
+
+    if (!!variantOf) {
+      const data = { id: variantOf, type };
+      this.store$.dispatch(new LoadEquipmentItem(data));
+      return this.store$.select(selectEquipmentItem, data).pipe(
+        filter(variantOfItem => !!variantOfItem),
+        take(1),
+        switchMap(variantOfItem => _properties$(variantOfItem))
+      );
     }
+
+    return _properties$(null);
   }
 
   getCreatedBy(): Observable<UserInterface> {
@@ -191,14 +210,32 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
     return property.value.pipe(map(value => !!value || this.showEmptyProperties));
   }
 
-  private _sensorProperties$(): Observable<EquipmentItemProperty[]> {
+  private _classProperty(itemType: EquipmentItemType): EquipmentItemProperty {
+    return this.showClass
+      ? {
+          name: this.translateService.instant("Class"),
+          value: of(this.equipmentItemService.humanizeType(itemType))
+        }
+      : null;
+  }
+
+  private _variantOfProperty(variantOfItem: EquipmentItem | null): EquipmentItemProperty {
+    return !!variantOfItem
+      ? {
+          name: this.equipmentItemService.getPrintablePropertyName(
+            variantOfItem.klass,
+            EquipmentItemDisplayProperty.VARIANT_OF
+          ),
+          value: this.equipmentItemService.getFullDisplayName$(variantOfItem),
+          link: `/equipment/explorer/${variantOfItem.klass.toLowerCase()}/${variantOfItem.id}`
+        }
+      : null;
+  }
+
+  private _sensorProperties$(variantOfItem: EquipmentItem | null): Observable<EquipmentItemProperty[]> {
     return of([
-      this.showClass
-        ? {
-            name: this.translateService.instant("Class"),
-            value: this.translateService.stream("Sensor")
-          }
-        : null,
+      this._classProperty(EquipmentItemType.SENSOR),
+      this._variantOfProperty(variantOfItem),
       {
         name: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.PIXELS, true),
         value: this.sensorService.getPrintableProperty$(this.item as SensorInterface, SensorDisplayProperty.PIXELS)
@@ -247,16 +284,12 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
     ]);
   }
 
-  private _cameraProperties$(): Observable<EquipmentItemProperty[]> {
+  private _cameraProperties$(variantOfItem: EquipmentItem | null): Observable<EquipmentItemProperty[]> {
     const item: CameraInterface = this.item as CameraInterface;
 
     return of([
-      this.showClass
-        ? {
-            name: this.translateService.instant("Class"),
-            value: this.translateService.stream("Camera")
-          }
-        : null,
+      this._classProperty(EquipmentItemType.CAMERA),
+      this._variantOfProperty(variantOfItem),
       {
         name: this.cameraService.getPrintablePropertyName(CameraDisplayProperty.TYPE, true),
         value: this.cameraService.getPrintableProperty$(item, CameraDisplayProperty.TYPE)
@@ -280,13 +313,8 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
     ]);
   }
 
-  private _telescopeProperties$(): Observable<EquipmentItemProperty[]> {
+  private _telescopeProperties$(variantOfItem: EquipmentItem | null): Observable<EquipmentItemProperty[]> {
     const item: TelescopeInterface = this.item as TelescopeInterface;
-
-    const class_ = {
-      name: this.translateService.instant("Class"),
-      value: this.translateService.stream("Telescope")
-    };
 
     const type_ = {
       name: this.telescopeService.getPrintablePropertyName(TelescopeDisplayProperty.TYPE, true),
@@ -309,7 +337,8 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
     };
 
     return of([
-      this.showClass ? class_ : null,
+      this._classProperty(EquipmentItemType.TELESCOPE),
+      this._variantOfProperty(variantOfItem),
       type_,
       item.type !== TelescopeType.CAMERA_LENS ? aperture : null,
       focalLength,
@@ -317,16 +346,12 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
     ]);
   }
 
-  private _mountProperties$(): Observable<EquipmentItemProperty[]> {
+  private _mountProperties$(variantOfItem: EquipmentItem | null): Observable<EquipmentItemProperty[]> {
     const item: MountInterface = this.item as MountInterface;
 
     let properties = [
-      this.showClass
-        ? {
-            name: this.translateService.instant("Class"),
-            value: this.translateService.stream("Mount")
-          }
-        : null,
+      this._classProperty(EquipmentItemType.MOUNT),
+      this._variantOfProperty(variantOfItem),
       {
         name: this.mountService.getPrintablePropertyName(MountDisplayProperty.TYPE, true),
         value: this.mountService.getPrintableProperty$(item, MountDisplayProperty.TYPE)
@@ -368,16 +393,12 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
     return of(properties);
   }
 
-  private _filterProperties$(): Observable<EquipmentItemProperty[]> {
+  private _filterProperties$(variantOfItem: EquipmentItem | null): Observable<EquipmentItemProperty[]> {
     const item: FilterInterface = this.item as FilterInterface;
 
     const properties = [
-      this.showClass
-        ? {
-            name: this.translateService.instant("Class"),
-            value: this.translateService.stream("Filter")
-          }
-        : null,
+      this._classProperty(EquipmentItemType.FILTER),
+      this._variantOfProperty(variantOfItem),
       {
         name: this.filterService.getPrintablePropertyName(FilterDisplayProperty.TYPE, true),
         value: this.filterService.getPrintableProperty$(item, FilterDisplayProperty.TYPE)
@@ -391,25 +412,11 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
     return of(properties);
   }
 
-  private _accessoryProperties$(): Observable<EquipmentItemProperty[]> {
-    return of([
-      this.showClass
-        ? {
-            name: this.translateService.instant("Class"),
-            value: this.translateService.stream("Accessory")
-          }
-        : null
-    ]);
+  private _accessoryProperties$(variantOfItem: EquipmentItem | null): Observable<EquipmentItemProperty[]> {
+    return of([this._classProperty(EquipmentItemType.ACCESSORY), this._variantOfProperty(variantOfItem)]);
   }
 
-  private _softwareProperties$(): Observable<EquipmentItemProperty[]> {
-    return of([
-      this.showClass
-        ? {
-            name: this.translateService.instant("Class"),
-            value: this.translateService.stream("Software")
-          }
-        : null
-    ]);
+  private _softwareProperties$(variantOfItem: EquipmentItem | null): Observable<EquipmentItemProperty[]> {
+    return of([this._classProperty(EquipmentItemType.SOFTWARE), this._variantOfProperty(variantOfItem)]);
   }
 }

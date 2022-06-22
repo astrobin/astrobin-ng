@@ -182,7 +182,6 @@
             <astrobin-equipment-item-browser
               #equipmentItemBrowser
               [type]="getActiveType()"
-              [enableVariantSelection]="true"
               (valueChanged)="this.migrationTarget = $event"
               (subCreationModeStarted)="subCreationMode = true"
               (subCreationModeEnded)="subCreationMode = false"

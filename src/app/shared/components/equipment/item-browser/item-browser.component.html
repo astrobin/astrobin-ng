@@ -23,8 +23,13 @@
       [showProperties]="false"
     ></astrobin-equipment-item-summary>
 
-    <div *ngIf="object.item.variants?.length > 0" class="camera-variants">
-      {{ variantsMessage(object.item.variants.length) }}
+    <div *ngIf="object.item.variants?.length > 0" class="item-variants">
+      <p class="item-variants-info">{{ variantsMessage(object.item.variants.length) }}</p>
+      <p class="item-variants-list">
+        <span *ngFor="let variant of object.item.variants">
+          <astrobin-equipment-item-display-name [item]="variant"></astrobin-equipment-item-display-name>
+        </span>
+      </p>
     </div>
   </div>
 </ng-template>

@@ -46,6 +46,8 @@ export interface EquipmentItemBaseInterface {
   diy?: boolean;
   brand: BrandInterface["id"];
   name: string;
+  variantOf: number | null;
+  variants: EquipmentItemBaseInterface[];
   website: string;
   image?: string | File[];
   userCount: number | null;

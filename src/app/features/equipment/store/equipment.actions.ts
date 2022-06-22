@@ -22,8 +22,11 @@ import { EquipmentPresetInterface } from "@features/equipment/types/equipment-pr
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { ImageInterface } from "@shared/interfaces/image.interface";
 import { EquipmentItemMostOftenUsedWith } from "@features/equipment/types/equipment-item-most-often-used-with-data.interface";
-import { ExplorerPageSortOrder } from "@features/equipment/pages/explorer-base/explorer-base.component";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import {
+  AllEquipmentItemsOptionsInterface,
+  EquipmentItemsSortOrder
+} from "@features/equipment/services/equipment-api.service";
 
 export interface EquipmentItemCreationSuccessPayloadInterface {
   item: EquipmentItemBaseInterface;
@@ -152,13 +155,15 @@ export enum EquipmentActionTypes {
 export class GetAllBrands implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.GET_ALL_BRANDS;
 
-  constructor(public payload: { page: number; sort: ExplorerPageSortOrder }) {}
+  constructor(public payload: { page: number; sort: EquipmentItemsSortOrder }) {}
 }
 
 export class GetAllBrandsSuccess implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.GET_ALL_BRANDS_SUCCESS;
 
-  constructor(public payload: { response: PaginatedApiResultInterface<BrandInterface>; sort: ExplorerPageSortOrder }) {}
+  constructor(
+    public payload: { response: PaginatedApiResultInterface<BrandInterface>; sort: EquipmentItemsSortOrder }
+  ) {}
 }
 
 export class LoadBrand implements PayloadActionInterface {
@@ -240,7 +245,12 @@ export class LoadEquipmentItemSuccess implements PayloadActionInterface {
 export class FindAllEquipmentItems implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.FIND_ALL_EQUIPMENT_ITEMS;
 
-  constructor(public payload: { q: string; type: EquipmentItemType }) {}
+  constructor(
+    public payload: {
+      type: EquipmentItemType;
+      options?: AllEquipmentItemsOptionsInterface;
+    }
+  ) {}
 }
 
 export class FindAllEquipmentItemsSuccess implements PayloadActionInterface {

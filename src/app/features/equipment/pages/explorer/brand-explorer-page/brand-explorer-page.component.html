@@ -102,11 +102,15 @@
             </thead>
             <tbody>
             <tr *ngFor="let item of itemsInBrand">
-              <td>
+              <td class="item-name">
                 <a [routerLink]="['/equipment/explorer', item.klass.toLowerCase(), item.id]">
-                  <astrobin-equipment-item-display-name
-                    [item]="item"
-                  ></astrobin-equipment-item-display-name>
+                  <astrobin-equipment-item-display-name [item]="item"></astrobin-equipment-item-display-name>
+                  <span
+                    *ngIf="item.variants?.length > 0"
+                    [innerHTML]="'+ {{numVariants}} variants' | translate:{numVariants: item.variants.length}"
+                    class="variant-count"
+                  >
+                  </span>
                 </a>
               </td>
               <td>{{ equipmentItemService.humanizeType(item.klass) }}</td>

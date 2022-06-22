@@ -14,6 +14,42 @@
             font-size: 1rem;
           }
 
+          .item-variants {
+            margin-top: .5rem;
+            padding-top: calc(.5rem - 1px);
+            padding-left: .5rem;
+            border-top: 1px solid var(--lightGrey);
+            font-style: italic;
+            color: var(--lighertGrey);
+
+            .item-variants-info,
+            .item-variants-list {
+              margin: 0;
+            }
+
+            .item-variants-list {
+              font-size: .9rem;
+
+              > span {
+                ::ng-deep {
+                  .brand {
+                    color: var(--white);
+                  }
+                }
+
+                &:not(:last-child) {
+                  margin-right: .5rem;
+
+
+                  &::after {
+                    content: '\b7'; /* middot */
+                    margin-left: .25rem;
+                  }
+                }
+              }
+            }
+          }
+
           &:not(:last-child) {
             border-bottom: 1px dashed var(--gray);
           }

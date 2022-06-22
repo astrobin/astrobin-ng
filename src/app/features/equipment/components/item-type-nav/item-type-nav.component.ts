@@ -8,12 +8,11 @@ import { Observable, of } from "rxjs";
 import { catchError, map, takeUntil, tap } from "rxjs/operators";
 import { TranslateService } from "@ngx-translate/core";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
+import { EquipmentApiService, EquipmentItemsSortOrder } from "@features/equipment/services/equipment-api.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { EquipmentActionTypes, GetAllBrands } from "@features/equipment/store/equipment.actions";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { selectEquipment } from "@features/equipment/store/equipment.selectors";
-import { ExplorerPageSortOrder } from "@features/equipment/pages/explorer-base/explorer-base.component";
 
 @Component({
   selector: "astrobin-equipment-item-type-nav",
@@ -301,7 +300,7 @@ export class ItemTypeNavComponent extends BaseComponentDirective implements OnIn
       return;
     }
 
-    this.store$.dispatch(new GetAllBrands({ page: 1, sort: ExplorerPageSortOrder.AZ }));
+    this.store$.dispatch(new GetAllBrands({ page: 1, sort: EquipmentItemsSortOrder.AZ }));
 
     for (const type of this.types) {
       if (type.providedCount) {
@@ -309,7 +308,7 @@ export class ItemTypeNavComponent extends BaseComponentDirective implements OnIn
         continue;
       }
 
-      type.count = this.equipmentApiService.getAllEquipmentItems(type.value).pipe(
+      type.count = this.equipmentApiService.findAllEquipmentItems(type.value, {}).pipe(
         takeUntil(this.destroyed$),
         catchError(() => of({ count: 0 })),
         map(response => response.count),
