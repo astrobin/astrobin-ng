@@ -98,7 +98,7 @@ describe("EquipmentApiService", () => {
       expect(response.results.length).toEqual(2);
     });
 
-    const req = httpMock.expectOne(`${service.configUrl}/camera/?q=foo`);
+    const req = httpMock.expectOne(`${service.configUrl}/camera/?page=1&sort=az&q=foo&include-variants=false`);
     expect(req.request.method).toBe("GET");
     req.flush({ results: cameras });
   });
