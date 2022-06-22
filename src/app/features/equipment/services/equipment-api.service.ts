@@ -187,7 +187,7 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     page: number = 1
   ): Observable<PaginatedApiResultInterface<EquipmentItem>> {
     return this.http.get<PaginatedApiResultInterface<EquipmentItem>>(
-      `${this.configUrl}/${type.toLowerCase()}/?brand=${brand}&page=${page}`
+      `${this.configUrl}/${type.toLowerCase()}/?brand=${brand}&page=${page}&include-variants=false`
     );
   }
 
