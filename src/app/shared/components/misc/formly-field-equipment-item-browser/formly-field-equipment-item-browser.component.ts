@@ -116,6 +116,9 @@ export class FormlyFieldEquipmentItemBrowserComponent extends FieldType implemen
         this.formControl.setValue(null);
       }
     }
+
+    this.formControl.markAsTouched();
+    this.formControl.markAsDirty();
   }
 
   quickAddItem(item: EquipmentItemBaseInterface) {

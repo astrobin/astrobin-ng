@@ -81,6 +81,7 @@ export class SoftwareEditorComponent extends BaseItemEditorComponent<SoftwareInt
         this._getDIYField(),
         this._getBrandField(),
         this._getNameField(),
+        this._getVariantOfField(EquipmentItemType.SOFTWARE),
         this._getWebsiteField(),
         this._getImageField()
       ];
