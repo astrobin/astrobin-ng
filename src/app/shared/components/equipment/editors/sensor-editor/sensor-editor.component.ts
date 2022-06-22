@@ -67,6 +67,7 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
       this.fields = [
         this._getBrandField(),
         this._getNameField(),
+        this._getVariantOfField(EquipmentItemType.SENSOR),
         {
           key: "pixelSize",
           type: "input",

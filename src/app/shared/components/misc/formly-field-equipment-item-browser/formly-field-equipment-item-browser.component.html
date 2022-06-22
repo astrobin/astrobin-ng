@@ -8,7 +8,7 @@
   [showLabel]="false"
   [type]="to.itemType"
   [usageType]="to.usageType"
-  [enableVariantSelection]="to.enableVariantSelection"
+  [enableVariantSelection]="to.enableVariantSelection !== undefined ? to.enableVariantSelection : true"
   [enableCreation]="to.enableCreation"
   (valueChanged)="onValueChanged($event)"
   (creationModeStarted)="onCreationModeStarted()"

@@ -10,19 +10,20 @@ import {
 import { TranslateService } from "@ngx-translate/core";
 import { EditProposalChange, EditProposalInterface } from "@features/equipment/types/edit-proposal.interface";
 import { Observable, of } from "rxjs";
-import { getEquipmentItemType, selectBrand } from "@features/equipment/store/equipment.selectors";
+import { getEquipmentItemType, selectBrand, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import { EquipmentItemServiceFactory } from "@features/equipment/services/equipment-item.service-factory";
 import { BrandInterface } from "@features/equipment/types/brand.interface";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
-import { LoadBrand } from "@features/equipment/store/equipment.actions";
+import { LoadBrand, LoadEquipmentItem } from "@features/equipment/store/equipment.actions";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { filter, map, switchMap, take } from "rxjs/operators";
 
 export enum EquipmentItemDisplayProperty {
   BRAND = "BRAND",
   NAME = "NAME",
+  VARIANT_OF = "VARIANT_OF",
   WEBSITE = "WEBSITE",
   IMAGE = "IMAGE"
 }
@@ -119,6 +120,14 @@ export class EquipmentItemService extends BaseService {
         return of(propertyValue.toString());
       case EquipmentItemDisplayProperty.NAME:
         return of(propertyValue.toString());
+      case EquipmentItemDisplayProperty.VARIANT_OF:
+        const payload = { id: propertyValue, type: item.klass };
+        this.store$.dispatch(new LoadEquipmentItem(payload));
+        return this.store$.select(selectEquipmentItem, payload).pipe(
+          filter(variantOf => !!variantOf),
+          take(1),
+          switchMap(variantOf => this.getFullDisplayName$(variantOf))
+        );
       case EquipmentItemDisplayProperty.WEBSITE:
         return of(propertyValue.toString());
       case EquipmentItemDisplayProperty.IMAGE:
@@ -138,6 +147,8 @@ export class EquipmentItemService extends BaseService {
         return this.translateService.instant("Brand");
       case EquipmentItemDisplayProperty.NAME:
         return this.translateService.instant("Name");
+      case EquipmentItemDisplayProperty.VARIANT_OF:
+        return this.translateService.instant("Variant of");
       case EquipmentItemDisplayProperty.WEBSITE:
         return this.translateService.instant("Website");
       case EquipmentItemDisplayProperty.IMAGE:
@@ -165,11 +176,14 @@ export class EquipmentItemService extends BaseService {
       "createdBy",
       "updated",
       "deleted",
+      "klass",
 
       "reviewedBy",
       "reviewedTimestamp",
       "reviewerDecision",
       "reviewerRejectionReason",
+      "reviewerRejectionDuplicateOfKlass",
+      "reviewerRejectionDuplicateOfUsageType",
       "reviewerComment",
 
       "editProposalOriginalProperties",
@@ -187,9 +201,9 @@ export class EquipmentItemService extends BaseService {
 
       "modified",
       "variants",
-      "parentVariant",
       "userCount",
-      "imageCount"
+      "imageCount",
+      "lastAddedOrRemovedFromImages"
     ];
 
     const nonNullableKeys = ["image"];

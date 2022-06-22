@@ -10,7 +10,8 @@
       (valueChanged)="onSelectedItemChanged($event)"
     ></astrobin-equipment-item-browser>
   </div>
-</div> <!-- browser row -->
+</div>
+<!-- browser row -->
 
 <div class="row">
   <div class="col order-last order-lg-first">
@@ -35,62 +36,76 @@
           [enableBrandLink]="true"
         ></astrobin-equipment-item-summary>
 
-        <div *ngIf="supportsVariants(selectedItem)" class="camera-variants-container">
-          <ng-container *ngIf="getVariants(selectedItem)?.length > 0; else cameraVariantTemplate">
+        <div *ngIf="!!selectedItem.variantOf || selectedItem.variants.length > 0" class="item-variants-container">
+          <ng-container *ngIf="selectedItem.variants.length > 0; else variantTemplate">
             {{ "Also available in the following variants:" | translate }}
 
             <span class="camera-variants">
-          <a
-            [routerLink]="['/equipment/explorer/camera', cameraVariant.id]"
-            *ngFor="let cameraVariant of getVariants(selectedItem)"
-            class="camera-variant"
-          >
-            <span *ngIf="!cameraVariant.modified && !cameraVariant.cooled">
-              <fa-icon icon="camera"></fa-icon>
-              {{ "Regular" | translate }}
-            </span>
+              <a
+                [routerLink]="['/equipment/explorer/', variant.klass.toLowerCase(), variant.id]"
+                *ngFor="let variant of selectedItem.variants"
+                class="camera-variant"
+              >
+                <ng-container *ngIf="selectedItem.klass === EquipmentItemType.CAMERA; else notCamera">
+                  <span *ngIf="!asCamera(variant).modified && !asCamera(variant).cooled">
+                    <fa-icon icon="camera"></fa-icon>
+                    {{ "Regular" | translate }}
+                  </span>
 
-            <span
-              *ngIf="cameraVariant.modified && !cameraVariant.cooled"
-              [ngbPopover]="modificationPopoverMessage()"
-              [popoverTitle]="modificationTitle()"
-              triggers="mouseenter:mouseleave"
-            >
-              <fa-icon icon="microchip"></fa-icon>
-              {{ modificationTitle() }}
-            </span>
+                  <span
+                    *ngIf="asCamera(variant).modified && !asCamera(variant).cooled"
+                    [ngbPopover]="modificationPopoverMessage()"
+                    [popoverTitle]="modificationTitle()"
+                    triggers="mouseenter:mouseleave"
+                  >
+                    <fa-icon icon="microchip"></fa-icon>
+                    {{ modificationTitle() }}
+                  </span>
 
-            <span
-              *ngIf="!cameraVariant.modified && cameraVariant.cooled"
-              [ngbPopover]="coolingPopoverMessage()"
-              [popoverTitle]="coolingTitle()"
-              triggers="mouseenter:mouseleave"
-            >
-              <fa-icon icon="icicles"></fa-icon>
-              {{ coolingTitle() }}
-            </span>
+                  <span
+                    *ngIf="!asCamera(variant).modified && asCamera(variant).cooled"
+                    [ngbPopover]="coolingPopoverMessage()"
+                    [popoverTitle]="coolingTitle()"
+                    triggers="mouseenter:mouseleave"
+                  >
+                    <fa-icon icon="icicles"></fa-icon>
+                    {{ coolingTitle() }}
+                  </span>
 
-            <span
-              *ngIf="cameraVariant.modified && cameraVariant.cooled"
-              [ngbPopover]="modificationPopoverMessage() + ' ' + coolingPopoverMessage()"
-              [popoverTitle]="modificationTitle() + ' + ' + coolingTitle()"
-              triggers="mouseenter:mouseleave"
-            >
-              <fa-icon icon="microchip"></fa-icon> {{ modificationTitle()}}
-              <fa-icon icon="plus"></fa-icon>
-              <fa-icon icon="icicles"></fa-icon> {{ coolingTitle() }}
+                  <span
+                    *ngIf="asCamera(variant).modified && asCamera(variant).cooled"
+                    [ngbPopover]="modificationPopoverMessage() + ' ' + coolingPopoverMessage()"
+                    [popoverTitle]="modificationTitle() + ' + ' + coolingTitle()"
+                    triggers="mouseenter:mouseleave"
+                  >
+                    <fa-icon icon="microchip"></fa-icon> {{ modificationTitle() }}
+                    <fa-icon icon="plus"></fa-icon>
+                    <fa-icon icon="icicles"></fa-icon> {{ coolingTitle() }}
+                  </span>
+                </ng-container>
+
+                <ng-template #notCamera>
+                  <astrobin-equipment-item-display-name [item]="variant"></astrobin-equipment-item-display-name>
+                </ng-template>
+              </a>
             </span>
-          </a>
-        </span>
           </ng-container>
 
-          <ng-template #cameraVariantTemplate>
-            {{ "This is a modified and/or custom-cooled variant of this camera." | translate }}
-            <a
-              [routerLink]="['/equipment/explorer/camera', getParentVariant(selectedItem).id]"
-            >
-              {{ "Go to regular variant." | translate }}
-            </a>
+          <ng-template #variantTemplate>
+            <ng-container *ngIf="!!selectedItem.variantOf">
+              <ng-container *ngIf="selectedItem.klass === EquipmentItemType.CAMERA; else variantNotCamera">
+                {{ "This is a modified and/or custom-cooled variant of this camera." | translate }}
+                <a [routerLink]="['/equipment/explorer/', selectedItem.klass.toLowerCase(), selectedItem.variantOf]">
+                  {{ "Go to regular variant." | translate }}
+                </a>
+              </ng-container>
+              <ng-template #variantNotCamera>
+                {{ "This is a variant of another equipment item." | translate }}
+                <a [routerLink]="['/equipment/explorer/', selectedItem.klass.toLowerCase(), selectedItem.variantOf]">
+                  {{ "Go to base variant." | translate }}
+                </a>
+              </ng-template>
+            </ng-container>
           </ng-template>
         </div>
       </div>
@@ -130,11 +145,11 @@
 
             <ng-container
               *ngIf="
-            (currentUser | isEquipmentModerator) &&
-            !!selectedItem.brand &&
-            selectedItem.reviewerDecision === null &&
-            selectedItem.createdBy !== currentUser.id
-          "
+                (currentUser | isEquipmentModerator) &&
+                !!selectedItem.brand &&
+                selectedItem.reviewerDecision === null &&
+                selectedItem.createdBy !== currentUser.id
+              "
             >
               <button
                 class="btn btn-danger"
@@ -186,8 +201,7 @@
               class="edit-proposals-collapsed"
               [innerHTML]="collapsedEditProposalsMessage(editProposals)"
               (click)="expandEditProposals()"
-            >
-            </div>
+            ></div>
           </ng-template>
         </div>
       </ng-container>
@@ -306,7 +320,9 @@
     </ng-container>
 
     <ng-container *ngIf="currentUser$ | async as currentUser">
-      <ng-container *ngIf="selectedItem && (currentUser.id === selectedItem.createdBy || (currentUser | isEquipmentModerator))">
+      <ng-container
+        *ngIf="selectedItem && (currentUser.id === selectedItem.createdBy || (currentUser | isEquipmentModerator))"
+      >
         <div *ngIf="contentType$ | async as contentType" class="comments mt-3">
           <astrobin-nested-comments
             [contentType]="contentType"
@@ -335,16 +351,18 @@
         <h3>{{ "Coming soon!" | translate }}</h3>
         <div class="coming-soon-content">
           {{
-          "This space will host a forum specific to this equipment item, to connect people who own it or are interested in it." | translate
+            "This space will host a forum specific to this equipment item, to connect people who own it or are interested in it."
+              | translate
           }}
         </div>
       </div>
     </ng-container>
-  </div> <!-- main pane -->
+  </div>
+  <!-- main pane -->
 
   <div *ngIf="doShowMostOftenUsedWith()" class="col-sm-12 col-lg-3 order-first order-lg-last mb-4 mb-lg-0">
-    <astrobin-equipment-item-most-often-used-with
-      [item]="selectedItem"
-    ></astrobin-equipment-item-most-often-used-with>
-  </div> <!-- side pane -->
-</div> <!-- card row -->
+    <astrobin-equipment-item-most-often-used-with [item]="selectedItem"></astrobin-equipment-item-most-often-used-with>
+  </div>
+  <!-- side pane -->
+</div>
+<!-- card row -->

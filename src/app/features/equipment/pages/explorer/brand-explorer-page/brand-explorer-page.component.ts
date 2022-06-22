@@ -3,8 +3,7 @@ import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import {
   EQUIPMENT_EXPLORER_PAGE_SORTING_COOKIE,
-  ExplorerBaseComponent,
-  ExplorerPageSortOrder
+  ExplorerBaseComponent
 } from "@features/equipment/pages/explorer-base/explorer-base.component";
 import { Actions, ofType } from "@ngrx/effects";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
@@ -37,6 +36,7 @@ import { UserInterface } from "@shared/interfaces/user.interface";
 import { ImageInterface } from "@shared/interfaces/image.interface";
 import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
+import { EquipmentItemsSortOrder } from "@features/equipment/services/equipment-api.service";
 
 @Component({
   selector: "astrobin-brand-explorer-page",
@@ -44,7 +44,7 @@ import { EquipmentItemService } from "@features/equipment/services/equipment-ite
   styleUrls: ["./brand-explorer-page.component.scss"]
 })
 export class BrandExplorerPageComponent extends ExplorerBaseComponent implements OnInit {
-  readonly ExplorerPageSortOrder = ExplorerPageSortOrder;
+  readonly ExplorerPageSortOrder = EquipmentItemsSortOrder;
   readonly UtilsService = UtilsService;
 
   title = this.translateService.instant("Equipment explorer");
@@ -86,8 +86,8 @@ export class BrandExplorerPageComponent extends ExplorerBaseComponent implements
     this.loadingService.setLoading(true);
 
     this.sortOrder =
-      (this.cookieService.get(EQUIPMENT_EXPLORER_PAGE_SORTING_COOKIE) as ExplorerPageSortOrder) ||
-      ExplorerPageSortOrder.AZ;
+      (this.cookieService.get(EQUIPMENT_EXPLORER_PAGE_SORTING_COOKIE) as EquipmentItemsSortOrder) ||
+      EquipmentItemsSortOrder.AZ;
 
     if (!!this.activeBrand) {
       return this._loadItemsInBrand();
@@ -99,20 +99,20 @@ export class BrandExplorerPageComponent extends ExplorerBaseComponent implements
           let diff: number;
 
           switch (this.sortOrder) {
-            case ExplorerPageSortOrder.AZ:
+            case EquipmentItemsSortOrder.AZ:
               return a.name.localeCompare(b.name);
-            case ExplorerPageSortOrder.AZ_DESC:
+            case EquipmentItemsSortOrder.AZ_DESC:
               return b.name.localeCompare(a.name);
-            case ExplorerPageSortOrder.IMAGES:
+            case EquipmentItemsSortOrder.IMAGES:
               diff = a.imageCount - b.imageCount;
               return diff === 0 ? a.name.localeCompare(b.name) : diff;
-            case ExplorerPageSortOrder.IMAGES_DESC:
+            case EquipmentItemsSortOrder.IMAGES_DESC:
               diff = b.imageCount - a.imageCount;
               return diff === 0 ? a.name.localeCompare(b.name) : diff;
-            case ExplorerPageSortOrder.USERS:
+            case EquipmentItemsSortOrder.USERS:
               diff = a.userCount - b.userCount;
               return diff === 0 ? a.name.localeCompare(b.name) : diff;
-            case ExplorerPageSortOrder.USERS_DESC:
+            case EquipmentItemsSortOrder.USERS_DESC:
               diff = b.userCount - a.userCount;
               return diff === 0 ? a.name.localeCompare(b.name) : diff;
           }
@@ -215,20 +215,20 @@ export class BrandExplorerPageComponent extends ExplorerBaseComponent implements
               let diff: number;
 
               switch (this.sortOrder) {
-                case ExplorerPageSortOrder.AZ:
+                case EquipmentItemsSortOrder.AZ:
                   return a.name.localeCompare(b.name);
-                case ExplorerPageSortOrder.AZ_DESC:
+                case EquipmentItemsSortOrder.AZ_DESC:
                   return b.name.localeCompare(a.name);
-                case ExplorerPageSortOrder.IMAGES:
+                case EquipmentItemsSortOrder.IMAGES:
                   diff = a.imageCount - b.imageCount;
                   return diff === 0 ? a.name.localeCompare(b.name) : diff;
-                case ExplorerPageSortOrder.IMAGES_DESC:
+                case EquipmentItemsSortOrder.IMAGES_DESC:
                   diff = b.imageCount - a.imageCount;
                   return diff === 0 ? a.name.localeCompare(b.name) : diff;
-                case ExplorerPageSortOrder.USERS:
+                case EquipmentItemsSortOrder.USERS:
                   diff = a.userCount - b.userCount;
                   return diff === 0 ? a.name.localeCompare(b.name) : diff;
-                case ExplorerPageSortOrder.USERS_DESC:
+                case EquipmentItemsSortOrder.USERS_DESC:
                   diff = b.userCount - a.userCount;
                   return diff === 0 ? a.name.localeCompare(b.name) : diff;
               }
