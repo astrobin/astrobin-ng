@@ -79,7 +79,11 @@ export class SoftwareEditorComponent extends BaseItemEditorComponent<SoftwareInt
     this.initBrandAndName().subscribe(() => {
       this.fields = [
         this._getDIYField(),
-        this._getBrandField(),
+        this._getBrandField(
+          `${this.translateService.instant("Brand")} / ` +
+            `${this.translateService.instant("Company")} / ` +
+            this.translateService.instant("Developer(s)")
+        ),
         this._getNameField(),
         this._getVariantOfField(EquipmentItemType.SOFTWARE),
         this._getWebsiteField(),

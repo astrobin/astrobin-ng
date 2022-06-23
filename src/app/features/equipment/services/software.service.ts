@@ -4,10 +4,13 @@ import { LoadingService } from "@shared/services/loading.service";
 import { EquipmentItemServiceInterface } from "@features/equipment/services/equipment-item.service-interface";
 import { SoftwareInterface } from "@features/equipment/types/software.interface";
 import { TranslateService } from "@ngx-translate/core";
-import { Observable, of } from "rxjs";
+import { Observable } from "rxjs";
 import { UtilsService } from "@shared/services/utils/utils.service";
+import { EquipmentItemDisplayProperty } from "@features/equipment/services/equipment-item.service";
 
-export enum SoftwareDisplayProperty {}
+export enum SoftwareDisplayProperty {
+  BRAND = EquipmentItemDisplayProperty.BRAND
+}
 
 @Injectable({
   providedIn: "root"
@@ -22,7 +25,7 @@ export class SoftwareService extends BaseService implements EquipmentItemService
   }
 
   getSupportedPrintableProperties(): string[] {
-    return [];
+    return [EquipmentItemDisplayProperty.BRAND];
   }
 
   getPrintableProperty$(
@@ -34,6 +37,13 @@ export class SoftwareService extends BaseService implements EquipmentItemService
   }
 
   getPrintablePropertyName(propertyName: SoftwareDisplayProperty, shortForm = false): string {
+    if (propertyName === SoftwareDisplayProperty.BRAND) {
+      return (
+        `${this.translateService.instant("Brand")} / ` +
+        `${this.translateService.instant("Company")} / ` +
+        this.translateService.instant("Developer(s)")
+      );
+    }
     throw Error(`Invalid property: ${propertyName}`);
   }
 }

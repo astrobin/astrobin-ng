@@ -321,7 +321,7 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
     };
   }
 
-  protected _getBrandField() {
+  protected _getBrandField(label?: string) {
     return {
       key: "brand",
       type: "ng-select",
@@ -336,7 +336,9 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
       },
       templateOptions: {
         clearable: true,
-        label: this.translateService.instant("Brand"),
+        label: label
+          ? label
+          : `${this.translateService.instant("Brand")} / ${this.translateService.instant("Company")}`,
         description:
           this.editorMode === EquipmentItemEditorMode.EDIT_PROPOSAL
             ? this.translateService.instant("Editing this field is not possible.")
