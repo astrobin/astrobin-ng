@@ -142,9 +142,15 @@ export class EquipmentItemService extends BaseService {
   }
 
   getPrintablePropertyName(type: EquipmentItemType, propertyName: any, shortForm = false): string {
+    const service = this.equipmentItemServiceFactory.getServiceByType(type);
+
+    if (service.getSupportedPrintableProperties().indexOf(propertyName) > -1) {
+      return service.getPrintablePropertyName(propertyName, shortForm);
+    }
+
     switch (propertyName) {
       case EquipmentItemDisplayProperty.BRAND:
-        return this.translateService.instant("Brand");
+        return `${this.translateService.instant("Brand")} / ${this.translateService.instant("Company")}`;
       case EquipmentItemDisplayProperty.NAME:
         return this.translateService.instant("Name");
       case EquipmentItemDisplayProperty.VARIANT_OF:
@@ -155,7 +161,7 @@ export class EquipmentItemService extends BaseService {
         return this.translateService.instant("Image");
     }
 
-    return this.equipmentItemServiceFactory.getServiceByType(type).getPrintablePropertyName(propertyName, shortForm);
+    throw Error(`Invalid property: ${propertyName}`);
   }
 
   propertyNameToPropertyEnum(propertyName: string): string {
