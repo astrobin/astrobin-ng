@@ -15,6 +15,7 @@ import { filter, map, switchMap, take, tap } from "rxjs/operators";
 import { SensorInterface } from "@features/equipment/types/sensor.interface";
 
 export enum CameraDisplayProperty {
+  NAME = "NAME",
   TYPE = "TYPE",
   SENSOR = "SENSOR",
   COOLED = "COOLED",
@@ -55,7 +56,7 @@ export class CameraService extends BaseService implements EquipmentItemServiceIn
 
   getSupportedPrintableProperties(): string[] {
     return [
-      "NAME", // Does not use EquipmentTypeDisplayProperty.NAME to avoid circular dependency.
+      CameraDisplayProperty.NAME,
       CameraDisplayProperty.TYPE,
       CameraDisplayProperty.SENSOR,
       CameraDisplayProperty.COOLED,
@@ -146,6 +147,8 @@ export class CameraService extends BaseService implements EquipmentItemServiceIn
 
   getPrintablePropertyName(propertyName: CameraDisplayProperty, shortForm = false): string {
     switch (propertyName) {
+      case CameraDisplayProperty.NAME:
+        return this.translateService.instant("Name");
       case CameraDisplayProperty.TYPE:
         return this.translateService.instant("Type");
       case CameraDisplayProperty.SENSOR:
