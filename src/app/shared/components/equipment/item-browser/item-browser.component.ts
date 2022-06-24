@@ -449,6 +449,14 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
   }
 
   itemCreated(item: EquipmentItemBaseInterface) {
+    this.popNotificationsService.success(
+      this.translateService.instant(
+        "Because of your contribution in adding this equipment item, the next person who wants to associate it " +
+          "with their images won't have to repeat the same process."
+      ),
+      this.translateService.instant("Thank you so much for contributing to the AstroBin equipment database! 🙌")
+    );
+
     this.endCreationMode();
     this.endSubCreationMode();
     this.addItem(item);

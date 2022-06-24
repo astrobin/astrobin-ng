@@ -524,9 +524,8 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
 
   editProposalCreated() {
     this.popNotificationsService.success(
-      this.translateService.instant(
-        "Thanks! Your edit proposal has been submitted and will be reviewed as soon as possible."
-      )
+      this.translateService.instant("Your edit proposal has been submitted and will be reviewed as soon as possible."),
+      this.translateService.instant("Thank you so much for contributing to the AstroBin equipment database! 🙌")
     );
     this.loadEditProposals();
     this.endEditMode();

@@ -1,6 +1,10 @@
 :host {
   display: block;
 
+  .toast-title {
+    margin-bottom: .75rem;
+  }
+
   .buttons {
     margin-top: 1.5rem;
     padding-top: 1rem;
