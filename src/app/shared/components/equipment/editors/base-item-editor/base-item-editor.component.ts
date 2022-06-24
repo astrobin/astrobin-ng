@@ -418,9 +418,12 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
       templateOptions: {
         required: true,
         label: this.translateService.instant("Name"),
-        description: this.translateService.instant(
-          "The name of this product. Do not include the brand's name and make sure it's spelled correctly."
-        )
+        description:
+          this.translateService.instant(
+            "The name of this product. Do not include the brand's name and make sure it's spelled correctly."
+          ) +
+          " " +
+          this.translateService.instant("Try to use the official product name in English, if applicable.")
       },
       hooks: {
         onInit: (field: FormlyFieldConfig) => {
