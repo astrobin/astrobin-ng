@@ -104,6 +104,9 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
   @Input()
   enableCreation = true;
 
+  @Input()
+  excludeId: number;
+
   model: { value: TypeUnion } = { value: null };
   form: FormGroup = new FormGroup({});
   fields: FormlyFieldConfig[] = [];
@@ -754,10 +757,12 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
         ),
         map((result: { brands: BrandInterface[]; items: EquipmentItemBaseInterface[] }) => {
           if (result.items.length > 0) {
-            return result.items.map(item => {
-              const brand = result.brands.find(b => b.id === item.brand);
-              return this._getNgOptionValue(brand, item);
-            });
+            return result.items
+              .filter(item => item.id !== this.excludeId)
+              .map(item => {
+                const brand = result.brands.find(b => b.id === item.brand);
+                return this._getNgOptionValue(brand, item);
+              });
           }
 
           return [];
