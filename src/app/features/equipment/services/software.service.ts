@@ -6,10 +6,9 @@ import { SoftwareInterface } from "@features/equipment/types/software.interface"
 import { TranslateService } from "@ngx-translate/core";
 import { Observable } from "rxjs";
 import { UtilsService } from "@shared/services/utils/utils.service";
-import { EquipmentItemDisplayProperty } from "@features/equipment/services/equipment-item.service";
 
 export enum SoftwareDisplayProperty {
-  BRAND = EquipmentItemDisplayProperty.BRAND
+  BRAND = "BRAND"
 }
 
 @Injectable({
@@ -25,7 +24,7 @@ export class SoftwareService extends BaseService implements EquipmentItemService
   }
 
   getSupportedPrintableProperties(): string[] {
-    return [EquipmentItemDisplayProperty.BRAND];
+    return [SoftwareDisplayProperty.BRAND];
   }
 
   getPrintableProperty$(
