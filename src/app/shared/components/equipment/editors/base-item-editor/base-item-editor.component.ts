@@ -388,7 +388,7 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
                       this.formlyFieldService.clearMessages(this.fields.find(f => f.key === "name").templateOptions);
                       this._validateBrandInName();
                       this._similarItemSuggestion();
-                      this._othersInBrand();
+                      this._othersInBrand(brand.name);
 
                       this.form.get("name").updateValueAndValidity({ emitEvent: false });
                       this.form.get("variantOf").updateValueAndValidity({ emitEvent: false });
@@ -676,7 +676,7 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
       });
   }
 
-  private _othersInBrand() {
+  private _othersInBrand(name: string) {
     const brandControl: AbstractControl = this.form.get("brand");
     const brandFieldConfig: FormlyFieldConfig = this.fields.find(field => field.key === "brand");
     const type: EquipmentItemType = this.equipmentItemService.getType({ ...this.model, ...this.form.value });
@@ -685,7 +685,7 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
       return;
     }
 
-    this.store$.dispatch(new GetOthersInBrand({ brand: brandControl.value, type, item: this.model?.id }));
+    this.store$.dispatch(new GetOthersInBrand({ brand: brandControl.value, type, name }));
     this.actions$
       .pipe(
         ofType(EquipmentActionTypes.GET_OTHERS_IN_BRAND_SUCCESS),

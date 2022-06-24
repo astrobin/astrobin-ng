@@ -194,19 +194,15 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
   getOthersInBrand(
     brand: BrandInterface["id"],
     type: EquipmentItemType,
-    item: EquipmentItemBaseInterface["id"]
+    name: string
   ): Observable<EquipmentItemBaseInterface[]> {
     if (!brand) {
       return of([]);
     }
 
-    return this.http
-      .get<EquipmentItemBaseInterface[]>(`${this.configUrl}/${type.toLowerCase()}/others-in-brand/?brand=${brand}`)
-      .pipe(
-        map(resultItems =>
-          resultItems.map(resultItem => this._parseItem(resultItem)).filter(resultItem => resultItem.id !== item)
-        )
-      );
+    return this.http.get<EquipmentItemBaseInterface[]>(
+      `${this.configUrl}/${type.toLowerCase()}/others-in-brand/?brand=${brand}&name=${encodeURIComponent(name)}`
+    );
   }
 
   getByContentTypeAndObjectId(

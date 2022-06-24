@@ -295,7 +295,7 @@ export class EquipmentEffects {
       map((action: GetOthersInBrand) => action.payload),
       mergeMap(payload =>
         this.equipmentApiService
-          .getOthersInBrand(payload.brand, payload.type, payload.item)
+          .getOthersInBrand(payload.brand, payload.type, payload.name)
           .pipe(map(items => new GetOthersInBrandSuccess({ items })))
       )
     )
