@@ -105,7 +105,7 @@ export class FilterEditorComponent extends BaseItemEditorComponent<FilterInterfa
               {
                 name: "min-value",
                 options: {
-                  minValue: 1
+                  minValue: 0
                 }
               },
               {
