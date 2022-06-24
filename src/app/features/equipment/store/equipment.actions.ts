@@ -304,9 +304,7 @@ export class GetAllInBrandSuccess implements PayloadActionInterface {
 export class GetOthersInBrand implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.GET_OTHERS_IN_BRAND;
 
-  constructor(
-    public payload: { brand: BrandInterface["id"]; type: EquipmentItemType; item: EquipmentItemBaseInterface["id"] }
-  ) {}
+  constructor(public payload: { brand: BrandInterface["id"]; type: EquipmentItemType; name: string }) {}
 }
 
 export class GetOthersInBrandSuccess implements PayloadActionInterface {
