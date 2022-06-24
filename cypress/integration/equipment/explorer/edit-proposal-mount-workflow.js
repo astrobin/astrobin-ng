@@ -98,7 +98,7 @@ context("Equipment", () => {
       );
       cy.get("astrobin-item-edit-proposal").click();
       cy.get("astrobin-item-edit-proposal .change .property-name")
-        .contains("Name:")
+        .contains("Product name:")
         .should("be.visible");
       cy.get("astrobin-item-edit-proposal .change .before")
         .contains("Test mount")

@@ -417,7 +417,7 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
       },
       templateOptions: {
         required: true,
-        label: this.translateService.instant("Name"),
+        label: this.translateService.instant("Product name"),
         description:
           this.translateService.instant(
             "The name of this product. Do not include the brand's name and make sure it's spelled correctly."
