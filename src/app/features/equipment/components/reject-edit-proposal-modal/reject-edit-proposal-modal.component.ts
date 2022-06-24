@@ -12,6 +12,7 @@ import { take } from "rxjs/operators";
 import { EquipmentActionTypes, RejectEquipmentItemEditProposal } from "@features/equipment/store/equipment.actions";
 import { Actions, ofType } from "@ngrx/effects";
 import { EditProposalInterface } from "@features/equipment/types/edit-proposal.interface";
+import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 
 @Component({
   selector: "astrobin-reject-edit-proposal-modal",
@@ -35,7 +36,8 @@ export class RejectEditProposalModalComponent extends BaseComponentDirective imp
     public readonly actions$: Actions,
     public readonly loadingService: LoadingService,
     public readonly translateService: TranslateService,
-    public readonly modal: NgbActiveModal
+    public readonly modal: NgbActiveModal,
+    public readonly popNotificationsService: PopNotificationsService
   ) {
     super(store$);
   }
@@ -71,6 +73,10 @@ export class RejectEditProposalModalComponent extends BaseComponentDirective imp
     this.actions$
       .pipe(ofType(EquipmentActionTypes.REJECT_EQUIPMENT_ITEM_EDIT_PROPOSAL_SUCCESS), take(1))
       .subscribe(() => {
+        this.popNotificationsService.success(
+          this.translateService.instant("This edit proposal has been rejected."),
+          this.translateService.instant("Thank you so much for contributing to the AstroBin equipment database! 🙌")
+        );
         this.loadingService.setLoading(false);
         this.modal.close();
       });

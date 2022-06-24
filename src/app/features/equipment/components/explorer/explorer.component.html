@@ -24,7 +24,7 @@
 
       <div class="card-body">
         <div *ngIf="selectedItem.reviewerDecision === null && !!selectedItem.brand" class="alert alert-warning">
-          {{ "This item has not been approved yet, so it's not available to be associated with images." | translate }}
+          {{ "This item has not been approved yet, so it's not available to be associated with images, except for the user who created it." | translate }}
         </div>
 
         <astrobin-equipment-item-summary
