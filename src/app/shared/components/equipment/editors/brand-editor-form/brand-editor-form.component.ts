@@ -101,7 +101,7 @@ export class BrandEditorFormComponent extends BaseComponentDirective implements 
         defaultValue: this.name,
         templateOptions: {
           required: true,
-          label: this.translateService.instant("Name"),
+          label: this.translateService.instant("Name of the brand (or company, or developer(s))"),
           description: this.translateService.instant("The name of this brand. Make sure it's spelled correctly.")
         },
         hooks: {
