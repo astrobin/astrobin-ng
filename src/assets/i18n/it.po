@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: AstroBin Angular App\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-03 14:04+0200\n"
-"PO-Revision-Date: 2022-06-18 12:08+0200\n"
+"PO-Revision-Date: 2022-06-25 22:06+0200\n"
 "Last-Translator: Salvatore Iovene\n"
 "Language-Team: Italian\n"
 "Language: it\n"
@@ -14,7 +14,7 @@ msgstr ""
 "X-Generator: Loco https://localise.biz\n"
 "X-Loco-Source-Locale: en\n"
 "X-Loco-Project-Id: 108356\n"
-"X-Loco-Api-Version: 1.0.26 20220328-1"
+"X-Loco-Api-Version: 1.0.26 20220622-1"
 
 #: loco:60685a683b0b1d485a736d12
 msgid "API Keys"
@@ -3306,6 +3306,8 @@ msgid ""
 "Please reject a renaming proposal only if the proposal incorrectly makes the "
 "item a different product."
 msgstr ""
+"Declina una proposta di rinomina solo se la proposta rende questo strumento "
+"un altro completamente diverso."
 
 #: loco:629870a92acaf3395934991b
 msgid "Rectangular"
@@ -3329,7 +3331,7 @@ msgstr "Regolare"
 
 #: loco:629870a92acaf33959349920
 msgid "Reviewer"
-msgstr ""
+msgstr "Reviewer"
 
 #: loco:629870a92acaf33959349921
 msgid "Round"
@@ -3813,3 +3815,157 @@ msgstr ""
 "distingue da prodotti simili che gli utenti AstroBin vorrebbero poter "
 "cercare separatamente, ma non così precisi da creare troppe varianti di "
 "quello che è essenzialmente lo stesso prodotto."
+
+#: loco:62b76935ae4a6942a60dee63
+msgid "+ {{numVariants}} variants"
+msgstr "+ {{numVariants}} varianti"
+
+#: loco:62b76935ae4a6942a60dee64
+msgid "Available in {{0}} additional variants:"
+msgstr "Disponibile in {{0}} varianti aggiuntive:"
+
+#: loco:62b76935ae4a6942a60dee65
+msgid ""
+"Because of your contribution in adding this equipment item, the next person "
+"who wants to associate it with their images won't have to repeat the same "
+"process."
+msgstr ""
+"Grazie al tuo contributo nell'aggiungere questo strumento, la prossima "
+"persona che vorrà associarlo alle proprie immagini non dovrà ripetere lo "
+"stesso procedimento."
+
+#: loco:62b76935ae4a6942a60dee66
+msgid "Companies"
+msgstr "Aziende"
+
+#: loco:62b76935ae4a6942a60dee67
+msgid "Company"
+msgstr "Azienda"
+
+#: loco:62b76935ae4a6942a60dee68
+msgid "Developer(s)"
+msgstr "Sviluppatore(i)"
+
+#: loco:62b76935ae4a6942a60dee69
+msgid "Go to base variant."
+msgstr "Vai alla variante di base."
+
+#: loco:62b76935ae4a6942a60dee6a
+msgid "Guiding"
+msgstr "Guida"
+
+#: loco:62b76935ae4a6942a60dee6b
+msgid ""
+"If this item is a variant of another product, please select it here. This is "
+"typically used for products that have multiple versions (e.g. filter size, "
+"filter wheel size and number of slots, software versions...) and AstroBin "
+"will use this information to group certain pieces of data (e.g. search "
+"results)."
+msgstr ""
+"Se questo strumento è una variante di un altro prodotto, selezionalo qui. "
+"Questo tipicamente viene usato per prodotti che hanno più versioni (ad "
+"esempio filtri di dimensioni diverse, versioni software...) e AstroBin userà "
+"questa informazione per raggruppare alcuni dati (p.e. risultati di ricerca)."
+
+#: loco:62b76935ae4a6942a60dee6c
+msgid "Imaging"
+msgstr "Acquisizione"
+
+#: loco:62b76935ae4a6942a60dee6d
+msgid ""
+"Marking an item as DIY (i.e. self-made) means that you, or someone on your "
+"behalf, actually made this equipment item, and it's something unique that "
+"other people literally cannot obtain. This item will not be available to "
+"others to add to their images."
+msgstr ""
+"Segnare un'oggetto come fai-da-te vuol dire che tu, o qualcuno per te, ha "
+"effettivamente costruito questo strumento, ed è qualcosa di unico che altre "
+"persone letteralmente non possono ottenere. Questo elemento non sarà "
+"disponibile perché altri lo aggiungano alle loro immagini."
+
+#: loco:62b76935ae4a6942a60dee6e
+msgid "Name of the brand (or company, or developer(s))"
+msgstr "Nome della marca (o azienda, o sviluppatore(i))"
+
+#: loco:62b76935ae4a6942a60dee6f
+msgid "Product name"
+msgstr "Nome del prodotto"
+
+#: loco:62b76935ae4a6942a60dee70
+msgid "Telescope or lens"
+msgstr "Telescopio o lente"
+
+#: loco:62b76935ae4a6942a60dee71
+msgid ""
+"Thank you so much for contributing to the AstroBin equipment database! 🙌"
+msgstr ""
+"Grazie mille per aver contribuito al database della strumentazione di "
+"AstroBin! 🙌"
+
+#: loco:62b76935ae4a6942a60dee72
+msgid ""
+"The \"Variant of\" field must be an item with the same brand as this one."
+msgstr ""
+"Il campo \"Variante di\" deve essere uno strumento della stessa marca che "
+"questo."
+
+#: loco:62b76935ae4a6942a60dee73
+msgid ""
+"This comment section is only visible to AstroBin equipment moderators and "
+"the user who created this item."
+msgstr ""
+"Questa sezione commenti è visibile solo ai moderatori della strumentazione "
+"di AstroBin e all'utente che ha creato questo strumento."
+
+#: loco:62b76935ae4a6942a60dee74
+msgid ""
+"This comment section is only visible to you and AstroBin equipment "
+"moderators."
+msgstr ""
+"Questa sezione commenti è visibile solo a te e ai moderatori della "
+"strumentazione di AstroBin."
+
+#: loco:62b76935ae4a6942a60dee75
+msgid "This edit proposal has been approved."
+msgstr "Questa proposta di modifica è stata approvata."
+
+#: loco:62b76935ae4a6942a60dee76
+msgid "This edit proposal has been rejected."
+msgstr "Questa proposta di modifica è stata declinata."
+
+#: loco:62b76935ae4a6942a60dee77
+msgid "This is a variant of another equipment item."
+msgstr "Questa è la variante di un altro strumento."
+
+#: loco:62b76935ae4a6942a60dee78
+msgid ""
+"This item has not been approved yet, so it's not available to be associated "
+"with images, except for the user who created it."
+msgstr ""
+"Questo elemento non è stato ancora approvato, e quindi non può essere "
+"associato ad immagini, eccetto per l'utente che l'ha creato."
+
+#: loco:62b76935ae4a6942a60dee79
+msgid "Try to use the official product name in English, if applicable."
+msgstr ""
+"Prova ad usare il nome ufficiale del prodotto in Inglese, se possibile."
+
+#: loco:62b76935ae4a6942a60dee7a
+msgid "Understood"
+msgstr "Capito"
+
+#: loco:62b76935ae4a6942a60dee7b
+msgid "Usage type"
+msgstr "Tipologia d'uso"
+
+#: loco:62b76935ae4a6942a60dee7c
+msgid "Variant of"
+msgstr "Variante di"
+
+#: loco:62b76935ae4a6942a60dee7d
+msgid ""
+"Your edit proposal has been submitted and will be reviewed as soon as "
+"possible."
+msgstr ""
+"La tua proposta di modifica è stata salvata e verrà controllato il prima "
+"possibile."
