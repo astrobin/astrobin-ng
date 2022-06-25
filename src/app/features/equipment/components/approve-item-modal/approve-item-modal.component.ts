@@ -8,7 +8,7 @@ import { State } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { LoadingService } from "@shared/services/loading.service";
-import { map, take } from "rxjs/operators";
+import { map, switchMap, take } from "rxjs/operators";
 import {
   ApproveEquipmentItem,
   EquipmentActionTypes,
@@ -21,6 +21,7 @@ import { Actions, ofType } from "@ngrx/effects";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 import { Observable } from "rxjs";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 
 @Component({
   selector: "astrobin-approve-item-modal",
@@ -50,7 +51,8 @@ export class ApproveItemModalComponent extends BaseComponentDirective implements
     public readonly loadingService: LoadingService,
     public readonly translateService: TranslateService,
     public readonly modal: NgbActiveModal,
-    public readonly equipmentItemService: EquipmentItemService
+    public readonly equipmentItemService: EquipmentItemService,
+    public readonly equipmentApiService: EquipmentApiService
   ) {
     super(store$);
   }
@@ -107,9 +109,29 @@ export class ApproveItemModalComponent extends BaseComponentDirective implements
       })
     );
 
-    this.actions$.pipe(ofType(EquipmentActionTypes.APPROVE_EQUIPMENT_ITEM_SUCCESS), take(1)).subscribe(() => {
+    this.actions$
+      .pipe(
+        ofType(EquipmentActionTypes.APPROVE_EQUIPMENT_ITEM_SUCCESS),
+        take(1),
+        switchMap(editProposal =>
+          this.equipmentApiService
+            .releaseReviewerLock(this.equipmentItem.klass, this.equipmentItem.id)
+            .pipe(map(() => editProposal))
+        )
+      )
+      .subscribe(() => {
+        this.loadingService.setLoading(false);
+        this.modal.close();
+      });
+  }
+
+  cancel() {
+    this.loadingService.setLoading(true);
+
+    this.equipmentApiService.releaseReviewerLock(this.equipmentItem.klass, this.equipmentItem.id).subscribe(() => {
       this.loadingService.setLoading(false);
-      this.modal.close();
+
+      this.modal.dismiss();
     });
   }
 

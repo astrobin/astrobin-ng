@@ -1,6 +1,6 @@
 <div class="modal-header">
   <h4 class="modal-title" id="modal-title">{{ "Approve" | translate }}</h4>
-  <button (click)="modal.dismiss()" aria-describedby="modal-title" class="close" type="button">
+  <button (click)="cancel()" aria-describedby="modal-title" class="close" type="button">
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
@@ -12,7 +12,7 @@
 </div>
 
 <div class="modal-footer">
-  <button (click)="modal.dismiss()" class="btn btn-outline-secondary" type="button">
+  <button (click)="cancel()" class="btn btn-outline-secondary" type="button">
     {{ "Cancel" | translate }}
   </button>
 

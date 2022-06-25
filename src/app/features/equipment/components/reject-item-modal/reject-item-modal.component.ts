@@ -13,7 +13,7 @@ import { State } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { LoadingService } from "@shared/services/loading.service";
-import { take, takeUntil } from "rxjs/operators";
+import { map, switchMap, take, takeUntil } from "rxjs/operators";
 import { EquipmentActionTypes, RejectEquipmentItem } from "@features/equipment/store/equipment.actions";
 import { Actions, ofType } from "@ngrx/effects";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
@@ -22,6 +22,7 @@ import { Router } from "@angular/router";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { FormlyFieldEquipmentItemBrowserMode } from "@shared/components/misc/formly-field-equipment-item-browser/formly-field-equipment-item-browser.component";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 
 @Component({
   selector: "astrobin-reject-item-modal",
@@ -52,6 +53,7 @@ export class RejectItemModalComponent extends BaseComponentDirective implements 
     public readonly translateService: TranslateService,
     public readonly modal: NgbActiveModal,
     public readonly equipmentItemService: EquipmentItemService,
+    public readonly equipmentApiService: EquipmentApiService,
     public readonly formlyFieldService: FormlyFieldService,
     public readonly router: Router,
     public readonly popNotificationsService: PopNotificationsService
@@ -211,9 +213,29 @@ export class RejectItemModalComponent extends BaseComponentDirective implements 
       })
     );
 
-    this.actions$.pipe(ofType(EquipmentActionTypes.REJECT_EQUIPMENT_ITEM_SUCCESS), take(1)).subscribe(() => {
+    this.actions$
+      .pipe(
+        ofType(EquipmentActionTypes.REJECT_EQUIPMENT_ITEM_SUCCESS),
+        take(1),
+        switchMap(editProposal =>
+          this.equipmentApiService
+            .releaseReviewerLock(this.equipmentItem.klass, this.equipmentItem.id)
+            .pipe(map(() => editProposal))
+        )
+      )
+      .subscribe(() => {
+        this.loadingService.setLoading(false);
+        this.modal.close();
+      });
+  }
+
+  cancel() {
+    this.loadingService.setLoading(true);
+
+    this.equipmentApiService.releaseReviewerLock(this.equipmentItem.klass, this.equipmentItem.id).subscribe(() => {
       this.loadingService.setLoading(false);
-      this.modal.close();
+
+      this.modal.dismiss();
     });
   }
 

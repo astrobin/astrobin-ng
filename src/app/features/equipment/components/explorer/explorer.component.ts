@@ -322,16 +322,27 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
       return;
     }
 
-    this.editMode = true;
-    this.editModel = { ...this.selectedItem };
+    this.loadingService.setLoading(true);
 
-    this.windowRefService.scrollToElement("#edit-item");
+    this.equipmentApiService.acquireEditProposalLock(this.selectedItem.klass, this.selectedItem.id).subscribe(() => {
+      this.loadingService.setLoading(false);
+
+      this.editMode = true;
+      this.editModel = { ...this.selectedItem };
+
+      this.windowRefService.scrollToElement("#edit-item");
+    });
   }
 
   endEditMode() {
-    this.editMode = false;
-    this.editModel = {};
-    this.editForm.reset();
+    this.loadingService.setLoading(true);
+
+    this.equipmentApiService.releaseEditProposalLock(this.selectedItem.klass, this.selectedItem.id).subscribe(() => {
+      this.editMode = false;
+      this.editModel = {};
+      this.editForm.reset();
+      this.loadingService.setLoading(false);
+    });
   }
 
   startMigrationMode() {
@@ -347,23 +358,29 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
       return;
     }
 
-    const modal: NgbModalRef = this.modalService.open(ApproveItemModalComponent);
-    const componentInstance: ApproveItemModalComponent = modal.componentInstance;
+    this.loadingService.setLoading(true);
 
-    componentInstance.equipmentItem = this.selectedItem;
+    this.equipmentApiService.acquireReviewerLock(this.selectedItem.klass, this.selectedItem.id).subscribe(() => {
+      this.loadingService.setLoading(false);
 
-    this.actions$
-      .pipe(
-        ofType(EquipmentActionTypes.APPROVE_EQUIPMENT_ITEM_SUCCESS),
-        map((action: ApproveEquipmentItemSuccess) => action.payload.item),
-        filter(item => item.id === this.selectedItem.id),
-        take(1)
-      )
-      .subscribe(item => {
-        this.setItem(item);
-        this.approved.emit();
-        this.popNotificationsService.success(this.translateService.instant("Item approved."));
-      });
+      const modal: NgbModalRef = this.modalService.open(ApproveItemModalComponent);
+      const componentInstance: ApproveItemModalComponent = modal.componentInstance;
+
+      componentInstance.equipmentItem = this.selectedItem;
+
+      this.actions$
+        .pipe(
+          ofType(EquipmentActionTypes.APPROVE_EQUIPMENT_ITEM_SUCCESS),
+          map((action: ApproveEquipmentItemSuccess) => action.payload.item),
+          filter(item => item.id === this.selectedItem.id),
+          take(1)
+        )
+        .subscribe(item => {
+          this.setItem(item);
+          this.approved.emit();
+          this.popNotificationsService.success(this.translateService.instant("Item approved."));
+        });
+    });
   }
 
   startRejection() {
@@ -371,14 +388,20 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
       return;
     }
 
-    const modal: NgbModalRef = this.modalService.open(RejectItemModalComponent);
-    const componentInstance: RejectItemModalComponent = modal.componentInstance;
+    this.loadingService.setLoading(true);
 
-    componentInstance.equipmentItem = this.selectedItem;
+    this.equipmentApiService.acquireReviewerLock(this.selectedItem.klass, this.selectedItem.id).subscribe(() => {
+      this.loadingService.setLoading(false);
 
-    modal.closed.pipe(take(1)).subscribe(() => {
-      this.resetBrowser();
-      this.rejected.emit();
+      const modal: NgbModalRef = this.modalService.open(RejectItemModalComponent);
+      const componentInstance: RejectItemModalComponent = modal.componentInstance;
+
+      componentInstance.equipmentItem = this.selectedItem;
+
+      modal.closed.pipe(take(1)).subscribe(() => {
+        this.resetBrowser();
+        this.rejected.emit();
+      });
     });
   }
 

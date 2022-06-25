@@ -32,6 +32,7 @@ import { ApproveEditProposalModalComponent } from "@features/equipment/component
 import { LoadContentType } from "@app/store/actions/content-type.actions";
 import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
 import { selectContentType } from "@app/store/selectors/app/content-type.selectors";
+import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 
 @Component({
   selector: "astrobin-item-edit-proposal",
@@ -54,6 +55,7 @@ export class ItemEditProposalComponent extends BaseComponentDirective implements
     public readonly store$: Store<State>,
     public readonly actions$: Actions,
     public readonly equipmentItemService: EquipmentItemService,
+    public readonly equipmentApiService: EquipmentApiService,
     public readonly translateService: TranslateService,
     public readonly classicRoutesService: ClassicRoutesService,
     public readonly loadingService: LoadingService,
@@ -137,33 +139,49 @@ export class ItemEditProposalComponent extends BaseComponentDirective implements
   }
 
   approveEdit() {
-    const modal: NgbModalRef = this.modalService.open(ApproveEditProposalModalComponent);
-    const componentInstance: ApproveEditProposalModalComponent = modal.componentInstance;
+    const type: EquipmentItemType = this.equipmentItemService.getType(this.editProposal);
 
-    componentInstance.editProposal = this.editProposal;
+    this.loadingService.setLoading(true);
 
-    this.actions$
-      .pipe(
-        ofType(EquipmentActionTypes.APPROVE_EQUIPMENT_ITEM_EDIT_PROPOSAL_SUCCESS),
-        map((action: ApproveEquipmentItemEditProposalSuccess) => action.payload.editProposal),
-        take(1)
-      )
-      .subscribe(editProposal => (this.editProposal = editProposal));
+    this.equipmentApiService.acquireEditProposalReviewLock(type, this.editProposal.id).subscribe(() => {
+      this.loadingService.setLoading(false);
+
+      const modal: NgbModalRef = this.modalService.open(ApproveEditProposalModalComponent);
+      const componentInstance: ApproveEditProposalModalComponent = modal.componentInstance;
+
+      componentInstance.editProposal = this.editProposal;
+
+      this.actions$
+        .pipe(
+          ofType(EquipmentActionTypes.APPROVE_EQUIPMENT_ITEM_EDIT_PROPOSAL_SUCCESS),
+          map((action: ApproveEquipmentItemEditProposalSuccess) => action.payload.editProposal),
+          take(1)
+        )
+        .subscribe(editProposal => (this.editProposal = editProposal));
+    });
   }
 
   rejectEdit() {
-    const modal: NgbModalRef = this.modalService.open(RejectEditProposalModalComponent);
-    const componentInstance: RejectEditProposalModalComponent = modal.componentInstance;
+    const type: EquipmentItemType = this.equipmentItemService.getType(this.editProposal);
 
-    componentInstance.editProposal = this.editProposal;
+    this.loadingService.setLoading(true);
 
-    this.actions$
-      .pipe(
-        ofType(EquipmentActionTypes.REJECT_EQUIPMENT_ITEM_EDIT_PROPOSAL_SUCCESS),
-        map((action: RejectEquipmentItemEditProposalSuccess) => action.payload.editProposal),
-        take(1)
-      )
-      .subscribe(editProposal => (this.editProposal = editProposal));
+    this.equipmentApiService.acquireEditProposalReviewLock(type, this.editProposal.id).subscribe(() => {
+      this.loadingService.setLoading(false);
+
+      const modal: NgbModalRef = this.modalService.open(RejectEditProposalModalComponent);
+      const componentInstance: RejectEditProposalModalComponent = modal.componentInstance;
+
+      componentInstance.editProposal = this.editProposal;
+
+      this.actions$
+        .pipe(
+          ofType(EquipmentActionTypes.REJECT_EQUIPMENT_ITEM_EDIT_PROPOSAL_SUCCESS),
+          map((action: RejectEquipmentItemEditProposalSuccess) => action.payload.editProposal),
+          take(1)
+        )
+        .subscribe(editProposal => (this.editProposal = editProposal));
+    });
   }
 
   private _loadData(type: EquipmentItemType) {
