@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: AstroBin Angular App\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-03 14:04+0200\n"
-"PO-Revision-Date: 2022-06-18 12:08+0200\n"
+"PO-Revision-Date: 2022-06-25 22:06+0200\n"
 "Last-Translator: Salvatore Iovene\n"
 "Language-Team: Russian\n"
 "Language: ru\n"
@@ -15,7 +15,7 @@ msgstr ""
 "X-Generator: Loco https://localise.biz\n"
 "X-Loco-Source-Locale: en\n"
 "X-Loco-Project-Id: 108356\n"
-"X-Loco-Api-Version: 1.0.26 20220328-1"
+"X-Loco-Api-Version: 1.0.26 20220622-1"
 
 #: loco:60685a683b0b1d485a736d12
 msgid "API Keys"
@@ -3507,4 +3507,134 @@ msgid ""
 "similar products that people might want to search for on AstroBin, but not "
 "so precise as to create too many variants of what is essentially the same "
 "product."
+msgstr ""
+
+#: loco:62b76935ae4a6942a60dee63
+msgid "+ {{numVariants}} variants"
+msgstr ""
+
+#: loco:62b76935ae4a6942a60dee64
+msgid "Available in {{0}} additional variants:"
+msgstr ""
+
+#: loco:62b76935ae4a6942a60dee65
+msgid ""
+"Because of your contribution in adding this equipment item, the next person "
+"who wants to associate it with their images won't have to repeat the same "
+"process."
+msgstr ""
+
+#: loco:62b76935ae4a6942a60dee66
+msgid "Companies"
+msgstr ""
+
+#: loco:62b76935ae4a6942a60dee67
+msgid "Company"
+msgstr ""
+
+#: loco:62b76935ae4a6942a60dee68
+msgid "Developer(s)"
+msgstr ""
+
+#: loco:62b76935ae4a6942a60dee69
+msgid "Go to base variant."
+msgstr ""
+
+#: loco:62b76935ae4a6942a60dee6a
+msgid "Guiding"
+msgstr ""
+
+#: loco:62b76935ae4a6942a60dee6b
+msgid ""
+"If this item is a variant of another product, please select it here. This is "
+"typically used for products that have multiple versions (e.g. filter size, "
+"filter wheel size and number of slots, software versions...) and AstroBin "
+"will use this information to group certain pieces of data (e.g. search "
+"results)."
+msgstr ""
+
+#: loco:62b76935ae4a6942a60dee6c
+msgid "Imaging"
+msgstr ""
+
+#: loco:62b76935ae4a6942a60dee6d
+msgid ""
+"Marking an item as DIY (i.e. self-made) means that you, or someone on your "
+"behalf, actually made this equipment item, and it's something unique that "
+"other people literally cannot obtain. This item will not be available to "
+"others to add to their images."
+msgstr ""
+
+#: loco:62b76935ae4a6942a60dee6e
+msgid "Name of the brand (or company, or developer(s))"
+msgstr ""
+
+#: loco:62b76935ae4a6942a60dee6f
+msgid "Product name"
+msgstr ""
+
+#: loco:62b76935ae4a6942a60dee70
+msgid "Telescope or lens"
+msgstr ""
+
+#: loco:62b76935ae4a6942a60dee71
+msgid ""
+"Thank you so much for contributing to the AstroBin equipment database! 🙌"
+msgstr ""
+
+#: loco:62b76935ae4a6942a60dee72
+msgid ""
+"The \"Variant of\" field must be an item with the same brand as this one."
+msgstr ""
+
+#: loco:62b76935ae4a6942a60dee73
+msgid ""
+"This comment section is only visible to AstroBin equipment moderators and "
+"the user who created this item."
+msgstr ""
+
+#: loco:62b76935ae4a6942a60dee74
+msgid ""
+"This comment section is only visible to you and AstroBin equipment "
+"moderators."
+msgstr ""
+
+#: loco:62b76935ae4a6942a60dee75
+msgid "This edit proposal has been approved."
+msgstr ""
+
+#: loco:62b76935ae4a6942a60dee76
+msgid "This edit proposal has been rejected."
+msgstr ""
+
+#: loco:62b76935ae4a6942a60dee77
+msgid "This is a variant of another equipment item."
+msgstr ""
+
+#: loco:62b76935ae4a6942a60dee78
+msgid ""
+"This item has not been approved yet, so it's not available to be associated "
+"with images, except for the user who created it."
+msgstr ""
+
+#: loco:62b76935ae4a6942a60dee79
+msgid "Try to use the official product name in English, if applicable."
+msgstr ""
+
+#: loco:62b76935ae4a6942a60dee7a
+msgid "Understood"
+msgstr ""
+
+#: loco:62b76935ae4a6942a60dee7b
+msgid "Usage type"
+msgstr ""
+
+#: loco:62b76935ae4a6942a60dee7c
+msgid "Variant of"
+msgstr ""
+
+#: loco:62b76935ae4a6942a60dee7d
+msgid ""
+"Your edit proposal has been submitted and will be reviewed as soon as "
+"possible."
 msgstr ""
