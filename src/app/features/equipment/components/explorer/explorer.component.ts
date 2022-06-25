@@ -335,14 +335,21 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
   }
 
   endEditMode() {
-    this.loadingService.setLoading(true);
-
-    this.equipmentApiService.releaseEditProposalLock(this.selectedItem.klass, this.selectedItem.id).subscribe(() => {
+    const _doEndEditMode = () => {
       this.editMode = false;
       this.editModel = {};
       this.editForm.reset();
-      this.loadingService.setLoading(false);
-    });
+    };
+
+    if (!!this.selectedItem) {
+      this.loadingService.setLoading(true);
+      this.equipmentApiService.releaseEditProposalLock(this.selectedItem.klass, this.selectedItem.id).subscribe(() => {
+        _doEndEditMode();
+        this.loadingService.setLoading(false);
+      });
+    } else {
+      _doEndEditMode();
+    }
   }
 
   startMigrationMode() {
