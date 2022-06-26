@@ -47,3 +47,16 @@
     margin: 0.25rem;
   }
 }
+
+astrobin-telescope,
+astrobin-camera,
+astrobin-equipment-item-display-name {
+  &:not(:last-child) {
+    margin-right: .25rem;
+
+    &::after {
+      content: '\b7'; /* middot */
+      margin-left: .25rem
+    }
+  }
+}
