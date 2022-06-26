@@ -18,6 +18,8 @@ import { CameraDisplayProperty, CameraService } from "@features/equipment/servic
 import { FormlyFieldService } from "@shared/services/formly-field.service";
 import { FormlyFieldEquipmentItemBrowserMode } from "@shared/components/misc/formly-field-equipment-item-browser/formly-field-equipment-item-browser.component";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { FormlyFieldConfig } from "@ngx-formly/core";
+import { takeUntil } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-camera-editor",
@@ -118,6 +120,15 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
               value: item[0],
               label: item[1]
             }))
+          },
+          hooks: {
+            onInit: (field: FormlyFieldConfig) => {
+              field.formControl.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(cameraType => {
+                if (cameraType === CameraType.DSLR_MIRRORLESS) {
+                  this.model.variantOf = null;
+                }
+              });
+            }
           }
         },
         {

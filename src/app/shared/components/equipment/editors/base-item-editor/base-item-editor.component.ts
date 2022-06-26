@@ -35,6 +35,7 @@ import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { InformationDialogComponent } from "@shared/components/misc/information-dialog/information-dialog.component";
 import { FormlyFieldEquipmentItemBrowserMode } from "@shared/components/misc/formly-field-equipment-item-browser/formly-field-equipment-item-browser.component";
+import { CameraInterface, CameraType } from "@features/equipment/types/camera.interface";
 
 export enum EquipmentItemEditorMode {
   CREATION,
@@ -504,7 +505,11 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
       type: "equipment-item-browser",
       wrappers: ["default-wrapper"],
       id: "equipment-item-field-variant-of",
-      hideExpression: () => !!this.model.diy || !this.model.brand,
+      hideExpression: () =>
+        !!this.model.diy ||
+        !this.model.brand ||
+        (this.model.klass === EquipmentItemType.CAMERA &&
+          ((this.model as unknown) as CameraInterface).type === CameraType.DSLR_MIRRORLESS),
       expressionProperties: {
         "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
       },
