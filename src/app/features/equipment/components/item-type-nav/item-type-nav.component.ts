@@ -22,7 +22,7 @@ import { EquipmentApiService, EquipmentItemsSortOrder } from "@features/equipmen
 import { LoadingService } from "@shared/services/loading.service";
 import { EquipmentActionTypes, GetAllBrands } from "@features/equipment/store/equipment.actions";
 import { WindowRefService } from "@shared/services/window-ref.service";
-import { selectEquipment } from "@features/equipment/store/equipment.selectors";
+import { selectEquipmentContributors, selectEquipment } from "@features/equipment/store/equipment.selectors";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { ActiveToast } from "ngx-toastr";
 
@@ -52,6 +52,9 @@ export class ItemTypeNavComponent extends BaseComponentDirective implements OnIn
 
   @Input()
   showBrands = true;
+
+  @Input()
+  showContributors = true;
 
   @Input()
   cameraCount: Observable<number | null> = null;
@@ -92,6 +95,9 @@ export class ItemTypeNavComponent extends BaseComponentDirective implements OnIn
   collapsedChanged = new EventEmitter<boolean>();
 
   brandCount$: Observable<number | null> = this.store$.select(selectEquipment).pipe(map(state => state.brandsCount));
+  contributorCount$: Observable<number | null> = this.store$
+    .select(selectEquipmentContributors)
+    .pipe(map(contributors => contributors.length));
 
   types: {
     label: string;
@@ -103,8 +109,11 @@ export class ItemTypeNavComponent extends BaseComponentDirective implements OnIn
     disabled?: boolean;
   }[];
 
+  @Input()
   activeType = this.activatedRoute.snapshot.paramMap.get("itemType");
+
   activeSubNav = "";
+
   reviewPendingEditNotification: ActiveToast<any>;
 
   @HostListener("mouseover") onMouseHover() {

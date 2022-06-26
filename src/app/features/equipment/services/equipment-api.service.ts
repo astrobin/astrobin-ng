@@ -33,6 +33,7 @@ import { ImageInterface } from "@shared/interfaces/image.interface";
 import { EquipmentItemMostOftenUsedWith } from "@features/equipment/types/equipment-item-most-often-used-with-data.interface";
 import { ExplorerFilterInterface } from "@features/equipment/pages/explorer/explorer-filters/explorer-filters.component";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import { ContributorInterface } from "@features/equipment/types/contributor.interface";
 
 export interface AllEquipmentItemsOptionsInterface {
   query?: string;
@@ -415,6 +416,10 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
       `${this.configUrl}/${itemType.toLowerCase()}-edit-proposal/${editProposalId}/release-review-lock/`,
       {}
     );
+  }
+
+  getContributors(): Observable<ContributorInterface[]> {
+    return this.http.get<ContributorInterface[]>(`${this.configUrl}/contributors/`);
   }
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

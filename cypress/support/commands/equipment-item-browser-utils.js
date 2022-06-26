@@ -277,6 +277,8 @@ Cypress.Commands.add("setupEquipmentDefaultRoutesForAllClasses", () => {
   cy.route("POST", "**/api/v2/equipment/**/release-edit-proposal-lock/", {}).as("releaseEditProposalLock");
   cy.route("POST", "**/api/v2/equipment/**/acquire-edit-proposal-review-lock/", {}).as("acquireEditProposalReviewLock");
   cy.route("POST", "**/api/v2/equipment/**/release-edit-proposal-review-lock/", {}).as("releaseEditProposalReviewLock");
+
+  cy.route("GET", "**/api/v2/equipment/contributors/", p[]).as("getContributors");
 });
 
 Cypress.Commands.add("setupEquipmentDefaultRoutesForCameras", () => {

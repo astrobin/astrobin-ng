@@ -12,7 +12,8 @@ export class EquipmentStateGenerator {
       imagesUsingEquipmentItems: [],
       usersUsingEquipmentBrands: [],
       imagesUsingEquipmentBrands: [],
-      mostOftenUsedWithData: {}
+      mostOftenUsedWithData: {},
+      contributors: []
     };
   }
 }

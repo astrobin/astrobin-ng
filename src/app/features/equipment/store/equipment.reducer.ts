@@ -9,6 +9,7 @@ import { EquipmentPresetInterface } from "@features/equipment/types/equipment-pr
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { ImageInterface } from "@shared/interfaces/image.interface";
 import { EquipmentItemMostOftenUsedWithData } from "@features/equipment/types/equipment-item-most-often-used-with-data.interface";
+import { ContributorInterface } from "@features/equipment/types/contributor.interface";
 
 export const equipmentFeatureKey = "equipment";
 
@@ -37,6 +38,7 @@ export interface EquipmentState {
     images: ImageInterface[];
   }[];
   mostOftenUsedWithData: EquipmentItemMostOftenUsedWithData | {};
+  contributors: ContributorInterface[];
 }
 
 export const initialEquipmentState: EquipmentState = {
@@ -49,7 +51,8 @@ export const initialEquipmentState: EquipmentState = {
   imagesUsingEquipmentItems: [],
   usersUsingEquipmentBrands: [],
   imagesUsingEquipmentBrands: [],
-  mostOftenUsedWithData: {}
+  mostOftenUsedWithData: {},
+  contributors: []
 };
 
 function editProposalCompareFunction(
@@ -297,6 +300,13 @@ export function reducer(state = initialEquipmentState, action: EquipmentActions)
             }
           ]
         ]
+      };
+    }
+
+    case EquipmentActionTypes.GET_CONTRIBUTORS_SUCCESS: {
+      return {
+        ...state,
+        contributors: action.payload.contributors
       };
     }
 
