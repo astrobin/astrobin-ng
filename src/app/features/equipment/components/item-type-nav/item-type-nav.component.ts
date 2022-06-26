@@ -1,4 +1,14 @@
-import { Component, EventEmitter, HostListener, Input, OnChanges, OnInit, Output, SimpleChanges } from "@angular/core";
+import {
+  Component,
+  EventEmitter,
+  HostListener,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  Output,
+  SimpleChanges
+} from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
@@ -21,7 +31,7 @@ import { ActiveToast } from "ngx-toastr";
   templateUrl: "./item-type-nav.component.html",
   styleUrls: ["./item-type-nav.component.scss"]
 })
-export class ItemTypeNavComponent extends BaseComponentDirective implements OnInit, OnChanges {
+export class ItemTypeNavComponent extends BaseComponentDirective implements OnInit, OnChanges, OnDestroy {
   @Input()
   excludeTypes: EquipmentItemType[] = [];
 
@@ -172,6 +182,14 @@ export class ItemTypeNavComponent extends BaseComponentDirective implements OnIn
     if (changes.softwareCount) {
       this.types.find(type => type.value === EquipmentItemType.SOFTWARE).count = changes.softwareCount.currentValue;
     }
+  }
+
+  ngOnDestroy() {
+    if (!!this.reviewPendingEditNotification) {
+      this.popNotificationsService.clear(this.reviewPendingEditNotification.toastId);
+    }
+
+    super.ngOnDestroy();
   }
 
   _initCollapsed() {
