@@ -113,7 +113,7 @@ export class ServerErrorsInterceptor implements HttpInterceptor {
           break;
         case 409:
           errorTitle = this.translateService.instant("Conflict detected");
-          errorMessage = err.url;
+          errorMessage = err.error || err.url;
           break;
         case 429:
           errorTitle = this.translateService.instant("Too many requests");
@@ -149,8 +149,10 @@ export class ServerErrorsInterceptor implements HttpInterceptor {
 
     if (errorTitle && errorMessage) {
       this.popNotificationsService.error(errorMessage, errorTitle, {
-        disableTimeOut: true,
-        enableHtml: true
+        timeOut: 60000,
+        disableTimeOut: "extendedTimeOut",
+        enableHtml: true,
+        closeButton: true
       });
 
       this.loadingService.setLoading(false);

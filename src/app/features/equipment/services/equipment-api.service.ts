@@ -366,6 +366,48 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     );
   }
 
+  acquireReviewerLock(itemType: EquipmentItemType, itemId: EquipmentItem["id"]): Observable<void> {
+    return this.http.post<void>(`${this.configUrl}/${itemType.toLowerCase()}/${itemId}/acquire-reviewer-lock/`, {});
+  }
+
+  releaseReviewerLock(itemType: EquipmentItemType, itemId: EquipmentItem["id"]): Observable<void> {
+    return this.http.post<void>(`${this.configUrl}/${itemType.toLowerCase()}/${itemId}/release-reviewer-lock/`, {});
+  }
+
+  acquireEditProposalLock(itemType: EquipmentItemType, itemId: EquipmentItem["id"]): Observable<void> {
+    return this.http.post<void>(
+      `${this.configUrl}/${itemType.toLowerCase()}/${itemId}/acquire-edit-proposal-lock/`,
+      {}
+    );
+  }
+
+  releaseEditProposalLock(itemType: EquipmentItemType, itemId: EquipmentItem["id"]): Observable<void> {
+    return this.http.post<void>(
+      `${this.configUrl}/${itemType.toLowerCase()}/${itemId}/release-edit-proposal-lock/`,
+      {}
+    );
+  }
+
+  acquireEditProposalReviewLock(
+    itemType: EquipmentItemType,
+    editProposalId: EditProposalInterface<EquipmentItem>["id"]
+  ): Observable<void> {
+    return this.http.post<void>(
+      `${this.configUrl}/${itemType.toLowerCase()}-edit-proposal/${editProposalId}/acquire-review-lock/`,
+      {}
+    );
+  }
+
+  releaseEditProposalReviewLock(
+    itemType: EquipmentItemType,
+    editProposalId: EditProposalInterface<EquipmentItem>["id"]
+  ): Observable<void> {
+    return this.http.post<void>(
+      `${this.configUrl}/${itemType.toLowerCase()}-edit-proposal/${editProposalId}/release-review-lock/`,
+      {}
+    );
+  }
+
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // BRAND API
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

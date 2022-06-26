@@ -1,18 +1,20 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { FormGroup } from "@angular/forms";
-import { EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
+import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { LoadingService } from "@shared/services/loading.service";
-import { take } from "rxjs/operators";
+import { map, switchMap, take } from "rxjs/operators";
 import { EquipmentActionTypes, RejectEquipmentItemEditProposal } from "@features/equipment/store/equipment.actions";
 import { Actions, ofType } from "@ngrx/effects";
 import { EditProposalInterface } from "@features/equipment/types/edit-proposal.interface";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
+import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
+import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 
 @Component({
   selector: "astrobin-reject-edit-proposal-modal",
@@ -37,7 +39,9 @@ export class RejectEditProposalModalComponent extends BaseComponentDirective imp
     public readonly loadingService: LoadingService,
     public readonly translateService: TranslateService,
     public readonly modal: NgbActiveModal,
-    public readonly popNotificationsService: PopNotificationsService
+    public readonly popNotificationsService: PopNotificationsService,
+    public readonly equipmentApiService: EquipmentApiService,
+    public readonly equipmentItemService: EquipmentItemService
   ) {
     super(store$);
   }
@@ -70,8 +74,18 @@ export class RejectEditProposalModalComponent extends BaseComponentDirective imp
       })
     );
 
+    const type: EquipmentItemType = this.equipmentItemService.getType(this.editProposal);
+
     this.actions$
-      .pipe(ofType(EquipmentActionTypes.REJECT_EQUIPMENT_ITEM_EDIT_PROPOSAL_SUCCESS), take(1))
+      .pipe(
+        ofType(EquipmentActionTypes.REJECT_EQUIPMENT_ITEM_EDIT_PROPOSAL_SUCCESS),
+        take(1),
+        switchMap(editProposal =>
+          this.equipmentApiService
+            .releaseEditProposalReviewLock(type, this.editProposal.id)
+            .pipe(map(() => editProposal))
+        )
+      )
       .subscribe(() => {
         this.popNotificationsService.success(
           this.translateService.instant("This edit proposal has been rejected."),
@@ -80,5 +94,12 @@ export class RejectEditProposalModalComponent extends BaseComponentDirective imp
         this.loadingService.setLoading(false);
         this.modal.close();
       });
+  }
+
+  cancel() {
+    const type: EquipmentItemType = this.equipmentItemService.getType(this.editProposal);
+    this.equipmentApiService.releaseEditProposalReviewLock(type, this.editProposal.id).subscribe(() => {
+      this.modal.dismiss();
+    });
   }
 }

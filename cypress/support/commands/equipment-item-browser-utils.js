@@ -270,6 +270,13 @@ Cypress.Commands.add("setupEquipmentDefaultRoutesForAllClasses", () => {
   cy.route("GET", "**/api/v2/equipment/**/images/", []).as("getImages");
   cy.route("GET", "**/api/v2/equipment/**/most-often-used-with/", []).as("getMostOftenUsedWith");
   cy.route("GET", "**/api/v2/nestedcomments/nestedcomments/**", []).as("getComments");
+
+  cy.route("POST", "**/api/v2/equipment/**/acquire-review-lock/", {}).as("acquireReviewLock");
+  cy.route("POST", "**/api/v2/equipment/**/release-review-lock/", {}).as("releaseReviewLock");
+  cy.route("POST", "**/api/v2/equipment/**/acquire-edit-proposal-lock/", {}).as("acquireEditProposalLock");
+  cy.route("POST", "**/api/v2/equipment/**/release-edit-proposal-lock/", {}).as("releaseEditProposalLock");
+  cy.route("POST", "**/api/v2/equipment/**/acquire-edit-proposal-review-lock/", {}).as("acquireEditProposalReviewLock");
+  cy.route("POST", "**/api/v2/equipment/**/release-edit-proposal-review-lock/", {}).as("releaseEditProposalReviewLock");
 });
 
 Cypress.Commands.add("setupEquipmentDefaultRoutesForCameras", () => {
