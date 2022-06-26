@@ -47,12 +47,14 @@ export class ConfirmItemCreationModalComponent extends BaseComponentDirective im
     confirmNamingConvention: boolean;
     confirmUnambiguous: boolean;
     confirmNoPersonalInformation: boolean;
+    confirmEnglish: boolean;
   } = {
     confirmNoTypos: false,
     confirmNoDuplication: false,
     confirmNamingConvention: false,
     confirmUnambiguous: false,
-    confirmNoPersonalInformation: false
+    confirmNoPersonalInformation: false,
+    confirmEnglish: false
   };
 
   constructor(
@@ -122,6 +124,19 @@ export class ConfirmItemCreationModalComponent extends BaseComponentDirective im
               "what is essentially the same product."
           )
         }
+      },
+      {
+        key: "confirmEnglish",
+        type: "checkbox",
+        id: "confirm-english",
+        wrappers: ["default-wrapper"],
+        templateOptions: {
+          label: this.translateService.instant("The name of this product is in English (if applicable)"),
+          description: this.translateService.instant(
+            "AstroBin does not translate product names into other languages, so if the name of this product has" +
+              "words that are not in English, please fix it."
+          )
+        }
       }
     ];
 
@@ -156,7 +171,8 @@ export class ConfirmItemCreationModalComponent extends BaseComponentDirective im
         this.model.confirmNoDuplication &&
         this.model.confirmNamingConvention &&
         this.model.confirmUnambiguous &&
-        this.model.confirmNoPersonalInformation
+        this.model.confirmNoPersonalInformation &&
+        this.model.confirmEnglish
       );
     }
 
