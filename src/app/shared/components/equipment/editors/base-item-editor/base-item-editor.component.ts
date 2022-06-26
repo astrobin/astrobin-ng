@@ -499,6 +499,23 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
     };
   }
 
+  protected _getCommunityNotesField(): any {
+    return {
+      key: "communityNotes",
+      type: "ckeditor",
+      wrappers: ["default-wrapper"],
+      id: "community-notes",
+      templateOptions: {
+        label: this.equipmentItemService.getPrintablePropertyName(null, EquipmentItemDisplayProperty.COMMUNITY_NOTES),
+        description: this.translateService.instant(
+          "This section can be used as a community page to share information about this item that doesn't fit " +
+            "the available data fields. Please use English."
+        ),
+        required: false
+      }
+    };
+  }
+
   protected _getVariantOfField(itemType: EquipmentItemType) {
     return {
       key: "variantOf",

@@ -50,6 +50,7 @@ export interface EquipmentItemBaseInterface {
   variants: EquipmentItemBaseInterface[];
   website: string;
   image?: string | File[];
+  communityNotes: string | null;
   userCount: number | null;
   imageCount: number | null;
 }

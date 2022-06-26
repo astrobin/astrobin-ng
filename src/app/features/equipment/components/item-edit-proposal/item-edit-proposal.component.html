@@ -23,34 +23,42 @@
       <span>{{ "The following changes are proposed:" | translate }}</span>
     </ng-container>
 
-    <ul class="changes">
-      <li *ngFor="let change of changes" class="change">
-        <span class="property-name">{{ change.propertyName }}:</span>
+    <table class="table table-striped changes">
+      <thead>
+      <tr>
+        <th>{{ "Property" | translate }}</th>
+        <th>{{ "Before" | translate }}</th>
+        <th>{{ "After" | translate }}</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let change of changes" class="change">
+        <td class="property-name">{{ change.propertyName }}</td>
 
-        <span class="before" [innerHTML]="change.before || 'n/a' | translate"></span>&nbsp;&xrarr;
+        <td class="before" [innerHTML]="change.before || 'n/a' | translate"></td>
 
-        <span class="after" [innerHTML]="change.after || 'n/a' | translate"></span>
+        <td class="after" [innerHTML]="change.after || 'n/a' | translate"></td>
 
-        <div *ngIf="change.propertyName === 'name'" class="alert alert-warning">
+        <td *ngIf="change.propertyName === 'name'" class="alert alert-warning" colspan="3">
           <span [innerHTML]="equipmentItemService.nameChangeWarningMessage()"></span>
-        </div>
-      </li>
+        </td>
+      </tr>
+      <tr *ngIf="editProposal.editProposalComment" class="change">
+        <td class="property-name">{{ "Proposer's comment" | translate }}:</td>
+        <td colspan="2" class="after">{{ editProposal.editProposalComment }}</td>
+      </tr>
 
-      <li *ngIf="editProposal.editProposalComment" class="change">
-        <span class="property-name">{{ "Proposer's comment" | translate }}:</span>
-        <span class="after">{{ editProposal.editProposalComment }}</span>
-      </li>
+      <tr *ngIf="editProposal.editProposalReviewedBy" class="change">
+        <td class="property-name">{{ "Reviewer" | translate }}</td>
+        <td colspan="2" class="after"><astrobin-username [userId]="editProposal.editProposalReviewedBy"></astrobin-username></td>
+      </tr>
 
-      <li *ngIf="editProposal.editProposalReviewedBy" class="change">
-        <span class="property-name">{{ "Reviewer" | translate }}:</span>
-        <span class="after"><astrobin-username [userId]="editProposal.editProposalReviewedBy"></astrobin-username></span>
-      </li>
-
-      <li *ngIf="editProposal.editProposalReviewComment" class="change">
-        <span class="property-name">{{ "Reviewer's comment" | translate }}:</span>
-        <span class="after">{{ editProposal.editProposalReviewComment }}</span>
-      </li>
-    </ul>
+      <tr *ngIf="editProposal.editProposalReviewComment" class="change">
+        <td class="property-name">{{ "Reviewer's comment" | translate }}</td>
+        <td colspan="2" class="after">{{ editProposal.editProposalReviewComment }}</td>
+      </tr>
+      </tbody>
+    </table>
 
     <div class="form-actions">
       <ng-container *ngIf="showReviewButtons$ | async as showReviewButtons">

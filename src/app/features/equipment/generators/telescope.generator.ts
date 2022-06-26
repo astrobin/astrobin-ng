@@ -15,6 +15,7 @@ export class TelescopeGenerator {
       name: source.name || "Test telescope",
       website: source.website || "https://www.test-telescope.com",
       image: source.image || "https://cdn.astrobin.com/images/foo.jpg",
+      communityNotes: null,
       type: source.type || TelescopeType.REFRACTOR_ACHROMATIC,
       aperture: source.aperture || 90,
       minFocalLength: source.minFocalLength || 450,

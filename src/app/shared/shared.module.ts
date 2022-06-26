@@ -52,6 +52,7 @@ import { LanguageLoader } from "@app/translate-loader";
 import { FormlyEquipmentItemBrowserWrapperComponent } from "@shared/components/misc/formly-equipment-item-browser-wrapper/formly-equipment-item-browser-wrapper.component";
 import { DirectivesModule } from "@shared/directives/directives.module";
 import { CustomToastComponent } from "@shared/components/misc/custom-toast/custom-toast.component";
+import { CKEditorService } from "@shared/services/ckeditor.service";
 
 export function appInitializer(store: Store<State>, actions$: Actions) {
   return () =>
@@ -174,6 +175,7 @@ export class SharedModule {
         AuthGuardService,
         AuthService,
         ClassicRoutesService,
+        CKEditorService,
         CookieService,
         GroupGuardService,
         ImageOwnerGuardService,

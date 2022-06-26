@@ -16,8 +16,10 @@ import { IsSuperUserPipe } from "./is-superuser.pipe";
 import { CamelCaseToSentenceCasePipe } from "@shared/pipes/camel-case-to-sentence-case.pipe";
 import { IsEquipmentModeratorPipe } from "@shared/pipes/is-equipment-moderator.pipe";
 import { IsInGroupPipe } from "@shared/pipes/is-in-group.pipe";
+import { BBCodeToHtmlPipe } from "@shared/pipes/bbcode-to-html.pipe";
 
 const pipes = [
+  BBCodeToHtmlPipe,
   CamelCaseToSentenceCasePipe,
   EnsureUrlProtocolPipe,
   IsContentModeratorPipe,

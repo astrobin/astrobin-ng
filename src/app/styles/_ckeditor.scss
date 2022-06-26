@@ -1,3 +1,22 @@
 .high-contrast .cke_button_icon {
   filter: grayscale(100%) brightness(250%);
 }
+
+.simpleuploads-tmpwrapper {
+  max-width: 100%;
+  width: 100% !important;
+
+  > span {
+    background: rgba(0, 0, 0, .5);
+    max-width: 200px;
+    top: 0 !important;
+    margin-top: 0 !important;
+    padding: .5rem 1rem;
+    font-size: 1rem !important;
+  }
+
+  svg {
+    width: 200px;
+    height: auto;
+  };
+}

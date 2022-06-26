@@ -82,6 +82,13 @@
         </tbody>
       </table>
 
+      <div class="community-notes" *ngIf="showCommunityNotes && !!item.communityNotes">
+        <h5>
+          {{ equipmentItemService.getPrintablePropertyName(null, EquipmentItemDisplayProperty.COMMUNITY_NOTES) }}
+        </h5>
+        <div class="community-notes-content" [innerHTML]="item.communityNotes | BBCodeToHtml"></div>
+      </div>
+
       <div *ngIf="showSubItem && !!subItem" class="sub-item">
         <astrobin-equipment-item-summary
           [item]="subItem"

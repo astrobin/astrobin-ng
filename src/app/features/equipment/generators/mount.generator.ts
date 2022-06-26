@@ -15,6 +15,7 @@ export class MountGenerator {
       name: source.name || "Test mount",
       website: source.website || "https://www.test-mount.com",
       image: source.image || "https://cdn.astrobin.com/images/foo.jpg",
+      communityNotes: null,
       type: source.type || MountType.GERMAN_EQUATORIAL,
       periodicError: source.periodicError || 1,
       pec: source.pec !== null && source.pec !== undefined ? source.pec : true,

@@ -42,7 +42,8 @@ interface EquipmentItemProperty {
   styleUrls: ["./item-summary.component.scss"]
 })
 export class ItemSummaryComponent extends BaseComponentDirective implements OnChanges {
-  UtilsService = UtilsService;
+  readonly UtilsService = UtilsService;
+  readonly EquipmentItemDisplayProperty = EquipmentItemDisplayProperty;
 
   @Input()
   item: EquipmentItem;
@@ -76,6 +77,9 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
 
   @Input()
   enableBrandLink = false;
+
+  @Input()
+  showCommunityNotes = false;
 
   brand: BrandInterface;
   subItem: EquipmentItemBaseInterface;
