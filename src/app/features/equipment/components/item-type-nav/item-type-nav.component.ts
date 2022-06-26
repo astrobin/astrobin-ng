@@ -13,6 +13,8 @@ import { LoadingService } from "@shared/services/loading.service";
 import { EquipmentActionTypes, GetAllBrands } from "@features/equipment/store/equipment.actions";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { selectEquipment } from "@features/equipment/store/equipment.selectors";
+import { PopNotificationsService } from "@shared/services/pop-notifications.service";
+import { ActiveToast } from "ngx-toastr";
 
 @Component({
   selector: "astrobin-equipment-item-type-nav",
@@ -93,6 +95,7 @@ export class ItemTypeNavComponent extends BaseComponentDirective implements OnIn
 
   activeType = this.activatedRoute.snapshot.paramMap.get("itemType");
   activeSubNav = "";
+  reviewPendingEditNotification: ActiveToast<any>;
 
   @HostListener("mouseover") onMouseHover() {
     if (!this.enableCollapsing) {
@@ -120,7 +123,8 @@ export class ItemTypeNavComponent extends BaseComponentDirective implements OnIn
     public readonly translateService: TranslateService,
     public readonly equipmentApiService: EquipmentApiService,
     public readonly loadingService: LoadingService,
-    public readonly windowRefService: WindowRefService
+    public readonly windowRefService: WindowRefService,
+    public readonly popNotificationsService: PopNotificationsService
   ) {
     super(store$);
   }
@@ -308,6 +312,8 @@ export class ItemTypeNavComponent extends BaseComponentDirective implements OnIn
         continue;
       }
 
+      this.loadingService.setLoading(true);
+
       type.count = this.equipmentApiService.findAllEquipmentItems(type.value, {}).pipe(
         takeUntil(this.destroyed$),
         catchError(() => of({ count: 0 })),
@@ -326,7 +332,52 @@ export class ItemTypeNavComponent extends BaseComponentDirective implements OnIn
         takeUntil(this.destroyed$),
         catchError(() => of({ count: 0 })),
         map(response => response.count),
-        tap(() => this.loadingService.setLoading(false))
+        tap(count => {
+          this.loadingService.setLoading(false);
+
+          if (!!this.reviewPendingEditNotification) {
+            this.popNotificationsService.remove(this.reviewPendingEditNotification.toastId);
+          }
+
+          if (count > 0 && this.activatedRoute.snapshot.url.join("/").indexOf("pending-edit-explorer") === -1) {
+            let message: string;
+
+            if (count === 1) {
+              message = this.translateService.instant(
+                "There is <strong>1 item</strong> of this class that has pending edits."
+              );
+            } else {
+              message = this.translateService.instant(
+                "There are <strong>{{n}} items</strong> of this class that have pending edits.",
+                { n: count }
+              );
+            }
+
+            this.reviewPendingEditNotification = this.popNotificationsService.info(
+              `${message} ` +
+                this.translateService.instant(
+                  "Please contribute to the AstroBin equipment database by " + "reviewing them!"
+                ),
+              null,
+              {
+                enableHtml: true,
+                disableTimeOut: true,
+                closeButton: true,
+                buttons: [
+                  {
+                    id: "1",
+                    title: this.translateService.instant("Review"),
+                    classList: "btn btn-sm btn-secondary"
+                  }
+                ]
+              }
+            );
+
+            this.reviewPendingEditNotification.onAction.subscribe(() => {
+              this.router.navigateByUrl(`/equipment/pending-edit-explorer/${type.value.toLowerCase()}`);
+            });
+          }
+        })
       );
     }
   }

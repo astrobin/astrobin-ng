@@ -42,6 +42,10 @@ export class PopNotificationsService extends BaseService {
     return this.toastr.error(message, title ? title : this.translate.instant("Error!"), options);
   }
 
+  public remove(toastId?: number) {
+    this.toastr.remove(toastId);
+  }
+
   public clear(toastId?: number) {
     this.toastr.clear(toastId);
   }
