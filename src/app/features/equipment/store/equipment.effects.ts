@@ -57,6 +57,7 @@ import {
   GetAllBrandsSuccess,
   GetAllInBrand,
   GetAllInBrandSuccess,
+  GetContributorsSuccess,
   GetImagesUsingBrand,
   GetImagesUsingBrandSuccess,
   GetImagesUsingItem,
@@ -445,6 +446,17 @@ export class EquipmentEffects {
           .pipe(
             map(data => new GetMostOftenUsedWithSuccess({ itemType: payload.itemType, itemId: payload.itemId, data }))
           )
+      )
+    )
+  );
+
+  GetContributors: Observable<GetContributorsSuccess> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(EquipmentActionTypes.GET_CONTRIBUTORS),
+      mergeMap(() =>
+        this.equipmentApiService
+          .getContributors()
+          .pipe(map(contributors => new GetContributorsSuccess({ contributors })))
       )
     )
   );

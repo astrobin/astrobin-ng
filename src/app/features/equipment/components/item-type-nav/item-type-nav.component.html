@@ -63,4 +63,24 @@
       </li>
     </ul>
   </li>
+
+  <ng-container *ngIf="showContributors">
+    <li class="nav-item-separator"></li>
+
+    <li [ngbNavItem]="'contributors'">
+      <a
+        ngbNavLink
+        routerLink="{{ routingBasePath }}/contributors"
+      >
+        <img src="/assets/images/default-avatar.jpeg?v1" [alt]="'Contributors' | translate" class="contributors-icon"/>
+        <span [hidden]="collapsed">
+          {{ "Contributors" | translate }}
+        </span>
+
+        <span *ngIf="contributorCount$" [hidden]="collapsed" class="count">
+        {{ contributorCount$ | async }}
+        </span>
+      </a>
+    </li>
+  </ng-container>
 </ul>

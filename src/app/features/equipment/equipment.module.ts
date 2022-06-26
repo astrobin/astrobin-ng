@@ -32,6 +32,7 @@ import { MostOftenUsedWithComponent } from "./components/explorer/most-often-use
 import { ExplorerFiltersComponent } from "./pages/explorer/explorer-filters/explorer-filters.component";
 import { BrandExplorerPageComponent } from "./pages/explorer/brand-explorer-page/brand-explorer-page.component";
 import { UnapproveItemModalComponent } from "@features/equipment/components/unapprove-item-modal/unapprove-item-modal.component";
+import { ContributorsPageComponent } from "./pages/contributors-page/contributors-page.component";
 
 @NgModule({
   declarations: [
@@ -62,7 +63,8 @@ import { UnapproveItemModalComponent } from "@features/equipment/components/unap
     ImagesUsingItemComponent,
     MostOftenUsedWithComponent,
     ExplorerFiltersComponent,
-    BrandExplorerPageComponent
+    BrandExplorerPageComponent,
+    ContributorsPageComponent
   ],
   imports: [RouterModule.forChild(routes), SharedModule, StoreModule.forFeature(equipmentFeatureKey, reducer)]
 })

@@ -13,6 +13,7 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 import { BrandInterface } from "@features/equipment/types/brand.interface";
 import { CookieService } from "ngx-cookie-service";
 import { EquipmentItemsSortOrder } from "@features/equipment/services/equipment-api.service";
+import { GetContributors } from "@features/equipment/store/equipment.actions";
 
 export const EQUIPMENT_EXPLORER_PAGE_SORTING_COOKIE = "astrobin-equipment-explorer-page-sorting";
 
@@ -62,6 +63,8 @@ export class ExplorerBaseComponent extends BaseComponentDirective implements OnI
     this.page = +this.activatedRoute.snapshot.queryParamMap.get("page") || 1;
     this.activeType = this.activatedRoute.snapshot.paramMap.get("itemType");
     this.activeEditProposalId = +this.activatedRoute.snapshot.paramMap.get("editProposalId");
+
+    this.store$.dispatch(new GetContributors());
 
     this.router.events.pipe(takeUntil(this.destroyed$)).subscribe(event => {
       if (event instanceof NavigationEnd) {

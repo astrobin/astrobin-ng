@@ -27,6 +27,7 @@ import {
   AllEquipmentItemsOptionsInterface,
   EquipmentItemsSortOrder
 } from "@features/equipment/services/equipment-api.service";
+import { ContributorInterface } from "@features/equipment/types/contributor.interface";
 
 export interface EquipmentItemCreationSuccessPayloadInterface {
   item: EquipmentItemBaseInterface;
@@ -80,6 +81,8 @@ export enum EquipmentActionTypes {
   GET_IMAGES_USING_ITEM_SUCCESS = "[Equipment] Get images using item success",
   GET_MOST_OFTEN_USED_WITH = "[Equipment] Get most often used with",
   GET_MOST_OFTEN_USED_WITH_SUCCESS = "[Equipment] Get most often used with success",
+  GET_CONTRIBUTORS = "[Equipment] Get contributors",
+  GET_CONTRIBUTORS_SUCCESS = "[Equipment] Get contributors success",
 
   // Equipment presets
 
@@ -444,6 +447,16 @@ export class GetMostOftenUsedWithSuccess implements PayloadActionInterface {
   ) {}
 }
 
+export class GetContributors implements Action {
+  readonly type = EquipmentActionTypes.GET_CONTRIBUTORS;
+}
+
+export class GetContributorsSuccess implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.GET_CONTRIBUTORS_SUCCESS;
+
+  constructor(public payload: { contributors: ContributorInterface[] }) {}
+}
+
 /**********************************************************************************************************************
  * Equipment presets
  *********************************************************************************************************************/
@@ -780,6 +793,8 @@ export type EquipmentActions =
   | GetImagesUsingItemSuccess
   | GetMostOftenUsedWith
   | GetMostOftenUsedWithSuccess
+  | GetContributors
+  | GetContributorsSuccess
 
   // Equipment presets
   | FindEquipmentPresets

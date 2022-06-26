@@ -11,6 +11,7 @@ import { PendingEditExplorerComponent } from "@features/equipment/pages/pending-
 import { PendingReviewExplorerComponent } from "@features/equipment/pages/pending-review-explorer/pending-review-explorer.component";
 import { ReviewGearRenamingProposalsComponent } from "@features/equipment/pages/review-gear-renaming-proposals/review-gear-renaming-proposals.component";
 import { BrandExplorerPageComponent } from "@features/equipment/pages/explorer/brand-explorer-page/brand-explorer-page.component";
+import { ContributorsPageComponent } from "@features/equipment/pages/contributors-page/contributors-page.component";
 
 export const routes: Routes = [
   {
@@ -77,6 +78,11 @@ export const routes: Routes = [
         redirectTo: "camera"
       },
 
+      {
+        path: "contributors",
+        pathMatch: "full",
+        component: ContributorsPageComponent
+      },
       {
         path: "brand",
         pathMatch: "full",

@@ -183,3 +183,5 @@ export const selectImagesUsingEquipmentBrand = createSelector(
     return matching.length > 0 ? matching[0].images : null;
   }
 );
+
+export const selectEquipmentContributors = createSelector(selectEquipment, state => state.contributors);
