@@ -4,11 +4,11 @@
   .contributor {
     text-align: center;
     position: relative;
-    margin-top: 1rem;
+    bottom: 3rem;
 
     ::ng-deep {
       astrobin-avatar img {
-        max-width: 75%;
+        max-width: 66.67%;
       }
 
       .username {
