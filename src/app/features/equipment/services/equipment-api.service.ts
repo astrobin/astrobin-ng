@@ -259,6 +259,15 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
       .pipe(map(responseItem => this._parseItem(responseItem)));
   }
 
+  unapproveEquipmentItem(item: EquipmentItemBaseInterface): Observable<EquipmentItemBaseInterface> {
+    const type = getEquipmentItemType(item);
+    const path = EquipmentItemType[type].toLowerCase();
+
+    return this.http
+      .post<EquipmentItemBaseInterface>(`${this.configUrl}/${path}/${item.id}/unapprove/`, {})
+      .pipe(map(responseItem => this._parseItem(responseItem)));
+  }
+
   rejectEquipmentItem(
     item: EquipmentItemBaseInterface,
     reason: EquipmentItemReviewerRejectionReason,

@@ -62,8 +62,10 @@ export enum EquipmentActionTypes {
   GET_ALL_IN_BRAND_SUCCESS = "[Equipment] Get all in brand success",
   GET_OTHERS_IN_BRAND = "[Equipment] Get others in brand",
   GET_OTHERS_IN_BRAND_SUCCESS = "[Equipment] Get others in brand success",
-  APPROVE_EQUIPMENT_ITEM = "[Equipment] Approve item",
-  APPROVE_EQUIPMENT_ITEM_SUCCESS = "[Equipment] Approve item success",
+  APPROVE_EQUIPMENT_ITEM = "[Equipment] Unapprove item",
+  APPROVE_EQUIPMENT_ITEM_SUCCESS = "[Equipment] Unapprove item success",
+  UNAPPROVE_EQUIPMENT_ITEM = "[Equipment] Approve item",
+  UNAPPROVE_EQUIPMENT_ITEM_SUCCESS = "[Equipment] Approve item success",
   REJECT_EQUIPMENT_ITEM = "[Equipment] Reject item",
   REJECT_EQUIPMENT_ITEM_SUCCESS = "[Equipment] Reject item success",
   FIND_EQUIPMENT_ITEM_EDIT_PROPOSALS = "[Equipment] Find equipment item edit proposals",
@@ -321,6 +323,18 @@ export class ApproveEquipmentItem implements PayloadActionInterface {
 
 export class ApproveEquipmentItemSuccess implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.APPROVE_EQUIPMENT_ITEM_SUCCESS;
+
+  constructor(public payload: { item: EquipmentItemBaseInterface }) {}
+}
+
+export class UnapproveEquipmentItem implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.UNAPPROVE_EQUIPMENT_ITEM;
+
+  constructor(public payload: { item: EquipmentItemBaseInterface }) {}
+}
+
+export class UnapproveEquipmentItemSuccess implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.UNAPPROVE_EQUIPMENT_ITEM_SUCCESS;
 
   constructor(public payload: { item: EquipmentItemBaseInterface }) {}
 }
@@ -750,6 +764,8 @@ export type EquipmentActions =
   | GetOthersInBrandSuccess
   | ApproveEquipmentItem
   | ApproveEquipmentItemSuccess
+  | UnapproveEquipmentItem
+  | UnapproveEquipmentItemSuccess
   | RejectEquipmentItem
   | RejectEquipmentItemSuccess
   | FindEquipmentItemEditProposals

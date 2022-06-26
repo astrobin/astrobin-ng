@@ -144,32 +144,51 @@
             </button>
 
             <ng-container
-              *ngIf="
-                (currentUser | isEquipmentModerator) &&
-                !!selectedItem.brand &&
-                selectedItem.reviewerDecision === null &&
-                selectedItem.createdBy !== currentUser.id
-              "
+              *ngIf="(currentUser | isEquipmentModerator) && !!selectedItem.brand"
             >
-              <button
-                class="btn btn-danger"
-                data-test="reject"
-                [class.loading]="loadingService.isLoading()"
-                [disabled]="editMode"
-                (click)="startRejection()"
+              <ng-container
+                *ngIf="
+                  selectedItem.reviewerDecision === null &&
+                  selectedItem.createdBy !== currentUser.id
+                "
               >
-                {{ "Reject" | translate }}&hellip;
-              </button>
+                <button
+                  class="btn btn-danger"
+                  data-test="reject"
+                  [class.loading]="loadingService.isLoading()"
+                  [disabled]="editMode"
+                  (click)="startRejection()"
+                >
+                  {{ "Reject" | translate }}&hellip;
+                </button>
 
-              <button
-                class="btn btn-success"
-                data-test="reject"
-                [class.loading]="loadingService.isLoading()"
-                [disabled]="editMode"
-                (click)="startApproval()"
+                <button
+                  class="btn btn-success"
+                  data-test="reject"
+                  [class.loading]="loadingService.isLoading()"
+                  [disabled]="editMode"
+                  (click)="startApproval()"
+                >
+                  {{ "Approve" | translate }}&hellip;
+                </button>
+              </ng-container>
+
+              <ng-container
+                *ngIf="
+                  selectedItem.reviewerDecision === EquipmentItemReviewerDecision.APPROVED &&
+                  selectedItem.createdBy !== currentUser.id
+                "
               >
-                {{ "Approve" | translate }}&hellip;
-              </button>
+                <button
+                  class="btn btn-danger"
+                  data-test="unapprove"
+                  [class.loading]="loadingService.isLoading()"
+                  [disabled]="editMode"
+                  (click)="startUnapproval()"
+                >
+                  {{ "Unapprove" | translate }}&hellip;
+                </button>
+              </ng-container>
             </ng-container>
           </ng-container>
         </ng-container>
