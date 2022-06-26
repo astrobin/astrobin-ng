@@ -36,7 +36,8 @@ enum NotificationCategory {
   PRIVATE_MESSAGES = "PRIVATE_MESSAGES",
   SUBSCRIPTIONS = "SUBSCRIPTIONS",
   USERS = "USERS",
-  EQUIPMENT = "EQUIPMENT"
+  EQUIPMENT = "EQUIPMENT",
+  EQUIPMENT_MODERATION = "EQUIPMENT_MODERATION"
 }
 
 interface NotificationCategoriesInterface {
@@ -91,6 +92,10 @@ export class SettingsPageComponent extends BaseComponentDirective implements OnI
       label: this.translateService.instant("Equipment"),
       items: {}
     },
+    [NotificationCategory.EQUIPMENT_MODERATION]: {
+      label: this.translateService.instant("Equipment moderation"),
+      items: {}
+    },
     [NotificationCategory.IOTD_STAFF]: {
       label: this.translateService.instant("IOTD/TP Staff"),
       items: {}
@@ -120,9 +125,14 @@ export class SettingsPageComponent extends BaseComponentDirective implements OnI
         this.store$.select(selectCurrentUser).pipe(
           tap(user => {
             const isIotdStaff = user.groups.filter(group => group.name === "iotd_staff").length > 0;
+            const isEquipmentModerator = user.groups.filter(group => group.name === "equipment_moderators").length > 0;
 
             if (!isIotdStaff) {
               delete this.categories[NotificationCategory.IOTD_STAFF];
+            }
+
+            if (!isEquipmentModerator) {
+              delete this.categories[NotificationCategory.EQUIPMENT_MODERATION];
             }
           }),
           map(() => data)
@@ -266,6 +276,8 @@ export class SettingsPageComponent extends BaseComponentDirective implements OnI
       case "equipment-item-migration-rejected":
       case "new_comment_to_unapproved_equipment_item":
         return NotificationCategory.EQUIPMENT;
+      case "equipment-item-requires-moderation":
+        return NotificationCategory.EQUIPMENT_MODERATION;
     }
 
     return null;
