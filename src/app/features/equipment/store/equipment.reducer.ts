@@ -9,7 +9,6 @@ import { EquipmentPresetInterface } from "@features/equipment/types/equipment-pr
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { ImageInterface } from "@shared/interfaces/image.interface";
 import { EquipmentItemMostOftenUsedWithData } from "@features/equipment/types/equipment-item-most-often-used-with-data.interface";
-import { EquipmentItemsSortOrder } from "@features/equipment/services/equipment-api.service";
 
 export const equipmentFeatureKey = "equipment";
 
@@ -114,6 +113,7 @@ export function reducer(state = initialEquipmentState, action: EquipmentActions)
 
     case EquipmentActionTypes.LOAD_EQUIPMENT_ITEM_SUCCESS:
     case EquipmentActionTypes.APPROVE_EQUIPMENT_ITEM_SUCCESS:
+    case EquipmentActionTypes.UNAPPROVE_EQUIPMENT_ITEM_SUCCESS:
     case EquipmentActionTypes.CREATE_SENSOR_SUCCESS:
     case EquipmentActionTypes.CREATE_CAMERA_SUCCESS:
     case EquipmentActionTypes.CREATE_TELESCOPE_SUCCESS:

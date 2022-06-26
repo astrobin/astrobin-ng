@@ -4,7 +4,11 @@ import { State } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
 import { TitleService } from "@shared/services/title/title.service";
 import { ActivatedRoute, Router } from "@angular/router";
-import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import {
+  EquipmentItemBaseInterface,
+  EquipmentItemReviewerDecision,
+  EquipmentItemType
+} from "@features/equipment/types/equipment-item-base.interface";
 import { filter, map, switchMap, take, takeUntil, tap } from "rxjs/operators";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
@@ -25,7 +29,8 @@ import {
   GetImagesUsingItem,
   GetUsersUsingItem,
   LoadBrand,
-  LoadEquipmentItem
+  LoadEquipmentItem,
+  UnapproveEquipmentItemSuccess
 } from "@features/equipment/store/equipment.actions";
 import { SensorInterface } from "@features/equipment/types/sensor.interface";
 import { CameraInterface, CameraType } from "@features/equipment/types/camera.interface";
@@ -61,6 +66,7 @@ import { LoadContentType } from "@app/store/actions/content-type.actions";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { ImageInterface } from "@shared/interfaces/image.interface";
 import { distinctUntilChangedObj } from "@shared/services/utils/utils.service";
+import { UnapproveItemModalComponent } from "@features/equipment/components/unapprove-item-modal/unapprove-item-modal.component";
 
 @Component({
   selector: "astrobin-equipment-explorer",
@@ -70,6 +76,7 @@ import { distinctUntilChangedObj } from "@shared/services/utils/utils.service";
 export class ExplorerComponent extends BaseComponentDirective implements OnInit, OnChanges {
   readonly EquipmentItemType = EquipmentItemType;
   readonly EquipmentItemEditorMode = EquipmentItemEditorMode;
+  readonly EquipmentItemReviewerDecision = EquipmentItemReviewerDecision;
 
   @Input()
   enableBrowser = true;
@@ -106,6 +113,9 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
 
   @Output()
   approved = new EventEmitter();
+
+  @Output()
+  unapproved = new EventEmitter();
 
   @Output()
   rejected = new EventEmitter();
@@ -386,6 +396,36 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
           this.setItem(item);
           this.approved.emit();
           this.popNotificationsService.success(this.translateService.instant("Item approved."));
+        });
+    });
+  }
+
+  startUnapproval() {
+    if (!this._verifyCameraVariantCanBeEdited()) {
+      return;
+    }
+
+    this.loadingService.setLoading(true);
+
+    this.equipmentApiService.acquireReviewerLock(this.selectedItem.klass, this.selectedItem.id).subscribe(() => {
+      this.loadingService.setLoading(false);
+
+      const modal: NgbModalRef = this.modalService.open(UnapproveItemModalComponent);
+      const componentInstance: UnapproveItemModalComponent = modal.componentInstance;
+
+      componentInstance.equipmentItem = this.selectedItem;
+
+      this.actions$
+        .pipe(
+          ofType(EquipmentActionTypes.UNAPPROVE_EQUIPMENT_ITEM_SUCCESS),
+          map((action: UnapproveEquipmentItemSuccess) => action.payload.item),
+          filter(item => item.id === this.selectedItem.id),
+          take(1)
+        )
+        .subscribe(item => {
+          this.setItem(item);
+          this.unapproved.emit();
+          this.popNotificationsService.success(this.translateService.instant("Item unapproved."));
         });
     });
   }

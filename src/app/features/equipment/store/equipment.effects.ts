@@ -78,6 +78,8 @@ import {
   RejectEquipmentItemEditProposal,
   RejectEquipmentItemEditProposalSuccess,
   RejectEquipmentItemSuccess,
+  UnapproveEquipmentItem,
+  UnapproveEquipmentItemSuccess,
   UpdateEquipmentPreset,
   UpdateEquipmentPresetSuccess
 } from "@features/equipment/store/equipment.actions";
@@ -309,6 +311,18 @@ export class EquipmentEffects {
         this.equipmentApiService
           .approveEquipmentItem(payload.item, payload.comment)
           .pipe(map(item => new ApproveEquipmentItemSuccess({ item })))
+      )
+    )
+  );
+
+  UnapproveEquipmentItem: Observable<UnapproveEquipmentItemSuccess> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(EquipmentActionTypes.UNAPPROVE_EQUIPMENT_ITEM),
+      map((action: UnapproveEquipmentItem) => action.payload),
+      mergeMap(payload =>
+        this.equipmentApiService
+          .unapproveEquipmentItem(payload.item)
+          .pipe(map(item => new UnapproveEquipmentItemSuccess({ item })))
       )
     )
   );

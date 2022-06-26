@@ -1,0 +1,28 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-title">
+    {{ "Unapprove" | translate }}: {{ equipmentItemService.getName$(equipmentItem) | async }}
+  </h4>
+
+  <button (click)="cancel()" aria-describedby="modal-title" class="close" type="button">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body">
+  <p>{{ "This operation will let equipment moderators review this item again." | translate }}</p>
+</div>
+
+<div class="modal-footer">
+  <button (click)="cancel()" class="btn btn-outline-secondary" type="button">
+    {{ "Cancel" | translate }}
+  </button>
+
+  <button
+    (click)="unapprove()"
+    class="btn btn-danger"
+    type="button"
+    [class.loading]="loadingService.isLoading()"
+  >
+    {{ "Unapprove" | translate }}
+  </button>
+</div>
