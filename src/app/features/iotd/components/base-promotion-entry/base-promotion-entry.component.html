@@ -35,17 +35,27 @@
     <div *ngIf="showMetadata" class="col-metadata">
       <p>
         <strong>{{ "Imaging telescopes" | translate }}:</strong>
-        <ng-container *ngIf="entry.imagingTelescopes?.length > 0; else noneSpecified">
+        <ng-container *ngIf="entry.imagingTelescopes?.length > 0 || entry.imagingTelescopes2?.length > 0; else noneSpecified">
           <astrobin-telescope *ngFor="let telescope of entry.imagingTelescopes" [id]="telescope.pk" [loadDelay]="500">
           </astrobin-telescope>
+
+          <astrobin-equipment-item-display-name
+            *ngFor="let telescope of entry.imagingTelescopes2"
+            [item]="selectItem(EquipmentItemType.TELESCOPE, telescope.id) | async"
+          ></astrobin-equipment-item-display-name>
         </ng-container>
       </p>
 
       <p>
         <strong>{{ "Imaging cameras" | translate }}:</strong>
-        <ng-container *ngIf="entry.imagingCameras?.length > 0; else noneSpecified">
+        <ng-container *ngIf="entry.imagingCameras?.length > 0 || entry.imagingCameras2?.length > 0; else noneSpecified">
           <astrobin-camera *ngFor="let camera of entry.imagingCameras" [id]="camera.pk" [loadDelay]="500">
           </astrobin-camera>
+
+          <astrobin-equipment-item-display-name
+            *ngFor="let camera of entry.imagingCameras2"
+            [item]="selectItem(EquipmentItemType.CAMERA, camera.id) | async"
+          ></astrobin-equipment-item-display-name>
         </ng-container>
       </p>
 

@@ -13,19 +13,25 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
 import { ImageComponent } from "@shared/components/misc/image/image.component";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
 import { Observable } from "rxjs";
-import { filter, map, take, takeUntil, tap } from "rxjs/operators";
+import { filter, map, take, takeUntil } from "rxjs/operators";
 import { PromotionImageInterface } from "@features/iotd/types/promotion-image.interface";
 import { CookieService } from "ngx-cookie-service";
 import { selectImage } from "@app/store/selectors/app/image.selectors";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { TranslateService } from "@ngx-translate/core";
+import { LoadEquipmentItem } from "@features/equipment/store/equipment.actions";
+import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import { selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 
 @Component({
   selector: "astrobin-base-promotion-entry",
   template: ""
 })
 export abstract class BasePromotionEntryComponent extends BaseComponentDirective implements OnInit {
+  readonly EquipmentItemType = EquipmentItemType;
+
   @Input()
   entry: PromotionImageInterface;
 
@@ -99,6 +105,14 @@ export abstract class BasePromotionEntryComponent extends BaseComponentDirective
     this.mayPromote$(this.entry.pk)
       .pipe(takeUntil(this.destroyed$))
       .subscribe(mayPromote => (this.mayPromote = mayPromote));
+
+    for (const telescope of this.entry.imagingTelescopes2) {
+      this.store$.dispatch(new LoadEquipmentItem({ type: EquipmentItemType.TELESCOPE, id: telescope.id }));
+    }
+
+    for (const camera of this.entry.imagingCameras2) {
+      this.store$.dispatch(new LoadEquipmentItem({ type: EquipmentItemType.CAMERA, id: camera.id }));
+    }
   }
 
   isHidden$(pk: PromotionImageInterface["pk"]): Observable<boolean> {
@@ -147,6 +161,10 @@ export abstract class BasePromotionEntryComponent extends BaseComponentDirective
       .select(selectHiddenImageByImageId, pk)
       .pipe(take(1))
       .subscribe(hiddenImage => this.store$.dispatch(new ShowImage({ hiddenImage })));
+  }
+
+  selectItem(type: EquipmentItemType, id: EquipmentItem["id"]): Observable<EquipmentItem> {
+    return this.store$.select(selectEquipmentItem, { type, id });
   }
 
   abstract isPromoted$(pk: PromotionImageInterface["pk"]): Observable<boolean>;
