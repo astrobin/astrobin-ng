@@ -23,13 +23,13 @@ context("Equipment", () => {
       it("should create a sensor", () => {
         cy.equipmentItemBrowserCreate("#camera-field-sensor", "Test sensor", "@findSensors");
 
+        cy.route("get", "**/api/v2/equipment/sensor/find-similar-in-brand/*", [testSensor]).as("findSimilarSensors");
+
         cy.equipmentItemBrowserSelectFirstBrand(
           "astrobin-sensor-editor #equipment-item-field-brand",
           "Test brand",
           testBrand
         );
-
-        cy.route("get", "**/api/v2/equipment/sensor/find-similar-in-brand/*", [testSensor]).as("findSimilarSensors");
 
         cy.get("astrobin-sensor-editor #equipment-item-field-name").clear();
         cy.get("astrobin-sensor-editor #equipment-item-field-name").type("Test sensor");
