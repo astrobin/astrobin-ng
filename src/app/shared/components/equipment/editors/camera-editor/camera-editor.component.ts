@@ -247,12 +247,83 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
   }
 
   protected _customNameChangesValidations(field: FormlyFieldConfig, value: string) {
-    const words = ["oag", "off-axis", "off axis"];
-    let hasOAG = false;
+    const oagWords = ["oag", "off-axis", "off axis"];
+    const canonMultiNameWords = [
+      "1000d",
+      "eos 1000d",
+      "rebel xs",
+      "kiss f",
+      "100d",
+      "eos 100d",
+      "rebel sl1",
+      "kiss x7",
+      "1100d",
+      "eos 1100d",
+      "rebel t3",
+      "kiss x50",
+      "1200d",
+      "eos 1200d",
+      "rebel t5",
+      "kiss x79",
+      "1300d",
+      "eos 1300d",
+      "rebel t6",
+      "kiss x80",
+      "400d",
+      "eos 400d",
+      "rebel xti",
+      "450d",
+      "eos 450d",
+      "rebel xsi",
+      "kiss x2",
+      "500d",
+      "eos 500d",
+      "rebel t1i",
+      "kiss x3",
+      "550d",
+      "eos 550d",
+      "rebel t2i",
+      "kiss x4",
+      "600d",
+      "eos 600d",
+      "rebel t3i",
+      "kiss x5",
+      "650d",
+      "eos 650d",
+      "rebel t41",
+      "kiss x6i",
+      "700d",
+      "eos 700d",
+      "rebel t5i",
+      "kiss x7i",
+      "750d",
+      "eos 750d",
+      "rebel t6i",
+      "kiss x8i",
+      "760d",
+      "eos 760d",
+      "rebel t6s",
+      "8000d",
+      "eos 8000d",
+      "800d",
+      "eos 800d",
+      "rebel t7i",
+      "kiss x9i"
+    ];
 
-    for (const word of words) {
+    let hasOAG = false;
+    let hasCanonMultiName = false;
+
+    for (const word of oagWords) {
       if (value.toLowerCase().indexOf(word) > -1) {
         hasOAG = true;
+        break;
+      }
+    }
+
+    for (const word of canonMultiNameWords) {
+      if (value.toLowerCase() === word) {
+        hasCanonMultiName = true;
         break;
       }
     }
@@ -262,6 +333,12 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
         level: FormlyFieldMessageLevel.WARNING,
         text: this.translateService.instant("Off-axis guiders are typically found as accessories, not cameras.")
       });
+    }
+
+    if (hasCanonMultiName) {
+      field.formControl.setErrors({ "has-canon-multi-name": true });
+      field.formControl.markAsTouched();
+      field.formControl.markAsDirty();
     }
   }
 }

@@ -128,6 +128,16 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
             0: options.value
           });
         }
+      },
+      {
+        name: "has-canon-multi-name",
+        message() {
+          return translateService.instant(
+            "This camera already exists in AstroBin's database. Certain Canon cameras have multiple names for " +
+              "multiple markets (e.g. EOS / Rebel / Kiss) and they are grouped as a single item on AstroBin for " +
+              "simplicity."
+          );
+        }
       }
     ],
     validators: [
