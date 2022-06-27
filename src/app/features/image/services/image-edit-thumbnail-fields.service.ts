@@ -48,7 +48,7 @@ export class ImageEditThumbnailFieldsService extends BaseService {
               if (!thumbnail) {
                 throw new Error("THUMBNAIL_NOT_READY");
               }
-              return thumbnail.url;
+              return `${thumbnail.url}?cache-block=true`;
             }),
             retryWithDelay(1000, 60),
             catchError(() => {
