@@ -1,6 +1,13 @@
 @import "../../../../styles/breakpoints";
 
 :host {
+  h1 {
+    astrobin-data-does-not-update-in-real-time {
+      font-size: 1rem;
+      vertical-align: top;
+    }
+  }
+
   .contributor {
     text-align: center;
     position: relative;
