@@ -15,7 +15,7 @@ import { EquipmentItemType } from "@features/equipment/types/equipment-item-base
 import { SensorInterface } from "@features/equipment/types/sensor.interface";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 import { CameraDisplayProperty, CameraService } from "@features/equipment/services/camera.service";
-import { FormlyFieldService } from "@shared/services/formly-field.service";
+import { FormlyFieldMessageLevel, FormlyFieldService } from "@shared/services/formly-field.service";
 import { FormlyFieldEquipmentItemBrowserMode } from "@shared/components/misc/formly-field-equipment-item-browser/formly-field-equipment-item-browser.component";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { FormlyFieldConfig } from "@ngx-formly/core";
@@ -242,6 +242,25 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
       });
     } else {
       _doInitFields();
+    }
+  }
+
+  protected _customNameChangesValidations(field: FormlyFieldConfig, value: string) {
+    const words = ["oag", "off-axis", "off axis"];
+    let hasOAG = false;
+
+    for (const word of words) {
+      if (value.toLowerCase().indexOf(word) > -1) {
+        hasOAG = true;
+        break;
+      }
+    }
+
+    if (hasOAG) {
+      this.formlyFieldService.addMessage(field.templateOptions, {
+        level: FormlyFieldMessageLevel.WARNING,
+        text: this.translateService.instant("Off-axis guiders are typically found as accessories, not cameras.")
+      });
     }
   }
 }

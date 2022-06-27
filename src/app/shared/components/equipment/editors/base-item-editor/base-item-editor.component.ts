@@ -18,7 +18,17 @@ import {
   LoadEquipmentItem
 } from "@features/equipment/store/equipment.actions";
 import { Actions, ofType } from "@ngrx/effects";
-import { debounceTime, distinctUntilChanged, filter, map, switchMap, take, takeUntil, tap } from "rxjs/operators";
+import {
+  debounceTime,
+  distinctUntilChanged,
+  filter,
+  map,
+  startWith,
+  switchMap,
+  take,
+  takeUntil,
+  tap
+} from "rxjs/operators";
 import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
 import { WindowRefService } from "@shared/services/window-ref.service";
@@ -373,6 +383,7 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
           field.formControl.valueChanges
             .pipe(
               takeUntil(this.destroyed$),
+              startWith(this.model.brand),
               tap(value => {
                 this.formlyFieldService.clearMessages(field.templateOptions);
 
@@ -431,6 +442,7 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
           field.formControl.valueChanges
             .pipe(
               takeUntil(this.destroyed$),
+              startWith(this.name),
               filter(value => !!value),
               debounceTime(500),
               distinctUntilChanged(),
