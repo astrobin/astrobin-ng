@@ -7,116 +7,136 @@
   &:not(:last-child) {
     border-bottom: 1px dashed var(--grey);
   }
-}
 
-.edit-proposal {
-  padding: .25rem 1rem;
-  cursor: pointer;
+  .edit-proposal {
+    padding: .25rem 1rem;
+    cursor: pointer;
 
-  @media (min-width: $lg-min) {
+    @media (min-width: $lg-min) {
+      &::after {
+        content: "";
+        position: absolute;
+        right: .5rem;
+        top: calc(1rem - 2px);
+        width: 0;
+        height: 0;
+        border-left: 5px solid transparent;
+        border-right: 5px solid transparent;
+        border-top: 5px solid var(--white);
+        clear: both;
+      }
+
+      &.pending:not(.opened) {
+        &::after {
+          animation: tinyBounce .9s ease-out infinite;
+        }
+      }
+    }
+
+    &.opened {
+      &::after {
+        border-top: 0;
+        border-bottom: 6px solid var(--lighterGrey);
+      }
+    }
+
+    &:not(.opened):hover {
+      background-color: rgba(255, 255, 255, .025);
+    }
+
+    .status {
+      &.rejected {
+        color: var(--dangerColor);
+      }
+
+      &.approved {
+        color: var(--successColor);
+      }
+
+      &.pending {
+        color: var(--warningColor);
+      }
+
+      &.superseded {
+        color: var(--grey);
+      }
+    }
+
+    .timeago {
+      color: var(--lightGrey);
+    }
+  }
+
+  .edit-proposal-details {
+    padding: 1rem;
+    color: var(--lighterGrey);
+
+    .changes {
+      padding-left: 1rem;
+      width: 90%;
+      margin: 2rem auto 3rem;
+      box-shadow: 0 0 2rem rgba(0, 0, 0, .5);
+
+      th,
+      td {
+        text-align: left;
+      }
+
+      .change {
+        .before {
+          color: var(--lightGrey);
+        }
+
+        .after {
+          text-align: left;
+        }
+
+        .before,
+        .after {
+          @media screen and (min-width: $sm-min) {
+            max-width: 150px;
+          }
+
+          @media screen and (min-width: $md-min) {
+            max-width: 200px;
+          }
+
+          @media screen and (min-width: $lg-min) {
+            max-width: 250px;
+          }
+
+          ::ng-deep {
+            img {
+              max-width: 100%;
+            }
+          }
+        }
+      }
+    }
+
+    .form-actions {
+      margin-top: 0;
+      margin-bottom: 1rem;
+      padding: 0;
+    }
+  }
+
+  .alert-warning {
+    font-size: 0.85rem;
+    padding: .5rem;
+    margin-top: .5rem;
+
     &::after {
       content: "";
       position: absolute;
-      right: .5rem;
-      top: calc(1rem - 2px);
+      top: -6px;
+      left: 1rem;
       width: 0;
       height: 0;
-      border-left: 5px solid transparent;
-      border-right: 5px solid transparent;
-      border-top: 5px solid var(--white);
+      border-style: solid;
+      border-width: 0 6px 6px 6px;
+      border-color: transparent transparent var(--warningColor) transparent;
       clear: both;
     }
-
-    &.pending:not(.opened) {
-      &::after {
-        animation: tinyBounce .9s ease-out infinite;
-      }
-    }
-  }
-
-  &.opened {
-    &::after {
-      border-top: 0;
-      border-bottom: 6px solid var(--lighterGrey);
-    }
-  }
-
-  &:not(.opened):hover {
-    background-color: rgba(255, 255, 255, .025);
-  }
-
-  .status {
-    &.rejected {
-      color: var(--dangerColor);
-    }
-
-    &.approved {
-      color: var(--successColor);
-    }
-
-    &.pending {
-      color: var(--warningColor);
-    }
-
-    &.superseded {
-      color: var(--grey);
-    }
-  }
-
-  .timeago {
-    color: var(--lightGrey);
-  }
-}
-
-.edit-proposal-details {
-  padding: 1rem;
-  color: var(--lighterGrey);
-
-  .changes {
-    margin-top: 1rem;
-    padding-left: 1rem;
-    list-style: none;
-
-    .change {
-      .property-name {
-        margin-right: 1rem;
-        font-weight: bold;
-        color: var(--white);
-      }
-
-      .before {
-        color: var(--lightGrey);
-      }
-    }
-  }
-
-  .form-actions {
-    margin-top: 0;
-    margin-bottom: 1rem;
-    padding: 0;
-  }
-}
-
-//.edit-proposal.opened + .edit-proposal-details {
-//  padding-top: 1rem;
-//  padding-bottom: 1rem;
-//}
-
-.alert-warning {
-  font-size: 0.85rem;
-  padding: .5rem;
-  margin-top: .5rem;
-
-  &::after {
-    content: "";
-    position: absolute;
-    top: -6px;
-    left: 1rem;
-    width: 0;
-    height: 0;
-    border-style: solid;
-    border-width: 0 6px 6px 6px;
-    border-color: transparent transparent var(--warningColor) transparent;
-    clear: both;
   }
 }

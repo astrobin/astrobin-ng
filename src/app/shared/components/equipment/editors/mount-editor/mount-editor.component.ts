@@ -234,7 +234,8 @@ export class MountEditorComponent extends BaseItemEditorComponent<MountInterface
           }
         },
         this._getImageField(),
-        this._getWebsiteField()
+        this._getWebsiteField(),
+        this._getCommunityNotesField()
       ];
 
       this._addBaseItemEditorFields();

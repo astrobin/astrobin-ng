@@ -329,7 +329,8 @@ export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeI
           }
         },
         this._getImageField(),
-        this._getWebsiteField()
+        this._getWebsiteField(),
+        this._getCommunityNotesField()
       ];
 
       this._addBaseItemEditorFields();

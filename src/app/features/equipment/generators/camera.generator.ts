@@ -17,6 +17,7 @@ export class CameraGenerator {
       name: source.name || "Test camera",
       website: source.website || "https://www.test-camera.com",
       image: source.image || "https://cdn.astrobin.com/images/foo.jpg",
+      communityNotes: null,
       type: source.type || CameraType.DSLR_MIRRORLESS,
       sensor: source.sensor || SensorGenerator.sensor().id,
       modified: source.modified !== undefined ? source.modified : false,

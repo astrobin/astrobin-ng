@@ -19,13 +19,16 @@ import { State } from "@app/store/state";
 import { LoadBrand, LoadEquipmentItem } from "@features/equipment/store/equipment.actions";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { filter, map, switchMap, take } from "rxjs/operators";
+import { BBCodeToHtmlPipe } from "@shared/pipes/bbcode-to-html.pipe";
+import { CKEditorService } from "@shared/services/ckeditor.service";
 
 export enum EquipmentItemDisplayProperty {
   BRAND = "BRAND",
   NAME = "NAME",
   VARIANT_OF = "VARIANT_OF",
   WEBSITE = "WEBSITE",
-  IMAGE = "IMAGE"
+  IMAGE = "IMAGE",
+  COMMUNITY_NOTES = "COMMUNITY_NOTES"
 }
 
 @Injectable({
@@ -38,7 +41,8 @@ export class EquipmentItemService extends BaseService {
     public readonly utilsService: UtilsService,
     public readonly translateService: TranslateService,
     public readonly equipmentItemServiceFactory: EquipmentItemServiceFactory,
-    public readonly equipmentApiService: EquipmentApiService
+    public readonly equipmentApiService: EquipmentApiService,
+    public readonly ckEditorService: CKEditorService
   ) {
     super(loadingService);
   }
@@ -104,7 +108,7 @@ export class EquipmentItemService extends BaseService {
   getPrintableProperty$(
     item: EquipmentItemBaseInterface,
     propertyName: any,
-    propertyValue: any
+    propertyValue?: any
   ): Observable<string | null> {
     if (propertyValue === undefined || propertyValue === null) {
       return of(null);
@@ -138,14 +142,18 @@ export class EquipmentItemService extends BaseService {
               )}</a>`
             : null
         );
+      case EquipmentItemDisplayProperty.COMMUNITY_NOTES:
+        return of(new BBCodeToHtmlPipe(this.ckEditorService).transform(propertyValue.toString()));
     }
   }
 
   getPrintablePropertyName(type: EquipmentItemType, propertyName: any, shortForm = false): string {
-    const service = this.equipmentItemServiceFactory.getServiceByType(type);
+    if (!!type) {
+      const service = this.equipmentItemServiceFactory.getServiceByType(type);
 
-    if (service.getSupportedPrintableProperties().indexOf(propertyName) > -1) {
-      return service.getPrintablePropertyName(propertyName, shortForm);
+      if (service.getSupportedPrintableProperties().indexOf(propertyName) > -1) {
+        return service.getPrintablePropertyName(propertyName, shortForm);
+      }
     }
 
     switch (propertyName) {
@@ -159,6 +167,8 @@ export class EquipmentItemService extends BaseService {
         return this.translateService.instant("Website");
       case EquipmentItemDisplayProperty.IMAGE:
         return this.translateService.instant("Image");
+      case EquipmentItemDisplayProperty.COMMUNITY_NOTES:
+        return this.translateService.instant("Community notes");
     }
 
     throw Error(`Invalid property: ${propertyName}`);

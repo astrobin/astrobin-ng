@@ -15,6 +15,7 @@ export class AccessoryGenerator {
       name: source.name || "Test accessory",
       website: source.website || "https://www.test-accessory.com",
       image: source.image || "https://cdn.astrobin.com/images/foo.jpg",
+      communityNotes: null,
       userCount: null,
       imageCount: null,
       variantOf: null,

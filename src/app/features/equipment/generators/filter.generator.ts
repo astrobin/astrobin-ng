@@ -15,6 +15,7 @@ export class FilterGenerator {
       name: source.name || "Test filter",
       website: source.website || "https://www.test-filter.com",
       image: source.image || "https://cdn.astrobin.com/images/foo.jpg",
+      communityNotes: null,
       type: source.type || FilterType.L,
       bandwidth: source.bandwidth || 12,
       userCount: null,
