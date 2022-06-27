@@ -7,6 +7,7 @@ import { LoadingService } from "@shared/services/loading.service";
 import { Observable } from "rxjs";
 import { BaseClassicApiService } from "../base-classic-api.service";
 import { map } from "rxjs/operators";
+import { UserInterface } from "@shared/interfaces/user.interface";
 
 @Injectable({
   providedIn: "root"
@@ -34,5 +35,11 @@ export class JsonApiService extends BaseClassicApiService implements JsonApiServ
     return this.http
       .get<{ available: boolean }>(`${this.configUrl}/common/url-is-available/?url=${url}`)
       .pipe(map(response => response.available));
+  }
+
+  hasLegacyGear(userId: UserInterface["id"]): Observable<boolean> {
+    return this.http
+      .get<{ result: boolean }>(`${this.configUrl}/user/has-legacy-gear/?userId=${userId}`)
+      .pipe(map(response => response.result));
   }
 }

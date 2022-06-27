@@ -18,6 +18,49 @@
   <span *ngIf="imageEditService.isSponsor(item.value)" class="remote-affiliate-sponsor">(sponsor)</span>
 </ng-template>
 
+<ng-template #equipmentStepPreambleTemplate>
+  <div class="alert alert-info mb-5" *ngIf="showMigrationInfo">
+    <h4>
+      {{ "Welcome to the new way of associating equipment to your images." | translate }}
+    </h4>
+    <p>
+      {{
+      "In order to vastly improve the accuracy and capabilities of AstroBin's search engine, we are working on " +
+      "removing fragmentation caused by duplicates in the equipment database. To achieve this, we have built a " +
+      "more robust user interface that makes it easier to maintain a clean equipment database." | translate
+      }}
+      <a href="https://welcome.astrobin.com/blog/the-great-equipment-database-migration-of-2021" target="_blank">
+        ({{ "Learn more" | translate }})
+      </a>
+    </p>
+    <p>
+      {{
+      "Unfortunately, due to the unstructured way in which the old equipment database was built, we are unable to " +
+      "automatically consolidate the data, and we need your help to migrate the equipment items that you have used " +
+      "so far to the new database." | translate
+      }}
+    </p>
+    <p>
+      {{
+      "If you do your migration, you will be able to easily select recently used items on this page, and will have " +
+        "contributed to something that can positively impact thousands of amateur astronomers." | translate
+      }} {{ "Thank you!" | translate }}
+    </p>
+    <div class="alert-buttons">
+      <a href="/equipment/migration-tool" target="_blank" class="btn btn-primary">
+        {{ "Migrate equipment" | translate }}
+      </a>
+
+      <button
+        class="btn btn-outline-secondary mt-2 ml-0 ml-sm-2 mt-sm-0"
+        (click)="dontShowMigrationInfoAgain()"
+      >
+        {{ "Don't show again" | translate }}
+      </button>
+    </div>
+  </div>
+</ng-template>
+
 <ng-template #equipmentStepButtonsTemplate>
   <button
     [class.loading]="loadingService.isLoading()"
@@ -58,9 +101,7 @@
     class="btn btn-primary"
     *ngIf="editingExistingImage"
     [class.loading]="loadingService.isLoading()"
-    (click)="onSave(
-      $event, classicRoutesService.IMAGE(imageEditService.image.hash || '' + imageEditService.image.pk)
-    )"
+    (click)="onSave($event, classicRoutesService.IMAGE(imageEditService.image.hash || '' + imageEditService.image.pk))"
   >
     {{ "Save" | translate }}
   </button>
@@ -80,7 +121,7 @@
         <h6 class="dropdown-header">{{ "Where do you want to go after saving?" | translate }}</h6>
 
         <button
-          *ngIf="!(user | isInGroup:'own_equipment_migrators')"
+          *ngIf="!(user | isInGroup: 'own_equipment_migrators')"
           (click)="
             onSave(
               $event,
@@ -97,8 +138,9 @@
           (click)="
             onSave(
               $event,
-              classicRoutesService.EDIT_IMAGE_ACQUISITION(imageEditService.image.hash || '' + imageEditService.image.pk) +
-                '?upload'
+              classicRoutesService.EDIT_IMAGE_ACQUISITION(
+                imageEditService.image.hash || '' + imageEditService.image.pk
+              ) + '?upload'
             )
           "
           class="dropdown-item"
