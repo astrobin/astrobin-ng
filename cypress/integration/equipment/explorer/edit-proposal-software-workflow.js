@@ -98,9 +98,6 @@ context("Equipment", () => {
         "AstroBin Dev"
       );
       cy.get("astrobin-item-edit-proposal").click();
-      cy.get("astrobin-item-edit-proposal .change .property-name")
-        .contains("Product name:")
-        .should("be.visible");
       cy.get("astrobin-item-edit-proposal .change .before")
         .contains("Test software")
         .should("be.visible");
