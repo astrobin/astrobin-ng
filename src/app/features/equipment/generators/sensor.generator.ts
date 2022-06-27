@@ -15,6 +15,7 @@ export class SensorGenerator {
       name: source.name || "Test sensor",
       website: source.website || "https://www.test-sensor.com",
       image: source.image || "https://cdn.astrobin.com/images/foo.jpg",
+      communityNotes: null,
       quantumEfficiency: source.quantumEfficiency || 1,
       pixelSize: source.pixelSize || 1,
       pixelWidth: source.pixelWidth || 1,
