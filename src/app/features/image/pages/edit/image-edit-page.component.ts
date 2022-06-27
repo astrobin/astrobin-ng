@@ -28,7 +28,7 @@ import { ImageEditEquipmentFieldsService } from "@features/image/services/image-
 import { Observable } from "rxjs";
 import { EquipmentPresetInterface } from "@features/equipment/types/equipment-preset.interface";
 import { selectEquipmentPresets } from "@features/equipment/store/equipment.selectors";
-import { filter, take, takeUntil } from "rxjs/operators";
+import { filter, switchMap, take, takeUntil } from "rxjs/operators";
 import { FindEquipmentPresets, ItemBrowserSet } from "@features/equipment/store/equipment.actions";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/types/equipment-item-base.interface";
@@ -36,6 +36,8 @@ import { ConfirmationDialogComponent } from "@shared/components/misc/confirmatio
 import { SaveEquipmentPresetModalComponent } from "@features/image/components/save-equipment-preset-modal/save-equipment-preset-modal.component";
 import { LoadEquipmentPresetModalComponent } from "@features/image/components/load-equipment-preset-modal/load-equipment-preset-modal.component";
 import { UserService } from "@shared/services/user.service";
+import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
+import { CookieService } from "ngx-cookie-service";
 
 @Component({
   selector: "astrobin-image-edit-page",
@@ -43,15 +45,22 @@ import { UserService } from "@shared/services/user.service";
   styleUrls: ["./image-edit-page.component.scss"]
 })
 export class ImageEditPageComponent extends BaseComponentDirective implements OnInit {
+  readonly DONT_SHOW_MIGRATION_INFO_COOKIE = "astrobin_apps_equipment_dont_show_migration_info";
+
   ImageAlias = ImageAlias;
 
   @ViewChild("stepperButtonsTemplate")
   stepperButtonsTemplate: TemplateRef<any>;
 
+  @ViewChild("equipmentStepPreambleTemplate")
+  equipmentStepPreambleTemplate: TemplateRef<any>;
+
   @ViewChild("equipmentStepButtonsTemplate")
   equipmentStepButtonsTemplate: TemplateRef<any>;
 
   editingExistingImage: boolean;
+
+  showMigrationInfo = false;
 
   constructor(
     public readonly store$: Store<State>,
@@ -73,7 +82,9 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     public readonly imageEditEquipmentFieldsService: ImageEditEquipmentFieldsService,
     public readonly imageEditSettingsFieldsService: ImageEditSettingsFieldsService,
     public readonly modalService: NgbModal,
-    public readonly userService: UserService
+    public readonly userService: UserService,
+    public readonly jsonApiService: JsonApiService,
+    public readonly cookieService: CookieService
   ) {
     super(store$);
   }
@@ -103,6 +114,11 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     this.titleService.setTitle("Edit image");
 
     this._initBreadcrumb();
+
+    this.currentUser$.pipe(switchMap(user => this.jsonApiService.hasLegacyGear(user.id))).subscribe(hasLegacyGear => {
+      const dontShowMigrationInfoCookie = this.cookieService.get(this.DONT_SHOW_MIGRATION_INFO_COOKIE);
+      this.showMigrationInfo = hasLegacyGear && !dontShowMigrationInfoCookie;
+    });
 
     this.store$.dispatch(
       new LoadThumbnail({
@@ -279,6 +295,11 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     });
   }
 
+  dontShowMigrationInfoAgain() {
+    this.cookieService.set(this.DONT_SHOW_MIGRATION_INFO_COOKIE, "1", null, "/");
+    this.showMigrationInfo = false;
+  }
+
   private _initFields(): void {
     this.currentUser$
       .pipe(
@@ -336,6 +357,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
           id: "image-stepper-equipment",
           templateOptions: {
             label: this.translateService.instant("Equipment"),
+            stepPreambleTemplate: this.equipmentStepPreambleTemplate,
             stepActionsTemplate: this.equipmentStepButtonsTemplate
           },
           fieldGroup: [
