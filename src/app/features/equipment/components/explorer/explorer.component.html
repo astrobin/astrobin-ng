@@ -41,13 +41,13 @@
           <ng-container *ngIf="selectedItem.variants.length > 0; else variantTemplate">
             {{ "Also available in the following variants:" | translate }}
 
-            <span class="camera-variants">
+            <span class="item-variants">
               <a
                 [routerLink]="['/equipment/explorer/', variant.klass.toLowerCase(), variant.id]"
                 *ngFor="let variant of selectedItem.variants"
-                class="camera-variant"
+                class="item-variant"
               >
-                <ng-container *ngIf="selectedItem.klass === EquipmentItemType.CAMERA; else notCamera">
+                <ng-container *ngIf="selectedItem.klass === EquipmentItemType.CAMERA && asCamera(selectedItem).type === CameraType.DSLR_MIRRORLESS; else notDslrOrMirrorlessCamera">
                   <span *ngIf="!asCamera(variant).modified && !asCamera(variant).cooled">
                     <fa-icon icon="camera"></fa-icon>
                     {{ "Regular" | translate }}
@@ -85,7 +85,7 @@
                   </span>
                 </ng-container>
 
-                <ng-template #notCamera>
+                <ng-template #notDslrOrMirrorlessCamera>
                   <astrobin-equipment-item-display-name [item]="variant"></astrobin-equipment-item-display-name>
                 </ng-template>
               </a>
@@ -94,13 +94,15 @@
 
           <ng-template #variantTemplate>
             <ng-container *ngIf="!!selectedItem.variantOf">
-              <ng-container *ngIf="selectedItem.klass === EquipmentItemType.CAMERA; else variantNotCamera">
+              <ng-container
+                *ngIf="selectedItem.klass === EquipmentItemType.CAMERA && asCamera(selectedItem).type === CameraType.DSLR_MIRRORLESS; else variantNotDslrOrMirrorlessCamera"
+              >
                 {{ "This is a modified and/or custom-cooled variant of this camera." | translate }}
                 <a [routerLink]="['/equipment/explorer/', selectedItem.klass.toLowerCase(), selectedItem.variantOf]">
                   {{ "Go to regular variant." | translate }}
                 </a>
               </ng-container>
-              <ng-template #variantNotCamera>
+              <ng-template #variantNotDslrOrMirrorlessCamera>
                 {{ "This is a variant of another equipment item." | translate }}
                 <a [routerLink]="['/equipment/explorer/', selectedItem.klass.toLowerCase(), selectedItem.variantOf]">
                   {{ "Go to base variant." | translate }}

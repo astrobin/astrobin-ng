@@ -77,6 +77,7 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
   readonly EquipmentItemType = EquipmentItemType;
   readonly EquipmentItemEditorMode = EquipmentItemEditorMode;
   readonly EquipmentItemReviewerDecision = EquipmentItemReviewerDecision;
+  readonly CameraType = CameraType;
 
   @Input()
   enableBrowser = true;
