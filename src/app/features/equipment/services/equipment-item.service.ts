@@ -137,9 +137,9 @@ export class EquipmentItemService extends BaseService {
       case EquipmentItemDisplayProperty.IMAGE:
         return of(
           propertyValue || item[propertyName]
-            ? `<a href="${propertyValue || item[propertyName]}" target="_blank">${this.translateService.instant(
-                "Image"
-              )}</a>`
+            ? `<a href="${propertyValue || item[propertyName]}" target="_blank">
+                 <img src="${propertyValue || item[propertyName]}">
+               </a>`
             : null
         );
       case EquipmentItemDisplayProperty.COMMUNITY_NOTES:
