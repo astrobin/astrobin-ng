@@ -251,20 +251,32 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
   initBrandAndName(): Observable<void> {
     return new Observable<void>(observer => {
       if (this.name) {
-        // Attempt to get the brand from the first few words.
-        const attemptedBrandName = this.name.split(" ")[0];
-        this.store$.dispatch(new FindAllBrands({ q: attemptedBrandName }));
+        const words = this.name.split(" ");
+
+        // Attempt to get the brand from the first n words.
+        for (let n = words.length; n > 0; n--) {
+          const attemptedBrandName = words.slice(0, n).join(" ");
+          this.store$.dispatch(new FindAllBrands({ q: attemptedBrandName }));
+        }
+
         this.actions$
           .pipe(
             ofType(EquipmentActionTypes.FIND_ALL_BRANDS_SUCCESS),
-            take(1),
             map((action: FindAllBrandsSuccess) => action.payload.brands)
           )
           .subscribe(brands => {
             if (brands.length > 0) {
+              const pattern = brands[0].name;
+              const re = new RegExp(pattern, "gi");
+              const string = this.name;
+              const replaced = string.replace(re, "");
+
               this.model = {
                 ...this.model,
-                ...{ brand: brands[0].id, name: this.name.replace(attemptedBrandName, "").trim() }
+                ...{
+                  brand: brands[0].id,
+                  name: replaced.trim()
+                }
               };
             }
 
