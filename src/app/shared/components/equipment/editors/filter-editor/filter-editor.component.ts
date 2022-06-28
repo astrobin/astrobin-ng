@@ -8,11 +8,12 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 import { State } from "@app/store/state";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
-import { FormlyFieldService } from "@shared/services/formly-field.service";
+import { FormlyFieldMessageLevel, FormlyFieldService } from "@shared/services/formly-field.service";
 import { FilterDisplayProperty, FilterService } from "@features/equipment/services/filter.service";
 import { FilterInterface, FilterType } from "@features/equipment/types/filter.interface";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { FormlyFieldConfig } from "@ngx-formly/core";
 
 @Component({
   selector: "astrobin-filter-editor",
@@ -124,5 +125,26 @@ export class FilterEditorComponent extends BaseItemEditorComponent<FilterInterfa
 
       this._addBaseItemEditorFields();
     });
+  }
+
+  protected _customNameChangesValidations(field: FormlyFieldConfig, value: string) {
+    const filterSetWords = ["filterset", "set", "filter set", "lrgb", "l-r-g-b", "ha-oiii-sii"];
+    let hasFilterSet = false;
+
+    for (const word of filterSetWords) {
+      if (value.toLowerCase().indexOf(word) > -1) {
+        hasFilterSet = true;
+        break;
+      }
+    }
+
+    if (hasFilterSet) {
+      this.formlyFieldService.addMessage(field.templateOptions, {
+        level: FormlyFieldMessageLevel.WARNING,
+        text: this.translateService.instant(
+          "Filter sets should be added one filter at a time, individually, so that they may be added to acquisition sessions."
+        )
+      });
+    }
   }
 }
