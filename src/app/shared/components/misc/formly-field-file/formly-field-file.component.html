@@ -1,7 +1,7 @@
 <div class="upload-wrapper">
   <div class="file-container">
-    <div class="file" *ngFor="let file of selectedFiles; let i = index">
-      <img [src]="getSanitizedImageUrl(file)" />
+    <div class="file" *ngFor="let item of selectedFiles; let i = index">
+      <img [src]="item.url" />
       <span (click)="onDelete(i)">&times;</span>
     </div>
   </div>

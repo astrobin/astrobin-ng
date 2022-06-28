@@ -8,7 +8,11 @@ import {
   EquipmentItemUsageType
 } from "@features/equipment/types/equipment-item-base.interface";
 import { TranslateService } from "@ngx-translate/core";
-import { EditProposalChange, EditProposalInterface } from "@features/equipment/types/edit-proposal.interface";
+import {
+  EditProposalChange,
+  EditProposalInterface,
+  EditProposalReviewStatus
+} from "@features/equipment/types/edit-proposal.interface";
 import { Observable, of } from "rxjs";
 import { getEquipmentItemType, selectBrand, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import { EquipmentItemServiceFactory } from "@features/equipment/services/equipment-item.service-factory";
@@ -21,6 +25,7 @@ import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { filter, map, switchMap, take } from "rxjs/operators";
 import { BBCodeToHtmlPipe } from "@shared/pipes/bbcode-to-html.pipe";
 import { CKEditorService } from "@shared/services/ckeditor.service";
+import { environment } from "@env/environment";
 
 export enum EquipmentItemDisplayProperty {
   BRAND = "BRAND",
@@ -230,6 +235,34 @@ export class EquipmentItemService extends BaseService {
 
     const nonNullableKeys = ["image"];
 
+    const _autoConvertValue = (value: any): any => {
+      if (value === "null" || value === "" || value === null || value === undefined) {
+        value = null;
+      } else if (value.toString().toLowerCase() === "true") {
+        value = true;
+      } else if (value.toString().toLowerCase() === "false") {
+        value = false;
+      } else if (UtilsService.isString(value) && UtilsService.isNumeric(value) && value.indexOf(".") > -1) {
+        try {
+          value = parseFloat(value);
+        } catch (e) {}
+      } else if (UtilsService.isString(value) && UtilsService.isNumeric(value)) {
+        try {
+          value = parseInt(value, 10);
+        } catch (e) {}
+      }
+
+      return value;
+    };
+
+    const _getNameValuePair = (property): { name: string; value: any } => {
+      const pair = property.split("=");
+      const name = pair[0];
+      const value: any = _autoConvertValue(pair[1]);
+
+      return { name, value };
+    };
+
     const _getChanges = (): EditProposalChange[] => {
       const changes: EditProposalChange[] = [];
 
@@ -242,37 +275,11 @@ export class EquipmentItemService extends BaseService {
 
       if (editProposal.editProposalOriginalProperties) {
         originalProperties = editProposal.editProposalOriginalProperties.split(",").map(property => {
-          const pair = property.split("=");
-          const name = pair[0];
-          let value: any = pair[1];
-
-          if (value === "null" || value === "") {
-            value = null;
-          } else if (value?.toLowerCase() === "true") {
-            value = true;
-          } else if (value?.toLowerCase() === "false") {
-            value = false;
-          } else if (UtilsService.isString(value) && UtilsService.isNumeric(value) && value.indexOf(".") > -1) {
-            try {
-              value = parseFloat(value);
-            } catch (e) {}
-          } else if (UtilsService.isString(value) && UtilsService.isNumeric(value)) {
-            try {
-              value = parseInt(value, 10);
-            } catch (e) {}
-          }
-
-          return { name, value };
+          return _getNameValuePair(property);
         });
       }
 
       for (const key of Object.keys(item)) {
-        let originalProperty = null;
-
-        if (!!editProposal.editProposalReviewStatus && !!originalProperties) {
-          originalProperty = originalProperties.find(property => UtilsService.toCamelCase(property.name) === key);
-        }
-
         if (ignoredKeys.indexOf(key) > -1) {
           continue;
         }
@@ -281,14 +288,33 @@ export class EquipmentItemService extends BaseService {
           continue;
         }
 
-        if (!editProposal.editProposalReviewStatus && item[key] !== editProposal[key]) {
-          // The edit proposal is pending: build a diff using the current status of the item.
-          changes.push({ propertyName: key, before: item[key], after: editProposal[key] });
-        } else if (!!originalProperties) {
-          // The edit proposal has been finalized: build a diff using the original edit proposal properties.
-          if (!!originalProperty && originalProperty.value !== editProposal[key]) {
-            changes.push({ propertyName: key, before: originalProperty.value, after: editProposal[key] });
+        let originalProperty = null;
+
+        if (!!editProposal.editProposalReviewStatus && !!originalProperties) {
+          originalProperty = originalProperties.find(property => UtilsService.toCamelCase(property.name) === key);
+        }
+
+        let itemValue: any;
+        let editProposalValue: any = _autoConvertValue(editProposal[key]);
+
+        if (editProposal.editProposalReviewStatus === EditProposalReviewStatus.APPROVED && !!originalProperty) {
+          itemValue = originalProperty.value;
+        } else {
+          itemValue = _autoConvertValue(item[key]);
+        }
+
+        if (key === "image") {
+          if (!!itemValue && itemValue.indexOf("http") !== 0) {
+            itemValue = `${environment.cdnUrl}/${itemValue}`;
           }
+
+          if (!!editProposalValue && editProposalValue.indexOf("http") !== 0) {
+            editProposalValue = `${environment.cdnUrl}/${editProposalValue}`;
+          }
+        }
+
+        if (itemValue !== editProposalValue) {
+          changes.push({ propertyName: key, before: itemValue, after: editProposalValue });
         }
       }
 

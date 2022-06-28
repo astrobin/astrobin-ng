@@ -34,6 +34,8 @@ import { EquipmentItemMostOftenUsedWith } from "@features/equipment/types/equipm
 import { ExplorerFilterInterface } from "@features/equipment/pages/explorer/explorer-filters/explorer-filters.component";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { ContributorInterface } from "@features/equipment/types/contributor.interface";
+import { Store } from "@ngrx/store";
+import { State } from "@app/store/state";
 
 export interface AllEquipmentItemsOptionsInterface {
   query?: string;
@@ -59,6 +61,7 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
   configUrl = this.baseUrl + "/equipment";
 
   constructor(
+    public readonly store$: Store<State>,
     public readonly loadingService: LoadingService,
     public readonly http: HttpClient,
     public readonly commonApiService: CommonApiService,
@@ -858,8 +861,12 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
           })
         )
         .subscribe(createdEditProposal => {
-          if (item.image && !UtilsService.isString(item.image) && item.image.length > 0) {
-            this._uploadEditProposalImage<T>(createdEditProposal.id, (item.image as File[])[0], path)
+          if (item.image && item.image.length > 0) {
+            this._uploadEditProposalImage<T>(
+              createdEditProposal.id,
+              UtilsService.isString(item.image) ? item.image : (item.image as File[])[0],
+              path
+            )
               .pipe(
                 take(1),
                 catchError(error => {
@@ -892,24 +899,42 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
 
   private _uploadEditProposalImage<T extends EquipmentItemBaseInterface>(
     id: T["id"],
-    image: File,
+    image: string | File,
     path: string
   ): Observable<EditProposalInterface<T>> {
-    const formData: FormData = new FormData();
-    formData.append("image", image);
+    const _doUpload = (imageFile: File) => {
+      const formData: FormData = new FormData();
+      formData.append("image", imageFile);
 
-    const httpOptions = {
-      headers: new HttpHeaders({
-        // Unsetting the Content-Type is necessary so it gets set to multipart/form-data with the correct boundary.
-        "Content-Type": "__unset__",
-        "Content-Disposition": `form-data; name="image"; filename=${image.name}`
-      })
+      const httpOptions = {
+        headers: new HttpHeaders({
+          // Unsetting the Content-Type is necessary so it gets set to multipart/form-data with the correct boundary.
+          "Content-Type": "__unset__",
+          "Content-Disposition": `form-data; name="image"; filename=${imageFile.name}`
+        })
+      };
+
+      return this.http.post<EditProposalInterface<T>>(
+        `${this.configUrl}/${path}-edit-proposal/${id}/image/`,
+        formData,
+        httpOptions
+      );
     };
 
-    return this.http.post<EditProposalInterface<T>>(
-      `${this.configUrl}/${path}-edit-proposal/${id}/image/`,
-      formData,
-      httpOptions
-    );
+    return new Observable<EditProposalInterface<T>>(observer => {
+      if (UtilsService.isString(image)) {
+        UtilsService.fileFromUrl(image as string).then((file: File) => {
+          _doUpload(file).subscribe(response => {
+            observer.next(response);
+            observer.next();
+          });
+        });
+      } else {
+        _doUpload(image as File).subscribe(response => {
+          observer.next(response);
+          observer.complete();
+        });
+      }
+    });
   }
 }

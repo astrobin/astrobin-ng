@@ -1,6 +1,8 @@
 import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
-import { DomSanitizer } from "@angular/platform-browser";
+import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
 import { FieldType } from "@ngx-formly/core";
+import { LoadingService } from "@shared/services/loading.service";
+import { UtilsService } from "@shared/services/utils/utils.service";
 
 @Component({
   selector: "astrobin-formly-field-file",
@@ -10,13 +12,21 @@ import { FieldType } from "@ngx-formly/core";
 export class FormlyFieldFileComponent extends FieldType implements OnInit {
   @ViewChild("fileInput") el: ElementRef;
 
-  selectedFiles: File[];
+  selectedFiles: { file: File; url: SafeUrl }[];
 
-  constructor(public sanitizer: DomSanitizer) {
+  constructor(public readonly sanitizer: DomSanitizer, public readonly loadingService: LoadingService) {
     super();
   }
 
-  ngOnInit(): void {}
+  ngOnInit() {
+    if (this.formControl.value) {
+      this.loadingService.setLoading(true);
+      UtilsService.fileFromUrl(this.formControl.value).then((file: File) => {
+        this._setValueFromFiles([file]);
+        this.loadingService.setLoading(false);
+      });
+    }
+  }
 
   openFileInput() {
     this.el.nativeElement.click();
@@ -28,15 +38,23 @@ export class FormlyFieldFileComponent extends FieldType implements OnInit {
   }
 
   onChange(event) {
-    this.selectedFiles = Array.from(event.target.files);
-    this.formControl.markAsTouched();
-  }
-
-  getSanitizedImageUrl(file: File) {
-    return this.sanitizer.bypassSecurityTrustUrl(window.URL.createObjectURL(file));
+    this._setValueFromFiles(Array.from(event.target.files));
   }
 
   isImage(file: File): boolean {
     return /^image\//.test(file.type);
+  }
+
+  _setValueFromFiles(files: File[]) {
+    this.selectedFiles = [];
+
+    for (const file of files) {
+      this.selectedFiles.push({
+        file,
+        url: this.sanitizer.bypassSecurityTrustUrl(window.URL.createObjectURL(file))
+      });
+    }
+
+    this.formControl.markAsTouched();
   }
 }

@@ -326,6 +326,13 @@ export class UtilsService {
     });
   }
 
+  static async fileFromUrl(url: string): Promise<File> {
+    const response = await fetch(url + "?cache-block=true");
+    const data = await response.blob();
+    const name = url.substring(url.lastIndexOf("/") + 1);
+    return new File([data], name);
+  }
+
   yesNo(value: any): string {
     if (!value || value === "0" || (UtilsService.isFunction(value.toLowerCase) && value.toLowerCase() === "false")) {
       return this.translateService.instant("No");
