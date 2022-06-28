@@ -193,14 +193,18 @@ export class EquipmentItemService extends BaseService {
       "updated",
       "deleted",
       "klass",
+      "group",
 
       "reviewedBy",
       "reviewedTimestamp",
       "reviewerDecision",
       "reviewerRejectionReason",
+      "reviewerRejectionDuplicateOf",
       "reviewerRejectionDuplicateOfKlass",
       "reviewerRejectionDuplicateOfUsageType",
       "reviewerComment",
+      "reviewerLock",
+      "reviewerLockTimestamp",
 
       "editProposalOriginalProperties",
       "editProposalTarget",
@@ -214,6 +218,8 @@ export class EquipmentItemService extends BaseService {
       "editProposalReviewIp",
       "editProposalReviewComment",
       "editProposalReviewStatus",
+      "editProposalLock",
+      "editProposalLockTimestamp",
 
       "modified",
       "variants",
