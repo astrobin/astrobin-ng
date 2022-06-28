@@ -270,7 +270,6 @@ export class ImageEditContentFieldsService extends BaseService {
       key: "locations",
       type: "ng-select",
       id: "image-locations-field",
-      hideExpression: () => Object.keys(RemoteSource).indexOf(this.imageEditService.model.remoteSource) > -1,
       templateOptions: {
         multiple: true,
         required: false,
