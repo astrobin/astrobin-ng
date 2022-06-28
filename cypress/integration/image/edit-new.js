@@ -142,10 +142,6 @@ context("Image edit (new)", () => {
     cy.get("#image-remote-source-field").should("be.visible");
   });
 
-  it("should not display the locations field when a commercial remote data source is selected", () => {
-    cy.get("#image-locations-field").should("not.be.visible");
-  });
-
   it("should select a backyard data source", () => {
     cy.get("#image-data-source-field").click();
     cy.get("#image-data-source-field .ng-option")
