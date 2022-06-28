@@ -19,9 +19,15 @@ export function KeyValueTagsValidator(control: FormControl): ValidationErrors {
     return null;
   }
 
-  const regex = /^[a-zA-Z]{1,100}=[a-zA-Z0-9]{1,100}(?:(?:\r\n?|\n)[a-zA-Z]{1,100}=[a-zA-Z0-9]{1,100})*$/g;
+  const regex = /[a-zA-Z_]{1,100}=[a-zA-Z0-9]{1,100}/;
 
-  return regex.test(control.value) ? null : { keyValueTags: true };
+  for (const line of control.value.trim().split("\n")) {
+    if (!regex.test(line)) {
+      return { keyValueTags: true };
+    }
+  }
+
+  return null;
 }
 
 @Injectable({
