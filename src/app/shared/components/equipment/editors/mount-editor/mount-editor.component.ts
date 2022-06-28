@@ -105,7 +105,7 @@ export class MountEditorComponent extends BaseItemEditorComponent<MountInterface
               {
                 name: "min-value",
                 options: {
-                  minValue: 1
+                  minValue: 0.01
                 }
               },
               {
@@ -136,7 +136,7 @@ export class MountEditorComponent extends BaseItemEditorComponent<MountInterface
               {
                 name: "min-value",
                 options: {
-                  minValue: 1
+                  minValue: 0.01
                 }
               }
             ]
