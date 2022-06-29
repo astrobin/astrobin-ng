@@ -1,19 +1,75 @@
 @import "../../../../../styles/breakpoints";
 
 :host {
+  display: block;
+  padding: 1rem;
+
   .image {
     height: 75px;
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
+    position: relative;
 
     &.image-large {
       height: 150px;
     }
 
+    .edit {
+      opacity: 0;
+      position: absolute;
+      top: calc(50% - 1.5rem);
+      left: calc(50% - 1.5rem);
+      background: rgba(0, 0, 0, .5);
+      width: 3rem;
+      height: 3rem;
+      z-index: 2;
+      text-align: center;
+      vertical-align: middle;
+      display: inline-block;
+      line-height: 3rem;
+      border-radius: 50%;
+      box-shadow: 0 0 2rem var(--black);
+      cursor: pointer;
+
+      &:hover {
+        background: var(--accentColor);
+      }
+    }
+
+    &:hover {
+      .edit {
+        opacity: 1;
+      }
+    }
+
     @media screen and (max-width: $md-max) {
       margin: 0 auto 2rem;
       max-width: 150px;
+    }
+  }
+
+  astrobin-equipment-item-display-name {
+    display: inline-block;
+
+    +.edit {
+      opacity: 0;
+      font-size: .75rem;
+      color: var(--lighterGrey);
+      cursor: pointer;
+      padding: .5rem 1rem;
+      vertical-align: middle;
+
+      &:hover {
+        opacity: 1;
+        color: var(--accentColor);
+      }
+    }
+
+    &:hover {
+      +.edit {
+        opacity: 1;
+      }
     }
   }
 
@@ -26,6 +82,8 @@
     margin-bottom: 0;
 
     .property {
+      position: relative;
+
       .property-name {
         color: var(--lightestGrey);
         font-weight: normal;
@@ -33,6 +91,31 @@
 
       .property-value {
         color: var(--lighterGrey);
+
+        .edit {
+          opacity: 0;
+          position: absolute;
+          top: 1px;
+          right: -1.75rem;
+          color: var(--white);
+          width: 1.75rem;
+          height: calc(2rem + 1px);
+          font-size: .66rem;
+          line-height: calc(2rem + 1px);
+          vertical-align: middle;
+          text-align: center;
+          cursor: pointer;
+
+          &:hover {
+            color: var(--accentColor);
+          }
+        }
+
+        &:hover {
+          .edit {
+            opacity: 1;
+          }
+        }
       }
 
       a > .property-value {

@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, SimpleChanges } from "@angular/core";
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
@@ -80,6 +80,12 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
 
   @Input()
   showCommunityNotes = false;
+
+  @Input()
+  showEditButtons = true;
+
+  @Output()
+  editButtonClick = new EventEmitter<EquipmentItem>();
 
   brand: BrandInterface;
   subItem: EquipmentItemBaseInterface;

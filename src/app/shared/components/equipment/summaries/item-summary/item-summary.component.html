@@ -9,6 +9,7 @@
         [class.image-large]="showLargeImage"
         [style.background-image]="'url(' + image + ')'"
       >
+        <fa-icon *ngIf="showEditButtons" class="edit" icon="pen" (click)="editButtonClick.emit(item)"></fa-icon>
       </div>
     </div>
 
@@ -19,6 +20,7 @@
             [item]="item"
             [enableBrandLink]="enableBrandLink"
           ></astrobin-equipment-item-display-name>
+          <fa-icon *ngIf="showEditButtons" class="edit" icon="pen" (click)="editButtonClick.emit(item)"></fa-icon>
           <a
             *ngIf="showViewLink"
             [routerLink]="['/equipment/explorer', item.klass.toLowerCase(), item.id]"
@@ -59,6 +61,8 @@
               <ng-template #noValue>
                 <span class="property-value">{{ "n/a" | translate }}</span>
               </ng-template>
+
+              <fa-icon *ngIf="showEditButtons" class="edit" icon="pen" (click)="editButtonClick.emit(item)"></fa-icon>
             </td>
           </tr>
         </ng-container>
@@ -101,6 +105,7 @@
           [showMeta]="false"
           [showViewLink]="true"
           [enableBrandLink]="enableBrandLink"
+          [showEditButtons]="false"
         ></astrobin-equipment-item-summary>
       </div>
     </div>

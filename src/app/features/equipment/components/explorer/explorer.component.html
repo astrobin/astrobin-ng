@@ -35,6 +35,7 @@
           [showMeta]="true"
           [enableBrandLink]="true"
           [showCommunityNotes]="true"
+          (editButtonClick)="startEditMode()"
         ></astrobin-equipment-item-summary>
 
         <div *ngIf="!!selectedItem.variantOf || selectedItem.variants.length > 0" class="item-variants-container">
