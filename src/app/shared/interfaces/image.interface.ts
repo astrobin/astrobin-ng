@@ -195,7 +195,7 @@ export interface ImageInterface {
   dataSource: DataSource;
   remoteSource?: string;
   partOfGroupSet: GroupInterface["id"][];
-  mouseHoverImage: MouseHoverImageOptions;
+  mouseHoverImage: MouseHoverImageOptions | ImageRevisionInterface["label"];
   allowComments: boolean;
   squareCropping: string;
   watermark: boolean;

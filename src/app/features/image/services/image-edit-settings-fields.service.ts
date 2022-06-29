@@ -4,17 +4,29 @@ import { LoadingService } from "@shared/services/loading.service";
 import {
   DownloadLimitationOptions,
   FullSizeLimitationDisplayOptions,
+  ImageRevisionInterface,
   LicenseOptions,
   MouseHoverImageOptions
 } from "@shared/interfaces/image.interface";
-import { KeyValueTagsValidator } from "@features/image/services/image-edit.service";
+import { ImageEditService, KeyValueTagsValidator } from "@features/image/services/image-edit.service";
 import { TranslateService } from "@ngx-translate/core";
+import { Store } from "@ngrx/store";
+import { State } from "@app/store/state";
+import { selectImageRevisionsForImage } from "@app/store/selectors/app/image-revision.selectors";
+import { map, tap } from "rxjs/operators";
+import { LoadImageRevisions } from "@app/store/actions/image.actions";
+import { distinctUntilChangedObj } from "@shared/services/utils/utils.service";
 
 @Injectable({
   providedIn: null
 })
 export class ImageEditSettingsFieldsService extends BaseService {
-  constructor(public readonly loadingService: LoadingService, public readonly translateService: TranslateService) {
+  constructor(
+    public readonly store$: Store<State>,
+    public readonly loadingService: LoadingService,
+    public readonly translateService: TranslateService,
+    public readonly imageEditService: ImageEditService
+  ) {
     super(loadingService);
   }
 
@@ -71,19 +83,17 @@ export class ImageEditSettingsFieldsService extends BaseService {
   }
 
   getMouseHoverImageField(): any {
-    return {
-      key: "mouseHoverImage",
-      type: "ng-select",
-      id: "image-mouse-hover-image-field",
-      templateOptions: {
-        required: true,
-        clearable: false,
-        label: this.translateService.instant("Mouse hover image"),
-        description: this.translateService.instant(
-          "Choose what will be displayed when somebody hovers the mouse over this image. Please note: only " +
-            "revisions with the same width and height of your original image can be considered."
-        ),
-        options: [
+    const image = this.imageEditService.image;
+
+    this.store$.dispatch(new LoadImageRevisions({ imageId: image.pk }));
+    const options = this.store$.select(selectImageRevisionsForImage, image.pk).pipe(
+      distinctUntilChangedObj(),
+      map(revisions => {
+        const newOptions: {
+          value: MouseHoverImageOptions | ImageRevisionInterface["label"];
+          label: string;
+          disabled?: boolean;
+        }[] = [
           {
             value: MouseHoverImageOptions.NOTHING,
             label: this.translateService.instant("Nothing")
@@ -96,7 +106,41 @@ export class ImageEditSettingsFieldsService extends BaseService {
             value: MouseHoverImageOptions.INVERTED,
             label: this.translateService.instant("Inverted monochrome")
           }
-        ]
+        ];
+
+        for (const revision of revisions) {
+          const disabled = image.w !== revision.w || image.h !== revision.h;
+          newOptions.push({
+            value: `REVISION__${revision.label}`,
+            label:
+              this.translateService.instant("Revision") +
+              `: ${revision.label} (${revision.w}x${revision.h}${
+                disabled ? " " + this.translateService.instant("resolution not matching") : ""
+              })`,
+            disabled
+          });
+        }
+
+        return newOptions;
+      }),
+      tap(newOptions => {
+        this.getMouseHoverImageField().templateOptions.options = newOptions;
+      })
+    );
+
+    return {
+      key: "mouseHoverImage",
+      type: "ng-select",
+      id: "image-mouse-hover-image-field",
+      templateOptions: {
+        required: true,
+        clearable: false,
+        label: this.translateService.instant("Mouse hover image"),
+        description: this.translateService.instant(
+          "Choose what will be displayed when somebody hovers the mouse over this image. Please note: only " +
+            "revisions with the same width and height of your original image can be considered."
+        ),
+        options
       }
     };
   }
