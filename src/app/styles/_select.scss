@@ -96,6 +96,10 @@
         color: var(--lightestGrey) !important;
         background: var(--darkGrey) !important;
       }
+
+      &.ng-option-disabled {
+        color: var(--lightGrey) !important;
+      }
     }
   }
 
