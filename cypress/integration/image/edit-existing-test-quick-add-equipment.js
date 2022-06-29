@@ -86,6 +86,6 @@ context("Image edit (existing). test quick add equipment", () => {
   });
 
   it("should not have quick-add for guiding telescopes", () => {
-    cy.get('[ng-reflect-id="image-guiding-telescopes-field"] + .quick-add').should("not.be.visible");
+    cy.get('[ng-reflect-id="image-guiding-telescopes-field"] + .quick-add .no-recent').should("be.visible");
   });
 });
