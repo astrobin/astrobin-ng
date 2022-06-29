@@ -411,6 +411,7 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
 
                       this.formlyFieldService.clearMessages(this.fields.find(f => f.key === "name").templateOptions);
                       this._validateBrandInName();
+                      this._validateCanonAndCentralDS();
                       this._similarItemSuggestion();
                       this._othersInBrand(brand.name);
 
@@ -462,6 +463,7 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
                 this.formlyFieldService.clearMessages(field.templateOptions);
                 this.formlyFieldService.clearMessages(this.fields.find(f => f.key === "brand").templateOptions);
                 this._validateBrandInName();
+                this._validateCanonAndCentralDS();
                 this._similarItemSuggestion();
                 this._editProposalWarning(field);
                 this._customNameChangesValidations(field, value);
@@ -791,6 +793,41 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
               text: message
             });
           }
+        }
+      });
+  }
+
+  private _validateCanonAndCentralDS() {
+    const brandControl: AbstractControl = this.form.get("brand");
+    const nameControl: AbstractControl = this.form.get("name");
+    const nameFieldConfig: FormlyFieldConfig = this.fields.find(field => field.key === "name");
+    const message = this.translateService.instant(
+      "<strong>Careful!</strong> {{0}} is a separate brand on AstroBin, so you probably want to select it as a brand.",
+      {
+        0: "CentralDS"
+      }
+    );
+
+    if (!brandControl?.value || !nameControl?.value) {
+      return;
+    }
+
+    this.store$
+      .select(selectBrand, brandControl.value)
+      .pipe(
+        filter(brand => !!brand),
+        take(1)
+      )
+      .subscribe(brand => {
+        if (
+          brand.name === "Canon" &&
+          (nameControl.value.toLowerCase().indexOf("centralds") > -1 ||
+            nameControl.value.toLowerCase().indexOf("central ds") > -1)
+        ) {
+          this.formlyFieldService.addMessage(nameFieldConfig.templateOptions, {
+            level: FormlyFieldMessageLevel.WARNING,
+            text: message
+          });
         }
       });
   }
