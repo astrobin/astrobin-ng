@@ -17,17 +17,24 @@
 ></astrobin-equipment-item-browser>
 
 <ng-container *ngIf="to.showQuickAddRecent">
-  <div class="quick-add" *ngIf="recent.length > 0">
+  <div class="quick-add">
     <span class="quick-add-label">{{ "Quick-add recent" | translate }}:</span>
-    <ng-container *ngFor="let item of recent; let last = last">
-      <a href="#" class="quick-add-item" appEventPreventDefault (click)="quickAddItem(item)">
-        <astrobin-equipment-item-display-name
-          [item]="item"
-          [enableSummaryModal]="false"
-        ></astrobin-equipment-item-display-name>
-      </a>
-      <span class="quick-add-separator" *ngIf="!last">&middot;</span>
+
+    <ng-container *ngIf="recent.length > 0; else noRecent">
+      <ng-container *ngFor="let item of recent; let last = last">
+        <a href="#" class="quick-add-item" appEventPreventDefault (click)="quickAddItem(item)">
+          <astrobin-equipment-item-display-name
+            [item]="item"
+            [enableSummaryModal]="false"
+          ></astrobin-equipment-item-display-name>
+        </a>
+        <span class="quick-add-separator" *ngIf="!last">&middot;</span>
+      </ng-container>
     </ng-container>
+
+    <ng-template #noRecent>
+      <span [innerHTML]="noRecentMessage" class="no-recent"></span>
+    </ng-template>
   </div>
 
   <div
@@ -37,7 +44,8 @@
       to.usageType == EquipmentItemUsageType.IMAGING &&
       recentLoaded &&
       recent.length === 0 &&
-      formControl.value?.length === 0"
+      formControl.value?.length === 0
+    "
   >
     {{ "Seems like it's your first time editing this kind of information!" | translate }}
     {{ "Start typing in the text box to show the dropdown suggestions." | translate }}
