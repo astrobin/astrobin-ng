@@ -185,7 +185,7 @@
         <div aria-labelledby="exploreDropdown" ngbDropdownMenu>
           <a [href]="classicRoutes.SEARCH + '?d=i'" class="dropdown-item">
             <fa-icon icon="search"></fa-icon>
-            {{ "The Big Wall" | translate }} / {{ "Advanced search" | translate }}
+            {{ "Advanced search" | translate }}
           </a>
 
           <ng-container *ngIf="currentUser$ | async as user">
