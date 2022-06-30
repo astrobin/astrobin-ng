@@ -12,7 +12,7 @@
 <div class="modal-footer">
   <ng-container *ngIf="(currentUser$ | async) === null">
     <button [class.loading]="loadingService.loading$ | async"
-            [disabled]="!loginForm.form.valid || loadingService.loading$ | async"
+            [disabled]="!loginForm.form.valid || (loadingService.loading$ | async)"
             (click)="loginForm.login()" class="btn btn-primary">
       {{ "Log in" | translate }}
     </button>
