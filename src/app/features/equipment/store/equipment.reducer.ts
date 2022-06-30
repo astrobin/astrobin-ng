@@ -151,7 +151,7 @@ export function reducer(state = initialEquipmentState, action: EquipmentActions)
 
       return {
         ...state,
-        equipmentItems
+        equipmentItems: equipmentItems.filter(item => item.klass !== rejectedItem.klass && item.id !== rejectedItem.id)
       };
     }
 

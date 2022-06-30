@@ -18,7 +18,7 @@
     <button
       (click)="save()"
       class="btn btn-primary"
-      [class.loading]="loadingService.isLoading() || !mapReady"
+      [class.loading]="(loadingService.loading$ | async) || !mapReady"
       type="button"
     >
       {{ "Save" | translate }}

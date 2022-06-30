@@ -3,7 +3,7 @@
     ngbDropdownToggle
     id="sort-dropdown-button"
     class="btn btn-sm-block btn-text"
-    [class.loading]="loadingService.isLoading()"
+    [class.loading]="loadingService.loading$ | async"
   >
     <fa-icon icon="sort"></fa-icon>
     {{ "Sort" | translate }}

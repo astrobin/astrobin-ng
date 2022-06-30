@@ -59,7 +59,7 @@
         <td>
           <button
             class="btn btn-xs btn-success mb-2 mb-md-0 mr-lg-2"
-            [class.loading]="this.loadingService.isLoading()"
+            [class.loading]="this.loadingService.loading$ | async"
             [disabled]="proposal.status !== GearRenamingProposalStatus.PENDING"
             (click)="approve($event, proposal)"
           >
@@ -68,7 +68,7 @@
           </button>
           <button
             class="btn btn-xs btn-danger"
-            [class.loading]="this.loadingService.isLoading()"
+            [class.loading]="this.loadingService.loading$ | async"
             [disabled]="proposal.status !== GearRenamingProposalStatus.PENDING"
             (click)="reject($event, proposal)"
           >

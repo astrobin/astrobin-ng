@@ -8,7 +8,7 @@ import { CreateNestedComment, LoadNestedComments } from "@app/store/actions/nest
 import { selectNestedCommentsByContentTypeIdAndObjectId } from "@app/store/selectors/app/nested-comments.selectors";
 import { map, take, takeUntil, tap } from "rxjs/operators";
 import { LoadingService } from "@shared/services/loading.service";
-import { UtilsService } from "@shared/services/utils/utils.service";
+import { distinctUntilChangedObj, UtilsService } from "@shared/services/utils/utils.service";
 import { FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
@@ -98,6 +98,7 @@ export class NestedCommentsComponent extends BaseComponentDirective implements O
       })
       .pipe(
         takeUntil(this.destroyed$),
+        distinctUntilChangedObj(),
         map(comments => UtilsService.sortParent(comments) as NestedCommentInterface[]),
         tap(() => this.loadingService.setLoading(false))
       );

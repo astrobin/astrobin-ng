@@ -21,7 +21,7 @@
     class="btn btn-success"
     type="button"
     [disabled]="!form.valid"
-    [class.loading]="loadingService.isLoading()"
+    [class.loading]="loadingService.loading$ | async"
   >
     {{ "Approve" | translate }}
   </button>

@@ -5,7 +5,7 @@
 
   <ng-container *ngIf="(currentUser$ | async) === null">
     <div class="buttons-area">
-      <button [class.loading]="loadingService.isLoading()" [disabled]="!loginForm.form.valid || loadingService.isLoading()"
+      <button [class.loading]="loadingService.loading$ | async" [disabled]="!loginForm.form.valid"
         (click)="loginForm.login()" class="btn btn-primary">
         {{ "Log in" | translate }}
       </button>

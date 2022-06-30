@@ -24,7 +24,7 @@
     class="btn btn-outline-danger"
     type="button"
     [disabled]="form.invalid"
-    [class.loading]="loadingService.isLoading() || form.pending"
+    [class.loading]="(loadingService.loading$ | async) || form.pending"
   >
     {{ "Delete" | translate }}
   </button>
@@ -34,7 +34,7 @@
     class="btn btn-primary"
     type="button"
     [disabled]="form.invalid"
-    [class.loading]="loadingService.isLoading() || form.pending"
+    [class.loading]="(loadingService.loading$ | async) || form.pending"
   >
     {{ "Load" | translate }}
   </button>

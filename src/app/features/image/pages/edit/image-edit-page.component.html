@@ -63,7 +63,7 @@
 
 <ng-template #equipmentStepButtonsTemplate>
   <button
-    [class.loading]="loadingService.isLoading()"
+    [class.loading]="loadingService.loading$ | async"
     [disabled]="!imageEditService.hasEquipmentItems()"
     id="clear-equipment-btn"
     class="btn btn-outline-danger mr-2"
@@ -74,7 +74,7 @@
 
   <div class="btn-group" role="group">
     <button
-      [class.loading]="loadingService.isLoading()"
+      [class.loading]="loadingService.loading$ | async"
       [disabled]="(presets$ | async)?.length === 0"
       id="load-preset-btn"
       class="btn btn-outline-secondary"
@@ -84,7 +84,7 @@
     </button>
 
     <button
-      [class.loading]="loadingService.isLoading()"
+      [class.loading]="loadingService.loading$ | async"
       [disabled]="!imageEditService.hasEquipmentItems()"
       id="save-preset-btn"
       class="btn btn-outline-secondary"
@@ -100,7 +100,7 @@
     id="save-button"
     class="btn btn-primary"
     *ngIf="editingExistingImage"
-    [class.loading]="loadingService.isLoading()"
+    [class.loading]="loadingService.loading$ | async"
     (click)="onSave($event, classicRoutesService.IMAGE(imageEditService.image.hash || '' + imageEditService.image.pk))"
   >
     {{ "Save" | translate }}
@@ -109,7 +109,7 @@
   <ng-container *ngIf="currentUser$ | async as user">
     <div ngbDropdown placement="top-right" *ngIf="!editingExistingImage">
       <button
-        [class.loading]="loadingService.isLoading()"
+        [class.loading]="loadingService.loading$ | async"
         [disabled]="!imageEditService.form.valid"
         class="btn btn-primary"
         id="save-dropdown"

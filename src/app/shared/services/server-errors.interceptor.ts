@@ -19,34 +19,17 @@ export class ServerErrorsInterceptor implements HttpInterceptor {
   ) {}
 
   public intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    let handled = false;
-
     return next.handle(request).pipe(
       retry(1),
       catchError(returnedError => {
-        let errorMessage = null;
-
         if (returnedError.error instanceof ErrorEvent) {
-          errorMessage = `Error: ${returnedError.error.message}`;
-        } else if (returnedError instanceof HttpErrorResponse) {
-          errorMessage = `Error ${returnedError.status}`;
-          if (returnedError.message) {
-            errorMessage += `: ${returnedError.message}`;
-          } else if (returnedError.error) {
-            errorMessage += `: ${returnedError.error.error} - ${returnedError.error.message}`;
-          }
-
-          handled = this.handleError(returnedError);
+          return throwError(returnedError.error.message);
         }
 
-        if (handled) {
+        if (this.handleError(returnedError)) {
           return of(returnedError);
-        }
-
-        if (errorMessage) {
-          return throwError(errorMessage);
         } else {
-          return throwError("Unexpected problem occurred");
+          return next.handle(request);
         }
       })
     );
@@ -56,6 +39,8 @@ export class ServerErrorsInterceptor implements HttpInterceptor {
     let errorTitle: string;
     let errorMessage: string;
     let handled = false;
+
+    const ignored404Paths = [/.*\/api\/v2\/equipment\/\w+\/\d+\/release-reviewer-lock\/$/];
 
     if (err.error instanceof ErrorEvent) {
       // A client-side or network error occurred. Handle it accordingly.
@@ -108,8 +93,18 @@ export class ServerErrorsInterceptor implements HttpInterceptor {
             this.translateService.instant("You tried to access a server resource that you're not authorized for.");
           break;
         case 404:
-          errorTitle = this.translateService.instant("The requested resource does not exist");
-          errorMessage = err.url;
+          let ignore = false;
+          for (const ignoredPathRegex of ignored404Paths) {
+            if (ignoredPathRegex.test(err.url)) {
+              ignore = true;
+            }
+          }
+
+          if (!ignore) {
+            errorTitle = this.translateService.instant("The requested resource does not exist");
+            errorMessage = err.url;
+          }
+
           break;
         case 409:
           errorTitle = this.translateService.instant("Conflict detected");

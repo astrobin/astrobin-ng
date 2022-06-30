@@ -129,7 +129,7 @@
       <div class="card-footer">
         <button
           class="btn btn-sm-block btn-secondary"
-          [class.loading]="loadingService.isLoading()"
+          [class.loading]="loadingService.loading$ | async"
           (click)="onCancel()"
         >
           {{ "Cancel" | translate }}
@@ -137,7 +137,7 @@
 
         <button
           class="btn btn-sm-block btn-primary"
-          [class.loading]="loadingService.isLoading() || creationForm.pending"
+          [class.loading]="(loadingService.loading$ | async) || creationForm.pending"
           (click)="createItem()"
         >
           {{ "Create item" | translate }}
