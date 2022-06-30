@@ -75,7 +75,7 @@
             *ngIf="showReviewButtons"
             class="btn btn-danger"
             [disabled]="reviewButtonsStatus.disabled"
-            [class.loading]="loadingService.isLoading()"
+            [class.loading]="loadingService.loading$ | async"
             (click)="rejectEdit()"
           >
             {{ "Reject edit" | translate }}&hellip;
@@ -84,7 +84,7 @@
             *ngIf="showReviewButtons"
             class="btn btn-success"
             [disabled]="reviewButtonsStatus.disabled"
-            [class.loading]="loadingService.isLoading()"
+            [class.loading]="loadingService.loading$ | async"
             (click)="approveEdit()"
           >
             {{ "Approve edit" | translate }}&hellip;

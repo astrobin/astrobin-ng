@@ -1,4 +1,6 @@
+import { Observable } from "rxjs";
+
 export interface LoadingServiceInterface {
-  isLoading: () => boolean;
+  isLoading: () => Observable<boolean>;
   setLoading: (boolean) => void;
 }

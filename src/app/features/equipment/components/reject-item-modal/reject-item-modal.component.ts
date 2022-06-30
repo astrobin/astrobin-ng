@@ -13,7 +13,7 @@ import { State } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { LoadingService } from "@shared/services/loading.service";
-import { map, switchMap, take, takeUntil } from "rxjs/operators";
+import { catchError, map, switchMap, take, takeUntil } from "rxjs/operators";
 import { EquipmentActionTypes, RejectEquipmentItem } from "@features/equipment/store/equipment.actions";
 import { Actions, ofType } from "@ngrx/effects";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
@@ -23,6 +23,7 @@ import { PopNotificationsService } from "@shared/services/pop-notifications.serv
 import { FormlyFieldEquipmentItemBrowserMode } from "@shared/components/misc/formly-field-equipment-item-browser/formly-field-equipment-item-browser.component";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
+import { EMPTY } from "rxjs";
 
 @Component({
   selector: "astrobin-reject-item-modal",
@@ -227,31 +228,34 @@ export class RejectItemModalComponent extends BaseComponentDirective implements 
     const duplicateOfKlass: EquipmentItemType = this.form.get("duplicateOfKlass")?.value;
     const duplicateOfUsageType: EquipmentItemUsageType = this.form.get("duplicateOfUsageType")?.value;
 
-    this.store$.dispatch(
-      new RejectEquipmentItem({
-        item: this.equipmentItem,
-        reason,
-        comment,
-        duplicateOf,
-        duplicateOfKlass,
-        duplicateOfUsageType
-      })
-    );
+    setTimeout(() => {
+      this.store$.dispatch(
+        new RejectEquipmentItem({
+          item: this.equipmentItem,
+          reason,
+          comment,
+          duplicateOf,
+          duplicateOfKlass,
+          duplicateOfUsageType
+        })
+      );
 
-    this.actions$
-      .pipe(
-        ofType(EquipmentActionTypes.REJECT_EQUIPMENT_ITEM_SUCCESS),
-        take(1),
-        switchMap(editProposal =>
-          this.equipmentApiService
-            .releaseReviewerLock(this.equipmentItem.klass, this.equipmentItem.id)
-            .pipe(map(() => editProposal))
+      this.actions$
+        .pipe(
+          ofType(EquipmentActionTypes.REJECT_EQUIPMENT_ITEM_SUCCESS),
+          take(1),
+          switchMap(item =>
+            this.equipmentApiService
+              .releaseReviewerLock(this.equipmentItem.klass, this.equipmentItem.id)
+              .pipe(map(() => item))
+          ),
+          catchError(() => {
+            this.modal.close();
+            return EMPTY;
+          })
         )
-      )
-      .subscribe(() => {
-        this.loadingService.setLoading(false);
-        this.modal.close();
-      });
+        .subscribe();
+    }, 100);
   }
 
   cancel() {

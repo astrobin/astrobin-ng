@@ -117,7 +117,7 @@
       <div class="card-footer">
         <button
           class="btn btn-sm-block btn-outline-secondary"
-          [class.loading]="loadingService.isLoading()"
+          [class.loading]="loadingService.loading$ | async"
           [disabled]="editMode"
           (click)="resetBrowser()"
         >
@@ -129,7 +129,7 @@
             <button
               class="btn btn-secondary"
               data-test="propose-edit"
-              [class.loading]="loadingService.isLoading()"
+              [class.loading]="loadingService.loading$ | async"
               [disabled]="editMode"
               (click)="startEditMode()"
             >
@@ -139,7 +139,7 @@
             <button
               *ngIf="(currentUser | isEquipmentModerator) && typeSupportsMigrateInto()"
               class="btn btn-secondary"
-              [class.loading]="loadingService.isLoading()"
+              [class.loading]="loadingService.loading$ | async"
               data-test="migrate-into"
               [disabled]="editMode"
               (click)="startMigrationMode()"
@@ -159,7 +159,7 @@
                 <button
                   class="btn btn-danger"
                   data-test="reject"
-                  [class.loading]="loadingService.isLoading()"
+                  [class.loading]="loadingService.loading$ | async"
                   [disabled]="editMode"
                   (click)="startRejection()"
                 >
@@ -169,7 +169,7 @@
                 <button
                   class="btn btn-success"
                   data-test="reject"
-                  [class.loading]="loadingService.isLoading()"
+                  [class.loading]="loadingService.loading$ | async"
                   [disabled]="editMode"
                   (click)="startApproval()"
                 >
@@ -186,7 +186,7 @@
                 <button
                   class="btn btn-danger"
                   data-test="unapprove"
-                  [class.loading]="loadingService.isLoading()"
+                  [class.loading]="loadingService.loading$ | async"
                   [disabled]="editMode"
                   (click)="startUnapproval()"
                 >
@@ -324,7 +324,7 @@
         <div class="card-footer">
           <button
             class="btn btn-sm-block btn-secondary"
-            [class.loading]="loadingService.isLoading()"
+            [class.loading]="loadingService.loading$ | async"
             (click)="endEditMode()"
           >
             {{ "Cancel" | translate }}
@@ -333,7 +333,7 @@
           <button
             class="btn btn-sm-block btn-primary"
             data-test="propose-edit-confirm"
-            [class.loading]="loadingService.isLoading() || editForm.pending"
+            [class.loading]="(loadingService.loading$ | async) || editForm.pending"
             (click)="proposeEdit()"
           >
             {{ "Propose edit" | translate }}

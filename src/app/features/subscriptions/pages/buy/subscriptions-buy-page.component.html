@@ -103,7 +103,7 @@
 
   <div class="form-actions">
     <a
-      [class.disabled]="loadingService.isLoading()"
+      [class.disabled]="loadingService.loading$ | async"
       [href]="classicRoutesService.PRICING"
       class="btn btn-outline-secondary"
     >
@@ -113,8 +113,8 @@
 
     <button
       (click)="buy()"
-      [class.loading]="loadingService.isLoading()"
-      [disabled]="loadingService.isLoading()"
+      [class.loading]="loadingService.loading$ | async"
+      [disabled]="loadingService.loading$ | async"
       class="btn btn-xl btn-primary buy"
     >
       {{ "Buy" | translate }}

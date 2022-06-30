@@ -9,14 +9,4 @@ describe(`LoadingService`, () => {
     await MockBuilder(LoadingService);
     service = TestBed.inject(LoadingService);
   });
-
-  it("should set the loading state correctly", () => {
-    service.setLoading(true);
-
-    expect(service.isLoading()).toBe(true);
-
-    service.setLoading(false);
-
-    expect(service.isLoading()).toBe(false);
-  });
 });

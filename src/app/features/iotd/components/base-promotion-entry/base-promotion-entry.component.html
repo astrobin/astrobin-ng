@@ -8,7 +8,7 @@
   <button
     [hidden]="!hidden"
     (click)="show(entry.pk)"
-    [class.loading]="loadingService.isLoading()"
+    [class.loading]="loadingService.loading$ | async"
     class="btn btn-outline-primary mt-2 mt-sm-0 ml-0 ml-sm-2"
   >
     <fa-icon icon="eye"></fa-icon>
@@ -75,7 +75,7 @@
   <button
     *ngIf="showViewButton"
     (click)="viewPage(entry.pk)"
-    [class.loading]="loadingService.isLoading()"
+    [class.loading]="loadingService.loading$ | async"
     class="btn btn-outline-secondary"
   >
     <fa-icon icon="link"></fa-icon>
@@ -84,7 +84,7 @@
 
   <button
     (click)="hide(entry.pk)"
-    [class.loading]="loadingService.isLoading()"
+    [class.loading]="loadingService.loading$ | async"
     [disabled]="isPromoted"
     class="btn btn-outline-secondary"
   >
@@ -94,7 +94,7 @@
 
   <button
     (click)="dismiss(entry.pk)"
-    [class.loading]="loadingService.isLoading()"
+    [class.loading]="loadingService.loading$ | async"
     [disabled]="isPromoted"
     class="btn btn-danger"
   >
@@ -105,7 +105,7 @@
   <button
     (click)="promote(entry.pk)"
     *ngIf="!isPromoted; else retract"
-    [class.loading]="loadingService.isLoading()"
+    [class.loading]="loadingService.loading$ | async"
     [disabled]="!mayPromote"
     class="btn btn-success"
   >
@@ -114,7 +114,7 @@
   </button>
 
   <ng-template #retract>
-    <button (click)="retractPromotion(entry.pk)" [class.loading]="loadingService.isLoading()" class="btn btn-danger">
+    <button (click)="retractPromotion(entry.pk)" [class.loading]="loadingService.loading$ | async" class="btn btn-danger">
       <fa-icon icon="undo"></fa-icon>
       {{ retractPromotionButtonLabel }}
     </button>

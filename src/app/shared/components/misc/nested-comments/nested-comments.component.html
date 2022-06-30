@@ -42,7 +42,7 @@
       <formly-form [fields]="fields" [form]="form" [model]="model"></formly-form>
     </form>
 
-    <button class="btn btn-secondary" [class.loading]="loadingService.isLoading()" (click)="cancelTopLevelComment()">
+    <button class="btn btn-secondary" [class.loading]="loadingService.loading$ | async" (click)="cancelTopLevelComment()">
       {{ "Cancel" | translate }}
     </button>
 
@@ -50,7 +50,7 @@
       class="btn btn-primary ml-sm-2"
       (click)="submitTopLevelComment()"
       [disabled]="!form.valid"
-      [class.loading]="loadingService.isLoading()"
+      [class.loading]="loadingService.loading$ | async"
     >
       {{ "Submit" | translate }}
     </button>

@@ -13,7 +13,7 @@
     </div>
 
     <div class="col">
-      <ng-container *ngIf="!loadingService.isLoading(); else loading">
+      <ng-container *ngIf="!loadingService.loading$ | async; else loading">
 
         <ng-container *ngIf="!!activeBrand">
           <div *ngIf="!!activeBrand" class="card">

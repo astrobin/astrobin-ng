@@ -1,3 +1,3 @@
-<button class="btn btn-link" [class.loading]="loadingService.isLoading()" data-test="refresh">
+<button class="btn btn-link" [class.loading]="loadingService.loading$ | async" data-test="refresh">
   <fa-icon icon="sync"></fa-icon>
 </button>

@@ -19,6 +19,7 @@ import {
 } from "@features/equipment/pages/explorer-base/pending-explorer-base.component";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { CookieService } from "ngx-cookie-service";
+import { LoadingService } from "@shared/services/loading.service";
 
 @Component({
   selector: "astrobin-equipment-pending-review-explorer",
@@ -39,7 +40,8 @@ export class PendingReviewExplorerComponent extends PendingExplorerBaseComponent
     public readonly equipmentApiService: EquipmentApiService,
     public readonly router: Router,
     public readonly windowRefService: WindowRefService,
-    public readonly cookieService: CookieService
+    public readonly cookieService: CookieService,
+    public readonly loadingService: LoadingService
   ) {
     super(store$, actions$, activatedRoute, router, windowRefService, cookieService);
     this.pendingType = PendingType.PENDING_REVIEW;
@@ -65,6 +67,7 @@ export class PendingReviewExplorerComponent extends PendingExplorerBaseComponent
   }
 
   getItems() {
+    this.loadingService.setLoading(true);
     this.items$ = this.equipmentApiService
       .getAllEquipmentItemsPendingReview(this._activeType as EquipmentItemType, this.page)
       .pipe(
@@ -77,7 +80,10 @@ export class PendingReviewExplorerComponent extends PendingExplorerBaseComponent
           }
           uniqueBrands.forEach(id => this.store$.dispatch(new LoadBrand({ id })));
         }),
-        tap(() => this._scrollToItemBrowser())
+        tap(() => {
+          this.loadingService.setLoading(false);
+          this._scrollToItemBrowser();
+        })
       );
   }
 }

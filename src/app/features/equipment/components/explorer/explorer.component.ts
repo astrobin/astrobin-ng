@@ -449,6 +449,7 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
       modal.closed.pipe(take(1)).subscribe(() => {
         this.resetBrowser();
         this.rejected.emit();
+        this.loadingService.setLoading(false);
       });
     });
   }

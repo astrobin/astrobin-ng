@@ -121,15 +121,15 @@
 </ng-template>
 
 <ng-template #buttons>
-  <button class="btn btn-sm-block btn-success" [class.loading]="loadingService.isLoading()" (click)="approve()">
+  <button class="btn btn-sm-block btn-success" [class.loading]="loadingService.loading$ | async" (click)="approve()">
     {{ "Approve" | translate }}
   </button>
 
-  <button class="btn btn-sm-block btn-danger" [class.loading]="loadingService.isLoading()" (click)="reject()">
+  <button class="btn btn-sm-block btn-danger" [class.loading]="loadingService.loading$ | async" (click)="reject()">
     {{ "Reject" | translate }}&hellip;
   </button>
 
-  <button class="btn btn-sm-block btn-secondary" [class.loading]="loadingService.isLoading()" (click)="exit()">
+  <button class="btn btn-sm-block btn-secondary" [class.loading]="loadingService.loading$ | async" (click)="exit()">
     {{ "Cancel" | translate }}
   </button>
 </ng-template>

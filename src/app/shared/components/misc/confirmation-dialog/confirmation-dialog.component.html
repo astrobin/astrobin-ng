@@ -16,13 +16,13 @@
   <button
     (click)="modal.dismiss()"
     class="btn btn-outline-secondary"
-    [class.loading]="loadingService.isLoading()"
+    [class.loading]="loadingService.loading$ | async"
     type="button"
   >
     {{ "Cancel" | translate }}
   </button>
 
-  <button (click)="modal.close()" class="btn btn-primary" [class.loading]="loadingService.isLoading()" type="button">
+  <button (click)="modal.close()" class="btn btn-primary" [class.loading]="loadingService.loading$ | async" type="button">
     {{ "Yes, continue" | translate }}
   </button>
 </div>

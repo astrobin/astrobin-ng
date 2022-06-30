@@ -15,7 +15,7 @@
   <button
     (click)="modal.close()"
     class="btn btn-primary"
-    [class.loading]="loadingService.isLoading()"
+    [class.loading]="loadingService.loading$ | async"
     type="button"
   >
     {{ "Understood" | translate }}

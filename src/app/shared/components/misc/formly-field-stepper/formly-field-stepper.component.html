@@ -24,7 +24,7 @@
       <div class="form-actions-container">
         <button
           class="btn btn-outline-secondary"
-          [class.loading]="loadingService.isLoading()"
+          [class.loading]="loadingService.loading$ | async"
           [disabled]="isFirstStep(index)"
           (click)="goToPreviousStep($event, index)"
         >
@@ -33,7 +33,7 @@
 
         <button
           class="btn btn-outline-primary"
-          [class.loading]="loadingService.isLoading()"
+          [class.loading]="loadingService.loading$ | async"
           [disabled]="isLastStep(index)"
           (click)="goToNextStep($event, index)"
         >

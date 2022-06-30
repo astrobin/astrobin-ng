@@ -33,7 +33,7 @@
     class="btn btn-danger"
     type="button"
     [disabled]="!form.valid"
-    [class.loading]="loadingService.isLoading()"
+    [class.loading]="loadingService.loading$ | async"
   >
     {{ "Reject" | translate }}
   </button>

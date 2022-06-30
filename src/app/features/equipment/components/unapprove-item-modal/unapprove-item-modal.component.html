@@ -21,7 +21,7 @@
     (click)="unapprove()"
     class="btn btn-danger"
     type="button"
-    [class.loading]="loadingService.isLoading()"
+    [class.loading]="loadingService.loading$ | async"
   >
     {{ "Unapprove" | translate }}
   </button>
