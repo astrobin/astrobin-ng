@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { LoadingServiceInterface } from "@shared/services/loading.service-interface";
 import { Observable, Subject } from "rxjs";
-import { debounceTime, tap } from "rxjs/operators";
+import { debounceTime } from "rxjs/operators";
 
 @Injectable({
   providedIn: "root"
@@ -36,6 +36,5 @@ export class LoadingService implements LoadingServiceInterface {
     }
 
     this.loadingSubject.next(this._isLoading);
-    console.log(this._loadingStack);
   }
 }
