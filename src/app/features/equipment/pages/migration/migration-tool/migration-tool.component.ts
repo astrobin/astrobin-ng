@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
 import { GearApiService } from "@shared/services/api/classic/astrobin/gear/gear-api.service";
 import { LoadingService } from "@shared/services/loading.service";
-import { map, switchMap, take, takeUntil, tap } from "rxjs/operators";
+import { filter, map, switchMap, take, takeUntil, tap } from "rxjs/operators";
 import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { TitleService } from "@shared/services/title/title.service";
 import { FormGroup } from "@angular/forms";
@@ -410,38 +410,59 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
   }
 
   confirmMigration(object: any) {
-    const modalRef = this.modalService.open(ConfirmationDialogComponent, { size: "sm" });
-    const componentInstant: ConfirmationDialogComponent = modalRef.componentInstance;
-    componentInstant.message = this.translateService.instant(
-      "AstroBin will update <strong>all your images</strong> that use the legacy equipment item " +
-        "<strong>{{0}}</strong> to the new one that you selected." +
-        "<br/><br/>" +
-        this.translateService.instant("For this reason, they need to represent the same product."),
-      {
-        0: `${object.make} ${object.name}`
-      }
-    );
+    this.currentUser$
+      .pipe(
+        filter(user => !!user),
+        take(1),
+        isGroupMember("equipment_moderators")
+      )
+      .subscribe(isEquipmentModerator => {
+        const modalRef = this.modalService.open(ConfirmationDialogComponent, { size: "sm" });
+        const componentInstant: ConfirmationDialogComponent = modalRef.componentInstance;
 
-    modalRef.closed.pipe(take(1)).subscribe(() => {
-      const type = this.getActiveType();
-      const selectedSimilarItemsPks = this._getSelectedSimilarItemsPks();
-      const similarItems = this.migrationConfirmation.similarItems.filter(
-        item => selectedSimilarItemsPks.indexOf(item.pk) > -1
-      );
+        if (isEquipmentModerator) {
+          componentInstant.message = this.translateService.instant(
+            "AstroBin will update <strong>all images by all users</strong> that use the legacy equipment item " +
+              "<strong>{{0}}</strong> to the new one that you selected." +
+              "<br/><br/>" +
+              this.translateService.instant("For this reason, they need to represent the same product."),
+            {
+              0: `${object.make} ${object.name}`
+            }
+          );
+        } else {
+          componentInstant.message = this.translateService.instant(
+            "AstroBin will update <strong>all your images</strong> that use the legacy equipment item " +
+              "<strong>{{0}}</strong> to the new one that you selected." +
+              "<br/><br/>" +
+              this.translateService.instant("For this reason, they need to represent the same product."),
+            {
+              0: `${object.make} ${object.name}`
+            }
+          );
+        }
 
-      for (const itemToMigrate of [...[object], ...similarItems]) {
-        this.store$
-          .select(selectEquipmentItem, { id: this.migrationTarget.id, type })
-          .pipe(take(1))
-          .subscribe(item => {
-            this._applyMigration(
-              itemToMigrate,
-              [itemToMigrate.pk, MigrationFlag.MIGRATE, type, item.id],
-              "ready to migrate"
-            );
-          });
-      }
-    });
+        modalRef.closed.pipe(take(1)).subscribe(() => {
+          const type = this.getActiveType();
+          const selectedSimilarItemsPks = this._getSelectedSimilarItemsPks();
+          const similarItems = this.migrationConfirmation.similarItems.filter(
+            item => selectedSimilarItemsPks.indexOf(item.pk) > -1
+          );
+
+          for (const itemToMigrate of [...[object], ...similarItems]) {
+            this.store$
+              .select(selectEquipmentItem, { id: this.migrationTarget.id, type })
+              .pipe(take(1))
+              .subscribe(item => {
+                this._applyMigration(
+                  itemToMigrate,
+                  [itemToMigrate.pk, MigrationFlag.MIGRATE, type, item.id],
+                  "ready to migrate"
+                );
+              });
+          }
+        });
+      });
   }
 
   cancelMigration() {
@@ -530,8 +551,7 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
               message +=
                 "<br/><br/>" +
                 this.translateService.instant(
-                  "The migration will be reviewed by a moderator as soon as possible, and you will be notified of " +
-                    "the outcome. If the migration is approved, you will be able to add the equipment item to your images."
+                  "The migration will complete within a few moments and all affected images will be automatically updated."
                 );
             } else {
               message +=
