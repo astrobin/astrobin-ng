@@ -59,6 +59,8 @@ export class ImageEditEquipmentFieldsService extends BaseService {
         usageType: EquipmentItemUsageType.IMAGING,
         showQuickAddRecent: true,
         showPlaceholderImage: true,
+        creationModeStarted: () => (this.creationMode = true),
+        creationModeEnded: () => (this.creationMode = false),
         enableCreation: true
       }
     };
@@ -77,6 +79,8 @@ export class ImageEditEquipmentFieldsService extends BaseService {
         itemType: EquipmentItemType.MOUNT,
         showQuickAddRecent: true,
         showPlaceholderImage: true,
+        creationModeStarted: () => (this.creationMode = true),
+        creationModeEnded: () => (this.creationMode = false),
         enableCreation: true
       }
     };
@@ -95,6 +99,8 @@ export class ImageEditEquipmentFieldsService extends BaseService {
         itemType: EquipmentItemType.FILTER,
         showQuickAddRecent: true,
         showPlaceholderImage: true,
+        creationModeStarted: () => (this.creationMode = true),
+        creationModeEnded: () => (this.creationMode = false),
         enableCreation: true
       }
     };
@@ -113,6 +119,8 @@ export class ImageEditEquipmentFieldsService extends BaseService {
         itemType: EquipmentItemType.ACCESSORY,
         showQuickAddRecent: true,
         showPlaceholderImage: true,
+        creationModeStarted: () => (this.creationMode = true),
+        creationModeEnded: () => (this.creationMode = false),
         enableCreation: true
       }
     };
@@ -131,6 +139,8 @@ export class ImageEditEquipmentFieldsService extends BaseService {
         itemType: EquipmentItemType.SOFTWARE,
         showQuickAddRecent: true,
         showPlaceholderImage: true,
+        creationModeStarted: () => (this.creationMode = true),
+        creationModeEnded: () => (this.creationMode = false),
         enableCreation: true
       }
     };
@@ -168,6 +178,8 @@ export class ImageEditEquipmentFieldsService extends BaseService {
         usageType: EquipmentItemUsageType.GUIDING,
         showQuickAddRecent: true,
         showPlaceholderImage: true,
+        creationModeStarted: () => (this.creationMode = true),
+        creationModeEnded: () => (this.creationMode = false),
         enableCreation: true
       },
       hooks: {
@@ -197,6 +209,8 @@ export class ImageEditEquipmentFieldsService extends BaseService {
         itemType: EquipmentItemType.CAMERA,
         usageType: EquipmentItemUsageType.GUIDING,
         showQuickAddRecent: true,
+        creationModeStarted: () => (this.creationMode = true),
+        creationModeEnded: () => (this.creationMode = false),
         showPlaceholderImage: true,
         enableCreation: true
       },
