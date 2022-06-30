@@ -2471,7 +2471,7 @@ msgid "Refractor: non-achromatic Galilean"
 msgstr "折射式：非消色差伽利略式"
 
 #: loco:61b24fc53b045a33935504a4
-msgid "Refractor: non-acrhmatic Keplerian"
+msgid "Refractor: non-achromatic Keplerian"
 msgstr "折射式：非消色差开普勒式"
 
 #: loco:61b24fc53b045a33935504a5

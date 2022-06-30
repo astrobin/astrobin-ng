@@ -2609,7 +2609,7 @@ msgid "Refractor: non-achromatic Galilean"
 msgstr "Рефрактор: неахроматичний Галілейський"
 
 #: loco:61b24fc53b045a33935504a4
-msgid "Refractor: non-acrhmatic Keplerian"
+msgid "Refractor: non-achromatic Keplerian"
 msgstr "Рефрактор: неахроматичний Кеплера"
 
 #: loco:61b24fc53b045a33935504a5

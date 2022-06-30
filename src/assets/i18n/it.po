@@ -2619,7 +2619,7 @@ msgid "Refractor: non-achromatic Galilean"
 msgstr "Riflettore: Galileano non-acromatico"
 
 #: loco:61b24fc53b045a33935504a4
-msgid "Refractor: non-acrhmatic Keplerian"
+msgid "Refractor: non-achromatic Keplerian"
 msgstr "Riflettore: Kepleriano non-acromatico"
 
 #: loco:61b24fc53b045a33935504a5
