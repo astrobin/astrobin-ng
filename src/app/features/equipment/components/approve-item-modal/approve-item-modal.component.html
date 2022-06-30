@@ -12,7 +12,8 @@
   <ng-container *ngIf="similarItems$ | async as similarItems">
     <div class="alert alert-warning" *ngIf="similarItems.length > 0">
       <h5>
-        <fa-icon icon="exclamation-triangle"></fa-icon> {{ "Warning!" | translate }}
+        <fa-icon icon="exclamation-triangle"></fa-icon>
+        {{ "Warning!" | translate }}
       </h5>
       <astrobin-similar-items-suggestion
         [items]="similarItems"
@@ -31,6 +32,13 @@
 </div>
 
 <div class="modal-footer">
+  <div class="alert alert-info mb-3">
+    <p>
+      {{ "This operation will make the item available to everyone on AstroBin." | translate }}
+      <span [innerHTML]="consultHandbookMessage"></span>
+    </p>
+  </div>
+
   <button (click)="cancel()" class="btn btn-outline-secondary" type="button">
     {{ "Cancel" | translate }}
   </button>

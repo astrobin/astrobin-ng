@@ -46,6 +46,31 @@ export class RejectItemModalComponent extends BaseComponentDirective implements 
   @Input()
   equipmentItem: EquipmentItemBaseInterface;
 
+  consultHandbookMessage = this.translateService.instant(
+    "Please consult the {{0}}AstroBin Equipment Moderator Handbook{{1}}.",
+    {
+      0: `<a href="https://welcome.astrobin.com/equipment-database-moderator-handbook" target="_blank">`,
+      1: "</a>"
+    }
+  );
+
+  get rejectWarningMessage(): string {
+    switch (this.model.reason) {
+      case EquipmentItemReviewerRejectionReason.DUPLICATE:
+        return this.translateService.instant(
+          "AstroBin will fix the images associated to this equipment item and notify the affected user."
+        );
+      case EquipmentItemReviewerRejectionReason.TYPO:
+      case EquipmentItemReviewerRejectionReason.INACCURATE_DATA:
+      case EquipmentItemReviewerRejectionReason.INSUFFICIENT_DATA:
+      case EquipmentItemReviewerRejectionReason.WRONG_BRAND:
+      case EquipmentItemReviewerRejectionReason.OTHER:
+        return this.translateService.instant(
+          "AstroBin will delete this item, remove it from all images, and notify the affected user."
+        );
+    }
+  }
+
   constructor(
     public readonly store$: Store<State>,
     public readonly actions$: Actions,

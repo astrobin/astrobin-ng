@@ -45,6 +45,14 @@ export class ApproveItemModalComponent extends BaseComponentDirective implements
 
   othersInBrand: EquipmentItem[] = [];
 
+  consultHandbookMessage = this.translateService.instant(
+    "Please consult the {{0}}AstroBin Equipment Moderator Handbook{{1}}.",
+    {
+      0: `<a href="https://welcome.astrobin.com/equipment-database-moderator-handbook" target="_blank">`,
+      1: "</a>"
+    }
+  );
+
   constructor(
     public readonly store$: Store<State>,
     public readonly actions$: Actions,
