@@ -308,7 +308,10 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
       "800d",
       "eos 800d",
       "rebel t7i",
-      "kiss x9i"
+      "kiss x9i",
+      "eos 200d",
+      "kiss x9",
+      "rebel sl2"
     ];
 
     let hasOAG = false;
