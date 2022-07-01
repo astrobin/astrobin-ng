@@ -135,7 +135,23 @@ export class EquipmentItemService extends BaseService {
         return this.store$.select(selectEquipmentItem, payload).pipe(
           filter(variantOf => !!variantOf),
           take(1),
-          switchMap(variantOf => this.getFullDisplayName$(variantOf))
+          switchMap(variantOf =>
+            this.getFullDisplayName$(variantOf).pipe(
+              map(fullDisplayName => ({
+                variantOf,
+                fullDisplayName
+              }))
+            )
+          ),
+          map(
+            ({ variantOf, fullDisplayName }) =>
+              `<a
+                 href="/equipment/explorer/${variantOf.klass.toLowerCase()}/${variantOf.id}"
+                 target="_blank"
+               >
+                 ${fullDisplayName}
+               </a>`
+          )
         );
       case EquipmentItemDisplayProperty.WEBSITE:
         return of(propertyValue.toString());
