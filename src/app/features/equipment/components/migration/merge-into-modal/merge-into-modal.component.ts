@@ -163,45 +163,40 @@ export class MergeIntoModalComponent extends BaseComponentDirective implements O
     const similarLegacyItems = this.similarLegacyItems.filter(
       item => selectedSimilarLegacyItemsPks.indexOf(item.pk) > -1
     );
+    const observables = similarLegacyItems.map(legacyItem =>
+      this.legacyGearApi.setMigration(legacyItem.pk, MigrationFlag.MIGRATE, this.activeType, this.equipmentItem.id)
+    );
+
     const total = similarLegacyItems.length;
     let counter = 0;
-    const observables = similarLegacyItems.map(legacyItem =>
-      this.legacyGearApi
-        .setMigration(legacyItem.pk, MigrationFlag.MIGRATE, this.activeType, this.equipmentItem.id)
-        .pipe(
-          tap(() => {
-            counter++;
-
-            if (!!this.singleMigrationNotification) {
-              this.popNotificationsService.remove(this.singleMigrationNotification.toastId);
-            }
-
-            this.singleMigrationNotification = this.popNotificationsService.success(
-              this.translateService.instant("Processing item {{0}}/{{1}}...", {
-                0: counter,
-                1: total
-              })
-            );
-          })
-        )
-    );
 
     this.loadingService.setLoading(true);
 
     concat(...observables).subscribe(() => {
-      this.loadingService.setLoading(false);
+      counter++;
 
       if (!!this.singleMigrationNotification) {
         this.popNotificationsService.remove(this.singleMigrationNotification.toastId);
       }
 
-      this.popNotificationsService.success(
-        this.translateService.instant("Good job! {{0}} items marked for migration.", {
-          0: counter
-        })
-      );
+      if (counter === total) {
+        this.loadingService.setLoading(false);
 
-      this.modal.close();
+        this.popNotificationsService.success(
+          this.translateService.instant("Good job! {{0}} items marked for migration.", {
+            0: counter
+          })
+        );
+
+        this.modal.close();
+      } else {
+        this.singleMigrationNotification = this.popNotificationsService.success(
+          this.translateService.instant("Processed item {{0}}/{{1}}.", {
+            0: counter,
+            1: total
+          })
+        );
+      }
     });
   }
 
