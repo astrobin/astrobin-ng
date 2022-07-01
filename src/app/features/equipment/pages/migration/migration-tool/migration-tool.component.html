@@ -305,7 +305,9 @@
             <td>{{ strategy.migrationFlag }}</td>
             <td>
               <ng-container *ngIf="!!strategy.migrationContentObjectBrand; else notAvailable">
-                <strong>{{ strategy.migrationContentObjectBrand.name }}</strong> {{ strategy.migrationContentObject.name }}
+                <astrobin-equipment-item-display-name
+                  [item]="strategy.migrationContentObject"
+                ></astrobin-equipment-item-display-name>
               </ng-container>
             </td>
             <td>
