@@ -56,6 +56,7 @@ const PROHIBITED_WORDS = [
   // English
   "modified",
   "modded",
+  "mod",
   "upgraded",
   "sold",
   "used",
