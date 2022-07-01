@@ -1,28 +1,26 @@
 <div class="modal-header">
-  <h4 class="modal-title" id="modal-title">Merge legacy items into this...</h4>
+  <h4 class="modal-title" id="modal-title">
+    {{ "Migrate legacy items into this one" | translate }}
+  </h4>
   <button (click)="modal.dismiss()" aria-describedby="modal-title" class="close" type="button">
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
 
 <div class="modal-body">
-  <ng-container *ngIf="similarLegacyItems.length > 0; else noSimilarItems">
-    <p class="alert alert-info">
-      We found these items in the legacy database that are similar to this one. Please check the ones that you want to
-      migrate into it. <strong>Please be careful!</strong> Not all items that AstroBin thinks are similar, are
-      necessarily the same product. Only check the ones that you are sure of.
-    </p>
+  <ng-container *ngIf="(this.loadingService.loading$ | async) === false; else loading">
+    <ng-container *ngIf="similarLegacyItems.length > 0; else noSimilarItems">
+      <p
+        class="alert alert-info"
+        [innerHTML]="message"
+      >
+      </p>
 
-    <form [formGroup]="form" class="mt-4 ml-3">
-      <formly-form [fields]="fields" [form]="form" [model]="model"></formly-form>
-    </form>
+      <form [formGroup]="form" class="mt-4 ml-3">
+        <formly-form [fields]="fields" [form]="form" [model]="model"></formly-form>
+      </form>
+    </ng-container>
   </ng-container>
-
-  <ng-template #noSimilarItems>
-    <p>
-      We couldn't find any similar items in the legacy database.
-    </p>
-  </ng-template>
 </div>
 
 <div class="modal-footer">
@@ -40,3 +38,13 @@
     {{ "Migrate" | translate }}
   </button>
 </div>
+
+<ng-template #noSimilarItems>
+  <p>
+    {{ "We couldn't find any similar items in the legacy database." | translate }}
+  </p>
+</ng-template>
+
+<ng-template #loading>
+  <astrobin-loading-indicator></astrobin-loading-indicator>
+</ng-template>

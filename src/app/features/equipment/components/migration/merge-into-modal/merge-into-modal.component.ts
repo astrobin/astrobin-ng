@@ -8,8 +8,8 @@ import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipme
 import { ActivatedRoute } from "@angular/router";
 import { CameraApiService } from "@shared/services/api/classic/astrobin/camera/camera-api.service";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
-import { filter, map, switchMap, take } from "rxjs/operators";
-import { forkJoin, of } from "rxjs";
+import { filter, map, switchMap, take, tap } from "rxjs/operators";
+import { concat, forkJoin, of } from "rxjs";
 import { GearApiService } from "@shared/services/api/classic/astrobin/gear/gear-api.service";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { GearService } from "@shared/services/gear/gear.service";
@@ -23,6 +23,8 @@ import { MountApiService } from "@shared/services/api/classic/astrobin/mount/mou
 import { FilterApiService } from "@shared/services/api/classic/astrobin/filter/filter-api.service";
 import { AccessoryApiService } from "@shared/services/api/classic/astrobin/accessory/accessory-api.service";
 import { SoftwareApiService } from "@shared/services/api/classic/astrobin/software/software-api.service";
+import { ActiveToast } from "ngx-toastr";
+import { TranslateService } from "@ngx-translate/core";
 
 @Component({
   selector: "astrobin-merge-into-modal",
@@ -42,6 +44,14 @@ export class MergeIntoModalComponent extends BaseComponentDirective implements O
   model: number[] = [];
   fields: FormlyFieldConfig[];
 
+  singleMigrationNotification: ActiveToast<any>;
+
+  message = this.translateService.instant(
+    "We found these items in the legacy database that are similar to this one. Please check the ones that you " +
+      "want to migrate into it. <strong>Please be careful!</strong> Not all items that AstroBin thinks are " +
+      "similar, are necessarily the same product. Only check the ones that you are sure of."
+  );
+
   constructor(
     public readonly store$: Store<State>,
     public readonly popNotificationsService: PopNotificationsService,
@@ -55,7 +65,8 @@ export class MergeIntoModalComponent extends BaseComponentDirective implements O
     public readonly legacyMountApi: MountApiService,
     public readonly legacyFilterApi: FilterApiService,
     public readonly legacyAccessoryApi: AccessoryApiService,
-    public readonly legacySoftwareApi: SoftwareApiService
+    public readonly legacySoftwareApi: SoftwareApiService,
+    public readonly translateService: TranslateService
   ) {
     super(store$);
   }
@@ -152,22 +163,46 @@ export class MergeIntoModalComponent extends BaseComponentDirective implements O
     const similarLegacyItems = this.similarLegacyItems.filter(
       item => selectedSimilarLegacyItemsPks.indexOf(item.pk) > -1
     );
-
-    for (const itemToMigrate of similarLegacyItems) {
-      this.loadingService.setLoading(true);
+    const total = similarLegacyItems.length;
+    let counter = 0;
+    const observables = similarLegacyItems.map(legacyItem =>
       this.legacyGearApi
-        .setMigration(itemToMigrate.pk, MigrationFlag.MIGRATE, this.activeType, this.equipmentItem.id)
-        .subscribe(
-          () => {
-            this.loadingService.setLoading(false);
-            this.popNotificationsService.success(`Good job! Items marked for migration.`);
-            this.modal.close();
-          },
-          error => {
-            this._operationError(error);
-          }
-        );
-    }
+        .setMigration(legacyItem.pk, MigrationFlag.MIGRATE, this.activeType, this.equipmentItem.id)
+        .pipe(
+          tap(() => {
+            counter++;
+
+            if (!!this.singleMigrationNotification) {
+              this.popNotificationsService.remove(this.singleMigrationNotification.toastId);
+            }
+
+            this.singleMigrationNotification = this.popNotificationsService.success(
+              this.translateService.instant("Processing item {{0}}/{{1}}...", {
+                0: counter,
+                1: total
+              })
+            );
+          })
+        )
+    );
+
+    this.loadingService.setLoading(true);
+
+    concat(...observables).subscribe(() => {
+      this.loadingService.setLoading(false);
+
+      if (!!this.singleMigrationNotification) {
+        this.popNotificationsService.remove(this.singleMigrationNotification.toastId);
+      }
+
+      this.popNotificationsService.success(
+        this.translateService.instant("Good job! {{0}} items marked for migration.", {
+          0: counter
+        })
+      );
+
+      this.modal.close();
+    });
   }
 
   _getSelectedSimilarLegacyItemsPks() {
@@ -183,21 +218,5 @@ export class MergeIntoModalComponent extends BaseComponentDirective implements O
     }
 
     return items;
-  }
-
-  _operationError(error) {
-    this.loadingService.setLoading(false);
-
-    let message: string;
-
-    if (error.status === HttpStatusCode.Conflict) {
-      message = "This object was already processed by someone else at the same time. We'll get you another one!";
-    } else {
-      message = `Sorry, something went wrong: <em>${error.message}</em>`;
-    }
-
-    this.popNotificationsService.error(message, null, {
-      enableHtml: true
-    });
   }
 }
