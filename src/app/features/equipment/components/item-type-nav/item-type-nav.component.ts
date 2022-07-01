@@ -366,7 +366,11 @@ export class ItemTypeNavComponent extends BaseComponentDirective implements OnIn
             this.popNotificationsService.remove(this.reviewPendingEditNotification.toastId);
           }
 
-          if (count > 0 && this.activatedRoute.snapshot.url.join("/").indexOf("pending-edit-explorer") === -1) {
+          if (
+            count > 0 &&
+            this.activatedRoute.snapshot.url.join("/").indexOf("pending-edit-explorer") === -1 &&
+            !this.activatedRoute.snapshot.paramMap.get("itemId")
+          ) {
             let message: string;
 
             if (count === 1) {

@@ -1,4 +1,14 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from "@angular/core";
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  Output,
+  SimpleChanges,
+  ViewChild
+} from "@angular/core";
 import { Action, Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
@@ -67,13 +77,14 @@ import { UserInterface } from "@shared/interfaces/user.interface";
 import { ImageInterface } from "@shared/interfaces/image.interface";
 import { distinctUntilChangedObj } from "@shared/services/utils/utils.service";
 import { UnapproveItemModalComponent } from "@features/equipment/components/unapprove-item-modal/unapprove-item-modal.component";
+import { ActiveToast } from "ngx-toastr";
 
 @Component({
   selector: "astrobin-equipment-explorer",
   templateUrl: "./explorer.component.html",
   styleUrls: ["./explorer.component.scss"]
 })
-export class ExplorerComponent extends BaseComponentDirective implements OnInit, OnChanges {
+export class ExplorerComponent extends BaseComponentDirective implements OnInit, OnChanges, OnDestroy {
   readonly EquipmentItemType = EquipmentItemType;
   readonly EquipmentItemEditorMode = EquipmentItemEditorMode;
   readonly EquipmentItemReviewerDecision = EquipmentItemReviewerDecision;
@@ -143,6 +154,8 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
   usersUsing$: Observable<UserInterface[]>;
   imagesUsing$: Observable<ImageInterface[]>;
 
+  reviewPendingEditNotification: ActiveToast<any>;
+
   commentsSectionInfoMessage$: Observable<string> = this.currentUser$.pipe(
     take(1),
     switchMap(user => {
@@ -192,6 +205,14 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
   ngOnChanges(changes: SimpleChanges) {
     if (!!changes.activeId && !changes.activeId.firstChange) {
       this._initActiveId();
+    }
+  }
+
+  ngOnDestroy() {
+    super.ngOnDestroy();
+
+    if (!!this.reviewPendingEditNotification) {
+      this.popNotificationsService.remove(this.reviewPendingEditNotification.toastId);
     }
   }
 
@@ -619,6 +640,23 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
         this.editProposals = editProposals;
         this.editProposalsCollapsed =
           this.editProposalsByStatus(editProposals, null).length === 0 && !this.activeEditProposalId;
+
+        const pendingEditProposals = this.editProposalsByStatus(editProposals, null);
+        for (const pendingEditProposal of pendingEditProposals) {
+          this.currentUser$.pipe(take(1)).subscribe(user => {
+            if (user.id !== pendingEditProposal.editProposalBy) {
+              if (!!this.reviewPendingEditNotification) {
+                this.popNotificationsService.remove(this.reviewPendingEditNotification.toastId);
+              }
+
+              this.reviewPendingEditNotification = this.popNotificationsService.info(
+                this.translateService.instant("This item has a pending edit proposal. Please review it!")
+              );
+
+              return;
+            }
+          });
+        }
       });
 
     this.store$.dispatch(new FindEquipmentItemEditProposals({ item: this.selectedItem }));
