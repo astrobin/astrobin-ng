@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: AstroBin Angular App\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-03 14:04+0200\n"
-"PO-Revision-Date: 2022-06-25 22:06+0200\n"
+"PO-Revision-Date: 2022-07-01 09:05+0200\n"
 "Last-Translator: Salvatore Iovene\n"
 "Language-Team: Italian\n"
 "Language: it\n"
@@ -14,7 +14,7 @@ msgstr ""
 "X-Generator: Loco https://localise.biz\n"
 "X-Loco-Source-Locale: en\n"
 "X-Loco-Project-Id: 108356\n"
-"X-Loco-Api-Version: 1.0.26 20220622-1"
+"X-Loco-Api-Version: 1.0.26 20220630-1"
 
 #: loco:60685a683b0b1d485a736d12
 msgid "API Keys"
@@ -2619,7 +2619,7 @@ msgid "Refractor: non-achromatic Galilean"
 msgstr "Riflettore: Galileano non-acromatico"
 
 #: loco:61b24fc53b045a33935504a4
-msgid "Refractor: non-achromatic Keplerian"
+msgid "Refractor: non-acrhmatic Keplerian"
 msgstr "Riflettore: Kepleriano non-acromatico"
 
 #: loco:61b24fc53b045a33935504a5
@@ -3969,3 +3969,182 @@ msgid ""
 msgstr ""
 "La tua proposta di modifica è stata salvata e verrà controllato il prima "
 "possibile."
+
+#: loco:62be9a56f89eae3aae73bb74
+msgid ""
+"<strong>Careful!</strong> {{0}} is a separate brand on AstroBin, so you "
+"probably want to select it as a brand."
+msgstr ""
+"<strong>Attento!</strong> {{0}} è una marca a parte su AstroBin, quindi "
+"probabilmente vuoi selezionarla come marca."
+
+#: loco:62be9a56f89eae3aae73bb75
+msgid "After"
+msgstr "Dopo"
+
+#: loco:62be9a56f89eae3aae73bb76
+msgid ""
+"AstroBin does not translate product names into other languages, so if the "
+"name of this product haswords that are not in English, please fix it."
+msgstr ""
+"AstroBin non traduce i nomi dei prodotti in altre lingue, quindi se il nome "
+"di questo prodotto ha parole che non sono in Inglese, per favore correggilo."
+
+#: loco:62be9a56f89eae3aae73bb77
+msgid ""
+"AstroBin will delete this item, remove it from all images, and notify the "
+"affected user."
+msgstr ""
+"AstroBin cancellerà questo strumento, rimuovendolo da tutte le immagini, e "
+"notificano gli utenti interessati."
+
+#: loco:62be9a56f89eae3aae73bb78
+msgid ""
+"AstroBin will fix the images associated to this equipment item and notify "
+"the affected user."
+msgstr ""
+"AstroBin correggerà le immagini associate a questo strumento e notificherà "
+"gli utenti interessati."
+
+#: loco:62be9a56f89eae3aae73bb79
+msgid "Before"
+msgstr "Prima"
+
+#: loco:62be9a56f89eae3aae73bb7a
+msgid "Community notes"
+msgstr "Note della comunità"
+
+#: loco:62be9a56f89eae3aae73bb7b
+msgid "Contributors"
+msgstr "Collaboratori"
+
+#: loco:62be9a56f89eae3aae73bb7c
+msgid "Don't show again"
+msgstr "Non mostrare più"
+
+#: loco:62be9a56f89eae3aae73bb7d
+msgid "Equipment moderation"
+msgstr "Moderazione della strumentazione"
+
+#: loco:62be9a56f89eae3aae73bb7e
+msgid ""
+"Filter sets should be added one filter at a time, individually, so that they "
+"may be added to acquisition sessions."
+msgstr ""
+"I set di filtri devono essere aggiunti uno alla volta, in modo che possano "
+"essere aggiunti alle sessioni di acquisizione."
+
+#: loco:62be9a56f89eae3aae73bb7f
+msgid "Item unapproved."
+msgstr "Approvazione rimossa"
+
+#: loco:62be9a56f89eae3aae73bb80
+msgid "Migrate equipment"
+msgstr "Migra strumentazione"
+
+#: loco:62be9a56f89eae3aae73bb81
+msgid "Off-axis guiders are typically found as accessories, not cameras."
+msgstr "Le guide fuori asse sono tipicamente tra gli accessori, non le camere."
+
+#: loco:62be9a56f89eae3aae73bb82
+msgid "Please consult the {{0}}AstroBin Equipment Moderator Handbook{{1}}."
+msgstr ""
+"Consulta il {{0}}Manuale del Moderatore della Strumentazione di AstroBin{{1}}"
+"."
+
+#: loco:62be9a56f89eae3aae73bb83
+msgid "Please contribute to the AstroBin equipment database by reviewing them!"
+msgstr ""
+"Contribuisci al database della strumentazione di AstroBin controllandole!"
+
+#: loco:62be9a56f89eae3aae73bb84
+msgid "Property"
+msgstr "Proprietà"
+
+#: loco:62be9a56f89eae3aae73bb85
+msgid "Refractor: non-achromatic Keplerian"
+msgstr "Rifrattore: Kepleriano non-acromatico"
+
+#: loco:62be9a56f89eae3aae73bb86
+msgid "Review"
+msgstr "Controlla"
+
+#: loco:62be9a56f89eae3aae73bb87
+msgid "Revision"
+msgstr "Revisione"
+
+#: loco:62be9a56f89eae3aae73bb88
+msgid ""
+"The migration will complete within a few moments and all affected images "
+"will be automatically updated."
+msgstr ""
+"La migrazione sarà completa entro pochi istanti e tutte le immagini "
+"interessate saranno aggiornate automaticamente."
+
+#: loco:62be9a56f89eae3aae73bb89
+msgid "The name of this product is in English (if applicable)"
+msgstr "Il nome di questo prodotto è in Inglese (se applicabile)"
+
+#: loco:62be9a56f89eae3aae73bb8a
+msgid ""
+"There are <strong>{{n}} items</strong> of this class that have pending edits."
+msgstr ""
+"Ci sono <strong>{{n}} elementi</strong> in questa classe che hanno proposte "
+"di modifica in attesa."
+
+#: loco:62be9a56f89eae3aae73bb8b
+msgid "There is <strong>1 item</strong> of this class that has pending edits."
+msgstr ""
+"C'è <strong>1 elemento</strong> in questa classe che ha proposte di modifica "
+"in attesa."
+
+#: loco:62be9a56f89eae3aae73bb8c
+msgid "This operation will let equipment moderators review this item again."
+msgstr ""
+"Questa operazione permetterà ai moderatori della strumentazione di "
+"controllare questo elemento nuovamente."
+
+#: loco:62be9a56f89eae3aae73bb8d
+msgid "This operation will make the item available to everyone on AstroBin."
+msgstr ""
+"Questa operazione renderà questo elemento disponibile a tutti su AstroBin."
+
+#: loco:62be9a56f89eae3aae73bb8e
+msgid ""
+"This section can be used as a community page to share information about this "
+"item that doesn't fit the available data fields. Please use English."
+msgstr ""
+"Questa sezione può essere usata come una pagina comunitaria per condividere "
+"informazioni su questo elemento che non rientrano nei campi disponibili. Usa "
+"l'Inglese p.f."
+
+#: loco:62be9a56f89eae3aae73bb8f
+msgid "Total number of edit proposals created or reviewed"
+msgstr "Numero totale di proposte di modifica create o controllate."
+
+#: loco:62be9a56f89eae3aae73bb90
+msgid "Unapprove"
+msgstr "Rimuovi approvazione"
+
+#: loco:62be9a56f89eae3aae73bb91
+msgid "Welcome to the new way of associating equipment to your images."
+msgstr "Benvenuti al nuovo modo di associare strumentazione alle tue immagini."
+
+#: loco:62be9a56f89eae3aae73bb92
+msgid ""
+"You don't have any recently used items in this class. Please find your "
+"equipment using the input box above, and the next time you edit an image, "
+"they will available for quick selection here. PS: you can also save/load "
+"presets to make it easier to add equipment next time! Look for the preset "
+"buttons at the end of this form."
+msgstr ""
+"Non hai alcun elemento usato di recente in questa classe. Trova la tua "
+"strumentazione usando la casella di ricerca qui sopra, e la prossima volta "
+"che modifichi un'immagine, questa sarà disponibile qui per una selezione "
+"rapida. PS: puoi anche salvare/caricare dei preset per rendere più facile "
+"selezionare la strumentazione la prossima volta! Cerca i bottoni dei preset "
+"in fondo a questo modulo."
+
+#: loco:62be9a56f89eae3aae73bb93
+msgid "resolution not matching"
+msgstr "risoluzione non corrispondente"
