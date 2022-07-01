@@ -176,7 +176,7 @@ export class MergeIntoModalComponent extends BaseComponentDirective implements O
       counter++;
 
       if (!!this.singleMigrationNotification) {
-        this.popNotificationsService.remove(this.singleMigrationNotification.toastId);
+        this.popNotificationsService.clear(this.singleMigrationNotification.toastId);
       }
 
       if (counter === total) {
@@ -194,7 +194,11 @@ export class MergeIntoModalComponent extends BaseComponentDirective implements O
           this.translateService.instant("Processed item {{0}}/{{1}}.", {
             0: counter,
             1: total
-          })
+          }),
+          null,
+          {
+            progressBar: false
+          }
         );
       }
     });
