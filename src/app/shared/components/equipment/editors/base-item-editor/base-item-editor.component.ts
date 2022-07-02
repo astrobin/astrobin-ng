@@ -68,6 +68,7 @@ const PROHIBITED_WORDS = [
   "present",
   "lost",
   "cooled",
+  "stock",
 
   // Italian
   "modificato",
