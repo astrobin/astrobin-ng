@@ -536,7 +536,7 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
         label: this.equipmentItemService.getPrintablePropertyName(null, EquipmentItemDisplayProperty.COMMUNITY_NOTES),
         description: this.translateService.instant(
           "This section can be used as a community page to share information about this item that doesn't fit " +
-            "the available data fields. Please use English."
+            "the available data fields. Please use English and do not include any personal information or anecdotes."
         ),
         required: false
       }
