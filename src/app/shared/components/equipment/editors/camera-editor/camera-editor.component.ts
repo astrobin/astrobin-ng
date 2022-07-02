@@ -19,7 +19,11 @@ import { FormlyFieldMessageLevel, FormlyFieldService } from "@shared/services/fo
 import { FormlyFieldEquipmentItemBrowserMode } from "@shared/components/misc/formly-field-equipment-item-browser/formly-field-equipment-item-browser.component";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { FormlyFieldConfig } from "@ngx-formly/core";
-import { takeUntil } from "rxjs/operators";
+import { filter, map, switchMap, take, takeUntil } from "rxjs/operators";
+import { selectBrand } from "@features/equipment/store/equipment.selectors";
+import { LoadBrand } from "@features/equipment/store/equipment.actions";
+import { of } from "rxjs";
+import { AbstractControl, FormControl } from "@angular/forms";
 
 @Component({
   selector: "astrobin-camera-editor",
@@ -33,6 +37,15 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
 
   @ViewChild("sensorOptionTemplate")
   sensorOptionTemplate: TemplateRef<any>;
+
+  private _defaultTypeOptions = [
+    [CameraType.DEDICATED_DEEP_SKY, this.cameraService.humanizeType(CameraType.DEDICATED_DEEP_SKY)],
+    [CameraType.DSLR_MIRRORLESS, this.cameraService.humanizeType(CameraType.DSLR_MIRRORLESS)],
+    [CameraType.GUIDER_PLANETARY, this.cameraService.humanizeType(CameraType.GUIDER_PLANETARY)],
+    [CameraType.VIDEO, this.cameraService.humanizeType(CameraType.VIDEO)],
+    [CameraType.FILM, this.cameraService.humanizeType(CameraType.FILM)],
+    [CameraType.OTHER, this.cameraService.humanizeType(CameraType.OTHER)]
+  ];
 
   constructor(
     public readonly store$: Store<State>,
@@ -109,14 +122,7 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
             label: this.cameraService.getPrintablePropertyName(CameraDisplayProperty.TYPE),
             required: true,
             clearable: true,
-            options: [
-              [CameraType.DEDICATED_DEEP_SKY, this.cameraService.humanizeType(CameraType.DEDICATED_DEEP_SKY)],
-              [CameraType.DSLR_MIRRORLESS, this.cameraService.humanizeType(CameraType.DSLR_MIRRORLESS)],
-              [CameraType.GUIDER_PLANETARY, this.cameraService.humanizeType(CameraType.GUIDER_PLANETARY)],
-              [CameraType.VIDEO, this.cameraService.humanizeType(CameraType.VIDEO)],
-              [CameraType.FILM, this.cameraService.humanizeType(CameraType.FILM)],
-              [CameraType.OTHER, this.cameraService.humanizeType(CameraType.OTHER)]
-            ].map(item => ({
+            options: this._defaultTypeOptions.map(item => ({
               value: item[0],
               label: item[1]
             }))
@@ -128,6 +134,32 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
                   this.model.variantOf = null;
                 }
               });
+            }
+          },
+          asyncValidators: {
+            centralDS: {
+              expression: (control: FormControl) => {
+                if (!control.value || control.value === CameraType.DEDICATED_DEEP_SKY) {
+                  return of(true);
+                }
+
+                if (control.value !== CameraType.DEDICATED_DEEP_SKY) {
+                  return of(this.form.get("brand").value).pipe(
+                    switchMap(brandId => {
+                      if (!brandId) {
+                        return of(true);
+                      }
+
+                      return this.store$.select(selectBrand, brandId).pipe(
+                        filter(brand => !!brand),
+                        take(1),
+                        map(brand => brand.name !== "CentralDS")
+                      );
+                    })
+                  );
+                }
+              },
+              message: this.translateService.instant(`For CentralDS cameras, please select "Dedicated deep-sky camera"`)
             }
           }
         },
@@ -240,9 +272,27 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
     if (this.editorMode === EquipmentItemEditorMode.CREATION) {
       this.initBrandAndName().subscribe(() => {
         _doInitFields();
+        this._initBrandValueChangesObservable();
       });
     } else {
       _doInitFields();
+    }
+  }
+
+  private _initBrandValueChangesObservable() {
+    const _doInit = (control: AbstractControl) => {
+      control.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(() => {
+        this.form.get("type").updateValueAndValidity({ emitEvent: false });
+      });
+    };
+
+    const brandControl: AbstractControl = this.form.get("brand");
+    if (!!brandControl) {
+      _doInit(brandControl);
+    } else {
+      setTimeout(() => {
+        this._initBrandValueChangesObservable();
+      }, 100);
     }
   }
 
