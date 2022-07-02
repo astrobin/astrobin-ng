@@ -138,6 +138,12 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
               "simplicity."
           );
         }
+      },
+      {
+        name: "has-tripod-as-accessory",
+        message() {
+          return translateService.instant("Tripods must be added in the Mounts equipment class.");
+        }
       }
     ],
     validators: [

@@ -12,6 +12,7 @@ import { FormlyFieldService } from "@shared/services/formly-field.service";
 import { AccessoryInterface } from "@features/equipment/types/accessory.interface";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { FormlyFieldConfig } from "@ngx-formly/core";
 
 @Component({
   selector: "astrobin-accessory-editor",
@@ -58,6 +59,16 @@ export class AccessoryEditorComponent extends BaseItemEditorComponent<AccessoryI
     this.model.klass = EquipmentItemType.ACCESSORY;
 
     super.ngAfterViewInit();
+  }
+
+  protected _customNameChangesValidations(field: FormlyFieldConfig, value: string) {
+    const hasTripod: boolean = !!value && value.toLowerCase().indexOf("tripod") > -1;
+
+    if (hasTripod) {
+      field.formControl.setErrors({ "has-tripod-as-accessory": true });
+      field.formControl.markAsTouched();
+      field.formControl.markAsDirty();
+    }
   }
 
   private _initFields() {
