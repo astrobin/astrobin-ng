@@ -176,7 +176,7 @@ export class MergeIntoModalComponent extends BaseComponentDirective implements O
       counter++;
 
       if (!!this.singleMigrationNotification) {
-        this.popNotificationsService.clear(this.singleMigrationNotification.toastId);
+        this.popNotificationsService.remove(this.singleMigrationNotification.toastId);
       }
 
       if (counter === total) {
