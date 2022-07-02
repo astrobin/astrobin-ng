@@ -47,6 +47,11 @@ h1 {
     strong {
       color: var(--white);
     }
+
+    .learn-more {
+      display: block;
+      font-size: 1rem;
+    }
   }
 
   @media (max-width: $sm-max) {
