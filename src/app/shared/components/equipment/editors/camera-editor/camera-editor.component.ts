@@ -168,7 +168,13 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
       "kiss x9i",
       "eos 200d",
       "kiss x9",
-      "rebel sl2"
+      "rebel sl2",
+      "250d",
+      "eos 250d",
+      "kiss x10",
+      "rebel sl3",
+      "200d mark ii",
+      "eos 200d mark ii"
     ];
 
     let hasOAG = false;
@@ -312,7 +318,7 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
             label: this.cameraService.getPrintablePropertyName(CameraDisplayProperty.MAX_COOLING),
             description: this.translateService.instant(
               "A positive whole number that represents how many Celsius below ambient temperature this camera can " +
-              "be cooled."
+                "be cooled."
             )
           },
           validators: {
