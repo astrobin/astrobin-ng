@@ -8,8 +8,8 @@ import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { Actions } from "@ngrx/effects";
 import {
-  ExplorerBaseComponent,
-  EQUIPMENT_EXPLORER_PAGE_SORTING_COOKIE
+  EQUIPMENT_EXPLORER_PAGE_SORTING_COOKIE,
+  ExplorerBaseComponent
 } from "@features/equipment/pages/explorer-base/explorer-base.component";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { filter, take, takeUntil, tap } from "rxjs/operators";
@@ -27,6 +27,8 @@ import {
   ExplorerFilterInterface,
   ExplorerFiltersComponent
 } from "@features/equipment/pages/explorer/explorer-filters/explorer-filters.component";
+import { CompareService, CompareServiceError } from "@features/equipment/services/compare.service";
+import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 
 @Component({
   selector: "astrobin-equipment-explorer-page",
@@ -57,7 +59,8 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
     public readonly location: Location,
     public readonly equipmentItemService: EquipmentItemService,
     public readonly popNotificationsService: PopNotificationsService,
-    public readonly cookieService: CookieService
+    public readonly cookieService: CookieService,
+    public readonly compareService: CompareService
   ) {
     super(store$, actions$, activatedRoute, router, windowRefService, cookieService);
   }
@@ -121,6 +124,28 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
 
   filtersApplied(): void {
     this.getItems();
+  }
+
+  addToComparisonList(item: EquipmentItem) {
+    try {
+      this.compareService.add(item);
+    } catch (e) {
+      if (e.message === CompareServiceError.NON_MATCHING_CLASS) {
+        this.popNotificationsService.error(
+          this.translateService.instant("You already have items of a different equipment class in the comparison list.")
+        );
+      } else if (e.message === CompareServiceError.TOO_MANY_ITEMS) {
+        this.popNotificationsService.error(
+          this.translateService.instant("You cannot compare more than {{n}} items.", {
+            n: CompareService.MAX_ITEMS
+          })
+        );
+      } else if (e.message === CompareServiceError.ALREADY_IN_LIST) {
+        this.popNotificationsService.warning(
+          this.translateService.instant("This item is already in your comparison list.")
+        );
+      }
+    }
   }
 
   private _setTitle() {

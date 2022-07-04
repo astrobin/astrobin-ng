@@ -3,19 +3,15 @@ import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { arrayUniqueEquipmentItems } from "@features/equipment/store/equipment.selectors";
-import { forkJoin, Observable, of } from "rxjs";
-import { CameraService } from "@features/equipment/services/camera.service";
-import { TelescopeService } from "@features/equipment/services/telescope.service";
-import { MountService } from "@features/equipment/services/mount.service";
-import { FilterService } from "@features/equipment/services/filter.service";
-import { AccessoryService } from "@features/equipment/services/accessory.service";
-import { SoftwareService } from "@features/equipment/services/software.service";
+import { forkJoin, Observable, of, Subject } from "rxjs";
 import { EquipmentItemServiceFactory } from "@features/equipment/services/equipment-item.service-factory";
 import { map } from "rxjs/operators";
 
 export enum CompareServiceError {
   NON_MATCHING_CLASS = "NON_MATCHING_CLASS",
-  ITEM_NOT_FOUND = "ITEM_NOT_FOUND"
+  ITEM_NOT_FOUND = "ITEM_NOT_FOUND",
+  TOO_MANY_ITEMS = "TOO_MANY_ITEMS",
+  ALREADY_IN_LIST = "ALREADY_IN_LIST"
 }
 
 export interface ComparisonInterface {
@@ -30,17 +26,16 @@ export interface ComparisonInterface {
   providedIn: "root"
 })
 export class CompareService extends BaseService {
+  static readonly MAX_ITEMS = 5;
+
   private _items: EquipmentItem[] = [];
+  private _changesSubject = new Subject<void>();
+
+  public changes = this._changesSubject.asObservable();
 
   constructor(
     public readonly loadingService: LoadingService,
-    public readonly equipmentItemServiceFactory: EquipmentItemServiceFactory,
-    public readonly cameraService: CameraService,
-    public readonly telescopeService: TelescopeService,
-    public readonly mountService: MountService,
-    public readonly filterService: FilterService,
-    public readonly accessoryService: AccessoryService,
-    public readonly softwareService: SoftwareService
+    public readonly equipmentItemServiceFactory: EquipmentItemServiceFactory
   ) {
     super(loadingService);
   }
@@ -52,7 +47,17 @@ export class CompareService extends BaseService {
         throw new Error(CompareServiceError.NON_MATCHING_CLASS);
       }
     }
+
+    if (this.amount() === CompareService.MAX_ITEMS) {
+      throw new Error(CompareServiceError.TOO_MANY_ITEMS);
+    }
+
+    if (this.getAll().filter(filteredItem => filteredItem.id === item.id).length > 0) {
+      throw new Error(CompareServiceError.ALREADY_IN_LIST);
+    }
+
     this._items = arrayUniqueEquipmentItems([...this._items, ...[item]]);
+    this._changesSubject.next();
   }
 
   remove(item: EquipmentItem): void {
@@ -62,6 +67,13 @@ export class CompareService extends BaseService {
     if (this.amount() === previousAmount) {
       throw new Error(CompareServiceError.ITEM_NOT_FOUND);
     }
+
+    this._changesSubject.next();
+  }
+
+  clear(): void {
+    this._items = [];
+    this._changesSubject.next();
   }
 
   get(index: number): EquipmentItem | null {

@@ -1,0 +1,54 @@
+@import "../../../../styles/mixins";
+
+:host {
+  position: fixed;
+  padding: 1rem 0;
+  left: 0;
+  bottom: 0;
+  display: none;
+  width: 100%;
+  box-shadow: 0 -.5rem 1rem rgba(0, 0, 0, .5);
+  @include darkest-background-texture;
+
+  .comparison-container {
+    height: 100%;
+
+    .comparison-item {
+      padding: 1rem;
+      text-align: center;
+      position: relative;
+      max-width: calc(20% - 1rem);
+
+      &:not(:first-child) {
+        margin-right: 2rem;
+      }
+
+      .image {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+      }
+
+      astrobin-equipment-item-display-name ::ng-deep {
+        .brand {
+          display: block;
+        }
+      }
+
+      .remove {
+        position: absolute;
+        top: .75rem;
+        right: .75rem;
+        cursor: pointer;
+
+        &:hover {
+          color: var(--accentColor);
+        }
+      }
+    }
+
+    .buttons {
+      height: 100%;
+    }
+  }
+}

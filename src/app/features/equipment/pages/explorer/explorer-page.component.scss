@@ -1,3 +1,5 @@
+@import "../../../../styles/breakpoints";
+
 .items {
   th {
     fa-icon {
@@ -20,6 +22,27 @@
       font-style: italic;
       font-size: .9rem;
       color: var(--lighterGrey);
+    }
+
+    @media screen and (max-width: $md-max) {
+      .add-to-compare {
+        display: none;
+      }
+    }
+
+      @media screen and (min-width: $lg-min) {
+      .add-to-compare {
+        padding: 0 .5rem;
+        float: right;
+        opacity: 0;
+        transition: opacity .1s ease-in-out;
+      }
+
+      &:hover {
+        .add-to-compare {
+          opacity: 1;
+        }
+      }
     }
   }
 }

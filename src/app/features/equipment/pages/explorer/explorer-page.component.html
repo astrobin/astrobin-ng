@@ -72,6 +72,9 @@
                   >
                   </span>
                 </a>
+                <a href="#" class="add-to-compare" appEventPreventDefault (click)="addToComparisonList(item)">
+                  <fa-icon icon="list-alt" [ngbTooltip]="'Add to comparison list' | translate"></fa-icon>
+                </a>
               </td>
               <td>{{ item.userCount }}</td>
               <td>{{ item.imageCount }}</td>
@@ -92,6 +95,8 @@
       </ng-container>
     </div> <!-- item div -->
   </div>
+
+  <astrobin-equipment-compare></astrobin-equipment-compare>
 </div>
 
 <ng-template #loading>
