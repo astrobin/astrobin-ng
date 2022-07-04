@@ -116,3 +116,12 @@
   }
 }
 
+@keyframes pulse {
+  25% {
+    transform: scale(0.9975);
+  }
+  75% {
+    transform: scale(1.0025);
+  }
+}
+

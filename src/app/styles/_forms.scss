@@ -96,6 +96,10 @@ formly-field-checkbox {
   font-size: .9rem;
 }
 
+.warning-feedback {
+  animation: pulse .45s ease-in-out infinite;
+}
+
 .custom-control {
   &.custom-radio {
     &:not(:last-child) {
