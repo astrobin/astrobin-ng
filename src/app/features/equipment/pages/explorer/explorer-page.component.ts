@@ -8,8 +8,8 @@ import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { Actions } from "@ngrx/effects";
 import {
-  ExplorerBaseComponent,
-  EQUIPMENT_EXPLORER_PAGE_SORTING_COOKIE
+  EQUIPMENT_EXPLORER_PAGE_SORTING_COOKIE,
+  ExplorerBaseComponent
 } from "@features/equipment/pages/explorer-base/explorer-base.component";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { filter, take, takeUntil, tap } from "rxjs/operators";
@@ -27,6 +27,9 @@ import {
   ExplorerFilterInterface,
   ExplorerFiltersComponent
 } from "@features/equipment/pages/explorer/explorer-filters/explorer-filters.component";
+import { CompareService, CompareServiceError } from "@features/equipment/services/compare.service";
+import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import { ExplorerComponent } from "@features/equipment/components/explorer/explorer.component";
 
 @Component({
   selector: "astrobin-equipment-explorer-page",
@@ -37,6 +40,9 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
   readonly EquipmentItemType = EquipmentItemType;
   readonly ExplorerPageSortOrder = EquipmentItemsSortOrder;
 
+  @ViewChild("explorer")
+  explorer: ExplorerComponent;
+
   @ViewChild("explorerFilters")
   explorerFilters: ExplorerFiltersComponent;
 
@@ -44,6 +50,7 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
   activeId: EquipmentItemBaseInterface["id"];
   filters: ExplorerFilterInterface[] = [];
   creationMode = false;
+  compareComponentVisible = false;
 
   constructor(
     public readonly store$: Store<State>,
@@ -57,7 +64,8 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
     public readonly location: Location,
     public readonly equipmentItemService: EquipmentItemService,
     public readonly popNotificationsService: PopNotificationsService,
-    public readonly cookieService: CookieService
+    public readonly cookieService: CookieService,
+    public readonly compareService: CompareService
   ) {
     super(store$, actions$, activatedRoute, router, windowRefService, cookieService);
   }
@@ -179,6 +187,10 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
           this.popNotificationsService.warning(
             this.translateService.instant("This item has already been approved by you or another moderator.")
           );
+        }
+
+        if (this.activatedRoute.snapshot.queryParamMap.get("edit") === "true") {
+          this.explorer.startEditMode();
         }
 
         let slug = UtilsService.slugify(

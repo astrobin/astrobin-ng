@@ -1,0 +1,88 @@
+@import "../../../../styles/mixins";
+
+:host {
+  position: fixed;
+  padding: 2rem 0;
+  left: 0;
+  bottom: 0;
+  display: none;
+  width: 100%;
+  box-shadow: 0 -0.5rem 1rem rgba(0, 0, 0, 0.5);
+  z-index: 3;
+  @include darkest-background-texture;
+
+  .comparison-container {
+    height: 100%;
+
+    .comparison-item {
+      padding: 1rem;
+      text-align: center;
+      position: relative;
+      max-width: calc(20% - 1rem);
+      background: rgba(255, 255, 255, 0.025);
+      border-radius: 0.5rem;
+      border-top: 1px solid rgba(0, 0, 0, 0.3);
+      border-left: 1px solid rgba(0, 0, 0, 0.3);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      border-right: 1px solid rgba(255, 255, 255, 0.05);
+      box-shadow: 0 0 1rem rgb(0, 0, 0, 0.25);
+
+      &:not(:last-child) {
+        margin-right: 2rem;
+      }
+
+      .image {
+        width: 5rem;
+        height: 5rem;
+        border-radius: 50%;
+        margin-bottom: 0.5rem;
+      }
+
+      hr {
+        margin: 0.5rem;
+        width: 100%;
+      }
+
+      astrobin-equipment-item-display-name ::ng-deep {
+        .brand {
+          display: block;
+          margin-right: 0;
+          color: var(--white);
+        }
+      }
+
+      .remove {
+        transition: opacity 0.2s ease-in-out;
+        position: absolute;
+        opacity: 0;
+        top: 2.5rem;
+        right: calc(50% - 1rem);
+        cursor: pointer;
+        width: 2rem;
+        height: 2rem;
+        background: var(--darkGrey);
+        box-shadow: 0 0 1rem rgba(0, 0, 0, 0.5);
+        color: var(--white);
+        font-size: 1.25rem;
+        border-radius: 50%;
+        line-height: 2rem;
+
+        &:hover {
+          opacity: 1;
+          color: var(--white);
+          background: var(--accentColor);
+        }
+      }
+
+      &:hover {
+        .remove {
+          opacity: 1;
+        }
+      }
+    }
+
+    .buttons {
+      height: 100%;
+    }
+  }
+}

@@ -52,6 +52,10 @@ export class EquipmentItemService extends BaseService {
     super(loadingService);
   }
 
+  trackBy(index, item: EquipmentItem) {
+    return item.id;
+  }
+
   getType(item: EquipmentItemBaseInterface): EquipmentItemType {
     return getEquipmentItemType(item);
   }

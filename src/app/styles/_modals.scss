@@ -1,6 +1,12 @@
 @import "mixins";
 
 .modal {
+  &.fullscreen {
+    .modal-dialog {
+      max-width: calc(100% - 1rem);
+    }
+  }
+
   .modal-content {
     border-radius: 0.4rem;
     box-shadow: 0 0 100px rgba(0, 0, 0, .5);

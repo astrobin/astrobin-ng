@@ -13,6 +13,11 @@ astrobin-equipment-item-browser {
   }
 }
 
+.add-to-compare {
+  color: var(--lighterGrey);
+  padding: .5rem;
+}
+
 .loading-edit-proposals {
   font-style: italic;
   font-size: .9rem;

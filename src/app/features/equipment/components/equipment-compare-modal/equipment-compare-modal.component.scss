@@ -1,0 +1,68 @@
+:host {
+  .comparison-table {
+    table-layout: fixed;
+
+    tr {
+      th {
+        background: var(--darkestGrey);
+        text-align: right;
+        width: 200px;
+      }
+
+      td {
+        padding: .75rem 1.5rem .75rem .75rem;
+        position: relative;
+
+        ::ng-deep img {
+          width: 100px;
+          height: 100px;
+          border-radius: 50%;
+        }
+
+        &.na {
+          color: var(--lightGrey);
+        }
+
+        &:last-child {
+          text-align: left;
+        }
+
+        .edit-button {
+          font-size: .8rem;
+          color: var(--lighterGrey);
+          margin-right: .5rem;
+          opacity: 0;
+          transition: opacity .2s ease-in-out;
+          cursor: pointer;
+          position: absolute;
+          right: 0;
+          top: calc(50% - .5rem);
+
+          &:hover {
+            color: var(--accentColor);
+          }
+        }
+
+        &:hover {
+          .edit-button {
+            opacity: 1;
+          }
+        }
+      }
+
+      &.image {
+        th {
+          background: transparent;
+        }
+
+        td {
+          ::ng-deep a[target=_blank] {
+            &:after {
+              display: none;
+            }
+          }
+        }
+      }
+    }
+  }
+}

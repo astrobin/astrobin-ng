@@ -78,6 +78,8 @@ import { ImageInterface } from "@shared/interfaces/image.interface";
 import { distinctUntilChangedObj } from "@shared/services/utils/utils.service";
 import { UnapproveItemModalComponent } from "@features/equipment/components/unapprove-item-modal/unapprove-item-modal.component";
 import { ActiveToast } from "ngx-toastr";
+import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import { CompareService, CompareServiceError } from "@features/equipment/services/compare.service";
 
 @Component({
   selector: "astrobin-equipment-explorer",
@@ -186,7 +188,8 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
     public readonly loadingService: LoadingService,
     public readonly popNotificationsService: PopNotificationsService,
     public readonly windowRefService: WindowRefService,
-    public readonly modalService: NgbModal
+    public readonly modalService: NgbModal,
+    public readonly compareService: CompareService
   ) {
     super(store$);
   }

@@ -39,7 +39,7 @@ export class SensorService extends BaseService implements EquipmentItemServiceIn
     return "";
   }
 
-  getSupportedPrintableProperties(): string[] {
+  getSupportedPrintableProperties(): SensorDisplayProperty[] {
     return [
       SensorDisplayProperty.PIXEL_SIZE,
       SensorDisplayProperty.PIXELS,
@@ -74,10 +74,10 @@ export class SensorService extends BaseService implements EquipmentItemServiceIn
         );
       case SensorDisplayProperty.PIXEL_WIDTH:
         propertyValue = parseInt(propertyValue, 10);
-        return of(propertyValue || item.pixelWidth ? `${propertyValue || item.pixelWidth} μm` : "");
+        return of(propertyValue || item.pixelWidth ? `${propertyValue || item.pixelWidth}` : "");
       case SensorDisplayProperty.PIXEL_HEIGHT:
         propertyValue = parseInt(propertyValue, 10);
-        return of(propertyValue || item.pixelHeight ? `${propertyValue || item.pixelHeight} μm` : "");
+        return of(propertyValue || item.pixelHeight ? `${propertyValue || item.pixelHeight}` : "");
       case SensorDisplayProperty.SENSOR_SIZE:
         if (!!propertyValue) {
           propertyValue.sensorWidth = parseFloat(propertyValue.sensorWidth);

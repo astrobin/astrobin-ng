@@ -14,6 +14,16 @@
     }
   }
 
+  thead,
+  tbody {
+    tr:first-child {
+      th,
+      td {
+        border-top: 0;
+      }
+    }
+  }
+
   td.fit,
   th.fit {
     white-space: nowrap;
