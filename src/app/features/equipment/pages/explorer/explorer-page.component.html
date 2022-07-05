@@ -1,8 +1,13 @@
 <div class="page" *ngIf="activeType">
   <h1>{{ title }} <em class="beta">(beta)</em></h1>
   <small>
-    {{ "AstroBin's equipment database is entirely maintained by the community. Feel free to make a contribution!" | translate }}
-    <a class="learn-more" href="https://welcome.astrobin.com/features/equipment-database" target="_blank">{{"Learn more"}}.</a>
+    {{
+      "AstroBin's equipment database is entirely maintained by the community. Feel free to make a contribution!"
+        | translate
+    }}
+    <a class="learn-more" href="https://welcome.astrobin.com/features/equipment-database" target="_blank"
+      >{{ "Learn more" }}.</a
+    >
   </small>
 
   <div class="row">
@@ -33,52 +38,65 @@
         ></astrobin-equipment-explorer-filters>
 
         <ng-container *ngIf="items$ | async as items; else loading">
-
           <table class="table table-striped table-sm items">
             <thead>
-            <tr>
-              <th>
-                <button class="btn btn-link" (click)="toggleAZSorting()">
-                  {{ "Product name" | translate }}
-                  <fa-icon icon="sort-alpha-down" *ngIf="sortOrder === ExplorerPageSortOrder.AZ_DESC"></fa-icon>
-                  <fa-icon icon="sort-alpha-up" *ngIf="sortOrder === ExplorerPageSortOrder.AZ"></fa-icon>
-                </button>
-              </th>
-              <th>
-                <button class="btn btn-link" (click)="toggleUsersSorting()">
-                  {{ "Users" | translate }}
-                  <fa-icon icon="sort-numeric-down" *ngIf="sortOrder === ExplorerPageSortOrder.USERS_DESC"></fa-icon>
-                  <fa-icon icon="sort-numeric-up" *ngIf="sortOrder === ExplorerPageSortOrder.USERS"></fa-icon>
-                </button>
-              </th>
-              <th>
-                <button class="btn btn-link" (click)="toggleImagesSorting()">
-                  {{ "Images" | translate }}
-                  <fa-icon icon="sort-numeric-down" *ngIf="sortOrder === ExplorerPageSortOrder.IMAGES_DESC"></fa-icon>
-                  <fa-icon icon="sort-numeric-up" *ngIf="sortOrder === ExplorerPageSortOrder.IMAGES"></fa-icon>
-                </button>
-              </th>
-            </tr>
+              <tr>
+                <th>
+                  <button class="btn btn-link" (click)="toggleAZSorting()">
+                    {{ "Product name" | translate }}
+                    <fa-icon icon="sort-alpha-down" *ngIf="sortOrder === ExplorerPageSortOrder.AZ_DESC"></fa-icon>
+                    <fa-icon icon="sort-alpha-up" *ngIf="sortOrder === ExplorerPageSortOrder.AZ"></fa-icon>
+                  </button>
+                </th>
+                <th>
+                  <button class="btn btn-link" (click)="toggleUsersSorting()">
+                    {{ "Users" | translate }}
+                    <fa-icon icon="sort-numeric-down" *ngIf="sortOrder === ExplorerPageSortOrder.USERS_DESC"></fa-icon>
+                    <fa-icon icon="sort-numeric-up" *ngIf="sortOrder === ExplorerPageSortOrder.USERS"></fa-icon>
+                  </button>
+                </th>
+                <th>
+                  <button class="btn btn-link" (click)="toggleImagesSorting()">
+                    {{ "Images" | translate }}
+                    <fa-icon icon="sort-numeric-down" *ngIf="sortOrder === ExplorerPageSortOrder.IMAGES_DESC"></fa-icon>
+                    <fa-icon icon="sort-numeric-up" *ngIf="sortOrder === ExplorerPageSortOrder.IMAGES"></fa-icon>
+                  </button>
+                </th>
+              </tr>
             </thead>
             <tbody>
-            <tr *ngFor="let item of items.results" data-id="{{ item.id }}">
-              <td class="item-name">
-                <a href="#" appEventPreventDefault (click)="viewItem(item)">
-                  <astrobin-equipment-item-display-name [item]="item"></astrobin-equipment-item-display-name>
-                  <span
-                    *ngIf="item.variants?.length > 0"
-                    [innerHTML]="'+ {{numVariants}} variants' | translate:{numVariants: item.variants.length}"
-                    class="variant-count"
+              <tr *ngFor="let item of items.results" data-id="{{ item.id }}">
+                <td class="item-name">
+                  <a href="#" appEventPreventDefault (click)="viewItem(item)">
+                    <astrobin-equipment-item-display-name [item]="item"></astrobin-equipment-item-display-name>
+                    <span
+                      *ngIf="item.variants?.length > 0"
+                      [innerHTML]="'+ {{numVariants}} variants' | translate:{numVariants: item.variants.length}"
+                      class="variant-count"
+                    >
+                    </span>
+                  </a>
+                  <a
+                    *ngIf="
+                      [
+                        EquipmentItemType.CAMERA,
+                        EquipmentItemType.SENSOR,
+                        EquipmentItemType.TELESCOPE,
+                        EquipmentItemType.FILTER,
+                        EquipmentItemType.MOUNT
+                      ].indexOf(activeType) > -1
+                    "
+                    href="#"
+                    class="add-to-compare"
+                    appEventPreventDefault
+                    (click)="compareService.addWithErrorHandling(item)"
                   >
-                  </span>
-                </a>
-                <a href="#" class="add-to-compare" appEventPreventDefault (click)="addToComparisonList(item)">
-                  <fa-icon icon="list-alt" [ngbTooltip]="'Add to comparison list' | translate"></fa-icon>
-                </a>
-              </td>
-              <td>{{ item.userCount }}</td>
-              <td>{{ item.imageCount }}</td>
-            </tr>
+                    <fa-icon icon="list-alt" [ngbTooltip]="'Add to comparison list' | translate"></fa-icon>
+                  </a>
+                </td>
+                <td>{{ item.userCount }}</td>
+                <td>{{ item.imageCount }}</td>
+              </tr>
             </tbody>
           </table>
 
@@ -93,7 +111,8 @@
           </ngb-pagination>
         </ng-container>
       </ng-container>
-    </div> <!-- item div -->
+    </div>
+    <!-- item div -->
   </div>
 
   <astrobin-equipment-compare></astrobin-equipment-compare>

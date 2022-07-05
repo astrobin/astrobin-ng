@@ -6,6 +6,14 @@ import { arrayUniqueEquipmentItems } from "@features/equipment/store/equipment.s
 import { forkJoin, Observable, of, Subject } from "rxjs";
 import { EquipmentItemServiceFactory } from "@features/equipment/services/equipment-item.service-factory";
 import { map } from "rxjs/operators";
+import {
+  EquipmentItemDisplayProperty,
+  EquipmentItemService
+} from "@features/equipment/services/equipment-item.service";
+import { SensorDisplayProperty } from "@features/equipment/services/sensor.service";
+import { TelescopeDisplayProperty } from "@features/equipment/services/telescope.service";
+import { PopNotificationsService } from "@shared/services/pop-notifications.service";
+import { TranslateService } from "@ngx-translate/core";
 
 export enum CompareServiceError {
   NON_MATCHING_CLASS = "NON_MATCHING_CLASS",
@@ -16,6 +24,7 @@ export enum CompareServiceError {
 
 export interface ComparisonInterface {
   [itemId: number]: {
+    propertyName: string;
     name: string;
     value$?: Observable<string>;
     value?: string;
@@ -35,7 +44,10 @@ export class CompareService extends BaseService {
 
   constructor(
     public readonly loadingService: LoadingService,
-    public readonly equipmentItemServiceFactory: EquipmentItemServiceFactory
+    public readonly equipmentItemServiceFactory: EquipmentItemServiceFactory,
+    public readonly equipmentItemService: EquipmentItemService,
+    public readonly popNotificationsService: PopNotificationsService,
+    public readonly translateService: TranslateService
   ) {
     super(loadingService);
   }
@@ -58,6 +70,28 @@ export class CompareService extends BaseService {
 
     this._items = arrayUniqueEquipmentItems([...this._items, ...[item]]);
     this._changesSubject.next();
+  }
+
+  addWithErrorHandling(item: EquipmentItem): void {
+    try {
+      this.add(item);
+    } catch (e) {
+      if (e.message === CompareServiceError.NON_MATCHING_CLASS) {
+        this.popNotificationsService.error(
+          this.translateService.instant("You already have items of a different equipment class in the comparison list.")
+        );
+      } else if (e.message === CompareServiceError.TOO_MANY_ITEMS) {
+        this.popNotificationsService.error(
+          this.translateService.instant("You cannot compare more than {{n}} items.", {
+            n: CompareService.MAX_ITEMS
+          })
+        );
+      } else if (e.message === CompareServiceError.ALREADY_IN_LIST) {
+        this.popNotificationsService.warning(
+          this.translateService.instant("This item is already in your comparison list.")
+        );
+      }
+    }
   }
 
   remove(item: EquipmentItem): void {
@@ -99,21 +133,52 @@ export class CompareService extends BaseService {
 
     return new Observable<ComparisonInterface>(observer => {
       const service = this.equipmentItemServiceFactory.getService(this.get(0));
-      const printableProperties = service.getSupportedPrintableProperties();
+      const printableProperties = service
+        .getSupportedPrintableProperties()
+        .filter(
+          (prop: EquipmentItemDisplayProperty | SensorDisplayProperty | TelescopeDisplayProperty) =>
+            [
+              EquipmentItemDisplayProperty.NAME,
+              SensorDisplayProperty.PIXEL_WIDTH,
+              SensorDisplayProperty.PIXEL_HEIGHT,
+              SensorDisplayProperty.SENSOR_WIDTH,
+              SensorDisplayProperty.SENSOR_HEIGHT,
+              TelescopeDisplayProperty.MIN_FOCAL_LENGTH,
+              TelescopeDisplayProperty.MAX_FOCAL_LENGTH
+            ].indexOf(prop) === -1
+        );
 
-      let data: ComparisonInterface;
+      const data: ComparisonInterface = {};
 
       for (const item of this.getAll()) {
-        for (const printableProperty of printableProperties) {
-          data = {
-            ...(data || {}),
-            ...{
-              [item.id]: []
-            }
-          };
+        if (!data[item.id]) {
+          data[item.id] = [];
+        }
 
+        data[item.id].push({
+          propertyName: EquipmentItemDisplayProperty.IMAGE,
+          name: this.equipmentItemService.getPrintablePropertyName(
+            item.klass,
+            EquipmentItemDisplayProperty.IMAGE,
+            true
+          ),
+          value$: this.equipmentItemService.getPrintableProperty$(
+            item,
+            EquipmentItemDisplayProperty.IMAGE,
+            item.image || `/assets/images/${item.klass.toLowerCase()}-placeholder.png`
+          )
+        });
+
+        data[item.id].push({
+          propertyName: EquipmentItemDisplayProperty.NAME,
+          name: this.equipmentItemService.getPrintablePropertyName(item.klass, EquipmentItemDisplayProperty.NAME, true),
+          value$: this.equipmentItemService.getFullDisplayName$(item)
+        });
+
+        for (const printableProperty of printableProperties) {
           data[item.id].push({
-            name: service.getPrintablePropertyName(printableProperty, true),
+            propertyName: printableProperty,
+            name: this.equipmentItemService.getPrintablePropertyName(item.klass, printableProperty, true),
             value$: service.getPrintableProperty$(item, printableProperty)
           });
         }
@@ -130,8 +195,9 @@ export class CompareService extends BaseService {
       ).subscribe(computedResults => {
         for (const result of computedResults) {
           for (const resultData of result) {
-            data[resultData["itemId"]].find(property => property.name === resultData["name"]).value =
-              resultData["value"];
+            const entry = data[resultData["itemId"]].find(property => property.name === resultData["name"]);
+            entry.value = resultData["value"];
+            delete entry.value$;
           }
         }
 

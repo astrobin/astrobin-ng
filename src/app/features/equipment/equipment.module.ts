@@ -34,6 +34,7 @@ import { BrandExplorerPageComponent } from "./pages/explorer/brand-explorer-page
 import { UnapproveItemModalComponent } from "@features/equipment/components/unapprove-item-modal/unapprove-item-modal.component";
 import { ContributorsPageComponent } from "./pages/contributors-page/contributors-page.component";
 import { EquipmentCompareComponent } from "./components/equipment-compare/equipment-compare.component";
+import { EquipmentCompareModalComponent } from './components/equipment-compare-modal/equipment-compare-modal.component';
 
 @NgModule({
   declarations: [
@@ -66,7 +67,8 @@ import { EquipmentCompareComponent } from "./components/equipment-compare/equipm
     ExplorerFiltersComponent,
     BrandExplorerPageComponent,
     ContributorsPageComponent,
-    EquipmentCompareComponent
+    EquipmentCompareComponent,
+    EquipmentCompareModalComponent
   ],
   imports: [RouterModule.forChild(routes), SharedModule, StoreModule.forFeature(equipmentFeatureKey, reducer)]
 })

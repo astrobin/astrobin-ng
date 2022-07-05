@@ -6,8 +6,10 @@ import { CompareService } from "@features/equipment/services/compare.service";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { WindowRefService } from "@shared/services/window-ref.service";
-import { fromEvent, Subscription } from "rxjs";
-import { debounceTime, filter, take, takeUntil } from "rxjs/operators";
+import { fromEvent } from "rxjs";
+import { debounceTime, takeUntil } from "rxjs/operators";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { EquipmentCompareModalComponent } from "@features/equipment/components/equipment-compare-modal/equipment-compare-modal.component";
 
 @Component({
   selector: "astrobin-equipment-compare",
@@ -15,8 +17,6 @@ import { debounceTime, filter, take, takeUntil } from "rxjs/operators";
   styleUrls: ["./equipment-compare.component.scss"]
 })
 export class EquipmentCompareComponent extends BaseComponentDirective implements OnInit {
-  private _resizeEventSubscription: Subscription;
-
   @HostBinding("class.d-block")
   show = false;
 
@@ -24,13 +24,14 @@ export class EquipmentCompareComponent extends BaseComponentDirective implements
     public readonly store$: Store<State>,
     public readonly compareService: CompareService,
     public readonly equipmentItemService: EquipmentItemService,
-    public readonly windowRefService: WindowRefService
+    public readonly windowRefService: WindowRefService,
+    public readonly modalService: NgbModal
   ) {
     super(store$);
   }
 
   ngOnInit(): void {
-    this._resizeEventSubscription = fromEvent(window, "resize")
+    fromEvent(window, "resize")
       .pipe(debounceTime(100))
       .subscribe(() => {
         this.setVisibility();
@@ -53,5 +54,9 @@ export class EquipmentCompareComponent extends BaseComponentDirective implements
     }
 
     return `/assets/images/${item.klass.toLowerCase()}-placeholder.png`;
+  }
+
+  compare() {
+    this.modalService.open(EquipmentCompareModalComponent, { size: "xl", windowClass: "fullscreen" });
   }
 }

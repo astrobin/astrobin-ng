@@ -1,0 +1,13 @@
+:host {
+  .comparison-table {
+    td ::ng-deep img {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+    }
+
+    td:last-child {
+      text-align: left;
+    }
+  }
+}

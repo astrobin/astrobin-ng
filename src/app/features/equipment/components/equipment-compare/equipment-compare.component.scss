@@ -37,9 +37,10 @@
 
       .remove {
         position: absolute;
-        top: .75rem;
-        right: .75rem;
+        top: .25rem;
+        right: .25rem;
         cursor: pointer;
+        padding: .5rem;
 
         &:hover {
           color: var(--accentColor);

@@ -126,28 +126,6 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
     this.getItems();
   }
 
-  addToComparisonList(item: EquipmentItem) {
-    try {
-      this.compareService.add(item);
-    } catch (e) {
-      if (e.message === CompareServiceError.NON_MATCHING_CLASS) {
-        this.popNotificationsService.error(
-          this.translateService.instant("You already have items of a different equipment class in the comparison list.")
-        );
-      } else if (e.message === CompareServiceError.TOO_MANY_ITEMS) {
-        this.popNotificationsService.error(
-          this.translateService.instant("You cannot compare more than {{n}} items.", {
-            n: CompareService.MAX_ITEMS
-          })
-        );
-      } else if (e.message === CompareServiceError.ALREADY_IN_LIST) {
-        this.popNotificationsService.warning(
-          this.translateService.instant("This item is already in your comparison list.")
-        );
-      }
-    }
-  }
-
   private _setTitle() {
     this.titleService.setTitle(this.title);
   }

@@ -1,0 +1,29 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-title">{{ "Compare" | translate }}</h4>
+  <button (click)="modal.dismiss()" aria-describedby="modal-title" class="close" type="button">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body">
+  <table class="table table-striped comparison-table">
+    <tbody>
+      <tr *ngFor="let row of firstItem; let i = index">
+        <th>
+          <ng-container *ngIf="row.propertyName !== EquipmentItemDisplayProperty.IMAGE">
+            {{ row.name }}
+          </ng-container>
+        </th>
+        <ng-container *ngFor="let item of data | keyvalue">
+          <td [innerHTML]="item.value[i].value || 'n/a' | translate"></td>
+        </ng-container>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="modal-footer">
+  <button (click)="modal.dismiss()" class="btn btn-outline-secondary" type="button">
+    {{ "Close" | translate }}
+  </button>
+</div>

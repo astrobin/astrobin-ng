@@ -9,9 +9,7 @@ import { UtilsService } from "@shared/services/utils/utils.service";
 
 export enum FilterDisplayProperty {
   TYPE = "TYPE",
-  BANDWIDTH = "BANDWIDTH",
-  SIZE = "SIZE",
-  OTHER_SIZE = "OTHER_SIZE"
+  BANDWIDTH = "BANDWIDTH"
 }
 
 @Injectable({
@@ -61,12 +59,7 @@ export class FilterService extends BaseService implements EquipmentItemServiceIn
   }
 
   getSupportedPrintableProperties(): string[] {
-    return [
-      FilterDisplayProperty.TYPE,
-      FilterDisplayProperty.BANDWIDTH,
-      FilterDisplayProperty.SIZE,
-      FilterDisplayProperty.OTHER_SIZE
-    ];
+    return [FilterDisplayProperty.TYPE, FilterDisplayProperty.BANDWIDTH];
   }
 
   getPrintableProperty$(
@@ -93,10 +86,6 @@ export class FilterService extends BaseService implements EquipmentItemServiceIn
         return shortForm
           ? this.translateService.instant("Bandwidth")
           : this.translateService.instant("Bandwidth") + " (nm)";
-      case FilterDisplayProperty.SIZE:
-        return this.translateService.instant("Size");
-      case FilterDisplayProperty.OTHER_SIZE:
-        return this.translateService.instant("Size") + " (mm)";
       default:
         throw Error(`Invalid property: ${propertyName}`);
     }
