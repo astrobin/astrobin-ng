@@ -46,6 +46,7 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
   activeId: EquipmentItemBaseInterface["id"];
   filters: ExplorerFilterInterface[] = [];
   creationMode = false;
+  compareComponentVisible = false;
 
   constructor(
     public readonly store$: Store<State>,

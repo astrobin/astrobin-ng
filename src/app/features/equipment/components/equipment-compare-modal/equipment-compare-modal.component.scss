@@ -1,13 +1,43 @@
 :host {
   .comparison-table {
-    td ::ng-deep img {
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-    }
+    table-layout: fixed;
 
-    td:last-child {
-      text-align: left;
+    tr {
+      th {
+        background: var(--darkestGrey);
+        text-align: right;
+        width: 200px;
+      }
+
+      td {
+        ::ng-deep img {
+          width: 100px;
+          height: 100px;
+          border-radius: 50%;
+        }
+
+        &.na {
+          color: var(--lightGrey);
+        }
+
+        &:last-child {
+          text-align: left;
+        }
+      }
+
+      &.image {
+        th {
+          background: transparent;
+        }
+
+        td {
+          ::ng-deep a[target=_blank] {
+            &:after {
+              display: none;
+            }
+          }
+        }
+      }
     }
   }
 }

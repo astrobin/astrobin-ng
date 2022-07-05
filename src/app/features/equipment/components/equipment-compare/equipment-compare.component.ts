@@ -1,4 +1,4 @@
-import { Component, HostBinding, OnInit } from "@angular/core";
+import { Component, EventEmitter, HostBinding, OnInit, Output } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
@@ -19,6 +19,9 @@ import { EquipmentCompareModalComponent } from "@features/equipment/components/e
 export class EquipmentCompareComponent extends BaseComponentDirective implements OnInit {
   @HostBinding("class.d-block")
   show = false;
+
+  @Output()
+  visibilityChanged = new EventEmitter<boolean>();
 
   constructor(
     public readonly store$: Store<State>,
@@ -46,6 +49,7 @@ export class EquipmentCompareComponent extends BaseComponentDirective implements
 
   setVisibility() {
     this.show = this.windowRefService.nativeWindow.innerWidth >= 992 && this.compareService.amount() > 0;
+    this.visibilityChanged.emit(this.show);
   }
 
   image(item: EquipmentItem) {
@@ -57,6 +61,14 @@ export class EquipmentCompareComponent extends BaseComponentDirective implements
   }
 
   compare() {
-    this.modalService.open(EquipmentCompareModalComponent, { size: "xl", windowClass: "fullscreen" });
+    const windowWidth = this.windowRefService.nativeWindow.innerWidth;
+    const amount = this.compareService.amount();
+    let windowClass = "";
+
+    if ((windowWidth < 1200 && amount > 2) || amount > 3) {
+      windowClass = "fullscreen";
+    }
+
+    this.modalService.open(EquipmentCompareModalComponent, { size: "lg", windowClass });
   }
 }

@@ -2,18 +2,24 @@ import { Injectable } from "@angular/core";
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
-import { arrayUniqueEquipmentItems } from "@features/equipment/store/equipment.selectors";
+import { arrayUniqueEquipmentItems, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import { forkJoin, Observable, of, Subject } from "rxjs";
 import { EquipmentItemServiceFactory } from "@features/equipment/services/equipment-item.service-factory";
-import { map } from "rxjs/operators";
+import { filter, map, switchMap, take } from "rxjs/operators";
 import {
   EquipmentItemDisplayProperty,
   EquipmentItemService
 } from "@features/equipment/services/equipment-item.service";
-import { SensorDisplayProperty } from "@features/equipment/services/sensor.service";
+import { SensorDisplayProperty, SensorService } from "@features/equipment/services/sensor.service";
 import { TelescopeDisplayProperty } from "@features/equipment/services/telescope.service";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { TranslateService } from "@ngx-translate/core";
+import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import { Store } from "@ngrx/store";
+import { State } from "@app/store/state";
+import { CameraInterface } from "@features/equipment/types/camera.interface";
+import { SensorInterface } from "@features/equipment/types/sensor.interface";
+import { LoadEquipmentItem } from "@features/equipment/store/equipment.actions";
 
 export enum CompareServiceError {
   NON_MATCHING_CLASS = "NON_MATCHING_CLASS",
@@ -43,9 +49,11 @@ export class CompareService extends BaseService {
   public changes = this._changesSubject.asObservable();
 
   constructor(
+    public readonly store$: Store<State>,
     public readonly loadingService: LoadingService,
     public readonly equipmentItemServiceFactory: EquipmentItemServiceFactory,
     public readonly equipmentItemService: EquipmentItemService,
+    public readonly sensorService: SensorService,
     public readonly popNotificationsService: PopNotificationsService,
     public readonly translateService: TranslateService
   ) {
@@ -132,7 +140,9 @@ export class CompareService extends BaseService {
     }
 
     return new Observable<ComparisonInterface>(observer => {
-      const service = this.equipmentItemServiceFactory.getService(this.get(0));
+      const first: EquipmentItem = this.get(0);
+      const klass: EquipmentItemType = first.klass;
+      const service = this.equipmentItemServiceFactory.getService(first);
       const printableProperties = service
         .getSupportedPrintableProperties()
         .filter(
@@ -182,6 +192,53 @@ export class CompareService extends BaseService {
             value$: service.getPrintableProperty$(item, printableProperty)
           });
         }
+
+        if (klass === EquipmentItemType.CAMERA) {
+          const camera = item as CameraInterface;
+
+          for (const sensorPrintableProperty of this.sensorService
+            .getSupportedPrintableProperties()
+            .filter(
+              (prop: SensorDisplayProperty) =>
+                [
+                  SensorDisplayProperty.PIXEL_WIDTH,
+                  SensorDisplayProperty.PIXEL_HEIGHT,
+                  SensorDisplayProperty.SENSOR_WIDTH,
+                  SensorDisplayProperty.SENSOR_HEIGHT
+                ].indexOf(prop) === -1
+            )) {
+            data[item.id].push({
+              propertyName: sensorPrintableProperty,
+              name: this.sensorService.getPrintablePropertyName(sensorPrintableProperty, true),
+              value$: !!camera.sensor
+                ? this.store$
+                    .select(selectEquipmentItem, {
+                      type: EquipmentItemType.SENSOR,
+                      id: camera.sensor
+                    })
+                    .pipe(
+                      filter(sensor => !!sensor),
+                      take(1),
+                      switchMap((sensor: SensorInterface) =>
+                        this.sensorService.getPrintableProperty$(sensor, sensorPrintableProperty)
+                      )
+                    )
+                : of(null)
+            });
+          }
+        }
+
+        data[item.id].push({
+          propertyName: "USERS",
+          name: this.translateService.instant("Users"),
+          value$: of(item.userCount.toString())
+        });
+
+        data[item.id].push({
+          propertyName: "IMAGES",
+          name: this.translateService.instant("Images"),
+          value$: of(item.imageCount.toString())
+        });
       }
 
       forkJoin(

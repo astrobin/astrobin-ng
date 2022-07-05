@@ -1,4 +1,4 @@
-<div class="page" *ngIf="activeType">
+<div class="page" [class.compare-component-visible]="compareComponentVisible" *ngIf="activeType">
   <h1>{{ title }} <em class="beta">(beta)</em></h1>
   <small>
     {{
@@ -115,7 +115,7 @@
     <!-- item div -->
   </div>
 
-  <astrobin-equipment-compare></astrobin-equipment-compare>
+  <astrobin-equipment-compare (visibilityChanged)="compareComponentVisible = $event"></astrobin-equipment-compare>
 </div>
 
 <ng-template #loading>

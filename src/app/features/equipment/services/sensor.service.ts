@@ -39,7 +39,7 @@ export class SensorService extends BaseService implements EquipmentItemServiceIn
     return "";
   }
 
-  getSupportedPrintableProperties(): string[] {
+  getSupportedPrintableProperties(): SensorDisplayProperty[] {
     return [
       SensorDisplayProperty.PIXEL_SIZE,
       SensorDisplayProperty.PIXELS,

@@ -92,11 +92,19 @@ export class CameraService extends BaseService implements EquipmentItemServiceIn
       case CameraDisplayProperty.TYPE:
         return of(this.humanizeType(propertyValue || item.type));
       case CameraDisplayProperty.SENSOR:
+        const id = parseInt(propertyValue, 10) || item.sensor;
+
+        if (!id) {
+          return of(null);
+        }
+
         const payload = {
-          id: parseInt(propertyValue, 10) || item.sensor,
+          id,
           type: EquipmentItemType.SENSOR
         };
+
         this.store$.dispatch(new LoadEquipmentItem(payload));
+
         return this.store$.select(selectEquipmentItem, payload).pipe(
           filter(sensor => !!sensor),
           take(1),

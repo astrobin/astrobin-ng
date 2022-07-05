@@ -8,6 +8,7 @@
   display: none;
   width: 100%;
   box-shadow: 0 -.5rem 1rem rgba(0, 0, 0, .5);
+  z-index: 3;
   @include darkest-background-texture;
 
   .comparison-container {
