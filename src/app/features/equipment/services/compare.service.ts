@@ -19,7 +19,11 @@ import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { CameraInterface } from "@features/equipment/types/camera.interface";
 import { SensorInterface } from "@features/equipment/types/sensor.interface";
-import { LoadEquipmentItem } from "@features/equipment/store/equipment.actions";
+import { selectCurrentUserProfile } from "@features/account/store/auth.selectors";
+import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
+import { SimplifiedSubscriptionName, SubscriptionName } from "@shared/types/subscription-name.type";
+import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { SubscriptionRequiredModalComponent } from "@shared/components/misc/subscription-required-modal/subscription-required-modal.component";
 
 export enum CompareServiceError {
   NON_MATCHING_CLASS = "NON_MATCHING_CLASS",
@@ -55,7 +59,9 @@ export class CompareService extends BaseService {
     public readonly equipmentItemService: EquipmentItemService,
     public readonly sensorService: SensorService,
     public readonly popNotificationsService: PopNotificationsService,
-    public readonly translateService: TranslateService
+    public readonly translateService: TranslateService,
+    public readonly userSubscriptionService: UserSubscriptionService,
+    public readonly modalService: NgbModal
   ) {
     super(loadingService);
   }
@@ -81,25 +87,43 @@ export class CompareService extends BaseService {
   }
 
   addWithErrorHandling(item: EquipmentItem): void {
-    try {
-      this.add(item);
-    } catch (e) {
-      if (e.message === CompareServiceError.NON_MATCHING_CLASS) {
-        this.popNotificationsService.error(
-          this.translateService.instant("You already have items of a different equipment class in the comparison list.")
-        );
-      } else if (e.message === CompareServiceError.TOO_MANY_ITEMS) {
-        this.popNotificationsService.error(
-          this.translateService.instant("You cannot compare more than {{n}} items.", {
-            n: CompareService.MAX_ITEMS
-          })
-        );
-      } else if (e.message === CompareServiceError.ALREADY_IN_LIST) {
-        this.popNotificationsService.warning(
-          this.translateService.instant("This item is already in your comparison list.")
-        );
-      }
-    }
+    this.store$
+      .select(selectCurrentUserProfile)
+      .pipe(
+        switchMap(profile =>
+          this.userSubscriptionService.hasValidSubscription$(profile, [SubscriptionName.ASTROBIN_ULTIMATE_2020])
+        )
+      )
+      .subscribe(isUltimate => {
+        if (!isUltimate) {
+          const modal: NgbModalRef = this.modalService.open(SubscriptionRequiredModalComponent);
+          const component: SubscriptionRequiredModalComponent = modal.componentInstance;
+          component.minimumSubscription = SimplifiedSubscriptionName.ASTROBIN_ULTIMATE_2020;
+          return;
+        }
+
+        try {
+          this.add(item);
+        } catch (e) {
+          if (e.message === CompareServiceError.NON_MATCHING_CLASS) {
+            this.popNotificationsService.error(
+              this.translateService.instant(
+                "You already have items of a different equipment class in the comparison list."
+              )
+            );
+          } else if (e.message === CompareServiceError.TOO_MANY_ITEMS) {
+            this.popNotificationsService.error(
+              this.translateService.instant("You cannot compare more than {{n}} items.", {
+                n: CompareService.MAX_ITEMS
+              })
+            );
+          } else if (e.message === CompareServiceError.ALREADY_IN_LIST) {
+            this.popNotificationsService.warning(
+              this.translateService.instant("This item is already in your comparison list.")
+            );
+          }
+        }
+      });
   }
 
   remove(item: EquipmentItem): void {
