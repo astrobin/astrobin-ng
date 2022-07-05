@@ -255,13 +255,13 @@ export class CompareService extends BaseService {
         data[item.id].push({
           propertyName: "USERS",
           name: this.translateService.instant("Users"),
-          value$: of(item.userCount.toString())
+          value$: of(item.userCount ? item.userCount.toString() : "0")
         });
 
         data[item.id].push({
           propertyName: "IMAGES",
           name: this.translateService.instant("Images"),
-          value$: of(item.imageCount.toString())
+          value$: of(item.imageCount ? item.imageCount.toString() : "0")
         });
       }
 

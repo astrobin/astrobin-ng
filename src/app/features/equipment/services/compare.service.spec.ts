@@ -6,15 +6,16 @@ import { CameraGenerator } from "@features/equipment/generators/camera.generator
 import { MountGenerator } from "@features/equipment/generators/mount.generator";
 import { CameraDisplayProperty, CameraService } from "@features/equipment/services/camera.service";
 import { of } from "rxjs";
+import { MountDisplayProperty, MountService } from "@features/equipment/services/mount.service";
 
 describe("CompareService", () => {
   let service: CompareService;
-  let cameraService: CameraService;
+  let mountService: MountService;
 
   beforeEach(async () => {
     await MockBuilder(CompareService, AppModule);
     service = TestBed.inject(CompareService);
-    cameraService = TestBed.inject(CameraService);
+    mountService = TestBed.inject(MountService);
   });
 
   it("should be created", () => {
@@ -74,41 +75,37 @@ describe("CompareService", () => {
 
   describe("comparison", () => {
     it("should work", done => {
-      const camera0 = CameraGenerator.camera({ id: 1, name: "cam0" });
-      const camera1 = CameraGenerator.camera({ id: 2, name: "cam1" });
-      const camera2 = CameraGenerator.camera({ id: 3, name: "cam2" });
+      const mount0 = MountGenerator.mount({ id: 1, name: "mount0" });
+      const mount1 = MountGenerator.mount({ id: 2, name: "mount1" });
+      const mount2 = MountGenerator.mount({ id: 3, name: "mount2" });
 
-      service.add(camera0);
-      service.add(camera1);
-      service.add(camera2);
+      service.add(mount0);
+      service.add(mount1);
+      service.add(mount2);
 
-      jest.spyOn(service.equipmentItemServiceFactory, "getService").mockReturnValue(cameraService);
+      jest.spyOn(service.equipmentItemServiceFactory, "getService").mockReturnValue(mountService);
       jest.spyOn(service.equipmentItemService, "getFullDisplayName$").mockReturnValue(of("foo"));
       jest.spyOn(service.equipmentItemService, "getPrintableProperty$").mockReturnValue(of("foo.png"));
-      jest
-        .spyOn(cameraService, "getSupportedPrintableProperties")
-        .mockReturnValue(["MAX_COOLING" as CameraDisplayProperty]);
-      jest.spyOn(service.equipmentItemService, "getPrintablePropertyName").mockReturnValue("Max. cooling");
-      jest
-        .spyOn(cameraService, "getPrintableProperty$")
-        .mockImplementation((camera, property) => of(camera.maxCooling + ""));
+      jest.spyOn(mountService, "getSupportedPrintableProperties").mockReturnValue(["WEIGHT" as MountDisplayProperty]);
+      jest.spyOn(service.equipmentItemService, "getPrintablePropertyName").mockReturnValue("Weight");
+      jest.spyOn(mountService, "getPrintableProperty$").mockImplementation((mount, property) => of(mount.weight + ""));
 
       service.comparison$().subscribe(comparison => {
         expect(Object.keys(comparison).length).toEqual(3);
 
-        // 3 = NAME, IMAGE, MAX_COOLING
-        expect(comparison[camera0.id].length).toEqual(3);
-        expect(comparison[camera1.id].length).toEqual(3);
-        expect(comparison[camera2.id].length).toEqual(3);
+        // 5 = NAME, IMAGE, WEIGHT, USERS, IMAGES
+        expect(comparison[mount0.id].length).toEqual(5);
+        expect(comparison[mount1.id].length).toEqual(5);
+        expect(comparison[mount2.id].length).toEqual(5);
 
-        expect(comparison[camera0.id][0].name).toEqual("Max. cooling");
-        expect(comparison[camera0.id][0].value).toEqual(camera0.maxCooling + "");
+        expect(comparison[mount0.id][0].name).toEqual("Weight");
+        expect(comparison[mount0.id][0].value).toEqual(mount0.weight + "");
 
-        expect(comparison[camera1.id][0].name).toEqual("Max. cooling");
-        expect(comparison[camera1.id][0].value).toEqual(camera1.maxCooling + "");
+        expect(comparison[mount1.id][0].name).toEqual("Weight");
+        expect(comparison[mount1.id][0].value).toEqual(mount1.weight + "");
 
-        expect(comparison[camera2.id][0].name).toEqual("Max. cooling");
-        expect(comparison[camera2.id][0].value).toEqual(camera2.maxCooling + "");
+        expect(comparison[mount2.id][0].name).toEqual("Weight");
+        expect(comparison[mount2.id][0].value).toEqual(mount2.weight + "");
 
         done();
       });
