@@ -36,7 +36,8 @@ describe("CompareService", () => {
       const item = CameraGenerator.camera();
 
       service.add(item);
-      service.add(item);
+
+      expect(() => service.add(item)).toThrowError(CompareServiceError.ALREADY_IN_LIST);
 
       expect(service.getAll()).toContain(item);
       expect(service.getAll()[0]).toEqual(item);
@@ -82,25 +83,32 @@ describe("CompareService", () => {
       service.add(camera2);
 
       jest.spyOn(service.equipmentItemServiceFactory, "getService").mockReturnValue(cameraService);
-      jest.spyOn(cameraService, "getSupportedPrintableProperties").mockReturnValue(["NAME" as CameraDisplayProperty]);
-      jest.spyOn(cameraService, "getPrintablePropertyName").mockReturnValue("Name");
-      jest.spyOn(cameraService, "getPrintableProperty$").mockImplementation((camera, property) => of(camera.name));
+      jest.spyOn(service.equipmentItemService, "getFullDisplayName$").mockReturnValue(of("foo"));
+      jest.spyOn(service.equipmentItemService, "getPrintableProperty$").mockReturnValue(of("foo.png"));
+      jest
+        .spyOn(cameraService, "getSupportedPrintableProperties")
+        .mockReturnValue(["MAX_COOLING" as CameraDisplayProperty]);
+      jest.spyOn(service.equipmentItemService, "getPrintablePropertyName").mockReturnValue("Max. cooling");
+      jest
+        .spyOn(cameraService, "getPrintableProperty$")
+        .mockImplementation((camera, property) => of(camera.maxCooling + ""));
 
       service.comparison$().subscribe(comparison => {
         expect(Object.keys(comparison).length).toEqual(3);
 
-        expect(comparison[camera0.id].length).toEqual(cameraService.getSupportedPrintableProperties().length);
-        expect(comparison[camera1.id].length).toEqual(cameraService.getSupportedPrintableProperties().length);
-        expect(comparison[camera2.id].length).toEqual(cameraService.getSupportedPrintableProperties().length);
+        // 3 = NAME, IMAGE, MAX_COOLING
+        expect(comparison[camera0.id].length).toEqual(3);
+        expect(comparison[camera1.id].length).toEqual(3);
+        expect(comparison[camera2.id].length).toEqual(3);
 
-        expect(comparison[camera0.id][0].name).toEqual("Name");
-        expect(comparison[camera0.id][0].value).toEqual(camera0.name);
+        expect(comparison[camera0.id][0].name).toEqual("Max. cooling");
+        expect(comparison[camera0.id][0].value).toEqual(camera0.maxCooling + "");
 
-        expect(comparison[camera1.id][0].name).toEqual("Name");
-        expect(comparison[camera1.id][0].value).toEqual(camera1.name);
+        expect(comparison[camera1.id][0].name).toEqual("Max. cooling");
+        expect(comparison[camera1.id][0].value).toEqual(camera1.maxCooling + "");
 
-        expect(comparison[camera2.id][0].name).toEqual("Name");
-        expect(comparison[camera2.id][0].value).toEqual(camera2.name);
+        expect(comparison[camera2.id][0].name).toEqual("Max. cooling");
+        expect(comparison[camera2.id][0].value).toEqual(camera2.maxCooling + "");
 
         done();
       });
