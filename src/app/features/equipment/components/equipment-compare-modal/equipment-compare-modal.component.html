@@ -17,8 +17,12 @@
         <ng-container *ngFor="let row of rows">
           <td
             [class.na]="row[i].value === null || row[i].value === ''"
-            [innerHTML]="row[i].value || 'n/a' | translate"
-          ></td>
+          >
+            <span [innerHTML]="row[i].value || 'n/a' | translate"></span>
+            <span *ngIf="row[i].propertyName !== EquipmentItemDisplayProperty.IMAGE" class="edit-button">
+              <fa-icon icon="pen" (click)="editButtonClicked(row[i].klass, row[i].id)"></fa-icon>
+            </span>
+          </td>
         </ng-container>
       </tr>
     </tbody>

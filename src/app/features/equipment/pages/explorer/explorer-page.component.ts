@@ -29,6 +29,7 @@ import {
 } from "@features/equipment/pages/explorer/explorer-filters/explorer-filters.component";
 import { CompareService, CompareServiceError } from "@features/equipment/services/compare.service";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import { ExplorerComponent } from "@features/equipment/components/explorer/explorer.component";
 
 @Component({
   selector: "astrobin-equipment-explorer-page",
@@ -38,6 +39,9 @@ import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 export class ExplorerPageComponent extends ExplorerBaseComponent implements OnInit {
   readonly EquipmentItemType = EquipmentItemType;
   readonly ExplorerPageSortOrder = EquipmentItemsSortOrder;
+
+  @ViewChild("explorer")
+  explorer: ExplorerComponent;
 
   @ViewChild("explorerFilters")
   explorerFilters: ExplorerFiltersComponent;
@@ -183,6 +187,10 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
           this.popNotificationsService.warning(
             this.translateService.instant("This item has already been approved by you or another moderator.")
           );
+        }
+
+        if (this.activatedRoute.snapshot.queryParamMap.get("edit") === "true") {
+          this.explorer.startEditMode();
         }
 
         let slug = UtilsService.slugify(

@@ -8,6 +8,8 @@ import { EquipmentItemDisplayProperty } from "@features/equipment/services/equip
 import { fromEvent } from "rxjs";
 import { debounceTime } from "rxjs/operators";
 import { WindowRefService } from "@shared/services/window-ref.service";
+import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import { Router } from "@angular/router";
 
 @Component({
   selector: "astrobin-equipment-compare-modal",
@@ -39,7 +41,8 @@ export class EquipmentCompareModalComponent extends BaseComponentDirective imple
     public readonly store$: Store<State>,
     public readonly modal: NgbActiveModal,
     public readonly compareService: CompareService,
-    public readonly windowRefService: WindowRefService
+    public readonly windowRefService: WindowRefService,
+    public readonly router: Router
   ) {
     super(store$);
   }
@@ -55,6 +58,15 @@ export class EquipmentCompareModalComponent extends BaseComponentDirective imple
         if (this.windowRefService.nativeWindow.innerWidth < 992) {
           this.modal.dismiss();
         }
+      });
+  }
+
+  editButtonClicked(klass: EquipmentItem["klass"], id: EquipmentItem["id"]) {
+    this.router
+      .navigate(["equipment", "explorer", klass.toLowerCase(), id], { queryParams: { edit: "true" } })
+      .then(() => {
+        this.modal.close();
+        this.compareService.clear();
       });
   }
 }

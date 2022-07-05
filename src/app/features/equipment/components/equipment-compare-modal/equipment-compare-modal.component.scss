@@ -10,6 +10,9 @@
       }
 
       td {
+        padding: .75rem 1.5rem .75rem .75rem;
+        position: relative;
+
         ::ng-deep img {
           width: 100px;
           height: 100px;
@@ -22,6 +25,28 @@
 
         &:last-child {
           text-align: left;
+        }
+
+        .edit-button {
+          font-size: .8rem;
+          color: var(--lighterGrey);
+          margin-right: .5rem;
+          opacity: 0;
+          transition: opacity .2s ease-in-out;
+          cursor: pointer;
+          position: absolute;
+          right: 0;
+          top: calc(50% - .5rem);
+
+          &:hover {
+            color: var(--accentColor);
+          }
+        }
+
+        &:hover {
+          .edit-button {
+            opacity: 1;
+          }
         }
       }
 

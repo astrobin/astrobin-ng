@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
-import { arrayUniqueEquipmentItems, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
+import { selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import { forkJoin, Observable, of, Subject } from "rxjs";
 import { EquipmentItemServiceFactory } from "@features/equipment/services/equipment-item.service-factory";
 import { filter, map, switchMap, take } from "rxjs/operators";
@@ -36,6 +36,8 @@ export enum CompareServiceError {
 export interface ComparisonInterface {
   [itemId: number]: {
     propertyName: string;
+    id: EquipmentItem["id"];
+    klass: EquipmentItemType;
     name: string;
     value$?: Observable<string>;
     value?: string;
@@ -193,6 +195,8 @@ export class CompareService extends BaseService {
 
         data[item.id].push({
           propertyName: EquipmentItemDisplayProperty.IMAGE,
+          id: item.id,
+          klass: item.klass,
           name: this.equipmentItemService.getPrintablePropertyName(
             item.klass,
             EquipmentItemDisplayProperty.IMAGE,
@@ -207,6 +211,8 @@ export class CompareService extends BaseService {
 
         data[item.id].push({
           propertyName: EquipmentItemDisplayProperty.NAME,
+          id: item.id,
+          klass: item.klass,
           name: this.equipmentItemService.getPrintablePropertyName(item.klass, EquipmentItemDisplayProperty.NAME, true),
           value$: this.equipmentItemService.getFullDisplayName$(item)
         });
@@ -214,6 +220,8 @@ export class CompareService extends BaseService {
         for (const printableProperty of printableProperties) {
           data[item.id].push({
             propertyName: printableProperty,
+            id: item.id,
+            klass: item.klass,
             name: this.equipmentItemService.getPrintablePropertyName(item.klass, printableProperty, true),
             value$: service.getPrintableProperty$(item, printableProperty)
           });
@@ -235,6 +243,8 @@ export class CompareService extends BaseService {
             )) {
             data[item.id].push({
               propertyName: sensorPrintableProperty,
+              id: item.id,
+              klass: item.klass,
               name: this.sensorService.getPrintablePropertyName(sensorPrintableProperty, true),
               value$: !!camera.sensor
                 ? this.store$
@@ -256,12 +266,16 @@ export class CompareService extends BaseService {
 
         data[item.id].push({
           propertyName: "USERS",
+          id: item.id,
+          klass: item.klass,
           name: this.translateService.instant("Users"),
           value$: of(item.userCount ? item.userCount.toString() : "0")
         });
 
         data[item.id].push({
           propertyName: "IMAGES",
+          id: item.id,
+          klass: item.klass,
           name: this.translateService.instant("Images"),
           value$: of(item.imageCount ? item.imageCount.toString() : "0")
         });
