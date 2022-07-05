@@ -19,7 +19,21 @@ export class EquipmentCompareModalComponent extends BaseComponentDirective imple
 
   public data: ComparisonInterface;
 
-  public firstItem;
+  get rows() {
+    if (!this.data) {
+      return [];
+    }
+
+    const compareItems = this.compareService.getAll();
+    const retVal = [];
+
+    // We need to preserve the order in which they were added to the CompareService.
+    for (const item of compareItems) {
+      retVal.push(this.data[item.id]);
+    }
+
+    return retVal;
+  }
 
   constructor(
     public readonly store$: Store<State>,
@@ -33,7 +47,6 @@ export class EquipmentCompareModalComponent extends BaseComponentDirective imple
   ngOnInit(): void {
     this.compareService.comparison$().subscribe(data => {
       this.data = data;
-      this.firstItem = data[Object.keys(data)[0]];
     });
 
     fromEvent(window, "resize")

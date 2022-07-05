@@ -24,6 +24,7 @@ import { UserSubscriptionService } from "@shared/services/user-subscription/user
 import { SimplifiedSubscriptionName, SubscriptionName } from "@shared/types/subscription-name.type";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { SubscriptionRequiredModalComponent } from "@shared/components/misc/subscription-required-modal/subscription-required-modal.component";
+import { CameraDisplayProperty } from "@features/equipment/services/camera.service";
 
 export enum CompareServiceError {
   NON_MATCHING_CLASS = "NON_MATCHING_CLASS",
@@ -82,7 +83,7 @@ export class CompareService extends BaseService {
       throw new Error(CompareServiceError.ALREADY_IN_LIST);
     }
 
-    this._items = arrayUniqueEquipmentItems([...this._items, ...[item]]);
+    this._items.push(item);
     this._changesSubject.next();
   }
 
@@ -178,7 +179,8 @@ export class CompareService extends BaseService {
               SensorDisplayProperty.SENSOR_WIDTH,
               SensorDisplayProperty.SENSOR_HEIGHT,
               TelescopeDisplayProperty.MIN_FOCAL_LENGTH,
-              TelescopeDisplayProperty.MAX_FOCAL_LENGTH
+              TelescopeDisplayProperty.MAX_FOCAL_LENGTH,
+              CameraDisplayProperty.MODIFIED
             ].indexOf(prop) === -1
         );
 
