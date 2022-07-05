@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: AstroBin Angular App\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-03 14:04+0200\n"
-"PO-Revision-Date: 2022-07-01 09:05+0200\n"
+"PO-Revision-Date: 2022-07-05 21:07+0200\n"
 "Last-Translator: Salvatore Iovene\n"
 "Language-Team: Simplified Chinese\n"
 "Language: zh-Hans\n"
@@ -14,7 +14,7 @@ msgstr ""
 "X-Generator: Loco https://localise.biz\n"
 "X-Loco-Source-Locale: en\n"
 "X-Loco-Project-Id: 108356\n"
-"X-Loco-Api-Version: 1.0.26 20220630-1"
+"X-Loco-Api-Version: 1.0.26 20220703-1"
 
 #: loco:60685a683b0b1d485a736d12
 msgid "API Keys"
@@ -3787,4 +3787,64 @@ msgstr ""
 
 #: loco:62be9a56f89eae3aae73bb93
 msgid "resolution not matching"
+msgstr ""
+
+#: loco:62c48ad88568f55dad14acf2
+msgid "Add to comparison list"
+msgstr ""
+
+#: loco:62c48ad88568f55dad14acf3
+msgid "Compare"
+msgstr ""
+
+#: loco:62c48ad88568f55dad14acf4
+msgid "For CentralDS cameras, please select \"Dedicated deep-sky camera\""
+msgstr ""
+
+#: loco:62c48ad88568f55dad14acf5
+msgid "Good job! {{0}} items marked for migration."
+msgstr ""
+
+#: loco:62c48ad88568f55dad14acf6
+msgid "Migrate legacy items into this one"
+msgstr ""
+
+#: loco:62c48ad88568f55dad14acf7
+msgid "Processed item {{0}}/{{1}}."
+msgstr ""
+
+#: loco:62c48ad88568f55dad14acf8
+msgid "This item has a pending edit proposal. Please review it!"
+msgstr ""
+
+#: loco:62c48ad88568f55dad14acf9
+msgid "This item is already in your comparison list."
+msgstr ""
+
+#: loco:62c48ad88568f55dad14acfa
+msgid ""
+"This section can be used as a community page to share information about this "
+"item that doesn't fit the available data fields. Please use English and do "
+"not include any personal information or anecdotes."
+msgstr ""
+
+#: loco:62c48ad88568f55dad14acfb
+msgid "We couldn't find any similar items in the legacy database."
+msgstr ""
+
+#: loco:62c48ad88568f55dad14acfc
+msgid ""
+"We found these items in the legacy database that are similar to this one. "
+"Please check the ones that you want to migrate into it. <strong>Please be "
+"careful!</strong> Not all items that AstroBin thinks are similar, are "
+"necessarily the same product. Only check the ones that you are sure of."
+msgstr ""
+
+#: loco:62c48ad88568f55dad14acfd
+msgid ""
+"You already have items of a different equipment class in the comparison list."
+msgstr ""
+
+#: loco:62c48ad88568f55dad14acfe
+msgid "You cannot compare more than {{n}} items."
 msgstr ""
