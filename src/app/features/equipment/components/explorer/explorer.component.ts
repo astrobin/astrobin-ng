@@ -78,8 +78,8 @@ import { ImageInterface } from "@shared/interfaces/image.interface";
 import { distinctUntilChangedObj } from "@shared/services/utils/utils.service";
 import { UnapproveItemModalComponent } from "@features/equipment/components/unapprove-item-modal/unapprove-item-modal.component";
 import { ActiveToast } from "ngx-toastr";
-import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
-import { CompareService, CompareServiceError } from "@features/equipment/services/compare.service";
+import { CompareService } from "@features/equipment/services/compare.service";
+import { Location } from "@angular/common";
 
 @Component({
   selector: "astrobin-equipment-explorer",
@@ -121,6 +121,9 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
 
   @Input()
   showForum = true;
+
+  @Input()
+  goBackOnClose = false;
 
   @Output()
   valueChanged = new EventEmitter<EquipmentItemBaseInterface>();
@@ -189,7 +192,8 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
     public readonly popNotificationsService: PopNotificationsService,
     public readonly windowRefService: WindowRefService,
     public readonly modalService: NgbModal,
-    public readonly compareService: CompareService
+    public readonly compareService: CompareService,
+    public readonly location: Location
   ) {
     super(store$);
   }
@@ -485,6 +489,10 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
 
     this.selectedItem = null;
     this.endEditMode();
+
+    if (this.goBackOnClose) {
+      this.location.back();
+    }
   }
 
   setItem(item: EquipmentItemBaseInterface | null) {

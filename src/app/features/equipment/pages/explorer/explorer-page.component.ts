@@ -51,6 +51,7 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
   filters: ExplorerFilterInterface[] = [];
   creationMode = false;
   compareComponentVisible = false;
+  goBackOnClose = false;
 
   constructor(
     public readonly store$: Store<State>,
@@ -192,6 +193,8 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
         if (this.activatedRoute.snapshot.queryParamMap.get("edit") === "true") {
           this.explorer.startEditMode();
         }
+
+        this.goBackOnClose = this.activatedRoute.snapshot.queryParamMap.get("back-on-close") === "true";
 
         let slug = UtilsService.slugify(
           `${!!brand ? brand.name : this.translateService.instant("(DIY)")} ${item.name}`
