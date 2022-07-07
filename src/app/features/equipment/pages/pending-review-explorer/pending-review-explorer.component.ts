@@ -20,6 +20,7 @@ import {
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { CookieService } from "ngx-cookie-service";
 import { LoadingService } from "@shared/services/loading.service";
+import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 
 @Component({
   selector: "astrobin-equipment-pending-review-explorer",
@@ -41,9 +42,10 @@ export class PendingReviewExplorerComponent extends PendingExplorerBaseComponent
     public readonly router: Router,
     public readonly windowRefService: WindowRefService,
     public readonly cookieService: CookieService,
-    public readonly loadingService: LoadingService
+    public readonly loadingService: LoadingService,
+    public readonly equipmentItemService: EquipmentItemService
   ) {
-    super(store$, actions$, activatedRoute, router, windowRefService, cookieService);
+    super(store$, actions$, activatedRoute, router, windowRefService, cookieService, equipmentItemService);
     this.pendingType = PendingType.PENDING_REVIEW;
   }
 

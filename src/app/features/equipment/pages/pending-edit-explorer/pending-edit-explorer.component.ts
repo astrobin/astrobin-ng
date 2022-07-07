@@ -17,6 +17,7 @@ import {
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { CookieService } from "ngx-cookie-service";
+import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 
 @Component({
   selector: "astrobin-equipment-pending-edit-explorer",
@@ -35,9 +36,10 @@ export class PendingEditExplorerComponent extends PendingExplorerBaseComponent i
     public readonly equipmentApiService: EquipmentApiService,
     public readonly router: Router,
     public readonly windowRefService: WindowRefService,
-    public readonly cookieService: CookieService
+    public readonly cookieService: CookieService,
+    public readonly equipmentItemService: EquipmentItemService
   ) {
-    super(store$, actions$, activatedRoute, router, windowRefService, cookieService);
+    super(store$, actions$, activatedRoute, router, windowRefService, cookieService, equipmentItemService);
     this.pendingType = PendingType.PENDING_EDIT;
   }
 
