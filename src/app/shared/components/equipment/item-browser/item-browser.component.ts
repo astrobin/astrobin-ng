@@ -59,7 +59,6 @@ import { VariantSelectorModalComponent } from "@shared/components/equipment/item
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { BaseItemEditorComponent } from "@shared/components/equipment/editors/base-item-editor/base-item-editor.component";
-import { FormlyFieldEquipmentItemBrowserMode } from "@shared/components/misc/formly-field-equipment-item-browser/formly-field-equipment-item-browser.component";
 
 type Type = EquipmentItem["id"] | EquipmentItem;
 type TypeUnion = EquipmentItem["id"] | EquipmentItem | EquipmentItem["id"][] | EquipmentItem[];
@@ -110,9 +109,6 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
 
   @Input()
   excludeId: number;
-
-  @Input()
-  mode = FormlyFieldEquipmentItemBrowserMode.OBJECT;
 
   model: { value: TypeUnion } = { value: null };
   form: FormGroup = new FormGroup({});
@@ -434,13 +430,13 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
     const _doAddItem = (itemToAdd: EquipmentItemBaseInterface) => {
       const _doSetValue = (value: EquipmentItemBaseInterface) => {
         if (this.multiple) {
-          if (this.mode === FormlyFieldEquipmentItemBrowserMode.ID) {
+          if (UtilsService.isObject(value)) {
             this.setValue([...((this.model.value as EquipmentItem["id"][]) || []), value.id]);
           } else {
             this.setValue([...((this.model.value as EquipmentItem[]) || []), value]);
           }
         } else {
-          if (this.mode === FormlyFieldEquipmentItemBrowserMode.ID) {
+          if (UtilsService.isObject(value)) {
             this.setValue(value.id);
           } else {
             this.setValue(value);
@@ -608,7 +604,7 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
                     .subscribe((items: EquipmentItemBaseInterface[]) => {
                       if (this.multiple) {
                         this.valueChanged.emit(items);
-                        if (this.mode === FormlyFieldEquipmentItemBrowserMode.ID) {
+                        if (!!items && items.length > 0 && UtilsService.isObject(items[0])) {
                           this.setValue(items.map(item => item.id));
                         } else {
                           this.setValue(items);
@@ -616,7 +612,7 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
                       } else {
                         if (!!items && items.length > 0) {
                           this.valueChanged.emit(items[0]);
-                          if (this.mode === FormlyFieldEquipmentItemBrowserMode.ID) {
+                          if (UtilsService.isObject(items[0])) {
                             this.setValue(items[0].id);
                           } else {
                             this.setValue(items[0]);
@@ -650,13 +646,13 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
       .subscribe(item => {
         if (this.multiple) {
           if (!!this.model.value) {
-            if (this.mode === FormlyFieldEquipmentItemBrowserMode.ID) {
+            if (UtilsService.isObject(item)) {
               this.setValue([...((this.model.value as EquipmentItem["id"][]) || []), item.id]);
             } else {
               this.setValue([...((this.model.value as EquipmentItem[]) || []), item]);
             }
           } else {
-            if (this.mode === FormlyFieldEquipmentItemBrowserMode.ID) {
+            if (UtilsService.isObject(item)) {
               this.setValue([item.id]);
             } else {
               this.setValue([item]);
@@ -706,15 +702,14 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
         return of([]);
       }
 
-      if (this.mode === FormlyFieldEquipmentItemBrowserMode.ID) {
-        (value as Type[]).forEach((id: EquipmentItem["id"]) =>
-          this.store$.dispatch(new LoadEquipmentItem({ id, type: this.type }))
-        );
-      } else {
-        (value as Type[]).forEach((item: EquipmentItem) =>
-          this.store$.dispatch(new LoadEquipmentItem({ id: item.id, type: this.type }))
-        );
-      }
+      (value as Type[]).forEach((x: EquipmentItem | EquipmentItem["id"]) =>
+        this.store$.dispatch(
+          new LoadEquipmentItem({
+            id: UtilsService.isObject(x) ? (x as EquipmentItem).id : (x as EquipmentItem["id"]),
+            type: this.type
+          })
+        )
+      );
 
       return forkJoin(
         value.map(itemId =>
@@ -744,11 +739,14 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
       );
     }
 
-    if (this.mode === FormlyFieldEquipmentItemBrowserMode.ID) {
-      this.store$.dispatch(new LoadEquipmentItem({ id: this.model.value as EquipmentItem["id"], type: this.type }));
-    } else {
-      this.store$.dispatch(new LoadEquipmentItem({ id: (this.model.value as EquipmentItem).id, type: this.type }));
-    }
+    this.store$.dispatch(
+      new LoadEquipmentItem({
+        id: UtilsService.isObject(this.model.value)
+          ? (this.model.value as EquipmentItem).id
+          : (this.model.value as EquipmentItem["id"]),
+        type: this.type
+      })
+    );
 
     return this.store$.select(selectEquipmentItem, { id: this.model.value, type: this.type }).pipe(
       filter(item => !!item),
