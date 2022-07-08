@@ -30,6 +30,7 @@
       groupBy="group"
       [class.ng-select-striped]="!!to.striped"
       [class.fullscreen]="fullscreen"
+      [class.enable-fullscreen]="to.enableFullscreen"
       class="flex-grow-1"
       (click)="goFullscreen($event, null)"
       (search)="goFullscreen(null, $event)"
