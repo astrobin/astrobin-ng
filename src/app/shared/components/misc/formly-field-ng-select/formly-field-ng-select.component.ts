@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import { Component, HostListener, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { FieldType } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
 import { UtilsService } from "@shared/services/utils/utils.service";
@@ -63,6 +63,10 @@ export class FormlyFieldNgSelectComponent extends FieldType implements OnInit, O
     }
 
     return this.translateService.instant("No items found.");
+  }
+
+  @HostListener("document:keydown.escape", ["$event"]) onKeydownHandler(event: KeyboardEvent) {
+    this.exitFullscreen();
   }
 
   ngOnInit() {
