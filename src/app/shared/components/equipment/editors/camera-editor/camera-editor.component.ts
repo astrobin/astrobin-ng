@@ -284,7 +284,8 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
             multiple: false,
             creationModeStarted: this.startSensorCreation.bind(this),
             creationModeEnded: this.endSensorCreation.bind(this),
-            enableCreation: true
+            enableCreation: true,
+            enableFullscreen: true
           }
         },
         {

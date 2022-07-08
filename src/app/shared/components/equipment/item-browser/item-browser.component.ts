@@ -105,6 +105,9 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
   enableCreation = true;
 
   @Input()
+  enableFullscreen = false;
+
+  @Input()
   excludeId: number;
 
   model: { value: TypeUnion } = { value: null };
@@ -537,7 +540,8 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
                 ),
                 striped: true,
                 multiple: this.multiple,
-                closeOnSelect: true
+                closeOnSelect: true,
+                enableFullscreen: this.enableFullscreen
               },
               hooks: {
                 onInit: (field: FormlyFieldConfig) => {

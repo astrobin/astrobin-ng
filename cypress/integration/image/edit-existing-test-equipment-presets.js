@@ -105,6 +105,8 @@ context("Image edit (existing), test equipment presets", () => {
     cy.route("get", /.*\/api\/v2\/equipment\/software\/recently-used\//, []).as("getRecentlyUsedSoftware");
 
     cy.route("get", "**/api/v2/equipment/equipment-preset/", [testEquipmentPreset]);
+
+    cy.route("get", "**/api/v2/images/image-revision/*", { count: 0, results: [] }).as("getRevisions");
   });
 
   it("should navigate to the edit page", () => {
@@ -125,6 +127,7 @@ context("Image edit (existing), test equipment presets", () => {
     cy.get(".custom-radio label")
       .contains("Test preset")
       .click();
+    cy.wait(500);
     cy.get(".btn-primary")
       .contains("Load")
       .click();
@@ -252,6 +255,7 @@ context("Image edit (existing), test equipment presets", () => {
       ]
     }).as("findTelescopes");
 
+    cy.get("#image-imaging-telescopes-field + .toggle-enable-fullscreen").click();
     cy.get("#image-imaging-telescopes-field input[type='text']").type("Foo");
     cy.wait("@findTelescopes");
 

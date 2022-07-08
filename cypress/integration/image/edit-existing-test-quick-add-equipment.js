@@ -67,6 +67,8 @@ context("Image edit (existing). test quick add equipment", () => {
     cy.route("get", /.*\/api\/v2\/equipment\/software\/recently-used\//, []);
 
     cy.route("get", "**/api/v2/equipment/equipment-preset/", []);
+
+    cy.route("get", "**/api/v2/images/image-revision/*", { count: 0, results: [] }).as("getRevisions");
   });
 
   it("should navigate to the edit page", () => {
