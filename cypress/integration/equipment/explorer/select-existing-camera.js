@@ -31,7 +31,7 @@ context("Equipment", () => {
 
         cy.route("get", "**/api/v2/equipment/brand/1/", testBrand).as("getBrand");
 
-        // cy.get("#equipment-item-field  + .toggle-enable-fullscreen").click();
+        cy.get("#equipment-item-field  + .toggle-enable-fullscreen").click();
         cy.ngSelectType("#equipment-item-field", "Test");
         cy.wait("@findCameras");
 

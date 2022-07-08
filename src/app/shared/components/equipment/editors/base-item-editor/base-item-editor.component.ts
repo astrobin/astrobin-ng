@@ -391,7 +391,7 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
                 ])
               )
             : of([]),
-        enableFullscreen: false,
+        enableFullscreen: true,
         onSearch: (term: string): Observable<any[]> => {
           return this._onBrandSearch(term);
         },

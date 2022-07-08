@@ -60,8 +60,8 @@ import { PopNotificationsService } from "@shared/services/pop-notifications.serv
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { BaseItemEditorComponent } from "@shared/components/equipment/editors/base-item-editor/base-item-editor.component";
 
-type Type = EquipmentItemBaseInterface["id"];
-type TypeUnion = Type | Type[] | null;
+type Type = EquipmentItem["id"] | EquipmentItem;
+type TypeUnion = EquipmentItem["id"] | EquipmentItem | EquipmentItem["id"][] | EquipmentItem[];
 
 @Component({
   selector: "astrobin-equipment-item-browser",
@@ -227,10 +227,12 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
       fieldConfig.templateOptions.options = of(options);
 
       if (!!this.form.get("value")) {
-        this.form.get("value").setValue(id);
+        this.form.get("value").setValue(id, { onlySelf: true, emitEvent: false });
       }
 
       this.model = { value: id };
+
+      this.valueChanged.emit(item);
     };
 
     const _doSetValues = (values: { brand: BrandInterface; item: EquipmentItemBaseInterface }[] = []) => {
@@ -250,8 +252,10 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
       this.model = { value: ids };
 
       if (this.form.get("value")) {
-        this.form.get("value").setValue(ids);
+        this.form.get("value").setValue(ids, { onlySelf: true, emitEvent: false });
       }
+
+      this.valueChanged.emit(items);
     };
 
     if (this.multiple) {
@@ -260,7 +264,14 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
         return;
       }
 
-      (value as Type[]).forEach(id => this.store$.dispatch(new LoadEquipmentItem({ id, type: this.type })));
+      (value as Type[]).forEach((x: EquipmentItem | EquipmentItem["id"]) =>
+        this.store$.dispatch(
+          new LoadEquipmentItem({
+            id: UtilsService.isObject(x) ? (x as EquipmentItem).id : (x as EquipmentItem["id"]),
+            type: this.type
+          })
+        )
+      );
 
       forkJoin(
         (value as Type[]).map(id =>
@@ -295,7 +306,13 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
         return;
       }
 
-      this.store$.dispatch(new LoadEquipmentItem({ id: value as Type, type: this.type }));
+      this.store$.dispatch(
+        new LoadEquipmentItem({
+          id: UtilsService.isObject(value) ? (value as EquipmentItem).id : (value as EquipmentItem["id"]),
+          type: this.type
+        })
+      );
+
       this.store$
         .select(selectEquipmentItem, { id: value, type: this.type })
         .pipe(
@@ -417,9 +434,17 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
     const _doAddItem = (itemToAdd: EquipmentItemBaseInterface) => {
       const _doSetValue = (value: EquipmentItemBaseInterface) => {
         if (this.multiple) {
-          this.setValue([...((this.model.value as Type[]) || []), value.id]);
+          if (UtilsService.isObject(value)) {
+            this.setValue([...((this.model.value as EquipmentItem["id"][]) || []), value.id]);
+          } else {
+            this.setValue([...((this.model.value as EquipmentItem[]) || []), value]);
+          }
         } else {
-          this.setValue(value.id);
+          if (UtilsService.isObject(value)) {
+            this.setValue(value.id);
+          } else {
+            this.setValue(value);
+          }
         }
       };
 
@@ -581,7 +606,23 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
                       })
                     )
                     .subscribe((items: EquipmentItemBaseInterface[]) => {
-                      this.valueChanged.emit(this.multiple ? items : items[0]);
+                      if (this.multiple) {
+                        if (!!items && items.length > 0 && UtilsService.isObject(items[0])) {
+                          this.setValue(items.map(item => item.id));
+                        } else {
+                          this.setValue(items);
+                        }
+                      } else {
+                        if (!!items && items.length > 0) {
+                          if (UtilsService.isObject(items[0])) {
+                            this.setValue(items[0].id);
+                          } else {
+                            this.setValue(items[0]);
+                          }
+                        } else {
+                          this.setValue(null);
+                        }
+                      }
                     });
                 }
               }
@@ -591,6 +632,8 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
       )
       .subscribe(() => {});
 
+    // The adding and setting here is only happening from the image editor.
+    // TODO: account for ID vs OBJECT mode, as right now it's hardcoded as ID, pretty much.
     if (!!this.itemBrowserAddSubscription) {
       this.itemBrowserAddSubscription.unsubscribe();
       this.itemBrowserAddSubscription = null;
@@ -606,7 +649,7 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
       .subscribe(item => {
         if (this.multiple) {
           if (!!this.model.value) {
-            this.setValue([...((this.model.value as Type[]) || []), item.id]);
+            this.setValue([...((this.model.value as EquipmentItem["id"][]) || []), item.id]);
           } else {
             this.setValue([item.id]);
           }
@@ -654,7 +697,14 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
         return of([]);
       }
 
-      (value as Type[]).forEach(id => this.store$.dispatch(new LoadEquipmentItem({ id, type: this.type })));
+      (value as Type[]).forEach((x: EquipmentItem | EquipmentItem["id"]) =>
+        this.store$.dispatch(
+          new LoadEquipmentItem({
+            id: UtilsService.isObject(x) ? (x as EquipmentItem).id : (x as EquipmentItem["id"]),
+            type: this.type
+          })
+        )
+      );
 
       return forkJoin(
         value.map(itemId =>
@@ -684,7 +734,14 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
       );
     }
 
-    this.store$.dispatch(new LoadEquipmentItem({ id: this.model.value as Type, type: this.type }));
+    this.store$.dispatch(
+      new LoadEquipmentItem({
+        id: UtilsService.isObject(this.model.value)
+          ? (this.model.value as EquipmentItem).id
+          : (this.model.value as EquipmentItem["id"]),
+        type: this.type
+      })
+    );
 
     return this.store$.select(selectEquipmentItem, { id: this.model.value, type: this.type }).pipe(
       filter(item => !!item),
