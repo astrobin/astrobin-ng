@@ -254,7 +254,9 @@ export class RejectItemModalComponent extends BaseComponentDirective implements 
             return EMPTY;
           })
         )
-        .subscribe();
+        .subscribe(() => {
+          this.modal.close();
+        });
     }, 100);
   }
 
