@@ -69,6 +69,10 @@ const PROHIBITED_WORDS = [
   "lost",
   "cooled",
   "stock",
+  "diy",
+  "self-made",
+  "selfmade",
+  "do-it-yourself",
 
   // Italian
   "modificato",
@@ -94,6 +98,11 @@ const PROHIBITED_WORDS = [
   "perduta",
   "raffreddato",
   "raffreddata",
+  "fai-da-te",
+  "auto-costruito",
+  "auto-costruita",
+  "autocostruito",
+  "autocostruita",
 
   // German
   "geändert",
