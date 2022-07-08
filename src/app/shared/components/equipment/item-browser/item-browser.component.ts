@@ -227,7 +227,7 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
       fieldConfig.templateOptions.options = of(options);
 
       if (!!this.form.get("value")) {
-        this.form.get("value").setValue(id);
+        this.form.get("value").setValue(id, { onlySelf: true, emitEvent: false });
       }
 
       this.model = { value: id };
@@ -250,7 +250,7 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
       this.model = { value: ids };
 
       if (this.form.get("value")) {
-        this.form.get("value").setValue(ids);
+        this.form.get("value").setValue(ids, { onlySelf: true, emitEvent: false });
       }
     };
 
@@ -581,7 +581,18 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
                       })
                     )
                     .subscribe((items: EquipmentItemBaseInterface[]) => {
-                      this.valueChanged.emit(this.multiple ? items : items[0]);
+                      if (this.multiple) {
+                        this.valueChanged.emit(items);
+                        this.setValue(items.map(item => item.id));
+                      } else {
+                        if (!!items && items.length > 0) {
+                          this.valueChanged.emit(items[0]);
+                          this.setValue(items[0].id);
+                        } else {
+                          this.valueChanged.emit(null);
+                          this.setValue(null);
+                        }
+                      }
                     });
                 }
               }
