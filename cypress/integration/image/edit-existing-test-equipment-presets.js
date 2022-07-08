@@ -257,7 +257,7 @@ context("Image edit (existing), test equipment presets", () => {
       ]
     }).as("findTelescopes");
 
-    cy.get("#image-imaging-telescopes-field + .toggle-enable-fullscreen").click();
+    // cy.get("#image-imaging-telescopes-field + .toggle-enable-fullscreen").click();
     cy.get("#image-imaging-telescopes-field input[type='text']").type("Foo");
     cy.wait("@findTelescopes");
 

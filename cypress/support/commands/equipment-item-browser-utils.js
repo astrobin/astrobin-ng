@@ -591,7 +591,7 @@ Cypress.Commands.add("setupEquipmentDefaultRoutes", () => {
 });
 
 Cypress.Commands.add("equipmentItemBrowserCreate", (selector, text, apiToWait) => {
-  cy.get(`${selector} + .toggle-enable-fullscreen`).click();
+  // cy.get(`${selector} + .toggle-enable-fullscreen`).click();
 
   cy.ngSelectType(selector, text);
 
@@ -664,7 +664,7 @@ Cypress.Commands.add("equipmentItemBrowserSelectFirstBrand", (selector, brandNam
     results: [brandObject]
   }).as("findBrands");
 
-  cy.get(`${selector} + .toggle-enable-fullscreen`).click();
+  // cy.get(`${selector} + .toggle-enable-fullscreen`).click();
 
   cy.ngSelectType(selector, brandName);
 
@@ -683,7 +683,7 @@ Cypress.Commands.add("equipmentItemBrowserSelectFirstCamera", (selector, cameraN
     results: [cameraObject]
   }).as("findCameras");
 
-  cy.get(`${selector} + .toggle-enable-fullscreen`).click();
+  // cy.get(`${selector} + .toggle-enable-fullscreen`).click();
 
   cy.ngSelectType(selector, cameraName);
 
@@ -702,7 +702,7 @@ Cypress.Commands.add("equipmentItemBrowserSelectFirstSensor", (selector, sensorN
     results: [sensorObject]
   }).as("findSensors");
 
-  cy.get(`${selector} + .toggle-enable-fullscreen`).click();
+  // cy.get(`${selector} + .toggle-enable-fullscreen`).click();
 
   cy.ngSelectType(selector, sensorName);
 
@@ -721,7 +721,7 @@ Cypress.Commands.add("equipmentItemBrowserSelectFirstTelescope", (selector, tele
     results: [telescopeObject]
   }).as("findTelescopes");
 
-  cy.get(`${selector} + .toggle-enable-fullscreen`).click();
+  // cy.get(`${selector} + .toggle-enable-fullscreen`).click();
 
   cy.ngSelectType(selector, telescopeName);
 
@@ -740,7 +740,7 @@ Cypress.Commands.add("equipmentItemBrowserSelectFirstMount", (selector, mountNam
     results: [mountObject]
   }).as("findMounts");
 
-  cy.get(`${selector} + .toggle-enable-fullscreen`).click();
+  // cy.get(`${selector} + .toggle-enable-fullscreen`).click();
 
   cy.ngSelectType(selector, mountName);
 
@@ -759,7 +759,7 @@ Cypress.Commands.add("equipmentItemBrowserSelectFirstFilter", (selector, filterN
     results: [filterObject]
   }).as("findFilters");
 
-  cy.get(`${selector} + .toggle-enable-fullscreen`).click();
+  // cy.get(`${selector} + .toggle-enable-fullscreen`).click();
 
   cy.ngSelectType(selector, filterName);
 
@@ -778,7 +778,7 @@ Cypress.Commands.add("equipmentItemBrowserSelectFirstAccessory", (selector, acce
     results: [accessoryObject]
   }).as("findAccessories");
 
-  cy.get(`${selector} + .toggle-enable-fullscreen`).click();
+  // cy.get(`${selector} + .toggle-enable-fullscreen`).click();
 
   cy.ngSelectType(selector, accessoryName);
 
@@ -797,7 +797,7 @@ Cypress.Commands.add("equipmentItemBrowserSelectFirstSoftware", (selector, softw
     results: [softwareObject]
   }).as("findSoftwareItems");
 
-  cy.get(`${selector} + .toggle-enable-fullscreen`).click();
+  // cy.get(`${selector} + .toggle-enable-fullscreen`).click();
 
   cy.ngSelectType(selector, softwareName);
 
