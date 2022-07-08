@@ -164,6 +164,8 @@ context("Image edit (existing), test equipment presets", () => {
       .contains("Test Brand Test Software 1")
       .should("be.visible");
 
+    cy.get("#image-show-guiding-equipment-field + label").click();
+
     cy.get("#image-guiding-telescopes-field .ng-value")
       .contains("Test Brand Test Telescope 3")
       .should("be.visible");
@@ -255,7 +257,7 @@ context("Image edit (existing), test equipment presets", () => {
       ]
     }).as("findTelescopes");
 
-    cy.get("#image-imaging-telescopes-field + .toggle-enable-fullscreen").click();
+    // cy.get("#image-imaging-telescopes-field + .toggle-enable-fullscreen").click();
     cy.get("#image-imaging-telescopes-field input[type='text']").type("Foo");
     cy.wait("@findTelescopes");
 

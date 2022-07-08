@@ -41,7 +41,7 @@ export class ImageEditEquipmentFieldsService extends BaseService {
         creationModeStarted: () => (this.creationMode = true),
         creationModeEnded: () => (this.creationMode = false),
         enableCreation: true,
-        enableFullscreen: true
+        enableFullscreen: false
       }
     };
   }
@@ -63,7 +63,7 @@ export class ImageEditEquipmentFieldsService extends BaseService {
         creationModeStarted: () => (this.creationMode = true),
         creationModeEnded: () => (this.creationMode = false),
         enableCreation: true,
-        enableFullscreen: true
+        enableFullscreen: false
       }
     };
   }
@@ -84,7 +84,7 @@ export class ImageEditEquipmentFieldsService extends BaseService {
         creationModeStarted: () => (this.creationMode = true),
         creationModeEnded: () => (this.creationMode = false),
         enableCreation: true,
-        enableFullscreen: true
+        enableFullscreen: false
       }
     };
   }
@@ -105,7 +105,7 @@ export class ImageEditEquipmentFieldsService extends BaseService {
         creationModeStarted: () => (this.creationMode = true),
         creationModeEnded: () => (this.creationMode = false),
         enableCreation: true,
-        enableFullscreen: true
+        enableFullscreen: false
       }
     };
   }
@@ -126,7 +126,7 @@ export class ImageEditEquipmentFieldsService extends BaseService {
         creationModeStarted: () => (this.creationMode = true),
         creationModeEnded: () => (this.creationMode = false),
         enableCreation: true,
-        enableFullscreen: true
+        enableFullscreen: false
       }
     };
   }
@@ -147,7 +147,7 @@ export class ImageEditEquipmentFieldsService extends BaseService {
         creationModeStarted: () => (this.creationMode = true),
         creationModeEnded: () => (this.creationMode = false),
         enableCreation: true,
-        enableFullscreen: true
+        enableFullscreen: false
       }
     };
   }
@@ -187,7 +187,7 @@ export class ImageEditEquipmentFieldsService extends BaseService {
         creationModeStarted: () => (this.creationMode = true),
         creationModeEnded: () => (this.creationMode = false),
         enableCreation: true,
-        enableFullscreen: true
+        enableFullscreen: false
       },
       hooks: {
         onInit: (field: FormlyFieldConfig) => {
@@ -220,7 +220,7 @@ export class ImageEditEquipmentFieldsService extends BaseService {
         creationModeEnded: () => (this.creationMode = false),
         showPlaceholderImage: true,
         enableCreation: true,
-        enableFullscreen: true
+        enableFullscreen: false
       },
       hooks: {
         onInit: (field: FormlyFieldConfig) => {
