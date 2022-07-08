@@ -1,6 +1,8 @@
 @import "breakpoints";
 
 .ng-select {
+  max-width: calc(100% - 1rem);
+
   .ng-select-container {
     color: var(--lighterGrey);
   }
