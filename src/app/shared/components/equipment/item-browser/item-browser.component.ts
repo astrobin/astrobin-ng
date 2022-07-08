@@ -231,6 +231,8 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
       }
 
       this.model = { value: id };
+
+      this.valueChanged.emit(item);
     };
 
     const _doSetValues = (values: { brand: BrandInterface; item: EquipmentItemBaseInterface }[] = []) => {
@@ -252,6 +254,8 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
       if (this.form.get("value")) {
         this.form.get("value").setValue(ids, { onlySelf: true, emitEvent: false });
       }
+
+      this.valueChanged.emit(items);
     };
 
     if (this.multiple) {
@@ -603,7 +607,6 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
                     )
                     .subscribe((items: EquipmentItemBaseInterface[]) => {
                       if (this.multiple) {
-                        this.valueChanged.emit(items);
                         if (!!items && items.length > 0 && UtilsService.isObject(items[0])) {
                           this.setValue(items.map(item => item.id));
                         } else {
@@ -611,14 +614,12 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
                         }
                       } else {
                         if (!!items && items.length > 0) {
-                          this.valueChanged.emit(items[0]);
                           if (UtilsService.isObject(items[0])) {
                             this.setValue(items[0].id);
                           } else {
                             this.setValue(items[0]);
                           }
                         } else {
-                          this.valueChanged.emit(null);
                           this.setValue(null);
                         }
                       }
@@ -631,6 +632,8 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
       )
       .subscribe(() => {});
 
+    // The adding and setting here is only happening from the image editor.
+    // TODO: account for ID vs OBJECT mode, as right now it's hardcoded as ID, pretty much.
     if (!!this.itemBrowserAddSubscription) {
       this.itemBrowserAddSubscription.unsubscribe();
       this.itemBrowserAddSubscription = null;
@@ -646,17 +649,9 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
       .subscribe(item => {
         if (this.multiple) {
           if (!!this.model.value) {
-            if (UtilsService.isObject(item)) {
-              this.setValue([...((this.model.value as EquipmentItem["id"][]) || []), item.id]);
-            } else {
-              this.setValue([...((this.model.value as EquipmentItem[]) || []), item]);
-            }
+            this.setValue([...((this.model.value as EquipmentItem["id"][]) || []), item.id]);
           } else {
-            if (UtilsService.isObject(item)) {
-              this.setValue([item.id]);
-            } else {
-              this.setValue([item]);
-            }
+            this.setValue([item.id]);
           }
         } else {
           this.setValue(item.id);
