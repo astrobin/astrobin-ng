@@ -182,6 +182,7 @@
             <astrobin-equipment-item-browser
               #equipmentItemBrowser
               [type]="getActiveType()"
+              [enableFullscreen]="true"
               (valueChanged)="this.migrationTarget = $event"
               (subCreationModeStarted)="subCreationMode = true"
               (subCreationModeEnded)="subCreationMode = false"

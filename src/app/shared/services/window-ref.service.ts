@@ -46,6 +46,28 @@ export class WindowRefService extends BaseService {
     _doScroll();
   }
 
+  focusElement(selector: string) {
+    let attempts = 0;
+
+    const _doFocus = () => {
+      const timeout = 100;
+
+      if (attempts >= 5) {
+        return;
+      }
+
+      const $element = this.nativeWindow.document.querySelector(selector) as HTMLElement;
+      if (!!$element) {
+        setTimeout(() => $element.focus(), timeout);
+      } else {
+        attempts++;
+        setTimeout(() => _doFocus(), timeout);
+      }
+    };
+
+    _doFocus();
+  }
+
   getCurrentUrl(): URL {
     return new URL(this.nativeWindow.document.URL);
   }

@@ -5,6 +5,7 @@
       #itemBrowser
       [type]="activeType"
       [initialValue]="this.activeId"
+      [enableFullscreen]="true"
       (creationModeStarted)="onCreationModeStarted()"
       (creationModeEnded)="onCreationModeEnded()"
       (valueChanged)="onSelectedItemChanged($event)"

@@ -40,7 +40,8 @@ export class ImageEditEquipmentFieldsService extends BaseService {
         showPlaceholderImage: true,
         creationModeStarted: () => (this.creationMode = true),
         creationModeEnded: () => (this.creationMode = false),
-        enableCreation: true
+        enableCreation: true,
+        enableFullscreen: true
       }
     };
   }
@@ -61,7 +62,8 @@ export class ImageEditEquipmentFieldsService extends BaseService {
         showPlaceholderImage: true,
         creationModeStarted: () => (this.creationMode = true),
         creationModeEnded: () => (this.creationMode = false),
-        enableCreation: true
+        enableCreation: true,
+        enableFullscreen: true
       }
     };
   }
@@ -81,7 +83,8 @@ export class ImageEditEquipmentFieldsService extends BaseService {
         showPlaceholderImage: true,
         creationModeStarted: () => (this.creationMode = true),
         creationModeEnded: () => (this.creationMode = false),
-        enableCreation: true
+        enableCreation: true,
+        enableFullscreen: true
       }
     };
   }
@@ -101,7 +104,8 @@ export class ImageEditEquipmentFieldsService extends BaseService {
         showPlaceholderImage: true,
         creationModeStarted: () => (this.creationMode = true),
         creationModeEnded: () => (this.creationMode = false),
-        enableCreation: true
+        enableCreation: true,
+        enableFullscreen: true
       }
     };
   }
@@ -121,7 +125,8 @@ export class ImageEditEquipmentFieldsService extends BaseService {
         showPlaceholderImage: true,
         creationModeStarted: () => (this.creationMode = true),
         creationModeEnded: () => (this.creationMode = false),
-        enableCreation: true
+        enableCreation: true,
+        enableFullscreen: true
       }
     };
   }
@@ -141,7 +146,8 @@ export class ImageEditEquipmentFieldsService extends BaseService {
         showPlaceholderImage: true,
         creationModeStarted: () => (this.creationMode = true),
         creationModeEnded: () => (this.creationMode = false),
-        enableCreation: true
+        enableCreation: true,
+        enableFullscreen: true
       }
     };
   }
@@ -180,7 +186,8 @@ export class ImageEditEquipmentFieldsService extends BaseService {
         showPlaceholderImage: true,
         creationModeStarted: () => (this.creationMode = true),
         creationModeEnded: () => (this.creationMode = false),
-        enableCreation: true
+        enableCreation: true,
+        enableFullscreen: true
       },
       hooks: {
         onInit: (field: FormlyFieldConfig) => {
@@ -212,7 +219,8 @@ export class ImageEditEquipmentFieldsService extends BaseService {
         creationModeStarted: () => (this.creationMode = true),
         creationModeEnded: () => (this.creationMode = false),
         showPlaceholderImage: true,
-        enableCreation: true
+        enableCreation: true,
+        enableFullscreen: true
       },
       hooks: {
         onInit: (field: FormlyFieldConfig) => {

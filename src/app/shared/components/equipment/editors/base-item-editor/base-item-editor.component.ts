@@ -258,33 +258,33 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
         // Attempt to get the brand from the first n words.
         for (let n = words.length; n > 0; n--) {
           const attemptedBrandName = words.slice(0, n).join(" ");
+          this.actions$
+            .pipe(
+              ofType(EquipmentActionTypes.FIND_ALL_BRANDS_SUCCESS),
+              take(1),
+              map((action: FindAllBrandsSuccess) => action.payload.brands)
+            )
+            .subscribe(brands => {
+              if (brands.length > 0) {
+                const pattern = brands[0].name;
+                const re = new RegExp(pattern, "gi");
+                const string = this.name;
+                const replaced = string.replace(re, "");
+
+                this.model = {
+                  ...this.model,
+                  ...{
+                    brand: brands[0].id,
+                    name: replaced.trim()
+                  }
+                };
+              }
+
+              observer.next();
+              observer.complete();
+            });
           this.store$.dispatch(new FindAllBrands({ q: attemptedBrandName }));
         }
-
-        this.actions$
-          .pipe(
-            ofType(EquipmentActionTypes.FIND_ALL_BRANDS_SUCCESS),
-            map((action: FindAllBrandsSuccess) => action.payload.brands)
-          )
-          .subscribe(brands => {
-            if (brands.length > 0) {
-              const pattern = brands[0].name;
-              const re = new RegExp(pattern, "gi");
-              const string = this.name;
-              const replaced = string.replace(re, "");
-
-              this.model = {
-                ...this.model,
-                ...{
-                  brand: brands[0].id,
-                  name: replaced.trim()
-                }
-              };
-            }
-
-            observer.next();
-            observer.complete();
-          });
       } else {
         observer.next();
         observer.complete();
@@ -382,7 +382,8 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
                 ])
               )
             : of([]),
-        onSearch: (term: string): Observable<void> => {
+        enableFullscreen: true,
+        onSearch: (term: string): Observable<any[]> => {
           return this._onBrandSearch(term);
         },
         optionTemplate: this.brandOptionTemplate,
@@ -390,7 +391,8 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
           this.startBrandCreation();
           this.form.get("brand").setValue(null);
           this.windowRefService.scrollToElement("#create-new-brand");
-        }
+        },
+        striped: true
       },
       hooks: {
         onInit: (field: FormlyFieldConfig) => {
@@ -410,6 +412,14 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
                   return this.equipmentApiService.getBrand(value).pipe(
                     tap((brand: BrandInterface) => {
                       this.brandCreation.name = brand.name;
+
+                      field.templateOptions.options = [
+                        {
+                          value: brand.id,
+                          label: brand.name,
+                          brand
+                        }
+                      ];
 
                       this.formlyFieldService.clearMessages(this.fields.find(f => f.key === "name").templateOptions);
                       this._validateBrandInName();
@@ -660,20 +670,23 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
     }
   }
 
-  protected _onBrandSearch(term: string): Observable<void> {
-    return new Observable<void>(observer => {
-      this.brandCreation.name = term;
+  protected _onBrandSearch(q: string): Observable<any[]> {
+    return new Observable<any[]>(observer => {
+      this.brandCreation.name = q;
 
-      if (!this.brandCreation.name) {
+      if (!q) {
         observer.next();
         observer.complete();
         return;
       }
 
       const field = this.fields.find(f => f.key === "brand");
-      this.store$.dispatch(new FindAllBrands({ q: this.brandCreation.name }));
+
+      this.store$.dispatch(new FindAllBrands({ q }));
+
       field.templateOptions.options = this.actions$.pipe(
         ofType(EquipmentActionTypes.FIND_ALL_BRANDS_SUCCESS),
+        take(1),
         map((action: FindAllBrandsSuccess) => action.payload.brands),
         map(brands =>
           brands.map(brand => {
@@ -684,8 +697,8 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
             };
           })
         ),
-        tap(() => {
-          observer.next();
+        tap(options => {
+          observer.next(options);
           observer.complete();
         })
       );

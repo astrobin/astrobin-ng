@@ -1,4 +1,12 @@
+@import "breakpoints";
+
 .ng-select {
+  max-width: 100%;
+
+  &.enable-fullscreen {
+    max-width: calc(100% - 1rem);
+  }
+
   .ng-select-container {
     color: var(--lighterGrey);
   }
@@ -108,6 +116,20 @@
 
     .add-tag {
       margin: 1rem;
+    }
+  }
+
+  &.fullscreen {
+    .ng-dropdown-panel {
+      height: calc(100vh - 220px);
+
+      .ng-dropdown-panel-items {
+        max-height: calc(100% - 180px) !important;
+
+        @media screen and (min-width: $lg-min) {
+          max-height: calc(100% - 122px) !important;
+        }
+      }
     }
   }
 }

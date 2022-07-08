@@ -3,7 +3,14 @@
 .modal {
   &.fullscreen {
     .modal-dialog {
-      max-width: calc(100% - 1rem);
+      max-width: 100%;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+    }
+
+    .modal-content {
+      height: 100%;
     }
   }
 
@@ -12,8 +19,13 @@
     box-shadow: 0 0 100px rgba(0, 0, 0, .5);
     @include dark-background-texture;
   }
+
   .modal-header {
     @include darkest-background-texture;
+  }
+
+  .modal-footer {
+    @include darker-background-texture;
   }
 }
 

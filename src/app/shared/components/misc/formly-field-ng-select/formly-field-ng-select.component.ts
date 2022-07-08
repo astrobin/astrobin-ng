@@ -1,10 +1,12 @@
-import { Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import { Component, HostListener, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { FieldType } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { isObservable, Subject, Subscription } from "rxjs";
 import { debounceTime, distinctUntilChanged, map, take, tap } from "rxjs/operators";
 import { NgSelectComponent } from "@ng-select/ng-select";
+import { NgbActiveModal, NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { WindowRefService } from "@shared/services/window-ref.service";
 
 @Component({
   selector: "astrobin-formly-field-ng-select",
@@ -17,11 +19,21 @@ export class FormlyFieldNgSelectComponent extends FieldType implements OnInit, O
   loading = false;
   value = null;
   showCreateNewButton = false;
+  fullscreen = false;
+
+  private _ngSelectModalRef: NgbModalRef;
 
   @ViewChild("ngSelect")
   private _ngSelect: NgSelectComponent;
 
-  constructor(public readonly translateService: TranslateService) {
+  @ViewChild("ngSelectModal")
+  private _ngSelectModal: NgbActiveModal;
+
+  constructor(
+    public readonly translateService: TranslateService,
+    public readonly modalService: NgbModal,
+    public readonly windowRefService: WindowRefService
+  ) {
     super();
   }
 
@@ -53,6 +65,10 @@ export class FormlyFieldNgSelectComponent extends FieldType implements OnInit, O
     return this.translateService.instant("No items found.");
   }
 
+  @HostListener("document:keydown.escape", ["$event"]) onKeydownHandler(event: KeyboardEvent) {
+    this.exitFullscreen();
+  }
+
   ngOnInit() {
     if (this.hasAsyncItems) {
       this.inputSubscription = this.input$
@@ -67,6 +83,10 @@ export class FormlyFieldNgSelectComponent extends FieldType implements OnInit, O
           this.onSearch(value);
         });
     }
+
+    this.formControl.valueChanges.subscribe(value => {
+      this.exitFullscreen();
+    });
   }
 
   ngOnDestroy() {
@@ -75,9 +95,53 @@ export class FormlyFieldNgSelectComponent extends FieldType implements OnInit, O
     }
   }
 
+  toggleEnableFullscreen() {
+    this.to.enableFullscreen = !this.to.enableFullscreen;
+  }
+
+  goFullscreen($event: Event, q) {
+    if (!!$event) {
+      const target: any = $event.target;
+
+      if (target.nodeName.toLowerCase() !== "input" || target.disabled) {
+        return;
+      }
+    }
+
+    if (this.to.enableFullscreen && !this.fullscreen) {
+      this.fullscreen = true;
+      this._ngSelectModalRef = this.modalService.open(this._ngSelectModal, { windowClass: "fullscreen" });
+      this._ngSelectModalRef.shown.pipe(take(1)).subscribe(() => {
+        const elementSelector = ".modal .ng-select input";
+
+        if (!!q) {
+          const inputElement = this.windowRefService.nativeWindow.document.querySelector(
+            elementSelector
+          ) as HTMLInputElement;
+          const placeholderElement = this.windowRefService.nativeWindow.document.querySelector(
+            ".modal .ng-select .ng-placeholder"
+          );
+
+          inputElement.value = q.term;
+          placeholderElement.remove();
+        }
+
+        this.windowRefService.focusElement(elementSelector);
+      });
+    }
+  }
+
+  exitFullscreen() {
+    if (this.fullscreen) {
+      this.fullscreen = false;
+      this._ngSelectModalRef.close();
+    }
+  }
+
   onAddTag(term: string) {
     this.to.addTag(this._ngSelect.searchTerm);
     this._ngSelect.close();
+    this.exitFullscreen();
   }
 
   onSearch(value) {

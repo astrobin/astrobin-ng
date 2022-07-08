@@ -1,72 +1,122 @@
-<ng-container *ngIf="hasAsyncItems; else hasSyncItems">
-  <ng-container [ngTemplateOutlet]="select" [ngTemplateOutletContext]="{items: to.options | async}"></ng-container>
-</ng-container>
+<ng-template #selectContainer>
+  <ng-container *ngIf="hasAsyncItems; else hasSyncItems">
+    <ng-container [ngTemplateOutlet]="select" [ngTemplateOutletContext]="{ items: to.options | async }"></ng-container>
+  </ng-container>
 
-<ng-template #hasSyncItems>
-  <ng-container [ngTemplateOutlet]="select" [ngTemplateOutletContext]="{items: to.options}"></ng-container>
+  <ng-template #hasSyncItems>
+    <ng-container [ngTemplateOutlet]="select" [ngTemplateOutletContext]="{ items: to.options }"></ng-container>
+  </ng-template>
 </ng-template>
 
 <ng-template #select let-items="items">
-  <ng-select
-    #ngSelect
-    [attr.id]="field.id"
-    [bindValue]="to.bindValue || 'value'"
-    [bindLabel]="to.bindLabel || 'label'"
-    [clearable]="to.clearable || false"
-    [closeOnSelect]="to.closeOnSelect !== undefined ? to.closeOnSelect : !to.multiple"
-    [formControl]="formControl"
-    [hideSelected]="to.multiple"
-    [items]="items"
-    [loading]="loading"
-    [multiple]="to.multiple"
-    [notFoundText]="notFoundText"
-    [typeToSearchText]="placeholder"
-    [placeholder]="placeholder"
-    [typeahead]="input$"
-    groupBy="group"
-    [class.ng-select-striped]="!!to.striped"
-  >
-    <ng-template let-item="item" ng-optgroup-tmp>
-      {{ item.group }}
-    </ng-template>
+  <div class="d-flex align-items-center">
+    <ng-select
+      #ngSelect
+      [attr.id]="field.id"
+      [bindValue]="to.bindValue || 'value'"
+      [bindLabel]="to.bindLabel || 'label'"
+      [clearable]="to.clearable || false"
+      [closeOnSelect]="to.closeOnSelect !== undefined ? to.closeOnSelect : !to.multiple"
+      [formControl]="formControl"
+      [hideSelected]="to.multiple"
+      [items]="items"
+      [loading]="loading"
+      [multiple]="to.multiple"
+      [notFoundText]="notFoundText"
+      [typeToSearchText]="placeholder"
+      [placeholder]="placeholder"
+      [typeahead]="input$"
+      [dropdownPosition]="this.fullscreen ? 'bottom' : 'auto'"
+      groupBy="group"
+      [class.ng-select-striped]="!!to.striped"
+      [class.fullscreen]="fullscreen"
+      [class.enable-fullscreen]="to.enableFullscreen"
+      class="flex-grow-1"
+      (click)="goFullscreen($event, null)"
+      (search)="goFullscreen(null, $event)"
+    >
+      <ng-template let-item="item" ng-optgroup-tmp>
+        {{ item.group }}
+      </ng-template>
 
-    <ng-template let-clear="clear" let-item="item" ng-label-tmp>
-      <ng-container *ngIf="!to.labelTemplate">{{ item.label }}</ng-container>
-      <ng-container
-        *ngIf="to.labelTemplate"
-        [ngTemplateOutletContext]="{ item: item }"
-        [ngTemplateOutlet]="to.labelTemplate"
-      ></ng-container>
-      <span (click)="clear(item)" aria-hidden="true" class="ng-value-icon right">×</span>
-    </ng-template>
-
-    <ng-template let-item="item" ng-option-tmp>
-      <ng-container *ngIf="!to.optionTemplate">{{ item.label }}</ng-container>
-      <ng-container
-        *ngIf="to.optionTemplate"
-        [ngTemplateOutletContext]="{ item: item }"
-        [ngTemplateOutlet]="to.optionTemplate"
-      ></ng-container>
-    </ng-template>
-
-    <ng-template ng-footer-tmp>
-      <div *ngIf="!!value && !!to.addTag && showCreateNewButton" class="add-tag">
-        <div [innerHTML]="'Can\'t find <strong>{{0}}</strong>?' | translate:{'0': value}"></div>
-
-        <ng-container *ngIf="to.footerTemplateExtra">
-          <ng-template [ngTemplateOutlet]="to.footerTemplateExtra">
-          </ng-template>
-        </ng-container>
-
-        <button
-          *ngIf="!!value && !!to.addTag && showCreateNewButton"
-          (click)="onAddTag(value)"
-          [class.loading]="loading"
-          class="btn btn-outline-primary"
+      <ng-template let-clear="clear" let-item="item" ng-label-tmp>
+        <ng-container *ngIf="!to.labelTemplate">{{ item.label }}</ng-container>
+        <ng-container
+          *ngIf="to.labelTemplate"
+          [ngTemplateOutletContext]="{ item: item }"
+          [ngTemplateOutlet]="to.labelTemplate"
+        ></ng-container>
+        <span
+          (click)="clear(item)"
+          appEventPreventDefault
+          appEventStopPropagation
+          aria-hidden="true"
+          class="ng-value-icon right"
+          >×</span
         >
-          {{ "Create new" }}
-        </button>
-      </div>
-    </ng-template>
-  </ng-select>
+      </ng-template>
+
+      <ng-template let-item="item" ng-option-tmp>
+        <ng-container *ngIf="!to.optionTemplate">{{ item.label }}</ng-container>
+        <ng-container
+          *ngIf="to.optionTemplate"
+          [ngTemplateOutletContext]="{ item }"
+          [ngTemplateOutlet]="to.optionTemplate"
+        ></ng-container>
+      </ng-template>
+
+      <ng-template ng-footer-tmp>
+        <div *ngIf="!!value && !!to.addTag && showCreateNewButton" class="add-tag">
+          <div [innerHTML]="'Can\'t find <strong>{{0}}</strong>?' | translate:{'0': value}"></div>
+
+          <ng-container *ngIf="to.footerTemplateExtra">
+            <ng-template [ngTemplateOutlet]="to.footerTemplateExtra"> </ng-template>
+          </ng-container>
+
+          <button
+            *ngIf="!!value && !!to.addTag && showCreateNewButton"
+            (click)="onAddTag(value)"
+            [class.loading]="loading"
+            class="btn btn-outline-primary"
+          >
+            {{ "Create new" }}
+          </button>
+        </div>
+      </ng-template>
+    </ng-select>
+
+    <a
+      *ngIf="!fullscreen && to.enableFullscreen"
+      href="#"
+      appEventStopPropagation
+      appEventPreventDefault
+      class="toggle-enable-fullscreen"
+      (click)="toggleEnableFullscreen()"
+    >
+      <fa-icon [class.text-muted]="!to.enableFullscreen" icon="expand"></fa-icon>
+    </a>
+  </div>
 </ng-template>
+
+<ng-template #ngSelectModal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-title">
+      {{ "Find equipment item" | translate }}
+    </h4>
+    <button (click)="exitFullscreen()" aria-describedby="modal-title" class="close" type="button">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <div class="modal-body">
+    <ng-container [ngTemplateOutlet]="selectContainer"></ng-container>
+  </div>
+
+  <div class="modal-footer">
+    <button (click)="exitFullscreen()" class="btn btn-secondary" type="button">
+      {{ "Close" | translate }}
+    </button>
+  </div>
+</ng-template>
+
+<ng-container [ngTemplateOutlet]="selectContainer"></ng-container>

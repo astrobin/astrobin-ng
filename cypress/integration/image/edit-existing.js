@@ -43,6 +43,8 @@ context("Image edit (existing)", () => {
 
     cy.route("get", "**/api/v2/equipment/equipment-preset/", []);
 
+    cy.route("get", "**/api/v2/images/image-revision/*", { count: 0, results: [] }).as("getRevisions");
+
     cy.login();
 
     cy.route(
