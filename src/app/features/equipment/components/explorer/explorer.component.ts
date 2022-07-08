@@ -382,9 +382,18 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
 
     if (!!this.selectedItem) {
       this.loadingService.setLoading(true);
-      this.equipmentApiService.releaseEditProposalLock(this.selectedItem.klass, this.selectedItem.id).subscribe(() => {
-        _doEndEditMode();
-        this.loadingService.setLoading(false);
+      this.currentUser$.pipe(take(1)).subscribe(user => {
+        if (!!user) {
+          this.equipmentApiService
+            .releaseEditProposalLock(this.selectedItem.klass, this.selectedItem.id)
+            .subscribe(() => {
+              _doEndEditMode();
+              this.loadingService.setLoading(false);
+            });
+        } else {
+          _doEndEditMode();
+          this.loadingService.setLoading(false);
+        }
       });
     } else {
       _doEndEditMode();
