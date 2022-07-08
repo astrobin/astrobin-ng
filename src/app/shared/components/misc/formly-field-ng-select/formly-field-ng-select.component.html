@@ -31,8 +31,8 @@
       [class.ng-select-striped]="!!to.striped"
       [class.fullscreen]="fullscreen"
       class="flex-grow-1"
-      (click)="goFullscreen(null)"
-      (search)="goFullscreen($event)"
+      (click)="goFullscreen($event, null)"
+      (search)="goFullscreen(null, $event)"
     >
       <ng-template let-item="item" ng-optgroup-tmp>
         {{ item.group }}
