@@ -45,7 +45,7 @@ context("Equipment", () => {
         cy.ngSelectOptionNumberSelectorShouldContain(
           "#equipment-item-field",
           1,
-          "astrobin-equipment-item-disply-name .name",
+          "astrobin-equipment-item-display-name .name",
           "Test"
         );
 
