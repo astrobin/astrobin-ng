@@ -188,16 +188,14 @@
             {{ "Advanced search" | translate }}
           </a>
 
-          <ng-container *ngIf="currentUser$ | async as user">
-            <a
-              *ngIf="(user | isEquipmentModerator) || (user | isInGroup:'own_equipment_migrators')"
-              [routerLink]="['equipment', 'explorer']"
-              class="dropdown-item"
-            >
-              <fa-icon icon="camera"></fa-icon>
-              {{ "Equipment" | translate }} <em>(beta)</em>
-            </a>
-          </ng-container>
+          <a
+            [routerLink]="['equipment', 'explorer']"
+            class="dropdown-item"
+          >
+            <fa-icon icon="camera"></fa-icon>
+            {{ "Equipment" | translate }}
+          </a>
+
           <a [routerLink]="['explore', 'constellations']" class="dropdown-item">
             <fa-icon icon="star"></fa-icon>
             {{ "Constellations" | translate }}

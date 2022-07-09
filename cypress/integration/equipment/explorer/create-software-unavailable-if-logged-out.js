@@ -8,14 +8,13 @@ context("Equipment", () => {
   context("Explorer", () => {
     it("should not have the 'Add' tag", () => {
       cy.visitPage("/equipment/explorer/software");
-      cy.url().should("contain", "logging-in");
 
-      // TODO: replace above with the commented part when the equipment explorer is open to non moderators.
-      // cy.get("#equipment-item-field .ng-input input").type("Test");
-      // cy.wait("@findSoftwareItems");
-      //
-      // cy.get("#equipment-item-field .ng-option").should("have.length", 1);
-      // cy.get("#equipment-item-field .ng-option:nth-child(1)").should("contain", "No items found");
+      cy.get("#equipment-item-field + .toggle-enable-fullscreen").click();
+      cy.get("#equipment-item-field .ng-input input").type("Test");
+      cy.wait("@findSoftwareItems");
+
+      cy.get("#equipment-item-field .ng-option").should("have.length", 1);
+      cy.get("#equipment-item-field .ng-option:nth-child(1)").should("contain", "No items found");
     });
   });
 });

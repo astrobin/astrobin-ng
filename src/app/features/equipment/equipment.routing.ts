@@ -69,8 +69,6 @@ export const routes: Routes = [
   },
   {
     path: "explorer",
-    canActivate: [AuthGuardService, GroupGuardService],
-    data: { anyOfGroups: ["equipment_moderators", "own_equipment_migrators"] },
     children: [
       {
         path: "",
