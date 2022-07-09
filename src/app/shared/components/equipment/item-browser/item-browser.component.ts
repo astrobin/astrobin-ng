@@ -220,10 +220,10 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
   }
 
   setValue(value: TypeUnion) {
-    const _doSetValue = (brand: BrandInterface, item: EquipmentItemBaseInterface) => {
+    const _doSetValue = (item: EquipmentItemBaseInterface) => {
       const id = !!item ? item.id : null;
       const fieldConfig = this.fields[0];
-      const options = !!item ? [this._getNgOptionValue(brand, item)] : [];
+      const options = !!item ? [this._getNgOptionValue(item)] : [];
 
       fieldConfig.templateOptions.options = of(options);
 
@@ -236,16 +236,15 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
       this.valueChanged.emit(item);
     };
 
-    const _doSetValues = (values: { brand: BrandInterface; item: EquipmentItemBaseInterface }[] = []) => {
+    const _doSetValues = (items: EquipmentItemBaseInterface[] = []) => {
       const fieldConfig = this.fields[0];
       const options =
-        values.length > 0
+        items.length > 0
           ? UtilsService.arrayUniqueObjects(
-              values.map(result => this._getNgOptionValue(result.brand, result.item)),
+              items.map(item => this._getNgOptionValue(item)),
               "value"
             )
           : [];
-      const items = values.map(v => v.item);
       const ids = items.map(item => item.id);
 
       fieldConfig.templateOptions.options = of(options);
@@ -278,32 +277,17 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
         (value as Type[]).map(id =>
           this.store$.select(selectEquipmentItem, { id, type: this.type }).pipe(
             filter(item => !!item),
-            tap(item => {
-              if (!!item.brand) {
-                this.store$.dispatch(new LoadBrand({ id: item.brand }));
-              }
-            }),
-            switchMap(item => {
-              if (!!item.brand) {
-                return this.store$.select(selectBrand, item.brand).pipe(
-                  filter(brand => !!brand),
-                  map(brand => ({ item, brand }))
-                );
-              }
-
-              return of({ item, brand: null });
-            }),
-            first()
+            take(1)
           )
         )
       )
-        .pipe(first())
-        .subscribe((results: { item: EquipmentItemBaseInterface; brand: BrandInterface }[]) => {
-          _doSetValues(results);
+        .pipe(take(1))
+        .subscribe(items => {
+          _doSetValues(items);
         });
     } else {
       if (!value) {
-        _doSetValue(null, null);
+        _doSetValue(null);
         return;
       }
 
@@ -318,25 +302,10 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
         .select(selectEquipmentItem, { id: value, type: this.type })
         .pipe(
           filter(item => !!item),
-          take(1),
-          tap(item => {
-            if (!!item.brand) {
-              this.store$.dispatch(new LoadBrand({ id: item.brand }));
-            }
-          }),
-          switchMap(item => {
-            if (!!item.brand) {
-              return this.store$.select(selectBrand, item.brand).pipe(
-                filter(brand => !!brand),
-                map(brand => ({ item, brand }))
-              );
-            }
-
-            return of({ item, brand: null });
-          })
+          take(1)
         )
-        .subscribe(({ item, brand }) => {
-          _doSetValue(brand, item);
+        .subscribe(item => {
+          _doSetValue(item);
         });
     }
   }
@@ -712,24 +681,8 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
           this.store$.select(selectEquipmentItem, { id: itemId, type: this.type }).pipe(
             takeUntil(this.destroyed$),
             filter(item => !!item),
-            tap(item => {
-              if (!!item.brand) {
-                this.store$.dispatch(new LoadBrand({ id: item.brand }));
-              }
-            }),
-            switchMap(item => {
-              if (!!item.brand) {
-                return this.store$.select(selectBrand, item.brand).pipe(
-                  takeUntil(this.destroyed$),
-                  filter(brand => !!brand),
-                  map(brand => ({ brand, item }))
-                );
-              }
-
-              return of({ brand: null, item });
-            }),
-            map(({ brand, item }) => this._getNgOptionValue(brand, item)),
-            first()
+            take(1),
+            map(item => this._getNgOptionValue(item))
           )
         )
       );
@@ -746,23 +699,8 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
 
     return this.store$.select(selectEquipmentItem, { id: this.model.value, type: this.type }).pipe(
       filter(item => !!item),
-      tap(item => {
-        if (!!item.brand) {
-          this.store$.dispatch(new LoadBrand({ id: item.brand }));
-        }
-      }),
-      switchMap(item => {
-        if (!!item.brand) {
-          return this.store$.select(selectBrand, item.brand).pipe(
-            takeUntil(this.destroyed$),
-            filter(brand => !!brand),
-            map(brand => ({ brand, item }))
-          );
-        }
-
-        return of({ brand: null, item });
-      }),
-      map(({ brand, item }) => this._getNgOptionValue(brand, item))
+      take(1),
+      map(item => this._getNgOptionValue(item))
     );
   }
 
@@ -790,40 +728,12 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
         ofType(EquipmentActionTypes.FIND_ALL_EQUIPMENT_ITEMS_SUCCESS),
         take(1),
         map((action: FindAllEquipmentItemsSuccess) => action.payload.items),
-        tap(items => {
-          const uniqueBrands: BrandInterface["id"][] = [];
-          for (const item of items) {
-            if (!!item.brand && uniqueBrands.indexOf(item.brand) === -1) {
-              uniqueBrands.push(item.brand);
-            }
-          }
-          uniqueBrands.forEach(id => this.store$.dispatch(new LoadBrand({ id })));
-        }),
-        switchMap(items =>
-          this.store$.select(selectBrands).pipe(
-            filter(brands => {
-              for (const item of items) {
-                if (!!item.brand && !brands.find(brand => brand.id === item.brand)) {
-                  return false;
-                }
-              }
-
-              return true;
-            }),
-            take(1),
-            map(brands => ({
-              brands,
-              items
-            }))
-          )
-        ),
-        map((result: { brands: BrandInterface[]; items: EquipmentItemBaseInterface[] }) => {
-          if (result.items.length > 0) {
-            return result.items
+        map(items => {
+          if (items.length > 0) {
+            return items
               .filter(item => item.id !== this.excludeId)
               .map(item => {
-                const brand = result.brands.find(b => b.id === item.brand);
-                return this._getNgOptionValue(brand, item);
+                return this._getNgOptionValue(item);
               });
           }
 
@@ -837,11 +747,10 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
     });
   }
 
-  _getNgOptionValue(brand: BrandInterface | null, item: EquipmentItemBaseInterface): any {
+  _getNgOptionValue(item: EquipmentItemBaseInterface): any {
     return {
       value: item.id,
-      label: `${!!brand ? brand.name : this.translateService.instant("(DIY)")} ${item.name}`,
-      brand,
+      label: `${!!item.brandName ? item.brandName : this.translateService.instant("(DIY)")} ${item.name}`,
       item
     };
   }

@@ -89,17 +89,8 @@ export class EquipmentItemService extends BaseService {
   }
 
   getFullDisplayName$(item: EquipmentItem): Observable<string> {
-    if (!!item.brand) {
-      this.store$.dispatch(new LoadBrand({ id: item.brand }));
-      return this.store$.select(selectBrand, item.brand).pipe(
-        filter(brand => !!brand),
-        take(1),
-        switchMap(brand => this.getName$(item).pipe(map(name => ({ brand: brand.name, name })))),
-        map((data: { brand: string; name: string }) => `${data.brand} ${data.name}`)
-      );
-    }
-
-    return this.getName$(item).pipe(map(name => `${this.translateService.instant("(DIY)")} ${name}`));
+    const brandName = item.brandName || this.translateService.instant("(DIY)");
+    return this.getName$(item).pipe(map(name => `${brandName} ${name}`));
   }
 
   getName$(item: EquipmentItemBaseInterface | BrandInterface): Observable<string> {

@@ -114,18 +114,7 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
         sortOrder: this.sortOrder,
         filters: this.filters
       })
-      .pipe(
-        tap(response => {
-          const uniqueBrands: BrandInterface["id"][] = [];
-          for (const item of response.results) {
-            if (!!item.brand && uniqueBrands.indexOf(item.brand) === -1) {
-              uniqueBrands.push(item.brand);
-            }
-          }
-          uniqueBrands.forEach(id => this.store$.dispatch(new LoadBrand({ id })));
-        }),
-        tap(() => this._scrollToItemBrowser())
-      );
+      .pipe(tap(() => this._scrollToItemBrowser()));
   }
 
   filtersApplied(): void {

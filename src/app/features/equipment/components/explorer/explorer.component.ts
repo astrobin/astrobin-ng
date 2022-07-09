@@ -517,10 +517,6 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
       );
     }
 
-    if (!!item?.brand) {
-      this.store$.dispatch(new LoadBrand({ id: item.brand }));
-    }
-
     this.endEditMode();
     this.loadEditProposals();
   }
