@@ -562,7 +562,7 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
                 optionTemplate: this.equipmentItemOptionTemplate,
                 footerTemplateExtra: this.footerTemplateExtra,
                 addTag: !!currentUser && this.enableCreation ? _addTag : undefined,
-                addTagPlaceholder: this.translateService.instant("Type to search options or create a new one..."),
+                addTagPlaceholder: this.translateService.instant("Type to search options or to create a new one..."),
                 striped: true,
                 multiple: this.multiple,
                 closeOnSelect: true,
