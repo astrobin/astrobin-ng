@@ -150,7 +150,8 @@ export enum EquipmentActionTypes {
 
   // Item browser
   ITEM_BROWSER_ADD = "[Equipment] Item browser add",
-  ITEM_BROWSER_SET = "[Equipment] Item browser set"
+  ITEM_BROWSER_SET = "[Equipment] Item browser set",
+  ITEM_BROWSER_EXIT_FULLSCREEN = "[Equipment] Item browser exit fullscreen"
 }
 
 /**********************************************************************************************************************
@@ -747,6 +748,10 @@ export class ItemBrowserSet implements PayloadActionInterface {
   ) {}
 }
 
+export class ItemBrowserExitFullscreen implements Action {
+  readonly type = EquipmentActionTypes.ITEM_BROWSER_EXIT_FULLSCREEN;
+}
+
 export type EquipmentActions =
   // Brands
   | GetAllBrands
@@ -854,4 +859,5 @@ export type EquipmentActions =
 
   // Item browser
   | ItemBrowserAdd
-  | ItemBrowserSet;
+  | ItemBrowserSet
+  | ItemBrowserExitFullscreen;
