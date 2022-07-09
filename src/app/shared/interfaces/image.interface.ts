@@ -109,6 +109,7 @@ export enum RemoteSource {
   TAIYUGE = "TaiYuge Observatory",
   TELI = "Telescope Live",
   WTO = "West Texas Observatory (WTO)",
+  YINHE = "YinHe Observatory",
   YUNLING = "Yunling Observatory"
 }
 
