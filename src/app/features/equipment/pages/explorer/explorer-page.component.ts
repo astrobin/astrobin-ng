@@ -13,10 +13,8 @@ import {
 } from "@features/equipment/pages/explorer-base/explorer-base.component";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { filter, take, takeUntil, tap } from "rxjs/operators";
-import { BrandInterface } from "@features/equipment/types/brand.interface";
-import { LoadBrand } from "@features/equipment/store/equipment.actions";
 import { EquipmentApiService, EquipmentItemsSortOrder } from "@features/equipment/services/equipment-api.service";
-import { selectBrand, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
+import { selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { Location } from "@angular/common";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
@@ -27,8 +25,7 @@ import {
   ExplorerFilterInterface,
   ExplorerFiltersComponent
 } from "@features/equipment/pages/explorer/explorer-filters/explorer-filters.component";
-import { CompareService, CompareServiceError } from "@features/equipment/services/compare.service";
-import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import { CompareService } from "@features/equipment/services/compare.service";
 import { ExplorerComponent } from "@features/equipment/components/explorer/explorer.component";
 
 @Component({
@@ -148,7 +145,7 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
   }
 
   private _setLocation() {
-    const _doSetLocation = (brand: BrandInterface | null, item: EquipmentItemBaseInterface) => {
+    const _doSetLocation = (item: EquipmentItemBaseInterface) => {
       setTimeout(() => {
         if (!item) {
           const urlObject = this.windowRefService.getCurrentUrl();
@@ -185,9 +182,7 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
 
         this.goBackOnClose = this.activatedRoute.snapshot.queryParamMap.get("back-on-close") === "true";
 
-        let slug = UtilsService.slugify(
-          `${!!brand ? brand.name : this.translateService.instant("(DIY)")} ${item.name}`
-        );
+        let slug = UtilsService.slugify(`${!!item.brandName ? item.brandName : "diy"} ${item.name}`);
 
         if (this.equipmentItemService.getType(item) === EquipmentItemType.CAMERA) {
           const camera = item as CameraInterface;
@@ -221,26 +216,10 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
           take(1)
         )
         .subscribe(item => {
-          if (item) {
-            if (!!item.brand) {
-              this.store$
-                .select(selectBrand, item.brand)
-                .pipe(
-                  filter(brand => !!brand),
-                  take(1)
-                )
-                .subscribe(brand => {
-                  _doSetLocation(brand, item);
-                });
-            } else {
-              _doSetLocation(null, item);
-            }
-          } else {
-            _doSetLocation(null, null);
-          }
+          _doSetLocation(item);
         });
     } else {
-      _doSetLocation(null, null);
+      _doSetLocation(null);
     }
   }
 }
