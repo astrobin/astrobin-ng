@@ -31,7 +31,8 @@
       [class.ng-select-striped]="!!to.striped"
       [class.fullscreen]="fullscreen"
       [class.enable-fullscreen]="to.enableFullscreen"
-      class="flex-grow-1"
+      [class.too-many-options]="hasAsyncItems && (to.options | async)?.length > TOO_MANY_OPTIONS"
+      class="{{ to.classNames }} flex-grow-1"
       (click)="goFullscreen($event, null)"
       (search)="goFullscreen(null, $event)"
     >
@@ -65,12 +66,25 @@
         ></ng-container>
       </ng-template>
 
+      <ng-template ng-header-tmp>
+        <ng-container *ngIf="hasAsyncItems">
+          <ng-container *ngIf="to.options | async as options">
+            <div class="too-many-options-label" *ngIf="options?.length > TOO_MANY_OPTIONS">
+              <fa-icon icon="exclamation-triangle"></fa-icon>
+              {{ "Type more to refine your search." | translate }}
+            </div>
+          </ng-container>
+        </ng-container>
+      </ng-template>
+
       <ng-template ng-footer-tmp>
         <div *ngIf="!!value && !!to.addTag && showCreateNewButton" class="add-tag">
-          <div [innerHTML]="'Can\'t find <strong>{{0}}</strong>?' | translate:{'0': value}"></div>
+          <div [innerHTML]="'Can\'t find <strong>{{0}}</strong>?' | translate:{'0': value}" class="cant-find"></div>
 
           <ng-container *ngIf="to.footerTemplateExtra">
-            <ng-template [ngTemplateOutlet]="to.footerTemplateExtra"> </ng-template>
+            <div class="footer-template-extra">
+              <ng-template [ngTemplateOutlet]="to.footerTemplateExtra"></ng-template>
+            </div>
           </ng-container>
 
           <button

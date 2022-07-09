@@ -14,6 +14,8 @@ import { WindowRefService } from "@shared/services/window-ref.service";
   styleUrls: ["./formly-field-ng-select.component.scss"]
 })
 export class FormlyFieldNgSelectComponent extends FieldType implements OnInit, OnDestroy {
+  readonly TOO_MANY_OPTIONS = 30;
+
   input$ = new Subject<string>();
   inputSubscription: Subscription;
   loading = false;

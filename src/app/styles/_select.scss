@@ -3,7 +3,7 @@
 .ng-select {
   max-width: 100%;
 
-  &.enable-fullscreen {
+  &.enable-fullscreen:not(.fullscreen) {
     max-width: calc(100% - 1rem);
   }
 
@@ -96,6 +96,12 @@
       white-space: normal !important;
       line-height: 1.15rem !important;
 
+      @media screen and (max-width: $sm-max) {
+        padding: .25rem .5rem !important;
+        font-size: .9rem !important;
+        line-height: 1rem !important;
+      }
+
       &.ng-option-child {
         padding-left: 1.5rem !important;
       }
@@ -121,13 +127,107 @@
 
   &.fullscreen {
     .ng-dropdown-panel {
-      height: calc(100vh - 220px);
+      height: calc(100vh - 210px);
 
       .ng-dropdown-panel-items {
-        max-height: calc(100% - 180px) !important;
+        max-height: calc(100% - 86px) !important;
 
         @media screen and (min-width: $lg-min) {
-          max-height: calc(100% - 122px) !important;
+          max-height: calc(100% - 130px) !important;
+        }
+      }
+    }
+
+    &.too-many-options {
+      .ng-dropdown-panel {
+        .ng-dropdown-panel-items {
+          max-height: calc(100% - 120px) !important;
+
+          @media screen and (min-width: $lg-min) {
+            max-height: calc(100% - 170px) !important;
+          }
+        }
+      }
+    }
+  }
+
+  &.equipment-select {
+    .ng-dropdown-panel {
+      box-shadow: 1rem 1rem 2rem rgba(0, 0, 0, 0.9) !important;
+
+      .ng-dropdown-panel-items {
+        .ng-option {
+          padding: .75rem 1rem !important;
+
+          ::ng-deep astrobin-equipment-item-display-name {
+            display: inline-block;
+
+            h5 {
+              margin: 0;
+              font-size: 1rem;
+            }
+          }
+
+          .item-variants-info,
+          .item-variants-list {
+            margin: 0;
+            line-height: 1.25rem;
+            font-style: italic;
+            display: inline-block;
+          }
+
+          .item-variants-info {
+            margin-right: .5rem;
+            color: var(--lightGrey);
+          }
+
+          .item-variants-list {
+            font-size: .9rem;
+            color: var(--lighterGrey);
+
+            > span {
+              ::ng-deep {
+                .brand {
+                  color: var(--white);
+                }
+              }
+
+              &:not(:last-child) {
+                margin-right: .5rem;
+
+
+                &::after {
+                  content: '\b7'; /* middot */
+                  margin-left: .25rem;
+                }
+              }
+            }
+          }
+
+          &:not(:last-child) {
+            border-bottom: 1px dashed var(--gray);
+          }
+
+          .property {
+            background: none !important;
+
+            .property-name,
+            .property-value {
+              font-size: .85rem;
+              opacity: .8;
+              border: 0 !important;
+            }
+
+            .property-name {
+              padding-left: 1rem;
+              width: 1%;
+              white-space: nowrap;
+            }
+
+            .property-value {
+              text-align: left !important;
+            }
+          }
         }
       }
     }
