@@ -6,6 +6,8 @@ import { EquipmentItemType } from "@features/equipment/types/equipment-item-base
 
 export class CameraGenerator {
   static camera(source: Partial<CameraInterface> = {}): CameraInterface {
+    const generatedBrand = BrandGenerator.brand();
+
     return {
       id: source.id || 1,
       created: source.created || "1970-01-01",
@@ -13,7 +15,8 @@ export class CameraGenerator {
       lastAddedOrRemovedFromImage: source.updated || "1970-01-01",
       createdBy: source.createdBy || 1,
       klass: EquipmentItemType.CAMERA,
-      brand: source.brand || BrandGenerator.brand().id,
+      brand: source.brand || generatedBrand.id,
+      brandName: source.brandName || generatedBrand.name,
       name: source.name || "Test camera",
       website: source.website || "https://www.test-camera.com",
       image: source.image || "https://cdn.astrobin.com/images/foo.jpg",

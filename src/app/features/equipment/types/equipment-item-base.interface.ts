@@ -45,6 +45,7 @@ export interface EquipmentItemBaseInterface {
   reviewerComment?: string;
   diy?: boolean;
   brand: BrandInterface["id"];
+  brandName: BrandInterface["name"];
   name: string;
   variantOf: number | null;
   variants: EquipmentItemBaseInterface[];

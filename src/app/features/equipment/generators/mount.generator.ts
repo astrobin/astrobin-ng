@@ -4,6 +4,8 @@ import { EquipmentItemType } from "@features/equipment/types/equipment-item-base
 
 export class MountGenerator {
   static mount(source: Partial<MountInterface> = {}): MountInterface {
+    const generatedBrand = BrandGenerator.brand();
+
     return {
       id: source.id || 1,
       created: source.created || "1970-01-01",
@@ -11,7 +13,8 @@ export class MountGenerator {
       lastAddedOrRemovedFromImage: source.updated || "1970-01-01",
       klass: EquipmentItemType.MOUNT,
       createdBy: source.createdBy || 1,
-      brand: source.brand || BrandGenerator.brand().id,
+      brand: source.brand || generatedBrand.id,
+      brandName: source.brandName || generatedBrand.name,
       name: source.name || "Test mount",
       website: source.website || "https://www.test-mount.com",
       image: source.image || "https://cdn.astrobin.com/images/foo.jpg",

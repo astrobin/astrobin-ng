@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit } from "@angular/core";
+import { Component, Input, OnChanges } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
@@ -6,15 +6,15 @@ import {
   EquipmentItemBaseInterface,
   EquipmentItemReviewerDecision
 } from "@features/equipment/types/equipment-item-base.interface";
-import { LoadBrand } from "@features/equipment/store/equipment.actions";
 import { TranslateService } from "@ngx-translate/core";
-import { selectBrand } from "@features/equipment/store/equipment.selectors";
-import { filter, take, takeUntil } from "rxjs/operators";
+import { filter, take } from "rxjs/operators";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { ItemSummaryModalComponent } from "@shared/components/equipment/summaries/item-summary-modal/item-summary-modal.component";
 import { ItemUnapprovedInfoModalComponent } from "@shared/components/equipment/item-unapproved-info-modal/item-unapproved-info-modal.component";
 import { UtilsService } from "@shared/services/utils/utils.service";
+import { LoadBrand } from "@features/equipment/store/equipment.actions";
+import { selectBrand } from "@features/equipment/store/equipment.selectors";
 
 @Component({
   selector: "astrobin-equipment-item-display-name",
@@ -46,21 +46,27 @@ export class EquipmentItemDisplayNameComponent extends BaseComponentDirective im
   }
 
   ngOnChanges(): void {
+    this.brandLink = !!this.item.brand
+      ? `/equipment/explorer/brand/${this.item.brand}/${UtilsService.slugify(this.item.brandName)}`
+      : undefined;
+
     if (!!this.item.brand) {
-      this.store$.dispatch(new LoadBrand({ id: this.item.brand }));
-      this.store$
-        .select(selectBrand, this.item.brand)
-        .pipe(
-          takeUntil(this.destroyed$),
-          filter(brand => !!brand)
-        )
-        .subscribe(brand => {
-          this.brandName = brand.name;
-          this.brandLink = `/equipment/explorer/brand/${brand.id}/${UtilsService.slugify(brand.name)}`;
-        });
+      if (!!this.item.brandName) {
+        this.brandName = this.item.brandName;
+      } else {
+        this.store$
+          .select(selectBrand, this.item.brand)
+          .pipe(
+            filter(brand => !!brand && brand.id === this.item.brand),
+            take(1)
+          )
+          .subscribe(brand => {
+            this.brandName = brand.name;
+          });
+        this.store$.dispatch(new LoadBrand({ id: this.item.brand }));
+      }
     } else {
-      this.brandName = this.translateService.instant("(DIY)");
-      this.brandLink = undefined;
+      this.brandName = this.translateService.instant("(DYI)");
     }
 
     this.equipmentItemService

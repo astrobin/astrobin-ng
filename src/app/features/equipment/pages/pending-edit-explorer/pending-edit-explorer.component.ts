@@ -63,17 +63,8 @@ export class PendingEditExplorerComponent extends PendingExplorerBaseComponent i
   }
 
   getItems() {
-    this.items$ = this.equipmentApiService.getAllEquipmentItemsPendingEdit(this._activeType as EquipmentItemType).pipe(
-      tap(response => {
-        const uniqueBrands: BrandInterface["id"][] = [];
-        for (const item of response.results) {
-          if (!!item.brand && uniqueBrands.indexOf(item.brand) === -1) {
-            uniqueBrands.push(item.brand);
-          }
-        }
-        uniqueBrands.forEach(id => this.store$.dispatch(new LoadBrand({ id })));
-      }),
-      tap(() => this._scrollToItemBrowser())
-    );
+    this.items$ = this.equipmentApiService
+      .getAllEquipmentItemsPendingEdit(this._activeType as EquipmentItemType)
+      .pipe(tap(() => this._scrollToItemBrowser()));
   }
 }
