@@ -8,7 +8,6 @@ context("Equipment", () => {
   context("Explorer", () => {
     it("should not have the 'Add' tag", () => {
       cy.visitPage("/equipment/explorer/mount");
-      cy.url().should("contain", "logging-in");
 
       cy.get("#equipment-item-field + .toggle-enable-fullscreen").click();
       cy.get("#equipment-item-field .ng-input input").type("Test");
