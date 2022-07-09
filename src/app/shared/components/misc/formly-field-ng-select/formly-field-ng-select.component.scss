@@ -1,3 +1,5 @@
+@import "../../../../styles/breakpoints";
+
 .add-tag .btn {
   margin-top: .5rem;
 }
@@ -6,4 +8,20 @@
   color: var(--lightestGrey);
   font-size: 1.25rem;
   margin-left: 1rem;
+}
+
+.too-many-options-label {
+  color: var(--warningColor);
+  padding: .5rem;
+
+  @media screen and (max-width: $sm-max) {
+    padding: .25rem;
+  }
+}
+
+.cant-find,
+.footer-template-extra {
+  @media screen and (max-width: $md-max) {
+    display: none;
+  }
 }

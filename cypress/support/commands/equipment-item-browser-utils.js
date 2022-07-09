@@ -689,7 +689,7 @@ Cypress.Commands.add("equipmentItemBrowserSelectFirstCamera", (selector, cameraN
 
   cy.wait("@findCameras");
 
-  cy.ngSelectOptionNumberSelectorShouldContain(selector, 1, "astrobin-equipment-item-summary .label", cameraName);
+  cy.ngSelectOptionNumberSelectorShouldContain(selector, 1, "astrobin-equipment-item-display-name .name", cameraName);
   cy.ngSelectOptionClick(selector, 1);
   cy.ngSelectValueShouldContain(selector, cameraName);
 });
@@ -708,7 +708,7 @@ Cypress.Commands.add("equipmentItemBrowserSelectFirstSensor", (selector, sensorN
 
   cy.wait("@findSensors");
 
-  cy.ngSelectOptionNumberSelectorShouldContain(selector, 1, "astrobin-equipment-item-summary .label", sensorName);
+  cy.ngSelectOptionNumberSelectorShouldContain(selector, 1, "astrobin-equipment-item-display-name .name", sensorName);
   cy.ngSelectOptionClick(selector, 1);
   cy.ngSelectValueShouldContain(selector, sensorName);
 });
@@ -727,7 +727,12 @@ Cypress.Commands.add("equipmentItemBrowserSelectFirstTelescope", (selector, tele
 
   cy.wait("@findTelescopes");
 
-  cy.ngSelectOptionNumberSelectorShouldContain(selector, 1, "astrobin-equipment-item-summary .label", telescopeName);
+  cy.ngSelectOptionNumberSelectorShouldContain(
+    selector,
+    1,
+    "astrobin-equipment-item-display-name .name",
+    telescopeName
+  );
   cy.ngSelectOptionClick(selector, 1);
   cy.ngSelectValueShouldContain(selector, telescopeName);
 });
@@ -746,7 +751,7 @@ Cypress.Commands.add("equipmentItemBrowserSelectFirstMount", (selector, mountNam
 
   cy.wait("@findMounts");
 
-  cy.ngSelectOptionNumberSelectorShouldContain(selector, 1, "astrobin-equipment-item-summary .label", mountName);
+  cy.ngSelectOptionNumberSelectorShouldContain(selector, 1, "astrobin-equipment-item-display-name .name", mountName);
   cy.ngSelectOptionClick(selector, 1);
   cy.ngSelectValueShouldContain(selector, mountName);
 });
@@ -765,7 +770,7 @@ Cypress.Commands.add("equipmentItemBrowserSelectFirstFilter", (selector, filterN
 
   cy.wait("@findFilters");
 
-  cy.ngSelectOptionNumberSelectorShouldContain(selector, 1, "astrobin-equipment-item-summary .label", filterName);
+  cy.ngSelectOptionNumberSelectorShouldContain(selector, 1, "astrobin-equipment-item-display-name .name", filterName);
   cy.ngSelectOptionClick(selector, 1);
   cy.ngSelectValueShouldContain(selector, filterName);
 });
@@ -784,7 +789,12 @@ Cypress.Commands.add("equipmentItemBrowserSelectFirstAccessory", (selector, acce
 
   cy.wait("@findAccessories");
 
-  cy.ngSelectOptionNumberSelectorShouldContain(selector, 1, "astrobin-equipment-item-summary .label", accessoryName);
+  cy.ngSelectOptionNumberSelectorShouldContain(
+    selector,
+    1,
+    "astrobin-equipment-item-display-name .name",
+    accessoryName
+  );
   cy.ngSelectOptionClick(selector, 1);
   cy.ngSelectValueShouldContain(selector, accessoryName);
 });
@@ -803,7 +813,7 @@ Cypress.Commands.add("equipmentItemBrowserSelectFirstSoftware", (selector, softw
 
   cy.wait("@findSoftwareItems");
 
-  cy.ngSelectOptionNumberSelectorShouldContain(selector, 1, "astrobin-equipment-item-summary .label", softwareName);
+  cy.ngSelectOptionNumberSelectorShouldContain(selector, 1, "astrobin-equipment-item-display-name .name", softwareName);
   cy.ngSelectOptionClick(selector, 1);
   cy.ngSelectValueShouldContain(selector, softwareName);
 });

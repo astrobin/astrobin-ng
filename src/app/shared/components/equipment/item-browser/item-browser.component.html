@@ -14,24 +14,18 @@
 
 <ng-template #equipmentItemOptionTemplate let-object="item">
   <div (click)="onOptionClicked($event, object)">
-    <astrobin-equipment-item-summary
+    <astrobin-equipment-item-display-name
       [item]="object.item"
-      [showClass]="false"
-      [showMeta]="false"
-      [showImage]="false"
-      [showSubItem]="false"
-      [showProperties]="false"
-      [showEditButtons]="false"
-    ></astrobin-equipment-item-summary>
+    ></astrobin-equipment-item-display-name>
 
-    <div *ngIf="object.item.variants?.length > 0" class="item-variants">
+    <ng-container *ngIf="object.item.variants?.length > 0">
       <p class="item-variants-info">{{ variantsMessage(object.item.variants.length) }}</p>
       <p class="item-variants-list">
         <span *ngFor="let variant of object.item.variants">
           <astrobin-equipment-item-display-name [item]="variant"></astrobin-equipment-item-display-name>
         </span>
       </p>
-    </div>
+    </ng-container>
   </div>
 </ng-template>
 
