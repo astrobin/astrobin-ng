@@ -34,6 +34,7 @@ import {
   FindAllEquipmentItems,
   FindAllEquipmentItemsSuccess,
   ItemBrowserAdd,
+  ItemBrowserExitFullscreen,
   ItemBrowserSet,
   LoadBrand,
   LoadEquipmentItem
@@ -473,6 +474,7 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
 
       modal.closed.pipe(take(1)).subscribe((variant: EquipmentItem) => {
         _doAddItem(variant);
+        this.store$.dispatch(new ItemBrowserExitFullscreen());
       });
     } else {
       _doAddItem(item);

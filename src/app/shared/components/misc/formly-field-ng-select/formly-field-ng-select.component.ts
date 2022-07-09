@@ -7,6 +7,8 @@ import { debounceTime, distinctUntilChanged, map, take, tap } from "rxjs/operato
 import { NgSelectComponent } from "@ng-select/ng-select";
 import { NgbActiveModal, NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { WindowRefService } from "@shared/services/window-ref.service";
+import { Actions, ofType } from "@ngrx/effects";
+import { EquipmentActionTypes } from "@features/equipment/store/equipment.actions";
 
 @Component({
   selector: "astrobin-formly-field-ng-select",
@@ -22,6 +24,7 @@ export class FormlyFieldNgSelectComponent extends FieldType implements OnInit, O
   value = null;
   showCreateNewButton = false;
   fullscreen = false;
+  exitFullscreenSubscription: Subscription;
 
   private _ngSelectModalRef: NgbModalRef;
 
@@ -32,6 +35,7 @@ export class FormlyFieldNgSelectComponent extends FieldType implements OnInit, O
   private _ngSelectModal: NgbActiveModal;
 
   constructor(
+    public actions$: Actions,
     public readonly translateService: TranslateService,
     public readonly modalService: NgbModal,
     public readonly windowRefService: WindowRefService
@@ -89,11 +93,21 @@ export class FormlyFieldNgSelectComponent extends FieldType implements OnInit, O
     this.formControl.valueChanges.subscribe(value => {
       this.exitFullscreen();
     });
+
+    this.exitFullscreenSubscription = this.actions$
+      .pipe(ofType(EquipmentActionTypes.ITEM_BROWSER_EXIT_FULLSCREEN))
+      .subscribe(() => {
+        this.exitFullscreen();
+      });
   }
 
   ngOnDestroy() {
     if (this.inputSubscription) {
       this.inputSubscription.unsubscribe();
+    }
+
+    if (this.exitFullscreenSubscription) {
+      this.exitFullscreenSubscription.unsubscribe();
     }
   }
 
