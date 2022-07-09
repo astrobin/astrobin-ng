@@ -102,7 +102,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr *ngFor="let item of itemsInBrand">
+            <tr *ngFor="let item of itemsInBrand; trackBy: equipmentItemService.trackBy">
               <td class="item-name">
                 <a [routerLink]="['/equipment/explorer', item.klass.toLowerCase(), item.id]">
                   <astrobin-equipment-item-display-name [item]="item"></astrobin-equipment-item-display-name>
