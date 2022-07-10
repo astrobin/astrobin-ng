@@ -1,12 +1,12 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
 import { GearApiService } from "@shared/services/api/classic/astrobin/gear/gear-api.service";
 import { LoadingService } from "@shared/services/loading.service";
-import { filter, map, switchMap, take, takeUntil, tap } from "rxjs/operators";
+import { delay, filter, map, switchMap, take, takeUntil, tap } from "rxjs/operators";
 import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { TitleService } from "@shared/services/title/title.service";
 import { FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
-import { EMPTY, forkJoin, Observable, of } from "rxjs";
+import { concat, EMPTY, forkJoin, Observable, of } from "rxjs";
 import { MigrationFlag } from "@shared/services/api/classic/astrobin/migratable-gear-item-api.service.interface";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { Store } from "@ngrx/store";
@@ -262,7 +262,11 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
     );
 
     modalRef.closed.pipe(take(1)).subscribe(() => {
-      this._applyMigration(object, [object.pk, MigrationFlag.WRONG_TYPE], this.translateService.instant("wrong type"));
+      this._applyMigration(
+        object,
+        [object.pk, MigrationFlag.WRONG_TYPE],
+        this.translateService.instant("wrong type")
+      ).subscribe();
     });
   }
 
@@ -283,7 +287,7 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
         object,
         [object.pk, MigrationFlag.MULTIPLE_ITEMS],
         this.translateService.instant("multiple items")
-      );
+      ).subscribe();
     });
   }
 
@@ -306,7 +310,7 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
         object,
         [object.pk, MigrationFlag.NOT_ENOUGH_INFO],
         this.translateService.instant("not enough info")
-      );
+      ).subscribe();
     });
   }
 
@@ -451,19 +455,22 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
           const similarItems = this.migrationConfirmation.similarItems.filter(
             item => selectedSimilarItemsPks.indexOf(item.pk) > -1
           );
-
-          for (const itemToMigrate of [...[object], ...similarItems]) {
-            this.store$
-              .select(selectEquipmentItem, { id: this.migrationTarget.id, type })
-              .pipe(take(1))
-              .subscribe(item => {
+          const observables = [...[object], ...similarItems].map(itemToMigrate =>
+            this.store$.select(selectEquipmentItem, { id: this.migrationTarget.id, type }).pipe(
+              filter(item => !!item),
+              take(1),
+              switchMap(item =>
                 this._applyMigration(
                   itemToMigrate,
                   [itemToMigrate.pk, MigrationFlag.MIGRATE, type, item.id],
                   "ready to migrate"
-                );
-              });
-          }
+                )
+              ),
+              delay(200)
+            )
+          );
+
+          concat(...observables).subscribe();
         });
       });
   }
@@ -523,67 +530,75 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
     this.allStrategies$ = this.gearMigrationStrategyApiService.getAll();
   }
 
-  _applyMigration(object: any, setMigrateArgs: any[], markedAs: string) {
-    this.loadingService.setLoading(true);
-    this.isEquipmentModerator
-      .pipe(
-        take(1),
-        switchMap(isEquipmentModerator =>
-          this.legacyGearApi.setMigration
-            .apply(this.legacyGearApi, setMigrateArgs)
-            .pipe(map(() => isEquipmentModerator))
+  _applyMigration(object: any, setMigrateArgs: any[], markedAs: string): Observable<void> {
+    return new Observable<void>(observer => {
+      this.loadingService.setLoading(true);
+
+      this.isEquipmentModerator
+        .pipe(
+          take(1),
+          switchMap(isEquipmentModerator =>
+            this.legacyGearApi.setMigration
+              .apply(this.legacyGearApi, setMigrateArgs)
+              .pipe(map(() => isEquipmentModerator))
+          )
         )
-      )
-      .subscribe(
-        isEquipmentModerator => {
-          this.loadingService.setLoading(false);
-          this.cancelMigration();
-          this.resetMigrationConfirmation();
-          this.skip(object);
+        .subscribe(
+          isEquipmentModerator => {
+            this.loadingService.setLoading(false);
+            this.cancelMigration();
+            this.resetMigrationConfirmation();
+            this.skip(object);
 
-          let message: string = this.translateService.instant(
-            "Item <strong>{{0}}</strong> marked as <strong>{{1}}</strong>.",
-            {
-              0: this.legacyGearService.getDisplayName(object.make, object.name),
-              1: markedAs
+            let message: string = this.translateService.instant(
+              "Item <strong>{{0}}</strong> marked as <strong>{{1}}</strong>.",
+              {
+                0: this.legacyGearService.getDisplayName(object.make, object.name),
+                1: markedAs
+              }
+            );
+
+            if (setMigrateArgs[1] === MigrationFlag.MIGRATE) {
+              if (isEquipmentModerator) {
+                message +=
+                  "<br/><br/>" +
+                  this.translateService.instant(
+                    "The migration will complete within a few moments and all affected images will be automatically updated."
+                  );
+              } else {
+                message +=
+                  "<br/><br/>" +
+                  this.translateService.instant(
+                    "The migration will complete within a few moments and your images will be automatically updated."
+                  );
+              }
             }
-          );
 
-          if (setMigrateArgs[1] === MigrationFlag.MIGRATE) {
-            if (isEquipmentModerator) {
-              message +=
-                "<br/><br/>" +
-                this.translateService.instant(
-                  "The migration will complete within a few moments and all affected images will be automatically updated."
-                );
-            } else {
-              message +=
-                "<br/><br/>" +
-                this.translateService.instant(
-                  "The migration will complete within a few moments and your images will be automatically updated."
-                );
+            if (!!this.migrationSuccessfulNotification) {
+              this.popNotificationsService.clear(this.migrationSuccessfulNotification.toastId);
+              this.migrationSuccessfulNotification = null;
             }
+
+            this.migrationSuccessfulNotification = this.popNotificationsService.success(message, null, {
+              enableHtml: true,
+              timeOut: 10000,
+              progressBar: false
+            });
+
+            this.migrationSuccessfulNotification.onHidden.pipe(take(1)).subscribe(() => {
+              this.migrationSuccessfulNotification = null;
+            });
+
+            observer.next(void 0);
+            observer.complete();
+          },
+          error => {
+            this._operationError(error);
+            observer.next(void 0);
+            observer.complete();
           }
-
-          if (!!this.migrationSuccessfulNotification) {
-            this.popNotificationsService.clear(this.migrationSuccessfulNotification.toastId);
-            this.migrationSuccessfulNotification = null;
-          }
-
-          this.migrationSuccessfulNotification = this.popNotificationsService.success(message, null, {
-            enableHtml: true,
-            timeOut: 10000,
-            progressBar: false
-          });
-
-          this.migrationSuccessfulNotification.onHidden.pipe(take(1)).subscribe(() => {
-            this.migrationSuccessfulNotification = null;
-          });
-        },
-        error => {
-          this._operationError(error);
-        }
-      );
+        );
+    });
   }
 
   _operationError(error) {
