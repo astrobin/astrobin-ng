@@ -137,10 +137,8 @@ export class ServerErrorsInterceptor implements HttpInterceptor {
           errorMessage = err.error;
           break;
         default:
-          errorTitle = this.translateService.instant("Something went wrong") + ` (error ${err.status})`;
-          errorMessage =
-            this.translateService.instant("If you can reproduce this issue reliably, please contact us.") +
-            `<br/><br/>${err.error || this.translateService.instant("Unknown error message")}`;
+          errorTitle = this.translateService.instant("Something went wrong");
+          errorMessage = this.translateService.instant("If you can reproduce this issue reliably, please contact us.");
       }
     }
 
