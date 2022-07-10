@@ -221,7 +221,18 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
           type: "ng-select",
           id: "camera-field-type",
           expressionProperties: {
-            "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+            "templateOptions.disabled": () =>
+              this.subCreation.inProgress ||
+              this.brandCreation.inProgress ||
+              (this.model.type === CameraType.DSLR_MIRRORLESS &&
+                this.form.get("type").pristine &&
+                EquipmentItemEditorMode.EDIT_PROPOSAL),
+            "templateOptions.description": () =>
+              this.model.type === CameraType.DSLR_MIRRORLESS &&
+              this.form.get("type").pristine &&
+              this.editorMode === EquipmentItemEditorMode.EDIT_PROPOSAL
+                ? this.translateService.instant("Editing this field is not possible.")
+                : null
           },
           templateOptions: {
             label: this.cameraService.getPrintablePropertyName(CameraDisplayProperty.TYPE),
