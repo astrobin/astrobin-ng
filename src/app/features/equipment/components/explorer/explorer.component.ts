@@ -38,7 +38,6 @@ import {
   FindEquipmentItemEditProposals,
   GetImagesUsingItem,
   GetUsersUsingItem,
-  LoadBrand,
   LoadEquipmentItem,
   UnapproveEquipmentItemSuccess
 } from "@features/equipment/store/equipment.actions";

@@ -23,6 +23,7 @@ import { filter, map, switchMap, take, takeUntil } from "rxjs/operators";
 import { selectBrand } from "@features/equipment/store/equipment.selectors";
 import { of } from "rxjs";
 import { AbstractControl, FormControl } from "@angular/forms";
+import { LoadBrand } from "@features/equipment/store/equipment.actions";
 
 @Component({
   selector: "astrobin-camera-editor",
@@ -253,6 +254,8 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
                       if (!brandId) {
                         return of(true);
                       }
+
+                      this.store$.dispatch(new LoadBrand({ id: brandId }));
 
                       return this.store$.select(selectBrand, brandId).pipe(
                         filter(brand => !!brand),
