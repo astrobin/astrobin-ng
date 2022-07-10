@@ -36,6 +36,7 @@ import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/pag
 import { GearMigrationStrategyApiService } from "@shared/services/api/classic/astrobin/grar-migration-strategy/gear-migration-strategy-api.service";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { ActiveToast } from "ngx-toastr";
 
 @Component({
   selector: "astrobin-migration-tool",
@@ -70,6 +71,8 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
     fields: null,
     similarItems: []
   };
+
+  migrationSuccessfulNotification: ActiveToast<any>;
 
   nonMigratedCamerasCount$: Observable<number>;
   nonMigratedTelescopesCount$: Observable<number>;
@@ -562,7 +565,20 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
             }
           }
 
-          this.popNotificationsService.success(message, null, { enableHtml: true });
+          if (!!this.migrationSuccessfulNotification) {
+            this.popNotificationsService.clear(this.migrationSuccessfulNotification.toastId);
+            this.migrationSuccessfulNotification = null;
+          }
+
+          this.migrationSuccessfulNotification = this.popNotificationsService.success(message, null, {
+            enableHtml: true,
+            timeOut: 10000,
+            progressBar: false
+          });
+
+          this.migrationSuccessfulNotification.onHidden.pipe(take(1)).subscribe(() => {
+            this.migrationSuccessfulNotification = null;
+          });
         },
         error => {
           this._operationError(error);
