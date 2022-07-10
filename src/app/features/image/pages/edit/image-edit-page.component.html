@@ -110,7 +110,6 @@
     <div ngbDropdown placement="top-right" *ngIf="!editingExistingImage">
       <button
         [class.loading]="loadingService.loading$ | async"
-        [disabled]="!imageEditService.form.valid"
         class="btn btn-primary"
         id="save-dropdown"
         ngbDropdownToggle
