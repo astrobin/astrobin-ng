@@ -13,6 +13,7 @@ import { MountDisplayProperty, MountService } from "@features/equipment/services
 import { MountInterface, MountType } from "@features/equipment/types/mount.interface";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { takeUntil } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-mount-editor",
@@ -84,6 +85,16 @@ export class MountEditorComponent extends BaseItemEditorComponent<MountInterface
               value: MountType[mountType],
               label: this.mountService.humanizeType(MountType[mountType])
             }))
+          },
+          hooks: {
+            onInit: field => {
+              field.formControl.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(mountType => {
+                if (mountType === MountType.TRIPOD) {
+                  this.model.computerized = false;
+                  field.formControl.get("computerized").setValue(false, { onlySelf: true, emitEvent: false });
+                }
+              });
+            }
           }
         },
         {
@@ -147,7 +158,7 @@ export class MountEditorComponent extends BaseItemEditorComponent<MountInterface
           type: "checkbox",
           wrappers: ["default-wrapper"],
           id: "mount-field-computerized",
-          defaultValue: true,
+          hideExpression: () => this.model.type === MountType.TRIPOD,
           expressionProperties: {
             "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
           },
