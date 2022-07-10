@@ -268,13 +268,37 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     }
 
     if (!this.imageEditService.form.valid) {
+      this.imageEditService.form.markAllAsTouched();
+
+      const errorList: string[] = [];
+
+      this.imageEditService.fields.forEach(topLevelField => {
+        topLevelField.fieldGroup.forEach(stepField => {
+          stepField.fieldGroup.forEach(field => {
+            if (field.formControl.errors !== null) {
+              errorList.push(
+                `<li><strong>${stepField.templateOptions.label}:</strong> ${field.templateOptions.label}</li>`
+              );
+            }
+          });
+        });
+      });
+
       this.popNotificationsService.error(
-        this.translateService.instant("Please check that all required fields have been filled at every step."),
-        "The form is incomplete or has errors.",
+        `
+        <p>
+          ${this.translateService.instant("The following form fields have errors, please correct them and try again:")}
+        </p>
+        <ul>
+          ${errorList.join("\n")}
+        </ul>
+        `,
+        null,
         {
-          timeOut: 10000
+          enableHtml: true
         }
       );
+
       return;
     }
 
