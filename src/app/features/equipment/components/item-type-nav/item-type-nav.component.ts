@@ -48,7 +48,7 @@ export class ItemTypeNavComponent extends BaseComponentDirective implements OnIn
   enableCollapsing = false;
 
   @Input()
-  collapsed = false;
+  collapsed = true;
 
   @Input()
   showBrands = true;

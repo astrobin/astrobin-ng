@@ -1,11 +1,12 @@
 import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
-import { distinctUntilChanged, mergeMap, switchMap, take } from "rxjs/operators";
+import { distinctUntilChanged, switchMap, take } from "rxjs/operators";
 import { TranslateService } from "@ngx-translate/core";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { SelectorWithProps } from "@ngrx/store/src/models";
 import { interval, Observable, of } from "rxjs";
 import { isPlatformBrowser } from "@angular/common";
+import { WindowRefService } from "@shared/services/window-ref.service";
 
 @Injectable({
   providedIn: "root"
@@ -14,7 +15,8 @@ export class UtilsService {
   constructor(
     public readonly store$: Store<State>,
     public readonly translateService: TranslateService,
-    @Inject(PLATFORM_ID) public readonly platformId
+    @Inject(PLATFORM_ID) public readonly platformId,
+    public readonly windowRefService: WindowRefService
   ) {}
 
   static uuid(): string {
@@ -65,17 +67,6 @@ export class UtilsService {
     }
 
     return a;
-  }
-
-  static isNearBelowViewport(window: Window, element: HTMLElement): boolean {
-    const maxDistance = 500;
-    const rect = element.getBoundingClientRect();
-    return (
-      rect.top >= 0 &&
-      rect.left >= 0 &&
-      rect.bottom <= (window.innerHeight || window.document.documentElement.clientHeight) + maxDistance &&
-      rect.right <= (window.innerWidth || window.document.documentElement.clientWidth)
-    );
   }
 
   static getLinksInText(text: string): string[] {
@@ -326,6 +317,22 @@ export class UtilsService {
     const data = await response.blob();
     const name = url.substring(url.lastIndexOf("/") + 1);
     return new File([data], name);
+  }
+
+  isNearBelowViewport(element: HTMLElement): boolean {
+    if (!isPlatformBrowser(this.platformId)) {
+      return false;
+    }
+
+    const maxDistance = 500;
+    const window = this.windowRefService.nativeWindow;
+    const rect = element.getBoundingClientRect();
+    return (
+      rect.top >= 0 &&
+      rect.left >= 0 &&
+      rect.bottom <= (window.innerHeight || window.document.documentElement.clientHeight) + maxDistance &&
+      rect.right <= (window.innerWidth || window.document.documentElement.clientWidth)
+    );
   }
 
   delay(ms: number): Observable<void> {
