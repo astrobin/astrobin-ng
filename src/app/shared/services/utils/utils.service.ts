@@ -1,16 +1,21 @@
-import { Injectable } from "@angular/core";
-import { distinctUntilChanged, mergeMap, switchMap } from "rxjs/operators";
+import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
+import { distinctUntilChanged, mergeMap, switchMap, take } from "rxjs/operators";
 import { TranslateService } from "@ngx-translate/core";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { SelectorWithProps } from "@ngrx/store/src/models";
-import { Observable, of } from "rxjs";
+import { interval, Observable, of } from "rxjs";
+import { isPlatformBrowser } from "@angular/common";
 
 @Injectable({
   providedIn: "root"
 })
 export class UtilsService {
-  constructor(public readonly store$: Store<State>, public readonly translateService: TranslateService) {}
+  constructor(
+    public readonly store$: Store<State>,
+    public readonly translateService: TranslateService,
+    @Inject(PLATFORM_ID) public readonly platformId
+  ) {}
 
   static uuid(): string {
     const S4 = (): string => {
@@ -331,6 +336,23 @@ export class UtilsService {
     const data = await response.blob();
     const name = url.substring(url.lastIndexOf("/") + 1);
     return new File([data], name);
+  }
+
+  delay(ms: number): Observable<void> {
+    return new Observable<void>(observer => {
+      if (isPlatformBrowser(this.platformId)) {
+        interval(ms)
+          .pipe(take(1))
+          .subscribe(() => {
+            observer.next();
+            observer.complete();
+          });
+      } else {
+        // Complete immediately.
+        observer.next();
+        observer.complete();
+      }
+    });
   }
 
   yesNo(value: any): string {

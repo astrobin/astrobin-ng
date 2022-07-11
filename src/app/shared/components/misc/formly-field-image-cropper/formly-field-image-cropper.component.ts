@@ -7,8 +7,9 @@ import { FieldType } from "@ngx-formly/core";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { CropperPosition, Dimensions, ImageCroppedEvent, LoadedImage } from "ngx-image-cropper";
-import { fromEvent, Subscription } from "rxjs";
+import { fromEvent, interval, Subscription } from "rxjs";
 import { debounceTime, filter, map, take } from "rxjs/operators";
+import { UtilsService } from "@shared/services/utils/utils.service";
 
 @Component({
   selector: "astrobin-formly-field-image-cropper",
@@ -31,7 +32,8 @@ export class FormlyFieldImageCropperComponent extends FieldType implements OnDes
   constructor(
     public readonly store$: Store<State>,
     public readonly windowRefService: WindowRefService,
-    public readonly popNotificationService: PopNotificationsService
+    public readonly popNotificationService: PopNotificationsService,
+    public readonly utilsService: UtilsService
   ) {
     super();
 
@@ -82,8 +84,8 @@ export class FormlyFieldImageCropperComponent extends FieldType implements OnDes
 
   private _reset() {
     this.store$.dispatch(new ImageEditorSetCropperShown(false));
-    setTimeout(() => {
+    this.utilsService.delay(100).subscribe(() => {
       this.store$.dispatch(new ImageEditorSetCropperShown(true));
-    }, 250);
+    });
   }
 }

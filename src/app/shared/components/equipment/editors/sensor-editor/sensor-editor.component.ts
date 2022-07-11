@@ -13,6 +13,7 @@ import { FormlyFieldService } from "@shared/services/formly-field.service";
 import { SensorDisplayProperty, SensorService } from "@features/equipment/services/sensor.service";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { UtilsService } from "@shared/services/utils/utils.service";
 
 @Component({
   selector: "astrobin-sensor-editor",
@@ -31,7 +32,8 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
     public readonly equipmentItemService: EquipmentItemService,
     public readonly formlyFieldService: FormlyFieldService,
     public readonly sensorService: SensorService,
-    public readonly modalService: NgbModal
+    public readonly modalService: NgbModal,
+    public readonly utilsService: UtilsService
   ) {
     super(
       store$,
@@ -42,7 +44,8 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
       equipmentApiService,
       equipmentItemService,
       formlyFieldService,
-      modalService
+      modalService,
+      utilsService
     );
   }
 
@@ -53,9 +56,9 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
   }
 
   ngAfterViewInit(): void {
-    setTimeout(() => {
+    this.utilsService.delay(1).subscribe(() => {
       this._initFields();
-    }, 1);
+    });
 
     this.model.klass = EquipmentItemType.SENSOR;
 

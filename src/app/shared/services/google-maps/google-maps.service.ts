@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
+import { google } from "@google/maps";
 
 // @ts-ignore
 type maps = google.maps;

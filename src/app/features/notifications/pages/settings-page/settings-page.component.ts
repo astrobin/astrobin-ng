@@ -10,7 +10,7 @@ import {
   selectNotificationSettings,
   selectNotificationTypes
 } from "@features/notifications/store/notifications.selectors";
-import { filter, map, switchMap, tap } from "rxjs/operators";
+import { filter, map, switchMap, take, tap } from "rxjs/operators";
 import {
   LoadNotificationSettings,
   LoadNotificationTypes,
@@ -21,9 +21,10 @@ import {
   NotificationSettingInterface
 } from "@features/notifications/interfaces/notification-setting.interface";
 import { NotificationTypeInterface } from "@features/notifications/interfaces/notification-type.interface";
-import { Observable } from "rxjs";
+import { interval, Observable } from "rxjs";
 import { selectCurrentUser } from "@features/account/store/auth.selectors";
 import { NgbAccordion } from "@ng-bootstrap/ng-bootstrap";
+import { UtilsService } from "@shared/services/utils/utils.service";
 
 enum NotificationCategory {
   COMMENTS = "COMMENTS",
@@ -163,9 +164,9 @@ export class SettingsPageComponent extends BaseComponentDirective implements OnI
 
   constructor(
     public readonly store$: Store<State>,
-    public readonly notificationsService: NotificationsService,
     public readonly titleService: TitleService,
-    public readonly translateService: TranslateService
+    public readonly translateService: TranslateService,
+    public readonly utilsService: UtilsService
   ) {
     super(store$);
 
@@ -192,9 +193,9 @@ export class SettingsPageComponent extends BaseComponentDirective implements OnI
         return;
       }
 
-      setTimeout(() => {
+      this.utilsService.delay(100).subscribe(() => {
         expandAccordion();
-      }, 100);
+      });
     };
 
     expandAccordion();

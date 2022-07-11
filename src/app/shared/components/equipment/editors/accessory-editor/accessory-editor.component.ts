@@ -13,6 +13,9 @@ import { AccessoryInterface } from "@features/equipment/types/accessory.interfac
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { FormlyFieldConfig } from "@ngx-formly/core";
+import { interval } from "rxjs";
+import { take } from "rxjs/operators";
+import { UtilsService } from "@shared/services/utils/utils.service";
 
 @Component({
   selector: "astrobin-accessory-editor",
@@ -30,7 +33,8 @@ export class AccessoryEditorComponent extends BaseItemEditorComponent<AccessoryI
     public readonly equipmentApiService: EquipmentApiService,
     public readonly equipmentItemService: EquipmentItemService,
     public readonly formlyFieldService: FormlyFieldService,
-    public readonly modalService: NgbModal
+    public readonly modalService: NgbModal,
+    public readonly utilsService: UtilsService
   ) {
     super(
       store$,
@@ -41,7 +45,8 @@ export class AccessoryEditorComponent extends BaseItemEditorComponent<AccessoryI
       equipmentApiService,
       equipmentItemService,
       formlyFieldService,
-      modalService
+      modalService,
+      utilsService
     );
   }
 
@@ -52,9 +57,9 @@ export class AccessoryEditorComponent extends BaseItemEditorComponent<AccessoryI
   }
 
   ngAfterViewInit(): void {
-    setTimeout(() => {
+    this.utilsService.delay(1).subscribe(() => {
       this._initFields();
-    }, 1);
+    });
 
     this.model.klass = EquipmentItemType.ACCESSORY;
 

@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, Inject, OnInit, PLATFORM_ID } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { State } from "@app/store/state";
@@ -10,6 +10,8 @@ import { TitleService } from "@shared/services/title/title.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { interval } from "rxjs";
 import { take, tap } from "rxjs/operators";
+import { UtilsService } from "@shared/services/utils/utils.service";
+import { isPlatformBrowser } from "@angular/common";
 
 @Component({
   selector: "astrobin-logged-in-page",
@@ -26,7 +28,8 @@ export class LoggedInPageComponent extends BaseComponentDirective implements OnI
     public readonly windowRef: WindowRefService,
     public readonly classicRoutesService: ClassicRoutesService,
     public readonly titleService: TitleService,
-    public readonly translate: TranslateService
+    public readonly translate: TranslateService,
+    @Inject(PLATFORM_ID) public readonly platformId
   ) {
     super(store$);
   }
@@ -42,19 +45,27 @@ export class LoggedInPageComponent extends BaseComponentDirective implements OnI
 
     this.redirectUrl = this.route.snapshot.queryParamMap.get("redirectUrl");
 
-    interval(1000)
-      .pipe(
-        take(this.seconds),
-        tap(() => this.seconds--)
-      )
-      .subscribe(() => {
-        if (this.seconds === 0) {
-          if (this.redirectUrl) {
-            this.router.navigateByUrl(this.redirectUrl);
-          } else {
-            this.windowRef.nativeWindow.location.assign(this.classicRoutesService.HOME);
+    const _doRedirect = () => {
+      if (this.redirectUrl) {
+        this.router.navigateByUrl(this.redirectUrl);
+      } else {
+        this.windowRef.nativeWindow.location.assign(this.classicRoutesService.HOME);
+      }
+    };
+
+    if (isPlatformBrowser(this.platformId)) {
+      interval(1000)
+        .pipe(
+          take(this.seconds),
+          tap(() => this.seconds--)
+        )
+        .subscribe(() => {
+          if (this.seconds === 0) {
+            _doRedirect();
           }
-        }
-      });
+        });
+    } else {
+      _doRedirect();
+    }
   }
 }

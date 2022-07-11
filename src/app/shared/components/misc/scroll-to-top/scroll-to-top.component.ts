@@ -25,7 +25,7 @@ export class ScrollToTopComponent extends BaseComponentDirective implements OnIn
   ngOnInit(): void {
     fromEvent(window, "scroll")
       .pipe(takeUntil(this.destroyed$), debounceTime(100), distinctUntilChanged())
-      .subscribe(() => (this.offset = window.pageYOffset));
+      .subscribe(() => (this.offset = this.windowRefService.nativeWindow.pageYOffset));
   }
 
   scrollToTop() {

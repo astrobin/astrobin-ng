@@ -63,7 +63,8 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
     public readonly equipmentItemService: EquipmentItemService,
     public readonly popNotificationsService: PopNotificationsService,
     public readonly cookieService: CookieService,
-    public readonly compareService: CompareService
+    public readonly compareService: CompareService,
+    public readonly utilsService: UtilsService
   ) {
     super(store$, actions$, activatedRoute, router, windowRefService, cookieService);
   }
@@ -146,7 +147,7 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
 
   private _setLocation() {
     const _doSetLocation = (item: EquipmentItemBaseInterface) => {
-      setTimeout(() => {
+      this.utilsService.delay(100).subscribe(() => {
         if (!item) {
           const urlObject = this.windowRefService.getCurrentUrl();
 
@@ -205,7 +206,7 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
         ) {
           this.location.replaceState(`/equipment/explorer/${this.activeType.toLowerCase()}/${item.id}/${slug}${hash}`);
         }
-      }, 100);
+      });
     };
 
     if (!!this.activeId) {

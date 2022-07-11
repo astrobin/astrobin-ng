@@ -13,6 +13,9 @@ import { SoftwareInterface } from "@features/equipment/types/software.interface"
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { take } from "rxjs/operators";
+import { interval } from "rxjs";
+import { UtilsService } from "@shared/services/utils/utils.service";
 
 @Component({
   selector: "astrobin-software-editor",
@@ -30,7 +33,8 @@ export class SoftwareEditorComponent extends BaseItemEditorComponent<SoftwareInt
     public readonly equipmentApiService: EquipmentApiService,
     public readonly equipmentItemService: EquipmentItemService,
     public readonly formlyFieldService: FormlyFieldService,
-    public readonly modalService: NgbModal
+    public readonly modalService: NgbModal,
+    public readonly utilsService: UtilsService
   ) {
     super(
       store$,
@@ -41,7 +45,8 @@ export class SoftwareEditorComponent extends BaseItemEditorComponent<SoftwareInt
       equipmentApiService,
       equipmentItemService,
       formlyFieldService,
-      modalService
+      modalService,
+      utilsService
     );
   }
 
@@ -52,9 +57,9 @@ export class SoftwareEditorComponent extends BaseItemEditorComponent<SoftwareInt
   }
 
   ngAfterViewInit(): void {
-    setTimeout(() => {
+    this.utilsService.delay(1).subscribe(() => {
       this._initFields();
-    }, 1);
+    });
 
     this.model.klass = EquipmentItemType.SOFTWARE;
 

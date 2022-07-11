@@ -14,6 +14,7 @@ import { FilterInterface, FilterType } from "@features/equipment/types/filter.in
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { FormlyFieldConfig } from "@ngx-formly/core";
+import { UtilsService } from "@shared/services/utils/utils.service";
 
 @Component({
   selector: "astrobin-filter-editor",
@@ -32,7 +33,8 @@ export class FilterEditorComponent extends BaseItemEditorComponent<FilterInterfa
     public readonly equipmentItemService: EquipmentItemService,
     public readonly formlyFieldService: FormlyFieldService,
     public readonly filterService: FilterService,
-    public readonly modalService: NgbModal
+    public readonly modalService: NgbModal,
+    public readonly utilsService: UtilsService
   ) {
     super(
       store$,
@@ -43,7 +45,8 @@ export class FilterEditorComponent extends BaseItemEditorComponent<FilterInterfa
       equipmentApiService,
       equipmentItemService,
       formlyFieldService,
-      modalService
+      modalService,
+      utilsService
     );
   }
 
@@ -54,9 +57,9 @@ export class FilterEditorComponent extends BaseItemEditorComponent<FilterInterfa
   }
 
   ngAfterViewInit(): void {
-    setTimeout(() => {
+    this.utilsService.delay(1).subscribe(() => {
       this._initFields();
-    }, 1);
+    });
 
     this.model.klass = EquipmentItemType.FILTER;
 

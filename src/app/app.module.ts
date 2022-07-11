@@ -64,14 +64,14 @@ import { EffectsModule } from "@ngrx/effects";
 import { StoreModule } from "@ngrx/store";
 import { StoreDevtoolsModule } from "@ngrx/store-devtools";
 import { MissingTranslationHandler, TranslateLoader, TranslateModule, TranslateParser } from "@ngx-translate/core";
-import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { SharedModule } from "@shared/shared.module";
 import { CookieService } from "ngx-cookie-service";
 import { TimeagoCustomFormatter, TimeagoFormatter, TimeagoIntl, TimeagoModule } from "ngx-timeago";
 import { AppRoutingModule } from "./app-routing.module";
 import { CustomMissingTranslationHandler } from "./missing-translation-handler";
-import { LanguageLoader } from "./translate-loader";
+import { translateLoaderFactory } from "./translate-loader";
+import { TransferHttpCacheModule } from "@nguniversal/common";
 
 // Supported languages
 registerLocaleData(localeEnglish);
@@ -135,9 +135,10 @@ export function initFontAwesome(iconLibrary: FaIconLibrary) {
 @NgModule({
   imports: [
     // Angular.
-    BrowserModule,
+    BrowserModule.withServerTransition({ appId: "serverApp" }),
     BrowserAnimationsModule,
     HttpClientModule,
+    TransferHttpCacheModule,
 
     // Dependencies.
     StoreModule.forRoot(appStateReducers),
@@ -162,8 +163,8 @@ export function initFontAwesome(iconLibrary: FaIconLibrary) {
       },
       loader: {
         provide: TranslateLoader,
-        useClass: LanguageLoader,
-        deps: [HttpClient, JsonApiService]
+        useFactory: translateLoaderFactory,
+        deps: [HttpClient]
       },
       isolate: false
     }),

@@ -19,7 +19,7 @@ import {
 } from "@features/equipment/types/equipment-item-base.interface";
 import { FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
-import { forkJoin, Observable, of, Subscription } from "rxjs";
+import { forkJoin, interval, Observable, of, Subscription } from "rxjs";
 import { TranslateService } from "@ngx-translate/core";
 import {
   CreateAccessory,
@@ -161,13 +161,16 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
     public readonly windowRefService: WindowRefService,
     public readonly modalService: NgbModal,
     public readonly equipmentItemService: EquipmentItemService,
-    public readonly popNotificationsService: PopNotificationsService
+    public readonly popNotificationsService: PopNotificationsService,
+    public readonly utilsService: UtilsService
   ) {
     super(store$);
   }
 
   ngOnInit() {
-    setTimeout(() => this._setFields(), 1);
+    this.utilsService.delay(1).subscribe(() => {
+      this._setFields();
+    });
   }
 
   ngOnChanges(changes: SimpleChanges) {

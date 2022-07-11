@@ -18,6 +18,7 @@ import { ImageEditService } from "@features/image/services/image-edit.service";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
+import { UtilsService } from "@shared/services/utils/utils.service";
 
 @Injectable({
   providedIn: null
@@ -28,7 +29,8 @@ export class ImageEditContentFieldsService extends BaseService {
     public readonly loadingService: LoadingService,
     public readonly translateService: TranslateService,
     public readonly imageEditService: ImageEditService,
-    public readonly modalService: NgbModal
+    public readonly modalService: NgbModal,
+    public readonly utilsService: UtilsService
   ) {
     super(loadingService);
   }
@@ -302,7 +304,7 @@ export class ImageEditContentFieldsService extends BaseService {
               group => group.id === "image-locations-field"
             )[0];
 
-            setTimeout(() => {
+            this.utilsService.delay(1).subscribe(() => {
               (locationsField.templateOptions.options as Observable<{ value: number; label: string }[]>)
                 .pipe(take(1))
                 .subscribe(currentOptions => {
@@ -318,7 +320,7 @@ export class ImageEditContentFieldsService extends BaseService {
                   locations: [...(this.imageEditService.model.locations || []), ...[newItem.value]]
                 }
               };
-            }, 1);
+            });
           });
         }
       }

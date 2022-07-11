@@ -9,7 +9,6 @@ describe("LanguageLoader", () => {
 
   beforeEach(async () => {
     await MockBuilder(LanguageLoader, AppModule);
-    (global as any).VERSION = "1";
     languageLoader = TestBed.inject(LanguageLoader);
   });
 

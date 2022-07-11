@@ -37,6 +37,7 @@ import { GearMigrationStrategyApiService } from "@shared/services/api/classic/as
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { ActiveToast } from "ngx-toastr";
+import { UtilsService } from "@shared/services/utils/utils.service";
 
 @Component({
   selector: "astrobin-migration-tool",
@@ -94,7 +95,6 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
     public readonly legacyTelescopeApi: TelescopeApiService,
     public readonly legacyMountApi: MountApiService,
     public readonly legacyFilterApi: FilterApiService,
-    public readonly legacyAccessoryApi: AccessoryApiService,
     public readonly legacyCombinedAccessoryAndFocalReducerApi: CombinedAccessoryAndFocalReducerApiService,
     public readonly legacySoftwareApi: SoftwareApiService,
     public readonly titleService: TitleService,
@@ -105,7 +105,8 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
     public readonly equipmentApiService: EquipmentApiService,
     public readonly legacyGearService: GearService,
     public readonly gearMigrationStrategyApiService: GearMigrationStrategyApiService,
-    public readonly modalService: NgbModal
+    public readonly modalService: NgbModal,
+    public readonly utilsService: UtilsService
   ) {
     super(store$);
   }
@@ -324,9 +325,9 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
         this.windowRefService.scrollToElement("#select-item-to-migrate-to");
         (document.querySelector("#equipment-item-field .ng-input input") as HTMLElement).focus();
       } else {
-        setTimeout(() => {
+        this.utilsService.delay(100).subscribe(() => {
           _focus();
-        }, 100);
+        });
       }
     };
 

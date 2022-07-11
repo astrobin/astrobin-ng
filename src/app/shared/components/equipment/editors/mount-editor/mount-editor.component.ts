@@ -14,6 +14,7 @@ import { MountInterface, MountType } from "@features/equipment/types/mount.inter
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { takeUntil } from "rxjs/operators";
+import { UtilsService } from "@shared/services/utils/utils.service";
 
 @Component({
   selector: "astrobin-mount-editor",
@@ -32,7 +33,8 @@ export class MountEditorComponent extends BaseItemEditorComponent<MountInterface
     public readonly equipmentItemService: EquipmentItemService,
     public readonly formlyFieldService: FormlyFieldService,
     public readonly mountService: MountService,
-    public readonly modalService: NgbModal
+    public readonly modalService: NgbModal,
+    public readonly utilsService: UtilsService
   ) {
     super(
       store$,
@@ -43,7 +45,8 @@ export class MountEditorComponent extends BaseItemEditorComponent<MountInterface
       equipmentApiService,
       equipmentItemService,
       formlyFieldService,
-      modalService
+      modalService,
+      utilsService
     );
   }
 
@@ -54,9 +57,9 @@ export class MountEditorComponent extends BaseItemEditorComponent<MountInterface
   }
 
   ngAfterViewInit(): void {
-    setTimeout(() => {
+    this.utilsService.delay(1).subscribe(() => {
       this._initFields();
-    }, 1);
+    });
 
     this.model.klass = EquipmentItemType.MOUNT;
 

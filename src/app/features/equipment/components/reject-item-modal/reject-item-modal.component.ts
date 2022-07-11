@@ -24,6 +24,7 @@ import { FormlyFieldEquipmentItemBrowserMode } from "@shared/components/misc/for
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import { EMPTY } from "rxjs";
+import { UtilsService } from "@shared/services/utils/utils.service";
 
 @Component({
   selector: "astrobin-reject-item-modal",
@@ -82,7 +83,8 @@ export class RejectItemModalComponent extends BaseComponentDirective implements 
     public readonly equipmentApiService: EquipmentApiService,
     public readonly formlyFieldService: FormlyFieldService,
     public readonly router: Router,
-    public readonly popNotificationsService: PopNotificationsService
+    public readonly popNotificationsService: PopNotificationsService,
+    public readonly utilsService: UtilsService
   ) {
     super(store$);
   }
@@ -228,7 +230,7 @@ export class RejectItemModalComponent extends BaseComponentDirective implements 
     const duplicateOfKlass: EquipmentItemType = this.form.get("duplicateOfKlass")?.value;
     const duplicateOfUsageType: EquipmentItemUsageType = this.form.get("duplicateOfUsageType")?.value;
 
-    setTimeout(() => {
+    this.utilsService.delay(100).subscribe(() => {
       this.store$.dispatch(
         new RejectEquipmentItem({
           item: this.equipmentItem,
@@ -257,7 +259,7 @@ export class RejectItemModalComponent extends BaseComponentDirective implements 
         .subscribe(() => {
           this.modal.close();
         });
-    }, 100);
+    });
   }
 
   cancel() {

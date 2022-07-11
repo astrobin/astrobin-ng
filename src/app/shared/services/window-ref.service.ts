@@ -1,19 +1,27 @@
-import { Injectable } from "@angular/core";
+import { Inject, Injectable } from "@angular/core";
 import { BaseService } from "@shared/services/base.service";
+import { LoadingService } from "@shared/services/loading.service";
+import { DOCUMENT } from "@angular/common";
+import { take } from "rxjs/operators";
+import { interval } from "rxjs";
+import { UtilsService } from "@shared/services/utils/utils.service";
 
 // @ts-ignore
 // tslint:disable-next-line:no-empty-interface
 export interface CustomWindowInterface extends Window {}
 
-function getWindow(): any {
-  // @ts-ignore
-  return window;
-}
-
 @Injectable()
 export class WindowRefService extends BaseService {
+  constructor(
+    public readonly loadingService: LoadingService,
+    @Inject(DOCUMENT) private _doc: Document,
+    public readonly utilsService: UtilsService
+  ) {
+    super(loadingService);
+  }
+
   get nativeWindow(): CustomWindowInterface {
-    return getWindow();
+    return this._doc.defaultView;
   }
 
   scroll(options: any) {
@@ -32,10 +40,14 @@ export class WindowRefService extends BaseService {
 
       const $element = this.nativeWindow.document.querySelector(selector);
       if (!!$element) {
-        setTimeout(() => $element.scrollIntoView(options), timeout);
+        this.utilsService.delay(timeout).subscribe(() => {
+          $element.scrollIntoView(options);
+        });
       } else {
         attempts++;
-        setTimeout(() => _doScroll(), timeout);
+        this.utilsService.delay(timeout).subscribe(() => {
+          _doScroll();
+        });
       }
     };
 
@@ -58,10 +70,14 @@ export class WindowRefService extends BaseService {
 
       const $element = this.nativeWindow.document.querySelector(selector) as HTMLElement;
       if (!!$element) {
-        setTimeout(() => $element.focus(), timeout);
+        this.utilsService.delay(timeout).subscribe(() => {
+          $element.focus();
+        });
       } else {
         attempts++;
-        setTimeout(() => _doFocus(), timeout);
+        this.utilsService.delay(timeout).subscribe(() => {
+          _doFocus();
+        });
       }
     };
 

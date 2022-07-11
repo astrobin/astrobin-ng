@@ -4,6 +4,7 @@
 
 export const environment = {
   production: false,
+  buildVersion: "1",
   classicBaseUrl: "http://localhost:8084",
   classicApiUrl: "http://localhost:8084",
   cdnUrl: "http://localhost:8084"

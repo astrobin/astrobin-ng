@@ -12,9 +12,11 @@ import { FormlyFieldMessageLevel, FormlyFieldService } from "@shared/services/fo
 import { TelescopeDisplayProperty, TelescopeService } from "@features/equipment/services/telescope.service";
 import { TelescopeInterface, TelescopeType } from "@features/equipment/types/telescope.interface";
 import { FormlyFieldConfig } from "@ngx-formly/core";
-import { takeUntil } from "rxjs/operators";
+import { take, takeUntil } from "rxjs/operators";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { interval } from "rxjs";
+import { UtilsService } from "@shared/services/utils/utils.service";
 
 @Component({
   selector: "astrobin-telescope-editor",
@@ -33,7 +35,8 @@ export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeI
     public readonly equipmentItemService: EquipmentItemService,
     public readonly formlyFieldService: FormlyFieldService,
     public readonly telescopeService: TelescopeService,
-    public readonly modalService: NgbModal
+    public readonly modalService: NgbModal,
+    public readonly utilsService: UtilsService
   ) {
     super(
       store$,
@@ -44,7 +47,8 @@ export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeI
       equipmentApiService,
       equipmentItemService,
       formlyFieldService,
-      modalService
+      modalService,
+      utilsService
     );
   }
 
@@ -55,9 +59,9 @@ export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeI
   }
 
   ngAfterViewInit(): void {
-    setTimeout(() => {
+    this.utilsService.delay(1).subscribe(() => {
       this._initFields();
-    }, 1);
+    });
 
     this.model.klass = EquipmentItemType.TELESCOPE;
 
@@ -231,9 +235,9 @@ export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeI
               hooks: {
                 onInit: (field: FormlyFieldConfig) => {
                   field.formControl.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(value => {
-                    setTimeout(() => {
+                    this.utilsService.delay(1).subscribe(() => {
                       this.form.get("maxFocalLength")?.updateValueAndValidity({ onlySelf: true, emitEvent: false });
-                    }, 1);
+                    });
                   });
                 }
               }
@@ -288,9 +292,9 @@ export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeI
               hooks: {
                 onInit: (field: FormlyFieldConfig) => {
                   field.formControl.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(value => {
-                    setTimeout(() => {
+                    this.utilsService.delay(1).subscribe(() => {
                       this.form.get("minFocalLength")?.updateValueAndValidity({ onlySelf: true, emitEvent: false });
-                    }, 1);
+                    });
                   });
                 }
               }
