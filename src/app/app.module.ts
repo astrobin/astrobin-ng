@@ -19,7 +19,7 @@ import localeAlbanian from "@angular/common/locales/sq";
 import localeTurkish from "@angular/common/locales/tr";
 import localeChineseSimplified from "@angular/common/locales/zh-Hans";
 import { NgModule } from "@angular/core";
-import { BrowserModule, Title } from "@angular/platform-browser";
+import { BrowserModule, BrowserTransferStateModule, Title } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { AppComponent } from "@app/app.component";
 import { appStateEffects, appStateReducers } from "@app/store/state";
@@ -137,8 +137,8 @@ export function initFontAwesome(iconLibrary: FaIconLibrary) {
     // Angular.
     BrowserModule.withServerTransition({ appId: "serverApp" }),
     BrowserAnimationsModule,
+    BrowserTransferStateModule,
     HttpClientModule,
-    TransferHttpCacheModule,
 
     // Dependencies.
     StoreModule.forRoot(appStateReducers),
