@@ -14,7 +14,7 @@ import { Observable, of } from "rxjs";
 import { distinctUntilChanged, filter, map, switchMap, take, tap } from "rxjs/operators";
 import { selectBackendConfig, selectIotdMaxSubmissionsPerDay } from "@app/store/selectors/app/app.selectors";
 import { ImageInterface } from "@shared/interfaces/image.interface";
-import { CookieService } from "ngx-cookie-service";
+import { CookieService } from "ngx-cookie";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { TranslateService } from "@ngx-translate/core";

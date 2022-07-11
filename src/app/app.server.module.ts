@@ -5,6 +5,7 @@ import { AppComponent } from "./app.component";
 import { TranslateLoader, TranslateModule } from "@ngx-translate/core";
 import { translateServerLoaderFactory } from "@app/translate-server-loader";
 import { HttpClient } from "@angular/common/http";
+import { CookieBackendModule } from "ngx-cookie-backend";
 
 @NgModule({
   imports: [
@@ -17,7 +18,8 @@ import { HttpClient } from "@angular/common/http";
         useFactory: translateServerLoaderFactory,
         deps: [HttpClient]
       }
-    })
+    }),
+    CookieBackendModule.forRoot()
   ],
   bootstrap: [AppComponent]
 })

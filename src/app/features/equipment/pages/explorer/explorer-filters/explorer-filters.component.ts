@@ -12,7 +12,7 @@ import { ColorOrMono } from "@features/equipment/types/sensor.interface";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { Location } from "@angular/common";
-import { CookieService } from "ngx-cookie-service";
+import { CookieService } from "ngx-cookie";
 import { SimplifiedSubscriptionName, SubscriptionName } from "@shared/types/subscription-name.type";
 import { map, switchMap } from "rxjs/operators";
 import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
@@ -188,11 +188,13 @@ export class ExplorerFiltersComponent extends BaseComponentDirective implements 
   }
 
   updateCookie(): void {
-    this.cookieService.set(
+    this.cookieService.put(
       `${COOKIE}-${this.type.toLowerCase()}`,
       JSON.stringify(this.activeFilters.map(activeFilter => ({ type: activeFilter.type, value: activeFilter.value }))),
-      null,
-      "/"
+      {
+        path: "/",
+        expires: null
+      }
     );
   }
 

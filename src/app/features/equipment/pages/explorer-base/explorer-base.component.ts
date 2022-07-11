@@ -11,7 +11,7 @@ import { Observable } from "rxjs";
 import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { BrandInterface } from "@features/equipment/types/brand.interface";
-import { CookieService } from "ngx-cookie-service";
+import { CookieService } from "ngx-cookie";
 import { EquipmentItemsSortOrder } from "@features/equipment/services/equipment-api.service";
 import { GetContributors } from "@features/equipment/store/equipment.actions";
 
@@ -98,7 +98,10 @@ export class ExplorerBaseComponent extends BaseComponentDirective implements OnI
       this.sortOrder = EquipmentItemsSortOrder.AZ_DESC;
     }
 
-    this.cookieService.set(EQUIPMENT_EXPLORER_PAGE_SORTING_COOKIE, this.sortOrder, null, "/");
+    this.cookieService.put(EQUIPMENT_EXPLORER_PAGE_SORTING_COOKIE, this.sortOrder, {
+      path: "/",
+      expires: null
+    });
 
     this.getItems();
   }
@@ -110,7 +113,10 @@ export class ExplorerBaseComponent extends BaseComponentDirective implements OnI
       this.sortOrder = EquipmentItemsSortOrder.USERS;
     }
 
-    this.cookieService.set(EQUIPMENT_EXPLORER_PAGE_SORTING_COOKIE, this.sortOrder, null, "/");
+    this.cookieService.put(EQUIPMENT_EXPLORER_PAGE_SORTING_COOKIE, this.sortOrder, {
+      path: "/",
+      expires: null
+    });
 
     this.getItems();
   }
@@ -122,7 +128,10 @@ export class ExplorerBaseComponent extends BaseComponentDirective implements OnI
       this.sortOrder = EquipmentItemsSortOrder.IMAGES;
     }
 
-    this.cookieService.set(EQUIPMENT_EXPLORER_PAGE_SORTING_COOKIE, this.sortOrder, null, "/");
+    this.cookieService.put(EQUIPMENT_EXPLORER_PAGE_SORTING_COOKIE, this.sortOrder, {
+      path: "/",
+      expires: null
+    });
 
     this.getItems();
   }

@@ -37,7 +37,7 @@ import { SaveEquipmentPresetModalComponent } from "@features/image/components/sa
 import { LoadEquipmentPresetModalComponent } from "@features/image/components/load-equipment-preset-modal/load-equipment-preset-modal.component";
 import { UserService } from "@shared/services/user.service";
 import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
-import { CookieService } from "ngx-cookie-service";
+import { CookieService } from "ngx-cookie";
 
 @Component({
   selector: "astrobin-image-edit-page",
@@ -320,7 +320,10 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
   }
 
   dontShowMigrationInfoAgain() {
-    this.cookieService.set(this.DONT_SHOW_MIGRATION_INFO_COOKIE, "1", null, "/");
+    this.cookieService.put(this.DONT_SHOW_MIGRATION_INFO_COOKIE, "1", {
+      path: "/",
+      expires: null
+    });
     this.showMigrationInfo = false;
   }
 

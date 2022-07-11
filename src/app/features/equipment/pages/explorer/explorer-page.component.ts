@@ -20,7 +20,7 @@ import { Location } from "@angular/common";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 import { CameraInterface, CameraType } from "@features/equipment/types/camera.interface";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
-import { CookieService } from "ngx-cookie-service";
+import { CookieService } from "ngx-cookie";
 import {
   ExplorerFilterInterface,
   ExplorerFiltersComponent

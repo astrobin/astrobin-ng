@@ -9,7 +9,7 @@ import { TitleService } from "@shared/services/title/title.service";
 import { TranslateService } from "@ngx-translate/core";
 import { EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
 import { WindowRefService } from "@shared/services/window-ref.service";
-import { CookieService } from "ngx-cookie-service";
+import { CookieService } from "ngx-cookie";
 
 @Component({
   selector: "astrobin-migration-explorer",

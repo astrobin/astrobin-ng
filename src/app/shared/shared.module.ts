@@ -36,7 +36,7 @@ import { UserService } from "@shared/services/user.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { NgWizardModule, THEME } from "ng-wizard";
 import { StickyNavModule } from "ng2-sticky-nav";
-import { CookieService } from "ngx-cookie-service";
+import { CookieService } from "ngx-cookie";
 import { NgxFilesizeModule } from "ngx-filesize";
 import { ImageCropperModule } from "ngx-image-cropper";
 import { TimeagoModule } from "ngx-timeago";
@@ -65,7 +65,7 @@ export function appInitializer(store: Store<State>, actions$: Actions) {
           take(1),
           switchMap(() => {
             store.dispatch(new InitializeAuth());
-            return actions$.pipe(ofType(AuthActionTypes.INITIALIZE_SUCCESS));
+            return actions$.pipe(ofType(AuthActionTypes.INITIALIZE_SUCCESS), take(1));
           })
         )
         .subscribe(() => {

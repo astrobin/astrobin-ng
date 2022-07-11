@@ -66,12 +66,11 @@ import { StoreDevtoolsModule } from "@ngrx/store-devtools";
 import { MissingTranslationHandler, TranslateLoader, TranslateModule, TranslateParser } from "@ngx-translate/core";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { SharedModule } from "@shared/shared.module";
-import { CookieService } from "ngx-cookie-service";
+import { CookieModule, CookieService } from "ngx-cookie";
 import { TimeagoCustomFormatter, TimeagoFormatter, TimeagoIntl, TimeagoModule } from "ngx-timeago";
 import { AppRoutingModule } from "./app-routing.module";
 import { CustomMissingTranslationHandler } from "./missing-translation-handler";
 import { translateLoaderFactory } from "./translate-loader";
-import { TransferHttpCacheModule } from "@nguniversal/common";
 
 // Supported languages
 registerLocaleData(localeEnglish);
@@ -139,6 +138,7 @@ export function initFontAwesome(iconLibrary: FaIconLibrary) {
     BrowserAnimationsModule,
     BrowserTransferStateModule,
     HttpClientModule,
+    CookieModule.forRoot(),
 
     // Dependencies.
     StoreModule.forRoot(appStateReducers),

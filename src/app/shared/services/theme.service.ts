@@ -1,11 +1,9 @@
 import { Injectable } from "@angular/core";
 import { WindowRefService } from "@shared/services/window-ref.service";
-import { CookieService } from "ngx-cookie-service";
 import { Constants } from "@shared/constants";
 import { environment } from "@env/environment";
-import { take } from "rxjs/operators";
-import { interval } from "rxjs";
 import { UtilsService } from "@shared/services/utils/utils.service";
+import { CookieService } from "ngx-cookie";
 
 export enum Theme {
   DEFAULT = "default",

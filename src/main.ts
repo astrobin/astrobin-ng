@@ -8,17 +8,11 @@ if (environment.production) {
   enableProdMode();
 }
 
-function bootstrap() {
+document.addEventListener("DOMContentLoaded", () => {
   platformBrowserDynamic()
     .bootstrapModule(AppModule)
     .catch(err => {
       // tslint:disable-next-line:no-console
       console.error(err);
     });
-}
-
-if (document.readyState === "complete") {
-  bootstrap();
-} else {
-  document.addEventListener("DOMContentLoaded", bootstrap);
-}
+});

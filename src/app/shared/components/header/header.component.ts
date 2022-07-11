@@ -15,7 +15,7 @@ import { selectCurrentUser } from "@features/account/store/auth.selectors";
 import { map, take, takeUntil } from "rxjs/operators";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
-import { CookieService } from "ngx-cookie-service";
+import { CookieService } from "ngx-cookie";
 import { Theme, ThemeService } from "@shared/services/theme.service";
 import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
 

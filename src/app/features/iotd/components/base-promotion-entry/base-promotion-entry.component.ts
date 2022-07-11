@@ -15,7 +15,7 @@ import { ImageAlias } from "@shared/enums/image-alias.enum";
 import { Observable } from "rxjs";
 import { filter, map, take, takeUntil } from "rxjs/operators";
 import { PromotionImageInterface } from "@features/iotd/types/promotion-image.interface";
-import { CookieService } from "ngx-cookie-service";
+import { CookieService } from "ngx-cookie";
 import { selectImage } from "@app/store/selectors/app/image.selectors";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";

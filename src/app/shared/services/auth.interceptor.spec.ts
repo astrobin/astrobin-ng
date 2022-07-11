@@ -6,7 +6,7 @@ import { AuthClassicApiService } from "@shared/services/api/classic/auth/auth-cl
 import { AuthInterceptor } from "@shared/services/auth.interceptor";
 import { AuthService } from "@shared/services/auth.service";
 import { MockBuilder, NG_MOCKS_INTERCEPTORS } from "ng-mocks";
-import { CookieService } from "ngx-cookie-service";
+import { CookieService } from "ngx-cookie";
 
 describe(`AuthHttpInterceptor`, () => {
   let authService: AuthService;
