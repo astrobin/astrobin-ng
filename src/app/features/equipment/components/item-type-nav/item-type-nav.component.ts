@@ -48,7 +48,10 @@ export class ItemTypeNavComponent extends BaseComponentDirective implements OnIn
   enableCollapsing = false;
 
   @Input()
-  collapsed = true;
+  startCollapsed = false;
+
+  @Input()
+  collapsed = false;
 
   @Input()
   showBrands = true;
@@ -207,7 +210,9 @@ export class ItemTypeNavComponent extends BaseComponentDirective implements OnIn
     const document = this.windowRefService.nativeWindow.document;
     isTouchDevice = document && "ontouchend" in document;
 
-    this.collapsed = this.enableCollapsing && !isTouchDevice && this.windowRefService.nativeWindow.innerWidth > 767;
+    this.collapsed =
+      this.enableCollapsing &&
+      (this.startCollapsed || (!isTouchDevice && this.windowRefService.nativeWindow.innerWidth > 767));
 
     this.collapsedChanged.emit(this.collapsed);
   }

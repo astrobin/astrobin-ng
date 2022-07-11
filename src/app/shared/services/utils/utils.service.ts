@@ -6,7 +6,6 @@ import { State } from "@app/store/state";
 import { SelectorWithProps } from "@ngrx/store/src/models";
 import { interval, Observable, of } from "rxjs";
 import { isPlatformBrowser } from "@angular/common";
-import { WindowRefService } from "@shared/services/window-ref.service";
 
 @Injectable({
   providedIn: "root"
@@ -15,8 +14,7 @@ export class UtilsService {
   constructor(
     public readonly store$: Store<State>,
     public readonly translateService: TranslateService,
-    @Inject(PLATFORM_ID) public readonly platformId,
-    public readonly windowRefService: WindowRefService
+    @Inject(PLATFORM_ID) public readonly platformId
   ) {}
 
   static uuid(): string {
@@ -325,7 +323,6 @@ export class UtilsService {
     }
 
     const maxDistance = 500;
-    const window = this.windowRefService.nativeWindow;
     const rect = element.getBoundingClientRect();
     return (
       rect.top >= 0 &&

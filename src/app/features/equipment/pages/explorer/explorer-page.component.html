@@ -14,6 +14,7 @@
     <div [class]="navCollapsed ? 'col-md-1' : 'col-md-4'">
       <astrobin-equipment-item-type-nav
         [enableCollapsing]="enableNavCollapsing"
+        [startCollapsed]="true"
         (collapsedChanged)="navCollapsed = $event"
       ></astrobin-equipment-item-type-nav>
     </div>
