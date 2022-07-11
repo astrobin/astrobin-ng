@@ -103,7 +103,7 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
       return;
     }
 
-    if (!UtilsService.isNearBelowViewport(this.elementRef.nativeElement)) {
+    if (!UtilsService.isNearBelowViewport(this.windowRefService.nativeWindow, this.elementRef.nativeElement)) {
       return;
     }
 

@@ -67,24 +67,14 @@ export class UtilsService {
     return a;
   }
 
-  static isInViewport(element: HTMLElement): boolean {
-    const rect = element.getBoundingClientRect();
-    return (
-      rect.top >= 0 &&
-      rect.left >= 0 &&
-      rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
-      rect.right <= (window.innerWidth || document.documentElement.clientWidth)
-    );
-  }
-
-  static isNearBelowViewport(element: HTMLElement): boolean {
+  static isNearBelowViewport(window: Window, element: HTMLElement): boolean {
     const maxDistance = 500;
     const rect = element.getBoundingClientRect();
     return (
       rect.top >= 0 &&
       rect.left >= 0 &&
-      rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) + maxDistance &&
-      rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+      rect.bottom <= (window.innerHeight || window.document.documentElement.clientHeight) + maxDistance &&
+      rect.right <= (window.innerWidth || window.document.documentElement.clientWidth)
     );
   }
 
