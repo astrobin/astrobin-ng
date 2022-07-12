@@ -1,4 +1,13 @@
-import { Component, HostBinding, HostListener, Input, OnChanges, SimpleChanges } from "@angular/core";
+import {
+  Component,
+  HostBinding,
+  HostListener,
+  Inject,
+  Input,
+  OnChanges,
+  PLATFORM_ID,
+  SimpleChanges
+} from "@angular/core";
 import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
 import { HideFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
 import { LoadThumbnail, LoadThumbnailCancel } from "@app/store/actions/thumbnail.actions";
@@ -17,6 +26,7 @@ import { BehaviorSubject, interval, Observable } from "rxjs";
 import { distinctUntilChanged, filter, map, switchMap, take, takeUntil, tap } from "rxjs/operators";
 import { ImageThumbnailInterface } from "@shared/interfaces/image-thumbnail.interface";
 import { UtilsService } from "@shared/services/utils/utils.service";
+import { isPlatformBrowser } from "@angular/common";
 
 @Component({
   selector: "astrobin-fullscreen-image-viewer",
@@ -63,7 +73,8 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     public readonly translateService: TranslateService,
     public readonly imageService: ImageService,
     public readonly domSanitizer: DomSanitizer,
-    public readonly utilsService: UtilsService
+    public readonly utilsService: UtilsService,
+    @Inject(PLATFORM_ID) public readonly platformId
   ) {
     super(store$);
 
@@ -200,13 +211,15 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   }
 
   private _setZoomIndicatorTimeout(): void {
-    // if (this._zoomIndicatorTimeout) {
-    //   clearTimeout(this._zoomIndicatorTimeout);
-    // }
-    //
-    // this._zoomIndicatorTimeout = this.windowRef.nativeWindow.setTimeout(() => {
-    //   this.showZoomIndicator = false;
-    // }, this._zoomIndicatorTimeoutDuration);
+    if (isPlatformBrowser(this.platformId)) {
+      if (this._zoomIndicatorTimeout) {
+        clearTimeout(this._zoomIndicatorTimeout);
+      }
+
+      this._zoomIndicatorTimeout = this.windowRef.nativeWindow.setTimeout(() => {
+        this.showZoomIndicator = false;
+      }, this._zoomIndicatorTimeoutDuration);
+    }
   }
 
   private _getHdOptions(): Omit<ImageThumbnailInterface, "url"> {
