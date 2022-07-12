@@ -1,8 +1,8 @@
 const awsServerlessExpress = require("aws-serverless-express");
-const server = require("./dist/frontend/server");
 const awsServerlessExpressMiddleware = require("aws-serverless-express/middleware");
+const app = require("./dist/frontend/server/main");
+const serverProxy = awsServerlessExpress.createServer(app.server);
 
-server.app.use(awsServerlessExpressMiddleware.eventContext());
+app.server.use(awsServerlessExpressMiddleware.eventContext());
 
-const serverProxy = awsServerlessExpress.createServer(server.app);
 module.exports.ssrserverless = (event, context) => awsServerlessExpress.proxy(serverProxy, event, context);

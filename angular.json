@@ -41,7 +41,6 @@
           },
           "configurations": {
             "development": {
-
               "index": {
                 "input": "src/index.html",
                 "output": "index.html"
@@ -161,6 +160,9 @@
             "browserTarget": "frontend:build"
           },
           "configurations": {
+            "development": {
+              "browserTarget": "frontend:build:development"
+            },
             "production": {
               "browserTarget": "frontend:build:production"
             },
