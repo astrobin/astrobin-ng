@@ -28,7 +28,8 @@
     "serve:ssr": "node dist/frontend/server/main.js",
     "build:ssr:dev": "ng build --configuration=development && ng run frontend:server --configuration=development",
     "build:ssr:prod": "ng build --aot --configuration=production && ng run frontend:server --configuration=production",
-    "prerender": "ng run frontend:prerender"
+    "prerender": "ng run frontend:prerender",
+    "deploy:ssr": "serverless deploy"
   },
   "private": true,
   "dependencies": {
