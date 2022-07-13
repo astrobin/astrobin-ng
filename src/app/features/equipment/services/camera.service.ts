@@ -13,6 +13,7 @@ import { EquipmentItemType } from "@features/equipment/types/equipment-item-base
 import { selectBrand, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import { filter, map, switchMap, take, tap } from "rxjs/operators";
 import { SensorInterface } from "@features/equipment/types/sensor.interface";
+import { EquipmentItemDisplayProperty } from "@features/equipment/services/equipment-item.service";
 
 export enum CameraDisplayProperty {
   NAME = "NAME",
@@ -155,6 +156,10 @@ export class CameraService extends BaseService implements EquipmentItemServiceIn
 
   getPrintablePropertyName(propertyName: CameraDisplayProperty, shortForm = false): string {
     switch (propertyName) {
+      case CameraDisplayProperty.NAME:
+        return shortForm
+          ? this.translateService.instant("Name")
+          : this.translateService.instant("Official and complete product name");
       case CameraDisplayProperty.TYPE:
         return this.translateService.instant("Type");
       case CameraDisplayProperty.SENSOR:
