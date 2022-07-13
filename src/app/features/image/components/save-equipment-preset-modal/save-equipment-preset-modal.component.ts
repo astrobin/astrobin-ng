@@ -57,7 +57,11 @@ export class SaveEquipmentPresetModalComponent extends BaseComponentDirective im
         id: "name",
         wrappers: ["default-wrapper"],
         templateOptions: {
-          label: this.translateService.instant("Name"),
+          label: this.translateService.instant("Preset name"),
+          description: this.translateService.instant(
+            `Here you can save an equipment preset so you can easily load it later on a different image <em>(e.g. "Home ` +
+              `observatory", "Solar setup", "Travel setup 2022", etc)</em>`
+          ),
           required: true,
           maxLength: 128
         }
@@ -80,7 +84,12 @@ export class SaveEquipmentPresetModalComponent extends BaseComponentDirective im
       .subscribe(() => {
         this.modal.close();
         this.loadingService.setLoading(false);
-        this.popNotificationsService.success(this.translateService.instant("Equipment preset created."));
+        this.popNotificationsService.success(
+          this.translateService.instant(
+            `Equipment preset created! You can use the "Load preset" button on a different image to assign the
+            same equipment to it.`
+          )
+        );
       });
   }
 

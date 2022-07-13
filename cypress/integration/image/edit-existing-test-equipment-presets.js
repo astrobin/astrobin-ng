@@ -280,7 +280,7 @@ context("Image edit (existing), test equipment presets", () => {
 
     cy.get(".modal").should("not.be.visible");
     cy.get(".toast-message")
-      .contains("Equipment preset created.")
+      .contains("Equipment preset created")
       .should("be.visible");
   });
 
