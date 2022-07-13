@@ -479,6 +479,7 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
       hooks: {
         onInit: (field: FormlyFieldConfig) => {
           field.formControl.valueChanges
+
             .pipe(
               takeUntil(this.destroyed$),
               startWith(this.name),

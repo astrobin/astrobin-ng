@@ -176,7 +176,9 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
     if (
       changes.initialValue &&
       changes.initialValue.previousValue !== undefined &&
-      changes.initialValue.currentValue !== undefined
+      changes.initialValue.previousValue !== null &&
+      changes.initialValue.currentValue !== undefined &&
+      changes.initialValue.currentValue !== null
     ) {
       if (this.multiple) {
         equals =
@@ -259,7 +261,7 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
     };
 
     if (this.multiple) {
-      if ((value as Type[]).length === 0) {
+      if (!value) {
         _doSetValues([]);
         return;
       }

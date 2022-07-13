@@ -5,12 +5,14 @@ import { AuthGuardService } from "@shared/services/guards/auth-guard.service";
 import { ImageOwnerGuardService } from "@shared/services/guards/image-owner-guard.service";
 import { CurrentUsersGroupsResolver } from "@shared/resolvers/current-users-groups.resolver";
 import { CurrentUsersLocationsResolver } from "@shared/resolvers/current-users-locations.resolver";
+import { PendingChangesGuard } from "@shared/services/guards/pending-changes-guard.service";
 
 export const routes: Routes = [
   {
     path: ":imageId/edit",
     component: ImageEditPageComponent,
     canActivate: [AuthGuardService, ImageOwnerGuardService],
+    canDeactivate: [PendingChangesGuard],
     resolve: {
       image: ImageResolver,
       groups: CurrentUsersGroupsResolver,

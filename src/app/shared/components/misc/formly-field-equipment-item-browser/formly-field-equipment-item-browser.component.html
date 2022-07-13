@@ -2,7 +2,7 @@
   #itemBrowser
   [enableSummaryModal]="false"
   [id]="field.id"
-  [initialValue]="initialValue"
+  [initialValue]="initialValue$ | async"
   [multiple]="to.multiple"
   [required]="to.required"
   [showLabel]="false"
