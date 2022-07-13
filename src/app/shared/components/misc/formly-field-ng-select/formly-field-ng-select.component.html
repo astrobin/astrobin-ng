@@ -114,16 +114,13 @@
 </ng-template>
 
 <ng-template #ngSelectModal>
-  <div class="modal-header">
-    <h4 class="modal-title" id="modal-title">
-      {{ "Find equipment item" | translate }}
-    </h4>
-    <button (click)="exitFullscreen()" aria-describedby="modal-title" class="close" type="button">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-
   <div class="modal-body">
+    <label
+      *ngIf="!!field.templateOptions.fullScreenLabel"
+      [attr.for]="field.id"
+    >
+      {{ field.templateOptions.fullScreenLabel }}
+    </label>
     <ng-container [ngTemplateOutlet]="selectContainer"></ng-container>
   </div>
 
