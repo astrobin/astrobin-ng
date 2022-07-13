@@ -373,6 +373,9 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
         label: label
           ? label
           : `${this.translateService.instant("Brand")} / ${this.translateService.instant("Company")}`,
+        fullScreenLabel: label
+          ? label
+          : `${this.translateService.instant("Brand")} / ${this.translateService.instant("Company")}`,
         description:
           this.editorMode === EquipmentItemEditorMode.EDIT_PROPOSAL
             ? this.translateService.instant("Editing this field is not possible.")
