@@ -111,14 +111,18 @@ export class ImageEditService extends BaseService {
 
         for (const preset of presets) {
           if (
-            JSON.stringify(preset.imagingTelescopes.sort()) === JSON.stringify(this.model.imagingTelescopes2.sort()) &&
-            JSON.stringify(preset.guidingTelescopes.sort()) === JSON.stringify(this.model.guidingTelescopes2.sort()) &&
-            JSON.stringify(preset.imagingCameras.sort()) === JSON.stringify(this.model.imagingCameras2.sort()) &&
-            JSON.stringify(preset.guidingCameras.sort()) === JSON.stringify(this.model.guidingCameras2.sort()) &&
-            JSON.stringify(preset.mounts.sort()) === JSON.stringify(this.model.mounts2.sort()) &&
-            JSON.stringify(preset.filters.sort()) === JSON.stringify(this.model.filters2.sort()) &&
-            JSON.stringify(preset.accessories.sort()) === JSON.stringify(this.model.accessories2.sort()) &&
-            JSON.stringify(preset.software.sort()) === JSON.stringify(this.model.software2.sort())
+            JSON.stringify([...preset.imagingTelescopes].sort()) ===
+              JSON.stringify([...this.model.imagingTelescopes2].sort()) &&
+            JSON.stringify([...preset.guidingTelescopes].sort()) ===
+              JSON.stringify([...this.model.guidingTelescopes2].sort()) &&
+            JSON.stringify([...preset.imagingCameras].sort()) ===
+              JSON.stringify([...this.model.imagingCameras2].sort()) &&
+            JSON.stringify([...preset.guidingCameras].sort()) ===
+              JSON.stringify([...this.model.guidingCameras2].sort()) &&
+            JSON.stringify([...preset.mounts].sort()) === JSON.stringify([...this.model.mounts2].sort()) &&
+            JSON.stringify([...preset.filters].sort()) === JSON.stringify([...this.model.filters2].sort()) &&
+            JSON.stringify([...preset.accessories].sort()) === JSON.stringify([...this.model.accessories2].sort()) &&
+            JSON.stringify([...preset.software].sort()) === JSON.stringify([...this.model.software2].sort())
           ) {
             return preset;
           }

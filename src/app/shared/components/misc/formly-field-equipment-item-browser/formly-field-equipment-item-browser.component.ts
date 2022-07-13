@@ -94,11 +94,16 @@ export class FormlyFieldEquipmentItemBrowserComponent extends FieldType implemen
   }
 
   onValueChanged(value: EquipmentItem | EquipmentItem[]) {
+    if (!value) {
+      this.formControl.setValue(this.to.multiple ? [] : null);
+      return;
+    }
+
     if (this.to.multiple) {
       const values = (value as EquipmentItem[]).map(x => x.id);
       const formValues = this.formControl.value as EquipmentItem[];
 
-      if (JSON.stringify(values.sort()) !== JSON.stringify(formValues.sort())) {
+      if (JSON.stringify([...values].sort()) !== JSON.stringify([...formValues].sort())) {
         this.formControl.markAsTouched();
         this.formControl.markAsDirty();
       }

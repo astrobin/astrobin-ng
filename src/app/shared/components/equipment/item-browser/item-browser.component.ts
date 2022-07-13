@@ -261,7 +261,7 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
     };
 
     if (this.multiple) {
-      if (!value) {
+      if (!value || (value as Type[]).length === 0) {
         _doSetValues([]);
         return;
       }

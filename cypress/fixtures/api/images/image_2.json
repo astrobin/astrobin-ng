@@ -10,5 +10,13 @@
   "h": 1000,
   "license": "ATTRIBUTION_NON_COMMERCIAL_SHARE_ALIKE",
   "imagingTelescopes": [],
-  "imagingCameras": []
+  "imagingCameras": [],
+  "imagingTelescopes2": [],
+  "imagingCameras2": [],
+  "mounts2": [],
+  "filters2":  [],
+  "accessories2": [],
+  "software2": [],
+  "guidingTelescopes2": [],
+  "guidingCameras2": []
 }
