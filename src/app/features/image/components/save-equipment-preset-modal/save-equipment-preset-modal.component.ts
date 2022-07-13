@@ -139,14 +139,14 @@ export class SaveEquipmentPresetModalComponent extends BaseComponentDirective im
   _getPreset(): EquipmentPresetInterface {
     return {
       name: this.model.name,
-      imagingTelescopes: this.imageEditService.model.imagingTelescopes2.map(value => value.id),
-      guidingTelescopes: this.imageEditService.model.guidingTelescopes2.map(value => value.id),
-      imagingCameras: this.imageEditService.model.imagingCameras2.map(value => value.id),
-      guidingCameras: this.imageEditService.model.guidingCameras2.map(value => value.id),
-      mounts: this.imageEditService.model.mounts2.map(value => value.id),
-      filters: this.imageEditService.model.filters2.map(value => value.id),
-      accessories: this.imageEditService.model.accessories2.map(value => value.id),
-      software: this.imageEditService.model.software2.map(value => value.id)
+      imagingTelescopes: this.imageEditService.model.imagingTelescopes2,
+      guidingTelescopes: this.imageEditService.model.guidingTelescopes2,
+      imagingCameras: this.imageEditService.model.imagingCameras2,
+      guidingCameras: this.imageEditService.model.guidingCameras2,
+      mounts: this.imageEditService.model.mounts2,
+      filters: this.imageEditService.model.filters2,
+      accessories: this.imageEditService.model.accessories2,
+      software: this.imageEditService.model.software2
     };
   }
 }

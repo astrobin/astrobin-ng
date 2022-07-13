@@ -11,17 +11,16 @@ import {
   EquipmentActionTypes,
   FindRecentlyUsedEquipmentItems,
   FindRecentlyUsedEquipmentItemsSuccess,
-  ItemBrowserAdd
+  ItemBrowserAdd,
+  LoadEquipmentItem
 } from "@features/equipment/store/equipment.actions";
 import { Actions, ofType } from "@ngrx/effects";
 import { filter, map, take } from "rxjs/operators";
 import { TranslateService } from "@ngx-translate/core";
 import { UtilsService } from "@shared/services/utils/utils.service";
-
-export enum FormlyFieldEquipmentItemBrowserMode {
-  ID,
-  OBJECT
-}
+import { Observable, of } from "rxjs";
+import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import { selectEquipmentItem, selectEquipmentItems } from "@features/equipment/store/equipment.selectors";
 
 @Component({
   selector: "astrobin-formly-field-equipment-item-browser",
@@ -49,6 +48,16 @@ export class FormlyFieldEquipmentItemBrowserComponent extends FieldType implemen
     super();
   }
 
+  get initialValue(): EquipmentItem["id"] | EquipmentItem["id"][] {
+    const value = this.formControl.value;
+
+    if (!this.formControl.value) {
+      return this.to.multiple ? [] : null;
+    }
+
+    return value;
+  }
+
   ngOnInit() {
     if (this.to.showQuickAddRecent) {
       this.store$.dispatch(
@@ -72,22 +81,6 @@ export class FormlyFieldEquipmentItemBrowserComponent extends FieldType implemen
     }
   }
 
-  get initialValue() {
-    if (this.to.mode === FormlyFieldEquipmentItemBrowserMode.ID) {
-      return this.formControl.value;
-    }
-
-    if (!this.formControl.value) {
-      return null;
-    }
-
-    if (this.to.multiple) {
-      return this.formControl.value.map(value => value.id);
-    }
-
-    return this.formControl.value.id;
-  }
-
   onCreationModeStarted() {
     if (this.to.creationModeStarted && UtilsService.isFunction(this.to.creationModeStarted)) {
       this.to.creationModeStarted();
@@ -100,31 +93,31 @@ export class FormlyFieldEquipmentItemBrowserComponent extends FieldType implemen
     }
   }
 
-  onValueChanged(value: EquipmentItemBaseInterface | EquipmentItemBaseInterface[]) {
-    if (this.to.multiple) {
-      const arrayValue = value as EquipmentItemBaseInterface[];
-
-      if (arrayValue.length > 0) {
-        this.formControl.setValue(
-          this.to.mode === FormlyFieldEquipmentItemBrowserMode.ID ? arrayValue.map(item => item.id) : arrayValue
-        );
-      } else {
-        this.formControl.setValue([]);
-      }
-    } else {
-      const singleValue = value as EquipmentItemBaseInterface;
-
-      if (!!singleValue) {
-        this.formControl.setValue(
-          this.to.mode === FormlyFieldEquipmentItemBrowserMode.ID ? singleValue.id : singleValue
-        );
-      } else {
-        this.formControl.setValue(null);
-      }
+  onValueChanged(value: EquipmentItem | EquipmentItem[]) {
+    if (!value) {
+      this.formControl.setValue(this.to.multiple ? [] : null);
+      return;
     }
 
-    this.formControl.markAsTouched();
-    this.formControl.markAsDirty();
+    if (this.to.multiple) {
+      const values = (value as EquipmentItem[]).map(x => x.id);
+      const formValues = this.formControl.value as EquipmentItem[];
+
+      if (JSON.stringify([...values].sort()) !== JSON.stringify([...formValues].sort())) {
+        this.formControl.markAsTouched();
+        this.formControl.markAsDirty();
+      }
+
+      this.formControl.setValue(values);
+    } else {
+      const id = (value as EquipmentItem).id;
+      if (id === this.formControl.value) {
+        this.formControl.markAsTouched();
+        this.formControl.markAsDirty();
+      }
+
+      this.formControl.setValue(id);
+    }
   }
 
   quickAddItem(item: EquipmentItemBaseInterface) {

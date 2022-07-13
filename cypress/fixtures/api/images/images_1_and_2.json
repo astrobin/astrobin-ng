@@ -14,6 +14,14 @@
       "license": "ATTRIBUTION_NON_COMMERCIAL_SHARE_ALIKE",
       "imagingTelescopes": [],
       "imagingCameras": [],
+      "imagingTelescopes2": [],
+      "imagingCameras2": [],
+      "mounts2": [],
+      "filters2":  [],
+      "accessories2": [],
+      "software2": [],
+      "guidingTelescopes2": [],
+      "guidingCameras2": [],
       "thumbnails": [
         {
           "url": "assets/test/images/regular.jpg",

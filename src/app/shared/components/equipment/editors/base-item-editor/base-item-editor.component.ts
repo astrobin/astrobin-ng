@@ -44,7 +44,6 @@ import { FormlyFieldMessageLevel, FormlyFieldService } from "@shared/services/fo
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { InformationDialogComponent } from "@shared/components/misc/information-dialog/information-dialog.component";
-import { FormlyFieldEquipmentItemBrowserMode } from "@shared/components/misc/formly-field-equipment-item-browser/formly-field-equipment-item-browser.component";
 import { CameraInterface, CameraType } from "@features/equipment/types/camera.interface";
 
 export enum EquipmentItemEditorMode {
@@ -482,6 +481,7 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
       hooks: {
         onInit: (field: FormlyFieldConfig) => {
           field.formControl.valueChanges
+
             .pipe(
               takeUntil(this.destroyed$),
               startWith(this.name),
@@ -590,7 +590,6 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
         "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
       },
       templateOptions: {
-        mode: FormlyFieldEquipmentItemBrowserMode.ID,
         label: this.equipmentItemService.getPrintablePropertyName(itemType, EquipmentItemDisplayProperty.VARIANT_OF),
         description: this.translateService.instant(
           "If this item is a variant of another product, please select it here. This is typically used for " +
