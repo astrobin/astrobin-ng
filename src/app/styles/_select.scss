@@ -28,6 +28,12 @@
     }
   }
 
+  &:not(.show-arrow) {
+    .ng-arrow-wrapper {
+      display: none;
+    }
+  }
+
   .ng-clear-wrapper {
     color: var(--lightGrey) !important;
 

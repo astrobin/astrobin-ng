@@ -536,6 +536,7 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
                 multiple: this.multiple,
                 closeOnSelect: true,
                 enableFullscreen: this.enableFullscreen,
+                showArrow: false,
                 classNames: "equipment-select"
               },
               hooks: {

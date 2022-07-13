@@ -32,6 +32,7 @@
       [class.fullscreen]="fullscreen"
       [class.enable-fullscreen]="to.enableFullscreen"
       [class.too-many-options]="hasAsyncItems && (to.options | async)?.length > TOO_MANY_OPTIONS"
+      [class.show-arrow]="to.showArrow !== false"
       class="{{ to.classNames }} flex-grow-1"
       (click)="goFullscreen($event, null)"
       (search)="goFullscreen(null, $event)"
