@@ -61,8 +61,8 @@ import { PopNotificationsService } from "@shared/services/pop-notifications.serv
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { BaseItemEditorComponent } from "@shared/components/equipment/editors/base-item-editor/base-item-editor.component";
 
-type Type = EquipmentItem["id"] | EquipmentItem;
-type TypeUnion = EquipmentItem["id"] | EquipmentItem | EquipmentItem["id"][] | EquipmentItem[];
+type Type = EquipmentItem["id"];
+type TypeUnion = EquipmentItem["id"] | EquipmentItem["id"][];
 
 @Component({
   selector: "astrobin-equipment-item-browser",
@@ -266,10 +266,10 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
         return;
       }
 
-      (value as Type[]).forEach((x: EquipmentItem | EquipmentItem["id"]) =>
+      (value as Type[]).forEach((id: EquipmentItem["id"]) =>
         this.store$.dispatch(
           new LoadEquipmentItem({
-            id: UtilsService.isObject(x) ? (x as EquipmentItem).id : (x as EquipmentItem["id"]),
+            id,
             type: this.type
           })
         )
@@ -295,7 +295,7 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
 
       this.store$.dispatch(
         new LoadEquipmentItem({
-          id: UtilsService.isObject(value) ? (value as EquipmentItem).id : (value as EquipmentItem["id"]),
+          id: value as Type,
           type: this.type
         })
       );
@@ -406,17 +406,9 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
     const _doAddItem = (itemToAdd: EquipmentItemBaseInterface) => {
       const _doSetValue = (value: EquipmentItemBaseInterface) => {
         if (this.multiple) {
-          if (UtilsService.isObject(value)) {
-            this.setValue([...((this.model.value as EquipmentItem["id"][]) || []), value.id]);
-          } else {
-            this.setValue([...((this.model.value as EquipmentItem[]) || []), value]);
-          }
+          this.setValue([...((this.model.value as EquipmentItem["id"][]) || []), value.id]);
         } else {
-          if (UtilsService.isObject(value)) {
-            this.setValue(value.id);
-          } else {
-            this.setValue(value);
-          }
+          this.setValue(value.id);
         }
       };
 
@@ -581,18 +573,10 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
                     )
                     .subscribe((items: EquipmentItemBaseInterface[]) => {
                       if (this.multiple) {
-                        if (!!items && items.length > 0 && UtilsService.isObject(items[0])) {
-                          this.setValue(items.map(item => item.id));
-                        } else {
-                          this.setValue(items);
-                        }
+                        this.setValue(items.map(item => item.id));
                       } else {
                         if (!!items && items.length > 0) {
-                          if (UtilsService.isObject(items[0])) {
-                            this.setValue(items[0].id);
-                          } else {
-                            this.setValue(items[0]);
-                          }
+                          this.setValue(items[0].id);
                         } else {
                           this.setValue(null);
                         }
@@ -607,7 +591,6 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
       .subscribe(() => {});
 
     // The adding and setting here is only happening from the image editor.
-    // TODO: account for ID vs OBJECT mode, as right now it's hardcoded as ID, pretty much.
     if (!!this.itemBrowserAddSubscription) {
       this.itemBrowserAddSubscription.unsubscribe();
       this.itemBrowserAddSubscription = null;
@@ -671,10 +654,10 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
         return of([]);
       }
 
-      (value as Type[]).forEach((x: EquipmentItem | EquipmentItem["id"]) =>
+      (value as Type[]).forEach((id: EquipmentItem["id"]) =>
         this.store$.dispatch(
           new LoadEquipmentItem({
-            id: UtilsService.isObject(x) ? (x as EquipmentItem).id : (x as EquipmentItem["id"]),
+            id,
             type: this.type
           })
         )
@@ -694,9 +677,7 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
 
     this.store$.dispatch(
       new LoadEquipmentItem({
-        id: UtilsService.isObject(this.model.value)
-          ? (this.model.value as EquipmentItem).id
-          : (this.model.value as EquipmentItem["id"]),
+        id: this.model.value as Type,
         type: this.type
       })
     );

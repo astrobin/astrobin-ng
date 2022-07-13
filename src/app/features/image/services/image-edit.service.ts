@@ -13,6 +13,12 @@ import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { selectEquipmentPresets } from "@features/equipment/store/equipment.selectors";
 import { map } from "rxjs/operators";
+import { TelescopeInterface } from "@features/equipment/types/telescope.interface";
+import { CameraInterface } from "@features/equipment/types/camera.interface";
+import { MountInterface } from "@features/equipment/types/mount.interface";
+import { FilterInterface } from "@features/equipment/types/filter.interface";
+import { AccessoryInterface } from "@features/equipment/types/accessory.interface";
+import { SoftwareInterface } from "@features/equipment/types/software.interface";
 
 export function KeyValueTagsValidator(control: FormControl): ValidationErrors {
   if (!control.value) {
@@ -35,7 +41,28 @@ export function KeyValueTagsValidator(control: FormControl): ValidationErrors {
 })
 export class ImageEditService extends BaseService {
   image: ImageInterface;
-  model: Partial<ImageInterface>;
+  model: Partial<
+    Omit<
+      ImageInterface,
+      | "imagingTelescopes2"
+      | "imagingCameras2"
+      | "mounts2"
+      | "filters2"
+      | "accessories2"
+      | "software2"
+      | "guidingTelescopes2"
+      | "guidingCameras2"
+    > & {
+      imagingTelescopes2: TelescopeInterface["id"][];
+      imagingCameras2: CameraInterface["id"][];
+      mounts2: MountInterface["id"][];
+      filters2: FilterInterface["id"][];
+      accessories2: AccessoryInterface["id"][];
+      software2: SoftwareInterface["id"][];
+      guidingTelescopes2: TelescopeInterface["id"][];
+      guidingCameras2: CameraInterface["id"][];
+    }
+  >;
   form = new FormGroup({});
   groups: GroupInterface[];
   locations: LocationInterface[];
@@ -84,18 +111,14 @@ export class ImageEditService extends BaseService {
 
         for (const preset of presets) {
           if (
-            JSON.stringify(preset.imagingTelescopes) ===
-              JSON.stringify(this.model.imagingTelescopes2.map(value => value.id)) &&
-            JSON.stringify(preset.guidingTelescopes) ===
-              JSON.stringify(this.model.guidingTelescopes2.map(value => value.id)) &&
-            JSON.stringify(preset.imagingCameras) ===
-              JSON.stringify(this.model.imagingCameras2.map(value => value.id)) &&
-            JSON.stringify(preset.guidingCameras) ===
-              JSON.stringify(this.model.guidingCameras2.map(value => value.id)) &&
-            JSON.stringify(preset.mounts) === JSON.stringify(this.model.mounts2.map(value => value.id)) &&
-            JSON.stringify(preset.filters) === JSON.stringify(this.model.filters2.map(value => value.id)) &&
-            JSON.stringify(preset.accessories) === JSON.stringify(this.model.accessories2.map(value => value.id)) &&
-            JSON.stringify(preset.software) === JSON.stringify(this.model.software2.map(value => value.id))
+            JSON.stringify(preset.imagingTelescopes.sort()) === JSON.stringify(this.model.imagingTelescopes2.sort()) &&
+            JSON.stringify(preset.guidingTelescopes.sort()) === JSON.stringify(this.model.guidingTelescopes2.sort()) &&
+            JSON.stringify(preset.imagingCameras.sort()) === JSON.stringify(this.model.imagingCameras2.sort()) &&
+            JSON.stringify(preset.guidingCameras.sort()) === JSON.stringify(this.model.guidingCameras2.sort()) &&
+            JSON.stringify(preset.mounts.sort()) === JSON.stringify(this.model.mounts2.sort()) &&
+            JSON.stringify(preset.filters.sort()) === JSON.stringify(this.model.filters2.sort()) &&
+            JSON.stringify(preset.accessories.sort()) === JSON.stringify(this.model.accessories2.sort()) &&
+            JSON.stringify(preset.software.sort()) === JSON.stringify(this.model.software2.sort())
           ) {
             return preset;
           }

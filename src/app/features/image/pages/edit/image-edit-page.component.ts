@@ -111,7 +111,19 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
 
   ngOnInit(): void {
     this.imageEditService.image = this.route.snapshot.data.image;
-    this.imageEditService.model = { ...this.imageEditService.image };
+    this.imageEditService.model = {
+      ...this.imageEditService.image,
+      ...{
+        imagingTelescopes2: this.imageEditService.image.imagingTelescopes2.map(x => x.id),
+        imagingCameras2: this.imageEditService.image.imagingCameras2.map(x => x.id),
+        mounts2: this.imageEditService.image.mounts2.map(x => x.id),
+        filters2: this.imageEditService.image.filters2.map(x => x.id),
+        accessories2: this.imageEditService.image.accessories2.map(x => x.id),
+        software2: this.imageEditService.image.software2.map(x => x.id),
+        guidingTelescopes2: this.imageEditService.image.guidingTelescopes2.map(x => x.id),
+        guidingCameras2: this.imageEditService.image.guidingCameras2.map(x => x.id)
+      }
+    };
     this.imageEditService.groups = this.route.snapshot.data.groups;
     this.imageEditService.locations = this.route.snapshot.data.locations;
 
