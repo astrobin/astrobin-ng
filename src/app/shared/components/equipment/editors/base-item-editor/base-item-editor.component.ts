@@ -459,17 +459,22 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
       id: "equipment-item-field-name",
       defaultValue: this.name,
       expressionProperties: {
-        "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+        "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress,
+        "templateOptions.label": () =>
+          this.model.diy
+            ? this.equipmentItemService.getPrintablePropertyName(null, EquipmentItemDisplayProperty.NAME, true)
+            : this.equipmentItemService.getPrintablePropertyName(null, EquipmentItemDisplayProperty.NAME, false),
+        "templateOptions.description": () =>
+          this.model.diy
+            ? null
+            : this.translateService.instant(
+                "The name of this product. Do not include the brand's name and make sure it's spelled correctly."
+              ) +
+              " " +
+              this.translateService.instant("Try to use the official product name in English, if applicable.")
       },
       templateOptions: {
-        required: true,
-        label: this.translateService.instant("Product name"),
-        description:
-          this.translateService.instant(
-            "The name of this product. Do not include the brand's name and make sure it's spelled correctly."
-          ) +
-          " " +
-          this.translateService.instant("Try to use the official product name in English, if applicable.")
+        required: true
       },
       hooks: {
         onInit: (field: FormlyFieldConfig) => {

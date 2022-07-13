@@ -14,13 +14,13 @@ import {
   EditProposalReviewStatus
 } from "@features/equipment/types/edit-proposal.interface";
 import { Observable, of } from "rxjs";
-import { getEquipmentItemType, selectBrand, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
+import { getEquipmentItemType, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import { EquipmentItemServiceFactory } from "@features/equipment/services/equipment-item.service-factory";
 import { BrandInterface } from "@features/equipment/types/brand.interface";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
-import { LoadBrand, LoadEquipmentItem } from "@features/equipment/store/equipment.actions";
+import { LoadEquipmentItem } from "@features/equipment/store/equipment.actions";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { filter, map, switchMap, take } from "rxjs/operators";
 import { BBCodeToHtmlPipe } from "@shared/pipes/bbcode-to-html.pipe";
@@ -176,7 +176,9 @@ export class EquipmentItemService extends BaseService {
       case EquipmentItemDisplayProperty.BRAND:
         return `${this.translateService.instant("Brand")} / ${this.translateService.instant("Company")}`;
       case EquipmentItemDisplayProperty.NAME:
-        return this.translateService.instant("Product name");
+        return shortForm
+          ? this.translateService.instant("Name")
+          : this.translateService.instant("Official and complete product name");
       case EquipmentItemDisplayProperty.VARIANT_OF:
         return this.translateService.instant("Variant of");
       case EquipmentItemDisplayProperty.WEBSITE:
@@ -204,6 +206,8 @@ export class EquipmentItemService extends BaseService {
 
     const ignoredKeys = [
       "id",
+      "brand",
+      "brandName",
       "created",
       "createdBy",
       "updated",
