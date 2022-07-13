@@ -461,17 +461,22 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
       id: "equipment-item-field-name",
       defaultValue: this.name,
       expressionProperties: {
-        "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+        "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress,
+        "templateOptions.label": () =>
+          this.model.diy
+            ? this.equipmentItemService.getPrintablePropertyName(null, EquipmentItemDisplayProperty.NAME, true)
+            : this.equipmentItemService.getPrintablePropertyName(null, EquipmentItemDisplayProperty.NAME, false),
+        "templateOptions.description": () =>
+          this.model.diy
+            ? null
+            : this.translateService.instant(
+                "The name of this product. Do not include the brand's name and make sure it's spelled correctly."
+              ) +
+              " " +
+              this.translateService.instant("Try to use the official product name in English, if applicable.")
       },
       templateOptions: {
-        required: true,
-        label: this.translateService.instant("Product name"),
-        description:
-          this.translateService.instant(
-            "The name of this product. Do not include the brand's name and make sure it's spelled correctly."
-          ) +
-          " " +
-          this.translateService.instant("Try to use the official product name in English, if applicable.")
+        required: true
       },
       hooks: {
         onInit: (field: FormlyFieldConfig) => {
@@ -521,8 +526,12 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
         },
         prohibitedWords: {
           expression: (control: FormControl) => {
+            if (!control.value) {
+              return of(true);
+            }
+
             for (const word of PROHIBITED_WORDS) {
-              if (control.value.toLowerCase().indexOf(word) > -1) {
+              if (new RegExp(`\\b${word}\\b`).test(control.value.toLowerCase())) {
                 return of(false);
               }
             }
@@ -531,7 +540,7 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
           },
           message: (error, field: FormlyFieldConfig) => {
             for (const word of PROHIBITED_WORDS) {
-              if (field.formControl.value.toLowerCase().indexOf(word) > -1) {
+              if (new RegExp(`\\b${word}\\b`).test(field.formControl.value.toLowerCase())) {
                 return this.translateService.instant(
                   `Your usage of the word "{{0}}" suggests that you are using this field to specify a property ` +
                     "of this item that is only relevant to your own copy. Remember that here you are creating or editing " +
