@@ -328,6 +328,8 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     );
 
     this.actions$.pipe(ofType(AppActionTypes.SAVE_IMAGE_SUCCESS)).subscribe(() => {
+      this.imageEditService.form.markAsPristine();
+
       if (!!next) {
         this.loadingService.setLoading(true);
         UtilsService.openLink(this.windowRefService.nativeWindow.document, next);
