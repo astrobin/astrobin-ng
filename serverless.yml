@@ -25,7 +25,6 @@ package:
     - '!node_modules/mime-db/**'
     - '!node_modules/@vendia/**'
 
-
 custom:
   apigwBinary:
     types:
