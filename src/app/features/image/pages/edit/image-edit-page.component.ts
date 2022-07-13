@@ -52,9 +52,6 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
   @ViewChild("stepperButtonsTemplate")
   stepperButtonsTemplate: TemplateRef<any>;
 
-  @ViewChild("equipmentStepPreambleTemplate")
-  equipmentStepPreambleTemplate: TemplateRef<any>;
-
   @ViewChild("equipmentStepButtonsTemplate")
   equipmentStepButtonsTemplate: TemplateRef<any>;
 
@@ -381,7 +378,6 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
           id: "image-stepper-equipment",
           templateOptions: {
             label: this.translateService.instant("Equipment"),
-            stepPreambleTemplate: this.equipmentStepPreambleTemplate,
             stepActionsTemplate: this.equipmentStepButtonsTemplate
           },
           fieldGroup: [
