@@ -176,7 +176,9 @@ export class EquipmentItemService extends BaseService {
       case EquipmentItemDisplayProperty.BRAND:
         return `${this.translateService.instant("Brand")} / ${this.translateService.instant("Company")}`;
       case EquipmentItemDisplayProperty.NAME:
-        return this.translateService.instant("Product name");
+        return shortForm
+          ? this.translateService.instant("Name")
+          : this.translateService.instant("Official and complete product name");
       case EquipmentItemDisplayProperty.VARIANT_OF:
         return this.translateService.instant("Variant of");
       case EquipmentItemDisplayProperty.WEBSITE:

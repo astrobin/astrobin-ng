@@ -22,7 +22,9 @@
         <table class="table table-striped">
           <thead>
           <tr>
-            <th>{{ "Product name" | translate }}</th>
+            <th>
+              {{ equipmentItemService.getPrintablePropertyName(null, EquipmentItemDisplayProperty.NAME, true) }}
+            </th>
             <th>{{ "Created" | translate }}</th>
           </tr>
           </thead>

@@ -155,8 +155,6 @@ export class CameraService extends BaseService implements EquipmentItemServiceIn
 
   getPrintablePropertyName(propertyName: CameraDisplayProperty, shortForm = false): string {
     switch (propertyName) {
-      case CameraDisplayProperty.NAME:
-        return this.translateService.instant("Product name");
       case CameraDisplayProperty.TYPE:
         return this.translateService.instant("Type");
       case CameraDisplayProperty.SENSOR:

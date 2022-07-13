@@ -14,6 +14,7 @@ import { BrandInterface } from "@features/equipment/types/brand.interface";
 import { CookieService } from "ngx-cookie-service";
 import { EquipmentItemsSortOrder } from "@features/equipment/services/equipment-api.service";
 import { GetContributors } from "@features/equipment/store/equipment.actions";
+import { EquipmentItemDisplayProperty } from "@features/equipment/services/equipment-item.service";
 
 export const EQUIPMENT_EXPLORER_PAGE_SORTING_COOKIE = "astrobin-equipment-explorer-page-sorting";
 
@@ -22,6 +23,8 @@ export const EQUIPMENT_EXPLORER_PAGE_SORTING_COOKIE = "astrobin-equipment-explor
   template: ""
 })
 export class ExplorerBaseComponent extends BaseComponentDirective implements OnInit {
+  readonly EquipmentItemDisplayProperty = EquipmentItemDisplayProperty;
+
   public page = 1;
   activeEditProposalId: EditProposalInterface<EquipmentItemBaseInterface>["id"];
   items$: Observable<PaginatedApiResultInterface<EquipmentItemBaseInterface> | BrandInterface[]>;
