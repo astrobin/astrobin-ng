@@ -1,7 +1,9 @@
+@import "../../../../styles/mixins";
+
 .breadcrumb {
+  @include darker-background-texture;
   margin-top: 1rem;
   margin-bottom: 0;
-  background: url("/assets/images/darker-background.png") repeat;
   border-radius: .25rem .25rem 0 0;
   padding: .65rem 1rem;
   position: relative;
