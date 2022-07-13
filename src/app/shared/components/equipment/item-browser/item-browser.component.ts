@@ -525,6 +525,7 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
                 required: this.required,
                 clearable: true,
                 label: this.showLabel ? this.label || this.translateService.instant("Find equipment item") : null,
+                fullScreenLabel: this.label || this.translateService.instant("Find equipment item"),
                 options: this._getOptions().pipe(takeUntil(this.destroyed$)),
                 onSearch: (term: string): Observable<any[]> => {
                   return this._onSearch(term);
@@ -538,6 +539,7 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
                 multiple: this.multiple,
                 closeOnSelect: true,
                 enableFullscreen: this.enableFullscreen,
+                showArrow: false,
                 classNames: "equipment-select"
               },
               hooks: {
