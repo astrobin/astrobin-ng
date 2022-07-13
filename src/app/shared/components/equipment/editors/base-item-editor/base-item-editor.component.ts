@@ -519,8 +519,12 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
         },
         prohibitedWords: {
           expression: (control: FormControl) => {
+            if (!control.value) {
+              return of(true);
+            }
+
             for (const word of PROHIBITED_WORDS) {
-              if (control.value.toLowerCase().indexOf(word) > -1) {
+              if (new RegExp(`\\b${word}\\b`).test(control.value.toLowerCase())) {
                 return of(false);
               }
             }
@@ -529,7 +533,7 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
           },
           message: (error, field: FormlyFieldConfig) => {
             for (const word of PROHIBITED_WORDS) {
-              if (field.formControl.value.toLowerCase().indexOf(word) > -1) {
+              if (new RegExp(`\\b${word}\\b`).test(field.formControl.value.toLowerCase())) {
                 return this.translateService.instant(
                   `Your usage of the word "{{0}}" suggests that you are using this field to specify a property ` +
                     "of this item that is only relevant to your own copy. Remember that here you are creating or editing " +
