@@ -439,7 +439,10 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
                       this._othersInBrand(brand.name);
 
                       this.form.get("name").updateValueAndValidity({ emitEvent: false });
-                      this.form.get("variantOf").updateValueAndValidity({ emitEvent: false });
+
+                      if (!!this.form.get("variantOf")) {
+                        this.form.get("variantOf").updateValueAndValidity({ emitEvent: false });
+                      }
                     })
                   );
                 }
