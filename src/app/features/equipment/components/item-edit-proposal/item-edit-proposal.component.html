@@ -25,79 +25,77 @@
 
     <table class="table table-striped changes">
       <thead>
-      <tr>
-        <th>{{ "Property" | translate }}</th>
-        <th>{{ "Before" | translate }}</th>
-        <th>{{ "After" | translate }}</th>
-      </tr>
+        <tr>
+          <th>{{ "Property" | translate }}</th>
+          <th>{{ "Before" | translate }}</th>
+          <th>{{ "After" | translate }}</th>
+        </tr>
       </thead>
       <tbody>
-      <tr *ngFor="let change of changes" class="change">
-        <td class="property-name">{{ change.propertyName }}</td>
+        <tr *ngFor="let change of changes" class="change">
+          <td class="property-name">{{ change.propertyName }}</td>
 
-        <td class="before" [innerHTML]="change.before || 'n/a' | translate"></td>
+          <td class="before" [innerHTML]="change.before || 'n/a' | translate"></td>
 
-        <td class="after" [innerHTML]="change.after || 'n/a' | translate"></td>
+          <td class="after" [innerHTML]="change.after || 'n/a' | translate"></td>
 
-        <td *ngIf="change.propertyName === 'name'" class="alert alert-warning" colspan="3">
-          <span [innerHTML]="equipmentItemService.nameChangeWarningMessage()"></span>
-        </td>
-      </tr>
-      <tr *ngIf="editProposal.editProposalComment" class="change">
-        <td class="property-name">{{ "Proposer's comment" | translate }}:</td>
-        <td colspan="2" class="after">{{ editProposal.editProposalComment }}</td>
-      </tr>
+          <td *ngIf="change.propertyName === 'name'" class="alert alert-warning" colspan="3">
+            <span [innerHTML]="equipmentItemService.nameChangeWarningMessage()"></span>
+          </td>
+        </tr>
+        <tr *ngIf="editProposal.editProposalComment" class="change">
+          <td class="property-name">{{ "Proposer's comment" | translate }}:</td>
+          <td colspan="2" class="after">{{ editProposal.editProposalComment }}</td>
+        </tr>
 
-      <tr *ngIf="editProposal.editProposalReviewedBy" class="change">
-        <td class="property-name">{{ "Reviewer" | translate }}</td>
-        <td colspan="2" class="after"><astrobin-username [userId]="editProposal.editProposalReviewedBy"></astrobin-username></td>
-      </tr>
+        <tr *ngIf="editProposal.editProposalReviewedBy" class="change">
+          <td class="property-name">{{ "Reviewer" | translate }}</td>
+          <td colspan="2" class="after">
+            <astrobin-username [userId]="editProposal.editProposalReviewedBy"></astrobin-username>
+          </td>
+        </tr>
 
-      <tr *ngIf="editProposal.editProposalReviewComment" class="change">
-        <td class="property-name">{{ "Reviewer's comment" | translate }}</td>
-        <td colspan="2" class="after">{{ editProposal.editProposalReviewComment }}</td>
-      </tr>
+        <tr *ngIf="editProposal.editProposalReviewComment" class="change">
+          <td class="property-name">{{ "Reviewer's comment" | translate }}</td>
+          <td colspan="2" class="after">{{ editProposal.editProposalReviewComment }}</td>
+        </tr>
       </tbody>
     </table>
 
+    <ng-container *ngIf="showReviewButtons$ | async as showReviewButtons">
+      <ng-container *ngIf="showReviewButtons && approveButtonsStatus$ | async as buttonStatus">
+        <div class="approve-disabled-reason" *ngIf="buttonStatus.disabled">
+          <fa-icon icon="exclamation-triangle"></fa-icon>
+          {{ buttonStatus.reason }}
+        </div>
+      </ng-container>
+    </ng-container>
+
     <div class="form-actions">
       <ng-container *ngIf="showReviewButtons$ | async as showReviewButtons">
-        <ng-container *ngIf="reviewButtonsStatus$ | async as reviewButtonsStatus">
-          <div
-            class="alert alert-mini alert-info"
-            *ngIf="showReviewButtons && reviewButtonsStatus.disabled && reviewButtonsStatus.reason"
-          >
-            <fa-icon icon="info-circle"></fa-icon>
-            <span [innerHTML]="reviewButtonsStatus.reason"></span>
-          </div>
-
-          <button
-            *ngIf="showReviewButtons"
-            class="btn btn-danger"
-            [disabled]="reviewButtonsStatus.disabled"
-            [class.loading]="loadingService.loading$ | async"
-            (click)="rejectEdit()"
-          >
-            {{ "Reject edit" | translate }}&hellip;
-          </button>
-          <button
-            *ngIf="showReviewButtons"
-            class="btn btn-success"
-            [disabled]="reviewButtonsStatus.disabled"
-            [class.loading]="loadingService.loading$ | async"
-            (click)="approveEdit()"
-          >
-            {{ "Approve edit" | translate }}&hellip;
-          </button>
-        </ng-container>
+        <button
+          *ngIf="showReviewButtons && rejectButtonsStatus$ | async as buttonStatus"
+          class="btn btn-outline-danger"
+          [disabled]="buttonStatus.disabled"
+          [class.loading]="loadingService.loading$ | async"
+          (click)="rejectEdit()"
+        >
+          {{ "Reject edit" | translate }}&hellip;
+        </button>
+        <button
+          *ngIf="showReviewButtons && approveButtonsStatus$ | async as buttonStatus"
+          class="btn btn-success"
+          [disabled]="buttonStatus.disabled"
+          [class.loading]="loadingService.loading$ | async"
+          (click)="approveEdit()"
+        >
+          {{ "Approve edit" | translate }}&hellip;
+        </button>
       </ng-container>
     </div>
 
     <div *ngIf="contentType$ | async as contentType" class="comments">
-      <astrobin-nested-comments
-        [contentType]="contentType"
-        [objectId]="editProposal.id"
-      ></astrobin-nested-comments>
+      <astrobin-nested-comments [contentType]="contentType" [objectId]="editProposal.id"></astrobin-nested-comments>
     </div>
   </div>
 </ng-container>
