@@ -416,6 +416,10 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
       {
         name: this.filterService.getPrintablePropertyName(FilterDisplayProperty.BANDWIDTH, true),
         value: this.filterService.getPrintableProperty$(item, FilterDisplayProperty.BANDWIDTH)
+      },
+      {
+        name: this.filterService.getPrintablePropertyName(FilterDisplayProperty.SIZE, true),
+        value: this.filterService.getPrintableProperty$(item, FilterDisplayProperty.SIZE)
       }
     ];
 
