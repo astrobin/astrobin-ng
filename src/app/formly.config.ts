@@ -107,7 +107,7 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
       },
       {
         name: "min-value",
-        message(options: { minValue: number }) {
+        message(options: { minValue: number }): string {
           return translateService.instant("This value must be equal to or greater than {{0}}.", {
             0: options.minValue
           });
@@ -115,7 +115,7 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
       },
       {
         name: "max-value",
-        message(options: { maxValue: number }) {
+        message(options: { maxValue: number }): string {
           return translateService.instant("This value must be equal to or smaller than {{0}}.", {
             0: options.maxValue
           });
@@ -123,7 +123,7 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
       },
       {
         name: "max-decimals",
-        message(options: { value: number }) {
+        message(options: { value: number }): string {
           return translateService.instant("This value must have {{0}} decimal digits or less.", {
             0: options.value
           });
@@ -131,7 +131,7 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
       },
       {
         name: "has-canon-multi-name",
-        message() {
+        message(): string {
           return translateService.instant(
             "This camera already exists in AstroBin's database. Certain Canon cameras have multiple names for " +
               "multiple markets (e.g. EOS / Rebel / Kiss) and they are grouped as a single item on AstroBin for " +
@@ -141,8 +141,17 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
       },
       {
         name: "has-tripod-as-accessory",
-        message() {
+        message(): string {
           return translateService.instant("Tripods must be added in the Mounts equipment class.");
+        }
+      },
+      {
+        name: "filter-name-lacks-size",
+        message(): string {
+          return translateService.instant(
+            "The name of the filter must end with its size in parentheses, as found from the Size selection " +
+              "dropdown, e.g.: (Round 50mm)."
+          );
         }
       }
     ],

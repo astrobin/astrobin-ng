@@ -1,4 +1,4 @@
-<div [class.has-error]="showError" class="form-group">
+<div [class.has-error]="showError" class="form-group {{to.fieldGroupClassName}}">
   <label *ngIf="to.label && to.hideLabel !== true" [attr.for]="id">
     <span [innerHTML]="to.label"></span>
     <span class="required-marker" *ngIf="to.required && !to.hideRequiredMarker">*</span>
