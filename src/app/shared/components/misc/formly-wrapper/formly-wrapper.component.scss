@@ -25,6 +25,10 @@
   font-style: italic;
 }
 
+.required-marker {
+  color: var(--lighterGrey);
+}
+
 .optional-marker {
   color: var(--lightGrey);
 }

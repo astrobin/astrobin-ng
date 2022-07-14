@@ -178,13 +178,15 @@ export class FilterEditorComponent extends BaseItemEditorComponent<FilterInterfa
           id: "filter-field-override-name",
           defaultValue: this.editorMode === EquipmentItemEditorMode.EDIT_PROPOSAL,
           templateOptions: {
-            label: this.translateService.instant("Override generated name"),
+            fieldGroupClassName: "override-name",
+            label: this.translateService.instant("Override generated name above"),
             description: this.translateService.instant(
               "AstroBin automatically sets the name of a filter from its properties, to keep a consistent " +
                 "naming convention strategy. If your filter has a specific product name that's more recognizable, " +
                 "please check this box and change its name."
             ),
-            required: true
+            required: true,
+            hideRequiredMarker: true
           }
         },
         this._getVariantOfField(EquipmentItemType.FILTER),
