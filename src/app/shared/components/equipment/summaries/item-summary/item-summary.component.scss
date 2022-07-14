@@ -51,6 +51,7 @@
 
   astrobin-equipment-item-display-name {
     display: inline-block;
+    line-height: 1.5rem;
 
     +.edit {
       opacity: 0;
