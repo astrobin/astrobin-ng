@@ -187,6 +187,13 @@ export class FilterEditorComponent extends BaseItemEditorComponent<FilterInterfa
             ),
             required: true,
             hideRequiredMarker: true
+          },
+          hooks: {
+            onInit: (field: FormlyFieldConfig) => {
+              field.formControl.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(() => {
+                this._updateGeneratedName();
+              });
+            }
           }
         },
         this._getVariantOfField(EquipmentItemType.FILTER),
