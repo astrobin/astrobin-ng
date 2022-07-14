@@ -31,9 +31,13 @@ export class EquipmentItemDisplayNameComponent extends BaseComponentDirective im
   @Input()
   enableBrandLink = false;
 
+  @Input()
+  enableNameLink = false;
+
   brandName: string;
   brandLink: string;
   itemName: string;
+  nameLink: string;
   showItemUnapprovedInfo: boolean;
 
   constructor(
@@ -73,6 +77,8 @@ export class EquipmentItemDisplayNameComponent extends BaseComponentDirective im
       .getName$(this.item)
       .pipe(take(1))
       .subscribe(name => (this.itemName = name));
+
+    this.nameLink = `/equipment/explorer/${this.item.klass.toLowerCase()}/${this.item.id}`;
 
     this.showItemUnapprovedInfo =
       this.item.reviewerDecision !== EquipmentItemReviewerDecision.APPROVED && !!this.item.brand;
