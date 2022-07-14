@@ -111,7 +111,7 @@ export class FormlyFieldEquipmentItemBrowserComponent extends FieldType implemen
       this.formControl.setValue(values);
     } else {
       const id = (value as EquipmentItem).id;
-      if (id === this.formControl.value) {
+      if (id !== this.formControl.value) {
         this.formControl.markAsTouched();
         this.formControl.markAsDirty();
       }
