@@ -2,7 +2,10 @@ import { AfterViewInit, Component, OnInit } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { Actions } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
-import { BaseItemEditorComponent } from "@shared/components/equipment/editors/base-item-editor/base-item-editor.component";
+import {
+  BaseItemEditorComponent,
+  EquipmentItemEditorMode
+} from "@shared/components/equipment/editors/base-item-editor/base-item-editor.component";
 import { LoadingService } from "@shared/services/loading.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { State } from "@app/store/state";
@@ -14,7 +17,8 @@ import { FilterInterface, FilterSize, FilterType } from "@features/equipment/typ
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { FormlyFieldConfig } from "@ngx-formly/core";
-import { startWith, takeUntil } from "rxjs/operators";
+import { take, takeUntil } from "rxjs/operators";
+import { interval } from "rxjs";
 
 @Component({
   selector: "astrobin-filter-editor",
@@ -87,13 +91,12 @@ export class FilterEditorComponent extends BaseItemEditorComponent<FilterInterfa
           },
           hooks: {
             onInit: (field: FormlyFieldConfig) => {
-              field.formControl.valueChanges
-                .pipe(takeUntil(this.destroyed$), startWith(this.model.type))
-                .subscribe(() => {
-                  const nameField = this.fields.find(f => f.key === "name");
-                  this.formlyFieldService.clearMessages(nameField.templateOptions);
-                  this._customNameChangesValidations(nameField, this.model.name);
-                });
+              field.formControl.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(() => {
+                const nameField = this.fields.find(f => f.key === "name");
+                this.formlyFieldService.clearMessages(nameField.templateOptions);
+                this._updateGeneratedName();
+                this._customNameChangesValidations(nameField, this.model.name);
+              });
             }
           }
         },
@@ -131,13 +134,12 @@ export class FilterEditorComponent extends BaseItemEditorComponent<FilterInterfa
           },
           hooks: {
             onInit: (field: FormlyFieldConfig) => {
-              field.formControl.valueChanges
-                .pipe(takeUntil(this.destroyed$), startWith(this.model.bandwidth))
-                .subscribe(() => {
-                  const nameField = this.fields.find(f => f.key === "name");
-                  this.formlyFieldService.clearMessages(nameField.templateOptions);
-                  this._customNameChangesValidations(nameField, this.model.name);
-                });
+              field.formControl.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(() => {
+                const nameField = this.fields.find(f => f.key === "name");
+                this.formlyFieldService.clearMessages(nameField.templateOptions);
+                this._updateGeneratedName();
+                this._customNameChangesValidations(nameField, this.model.name);
+              });
             }
           }
         },
@@ -159,13 +161,12 @@ export class FilterEditorComponent extends BaseItemEditorComponent<FilterInterfa
           },
           hooks: {
             onInit: (field: FormlyFieldConfig) => {
-              field.formControl.valueChanges
-                .pipe(takeUntil(this.destroyed$), startWith(this.model.size))
-                .subscribe(() => {
-                  const nameField = this.fields.find(f => f.key === "name");
-                  this.formlyFieldService.clearMessages(nameField.templateOptions);
-                  this._customNameChangesValidations(nameField, this.model.name);
-                });
+              field.formControl.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(() => {
+                const nameField = this.fields.find(f => f.key === "name");
+                this.formlyFieldService.clearMessages(nameField.templateOptions);
+                this._updateGeneratedName();
+                this._customNameChangesValidations(nameField, this.model.name);
+              });
             }
           }
         },
@@ -175,7 +176,7 @@ export class FilterEditorComponent extends BaseItemEditorComponent<FilterInterfa
           type: "checkbox",
           wrappers: ["default-wrapper"],
           id: "filter-field-override-name",
-          defaultValue: false,
+          defaultValue: this.editorMode === EquipmentItemEditorMode.EDIT_PROPOSAL,
           templateOptions: {
             label: this.translateService.instant("Override generated name"),
             description: this.translateService.instant(
@@ -194,22 +195,31 @@ export class FilterEditorComponent extends BaseItemEditorComponent<FilterInterfa
 
       this._addBaseItemEditorFields();
     });
+  }
 
-    this.form.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(value => {
-      if (
-        (!!value.type || !!value.bandwidth || !!value.size) &&
-        !this.form.get("overrideName").value &&
-        this.form.dirty
-      ) {
-        const typeLabel = !!value.type ? this.filterService.humanizeTypeShort(value.type) : "";
-        const bandwidthLabel = !!value.bandwidth ? `${value.bandwidth}nm` : "";
-        const sizeLabel =
-          !!value.size && value.size !== FilterSize.OTHER ? this.filterService.humanizeSizeShort(value.size) : "";
-        const generated = `${typeLabel} ${bandwidthLabel} ${sizeLabel}`.replace("  ", " ").trim();
+  private _updateGeneratedName() {
+    interval(10)
+      .pipe(take(1))
+      .subscribe(() => {
+        const value = this.form.value;
 
-        this.form.get("name").setValue(generated, { onlySelf: true });
-      }
-    });
+        if (
+          (!!value.type || !!value.bandwidth || !!value.size) &&
+          !this.form.get("overrideName").value &&
+          this.form.dirty
+        ) {
+          const typeLabel = !!value.type ? this.filterService.humanizeTypeShort(value.type) : "";
+          const bandwidthLabel = !!value.bandwidth ? `${value.bandwidth}nm` : "";
+          const sizeLabel =
+            !!value.size && value.size !== FilterSize.OTHER ? this.filterService.humanizeSizeShort(value.size) : "";
+          const generated = `${typeLabel} ${bandwidthLabel} ${sizeLabel}`.replace("  ", " ").trim();
+
+          this.form.get("name").setValue(generated);
+          this.form.get("name").markAsTouched();
+          this.form.get("name").markAsDirty();
+          this.form.get("name").updateValueAndValidity();
+        }
+      });
   }
 
   protected _customNameChangesValidations(field: FormlyFieldConfig, value: string) {
