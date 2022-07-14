@@ -196,7 +196,11 @@ export class FilterEditorComponent extends BaseItemEditorComponent<FilterInterfa
     });
 
     this.form.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(value => {
-      if ((!!value.type || !!value.bandwidth || !!value.size) && !this.form.get("overrideName").value) {
+      if (
+        (!!value.type || !!value.bandwidth || !!value.size) &&
+        !this.form.get("overrideName").value &&
+        this.form.dirty
+      ) {
         const typeLabel = !!value.type ? this.filterService.humanizeTypeShort(value.type) : "";
         const bandwidthLabel = !!value.bandwidth ? `${value.bandwidth}nm` : "";
         const sizeLabel =
