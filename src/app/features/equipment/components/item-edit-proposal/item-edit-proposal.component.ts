@@ -12,7 +12,6 @@ import { EquipmentItemService } from "@features/equipment/services/equipment-ite
 import {
   ApproveEquipmentItemEditProposalSuccess,
   EquipmentActionTypes,
-  LoadBrand,
   LoadEquipmentItem,
   RejectEquipmentItemEditProposalSuccess
 } from "@features/equipment/store/equipment.actions";
@@ -85,7 +84,7 @@ export class ItemEditProposalComponent extends BaseComponentDirective implements
     return this.currentUser$.pipe(map(currentUser => !!currentUser && !this.editProposal.editProposalReviewStatus));
   }
 
-  get reviewButtonsStatus$(): Observable<{ disabled: boolean; reason: string | null }> {
+  get approveButtonsStatus$(): Observable<{ disabled: boolean; reason: string | null }> {
     return this.store$.select(selectEditProposalsForItem, this.item).pipe(
       map(editProposals =>
         editProposals.filter(
@@ -100,11 +99,38 @@ export class ItemEditProposalComponent extends BaseComponentDirective implements
           return {
             disabled: true,
             reason: this.translateService.instant(
-              "You cannot review this edit proposal because you were the one who proposed it."
+              "You cannot approve this edit proposal because you were the one who proposed it."
             )
           };
         }
 
+        if (editProposals.length > 0) {
+          return {
+            disabled: true,
+            reason: this.translateService.instant(
+              "You cannot review this edit proposal because there are previous pending proposals."
+            )
+          };
+        }
+
+        return {
+          disabled: false,
+          reason: null
+        };
+      })
+    );
+  }
+
+  get rejectButtonsStatus$(): Observable<{ disabled: boolean; reason: string | null }> {
+    return this.store$.select(selectEditProposalsForItem, this.item).pipe(
+      map(editProposals =>
+        editProposals.filter(
+          editProposal =>
+            editProposal.editProposalReviewStatus === null &&
+            new Date(editProposal.editProposalCreated) < new Date(this.editProposal.editProposalCreated)
+        )
+      ),
+      map(editProposals => {
         if (editProposals.length > 0) {
           return {
             disabled: true,

@@ -16,7 +16,6 @@ import { SensorInterface } from "@features/equipment/types/sensor.interface";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 import { CameraDisplayProperty, CameraService } from "@features/equipment/services/camera.service";
 import { FormlyFieldMessageLevel, FormlyFieldService } from "@shared/services/formly-field.service";
-import { FormlyFieldEquipmentItemBrowserMode } from "@shared/components/misc/formly-field-equipment-item-browser/formly-field-equipment-item-browser.component";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { filter, map, switchMap, take, takeUntil } from "rxjs/operators";
@@ -293,7 +292,6 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
             "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
           },
           templateOptions: {
-            mode: FormlyFieldEquipmentItemBrowserMode.ID,
             label: this.cameraService.getPrintablePropertyName(CameraDisplayProperty.SENSOR),
             itemType: EquipmentItemType.SENSOR,
             showQuickAddRecent: false,

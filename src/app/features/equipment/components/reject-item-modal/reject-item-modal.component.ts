@@ -20,7 +20,6 @@ import { EquipmentItemService } from "@features/equipment/services/equipment-ite
 import { FormlyFieldMessageLevel, FormlyFieldService } from "@shared/services/formly-field.service";
 import { Router } from "@angular/router";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
-import { FormlyFieldEquipmentItemBrowserMode } from "@shared/components/misc/formly-field-equipment-item-browser/formly-field-equipment-item-browser.component";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import { EMPTY } from "rxjs";
@@ -282,7 +281,6 @@ export class RejectItemModalComponent extends BaseComponentDirective implements 
         "templateOptions.required": "model.reason === 'DUPLICATE'"
       },
       templateOptions: {
-        mode: FormlyFieldEquipmentItemBrowserMode.ID,
         label: this.translateService.instant("Duplicate of"),
         itemType: this.equipmentItemService.getType(this.equipmentItem),
         showQuickAddRecent: false,

@@ -1,4 +1,4 @@
-import { Component, OnInit, TemplateRef, ViewChild } from "@angular/core";
+import { Component, HostListener, OnInit, TemplateRef, ViewChild } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
@@ -38,13 +38,14 @@ import { LoadEquipmentPresetModalComponent } from "@features/image/components/lo
 import { UserService } from "@shared/services/user.service";
 import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
 import { CookieService } from "ngx-cookie";
+import { ComponentCanDeactivate } from "@shared/services/guards/pending-changes-guard.service";
 
 @Component({
   selector: "astrobin-image-edit-page",
   templateUrl: "./image-edit-page.component.html",
   styleUrls: ["./image-edit-page.component.scss"]
 })
-export class ImageEditPageComponent extends BaseComponentDirective implements OnInit {
+export class ImageEditPageComponent extends BaseComponentDirective implements OnInit, ComponentCanDeactivate {
   readonly DONT_SHOW_MIGRATION_INFO_COOKIE = "astrobin_apps_equipment_dont_show_migration_info";
 
   ImageAlias = ImageAlias;
@@ -52,15 +53,17 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
   @ViewChild("stepperButtonsTemplate")
   stepperButtonsTemplate: TemplateRef<any>;
 
-  @ViewChild("equipmentStepPreambleTemplate")
-  equipmentStepPreambleTemplate: TemplateRef<any>;
-
   @ViewChild("equipmentStepButtonsTemplate")
   equipmentStepButtonsTemplate: TemplateRef<any>;
 
   editingExistingImage: boolean;
 
   showMigrationInfo = false;
+
+  @HostListener("window:beforeunload")
+  canDeactivate(): Observable<boolean> | boolean {
+    return this.imageEditService.form.pristine;
+  }
 
   constructor(
     public readonly store$: Store<State>,
@@ -105,7 +108,19 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
 
   ngOnInit(): void {
     this.imageEditService.image = this.route.snapshot.data.image;
-    this.imageEditService.model = { ...this.imageEditService.image };
+    this.imageEditService.model = {
+      ...this.imageEditService.image,
+      ...{
+        imagingTelescopes2: this.imageEditService.image.imagingTelescopes2.map(x => x.id),
+        imagingCameras2: this.imageEditService.image.imagingCameras2.map(x => x.id),
+        mounts2: this.imageEditService.image.mounts2.map(x => x.id),
+        filters2: this.imageEditService.image.filters2.map(x => x.id),
+        accessories2: this.imageEditService.image.accessories2.map(x => x.id),
+        software2: this.imageEditService.image.software2.map(x => x.id),
+        guidingTelescopes2: this.imageEditService.image.guidingTelescopes2.map(x => x.id),
+        guidingCameras2: this.imageEditService.image.guidingCameras2.map(x => x.id)
+      }
+    };
     this.imageEditService.groups = this.route.snapshot.data.groups;
     this.imageEditService.locations = this.route.snapshot.data.locations;
 
@@ -310,6 +325,8 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     );
 
     this.actions$.pipe(ofType(AppActionTypes.SAVE_IMAGE_SUCCESS)).subscribe(() => {
+      this.imageEditService.form.markAsPristine();
+
       if (!!next) {
         this.loadingService.setLoading(true);
         UtilsService.openLink(this.windowRefService.nativeWindow.document, next);
@@ -384,7 +401,6 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
           id: "image-stepper-equipment",
           templateOptions: {
             label: this.translateService.instant("Equipment"),
-            stepPreambleTemplate: this.equipmentStepPreambleTemplate,
             stepActionsTemplate: this.equipmentStepButtonsTemplate
           },
           fieldGroup: [

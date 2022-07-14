@@ -44,7 +44,6 @@ import { FormlyFieldMessageLevel, FormlyFieldService } from "@shared/services/fo
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { InformationDialogComponent } from "@shared/components/misc/information-dialog/information-dialog.component";
-import { FormlyFieldEquipmentItemBrowserMode } from "@shared/components/misc/formly-field-equipment-item-browser/formly-field-equipment-item-browser.component";
 import { CameraInterface, CameraType } from "@features/equipment/types/camera.interface";
 import { UtilsService } from "@shared/services/utils/utils.service";
 
@@ -375,6 +374,9 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
         label: label
           ? label
           : `${this.translateService.instant("Brand")} / ${this.translateService.instant("Company")}`,
+        fullScreenLabel: label
+          ? label
+          : `${this.translateService.instant("Brand")} / ${this.translateService.instant("Company")}`,
         description:
           this.editorMode === EquipmentItemEditorMode.EDIT_PROPOSAL
             ? this.translateService.instant("Editing this field is not possible.")
@@ -439,7 +441,10 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
                       this._othersInBrand(brand.name);
 
                       this.form.get("name").updateValueAndValidity({ emitEvent: false });
-                      this.form.get("variantOf").updateValueAndValidity({ emitEvent: false });
+
+                      if (!!this.form.get("variantOf")) {
+                        this.form.get("variantOf").updateValueAndValidity({ emitEvent: false });
+                      }
                     })
                   );
                 }
@@ -481,6 +486,7 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
       hooks: {
         onInit: (field: FormlyFieldConfig) => {
           field.formControl.valueChanges
+
             .pipe(
               takeUntil(this.destroyed$),
               startWith(this.name),
@@ -589,7 +595,6 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
         "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
       },
       templateOptions: {
-        mode: FormlyFieldEquipmentItemBrowserMode.ID,
         label: this.equipmentItemService.getPrintablePropertyName(itemType, EquipmentItemDisplayProperty.VARIANT_OF),
         description: this.translateService.instant(
           "If this item is a variant of another product, please select it here. This is typically used for " +

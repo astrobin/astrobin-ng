@@ -19,15 +19,9 @@
           <astrobin-equipment-item-display-name
             [item]="item"
             [enableBrandLink]="enableBrandLink"
+            [enableNameLink]="showViewLink"
           ></astrobin-equipment-item-display-name>
           <fa-icon *ngIf="showEditButtons" class="edit" icon="pen" (click)="editButtonClick.emit(item)"></fa-icon>
-          <a
-            *ngIf="showViewLink"
-            [routerLink]="['/equipment/explorer', item.klass.toLowerCase(), item.id]"
-             class="ml-0 ml-sm-2 mt-2 mt-sm-0 btn btn-outline-primary btn-sm"
-          >
-            {{ "View" | translate }}
-          </a>
         </h5>
         <h6 *ngIf="showProperties && !!item.website" class="website">
           <a target="_blank" [href]="item.website">{{ UtilsService.shortenUrl(item.website) }}</a>

@@ -80,7 +80,7 @@ export const selectEquipmentItems = createSelector(selectEquipment, state => sta
 
 export const selectEquipmentItem = createSelector(
   selectEquipmentItems,
-  (items: EquipmentItem[], data: { id: number; type: EquipmentItemType }) => {
+  (items: EquipmentItem[], data: { id: number; type: EquipmentItemType }): EquipmentItem | null => {
     const matching = items.filter(item => {
       const itemType = getEquipmentItemType(item);
       return item.id === data.id && itemType === data.type;

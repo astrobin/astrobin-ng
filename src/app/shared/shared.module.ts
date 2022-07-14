@@ -53,6 +53,7 @@ import { FormlyEquipmentItemBrowserWrapperComponent } from "@shared/components/m
 import { DirectivesModule } from "@shared/directives/directives.module";
 import { CustomToastComponent } from "@shared/components/misc/custom-toast/custom-toast.component";
 import { CKEditorService } from "@shared/services/ckeditor.service";
+import { PendingChangesGuard } from "@shared/services/guards/pending-changes-guard.service";
 
 export function appInitializer(store: Store<State>, actions$: Actions) {
   return () =>
@@ -181,6 +182,7 @@ export class SharedModule {
         GroupGuardService,
         ImageOwnerGuardService,
         LoadingService,
+        PendingChangesGuard,
         PopNotificationsService,
         SessionService,
         UltimateSubscriptionGuardService,
