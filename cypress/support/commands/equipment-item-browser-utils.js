@@ -143,6 +143,7 @@ export const testAccessory = {
   brand: 1,
   brandName: "Test brand",
   name: "Test accessory",
+  type: "COMPUTER",
   image: null,
   variantOf: null,
   variants: []

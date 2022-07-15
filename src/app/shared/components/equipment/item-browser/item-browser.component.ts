@@ -41,8 +41,7 @@ import {
 } from "@features/equipment/store/equipment.actions";
 import { filter, first, map, switchMap, take, takeUntil, tap } from "rxjs/operators";
 import { Actions, ofType } from "@ngrx/effects";
-import { BrandInterface } from "@features/equipment/types/brand.interface";
-import { selectBrand, selectBrands, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
+import { selectBrand, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { ConfirmItemCreationModalComponent } from "@shared/components/equipment/editors/confirm-item-creation-modal/confirm-item-creation-modal.component";

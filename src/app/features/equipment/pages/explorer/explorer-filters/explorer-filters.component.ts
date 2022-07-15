@@ -24,7 +24,9 @@ import { TelescopeType } from "@features/equipment/types/telescope.interface";
 import { MountDisplayProperty, MountService } from "@features/equipment/services/mount.service";
 import { MountType } from "@features/equipment/types/mount.interface";
 import { FilterDisplayProperty, FilterService } from "@features/equipment/services/filter.service";
-import { FilterType } from "@features/equipment/types/filter.interface";
+import { FilterSize, FilterType } from "@features/equipment/types/filter.interface";
+import { AccessoryDisplayProperty, AccessoryService } from "@features/equipment/services/accessory.service";
+import { AccessoryType } from "@features/equipment/types/accessory.interface";
 
 const COOKIE = "astrobin-equipment-explorer-filter-data";
 
@@ -77,7 +79,9 @@ export enum ExplorerFilterType {
   MOUNT_SLEW_SPEED = "mount-slew-speed",
 
   FILTER_TYPE = "filter-type",
-  FILTER_BANDWIDTH = "filter-bandwidth"
+  FILTER_BANDWIDTH = "filter-bandwidth",
+  FILTER_SIZE = "filter-size",
+  ACCESSORY_TYPE = "accessory-type"
 }
 
 export enum ExplorerFilterValueType {
@@ -133,6 +137,7 @@ export class ExplorerFiltersComponent extends BaseComponentDirective implements 
     public readonly telescopeService: TelescopeService,
     public readonly mountService: MountService,
     public readonly filterService: FilterService,
+    public readonly accessoryService: AccessoryService,
     public readonly windowRefService: WindowRefService,
     public readonly location: Location,
     public readonly cookieService: CookieService,
@@ -913,6 +918,45 @@ export class ExplorerFiltersComponent extends BaseComponentDirective implements 
             to: 20
           },
           valueType: ExplorerFilterValueType.OBJECT
+        });
+
+        this.availableFilters.push({
+          type: ExplorerFilterType.FILTER_SIZE,
+          label: this.equipmentItemService.getPrintablePropertyName(
+            EquipmentItemType.FILTER,
+            FilterDisplayProperty.SIZE,
+            false
+          ),
+          icon: "ruler",
+          widget: ExplorerFilterWidget.SELECT,
+          items: Object.keys(FilterSize).map(filterSize => ({
+            value: filterSize,
+            label: this.filterService.humanizeSize(filterSize as FilterSize)
+          })),
+          value: null,
+          valueType: ExplorerFilterValueType.OBJECT,
+          humanizeValueFunction: this.filterService.humanizeSize.bind(this.filterService)
+        });
+
+        break;
+
+      case EquipmentItemType.ACCESSORY:
+        this.availableFilters.push({
+          type: ExplorerFilterType.ACCESSORY_TYPE,
+          label: this.equipmentItemService.getPrintablePropertyName(
+            EquipmentItemType.ACCESSORY,
+            AccessoryDisplayProperty.TYPE,
+            false
+          ),
+          icon: "bars",
+          widget: ExplorerFilterWidget.SELECT,
+          items: Object.keys(AccessoryType).map(accessoryType => ({
+            value: accessoryType,
+            label: this.accessoryService.humanizeType(accessoryType as AccessoryType)
+          })),
+          value: null,
+          valueType: ExplorerFilterValueType.OBJECT,
+          humanizeValueFunction: this.accessoryService.humanizeType.bind(this.accessoryService)
         });
 
         break;

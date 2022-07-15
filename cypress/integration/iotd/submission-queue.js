@@ -41,6 +41,8 @@ context("IOTD Submission queue", () => {
       cy.route("get", "**/common/users/*", "fixture:api/common/users_3_iotd_submitter.json").as("getUser");
 
       cy.route("get", "**/iotd/staff-member-settings/", { user: 1, queueSortOrder: "OLDEST" });
+
+      cy.route("get", "**/api/v2/images/image-revision/?image=1", { results: [] }).as("getImageRevisions");
     });
 
     it("should render page elements", () => {

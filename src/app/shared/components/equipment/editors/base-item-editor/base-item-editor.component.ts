@@ -466,7 +466,8 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
       id: "equipment-item-field-name",
       defaultValue: this.name,
       expressionProperties: {
-        "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress,
+        "templateOptions.disabled": () =>
+          this.subCreation.inProgress || this.brandCreation.inProgress || (this.model as any).overrideName === false,
         "templateOptions.label": () =>
           this.model.diy
             ? this.equipmentItemService.getPrintablePropertyName(null, EquipmentItemDisplayProperty.NAME, true)

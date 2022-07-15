@@ -9,12 +9,11 @@ import { State } from "@app/store/state";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 import { FormlyFieldService } from "@shared/services/formly-field.service";
-import { AccessoryInterface } from "@features/equipment/types/accessory.interface";
+import { AccessoryInterface, AccessoryType } from "@features/equipment/types/accessory.interface";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { FormlyFieldConfig } from "@ngx-formly/core";
-import { interval } from "rxjs";
-import { take } from "rxjs/operators";
+import { AccessoryDisplayProperty, AccessoryService } from "@features/equipment/services/accessory.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
 
 @Component({
@@ -32,6 +31,7 @@ export class AccessoryEditorComponent extends BaseItemEditorComponent<AccessoryI
     public readonly windowRefService: WindowRefService,
     public readonly equipmentApiService: EquipmentApiService,
     public readonly equipmentItemService: EquipmentItemService,
+    public readonly accessoryService: AccessoryService,
     public readonly formlyFieldService: FormlyFieldService,
     public readonly modalService: NgbModal,
     public readonly utilsService: UtilsService
@@ -83,6 +83,23 @@ export class AccessoryEditorComponent extends BaseItemEditorComponent<AccessoryI
         this._getBrandField(),
         this._getNameField(),
         this._getVariantOfField(EquipmentItemType.ACCESSORY),
+        {
+          key: "type",
+          type: "ng-select",
+          id: "accessory-field-type",
+          expressionProperties: {
+            "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+          },
+          templateOptions: {
+            label: this.accessoryService.getPrintablePropertyName(AccessoryDisplayProperty.TYPE),
+            required: true,
+            clearable: true,
+            options: Object.keys(AccessoryType).map(accessoryType => ({
+              value: AccessoryType[accessoryType],
+              label: this.accessoryService.humanizeType(AccessoryType[accessoryType])
+            }))
+          }
+        },
         this._getWebsiteField(),
         this._getImageField(),
         this._getCommunityNotesField()
