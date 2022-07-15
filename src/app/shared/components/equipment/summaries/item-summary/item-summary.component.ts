@@ -29,6 +29,8 @@ import { FilterDisplayProperty, FilterService } from "@features/equipment/servic
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { selectUser } from "@features/account/store/auth.selectors";
 import { LoadUser } from "@features/account/store/auth.actions";
+import { AccessoryDisplayProperty, AccessoryService } from "@features/equipment/services/accessory.service";
+import { AccessoryInterface } from "@features/equipment/types/accessory.interface";
 
 interface EquipmentItemProperty {
   name: string;
@@ -101,7 +103,8 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
     public readonly telescopeService: TelescopeService,
     public readonly sensorService: SensorService,
     public readonly mountService: MountService,
-    public readonly filterService: FilterService
+    public readonly filterService: FilterService,
+    public readonly accessoryService: AccessoryService
   ) {
     super(store$);
   }
@@ -427,7 +430,16 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
   }
 
   private _accessoryProperties$(variantOfItem: EquipmentItem | null): Observable<EquipmentItemProperty[]> {
-    return of([this._classProperty(EquipmentItemType.ACCESSORY), this._variantOfProperty(variantOfItem)]);
+    const item: AccessoryInterface = this.item as AccessoryInterface;
+
+    return of([
+      this._classProperty(EquipmentItemType.ACCESSORY),
+      this._variantOfProperty(variantOfItem),
+      {
+        name: this.accessoryService.getPrintablePropertyName(AccessoryDisplayProperty.TYPE, true),
+        value: this.accessoryService.getPrintableProperty$(item, AccessoryDisplayProperty.TYPE)
+      }
+    ]);
   }
 
   private _softwareProperties$(variantOfItem: EquipmentItem | null): Observable<EquipmentItemProperty[]> {
