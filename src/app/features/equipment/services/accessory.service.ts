@@ -31,7 +31,7 @@ export class AccessoryService extends BaseService implements EquipmentItemServic
       [AccessoryType.FIELD_DEROTATOR]: this.translateService.instant("Field derotator"),
       [AccessoryType.FILTER_WHEEL]: this.translateService.instant("Filter wheel"),
       [AccessoryType.FLAT_BOX]: this.translateService.instant("Flat box"),
-      [AccessoryType.FOCAL_MODIFIED_FIELD_CORRECTOR]: this.translateService.instant("Focal modified/ field corrector"),
+      [AccessoryType.FOCAL_MODIFIER_FIELD_CORRECTOR]: this.translateService.instant("Focal modifier / field corrector"),
       [AccessoryType.FOCUSER]: this.translateService.instant("Focuser"),
       [AccessoryType.OAG]: this.translateService.instant("Off-xis guider"),
       [AccessoryType.OBSERVATORY_CONTROL]: this.translateService.instant("Observatory control"),
