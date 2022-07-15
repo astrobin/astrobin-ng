@@ -29,6 +29,12 @@ context("Equipment", () => {
         cy.get("#equipment-item-field-name").should("have.value", "Test");
       });
 
+      it("should fill the type", () => {
+        cy.ngSelectOpen("#accessory-field-type");
+        cy.ngSelectOptionClick("#accessory-field-type", 1);
+        cy.ngSelectValueShouldContain("#accessory-field-type", "Computer");
+      });
+
       it("should create the item", () => {
         cy.route("post", "**/api/v2/equipment/accessory/", testAccessory).as("createAccessory");
 
@@ -39,6 +45,7 @@ context("Equipment", () => {
           .should("be.visible");
 
         cy.equipmentItemSummaryShouldHaveItem(".modal", "Test brand", "Test");
+        cy.equipmentItemSummaryShouldHaveProperty(".modal", "Type", "Computer");
         cy.equipmentItemSummaryShouldHaveProperty(".modal", "Class", "Accessory");
 
         cy.get("[for=confirm-no-typos]").click();

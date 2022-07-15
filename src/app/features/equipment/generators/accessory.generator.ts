@@ -1,5 +1,5 @@
 import { BrandGenerator } from "@features/equipment/generators/brand.generator";
-import { AccessoryInterface } from "@features/equipment/types/accessory.interface";
+import { AccessoryInterface, AccessoryType } from "@features/equipment/types/accessory.interface";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 
 export class AccessoryGenerator {
@@ -19,6 +19,7 @@ export class AccessoryGenerator {
       website: source.website || "https://www.test-accessory.com",
       image: source.image || "https://cdn.astrobin.com/images/foo.jpg",
       communityNotes: null,
+      type: source.type || AccessoryType.OTHER,
       userCount: null,
       imageCount: null,
       variantOf: null,
