@@ -24,7 +24,7 @@ import { TelescopeType } from "@features/equipment/types/telescope.interface";
 import { MountDisplayProperty, MountService } from "@features/equipment/services/mount.service";
 import { MountType } from "@features/equipment/types/mount.interface";
 import { FilterDisplayProperty, FilterService } from "@features/equipment/services/filter.service";
-import { FilterType } from "@features/equipment/types/filter.interface";
+import { FilterSize, FilterType } from "@features/equipment/types/filter.interface";
 import { AccessoryDisplayProperty, AccessoryService } from "@features/equipment/services/accessory.service";
 import { AccessoryType } from "@features/equipment/types/accessory.interface";
 
@@ -80,7 +80,7 @@ export enum ExplorerFilterType {
 
   FILTER_TYPE = "filter-type",
   FILTER_BANDWIDTH = "filter-bandwidth",
-
+  FILTER_SIZE = "filter-size",
   ACCESSORY_TYPE = "accessory-type"
 }
 
@@ -916,6 +916,24 @@ export class ExplorerFiltersComponent extends BaseComponentDirective implements 
             to: 20
           },
           valueType: ExplorerFilterValueType.OBJECT
+        });
+
+        this.availableFilters.push({
+          type: ExplorerFilterType.FILTER_SIZE,
+          label: this.equipmentItemService.getPrintablePropertyName(
+            EquipmentItemType.FILTER,
+            FilterDisplayProperty.SIZE,
+            false
+          ),
+          icon: "ruler",
+          widget: ExplorerFilterWidget.SELECT,
+          items: Object.keys(FilterSize).map(filterSize => ({
+            value: filterSize,
+            label: this.filterService.humanizeSize(filterSize as FilterSize)
+          })),
+          value: null,
+          valueType: ExplorerFilterValueType.OBJECT,
+          humanizeValueFunction: this.filterService.humanizeSize.bind(this.filterService)
         });
 
         break;
