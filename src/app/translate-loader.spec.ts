@@ -14,46 +14,15 @@ describe("LanguageLoader", () => {
 
   describe("getTranslations", () => {
     it("should work under best conditions", done => {
-      const classic = {
-        a: "A",
-        b: "B"
-      };
-
       const ng = {
         c: "C",
         d: "D"
       };
 
-      languageLoader.ngJsonTranslations$ = () => of(ng);
       languageLoader.ngTranslations$ = () => of(ng);
 
       languageLoader.getTranslation("en").subscribe(translation => {
-        expect(translation).toEqual({ ...classic, ...ng });
-        done();
-      });
-    });
-
-    it("should fill missing values with key", done => {
-      const classic = {
-        a: "A",
-        b: ""
-      };
-
-      const ng = {
-        c: "C",
-        d: ""
-      };
-
-      languageLoader.ngJsonTranslations$ = () => of(ng);
-      languageLoader.ngTranslations$ = () => of(ng);
-
-      languageLoader.getTranslation("en").subscribe(translation => {
-        expect(translation).toEqual({
-          a: "A",
-          b: "b",
-          c: "C",
-          d: "d"
-        });
+        expect(translation).toEqual(ng);
         done();
       });
     });
