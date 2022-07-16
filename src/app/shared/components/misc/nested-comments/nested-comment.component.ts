@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { AfterViewInit, Component, ElementRef, Input, OnInit, TemplateRef, ViewChild } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
@@ -17,12 +17,14 @@ import { Actions, ofType } from "@ngrx/effects";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { WindowRefService } from "@shared/services/window-ref.service";
 
+declare const CopyButtonPlugin;
+
 @Component({
   selector: "astrobin-nested-comment",
   templateUrl: "./nested-comment.component.html",
   styleUrls: ["./nested-comment.component.scss"]
 })
-export class NestedCommentComponent extends BaseComponentDirective implements OnInit {
+export class NestedCommentComponent extends BaseComponentDirective implements OnInit, AfterViewInit {
   @Input()
   comment: NestedCommentInterface;
 
@@ -34,6 +36,9 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
   replyForm = new FormGroup({});
   replyFields: FormlyFieldConfig[];
   showReplyForm = false;
+
+  @ViewChild("commentText", { read: ElementRef })
+  private _commentText: ElementRef;
 
   constructor(
     public readonly store$: Store<State>,
@@ -50,6 +55,31 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
     this.user$ = this.store$.select(selectUser, this.comment.author).pipe(takeUntil(this.destroyed$));
     this._initReplyFields();
     this._initHighlighted();
+  }
+
+  ngAfterViewInit() {
+    const window = this.windowRefService.nativeWindow as any;
+    if (typeof window.hljs !== undefined) {
+      const $elements = this._commentText.nativeElement.querySelectorAll("pre code");
+      for (const $element of $elements) {
+        const brPlugin = {
+          "before:highlightBlock": ({ block }) => {
+            block.innerHTML = block.innerHTML.replace(/<br[ /]*>/g, "\n");
+          },
+          "after:highlightBlock": ({ result }) => {
+            result.value = result.value.replace(/\n/g, "<br>");
+          }
+        };
+
+        window.hljs.addPlugin(brPlugin);
+
+        if (typeof CopyButtonPlugin !== "undefined") {
+          window.hljs.addPlugin(new CopyButtonPlugin());
+        }
+        window.hljs.highlightElement($element);
+        window.hljs.initLineNumbersOnLoad();
+      }
+    }
   }
 
   getLink(): string {

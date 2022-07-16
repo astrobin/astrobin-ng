@@ -3,7 +3,8 @@ import { BaseService } from "@shared/services/base.service";
 
 // @ts-ignore
 // tslint:disable-next-line:no-empty-interface
-export interface CustomWindowInterface extends Window {}
+export interface CustomWindowInterface extends Window {
+}
 
 function getWindow(): any {
   // @ts-ignore
