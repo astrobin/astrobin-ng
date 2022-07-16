@@ -25,6 +25,9 @@ export class FormlyFieldCKEditorComponent extends FieldType implements AfterView
     const editorBase = document.getElementById(this.field.id);
 
     if (CKEDITOR && editorBase) {
+      // Bump this anytime a plugin or other CKEDITOR resource is updated.
+      CKEDITOR.timestamp = "2022-07-16";
+
       const editor = CKEDITOR.replace(this.field.id, this.ckeditorService.options(this.formControl));
       editor.setData(this.formControl.value);
 

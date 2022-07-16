@@ -336,7 +336,7 @@
       color: var(--accentColor) !important;
     }
 
-    img {
+    img:not(.cke_reset) {
       max-width: 100%;
       height: auto !important;
       margin-top: 10px;
