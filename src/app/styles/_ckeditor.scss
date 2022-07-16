@@ -20,3 +20,16 @@
     height: auto;
   }
 }
+
+.cke_wysiwyg_div {
+  padding: 1rem !important;
+
+  pre {
+    padding: 0;
+    margin: 1rem 0;
+  }
+}
+
+select.cke_dialog_ui_input_select {
+  height: auto !important;
+}

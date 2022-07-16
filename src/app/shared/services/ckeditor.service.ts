@@ -24,6 +24,7 @@ export class CKEditorService extends BaseService {
       "blockquote",
       "button",
       "clipboard",
+      "codesnippet",
       "dialog",
       "dialogui",
       "divarea",
@@ -95,7 +96,7 @@ export class CKEditorService extends BaseService {
       },
       {
         name: "insert",
-        items: ["addFile", "addImage"]
+        items: ["addFile", "addImage", "CodeSnippet"]
       },
       {
         name: "special",
@@ -439,6 +440,27 @@ export class CKEditorService extends BaseService {
       autoGrow_minHeight: 300,
       autoGrow_maxHeight: 1200,
       autoGrow_bottomSpace: 50,
+      codeSnippet_languages: {
+        bash: "Bash",
+        coffeescript: "CoffeeScript",
+        cpp: "C++",
+        cs: "C#",
+        css: "CSS",
+        diff: "Diff",
+        html: "HTML",
+        java: "Java",
+        javascript: "JavaScript",
+        json: "JSON",
+        objectivec: "Objective-C",
+        perl: "Perl",
+        php: "PHP",
+        python: "Python",
+        ruby: "Ruby",
+        sql: "SQL",
+        vbscript: "VBScript",
+        xhtml: "XHTML",
+        xml: "XML"
+      },
       on: {
         change() {
           onChange(this);
