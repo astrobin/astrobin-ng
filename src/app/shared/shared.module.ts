@@ -54,6 +54,7 @@ import { DirectivesModule } from "@shared/directives/directives.module";
 import { CustomToastComponent } from "@shared/components/misc/custom-toast/custom-toast.component";
 import { CKEditorService } from "@shared/services/ckeditor.service";
 import { PendingChangesGuard } from "@shared/services/guards/pending-changes-guard.service";
+import { of } from "rxjs";
 
 export function appInitializer(store: Store<State>, actions$: Actions) {
   return () =>
@@ -65,8 +66,9 @@ export function appInitializer(store: Store<State>, actions$: Actions) {
           ofType(AppActionTypes.INITIALIZE_SUCCESS),
           take(1),
           switchMap(() => {
-            store.dispatch(new InitializeAuth());
-            return actions$.pipe(ofType(AuthActionTypes.INITIALIZE_SUCCESS), take(1));
+            return of(true);
+            // store.dispatch(new InitializeAuth());
+            // return actions$.pipe(ofType(AuthActionTypes.INITIALIZE_SUCCESS), take(1));
           })
         )
         .subscribe(() => {

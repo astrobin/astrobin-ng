@@ -28,8 +28,7 @@
     "serve:ssr": "node dist/frontend/server/main.js",
     "build:ssr:dev": "ng build --configuration=development && ng run frontend:server --configuration=development",
     "build:ssr:prod": "ng build --aot --configuration=production && ng run frontend:server --configuration=production",
-    "prerender": "ng run frontend:prerender",
-    "deploy:ssr": "serverless deploy"
+    "prerender": "ng run frontend:prerender"
   },
   "private": true,
   "dependencies": {
@@ -57,7 +56,6 @@
     "@ngx-formly/core": "5.10.23",
     "@ngx-translate/core": "13.0.0",
     "@ngx-translate/http-loader": "6.0.0",
-    "aws-serverless-express": "3.4.0",
     "bootstrap": "4.6.1",
     "bootswatch": "4.6.1",
     "class-transformer": "0.4.0",
@@ -82,8 +80,6 @@
     "rimraf": "3.0.2",
     "rxjs": "6.6.7",
     "rxjs-boost": "1.0.1",
-    "serverless": "3.20.0",
-    "serverless-apigw-binary": "0.4.4",
     "tslib": "2.3.1",
     "webpack-bundle-tracker": "1.4.0",
     "zone.js": "0.11.4"
