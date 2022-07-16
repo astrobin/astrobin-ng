@@ -6,7 +6,6 @@ import { AccessoryInterface, AccessoryType } from "@features/equipment/types/acc
 import { TranslateService } from "@ngx-translate/core";
 import { Observable, of } from "rxjs";
 import { UtilsService } from "@shared/services/utils/utils.service";
-import { FilterDisplayProperty } from "@features/equipment/services/filter.service";
 
 export enum AccessoryDisplayProperty {
   TYPE = "TYPE"
@@ -33,7 +32,7 @@ export class AccessoryService extends BaseService implements EquipmentItemServic
       [AccessoryType.FLAT_BOX]: this.translateService.instant("Flat box"),
       [AccessoryType.FOCAL_MODIFIER_FIELD_CORRECTOR]: this.translateService.instant("Focal modifier / field corrector"),
       [AccessoryType.FOCUSER]: this.translateService.instant("Focuser"),
-      [AccessoryType.OAG]: this.translateService.instant("Off-xis guider"),
+      [AccessoryType.OAG]: this.translateService.instant("Off-axis guider"),
       [AccessoryType.OBSERVATORY_CONTROL]: this.translateService.instant("Observatory control"),
       [AccessoryType.OBSERVATORY_DOME]: this.translateService.instant("Observatory dome"),
       [AccessoryType.POWER_DISTRIBUTION]: this.translateService.instant("Power distribution"),
