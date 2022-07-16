@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { Actions } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
@@ -21,8 +21,7 @@ import { UtilsService } from "@shared/services/utils/utils.service";
   templateUrl: "./mount-editor.component.html",
   styleUrls: ["./mount-editor.component.scss", "../base-item-editor/base-item-editor.component.scss"]
 })
-export class MountEditorComponent extends BaseItemEditorComponent<MountInterface, null>
-  implements OnInit, AfterViewInit {
+export class MountEditorComponent extends BaseItemEditorComponent<MountInterface, null> implements OnInit {
   constructor(
     public readonly store$: Store<State>,
     public readonly actions$: Actions,
@@ -54,16 +53,9 @@ export class MountEditorComponent extends BaseItemEditorComponent<MountInterface
     if (!this.returnToSelector) {
       this.returnToSelector = "#mount-editor-form";
     }
-  }
-
-  ngAfterViewInit(): void {
-    this.utilsService.delay(1).subscribe(() => {
-      this._initFields();
-    });
 
     this.model.klass = EquipmentItemType.MOUNT;
-
-    super.ngAfterViewInit();
+    this._initFields();
   }
 
   private _initFields() {

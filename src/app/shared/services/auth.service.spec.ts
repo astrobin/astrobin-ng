@@ -15,8 +15,7 @@ describe("AuthService", () => {
       let value = "123";
 
       instance.get = key => (key === AuthService.CLASSIC_AUTH_TOKEN_COOKIE ? value : null);
-      instance.check = key => key === AuthService.CLASSIC_AUTH_TOKEN_COOKIE;
-      instance.delete = key => {
+      instance.remove = key => {
         if (key === AuthService.CLASSIC_AUTH_TOKEN_COOKIE) {
           value = null;
         }

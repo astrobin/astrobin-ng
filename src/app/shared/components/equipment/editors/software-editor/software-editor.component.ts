@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { Actions } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
@@ -13,8 +13,6 @@ import { SoftwareInterface } from "@features/equipment/types/software.interface"
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { take } from "rxjs/operators";
-import { interval } from "rxjs";
 import { UtilsService } from "@shared/services/utils/utils.service";
 
 @Component({
@@ -22,8 +20,7 @@ import { UtilsService } from "@shared/services/utils/utils.service";
   templateUrl: "./software-editor.component.html",
   styleUrls: ["./software-editor.component.scss", "../base-item-editor/base-item-editor.component.scss"]
 })
-export class SoftwareEditorComponent extends BaseItemEditorComponent<SoftwareInterface, null>
-  implements OnInit, AfterViewInit {
+export class SoftwareEditorComponent extends BaseItemEditorComponent<SoftwareInterface, null> implements OnInit {
   constructor(
     public readonly store$: Store<State>,
     public readonly actions$: Actions,
@@ -54,16 +51,9 @@ export class SoftwareEditorComponent extends BaseItemEditorComponent<SoftwareInt
     if (!this.returnToSelector) {
       this.returnToSelector = "#software-editor-form";
     }
-  }
 
-  ngAfterViewInit(): void {
-    this.utilsService.delay(1).subscribe(() => {
-      this._initFields();
-    });
-
+    this._initFields();
     this.model.klass = EquipmentItemType.SOFTWARE;
-
-    super.ngAfterViewInit();
   }
 
   protected _customNameChangesValidations(field: FormlyFieldConfig, value: string) {

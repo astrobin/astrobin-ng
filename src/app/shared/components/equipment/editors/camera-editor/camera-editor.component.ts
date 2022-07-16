@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit, TemplateRef, ViewChild } from "@angular/core";
+import { Component, OnInit, TemplateRef, ViewChild } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { Actions } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
@@ -30,8 +30,7 @@ import { UtilsService } from "@shared/services/utils/utils.service";
   templateUrl: "./camera-editor.component.html",
   styleUrls: ["./camera-editor.component.scss", "../base-item-editor/base-item-editor.component.scss"]
 })
-export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterface, SensorInterface>
-  implements OnInit, AfterViewInit {
+export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterface, SensorInterface> implements OnInit {
   @ViewChild("sensorLabelTemplate")
   sensorLabelTemplate: TemplateRef<any>;
 
@@ -78,16 +77,9 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
     if (!this.returnToSelector) {
       this.returnToSelector = "#camera-editor-form";
     }
-  }
-
-  ngAfterViewInit(): void {
-    this.utilsService.delay(1).subscribe(() => {
-      this._initFields();
-    });
 
     this.model.klass = EquipmentItemType.CAMERA;
-
-    super.ngAfterViewInit();
+    this._initFields();
   }
 
   startSensorCreation() {

@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { Actions } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
@@ -12,10 +12,9 @@ import { FormlyFieldMessageLevel, FormlyFieldService } from "@shared/services/fo
 import { TelescopeDisplayProperty, TelescopeService } from "@features/equipment/services/telescope.service";
 import { TelescopeInterface, TelescopeType } from "@features/equipment/types/telescope.interface";
 import { FormlyFieldConfig } from "@ngx-formly/core";
-import { take, takeUntil } from "rxjs/operators";
+import { takeUntil } from "rxjs/operators";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { interval } from "rxjs";
 import { UtilsService } from "@shared/services/utils/utils.service";
 
 @Component({
@@ -23,8 +22,7 @@ import { UtilsService } from "@shared/services/utils/utils.service";
   templateUrl: "./telescope-editor.component.html",
   styleUrls: ["./telescope-editor.component.scss", "../base-item-editor/base-item-editor.component.scss"]
 })
-export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeInterface, null>
-  implements OnInit, AfterViewInit {
+export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeInterface, null> implements OnInit {
   constructor(
     public readonly store$: Store<State>,
     public readonly actions$: Actions,
@@ -56,16 +54,9 @@ export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeI
     if (!this.returnToSelector) {
       this.returnToSelector = "#telescope-editor-form";
     }
-  }
-
-  ngAfterViewInit(): void {
-    this.utilsService.delay(1).subscribe(() => {
-      this._initFields();
-    });
 
     this.model.klass = EquipmentItemType.TELESCOPE;
-
-    super.ngAfterViewInit();
+    this._initFields();
   }
 
   private _initFields() {

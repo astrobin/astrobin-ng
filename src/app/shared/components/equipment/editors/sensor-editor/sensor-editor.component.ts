@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit, TemplateRef, ViewChild } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { Actions } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
@@ -20,8 +20,7 @@ import { UtilsService } from "@shared/services/utils/utils.service";
   templateUrl: "./sensor-editor.component.html",
   styleUrls: ["./sensor-editor.component.scss", "../base-item-editor/base-item-editor.component.scss"]
 })
-export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterface, null>
-  implements OnInit, AfterViewInit {
+export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterface, null> implements OnInit {
   constructor(
     public readonly store$: Store<State>,
     public readonly actions$: Actions,
@@ -53,16 +52,9 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
     if (!this.returnToSelector) {
       this.returnToSelector = "#sensor-editor-form";
     }
-  }
-
-  ngAfterViewInit(): void {
-    this.utilsService.delay(1).subscribe(() => {
-      this._initFields();
-    });
 
     this.model.klass = EquipmentItemType.SENSOR;
-
-    super.ngAfterViewInit();
+    this._initFields();
   }
 
   private _initFields() {

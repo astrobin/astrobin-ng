@@ -24,7 +24,6 @@ describe("LanguageLoader", () => {
         d: "D"
       };
 
-      languageLoader.classicTranslations$ = () => of(classic);
       languageLoader.ngJsonTranslations$ = () => of(ng);
       languageLoader.ngTranslations$ = () => of(ng);
 
@@ -45,7 +44,6 @@ describe("LanguageLoader", () => {
         d: ""
       };
 
-      languageLoader.classicTranslations$ = () => of(classic);
       languageLoader.ngJsonTranslations$ = () => of(ng);
       languageLoader.ngTranslations$ = () => of(ng);
 

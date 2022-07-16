@@ -7,16 +7,16 @@ import { ImageGenerator } from "@shared/generators/image.generator";
 import { MockBuilder } from "ng-mocks";
 import { SubmissionEntryComponent } from "./submission-entry.component";
 import { WindowRefService } from "@shared/services/window-ref.service";
+import { CookieService } from "ngx-cookie";
 
 describe("SubmissionEntryComponent", () => {
   let component: SubmissionEntryComponent;
   let fixture: ComponentFixture<SubmissionEntryComponent>;
 
   beforeEach(async () => {
-    await MockBuilder(SubmissionEntryComponent, IotdModule).provide([
-      WindowRefService,
-      provideMockStore({ initialState })
-    ]);
+    await MockBuilder(SubmissionEntryComponent, IotdModule)
+      .provide([WindowRefService, provideMockStore({ initialState })])
+      .mock(CookieService);
   });
 
   beforeEach(() => {

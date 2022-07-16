@@ -49,7 +49,9 @@ export class LoggedInPageComponent extends BaseComponentDirective implements OnI
       if (this.redirectUrl) {
         this.router.navigateByUrl(this.redirectUrl);
       } else {
-        this.windowRef.nativeWindow.location.assign(this.classicRoutesService.HOME);
+        if (typeof this.windowRef.nativeWindow.location.assign !== "undefined") {
+          this.windowRef.nativeWindow.location.assign(this.classicRoutesService.HOME);
+        }
       }
     };
 

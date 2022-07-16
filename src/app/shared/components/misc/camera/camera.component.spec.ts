@@ -4,13 +4,14 @@ import { initialState } from "@app/store/state";
 import { provideMockStore } from "@ngrx/store/testing";
 import { MockBuilder } from "ng-mocks";
 import { CameraComponent } from "./camera.component";
+import { UtilsService } from "@shared/services/utils/utils.service";
 
 describe("CameraComponent", () => {
   let component: CameraComponent;
   let fixture: ComponentFixture<CameraComponent>;
 
   beforeEach(async () => {
-    await MockBuilder(CameraComponent, AppModule).provide(provideMockStore({ initialState }));
+    await MockBuilder(CameraComponent, AppModule).provide([provideMockStore({ initialState }), UtilsService]);
   });
 
   beforeEach(() => {
