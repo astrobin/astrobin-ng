@@ -25,13 +25,7 @@ describe("FormlyFieldStepperComponent", () => {
     fixture = TestBed.createComponent(FormlyFieldStepperComponent);
     component = fixture.componentInstance;
     component.field = {
-      fieldGroup: [
-        {
-          id: "1",
-          templateOptions: { label: "1" },
-          fieldGroup: []
-        }
-      ]
+      fieldGroup: []
     };
     fixture.detectChanges();
   });

@@ -1,5 +1,7 @@
 import {
+  AfterContentChecked,
   AfterViewInit,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   Inject,
@@ -32,7 +34,8 @@ import { isPlatformServer } from "@angular/common";
   templateUrl: "./formly-field-stepper.component.html",
   styleUrls: ["./formly-field-stepper.component.scss"]
 })
-export class FormlyFieldStepperComponent extends FieldType implements OnInit, AfterViewInit, OnDestroy {
+export class FormlyFieldStepperComponent extends FieldType
+  implements OnInit, AfterViewInit, OnDestroy, AfterContentChecked {
   @ViewChild("wizard")
   wizard: NgWizardComponent;
 
@@ -57,7 +60,8 @@ export class FormlyFieldStepperComponent extends FieldType implements OnInit, Af
     public readonly router: Router,
     public readonly route: ActivatedRoute,
     public readonly renderer: Renderer2,
-    @Inject(PLATFORM_ID) public readonly platformId
+    @Inject(PLATFORM_ID) public readonly platformId,
+    public readonly cd: ChangeDetectorRef
   ) {
     super();
   }
@@ -88,6 +92,10 @@ export class FormlyFieldStepperComponent extends FieldType implements OnInit, Af
     this._stepClickListeners.forEach(listener => {
       listener();
     });
+  }
+
+  ngAfterContentChecked(): void {
+    this.cd.detectChanges();
   }
 
   onStepChanged(event?: StepChangedArgs) {
