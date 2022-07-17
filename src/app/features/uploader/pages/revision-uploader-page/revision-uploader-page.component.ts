@@ -255,6 +255,8 @@ export class RevisionUploaderPageComponent extends BaseComponentDirective implem
   }
 
   ngOnInit(): void {
+    super.ngOnInit();
+
     this.image = this.route.snapshot.data.image;
 
     this._setTitle();

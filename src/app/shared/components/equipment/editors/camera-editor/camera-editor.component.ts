@@ -74,6 +74,8 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
   }
 
   ngOnInit() {
+    super.ngOnInit();
+
     if (!this.returnToSelector) {
       this.returnToSelector = "#camera-editor-form";
     }

@@ -33,6 +33,8 @@ export class TelescopeComponent extends BaseComponentDirective implements OnInit
   }
 
   ngOnInit(): void {
+    super.ngOnInit();
+
     if (this.id === undefined) {
       throw new Error("Attribute 'id' is required");
     }

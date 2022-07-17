@@ -68,6 +68,8 @@ export class ConfirmItemCreationModalComponent extends BaseComponentDirective im
   }
 
   ngOnInit() {
+    super.ngOnInit();
+
     const type: EquipmentItemType = this.equipmentItemService.getType(this.item);
 
     this.store$.dispatch(new FindSimilarInBrand({ brand: this.item.brand, q: this.item.name, type }));

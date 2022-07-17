@@ -50,6 +50,8 @@ export class MountEditorComponent extends BaseItemEditorComponent<MountInterface
   }
 
   ngOnInit() {
+    super.ngOnInit();
+
     if (!this.returnToSelector) {
       this.returnToSelector = "#mount-editor-form";
     }

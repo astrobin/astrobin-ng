@@ -11,16 +11,13 @@ import {
   EquipmentActionTypes,
   FindRecentlyUsedEquipmentItems,
   FindRecentlyUsedEquipmentItemsSuccess,
-  ItemBrowserAdd,
-  LoadEquipmentItem
+  ItemBrowserAdd
 } from "@features/equipment/store/equipment.actions";
 import { Actions, ofType } from "@ngrx/effects";
 import { filter, map, take } from "rxjs/operators";
 import { TranslateService } from "@ngx-translate/core";
 import { UtilsService } from "@shared/services/utils/utils.service";
-import { Observable, of } from "rxjs";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
-import { selectEquipmentItem, selectEquipmentItems } from "@features/equipment/store/equipment.selectors";
 
 @Component({
   selector: "astrobin-formly-field-equipment-item-browser",

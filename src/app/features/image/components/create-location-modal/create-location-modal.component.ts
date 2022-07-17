@@ -40,6 +40,8 @@ export class CreateLocationModalComponent extends BaseComponentDirective impleme
   }
 
   ngOnInit(): void {
+    super.ngOnInit();
+
     this.store$
       .select(selectApp)
       .pipe(

@@ -85,6 +85,8 @@ export class BrandEditorFormComponent extends BaseComponentDirective implements 
   }
 
   ngOnInit(): void {
+    super.ngOnInit();
+
     if (this.name?.length >= BrandEditorFormComponent.MIN_LENGTH_FOR_SUGGESTIONS) {
       this.equipmentApiService
         .findAllBrands(this.name)

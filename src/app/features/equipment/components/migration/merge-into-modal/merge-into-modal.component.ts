@@ -72,6 +72,8 @@ export class MergeIntoModalComponent extends BaseComponentDirective implements O
   }
 
   ngOnInit() {
+    super.ngOnInit();
+
     let api;
 
     if (!this.equipmentItem.brand) {

@@ -75,7 +75,9 @@ export class MigrationReviewItemComponent extends BaseComponentDirective impleme
   }
 
   ngOnInit(): void {
-    const migrationStrategyId = this.activatedRoute.snapshot.paramMap.get("migrationStrategyId");
+    super.ngOnInit();
+
+    const migrationStrategyId = this.activatedRoute.snapshot?.paramMap.get("migrationStrategyId");
 
     this.gearMigrationStrategyApiService
       .get(+migrationStrategyId)

@@ -77,6 +77,8 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
   }
 
   ngOnInit() {
+    super.ngOnInit();
+
     if (this.id === null) {
       throw new Error("Attribute 'id' is required");
     }

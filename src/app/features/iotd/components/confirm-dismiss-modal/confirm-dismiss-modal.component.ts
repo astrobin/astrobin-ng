@@ -48,6 +48,8 @@ export class ConfirmDismissModalComponent extends BaseComponentDirective impleme
   }
 
   ngOnInit() {
+    super.ngOnInit();
+
     this.fields = [
       {
         key: "dontRemindMeForAMonth",

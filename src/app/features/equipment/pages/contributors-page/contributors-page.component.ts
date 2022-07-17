@@ -25,6 +25,8 @@ export class ContributorsPageComponent extends ExplorerBaseComponent implements 
   );
 
   ngOnInit() {
+    super.ngOnInit();
+
     this.store$.dispatch(new GetContributors());
   }
 

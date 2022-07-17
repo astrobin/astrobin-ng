@@ -1,4 +1,4 @@
-import { Directive, OnDestroy } from "@angular/core";
+import { Directive, OnDestroy, OnInit } from "@angular/core";
 import { Observable, Subject } from "rxjs";
 import { Store } from "@ngrx/store";
 import { selectCurrentUser, selectCurrentUserProfile } from "@features/account/store/auth.selectors";
@@ -7,26 +7,33 @@ import { UserProfileInterface } from "@shared/interfaces/user-profile.interface"
 import { distinctUntilKeyChanged, map, switchMap, tap } from "rxjs/operators";
 
 @Directive()
-export class BaseComponentDirective implements OnDestroy {
+export class BaseComponentDirective implements OnInit, OnDestroy {
   title: string;
   destroyedSubject = new Subject();
   destroyed$ = this.destroyedSubject.asObservable();
-  currentUser$: Observable<UserInterface> = this.store$.select(selectCurrentUser);
-  currentUserProfile$: Observable<UserProfileInterface> = this.store$.select(selectCurrentUserProfile);
-  currentUserWrapper$: Observable<{ user: UserInterface; userProfile: UserProfileInterface }> = this.currentUser$.pipe(
-    distinctUntilKeyChanged("id"),
-    switchMap(user =>
-      this.currentUserProfile$.pipe(
-        distinctUntilKeyChanged("id"),
-        map(userProfile => ({
-          user,
-          userProfile
-        }))
-      )
-    )
-  );
 
-  constructor(public readonly store$: Store) {}
+  currentUser$: Observable<UserInterface | null>;
+  currentUserProfile$: Observable<UserProfileInterface | null>;
+  currentUserWrapper$: Observable<{ user: UserInterface | null; userProfile: UserProfileInterface | null }>;
+
+  constructor(public readonly store$: Store) {
+    this.currentUser$ = this.store$.select(selectCurrentUser).pipe(distinctUntilKeyChanged("id"));
+    this.currentUserProfile$ = this.store$.select(selectCurrentUserProfile).pipe(distinctUntilKeyChanged("id"));
+    this.currentUserWrapper$ = this.store$.select(selectCurrentUser).pipe(
+      distinctUntilKeyChanged("id"),
+      switchMap(user =>
+        this.store$.select(selectCurrentUserProfile).pipe(
+          distinctUntilKeyChanged("id"),
+          map(userProfile => ({
+            user,
+            userProfile
+          }))
+        )
+      )
+    );
+  }
+
+  ngOnInit() {}
 
   ngOnDestroy(): void {
     this.destroyedSubject.next();

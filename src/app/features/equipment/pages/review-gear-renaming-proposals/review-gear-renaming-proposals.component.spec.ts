@@ -4,6 +4,8 @@ import { ReviewGearRenamingProposalsComponent } from "./review-gear-renaming-pro
 import { AppModule } from "@app/app.module";
 import { MockBuilder } from "ng-mocks";
 import { ActivatedRoute } from "@angular/router";
+import { provideMockStore } from "@ngrx/store/testing";
+import { initialState } from "@app/store/state";
 
 describe("ReviewGearRenamingProposalsComponent", () => {
   let component: ReviewGearRenamingProposalsComponent;
@@ -11,6 +13,7 @@ describe("ReviewGearRenamingProposalsComponent", () => {
 
   beforeEach(async () => {
     await MockBuilder(ReviewGearRenamingProposalsComponent, AppModule).provide([
+      provideMockStore({ initialState }),
       {
         provide: ActivatedRoute,
         useValue: {

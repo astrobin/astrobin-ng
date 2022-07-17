@@ -49,6 +49,8 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
   }
 
   ngOnInit() {
+    super.ngOnInit();
+
     if (!this.returnToSelector) {
       this.returnToSelector = "#sensor-editor-form";
     }

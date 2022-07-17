@@ -66,6 +66,8 @@ export class ApproveItemModalComponent extends BaseComponentDirective implements
   }
 
   ngOnInit(): void {
+    super.ngOnInit();
+
     this.fields = [
       {
         key: "comment",

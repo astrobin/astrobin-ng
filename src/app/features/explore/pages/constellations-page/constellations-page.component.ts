@@ -8,13 +8,14 @@ import { ConstellationInterface, ConstellationsService } from "@features/explore
 import { ViewportScroller } from "@angular/common";
 import { LoadingService } from "@shared/services/loading.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
 
 @Component({
   selector: "astrobin-constellations-page",
   templateUrl: "./constellations-page.component.html",
   styleUrls: ["./constellations-page.component.scss"]
 })
-export class ConstellationsPageComponent implements OnInit {
+export class ConstellationsPageComponent extends BaseComponentDirective implements OnInit {
   pageTitle = this.translateService.instant("Constellations");
 
   constructor(
@@ -25,9 +26,13 @@ export class ConstellationsPageComponent implements OnInit {
     public readonly viewportScroller: ViewportScroller,
     public readonly loadingService: LoadingService,
     public readonly windowRefService: WindowRefService
-  ) {}
+  ) {
+    super(store$);
+  }
 
   ngOnInit(): void {
+    super.ngOnInit();
+
     this.titleService.setTitle(this.pageTitle);
     this.store$.dispatch(
       new SetBreadcrumb({

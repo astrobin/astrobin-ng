@@ -51,6 +51,8 @@ export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeI
   }
 
   ngOnInit() {
+    super.ngOnInit();
+
     if (!this.returnToSelector) {
       this.returnToSelector = "#telescope-editor-form";
     }

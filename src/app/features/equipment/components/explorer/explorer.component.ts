@@ -204,6 +204,8 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
   }
 
   ngOnInit() {
+    super.ngOnInit();
+
     this._initActions();
     this._initActiveId();
   }

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, Input } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { BrandInterface } from "@features/equipment/types/brand.interface";
 import { Store } from "@ngrx/store";
@@ -10,7 +10,7 @@ export const PLACEHOLDER = "/assets/images/brand-placeholder.png?v=1";
   templateUrl: "./brand-summary.component.html",
   styleUrls: ["./brand-summary.component.scss"]
 })
-export class BrandSummaryComponent extends BaseComponentDirective implements OnInit {
+export class BrandSummaryComponent extends BaseComponentDirective {
   @Input()
   brand: BrandInterface;
 
@@ -21,6 +21,4 @@ export class BrandSummaryComponent extends BaseComponentDirective implements OnI
   get logo(): string {
     return (this.brand.logo as string) || PLACEHOLDER;
   }
-
-  ngOnInit(): void {}
 }

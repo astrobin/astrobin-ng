@@ -136,6 +136,8 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
   }
 
   ngOnInit(): void {
+    super.ngOnInit();
+
     this.titleService.setTitle(this.pageTitle);
     this.store$.dispatch(
       new SetBreadcrumb({

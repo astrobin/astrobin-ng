@@ -1,4 +1,4 @@
-import { Component, EventEmitter, HostListener, Input, OnInit, Output } from "@angular/core";
+import { Component, EventEmitter, HostListener, Input, Output } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { State } from "@app/store/state";
 import { AuthActionTypes, Login } from "@features/account/store/auth.actions";
@@ -11,7 +11,7 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
   templateUrl: "./login-form.component.html",
   styleUrls: ["./login-form.component.scss"]
 })
-export class LoginFormComponent extends BaseComponentDirective implements OnInit {
+export class LoginFormComponent extends BaseComponentDirective {
   form: FormGroup;
   error = false;
 
@@ -30,8 +30,6 @@ export class LoginFormComponent extends BaseComponentDirective implements OnInit
       password: ["", Validators.required]
     });
   }
-
-  ngOnInit(): void {}
 
   @HostListener("document:keydown.enter", ["$event"]) login(): void {
     this.store$.dispatch(

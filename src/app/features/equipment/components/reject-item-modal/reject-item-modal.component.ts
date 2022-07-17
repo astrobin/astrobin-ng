@@ -89,6 +89,8 @@ export class RejectItemModalComponent extends BaseComponentDirective implements 
   }
 
   ngOnInit(): void {
+    super.ngOnInit();
+
     this.fields = [
       {
         key: "reason",

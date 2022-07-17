@@ -148,6 +148,8 @@ export class ExplorerFiltersComponent extends BaseComponentDirective implements 
   }
 
   ngOnInit(): void {
+    super.ngOnInit();
+
     this._buildAvailableFilters();
 
     this.buildFromCookie();

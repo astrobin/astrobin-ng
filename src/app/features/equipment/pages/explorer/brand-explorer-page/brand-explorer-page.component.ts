@@ -153,7 +153,7 @@ export class BrandExplorerPageComponent extends ExplorerBaseComponent implements
   }
 
   private _setParams() {
-    this.activeId = parseInt(this.activatedRoute.snapshot.paramMap.get("brandId"), 10);
+    this.activeId = parseInt(this.activatedRoute.snapshot?.paramMap.get("brandId"), 10);
     if (!!this.activeId) {
       this.store$
         .select(selectBrand, this.activeId)

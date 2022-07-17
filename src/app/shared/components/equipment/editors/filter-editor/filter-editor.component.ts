@@ -55,6 +55,8 @@ export class FilterEditorComponent extends BaseItemEditorComponent<FilterInterfa
   }
 
   ngOnInit() {
+    super.ngOnInit();
+
     if (!this.returnToSelector) {
       this.returnToSelector = "#filter-editor-form";
     }

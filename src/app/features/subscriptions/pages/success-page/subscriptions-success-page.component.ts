@@ -7,6 +7,7 @@ import { SubscriptionsService } from "@features/subscriptions/services/subscript
 import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
 import { TitleService } from "@shared/services/title/title.service";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
 
 declare const gtag: any;
 
@@ -15,19 +16,23 @@ declare const gtag: any;
   templateUrl: "./subscriptions-success-page.component.html",
   styleUrls: ["./subscriptions-success-page.component.scss"]
 })
-export class SubscriptionsSuccessPageComponent implements OnInit {
+export class SubscriptionsSuccessPageComponent extends BaseComponentDirective implements OnInit {
   constructor(
     public readonly store$: Store<State>,
     public readonly titleService: TitleService,
     public readonly translate: TranslateService,
     public readonly activatedRoute: ActivatedRoute,
     public readonly subscriptionsService: SubscriptionsService
-  ) {}
+  ) {
+    super(store$);
+  }
 
   ngOnInit(): void {
+    super.ngOnInit();
+
     this.titleService.setTitle(this.translate.instant("Subscription confirmed"));
 
-    const product = this.activatedRoute.snapshot.queryParams["product"];
+    const product = this.activatedRoute.snapshot?.queryParams["product"];
 
     if (!!product) {
       this.store$.select(selectApp).subscribe(state => {

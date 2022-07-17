@@ -50,6 +50,8 @@ export class SaveEquipmentPresetModalComponent extends BaseComponentDirective im
   }
 
   ngOnInit(): void {
+    super.ngOnInit();
+
     this.fields = [
       {
         key: "name",

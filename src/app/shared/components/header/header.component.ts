@@ -144,6 +144,8 @@ export class HeaderComponent extends BaseComponentDirective implements OnInit {
   }
 
   ngOnInit() {
+    super.ngOnInit();
+
     this.helpWithTranslationsUrl$.pipe(takeUntil(this.destroyed$)).subscribe(url => {
       this.helpWithTranslationsUrl = url;
     });

@@ -48,6 +48,8 @@ export class EquipmentCompareModalComponent extends BaseComponentDirective imple
   }
 
   ngOnInit(): void {
+    super.ngOnInit();
+
     this.compareService.comparison$().subscribe(data => {
       this.data = data;
     });

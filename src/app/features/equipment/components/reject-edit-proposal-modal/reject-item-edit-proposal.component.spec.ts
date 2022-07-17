@@ -4,13 +4,18 @@ import { AppModule } from "@app/app.module";
 import { RejectEditProposalModalComponent } from "./reject-edit-proposal-modal.component";
 import { MockBuilder } from "ng-mocks";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
+import { provideMockStore } from "@ngrx/store/testing";
+import { initialState } from "@app/store/state";
 
 describe("RejectItemModalComponent", () => {
   let component: RejectEditProposalModalComponent;
   let fixture: ComponentFixture<RejectEditProposalModalComponent>;
 
   beforeEach(async () => {
-    await MockBuilder(RejectEditProposalModalComponent, AppModule).provide(NgbActiveModal);
+    await MockBuilder(RejectEditProposalModalComponent, AppModule).provide([
+      NgbActiveModal,
+      provideMockStore({ initialState })
+    ]);
   });
 
   beforeEach(() => {

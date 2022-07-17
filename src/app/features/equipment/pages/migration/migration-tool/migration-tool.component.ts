@@ -50,7 +50,7 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
   @ViewChild("equipmentItemBrowser")
   equipmentItemBrowser: ItemBrowserComponent;
 
-  activeType = this.activatedRoute.snapshot.paramMap.get("itemType");
+  activeType = this.activatedRoute.snapshot?.paramMap.get("itemType");
 
   title = "Migration tool";
   randomNonMigrated$: any = this.getRandomNonMigrated$();
@@ -116,6 +116,8 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
   }
 
   ngOnInit(): void {
+    super.ngOnInit();
+
     this.titleService.setTitle(this.title);
 
     this.store$.dispatch(
@@ -131,9 +133,9 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
       })
     );
 
-    this.router.events.pipe(takeUntil(this.destroyed$)).subscribe(event => {
+    this.router.events?.pipe(takeUntil(this.destroyed$)).subscribe(event => {
       if (event instanceof NavigationEnd) {
-        this.activeType = this.activatedRoute.snapshot.paramMap.get("itemType");
+        this.activeType = this.activatedRoute.snapshot?.paramMap.get("itemType");
         this.skip();
       }
     });

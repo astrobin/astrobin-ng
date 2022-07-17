@@ -184,6 +184,8 @@ export class SettingsPageComponent extends BaseComponentDirective implements OnI
   }
 
   ngOnInit(): void {
+    super.ngOnInit();
+
     this.store$.dispatch(new LoadNotificationTypes());
     this.store$.dispatch(new LoadNotificationSettings());
   }

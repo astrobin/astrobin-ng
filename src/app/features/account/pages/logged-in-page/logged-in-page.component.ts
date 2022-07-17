@@ -39,6 +39,8 @@ export class LoggedInPageComponent extends BaseComponentDirective implements OnI
   }
 
   ngOnInit(): void {
+    super.ngOnInit();
+
     const title = this.translate.instant("Welcome!");
     this.titleService.setTitle(title);
     this.store$.dispatch(new SetBreadcrumb({ breadcrumb: [{ label: "Account" }, { label: title }] }));

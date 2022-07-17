@@ -63,15 +63,17 @@ export class ExplorerBaseComponent extends BaseComponentDirective implements OnI
   }
 
   ngOnInit() {
-    this.page = +this.activatedRoute.snapshot.queryParamMap.get("page") || 1;
-    this.activeType = this.activatedRoute.snapshot.paramMap.get("itemType");
-    this.activeEditProposalId = +this.activatedRoute.snapshot.paramMap.get("editProposalId");
+    super.ngOnInit();
+
+    this.page = +this.activatedRoute.snapshot?.queryParamMap.get("page") || 1;
+    this.activeType = this.activatedRoute.snapshot?.paramMap.get("itemType");
+    this.activeEditProposalId = +this.activatedRoute.snapshot?.paramMap.get("editProposalId");
 
     this.store$.dispatch(new GetContributors());
 
-    this.router.events.pipe(takeUntil(this.destroyed$)).subscribe(event => {
+    this.router.events?.pipe(takeUntil(this.destroyed$)).subscribe(event => {
       if (event instanceof NavigationEnd) {
-        this.activeType = this.activatedRoute.snapshot.paramMap.get("itemType");
+        this.activeType = this.activatedRoute.snapshot?.paramMap.get("itemType");
         this.getItems();
       }
     });

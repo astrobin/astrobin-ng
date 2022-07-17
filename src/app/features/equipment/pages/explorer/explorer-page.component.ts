@@ -139,8 +139,8 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
   }
 
   private _setParams() {
-    this.page = parseInt(this.activatedRoute.snapshot.queryParamMap.get("page"), 10) || 1;
-    this.activeId = parseInt(this.activatedRoute.snapshot.paramMap.get("itemId"), 10);
+    this.page = parseInt(this.activatedRoute.snapshot?.queryParamMap.get("page"), 10) || 1;
+    this.activeId = parseInt(this.activatedRoute.snapshot?.paramMap.get("itemId"), 10);
     this.enableNavCollapsing = !!this.activeId;
     this.navCollapsed = !!this.activeId;
   }
@@ -168,7 +168,7 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
         const hash = this.windowRefService.nativeWindow.location.hash;
 
         if (
-          this.activatedRoute.snapshot.queryParamMap.get("request-review") === "true" &&
+          this.activatedRoute.snapshot?.queryParamMap.get("request-review") === "true" &&
           item &&
           !!item.reviewerDecision
         ) {
@@ -177,11 +177,11 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
           );
         }
 
-        if (this.activatedRoute.snapshot.queryParamMap.get("edit") === "true") {
+        if (this.activatedRoute.snapshot?.queryParamMap.get("edit") === "true") {
           this.explorer.startEditMode();
         }
 
-        this.goBackOnClose = this.activatedRoute.snapshot.queryParamMap.get("back-on-close") === "true";
+        this.goBackOnClose = this.activatedRoute.snapshot?.queryParamMap.get("back-on-close") === "true";
 
         let slug = UtilsService.slugify(`${!!item.brandName ? item.brandName : "diy"} ${item.name}`);
 

@@ -21,6 +21,8 @@ export class BreadcrumbComponent extends BaseComponentDirective implements OnIni
   }
 
   ngOnInit(): void {
+    super.ngOnInit();
+
     this.breadcrumb$ = this.store$.select(selectBreadcrumb).pipe(takeUntil(this.destroyed$));
   }
 }

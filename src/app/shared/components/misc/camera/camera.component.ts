@@ -32,6 +32,8 @@ export class CameraComponent extends BaseComponentDirective implements OnInit, A
   }
 
   ngOnInit(): void {
+    super.ngOnInit();
+
     if (this.id === undefined) {
       throw new Error("Attribute 'id' is required");
     }

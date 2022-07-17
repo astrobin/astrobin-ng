@@ -36,6 +36,8 @@ export class CountDownComponent extends BaseComponentDirective implements OnInit
   }
 
   ngOnInit() {
+    super.ngOnInit();
+
     this.getTimeDifference();
 
     if (isPlatformBrowser(this.platformId)) {

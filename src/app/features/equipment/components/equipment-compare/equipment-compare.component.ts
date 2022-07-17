@@ -34,6 +34,8 @@ export class EquipmentCompareComponent extends BaseComponentDirective implements
   }
 
   ngOnInit(): void {
+    super.ngOnInit();
+
     fromEvent(this.windowRefService.nativeWindow, "resize")
       .pipe(debounceTime(100))
       .subscribe(() => {

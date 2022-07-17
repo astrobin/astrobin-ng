@@ -74,6 +74,8 @@ export abstract class BasePromotionSlotsComponent extends BaseComponentDirective
   }
 
   ngOnInit() {
+    super.ngOnInit();
+
     if (this.slotType === undefined) {
       throw new Error("slotType cannot be undefined");
     }

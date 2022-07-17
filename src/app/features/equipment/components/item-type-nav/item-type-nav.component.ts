@@ -113,7 +113,7 @@ export class ItemTypeNavComponent extends BaseComponentDirective implements OnIn
   }[];
 
   @Input()
-  activeType = this.activatedRoute.snapshot.paramMap.get("itemType");
+  activeType = this.activatedRoute.snapshot?.paramMap.get("itemType");
 
   activeSubNav = "";
 
@@ -152,8 +152,10 @@ export class ItemTypeNavComponent extends BaseComponentDirective implements OnIn
   }
 
   ngOnInit() {
+    super.ngOnInit();
+
     this._initCollapsed();
-    this._setActiveSubNav(this.activatedRoute.snapshot.url.join("/"));
+    this._setActiveSubNav(this.activatedRoute.snapshot?.url.join("/"));
     this._initRouterEvents();
     this._initActionListeners();
     this._initTypes();
@@ -228,9 +230,9 @@ export class ItemTypeNavComponent extends BaseComponentDirective implements OnIn
   }
 
   _initRouterEvents() {
-    this.router.events.pipe(takeUntil(this.destroyed$)).subscribe(event => {
+    this.router.events?.pipe(takeUntil(this.destroyed$)).subscribe(event => {
       if (event instanceof NavigationEnd) {
-        this.activeType = this.activatedRoute.snapshot.paramMap.get("itemType");
+        this.activeType = this.activatedRoute.snapshot?.paramMap.get("itemType");
         this._setActiveSubNav(event.urlAfterRedirects);
       }
     });
@@ -373,8 +375,8 @@ export class ItemTypeNavComponent extends BaseComponentDirective implements OnIn
 
           if (
             count > 0 &&
-            this.activatedRoute.snapshot.url.join("/").indexOf("pending-edit-explorer") === -1 &&
-            !this.activatedRoute.snapshot.paramMap.get("itemId")
+            this.activatedRoute.snapshot?.url.join("/").indexOf("pending-edit-explorer") === -1 &&
+            !this.activatedRoute.snapshot?.paramMap.get("itemId")
           ) {
             let message: string;
 

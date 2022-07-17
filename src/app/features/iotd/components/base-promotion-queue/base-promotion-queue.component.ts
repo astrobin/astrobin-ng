@@ -68,7 +68,9 @@ export abstract class BasePromotionQueueComponent extends BaseComponentDirective
   }
 
   ngOnInit(): void {
-    this.page = this.activatedRoute.snapshot.queryParamMap.get("page") || 1;
+    super.ngOnInit();
+
+    this.page = this.activatedRoute.snapshot?.queryParamMap.get("page") || 1;
 
     this.promotions$
       .pipe(

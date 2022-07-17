@@ -48,6 +48,8 @@ export class SoftwareEditorComponent extends BaseItemEditorComponent<SoftwareInt
   }
 
   ngOnInit() {
+    super.ngOnInit();
+
     if (!this.returnToSelector) {
       this.returnToSelector = "#software-editor-form";
     }

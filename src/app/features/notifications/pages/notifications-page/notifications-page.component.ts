@@ -45,7 +45,9 @@ export class NotificationsPageComponent extends BaseComponentDirective implement
   }
 
   ngOnInit(): void {
-    this.page = this.activatedRoute.snapshot.queryParamMap.get("page") || 1;
+    super.ngOnInit();
+
+    this.page = this.activatedRoute.snapshot?.queryParamMap.get("page") || 1;
     this.notificationsService.refresh();
   }
 

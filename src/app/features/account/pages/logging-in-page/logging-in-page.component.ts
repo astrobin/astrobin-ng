@@ -27,6 +27,8 @@ export class LoggingInPageComponent extends BaseComponentDirective implements On
   }
 
   ngOnInit() {
+    super.ngOnInit();
+
     this.title = this.translate.instant("Logging you in securely...");
     this.titleService.setTitle(this.title);
     this.store$.dispatch(new SetBreadcrumb({ breadcrumb: [{ label: "Account" }, { label: this.title }] }));

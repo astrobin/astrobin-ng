@@ -88,6 +88,8 @@ export abstract class BasePromotionEntryComponent extends BaseComponentDirective
   }
 
   ngOnInit() {
+    super.ngOnInit();
+
     this.setExpiration(this.entry.pk);
 
     this.isHidden$(this.entry.pk)

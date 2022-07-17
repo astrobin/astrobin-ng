@@ -31,6 +31,8 @@ export class SimilarItemsSuggestionComponent extends BaseComponentDirective impl
   }
 
   ngOnInit() {
+    super.ngOnInit();
+
     if (!this.preamble) {
       this.preamble = this.translateService.instant(
         "We found the following similar items. Click the correct one to use it, or ignore this message."
