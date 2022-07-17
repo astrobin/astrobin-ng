@@ -53,7 +53,8 @@ const routes: Routes = [
   imports: [
     RouterModule.forRoot(routes, {
       onSameUrlNavigation: "reload",
-      relativeLinkResolution: "legacy"
+      relativeLinkResolution: "legacy",
+      initialNavigation: "enabled"
     })
   ],
   exports: [RouterModule]
