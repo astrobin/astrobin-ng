@@ -23,8 +23,7 @@ export class BaseComponentDirective implements OnDestroy {
           userProfile
         }))
       )
-    ),
-    tap(data => console.log(data))
+    )
   );
 
   constructor(public readonly store$: Store) {}
