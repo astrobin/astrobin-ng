@@ -76,6 +76,6 @@ export class AuthService extends BaseService implements AuthServiceInterface {
   }
 
   isAuthenticated$(): Observable<boolean> {
-    return of(this.getClassicApiToken() !== null);
+    return of(!!this.getClassicApiToken());
   }
 }
