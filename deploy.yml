@@ -10,4 +10,4 @@ phases:
 
   build:
     commands:
-      - deploy.sh astrobin-ng-app-launch-template astrobin-ng-autoscaling-group 300
+      - bash deploy.sh astrobin-ng-autoscaling-group 300
