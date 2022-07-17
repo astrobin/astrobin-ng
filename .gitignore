@@ -54,4 +54,3 @@ Thumbs.db
 /cypress/screenshots/*
 !/cypress/screenshots/.empty
 /.angular/cache/
-.serverless

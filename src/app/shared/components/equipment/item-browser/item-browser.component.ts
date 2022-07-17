@@ -173,7 +173,7 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
 
   ngOnInit() {
     super.ngOnInit();
-    this._setFields();
+    this.utilsService.delay(1).subscribe(() => this._setFields());
   }
 
   ngOnChanges(changes: SimpleChanges) {
