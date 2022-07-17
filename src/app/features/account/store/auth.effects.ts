@@ -26,7 +26,7 @@ import { AuthService } from "@shared/services/auth.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { CookieService } from "ngx-cookie";
 import { TimeagoIntl } from "ngx-timeago";
-import { EMPTY, forkJoin, Observable, of } from "rxjs";
+import { EMPTY, Observable, of } from "rxjs";
 import { catchError, concatMap, map, mergeMap, switchMap, take, tap } from "rxjs/operators";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";

@@ -31,7 +31,6 @@ interface AvailableLanguageInterface {
 })
 export class HeaderComponent extends BaseComponentDirective implements OnInit {
   isCollapsed = true;
-  isAuthenticated = false;
   helpWithTranslationsUrl: string;
 
   languages: AvailableLanguageInterface[] = [
@@ -145,11 +144,6 @@ export class HeaderComponent extends BaseComponentDirective implements OnInit {
   }
 
   ngOnInit() {
-    this.authService
-      .isAuthenticated$()
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe(isAuthenticated => (this.isAuthenticated = isAuthenticated));
-
     this.helpWithTranslationsUrl$.pipe(takeUntil(this.destroyed$)).subscribe(url => {
       this.helpWithTranslationsUrl = url;
     });

@@ -37,15 +37,12 @@
         <ng-container [ngTemplateOutlet]="quickSearch"></ng-container>
       </div>
 
-      <ul *ngIf="isAuthenticated" class="navbar-nav">
+      <ul *ngIf="(currentUser$ | async) !== null; else loginAndRegister" class="navbar-nav">
         <ng-container [ngTemplateOutlet]="languageSelector"></ng-container>
         <ng-container [ngTemplateOutlet]="notificationsButton"></ng-container>
         <ng-container [ngTemplateOutlet]="userMenu"></ng-container>
         <ng-container [ngTemplateOutlet]="uploadButton"></ng-container>
       </ul>
-
-      <ng-container *ngIf="!isAuthenticated" [ngTemplateOutlet]="loginAndRegister">
-      </ng-container>
     </div>
   </div>
   <!-- ./container -->
