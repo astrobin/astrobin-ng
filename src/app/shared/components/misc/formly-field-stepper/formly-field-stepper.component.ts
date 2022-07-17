@@ -2,8 +2,10 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
+  Inject,
   OnDestroy,
   OnInit,
+  PLATFORM_ID,
   QueryList,
   Renderer2,
   ViewChild,
@@ -23,6 +25,7 @@ import {
   STEP_STATE,
   StepChangedArgs
 } from "ng-wizard";
+import { isPlatformServer } from "@angular/common";
 
 @Component({
   selector: "astrobin-formly-field-stepper",
@@ -53,7 +56,8 @@ export class FormlyFieldStepperComponent extends FieldType implements OnInit, Af
     public readonly loadingService: LoadingService,
     public readonly router: Router,
     public readonly route: ActivatedRoute,
-    public readonly renderer: Renderer2
+    public readonly renderer: Renderer2,
+    @Inject(PLATFORM_ID) public readonly platformId
   ) {
     super();
   }
@@ -66,6 +70,10 @@ export class FormlyFieldStepperComponent extends FieldType implements OnInit, Af
   }
 
   ngAfterViewInit() {
+    if (isPlatformServer(this.platformId)) {
+      return;
+    }
+
     const anchors: HTMLAnchorElement[] = this.wizardElement.nativeElement.querySelectorAll("a");
     anchors.forEach(anchor => {
       this._stepClickListeners.push(
@@ -113,6 +121,10 @@ export class FormlyFieldStepperComponent extends FieldType implements OnInit, Af
   }
 
   isValid(field: FormlyFieldConfig) {
+    if (!field.formControl) {
+      return false;
+    }
+
     if (field.key) {
       return !field.formControl.invalid && !field.formControl.pending;
     }

@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from "@angular/core";
+import { AfterViewInit, Component, Inject, OnInit, PLATFORM_ID, ViewChild } from "@angular/core";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { NotificationsService } from "@features/notifications/services/notifications.service";
@@ -25,6 +25,7 @@ import { interval, Observable } from "rxjs";
 import { selectCurrentUser } from "@features/account/store/auth.selectors";
 import { NgbAccordion } from "@ng-bootstrap/ng-bootstrap";
 import { UtilsService } from "@shared/services/utils/utils.service";
+import { isPlatformBrowser } from "@angular/common";
 
 enum NotificationCategory {
   COMMENTS = "COMMENTS",
@@ -166,7 +167,8 @@ export class SettingsPageComponent extends BaseComponentDirective implements OnI
     public readonly store$: Store<State>,
     public readonly titleService: TitleService,
     public readonly translateService: TranslateService,
-    public readonly utilsService: UtilsService
+    public readonly utilsService: UtilsService,
+    @Inject(PLATFORM_ID) public readonly platformId
   ) {
     super(store$);
 
@@ -198,7 +200,9 @@ export class SettingsPageComponent extends BaseComponentDirective implements OnI
       });
     };
 
-    expandAccordion();
+    if (isPlatformBrowser(this.platformId)) {
+      expandAccordion();
+    }
   }
 
   getNotificationTypeById(id: string) {

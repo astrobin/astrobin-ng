@@ -1,11 +1,10 @@
-import { AfterViewInit, Component } from "@angular/core";
+import { AfterViewInit, Component, Inject, PLATFORM_ID } from "@angular/core";
 import { FieldType } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
 import { CKEditorService } from "@shared/services/ckeditor.service";
-import { take } from "rxjs/operators";
-import { interval } from "rxjs";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
+import { isPlatformServer } from "@angular/common";
 
 declare const CKEDITOR: any;
 
@@ -21,7 +20,8 @@ export class FormlyFieldCKEditorComponent extends FieldType implements AfterView
     public readonly translateService: TranslateService,
     public readonly ckeditorService: CKEditorService,
     public readonly utilsService: UtilsService,
-    public readonly windowRefService: WindowRefService
+    public readonly windowRefService: WindowRefService,
+    @Inject(PLATFORM_ID) public readonly platformId
   ) {
     super();
   }
@@ -31,6 +31,10 @@ export class FormlyFieldCKEditorComponent extends FieldType implements AfterView
   }
 
   private _initialize(): void {
+    if (isPlatformServer(this.platformId)) {
+      return;
+    }
+
     const document = this.windowRefService.nativeWindow.document;
     const editorBase = document.getElementById(this.field.id);
 

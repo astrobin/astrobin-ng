@@ -66,10 +66,7 @@ export class NotificationsPageComponent extends BaseComponentDirective implement
   pageChange(page: number): void {
     this.page = page;
     this.router.navigateByUrl(`/notifications?page=${page}`).then(() => {
-      this.notificationsService
-        .getAll(page)
-        .pipe(take(1))
-        .subscribe();
+      this.notificationsService.getAll(page).subscribe();
     });
   }
 

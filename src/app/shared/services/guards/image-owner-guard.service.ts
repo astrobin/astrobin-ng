@@ -56,7 +56,10 @@ export class ImageOwnerGuardService extends BaseService implements CanActivate {
         this.store$.dispatch(new LoadImage(imageId));
 
         combineLatest([
-          this.store$.select(selectCurrentUser).pipe(map(user => user.id)),
+          this.store$.select(selectCurrentUser).pipe(
+            filter(user => !!user),
+            map(user => user.id)
+          ),
           this.store$.select(selectImage, imageId).pipe(filter(image => !!image))
         ])
           .pipe(map(result => result[0] === result[1].user))
