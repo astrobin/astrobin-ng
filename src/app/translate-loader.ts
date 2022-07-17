@@ -60,7 +60,6 @@ import { strings as timeagoZhCn } from "ngx-timeago/language-strings/zh-CN";
 import { strings as timeagoZhTw } from "ngx-timeago/language-strings/zh-TW";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
-import { makeStateKey, StateKey, TransferState } from "@angular/platform-browser";
 
 @Injectable()
 export class LanguageLoader extends TranslatePoHttpLoader {
