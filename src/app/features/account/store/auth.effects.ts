@@ -26,8 +26,8 @@ import { AuthService } from "@shared/services/auth.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { CookieService } from "ngx-cookie-service";
 import { TimeagoIntl } from "ngx-timeago";
-import { EMPTY, forkJoin, Observable, of } from "rxjs";
-import { catchError, map, mergeMap, switchMap, take, tap } from "rxjs/operators";
+import { EMPTY,, Observable, of } from "rxjs";
+import { catchError, concatMap, map, mergeMap, switchMap, take, tap } from "rxjs/operators";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { selectCurrentUserProfile, selectUser, selectUserProfile } from "@features/account/store/auth.selectors";
@@ -206,33 +206,41 @@ export class AuthEffects {
     public readonly timeagoIntl: TimeagoIntl
   ) {}
 
-  private _getCurrentUserProfile$: Observable<UserProfileInterface> = this.commonApiService.getCurrentUserProfile();
-
-  private _getCurrentUser$: Observable<UserInterface> = this._getCurrentUserProfile$.pipe(
+  private _getCurrentUser$: Observable<{
+    user: UserInterface;
+    userProfile: UserProfileInterface;
+  }> = this.commonApiService.getCurrentUserProfile().pipe(
     switchMap(userProfile => {
       if (userProfile !== null) {
-        return this.commonApiService.getUser(userProfile.user);
+        return this.commonApiService.getUser(userProfile.user).pipe(
+          map(user => ({
+            user,
+            userProfile
+          }))
+        );
       }
 
       return of(null);
     })
   );
 
-  private _getUserSubscriptions$: Observable<UserSubscriptionInterface[]> = this._getCurrentUser$.pipe(
-    switchMap(user => {
-      if (user !== null) {
-        return this.commonApiService.getUserSubscriptions(user);
-      }
-
-      return of(null);
+  private _getData$: Observable<{
+    user: UserInterface;
+    userProfile: UserProfileInterface;
+    userSubscriptions: UserSubscriptionInterface[];
+  }> = this._getCurrentUser$.pipe(
+    concatMap(userData => {
+      return this.commonApiService.getUserSubscriptions(userData.user).pipe(
+        map(userSubscriptions => {
+          return {
+            user: userData.user,
+            userProfile: userData.userProfile,
+            userSubscriptions
+          };
+        })
+      );
     })
   );
-
-  private _getData$ = forkJoin({
-    user: this._getCurrentUser$,
-    userProfile: this._getCurrentUserProfile$,
-    userSubscriptions: this._getUserSubscriptions$
-  });
 
   private _setLanguage(language: string): Observable<any> {
     this.translate.setDefaultLang(language);
