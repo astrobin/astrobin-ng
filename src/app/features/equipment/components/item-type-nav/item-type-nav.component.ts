@@ -48,9 +48,6 @@ export class ItemTypeNavComponent extends BaseComponentDirective implements OnIn
   enableCollapsing = false;
 
   @Input()
-  startCollapsed = false;
-
-  @Input()
   collapsed = false;
 
   @Input()
@@ -119,6 +116,10 @@ export class ItemTypeNavComponent extends BaseComponentDirective implements OnIn
 
   reviewPendingEditNotification: ActiveToast<any>;
 
+  isTouchDevice: boolean;
+
+  hasActiveItem: boolean;
+
   @HostListener("mouseover") onMouseHover() {
     if (!this.enableCollapsing) {
       return;
@@ -149,6 +150,10 @@ export class ItemTypeNavComponent extends BaseComponentDirective implements OnIn
     public readonly popNotificationsService: PopNotificationsService
   ) {
     super(store$);
+
+    const document = this.windowRefService.nativeWindow.document;
+    this.isTouchDevice = document && "ontouchend" in document;
+    this.hasActiveItem = !!this.activatedRoute.snapshot?.paramMap.get("activeId");
   }
 
   ngOnInit() {
@@ -207,14 +212,10 @@ export class ItemTypeNavComponent extends BaseComponentDirective implements OnIn
   }
 
   _initCollapsed() {
-    let isTouchDevice: boolean;
-
-    const document = this.windowRefService.nativeWindow.document;
-    isTouchDevice = document && "ontouchend" in document;
-
     this.collapsed =
       this.enableCollapsing &&
-      (this.startCollapsed || (!isTouchDevice && this.windowRefService.nativeWindow.innerWidth > 767));
+      (!this.hasActiveItem || !this.isTouchDevice) &&
+      this.windowRefService.nativeWindow.innerWidth > 767;
 
     this.collapsedChanged.emit(this.collapsed);
   }
@@ -233,6 +234,7 @@ export class ItemTypeNavComponent extends BaseComponentDirective implements OnIn
     this.router.events?.pipe(takeUntil(this.destroyed$)).subscribe(event => {
       if (event instanceof NavigationEnd) {
         this.activeType = this.activatedRoute.snapshot?.paramMap.get("itemType");
+        this.hasActiveItem = !!this.activatedRoute.snapshot?.paramMap.get("activeId");
         this._setActiveSubNav(event.urlAfterRedirects);
       }
     });
