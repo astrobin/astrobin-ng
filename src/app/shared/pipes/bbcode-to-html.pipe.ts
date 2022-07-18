@@ -1,14 +1,16 @@
 import { Pipe, PipeTransform } from "@angular/core";
 import { CKEditorService } from "@shared/services/ckeditor.service";
+import { WindowRefService } from "@shared/services/window-ref.service";
 
 @Pipe({
   name: "BBCodeToHtml"
 })
 export class BBCodeToHtmlPipe implements PipeTransform {
-  constructor(public readonly ckEditorService: CKEditorService) {}
+  constructor(public readonly ckEditorService: CKEditorService, public readonly windowRefService: WindowRefService) {}
 
   BBCodeToHtml(code) {
-    const CKEDITOR = (window as any).CKEDITOR;
+    const window = this.windowRefService.nativeWindow as any;
+    const CKEDITOR = window.CKEDITOR;
 
     const fragment = CKEDITOR.htmlParser.fragment.fromBBCode(code);
     const writer = new CKEDITOR.htmlParser.basicWriter();

@@ -26,6 +26,7 @@ import { filter, map, switchMap, take } from "rxjs/operators";
 import { BBCodeToHtmlPipe } from "@shared/pipes/bbcode-to-html.pipe";
 import { CKEditorService } from "@shared/services/ckeditor.service";
 import { environment } from "@env/environment";
+import { WindowRefService } from "@shared/services/window-ref.service";
 
 export enum EquipmentItemDisplayProperty {
   BRAND = "BRAND",
@@ -47,7 +48,8 @@ export class EquipmentItemService extends BaseService {
     public readonly translateService: TranslateService,
     public readonly equipmentItemServiceFactory: EquipmentItemServiceFactory,
     public readonly equipmentApiService: EquipmentApiService,
-    public readonly ckEditorService: CKEditorService
+    public readonly ckEditorService: CKEditorService,
+    public readonly windowRefService: WindowRefService
   ) {
     super(loadingService);
   }
@@ -159,7 +161,9 @@ export class EquipmentItemService extends BaseService {
             : null
         );
       case EquipmentItemDisplayProperty.COMMUNITY_NOTES:
-        return of(new BBCodeToHtmlPipe(this.ckEditorService).transform(propertyValue.toString()));
+        return of(
+          new BBCodeToHtmlPipe(this.ckEditorService, this.windowRefService).transform(propertyValue.toString())
+        );
     }
   }
 
