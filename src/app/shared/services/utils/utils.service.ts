@@ -373,3 +373,13 @@ export class UtilsService {
 export function distinctUntilChangedObj<T>() {
   return distinctUntilChanged<T>((a, b) => JSON.stringify(a) === JSON.stringify(b));
 }
+
+export function distinctUntilKeyChangedOrNull<T>(key: string) {
+  return distinctUntilChanged<T>((a, b) => {
+    if (a === b) {
+      return true;
+    }
+
+    return !!a && !!b && a[key] === b[key];
+  });
+}

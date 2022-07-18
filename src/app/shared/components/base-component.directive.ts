@@ -4,7 +4,8 @@ import { Store } from "@ngrx/store";
 import { selectCurrentUser, selectCurrentUserProfile } from "@features/account/store/auth.selectors";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
-import { distinctUntilKeyChanged, map, switchMap, tap } from "rxjs/operators";
+import { map, switchMap } from "rxjs/operators";
+import { distinctUntilKeyChangedOrNull } from "@shared/services/utils/utils.service";
 
 @Directive()
 export class BaseComponentDirective implements OnInit, OnDestroy {
@@ -17,13 +18,11 @@ export class BaseComponentDirective implements OnInit, OnDestroy {
   currentUserWrapper$: Observable<{ user: UserInterface | null; userProfile: UserProfileInterface | null }>;
 
   constructor(public readonly store$: Store) {
-    this.currentUser$ = this.store$.select(selectCurrentUser).pipe(distinctUntilKeyChanged("id"));
-    this.currentUserProfile$ = this.store$.select(selectCurrentUserProfile).pipe(distinctUntilKeyChanged("id"));
+    this.currentUser$ = this.store$.select(selectCurrentUser).pipe(distinctUntilKeyChangedOrNull("id"));
+    this.currentUserProfile$ = this.store$.select(selectCurrentUserProfile).pipe(distinctUntilKeyChangedOrNull("id"));
     this.currentUserWrapper$ = this.store$.select(selectCurrentUser).pipe(
-      distinctUntilKeyChanged("id"),
       switchMap(user =>
         this.store$.select(selectCurrentUserProfile).pipe(
-          distinctUntilKeyChanged("id"),
           map(userProfile => ({
             user,
             userProfile
