@@ -30,3 +30,8 @@ artifacts:
   files:
     - '**/*'
   base-directory: dist/frontend
+  secondary-artifacts:
+    browserRootContent:
+      files:
+        - '**/*'
+      base-direrctory: dist/frontend/browser
