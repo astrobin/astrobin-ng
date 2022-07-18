@@ -8,7 +8,7 @@ import { UserInterface } from "@shared/interfaces/user.interface";
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { Observable, Observer } from "rxjs";
-import { map, take } from "rxjs/operators";
+import { filter, map, take } from "rxjs/operators";
 import { AuthService } from "../auth.service";
 
 @Injectable()
@@ -58,6 +58,7 @@ export class GroupGuardService extends BaseService implements CanActivate {
         this.store$
           .select(selectCurrentUser)
           .pipe(
+            filter(user => !!user),
             map((user: UserInterface) => {
               if (!user) {
                 return false;
