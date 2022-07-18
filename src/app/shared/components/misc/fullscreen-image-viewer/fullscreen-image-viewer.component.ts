@@ -1,4 +1,13 @@
-import { Component, HostBinding, HostListener, Input, OnChanges, SimpleChanges } from "@angular/core";
+import {
+  Component,
+  HostBinding,
+  HostListener,
+  Inject,
+  Input,
+  OnChanges,
+  PLATFORM_ID,
+  SimpleChanges
+} from "@angular/core";
 import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
 import { HideFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
 import { LoadThumbnail, LoadThumbnailCancel } from "@app/store/actions/thumbnail.actions";
@@ -13,9 +22,11 @@ import { ImageService } from "@shared/services/image/image.service";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { Coord } from "ngx-image-zoom";
-import { BehaviorSubject, Observable } from "rxjs";
+import { BehaviorSubject, interval, Observable } from "rxjs";
 import { distinctUntilChanged, filter, map, switchMap, take, takeUntil, tap } from "rxjs/operators";
 import { ImageThumbnailInterface } from "@shared/interfaces/image-thumbnail.interface";
+import { UtilsService } from "@shared/services/utils/utils.service";
+import { isPlatformBrowser } from "@angular/common";
 
 @Component({
   selector: "astrobin-fullscreen-image-viewer",
@@ -61,7 +72,9 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
     public readonly popNotificationsService: PopNotificationsService,
     public readonly translateService: TranslateService,
     public readonly imageService: ImageService,
-    public readonly domSanitizer: DomSanitizer
+    public readonly domSanitizer: DomSanitizer,
+    public readonly utilsService: UtilsService,
+    @Inject(PLATFORM_ID) public readonly platformId
   ) {
     super(store$);
 
@@ -140,17 +153,17 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
         if (show) {
           this.store$.dispatch(new LoadThumbnail({ data: this._getHdOptions(), bustCache: false }));
 
-          setTimeout(() => {
+          this.utilsService.delay(1).subscribe(() => {
             this.klass = "d-flex";
-          }, 1);
+          });
         } else {
           if (this._zoomReadyNotification) {
             this.popNotificationsService.clear(this._zoomReadyNotification.id);
           }
 
-          setTimeout(() => {
+          this.utilsService.delay(1).subscribe(() => {
             this.klass = "d-none";
-          }, 1);
+          });
         }
       })
     );
@@ -198,13 +211,15 @@ export class FullscreenImageViewerComponent extends BaseComponentDirective imple
   }
 
   private _setZoomIndicatorTimeout(): void {
-    if (this._zoomIndicatorTimeout) {
-      clearTimeout(this._zoomIndicatorTimeout);
-    }
+    if (isPlatformBrowser(this.platformId)) {
+      if (this._zoomIndicatorTimeout) {
+        clearTimeout(this._zoomIndicatorTimeout);
+      }
 
-    this._zoomIndicatorTimeout = this.windowRef.nativeWindow.setTimeout(() => {
-      this.showZoomIndicator = false;
-    }, this._zoomIndicatorTimeoutDuration);
+      this._zoomIndicatorTimeout = this.windowRef.nativeWindow.setTimeout(() => {
+        this.showZoomIndicator = false;
+      }, this._zoomIndicatorTimeoutDuration);
+    }
   }
 
   private _getHdOptions(): Omit<ImageThumbnailInterface, "url"> {

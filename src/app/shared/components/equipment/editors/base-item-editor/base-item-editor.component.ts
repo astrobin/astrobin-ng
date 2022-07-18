@@ -45,6 +45,7 @@ import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { InformationDialogComponent } from "@shared/components/misc/information-dialog/information-dialog.component";
 import { CameraInterface, CameraType } from "@features/equipment/types/camera.interface";
+import { UtilsService } from "@shared/services/utils/utils.service";
 
 export enum EquipmentItemEditorMode {
   CREATION,
@@ -191,20 +192,21 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
     public readonly equipmentApiService: EquipmentApiService,
     public readonly equipmentItemService: EquipmentItemService,
     public readonly formlyFieldService: FormlyFieldService,
-    public readonly modalService: NgbModal
+    public readonly modalService: NgbModal,
+    public readonly utilsService: UtilsService
   ) {
     super(store$);
   }
 
   ngAfterViewInit(): void {
-    setTimeout(() => {
+    this.utilsService.delay(100).subscribe(() => {
       const document = this.windowRefService.nativeWindow.document;
       const element = document.querySelector("#equipment-item-field-brand .ng-input input") as HTMLElement;
 
       if (!!element) {
         element.focus();
       }
-    }, 100);
+    });
   }
 
   startBrandCreation() {

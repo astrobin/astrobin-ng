@@ -1,8 +1,10 @@
 import { AfterViewInit, Component, ViewChild } from "@angular/core";
 import { FieldType } from "@ngx-formly/core";
-import { Observable } from "rxjs";
+import { interval, Observable } from "rxjs";
 import { take } from "rxjs/operators";
 import { GoogleMapsService } from "@shared/services/google-maps/google-maps.service";
+import { google } from "@google/maps";
+import { UtilsService } from "@shared/services/utils/utils.service";
 
 @Component({
   selector: "astrobin-formly-field-image-cropper",
@@ -16,7 +18,7 @@ export class FormlyFieldGoogleMapComponent extends FieldType implements AfterVie
 
   tilesLoaded = false;
 
-  constructor(public readonly googleMapsService: GoogleMapsService) {
+  constructor(public readonly googleMapsService: GoogleMapsService, public readonly utilsService: UtilsService) {
     super();
   }
 
@@ -39,12 +41,12 @@ export class FormlyFieldGoogleMapComponent extends FieldType implements AfterVie
         });
 
         this.googleMapsService.maps.event.addListener(this.map, "center_changed", () => {
-          // 0.1 seconds after the center of the map has changed, set the marker position again.
-          window.setTimeout(() => {
+          // 0.25 seconds after the center of the map has changed, set the marker position again.
+          this.utilsService.delay(250).subscribe(() => {
             const center = this.map.getCenter();
             marker.setPosition(center);
             this.formControl.setValue(center);
-          }, 250);
+          });
         });
 
         this.googleMapsService.maps.event.addListenerOnce(this.map, "tilesloaded", () => {

@@ -51,6 +51,8 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
   }
 
   ngOnInit(): void {
+    super.ngOnInit();
+
     this.store$.dispatch(new LoadUser({ id: this.comment.author }));
     this.user$ = this.store$.select(selectUser, this.comment.author).pipe(takeUntil(this.destroyed$));
     this._initReplyFields();

@@ -1,16 +1,21 @@
-import { Injectable } from "@angular/core";
-import { distinctUntilChanged, mergeMap, switchMap } from "rxjs/operators";
+import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
+import { distinctUntilChanged, switchMap, take } from "rxjs/operators";
 import { TranslateService } from "@ngx-translate/core";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { SelectorWithProps } from "@ngrx/store/src/models";
-import { Observable, of } from "rxjs";
+import { interval, Observable, of } from "rxjs";
+import { isPlatformBrowser } from "@angular/common";
 
 @Injectable({
   providedIn: "root"
 })
 export class UtilsService {
-  constructor(public readonly store$: Store<State>, public readonly translateService: TranslateService) {}
+  constructor(
+    public readonly store$: Store<State>,
+    public readonly translateService: TranslateService,
+    @Inject(PLATFORM_ID) public readonly platformId
+  ) {}
 
   static uuid(): string {
     const S4 = (): string => {
@@ -60,27 +65,6 @@ export class UtilsService {
     }
 
     return a;
-  }
-
-  static isInViewport(element: HTMLElement): boolean {
-    const rect = element.getBoundingClientRect();
-    return (
-      rect.top >= 0 &&
-      rect.left >= 0 &&
-      rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
-      rect.right <= (window.innerWidth || document.documentElement.clientWidth)
-    );
-  }
-
-  static isNearBelowViewport(element: HTMLElement): boolean {
-    const maxDistance = 500;
-    const rect = element.getBoundingClientRect();
-    return (
-      rect.top >= 0 &&
-      rect.left >= 0 &&
-      rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) + maxDistance &&
-      rect.right <= (window.innerWidth || document.documentElement.clientWidth)
-    );
   }
 
   static getLinksInText(text: string): string[] {
@@ -333,6 +317,38 @@ export class UtilsService {
     return new File([data], name);
   }
 
+  isNearBelowViewport(element: HTMLElement): boolean {
+    if (!isPlatformBrowser(this.platformId)) {
+      return false;
+    }
+
+    const maxDistance = 500;
+    const rect = element.getBoundingClientRect();
+    return (
+      rect.top >= 0 &&
+      rect.left >= 0 &&
+      rect.bottom <= (window.innerHeight || window.document.documentElement.clientHeight) + maxDistance &&
+      rect.right <= (window.innerWidth || window.document.documentElement.clientWidth)
+    );
+  }
+
+  delay(ms: number): Observable<void> {
+    return new Observable<void>(observer => {
+      if (isPlatformBrowser(this.platformId)) {
+        interval(ms)
+          .pipe(take(1))
+          .subscribe(() => {
+            observer.next();
+            observer.complete();
+          });
+      } else {
+        // Complete immediately.
+        observer.next();
+        observer.complete();
+      }
+    });
+  }
+
   yesNo(value: any): string {
     if (!value || value === "0" || (UtilsService.isFunction(value.toLowerCase) && value.toLowerCase() === "false")) {
       return this.translateService.instant("No");
@@ -356,4 +372,14 @@ export class UtilsService {
 
 export function distinctUntilChangedObj<T>() {
   return distinctUntilChanged<T>((a, b) => JSON.stringify(a) === JSON.stringify(b));
+}
+
+export function distinctUntilKeyChangedOrNull<T>(key: string) {
+  return distinctUntilChanged<T>((a, b) => {
+    if (a === b) {
+      return true;
+    }
+
+    return !!a && !!b && a[key] === b[key];
+  });
 }

@@ -41,6 +41,8 @@ export class RejectReviewGearRenamingProposalsModalComponent extends BaseCompone
   }
 
   ngOnInit(): void {
+    super.ngOnInit();
+
     this.fields = [
       {
         key: "rejectReason",

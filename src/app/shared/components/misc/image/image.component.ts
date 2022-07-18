@@ -24,7 +24,7 @@ import { ImageService } from "@shared/services/image/image.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { debounceTime, distinctUntilChanged, filter, map, switchMap, take, takeUntil } from "rxjs/operators";
-import { fromEvent, Observable, of } from "rxjs";
+import { fromEvent, interval, Observable, of } from "rxjs";
 import { selectImageRevisionsForImage } from "@app/store/selectors/app/image-revision.selectors";
 import { Actions } from "@ngrx/effects";
 import { ImageThumbnailInterface } from "@shared/interfaces/image-thumbnail.interface";
@@ -77,6 +77,8 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
   }
 
   ngOnInit() {
+    super.ngOnInit();
+
     if (this.id === null) {
       throw new Error("Attribute 'id' is required");
     }
@@ -103,41 +105,44 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
       return;
     }
 
-    if (!UtilsService.isNearBelowViewport(this.elementRef.nativeElement)) {
+    if (!this.utilsService.isNearBelowViewport(this.elementRef.nativeElement)) {
       return;
     }
 
     this.loading = true;
 
     // 0-200 ms
-    setTimeout(() => {
-      this.store$
-        .select(selectImage, this.id)
-        .pipe(
-          filter(image => !!image),
-          take(1),
-          switchMap(image =>
-            this.store$.select(selectImageRevisionsForImage, this.id).pipe(
-              take(1),
-              map(() => image)
-            )
-          ),
-          switchMap(image => this._loadRevision(image).pipe(map(revision => ({ image, revision }))))
-        )
-        .subscribe(({ image, revision }) => {
-          this.image = image;
-          const w = !!revision ? revision.w : image.w;
-          const h = !!revision ? revision.h : image.h;
-          this._setWidthAndHeight(w, h);
-          this._loadThumbnail();
-        });
+    this.utilsService
+      .delay(Math.floor(Math.random() * 200))
+      .pipe(take(1))
+      .subscribe(() => {
+        this.store$
+          .select(selectImage, this.id)
+          .pipe(
+            filter(image => !!image),
+            take(1),
+            switchMap(image =>
+              this.store$.select(selectImageRevisionsForImage, this.id).pipe(
+                take(1),
+                map(() => image)
+              )
+            ),
+            switchMap(image => this._loadRevision(image).pipe(map(revision => ({ image, revision }))))
+          )
+          .subscribe(({ image, revision }) => {
+            this.image = image;
+            const w = !!revision ? revision.w : image.w;
+            const h = !!revision ? revision.h : image.h;
+            this._setWidthAndHeight(w, h);
+            this._loadThumbnail();
+          });
 
-      this.store$.dispatch(new LoadImage(this.id));
+        this.store$.dispatch(new LoadImage(this.id));
 
-      if (this.autoLoadRevisions) {
-        this.store$.dispatch(new LoadImageRevisions({ imageId: this.id }));
-      }
-    }, Math.floor(Math.random() * 200));
+        if (this.autoLoadRevisions) {
+          this.store$.dispatch(new LoadImageRevisions({ imageId: this.id }));
+        }
+      });
   }
 
   onLoad(event) {

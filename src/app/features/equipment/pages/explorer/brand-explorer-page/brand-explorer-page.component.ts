@@ -28,7 +28,7 @@ import {
 } from "@features/equipment/store/equipment.actions";
 import { filter, map, take, takeUntil } from "rxjs/operators";
 import { UtilsService } from "@shared/services/utils/utils.service";
-import { CookieService } from "ngx-cookie-service";
+import { CookieService } from "ngx-cookie";
 import { LoadingService } from "@shared/services/loading.service";
 import { BrandInterface } from "@features/equipment/types/brand.interface";
 import { Observable } from "rxjs";
@@ -153,7 +153,7 @@ export class BrandExplorerPageComponent extends ExplorerBaseComponent implements
   }
 
   private _setParams() {
-    this.activeId = parseInt(this.activatedRoute.snapshot.paramMap.get("brandId"), 10);
+    this.activeId = parseInt(this.activatedRoute.snapshot?.paramMap.get("brandId"), 10);
     if (!!this.activeId) {
       this.store$
         .select(selectBrand, this.activeId)

@@ -36,12 +36,12 @@ import { UserService } from "@shared/services/user.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { NgWizardModule, THEME } from "ng-wizard";
 import { StickyNavModule } from "ng2-sticky-nav";
-import { CookieService } from "ngx-cookie-service";
+import { CookieService } from "ngx-cookie";
 import { NgxFilesizeModule } from "ngx-filesize";
 import { ImageCropperModule } from "ngx-image-cropper";
 import { TimeagoModule } from "ngx-timeago";
 import { ToastrModule } from "ngx-toastr";
-import { switchMap } from "rxjs/operators";
+import { switchMap, take } from "rxjs/operators";
 import { ComponentsModule } from "./components/components.module";
 import { PipesModule } from "./pipes/pipes.module";
 import { FormlyWrapperComponent } from "@shared/components/misc/formly-wrapper/formly-wrapper.component";
@@ -63,9 +63,10 @@ export function appInitializer(store: Store<State>, actions$: Actions) {
       actions$
         .pipe(
           ofType(AppActionTypes.INITIALIZE_SUCCESS),
+          take(1),
           switchMap(() => {
             store.dispatch(new InitializeAuth());
-            return actions$.pipe(ofType(AuthActionTypes.INITIALIZE_SUCCESS));
+            return actions$.pipe(ofType(AuthActionTypes.INITIALIZE_SUCCESS), take(1));
           })
         )
         .subscribe(() => {

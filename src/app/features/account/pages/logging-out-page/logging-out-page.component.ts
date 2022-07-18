@@ -22,6 +22,8 @@ export class LoggingOutPageComponent extends BaseComponentDirective implements O
   }
 
   ngOnInit() {
+    super.ngOnInit();
+
     this.title = this.translate.instant("Logging you out securely...");
     this.titleService.setTitle(this.title);
     this.store$.dispatch(new SetBreadcrumb({ breadcrumb: [{ label: "Account" }, { label: this.title }] }));

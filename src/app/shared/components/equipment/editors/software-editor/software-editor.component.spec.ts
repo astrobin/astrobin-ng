@@ -9,6 +9,7 @@ import { provideMockActions } from "@ngrx/effects/testing";
 import { ReplaySubject } from "rxjs";
 import { AppModule } from "@app/app.module";
 import { BrandEditorCardComponent } from "@shared/components/equipment/editors/brand-editor-card/brand-editor-card.component";
+import { UtilsService } from "@shared/services/utils/utils.service";
 
 describe("SoftwareEditorComponent", () => {
   let component: SoftwareEditorComponent;
@@ -17,7 +18,7 @@ describe("SoftwareEditorComponent", () => {
   beforeEach(async () => {
     await MockBuilder(SoftwareEditorComponent, EquipmentModule)
       .mock(AppModule)
-      .provide([provideMockStore({ initialState }), provideMockActions(() => new ReplaySubject<any>())])
+      .provide([provideMockStore({ initialState }), provideMockActions(() => new ReplaySubject<any>()), UtilsService])
       .mock(BrandEditorCardComponent);
   });
 

@@ -19,7 +19,7 @@ import localeAlbanian from "@angular/common/locales/sq";
 import localeTurkish from "@angular/common/locales/tr";
 import localeChineseSimplified from "@angular/common/locales/zh-Hans";
 import { NgModule } from "@angular/core";
-import { BrowserModule, Title } from "@angular/platform-browser";
+import { BrowserModule, BrowserTransferStateModule, Title } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { AppComponent } from "@app/app.component";
 import { appStateEffects, appStateReducers } from "@app/store/state";
@@ -64,14 +64,13 @@ import { EffectsModule } from "@ngrx/effects";
 import { StoreModule } from "@ngrx/store";
 import { StoreDevtoolsModule } from "@ngrx/store-devtools";
 import { MissingTranslationHandler, TranslateLoader, TranslateModule, TranslateParser } from "@ngx-translate/core";
-import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { SharedModule } from "@shared/shared.module";
-import { CookieService } from "ngx-cookie-service";
+import { CookieModule, CookieService } from "ngx-cookie";
 import { TimeagoCustomFormatter, TimeagoFormatter, TimeagoIntl, TimeagoModule } from "ngx-timeago";
 import { AppRoutingModule } from "./app-routing.module";
 import { CustomMissingTranslationHandler } from "./missing-translation-handler";
-import { LanguageLoader } from "./translate-loader";
+import { translateLoaderFactory } from "./translate-loader";
 
 // Supported languages
 registerLocaleData(localeEnglish);
@@ -135,9 +134,11 @@ export function initFontAwesome(iconLibrary: FaIconLibrary) {
 @NgModule({
   imports: [
     // Angular.
-    BrowserModule,
+    BrowserModule.withServerTransition({ appId: "serverApp" }),
     BrowserAnimationsModule,
+    BrowserTransferStateModule,
     HttpClientModule,
+    CookieModule.forRoot(),
 
     // Dependencies.
     StoreModule.forRoot(appStateReducers),
@@ -162,8 +163,8 @@ export function initFontAwesome(iconLibrary: FaIconLibrary) {
       },
       loader: {
         provide: TranslateLoader,
-        useClass: LanguageLoader,
-        deps: [HttpClient, JsonApiService]
+        useFactory: translateLoaderFactory,
+        deps: [HttpClient]
       },
       isolate: false
     }),

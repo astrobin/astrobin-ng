@@ -8,9 +8,11 @@ if (environment.production) {
   enableProdMode();
 }
 
-platformBrowserDynamic()
-  .bootstrapModule(AppModule)
-  .catch(err => {
-    // tslint:disable-next-line:no-console
-    console.error(err);
-  });
+document.addEventListener("DOMContentLoaded", () => {
+  platformBrowserDynamic()
+    .bootstrapModule(AppModule)
+    .catch(err => {
+      // tslint:disable-next-line:no-console
+      console.error(err);
+    });
+});

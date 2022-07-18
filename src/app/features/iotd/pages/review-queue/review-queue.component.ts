@@ -14,7 +14,7 @@ import { TitleService } from "@shared/services/title/title.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { Observable } from "rxjs";
 import { ActivatedRoute, Router } from "@angular/router";
-import { CookieService } from "ngx-cookie-service";
+import { CookieService } from "ngx-cookie";
 import { ReviewImageInterface } from "@features/iotd/types/review-image.interface";
 import { Actions } from "@ngrx/effects";
 import { takeUntil } from "rxjs/operators";

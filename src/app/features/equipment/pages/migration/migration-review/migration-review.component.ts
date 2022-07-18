@@ -39,6 +39,8 @@ export class MigrationReviewComponent extends BaseComponentDirective implements 
   }
 
   ngOnInit(): void {
+    super.ngOnInit();
+
     this.titleService.setTitle(this.title);
 
     this.store$.dispatch(

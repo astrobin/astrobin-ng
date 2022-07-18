@@ -1,9 +1,10 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, Inject, Input, OnInit, PLATFORM_ID } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { interval, Subscription } from "rxjs";
 import { takeUntil } from "rxjs/operators";
+import { isPlatformBrowser } from "@angular/common";
 
 @Component({
   selector: "astrobin-count-down",
@@ -30,20 +31,24 @@ export class CountDownComponent extends BaseComponentDirective implements OnInit
   hoursToTargetDate;
   daysToTargetDate;
 
-  constructor(public readonly store$: Store<State>) {
+  constructor(public readonly store$: Store<State>, @Inject(PLATFORM_ID) public readonly platformId) {
     super(store$);
   }
 
   ngOnInit() {
+    super.ngOnInit();
+
     this.getTimeDifference();
 
-    interval(this.showSeconds ? 1000 : 60000)
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe(x => {
-        if (!!this.targetDate) {
-          this.getTimeDifference();
-        }
-      });
+    if (isPlatformBrowser(this.platformId)) {
+      interval(this.showSeconds ? 1000 : 60000)
+        .pipe(takeUntil(this.destroyed$))
+        .subscribe(x => {
+          if (!!this.targetDate) {
+            this.getTimeDifference();
+          }
+        });
+    }
   }
 
   private getTimeDifference() {

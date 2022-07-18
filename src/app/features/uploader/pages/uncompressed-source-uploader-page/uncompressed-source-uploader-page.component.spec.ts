@@ -4,6 +4,8 @@ import { UncompressedSourceUploaderPageComponent } from "@features/uploader/page
 import { UploaderModule } from "@features/uploader/uploader.module";
 import { ImageGenerator } from "@shared/generators/image.generator";
 import { MockBuilder, MockRender } from "ng-mocks";
+import { provideMockStore } from "@ngrx/store/testing";
+import { initialState } from "@app/store/state";
 
 describe("UncompressedSourceUploader.PageComponent", () => {
   let component: UncompressedSourceUploaderPageComponent;
@@ -11,16 +13,19 @@ describe("UncompressedSourceUploader.PageComponent", () => {
   beforeEach(() =>
     MockBuilder(UncompressedSourceUploaderPageComponent, UploaderModule)
       .mock(AppModule)
-      .provide({
-        provide: ActivatedRoute,
-        useValue: {
-          snapshot: {
-            data: {
-              image: ImageGenerator.image()
+      .provide([
+        provideMockStore({ initialState }),
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              data: {
+                image: ImageGenerator.image()
+              }
             }
           }
         }
-      })
+      ])
   );
 
   beforeEach(() => {

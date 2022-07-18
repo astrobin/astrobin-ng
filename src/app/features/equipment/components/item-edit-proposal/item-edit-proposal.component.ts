@@ -158,6 +158,8 @@ export class ItemEditProposalComponent extends BaseComponentDirective implements
   }
 
   ngOnInit(): void {
+    super.ngOnInit();
+
     const type: EquipmentItemType = this.equipmentItemService.getType(this.editProposal);
 
     this._loadData(type);

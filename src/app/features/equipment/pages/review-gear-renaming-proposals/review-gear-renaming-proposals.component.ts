@@ -55,7 +55,9 @@ export class ReviewGearRenamingProposalsComponent extends BaseComponentDirective
   }
 
   ngOnInit(): void {
-    this.itemType = this.activatedRoute.snapshot.paramMap.get("itemType") as GearRenamingProposalItemType;
+    super.ngOnInit();
+
+    this.itemType = this.activatedRoute.snapshot?.paramMap.get("itemType") as GearRenamingProposalItemType;
     this.getProposals();
   }
 

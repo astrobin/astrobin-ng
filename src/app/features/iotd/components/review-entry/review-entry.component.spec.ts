@@ -7,13 +7,16 @@ import { ImageGenerator } from "@shared/generators/image.generator";
 import { MockBuilder } from "ng-mocks";
 import { ReviewEntryComponent } from "./review-entry.component";
 import { WindowRefService } from "@shared/services/window-ref.service";
+import { CookieService } from "ngx-cookie";
 
 describe("ReviewEntryComponent", () => {
   let component: ReviewEntryComponent;
   let fixture: ComponentFixture<ReviewEntryComponent>;
 
   beforeEach(async () => {
-    await MockBuilder(ReviewEntryComponent, IotdModule).provide([WindowRefService, provideMockStore({ initialState })]);
+    await MockBuilder(ReviewEntryComponent, IotdModule)
+      .provide([WindowRefService, provideMockStore({ initialState })])
+      .mock(CookieService);
   });
 
   beforeEach(() => {

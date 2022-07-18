@@ -20,6 +20,8 @@ export class NotFound404PageComponent extends BaseComponentDirective implements 
   }
 
   ngOnInit() {
+    super.ngOnInit();
+
     const title = "404";
     this.titleService.setTitle(title);
 

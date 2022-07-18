@@ -4,7 +4,7 @@ import { State } from "@app/store/state";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
 import { LoadingService } from "@shared/services/loading.service";
-import { fromEvent, Observable, of } from "rxjs";
+import { fromEvent, interval, Observable, of } from "rxjs";
 import { catchError, debounceTime, filter, first, map, mapTo, mergeMap, take, tap } from "rxjs/operators";
 import {
   CreateNestedCommentFailure,
@@ -62,7 +62,7 @@ export class NestedCommentsEffects {
               take(1)
             )
             .subscribe(selectedNestedComment => {
-              setTimeout(() => {
+              this.utilsService.delay(1).subscribe(() => {
                 const element = this.windowRefService.nativeWindow.document.getElementById(`c${nestedComment.id}`);
                 element.scrollIntoView({ behavior: "smooth", block: "start", inline: "nearest" });
                 fromEvent(this.windowRefService.nativeWindow, "scroll")
@@ -70,11 +70,11 @@ export class NestedCommentsEffects {
                   .subscribe(() => {
                     element.classList.add("created");
 
-                    setTimeout(() => {
+                    this.utilsService.delay(1000).subscribe(() => {
                       element.classList.remove("created");
-                    }, 1000);
+                    });
                   });
-              }, 1);
+              });
             });
         }),
         map(() => void 0)
@@ -98,7 +98,7 @@ export class NestedCommentsEffects {
     public readonly actions$: Actions<All>,
     public readonly loadingService: LoadingService,
     public readonly nestedCommentsApiService: NestedCommentsApiService,
-    public readonly windowRefService: WindowRefService
-  ) {
-  }
+    public readonly windowRefService: WindowRefService,
+    public readonly utilsService: UtilsService
+  ) {}
 }

@@ -47,6 +47,8 @@ export class RejectEditProposalModalComponent extends BaseComponentDirective imp
   }
 
   ngOnInit(): void {
+    super.ngOnInit();
+
     this.fields = [
       {
         key: "comment",

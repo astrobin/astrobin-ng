@@ -5,7 +5,9 @@ import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { CameraInterface } from "@shared/interfaces/camera.interface";
 import { GearService } from "@shared/services/gear/gear.service";
-import { Observable } from "rxjs";
+import { interval, Observable } from "rxjs";
+import { take } from "rxjs/operators";
+import { UtilsService } from "@shared/services/utils/utils.service";
 
 @Component({
   selector: "astrobin-camera",
@@ -21,11 +23,17 @@ export class CameraComponent extends BaseComponentDirective implements OnInit, A
   @Input()
   loadDelay = 0;
 
-  constructor(public readonly store$: Store<State>, public readonly gearService: GearService) {
+  constructor(
+    public readonly store$: Store<State>,
+    public readonly gearService: GearService,
+    public readonly utilsService: UtilsService
+  ) {
     super(store$);
   }
 
   ngOnInit(): void {
+    super.ngOnInit();
+
     if (this.id === undefined) {
       throw new Error("Attribute 'id' is required");
     }
@@ -37,8 +45,8 @@ export class CameraComponent extends BaseComponentDirective implements OnInit, A
   }
 
   ngAfterViewInit() {
-    setTimeout(() => {
+    this.utilsService.delay(this.loadDelay).subscribe(() => {
       this.store$.dispatch(new LoadCamera(this.id));
-    }, this.loadDelay);
+    });
   }
 }

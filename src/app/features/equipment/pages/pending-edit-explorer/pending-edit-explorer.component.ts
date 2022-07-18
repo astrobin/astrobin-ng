@@ -16,7 +16,7 @@ import {
 } from "@features/equipment/pages/explorer-base/pending-explorer-base.component";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import { CookieService } from "ngx-cookie-service";
+import { CookieService } from "ngx-cookie";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 
 @Component({

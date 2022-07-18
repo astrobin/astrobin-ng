@@ -8,6 +8,7 @@ import { provideMockActions } from "@ngrx/effects/testing";
 import { ReplaySubject } from "rxjs";
 import { AppModule } from "@app/app.module";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import { UtilsService } from "@shared/services/utils/utils.service";
 
 describe("ItemBrowserComponent", () => {
   let component: ItemBrowserComponent;
@@ -16,7 +17,8 @@ describe("ItemBrowserComponent", () => {
   beforeEach(async () => {
     await MockBuilder(ItemBrowserComponent, AppModule).provide([
       provideMockStore({ initialState }),
-      provideMockActions(() => new ReplaySubject<any>())
+      provideMockActions(() => new ReplaySubject<any>()),
+      UtilsService
     ]);
   });
 

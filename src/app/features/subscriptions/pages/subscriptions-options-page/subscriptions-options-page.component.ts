@@ -33,6 +33,8 @@ export class SubscriptionsOptionsPageComponent extends BaseComponentDirective im
   }
 
   ngOnInit(): void {
+    super.ngOnInit();
+
     const title = this.translate.instant("Subscription plans");
     this.store$.dispatch(new SetBreadcrumb({ breadcrumb: [{ label: "Subscriptions" }, { label: title }] }));
 

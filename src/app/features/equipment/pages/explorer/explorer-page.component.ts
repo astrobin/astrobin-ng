@@ -20,7 +20,7 @@ import { Location } from "@angular/common";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 import { CameraInterface, CameraType } from "@features/equipment/types/camera.interface";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
-import { CookieService } from "ngx-cookie-service";
+import { CookieService } from "ngx-cookie";
 import {
   ExplorerFilterInterface,
   ExplorerFiltersComponent
@@ -63,7 +63,8 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
     public readonly equipmentItemService: EquipmentItemService,
     public readonly popNotificationsService: PopNotificationsService,
     public readonly cookieService: CookieService,
-    public readonly compareService: CompareService
+    public readonly compareService: CompareService,
+    public readonly utilsService: UtilsService
   ) {
     super(store$, actions$, activatedRoute, router, windowRefService, cookieService);
   }
@@ -138,15 +139,15 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
   }
 
   private _setParams() {
-    this.page = parseInt(this.activatedRoute.snapshot.queryParamMap.get("page"), 10) || 1;
-    this.activeId = parseInt(this.activatedRoute.snapshot.paramMap.get("itemId"), 10);
+    this.page = parseInt(this.activatedRoute.snapshot?.queryParamMap.get("page"), 10) || 1;
+    this.activeId = parseInt(this.activatedRoute.snapshot?.paramMap.get("itemId"), 10);
     this.enableNavCollapsing = !!this.activeId;
     this.navCollapsed = !!this.activeId;
   }
 
   private _setLocation() {
     const _doSetLocation = (item: EquipmentItemBaseInterface) => {
-      setTimeout(() => {
+      this.utilsService.delay(100).subscribe(() => {
         if (!item) {
           const urlObject = this.windowRefService.getCurrentUrl();
 
@@ -167,7 +168,7 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
         const hash = this.windowRefService.nativeWindow.location.hash;
 
         if (
-          this.activatedRoute.snapshot.queryParamMap.get("request-review") === "true" &&
+          this.activatedRoute.snapshot?.queryParamMap.get("request-review") === "true" &&
           item &&
           !!item.reviewerDecision
         ) {
@@ -176,11 +177,11 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
           );
         }
 
-        if (this.activatedRoute.snapshot.queryParamMap.get("edit") === "true") {
+        if (this.activatedRoute.snapshot?.queryParamMap.get("edit") === "true") {
           this.explorer.startEditMode();
         }
 
-        this.goBackOnClose = this.activatedRoute.snapshot.queryParamMap.get("back-on-close") === "true";
+        this.goBackOnClose = this.activatedRoute.snapshot?.queryParamMap.get("back-on-close") === "true";
 
         let slug = UtilsService.slugify(`${!!item.brandName ? item.brandName : "diy"} ${item.name}`);
 
@@ -205,7 +206,7 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
         ) {
           this.location.replaceState(`/equipment/explorer/${this.activeType.toLowerCase()}/${item.id}/${slug}${hash}`);
         }
-      }, 100);
+      });
     };
 
     if (!!this.activeId) {

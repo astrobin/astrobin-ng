@@ -1,3 +1,4 @@
+@import "../../../../styles/mixins";
 
 :host {
   display: block;
@@ -8,13 +9,13 @@
 }
 
 label {
+  @include darkest-background-texture;
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 10rem;
   padding: 2rem;
   border: 2px dashed var(--lightGrey);
-  background: url("/assets/images/darkest-background.png") repeat;
   opacity: .9;
   border-radius: .25rem;
   cursor: not-allowed;

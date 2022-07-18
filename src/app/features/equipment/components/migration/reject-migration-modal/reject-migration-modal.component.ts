@@ -63,6 +63,8 @@ export class RejectMigrationModalComponent extends BaseComponentDirective implem
   }
 
   ngOnInit(): void {
+    super.ngOnInit();
+
     this.fields = [
       {
         key: "reason",

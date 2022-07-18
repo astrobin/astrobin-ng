@@ -144,6 +144,8 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
   }
 
   ngOnInit(): void {
+    super.ngOnInit();
+
     this.loadingService.setLoading(true);
 
     this.activatedRoute.params.pipe(takeUntil(this.destroyed$)).subscribe(params => {

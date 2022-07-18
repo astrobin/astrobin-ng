@@ -24,7 +24,7 @@ import { UserInterface } from "@shared/interfaces/user.interface";
 import { CommonApiService } from "@shared/services/api/classic/common/common-api.service";
 import { AuthService } from "@shared/services/auth.service";
 import { LoadingService } from "@shared/services/loading.service";
-import { CookieService } from "ngx-cookie-service";
+import { CookieService } from "ngx-cookie";
 import { TimeagoIntl } from "ngx-timeago";
 import { EMPTY, Observable, of } from "rxjs";
 import { catchError, concatMap, map, mergeMap, switchMap, take, tap } from "rxjs/operators";
@@ -141,7 +141,10 @@ export class AuthEffects {
       switchMap(action =>
         this.authService.login(action.payload.handle, action.payload.password, action.payload.redirectUrl).pipe(
           tap(token => {
-            this.cookieService.set(AuthService.CLASSIC_AUTH_TOKEN_COOKIE, token, 180, "/");
+            this.cookieService.put(AuthService.CLASSIC_AUTH_TOKEN_COOKIE, token, {
+              path: "/",
+              expires: new Date(new Date().getTime() + 180 * 24 * 60 * 60 * 1000)
+            });
           }),
           switchMap(() =>
             this._getData$.pipe(
@@ -166,7 +169,8 @@ export class AuthEffects {
       ofType(AuthActionTypes.INITIALIZE),
       switchMap(() =>
         new Observable<LoginSuccessInterface>(observer => {
-          if (this.cookieService.check(AuthService.CLASSIC_AUTH_TOKEN_COOKIE)) {
+          const token = this.cookieService.get(AuthService.CLASSIC_AUTH_TOKEN_COOKIE);
+          if (!!token) {
             this._getData$.subscribe(data => {
               if (!data.user || !data.userProfile || !data.userSubscriptions) {
                 observer.next({ user: null, userProfile: null, userSubscriptions: [] });

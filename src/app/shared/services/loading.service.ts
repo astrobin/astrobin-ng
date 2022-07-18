@@ -7,7 +7,7 @@ import { debounceTime } from "rxjs/operators";
   providedIn: "root"
 })
 export class LoadingService implements LoadingServiceInterface {
-  static readonly DEBOUNCE_TIME = 100;
+  static readonly DEBOUNCE_TIME = 250;
 
   loadingSubject = new Subject<boolean>();
   loading$: Observable<boolean> = this.loadingSubject.asObservable().pipe(debounceTime(LoadingService.DEBOUNCE_TIME));

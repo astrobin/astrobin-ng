@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, Input } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
@@ -10,7 +10,7 @@ import { ContentTypeInterface } from "@shared/interfaces/content-type.interface"
   selector: "astrobin-iotd-comments-modal",
   templateUrl: "./nested-comments-modal.component.html"
 })
-export class NestedCommentsModalComponent extends BaseComponentDirective implements OnInit {
+export class NestedCommentsModalComponent extends BaseComponentDirective {
   @Input()
   contentType: ContentTypeInterface;
 
@@ -30,6 +30,4 @@ export class NestedCommentsModalComponent extends BaseComponentDirective impleme
   ) {
     super(store$);
   }
-
-  ngOnInit(): void {}
 }

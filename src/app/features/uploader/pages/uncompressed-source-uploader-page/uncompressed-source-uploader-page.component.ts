@@ -65,6 +65,8 @@ export class UncompressedSourceUploaderPageComponent extends BaseComponentDirect
   }
 
   ngOnInit(): void {
+    super.ngOnInit();
+
     this.image = this.route.snapshot.data.image;
 
     this.titleService.setTitle(this.pageTitle);

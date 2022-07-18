@@ -2,7 +2,6 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { environment } from "@env/environment";
 import { TranslatePoHttpLoader } from "@fjnr/ngx-translate-po-http-loader";
-import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
 import { TimeagoIntl } from "ngx-timeago";
 import { strings as timeagoAf } from "ngx-timeago/language-strings/af";
 import { strings as timeagoAr } from "ngx-timeago/language-strings/ar";
@@ -59,19 +58,14 @@ import { strings as timeagoUz } from "ngx-timeago/language-strings/uz";
 import { strings as timeagoVi } from "ngx-timeago/language-strings/vi";
 import { strings as timeagoZhCn } from "ngx-timeago/language-strings/zh-CN";
 import { strings as timeagoZhTw } from "ngx-timeago/language-strings/zh-TW";
-import { forkJoin, Observable } from "rxjs";
-import { catchError, map, switchMap } from "rxjs/operators";
-
-declare const VERSION: string;
+import { Observable } from "rxjs";
+import { map } from "rxjs/operators";
 
 @Injectable()
 export class LanguageLoader extends TranslatePoHttpLoader {
-  constructor(public http: HttpClient, public jsonApi: JsonApiService) {
+  constructor(public readonly http: HttpClient) {
     super(http);
   }
-
-  ngJsonTranslations$ = (lang: string): Observable<object> =>
-    this.http.get(`/assets/i18n/${lang}.json?version=${VERSION}`);
 
   ngTranslations$ = (lang: string): Observable<object> => {
     if (lang === "zh-hans") {
@@ -79,75 +73,14 @@ export class LanguageLoader extends TranslatePoHttpLoader {
     }
 
     return this.http
-      .get(`/assets/i18n/${lang}.po?version=${VERSION}`, {
+      .get(`/assets/i18n/${lang}.po?version=${environment.buildVersion}`, {
         responseType: "text"
       })
       .pipe(map((contents: string) => this.parse(contents)));
   };
 
-  classicTranslations$ = (lang: string): Observable<object> =>
-    this.jsonApi.getBackendConfig().pipe(
-      switchMap(backendConfig =>
-        this.http
-          .get(`${environment.classicApiUrl}/json-api/i18n/messages/${lang}/?version=${backendConfig.i18nHash}`, {
-            responseType: "text"
-          })
-          .pipe(map((contents: string) => this.parse(contents)))
-      )
-    );
-
   getTranslation(lang: string): Observable<any> {
-    if (!lang) {
-      lang = "en";
-    }
-
-    const backends = [
-      this.classicTranslations$(lang),
-      this.ngTranslations$(lang).pipe(catchError(() => this.ngTranslations$("en")))
-    ];
-
-    if (["pt"].indexOf(lang) > -1) {
-      backends.push(this.ngJsonTranslations$(lang).pipe(catchError(() => this.ngJsonTranslations$("en"))));
-    }
-
-    backends.push();
-    return forkJoin(backends).pipe(
-      map(results => {
-        const classicTranslations = results[0];
-        const ngTranslations = results[1];
-        const ngJsonTranslations = results[2];
-
-        Object.keys(classicTranslations).forEach(key => {
-          if (classicTranslations[key] === "") {
-            classicTranslations[key] = key;
-          }
-        });
-
-        if (ngJsonTranslations) {
-          Object.keys(ngJsonTranslations).forEach(key => {
-            if (ngJsonTranslations[key] === "") {
-              ngJsonTranslations[key] = key;
-            }
-          });
-        }
-
-        Object.keys(ngTranslations).forEach(key => {
-          if (ngTranslations[key] === "") {
-            if (ngJsonTranslations) {
-              ngTranslations[key] = ngJsonTranslations[key];
-            } else {
-              ngTranslations[key] = key;
-            }
-          }
-        });
-
-        return {
-          ...ngJsonTranslations,
-          ...ngTranslations,
-          ...classicTranslations
-        };
-      })
-    );
+    return this.ngTranslations$(lang);
   }
 
   parse(contents: string): any {
@@ -162,6 +95,10 @@ export class LanguageLoader extends TranslatePoHttpLoader {
 
     return mapped;
   }
+}
+
+export function translateLoaderFactory(http: HttpClient) {
+  return new LanguageLoader(http);
 }
 
 export function setTimeagoIntl(timeagoIntl: TimeagoIntl, language: string): void {

@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { Actions } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
@@ -13,18 +13,15 @@ import { AccessoryInterface, AccessoryType } from "@features/equipment/types/acc
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { FormlyFieldConfig } from "@ngx-formly/core";
-import { FilterDisplayProperty } from "@features/equipment/services/filter.service";
-import { FilterType } from "@features/equipment/types/filter.interface";
-import { takeUntil } from "rxjs/operators";
 import { AccessoryDisplayProperty, AccessoryService } from "@features/equipment/services/accessory.service";
+import { UtilsService } from "@shared/services/utils/utils.service";
 
 @Component({
   selector: "astrobin-accessory-editor",
   templateUrl: "./accessory-editor.component.html",
   styleUrls: ["./accessory-editor.component.scss", "../base-item-editor/base-item-editor.component.scss"]
 })
-export class AccessoryEditorComponent extends BaseItemEditorComponent<AccessoryInterface, null>
-  implements OnInit, AfterViewInit {
+export class AccessoryEditorComponent extends BaseItemEditorComponent<AccessoryInterface, null> implements OnInit {
   constructor(
     public readonly store$: Store<State>,
     public readonly actions$: Actions,
@@ -33,9 +30,10 @@ export class AccessoryEditorComponent extends BaseItemEditorComponent<AccessoryI
     public readonly windowRefService: WindowRefService,
     public readonly equipmentApiService: EquipmentApiService,
     public readonly equipmentItemService: EquipmentItemService,
+    public readonly accessoryService: AccessoryService,
     public readonly formlyFieldService: FormlyFieldService,
     public readonly modalService: NgbModal,
-    public readonly accessoryService: AccessoryService
+    public readonly utilsService: UtilsService
   ) {
     super(
       store$,
@@ -46,7 +44,8 @@ export class AccessoryEditorComponent extends BaseItemEditorComponent<AccessoryI
       equipmentApiService,
       equipmentItemService,
       formlyFieldService,
-      modalService
+      modalService,
+      utilsService
     );
   }
 
@@ -54,16 +53,9 @@ export class AccessoryEditorComponent extends BaseItemEditorComponent<AccessoryI
     if (!this.returnToSelector) {
       this.returnToSelector = "#accessory-editor-form";
     }
-  }
-
-  ngAfterViewInit(): void {
-    setTimeout(() => {
-      this._initFields();
-    }, 1);
 
     this.model.klass = EquipmentItemType.ACCESSORY;
-
-    super.ngAfterViewInit();
+    this._initFields();
   }
 
   protected _customNameChangesValidations(field: FormlyFieldConfig, value: string) {

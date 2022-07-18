@@ -165,6 +165,10 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
         ): ValidationErrors => {
           let value;
 
+          if (typeof FileList === "undefined") {
+            return null;
+          }
+
           if (Array.isArray(control.value) || control.value instanceof FileList) {
             value = control.value[0];
           } else {

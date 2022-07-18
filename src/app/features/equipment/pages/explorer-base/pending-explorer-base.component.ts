@@ -5,7 +5,7 @@ import { Actions } from "@ngrx/effects";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ExplorerBaseComponent } from "@features/equipment/pages/explorer-base/explorer-base.component";
 import { WindowRefService } from "@shared/services/window-ref.service";
-import { CookieService } from "ngx-cookie-service";
+import { CookieService } from "ngx-cookie";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 
 export enum PendingType {

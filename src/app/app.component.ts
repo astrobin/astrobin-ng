@@ -38,7 +38,7 @@ export class AppComponent extends BaseComponentDirective {
   }
 
   initRouterEvents(): void {
-    this.router.events.subscribe(event => {
+    this.router.events?.subscribe(event => {
       if (event instanceof NavigationEnd) {
         this.tagGoogleAnalyticsPage(event.urlAfterRedirects);
       }

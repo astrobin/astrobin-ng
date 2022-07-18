@@ -50,6 +50,8 @@ export class NestedCommentsComponent extends BaseComponentDirective implements O
   }
 
   ngOnInit() {
+    super.ngOnInit();
+
     this._initComments();
     this._initFields();
 

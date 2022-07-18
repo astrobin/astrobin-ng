@@ -1,10 +1,12 @@
 import {
   Component,
   EventEmitter,
+  Inject,
   Input,
   OnChanges,
   OnInit,
   Output,
+  PLATFORM_ID,
   SimpleChanges,
   TemplateRef,
   ViewChild
@@ -19,7 +21,7 @@ import {
 } from "@features/equipment/types/equipment-item-base.interface";
 import { FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
-import { forkJoin, Observable, of, Subscription } from "rxjs";
+import { forkJoin, interval, Observable, of, Subscription } from "rxjs";
 import { TranslateService } from "@ngx-translate/core";
 import {
   CreateAccessory,
@@ -59,6 +61,7 @@ import { VariantSelectorModalComponent } from "@shared/components/equipment/item
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { BaseItemEditorComponent } from "@shared/components/equipment/editors/base-item-editor/base-item-editor.component";
+import { isPlatformBrowser } from "@angular/common";
 
 type Type = EquipmentItem["id"];
 type TypeUnion = EquipmentItem["id"] | EquipmentItem["id"][];
@@ -69,7 +72,8 @@ type TypeUnion = EquipmentItem["id"] | EquipmentItem["id"][];
   styleUrls: ["./item-browser.component.scss"]
 })
 export class ItemBrowserComponent extends BaseComponentDirective implements OnInit, OnChanges {
-  EquipmentItemType = EquipmentItemType;
+  readonly isPlatformBrowser = isPlatformBrowser;
+  readonly EquipmentItemType = EquipmentItemType;
 
   @Input()
   id = "equipment-item-field";
@@ -160,13 +164,16 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
     public readonly windowRefService: WindowRefService,
     public readonly modalService: NgbModal,
     public readonly equipmentItemService: EquipmentItemService,
-    public readonly popNotificationsService: PopNotificationsService
+    public readonly popNotificationsService: PopNotificationsService,
+    public readonly utilsService: UtilsService,
+    @Inject(PLATFORM_ID) public readonly platformId
   ) {
     super(store$);
   }
 
   ngOnInit() {
-    setTimeout(() => this._setFields(), 1);
+    super.ngOnInit();
+    this.utilsService.delay(1).subscribe(() => this._setFields());
   }
 
   ngOnChanges(changes: SimpleChanges) {

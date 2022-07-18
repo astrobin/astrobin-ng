@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit, TemplateRef, ViewChild } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { Actions } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
@@ -13,14 +13,14 @@ import { FormlyFieldService } from "@shared/services/formly-field.service";
 import { SensorDisplayProperty, SensorService } from "@features/equipment/services/sensor.service";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { UtilsService } from "@shared/services/utils/utils.service";
 
 @Component({
   selector: "astrobin-sensor-editor",
   templateUrl: "./sensor-editor.component.html",
   styleUrls: ["./sensor-editor.component.scss", "../base-item-editor/base-item-editor.component.scss"]
 })
-export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterface, null>
-  implements OnInit, AfterViewInit {
+export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterface, null> implements OnInit {
   constructor(
     public readonly store$: Store<State>,
     public readonly actions$: Actions,
@@ -31,7 +31,8 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
     public readonly equipmentItemService: EquipmentItemService,
     public readonly formlyFieldService: FormlyFieldService,
     public readonly sensorService: SensorService,
-    public readonly modalService: NgbModal
+    public readonly modalService: NgbModal,
+    public readonly utilsService: UtilsService
   ) {
     super(
       store$,
@@ -42,24 +43,20 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
       equipmentApiService,
       equipmentItemService,
       formlyFieldService,
-      modalService
+      modalService,
+      utilsService
     );
   }
 
   ngOnInit() {
+    super.ngOnInit();
+
     if (!this.returnToSelector) {
       this.returnToSelector = "#sensor-editor-form";
     }
-  }
-
-  ngAfterViewInit(): void {
-    setTimeout(() => {
-      this._initFields();
-    }, 1);
 
     this.model.klass = EquipmentItemType.SENSOR;
-
-    super.ngAfterViewInit();
+    this._initFields();
   }
 
   private _initFields() {

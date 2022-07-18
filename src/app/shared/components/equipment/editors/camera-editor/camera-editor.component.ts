@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit, TemplateRef, ViewChild } from "@angular/core";
+import { Component, OnInit, TemplateRef, ViewChild } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { Actions } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
@@ -23,14 +23,14 @@ import { selectBrand } from "@features/equipment/store/equipment.selectors";
 import { of } from "rxjs";
 import { AbstractControl, FormControl } from "@angular/forms";
 import { LoadBrand } from "@features/equipment/store/equipment.actions";
+import { UtilsService } from "@shared/services/utils/utils.service";
 
 @Component({
   selector: "astrobin-camera-editor",
   templateUrl: "./camera-editor.component.html",
   styleUrls: ["./camera-editor.component.scss", "../base-item-editor/base-item-editor.component.scss"]
 })
-export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterface, SensorInterface>
-  implements OnInit, AfterViewInit {
+export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterface, SensorInterface> implements OnInit {
   @ViewChild("sensorLabelTemplate")
   sensorLabelTemplate: TemplateRef<any>;
 
@@ -56,7 +56,8 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
     public readonly equipmentItemService: EquipmentItemService,
     public readonly formlyFieldService: FormlyFieldService,
     public readonly cameraService: CameraService,
-    public readonly modalService: NgbModal
+    public readonly modalService: NgbModal,
+    public readonly utilsService: UtilsService
   ) {
     super(
       store$,
@@ -67,24 +68,20 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
       equipmentApiService,
       equipmentItemService,
       formlyFieldService,
-      modalService
+      modalService,
+      utilsService
     );
   }
 
   ngOnInit() {
+    super.ngOnInit();
+
     if (!this.returnToSelector) {
       this.returnToSelector = "#camera-editor-form";
     }
-  }
-
-  ngAfterViewInit(): void {
-    setTimeout(() => {
-      this._initFields();
-    }, 1);
 
     this.model.klass = EquipmentItemType.CAMERA;
-
-    super.ngAfterViewInit();
+    this._initFields();
   }
 
   startSensorCreation() {
@@ -98,9 +95,10 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
     this.subCreation.model = {};
     this.subCreation.form.reset();
     this.subCreationInProgress.emit(false);
-    setTimeout(() => {
+
+    this.utilsService.delay(250).subscribe(() => {
       this.windowRefService.scrollToElement("#camera-field-sensor");
-    }, 250);
+    });
   }
 
   protected _customNameChangesValidations(field: FormlyFieldConfig, value: string) {
@@ -407,9 +405,9 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
     if (!!brandControl) {
       _doInit(brandControl);
     } else {
-      setTimeout(() => {
+      this.utilsService.delay(100).subscribe(() => {
         this._initBrandValueChangesObservable();
-      }, 100);
+      });
     }
   }
 }

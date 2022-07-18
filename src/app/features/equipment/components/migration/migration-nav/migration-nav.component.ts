@@ -17,6 +17,8 @@ export class MigrationNavComponent extends BaseComponentDirective implements OnI
   }
 
   ngOnInit(): void {
+    super.ngOnInit();
+
     const url = this.location.path();
 
     if (url.indexOf("migration-tool") > -1) {

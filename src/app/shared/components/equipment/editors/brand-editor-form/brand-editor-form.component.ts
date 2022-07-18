@@ -22,6 +22,7 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
 import { State } from "@app/store/state";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { FormlyFieldMessageLevel, FormlyFieldService } from "@shared/services/formly-field.service";
+import { UtilsService } from "@shared/services/utils/utils.service";
 
 const PROHIBITED_WORDS = [
   // English
@@ -77,12 +78,15 @@ export class BrandEditorFormComponent extends BaseComponentDirective implements 
     public readonly translateService: TranslateService,
     public readonly equipmentApiService: EquipmentApiService,
     public readonly windowRefService: WindowRefService,
-    public readonly formlyFieldService: FormlyFieldService
+    public readonly formlyFieldService: FormlyFieldService,
+    public readonly utilsService: UtilsService
   ) {
     super(store$);
   }
 
   ngOnInit(): void {
+    super.ngOnInit();
+
     if (this.name?.length >= BrandEditorFormComponent.MIN_LENGTH_FOR_SUGGESTIONS) {
       this.equipmentApiService
         .findAllBrands(this.name)
@@ -209,10 +213,10 @@ export class BrandEditorFormComponent extends BaseComponentDirective implements 
   }
 
   ngAfterViewInit(): void {
-    setTimeout(() => {
+    this.utilsService.delay(100).subscribe(() => {
       const document = this.windowRefService.nativeWindow.document;
       (document.querySelector("#brand-field-name") as HTMLElement).focus();
-    }, 100);
+    });
   }
 
   private _showSimilarBrandsWarning(similarBrands: BrandInterface[]) {

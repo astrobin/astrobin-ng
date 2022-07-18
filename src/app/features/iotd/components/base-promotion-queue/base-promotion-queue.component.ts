@@ -21,7 +21,7 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 import { Observable } from "rxjs";
 import { map, switchMap, takeUntil } from "rxjs/operators";
 import { ActivatedRoute, Params, Router } from "@angular/router";
-import { CookieService } from "ngx-cookie-service";
+import { CookieService } from "ngx-cookie";
 import { SubmissionImageInterface } from "@features/iotd/types/submission-image.interface";
 import { ReviewImageInterface } from "@features/iotd/types/review-image.interface";
 import { Actions } from "@ngrx/effects";
@@ -68,7 +68,9 @@ export abstract class BasePromotionQueueComponent extends BaseComponentDirective
   }
 
   ngOnInit(): void {
-    this.page = this.activatedRoute.snapshot.queryParamMap.get("page") || 1;
+    super.ngOnInit();
+
+    this.page = this.activatedRoute.snapshot?.queryParamMap.get("page") || 1;
 
     this.promotions$
       .pipe(
@@ -79,7 +81,7 @@ export abstract class BasePromotionQueueComponent extends BaseComponentDirective
         )
       )
       .subscribe(({ promotions, backendConfig }) => {
-        const showInfo = this.supportsMaxPromotionsPerDayInfo && !this.cookieService.check(FILL_SLOT_REMINDER_COOKIE);
+        const showInfo = this.supportsMaxPromotionsPerDayInfo && !this.cookieService.get(FILL_SLOT_REMINDER_COOKIE);
         if (showInfo && promotions.length === this.maxPromotionsPerDay(backendConfig)) {
           this.popNotificationsService
             .info(
@@ -100,7 +102,10 @@ export abstract class BasePromotionQueueComponent extends BaseComponentDirective
               }
             )
             .onAction.subscribe(() => {
-              this.cookieService.set(FILL_SLOT_REMINDER_COOKIE, "1", 30, "/");
+              this.cookieService.put(FILL_SLOT_REMINDER_COOKIE, "1", {
+                path: "/",
+                expires: new Date(new Date().getTime() + 30 * 24 * 60 * 60 * 1000)
+              });
             });
         }
       });

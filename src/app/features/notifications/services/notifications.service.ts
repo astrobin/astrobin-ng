@@ -5,7 +5,7 @@ import { NotificationServiceInterface } from "@features/notifications/services/n
 import { NotificationsApiService } from "@features/notifications/services/notifications-api.service";
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
-import { Observable, Subject, throwError } from "rxjs";
+import { Observable, ReplaySubject, Subject, throwError } from "rxjs";
 import { catchError, switchMap, take, tap } from "rxjs/operators";
 
 @Injectable({
@@ -15,8 +15,8 @@ export class NotificationsService extends BaseService implements NotificationSer
   notifications$: Observable<NotificationListResponseInterface>;
   unreadCount$: Observable<number>;
 
-  private _notificationsSubject = new Subject<NotificationListResponseInterface>();
-  private _unreadCountSubject = new Subject<number>();
+  private _notificationsSubject = new ReplaySubject<NotificationListResponseInterface>();
+  private _unreadCountSubject = new ReplaySubject<number>();
   private _lastPage = 1;
 
   constructor(public loadingService: LoadingService, public api: NotificationsApiService) {
@@ -30,7 +30,6 @@ export class NotificationsService extends BaseService implements NotificationSer
 
     this.getAll(page)
       .pipe(
-        take(1),
         switchMap(() => this.getUnreadCount()),
         catchError(error => {
           this.loadingSubject.next(false);

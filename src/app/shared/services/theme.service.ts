@@ -1,9 +1,9 @@
 import { Injectable } from "@angular/core";
 import { WindowRefService } from "@shared/services/window-ref.service";
-import { CookieService } from "ngx-cookie-service";
 import { Constants } from "@shared/constants";
-
-declare const VERSION: string;
+import { environment } from "@env/environment";
+import { UtilsService } from "@shared/services/utils/utils.service";
+import { CookieService } from "ngx-cookie";
 
 export enum Theme {
   DEFAULT = "default",
@@ -16,7 +16,11 @@ export enum Theme {
 export class ThemeService {
   theme = Theme.DEFAULT;
 
-  constructor(public readonly windowRef: WindowRefService, public readonly cookieService: CookieService) {}
+  constructor(
+    public readonly windowRef: WindowRefService,
+    public readonly cookieService: CookieService,
+    public readonly utilsService: UtilsService
+  ) {}
 
   currentTheme(): Theme {
     const cookie = this.cookieService.get(Constants.USE_HIGH_CONTRAST_THEME_COOKIE);
@@ -24,6 +28,7 @@ export class ThemeService {
   }
 
   setTheme(): void {
+    const document = this.windowRef.nativeWindow.document;
     const theme = this.currentTheme();
     const head = document.getElementsByTagName("head")[0];
     const body = document.getElementsByTagName("body")[0];
@@ -33,7 +38,7 @@ export class ThemeService {
     newLink.id = "astrobin-theme";
     newLink.type = "text/css";
     newLink.rel = "stylesheet";
-    newLink.href = `/assets/themes/${theme}.css?build=${VERSION}`;
+    newLink.href = `/assets/themes/${theme}.css?build=${environment.buildVersion}`;
 
     head.appendChild(newLink);
 
@@ -46,9 +51,9 @@ export class ThemeService {
     }
 
     if (currentLink) {
-      setTimeout(() => {
+      this.utilsService.delay(100).subscribe(() => {
         currentLink.parentElement.removeChild(currentLink);
-      }, 100);
+      });
     }
   }
 }

@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { Actions } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
@@ -17,6 +17,7 @@ import { FilterInterface, FilterSize, FilterType } from "@features/equipment/typ
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { FormlyFieldConfig } from "@ngx-formly/core";
+import { UtilsService } from "@shared/services/utils/utils.service";
 import { take, takeUntil } from "rxjs/operators";
 import { interval } from "rxjs";
 
@@ -25,8 +26,7 @@ import { interval } from "rxjs";
   templateUrl: "./filter-editor.component.html",
   styleUrls: ["./filter-editor.component.scss", "../base-item-editor/base-item-editor.component.scss"]
 })
-export class FilterEditorComponent extends BaseItemEditorComponent<FilterInterface, null>
-  implements OnInit, AfterViewInit {
+export class FilterEditorComponent extends BaseItemEditorComponent<FilterInterface, null> implements OnInit {
   constructor(
     public readonly store$: Store<State>,
     public readonly actions$: Actions,
@@ -37,7 +37,8 @@ export class FilterEditorComponent extends BaseItemEditorComponent<FilterInterfa
     public readonly equipmentItemService: EquipmentItemService,
     public readonly formlyFieldService: FormlyFieldService,
     public readonly filterService: FilterService,
-    public readonly modalService: NgbModal
+    public readonly modalService: NgbModal,
+    public readonly utilsService: UtilsService
   ) {
     super(
       store$,
@@ -48,24 +49,68 @@ export class FilterEditorComponent extends BaseItemEditorComponent<FilterInterfa
       equipmentApiService,
       equipmentItemService,
       formlyFieldService,
-      modalService
+      modalService,
+      utilsService
     );
   }
 
   ngOnInit() {
+    super.ngOnInit();
+
     if (!this.returnToSelector) {
       this.returnToSelector = "#filter-editor-form";
     }
-  }
-
-  ngAfterViewInit(): void {
-    setTimeout(() => {
-      this._initFields();
-    }, 1);
 
     this.model.klass = EquipmentItemType.FILTER;
+    this._initFields();
+  }
 
-    super.ngAfterViewInit();
+  protected _customNameChangesValidations(field: FormlyFieldConfig, value: string) {
+    if (field.formControl.pristine) {
+      return;
+    }
+
+    const filterSetWords = ["filterset", "set", "filter set", "lrgb", "l-r-g-b", "ha-oiii-sii"];
+
+    let hasFilterSet = false;
+
+    for (const word of filterSetWords) {
+      if (value.toLowerCase().indexOf(word) > -1) {
+        hasFilterSet = true;
+        break;
+      }
+    }
+
+    const hasBandwidth = !this.model.bandwidth || value.indexOf(`${this.model.bandwidth}nm`) > -1;
+    const hasSize =
+      !this.model.size ||
+      this.model.size === FilterSize.OTHER ||
+      value.indexOf(`${this.filterService.humanizeSizeShort(this.model.size)}`) > -1;
+
+    if (!hasBandwidth) {
+      this.formlyFieldService.addMessage(field.templateOptions, {
+        level: FormlyFieldMessageLevel.INFO,
+        text: this.translateService.instant(
+          "Please consider making the name contain the bandwidth, to prevent ambiguity."
+        )
+      });
+    }
+
+    if (!hasSize) {
+      this.formlyFieldService.addMessage(field.templateOptions, {
+        level: FormlyFieldMessageLevel.INFO,
+        text: this.translateService.instant("Please consider making the name contain the size, to prevent ambiguity.")
+      });
+    }
+
+    if (hasFilterSet) {
+      this.formlyFieldService.addMessage(field.templateOptions, {
+        level: FormlyFieldMessageLevel.WARNING,
+        text: this.translateService.instant(
+          "Filter sets should be added one filter at a time, individually, so that they may be added to acquisition sessions."
+        )
+      });
+    }
   }
 
   private _initFields() {
@@ -229,53 +274,5 @@ export class FilterEditorComponent extends BaseItemEditorComponent<FilterInterfa
           this.form.get("name").updateValueAndValidity();
         }
       });
-  }
-
-  protected _customNameChangesValidations(field: FormlyFieldConfig, value: string) {
-    if (field.formControl.pristine) {
-      return;
-    }
-
-    const filterSetWords = ["filterset", "set", "filter set", "lrgb", "l-r-g-b", "ha-oiii-sii"];
-
-    let hasFilterSet = false;
-
-    for (const word of filterSetWords) {
-      if (value.toLowerCase().indexOf(word) > -1) {
-        hasFilterSet = true;
-        break;
-      }
-    }
-
-    const hasBandwidth = !this.model.bandwidth || value.indexOf(`${this.model.bandwidth}nm`) > -1;
-    const hasSize =
-      !this.model.size ||
-      this.model.size === FilterSize.OTHER ||
-      value.indexOf(`${this.filterService.humanizeSizeShort(this.model.size)}`) > -1;
-
-    if (!hasBandwidth) {
-      this.formlyFieldService.addMessage(field.templateOptions, {
-        level: FormlyFieldMessageLevel.INFO,
-        text: this.translateService.instant(
-          "Please consider making the name contain the bandwidth, to prevent ambiguity."
-        )
-      });
-    }
-
-    if (!hasSize) {
-      this.formlyFieldService.addMessage(field.templateOptions, {
-        level: FormlyFieldMessageLevel.INFO,
-        text: this.translateService.instant("Please consider making the name contain the size, to prevent ambiguity.")
-      });
-    }
-
-    if (hasFilterSet) {
-      this.formlyFieldService.addMessage(field.templateOptions, {
-        level: FormlyFieldMessageLevel.WARNING,
-        text: this.translateService.instant(
-          "Filter sets should be added one filter at a time, individually, so that they may be added to acquisition sessions."
-        )
-      });
-    }
   }
 }

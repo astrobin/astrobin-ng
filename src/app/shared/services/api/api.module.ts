@@ -10,6 +10,8 @@ import { LoadingService } from "@shared/services/loading.service";
 import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
 import { AuthService } from "@shared/services/auth.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
+import { UtilsService } from "@shared/services/utils/utils.service";
+import { TransferStateInterceptor } from "@shared/services/transfer-state.interceptor";
 
 @NgModule({
   imports: [HttpClientModule],
@@ -22,7 +24,12 @@ import { WindowRefService } from "@shared/services/window-ref.service";
     {
       provide: HTTP_INTERCEPTORS,
       useClass: ServerErrorsInterceptor,
-      deps: [WindowRefService, TranslateService, PopNotificationsService, LoadingService, AuthService],
+      deps: [WindowRefService, TranslateService, PopNotificationsService, LoadingService, AuthService, UtilsService],
+      multi: true
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: TransferStateInterceptor,
       multi: true
     },
     AuthClassicApiService,

@@ -15,7 +15,7 @@ import { selectCurrentUser } from "@features/account/store/auth.selectors";
 import { map, take, takeUntil } from "rxjs/operators";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
-import { CookieService } from "ngx-cookie-service";
+import { CookieService } from "ngx-cookie";
 import { Theme, ThemeService } from "@shared/services/theme.service";
 import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
 
@@ -31,7 +31,6 @@ interface AvailableLanguageInterface {
 })
 export class HeaderComponent extends BaseComponentDirective implements OnInit {
   isCollapsed = true;
-  isAuthenticated = false;
   helpWithTranslationsUrl: string;
 
   languages: AvailableLanguageInterface[] = [
@@ -145,10 +144,7 @@ export class HeaderComponent extends BaseComponentDirective implements OnInit {
   }
 
   ngOnInit() {
-    this.authService
-      .isAuthenticated$()
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe(isAuthenticated => (this.isAuthenticated = isAuthenticated));
+    super.ngOnInit();
 
     this.helpWithTranslationsUrl$.pipe(takeUntil(this.destroyed$)).subscribe(url => {
       this.helpWithTranslationsUrl = url;

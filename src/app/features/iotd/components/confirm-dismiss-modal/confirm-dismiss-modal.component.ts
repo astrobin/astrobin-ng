@@ -9,7 +9,7 @@ import { filter, map, takeUntil } from "rxjs/operators";
 import { TranslateService } from "@ngx-translate/core";
 import { FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
-import { CookieService } from "ngx-cookie-service";
+import { CookieService } from "ngx-cookie";
 
 export enum ConfirmDismissResult {
   CANCEL,
@@ -48,6 +48,8 @@ export class ConfirmDismissModalComponent extends BaseComponentDirective impleme
   }
 
   ngOnInit() {
+    super.ngOnInit();
+
     this.fields = [
       {
         key: "dontRemindMeForAMonth",
@@ -59,7 +61,10 @@ export class ConfirmDismissModalComponent extends BaseComponentDirective impleme
         hooks: {
           onInit: (field: FormlyFieldConfig) => {
             field.formControl.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(value => {
-              this.cookieService.set(DISMISSAL_NOTICE_COOKIE, value ? "1" : "0", 30, "/");
+              this.cookieService.put(DISMISSAL_NOTICE_COOKIE, value ? "1" : "0", {
+                path: "/",
+                expires: new Date(new Date().getTime() + 30 * 24 * 60 * 60 * 1000)
+              });
             });
           }
         }

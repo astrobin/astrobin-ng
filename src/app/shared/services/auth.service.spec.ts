@@ -3,7 +3,7 @@ import { Router } from "@angular/router";
 import { AppModule } from "@app/app.module";
 import { AuthClassicApiService } from "@shared/services/api/classic/auth/auth-classic-api.service";
 import { MockBuilder, MockInstance, MockReset } from "ng-mocks";
-import { CookieService } from "ngx-cookie-service";
+import { CookieService } from "ngx-cookie";
 import { of } from "rxjs";
 import { AuthService } from "./auth.service";
 
@@ -15,8 +15,7 @@ describe("AuthService", () => {
       let value = "123";
 
       instance.get = key => (key === AuthService.CLASSIC_AUTH_TOKEN_COOKIE ? value : null);
-      instance.check = key => key === AuthService.CLASSIC_AUTH_TOKEN_COOKIE;
-      instance.delete = key => {
+      instance.remove = key => {
         if (key === AuthService.CLASSIC_AUTH_TOKEN_COOKIE) {
           value = null;
         }

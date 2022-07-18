@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { Actions } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
@@ -14,14 +14,14 @@ import { MountInterface, MountType } from "@features/equipment/types/mount.inter
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { takeUntil } from "rxjs/operators";
+import { UtilsService } from "@shared/services/utils/utils.service";
 
 @Component({
   selector: "astrobin-mount-editor",
   templateUrl: "./mount-editor.component.html",
   styleUrls: ["./mount-editor.component.scss", "../base-item-editor/base-item-editor.component.scss"]
 })
-export class MountEditorComponent extends BaseItemEditorComponent<MountInterface, null>
-  implements OnInit, AfterViewInit {
+export class MountEditorComponent extends BaseItemEditorComponent<MountInterface, null> implements OnInit {
   constructor(
     public readonly store$: Store<State>,
     public readonly actions$: Actions,
@@ -32,7 +32,8 @@ export class MountEditorComponent extends BaseItemEditorComponent<MountInterface
     public readonly equipmentItemService: EquipmentItemService,
     public readonly formlyFieldService: FormlyFieldService,
     public readonly mountService: MountService,
-    public readonly modalService: NgbModal
+    public readonly modalService: NgbModal,
+    public readonly utilsService: UtilsService
   ) {
     super(
       store$,
@@ -43,24 +44,20 @@ export class MountEditorComponent extends BaseItemEditorComponent<MountInterface
       equipmentApiService,
       equipmentItemService,
       formlyFieldService,
-      modalService
+      modalService,
+      utilsService
     );
   }
 
   ngOnInit() {
+    super.ngOnInit();
+
     if (!this.returnToSelector) {
       this.returnToSelector = "#mount-editor-form";
     }
-  }
-
-  ngAfterViewInit(): void {
-    setTimeout(() => {
-      this._initFields();
-    }, 1);
 
     this.model.klass = EquipmentItemType.MOUNT;
-
-    super.ngAfterViewInit();
+    this._initFields();
   }
 
   private _initFields() {

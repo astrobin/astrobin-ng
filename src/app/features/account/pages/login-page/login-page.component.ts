@@ -32,6 +32,8 @@ export class LoginPageComponent extends BaseComponentDirective implements OnInit
   }
 
   ngOnInit(): void {
+    super.ngOnInit();
+
     const title = this.translate.instant("Log in");
     this.titleService.setTitle(title);
     this.store$.dispatch(new SetBreadcrumb({ breadcrumb: [{ label: "Account" }, { label: title }] }));

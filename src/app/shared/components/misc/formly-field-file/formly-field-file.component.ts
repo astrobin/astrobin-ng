@@ -3,6 +3,7 @@ import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
 import { FieldType } from "@ngx-formly/core";
 import { LoadingService } from "@shared/services/loading.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
+import { WindowRefService } from "@shared/services/window-ref.service";
 
 @Component({
   selector: "astrobin-formly-field-file",
@@ -14,7 +15,11 @@ export class FormlyFieldFileComponent extends FieldType implements OnInit {
 
   selectedFiles: { file: File; url: SafeUrl }[];
 
-  constructor(public readonly sanitizer: DomSanitizer, public readonly loadingService: LoadingService) {
+  constructor(
+    public readonly sanitizer: DomSanitizer,
+    public readonly loadingService: LoadingService,
+    public readonly windowRefService: WindowRefService
+  ) {
     super();
   }
 
@@ -51,7 +56,9 @@ export class FormlyFieldFileComponent extends FieldType implements OnInit {
     for (const file of files) {
       this.selectedFiles.push({
         file,
-        url: this.sanitizer.bypassSecurityTrustUrl(window.URL.createObjectURL(file))
+        url: this.sanitizer.bypassSecurityTrustUrl(
+          (this.windowRefService.nativeWindow as any).URL.createObjectURL(file)
+        )
       });
     }
 

@@ -8,7 +8,7 @@ import { LoadingService } from "@shared/services/loading.service";
 import { Observable, of } from "rxjs";
 import { distinctUntilChanged, filter, map, switchMap, take, tap } from "rxjs/operators";
 import { ImageInterface } from "@shared/interfaces/image.interface";
-import { CookieService } from "ngx-cookie-service";
+import { CookieService } from "ngx-cookie";
 import { DeleteIotd, PostIotd } from "@features/iotd/store/iotd.actions";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";

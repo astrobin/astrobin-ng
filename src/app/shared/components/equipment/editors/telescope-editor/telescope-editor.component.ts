@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { Actions } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
@@ -15,14 +15,14 @@ import { FormlyFieldConfig } from "@ngx-formly/core";
 import { takeUntil } from "rxjs/operators";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { UtilsService } from "@shared/services/utils/utils.service";
 
 @Component({
   selector: "astrobin-telescope-editor",
   templateUrl: "./telescope-editor.component.html",
   styleUrls: ["./telescope-editor.component.scss", "../base-item-editor/base-item-editor.component.scss"]
 })
-export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeInterface, null>
-  implements OnInit, AfterViewInit {
+export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeInterface, null> implements OnInit {
   constructor(
     public readonly store$: Store<State>,
     public readonly actions$: Actions,
@@ -33,7 +33,8 @@ export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeI
     public readonly equipmentItemService: EquipmentItemService,
     public readonly formlyFieldService: FormlyFieldService,
     public readonly telescopeService: TelescopeService,
-    public readonly modalService: NgbModal
+    public readonly modalService: NgbModal,
+    public readonly utilsService: UtilsService
   ) {
     super(
       store$,
@@ -44,24 +45,20 @@ export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeI
       equipmentApiService,
       equipmentItemService,
       formlyFieldService,
-      modalService
+      modalService,
+      utilsService
     );
   }
 
   ngOnInit() {
+    super.ngOnInit();
+
     if (!this.returnToSelector) {
       this.returnToSelector = "#telescope-editor-form";
     }
-  }
-
-  ngAfterViewInit(): void {
-    setTimeout(() => {
-      this._initFields();
-    }, 1);
 
     this.model.klass = EquipmentItemType.TELESCOPE;
-
-    super.ngAfterViewInit();
+    this._initFields();
   }
 
   private _initFields() {
@@ -231,9 +228,9 @@ export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeI
               hooks: {
                 onInit: (field: FormlyFieldConfig) => {
                   field.formControl.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(value => {
-                    setTimeout(() => {
+                    this.utilsService.delay(1).subscribe(() => {
                       this.form.get("maxFocalLength")?.updateValueAndValidity({ onlySelf: true, emitEvent: false });
-                    }, 1);
+                    });
                   });
                 }
               }
@@ -288,9 +285,9 @@ export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeI
               hooks: {
                 onInit: (field: FormlyFieldConfig) => {
                   field.formControl.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(value => {
-                    setTimeout(() => {
+                    this.utilsService.delay(1).subscribe(() => {
                       this.form.get("minFocalLength")?.updateValueAndValidity({ onlySelf: true, emitEvent: false });
-                    }, 1);
+                    });
                   });
                 }
               }

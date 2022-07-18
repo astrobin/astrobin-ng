@@ -1,7 +1,10 @@
-import { AfterViewInit, Component } from "@angular/core";
+import { AfterViewInit, Component, Inject, PLATFORM_ID } from "@angular/core";
 import { FieldType } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
 import { CKEditorService } from "@shared/services/ckeditor.service";
+import { UtilsService } from "@shared/services/utils/utils.service";
+import { WindowRefService } from "@shared/services/window-ref.service";
+import { isPlatformServer } from "@angular/common";
 
 declare const CKEDITOR: any;
 
@@ -13,7 +16,13 @@ declare const CKEDITOR: any;
 export class FormlyFieldCKEditorComponent extends FieldType implements AfterViewInit {
   showEditor = false;
 
-  constructor(public readonly translateService: TranslateService, public readonly ckeditorService: CKEditorService) {
+  constructor(
+    public readonly translateService: TranslateService,
+    public readonly ckeditorService: CKEditorService,
+    public readonly utilsService: UtilsService,
+    public readonly windowRefService: WindowRefService,
+    @Inject(PLATFORM_ID) public readonly platformId
+  ) {
     super();
   }
 
@@ -22,6 +31,11 @@ export class FormlyFieldCKEditorComponent extends FieldType implements AfterView
   }
 
   private _initialize(): void {
+    if (isPlatformServer(this.platformId)) {
+      return;
+    }
+
+    const document = this.windowRefService.nativeWindow.document;
     const editorBase = document.getElementById(this.field.id);
 
     if (CKEDITOR && editorBase) {
@@ -35,9 +49,9 @@ export class FormlyFieldCKEditorComponent extends FieldType implements AfterView
         this.showEditor = true;
       });
     } else {
-      setTimeout(() => {
+      this.utilsService.delay(100).subscribe(() => {
         this._initialize();
-      }, 100);
+      });
     }
   }
 }

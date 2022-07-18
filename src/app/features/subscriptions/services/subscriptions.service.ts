@@ -8,8 +8,9 @@ import { TranslateService } from "@ngx-translate/core";
 import { Constants } from "@shared/constants";
 import { SubscriptionName } from "@shared/types/subscription-name.type";
 import * as countryJs from "country-js";
-import { BehaviorSubject, Observable } from "rxjs";
+import { BehaviorSubject, interval, Observable } from "rxjs";
 import { take } from "rxjs/operators";
+import { UtilsService } from "@shared/services/utils/utils.service";
 
 @Injectable({
   providedIn: "root"
@@ -25,7 +26,8 @@ export class SubscriptionsService {
   constructor(
     public readonly store$: Store<State>,
     public readonly translate: TranslateService,
-    public readonly paymentsApiService: PaymentsApiService
+    public readonly paymentsApiService: PaymentsApiService,
+    public readonly utilsService: UtilsService
   ) {
     this.store$
       .select(state => state.app)
@@ -71,12 +73,12 @@ export class SubscriptionsService {
   getPrice(product: PayableProductInterface): Observable<PricingInterface> {
     if (!this.currency) {
       return new Observable<PricingInterface>(observer => {
-        setTimeout(() => {
+        this.utilsService.delay(100).subscribe(() => {
           this.getPrice(product).subscribe(price => {
             observer.next(price);
             observer.complete();
           });
-        }, 100);
+        });
       });
     }
 

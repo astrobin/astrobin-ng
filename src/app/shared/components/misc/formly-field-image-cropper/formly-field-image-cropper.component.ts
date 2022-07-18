@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from "@angular/core";
+import { Component, Inject, OnDestroy, PLATFORM_ID } from "@angular/core";
 import { State } from "@app/store/state";
 import { ImageEditorSetCropperShown } from "@features/image/store/image.actions";
 import { selectImageEditorState } from "@features/image/store/image.selectors";
@@ -7,8 +7,10 @@ import { FieldType } from "@ngx-formly/core";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { CropperPosition, Dimensions, ImageCroppedEvent, LoadedImage } from "ngx-image-cropper";
-import { fromEvent, Subscription } from "rxjs";
+import { fromEvent, interval, Subscription } from "rxjs";
 import { debounceTime, filter, map, take } from "rxjs/operators";
+import { UtilsService } from "@shared/services/utils/utils.service";
+import { isPlatformBrowser } from "@angular/common";
 
 @Component({
   selector: "astrobin-formly-field-image-cropper",
@@ -31,27 +33,33 @@ export class FormlyFieldImageCropperComponent extends FieldType implements OnDes
   constructor(
     public readonly store$: Store<State>,
     public readonly windowRefService: WindowRefService,
-    public readonly popNotificationService: PopNotificationsService
+    public readonly popNotificationService: PopNotificationsService,
+    public readonly utilsService: UtilsService,
+    @Inject(PLATFORM_ID) public readonly platformId
   ) {
     super();
 
-    this.resizeEventSubscription = fromEvent(window, "resize")
-      .pipe(debounceTime(100))
-      .subscribe(() => {
-        this.showCropper$
-          .pipe(
-            take(1),
-            filter(showCropper => showCropper)
-          )
-          .subscribe(() => {
-            this._reset();
-            this.popNotificationService.info("As you resized your window, please check your image crop again.");
-          });
-      });
+    if (isPlatformBrowser(platformId)) {
+      this.resizeEventSubscription = fromEvent(window, "resize")
+        .pipe(debounceTime(100))
+        .subscribe(() => {
+          this.showCropper$
+            .pipe(
+              take(1),
+              filter(showCropper => showCropper)
+            )
+            .subscribe(() => {
+              this._reset();
+              this.popNotificationService.info("As you resized your window, please check your image crop again.");
+            });
+        });
+    }
   }
 
   ngOnDestroy() {
-    this.resizeEventSubscription.unsubscribe();
+    if (!!this.resizeEventSubscription) {
+      this.resizeEventSubscription.unsubscribe();
+    }
   }
 
   onCropperReady(dimensions: Dimensions) {
@@ -82,8 +90,8 @@ export class FormlyFieldImageCropperComponent extends FieldType implements OnDes
 
   private _reset() {
     this.store$.dispatch(new ImageEditorSetCropperShown(false));
-    setTimeout(() => {
+    this.utilsService.delay(100).subscribe(() => {
       this.store$.dispatch(new ImageEditorSetCropperShown(true));
-    }, 250);
+    });
   }
 }

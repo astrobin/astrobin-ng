@@ -37,7 +37,7 @@ import { SaveEquipmentPresetModalComponent } from "@features/image/components/sa
 import { LoadEquipmentPresetModalComponent } from "@features/image/components/load-equipment-preset-modal/load-equipment-preset-modal.component";
 import { UserService } from "@shared/services/user.service";
 import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
-import { CookieService } from "ngx-cookie-service";
+import { CookieService } from "ngx-cookie";
 import { ComponentCanDeactivate } from "@shared/services/guards/pending-changes-guard.service";
 
 @Component({
@@ -107,6 +107,8 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
   }
 
   ngOnInit(): void {
+    super.ngOnInit();
+
     this.imageEditService.image = this.route.snapshot.data.image;
     this.imageEditService.model = {
       ...this.imageEditService.image,
@@ -337,7 +339,10 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
   }
 
   dontShowMigrationInfoAgain() {
-    this.cookieService.set(this.DONT_SHOW_MIGRATION_INFO_COOKIE, "1", null, "/");
+    this.cookieService.put(this.DONT_SHOW_MIGRATION_INFO_COOKIE, "1", {
+      path: "/",
+      expires: null
+    });
     this.showMigrationInfo = false;
   }
 

@@ -57,6 +57,8 @@ export class LoadEquipmentPresetModalComponent extends BaseComponentDirective im
   }
 
   ngOnInit(): void {
+    super.ngOnInit();
+
     this._setFields();
   }
 
