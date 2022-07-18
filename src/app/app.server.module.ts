@@ -6,7 +6,6 @@ import { TranslateLoader, TranslateModule } from "@ngx-translate/core";
 import { translateServerLoaderFactory } from "@app/translate-server-loader";
 import { HttpClient } from "@angular/common/http";
 import { CookieBackendModule } from "ngx-cookie-backend";
-import { TransferState } from "@angular/platform-browser";
 
 @NgModule({
   imports: [
@@ -17,7 +16,7 @@ import { TransferState } from "@angular/platform-browser";
       loader: {
         provide: TranslateLoader,
         useFactory: translateServerLoaderFactory,
-        deps: [HttpClient, TransferState]
+        deps: [HttpClient]
       }
     }),
     CookieBackendModule.forRoot()
