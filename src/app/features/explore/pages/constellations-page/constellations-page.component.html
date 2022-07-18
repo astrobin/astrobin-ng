@@ -18,30 +18,32 @@
     </ng-select>
   </div>
 
-  <div
-    *ngFor="let constellation of constellationsService.constellations"
-    id="constellation-{{ constellation.id }}"
-    class="constellation"
-  >
-    <ng-container *ngIf="constellation.data$ | async as constellationData">
-      <div class="row align-items-center">
-        <div class="col-12 col-lg-4">
-          <img class="constellation-image" [src]="constellationData.originalimage?.source" [alt]="constellation.name" />
+  <ng-container *ssrExclude>
+    <div
+      *ngFor="let constellation of constellationsService.constellations"
+      id="constellation-{{ constellation.id }}"
+      class="constellation"
+    >
+      <ng-container *ngIf="constellation.data$ | async as constellationData">
+        <div class="row align-items-center">
+          <div class="col-12 col-lg-4">
+            <img class="constellation-image" [src]="constellationData.originalimage?.source" [alt]="constellation.name" />
+          </div>
+          <div class="col-12 col-lg-8">
+            <h3 class="mt-4 mt-lg-0">
+              <span class="constellation-id">{{ constellation.id }}</span> {{ constellation.name }}
+            </h3>
+            <p>{{ constellationData.extract }}</p>
+            <a
+              class="btn btn-outline-primary"
+              [class.loading]="loadingService.loading$ | async"
+              (click)="findImages(constellation)"
+            >
+              {{ "Find images" | translate }}
+            </a>
+          </div>
         </div>
-        <div class="col-12 col-lg-8">
-          <h3 class="mt-4 mt-lg-0">
-            <span class="constellation-id">{{ constellation.id }}</span> {{ constellation.name }}
-          </h3>
-          <p>{{ constellationData.extract }}</p>
-          <a
-            class="btn btn-outline-primary"
-            [class.loading]="loadingService.loading$ | async"
-            (click)="findImages(constellation)"
-          >
-            {{ "Find images" | translate }}
-          </a>
-        </div>
-      </div>
-    </ng-container>
-  </div>
+      </ng-container>
+    </div>
+  </ng-container>
 </div>
