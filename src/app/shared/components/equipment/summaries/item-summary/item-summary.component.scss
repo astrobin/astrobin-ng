@@ -171,6 +171,10 @@
     margin-top: 1rem;
     border-top: 1px dashed var(--lightGrey);
 
+    @media screen and (max-width: $md-max) {
+      padding: 0;
+    }
+
     h5 {
       font-size: 1.1rem;
       color: var(--lighterGrey);

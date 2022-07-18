@@ -89,8 +89,6 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
 
   onSelectedItemChanged(item: EquipmentItemBaseInterface) {
     this.activeId = !!item ? item.id : null;
-    this.enableNavCollapsing = !!this.activeId;
-    this.navCollapsed = !!this.activeId;
 
     this._setLocation();
     this._scrollToItemBrowser();
@@ -141,8 +139,6 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
   private _setParams() {
     this.page = parseInt(this.activatedRoute.snapshot?.queryParamMap.get("page"), 10) || 1;
     this.activeId = parseInt(this.activatedRoute.snapshot?.paramMap.get("itemId"), 10);
-    this.enableNavCollapsing = !!this.activeId;
-    this.navCollapsed = !!this.activeId;
   }
 
   private _setLocation() {

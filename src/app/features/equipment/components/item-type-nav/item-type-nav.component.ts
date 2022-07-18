@@ -45,9 +45,6 @@ export class ItemTypeNavComponent extends BaseComponentDirective implements OnIn
   routingBasePath = "/equipment/explorer";
 
   @Input()
-  enableCollapsing = false;
-
-  @Input()
   collapsed = false;
 
   @Input()
@@ -121,19 +118,11 @@ export class ItemTypeNavComponent extends BaseComponentDirective implements OnIn
   hasActiveItem: boolean;
 
   @HostListener("mouseover") onMouseHover() {
-    if (!this.enableCollapsing) {
-      return;
-    }
-
     this.collapsed = false;
     this.collapsedChanged.emit(this.collapsed);
   }
 
   @HostListener("mouseleave") onMouseLeave() {
-    if (!this.enableCollapsing) {
-      return;
-    }
-
     this.collapsed = true;
     this.collapsedChanged.emit(this.collapsed);
   }
@@ -153,7 +142,7 @@ export class ItemTypeNavComponent extends BaseComponentDirective implements OnIn
 
     const document = this.windowRefService.nativeWindow.document;
     this.isTouchDevice = document && "ontouchend" in document;
-    this.hasActiveItem = !!this.activatedRoute.snapshot?.paramMap.get("activeId");
+    this.hasActiveItem = !!this.activatedRoute.snapshot?.paramMap.get("itemId");
   }
 
   ngOnInit() {
@@ -212,11 +201,7 @@ export class ItemTypeNavComponent extends BaseComponentDirective implements OnIn
   }
 
   _initCollapsed() {
-    this.collapsed =
-      this.enableCollapsing &&
-      (!this.hasActiveItem || !this.isTouchDevice) &&
-      this.windowRefService.nativeWindow.innerWidth > 767;
-
+    this.collapsed = this.isTouchDevice || this.hasActiveItem;
     this.collapsedChanged.emit(this.collapsed);
   }
 
@@ -234,8 +219,9 @@ export class ItemTypeNavComponent extends BaseComponentDirective implements OnIn
     this.router.events?.pipe(takeUntil(this.destroyed$)).subscribe(event => {
       if (event instanceof NavigationEnd) {
         this.activeType = this.activatedRoute.snapshot?.paramMap.get("itemType");
-        this.hasActiveItem = !!this.activatedRoute.snapshot?.paramMap.get("activeId");
+        this.hasActiveItem = !!this.activatedRoute.snapshot?.paramMap.get("itemId");
         this._setActiveSubNav(event.urlAfterRedirects);
+        this._initCollapsed();
       }
     });
   }

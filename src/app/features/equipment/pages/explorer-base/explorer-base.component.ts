@@ -30,7 +30,6 @@ export class ExplorerBaseComponent extends BaseComponentDirective implements OnI
   items$: Observable<PaginatedApiResultInterface<EquipmentItemBaseInterface> | BrandInterface[]>;
   sortOrder: EquipmentItemsSortOrder = EquipmentItemsSortOrder.AZ;
   navCollapsed = false;
-  enableNavCollapsing = false;
 
   constructor(
     public readonly store$: Store<State>,

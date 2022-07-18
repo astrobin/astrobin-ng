@@ -7,11 +7,11 @@
         [queryParams]="{'page': 1}"
       >
         <img src="/assets/images/brand-placeholder.png" [alt]="'Brands' | translate" />
-        <span [hidden]="collapsed">
+        <span>
           {{ "Brands" | translate }} / {{ "Companies" | translate }}
         </span>
 
-        <span *ngIf="brandCount$" [hidden]="collapsed" class="count">
+        <span *ngIf="brandCount$"class="count">
         {{ brandCount$ | async }}
         </span>
       </a>
@@ -27,11 +27,11 @@
       [queryParams]="{'page': 1}"
     >
       <img src="/assets/images/{{ type.value.toLowerCase() }}-placeholder.png" alt="{{ type.label }}" />
-      <span [hidden]="collapsed">
+      <span>
         {{ type.label }}
       </span>
 
-      <span *ngIf="type.count" [hidden]="collapsed" class="count">
+      <span *ngIf="type.count" class="count">
       {{ type.count | async }}
       </span>
     </a>
@@ -39,7 +39,6 @@
 
     <ul
       *ngIf="activeType === type.value.toLowerCase() && showSubNavigation"
-      [hidden]="collapsed"
       ngbNav
       #subnav="ngbNav"
       [(activeId)]="activeSubNav"
@@ -73,11 +72,11 @@
         routerLink="{{ routingBasePath }}/contributors"
       >
         <img src="/assets/images/default-avatar.jpeg?v1" [alt]="'Contributors' | translate" class="contributors-icon"/>
-        <span [hidden]="collapsed">
+        <span>
           {{ "Contributors" | translate }}
         </span>
 
-        <span *ngIf="contributorCount$" [hidden]="collapsed" class="count">
+        <span *ngIf="contributorCount$" class="count">
         {{ contributorCount$ | async }}
         </span>
       </a>
