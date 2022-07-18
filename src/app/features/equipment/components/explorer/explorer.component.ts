@@ -1,11 +1,13 @@
 import {
   Component,
   EventEmitter,
+  Inject,
   Input,
   OnChanges,
   OnDestroy,
   OnInit,
   Output,
+  PLATFORM_ID,
   SimpleChanges,
   ViewChild
 } from "@angular/core";
@@ -78,7 +80,7 @@ import { distinctUntilChangedObj } from "@shared/services/utils/utils.service";
 import { UnapproveItemModalComponent } from "@features/equipment/components/unapprove-item-modal/unapprove-item-modal.component";
 import { ActiveToast } from "ngx-toastr";
 import { CompareService } from "@features/equipment/services/compare.service";
-import { Location } from "@angular/common";
+import { isPlatformBrowser, Location } from "@angular/common";
 
 @Component({
   selector: "astrobin-equipment-explorer",
@@ -90,6 +92,7 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
   readonly EquipmentItemEditorMode = EquipmentItemEditorMode;
   readonly EquipmentItemReviewerDecision = EquipmentItemReviewerDecision;
   readonly CameraType = CameraType;
+  readonly isBrowser = isPlatformBrowser(this.platformId);
 
   @Input()
   enableBrowser = true;
@@ -192,7 +195,8 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
     public readonly windowRefService: WindowRefService,
     public readonly modalService: NgbModal,
     public readonly compareService: CompareService,
-    public readonly location: Location
+    public readonly location: Location,
+    @Inject(PLATFORM_ID) public readonly platformId
   ) {
     super(store$);
   }
@@ -263,6 +267,7 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
 
   doShowMostOftenUsedWith(): boolean {
     return (
+      this.isBrowser &&
       this.showMostOftenUsedWith &&
       this.selectedItem &&
       [

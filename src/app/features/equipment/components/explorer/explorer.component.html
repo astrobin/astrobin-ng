@@ -367,7 +367,7 @@
       </ng-container>
     </ng-container>
 
-    <ng-container *ngIf="activeId">
+    <ng-container *ngIf="activeId && isBrowser">
       <astrobin-users-using-equipment-item
         *ngIf="showUsersUsing"
         class="mt-5"
