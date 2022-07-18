@@ -10,18 +10,17 @@ describe("LoginModalComponent", () => {
   let component: LoginModalComponent;
 
   beforeEach(() =>
-    MockBuilder(LoginModalComponent, AppModule)
-      .provide([
-        NgbActiveModal,
-        provideMockStore({ initialState }),
-        {
-          provide: DomSanitizer,
-          useValue: {
-            sanitize: () => "safeString",
-            bypassSecurityTrustHtml: () => "safeString"
-          }
-        })
-    ]
+    MockBuilder(LoginModalComponent, AppModule).provide([
+      NgbActiveModal,
+      provideMockStore({ initialState }),
+      {
+        provide: DomSanitizer,
+        useValue: {
+          sanitize: () => "safeString",
+          bypassSecurityTrustHtml: () => "safeString"
+        }
+      }
+    ])
   );
   beforeEach(() => (component = MockRender(LoginModalComponent).point.componentInstance));
 
