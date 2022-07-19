@@ -1,9 +1,6 @@
 @import "../../../../../styles/breakpoints";
 
 :host {
-  display: block;
-  padding: 1rem;
-
   .image {
     height: 75px;
     background-size: contain;
@@ -172,7 +169,7 @@
     border-top: 1px dashed var(--lightGrey);
 
     @media screen and (max-width: $md-max) {
-      padding: 0;
+      padding: 1rem 0 0 0;
     }
 
     h5 {
@@ -187,12 +184,16 @@
 
   .meta {
     padding: .75rem 1.5rem;
-    margin: -1.25rem;
+    margin: -1.5rem;
     margin-top: 1rem;
     color: var(--lighterGrey);
     background: var(--grey);
     font-style: italic;
     font-size: .85rem;
+
+    @media screen and (max-width: $md-max) {
+      margin: -.5rem;
+    }
 
     strong {
       color: var(--white);

@@ -15,6 +15,15 @@ astrobin-equipment-item-browser {
   }
 }
 
+astrobin-equipment-item-summary {
+  display: block;
+  padding: .5rem;
+
+  @media screen and (max-width: $md-max) {
+    padding: 0;
+  }
+}
+
 .add-to-compare {
   color: var(--lighterGrey);
   padding: .5rem;
