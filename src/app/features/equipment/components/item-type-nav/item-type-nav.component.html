@@ -22,7 +22,7 @@
         [queryParams]="{'page': 1}"
       >
         <img
-          src="/assets/images/brand-placeholder.png"
+          src="/assets/images/brand-placeholder.png?v=2"
           [alt]="'Brands' | translate"
           (mouseover)="expand()"
         />
@@ -47,7 +47,7 @@
       (mouseover)="expand()"
     >
       <img
-        src="/assets/images/{{ type.value.toLowerCase() }}-placeholder.png"
+        src="/assets/images/{{ type.value.toLowerCase() }}-placeholder.png?v=2"
         alt="{{ type.label }}"
       />
       <span>
@@ -95,7 +95,7 @@
         routerLink="{{ routingBasePath }}/contributors"
       >
         <img
-          src="/assets/images/default-avatar.jpeg?v1"
+          src="/assets/images/default-avatar.jpeg?v=2"
           [alt]="'Contributors' | translate"
           class="contributors-icon"
           (mouseover)="expand()"

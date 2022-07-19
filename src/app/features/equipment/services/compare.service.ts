@@ -205,7 +205,7 @@ export class CompareService extends BaseService {
           value$: this.equipmentItemService.getPrintableProperty$(
             item,
             EquipmentItemDisplayProperty.IMAGE,
-            item.image || `/assets/images/${item.klass.toLowerCase()}-placeholder.png`
+            item.image || `/assets/images/${item.klass.toLowerCase()}-placeholder.png?v=2`
           )
         });
 

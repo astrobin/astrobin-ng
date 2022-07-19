@@ -71,7 +71,7 @@ export class BrandExplorerPageComponent extends ExplorerBaseComponent implements
   }
 
   get logo(): string {
-    return (this.activeBrand.logo as string) || "/assets/images/brand-placeholder.png";
+    return (this.activeBrand.logo as string) || "/assets/images/brand-placeholder.png?v=2";
   }
 
   ngOnInit(): void {

@@ -3,7 +3,7 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
 import { BrandInterface } from "@features/equipment/types/brand.interface";
 import { Store } from "@ngrx/store";
 
-export const PLACEHOLDER = "/assets/images/brand-placeholder.png?v=1";
+export const PLACEHOLDER = "/assets/images/brand-placeholder.png?v=2";
 
 @Component({
   selector: "astrobin-brand-summary",

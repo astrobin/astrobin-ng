@@ -115,7 +115,7 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
 
   get placeholder(): string {
     const type: EquipmentItemType = this.equipmentItemService.getType(this.item);
-    return `/assets/images/${EquipmentItemType[type].toLowerCase()}-placeholder.png`;
+    return `/assets/images/${EquipmentItemType[type].toLowerCase()}-placeholder.png?v=2`;
   }
 
   get properties$(): Observable<EquipmentItemProperty[]> {

@@ -59,7 +59,7 @@ export class EquipmentCompareComponent extends BaseComponentDirective implements
       return item.image;
     }
 
-    return `/assets/images/${item.klass.toLowerCase()}-placeholder.png`;
+    return `/assets/images/${item.klass.toLowerCase()}-placeholder.png?v=2`;
   }
 
   compare() {
