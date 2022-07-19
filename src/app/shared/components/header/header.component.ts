@@ -165,7 +165,7 @@ export class HeaderComponent extends BaseComponentDirective implements OnInit {
   }
 
   useHighContrastTheme(): boolean {
-    return this.themeService.currentTheme() === Theme.HIGH_CONTRAST;
+    return this.themeService.preferredTheme() === Theme.HIGH_CONTRAST;
   }
 
   toggleHighContrastTheme(): void {

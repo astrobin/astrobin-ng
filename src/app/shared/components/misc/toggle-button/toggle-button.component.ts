@@ -23,7 +23,7 @@ export class ToggleButtonComponent extends BaseComponentDirective {
   }
 
   get color(): any {
-    const highContrast = this.themeService.currentTheme() === Theme.HIGH_CONTRAST;
+    const highContrast = this.themeService.preferredTheme() === Theme.HIGH_CONTRAST;
     return {
       checked: highContrast ? "#888" : "#cc4b2e",
       unchecked: highContrast ? "#000" : "#111"
@@ -31,7 +31,7 @@ export class ToggleButtonComponent extends BaseComponentDirective {
   }
 
   get switchColor(): any {
-    const highContrast = this.themeService.currentTheme() === Theme.HIGH_CONTRAST;
+    const highContrast = this.themeService.preferredTheme() === Theme.HIGH_CONTRAST;
     return {
       checked: "#fff",
       unchecked: highContrast ? "#888" : "#666"
