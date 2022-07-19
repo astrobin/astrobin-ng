@@ -68,10 +68,6 @@ export class LanguageLoader extends TranslatePoHttpLoader {
   }
 
   ngTranslations$ = (lang: string): Observable<object> => {
-    if (lang === "zh-hans") {
-      lang = "zh_Hans";
-    }
-
     return this.http
       .get(`/assets/i18n/${lang}.po?version=${environment.buildVersion}`, {
         responseType: "text"
@@ -80,6 +76,14 @@ export class LanguageLoader extends TranslatePoHttpLoader {
   };
 
   getTranslation(lang: string): Observable<any> {
+    if (lang === "zh-hans") {
+      lang = "zh_Hans";
+    }
+
+    if (["de", "en", "es", "fr", "it", "pt", "ru", "uk", "zh-hans"].indexOf(lang) === -1) {
+      lang = "en";
+    }
+
     return this.ngTranslations$(lang);
   }
 
