@@ -1,4 +1,19 @@
-<ul ngbNav #nav="ngbNav" [(activeId)]="activeType" class="nav-pills" [class.collapsed]="collapsed" orientation="vertical">
+<button
+  *ngIf="isSmallDevice && collapsed"
+  (click)="expand()"
+  class="btn btn-outline-secondary btn-block mb-4"
+>
+  {{ "Select equipment class" | translate }}
+</button>
+
+<ul
+  ngbNav
+  #nav="ngbNav"
+  [(activeId)]="activeType"
+  class="nav-pills"
+  [class.collapsed]="collapsed"
+  orientation="vertical"
+>
   <ng-container *ngIf="showBrands">
     <li [ngbNavItem]="'brand'">
       <a
@@ -6,7 +21,11 @@
         routerLink="{{ routingBasePath }}/brand"
         [queryParams]="{'page': 1}"
       >
-        <img src="/assets/images/brand-placeholder.png" [alt]="'Brands' | translate" />
+        <img
+          src="/assets/images/brand-placeholder.png"
+          [alt]="'Brands' | translate"
+          (mouseover)="expand()"
+        />
         <span>
           {{ "Brands" | translate }} / {{ "Companies" | translate }}
         </span>
@@ -25,8 +44,12 @@
       ngbNavLink
       routerLink="{{ routingBasePath }}/{{ type.value.toLowerCase() }}"
       [queryParams]="{'page': 1}"
+      (mouseover)="expand()"
     >
-      <img src="/assets/images/{{ type.value.toLowerCase() }}-placeholder.png" alt="{{ type.label }}" />
+      <img
+        src="/assets/images/{{ type.value.toLowerCase() }}-placeholder.png"
+        alt="{{ type.label }}"
+      />
       <span>
         {{ type.label }}
       </span>
@@ -71,7 +94,12 @@
         ngbNavLink
         routerLink="{{ routingBasePath }}/contributors"
       >
-        <img src="/assets/images/default-avatar.jpeg?v1" [alt]="'Contributors' | translate" class="contributors-icon"/>
+        <img
+          src="/assets/images/default-avatar.jpeg?v1"
+          [alt]="'Contributors' | translate"
+          class="contributors-icon"
+          (mouseover)="expand()"
+        />
         <span>
           {{ "Contributors" | translate }}
         </span>
@@ -80,6 +108,17 @@
         {{ contributorCount$ | async }}
         </span>
       </a>
+    </li>
+  </ng-container>
+
+  <ng-container *ngIf="!collapsed">
+    <li class="nav-item-separator"></li>
+
+    <li [ngbNavItem]="'collapse'">
+      <button class="btn btn-outline-secondary btn-block" (click)="collapse()">
+        <fa-icon *ngIf="isSmallDevice" icon="angle-double-up"></fa-icon>
+        <fa-icon *ngIf="!isSmallDevice" icon="angle-double-left"></fa-icon>
+      </button>
     </li>
   </ng-container>
 </ul>

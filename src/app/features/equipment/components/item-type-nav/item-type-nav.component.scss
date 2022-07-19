@@ -9,8 +9,7 @@
     overflow: hidden;
 
     @media screen and (max-width: $sm-max) {
-      height: 40px;
-      overflow-x: auto;
+      display: none;
     }
 
     @media screen and (min-width: $md-min) {

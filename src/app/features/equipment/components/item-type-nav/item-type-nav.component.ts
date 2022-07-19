@@ -1,12 +1,14 @@
 import {
+  AfterViewInit,
   Component,
   EventEmitter,
-  HostListener,
+  Inject,
   Input,
   OnChanges,
   OnDestroy,
   OnInit,
   Output,
+  PLATFORM_ID,
   SimpleChanges
 } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
@@ -14,24 +16,26 @@ import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { Actions, ofType } from "@ngrx/effects";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
-import { Observable, of } from "rxjs";
-import { catchError, map, takeUntil, tap } from "rxjs/operators";
+import { fromEvent, Observable, of } from "rxjs";
+import { catchError, debounceTime, map, takeUntil, tap } from "rxjs/operators";
 import { TranslateService } from "@ngx-translate/core";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { EquipmentApiService, EquipmentItemsSortOrder } from "@features/equipment/services/equipment-api.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { EquipmentActionTypes, GetAllBrands } from "@features/equipment/store/equipment.actions";
 import { WindowRefService } from "@shared/services/window-ref.service";
-import { selectEquipmentContributors, selectEquipment } from "@features/equipment/store/equipment.selectors";
+import { selectEquipment, selectEquipmentContributors } from "@features/equipment/store/equipment.selectors";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { ActiveToast } from "ngx-toastr";
+import { isPlatformBrowser } from "@angular/common";
 
 @Component({
   selector: "astrobin-equipment-item-type-nav",
   templateUrl: "./item-type-nav.component.html",
   styleUrls: ["./item-type-nav.component.scss"]
 })
-export class ItemTypeNavComponent extends BaseComponentDirective implements OnInit, OnChanges, OnDestroy {
+export class ItemTypeNavComponent extends BaseComponentDirective
+  implements OnInit, OnChanges, AfterViewInit, OnDestroy {
   @Input()
   excludeTypes: EquipmentItemType[] = [];
 
@@ -43,9 +47,6 @@ export class ItemTypeNavComponent extends BaseComponentDirective implements OnIn
 
   @Input()
   routingBasePath = "/equipment/explorer";
-
-  @Input()
-  collapsed = false;
 
   @Input()
   showBrands = true;
@@ -88,6 +89,9 @@ export class ItemTypeNavComponent extends BaseComponentDirective implements OnIn
   softwarePendingReviewCount: Observable<number | null> = null;
   softwarePendingEditCount: Observable<number | null> = null;
 
+  @Input()
+  activeType = this.activatedRoute.snapshot?.paramMap.get("itemType");
+
   @Output()
   collapsedChanged = new EventEmitter<boolean>();
 
@@ -106,26 +110,10 @@ export class ItemTypeNavComponent extends BaseComponentDirective implements OnIn
     disabled?: boolean;
   }[];
 
-  @Input()
-  activeType = this.activatedRoute.snapshot?.paramMap.get("itemType");
-
   activeSubNav = "";
-
   reviewPendingEditNotification: ActiveToast<any>;
-
-  isTouchDevice: boolean;
-
-  hasActiveItem: boolean;
-
-  @HostListener("mouseover") onMouseHover() {
-    this.collapsed = false;
-    this.collapsedChanged.emit(this.collapsed);
-  }
-
-  @HostListener("mouseleave") onMouseLeave() {
-    this.collapsed = true;
-    this.collapsedChanged.emit(this.collapsed);
-  }
+  isSmallDevice: boolean;
+  collapsed: boolean;
 
   constructor(
     public readonly store$: Store<State>,
@@ -136,29 +124,24 @@ export class ItemTypeNavComponent extends BaseComponentDirective implements OnIn
     public readonly equipmentApiService: EquipmentApiService,
     public readonly loadingService: LoadingService,
     public readonly windowRefService: WindowRefService,
-    public readonly popNotificationsService: PopNotificationsService
+    public readonly popNotificationsService: PopNotificationsService,
+    @Inject(PLATFORM_ID) public readonly platformId
   ) {
     super(store$);
-
-    const document = this.windowRefService.nativeWindow.document;
-    this.isTouchDevice = document && "ontouchend" in document;
-    this.hasActiveItem = !!this.activatedRoute.snapshot?.paramMap.get("itemId");
+    this._initRouterEvents();
   }
 
   ngOnInit() {
     super.ngOnInit();
 
-    this._initCollapsed();
+    this.collapse();
     this._setActiveSubNav(this.activatedRoute.snapshot?.url.join("/"));
-    this._initRouterEvents();
     this._initActionListeners();
     this._initTypes();
     this._loadCounts();
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    this._initCollapsed();
-
     if (!this.types) {
       return;
     }
@@ -192,6 +175,24 @@ export class ItemTypeNavComponent extends BaseComponentDirective implements OnIn
     }
   }
 
+  ngAfterViewInit() {
+    this.collapse();
+
+    const _setIsSmallDevice = () => {
+      this.isSmallDevice = this.windowRefService.nativeWindow.window.innerWidth < 768;
+    };
+
+    if (isPlatformBrowser(this.platformId)) {
+      _setIsSmallDevice();
+
+      fromEvent(this.windowRefService.nativeWindow, "resize")
+        .pipe(debounceTime(100), takeUntil(this.destroyed$))
+        .subscribe(() => {
+          _setIsSmallDevice();
+        });
+    }
+  }
+
   ngOnDestroy() {
     if (!!this.reviewPendingEditNotification) {
       this.popNotificationsService.clear(this.reviewPendingEditNotification.toastId);
@@ -200,9 +201,18 @@ export class ItemTypeNavComponent extends BaseComponentDirective implements OnIn
     super.ngOnDestroy();
   }
 
-  _initCollapsed() {
-    this.collapsed = this.isTouchDevice || this.hasActiveItem;
-    this.collapsedChanged.emit(this.collapsed);
+  collapse() {
+    if (!this.collapsed) {
+      this.collapsed = true;
+      this.collapsedChanged.emit(true);
+    }
+  }
+
+  expand() {
+    if (this.collapsed) {
+      this.collapsed = false;
+      this.collapsedChanged.emit(false);
+    }
   }
 
   _setActiveSubNav(url: string) {
@@ -219,9 +229,8 @@ export class ItemTypeNavComponent extends BaseComponentDirective implements OnIn
     this.router.events?.pipe(takeUntil(this.destroyed$)).subscribe(event => {
       if (event instanceof NavigationEnd) {
         this.activeType = this.activatedRoute.snapshot?.paramMap.get("itemType");
-        this.hasActiveItem = !!this.activatedRoute.snapshot?.paramMap.get("itemId");
         this._setActiveSubNav(event.urlAfterRedirects);
-        this._initCollapsed();
+        this.collapse();
       }
     });
   }

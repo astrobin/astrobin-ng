@@ -27,6 +27,7 @@ import {
 } from "@features/equipment/pages/explorer/explorer-filters/explorer-filters.component";
 import { CompareService } from "@features/equipment/services/compare.service";
 import { ExplorerComponent } from "@features/equipment/components/explorer/explorer.component";
+import { ItemTypeNavComponent } from "@features/equipment/components/item-type-nav/item-type-nav.component";
 
 @Component({
   selector: "astrobin-equipment-explorer-page",
@@ -42,6 +43,9 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
 
   @ViewChild("explorerFilters")
   explorerFilters: ExplorerFiltersComponent;
+
+  @ViewChild("itemTypeNavComponent")
+  itemTypeNavComponent: ItemTypeNavComponent;
 
   title = this.translateService.instant("Equipment explorer");
   activeId: EquipmentItemBaseInterface["id"];
@@ -143,6 +147,10 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
 
   private _setLocation() {
     const _doSetLocation = (item: EquipmentItemBaseInterface) => {
+      if (!!this.itemTypeNavComponent) {
+        this.itemTypeNavComponent.collapse();
+      }
+
       this.utilsService.delay(100).subscribe(() => {
         if (!item) {
           const urlObject = this.windowRefService.getCurrentUrl();
