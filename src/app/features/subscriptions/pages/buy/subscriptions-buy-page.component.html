@@ -12,7 +12,8 @@
   {{ "Validity" | translate }}: <strong>1 {{ "year" | translate }}</strong> &middot; {{ "Autorenew" | translate }}:
   <strong>{{ "No" | translate }}</strong>
 </small>
-<small [innerHTML]="moreInfoMessage"></small>
+
+<small class="mt-2 mb-4 d-block" [innerHTML]="moreInfoMessage"></small>
 
 <ngb-accordion class="info">
   <ngb-panel

@@ -6,11 +6,27 @@
   }
 
   &.collapsed {
+    overflow: hidden;
+
+    @media screen and (max-width: $sm-max) {
+      height: 40px;
+      overflow-x: auto;
+    }
+
+    @media screen and (min-width: $md-min) {
+      width: 40px;
+    }
+
     .nav-link {
       &.active,
       &:hover {
         background-color: transparent;
       }
+    }
+
+    // Nested list for pending review/edit.
+    .nav-item .nav-pills {
+      display: none;
     }
   }
 }
@@ -24,32 +40,38 @@
   }
 
   img {
-    width: 2rem;
-    margin: .25rem;
+    width: 43px;
+    margin: 0;
     position: absolute;
-    left: 0;
-    top: 0;
+    left: -3px;
+    top: -3px;
   }
 
   .nav-link {
-    padding-left: 2.5rem;
+    padding-left: 3rem;
+    border-radius: 2rem;
   }
 
   .count {
     position: absolute;
-    top: .75rem;
-    right: .5rem;
-    font-size: 1rem;
+    top: .667rem;
+    right: 1rem;
+    font-size: .8rem;
     line-height: 1rem;
-    opacity: .5;
+    opacity: 0.5;
   }
 
   .nav-pills {
-    font-size: .9rem;
-    margin: .5rem 0 1rem 1rem;
+    font-size: .85rem;
+    margin-left: 3rem;
+    font-style: italic;
+    padding: 1rem 0 .5rem 0;
+    min-height: initial;
 
     .nav-link {
       padding: .5rem 1rem;
+      color: var(--lighterGrey);
+      border-radius: .5rem;
 
       &.active {
         background-color: transparent;
@@ -62,5 +84,7 @@
 
 .contributors-icon {
   border-radius: 50%;
-  width: 1.75rem !important;
+  width: 36px !important;
+  top: 0 !important;
+  left: 0 !important;
 }

@@ -13,7 +13,6 @@
   <div class="row">
     <div [class]="navCollapsed ? 'col-md-1' : 'col-md-4'">
       <astrobin-equipment-item-type-nav
-        [enableCollapsing]="enableNavCollapsing"
         (collapsedChanged)="navCollapsed = $event"
       ></astrobin-equipment-item-type-nav>
     </div>
@@ -44,21 +43,21 @@
             <thead>
               <tr>
                 <th>
-                  <button class="btn btn-link" (click)="toggleAZSorting()">
+                  <button class="btn btn-link btn-no-block" (click)="toggleAZSorting()">
                     {{ equipmentItemService.getPrintablePropertyName(null, EquipmentItemDisplayProperty.NAME, true) }}
                     <fa-icon icon="sort-alpha-down" *ngIf="sortOrder === ExplorerPageSortOrder.AZ_DESC"></fa-icon>
                     <fa-icon icon="sort-alpha-up" *ngIf="sortOrder === ExplorerPageSortOrder.AZ"></fa-icon>
                   </button>
                 </th>
                 <th>
-                  <button class="btn btn-link" (click)="toggleUsersSorting()">
+                  <button class="btn btn-link btn-no-block" (click)="toggleUsersSorting()">
                     {{ "Users" | translate }}
                     <fa-icon icon="sort-numeric-down" *ngIf="sortOrder === ExplorerPageSortOrder.USERS_DESC"></fa-icon>
                     <fa-icon icon="sort-numeric-up" *ngIf="sortOrder === ExplorerPageSortOrder.USERS"></fa-icon>
                   </button>
                 </th>
                 <th>
-                  <button class="btn btn-link" (click)="toggleImagesSorting()">
+                  <button class="btn btn-link btn-no-block" (click)="toggleImagesSorting()">
                     {{ "Images" | translate }}
                     <fa-icon icon="sort-numeric-down" *ngIf="sortOrder === ExplorerPageSortOrder.IMAGES_DESC"></fa-icon>
                     <fa-icon icon="sort-numeric-up" *ngIf="sortOrder === ExplorerPageSortOrder.IMAGES"></fa-icon>

@@ -1,3 +1,5 @@
+@import "styles/breakpoints";
+
 :host {
   display: flex;
   min-height: 100vh;
@@ -5,5 +7,9 @@
 
   > .container {
     flex: 1;
+
+    @media screen and (max-width: $md-max) {
+      padding: 0;
+    }
   }
 }
