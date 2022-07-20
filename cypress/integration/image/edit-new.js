@@ -25,6 +25,8 @@ context("Image edit (new)", () => {
 
     cy.route("get", "**/api/v2/equipment/equipment-preset/", []);
 
+    cy.route("get", "**/json-api/user/has-legacy-gear/?userId=1", { result: false });
+
     cy.route("get", "**/api/v2/images/image-revision/*", { count: 0, results: [] }).as("getRevisions");
   });
 
