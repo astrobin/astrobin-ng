@@ -137,16 +137,6 @@
               {{ "Propose edit" | translate }}&hellip;
             </button>
 
-            <a
-              href="#"
-              appEventPreventDefault
-              class="add-to-compare"
-              [class.loading]="loadingService.loading$ | async"
-              (click)="compareService.addWithErrorHandling(selectedItem)"
-            >
-              <fa-icon icon="list-alt" [ngbTooltip]="'Add to comparison list' | translate"></fa-icon>
-            </a>
-
             <button
               *ngIf="(currentUser | isEquipmentModerator) && typeSupportsMigrateInto()"
               class="btn btn-secondary"
@@ -205,6 +195,16 @@
                 </button>
               </ng-container>
             </ng-container>
+
+            <a
+              href="#"
+              appEventPreventDefault
+              class="add-to-compare"
+              [class.loading]="loadingService.loading$ | async"
+              (click)="compareService.addWithErrorHandling(selectedItem)"
+            >
+              <fa-icon icon="list-alt" [ngbTooltip]="'Add to comparison list' | translate"></fa-icon>
+            </a>
           </ng-container>
         </ng-container>
       </div>
