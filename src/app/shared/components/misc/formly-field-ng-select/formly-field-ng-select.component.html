@@ -9,7 +9,7 @@
 </ng-template>
 
 <ng-template #select let-items="items">
-  <div class="d-flex align-items-center">
+  <div class="position-relative">
     <ng-select
       #ngSelect
       [attr.id]="field.id"
@@ -106,6 +106,7 @@
       appEventStopPropagation
       appEventPreventDefault
       class="toggle-enable-fullscreen"
+      [ngbTooltip]="'Disable fullscreen mode' | translate"
       (click)="toggleEnableFullscreen()"
     >
       <fa-icon [class.text-muted]="!to.enableFullscreen" icon="expand"></fa-icon>

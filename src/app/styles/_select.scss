@@ -3,10 +3,6 @@
 .ng-select {
   max-width: 100%;
 
-  &.enable-fullscreen:not(.fullscreen) {
-    max-width: calc(100% - 1rem);
-  }
-
   .ng-select-container {
     color: var(--lighterGrey);
   }
@@ -128,6 +124,12 @@
 
     .add-tag {
       margin: 1rem;
+    }
+  }
+
+  &.enable-fullscreen {
+    .ng-value-container {
+      padding-right: 2rem;
     }
   }
 

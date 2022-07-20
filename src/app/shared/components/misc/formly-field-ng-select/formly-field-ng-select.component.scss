@@ -5,9 +5,11 @@
 }
 
 .toggle-enable-fullscreen {
-  color: var(--lightestGrey);
+  color: var(--lightGrey);
   font-size: 1.25rem;
-  margin-left: 1rem;
+  position: absolute;
+  top: calc(.5rem - 2px);
+  right: 1.5rem;
 }
 
 .too-many-options-label {
