@@ -128,8 +128,16 @@
   }
 
   &.enable-fullscreen {
-    .ng-value-container {
-      padding-right: 2rem;
+    .ng-select-container {
+      &.ng-has-value {
+        .ng-value-container {
+          padding-right: 2rem;
+        }
+      }
+
+      .ng-value-container {
+        padding-right: 3rem;
+      }
     }
   }
 
