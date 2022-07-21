@@ -8,7 +8,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { TelescopeInterface, TelescopeType } from "@features/equipment/types/telescope.interface";
-import { UtilsService } from "@shared/services/utils/utils.service";
+import { distinctUntilKeyChangedOrNull, UtilsService } from "@shared/services/utils/utils.service";
 import { filter, map, switchMap, take, takeWhile, tap } from "rxjs/operators";
 import { CameraDisplayProperty, CameraService } from "@features/equipment/services/camera.service";
 import { selectBrand, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
@@ -31,6 +31,8 @@ import { selectUser } from "@features/account/store/auth.selectors";
 import { LoadUser } from "@features/account/store/auth.actions";
 import { AccessoryDisplayProperty, AccessoryService } from "@features/equipment/services/accessory.service";
 import { AccessoryInterface } from "@features/equipment/types/accessory.interface";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { AssignItemModalComponent } from "@shared/components/equipment/summaries/assign-item-modal/assign-item-modal.component";
 
 interface EquipmentItemProperty {
   name: string;
@@ -104,7 +106,8 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
     public readonly sensorService: SensorService,
     public readonly mountService: MountService,
     public readonly filterService: FilterService,
-    public readonly accessoryService: AccessoryService
+    public readonly accessoryService: AccessoryService,
+    public readonly modalService: NgbModal
   ) {
     super(store$);
   }
@@ -155,11 +158,15 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
   }
 
   getCreatedBy(): Observable<UserInterface> {
-    return this.store$.select(selectUser, this.item.createdBy);
+    return this.store$.select(selectUser, this.item.createdBy).pipe(distinctUntilKeyChangedOrNull("id"));
+  }
+
+  getAssignee(): Observable<UserInterface | null> {
+    return this.store$.select(selectUser, this.item.assignee).pipe(distinctUntilKeyChangedOrNull("id"));
   }
 
   getReviewedBy(): Observable<UserInterface> {
-    return this.store$.select(selectUser, this.item.reviewedBy);
+    return this.store$.select(selectUser, this.item.reviewedBy).pipe(distinctUntilKeyChangedOrNull("id"));
   }
 
   showLastUpdate(): boolean {
@@ -176,6 +183,10 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
   ngOnChanges(changes: SimpleChanges): void {
     if (this.item.createdBy) {
       this.store$.dispatch(new LoadUser({ id: this.item.createdBy }));
+    }
+
+    if (this.item.assignee) {
+      this.store$.dispatch(new LoadUser({ id: this.item.assignee }));
     }
 
     if (this.item.reviewedBy) {
@@ -221,6 +232,19 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
     }
 
     return property.value.pipe(map(value => !!value || this.showEmptyProperties));
+  }
+
+  assign() {
+    const modalRef = this.modalService.open(AssignItemModalComponent);
+    const componentInstance: AssignItemModalComponent = modalRef.componentInstance;
+    componentInstance.item = this.item;
+    modalRef.closed.subscribe((item: EquipmentItem) => {
+      this.item = item;
+
+      if (!!item.assignee) {
+        this.store$.dispatch(new LoadUser({ id: item.assignee }));
+      }
+    });
   }
 
   private _classProperty(itemType: EquipmentItemType): EquipmentItemProperty {

@@ -112,7 +112,26 @@
       <abbr [attr.title]="item.created | localDate">
         ({{ item.created | localDate | timeago:true }})
       </abbr>
-    <p>
+    </p>
+
+    <ng-container *ngIf="(currentUser$ | async) as currentUser">
+      <p *ngIf="(currentUser | isEquipmentModerator) && !item.reviewerDecision">
+        <strong>{{ "Assignee" | translate }}</strong>:
+        <astrobin-username *ngIf="!!item.assignee" [user]="getAssignee() | async"></astrobin-username>
+        <span *ngIf="!item.assignee">{{ "Any moderator" | translate }}</span>
+        <a
+          *ngIf="item.assignee === null || item.assignee === currentUser.id"
+          href="#"
+          class="assign"
+          appEventStopPropagation
+          appEventPreventDefault
+          [ngbTooltip]="'Assign' | translate"
+          (click)="assign()"
+        >
+          <fa-icon icon="pen"></fa-icon>
+        </a>
+      </p>
+    </ng-container>
 
     <p *ngIf="item.reviewedBy">
       <strong>{{ "Reviewed by" | translate }}</strong>:

@@ -124,7 +124,8 @@ export function reducer(state = initialEquipmentState, action: EquipmentActions)
     case EquipmentActionTypes.CREATE_FILTER_SUCCESS:
     case EquipmentActionTypes.CREATE_ACCESSORY_SUCCESS:
     case EquipmentActionTypes.CREATE_SOFTWARE_SUCCESS:
-    case EquipmentActionTypes.LOAD_SENSOR_SUCCESS: {
+    case EquipmentActionTypes.LOAD_SENSOR_SUCCESS:
+    case EquipmentActionTypes.ASSIGN_ITEM_SUCCESS: {
       return {
         ...state,
         equipmentItems: arrayUniqueEquipmentItems([...state.equipmentItems, ...[action.payload.item]])
@@ -162,7 +163,8 @@ export function reducer(state = initialEquipmentState, action: EquipmentActions)
     case EquipmentActionTypes.CREATE_FILTER_EDIT_PROPOSAL_SUCCESS:
     case EquipmentActionTypes.CREATE_ACCESSORY_EDIT_PROPOSAL_SUCCESS:
     case EquipmentActionTypes.CREATE_SOFTWARE_EDIT_PROPOSAL_SUCCESS:
-    case EquipmentActionTypes.REJECT_EQUIPMENT_ITEM_EDIT_PROPOSAL_SUCCESS: {
+    case EquipmentActionTypes.REJECT_EQUIPMENT_ITEM_EDIT_PROPOSAL_SUCCESS:
+    case EquipmentActionTypes.ASSIGN_EDIT_PROPOSAL_SUCCESS: {
       return {
         ...state,
         editProposals: (arrayUniqueEquipmentItems([

@@ -72,6 +72,28 @@
     </ng-container>
 
     <div class="form-actions">
+      <ng-container *ngIf="(currentUser$ | async) as currentUser">
+        <button class="btn pd-lg-0 assign-edit-proposal">
+          <span class="text-muted mr-2">{{ "Assignee" | translate }}:</span>
+          <astrobin-username
+            *ngIf="!!editProposal.editProposalAssignee"
+            [userId]="editProposal.editProposalAssignee"
+          ></astrobin-username>
+          <span *ngIf="!editProposal.editProposalAssignee">{{ "Anyone" | translate }}</span>
+          <a
+            *ngIf="editProposal.editProposalAssignee === null || editProposal.editProposalAssignee === currentUser.id"
+            href="#"
+            class="assign"
+            appEventStopPropagation
+            appEventPreventDefault
+            [ngbTooltip]="'Assign' | translate"
+            (click)="assign()"
+          >
+            <fa-icon icon="pen"></fa-icon>
+          </a>
+        </button>
+      </ng-container>
+
       <ng-container *ngIf="showReviewButtons$ | async as showReviewButtons">
         <button
           *ngIf="showReviewButtons && rejectButtonsStatus$ | async as buttonStatus"

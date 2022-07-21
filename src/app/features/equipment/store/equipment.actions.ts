@@ -83,6 +83,10 @@ export enum EquipmentActionTypes {
   GET_MOST_OFTEN_USED_WITH_SUCCESS = "[Equipment] Get most often used with success",
   GET_CONTRIBUTORS = "[Equipment] Get contributors",
   GET_CONTRIBUTORS_SUCCESS = "[Equipment] Get contributors success",
+  ASSIGN_ITEM = "[Equipment] Assign item",
+  ASSIGN_ITEM_SUCCESS = "[Equipment] Assign item success",
+  ASSIGN_EDIT_PROPOSAL = "[Equipment] Assign edit proposal",
+  ASSIGN_EDIT_PROPOSAL_SUCCESS = "[Equipment] Assign edit proposal success",
 
   // Equipment presets
 
@@ -458,6 +462,38 @@ export class GetContributorsSuccess implements PayloadActionInterface {
   constructor(public payload: { contributors: ContributorInterface[] }) {}
 }
 
+export class AssignItem implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.ASSIGN_ITEM;
+
+  constructor(
+    public payload: { itemType: EquipmentItemType; itemId: EquipmentItem["id"]; assignee: UserInterface["id"] | null }
+  ) {}
+}
+
+export class AssignItemSuccess implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.ASSIGN_ITEM_SUCCESS;
+
+  constructor(public payload: { item: EquipmentItem }) {}
+}
+
+export class AssignEditProposal implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.ASSIGN_EDIT_PROPOSAL;
+
+  constructor(
+    public payload: {
+      itemType: EquipmentItemType;
+      editProposalId: EditProposalInterface<EquipmentItem>["id"];
+      assignee: UserInterface["id"] | null;
+    }
+  ) {}
+}
+
+export class AssignEditProposalSuccess implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.ASSIGN_EDIT_PROPOSAL_SUCCESS;
+
+  constructor(public payload: { editProposal: EditProposalInterface<EquipmentItem> }) {}
+}
+
 /**********************************************************************************************************************
  * Equipment presets
  *********************************************************************************************************************/
@@ -800,6 +836,10 @@ export type EquipmentActions =
   | GetMostOftenUsedWithSuccess
   | GetContributors
   | GetContributorsSuccess
+  | AssignItem
+  | AssignItemSuccess
+  | AssignEditProposal
+  | AssignEditProposalSuccess
 
   // Equipment presets
   | FindEquipmentPresets

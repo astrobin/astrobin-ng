@@ -89,6 +89,8 @@ import { AvatarComponent } from "@shared/components/misc/avatar/avatar.component
 import { DataDoesNotUpdateInRealTimeComponent } from "@shared/components/misc/data-does-not-update-in-real-time/data-does-not-update-in-real-time.component";
 import { SubscriptionRequiredModalComponent } from "@shared/components/misc/subscription-required-modal/subscription-required-modal.component";
 import { InformationDialogComponent } from "@shared/components/misc/information-dialog/information-dialog.component";
+import { AssignItemModalComponent } from "@shared/components/equipment/summaries/assign-item-modal/assign-item-modal.component";
+import { AssignEditProposalModalComponent } from "@shared/components/equipment/summaries/assign-edit-proposal-modal/assign-edit-proposal-modal.component";
 
 const modules = [
   CommonModule,
@@ -180,7 +182,9 @@ const components = [
   BrandEditorFormComponent,
   SimilarItemsSuggestionComponent,
   ConfirmItemCreationModalComponent,
-  OthersInBrandComponent
+  OthersInBrandComponent,
+  AssignItemModalComponent,
+  AssignEditProposalModalComponent
 ];
 
 const services = [UsernameService];

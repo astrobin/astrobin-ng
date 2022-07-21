@@ -18,6 +18,7 @@ export interface EditProposalInterface<T extends EquipmentItemBaseInterface> ext
   editProposalOriginalProperties: string;
   editProposalTarget: T["id"];
   editProposalBy?: UserInterface["id"];
+  editProposalAssignee: UserInterface["id"] | null;
   editProposalCreated: string;
   editProposalUpdated: string;
   editProposalIp?: string;

@@ -1,7 +1,6 @@
 import { AfterViewInit, Component, Inject, OnInit, PLATFORM_ID, ViewChild } from "@angular/core";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
-import { NotificationsService } from "@features/notifications/services/notifications.service";
 import { TitleService } from "@shared/services/title/title.service";
 import { TranslateService } from "@ngx-translate/core";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
@@ -10,7 +9,7 @@ import {
   selectNotificationSettings,
   selectNotificationTypes
 } from "@features/notifications/store/notifications.selectors";
-import { filter, map, switchMap, take, tap } from "rxjs/operators";
+import { filter, map, switchMap, tap } from "rxjs/operators";
 import {
   LoadNotificationSettings,
   LoadNotificationTypes,
@@ -21,7 +20,7 @@ import {
   NotificationSettingInterface
 } from "@features/notifications/interfaces/notification-setting.interface";
 import { NotificationTypeInterface } from "@features/notifications/interfaces/notification-type.interface";
-import { interval, Observable } from "rxjs";
+import { Observable } from "rxjs";
 import { selectCurrentUser } from "@features/account/store/auth.selectors";
 import { NgbAccordion } from "@ng-bootstrap/ng-bootstrap";
 import { UtilsService } from "@shared/services/utils/utils.service";
@@ -284,6 +283,7 @@ export class SettingsPageComponent extends BaseComponentDirective implements OnI
       case "new_comment_to_unapproved_equipment_item":
         return NotificationCategory.EQUIPMENT;
       case "equipment-item-requires-moderation":
+      case "equipment-item-assigned":
         return NotificationCategory.EQUIPMENT_MODERATION;
     }
 

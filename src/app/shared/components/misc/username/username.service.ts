@@ -3,12 +3,12 @@ import { UsernameServiceInterface } from "@shared/components/misc/username/usern
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
-import { Store } from "@ngrx/store";
 import { Observable, of } from "rxjs";
-import { selectUserProfile } from "@features/account/store/auth.selectors";
-import { map } from "rxjs/operators";
+import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { LoadUserProfile } from "@features/account/store/auth.actions";
+import { selectUserProfile } from "@features/account/store/auth.selectors";
+import { map } from "rxjs/operators";
 
 @Injectable()
 export class UsernameService extends BaseService implements UsernameServiceInterface {
@@ -17,8 +17,8 @@ export class UsernameService extends BaseService implements UsernameServiceInter
   }
 
   getDisplayName$(user: UserInterface): Observable<string> {
-    if (!user) {
-      return of(null);
+    if (!!user.displayName) {
+      return of(user.displayName);
     }
 
     this.store$.dispatch(new LoadUserProfile({ id: user.userProfile }));

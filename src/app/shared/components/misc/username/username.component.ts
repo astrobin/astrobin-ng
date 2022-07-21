@@ -1,13 +1,13 @@
-import { Component, Input, OnChanges } from "@angular/core";
+import { Component, Input, OnChanges, OnInit } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { UsernameService } from "@shared/components/misc/username/username.service";
 import { UserInterface } from "@shared/interfaces/user.interface";
-import { Observable } from "rxjs";
+import { Observable, of } from "rxjs";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { selectUser } from "@features/account/store/auth.selectors";
-import { filter, switchMap, take, tap } from "rxjs/operators";
+import { filter, map, switchMap, take, tap } from "rxjs/operators";
 import { LoadUser } from "@features/account/store/auth.actions";
 
 @Component({
@@ -16,7 +16,7 @@ import { LoadUser } from "@features/account/store/auth.actions";
   styleUrls: ["./username.component.scss"],
   providers: [UsernameService]
 })
-export class UsernameComponent extends BaseComponentDirective implements OnChanges {
+export class UsernameComponent extends BaseComponentDirective implements OnInit, OnChanges {
   @Input()
   user: UserInterface;
 
@@ -29,7 +29,7 @@ export class UsernameComponent extends BaseComponentDirective implements OnChang
   @Input()
   linkTarget = "_self";
 
-  username$: Observable<string>;
+  username: string;
 
   constructor(
     public readonly store$: Store<State>,
@@ -39,16 +39,31 @@ export class UsernameComponent extends BaseComponentDirective implements OnChang
     super(store$);
   }
 
+  ngOnInit() {
+    super.ngOnInit();
+
+    this._initUsername();
+  }
+
   ngOnChanges() {
+    this._initUsername();
+  }
+
+  private _initUsername() {
     if (this.user) {
-      this.username$ = this.usernameService.getDisplayName$(this.user);
+      this.usernameService.getDisplayName$(this.user).subscribe(username => {
+        this.username = username;
+      });
     } else if (this.userId) {
-      this.username$ = this.store$.select(selectUser, this.userId).pipe(
-        filter(user => !!user),
-        tap(user => (this.user = user)),
-        take(1),
-        switchMap(user => this.usernameService.getDisplayName$(user))
-      );
+      this.store$
+        .select(selectUser, this.userId)
+        .pipe(
+          filter(user => !!user),
+          tap(user => (this.user = user)),
+          take(1),
+          switchMap(user => this.usernameService.getDisplayName$(user))
+        )
+        .subscribe(username => (this.username = username));
       this.store$.dispatch(new LoadUser({ id: this.userId }));
     }
   }

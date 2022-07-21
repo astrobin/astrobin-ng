@@ -1,0 +1,37 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-title">{{ "Assign" | translate }}</h4>
+  <button (click)="modal.dismiss()" aria-describedby="modal-title" class="close" type="button">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body">
+  <p>
+    {{
+      "If you assign this item to a specific moderator, only they will be able to review it or unassign themselves."
+        | translate
+    }}
+  </p>
+
+  <form [formGroup]="form">
+    <formly-form [fields]="fields" [form]="form" [model]="model"></formly-form>
+  </form>
+
+  <astrobin-loading-indicator *ngIf="fields[0].templateOptions.options.length === 0"></astrobin-loading-indicator>
+</div>
+
+<div class="modal-footer">
+  <button (click)="modal.dismiss()" class="btn btn-outline-secondary" type="button">
+    {{ "Cancel" | translate }}
+  </button>
+
+  <button
+    (click)="save()"
+    class="btn btn-success"
+    type="button"
+    [disabled]="model.assignee === item.assignee"
+    [class.loading]="loadingService.loading$ | async"
+  >
+    {{ "Save" | translate }}
+  </button>
+</div>
