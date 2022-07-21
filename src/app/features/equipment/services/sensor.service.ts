@@ -60,7 +60,8 @@ export class SensorService extends BaseService implements EquipmentItemServiceIn
   getPrintableProperty$(
     item: SensorInterface,
     property: SensorDisplayProperty,
-    propertyValue?: any
+    propertyValue?: any,
+    shortForm?: boolean
   ): Observable<string | null> {
     switch (property) {
       case SensorDisplayProperty.PIXEL_SIZE:

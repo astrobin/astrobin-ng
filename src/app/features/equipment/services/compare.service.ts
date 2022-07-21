@@ -217,6 +217,23 @@ export class CompareService extends BaseService {
           value$: this.equipmentItemService.getFullDisplayName$(item)
         });
 
+        data[item.id].push({
+          propertyName: EquipmentItemDisplayProperty.WEBSITE,
+          id: item.id,
+          klass: item.klass,
+          name: this.equipmentItemService.getPrintablePropertyName(
+            item.klass,
+            EquipmentItemDisplayProperty.WEBSITE,
+            true
+          ),
+          value$: this.equipmentItemService.getPrintableProperty$(
+            item,
+            EquipmentItemDisplayProperty.WEBSITE,
+            item.website,
+            true
+          )
+        });
+
         for (const printableProperty of printableProperties) {
           data[item.id].push({
             propertyName: printableProperty,

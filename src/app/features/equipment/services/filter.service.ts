@@ -180,7 +180,8 @@ export class FilterService extends BaseService implements EquipmentItemServiceIn
   getPrintableProperty$(
     item: FilterInterface,
     property: FilterDisplayProperty,
-    propertyValue?: any
+    propertyValue?: any,
+    shortForm?: boolean
   ): Observable<string | null> {
     switch (property) {
       case FilterDisplayProperty.TYPE:

@@ -50,7 +50,8 @@ export class AccessoryService extends BaseService implements EquipmentItemServic
   getPrintableProperty$(
     item: AccessoryInterface,
     property: AccessoryDisplayProperty,
-    propertyValue?: any
+    propertyValue?: any,
+    shortForm?: boolean
   ): Observable<string | null> {
     switch (property) {
       case AccessoryDisplayProperty.TYPE:

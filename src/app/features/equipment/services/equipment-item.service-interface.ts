@@ -9,7 +9,8 @@ export interface EquipmentItemServiceInterface {
   getPrintableProperty$(
     item: EquipmentItemBaseInterface,
     propertyName: any,
-    propertyValue?: any
+    propertyValue?: any,
+    shortForm?: boolean
   ): Observable<string | null>;
 
   getPrintablePropertyName(propertyName: any, shortForm: boolean): string;

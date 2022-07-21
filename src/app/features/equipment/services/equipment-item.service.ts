@@ -110,7 +110,8 @@ export class EquipmentItemService extends BaseService {
   getPrintableProperty$(
     item: EquipmentItemBaseInterface,
     propertyName: any,
-    propertyValue?: any
+    propertyValue?: any,
+    shortForm?: boolean
   ): Observable<string | null> {
     if (propertyValue === undefined || propertyValue === null) {
       return of(null);
@@ -118,7 +119,7 @@ export class EquipmentItemService extends BaseService {
 
     const service = this.equipmentItemServiceFactory.getService(item);
     if (service.getSupportedPrintableProperties().indexOf(propertyName) > -1) {
-      return service.getPrintableProperty$(item, propertyName, propertyValue);
+      return service.getPrintableProperty$(item, propertyName, propertyValue, shortForm);
     }
 
     switch (propertyName) {
@@ -151,7 +152,15 @@ export class EquipmentItemService extends BaseService {
           )
         );
       case EquipmentItemDisplayProperty.WEBSITE:
-        return of(propertyValue.toString());
+        const website = propertyValue || item[propertyName];
+
+        return of(
+          website
+            ? `<a href="${website}" target="_blank">
+                 ${shortForm ? UtilsService.shortenUrl(website) : website}
+               </a>`
+            : null
+        );
       case EquipmentItemDisplayProperty.IMAGE:
         return of(
           propertyValue || item[propertyName]

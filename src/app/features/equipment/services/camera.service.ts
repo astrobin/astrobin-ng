@@ -70,7 +70,8 @@ export class CameraService extends BaseService implements EquipmentItemServiceIn
   getPrintableProperty$(
     item: CameraInterface,
     property: CameraDisplayProperty | string,
-    propertyValue?: any
+    propertyValue?: any,
+    shortForm?: boolean
   ): Observable<string | null> {
     switch (property) {
       case "NAME":

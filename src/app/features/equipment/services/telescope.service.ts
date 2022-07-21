@@ -98,7 +98,8 @@ export class TelescopeService extends BaseService implements EquipmentItemServic
   getPrintableProperty$(
     item: TelescopeInterface,
     property: TelescopeDisplayProperty,
-    propertyValue?: any
+    propertyValue?: any,
+    shortForm?: boolean
   ): Observable<string | null> {
     switch (property) {
       case TelescopeDisplayProperty.TYPE:
