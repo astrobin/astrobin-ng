@@ -94,9 +94,9 @@ describe("CompareService", () => {
         expect(Object.keys(comparison).length).toEqual(3);
 
         // 5 = NAME, IMAGE, WEIGHT, USERS, IMAGES
-        expect(comparison[mount0.id].length).toEqual(5);
-        expect(comparison[mount1.id].length).toEqual(5);
-        expect(comparison[mount2.id].length).toEqual(5);
+        expect(comparison[mount0.id].length).toEqual(6);
+        expect(comparison[mount1.id].length).toEqual(6);
+        expect(comparison[mount2.id].length).toEqual(6);
 
         expect(comparison[mount0.id][0].name).toEqual("Weight");
         expect(comparison[mount0.id][0].value).toEqual(mount0.weight + "");

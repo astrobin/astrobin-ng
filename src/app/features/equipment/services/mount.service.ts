@@ -65,7 +65,8 @@ export class MountService extends BaseService implements EquipmentItemServiceInt
   getPrintableProperty$(
     item: MountInterface,
     property: MountDisplayProperty,
-    propertyValue?: any
+    propertyValue?: any,
+    shortForm?: boolean
   ): Observable<string | null> {
     let result: string;
 

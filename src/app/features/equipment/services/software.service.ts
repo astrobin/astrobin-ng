@@ -30,7 +30,8 @@ export class SoftwareService extends BaseService implements EquipmentItemService
   getPrintableProperty$(
     item: SoftwareInterface,
     property: SoftwareDisplayProperty,
-    propertyValue?: any
+    propertyValue?: any,
+    shortForm?: boolean
   ): Observable<string | null> {
     throw Error(`Invalid property: ${property}`);
   }
