@@ -90,6 +90,7 @@ describe("CommonApiAdaptorService", () => {
         last_login: "2020-04-10T19:05:51.400207",
         is_superuser: true,
         username: "foo",
+        display_name: "Foo",
         first_name: "Foo",
         is_staff: true,
         is_active: true,

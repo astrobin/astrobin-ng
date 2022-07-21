@@ -52,7 +52,8 @@ export class CameraGenerator {
         editProposalReviewTimestamp: source.editProposalReviewTimestamp || null,
         editProposalReviewIp: source.editProposalReviewIp || null,
         editProposalReviewComment: source.editProposalReviewComment || null,
-        editProposalReviewStatus: source.editProposalReviewStatus || null
+        editProposalReviewStatus: source.editProposalReviewStatus || null,
+        editProposalAssignee: source.editProposalAssignee || null
       }
     };
   }
