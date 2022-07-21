@@ -105,6 +105,10 @@
             max-width: 250px;
           }
 
+          a {
+            word-break: break-all;
+          }
+
           ::ng-deep {
             img {
               max-width: 100%;
