@@ -425,6 +425,43 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     return this.http.get<ContributorInterface[]>(`${this.configUrl}/contributors/`);
   }
 
+  getPossibleItemAssignees(
+    itemType: EquipmentItemType,
+    itemId: EquipmentItem["id"]
+  ): Observable<{ key: EquipmentItem["id"]; value: string }[]> {
+    return this.http.get<{ key: UserInterface["id"]; value: string }[]>(
+      `${this.configUrl}/${itemType.toLowerCase()}/${itemId}/possible-assignees/`
+    );
+  }
+
+  assignItem(
+    itemType: EquipmentItemType,
+    itemId: EquipmentItem["id"],
+    assignee: UserInterface["id"] | null
+  ): Observable<EquipmentItem> {
+    return this.http.post<EquipmentItem>(`${this.configUrl}/${itemType.toLowerCase()}/${itemId}/assign/`, { assignee });
+  }
+
+  getPossibleEditProposalAssignees(
+    itemType: EquipmentItemType,
+    editProposalId: EditProposalInterface<EquipmentItem>["id"]
+  ): Observable<{ key: UserInterface["id"]; value: string }[]> {
+    return this.http.get<{ key: UserInterface["id"]; value: string }[]>(
+      `${this.configUrl}/${itemType.toLowerCase()}-edit-proposal/${editProposalId}/possible-assignees/`
+    );
+  }
+
+  assignEditProposal(
+    itemType: EquipmentItemType,
+    editProposalId: EditProposalInterface<EquipmentItem>["id"],
+    assignee: UserInterface["id"] | null
+  ): Observable<EditProposalInterface<EquipmentItem>> {
+    return this.http.post<EditProposalInterface<EquipmentItem>>(
+      `${this.configUrl}/${itemType.toLowerCase()}-edit-proposal/${editProposalId}/assign/`,
+      { assignee }
+    );
+  }
+
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // BRAND API
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

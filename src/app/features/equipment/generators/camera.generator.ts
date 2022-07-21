@@ -14,6 +14,7 @@ export class CameraGenerator {
       updated: source.updated || "1970-01-01",
       lastAddedOrRemovedFromImage: source.updated || "1970-01-01",
       createdBy: source.createdBy || 1,
+      assignee: source.assignee || null,
       klass: EquipmentItemType.CAMERA,
       brand: source.brand || generatedBrand.id,
       brandName: source.brandName || generatedBrand.name,
@@ -51,7 +52,8 @@ export class CameraGenerator {
         editProposalReviewTimestamp: source.editProposalReviewTimestamp || null,
         editProposalReviewIp: source.editProposalReviewIp || null,
         editProposalReviewComment: source.editProposalReviewComment || null,
-        editProposalReviewStatus: source.editProposalReviewStatus || null
+        editProposalReviewStatus: source.editProposalReviewStatus || null,
+        editProposalAssignee: source.editProposalAssignee || null
       }
     };
   }

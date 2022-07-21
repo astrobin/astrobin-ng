@@ -13,6 +13,7 @@ export class TelescopeGenerator {
       lastAddedOrRemovedFromImage: source.updated || "1970-01-01",
       klass: EquipmentItemType.TELESCOPE,
       createdBy: source.createdBy || 1,
+      assignee: source.assignee || null,
       brand: source.brand || generatedBrand.id,
       brandName: source.brandName || generatedBrand.name,
       name: source.name || "Test telescope",

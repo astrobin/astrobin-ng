@@ -5,6 +5,10 @@ import {
   ApproveEquipmentItemEditProposal,
   ApproveEquipmentItemEditProposalSuccess,
   ApproveEquipmentItemSuccess,
+  AssignEditProposal,
+  AssignEditProposalSuccess,
+  AssignItem,
+  AssignItemSuccess,
   CreateAccessory,
   CreateAccessoryEditProposal,
   CreateAccessoryEditProposalSuccess,
@@ -84,7 +88,7 @@ import {
   UpdateEquipmentPreset,
   UpdateEquipmentPresetSuccess
 } from "@features/equipment/store/equipment.actions";
-import { Actions, createEffect, ofType } from "@ngrx/effects";
+import { act, Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { All } from "@app/store/actions/app.actions";
@@ -457,6 +461,30 @@ export class EquipmentEffects {
         this.equipmentApiService
           .getContributors()
           .pipe(map(contributors => new GetContributorsSuccess({ contributors })))
+      )
+    )
+  );
+
+  AssignItem: Observable<AssignItemSuccess> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(EquipmentActionTypes.ASSIGN_ITEM),
+      map((action: AssignItem) => action.payload),
+      mergeMap(payload =>
+        this.equipmentApiService
+          .assignItem(payload.itemType, payload.itemId, payload.assignee)
+          .pipe(map(item => new AssignItemSuccess({ item })))
+      )
+    )
+  );
+
+  AssignEditProposal: Observable<AssignEditProposalSuccess> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(EquipmentActionTypes.ASSIGN_EDIT_PROPOSAL),
+      map((action: AssignEditProposal) => action.payload),
+      mergeMap(payload =>
+        this.equipmentApiService
+          .assignEditProposal(payload.itemType, payload.editProposalId, payload.assignee)
+          .pipe(map(editProposal => new AssignEditProposalSuccess({ editProposal })))
       )
     )
   );

@@ -149,7 +149,10 @@
             </button>
 
             <ng-container
-              *ngIf="(currentUser | isEquipmentModerator) && !!selectedItem.brand"
+              *ngIf="
+                (currentUser | isEquipmentModerator) &&
+                (!selectedItem.assignee || selectedItem.assignee === currentUser.id) &&
+                !!selectedItem.brand"
             >
               <ng-container
                 *ngIf="

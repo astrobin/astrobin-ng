@@ -8,6 +8,7 @@ export class UserGenerator {
       userProfile: 1,
       username: "Test",
       firstName: "Test",
+      displayName: "Test",
       avatar: null,
       largeAvatar: null,
       lastLogin: new Date("2010-01-01"),

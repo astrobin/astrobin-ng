@@ -25,6 +25,7 @@
             <th>
               {{ equipmentItemService.getPrintablePropertyName(null, EquipmentItemDisplayProperty.NAME, true) }}
             </th>
+            <th *ngIf="pendingType === PendingType.PENDING_REVIEW">{{ "Assignee" | translate }}</th>
             <th>{{ "Created" | translate }}</th>
           </tr>
           </thead>
@@ -37,6 +38,10 @@
               >
                 <astrobin-equipment-item-display-name [item]="item"></astrobin-equipment-item-display-name>
               </a>
+            </td>
+            <td *ngIf="pendingType === PendingType.PENDING_REVIEW">
+              <astrobin-username *ngIf="!!item.assignee" [userId]="item.assignee"></astrobin-username>
+              <span *ngIf="!item.assignee">{{ "Any moderator" | translate }}</span>
             </td>
             <td>
               {{ item.created | localDate | timeago: true }}

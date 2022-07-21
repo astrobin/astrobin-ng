@@ -1,11 +1,15 @@
 <a [href]="classicRoutesService.GALLERY(user)" [target]="linkTarget" *ngIf="link" appEventStopPropagation>
-  <ng-container [ngTemplateOutlet]="username"></ng-container>
+  <ng-container [ngTemplateOutlet]="usernameTemplate"></ng-container>
 </a>
 
-<ng-container [ngTemplateOutlet]="username" *ngIf="!link"></ng-container>
+<ng-container [ngTemplateOutlet]="usernameTemplate" *ngIf="!link"></ng-container>
 
-<ng-template #username>
-  <span class="username">
-    {{ username$ | async }}
+<ng-template #usernameTemplate>
+  <span class="username" *ngIf="!!username; else loadingTemplate">
+    {{ username }}
   </span>
+</ng-template>
+
+<ng-template #loadingTemplate>
+  <astrobin-text-loading-indicator></astrobin-text-loading-indicator>
 </ng-template>

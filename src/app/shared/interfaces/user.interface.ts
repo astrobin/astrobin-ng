@@ -7,6 +7,7 @@ export interface UserInterface {
   userProfile: UserProfileInterface["id"];
   username: string;
   firstName: string;
+  displayName: string;
   avatar: string;
   largeAvatar: string;
   lastLogin: Date;

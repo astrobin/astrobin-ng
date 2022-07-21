@@ -13,6 +13,7 @@ export class FilterGenerator {
       lastAddedOrRemovedFromImage: source.updated || "1970-01-01",
       klass: EquipmentItemType.FILTER,
       createdBy: source.createdBy || 1,
+      assignee: source.assignee || null,
       brand: source.brand || generatedBrand.id,
       brandName: source.brandName || generatedBrand.name,
       name: source.name || "Test filter",

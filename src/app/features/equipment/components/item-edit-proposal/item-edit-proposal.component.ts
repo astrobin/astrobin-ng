@@ -11,6 +11,7 @@ import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipme
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 import {
   ApproveEquipmentItemEditProposalSuccess,
+  AssignEditProposalSuccess,
   EquipmentActionTypes,
   LoadEquipmentItem,
   RejectEquipmentItemEditProposalSuccess
@@ -18,7 +19,7 @@ import {
 import { selectEditProposalsForItem, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { LoadUser } from "@features/account/store/auth.actions";
-import { filter, map, switchMap, take, tap } from "rxjs/operators";
+import { filter, map, switchMap, take, takeUntil, tap } from "rxjs/operators";
 import { TranslateService } from "@ngx-translate/core";
 import { forkJoin, Observable } from "rxjs";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
@@ -32,6 +33,9 @@ import { LoadContentType } from "@app/store/actions/content-type.actions";
 import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
 import { selectContentType } from "@app/store/selectors/app/content-type.selectors";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
+import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import { AssignEditProposalModalComponent } from "@shared/components/equipment/summaries/assign-edit-proposal-modal/assign-edit-proposal-modal.component";
+import { UtilsService } from "@shared/services/utils/utils.service";
 
 @Component({
   selector: "astrobin-item-edit-proposal",
@@ -58,7 +62,8 @@ export class ItemEditProposalComponent extends BaseComponentDirective implements
     public readonly translateService: TranslateService,
     public readonly classicRoutesService: ClassicRoutesService,
     public readonly loadingService: LoadingService,
-    public readonly modalService: NgbModal
+    public readonly modalService: NgbModal,
+    public readonly utilsService: UtilsService
   ) {
     super(store$);
   }
@@ -95,6 +100,15 @@ export class ItemEditProposalComponent extends BaseComponentDirective implements
       ),
       switchMap(editProposals => this.currentUser$.pipe(map(currentUser => ({ editProposals, currentUser })))),
       map(({ editProposals, currentUser }) => {
+        if (!!this.editProposal.editProposalAssignee && this.editProposal.editProposalAssignee !== currentUser.id) {
+          return {
+            disabled: true,
+            reason: this.translateService.instant(
+              "You cannot review this edit proposal because it's assigned to another user."
+            )
+          };
+        }
+
         if (currentUser.id === this.editProposal.editProposalBy) {
           return {
             disabled: true,
@@ -130,7 +144,17 @@ export class ItemEditProposalComponent extends BaseComponentDirective implements
             new Date(editProposal.editProposalCreated) < new Date(this.editProposal.editProposalCreated)
         )
       ),
-      map(editProposals => {
+      switchMap(editProposals => this.currentUser$.pipe(map(currentUser => ({ editProposals, currentUser })))),
+      map(({ editProposals, currentUser }) => {
+        if (!!this.editProposal.editProposalAssignee && this.editProposal.editProposalAssignee !== currentUser.id) {
+          return {
+            disabled: true,
+            reason: this.translateService.instant(
+              "You cannot review this edit proposal because it's assigned to another user."
+            )
+          };
+        }
+
         if (editProposals.length > 0) {
           return {
             disabled: true,
@@ -164,6 +188,19 @@ export class ItemEditProposalComponent extends BaseComponentDirective implements
 
     this._loadData(type);
     this._loadEquipmentItem(type);
+  }
+
+  assign() {
+    const modalRef = this.modalService.open(AssignEditProposalModalComponent);
+    const componentInstance: AssignEditProposalModalComponent = modalRef.componentInstance;
+    componentInstance.editProposal = this.editProposal;
+    modalRef.closed.subscribe((editProposal: EditProposalInterface<EquipmentItem>) => {
+      this.editProposal = editProposal;
+
+      if (!!this.editProposal.editProposalAssignee) {
+        this.store$.dispatch(new LoadUser({ id: this.editProposal.editProposalAssignee }));
+      }
+    });
   }
 
   approveEdit() {

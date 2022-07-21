@@ -29,6 +29,8 @@ import { LoadingService } from "@shared/services/loading.service";
 import {
   ApproveEquipmentItemEditProposalSuccess,
   ApproveEquipmentItemSuccess,
+  AssignEditProposalSuccess,
+  AssignItemSuccess,
   CreateAccessoryEditProposal,
   CreateCameraEditProposal,
   CreateFilterEditProposal,
@@ -324,6 +326,24 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
       )
       .subscribe(item => {
         this.setItem(item);
+      });
+
+    this.actions$
+      .pipe(ofType(EquipmentActionTypes.ASSIGN_ITEM_SUCCESS))
+      .pipe(
+        takeUntil(this.destroyed$),
+        map((action: AssignItemSuccess) => action.payload.item),
+        filter(item => !!this.selectedItem && item.id === this.selectedItem.id)
+      )
+      .subscribe(item => {
+        this.selectedItem = item;
+      });
+
+    this.actions$
+      .pipe(ofType(EquipmentActionTypes.ASSIGN_EDIT_PROPOSAL_SUCCESS))
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(() => {
+        this.expandEditProposals();
       });
   }
 
