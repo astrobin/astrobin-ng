@@ -143,6 +143,7 @@ describe("CommonApiAdaptorService", () => {
         isStaff: true,
         isActive: true,
         dateJoined: new Date("2020-04-09T19:45:21.522611"),
+        displayName: "Foo",
         groups: [
           {
             id: 1,
