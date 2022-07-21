@@ -8,8 +8,6 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { Actions } from "@ngrx/effects";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import { tap } from "rxjs/operators";
-import { LoadBrand } from "@features/equipment/store/equipment.actions";
-import { BrandInterface } from "@features/equipment/types/brand.interface";
 import {
   PendingExplorerBaseComponent,
   PendingType
