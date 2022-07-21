@@ -17,7 +17,7 @@
     <formly-form [fields]="fields" [form]="form" [model]="model"></formly-form>
   </form>
 
-  <astrobin-loading-indicator *ngIf="fields[0].templateOptions.options.length === 0"></astrobin-loading-indicator>
+  <astrobin-loading-indicator *ngIf="loadingAssignees"></astrobin-loading-indicator>
 </div>
 
 <div class="modal-footer">

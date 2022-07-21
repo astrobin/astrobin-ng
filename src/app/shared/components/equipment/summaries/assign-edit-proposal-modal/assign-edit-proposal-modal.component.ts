@@ -38,6 +38,7 @@ export class AssignEditProposalModalComponent extends BaseComponentDirective imp
   } = {
     assignee: null
   };
+  loadingAssignees = true;
 
   constructor(
     public readonly store$: Store<State>,
@@ -69,7 +70,10 @@ export class AssignEditProposalModalComponent extends BaseComponentDirective imp
               map(possibleAssignees => {
                 return [{ key: null, value: this.translateService.instant("Anyone") }, ...possibleAssignees];
               }),
-              tap(() => this.loadingService.setLoading(false))
+              tap(() => {
+                this.loadingService.setLoading(false);
+                this.loadingAssignees = false;
+              })
             )
         }
       }
