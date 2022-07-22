@@ -115,132 +115,32 @@ export class FilterEditorComponent extends BaseItemEditorComponent<FilterInterfa
 
   private _initFields() {
     this.initBrandAndName().subscribe(() => {
+      if (this.editorMode === EquipmentItemEditorMode.CREATION) {
+        this.fields = [
+          this._getDIYField(),
+          this._getBrandField(),
+          this._getTypeField(),
+          this._getBandwidthField(),
+          this._getSizeField()
+        ];
+      } else {
+        if (this.model.type === null || this.model.type === FilterType.OTHER) {
+          this.fields.push(this._getTypeField());
+        }
+
+        if (!this.model.bandwidth) {
+          this.fields.push(this._getBandwidthField());
+        }
+
+        if (this.model.size === null || this.model.size === FilterSize.OTHER) {
+          this.fields.push(this._getSizeField());
+        }
+      }
+
       this.fields = [
-        this._getDIYField(),
-        this._getBrandField(),
-        {
-          key: "type",
-          type: "ng-select",
-          id: "filter-field-type",
-          expressionProperties: {
-            "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
-          },
-          templateOptions: {
-            label: this.filterService.getPrintablePropertyName(FilterDisplayProperty.TYPE),
-            required: true,
-            clearable: true,
-            options: Object.keys(FilterType).map(filterType => ({
-              value: FilterType[filterType],
-              label: this.filterService.humanizeType(FilterType[filterType])
-            }))
-          },
-          hooks: {
-            onInit: (field: FormlyFieldConfig) => {
-              field.formControl.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(() => {
-                const nameField = this.fields.find(f => f.key === "name");
-                this.formlyFieldService.clearMessages(nameField.templateOptions);
-                this._updateGeneratedName();
-                this._customNameChangesValidations(nameField, this.model.name);
-              });
-            }
-          }
-        },
-        {
-          key: "bandwidth",
-          type: "input",
-          wrappers: ["default-wrapper"],
-          id: "filter-field-bandwidth",
-          expressionProperties: {
-            "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress,
-            "templateOptions.required": () =>
-              [FilterType.H_ALPHA, FilterType.H_BETA, FilterType.SII, FilterType.OIII].indexOf(this.model.type) > -1
-          },
-          templateOptions: {
-            type: "number",
-            step: 0.1,
-            label: this.filterService.getPrintablePropertyName(FilterDisplayProperty.BANDWIDTH)
-          },
-          validators: {
-            validation: [
-              "number",
-              {
-                name: "min-value",
-                options: {
-                  minValue: 0
-                }
-              },
-              {
-                name: "max-decimals",
-                options: {
-                  value: 2
-                }
-              }
-            ]
-          },
-          hooks: {
-            onInit: (field: FormlyFieldConfig) => {
-              field.formControl.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(() => {
-                const nameField = this.fields.find(f => f.key === "name");
-                this.formlyFieldService.clearMessages(nameField.templateOptions);
-                this._updateGeneratedName();
-                this._customNameChangesValidations(nameField, this.model.name);
-              });
-            }
-          }
-        },
-        {
-          key: "size",
-          type: "ng-select",
-          id: "filter-field-size",
-          expressionProperties: {
-            "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
-          },
-          templateOptions: {
-            label: this.filterService.getPrintablePropertyName(FilterDisplayProperty.SIZE),
-            required: true,
-            clearable: true,
-            options: Object.keys(FilterSize).map(filterSize => ({
-              value: FilterSize[filterSize],
-              label: this.filterService.humanizeSize(FilterSize[filterSize])
-            }))
-          },
-          hooks: {
-            onInit: (field: FormlyFieldConfig) => {
-              field.formControl.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(() => {
-                const nameField = this.fields.find(f => f.key === "name");
-                this.formlyFieldService.clearMessages(nameField.templateOptions);
-                this._updateGeneratedName();
-                this._customNameChangesValidations(nameField, this.model.name);
-              });
-            }
-          }
-        },
+        ...this.fields,
         this._getNameField(),
-        {
-          key: "overrideName",
-          type: "checkbox",
-          wrappers: ["default-wrapper"],
-          id: "filter-field-override-name",
-          defaultValue: this.editorMode === EquipmentItemEditorMode.EDIT_PROPOSAL,
-          templateOptions: {
-            fieldGroupClassName: "override-name",
-            label: this.translateService.instant("Override generated name above"),
-            description: this.translateService.instant(
-              "AstroBin automatically sets the name of a filter from its properties, to keep a consistent " +
-                "naming convention strategy. If your filter has a specific product name that's more recognizable, " +
-                "please check this box and change its name."
-            ),
-            required: true,
-            hideRequiredMarker: true
-          },
-          hooks: {
-            onInit: (field: FormlyFieldConfig) => {
-              field.formControl.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(() => {
-                this._updateGeneratedName();
-              });
-            }
-          }
-        },
+        this._getOverrideNameField(),
         this._getVariantOfField(EquipmentItemType.FILTER),
         this._getImageField(),
         this._getWebsiteField(),
@@ -274,5 +174,139 @@ export class FilterEditorComponent extends BaseItemEditorComponent<FilterInterfa
           this.form.get("name").updateValueAndValidity();
         }
       });
+  }
+
+  private _getTypeField() {
+    return {
+      key: "type",
+      type: "ng-select",
+      id: "filter-field-type",
+      expressionProperties: {
+        "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+      },
+      templateOptions: {
+        label: this.filterService.getPrintablePropertyName(FilterDisplayProperty.TYPE),
+        required: true,
+        clearable: true,
+        options: Object.keys(FilterType).map(filterType => ({
+          value: FilterType[filterType],
+          label: this.filterService.humanizeType(FilterType[filterType])
+        }))
+      },
+      hooks: {
+        onInit: (field: FormlyFieldConfig) => {
+          field.formControl.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(() => {
+            const nameField = this.fields.find(f => f.key === "name");
+            this.formlyFieldService.clearMessages(nameField.templateOptions);
+            this._updateGeneratedName();
+            this._customNameChangesValidations(nameField, this.model.name);
+          });
+        }
+      }
+    };
+  }
+
+  private _getBandwidthField() {
+    return {
+      key: "bandwidth",
+      type: "input",
+      wrappers: ["default-wrapper"],
+      id: "filter-field-bandwidth",
+      expressionProperties: {
+        "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress,
+        "templateOptions.required": () =>
+          [FilterType.H_ALPHA, FilterType.H_BETA, FilterType.SII, FilterType.OIII].indexOf(this.model.type) > -1
+      },
+      templateOptions: {
+        type: "number",
+        step: 0.1,
+        label: this.filterService.getPrintablePropertyName(FilterDisplayProperty.BANDWIDTH)
+      },
+      validators: {
+        validation: [
+          "number",
+          {
+            name: "min-value",
+            options: {
+              minValue: 0
+            }
+          },
+          {
+            name: "max-decimals",
+            options: {
+              value: 2
+            }
+          }
+        ]
+      },
+      hooks: {
+        onInit: (field: FormlyFieldConfig) => {
+          field.formControl.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(() => {
+            const nameField = this.fields.find(f => f.key === "name");
+            this.formlyFieldService.clearMessages(nameField.templateOptions);
+            this._updateGeneratedName();
+            this._customNameChangesValidations(nameField, this.model.name);
+          });
+        }
+      }
+    };
+  }
+
+  private _getSizeField() {
+    return {
+      key: "size",
+      type: "ng-select",
+      id: "filter-field-size",
+      expressionProperties: {
+        "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+      },
+      templateOptions: {
+        label: this.filterService.getPrintablePropertyName(FilterDisplayProperty.SIZE),
+        required: true,
+        clearable: true,
+        options: Object.keys(FilterSize).map(filterSize => ({
+          value: FilterSize[filterSize],
+          label: this.filterService.humanizeSize(FilterSize[filterSize])
+        }))
+      },
+      hooks: {
+        onInit: (field: FormlyFieldConfig) => {
+          field.formControl.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(() => {
+            const nameField = this.fields.find(f => f.key === "name");
+            this.formlyFieldService.clearMessages(nameField.templateOptions);
+            this._updateGeneratedName();
+            this._customNameChangesValidations(nameField, this.model.name);
+          });
+        }
+      }
+    };
+  }
+
+  private _getOverrideNameField() {
+    return {
+      key: "overrideName",
+      type: "checkbox",
+      wrappers: ["default-wrapper"],
+      id: "filter-field-override-name",
+      defaultValue: this.editorMode === EquipmentItemEditorMode.EDIT_PROPOSAL,
+      templateOptions: {
+        fieldGroupClassName: "override-name",
+        label: this.translateService.instant("Override generated name above"),
+        description: this.translateService.instant(
+          "AstroBin automatically sets the name of a filter from its properties, to keep a consistent " +
+            "naming convention strategy. If your filter has a specific product name that's more recognizable, " +
+            "please check this box and change its name."
+        ),
+        required: true,
+        hideRequiredMarker: true
+      },
+      hooks: {
+        onInit: (field: FormlyFieldConfig) => {
+          field.formControl.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(() => {
+            this._updateGeneratedName();
+          });
+        }
+      }
+    };
   }
 }

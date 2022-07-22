@@ -63,6 +63,10 @@ export class EquipmentCompareModalComponent extends BaseComponentDirective imple
       });
   }
 
+  showEditButton(row): boolean {
+    return [null, undefined, "", "OTHER"].indexOf(row.value) > -1 || ["WEBSITE", "NAME"].indexOf(row.propertyName) > -1;
+  }
+
   editButtonClicked(klass: EquipmentItem["klass"], id: EquipmentItem["id"]) {
     this.router
       .navigate(["equipment", "explorer", klass.toLowerCase(), id], { queryParams: { edit: "true" } })

@@ -2,7 +2,10 @@ import { Component, OnInit } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { Actions } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
-import { BaseItemEditorComponent } from "@shared/components/equipment/editors/base-item-editor/base-item-editor.component";
+import {
+  BaseItemEditorComponent,
+  EquipmentItemEditorMode
+} from "@shared/components/equipment/editors/base-item-editor/base-item-editor.component";
 import { LoadingService } from "@shared/services/loading.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { State } from "@app/store/state";
@@ -63,274 +66,318 @@ export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeI
 
   private _initFields() {
     this.initBrandAndName().subscribe(() => {
-      this.fields = [
-        this._getDIYField(),
-        this._getBrandField(),
-        this._getNameField(),
-        this._getVariantOfField(EquipmentItemType.TELESCOPE),
-        {
-          key: "type",
-          type: "ng-select",
-          id: "telescope-field-type",
-          expressionProperties: {
-            "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
-          },
-          templateOptions: {
-            label: this.telescopeService.getPrintablePropertyName(TelescopeDisplayProperty.TYPE),
-            required: true,
-            clearable: true,
-            options: Object.keys(TelescopeType).map(telescopeType => ({
-              value: TelescopeType[telescopeType],
-              label: this.telescopeService.humanizeType(TelescopeType[telescopeType])
-            }))
-          },
-          hooks: {
-            onInit: (field: FormlyFieldConfig) => {
-              field.formControl.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(value => {
-                const nameField = this.fields.find(f => f.key === "name");
-                this.formlyFieldService.clearMessages(nameField.templateOptions);
-                if (value === TelescopeType.CAMERA_LENS) {
-                  this.formlyFieldService.addMessage(nameField.templateOptions, {
-                    level: FormlyFieldMessageLevel.INFO,
-                    text: this.translateService.instant(
-                      "The recommended naming convention for camera lenses is: optional model name, focal length " +
-                        "range, f-ratio range, additional properties. E.g. <strong>Nikkor Z 28mm f/2.8 (SE)</strong>."
-                    )
-                  });
-                }
-              });
-            }
-          }
-        },
-        {
-          key: "aperture",
-          type: "input",
-          wrappers: ["default-wrapper"],
-          id: "telescope-field-aperture",
-          hideExpression: () => this.model.type === TelescopeType.CAMERA_LENS,
-          expressionProperties: {
-            "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
-          },
-          templateOptions: {
-            type: "number",
-            step: 0.1,
-            label: this.telescopeService.getPrintablePropertyName(TelescopeDisplayProperty.APERTURE)
-          },
-          validators: {
-            validation: [
-              "number",
-              {
-                name: "min-value",
-                options: {
-                  minValue: 0.1
-                }
-              },
-              {
-                name: "max-decimals",
-                options: {
-                  value: 2
-                }
-              }
-            ]
-          }
-        },
-        {
-          key: "fixedFocalLength",
-          type: "checkbox",
-          wrappers: ["default-wrapper"],
-          id: "telescope-field-fixed-focal-length",
-          defaultValue: this.model.minFocalLength === this.model.maxFocalLength,
-          expressionProperties: {
-            "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
-          },
-          templateOptions: {
-            label: this.translateService.instant("Fixed focal length")
-          }
-        },
-        {
-          key: "focalLength",
-          type: "input",
-          wrappers: ["default-wrapper"],
-          id: "telescope-field-focal-length",
-          defaultValue: this.model.minFocalLength === this.model.maxFocalLength ? this.model.minFocalLength : null,
-          hideExpression: () => !this.form.get("fixedFocalLength").value,
-          expressionProperties: {
-            "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
-          },
-          templateOptions: {
-            type: "number",
-            step: 0.1,
-            label: this.telescopeService.getPrintablePropertyName(TelescopeDisplayProperty.FOCAL_LENGTH)
-          },
-          validators: {
-            validation: [
-              "number",
-              {
-                name: "min-value",
-                options: {
-                  minValue: 0.1
-                }
-              },
-              {
-                name: "max-decimals",
-                options: {
-                  value: 2
-                }
-              }
-            ]
-          },
-          hooks: {
-            onInit: (field: FormlyFieldConfig) => {
-              field.formControl.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(value => {
-                this.model.minFocalLength = value;
-                this.model.maxFocalLength = value;
-              });
-            }
-          }
-        },
-        {
-          fieldGroupClassName: "row",
-          fieldGroup: [
-            {
-              className: "col-12 col-lg-6",
-              key: "minFocalLength",
-              type: "input",
-              wrappers: ["default-wrapper"],
-              id: "telescope-field-min-focal-length",
-              defaultValue: this.model.minFocalLength,
-              hideExpression: () => !!this.form.get("fixedFocalLength").value,
-              expressionProperties: {
-                "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress,
-                "templateOptions.required": model => !model.fixedFocalLength
-              },
-              templateOptions: {
-                type: "number",
-                step: 0.1,
-                label: this.telescopeService.getPrintablePropertyName(TelescopeDisplayProperty.MIN_FOCAL_LENGTH)
-              },
-              validators: {
-                validation: [
-                  "number",
-                  {
-                    name: "min-value",
-                    options: {
-                      minValue: 0.1
-                    }
-                  },
-                  {
-                    name: "max-decimals",
-                    options: {
-                      value: 2
-                    }
-                  }
-                ]
-              },
-              hooks: {
-                onInit: (field: FormlyFieldConfig) => {
-                  field.formControl.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(value => {
-                    this.utilsService.delay(1).subscribe(() => {
-                      this.form.get("maxFocalLength")?.updateValueAndValidity({ onlySelf: true, emitEvent: false });
-                    });
-                  });
-                }
-              }
-            },
-            {
-              className: "col-12 col-lg-6",
-              key: "maxFocalLength",
-              type: "input",
-              wrappers: ["default-wrapper"],
-              id: "telescope-field-max-focal-length",
-              defaultValue: this.model.maxFocalLength,
-              hideExpression: () => !!this.form.get("fixedFocalLength").value,
-              expressionProperties: {
-                "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress,
-                "templateOptions.required": model => !model.fixedFocalLength
-              },
-              templateOptions: {
-                type: "number",
-                step: 0.1,
-                label: this.telescopeService.getPrintablePropertyName(TelescopeDisplayProperty.MAX_FOCAL_LENGTH)
-              },
-              validators: {
-                validation: [
-                  "number",
-                  {
-                    name: "min-value",
-                    options: {
-                      minValue: 0.1
-                    }
-                  },
-                  {
-                    name: "max-decimals",
-                    options: {
-                      value: 2
-                    }
-                  },
-                  {
-                    name: "max-greater-equal-than-min",
-                    options: {
-                      model: this.model,
-                      minValueKey: "minFocalLength",
-                      minLabel: this.telescopeService.getPrintablePropertyName(
-                        TelescopeDisplayProperty.MIN_FOCAL_LENGTH
-                      ),
-                      maxLabel: this.telescopeService.getPrintablePropertyName(
-                        TelescopeDisplayProperty.MAX_FOCAL_LENGTH
-                      )
-                    }
-                  }
-                ]
-              },
-              hooks: {
-                onInit: (field: FormlyFieldConfig) => {
-                  field.formControl.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(value => {
-                    this.utilsService.delay(1).subscribe(() => {
-                      this.form.get("minFocalLength")?.updateValueAndValidity({ onlySelf: true, emitEvent: false });
-                    });
-                  });
-                }
-              }
-            }
-          ]
-        },
-        {
-          key: "weight",
-          type: "input",
-          wrappers: ["default-wrapper"],
-          id: "telescope-field-weight",
-          expressionProperties: {
-            "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
-          },
-          templateOptions: {
-            type: "number",
-            step: 0.1,
-            label: this.telescopeService.getPrintablePropertyName(TelescopeDisplayProperty.WEIGHT)
-          },
-          validators: {
-            validation: [
-              "number",
-              {
-                name: "min-value",
-                options: {
-                  minValue: 0.1
-                }
-              },
-              {
-                name: "max-decimals",
-                options: {
-                  value: 2
-                }
-              }
-            ]
-          }
-        },
-        this._getImageField(),
-        this._getWebsiteField(),
-        this._getCommunityNotesField()
-      ];
+      if (this.editorMode === EquipmentItemEditorMode.CREATION) {
+        this.fields = [
+          this._getDIYField(),
+          this._getBrandField(),
+          this._getNameField(),
+          this._getVariantOfField(EquipmentItemType.TELESCOPE),
+          this._getTypeField(),
+          this._getApertureField(),
+          this._getFixedFocalLengthField(),
+          this._getFocalLengthField(),
+          this._getFocalLengthMinMaxField(),
+          this._getWeightField()
+        ];
+      } else {
+        this.fields = [this._getNameField(), this._getVariantOfField(EquipmentItemType.TELESCOPE)];
+
+        if (this.model.type === null || this.model.type === TelescopeType.OTHER) {
+          this.fields.push(this._getTypeField());
+        }
+
+        if (!this.model.aperture) {
+          this.fields.push(this._getApertureField());
+        }
+
+        if (!this.model.minFocalLength || !this.model.maxFocalLength) {
+          this.fields = [
+            ...this.fields,
+            this._getFixedFocalLengthField(),
+            this._getFocalLengthField(),
+            this._getFocalLengthMinMaxField()
+          ];
+        }
+
+        if (!this.model.weight) {
+          this.fields.push(this._getWeightField());
+        }
+      }
+
+      this.fields = [...this.fields, this._getImageField(), this._getWebsiteField(), this._getCommunityNotesField()];
 
       this._addBaseItemEditorFields();
     });
+  }
+
+  private _getTypeField() {
+    return {
+      key: "type",
+      type: "ng-select",
+      id: "telescope-field-type",
+      expressionProperties: {
+        "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+      },
+      templateOptions: {
+        label: this.telescopeService.getPrintablePropertyName(TelescopeDisplayProperty.TYPE),
+        required: true,
+        clearable: true,
+        options: Object.keys(TelescopeType).map(telescopeType => ({
+          value: TelescopeType[telescopeType],
+          label: this.telescopeService.humanizeType(TelescopeType[telescopeType])
+        }))
+      },
+      hooks: {
+        onInit: (field: FormlyFieldConfig) => {
+          field.formControl.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(value => {
+            const nameField = this.fields.find(f => f.key === "name");
+            this.formlyFieldService.clearMessages(nameField.templateOptions);
+            if (value === TelescopeType.CAMERA_LENS) {
+              this.formlyFieldService.addMessage(nameField.templateOptions, {
+                level: FormlyFieldMessageLevel.INFO,
+                text: this.translateService.instant(
+                  "The recommended naming convention for camera lenses is: optional model name, focal length " +
+                    "range, f-ratio range, additional properties. E.g. <strong>Nikkor Z 28mm f/2.8 (SE)</strong>."
+                )
+              });
+            }
+          });
+        }
+      }
+    };
+  }
+
+  private _getApertureField() {
+    return {
+      key: "aperture",
+      type: "input",
+      wrappers: ["default-wrapper"],
+      id: "telescope-field-aperture",
+      hideExpression: () => this.model.type === TelescopeType.CAMERA_LENS,
+      expressionProperties: {
+        "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+      },
+      templateOptions: {
+        type: "number",
+        step: 0.1,
+        label: this.telescopeService.getPrintablePropertyName(TelescopeDisplayProperty.APERTURE)
+      },
+      validators: {
+        validation: [
+          "number",
+          {
+            name: "min-value",
+            options: {
+              minValue: 0.1
+            }
+          },
+          {
+            name: "max-decimals",
+            options: {
+              value: 2
+            }
+          }
+        ]
+      }
+    };
+  }
+
+  private _getFixedFocalLengthField() {
+    return {
+      key: "fixedFocalLength",
+      type: "checkbox",
+      wrappers: ["default-wrapper"],
+      id: "telescope-field-fixed-focal-length",
+      defaultValue: this.model.minFocalLength === this.model.maxFocalLength,
+      expressionProperties: {
+        "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+      },
+      templateOptions: {
+        label: this.translateService.instant("Fixed focal length")
+      }
+    };
+  }
+
+  private _getFocalLengthField() {
+    return {
+      key: "focalLength",
+      type: "input",
+      wrappers: ["default-wrapper"],
+      id: "telescope-field-focal-length",
+      defaultValue: this.model.minFocalLength === this.model.maxFocalLength ? this.model.minFocalLength : null,
+      hideExpression: () => !this.form.get("fixedFocalLength").value,
+      expressionProperties: {
+        "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+      },
+      templateOptions: {
+        type: "number",
+        step: 0.1,
+        label: this.telescopeService.getPrintablePropertyName(TelescopeDisplayProperty.FOCAL_LENGTH)
+      },
+      validators: {
+        validation: [
+          "number",
+          {
+            name: "min-value",
+            options: {
+              minValue: 0.1
+            }
+          },
+          {
+            name: "max-decimals",
+            options: {
+              value: 2
+            }
+          }
+        ]
+      },
+      hooks: {
+        onInit: (field: FormlyFieldConfig) => {
+          field.formControl.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(value => {
+            this.model.minFocalLength = value;
+            this.model.maxFocalLength = value;
+          });
+        }
+      }
+    };
+  }
+
+  private _getFocalLengthMinMaxField() {
+    return {
+      fieldGroupClassName: "row",
+      fieldGroup: [
+        {
+          className: "col-12 col-lg-6",
+          key: "minFocalLength",
+          type: "input",
+          wrappers: ["default-wrapper"],
+          id: "telescope-field-min-focal-length",
+          defaultValue: this.model.minFocalLength,
+          hideExpression: () => !!this.form.get("fixedFocalLength").value,
+          expressionProperties: {
+            "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress,
+            "templateOptions.required": model => !model.fixedFocalLength
+          },
+          templateOptions: {
+            type: "number",
+            step: 0.1,
+            label: this.telescopeService.getPrintablePropertyName(TelescopeDisplayProperty.MIN_FOCAL_LENGTH)
+          },
+          validators: {
+            validation: [
+              "number",
+              {
+                name: "min-value",
+                options: {
+                  minValue: 0.1
+                }
+              },
+              {
+                name: "max-decimals",
+                options: {
+                  value: 2
+                }
+              }
+            ]
+          },
+          hooks: {
+            onInit: (field: FormlyFieldConfig) => {
+              field.formControl.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(value => {
+                this.utilsService.delay(1).subscribe(() => {
+                  this.form.get("maxFocalLength")?.updateValueAndValidity({ onlySelf: true, emitEvent: false });
+                });
+              });
+            }
+          }
+        },
+        {
+          className: "col-12 col-lg-6",
+          key: "maxFocalLength",
+          type: "input",
+          wrappers: ["default-wrapper"],
+          id: "telescope-field-max-focal-length",
+          defaultValue: this.model.maxFocalLength,
+          hideExpression: () => !!this.form.get("fixedFocalLength").value,
+          expressionProperties: {
+            "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress,
+            "templateOptions.required": model => !model.fixedFocalLength
+          },
+          templateOptions: {
+            type: "number",
+            step: 0.1,
+            label: this.telescopeService.getPrintablePropertyName(TelescopeDisplayProperty.MAX_FOCAL_LENGTH)
+          },
+          validators: {
+            validation: [
+              "number",
+              {
+                name: "min-value",
+                options: {
+                  minValue: 0.1
+                }
+              },
+              {
+                name: "max-decimals",
+                options: {
+                  value: 2
+                }
+              },
+              {
+                name: "max-greater-equal-than-min",
+                options: {
+                  model: this.model,
+                  minValueKey: "minFocalLength",
+                  minLabel: this.telescopeService.getPrintablePropertyName(TelescopeDisplayProperty.MIN_FOCAL_LENGTH),
+                  maxLabel: this.telescopeService.getPrintablePropertyName(TelescopeDisplayProperty.MAX_FOCAL_LENGTH)
+                }
+              }
+            ]
+          },
+          hooks: {
+            onInit: (field: FormlyFieldConfig) => {
+              field.formControl.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(value => {
+                this.utilsService.delay(1).subscribe(() => {
+                  this.form.get("minFocalLength")?.updateValueAndValidity({ onlySelf: true, emitEvent: false });
+                });
+              });
+            }
+          }
+        }
+      ]
+    };
+  }
+
+  private _getWeightField() {
+    return {
+      key: "weight",
+      type: "input",
+      wrappers: ["default-wrapper"],
+      id: "telescope-field-weight",
+      expressionProperties: {
+        "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+      },
+      templateOptions: {
+        type: "number",
+        step: 0.1,
+        label: this.telescopeService.getPrintablePropertyName(TelescopeDisplayProperty.WEIGHT)
+      },
+      validators: {
+        validation: [
+          "number",
+          {
+            name: "min-value",
+            options: {
+              minValue: 0.1
+            }
+          },
+          {
+            name: "max-decimals",
+            options: {
+              value: 2
+            }
+          }
+        ]
+      }
+    };
   }
 }

@@ -2,7 +2,10 @@ import { Component, OnInit } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { Actions } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
-import { BaseItemEditorComponent } from "@shared/components/equipment/editors/base-item-editor/base-item-editor.component";
+import {
+  BaseItemEditorComponent,
+  EquipmentItemEditorMode
+} from "@shared/components/equipment/editors/base-item-editor/base-item-editor.component";
 import { LoadingService } from "@shared/services/loading.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { State } from "@app/store/state";
@@ -61,320 +64,412 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
 
   private _initFields() {
     this.initBrandAndName().subscribe(() => {
-      this.fields = [
-        this._getBrandField(),
-        this._getNameField(),
-        this._getVariantOfField(EquipmentItemType.SENSOR),
-        {
-          key: "pixelSize",
-          type: "input",
-          wrappers: ["default-wrapper"],
-          id: "sensor-field-pixel-size",
-          expressionProperties: {
-            "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
-          },
-          templateOptions: {
-            type: "number",
-            step: 0.1,
-            label: this.translateService.instant("Pixel size (in μm)"),
-            description: this.translateService.instant("The size of the individual pixels in μm.")
-          },
-          validators: {
-            validation: [
-              "number",
-              {
-                name: "min-value",
-                options: {
-                  minValue: 0.1
-                }
-              },
-              {
-                name: "max-decimals",
-                options: {
-                  value: 2
-                }
-              }
-            ]
-          }
-        },
-        {
-          key: "pixelWidth",
-          type: "input",
-          wrappers: ["default-wrapper"],
-          id: "sensor-field-pixel-width",
-          expressionProperties: {
-            "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
-          },
-          templateOptions: {
-            required: true,
-            type: "number",
-            step: 1,
-            label: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.PIXEL_WIDTH)
-          },
-          validators: {
-            validation: [
-              "whole-number",
-              {
-                name: "min-value",
-                options: {
-                  minValue: 1
-                }
-              }
-            ]
-          }
-        },
-        {
-          key: "pixelHeight",
-          type: "input",
-          wrappers: ["default-wrapper"],
-          id: "sensor-field-pixel-height",
-          expressionProperties: {
-            "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
-          },
-          templateOptions: {
-            required: true,
-            type: "number",
-            step: 1,
-            label: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.PIXEL_HEIGHT)
-          },
-          validators: {
-            validation: [
-              "whole-number",
-              {
-                name: "min-value",
-                options: {
-                  minValue: 1
-                }
-              }
-            ]
-          }
-        },
-        {
-          key: "sensorWidth",
-          type: "input",
-          wrappers: ["default-wrapper"],
-          id: "sensor-field-sensor-width",
-          expressionProperties: {
-            "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
-          },
-          templateOptions: {
-            type: "number",
-            step: 0.1,
-            label: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.SENSOR_WIDTH)
-          },
-          validators: {
-            validation: [
-              "number",
-              {
-                name: "min-value",
-                options: {
-                  minValue: 0.1
-                }
-              },
-              {
-                name: "max-decimals",
-                options: {
-                  value: 2
-                }
-              }
-            ]
-          }
-        },
-        {
-          key: "sensorHeight",
-          type: "input",
-          wrappers: ["default-wrapper"],
-          id: "sensor-field-sensor-height",
-          expressionProperties: {
-            "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
-          },
-          templateOptions: {
-            type: "number",
-            step: 0.1,
-            label: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.SENSOR_HEIGHT)
-          },
-          validators: {
-            validation: [
-              "number",
-              {
-                name: "min-value",
-                options: {
-                  minValue: 0.1
-                }
-              },
-              {
-                name: "max-decimals",
-                options: {
-                  value: 2
-                }
-              }
-            ]
-          }
-        },
-        {
-          key: "quantumEfficiency",
-          type: "input",
-          wrappers: ["default-wrapper"],
-          id: "sensor-field-quantum-efficiency",
-          expressionProperties: {
-            "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
-          },
-          templateOptions: {
-            type: "number",
-            step: 0.1,
-            label: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.QUANTUM_EFFICIENCY)
-          },
-          validators: {
-            validation: [
-              "number",
-              {
-                name: "min-value",
-                options: {
-                  minValue: 0.1
-                }
-              },
-              {
-                name: "max-value",
-                options: {
-                  maxValue: 100
-                }
-              }
-            ]
-          }
-        },
-        {
-          key: "fullWellCapacity",
-          type: "input",
-          wrappers: ["default-wrapper"],
-          id: "sensor-field-full-well-capacity",
-          expressionProperties: {
-            "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
-          },
-          templateOptions: {
-            type: "number",
-            step: 1,
-            label: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.FULL_WELL_CAPACITY)
-          },
-          validators: {
-            validation: [
-              "whole-number",
-              {
-                name: "min-value",
-                options: {
-                  minValue: 1
-                }
-              }
-            ]
-          }
-        },
-        {
-          key: "readNoise",
-          type: "input",
-          wrappers: ["default-wrapper"],
-          id: "sensor-field-read-noise",
-          expressionProperties: {
-            "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
-          },
-          templateOptions: {
-            type: "number",
-            step: 0.1,
-            label: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.READ_NOISE)
-          },
-          validators: {
-            validation: [
-              "number",
-              {
-                name: "min-value",
-                options: {
-                  minValue: 0.1
-                }
-              },
-              {
-                name: "max-decimals",
-                options: {
-                  value: 2
-                }
-              }
-            ]
-          }
-        },
-        {
-          key: "frameRate",
-          type: "input",
-          wrappers: ["default-wrapper"],
-          id: "sensor-field-frame-rate",
-          expressionProperties: {
-            "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
-          },
-          templateOptions: {
-            type: "number",
-            step: 1,
-            label: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.FRAME_RATE)
-          },
-          validators: {
-            validation: [
-              "whole-number",
-              {
-                name: "min-value",
-                options: {
-                  minValue: 1
-                }
-              }
-            ]
-          }
-        },
-        {
-          key: "adc",
-          type: "input",
-          wrappers: ["default-wrapper"],
-          id: "sensor-field-adc",
-          expressionProperties: {
-            "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
-          },
-          templateOptions: {
-            type: "number",
-            step: 1,
-            label: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.ADC),
-            description: this.translateService.instant("Analog to Digital Converter")
-          },
-          validators: {
-            validation: [
-              "whole-number",
-              {
-                name: "min-value",
-                options: {
-                  minValue: 1
-                }
-              }
-            ]
-          }
-        },
-        {
-          key: "colorOrMono",
-          type: "ng-select",
-          id: "sensor-field-color-or-mono",
-          expressionProperties: {
-            "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
-          },
-          templateOptions: {
-            label: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.COLOR_OR_MONO),
-            options: [
-              {
-                label: this.translateService.instant("Color"),
-                value: ColorOrMono.C
-              },
-              {
-                label: this.translateService.instant("Mono"),
-                value: ColorOrMono.M
-              }
-            ]
-          }
-        },
-        this._getImageField(),
-        this._getWebsiteField()
-      ];
+      if (this.editorMode === EquipmentItemEditorMode.CREATION) {
+        this.fields = [
+          this._getBrandField(),
+          this._getNameField(),
+          this._getVariantOfField(EquipmentItemType.SENSOR),
+          this._getPixelSizeField(),
+          this._getPixelWidthField(),
+          this._getPixelHeightField(),
+          this._getSensorWidthField(),
+          this._getSensorHeightField(),
+          this._getQuantumEfficiencyField(),
+          this._getFullWellCapacityField(),
+          this._getReadNoiseField(),
+          this._getFrameRateField(),
+          this._getAdcField(),
+          this._getColorOrMonoField()
+        ];
+      } else {
+        this.fields = [this._getNameField(), this._getVariantOfField(EquipmentItemType.SENSOR)];
+
+        if (!this.model.pixelSize) {
+          this.fields.push(this._getPixelSizeField());
+        }
+
+        if (!this.model.pixelWidth) {
+          this.fields.push(this._getPixelWidthField());
+        }
+
+        if (!this.model.pixelHeight) {
+          this.fields.push(this._getPixelHeightField());
+        }
+
+        if (!this.model.sensorWidth) {
+          this.fields.push(this._getSensorWidthField());
+        }
+
+        if (!this.model.sensorHeight) {
+          this.fields.push(this._getSensorHeightField());
+        }
+
+        if (!this.model.quantumEfficiency) {
+          this.fields.push(this._getQuantumEfficiencyField());
+        }
+
+        if (!this.model.fullWellCapacity) {
+          this.fields.push(this._getFullWellCapacityField());
+        }
+
+        if (!this.model.readNoise) {
+          this.fields.push(this._getReadNoiseField());
+        }
+
+        if (!this.model.frameRate) {
+          this.fields.push(this._getFrameRateField());
+        }
+
+        if (!this.model.adc) {
+          this.fields.push(this._getAdcField());
+        }
+
+        if (!this.model.colorOrMono) {
+          this.fields.push(this._getColorOrMonoField());
+        }
+      }
+
+      this.fields = [...this.fields, this._getImageField(), this._getWebsiteField(), this._getCommunityNotesField()];
 
       this._addBaseItemEditorFields();
     });
+  }
+
+  private _getPixelSizeField() {
+    return {
+      key: "pixelSize",
+      type: "input",
+      wrappers: ["default-wrapper"],
+      id: "sensor-field-pixel-size",
+      expressionProperties: {
+        "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+      },
+      templateOptions: {
+        type: "number",
+        step: 0.1,
+        label: this.translateService.instant("Pixel size (in μm)"),
+        description: this.translateService.instant("The size of the individual pixels in μm.")
+      },
+      validators: {
+        validation: [
+          "number",
+          {
+            name: "min-value",
+            options: {
+              minValue: 0.1
+            }
+          },
+          {
+            name: "max-decimals",
+            options: {
+              value: 2
+            }
+          }
+        ]
+      }
+    };
+  }
+
+  private _getPixelWidthField() {
+    return {
+      key: "pixelWidth",
+      type: "input",
+      wrappers: ["default-wrapper"],
+      id: "sensor-field-pixel-width",
+      expressionProperties: {
+        "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+      },
+      templateOptions: {
+        required: true,
+        type: "number",
+        step: 1,
+        label: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.PIXEL_WIDTH)
+      },
+      validators: {
+        validation: [
+          "whole-number",
+          {
+            name: "min-value",
+            options: {
+              minValue: 1
+            }
+          }
+        ]
+      }
+    };
+  }
+
+  private _getPixelHeightField() {
+    return {
+      key: "pixelHeight",
+      type: "input",
+      wrappers: ["default-wrapper"],
+      id: "sensor-field-pixel-height",
+      expressionProperties: {
+        "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+      },
+      templateOptions: {
+        required: true,
+        type: "number",
+        step: 1,
+        label: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.PIXEL_HEIGHT)
+      },
+      validators: {
+        validation: [
+          "whole-number",
+          {
+            name: "min-value",
+            options: {
+              minValue: 1
+            }
+          }
+        ]
+      }
+    };
+  }
+
+  private _getSensorWidthField() {
+    return {
+      key: "sensorWidth",
+      type: "input",
+      wrappers: ["default-wrapper"],
+      id: "sensor-field-sensor-width",
+      expressionProperties: {
+        "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+      },
+      templateOptions: {
+        type: "number",
+        step: 0.1,
+        label: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.SENSOR_WIDTH)
+      },
+      validators: {
+        validation: [
+          "number",
+          {
+            name: "min-value",
+            options: {
+              minValue: 0.1
+            }
+          },
+          {
+            name: "max-decimals",
+            options: {
+              value: 2
+            }
+          }
+        ]
+      }
+    };
+  }
+
+  private _getSensorHeightField() {
+    return {
+      key: "sensorHeight",
+      type: "input",
+      wrappers: ["default-wrapper"],
+      id: "sensor-field-sensor-height",
+      expressionProperties: {
+        "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+      },
+      templateOptions: {
+        type: "number",
+        step: 0.1,
+        label: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.SENSOR_HEIGHT)
+      },
+      validators: {
+        validation: [
+          "number",
+          {
+            name: "min-value",
+            options: {
+              minValue: 0.1
+            }
+          },
+          {
+            name: "max-decimals",
+            options: {
+              value: 2
+            }
+          }
+        ]
+      }
+    };
+  }
+
+  private _getQuantumEfficiencyField() {
+    return {
+      key: "quantumEfficiency",
+      type: "input",
+      wrappers: ["default-wrapper"],
+      id: "sensor-field-quantum-efficiency",
+      expressionProperties: {
+        "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+      },
+      templateOptions: {
+        type: "number",
+        step: 0.1,
+        label: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.QUANTUM_EFFICIENCY)
+      },
+      validators: {
+        validation: [
+          "number",
+          {
+            name: "min-value",
+            options: {
+              minValue: 0.1
+            }
+          },
+          {
+            name: "max-value",
+            options: {
+              maxValue: 100
+            }
+          }
+        ]
+      }
+    };
+  }
+
+  private _getFullWellCapacityField() {
+    return {
+      key: "fullWellCapacity",
+      type: "input",
+      wrappers: ["default-wrapper"],
+      id: "sensor-field-full-well-capacity",
+      expressionProperties: {
+        "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+      },
+      templateOptions: {
+        type: "number",
+        step: 1,
+        label: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.FULL_WELL_CAPACITY)
+      },
+      validators: {
+        validation: [
+          "whole-number",
+          {
+            name: "min-value",
+            options: {
+              minValue: 1
+            }
+          }
+        ]
+      }
+    };
+  }
+
+  private _getReadNoiseField() {
+    return {
+      key: "readNoise",
+      type: "input",
+      wrappers: ["default-wrapper"],
+      id: "sensor-field-read-noise",
+      expressionProperties: {
+        "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+      },
+      templateOptions: {
+        type: "number",
+        step: 0.1,
+        label: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.READ_NOISE)
+      },
+      validators: {
+        validation: [
+          "number",
+          {
+            name: "min-value",
+            options: {
+              minValue: 0.1
+            }
+          },
+          {
+            name: "max-decimals",
+            options: {
+              value: 2
+            }
+          }
+        ]
+      }
+    };
+  }
+
+  private _getFrameRateField() {
+    return {
+      key: "frameRate",
+      type: "input",
+      wrappers: ["default-wrapper"],
+      id: "sensor-field-frame-rate",
+      expressionProperties: {
+        "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+      },
+      templateOptions: {
+        type: "number",
+        step: 1,
+        label: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.FRAME_RATE)
+      },
+      validators: {
+        validation: [
+          "whole-number",
+          {
+            name: "min-value",
+            options: {
+              minValue: 1
+            }
+          }
+        ]
+      }
+    };
+  }
+
+  private _getAdcField() {
+    return {
+      key: "adc",
+      type: "input",
+      wrappers: ["default-wrapper"],
+      id: "sensor-field-adc",
+      expressionProperties: {
+        "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+      },
+      templateOptions: {
+        type: "number",
+        step: 1,
+        label: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.ADC),
+        description: this.translateService.instant("Analog to Digital Converter")
+      },
+      validators: {
+        validation: [
+          "whole-number",
+          {
+            name: "min-value",
+            options: {
+              minValue: 1
+            }
+          }
+        ]
+      }
+    };
+  }
+
+  private _getColorOrMonoField() {
+    return {
+      key: "colorOrMono",
+      type: "ng-select",
+      id: "sensor-field-color-or-mono",
+      expressionProperties: {
+        "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+      },
+      templateOptions: {
+        label: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.COLOR_OR_MONO),
+        options: [
+          {
+            label: this.translateService.instant("Color"),
+            value: ColorOrMono.C
+          },
+          {
+            label: this.translateService.instant("Mono"),
+            value: ColorOrMono.M
+          }
+        ]
+      }
+    };
   }
 }

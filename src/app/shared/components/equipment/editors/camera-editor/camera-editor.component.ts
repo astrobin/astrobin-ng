@@ -208,178 +208,40 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
 
   private _initFields() {
     const _doInitFields = () => {
-      this.fields = [
-        this._getDIYField(),
-        this._getBrandField(),
-        this._getNameField(),
-        this._getVariantOfField(EquipmentItemType.CAMERA),
-        {
-          key: "type",
-          type: "ng-select",
-          id: "camera-field-type",
-          expressionProperties: {
-            "templateOptions.disabled": () =>
-              this.subCreation.inProgress ||
-              this.brandCreation.inProgress ||
-              (this.model.type === CameraType.DSLR_MIRRORLESS &&
-                this.form.get("type").pristine &&
-                EquipmentItemEditorMode.EDIT_PROPOSAL),
-            "templateOptions.description": () =>
-              this.model.type === CameraType.DSLR_MIRRORLESS &&
-              this.form.get("type").pristine &&
-              this.editorMode === EquipmentItemEditorMode.EDIT_PROPOSAL
-                ? this.translateService.instant("Editing this field is not possible.")
-                : null
-          },
-          templateOptions: {
-            label: this.cameraService.getPrintablePropertyName(CameraDisplayProperty.TYPE),
-            required: true,
-            clearable: true,
-            options: this._defaultTypeOptions.map(item => ({
-              value: item[0],
-              label: item[1]
-            }))
-          },
-          hooks: {
-            onInit: (field: FormlyFieldConfig) => {
-              field.formControl.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(cameraType => {
-                if (cameraType === CameraType.DSLR_MIRRORLESS) {
-                  this.model.variantOf = null;
-                }
-              });
-            }
-          },
-          asyncValidators: {
-            centralDS: {
-              expression: (control: FormControl) => {
-                if (!control.value || control.value === CameraType.DEDICATED_DEEP_SKY) {
-                  return of(true);
-                }
+      if (this.editorMode === EquipmentItemEditorMode.CREATION) {
+        this.fields = [
+          this._getDIYField(),
+          this._getBrandField(),
+          this._getNameField(),
+          this._getTypeField(),
+          this._getSensorField(),
+          this._getCooledField(),
+          this._getMaxCoolingField(),
+          this._getBackFocusField()
+        ];
+      } else {
+        if (!this.model.type || this.model.type === CameraType.OTHER) {
+          this.fields.push(this._getTypeField());
+        }
 
-                if (control.value !== CameraType.DEDICATED_DEEP_SKY) {
-                  return of(this.form.get("brand").value).pipe(
-                    switchMap(brandId => {
-                      if (!brandId) {
-                        return of(true);
-                      }
+        if (!this.model.sensor) {
+          this.fields.push(this._getSensorField());
+        }
 
-                      this.store$.dispatch(new LoadBrand({ id: brandId }));
+        if (this.model.cooled === null) {
+          this.fields.push(this._getCooledField());
+        }
 
-                      return this.store$.select(selectBrand, brandId).pipe(
-                        filter(brand => !!brand),
-                        take(1),
-                        map(brand => brand.name !== "CentralDS")
-                      );
-                    })
-                  );
-                }
-              },
-              message: this.translateService.instant(`For CentralDS cameras, please select "Dedicated deep-sky camera"`)
-            }
-          }
-        },
-        {
-          key: "sensor",
-          type: "equipment-item-browser",
-          id: "camera-field-sensor",
-          expressionProperties: {
-            "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
-          },
-          templateOptions: {
-            label: this.cameraService.getPrintablePropertyName(CameraDisplayProperty.SENSOR),
-            itemType: EquipmentItemType.SENSOR,
-            showQuickAddRecent: false,
-            showPlaceholderImage: false,
-            required: false,
-            multiple: false,
-            creationModeStarted: this.startSensorCreation.bind(this),
-            creationModeEnded: this.endSensorCreation.bind(this),
-            enableCreation: true,
-            enableFullscreen: true
-          }
-        },
-        {
-          key: "cooled",
-          type: "checkbox",
-          wrappers: ["default-wrapper"],
-          id: "camera-field-cooled",
-          hideExpression: () => this.form.get("type").value !== CameraType.DEDICATED_DEEP_SKY,
-          defaultValue: this.editorMode === EquipmentItemEditorMode.CREATION ? false : null,
-          expressionProperties: {
-            "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
-          },
-          templateOptions: {
-            label: this.cameraService.getPrintablePropertyName(CameraDisplayProperty.COOLED),
-            description: this.translateService.instant("Whether this camera is equipped with a cooling mechanism."),
-            required: this.editorMode === EquipmentItemEditorMode.CREATION
-          }
-        },
-        {
-          key: "maxCooling",
-          type: "input",
-          wrappers: ["default-wrapper"],
-          id: "camera-field-max-cooling",
-          hideExpression: () => !this.form.get("cooled")?.value,
-          expressionProperties: {
-            "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
-          },
-          templateOptions: {
-            type: "number",
-            step: 1,
-            label: this.cameraService.getPrintablePropertyName(CameraDisplayProperty.MAX_COOLING),
-            description: this.translateService.instant(
-              "A positive whole number that represents how many Celsius below ambient temperature this camera can " +
-                "be cooled."
-            )
-          },
-          validators: {
-            validation: [
-              "whole-number",
-              {
-                name: "min-value",
-                options: {
-                  minValue: 1
-                }
-              }
-            ]
-          }
-        },
-        {
-          key: "backFocus",
-          type: "input",
-          wrappers: ["default-wrapper"],
-          id: "camera-field-back-focus",
-          expressionProperties: {
-            "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
-          },
-          templateOptions: {
-            type: "number",
-            step: 0.1,
-            label: this.cameraService.getPrintablePropertyName(CameraDisplayProperty.BACK_FOCUS),
-            description: this.translateService.instant("Camera back focus in mm.")
-          },
-          validators: {
-            validation: [
-              "number",
-              {
-                name: "min-value",
-                options: {
-                  minValue: 0.1
-                }
-              },
-              {
-                name: "max-decimals",
-                options: {
-                  value: 2
-                }
-              }
-            ]
-          }
-        },
-        this._getWebsiteField(),
-        this._getImageField(),
-        this._getCommunityNotesField()
-      ];
+        if (!this.model.maxCooling) {
+          this.fields.push(this._getMaxCoolingField());
+        }
+
+        if (!this.model.backFocus) {
+          this.fields.push(this._getBackFocusField());
+        }
+      }
+
+      this.fields = [...this.fields, this._getWebsiteField(), this._getImageField(), this._getCommunityNotesField()];
 
       this._addBaseItemEditorFields();
     };
@@ -392,6 +254,173 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
     } else {
       _doInitFields();
     }
+  }
+
+  private _getTypeField() {
+    return {
+      key: "type",
+      type: "ng-select",
+      id: "camera-field-type",
+      expressionProperties: {
+        "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+      },
+      templateOptions: {
+        label: this.cameraService.getPrintablePropertyName(CameraDisplayProperty.TYPE),
+        required: true,
+        clearable: true,
+        options: this._defaultTypeOptions.map(item => ({
+          value: item[0],
+          label: item[1]
+        }))
+      },
+      hooks: {
+        onInit: (field: FormlyFieldConfig) => {
+          field.formControl.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(cameraType => {
+            if (cameraType === CameraType.DSLR_MIRRORLESS) {
+              this.model.variantOf = null;
+            }
+          });
+        }
+      },
+      asyncValidators: {
+        centralDS: {
+          expression: (control: FormControl) => {
+            if (!control.value || control.value === CameraType.DEDICATED_DEEP_SKY) {
+              return of(true);
+            }
+
+            if (control.value !== CameraType.DEDICATED_DEEP_SKY) {
+              return of(this.form.get("brand").value).pipe(
+                switchMap(brandId => {
+                  if (!brandId) {
+                    return of(true);
+                  }
+
+                  this.store$.dispatch(new LoadBrand({ id: brandId }));
+
+                  return this.store$.select(selectBrand, brandId).pipe(
+                    filter(brand => !!brand),
+                    take(1),
+                    map(brand => brand.name !== "CentralDS")
+                  );
+                })
+              );
+            }
+          },
+          message: this.translateService.instant(`For CentralDS cameras, please select "Dedicated deep-sky camera"`)
+        }
+      }
+    };
+  }
+
+  private _getSensorField() {
+    return {
+      key: "sensor",
+      type: "equipment-item-browser",
+      id: "camera-field-sensor",
+      expressionProperties: {
+        "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+      },
+      templateOptions: {
+        label: this.cameraService.getPrintablePropertyName(CameraDisplayProperty.SENSOR),
+        itemType: EquipmentItemType.SENSOR,
+        showQuickAddRecent: false,
+        showPlaceholderImage: false,
+        required: false,
+        multiple: false,
+        creationModeStarted: this.startSensorCreation.bind(this),
+        creationModeEnded: this.endSensorCreation.bind(this),
+        enableCreation: true,
+        enableFullscreen: true
+      }
+    };
+  }
+
+  private _getCooledField() {
+    return {
+      key: "cooled",
+      type: "checkbox",
+      wrappers: ["default-wrapper"],
+      id: "camera-field-cooled",
+      hideExpression: () => this.model.type !== CameraType.DEDICATED_DEEP_SKY,
+      defaultValue: this.editorMode === EquipmentItemEditorMode.CREATION ? false : null,
+      expressionProperties: {
+        "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+      },
+      templateOptions: {
+        label: this.cameraService.getPrintablePropertyName(CameraDisplayProperty.COOLED),
+        description: this.translateService.instant("Whether this camera is equipped with a cooling mechanism."),
+        required: this.editorMode === EquipmentItemEditorMode.CREATION
+      }
+    };
+  }
+
+  private _getMaxCoolingField() {
+    return {
+      key: "maxCooling",
+      type: "input",
+      wrappers: ["default-wrapper"],
+      id: "camera-field-max-cooling",
+      hideExpression: () => !this.model.cooled,
+      expressionProperties: {
+        "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+      },
+      templateOptions: {
+        type: "number",
+        step: 1,
+        label: this.cameraService.getPrintablePropertyName(CameraDisplayProperty.MAX_COOLING),
+        description: this.translateService.instant(
+          "A positive whole number that represents how many Celsius below ambient temperature this camera can " +
+            "be cooled."
+        )
+      },
+      validators: {
+        validation: [
+          "whole-number",
+          {
+            name: "min-value",
+            options: {
+              minValue: 1
+            }
+          }
+        ]
+      }
+    };
+  }
+
+  private _getBackFocusField() {
+    return {
+      key: "backFocus",
+      type: "input",
+      wrappers: ["default-wrapper"],
+      id: "camera-field-back-focus",
+      expressionProperties: {
+        "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+      },
+      templateOptions: {
+        type: "number",
+        step: 0.1,
+        label: this.cameraService.getPrintablePropertyName(CameraDisplayProperty.BACK_FOCUS),
+        description: this.translateService.instant("Camera back focus in mm.")
+      },
+      validators: {
+        validation: [
+          "number",
+          {
+            name: "min-value",
+            options: {
+              minValue: 0.1
+            }
+          },
+          {
+            name: "max-decimals",
+            options: {
+              value: 2
+            }
+          }
+        ]
+      }
+    };
   }
 
   private _initBrandValueChangesObservable() {
