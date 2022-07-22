@@ -23,7 +23,6 @@ export class FilterGenerator {
       type: source.type || FilterType.L,
       bandwidth: source.bandwidth || 12,
       size: source.size || FilterSize.ROUND_1_25_IN,
-      frozenAsAmbiguous: null,
       userCount: null,
       imageCount: null,
       variantOf: null,
