@@ -17,8 +17,6 @@ import { Actions, ofType } from "@ngrx/effects";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { WindowRefService } from "@shared/services/window-ref.service";
 
-declare const CopyButtonPlugin;
-
 @Component({
   selector: "astrobin-nested-comment",
   templateUrl: "./nested-comment.component.html",
@@ -74,10 +72,6 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
         };
 
         window.hljs.addPlugin(brPlugin);
-
-        if (typeof CopyButtonPlugin !== "undefined") {
-          window.hljs.addPlugin(new CopyButtonPlugin());
-        }
         window.hljs.highlightElement($element);
         window.hljs.initLineNumbersOnLoad();
       }
