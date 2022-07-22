@@ -130,7 +130,7 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
   fields: FormlyFieldConfig[];
 
   @Input()
-  form: FormGroup = new FormGroup({});
+  form: FormGroup;
 
   @Input()
   model: Partial<T> = {};
@@ -466,8 +466,7 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
       id: "equipment-item-field-name",
       defaultValue: this.name,
       expressionProperties: {
-        "templateOptions.disabled": () =>
-          this.subCreation.inProgress || this.brandCreation.inProgress || (this.model as any).overrideName === false,
+        "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress,
         "templateOptions.label": () =>
           this.model.diy
             ? this.equipmentItemService.getPrintablePropertyName(null, EquipmentItemDisplayProperty.NAME, true)
