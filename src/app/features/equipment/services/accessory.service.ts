@@ -27,7 +27,7 @@ export class AccessoryService extends BaseService implements EquipmentItemServic
     const map = {
       [AccessoryType.COMPUTER]: this.translateService.instant("Computer"),
       [AccessoryType.DEW_MITIGATION]: this.translateService.instant("Dew mitigation"),
-      [AccessoryType.FIELD_DEROTATOR]: this.translateService.instant("Field derotator"),
+      [AccessoryType.FIELD_DEROTATOR]: this.translateService.instant("Field derotator / camera rotator"),
       [AccessoryType.FILTER_WHEEL]: this.translateService.instant("Filter wheel"),
       [AccessoryType.FLAT_BOX]: this.translateService.instant("Flat box"),
       [AccessoryType.FOCAL_MODIFIER_FIELD_CORRECTOR]: this.translateService.instant("Focal modifier / field corrector"),
