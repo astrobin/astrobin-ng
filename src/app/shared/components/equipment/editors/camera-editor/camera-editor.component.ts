@@ -220,6 +220,8 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
           this._getBackFocusField()
         ];
       } else {
+        this.fields = [this._getNameField()];
+
         if (!this.model.type || this.model.type === CameraType.OTHER) {
           this.fields.push(this._getTypeField());
         }
