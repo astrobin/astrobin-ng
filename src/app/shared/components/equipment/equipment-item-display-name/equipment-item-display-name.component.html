@@ -8,16 +8,22 @@
 
 <span class="name" *ngIf="!!itemName; else loading">
   <ng-template #nameTemplate>
-      {{ itemName }}
-      <a
-        *ngIf="showItemUnapprovedInfo"
-        href="#"
-        appEventPreventDefault
-        appEventStopPropagation
-        (click)="openItemUnapprovedInfoModal(item)"
-      >
-    <fa-icon icon="asterisk"></fa-icon>
-  </a>
+    {{ itemName }}
+    <a
+      *ngIf="showItemUnapprovedInfo"
+      href="#"
+      appEventPreventDefault
+      appEventStopPropagation
+      (click)="openItemUnapprovedInfoModal(item)"
+    >
+      <fa-icon icon="asterisk"></fa-icon>
+    </a>
+
+    <fa-icon
+      *ngIf="item.frozenAsAmbiguous"
+      [ngbTooltip]="'Frozen as ambiguous' | translate"
+      icon="snowflake"
+    ></fa-icon>
   </ng-template>
 
   <ng-container *ngIf="enableNameLink; else noNameLinkTemplate">
@@ -41,4 +47,6 @@
   <fa-icon icon="info-circle"></fa-icon>
 </a>
 
-<ng-template #loading><astrobin-text-loading-indicator></astrobin-text-loading-indicator></ng-template>
+<ng-template #loading>
+  <astrobin-text-loading-indicator></astrobin-text-loading-indicator>
+</ng-template>
