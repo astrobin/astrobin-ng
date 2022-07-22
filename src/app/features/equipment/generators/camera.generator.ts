@@ -28,6 +28,7 @@ export class CameraGenerator {
       cooled: source.cooled !== undefined ? source.cooled : true,
       maxCooling: source.maxCooling !== undefined ? source.maxCooling : 50,
       backFocus: source.backFocus !== undefined ? source.backFocus : 10,
+      frozenAsAmbiguous: null,
       userCount: null,
       imageCount: null,
       variantOf: null,
