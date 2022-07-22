@@ -53,6 +53,7 @@ export interface EquipmentItemBaseInterface {
   website: string;
   image?: string | File[];
   communityNotes: string | null;
+  frozenAsAmbiguous: boolean | null;
   userCount: number | null;
   imageCount: number | null;
 }

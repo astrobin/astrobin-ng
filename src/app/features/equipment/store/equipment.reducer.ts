@@ -125,7 +125,9 @@ export function reducer(state = initialEquipmentState, action: EquipmentActions)
     case EquipmentActionTypes.CREATE_ACCESSORY_SUCCESS:
     case EquipmentActionTypes.CREATE_SOFTWARE_SUCCESS:
     case EquipmentActionTypes.LOAD_SENSOR_SUCCESS:
-    case EquipmentActionTypes.ASSIGN_ITEM_SUCCESS: {
+    case EquipmentActionTypes.ASSIGN_ITEM_SUCCESS:
+    case EquipmentActionTypes.FREEZE_EQUIPMENT_ITEM_AS_AMBIGUOUS_SUCCESS:
+    case EquipmentActionTypes.UNFREEZE_EQUIPMENT_ITEM_AS_AMBIGUOUS_SUCCESS: {
       return {
         ...state,
         equipmentItems: arrayUniqueEquipmentItems([...state.equipmentItems, ...[action.payload.item]])
