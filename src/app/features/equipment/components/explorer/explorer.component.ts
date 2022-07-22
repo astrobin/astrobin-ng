@@ -521,7 +521,8 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
       componentInstance.message = this.translateService.instant(
         "You are about to freeze this item as ambiguous. The item will remain associated the images it's " +
           "currently associated with. Nobody will be able to see this item (except moderators and the item's " +
-          "creator). Nobody will be able to add this item to images."
+          "creator). Nobody will be able to add this item to images. Any items marked as 'variant of' this item will " +
+          "lose the relationship."
       );
 
       this.actions$
