@@ -57,6 +57,8 @@ import {
   FindRecentlyUsedEquipmentItemsSuccess,
   FindSimilarInBrand,
   FindSimilarInBrandSuccess,
+  FreezeEquipmentItemAsAmbiguous,
+  FreezeEquipmentItemAsAmbiguousSuccess,
   GetAllBrands,
   GetAllBrandsSuccess,
   GetAllInBrand,
@@ -85,6 +87,8 @@ import {
   RejectEquipmentItemSuccess,
   UnapproveEquipmentItem,
   UnapproveEquipmentItemSuccess,
+  UnfreezeEquipmentItemAsAmbiguous,
+  UnfreezeEquipmentItemAsAmbiguousSuccess,
   UpdateEquipmentPreset,
   UpdateEquipmentPresetSuccess
 } from "@features/equipment/store/equipment.actions";
@@ -328,6 +332,30 @@ export class EquipmentEffects {
         this.equipmentApiService
           .unapproveEquipmentItem(payload.item)
           .pipe(map(item => new UnapproveEquipmentItemSuccess({ item })))
+      )
+    )
+  );
+
+  FreezeEquipmentItemAsAmbiguous: Observable<FreezeEquipmentItemAsAmbiguousSuccess> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(EquipmentActionTypes.FREEZE_EQUIPMENT_ITEM_AS_AMBIGUOUS),
+      map((action: FreezeEquipmentItemAsAmbiguous) => action.payload),
+      mergeMap(payload =>
+        this.equipmentApiService
+          .freezeEquipmentItemAsAmbiguous(payload.item)
+          .pipe(map(item => new FreezeEquipmentItemAsAmbiguousSuccess({ item })))
+      )
+    )
+  );
+
+  UnfreezeEquipmentItemAsAmbiguous: Observable<UnfreezeEquipmentItemAsAmbiguousSuccess> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(EquipmentActionTypes.UNFREEZE_EQUIPMENT_ITEM_AS_AMBIGUOUS),
+      map((action: UnfreezeEquipmentItemAsAmbiguous) => action.payload),
+      mergeMap(payload =>
+        this.equipmentApiService
+          .unfreezeEquipmentItemAsAmbiguous(payload.item)
+          .pipe(map(item => new UnfreezeEquipmentItemAsAmbiguousSuccess({ item })))
       )
     )
   );

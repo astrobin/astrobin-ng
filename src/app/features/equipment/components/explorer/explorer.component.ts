@@ -40,10 +40,14 @@ import {
   CreateTelescopeEditProposal,
   EquipmentActionTypes,
   FindEquipmentItemEditProposals,
+  FreezeEquipmentItemAsAmbiguous,
+  FreezeEquipmentItemAsAmbiguousSuccess,
   GetImagesUsingItem,
   GetUsersUsingItem,
   LoadEquipmentItem,
-  UnapproveEquipmentItemSuccess
+  UnapproveEquipmentItemSuccess,
+  UnfreezeEquipmentItemAsAmbiguous,
+  UnfreezeEquipmentItemAsAmbiguousSuccess
 } from "@features/equipment/store/equipment.actions";
 import { SensorInterface } from "@features/equipment/types/sensor.interface";
 import { CameraInterface, CameraType } from "@features/equipment/types/camera.interface";
@@ -83,6 +87,7 @@ import { UnapproveItemModalComponent } from "@features/equipment/components/unap
 import { ActiveToast } from "ngx-toastr";
 import { CompareService } from "@features/equipment/services/compare.service";
 import { isPlatformBrowser, Location } from "@angular/common";
+import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
 
 @Component({
   selector: "astrobin-equipment-explorer",
@@ -137,6 +142,12 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
 
   @Output()
   unapproved = new EventEmitter();
+
+  @Output()
+  frozenAsAmbiguous = new EventEmitter();
+
+  @Output()
+  unfrozenAsAmbiguous = new EventEmitter();
 
   @Output()
   rejected = new EventEmitter();
@@ -491,6 +502,80 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
           this.unapproved.emit();
           this.popNotificationsService.success(this.translateService.instant("Item unapproved."));
         });
+    });
+  }
+
+  startFreezeAsAmbiguous() {
+    if (!this._verifyCameraVariantCanBeEdited()) {
+      return;
+    }
+
+    this.loadingService.setLoading(true);
+
+    this.equipmentApiService.acquireReviewerLock(this.selectedItem.klass, this.selectedItem.id).subscribe(() => {
+      this.loadingService.setLoading(false);
+
+      const modal: NgbModalRef = this.modalService.open(ConfirmationDialogComponent);
+      const componentInstance: ConfirmationDialogComponent = modal.componentInstance;
+
+      componentInstance.message = this.translateService.instant(
+        "You are about to freeze this item as ambiguous. The item will remain associated the images it's " +
+          "currently associated with. Nobody will be able to see this item (except moderators and the item's " +
+          "creator). Nobody will be able to add this item to images."
+      );
+
+      this.actions$
+        .pipe(
+          ofType(EquipmentActionTypes.FREEZE_EQUIPMENT_ITEM_AS_AMBIGUOUS_SUCCESS),
+          map((action: FreezeEquipmentItemAsAmbiguousSuccess) => action.payload.item),
+          filter(item => item.id === this.selectedItem.id),
+          take(1)
+        )
+        .subscribe(item => {
+          this.popNotificationsService.success(this.translateService.instant("Item frozen as ambiguous."));
+          this.setItem(item);
+          this.frozenAsAmbiguous.emit();
+        });
+
+      modal.closed.subscribe(item => {
+        this.store$.dispatch(new FreezeEquipmentItemAsAmbiguous({ item: this.selectedItem }));
+      });
+    });
+  }
+
+  startUnfreezeAsAmbiguous() {
+    if (!this._verifyCameraVariantCanBeEdited()) {
+      return;
+    }
+
+    this.loadingService.setLoading(true);
+
+    this.equipmentApiService.acquireReviewerLock(this.selectedItem.klass, this.selectedItem.id).subscribe(() => {
+      this.loadingService.setLoading(false);
+
+      const modal: NgbModalRef = this.modalService.open(ConfirmationDialogComponent);
+      const componentInstance: ConfirmationDialogComponent = modal.componentInstance;
+
+      componentInstance.message = this.translateService.instant(
+        "You are about to unfreeze this item as ambiguous. Users will be able to see it and use it again."
+      );
+
+      this.actions$
+        .pipe(
+          ofType(EquipmentActionTypes.UNFREEZE_EQUIPMENT_ITEM_AS_AMBIGUOUS_SUCCESS),
+          map((action: UnfreezeEquipmentItemAsAmbiguousSuccess) => action.payload.item),
+          filter(item => item.id === this.selectedItem.id),
+          take(1)
+        )
+        .subscribe(item => {
+          this.popNotificationsService.success(this.translateService.instant("Item unfrozen."));
+          this.setItem(item);
+          this.unfrozenAsAmbiguous.emit();
+        });
+
+      modal.closed.subscribe(item => {
+        this.store$.dispatch(new UnfreezeEquipmentItemAsAmbiguous({ item: this.selectedItem }));
+      });
     });
   }
 
