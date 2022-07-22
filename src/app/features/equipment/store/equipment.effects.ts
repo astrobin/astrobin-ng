@@ -88,7 +88,7 @@ import {
   UpdateEquipmentPreset,
   UpdateEquipmentPresetSuccess
 } from "@features/equipment/store/equipment.actions";
-import { act, Actions, createEffect, ofType } from "@ngrx/effects";
+import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { All } from "@app/store/actions/app.actions";
