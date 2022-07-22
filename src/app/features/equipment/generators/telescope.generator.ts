@@ -25,7 +25,6 @@ export class TelescopeGenerator {
       minFocalLength: source.minFocalLength || 450,
       maxFocalLength: source.maxFocalLength || 450,
       weight: source.weight || 2,
-      frozenAsAmbiguous: null,
       userCount: null,
       imageCount: null,
       variantOf: null,

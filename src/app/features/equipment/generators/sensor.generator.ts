@@ -31,7 +31,6 @@ export class SensorGenerator {
       frameRate: source.frameRate || 1,
       adc: source.adc || 1,
       colorOrMono: source.colorOrMono || ColorOrMono.M,
-      frozenAsAmbiguous: null,
       userCount: null,
       imageCount: null,
       variantOf: null,

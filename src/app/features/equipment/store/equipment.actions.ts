@@ -67,10 +67,6 @@ export enum EquipmentActionTypes {
   APPROVE_EQUIPMENT_ITEM_SUCCESS = "[Equipment] Unapprove item success",
   UNAPPROVE_EQUIPMENT_ITEM = "[Equipment] Approve item",
   UNAPPROVE_EQUIPMENT_ITEM_SUCCESS = "[Equipment] Approve item success",
-  FREEZE_EQUIPMENT_ITEM_AS_AMBIGUOUS = "[Equipment] Freeze item as ambiguous",
-  FREEZE_EQUIPMENT_ITEM_AS_AMBIGUOUS_SUCCESS = "[Equipment] Freeze item as ambiguous success",
-  UNFREEZE_EQUIPMENT_ITEM_AS_AMBIGUOUS = "[Equipment] Unfreeze item as ambiguous",
-  UNFREEZE_EQUIPMENT_ITEM_AS_AMBIGUOUS_SUCCESS = "[Equipment] Unfreeze item as ambiguous success",
   REJECT_EQUIPMENT_ITEM = "[Equipment] Reject item",
   REJECT_EQUIPMENT_ITEM_SUCCESS = "[Equipment] Reject item success",
   FIND_EQUIPMENT_ITEM_EDIT_PROPOSALS = "[Equipment] Find equipment item edit proposals",
@@ -347,30 +343,6 @@ export class UnapproveEquipmentItem implements PayloadActionInterface {
 
 export class UnapproveEquipmentItemSuccess implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.UNAPPROVE_EQUIPMENT_ITEM_SUCCESS;
-
-  constructor(public payload: { item: EquipmentItemBaseInterface }) {}
-}
-
-export class FreezeEquipmentItemAsAmbiguous implements PayloadActionInterface {
-  readonly type = EquipmentActionTypes.FREEZE_EQUIPMENT_ITEM_AS_AMBIGUOUS;
-
-  constructor(public payload: { item: EquipmentItemBaseInterface }) {}
-}
-
-export class FreezeEquipmentItemAsAmbiguousSuccess implements PayloadActionInterface {
-  readonly type = EquipmentActionTypes.FREEZE_EQUIPMENT_ITEM_AS_AMBIGUOUS_SUCCESS;
-
-  constructor(public payload: { item: EquipmentItemBaseInterface }) {}
-}
-
-export class UnfreezeEquipmentItemAsAmbiguous implements PayloadActionInterface {
-  readonly type = EquipmentActionTypes.UNFREEZE_EQUIPMENT_ITEM_AS_AMBIGUOUS;
-
-  constructor(public payload: { item: EquipmentItemBaseInterface }) {}
-}
-
-export class UnfreezeEquipmentItemAsAmbiguousSuccess implements PayloadActionInterface {
-  readonly type = EquipmentActionTypes.UNFREEZE_EQUIPMENT_ITEM_AS_AMBIGUOUS_SUCCESS;
 
   constructor(public payload: { item: EquipmentItemBaseInterface }) {}
 }
@@ -848,10 +820,6 @@ export type EquipmentActions =
   | ApproveEquipmentItemSuccess
   | UnapproveEquipmentItem
   | UnapproveEquipmentItemSuccess
-  | FreezeEquipmentItemAsAmbiguous
-  | FreezeEquipmentItemAsAmbiguousSuccess
-  | UnfreezeEquipmentItemAsAmbiguous
-  | UnfreezeEquipmentItemAsAmbiguousSuccess
   | RejectEquipmentItem
   | RejectEquipmentItemSuccess
   | FindEquipmentItemEditProposals

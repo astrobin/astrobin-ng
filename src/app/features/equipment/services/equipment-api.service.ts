@@ -272,24 +272,6 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
       .pipe(map(responseItem => this._parseItem(responseItem)));
   }
 
-  freezeEquipmentItemAsAmbiguous(item: EquipmentItemBaseInterface): Observable<EquipmentItemBaseInterface> {
-    const type = getEquipmentItemType(item);
-    const path = EquipmentItemType[type].toLowerCase();
-
-    return this.http
-      .post<EquipmentItemBaseInterface>(`${this.configUrl}/${path}/${item.id}/freeze-as-ambiguous/`, {})
-      .pipe(map(responseItem => this._parseItem(responseItem)));
-  }
-
-  unfreezeEquipmentItemAsAmbiguous(item: EquipmentItemBaseInterface): Observable<EquipmentItemBaseInterface> {
-    const type = getEquipmentItemType(item);
-    const path = EquipmentItemType[type].toLowerCase();
-
-    return this.http
-      .post<EquipmentItemBaseInterface>(`${this.configUrl}/${path}/${item.id}/unfreeze-as-ambiguous/`, {})
-      .pipe(map(responseItem => this._parseItem(responseItem)));
-  }
-
   rejectEquipmentItem(
     item: EquipmentItemBaseInterface,
     reason: EquipmentItemReviewerRejectionReason,

@@ -20,7 +20,6 @@ export class SoftwareGenerator {
       website: source.website || "https://www.test-software.com",
       image: source.image || "https://cdn.astrobin.com/images/foo.jpg",
       communityNotes: null,
-      frozenAsAmbiguous: null,
       userCount: null,
       imageCount: null,
       variantOf: null,
