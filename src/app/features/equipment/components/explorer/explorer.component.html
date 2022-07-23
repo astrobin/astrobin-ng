@@ -28,6 +28,10 @@
           {{ "This item has not been approved yet, so it's not available to be associated with images, except for the user who created it." | translate }}
         </div>
 
+        <div *ngIf="!!selectedItem.frozenAsAmbiguous" class="alert alert-warning">
+          {{ "This item is frozen as ambiguous and cannot be associated to images again." | translate }}
+        </div>
+
         <astrobin-equipment-item-summary
           [item]="selectedItem"
           [showClass]="false"
@@ -128,6 +132,7 @@
         <ng-container *ngIf="currentUser$ | async as currentUser">
           <ng-container *ngIf="!!currentUser">
             <button
+              *ngIf="!selectedItem.frozenAsAmbiguous"
               class="btn btn-secondary"
               data-test="propose-edit"
               [class.loading]="loadingService.loading$ | async"
@@ -178,6 +183,42 @@
                   (click)="startApproval()"
                 >
                   {{ "Approve" | translate }}&hellip;
+                </button>
+              </ng-container>
+
+              <ng-container
+                *ngIf="
+                  selectedItem.reviewerDecision === EquipmentItemReviewerDecision.APPROVED &&
+                  !selectedItem.frozenAsAmbiguous &&
+                  selectedItem.createdBy !== currentUser.id
+                "
+              >
+                <button
+                  class="btn btn-warning"
+                  data-test="freeze-as-ambiguous"
+                  [class.loading]="loadingService.loading$ | async"
+                  [disabled]="editMode"
+                  (click)="startFreezeAsAmbiguous()"
+                >
+                  {{ "Freeze" | translate }}&hellip;
+                </button>
+              </ng-container>
+
+              <ng-container
+                *ngIf="
+                  selectedItem.reviewerDecision === EquipmentItemReviewerDecision.APPROVED &&
+                  selectedItem.frozenAsAmbiguous &&
+                  selectedItem.createdBy !== currentUser.id
+                "
+              >
+                <button
+                  class="btn btn-warning"
+                  data-test="freeze-as-ambiguous"
+                  [class.loading]="loadingService.loading$ | async"
+                  [disabled]="editMode"
+                  (click)="startUnfreezeAsAmbiguous()"
+                >
+                  {{ "Unfreeze" | translate }}&hellip;
                 </button>
               </ng-container>
 

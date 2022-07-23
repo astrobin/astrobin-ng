@@ -21,6 +21,7 @@ export class AccessoryGenerator {
       image: source.image || "https://cdn.astrobin.com/images/foo.jpg",
       communityNotes: null,
       type: source.type || AccessoryType.OTHER,
+      frozenAsAmbiguous: null,
       userCount: null,
       imageCount: null,
       variantOf: null,

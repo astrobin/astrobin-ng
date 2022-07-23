@@ -6,7 +6,12 @@
 </div>
 
 <div class="modal-body">
-  <button class="btn btn-outline-secondary variant" *ngFor="let variant of variants" (click)="modal.close(variant)">
+  <button
+    *ngFor="let variant of variants"
+    (click)="variantClicked($event, variant)"
+    [class.disabled]="variant.frozenAsAmbiguous && !enableSelectFrozen"
+    class="btn btn-outline-secondary variant"
+  >
     <astrobin-equipment-item-display-name [item]="variant"></astrobin-equipment-item-display-name>
   </button>
 </div>

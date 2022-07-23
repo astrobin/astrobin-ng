@@ -112,6 +112,9 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
   enableFullscreen = false;
 
   @Input()
+  enableSelectFrozen = true;
+
+  @Input()
   excludeId: number;
 
   model: { value: TypeUnion } = { value: null };
@@ -418,6 +421,10 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
         }
       };
 
+      if (itemToAdd.frozenAsAmbiguous && !this.enableSelectFrozen) {
+        return this.equipmentItemService.cannotSelectedBecauseFrozenAsAmbiguousError();
+      }
+
       if (!!item.brand) {
         this.store$.dispatch(new LoadBrand({ id: item.brand }));
 
@@ -439,7 +446,9 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
 
     if (this.enableVariantSelection && item.variants?.length > 0) {
       const modal: NgbModalRef = this.modalService.open(VariantSelectorModalComponent);
-      modal.componentInstance.variants = [...[item], ...item.variants];
+      const componentInstance: VariantSelectorModalComponent = modal.componentInstance;
+      componentInstance.variants = [...[item], ...item.variants];
+      componentInstance.enableSelectFrozen = this.enableSelectFrozen;
 
       modal.closed.pipe(take(1)).subscribe((variant: EquipmentItem) => {
         _doAddItem(variant);
@@ -465,10 +474,19 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
   }
 
   onOptionClicked($event, obj): boolean {
-    if (this.enableVariantSelection && obj.item.variants?.length > 0) {
+    const item: EquipmentItem = obj.item;
+
+    if (this.enableVariantSelection && item.variants?.length > 0) {
       $event.preventDefault();
       $event.stopPropagation();
       this.addItem(obj.item);
+      return true;
+    }
+
+    if (item.frozenAsAmbiguous && !this.enableSelectFrozen) {
+      $event.preventDefault();
+      $event.stopPropagation();
+      this.equipmentItemService.cannotSelectedBecauseFrozenAsAmbiguousError();
       return true;
     }
 
@@ -538,7 +556,8 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
                 closeOnSelect: true,
                 enableFullscreen: this.enableFullscreen,
                 showArrow: false,
-                classNames: "equipment-select"
+                classNames: "equipment-select",
+                enableSelectFrozen: this.enableSelectFrozen
               },
               hooks: {
                 onInit: (field: FormlyFieldConfig) => {
