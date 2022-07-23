@@ -26,6 +26,11 @@
     }
   }
 
+  &.disabled {
+    opacity: .5;
+    cursor: not-allowed;
+  }
+
   &.btn-link {
     font-size: inherit;
     line-height: 1.15rem;

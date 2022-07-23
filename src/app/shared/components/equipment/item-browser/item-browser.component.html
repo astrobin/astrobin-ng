@@ -13,7 +13,7 @@
 </ng-template>
 
 <ng-template #equipmentItemOptionTemplate let-object="item">
-  <div (click)="onOptionClicked($event, object)">
+  <div (click)="onOptionClicked($event, object)" class="option-wrapper">
     <astrobin-equipment-item-display-name
       [item]="object.item"
     ></astrobin-equipment-item-display-name>
