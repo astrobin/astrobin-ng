@@ -1,10 +1,12 @@
-<span class="brand" *ngIf="!!brandName; else loading">
-  <a *ngIf="enableBrandLink && !!brandLink" [routerLink]="brandLink">{{ brandName }}</a>
+<ng-container *ngIf="showBrand">
+  <span class="brand" *ngIf="!!brandName; else loading">
+    <a *ngIf="enableBrandLink && !!brandLink" [routerLink]="brandLink">{{ brandName }}</a>
 
-  <ng-container *ngIf="!enableBrandLink || !brandLink">
-    {{ brandName }}
-  </ng-container>
-</span>
+    <ng-container *ngIf="!enableBrandLink || !brandLink">
+      {{ brandName }}
+    </ng-container>
+  </span>
+</ng-container>
 
 <span class="name" *ngIf="!!itemName; else loading">
   <ng-template #nameTemplate>
@@ -20,7 +22,7 @@
     </a>
 
     <fa-icon
-      *ngIf="item.frozenAsAmbiguous"
+      *ngIf="showFrozenAsAmbiguous && item.frozenAsAmbiguous"
       [ngbTooltip]="'Frozen as ambiguous' | translate"
       icon="snowflake"
     ></fa-icon>
