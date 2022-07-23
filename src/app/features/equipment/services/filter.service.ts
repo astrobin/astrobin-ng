@@ -136,7 +136,7 @@ export class FilterService extends BaseService implements EquipmentItemServiceIn
   humanizeSizeShort(size: FilterSize) {
     const map = {
       [FilterSize.ROUND_1_25_IN]: `1.25"`,
-      [FilterSize.ROUND_2_IN]: ` 2"`,
+      [FilterSize.ROUND_2_IN]: `2"`,
       [FilterSize.ROUND_27_MM]: "27 mm",
       [FilterSize.ROUND_31_MM]: "31 mm",
       [FilterSize.ROUND_36_MM]: "36 mm",
