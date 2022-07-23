@@ -1,14 +1,25 @@
-import {
-  testBrand,
-  testTelescope,
-  testTelescopeEditProposal
-} from "../../../support/commands/equipment-item-browser-utils";
+import { testTelescope, testTelescopeEditProposal } from "../../../support/commands/equipment-item-browser-utils";
 
+const testTelescopeIncomplete = {
+  ...testTelescope,
+  type: "OTHER",
+  aperture: null,
+  minFocalLength: null,
+  maxFocalLength: null,
+  weight: null
+};
 context("Equipment", () => {
   beforeEach(() => {
     cy.server();
     cy.setupInitializationRoutes();
     cy.setupEquipmentDefaultRoutes();
+
+    cy.route("GET", "**/api/v2/equipment/telescope/?page=*", {
+      count: 1,
+      next: null,
+      previous: null,
+      results: [testTelescopeIncomplete]
+    }).as("findTelescopes");
 
     cy.route("get", "**/api/v2/equipment/telescope-edit-proposal/?edit_proposal_target=*", { results: [] });
   });
@@ -17,7 +28,7 @@ context("Equipment", () => {
     it("should not have the 'Propose edit' button if logged out", () => {
       cy.visitPage("/equipment/explorer/telescope");
 
-      cy.equipmentItemBrowserSelectFirstTelescope("#equipment-item-field", "Test", testTelescope);
+      cy.equipmentItemBrowserSelectFirstTelescope("#equipment-item-field", "Test", testTelescopeIncomplete);
 
       cy.get(".card .card-header")
         .contains("Telescope")
@@ -32,7 +43,7 @@ context("Equipment", () => {
       cy.login();
       cy.visitPage("/equipment/explorer/telescope");
 
-      cy.equipmentItemBrowserSelectFirstTelescope("#equipment-item-field", "Test", testTelescope);
+      cy.equipmentItemBrowserSelectFirstTelescope("#equipment-item-field", "Test", testTelescopeIncomplete);
 
       cy.get(".card .card-header")
         .contains("Telescope")
@@ -46,15 +57,15 @@ context("Equipment", () => {
     it("should show all the prefilled data in the form", () => {
       cy.get("[data-test=propose-edit]").click();
       cy.get("astrobin-telescope-editor").should("be.visible");
-      cy.ngSelectValueShouldContain("#equipment-item-field-brand", testBrand.name);
-      cy.get("#equipment-item-field-name").should("have.value", testTelescope.name);
-      cy.ngSelectValueShouldContain("#telescope-field-type", "Refractor: achromatic");
-      cy.get("#telescope-field-aperture").should("have.value", testTelescope.aperture);
-      cy.get("#telescope-field-min-focal-length").should("have.value", testTelescope.minFocalLength);
-      cy.get("#telescope-field-max-focal-length").should("have.value", testTelescope.maxFocalLength);
+      cy.get("#equipment-item-field-name").should("have.value", testTelescopeIncomplete.name);
+      cy.ngSelectValueShouldContain("#telescope-field-type", "Other");
+      cy.get("#telescope-field-aperture").should("have.value", "");
+      cy.get("#telescope-field-min-focal-length").should("have.value", "");
+      cy.get("#telescope-field-max-focal-length").should("have.value", "");
+      cy.get("#telescope-field-weight").should("have.value", "");
     });
 
-    it("should the comment field", () => {
+    it("should have the comment field", () => {
       cy.get("#equipment-item-field-edit-proposal-comment").should("be.visible");
     });
 
@@ -73,6 +84,16 @@ context("Equipment", () => {
       cy.get(".alert-warning span")
         .contains("Change the name only to fix a typo")
         .should("be.visible");
+    });
+
+    it("should update some data", () => {
+      cy.ngSelectType("#telescope-field-type", "Refractor: apochromatic");
+      cy.ngSelectOptionClick("#telescope-field-type", 1);
+      cy.get("#telescope-field-aperture").type(200);
+      cy.get("#telescope-field-fixed-focal-length + label").click();
+      cy.get("#telescope-field-min-focal-length").type(1000);
+      cy.get("#telescope-field-max-focal-length").type(2000);
+      cy.get("#telescope-field-weight").type(10);
     });
 
     it("should submit the form", () => {

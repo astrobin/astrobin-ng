@@ -1,10 +1,24 @@
-import { testBrand, testMount, testMountEditProposal } from "../../../support/commands/equipment-item-browser-utils";
+import { testMount, testMountEditProposal } from "../../../support/commands/equipment-item-browser-utils";
+
+const testMountIncomplete = {
+  ...testMount,
+  type: "OTHER",
+  weight: null,
+  maxPayload: null
+};
 
 context("Equipment", () => {
   beforeEach(() => {
     cy.server();
     cy.setupInitializationRoutes();
     cy.setupEquipmentDefaultRoutes();
+
+    cy.route("GET", "**/api/v2/equipment/mount/?page=*", {
+      count: 1,
+      next: null,
+      previous: null,
+      results: [testMountIncomplete]
+    }).as("findMounts");
 
     cy.route("get", "**/api/v2/equipment/mount-edit-proposal/?edit_proposal_target=*", { results: [] });
   });
@@ -13,7 +27,7 @@ context("Equipment", () => {
     it("should not have the 'Propose edit' button if logged out", () => {
       cy.visitPage("/equipment/explorer/mount");
 
-      cy.equipmentItemBrowserSelectFirstMount("#equipment-item-field", "Test", testMount);
+      cy.equipmentItemBrowserSelectFirstMount("#equipment-item-field", "Test", testMountIncomplete);
 
       cy.get(".card .card-header")
         .contains("Mount")
@@ -28,7 +42,7 @@ context("Equipment", () => {
       cy.login();
       cy.visitPage("/equipment/explorer/mount");
 
-      cy.equipmentItemBrowserSelectFirstMount("#equipment-item-field", "Test", testMount);
+      cy.equipmentItemBrowserSelectFirstMount("#equipment-item-field", "Test", testMountIncomplete);
 
       cy.get(".card .card-header")
         .contains("Mount")
@@ -42,14 +56,13 @@ context("Equipment", () => {
     it("should show all the prefilled data in the form", () => {
       cy.get("[data-test=propose-edit]").click();
       cy.get("astrobin-mount-editor").should("be.visible");
-      cy.ngSelectValueShouldContain("#equipment-item-field-brand", testBrand.name);
-      cy.get("#equipment-item-field-name").should("have.value", testMount.name);
-      cy.ngSelectValueShouldContain("#mount-field-type", "German equatorial");
-      cy.get("#mount-field-max-payload").should("have.value", testMount.maxPayload);
-      cy.get("#mount-field-weight").should("have.value", testMount.weight);
+      cy.get("#equipment-item-field-name").should("have.value", testMountIncomplete.name);
+      cy.ngSelectValueShouldContain("#mount-field-type", "Other");
+      cy.get("#mount-field-max-payload").should("have.value", "");
+      cy.get("#mount-field-weight").should("have.value", "");
     });
 
-    it("should the comment field", () => {
+    it("should have the comment field", () => {
       cy.get("#equipment-item-field-edit-proposal-comment").should("be.visible");
     });
 
@@ -68,6 +81,13 @@ context("Equipment", () => {
       cy.get(".alert-warning span")
         .contains("Change the name only to fix a typo")
         .should("be.visible");
+    });
+
+    it("should update some data", () => {
+      cy.ngSelectType("#mount-field-type", "Equatorial");
+      cy.ngSelectOptionClick("#mount-field-type", 1);
+      cy.get("#mount-field-weight").type(10);
+      cy.get("#mount-field-max-payload").type(20);
     });
 
     it("should submit the form", () => {

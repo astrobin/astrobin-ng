@@ -20,7 +20,7 @@
           >
             <span [innerHTML]="row[i].value || 'n/a' | translate"></span>
             <span *ngIf="row[i].propertyName !== EquipmentItemDisplayProperty.IMAGE" class="edit-button">
-              <fa-icon icon="pen" (click)="editButtonClicked(row[i].klass, row[i].id)"></fa-icon>
+              <fa-icon *ngIf="showEditButton(row[i])" icon="pen" (click)="editButtonClicked(row[i].klass, row[i].id)"></fa-icon>
             </span>
           </td>
         </ng-container>

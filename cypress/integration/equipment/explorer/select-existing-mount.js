@@ -27,7 +27,7 @@ context("Equipment", () => {
           next: null,
           previous: null,
           results: [testMount]
-        }).as("getMounts");
+        }).as("findMounts");
 
         cy.route("get", "**/api/v2/equipment/brand/1/", testBrand).as("getBrand");
 

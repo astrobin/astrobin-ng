@@ -46,7 +46,6 @@ context("Equipment", () => {
     it("should show all the prefilled data in the form", () => {
       cy.get("[data-test=propose-edit]").click();
       cy.get("astrobin-accessory-editor").should("be.visible");
-      cy.ngSelectValueShouldContain("#equipment-item-field-brand", testBrand.name);
       cy.get("#equipment-item-field-name").should("have.value", testAccessory.name);
     });
 

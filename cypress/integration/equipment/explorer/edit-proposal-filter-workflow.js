@@ -1,10 +1,19 @@
-import { testBrand, testFilter, testFilterEditProposal } from "../../../support/commands/equipment-item-browser-utils";
+import { testFilter, testFilterEditProposal } from "../../../support/commands/equipment-item-browser-utils";
+
+const testFilterIncomplete = { ...testFilter, bandwidth: null };
 
 context("Equipment", () => {
   beforeEach(() => {
     cy.server();
     cy.setupInitializationRoutes();
     cy.setupEquipmentDefaultRoutes();
+
+    cy.route("GET", "**/api/v2/equipment/filter/?page=*", {
+      count: 1,
+      next: null,
+      previous: null,
+      results: [testFilterIncomplete]
+    }).as("findFilters");
 
     cy.route("get", "**/api/v2/equipment/filter-edit-proposal/?edit_proposal_target=*", { results: [] });
   });
@@ -13,7 +22,7 @@ context("Equipment", () => {
     it("should not have the 'Propose edit' button if logged out", () => {
       cy.visitPage("/equipment/explorer/filter");
 
-      cy.equipmentItemBrowserSelectFirstFilter("#equipment-item-field", "Test", testFilter);
+      cy.equipmentItemBrowserSelectFirstFilter("#equipment-item-field", "Test", testFilterIncomplete);
 
       cy.get(".card .card-header")
         .contains("Filter")
@@ -28,7 +37,7 @@ context("Equipment", () => {
       cy.login();
       cy.visitPage("/equipment/explorer/filter");
 
-      cy.equipmentItemBrowserSelectFirstFilter("#equipment-item-field", "Test", testFilter);
+      cy.equipmentItemBrowserSelectFirstFilter("#equipment-item-field", "Test", testFilterIncomplete);
 
       cy.get(".card .card-header")
         .contains("Filter")
@@ -42,11 +51,8 @@ context("Equipment", () => {
     it("should show all the prefilled data in the form", () => {
       cy.get("[data-test=propose-edit]").click();
       cy.get("astrobin-filter-editor").should("be.visible");
-      cy.ngSelectValueShouldContain("#equipment-item-field-brand", testBrand.name);
-      cy.get("#equipment-item-field-name").should("have.value", testFilter.name);
-      cy.ngSelectValueShouldContain("#filter-field-type", "Luminance/clear (L)");
-      cy.get("#filter-field-bandwidth").should("have.value", testFilter.bandwidth);
-      cy.ngSelectValueShouldContain("#filter-field-size", 'Round 1.25"');
+      cy.get("#equipment-item-field-name").should("have.value", testFilterIncomplete.name);
+      cy.get("#filter-field-bandwidth").should("have.value", "");
     });
 
     it("should the comment field", () => {

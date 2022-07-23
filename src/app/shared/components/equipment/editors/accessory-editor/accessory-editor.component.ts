@@ -2,7 +2,10 @@ import { Component, OnInit } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { Actions } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
-import { BaseItemEditorComponent } from "@shared/components/equipment/editors/base-item-editor/base-item-editor.component";
+import {
+  BaseItemEditorComponent,
+  EquipmentItemEditorMode
+} from "@shared/components/equipment/editors/base-item-editor/base-item-editor.component";
 import { LoadingService } from "@shared/services/loading.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { State } from "@app/store/state";
@@ -70,34 +73,41 @@ export class AccessoryEditorComponent extends BaseItemEditorComponent<AccessoryI
 
   private _initFields() {
     this.initBrandAndName().subscribe(() => {
-      this.fields = [
-        this._getDIYField(),
-        this._getBrandField(),
-        this._getNameField(),
-        this._getVariantOfField(EquipmentItemType.ACCESSORY),
-        {
-          key: "type",
-          type: "ng-select",
-          id: "accessory-field-type",
-          expressionProperties: {
-            "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
-          },
-          templateOptions: {
-            label: this.accessoryService.getPrintablePropertyName(AccessoryDisplayProperty.TYPE),
-            required: true,
-            clearable: true,
-            options: Object.keys(AccessoryType).map(accessoryType => ({
-              value: AccessoryType[accessoryType],
-              label: this.accessoryService.humanizeType(AccessoryType[accessoryType])
-            }))
-          }
-        },
-        this._getWebsiteField(),
-        this._getImageField(),
-        this._getCommunityNotesField()
-      ];
+      if (this.editorMode === EquipmentItemEditorMode.CREATION) {
+        this.fields = [
+          this._getDIYField(),
+          this._getBrandField(),
+          this._getNameField(),
+          this._getVariantOfField(EquipmentItemType.ACCESSORY),
+          this._getTypeField()
+        ];
+      } else {
+        this.fields = [this._getNameField(), this._getVariantOfField(EquipmentItemType.ACCESSORY)];
+      }
+
+      this.fields = [...this.fields, this._getWebsiteField(), this._getImageField(), this._getCommunityNotesField()];
 
       this._addBaseItemEditorFields();
     });
+  }
+
+  private _getTypeField() {
+    return {
+      key: "type",
+      type: "ng-select",
+      id: "accessory-field-type",
+      expressionProperties: {
+        "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+      },
+      templateOptions: {
+        label: this.accessoryService.getPrintablePropertyName(AccessoryDisplayProperty.TYPE),
+        required: true,
+        clearable: true,
+        options: Object.keys(AccessoryType).map(accessoryType => ({
+          value: AccessoryType[accessoryType],
+          label: this.accessoryService.humanizeType(AccessoryType[accessoryType])
+        }))
+      }
+    };
   }
 }

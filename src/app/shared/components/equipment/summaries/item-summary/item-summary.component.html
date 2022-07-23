@@ -56,7 +56,12 @@
                 <span class="property-value">{{ "n/a" | translate }}</span>
               </ng-template>
 
-              <fa-icon *ngIf="showEditButtons" class="edit" icon="pen" (click)="editButtonClick.emit(item)"></fa-icon>
+              <fa-icon
+                *ngIf="showEditButtons && (property.value | async) === ''"
+                class="edit"
+                icon="pen"
+                (click)="editButtonClick.emit(item)"
+              ></fa-icon>
             </td>
           </tr>
         </ng-container>
