@@ -345,7 +345,8 @@ context("Image edit (new)", () => {
           createdBy: 1,
           reviewedBy: null,
           brand: 1,
-          group: null
+          group: null,
+          variants: []
         }
       ]
     }).as("findTelescopes");
