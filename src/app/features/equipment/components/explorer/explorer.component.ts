@@ -510,6 +510,15 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
       return;
     }
 
+    if (!this.selectedItem.variants?.length) {
+      this.popNotificationsService.error(
+        "" +
+          "You cannot freeze this item as ambiguous because it doesn't have any variants. Please first create the " +
+          "appropriate unambiguous variants, and then try again."
+      );
+      return;
+    }
+
     this.loadingService.setLoading(true);
 
     this.equipmentApiService.acquireReviewerLock(this.selectedItem.klass, this.selectedItem.id).subscribe(() => {
