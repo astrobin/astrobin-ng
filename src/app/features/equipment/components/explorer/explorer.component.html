@@ -29,7 +29,7 @@
         </div>
 
         <div *ngIf="!!selectedItem.frozenAsAmbiguous" class="alert alert-warning">
-          {{ "This item is frozen as ambiguous. Non-moderators cannot see it nor use it, but it's still associated with the images it was associated with before being frozen." | translate }}
+          {{ "This item is frozen as ambiguous and cannot be associated to images again." | translate }}
         </div>
 
         <astrobin-equipment-item-summary
@@ -132,6 +132,7 @@
         <ng-container *ngIf="currentUser$ | async as currentUser">
           <ng-container *ngIf="!!currentUser">
             <button
+              *ngIf="!selectedItem.frozenAsAmbiguous"
               class="btn btn-secondary"
               data-test="propose-edit"
               [class.loading]="loadingService.loading$ | async"

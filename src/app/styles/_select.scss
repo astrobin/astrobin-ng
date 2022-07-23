@@ -93,7 +93,7 @@
     }
 
     .ng-option {
-      padding: .5rem 1rem !important;
+      padding: .5rem 1rem;
       color: var(--lightestGrey) !important;
       white-space: normal !important;
       line-height: 1.15rem !important;
@@ -173,7 +173,11 @@
 
       .ng-dropdown-panel-items {
         .ng-option {
-          padding: .75rem 1rem !important;
+          padding: 0 !important;
+
+          .option-wrapper {
+            padding: .75rem;
+          };
 
           ::ng-deep astrobin-equipment-item-display-name {
             display: inline-block;
@@ -193,6 +197,7 @@
           }
 
           .item-variants-info {
+            margin-left: .5rem;
             margin-right: .5rem;
             color: var(--lightGrey);
           }

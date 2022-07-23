@@ -27,6 +27,7 @@ import { BBCodeToHtmlPipe } from "@shared/pipes/bbcode-to-html.pipe";
 import { CKEditorService } from "@shared/services/ckeditor.service";
 import { environment } from "@env/environment";
 import { WindowRefService } from "@shared/services/window-ref.service";
+import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 
 export enum EquipmentItemDisplayProperty {
   BRAND = "BRAND",
@@ -49,7 +50,8 @@ export class EquipmentItemService extends BaseService {
     public readonly equipmentItemServiceFactory: EquipmentItemServiceFactory,
     public readonly equipmentApiService: EquipmentApiService,
     public readonly ckEditorService: CKEditorService,
-    public readonly windowRefService: WindowRefService
+    public readonly windowRefService: WindowRefService,
+    public readonly popNotificationsService: PopNotificationsService
   ) {
     super(loadingService);
   }
@@ -358,6 +360,15 @@ export class EquipmentItemService extends BaseService {
       "<strong>Careful!</strong> Change the name only to fix a typo or the naming convention. This operation will " +
         "change the name of this equipment item <strong>for all AstroBin images that use it</strong>, so you should " +
         "not change the name if it becomes a different product."
+    );
+  }
+
+  cannotSelectedBecauseFrozenAsAmbiguousError() {
+    this.popNotificationsService.error(
+      this.translateService.instant(
+        "This item cannot be selected it's been marked as ambiguous. Consider selecting or creating a non " +
+          "ambiguous variant instead."
+      )
     );
   }
 }
