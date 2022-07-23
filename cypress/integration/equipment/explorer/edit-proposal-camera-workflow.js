@@ -1,15 +1,25 @@
-import {
-  testBrand,
-  testCamera,
-  testCameraEditProposal,
-  testSensor
-} from "../../../support/commands/equipment-item-browser-utils";
+import { testBrand, testCamera, testCameraEditProposal } from "../../../support/commands/equipment-item-browser-utils";
 
+const testCameraIncomplete = {
+  ...testCamera,
+  type: "OTHER",
+  sensor: null,
+  cooled: null,
+  maxCooling: null,
+  backFocus: null
+};
 context("Equipment", () => {
   beforeEach(() => {
     cy.server();
     cy.setupInitializationRoutes();
     cy.setupEquipmentDefaultRoutes();
+
+    cy.route("GET", "**/api/v2/equipment/camera/?page=*", {
+      count: 1,
+      next: null,
+      previous: null,
+      results: [testCameraIncomplete]
+    }).as("findCameras");
 
     cy.route("get", "**/api/v2/equipment/camera-edit-proposal/?edit_proposal_target=*", { results: [] });
   });
@@ -18,7 +28,7 @@ context("Equipment", () => {
     it("should not have the 'Propose edit' button if logged out", () => {
       cy.visitPage("/equipment/explorer");
 
-      cy.equipmentItemBrowserSelectFirstCamera("#equipment-item-field", "Test", testCamera);
+      cy.equipmentItemBrowserSelectFirstCamera("#equipment-item-field", "Test", testCameraIncomplete);
 
       cy.get(".card .card-header")
         .contains("Camera")
@@ -33,7 +43,7 @@ context("Equipment", () => {
       cy.login();
       cy.visitPage("/equipment/explorer");
 
-      cy.equipmentItemBrowserSelectFirstCamera("#equipment-item-field", "Test", testCamera);
+      cy.equipmentItemBrowserSelectFirstCamera("#equipment-item-field", "Test", testCameraIncomplete);
 
       cy.get(".card .card-header")
         .contains("Camera")
@@ -47,13 +57,11 @@ context("Equipment", () => {
     it("should show all the prefilled data in the form", () => {
       cy.get("[data-test=propose-edit]").click();
       cy.get("astrobin-camera-editor").should("be.visible");
-      cy.ngSelectValueShouldContain("#equipment-item-field-brand", testBrand.name);
-      cy.get("#equipment-item-field-name").should("have.value", testCamera.name);
-      cy.ngSelectValueShouldContain("#camera-field-type", "Dedicated deep-sky camera");
-      cy.equipmentItemBrowserShouldContain("#camera-field-sensor", "Test brand", "Test sensor");
-      cy.get("#camera-field-cooled").should("be.checked");
-      cy.get("#camera-field-max-cooling").should("have.value", testCamera.maxCooling);
-      cy.get("#camera-field-back-focus").should("have.value", testCamera.backFocus);
+      cy.get("#equipment-item-field-name").should("have.value", testCameraIncomplete.name);
+      cy.ngSelectValueShouldContain("#camera-field-type", "Other");
+      cy.get("#camera-field-cooled").should("not.be.checked");
+      cy.get("#camera-field-max-cooling").should("have.value", "");
+      cy.get("#camera-field-back-focus").should("have.value", "");
     });
 
     it("should the comment field", () => {
@@ -75,6 +83,14 @@ context("Equipment", () => {
       cy.get(".alert-warning span")
         .contains("Change the name only to fix a typo")
         .should("be.visible");
+    });
+
+    it("should update some data", () => {
+      cy.ngSelectType("#camera-field-type", "Deep");
+      cy.ngSelectOptionClick("#camera-field-type", 1);
+      cy.get("#camera-field-cooled + label").click();
+      cy.get("#camera-field-max-cooling").type(10);
+      cy.get("#camera-field-back-focus").type(20);
     });
 
     it("should submit the form", () => {

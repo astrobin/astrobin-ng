@@ -124,6 +124,8 @@ export class FilterEditorComponent extends BaseItemEditorComponent<FilterInterfa
           this._getSizeField()
         ];
       } else {
+        this.fields = [];
+
         if (this.model.type === null || this.model.type === FilterType.OTHER) {
           this.fields.push(this._getTypeField());
         }

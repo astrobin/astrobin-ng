@@ -80,6 +80,8 @@ export class MountEditorComponent extends BaseItemEditorComponent<MountInterface
           this._getSlewSpeedField()
         ];
       } else {
+        this.fields = [this._getNameField(), this._getVariantOfField(EquipmentItemType.MOUNT)];
+
         if (!this.model.type || this.model.type === MountType.OTHER) {
           this.fields.push(this._getTypeField());
         }

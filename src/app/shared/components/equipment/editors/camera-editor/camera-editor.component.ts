@@ -292,7 +292,7 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
             }
 
             if (control.value !== CameraType.DEDICATED_DEEP_SKY) {
-              return of(this.form.get("brand").value).pipe(
+              return of(this.model.brand).pipe(
                 switchMap(brandId => {
                   if (!brandId) {
                     return of(true);
@@ -334,7 +334,8 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
         creationModeEnded: this.endSensorCreation.bind(this),
         enableCreation: true,
         enableFullscreen: true,
-      enableSelectFrozen: false}
+        enableSelectFrozen: false
+      }
     };
   }
 

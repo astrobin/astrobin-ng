@@ -495,7 +495,9 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
               distinctUntilChanged(),
               tap((value: string) => {
                 this.formlyFieldService.clearMessages(field.templateOptions);
-                this.formlyFieldService.clearMessages(this.fields.find(f => f.key === "brand").templateOptions);
+                if (this.fields.find(f => f.key === "brand")) {
+                  this.formlyFieldService.clearMessages(this.fields.find(f => f.key === "brand").templateOptions);
+                }
                 this._validateBrandInName();
                 this._validateCanonAndCentralDS();
                 this._similarItemSuggestion();
