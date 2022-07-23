@@ -11,7 +11,7 @@ Cypress.Commands.add("ngSelectOptionNumberSelectorShouldContain", (selector, chi
 });
 
 Cypress.Commands.add("ngSelectOptionClick", (selector, childNumber) => {
-  cy.get(`${selector} .ng-option:nth-child(${childNumber})`).click("top");
+  cy.get(`${selector} .ng-option:nth-child(${childNumber})`).click();
 });
 
 Cypress.Commands.add("ngSelectValueShouldContain", (selector, text) => {

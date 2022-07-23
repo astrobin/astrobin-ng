@@ -476,11 +476,21 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
   onOptionClicked($event, obj): boolean {
     const item: EquipmentItem = obj.item;
 
-    $event.preventDefault();
-    $event.stopPropagation();
-    this.addItem(item);
+    if (this.enableVariantSelection && item.variants?.length > 0) {
+      $event.preventDefault();
+      $event.stopPropagation();
+      this.addItem(obj.item);
+      return true;
+    }
 
-    return true;
+    if (item.frozenAsAmbiguous && !this.enableSelectFrozen) {
+      $event.preventDefault();
+      $event.stopPropagation();
+      this.equipmentItemService.cannotSelectedBecauseFrozenAsAmbiguousError();
+      return true;
+    }
+
+    return false;
   }
 
   onCancel() {
