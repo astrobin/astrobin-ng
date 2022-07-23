@@ -422,10 +422,7 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
       };
 
       if (itemToAdd.frozenAsAmbiguous && !this.enableSelectFrozen) {
-        this.popNotificationsService.error(
-          this.translateService.instant("This item cannot be selected because it's frozen as ambiguous.")
-        );
-        return;
+        return this.equipmentItemService.cannotSelectedBecauseFrozenAsAmbiguousError();
       }
 
       if (!!item.brand) {
@@ -479,14 +476,11 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
   onOptionClicked($event, obj): boolean {
     const item: EquipmentItem = obj.item;
 
-    if (this.enableVariantSelection && item.variants?.length > 0) {
-      $event.preventDefault();
-      $event.stopPropagation();
-      this.addItem(obj.item);
-      return true;
-    }
+    $event.preventDefault();
+    $event.stopPropagation();
+    this.addItem(item);
 
-    return false;
+    return true;
   }
 
   onCancel() {
