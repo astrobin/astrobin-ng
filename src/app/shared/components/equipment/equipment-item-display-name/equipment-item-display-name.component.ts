@@ -29,10 +29,21 @@ export class EquipmentItemDisplayNameComponent extends BaseComponentDirective im
   enableSummaryModal = false;
 
   @Input()
+  showBrand = true;
+
+  @Input()
   enableBrandLink = false;
 
   @Input()
   enableNameLink = false;
+
+  @Input()
+  showFrozenAsAmbiguous = true;
+
+  // A part of the name to remove. This is useful if this display-name is shown in a list of variants, to avoid
+  // repetitions.
+  @Input()
+  cut = "";
 
   brandName: string;
   brandLink: string;
@@ -76,7 +87,7 @@ export class EquipmentItemDisplayNameComponent extends BaseComponentDirective im
     this.equipmentItemService
       .getName$(this.item)
       .pipe(take(1))
-      .subscribe(name => (this.itemName = name));
+      .subscribe(name => (this.itemName = name.replace(this.cut, "")));
 
     this.nameLink = `/equipment/explorer/${this.item.klass.toLowerCase()}/${this.item.id}`;
 
