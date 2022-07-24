@@ -118,6 +118,10 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     );
   }
 
+  itemCount(type: EquipmentItemType): Observable<number> {
+    return this.http.get<number>(`${this.configUrl}/${type.toLowerCase()}/count/`);
+  }
+
   getAllEquipmentItemsPendingReview(
     type: EquipmentItemType,
     page = 1

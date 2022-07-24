@@ -345,10 +345,8 @@ export class ItemTypeNavComponent extends BaseComponentDirective
 
       this.loadingService.setLoading(true);
 
-      type.count = this.equipmentApiService.findAllEquipmentItems(type.value, {}).pipe(
+      type.count = this.equipmentApiService.itemCount(type.value).pipe(
         takeUntil(this.destroyed$),
-        catchError(() => of({ count: 0 })),
-        map(response => response.count),
         tap(() => this.loadingService.setLoading(false))
       );
 
