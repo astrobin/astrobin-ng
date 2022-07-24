@@ -274,6 +274,7 @@ Cypress.Commands.add("setupEquipmentDefaultRoutesForBrands", () => {
 });
 
 Cypress.Commands.add("setupEquipmentDefaultRoutesForAllClasses", () => {
+  cy.route("GET", "**/api/v2/equipment/**/count/", 0).as("getCount");
   cy.route("GET", "**/api/v2/equipment/**/users/", []).as("getUsers");
   cy.route("GET", "**/api/v2/equipment/**/images/", []).as("getImages");
   cy.route("GET", "**/api/v2/equipment/**/most-often-used-with/", []).as("getMostOftenUsedWith");
