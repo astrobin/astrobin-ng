@@ -411,8 +411,12 @@
       </ng-container>
     </ng-container>
 
-    <ng-container *ngIf="activeId && isBrowser">
-      <astrobin-forum-preview *ngIf="showForum" class="mt-5 d-block">
+    <ng-container *ngIf="!!selectedItem && isBrowser">
+      <astrobin-forum-preview
+        *ngIf="showForum && !!selectedItem.forum"
+        [forumId]="selectedItem.forum"
+        class="mt-5 d-block"
+      >
       </astrobin-forum-preview>
 
       <astrobin-users-using-equipment-item

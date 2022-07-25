@@ -1,0 +1,30 @@
+.category-description {
+  padding: 1rem;
+  background: var(--darkerGrey);
+  margin: 0 .5rem;
+  border-radius: .5rem .5rem 0 0;
+  font-style: italic;
+  color: var(--lighterGrey);
+}
+
+.table {
+  td {
+    vertical-align: middle;
+  }
+
+  .title {
+    a {
+      color: var(--lightestGrey);
+      padding: 2px 0; // avoid gaps in the clickable area if the text is multi-line.
+
+      &:hover {
+        color: var(--accentColor);
+        text-decoration: none;
+      }
+    }
+  }
+
+  .created {
+    white-space: nowrap;
+  }
+}

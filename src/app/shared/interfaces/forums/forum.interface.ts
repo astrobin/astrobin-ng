@@ -13,6 +13,6 @@ export interface ForumInterface {
   slug: string;
   category: CategoryInterface["id"];
   parent: ForumInterface["id"] | null;
-  modrators: UserInterface["id"][];
+  moderators: UserInterface["id"][];
   readedBy: UserInterface["id"][];
 }

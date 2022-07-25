@@ -24,7 +24,8 @@ export class SoftwareGenerator {
       userCount: null,
       imageCount: null,
       variantOf: null,
-      variants: []
+      variants: [],
+      forum: null
     };
   }
 }

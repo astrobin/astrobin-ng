@@ -1,3 +1,10 @@
+<div
+  *ngIf="category?.slug === 'equipment-forums' && topics?.length > 0"
+  [innerHTML]="equipmentCategoryDescription"
+  class="category-description"
+>
+</div>
+
 <div class="card">
   <div class="card-header">
     {{ "Recent forum posts" | translate }}
@@ -5,22 +12,43 @@
 
   <div class="card-body">
     <ng-container *ngIf="!loading; else loadingTemplate">
-      <table *ngIf="topics.length > 0; else noTopicsTemplate" class="table table-striped">
-        <thead>
-        <tr>
-          <th>{{ "Title" | translate }}</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr *ngFor="let topic of topics">
-          <td class="title">{{ topic.name }}</td>
-        </tr>
-        </tbody>
-      </table>
+      <ng-container *ngIf="currentUser$ | async as currentUser">
+        <table *ngIf="topics.length > 0; else noTopicsTemplate" class="table table-striped mb-0">
+          <tbody>
+            <tr *ngFor="let topic of topics">
+              <td class="title">
+                <span *ngIf="topic.postCount < 2" class="text-muted d-inline-block pr-2"
+                  >{{ "Unanswered" | translate }}
+                </span>
+
+                <a [href]="topicUrl(topic.id)">
+                  {{ topic.name }}
+                </a>
+              </td>
+              <td class="user">
+                <astrobin-username [userId]="topic.user"></astrobin-username>
+              </td>
+              <td class="created">
+                <abbr [attr.title]="topic.created | localDate">
+                  {{ topic.created | localDate | timeago: true }}
+                </abbr>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </ng-container>
     </ng-container>
   </div>
 
-  <div class="card-footer"></div>
+  <div class="card-footer">
+    <a class="btn btn-secondary" [href]="forumUrl">
+      {{ "View all topics" | translate }}
+    </a>
+
+    <a class="btn btn-primary" [href]="forumNewTopicUrl">
+      {{ "New topic" | translate }}
+    </a>
+  </div>
 </div>
 
 <ng-template #loadingTemplate>
@@ -29,6 +57,20 @@
 
 <ng-template #noTopicsTemplate>
   <p>
-    {{ "There are no topics in this forum. Want to be the first to post?" | translate }}
+    <span>
+      {{ "There are no topics in this forum." | translate }}
+    </span>
+    <span>
+      <a [href]="forumNewTopicUrl">
+        {{ "Want to be the first to post?" | translate }}
+      </a>
+    </span>
+  </p>
+
+  <p class="text-muted">
+    {{
+      "When you start a new discussions here, everybody who has used this equipment item on AstroBin will be notified " +
+        "unless they opted-out." | translate
+    }}
   </p>
 </ng-template>
