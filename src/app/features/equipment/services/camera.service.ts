@@ -13,7 +13,6 @@ import { EquipmentItemType } from "@features/equipment/types/equipment-item-base
 import { selectBrand, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import { filter, map, switchMap, take, tap } from "rxjs/operators";
 import { SensorInterface } from "@features/equipment/types/sensor.interface";
-import { EquipmentItemDisplayProperty } from "@features/equipment/services/equipment-item.service";
 
 export enum CameraDisplayProperty {
   NAME = "NAME",

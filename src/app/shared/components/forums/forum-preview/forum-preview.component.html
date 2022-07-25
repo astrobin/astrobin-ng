@@ -23,12 +23,9 @@
 
                 <a [href]="topicUrl(topic.id)">
                   {{ topic.name }}
-                </a>
+                </a> - <astrobin-username [userId]="topic.user"></astrobin-username>
               </td>
-              <td class="user">
-                <astrobin-username [userId]="topic.user"></astrobin-username>
-              </td>
-              <td class="created">
+              <td class="created d-none d-lg-table-cell">
                 <abbr [attr.title]="topic.created | localDate">
                   {{ topic.created | localDate | timeago: true }}
                 </abbr>

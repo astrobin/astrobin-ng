@@ -16,6 +16,7 @@
     a {
       color: var(--lightestGrey);
       padding: 2px 0; // avoid gaps in the clickable area if the text is multi-line.
+      hyphens: auto;
 
       &:hover {
         color: var(--accentColor);
