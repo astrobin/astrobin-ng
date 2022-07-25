@@ -65,7 +65,7 @@ export class MountEditorComponent extends BaseItemEditorComponent<MountInterface
 
   private _initFields() {
     this.initBrandAndName().subscribe(() => {
-      if (this.editorMode === EquipmentItemEditorMode.CREATION) {
+      if (this.editorMode === EquipmentItemEditorMode.CREATION || !this.model.reviewerDecision) {
         this.fields = [
           this._getDIYField(),
           this._getBrandField(),

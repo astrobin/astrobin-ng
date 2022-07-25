@@ -208,7 +208,7 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
 
   private _initFields() {
     const _doInitFields = () => {
-      if (this.editorMode === EquipmentItemEditorMode.CREATION) {
+      if (this.editorMode === EquipmentItemEditorMode.CREATION || !this.model.reviewerDecision) {
         this.fields = [
           this._getDIYField(),
           this._getBrandField(),

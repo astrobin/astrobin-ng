@@ -64,7 +64,7 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
 
   private _initFields() {
     this.initBrandAndName().subscribe(() => {
-      if (this.editorMode === EquipmentItemEditorMode.CREATION) {
+      if (this.editorMode === EquipmentItemEditorMode.CREATION || !this.model.reviewerDecision) {
         this.fields = [
           this._getBrandField(),
           this._getNameField(),
