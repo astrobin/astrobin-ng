@@ -15,6 +15,7 @@
   .title {
     a {
       color: var(--lightestGrey);
+      font-weight: bold;
       padding: 2px 0; // avoid gaps in the clickable area if the text is multi-line.
       hyphens: auto;
 
@@ -23,9 +24,21 @@
         text-decoration: none;
       }
     }
+
+    .meta {
+      margin-top: .5rem;
+
+      astrobin-username ::ng-deep a {
+        color: var(--lighterGrey);
+      }
+
+      white-space: nowrap;
+      color: var(--lighterGrey);
+    }
   }
 
-  .created {
+  .replies {
     white-space: nowrap;
+    color: var(--lighterGrey);
   }
 }

@@ -23,12 +23,18 @@
 
                 <a [href]="topicUrl(topic.id)">
                   {{ topic.name }}
-                </a> - <astrobin-username [userId]="topic.user"></astrobin-username>
+                </a>
+
+                <div class="meta">
+                  <astrobin-username [userId]="topic.user"></astrobin-username>&middot;
+                  <abbr [attr.title]="topic.created | localDate">
+                    {{ topic.created | localDate | timeago: true }}
+                  </abbr>
+                </div>
               </td>
-              <td class="created d-none d-lg-table-cell">
-                <abbr [attr.title]="topic.created | localDate">
-                  {{ topic.created | localDate | timeago: true }}
-                </abbr>
+
+              <td class="replies d-none d-lg-table-cell">
+                {{ getRepliesMessage(topic.postCount) }}
               </td>
             </tr>
           </tbody>

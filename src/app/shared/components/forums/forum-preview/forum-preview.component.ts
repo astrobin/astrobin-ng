@@ -61,6 +61,10 @@ export class ForumPreviewComponent extends BaseComponentDirective implements OnI
     return `${this.classicRoutesService.FORUM_HOME}topic/${topicId}`;
   }
 
+  getRepliesMessage(postCount: number): string {
+    return this.translateService.instant("{{0}} replies", { 0: postCount - 1 });
+  }
+
   private _loadTopics(): void {
     this.loading = true;
     this.forumApiService
