@@ -1,0 +1,79 @@
+<div
+  *ngIf="category?.slug === 'equipment-forums' && topics?.length > 0"
+  [innerHTML]="equipmentCategoryDescription"
+  class="category-description"
+>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    {{ "Recent forum posts" | translate }}
+  </div>
+
+  <div class="card-body">
+    <ng-container *ngIf="!loading; else loadingTemplate">
+      <ng-container *ngIf="currentUser$ | async as currentUser">
+        <table *ngIf="topics.length > 0; else noTopicsTemplate" class="table table-striped mb-0">
+          <tbody>
+            <tr *ngFor="let topic of topics">
+              <td class="title">
+                <span *ngIf="topic.postCount < 2" class="text-muted d-inline-block pr-2"
+                  >{{ "Unanswered" | translate }}
+                </span>
+
+                <a [href]="topicUrl(topic.id)">
+                  {{ topic.name }}
+                </a>
+
+                <div class="meta">
+                  <astrobin-username [userId]="topic.user"></astrobin-username>&middot;
+                  <abbr [attr.title]="topic.created | localDate">
+                    {{ topic.created | localDate | timeago: true }}
+                  </abbr>
+                </div>
+              </td>
+
+              <td class="replies d-none d-lg-table-cell">
+                {{ getRepliesMessage(topic.postCount) }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </ng-container>
+    </ng-container>
+  </div>
+
+  <div class="card-footer">
+    <a class="btn btn-secondary" [href]="forumUrl">
+      {{ "View all topics" | translate }}
+    </a>
+
+    <a class="btn btn-primary" [href]="forumNewTopicUrl">
+      {{ "New topic" | translate }}
+    </a>
+  </div>
+</div>
+
+<ng-template #loadingTemplate>
+  <astrobin-loading-indicator></astrobin-loading-indicator>
+</ng-template>
+
+<ng-template #noTopicsTemplate>
+  <p>
+    <span>
+      {{ "There are no topics in this forum." | translate }}
+    </span>
+    <span>
+      <a [href]="forumNewTopicUrl">
+        {{ "Want to be the first to post?" | translate }}
+      </a>
+    </span>
+  </p>
+
+  <p class="text-muted">
+    {{
+      "When you start a new discussions here, everybody who has used this equipment item on AstroBin will be notified " +
+        "unless they opted-out." | translate
+    }}
+  </p>
+</ng-template>

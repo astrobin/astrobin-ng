@@ -91,6 +91,7 @@ import { SubscriptionRequiredModalComponent } from "@shared/components/misc/subs
 import { InformationDialogComponent } from "@shared/components/misc/information-dialog/information-dialog.component";
 import { AssignItemModalComponent } from "@shared/components/equipment/summaries/assign-item-modal/assign-item-modal.component";
 import { AssignEditProposalModalComponent } from "@shared/components/equipment/summaries/assign-edit-proposal-modal/assign-edit-proposal-modal.component";
+import { ForumPreviewComponent } from "@shared/components/forums/forum-preview/forum-preview.component";
 
 const modules = [
   CommonModule,
@@ -140,6 +141,7 @@ const components = [
   FormlyFieldEquipmentItemBrowserComponent,
   FormlyWrapperComponent,
   FormlyEquipmentItemBrowserWrapperComponent,
+  ForumPreviewComponent,
   FullscreenImageViewerComponent,
   HeaderComponent,
   ImageComponent,

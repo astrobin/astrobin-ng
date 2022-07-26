@@ -1,0 +1,44 @@
+.category-description {
+  padding: 1rem;
+  background: var(--darkerGrey);
+  margin: 0 .5rem;
+  border-radius: .5rem .5rem 0 0;
+  font-style: italic;
+  color: var(--lighterGrey);
+}
+
+.table {
+  td {
+    vertical-align: middle;
+  }
+
+  .title {
+    a {
+      color: var(--lightestGrey);
+      font-weight: bold;
+      padding: 2px 0; // avoid gaps in the clickable area if the text is multi-line.
+      hyphens: auto;
+
+      &:hover {
+        color: var(--accentColor);
+        text-decoration: none;
+      }
+    }
+
+    .meta {
+      margin-top: .5rem;
+
+      astrobin-username ::ng-deep a {
+        color: var(--lighterGrey);
+      }
+
+      white-space: nowrap;
+      color: var(--lighterGrey);
+    }
+  }
+
+  .replies {
+    white-space: nowrap;
+    color: var(--lighterGrey);
+  }
+}

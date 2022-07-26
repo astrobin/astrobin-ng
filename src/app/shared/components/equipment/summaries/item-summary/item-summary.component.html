@@ -81,6 +81,16 @@
             </th>
             <td class="property-value">{{ item.imageCount || 0 }}</td>
           </tr>
+          <tr *ngIf="showSubItem && !!subItem && subItemCollapsed" class="property">
+            <th class="property-name">
+              {{ subItemLabel }}
+            </th>
+            <td class="property-value">
+              <a href="#" appEventPreventDefault appEventStopPropagation (click)="subItemCollapsed = false">
+                <astrobin-equipment-item-display-name [item]="subItem"></astrobin-equipment-item-display-name>
+              </a>
+            </td>
+          </tr>
         </ng-container>
         </tbody>
       </table>
@@ -92,7 +102,7 @@
         <div class="community-notes-content" [innerHTML]="item.communityNotes | BBCodeToHtml"></div>
       </div>
 
-      <div *ngIf="showSubItem && !!subItem" class="sub-item">
+      <div *ngIf="showSubItem && !!subItem && !subItemCollapsed" class="sub-item">
         <astrobin-equipment-item-summary
           [item]="subItem"
           [showSubItem]="showSubItem"

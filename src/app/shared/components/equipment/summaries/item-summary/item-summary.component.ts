@@ -93,6 +93,7 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
 
   brand: BrandInterface;
   subItem: EquipmentItemBaseInterface;
+  subItemCollapsed = true;
   properties: EquipmentItemProperty[];
 
   constructor(
@@ -155,6 +156,14 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
     }
 
     return _properties$(null);
+  }
+
+  get subItemLabel(): string {
+    if (this.item.klass === EquipmentItemType.CAMERA) {
+      return this.cameraService.getPrintablePropertyName(CameraDisplayProperty.SENSOR, true);
+    }
+
+    return this.translateService.instant("Sub-item");
   }
 
   getCreatedBy(): Observable<UserInterface> {
