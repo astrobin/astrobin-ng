@@ -12,7 +12,7 @@
 
   <div class="card-body">
     <ng-container *ngIf="!loading; else loadingTemplate">
-      <table *ngIf="topics.length > 0; else noTopicsTemplate" class="table table-striped mb-0">
+      <table *ngIf="topics?.length > 0; else noTopicsTemplate" class="table table-striped mb-0">
         <tbody>
           <tr *ngFor="let topic of topics">
             <td class="title">

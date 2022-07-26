@@ -17,6 +17,7 @@ describe("ForumPreviewComponent", () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(ForumPreviewComponent);
     component = fixture.componentInstance;
+    component.forumId = 1;
     fixture.detectChanges();
   });
 
