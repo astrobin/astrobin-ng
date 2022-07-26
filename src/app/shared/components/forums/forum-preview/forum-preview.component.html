@@ -12,34 +12,32 @@
 
   <div class="card-body">
     <ng-container *ngIf="!loading; else loadingTemplate">
-      <ng-container *ngIf="currentUser$ | async as currentUser">
-        <table *ngIf="topics.length > 0; else noTopicsTemplate" class="table table-striped mb-0">
-          <tbody>
-            <tr *ngFor="let topic of topics">
-              <td class="title">
-                <span *ngIf="topic.postCount < 2" class="text-muted d-inline-block pr-2"
-                  >{{ "Unanswered" | translate }}
-                </span>
+      <table *ngIf="topics.length > 0; else noTopicsTemplate" class="table table-striped mb-0">
+        <tbody>
+          <tr *ngFor="let topic of topics">
+            <td class="title">
+              <span *ngIf="topic.postCount < 2" class="text-muted d-inline-block pr-2"
+                >{{ "Unanswered" | translate }}
+              </span>
 
-                <a [href]="topicUrl(topic.id)">
-                  {{ topic.name }}
-                </a>
+              <a [href]="topicUrl(topic.id)">
+                {{ topic.name }}
+              </a>
 
-                <div class="meta">
-                  <astrobin-username [userId]="topic.user"></astrobin-username>&middot;
-                  <abbr [attr.title]="topic.created | localDate">
-                    {{ topic.created | localDate | timeago: true }}
-                  </abbr>
-                </div>
-              </td>
+              <div class="meta">
+                <astrobin-username [userId]="topic.user"></astrobin-username>&middot;
+                <abbr [attr.title]="topic.created | localDate">
+                  {{ topic.created | localDate | timeago: true }}
+                </abbr>
+              </div>
+            </td>
 
-              <td class="replies d-none d-lg-table-cell">
-                {{ getRepliesMessage(topic.postCount) }}
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </ng-container>
+            <td class="replies d-none d-lg-table-cell">
+              {{ getRepliesMessage(topic.postCount) }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </ng-container>
   </div>
 
