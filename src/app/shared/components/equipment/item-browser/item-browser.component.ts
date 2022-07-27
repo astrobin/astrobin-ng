@@ -200,6 +200,12 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
         this._setFields();
       }
     }
+
+    if (!!changes.label && this.fields && this.fields.length > 0) {
+      this.fields[0].templateOptions.label = this.showLabel
+        ? this.label || this.translateService.instant("Find equipment item")
+        : null;
+    }
   }
 
   reset() {

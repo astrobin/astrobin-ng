@@ -3,6 +3,7 @@
     <astrobin-equipment-item-browser
       *ngIf="enableBrowser"
       #itemBrowser
+      [label]="equipmentItemBrowserLabel"
       [type]="activeType"
       [initialValue]="this.activeId"
       [enableFullscreen]="true"
