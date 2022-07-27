@@ -55,16 +55,16 @@ export class ImageSearchComponent extends BaseComponentDirective implements OnIn
     this.searchUrl = `${this.classicRoutesService.SEARCH}?d=i&sort=${this.ordering}&q="${encodeURIComponent(
       this.text
     )}"`;
-    this._loadData();
+    this._loadData(false);
   }
 
   sortBy(ordering: string): void {
     this.ordering = ordering;
     this.page = 1;
-    this._loadData();
+    this._loadData(false);
   }
 
-  private _loadData(): void {
+  private _loadData(cumulative = true): void {
     this.loading = true;
 
     if (this.page === 1) {
@@ -75,6 +75,11 @@ export class ImageSearchComponent extends BaseComponentDirective implements OnIn
       .search({ text: this.text, ordering: this.ordering, page: this.page })
       .subscribe(response => {
         this.next = response.next;
+
+        if (!cumulative) {
+          this.images = [];
+        }
+
         this.images = [...this.images, ...response.results.filter(image => !!image.galleryThumbnail)];
         this.loading = false;
         this.initialLoading = false;
