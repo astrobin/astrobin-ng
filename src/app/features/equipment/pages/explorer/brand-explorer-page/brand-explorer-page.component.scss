@@ -1,5 +1,17 @@
 @import "../../../../../styles/breakpoints";
 
+:host {
+  ::ng-deep {
+    .objects-using > astrobin-avatar {
+      max-width: calc(20% - 1rem);
+    }
+
+    .search-results > a {
+      max-width: 10%;
+    }
+  }
+}
+
 .image {
   height: 100px;
   background-size: contain;

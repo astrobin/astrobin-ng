@@ -14,7 +14,6 @@ import {
   selectBrand,
   selectBrands,
   selectEquipmentItems,
-  selectImagesUsingEquipmentBrand,
   selectUsersUsingEquipmentBrand
 } from "@features/equipment/store/equipment.selectors";
 import {
@@ -23,7 +22,6 @@ import {
   GetAllBrandsSuccess,
   GetAllInBrand,
   GetAllInBrandSuccess,
-  GetImagesUsingBrand,
   GetUsersUsingBrand
 } from "@features/equipment/store/equipment.actions";
 import { filter, map, take, takeUntil } from "rxjs/operators";
@@ -53,7 +51,6 @@ export class BrandExplorerPageComponent extends ExplorerBaseComponent implements
   itemsInBrand: EquipmentItemBaseInterface[];
 
   usersUsing$: Observable<UserInterface[]>;
-  imagesUsing$: Observable<ImageInterface[]>;
 
   constructor(
     public readonly store$: Store<State>,
@@ -242,13 +239,8 @@ export class BrandExplorerPageComponent extends ExplorerBaseComponent implements
 
   private _loadUsing() {
     this.store$.dispatch(new GetUsersUsingBrand({ brandId: this.activeId }));
-    this.store$.dispatch(new GetImagesUsingBrand({ brandId: this.activeId }));
 
     this.usersUsing$ = this.store$.select(selectUsersUsingEquipmentBrand, {
-      brandId: this.activeId
-    });
-
-    this.imagesUsing$ = this.store$.select(selectImagesUsingEquipmentBrand, {
       brandId: this.activeId
     });
   }

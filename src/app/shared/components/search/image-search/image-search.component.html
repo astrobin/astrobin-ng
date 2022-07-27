@@ -1,0 +1,59 @@
+<div class="card">
+  <div class="card-header d-flex justify-content-between align-items-center">
+    {{ header }}
+
+    <div class="buttons d-flex align-items-center">
+      <div ngbDropdown class="sort-menu mr-2">
+        <button ngbDropdownToggle id="sort-search-results" type="button" class="btn btn-outline-secondary">
+          {{ "Sort" | translate }}
+        </button>
+
+        <div ngbDropdownMenu aria-labelledby="sort-search-results">
+          <button ngbDropdownItem (click)="sortBy('-likes')">
+            <fa-icon icon="check" *ngIf="ordering === '-likes'; else notSelected"></fa-icon>
+            {{ "Most liked" | translate }}
+          </button>
+
+          <button ngbDropdownItem (click)="sortBy('-published')">
+            <fa-icon icon="check" *ngIf="ordering === '-published'; else notSelected"></fa-icon>
+            {{ "Most recent" | translate }}
+          </button>
+        </div>
+      </div>
+
+      <a class="btn btn-outline-primary float-right" [href]="searchUrl">
+        {{ "More" | translate }}
+      </a>
+    </div>
+  </div>
+
+  <div class="card-body">
+    <div class="search-results">
+      <ng-container *ngIf="!initialLoading; else loadingTemplate">
+        <ng-container *ngIf="images.length > 0; else noImages">
+          <a *ngFor="let image of images" [href]="classicRoutesService.IMAGE(image.hash || image.objectId.toString())">
+            <img [src]="image.galleryThumbnail" [alt]="image.title" />
+          </a>
+        </ng-container>
+      </ng-container>
+
+      <div *ngIf="loading && !initialLoading" class="loading">
+        <astrobin-loading-indicator></astrobin-loading-indicator>
+      </div>
+    </div>
+  </div>
+</div>
+
+<astrobin-scroll-to-top></astrobin-scroll-to-top>
+
+<ng-template #notSelected>
+  <span class="not-selected"></span>
+</ng-template>
+
+<ng-template #noImages>
+  <astrobin-nothing-here></astrobin-nothing-here>
+</ng-template>
+
+<ng-template #loadingTemplate>
+  <astrobin-loading-indicator></astrobin-loading-indicator>
+</ng-template>

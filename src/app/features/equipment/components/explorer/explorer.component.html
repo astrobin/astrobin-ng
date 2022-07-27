@@ -419,24 +419,26 @@
       >
       </astrobin-forum-preview>
 
-      <astrobin-users-using-equipment-item
-        *ngIf="showUsersUsing"
-        class="mt-5"
-        [users]="usersUsing$ | async"
-      ></astrobin-users-using-equipment-item>
-
-      <astrobin-images-using-equipment-item
-        *ngIf="showImagesUsing"
-        class="mt-5"
-        [images]="imagesUsing$ | async"
-        [item]="selectedItem"
-      ></astrobin-images-using-equipment-item>
+      <astrobin-image-search
+        [header]="'Acquired with this item' | translate"
+        [text]="equipmentItemService.getFullDisplayName$(selectedItem) | async"
+        ordering="-likes"
+        class="mt-5 d-block"
+      ></astrobin-image-search>
     </ng-container>
   </div>
   <!-- main pane -->
 
   <div *ngIf="doShowMostOftenUsedWith()" class="col-sm-12 col-lg-3 order-first order-lg-last mb-4 mb-lg-0">
-    <astrobin-equipment-item-most-often-used-with [item]="selectedItem"></astrobin-equipment-item-most-often-used-with>
+    <astrobin-equipment-item-most-often-used-with
+      [item]="selectedItem"
+    ></astrobin-equipment-item-most-often-used-with>
+
+    <astrobin-users-using-equipment-item
+      *ngIf="showUsersUsing"
+      class="mt-5 d-none d-lg-block"
+      [users]="usersUsing$ | async"
+    ></astrobin-users-using-equipment-item>
   </div>
   <!-- side pane -->
 </div>

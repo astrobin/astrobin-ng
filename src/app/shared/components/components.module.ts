@@ -92,6 +92,7 @@ import { InformationDialogComponent } from "@shared/components/misc/information-
 import { AssignItemModalComponent } from "@shared/components/equipment/summaries/assign-item-modal/assign-item-modal.component";
 import { AssignEditProposalModalComponent } from "@shared/components/equipment/summaries/assign-edit-proposal-modal/assign-edit-proposal-modal.component";
 import { ForumPreviewComponent } from "@shared/components/forums/forum-preview/forum-preview.component";
+import { ImageSearchComponent } from "@shared/components/search/image-search/image-search.component";
 
 const modules = [
   CommonModule,
@@ -145,6 +146,7 @@ const components = [
   FullscreenImageViewerComponent,
   HeaderComponent,
   ImageComponent,
+  ImageSearchComponent,
   InformationDialogComponent,
   LoadingIndicatorComponent,
   LoginFormComponent,

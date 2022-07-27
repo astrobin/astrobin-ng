@@ -9,9 +9,7 @@ export class EquipmentStateGenerator {
       editProposals: [],
       presets: [],
       usersUsingEquipmentItems: [],
-      imagesUsingEquipmentItems: [],
       usersUsingEquipmentBrands: [],
-      imagesUsingEquipmentBrands: [],
       mostOftenUsedWithData: {},
       contributors: []
     };

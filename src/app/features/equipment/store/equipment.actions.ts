@@ -228,18 +228,6 @@ export class GetUsersUsingBrandSuccess implements PayloadActionInterface {
   constructor(public payload: { brandId: BrandInterface["id"]; users: UserInterface[] }) {}
 }
 
-export class GetImagesUsingBrand implements PayloadActionInterface {
-  readonly type = EquipmentActionTypes.GET_IMAGES_USING_BRAND;
-
-  constructor(public payload: { brandId: BrandInterface["id"] }) {}
-}
-
-export class GetImagesUsingBrandSuccess implements PayloadActionInterface {
-  readonly type = EquipmentActionTypes.GET_IMAGES_USING_BRAND_SUCCESS;
-
-  constructor(public payload: { brandId: BrandInterface["id"]; images: ImageInterface[] }) {}
-}
-
 /**********************************************************************************************************************
  * Generic equipment items
  *********************************************************************************************************************/
@@ -445,20 +433,6 @@ export class GetUsersUsingItemSuccess implements PayloadActionInterface {
 
   constructor(
     public payload: { itemType: EquipmentItemType; itemId: EquipmentItemBaseInterface["id"]; users: UserInterface[] }
-  ) {}
-}
-
-export class GetImagesUsingItem implements PayloadActionInterface {
-  readonly type = EquipmentActionTypes.GET_IMAGES_USING_ITEM;
-
-  constructor(public payload: { itemType: EquipmentItemType; itemId: EquipmentItemBaseInterface["id"] }) {}
-}
-
-export class GetImagesUsingItemSuccess implements PayloadActionInterface {
-  readonly type = EquipmentActionTypes.GET_IMAGES_USING_ITEM_SUCCESS;
-
-  constructor(
-    public payload: { itemType: EquipmentItemType; itemId: EquipmentItemBaseInterface["id"]; images: ImageInterface[] }
   ) {}
 }
 
@@ -828,8 +802,6 @@ export type EquipmentActions =
   | FindAllBrandsSuccess
   | GetUsersUsingBrand
   | GetUsersUsingBrandSuccess
-  | GetImagesUsingBrand
-  | GetImagesUsingBrandSuccess
 
   // Generic equipment items
   | LoadEquipmentItem
@@ -862,8 +834,6 @@ export type EquipmentActions =
   | RejectEquipmentItemEditProposalSuccess
   | GetUsersUsingItem
   | GetUsersUsingItemSuccess
-  | GetImagesUsingItem
-  | GetImagesUsingItemSuccess
   | GetMostOftenUsedWith
   | GetMostOftenUsedWithSuccess
   | GetContributors

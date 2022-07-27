@@ -1,3 +1,13 @@
+@import "../../../../../styles/breakpoints";
+
+:host {
+  display: block;
+
+  @media screen and (max-width: $md-max) {
+    text-align: center;
+  }
+}
+
 .card-header {
   padding-left: .75rem;
 }

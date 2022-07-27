@@ -1,0 +1,38 @@
+.card-header {
+  .buttons {
+    .sort-menu {
+      .not-selected {
+        display: inline-block;
+        width: 1.25rem;
+      }
+    }
+  }
+}
+
+.search-results {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+
+  > a {
+    display: block;
+    padding: .25rem;
+    width: calc(100% / 5);
+
+    &:hover {
+      > img {
+        transform: scale(1.05);
+      }
+    }
+
+    > img {
+      width: 100%;
+      transition: all .1s ease-in-out;
+    }
+  }
+
+  .loading {
+    width: 100%;
+    margin: 2rem 0;
+  }
+}

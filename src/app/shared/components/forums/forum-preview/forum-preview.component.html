@@ -1,10 +1,3 @@
-<div
-  *ngIf="category?.slug === 'equipment-forums' && topics?.length > 0"
-  [innerHTML]="equipmentCategoryDescription"
-  class="category-description"
->
-</div>
-
 <div class="card">
   <div class="card-header">
     {{ "Recent forum posts" | translate }}
@@ -50,6 +43,13 @@
       {{ "New topic" | translate }}
     </a>
   </div>
+</div>
+
+<div
+  *ngIf="category?.slug === 'equipment-forums' && topics?.length > 0"
+  [innerHTML]="equipmentCategoryDescription"
+  class="category-description"
+>
 </div>
 
 <ng-template #loadingTemplate>
