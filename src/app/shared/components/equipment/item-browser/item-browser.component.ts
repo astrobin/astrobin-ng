@@ -447,7 +447,7 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
     if (this.enableVariantSelection && item.variants?.length > 0) {
       const modal: NgbModalRef = this.modalService.open(VariantSelectorModalComponent);
       const componentInstance: VariantSelectorModalComponent = modal.componentInstance;
-      componentInstance.variants = [...[item], ...item.variants];
+      componentInstance.variants = [...[item], ...item.variants].filter(variant => !variant.frozenAsAmbiguous);
       componentInstance.enableSelectFrozen = this.enableSelectFrozen;
 
       modal.closed.pipe(take(1)).subscribe((variant: EquipmentItem) => {
