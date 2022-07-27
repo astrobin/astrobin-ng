@@ -28,6 +28,9 @@ import {
 import { CompareService } from "@features/equipment/services/compare.service";
 import { ExplorerComponent } from "@features/equipment/components/explorer/explorer.component";
 import { ItemTypeNavComponent } from "@features/equipment/components/item-type-nav/item-type-nav.component";
+import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { VariantSelectorModalComponent } from "@shared/components/equipment/item-browser/variant-selector-modal/variant-selector-modal.component";
+import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 
 @Component({
   selector: "astrobin-equipment-explorer-page",
@@ -68,7 +71,8 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
     public readonly popNotificationsService: PopNotificationsService,
     public readonly cookieService: CookieService,
     public readonly compareService: CompareService,
-    public readonly utilsService: UtilsService
+    public readonly utilsService: UtilsService,
+    public readonly modalService: NgbModal
   ) {
     super(store$, actions$, activatedRoute, router, windowRefService, cookieService);
   }
@@ -99,7 +103,18 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
   }
 
   viewItem(item: EquipmentItemBaseInterface): void {
-    this.onSelectedItemChanged(item);
+    if (item.variants?.length > 0) {
+      const modal: NgbModalRef = this.modalService.open(VariantSelectorModalComponent);
+      const componentInstance: VariantSelectorModalComponent = modal.componentInstance;
+      componentInstance.variants = [...[item], ...item.variants].filter(variant => !variant.frozenAsAmbiguous);
+      componentInstance.enableSelectFrozen = false;
+
+      modal.closed.pipe(take(1)).subscribe((variant: EquipmentItem) => {
+        this.onSelectedItemChanged(variant);
+      });
+    } else {
+      this.onSelectedItemChanged(item);
+    }
   }
 
   getItems() {

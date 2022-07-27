@@ -25,6 +25,7 @@ import { SimplifiedSubscriptionName, SubscriptionName } from "@shared/types/subs
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { SubscriptionRequiredModalComponent } from "@shared/components/misc/subscription-required-modal/subscription-required-modal.component";
 import { CameraDisplayProperty } from "@features/equipment/services/camera.service";
+import { VariantSelectorModalComponent } from "@shared/components/equipment/item-browser/variant-selector-modal/variant-selector-modal.component";
 
 export enum CompareServiceError {
   NON_MATCHING_CLASS = "NON_MATCHING_CLASS",
@@ -90,43 +91,58 @@ export class CompareService extends BaseService {
   }
 
   addWithErrorHandling(item: EquipmentItem): void {
-    this.store$
-      .select(selectCurrentUserProfile)
-      .pipe(
-        switchMap(profile =>
-          this.userSubscriptionService.hasValidSubscription$(profile, [SubscriptionName.ASTROBIN_ULTIMATE_2020])
+    const _doAdd = (itemToAdd: EquipmentItem): void => {
+      this.store$
+        .select(selectCurrentUserProfile)
+        .pipe(
+          switchMap(profile =>
+            this.userSubscriptionService.hasValidSubscription$(profile, [SubscriptionName.ASTROBIN_ULTIMATE_2020])
+          )
         )
-      )
-      .subscribe(isUltimate => {
-        if (!isUltimate) {
-          const modal: NgbModalRef = this.modalService.open(SubscriptionRequiredModalComponent);
-          const component: SubscriptionRequiredModalComponent = modal.componentInstance;
-          component.minimumSubscription = SimplifiedSubscriptionName.ASTROBIN_ULTIMATE_2020;
-          return;
-        }
-
-        try {
-          this.add(item);
-        } catch (e) {
-          if (e.message === CompareServiceError.NON_MATCHING_CLASS) {
-            this.popNotificationsService.error(
-              this.translateService.instant(
-                "You already have items of a different equipment class in the comparison list."
-              )
-            );
-          } else if (e.message === CompareServiceError.TOO_MANY_ITEMS) {
-            this.popNotificationsService.error(
-              this.translateService.instant("You cannot compare more than {{n}} items.", {
-                n: CompareService.MAX_ITEMS
-              })
-            );
-          } else if (e.message === CompareServiceError.ALREADY_IN_LIST) {
-            this.popNotificationsService.warning(
-              this.translateService.instant("This item is already in your comparison list.")
-            );
+        .subscribe(isUltimate => {
+          if (!isUltimate) {
+            const modal: NgbModalRef = this.modalService.open(SubscriptionRequiredModalComponent);
+            const component: SubscriptionRequiredModalComponent = modal.componentInstance;
+            component.minimumSubscription = SimplifiedSubscriptionName.ASTROBIN_ULTIMATE_2020;
+            return;
           }
-        }
+
+          try {
+            this.add(itemToAdd);
+          } catch (e) {
+            if (e.message === CompareServiceError.NON_MATCHING_CLASS) {
+              this.popNotificationsService.error(
+                this.translateService.instant(
+                  "You already have items of a different equipment class in the comparison list."
+                )
+              );
+            } else if (e.message === CompareServiceError.TOO_MANY_ITEMS) {
+              this.popNotificationsService.error(
+                this.translateService.instant("You cannot compare more than {{n}} items.", {
+                  n: CompareService.MAX_ITEMS
+                })
+              );
+            } else if (e.message === CompareServiceError.ALREADY_IN_LIST) {
+              this.popNotificationsService.warning(
+                this.translateService.instant("This item is already in your comparison list.")
+              );
+            }
+          }
+        });
+    };
+
+    if (item.variants?.length > 0) {
+      const modal: NgbModalRef = this.modalService.open(VariantSelectorModalComponent);
+      const componentInstance: VariantSelectorModalComponent = modal.componentInstance;
+      componentInstance.variants = [...[item], ...item.variants].filter(variant => !variant.frozenAsAmbiguous);
+      componentInstance.enableSelectFrozen = false;
+
+      modal.closed.pipe(take(1)).subscribe((variant: EquipmentItem) => {
+        _doAdd(variant);
       });
+    } else {
+      _doAdd(item);
+    }
   }
 
   remove(item: EquipmentItem): void {
