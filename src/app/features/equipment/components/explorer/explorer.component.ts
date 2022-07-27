@@ -42,7 +42,6 @@ import {
   FindEquipmentItemEditProposals,
   FreezeEquipmentItemAsAmbiguous,
   FreezeEquipmentItemAsAmbiguousSuccess,
-  GetImagesUsingItem,
   GetUsersUsingItem,
   LoadEquipmentItem,
   UnapproveEquipmentItemSuccess,
@@ -62,7 +61,6 @@ import { ItemBrowserComponent } from "@shared/components/equipment/item-browser/
 import {
   selectEditProposalsForItem,
   selectEquipmentItem,
-  selectImagesUsingEquipmentItem,
   selectUsersUsingEquipmentItem
 } from "@features/equipment/store/equipment.selectors";
 import { WindowRefService } from "@shared/services/window-ref.service";
@@ -172,7 +170,6 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
   editProposalsCollapsed = true;
 
   usersUsing$: Observable<UserInterface[]>;
-  imagesUsing$: Observable<ImageInterface[]>;
 
   reviewPendingEditNotification: ActiveToast<any>;
 
@@ -296,14 +293,8 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
     if (this.activeId) {
       this.store$.dispatch(new LoadEquipmentItem({ id: this.activeId, type: this.activeType }));
       this.store$.dispatch(new GetUsersUsingItem({ itemType: this.activeType, itemId: this.activeId }));
-      this.store$.dispatch(new GetImagesUsingItem({ itemType: this.activeType, itemId: this.activeId }));
 
       this.usersUsing$ = this.store$.select(selectUsersUsingEquipmentItem, {
-        itemType: this.activeType,
-        itemId: this.activeId
-      });
-
-      this.imagesUsing$ = this.store$.select(selectImagesUsingEquipmentItem, {
         itemType: this.activeType,
         itemId: this.activeId
       });

@@ -64,10 +64,7 @@ import {
   GetAllInBrand,
   GetAllInBrandSuccess,
   GetContributorsSuccess,
-  GetImagesUsingBrand,
-  GetImagesUsingBrandSuccess,
-  GetImagesUsingItem,
-  GetImagesUsingItemSuccess,
+  GetMostOftenUsedWith,
   GetMostOftenUsedWithSuccess,
   GetOthersInBrand,
   GetOthersInBrandSuccess,
@@ -97,15 +94,13 @@ import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { All } from "@app/store/actions/app.actions";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
-import { filter, map, mergeMap, switchMap, tap } from "rxjs/operators";
+import { filter, map, mergeMap, switchMap } from "rxjs/operators";
 import { selectBrand, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import { SensorInterface } from "@features/equipment/types/sensor.interface";
 import { BrandInterface } from "@features/equipment/types/brand.interface";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { SelectorWithProps } from "@ngrx/store/src/models";
-import { ImageInterface } from "@shared/interfaces/image.interface";
-import { LoadImageSuccess } from "@app/store/actions/image.actions";
 
 function getFromStoreOrApiByIdAndType<T>(
   store$: Store<State>,
@@ -196,34 +191,6 @@ export class EquipmentEffects {
           .pipe(map(users => new GetUsersUsingBrandSuccess({ brandId: payload.brandId, users })))
       )
     )
-  );
-
-  GetImagesUsingBrand: Observable<GetImagesUsingBrandSuccess> = createEffect(() =>
-    this.actions$.pipe(
-      ofType(EquipmentActionTypes.GET_IMAGES_USING_BRAND),
-      map((action: GetImagesUsingBrand) => action.payload),
-      mergeMap(payload =>
-        this.equipmentApiService
-          .getImagesUsingBrand(payload.brandId)
-          .pipe(map(images => new GetImagesUsingBrandSuccess({ brandId: payload.brandId, images })))
-      )
-    )
-  );
-
-  GetImagesUsingBrandSuccess: Observable<GetImagesUsingBrandSuccess> = createEffect(
-    () =>
-      this.actions$.pipe(
-        ofType(EquipmentActionTypes.GET_IMAGES_USING_BRAND_SUCCESS),
-        tap((action: GetImagesUsingBrandSuccess) => {
-          const images: ImageInterface[] = action.payload.images;
-          for (const image of images) {
-            this.store$.dispatch(new LoadImageSuccess(image));
-          }
-        })
-      ),
-    {
-      dispatch: false
-    }
   );
 
   /*********************************************************************************************************************
@@ -438,40 +405,10 @@ export class EquipmentEffects {
     )
   );
 
-  GetImagesUsingItem: Observable<GetImagesUsingItemSuccess> = createEffect(() =>
-    this.actions$.pipe(
-      ofType(EquipmentActionTypes.GET_IMAGES_USING_ITEM),
-      map((action: GetImagesUsingItem) => action.payload),
-      mergeMap(payload =>
-        this.equipmentApiService
-          .getImagesUsingItem(payload.itemType, payload.itemId)
-          .pipe(
-            map(images => new GetImagesUsingItemSuccess({ itemType: payload.itemType, itemId: payload.itemId, images }))
-          )
-      )
-    )
-  );
-
-  GetImagesUsingItemSuccess: Observable<GetImagesUsingItemSuccess> = createEffect(
-    () =>
-      this.actions$.pipe(
-        ofType(EquipmentActionTypes.GET_IMAGES_USING_ITEM_SUCCESS),
-        tap((action: GetImagesUsingItemSuccess) => {
-          const images: ImageInterface[] = action.payload.images;
-          for (const image of images) {
-            this.store$.dispatch(new LoadImageSuccess(image));
-          }
-        })
-      ),
-    {
-      dispatch: false
-    }
-  );
-
   GetMostOftenUsedWith: Observable<GetMostOftenUsedWithSuccess> = createEffect(() =>
     this.actions$.pipe(
       ofType(EquipmentActionTypes.GET_MOST_OFTEN_USED_WITH),
-      map((action: GetImagesUsingItem) => action.payload),
+      map((action: GetMostOftenUsedWith) => action.payload),
       mergeMap(payload =>
         this.equipmentApiService
           .getMostOftenUsedWith(payload.itemType, payload.itemId)

@@ -5,11 +5,15 @@
   text-align: center;
 }
 
-astrobin-avatar,
-astrobin-image {
-  display: inline-block;
-  width: calc(20% - 2rem);
-  margin: 1rem;
+.objects-using {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+astrobin-avatar {
+  width: calc(33% - 1rem);
+  margin: .5rem;
   transition: transform .1s ease-in-out;
 
   &:hover {
@@ -18,15 +22,6 @@ astrobin-image {
 
   @media screen and (max-width: $md-max) {
     width: calc(20% - .25rem);
-  }
-}
-
-astrobin-image {
-  width: calc(12.5% - 1rem);
-  margin: .25rem .5rem;
-
-  @media screen and (max-width: $md-max) {
-    width: calc(16.666667% - .25rem);
   }
 }
 

@@ -24,18 +24,9 @@ export interface EquipmentState {
     itemId: EquipmentItemBaseInterface["id"];
     users: UserInterface[];
   }[];
-  imagesUsingEquipmentItems: {
-    itemType: EquipmentItemType;
-    itemId: EquipmentItemBaseInterface["id"];
-    images: ImageInterface[];
-  }[];
   usersUsingEquipmentBrands: {
     brandId: EquipmentItemBaseInterface["id"];
     users: UserInterface[];
-  }[];
-  imagesUsingEquipmentBrands: {
-    brandId: EquipmentItemBaseInterface["id"];
-    images: ImageInterface[];
   }[];
   mostOftenUsedWithData: EquipmentItemMostOftenUsedWithData | {};
   contributors: ContributorInterface[];
@@ -48,9 +39,7 @@ export const initialEquipmentState: EquipmentState = {
   editProposals: [],
   presets: [],
   usersUsingEquipmentItems: [],
-  imagesUsingEquipmentItems: [],
   usersUsingEquipmentBrands: [],
-  imagesUsingEquipmentBrands: [],
   mostOftenUsedWithData: {},
   contributors: []
 };
@@ -246,24 +235,6 @@ export function reducer(state = initialEquipmentState, action: EquipmentActions)
       };
     }
 
-    case EquipmentActionTypes.GET_IMAGES_USING_ITEM_SUCCESS: {
-      return {
-        ...state,
-        imagesUsingEquipmentItems: [
-          ...state.imagesUsingEquipmentItems.filter(
-            entry => entry.itemType !== action.payload.itemType && entry.itemId !== action.payload.itemId
-          ),
-          ...[
-            {
-              itemType: action.payload.itemType,
-              itemId: action.payload.itemId,
-              images: action.payload.images
-            }
-          ]
-        ]
-      };
-    }
-
     case EquipmentActionTypes.GET_MOST_OFTEN_USED_WITH_SUCCESS: {
       const key = `${action.payload.itemType}-${action.payload.itemId}`;
       return {
@@ -286,21 +257,6 @@ export function reducer(state = initialEquipmentState, action: EquipmentActions)
             {
               brandId: action.payload.brandId,
               users: action.payload.users
-            }
-          ]
-        ]
-      };
-    }
-
-    case EquipmentActionTypes.GET_IMAGES_USING_BRAND_SUCCESS: {
-      return {
-        ...state,
-        imagesUsingEquipmentBrands: [
-          ...state.imagesUsingEquipmentBrands.filter(entry => entry.brandId !== action.payload.brandId),
-          ...[
-            {
-              brandId: action.payload.brandId,
-              images: action.payload.images
             }
           ]
         ]

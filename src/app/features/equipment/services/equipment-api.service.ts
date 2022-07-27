@@ -385,13 +385,6 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     return this.http.get<UserInterface[]>(`${this.configUrl}/${itemType.toLowerCase()}/${itemId}/users/`);
   }
 
-  getImagesUsingItem(
-    itemType: EquipmentItemType,
-    itemId: EquipmentItemBaseInterface["id"]
-  ): Observable<ImageInterface[]> {
-    return this.http.get<ImageInterface[]>(`${this.configUrl}/${itemType.toLowerCase()}/${itemId}/images/`);
-  }
-
   getMostOftenUsedWith(
     itemType: EquipmentItemType,
     itemId: EquipmentItemBaseInterface["id"]
@@ -578,10 +571,6 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
 
   getUsersUsingBrand(brandId: BrandInterface["id"]): Observable<UserInterface[]> {
     return this.http.get<UserInterface[]>(`${this.configUrl}/brand/${brandId}/users/`);
-  }
-
-  getImagesUsingBrand(brandId: BrandInterface["id"]): Observable<ImageInterface[]> {
-    return this.http.get<ImageInterface[]>(`${this.configUrl}/brand/${brandId}/images/`);
   }
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -31,7 +31,7 @@ export class ForumPreviewComponent extends BaseComponentDirective implements OnI
     "Every equipment item on AstroBin has a forum associated with it. Anybody who used an " +
       "equipment item is notified of new topics in its forum, unless they opt out. This is very  " +
       "useful to connect with other users who use the same equipment as you. " +
-      "{{ _0 }}Learn more about the AstroBin equipment database{{ _1 }}!",
+      "{{ _0 }}Learn more about the AstroBin equipment database!{{ _1 }}",
     {
       _0: `<a href="https://welcome.astrobin.com/features/equipment-database" target="_blank">`,
       _1: "</a>"

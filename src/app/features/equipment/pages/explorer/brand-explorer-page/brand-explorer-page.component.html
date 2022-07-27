@@ -125,11 +125,12 @@
             [users]="usersUsing$ | async"
           ></astrobin-users-using-equipment-item>
 
-          <astrobin-images-using-equipment-item
-            class="mt-5"
-            [images]="imagesUsing$ | async"
-            [brand]="activeBrand"
-          ></astrobin-images-using-equipment-item>
+          <astrobin-image-search
+            [header]="'Acquired with this brand' | translate"
+            [text]="activeBrand.name"
+            ordering="-likes"
+            class="mt-5 d-block"
+          ></astrobin-image-search>
         </ng-container>
 
         <ng-container *ngIf="!activeBrand">
