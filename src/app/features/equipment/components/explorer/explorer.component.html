@@ -448,6 +448,8 @@
       <astrobin-image-search
         [header]="'Acquired with this item' | translate"
         [text]="equipmentItemService.getFullDisplayName$(selectedItem) | async"
+        [itemType]="activeType"
+        [itemId]="selectedItem.id"
         ordering="-likes"
         class="mt-5 d-block"
       ></astrobin-image-search>
