@@ -40,6 +40,9 @@ export class ItemTypeNavComponent extends BaseComponentDirective
   excludeTypes: EquipmentItemType[] = [];
 
   @Input()
+  enableCollapse = true;
+
+  @Input()
   showCounts = true;
 
   @Input()
@@ -128,13 +131,13 @@ export class ItemTypeNavComponent extends BaseComponentDirective
     @Inject(PLATFORM_ID) public readonly platformId
   ) {
     super(store$);
-    this._initRouterEvents();
   }
 
   ngOnInit() {
     super.ngOnInit();
 
     this.collapse();
+    this._initRouterEvents();
     this._setActiveSubNav(this.activatedRoute.snapshot?.url.join("/"));
     this._initActionListeners();
     this._initTypes();
@@ -202,6 +205,10 @@ export class ItemTypeNavComponent extends BaseComponentDirective
   }
 
   collapse() {
+    if (!this.enableCollapse) {
+      return;
+    }
+
     if (!this.collapsed) {
       this.collapsed = true;
       this.collapsedChanged.emit(true);

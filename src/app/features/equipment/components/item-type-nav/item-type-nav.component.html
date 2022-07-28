@@ -111,7 +111,7 @@
     </li>
   </ng-container>
 
-  <ng-container *ngIf="!collapsed">
+  <ng-container *ngIf="!collapsed && enableCollapse">
     <li class="nav-item-separator"></li>
 
     <li [ngbNavItem]="'collapse'">

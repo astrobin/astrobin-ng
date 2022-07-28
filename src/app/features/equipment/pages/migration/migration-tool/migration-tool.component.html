@@ -20,6 +20,7 @@
       <astrobin-equipment-item-type-nav
         routingBasePath="/equipment/migration-tool"
         [showBrands]="false"
+        [showContributors]="false"
         [cameraCount]="nonMigratedCamerasCount$"
         [telescopeCount]="nonMigratedTelescopesCount$"
         [mountCount]="nonMigratedMountsCount$"
@@ -28,6 +29,7 @@
         [softwareCount]="nonMigratedSoftwareCount$"
         [showSubNavigation]="false"
         [excludeTypes]="[EquipmentItemType.SENSOR]"
+        [enableCollapse]="false"
       ></astrobin-equipment-item-type-nav>
     </div>
 
