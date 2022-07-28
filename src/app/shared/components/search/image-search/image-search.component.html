@@ -4,7 +4,11 @@
 
     <div class="buttons d-flex align-items-center">
       <div
-        *ngIf="itemType === EquipmentItemType.TELESCOPE || itemType === EquipmentItemType.CAMERA"
+        *ngIf="
+          itemType === EquipmentItemType.TELESCOPE ||
+          itemType === EquipmentItemType.CAMERA ||
+          itemType === EquipmentItemType.SENSOR
+        "
         ngbDropdown
         class="usage-menu mr-2"
       >

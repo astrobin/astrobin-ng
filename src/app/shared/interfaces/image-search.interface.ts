@@ -7,6 +7,9 @@ export interface ImageSearchInterface {
   description: string | null;
   published: string;
 
+  allSensors: string[];
+  imagingSensors: string[];
+  guidingSensors: string[];
   allTelescopes2: string[];
   imagingTelescopes2: string[];
   guidingTelescopes2: string[];
@@ -18,6 +21,9 @@ export interface ImageSearchInterface {
   imagingCameras2: string[];
   guidingCameras2: string[];
 
+  allSensorsId: string[];
+  imagingSensorsId: string[];
+  guidingSensorsId: string[];
   allTelescopes2Id: string[];
   imagingTelescopes2Id: string[];
   guidingTelescopes2Id: string[];

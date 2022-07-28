@@ -42,13 +42,18 @@ export class ImageSearchApiService extends BaseClassicApiService {
       url = UtilsService.addOrUpdateUrlParam(url, "ordering", options.ordering);
     }
 
-    const emptyResponse = { results: [], count: 0, prev: null, next: null };
     let prop: string;
 
     switch (options.itemType) {
       case EquipmentItemType.SENSOR:
-        // TODO: index sensors in the backend.
-        return of(emptyResponse);
+        if (options.usageType === EquipmentItemUsageType.GUIDING) {
+          prop = "guiding_sensors_id";
+        } else if (options.usageType === EquipmentItemUsageType.IMAGING) {
+          prop = "imaging_sensors_id";
+        } else {
+          prop = "all_sensors_id";
+        }
+        break;
       case EquipmentItemType.CAMERA:
         if (options.usageType === EquipmentItemUsageType.GUIDING) {
           prop = "guiding_cameras_2_id";
