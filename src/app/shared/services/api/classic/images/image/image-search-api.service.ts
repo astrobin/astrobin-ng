@@ -4,13 +4,16 @@ import { State } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { BaseClassicApiService } from "@shared/services/api/classic/base-classic-api.service";
 import { LoadingService } from "@shared/services/loading.service";
-import { Observable } from "rxjs";
+import { Observable, of } from "rxjs";
 import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
 import { ImageSearchInterface } from "@shared/interfaces/image-search.interface";
 import { UtilsService } from "@shared/services/utils/utils.service";
+import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 
 export interface ImageSearchOptions {
-  text?: string;
+  itemType: EquipmentItemType;
+  itemId: EquipmentItem["id"];
   ordering?: string;
   page: number;
 }
@@ -34,10 +37,39 @@ export class ImageSearchApiService extends BaseClassicApiService {
 
     url = UtilsService.addOrUpdateUrlParam(url, "page", options.page.toString());
 
-    for (const arg of ["text", "ordering"]) {
-      if (!!options[arg]) {
-        url = UtilsService.addOrUpdateUrlParam(url, arg, options[arg]);
-      }
+    if (!!options.ordering) {
+      url = UtilsService.addOrUpdateUrlParam(url, "ordering", options.ordering);
+    }
+
+    const emptyResponse = { results: [], count: 0, prev: null, next: null };
+    let prop: string;
+
+    switch (options.itemType) {
+      case EquipmentItemType.SENSOR:
+        // TODO: index sensors in the backend.
+        return of(emptyResponse);
+      case EquipmentItemType.CAMERA:
+        prop = "imaging_cameras_2_id";
+        break;
+      case EquipmentItemType.TELESCOPE:
+        prop = "imaging_telescopes_2_id";
+        break;
+      case EquipmentItemType.MOUNT:
+        prop = "mounts_2_id";
+        break;
+      case EquipmentItemType.FILTER:
+        prop = "filters_2_id";
+        break;
+      case EquipmentItemType.ACCESSORY:
+        prop = "accessories_2_id";
+        break;
+      case EquipmentItemType.SOFTWARE:
+        prop = "software_2_id";
+        break;
+    }
+
+    if (!!prop) {
+      url = UtilsService.addOrUpdateUrlParam(url, prop, options.itemId.toString());
     }
 
     return this.http.get<PaginatedApiResultInterface<ImageSearchInterface>>(url);

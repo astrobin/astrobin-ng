@@ -9,6 +9,8 @@ import { fromEvent } from "rxjs";
 import { debounceTime, distinctUntilChanged, takeUntil } from "rxjs/operators";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { TranslateService } from "@ngx-translate/core";
+import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 
 @Component({
   selector: "astrobin-image-search",
@@ -21,6 +23,12 @@ export class ImageSearchComponent extends BaseComponentDirective implements OnIn
 
   @Input()
   text: string;
+
+  @Input()
+  itemType: EquipmentItemType;
+
+  @Input()
+  itemId: EquipmentItem["id"];
 
   @Input()
   ordering: string;
@@ -72,7 +80,7 @@ export class ImageSearchComponent extends BaseComponentDirective implements OnIn
     }
 
     this.imageSearchApiService
-      .search({ text: this.text, ordering: this.ordering, page: this.page })
+      .search({ itemType: this.itemType, itemId: this.itemId, ordering: this.ordering, page: this.page })
       .subscribe(response => {
         this.next = response.next;
 
