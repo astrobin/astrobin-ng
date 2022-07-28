@@ -91,8 +91,7 @@ export class EquipmentItemDisplayNameComponent extends BaseComponentDirective im
 
     this.nameLink = `/equipment/explorer/${this.item.klass.toLowerCase()}/${this.item.id}`;
 
-    this.showItemUnapprovedInfo =
-      this.item.reviewerDecision !== EquipmentItemReviewerDecision.APPROVED && !!this.item.brand;
+    this.showItemUnapprovedInfo = this.item.reviewerDecision !== EquipmentItemReviewerDecision.APPROVED;
   }
 
   openItemSummaryModal(item: EquipmentItemBaseInterface) {
