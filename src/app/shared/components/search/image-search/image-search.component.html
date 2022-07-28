@@ -3,6 +3,33 @@
     {{ header }}
 
     <div class="buttons d-flex align-items-center">
+      <div
+        *ngIf="itemType === EquipmentItemType.TELESCOPE || itemType === EquipmentItemType.CAMERA"
+        ngbDropdown
+        class="usage-menu mr-2"
+      >
+        <button ngbDropdownToggle id="usage-menu" type="button" class="btn btn-outline-secondary">
+          {{ "Usage" | translate }}
+        </button>
+
+        <div ngbDropdownMenu aria-labelledby="sort-search-results">
+          <button ngbDropdownItem (click)="setUsageType(null)">
+            <fa-icon icon="check" *ngIf="!usageType; else notSelected"></fa-icon>
+            {{ "Any" | translate }}
+          </button>
+
+          <button ngbDropdownItem (click)="setUsageType(EquipmentItemUsageType.IMAGING)">
+            <fa-icon icon="check" *ngIf="usageType === EquipmentItemUsageType.IMAGING; else notSelected"></fa-icon>
+            {{ "Imaging" | translate }}
+          </button>
+
+          <button ngbDropdownItem (click)="setUsageType(EquipmentItemUsageType.GUIDING)">
+            <fa-icon icon="check" *ngIf="usageType === EquipmentItemUsageType.GUIDING; else notSelected"></fa-icon>
+            {{ "Guiding" | translate }}
+          </button>
+        </div>
+      </div>
+
       <div ngbDropdown class="sort-menu mr-2">
         <button ngbDropdownToggle id="sort-search-results" type="button" class="btn btn-outline-secondary">
           {{ "Sort" | translate }}

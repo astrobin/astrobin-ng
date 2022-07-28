@@ -8,12 +8,13 @@ import { Observable, of } from "rxjs";
 import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
 import { ImageSearchInterface } from "@shared/interfaces/image-search.interface";
 import { UtilsService } from "@shared/services/utils/utils.service";
-import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import { EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/types/equipment-item-base.interface";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 
 export interface ImageSearchOptions {
   itemType: EquipmentItemType;
   itemId: EquipmentItem["id"];
+  usageType?: EquipmentItemUsageType;
   ordering?: string;
   page: number;
 }
@@ -49,10 +50,22 @@ export class ImageSearchApiService extends BaseClassicApiService {
         // TODO: index sensors in the backend.
         return of(emptyResponse);
       case EquipmentItemType.CAMERA:
-        prop = "imaging_cameras_2_id";
+        if (options.usageType === EquipmentItemUsageType.GUIDING) {
+          prop = "guiding_cameras_2_id";
+        } else if (options.usageType === EquipmentItemUsageType.IMAGING) {
+          prop = "imaging_cameras_2_id";
+        } else {
+          prop = "all_cameras_2_id";
+        }
         break;
       case EquipmentItemType.TELESCOPE:
-        prop = "imaging_telescopes_2_id";
+        if (options.usageType === EquipmentItemUsageType.GUIDING) {
+          prop = "guiding_telescopes_2_id";
+        } else if (options.usageType === EquipmentItemUsageType.IMAGING) {
+          prop = "imaging_telescopes_2_id";
+        } else {
+          prop = "all_telescopes_2_id";
+        }
         break;
       case EquipmentItemType.MOUNT:
         prop = "mounts_2_id";
