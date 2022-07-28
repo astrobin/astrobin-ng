@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from "@angular/core";
+import { Component, ElementRef, Input, OnChanges, OnInit, SimpleChanges } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
@@ -9,7 +9,7 @@ import { fromEvent } from "rxjs";
 import { debounceTime, distinctUntilChanged, takeUntil } from "rxjs/operators";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { TranslateService } from "@ngx-translate/core";
-import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import { EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/types/equipment-item-base.interface";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 
 @Component({
@@ -18,6 +18,9 @@ import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
   styleUrls: ["./image-search.component.scss"]
 })
 export class ImageSearchComponent extends BaseComponentDirective implements OnInit, OnChanges {
+  readonly EquipmentItemType = EquipmentItemType;
+  readonly EquipmentItemUsageType = EquipmentItemUsageType;
+
   @Input()
   header = this.translateService.instant("Search results");
 
@@ -39,6 +42,7 @@ export class ImageSearchComponent extends BaseComponentDirective implements OnIn
   loading = true;
   images: ImageSearchInterface[] = [];
   searchUrl: string;
+  usageType: EquipmentItemUsageType;
 
   constructor(
     public readonly store$: Store<State>,
@@ -72,6 +76,12 @@ export class ImageSearchComponent extends BaseComponentDirective implements OnIn
     this._loadData(false);
   }
 
+  setUsageType(usageType: EquipmentItemUsageType): void {
+    this.usageType = usageType;
+    this.page = 1;
+    this._loadData(false);
+  }
+
   private _loadData(cumulative = true): void {
     this.loading = true;
 
@@ -80,7 +90,13 @@ export class ImageSearchComponent extends BaseComponentDirective implements OnIn
     }
 
     this.imageSearchApiService
-      .search({ itemType: this.itemType, itemId: this.itemId, ordering: this.ordering, page: this.page })
+      .search({
+        itemType: this.itemType,
+        itemId: this.itemId,
+        usageType: this.usageType,
+        ordering: this.ordering,
+        page: this.page
+      })
       .subscribe(response => {
         this.next = response.next;
 
