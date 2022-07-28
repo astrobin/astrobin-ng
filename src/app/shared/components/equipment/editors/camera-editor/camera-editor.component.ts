@@ -213,6 +213,7 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
           this._getDIYField(),
           this._getBrandField(),
           this._getNameField(),
+          this._getVariantOfField(EquipmentItemType.CAMERA),
           this._getTypeField(),
           this._getSensorField(),
           this._getCooledField(),
@@ -220,7 +221,7 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
           this._getBackFocusField()
         ];
       } else {
-        this.fields = [this._getNameField()];
+        this.fields = [this._getNameField(), this._getVariantOfField(EquipmentItemType.CAMERA)];
 
         if (!this.model.type || this.model.type === CameraType.OTHER) {
           this.fields.push(this._getTypeField());
