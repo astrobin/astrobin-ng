@@ -31,10 +31,12 @@ import { LoadingService } from "@shared/services/loading.service";
 import { BrandInterface } from "@features/equipment/types/brand.interface";
 import { Observable } from "rxjs";
 import { UserInterface } from "@shared/interfaces/user.interface";
-import { ImageInterface } from "@shared/interfaces/image.interface";
 import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 import { EquipmentItemsSortOrder } from "@features/equipment/services/equipment-api.service";
+import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { VariantSelectorModalComponent } from "@shared/components/equipment/item-browser/variant-selector-modal/variant-selector-modal.component";
+import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 
 @Component({
   selector: "astrobin-brand-explorer-page",
@@ -61,7 +63,8 @@ export class BrandExplorerPageComponent extends ExplorerBaseComponent implements
     public readonly translateService: TranslateService,
     public readonly cookieService: CookieService,
     public readonly loadingService: LoadingService,
-    public readonly equipmentItemService: EquipmentItemService
+    public readonly equipmentItemService: EquipmentItemService,
+    public readonly modalService: NgbModal
   ) {
     super(store$, actions$, activatedRoute, router, windowRefService, cookieService);
     this.activeType = "BRAND";
@@ -124,6 +127,21 @@ export class BrandExplorerPageComponent extends ExplorerBaseComponent implements
 
   viewBrand(brand: BrandInterface) {
     this.router.navigateByUrl(`/equipment/explorer/brand/${brand.id}/${UtilsService.slugify(brand.name)}`);
+  }
+
+  viewItem(item: EquipmentItemBaseInterface): void {
+    if (item.variants?.length > 0) {
+      const modal: NgbModalRef = this.modalService.open(VariantSelectorModalComponent);
+      const componentInstance: VariantSelectorModalComponent = modal.componentInstance;
+      componentInstance.variants = [...[item], ...item.variants].filter(variant => !variant.frozenAsAmbiguous);
+      componentInstance.enableSelectFrozen = false;
+
+      modal.closed.pipe(take(1)).subscribe((variant: EquipmentItem) => {
+        this.router.navigateByUrl(`/equipment/explorer/${variant.klass}/${variant.id}/`);
+      });
+    } else {
+      this.router.navigateByUrl(`/equipment/explorer/${item.klass}/${item.id}/`);
+    }
   }
 
   closeBrand() {
