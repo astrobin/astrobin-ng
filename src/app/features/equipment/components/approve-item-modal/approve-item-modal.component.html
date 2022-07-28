@@ -32,7 +32,7 @@
 </div>
 
 <div class="modal-footer">
-  <div class="alert alert-info mb-3">
+  <div *ngIf="!!equipmentItem.brand" class="alert alert-info mb-3">
     <p>
       {{ "This operation will make the item available to everyone on AstroBin." | translate }}
       <span [innerHTML]="consultHandbookMessage"></span>

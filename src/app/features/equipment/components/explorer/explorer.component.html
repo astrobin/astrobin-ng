@@ -182,6 +182,7 @@
 
                 <ng-container
                   *ngIf="
+                    !!selectedItem.brand &&
                     selectedItem.reviewerDecision === EquipmentItemReviewerDecision.APPROVED &&
                     !selectedItem.frozenAsAmbiguous
                   "
@@ -200,6 +201,7 @@
 
                 <ng-container
                   *ngIf="
+                    !!selectedItem.brand &&
                     selectedItem.reviewerDecision === EquipmentItemReviewerDecision.APPROVED &&
                     selectedItem.frozenAsAmbiguous
                   "
@@ -217,7 +219,7 @@
                 </ng-container>
 
                 <ng-container
-                  *ngIf="(!selectedItem.assignee || selectedItem.assignee === currentUser.id) && !!selectedItem.brand"
+                  *ngIf="(!selectedItem.assignee || selectedItem.assignee === currentUser.id)"
                 >
                   <ng-container
                     *ngIf="selectedItem.reviewerDecision === null && selectedItem.createdBy !== currentUser.id"
