@@ -74,11 +74,15 @@ astrobin-equipment-item-summary {
   font-style: italic;
 
   .item-variant {
-    display: block;
-    padding: .33rem;
-    width: 100%;
     border-bottom: 0;
-    margin-left: 1rem;
+    margin-left: .5rem;
+
+    &:not(:last-child) {
+      &::after {
+        content: '\b7'; /* middot */
+        margin-left: .25rem
+      }
+    }
 
     [icon=plus] {
       margin: 0 .5rem;
@@ -98,7 +102,7 @@ astrobin-equipment-item-summary {
   margin-top: 3rem;
   text-align: center;
   padding: 2rem;
-  background: rgba(255,255,255, .025);
+  background: rgba(255, 255, 255, .025);
   border: 1px dashed rgba(255, 255, 255, .15);
   color: var(--lighterGrey);
   opacity: .66;

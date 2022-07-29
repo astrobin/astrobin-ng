@@ -13,16 +13,14 @@ import {
   arrayUniqueEquipmentItems,
   selectBrand,
   selectBrands,
-  selectEquipmentItems,
-  selectUsersUsingEquipmentBrand
+  selectEquipmentItems
 } from "@features/equipment/store/equipment.selectors";
 import {
   EquipmentActionTypes,
   GetAllBrands,
   GetAllBrandsSuccess,
   GetAllInBrand,
-  GetAllInBrandSuccess,
-  GetUsersUsingBrand
+  GetAllInBrandSuccess
 } from "@features/equipment/store/equipment.actions";
 import { filter, map, take, takeUntil } from "rxjs/operators";
 import { UtilsService } from "@shared/services/utils/utils.service";
@@ -51,8 +49,6 @@ export class BrandExplorerPageComponent extends ExplorerBaseComponent implements
   activeId: BrandInterface["id"];
   activeBrand: BrandInterface;
   itemsInBrand: EquipmentItemBaseInterface[];
-
-  usersUsing$: Observable<UserInterface[]>;
 
   constructor(
     public readonly store$: Store<State>,
@@ -179,7 +175,6 @@ export class BrandExplorerPageComponent extends ExplorerBaseComponent implements
         .subscribe(brand => {
           this.activeBrand = brand;
           this._loadItemsInBrand();
-          this._loadUsing();
         });
     }
   }
@@ -253,14 +248,6 @@ export class BrandExplorerPageComponent extends ExplorerBaseComponent implements
           );
         });
     }
-  }
-
-  private _loadUsing() {
-    this.store$.dispatch(new GetUsersUsingBrand({ brandId: this.activeId }));
-
-    this.usersUsing$ = this.store$.select(selectUsersUsingEquipmentBrand, {
-      brandId: this.activeId
-    });
   }
 
   private _setupRouterEvents() {

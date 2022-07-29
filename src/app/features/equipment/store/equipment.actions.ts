@@ -216,18 +216,6 @@ export class FindAllBrandsSuccess implements PayloadActionInterface {
   constructor(public payload: { brands: BrandInterface[] }) {}
 }
 
-export class GetUsersUsingBrand implements PayloadActionInterface {
-  readonly type = EquipmentActionTypes.GET_USERS_USING_BRAND;
-
-  constructor(public payload: { brandId: BrandInterface["id"] }) {}
-}
-
-export class GetUsersUsingBrandSuccess implements PayloadActionInterface {
-  readonly type = EquipmentActionTypes.GET_USERS_USING_BRAND_SUCCESS;
-
-  constructor(public payload: { brandId: BrandInterface["id"]; users: UserInterface[] }) {}
-}
-
 /**********************************************************************************************************************
  * Generic equipment items
  *********************************************************************************************************************/
@@ -420,20 +408,6 @@ export class RejectEquipmentItemEditProposalSuccess implements PayloadActionInte
   readonly type = EquipmentActionTypes.REJECT_EQUIPMENT_ITEM_EDIT_PROPOSAL_SUCCESS;
 
   constructor(public payload: { editProposal: EditProposalInterface<EquipmentItemBaseInterface> }) {}
-}
-
-export class GetUsersUsingItem implements PayloadActionInterface {
-  readonly type = EquipmentActionTypes.GET_USERS_USING_ITEM;
-
-  constructor(public payload: { itemType: EquipmentItemType; itemId: EquipmentItemBaseInterface["id"] }) {}
-}
-
-export class GetUsersUsingItemSuccess implements PayloadActionInterface {
-  readonly type = EquipmentActionTypes.GET_USERS_USING_ITEM_SUCCESS;
-
-  constructor(
-    public payload: { itemType: EquipmentItemType; itemId: EquipmentItemBaseInterface["id"]; users: UserInterface[] }
-  ) {}
 }
 
 export class GetMostOftenUsedWith implements PayloadActionInterface {
@@ -800,8 +774,6 @@ export type EquipmentActions =
   | CreateBrandSuccess
   | FindAllBrands
   | FindAllBrandsSuccess
-  | GetUsersUsingBrand
-  | GetUsersUsingBrandSuccess
 
   // Generic equipment items
   | LoadEquipmentItem
@@ -832,8 +804,6 @@ export type EquipmentActions =
   | ApproveEquipmentItemEditProposalSuccess
   | RejectEquipmentItemEditProposal
   | RejectEquipmentItemEditProposalSuccess
-  | GetUsersUsingItem
-  | GetUsersUsingItemSuccess
   | GetMostOftenUsedWith
   | GetMostOftenUsedWithSuccess
   | GetContributors

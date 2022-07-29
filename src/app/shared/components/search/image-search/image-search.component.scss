@@ -19,6 +19,8 @@
     display: block;
     padding: .25rem;
     width: calc(100% / 5);
+    max-width: 125px;
+    min-width: 95px;
 
     &:hover {
       > img {

@@ -12,7 +12,7 @@
         ngbDropdown
         class="usage-menu mr-2"
       >
-        <button ngbDropdownToggle id="usage-menu" type="button" class="btn btn-outline-secondary">
+        <button ngbDropdownToggle id="usage-menu" type="button" class="btn btn-outline-secondary mb-0">
           {{ "Usage" | translate }}
         </button>
 
@@ -82,7 +82,7 @@
 </ng-template>
 
 <ng-template #noImages>
-  <astrobin-nothing-here></astrobin-nothing-here>
+  <astrobin-nothing-here [withAlert]="false" [withInfoSign]="false"></astrobin-nothing-here>
 </ng-template>
 
 <ng-template #loadingTemplate>

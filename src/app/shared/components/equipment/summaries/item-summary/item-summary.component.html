@@ -1,28 +1,21 @@
 <ng-container *ngIf="item">
   <div class="row">
-    <div
-      *ngIf="showImage"
-      class="col-12 col-lg-3"
-    >
-      <div
-        class="image"
-        [class.image-large]="showLargeImage"
-        [style.background-image]="'url(' + image + ')'"
-      >
+    <div *ngIf="showImage" class="col-12 col-lg-3">
+      <div class="image" [class.image-large]="showLargeImage" [style.background-image]="'url(' + image + ')'">
         <fa-icon *ngIf="showEditButtons" class="edit" icon="pen" (click)="editButtonClick.emit(item)"></fa-icon>
       </div>
     </div>
 
     <div class="col">
       <div class="label">
-        <h5>
+        <h2>
           <astrobin-equipment-item-display-name
             [item]="item"
             [enableBrandLink]="enableBrandLink"
             [enableNameLink]="showViewLink"
           ></astrobin-equipment-item-display-name>
           <fa-icon *ngIf="showEditButtons" class="edit" icon="pen" (click)="editButtonClick.emit(item)"></fa-icon>
-        </h5>
+        </h2>
         <h6 *ngIf="showProperties && !!item.website" class="website">
           <a target="_blank" [href]="item.website">{{ UtilsService.shortenUrl(item.website) }}</a>
         </h6>
@@ -66,6 +59,17 @@
           </tr>
         </ng-container>
 
+        <tr *ngIf="showSubItem && !!subItem && subItemCollapsed" class="property">
+          <th class="property-name">
+            {{ subItemLabel }}
+          </th>
+          <td class="property-value">
+            <a href="#" appEventPreventDefault appEventStopPropagation (click)="subItemCollapsed = false">
+              <astrobin-equipment-item-display-name [item]="subItem"></astrobin-equipment-item-display-name>
+            </a>
+          </td>
+        </tr>
+
         <ng-container *ngIf="showStats">
           <tr class="property">
             <th class="property-name">
@@ -74,6 +78,7 @@
             </th>
             <td class="property-value">{{ item.userCount || 0 }}</td>
           </tr>
+
           <tr class="property">
             <th class="property-name">
               {{ "Images" | translate }}
@@ -81,17 +86,41 @@
             </th>
             <td class="property-value">{{ item.imageCount || 0 }}</td>
           </tr>
-          <tr *ngIf="showSubItem && !!subItem && subItemCollapsed" class="property">
-            <th class="property-name">
-              {{ subItemLabel }}
-            </th>
-            <td class="property-value">
-              <a href="#" appEventPreventDefault appEventStopPropagation (click)="subItemCollapsed = false">
-                <astrobin-equipment-item-display-name [item]="subItem"></astrobin-equipment-item-display-name>
-              </a>
-            </td>
-          </tr>
         </ng-container>
+
+        <tr *ngIf="showMostOftenUsedWith && itemTypeSupportsMostOftenUsedWith()" class="property">
+          <th class="property-name">
+            {{ "Most often used with" | translate }}
+            <astrobin-data-does-not-update-in-real-time></astrobin-data-does-not-update-in-real-time>
+          </th>
+          <td class="property-value most-often-used-with">
+            <ng-container *ngIf="mostOftenUsedWith$ | async as mostOftenUsedWith; else loadingTemplate">
+              <ng-container *ngIf="mostOftenUsedWith.length > 0; else noMostOftenUsedWithTemplate">
+                <ng-container *ngIf="mostOftenUsedWith[0].item$ | async as currentItem">
+                  <a
+                    [routerLink]="['/equipment/explorer', currentItem.klass.toLowerCase(), currentItem.id]"
+                    [ngbTooltip]="'{{0}} images in common' | translate:{'0': mostOftenUsedWith[0].matches}"
+                  >
+                    <astrobin-equipment-item-display-name [item]="currentItem"></astrobin-equipment-item-display-name>
+                  </a>
+                </ng-container>
+              </ng-container>
+
+              <button
+                *ngIf="mostOftenUsedWith.length > 0"
+                class="ml-2 btn btn-outline-primary btn-sm d-none d-lg-inline"
+                [class.loading]="loadingService.loading$ | async"
+                (click)="viewMoreMostOftenUsedWith()"
+              >
+                {{ "More" | translate }}
+              </button>
+
+              <ng-template #noMostOftenUsedWithTemplate>
+                <astrobin-nothing-here [withAlert]="false" [withInfoSign]="false"></astrobin-nothing-here>
+              </ng-template>
+            </ng-container>
+          </td>
+        </tr>
         </tbody>
       </table>
 
@@ -120,47 +149,51 @@
     </div>
   </div>
 
-  <div class="meta" *ngIf="showMeta">
-    <p *ngIf="item.createdBy">
-      <strong>{{ "Created by" | translate }}</strong>:
-      <astrobin-username [user]="getCreatedBy() | async"></astrobin-username>
-      <abbr [attr.title]="item.created | localDate">
-        ({{ item.created | localDate | timeago:true }})
-      </abbr>
-    </p>
+  <ng-container *ngIf="currentUser$ | async as currentUser">
+    <ng-container *ngIf="!!currentUser && currentUser | isEquipmentModerator">
+      <div class="meta" *ngIf="showMeta">
+        <p *ngIf="item.createdBy">
+          <strong>{{ "Created by" | translate }}:</strong>
+          <astrobin-username [user]="getCreatedBy() | async"></astrobin-username>
+          <abbr [attr.title]="item.created | localDate"> ({{ item.created | localDate | timeago: true }}) </abbr>
+        </p>
 
-    <ng-container *ngIf="(currentUser$ | async) as currentUser">
-      <p *ngIf="(currentUser | isEquipmentModerator) && !item.reviewerDecision">
-        <strong>{{ "Assignee" | translate }}</strong>:
-        <astrobin-username *ngIf="!!item.assignee" [user]="getAssignee() | async"></astrobin-username>
-        <span *ngIf="!item.assignee">{{ "Any moderator" | translate }}</span>
-        <a
-          *ngIf="item.assignee === null || item.assignee === currentUser.id"
-          href="#"
-          class="assign"
-          appEventStopPropagation
-          appEventPreventDefault
-          [ngbTooltip]="'Assign' | translate"
-          (click)="assign()"
-        >
-          <fa-icon icon="pen"></fa-icon>
-        </a>
-      </p>
+        <p *ngIf="!item.reviewerDecision">
+          <strong>{{ "Assignee" | translate }}:</strong>
+          <astrobin-username *ngIf="!!item.assignee" [user]="getAssignee() | async"></astrobin-username>
+          <span *ngIf="!item.assignee">{{ "Any moderator" | translate }}</span>
+          <a
+            *ngIf="item.assignee === null || item.assignee === currentUser.id"
+            href="#"
+            class="assign"
+            appEventStopPropagation
+            appEventPreventDefault
+            [ngbTooltip]="'Assign' | translate"
+            (click)="assign()"
+          >
+            <fa-icon icon="pen"></fa-icon>
+          </a>
+        </p>
+
+        <p *ngIf="item.reviewedBy">
+          <strong>{{ "Reviewed by" | translate }}:</strong>
+          <astrobin-username [user]="getReviewedBy() | async"></astrobin-username>
+          <abbr *ngIf="item.reviewedTimestamp" [attr.title]="item.reviewedTimestamp | localDate">
+            ({{ item.reviewedTimestamp | localDate | timeago: true }})
+          </abbr>
+        </p>
+
+        <p *ngIf="showLastUpdate()">
+          <strong>{{ "Last update" | translate }}:</strong>
+          <abbr [attr.title]="item.updated | localDate">
+            {{ item.updated | localDate | timeago: true }}
+          </abbr>
+        </p>
+      </div>
     </ng-container>
-
-    <p *ngIf="item.reviewedBy">
-      <strong>{{ "Reviewed by" | translate }}</strong>:
-      <astrobin-username [user]="getReviewedBy() | async"></astrobin-username>
-      <abbr *ngIf="item.reviewedTimestamp" [attr.title]="item.reviewedTimestamp | localDate">
-        ({{ item.reviewedTimestamp | localDate | timeago:true }})
-      </abbr>
-    </p>
-
-    <p *ngIf="showLastUpdate()">
-      <strong>{{ "Last update" | translate }}:</strong>
-      <abbr [attr.title]="item.updated | localDate">
-        {{ item.updated | localDate | timeago:true }}
-      </abbr>
-    </p>
-  </div>
+  </ng-container>
 </ng-container>
+
+<ng-template #loadingTemplate>
+  <astrobin-loading-indicator></astrobin-loading-indicator>
+</ng-template>

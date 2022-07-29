@@ -29,7 +29,6 @@ import { LoadingService } from "@shared/services/loading.service";
 import {
   ApproveEquipmentItemEditProposalSuccess,
   ApproveEquipmentItemSuccess,
-  AssignEditProposalSuccess,
   AssignItemSuccess,
   CreateAccessoryEditProposal,
   CreateCameraEditProposal,
@@ -42,7 +41,6 @@ import {
   FindEquipmentItemEditProposals,
   FreezeEquipmentItemAsAmbiguous,
   FreezeEquipmentItemAsAmbiguousSuccess,
-  GetUsersUsingItem,
   LoadEquipmentItem,
   UnapproveEquipmentItemSuccess,
   UnfreezeEquipmentItemAsAmbiguous,
@@ -58,11 +56,7 @@ import {
 } from "@shared/components/equipment/editors/base-item-editor/base-item-editor.component";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { ItemBrowserComponent } from "@shared/components/equipment/item-browser/item-browser.component";
-import {
-  selectEditProposalsForItem,
-  selectEquipmentItem,
-  selectUsersUsingEquipmentItem
-} from "@features/equipment/store/equipment.selectors";
+import { selectEditProposalsForItem, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { RejectItemModalComponent } from "@features/equipment/components/reject-item-modal/reject-item-modal.component";
@@ -119,9 +113,6 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
 
   @Input()
   showMostOftenUsedWith = true;
-
-  @Input()
-  showUsersUsing = true;
 
   @Input()
   showImagesUsing = true;
@@ -304,29 +295,9 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
     );
   }
 
-  doShowMostOftenUsedWith(): boolean {
-    return (
-      this.isBrowser &&
-      this.showMostOftenUsedWith &&
-      this.selectedItem &&
-      [
-        EquipmentItemType.CAMERA,
-        EquipmentItemType.TELESCOPE,
-        EquipmentItemType.MOUNT,
-        EquipmentItemType.FILTER
-      ].indexOf(this.activeType) > -1
-    );
-  }
-
   _initActiveId() {
     if (this.activeId) {
       this.store$.dispatch(new LoadEquipmentItem({ id: this.activeId, type: this.activeType }));
-      this.store$.dispatch(new GetUsersUsingItem({ itemType: this.activeType, itemId: this.activeId }));
-
-      this.usersUsing$ = this.store$.select(selectUsersUsingEquipmentItem, {
-        itemType: this.activeType,
-        itemId: this.activeId
-      });
 
       this.store$
         .select(selectEquipmentItem, { id: this.activeId, type: this.activeType })
@@ -801,7 +772,7 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
         const pendingEditProposals = this.editProposalsByStatus(editProposals, null);
         for (const pendingEditProposal of pendingEditProposals) {
           this.currentUser$.pipe(take(1)).subscribe(user => {
-            if (user.id !== pendingEditProposal.editProposalBy) {
+            if (!!user && user.id !== pendingEditProposal.editProposalBy) {
               if (!!this.reviewPendingEditNotification) {
                 this.popNotificationsService.remove(this.reviewPendingEditNotification.toastId);
               }

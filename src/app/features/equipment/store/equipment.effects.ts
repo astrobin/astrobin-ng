@@ -68,10 +68,6 @@ import {
   GetMostOftenUsedWithSuccess,
   GetOthersInBrand,
   GetOthersInBrandSuccess,
-  GetUsersUsingBrand,
-  GetUsersUsingBrandSuccess,
-  GetUsersUsingItem,
-  GetUsersUsingItemSuccess,
   LoadBrand,
   LoadBrandSuccess,
   LoadEquipmentItem,
@@ -177,18 +173,6 @@ export class EquipmentEffects {
       map((action: FindAllBrands) => action.payload),
       mergeMap(payload =>
         this.equipmentApiService.findAllBrands(payload.q).pipe(map(brands => new FindAllBrandsSuccess({ brands })))
-      )
-    )
-  );
-
-  GetUsersUsingBrand: Observable<GetUsersUsingBrandSuccess> = createEffect(() =>
-    this.actions$.pipe(
-      ofType(EquipmentActionTypes.GET_USERS_USING_BRAND),
-      map((action: GetUsersUsingBrand) => action.payload),
-      mergeMap(payload =>
-        this.equipmentApiService
-          .getUsersUsingBrand(payload.brandId)
-          .pipe(map(users => new GetUsersUsingBrandSuccess({ brandId: payload.brandId, users })))
       )
     )
   );
@@ -386,20 +370,6 @@ export class EquipmentEffects {
             map(
               rejectedEditProposal => new RejectEquipmentItemEditProposalSuccess({ editProposal: rejectedEditProposal })
             )
-          )
-      )
-    )
-  );
-
-  GetUsersUsingItem: Observable<GetUsersUsingItemSuccess> = createEffect(() =>
-    this.actions$.pipe(
-      ofType(EquipmentActionTypes.GET_USERS_USING_ITEM),
-      map((action: GetUsersUsingItem) => action.payload),
-      mergeMap(payload =>
-        this.equipmentApiService
-          .getUsersUsingItem(payload.itemType, payload.itemId)
-          .pipe(
-            map(users => new GetUsersUsingItemSuccess({ itemType: payload.itemType, itemId: payload.itemId, users }))
           )
       )
     )

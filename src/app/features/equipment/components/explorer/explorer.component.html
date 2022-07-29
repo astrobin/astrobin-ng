@@ -38,12 +38,12 @@
 
         <astrobin-equipment-item-summary
           [item]="selectedItem"
-          [showClass]="false"
           [showEmptyProperties]="true"
           [showLargeImage]="true"
           [showMeta]="true"
           [enableBrandLink]="true"
           [showCommunityNotes]="true"
+          [showMostOftenUsedWith]="true"
           (editButtonClick)="startEditMode()"
         ></astrobin-equipment-item-summary>
 
@@ -104,7 +104,11 @@
                 </ng-container>
 
                 <ng-template #notDslrOrMirrorlessCamera>
-                  <astrobin-equipment-item-display-name [item]="variant"></astrobin-equipment-item-display-name>
+                  <astrobin-equipment-item-display-name
+                    [item]="variant"
+                    [showBrand]="false"
+                    [cut]="selectedItem.name"
+                  ></astrobin-equipment-item-display-name>
                 </ng-template>
               </a>
             </span>
@@ -459,15 +463,6 @@
   </div>
   <!-- main pane -->
 
-  <div *ngIf="doShowMostOftenUsedWith()" class="col-sm-12 col-lg-3 order-first order-lg-last mb-4 mb-lg-0">
-    <astrobin-equipment-item-most-often-used-with [item]="selectedItem"></astrobin-equipment-item-most-often-used-with>
-
-    <astrobin-users-using-equipment-item
-      *ngIf="showUsersUsing"
-      class="mt-5 d-none d-lg-block"
-      [users]="usersUsing$ | async"
-    ></astrobin-users-using-equipment-item>
-  </div>
   <!-- side pane -->
 </div>
 <!-- card row -->

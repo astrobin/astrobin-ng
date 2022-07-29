@@ -6,8 +6,6 @@ import { EditProposalInterface } from "@features/equipment/types/edit-proposal.i
 import { arrayUniqueEquipmentItems, getEquipmentItemType } from "@features/equipment/store/equipment.selectors";
 import { CameraInterface } from "@features/equipment/types/camera.interface";
 import { EquipmentPresetInterface } from "@features/equipment/types/equipment-preset.interface";
-import { UserInterface } from "@shared/interfaces/user.interface";
-import { ImageInterface } from "@shared/interfaces/image.interface";
 import { EquipmentItemMostOftenUsedWithData } from "@features/equipment/types/equipment-item-most-often-used-with-data.interface";
 import { ContributorInterface } from "@features/equipment/types/contributor.interface";
 
@@ -19,15 +17,6 @@ export interface EquipmentState {
   equipmentItems: EquipmentItemBaseInterface[];
   editProposals: EditProposalInterface<EquipmentItemBaseInterface>[];
   presets: EquipmentPresetInterface[];
-  usersUsingEquipmentItems: {
-    itemType: EquipmentItemType;
-    itemId: EquipmentItemBaseInterface["id"];
-    users: UserInterface[];
-  }[];
-  usersUsingEquipmentBrands: {
-    brandId: EquipmentItemBaseInterface["id"];
-    users: UserInterface[];
-  }[];
   mostOftenUsedWithData: EquipmentItemMostOftenUsedWithData | {};
   contributors: ContributorInterface[];
 }
@@ -38,8 +27,6 @@ export const initialEquipmentState: EquipmentState = {
   equipmentItems: [],
   editProposals: [],
   presets: [],
-  usersUsingEquipmentItems: [],
-  usersUsingEquipmentBrands: [],
   mostOftenUsedWithData: {},
   contributors: []
 };
@@ -217,24 +204,6 @@ export function reducer(state = initialEquipmentState, action: EquipmentActions)
       };
     }
 
-    case EquipmentActionTypes.GET_USERS_USING_ITEM_SUCCESS: {
-      return {
-        ...state,
-        usersUsingEquipmentItems: [
-          ...state.usersUsingEquipmentItems.filter(
-            entry => entry.itemType !== action.payload.itemType && entry.itemId !== action.payload.itemId
-          ),
-          ...[
-            {
-              itemType: action.payload.itemType,
-              itemId: action.payload.itemId,
-              users: action.payload.users
-            }
-          ]
-        ]
-      };
-    }
-
     case EquipmentActionTypes.GET_MOST_OFTEN_USED_WITH_SUCCESS: {
       const key = `${action.payload.itemType}-${action.payload.itemId}`;
       return {
@@ -245,21 +214,6 @@ export function reducer(state = initialEquipmentState, action: EquipmentActions)
             [key]: action.payload.data
           }
         }
-      };
-    }
-
-    case EquipmentActionTypes.GET_USERS_USING_BRAND_SUCCESS: {
-      return {
-        ...state,
-        usersUsingEquipmentBrands: [
-          ...state.usersUsingEquipmentBrands.filter(entry => entry.brandId !== action.payload.brandId),
-          ...[
-            {
-              brandId: action.payload.brandId,
-              users: action.payload.users
-            }
-          ]
-        ]
       };
     }
 
