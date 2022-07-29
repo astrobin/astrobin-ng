@@ -6,6 +6,7 @@ import { AppModule } from "@app/app.module";
 import { provideMockStore } from "@ngrx/store/testing";
 import { initialState } from "@app/store/state";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
+import { TelescopeGenerator } from "@features/equipment/generators/telescope.generator";
 
 describe("MostOftenUsedWithModalComponent", () => {
   let component: MostOftenUsedWithModalComponent;
@@ -21,6 +22,7 @@ describe("MostOftenUsedWithModalComponent", () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(MostOftenUsedWithModalComponent);
     component = fixture.componentInstance;
+    component.item = TelescopeGenerator.telescope();
     fixture.detectChanges();
   });
 
