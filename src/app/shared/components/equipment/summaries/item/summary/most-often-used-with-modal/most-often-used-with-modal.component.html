@@ -9,16 +9,26 @@
 <div class="modal-body">
   <ng-container *ngIf="mostOftenUsedWith !== undefined; else loading">
     <table *ngIf="mostOftenUsedWith.length > 0; else noItems" class="table table-sm table-striped">
+      <thead>
+      <tr>
+        <th>{{ "Equipment item" | translate }}</th>
+        <th>{{ "Images in common" | translate }}</th>
+      </tr>
+      </thead>
       <tbody>
       <tr *ngFor="let entry of sortedItems(mostOftenUsedWith)">
         <th>
-          <a [routerLink]="['/equipment/explorer', entry.item.klass.toLowerCase(), entry.item.id]">
+          <a
+            [routerLink]="['/equipment/explorer', entry.item.klass.toLowerCase(), entry.item.id]"
+            (click)="modal.dismiss()"
+          >
             <astrobin-equipment-item-display-name
               [item]="entry.item"
             ></astrobin-equipment-item-display-name>
           </a>
         </th>
-        <td [innerHTML]="'{{0}} images in common' | translate:{'0': entry.matches}">
+        <td>
+          {{ entry.matches }}
         </td>
       </tr>
       </tbody>
