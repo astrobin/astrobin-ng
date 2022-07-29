@@ -4177,7 +4177,7 @@ msgstr ""
 "Schreiben Sie, um nach Optionen zu suchen, oder erstellen Sie eine neue ..."
 
 #: loco:62cf4ff83bdfba387865f532
-msgid "(DYI)"
+msgid "(DIY)"
 msgstr ""
 
 #: loco:62cf4ff83bdfba387865f533

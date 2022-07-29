@@ -81,7 +81,7 @@ export class EquipmentItemDisplayNameComponent extends BaseComponentDirective im
         this.store$.dispatch(new LoadBrand({ id: this.item.brand }));
       }
     } else {
-      this.brandName = this.translateService.instant("(DYI)");
+      this.brandName = this.translateService.instant("(DIY)");
     }
 
     this.equipmentItemService

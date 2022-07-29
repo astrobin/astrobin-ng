@@ -4236,7 +4236,7 @@ msgid "Type to search options or create a new one..."
 msgstr "Digita per cercare tra le opzioni o per crearne una nuova..."
 
 #: loco:62cf4ff83bdfba387865f532
-msgid "(DYI)"
+msgid "(DIY)"
 msgstr "(fai-da-te)"
 
 #: loco:62cf4ff83bdfba387865f533

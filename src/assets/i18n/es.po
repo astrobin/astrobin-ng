@@ -3879,7 +3879,7 @@ msgid "Type to search options or create a new one..."
 msgstr ""
 
 #: loco:62cf4ff83bdfba387865f532
-msgid "(DYI)"
+msgid "(DIY)"
 msgstr ""
 
 #: loco:62cf4ff83bdfba387865f533
