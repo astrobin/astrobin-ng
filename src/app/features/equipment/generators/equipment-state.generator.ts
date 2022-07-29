@@ -8,8 +8,6 @@ export class EquipmentStateGenerator {
       equipmentItems: [],
       editProposals: [],
       presets: [],
-      usersUsingEquipmentItems: [],
-      usersUsingEquipmentBrands: [],
       mostOftenUsedWithData: {},
       contributors: []
     };

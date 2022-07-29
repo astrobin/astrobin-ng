@@ -26,8 +26,6 @@ import { ReviewGearRenamingProposalsComponent } from "./pages/review-gear-renami
 import { RejectReviewGearRenamingProposalsModalComponent } from "@features/equipment/components/reject-review-gear-renaming-proposals-modal/reject-review-gear-renaming-proposals-modal.component";
 import { PendingExplorerBaseComponent } from "@features/equipment/pages/explorer-base/pending-explorer-base.component";
 import { ExplorerBaseComponent } from "@features/equipment/pages/explorer-base/explorer-base.component";
-import { UsersUsingItemComponent } from "./components/explorer/users-using-item/users-using-item.component";
-import { MostOftenUsedWithComponent } from "./components/explorer/most-often-used-with/most-often-used-with.component";
 import { ExplorerFiltersComponent } from "./pages/explorer/explorer-filters/explorer-filters.component";
 import { BrandExplorerPageComponent } from "./pages/explorer/brand-explorer-page/brand-explorer-page.component";
 import { UnapproveItemModalComponent } from "@features/equipment/components/unapprove-item-modal/unapprove-item-modal.component";
@@ -60,8 +58,6 @@ import { EquipmentCompareModalComponent } from "./components/equipment-compare-m
     MergeIntoModalComponent,
     ReviewGearRenamingProposalsComponent,
     RejectReviewGearRenamingProposalsModalComponent,
-    UsersUsingItemComponent,
-    MostOftenUsedWithComponent,
     ExplorerFiltersComponent,
     BrandExplorerPageComponent,
     ContributorsPageComponent,

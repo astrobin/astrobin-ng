@@ -93,6 +93,7 @@ import { AssignItemModalComponent } from "@shared/components/equipment/summaries
 import { AssignEditProposalModalComponent } from "@shared/components/equipment/summaries/assign-edit-proposal-modal/assign-edit-proposal-modal.component";
 import { ForumPreviewComponent } from "@shared/components/forums/forum-preview/forum-preview.component";
 import { ImageSearchComponent } from "@shared/components/search/image-search/image-search.component";
+import { MostOftenUsedWithModalComponent } from "@shared/components/equipment/summaries/item/summary/most-often-used-with-modal/most-often-used-with-modal.component";
 
 const modules = [
   CommonModule,
@@ -151,6 +152,7 @@ const components = [
   LoadingIndicatorComponent,
   LoginFormComponent,
   LoginModalComponent,
+  MostOftenUsedWithModalComponent,
   NestedCommentComponent,
   NestedCommentsComponent,
   NestedCommentsModalComponent,

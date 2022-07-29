@@ -8,8 +8,7 @@ import { UtilsService } from "@shared/services/utils/utils.service";
 
 // @ts-ignore
 // tslint:disable-next-line:no-empty-interface
-export interface CustomWindowInterface extends Window {
-}
+export interface CustomWindowInterface extends Window {}
 
 @Injectable()
 export class WindowRefService extends BaseService {
@@ -90,6 +89,7 @@ export class WindowRefService extends BaseService {
   }
 
   locationAssign(url: string) {
+    this.loadingService.setLoading(true);
     this.nativeWindow.location.assign(url);
   }
 }

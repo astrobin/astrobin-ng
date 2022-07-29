@@ -11,9 +11,18 @@ import { TelescopeInterface, TelescopeType } from "@features/equipment/types/tel
 import { distinctUntilKeyChangedOrNull, UtilsService } from "@shared/services/utils/utils.service";
 import { filter, map, switchMap, take, takeWhile, tap } from "rxjs/operators";
 import { CameraDisplayProperty, CameraService } from "@features/equipment/services/camera.service";
-import { selectBrand, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
+import {
+  selectBrand,
+  selectEquipmentItem,
+  selectMostOftenUsedWithForItem
+} from "@features/equipment/store/equipment.selectors";
 import { Observable, of } from "rxjs";
-import { LoadBrand, LoadEquipmentItem, LoadSensor } from "@features/equipment/store/equipment.actions";
+import {
+  GetMostOftenUsedWith,
+  LoadBrand,
+  LoadEquipmentItem,
+  LoadSensor
+} from "@features/equipment/store/equipment.actions";
 import { TelescopeDisplayProperty, TelescopeService } from "@features/equipment/services/telescope.service";
 import { SensorDisplayProperty, SensorService } from "@features/equipment/services/sensor.service";
 import {
@@ -31,8 +40,15 @@ import { selectUser } from "@features/account/store/auth.selectors";
 import { LoadUser } from "@features/account/store/auth.actions";
 import { AccessoryDisplayProperty, AccessoryService } from "@features/equipment/services/accessory.service";
 import { AccessoryInterface } from "@features/equipment/types/accessory.interface";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { AssignItemModalComponent } from "@shared/components/equipment/summaries/assign-item-modal/assign-item-modal.component";
+import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
+import { WindowRefService } from "@shared/services/window-ref.service";
+import { AuthService } from "@shared/services/auth.service";
+import { SubscriptionRequiredModalComponent } from "@shared/components/misc/subscription-required-modal/subscription-required-modal.component";
+import { SimplifiedSubscriptionName } from "@shared/types/subscription-name.type";
+import { MostOftenUsedWithModalComponent } from "@shared/components/equipment/summaries/item/summary/most-often-used-with-modal/most-often-used-with-modal.component";
+import { LoadingService } from "@shared/services/loading.service";
 
 interface EquipmentItemProperty {
   name: string;
@@ -86,6 +102,9 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
   showCommunityNotes = false;
 
   @Input()
+  showMostOftenUsedWith = false;
+
+  @Input()
   showEditButtons = true;
 
   @Output()
@@ -95,6 +114,7 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
   subItem: EquipmentItemBaseInterface;
   subItemCollapsed = true;
   properties: EquipmentItemProperty[];
+  mostOftenUsedWith$: Observable<{ item$: Observable<EquipmentItem>; matches: number }[]>;
 
   constructor(
     public readonly store$: Store<State>,
@@ -108,7 +128,11 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
     public readonly mountService: MountService,
     public readonly filterService: FilterService,
     public readonly accessoryService: AccessoryService,
-    public readonly modalService: NgbModal
+    public readonly modalService: NgbModal,
+    public readonly userSubscriptionService: UserSubscriptionService,
+    public readonly windowRefService: WindowRefService,
+    public readonly authService: AuthService,
+    public readonly loadingService: LoadingService
   ) {
     super(store$);
   }
@@ -232,6 +256,34 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
         .subscribe(sensor => (this.subItem = sensor));
     }
 
+    if (this.showMostOftenUsedWith) {
+      const payload = { itemType: this.item.klass, itemId: this.item.id };
+      this.store$.dispatch(new GetMostOftenUsedWith(payload));
+      this.mostOftenUsedWith$ = this.store$.select(selectMostOftenUsedWithForItem, payload).pipe(
+        filter(data => !!data),
+        take(1),
+        map(data => {
+          return Object.keys(data)
+            .map(key => {
+              const klass: EquipmentItemType = EquipmentItemType[key.split("-")[0]];
+              const id: EquipmentItem["id"] = parseInt(key.split("-")[1], 10);
+              const itemPayload = { type: klass, id };
+
+              this.store$.dispatch(new LoadEquipmentItem(itemPayload));
+
+              return {
+                item$: this.store$.select(selectEquipmentItem, itemPayload).pipe(
+                  filter(item => !!item),
+                  take(1)
+                ),
+                matches: parseInt(data[key], 10)
+              };
+            })
+            .sort((a, b) => b.matches - a.matches);
+        })
+      );
+    }
+
     this.properties$.pipe(take(1)).subscribe(properties => (this.properties = properties));
   }
 
@@ -253,6 +305,39 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
       if (!!item.assignee) {
         this.store$.dispatch(new LoadUser({ id: item.assignee }));
       }
+    });
+  }
+
+  itemTypeSupportsMostOftenUsedWith(): boolean {
+    return (
+      this.showMostOftenUsedWith &&
+      [
+        EquipmentItemType.CAMERA,
+        EquipmentItemType.TELESCOPE,
+        EquipmentItemType.MOUNT,
+        EquipmentItemType.FILTER
+      ].indexOf(this.item.klass) > -1
+    );
+  }
+
+  viewMoreMostOftenUsedWith() {
+    this.currentUser$.pipe(take(1)).subscribe(user => {
+      if (!user) {
+        this.windowRefService.locationAssign(this.authService.getLoginUrl());
+        return;
+      }
+
+      this.userSubscriptionService.fullSearchAllowed$().subscribe(allowed => {
+        if (allowed) {
+          const modalRef: NgbModalRef = this.modalService.open(MostOftenUsedWithModalComponent);
+          const componentInstance: MostOftenUsedWithModalComponent = modalRef.componentInstance;
+          componentInstance.item = this.item;
+        } else {
+          const modalRef: NgbModalRef = this.modalService.open(SubscriptionRequiredModalComponent);
+          const componentInstance: SubscriptionRequiredModalComponent = modalRef.componentInstance;
+          componentInstance.minimumSubscription = SimplifiedSubscriptionName.ASTROBIN_ULTIMATE_2020;
+        }
+      });
     });
   }
 

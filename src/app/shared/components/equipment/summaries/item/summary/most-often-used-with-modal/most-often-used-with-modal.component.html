@@ -1,0 +1,40 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-title">{{ "Approve" | translate }}</h4>
+  <button (click)="modal.dismiss()" aria-describedby="modal-title" class="close" type="button">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body">
+  <ng-container *ngIf="mostOftenUsedWith !== undefined; else loading">
+    <table *ngIf="mostOftenUsedWith.length > 0; else noItems" class="table table-sm table-striped">
+      <tbody>
+      <tr *ngFor="let entry of sortedItems(mostOftenUsedWith)">
+        <th>
+          <a [routerLink]="['/equipment/explorer', entry.item.klass.toLowerCase(), entry.item.id]">
+            <astrobin-equipment-item-display-name
+              [item]="entry.item"
+            ></astrobin-equipment-item-display-name>
+          </a>
+        </th>
+        <td [innerHTML]="'{{0}} images in common' | translate:{'0': entry.matches}">
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </ng-container>
+</div>
+
+<div class="modal-footer">
+  <button (click)="modal.dismiss()" class="btn btn-secondary" type="button">
+    {{ "Close" | translate }}
+  </button>
+</div>
+
+<ng-template #noItems>
+  <astrobin-nothing-here [withAlert]="false" [withInfoSign]="false"></astrobin-nothing-here>
+</ng-template>
+
+<ng-template #loading>
+  <astrobin-loading-indicator></astrobin-loading-indicator>
+</ng-template>
