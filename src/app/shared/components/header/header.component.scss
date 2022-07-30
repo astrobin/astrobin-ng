@@ -93,13 +93,17 @@
   .user-dropdown-toggle {
     margin: 0.75rem 0.5rem;
 
-    astrobin-username ::ng-deep {
-      a {
-        color: var(--white);
+    astrobin-username {
+      margin-right: .25rem;
 
-        &:hover {
-          color: var(--lighterAccentColor);
-          text-decoration: none;
+      ::ng-deep {
+        a {
+          color: var(--white);
+
+          &:hover {
+            color: var(--lighterAccentColor);
+            text-decoration: none;
+          }
         }
       }
     }

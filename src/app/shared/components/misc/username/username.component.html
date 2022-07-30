@@ -5,9 +5,7 @@
 <ng-container [ngTemplateOutlet]="usernameTemplate" *ngIf="!link"></ng-container>
 
 <ng-template #usernameTemplate>
-  <span class="username" *ngIf="!!username; else loadingTemplate">
-    {{ username }}
-  </span>
+  <span class="username" *ngIf="!!username; else loadingTemplate">{{ username }}</span>
 </ng-template>
 
 <ng-template #loadingTemplate>

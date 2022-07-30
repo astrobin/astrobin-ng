@@ -28,8 +28,12 @@
     .meta {
       margin-top: .5rem;
 
-      astrobin-username ::ng-deep a {
-        color: var(--lighterGrey);
+      astrobin-username {
+        margin-right: .25rem;
+
+        ::ng-deep a {
+          color: var(--lighterGrey);
+        }
       }
 
       white-space: nowrap;

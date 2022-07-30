@@ -73,7 +73,7 @@
 
     <div class="form-actions">
       <ng-container *ngIf="(currentUser$ | async) as currentUser">
-        <button *ngIf="!editProposal.editProposalReviewStatus" class="btn mr-md-0 px-1 assign-edit-proposal">
+        <button *ngIf="!editProposal.editProposalReviewStatus" class="btn px-1 assign-edit-proposal">
           <span class="text-muted mr-2">{{ "Assignee" | translate }}:</span>
           <astrobin-username
             *ngIf="!!editProposal.editProposalAssignee"
