@@ -1,5 +1,28 @@
+@import "breakpoints";
+
+.dropdown {
+  @media (max-width: $xs-max) {
+    &:not(.btn-no-block) {
+      display: block;
+      width: 100%;
+      padding-top: .75rem;
+      padding-bottom: .75rem;
+
+      &:not(:last-child) {
+        margin-bottom: .5rem;
+      }
+    }
+  }
+}
+
 .dropdown-menu {
   font-size: 0.85rem;
+  box-shadow: 1rem 1rem 2rem rgba(0, 0, 0, 0.9);
+
+  @media (max-width: $xs-max) {
+    margin-top: .25rem;
+    width: 100%;
+  }
 
   .dropdown-item {
     fa-icon {
@@ -8,6 +31,10 @@
       width: 1rem;
       display: inline-block;
       text-align: center;
+    }
+
+    @media (max-width: $xs-max) {
+      padding: 1rem;
     }
   }
 }

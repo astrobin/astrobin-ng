@@ -31,4 +31,5 @@
 
 .modal-backdrop.show {
   backdrop-filter: blur(3px);
+  opacity: .75;
 }
