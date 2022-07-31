@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
@@ -37,7 +37,8 @@ export class ExplorerBaseComponent extends BaseComponentDirective implements OnI
     public readonly activatedRoute: ActivatedRoute,
     public readonly router: Router,
     public readonly windowRefService: WindowRefService,
-    public readonly cookieService: CookieService
+    public readonly cookieService: CookieService,
+    public readonly changeDetectionRef: ChangeDetectorRef
   ) {
     super(store$);
   }
@@ -138,6 +139,11 @@ export class ExplorerBaseComponent extends BaseComponentDirective implements OnI
     });
 
     this.getItems();
+  }
+
+  onNavCollapsedChanged(collapsed: boolean): void {
+    this.navCollapsed = collapsed;
+    this.changeDetectionRef.detectChanges();
   }
 
   getItems() {}

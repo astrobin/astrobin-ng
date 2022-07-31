@@ -11,7 +11,7 @@
 
   <div class="card-footer flex-row">
     <fa-icon icon="info-circle" (click)="infoButtonClicked()"></fa-icon>
-    <fa-icon icon="trash-alt" (click)="removeButtonClicked()"></fa-icon>
+    <fa-icon icon="times" (click)="removeButtonClicked()"></fa-icon>
   </div>
 </div>
 
@@ -46,12 +46,22 @@
 <ng-template #cardBodyBrandListingsFullTemplate>
   <div *ngFor="let listing of listings.brandListings" class="listing">
     <ng-container *ngIf="!!listing.retailer.logo; else noLogoTemplate">
-      <a [href]="urlWithTags(listing, 'equipment-item-page')" target="_blank" class="with-logo">
+      <a
+        [href]="urlWithTags(listing)"
+        [ngbTooltip]="!!item ? item.brandName : brand.name"
+        appGtagOutboundClickEvent
+        target="_blank"
+        class="with-logo"
+      >
         <img [src]="listing.retailer.logo" [alt]="listing.retailer.name" />
       </a>
     </ng-container>
     <ng-template #noLogoTemplate>
-      <a [href]="urlWithTags(listing, 'equipment-item-page')" target="_blank">
+      <a
+        [href]="urlWithTags(listing)"
+        appGtagOutboundClickEvent
+        target="_blank"
+      >
         {{ listing.retailer.name }}
       </a>
     </ng-template>

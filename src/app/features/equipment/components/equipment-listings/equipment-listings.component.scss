@@ -17,6 +17,7 @@
 
   > a {
     display: block;
+    cursor: pointer;
 
     &.with-logo {
       &:after {
@@ -27,6 +28,7 @@
       > img {
         width: 100%;
         transition: all .1s ease-in-out;
+        pointer-events: none;
 
         &:hover {
           transform: scale(1.05);

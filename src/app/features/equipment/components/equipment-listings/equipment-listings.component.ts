@@ -106,8 +106,9 @@ export class EquipmentListingsComponent extends BaseComponentDirective implement
     });
   }
 
-  urlWithTags(listing: EquipmentBrandListingInterface | EquipmentItemListingInterface, source: string): string {
+  urlWithTags(listing: EquipmentBrandListingInterface | EquipmentItemListingInterface): string {
     let url = listing.url;
+    const source = !!this.item ? "equipment-item-page" : "equipment-brand-page";
 
     if (url.indexOf("brand") > -1 || url.indexOf("retailer") > -1 || url.indexOf("source") > -1) {
       return url;

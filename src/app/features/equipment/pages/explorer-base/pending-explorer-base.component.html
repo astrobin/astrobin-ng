@@ -7,7 +7,7 @@
 
   <div class="row">
     <div  [class]="navCollapsed ? 'col-md-1' : 'col-md-4'">
-      <astrobin-equipment-item-type-nav (collapsedChanged)="navCollapsed = $event"></astrobin-equipment-item-type-nav>
+      <astrobin-equipment-item-type-nav (collapsedChanged)="onNavCollapsedChanged($event)"></astrobin-equipment-item-type-nav>
     </div>
 
     <div class="col">

@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import {
@@ -61,9 +61,10 @@ export class BrandExplorerPageComponent extends ExplorerBaseComponent implements
     public readonly loadingService: LoadingService,
     public readonly equipmentItemService: EquipmentItemService,
     public readonly modalService: NgbModal,
-    public readonly equipmentApiService: EquipmentApiService
+    public readonly equipmentApiService: EquipmentApiService,
+    public readonly changeDetectionRef: ChangeDetectorRef
   ) {
-    super(store$, actions$, activatedRoute, router, windowRefService, cookieService);
+    super(store$, actions$, activatedRoute, router, windowRefService, cookieService, changeDetectionRef);
     this.activeType = "BRAND";
   }
 
@@ -276,7 +277,10 @@ export class BrandExplorerPageComponent extends ExplorerBaseComponent implements
         if (listings.allowFullRetailerIntegration) {
           this.listings = listings;
         }
+        this.loadingService.setLoading(false);
       });
+    } else {
+      this.loadingService.setLoading(false);
     }
   }
 }

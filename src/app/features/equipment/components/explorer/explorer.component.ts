@@ -839,7 +839,10 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
         if (listings.allowFullRetailerIntegration) {
           this.listings = listings;
         }
+        this.loadingService.setLoading(false);
       });
+    } else {
+      this.loadingService.setLoading(false);
     }
   }
 }
