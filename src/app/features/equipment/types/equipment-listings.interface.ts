@@ -40,6 +40,5 @@ export interface EquipmentItemListingInterface {
 export interface EquipmentListingsInterface {
   brandListings: EquipmentBrandListingInterface[];
   itemListings: EquipmentItemListingInterface[];
-  allowLiteRetailerIntegration: boolean;
   allowFullRetailerIntegration: boolean;
 }

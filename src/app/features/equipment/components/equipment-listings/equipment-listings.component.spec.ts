@@ -27,8 +27,7 @@ describe("EquipmentListingsComponent", () => {
     component.listings = {
       brandListings: [],
       itemListings: [],
-      allowFullRetailerIntegration: true,
-      allowLiteRetailerIntegration: false
+      allowFullRetailerIntegration: true
     };
 
     fixture.detectChanges();
