@@ -27,14 +27,13 @@ import { UtilsService } from "@shared/services/utils/utils.service";
 import { CookieService } from "ngx-cookie";
 import { LoadingService } from "@shared/services/loading.service";
 import { BrandInterface } from "@features/equipment/types/brand.interface";
-import { Observable } from "rxjs";
-import { UserInterface } from "@shared/interfaces/user.interface";
 import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
-import { EquipmentItemsSortOrder } from "@features/equipment/services/equipment-api.service";
+import { EquipmentApiService, EquipmentItemsSortOrder } from "@features/equipment/services/equipment-api.service";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { VariantSelectorModalComponent } from "@shared/components/equipment/item-browser/variant-selector-modal/variant-selector-modal.component";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import { EquipmentListingsInterface } from "@features/equipment/types/equipment-listings.interface";
 
 @Component({
   selector: "astrobin-brand-explorer-page",
@@ -49,6 +48,7 @@ export class BrandExplorerPageComponent extends ExplorerBaseComponent implements
   activeId: BrandInterface["id"];
   activeBrand: BrandInterface;
   itemsInBrand: EquipmentItemBaseInterface[];
+  listings: EquipmentListingsInterface = null;
 
   constructor(
     public readonly store$: Store<State>,
@@ -60,7 +60,8 @@ export class BrandExplorerPageComponent extends ExplorerBaseComponent implements
     public readonly cookieService: CookieService,
     public readonly loadingService: LoadingService,
     public readonly equipmentItemService: EquipmentItemService,
-    public readonly modalService: NgbModal
+    public readonly modalService: NgbModal,
+    public readonly equipmentApiService: EquipmentApiService
   ) {
     super(store$, actions$, activatedRoute, router, windowRefService, cookieService);
     this.activeType = "BRAND";
@@ -175,6 +176,7 @@ export class BrandExplorerPageComponent extends ExplorerBaseComponent implements
         .subscribe(brand => {
           this.activeBrand = brand;
           this._loadItemsInBrand();
+          this._loadListings();
         });
     }
   }
@@ -259,5 +261,22 @@ export class BrandExplorerPageComponent extends ExplorerBaseComponent implements
       .subscribe(() => {
         this._setParams();
       });
+  }
+
+  private _loadListings() {
+    this.loadingService.setLoading(true);
+
+    this.listings = null;
+
+    if (!!this.activeBrand) {
+      this.equipmentApiService.getListingsForBrand(this.activeBrand.id).subscribe(listings => {
+        // Skip "Lite" retailer integration for now. On the classic website, full integration means banners, and lite
+        // integration means shopping cart menu in the corner of the technical card.
+        // On the equipment item page, full means banners, and lite means stock availability.
+        if (listings.allowFullRetailerIntegration) {
+          this.listings = listings;
+        }
+      });
+    }
   }
 }

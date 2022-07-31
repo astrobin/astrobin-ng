@@ -18,6 +18,7 @@ export class ClassicRoutesService extends BaseService {
   UPLOAD = BASE_URL + "/upload/";
   INBOX = BASE_URL + "/messages/inbox/";
   SETTINGS = BASE_URL + "/profile/edit/basic/";
+  SETTINGS_PREFERENCES = BASE_URL + "/profile/edit/preferences/";
   FORUM_HOME = BASE_URL + "/forum/";
   FORUM_LATEST = BASE_URL + "/forum/topic/latest/";
   FORUM_SUBSCRIBED = BASE_URL + "/forum/topic/subscribed";

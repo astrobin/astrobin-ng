@@ -464,6 +464,16 @@
   </div>
   <!-- main pane -->
 
+  <div
+    *ngIf="!!listings && (listings.brandListings.length > 0 || listings.itemListings.length > 0)"
+    class="col-sm-12 col-lg-3 sidebar"
+  >
+    <astrobin-equipment-listings
+      [item]="selectedItem"
+      [listings]="listings"
+      class="d-block mb-5"
+    ></astrobin-equipment-listings>
+  </div>
   <!-- side pane -->
 </div>
 <!-- card row -->

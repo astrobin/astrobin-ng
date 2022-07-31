@@ -10,7 +10,7 @@ import { UserSubscriptionServiceInterface } from "@shared/services/user-subscrip
 import { SubscriptionName } from "@shared/types/subscription-name.type";
 import { Observable, zip } from "rxjs";
 import { map, switchMap, take } from "rxjs/operators";
-import { selectAuth } from "@features/account/store/auth.selectors";
+import { selectAuth, selectCurrentUserProfile } from "@features/account/store/auth.selectors";
 
 @Injectable({
   providedIn: "root"
@@ -96,6 +96,21 @@ export class UserSubscriptionService extends BaseService implements UserSubscrip
       take(1),
       map(auth => auth.userProfile),
       switchMap(userProfile => this.hasValidSubscription$(userProfile, [SubscriptionName.ASTROBIN_ULTIMATE_2020]))
+    );
+  }
+
+  canRemoveAds$(): Observable<boolean> {
+    return this.store$.select(selectCurrentUserProfile).pipe(
+      take(1),
+      switchMap(userProfile =>
+        this.hasValidSubscription$(userProfile, [
+          SubscriptionName.ASTROBIN_LITE,
+          SubscriptionName.ASTROBIN_PREMIUM,
+          SubscriptionName.ASTROBIN_PREMIUM_AUTORENEW,
+          SubscriptionName.ASTROBIN_PREMIUM_2020,
+          SubscriptionName.ASTROBIN_ULTIMATE_2020
+        ])
+      )
     );
   }
 

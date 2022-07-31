@@ -12,6 +12,7 @@ import { AuthService } from "@shared/services/auth.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { TransferStateInterceptor } from "@shared/services/transfer-state.interceptor";
+import { DebugCountryInterceptor } from "@shared/services/debug-country.interceptor";
 
 @NgModule({
   imports: [HttpClientModule],
@@ -25,6 +26,12 @@ import { TransferStateInterceptor } from "@shared/services/transfer-state.interc
       provide: HTTP_INTERCEPTORS,
       useClass: ServerErrorsInterceptor,
       deps: [WindowRefService, TranslateService, PopNotificationsService, LoadingService, AuthService, UtilsService],
+      multi: true
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: DebugCountryInterceptor,
+      deps: [WindowRefService],
       multi: true
     },
     {

@@ -34,6 +34,7 @@ export interface UserProfileInterface {
   receiveImportantCommunications: boolean;
   receiveMarketingAndCommercialMaterial: boolean;
   allowAstronomyAds: boolean;
+  allowRetailerIntegration: boolean;
   inactiveAccountReminderSent: Date;
   language: string;
   seenRealName: boolean;

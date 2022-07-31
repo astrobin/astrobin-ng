@@ -87,6 +87,7 @@ export interface BackendUserProfileInterface {
   premium_offer_expiration: string;
   premium_offer_sent: string;
   allow_astronomy_ads: boolean;
+  allow_retailer_integration: boolean;
   inactive_account_reminder_sent: string;
   astrobin_index: number;
   contribution_index: number;
@@ -186,6 +187,7 @@ export class CommonApiAdaptorService extends BaseService {
       premiumOfferExpiration: new Date(userProfile.premium_offer_expiration),
       premiumOfferSent: new Date(userProfile.premium_offer_sent),
       allowAstronomyAds: userProfile.allow_astronomy_ads,
+      allowRetailerIntegration: userProfile.allow_retailer_integration,
       inactiveAccountReminderSent: new Date(userProfile.inactive_account_reminder_sent),
       astroBinIndex: userProfile.astrobin_index,
       contributionIndex: userProfile.contribution_index,

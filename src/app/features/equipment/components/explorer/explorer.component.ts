@@ -80,6 +80,8 @@ import { ActiveToast } from "ngx-toastr";
 import { CompareService } from "@features/equipment/services/compare.service";
 import { isPlatformBrowser, Location } from "@angular/common";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
+import { EquipmentListingsInterface } from "@features/equipment/types/equipment-listings.interface";
+import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
 
 @Component({
   selector: "astrobin-equipment-explorer",
@@ -161,8 +163,6 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
   editProposals: EditProposalInterface<EquipmentItemBaseInterface>[] | null = null;
   editProposalsCollapsed = true;
 
-  usersUsing$: Observable<UserInterface[]>;
-
   reviewPendingEditNotification: ActiveToast<any>;
 
   commentsSectionInfoMessage$: Observable<string> = this.currentUser$.pipe(
@@ -179,6 +179,8 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
       );
     })
   );
+
+  listings: EquipmentListingsInterface = null;
 
   @ViewChild("itemBrowser")
   private _itemBrowser: ItemBrowserComponent;
@@ -630,7 +632,8 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
     }
 
     this.endEditMode();
-    this.loadEditProposals();
+    this._loadEditProposals();
+    this._loadListings();
   }
 
   onCreationModeStarted() {
@@ -748,11 +751,44 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
       this.translateService.instant("Your edit proposal has been submitted and will be reviewed as soon as possible."),
       this.translateService.instant("Thank you so much for contributing to the AstroBin equipment database! 🙌")
     );
-    this.loadEditProposals();
+    this._loadEditProposals();
     this.endEditMode();
   }
 
-  loadEditProposals() {
+  editProposalsByStatus(
+    editProposals: EditProposalInterface<EquipmentItemBaseInterface>[],
+    status: EditProposalReviewStatus
+  ): EditProposalInterface<EquipmentItemBaseInterface>[] {
+    if (!editProposals) {
+      return [];
+    }
+
+    return editProposals.filter(editProposal => editProposal.editProposalReviewStatus === status);
+  }
+
+  collapsedEditProposalsMessage(editProposals: EditProposalInterface<EquipmentItemBaseInterface>[]): string {
+    return this.translateService.instant("This item has a history of <strong>{{0}}</strong> approved edit proposals.", {
+      "0": this.editProposalsByStatus(editProposals, EditProposalReviewStatus.APPROVED).length
+    });
+  }
+
+  collapseEditProposals() {
+    this.editProposalsCollapsed = true;
+  }
+
+  expandEditProposals() {
+    this.editProposalsCollapsed = false;
+  }
+
+  showEditProposals(): boolean {
+    return this.editProposalsByStatus(this.editProposals, null)?.length > 0 || !this.editProposalsCollapsed;
+  }
+
+  typeSupportsMigrateInto() {
+    return this.activeType !== EquipmentItemType.SENSOR;
+  }
+
+  private _loadEditProposals() {
     if (!this.selectedItem) {
       return;
     }
@@ -790,36 +826,20 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
     this.store$.dispatch(new FindEquipmentItemEditProposals({ item: this.selectedItem }));
   }
 
-  editProposalsByStatus(
-    editProposals: EditProposalInterface<EquipmentItemBaseInterface>[],
-    status: EditProposalReviewStatus
-  ): EditProposalInterface<EquipmentItemBaseInterface>[] {
-    if (!editProposals) {
-      return [];
+  private _loadListings() {
+    this.loadingService.setLoading(true);
+
+    this.listings = null;
+
+    if (!!this.selectedItem) {
+      this.equipmentApiService.getListings(this.selectedItem.klass, this.selectedItem.id).subscribe(listings => {
+        // Skip "Lite" retailer integration for now. On the classic website, full integration means banners, and lite
+        // integration means shopping cart menu in the corner of the technical card.
+        // On the equipment item page, full means banners, and lite means stock availability.
+        if (listings.allowFullRetailerIntegration) {
+          this.listings = listings;
+        }
+      });
     }
-
-    return editProposals.filter(editProposal => editProposal.editProposalReviewStatus === status);
-  }
-
-  collapsedEditProposalsMessage(editProposals: EditProposalInterface<EquipmentItemBaseInterface>[]): string {
-    return this.translateService.instant("This item has a history of <strong>{{0}}</strong> approved edit proposals.", {
-      "0": this.editProposalsByStatus(editProposals, EditProposalReviewStatus.APPROVED).length
-    });
-  }
-
-  collapseEditProposals() {
-    this.editProposalsCollapsed = true;
-  }
-
-  expandEditProposals() {
-    this.editProposalsCollapsed = false;
-  }
-
-  showEditProposals(): boolean {
-    return this.editProposalsByStatus(this.editProposals, null)?.length > 0 || !this.editProposalsCollapsed;
-  }
-
-  typeSupportsMigrateInto() {
-    return this.activeType !== EquipmentItemType.SENSOR;
   }
 }
