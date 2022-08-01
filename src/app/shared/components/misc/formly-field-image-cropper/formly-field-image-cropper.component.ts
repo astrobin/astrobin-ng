@@ -7,7 +7,7 @@ import { FieldType } from "@ngx-formly/core";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { CropperPosition, Dimensions, ImageCroppedEvent, LoadedImage } from "ngx-image-cropper";
-import { fromEvent, interval, Subscription } from "rxjs";
+import { fromEvent, Subscription } from "rxjs";
 import { debounceTime, filter, map, take } from "rxjs/operators";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { isPlatformBrowser } from "@angular/common";
@@ -50,7 +50,11 @@ export class FormlyFieldImageCropperComponent extends FieldType implements OnDes
             )
             .subscribe(() => {
               this._reset();
-              this.popNotificationService.info("As you resized your window, please check your image crop again.");
+
+              const document = this.windowRefService.nativeWindow.document;
+              if (document && !("ontouchend" in document)) {
+                this.popNotificationService.info("As you resized your window, please check your image crop again.");
+              }
             });
         });
     }
