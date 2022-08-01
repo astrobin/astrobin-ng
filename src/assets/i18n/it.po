@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: AstroBin Angular App\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-03 14:04+0200\n"
-"PO-Revision-Date: 2022-07-14 01:08+0200\n"
+"PO-Revision-Date: 2022-08-01 18:42+0200\n"
 "Last-Translator: Salvatore Iovene\n"
 "Language-Team: Italian\n"
 "Language: it\n"
@@ -4236,7 +4236,7 @@ msgid "Type to search options or create a new one..."
 msgstr "Digita per cercare tra le opzioni o per crearne una nuova..."
 
 #: loco:62cf4ff83bdfba387865f532
-msgid "(DIY)"
+msgid "(DYI)"
 msgstr "(fai-da-te)"
 
 #: loco:62cf4ff83bdfba387865f533
@@ -4265,3 +4265,386 @@ msgstr "Nome del prodotto ufficiale e completo"
 #: loco:62cf4ff83bdfba387865f536
 msgid "Preset name"
 msgstr "Nome del preset"
+
+#: loco:62e7ff278ccac067625b50e2
+msgid "Acquired with this brand"
+msgstr "Acquisite con questa marca"
+
+#: loco:62e7ff278ccac067625b50e3
+msgid "Acquired with this item"
+msgstr "Acquisite con questo strumento"
+
+#: loco:62e7ff278ccac067625b50e4
+msgid "Any moderator"
+msgstr "Qualunque moderatore"
+
+#: loco:62e7ff278ccac067625b50e5
+msgid "Anyone"
+msgstr "Chiunque"
+
+#: loco:62e7ff278ccac067625b50e6
+msgid "Assign"
+msgstr "Assegna"
+
+#: loco:62e7ff278ccac067625b50e7
+msgid "Assignee"
+msgstr "Assegnatario"
+
+#: loco:62e7ff278ccac067625b50e8
+msgid ""
+"AstroBin automatically sets the name of a filter from its properties, to "
+"keep a consistent naming convention strategy. If your filter has a specific "
+"product name that's more recognizable, please check this box and change its "
+"name."
+msgstr ""
+"AstroBin imposta il nome di un filtro automaticamente a partire dalle sue "
+"proprietà, per tenere una convenzione di denominazione consistente. Se il "
+"tuo filtro ha un nome di prodotto specifico che è più riconoscibile, spunta "
+"questa casella e cambiagli il nome."
+
+#: loco:62e7ff278ccac067625b50e9
+msgid ""
+"AstroBin partners with retailer of astrophotography equipment in your "
+"country. For some of them, when you make a purchase within a few weeks after "
+"clicking on a link on a page like this, AstroBin gets a commission and it "
+"doesn't cost you anything."
+msgstr ""
+"AstroBin collabora con negozi di strumentazione per astrofotografia nel tuo "
+"Paese. Per alcuni di essi, quando fai un acquisto entro qualche settimana "
+"dopo aver cliccato su un link su una pagina come questa, AstroBin riceve una "
+"commissione e non ti costa niente."
+
+#: loco:62e7ff278ccac067625b50ea
+msgid "AstroBin sponsors that sell {{0}}"
+msgstr "Sponsor AstroBin che vendono {{0}}"
+
+#: loco:62e7ff278ccac067625b50eb
+msgid "Begin migration"
+msgstr "Inizia migrazione"
+
+#: loco:62e7ff278ccac067625b50ec
+msgid "Computer"
+msgstr "Computer"
+
+#: loco:62e7ff278ccac067625b50ed
+msgid "Dew mitigation"
+msgstr "Anti-rugiada"
+
+#: loco:62e7ff278ccac067625b50ee
+msgid "Disable fullscreen mode"
+msgstr "Disabilita modalità schermo intero"
+
+#: loco:62e7ff278ccac067625b50ef
+msgid "Edit proposal assigned to {{0}} for review."
+msgstr "Proposta di modifica assegnata a {{0}}."
+
+#: loco:62e7ff278ccac067625b50f0
+msgid "Edit proposal unassigned: anyone can review it."
+msgstr "Proposta di modifica disassegnata: chiunque può controllarla."
+
+#: loco:62e7ff278ccac067625b50f1
+msgid "Equipment item"
+msgstr "Strumento"
+
+#: loco:62e7ff278ccac067625b50f2
+msgid "Equipment item assigned to {{0}} for review."
+msgstr "Strumento assegnato a {{0}}."
+
+#: loco:62e7ff278ccac067625b50f3
+msgid "Equipment item unassigned: any moderator can review it."
+msgstr "Strumento disassegnato: qualunque moderatore più controllarlo."
+
+#: loco:62e7ff278ccac067625b50f4
+msgid ""
+"Every equipment item on AstroBin has a forum associated with it. Anybody who "
+"used an equipment item is notified of new topics in its forum, unless they "
+"opt out. This is very  useful to connect with other users who use the same "
+"equipment as you. {{ _0 }}Learn more about the AstroBin equipment database!"
+"{{ _1 }}"
+msgstr ""
+"Ogni strumento su AstroBin ha un forum associato ad esso. Chiunque abbia "
+"usato uno strumento viene notificato dei nuovi argomenti nel suo forum, a "
+"meno che non abbia spento la notifica. Questo è molto utile per raggiungere "
+"utenti con la stessa strumentazione che hai tu. {{_0}}Scopri di più sul "
+"database della strumentazione di AstroBin!{{_1}}"
+
+#: loco:62e7ff278ccac067625b50f5
+msgid "Field derotator / camera rotator"
+msgstr "Derotatore di campo / rotatore di camera"
+
+#: loco:62e7ff278ccac067625b50f6
+msgid "Filter results"
+msgstr "Filtra risultati"
+
+#: loco:62e7ff278ccac067625b50f7
+msgid "Filter wheel"
+msgstr "Ruote portafiltri"
+
+#: loco:62e7ff278ccac067625b50f8
+msgid "Find accessory"
+msgstr "Trova accessio"
+
+#: loco:62e7ff278ccac067625b50f9
+msgid "Find camera"
+msgstr "Trova camera"
+
+#: loco:62e7ff278ccac067625b50fa
+msgid "Find filter"
+msgstr "Trova filtro"
+
+#: loco:62e7ff278ccac067625b50fb
+msgid "Find mount"
+msgstr "Trova montatura"
+
+#: loco:62e7ff278ccac067625b50fc
+msgid "Find sensor"
+msgstr "Trova sensore"
+
+#: loco:62e7ff278ccac067625b50fd
+msgid "Find software"
+msgstr "Trova software"
+
+#: loco:62e7ff278ccac067625b50fe
+msgid "Find telescope or lens"
+msgstr "Trova telescopio o lente"
+
+#: loco:62e7ff278ccac067625b50ff
+msgid "Flat box"
+msgstr "Flat box"
+
+#: loco:62e7ff278ccac067625b5100
+msgid "Focal modifier / field corrector"
+msgstr "Modificatore di focale / correttore di campo"
+
+#: loco:62e7ff278ccac067625b5101
+msgid "Focuser"
+msgstr "Focheggiatore"
+
+#: loco:62e7ff278ccac067625b5102
+msgid "Freeze"
+msgstr "Congela"
+
+#: loco:62e7ff278ccac067625b5103
+msgid "Frozen as ambiguous"
+msgstr "Congela come ambiguo"
+
+#: loco:62e7ff278ccac067625b5104
+msgid ""
+"However, please let me offer you a good reason to allow ads on AstroBin:"
+msgstr ""
+"Comunque, lasciati offrire un buon motivo per lasciare le pubblicità su "
+"AstroBin:"
+
+#: loco:62e7ff278ccac067625b5105
+msgid ""
+"If you assign this edit proposal to a specific user, only they will be able "
+"to review it or unassign themselves."
+msgstr ""
+"Se assegni questa proposta di modifica ad un utente specifico, solo questi "
+"sarà in gradi di controllarla o disassegnarsi."
+
+#: loco:62e7ff278ccac067625b5106
+msgid ""
+"If you assign this item to a specific moderator, only they will be able to "
+"review it or unassign themselves."
+msgstr ""
+"Se assegni questo strumento ad un moderatore specifico, solo questi sarà in "
+"gradi di controllarlo o disassegnarsi."
+
+#: loco:62e7ff278ccac067625b5107
+msgid ""
+"If you still feel that you would rather not see these ads, you can change "
+"this on your settings page."
+msgstr ""
+"Se preferisci comunque non vedere le pubblicità, puoi cambiarlo nelle tue "
+"impostazioni."
+
+#: loco:62e7ff278ccac067625b5108
+msgid "Images in common"
+msgstr "Immagini in comune"
+
+#: loco:62e7ff278ccac067625b5109
+msgid "Item frozen as ambiguous."
+msgstr "Strumento congelato come ambiguo."
+
+#: loco:62e7ff278ccac067625b510a
+msgid "Item unfrozen."
+msgstr "Strumento scongelato."
+
+#: loco:62e7ff278ccac067625b510b
+msgid "Known stock availability"
+msgstr "Disponibilità a magazzino"
+
+#: loco:62e7ff278ccac067625b510c
+msgid "Known stock availability for"
+msgstr "Disponibilità a magazzino per"
+
+#: loco:62e7ff278ccac067625b510d
+msgid "More"
+msgstr "Di più"
+
+#: loco:62e7ff278ccac067625b510e
+msgid "Most liked"
+msgstr "Più piaciute"
+
+#: loco:62e7ff278ccac067625b510f
+msgid "Most recent"
+msgstr "Più recenti"
+
+#: loco:62e7ff278ccac067625b5110
+msgid "New topic"
+msgstr "Nuovo argomento"
+
+#: loco:62e7ff278ccac067625b5111
+msgid "Observatory control"
+msgstr "Controllo di osservatorio"
+
+#: loco:62e7ff278ccac067625b5112
+msgid "Observatory dome"
+msgstr "Cupola"
+
+#: loco:62e7ff278ccac067625b5113
+msgid "Off-axis guider"
+msgstr "Guida fuori-asse"
+
+#: loco:62e7ff278ccac067625b5114
+msgid "Override generated name above"
+msgstr "Sovrascrivi il nome generato sopra"
+
+#: loco:62e7ff278ccac067625b5115
+msgid ""
+"Please consider making the name contain the bandwidth, to prevent ambiguity."
+msgstr ""
+"Considera far sì che il nome contenga la larghezza di banda, per evitare "
+"ambiguità."
+
+#: loco:62e7ff278ccac067625b5116
+msgid "Please consider making the name contain the size, to prevent ambiguity."
+msgstr ""
+"Considera far sì che il nome contenga la dimensione, per evitare ambiguità."
+
+#: loco:62e7ff278ccac067625b5117
+msgid "Please find a corresponding equipment item in the NEW database"
+msgstr "Trova uno strumento corrispondente nel NUOVO database"
+
+#: loco:62e7ff278ccac067625b5118
+msgid "Power distribution"
+msgstr "Alimentatore"
+
+#: loco:62e7ff278ccac067625b5119
+msgid "Recent forum posts"
+msgstr "Messaggi recenti sul forum"
+
+#: loco:62e7ff278ccac067625b511a
+msgid ""
+"Remember: you want to match items from the old database products in the new "
+"database."
+msgstr ""
+"Ricorda: devi far corrispondere strumenti dal vecchio database a prodotti "
+"nel nuovo database."
+
+#: loco:62e7ff278ccac067625b511b
+msgid "Search results"
+msgstr "Risultati di ricerca"
+
+#: loco:62e7ff278ccac067625b511c
+msgid "Select equipment class"
+msgstr "Seleziona classe di strumentazione"
+
+#: loco:62e7ff278ccac067625b511d
+msgid "Sub-item"
+msgstr "Sotto-strumento"
+
+#: loco:62e7ff278ccac067625b511e
+msgid "There are no topics in this forum."
+msgstr "Non ci sono argomenti in questo forum."
+
+#: loco:62e7ff278ccac067625b511f
+msgid "This is an item in the OLD database and it might be poorly defined"
+msgstr ""
+"Questo è uno strumento nel VECCHIO database e potrebbe essere mal definito"
+
+#: loco:62e7ff278ccac067625b5120
+msgid ""
+"This item cannot be selected it's been marked as ambiguous. Consider "
+"selecting or creating a non ambiguous variant instead."
+msgstr ""
+"Questo strumento non può essere selezionato perché è stato segnato come "
+"ambiguo. Considera il selezionale o creare una variante non ambigua."
+
+#: loco:62e7ff278ccac067625b5121
+msgid ""
+"This item is frozen as ambiguous and cannot be associated to images again."
+msgstr ""
+"Questo strumento è congelato come ambiguo e non può essere associato ad "
+"altre immagini."
+
+#: loco:62e7ff278ccac067625b5122
+msgid "Unanswered"
+msgstr "Senza risposta"
+
+#: loco:62e7ff278ccac067625b5123
+msgid "Unfreeze"
+msgstr "Scongela"
+
+#: loco:62e7ff278ccac067625b5124
+msgid "Usage"
+msgstr "Uso"
+
+#: loco:62e7ff278ccac067625b5125
+msgid "View all topics"
+msgstr "Tutti gli argomenti"
+
+#: loco:62e7ff278ccac067625b5126
+msgid ""
+"WARNING: you have unsaved changed. If you leave this page, they will be lost."
+msgstr ""
+"ATTENZIONE: hai modifiche non salvate. Se lasci questa pagina, le perderai."
+
+#: loco:62e7ff278ccac067625b5127
+msgid "Want to be the first to post?"
+msgstr "Vuoi essere il primo a postare?"
+
+#: loco:62e7ff278ccac067625b5128
+msgid ""
+"We know, we're all used to the fact that ads on the Internet are annoying."
+msgstr ""
+"Lo sappiamo, siamo tutti abituati al fatto che le pubblicità su Internet "
+"sono fastidiose."
+
+#: loco:62e7ff278ccac067625b5129
+msgid "Weather monitoring"
+msgstr "Controllo meteo"
+
+#: loco:62e7ff278ccac067625b512a
+msgid ""
+"You are about to freeze this item as ambiguous. The item will remain "
+"associated the images it's currently associated with. Nobody will be able to "
+"see this item (except moderators and the item's creator). Nobody will be "
+"able to add this item to images. Any items marked as 'variant of' this item "
+"will lose the relationship."
+msgstr ""
+
+#: loco:62e7ff278ccac067625b512b
+msgid ""
+"You are about to unfreeze this item as ambiguous. Users will be able to see "
+"it and use it again."
+msgstr ""
+
+#: loco:62e7ff278ccac067625b512c
+msgid ""
+"You cannot approve this edit proposal because you were the one who proposed "
+"it."
+msgstr ""
+"Non puoi approvare questa proposta di modifica perché sei stato tu a farla."
+
+#: loco:62e7ff278ccac067625b512d
+msgid ""
+"You cannot review this edit proposal because it's assigned to another user."
+msgstr ""
+"Non puoi controllare questa richiesta di proposta perché è assegnata ad un "
+"altro utente."
+
+#: loco:62e7ff278ccac067625b512e
+msgid "{{0}} replies"
+msgstr "{{0}} risposte"
