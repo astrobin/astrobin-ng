@@ -10,9 +10,18 @@
 }
 
 .listing {
+  @media screen and (min-width: $lg-min) {
+    margin: -1rem -1rem calc(1rem + 2px) -1rem;
+
+    &:last-child {
+      margin-bottom: -1rem;
+    }
+  }
+
   @media screen and (max-width: $md-max) {
-    margin-right: .5rem;
-    max-width: calc(33.334% - .5rem - 1px);
+    margin-right: 1px;
+    margin-bottom: 1px;
+    max-width: calc(33.334% - 1px)
   }
 
   > a {
@@ -35,10 +44,6 @@
         }
       }
     }
-  }
-
-  &:not(:last-child) {
-    margin-bottom: 1rem;
   }
 }
 
