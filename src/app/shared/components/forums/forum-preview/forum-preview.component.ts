@@ -16,6 +16,8 @@ import { TranslateService } from "@ngx-translate/core";
   styleUrls: ["./forum-preview.component.scss"]
 })
 export class ForumPreviewComponent extends BaseComponentDirective implements OnInit, OnChanges {
+  readonly MAX_TOPICS = 10;
+
   @Input()
   forumId: ForumInterface["id"];
 
@@ -84,7 +86,7 @@ export class ForumPreviewComponent extends BaseComponentDirective implements OnI
         switchMap(forum => this.forumApiService.loadTopics(forum.id))
       )
       .subscribe(response => {
-        this.topics = response.results.slice(0, 10);
+        this.topics = response.results.slice(0, this.MAX_TOPICS);
         this.loading = false;
       });
   }

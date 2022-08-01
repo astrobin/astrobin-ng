@@ -35,13 +35,15 @@
   </div>
 
   <div class="card-footer">
-    <a class="btn btn-secondary" [href]="forumUrl">
-      {{ "View all topics" | translate }}
-    </a>
+    <ng-container *ngIf="!loading; else loadingTemplate">
+      <a *ngIf="topics?.length > MAX_TOPICS" class="btn btn-secondary" [href]="forumUrl">
+        {{ "View all topics" | translate }}
+      </a>
 
-    <a class="btn btn-primary" [href]="forumNewTopicUrl">
-      {{ "New topic" | translate }}
-    </a>
+      <a class="btn btn-primary" [href]="forumNewTopicUrl">
+        {{ "New topic" | translate }}
+      </a>
+    </ng-container>
   </div>
 </div>
 
