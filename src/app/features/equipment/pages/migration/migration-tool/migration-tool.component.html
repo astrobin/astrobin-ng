@@ -65,7 +65,9 @@
         class="card box-shadow"
         [class.disabled]="migrationMode || subCreationMode || migrationConfirmation.inProgress"
       >
-        <div class="card-header">{{ "This LEGACY item needs to be migrated" | translate }}:</div>
+        <div class="card-header">
+          {{ "This is an item in the OLD database and it might be poorly defined" | translate }}
+        </div>
 
         <div class="card-body">
           <table class="table table-striped">
@@ -177,17 +179,20 @@
           <div class="backdrop"></div>
 
           <div class="card-header">
-            {{ "Select target item for the migration, or create a new one." | translate }}
+            {{ "Begin migration" | translate }}
           </div>
 
           <div class="card-body">
             <astrobin-equipment-item-browser
               #equipmentItemBrowser
+              [label]='"Please find a corresponding equipment item in the NEW database" | translate'
+              [description]='"Remember: you want to match items from the old database products in the new database." | translate'
               [type]="getActiveType()"
               [enableFullscreen]="true"
               (valueChanged)="this.migrationTarget = $event"
               (subCreationModeStarted)="subCreationMode = true"
               (subCreationModeEnded)="subCreationMode = false"
+              [required]="true"
             ></astrobin-equipment-item-browser>
           </div>
 

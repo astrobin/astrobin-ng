@@ -94,6 +94,9 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
   showLabel = true;
 
   @Input()
+  description: string;
+
+  @Input()
   required = false;
 
   @Input()
@@ -205,6 +208,10 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
       this.fields[0].templateOptions.label = this.showLabel
         ? this.label || this.translateService.instant("Find equipment item")
         : null;
+    }
+
+    if (!!changes.description && this.fields && this.fields.length > 0) {
+      this.fields[0].templateOptions.description = this.description;
     }
   }
 
@@ -547,6 +554,7 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
                 required: this.required,
                 clearable: true,
                 label: this.showLabel ? this.label || this.translateService.instant("Find equipment item") : null,
+                description: this.description,
                 fullScreenLabel: this.label || this.translateService.instant("Find equipment item"),
                 options: this._getOptions().pipe(takeUntil(this.destroyed$)),
                 onSearch: (term: string): Observable<any[]> => {
