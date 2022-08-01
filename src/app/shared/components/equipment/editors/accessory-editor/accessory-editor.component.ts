@@ -83,6 +83,10 @@ export class AccessoryEditorComponent extends BaseItemEditorComponent<AccessoryI
         ];
       } else {
         this.fields = [this._getNameField(), this._getVariantOfField(EquipmentItemType.ACCESSORY)];
+
+        if (this.model.type === null || this.model.type === AccessoryType.OTHER) {
+          this.fields.push(this._getTypeField());
+        }
       }
 
       this.fields = [...this.fields, this._getWebsiteField(), this._getImageField(), this._getCommunityNotesField()];
