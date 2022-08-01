@@ -36,6 +36,7 @@ export class UserProfileGenerator {
       receiveImportantCommunications: true,
       receiveMarketingAndCommercialMaterial: false,
       allowAstronomyAds: true,
+      allowRetailerIntegration: true,
       inactiveAccountReminderSent: null,
       language: "en",
       seenRealName: true,

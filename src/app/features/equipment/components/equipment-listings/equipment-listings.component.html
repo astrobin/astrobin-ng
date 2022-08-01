@@ -1,0 +1,73 @@
+<div class="card">
+  <div class="card-header">
+    <ng-container *ngTemplateOutlet="cardHeaderTemplate"></ng-container>
+  </div>
+
+  <div class="card-body">
+    <div class="listings">
+      <ng-container *ngTemplateOutlet="cardBodyTemplate"></ng-container>
+    </div>
+  </div>
+
+  <div class="card-footer flex-row">
+    <fa-icon icon="info-circle" (click)="infoButtonClicked()"></fa-icon>
+    <fa-icon icon="times" (click)="removeButtonClicked()"></fa-icon>
+  </div>
+</div>
+
+<ng-template #loadingTemplate>
+  <astrobin-loading-indicator></astrobin-loading-indicator>
+</ng-template>
+
+<ng-template #cardHeaderItemListingsFullTemplate>
+  <span [innerHTML]="shopItemLabel"></span>
+</ng-template>
+
+<ng-template #cardHeaderItemListingsLiteTemplate>
+  <span [innerHTML]="'Known stock availability for' | translate"></span>
+</ng-template>
+
+<ng-template #cardHeaderBrandListingsFullTemplate>
+  <span [innerHTML]="shopBrandLabel"></span>
+</ng-template>
+
+<ng-template #cardHeaderBrandListingsLiteTemplate>
+  <span [innerHTML]="'Known stock availability' | translate"></span>
+</ng-template>
+
+<ng-template #cardBodyItemListingsFullTemplate>
+
+</ng-template>
+
+<ng-template #cardBodyItemListingsLiteTemplate>
+
+</ng-template>
+
+<ng-template #cardBodyBrandListingsFullTemplate>
+  <div *ngFor="let listing of listings.brandListings" class="listing">
+    <ng-container *ngIf="!!listing.retailer.logo; else noLogoTemplate">
+      <a
+        [href]="urlWithTags(listing)"
+        [ngbTooltip]="!!item ? item.brandName : brand.name"
+        appGtagOutboundClickEvent
+        target="_blank"
+        class="with-logo"
+      >
+        <img [src]="listing.retailer.logo" [alt]="listing.retailer.name" />
+      </a>
+    </ng-container>
+    <ng-template #noLogoTemplate>
+      <a
+        [href]="urlWithTags(listing)"
+        appGtagOutboundClickEvent
+        target="_blank"
+      >
+        {{ listing.retailer.name }}
+      </a>
+    </ng-template>
+  </div>
+</ng-template>
+
+<ng-template #cardBodyBrandListingsLiteTemplate>
+
+</ng-template>

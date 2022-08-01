@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from "@angular/core";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
@@ -72,9 +72,10 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
     public readonly cookieService: CookieService,
     public readonly compareService: CompareService,
     public readonly utilsService: UtilsService,
-    public readonly modalService: NgbModal
+    public readonly modalService: NgbModal,
+    public readonly changeDetectionRef: ChangeDetectorRef
   ) {
-    super(store$, actions$, activatedRoute, router, windowRefService, cookieService);
+    super(store$, actions$, activatedRoute, router, windowRefService, cookieService, changeDetectionRef);
   }
 
   ngOnInit(): void {

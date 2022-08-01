@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
@@ -35,9 +35,19 @@ export class PendingEditExplorerComponent extends PendingExplorerBaseComponent i
     public readonly router: Router,
     public readonly windowRefService: WindowRefService,
     public readonly cookieService: CookieService,
-    public readonly equipmentItemService: EquipmentItemService
+    public readonly equipmentItemService: EquipmentItemService,
+    public readonly changeDetectionRef: ChangeDetectorRef
   ) {
-    super(store$, actions$, activatedRoute, router, windowRefService, cookieService, equipmentItemService);
+    super(
+      store$,
+      actions$,
+      activatedRoute,
+      router,
+      windowRefService,
+      cookieService,
+      equipmentItemService,
+      changeDetectionRef
+    );
     this.pendingType = PendingType.PENDING_EDIT;
   }
 

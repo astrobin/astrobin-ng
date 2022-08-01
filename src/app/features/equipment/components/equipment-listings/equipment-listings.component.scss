@@ -1,0 +1,58 @@
+@import "../../../../styles/breakpoints";
+
+.listings {
+  display: flex;
+  flex-wrap: wrap;
+
+  @media screen and (min-width: $lg-min) {
+    flex-direction: column;
+  }
+}
+
+.listing {
+  @media screen and (max-width: $md-max) {
+    margin-right: .5rem;
+    max-width: calc(33.334% - .5rem - 1px);
+  }
+
+  > a {
+    display: block;
+    cursor: pointer;
+
+    &.with-logo {
+      &:after {
+        content: "";
+        display: none;
+      }
+
+      > img {
+        width: 100%;
+        transition: all .1s ease-in-out;
+        pointer-events: none;
+
+        &:hover {
+          transform: scale(1.05);
+        }
+      }
+    }
+  }
+
+  &:not(:last-child) {
+    margin-bottom: 1rem;
+  }
+}
+
+.card-footer {
+  fa-icon {
+    cursor: pointer;
+    color: var(--lightGrey);
+
+    &:not(:last-child) {
+      margin-right: .5rem;
+    }
+
+    &:hover {
+      color: var(--lighterGrey);
+    }
+  }
+}

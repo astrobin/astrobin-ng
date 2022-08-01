@@ -29,13 +29,16 @@ import { SoftwareInterface } from "@features/equipment/types/software.interface"
 import { getEquipmentItemType } from "@features/equipment/store/equipment.selectors";
 import { EquipmentPresetInterface } from "@features/equipment/types/equipment-preset.interface";
 import { UserInterface } from "@shared/interfaces/user.interface";
-import { ImageInterface } from "@shared/interfaces/image.interface";
 import { EquipmentItemMostOftenUsedWith } from "@features/equipment/types/equipment-item-most-often-used-with-data.interface";
 import { ExplorerFilterInterface } from "@features/equipment/pages/explorer/explorer-filters/explorer-filters.component";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { ContributorInterface } from "@features/equipment/types/contributor.interface";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
+import {
+  EquipmentBrandListingInterface,
+  EquipmentListingsInterface
+} from "@features/equipment/types/equipment-listings.interface";
 
 export interface AllEquipmentItemsOptionsInterface {
   query?: string;
@@ -470,6 +473,10 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     );
   }
 
+  getListings(itemType: EquipmentItemType, itemId: EquipmentItem["id"]): Observable<EquipmentListingsInterface> {
+    return this.http.get<EquipmentListingsInterface>(`${this.configUrl}/${itemType.toLowerCase()}/${itemId}/listings/`);
+  }
+
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // BRAND API
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -560,6 +567,10 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     return this.http
       .get<PaginatedApiResultInterface<BrandInterface>>(`${this.configUrl}/brand/?q=${q}`)
       .pipe(map(response => response.results));
+  }
+
+  getListingsForBrand(brandId: BrandInterface["id"]): Observable<EquipmentListingsInterface> {
+    return this.http.get<EquipmentListingsInterface>(`${this.configUrl}/brand/${brandId}/listings/`);
   }
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

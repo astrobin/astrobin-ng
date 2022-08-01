@@ -37,6 +37,9 @@
   .card-header {
     @include darkest-background-texture;
     color: var(--white);
+    padding: .75rem 1rem;
+    font-size: 1rem;
+    font-weight: bold;
 
     .btn-link {
       padding: 0;

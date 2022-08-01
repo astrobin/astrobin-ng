@@ -94,6 +94,7 @@ import { AssignEditProposalModalComponent } from "@shared/components/equipment/s
 import { ForumPreviewComponent } from "@shared/components/forums/forum-preview/forum-preview.component";
 import { ImageSearchComponent } from "@shared/components/search/image-search/image-search.component";
 import { MostOftenUsedWithModalComponent } from "@shared/components/equipment/summaries/item/summary/most-often-used-with-modal/most-often-used-with-modal.component";
+import { RemoveAdsDialogComponent } from "@shared/components/misc/remove-ads-dialog/remove-ads-dialog.component";
 
 const modules = [
   CommonModule,
@@ -161,6 +162,7 @@ const components = [
   ObjectsInFieldComponent,
   ReadOnlyModeComponent,
   RefreshButtonComponent,
+  RemoveAdsDialogComponent,
   ScrollToTopComponent,
   SubscriptionRequiredModalComponent,
   TelescopeComponent,

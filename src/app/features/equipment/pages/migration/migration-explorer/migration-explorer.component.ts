@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { Actions } from "@ngrx/effects";
@@ -29,9 +29,10 @@ export class MigrationExplorerComponent extends ExplorerBaseComponent implements
     public readonly titleService: TitleService,
     public readonly translateService: TranslateService,
     public readonly windowRefService: WindowRefService,
-    public readonly cookieService: CookieService
+    public readonly cookieService: CookieService,
+    public readonly changeDetectionRef: ChangeDetectorRef
   ) {
-    super(store$, actions$, activatedRoute, router, windowRefService, cookieService);
+    super(store$, actions$, activatedRoute, router, windowRefService, cookieService, changeDetectionRef);
   }
 
   ngOnInit(): void {

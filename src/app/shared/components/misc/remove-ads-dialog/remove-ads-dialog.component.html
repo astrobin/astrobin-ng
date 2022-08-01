@@ -1,0 +1,58 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-title">
+    <fa-icon icon="info-circle"></fa-icon>
+    {{ "Please note" | translate }}
+  </h4>
+  <button (click)="modal.dismiss()" aria-describedby="modal-title" class="close" type="button">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body">
+  <p>
+    {{ "We know, we're all used to the fact that ads on the Internet are annoying." | translate }}
+  </p>
+
+  <p>
+    {{ "However, please let me offer you a good reason to allow ads on AstroBin:" | translate }}
+  </p>
+
+  <p>
+    <strong>
+      {{
+      "There are only astronomy ads on AstroBin, that are published after my review and approval. " +
+      "Nothing fishy, nothing off-topic, and nothing that will use any of your private information." | translate
+      }}
+    </strong>
+  </p>
+
+  <p>
+    {{
+    "If you still feel that you would rather not see these ads, you can change this on your settings page." | translate
+    }}
+  </p>
+
+  <p>
+    {{ "Thank you!" | translate }}
+  </p>
+</div>
+
+<div class="modal-footer">
+  <a
+    [href]="classicRoutesService.SETTINGS_PREFERENCES"
+    class="btn btn-outline-secondary"
+    [class.loading]="loadingService.loading$ | async"
+    type="button"
+  >
+    {{ "Settings" | translate }}
+  </a>
+
+  <button
+    (click)="modal.close()"
+    class="btn btn-secondary"
+    [class.loading]="loadingService.loading$ | async"
+    type="button"
+  >
+    {{ "Close" | translate }}
+  </button>
+</div>
