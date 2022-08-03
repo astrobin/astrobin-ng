@@ -85,7 +85,7 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
   usageType: EquipmentItemUsageType;
 
   @Input()
-  initialValue: TypeUnion = null;
+  value: TypeUnion = null;
 
   @Input()
   label: string;
@@ -531,7 +531,7 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
       this.windowRefService.scrollToElement("#create-new-item");
     };
 
-    this.model = { value: this.initialValue };
+    this.model = { value: this.value };
 
     if (!!this.currentUserSubscription) {
       this.currentUserSubscription.unsubscribe();
@@ -645,7 +645,8 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
       .subscribe(item => {
         if (this.multiple) {
           if (!!this.model.value) {
-            this.setValue([...((this.model.value as EquipmentItem["id"][]) || []), item.id]);
+            const newValue = [...((this.model.value as EquipmentItem["id"][]) || []), item.id];
+            this.setValue([...new Set(newValue)]);
           } else {
             this.setValue([item.id]);
           }
@@ -678,7 +679,7 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
         }
       });
 
-    this.setValue(this.initialValue);
+    this.setValue(this.value);
   }
 
   _getOptions(): Observable<any> {

@@ -35,10 +35,7 @@ import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { ContributorInterface } from "@features/equipment/types/contributor.interface";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
-import {
-  EquipmentBrandListingInterface,
-  EquipmentListingsInterface
-} from "@features/equipment/types/equipment-listings.interface";
+import { EquipmentListingsInterface } from "@features/equipment/types/equipment-listings.interface";
 
 export interface AllEquipmentItemsOptionsInterface {
   query?: string;
