@@ -52,7 +52,21 @@ export enum EquipmentItemEditorMode {
   EDIT_PROPOSAL
 }
 
-const PROHIBITED_WORDS = [
+const DIY_PROHIBITED_WORDS = [
+  "diy",
+  "self-made",
+  "selfmade",
+  "homemade",
+  "home-made",
+  "do-it-yourself",
+  "fai-da-te",
+  "auto-costruito",
+  "auto-costruita",
+  "autocostruito",
+  "autocostruita"
+];
+
+const OWN_INSTANCE_PROHIBITED_WORDS = [
   // English
   "modified",
   "modded",
@@ -69,10 +83,6 @@ const PROHIBITED_WORDS = [
   "lost",
   "cooled",
   "stock",
-  "diy",
-  "self-made",
-  "selfmade",
-  "do-it-yourself",
 
   // Italian
   "modificato",
@@ -98,11 +108,6 @@ const PROHIBITED_WORDS = [
   "perduta",
   "raffreddato",
   "raffreddata",
-  "fai-da-te",
-  "auto-costruito",
-  "auto-costruita",
-  "autocostruito",
-  "autocostruita",
 
   // German
   "geändert",
@@ -538,7 +543,13 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
               return of(true);
             }
 
-            for (const word of PROHIBITED_WORDS) {
+            for (const word of DIY_PROHIBITED_WORDS) {
+              if (new RegExp(`\\b${word}\\b`).test(control.value.toLowerCase())) {
+                return of(false);
+              }
+            }
+
+            for (const word of OWN_INSTANCE_PROHIBITED_WORDS) {
               if (new RegExp(`\\b${word}\\b`).test(control.value.toLowerCase())) {
                 return of(false);
               }
@@ -547,7 +558,7 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
             return of(true);
           },
           message: (error, field: FormlyFieldConfig) => {
-            for (const word of PROHIBITED_WORDS) {
+            for (const word of OWN_INSTANCE_PROHIBITED_WORDS) {
               if (new RegExp(`\\b${word}\\b`).test(field.formControl.value.toLowerCase())) {
                 return this.translateService.instant(
                   `Your usage of the word "{{0}}" suggests that you are using this field to specify a property ` +
@@ -555,6 +566,20 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
                     "the generic instance that will be shared by all owners on AstroBin.",
                   {
                     "0": word
+                  }
+                );
+              }
+            }
+
+            for (const word of DIY_PROHIBITED_WORDS) {
+              if (new RegExp(`\\b${word}\\b`).test(field.formControl.value.toLowerCase())) {
+                const label = this.translateService.instant("Self-made / non-commercial (no brand)");
+                return this.translateService.instant(
+                  `You don't need to use the word "{{0}}", as this meaning is already conveyed by clicking on ` +
+                    `the checkbox above: "{{1}}".`,
+                  {
+                    "0": word,
+                    "1": label
                   }
                 );
               }
