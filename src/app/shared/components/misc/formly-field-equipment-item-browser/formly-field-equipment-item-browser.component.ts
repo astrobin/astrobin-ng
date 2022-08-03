@@ -30,11 +30,16 @@ export class FormlyFieldEquipmentItemBrowserComponent extends FieldType implemen
 
   recent: EquipmentItemBaseInterface[] = [];
   recentLoaded = false;
+  hasRecent = false;
 
   noRecentMessage: string = this.translateService.instant(
     "You don't have any recently used items in this class. Please find your equipment using the input box above, " +
       "and the next time you edit an image, they will available for quick selection here. PS: you can also save/load " +
       "presets to make it easier to add equipment next time! Look for the preset buttons at the end of this form."
+  );
+
+  allRecentUsedMessage: string = this.translateService.instant(
+    "All your recent items of this equipment class are already used above."
   );
 
   constructor(
@@ -45,7 +50,7 @@ export class FormlyFieldEquipmentItemBrowserComponent extends FieldType implemen
     super();
   }
 
-  get initialValue(): EquipmentItem["id"] | EquipmentItem["id"][] {
+  get value(): EquipmentItem["id"] | EquipmentItem["id"][] {
     const value = this.formControl.value;
 
     if (!this.formControl.value) {
@@ -56,26 +61,7 @@ export class FormlyFieldEquipmentItemBrowserComponent extends FieldType implemen
   }
 
   ngOnInit() {
-    if (this.to.showQuickAddRecent) {
-      this.store$.dispatch(
-        new FindRecentlyUsedEquipmentItems({
-          type: this.to.itemType,
-          usageType: this.to.usageType
-        })
-      );
-      this.actions$
-        .pipe(
-          ofType(EquipmentActionTypes.FIND_RECENTLY_USED_EQUIPMENT_ITEMS_SUCCESS),
-          map((action: FindRecentlyUsedEquipmentItemsSuccess) => action.payload),
-          filter(payload => payload.type === this.to.itemType && payload.usageType === this.to.usageType),
-          take(1),
-          map(payload => payload.items)
-        )
-        .subscribe(items => {
-          this.recent = items;
-          this.recentLoaded = true;
-        });
-    }
+    this._loadRecent();
   }
 
   onCreationModeStarted() {
@@ -91,6 +77,8 @@ export class FormlyFieldEquipmentItemBrowserComponent extends FieldType implemen
   }
 
   onValueChanged(value: EquipmentItem | EquipmentItem[]) {
+    this._loadRecent();
+
     if (!value) {
       this.formControl.setValue(this.to.multiple ? [] : null);
       return;
@@ -119,5 +107,33 @@ export class FormlyFieldEquipmentItemBrowserComponent extends FieldType implemen
 
   quickAddItem(item: EquipmentItemBaseInterface) {
     this.store$.dispatch(new ItemBrowserAdd({ type: this.to.itemType, usageType: this.to.usageType, item }));
+  }
+
+  _loadRecent(): void {
+    if (this.to.showQuickAddRecent) {
+      this.store$.dispatch(
+        new FindRecentlyUsedEquipmentItems({
+          type: this.to.itemType,
+          usageType: this.to.usageType
+        })
+      );
+      this.actions$
+        .pipe(
+          ofType(EquipmentActionTypes.FIND_RECENTLY_USED_EQUIPMENT_ITEMS_SUCCESS),
+          map((action: FindRecentlyUsedEquipmentItemsSuccess) => action.payload),
+          filter(payload => payload.type === this.to.itemType && payload.usageType === this.to.usageType),
+          take(1),
+          map(payload => payload.items)
+        )
+        .subscribe(items => {
+          if (this.to.multiple) {
+            this.recent = items.filter(x => (this.value as EquipmentItem["id"][]).indexOf(x.id) === -1);
+          } else {
+            this.recent = items.filter(x => x.id !== this.value);
+          }
+          this.recentLoaded = true;
+          this.hasRecent = items.length > 0;
+        });
+    }
   }
 }

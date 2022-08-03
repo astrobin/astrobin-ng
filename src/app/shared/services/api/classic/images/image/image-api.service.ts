@@ -73,21 +73,6 @@ export class ImageApiService extends BaseClassicApiService {
   }
 
   updateImage(pk: ImageInterface["pk"], data: ImageInterface): Observable<ImageInterface> {
-    const fixed = { ...data };
-
-    for (const prop of [
-      "imagingTelescopes2",
-      "imagingCameras2",
-      "mounts2",
-      "filters2",
-      "accessories2",
-      "software2",
-      "guidingTelescopes2",
-      "guidingCameras2"
-    ]) {
-      fixed[prop] = [...new Set(fixed[prop])];
-    }
-
-    return this.http.put<ImageInterface>(`${this.configUrl}/image/${pk}/`, fixed);
+    return this.http.put<ImageInterface>(`${this.configUrl}/image/${pk}/`, data);
   }
 }

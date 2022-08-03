@@ -2,7 +2,7 @@
   #itemBrowser
   [enableSummaryModal]="false"
   [id]="field.id"
-  [initialValue]="initialValue"
+  [value]="value"
   [label]="to.label"
   [description]="to.description"
   [multiple]="to.multiple"
@@ -24,21 +24,19 @@
   <div class="quick-add">
     <span class="quick-add-label">{{ "Quick-add recent" | translate }}:</span>
 
-    <ng-container *ngIf="recent.length > 0; else noRecent">
-      <ng-container *ngFor="let item of recent; let last = last">
-        <a href="#" class="quick-add-item" appEventPreventDefault (click)="quickAddItem(item)">
-          <astrobin-equipment-item-display-name
-            [item]="item"
-            [enableSummaryModal]="false"
-          ></astrobin-equipment-item-display-name>
-        </a>
-        <span class="quick-add-separator" *ngIf="!last">&middot;</span>
+    <ng-container *ngIf="hasRecent; else noRecent">
+      <ng-container *ngIf="recent.length > 0; else allRecentUsed">
+        <ng-container *ngFor="let item of recent; let last = last">
+          <a href="#" class="quick-add-item" appEventPreventDefault (click)="quickAddItem(item)">
+            <astrobin-equipment-item-display-name
+              [item]="item"
+              [enableSummaryModal]="false"
+            ></astrobin-equipment-item-display-name>
+          </a>
+          <span class="quick-add-separator" *ngIf="!last">&middot;</span>
+        </ng-container>
       </ng-container>
     </ng-container>
-
-    <ng-template #noRecent>
-      <span [innerHTML]="noRecentMessage" class="no-recent"></span>
-    </ng-template>
   </div>
 
   <div
@@ -55,3 +53,11 @@
     {{ "Start typing in the text box to show the dropdown suggestions." | translate }}
   </div>
 </ng-container>
+
+<ng-template #noRecent>
+  <span [innerHTML]="noRecentMessage" class="no-recent"></span>
+</ng-template>
+
+<ng-template #allRecentUsed>
+  <span [innerHTML]="allRecentUsedMessage" class="no-recent"></span>
+</ng-template>
