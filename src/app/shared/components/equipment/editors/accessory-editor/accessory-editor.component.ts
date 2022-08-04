@@ -18,6 +18,8 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { AccessoryDisplayProperty, AccessoryService } from "@features/equipment/services/accessory.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
+import { switchMap, take } from "rxjs/operators";
+import { isGroupMember } from "@shared/operators/is-group-member.operator";
 
 @Component({
   selector: "astrobin-accessory-editor",
@@ -72,27 +74,29 @@ export class AccessoryEditorComponent extends BaseItemEditorComponent<AccessoryI
   }
 
   private _initFields() {
-    this.initBrandAndName().subscribe(() => {
-      if (this.editorMode === EquipmentItemEditorMode.CREATION || !this.model.reviewerDecision) {
-        this.fields = [
-          this._getDIYField(),
-          this._getBrandField(),
-          this._getNameField(),
-          this._getVariantOfField(EquipmentItemType.ACCESSORY),
-          this._getTypeField()
-        ];
-      } else {
-        this.fields = [this._getNameField(), this._getVariantOfField(EquipmentItemType.ACCESSORY)];
+    this.initBrandAndName()
+      .pipe(switchMap(() => this.currentUser$.pipe(take(1), isGroupMember("equipment_moderators"))))
+      .subscribe(isModerator => {
+        if (this.editorMode === EquipmentItemEditorMode.CREATION || !this.model.reviewerDecision || isModerator) {
+          this.fields = [
+            this._getDIYField(),
+            this._getBrandField(),
+            this._getNameField(),
+            this._getVariantOfField(EquipmentItemType.ACCESSORY),
+            this._getTypeField()
+          ];
+        } else {
+          this.fields = [this._getNameField(), this._getVariantOfField(EquipmentItemType.ACCESSORY)];
 
-        if (this.model.type === null || this.model.type === AccessoryType.OTHER) {
-          this.fields.push(this._getTypeField());
+          if (this.model.type === null || this.model.type === AccessoryType.OTHER) {
+            this.fields.push(this._getTypeField());
+          }
         }
-      }
 
-      this.fields = [...this.fields, this._getWebsiteField(), this._getImageField(), this._getCommunityNotesField()];
+        this.fields = [...this.fields, this._getWebsiteField(), this._getImageField(), this._getCommunityNotesField()];
 
-      this._addBaseItemEditorFields();
-    });
+        this._addBaseItemEditorFields();
+      });
   }
 
   private _getTypeField() {

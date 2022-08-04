@@ -17,6 +17,8 @@ import { SensorDisplayProperty, SensorService } from "@features/equipment/servic
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { UtilsService } from "@shared/services/utils/utils.service";
+import { switchMap, take } from "rxjs/operators";
+import { isGroupMember } from "@shared/operators/is-group-member.operator";
 
 @Component({
   selector: "astrobin-sensor-editor",
@@ -63,76 +65,78 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
   }
 
   private _initFields() {
-    this.initBrandAndName().subscribe(() => {
-      if (this.editorMode === EquipmentItemEditorMode.CREATION || !this.model.reviewerDecision) {
-        this.fields = [
-          this._getBrandField(),
-          this._getNameField(),
-          this._getVariantOfField(EquipmentItemType.SENSOR),
-          this._getPixelSizeField(),
-          this._getPixelWidthField(),
-          this._getPixelHeightField(),
-          this._getSensorWidthField(),
-          this._getSensorHeightField(),
-          this._getQuantumEfficiencyField(),
-          this._getFullWellCapacityField(),
-          this._getReadNoiseField(),
-          this._getFrameRateField(),
-          this._getAdcField(),
-          this._getColorOrMonoField()
-        ];
-      } else {
-        this.fields = [this._getNameField(), this._getVariantOfField(EquipmentItemType.SENSOR)];
+    this.initBrandAndName()
+      .pipe(switchMap(() => this.currentUser$.pipe(take(1), isGroupMember("equipment_moderators"))))
+      .subscribe(isModerator => {
+        if (this.editorMode === EquipmentItemEditorMode.CREATION || !this.model.reviewerDecision || isModerator) {
+          this.fields = [
+            this._getBrandField(),
+            this._getNameField(),
+            this._getVariantOfField(EquipmentItemType.SENSOR),
+            this._getPixelSizeField(),
+            this._getPixelWidthField(),
+            this._getPixelHeightField(),
+            this._getSensorWidthField(),
+            this._getSensorHeightField(),
+            this._getQuantumEfficiencyField(),
+            this._getFullWellCapacityField(),
+            this._getReadNoiseField(),
+            this._getFrameRateField(),
+            this._getAdcField(),
+            this._getColorOrMonoField()
+          ];
+        } else {
+          this.fields = [this._getNameField(), this._getVariantOfField(EquipmentItemType.SENSOR)];
 
-        if (!this.model.pixelSize) {
-          this.fields.push(this._getPixelSizeField());
+          if (!this.model.pixelSize) {
+            this.fields.push(this._getPixelSizeField());
+          }
+
+          if (!this.model.pixelWidth) {
+            this.fields.push(this._getPixelWidthField());
+          }
+
+          if (!this.model.pixelHeight) {
+            this.fields.push(this._getPixelHeightField());
+          }
+
+          if (!this.model.sensorWidth) {
+            this.fields.push(this._getSensorWidthField());
+          }
+
+          if (!this.model.sensorHeight) {
+            this.fields.push(this._getSensorHeightField());
+          }
+
+          if (!this.model.quantumEfficiency) {
+            this.fields.push(this._getQuantumEfficiencyField());
+          }
+
+          if (!this.model.fullWellCapacity) {
+            this.fields.push(this._getFullWellCapacityField());
+          }
+
+          if (!this.model.readNoise) {
+            this.fields.push(this._getReadNoiseField());
+          }
+
+          if (!this.model.frameRate) {
+            this.fields.push(this._getFrameRateField());
+          }
+
+          if (!this.model.adc) {
+            this.fields.push(this._getAdcField());
+          }
+
+          if (!this.model.colorOrMono) {
+            this.fields.push(this._getColorOrMonoField());
+          }
         }
 
-        if (!this.model.pixelWidth) {
-          this.fields.push(this._getPixelWidthField());
-        }
+        this.fields = [...this.fields, this._getImageField(), this._getWebsiteField(), this._getCommunityNotesField()];
 
-        if (!this.model.pixelHeight) {
-          this.fields.push(this._getPixelHeightField());
-        }
-
-        if (!this.model.sensorWidth) {
-          this.fields.push(this._getSensorWidthField());
-        }
-
-        if (!this.model.sensorHeight) {
-          this.fields.push(this._getSensorHeightField());
-        }
-
-        if (!this.model.quantumEfficiency) {
-          this.fields.push(this._getQuantumEfficiencyField());
-        }
-
-        if (!this.model.fullWellCapacity) {
-          this.fields.push(this._getFullWellCapacityField());
-        }
-
-        if (!this.model.readNoise) {
-          this.fields.push(this._getReadNoiseField());
-        }
-
-        if (!this.model.frameRate) {
-          this.fields.push(this._getFrameRateField());
-        }
-
-        if (!this.model.adc) {
-          this.fields.push(this._getAdcField());
-        }
-
-        if (!this.model.colorOrMono) {
-          this.fields.push(this._getColorOrMonoField());
-        }
-      }
-
-      this.fields = [...this.fields, this._getImageField(), this._getWebsiteField(), this._getCommunityNotesField()];
-
-      this._addBaseItemEditorFields();
-    });
+        this._addBaseItemEditorFields();
+      });
   }
 
   private _getPixelSizeField() {

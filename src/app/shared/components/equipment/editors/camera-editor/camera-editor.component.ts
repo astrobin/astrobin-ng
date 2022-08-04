@@ -24,6 +24,7 @@ import { of } from "rxjs";
 import { AbstractControl, FormControl } from "@angular/forms";
 import { LoadBrand } from "@features/equipment/store/equipment.actions";
 import { UtilsService } from "@shared/services/utils/utils.service";
+import { isGroupMember } from "@shared/operators/is-group-member.operator";
 
 @Component({
   selector: "astrobin-camera-editor",
@@ -208,45 +209,47 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
 
   private _initFields() {
     const _doInitFields = () => {
-      if (this.editorMode === EquipmentItemEditorMode.CREATION || !this.model.reviewerDecision) {
-        this.fields = [
-          this._getDIYField(),
-          this._getBrandField(),
-          this._getNameField(),
-          this._getVariantOfField(EquipmentItemType.CAMERA),
-          this._getTypeField(),
-          this._getSensorField(),
-          this._getCooledField(),
-          this._getMaxCoolingField(),
-          this._getBackFocusField()
-        ];
-      } else {
-        this.fields = [this._getNameField(), this._getVariantOfField(EquipmentItemType.CAMERA)];
+      this.currentUser$.pipe(take(1), isGroupMember("equipment_moderators")).subscribe(isModerator => {
+        if (this.editorMode === EquipmentItemEditorMode.CREATION || !this.model.reviewerDecision || isModerator) {
+          this.fields = [
+            this._getDIYField(),
+            this._getBrandField(),
+            this._getNameField(),
+            this._getVariantOfField(EquipmentItemType.CAMERA),
+            this._getTypeField(),
+            this._getSensorField(),
+            this._getCooledField(),
+            this._getMaxCoolingField(),
+            this._getBackFocusField()
+          ];
+        } else {
+          this.fields = [this._getNameField(), this._getVariantOfField(EquipmentItemType.CAMERA)];
 
-        if (!this.model.type || this.model.type === CameraType.OTHER) {
-          this.fields.push(this._getTypeField());
+          if (!this.model.type || this.model.type === CameraType.OTHER) {
+            this.fields.push(this._getTypeField());
+          }
+
+          if (!this.model.sensor) {
+            this.fields.push(this._getSensorField());
+          }
+
+          if (this.model.cooled === null) {
+            this.fields.push(this._getCooledField());
+          }
+
+          if (!this.model.maxCooling) {
+            this.fields.push(this._getMaxCoolingField());
+          }
+
+          if (!this.model.backFocus) {
+            this.fields.push(this._getBackFocusField());
+          }
         }
 
-        if (!this.model.sensor) {
-          this.fields.push(this._getSensorField());
-        }
+        this.fields = [...this.fields, this._getWebsiteField(), this._getImageField(), this._getCommunityNotesField()];
 
-        if (this.model.cooled === null) {
-          this.fields.push(this._getCooledField());
-        }
-
-        if (!this.model.maxCooling) {
-          this.fields.push(this._getMaxCoolingField());
-        }
-
-        if (!this.model.backFocus) {
-          this.fields.push(this._getBackFocusField());
-        }
-      }
-
-      this.fields = [...this.fields, this._getWebsiteField(), this._getImageField(), this._getCommunityNotesField()];
-
-      this._addBaseItemEditorFields();
+        this._addBaseItemEditorFields();
+      });
     };
 
     if (this.editorMode === EquipmentItemEditorMode.CREATION) {

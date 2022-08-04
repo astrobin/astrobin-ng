@@ -16,8 +16,9 @@ import { MountDisplayProperty, MountService } from "@features/equipment/services
 import { MountInterface, MountType } from "@features/equipment/types/mount.interface";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { takeUntil } from "rxjs/operators";
+import { switchMap, take, takeUntil } from "rxjs/operators";
 import { UtilsService } from "@shared/services/utils/utils.service";
+import { isGroupMember } from "@shared/operators/is-group-member.operator";
 
 @Component({
   selector: "astrobin-mount-editor",
@@ -64,57 +65,59 @@ export class MountEditorComponent extends BaseItemEditorComponent<MountInterface
   }
 
   private _initFields() {
-    this.initBrandAndName().subscribe(() => {
-      if (this.editorMode === EquipmentItemEditorMode.CREATION || !this.model.reviewerDecision) {
-        this.fields = [
-          this._getDIYField(),
-          this._getBrandField(),
-          this._getNameField(),
-          this._getVariantOfField(EquipmentItemType.MOUNT),
-          this._getTypeField(),
-          this._getWeightField(),
-          this._getMaxPayloadField(),
-          this._getComputerizedField(),
-          this._getPeriodicErrorField(),
-          this._getPecField(),
-          this._getSlewSpeedField()
-        ];
-      } else {
-        this.fields = [this._getNameField(), this._getVariantOfField(EquipmentItemType.MOUNT)];
+    this.initBrandAndName()
+      .pipe(switchMap(() => this.currentUser$.pipe(take(1), isGroupMember("equipment_moderators"))))
+      .subscribe(isModerator => {
+        if (this.editorMode === EquipmentItemEditorMode.CREATION || !this.model.reviewerDecision || isModerator) {
+          this.fields = [
+            this._getDIYField(),
+            this._getBrandField(),
+            this._getNameField(),
+            this._getVariantOfField(EquipmentItemType.MOUNT),
+            this._getTypeField(),
+            this._getWeightField(),
+            this._getMaxPayloadField(),
+            this._getComputerizedField(),
+            this._getPeriodicErrorField(),
+            this._getPecField(),
+            this._getSlewSpeedField()
+          ];
+        } else {
+          this.fields = [this._getNameField(), this._getVariantOfField(EquipmentItemType.MOUNT)];
 
-        if (!this.model.type || this.model.type === MountType.OTHER) {
-          this.fields.push(this._getTypeField());
+          if (!this.model.type || this.model.type === MountType.OTHER) {
+            this.fields.push(this._getTypeField());
+          }
+
+          if (!this.model.weight) {
+            this.fields.push(this._getWeightField());
+          }
+
+          if (!this.model.maxPayload) {
+            this.fields.push(this._getMaxPayloadField());
+          }
+
+          if (this.model.computerized === null) {
+            this.fields.push(this._getComputerizedField());
+          }
+
+          if (this.model.periodicError === null) {
+            this.fields.push(this._getPeriodicErrorField());
+          }
+
+          if (this.model.pec === null) {
+            this.fields.push(this._getPecField());
+          }
+
+          if (!this.model.slewSpeed) {
+            this.fields.push(this._getSlewSpeedField());
+          }
         }
 
-        if (!this.model.weight) {
-          this.fields.push(this._getWeightField());
-        }
+        this.fields = [...this.fields, this._getImageField(), this._getWebsiteField(), this._getCommunityNotesField()];
 
-        if (!this.model.maxPayload) {
-          this.fields.push(this._getMaxPayloadField());
-        }
-
-        if (this.model.computerized === null) {
-          this.fields.push(this._getComputerizedField());
-        }
-
-        if (this.model.periodicError === null) {
-          this.fields.push(this._getPeriodicErrorField());
-        }
-
-        if (this.model.pec === null) {
-          this.fields.push(this._getPecField());
-        }
-
-        if (!this.model.slewSpeed) {
-          this.fields.push(this._getSlewSpeedField());
-        }
-      }
-
-      this.fields = [...this.fields, this._getImageField(), this._getWebsiteField(), this._getCommunityNotesField()];
-
-      this._addBaseItemEditorFields();
-    });
+        this._addBaseItemEditorFields();
+      });
   }
 
   private _getTypeField() {
