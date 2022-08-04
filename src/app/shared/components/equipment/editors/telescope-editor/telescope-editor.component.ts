@@ -15,10 +15,11 @@ import { FormlyFieldMessageLevel, FormlyFieldService } from "@shared/services/fo
 import { TelescopeDisplayProperty, TelescopeService } from "@features/equipment/services/telescope.service";
 import { TelescopeInterface, TelescopeType } from "@features/equipment/types/telescope.interface";
 import { FormlyFieldConfig } from "@ngx-formly/core";
-import { takeUntil } from "rxjs/operators";
+import { switchMap, take, takeUntil } from "rxjs/operators";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { UtilsService } from "@shared/services/utils/utils.service";
+import { isGroupMember } from "@shared/operators/is-group-member.operator";
 
 @Component({
   selector: "astrobin-telescope-editor",
@@ -65,49 +66,51 @@ export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeI
   }
 
   private _initFields() {
-    this.initBrandAndName().subscribe(() => {
-      if (this.editorMode === EquipmentItemEditorMode.CREATION || !this.model.reviewerDecision) {
-        this.fields = [
-          this._getDIYField(),
-          this._getBrandField(),
-          this._getNameField(),
-          this._getVariantOfField(EquipmentItemType.TELESCOPE),
-          this._getTypeField(),
-          this._getApertureField(),
-          this._getFixedFocalLengthField(),
-          this._getFocalLengthField(),
-          this._getFocalLengthMinMaxField(),
-          this._getWeightField()
-        ];
-      } else {
-        this.fields = [this._getNameField(), this._getVariantOfField(EquipmentItemType.TELESCOPE)];
-
-        if (this.model.type === null || this.model.type === TelescopeType.OTHER) {
-          this.fields.push(this._getTypeField());
-        }
-
-        if (!this.model.aperture) {
-          this.fields.push(this._getApertureField());
-        }
-
-        if (!this.model.minFocalLength || !this.model.maxFocalLength) {
+    this.initBrandAndName()
+      .pipe(switchMap(() => this.currentUser$.pipe(take(1), isGroupMember("equipment_moderators"))))
+      .subscribe(isModerator => {
+        if (this.editorMode === EquipmentItemEditorMode.CREATION || !this.model.reviewerDecision || isModerator) {
           this.fields = [
-            ...this.fields,
+            this._getDIYField(),
+            this._getBrandField(),
+            this._getNameField(),
+            this._getVariantOfField(EquipmentItemType.TELESCOPE),
+            this._getTypeField(),
+            this._getApertureField(),
             this._getFixedFocalLengthField(),
             this._getFocalLengthField(),
-            this._getFocalLengthMinMaxField()
+            this._getFocalLengthMinMaxField(),
+            this._getWeightField()
           ];
+        } else {
+          this.fields = [this._getNameField(), this._getVariantOfField(EquipmentItemType.TELESCOPE)];
+
+          if (this.model.type === null || this.model.type === TelescopeType.OTHER) {
+            this.fields.push(this._getTypeField());
+          }
+
+          if (!this.model.aperture) {
+            this.fields.push(this._getApertureField());
+          }
+
+          if (!this.model.minFocalLength || !this.model.maxFocalLength) {
+            this.fields = [
+              ...this.fields,
+              this._getFixedFocalLengthField(),
+              this._getFocalLengthField(),
+              this._getFocalLengthMinMaxField()
+            ];
+          }
+
+          if (!this.model.weight) {
+            this.fields.push(this._getWeightField());
+          }
         }
 
-        if (!this.model.weight) {
-          this.fields.push(this._getWeightField());
-        }
-      }
+        this.fields = [...this.fields, this._getImageField(), this._getWebsiteField(), this._getCommunityNotesField()];
 
-      this.fields = [...this.fields, this._getImageField(), this._getWebsiteField(), this._getCommunityNotesField()];
-
-      this._addBaseItemEditorFields();
-    });
+        this._addBaseItemEditorFields();
+      });
   }
 
   private _getTypeField() {

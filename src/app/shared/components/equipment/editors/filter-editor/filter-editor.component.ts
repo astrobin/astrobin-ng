@@ -18,8 +18,9 @@ import { EquipmentItemType } from "@features/equipment/types/equipment-item-base
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { UtilsService } from "@shared/services/utils/utils.service";
-import { take, takeUntil } from "rxjs/operators";
+import { switchMap, take, takeUntil } from "rxjs/operators";
 import { interval } from "rxjs";
+import { isGroupMember } from "@shared/operators/is-group-member.operator";
 
 @Component({
   selector: "astrobin-filter-editor",
@@ -114,43 +115,45 @@ export class FilterEditorComponent extends BaseItemEditorComponent<FilterInterfa
   }
 
   private _initFields() {
-    this.initBrandAndName().subscribe(() => {
-      if (this.editorMode === EquipmentItemEditorMode.CREATION || !this.model.reviewerDecision) {
+    this.initBrandAndName()
+      .pipe(switchMap(() => this.currentUser$.pipe(take(1), isGroupMember("equipment_moderators"))))
+      .subscribe(isModerator => {
+        if (this.editorMode === EquipmentItemEditorMode.CREATION || !this.model.reviewerDecision || isModerator) {
+          this.fields = [
+            this._getDIYField(),
+            this._getBrandField(),
+            this._getTypeField(),
+            this._getBandwidthField(),
+            this._getSizeField()
+          ];
+        } else {
+          this.fields = [];
+
+          if (this.model.type === null || this.model.type === FilterType.OTHER) {
+            this.fields.push(this._getTypeField());
+          }
+
+          if (!this.model.bandwidth) {
+            this.fields.push(this._getBandwidthField());
+          }
+
+          if (this.model.size === null || this.model.size === FilterSize.OTHER) {
+            this.fields.push(this._getSizeField());
+          }
+        }
+
         this.fields = [
-          this._getDIYField(),
-          this._getBrandField(),
-          this._getTypeField(),
-          this._getBandwidthField(),
-          this._getSizeField()
+          ...this.fields,
+          this._getNameField(),
+          this._getOverrideNameField(),
+          this._getVariantOfField(EquipmentItemType.FILTER),
+          this._getImageField(),
+          this._getWebsiteField(),
+          this._getCommunityNotesField()
         ];
-      } else {
-        this.fields = [];
 
-        if (this.model.type === null || this.model.type === FilterType.OTHER) {
-          this.fields.push(this._getTypeField());
-        }
-
-        if (!this.model.bandwidth) {
-          this.fields.push(this._getBandwidthField());
-        }
-
-        if (this.model.size === null || this.model.size === FilterSize.OTHER) {
-          this.fields.push(this._getSizeField());
-        }
-      }
-
-      this.fields = [
-        ...this.fields,
-        this._getNameField(),
-        this._getOverrideNameField(),
-        this._getVariantOfField(EquipmentItemType.FILTER),
-        this._getImageField(),
-        this._getWebsiteField(),
-        this._getCommunityNotesField()
-      ];
-
-      this._addBaseItemEditorFields();
-    });
+        this._addBaseItemEditorFields();
+      });
   }
 
   private _updateGeneratedName() {
