@@ -403,31 +403,27 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
     });
   }
 
-  endEditMode() {
-    const _doEndEditMode = () => {
-      this.editMode = false;
-      this.editModel = {};
-      this.editForm.reset();
-    };
+  _endEditMode() {
+    this.editMode = false;
+    this.editModel = {};
+    this.editForm.reset();
+  }
 
-    if (!!this.selectedItem) {
-      this.loadingService.setLoading(true);
-      this.currentUser$.pipe(take(1)).subscribe(user => {
-        if (!!user) {
-          this.equipmentApiService
-            .releaseEditProposalLock(this.selectedItem.klass, this.selectedItem.id)
-            .subscribe(() => {
-              _doEndEditMode();
-              this.loadingService.setLoading(false);
-            });
-        } else {
-          _doEndEditMode();
-          this.loadingService.setLoading(false);
-        }
-      });
-    } else {
-      _doEndEditMode();
-    }
+  cancelEditMode() {
+    this.loadingService.setLoading(true);
+    this.currentUser$.pipe(take(1)).subscribe(user => {
+      if (!!user) {
+        this.equipmentApiService
+          .releaseEditProposalLock(this.selectedItem.klass, this.selectedItem.id)
+          .subscribe(() => {
+            this._endEditMode();
+            this.loadingService.setLoading(false);
+          });
+      } else {
+        this._endEditMode();
+        this.loadingService.setLoading(false);
+      }
+    });
   }
 
   startMigrationMode() {
@@ -611,7 +607,7 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
     }
 
     this.selectedItem = null;
-    this.endEditMode();
+    this._endEditMode();
 
     if (this.goBackOnClose) {
       this.location.back();
@@ -631,7 +627,7 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
       );
     }
 
-    this.endEditMode();
+    this._endEditMode();
     this._loadEditProposals();
     this._loadListings();
   }
@@ -752,7 +748,7 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
       this.translateService.instant("Thank you so much for contributing to the AstroBin equipment database! 🙌")
     );
     this._loadEditProposals();
-    this.endEditMode();
+    this.cancelEditMode();
   }
 
   editProposalsByStatus(

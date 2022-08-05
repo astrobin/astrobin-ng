@@ -413,7 +413,7 @@
           <button
             class="btn btn-sm-block btn-secondary"
             [class.loading]="loadingService.loading$ | async"
-            (click)="endEditMode()"
+            (click)="cancelEditMode()"
           >
             {{ "Cancel" | translate }}
           </button>
