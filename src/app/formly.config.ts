@@ -169,6 +169,14 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
             "The Starizona Hyperstar models are found among Accessories. Please find your item in that category, thanks!"
           );
         }
+      },
+      {
+        name: "has-teleconverter-in-wrong-class",
+        message(): string {
+          return translateService.instant(
+            "Teleconverters are found among Accessories. Please find your item in that category, thanks!"
+          );
+        }
       }
     ],
     validators: [

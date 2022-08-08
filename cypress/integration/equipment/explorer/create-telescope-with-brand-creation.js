@@ -55,6 +55,18 @@ context("Equipment", () => {
           .type("Test");
       });
 
+      it("should not allow the word teleconverter", () => {
+        cy.get("#equipment-item-field-name")
+          .clear()
+          .type("Teleconverter");
+        cy.get("formly-validation-message")
+          .contains("Teleconverters are found among Accessories. Please find your item in that category, thanks!")
+          .should("be.visible");
+        cy.get("#equipment-item-field-name")
+          .clear()
+          .type("Test");
+      });
+
       it("should fill the type", () => {
         cy.ngSelectOpen("#telescope-field-type");
         cy.ngSelectOptionClick("#telescope-field-type", 1);

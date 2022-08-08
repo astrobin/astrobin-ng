@@ -70,6 +70,10 @@ export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeI
       field.formControl.setErrors({ "has-hyperstar-in-wrong-class": true });
       field.formControl.markAsTouched();
       field.formControl.markAsDirty();
+    } else if (value.toLowerCase().indexOf("teleconverter") > -1) {
+      field.formControl.setErrors({ "has-teleconverter-in-wrong-class": true });
+      field.formControl.markAsTouched();
+      field.formControl.markAsDirty();
     }
 
     this.equipmentItemService.hasOagInWrongClassError(field, value);
