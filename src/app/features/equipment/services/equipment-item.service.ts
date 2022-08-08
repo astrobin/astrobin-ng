@@ -28,6 +28,7 @@ import { CKEditorService } from "@shared/services/ckeditor.service";
 import { environment } from "@env/environment";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
+import { FormlyFieldConfig } from "@ngx-formly/core";
 
 export enum EquipmentItemDisplayProperty {
   BRAND = "BRAND",
@@ -370,5 +371,24 @@ export class EquipmentItemService extends BaseService {
           "ambiguous variant instead."
       )
     );
+  }
+
+  hasOagInWrongClassError(field: FormlyFieldConfig, value: string): void {
+    const oagWords = ["oag", "off-axis", "off axis"];
+
+    let hasOAG = false;
+
+    for (const word of oagWords) {
+      if (value.toLowerCase().indexOf(word) > -1) {
+        hasOAG = true;
+        break;
+      }
+    }
+
+    if (hasOAG) {
+      field.formControl.setErrors({ "has-oag-in-wrong-class": true });
+      field.formControl.markAsTouched();
+      field.formControl.markAsDirty();
+    }
   }
 }

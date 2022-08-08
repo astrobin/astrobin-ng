@@ -29,6 +29,44 @@ context("Equipment", () => {
         cy.get("#equipment-item-field-name").should("have.value", "Test");
       });
 
+      it("should not allow the word OAG", () => {
+        cy.get("#equipment-item-field-name")
+          .clear()
+          .type("My OAG foo");
+        cy.get("formly-validation-message")
+          .contains("Off-axis guiders are found among Accessories. Please find your item in that category, thanks!")
+          .should("be.visible");
+        cy.get("#equipment-item-field-name")
+          .clear()
+          .type("Test");
+      });
+
+      it("should not allow the word Hyperstar", () => {
+        cy.get("#equipment-item-field-name")
+          .clear()
+          .type("C11 hyperstar");
+        cy.get("formly-validation-message")
+          .contains(
+            "The Starizona Hyperstar models are found among Accessories. Please find your item in that category, thanks!"
+          )
+          .should("be.visible");
+        cy.get("#equipment-item-field-name")
+          .clear()
+          .type("Test");
+      });
+
+      it("should not allow the word teleconverter", () => {
+        cy.get("#equipment-item-field-name")
+          .clear()
+          .type("Teleconverter");
+        cy.get("formly-validation-message")
+          .contains("Teleconverters are found among Accessories. Please find your item in that category, thanks!")
+          .should("be.visible");
+        cy.get("#equipment-item-field-name")
+          .clear()
+          .type("Test");
+      });
+
       it("should fill the type", () => {
         cy.ngSelectOpen("#telescope-field-type");
         cy.ngSelectOptionClick("#telescope-field-type", 1);

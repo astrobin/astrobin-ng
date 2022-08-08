@@ -15,7 +15,7 @@ import { EquipmentItemType } from "@features/equipment/types/equipment-item-base
 import { SensorInterface } from "@features/equipment/types/sensor.interface";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 import { CameraDisplayProperty, CameraService } from "@features/equipment/services/camera.service";
-import { FormlyFieldMessageLevel, FormlyFieldService } from "@shared/services/formly-field.service";
+import { FormlyFieldService } from "@shared/services/formly-field.service";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { filter, map, switchMap, take, takeUntil } from "rxjs/operators";
@@ -103,7 +103,6 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
   }
 
   protected _customNameChangesValidations(field: FormlyFieldConfig, value: string) {
-    const oagWords = ["oag", "off-axis", "off axis"];
     const canonMultiNameWords = [
       "1000d",
       "eos 1000d",
@@ -176,15 +175,7 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
       "eos 200d mark ii"
     ];
 
-    let hasOAG = false;
     let hasCanonMultiName = false;
-
-    for (const word of oagWords) {
-      if (value.toLowerCase().indexOf(word) > -1) {
-        hasOAG = true;
-        break;
-      }
-    }
 
     for (const word of canonMultiNameWords) {
       if (value.toLowerCase() === word) {
@@ -193,18 +184,13 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
       }
     }
 
-    if (hasOAG) {
-      this.formlyFieldService.addMessage(field.templateOptions, {
-        level: FormlyFieldMessageLevel.WARNING,
-        text: this.translateService.instant("Off-axis guiders are typically found as accessories, not cameras.")
-      });
-    }
-
     if (hasCanonMultiName) {
       field.formControl.setErrors({ "has-canon-multi-name": true });
       field.formControl.markAsTouched();
       field.formControl.markAsDirty();
     }
+
+    this.equipmentItemService.hasOagInWrongClassError(field, value);
   }
 
   private _initFields() {
