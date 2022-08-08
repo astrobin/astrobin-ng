@@ -76,7 +76,7 @@ context("Equipment", () => {
         cy.equipmentItemSummaryShouldHaveItem(".modal", "Test brand", "Test");
         cy.equipmentItemSummaryShouldHaveProperty(".modal", "Class", "Telescope");
         cy.equipmentItemSummaryShouldHaveProperty(".modal", "Type", "Refractor: achromatic");
-        cy.equipmentItemSummaryShouldHaveProperty(".modal", "Aperture", "80 mm");
+        cy.equipmentItemSummaryShouldHaveProperty(".modal", "Diameter", "80 mm");
         cy.equipmentItemSummaryShouldHaveProperty(".modal", "Focal length", "800 - 1600 mm");
 
         cy.get("[for=confirm-no-typos]").click();

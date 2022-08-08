@@ -156,8 +156,8 @@ export class TelescopeService extends BaseService implements EquipmentItemServic
         return this.translateService.instant("Type");
       case TelescopeDisplayProperty.APERTURE:
         return shortForm
-          ? this.translateService.instant("Aperture")
-          : this.translateService.instant("Aperture") + " (mm)";
+          ? this.translateService.instant("Diameter")
+          : this.translateService.instant("Diameter") + " (mm)";
       case TelescopeDisplayProperty.FOCAL_LENGTH:
         return shortForm
           ? this.translateService.instant("Focal length")
