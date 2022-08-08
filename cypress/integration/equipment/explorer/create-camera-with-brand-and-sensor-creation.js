@@ -29,6 +29,18 @@ context("Equipment", () => {
         cy.get("#equipment-item-field-name").should("have.value", "Test camera");
       });
 
+      it("should not allow the word OAG", () => {
+        cy.get("#equipment-item-field-name")
+          .clear()
+          .type("My OAG foo");
+        cy.get("formly-validation-message")
+          .contains("Off-axis guiders are found among Accessories. Please find your item in that category, thanks!")
+          .should("be.visible");
+        cy.get("#equipment-item-field-name")
+          .clear()
+          .type("Test camera");
+      });
+
       it("should fill the type", () => {
         cy.ngSelectOpen("#camera-field-type");
         cy.ngSelectOptionClick("#camera-field-type", 1);

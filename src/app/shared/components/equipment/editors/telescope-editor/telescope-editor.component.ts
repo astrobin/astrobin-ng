@@ -65,6 +65,16 @@ export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeI
     this._initFields();
   }
 
+  protected _customNameChangesValidations(field: FormlyFieldConfig, value: string): void {
+    if (value.toLowerCase().indexOf("hyperstar") > -1) {
+      field.formControl.setErrors({ "has-hyperstar-in-wrong-class": true });
+      field.formControl.markAsTouched();
+      field.formControl.markAsDirty();
+    }
+
+    this.equipmentItemService.hasOagInWrongClassError(field, value);
+  }
+
   private _initFields() {
     this.initBrandAndName()
       .pipe(switchMap(() => this.currentUser$.pipe(take(1), isGroupMember("equipment_moderators"))))
