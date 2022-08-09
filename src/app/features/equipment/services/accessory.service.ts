@@ -37,6 +37,7 @@ export class AccessoryService extends BaseService implements EquipmentItemServic
       [AccessoryType.OBSERVATORY_DOME]: this.translateService.instant("Observatory dome"),
       [AccessoryType.POWER_DISTRIBUTION]: this.translateService.instant("Power distribution"),
       [AccessoryType.WEATHER_MONITORING]: this.translateService.instant("Weather monitoring"),
+      [AccessoryType.MOUNT_CONTROL]: this.translateService.instant("Mount control"),
       [AccessoryType.OTHER]: this.translateService.instant("Other")
     };
 
