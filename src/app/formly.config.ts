@@ -177,6 +177,14 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
             "Teleconverters are found among Accessories. Please find your item in that category, thanks!"
           );
         }
+      },
+      {
+        name: "has-lacerta-mgen-in-wrong-class",
+        message(): string {
+          return translateService.instant(
+            "Lacerta MGEN standalone autoguiders are found among Accessories. Please find your item in that category, thanks!"
+          );
+        }
       }
     ],
     validators: [

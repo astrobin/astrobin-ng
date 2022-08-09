@@ -190,6 +190,22 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
       field.formControl.markAsDirty();
     }
 
+    if (!!this.model.brand && value && value.toLowerCase().indexOf("mgen") > -1) {
+      this.store$
+        .select(selectBrand, this.model.brand)
+        .pipe(
+          filter(brand => !!brand),
+          take(1)
+        )
+        .subscribe(brand => {
+          if (brand.name === "Lacerta") {
+            field.formControl.setErrors({ "has-lacerta-mgen-in-wrong-class": true });
+            field.formControl.markAsTouched();
+            field.formControl.markAsDirty();
+          }
+        });
+    }
+
     this.equipmentItemService.hasOagInWrongClassError(field, value);
   }
 
