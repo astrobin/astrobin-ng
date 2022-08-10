@@ -121,6 +121,12 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
           .pipe(
             filter(image => !!image),
             take(1),
+            switchMap(image =>
+              this.store$.select(selectImageRevisionsForImage, this.id).pipe(
+                take(1),
+                map(() => image)
+              )
+            ),
             switchMap(image => this._loadRevision(image).pipe(map(revision => ({ image, revision }))))
           )
           .subscribe(({ image, revision }) => {
@@ -149,6 +155,7 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
     }
 
     return this.store$.select(selectImageRevisionsForImage, image.pk).pipe(
+      take(1),
       map(imageRevisions => {
         const matchingRevisions = imageRevisions.filter(
           imageRevision => (imageRevision.isFinal && this.revision === "final") || imageRevision.label === this.revision
