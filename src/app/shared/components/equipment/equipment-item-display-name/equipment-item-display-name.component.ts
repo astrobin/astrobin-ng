@@ -61,6 +61,10 @@ export class EquipmentItemDisplayNameComponent extends BaseComponentDirective im
   }
 
   ngOnChanges(): void {
+    if (!this.item) {
+      return;
+    }
+
     this.brandLink = !!this.item.brand
       ? `/equipment/explorer/brand/${this.item.brand}/${UtilsService.slugify(this.item.brandName)}`
       : undefined;
