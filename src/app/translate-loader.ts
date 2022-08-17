@@ -80,7 +80,7 @@ export class LanguageLoader extends TranslatePoHttpLoader {
       lang = "zh_Hans";
     }
 
-    if (["de", "en", "es", "fr", "it", "pt", "ru", "uk", "zh-hans"].indexOf(lang) === -1) {
+    if (["de", "en", "es", "fr", "it", "pt", "ru", "uk", "zh-hans", "ja"].indexOf(lang) === -1) {
       lang = "en";
     }
 
