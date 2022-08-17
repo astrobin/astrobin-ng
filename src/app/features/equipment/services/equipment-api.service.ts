@@ -762,7 +762,9 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
         pixelSize: item.pixelSize !== null ? parseFloat((item.pixelSize as unknown) as string) : null,
         sensorWidth: item.sensorWidth !== null ? parseFloat((item.sensorWidth as unknown) as string) : null,
         sensorHeight: item.sensorHeight !== null ? parseFloat((item.sensorHeight as unknown) as string) : null,
-        readNoise: item.readNoise !== null ? parseFloat((item.readNoise as unknown) as string) : null
+        readNoise: item.readNoise !== null ? parseFloat((item.readNoise as unknown) as string) : null,
+        fullWellCapacity:
+          item.fullWellCapacity !== null ? parseFloat((item.fullWellCapacity as unknown) as string) : null
       }
     };
   }

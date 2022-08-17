@@ -345,16 +345,22 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
       },
       templateOptions: {
         type: "number",
-        step: 1,
+        step: 0.1,
         label: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.FULL_WELL_CAPACITY)
       },
       validators: {
         validation: [
-          "whole-number",
+          "number",
           {
             name: "min-value",
             options: {
-              minValue: 1
+              minValue: 0.1
+            }
+          },
+          {
+            name: "max-decimals",
+            options: {
+              value: 2
             }
           }
         ]
