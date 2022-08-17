@@ -91,6 +91,7 @@ export class ImageSearchComponent extends BaseComponentDirective implements OnIn
 
     this.imageSearchApiService
       .search({
+        text: this.text,
         itemType: this.itemType,
         itemId: this.itemId,
         usageType: this.usageType,

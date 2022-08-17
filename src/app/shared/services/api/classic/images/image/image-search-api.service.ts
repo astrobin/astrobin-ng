@@ -12,8 +12,9 @@ import { EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/t
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 
 export interface ImageSearchOptions {
-  itemType: EquipmentItemType;
-  itemId: EquipmentItem["id"];
+  text?: string;
+  itemType?: EquipmentItemType;
+  itemId?: EquipmentItem["id"];
   usageType?: EquipmentItemUsageType;
   ordering?: string;
   page: number;
@@ -88,6 +89,8 @@ export class ImageSearchApiService extends BaseClassicApiService {
 
     if (!!prop) {
       url = UtilsService.addOrUpdateUrlParam(url, prop, options.itemId.toString());
+    } else if (!!options.text) {
+      url = UtilsService.addOrUpdateUrlParam(url, "text", options.text);
     }
 
     return this.http.get<PaginatedApiResultInterface<ImageSearchInterface>>(url);
