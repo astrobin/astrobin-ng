@@ -189,6 +189,8 @@
               [description]='"Remember: you want to match items from the old database products in the new database." | translate'
               [type]="getActiveType()"
               [enableFullscreen]="true"
+              [showItemTypeSelector]="true"
+              [layout]="ItemBrowserLayout.VERTICAL"
               (valueChanged)="this.migrationTarget = $event"
               (subCreationModeStarted)="subCreationMode = true"
               (subCreationModeEnded)="subCreationMode = false"

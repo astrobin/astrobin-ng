@@ -3,12 +3,13 @@
     <astrobin-equipment-item-browser
       *ngIf="enableBrowser"
       #itemBrowser
-      [label]="equipmentItemBrowserLabel"
       [type]="activeType"
       [value]="this.activeId"
       [enableFullscreen]="true"
+      [showItemTypeSelector]="true"
       (creationModeStarted)="onCreationModeStarted()"
       (creationModeEnded)="onCreationModeEnded()"
+      (itemTypeChanged)="onItemTypeChanged($event)"
       (valueChanged)="onSelectedItemChanged($event)"
     ></astrobin-equipment-item-browser>
   </div>

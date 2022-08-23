@@ -24,10 +24,12 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 import { State } from "@app/store/state";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 import { GearService } from "@shared/services/gear/gear.service";
-import { ItemBrowserComponent } from "@shared/components/equipment/item-browser/item-browser.component";
+import {
+  ItemBrowserComponent,
+  ItemBrowserLayout
+} from "@shared/components/equipment/item-browser/item-browser.component";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import { FilterApiService } from "@shared/services/api/classic/astrobin/filter/filter-api.service";
-import { AccessoryApiService } from "@shared/services/api/classic/astrobin/accessory/accessory-api.service";
 import { SoftwareApiService } from "@shared/services/api/classic/astrobin/software/software-api.service";
 import { isGroupMember } from "@shared/operators/is-group-member.operator";
 import { CombinedAccessoryAndFocalReducerApiService } from "@shared/services/api/classic/astrobin/combined-accessory-and-focal-reducer/combined-accessory-and-focal-reducer-api.service";
@@ -45,7 +47,8 @@ import { UtilsService } from "@shared/services/utils/utils.service";
   styleUrls: ["./migration-tool.component.scss"]
 })
 export class MigrationToolComponent extends BaseComponentDirective implements OnInit {
-  EquipmentItemType = EquipmentItemType;
+  readonly EquipmentItemType = EquipmentItemType;
+  readonly ItemBrowserLayout = ItemBrowserLayout;
 
   @ViewChild("equipmentItemBrowser")
   equipmentItemBrowser: ItemBrowserComponent;
@@ -453,7 +456,7 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
         }
 
         modalRef.closed.pipe(take(1)).subscribe(() => {
-          const type = this.getActiveType();
+          const type = this.equipmentItemBrowser.type;
           const selectedSimilarItemsPks = this._getSelectedSimilarItemsPks();
           const similarItems = this.migrationConfirmation.similarItems.filter(
             item => selectedSimilarItemsPks.indexOf(item.pk) > -1

@@ -1,4 +1,4 @@
-import { Component, HostListener, OnDestroy, OnInit, ViewChild } from "@angular/core";
+import { Component, HostListener, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from "@angular/core";
 import { FieldType } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
 import { UtilsService } from "@shared/services/utils/utils.service";
@@ -15,7 +15,7 @@ import { EquipmentActionTypes } from "@features/equipment/store/equipment.action
   templateUrl: "./formly-field-ng-select.component.html",
   styleUrls: ["./formly-field-ng-select.component.scss"]
 })
-export class FormlyFieldNgSelectComponent extends FieldType implements OnInit, OnDestroy {
+export class FormlyFieldNgSelectComponent extends FieldType implements OnInit, OnDestroy, OnChanges {
   readonly TOO_MANY_OPTIONS = 30;
 
   input$ = new Subject<string>();
@@ -25,6 +25,7 @@ export class FormlyFieldNgSelectComponent extends FieldType implements OnInit, O
   showCreateNewButton = false;
   fullscreen = false;
   exitFullscreenSubscription: Subscription;
+  hasAsyncItems: boolean;
 
   private _ngSelectModalRef: NgbModalRef;
 
@@ -41,10 +42,6 @@ export class FormlyFieldNgSelectComponent extends FieldType implements OnInit, O
     public readonly windowRefService: WindowRefService
   ) {
     super();
-  }
-
-  get hasAsyncItems(): boolean {
-    return isObservable(this.to.options);
   }
 
   get placeholder(): string {
@@ -76,6 +73,8 @@ export class FormlyFieldNgSelectComponent extends FieldType implements OnInit, O
   }
 
   ngOnInit() {
+    this.hasAsyncItems = isObservable(this.to.options);
+
     if (this.hasAsyncItems) {
       this.inputSubscription = this.input$
         .pipe(
@@ -99,6 +98,10 @@ export class FormlyFieldNgSelectComponent extends FieldType implements OnInit, O
       .subscribe(() => {
         this.exitFullscreen();
       });
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    this.hasAsyncItems = isObservable(this.to.options);
   }
 
   ngOnDestroy() {
@@ -151,6 +154,7 @@ export class FormlyFieldNgSelectComponent extends FieldType implements OnInit, O
     if (this.fullscreen) {
       this.fullscreen = false;
       this._ngSelectModalRef.close();
+      this._ngSelect.writeValue(this.formControl.value);
     }
   }
 

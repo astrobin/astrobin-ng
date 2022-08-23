@@ -21,7 +21,7 @@ import {
 } from "@features/equipment/types/equipment-item-base.interface";
 import { FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
-import { forkJoin, interval, Observable, of, Subscription } from "rxjs";
+import { forkJoin, isObservable, Observable, of, Subscription } from "rxjs";
 import { TranslateService } from "@ngx-translate/core";
 import {
   CreateAccessory,
@@ -66,6 +66,11 @@ import { isPlatformBrowser } from "@angular/common";
 type Type = EquipmentItem["id"];
 type TypeUnion = EquipmentItem["id"] | EquipmentItem["id"][];
 
+export enum ItemBrowserLayout {
+  HORIZONTAL,
+  VERTICAL
+}
+
 @Component({
   selector: "astrobin-equipment-item-browser",
   templateUrl: "./item-browser.component.html",
@@ -86,6 +91,9 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
 
   @Input()
   value: TypeUnion = null;
+
+  @Input()
+  showItemTypeSelector = false;
 
   @Input()
   label: string;
@@ -120,7 +128,10 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
   @Input()
   excludeId: number;
 
-  model: { value: TypeUnion } = { value: null };
+  @Input()
+  layout: ItemBrowserLayout = ItemBrowserLayout.HORIZONTAL;
+
+  model: { klass: EquipmentItemType; value: TypeUnion } = { klass: null, value: null };
   form: FormGroup = new FormGroup({});
   fields: FormlyFieldConfig[] = [];
   creationMode = false;
@@ -158,6 +169,9 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
 
   @Output()
   subCreationModeEnded = new EventEmitter<void>();
+
+  @Output()
+  itemTypeChanged = new EventEmitter<EquipmentItemType>();
 
   @Output()
   valueChanged = new EventEmitter<EquipmentItemBaseInterface | EquipmentItemBaseInterface[] | null>();
@@ -204,21 +218,15 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
       }
     }
 
-    if (!!changes.label && this.fields && this.fields.length > 0) {
-      this.fields[0].templateOptions.label = this.showLabel
-        ? this.label || this.translateService.instant("Find equipment item")
-        : null;
-    }
-
-    if (!!changes.description && this.fields && this.fields.length > 0) {
-      this.fields[0].templateOptions.description = this.description;
+    if (changes.type && !!this.form && !!this.form.controls.klass) {
+      this.form.get("klass").setValue(changes.type.currentValue);
     }
   }
 
   reset() {
-    this.model = { value: null };
-    this.form.reset();
-    this.fields[0].templateOptions.options = of([]);
+    this.model.value = null;
+    this.form.get("value").reset();
+    this._getValueField().templateOptions.options = of([]);
   }
 
   startCreationMode() {
@@ -246,7 +254,7 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
   setValue(value: TypeUnion) {
     const _doSetValue = (item: EquipmentItemBaseInterface) => {
       const id = !!item ? item.id : null;
-      const fieldConfig = this.fields[0];
+      const fieldConfig = this._getValueField();
       const options = !!item ? [this._getNgOptionValue(item)] : [];
 
       fieldConfig.templateOptions.options = of(options);
@@ -255,13 +263,13 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
         this.form.get("value").setValue(id, { onlySelf: true, emitEvent: false });
       }
 
-      this.model = { value: id };
+      this.model = { klass: this.type, value: id };
 
       this.valueChanged.emit(item);
     };
 
     const _doSetValues = (items: EquipmentItemBaseInterface[] = []) => {
-      const fieldConfig = this.fields[0];
+      const fieldConfig = this._getValueField();
       const options =
         items.length > 0
           ? UtilsService.arrayUniqueObjects(
@@ -273,7 +281,7 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
 
       fieldConfig.templateOptions.options = of(options);
 
-      this.model = { value: ids };
+      this.model = { klass: this.type, value: ids };
 
       if (this.form.get("value")) {
         this.form.get("value").setValue(ids, { onlySelf: true, emitEvent: false });
@@ -525,13 +533,51 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
     });
   }
 
+  updateLabelAndDescription(itemType: EquipmentItemType): void {
+    if (this.fields && this.fields.length > 0) {
+      const field = this._getValueField();
+
+      switch (itemType) {
+        case EquipmentItemType.SENSOR:
+          field.templateOptions.label = this.translateService.instant("Find sensor");
+          break;
+        case EquipmentItemType.CAMERA:
+          field.templateOptions.label = this.translateService.instant("Find camera");
+          break;
+        case EquipmentItemType.TELESCOPE:
+          field.templateOptions.label = this.translateService.instant("Find telescope or lens");
+          break;
+        case EquipmentItemType.MOUNT:
+          field.templateOptions.label = this.translateService.instant("Find mount");
+          break;
+        case EquipmentItemType.ACCESSORY:
+          field.templateOptions.label = this.translateService.instant("Find accessory");
+          break;
+        case EquipmentItemType.FILTER:
+          field.templateOptions.label = this.translateService.instant("Find filter");
+          break;
+        case EquipmentItemType.SOFTWARE:
+          field.templateOptions.label = this.translateService.instant("Find software");
+          break;
+        default:
+          field.templateOptions.label = this.translateService.instant("Find equipment item");
+      }
+
+      if (!this.showLabel) {
+        field.templateOptions.label = this.translateService.instant("Find equipment item");
+      }
+
+      this._getValueField().templateOptions.description = this.description;
+    }
+  }
+
   _setFields() {
     const _addTag = () => {
       this.startCreationMode();
       this.windowRefService.scrollToElement("#create-new-item");
     };
 
-    this.model = { value: this.value };
+    this.model = { klass: this.type, value: this.value };
 
     if (!!this.currentUserSubscription) {
       this.currentUserSubscription.unsubscribe();
@@ -543,86 +589,133 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
         map(currentUser => {
           this.fields = [
             {
-              key: "value",
-              type: "ng-select",
-              id: `${this.id}`,
-              expressionProperties: {
-                "templateOptions.disabled": () => this.creationMode
-              },
-              defaultValue: this.model,
-              templateOptions: {
-                required: this.required,
-                clearable: true,
-                label: this.showLabel ? this.label || this.translateService.instant("Find equipment item") : null,
-                description: this.description,
-                fullScreenLabel: this.label || this.translateService.instant("Find equipment item"),
-                options: this._getOptions().pipe(takeUntil(this.destroyed$)),
-                onSearch: (term: string): Observable<any[]> => {
-                  return this._onSearch(term);
-                },
-                labelTemplate: this.equipmentItemLabelTemplate,
-                optionTemplate: this.equipmentItemOptionTemplate,
-                footerTemplateExtra: this.footerTemplateExtra,
-                addTag: !!currentUser && this.enableCreation ? _addTag : undefined,
-                addTagPlaceholder: this.translateService.instant("Type to search options or to create a new one..."),
-                striped: true,
-                multiple: this.multiple,
-                closeOnSelect: true,
-                enableFullscreen: this.enableFullscreen,
-                showArrow: false,
-                classNames: "equipment-select",
-                enableSelectFrozen: this.enableSelectFrozen
-              },
-              hooks: {
-                onInit: (field: FormlyFieldConfig) => {
-                  field.formControl.valueChanges
-                    .pipe(
-                      takeUntil(this.destroyed$),
-                      switchMap((value: TypeUnion) => {
-                        if (!value || (Array.isArray(value) && value.length === 0)) {
-                          return of([]);
-                        }
+              fieldGroupClassName: this.layout === ItemBrowserLayout.HORIZONTAL ? "row no-gutters" : "row",
+              fieldGroup: [
+                {
+                  className:
+                    this.layout === ItemBrowserLayout.HORIZONTAL ? "col-12 col-lg-3 pr-lg-2 mb-sm-3 mb-lg-0" : "col-12",
+                  key: "klass",
+                  type: "ng-select",
+                  id: "klass",
+                  expressionProperties: {
+                    "templateOptions.disabled": () => this.creationMode
+                  },
+                  hideExpression: () => !this.showItemTypeSelector,
+                  defaultValue: this.type,
+                  templateOptions: {
+                    label: this.translateService.instant("Item class"),
+                    clearable: false,
+                    required: true,
+                    options: Object.keys(EquipmentItemType).map(itemType => ({
+                      value: EquipmentItemType[itemType],
+                      label: this.equipmentItemService.humanizeType(EquipmentItemType[itemType])
+                    }))
+                  },
+                  hooks: {
+                    onInit: (field: FormlyFieldConfig) => {
+                      field.formControl.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(value => {
+                        const previousType = this.type;
+                        this.type = value;
+                        this.updateLabelAndDescription(value);
 
-                        if (Array.isArray(value)) {
-                          return forkJoin(
-                            (value as EquipmentItemBaseInterface["id"][]).map(id =>
-                              this.store$
-                                .select(selectEquipmentItem, {
-                                  id,
-                                  type: this.type
-                                })
-                                .pipe(
-                                  filter(item => !!item),
-                                  first()
-                                )
-                            )
-                          ).pipe(filter(items => items.length > 0));
-                        }
-
-                        return this.store$
-                          .select(selectEquipmentItem, {
-                            id: value as EquipmentItemBaseInterface["id"],
-                            type: this.type
-                          })
-                          .pipe(
-                            filter(item => !!item),
-                            map(item => [item])
-                          );
-                      })
-                    )
-                    .subscribe((items: EquipmentItemBaseInterface[]) => {
-                      if (this.multiple) {
-                        this.setValue(items.map(item => item.id));
-                      } else {
-                        if (!!items && items.length > 0) {
-                          this.setValue(items[0].id);
-                        } else {
+                        if (value !== previousType) {
                           this.setValue(null);
                         }
-                      }
-                    });
+
+                        this.itemTypeChanged.emit(value);
+                      });
+                    }
+                  }
+                },
+                {
+                  className:
+                    this.showItemTypeSelector && this.layout === ItemBrowserLayout.HORIZONTAL
+                      ? "col-12 col-lg-9"
+                      : "col-12",
+                  key: "value",
+                  type: "ng-select",
+                  id: `${this.id}`,
+                  expressionProperties: {
+                    "templateOptions.disabled": () => this.creationMode
+                  },
+                  defaultValue: this.model,
+                  templateOptions: {
+                    required: this.required,
+                    clearable: true,
+                    label: this.showLabel ? this.label || this.translateService.instant("Find equipment item") : null,
+                    description: this.description,
+                    fullScreenLabel: this.label || this.translateService.instant("Find equipment item"),
+                    options: this._getOptions().pipe(takeUntil(this.destroyed$)),
+                    onSearch: (term: string): Observable<any[]> => {
+                      return this._onSearch(term);
+                    },
+                    labelTemplate: this.equipmentItemLabelTemplate,
+                    optionTemplate: this.equipmentItemOptionTemplate,
+                    footerTemplateExtra: this.footerTemplateExtra,
+                    addTag: !!currentUser && this.enableCreation ? _addTag : undefined,
+                    addTagPlaceholder: this.translateService.instant(
+                      "Type to search options or to create a new one..."
+                    ),
+                    striped: true,
+                    multiple: this.multiple,
+                    closeOnSelect: true,
+                    enableFullscreen: this.enableFullscreen,
+                    showArrow: false,
+                    classNames: "equipment-select",
+                    enableSelectFrozen: this.enableSelectFrozen
+                  },
+                  hooks: {
+                    onInit: (field: FormlyFieldConfig) => {
+                      field.formControl.valueChanges
+                        .pipe(
+                          takeUntil(this.destroyed$),
+                          switchMap((value: TypeUnion) => {
+                            if (!value || (Array.isArray(value) && value.length === 0)) {
+                              return of([]);
+                            }
+
+                            if (Array.isArray(value)) {
+                              return forkJoin(
+                                (value as EquipmentItemBaseInterface["id"][]).map(id =>
+                                  this.store$
+                                    .select(selectEquipmentItem, {
+                                      id,
+                                      type: this.type
+                                    })
+                                    .pipe(
+                                      filter(item => !!item),
+                                      first()
+                                    )
+                                )
+                              ).pipe(filter(items => items.length > 0));
+                            }
+
+                            return this.store$
+                              .select(selectEquipmentItem, {
+                                id: value as EquipmentItemBaseInterface["id"],
+                                type: this.type
+                              })
+                              .pipe(
+                                filter(item => !!item),
+                                map(item => [item])
+                              );
+                          })
+                        )
+                        .subscribe((items: EquipmentItemBaseInterface[]) => {
+                          if (this.multiple) {
+                            this.setValue(items.map(item => item.id));
+                          } else {
+                            if (!!items && items.length > 0) {
+                              this.setValue(items[0].id);
+                            } else {
+                              this.setValue(null);
+                            }
+                          }
+                        });
+                    }
+                  }
                 }
-              }
+              ]
             }
           ];
         })
@@ -739,34 +832,36 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
 
       this.q = q;
 
-      const field = this.fields[0];
+      this.actions$
+        .pipe(
+          ofType(EquipmentActionTypes.FIND_ALL_EQUIPMENT_ITEMS_SUCCESS),
+          take(1),
+          map((action: FindAllEquipmentItemsSuccess) => action.payload.items),
+          map(items => {
+            if (items.length > 0) {
+              return items
+                .filter(item => item.id !== this.excludeId)
+                .map(item => {
+                  return this._getNgOptionValue(item);
+                });
+            }
+
+            return [];
+          })
+        )
+        .subscribe(options => {
+          const field = this._getValueField();
+          field.templateOptions.options = of(options);
+          observer.next(options);
+          observer.complete();
+        });
+
       this.store$.dispatch(
         new FindAllEquipmentItems({
           type: this.type,
           options: {
             query: q
           }
-        })
-      );
-
-      field.templateOptions.options = this.actions$.pipe(
-        ofType(EquipmentActionTypes.FIND_ALL_EQUIPMENT_ITEMS_SUCCESS),
-        take(1),
-        map((action: FindAllEquipmentItemsSuccess) => action.payload.items),
-        map(items => {
-          if (items.length > 0) {
-            return items
-              .filter(item => item.id !== this.excludeId)
-              .map(item => {
-                return this._getNgOptionValue(item);
-              });
-          }
-
-          return [];
-        }),
-        tap(options => {
-          observer.next(options);
-          observer.complete();
         })
       );
     });
@@ -778,5 +873,9 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
       label: `${!!item.brandName ? item.brandName : this.translateService.instant("(DIY)")} ${item.name}`,
       item
     };
+  }
+
+  _getValueField(): FormlyFieldConfig {
+    return this.fields[0].fieldGroup[1];
   }
 }
