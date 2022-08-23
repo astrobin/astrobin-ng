@@ -256,26 +256,6 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
     }
   }
 
-  markAsWrongType(event: Event, object: any) {
-    event.preventDefault();
-
-    const modalRef = this.modalService.open(ConfirmationDialogComponent, { size: "sm" });
-    const componentInstant: ConfirmationDialogComponent = modalRef.componentInstance;
-    componentInstant.message = this.translateService.instant(
-      "Only do this if the legacy item is not of the equipment class you are currently migrating (see the selected " +
-        "menu entry in the sidebar, e.g. Camera / Telescope / Mount / etc). Sometimes this happens if you added an OAG as " +
-        "a telescope instead of an accessory back when you created this equipment item."
-    );
-
-    modalRef.closed.pipe(take(1)).subscribe(() => {
-      this._applyMigration(
-        object,
-        [object.pk, MigrationFlag.WRONG_TYPE],
-        this.translateService.instant("wrong type")
-      ).subscribe();
-    });
-  }
-
   markAsMultiple(event: Event, object: any) {
     event.preventDefault();
 
@@ -491,19 +471,6 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
       .undo(strategy.pk)
       .pipe(tap(() => this.loadingService.setLoading(false)))
       .subscribe(() => this.skip());
-  }
-
-  wrongTypeMessage(): string {
-    const humanizedActiveType: string = this.legacyGearService.humanizeType(this.activeType);
-    return this.translateService.instant(`Not a {{0}}`, {
-      0: humanizedActiveType.toLowerCase()
-    });
-  }
-
-  wrongTypeTooltip(): string {
-    return this.translateService.instant(
-      "The legacy object cannot be migrated because it's not the right kind (e.g. a telescope added as a camera)."
-    );
   }
 
   multipleTooltip(): string {
