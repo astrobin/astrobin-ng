@@ -149,7 +149,6 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
   @ViewChild("editor")
   editor: BaseItemEditorComponent<EquipmentItemBaseInterface, null>;
 
-  equipmentItemBrowserLabel: string;
   selectedItem: EquipmentItemBaseInterface | null = null;
   cameraVariants: CameraInterface[] = [];
 
@@ -223,32 +222,8 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
       this._initActiveId();
     }
 
-    if (!!changes.activeType) {
-      switch (this.activeType) {
-        case EquipmentItemType.SENSOR:
-          this.equipmentItemBrowserLabel = this.translateService.instant("Find sensor");
-          break;
-        case EquipmentItemType.CAMERA:
-          this.equipmentItemBrowserLabel = this.translateService.instant("Find camera");
-          break;
-        case EquipmentItemType.TELESCOPE:
-          this.equipmentItemBrowserLabel = this.translateService.instant("Find telescope or lens");
-          break;
-        case EquipmentItemType.MOUNT:
-          this.equipmentItemBrowserLabel = this.translateService.instant("Find mount");
-          break;
-        case EquipmentItemType.ACCESSORY:
-          this.equipmentItemBrowserLabel = this.translateService.instant("Find accessory");
-          break;
-        case EquipmentItemType.FILTER:
-          this.equipmentItemBrowserLabel = this.translateService.instant("Find filter");
-          break;
-        case EquipmentItemType.SOFTWARE:
-          this.equipmentItemBrowserLabel = this.translateService.instant("Find software");
-          break;
-        default:
-          this.equipmentItemBrowserLabel = this.translateService.instant("Find equipment item");
-      }
+    if (!!changes.activeType && !!this._itemBrowser) {
+      this._itemBrowser.updateLabelAndDescription(changes.activeType.currentValue);
     }
   }
 
@@ -257,6 +232,13 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
 
     if (!!this.reviewPendingEditNotification) {
       this.popNotificationsService.remove(this.reviewPendingEditNotification.toastId);
+    }
+  }
+
+  onItemTypeChanged(itemType: EquipmentItemType) {
+    if (!!itemType && itemType !== this.activeType) {
+      this.activeType = itemType;
+      this.router.navigateByUrl(`/equipment/explorer/${itemType.toLowerCase()}/`);
     }
   }
 

@@ -24,10 +24,12 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 import { State } from "@app/store/state";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 import { GearService } from "@shared/services/gear/gear.service";
-import { ItemBrowserComponent } from "@shared/components/equipment/item-browser/item-browser.component";
+import {
+  ItemBrowserComponent,
+  ItemBrowserLayout
+} from "@shared/components/equipment/item-browser/item-browser.component";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import { FilterApiService } from "@shared/services/api/classic/astrobin/filter/filter-api.service";
-import { AccessoryApiService } from "@shared/services/api/classic/astrobin/accessory/accessory-api.service";
 import { SoftwareApiService } from "@shared/services/api/classic/astrobin/software/software-api.service";
 import { isGroupMember } from "@shared/operators/is-group-member.operator";
 import { CombinedAccessoryAndFocalReducerApiService } from "@shared/services/api/classic/astrobin/combined-accessory-and-focal-reducer/combined-accessory-and-focal-reducer-api.service";
@@ -45,7 +47,8 @@ import { UtilsService } from "@shared/services/utils/utils.service";
   styleUrls: ["./migration-tool.component.scss"]
 })
 export class MigrationToolComponent extends BaseComponentDirective implements OnInit {
-  EquipmentItemType = EquipmentItemType;
+  readonly EquipmentItemType = EquipmentItemType;
+  readonly ItemBrowserLayout = ItemBrowserLayout;
 
   @ViewChild("equipmentItemBrowser")
   equipmentItemBrowser: ItemBrowserComponent;
@@ -253,26 +256,6 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
     }
   }
 
-  markAsWrongType(event: Event, object: any) {
-    event.preventDefault();
-
-    const modalRef = this.modalService.open(ConfirmationDialogComponent, { size: "sm" });
-    const componentInstant: ConfirmationDialogComponent = modalRef.componentInstance;
-    componentInstant.message = this.translateService.instant(
-      "Only do this if the legacy item is not of the equipment class you are currently migrating (see the selected " +
-        "menu entry in the sidebar, e.g. Camera / Telescope / Mount / etc). Sometimes this happens if you added an OAG as " +
-        "a telescope instead of an accessory back when you created this equipment item."
-    );
-
-    modalRef.closed.pipe(take(1)).subscribe(() => {
-      this._applyMigration(
-        object,
-        [object.pk, MigrationFlag.WRONG_TYPE],
-        this.translateService.instant("wrong type")
-      ).subscribe();
-    });
-  }
-
   markAsMultiple(event: Event, object: any) {
     event.preventDefault();
 
@@ -453,7 +436,7 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
         }
 
         modalRef.closed.pipe(take(1)).subscribe(() => {
-          const type = this.getActiveType();
+          const type = this.equipmentItemBrowser.type;
           const selectedSimilarItemsPks = this._getSelectedSimilarItemsPks();
           const similarItems = this.migrationConfirmation.similarItems.filter(
             item => selectedSimilarItemsPks.indexOf(item.pk) > -1
@@ -488,19 +471,6 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
       .undo(strategy.pk)
       .pipe(tap(() => this.loadingService.setLoading(false)))
       .subscribe(() => this.skip());
-  }
-
-  wrongTypeMessage(): string {
-    const humanizedActiveType: string = this.legacyGearService.humanizeType(this.activeType);
-    return this.translateService.instant(`Not a {{0}}`, {
-      0: humanizedActiveType.toLowerCase()
-    });
-  }
-
-  wrongTypeTooltip(): string {
-    return this.translateService.instant(
-      "The legacy object cannot be migrated because it's not the right kind (e.g. a telescope added as a camera)."
-    );
   }
 
   multipleTooltip(): string {

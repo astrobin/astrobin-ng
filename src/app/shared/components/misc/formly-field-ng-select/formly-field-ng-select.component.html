@@ -1,14 +1,16 @@
 <ng-template #selectContainer>
-  <ng-container *ngIf="hasAsyncItems; else hasSyncItems">
-    <ng-container [ngTemplateOutlet]="select" [ngTemplateOutletContext]="{ items: to.options | async }"></ng-container>
-  </ng-container>
+  <ng-container *ngIf="to.options !== null">
+    <ng-container *ngIf="hasAsyncItems; else hasSyncItems">
+      <ng-container [ngTemplateOutlet]="select" [ngTemplateOutletContext]="{ options: to.options | async }"></ng-container>
+    </ng-container>
 
-  <ng-template #hasSyncItems>
-    <ng-container [ngTemplateOutlet]="select" [ngTemplateOutletContext]="{ items: to.options }"></ng-container>
-  </ng-template>
+    <ng-template #hasSyncItems>
+      <ng-container [ngTemplateOutlet]="select" [ngTemplateOutletContext]="{ options: to.options }"></ng-container>
+    </ng-template>
+  </ng-container>
 </ng-template>
 
-<ng-template #select let-items="items">
+<ng-template #select let-options="options">
   <div class="position-relative">
     <ng-select
       #ngSelect
@@ -19,7 +21,7 @@
       [closeOnSelect]="to.closeOnSelect !== undefined ? to.closeOnSelect : !to.multiple"
       [formControl]="formControl"
       [hideSelected]="to.multiple"
-      [items]="items"
+      [items]="options"
       [loading]="loading"
       [multiple]="to.multiple"
       [notFoundText]="notFoundText"

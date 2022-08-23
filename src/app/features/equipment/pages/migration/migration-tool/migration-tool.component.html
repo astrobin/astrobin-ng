@@ -124,13 +124,6 @@
             </button>
 
             <div aria-labelledby="mark-as-dropdown-button" ngbDropdownMenu>
-              <a href="" class="dropdown-item" (click)="markAsWrongType($event, randomNonMigrated.item)">
-                {{ wrongTypeMessage() }}
-                <span class="help-tooltip" [ngbTooltip]="wrongTypeTooltip()">
-                  <fa-icon icon="question-circle"></fa-icon>
-                </span>
-              </a>
-
               <a href="" class="dropdown-item" (click)="markAsMultiple($event, randomNonMigrated.item)">
                 {{ "Multiple items" | translate }}
                 <span class="help-tooltip" [ngbTooltip]="multipleTooltip()">
@@ -189,6 +182,8 @@
               [description]='"Remember: you want to match items from the old database products in the new database." | translate'
               [type]="getActiveType()"
               [enableFullscreen]="true"
+              [showItemTypeSelector]="true"
+              [layout]="ItemBrowserLayout.VERTICAL"
               (valueChanged)="this.migrationTarget = $event"
               (subCreationModeStarted)="subCreationMode = true"
               (subCreationModeEnded)="subCreationMode = false"

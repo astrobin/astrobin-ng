@@ -248,13 +248,13 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
       return;
     }
 
-    this.fields.find(field => field.key === "brand").templateOptions.options = [
+    this.fields.find(field => field.key === "brand").templateOptions.options = of([
       {
         value: brand.id,
         label: brand.name,
         brand
       }
-    ];
+    ]);
     this.model = { ...this.model, ...{ brand: brand.id } };
     this.form.controls.brand.setValue(brand.id);
     this.brandCreation.name = brand.name;
@@ -431,13 +431,13 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
                     tap((brand: BrandInterface) => {
                       this.brandCreation.name = brand.name;
 
-                      field.templateOptions.options = [
+                      field.templateOptions.options = of([
                         {
                           value: brand.id,
                           label: brand.name,
                           brand
                         }
-                      ];
+                      ]);
 
                       this.formlyFieldService.clearMessages(this.fields.find(f => f.key === "name").templateOptions);
                       this._validateBrandInName();
@@ -734,26 +734,26 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
 
       const field = this.fields.find(f => f.key === "brand");
 
-      this.store$.dispatch(new FindAllBrands({ q }));
-
-      field.templateOptions.options = this.actions$.pipe(
-        ofType(EquipmentActionTypes.FIND_ALL_BRANDS_SUCCESS),
-        take(1),
-        map((action: FindAllBrandsSuccess) => action.payload.brands),
-        map(brands =>
-          brands.map(brand => {
-            return {
+      this.actions$
+        .pipe(
+          ofType(EquipmentActionTypes.FIND_ALL_BRANDS_SUCCESS),
+          take(1),
+          map((action: FindAllBrandsSuccess) => action.payload.brands),
+          map(brands =>
+            brands.map(brand => ({
               value: brand.id,
               label: brand.name,
               brand
-            };
-          })
-        ),
-        tap(options => {
+            }))
+          )
+        )
+        .subscribe(options => {
+          field.templateOptions.options = of(options);
           observer.next(options);
           observer.complete();
-        })
-      );
+        });
+
+      this.store$.dispatch(new FindAllBrands({ q }));
     });
   }
 
