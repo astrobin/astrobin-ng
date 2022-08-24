@@ -8,6 +8,7 @@ import { AppModule } from "@app/app.module";
 import { CameraGenerator } from "@features/equipment/generators/camera.generator";
 import { NestedCommentsComponent } from "@shared/components/misc/nested-comments/nested-comments.component";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import { WindowRefService } from "@shared/services/window-ref.service";
 
 describe("ItemEditProposalComponent", () => {
   let component: ItemEditProposalComponent;
@@ -15,7 +16,7 @@ describe("ItemEditProposalComponent", () => {
 
   beforeEach(async () => {
     await MockBuilder(ItemEditProposalComponent, AppModule)
-      .provide([provideMockStore({ initialState })])
+      .provide([provideMockStore({ initialState }), WindowRefService])
       .mock(NestedCommentsComponent);
   });
 
