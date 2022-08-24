@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { AfterViewInit, Component, Input, OnInit } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
@@ -11,7 +11,6 @@ import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipme
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 import {
   ApproveEquipmentItemEditProposalSuccess,
-  AssignEditProposalSuccess,
   EquipmentActionTypes,
   LoadEquipmentItem,
   RejectEquipmentItemEditProposalSuccess
@@ -36,13 +35,15 @@ import { EquipmentApiService } from "@features/equipment/services/equipment-api.
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { AssignEditProposalModalComponent } from "@shared/components/equipment/summaries/assign-edit-proposal-modal/assign-edit-proposal-modal.component";
 import { UtilsService } from "@shared/services/utils/utils.service";
+import { WindowRefService } from "@shared/services/window-ref.service";
+import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 
 @Component({
   selector: "astrobin-item-edit-proposal",
   templateUrl: "./item-edit-proposal.component.html",
   styleUrls: ["./item-edit-proposal.component.scss"]
 })
-export class ItemEditProposalComponent extends BaseComponentDirective implements OnInit {
+export class ItemEditProposalComponent extends BaseComponentDirective implements OnInit, AfterViewInit {
   @Input()
   editProposal: EditProposalInterface<EquipmentItemBaseInterface>;
 
@@ -63,7 +64,9 @@ export class ItemEditProposalComponent extends BaseComponentDirective implements
     public readonly classicRoutesService: ClassicRoutesService,
     public readonly loadingService: LoadingService,
     public readonly modalService: NgbModal,
-    public readonly utilsService: UtilsService
+    public readonly utilsService: UtilsService,
+    public readonly windowRefService: WindowRefService,
+    public readonly popNotificationsService: PopNotificationsService
   ) {
     super(store$);
   }
@@ -188,6 +191,21 @@ export class ItemEditProposalComponent extends BaseComponentDirective implements
 
     this._loadData(type);
     this._loadEquipmentItem(type);
+  }
+
+  ngAfterViewInit() {
+    if (this.windowRefService.getCurrentUrl().href.indexOf("/edit-proposals/") && this.opened) {
+      this.windowRefService.scrollToElement(`.edit-proposal[data-id="${this.editProposal.id}"]`);
+      if (this.editProposal.editProposalReviewStatus !== null) {
+        this.currentUser$.pipe(take(1)).subscribe(user => {
+          if (!user || this.editProposal.editProposalReviewedBy !== user.id) {
+            this.popNotificationsService.warning(
+              this.translateService.instant("This edit proposal has already been reviewed.")
+            );
+          }
+        });
+      }
+    }
   }
 
   assign() {
