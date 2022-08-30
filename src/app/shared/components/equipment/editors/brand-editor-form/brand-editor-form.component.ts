@@ -155,6 +155,24 @@ export class BrandEditorFormComponent extends BaseComponentDirective implements 
               }
             }
           },
+          teleskopExpress: {
+            expression: (control: FormControl) => {
+              return of(
+                control.value.toLowerCase().indexOf("teleskop-express") === -1 &&
+                  control.value.toLowerCase().indexOf("teleskop express") === -1 &&
+                  control.value.toLowerCase().indexOf("teleskop-service") === -1 &&
+                  control.value.toLowerCase().indexOf("teleskop service") === -1
+              );
+            },
+            message: (error, field: FormlyFieldConfig) => {
+              return this.translateService.instant(
+                "The brand you are looking for is {{0}} and it already exists on AstroBin's database.",
+                {
+                  0: "TS-Optics"
+                }
+              );
+            }
+          },
           unique: {
             expression: (control: FormControl) => {
               return control.valueChanges.pipe(
