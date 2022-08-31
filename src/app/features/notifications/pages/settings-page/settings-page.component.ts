@@ -270,6 +270,8 @@ export class SettingsPageComponent extends BaseComponentDirective implements OnI
       case "image_not_solved_advanced":
       case "image_solved_advanced":
       case "new_image_description_mention":
+      case "added_as_collaborator":
+      case "removed_as_collaborator":
         return NotificationCategory.IMAGES;
       case "new_follower":
         return NotificationCategory.USERS;
