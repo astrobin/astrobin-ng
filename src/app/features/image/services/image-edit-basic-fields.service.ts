@@ -81,7 +81,7 @@ export class ImageEditBasicFieldsService extends BaseService {
 
   getCollaboratorsField(): FormlyFieldConfig {
     const ngSelectData = (userProfile: UserProfileInterface): { value: number; label: string } => ({
-      value: userProfile.id,
+      value: userProfile.user,
       label: userProfile.realName ? `${userProfile.realName} (${userProfile.username})` : userProfile.username
     });
 
