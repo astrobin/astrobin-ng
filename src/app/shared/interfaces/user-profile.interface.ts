@@ -5,6 +5,7 @@ export interface UserProfileInterface {
   id: number;
   deleted: Date;
   updated: Date;
+  username: string;
   realName: string;
   website: string;
   job: string;

@@ -359,6 +359,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
           fieldGroup: [
             this.imageEditBasicFieldsService.getTitleField(),
             this.imageEditBasicFieldsService.getDescriptionField(),
+            this.imageEditBasicFieldsService.getCollaboratorsField(),
             this.imageEditBasicFieldsService.getLinkField(),
             this.imageEditBasicFieldsService.getLinkToFitsField()
           ]

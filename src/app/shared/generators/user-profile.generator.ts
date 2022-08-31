@@ -7,6 +7,7 @@ export class UserProfileGenerator {
       id: 1,
       deleted: null,
       updated: new Date("2010-01-01"),
+      username: "foo",
       realName: "Foo Bar",
       website: "http://www.foobar.com",
       job: "Astronomer",

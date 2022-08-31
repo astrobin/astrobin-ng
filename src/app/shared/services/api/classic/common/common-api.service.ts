@@ -64,6 +64,25 @@ export class CommonApiService extends BaseClassicApiService implements CommonApi
       .pipe(map((user: BackendUserProfileInterface) => this.commonApiAdaptorService.userProfileFromBackend(user)));
   }
 
+  getUserProfileByUserId(userId: UserInterface["id"]): Observable<UserProfileInterface> {
+    return this.http.get<BackendUserProfileInterface[]>(`${this.configUrl}/userprofiles/?user=${userId}`).pipe(
+      map((userProfiles: BackendUserProfileInterface[]) =>
+        userProfiles.map(userProfile => this.commonApiAdaptorService.userProfileFromBackend(userProfile))
+      ),
+      map(userProfiles => (!!userProfiles && userProfiles.length > 0 ? userProfiles[0] : null))
+    );
+  }
+
+  findUserProfiles(q: string): Observable<UserProfileInterface[]> {
+    return this.http
+      .get<BackendUserProfileInterface[]>(`${this.configUrl}/userprofiles/?q=${q}`)
+      .pipe(
+        map((userProfiles: BackendUserProfileInterface[]) =>
+          userProfiles.map(user => this.commonApiAdaptorService.userProfileFromBackend(user))
+        )
+      );
+  }
+
   getCurrentUserProfile(): Observable<UserProfileInterface> {
     return this.http.get<BackendUserProfileInterface[]>(this.configUrl + "/userprofiles/current/").pipe(
       map(response => {
