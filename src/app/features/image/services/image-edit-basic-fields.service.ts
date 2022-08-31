@@ -3,15 +3,26 @@ import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { TranslateService } from "@ngx-translate/core";
 import { ImageEditService } from "@features/image/services/image-edit.service";
+import { FormlyFieldConfig } from "@ngx-formly/core";
+import { forkJoin, Observable, of } from "rxjs";
+import { CommonApiService } from "@shared/services/api/classic/common/common-api.service";
+import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
+import { filter, map, take, tap } from "rxjs/operators";
+import { Store } from "@ngrx/store";
+import { State } from "@app/store/state";
+import { FormControl } from "@angular/forms";
+import { selectCurrentUser } from "@features/account/store/auth.selectors";
 
 @Injectable({
   providedIn: null
 })
 export class ImageEditBasicFieldsService extends BaseService {
   constructor(
+    public readonly store$: Store<State>,
     public readonly loadingService: LoadingService,
     public readonly translateService: TranslateService,
-    public readonly imageEditService: ImageEditService
+    public readonly imageEditService: ImageEditService,
+    public readonly commonApiService: CommonApiService
   ) {
     super(loadingService);
   }
@@ -66,6 +77,64 @@ export class ImageEditBasicFieldsService extends BaseService {
     }
 
     return this.getDescriptionHtmlField();
+  }
+
+  getCollaboratorsField(): FormlyFieldConfig {
+    const ngSelectData = (userProfile: UserProfileInterface): { value: number; label: string } => ({
+      value: userProfile.id,
+      label: userProfile.realName ? `${userProfile.realName} (${userProfile.username})` : userProfile.username
+    });
+
+    const _getField = (): FormlyFieldConfig => {
+      return this.imageEditService.fields[0].fieldGroup[0].fieldGroup[2];
+    };
+
+    return {
+      key: "collaborators",
+      type: "ng-select",
+      wrappers: ["default-wrapper"],
+      id: "image-collaborators-field",
+      templateOptions: {
+        label: this.translateService.instant("Collaborators"),
+        description: this.translateService.instant(
+          "If this image was a group effort, please add additional collaborators (other than you) here."
+        ),
+        multiple: true,
+        required: false,
+        clearable: true,
+        enableFullscreen: false,
+        striped: true,
+        options: this.imageEditService.model.collaborators
+          ? forkJoin(
+              this.imageEditService.model.collaborators.map(collaborator => {
+                return this.commonApiService
+                  .getUserProfileByUserId(collaborator)
+                  .pipe(map(userProfile => ngSelectData(userProfile)));
+              })
+            )
+          : of([]),
+        onSearch: (term: string): Observable<UserProfileInterface[]> => {
+          const field = _getField();
+          return this.commonApiService.findUserProfiles(term).pipe(
+            tap(userProfiles => {
+              field.templateOptions.options = of(userProfiles.map(userProfile => ngSelectData(userProfile)));
+            })
+          );
+        }
+      },
+      asyncValidators: {
+        notIncludeSelf: {
+          expression: (control: FormControl) => {
+            return this.store$.select(selectCurrentUser).pipe(
+              filter(user => !!user),
+              take(1),
+              map(user => !control.value || control.value.indexOf(user.id) === -1)
+            );
+          },
+          message: this.translateService.instant("No need to include yourself as a collaborator.")
+        }
+      }
+    };
   }
 
   getLinkField(): any {

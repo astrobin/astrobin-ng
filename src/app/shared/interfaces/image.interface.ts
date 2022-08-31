@@ -161,6 +161,7 @@ export enum DownloadLimitationOptions {
 export interface ImageInterface {
   pk: number;
   user: UserInterface["id"];
+  collaborators: UserInterface["id"][] | null;
   hash: string;
   title: string;
   imageFile: string;

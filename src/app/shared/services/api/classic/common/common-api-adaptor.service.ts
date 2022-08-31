@@ -41,6 +41,7 @@ export interface BackendUserProfileInterface {
   id: number;
   deleted: string;
   updated: string;
+  username: string;
   real_name: string;
   website: string;
   job: string;
@@ -141,6 +142,7 @@ export class CommonApiAdaptorService extends BaseService {
       id: userProfile.id,
       deleted: new Date(userProfile.deleted),
       updated: new Date(userProfile.updated),
+      username: userProfile.username,
       realName: userProfile.real_name,
       website: userProfile.website,
       job: userProfile.job,

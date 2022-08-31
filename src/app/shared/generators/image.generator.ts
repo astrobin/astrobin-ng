@@ -12,6 +12,7 @@ export class ImageGenerator {
   static image(source: Partial<ImageInterface> = {}): ImageInterface {
     return {
       user: source.user || 1,
+      collaborators: source.collaborators || null,
       pk: source.pk || 1,
       hash: source.hash || "abc123",
       title: source.title || "Generated image",
