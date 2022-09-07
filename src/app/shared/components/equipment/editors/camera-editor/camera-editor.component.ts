@@ -190,7 +190,11 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
       field.formControl.markAsDirty();
     }
 
-    if (!!this.model.brand && value && value.toLowerCase().indexOf("mgen") > -1) {
+    if (
+      !!this.model.brand &&
+      value &&
+      (value.toLowerCase().indexOf("mgen") > -1 || value.toLowerCase().indexOf("m-gen") > -1)
+    ) {
       this.store$
         .select(selectBrand, this.model.brand)
         .pipe(
