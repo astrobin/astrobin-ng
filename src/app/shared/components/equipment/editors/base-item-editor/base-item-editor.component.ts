@@ -15,6 +15,7 @@ import {
   FindSimilarInBrandSuccess,
   GetOthersInBrand,
   GetOthersInBrandSuccess,
+  LoadBrand,
   LoadEquipmentItem
 } from "@features/equipment/store/equipment.actions";
 import { Actions, ofType } from "@ngrx/effects";
@@ -515,6 +516,13 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
         brandInName: {
           expression: (control: FormControl) => {
             const brandControl: AbstractControl = this.form.get("brand");
+
+            if (!control.value || !brandControl.value) {
+              return of(true);
+            }
+
+            this.store$.dispatch(new LoadBrand({ id: brandControl.value }));
+
             return this.store$.select(selectBrand, brandControl.value).pipe(
               filter(brand => !!brand),
               take(1),
