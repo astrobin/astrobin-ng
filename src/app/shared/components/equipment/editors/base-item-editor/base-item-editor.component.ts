@@ -15,6 +15,7 @@ import {
   FindSimilarInBrandSuccess,
   GetOthersInBrand,
   GetOthersInBrandSuccess,
+  LoadBrand,
   LoadEquipmentItem
 } from "@features/equipment/store/equipment.actions";
 import { Actions, ofType } from "@ngrx/effects";
@@ -440,7 +441,6 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
                       ]);
 
                       this.formlyFieldService.clearMessages(this.fields.find(f => f.key === "name").templateOptions);
-                      this._validateBrandInName();
                       this._validateCanonAndCentralDS();
                       this._similarItemSuggestion();
                       this._othersInBrand(brand.name);
@@ -503,7 +503,6 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
                 if (this.fields.find(f => f.key === "brand")) {
                   this.formlyFieldService.clearMessages(this.fields.find(f => f.key === "brand").templateOptions);
                 }
-                this._validateBrandInName();
                 this._validateCanonAndCentralDS();
                 this._similarItemSuggestion();
                 this._editProposalWarning(field);
@@ -514,6 +513,24 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
         }
       },
       asyncValidators: {
+        brandInName: {
+          expression: (control: FormControl) => {
+            const brandControl: AbstractControl = this.form.get("brand");
+
+            if (!control.value || !brandControl.value) {
+              return of(true);
+            }
+
+            this.store$.dispatch(new LoadBrand({ id: brandControl.value }));
+
+            return this.store$.select(selectBrand, brandControl.value).pipe(
+              filter(brand => !!brand),
+              take(1),
+              map((brand: BrandInterface) => control.value.toLowerCase().indexOf(brand.name.toLowerCase()) === -1)
+            );
+          },
+          message: this.translateService.instant("Do not repeat the brand's name in the item's name.")
+        },
         uniqueForBrand: {
           expression: (control: FormControl) => {
             const type: EquipmentItemType = this.equipmentItemService.getType({
@@ -823,43 +840,6 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
             template,
             data
           });
-        }
-      });
-  }
-
-  private _validateBrandInName() {
-    const brandControl: AbstractControl = this.form.get("brand");
-    const nameControl: AbstractControl = this.form.get("name");
-    const nameFieldConfig: FormlyFieldConfig = this.fields.find(field => field.key === "name");
-    const message = this.translateService.instant(
-      "<strong>Careful!</strong> The item's name contains the brand's name (or vice versa), and it probably shouldn't."
-    );
-
-    if (!brandControl?.value || !nameControl?.value) {
-      return;
-    }
-
-    this.store$
-      .select(selectBrand, brandControl.value)
-      .pipe(
-        filter(brand => !!brand),
-        take(1)
-      )
-      .subscribe(brand => {
-        if (nameControl.value.toLowerCase().indexOf(brand.name.toLowerCase()) > -1) {
-          this.formlyFieldService.addMessage(nameFieldConfig.templateOptions, {
-            level: FormlyFieldMessageLevel.WARNING,
-            text: message
-          });
-        }
-
-        for (const word of nameControl.value.split(" ")) {
-          if (brand.name.toLowerCase() === word.toLowerCase()) {
-            this.formlyFieldService.addMessage(nameFieldConfig.templateOptions, {
-              level: FormlyFieldMessageLevel.WARNING,
-              text: message
-            });
-          }
         }
       });
   }
