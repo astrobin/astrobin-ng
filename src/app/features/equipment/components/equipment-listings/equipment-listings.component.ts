@@ -38,8 +38,11 @@ export class EquipmentListingsComponent extends BaseComponentDirective implement
   @Input()
   listings: EquipmentListingsInterface = null;
 
-  cardHeaderTemplate: TemplateRef<any>;
-  cardBodyTemplate: TemplateRef<any>;
+  itemCardHeaderTemplate: TemplateRef<any>;
+  itemCardBodyTemplate: TemplateRef<any>;
+
+  brandCardHeaderTemplate: TemplateRef<any>;
+  brandCardBodyTemplate: TemplateRef<any>;
 
   @ViewChild("loadingTemplate")
   private _loadingTemplate: TemplateRef<any>;
@@ -114,7 +117,13 @@ export class EquipmentListingsComponent extends BaseComponentDirective implement
       return url;
     }
 
-    url = UtilsService.addOrUpdateUrlParam(url, "brand", this.item ? this.item.brandName : this.brand.name);
+    url = UtilsService.addOrUpdateUrlParam(url, "brand", !!this.item ? this.item.brandName : this.brand.name);
+
+    if (!!this.item && Object.keys(listing).indexOf("itemObjectId") > -1) {
+      // This is an item listing.
+      url = UtilsService.addOrUpdateUrlParam(url, "name", this.item.name);
+    }
+
     url = UtilsService.addOrUpdateUrlParam(url, "retailer", listing.retailer.name);
     url = UtilsService.addOrUpdateUrlParam(url, "source", source);
 
@@ -154,32 +163,41 @@ export class EquipmentListingsComponent extends BaseComponentDirective implement
     if (!!this.listings) {
       if (this.listings.allowFullRetailerIntegration) {
         if (this.listings.itemListings.length > 0) {
-          this.cardHeaderTemplate = this._cardHeaderItemListingsFullTemplate;
-          this.cardBodyTemplate = this._cardBodyItemListingsFullTemplate;
-          return;
+          this.itemCardHeaderTemplate = this._cardHeaderItemListingsFullTemplate;
+          this.itemCardBodyTemplate = this._cardBodyItemListingsFullTemplate;
         }
 
         if (this.listings.brandListings.length > 0) {
-          this.cardHeaderTemplate = this._cardHeaderBrandListingsFullTemplate;
-          this.cardBodyTemplate = this._cardBodyBrandListingsFullTemplate;
-          return;
+          this.brandCardHeaderTemplate = this._cardHeaderBrandListingsFullTemplate;
+          this.brandCardBodyTemplate = this._cardBodyBrandListingsFullTemplate;
         }
       } else {
         if (this.listings.itemListings.length > 0) {
-          this.cardHeaderTemplate = this._cardHeaderItemListingsLiteTemplate;
-          this.cardBodyTemplate = this._cardBodyItemListingsLiteTemplate;
-          return;
+          this.itemCardHeaderTemplate = this._cardHeaderItemListingsLiteTemplate;
+          this.itemCardBodyTemplate = this._cardBodyItemListingsLiteTemplate;
         }
 
         if (this.listings.brandListings.length > 0) {
-          this.cardHeaderTemplate = this._cardHeaderBrandListingsLiteTemplate;
-          this.cardBodyTemplate = this._cardBodyBrandListingsLiteTemplate;
-          return;
+          this.brandCardHeaderTemplate = this._cardHeaderBrandListingsLiteTemplate;
+          this.brandCardBodyTemplate = this._cardBodyBrandListingsLiteTemplate;
         }
       }
     }
 
-    this.cardHeaderTemplate = this._loadingTemplate;
-    this.cardBodyTemplate = this._loadingTemplate;
+    if (!this.itemCardHeaderTemplate) {
+      this.itemCardHeaderTemplate = this._loadingTemplate;
+    }
+
+    if (!this.itemCardBodyTemplate) {
+      this.itemCardBodyTemplate = this._loadingTemplate;
+    }
+
+    if (!this.brandCardHeaderTemplate) {
+      this.brandCardHeaderTemplate = this._loadingTemplate;
+    }
+
+    if (!this.brandCardBodyTemplate) {
+      this.brandCardBodyTemplate = this._loadingTemplate;
+    }
   }
 }
