@@ -25,7 +25,12 @@ export class SoftwareGenerator {
       imageCount: null,
       variantOf: null,
       variants: [],
-      forum: null
+      forum: null,
+      listings: {
+        itemListings: [],
+        brandListings: [],
+        allowFullRetailerIntegration: false
+      }
     };
   }
 }

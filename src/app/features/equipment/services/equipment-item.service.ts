@@ -262,7 +262,8 @@ export class EquipmentItemService extends BaseService {
       "userCount",
       "imageCount",
       "lastAddedOrRemovedFromImage",
-      "searchFriendlyName"
+      "searchFriendlyName",
+      "listings"
     ];
 
     const nonNullableKeys = ["image"];
