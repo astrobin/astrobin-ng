@@ -72,16 +72,12 @@ import { ContentTypeInterface } from "@shared/interfaces/content-type.interface"
 import { Observable, Subscription } from "rxjs";
 import { selectContentType } from "@app/store/selectors/app/content-type.selectors";
 import { LoadContentType } from "@app/store/actions/content-type.actions";
-import { UserInterface } from "@shared/interfaces/user.interface";
-import { ImageInterface } from "@shared/interfaces/image.interface";
 import { distinctUntilChangedObj } from "@shared/services/utils/utils.service";
 import { UnapproveItemModalComponent } from "@features/equipment/components/unapprove-item-modal/unapprove-item-modal.component";
 import { ActiveToast } from "ngx-toastr";
 import { CompareService } from "@features/equipment/services/compare.service";
 import { isPlatformBrowser, Location } from "@angular/common";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
-import { EquipmentListingsInterface } from "@features/equipment/types/equipment-listings.interface";
-import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
 
 @Component({
   selector: "astrobin-equipment-explorer",
@@ -178,8 +174,6 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
       );
     })
   );
-
-  listings: EquipmentListingsInterface = null;
 
   @ViewChild("itemBrowser")
   private _itemBrowser: ItemBrowserComponent;
@@ -611,7 +605,6 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
 
     this._endEditMode();
     this._loadEditProposals();
-    this._loadListings();
   }
 
   onCreationModeStarted() {
@@ -802,25 +795,5 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
       });
 
     this.store$.dispatch(new FindEquipmentItemEditProposals({ item: this.selectedItem }));
-  }
-
-  private _loadListings() {
-    this.loadingService.setLoading(true);
-
-    this.listings = null;
-
-    if (!!this.selectedItem) {
-      this.equipmentApiService.getListings(this.selectedItem.klass, this.selectedItem.id).subscribe(listings => {
-        // Skip "Lite" retailer integration for now. On the classic website, full integration means banners, and lite
-        // integration means shopping cart menu in the corner of the technical card.
-        // On the equipment item page, full means banners, and lite means stock availability.
-        if (listings.allowFullRetailerIntegration) {
-          this.listings = listings;
-        }
-        this.loadingService.setLoading(false);
-      });
-    } else {
-      this.loadingService.setLoading(false);
-    }
   }
 }

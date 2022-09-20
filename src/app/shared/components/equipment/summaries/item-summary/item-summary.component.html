@@ -121,6 +121,21 @@
             </ng-container>
           </td>
         </tr>
+
+        <tr *ngIf="item.listings?.itemListings?.length" class="property">
+          <th class="property-name">
+            {{ "Known retailers" | translate }}
+          </th>
+          <td class="property-value retailers">
+            <ng-container *ngFor="let listing of item.listings.itemListings; let isLast = last">
+              <a  [href]="listing.url" target="_blank">
+                {{ listing.retailer.name }}
+              </a>
+
+              {{ isLast ? "" : "&nbsp;&middot;&nbsp;" }}
+            </ng-container>
+          </td>
+        </tr>
         </tbody>
       </table>
 

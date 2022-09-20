@@ -1,6 +1,7 @@
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { BrandInterface } from "@features/equipment/types/brand.interface";
 import { ForumInterface } from "@shared/interfaces/forums/forum.interface";
+import { EquipmentListingsInterface } from "@features/equipment/types/equipment-listings.interface";
 
 export enum EquipmentItemType {
   SENSOR = "SENSOR",
@@ -58,4 +59,5 @@ export interface EquipmentItemBaseInterface {
   forum: ForumInterface["id"] | null;
   userCount: number | null;
   imageCount: number | null;
+  listings: EquipmentListingsInterface;
 }
