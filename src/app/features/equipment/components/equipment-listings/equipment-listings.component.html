@@ -1,11 +1,28 @@
-<div class="card">
+<div class="card mb-4" *ngIf="listings.itemListings.length > 0">
   <div class="card-header">
-    <ng-container *ngTemplateOutlet="cardHeaderTemplate"></ng-container>
+    <ng-container *ngTemplateOutlet="itemCardHeaderTemplate"></ng-container>
   </div>
 
   <div class="card-body">
     <div class="listings">
-      <ng-container *ngTemplateOutlet="cardBodyTemplate"></ng-container>
+      <ng-container *ngTemplateOutlet="itemCardBodyTemplate"></ng-container>
+    </div>
+  </div>
+
+  <div class="card-footer flex-row">
+    <fa-icon icon="info-circle" (click)="infoButtonClicked()"></fa-icon>
+    <fa-icon icon="times" (click)="removeButtonClicked()"></fa-icon>
+  </div>
+</div>
+
+<div class="card" *ngIf="listings.brandListings.length > 0">
+  <div class="card-header">
+    <ng-container *ngTemplateOutlet="brandCardHeaderTemplate"></ng-container>
+  </div>
+
+  <div class="card-body">
+    <div class="listings">
+      <ng-container *ngTemplateOutlet="brandCardBodyTemplate"></ng-container>
     </div>
   </div>
 
@@ -36,38 +53,44 @@
 </ng-template>
 
 <ng-template #cardBodyItemListingsFullTemplate>
-
+  <div *ngFor="let listing of listings.itemListings" class="listing">
+    <ng-container [ngTemplateOutlet]="listingFull" [ngTemplateOutletContext]="{listing}"></ng-container>
+  </div>
 </ng-template>
 
 <ng-template #cardBodyItemListingsLiteTemplate>
-
+  <!-- TODO -->
 </ng-template>
 
 <ng-template #cardBodyBrandListingsFullTemplate>
   <div *ngFor="let listing of listings.brandListings" class="listing">
-    <ng-container *ngIf="!!listing.retailer.logo; else noLogoTemplate">
-      <a
-        [href]="urlWithTags(listing)"
-        [ngbTooltip]="!!item ? item.brandName : brand.name"
-        appGtagOutboundClickEvent
-        target="_blank"
-        class="with-logo"
-      >
-        <img [src]="listing.retailer.logo" [alt]="listing.retailer.name" />
-      </a>
-    </ng-container>
-    <ng-template #noLogoTemplate>
-      <a
-        [href]="urlWithTags(listing)"
-        appGtagOutboundClickEvent
-        target="_blank"
-      >
-        {{ listing.retailer.name }}
-      </a>
-    </ng-template>
+    <ng-container [ngTemplateOutlet]="listingFull" [ngTemplateOutletContext]="{listing}"></ng-container>
   </div>
 </ng-template>
 
 <ng-template #cardBodyBrandListingsLiteTemplate>
+  <!-- TODO -->
+</ng-template>
 
+<ng-template #listingFull let-listing="listing">
+  <ng-container *ngIf="!!listing.retailer.logo; else noLogoTemplate">
+    <a
+      [href]="urlWithTags(listing)"
+      [ngbTooltip]="listing.retailer.name"
+      appGtagOutboundClickEvent
+      target="_blank"
+      class="with-logo"
+    >
+      <img [src]="listing.retailer.logo" [alt]="listing.retailer.name" />
+    </a>
+  </ng-container>
+  <ng-template #noLogoTemplate>
+    <a
+      [href]="urlWithTags(listing)"
+      appGtagOutboundClickEvent
+      target="_blank"
+    >
+      {{ listing.retailer.name }}
+    </a>
+  </ng-template>
 </ng-template>
