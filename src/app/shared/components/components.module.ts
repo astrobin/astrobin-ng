@@ -95,6 +95,7 @@ import { ForumPreviewComponent } from "@shared/components/forums/forum-preview/f
 import { ImageSearchComponent } from "@shared/components/search/image-search/image-search.component";
 import { MostOftenUsedWithModalComponent } from "@shared/components/equipment/summaries/item/summary/most-often-used-with-modal/most-often-used-with-modal.component";
 import { RemoveAdsDialogComponent } from "@shared/components/misc/remove-ads-dialog/remove-ads-dialog.component";
+import { ItemBrowserByPropertiesModalComponent } from "@shared/components/equipment/item-browser-by-properties-modal/item-browser-by-properties-modal.component";
 
 const modules = [
   CommonModule,
@@ -172,6 +173,7 @@ const components = [
 
   // Equipment
   ItemBrowserComponent,
+  ItemBrowserByPropertiesModalComponent,
   VariantSelectorModalComponent,
   ItemSummaryComponent,
   ItemUnapprovedInfoModalComponent,

@@ -21,7 +21,7 @@ import {
 } from "@features/equipment/types/equipment-item-base.interface";
 import { FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
-import { forkJoin, isObservable, Observable, of, Subscription } from "rxjs";
+import { forkJoin, Observable, of, Subscription } from "rxjs";
 import { TranslateService } from "@ngx-translate/core";
 import {
   CreateAccessory,
@@ -41,7 +41,7 @@ import {
   LoadBrand,
   LoadEquipmentItem
 } from "@features/equipment/store/equipment.actions";
-import { filter, first, map, switchMap, take, takeUntil, tap } from "rxjs/operators";
+import { filter, first, map, switchMap, take, takeUntil } from "rxjs/operators";
 import { Actions, ofType } from "@ngrx/effects";
 import { selectBrand, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import { WindowRefService } from "@shared/services/window-ref.service";
@@ -62,6 +62,7 @@ import { PopNotificationsService } from "@shared/services/pop-notifications.serv
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { BaseItemEditorComponent } from "@shared/components/equipment/editors/base-item-editor/base-item-editor.component";
 import { isPlatformBrowser } from "@angular/common";
+import { ItemBrowserByPropertiesModalComponent } from "@shared/components/equipment/item-browser-by-properties-modal/item-browser-by-properties-modal.component";
 
 type Type = EquipmentItem["id"];
 type TypeUnion = EquipmentItem["id"] | EquipmentItem["id"][];
@@ -69,6 +70,11 @@ type TypeUnion = EquipmentItem["id"] | EquipmentItem["id"][];
 export enum ItemBrowserLayout {
   HORIZONTAL,
   VERTICAL
+}
+
+export enum ItemSelectionMode {
+  SEARCH,
+  BROWSE
 }
 
 @Component({
@@ -131,7 +137,11 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
   @Input()
   layout: ItemBrowserLayout = ItemBrowserLayout.HORIZONTAL;
 
-  model: { klass: EquipmentItemType; value: TypeUnion } = { klass: null, value: null };
+  model: { klass: EquipmentItemType; value: TypeUnion; selectionMode: ItemSelectionMode } = {
+    klass: null,
+    value: null,
+    selectionMode: ItemSelectionMode.SEARCH
+  };
   form: FormGroup = new FormGroup({});
   fields: FormlyFieldConfig[] = [];
   creationMode = false;
@@ -263,7 +273,7 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
         this.form.get("value").setValue(id, { onlySelf: true, emitEvent: false });
       }
 
-      this.model = { klass: this.type, value: id };
+      this.model = { klass: this.type, value: id, selectionMode: ItemSelectionMode.SEARCH };
 
       this.valueChanged.emit(item);
     };
@@ -281,7 +291,7 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
 
       fieldConfig.templateOptions.options = of(options);
 
-      this.model = { klass: this.type, value: ids };
+      this.model = { klass: this.type, value: ids, selectionMode: ItemSelectionMode.SEARCH };
 
       if (this.form.get("value")) {
         this.form.get("value").setValue(ids, { onlySelf: true, emitEvent: false });
@@ -571,13 +581,27 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
     }
   }
 
+  openItemBrowserByProperties(): void {
+    const modalRef: NgbModalRef = this.modalService.open(ItemBrowserByPropertiesModalComponent, { size: "xl" });
+    const componentInstance: ItemBrowserByPropertiesModalComponent = modalRef.componentInstance;
+    componentInstance.type = this.type;
+
+    modalRef.closed.subscribe(item => {
+      this.setValue(item.id);
+    });
+
+    modalRef.dismissed.subscribe(() => {
+      this.form.get("selection-mode").setValue(ItemSelectionMode.SEARCH);
+    });
+  }
+
   _setFields() {
     const _addTag = () => {
       this.startCreationMode();
       this.windowRefService.scrollToElement("#create-new-item");
     };
 
-    this.model = { klass: this.type, value: this.value };
+    this.model = { klass: this.type, value: this.value, selectionMode: ItemSelectionMode.SEARCH };
 
     if (!!this.currentUserSubscription) {
       this.currentUserSubscription.unsubscribe();
@@ -593,7 +617,7 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
               fieldGroup: [
                 {
                   className:
-                    this.layout === ItemBrowserLayout.HORIZONTAL ? "col-12 col-lg-3 pr-lg-2 mb-sm-3 mb-lg-0" : "col-12",
+                    this.layout === ItemBrowserLayout.HORIZONTAL ? "col-12 col-lg-3 pr-lg-2 mb-3 mb-lg-0" : "col-12",
                   key: "klass",
                   type: "ng-select",
                   id: "klass",
@@ -630,8 +654,8 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
                 {
                   className:
                     this.showItemTypeSelector && this.layout === ItemBrowserLayout.HORIZONTAL
-                      ? "col-12 col-lg-9"
-                      : "col-12",
+                      ? "col-12 col-lg-6 pr-lg-2 mb-3 mb-lg-0"
+                      : "col-12 col-lg-9 pr-lg-2 mb-3 mb-lg-0",
                   key: "value",
                   type: "ng-select",
                   id: `${this.id}`,
@@ -712,6 +736,41 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
                             }
                           }
                         });
+                    }
+                  }
+                },
+                {
+                  className: this.layout === ItemBrowserLayout.HORIZONTAL ? "col-12 col-lg-3" : "col-12",
+                  key: "selection-mode",
+                  type: "ng-select",
+                  id: `selection-mode-${this.id}`,
+                  expressionProperties: {
+                    "templateOptions.disabled": () => this.creationMode
+                  },
+                  defaultValue: ItemSelectionMode.SEARCH,
+                  templateOptions: {
+                    required: true,
+                    clearable: false,
+                    searchable: false,
+                    label: this.translateService.instant("Selection mode"),
+                    options: [
+                      {
+                        value: ItemSelectionMode.SEARCH,
+                        label: this.translateService.instant("Text search")
+                      },
+                      {
+                        value: ItemSelectionMode.BROWSE,
+                        label: this.translateService.instant("Browse by properties")
+                      }
+                    ]
+                  },
+                  hooks: {
+                    onInit: (field: FormlyFieldConfig) => {
+                      field.formControl.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(value => {
+                        if (value === ItemSelectionMode.BROWSE) {
+                          this.openItemBrowserByProperties();
+                        }
+                      });
                     }
                   }
                 }

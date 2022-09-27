@@ -9,6 +9,10 @@
       margin: 0;
     }
 
+    .modal-body {
+      height: calc(100vh - 140px);
+    }
+
     .modal-content {
       height: 100%;
     }
@@ -27,6 +31,10 @@
   .modal-footer {
     @include darker-background-texture;
   }
+}
+
+.modal-xl {
+  max-width: calc(100% - 3rem);
 }
 
 .modal-backdrop.show {

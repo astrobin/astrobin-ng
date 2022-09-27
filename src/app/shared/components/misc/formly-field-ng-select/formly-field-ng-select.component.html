@@ -12,6 +12,7 @@
 
 <ng-template #select let-options="options">
   <div class="position-relative">
+
     <ng-select
       #ngSelect
       [attr.id]="field.id"
@@ -28,6 +29,7 @@
       [notFoundText]="notFoundText"
       [typeToSearchText]="placeholder"
       [placeholder]="placeholder"
+      [searchable]="to.searchable !== undefined ? to.searchable : true"
       [typeahead]="input$"
       [dropdownPosition]="this.fullscreen ? 'bottom' : 'auto'"
       groupBy="group"
@@ -73,7 +75,7 @@
       <ng-template ng-header-tmp>
         <ng-container *ngIf="hasAsyncItems">
           <ng-container *ngIf="to.options | async as options">
-            <div class="too-many-options-label" *ngIf="options?.length > TOO_MANY_OPTIONS">
+            <div class="too-many-options-label" *ngIf="value?.length > 0 && options?.length > TOO_MANY_OPTIONS">
               <fa-icon icon="exclamation-triangle"></fa-icon>
               {{ "Type more to refine your search." | translate }}
             </div>
