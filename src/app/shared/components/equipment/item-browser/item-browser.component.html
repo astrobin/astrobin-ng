@@ -4,11 +4,19 @@
 
 <ng-template #equipmentItemLabelTemplate let-object="item">
   <ng-container *ngIf="model && model.value">
-    <astrobin-equipment-item-display-name
-      *ngIf="!!object?.item; else loading"
-      [item]="object.item"
-      [enableSummaryModal]="enableSummaryModal"
-    ></astrobin-equipment-item-display-name>
+    <ng-container *ngIf="!!object?.item; else noItemObject">
+      <astrobin-equipment-item-display-name
+        [item]="object.item"
+        [enableSummaryModal]="enableSummaryModal"
+      ></astrobin-equipment-item-display-name>
+    </ng-container>
+    <ng-template #noItemObject>
+      <astrobin-equipment-item-display-name
+        *ngIf="!!object?.value; else loading"
+        [item]="getItemById$(object.value) | async"
+        [enableSummaryModal]="enableSummaryModal"
+      ></astrobin-equipment-item-display-name>
+    </ng-template>
   </ng-container>
 </ng-template>
 

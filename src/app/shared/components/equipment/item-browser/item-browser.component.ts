@@ -229,6 +229,10 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
     }
   }
 
+  getItemById$(id: EquipmentItem["id"]) {
+    return this.store$.select(selectEquipmentItem, { type: this.type, id });
+  }
+
   reset() {
     this.model.value = null;
     this.form.get("value").reset();
