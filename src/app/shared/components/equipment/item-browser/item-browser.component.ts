@@ -483,7 +483,10 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
 
       modal.closed.pipe(take(1)).subscribe((variant: EquipmentItem) => {
         _doAddItem(variant);
-        this.store$.dispatch(new ItemBrowserExitFullscreen());
+
+        if (!this.multiple) {
+          this.store$.dispatch(new ItemBrowserExitFullscreen());
+        }
       });
     } else {
       _doAddItem(item);
@@ -587,7 +590,10 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
     } else {
       this.addItem(item);
     }
-    this.store$.dispatch(new ItemBrowserExitFullscreen());
+
+    if (!this.multiple) {
+      this.store$.dispatch(new ItemBrowserExitFullscreen());
+    }
   }
 
   onCreateClickedBrowsingByProperties(): void {

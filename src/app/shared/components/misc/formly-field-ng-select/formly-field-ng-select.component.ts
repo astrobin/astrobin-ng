@@ -1,4 +1,4 @@
-import { Component, HostListener, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from "@angular/core";
+import { Component, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from "@angular/core";
 import { FieldType } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
 import { UtilsService } from "@shared/services/utils/utils.service";
@@ -39,7 +39,8 @@ export class FormlyFieldNgSelectComponent extends FieldType implements OnInit, O
     public actions$: Actions,
     public readonly translateService: TranslateService,
     public readonly modalService: NgbModal,
-    public readonly windowRefService: WindowRefService
+    public readonly windowRefService: WindowRefService,
+    public readonly utilsService: UtilsService
   ) {
     super();
   }
@@ -68,10 +69,6 @@ export class FormlyFieldNgSelectComponent extends FieldType implements OnInit, O
     return this.translateService.instant("No items found.");
   }
 
-  @HostListener("document:keydown.escape", ["$event"]) onKeydownHandler(event: KeyboardEvent) {
-    this.exitFullscreen();
-  }
-
   ngOnInit() {
     this.hasAsyncItems = isObservable(this.to.options);
 
@@ -90,7 +87,9 @@ export class FormlyFieldNgSelectComponent extends FieldType implements OnInit, O
     }
 
     this.formControl.valueChanges.subscribe(value => {
-      this.exitFullscreen();
+      if (!this.to.multiple) {
+        this.exitFullscreen();
+      }
     });
 
     this.exitFullscreenSubscription = this.actions$
@@ -147,12 +146,14 @@ export class FormlyFieldNgSelectComponent extends FieldType implements OnInit, O
 
         this.windowRefService.focusElement(elementSelector);
       });
+      this._ngSelectModalRef.hidden.pipe(take(1)).subscribe(() => {
+        this.fullscreen = false;
+      });
     }
   }
 
   exitFullscreen() {
     if (this.fullscreen) {
-      this.fullscreen = false;
       this._ngSelectModalRef.close();
       this._ngSelect.writeValue(this.formControl.value);
     }
@@ -160,8 +161,11 @@ export class FormlyFieldNgSelectComponent extends FieldType implements OnInit, O
 
   onAddTag(term: string) {
     this.to.addTag(this._ngSelect.searchTerm);
-    this._ngSelect.close();
-    this.exitFullscreen();
+
+    if (!this.to.multiple) {
+      this._ngSelect.close();
+      this.exitFullscreen();
+    }
   }
 
   onSearch(value) {

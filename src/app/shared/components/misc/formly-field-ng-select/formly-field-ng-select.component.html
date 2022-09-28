@@ -140,7 +140,14 @@
         {{ placeholder }}
       </label>
 
-      <ng-container [ngTemplateOutlet]="selectContainer"></ng-container>
+      <div class="d-flex">
+        <div class="flex-grow-1">
+          <ng-container [ngTemplateOutlet]="selectContainer"></ng-container>
+        </div>
+        <button class="btn btn-primary btn-sm ml-3" (click)="exitFullscreen()">
+          {{ "Done" | translate }}
+        </button>
+      </div>
     </div>
 
     <div *ngIf="!!to.fullScreenBodyTemplate" class="full-screen-body-template-container mt-3">
