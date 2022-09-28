@@ -104,7 +104,7 @@ export class ItemBrowserByPropertiesComponent extends BaseComponentDirective imp
     this._loadData();
 
     this.form.valueChanges
-      .pipe(takeUntil(this.destroyed$), debounceTime(250), distinctUntilChangedObj())
+      .pipe(takeUntil(this.destroyed$), debounceTime(750), distinctUntilChangedObj())
       .subscribe(() => this.onChange());
   }
 
