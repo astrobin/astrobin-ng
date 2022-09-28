@@ -5,9 +5,14 @@
 
   .ng-select-container {
     color: var(--lighterGrey);
+    cursor: text !important;
   }
 
   .ng-value-container {
+    .ng-value {
+      cursor: default;
+    }
+
     .ng-placeholder {
       color: var(--lightGrey) !important;
     }
@@ -38,8 +43,11 @@
     }
   }
 
-  .ng-input > input {
-    color: var(--lighterGrey) !important;
+  .ng-input {
+    > input {
+      cursor: text !important;
+      color: var(--lighterGrey) !important;
+    }
   }
 
   &.ng-select-multiple {
@@ -139,6 +147,13 @@
         padding-right: 3rem;
       }
     }
+
+    &:not(.fullscreen) {
+      .ng-input,
+      .ng-dropdown-panel {
+        display: none;
+      }
+    }
   }
 
   &.fullscreen {
@@ -177,7 +192,8 @@
 
           .option-wrapper {
             padding: .75rem;
-          };
+          }
+        ;
 
           ::ng-deep astrobin-equipment-item-display-name {
             display: inline-block;

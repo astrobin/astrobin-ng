@@ -38,6 +38,7 @@ import { State } from "@app/store/state";
 import { EquipmentListingsInterface } from "@features/equipment/types/equipment-listings.interface";
 
 export interface AllEquipmentItemsOptionsInterface {
+  brand?: BrandInterface["id"];
   query?: string;
   sortOrder?: string;
   filters?: ExplorerFilterInterface[];
@@ -93,6 +94,10 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     url = UtilsService.addOrUpdateUrlParam(url, "page", String(options.page || 1));
     url = UtilsService.addOrUpdateUrlParam(url, "sort", options.sortOrder || EquipmentItemsSortOrder.AZ);
     url = UtilsService.addOrUpdateUrlParam(url, "q", options.query || "");
+
+    if (!!options.brand) {
+      url = UtilsService.addOrUpdateUrlParam(url, "brand", options.brand + "" || "");
+    }
 
     if (!!options.filters) {
       for (const filter of options.filters) {
@@ -490,6 +495,12 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
 
   getBrandsByName(name: BrandInterface["name"]): Observable<PaginatedApiResultInterface<BrandInterface>> {
     return this.http.get<PaginatedApiResultInterface<BrandInterface>>(`${this.configUrl}/brand/?name=${name}`);
+  }
+
+  getBrandsByEquipmentType(type: EquipmentItemType): Observable<PaginatedApiResultInterface<BrandInterface>> {
+    return this.http.get<PaginatedApiResultInterface<BrandInterface>>(
+      `${this.configUrl}/brand/?type=${type.toLowerCase()}`
+    );
   }
 
   getBrandsByWebsite(website: BrandInterface["website"]): Observable<PaginatedApiResultInterface<BrandInterface>> {

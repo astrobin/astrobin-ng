@@ -21,7 +21,7 @@
     margin-right: .25rem;
     fill: currentColor;
 
-    &:last-of-type {
+    &:last-of-type:not(:only-child) {
       margin-right: .5rem;
     }
   }
@@ -37,7 +37,6 @@
     padding: 0;
     border: 0;
     vertical-align: initial;
-    border-bottom: 1px dotted transparent;
     border-bottom-color: inherit;
 
     &:active,

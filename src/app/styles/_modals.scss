@@ -1,4 +1,5 @@
 @import "mixins";
+@import "breakpoints";
 
 .modal {
   &.fullscreen {
@@ -7,6 +8,10 @@
       width: 100%;
       height: 100%;
       margin: 0;
+    }
+
+    .modal-body {
+      height: calc(100vh - 140px);
     }
 
     .modal-content {
@@ -26,6 +31,12 @@
 
   .modal-footer {
     @include darker-background-texture;
+  }
+}
+
+.modal-xl {
+  @media screen and (min-width: $lg-min) {
+    max-width: calc(100% - 3rem);
   }
 }
 

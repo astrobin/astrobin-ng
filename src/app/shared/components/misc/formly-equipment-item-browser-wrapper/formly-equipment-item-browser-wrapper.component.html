@@ -4,13 +4,6 @@
       <img class="placeholder mt-lg-3 mt-xl-2" src="/assets/images/{{ to.itemType.toLowerCase() }}-placeholder.png?v=2" />
     </div>
     <div class="col">
-      <label *ngIf="to.label && to.hideLabel !== true" [attr.for]="id">
-        <span [innerHTML]="to.label"></span>
-        <span class="required-marker" *ngIf="to.required && !to.hideRequiredMarker">*</span>
-        <span class="optional-marker" *ngIf="!to.required && !to.hideOptionalMarker">
-          {{ "(optional)" | translate }}
-        </span>
-      </label>
 
       <ng-template #fieldComponent></ng-template>
 

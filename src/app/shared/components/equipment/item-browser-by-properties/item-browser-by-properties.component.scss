@@ -1,0 +1,77 @@
+@import "../../../../styles/breakpoints";
+
+::ng-deep .top-label {
+  display: block;
+  width: calc(100% + 2rem);
+  background: var(--darkestGrey);
+  padding: .75rem;
+  margin: -1rem -1rem 1rem -1rem;
+}
+
+.scrollable-container {
+  @media screen and (min-width: $lg-min) {
+    height: calc(100vh - 585px);
+    overflow-x: hidden;
+    overflow-y: scroll;
+
+    &.loading {
+      height: calc(100vh - 585px - 1.75rem);
+    }
+  }
+
+  astrobin-loading-indicator {
+    position: absolute;
+    bottom: 0;
+  }
+}
+
+h4 {
+  border-bottom: 1px solid var(--lightGrey);
+  font-size: 1.1rem;
+  color: var(--lighterGrey);
+  padding-bottom: .25rem;
+  margin-bottom: 1.5rem;
+}
+
+.table.items {
+  td:not(:first-child) {
+    color: var(--lightestGrey);
+  }
+
+  .item-variants-info,
+  .item-variants-list {
+    margin: 0;
+    line-height: 1.25rem;
+    font-style: italic;
+    display: inline-block;
+  }
+
+  .item-variants-info {
+    margin-left: .5rem;
+    margin-right: .5rem;
+    color: var(--lightGrey);
+  }
+
+  .item-variants-list {
+    font-size: .9rem;
+    color: var(--lighterGrey);
+
+    > span {
+      ::ng-deep {
+        .brand {
+          color: var(--white);
+        }
+      }
+
+      &:not(:last-child) {
+        margin-right: .5rem;
+
+
+        &::after {
+          content: '\b7'; /* middot */
+          margin-left: .25rem;
+        }
+      }
+    }
+  }
+}

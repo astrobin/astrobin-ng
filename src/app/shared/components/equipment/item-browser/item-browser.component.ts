@@ -21,7 +21,7 @@ import {
 } from "@features/equipment/types/equipment-item-base.interface";
 import { FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
-import { forkJoin, isObservable, Observable, of, Subscription } from "rxjs";
+import { forkJoin, Observable, of, Subscription } from "rxjs";
 import { TranslateService } from "@ngx-translate/core";
 import {
   CreateAccessory,
@@ -41,7 +41,7 @@ import {
   LoadBrand,
   LoadEquipmentItem
 } from "@features/equipment/store/equipment.actions";
-import { filter, first, map, switchMap, take, takeUntil, tap } from "rxjs/operators";
+import { filter, first, map, switchMap, take, takeUntil } from "rxjs/operators";
 import { Actions, ofType } from "@ngrx/effects";
 import { selectBrand, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import { WindowRefService } from "@shared/services/window-ref.service";
@@ -131,7 +131,10 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
   @Input()
   layout: ItemBrowserLayout = ItemBrowserLayout.HORIZONTAL;
 
-  model: { klass: EquipmentItemType; value: TypeUnion } = { klass: null, value: null };
+  model: { klass: EquipmentItemType; value: TypeUnion } = {
+    klass: null,
+    value: null
+  };
   form: FormGroup = new FormGroup({});
   fields: FormlyFieldConfig[] = [];
   creationMode = false;
@@ -157,6 +160,9 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
 
   @ViewChild("footerTemplateExtra")
   footerTemplateExtra: TemplateRef<any>;
+
+  @ViewChild("fullScreenBodyTemplate")
+  fullScreenBodyTemplate: TemplateRef<any>;
 
   @Output()
   creationModeStarted = new EventEmitter<void>();
@@ -221,6 +227,10 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
     if (changes.type && !!this.form && !!this.form.controls.klass) {
       this.form.get("klass").setValue(changes.type.currentValue);
     }
+  }
+
+  getItemById$(id: EquipmentItem["id"]) {
+    return this.store$.select(selectEquipmentItem, { type: this.type, id });
   }
 
   reset() {
@@ -473,7 +483,10 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
 
       modal.closed.pipe(take(1)).subscribe((variant: EquipmentItem) => {
         _doAddItem(variant);
-        this.store$.dispatch(new ItemBrowserExitFullscreen());
+
+        if (!this.multiple) {
+          this.store$.dispatch(new ItemBrowserExitFullscreen());
+        }
       });
     } else {
       _doAddItem(item);
@@ -571,6 +584,25 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
     }
   }
 
+  onItemSetByBrowsingByProperties(item: EquipmentItem): void {
+    if (this.multiple) {
+      this.store$.dispatch(new ItemBrowserAdd({ type: this.type, usageType: this.usageType, item }));
+    } else {
+      this.addItem(item);
+    }
+
+    if (!this.multiple) {
+      this.store$.dispatch(new ItemBrowserExitFullscreen());
+    }
+  }
+
+  onCreateClickedBrowsingByProperties(): void {
+    this.store$.dispatch(new ItemBrowserExitFullscreen());
+    this.q = "";
+    this.startCreationMode();
+    this.windowRefService.scrollToElement("#create-new-item");
+  }
+
   _setFields() {
     const _addTag = () => {
       this.startCreationMode();
@@ -593,7 +625,7 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
               fieldGroup: [
                 {
                   className:
-                    this.layout === ItemBrowserLayout.HORIZONTAL ? "col-12 col-lg-3 pr-lg-2 mb-sm-3 mb-lg-0" : "col-12",
+                    this.layout === ItemBrowserLayout.HORIZONTAL ? "col-12 col-lg-3 pr-lg-2 mb-3 mb-lg-0" : "col-12",
                   key: "klass",
                   type: "ng-select",
                   id: "klass",
@@ -630,7 +662,7 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
                 {
                   className:
                     this.showItemTypeSelector && this.layout === ItemBrowserLayout.HORIZONTAL
-                      ? "col-12 col-lg-9"
+                      ? "col-12 col-lg-9 pr-lg-2 mb-3 mb-lg-0"
                       : "col-12",
                   key: "value",
                   type: "ng-select",
@@ -660,6 +692,7 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
                     multiple: this.multiple,
                     closeOnSelect: true,
                     enableFullscreen: this.enableFullscreen,
+                    fullScreenBodyTemplate: this.fullScreenBodyTemplate,
                     showArrow: false,
                     classNames: "equipment-select",
                     enableSelectFrozen: this.enableSelectFrozen
@@ -736,16 +769,7 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
         map(payload => payload.item)
       )
       .subscribe(item => {
-        if (this.multiple) {
-          if (!!this.model.value) {
-            const newValue = [...((this.model.value as EquipmentItem["id"][]) || []), item.id];
-            this.setValue([...new Set(newValue)]);
-          } else {
-            this.setValue([item.id]);
-          }
-        } else {
-          this.setValue(item.id);
-        }
+        this.addItem(item);
       });
 
     if (!!this.itemBrowserSetSubscription) {

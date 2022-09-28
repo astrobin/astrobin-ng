@@ -1,5 +1,21 @@
 @import "../../../../styles/breakpoints";
 
+.ng-select-container,
+.full-screen-body-template-container ::ng-deep .full-screen-body-template-content {
+  padding: 1rem;
+  background: var(--darkerGrey);
+  border: 1px solid var(--grey);
+  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .35);
+}
+
+label {
+  display: block;
+  width: calc(100% + 2rem);
+  background: var(--darkestGrey);
+  padding: .75rem;
+  margin: -1rem -1rem 1rem -1rem;
+}
+
 .add-tag .btn {
   margin-top: .5rem;
 }
@@ -8,8 +24,9 @@
   color: var(--lightGrey);
   font-size: 1.25rem;
   position: absolute;
-  top: calc(50% - 1rem);
+  top: calc(50% - 1rem - -2px);
   right: 1.5rem;
+  opacity: .2;
 }
 
 .too-many-options-label {

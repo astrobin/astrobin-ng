@@ -12,6 +12,7 @@
 
 <ng-template #select let-options="options">
   <div class="position-relative">
+
     <ng-select
       #ngSelect
       [attr.id]="field.id"
@@ -26,8 +27,9 @@
       [loading]="loading"
       [multiple]="to.multiple"
       [notFoundText]="notFoundText"
-      [typeToSearchText]="placeholder"
-      [placeholder]="placeholder"
+      [typeToSearchText]="fullscreen ? '' : placeholder"
+      [placeholder]="fullscreen ? '' : placeholder"
+      [searchable]="to.searchable !== undefined ? to.searchable : true"
       [typeahead]="input$"
       [dropdownPosition]="this.fullscreen ? 'bottom' : 'auto'"
       groupBy="group"
@@ -73,7 +75,7 @@
       <ng-template ng-header-tmp>
         <ng-container *ngIf="hasAsyncItems">
           <ng-container *ngIf="to.options | async as options">
-            <div class="too-many-options-label" *ngIf="options?.length > TOO_MANY_OPTIONS">
+            <div class="too-many-options-label" *ngIf="value?.length > 0 && options?.length > TOO_MANY_OPTIONS">
               <fa-icon icon="exclamation-triangle"></fa-icon>
               {{ "Type more to refine your search." | translate }}
             </div>
@@ -118,14 +120,39 @@
 </ng-template>
 
 <ng-template #ngSelectModal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-title">
+      <ng-container *ngIf="field.templateOptions.fullScreenLabel; else noFullScreenLabel">
+        {{ field.templateOptions.fullScreenLabel}}
+      </ng-container>
+      <ng-template #noFullScreenLabel>
+        {{ field.templateOptions.label }}
+      </ng-template>
+    </h4>
+    <button (click)="exitFullscreen()" aria-describedby="modal-title" class="close" type="button">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
   <div class="modal-body">
-    <label
-      *ngIf="!!field.templateOptions.fullScreenLabel"
-      [attr.for]="field.id"
-    >
-      {{ field.templateOptions.fullScreenLabel }}:
-    </label>
-    <ng-container [ngTemplateOutlet]="selectContainer"></ng-container>
+    <div class="ng-select-container">
+      <label [attr.for]="field.id">
+        {{ placeholder }}
+      </label>
+
+      <div class="d-flex">
+        <div class="flex-grow-1">
+          <ng-container [ngTemplateOutlet]="selectContainer"></ng-container>
+        </div>
+        <button class="btn btn-primary btn-sm ml-3" (click)="exitFullscreen()">
+          {{ "Done" | translate }}
+        </button>
+      </div>
+    </div>
+
+    <div *ngIf="!!to.fullScreenBodyTemplate" class="full-screen-body-template-container mt-3">
+      <ng-container [ngTemplateOutlet]="to.fullScreenBodyTemplate"></ng-container>
+    </div>
   </div>
 
   <div class="modal-footer">

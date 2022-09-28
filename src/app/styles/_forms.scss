@@ -12,6 +12,10 @@ formly-field {
   }
 }
 
+formly-field formly-group formly-field:not(:last-of-type) {
+  margin-bottom: 0;
+}
+
 formly-field-checkbox {
   +.form-text {
     padding-left: 1.5rem;
