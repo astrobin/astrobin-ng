@@ -37,4 +37,41 @@ h4 {
   td:not(:first-child) {
     color: var(--lightestGrey);
   }
+
+  .item-variants-info,
+  .item-variants-list {
+    margin: 0;
+    line-height: 1.25rem;
+    font-style: italic;
+    display: inline-block;
+  }
+
+  .item-variants-info {
+    margin-left: .5rem;
+    margin-right: .5rem;
+    color: var(--lightGrey);
+  }
+
+  .item-variants-list {
+    font-size: .9rem;
+    color: var(--lighterGrey);
+
+    > span {
+      ::ng-deep {
+        .brand {
+          color: var(--white);
+        }
+      }
+
+      &:not(:last-child) {
+        margin-right: .5rem;
+
+
+        &::after {
+          content: '\b7'; /* middot */
+          margin-left: .25rem;
+        }
+      }
+    }
+  }
 }

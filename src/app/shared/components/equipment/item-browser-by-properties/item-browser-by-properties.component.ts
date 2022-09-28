@@ -139,6 +139,12 @@ export class ItemBrowserByPropertiesComponent extends BaseComponentDirective imp
     return this.store$.select(selectEquipmentItem, { type: EquipmentItemType.SENSOR, id });
   }
 
+  variantsMessage(numberOfVariants: number): string {
+    return this.translateService.instant("Available in {{0}} additional variants:", {
+      0: numberOfVariants
+    });
+  }
+
   _loadData(page = 1): void {
     if (!this.hasNextPage || this.loadingPage) {
       return;

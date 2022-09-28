@@ -66,7 +66,23 @@
           <tr *ngFor="let item of results">
             <td>
               <a href="#" appEventPreventDefault appEventStopPropagation (click)="itemSelected.emit(item)">
-                <astrobin-equipment-item-display-name [item]="item"></astrobin-equipment-item-display-name>
+                <astrobin-equipment-item-display-name
+                  [item]="item"
+                  [showFrozenAsAmbiguous]="item.variants.length === 0"
+                ></astrobin-equipment-item-display-name>
+
+                <ng-container *ngIf="item.variants?.length > 0">
+                  <p class="item-variants-info">{{ variantsMessage(item.variants.length) }}</p>
+                  <p class="item-variants-list">
+                    <span *ngFor="let variant of item.variants">
+                      <astrobin-equipment-item-display-name
+                        [item]="variant"
+                        [showBrand]="false"
+                        [cut]="item.name"
+                      ></astrobin-equipment-item-display-name>
+                    </span>
+                  </p>
+                </ng-container>
               </a>
             </td>
 
@@ -123,7 +139,7 @@
         </table>
 
         <div *ngIf="!loadingPage && !hasNextPage" class="mt-3 p-1">
-          <hr/>
+          <hr />
 
           <p>{{ "Can't find what you're looking for?" | translate }}</p>
           <ng-container [ngTemplateOutlet]="createNewButton"></ng-container>
