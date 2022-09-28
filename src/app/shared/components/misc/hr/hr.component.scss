@@ -1,0 +1,31 @@
+:host {
+  display: block;
+}
+
+div {
+  position: relative;
+  font-size: 1rem;
+  z-index: 1;
+  overflow: hidden;
+  text-align: center;
+
+  &:before,
+  &:after {
+    position: absolute;
+    top: 51%;
+    overflow: hidden;
+    width: 50%;
+    height: 1px;
+    content: '\a0';
+    background-color: var(--lightGrey);
+  }
+
+  &:before {
+    margin-left: -50%;
+    text-align: right;
+  }
+
+  > span {
+    padding: 0 .75rem;
+  }
+}

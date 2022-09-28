@@ -1,21 +1,21 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { ItemBrowserByPropertiesModalComponent } from "./item-browser-by-properties-modal.component";
+import { ItemBrowserByPropertiesComponent } from "./item-browser-by-properties.component";
 import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
 import { provideMockStore } from "@ngrx/store/testing";
 import { initialState } from "@app/store/state";
 
 describe("ItemBrowserByPropertiesModalComponent", () => {
-  let component: ItemBrowserByPropertiesModalComponent;
-  let fixture: ComponentFixture<ItemBrowserByPropertiesModalComponent>;
+  let component: ItemBrowserByPropertiesComponent;
+  let fixture: ComponentFixture<ItemBrowserByPropertiesComponent>;
 
   beforeEach(async () => {
-    await MockBuilder(ItemBrowserByPropertiesModalComponent, AppModule).provide(provideMockStore({ initialState }));
+    await MockBuilder(ItemBrowserByPropertiesComponent, AppModule).provide(provideMockStore({ initialState }));
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ItemBrowserByPropertiesModalComponent);
+    fixture = TestBed.createComponent(ItemBrowserByPropertiesComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

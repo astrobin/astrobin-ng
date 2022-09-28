@@ -27,8 +27,8 @@
       [loading]="loading"
       [multiple]="to.multiple"
       [notFoundText]="notFoundText"
-      [typeToSearchText]="placeholder"
-      [placeholder]="placeholder"
+      [typeToSearchText]="fullscreen ? '' : placeholder"
+      [placeholder]="fullscreen ? '' : placeholder"
       [searchable]="to.searchable !== undefined ? to.searchable : true"
       [typeahead]="input$"
       [dropdownPosition]="this.fullscreen ? 'bottom' : 'auto'"
@@ -120,14 +120,32 @@
 </ng-template>
 
 <ng-template #ngSelectModal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-title">
+      <ng-container *ngIf="field.templateOptions.fullScreenLabel; else noFullScreenLabel">
+        {{ field.templateOptions.fullScreenLabel}}
+      </ng-container>
+      <ng-template #noFullScreenLabel>
+        {{ field.templateOptions.label }}
+      </ng-template>
+    </h4>
+    <button (click)="exitFullscreen()" aria-describedby="modal-title" class="close" type="button">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
   <div class="modal-body">
-    <label
-      *ngIf="!!field.templateOptions.fullScreenLabel"
-      [attr.for]="field.id"
-    >
-      {{ field.templateOptions.fullScreenLabel }}:
-    </label>
-    <ng-container [ngTemplateOutlet]="selectContainer"></ng-container>
+    <div class="ng-select-container">
+      <label [attr.for]="field.id">
+        {{ placeholder }}
+      </label>
+
+      <ng-container [ngTemplateOutlet]="selectContainer"></ng-container>
+    </div>
+
+    <div *ngIf="!!to.fullScreenBodyTemplate" class="full-screen-body-template-container mt-4">
+      <ng-container [ngTemplateOutlet]="to.fullScreenBodyTemplate"></ng-container>
+    </div>
   </div>
 
   <div class="modal-footer">

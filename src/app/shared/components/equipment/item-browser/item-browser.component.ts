@@ -62,7 +62,6 @@ import { PopNotificationsService } from "@shared/services/pop-notifications.serv
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { BaseItemEditorComponent } from "@shared/components/equipment/editors/base-item-editor/base-item-editor.component";
 import { isPlatformBrowser } from "@angular/common";
-import { ItemBrowserByPropertiesModalComponent } from "@shared/components/equipment/item-browser-by-properties-modal/item-browser-by-properties-modal.component";
 
 type Type = EquipmentItem["id"];
 type TypeUnion = EquipmentItem["id"] | EquipmentItem["id"][];
@@ -70,11 +69,6 @@ type TypeUnion = EquipmentItem["id"] | EquipmentItem["id"][];
 export enum ItemBrowserLayout {
   HORIZONTAL,
   VERTICAL
-}
-
-export enum ItemSelectionMode {
-  SEARCH,
-  BROWSE
 }
 
 @Component({
@@ -137,10 +131,9 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
   @Input()
   layout: ItemBrowserLayout = ItemBrowserLayout.HORIZONTAL;
 
-  model: { klass: EquipmentItemType; value: TypeUnion; selectionMode: ItemSelectionMode } = {
+  model: { klass: EquipmentItemType; value: TypeUnion } = {
     klass: null,
-    value: null,
-    selectionMode: ItemSelectionMode.SEARCH
+    value: null
   };
   form: FormGroup = new FormGroup({});
   fields: FormlyFieldConfig[] = [];
@@ -167,6 +160,9 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
 
   @ViewChild("footerTemplateExtra")
   footerTemplateExtra: TemplateRef<any>;
+
+  @ViewChild("fullScreenBodyTemplate")
+  fullScreenBodyTemplate: TemplateRef<any>;
 
   @Output()
   creationModeStarted = new EventEmitter<void>();
@@ -273,7 +269,7 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
         this.form.get("value").setValue(id, { onlySelf: true, emitEvent: false });
       }
 
-      this.model = { klass: this.type, value: id, selectionMode: ItemSelectionMode.SEARCH };
+      this.model = { klass: this.type, value: id };
 
       this.valueChanged.emit(item);
     };
@@ -291,7 +287,7 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
 
       fieldConfig.templateOptions.options = of(options);
 
-      this.model = { klass: this.type, value: ids, selectionMode: ItemSelectionMode.SEARCH };
+      this.model = { klass: this.type, value: ids };
 
       if (this.form.get("value")) {
         this.form.get("value").setValue(ids, { onlySelf: true, emitEvent: false });
@@ -581,18 +577,20 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
     }
   }
 
-  openItemBrowserByProperties(): void {
-    const modalRef: NgbModalRef = this.modalService.open(ItemBrowserByPropertiesModalComponent, { size: "xl" });
-    const componentInstance: ItemBrowserByPropertiesModalComponent = modalRef.componentInstance;
-    componentInstance.type = this.type;
-
-    modalRef.closed.subscribe(item => {
+  onItemSetByBrowsingByProperties(item: EquipmentItem): void {
+    if (this.multiple) {
+      this.setValue([...((this.model.value as EquipmentItem["id"][]) || []), item.id]);
+    } else {
       this.setValue(item.id);
-    });
+    }
+    this.store$.dispatch(new ItemBrowserExitFullscreen());
+  }
 
-    modalRef.dismissed.subscribe(() => {
-      this.form.get("selection-mode").setValue(ItemSelectionMode.SEARCH);
-    });
+  onCreateClickedBrowsingByProperties(): void {
+    this.store$.dispatch(new ItemBrowserExitFullscreen());
+    this.q = "";
+    this.startCreationMode();
+    this.windowRefService.scrollToElement("#create-new-item");
   }
 
   _setFields() {
@@ -601,7 +599,7 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
       this.windowRefService.scrollToElement("#create-new-item");
     };
 
-    this.model = { klass: this.type, value: this.value, selectionMode: ItemSelectionMode.SEARCH };
+    this.model = { klass: this.type, value: this.value };
 
     if (!!this.currentUserSubscription) {
       this.currentUserSubscription.unsubscribe();
@@ -654,8 +652,8 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
                 {
                   className:
                     this.showItemTypeSelector && this.layout === ItemBrowserLayout.HORIZONTAL
-                      ? "col-12 col-lg-6 pr-lg-2 mb-3 mb-lg-0"
-                      : "col-12 col-lg-9 pr-lg-2 mb-3 mb-lg-0",
+                      ? "col-12 col-lg-9 pr-lg-2 mb-3 mb-lg-0"
+                      : "col-12",
                   key: "value",
                   type: "ng-select",
                   id: `${this.id}`,
@@ -684,6 +682,7 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
                     multiple: this.multiple,
                     closeOnSelect: true,
                     enableFullscreen: this.enableFullscreen,
+                    fullScreenBodyTemplate: this.fullScreenBodyTemplate,
                     showArrow: false,
                     classNames: "equipment-select",
                     enableSelectFrozen: this.enableSelectFrozen
@@ -736,41 +735,6 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
                             }
                           }
                         });
-                    }
-                  }
-                },
-                {
-                  className: this.layout === ItemBrowserLayout.HORIZONTAL ? "col-12 col-lg-3" : "col-12",
-                  key: "selection-mode",
-                  type: "ng-select",
-                  id: `selection-mode-${this.id}`,
-                  expressionProperties: {
-                    "templateOptions.disabled": () => this.creationMode
-                  },
-                  defaultValue: ItemSelectionMode.SEARCH,
-                  templateOptions: {
-                    required: true,
-                    clearable: false,
-                    searchable: false,
-                    label: this.translateService.instant("Selection mode"),
-                    options: [
-                      {
-                        value: ItemSelectionMode.SEARCH,
-                        label: this.translateService.instant("Text search")
-                      },
-                      {
-                        value: ItemSelectionMode.BROWSE,
-                        label: this.translateService.instant("Browse by properties")
-                      }
-                    ]
-                  },
-                  hooks: {
-                    onInit: (field: FormlyFieldConfig) => {
-                      field.formControl.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(value => {
-                        if (value === ItemSelectionMode.BROWSE) {
-                          this.openItemBrowserByProperties();
-                        }
-                      });
                     }
                   }
                 }

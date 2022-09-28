@@ -1,8 +1,17 @@
-import { AfterViewInit, Component, ElementRef, Input, OnInit, QueryList, ViewChildren } from "@angular/core";
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  QueryList,
+  ViewChildren
+} from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { LoadingService } from "@shared/services/loading.service";
-import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
@@ -35,11 +44,11 @@ import { AccessoryDisplayProperty, AccessoryService } from "@features/equipment/
 import { AccessoryType } from "@features/equipment/types/accessory.interface";
 
 @Component({
-  selector: "astrobin-item-browser-by-properties-modal",
-  templateUrl: "./item-browser-by-properties-modal.component.html",
-  styleUrls: ["./item-browser-by-properties-modal.component.scss"]
+  selector: "astrobin-item-browser-by-properties",
+  templateUrl: "./item-browser-by-properties.component.html",
+  styleUrls: ["./item-browser-by-properties.component.scss"]
 })
-export class ItemBrowserByPropertiesModalComponent extends BaseComponentDirective implements OnInit, AfterViewInit {
+export class ItemBrowserByPropertiesComponent extends BaseComponentDirective implements OnInit, AfterViewInit {
   readonly EquipmentItemType = EquipmentItemType;
   readonly EquipmentItemDisplayProperty = EquipmentItemDisplayProperty;
   readonly TelescopeDisplayProperty = TelescopeDisplayProperty;
@@ -53,13 +62,19 @@ export class ItemBrowserByPropertiesModalComponent extends BaseComponentDirectiv
   form: FormGroup = new FormGroup({});
   model: any = {};
   results: EquipmentItem[] = [];
-  loadingPage = true;
+  loadingPage = false;
   page = 1;
   hasNextPage = true;
   fetchingSensors = {};
 
   @Input()
   type: EquipmentItemType;
+
+  @Output()
+  itemSelected = new EventEmitter<EquipmentItem>();
+
+  @Output()
+  createClicked = new EventEmitter<void>();
 
   @ViewChildren("resultsScrollable", { read: ElementRef })
   private _resultsScrollable: QueryList<ElementRef>;
@@ -69,7 +84,6 @@ export class ItemBrowserByPropertiesModalComponent extends BaseComponentDirectiv
     public readonly actions$: Actions,
     public readonly loadingService: LoadingService,
     public readonly translateService: TranslateService,
-    public readonly modal: NgbActiveModal,
     public readonly equipmentItemService: EquipmentItemService,
     public readonly equipmentApiService: EquipmentApiService,
     public readonly telescopeService: TelescopeService,
@@ -113,9 +127,12 @@ export class ItemBrowserByPropertiesModalComponent extends BaseComponentDirectiv
 
   onResultsScroll(event) {
     if (event.target.scrollTop > (event.target.scrollHeight - event.target.offsetHeight) / 2) {
-      this.page += 1;
-      this._loadData(this.page);
+      this.loadNextPage();
     }
+  }
+
+  loadNextPage(): void {
+    this._loadData(this.page + 1);
   }
 
   getSensor$(id: SensorInterface["id"]): Observable<EquipmentItem> {
@@ -123,7 +140,7 @@ export class ItemBrowserByPropertiesModalComponent extends BaseComponentDirectiv
   }
 
   _loadData(page = 1): void {
-    if (!this.hasNextPage) {
+    if (!this.hasNextPage || this.loadingPage) {
       return;
     }
 
@@ -224,6 +241,9 @@ export class ItemBrowserByPropertiesModalComponent extends BaseComponentDirectiv
       key: "brand",
       type: "ng-select",
       id: "brand",
+      expressionProperties: {
+        "templateOptions.disabled": () => this.loadingPage
+      },
       templateOptions: {
         required: false,
         clearable: true,
@@ -255,6 +275,9 @@ export class ItemBrowserByPropertiesModalComponent extends BaseComponentDirectiv
       key: "telescope-type",
       type: "ng-select",
       id: "telescope-type",
+      expressionProperties: {
+        "templateOptions.disabled": () => this.loadingPage
+      },
       templateOptions: {
         label: this.telescopeService.getPrintablePropertyName(TelescopeDisplayProperty.TYPE),
         required: false,
@@ -271,6 +294,9 @@ export class ItemBrowserByPropertiesModalComponent extends BaseComponentDirectiv
     return {
       key: "telescope-aperture",
       id: "telescope-aperture",
+      expressionProperties: {
+        "templateOptions.disabled": () => this.loadingPage
+      },
       fieldGroupClassName: "row",
       wrappers: ["default-wrapper"],
       templateOptions: {
@@ -345,6 +371,9 @@ export class ItemBrowserByPropertiesModalComponent extends BaseComponentDirectiv
       id: "telescope-focal-length",
       fieldGroupClassName: "row",
       wrappers: ["default-wrapper"],
+      expressionProperties: {
+        "templateOptions.disabled": () => this.loadingPage
+      },
       templateOptions: {
         label: this.telescopeService.getPrintablePropertyName(TelescopeDisplayProperty.FOCAL_LENGTH)
       },
@@ -416,6 +445,9 @@ export class ItemBrowserByPropertiesModalComponent extends BaseComponentDirectiv
       key: "camera-type",
       type: "ng-select",
       id: "camera-type",
+      expressionProperties: {
+        "templateOptions.disabled": () => this.loadingPage
+      },
       templateOptions: {
         label: this.cameraService.getPrintablePropertyName(CameraDisplayProperty.TYPE),
         required: false,
@@ -433,6 +465,9 @@ export class ItemBrowserByPropertiesModalComponent extends BaseComponentDirectiv
       key: "mount-type",
       type: "ng-select",
       id: "mount-type",
+      expressionProperties: {
+        "templateOptions.disabled": () => this.loadingPage
+      },
       templateOptions: {
         label: this.mountService.getPrintablePropertyName(MountDisplayProperty.TYPE),
         required: false,
@@ -450,6 +485,9 @@ export class ItemBrowserByPropertiesModalComponent extends BaseComponentDirectiv
       key: "filter-type",
       type: "ng-select",
       id: "filter-type",
+      expressionProperties: {
+        "templateOptions.disabled": () => this.loadingPage
+      },
       templateOptions: {
         label: this.filterService.getPrintablePropertyName(FilterDisplayProperty.TYPE),
         required: false,
@@ -467,6 +505,9 @@ export class ItemBrowserByPropertiesModalComponent extends BaseComponentDirectiv
       key: "accessory-type",
       type: "ng-select",
       id: "accessory-type",
+      expressionProperties: {
+        "templateOptions.disabled": () => this.loadingPage
+      },
       templateOptions: {
         label: this.accessoryService.getPrintablePropertyName(AccessoryDisplayProperty.TYPE),
         required: false,

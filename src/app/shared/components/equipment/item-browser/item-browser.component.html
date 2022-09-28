@@ -147,6 +147,18 @@
   </div>
 </ng-container>
 
+<ng-template #fullScreenBodyTemplate>
+  <astrobin-hr class="mb-4" [text]="'or' | translate"></astrobin-hr>
+
+  <div class="full-screen-body-template-content">
+    <astrobin-item-browser-by-properties
+      [type]="type"
+      (itemSelected)="onItemSetByBrowsingByProperties($event)"
+      (createClicked)="onCreateClickedBrowsingByProperties()"
+    ></astrobin-item-browser-by-properties>
+  </div>
+</ng-template>
+
 <ng-template #loading>
   <astrobin-loading-indicator></astrobin-loading-indicator>
 </ng-template>

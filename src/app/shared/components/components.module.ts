@@ -95,7 +95,8 @@ import { ForumPreviewComponent } from "@shared/components/forums/forum-preview/f
 import { ImageSearchComponent } from "@shared/components/search/image-search/image-search.component";
 import { MostOftenUsedWithModalComponent } from "@shared/components/equipment/summaries/item/summary/most-often-used-with-modal/most-often-used-with-modal.component";
 import { RemoveAdsDialogComponent } from "@shared/components/misc/remove-ads-dialog/remove-ads-dialog.component";
-import { ItemBrowserByPropertiesModalComponent } from "@shared/components/equipment/item-browser-by-properties-modal/item-browser-by-properties-modal.component";
+import { ItemBrowserByPropertiesComponent } from "@shared/components/equipment/item-browser-by-properties/item-browser-by-properties.component";
+import { HrComponent } from "@shared/components/misc/hr/hr.component";
 
 const modules = [
   CommonModule,
@@ -148,6 +149,7 @@ const components = [
   ForumPreviewComponent,
   FullscreenImageViewerComponent,
   HeaderComponent,
+  HrComponent,
   ImageComponent,
   ImageSearchComponent,
   InformationDialogComponent,
@@ -173,7 +175,7 @@ const components = [
 
   // Equipment
   ItemBrowserComponent,
-  ItemBrowserByPropertiesModalComponent,
+  ItemBrowserByPropertiesComponent,
   VariantSelectorModalComponent,
   ItemSummaryComponent,
   ItemUnapprovedInfoModalComponent,
