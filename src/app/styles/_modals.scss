@@ -1,4 +1,5 @@
 @import "mixins";
+@import "breakpoints";
 
 .modal {
   &.fullscreen {
@@ -34,7 +35,9 @@
 }
 
 .modal-xl {
-  max-width: calc(100% - 3rem);
+  @media screen and (min-width: $lg-min) {
+    max-width: calc(100% - 3rem);
+  }
 }
 
 .modal-backdrop.show {

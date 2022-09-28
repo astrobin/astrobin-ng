@@ -10,10 +10,10 @@
 
 label {
   display: block;
-  width: calc(100% + 2rem);
+  width: calc(100% + 1.5rem);
   background: var(--darkestGrey);
-  padding: 1rem;
-  margin: -1rem -1rem 1rem -1rem;
+  padding: .75rem;
+  margin: -.75rem -.75rem .75rem -.75rem;
 }
 
 .add-tag .btn {
