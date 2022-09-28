@@ -122,7 +122,7 @@ export class FormlyFieldNgSelectComponent extends FieldType implements OnInit, O
     if (!!$event) {
       const target: any = $event.target;
 
-      if (target.nodeName.toLowerCase() !== "input" || target.disabled) {
+      if (target.disabled) {
         return;
       }
     }
