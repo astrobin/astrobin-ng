@@ -579,9 +579,9 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
 
   onItemSetByBrowsingByProperties(item: EquipmentItem): void {
     if (this.multiple) {
-      this.setValue([...((this.model.value as EquipmentItem["id"][]) || []), item.id]);
+      this.store$.dispatch(new ItemBrowserAdd({ type: this.type, usageType: this.usageType, item }));
     } else {
-      this.setValue(item.id);
+      this.addItem(item);
     }
     this.store$.dispatch(new ItemBrowserExitFullscreen());
   }
@@ -759,16 +759,7 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
         map(payload => payload.item)
       )
       .subscribe(item => {
-        if (this.multiple) {
-          if (!!this.model.value) {
-            const newValue = [...((this.model.value as EquipmentItem["id"][]) || []), item.id];
-            this.setValue([...new Set(newValue)]);
-          } else {
-            this.setValue([item.id]);
-          }
-        } else {
-          this.setValue(item.id);
-        }
+        this.addItem(item);
       });
 
     if (!!this.itemBrowserSetSubscription) {
