@@ -80,6 +80,11 @@ export class FormlyFieldEquipmentItemBrowserComponent extends FieldType implemen
     this._loadRecent();
 
     if (!value) {
+      if (!!this.formControl.value) {
+        this.formControl.markAsTouched();
+        this.formControl.markAsDirty();
+      }
+
       this.formControl.setValue(this.to.multiple ? [] : null);
       return;
     }

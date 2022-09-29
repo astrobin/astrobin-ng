@@ -628,7 +628,6 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
     return {
       key: "variantOf",
       type: "equipment-item-browser",
-      wrappers: ["default-wrapper"],
       id: "equipment-item-field-variant-of",
       hideExpression: () =>
         !!this.model.diy ||
