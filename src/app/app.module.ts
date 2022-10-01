@@ -186,7 +186,7 @@ export function initFontAwesome(iconLibrary: FaIconLibrary) {
     {
       provide: ErrorHandler,
       useValue: Sentry.createErrorHandler({
-        showDialog: true
+        showDialog: false
       })
     }
   ],
