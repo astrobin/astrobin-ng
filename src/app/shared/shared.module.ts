@@ -54,6 +54,7 @@ import { DirectivesModule } from "@shared/directives/directives.module";
 import { CustomToastComponent } from "@shared/components/misc/custom-toast/custom-toast.component";
 import { CKEditorService } from "@shared/services/ckeditor.service";
 import { PendingChangesGuard } from "@shared/services/guards/pending-changes-guard.service";
+import * as Sentry from "@sentry/angular";
 
 export function appInitializer(store: Store<State>, actions$: Actions) {
   return () =>
@@ -193,6 +194,12 @@ export class SharedModule {
           useFactory: appInitializer,
           multi: true,
           deps: [Store, Actions]
+        },
+        {
+          provide: APP_INITIALIZER,
+          useFactory: () => () => {},
+          deps: [Sentry.TraceService],
+          multi: true
         },
         {
           provide: FORMLY_CONFIG,

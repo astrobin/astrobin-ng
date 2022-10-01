@@ -56,6 +56,8 @@
     "@ngx-formly/core": "5.10.23",
     "@ngx-translate/core": "13.0.0",
     "@ngx-translate/http-loader": "6.0.0",
+    "@sentry/angular": "7.14.0",
+    "@sentry/tracing": "7.14.0",
     "bootstrap": "4.6.1",
     "bootswatch": "4.6.1",
     "class-transformer": "0.4.0",
