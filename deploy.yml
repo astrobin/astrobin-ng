@@ -19,8 +19,8 @@ phases:
 
   post_build:
     commands:
-      - sentry-cli releases new -p $SENTRY_PROJECT $SENTRY_RELEASE
-      - sentry-cli releases set-commits $SENTRY_RELEASE --auto
-      - sentry-cli releases files $SENTRY_RELEASE upload-sourcemaps dist/frontend/browser/
-      - sentry-cli releases finalize $SENTRY_RELEASE
-      - sentry-cli releases deploys $SENTRY_RELEASE new -e $SENTRY_ENVIRONMENT
+      - sentry-cli releases new -p $SENTRY_PROJECT $CODEBUILD_RESOLVED_SOURCE_VERSION
+      - sentry-cli releases set-commits $CODEBUILD_RESOLVED_SOURCE_VERSION --auto
+      - sentry-cli releases files $CODEBUILD_RESOLVED_SOURCE_VERSION upload-sourcemaps dist/frontend/browser/
+      - sentry-cli releases finalize $CODEBUILD_RESOLVED_SOURCE_VERSION
+      - sentry-cli releases deploys $CODEBUILD_RESOLVED_SOURCE_VERSION new -e $SENTRY_ENVIRONMENT

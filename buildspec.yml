@@ -14,8 +14,8 @@ phases:
 
   build:
     commands:
-      - sentry-cli releases new -p $SENTRY_PROJECT $SENTRY_RELEASE
-      - sentry-cli releases set-commits $SENTRY_RELEASE --auto
+      - sentry-cli releases new -p $SENTRY_PROJECT $CODEBUILD_RESOLVED_SOURCE_VERSION
+      - sentry-cli releases set-commits $CODEBUILD_RESOLVED_SOURCE_VERSION --auto
       - npm run lint
       - npm run build:prod
       - npm run build:ssr:prod
@@ -24,9 +24,9 @@ phases:
     commands:
       - npm run test
       - npm run cy:serve-and-run
-      - sentry-cli releases files $SENTRY_RELEASE upload-sourcemaps dist/frontend/browser/
-      - sentry-cli releases finalize $SENTRY_RELEASE
-      - sentry-cli releases deploys $SENTRY_RELEASE new -e $SENTRY_ENVIRONMENT
+      - sentry-cli releases files $CODEBUILD_RESOLVED_SOURCE_VERSION upload-sourcemaps dist/frontend/browser/
+      - sentry-cli releases finalize $CODEBUILD_RESOLVED_SOURCE_VERSION
+      - sentry-cli releases deploys $CODEBUILD_RESOLVED_SOURCE_VERSION new -e $SENTRY_ENVIRONMENT
     finally:
       - aws configure set aws_access_key_id ${AWS_ACCESS_KEY_ID}
       - aws configure set aws_secret_access_key ${AWS_SECRET_ACCESS_KEY}
