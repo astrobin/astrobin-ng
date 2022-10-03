@@ -18,7 +18,7 @@ import localeRussian from "@angular/common/locales/ru";
 import localeAlbanian from "@angular/common/locales/sq";
 import localeTurkish from "@angular/common/locales/tr";
 import localeChineseSimplified from "@angular/common/locales/zh-Hans";
-import { NgModule } from "@angular/core";
+import { ErrorHandler, NgModule } from "@angular/core";
 import { BrowserModule, BrowserTransferStateModule, Title } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { AppComponent } from "@app/app.component";
@@ -71,6 +71,8 @@ import { TimeagoCustomFormatter, TimeagoFormatter, TimeagoIntl, TimeagoModule } 
 import { AppRoutingModule } from "./app-routing.module";
 import { CustomMissingTranslationHandler } from "./missing-translation-handler";
 import { translateLoaderFactory } from "./translate-loader";
+import * as Sentry from "@sentry/angular";
+import { Router } from "@angular/router";
 
 // Supported languages
 registerLocaleData(localeEnglish);
@@ -173,7 +175,21 @@ export function initFontAwesome(iconLibrary: FaIconLibrary) {
     AppRoutingModule,
     SharedModule.forRoot()
   ],
-  providers: [CookieService, Title, WindowRefService],
+  providers: [
+    CookieService,
+    Title,
+    WindowRefService,
+    {
+      provide: Sentry.TraceService,
+      deps: [Router]
+    },
+    {
+      provide: ErrorHandler,
+      useValue: Sentry.createErrorHandler({
+        showDialog: false
+      })
+    }
+  ],
   declarations: [AppComponent],
   bootstrap: [AppComponent]
 })
