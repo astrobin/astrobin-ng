@@ -1,11 +1,5 @@
 version: 0.2
 
-env:
-  variables:
-    SENTRY_ORG: astrobin
-    SENTRY_PROJECT: astrobin-ng-prod
-    SENTRY_ENVIRONMENT: production
-
 phases:
   install:
     commands:
