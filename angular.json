@@ -67,7 +67,11 @@
               },
               "optimization": true,
               "outputHashing": "all",
-              "sourceMap": false,
+              "sourceMap": {
+                "hidden": true,
+                "scripts": true,
+                "styles": true
+              },
               "namedChunks": false,
               "aot": true,
               "extractLicenses": true,
@@ -94,7 +98,11 @@
               },
               "optimization": true,
               "outputHashing": "all",
-              "sourceMap": false,
+              "sourceMap": {
+                "hidden": true,
+                "scripts": true,
+                "styles": true
+              },
               "namedChunks": false,
               "aot": true,
               "extractLicenses": true,
@@ -121,7 +129,11 @@
               },
               "optimization": true,
               "outputHashing": "all",
-              "sourceMap": false,
+              "sourceMap": {
+                "hidden": true,
+                "scripts": true,
+                "styles": true
+              },
               "namedChunks": false,
               "aot": true,
               "extractLicenses": true,
@@ -138,7 +150,11 @@
             "local-production": {
               "optimization": true,
               "outputHashing": "all",
-              "sourceMap": false,
+              "sourceMap": {
+                "hidden": true,
+                "scripts": true,
+                "styles": true
+              },
               "namedChunks": false,
               "aot": true,
               "extractLicenses": true,
@@ -218,7 +234,11 @@
                 }
               ],
               "optimization": true,
-              "sourceMap": false,
+              "sourceMap": {
+                "hidden": true,
+                "scripts": true,
+                "styles": true
+              },
               "extractLicenses": true
             },
             "beta": {
@@ -230,7 +250,11 @@
                 }
               ],
               "optimization": true,
-              "sourceMap": false,
+              "sourceMap": {
+                "hidden": true,
+                "scripts": true,
+                "styles": true
+              },
               "extractLicenses": true
             },
             "cypress": {
@@ -242,13 +266,21 @@
                 }
               ],
               "optimization": true,
-              "sourceMap": false,
+              "sourceMap": {
+                "hidden": true,
+                "scripts": true,
+                "styles": true
+              },
               "extractLicenses": true
             },
             "local-production": {
               "outputHashing": "media",
               "optimization": true,
-              "sourceMap": false,
+              "sourceMap": {
+                "hidden": true,
+                "scripts": true,
+                "styles": true
+              },
               "extractLicenses": true
             }
           },
