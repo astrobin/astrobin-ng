@@ -1,5 +1,11 @@
 version: 0.2
 
+env:
+  variables:
+    SENTRY_ORG: astrobin
+    SENTRY_PROJECT: astrobin-ng-dev
+    SENTRY_ENVIRONMENT: cypress
+
 phases:
   install:
     runtime-versions:
@@ -14,7 +20,8 @@ phases:
 
   build:
     commands:
-      - sentry-cli releases --org astrobin new --project astrobin-ng-dev "$CODEBUILD_RESOLVED_SOURCE_VERSION"
+      - sentry-cli releases new -p $SENTRY_PROJECT $SENTRY_RELEASE
+      - sentry-cli releases set-commits $SENTRY_RELEASE --auto
       - npm run lint
       - npm run build:prod
       - npm run build:ssr:prod
@@ -23,8 +30,9 @@ phases:
     commands:
       - npm run test
       - npm run cy:serve-and-run
-      - sentry-cli releases --org astrobin files --project astrobin-ng-dev "$CODEBUILD_RESOLVED_SOURCE_VERSION" upload-sourcemaps dist/frontend/browser/
-      - sentry-cli releases --org astrobin finalize --project astrobin-ng-dev "$CODEBUILD_RESOLVED_SOURCE_VERSION"
+      - sentry-cli releases files $SENTRY_RELEASE upload-sourcemaps dist/frontend/browser/
+      - sentry-cli releases finalize $SENTRY_RELEASE
+      - sentry-cli releases deploys $SENTRY_RELEASE new -e $SENTRY_ENVIRONMENT
     finally:
       - aws configure set aws_access_key_id ${AWS_ACCESS_KEY_ID}
       - aws configure set aws_secret_access_key ${AWS_SECRET_ACCESS_KEY}

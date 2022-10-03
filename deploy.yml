@@ -1,5 +1,11 @@
 version: 0.2
 
+env:
+  variables:
+    SENTRY_ORG: astrobin
+    SENTRY_PROJECT: astrobin-ng-prod
+    SENTRY_ENVIRONMENT: production
+
 phases:
   install:
     commands:
@@ -19,6 +25,8 @@ phases:
 
   post_build:
     commands:
-      - sentry-cli releases --org astrobin new --project astrobin-ng-prod "$CODEBUILD_RESOLVED_SOURCE_VERSION"
-      - sentry-cli releases --org astrobin files --project astrobin-ng-prod "$CODEBUILD_RESOLVED_SOURCE_VERSION" upload-sourcemaps dist/frontend/browser/
-      - sentry-cli releases --org astrobin finalize --project astrobin-ng-prod "$CODEBUILD_RESOLVED_SOURCE_VERSION"
+      - sentry-cli releases new -p $SENTRY_PROJECT $SENTRY_RELEASE
+      - sentry-cli releases set-commits $SENTRY_RELEASE --auto
+      - sentry-cli releases files $SENTRY_RELEASE upload-sourcemaps dist/frontend/browser/
+      - sentry-cli releases finalize $SENTRY_RELEASE
+      - sentry-cli releases deploys $SENTRY_RELEASE new -e $SENTRY_ENVIRONMENT
