@@ -7,20 +7,8 @@ phases:
       - curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
       - apt-get -y update
       - apt-get -y install jq
-      - curl -sL https://sentry.io/get-cli/ | SENTRY_CLI_VERSION="2.6.0" bash
-
-  pre_build:
-    commands:
-      - sentry-cli login --auth-token ${SENTRY_AUTH_TOKEN}
 
   build:
     commands:
       - bash deploy.sh astrobin-ng-autoscaling-group 180
 
-  post_build:
-    commands:
-      - sentry-cli releases new -p $SENTRY_PROJECT $CODEBUILD_RESOLVED_SOURCE_VERSION
-      - sentry-cli releases set-commits $CODEBUILD_RESOLVED_SOURCE_VERSION --auto
-      - sentry-cli releases files $CODEBUILD_RESOLVED_SOURCE_VERSION upload-sourcemaps dist/frontend/browser/
-      - sentry-cli releases finalize $CODEBUILD_RESOLVED_SOURCE_VERSION
-      - sentry-cli releases deploys $CODEBUILD_RESOLVED_SOURCE_VERSION new -e $SENTRY_ENVIRONMENT
