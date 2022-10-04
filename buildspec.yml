@@ -13,14 +13,14 @@ phases:
 
   build:
     commands:
-#      - npm run lint
+      - npm run lint
       - npm run build:prod
       - npm run build:ssr:prod
 
   post_build:
     commands:
-#      - npm run test
-#      - npm run cy:serve-and-run
+      - npm run test
+      - npm run cy:serve-and-run
     finally:
       - aws configure set aws_access_key_id ${AWS_ACCESS_KEY_ID}
       - aws configure set aws_secret_access_key ${AWS_SECRET_ACCESS_KEY}
