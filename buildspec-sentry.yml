@@ -1,6 +1,16 @@
 version: 0.2
 
 phases:
+  install:
+    runtime-versions:
+      nodejs: 12
+
+  pre_build:
+    commands:
+      - node --version
+      - npm --version
+      - npm ci
+
   build:
     commands:
       - npm run build:prod
