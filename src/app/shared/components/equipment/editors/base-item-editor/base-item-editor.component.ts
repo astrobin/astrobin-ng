@@ -517,7 +517,7 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
           expression: (control: FormControl) => {
             const brandControl: AbstractControl = this.form.get("brand");
 
-            if (!control.value || !brandControl.value) {
+            if (!control.value || !brandControl?.value) {
               return of(true);
             }
 
@@ -816,7 +816,7 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
     const brandFieldConfig: FormlyFieldConfig = this.fields.find(field => field.key === "brand");
     const type: EquipmentItemType = this.equipmentItemService.getType({ ...this.model, ...this.form.value });
 
-    if (!type || !brandControl.value) {
+    if (!type || !brandControl?.value) {
       return;
     }
 
