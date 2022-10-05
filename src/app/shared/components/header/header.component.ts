@@ -96,8 +96,13 @@ export class HeaderComponent extends BaseComponentDirective implements OnInit {
 
   get currentLanguageCodeDisplay(): string {
     let display = this.languageCodeDisplays.filter(item => item.code === (this.translateService.currentLang || "en"));
+
     if (!display) {
       display = this.languageCodeDisplays.filter(item => item.code === "en");
+    }
+
+    if (!display || display.length === 0) {
+      return "EN";
     }
 
     return display[0].label;
