@@ -439,7 +439,11 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
   private _initBrandValueChangesObservable() {
     const _doInit = (control: AbstractControl) => {
       control.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(() => {
-        this.form.get("type").updateValueAndValidity({ emitEvent: false });
+        const typeField = this.form.get("type");
+
+        if (!!typeField) {
+          this.form.get("type").updateValueAndValidity({ emitEvent: false });
+        }
       });
     };
 
