@@ -178,7 +178,9 @@ export class FormlyFieldNgSelectComponent extends FieldType implements OnInit, O
           const hasValue = !!this.value;
           const alreadyInOptions =
             !!options &&
-            options.filter(option => hasValue && option.label.toLowerCase() === this.value.toLowerCase()).length > 0;
+            options.filter(
+              option => hasValue && !!option.label && option.label.toLowerCase() === this.value.toLowerCase()
+            ).length > 0;
 
           this.showCreateNewButton = hasAddTag && hasValue && !alreadyInOptions;
           this.loading = false;
