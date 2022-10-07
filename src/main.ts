@@ -7,6 +7,7 @@ import * as Sentry from "@sentry/angular";
 import { BrowserTracing } from "@sentry/tracing";
 
 Sentry.init({
+  release: environment.buildVersion,
   dsn: `https://${environment.sentryKeys[0]}@${environment.sentryKeys[1]}.ingest.sentry.io/${environment.sentryKeys[2]}`,
   integrations: [
     new BrowserTracing({
