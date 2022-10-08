@@ -17,7 +17,9 @@ import localeUkrainian from "@angular/common/locales/uk";
 import localeRussian from "@angular/common/locales/ru";
 import localeAlbanian from "@angular/common/locales/sq";
 import localeTurkish from "@angular/common/locales/tr";
+import localeChinese from "@angular/common/locales/zh";
 import localeChineseSimplified from "@angular/common/locales/zh-Hans";
+import localeChineseTraditional from "@angular/common/locales/zh-Hant";
 import { ErrorHandler, NgModule } from "@angular/core";
 import { BrowserModule, BrowserTransferStateModule, Title } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
@@ -95,6 +97,10 @@ registerLocaleData(localeUkrainian);
 registerLocaleData(localeRussian);
 registerLocaleData(localeAlbanian);
 registerLocaleData(localeTurkish);
+
+// Other languages
+registerLocaleData(localeChinese);
+registerLocaleData(localeChineseTraditional);
 
 export function initFontAwesome(iconLibrary: FaIconLibrary) {
   iconLibrary.addIconPacks(fas);

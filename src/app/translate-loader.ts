@@ -76,11 +76,15 @@ export class LanguageLoader extends TranslatePoHttpLoader {
   };
 
   getTranslation(lang: string): Observable<any> {
-    if (lang === "zh-hans") {
+    if (!lang) {
+      lang = "en";
+    }
+
+    if (lang.toLowerCase() === "zh-hans" || lang.toLowerCase() === "zh-hant" || lang.toLowerCase() === "zh") {
       lang = "zh_Hans";
     }
 
-    if (["de", "en", "es", "fr", "it", "pt", "ru", "uk", "zh-hans", "ja"].indexOf(lang) === -1) {
+    if (["de", "en", "es", "fr", "it", "pt", "ru", "uk", "zh_hans", "ja"].indexOf(lang.toLowerCase()) === -1) {
       lang = "en";
     }
 
