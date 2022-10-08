@@ -180,7 +180,13 @@
                   <tbody>
                     <tr *ngFor="let brand of brands" data-id="{{ brand.id }}">
                       <td>
-                        <a href="#" appEventPreventDefault (click)="viewBrand(brand)">{{ brand.name }}</a>
+                        <a
+                          [href]="'/equipment/explorer/brand/' + brand.id + '/' + UtilsService.slugify(brand.name)"
+                          appEventPreventDefault
+                          (click)="viewBrand(brand)"
+                        >
+                          {{ brand.name }}
+                        </a>
                       </td>
                       <td>{{ brand.userCount }}</td>
                       <td>{{ brand.imageCount }}</td>
