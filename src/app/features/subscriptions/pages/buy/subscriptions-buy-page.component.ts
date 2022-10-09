@@ -262,6 +262,10 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
         }),
         switchMap(() => this.paymentsApiService.getConfig().pipe(tap(_config => (config = _config)))),
         switchMap(() => {
+          if (!Stripe) {
+            return null;
+          }
+
           stripe = Stripe(config.publicKey);
           return this.paymentsApiService.createCheckoutSession(
             userId,
@@ -271,6 +275,12 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
         })
       )
       .subscribe(response => {
+        if (!response) {
+          this.popNotificationsService.error("Unable to load payment processor. Is your browser blocking Stripe?");
+          this.loadingService.setLoading(false);
+          return;
+        }
+
         if (response.sessionId) {
           stripe.redirectToCheckout({ sessionId: response.sessionId });
         } else {
