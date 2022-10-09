@@ -164,8 +164,9 @@ export class FormlyFieldNgSelectComponent extends FieldType implements OnInit, O
 
     if (!this.to.multiple) {
       this._ngSelect.close();
-      this.exitFullscreen();
     }
+
+    this.exitFullscreen();
   }
 
   onSearch(value) {
