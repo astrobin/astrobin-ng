@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: AstroBin Angular App\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-03 14:04+0200\n"
-"PO-Revision-Date: 2022-08-11 02:08+0200\n"
+"PO-Revision-Date: 2022-10-12 11:43+0200\n"
 "Last-Translator: Salvatore Iovene\n"
 "Language-Team: Japanese\n"
 "Language: ja\n"
@@ -14,7 +14,7 @@ msgstr ""
 "X-Generator: Loco https://localise.biz\n"
 "X-Loco-Source-Locale: en\n"
 "X-Loco-Project-Id: 108356\n"
-"X-Loco-Api-Version: 1.0.26 20220711-1"
+"X-Loco-Api-Version: 1.0.26 20220820-1"
 
 #: loco:60685a683b0b1d485a736d12
 msgid "API Keys"
@@ -420,7 +420,7 @@ msgstr "The Big Wall"
 
 #: loco:60685a683b0b1d485a736d72
 msgid "There doesn't seem to be anything here."
-msgstr "ここには何もないようです。"
+msgstr "まだありません"
 
 #: loco:60685a683b0b1d485a736d73
 msgid "This field is required"
@@ -1599,7 +1599,7 @@ msgstr "Contribution Index"
 
 #: loco:6151f41acae9ba5e6a4b2a41
 msgid "Cooled"
-msgstr "冷却された"
+msgstr "冷却"
 
 #: loco:6151f41acae9ba5e6a4b2a42
 msgid "Create a new item"
@@ -1655,7 +1655,7 @@ msgstr "レビューをペンディングにした機材"
 
 #: loco:6151f41acae9ba5e6a4b2a4f
 msgid "Explorer"
-msgstr "Explorer"
+msgstr "探索"
 
 #: loco:6151f41acae9ba5e6a4b2a50
 msgid "Film camera"
@@ -3060,7 +3060,7 @@ msgstr "次へ"
 
 #: loco:629870a92acaf3395934990f
 msgid "Go to regular variant."
-msgstr "通常のバージョン移動"
+msgstr "基本バージョンへ移動"
 
 #: loco:629870a92acaf33959349910
 msgid "I have carefully checked for typos"
@@ -3279,7 +3279,7 @@ msgstr "他のメンバーが作成した編集案を、誰でも確認するこ
 msgid ""
 "AstroBin's equipment database is entirely maintained by the community. Feel "
 "free to make a contribution!"
-msgstr "AstroBinの機材データベースは、すべてコミュニティによって管理されています。お気軽にご協力をお願いします。"
+msgstr "AstroBinのすべての機材データベースは、コミュニティによって管理されています。お気軽にご協力をお願いします。"
 
 #: loco:62a85e35137a5a5dde260787
 msgid "Astrophotographers who have used this equipment item"
@@ -3389,7 +3389,7 @@ msgstr "フィルターを追加する"
 
 #: loco:62ab63ab8f947e59c74f08b3
 msgid "Any"
-msgstr "Any"
+msgstr "どちらも"
 
 #: loco:62ab63ab8f947e59c74f08b4
 msgid "Apply"
@@ -3576,11 +3576,11 @@ msgstr "開発者"
 
 #: loco:62b76935ae4a6942a60dee69
 msgid "Go to base variant."
-msgstr "基本のバージョンへ行く"
+msgstr "元バージョンへ"
 
 #: loco:62b76935ae4a6942a60dee6a
 msgid "Guiding"
-msgstr "ガイディング"
+msgstr "ガイド"
 
 #: loco:62b76935ae4a6942a60dee6b
 msgid ""
@@ -3594,7 +3594,7 @@ msgstr ""
 
 #: loco:62b76935ae4a6942a60dee6c
 msgid "Imaging"
-msgstr "画像処理"
+msgstr "撮影"
 
 #: loco:62b76935ae4a6942a60dee6d
 msgid ""
@@ -3671,7 +3671,7 @@ msgstr "使用方法"
 
 #: loco:62b76935ae4a6942a60dee7c
 msgid "Variant of"
-msgstr "のバージョン"
+msgstr "元バージョン"
 
 #: loco:62b76935ae4a6942a60dee7d
 msgid ""
@@ -3941,7 +3941,7 @@ msgstr "このブランドで撮影した"
 
 #: loco:62e7ff278ccac067625b50e3
 msgid "Acquired with this item"
-msgstr "このアイテムで撮影した"
+msgstr "このアイテムで撮影された画像"
 
 #: loco:62e7ff278ccac067625b50e4
 msgid "Any moderator"
@@ -4113,7 +4113,7 @@ msgstr "それでもなお、これらの広告を表示したくないと感じ
 
 #: loco:62e7ff278ccac067625b5108
 msgid "Images in common"
-msgstr "共通で使える画像"
+msgstr "の画像で利用"
 
 #: loco:62e7ff278ccac067625b5109
 msgid "Item frozen as ambiguous."
@@ -4137,11 +4137,11 @@ msgstr "もっと"
 
 #: loco:62e7ff278ccac067625b510e
 msgid "Most liked"
-msgstr "最も「いいね！」"
+msgstr "いいね！数"
 
 #: loco:62e7ff278ccac067625b510f
 msgid "Most recent"
-msgstr "最も最新"
+msgstr "最新"
 
 #: loco:62e7ff278ccac067625b5110
 msgid "New topic"
@@ -4285,3 +4285,86 @@ msgstr "この編集案は他のユーザーに割り当てられているため
 #: loco:62e7ff278ccac067625b512e
 msgid "{{0}} replies"
 msgstr "{{0}} 件の返信"
+
+#: loco:62fcbd066a27653995445032
+msgid "All your recent items of this equipment class are already used above."
+msgstr "この機材種別の最近のアイテムは全て上記で既に使用済みです。"
+
+#: loco:62fcbd066a27653995445033
+msgid "Diameter"
+msgstr "口径"
+
+#: loco:62fcbd066a27653995445034
+msgid "Mount control"
+msgstr "赤道儀の制御"
+
+#: loco:62fcbd066a27653995445035
+msgid ""
+"You don't need to use the word \"{{0}}\", as this meaning is already "
+"conveyed by clicking on the checkbox above: \"{{1}}\"."
+msgstr ""
+"この意味は上の\"{{1}}\"チェックボックスをクリックすることで既に伝わっているので、\"{{0}}\"という単語を使う必要はないでしょう。"
+
+#: loco:63468b8c0b8567193f47a232
+msgid "Browse by brand and properties"
+msgstr ""
+
+#: loco:63468b8c0b8567193f47a233
+msgid "Can't find what you're looking for?"
+msgstr ""
+
+#: loco:63468b8c0b8567193f47a234
+msgid "Collaborators"
+msgstr ""
+
+#: loco:63468b8c0b8567193f47a235
+msgid "Create new"
+msgstr ""
+
+#: loco:63468b8c0b8567193f47a236
+msgid "Do not repeat the brand's name in the item's name."
+msgstr ""
+
+#: loco:63468b8c0b8567193f47a237
+msgid "Done"
+msgstr ""
+
+#: loco:63468b8c0b8567193f47a238
+msgid ""
+"If this image was a group effort, please add additional collaborators (other "
+"than you) here."
+msgstr ""
+
+#: loco:63468b8c0b8567193f47a239
+msgid "Known retailers"
+msgstr ""
+
+#: loco:63468b8c0b8567193f47a23a
+msgid "Load more"
+msgstr ""
+
+#: loco:63468b8c0b8567193f47a23b
+msgid "No equipment items found by the selected properties."
+msgstr ""
+
+#: loco:63468b8c0b8567193f47a23c
+msgid "No need to include yourself as a collaborator."
+msgstr ""
+
+#: loco:63468b8c0b8567193f47a23d
+msgid "Properties"
+msgstr ""
+
+#: loco:63468b8c0b8567193f47a23e
+msgid "Results"
+msgstr ""
+
+#: loco:63468b8c0b8567193f47a23f
+msgid ""
+"The brand you are looking for is {{0}} and it already exists on AstroBin's "
+"database."
+msgstr ""
+
+#: loco:63468b8c0b8567193f47a240
+msgid "This edit proposal has already been reviewed."
+msgstr ""
