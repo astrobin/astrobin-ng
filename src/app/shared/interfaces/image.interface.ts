@@ -108,6 +108,7 @@ export enum RemoteSource {
   SKIESAWAY = "SkiesAway Remote Observatories",
   TAIYUGE = "TaiYuge Observatory",
   TELI = "Telescope Live",
+  UDRO = "Utah Desert Remote Observatories",
   WTO = "West Texas Observatory (WTO)",
   YINHE = "YinHe Observatory",
   YUNLING = "Yunling Observatory"
