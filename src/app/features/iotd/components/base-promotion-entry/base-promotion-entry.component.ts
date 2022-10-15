@@ -109,11 +109,23 @@ export abstract class BasePromotionEntryComponent extends BaseComponentDirective
       .subscribe(mayPromote => (this.mayPromote = mayPromote));
 
     for (const telescope of this.entry.imagingTelescopes2) {
-      this.store$.dispatch(new LoadEquipmentItem({ type: EquipmentItemType.TELESCOPE, id: telescope.id }));
+      this.store$.dispatch(
+        new LoadEquipmentItem({
+          type: EquipmentItemType.TELESCOPE,
+          id: telescope.id,
+          item: telescope
+        })
+      );
     }
 
     for (const camera of this.entry.imagingCameras2) {
-      this.store$.dispatch(new LoadEquipmentItem({ type: EquipmentItemType.CAMERA, id: camera.id }));
+      this.store$.dispatch(
+        new LoadEquipmentItem({
+          type: EquipmentItemType.CAMERA,
+          id: camera.id,
+          item: camera
+        })
+      );
     }
   }
 
