@@ -185,16 +185,20 @@ export class EquipmentEffects {
     this.actions$.pipe(
       ofType(EquipmentActionTypes.LOAD_EQUIPMENT_ITEM),
       map((action: LoadEquipmentItem) => action.payload),
-      mergeMap(payload =>
-        getFromStoreOrApiByIdAndType<EquipmentItemBaseInterface>(
+      mergeMap(payload => {
+        if (!!payload.item) {
+          return of(new LoadEquipmentItemSuccess({ item: payload.item }));
+        }
+
+        return getFromStoreOrApiByIdAndType<EquipmentItemBaseInterface>(
           this.store$,
           payload.id,
           payload.type,
           selectEquipmentItem,
           this.equipmentApiService.getEquipmentItem,
           this.equipmentApiService
-        ).pipe(map(item => new LoadEquipmentItemSuccess({ item })))
-      )
+        ).pipe(map(item => new LoadEquipmentItemSuccess({ item })));
+      })
     )
   );
 

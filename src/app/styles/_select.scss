@@ -158,7 +158,15 @@
 
   &.fullscreen {
     .ng-dropdown-panel {
-      height: calc(100vh - 180px);
+      height: calc(100vh - 315px);
+
+      @media screen and (max-width: $sm-max) {
+        height: calc(100vh - 215px);
+      }
+
+      @media screen and (max-width: $md-max) {
+        height: calc(100vh - 235px);
+      }
 
       .ng-dropdown-panel-items {
         max-height: calc(100% - 86px) !important;
