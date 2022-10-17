@@ -223,7 +223,13 @@ export class FindAllBrandsSuccess implements PayloadActionInterface {
 export class LoadEquipmentItem implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.LOAD_EQUIPMENT_ITEM;
 
-  constructor(public payload: { id: EquipmentItemBaseInterface["id"]; type: EquipmentItemType }) {}
+  constructor(
+    public payload: {
+      id: EquipmentItemBaseInterface["id"];
+      type: EquipmentItemType;
+      item?: EquipmentItem; // The dispatcher already has the item and just wants it added to the store.
+    }
+  ) {}
 }
 
 export class LoadEquipmentItemSuccess implements PayloadActionInterface {
