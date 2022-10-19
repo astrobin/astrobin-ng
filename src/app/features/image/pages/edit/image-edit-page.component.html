@@ -6,6 +6,8 @@
       [model]="imageEditService.model"
     ></formly-form>
   </form>
+
+  <div *ngIf="imageEditEquipmentFieldsService.creationMode" class="equipment-item-creation-mode-overlay"></div>
 </div>
 
 <ng-template #remoteSourceLabelTemplate let-item="item">
