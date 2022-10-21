@@ -7,12 +7,16 @@ import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/types/equipment-item-base.interface";
+import { Subscription } from "rxjs";
 
 @Injectable({
   providedIn: null
 })
 export class ImageEditEquipmentFieldsService extends BaseService {
   creationMode = false;
+
+  private _getGuidingTelescopesSubscription: Subscription;
+  private _getGuidingCamerasSbscription: Subscription;
 
   constructor(
     public readonly store$: Store<State>,
@@ -190,12 +194,20 @@ export class ImageEditEquipmentFieldsService extends BaseService {
       },
       hooks: {
         onInit: (field: FormlyFieldConfig) => {
-          field.formControl.valueChanges.subscribe(value => {
+          if (!!this._getGuidingTelescopesSubscription) {
+            this._getGuidingTelescopesSubscription.unsubscribe();
+          }
+
+          this._getGuidingTelescopesSubscription = field.formControl.valueChanges.subscribe(value => {
             if (value && value.length > 0) {
               this.imageEditService.model.showGuidingEquipment = true;
               this.imageEditService.form.get("showGuidingEquipment").setValue(true);
             }
           });
+        },
+        onDestroy: () => {
+          this._getGuidingTelescopesSubscription.unsubscribe();
+          this._getGuidingTelescopesSubscription = undefined;
         }
       }
     };
@@ -223,12 +235,20 @@ export class ImageEditEquipmentFieldsService extends BaseService {
       },
       hooks: {
         onInit: (field: FormlyFieldConfig) => {
-          field.formControl.valueChanges.subscribe(value => {
+          if (!!this._getGuidingCamerasSbscription) {
+            this._getGuidingCamerasSbscription.unsubscribe();
+          }
+
+          this._getGuidingCamerasSbscription = field.formControl.valueChanges.subscribe(value => {
             if (value && value.length > 0) {
               this.imageEditService.model.showGuidingEquipment = true;
               this.imageEditService.form.get("showGuidingEquipment").setValue(true);
             }
           });
+        },
+        onDestroy: () => {
+          this._getGuidingCamerasSbscription.unsubscribe();
+          this._getGuidingCamerasSbscription = undefined;
         }
       }
     };
