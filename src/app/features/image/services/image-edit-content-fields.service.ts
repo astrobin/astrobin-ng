@@ -9,7 +9,7 @@ import {
   SubjectType
 } from "@shared/interfaces/image.interface";
 import { FormlyFieldConfig } from "@ngx-formly/core";
-import { Observable, of } from "rxjs";
+import { Observable, of, Subscription } from "rxjs";
 import { CreateLocationAddTag } from "@app/store/actions/location.actions";
 import { CreateLocationModalComponent } from "@features/image/components/create-location-modal/create-location-modal.component";
 import { take } from "rxjs/operators";
@@ -24,6 +24,9 @@ import { UtilsService } from "@shared/services/utils/utils.service";
   providedIn: null
 })
 export class ImageEditContentFieldsService extends BaseService {
+  private _subjectTypeValueChangesSubscription: Subscription;
+  private _dataSourceValueChangesSubscription: Subscription;
+
   constructor(
     public readonly store$: Store<State>,
     public readonly loadingService: LoadingService,
@@ -94,11 +97,19 @@ export class ImageEditContentFieldsService extends BaseService {
       },
       hooks: {
         onInit: (field: FormlyFieldConfig) => {
-          field.formControl.valueChanges.subscribe(value => {
+          if (!!this._subjectTypeValueChangesSubscription) {
+            this._subjectTypeValueChangesSubscription.unsubscribe();
+          }
+
+          this._subjectTypeValueChangesSubscription = field.formControl.valueChanges.subscribe(value => {
             if (value !== SubjectType.SOLAR_SYSTEM) {
               this.imageEditService.model.solarSystemMainSubject = null;
             }
           });
+        },
+        onDestroy: () => {
+          this._subjectTypeValueChangesSubscription.unsubscribe();
+          this._subjectTypeValueChangesSubscription = undefined;
         }
       }
     };
@@ -219,11 +230,19 @@ export class ImageEditContentFieldsService extends BaseService {
       },
       hooks: {
         onInit: (field: FormlyFieldConfig) => {
-          field.formControl.valueChanges.subscribe(value => {
+          if (!!this._dataSourceValueChangesSubscription) {
+            this._dataSourceValueChangesSubscription.unsubscribe();
+          }
+
+          this._dataSourceValueChangesSubscription = field.formControl.valueChanges.subscribe(value => {
             if ([DataSource.OWN_REMOTE, DataSource.AMATEUR_HOSTING].indexOf(value) === -1) {
               this.imageEditService.model.remoteSource = null;
             }
           });
+        },
+        onDestroy: () => {
+          this._dataSourceValueChangesSubscription.unsubscribe();
+          this._dataSourceValueChangesSubscription = undefined;
         }
       }
     };

@@ -22,6 +22,7 @@ export class FormlyFieldNgSelectComponent extends FieldType implements OnInit, O
   inputSubscription: Subscription;
   loading = false;
   value = null;
+  valueChangesSubscription: Subscription;
   showCreateNewButton = false;
   fullscreen = false;
   exitFullscreenSubscription: Subscription;
@@ -86,7 +87,7 @@ export class FormlyFieldNgSelectComponent extends FieldType implements OnInit, O
         });
     }
 
-    this.formControl.valueChanges.subscribe(value => {
+    this.valueChangesSubscription = this.formControl.valueChanges.subscribe(value => {
       if (!this.to.multiple) {
         this.exitFullscreen();
       }
@@ -104,12 +105,16 @@ export class FormlyFieldNgSelectComponent extends FieldType implements OnInit, O
   }
 
   ngOnDestroy() {
-    if (this.inputSubscription) {
+    if (!!this.inputSubscription) {
       this.inputSubscription.unsubscribe();
     }
 
-    if (this.exitFullscreenSubscription) {
+    if (!!this.exitFullscreenSubscription) {
       this.exitFullscreenSubscription.unsubscribe();
+    }
+
+    if (!!this.valueChangesSubscription) {
+      this.valueChangesSubscription.unsubscribe();
     }
   }
 

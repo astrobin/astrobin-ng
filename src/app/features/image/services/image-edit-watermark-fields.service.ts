@@ -7,11 +7,17 @@ import { TranslateService } from "@ngx-translate/core";
 import { ImageEditService } from "@features/image/services/image-edit.service";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
+import { Subscription } from "rxjs";
 
 @Injectable({
   providedIn: null
 })
 export class ImageEditWatermarkFieldsService extends BaseService {
+  private _watermarkTextValueChangesSubscription: Subscription;
+  private _watermarkPositionValueChangesSubscription: Subscription;
+  private _watermarkTextSizeValueChangesSubscription: Subscription;
+  private _watermarkTextOpacityValueChangesSubscription: Subscription;
+
   constructor(
     public readonly store$: Store<State>,
     public readonly loadingService: LoadingService,
@@ -48,9 +54,17 @@ export class ImageEditWatermarkFieldsService extends BaseService {
       },
       hooks: {
         onInit: (field: FormlyFieldConfig) => {
-          field.formControl.valueChanges.subscribe(() => {
+          if (!!this._watermarkTextValueChangesSubscription) {
+            this._watermarkTextValueChangesSubscription.unsubscribe();
+          }
+
+          this._watermarkTextValueChangesSubscription = field.formControl.valueChanges.subscribe(() => {
             this._setWatermarkTrue();
           });
+        },
+        onDestroy: () => {
+          this._watermarkTextValueChangesSubscription.unsubscribe();
+          this._watermarkTextValueChangesSubscription = undefined;
         }
       }
     };
@@ -98,9 +112,17 @@ export class ImageEditWatermarkFieldsService extends BaseService {
       },
       hooks: {
         onInit: (field: FormlyFieldConfig) => {
-          field.formControl.valueChanges.subscribe(() => {
+          if (!!this._watermarkPositionValueChangesSubscription) {
+            this._watermarkPositionValueChangesSubscription.unsubscribe();
+          }
+
+          this._watermarkPositionValueChangesSubscription = field.formControl.valueChanges.subscribe(() => {
             this._setWatermarkTrue();
           });
+        },
+        onDestroy: () => {
+          this._watermarkPositionValueChangesSubscription.unsubscribe();
+          this._watermarkPositionValueChangesSubscription = undefined;
         }
       }
     };
@@ -133,9 +155,17 @@ export class ImageEditWatermarkFieldsService extends BaseService {
       },
       hooks: {
         onInit: (field: FormlyFieldConfig) => {
-          field.formControl.valueChanges.subscribe(() => {
+          if (!!this._watermarkTextSizeValueChangesSubscription) {
+            this._watermarkTextSizeValueChangesSubscription.unsubscribe();
+          }
+
+          this._watermarkTextSizeValueChangesSubscription = field.formControl.valueChanges.subscribe(() => {
             this._setWatermarkTrue();
           });
+        },
+        onDestroy: () => {
+          this._watermarkTextSizeValueChangesSubscription.unsubscribe();
+          this._watermarkTextSizeValueChangesSubscription = undefined;
         }
       }
     };
@@ -158,9 +188,17 @@ export class ImageEditWatermarkFieldsService extends BaseService {
       },
       hooks: {
         onInit: (field: FormlyFieldConfig) => {
-          field.formControl.valueChanges.subscribe(() => {
+          if (!!this._watermarkTextOpacityValueChangesSubscription) {
+            this._watermarkTextOpacityValueChangesSubscription.unsubscribe();
+          }
+
+          this._watermarkTextOpacityValueChangesSubscription = field.formControl.valueChanges.subscribe(() => {
             this._setWatermarkTrue();
           });
+        },
+        onDestroy: () => {
+          this._watermarkTextOpacityValueChangesSubscription.unsubscribe();
+          this._watermarkTextOpacityValueChangesSubscription = undefined;
         }
       }
     };

@@ -28,6 +28,7 @@ import {
   StepChangedArgs
 } from "ng-wizard";
 import { isPlatformServer } from "@angular/common";
+import { Subscription } from "rxjs";
 
 @Component({
   selector: "astrobin-formly-field-stepper",
@@ -51,6 +52,8 @@ export class FormlyFieldStepperComponent extends FieldType
 
   private _stepClickListeners = [];
 
+  private _routeFragmentSubscription: Subscription;
+
   constructor(
     public readonly ngWizardService: NgWizardService,
     public readonly translateService: TranslateService,
@@ -67,7 +70,7 @@ export class FormlyFieldStepperComponent extends FieldType
   }
 
   ngOnInit() {
-    this.route.fragment.subscribe((fragment: string) => {
+    this._routeFragmentSubscription = this.route.fragment.subscribe((fragment: string) => {
       this.currentStepIndex = +fragment - 1;
       this.ngWizardService.show(this.currentStepIndex);
     });
@@ -92,6 +95,10 @@ export class FormlyFieldStepperComponent extends FieldType
     this._stepClickListeners.forEach(listener => {
       listener();
     });
+
+    if (!!this._routeFragmentSubscription) {
+      this._routeFragmentSubscription.unsubscribe();
+    }
   }
 
   ngAfterContentChecked(): void {
