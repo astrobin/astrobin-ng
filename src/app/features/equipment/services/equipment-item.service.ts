@@ -267,8 +267,6 @@ export class EquipmentItemService extends BaseService {
       "forum"
     ];
 
-    const nonNullableKeys = ["image"];
-
     const _autoConvertValue = (value: any): any => {
       if (value === "null" || value === "" || value === null || value === undefined) {
         value = null;
@@ -315,10 +313,6 @@ export class EquipmentItemService extends BaseService {
 
       for (const key of Object.keys(item)) {
         if (ignoredKeys.indexOf(key) > -1) {
-          continue;
-        }
-
-        if (nonNullableKeys.indexOf(key) > -1 && (editProposal[key] === null || editProposal[key] === undefined)) {
           continue;
         }
 

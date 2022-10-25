@@ -40,10 +40,14 @@ export class FormlyFieldFileComponent extends FieldType implements OnInit {
   onDelete(index) {
     this.selectedFiles.splice(index, 1);
     this.formControl.patchValue(this.selectedFiles);
+    this.formControl.markAsTouched();
+    this.formControl.markAsDirty();
   }
 
   onChange(event) {
     this._setValueFromFiles(Array.from(event.target.files));
+    this.formControl.markAsTouched();
+    this.formControl.markAsDirty();
   }
 
   isImage(file: File): boolean {
@@ -61,7 +65,5 @@ export class FormlyFieldFileComponent extends FieldType implements OnInit {
         )
       });
     }
-
-    this.formControl.markAsTouched();
   }
 }
