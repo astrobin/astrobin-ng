@@ -67,6 +67,18 @@ context("Equipment", () => {
           .type("Test");
       });
 
+      it("should not allow the word skywatcher", () => {
+        cy.get("#equipment-item-field-name")
+          .clear()
+          .type("Skywatcher");
+        cy.get("formly-validation-message")
+          .contains("Sky-Watcher is spelled with a dash sign.")
+          .should("be.visible");
+        cy.get("#equipment-item-field-name")
+          .clear()
+          .type("Test");
+      });
+
       it("should fill the type", () => {
         cy.ngSelectOpen("#telescope-field-type");
         cy.ngSelectOptionClick("#telescope-field-type", 1);
