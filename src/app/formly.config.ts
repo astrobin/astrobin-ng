@@ -185,6 +185,12 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
             "Lacerta MGEN standalone autoguiders are found among Accessories. Please find your item in that category, thanks!"
           );
         }
+      },
+      {
+        name: "has-skywatcher-without-dash",
+        message(): string {
+          return translateService.instant("Sky-Watcher is spelled with a dash sign.");
+        }
       }
     ],
     validators: [
