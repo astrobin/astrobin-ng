@@ -444,6 +444,7 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
                       this._validateCanonAndCentralDS();
                       this._similarItemSuggestion();
                       this._othersInBrand(brand.name);
+                      this._customNameChangesValidations(field, this.model.name);
 
                       this.form.get("name").updateValueAndValidity({ emitEvent: false });
 
