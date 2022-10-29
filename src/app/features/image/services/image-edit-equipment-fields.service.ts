@@ -16,7 +16,7 @@ export class ImageEditEquipmentFieldsService extends BaseService {
   creationMode = false;
 
   private _getGuidingTelescopesSubscription: Subscription;
-  private _getGuidingCamerasSbscription: Subscription;
+  private _getGuidingCamerasSubscription: Subscription;
 
   constructor(
     public readonly store$: Store<State>,
@@ -235,11 +235,11 @@ export class ImageEditEquipmentFieldsService extends BaseService {
       },
       hooks: {
         onInit: (field: FormlyFieldConfig) => {
-          if (!!this._getGuidingCamerasSbscription) {
-            this._getGuidingCamerasSbscription.unsubscribe();
+          if (!!this._getGuidingCamerasSubscription) {
+            this._getGuidingCamerasSubscription.unsubscribe();
           }
 
-          this._getGuidingCamerasSbscription = field.formControl.valueChanges.subscribe(value => {
+          this._getGuidingCamerasSubscription = field.formControl.valueChanges.subscribe(value => {
             if (value && value.length > 0) {
               this.imageEditService.model.showGuidingEquipment = true;
               this.imageEditService.form.get("showGuidingEquipment").setValue(true);
@@ -247,8 +247,8 @@ export class ImageEditEquipmentFieldsService extends BaseService {
           });
         },
         onDestroy: () => {
-          this._getGuidingCamerasSbscription.unsubscribe();
-          this._getGuidingCamerasSbscription = undefined;
+          this._getGuidingCamerasSubscription.unsubscribe();
+          this._getGuidingCamerasSubscription = undefined;
         }
       }
     };
