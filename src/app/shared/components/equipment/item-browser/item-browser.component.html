@@ -13,7 +13,8 @@
     <ng-template #noItemObject>
       <astrobin-equipment-item-display-name
         *ngIf="!!object?.value; else loading"
-        [item]="getItemById$(object.value) | async"
+        [itemId]="object.value"
+        [itemType]="type"
         [enableSummaryModal]="enableSummaryModal"
       ></astrobin-equipment-item-display-name>
     </ng-template>
