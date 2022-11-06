@@ -4,7 +4,8 @@ import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import {
   EquipmentItemBaseInterface,
-  EquipmentItemReviewerDecision
+  EquipmentItemReviewerDecision,
+  EquipmentItemType
 } from "@features/equipment/types/equipment-item-base.interface";
 import { TranslateService } from "@ngx-translate/core";
 import { filter, take } from "rxjs/operators";
@@ -14,7 +15,8 @@ import { ItemSummaryModalComponent } from "@shared/components/equipment/summarie
 import { ItemUnapprovedInfoModalComponent } from "@shared/components/equipment/item-unapproved-info-modal/item-unapproved-info-modal.component";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { LoadBrand } from "@features/equipment/store/equipment.actions";
-import { selectBrand } from "@features/equipment/store/equipment.selectors";
+import { selectBrand, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
+import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 
 @Component({
   selector: "astrobin-equipment-item-display-name",
@@ -23,7 +25,13 @@ import { selectBrand } from "@features/equipment/store/equipment.selectors";
 })
 export class EquipmentItemDisplayNameComponent extends BaseComponentDirective implements OnChanges {
   @Input()
-  item: EquipmentItemBaseInterface;
+  itemId: EquipmentItem["id"];
+
+  @Input()
+  itemType: EquipmentItemType;
+
+  @Input()
+  item: EquipmentItem;
 
   @Input()
   enableSummaryModal = false;
@@ -61,41 +69,58 @@ export class EquipmentItemDisplayNameComponent extends BaseComponentDirective im
   }
 
   ngOnChanges(): void {
-    if (!this.item) {
+    if (!this.item && !this.itemId && !this.itemType) {
       return;
     }
 
-    this.brandLink = !!this.item.brand
-      ? `/equipment/explorer/brand/${this.item.brand}/${UtilsService.slugify(this.item.brandName)}`
-      : undefined;
+    const _onChanges = (item: EquipmentItem) => {
+      this.brandLink = !!this.item.brand
+        ? `/equipment/explorer/brand/${this.item.brand}/${UtilsService.slugify(this.item.brandName)}`
+        : undefined;
 
-    if (!!this.item.brand) {
-      if (!!this.item.brandName) {
-        this.brandName = this.item.brandName;
+      if (!!this.item.brand) {
+        if (!!this.item.brandName) {
+          this.brandName = this.item.brandName;
+        } else {
+          this.store$
+            .select(selectBrand, this.item.brand)
+            .pipe(
+              filter(brand => !!brand && brand.id === this.item.brand),
+              take(1)
+            )
+            .subscribe(brand => {
+              this.brandName = brand.name;
+            });
+          this.store$.dispatch(new LoadBrand({ id: this.item.brand }));
+        }
       } else {
-        this.store$
-          .select(selectBrand, this.item.brand)
-          .pipe(
-            filter(brand => !!brand && brand.id === this.item.brand),
-            take(1)
-          )
-          .subscribe(brand => {
-            this.brandName = brand.name;
-          });
-        this.store$.dispatch(new LoadBrand({ id: this.item.brand }));
+        this.brandName = this.translateService.instant("(DIY)");
       }
+
+      this.equipmentItemService
+        .getName$(this.item)
+        .pipe(take(1))
+        .subscribe(name => (this.itemName = name.replace(this.cut, "")));
+
+      this.nameLink = `/equipment/explorer/${this.item.klass.toLowerCase()}/${this.item.id}`;
+
+      this.showItemUnapprovedInfo = this.item.reviewerDecision !== EquipmentItemReviewerDecision.APPROVED;
+    };
+
+    if (!this.item) {
+      this.store$
+        .select(selectEquipmentItem, { id: this.itemId, type: this.itemType })
+        .pipe(
+          filter(item => !!item),
+          take(1)
+        )
+        .subscribe((item: EquipmentItem) => {
+          this.item = item;
+          _onChanges(item);
+        });
     } else {
-      this.brandName = this.translateService.instant("(DIY)");
+      _onChanges(this.item);
     }
-
-    this.equipmentItemService
-      .getName$(this.item)
-      .pipe(take(1))
-      .subscribe(name => (this.itemName = name.replace(this.cut, "")));
-
-    this.nameLink = `/equipment/explorer/${this.item.klass.toLowerCase()}/${this.item.id}`;
-
-    this.showItemUnapprovedInfo = this.item.reviewerDecision !== EquipmentItemReviewerDecision.APPROVED;
   }
 
   openItemSummaryModal(item: EquipmentItemBaseInterface) {
