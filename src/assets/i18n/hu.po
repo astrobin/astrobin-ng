@@ -52,13 +52,13 @@ msgid "ADC"
 msgstr ""
 
 msgid "API Keys"
-msgstr "Ключи API"
+msgstr "API kulcsok"
 
 msgid "Accepted formats"
-msgstr "Поддерживаемые форматы"
+msgstr "Elfogadott formátumok"
 
 msgid "Access denied."
-msgstr "Доступ запрещён."
+msgstr "Hozzáférés megtagadva."
 
 msgid "Accessories"
 msgstr ""
@@ -88,10 +88,10 @@ msgid "Add to comparison list"
 msgstr ""
 
 msgid "Advanced plate-solving"
-msgstr "Расширенное распознавание поля"
+msgstr "Fejlett plate-solving"
 
 msgid "Advanced search"
-msgstr "Расширенный поиск"
+msgstr "Fejlett keresés"
 
 msgid "After"
 msgstr ""
@@ -124,7 +124,7 @@ msgid "Amateur hosting facility"
 msgstr ""
 
 msgid "Amount"
-msgstr "Величина"
+msgstr "Összeg"
 
 msgid "An item of the same class, brand, and name already exists."
 msgstr ""
@@ -133,7 +133,7 @@ msgid "Analog to Digital Converter"
 msgstr ""
 
 msgid "And much more!"
-msgstr "...и многое другое!"
+msgstr "És sok más!"
 
 msgid "Anular solar eclipse"
 msgstr ""
@@ -210,11 +210,11 @@ msgid ""
 "then contact us at {{1}} to get a refund for the unused time on your old "
 "subscription. Thanks!"
 msgstr ""
-"AstroBin в настоящее время не поддерживает обновление подписки, но мы рады "
-"сделать это вручную. Если у вас более низкий уровень подписки и вы хотите "
-"перейти на <strong>{{0}}</strong>, просто купите ее, а затем свяжитесь с "
-"нами по {{1}}, чтобы получить возмещение за неиспользованное время по вашей "
-"старой подписке. Благодарность!"
+"Az AstroBin jelenleg nem támogatja az előfizetés-fejlesztést, de manuálisan "
+"el tudjuk intézni. Ha egy alacsonyabb előfizetési szinten vagy, és "
+"szeretnél frissíteni <strong>{{0}}</strong> szintre, kérjük, csak vedd meg, "
+"majd lépj kapcsolatba velünk a {{1}} címen, hogy visszatérítést kapj a régi "
+"előfizetésed fel nem használt idejére. Köszönjük!"
 
 msgid ""
 "AstroBin encountered an internal error. Please try again and contact us if "
@@ -260,7 +260,7 @@ msgid ""
 msgstr ""
 
 msgid "Astrophotographers list"
-msgstr "Список астрофотографов"
+msgstr "Asztrofotósok listája"
 
 msgid "Attribution Creative Commons"
 msgstr ""
@@ -284,7 +284,7 @@ msgid "Authentication error. Please log out and in again."
 msgstr ""
 
 msgid "Autorenew"
-msgstr "Авто-обновление"
+msgstr "Automatikus megújítás"
 
 msgid "Available in {{0}} additional variants:"
 msgstr ""
@@ -305,10 +305,10 @@ msgid "Basic information"
 msgstr ""
 
 msgid "Basic plate-solving"
-msgstr "Простое распознавание поля"
+msgstr "Egyszerű plate-solving"
 
 msgid "Basic search"
-msgstr "Простой поиск"
+msgstr "Egyszerű keresés"
 
 msgid ""
 "Because of your contribution in adding this equipment item, the next person "
@@ -332,7 +332,7 @@ msgid "Blue channel (B)"
 msgstr ""
 
 msgid "Bookmarks"
-msgstr "Закладки"
+msgstr "Könyvjelzők"
 
 msgid "Bottom center"
 msgstr ""
@@ -356,7 +356,7 @@ msgid "Browse by brand and properties"
 msgstr ""
 
 msgid "Buy"
-msgstr "Купить"
+msgstr "Vásárlás"
 
 msgid "Camera"
 msgstr ""
@@ -380,7 +380,7 @@ msgid "Cancel"
 msgstr ""
 
 msgid "Cancelled"
-msgstr "Отменено"
+msgstr "Törölt"
 
 msgid "Catadioptric: ACF Schmidt-Cassegrain"
 msgstr ""
@@ -484,7 +484,7 @@ msgid "Commercial facilities"
 msgstr ""
 
 msgid "Commercial products"
-msgstr "Коммерческие продукты"
+msgstr "Kereskedelmi termékek"
 
 msgid "Community notes"
 msgstr ""
@@ -526,7 +526,7 @@ msgid "Constellations"
 msgstr ""
 
 msgid "Contact"
-msgstr "Контакт"
+msgstr "Kapcsolatfelvétel"
 
 msgid "Content"
 msgstr ""
@@ -538,7 +538,7 @@ msgid "Contributors"
 msgstr ""
 
 msgid "Contributors list"
-msgstr "Список авторов"
+msgstr "Hozzájárulók listája"
 
 msgid "Cooled"
 msgstr ""
@@ -580,7 +580,7 @@ msgid "Data source"
 msgstr ""
 
 msgid "Date"
-msgstr "Дата"
+msgstr "Dátum"
 
 msgid "Dedicated deep-sky camera"
 msgstr ""
@@ -592,7 +592,7 @@ msgid "Delete"
 msgstr ""
 
 msgid "Description"
-msgstr "Описание"
+msgstr "Leírás"
 
 msgid "Developer(s)"
 msgstr ""
@@ -625,7 +625,7 @@ msgid ""
 msgstr ""
 
 msgid "Do not notify your followers about this revision."
-msgstr "Не уведомлять своих подписчиков об этой редакции."
+msgstr "Ne legyenek értesítve a követőid erről az átdolgozásról."
 
 msgid "Do not repeat the brand's name in the item's name."
 msgstr ""
@@ -646,7 +646,7 @@ msgid "Drawing/Sketch"
 msgstr ""
 
 msgid "Drop file here or click to browse"
-msgstr "Перетащите файл сюда или нажмите, чтобы просмотреть"
+msgstr "Dobd ide a fájlt, vagy kattints a böngészéshez"
 
 msgid "Dual Alt-Az/Equatorial"
 msgstr ""
@@ -682,7 +682,7 @@ msgid "Electronically-Assisted Astronomy (EAA, e.g. based on a live video feed)"
 msgstr ""
 
 msgid "Email"
-msgstr "Эл. почта"
+msgstr "Email"
 
 msgid "Enable high contrast theme"
 msgstr ""
@@ -730,7 +730,7 @@ msgid "Equipment preset updated."
 msgstr ""
 
 msgid "Error!"
-msgstr "Ошибка!"
+msgstr "Hiba!"
 
 msgid ""
 "Every equipment item on AstroBin has a forum associated with it. Anybody "
@@ -744,10 +744,10 @@ msgid "Everybody"
 msgstr ""
 
 msgid "Expiration date"
-msgstr "Дата истечения"
+msgstr "Lejárati idő"
 
 msgid "Explore"
-msgstr "Исследовать"
+msgstr "Felfedezés"
 
 msgid "Explorer"
 msgstr ""
@@ -756,7 +756,7 @@ msgid "Extremely wide field"
 msgstr ""
 
 msgid "FAQ"
-msgstr "ЧАВО"
+msgstr "FAQ"
 
 msgid "Feel free to contribute!"
 msgstr ""
@@ -770,7 +770,7 @@ msgid ""
 msgstr ""
 
 msgid "File type not supported"
-msgstr "Тип файла не поддерживается"
+msgstr "Nem támogatott fájltípus"
 
 msgid "Film camera"
 msgstr ""
@@ -844,13 +844,11 @@ msgid ""
 "For more information about this and other subscription plans, please visit "
 "the {{0}}pricing{{1}} page."
 msgstr ""
-"Для получения дополнительной информации об этом и других планах подписки "
-"посетите страницу {{0}}цен{{1}}."
+"További információkért erről és más előfizetési csomagokról, kérjük, "
+"látogass el a {{0}}pricing{{{1}} oldalra."
 
 msgid "For more information, please check out our Twitter feed:"
-msgstr ""
-"Для получения дополнительной информации, пожалуйста, проверьте нашу ленту "
-"Twitter:"
+msgstr "További információkért kérjük, nézd meg Twitter hírfolyamunkat:"
 
 msgid "For security reasons, this is not permitted."
 msgstr ""
@@ -862,15 +860,14 @@ msgid ""
 "For this reason, you cannot purchase this at the moment, as AstroBin does "
 "not currently offer a downgrade path."
 msgstr ""
-"По этой причине вы не можете приобрести это в настоящий момент, поскольку "
-"AstroBin в настоящее время не предлагает возможности перехода на более "
-"раннюю версию."
+"Emiatt ezt jelenleg nem tudod megvásárolni, mivel az AstroBin jelenleg nem "
+"kínál downgrade lehetőséget."
 
 msgid "Fork"
 msgstr ""
 
 msgid "Forum"
-msgstr "Форум"
+msgstr "Fórum"
 
 msgid "Forums"
 msgstr ""
@@ -888,7 +885,7 @@ msgid "Frozen as ambiguous"
 msgstr ""
 
 msgid "Full search"
-msgstr "Полный поиск"
+msgstr "Teljes keresés"
 
 msgid "Full well capacity"
 msgstr ""
@@ -912,7 +909,7 @@ msgid "Get next"
 msgstr ""
 
 msgid "Go back to the home page."
-msgstr "Вернуться на заглавную страницу."
+msgstr "Visszatérés a kezdőlapra."
 
 msgid "Go to base variant."
 msgstr ""
@@ -927,7 +924,7 @@ msgid "Green channel (G)"
 msgstr ""
 
 msgid "Groups"
-msgstr "Группы"
+msgstr "Csoportok"
 
 msgid "Guider or planetary camera"
 msgstr ""
@@ -951,10 +948,10 @@ msgid ""
 msgstr ""
 
 msgid "Help"
-msgstr "Помощь"
+msgstr "Segítség"
 
 msgid "Help with translations!"
-msgstr "Помогите с переводами!"
+msgstr "Segíts fordítással!"
 
 msgid ""
 "Here you can save an equipment preset so you can easily load it later on a "
@@ -969,7 +966,7 @@ msgid "Hide"
 msgstr ""
 
 msgid "Home"
-msgstr "На главную"
+msgstr "Kezdőlap"
 
 msgid "However, please let me offer you a good reason to allow ads on AstroBin:"
 msgstr ""
@@ -1075,16 +1072,16 @@ msgid "Image of the Day / Top Picks"
 msgstr ""
 
 msgid "Image of the day"
-msgstr "Изображение Дня"
+msgstr "A nap képe"
 
 msgid "Image queue"
-msgstr "Очередь изображений"
+msgstr "Kép várólista"
 
 msgid "Image saved."
 msgstr ""
 
 msgid "Images"
-msgstr "Изображения"
+msgstr "Képek"
 
 msgid "Images in common"
 msgstr ""
@@ -1099,7 +1096,7 @@ msgid "Imaging telescopes"
 msgstr ""
 
 msgid "Info"
-msgstr "Инфо"
+msgstr "Infó"
 
 msgid "Infrared (IR)"
 msgstr ""
@@ -1125,7 +1122,7 @@ msgid "It looks like you reached the revision upload limit for your subscription
 msgstr ""
 
 msgid "It looks like you reached the upload limit for your subscription."
-msgstr "Похоже, вы достигли предела загрузки для своей подписки."
+msgstr "Úgy tűnik, hogy elérted az előfizetésedhez tartozó feltöltési limitet."
 
 msgid "Item <strong>{{0}}</strong> marked as <strong>{{1}}</strong>."
 msgstr ""
@@ -1149,7 +1146,7 @@ msgid "Item unfrozen."
 msgstr ""
 
 msgid "Judgement queue"
-msgstr "Очередь суждения"
+msgstr "Elbírálási várólista"
 
 msgid "Jump to"
 msgstr ""
@@ -1170,7 +1167,7 @@ msgid "Known stock availability for"
 msgstr ""
 
 msgid "Language"
-msgstr "Язык"
+msgstr "Nyelv"
 
 msgid "Large"
 msgstr ""
@@ -1179,10 +1176,10 @@ msgid "Last update"
 msgstr ""
 
 msgid "Latest topics"
-msgstr "Последние темы"
+msgstr "Legutóbbi témák"
 
 msgid "Learn more"
-msgstr "Узнать больше"
+msgstr "Tudj meg többet"
 
 msgid "Legacy item"
 msgstr ""
@@ -1224,7 +1221,7 @@ msgid "Locations"
 msgstr ""
 
 msgid "Log in"
-msgstr "Вход"
+msgstr "Bejelentkezés"
 
 msgid "Logging you in securely..."
 msgstr ""
@@ -1239,7 +1236,7 @@ msgid "Logo"
 msgstr ""
 
 msgid "Logout"
-msgstr "Выход"
+msgstr "Kijelentkezés"
 
 msgid "Lucky imaging"
 msgstr ""
@@ -1254,16 +1251,16 @@ msgid "Main solar system subject"
 msgstr ""
 
 msgid "Mark all as read"
-msgstr "Отметить все как прочитанные"
+msgstr "Összes megjelölése olvasottként"
 
 msgid "Mark as"
 msgstr ""
 
 msgid "Mark as final"
-msgstr "Отметить как окончательный"
+msgstr "Megjelölés végsőként"
 
 msgid "Mark this revision as the final rendition of your image."
-msgstr "Отметьте эту редакцию как окончательную версию вашего изображения."
+msgstr "Átdolgozás megjelölése a képed végleges változataként."
 
 msgid ""
 "Marking an item as DIY (i.e. self-made) means that you, or someone on your "
@@ -1285,13 +1282,13 @@ msgid "Max. payload"
 msgstr ""
 
 msgid "Max. {{ max }} MB / image"
-msgstr ""
+msgstr "Max. {{ max }} MB / kép"
 
 msgid "Max. {{ max }} total images"
-msgstr ""
+msgstr "Max. {{ max }} számú kép"
 
 msgid "Max. {{ max }} uploads"
-msgstr ""
+msgstr "Max. {{ max }} feltöltés"
 
 msgid "Me only"
 msgstr ""
@@ -1330,7 +1327,7 @@ msgid "Mix of multiple sources"
 msgstr ""
 
 msgid "Moderate"
-msgstr "Умеренный"
+msgstr "Moderálás"
 
 msgid ""
 "Modifications typically include LPF2 filter removal, Baader modification, "
@@ -1380,16 +1377,16 @@ msgid "Multiple items"
 msgstr ""
 
 msgid "My messages"
-msgstr "Мои сообщения"
+msgstr "Üzeneteim"
 
 msgid "My places"
-msgstr "Мои места"
+msgstr "Helyeim"
 
 msgid "My settings"
-msgstr "Мои настройки"
+msgstr "Beállításaim"
 
 msgid "Name"
-msgstr "Название"
+msgstr "Név"
 
 msgid "Name of the brand (or company, or developer(s))"
 msgstr ""
@@ -1419,7 +1416,7 @@ msgid "Nitrogen-II (NII)"
 msgstr ""
 
 msgid "No"
-msgstr "Нет"
+msgstr "Nem"
 
 msgid "No changes are proposed, or all proposed changes are outdated."
 msgstr ""
@@ -1434,7 +1431,7 @@ msgid "No need to include yourself as a collaborator."
 msgstr ""
 
 msgid "No plate-solving"
-msgstr "Нет распознавания кадра"
+msgstr "Nincs plate-solving"
 
 msgid "No, thanks"
 msgstr ""
@@ -1470,7 +1467,7 @@ msgid "Notification settings"
 msgstr ""
 
 msgid "Notifications"
-msgstr "Уведомления"
+msgstr "Értesítések"
 
 msgid "Number of pixels"
 msgstr ""
@@ -1561,7 +1558,7 @@ msgid "Partial solar eclipse"
 msgstr ""
 
 msgid "Password"
-msgstr "Пароль"
+msgstr "Jelszó"
 
 msgid "Paying members only"
 msgstr ""
@@ -1654,10 +1651,9 @@ msgid ""
 "details and then email us at {{ email_prefix }}{{ email }}{{ email_postfix "
 "}} with your username so we may upgrade your account manually."
 msgstr ""
-"Внесите депозит в размере {{ currency }} {{ amount }} на следующие "
-"банковские реквизиты, а затем напишите нам по адресу {{ email_prefix }}{{ "
-"email }}{{ email_postfix }} со своим именем пользователя, чтобы мы могли "
-"обновить ваш аккаунт вручную."
+"Kérjük, fizess be {{ currency }} {{ amount }} az alábbi bankszámlaszámra, "
+"majd küldj e-mailt a {{ email_prefix }}{{ email }}{{ email_postfix }} címre "
+"a felhasználóneveddel, hogy manuálisan frissíthessük a fiókodat."
 
 msgid "Please make sure that the information you entered is accurate."
 msgstr ""
@@ -1690,7 +1686,7 @@ msgid "Please wait until your subscription expires, then come back to this page.
 msgstr ""
 
 msgid "Plots"
-msgstr "Графики"
+msgstr "Területek"
 
 msgid "Portable English"
 msgstr ""
@@ -1702,7 +1698,7 @@ msgid "Power distribution"
 msgstr ""
 
 msgid "Prefer to pay via bank transfer?"
-msgstr "Предпочитаете платить банковским переводом?"
+msgstr "Inkább banki átutalással fizetnél?"
 
 msgid "Preset name"
 msgstr ""
@@ -1744,7 +1740,7 @@ msgid ""
 msgstr ""
 
 msgid "Public Gallery"
-msgstr "Публичная Галерея"
+msgstr "Nyilvános Galéria"
 
 msgid "Public amateur data"
 msgstr ""
@@ -1756,7 +1752,7 @@ msgid "Quantum efficiency"
 msgstr ""
 
 msgid "Quick search"
-msgstr "Быстрый поиск"
+msgstr "Gyorskeresés"
 
 msgid "Quick-add recent"
 msgstr ""
@@ -1825,7 +1821,7 @@ msgid "Refractor: superachromat"
 msgstr ""
 
 msgid "Register"
-msgstr "Регистрация"
+msgstr "Regisztrálás"
 
 msgid "Regular"
 msgstr ""
@@ -1848,7 +1844,7 @@ msgid ""
 msgstr ""
 
 msgid "Remote astrophotography"
-msgstr "Удалённая астрофотография"
+msgstr "Külső forrásos asztrofotózás"
 
 msgid "Remote data source"
 msgstr ""
@@ -1857,7 +1853,7 @@ msgid "Reply"
 msgstr ""
 
 msgid "Reset password"
-msgstr "Сбросить пароль"
+msgstr "Jelszó visszaállítása"
 
 msgid "Results"
 msgstr ""
@@ -1869,13 +1865,13 @@ msgid "Retract promotion"
 msgstr ""
 
 msgid "Return to the classic uploader"
-msgstr "Вернуться к классическому загрузчику"
+msgstr "Vissza a hagyományos feltöltőhöz"
 
 msgid "Review"
 msgstr ""
 
 msgid "Review queue"
-msgstr "Проверить очередь"
+msgstr "Átnézési várólista"
 
 msgid "Reviewed by"
 msgstr ""
@@ -1890,7 +1886,7 @@ msgid "Revision"
 msgstr ""
 
 msgid "Revision uploader"
-msgstr "Загрузчик редакции"
+msgstr "Átdolgozás-feltöltő"
 
 msgid "Round"
 msgstr ""
@@ -1968,7 +1964,7 @@ msgid "Service not available"
 msgstr ""
 
 msgid "Settings"
-msgstr "Настройки"
+msgstr "Beállítások"
 
 msgid "Sharpen thumbnails"
 msgstr ""
@@ -1988,7 +1984,7 @@ msgid "Size"
 msgstr ""
 
 msgid "Skip notifications"
-msgstr "Пропустить уведомления"
+msgstr "Értesítések kihagyása"
 
 msgid "Sky glow"
 msgstr ""
@@ -2018,8 +2014,8 @@ msgid ""
 "Sorry, but the page you are looking for is not here. If you expected an "
 "image, this means that the author deleted it."
 msgstr ""
-"Извините, но страницы, которую вы ищете, здесь нет. Если вы ожидали "
-"изображение, это означает, что автор удалил его."
+"Sajnáljuk, de az általad keresett oldal nincs itt. Ha egy képre "
+"számítottál, az azt jelenti, hogy a szerző törölte azt."
 
 msgid ""
 "Sorry, but this image is too large. Under your current subscription plan, "
@@ -2043,16 +2039,16 @@ msgid "Sort"
 msgstr ""
 
 msgid "Spam list"
-msgstr "Список спама"
+msgstr "Spam lista"
 
 msgid "Sponsors & Partners"
-msgstr "Спонсоры & Партнёры"
+msgstr "Szponzorok & Partnerek"
 
 msgid "Square"
 msgstr ""
 
 msgid "Staging Area"
-msgstr "Студия"
+msgstr "Előkészítési Terület"
 
 msgid "Star tracker"
 msgstr ""
@@ -2076,7 +2072,7 @@ msgid "Subject type"
 msgstr ""
 
 msgid "Submission queue"
-msgstr "Очередь отправки"
+msgstr "Beküldési várólista"
 
 msgid "Submit"
 msgstr ""
@@ -2085,22 +2081,22 @@ msgid "Submit this image to the selected groups."
 msgstr ""
 
 msgid "Subscribed topics"
-msgstr "Подписанные темы"
+msgstr "Feliratkozott témák"
 
 msgid "Subscription confirmed"
-msgstr "Подписка подтверждена"
+msgstr "Előfizetés megerősítve"
 
 msgid "Subscription plans"
-msgstr "Планы подписки"
+msgstr "Előfizetési tervek"
 
 msgid "Subscription process cancelled"
-msgstr "Процесс подписки отменен"
+msgstr "Előfizetési folyamat törölve"
 
 msgid "Subscriptions"
 msgstr ""
 
 msgid "Success!"
-msgstr "Выполнено!"
+msgstr "Siker!"
 
 msgid "Sulfur-II (SII)"
 msgstr ""
@@ -2123,7 +2119,7 @@ msgid ""
 msgstr ""
 
 msgid "Target image"
-msgstr "Конечное изображение"
+msgstr "Célkép"
 
 msgid "Telescope"
 msgstr ""
@@ -2141,7 +2137,7 @@ msgid "Text"
 msgstr ""
 
 msgid "Thank you for supporting AstroBin!"
-msgstr "Спасибо вам за поддержку AstroBin!"
+msgstr "Köszönjük, hogy támogatod az AstroBint!"
 
 msgid "Thank you so much for contributing to the AstroBin equipment database! 🙌"
 msgstr ""
@@ -2150,7 +2146,7 @@ msgid "Thank you!"
 msgstr ""
 
 msgid "Thanks!"
-msgstr "Спасибо!"
+msgstr "Köszönjük!"
 
 msgid "The \"Variant of\" field must be an item with the same brand as this one."
 msgstr ""
@@ -2321,7 +2317,7 @@ msgid "There are no topics in this forum."
 msgstr ""
 
 msgid "There doesn't seem to be anything here."
-msgstr "Кажется, здесь ничего нет."
+msgstr "Úgy tűnik, nincs itt semmi."
 
 msgid "There is <strong>1 item</strong> of this class that has pending edits."
 msgstr ""
@@ -2357,8 +2353,8 @@ msgid ""
 "This image will be uploaded to your staging area as a work in progress. You "
 "can make it public at the end of the process."
 msgstr ""
-"Это изображение будет загружено в вашу студию в процессе работы. Вы можете "
-"сделать это общедоступным в конце процесса."
+"Ez a kép feltöltésre kerül az előkészítési területedre, mint folyamatban "
+"lévő munka. A folyamat végén nyilvánossá teheted."
 
 msgid "This is a modified and/or custom-cooled variant of this camera."
 msgstr ""
@@ -2432,8 +2428,8 @@ msgid ""
 "This page or operation is not available at the moment, because AstroBin is "
 "in READ ONLY mode."
 msgstr ""
-"Эта страница или операция в настоящий момент недоступны, потому что "
-"AstroBin находится в режиме ТОЛЬКО ДЛЯ ЧТЕНИЯ."
+"Ez az oldal vagy művelet jelenleg nem elérhető, mert az AstroBin READ ONLY "
+"üzemmódban van."
 
 msgid ""
 "This section can be used as a community page to share information about "
@@ -2461,7 +2457,7 @@ msgid "Time"
 msgstr ""
 
 msgid "Title"
-msgstr "Заголовок"
+msgstr "Cím"
 
 msgid "To"
 msgstr ""
@@ -2484,10 +2480,10 @@ msgid "Top left"
 msgstr ""
 
 msgid "Top pick nominations"
-msgstr "Номинации на Лучшее Изображение"
+msgstr "Top pick jelöltek"
 
 msgid "Top picks"
-msgstr "Лучшие Изображения"
+msgstr "Top pickek"
 
 msgid "Top right"
 msgstr ""
@@ -2538,7 +2534,7 @@ msgid "Unapprove"
 msgstr ""
 
 msgid "Uncompressed source uploader"
-msgstr "Загрузчик несжатого исходного кода"
+msgstr "Tömörítetlen forrás feltöltő"
 
 msgid "Understood"
 msgstr ""
@@ -2553,22 +2549,22 @@ msgid "Unknown"
 msgstr ""
 
 msgid "Unknown error"
-msgstr "Неизвестная ошибка"
+msgstr "Ismeretlen hiba"
 
 msgid "Unlimited images"
-msgstr "Неограниченные изображения"
+msgstr "Korlátlan számú kép"
 
 msgid "Unlimited revisions"
-msgstr "Неограниченное количество ревизий"
+msgstr "Korlátlan számú átdolgozás"
 
 msgid "Unlimited size"
-msgstr "Неограниченный размер"
+msgstr "Korlátlan méret"
 
 msgid "Upload"
-msgstr "Загрузить"
+msgstr "Feltöltés"
 
 msgid "Uploader"
-msgstr "Загрузчик"
+msgstr "Feltöltő"
 
 msgid "Uploading..."
 msgstr ""
@@ -2591,7 +2587,7 @@ msgid "Use the <strong>@</strong> sign and start typing to mention any user."
 msgstr ""
 
 msgid "Username"
-msgstr "Имя пользователя"
+msgstr "Felhasználónév"
 
 msgid "Users"
 msgstr ""
@@ -2600,7 +2596,7 @@ msgid "Validation error"
 msgstr ""
 
 msgid "Validity"
-msgstr "Срок действия"
+msgstr "Érvényesség"
 
 msgid "Variant of"
 msgstr ""
@@ -2623,10 +2619,10 @@ msgid "Want to be the first to post?"
 msgstr ""
 
 msgid "Want to upgrade from a lower subscription tier?"
-msgstr "Хотите перейти с более низкого уровня подписки?"
+msgstr "Egy alacsonyabb előfizetési szintről szeretnél fejleszteni?"
 
 msgid "Warning!"
-msgstr "Внимание!"
+msgstr "Figyelem!"
 
 msgid ""
 "Warning! That's a large file you got there! AstroBin does not impose "
@@ -2640,8 +2636,8 @@ msgstr ""
 
 msgid "We could not log you in. Please check your credentials and try again."
 msgstr ""
-"Не удалось войти в систему. Проверьте свои учетные данные и повторите "
-"попытку."
+"Nem tudtunk bejelentkeztetni. Kérjük, ellenőrizd az adatokat, és próbáld "
+"meg újra."
 
 msgid "We couldn't find any similar items in the legacy database."
 msgstr ""
@@ -2668,7 +2664,7 @@ msgid "We know, we're all used to the fact that ads on the Internet are annoying
 msgstr ""
 
 msgid "We'll never share your email with anyone else."
-msgstr "Мы никогда никому не передадим вашу электронную почту."
+msgstr "Soha nem osztjuk meg e-mail címedet senki mással."
 
 msgid "Weather monitoring"
 msgstr ""
@@ -2683,10 +2679,10 @@ msgid "Weight"
 msgstr ""
 
 msgid "Welcome!"
-msgstr "Добро пожаловать!"
+msgstr "Üdvözlünk!"
 
 msgid "What is this site?"
-msgstr "Что это за сайт?"
+msgstr "Mi ez a weboldal?"
 
 msgid "When"
 msgstr ""
@@ -2718,7 +2714,7 @@ msgid ""
 msgstr ""
 
 msgid "Would you like to upgrade?"
-msgstr "Хотите обновить подписку?"
+msgstr "Szeretnél fejleszteni?"
 
 msgid "Yes"
 msgstr ""
@@ -2804,7 +2800,7 @@ msgstr ""
 msgid ""
 "You have a <strong>{{0}}</strong> subscription. Enjoy your unlimited "
 "uploads!"
-msgstr ""
+msgstr "<strong>{{0}}</strong> feliratkozásod van. Élvezd a korlátlan feltöltést!"
 
 msgid ""
 "You have a <strong>{{0}}</strong> subscription. You have used "
@@ -2816,14 +2812,19 @@ msgid ""
 "You have a <strong>{{0}}</strong> subscription. You have used "
 "<strong>{{1}}</strong> of your <strong>{{2}}</strong> upload slots."
 msgstr ""
+"<strong>{{0}}</strong> feliratkozásod van. <strong>{{1}}</strong> számú "
+"feltöltést használtál fel <strong>{{2}}</strong> feltöltési engedélyedből."
 
 msgid ""
 "You have a <strong>{{0}}</strong> subscription. You have used "
 "<strong>{{1}}</strong> of your <strong>{{2}}</strong> yearly upload slots."
 msgstr ""
+"<strong>{{0}}</strong> feliratkozásod van. <strong>{{1}}</strong> számú "
+"feltöltést használtál fel <strong>{{2}}</strong> évi feltöltési "
+"engedélyedből."
 
 msgid "You have been logged in."
-msgstr "Вы вошли в систему."
+msgstr "Be lettél jelentkezve."
 
 msgid "You may have up to one revision per image."
 msgstr ""
@@ -2853,7 +2854,7 @@ msgid ""
 msgstr ""
 
 msgid "You will be redirected in {{seconds}} seconds..."
-msgstr ""
+msgstr "{{seconds}} másodpercen belül át leszel irányítva..."
 
 msgid "You will overwrite your existing preset with the same name."
 msgstr ""
@@ -2870,28 +2871,28 @@ msgid "Your most recent applied migrations (all equipment classes)"
 msgstr ""
 
 msgid "Your payments"
-msgstr "Ваши платежи"
+msgstr "Fizetéseid"
 
 msgid ""
 "Your request has been received, and we are awaiting the final confirmation "
 "from the payment processor. Your subscription should be active within a few "
 "minutes!"
 msgstr ""
-"Ваш запрос получен, и мы ожидаем окончательного подтверждения от платежной "
-"системы. Ваша подписка должна быть активна в течение нескольких минут!"
+"A kérésedet megkaptuk, és várjuk a végső visszaigazolást a fizetési "
+"feldolgozótól. Az előfizetésed néhány percen belül aktiválódni fog!"
 
 msgid "Your session is invalid, please log in again"
-msgstr "Ваш сеанс недействителен, пожалуйста, войдите снова"
+msgstr "Érvénytelen munkamenet, kérjük, jelentkezz be újra"
 
 msgid "Your subscriptions"
-msgstr "Ваши подписки"
+msgstr "Előfizetéseid"
 
 msgid ""
 "Your transaction with the payment processor has been cancelled, so no "
 "change in your subscription has occurred."
 msgstr ""
-"Ваша транзакция с платежной системой была отменена, поэтому никаких "
-"изменений в вашей подписке не произошло."
+"A tranzakciód a fizetési feldolgozóval törlésre került, így az "
+"előfizetésedben nem történt változás."
 
 msgid ""
 "Your usage of the word \"{{0}}\" suggests that you are trying to add a DIY "
@@ -2937,7 +2938,7 @@ msgid "multiple items"
 msgstr ""
 
 msgid "n/a"
-msgstr "н/д"
+msgstr "n/a"
 
 msgid "not enough info"
 msgstr ""
@@ -2957,10 +2958,10 @@ msgid ""
 msgstr ""
 
 msgid "year"
-msgstr "год"
+msgstr "év"
 
 msgid "{{ max }} revisions / image"
-msgstr ""
+msgstr "{{ max }} átdolgozás / kép"
 
 msgid "{{0}} images in common"
 msgstr ""

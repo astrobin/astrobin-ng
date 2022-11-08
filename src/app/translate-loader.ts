@@ -84,7 +84,7 @@ export class LanguageLoader extends TranslatePoHttpLoader {
       lang = "zh_Hans";
     }
 
-    if (["de", "en", "es", "fr", "it", "pt", "ru", "uk", "zh_hans", "ja"].indexOf(lang.toLowerCase()) === -1) {
+    if (["de", "en", "es", "fr", "it", "pt", "ru", "uk", "zh_hans", "ja", "hu"].indexOf(lang.toLowerCase()) === -1) {
       lang = "en";
     }
 
