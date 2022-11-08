@@ -362,7 +362,7 @@ msgid "Brands"
 msgstr "ブランド"
 
 msgid "Browse by brand and properties"
-msgstr ""
+msgstr "ブランド別・プロパティ別にみる"
 
 msgid "Buy"
 msgstr "購入する"
@@ -383,7 +383,7 @@ msgid "Can't find <strong>{{0}}</strong>?"
 msgstr "<strong>{{0}}</strong>をみれませんか？"
 
 msgid "Can't find what you're looking for?"
-msgstr ""
+msgstr "お探しのものが見つかりませんか？"
 
 msgid "Cancel"
 msgstr "キャンセル"
@@ -469,7 +469,7 @@ msgid "Close"
 msgstr "閉じる"
 
 msgid "Collaborators"
-msgstr ""
+msgstr "コラボレーター"
 
 msgid "Color"
 msgstr "カラー"
@@ -562,7 +562,7 @@ msgid "Create item"
 msgstr "アイテムを作成する"
 
 msgid "Create new"
-msgstr ""
+msgstr "新規作成"
 
 msgid "Create new brand"
 msgstr "新規ブランドを作成する"
@@ -639,7 +639,7 @@ msgid "Do not notify your followers about this revision."
 msgstr "この修正について、フォロワーに通知しないでください。"
 
 msgid "Do not repeat the brand's name in the item's name."
-msgstr ""
+msgstr "アイテム名のなかでブランド名を繰り返してはいけません。"
 
 msgid "Dobsonian"
 msgstr "ドブソニアン"
@@ -648,7 +648,7 @@ msgid "Don't remind me for a month"
 msgstr "1ヶ月間、私を思い出させないでください"
 
 msgid "Done"
-msgstr ""
+msgstr "実行"
 
 msgid "Downloaded"
 msgstr "ダウンロードした"
@@ -1031,7 +1031,7 @@ msgstr ""
 msgid ""
 "If this image was a group effort, please add additional collaborators "
 "(other than you) here."
-msgstr ""
+msgstr "この画像が共同作品であったのであれば、コラボレーターをここに追加してください。"
 
 msgid ""
 "If this item is a variant of another product, please select it here. This "
@@ -1182,7 +1182,7 @@ msgid "Key/value tags"
 msgstr "Key/valueタグ"
 
 msgid "Known retailers"
-msgstr ""
+msgstr "既知の販売店"
 
 msgid "Known stock availability"
 msgstr "在庫状況を知る"
@@ -1230,7 +1230,7 @@ msgid "Load equipment preset"
 msgstr "プリセット機材を読込んだ"
 
 msgid "Load more"
-msgstr ""
+msgstr "さらに読み込む"
 
 msgid "Load preset"
 msgstr "プリセットを読込んだ"
@@ -1448,13 +1448,13 @@ msgid "No changes are proposed, or all proposed changes are outdated."
 msgstr "変更案がない、または、変更案がすべて過去のものである。"
 
 msgid "No equipment items found by the selected properties."
-msgstr ""
+msgstr "選択されたプロパティで機器が見つかりませんでした。"
 
 msgid "No items found."
 msgstr "アイテムはみつかりません"
 
 msgid "No need to include yourself as a collaborator."
-msgstr ""
+msgstr "自分をコラボレーターに含める必要はない。"
 
 msgid "No plate-solving"
 msgstr "プレートソルビングなし"
@@ -1754,7 +1754,7 @@ msgid "Promote"
 msgstr "Promote"
 
 msgid "Properties"
-msgstr ""
+msgstr "プロパティ"
 
 msgid "Property"
 msgstr "項目"
@@ -1893,7 +1893,7 @@ msgid "Reset password"
 msgstr "パスワードをリセットする"
 
 msgid "Results"
-msgstr ""
+msgstr "結果"
 
 msgid "Retract"
 msgstr "リトラクト"
@@ -2227,7 +2227,7 @@ msgstr ""
 msgid ""
 "The brand you are looking for is {{0}} and it already exists on AstroBin's "
 "database."
-msgstr ""
+msgstr "お探しのブランドは{{0}}で、AstroBinのデータベースに既に登録済みです。"
 
 msgid "The final font size will depend on how long your watermark is."
 msgstr "最終的なフォントサイズは、透かしの長さによって異なります。"
@@ -2386,7 +2386,7 @@ msgid ""
 msgstr "このコメント欄は、お客様とAstroBinの機材モデレーターのみ閲覧可能です。"
 
 msgid "This edit proposal has already been reviewed."
-msgstr ""
+msgstr "この編集提案は既にレビューされています。"
 
 msgid "This edit proposal has been approved."
 msgstr "この編集提案は承認されました。"

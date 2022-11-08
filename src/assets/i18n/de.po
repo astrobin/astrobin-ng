@@ -404,7 +404,7 @@ msgid "Brands"
 msgstr "Marken"
 
 msgid "Browse by brand and properties"
-msgstr ""
+msgstr "Nach Marke und Eigenschaften suchen"
 
 msgid "Buy"
 msgstr "Kaufen"
@@ -425,7 +425,7 @@ msgid "Can't find <strong>{{0}}</strong>?"
 msgstr "Können Sie <strong>{{0}}</strong> nicht finden?"
 
 msgid "Can't find what you're looking for?"
-msgstr ""
+msgstr "Sie können nicht finden, was Sie suchen?"
 
 msgid "Cancel"
 msgstr "Abbrechen"
@@ -519,7 +519,7 @@ msgid "Close"
 msgstr "Schließen"
 
 msgid "Collaborators"
-msgstr ""
+msgstr "Mitwirkende"
 
 msgid "Color"
 msgstr "Farbe"
@@ -612,7 +612,7 @@ msgid "Create item"
 msgstr "Artikel erstellen"
 
 msgid "Create new"
-msgstr ""
+msgstr "Neu erstellen"
 
 msgid "Create new brand"
 msgstr "Neue Marke erstellen"
@@ -694,7 +694,7 @@ msgid "Do not notify your followers about this revision."
 msgstr "Keine Benachrichtigung Ihrer Abonnenten zu dieser Revision"
 
 msgid "Do not repeat the brand's name in the item's name."
-msgstr ""
+msgstr "Wiederholen Sie den Markennamen nicht im Namen des Artikels."
 
 msgid "Dobsonian"
 msgstr "Dobson"
@@ -703,7 +703,7 @@ msgid "Don't remind me for a month"
 msgstr "Erinnere mich für einen Monat nicht daran"
 
 msgid "Done"
-msgstr ""
+msgstr "Fertig"
 
 msgid "Downloaded"
 msgstr "Heruntergeladen"
@@ -1116,6 +1116,8 @@ msgid ""
 "If this image was a group effort, please add additional collaborators "
 "(other than you) here."
 msgstr ""
+"Wenn dieses Bild eine Gruppenarbeit war, fügen Sie hier bitte weitere "
+"Mitwirkende (außer Ihnen) hinzu."
 
 msgid ""
 "If this item is a variant of another product, please select it here. This "
@@ -1295,7 +1297,7 @@ msgid "Key/value tags"
 msgstr "Schlüssel/Wert-Tags"
 
 msgid "Known retailers"
-msgstr ""
+msgstr "Bekannte Händler"
 
 msgid "Known stock availability"
 msgstr "Bekannte Lagerverfügbarkeit"
@@ -1345,7 +1347,7 @@ msgstr ""
 "\n"
 
 msgid "Load more"
-msgstr ""
+msgstr "Mehr laden"
 
 msgid "Load preset"
 msgstr "Voreinstellung laden"
@@ -1571,13 +1573,13 @@ msgstr ""
 "Änderungen sind veraltet."
 
 msgid "No equipment items found by the selected properties."
-msgstr ""
+msgstr "Keine Ausrüstungsgegenstände mit den ausgewählten Eigenschaften gefunden."
 
 msgid "No items found."
 msgstr "Keine Elemente gefunden."
 
 msgid "No need to include yourself as a collaborator."
-msgstr ""
+msgstr "Sie müssen sich selbst nicht als Mitarbeiter einbeziehen."
 
 msgid "No plate-solving"
 msgstr "Kein Plate-Solving"
@@ -1909,7 +1911,7 @@ msgid "Promote"
 msgstr "Einreichen"
 
 msgid "Properties"
-msgstr ""
+msgstr "Eigenschaften"
 
 msgid "Property"
 msgstr "Eigenschaft"
@@ -2058,7 +2060,7 @@ msgid "Reset password"
 msgstr "Passwort zurücksetzen"
 
 msgid "Results"
-msgstr ""
+msgstr "Resultate"
 
 msgid "Retract"
 msgstr "Zurückziehen"
@@ -2416,6 +2418,8 @@ msgid ""
 "The brand you are looking for is {{0}} and it already exists on AstroBin's "
 "database."
 msgstr ""
+"Die von Ihnen gesuchte Marke ist {{0}} und existiert bereits in der "
+"Datenbank von AstroBin."
 
 msgid "The final font size will depend on how long your watermark is."
 msgstr "Die endgültige Schriftgröße hängt davon ab, wie lang Dein Wasserzeichen ist."
@@ -2609,7 +2613,7 @@ msgstr ""
 "AstroBin-Geräten sichtbar."
 
 msgid "This edit proposal has already been reviewed."
-msgstr ""
+msgstr "Dieser Änderungsvorschlag wurde bereits geprüft."
 
 msgid "This edit proposal has been approved."
 msgstr "Dieser Bearbeitungsvorschlag wurde genehmigt."
