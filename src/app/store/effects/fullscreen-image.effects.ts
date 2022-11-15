@@ -23,5 +23,6 @@ export class FullscreenImageEffects {
     public readonly store$: Store<State>,
     public readonly actions$: Actions<All>,
     public readonly windowRef: WindowRefService
-  ) {}
+  ) {
+  }
 }

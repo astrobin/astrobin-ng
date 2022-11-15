@@ -46,11 +46,9 @@ context("notifications", () => {
       });
 
       it("should have the correct setup", () => {
-        cy.get("astrobin-empty-list").should("not.be.visible");
+        cy.get("astrobin-empty-list").should("not.exist");
         cy.get("#mark-all-as-read").should("not.be.disabled");
-        cy.get("ngb-pagination")
-          .its("length")
-          .should("equal", 2);
+        cy.get("ngb-pagination").its("length").should("equal", 2);
         cy.get("#unread-notifications-count").should("contain.text", 1);
         cy.get(".navbar .notifications-list-item .badge").should("contain.text", 1);
       });
@@ -82,7 +80,7 @@ context("notifications", () => {
           method: "PUT",
           url: "**/notifications/notification/mark_all_as_read",
           response: {},
-          delay: 1000
+          delay: 1000,
         }).as("markAllNotificationsAsReadSlow");
 
         cy.get("#mark-all-as-read").click();

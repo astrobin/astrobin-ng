@@ -17,7 +17,7 @@ describe("MountEditorComponent", () => {
 
   beforeEach(async () => {
     await MockBuilder(MountEditorComponent, EquipmentModule)
-      .mock(AppModule)
+      .mock(AppModule, { export: true })
       .provide([provideMockStore({ initialState }), provideMockActions(() => new ReplaySubject<any>()), UtilsService])
       .mock(BrandEditorCardComponent);
   });

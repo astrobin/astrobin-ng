@@ -53,10 +53,10 @@ const routes: Routes = [
   imports: [
     RouterModule.forRoot(routes, {
       onSameUrlNavigation: "reload",
-      relativeLinkResolution: "legacy",
-      initialNavigation: "enabled"
+      initialNavigation: "enabledBlocking"
     })
   ],
   exports: [RouterModule]
 })
-export class AppRoutingModule {}
+export class AppRoutingModule {
+}

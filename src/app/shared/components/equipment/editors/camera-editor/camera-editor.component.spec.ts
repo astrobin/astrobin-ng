@@ -2,7 +2,6 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { CameraEditorComponent } from "./camera-editor.component";
 import { MockBuilder } from "ng-mocks";
-import { EquipmentModule } from "@features/equipment/equipment.module";
 import { provideMockStore } from "@ngrx/store/testing";
 import { initialState } from "@app/store/state";
 import { provideMockActions } from "@ngrx/effects/testing";
@@ -16,8 +15,7 @@ describe("CameraEditorComponent", () => {
   let fixture: ComponentFixture<CameraEditorComponent>;
 
   beforeEach(async () => {
-    await MockBuilder(CameraEditorComponent, EquipmentModule)
-      .mock(AppModule)
+    await MockBuilder(CameraEditorComponent, AppModule)
       .provide([provideMockStore({ initialState }), provideMockActions(() => new ReplaySubject<any>()), UtilsService])
       .mock(BrandEditorCardComponent);
   });

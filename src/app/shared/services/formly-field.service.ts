@@ -1,10 +1,12 @@
 import { Injectable, TemplateRef } from "@angular/core";
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
+import { Observable, Subject } from "rxjs";
+import { FormlyFieldConfig } from "@ngx-formly/core";
 
 export enum FormlyFieldMessageLevel {
   INFO = "INFO",
-  WARNING = "WARNING"
+  WARNING = "WARNING",
 }
 
 export interface FormlyFieldMessage {
@@ -15,21 +17,29 @@ export interface FormlyFieldMessage {
   dismissible?: boolean;
 }
 
+export interface FormlyFieldMessages {
+  [id: string]: FormlyFieldMessage[];
+}
+
 @Injectable({
   providedIn: "root"
 })
 export class FormlyFieldService extends BaseService {
+  readonly messagesChangesSubject = new Subject<FormlyFieldMessages>();
+  readonly messagesChanges$: Observable<FormlyFieldMessages> = this.messagesChangesSubject.asObservable();
+
   constructor(public readonly loadingService: LoadingService) {
     super(loadingService);
   }
 
-  clearMessages(templateOptions: any) {
-    templateOptions.messages = [];
+  clearMessages(config: FormlyFieldConfig) {
+    config["messages"] = [];
+    this.messagesChangesSubject.next(config["messages"]);
   }
 
-  addMessage(templateOptions: any, message: FormlyFieldMessage) {
-    if (!templateOptions.messages) {
-      templateOptions.messages = [];
+  addMessage(config: FormlyFieldConfig, message: FormlyFieldMessage) {
+    if (config["messages"] === undefined) {
+      config["messages"] = [];
     }
 
     if (!message.text && !message.template) {
@@ -37,14 +47,20 @@ export class FormlyFieldService extends BaseService {
     }
 
     // Clear duplicates by text or template/data.
-    this.removeMessage(templateOptions, message);
+    this.removeMessage(config, message, false);
 
-    templateOptions.messages.push(message);
+    config["messages"] = [...config["messages"], message];
+
+    this.messagesChangesSubject.next(config["messages"]);
   }
 
-  removeMessage(templateOptions: any, message: FormlyFieldMessage) {
-    if (!!templateOptions.messages) {
-      templateOptions.messages = templateOptions.messages.filter(m => !this._equals(m, message));
+  removeMessage(config: FormlyFieldConfig, message: FormlyFieldMessage, emitEvent = true) {
+    if (config["messages"] !== undefined) {
+      config["messages"] = config["messages"].filter(m => !this._equals(m, message));
+
+      if (emitEvent) {
+        this.messagesChangesSubject.next(config["messages"]);
+      }
     }
   }
 

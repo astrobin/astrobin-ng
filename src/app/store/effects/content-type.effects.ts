@@ -19,13 +19,13 @@ export class ContentTypeEffects {
           mergeMap(fromStore =>
             fromStore !== null
               ? of(fromStore).pipe(
-                  take(1),
-                  map(contentType => new LoadContentTypeSuccess(contentType))
-                )
+                take(1),
+                map(contentType => new LoadContentTypeSuccess(contentType))
+              )
               : this.commonApiService.getContentType(action.payload.appLabel, action.payload.model).pipe(
-                  map(contentType => new LoadContentTypeSuccess(contentType)),
-                  catchError(error => EMPTY)
-                )
+                map(contentType => new LoadContentTypeSuccess(contentType)),
+                catchError(error => EMPTY)
+              )
           )
         )
       )
@@ -36,5 +36,6 @@ export class ContentTypeEffects {
     public readonly store$: Store<State>,
     public readonly actions$: Actions<All>,
     public readonly commonApiService: CommonApiService
-  ) {}
+  ) {
+  }
 }

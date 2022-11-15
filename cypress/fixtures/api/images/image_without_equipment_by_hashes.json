@@ -14,14 +14,6 @@
       "h": 4000,
       "imagingTelescopes": [],
       "imagingCameras": [],
-      "imagingTelescopes2": [],
-      "imagingCameras2": [],
-      "mounts2": [],
-      "filters2":  [],
-      "accessories2": [],
-      "software2": [],
-      "guidingTelescopes2": [],
-      "guidingCameras2": [],
       "published": "2021-03-15T21:57:28.994031",
       "license": "ATTRIBUTION_NON_COMMERCIAL_SHARE_ALIKE",
       "description": "This is a test",
@@ -58,7 +50,27 @@
       "mounts2": [],
       "filters2": [],
       "accessories2": [],
-      "software2": []
+      "software2": [],
+      "thumbnails": [
+        {
+          "url": "assets/test/images/regular.jpg",
+          "alias": "regular",
+          "id": 1,
+          "revision": "final"
+        },
+        {
+          "url": "assets/test/images/hd.jpg",
+          "alias": "hd",
+          "id": 1,
+          "revision": "final"
+        },
+        {
+          "url": "assets/test/images/story.jpg",
+          "alias": "story",
+          "id": 1,
+          "revision": "final"
+        }
+      ]
     }
   ]
 }

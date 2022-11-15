@@ -2,7 +2,6 @@ import { TestBed } from "@angular/core/testing";
 import { AppModule } from "@app/app.module";
 import { UserGenerator } from "@shared/generators/user.generator";
 import { MockBuilder } from "ng-mocks";
-import { IsIotdJudgePipe } from "./is-iotd-judge.pipe";
 import { IsInGroupPipe } from "@shared/pipes/is-in-group.pipe";
 
 describe("IsInGroupPipe", () => {

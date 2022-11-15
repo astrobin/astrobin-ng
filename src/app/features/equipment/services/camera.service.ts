@@ -170,8 +170,8 @@ export class CameraService extends BaseService implements EquipmentItemServiceIn
         return shortForm
           ? this.translateService.instant("Max. cooling")
           : `${this.translateService.instant("Max. cooling")} (${this.translateService.instant(
-              "Celsius degrees below ambient"
-            )})`;
+            "Celsius degrees below ambient"
+          )})`;
       case CameraDisplayProperty.BACK_FOCUS:
         return shortForm
           ? this.translateService.instant("Back focus")

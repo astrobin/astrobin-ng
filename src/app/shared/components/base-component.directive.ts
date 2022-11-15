@@ -28,18 +28,20 @@ export class BaseComponentDirective implements OnInit, OnDestroy {
 
     this.currentUserWrapper$ = this.store$.select(selectCurrentUser).pipe(
       takeUntil(this.destroyed$),
-      switchMap((user) =>
+      switchMap(user =>
         this.store$.select(selectCurrentUserProfile).pipe(
-          map((userProfile) => ({
+          map(userProfile => ({
             user,
-            userProfile,
+            userProfile
           }))
         )
       )
     );
   }
 
-  ngOnInit() {}
+  // eslint-disable-next-line @angular-eslint/no-empty-lifecycle-method
+  ngOnInit() {
+  }
 
   ngOnDestroy(): void {
     this.destroyedSubject.next();

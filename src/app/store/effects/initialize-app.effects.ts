@@ -49,5 +49,6 @@ export class InitializeAppEffects {
     public readonly translate: TranslateService,
     public readonly timeagoIntl: TimeagoIntl,
     public readonly windowRef: WindowRefService
-  ) {}
+  ) {
+  }
 }

@@ -7,7 +7,7 @@ export class BrandGenerator {
       created: "1970-01-01",
       updated: "1970-01-01",
       lastAddedOrRemovedFromImage: "1970-01-01",
-      name: "Test brand",
+      name: "Test Brand",
       userCount: 0,
       imageCount: 0
     };

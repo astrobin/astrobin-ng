@@ -5,7 +5,7 @@ import { State } from "@app/store/state";
 import { LoadingService } from "@shared/services/loading.service";
 import { Observable } from "rxjs";
 import { selectStaffMemberSettings } from "@features/iotd/store/iotd.selectors";
-import { map, take } from "rxjs/operators";
+import { map } from "rxjs/operators";
 import { QueueSortOrder } from "@features/iotd/types/staff-member-settings.interface";
 
 @Component({

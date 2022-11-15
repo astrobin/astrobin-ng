@@ -19,7 +19,7 @@ context("Equipment", () => {
       it("should create a brand", () => {
         cy.equipmentItemBrowserCreateBrand(
           "#equipment-item-field-brand",
-          "Test brand",
+          "Test Brand",
           "https://www.test-brand.com/",
           testBrand
         );
@@ -51,18 +51,12 @@ context("Equipment", () => {
 
       it("should override the name", () => {
         cy.get("#filter-field-override-name + label").click();
-        cy.get("#equipment-item-field-name")
-          .clear()
-          .type("Test filter");
+        cy.get("#equipment-item-field-name").clear().type("Test filter");
+        cy.get("#equipment-item-field-website").click();
       });
 
       it("should have the filter name info messages", () => {
-        cy.get(".alert-info")
-          .contains("contain the bandwidth")
-          .should("be.visible");
-        cy.get(".alert-info")
-          .contains("contain the size")
-          .should("be.visible");
+        cy.get(".alert-info").contains("contain the bandwidth").should("be.visible");
       });
 
       it("should create the item", () => {
@@ -70,11 +64,9 @@ context("Equipment", () => {
 
         cy.get("#create-new-item .btn-primary").click();
 
-        cy.get(".modal-title")
-          .contains("Confirm item creation")
-          .should("be.visible");
+        cy.get(".modal-title").contains("Confirm item creation").should("be.visible");
 
-        cy.equipmentItemSummaryShouldHaveItem(".modal", "Test brand", "Test");
+        cy.equipmentItemSummaryShouldHaveItem(".modal", "Test Brand", "Test");
         cy.equipmentItemSummaryShouldHaveProperty(".modal", "Class", "Filter");
         cy.equipmentItemSummaryShouldHaveProperty(".modal", "Type", "Hydrogen-alpha (Hα)");
         cy.equipmentItemSummaryShouldHaveProperty(".modal", "Bandwidth", "3 nm");
@@ -86,13 +78,11 @@ context("Equipment", () => {
         cy.get("[for=confirm-unambiguous]").click();
         cy.get("[for=confirm-english]").click();
         cy.get("[for=confirm-no-personal-information]").click();
-        cy.get(".modal-footer .btn")
-          .contains("Confirm")
-          .click();
+        cy.get(".modal-footer .btn").contains("Confirm").click();
 
         cy.wait("@createFilter");
 
-        cy.equipmentItemBrowserShouldContain("#equipment-item-field", "Test brand", "Test filter");
+        cy.equipmentItemBrowserShouldContain("#equipment-item-field", "Test Brand", "Test filter");
       });
     });
   });

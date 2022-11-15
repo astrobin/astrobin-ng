@@ -10,8 +10,6 @@ import { SubscriptionInterface } from "@shared/interfaces/subscription.interface
 import { TelescopeInterface } from "@shared/interfaces/telescope.interface";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { NestedCommentInterface } from "@shared/interfaces/nested-comment.interface";
-import * as Util from "util";
-import { act } from "@ngrx/effects";
 
 export interface AppState {
   // Weather the app has been initialized.
@@ -145,12 +143,15 @@ export function reducer(state = initialAppState, action: All): AppState {
       };
     }
 
-    case AppActionTypes.SAVE_IMAGE_SUCCESS: {
-      return {
-        ...state,
-        images: [...state.images.filter(i => i.pk !== action.payload.image.pk), action.payload.image]
-      };
-    }
+    // case AppActionTypes.SAVE_IMAGE_SUCCESS: {
+    //   return {
+    //     ...state,
+    //     images: [
+    //       ...state.images.filter((i) => i.pk !== action.payload.image.pk),
+    //       action.payload.image as ImageEditModelInterface,
+    //     ],
+    //   };
+    // }
 
     case AppActionTypes.LOAD_IMAGES_SUCCESS: {
       const flatImages = action.payload.results.map(image => ({

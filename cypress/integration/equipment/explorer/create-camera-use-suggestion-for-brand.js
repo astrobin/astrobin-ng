@@ -17,7 +17,7 @@ context("Equipment", () => {
       });
 
       it("should select brand suggestion", () => {
-        cy.equipmentItemBrowserCreateBrandUsingSuggestion("#equipment-item-field-brand", "Test brand", testBrand);
+        cy.equipmentItemBrowserCreateBrandUsingSuggestion("#equipment-item-field-brand", "Test Brand", testBrand);
       });
     });
   });

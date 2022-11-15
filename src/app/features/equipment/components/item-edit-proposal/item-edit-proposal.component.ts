@@ -18,7 +18,7 @@ import {
 import { selectEditProposalsForItem, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { LoadUser } from "@features/account/store/auth.actions";
-import { filter, map, switchMap, take, takeUntil, tap } from "rxjs/operators";
+import { filter, map, switchMap, take, tap } from "rxjs/operators";
 import { TranslateService } from "@ngx-translate/core";
 import { forkJoin, Observable } from "rxjs";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";

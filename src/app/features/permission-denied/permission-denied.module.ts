@@ -8,4 +8,5 @@ import { PermissionDeniedPageComponent } from "./pages/permission-denied-page/pe
   declarations: [PermissionDeniedPageComponent],
   imports: [RouterModule.forChild(routes), SharedModule]
 })
-export class PermissionDeniedModule {}
+export class PermissionDeniedModule {
+}

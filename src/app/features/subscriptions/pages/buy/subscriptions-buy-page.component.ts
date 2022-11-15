@@ -91,8 +91,8 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
   get upgradeMessage(): string {
     return this.translate.instant(
       "AstroBin doesn't support subscription upgrades at the moment, but we're happy to make it happen manually. If " +
-        "you're on a lower subscription tier and would like to upgrade to <strong>{{0}}</strong>, please just buy it " +
-        "and then contact us at {{1}} to get a refund for the unused time on your old subscription. Thanks!",
+      "you're on a lower subscription tier and would like to upgrade to <strong>{{0}}</strong>, please just buy it " +
+      "and then contact us at {{1}} to get a refund for the unused time on your old subscription. Thanks!",
       {
         0: this.subscriptionsService.getName(this.product),
         1: `<a href="mailto:support@astrobin.com">support@astrobin.com</a>`
@@ -218,8 +218,8 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
             switchMap(price =>
               this.translate.stream(
                 "Please make a deposit of {{ currency }} {{ amount }} to the following bank details and then email " +
-                  "us at {{ email_prefix }}{{ email }}{{ email_postfix }} with your username so we may upgrade your " +
-                  "account manually.",
+                "us at {{ email_prefix }}{{ email }}{{ email_postfix }} with your username so we may upgrade your " +
+                "account manually.",
                 {
                   currency: "",
                   amount: `<strong>${this.currencyPipe.transform(price, this.subscriptionsService.currency)}</strong>`,
@@ -238,8 +238,8 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
     return this.domSanitizer.bypassSecurityTrustHtml(
       this.translate.instant(
         "The Lite plan is capped at <strong>{{maxImagesForLite}}</strong> total images, and you currently have " +
-          "<strong>{{numberOfImages}}</strong> images on AstroBin. For this reason, we recommend that you upgrade to " +
-          "Premium or Ultimate instead.",
+        "<strong>{{numberOfImages}}</strong> images on AstroBin. For this reason, we recommend that you upgrade to " +
+        "Premium or Ultimate instead.",
         {
           maxImagesForLite: 50,
           numberOfImages

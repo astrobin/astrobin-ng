@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { Actions } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
@@ -31,7 +31,8 @@ export class SoftwareEditorComponent extends BaseItemEditorComponent<SoftwareInt
     public readonly equipmentItemService: EquipmentItemService,
     public readonly formlyFieldService: FormlyFieldService,
     public readonly modalService: NgbModal,
-    public readonly utilsService: UtilsService
+    public readonly utilsService: UtilsService,
+    public readonly changeDetectorRef: ChangeDetectorRef
   ) {
     super(
       store$,
@@ -43,7 +44,8 @@ export class SoftwareEditorComponent extends BaseItemEditorComponent<SoftwareInt
       equipmentItemService,
       formlyFieldService,
       modalService,
-      utilsService
+      utilsService,
+      changeDetectorRef
     );
   }
 
@@ -62,11 +64,11 @@ export class SoftwareEditorComponent extends BaseItemEditorComponent<SoftwareInt
     const hasNumbers: boolean = /\d/.test(value);
 
     if (hasNumbers) {
-      this.formlyFieldService.addMessage(field.templateOptions, {
+      this.formlyFieldService.addMessage(field, {
         level: FormlyFieldMessageLevel.INFO,
         text: this.translateService.instant(
           "The AstroBin equipment database does not attempt to track version numbers of software. " +
-            "If that number is a version number, please remove it, thanks!"
+          "If that number is a version number, please remove it, thanks!"
         )
       });
     }
@@ -78,8 +80,8 @@ export class SoftwareEditorComponent extends BaseItemEditorComponent<SoftwareInt
         this._getDIYField(),
         this._getBrandField(
           `${this.translateService.instant("Brand")} / ` +
-            `${this.translateService.instant("Company")} / ` +
-            this.translateService.instant("Developer(s)")
+          `${this.translateService.instant("Company")} / ` +
+          this.translateService.instant("Developer(s)")
         ),
         this._getNameField(),
         this._getVariantOfField(EquipmentItemType.SOFTWARE),

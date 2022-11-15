@@ -4,7 +4,7 @@ import { State } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { BaseClassicApiService } from "@shared/services/api/classic/base-classic-api.service";
 import { LoadingService } from "@shared/services/loading.service";
-import { Observable, of } from "rxjs";
+import { Observable } from "rxjs";
 import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
 import { ImageSearchInterface } from "@shared/interfaces/image-search.interface";
 import { UtilsService } from "@shared/services/utils/utils.service";

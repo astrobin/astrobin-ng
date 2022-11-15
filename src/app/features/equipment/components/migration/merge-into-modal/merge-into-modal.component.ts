@@ -8,7 +8,7 @@ import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipme
 import { ActivatedRoute } from "@angular/router";
 import { CameraApiService } from "@shared/services/api/classic/astrobin/camera/camera-api.service";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
-import { filter, map, switchMap, take, tap } from "rxjs/operators";
+import { filter, map, switchMap } from "rxjs/operators";
 import { concat, forkJoin, of } from "rxjs";
 import { GearApiService } from "@shared/services/api/classic/astrobin/gear/gear-api.service";
 import { FormlyFieldConfig } from "@ngx-formly/core";
@@ -17,7 +17,6 @@ import { LoadBrand } from "@features/equipment/store/equipment.actions";
 import { selectBrand } from "@features/equipment/store/equipment.selectors";
 import { FormGroup } from "@angular/forms";
 import { MigrationFlag } from "@shared/services/api/classic/astrobin/migratable-gear-item-api.service.interface";
-import { HttpStatusCode } from "@angular/common/http";
 import { TelescopeApiService } from "@shared/services/api/classic/astrobin/telescope/telescope-api.service";
 import { MountApiService } from "@shared/services/api/classic/astrobin/mount/mount-api.service";
 import { FilterApiService } from "@shared/services/api/classic/astrobin/filter/filter-api.service";
@@ -48,8 +47,8 @@ export class MergeIntoModalComponent extends BaseComponentDirective implements O
 
   message = this.translateService.instant(
     "We found these items in the legacy database that are similar to this one. Please check the ones that you " +
-      "want to migrate into it. <strong>Please be careful!</strong> Not all items that AstroBin thinks are " +
-      "similar, are necessarily the same product. Only check the ones that you are sure of."
+    "want to migrate into it. <strong>Please be careful!</strong> Not all items that AstroBin thinks are " +
+    "similar, are necessarily the same product. Only check the ones that you are sure of."
   );
 
   constructor(
@@ -127,9 +126,9 @@ export class MergeIntoModalComponent extends BaseComponentDirective implements O
               return of(legacyItems);
             }
 
-            return forkJoin(...[legacyItems.map(item => this.legacyGearApi.lockForMigration(item.pk))]).pipe(
-              map(() => legacyItems)
-            );
+            return forkJoin(
+              ...([legacyItems.map(item => this.legacyGearApi.lockForMigration(item.pk))] as const)
+            ).pipe(map(() => legacyItems));
           })
         )
         .subscribe(legacyItems => {
@@ -142,7 +141,7 @@ export class MergeIntoModalComponent extends BaseComponentDirective implements O
               type: "checkbox",
               id: `similar-item-${item.pk}`,
               defaultValue: false,
-              templateOptions: {
+              props: {
                 required: false,
                 label: this.legacyGearService.getDisplayName(item.make, item.name),
                 value: item.pk

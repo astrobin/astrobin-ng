@@ -1,10 +1,10 @@
-import { Directive, HostBinding } from "@angular/core";
+import { Directive } from "@angular/core";
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from "@angular/forms";
 
 @Directive({
-  // tslint:disable-next-line
+  // eslint-disable-next-line
   selector: "input[type=file]",
-  // tslint:disable-next-line:no-host-metadata-property
+  // eslint-disable-next-line @angular-eslint/no-host-metadata-property
   host: {
     "(change)": "onChange($event.target.files)",
     "(blur)": "onTouched()"
@@ -14,11 +14,14 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from "@angular/forms";
 export class FileValueAccessorDirective implements ControlValueAccessor {
   value: any;
 
-  onChange = _ => {};
+  onChange = _ => {
+  };
 
-  onTouched = () => {};
+  onTouched = () => {
+  };
 
-  writeValue(value) {}
+  writeValue(value) {
+  }
 
   registerOnChange(fn: any) {
     this.onChange = fn;

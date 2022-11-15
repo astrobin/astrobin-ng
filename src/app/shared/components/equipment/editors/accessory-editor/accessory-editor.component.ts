@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { Actions } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
@@ -38,7 +38,8 @@ export class AccessoryEditorComponent extends BaseItemEditorComponent<AccessoryI
     public readonly accessoryService: AccessoryService,
     public readonly formlyFieldService: FormlyFieldService,
     public readonly modalService: NgbModal,
-    public readonly utilsService: UtilsService
+    public readonly utilsService: UtilsService,
+    public readonly changeDetectorRef: ChangeDetectorRef
   ) {
     super(
       store$,
@@ -50,7 +51,8 @@ export class AccessoryEditorComponent extends BaseItemEditorComponent<AccessoryI
       equipmentItemService,
       formlyFieldService,
       modalService,
-      utilsService
+      utilsService,
+      changeDetectorRef
     );
   }
 
@@ -105,9 +107,9 @@ export class AccessoryEditorComponent extends BaseItemEditorComponent<AccessoryI
       type: "ng-select",
       id: "accessory-field-type",
       expressionProperties: {
-        "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+        "props.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
       },
-      templateOptions: {
+      props: {
         label: this.accessoryService.getPrintablePropertyName(AccessoryDisplayProperty.TYPE),
         required: true,
         clearable: true,

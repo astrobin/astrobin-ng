@@ -10,4 +10,5 @@ import { SettingsPageComponent } from "./pages/settings-page/settings-page.compo
   declarations: [NormalizeNotificationLinkPipe, NotificationsPageComponent, SettingsPageComponent],
   imports: [RouterModule.forChild(routes), SharedModule]
 })
-export class NotificationsModule {}
+export class NotificationsModule {
+}

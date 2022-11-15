@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { Actions } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
@@ -37,7 +37,8 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
     public readonly formlyFieldService: FormlyFieldService,
     public readonly sensorService: SensorService,
     public readonly modalService: NgbModal,
-    public readonly utilsService: UtilsService
+    public readonly utilsService: UtilsService,
+    public readonly changeDetectorRef: ChangeDetectorRef
   ) {
     super(
       store$,
@@ -49,7 +50,8 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
       equipmentItemService,
       formlyFieldService,
       modalService,
-      utilsService
+      utilsService,
+      changeDetectorRef
     );
   }
 
@@ -146,9 +148,9 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
       wrappers: ["default-wrapper"],
       id: "sensor-field-pixel-size",
       expressionProperties: {
-        "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+        "props.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
       },
-      templateOptions: {
+      props: {
         type: "number",
         step: 0.1,
         label: this.translateService.instant("Pixel size (in μm)"),
@@ -181,9 +183,9 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
       wrappers: ["default-wrapper"],
       id: "sensor-field-pixel-width",
       expressionProperties: {
-        "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+        "props.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
       },
-      templateOptions: {
+      props: {
         required: true,
         type: "number",
         step: 1,
@@ -210,9 +212,9 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
       wrappers: ["default-wrapper"],
       id: "sensor-field-pixel-height",
       expressionProperties: {
-        "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+        "props.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
       },
-      templateOptions: {
+      props: {
         required: true,
         type: "number",
         step: 1,
@@ -239,9 +241,9 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
       wrappers: ["default-wrapper"],
       id: "sensor-field-sensor-width",
       expressionProperties: {
-        "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+        "props.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
       },
-      templateOptions: {
+      props: {
         type: "number",
         step: 0.1,
         label: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.SENSOR_WIDTH)
@@ -273,9 +275,9 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
       wrappers: ["default-wrapper"],
       id: "sensor-field-sensor-height",
       expressionProperties: {
-        "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+        "props.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
       },
-      templateOptions: {
+      props: {
         type: "number",
         step: 0.1,
         label: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.SENSOR_HEIGHT)
@@ -307,9 +309,9 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
       wrappers: ["default-wrapper"],
       id: "sensor-field-quantum-efficiency",
       expressionProperties: {
-        "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+        "props.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
       },
-      templateOptions: {
+      props: {
         type: "number",
         step: 0.1,
         label: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.QUANTUM_EFFICIENCY)
@@ -341,9 +343,9 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
       wrappers: ["default-wrapper"],
       id: "sensor-field-full-well-capacity",
       expressionProperties: {
-        "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+        "props.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
       },
-      templateOptions: {
+      props: {
         type: "number",
         step: 0.1,
         label: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.FULL_WELL_CAPACITY)
@@ -375,9 +377,9 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
       wrappers: ["default-wrapper"],
       id: "sensor-field-read-noise",
       expressionProperties: {
-        "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+        "props.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
       },
-      templateOptions: {
+      props: {
         type: "number",
         step: 0.1,
         label: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.READ_NOISE)
@@ -409,9 +411,9 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
       wrappers: ["default-wrapper"],
       id: "sensor-field-frame-rate",
       expressionProperties: {
-        "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+        "props.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
       },
-      templateOptions: {
+      props: {
         type: "number",
         step: 1,
         label: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.FRAME_RATE)
@@ -437,9 +439,9 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
       wrappers: ["default-wrapper"],
       id: "sensor-field-adc",
       expressionProperties: {
-        "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+        "props.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
       },
-      templateOptions: {
+      props: {
         type: "number",
         step: 1,
         label: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.ADC),
@@ -465,9 +467,9 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
       type: "ng-select",
       id: "sensor-field-color-or-mono",
       expressionProperties: {
-        "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+        "props.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
       },
-      templateOptions: {
+      props: {
         label: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.COLOR_OR_MONO),
         options: [
           {

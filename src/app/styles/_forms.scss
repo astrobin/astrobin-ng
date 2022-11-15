@@ -2,6 +2,7 @@ label {
   font-size: 1rem;
   font-weight: bold;
   color: var(--white);
+  margin-bottom: .5rem;
 }
 
 formly-field {
@@ -24,7 +25,6 @@ formly-field-checkbox {
     background-color: var(--darkestGrey);
     border-color: var(--darkGrey);
     color: var(--lighterGrey);
-    padding: 1.25rem 1rem;
 
     @media screen and (-ms-high-contrast: active), screen and (-ms-high-contrast: none) {
       /* IE10+ specific style */
@@ -100,11 +100,9 @@ formly-field-checkbox {
   animation: pulse .45s ease-in-out infinite;
 }
 
-.custom-control {
-  &.custom-radio {
-    &:not(:last-child) {
-      margin-bottom: .5rem;
-    }
+.form-check {
+  &:not(:last-child) {
+    margin-bottom: .5rem;
   }
 }
 

@@ -68,4 +68,5 @@ import { EquipmentListingsComponent } from "./components/equipment-listings/equi
   ],
   imports: [RouterModule.forChild(routes), SharedModule, StoreModule.forFeature(equipmentFeatureKey, reducer)]
 })
-export class EquipmentModule {}
+export class EquipmentModule {
+}

@@ -6,30 +6,35 @@ import { MockBuilder } from "ng-mocks";
 import { ActivatedRoute } from "@angular/router";
 import { provideMockStore } from "@ngrx/store/testing";
 import { initialState } from "@app/store/state";
+import { HttpClientModule } from "@angular/common/http";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
 
 describe("ReviewGearRenamingProposalsComponent", () => {
   let component: ReviewGearRenamingProposalsComponent;
   let fixture: ComponentFixture<ReviewGearRenamingProposalsComponent>;
 
   beforeEach(async () => {
-    await MockBuilder(ReviewGearRenamingProposalsComponent, AppModule).provide([
-      provideMockStore({ initialState }),
-      {
-        provide: ActivatedRoute,
-        useValue: {
-          snapshot: {
-            paramMap: { get: key => "camera" }
+    await MockBuilder(ReviewGearRenamingProposalsComponent, AppModule)
+      .replace(HttpClientModule, HttpClientTestingModule)
+      .provide([
+        provideMockStore({ initialState }),
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              paramMap: { get: key => "camera" }
+            }
           }
         }
-      }
-    ]);
+      ]);
   });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ReviewGearRenamingProposalsComponent);
     component = fixture.componentInstance;
 
-    jest.spyOn(component, "getProposals").mockImplementation(() => {});
+    jest.spyOn(component, "getProposals").mockImplementation(() => {
+    });
 
     fixture.detectChanges();
   });

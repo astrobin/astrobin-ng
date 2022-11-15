@@ -26,7 +26,7 @@
     <ng-container *ngIf="hasRecent; else noRecent">
       <ng-container *ngIf="recent.length > 0; else allRecentUsed">
         <ng-container *ngFor="let item of recent; let last = last">
-          <a href="#" class="quick-add-item" appEventPreventDefault (click)="quickAddItem(item)">
+          <a href="#" class="quick-add-item" astrobinEventPreventDefault (click)="quickAddItem(item)">
             <astrobin-equipment-item-display-name
               [item]="item"
               [enableSummaryModal]="false"
@@ -41,8 +41,8 @@
   <div
     class="no-recent alert alert-warning with-triangle"
     *ngIf="
-      to.itemType == EquipmentItemType.TELESCOPE &&
-      to.usageType == EquipmentItemUsageType.IMAGING &&
+      to.itemType === EquipmentItemType.TELESCOPE &&
+      to.usageType === EquipmentItemUsageType.IMAGING &&
       recentLoaded &&
       recent.length === 0 &&
       formControl.value?.length === 0

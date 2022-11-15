@@ -13,7 +13,7 @@ describe("EquipmentItemSummaryComponent", () => {
 
   beforeEach(async () => {
     await MockBuilder(ItemSummaryComponent, EquipmentModule)
-      .mock(AppModule)
+      .mock(AppModule, { export: true })
       .provide(provideMockStore({ initialState }));
   });
 

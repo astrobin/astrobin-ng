@@ -1,5 +1,4 @@
 import { Injectable } from "@angular/core";
-import { ImageAlias } from "@shared/enums/image-alias.enum";
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { WindowRefService } from "@shared/services/window-ref.service";

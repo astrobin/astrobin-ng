@@ -17,7 +17,7 @@ describe("PopNotificationsService", () => {
 
   describe("success", () => {
     beforeEach(() => {
-      spyOn(service.toastr, "success");
+      jest.spyOn(service.toastr, "success");
     });
 
     it("should defer to toastr module, with title", () => {
@@ -35,7 +35,7 @@ describe("PopNotificationsService", () => {
 
   describe("info", () => {
     beforeEach(() => {
-      spyOn(service.toastr, "info");
+      jest.spyOn(service.toastr, "info");
     });
 
     it("should defer to toastr module, with title", () => {
@@ -53,7 +53,7 @@ describe("PopNotificationsService", () => {
 
   describe("warning", () => {
     beforeEach(() => {
-      spyOn(service.toastr, "warning");
+      jest.spyOn(service.toastr, "warning");
     });
 
     it("should defer to toastr module, with title", () => {
@@ -71,7 +71,7 @@ describe("PopNotificationsService", () => {
 
   describe("error", () => {
     beforeEach(() => {
-      spyOn(service.toastr, "error");
+      jest.spyOn(service.toastr, "error");
     });
 
     it("should defer to toastr module, with title", () => {

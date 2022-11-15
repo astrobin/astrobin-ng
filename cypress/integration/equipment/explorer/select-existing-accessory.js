@@ -19,19 +19,19 @@ context("Equipment", () => {
           count: 1,
           next: null,
           previous: null,
-          results: [testAccessory]
+          results: [testAccessory],
         }).as("findAccessories");
 
         cy.route("get", "**/api/v2/equipment/accessory/?page=*", {
           count: 1,
           next: null,
           previous: null,
-          results: [testAccessory]
+          results: [testAccessory],
         }).as("getAccessories");
 
         cy.route("get", "**/api/v2/equipment/brand/1/", testBrand).as("getBrand");
 
-        cy.get("#equipment-item-field  + .toggle-enable-fullscreen").click();
+        cy.get("#equipment-item-field  + .toggle-enable-fullscreen").scrollIntoView().click();
         cy.ngSelectType("#equipment-item-field", "Test");
         cy.wait("@findAccessories");
 
@@ -40,7 +40,7 @@ context("Equipment", () => {
           "#equipment-item-field",
           1,
           "astrobin-equipment-item-display-name .brand",
-          "Test brand"
+          "Test Brand"
         );
         cy.ngSelectOptionNumberSelectorShouldContain(
           "#equipment-item-field",
@@ -50,7 +50,7 @@ context("Equipment", () => {
         );
 
         cy.ngSelectOptionClick("#equipment-item-field", 1);
-        cy.equipmentItemBrowserShouldContain("#equipment-item-field", "Test brand", "Test accessory");
+        cy.equipmentItemBrowserShouldContain("#equipment-item-field", "Test Brand", "Test accessory");
       });
 
       it("should update the URL with ID and slug", () => {
@@ -58,12 +58,8 @@ context("Equipment", () => {
       });
 
       it("should show the item", () => {
-        cy.get(".card astrobin-equipment-item-summary .label .brand")
-          .contains("Test brand")
-          .should("be.visible");
-        cy.get(".card astrobin-equipment-item-summary .label .name")
-          .contains("Test")
-          .should("be.visible");
+        cy.get(".card astrobin-equipment-item-summary .label .brand").contains("Test Brand").should("be.visible");
+        cy.get(".card astrobin-equipment-item-summary .label .name").contains("Test").should("be.visible");
       });
     });
   });

@@ -1,4 +1,4 @@
-// tslint:disable:max-classes-per-file
+/* eslint-disable max-classes-per-file */
 
 import { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
 import { Action } from "@ngrx/store";
@@ -23,7 +23,8 @@ export class LoadNotificationTypes implements Action {
 export class LoadNotificationTypesSuccess implements PayloadActionInterface {
   readonly type = NotificationsActionTypes.LOAD_TYPES_SUCCESS;
 
-  constructor(public payload: { types: NotificationTypeInterface[] }) {}
+  constructor(public payload: { types: NotificationTypeInterface[] }) {
+  }
 }
 
 export class LoadNotificationSettings implements Action {
@@ -33,19 +34,22 @@ export class LoadNotificationSettings implements Action {
 export class LoadNotificationSettingsSuccess implements PayloadActionInterface {
   readonly type = NotificationsActionTypes.LOAD_SETTINGS_SUCCESS;
 
-  constructor(public payload: { settings: NotificationSettingInterface[] }) {}
+  constructor(public payload: { settings: NotificationSettingInterface[] }) {
+  }
 }
 
 export class SetNotificationSetting implements PayloadActionInterface {
   readonly type = NotificationsActionTypes.SET_SETTING;
 
-  constructor(public payload: { setting: NotificationSettingInterface }) {}
+  constructor(public payload: { setting: NotificationSettingInterface }) {
+  }
 }
 
 export class SetNotificationSettingSuccess implements PayloadActionInterface {
   readonly type = NotificationsActionTypes.SET_SETTING_SUCCESS;
 
-  constructor(public payload: { setting: NotificationSettingInterface }) {}
+  constructor(public payload: { setting: NotificationSettingInterface }) {
+  }
 }
 
 export type All =

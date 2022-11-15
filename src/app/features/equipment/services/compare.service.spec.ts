@@ -4,7 +4,6 @@ import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
 import { CameraGenerator } from "@features/equipment/generators/camera.generator";
 import { MountGenerator } from "@features/equipment/generators/mount.generator";
-import { CameraDisplayProperty, CameraService } from "@features/equipment/services/camera.service";
 import { of } from "rxjs";
 import { MountDisplayProperty, MountService } from "@features/equipment/services/mount.service";
 

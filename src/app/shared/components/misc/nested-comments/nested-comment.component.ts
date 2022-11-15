@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, Input, OnInit, TemplateRef, ViewChild } from "@angular/core";
+import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
@@ -117,7 +117,7 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
         type: "ckeditor",
         wrappers: ["default-wrapper"],
         id: `reply-comment-field-${this.comment.id}`,
-        templateOptions: {
+        props: {
           required: true
         }
       }

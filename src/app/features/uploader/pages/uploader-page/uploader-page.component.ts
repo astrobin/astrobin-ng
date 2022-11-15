@@ -16,9 +16,7 @@ import { UserSubscriptionService } from "@shared/services/user-subscription/user
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { SubscriptionName } from "@shared/types/subscription-name.type";
 import { UploadState, UploadxService } from "ngx-uploadx";
-import { take, takeUntil } from "rxjs/operators";
-import { selectCurrentUserProfile } from "@features/account/store/auth.selectors";
-import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
+import { takeUntil } from "rxjs/operators";
 import { ActivatedRoute, Router } from "@angular/router";
 
 @Component({
@@ -43,7 +41,7 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
       wrappers: ["default-wrapper"],
       id: "title",
       type: "input",
-      templateOptions: {
+      props: {
         label: this.translate.instant("Title"),
         required: true,
         maxLength: 128,
@@ -54,7 +52,7 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
       key: "image_file",
       id: "image_file",
       type: "chunked-file",
-      templateOptions: {
+      props: {
         required: true,
         experimentalTiffSupportWarning: true,
         veryLargeSizeWarning: true
@@ -96,7 +94,7 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
   subscriptionWithYearlySlotsMessage(name: string, counter: number, slots: number): string {
     return this.translate.instant(
       "You have a <strong>{{0}}</strong> subscription. You have used <strong>{{1}}</strong> of " +
-        "your <strong>{{2}}</strong> yearly upload slots.",
+      "your <strong>{{2}}</strong> yearly upload slots.",
       {
         0: name,
         1: counter,
@@ -108,7 +106,7 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
   subscriptionWithTotalImagesMessage(name: string, counter: number, images: number): string {
     return this.translate.instant(
       "You have a <strong>{{0}}</strong> subscription. You have used <strong>{{1}}</strong> of " +
-        "the <strong>{{2}}</strong> images allowed in your plan.",
+      "the <strong>{{2}}</strong> images allowed in your plan.",
       {
         0: name,
         1: counter,
@@ -120,7 +118,7 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
   subscriptionWithTotalSlotsMessage(name: string, counter: number, slots: number): string {
     return this.translate.instant(
       "You have a <strong>{{0}}</strong> subscription. You have used <strong>{{1}}</strong> of " +
-        "your <strong>{{2}}</strong> upload slots.",
+      "your <strong>{{2}}</strong> upload slots.",
       {
         0: name,
         1: counter,
@@ -209,8 +207,8 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
       this.popNotificationsService.warning(
         this.translate.instant(
           "If this file is a different take on the same data as in another image you already published on " +
-            "AstroBin, the common practice would be to upload it as a new revision. For more info, please " +
-            "{{0}}click here{{1}}.",
+          "AstroBin, the common practice would be to upload it as a new revision. For more info, please " +
+          "{{0}}click here{{1}}.",
           {
             0: "<a href='https://welcome.astrobin.com/features/image-revisions' target='_blank'>",
             1: "</a>"

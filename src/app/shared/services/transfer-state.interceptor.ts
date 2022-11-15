@@ -7,7 +7,8 @@ import { tap } from "rxjs/operators";
 
 @Injectable()
 export class TransferStateInterceptor implements HttpInterceptor {
-  constructor(@Inject(PLATFORM_ID) public readonly platformId, public readonly transferState: TransferState) {}
+  constructor(@Inject(PLATFORM_ID) public readonly platformId, public readonly transferState: TransferState) {
+  }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     if (request.method !== "GET") {

@@ -17,7 +17,7 @@ describe("EditProposalExplorerComponent", () => {
 
   beforeEach(async () => {
     await MockBuilder(PendingReviewExplorerComponent, AppModule)
-      .mock(ItemTypeNavComponent)
+      .mock(ItemTypeNavComponent, { export: true })
       .mock(ItemBrowserComponent)
       .provide([
         provideMockStore({ initialState }),

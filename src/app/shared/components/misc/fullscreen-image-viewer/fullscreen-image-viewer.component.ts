@@ -22,7 +22,7 @@ import { ImageService } from "@shared/services/image/image.service";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { Coord } from "ngx-image-zoom";
-import { BehaviorSubject, interval, Observable } from "rxjs";
+import { BehaviorSubject, Observable } from "rxjs";
 import { distinctUntilChanged, filter, map, switchMap, take, takeUntil, tap } from "rxjs/operators";
 import { ImageThumbnailInterface } from "@shared/interfaces/image-thumbnail.interface";
 import { UtilsService } from "@shared/services/utils/utils.service";

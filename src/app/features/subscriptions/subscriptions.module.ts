@@ -22,4 +22,5 @@ import { SubscriptionsSuccessPageComponent } from "./pages/success-page/subscrip
   ],
   imports: [RouterModule.forChild(routes), SharedModule]
 })
-export class SubscriptionsModule {}
+export class SubscriptionsModule {
+}

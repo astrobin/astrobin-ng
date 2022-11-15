@@ -5,7 +5,7 @@ import { LoadingService } from "@shared/services/loading.service";
 declare const gtag: any;
 
 @Directive({
-  selector: "[appGtagOutboundClickEvent]"
+  selector: "[astrobinGtagOutboundClickEvent]"
 })
 export class GtagOutboundClickEventDirective {
   @Input()
@@ -13,6 +13,9 @@ export class GtagOutboundClickEventDirective {
 
   @Input()
   target: string;
+
+  constructor(public readonly windowRefService: WindowRefService, public readonly loadingService: LoadingService) {
+  }
 
   @HostListener("click", ["$event"])
   public onClick(event: Event): void {
@@ -31,6 +34,4 @@ export class GtagOutboundClickEventDirective {
       this.windowRefService.locationAssign(this.href);
     }
   }
-
-  constructor(public readonly windowRefService: WindowRefService, public readonly loadingService: LoadingService) {}
 }

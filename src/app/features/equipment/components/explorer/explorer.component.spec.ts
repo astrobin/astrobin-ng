@@ -18,9 +18,9 @@ describe("ExplorerComponent", () => {
   beforeEach(async () => {
     await MockBuilder(ExplorerComponent, AppModule)
       .provide([provideMockStore({ initialState }), provideMockActions(() => new ReplaySubject<any>())])
-      .mock(ItemTypeNavComponent)
+      .mock(ItemTypeNavComponent, { export: true })
       .mock(ItemBrowserComponent)
-      .mock(ItemEditProposalComponent);
+      .mock(ItemEditProposalComponent, { export: true });
   });
 
   beforeEach(() => {

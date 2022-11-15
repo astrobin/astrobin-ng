@@ -13,21 +13,23 @@
     <formly-validation-message [field]="field"></formly-validation-message>
   </div>
 
-  <ng-container *ngFor="let message of to.messages">
-    <div class="alert alert-{{ message.level.toLowerCase() }} {{ message.level.toLowerCase() }}-feedback">
-      <ng-container *ngIf="message.text">
-        <span [innerHTML]="message.text"></span>
-      </ng-container>
+  <ng-container *ngIf="!!field['messages']">
+    <ng-container *ngFor="let message of field['messages']">
+      <div class="alert alert-{{ message.level.toLowerCase() }} {{ message.level.toLowerCase() }}-feedback">
+        <ng-container *ngIf="message.text">
+          <span [innerHTML]="message.text"></span>
+        </ng-container>
 
-      <ng-container
-        *ngIf="message.template"
-        [ngTemplateOutlet]="message.template"
-        [ngTemplateOutletContext]="{ data: message.data }"
-      >
-      </ng-container>
+        <ng-container
+          *ngIf="message.template"
+          [ngTemplateOutlet]="message.template"
+          [ngTemplateOutletContext]="{ data: message.data }"
+        >
+        </ng-container>
 
-      <button *ngIf="message.dismissible" class="close" (click)="closeMessage(message)">&times;</button>
-    </div>
+        <button *ngIf="message.dismissible" class="close" (click)="closeMessage(message)">&times;</button>
+      </div>
+    </ng-container>
   </ng-container>
 
   <small *ngIf="to.description" class="form-text text-muted" [innerHTML]="to.description"></small>

@@ -6,7 +6,8 @@ import { WindowRefService } from "@shared/services/window-ref.service";
   name: "BBCodeToHtml"
 })
 export class BBCodeToHtmlPipe implements PipeTransform {
-  constructor(public readonly ckEditorService: CKEditorService, public readonly windowRefService: WindowRefService) {}
+  constructor(public readonly ckEditorService: CKEditorService, public readonly windowRefService: WindowRefService) {
+  }
 
   BBCodeToHtml(code) {
     const window = this.windowRefService.nativeWindow as any;
@@ -32,7 +33,7 @@ export class BBCodeToHtmlPipe implements PipeTransform {
         },
         span: element => {
           let bbcode;
-          // tslint:disable-next-line:no-conditional-assignment
+          // eslint-disable-next-line no-cond-assign
           if ((bbcode = element.attributes.bbcode)) {
             if (bbcode === "img") {
               element.name = "img";

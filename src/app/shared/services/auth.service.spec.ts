@@ -52,7 +52,8 @@ describe("AuthService", () => {
         expect(service.getClassicApiToken()).toBe("123");
 
         jest.spyOn(service.router, "navigate").mockReturnValue(Promise.resolve(true));
-        jest.spyOn(service.windowRefService, "locationAssign").mockImplementation(() => {});
+        jest.spyOn(service.windowRefService, "locationAssign").mockImplementation(() => {
+        });
 
         service.logout().subscribe(() => {
           expect(service.getClassicApiToken()).toBe(null);

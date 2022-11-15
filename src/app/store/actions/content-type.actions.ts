@@ -1,4 +1,4 @@
-// tslint:disable:max-classes-per-file
+/* eslint-disable max-classes-per-file */
 
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
@@ -7,11 +7,13 @@ import { ContentTypeInterface } from "@shared/interfaces/content-type.interface"
 export class LoadContentType implements PayloadActionInterface {
   readonly type = AppActionTypes.LOAD_CONTENT_TYPE;
 
-  constructor(public payload: Omit<ContentTypeInterface, "id">) {}
+  constructor(public payload: Omit<ContentTypeInterface, "id">) {
+  }
 }
 
 export class LoadContentTypeSuccess implements PayloadActionInterface {
   readonly type = AppActionTypes.LOAD_CONTENT_TYPE_SUCCESS;
 
-  constructor(public payload: ContentTypeInterface) {}
+  constructor(public payload: ContentTypeInterface) {
+  }
 }

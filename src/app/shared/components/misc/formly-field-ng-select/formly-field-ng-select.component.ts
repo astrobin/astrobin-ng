@@ -1,4 +1,4 @@
-import { Component, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from "@angular/core";
+import { ChangeDetectorRef, Component, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from "@angular/core";
 import { FieldType } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
 import { UtilsService } from "@shared/services/utils/utils.service";
@@ -17,6 +17,7 @@ import { EquipmentActionTypes } from "@features/equipment/store/equipment.action
 })
 export class FormlyFieldNgSelectComponent extends FieldType implements OnInit, OnDestroy, OnChanges {
   readonly TOO_MANY_OPTIONS = 30;
+  readonly cypressTesting: boolean;
 
   input$ = new Subject<string>();
   inputSubscription: Subscription;
@@ -41,9 +42,12 @@ export class FormlyFieldNgSelectComponent extends FieldType implements OnInit, O
     public readonly translateService: TranslateService,
     public readonly modalService: NgbModal,
     public readonly windowRefService: WindowRefService,
-    public readonly utilsService: UtilsService
+    public readonly utilsService: UtilsService,
+    public readonly changeDetectionRef: ChangeDetectorRef
   ) {
     super();
+
+    this.cypressTesting = (this.windowRefService.nativeWindow as any).Cypress !== undefined;
   }
 
   get placeholder(): string {
@@ -190,6 +194,7 @@ export class FormlyFieldNgSelectComponent extends FieldType implements OnInit, O
 
           this.showCreateNewButton = hasAddTag && hasValue && !alreadyInOptions;
           this.loading = false;
+          this.changeDetectionRef.detectChanges();
         });
     }
   }

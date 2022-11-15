@@ -1,5 +1,4 @@
 import { Injectable } from "@angular/core";
-import { LoadSolutions } from "@app/store/actions/solution.actions";
 import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
 import { State } from "@app/store/state";
 import { IotdApiService } from "@features/iotd/services/iotd-api.service";
@@ -606,5 +605,6 @@ export class IotdEffects {
     public readonly popNotificationsService: PopNotificationsService,
     public readonly translateService: TranslateService,
     public readonly windowRef: WindowRefService
-  ) {}
+  ) {
+  }
 }

@@ -7,6 +7,8 @@ import { provideMockStore } from "@ngrx/store/testing";
 import { MockBuilder, MockProvider, MockRender } from "ng-mocks";
 import { SubscriptionsSuccessPageComponent } from "./subscriptions-success-page.component";
 import { StateGenerator } from "@app/store/generators/state.generator";
+import { HttpClientModule } from "@angular/common/http";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
 
 describe("SuccessPageComponent", () => {
   let component: SubscriptionsSuccessPageComponent;
@@ -16,6 +18,7 @@ describe("SuccessPageComponent", () => {
     MockBuilder(SubscriptionsSuccessPageComponent, AppModule)
       .keep(StoreModule.forRoot(appStateReducers))
       .keep(EffectsModule.forRoot(appStateEffects))
+      .replace(HttpClientModule, HttpClientTestingModule)
       .provide(provideMockStore({ initialState }))
       .provide(
         MockProvider(ActivatedRoute, {

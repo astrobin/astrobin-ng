@@ -14,7 +14,7 @@ describe("RevisionUploader.PageComponent", () => {
 
   beforeEach(() =>
     MockBuilder(RevisionUploaderPageComponent, UploaderModule)
-      .mock(AppModule)
+      .mock(AppModule, { export: true })
       .provide([
         {
           provide: ActivatedRoute,

@@ -58,11 +58,11 @@ export class SaveEquipmentPresetModalComponent extends BaseComponentDirective im
         type: "input",
         id: "name",
         wrappers: ["default-wrapper"],
-        templateOptions: {
+        props: {
           label: this.translateService.instant("Preset name"),
           description: this.translateService.instant(
             `Here you can save an equipment preset so you can easily load it later on a different image <em>(e.g. "Home ` +
-              `observatory", "Solar setup", "Travel setup 2022", etc)</em>`
+            `observatory", "Solar setup", "Travel setup 2022", etc)</em>`
           ),
           required: true,
           maxLength: 128

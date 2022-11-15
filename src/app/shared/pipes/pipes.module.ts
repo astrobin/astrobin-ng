@@ -43,4 +43,5 @@ const pipes = [
   imports: [CommonModule],
   exports: pipes
 })
-export class PipesModule {}
+export class PipesModule {
+}

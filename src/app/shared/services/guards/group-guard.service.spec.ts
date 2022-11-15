@@ -4,7 +4,7 @@ import { AppModule } from "@app/app.module";
 import { initialState } from "@app/store/state";
 import { MockStore, provideMockStore } from "@ngrx/store/testing";
 import { GroupGuardService } from "@shared/services/guards/group-guard.service";
-import { MockBuilder, MockInstance, MockReset, ngMocks } from "ng-mocks";
+import { MockBuilder, MockReset, MockService } from "ng-mocks";
 import { of } from "rxjs";
 import { UserGenerator } from "../../generators/user.generator";
 
@@ -13,27 +13,20 @@ describe("GroupGuardService", () => {
   let route: ActivatedRouteSnapshot;
   let store: MockStore;
 
-  beforeEach(async () => {
-    await MockInstance(ActivatedRouteSnapshot, instance => {
-      ngMocks.stub(instance, "data", "get");
-    });
-  });
-
   afterEach(MockReset);
 
   beforeEach(async () => {
-    await MockBuilder(GroupGuardService, AppModule)
-      .mock(ActivatedRouteSnapshot)
-      .provide(provideMockStore({ initialState }));
+    await MockBuilder(GroupGuardService, AppModule).provide(provideMockStore({ initialState }));
 
     store = TestBed.inject(MockStore);
     service = TestBed.inject(GroupGuardService);
-    route = TestBed.inject(ActivatedRouteSnapshot);
 
-    jest.spyOn(route, "data", "get").mockReturnValue({ group: "Test group" });
-    jest.spyOn(service.router, "navigateByUrl").mockImplementation(
-      () => new Promise<boolean>(resolve => resolve(true))
-    );
+    route = MockService(ActivatedRouteSnapshot, {
+      data: { group: "Test group" }
+    });
+    jest
+      .spyOn(service.router, "navigateByUrl")
+      .mockImplementation(() => new Promise<boolean>(resolve => resolve(true)));
   });
 
   it("should be created", () => {
@@ -55,7 +48,6 @@ describe("GroupGuardService", () => {
     state.auth.user = user;
     store.setState(state);
 
-    route = TestBed.inject(ActivatedRouteSnapshot);
     jest.spyOn(service.authService, "isAuthenticated$").mockReturnValue(of(true));
 
     service.canActivate(route, { url: "/foo" } as RouterStateSnapshot).subscribe(result => {

@@ -13,7 +13,7 @@ describe("AppComponent", () => {
   beforeEach(() =>
     MockBuilder(AppComponent, AppModule)
       .keep(RouterModule)
-      .keep(RouterTestingModule.withRoutes([]))
+      .keep(RouterTestingModule.withRoutes([]), { export: true })
       .provide(provideMockStore({ initialState }))
   );
 
@@ -24,6 +24,6 @@ describe("AppComponent", () => {
   });
 
   it("should create the app", () => {
-    expect(component).toEqual(jasmine.any(AppComponent));
+    expect(component).toBeDefined();
   });
 });

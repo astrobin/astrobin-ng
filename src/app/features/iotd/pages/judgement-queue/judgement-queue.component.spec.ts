@@ -11,6 +11,8 @@ import { IotdApiService } from "@features/iotd/services/iotd-api.service";
 import { of } from "rxjs";
 import { FutureIotdSlotsComponent } from "@features/iotd/components/future-iotd-slots/future-iotd-slots.component";
 import { JudgementEntryComponent } from "@features/iotd/components/judgement-entry/judgement-entry.component";
+import { HttpClientModule } from "@angular/common/http";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
 
 describe("JudgementQueueComponent", () => {
   let component: JudgementQueueComponent;
@@ -18,10 +20,11 @@ describe("JudgementQueueComponent", () => {
 
   beforeEach(async () => {
     await MockBuilder(JudgementQueueComponent, AppModule)
+      .replace(HttpClientModule, HttpClientTestingModule)
       .provide([IotdApiService, provideMockStore({ initialState })])
-      .mock(QueueSortButtonComponent)
-      .mock(FutureIotdSlotsComponent)
-      .mock(JudgementEntryComponent);
+      .mock(QueueSortButtonComponent, { export: true })
+      .mock(FutureIotdSlotsComponent, { export: true })
+      .mock(JudgementEntryComponent, { export: true });
   });
 
   beforeEach(() =>

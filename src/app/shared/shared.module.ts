@@ -34,7 +34,6 @@ import { PopNotificationsService } from "@shared/services/pop-notifications.serv
 import { SessionService } from "@shared/services/session.service";
 import { UserService } from "@shared/services/user.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
-import { NgWizardModule, THEME } from "ng-wizard";
 import { StickyNavModule } from "ng2-sticky-nav";
 import { CookieService } from "ngx-cookie";
 import { NgxFilesizeModule } from "ngx-filesize";
@@ -55,6 +54,7 @@ import { CustomToastComponent } from "@shared/components/misc/custom-toast/custo
 import { CKEditorService } from "@shared/services/ckeditor.service";
 import { PendingChangesGuard } from "@shared/services/guards/pending-changes-guard.service";
 import * as Sentry from "@sentry/angular";
+import { NgWizardModule, THEME } from "@kronscht/ng-wizard";
 
 export function appInitializer(store: Store<State>, actions$: Actions) {
   return () =>
@@ -87,6 +87,9 @@ export function appInitializer(store: Store<State>, actions$: Actions) {
 
     FontAwesomeModule,
     FormlyModule.forRoot({
+      extras: {
+        lazyRender: false
+      },
       wrappers: [
         { name: "equipment-item-browser-wrapper", component: FormlyEquipmentItemBrowserWrapperComponent },
         { name: "default-wrapper", component: FormlyWrapperComponent }
@@ -197,7 +200,8 @@ export class SharedModule {
         },
         {
           provide: APP_INITIALIZER,
-          useFactory: () => () => {},
+          useFactory: () => () => {
+          },
           deps: [Sentry.TraceService],
           multi: true
         },

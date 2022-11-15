@@ -31,7 +31,8 @@ export interface WikipediaPageSummaryInterface {
   providedIn: "root"
 })
 export class WikipediaApiService {
-  constructor(public readonly http: HttpClient) {}
+  constructor(public readonly http: HttpClient) {
+  }
 
   getPageSummary(title: string, language: string): Observable<WikipediaPageSummaryInterface> {
     return this.http.get<WikipediaPageSummaryInterface>(

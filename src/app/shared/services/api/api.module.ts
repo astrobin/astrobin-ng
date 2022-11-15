@@ -44,4 +44,5 @@ import { DebugCountryInterceptor } from "@shared/services/debug-country.intercep
     JsonApiService
   ]
 })
-export class ApiModule {}
+export class ApiModule {
+}

@@ -10,7 +10,7 @@
           itemType === EquipmentItemType.SENSOR
         "
         ngbDropdown
-        class="usage-menu mr-2 mb-0"
+        class="usage-menu me-2 mb-0"
       >
         <button ngbDropdownToggle id="usage-menu" type="button" class="btn btn-outline-secondary mb-0">
           {{ "Usage" | translate }}
@@ -34,7 +34,7 @@
         </div>
       </div>
 
-      <div ngbDropdown class="sort-menu mr-2 mb-0">
+      <div ngbDropdown class="sort-menu me-2 mb-0">
         <button ngbDropdownToggle id="sort-search-results" type="button" class="btn btn-outline-secondary mb-0">
           {{ "Sort" | translate }}
         </button>
@@ -52,7 +52,7 @@
         </div>
       </div>
 
-      <a class="btn btn-outline-primary float-right" [href]="searchUrl">
+      <a class="btn btn-outline-primary float-end" [href]="searchUrl">
         {{ "More" | translate }}
       </a>
     </div>

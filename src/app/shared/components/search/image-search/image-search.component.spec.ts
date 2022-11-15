@@ -5,13 +5,14 @@ import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
 import { provideMockStore } from "@ngrx/store/testing";
 import { initialState } from "@app/store/state";
+import { WindowRefService } from "@shared/services/window-ref.service";
 
 describe("ImageSearchComponent", () => {
   let component: ImageSearchComponent;
   let fixture: ComponentFixture<ImageSearchComponent>;
 
   beforeEach(async () => {
-    await MockBuilder(ImageSearchComponent, AppModule).provide([provideMockStore({ initialState })]);
+    await MockBuilder(ImageSearchComponent, AppModule).provide([WindowRefService, provideMockStore({ initialState })]);
   });
 
   beforeEach(() => {

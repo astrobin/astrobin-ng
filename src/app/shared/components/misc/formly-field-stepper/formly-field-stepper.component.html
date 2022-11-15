@@ -10,14 +10,14 @@
     [canExit]="!isStepErrored(index)"
     class="wizard-step"
   >
-    <div *ngIf="!!field.templateOptions.stepPreambleTemplate" class="step-preamble">
-      <ng-container [ngTemplateOutlet]="field.templateOptions.stepPreambleTemplate"></ng-container>
+    <div *ngIf="!!field.props.stepPreambleTemplate" class="step-preamble">
+      <ng-container [ngTemplateOutlet]="field.props.stepPreambleTemplate"></ng-container>
     </div>
 
     <formly-field [field]="field"></formly-field>
 
-    <div *ngIf="!!field.templateOptions.stepActionsTemplate" class="step-actions text-right">
-      <ng-container [ngTemplateOutlet]="field.templateOptions.stepActionsTemplate"></ng-container>
+    <div *ngIf="!!field.props.stepActionsTemplate" class="step-actions text-end">
+      <ng-container [ngTemplateOutlet]="field.props.stepActionsTemplate"></ng-container>
     </div>
 
     <div class="form-actions" [class.fixed]="to.fixed">

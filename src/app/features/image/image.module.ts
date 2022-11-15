@@ -36,4 +36,5 @@ import { LoadEquipmentPresetModalComponent } from "./components/load-equipment-p
     ImageEditWatermarkFieldsService
   ]
 })
-export class ImageModule {}
+export class ImageModule {
+}

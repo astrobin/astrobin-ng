@@ -263,9 +263,9 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
     const componentInstant: ConfirmationDialogComponent = modalRef.componentInstance;
     componentInstant.message = this.translateService.instant(
       "Only do this if the legacy item is actually multiple products lumped together under the same name. " +
-        "This typically happens for LRGB filter sets when you didn't create individual filters back when you added " +
-        "this legacy item to the database. Sometimes this happens when you actually added multiple products using the " +
-        "same text box (e.g. 'Canon 70D / Canon 80D')."
+      "This typically happens for LRGB filter sets when you didn't create individual filters back when you added " +
+      "this legacy item to the database. Sometimes this happens when you actually added multiple products using the " +
+      "same text box (e.g. 'Canon 70D / Canon 80D')."
     );
 
     modalRef.closed.pipe(take(1)).subscribe(() => {
@@ -284,11 +284,11 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
     const componentInstant: ConfirmationDialogComponent = modalRef.componentInstance;
     componentInstant.message = this.translateService.instant(
       "Only do this if the legacy item cannot be determined unambiguously. Sometimes this happens if back when you " +
-        "added this legacy item to the equipment database, you didn't specify a key property in its name, e.g. color vs " +
-        "mono, and then you used it for several images indiscriminately of that property. E.g. have an Atik 4000 Color " +
-        "and an Atik 4000 Mono, and you added a generic 'Atik 4000' and used it both for color and mono images. You " +
-        "cannot migrate it to either the color or mono variant of the new database entry, because some of your images " +
-        "will present the wrong information once their equipment association is changed."
+      "added this legacy item to the equipment database, you didn't specify a key property in its name, e.g. color vs " +
+      "mono, and then you used it for several images indiscriminately of that property. E.g. have an Atik 4000 Color " +
+      "and an Atik 4000 Mono, and you added a generic 'Atik 4000' and used it both for color and mono images. You " +
+      "cannot migrate it to either the color or mono variant of the new database entry, because some of your images " +
+      "will present the wrong information once their equipment association is changed."
     );
 
     modalRef.closed.pipe(take(1)).subscribe(() => {
@@ -366,9 +366,9 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
               return of(legacyItems);
             }
 
-            return forkJoin(...[legacyItems.map(item => this.legacyGearApi.lockForMigration(item.pk))]).pipe(
-              map(() => legacyItems)
-            );
+            return forkJoin(
+              ...([legacyItems.map(item => this.legacyGearApi.lockForMigration(item.pk))] as const)
+            ).pipe(map(() => legacyItems));
           })
         )
         .subscribe(legacyItems => {
@@ -384,7 +384,7 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
               type: "checkbox",
               id: `similar-item-${item.pk}`,
               defaultValue: false,
-              templateOptions: {
+              props: {
                 required: false,
                 label: this.legacyGearService.getDisplayName(item.make, item.name),
                 value: item.pk
@@ -416,9 +416,9 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
         if (isEquipmentModerator) {
           componentInstant.message = this.translateService.instant(
             "AstroBin will update <strong>all images by all users</strong> that use the legacy equipment item " +
-              "<strong>{{0}}</strong> to the new one that you selected." +
-              "<br/><br/>" +
-              this.translateService.instant("For this reason, they need to represent the same product."),
+            "<strong>{{0}}</strong> to the new one that you selected." +
+            "<br/><br/>" +
+            this.translateService.instant("For this reason, they need to represent the same product."),
             {
               0: `${object.make} ${object.name}`
             }
@@ -426,9 +426,9 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
         } else {
           componentInstant.message = this.translateService.instant(
             "AstroBin will update <strong>all your images</strong> that use the legacy equipment item " +
-              "<strong>{{0}}</strong> to the new one that you selected." +
-              "<br/><br/>" +
-              this.translateService.instant("For this reason, they need to represent the same product."),
+            "<strong>{{0}}</strong> to the new one that you selected." +
+            "<br/><br/>" +
+            this.translateService.instant("For this reason, they need to represent the same product."),
             {
               0: `${object.make} ${object.name}`
             }
@@ -476,7 +476,7 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
   multipleTooltip(): string {
     return this.translateService.instant(
       "The legacy object cannot be migrated because it consists of multiple objects in the same item (e.g. " +
-        "LRGB filter set, or multiple unrelated products)."
+      "LRGB filter set, or multiple unrelated products)."
     );
   }
 
@@ -492,9 +492,8 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
       this.nonMigratedTelescopesCount$ = this.legacyTelescopeApi.getNonMigratedCount(isEquipmentModerator);
       this.nonMigratedMountsCount$ = this.legacyMountApi.getNonMigratedCount(isEquipmentModerator);
       this.nonMigratedFiltersCount$ = this.legacyFilterApi.getNonMigratedCount(isEquipmentModerator);
-      this.nonMigratedAccessoriesCount$ = this.legacyCombinedAccessoryAndFocalReducerApi.getNonMigratedCount(
-        isEquipmentModerator
-      );
+      this.nonMigratedAccessoriesCount$ =
+        this.legacyCombinedAccessoryAndFocalReducerApi.getNonMigratedCount(isEquipmentModerator);
       this.nonMigratedSoftwareCount$ = this.legacySoftwareApi.getNonMigratedCount(isEquipmentModerator);
     });
   }

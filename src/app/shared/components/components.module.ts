@@ -31,7 +31,6 @@ import { RefreshButtonComponent } from "@shared/components/misc/refresh-button/r
 import { TelescopeComponent } from "@shared/components/misc/telescope/telescope.component";
 import { TextLoadingIndicatorComponent } from "@shared/components/misc/text-loading-indicator/text-loading-indicator.component";
 import { PipesModule } from "@shared/pipes/pipes.module";
-import { NgWizardModule } from "ng-wizard";
 import { NgxFilesizeModule } from "ngx-filesize";
 import { ImageCropperModule } from "ngx-image-cropper";
 import { NgxImageZoomModule } from "ngx-image-zoom";
@@ -97,6 +96,7 @@ import { MostOftenUsedWithModalComponent } from "@shared/components/equipment/su
 import { RemoveAdsDialogComponent } from "@shared/components/misc/remove-ads-dialog/remove-ads-dialog.component";
 import { ItemBrowserByPropertiesComponent } from "@shared/components/equipment/item-browser-by-properties/item-browser-by-properties.component";
 import { HrComponent } from "@shared/components/misc/hr/hr.component";
+import { NgWizardModule } from "@kronscht/ng-wizard";
 
 const modules = [
   CommonModule,

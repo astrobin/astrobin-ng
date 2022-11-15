@@ -27,26 +27,26 @@ export class ImageEditBasicFieldsService extends BaseService {
     super(loadingService);
   }
 
-  getTitleField(): any {
+  getTitleField(): FormlyFieldConfig {
     return {
       key: "title",
       type: "input",
       wrappers: ["default-wrapper"],
       id: "image-title-field",
-      templateOptions: {
+      props: {
         label: this.translateService.instant("Title"),
         required: true
       }
     };
   }
 
-  getDescriptionHtmlField(): any {
+  getDescriptionHtmlField(): FormlyFieldConfig {
     return {
       key: "description",
       type: "textarea",
       wrappers: ["default-wrapper"],
       id: "image-description-field",
-      templateOptions: {
+      props: {
         label: this.translateService.instant("Description"),
         description: this.translateService.instant("HTML tags are allowed."),
         required: false,
@@ -55,23 +55,23 @@ export class ImageEditBasicFieldsService extends BaseService {
     };
   }
 
-  getDescriptionBBCodeField(): any {
+  getDescriptionBBCodeField(): FormlyFieldConfig {
     return {
       key: "descriptionBbcode",
       type: "ckeditor",
       wrappers: ["default-wrapper"],
       id: "image-description-field",
-      templateOptions: {
+      props: {
         label: this.translateService.instant("Description"),
         required: false
       }
     };
   }
 
-  getDescriptionField(): any {
+  getDescriptionField(): FormlyFieldConfig {
     if (
-      this.imageEditService.image.descriptionBbcode ||
-      (!this.imageEditService.image.descriptionBbcode && !this.imageEditService.image.description)
+      this.imageEditService.model.descriptionBbcode ||
+      (!this.imageEditService.model.descriptionBbcode && !this.imageEditService.model.description)
     ) {
       return this.getDescriptionBBCodeField();
     }
@@ -94,7 +94,7 @@ export class ImageEditBasicFieldsService extends BaseService {
       type: "ng-select",
       wrappers: ["default-wrapper"],
       id: "image-collaborators-field",
-      templateOptions: {
+      props: {
         label: this.translateService.instant("Collaborators"),
         description: this.translateService.instant(
           "If this image was a group effort, please add additional collaborators (other than you) here."
@@ -106,18 +106,21 @@ export class ImageEditBasicFieldsService extends BaseService {
         striped: true,
         options: this.imageEditService.model.collaborators
           ? forkJoin(
-              this.imageEditService.model.collaborators.map(collaborator => {
-                return this.commonApiService
-                  .getUserProfileByUserId(collaborator)
-                  .pipe(map(userProfile => ngSelectData(userProfile)));
-              })
-            )
+            this.imageEditService.model.collaborators.map(collaborator => {
+              return this.commonApiService
+                .getUserProfileByUserId(collaborator)
+                .pipe(map(userProfile => ngSelectData(userProfile)));
+            })
+          )
           : of([]),
         onSearch: (term: string): Observable<UserProfileInterface[]> => {
           const field = _getField();
           return this.commonApiService.findUserProfiles(term).pipe(
             tap(userProfiles => {
-              field.templateOptions.options = of(userProfiles.map(userProfile => ngSelectData(userProfile)));
+              field.props = {
+                ...field.props,
+                options: of(userProfiles.map(userProfile => ngSelectData(userProfile)))
+              };
             })
           );
         }
@@ -137,13 +140,13 @@ export class ImageEditBasicFieldsService extends BaseService {
     };
   }
 
-  getLinkField(): any {
+  getLinkField(): FormlyFieldConfig {
     return {
       key: "link",
       type: "input",
       wrappers: ["default-wrapper"],
       id: "image-link-field",
-      templateOptions: {
+      props: {
         label: this.translateService.instant("Link"),
         description: this.translateService.instant(
           "If you're hosting a copy of this image on your website, put the address here."
@@ -157,18 +160,18 @@ export class ImageEditBasicFieldsService extends BaseService {
     };
   }
 
-  getLinkToFitsField(): any {
+  getLinkToFitsField(): FormlyFieldConfig {
     return {
       key: "linkToFits",
       type: "input",
       wrappers: ["default-wrapper"],
       id: "image-link-to-fits-field",
-      templateOptions: {
+      props: {
         label: this.translateService.instant("Link to TIFF/FITS"),
         description: this.translateService.instant(
           "If you want to share the TIFF or FITS file of your image, put a link to the file here. " +
-            "Unfortunately, AstroBin cannot offer to store these files at the moment, so you will have to " +
-            "host them on your personal space."
+          "Unfortunately, AstroBin cannot offer to store these files at the moment, so you will have to " +
+          "host them on your personal space."
         ),
         placeholder: this.translateService.instant("e.g.") + " https://www.example.com/my-page.html",
         required: false

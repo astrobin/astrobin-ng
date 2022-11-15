@@ -43,12 +43,13 @@
     margin: 0;
     position: absolute;
     left: -3px;
-    top: -3px;
+    top: -2px;
   }
 
   .nav-link {
     padding-left: 3rem;
     border-radius: 2rem;
+    background-image: none;
   }
 
   .count {

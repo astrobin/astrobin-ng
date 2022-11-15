@@ -65,7 +65,7 @@
           <tbody>
           <tr *ngFor="let item of results">
             <td>
-              <a href="#" appEventPreventDefault appEventStopPropagation (click)="itemSelected.emit(item)">
+              <a href="#" astrobinEventPreventDefault astrobinEventStopPropagation (click)="itemSelected.emit(item)">
                 <astrobin-equipment-item-display-name
                   [item]="item"
                   [showFrozenAsAmbiguous]="item.variants.length === 0"
@@ -149,8 +149,8 @@
       <a
         *ngIf="hasNextPage && !loadingPage"
         href="#"
-        appEventStopPropagation
-        appEventPreventDefault
+        astrobinEventStopPropagation
+        astrobinEventPreventDefault
         (click)="loadNextPage()"
         class="text-center d-block d-lg-none p-2"
       >

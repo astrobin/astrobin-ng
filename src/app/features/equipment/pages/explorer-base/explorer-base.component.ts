@@ -146,7 +146,8 @@ export class ExplorerBaseComponent extends BaseComponentDirective implements OnI
     this.changeDetectionRef.detectChanges();
   }
 
-  getItems() {}
+  getItems() {
+  }
 
   protected _scrollToItemBrowser(): void {
     if (this.windowRefService.nativeWindow.innerWidth < 768) {

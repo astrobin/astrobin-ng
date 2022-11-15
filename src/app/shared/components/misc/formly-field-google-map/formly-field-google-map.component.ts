@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ViewChild } from "@angular/core";
 import { FieldType } from "@ngx-formly/core";
-import { interval, Observable } from "rxjs";
+import { Observable } from "rxjs";
 import { take } from "rxjs/operators";
 import { GoogleMapsService } from "@shared/services/google-maps/google-maps.service";
 import { google } from "@google/maps";

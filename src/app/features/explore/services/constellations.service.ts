@@ -19,6 +19,13 @@ export interface ConstellationInterface {
 export class ConstellationsService {
   private _availableLanguages = ["de", "en", "fr", "it", "es"];
 
+  constructor(
+    public readonly translateService: TranslateService,
+    public readonly classicRoutesService: ClassicRoutesService,
+    public readonly wikipediaApiService: WikipediaApiService
+  ) {
+  }
+
   private _constellations = {
     de: [
       ["And", "Andromeda", { requiresDisambiguation: true }],
@@ -471,12 +478,6 @@ export class ConstellationsService {
       ["Vul", "Vulpecula"]
     ].map(data => this._constellation(data))
   };
-
-  constructor(
-    public readonly translateService: TranslateService,
-    public readonly classicRoutesService: ClassicRoutesService,
-    public readonly wikipediaApiService: WikipediaApiService
-  ) {}
 
   get constellations(): ConstellationInterface[] {
     const language = this.translateService.currentLang;

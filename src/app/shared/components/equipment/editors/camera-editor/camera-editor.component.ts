@@ -1,4 +1,4 @@
-import { Component, OnInit, TemplateRef, ViewChild } from "@angular/core";
+import { ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { Actions } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
@@ -58,7 +58,8 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
     public readonly formlyFieldService: FormlyFieldService,
     public readonly cameraService: CameraService,
     public readonly modalService: NgbModal,
-    public readonly utilsService: UtilsService
+    public readonly utilsService: UtilsService,
+    public readonly changeDetectorRef: ChangeDetectorRef
   ) {
     super(
       store$,
@@ -70,7 +71,8 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
       equipmentItemService,
       formlyFieldService,
       modalService,
-      utilsService
+      utilsService,
+      changeDetectorRef
     );
   }
 
@@ -274,9 +276,9 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
       type: "ng-select",
       id: "camera-field-type",
       expressionProperties: {
-        "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+        "props.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
       },
-      templateOptions: {
+      props: {
         label: this.cameraService.getPrintablePropertyName(CameraDisplayProperty.TYPE),
         required: true,
         clearable: true,
@@ -331,9 +333,9 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
       type: "equipment-item-browser",
       id: "camera-field-sensor",
       expressionProperties: {
-        "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+        "props.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
       },
-      templateOptions: {
+      props: {
         label: this.cameraService.getPrintablePropertyName(CameraDisplayProperty.SENSOR),
         itemType: EquipmentItemType.SENSOR,
         showQuickAddRecent: false,
@@ -358,9 +360,9 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
       hideExpression: () => this.model.type !== CameraType.DEDICATED_DEEP_SKY,
       defaultValue: this.editorMode === EquipmentItemEditorMode.CREATION ? false : null,
       expressionProperties: {
-        "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+        "props.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
       },
-      templateOptions: {
+      props: {
         label: this.cameraService.getPrintablePropertyName(CameraDisplayProperty.COOLED),
         description: this.translateService.instant("Whether this camera is equipped with a cooling mechanism."),
         required: this.editorMode === EquipmentItemEditorMode.CREATION
@@ -376,15 +378,15 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
       id: "camera-field-max-cooling",
       hideExpression: () => !this.model.cooled,
       expressionProperties: {
-        "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+        "props.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
       },
-      templateOptions: {
+      props: {
         type: "number",
         step: 1,
         label: this.cameraService.getPrintablePropertyName(CameraDisplayProperty.MAX_COOLING),
         description: this.translateService.instant(
           "A positive whole number that represents how many Celsius below ambient temperature this camera can " +
-            "be cooled."
+          "be cooled."
         )
       },
       validators: {
@@ -408,9 +410,9 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
       wrappers: ["default-wrapper"],
       id: "camera-field-back-focus",
       expressionProperties: {
-        "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+        "props.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
       },
-      templateOptions: {
+      props: {
         type: "number",
         step: 0.1,
         label: this.cameraService.getPrintablePropertyName(CameraDisplayProperty.BACK_FOCUS),

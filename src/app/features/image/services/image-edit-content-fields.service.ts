@@ -38,12 +38,12 @@ export class ImageEditContentFieldsService extends BaseService {
     super(loadingService);
   }
 
-  getAcquisitionTypeField(): any {
+  getAcquisitionTypeField(): FormlyFieldConfig {
     return {
       key: "acquisitionType",
       type: "ng-select",
       id: "image-acquisition-type-field",
-      templateOptions: {
+      props: {
         required: true,
         clearable: false,
         label: this.translateService.instant("Acquisition type"),
@@ -75,12 +75,12 @@ export class ImageEditContentFieldsService extends BaseService {
     };
   }
 
-  getSubjectTypeField(): any {
+  getSubjectTypeField(): FormlyFieldConfig {
     return {
       key: "subjectType",
       type: "ng-select",
       id: "image-subject-type-field",
-      templateOptions: {
+      props: {
         required: true,
         clearable: false,
         label: this.translateService.instant("Subject type"),
@@ -115,16 +115,16 @@ export class ImageEditContentFieldsService extends BaseService {
     };
   }
 
-  getSolarSystemMainSubjectField(): any {
+  getSolarSystemMainSubjectField(): FormlyFieldConfig {
     return {
       key: "solarSystemMainSubject",
       type: "ng-select",
       id: "image-solar-system-main-subject-field",
       hideExpression: () => this.imageEditService.model.subjectType !== SubjectType.SOLAR_SYSTEM,
       expressionProperties: {
-        "templateOptions.required": "model.subjectType === 'SOLAR_SYSTEM'"
+        "props.required": "model.subjectType === 'SOLAR_SYSTEM'"
       },
-      templateOptions: {
+      props: {
         label: this.translateService.instant("Main solar system subject"),
         options: [
           { value: SolarSystemSubjectType.SUN, label: this.translateService.instant("Sun") },
@@ -170,12 +170,12 @@ export class ImageEditContentFieldsService extends BaseService {
     };
   }
 
-  getDataSourceField(): any {
+  getDataSourceField(): FormlyFieldConfig {
     return {
       key: "dataSource",
       type: "ng-select",
       id: "image-data-source-field",
-      templateOptions: {
+      props: {
         required: true,
         clearable: false,
         label: this.translateService.instant("Data source"),
@@ -248,7 +248,7 @@ export class ImageEditContentFieldsService extends BaseService {
     };
   }
 
-  getRemoteSourceField(): any {
+  getRemoteSourceField(): FormlyFieldConfig {
     return {
       key: "remoteSource",
       type: "ng-select",
@@ -256,9 +256,9 @@ export class ImageEditContentFieldsService extends BaseService {
       hideExpression: () =>
         [DataSource.OWN_REMOTE, DataSource.AMATEUR_HOSTING].indexOf(this.imageEditService.model.dataSource) === -1,
       expressionProperties: {
-        "templateOptions.required": "model.dataSource === 'OWN_REMOTE' || model.dataSource === 'AMATEUR_HOSTING'"
+        "props.required": "model.dataSource === 'OWN_REMOTE' || model.dataSource === 'AMATEUR_HOSTING'"
       },
-      templateOptions: {
+      props: {
         label: this.translateService.instant("Remote data source"),
         description: this.translateService.instant(
           "Which remote hosting facility did you use to acquire data for this image?"
@@ -286,12 +286,12 @@ export class ImageEditContentFieldsService extends BaseService {
     };
   }
 
-  getLocationsField(): any {
+  getLocationsField(): FormlyFieldConfig {
     return {
       key: "locations",
       type: "ng-select",
       id: "image-locations-field",
-      templateOptions: {
+      props: {
         multiple: true,
         required: false,
         label: this.translateService.instant("Locations"),
@@ -318,19 +318,21 @@ export class ImageEditContentFieldsService extends BaseService {
             };
 
             const stepperField = this.imageEditService.fields.filter(field => field.id === "image-stepper-field")[0];
-            const contentFieldGroup = stepperField.fieldGroup.filter(group => group.id === "image-stepper-content")[0];
+            const contentFieldGroup = stepperField.fieldGroup.filter(
+              group => group.id === "image-stepper-content"
+            )[0];
             const locationsField = contentFieldGroup.fieldGroup.filter(
               group => group.id === "image-locations-field"
             )[0];
 
             this.utilsService.delay(1).subscribe(() => {
-              (locationsField.templateOptions.options as Observable<{ value: number; label: string }[]>)
+              (locationsField.props.options as Observable<{ value: number; label: string }[]>)
                 .pipe(take(1))
                 .subscribe(currentOptions => {
-                  locationsField.templateOptions.options = of([
-                    ...(currentOptions as { value: number; label: string }[]),
-                    ...[newItem]
-                  ]);
+                  locationsField.props = {
+                    ...locationsField.props,
+                    options: of([...(currentOptions as { value: number; label: string }[]), ...[newItem]])
+                  };
                 });
 
               this.imageEditService.model = {
@@ -346,13 +348,13 @@ export class ImageEditContentFieldsService extends BaseService {
     };
   }
 
-  getGroupsField(): any {
+  getGroupsField(): FormlyFieldConfig {
     let description = this.translateService.instant("Submit this image to the selected groups.");
 
     if (this.imageEditService.groups.length === 0) {
       const reason = this.translateService.instant("This field is disabled because you haven't joined any groups yet.");
       description += ` <strong>${reason}</strong>`;
-    } else if (this.imageEditService.image.isWip) {
+    } else if (this.imageEditService.model.isWip) {
       const publicationInfo = this.translateService.instant(
         "This setting will take affect after the image will be moved to your public area."
       );
@@ -363,7 +365,7 @@ export class ImageEditContentFieldsService extends BaseService {
       key: "partOfGroupSet",
       type: "ng-select",
       id: "image-groups-field",
-      templateOptions: {
+      props: {
         multiple: true,
         required: false,
         disabled: this.imageEditService.groups.length === 0,

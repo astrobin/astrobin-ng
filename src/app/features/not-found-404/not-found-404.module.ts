@@ -8,4 +8,5 @@ import { NotFound404PageComponent } from "./pages/not-found-404-page/not-found-4
   declarations: [NotFound404PageComponent],
   imports: [RouterModule.forChild(routes), SharedModule]
 })
-export class NotFound404Module {}
+export class NotFound404Module {
+}

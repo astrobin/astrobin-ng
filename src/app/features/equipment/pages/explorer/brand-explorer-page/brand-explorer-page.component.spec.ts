@@ -9,14 +9,18 @@ import { ItemTypeNavComponent } from "@features/equipment/components/item-type-n
 import { ActivatedRoute, Router } from "@angular/router";
 import { EMPTY, ReplaySubject } from "rxjs";
 import { provideMockActions } from "@ngrx/effects/testing";
+import { EquipmentModule } from "@features/equipment/equipment.module";
+import { WindowRefService } from "@shared/services/window-ref.service";
 
 describe("BrandExplorerPageComponent", () => {
   let component: BrandExplorerPageComponent;
   let fixture: ComponentFixture<BrandExplorerPageComponent>;
 
   beforeEach(async () => {
-    await MockBuilder(BrandExplorerPageComponent, AppModule)
+    await MockBuilder(BrandExplorerPageComponent, EquipmentModule)
+      .mock(AppModule, { export: true })
       .provide([
+        WindowRefService,
         provideMockStore({ initialState }),
         provideMockActions(() => new ReplaySubject<any>()),
         {

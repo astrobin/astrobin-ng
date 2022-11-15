@@ -30,12 +30,12 @@
               {
                 "input": "src/default-theme.scss",
                 "inject": false,
-                "bundleName": "assets/themes/default"
+                "bundleName": "default"
               },
               {
                 "input": "src/high-contrast-theme.scss",
                 "inject": false,
-                "bundleName": "assets/themes/high-contrast"
+                "bundleName": "high-contrast"
               }
             ]
           },
@@ -52,7 +52,7 @@
               "aot": false,
               "extractLicenses": false,
               "vendorChunk": false,
-              "buildOptimizer": false,
+              "buildOptimizer": false
             },
             "production": {
               "fileReplacements": [
@@ -90,7 +90,7 @@
                 {
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.beta.ts"
-                },
+                }
               ],
               "index": {
                 "input": "src/index.beta.html",
@@ -200,14 +200,11 @@
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@angular-eslint/builder:lint",
           "options": {
-            "tsConfig": [
-              "src/tsconfig.app.json",
-              "src/tsconfig.spec.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
+            "lintFilePatterns": [
+              "src/**/*.ts",
+              "src/**/*.html"
             ]
           }
         },
@@ -324,6 +321,9 @@
   },
   "defaultProject": "frontend",
   "cli": {
-    "analytics": "c2a43054-337a-4c13-8020-637c2c52c2ea"
+    "analytics": "c2a43054-337a-4c13-8020-637c2c52c2ea",
+    "schematicCollections": [
+      "@angular-eslint/schematics"
+    ]
   }
 }

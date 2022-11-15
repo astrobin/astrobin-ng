@@ -269,7 +269,7 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
   coolingPopoverMessage(): string {
     return this.translateService.instant(
       "Custom-cooled cameras are DSLR and mirrorless cameras that are not sold with cooling as stock, but a " +
-        "cooling mechanism is added as a custom modification."
+      "cooling mechanism is added as a custom modification."
     );
   }
 
@@ -345,7 +345,7 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
   }
 
   asCamera(item: EquipmentItemBaseInterface): CameraInterface {
-    return (item as unknown) as CameraInterface;
+    return item as unknown as CameraInterface;
   }
 
   startEditMode() {
@@ -361,7 +361,7 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
       this.popNotificationsService.error(
         this.translateService.instant(
           "You cannot propose an edit while there is a pending one. Please review the pending edit proposal first, " +
-            "thank you!"
+          "thank you!"
         )
       );
       return;
@@ -478,8 +478,8 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
     if (!this.selectedItem.variants?.length) {
       this.popNotificationsService.error(
         "" +
-          "You cannot freeze this item as ambiguous because it doesn't have any variants. Please first create the " +
-          "appropriate unambiguous variants, and then try again."
+        "You cannot freeze this item as ambiguous because it doesn't have any variants. Please first create the " +
+        "appropriate unambiguous variants, and then try again."
       );
       return;
     }
@@ -494,9 +494,9 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
 
       componentInstance.message = this.translateService.instant(
         "You are about to freeze this item as ambiguous. The item will remain associated the images it's " +
-          "currently associated with. Nobody will be able to see this item (except moderators and the item's " +
-          "creator). Nobody will be able to add this item to images. Any items marked as 'variant of' this item will " +
-          "lose the relationship."
+        "currently associated with. Nobody will be able to see this item (except moderators and the item's " +
+        "creator). Nobody will be able to add this item to images. Any items marked as 'variant of' this item will " +
+        "lose the relationship."
       );
 
       this.actions$
@@ -622,7 +622,7 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
       const errorList: string[] = [];
       this.editor.fields.forEach(field => {
         if (field.formControl.errors !== null) {
-          errorList.push(`<li>${field.templateOptions.label}</li>`);
+          errorList.push(`<li>${field.props.label}</li>`);
         }
       });
       this.popNotificationsService.error(

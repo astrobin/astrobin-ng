@@ -17,7 +17,7 @@ context("Equipment", () => {
       });
 
       it("should select a brand", () => {
-        cy.equipmentItemBrowserSelectFirstBrand("#equipment-item-field-brand", "Test brand", testBrand);
+        cy.equipmentItemBrowserSelectFirstBrand("#equipment-item-field-brand", "Test Brand", testBrand);
       });
 
       it("should have prefilled the name", () => {
@@ -25,18 +25,14 @@ context("Equipment", () => {
       });
 
       it("should display error if name contains prohibited word", () => {
-        cy.get("#equipment-item-field-name")
-          .clear()
-          .type("Test modded");
+        cy.get("#equipment-item-field-name").clear().type("Test modded");
         cy.get("#equipment-item-field-name")
           .should("have.class", "is-invalid")
           .closest(".form-group")
           .should("have.class", "has-error")
           .find(".invalid-feedback")
           .should("be.visible");
-        cy.get("#equipment-item-field-name")
-          .clear()
-          .type("Test");
+        cy.get("#equipment-item-field-name").clear().type("Test");
         cy.get("#equipment-item-field-name").should("not.have.class", "is-invalid");
       });
 
@@ -66,11 +62,9 @@ context("Equipment", () => {
 
         cy.get("#create-new-item .btn-primary").click();
 
-        cy.get(".modal-title")
-          .contains("Confirm item creation")
-          .should("be.visible");
+        cy.get(".modal-title").contains("Confirm item creation").should("be.visible");
 
-        cy.equipmentItemSummaryShouldHaveItem(".modal", "Test brand", "Test");
+        cy.equipmentItemSummaryShouldHaveItem(".modal", "Test Brand", "Test");
         cy.equipmentItemSummaryShouldHaveProperty(".modal", "Class", "Camera");
         cy.equipmentItemSummaryShouldHaveProperty(".modal", "Type", "Dedicated deep-sky camera");
         cy.equipmentItemSummaryShouldHaveProperty(".modal", "Cooled", "Yes");
@@ -83,13 +77,11 @@ context("Equipment", () => {
         cy.get("[for=confirm-unambiguous]").click();
         cy.get("[for=confirm-english]").click();
         cy.get("[for=confirm-no-personal-information]").click();
-        cy.get(".modal-footer .btn")
-          .contains("Confirm")
-          .click();
+        cy.get(".modal-footer .btn").contains("Confirm").click();
 
         cy.wait("@createCamera");
 
-        cy.equipmentItemBrowserShouldContain("#equipment-item-field", "Test brand", "Test camera");
+        cy.equipmentItemBrowserShouldContain("#equipment-item-field", "Test Brand", "Test camera");
       });
 
       it("should update the URL with ID and slug", () => {

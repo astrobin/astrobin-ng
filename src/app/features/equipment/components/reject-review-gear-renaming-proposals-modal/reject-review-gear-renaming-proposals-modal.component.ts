@@ -49,7 +49,7 @@ export class RejectReviewGearRenamingProposalsModalComponent extends BaseCompone
         type: "textarea",
         id: "reject-reason",
         wrappers: ["default-wrapper"],
-        templateOptions: {
+        props: {
           label: this.translateService.instant("Reason"),
           required: true,
           rows: 4

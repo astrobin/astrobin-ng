@@ -2,7 +2,6 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { BaseItemEditorComponent } from "./base-item-editor.component";
 import { MockBuilder } from "ng-mocks";
-import { EquipmentModule } from "@features/equipment/equipment.module";
 import { provideMockStore } from "@ngrx/store/testing";
 import { initialState } from "@app/store/state";
 import { provideMockActions } from "@ngrx/effects/testing";
@@ -17,9 +16,11 @@ describe("BaseEquipmentItemEditorComponent", () => {
   let fixture: ComponentFixture<BaseItemEditorComponent<CameraInterface, SensorInterface>>;
 
   beforeEach(async () => {
-    await MockBuilder(BaseItemEditorComponent, EquipmentModule)
-      .mock(AppModule)
-      .provide([provideMockStore({ initialState }), provideMockActions(() => new ReplaySubject<any>()), UtilsService]);
+    await MockBuilder(BaseItemEditorComponent, AppModule).provide([
+      provideMockStore({ initialState }),
+      provideMockActions(() => new ReplaySubject<any>()),
+      UtilsService
+    ]);
   });
 
   beforeEach(() => {

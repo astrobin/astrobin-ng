@@ -34,8 +34,8 @@ export class FormlyFieldEquipmentItemBrowserComponent extends FieldType implemen
 
   noRecentMessage: string = this.translateService.instant(
     "You don't have any recently used items in this class. Please find your equipment using the input box above, " +
-      "and the next time you edit an image, they will available for quick selection here. PS: you can also save/load " +
-      "presets to make it easier to add equipment next time! Look for the preset buttons at the end of this form."
+    "and the next time you edit an image, they will available for quick selection here. PS: you can also save/load " +
+    "presets to make it easier to add equipment next time! Look for the preset buttons at the end of this form."
   );
 
   allRecentUsedMessage: string = this.translateService.instant(

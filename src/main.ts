@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
   platformBrowserDynamic()
     .bootstrapModule(AppModule)
     .catch(err => {
-      // tslint:disable-next-line:no-console
+      // eslint-disable-next-line no-console
       console.error(err);
     });
 });

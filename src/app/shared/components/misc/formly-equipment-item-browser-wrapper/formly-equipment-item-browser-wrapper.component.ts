@@ -13,6 +13,6 @@ export class FormlyEquipmentItemBrowserWrapperComponent extends FieldWrapper {
   }
 
   closeMessage(message: FormlyFieldMessage) {
-    this.formlyFieldService.removeMessage(this.to, message);
+    this.formlyFieldService.removeMessage(this.field, message);
   }
 }

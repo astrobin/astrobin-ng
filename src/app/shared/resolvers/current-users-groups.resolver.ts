@@ -13,7 +13,8 @@ import { GroupInterface } from "@shared/interfaces/group.interface";
   providedIn: "root"
 })
 export class CurrentUsersGroupsResolver implements Resolve<GroupInterface[]> {
-  constructor(private readonly store$: Store<State>, private readonly groupApiService: GroupApiService) {}
+  constructor(private readonly store$: Store<State>, private readonly groupApiService: GroupApiService) {
+  }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> | Promise<any> | any {
     return this.store$.select(selectCurrentUser).pipe(

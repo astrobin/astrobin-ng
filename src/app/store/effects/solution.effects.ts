@@ -19,13 +19,13 @@ export class SolutionEffects {
           mergeMap(solutionFromStore =>
             solutionFromStore !== null
               ? of(solutionFromStore).pipe(
-                  take(1),
-                  map(solution => new LoadSolutionSuccess(solution))
-                )
+                take(1),
+                map(solution => new LoadSolutionSuccess(solution))
+              )
               : this.solutionApiService.getSolution(action.payload.contentType, action.payload.objectId).pipe(
-                  map(solution => (!!solution ? new LoadSolutionSuccess(solution) : new LoadSolutionFailure())),
-                  catchError(error => EMPTY)
-                )
+                map(solution => (!!solution ? new LoadSolutionSuccess(solution) : new LoadSolutionFailure())),
+                catchError(error => EMPTY)
+              )
           )
         )
       )
@@ -48,5 +48,6 @@ export class SolutionEffects {
     public readonly store$: Store<State>,
     public readonly actions$: Actions<All>,
     public readonly solutionApiService: SolutionApiService
-  ) {}
+  ) {
+  }
 }

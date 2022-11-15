@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { Actions } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
@@ -11,7 +11,7 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 import { State } from "@app/store/state";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
-import { FormlyFieldMessageLevel, FormlyFieldService } from "@shared/services/formly-field.service";
+import { FormlyFieldMessage, FormlyFieldMessageLevel, FormlyFieldService } from "@shared/services/formly-field.service";
 import { FilterDisplayProperty, FilterService } from "@features/equipment/services/filter.service";
 import { FilterInterface, FilterSize, FilterType } from "@features/equipment/types/filter.interface";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
@@ -39,7 +39,8 @@ export class FilterEditorComponent extends BaseItemEditorComponent<FilterInterfa
     public readonly formlyFieldService: FormlyFieldService,
     public readonly filterService: FilterService,
     public readonly modalService: NgbModal,
-    public readonly utilsService: UtilsService
+    public readonly utilsService: UtilsService,
+    public readonly changeDetectorRef: ChangeDetectorRef
   ) {
     super(
       store$,
@@ -51,7 +52,8 @@ export class FilterEditorComponent extends BaseItemEditorComponent<FilterInterfa
       equipmentItemService,
       formlyFieldService,
       modalService,
-      utilsService
+      utilsService,
+      changeDetectorRef
     );
   }
 
@@ -88,29 +90,41 @@ export class FilterEditorComponent extends BaseItemEditorComponent<FilterInterfa
       this.model.size === FilterSize.OTHER ||
       value.indexOf(`${this.filterService.humanizeSizeShort(this.model.size)}`) > -1;
 
+    const bandWidthMessage: FormlyFieldMessage = {
+      level: FormlyFieldMessageLevel.INFO,
+      text: this.translateService.instant(
+        "Please consider making the name contain the bandwidth, to prevent ambiguity."
+      )
+    };
+
+    const sizeMessage: FormlyFieldMessage = {
+      level: FormlyFieldMessageLevel.INFO,
+      text: this.translateService.instant("Please consider making the name contain the size, to prevent ambiguity.")
+    };
+
+    const filterSetMessage: FormlyFieldMessage = {
+      level: FormlyFieldMessageLevel.WARNING,
+      text: this.translateService.instant(
+        "Filter sets should be added one filter at a time, individually, so that they may be added to acquisition sessions."
+      )
+    };
+
     if (!hasBandwidth) {
-      this.formlyFieldService.addMessage(field.templateOptions, {
-        level: FormlyFieldMessageLevel.INFO,
-        text: this.translateService.instant(
-          "Please consider making the name contain the bandwidth, to prevent ambiguity."
-        )
-      });
+      this.formlyFieldService.addMessage(field, bandWidthMessage);
+    } else {
+      this.formlyFieldService.removeMessage(field, bandWidthMessage);
     }
 
     if (!hasSize) {
-      this.formlyFieldService.addMessage(field.templateOptions, {
-        level: FormlyFieldMessageLevel.INFO,
-        text: this.translateService.instant("Please consider making the name contain the size, to prevent ambiguity.")
-      });
+      this.formlyFieldService.addMessage(field, sizeMessage);
+    } else {
+      this.formlyFieldService.removeMessage(field, sizeMessage);
     }
 
     if (hasFilterSet) {
-      this.formlyFieldService.addMessage(field.templateOptions, {
-        level: FormlyFieldMessageLevel.WARNING,
-        text: this.translateService.instant(
-          "Filter sets should be added one filter at a time, individually, so that they may be added to acquisition sessions."
-        )
-      });
+      this.formlyFieldService.addMessage(field, filterSetMessage);
+    } else {
+      this.formlyFieldService.removeMessage(field, filterSetMessage);
     }
   }
 
@@ -187,9 +201,9 @@ export class FilterEditorComponent extends BaseItemEditorComponent<FilterInterfa
       type: "ng-select",
       id: "filter-field-type",
       expressionProperties: {
-        "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+        "props.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
       },
-      templateOptions: {
+      props: {
         label: this.filterService.getPrintablePropertyName(FilterDisplayProperty.TYPE),
         required: true,
         clearable: true,
@@ -202,7 +216,7 @@ export class FilterEditorComponent extends BaseItemEditorComponent<FilterInterfa
         onInit: (field: FormlyFieldConfig) => {
           field.formControl.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(() => {
             const nameField = this.fields.find(f => f.key === "name");
-            this.formlyFieldService.clearMessages(nameField.templateOptions);
+            this.formlyFieldService.clearMessages(nameField);
             this._updateGeneratedName();
             this._customNameChangesValidations(nameField, this.model.name);
           });
@@ -218,11 +232,11 @@ export class FilterEditorComponent extends BaseItemEditorComponent<FilterInterfa
       wrappers: ["default-wrapper"],
       id: "filter-field-bandwidth",
       expressionProperties: {
-        "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress,
-        "templateOptions.required": () =>
+        "props.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress,
+        "props.required": () =>
           [FilterType.H_ALPHA, FilterType.H_BETA, FilterType.SII, FilterType.OIII].indexOf(this.model.type) > -1
       },
-      templateOptions: {
+      props: {
         type: "number",
         step: 0.1,
         label: this.filterService.getPrintablePropertyName(FilterDisplayProperty.BANDWIDTH)
@@ -248,7 +262,7 @@ export class FilterEditorComponent extends BaseItemEditorComponent<FilterInterfa
         onInit: (field: FormlyFieldConfig) => {
           field.formControl.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(() => {
             const nameField = this.fields.find(f => f.key === "name");
-            this.formlyFieldService.clearMessages(nameField.templateOptions);
+            this.formlyFieldService.clearMessages(nameField);
             this._updateGeneratedName();
             this._customNameChangesValidations(nameField, this.model.name);
           });
@@ -263,9 +277,9 @@ export class FilterEditorComponent extends BaseItemEditorComponent<FilterInterfa
       type: "ng-select",
       id: "filter-field-size",
       expressionProperties: {
-        "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+        "props.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
       },
-      templateOptions: {
+      props: {
         label: this.filterService.getPrintablePropertyName(FilterDisplayProperty.SIZE),
         required: true,
         clearable: true,
@@ -278,7 +292,7 @@ export class FilterEditorComponent extends BaseItemEditorComponent<FilterInterfa
         onInit: (field: FormlyFieldConfig) => {
           field.formControl.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(() => {
             const nameField = this.fields.find(f => f.key === "name");
-            this.formlyFieldService.clearMessages(nameField.templateOptions);
+            this.formlyFieldService.clearMessages(nameField);
             this._updateGeneratedName();
             this._customNameChangesValidations(nameField, this.model.name);
           });
@@ -294,13 +308,13 @@ export class FilterEditorComponent extends BaseItemEditorComponent<FilterInterfa
       wrappers: ["default-wrapper"],
       id: "filter-field-override-name",
       defaultValue: this.editorMode === EquipmentItemEditorMode.EDIT_PROPOSAL,
-      templateOptions: {
+      props: {
         fieldGroupClassName: "override-name",
         label: this.translateService.instant("Override generated name above"),
         description: this.translateService.instant(
           "AstroBin automatically sets the name of a filter from its properties, to keep a consistent " +
-            "naming convention strategy. If your filter has a specific product name that's more recognizable, " +
-            "please check this box and change its name."
+          "naming convention strategy. If your filter has a specific product name that's more recognizable, " +
+          "please check this box and change its name."
         ),
         required: true,
         hideRequiredMarker: true

@@ -6,16 +6,17 @@ import { AppModule } from "@app/app.module";
 import { provideMockStore } from "@ngrx/store/testing";
 import { initialState } from "@app/store/state";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
+import { HttpClientModule } from "@angular/common/http";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
 
 describe("ReviewGearRenamingProposalsRejectModalComponent", () => {
   let component: RejectReviewGearRenamingProposalsModalComponent;
   let fixture: ComponentFixture<RejectReviewGearRenamingProposalsModalComponent>;
 
   beforeEach(async () => {
-    await MockBuilder(RejectReviewGearRenamingProposalsModalComponent, AppModule).provide([
-      provideMockStore({ initialState }),
-      NgbActiveModal
-    ]);
+    await MockBuilder(RejectReviewGearRenamingProposalsModalComponent, AppModule)
+      .replace(HttpClientModule, HttpClientTestingModule)
+      .provide([provideMockStore({ initialState }), NgbActiveModal]);
   });
 
   beforeEach(() => {

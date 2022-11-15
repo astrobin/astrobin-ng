@@ -6,13 +6,14 @@ import { ImageAlias } from "@shared/enums/image-alias.enum";
 import { ImageGenerator } from "@shared/generators/image.generator";
 import { MockBuilder } from "ng-mocks";
 import { ImageComponent } from "./image.component";
+import { WindowRefService } from "@shared/services/window-ref.service";
 
 describe("ImageComponent", () => {
   let component: ImageComponent;
   let fixture: ComponentFixture<ImageComponent>;
 
   beforeEach(async () => {
-    await MockBuilder(ImageComponent, AppModule).provide(provideMockStore({ initialState }));
+    await MockBuilder(ImageComponent, AppModule).provide([WindowRefService, provideMockStore({ initialState })]);
   });
 
   beforeEach(() => {

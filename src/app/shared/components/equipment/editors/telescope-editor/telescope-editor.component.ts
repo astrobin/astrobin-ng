@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { Actions } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
@@ -38,7 +38,8 @@ export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeI
     public readonly formlyFieldService: FormlyFieldService,
     public readonly telescopeService: TelescopeService,
     public readonly modalService: NgbModal,
-    public readonly utilsService: UtilsService
+    public readonly utilsService: UtilsService,
+    public readonly changeDetectorRef: ChangeDetectorRef
   ) {
     super(
       store$,
@@ -50,7 +51,8 @@ export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeI
       equipmentItemService,
       formlyFieldService,
       modalService,
-      utilsService
+      utilsService,
+      changeDetectorRef
     );
   }
 
@@ -137,9 +139,9 @@ export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeI
       type: "ng-select",
       id: "telescope-field-type",
       expressionProperties: {
-        "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+        "props.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
       },
-      templateOptions: {
+      props: {
         label: this.telescopeService.getPrintablePropertyName(TelescopeDisplayProperty.TYPE),
         required: true,
         clearable: true,
@@ -152,13 +154,13 @@ export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeI
         onInit: (field: FormlyFieldConfig) => {
           field.formControl.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(value => {
             const nameField = this.fields.find(f => f.key === "name");
-            this.formlyFieldService.clearMessages(nameField.templateOptions);
+            this.formlyFieldService.clearMessages(nameField);
             if (value === TelescopeType.CAMERA_LENS) {
-              this.formlyFieldService.addMessage(nameField.templateOptions, {
+              this.formlyFieldService.addMessage(nameField, {
                 level: FormlyFieldMessageLevel.INFO,
                 text: this.translateService.instant(
                   "The recommended naming convention for camera lenses is: optional model name, focal length " +
-                    "range, f-ratio range, additional properties. E.g. <strong>Nikkor Z 28mm f/2.8 (SE)</strong>."
+                  "range, f-ratio range, additional properties. E.g. <strong>Nikkor Z 28mm f/2.8 (SE)</strong>."
                 )
               });
             }
@@ -176,9 +178,9 @@ export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeI
       id: "telescope-field-aperture",
       hideExpression: () => this.model.type === TelescopeType.CAMERA_LENS,
       expressionProperties: {
-        "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+        "props.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
       },
-      templateOptions: {
+      props: {
         type: "number",
         step: 0.1,
         label: this.telescopeService.getPrintablePropertyName(TelescopeDisplayProperty.APERTURE)
@@ -211,9 +213,9 @@ export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeI
       id: "telescope-field-fixed-focal-length",
       defaultValue: this.model.minFocalLength === this.model.maxFocalLength,
       expressionProperties: {
-        "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+        "props.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
       },
-      templateOptions: {
+      props: {
         label: this.translateService.instant("Fixed focal length")
       }
     };
@@ -228,9 +230,9 @@ export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeI
       defaultValue: this.model.minFocalLength === this.model.maxFocalLength ? this.model.minFocalLength : null,
       hideExpression: () => !this.form.get("fixedFocalLength").value,
       expressionProperties: {
-        "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+        "props.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
       },
-      templateOptions: {
+      props: {
         type: "number",
         step: 0.1,
         label: this.telescopeService.getPrintablePropertyName(TelescopeDisplayProperty.FOCAL_LENGTH)
@@ -276,10 +278,10 @@ export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeI
           defaultValue: this.model.minFocalLength,
           hideExpression: () => !!this.form.get("fixedFocalLength").value,
           expressionProperties: {
-            "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress,
-            "templateOptions.required": model => !model.fixedFocalLength
+            "props.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress,
+            "props.required": model => !model.fixedFocalLength
           },
-          templateOptions: {
+          props: {
             type: "number",
             step: 0.1,
             label: this.telescopeService.getPrintablePropertyName(TelescopeDisplayProperty.MIN_FOCAL_LENGTH)
@@ -320,10 +322,10 @@ export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeI
           defaultValue: this.model.maxFocalLength,
           hideExpression: () => !!this.form.get("fixedFocalLength").value,
           expressionProperties: {
-            "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress,
-            "templateOptions.required": model => !model.fixedFocalLength
+            "props.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress,
+            "props.required": model => !model.fixedFocalLength
           },
-          templateOptions: {
+          props: {
             type: "number",
             step: 0.1,
             label: this.telescopeService.getPrintablePropertyName(TelescopeDisplayProperty.MAX_FOCAL_LENGTH)
@@ -375,9 +377,9 @@ export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeI
       wrappers: ["default-wrapper"],
       id: "telescope-field-weight",
       expressionProperties: {
-        "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+        "props.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
       },
-      templateOptions: {
+      props: {
         type: "number",
         step: 0.1,
         label: this.telescopeService.getPrintablePropertyName(TelescopeDisplayProperty.WEIGHT)

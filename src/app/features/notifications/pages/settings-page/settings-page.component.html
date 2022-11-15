@@ -9,7 +9,7 @@
         </ng-template>
 
         <ng-template ngbPanelContent>
-          <form *ngFor="let item of category.items | keyvalue" class="notification-form form-inline">
+          <form *ngFor="let item of category.items | keyvalue" class="notification-form d-flex flex-row align-items-center flex-wrap">
             <div class="form-group">
               <label>{{ getNotificationTypeById(item.key).display }}</label>
             </div>
@@ -20,7 +20,7 @@
                   (toggle)="notificationSettingChanged(item.value['EMAIL'], $event)"
                   [attr.id]="'notification-' + item.key + '-email'"
                   [value]="item.value['EMAIL'].send"
-                  class="mr-2"
+                  class="me-2"
                 ></astrobin-toggle-button>
                 <label [attr.for]="'notification-' + item.key + '-email'" class="form-check-label">
                   {{ "E-mail" | translate }}
@@ -32,7 +32,7 @@
                   (toggle)="notificationSettingChanged(item.value['ON_SITE'], $event)"
                   [attr.id]="'notification-' + item.key + '-onsite'"
                   [value]="item.value['ON_SITE'].send"
-                  class="mr-2"
+                  class="me-2"
                 ></astrobin-toggle-button>
                 <label [attr.for]="'notification-' + item.key + '-onsite'" class="form-check-label">
                   {{ "On-site" | translate }}

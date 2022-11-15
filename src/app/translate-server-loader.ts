@@ -1,8 +1,8 @@
 import { join } from "path";
 import { Observable } from "rxjs";
 import * as fs from "fs";
-import { TranslatePoHttpLoader } from "@fjnr/ngx-translate-po-http-loader";
 import { HttpClient } from "@angular/common/http";
+import { TranslatePoHttpLoader } from "@tobyodonnell-aiau/ngx-translate-po-http-loader";
 
 export class TranslateServerLoader extends TranslatePoHttpLoader {
   constructor(

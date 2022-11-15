@@ -65,5 +65,6 @@ export class MigrationExplorerComponent extends ExplorerBaseComponent implements
     this.activeId = parseInt(this.activatedRoute.snapshot?.paramMap.get("itemId"), 10);
   }
 
-  getItems() {}
+  getItems() {
+  }
 }

@@ -6,7 +6,6 @@ import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { TitleService } from "@shared/services/title/title.service";
 import { ActivatedRoute } from "@angular/router";
-import { WindowRefService } from "@shared/services/window-ref.service";
 import { AuthService } from "@shared/services/auth.service";
 
 @Component({

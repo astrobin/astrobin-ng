@@ -19,11 +19,11 @@ context("Equipment", () => {
       it("should select suggestion", () => {
         cy.route("get", "**/api/v2/equipment/filter/find-similar-in-brand/*", [testFilter]);
 
-        cy.equipmentItemBrowserSelectFirstBrand("#equipment-item-field-brand", "Test brand", testBrand);
+        cy.equipmentItemBrowserSelectFirstBrand("#equipment-item-field-brand", "Test Brand", testBrand);
         cy.get("#equipment-item-field-name").should("have.value", "Test");
         cy.get("astrobin-similar-items-suggestion").should("be.visible");
         cy.get("astrobin-similar-items-suggestion .btn").click();
-        cy.equipmentItemBrowserShouldContain("#equipment-item-field", "Test brand", "Test filter");
+        cy.equipmentItemBrowserShouldContain("#equipment-item-field", "Test Brand", "Test filter");
       });
     });
   });

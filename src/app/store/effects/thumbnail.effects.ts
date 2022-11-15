@@ -22,32 +22,32 @@ export class ThumbnailEffects {
             thumbnailFromStore !== null
               ? of(thumbnailFromStore)
               : this.store$.select(selectImage, action.payload.data.id).pipe(
-                  take(1),
-                  mergeMap(imageFromStore => {
-                    if (imageFromStore !== null) {
-                      return this.imageApiService.getThumbnail(
-                        imageFromStore.hash || imageFromStore.pk,
+                take(1),
+                mergeMap(imageFromStore => {
+                  if (imageFromStore !== null) {
+                    return this.imageApiService.getThumbnail(
+                      imageFromStore.hash || imageFromStore.pk,
+                      action.payload.data.revision,
+                      action.payload.data.alias,
+                      action.payload.bustCache
+                    );
+                  }
+
+                  this.store$.dispatch(new LoadImage(action.payload.data.id));
+
+                  return this.store$.select(selectImage, action.payload.data.id).pipe(
+                    filter(image => !!image),
+                    mergeMap(image =>
+                      this.imageApiService.getThumbnail(
+                        image.hash || image.pk,
                         action.payload.data.revision,
                         action.payload.data.alias,
                         action.payload.bustCache
-                      );
-                    }
-
-                    this.store$.dispatch(new LoadImage(action.payload.data.id));
-
-                    return this.store$.select(selectImage, action.payload.data.id).pipe(
-                      filter(image => !!image),
-                      mergeMap(image =>
-                        this.imageApiService.getThumbnail(
-                          image.hash || image.pk,
-                          action.payload.data.revision,
-                          action.payload.data.alias,
-                          action.payload.bustCache
-                        )
                       )
-                    );
-                  })
-                )
+                    )
+                  );
+                })
+              )
           )
         )
       ),
@@ -91,5 +91,6 @@ export class ThumbnailEffects {
     public readonly store$: Store<State>,
     public readonly actions$: Actions<All>,
     public readonly imageApiService: ImageApiService
-  ) {}
+  ) {
+  }
 }

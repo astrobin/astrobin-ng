@@ -180,8 +180,10 @@ export class LoadEquipmentPresetModalComponent extends BaseComponentDirective im
             key: "preset",
             type: "radio",
             wrappers: ["default-wrapper"],
-            templateOptions: {
+            props: {
               required: true,
+              labelProp: "value",
+              valueProp: "key",
               options: presets.map(preset => ({
                 key: preset.id,
                 value: preset.name

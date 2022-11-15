@@ -13,7 +13,7 @@ const testEquipmentPreset = {
   mounts: [1],
   filters: [1],
   accessories: [1],
-  software: [1]
+  software: [1],
 };
 
 const testEquipmentPreset2 = {
@@ -31,7 +31,7 @@ const testEquipmentPreset2 = {
   mounts: [],
   filters: [],
   accessories: [],
-  software: []
+  software: [],
 };
 
 context("Image edit (existing), test equipment presets", () => {
@@ -96,8 +96,8 @@ context("Image edit (existing), test equipment presets", () => {
         createdBy: 1,
         reviewedBy: null,
         brand: 1,
-        group: null
-      }
+        group: null,
+      },
     ]).as("getRecentlyUsedTelescopeForImaging");
     cy.route("get", /.*\/api\/v2\/equipment\/mount\/recently-used\//, []).as("getRecentlyUsedMount");
     cy.route("get", /.*\/api\/v2\/equipment\/filter\/recently-used\//, []).as("getRecentlyUsedFilter");
@@ -126,91 +126,55 @@ context("Image edit (existing), test equipment presets", () => {
 
   it("should select a preset", () => {
     cy.get("#load-preset-btn").click();
-    cy.get(".custom-radio label")
-      .contains("Test preset")
-      .click();
+    cy.get(".form-check label").contains("Test preset").click();
     cy.wait(500);
-    cy.get(".btn-primary")
-      .contains("Load")
-      .click();
+    cy.get(".btn-primary").contains("Load").click();
 
-    cy.get("#image-imaging-telescopes-field .ng-value")
-      .contains("Test Brand Test Telescope 1")
-      .should("be.visible");
+    cy.get("#image-imaging-telescopes-field .ng-value").contains("Test Brand Test Telescope 1").should("be.visible");
 
-    cy.get("#image-imaging-telescopes-field .ng-value")
-      .contains("Test Brand Test Telescope 2")
-      .should("be.visible");
+    cy.get("#image-imaging-telescopes-field .ng-value").contains("Test Brand Test Telescope 2").should("be.visible");
 
-    cy.get("#image-imaging-cameras-field .ng-value")
-      .contains("Test Brand Test Camera 1")
-      .should("be.visible");
+    cy.get("#image-imaging-cameras-field .ng-value").contains("Test Brand Test Camera 1").should("be.visible");
 
-    cy.get("#image-imaging-cameras-field .ng-value")
-      .contains("Test Brand Test Camera 2")
-      .should("be.visible");
+    cy.get("#image-imaging-cameras-field .ng-value").contains("Test Brand Test Camera 2").should("be.visible");
 
-    cy.get("#image-mounts-field .ng-value")
-      .contains("Test Brand Test Mount 1")
-      .should("be.visible");
+    cy.get("#image-mounts-field .ng-value").contains("Test Brand Test Mount 1").should("be.visible");
 
-    cy.get("#image-filters-field .ng-value")
-      .contains("Test Brand Test Filter 1")
-      .should("be.visible");
+    cy.get("#image-filters-field .ng-value").contains("Test Brand Test Filter 1").should("be.visible");
 
-    cy.get("#image-accessories-field .ng-value")
-      .contains("Test Brand Test Accessory 1")
-      .should("be.visible");
+    cy.get("#image-accessories-field .ng-value").contains("Test Brand Test Accessory 1").should("be.visible");
 
-    cy.get("#image-software-field .ng-value")
-      .contains("Test Brand Test Software 1")
-      .should("be.visible");
+    cy.get("#image-software-field .ng-value").contains("Test Brand Test Software 1").should("be.visible");
 
-    cy.get("#image-guiding-telescopes-field .ng-value")
-      .contains("Test Brand Test Telescope 3")
-      .should("be.visible");
+    cy.get("#image-guiding-telescopes-field .ng-value").contains("Test Brand Test Telescope 3").should("be.visible");
 
-    cy.get("#image-guiding-cameras-field .ng-value")
-      .contains("Test Brand Test Camera 3")
-      .should("be.visible");
+    cy.get("#image-guiding-cameras-field .ng-value").contains("Test Brand Test Camera 3").should("be.visible");
   });
 
   it("should prefill the name when saving active preset", () => {
     cy.get("#save-preset-btn").click();
-    cy.get(".modal .modal-title")
-      .contains("Save equipment preset")
-      .should("be.visible");
+    cy.get(".modal .modal-title").contains("Save equipment preset").should("be.visible");
     cy.get(".modal input#name").should("have.value", "Test preset");
   });
 
   it("should prompt to overwrite", () => {
-    cy.get(".modal .btn")
-      .contains("Save")
-      .click();
+    cy.get(".modal .btn").contains("Save").click();
 
-    cy.get(".modal .modal-title")
-      .contains("Are you sure?")
-      .should("be.visible");
+    cy.get(".modal .modal-title").contains("Are you sure?").should("be.visible");
   });
 
   it("should save", () => {
     cy.route("put", "**/api/v2/equipment/equipment-preset/1/", testEquipmentPreset);
-    cy.get(".modal .btn")
-      .contains("Yes, continue")
-      .click();
+    cy.get(".modal .btn").contains("Yes, continue").click();
 
-    cy.get(".modal").should("not.be.visible");
-    cy.get(".toast-message")
-      .contains("Equipment preset updated.")
-      .should("be.visible");
+    cy.get(".modal").should("not.exist");
+    cy.get(".toast-message").contains("Equipment preset updated.").should("be.visible").click().should("not.exist");
   });
 
   it("should clear the equipment", () => {
     cy.get("#clear-equipment-btn").click();
 
-    cy.get(".modal .btn")
-      .contains("Yes, continue")
-      .click();
+    cy.get(".modal .btn").contains("Yes, continue").click();
     cy.get("#clear-equipment-btn").should("be.disabled");
 
     cy.get("#image-imaging-telescopes-field .ng-value").should("have.length", 0);
@@ -252,12 +216,12 @@ context("Image edit (existing), test equipment presets", () => {
           createdBy: 1,
           reviewedBy: null,
           brand: 1,
-          group: null
-        }
-      ]
+          group: null,
+        },
+      ],
     }).as("findTelescopes");
 
-    cy.get("#image-imaging-telescopes-field + .toggle-enable-fullscreen").click();
+    cy.get("#image-imaging-telescopes-field + .toggle-enable-fullscreen").scrollIntoView().click();
     cy.get("#image-imaging-telescopes-field input[type='text']").type("Foo");
     cy.wait("@findTelescopes");
 
@@ -269,47 +233,31 @@ context("Image edit (existing), test equipment presets", () => {
 
   it("should save as a new preset", () => {
     cy.get("#save-preset-btn").click();
-    cy.get(".modal .modal-title")
-      .contains("Save equipment preset")
-      .should("be.visible");
+    cy.get(".modal .modal-title").contains("Save equipment preset").should("be.visible");
     cy.get(".modal input#name").should("have.value", "");
     cy.get(".modal input#name").type("Test preset 2");
 
     cy.route("post", "**/api/v2/equipment/equipment-preset/", testEquipmentPreset2);
-    cy.get(".modal .btn")
-      .contains("Save")
-      .click();
+    cy.get(".modal .btn").contains("Save").click();
 
-    cy.get(".modal").should("not.be.visible");
-    cy.get(".toast-message")
-      .contains("Equipment preset created")
-      .should("be.visible");
+    cy.get(".modal").should("not.exist");
+    cy.get(".toast-message").contains("Equipment preset created").should("be.visible").click().should("not.exist");
   });
 
   it("should have updated the presets modal", () => {
     cy.get("#load-preset-btn").click();
-    cy.get(".custom-radio label")
-      .contains("Test preset 2")
-      .should("be.visible");
+    cy.get(".form-check label").contains("Test preset 2").should("be.visible");
   });
 
   it("should delete a preset", () => {
-    cy.get(".custom-radio label")
-      .contains("Test preset 2")
-      .click();
+    cy.get(".form-check label").contains("Test preset 2").click();
 
-    cy.get(".btn")
-      .contains("Delete")
-      .click();
+    cy.get(".btn").contains("Delete").click();
 
     cy.route("delete", "**/api/v2/equipment/equipment-preset/2/", {});
 
-    cy.get(".btn")
-      .contains("Yes, continue")
-      .click();
+    cy.get(".btn").contains("Yes, continue").click();
 
-    cy.get(".custom-radio label")
-      .contains("Test preset 2")
-      .should("not.exist");
+    cy.get(".form-check label").contains("Test preset 2").should("not.exist");
   });
 });

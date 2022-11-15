@@ -1,24 +1,22 @@
-@import "~bootstrap/scss/functions";
+@import "./node_modules/bootstrap/scss/functions";
 
 // Override Bootstrap variables
-$theme-colors: (
-  "primary": #f0f0f0,
-  "secondary": #f0f0f0,
-  "success": #f0f0f0,
-  "info": #222,
-  "warning": #f0f0f0,
-  "danger": #f0f0f0,
-  "light": #f0f0f0,
-  "dark": #111
-);
+$primary: #f0f0f0;
+$secondary: #f0f0f0;
+$success: #f0f0f0;
+$info: #222;
+$warning: #f0f0f0;
+$danger: #f0f0f0;
+$light: #f0f0f0;
+$dark: #111;
 
-$dropdown-link-hover-bg: theme-color("dark");
+$dropdown-link-hover-bg: $dark;
 $enable-gradients: false;
 
 // Define own colors
 
 // ... shades of grey
-$white: theme-color("light");
+$white: $light;
 $lightest-grey: #e0e0e0;
 $lighter-grey: #aaa;
 $light-grey: #999;
@@ -31,25 +29,25 @@ $black: #000;
 // ... other colors
 $gold: #fff;
 
-$info: theme-color("info");
-$text-on-info: theme-color("light");
+$info: $info;
+$text-on-info: $light;
 
-$success: theme-color("success");
-$text-on-success: theme-color("dark");
+$success: $success;
+$text-on-success: $dark;
 $successSecondary: darken($success, 30%);
 
-$warning: theme-color("warning");
-$text-on-warning: theme-color("dark");
+$warning: $warning;
+$text-on-warning: $dark;
 
-$error: theme-color("error");
+$error: $danger;
 $text-on-error: $black;
 
 // ... special colors
-$accent-color: theme-color("primary");
+$accent-color: $primary;
 $lighter-accent-color: lighten($accent-color, 20%);
 $darker-accent-color: darken($accent-color, 20%);
 $muted-accent-color: #eee;
-$text-on-accent-color: theme-color("dark");
+$text-on-accent-color: $dark;
 
 $secondary-accent-color: #ddd;
 $lighter-secondary-accent-color: lighten($secondary-accent-color, 20%);
@@ -85,7 +83,7 @@ $ng-select-value-font-size: 0.9em;
   --textOnSecondaryAccentColor: #{$text-on-secondary-accent-color};
 
   --brightWhite: #fff;
-  --white: #{theme-color("primary")};
+  --white: #{$primary};
   --lightGrey: #{$light-grey};
   --lighterGrey: #{$lighter-grey};
   --lightestGrey: #{$lightest-grey};
@@ -97,16 +95,16 @@ $ng-select-value-font-size: 0.9em;
 
   --gold: #{$gold};
 
-  --infoColor: #{theme-color("info")};
+  --infoColor: #{$info};
   --textOnInfoColor: #{$text-on-info};
 
-  --successColor: #{theme-color("success")};
+  --successColor: #{$success};
   --textOnSuccessColor: #{$text-on-success};
   --successSecondaryColor: #{$successSecondary};
 
-  --warningColor: #{theme-color("warning")};
+  --warningColor: #{$warning};
   --textOnWarningColor: #{$text-on-warning};
 
-  --dangerColor: #{theme-color("danger")};
+  --dangerColor: #{$danger};
   --textOnDangerColor: #{$text-on-error};
 }

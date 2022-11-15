@@ -96,11 +96,11 @@ export class AuthEffects {
             userFromStore !== null
               ? of(userFromStore).pipe(map(() => new LoadUserSuccess({ user: userFromStore })))
               : this.commonApiService.getUser(payload.id).pipe(
-                  map(
-                    user => new LoadUserSuccess({ user }),
-                    catchError(error => EMPTY)
-                  )
+                map(
+                  user => new LoadUserSuccess({ user }),
+                  catchError(error => EMPTY)
                 )
+              )
           )
         )
       )
@@ -116,20 +116,53 @@ export class AuthEffects {
           switchMap(userProfileFromStore =>
             userProfileFromStore !== null
               ? of(userProfileFromStore).pipe(
-                  map(() => new LoadUserProfileSuccess({ userProfile: userProfileFromStore }))
-                )
+                map(() => new LoadUserProfileSuccess({ userProfile: userProfileFromStore }))
+              )
               : this.commonApiService.getUserProfile(payload.id).pipe(
-                  map(
-                    userProfile => new LoadUserProfileSuccess({ userProfile }),
-                    catchError(error => EMPTY)
-                  )
+                map(
+                  userProfile => new LoadUserProfileSuccess({ userProfile }),
+                  catchError(error => EMPTY)
                 )
+              )
           )
         )
       )
     )
   );
+  private _getCurrentUser$: Observable<{
+    user: UserInterface;
+    userProfile: UserProfileInterface;
+  }> = this.commonApiService.getCurrentUserProfile().pipe(
+    switchMap(userProfile => {
+      if (userProfile !== null) {
+        return this.commonApiService.getUser(userProfile.user).pipe(
+          map(user => ({
+            user,
+            userProfile
+          }))
+        );
+      }
 
+      return of(null);
+    })
+  );
+  private _getData$: Observable<{
+    user: UserInterface;
+    userProfile: UserProfileInterface;
+    userSubscriptions: UserSubscriptionInterface[];
+  }> = this._getCurrentUser$.pipe(
+    concatMap(userData => {
+      return this.commonApiService.getUserSubscriptions(userData.user).pipe(
+        map(userSubscriptions => {
+          return {
+            user: userData.user,
+            userProfile: userData.userProfile,
+            userSubscriptions
+          };
+        })
+      );
+    })
+  );
   Login: Observable<LoginSuccess | LoginFailure> = createEffect(() =>
     this.actions$.pipe(
       ofType(AuthActionTypes.LOGIN),
@@ -163,7 +196,6 @@ export class AuthEffects {
       )
     )
   );
-
   Initialize: Observable<InitializeAuthSuccess> = createEffect(() =>
     this.actions$.pipe(
       ofType(AuthActionTypes.INITIALIZE),
@@ -208,43 +240,8 @@ export class AuthEffects {
     public readonly commonApiService: CommonApiService,
     public readonly translate: TranslateService,
     public readonly timeagoIntl: TimeagoIntl
-  ) {}
-
-  private _getCurrentUser$: Observable<{
-    user: UserInterface;
-    userProfile: UserProfileInterface;
-  }> = this.commonApiService.getCurrentUserProfile().pipe(
-    switchMap(userProfile => {
-      if (userProfile !== null) {
-        return this.commonApiService.getUser(userProfile.user).pipe(
-          map(user => ({
-            user,
-            userProfile
-          }))
-        );
-      }
-
-      return of(null);
-    })
-  );
-
-  private _getData$: Observable<{
-    user: UserInterface;
-    userProfile: UserProfileInterface;
-    userSubscriptions: UserSubscriptionInterface[];
-  }> = this._getCurrentUser$.pipe(
-    concatMap(userData => {
-      return this.commonApiService.getUserSubscriptions(userData.user).pipe(
-        map(userSubscriptions => {
-          return {
-            user: userData.user,
-            userProfile: userData.userProfile,
-            userSubscriptions
-          };
-        })
-      );
-    })
-  );
+  ) {
+  }
 
   private _setLanguage(language: string): Observable<any> {
     this.translate.setDefaultLang(language);

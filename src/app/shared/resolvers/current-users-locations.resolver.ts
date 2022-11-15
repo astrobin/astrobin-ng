@@ -14,7 +14,8 @@ import { UtilsService } from "@shared/services/utils/utils.service";
   providedIn: "root"
 })
 export class CurrentUsersLocationsResolver implements Resolve<LocationInterface[]> {
-  constructor(private readonly store$: Store<State>, private readonly locationsApiService: UsersLocationsApiService) {}
+  constructor(private readonly store$: Store<State>, private readonly locationsApiService: UsersLocationsApiService) {
+  }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> | Promise<any> | any {
     return this.store$.select(selectCurrentUserProfile).pipe(

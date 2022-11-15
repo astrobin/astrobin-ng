@@ -17,7 +17,8 @@ export class ServerErrorsInterceptor implements HttpInterceptor {
     public readonly loadingService: LoadingService,
     public readonly authService: AuthService,
     public readonly utilsService: UtilsService
-  ) {}
+  ) {
+  }
 
   public intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return next.handle(request).pipe(
@@ -115,7 +116,7 @@ export class ServerErrorsInterceptor implements HttpInterceptor {
         errorTitle = this.translateService.instant("Internal server error");
         errorMessage = this.translateService.instant(
           "This should never happen. AstroBin's staff has been notified automatically and will solve the " +
-            "problem as soon as possible."
+          "problem as soon as possible."
         );
         break;
       case 503:

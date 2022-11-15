@@ -1,7 +1,7 @@
 import { Directive, HostListener } from "@angular/core";
 
 @Directive({
-  selector: "[appEventPreventDefault]"
+  selector: "[astrobinEventPreventDefault]"
 })
 export class EventPreventDefaultDirective {
   @HostListener("click", ["$event"])

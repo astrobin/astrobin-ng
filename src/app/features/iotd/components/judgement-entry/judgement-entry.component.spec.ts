@@ -8,6 +8,7 @@ import { MockBuilder } from "ng-mocks";
 import { JudgementEntryComponent } from "./judgement-entry.component";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { CookieService } from "ngx-cookie";
+import { AppModule } from "@app/app.module";
 
 describe("JudgementEntryComponent", () => {
   let component: JudgementEntryComponent;
@@ -15,8 +16,8 @@ describe("JudgementEntryComponent", () => {
 
   beforeEach(async () => {
     await MockBuilder(JudgementEntryComponent, IotdModule)
-      .provide([WindowRefService, provideMockStore({ initialState })])
-      .mock(CookieService);
+      .mock(AppModule, { export: true })
+      .provide([WindowRefService, provideMockStore({ initialState }), CookieService]);
   });
 
   beforeEach(() => {

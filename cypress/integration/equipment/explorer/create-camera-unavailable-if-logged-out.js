@@ -9,7 +9,7 @@ context("Equipment", () => {
     it("should not have the 'Add' tag", () => {
       cy.visitPage("/equipment/explorer");
 
-      cy.get("#equipment-item-field + .toggle-enable-fullscreen").click();
+      cy.get("#equipment-item-field + .toggle-enable-fullscreen").scrollIntoView().click();
       cy.get("#equipment-item-field .ng-input input").type("Test");
       cy.wait("@findCameras");
 

@@ -70,7 +70,7 @@
               <tr *ngFor="let item of items.results; trackBy: equipmentItemService.trackBy" data-id="{{ item.id }}">
                 <td class="item-name">
                   <a
-                    appEventPreventDefault
+                    astrobinEventPreventDefault
                     [href]="'/equipment/explorer/' + item.klass.toLowerCase() + '/' + item.id + '/'"
                     (click)="viewItem(item)"
                   >
@@ -97,7 +97,7 @@
                     "
                     href="#"
                     class="add-to-compare"
-                    appEventPreventDefault
+                    astrobinEventPreventDefault
                     (click)="compareService.addWithErrorHandling(item)"
                   >
                     <fa-icon icon="list-alt" [ngbTooltip]="'Add to comparison list' | translate"></fa-icon>

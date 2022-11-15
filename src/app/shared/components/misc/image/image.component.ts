@@ -24,7 +24,7 @@ import { ImageService } from "@shared/services/image/image.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { debounceTime, distinctUntilChanged, filter, map, switchMap, take, takeUntil } from "rxjs/operators";
-import { fromEvent, interval, Observable, of } from "rxjs";
+import { fromEvent, Observable, of } from "rxjs";
 import { selectImageRevisionsForImage } from "@app/store/selectors/app/image-revision.selectors";
 import { Actions } from "@ngrx/effects";
 import { ImageThumbnailInterface } from "@shared/interfaces/image-thumbnail.interface";
