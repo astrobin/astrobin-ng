@@ -1,24 +1,24 @@
 import { Injectable, OnDestroy } from "@angular/core";
 import { LoadingService } from "@shared/services/loading.service";
-import { Observable, Subject, Subscription } from "rxjs";
-import { debounceTime } from "rxjs/operators";
+import { Observable, ReplaySubject, Subject } from "rxjs";
+import { debounceTime, takeUntil } from "rxjs/operators";
 
 @Injectable()
 export class BaseService implements OnDestroy {
-  destroyedSubject = new Subject<void>();
+  destroyedSubject = new ReplaySubject<void>(1);
   destroyed$ = this.destroyedSubject.asObservable();
 
   loadingSubject = new Subject<boolean>();
-  loading$: Observable<boolean> = this.loadingSubject.asObservable().pipe(debounceTime(LoadingService.DEBOUNCE_TIME));
-
-  private loadingSubscription: Subscription;
+  loading$: Observable<boolean> = this.loadingSubject
+    .asObservable()
+    .pipe(takeUntil(this.destroyed$), debounceTime(LoadingService.DEBOUNCE_TIME));
 
   constructor(public readonly loadingService: LoadingService) {
-    this.loadingSubscription = this.loading$.subscribe(value => this.loadingService.setLoading(value));
+    this.loading$.subscribe((value) => this.loadingService.setLoading(value));
   }
 
   ngOnDestroy(): void {
     this.destroyedSubject.next();
-    this.loadingSubscription.unsubscribe();
+    this.destroyedSubject.complete();
   }
 }

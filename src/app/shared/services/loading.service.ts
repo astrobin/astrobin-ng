@@ -1,16 +1,20 @@
-import { Injectable } from "@angular/core";
+import { Injectable, OnDestroy } from "@angular/core";
 import { LoadingServiceInterface } from "@shared/services/loading.service-interface";
-import { Observable, Subject } from "rxjs";
-import { debounceTime } from "rxjs/operators";
+import { Observable, ReplaySubject, Subject } from "rxjs";
+import { debounceTime, takeUntil } from "rxjs/operators";
 
 @Injectable({
-  providedIn: "root"
+  providedIn: "root",
 })
-export class LoadingService implements LoadingServiceInterface {
+export class LoadingService implements LoadingServiceInterface, OnDestroy {
   static readonly DEBOUNCE_TIME = 250;
 
-  loadingSubject = new Subject<boolean>();
-  loading$: Observable<boolean> = this.loadingSubject.asObservable().pipe(debounceTime(LoadingService.DEBOUNCE_TIME));
+  destroyedSubject = new ReplaySubject<void>(1);
+  destroyed$ = this.destroyedSubject.asObservable();
+  loadingSubject = new ReplaySubject<boolean>();
+  loading$: Observable<boolean> = this.loadingSubject
+    .asObservable()
+    .pipe(takeUntil(this.destroyed$), debounceTime(LoadingService.DEBOUNCE_TIME));
 
   private _isLoading = false;
   private _loadingStack = 0;
@@ -36,5 +40,10 @@ export class LoadingService implements LoadingServiceInterface {
     }
 
     this.loadingSubject.next(this._isLoading);
+  }
+
+  ngOnDestroy(): void {
+    this.destroyedSubject.next();
+    this.destroyedSubject.complete();
   }
 }
