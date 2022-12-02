@@ -79,16 +79,6 @@ export class ImageEditAcquisitionFieldsService extends BaseService {
     ];
   }
 
-  private _getModelKey(): string | null {
-    if (this._isDeepSky()) {
-      return "deepSkyAcquisitions";
-    } else if (this._isSolarSystem()) {
-      return "solarSystemAcquisitions";
-    } else {
-      return null;
-    }
-  }
-
   private _isDeepSky(): boolean {
     return [SubjectType.DEEP_SKY, SubjectType.WIDE_FIELD].indexOf(this.imageEditService.model.subjectType) > -1;
   }

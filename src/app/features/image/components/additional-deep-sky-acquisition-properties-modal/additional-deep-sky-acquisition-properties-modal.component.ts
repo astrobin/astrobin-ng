@@ -70,6 +70,11 @@ export class AdditionalDeepSkyAcquisitionPropertiesModalComponent extends BaseCo
               required: false,
               step: 1,
               min: 0
+            },
+            validators: {
+              validation: [
+                "whole-number"
+              ]
             }
           },
           {
@@ -94,6 +99,16 @@ export class AdditionalDeepSkyAcquisitionPropertiesModalComponent extends BaseCo
               required: false,
               step: 1,
               min: 0
+            },
+            validators: {
+              validation: [
+                {
+                  name: "max-decimals",
+                  options: {
+                    value: 2
+                  }
+                }
+              ]
             }
           },
           {
@@ -107,6 +122,11 @@ export class AdditionalDeepSkyAcquisitionPropertiesModalComponent extends BaseCo
               required: false,
               step: 1,
               min: 0
+            },
+            validators: {
+              validation: [
+                "whole-number"
+              ]
             }
           }
         ]
@@ -133,6 +153,16 @@ export class AdditionalDeepSkyAcquisitionPropertiesModalComponent extends BaseCo
               required: false,
               step: 1,
               min: 0
+            },
+            validators: {
+              validation: [
+                {
+                  name: "max-decimals",
+                  options: {
+                    value: 2
+                  }
+                }
+              ]
             }
           }
         ]
@@ -156,6 +186,11 @@ export class AdditionalDeepSkyAcquisitionPropertiesModalComponent extends BaseCo
               required: false,
               step: 1,
               min: 0
+            },
+            validators: {
+              validation: [
+                "whole-number"
+              ]
             }
           },
           {
@@ -182,6 +217,11 @@ export class AdditionalDeepSkyAcquisitionPropertiesModalComponent extends BaseCo
               required: false,
               step: 1,
               min: 0
+            },
+            validators: {
+              validation: [
+                "whole-number"
+              ]
             }
           },
           {
@@ -195,6 +235,11 @@ export class AdditionalDeepSkyAcquisitionPropertiesModalComponent extends BaseCo
               required: false,
               step: 1,
               min: 0
+            },
+            validators: {
+              validation: [
+                "whole-number"
+              ]
             }
           }
         ]
@@ -243,6 +288,16 @@ export class AdditionalDeepSkyAcquisitionPropertiesModalComponent extends BaseCo
               required: false,
               step: 1,
               min: 0
+            },
+            validators: {
+              validation: [
+                {
+                  name: "max-decimals",
+                  options: {
+                    value: 2
+                  }
+                }
+              ]
             }
           },
           {
@@ -256,6 +311,16 @@ export class AdditionalDeepSkyAcquisitionPropertiesModalComponent extends BaseCo
               required: false,
               step: 1,
               min: 0
+            },
+            validators: {
+              validation: [
+                {
+                  name: "max-decimals",
+                  options: {
+                    value: 2
+                  }
+                }
+              ]
             }
           },
           {
@@ -268,7 +333,18 @@ export class AdditionalDeepSkyAcquisitionPropertiesModalComponent extends BaseCo
               description: this.translateService.instant("Ambient temperature in Celsius degrees."),
               required: false,
               step: 1,
-              min: 0
+              min: -88, // Minimum temperature ever recorded on Earth.
+              max: 58   // Maximum temperature ever recorded on Earth.
+            },
+            validators: {
+              validation: [
+                {
+                  name: "max-decimals",
+                  options: {
+                    value: 2
+                  }
+                }
+              ]
             }
           }
         ]
