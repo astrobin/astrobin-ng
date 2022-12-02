@@ -58,14 +58,14 @@ $text-on-secondary-accent-color: $white;
 $ng-select-highlight: $darker-grey;
 $ng-select-primary-text: $lightest-grey;
 $ng-select-disabled-text: $lightest-grey;
-$ng-select-border: $darker-grey;
-$ng-select-border-radius: 4px;
+$ng-select-border: $darkest-grey;
+$ng-select-border-radius: .375rem;
 $ng-select-bg: $darkest-grey;
 $ng-select-selected: darken($ng-select-highlight, 2%);
 $ng-select-marked: darken($ng-select-highlight, 1%);
 $ng-select-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 0 3px rgba(0, 126, 255, 0.1);
 $ng-select-placeholder: darken($ng-select-primary-text, 10%);
-$ng-select-height: 42px;
+$ng-select-height: 36px;
 $ng-select-value-padding-left: .5rem;
 $ng-select-value-font-size: 0.9em;
 

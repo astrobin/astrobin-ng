@@ -5,6 +5,10 @@
 @import "./node_modules/@kronscht/ng-wizard/themes/ng_wizard.min";
 @import "./node_modules/@ng-select/ng-select/scss/default.theme";
 
+@import './node_modules/@swimlane/ngx-datatable/index';
+@import './node_modules/@swimlane/ngx-datatable/themes/bootstrap';
+@import './node_modules/@swimlane/ngx-datatable/assets/icons';
+
 @import "assets/flags/flags";
 
 @import "app/styles/accordion";
@@ -13,6 +17,7 @@
 @import "app/styles/cards";
 @import "app/styles/ckeditor";
 @import "app/styles/common";
+@import "app/styles/datatable";
 @import "app/styles/dropdowns";
 @import "app/styles/forms";
 @import "app/styles/highlightjs";

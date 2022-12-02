@@ -51,8 +51,8 @@ export class FormlyFieldGoogleMapComponent extends FieldType implements AfterVie
 
         this.googleMapsService.maps.event.addListenerOnce(this.map, "tilesloaded", () => {
           this.tilesLoaded = true;
-          if (this.to.mapReady !== undefined) {
-            this.to.mapReady();
+          if (this.props.mapReady !== undefined) {
+            this.props.mapReady();
           }
         });
 

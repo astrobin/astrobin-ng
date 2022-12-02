@@ -13,6 +13,8 @@ import { JsonApiService } from "@shared/services/api/classic/json/json-api.servi
 import { debounceTime, distinctUntilChanged, first, startWith, switchMap } from "rxjs/operators";
 import { of } from "rxjs";
 import { FormlyFieldEquipmentItemBrowserComponent } from "@shared/components/misc/formly-field-equipment-item-browser/formly-field-equipment-item-browser.component";
+import { FormlyFieldTableComponent } from "@shared/components/misc/formly-field-table/formly-field-table.component";
+import { FormlyFieldButtonComponent } from "@shared/components/misc/formly-field-button/formly-field-button.component";
 
 export interface FileSizeValidatorOptionsInterface {
   max: number;
@@ -60,6 +62,16 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
         name: "equipment-item-browser",
         component: FormlyFieldEquipmentItemBrowserComponent,
         wrappers: ["equipment-item-browser-wrapper"]
+      },
+      {
+        name: "table",
+        component: FormlyFieldTableComponent,
+        wrappers: ["default-wrapper"]
+      },
+      {
+        name: "button",
+        component: FormlyFieldButtonComponent,
+        wrappers: ["default-wrapper"]
       }
     ],
     validationMessages: [
@@ -99,11 +111,11 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
       },
       {
         name: "number",
-        message: translateService.instant("This value should be an whole number.")
+        message: translateService.instant("This value should be a number.")
       },
       {
         name: "whole-number",
-        message: translateService.instant("This value should be an whole number.")
+        message: translateService.instant("This value should be a whole number.")
       },
       {
         name: "min-value",
@@ -114,10 +126,34 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
         }
       },
       {
+        name: "min",
+        message(options: { min: number }): string {
+          return translateService.instant("This value must be equal to or greater than {{0}}.", {
+            0: options.min
+          });
+        }
+      },
+      {
         name: "max-value",
         message(options: { maxValue: number }): string {
           return translateService.instant("This value must be equal to or smaller than {{0}}.", {
             0: options.maxValue
+          });
+        }
+      },
+      {
+        name: "max",
+        message(options: { maxValue: number }): string {
+          return translateService.instant("This value must be equal to or smaller than {{0}}.", {
+            0: options.maxValue
+          });
+        }
+      },
+      {
+        name: "max-date",
+        message(options: { value: Date }): string {
+          return translateService.instant("This date must not be after {{0}}.", {
+            0: options.value.toDateString()
           });
         }
       },
@@ -325,6 +361,16 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
           }
 
           return parseFloat(control.value) <= options.maxValue ? null : { "max-value": options };
+        }
+      },
+      {
+        name: "max-date",
+        validation: (control: FormControl, field: FormlyFieldConfig, options: { value: Date }) => {
+          if (control.value === null || control.value === undefined) {
+            return null;
+          }
+
+          return new Date(control.value) <= options.value ? null : { "max-date": options };
         }
       },
       {

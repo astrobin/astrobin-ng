@@ -1,17 +1,25 @@
-<div [class.has-error]="showError" class="form-group {{to.fieldGroupClassName}}">
-  <label *ngIf="to.label && to.hideLabel !== true" [attr.for]="id">
-    <span [innerHTML]="to.label"></span>
-    <span class="required-marker" *ngIf="to.required && !to.hideRequiredMarker">*</span>
-    <span class="optional-marker" *ngIf="!to.required && !to.hideOptionalMarker">
+<div [class.has-error]="showError" class="form-group {{props.fieldGroupClassName}}">
+  <label *ngIf="props.label && props.hideLabel !== true" [attr.for]="id">
+    <span [innerHTML]="props.label"></span>
+    <span *ngIf="props.required && !props.hideRequiredMarker" class="required-marker">*</span>
+    <span *ngIf="!props.required && !props.hideOptionalMarker" class="optional-marker">
       {{ "(optional)" | translate }}
     </span>
+
+    <ng-container *ngIf="!!props.descriptionUnderLabel">
+      <ng-container [ngTemplateOutlet]="description"></ng-container>
+    </ng-container>
   </label>
+
+  <ng-container *ngIf="!!props.errorUnderLabel">
+    <ng-container [ngTemplateOutlet]="error"></ng-container>
+  </ng-container>
 
   <ng-template #fieldComponent></ng-template>
 
-  <div *ngIf="showError" [style.display]="'block'" class="invalid-feedback">
-    <formly-validation-message [field]="field"></formly-validation-message>
-  </div>
+  <ng-container *ngIf="!props.errorUnderLabel">
+    <ng-container [ngTemplateOutlet]="error"></ng-container>
+  </ng-container>
 
   <ng-container *ngIf="!!field['messages']">
     <ng-container *ngFor="let message of field['messages']">
@@ -22,15 +30,32 @@
 
         <ng-container
           *ngIf="message.template"
-          [ngTemplateOutlet]="message.template"
           [ngTemplateOutletContext]="{ data: message.data }"
+          [ngTemplateOutlet]="message.template"
         >
         </ng-container>
 
-        <button *ngIf="message.dismissible" class="close" (click)="closeMessage(message)">&times;</button>
+        <button (click)="closeMessage(message)" *ngIf="message.dismissible" class="close">&times;</button>
       </div>
     </ng-container>
   </ng-container>
 
-  <small *ngIf="to.description" class="form-text text-muted" [innerHTML]="to.description"></small>
+  <ng-container *ngIf="!props.descriptionUnderLabel">
+    <ng-container [ngTemplateOutlet]="description"></ng-container>
+  </ng-container>
 </div>
+
+<ng-template #description>
+  <small
+    *ngIf="props.description"
+    [innerHTML]="props.description"
+    class="form-text text-muted">
+  </small>
+</ng-template>
+
+<ng-template #error>
+  <div *ngIf="showError && formControl.touched" [class.mb-2]="props.errorUnderLabel" [style.display]="'block'"
+       class="invalid-feedback">
+    <formly-validation-message [field]="field"></formly-validation-message>
+  </div>
+</ng-template>

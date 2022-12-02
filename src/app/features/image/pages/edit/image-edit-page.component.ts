@@ -39,6 +39,7 @@ import { UserService } from "@shared/services/user.service";
 import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
 import { CookieService } from "ngx-cookie";
 import { ComponentCanDeactivate } from "@shared/services/guards/pending-changes-guard.service";
+import { ImageEditAcquisitionFieldsService } from "@features/image/services/image-edit-acquisition-fields.service";
 
 @Component({
   selector: "astrobin-image-edit-page",
@@ -78,6 +79,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     public readonly imageEditWatermarkFieldsService: ImageEditWatermarkFieldsService,
     public readonly imageEditThumbnailFieldsService: ImageEditThumbnailFieldsService,
     public readonly imageEditEquipmentFieldsService: ImageEditEquipmentFieldsService,
+    public readonly imageEditAcquisitionFieldsService: ImageEditAcquisitionFieldsService,
     public readonly imageEditSettingsFieldsService: ImageEditSettingsFieldsService,
     public readonly modalService: NgbModal,
     public readonly userService: UserService,
@@ -111,10 +113,8 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
 
     const image = this.route.snapshot.data.image;
 
-    this.imageEditService.model = image;
-
     this.imageEditService.model = {
-      ...this.imageEditService.model,
+      ...image,
       ...{
         imagingTelescopes2: image.imagingTelescopes2.map(x => x.id),
         imagingCameras2: image.imagingCameras2.map(x => x.id),
@@ -422,6 +422,14 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
           ]
         };
 
+        const acquisition = {
+          id: "image-stepper-acquisition",
+          props: {
+            label: this.translateService.instant("Acquisition")
+          },
+          fieldGroup: this.imageEditAcquisitionFieldsService.getFields()
+        };
+
         const settings = {
           id: "image-stepper-settings",
           props: { label: this.translateService.instant("Settings") },
@@ -441,6 +449,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
           fieldGroup.push(equipment);
         }
 
+        fieldGroup.push(acquisition);
         fieldGroup.push(settings);
 
         this.imageEditService.fields = [
@@ -448,7 +457,6 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
             type: "stepper",
             id: "image-stepper-field",
             props: {
-              // image: this.imageEditService.model,
               buttonsTemplate: this.stepperButtonsTemplate,
               fixed: true
             },

@@ -55,6 +55,8 @@ import { CKEditorService } from "@shared/services/ckeditor.service";
 import { PendingChangesGuard } from "@shared/services/guards/pending-changes-guard.service";
 import * as Sentry from "@sentry/angular";
 import { NgWizardModule, THEME } from "@kronscht/ng-wizard";
+import { NgxDatatableModule } from "@swimlane/ngx-datatable";
+import { FormlyCardWrapperComponent } from "@shared/components/misc/formly-card-wrapper/formly-card-wrapper.component";
 
 export function appInitializer(store: Store<State>, actions$: Actions) {
   return () =>
@@ -88,11 +90,13 @@ export function appInitializer(store: Store<State>, actions$: Actions) {
     FontAwesomeModule,
     FormlyModule.forRoot({
       extras: {
-        lazyRender: false
+        lazyRender: false,
+        resetFieldOnHide: false
       },
       wrappers: [
         { name: "equipment-item-browser-wrapper", component: FormlyEquipmentItemBrowserWrapperComponent },
-        { name: "default-wrapper", component: FormlyWrapperComponent }
+        { name: "default-wrapper", component: FormlyWrapperComponent },
+        { name: "card-wrapper", component: FormlyCardWrapperComponent }
       ]
     }),
     FormlyBootstrapModule,
@@ -103,6 +107,7 @@ export function appInitializer(store: Store<State>, actions$: Actions) {
     NgbPopoverModule,
     NgbProgressbarModule,
     NgSelectModule,
+    NgxDatatableModule,
     NgxFilesizeModule,
     NgWizardModule.forRoot({
       theme: THEME.default,

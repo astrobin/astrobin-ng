@@ -1,52 +1,52 @@
 <astrobin-equipment-item-browser
   #itemBrowser
-  [enableSummaryModal]="false"
-  [id]="field.id"
-  [value]="value"
-  [label]="to.label"
-  [description]="to.description"
-  [multiple]="to.multiple"
-  [required]="to.required"
-  [type]="to.itemType"
-  [usageType]="to.usageType"
-  [enableVariantSelection]="to.enableVariantSelection !== undefined ? to.enableVariantSelection : true"
-  [enableCreation]="to.enableCreation"
-  [enableFullscreen]="to.enableFullscreen"
-  [enableSelectFrozen]="to.enableSelectFrozen !== undefined ? to.enableSelectFrozen : true"
-  [excludeId]="to.excludeId"
-  (valueChanged)="onValueChanged($event)"
-  (creationModeStarted)="onCreationModeStarted()"
   (creationModeEnded)="onCreationModeEnded()"
+  (creationModeStarted)="onCreationModeStarted()"
+  (valueChanged)="onValueChanged($event)"
+  [description]="props.description"
+  [enableCreation]="props.enableCreation"
+  [enableFullscreen]="props.enableFullscreen"
+  [enableSelectFrozen]="props.enableSelectFrozen !== undefined ? props.enableSelectFrozen : true"
+  [enableSummaryModal]="false"
+  [enableVariantSelection]="props.enableVariantSelection !== undefined ? props.enableVariantSelection : true"
+  [excludeId]="props.excludeId"
+  [id]="field.id"
+  [label]="props.label"
+  [multiple]="props.multiple"
+  [required]="props.required"
+  [type]="props.itemType"
+  [usageType]="props.usageType"
+  [value]="value"
 ></astrobin-equipment-item-browser>
 
-<ng-container *ngIf="to.showQuickAddRecent">
+<ng-container *ngIf="props.showQuickAddRecent">
   <div class="quick-add">
     <span class="quick-add-label">{{ "Quick-add recent" | translate }}:</span>
 
     <ng-container *ngIf="hasRecent; else noRecent">
       <ng-container *ngIf="recent.length > 0; else allRecentUsed">
         <ng-container *ngFor="let item of recent; let last = last">
-          <a href="#" class="quick-add-item" astrobinEventPreventDefault (click)="quickAddItem(item)">
+          <a (click)="quickAddItem(item)" astrobinEventPreventDefault class="quick-add-item" href="#">
             <astrobin-equipment-item-display-name
-              [item]="item"
               [enableSummaryModal]="false"
+              [item]="item"
             ></astrobin-equipment-item-display-name>
           </a>
-          <span class="quick-add-separator" *ngIf="!last">&middot;</span>
+          <span *ngIf="!last" class="quick-add-separator">&middot;</span>
         </ng-container>
       </ng-container>
     </ng-container>
   </div>
 
   <div
-    class="no-recent alert alert-warning with-triangle"
     *ngIf="
-      to.itemType === EquipmentItemType.TELESCOPE &&
-      to.usageType === EquipmentItemUsageType.IMAGING &&
+      props.itemType === EquipmentItemType.TELESCOPE &&
+      props.usageType === EquipmentItemUsageType.IMAGING &&
       recentLoaded &&
       recent.length === 0 &&
       formControl.value?.length === 0
     "
+    class="no-recent alert alert-warning with-triangle"
   >
     {{ "Seems like it's your first time editing this kind of information!" | translate }}
     {{ "Start typing in the text box to show the dropdown suggestions." | translate }}

@@ -149,7 +149,13 @@ export function initFontAwesome(iconLibrary: FaIconLibrary) {
     CookieModule.forRoot(),
 
     // Dependencies.
-    StoreModule.forRoot(appStateReducers),
+    StoreModule.forRoot(appStateReducers,
+      {
+        runtimeChecks: {
+          strictStateImmutability: false,
+          strictActionImmutability: false
+        }
+      }),
     StoreDevtoolsModule.instrument({
       maxAge: 25, // Retains last 25 states
       logOnly: environment.production // Restrict extension to log-only mode

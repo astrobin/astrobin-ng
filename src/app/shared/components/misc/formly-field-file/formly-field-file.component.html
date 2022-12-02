@@ -1,33 +1,33 @@
 <div class="upload-wrapper">
   <div class="file-container">
-    <div class="file" *ngFor="let item of selectedFiles; let i = index">
+    <div *ngFor="let item of selectedFiles; let i = index" class="file">
       <img [src]="item.url" />
       <span (click)="onDelete(i)">&times;</span>
     </div>
   </div>
 
-  <div class="upload-container" (click)="openFileInput()">
+  <div (click)="openFileInput()" class="upload-container">
     <div class="mask"></div>
     <div class="helper-text">
       <div class="absolute-div">
-        <div *ngIf="!to.multiple">
+        <div *ngIf="!props.multiple">
           {{ "Choose file" | translate }}
         </div>
-        <div *ngIf="to.multiple">
+        <div *ngIf="props.multiple">
           {{ "Choose files" | translate }}
         </div>
       </div>
     </div>
     <input
       #fileInput
-      [multiple]="to.multiple"
-      id="file-input"
-      type="file"
+      (change)="onChange($event)"
+      [accept]="props.accept || '*'"
       [formControl]="formControl"
       [formlyAttributes]="field"
-      (change)="onChange($event)"
-      [accept]="to.accept || '*'"
+      [multiple]="props.multiple"
+      id="file-input"
       style="display: none"
+      type="file"
     />
   </div>
 </div>

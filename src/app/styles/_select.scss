@@ -11,6 +11,11 @@
   .ng-value-container {
     .ng-value {
       cursor: default;
+      padding-left: .5rem;
+    }
+
+    .ng-input {
+      padding-left: 1rem !important;
     }
 
     .ng-placeholder {
@@ -82,56 +87,6 @@
   &.ng-select-striped {
     .ng-option:nth-child(odd) {
       background-color: var(--darkerGrey);
-    }
-  }
-
-  .ng-dropdown-panel {
-    background: var(--darkestGrey) !important;
-    border-top: 1px solid var(--darkGrey) !important;
-    box-shadow: .25rem .5rem 1rem rgba(0, 0, 0, .5) !important;
-
-    .ng-dropdown-panel-items {
-      max-height: 220px !important;
-    }
-
-    .ng-optgroup {
-      color: var(--white) !important;
-      font-weight: bold !important;
-      padding: .75rem !important;
-    }
-
-    .ng-option {
-      padding: .5rem 1rem;
-      color: var(--lightestGrey) !important;
-      white-space: normal !important;
-      line-height: 1.15rem !important;
-
-      @media screen and (max-width: $sm-max) {
-        padding: .25rem .5rem !important;
-        font-size: .9rem !important;
-        line-height: 1rem !important;
-      }
-
-      &.ng-option-child {
-        padding-left: 1.5rem !important;
-      }
-
-      &.ng-option-marked {
-        color: var(--lightestGrey) !important;
-        background: var(--darkGrey) !important;
-      }
-
-      &.ng-option-disabled {
-        color: var(--lightGrey) !important;
-      }
-    }
-  }
-
-  .ng-dropdown-footer {
-    padding: 0;
-
-    .add-tag {
-      margin: 1rem;
     }
   }
 
@@ -276,5 +231,55 @@
         }
       }
     }
+  }
+}
+
+.ng-dropdown-panel {
+  background: var(--darkestGrey) !important;
+  border-top: 1px solid var(--darkGrey) !important;
+  box-shadow: .25rem .5rem 1rem rgba(0, 0, 0, .5) !important;
+
+  .ng-dropdown-panel-items {
+    max-height: 220px !important;
+  }
+
+  .ng-optgroup {
+    color: var(--white) !important;
+    font-weight: bold !important;
+    padding: .75rem !important;
+  }
+
+  .ng-option {
+    padding: .5rem 1rem;
+    color: var(--lightestGrey) !important;
+    white-space: normal !important;
+    line-height: 1.15rem !important;
+
+    @media screen and (max-width: $sm-max) {
+      padding: .25rem .5rem !important;
+      font-size: .9rem !important;
+      line-height: 1rem !important;
+    }
+
+    &.ng-option-child {
+      padding-left: 1.5rem !important;
+    }
+
+    &.ng-option-marked {
+      color: var(--lightestGrey) !important;
+      background: var(--darkGrey) !important;
+    }
+
+    &.ng-option-disabled {
+      color: var(--lightGrey) !important;
+    }
+  }
+}
+
+.ng-dropdown-footer {
+  padding: 0;
+
+  .add-tag {
+    margin: 1rem;
   }
 }

@@ -58,6 +58,7 @@
     "@popperjs/core": "2.11.6",
     "@sentry/angular": "7.20.0",
     "@sentry/tracing": "7.20.0",
+    "@swimlane/ngx-datatable": "20.1.0",
     "@tobyodonnell-aiau/ngx-translate-po-http-loader": "3.1.13",
     "babel-plugin-transform-runtime": "6.23.0",
     "babel-preset-env": "1.7.0",

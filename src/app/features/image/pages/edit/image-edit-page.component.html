@@ -22,32 +22,32 @@
 
 <ng-template #equipmentStepButtonsTemplate>
   <button
+    (click)="onClearEquipmentClicked()"
     [class.loading]="loadingService.loading$ | async"
     [disabled]="!imageEditService.hasEquipmentItems()"
-    id="clear-equipment-btn"
     class="btn btn-outline-danger me-2"
-    (click)="onClearEquipmentClicked()"
+    id="clear-equipment-btn"
   >
     {{ "Clear" | translate }}
   </button>
 
   <div class="btn-group" role="group">
     <button
+      (click)="onLoadEquipmentPresetClicked()"
       [class.loading]="loadingService.loading$ | async"
       [disabled]="(presets$ | async)?.length === 0"
-      id="load-preset-btn"
       class="btn btn-outline-secondary"
-      (click)="onLoadEquipmentPresetClicked()"
+      id="load-preset-btn"
     >
       {{ "Load preset" | translate }}&hellip;
     </button>
 
     <button
+      (click)="onSaveEquipmentPresetClicked()"
       [class.loading]="loadingService.loading$ | async"
       [disabled]="!imageEditService.hasEquipmentItems()"
-      id="save-preset-btn"
       class="btn btn-outline-secondary"
-      (click)="onSaveEquipmentPresetClicked()"
+      id="save-preset-btn"
     >
       {{ "Save preset" | translate }}&hellip;
     </button>
@@ -56,17 +56,17 @@
 
 <ng-template #stepperButtonsTemplate>
   <button
-    id="save-button"
-    class="btn btn-primary"
+    (click)="onSave($event, classicRoutesService.IMAGE(imageEditService.model.hash || '' + imageEditService.model.pk))"
     *ngIf="editingExistingImage"
     [class.loading]="loadingService.loading$ | async"
-    (click)="onSave($event, classicRoutesService.IMAGE(imageEditService.model.hash || '' + imageEditService.model.pk))"
+    class="btn btn-primary"
+    id="save-button"
   >
     {{ "Save" | translate }}
   </button>
 
   <ng-container *ngIf="currentUser$ | async as user">
-    <div ngbDropdown placement="top-right" *ngIf="!editingExistingImage">
+    <div *ngIf="!editingExistingImage" ngbDropdown placement="top-right">
       <button
         [class.loading]="loadingService.loading$ | async"
         class="btn btn-primary"
@@ -79,7 +79,6 @@
         <h6 class="dropdown-header">{{ "Where do you want to go after saving?" | translate }}</h6>
 
         <button
-          *ngIf="!(user | isInGroup: 'own_equipment_migrators')"
           (click)="
             onSave(
               $event,
@@ -87,6 +86,7 @@
                 '?upload'
             )
           "
+          *ngIf="!(user | isInGroup: 'own_equipment_migrators')"
           class="dropdown-item"
         >
           {{ "Save and proceed to gear selection" | translate }}

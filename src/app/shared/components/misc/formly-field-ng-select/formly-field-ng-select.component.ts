@@ -51,19 +51,23 @@ export class FormlyFieldNgSelectComponent extends FieldType implements OnInit, O
   }
 
   get placeholder(): string {
-    if (this.to.addTag) {
-      if (this.to.addTagPlaceholder) {
-        return this.to.addTagPlaceholder;
+    if (this.props.addTag) {
+      if (this.props.addTagPlaceholder) {
+        return this.props.addTagPlaceholder;
       }
 
       return this.translateService.instant("Type to search options or to create a new one...");
     }
 
-    return this.translateService.instant("Type to search options...");
+    if (this.props.searchable !== false) {
+      return this.translateService.instant("Type to search options...");
+    }
+
+    return this.translateService.instant("Select") + "...";
   }
 
   get notFoundText(): string {
-    if (this.to.addTag) {
+    if (this.props.addTag) {
       return (
         this.translateService.instant("No items found.") +
         " " +
@@ -75,7 +79,7 @@ export class FormlyFieldNgSelectComponent extends FieldType implements OnInit, O
   }
 
   ngOnInit() {
-    this.hasAsyncItems = isObservable(this.to.options);
+    this.hasAsyncItems = isObservable(this.props.options);
 
     if (this.hasAsyncItems) {
       this.inputSubscription = this.input$
@@ -92,7 +96,7 @@ export class FormlyFieldNgSelectComponent extends FieldType implements OnInit, O
     }
 
     this.valueChangesSubscription = this.formControl.valueChanges.subscribe(value => {
-      if (!this.to.multiple) {
+      if (!this.props.multiple) {
         this.exitFullscreen();
       }
     });
@@ -105,7 +109,7 @@ export class FormlyFieldNgSelectComponent extends FieldType implements OnInit, O
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    this.hasAsyncItems = isObservable(this.to.options);
+    this.hasAsyncItems = isObservable(this.props.options);
   }
 
   ngOnDestroy() {
@@ -123,7 +127,7 @@ export class FormlyFieldNgSelectComponent extends FieldType implements OnInit, O
   }
 
   toggleEnableFullscreen() {
-    this.to.enableFullscreen = !this.to.enableFullscreen;
+    this.props.enableFullscreen = !this.props.enableFullscreen;
   }
 
   goFullscreen($event: Event, q) {
@@ -135,7 +139,7 @@ export class FormlyFieldNgSelectComponent extends FieldType implements OnInit, O
       }
     }
 
-    if (this.to.enableFullscreen && !this.fullscreen) {
+    if (this.props.enableFullscreen && !this.fullscreen) {
       this.fullscreen = true;
       this._ngSelectModalRef = this.modalService.open(this._ngSelectModal, { size: "xl" });
       this._ngSelectModalRef.shown.pipe(take(1)).subscribe(() => {
@@ -169,9 +173,9 @@ export class FormlyFieldNgSelectComponent extends FieldType implements OnInit, O
   }
 
   onAddTag(term: string) {
-    this.to.addTag(this._ngSelect.searchTerm);
+    this.props.addTag(this._ngSelect.searchTerm);
 
-    if (!this.to.multiple) {
+    if (!this.props.multiple) {
       this._ngSelect.close();
     }
 
@@ -179,12 +183,12 @@ export class FormlyFieldNgSelectComponent extends FieldType implements OnInit, O
   }
 
   onSearch(value) {
-    if (UtilsService.isFunction(this.to.onSearch)) {
+    if (UtilsService.isFunction(this.props.onSearch)) {
       this.to
         .onSearch(value)
         .pipe(take(1))
         .subscribe(options => {
-          const hasAddTag = !!this.to.addTag;
+          const hasAddTag = !!this.props.addTag;
           const hasValue = !!this.value;
           const alreadyInOptions =
             !!options &&
