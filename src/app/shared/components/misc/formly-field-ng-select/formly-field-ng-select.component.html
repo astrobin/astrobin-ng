@@ -16,6 +16,7 @@
 
     <ng-select
       #ngSelect
+      (change)="onChange($event)"
       (click)="goFullscreen($event, null)"
       (search)="goFullscreen(null, $event)"
       [appendTo]="props.appendTo"
@@ -123,7 +124,7 @@
 
 <ng-template #ngSelectModal>
   <div class="modal-header">
-    <h4 class="modal-title" id="modal-title">
+    <h4 class="modal-title" id="ng-select-modal">
       <ng-container *ngIf="field.props.fullScreenLabel; else noFullScreenLabel">
         {{ field.props.fullScreenLabel}}
       </ng-container>
@@ -165,3 +166,4 @@
 </ng-template>
 
 <ng-container [ngTemplateOutlet]="selectContainer"></ng-container>
+

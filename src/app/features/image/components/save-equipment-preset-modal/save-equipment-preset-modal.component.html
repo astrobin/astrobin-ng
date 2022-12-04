@@ -1,5 +1,5 @@
 <div class="modal-header">
-  <h4 class="modal-title" id="modal-title">
+  <h4 class="modal-title" id="save-equipment-preset-modal">
     {{ "Save equipment preset" | translate }}
   </h4>
 
@@ -21,10 +21,10 @@
 
   <button
     (click)="onCreateClicked()"
+    [class.loading]="(loadingService.loading$ | async) || form.pending"
+    [disabled]="form.invalid"
     class="btn btn-primary"
     type="button"
-    [disabled]="form.invalid"
-    [class.loading]="(loadingService.loading$ | async) || form.pending"
   >
     {{ "Save" | translate }}
   </button>

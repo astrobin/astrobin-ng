@@ -1,5 +1,5 @@
 <div class="modal-header">
-  <h4 class="modal-title" id="modal-title">{{ "Most often used with" | translate }}
+  <h4 class="modal-title" id="most-often-used-with-modal">{{ "Most often used with" | translate }}
   </h4>
   <button (click)="modal.dismiss()" aria-describedby="modal-title" class="close" type="button">
     <span aria-hidden="true">&times;</span>
@@ -19,8 +19,8 @@
       <tr *ngFor="let entry of sortedItems(mostOftenUsedWith)">
         <th>
           <a
-            [routerLink]="['/equipment/explorer', entry.item.klass.toLowerCase(), entry.item.id]"
             (click)="modal.dismiss()"
+            [routerLink]="['/equipment/explorer', entry.item.klass.toLowerCase(), entry.item.id]"
           >
             <astrobin-equipment-item-display-name
               [item]="entry.item"

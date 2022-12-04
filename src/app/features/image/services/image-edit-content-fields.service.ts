@@ -93,7 +93,21 @@ export class ImageEditContentFieldsService extends BaseService {
           { value: SubjectType.NOCTILUCENT_CLOUDS, label: this.translateService.instant("Noctilucent clouds") },
           { value: SubjectType.GEAR, label: this.translateService.instant("Gear") },
           { value: SubjectType.OTHER, label: this.translateService.instant("Other") }
-        ]
+        ],
+        changeConfirmationCondition: (currentValue: SubjectType, newValue: SubjectType): boolean => {
+          if (this.imageEditService.isDeepSky(currentValue) && !this.imageEditService.isDeepSky(newValue)) {
+            return this.imageEditService.model.deepSkyAcquisitions.length > 0;
+          }
+
+          if (this.imageEditService.isSolarSystem(currentValue) && !this.imageEditService.isSolarSystem(newValue)) {
+            return this.imageEditService.model.solarSystemAcquisitions.length > 0;
+          }
+
+          return false;
+        },
+        changeConfirmationMessage: this.translateService.instant(
+          "Changing this value will remove any acquisition sessions you have already added."
+        )
       },
       hooks: {
         onInit: (field: FormlyFieldConfig) => {

@@ -1,5 +1,5 @@
 <div class="modal-header">
-  <h4 class="modal-title" id="modal-title">
+  <h4 class="modal-title" id="unapprove-item-modal">
     {{ "Unapprove" | translate }}: {{ equipmentItemService.getName$(equipmentItem) | async }}
   </h4>
 
@@ -19,9 +19,9 @@
 
   <button
     (click)="unapprove()"
+    [class.loading]="loadingService.loading$ | async"
     class="btn btn-danger"
     type="button"
-    [class.loading]="loadingService.loading$ | async"
   >
     {{ "Unapprove" | translate }}
   </button>

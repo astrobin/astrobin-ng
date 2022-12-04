@@ -1,5 +1,5 @@
 <div class="modal-header">
-  <h4 class="modal-title" id="modal-title">{{ "Compare" | translate }}</h4>
+  <h4 class="modal-title" id="equipmnt-compare-modal">{{ "Compare" | translate }}</h4>
   <button (click)="modal.dismiss()" aria-describedby="modal-title" class="close" type="button">
     <span aria-hidden="true">&times;</span>
   </button>
@@ -8,23 +8,24 @@
 <div class="modal-body">
   <table class="table table-striped comparison-table">
     <tbody>
-      <tr *ngFor="let prop of rows[0]; let i = index" [class]="prop.propertyName.toLowerCase()">
-        <th>
-          <ng-container *ngIf="prop.propertyName !== EquipmentItemDisplayProperty.IMAGE">
-            {{ prop.name }}
-          </ng-container>
-        </th>
-        <ng-container *ngFor="let row of rows">
-          <td
-            [class.na]="row[i].value === null || row[i].value === ''"
-          >
-            <span [innerHTML]="row[i].value || 'n/a' | translate"></span>
-            <span *ngIf="row[i].propertyName !== EquipmentItemDisplayProperty.IMAGE" class="edit-button">
-              <fa-icon *ngIf="showEditButton(row[i])" icon="pen" (click)="editButtonClicked(row[i].klass, row[i].id)"></fa-icon>
-            </span>
-          </td>
+    <tr *ngFor="let prop of rows[0]; let i = index" [class]="prop.propertyName.toLowerCase()">
+      <th>
+        <ng-container *ngIf="prop.propertyName !== EquipmentItemDisplayProperty.IMAGE">
+          {{ prop.name }}
         </ng-container>
-      </tr>
+      </th>
+      <ng-container *ngFor="let row of rows">
+        <td
+          [class.na]="row[i].value === null || row[i].value === ''"
+        >
+          <span [innerHTML]="row[i].value || 'n/a' | translate"></span>
+          <span *ngIf="row[i].propertyName !== EquipmentItemDisplayProperty.IMAGE" class="edit-button">
+              <fa-icon (click)="editButtonClicked(row[i].klass, row[i].id)" *ngIf="showEditButton(row[i])"
+                       icon="pen"></fa-icon>
+            </span>
+        </td>
+      </ng-container>
+    </tr>
     </tbody>
   </table>
 </div>

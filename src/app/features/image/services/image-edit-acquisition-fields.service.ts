@@ -29,13 +29,7 @@ export class ImageEditAcquisitionFieldsService extends BaseService {
   }
 
   getFields(): FormlyFieldConfig[] {
-    if (this._isDeepSky()) {
-      return this.getDeepSkyFields();
-    } else if (this._isSolarSystem()) {
-      return this.getSolarSystemFields();
-    }
-
-    return [];
+    return this.getDeepSkyFields().concat(this.getSolarSystemFields());
   }
 
   getDeepSkyFields(): FormlyFieldConfig[] {
@@ -43,6 +37,7 @@ export class ImageEditAcquisitionFieldsService extends BaseService {
       {
         key: "deepSkyAcquisitions",
         type: "table",
+        hideExpression: () => !this._isDeepSky(),
         props: {
           label: this.translateService.instant("Deep sky acquisition sessions"),
           addLabel: this.translateService.instant("Add session"),
@@ -69,8 +64,10 @@ export class ImageEditAcquisitionFieldsService extends BaseService {
       {
         key: "solarSystemAcquisitions",
         type: "table",
+        hideExpression: () => !this._isSolarSystem(),
         props: {
-          label: this.translateService.instant("Solar system acquisition sessions")
+          label: this.translateService.instant("Solar system acquisition sessions"),
+          addLabel: this.translateService.instant("Add session")
         },
         fieldArray: {
           fieldGroup: [this._getDateField()]

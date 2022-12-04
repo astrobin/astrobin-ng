@@ -1,5 +1,5 @@
 <div class="modal-header">
-  <h4 class="modal-title" id="modal-title">
+  <h4 class="modal-title" id="approve-item-modal">
     {{ "Approve" | translate }}: {{ equipmentItemService.getName$(equipmentItem) | async }}
   </h4>
 
@@ -10,7 +10,7 @@
 
 <div class="modal-body">
   <ng-container *ngIf="similarItems$ | async as similarItems">
-    <div class="alert alert-warning" *ngIf="similarItems.length > 0">
+    <div *ngIf="similarItems.length > 0" class="alert alert-warning">
       <h5>
         <fa-icon icon="exclamation-triangle"></fa-icon>
         {{ "Warning!" | translate }}
@@ -22,7 +22,7 @@
     </div>
   </ng-container>
 
-  <div class="alert alert-info" *ngIf="othersInBrand.length > 0">
+  <div *ngIf="othersInBrand.length > 0" class="alert alert-info">
     <astrobin-equipment-others-in-brand [items]="othersInBrand"></astrobin-equipment-others-in-brand>
   </div>
 
@@ -45,10 +45,10 @@
 
   <button
     (click)="approve()"
+    [class.loading]="loadingService.loading$ | async"
+    [disabled]="!form.valid"
     class="btn btn-success"
     type="button"
-    [disabled]="!form.valid"
-    [class.loading]="loadingService.loading$ | async"
   >
     {{ "Approve" | translate }}
   </button>

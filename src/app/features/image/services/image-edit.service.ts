@@ -2,7 +2,7 @@ import { Injectable, TemplateRef } from "@angular/core";
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { FormControl, FormGroup, ValidationErrors } from "@angular/forms";
-import { ImageInterface } from "@shared/interfaces/image.interface";
+import { ImageInterface, SubjectType } from "@shared/interfaces/image.interface";
 import { GroupInterface } from "@shared/interfaces/group.interface";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { RemoteSourceAffiliateInterface } from "@shared/interfaces/remote-source-affiliate.interface";
@@ -72,6 +72,22 @@ export class ImageEditService extends BaseService {
 
   constructor(public readonly store$: Store<State>, public readonly loadingService: LoadingService) {
     super(loadingService);
+  }
+
+  isDeepSky(value?: SubjectType): boolean {
+    if (value === undefined) {
+      value = this.model.subjectType;
+    }
+
+    return [SubjectType.DEEP_SKY, SubjectType.WIDE_FIELD].indexOf(value) > -1;
+  }
+
+  isSolarSystem(value?: SubjectType): boolean {
+    if (value === undefined) {
+      value = this.model.subjectType;
+    }
+
+    return [SubjectType.SOLAR_SYSTEM].indexOf(value) > -1;
   }
 
   public isSponsor(code: string): boolean {

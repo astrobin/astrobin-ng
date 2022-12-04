@@ -9,6 +9,7 @@ import { NgbActiveModal, NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstra
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { Actions, ofType } from "@ngrx/effects";
 import { EquipmentActionTypes } from "@features/equipment/store/equipment.actions";
+import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
 
 @Component({
   selector: "astrobin-formly-field-ng-select",
@@ -30,6 +31,7 @@ export class FormlyFieldNgSelectComponent extends FieldType implements OnInit, O
   hasAsyncItems: boolean;
 
   private _ngSelectModalRef: NgbModalRef;
+  private _previousModelValue = null;
 
   @ViewChild("ngSelect")
   private _ngSelect: NgSelectComponent;
@@ -79,6 +81,7 @@ export class FormlyFieldNgSelectComponent extends FieldType implements OnInit, O
   }
 
   ngOnInit() {
+    this._previousModelValue = this.formControl.value;
     this.hasAsyncItems = isObservable(this.props.options);
 
     if (this.hasAsyncItems) {
@@ -123,6 +126,28 @@ export class FormlyFieldNgSelectComponent extends FieldType implements OnInit, O
 
     if (!!this.valueChangesSubscription) {
       this.valueChangesSubscription.unsubscribe();
+    }
+  }
+
+  onChange(event: any) {
+    if (
+      !!this.props.changeConfirmationCondition &&
+      UtilsService.isFunction(this.props.changeConfirmationCondition) &&
+      this.props.changeConfirmationCondition(this._previousModelValue, event.value)) {
+      const modalRef: NgbModalRef = this.modalService.open(ConfirmationDialogComponent);
+      const componentInstance: ConfirmationDialogComponent = modalRef.componentInstance;
+
+      componentInstance.message = this.props.changeConfirmationMessage;
+
+      modalRef.dismissed.subscribe(() => {
+        this._ngSelect.writeValue(this._previousModelValue);
+      });
+
+      modalRef.closed.subscribe(() => {
+        this._previousModelValue = event.value;
+      });
+    } else {
+      this._previousModelValue = event.value;
     }
   }
 

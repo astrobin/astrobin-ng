@@ -1,6 +1,6 @@
 <form (ngSubmit)="save()" [formGroup]="form">
   <div class="modal-header">
-    <h4 class="modal-title" id="modal-title">{{ "Create new location" | translate }}</h4>
+    <h4 class="modal-title" id="create-location-modal">{{ "Create new location" | translate }}</h4>
     <button (click)="modal.dismiss()" aria-describedby="modal-title" class="close" type="button">
       <span aria-hidden="true">&times;</span>
     </button>
@@ -17,8 +17,8 @@
 
     <button
       (click)="save()"
-      class="btn btn-primary"
       [class.loading]="(loadingService.loading$ | async) || !mapReady"
+      class="btn btn-primary"
       type="button"
     >
       {{ "Save" | translate }}

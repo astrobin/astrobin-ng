@@ -1,6 +1,7 @@
 <div class="modal-header">
-  <h4 class="modal-title" id="modal-title">
-    <fa-icon icon="info-circle"></fa-icon> {{"Please note" | translate }}
+  <h4 class="modal-title" id="information-dialog-modal">
+    <fa-icon icon="info-circle"></fa-icon>
+    {{"Please note" | translate }}
   </h4>
   <button (click)="modal.dismiss()" aria-describedby="modal-title" class="close" type="button">
     <span aria-hidden="true">&times;</span>
@@ -14,8 +15,8 @@
 <div class="modal-footer">
   <button
     (click)="modal.close()"
-    class="btn btn-primary"
     [class.loading]="loadingService.loading$ | async"
+    class="btn btn-primary"
     type="button"
   >
     {{ "Understood" | translate }}
