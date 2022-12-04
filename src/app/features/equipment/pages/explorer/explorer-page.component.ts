@@ -56,7 +56,6 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
   creationMode = false;
   compareComponentVisible = false;
   goBackOnClose = false;
-  enableCollapse = true;
 
   constructor(
     public readonly store$: Store<State>,
@@ -86,10 +85,6 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
     this._setBreadcrumb();
     this._setParams();
     this._setLocation();
-
-    if (this.windowRefService.nativeWindow.innerWidth > 1200) {
-      this.enableCollapse = false;
-    }
 
     this.router.events
       .pipe(
