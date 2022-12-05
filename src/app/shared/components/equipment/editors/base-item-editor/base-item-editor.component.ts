@@ -5,12 +5,13 @@ import {
   Component,
   EventEmitter,
   Input,
+  OnInit,
   Output,
   TemplateRef,
   ViewChild
 } from "@angular/core";
 import { AbstractControl, FormControl, FormGroup } from "@angular/forms";
-import { FormlyFieldConfig } from "@ngx-formly/core";
+import { FormlyFieldConfig, FormlyFormOptions } from "@ngx-formly/core";
 import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { BrandInterface } from "@features/equipment/types/brand.interface";
 import { EMPTY, Observable, of } from "rxjs";
@@ -58,8 +59,8 @@ import { CameraInterface, CameraType } from "@features/equipment/types/camera.in
 import { UtilsService } from "@shared/services/utils/utils.service";
 
 export enum EquipmentItemEditorMode {
-  CREATION,
-  EDIT_PROPOSAL,
+  CREATION = "CREATION",
+  EDIT_PROPOSAL = "EDIT_PROPOSAL"
 }
 
 const DIY_PROHIBITED_WORDS = [
@@ -141,7 +142,7 @@ const OWN_INSTANCE_PROHIBITED_WORDS = [
 })
 export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB extends EquipmentItemBaseInterface>
   extends BaseComponentDirective
-  implements AfterViewInit {
+  implements OnInit, AfterViewInit {
   fields: FormlyFieldConfig[];
 
   @Input()
@@ -174,28 +175,22 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
   @ViewChild("othersInBrandTemplate")
   othersInBrandTemplate: TemplateRef<any>;
 
-  brandCreation: {
-    inProgress: boolean;
-    form: FormGroup;
-    model: Partial<BrandInterface>;
-    name: string;
-  } = {
-    inProgress: false,
-    form: new FormGroup({}),
-    model: {},
-    name: null
-  };
-
-  subCreation: {
-    inProgress: boolean;
-    form: FormGroup;
-    model: Partial<SUB>;
-    name: string;
-  } = {
-    inProgress: false,
-    form: new FormGroup({}),
-    model: {},
-    name: null
+  options: FormlyFormOptions = {
+    formState: {
+      brandCreation: {
+        inProgress: false,
+        form: new FormGroup({}),
+        model: {},
+        name: null
+      },
+      subCreation: {
+        inProgress: false,
+        form: new FormGroup({}),
+        model: {},
+        name: null
+      },
+      editorMode: null
+    }
   };
 
   constructor(
@@ -214,6 +209,12 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
     super(store$);
   }
 
+  ngOnInit() {
+    super.ngOnInit();
+
+    this.options.formState.editorMode = this.editorMode;
+  }
+
   ngAfterViewInit(): void {
     this.utilsService.delay(100).subscribe(() => {
       const document = this.windowRefService.nativeWindow.document;
@@ -226,19 +227,19 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
   }
 
   startBrandCreation() {
-    this.brandCreation.inProgress = true;
+    this.options.formState.brandCreation.inProgress = true;
     this.subCreationInProgress.emit(true);
   }
 
   endBrandCreation() {
-    this.brandCreation.inProgress = false;
+    this.options.formState.brandCreation.inProgress = false;
     this.subCreationInProgress.emit(false);
-    this.brandCreation.model = {};
-    this.brandCreation.form.reset();
+    this.options.formState.brandCreation.model = {};
+    this.options.formState.brandCreation.form.reset();
   }
 
   createBrand() {
-    const { id, ...brand } = this.brandCreation.form.value;
+    const { id, ...brand } = this.options.formState.brandCreation.form.value;
     this.loadingService.setLoading(true);
     this.store$.dispatch(new CreateBrand({ brand }));
     this.actions$
@@ -274,7 +275,7 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
 
     this.model = { ...this.model, ...{ brand: brand.id } };
     this.form.controls.brand.setValue(brand.id);
-    this.brandCreation.name = brand.name;
+    this.options.formState.brandCreation.name = brand.name;
     this.endBrandCreation();
 
     if (this.returnToSelector) {
@@ -329,11 +330,8 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
       key: "diy",
       type: "checkbox",
       id: "equipment-item-field-diy",
-      expressionProperties: {
-        "props.disabled": () =>
-          this.subCreation.inProgress ||
-          this.brandCreation.inProgress ||
-          this.editorMode === EquipmentItemEditorMode.EDIT_PROPOSAL
+      expressions: {
+        "props.disabled": "formState.subCreation.inProgress || formState.brandCreation.inProgress ||formState.editorMode === 'EDIT_PROPOSAL'"
       },
       defaultValue: false,
       props: {
@@ -383,13 +381,9 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
       key: "brand",
       type: "ng-select",
       id: "equipment-item-field-brand",
-      expressionProperties: {
-        "props.disabled": () =>
-          this.subCreation.inProgress ||
-          this.brandCreation.inProgress ||
-          this.editorMode === EquipmentItemEditorMode.EDIT_PROPOSAL ||
-          !!this.model.diy,
-        "props.required": () => !this.model.diy
+      expressions: {
+        "props.disabled": "formState.subCreation.inProgress || formState.brandCreation.inProgress || formState.editorMode === 'EDIT_PROPOSAL' || model.diy",
+        "props.required": "!model.diy"
       },
       props: {
         clearable: true,
@@ -446,7 +440,7 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
                 if (!!value) {
                   return this.equipmentApiService.getBrand(value).pipe(
                     tap((brand: BrandInterface) => {
-                      this.brandCreation.name = brand.name;
+                      this.options.formState.brandCreation.name = brand.name;
 
                       field.props = {
                         ...field.props,
@@ -490,8 +484,8 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
       wrappers: ["default-wrapper"],
       id: "equipment-item-field-name",
       defaultValue: this.name,
-      expressionProperties: {
-        "props.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress,
+      expressions: {
+        "props.disabled": "formState.subCreation.inProgress || formState.brandCreation.inProgress",
         "props.label": () =>
           this.model.diy
             ? this.equipmentItemService.getPrintablePropertyName(null, EquipmentItemDisplayProperty.NAME, true)
@@ -654,8 +648,8 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
         !this.model.brand ||
         (this.model.klass === EquipmentItemType.CAMERA &&
           (this.model as unknown as CameraInterface).type === CameraType.DSLR_MIRRORLESS),
-      expressionProperties: {
-        "props.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+      expressions: {
+        "props.disabled": "formState.subCreation.inProgress || formState.brandCreation.inProgress"
       },
       props: {
         label: this.equipmentItemService.getPrintablePropertyName(itemType, EquipmentItemDisplayProperty.VARIANT_OF),
@@ -702,8 +696,8 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
       type: "input",
       wrappers: ["default-wrapper"],
       id: "equipment-item-field-website",
-      expressionProperties: {
-        "props.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+      expressions: {
+        "props.disabled": "formState.subCreation.inProgress || formState.brandCreation.inProgress"
       },
       props: {
         required: false,
@@ -723,8 +717,8 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
       key: "image",
       type: "file",
       id: "equipment-item-field-image",
-      expressionProperties: {
-        "props.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+      expressions: {
+        "props.disabled": "formState.subCreation.inProgress || formState.brandCreation.inProgress"
       },
       props: {
         required: false,
@@ -764,7 +758,7 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
 
   protected _onBrandSearch(q: string): Observable<any[]> {
     return new Observable<any[]>(observer => {
-      this.brandCreation.name = q;
+      this.options.formState.brandCreation.name = q;
 
       if (!q) {
         observer.next();

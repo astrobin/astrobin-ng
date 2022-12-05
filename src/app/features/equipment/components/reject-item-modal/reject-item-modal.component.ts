@@ -160,7 +160,7 @@ export class RejectItemModalComponent extends BaseComponentDirective implements 
         id: "comment",
         wrappers: ["default-wrapper"],
         hideExpression: () => this.model.reason !== EquipmentItemReviewerRejectionReason.OTHER,
-        expressionProperties: {
+        expressions: {
           "props.required": "model.reason === 'OTHER'"
         },
         props: {
@@ -173,7 +173,7 @@ export class RejectItemModalComponent extends BaseComponentDirective implements 
         type: "ng-select",
         id: "duplicate-of-klass",
         hideExpression: () => this.model.reason !== EquipmentItemReviewerRejectionReason.DUPLICATE,
-        expressionProperties: {
+        expressions: {
           "props.required": "model.reason === 'DUPLICATE'"
         },
         defaultValue: EquipmentItemType[this.equipmentItem.klass],
@@ -209,7 +209,7 @@ export class RejectItemModalComponent extends BaseComponentDirective implements 
         hideExpression: () =>
           this.model.reason !== EquipmentItemReviewerRejectionReason.DUPLICATE ||
           [EquipmentItemType.TELESCOPE, EquipmentItemType.CAMERA].indexOf(this.model.duplicateOfKlass) === -1,
-        expressionProperties: {
+        expressions: {
           "props.required": "model.reason === 'DUPLICATE'"
         },
         defaultValue: EquipmentItemUsageType.GUIDING,
@@ -283,7 +283,7 @@ export class RejectItemModalComponent extends BaseComponentDirective implements 
       type: "equipment-item-browser",
       id: "duplicate-of",
       hideExpression: () => this.model.reason !== EquipmentItemReviewerRejectionReason.DUPLICATE,
-      expressionProperties: {
+      expressions: {
         "props.required": "model.reason === 'DUPLICATE'"
       },
       props: {

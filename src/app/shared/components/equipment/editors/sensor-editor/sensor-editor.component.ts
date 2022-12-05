@@ -147,8 +147,8 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
       type: "input",
       wrappers: ["default-wrapper"],
       id: "sensor-field-pixel-size",
-      expressionProperties: {
-        "props.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+      expressions: {
+        "props.disabled": "formState.subCreation.inProgress || formState.brandCreation.inProgress"
       },
       props: {
         type: "number",
@@ -182,8 +182,8 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
       type: "input",
       wrappers: ["default-wrapper"],
       id: "sensor-field-pixel-width",
-      expressionProperties: {
-        "props.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+      expressions: {
+        "props.disabled": "formState.subCreation.inProgress || formState.brandCreation.inProgress"
       },
       props: {
         required: true,
@@ -211,8 +211,8 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
       type: "input",
       wrappers: ["default-wrapper"],
       id: "sensor-field-pixel-height",
-      expressionProperties: {
-        "props.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+      expressions: {
+        "props.disabled": "formState.subCreation.inProgress || formState.brandCreation.inProgress"
       },
       props: {
         required: true,
@@ -240,8 +240,8 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
       type: "input",
       wrappers: ["default-wrapper"],
       id: "sensor-field-sensor-width",
-      expressionProperties: {
-        "props.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+      expressions: {
+        "props.disabled": "formState.subCreation.inProgress || formState.brandCreation.inProgress"
       },
       props: {
         type: "number",
@@ -274,8 +274,8 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
       type: "input",
       wrappers: ["default-wrapper"],
       id: "sensor-field-sensor-height",
-      expressionProperties: {
-        "props.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+      expressions: {
+        "props.disabled": "formState.subCreation.inProgress || formState.brandCreation.inProgress"
       },
       props: {
         type: "number",
@@ -308,8 +308,8 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
       type: "input",
       wrappers: ["default-wrapper"],
       id: "sensor-field-quantum-efficiency",
-      expressionProperties: {
-        "props.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+      expressions: {
+        "props.disabled": "formState.subCreation.inProgress || formState.brandCreation.inProgress"
       },
       props: {
         type: "number",
@@ -342,8 +342,8 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
       type: "input",
       wrappers: ["default-wrapper"],
       id: "sensor-field-full-well-capacity",
-      expressionProperties: {
-        "props.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+      expressions: {
+        "props.disabled": "formState.subCreation.inProgress || formState.brandCreation.inProgress"
       },
       props: {
         type: "number",
@@ -376,8 +376,8 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
       type: "input",
       wrappers: ["default-wrapper"],
       id: "sensor-field-read-noise",
-      expressionProperties: {
-        "props.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+      expressions: {
+        "props.disabled": "formState.subCreation.inProgress || formState.brandCreation.inProgress"
       },
       props: {
         type: "number",
@@ -410,8 +410,8 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
       type: "input",
       wrappers: ["default-wrapper"],
       id: "sensor-field-frame-rate",
-      expressionProperties: {
-        "props.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+      expressions: {
+        "props.disabled": "formState.subCreation.inProgress || formState.brandCreation.inProgress"
       },
       props: {
         type: "number",
@@ -438,8 +438,8 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
       type: "input",
       wrappers: ["default-wrapper"],
       id: "sensor-field-adc",
-      expressionProperties: {
-        "props.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+      expressions: {
+        "props.disabled": "formState.subCreation.inProgress || formState.brandCreation.inProgress"
       },
       props: {
         type: "number",
@@ -466,8 +466,8 @@ export class SensorEditorComponent extends BaseItemEditorComponent<SensorInterfa
       key: "colorOrMono",
       type: "ng-select",
       id: "sensor-field-color-or-mono",
-      expressionProperties: {
-        "props.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+      expressions: {
+        "props.disabled": "formState.subCreation.inProgress || formState.brandCreation.inProgress"
       },
       props: {
         label: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.COLOR_OR_MONO),

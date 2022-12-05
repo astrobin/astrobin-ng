@@ -138,8 +138,8 @@ export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeI
       key: "type",
       type: "ng-select",
       id: "telescope-field-type",
-      expressionProperties: {
-        "props.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+      expressions: {
+        "props.disabled": "formState.subCreation.inProgress || formState.brandCreation.inProgress"
       },
       props: {
         label: this.telescopeService.getPrintablePropertyName(TelescopeDisplayProperty.TYPE),
@@ -177,8 +177,8 @@ export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeI
       wrappers: ["default-wrapper"],
       id: "telescope-field-aperture",
       hideExpression: () => this.model.type === TelescopeType.CAMERA_LENS,
-      expressionProperties: {
-        "props.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+      expressions: {
+        "props.disabled": "formState.subCreation.inProgress || formState.brandCreation.inProgress"
       },
       props: {
         type: "number",
@@ -212,8 +212,8 @@ export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeI
       wrappers: ["default-wrapper"],
       id: "telescope-field-fixed-focal-length",
       defaultValue: this.model.minFocalLength === this.model.maxFocalLength,
-      expressionProperties: {
-        "props.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+      expressions: {
+        "props.disabled": "formState.subCreation.inProgress || formState.brandCreation.inProgress"
       },
       props: {
         label: this.translateService.instant("Fixed focal length")
@@ -229,8 +229,8 @@ export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeI
       id: "telescope-field-focal-length",
       defaultValue: this.model.minFocalLength === this.model.maxFocalLength ? this.model.minFocalLength : null,
       hideExpression: () => !this.form.get("fixedFocalLength").value,
-      expressionProperties: {
-        "props.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+      expressions: {
+        "props.disabled": "formState.subCreation.inProgress || formState.brandCreation.inProgress"
       },
       props: {
         type: "number",
@@ -277,9 +277,9 @@ export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeI
           id: "telescope-field-min-focal-length",
           defaultValue: this.model.minFocalLength,
           hideExpression: () => !!this.form.get("fixedFocalLength").value,
-          expressionProperties: {
-            "props.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress,
-            "props.required": model => !model.fixedFocalLength
+          expressions: {
+            "props.disabled": "formState.subCreation.inProgress || formState.brandCreation.inProgress",
+            "props.required": "!model.fixedFocalLength"
           },
           props: {
             type: "number",
@@ -321,9 +321,9 @@ export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeI
           id: "telescope-field-max-focal-length",
           defaultValue: this.model.maxFocalLength,
           hideExpression: () => !!this.form.get("fixedFocalLength").value,
-          expressionProperties: {
-            "props.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress,
-            "props.required": model => !model.fixedFocalLength
+          expressions: {
+            "props.disabled": "formState.subCreation.inProgress || formState.brandCreation.inProgress",
+            "props.required": "!model.fixedFocalLength"
           },
           props: {
             type: "number",
@@ -376,8 +376,8 @@ export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeI
       type: "input",
       wrappers: ["default-wrapper"],
       id: "telescope-field-weight",
-      expressionProperties: {
-        "props.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+      expressions: {
+        "props.disabled": "formState.subCreation.inProgress || formState.brandCreation.inProgress"
       },
       props: {
         type: "number",

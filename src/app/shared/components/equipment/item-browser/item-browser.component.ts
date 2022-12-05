@@ -20,7 +20,7 @@ import {
   EquipmentItemUsageType
 } from "@features/equipment/types/equipment-item-base.interface";
 import { FormGroup } from "@angular/forms";
-import { FormlyFieldConfig } from "@ngx-formly/core";
+import { FormlyFieldConfig, FormlyFormOptions } from "@ngx-formly/core";
 import { forkJoin, Observable, of, Subscription } from "rxjs";
 import { TranslateService } from "@ngx-translate/core";
 import {
@@ -137,8 +137,12 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
   };
   form: FormGroup = new FormGroup({});
   fields: FormlyFieldConfig[] = [];
-  creationMode = false;
-  subCreationMode = false;
+  options: FormlyFormOptions = {
+    formState: {
+      creationMode: false,
+      subCreationMode: false
+    }
+  };
 
   q: string = null;
 
@@ -242,24 +246,24 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
   }
 
   startCreationMode() {
-    this.creationMode = true;
+    this.options.formState.creationMode = true;
     this.creationModeStarted.emit();
   }
 
   endCreationMode() {
-    this.creationMode = false;
+    this.options.formState.creationMode = false;
     this.creationForm.reset();
     this.creationModel = {};
     this.creationModeEnded.emit();
   }
 
   startSubCreationMode() {
-    this.subCreationMode = true;
+    this.options.formState.subCreationMode = true;
     this.subCreationModeStarted.emit();
   }
 
   endSubCreationMode() {
-    this.subCreationMode = false;
+    this.options.formState.subCreationMode = false;
     this.subCreationModeEnded.emit();
   }
 
@@ -641,8 +645,8 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
                   key: "klass",
                   type: "ng-select",
                   id: "klass",
-                  expressionProperties: {
-                    "props.disabled": () => this.creationMode
+                  expressions: {
+                    "props.disabled": "formState.creationMode"
                   },
                   hideExpression: () => !this.showItemTypeSelector,
                   defaultValue: this.type,
@@ -679,8 +683,8 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
                   key: "value",
                   type: "ng-select",
                   id: `${this.id}`,
-                  expressionProperties: {
-                    "props.disabled": () => this.creationMode
+                  expressions: {
+                    "props.disabled": "formState.creationMode"
                   },
                   defaultValue: this.model,
                   props: {

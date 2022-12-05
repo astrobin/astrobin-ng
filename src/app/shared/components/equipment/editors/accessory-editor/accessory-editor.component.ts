@@ -106,8 +106,8 @@ export class AccessoryEditorComponent extends BaseItemEditorComponent<AccessoryI
       key: "type",
       type: "ng-select",
       id: "accessory-field-type",
-      expressionProperties: {
-        "props.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+      expressions: {
+        "props.disabled": "formState.subCreation.inProgress || formState.brandCreation.inProgress"
       },
       props: {
         label: this.accessoryService.getPrintablePropertyName(AccessoryDisplayProperty.TYPE),
