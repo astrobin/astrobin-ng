@@ -12,7 +12,7 @@
     [imageURL]="thumbnailURL"
     [maintainAspectRatio]="true"
     [roundCropper]="false"
-    [style.display]="cropperReady ? null : 'none'"
+    [style.display]="cropperReady ? 'block' : 'none'"
   ></image-cropper>
 
   <ng-container *ngIf="!cropperReady" [ngTemplateOutlet]="loading"></ng-container>

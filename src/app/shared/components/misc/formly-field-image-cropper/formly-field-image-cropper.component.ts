@@ -1,4 +1,4 @@
-import { Component, Inject, OnDestroy, PLATFORM_ID } from "@angular/core";
+import { ChangeDetectorRef, Component, Inject, OnDestroy, PLATFORM_ID } from "@angular/core";
 import { State } from "@app/store/state";
 import { ImageEditorSetCropperShown } from "@features/image/store/image.actions";
 import { selectImageEditorState } from "@features/image/store/image.selectors";
@@ -26,21 +26,23 @@ export class FormlyFieldImageCropperComponent extends FieldType implements OnDes
   };
   ratio: number;
   cropperReady = false;
+  firstReset = false;
   showCropper$ = this.store$.select(selectImageEditorState).pipe(map(state => state.cropperShown));
 
-  private resizeEventSubscription: Subscription;
+  private readonly _resizeEventSubscription: Subscription;
 
   constructor(
     public readonly store$: Store<State>,
     public readonly windowRefService: WindowRefService,
     public readonly popNotificationService: PopNotificationsService,
     public readonly utilsService: UtilsService,
-    @Inject(PLATFORM_ID) public readonly platformId
+    @Inject(PLATFORM_ID) public readonly platformId,
+    public readonly changeDetectorRef: ChangeDetectorRef
   ) {
     super();
 
     if (isPlatformBrowser(platformId)) {
-      this.resizeEventSubscription = fromEvent(window, "resize")
+      this._resizeEventSubscription = fromEvent(window, "resize")
         .pipe(debounceTime(100))
         .subscribe(() => {
           this.showCropper$
@@ -61,13 +63,13 @@ export class FormlyFieldImageCropperComponent extends FieldType implements OnDes
   }
 
   ngOnDestroy() {
-    if (!!this.resizeEventSubscription) {
-      this.resizeEventSubscription.unsubscribe();
+    if (!!this._resizeEventSubscription) {
+      this._resizeEventSubscription.unsubscribe();
     }
   }
 
   onCropperReady(dimensions: Dimensions) {
-    const image = this.to.image;
+    const image = this.props.image;
 
     this.ratio = image.w / dimensions.width;
 
@@ -86,6 +88,10 @@ export class FormlyFieldImageCropperComponent extends FieldType implements OnDes
     const y2 = Math.round(event.cropperPosition.y2 * this.ratio);
 
     this.formControl.setValue(`${x1},${y1},${x2},${y2}`);
+    if (!this.firstReset) {
+      this._reset();
+      this.firstReset = true;
+    }
   }
 
   onImageLoaded(imageLoaded: LoadedImage) {
