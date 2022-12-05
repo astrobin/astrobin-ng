@@ -135,7 +135,7 @@ export class RejectMigrationModalComponent extends BaseComponentDirective implem
         type: "ng-select",
         id: "bad-migration-target-reason",
         hideExpression: () => this.model.reason !== RejectMigrationReason.REJECTED_BAD_MIGRATION_TARGET,
-        expressionProperties: {
+        expressions: {
           "props.required": "model.reason === 'REJECTED_BAD_MIGRATION_TARGET'"
         },
         props: {

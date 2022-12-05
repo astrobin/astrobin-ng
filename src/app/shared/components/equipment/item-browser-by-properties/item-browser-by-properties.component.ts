@@ -13,7 +13,7 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
 import { Store } from "@ngrx/store";
 import { LoadingService } from "@shared/services/loading.service";
 import { FormGroup } from "@angular/forms";
-import { FormlyFieldConfig } from "@ngx-formly/core";
+import { FormlyFieldConfig, FormlyFormOptions } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import {
@@ -61,8 +61,13 @@ export class ItemBrowserByPropertiesComponent extends BaseComponentDirective imp
   fields: FormlyFieldConfig[];
   form: FormGroup = new FormGroup({});
   model: any = {};
+  options: FormlyFormOptions = {
+    formState: {
+      loadingPage: false
+    }
+  };
+
   results: EquipmentItem[] = [];
-  loadingPage = false;
   page = 1;
   hasNextPage = true;
   fetchingSensors = {};
@@ -146,11 +151,11 @@ export class ItemBrowserByPropertiesComponent extends BaseComponentDirective imp
   }
 
   _loadData(page = 1): void {
-    if (!this.hasNextPage || this.loadingPage) {
+    if (!this.hasNextPage || this.options.formState.loadingPage) {
       return;
     }
 
-    this.loadingPage = true;
+    this.options.formState.loadingPage = true;
 
     const { type, brand, ...filters } = this.form.value;
     this.page = page;
@@ -177,7 +182,7 @@ export class ItemBrowserByPropertiesComponent extends BaseComponentDirective imp
       .pipe(
         take(1),
         tap(() => {
-          this.loadingPage = false;
+          this.options.formState.loadingPage = false;
         })
       )
       .subscribe(items => {
@@ -251,8 +256,8 @@ export class ItemBrowserByPropertiesComponent extends BaseComponentDirective imp
       key: "brand",
       type: "ng-select",
       id: "brand",
-      expressionProperties: {
-        "props.disabled": () => this.loadingPage
+      expressions: {
+        "props.disabled": "formState.loadingPage"
       },
       props: {
         required: false,
@@ -285,8 +290,8 @@ export class ItemBrowserByPropertiesComponent extends BaseComponentDirective imp
       key: "telescope-type",
       type: "ng-select",
       id: "telescope-type",
-      expressionProperties: {
-        "props.disabled": () => this.loadingPage
+      expressions: {
+        "props.disabled": "formState.loadingPage"
       },
       props: {
         label: this.telescopeService.getPrintablePropertyName(TelescopeDisplayProperty.TYPE),
@@ -304,8 +309,8 @@ export class ItemBrowserByPropertiesComponent extends BaseComponentDirective imp
     return {
       key: "telescope-aperture",
       id: "telescope-aperture",
-      expressionProperties: {
-        "props.disabled": () => this.loadingPage
+      expressions: {
+        "props.disabled": "formState.loadingPage"
       },
       fieldGroupClassName: "row",
       wrappers: ["default-wrapper"],
@@ -381,8 +386,8 @@ export class ItemBrowserByPropertiesComponent extends BaseComponentDirective imp
       id: "telescope-focal-length",
       fieldGroupClassName: "row",
       wrappers: ["default-wrapper"],
-      expressionProperties: {
-        "props.disabled": () => this.loadingPage
+      expressions: {
+        "props.disabled": "formState.loadingPage"
       },
       props: {
         label: this.telescopeService.getPrintablePropertyName(TelescopeDisplayProperty.FOCAL_LENGTH)
@@ -455,8 +460,8 @@ export class ItemBrowserByPropertiesComponent extends BaseComponentDirective imp
       key: "camera-type",
       type: "ng-select",
       id: "camera-type",
-      expressionProperties: {
-        "props.disabled": () => this.loadingPage
+      expressions: {
+        "props.disabled": "formState.loadingPage"
       },
       props: {
         label: this.cameraService.getPrintablePropertyName(CameraDisplayProperty.TYPE),
@@ -475,8 +480,8 @@ export class ItemBrowserByPropertiesComponent extends BaseComponentDirective imp
       key: "mount-type",
       type: "ng-select",
       id: "mount-type",
-      expressionProperties: {
-        "props.disabled": () => this.loadingPage
+      expressions: {
+        "props.disabled": "formState.loadingPage"
       },
       props: {
         label: this.mountService.getPrintablePropertyName(MountDisplayProperty.TYPE),
@@ -495,8 +500,8 @@ export class ItemBrowserByPropertiesComponent extends BaseComponentDirective imp
       key: "filter-type",
       type: "ng-select",
       id: "filter-type",
-      expressionProperties: {
-        "props.disabled": () => this.loadingPage
+      expressions: {
+        "props.disabled": "formState.loadingPage"
       },
       props: {
         label: this.filterService.getPrintablePropertyName(FilterDisplayProperty.TYPE),
@@ -515,8 +520,8 @@ export class ItemBrowserByPropertiesComponent extends BaseComponentDirective imp
       key: "accessory-type",
       type: "ng-select",
       id: "accessory-type",
-      expressionProperties: {
-        "props.disabled": () => this.loadingPage
+      expressions: {
+        "props.disabled": "formState.loadingPage"
       },
       props: {
         label: this.accessoryService.getPrintablePropertyName(AccessoryDisplayProperty.TYPE),

@@ -88,15 +88,15 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
   }
 
   startSensorCreation() {
-    this.subCreation.inProgress = true;
+    this.options.formState.subCreation.inProgress = true;
     this.subCreationInProgress.emit(true);
     this.windowRefService.scrollToElement("astrobin-sensor-editor");
   }
 
   endSensorCreation() {
-    this.subCreation.inProgress = false;
-    this.subCreation.model = {};
-    this.subCreation.form.reset();
+    this.options.formState.subCreation.inProgress = false;
+    this.options.formState.subCreation.model = {};
+    this.options.formState.subCreation.form.reset();
     this.subCreationInProgress.emit(false);
 
     this.utilsService.delay(250).subscribe(() => {
@@ -275,8 +275,8 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
       key: "type",
       type: "ng-select",
       id: "camera-field-type",
-      expressionProperties: {
-        "props.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+      expressions: {
+        "props.disabled": "formState.subCreation.inProgress || formState.brandCreation.inProgress"
       },
       props: {
         label: this.cameraService.getPrintablePropertyName(CameraDisplayProperty.TYPE),
@@ -332,8 +332,8 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
       key: "sensor",
       type: "equipment-item-browser",
       id: "camera-field-sensor",
-      expressionProperties: {
-        "props.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+      expressions: {
+        "props.disabled": "formState.subCreation.inProgress || formState.brandCreation.inProgress"
       },
       props: {
         label: this.cameraService.getPrintablePropertyName(CameraDisplayProperty.SENSOR),
@@ -359,8 +359,8 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
       id: "camera-field-cooled",
       hideExpression: () => this.model.type !== CameraType.DEDICATED_DEEP_SKY,
       defaultValue: this.editorMode === EquipmentItemEditorMode.CREATION ? false : null,
-      expressionProperties: {
-        "props.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+      expressions: {
+        "props.disabled": "formState.subCreation.inProgress || formState.brandCreation.inProgress"
       },
       props: {
         label: this.cameraService.getPrintablePropertyName(CameraDisplayProperty.COOLED),
@@ -377,8 +377,8 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
       wrappers: ["default-wrapper"],
       id: "camera-field-max-cooling",
       hideExpression: () => !this.model.cooled,
-      expressionProperties: {
-        "props.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+      expressions: {
+        "props.disabled": "formState.subCreation.inProgress || formState.brandCreation.inProgress"
       },
       props: {
         type: "number",
@@ -409,8 +409,8 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
       type: "input",
       wrappers: ["default-wrapper"],
       id: "camera-field-back-focus",
-      expressionProperties: {
-        "props.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+      expressions: {
+        "props.disabled": "formState.subCreation.inProgress || formState.brandCreation.inProgress"
       },
       props: {
         type: "number",

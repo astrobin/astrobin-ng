@@ -1,21 +1,21 @@
 <form *ngIf="isPlatformBrowser(platformId); else loading" [formGroup]="form" class="d-flex align-items-end">
-  <formly-form [fields]="fields" [form]="form" [model]="model" class="flex-grow-1"></formly-form>
+  <formly-form [fields]="fields" [form]="form" [model]="model" [options]="options" class="flex-grow-1"></formly-form>
 </form>
 
 <ng-template #equipmentItemLabelTemplate let-object="item">
   <ng-container *ngIf="model && model.value">
     <ng-container *ngIf="!!object?.item; else noItemObject">
       <astrobin-equipment-item-display-name
-        [item]="object.item"
         [enableSummaryModal]="enableSummaryModal"
+        [item]="object.item"
       ></astrobin-equipment-item-display-name>
     </ng-container>
     <ng-template #noItemObject>
       <astrobin-equipment-item-display-name
         *ngIf="!!object?.value; else loading"
+        [enableSummaryModal]="enableSummaryModal"
         [itemId]="object.value"
         [itemType]="type"
-        [enableSummaryModal]="enableSummaryModal"
       ></astrobin-equipment-item-display-name>
     </ng-template>
   </ng-container>
@@ -28,14 +28,14 @@
       [showFrozenAsAmbiguous]="object.item.variants.length === 0"
     ></astrobin-equipment-item-display-name>
 
-    <ng-container *ngIf="object.item.variants?.length > 0">
+    <ng-container *ngIf="object.item?.variants?.length > 0">
       <p class="item-variants-info">{{ variantsMessage(object.item.variants.length) }}</p>
       <p class="item-variants-list">
         <span *ngFor="let variant of object.item.variants">
           <astrobin-equipment-item-display-name
+            [cut]="object.item.name"
             [item]="variant"
             [showBrand]="false"
-            [cut]="object.item.name"
           ></astrobin-equipment-item-display-name>
         </span>
       </p>
@@ -50,13 +50,13 @@
   </div>
 </ng-template>
 
-<ng-container *ngIf="creationMode">
+<ng-container *ngIf="options.formState.creationMode">
   <div class="mt-4 mb-4 text-center">
     <fa-icon icon="arrow-down"></fa-icon>
   </div>
 
   <div class="mt-4 mb-4">
-    <div class="card" [class.disabled-with-backdrop]="subCreationMode" id="create-new-item">
+    <div [class.disabled-with-backdrop]="options.formState.subCreationMode" class="card" id="create-new-item">
       <div class="backdrop"></div>
 
       <div class="card-header">
@@ -66,88 +66,88 @@
       <div class="card-body">
         <astrobin-camera-editor
           #editor
+          (subCreationInProgress)="onSubCreationInProgress($event)"
+          (suggestionSelected)="itemCreated($event)"
           *ngIf="type === EquipmentItemType.CAMERA"
           [form]="creationForm"
           [model]="creationModel"
           [name]="q"
-          (subCreationInProgress)="onSubCreationInProgress($event)"
-          (suggestionSelected)="itemCreated($event)"
         ></astrobin-camera-editor>
 
         <astrobin-sensor-editor
           #editor
+          (subCreationInProgress)="onSubCreationInProgress($event)"
+          (suggestionSelected)="itemCreated($event)"
           *ngIf="type === EquipmentItemType.SENSOR"
           [form]="creationForm"
           [model]="creationModel"
           [name]="q"
-          (subCreationInProgress)="onSubCreationInProgress($event)"
-          (suggestionSelected)="itemCreated($event)"
         ></astrobin-sensor-editor>
 
         <astrobin-telescope-editor
           #editor
+          (subCreationInProgress)="onSubCreationInProgress($event)"
+          (suggestionSelected)="itemCreated($event)"
           *ngIf="type === EquipmentItemType.TELESCOPE"
           [form]="creationForm"
           [model]="creationModel"
           [name]="q"
-          (subCreationInProgress)="onSubCreationInProgress($event)"
-          (suggestionSelected)="itemCreated($event)"
         ></astrobin-telescope-editor>
 
         <astrobin-mount-editor
           #editor
+          (subCreationInProgress)="onSubCreationInProgress($event)"
+          (suggestionSelected)="itemCreated($event)"
           *ngIf="type === EquipmentItemType.MOUNT"
           [form]="creationForm"
           [model]="creationModel"
           [name]="q"
-          (subCreationInProgress)="onSubCreationInProgress($event)"
-          (suggestionSelected)="itemCreated($event)"
         ></astrobin-mount-editor>
 
         <astrobin-filter-editor
           #editor
+          (subCreationInProgress)="onSubCreationInProgress($event)"
+          (suggestionSelected)="itemCreated($event)"
           *ngIf="type === EquipmentItemType.FILTER"
           [form]="creationForm"
           [model]="creationModel"
           [name]="q"
-          (subCreationInProgress)="onSubCreationInProgress($event)"
-          (suggestionSelected)="itemCreated($event)"
         ></astrobin-filter-editor>
 
         <astrobin-accessory-editor
           #editor
+          (subCreationInProgress)="onSubCreationInProgress($event)"
+          (suggestionSelected)="itemCreated($event)"
           *ngIf="type === EquipmentItemType.ACCESSORY"
           [form]="creationForm"
           [model]="creationModel"
           [name]="q"
-          (subCreationInProgress)="onSubCreationInProgress($event)"
-          (suggestionSelected)="itemCreated($event)"
         ></astrobin-accessory-editor>
 
         <astrobin-software-editor
           #editor
+          (subCreationInProgress)="onSubCreationInProgress($event)"
+          (suggestionSelected)="itemCreated($event)"
           *ngIf="type === EquipmentItemType.SOFTWARE"
           [form]="creationForm"
           [model]="creationModel"
           [name]="q"
-          (subCreationInProgress)="onSubCreationInProgress($event)"
-          (suggestionSelected)="itemCreated($event)"
         ></astrobin-software-editor>
       </div>
 
       <div class="card-footer">
         <button
-          class="btn btn-sm-block btn-secondary"
-          [class.loading]="loadingService.loading$ | async"
           (click)="onCancel()"
+          [class.loading]="loadingService.loading$ | async"
+          class="btn btn-sm-block btn-secondary"
         >
           {{ "Cancel" | translate }}
         </button>
 
         <button
-          class="btn btn-sm-block btn-primary"
-          [class.loading]="(loadingService.loading$ | async) || creationForm.pending"
           (click)="createItem()"
+          [class.loading]="(loadingService.loading$ | async) || creationForm.pending"
+          class="btn btn-sm-block btn-primary"
         >
           {{ "Create item" | translate }}
         </button>
@@ -157,13 +157,13 @@
 </ng-container>
 
 <ng-template #fullScreenBodyTemplate>
-  <astrobin-hr class="mb-3" [text]="'or' | translate"></astrobin-hr>
+  <astrobin-hr [text]="'or' | translate" class="mb-3"></astrobin-hr>
 
   <div class="full-screen-body-template-content">
     <astrobin-item-browser-by-properties
-      [type]="type"
-      (itemSelected)="onItemSetByBrowsingByProperties($event)"
       (createClicked)="onCreateClickedBrowsingByProperties()"
+      (itemSelected)="onItemSetByBrowsingByProperties($event)"
+      [type]="type"
     ></astrobin-item-browser-by-properties>
   </div>
 </ng-template>
