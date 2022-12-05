@@ -57,8 +57,10 @@ export class AssignItemModalComponent extends BaseComponentDirective implements 
         key: "assignee",
         type: "radio",
         wrappers: ["default-wrapper"],
-        templateOptions: {
+        props: {
           required: false,
+          labelProp: "value",
+          valueProp: "key",
           options: this.equipmentApiService.getPossibleItemAssignees(this.item.klass, this.item.id).pipe(
             map(possibleAssignees => {
               return [{ key: null, value: this.translateService.instant("Any moderator") }, ...possibleAssignees];

@@ -10,7 +10,6 @@ import { TitleService } from "@shared/services/title/title.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { interval } from "rxjs";
 import { take, tap } from "rxjs/operators";
-import { UtilsService } from "@shared/services/utils/utils.service";
 import { isPlatformBrowser } from "@angular/common";
 
 @Component({

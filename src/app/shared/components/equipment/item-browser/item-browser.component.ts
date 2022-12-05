@@ -68,7 +68,7 @@ type TypeUnion = EquipmentItem["id"] | EquipmentItem["id"][];
 
 export enum ItemBrowserLayout {
   HORIZONTAL,
-  VERTICAL
+  VERTICAL,
 }
 
 @Component({
@@ -230,9 +230,15 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
   }
 
   reset() {
+    const valueField = this._getValueField();
+
     this.model.value = null;
     this.form.get("value").reset();
-    this._getValueField().templateOptions.options = of([]);
+
+    valueField.props = {
+      ...valueField.props,
+      options: of([])
+    };
   }
 
   startCreationMode() {
@@ -263,7 +269,10 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
       const fieldConfig = this._getValueField();
       const options = !!item ? [this._getNgOptionValue(item)] : [];
 
-      fieldConfig.templateOptions.options = of(options);
+      fieldConfig.props = {
+        ...fieldConfig.props,
+        options: of(options)
+      };
 
       if (!!this.form.get("value")) {
         this.form.get("value").setValue(id, { onlySelf: true, emitEvent: false });
@@ -279,13 +288,16 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
       const options =
         items.length > 0
           ? UtilsService.arrayUniqueObjects(
-              items.map(item => this._getNgOptionValue(item)),
-              "value"
-            )
+            items.map(item => this._getNgOptionValue(item)),
+            "value"
+          )
           : [];
       const ids = items.map(item => item.id);
 
-      fieldConfig.templateOptions.options = of(options);
+      fieldConfig.props = {
+        ...fieldConfig.props,
+        options: of(options)
+      };
 
       this.model = { klass: this.type, value: ids };
 
@@ -354,7 +366,7 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
       const errorList: string[] = [];
       this.editor.fields.forEach(field => {
         if (field.formControl.errors !== null) {
-          errorList.push(`<li>${field.templateOptions.label}</li>`);
+          errorList.push(`<li>${field.props.label}</li>`);
         }
       });
       this.popNotificationsService.error(
@@ -493,7 +505,7 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
     this.popNotificationsService.success(
       this.translateService.instant(
         "Because of your contribution in adding this equipment item, the next person who wants to associate it " +
-          "with their images won't have to repeat the same process."
+        "with their images won't have to repeat the same process."
       ),
       this.translateService.instant("Thank you so much for contributing to the AstroBin equipment database! 🙌")
     );
@@ -548,35 +560,39 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
 
       switch (itemType) {
         case EquipmentItemType.SENSOR:
-          field.templateOptions.label = this.translateService.instant("Find sensor");
+          field.props = { ...field.props, label: this.translateService.instant("Find sensor") };
           break;
         case EquipmentItemType.CAMERA:
-          field.templateOptions.label = this.translateService.instant("Find camera");
+          field.props = { ...field.props, label: this.translateService.instant("Find camera") };
           break;
         case EquipmentItemType.TELESCOPE:
-          field.templateOptions.label = this.translateService.instant("Find telescope or lens");
+          field.props = { ...field.props, label: this.translateService.instant("Find telescope or lens") };
           break;
         case EquipmentItemType.MOUNT:
-          field.templateOptions.label = this.translateService.instant("Find mount");
+          field.props = { ...field.props, label: this.translateService.instant("Find mount") };
           break;
         case EquipmentItemType.ACCESSORY:
-          field.templateOptions.label = this.translateService.instant("Find accessory");
+          field.props = { ...field.props, label: this.translateService.instant("Find accessory") };
           break;
         case EquipmentItemType.FILTER:
-          field.templateOptions.label = this.translateService.instant("Find filter");
+          field.props = { ...field.props, label: this.translateService.instant("Find filter") };
           break;
         case EquipmentItemType.SOFTWARE:
-          field.templateOptions.label = this.translateService.instant("Find software");
+          field.props = { ...field.props, label: this.translateService.instant("Find software") };
           break;
         default:
-          field.templateOptions.label = this.translateService.instant("Find equipment item");
+          field.props = { ...field.props, label: this.translateService.instant("Find equipment item") };
       }
 
       if (!this.showLabel) {
-        field.templateOptions.label = this.translateService.instant("Find equipment item");
+        field.props = { ...field.props, label: this.translateService.instant("Find equipment item") };
       }
 
-      this._getValueField().templateOptions.description = this.description;
+      const valueField = this._getValueField();
+      valueField.props = {
+        ...valueField.props,
+        description: this.description
+      };
     }
   }
 
@@ -626,11 +642,11 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
                   type: "ng-select",
                   id: "klass",
                   expressionProperties: {
-                    "templateOptions.disabled": () => this.creationMode
+                    "props.disabled": () => this.creationMode
                   },
                   hideExpression: () => !this.showItemTypeSelector,
                   defaultValue: this.type,
-                  templateOptions: {
+                  props: {
                     label: this.translateService.instant("Item class"),
                     clearable: false,
                     required: true,
@@ -664,10 +680,10 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
                   type: "ng-select",
                   id: `${this.id}`,
                   expressionProperties: {
-                    "templateOptions.disabled": () => this.creationMode
+                    "props.disabled": () => this.creationMode
                   },
                   defaultValue: this.model,
-                  templateOptions: {
+                  props: {
                     required: this.required,
                     clearable: true,
                     label: this.showLabel ? this.label || this.translateService.instant("Find equipment item") : null,
@@ -749,7 +765,8 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
           ];
         })
       )
-      .subscribe(() => {});
+      .subscribe(() => {
+      });
 
     // The adding and setting here is only happening from the image editor.
     if (!!this.itemBrowserAddSubscription) {
@@ -871,7 +888,7 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
         )
         .subscribe(options => {
           const field = this._getValueField();
-          field.templateOptions.options = of(options);
+          field.props = { ...field.props, options: of(options) };
           observer.next(options);
           observer.complete();
         });

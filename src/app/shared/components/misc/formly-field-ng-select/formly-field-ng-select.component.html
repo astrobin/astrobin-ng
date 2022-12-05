@@ -55,8 +55,8 @@
         ></ng-container>
         <span
           (click)="clear(item)"
-          appEventPreventDefault
-          appEventStopPropagation
+          astrobinEventPreventDefault
+          astrobinEventStopPropagation
           aria-hidden="true"
           class="ng-value-icon right"
           >×</span
@@ -106,10 +106,10 @@
     </ng-select>
 
     <a
-      *ngIf="!fullscreen && to.enableFullscreen"
+      *ngIf="!fullscreen && to.enableFullscreen && cypressTesting"
       href="#"
-      appEventStopPropagation
-      appEventPreventDefault
+      astrobinEventStopPropagation
+      astrobinEventPreventDefault
       class="toggle-enable-fullscreen"
       [ngbTooltip]="'Disable fullscreen mode' | translate"
       (click)="toggleEnableFullscreen()"
@@ -122,11 +122,11 @@
 <ng-template #ngSelectModal>
   <div class="modal-header">
     <h4 class="modal-title" id="modal-title">
-      <ng-container *ngIf="field.templateOptions.fullScreenLabel; else noFullScreenLabel">
-        {{ field.templateOptions.fullScreenLabel}}
+      <ng-container *ngIf="field.props.fullScreenLabel; else noFullScreenLabel">
+        {{ field.props.fullScreenLabel}}
       </ng-container>
       <ng-template #noFullScreenLabel>
-        {{ field.templateOptions.label }}
+        {{ field.props.label }}
       </ng-template>
     </h4>
     <button (click)="exitFullscreen()" aria-describedby="modal-title" class="close" type="button">

@@ -8,7 +8,8 @@ import { SubscriptionName } from "../types/subscription-name.type";
   name: "hasValidUserSubscription"
 })
 export class HasValidUserSubscriptionPipe implements PipeTransform {
-  constructor(public userSubscriptionService: UserSubscriptionService) {}
+  constructor(public userSubscriptionService: UserSubscriptionService) {
+  }
 
   transform(userProfile: UserProfileInterface, subscriptionNames: SubscriptionName[]): Observable<boolean> {
     return this.userSubscriptionService.hasValidSubscription$(userProfile, subscriptionNames);

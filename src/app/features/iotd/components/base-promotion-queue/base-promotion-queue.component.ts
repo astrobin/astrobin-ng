@@ -87,7 +87,7 @@ export abstract class BasePromotionQueueComponent extends BaseComponentDirective
             .info(
               this.translateService.instant(
                 "Please note: you don't <strong>have to</strong> use all your slots. It's ok to use fewer if you " +
-                  "don't think there are that many worthy images today."
+                "don't think there are that many worthy images today."
               ),
               null,
               {
@@ -102,11 +102,11 @@ export abstract class BasePromotionQueueComponent extends BaseComponentDirective
               }
             )
             .onAction.subscribe(() => {
-              this.cookieService.put(FILL_SLOT_REMINDER_COOKIE, "1", {
-                path: "/",
-                expires: new Date(new Date().getTime() + 30 * 24 * 60 * 60 * 1000)
-              });
+            this.cookieService.put(FILL_SLOT_REMINDER_COOKIE, "1", {
+              path: "/",
+              expires: new Date(new Date().getTime() + 30 * 24 * 60 * 60 * 1000)
             });
+          });
         }
       });
 

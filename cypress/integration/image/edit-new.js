@@ -67,20 +67,14 @@ context("Image edit (new)", () => {
 
   it("should mark the step as errored if a required field is cleared", () => {
     cy.get("#image-title-field").clear();
-    cy.get("#image-stepper-field .nav-item.danger .nav-link")
-      .contains("Basic information")
-      .should("exist");
+    cy.get("#image-stepper-field .nav-item.danger .nav-link").contains("Basic information").should("exist");
 
     cy.get("#image-title-field").type("Test image");
-    cy.get("#image-stepper-field .nav-item.danger .nav-link")
-      .contains("Basic information")
-      .should("not.exist");
+    cy.get("#image-stepper-field .nav-item.danger .nav-link").contains("Basic information").should("not.exist");
   });
 
   it("should have prefilled the content step", () => {
-    cy.get("#image-stepper-basic-information .form-actions .btn")
-      .contains("Next")
-      .click();
+    cy.get("#image-stepper-basic-information .form-actions .btn").contains("Next").click();
 
     cy.url().should("contain", "#2");
 
@@ -94,43 +88,33 @@ context("Image edit (new)", () => {
 
   it("should select an acquisition type", () => {
     cy.get("#image-acquisition-type-field").click();
-    cy.get("#image-acquisition-type-field .ng-option")
-      .contains("Regular")
-      .click();
+    cy.get("#image-acquisition-type-field .ng-option").contains("Regular").click();
     cy.get("#image-acquisition-type-field .ng-value").should("contain.text", "Regular");
   });
 
   it("should select a subject type", () => {
     cy.get("#image-subject-type-field").click();
-    cy.get("#image-subject-type-field .ng-option")
-      .contains("Deep sky")
-      .click();
+    cy.get("#image-subject-type-field .ng-option").contains("Deep sky").click();
     cy.get("#image-subject-type-field .ng-value").should("contain.text", "Deep sky");
     cy.get("#image-solar-system-main-subject-field").should("not.be.visible");
   });
 
   it("should display solar system main subject field if solar system is selected", () => {
     cy.get("#image-subject-type-field").click();
-    cy.get("#image-subject-type-field .ng-option")
-      .contains("Solar system")
-      .click();
+    cy.get("#image-subject-type-field .ng-option").contains("Solar system").click();
     cy.get("#image-subject-type-field .ng-value").should("contain.text", "Solar system");
     cy.get("#image-solar-system-main-subject-field").should("be.visible");
   });
 
   it("should select a solar system main subject type", () => {
     cy.get("#image-solar-system-main-subject-field").click();
-    cy.get("#image-solar-system-main-subject-field .ng-option")
-      .contains("Moon")
-      .click();
+    cy.get("#image-solar-system-main-subject-field .ng-option").contains("Moon").click();
     cy.get("#image-solar-system-main-subject-field .ng-value").should("contain.text", "Moon");
   });
 
   it("should select an amateur hosting facility data source", () => {
     cy.get("#image-data-source-field").click();
-    cy.get("#image-data-source-field .ng-option")
-      .contains("Amateur hosting facility")
-      .click();
+    cy.get("#image-data-source-field .ng-option").contains("Amateur hosting facility").click();
     cy.get("#image-data-source-field .ng-value").should("contain.text", "Amateur hosting facility");
 
     cy.get("#image-remote-source-field").should("be.visible");
@@ -138,9 +122,7 @@ context("Image edit (new)", () => {
 
   it("should select a remote data source", () => {
     cy.get("#image-remote-source-field").click();
-    cy.get("#image-remote-source-field .ng-option")
-      .contains("DeepSkyWest")
-      .click();
+    cy.get("#image-remote-source-field .ng-option").contains("DeepSkyWest").click();
     cy.get("#image-remote-source-field .ng-value").should("contain.text", "DeepSkyWest");
 
     cy.get("#image-remote-source-field").should("be.visible");
@@ -148,9 +130,7 @@ context("Image edit (new)", () => {
 
   it("should select a backyard data source", () => {
     cy.get("#image-data-source-field").click();
-    cy.get("#image-data-source-field .ng-option")
-      .contains("Backyard")
-      .click();
+    cy.get("#image-data-source-field .ng-option").contains("Backyard").click();
     cy.get("#image-data-source-field .ng-value").should("contain.text", "Backyard");
     cy.get("#image-remote-source-field").should("not.be.visible");
     cy.get("#image-locations-field").should("be.visible");
@@ -173,12 +153,12 @@ context("Image edit (new)", () => {
       lon_min: 11,
       lon_sec: 12,
       lon_side: "E",
-      altitude: 400
+      altitude: 400,
     };
 
     cy.route("post", "**/api/v2/astrobin/location/", location).as("createLocation");
     cy.route("put", "**/api/v2/common/userprofiles/1/partial/", {
-      locations: [location]
+      locations: [location],
     }).as("updateUserProfile");
 
     cy.get("#image-locations-field").click();
@@ -187,36 +167,26 @@ context("Image edit (new)", () => {
       .should("be.visible");
     cy.get("#image-locations-field").type("Home observatory");
 
-    cy.get("#image-locations-field .add-tag")
-      .contains("Home observatory")
-      .should("be.visible");
+    cy.get("#image-locations-field .add-tag").contains("Home observatory").should("be.visible");
 
     cy.get("#image-locations-field .add-tag .btn").click();
 
     cy.get("astrobin-create-location-modal").should("be.visible");
     cy.get("astrobin-create-location-modal .form-control#name").should("have.value", "Home observatory");
 
-    cy.get("astrobin-create-location-modal .btn")
-      .contains("Save")
-      .click();
+    cy.get("astrobin-create-location-modal .btn").contains("Save").click();
 
-    cy.get("formly-validation-message")
-      .contains("This field is required")
-      .should("exist");
+    cy.get("formly-validation-message").contains("This field is required").should("exist");
 
     cy.get("astrobin-create-location-modal .form-control#altitude").type("400");
 
-    cy.get("astrobin-create-location-modal .btn")
-      .contains("Save")
-      .click();
+    cy.get("astrobin-create-location-modal .btn").contains("Save").click();
 
     cy.wait("@createLocation");
     cy.wait("@updateUserProfile");
 
-    cy.get("astrobin-create-location-modal").should("not.be.visible");
-    cy.get("#image-locations-field .ng-value-container .ng-value")
-      .contains("Home observatory")
-      .should("exist");
+    cy.get("astrobin-create-location-modal").should("not.exist");
+    cy.get("#image-locations-field .ng-value-container .ng-value").contains("Home observatory").should("exist");
   });
 
   it("should select a group", () => {
@@ -228,26 +198,20 @@ context("Image edit (new)", () => {
       .should("exist");
 
     cy.get("#image-groups-field").click();
-    cy.get("#image-groups-field .ng-option")
-      .contains("First test group")
-      .click();
+    cy.get("#image-groups-field .ng-option").contains("First test group").click();
     cy.get("#image-groups-field .ng-value").should("contain.text", "First test group");
   });
 
   it("should display remote source if data source is remote", () => {
     cy.get("#image-data-source-field").click();
-    cy.get("#image-data-source-field .ng-option")
-      .contains("remote")
-      .click();
+    cy.get("#image-data-source-field .ng-option").contains("remote").click();
     cy.get("#image-data-source-field .ng-value").should("contain.text", "remote");
     cy.get("#image-remote-source-field").should("be.visible");
   });
 
   it("should select a remote source", () => {
     cy.get("#image-remote-source-field").click();
-    cy.get("#image-remote-source-field .ng-option")
-      .contains("ChileScope")
-      .click();
+    cy.get("#image-remote-source-field .ng-option").contains("ChileScope").click();
     cy.get("#image-remote-source-field .ng-value").should("contain.text", "ChileScope");
   });
 
@@ -256,14 +220,10 @@ context("Image edit (new)", () => {
   });
 
   it("should have prefilled the watermark step", () => {
-    cy.get("#image-stepper-content .form-actions .btn")
-      .contains("Next")
-      .click();
+    cy.get("#image-stepper-content .form-actions .btn").contains("Next").click();
 
     // Skip over thumbnails step.
-    cy.get("#image-stepper-thumbnail .form-actions .btn")
-      .contains("Next")
-      .click();
+    cy.get("#image-stepper-thumbnail .form-actions .btn").contains("Next").click();
 
     cy.url().should("contain", "#4");
 
@@ -283,9 +243,7 @@ context("Image edit (new)", () => {
     cy.get("[for=image-watermark-field]").click();
     cy.get("#image-watermark-field").should("not.be.checked");
     cy.get("#image-watermark-position-field").click();
-    cy.get("#image-watermark-position-field .ng-option")
-      .contains("Top right")
-      .click();
+    cy.get("#image-watermark-position-field .ng-option").contains("Top right").click();
     cy.get("#image-watermark-field").should("be.checked");
   });
 
@@ -293,9 +251,7 @@ context("Image edit (new)", () => {
     cy.get("[for=image-watermark-field]").click();
     cy.get("#image-watermark-field").should("not.be.checked");
     cy.get("#image-watermark-size-field").click();
-    cy.get("#image-watermark-size-field .ng-option")
-      .contains("Large")
-      .click();
+    cy.get("#image-watermark-size-field .ng-option").contains("Large").click();
     cy.get("#image-watermark-field").should("be.checked");
   });
 
@@ -308,9 +264,7 @@ context("Image edit (new)", () => {
   });
 
   it("should have the equipment step", () => {
-    cy.get("#image-stepper-watermark .form-actions .btn")
-      .contains("Next")
-      .click();
+    cy.get("#image-stepper-watermark .form-actions .btn").contains("Next").click();
 
     cy.url().should("contain", "#5");
 
@@ -346,36 +300,34 @@ context("Image edit (new)", () => {
           reviewedBy: null,
           brand: 1,
           group: null,
-          variants: []
-        }
-      ]
+          variants: [],
+        },
+      ],
     }).as("findTelescopes");
 
-    cy.get("#image-imaging-telescopes-field + .toggle-enable-fullscreen").click();
+    cy.get("#image-imaging-telescopes-field + .toggle-enable-fullscreen").scrollIntoView().click();
     cy.get("#image-imaging-telescopes-field input[type='text']").type("Foo");
     cy.wait("@findTelescopes");
     cy.wait("@getBrand1");
 
     cy.get("#image-imaging-telescopes-field .ng-option:first-child").click();
     cy.get("#image-imaging-telescopes-field .ng-select-container .ng-value")
-      .contains("Brand Foo 123")
+      .contains("Test Brand Foo 123")
       .should("be.visible");
   });
 
   it("should create a camera", () => {
     cy.setupEquipmentDefaultRoutes();
     cy.equipmentItemBrowserCreate("#image-imaging-cameras-field", "Test camera", "@findCameras");
-    cy.equipmentItemBrowserSelectFirstBrand("#equipment-item-field-brand", "Test brand", testBrand);
+    cy.equipmentItemBrowserSelectFirstBrand("#equipment-item-field-brand", "Test Brand", testBrand);
     cy.get("#equipment-item-field-name").should("have.value", "Test camera");
     cy.ngSelectOpen("#camera-field-type");
     cy.ngSelectOptionClick("#camera-field-type", 1);
     cy.ngSelectValueShouldContain("#camera-field-type", "Dedicated deep-sky camera");
     cy.route("post", "**/api/v2/equipment/camera/", testCamera).as("createCamera");
     cy.get("#create-new-item .btn-primary").click();
-    cy.get(".modal-title")
-      .contains("Confirm item creation")
-      .should("be.visible");
-    cy.equipmentItemSummaryShouldHaveItem(".modal", "Test brand", "Test camera");
+    cy.get(".modal-title").contains("Confirm item creation").should("be.visible");
+    cy.equipmentItemSummaryShouldHaveItem(".modal", "Test Brand", "Test camera");
     cy.equipmentItemSummaryShouldHaveProperty(".modal", "Class", "Camera");
     cy.equipmentItemSummaryShouldHaveProperty(".modal", "Type", "Dedicated deep-sky camera");
     cy.get("[for=confirm-no-typos]").click();
@@ -384,17 +336,13 @@ context("Image edit (new)", () => {
     cy.get("[for=confirm-unambiguous]").click();
     cy.get("[for=confirm-english]").click();
     cy.get("[for=confirm-no-personal-information]").click();
-    cy.get(".modal-footer .btn")
-      .contains("Confirm")
-      .click();
+    cy.get(".modal-footer .btn").contains("Confirm").click();
     cy.wait("@createCamera");
-    cy.equipmentItemBrowserShouldContain("#image-imaging-cameras-field", "Test brand", "Test camera");
+    cy.equipmentItemBrowserShouldContain("#image-imaging-cameras-field", "Test Brand", "Test camera");
   });
 
   it("should have prefilled the settings step", () => {
-    cy.get("#image-stepper-equipment .form-actions .btn")
-      .contains("Next")
-      .click();
+    cy.get("#image-stepper-equipment .form-actions .btn").contains("Next").click();
 
     cy.url().should("contain", "#6");
 

@@ -1,4 +1,4 @@
-// tslint:disable:max-classes-per-file
+/* eslint-disable max-classes-per-file */
 
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { LoadCamera, LoadCameraSuccess } from "@app/store/actions/camera.actions";
@@ -33,11 +33,11 @@ import {
 } from "@app/store/actions/thumbnail.actions";
 import { CreateLocation, CreateLocationAddTag, CreateLocationSuccess } from "@app/store/actions/location.actions";
 import {
-  LoadNestedComments,
-  LoadNestedCommentsSuccess,
   CreateNestedComment,
   CreateNestedCommentFailure,
-  CreateNestedCommentSuccess
+  CreateNestedCommentSuccess,
+  LoadNestedComments,
+  LoadNestedCommentsSuccess
 } from "@app/store/actions/nested-comments.actions";
 
 export enum AppActionTypes {

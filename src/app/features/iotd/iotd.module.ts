@@ -45,4 +45,5 @@ import { JudgementEntryComponent } from "@features/iotd/components/judgement-ent
   providers: [IotdApiService],
   exports: [RouterModule, SharedModule, StoreModule, EffectsModule]
 })
-export class IotdModule {}
+export class IotdModule {
+}

@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
 import { FieldType } from "@ngx-formly/core";
 import {
   EquipmentItemBaseInterface,
@@ -30,12 +30,13 @@ export class FormlyFieldEquipmentItemBrowserComponent extends FieldType implemen
 
   recent: EquipmentItemBaseInterface[] = [];
   recentLoaded = false;
+  recentUsed = false;
   hasRecent = false;
 
   noRecentMessage: string = this.translateService.instant(
     "You don't have any recently used items in this class. Please find your equipment using the input box above, " +
-      "and the next time you edit an image, they will available for quick selection here. PS: you can also save/load " +
-      "presets to make it easier to add equipment next time! Look for the preset buttons at the end of this form."
+    "and the next time you edit an image, they will available for quick selection here. PS: you can also save/load " +
+    "presets to make it easier to add equipment next time! Look for the preset buttons at the end of this form."
   );
 
   allRecentUsedMessage: string = this.translateService.instant(
@@ -45,7 +46,8 @@ export class FormlyFieldEquipmentItemBrowserComponent extends FieldType implemen
   constructor(
     public readonly store$: Store<State>,
     public readonly actions$: Actions,
-    public readonly translateService: TranslateService
+    public readonly translateService: TranslateService,
+    public readonly changeDetectorRef: ChangeDetectorRef
   ) {
     super();
   }
@@ -112,6 +114,7 @@ export class FormlyFieldEquipmentItemBrowserComponent extends FieldType implemen
 
   quickAddItem(item: EquipmentItemBaseInterface) {
     this.store$.dispatch(new ItemBrowserAdd({ type: this.to.itemType, usageType: this.to.usageType, item }));
+    this.recentUsed = true;
   }
 
   _loadRecent(): void {
@@ -137,7 +140,7 @@ export class FormlyFieldEquipmentItemBrowserComponent extends FieldType implemen
             this.recent = items.filter(x => x.id !== this.value);
           }
           this.recentLoaded = true;
-          this.hasRecent = items.length > 0;
+          this.changeDetectorRef.detectChanges();
         });
     }
   }

@@ -6,4 +6,5 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
   templateUrl: "./text-loading-indicator.component.html",
   styleUrls: ["./text-loading-indicator.component.scss"]
 })
-export class TextLoadingIndicatorComponent extends BaseComponentDirective {}
+export class TextLoadingIndicatorComponent extends BaseComponentDirective {
+}

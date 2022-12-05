@@ -1,4 +1,4 @@
-// tslint:disable:max-classes-per-file
+/* eslint-disable max-classes-per-file */
 
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
@@ -8,13 +8,15 @@ import { Action } from "@ngrx/store";
 export class LoadSolution implements PayloadActionInterface {
   readonly type = AppActionTypes.LOAD_SOLUTION;
 
-  constructor(public payload: { contentType: number; objectId: string }) {}
+  constructor(public payload: { contentType: number; objectId: string }) {
+  }
 }
 
 export class LoadSolutionSuccess implements PayloadActionInterface {
   readonly type = AppActionTypes.LOAD_SOLUTION_SUCCESS;
 
-  constructor(public payload: SolutionInterface) {}
+  constructor(public payload: SolutionInterface) {
+  }
 }
 
 export class LoadSolutionFailure implements Action {
@@ -24,11 +26,13 @@ export class LoadSolutionFailure implements Action {
 export class LoadSolutions implements PayloadActionInterface {
   readonly type = AppActionTypes.LOAD_SOLUTIONS;
 
-  constructor(public payload: { contentType: number; objectIds: string[] }) {}
+  constructor(public payload: { contentType: number; objectIds: string[] }) {
+  }
 }
 
 export class LoadSolutionsSuccess implements PayloadActionInterface {
   readonly type = AppActionTypes.LOAD_SOLUTIONS_SUCCESS;
 
-  constructor(public payload: SolutionInterface[]) {}
+  constructor(public payload: SolutionInterface[]) {
+  }
 }

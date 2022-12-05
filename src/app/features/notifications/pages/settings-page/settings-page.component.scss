@@ -6,13 +6,18 @@
 
   label {
     font-weight: normal;
+    margin: 0;
   }
 
   &:nth-child(odd) {
     background: rgba(255, 255, 255, 0.025);
   }
 
-  .form-check:not(last-child) {
+  .form-group {
+    margin: 0;
+  }
+
+  .form-check:not(:last-child) {
     margin-right: 1.5rem;
   }
 

@@ -7,7 +7,8 @@ import { GroupInterface } from "@shared/interfaces/group.interface";
   name: "isInGroup"
 })
 export class IsInGroupPipe implements PipeTransform {
-  constructor(public userService: UserService) {}
+  constructor(public userService: UserService) {
+  }
 
   transform(user: UserInterface, groupName: GroupInterface["name"]): boolean {
     return this.userService.isInGroup(user, groupName);

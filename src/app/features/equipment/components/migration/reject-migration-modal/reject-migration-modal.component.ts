@@ -24,7 +24,7 @@ export enum RejectMigrationReason {
   REJECTED_INCORRECT_STRATEGY = "REJECTED_INCORRECT_STRATEGY",
   REJECTED_WRONG_MIGRATION_TARGET = "REJECTED_WRONG_MIGRATION_TARGET",
   REJECTED_BAD_MIGRATION_TARGET = "REJECTED_BAD_MIGRATION_TARGET",
-  REJECTED_OTHER = "REJECTED_OTHER"
+  REJECTED_OTHER = "REJECTED_OTHER",
 }
 
 @Component({
@@ -70,7 +70,7 @@ export class RejectMigrationModalComponent extends BaseComponentDirective implem
         key: "reason",
         type: "ng-select",
         id: "reason",
-        templateOptions: {
+        props: {
           label: "Reason",
           required: true,
           clearable: false,
@@ -110,15 +110,18 @@ export class RejectMigrationModalComponent extends BaseComponentDirective implem
                   break;
               }
 
-              field.templateOptions.description = description;
+              field.props = {
+                ...field.props,
+                description
+              };
 
               if (warning) {
-                this.formlyFieldService.addMessage(field.templateOptions, {
+                this.formlyFieldService.addMessage(field, {
                   level: FormlyFieldMessageLevel.WARNING,
                   text: warning
                 });
               } else {
-                this.formlyFieldService.removeMessage(field.templateOptions, {
+                this.formlyFieldService.removeMessage(field, {
                   level: FormlyFieldMessageLevel.WARNING,
                   text: warning
                 });
@@ -133,9 +136,9 @@ export class RejectMigrationModalComponent extends BaseComponentDirective implem
         id: "bad-migration-target-reason",
         hideExpression: () => this.model.reason !== RejectMigrationReason.REJECTED_BAD_MIGRATION_TARGET,
         expressionProperties: {
-          "templateOptions.required": "model.reason === 'REJECTED_BAD_MIGRATION_TARGET'"
+          "props.required": "model.reason === 'REJECTED_BAD_MIGRATION_TARGET'"
         },
-        templateOptions: {
+        props: {
           label: "Bad migration target reason",
           clearable: false,
           options: this._badMigrationTargetReasonOptions()
@@ -146,7 +149,7 @@ export class RejectMigrationModalComponent extends BaseComponentDirective implem
         type: "textarea",
         id: "comment",
         wrappers: ["default-wrapper"],
-        templateOptions: {
+        props: {
           label: "Comment",
           required: false,
           rows: 4

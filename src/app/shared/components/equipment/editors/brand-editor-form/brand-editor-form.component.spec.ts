@@ -2,7 +2,6 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { BrandEditorFormComponent } from "./brand-editor-form.component";
 import { MockBuilder } from "ng-mocks";
-import { EquipmentModule } from "@features/equipment/equipment.module";
 import { provideMockStore } from "@ngrx/store/testing";
 import { initialState } from "@app/store/state";
 import { AppModule } from "@app/app.module";
@@ -13,9 +12,7 @@ describe("BrandEditorComponent", () => {
   let fixture: ComponentFixture<BrandEditorFormComponent>;
 
   beforeEach(async () => {
-    await MockBuilder(BrandEditorFormComponent, EquipmentModule)
-      .mock(AppModule)
-      .provide([provideMockStore({ initialState }), UtilsService]);
+    await MockBuilder(BrandEditorFormComponent, AppModule).provide([provideMockStore({ initialState }), UtilsService]);
   });
 
   beforeEach(() => {

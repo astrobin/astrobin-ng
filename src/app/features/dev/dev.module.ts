@@ -9,4 +9,5 @@ import { NestedCommentsTestPageComponent } from "./nested-comments-test-page/nes
   declarations: [ImageTestPageComponent, NestedCommentsTestPageComponent],
   imports: [DevRoutingModule, SharedModule]
 })
-export class DevModule {}
+export class DevModule {
+}

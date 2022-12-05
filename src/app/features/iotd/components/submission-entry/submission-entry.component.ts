@@ -56,10 +56,10 @@ export class SubmissionEntryComponent extends BasePromotionEntryComponent {
         return isPromoted
           ? of(false)
           : max$.pipe(
-              take(1),
-              switchMap(max => count$.pipe(map(count => ({ max, count })))),
-              map(({ max, count }) => count < max)
-            );
+            take(1),
+            switchMap(max => count$.pipe(map(count => ({ max, count })))),
+            map(({ max, count }) => count < max)
+          );
       })
     );
   }

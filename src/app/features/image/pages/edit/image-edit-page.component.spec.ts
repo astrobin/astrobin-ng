@@ -59,7 +59,7 @@ describe("EditComponent", () => {
   });
 
   it("should initialize data", () => {
-    expect(component.imageEditService.image).toEqual(image);
+    expect(component.imageEditService.model).toEqual(image);
     expect(component.imageEditService.model).toEqual(image);
   });
 });

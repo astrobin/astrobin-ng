@@ -14,7 +14,7 @@ describe("ContributorsPageComponent", () => {
   beforeEach(async () => {
     await MockBuilder(ContributorsPageComponent, AppModule)
       .provide([provideMockStore({ initialState })])
-      .mock(ItemTypeNavComponent);
+      .mock(ItemTypeNavComponent, { export: true });
   });
 
   beforeEach(() => {

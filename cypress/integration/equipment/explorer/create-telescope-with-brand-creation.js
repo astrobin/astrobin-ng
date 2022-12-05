@@ -19,7 +19,7 @@ context("Equipment", () => {
       it("should create a brand", () => {
         cy.equipmentItemBrowserCreateBrand(
           "#equipment-item-field-brand",
-          "Test brand",
+          "Test Brand",
           "https://www.test-brand.com/",
           testBrand
         );
@@ -30,53 +30,35 @@ context("Equipment", () => {
       });
 
       it("should not allow the word OAG", () => {
-        cy.get("#equipment-item-field-name")
-          .clear()
-          .type("My OAG foo");
+        cy.get("#equipment-item-field-name").clear().type("My OAG foo");
         cy.get("formly-validation-message")
           .contains("Off-axis guiders are found among Accessories. Please find your item in that category, thanks!")
           .should("be.visible");
-        cy.get("#equipment-item-field-name")
-          .clear()
-          .type("Test");
+        cy.get("#equipment-item-field-name").clear().type("Test");
       });
 
       it("should not allow the word Hyperstar", () => {
-        cy.get("#equipment-item-field-name")
-          .clear()
-          .type("C11 hyperstar");
+        cy.get("#equipment-item-field-name").clear().type("C11 hyperstar");
         cy.get("formly-validation-message")
           .contains(
             "The Starizona Hyperstar models are found among Accessories. Please find your item in that category, thanks!"
           )
           .should("be.visible");
-        cy.get("#equipment-item-field-name")
-          .clear()
-          .type("Test");
+        cy.get("#equipment-item-field-name").clear().type("Test");
       });
 
       it("should not allow the word teleconverter", () => {
-        cy.get("#equipment-item-field-name")
-          .clear()
-          .type("Teleconverter");
+        cy.get("#equipment-item-field-name").clear().type("Teleconverter");
         cy.get("formly-validation-message")
           .contains("Teleconverters are found among Accessories. Please find your item in that category, thanks!")
           .should("be.visible");
-        cy.get("#equipment-item-field-name")
-          .clear()
-          .type("Test");
+        cy.get("#equipment-item-field-name").clear().type("Test");
       });
 
       it("should not allow the word skywatcher", () => {
-        cy.get("#equipment-item-field-name")
-          .clear()
-          .type("Skywatcher");
-        cy.get("formly-validation-message")
-          .contains("Sky-Watcher is spelled with a dash sign.")
-          .should("be.visible");
-        cy.get("#equipment-item-field-name")
-          .clear()
-          .type("Test");
+        cy.get("#equipment-item-field-name").clear().type("Skywatcher");
+        cy.get("formly-validation-message").contains("Sky-Watcher is spelled with a dash sign.").should("be.visible");
+        cy.get("#equipment-item-field-name").clear().type("Test");
       });
 
       it("should fill the type", () => {
@@ -119,11 +101,9 @@ context("Equipment", () => {
 
         cy.get("#create-new-item .btn-primary").click();
 
-        cy.get(".modal-title")
-          .contains("Confirm item creation")
-          .should("be.visible");
+        cy.get(".modal-title").contains("Confirm item creation").should("be.visible");
 
-        cy.equipmentItemSummaryShouldHaveItem(".modal", "Test brand", "Test");
+        cy.equipmentItemSummaryShouldHaveItem(".modal", "Test Brand", "Test");
         cy.equipmentItemSummaryShouldHaveProperty(".modal", "Class", "Telescope");
         cy.equipmentItemSummaryShouldHaveProperty(".modal", "Type", "Refractor: achromatic");
         cy.equipmentItemSummaryShouldHaveProperty(".modal", "Diameter", "80 mm");
@@ -135,13 +115,11 @@ context("Equipment", () => {
         cy.get("[for=confirm-unambiguous]").click();
         cy.get("[for=confirm-english]").click();
         cy.get("[for=confirm-no-personal-information]").click();
-        cy.get(".modal-footer .btn")
-          .contains("Confirm")
-          .click();
+        cy.get(".modal-footer .btn").contains("Confirm").click();
 
         cy.wait("@createTelescope");
 
-        cy.equipmentItemBrowserShouldContain("#equipment-item-field", "Test brand", "Test telescope");
+        cy.equipmentItemBrowserShouldContain("#equipment-item-field", "Test Brand", "Test telescope");
       });
     });
   });

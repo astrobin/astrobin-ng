@@ -19,13 +19,13 @@ export class CameraEffects {
           switchMap(cameraFromStore =>
             cameraFromStore !== null
               ? of(cameraFromStore).pipe(
-                  take(1),
-                  map(camera => new LoadCameraSuccess(camera))
-                )
+                take(1),
+                map(camera => new LoadCameraSuccess(camera))
+              )
               : this.cameraApiService.get(action.payload).pipe(
-                  map(camera => new LoadCameraSuccess(camera)),
-                  catchError(error => EMPTY)
-                )
+                map(camera => new LoadCameraSuccess(camera)),
+                catchError(error => EMPTY)
+              )
           )
         )
       )
@@ -36,5 +36,6 @@ export class CameraEffects {
     public readonly store$: Store<State>,
     public readonly actions$: Actions<All>,
     public readonly cameraApiService: CameraApiService
-  ) {}
+  ) {
+  }
 }

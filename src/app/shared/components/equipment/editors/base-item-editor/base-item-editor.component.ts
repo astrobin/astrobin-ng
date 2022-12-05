@@ -1,5 +1,14 @@
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { AfterViewInit, Component, EventEmitter, Input, Output, TemplateRef, ViewChild } from "@angular/core";
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  TemplateRef,
+  ViewChild
+} from "@angular/core";
 import { AbstractControl, FormControl, FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
@@ -50,7 +59,7 @@ import { UtilsService } from "@shared/services/utils/utils.service";
 
 export enum EquipmentItemEditorMode {
   CREATION,
-  EDIT_PROPOSAL
+  EDIT_PROPOSAL,
 }
 
 const DIY_PROHIBITED_WORDS = [
@@ -199,7 +208,8 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
     public readonly equipmentItemService: EquipmentItemService,
     public readonly formlyFieldService: FormlyFieldService,
     public readonly modalService: NgbModal,
-    public readonly utilsService: UtilsService
+    public readonly utilsService: UtilsService,
+    public readonly changeDetectorRef: ChangeDetectorRef
   ) {
     super(store$);
   }
@@ -249,13 +259,19 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
       return;
     }
 
-    this.fields.find(field => field.key === "brand").templateOptions.options = of([
-      {
-        value: brand.id,
-        label: brand.name,
-        brand
-      }
-    ]);
+    const brandField = this.fields.find(field => field.key === "brand");
+
+    brandField.props = {
+      ...brandField.props,
+      options: of([
+        {
+          value: brand.id,
+          label: brand.name,
+          brand
+        }
+      ])
+    };
+
     this.model = { ...this.model, ...{ brand: brand.id } };
     this.form.controls.brand.setValue(brand.id);
     this.brandCreation.name = brand.name;
@@ -314,22 +330,22 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
       type: "checkbox",
       id: "equipment-item-field-diy",
       expressionProperties: {
-        "templateOptions.disabled": () =>
+        "props.disabled": () =>
           this.subCreation.inProgress ||
           this.brandCreation.inProgress ||
           this.editorMode === EquipmentItemEditorMode.EDIT_PROPOSAL
       },
       defaultValue: false,
-      templateOptions: {
+      props: {
         required: true,
         label: this.translateService.instant("Self-made / non-commercial (no brand)"),
         description:
           this.editorMode === EquipmentItemEditorMode.EDIT_PROPOSAL
             ? this.translateService.instant("Editing this field is not possible.")
             : this.translateService.instant(
-                "Check this box if this item is self-made, and/or was never on the market as a commercial " +
-                  "product, and therefore does not have a brand."
-              )
+              "Check this box if this item is self-made, and/or was never on the market as a commercial " +
+              "product, and therefore does not have a brand."
+            )
       },
       hooks: {
         onInit: (field: FormlyFieldConfig) => {
@@ -343,8 +359,8 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
 
                   informationModalInstance.message = this.translateService.instant(
                     "Marking an item as DIY (i.e. self-made) means that you, or someone on your behalf, actually " +
-                      "made this equipment item, and it's something unique that other people literally cannot " +
-                      "obtain. This item will not be available to others to add to their images."
+                    "made this equipment item, and it's something unique that other people literally cannot " +
+                    "obtain. This item will not be available to others to add to their images."
                   );
 
                   informationModalRef.closed.pipe(take(1)).subscribe(() => {
@@ -368,14 +384,14 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
       type: "ng-select",
       id: "equipment-item-field-brand",
       expressionProperties: {
-        "templateOptions.disabled": () =>
+        "props.disabled": () =>
           this.subCreation.inProgress ||
           this.brandCreation.inProgress ||
           this.editorMode === EquipmentItemEditorMode.EDIT_PROPOSAL ||
           !!this.model.diy,
-        "templateOptions.required": () => !this.model.diy
+        "props.required": () => !this.model.diy
       },
-      templateOptions: {
+      props: {
         clearable: true,
         label: label
           ? label
@@ -390,16 +406,16 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
         options:
           this.model && this.model.brand
             ? this.store$.select(selectBrand, this.model.brand).pipe(
-                filter(brand => !!brand),
-                take(1),
-                map(brand => [
-                  {
-                    value: brand.id,
-                    label: brand.name,
-                    brand
-                  }
-                ])
-              )
+              filter(brand => !!brand),
+              take(1),
+              map(brand => [
+                {
+                  value: brand.id,
+                  label: brand.name,
+                  brand
+                }
+              ])
+            )
             : of([]),
         enableFullscreen: true,
         onSearch: (term: string): Observable<any[]> => {
@@ -420,7 +436,7 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
               takeUntil(this.destroyed$),
               startWith(this.model.brand),
               tap(value => {
-                this.formlyFieldService.clearMessages(field.templateOptions);
+                this.formlyFieldService.clearMessages(field);
 
                 if (!!value && this.form.get("name").value) {
                   this.form.get("name").markAsTouched();
@@ -432,15 +448,18 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
                     tap((brand: BrandInterface) => {
                       this.brandCreation.name = brand.name;
 
-                      field.templateOptions.options = of([
-                        {
-                          value: brand.id,
-                          label: brand.name,
-                          brand
-                        }
-                      ]);
+                      field.props = {
+                        ...field.props,
+                        options: of([
+                          {
+                            value: brand.id,
+                            label: brand.name,
+                            brand
+                          }
+                        ])
+                      };
 
-                      this.formlyFieldService.clearMessages(this.fields.find(f => f.key === "name").templateOptions);
+                      this.formlyFieldService.clearMessages(this.fields.find(f => f.key === "name"));
                       this._validateCanonAndCentralDS();
                       this._similarItemSuggestion();
                       this._othersInBrand(brand.name);
@@ -472,21 +491,21 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
       id: "equipment-item-field-name",
       defaultValue: this.name,
       expressionProperties: {
-        "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress,
-        "templateOptions.label": () =>
+        "props.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress,
+        "props.label": () =>
           this.model.diy
             ? this.equipmentItemService.getPrintablePropertyName(null, EquipmentItemDisplayProperty.NAME, true)
             : this.equipmentItemService.getPrintablePropertyName(null, EquipmentItemDisplayProperty.NAME, false),
-        "templateOptions.description": () =>
+        "props.description": () =>
           this.model.diy
             ? null
             : this.translateService.instant(
-                "The name of this product. Do not include the brand's name and make sure it's spelled correctly."
-              ) +
-              " " +
-              this.translateService.instant("Try to use the official product name in English, if applicable.")
+              "The name of this product. Do not include the brand's name and make sure it's spelled correctly."
+            ) +
+            " " +
+            this.translateService.instant("Try to use the official product name in English, if applicable.")
       },
-      templateOptions: {
+      props: {
         required: true
       },
       hooks: {
@@ -500,9 +519,9 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
               debounceTime(500),
               distinctUntilChanged(),
               tap((value: string) => {
-                this.formlyFieldService.clearMessages(field.templateOptions);
+                this.formlyFieldService.clearMessages(field);
                 if (this.fields.find(f => f.key === "brand")) {
-                  this.formlyFieldService.clearMessages(this.fields.find(f => f.key === "brand").templateOptions);
+                  this.formlyFieldService.clearMessages(this.fields.find(f => f.key === "brand"));
                 }
                 this._validateCanonAndCentralDS();
                 this._similarItemSuggestion();
@@ -580,8 +599,8 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
               if (new RegExp(`\\b${word}\\b`).test(field.formControl.value.toLowerCase())) {
                 return this.translateService.instant(
                   `Your usage of the word "{{0}}" suggests that you are using this field to specify a property ` +
-                    "of this item that is only relevant to your own copy. Remember that here you are creating or editing " +
-                    "the generic instance that will be shared by all owners on AstroBin.",
+                  "of this item that is only relevant to your own copy. Remember that here you are creating or editing " +
+                  "the generic instance that will be shared by all owners on AstroBin.",
                   {
                     "0": word
                   }
@@ -594,7 +613,7 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
                 const label = this.translateService.instant("Self-made / non-commercial (no brand)");
                 return this.translateService.instant(
                   `You don't need to use the word "{{0}}", as this meaning is already conveyed by clicking on ` +
-                    `the checkbox above: "{{1}}".`,
+                  `the checkbox above: "{{1}}".`,
                   {
                     "0": word,
                     "1": label
@@ -614,11 +633,11 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
       type: "ckeditor",
       wrappers: ["default-wrapper"],
       id: "community-notes",
-      templateOptions: {
+      props: {
         label: this.equipmentItemService.getPrintablePropertyName(null, EquipmentItemDisplayProperty.COMMUNITY_NOTES),
         description: this.translateService.instant(
           "This section can be used as a community page to share information about this item that doesn't fit " +
-            "the available data fields. Please use English and do not include any personal information or anecdotes."
+          "the available data fields. Please use English and do not include any personal information or anecdotes."
         ),
         required: false
       }
@@ -634,16 +653,16 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
         !!this.model.diy ||
         !this.model.brand ||
         (this.model.klass === EquipmentItemType.CAMERA &&
-          ((this.model as unknown) as CameraInterface).type === CameraType.DSLR_MIRRORLESS),
+          (this.model as unknown as CameraInterface).type === CameraType.DSLR_MIRRORLESS),
       expressionProperties: {
-        "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+        "props.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
       },
-      templateOptions: {
+      props: {
         label: this.equipmentItemService.getPrintablePropertyName(itemType, EquipmentItemDisplayProperty.VARIANT_OF),
         description: this.translateService.instant(
           "If this item is a variant of another product, please select it here. This is typically used for " +
-            "products that have multiple versions (e.g. filter size, filter wheel size and number of slots, software " +
-            "versions...) and AstroBin will use this information to group certain pieces of data (e.g. search results)."
+          "products that have multiple versions (e.g. filter size, filter wheel size and number of slots, software " +
+          "versions...) and AstroBin will use this information to group certain pieces of data (e.g. search results)."
         ),
         itemType,
         showQuickAddRecent: false,
@@ -684,9 +703,9 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
       wrappers: ["default-wrapper"],
       id: "equipment-item-field-website",
       expressionProperties: {
-        "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+        "props.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
       },
-      templateOptions: {
+      props: {
         required: false,
         label: this.translateService.instant("Website")
       },
@@ -705,9 +724,9 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
       type: "file",
       id: "equipment-item-field-image",
       expressionProperties: {
-        "templateOptions.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+        "props.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
       },
-      templateOptions: {
+      props: {
         required: false,
         label: this.translateService.instant("Image"),
         description: this.translateService.instant("Official (or official looking) product image. Max. 1MB."),
@@ -726,7 +745,7 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
       type: "textarea",
       wrappers: ["default-wrapper"],
       id: "equipment-item-field-edit-proposal-comment",
-      templateOptions: {
+      props: {
         required: false,
         label: this.translateService.instant("Edit proposal comment")
       }
@@ -737,6 +756,10 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
     if (this.editorMode === EquipmentItemEditorMode.EDIT_PROPOSAL) {
       this.fields.push(this._getEditProposalCommentField());
     }
+
+    // _addBaseItemEditorFields is called last by all sub-class editor, which triggers detecting that fields have been
+    // set.
+    this.changeDetectorRef.detectChanges();
   }
 
   protected _onBrandSearch(q: string): Observable<any[]> {
@@ -765,7 +788,10 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
           )
         )
         .subscribe(options => {
-          field.templateOptions.options = of(options);
+          field.props = {
+            ...field.props,
+            options: of(options)
+          };
           observer.next(options);
           observer.complete();
         });
@@ -804,7 +830,7 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
           data = similarItems;
         }
 
-        this.formlyFieldService.addMessage(nameFieldConfig.templateOptions, {
+        this.formlyFieldService.addMessage(nameFieldConfig, {
           level: FormlyFieldMessageLevel.WARNING,
           template,
           data
@@ -835,7 +861,7 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
         if (others.length > 0) {
           template = this.othersInBrandTemplate;
           data = others;
-          this.formlyFieldService.addMessage(brandFieldConfig.templateOptions, {
+          this.formlyFieldService.addMessage(brandFieldConfig, {
             level: FormlyFieldMessageLevel.INFO,
             template,
             data
@@ -871,7 +897,7 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
           (nameControl.value.toLowerCase().indexOf("centralds") > -1 ||
             nameControl.value.toLowerCase().indexOf("central ds") > -1)
         ) {
-          this.formlyFieldService.addMessage(nameFieldConfig.templateOptions, {
+          this.formlyFieldService.addMessage(nameFieldConfig, {
             level: FormlyFieldMessageLevel.WARNING,
             text: message
           });
@@ -886,7 +912,7 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
 
     const message = this.equipmentItemService.nameChangeWarningMessage();
 
-    this.formlyFieldService.addMessage(field.templateOptions, {
+    this.formlyFieldService.addMessage(field, {
       level: FormlyFieldMessageLevel.WARNING,
       text: message
     });

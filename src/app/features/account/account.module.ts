@@ -11,4 +11,5 @@ import { LoggingInPageComponent } from "@features/account/pages/logging-in-page/
   declarations: [LoginPageComponent, LoggedInPageComponent, LoggingInPageComponent, LoggingOutPageComponent],
   imports: [RouterModule.forChild(routes), SharedModule]
 })
-export class AccountModule {}
+export class AccountModule {
+}

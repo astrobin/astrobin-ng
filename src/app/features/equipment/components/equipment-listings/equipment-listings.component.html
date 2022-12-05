@@ -77,7 +77,7 @@
     <a
       [href]="urlWithTags(listing)"
       [ngbTooltip]="listing.retailer.name"
-      appGtagOutboundClickEvent
+      astrobinGtagOutboundClickEvent
       target="_blank"
       class="with-logo"
     >
@@ -87,7 +87,7 @@
   <ng-template #noLogoTemplate>
     <a
       [href]="urlWithTags(listing)"
-      appGtagOutboundClickEvent
+      astrobinGtagOutboundClickEvent
       target="_blank"
     >
       {{ listing.retailer.name }}

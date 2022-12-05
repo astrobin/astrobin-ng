@@ -2,7 +2,7 @@ import { ComponentFixture, fakeAsync, TestBed, tick } from "@angular/core/testin
 import { ActivatedRoute } from "@angular/router";
 import { AppModule } from "@app/app.module";
 import { MockBuilder } from "ng-mocks";
-import { NgWizardStep, STEP_STATE, StepChangedArgs } from "ng-wizard";
+import { NgWizardStep, STEP_STATE, StepChangedArgs } from "@kronscht/ng-wizard";
 import { of } from "rxjs";
 import { FormlyFieldStepperComponent } from "./formly-field-stepper.component";
 
@@ -69,7 +69,7 @@ describe("FormlyFieldStepperComponent", () => {
       component.field = {
         fieldGroup: [
           {
-            templateOptions: { label: "1" },
+            props: { label: "1" },
             fieldGroup: []
           }
         ]
@@ -102,12 +102,12 @@ describe("FormlyFieldStepperComponent", () => {
   describe("getStepTitle", () => {
     it("should show Step {{ stepNumber }} if there is no error", () => {
       jest.spyOn(component, "isStepErrored").mockReturnValue(false);
-      expect(component.getStepTitle({ templateOptions: { label: "foo" } }, 0)).toEqual("foo");
+      expect(component.getStepTitle({ props: { label: "foo" } }, 0)).toEqual("foo");
     });
 
     it("should show Step {{ stepNumber }} with a star if there is an error", () => {
       jest.spyOn(component, "isStepErrored").mockReturnValue(true);
-      expect(component.getStepTitle({ templateOptions: { label: "foo" } }, 0)).toEqual("foo*");
+      expect(component.getStepTitle({ props: { label: "foo" } }, 0)).toEqual("foo*");
     });
   });
 

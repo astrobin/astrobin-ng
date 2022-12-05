@@ -30,9 +30,9 @@ export class ImageEffects {
             imageFromStore !== null
               ? of(imageFromStore).pipe(map(image => new LoadImageSuccess(image)))
               : this.imageApiService.getImage(action.payload).pipe(
-                  map(image => new LoadImageSuccess(image)),
-                  catchError(error => of(new LoadImageFailure(error)))
-                )
+                map(image => new LoadImageSuccess(image)),
+                catchError(error => of(new LoadImageFailure(error)))
+              )
           )
         )
       )
@@ -56,8 +56,8 @@ export class ImageEffects {
       ofType(AppActionTypes.SAVE_IMAGE),
       tap(() => this.loadingService.setLoading(true)),
       mergeMap(action =>
-        this.imageApiService.updateImage(action.payload.pk, action.payload.data).pipe(
-          map(() => new SaveImageSuccess({ image: action.payload.data })),
+        this.imageApiService.updateImage(action.payload.pk, action.payload.image).pipe(
+          map(() => new SaveImageSuccess({ image: action.payload.image })),
           catchError(error => of(new SaveImageFailure({ error })))
         )
       )
@@ -97,7 +97,9 @@ export class ImageEffects {
       ofType(AppActionTypes.LOAD_IMAGE_REVISIONS),
       mergeMap(action =>
         this.imageApiService.getImageRevisions(action.payload.imageId).pipe(
-          map(response => new LoadImageRevisionsSuccess({ imageId: action.payload.imageId, imageRevisions: response })),
+          map(
+            response => new LoadImageRevisionsSuccess({ imageId: action.payload.imageId, imageRevisions: response })
+          ),
           catchError(() => EMPTY)
         )
       )
@@ -111,5 +113,6 @@ export class ImageEffects {
     public readonly loadingService: LoadingService,
     public readonly popNotificationsService: PopNotificationsService,
     public readonly translateService: TranslateService
-  ) {}
+  ) {
+  }
 }

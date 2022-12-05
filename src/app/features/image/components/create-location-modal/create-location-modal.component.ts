@@ -55,7 +55,7 @@ export class CreateLocationModalComponent extends BaseComponentDirective impleme
               id: "name",
               key: "name",
               defaultValue: name,
-              templateOptions: {
+              props: {
                 label: this.translateService.instant("Name"),
                 placeholder: this.translateService.instant("e.g. 'Home observatory'"),
                 required: true
@@ -65,7 +65,7 @@ export class CreateLocationModalComponent extends BaseComponentDirective impleme
               type: "google-map",
               id: "google-map",
               key: "google-map",
-              templateOptions: {
+              props: {
                 required: true,
                 height: 300,
                 mapReady: () => {
@@ -79,7 +79,7 @@ export class CreateLocationModalComponent extends BaseComponentDirective impleme
               id: "altitude",
               key: "altitude",
               wrappers: ["default-wrapper"],
-              templateOptions: {
+              props: {
                 required: true,
                 label: this.translateService.instant("Altitude"),
                 description: this.translateService.instant("Meters above sea level"),
@@ -103,15 +103,15 @@ export class CreateLocationModalComponent extends BaseComponentDirective impleme
 
     this.loadingService.setLoading(true);
 
-    const latitude = this.form.get("google-map").value.lat();
-    const longitude = this.form.get("google-map").value.lng();
+    const latitude = (this.form.get("google-map").value as any).lat();
+    const longitude = (this.form.get("google-map").value as any).lng();
 
     this.getGeolocation(latitude, longitude).subscribe(result => {
       const location = this.buildLocationObject(
-        this.form.value.name,
+        (this.form.value as any).name,
         latitude,
         longitude,
-        this.form.value.aititude,
+        (this.form.value as any).aititude,
         result.city,
         result.state,
         result.country
@@ -166,7 +166,7 @@ export class CreateLocationModalComponent extends BaseComponentDirective impleme
     decimalDegrees,
     type: "latitude" | "longitude"
   ): { degrees: number; minutes: number; seconds: number; direction: "N" | "S" | "W" | "E" } {
-    /* tslint:disable:no-bitwise */
+    /* eslint-disable no-bitwise */
 
     const direction = decimalDegrees < 0 ? (type === "longitude" ? "W" : "S") : type === "longitude" ? "E" : "N";
 

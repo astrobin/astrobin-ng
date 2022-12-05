@@ -54,7 +54,7 @@ export function arrayUniqueEquipmentItems(
   const a: (
     | EquipmentItemBaseInterface
     | EditProposalInterface<EquipmentItemBaseInterface>
-  )[] = array.concat().reverse();
+    )[] = array.concat().reverse();
 
   for (let i = 0; i < a.length; ++i) {
     for (let j = i + 1; j < a.length; ++j) {

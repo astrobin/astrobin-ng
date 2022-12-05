@@ -277,11 +277,13 @@ export class EquipmentItemService extends BaseService {
       } else if (UtilsService.isString(value) && UtilsService.isNumeric(value) && value.indexOf(".") > -1) {
         try {
           value = parseFloat(value);
-        } catch (e) {}
+        } catch (e) {
+        }
       } else if (UtilsService.isString(value) && UtilsService.isNumeric(value)) {
         try {
           value = parseInt(value, 10);
-        } catch (e) {}
+        } catch (e) {
+        }
       }
 
       return value;
@@ -300,9 +302,9 @@ export class EquipmentItemService extends BaseService {
 
       let originalProperties:
         | {
-            name: string;
-            value: string | null;
-          }[]
+        name: string;
+        value: string | null;
+      }[]
         | null = null;
 
       if (editProposal.editProposalOriginalProperties) {
@@ -355,8 +357,8 @@ export class EquipmentItemService extends BaseService {
   nameChangeWarningMessage(): string {
     return this.translateService.instant(
       "<strong>Careful!</strong> Change the name only to fix a typo or the naming convention. This operation will " +
-        "change the name of this equipment item <strong>for all AstroBin images that use it</strong>, so you should " +
-        "not change the name if it becomes a different product."
+      "change the name of this equipment item <strong>for all AstroBin images that use it</strong>, so you should " +
+      "not change the name if it becomes a different product."
     );
   }
 
@@ -364,7 +366,7 @@ export class EquipmentItemService extends BaseService {
     this.popNotificationsService.error(
       this.translateService.instant(
         "This item cannot be selected it's been marked as ambiguous. Consider selecting or creating a non " +
-          "ambiguous variant instead."
+        "ambiguous variant instead."
       )
     );
   }

@@ -12,12 +12,12 @@ describe("UploaderGuardService", () => {
 
   beforeEach(async () => {
     await MockBuilder(UploaderGuardService, AppModule)
-      .keep(PremiumSubscriptionGuardService)
+      .keep(PremiumSubscriptionGuardService, { export: true })
       .keep(UltimateSubscriptionGuardService);
     service = TestBed.inject(UploaderGuardService);
-    jest.spyOn(service.router, "navigateByUrl").mockImplementation(
-      () => new Promise<boolean>(resolve => resolve(true))
-    );
+    jest
+      .spyOn(service.router, "navigateByUrl")
+      .mockImplementation(() => new Promise<boolean>(resolve => resolve(true)));
   });
 
   it("should be created", () => {

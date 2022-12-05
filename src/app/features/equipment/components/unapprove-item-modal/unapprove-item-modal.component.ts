@@ -1,9 +1,8 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, Input } from "@angular/core";
 import { EquipmentItemBaseInterface } from "@features/equipment/types/equipment-item-base.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
-import { TranslateService } from "@ngx-translate/core";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { LoadingService } from "@shared/services/loading.service";
 import { map, switchMap, take } from "rxjs/operators";

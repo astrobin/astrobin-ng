@@ -18,7 +18,8 @@ export class ImageResolver implements Resolve<ImageInterface> {
     private readonly router: Router,
     private readonly location: Location,
     private readonly store$: Store<State>
-  ) {}
+  ) {
+  }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> | Promise<any> | any {
     const id = route.paramMap.get("imageId");

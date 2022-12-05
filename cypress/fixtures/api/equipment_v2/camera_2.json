@@ -18,6 +18,7 @@
   "backFocus": null,
   "createdBy": 1,
   "reviewedBy": null,
+  "brandName": "Test Brand",
   "brand": 1,
   "group": null,
   "sensor": null,

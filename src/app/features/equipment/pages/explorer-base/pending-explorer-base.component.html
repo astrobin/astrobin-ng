@@ -2,12 +2,16 @@
   <h1>{{ title }}</h1>
   <small>
     {{ "AstroBin's equipment database is entirely maintained by the community. Feel free to make a contribution!" | translate }}
-    <a class="learn-more" href="https://welcome.astrobin.com/features/equipment-database" target="_blank">{{"Learn more"}}.</a>
+    <a class="learn-more" href="https://welcome.astrobin.com/features/equipment-database"
+       target="_blank">{{"Learn more"}}.</a>
   </small>
 
   <div class="row">
-    <div  [class]="navCollapsed ? 'col-md-1' : 'col-md-4'">
-      <astrobin-equipment-item-type-nav (collapsedChanged)="onNavCollapsedChanged($event)"></astrobin-equipment-item-type-nav>
+    <div [class]="navCollapsed ? 'col-md-1' : 'col-md-4 col-xl-3'">
+      <astrobin-equipment-item-type-nav
+        (collapsedChanged)="onNavCollapsedChanged($event)"
+        [enableCollapse]="enableCollapse"
+      ></astrobin-equipment-item-type-nav>
     </div>
 
     <div class="col">
@@ -33,8 +37,8 @@
           <tr *ngFor="let item of items.results">
             <td>
               <a
-                [routerLink]="['/equipment/explorer', activeType.toLowerCase(), item.id]"
                 [queryParams]="{'back-on-close': true}"
+                [routerLink]="['/equipment/explorer', activeType.toLowerCase(), item.id]"
               >
                 <astrobin-equipment-item-display-name [item]="item"></astrobin-equipment-item-display-name>
               </a>
@@ -53,8 +57,8 @@
         <astrobin-nothing-here *ngIf="items.count === 0"></astrobin-nothing-here>
 
         <ngb-pagination
-          *ngIf="items.count > items.results.length"
           (pageChange)="pageChange($event)"
+          *ngIf="items.count > items.results.length"
           [(page)]="page"
           [collectionSize]="items.count"
         >

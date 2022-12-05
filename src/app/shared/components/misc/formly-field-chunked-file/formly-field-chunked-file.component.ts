@@ -35,7 +35,7 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
     maxChunkSize: 2 * 1024 * 1024,
     multiple: false,
     autoUpload: false,
-    storeIncompleteUploadUrl: false,
+    storeIncompleteHours: 0,
     retryConfig: {
       shouldRetry: (code, attempts) => {
         return code === 423 && attempts < 5;
@@ -256,7 +256,7 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
           this.popNotificationsService.error(
             this.translateService.instant(
               "Sorry, but this image is too large. Under your current subscription plan, the maximum " +
-                "allowed image size is {{max}}.",
+              "allowed image size is {{max}}.",
               {
                 max: result.max / 1024 / 1024 + " MB"
               }
@@ -335,8 +335,8 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
       message =
         this.translateService.instant(
           "Warning! That's a large file you got there! AstroBin does not impose artificial limitation in the file " +
-            "size you can upload with an Ultimate subscription, but we cannot guarantee that all images above 200 MB or " +
-            "~8000x8000 pixels will work. Feel free to give it a shot tho!"
+          "size you can upload with an Ultimate subscription, but we cannot guarantee that all images above 200 MB or " +
+          "~8000x8000 pixels will work. Feel free to give it a shot tho!"
         ) +
         " <a class='d-block mt-2' target='_blank' href='https://welcome.astrobin.com/faq#image-limits'>" +
         this.translateService.instant("Learn more") +
@@ -345,7 +345,7 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
       message =
         this.translateService.instant(
           "Heads up! Are you sure you want to upload such a large file? It's okay to do so but probably not many " +
-            "people will want to see it at its full resolution, if it will take too long for them to download it."
+          "people will want to see it at its full resolution, if it will take too long for them to download it."
         ) +
         " <a class='d-block mt-2' target='_blank' href='https://welcome.astrobin.com/faq#image-limits'>" +
         this.translateService.instant("Learn more") +

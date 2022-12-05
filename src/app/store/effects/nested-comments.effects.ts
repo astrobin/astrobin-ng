@@ -4,7 +4,7 @@ import { State } from "@app/store/state";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
 import { LoadingService } from "@shared/services/loading.service";
-import { fromEvent, interval, Observable, of } from "rxjs";
+import { fromEvent, Observable, of } from "rxjs";
 import { catchError, debounceTime, filter, first, map, mapTo, mergeMap, take, tap } from "rxjs/operators";
 import {
   CreateNestedCommentFailure,
@@ -100,5 +100,6 @@ export class NestedCommentsEffects {
     public readonly nestedCommentsApiService: NestedCommentsApiService,
     public readonly windowRefService: WindowRefService,
     public readonly utilsService: UtilsService
-  ) {}
+  ) {
+  }
 }

@@ -5,8 +5,7 @@ import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { CameraInterface } from "@shared/interfaces/camera.interface";
 import { GearService } from "@shared/services/gear/gear.service";
-import { interval, Observable } from "rxjs";
-import { take } from "rxjs/operators";
+import { Observable } from "rxjs";
 import { UtilsService } from "@shared/services/utils/utils.service";
 
 @Component({

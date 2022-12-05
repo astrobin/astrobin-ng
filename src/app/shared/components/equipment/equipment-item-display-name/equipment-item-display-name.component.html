@@ -14,8 +14,8 @@
     <a
       *ngIf="showItemUnapprovedInfo"
       href="#"
-      appEventPreventDefault
-      appEventStopPropagation
+      astrobinEventPreventDefault
+      astrobinEventStopPropagation
       (click)="openItemUnapprovedInfoModal(item)"
     >
       <fa-icon icon="asterisk"></fa-icon>
@@ -43,7 +43,7 @@
   *ngIf="enableSummaryModal"
   href=""
   class="btn-info-modal"
-  appEventPreventDefault
+  astrobinEventPreventDefault
   (click)="openItemSummaryModal(item)"
 >
   <fa-icon icon="info-circle"></fa-icon>

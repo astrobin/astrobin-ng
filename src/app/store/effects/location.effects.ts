@@ -46,5 +46,6 @@ export class LocationEffects {
     public readonly store$: Store<State>,
     public readonly actions$: Actions<All>,
     public readonly locationApiService: LocationApiService
-  ) {}
+  ) {
+  }
 }

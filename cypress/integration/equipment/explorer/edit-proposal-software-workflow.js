@@ -1,7 +1,7 @@
 import {
   testBrand,
   testSoftware,
-  testSoftwareEditProposal
+  testSoftwareEditProposal,
 } from "../../../support/commands/equipment-item-browser-utils";
 
 context("Equipment", () => {
@@ -13,15 +13,13 @@ context("Equipment", () => {
     cy.route("get", "**/api/v2/equipment/software-edit-proposal/?edit_proposal_target=*", { results: [] });
   });
 
-  context("Explorer", () => {
+  context("Edit proposal software workflow", () => {
     it("should not have the 'Propose edit' button if logged out", () => {
       cy.visitPage("/equipment/explorer/software");
 
       cy.equipmentItemBrowserSelectFirstSoftware("#equipment-item-field", "Test", testSoftware);
 
-      cy.get(".card .card-header")
-        .contains("Software")
-        .should("be.visible");
+      cy.get(".card .card-header").contains("Software").should("be.visible");
 
       cy.get(".card .card-body astrobin-equipment-item-summary").should("be.visible");
 
@@ -34,9 +32,7 @@ context("Equipment", () => {
 
       cy.equipmentItemBrowserSelectFirstSoftware("#equipment-item-field", "Test", testSoftware);
 
-      cy.get(".card .card-header")
-        .contains("Software")
-        .should("be.visible");
+      cy.get(".card .card-header").contains("Software").should("be.visible");
 
       cy.get(".card .card-body astrobin-equipment-item-summary").should("be.visible");
 
@@ -59,22 +55,18 @@ context("Equipment", () => {
         count: 0,
         next: null,
         previous: null,
-        results: []
+        results: [],
       }).as("findSoftwareItemsByName");
 
-      cy.get("#equipment-item-field-name")
-        .clear()
-        .type("Foo");
+      cy.get("#equipment-item-field-name").clear().type("Foo");
 
-      cy.get(".alert-warning span")
-        .contains("Change the name only to fix a typo")
-        .should("be.visible");
+      cy.get(".alert-warning span").contains("Change the name only to fix a typo").should("be.visible");
     });
 
     it("should submit the form", () => {
       cy.route("post", "**/api/v2/equipment/software-edit-proposal/", testSoftwareEditProposal).as("saveEditProposal");
       cy.route("get", "**/api/v2/equipment/software-edit-proposal/?edit_proposal_target=*", {
-        results: [testSoftwareEditProposal]
+        results: [testSoftwareEditProposal],
       }).as("getEditProposals");
 
       cy.get("[data-test=propose-edit-confirm]").click();
@@ -82,11 +74,9 @@ context("Equipment", () => {
       cy.wait("@saveEditProposal");
       cy.wait("@getEditProposals");
 
-      cy.get(".toast-message")
-        .contains("Your edit proposal has been submitted")
-        .should("be.visible");
+      cy.get(".toast-message").contains("Your edit proposal has been submitted").should("be.visible");
 
-      cy.get("astrobin-software-editor").should("not.be.visible");
+      cy.get("astrobin-software-editor").should("not.exist");
     });
 
     it("should show the new edit proposal on the page", () => {
@@ -96,19 +86,12 @@ context("Equipment", () => {
         "AstroBin Dev"
       );
       cy.get("astrobin-item-edit-proposal").click();
-      cy.get("astrobin-item-edit-proposal .change .before")
-        .contains("Test software")
-        .should("be.visible");
-      cy.get("astrobin-item-edit-proposal .change .after")
-        .contains("Test software Pro")
-        .should("be.visible");
+      cy.get("astrobin-item-edit-proposal .change .before").contains("Test software").should("be.visible");
+      cy.get("astrobin-item-edit-proposal .change .after").contains("Test software Pro").should("be.visible");
     });
 
     it("should have disabled buttons because the proposer cannot review", () => {
-      cy.get("astrobin-item-edit-proposal .btn")
-        .contains("Approve edit…")
-        .should("be.visible")
-        .should("be.disabled");
+      cy.get("astrobin-item-edit-proposal .btn").contains("Approve edit…").should("be.visible").should("be.disabled");
       cy.get(".approve-disabled-reason")
         .contains("You cannot approve this edit proposal because you were the one who proposed it.")
         .should("be.visible");

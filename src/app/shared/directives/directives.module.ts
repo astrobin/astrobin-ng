@@ -11,4 +11,5 @@ const directives = [EventPreventDefaultDirective, EventStopPropagationDirective,
   exports: directives,
   imports: [CommonModule]
 })
-export class DirectivesModule {}
+export class DirectivesModule {
+}

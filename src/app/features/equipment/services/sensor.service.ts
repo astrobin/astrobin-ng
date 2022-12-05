@@ -21,6 +21,7 @@ export enum SensorDisplayProperty {
   ADC = "ADC",
   COLOR_OR_MONO = "COLOR_OR_MONO"
 }
+
 @Injectable({
   providedIn: "root"
 })
@@ -87,7 +88,7 @@ export class SensorService extends BaseService implements EquipmentItemServiceIn
         return of(
           propertyValue || (item.sensorWidth && item.sensorHeight)
             ? `${propertyValue?.sensorWidth || item.sensorWidth} x ${propertyValue?.sensorHeight ||
-                item.sensorHeight} mm`
+            item.sensorHeight} mm`
             : ""
         );
       case SensorDisplayProperty.SENSOR_WIDTH:

@@ -14,7 +14,7 @@ describe("NotificationsPageComponent", () => {
 
   beforeEach(() =>
     MockBuilder(NotificationsPageComponent, NotificationsModule)
-      .mock(AppModule) // parent module
+      .mock(AppModule, { export: true })
       .provide([
         provideMockStore({ initialState }),
         {
@@ -73,9 +73,9 @@ describe("NotificationsPageComponent", () => {
 
   describe("pageChange", () => {
     it("should get notification for that page from the service", fakeAsync(() => {
-      jest.spyOn(component.router, "navigateByUrl").mockImplementation(
-        () => new Promise<boolean>(resolve => resolve(true))
-      );
+      jest
+        .spyOn(component.router, "navigateByUrl")
+        .mockImplementation(() => new Promise<boolean>(resolve => resolve(true)));
 
       component.pageChange(2);
 

@@ -9,4 +9,5 @@ import { SSRExcludeModule } from "ngx-ssr-exclude";
   declarations: [ConstellationsPageComponent],
   imports: [RouterModule.forChild(routes), SharedModule, SSRExcludeModule]
 })
-export class ExploreModule {}
+export class ExploreModule {
+}

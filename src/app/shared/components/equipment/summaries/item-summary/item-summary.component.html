@@ -64,7 +64,7 @@
             {{ subItemLabel }}
           </th>
           <td class="property-value">
-            <a href="#" appEventPreventDefault appEventStopPropagation (click)="subItemCollapsed = false">
+            <a href="#" astrobinEventPreventDefault astrobinEventStopPropagation (click)="subItemCollapsed = false">
               <astrobin-equipment-item-display-name [item]="subItem"></astrobin-equipment-item-display-name>
             </a>
           </td>
@@ -108,7 +108,7 @@
 
               <button
                 *ngIf="mostOftenUsedWith.length > 0"
-                class="ml-2 btn btn-outline-primary btn-sm d-none d-lg-inline"
+                class="ms-2 btn btn-outline-primary btn-sm d-none d-lg-inline"
                 [class.loading]="loadingService.loading$ | async"
                 (click)="viewMoreMostOftenUsedWith()"
               >
@@ -181,8 +181,8 @@
             *ngIf="item.assignee === null || item.assignee === currentUser.id"
             href="#"
             class="assign"
-            appEventStopPropagation
-            appEventPreventDefault
+            astrobinEventStopPropagation
+            astrobinEventPreventDefault
             [ngbTooltip]="'Assign' | translate"
             (click)="assign()"
           >

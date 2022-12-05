@@ -27,12 +27,12 @@ export class ImageEditWatermarkFieldsService extends BaseService {
     super(loadingService);
   }
 
-  getWatermarkCheckboxField(): any {
+  getWatermarkCheckboxField(): FormlyFieldConfig {
     return {
       key: "watermark",
       type: "checkbox",
       id: "image-watermark-field",
-      templateOptions: {
+      props: {
         required: true,
         label: this.translateService.instant("Apply watermark to image"),
         description:
@@ -43,13 +43,13 @@ export class ImageEditWatermarkFieldsService extends BaseService {
     };
   }
 
-  getWatermarkTextField(): any {
+  getWatermarkTextField(): FormlyFieldConfig {
     return {
       key: "watermarkText",
       type: "input",
       wrappers: ["default-wrapper"],
       id: "image-watermark-text-field",
-      templateOptions: {
+      props: {
         label: this.translateService.instant("Text")
       },
       hooks: {
@@ -70,12 +70,12 @@ export class ImageEditWatermarkFieldsService extends BaseService {
     };
   }
 
-  getWatermarkPosition(): any {
+  getWatermarkPosition(): FormlyFieldConfig {
     return {
       key: "watermarkPosition",
       type: "ng-select",
       id: "image-watermark-position-field",
-      templateOptions: {
+      props: {
         required: true,
         clearable: false,
         label: this.translateService.instant("Position"),
@@ -128,12 +128,12 @@ export class ImageEditWatermarkFieldsService extends BaseService {
     };
   }
 
-  getWatermarkTextSize(): any {
+  getWatermarkTextSize(): FormlyFieldConfig {
     return {
       key: "watermarkSize",
       type: "ng-select",
       id: "image-watermark-size-field",
-      templateOptions: {
+      props: {
         required: true,
         clearable: false,
         label: this.translateService.instant("Size"),
@@ -171,13 +171,13 @@ export class ImageEditWatermarkFieldsService extends BaseService {
     };
   }
 
-  getWatermarkTextOpacity(): any {
+  getWatermarkTextOpacity(): FormlyFieldConfig {
     return {
       key: "watermarkOpacity",
       type: "input",
       wrappers: ["default-wrapper"],
       id: "image-watermark-opacity-field",
-      templateOptions: {
+      props: {
         type: "number",
         min: 0,
         max: 100,

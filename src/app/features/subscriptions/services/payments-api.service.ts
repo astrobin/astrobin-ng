@@ -11,7 +11,8 @@ import { Observable } from "rxjs";
   providedIn: "root"
 })
 export class PaymentsApiService {
-  constructor(public readonly http: HttpClient) {}
+  constructor(public readonly http: HttpClient) {
+  }
 
   public getConfig(): Observable<PaymentsApiConfigInterface> {
     return this.http.get<PaymentsApiConfigInterface>(`${environment.classicApiUrl}/payments/config/`);

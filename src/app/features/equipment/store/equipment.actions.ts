@@ -1,4 +1,4 @@
-// tslint:disable:max-classes-per-file
+/* eslint-disable max-classes-per-file */
 
 import { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
 import {
@@ -20,7 +20,6 @@ import { SoftwareInterface } from "@features/equipment/types/software.interface"
 import { Action } from "@ngrx/store";
 import { EquipmentPresetInterface } from "@features/equipment/types/equipment-preset.interface";
 import { UserInterface } from "@shared/interfaces/user.interface";
-import { ImageInterface } from "@shared/interfaces/image.interface";
 import { EquipmentItemMostOftenUsedWith } from "@features/equipment/types/equipment-item-most-often-used-with-data.interface";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import {
@@ -169,7 +168,8 @@ export enum EquipmentActionTypes {
 export class GetAllBrands implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.GET_ALL_BRANDS;
 
-  constructor(public payload: { page: number; sort: EquipmentItemsSortOrder }) {}
+  constructor(public payload: { page: number; sort: EquipmentItemsSortOrder }) {
+  }
 }
 
 export class GetAllBrandsSuccess implements PayloadActionInterface {
@@ -177,43 +177,50 @@ export class GetAllBrandsSuccess implements PayloadActionInterface {
 
   constructor(
     public payload: { response: PaginatedApiResultInterface<BrandInterface>; sort: EquipmentItemsSortOrder }
-  ) {}
+  ) {
+  }
 }
 
 export class LoadBrand implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.LOAD_BRAND;
 
-  constructor(public payload: { id: BrandInterface["id"] }) {}
+  constructor(public payload: { id: BrandInterface["id"] }) {
+  }
 }
 
 export class LoadBrandSuccess implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.LOAD_BRAND_SUCCESS;
 
-  constructor(public payload: { brand: BrandInterface }) {}
+  constructor(public payload: { brand: BrandInterface }) {
+  }
 }
 
 export class CreateBrand implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.CREATE_BRAND;
 
-  constructor(public payload: { brand: Omit<BrandInterface, "id"> }) {}
+  constructor(public payload: { brand: Omit<BrandInterface, "id"> }) {
+  }
 }
 
 export class CreateBrandSuccess implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.CREATE_BRAND_SUCCESS;
 
-  constructor(public payload: { brand: BrandInterface }) {}
+  constructor(public payload: { brand: BrandInterface }) {
+  }
 }
 
 export class FindAllBrands implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.FIND_ALL_BRANDS;
 
-  constructor(public payload: { q: string }) {}
+  constructor(public payload: { q: string }) {
+  }
 }
 
 export class FindAllBrandsSuccess implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.FIND_ALL_BRANDS_SUCCESS;
 
-  constructor(public payload: { brands: BrandInterface[] }) {}
+  constructor(public payload: { brands: BrandInterface[] }) {
+  }
 }
 
 /**********************************************************************************************************************
@@ -229,13 +236,15 @@ export class LoadEquipmentItem implements PayloadActionInterface {
       type: EquipmentItemType;
       item?: EquipmentItem; // The dispatcher already has the item and just wants it added to the store.
     }
-  ) {}
+  ) {
+  }
 }
 
 export class LoadEquipmentItemSuccess implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.LOAD_EQUIPMENT_ITEM_SUCCESS;
 
-  constructor(public payload: { item: EquipmentItemBaseInterface }) {}
+  constructor(public payload: { item: EquipmentItemBaseInterface }) {
+  }
 }
 
 export class FindAllEquipmentItems implements PayloadActionInterface {
@@ -246,19 +255,22 @@ export class FindAllEquipmentItems implements PayloadActionInterface {
       type: EquipmentItemType;
       options?: AllEquipmentItemsOptionsInterface;
     }
-  ) {}
+  ) {
+  }
 }
 
 export class FindAllEquipmentItemsSuccess implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.FIND_ALL_EQUIPMENT_ITEMS_SUCCESS;
 
-  constructor(public payload: { items: EquipmentItemBaseInterface[] }) {}
+  constructor(public payload: { items: EquipmentItemBaseInterface[] }) {
+  }
 }
 
 export class FindRecentlyUsedEquipmentItems implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.FIND_RECENTLY_USED_EQUIPMENT_ITEMS;
 
-  constructor(public payload: { type: EquipmentItemType; usageType: EquipmentItemUsageType | null }) {}
+  constructor(public payload: { type: EquipmentItemType; usageType: EquipmentItemUsageType | null }) {
+  }
 }
 
 export class FindRecentlyUsedEquipmentItemsSuccess implements PayloadActionInterface {
@@ -270,91 +282,106 @@ export class FindRecentlyUsedEquipmentItemsSuccess implements PayloadActionInter
       usageType: EquipmentItemUsageType | null;
       items: EquipmentItemBaseInterface[];
     }
-  ) {}
+  ) {
+  }
 }
 
 export class FindSimilarInBrand implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.FIND_SIMILAR_IN_BRAND;
 
-  constructor(public payload: { brand: BrandInterface["id"]; q: string; type: EquipmentItemType }) {}
+  constructor(public payload: { brand: BrandInterface["id"]; q: string; type: EquipmentItemType }) {
+  }
 }
 
 export class FindSimilarInBrandSuccess implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.FIND_SIMILAR_IN_BRAND_SUCCESS;
 
-  constructor(public payload: { items: EquipmentItemBaseInterface[] }) {}
+  constructor(public payload: { items: EquipmentItemBaseInterface[] }) {
+  }
 }
 
 export class GetAllInBrand implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.GET_ALL_IN_BRAND;
 
-  constructor(public payload: { brand: BrandInterface["id"]; type: EquipmentItemType; page: number }) {}
+  constructor(public payload: { brand: BrandInterface["id"]; type: EquipmentItemType; page: number }) {
+  }
 }
 
 export class GetAllInBrandSuccess implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.GET_ALL_IN_BRAND_SUCCESS;
 
-  constructor(public payload: { response: PaginatedApiResultInterface<EquipmentItem> }) {}
+  constructor(public payload: { response: PaginatedApiResultInterface<EquipmentItem> }) {
+  }
 }
 
 export class GetOthersInBrand implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.GET_OTHERS_IN_BRAND;
 
-  constructor(public payload: { brand: BrandInterface["id"]; type: EquipmentItemType; name: string }) {}
+  constructor(public payload: { brand: BrandInterface["id"]; type: EquipmentItemType; name: string }) {
+  }
 }
 
 export class GetOthersInBrandSuccess implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.GET_OTHERS_IN_BRAND_SUCCESS;
 
-  constructor(public payload: { items: EquipmentItemBaseInterface[] }) {}
+  constructor(public payload: { items: EquipmentItemBaseInterface[] }) {
+  }
 }
 
 export class ApproveEquipmentItem implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.APPROVE_EQUIPMENT_ITEM;
 
-  constructor(public payload: { item: EquipmentItemBaseInterface; comment: string }) {}
+  constructor(public payload: { item: EquipmentItemBaseInterface; comment: string }) {
+  }
 }
 
 export class ApproveEquipmentItemSuccess implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.APPROVE_EQUIPMENT_ITEM_SUCCESS;
 
-  constructor(public payload: { item: EquipmentItemBaseInterface }) {}
+  constructor(public payload: { item: EquipmentItemBaseInterface }) {
+  }
 }
 
 export class UnapproveEquipmentItem implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.UNAPPROVE_EQUIPMENT_ITEM;
 
-  constructor(public payload: { item: EquipmentItemBaseInterface }) {}
+  constructor(public payload: { item: EquipmentItemBaseInterface }) {
+  }
 }
 
 export class UnapproveEquipmentItemSuccess implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.UNAPPROVE_EQUIPMENT_ITEM_SUCCESS;
 
-  constructor(public payload: { item: EquipmentItemBaseInterface }) {}
+  constructor(public payload: { item: EquipmentItemBaseInterface }) {
+  }
 }
 
 export class FreezeEquipmentItemAsAmbiguous implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.FREEZE_EQUIPMENT_ITEM_AS_AMBIGUOUS;
 
-  constructor(public payload: { item: EquipmentItemBaseInterface }) {}
+  constructor(public payload: { item: EquipmentItemBaseInterface }) {
+  }
 }
 
 export class FreezeEquipmentItemAsAmbiguousSuccess implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.FREEZE_EQUIPMENT_ITEM_AS_AMBIGUOUS_SUCCESS;
 
-  constructor(public payload: { item: EquipmentItemBaseInterface }) {}
+  constructor(public payload: { item: EquipmentItemBaseInterface }) {
+  }
 }
 
 export class UnfreezeEquipmentItemAsAmbiguous implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.UNFREEZE_EQUIPMENT_ITEM_AS_AMBIGUOUS;
 
-  constructor(public payload: { item: EquipmentItemBaseInterface }) {}
+  constructor(public payload: { item: EquipmentItemBaseInterface }) {
+  }
 }
 
 export class UnfreezeEquipmentItemAsAmbiguousSuccess implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.UNFREEZE_EQUIPMENT_ITEM_AS_AMBIGUOUS_SUCCESS;
 
-  constructor(public payload: { item: EquipmentItemBaseInterface }) {}
+  constructor(public payload: { item: EquipmentItemBaseInterface }) {
+  }
 }
 
 export class RejectEquipmentItem implements PayloadActionInterface {
@@ -369,19 +396,22 @@ export class RejectEquipmentItem implements PayloadActionInterface {
       duplicateOfKlass: EquipmentItemType | null;
       duplicateOfUsageType: EquipmentItemUsageType | null;
     }
-  ) {}
+  ) {
+  }
 }
 
 export class RejectEquipmentItemSuccess implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.REJECT_EQUIPMENT_ITEM_SUCCESS;
 
-  constructor(public payload: { item: EquipmentItemBaseInterface }) {}
+  constructor(public payload: { item: EquipmentItemBaseInterface }) {
+  }
 }
 
 export class FindEquipmentItemEditProposals implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.FIND_EQUIPMENT_ITEM_EDIT_PROPOSALS;
 
-  constructor(public payload: { item: EquipmentItemBaseInterface }) {}
+  constructor(public payload: { item: EquipmentItemBaseInterface }) {
+  }
 }
 
 export class FindEquipmentItemEditProposalsSuccess implements PayloadActionInterface {
@@ -389,37 +419,43 @@ export class FindEquipmentItemEditProposalsSuccess implements PayloadActionInter
 
   constructor(
     public payload: { editProposals: PaginatedApiResultInterface<EditProposalInterface<EquipmentItemBaseInterface>> }
-  ) {}
+  ) {
+  }
 }
 
 export class ApproveEquipmentItemEditProposal implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.APPROVE_EQUIPMENT_ITEM_EDIT_PROPOSAL;
 
-  constructor(public payload: { editProposal: EditProposalInterface<EquipmentItemBaseInterface>; comment: string }) {}
+  constructor(public payload: { editProposal: EditProposalInterface<EquipmentItemBaseInterface>; comment: string }) {
+  }
 }
 
 export class ApproveEquipmentItemEditProposalSuccess implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.APPROVE_EQUIPMENT_ITEM_EDIT_PROPOSAL_SUCCESS;
 
-  constructor(public payload: { editProposal: EditProposalInterface<EquipmentItemBaseInterface> }) {}
+  constructor(public payload: { editProposal: EditProposalInterface<EquipmentItemBaseInterface> }) {
+  }
 }
 
 export class RejectEquipmentItemEditProposal implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.REJECT_EQUIPMENT_ITEM_EDIT_PROPOSAL;
 
-  constructor(public payload: { editProposal: EditProposalInterface<EquipmentItemBaseInterface>; comment: string }) {}
+  constructor(public payload: { editProposal: EditProposalInterface<EquipmentItemBaseInterface>; comment: string }) {
+  }
 }
 
 export class RejectEquipmentItemEditProposalSuccess implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.REJECT_EQUIPMENT_ITEM_EDIT_PROPOSAL_SUCCESS;
 
-  constructor(public payload: { editProposal: EditProposalInterface<EquipmentItemBaseInterface> }) {}
+  constructor(public payload: { editProposal: EditProposalInterface<EquipmentItemBaseInterface> }) {
+  }
 }
 
 export class GetMostOftenUsedWith implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.GET_MOST_OFTEN_USED_WITH;
 
-  constructor(public payload: { itemType: EquipmentItemType; itemId: EquipmentItemBaseInterface["id"] }) {}
+  constructor(public payload: { itemType: EquipmentItemType; itemId: EquipmentItemBaseInterface["id"] }) {
+  }
 }
 
 export class GetMostOftenUsedWithSuccess implements PayloadActionInterface {
@@ -431,7 +467,8 @@ export class GetMostOftenUsedWithSuccess implements PayloadActionInterface {
       itemId: EquipmentItemBaseInterface["id"];
       data: EquipmentItemMostOftenUsedWith;
     }
-  ) {}
+  ) {
+  }
 }
 
 export class GetContributors implements Action {
@@ -441,7 +478,8 @@ export class GetContributors implements Action {
 export class GetContributorsSuccess implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.GET_CONTRIBUTORS_SUCCESS;
 
-  constructor(public payload: { contributors: ContributorInterface[] }) {}
+  constructor(public payload: { contributors: ContributorInterface[] }) {
+  }
 }
 
 export class AssignItem implements PayloadActionInterface {
@@ -449,13 +487,15 @@ export class AssignItem implements PayloadActionInterface {
 
   constructor(
     public payload: { itemType: EquipmentItemType; itemId: EquipmentItem["id"]; assignee: UserInterface["id"] | null }
-  ) {}
+  ) {
+  }
 }
 
 export class AssignItemSuccess implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.ASSIGN_ITEM_SUCCESS;
 
-  constructor(public payload: { item: EquipmentItem }) {}
+  constructor(public payload: { item: EquipmentItem }) {
+  }
 }
 
 export class AssignEditProposal implements PayloadActionInterface {
@@ -467,13 +507,15 @@ export class AssignEditProposal implements PayloadActionInterface {
       editProposalId: EditProposalInterface<EquipmentItem>["id"];
       assignee: UserInterface["id"] | null;
     }
-  ) {}
+  ) {
+  }
 }
 
 export class AssignEditProposalSuccess implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.ASSIGN_EDIT_PROPOSAL_SUCCESS;
 
-  constructor(public payload: { editProposal: EditProposalInterface<EquipmentItem> }) {}
+  constructor(public payload: { editProposal: EditProposalInterface<EquipmentItem> }) {
+  }
 }
 
 /**********************************************************************************************************************
@@ -487,43 +529,50 @@ export class FindEquipmentPresets implements Action {
 export class FindEquipmentPresetsSuccess implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.FIND_EQUIPMENT_PRESETS_SUCCESS;
 
-  constructor(public payload: { presets: EquipmentPresetInterface[] }) {}
+  constructor(public payload: { presets: EquipmentPresetInterface[] }) {
+  }
 }
 
 export class CreateEquipmentPreset implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.CREATE_EQUIPMENT_PRESET;
 
-  constructor(public payload: { preset: EquipmentPresetInterface }) {}
+  constructor(public payload: { preset: EquipmentPresetInterface }) {
+  }
 }
 
 export class CreateEquipmentPresetSuccess implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.CREATE_EQUIPMENT_PRESET_SUCCESS;
 
-  constructor(public payload: { preset: EquipmentPresetInterface }) {}
+  constructor(public payload: { preset: EquipmentPresetInterface }) {
+  }
 }
 
 export class UpdateEquipmentPreset implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.UPDATE_EQUIPMENT_PRESET;
 
-  constructor(public payload: { preset: EquipmentPresetInterface }) {}
+  constructor(public payload: { preset: EquipmentPresetInterface }) {
+  }
 }
 
 export class UpdateEquipmentPresetSuccess implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.UPDATE_EQUIPMENT_PRESET_SUCCESS;
 
-  constructor(public payload: { preset: EquipmentPresetInterface }) {}
+  constructor(public payload: { preset: EquipmentPresetInterface }) {
+  }
 }
 
 export class DeleteEquipmentPreset implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.DELETE_EQUIPMENT_PRESET;
 
-  constructor(public payload: { id: EquipmentPresetInterface["id"] }) {}
+  constructor(public payload: { id: EquipmentPresetInterface["id"] }) {
+  }
 }
 
 export class DeleteEquipmentPresetSuccess implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.DELETE_EQUIPMENT_PRESET_SUCCESS;
 
-  constructor(public payload: { id: EquipmentPresetInterface["id"] }) {}
+  constructor(public payload: { id: EquipmentPresetInterface["id"] }) {
+  }
 }
 
 /**********************************************************************************************************************
@@ -533,37 +582,43 @@ export class DeleteEquipmentPresetSuccess implements PayloadActionInterface {
 export class CreateSensor implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.CREATE_SENSOR;
 
-  constructor(public payload: { sensor: Omit<SensorInterface, "id"> }) {}
+  constructor(public payload: { sensor: Omit<SensorInterface, "id"> }) {
+  }
 }
 
 export class CreateSensorSuccess implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.CREATE_SENSOR_SUCCESS;
 
-  constructor(public payload: EquipmentItemCreationSuccessPayloadInterface) {}
+  constructor(public payload: EquipmentItemCreationSuccessPayloadInterface) {
+  }
 }
 
 export class CreateSensorEditProposal implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.CREATE_SENSOR_EDIT_PROPOSAL;
 
-  constructor(public payload: { sensor: Omit<EditProposalInterface<SensorInterface>, "id"> }) {}
+  constructor(public payload: { sensor: Omit<EditProposalInterface<SensorInterface>, "id"> }) {
+  }
 }
 
 export class CreateSensorEditProposalSuccess implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.CREATE_SENSOR_EDIT_PROPOSAL_SUCCESS;
 
-  constructor(public payload: { editProposal: EditProposalInterface<SensorInterface> }) {}
+  constructor(public payload: { editProposal: EditProposalInterface<SensorInterface> }) {
+  }
 }
 
 export class LoadSensor implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.LOAD_SENSOR;
 
-  constructor(public payload: { id: SensorInterface["id"] }) {}
+  constructor(public payload: { id: SensorInterface["id"] }) {
+  }
 }
 
 export class LoadSensorSuccess implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.LOAD_SENSOR_SUCCESS;
 
-  constructor(public payload: { item: SensorInterface }) {}
+  constructor(public payload: { item: SensorInterface }) {
+  }
 }
 
 /**********************************************************************************************************************
@@ -573,37 +628,43 @@ export class LoadSensorSuccess implements PayloadActionInterface {
 export class CreateCamera implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.CREATE_CAMERA;
 
-  constructor(public payload: { camera: Omit<CameraInterface, "id"> }) {}
+  constructor(public payload: { camera: Omit<CameraInterface, "id"> }) {
+  }
 }
 
 export class CreateCameraSuccess implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.CREATE_CAMERA_SUCCESS;
 
-  constructor(public payload: EquipmentItemCreationSuccessPayloadInterface) {}
+  constructor(public payload: EquipmentItemCreationSuccessPayloadInterface) {
+  }
 }
 
 export class CreateCameraEditProposal implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.CREATE_CAMERA_EDIT_PROPOSAL;
 
-  constructor(public payload: { camera: Omit<EditProposalInterface<CameraInterface>, "id"> }) {}
+  constructor(public payload: { camera: Omit<EditProposalInterface<CameraInterface>, "id"> }) {
+  }
 }
 
 export class CreateCameraEditProposalSuccess implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.CREATE_CAMERA_EDIT_PROPOSAL_SUCCESS;
 
-  constructor(public payload: { editProposal: EditProposalInterface<CameraInterface> }) {}
+  constructor(public payload: { editProposal: EditProposalInterface<CameraInterface> }) {
+  }
 }
 
 export class FindCameraVariants implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.FIND_CAMERA_VARIANTS;
 
-  constructor(public payload: { id: CameraInterface["id"] }) {}
+  constructor(public payload: { id: CameraInterface["id"] }) {
+  }
 }
 
 export class FindCameraVariantsSuccess implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.FIND_CAMERA_VARIANTS_SUCCESS;
 
-  constructor(public payload: { cameraVariants: CameraInterface[] }) {}
+  constructor(public payload: { cameraVariants: CameraInterface[] }) {
+  }
 }
 
 /**********************************************************************************************************************
@@ -613,25 +674,29 @@ export class FindCameraVariantsSuccess implements PayloadActionInterface {
 export class CreateTelescope implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.CREATE_TELESCOPE;
 
-  constructor(public payload: { telescope: Omit<TelescopeInterface, "id"> }) {}
+  constructor(public payload: { telescope: Omit<TelescopeInterface, "id"> }) {
+  }
 }
 
 export class CreateTelescopeSuccess implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.CREATE_TELESCOPE_SUCCESS;
 
-  constructor(public payload: EquipmentItemCreationSuccessPayloadInterface) {}
+  constructor(public payload: EquipmentItemCreationSuccessPayloadInterface) {
+  }
 }
 
 export class CreateTelescopeEditProposal implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.CREATE_TELESCOPE_EDIT_PROPOSAL;
 
-  constructor(public payload: { telescope: Omit<EditProposalInterface<TelescopeInterface>, "id"> }) {}
+  constructor(public payload: { telescope: Omit<EditProposalInterface<TelescopeInterface>, "id"> }) {
+  }
 }
 
 export class CreateTelescopeEditProposalSuccess implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.CREATE_TELESCOPE_EDIT_PROPOSAL_SUCCESS;
 
-  constructor(public payload: { editProposal: EditProposalInterface<TelescopeInterface> }) {}
+  constructor(public payload: { editProposal: EditProposalInterface<TelescopeInterface> }) {
+  }
 }
 
 /**********************************************************************************************************************
@@ -641,25 +706,29 @@ export class CreateTelescopeEditProposalSuccess implements PayloadActionInterfac
 export class CreateMount implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.CREATE_MOUNT;
 
-  constructor(public payload: { mount: Omit<MountInterface, "id"> }) {}
+  constructor(public payload: { mount: Omit<MountInterface, "id"> }) {
+  }
 }
 
 export class CreateMountSuccess implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.CREATE_MOUNT_SUCCESS;
 
-  constructor(public payload: EquipmentItemCreationSuccessPayloadInterface) {}
+  constructor(public payload: EquipmentItemCreationSuccessPayloadInterface) {
+  }
 }
 
 export class CreateMountEditProposal implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.CREATE_MOUNT_EDIT_PROPOSAL;
 
-  constructor(public payload: { mount: Omit<EditProposalInterface<MountInterface>, "id"> }) {}
+  constructor(public payload: { mount: Omit<EditProposalInterface<MountInterface>, "id"> }) {
+  }
 }
 
 export class CreateMountEditProposalSuccess implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.CREATE_MOUNT_EDIT_PROPOSAL_SUCCESS;
 
-  constructor(public payload: { editProposal: EditProposalInterface<MountInterface> }) {}
+  constructor(public payload: { editProposal: EditProposalInterface<MountInterface> }) {
+  }
 }
 
 /**********************************************************************************************************************
@@ -669,25 +738,29 @@ export class CreateMountEditProposalSuccess implements PayloadActionInterface {
 export class CreateFilter implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.CREATE_FILTER;
 
-  constructor(public payload: { filter: Omit<FilterInterface, "id"> }) {}
+  constructor(public payload: { filter: Omit<FilterInterface, "id"> }) {
+  }
 }
 
 export class CreateFilterSuccess implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.CREATE_FILTER_SUCCESS;
 
-  constructor(public payload: EquipmentItemCreationSuccessPayloadInterface) {}
+  constructor(public payload: EquipmentItemCreationSuccessPayloadInterface) {
+  }
 }
 
 export class CreateFilterEditProposal implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.CREATE_FILTER_EDIT_PROPOSAL;
 
-  constructor(public payload: { filter: Omit<EditProposalInterface<FilterInterface>, "id"> }) {}
+  constructor(public payload: { filter: Omit<EditProposalInterface<FilterInterface>, "id"> }) {
+  }
 }
 
 export class CreateFilterEditProposalSuccess implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.CREATE_FILTER_EDIT_PROPOSAL_SUCCESS;
 
-  constructor(public payload: { editProposal: EditProposalInterface<FilterInterface> }) {}
+  constructor(public payload: { editProposal: EditProposalInterface<FilterInterface> }) {
+  }
 }
 
 /**********************************************************************************************************************
@@ -697,25 +770,29 @@ export class CreateFilterEditProposalSuccess implements PayloadActionInterface {
 export class CreateAccessory implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.CREATE_ACCESSORY;
 
-  constructor(public payload: { accessory: Omit<AccessoryInterface, "id"> }) {}
+  constructor(public payload: { accessory: Omit<AccessoryInterface, "id"> }) {
+  }
 }
 
 export class CreateAccessorySuccess implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.CREATE_ACCESSORY_SUCCESS;
 
-  constructor(public payload: EquipmentItemCreationSuccessPayloadInterface) {}
+  constructor(public payload: EquipmentItemCreationSuccessPayloadInterface) {
+  }
 }
 
 export class CreateAccessoryEditProposal implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.CREATE_ACCESSORY_EDIT_PROPOSAL;
 
-  constructor(public payload: { accessory: Omit<EditProposalInterface<AccessoryInterface>, "id"> }) {}
+  constructor(public payload: { accessory: Omit<EditProposalInterface<AccessoryInterface>, "id"> }) {
+  }
 }
 
 export class CreateAccessoryEditProposalSuccess implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.CREATE_ACCESSORY_EDIT_PROPOSAL_SUCCESS;
 
-  constructor(public payload: { editProposal: EditProposalInterface<AccessoryInterface> }) {}
+  constructor(public payload: { editProposal: EditProposalInterface<AccessoryInterface> }) {
+  }
 }
 
 /**********************************************************************************************************************
@@ -725,25 +802,29 @@ export class CreateAccessoryEditProposalSuccess implements PayloadActionInterfac
 export class CreateSoftware implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.CREATE_SOFTWARE;
 
-  constructor(public payload: { software: Omit<SoftwareInterface, "id"> }) {}
+  constructor(public payload: { software: Omit<SoftwareInterface, "id"> }) {
+  }
 }
 
 export class CreateSoftwareSuccess implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.CREATE_SOFTWARE_SUCCESS;
 
-  constructor(public payload: EquipmentItemCreationSuccessPayloadInterface) {}
+  constructor(public payload: EquipmentItemCreationSuccessPayloadInterface) {
+  }
 }
 
 export class CreateSoftwareEditProposal implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.CREATE_SOFTWARE_EDIT_PROPOSAL;
 
-  constructor(public payload: { software: Omit<EditProposalInterface<SoftwareInterface>, "id"> }) {}
+  constructor(public payload: { software: Omit<EditProposalInterface<SoftwareInterface>, "id"> }) {
+  }
 }
 
 export class CreateSoftwareEditProposalSuccess implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.CREATE_SOFTWARE_EDIT_PROPOSAL_SUCCESS;
 
-  constructor(public payload: { editProposal: EditProposalInterface<SoftwareInterface> }) {}
+  constructor(public payload: { editProposal: EditProposalInterface<SoftwareInterface> }) {
+  }
 }
 
 /**********************************************************************************************************************
@@ -755,7 +836,8 @@ export class ItemBrowserAdd implements PayloadActionInterface {
 
   constructor(
     public payload: { type: EquipmentItemType; usageType: EquipmentItemUsageType; item: EquipmentItemBaseInterface }
-  ) {}
+  ) {
+  }
 }
 
 export class ItemBrowserSet implements PayloadActionInterface {
@@ -763,7 +845,8 @@ export class ItemBrowserSet implements PayloadActionInterface {
 
   constructor(
     public payload: { type: EquipmentItemType; usageType?: EquipmentItemUsageType; items: EquipmentItemBaseInterface[] }
-  ) {}
+  ) {
+  }
 }
 
 export class ItemBrowserExitFullscreen implements Action {
@@ -771,7 +854,7 @@ export class ItemBrowserExitFullscreen implements Action {
 }
 
 export type EquipmentActions =
-  // Brands
+// Brands
   | GetAllBrands
   | GetAllBrandsSuccess
   | LoadBrand

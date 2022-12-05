@@ -5,27 +5,29 @@
   </h1>
   <small>
     {{
-      "AstroBin's equipment database is entirely maintained by the community. Feel free to make a contribution!"
-        | translate
+    "AstroBin's equipment database is entirely maintained by the community. Feel free to make a contribution!"
+      | translate
     }}
-    <a class="learn-more" href="https://welcome.astrobin.com/features/equipment-database" target="_blank">{{"Learn more"}}.</a>
+    <a class="learn-more" href="https://welcome.astrobin.com/features/equipment-database"
+       target="_blank">{{"Learn more"}}.</a>
   </small>
 
   <div class="row">
-    <div [class]="navCollapsed ? 'col-md-1' : 'col-md-4'">
+    <div [class]="navCollapsed ? 'col-md-1' : 'col-md-4 col-xl-3'">
       <astrobin-equipment-item-type-nav
-        [activeType]="'contributors'"
         (collapsedChanged)="onNavCollapsedChanged($event)"
+        [activeType]="'contributors'"
       ></astrobin-equipment-item-type-nav>
     </div>
 
     <div class="col">
-      <div class="row" *ngIf="contributors$ | async as contributors; else loading">
+      <div *ngIf="contributors$ | async as contributors; else loading" class="row">
         <div *ngFor="let contributor of contributors" class="col-6 col-sm-4 col-lg-3">
-          <div class="contributor" *ngIf="selectUser(contributor[0]) | async as user">
+          <div *ngIf="selectUser(contributor[0]) | async as user" class="contributor">
             <astrobin-avatar [user]="user"></astrobin-avatar>
-            <astrobin-username [user]="user" [link]="false"></astrobin-username>
-            <div class="badge badge-success" [ngbTooltip]="'Total number of edit proposals created or reviewed' | translate">
+            <astrobin-username [link]="false" [user]="user"></astrobin-username>
+            <div [ngbTooltip]="'Total number of edit proposals created or reviewed' | translate"
+                 class="badge badge-success">
               {{ contributor[1] }}
             </div>
           </div>

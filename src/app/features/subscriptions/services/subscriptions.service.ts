@@ -8,7 +8,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { Constants } from "@shared/constants";
 import { SubscriptionName } from "@shared/types/subscription-name.type";
 import * as countryJs from "country-js";
-import { BehaviorSubject, interval, Observable } from "rxjs";
+import { BehaviorSubject, Observable } from "rxjs";
 import { take } from "rxjs/operators";
 import { UtilsService } from "@shared/services/utils/utils.service";
 

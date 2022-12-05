@@ -12,6 +12,7 @@ import { LoadingService } from "@shared/services/loading.service";
 import { Observable, throwError } from "rxjs";
 import { map } from "rxjs/operators";
 import { UserInterface } from "@shared/interfaces/user.interface";
+import { ImageEditModelInterface } from "@features/image/services/image-edit.service";
 
 @Injectable({
   providedIn: "root"
@@ -72,7 +73,7 @@ export class ImageApiService extends BaseClassicApiService {
     return this.http.get<ImageThumbnailInterface>(url);
   }
 
-  updateImage(pk: ImageInterface["pk"], data: ImageInterface): Observable<ImageInterface> {
-    return this.http.put<ImageInterface>(`${this.configUrl}/image/${pk}/`, data);
+  updateImage(pk: ImageInterface["pk"], image: ImageEditModelInterface): Observable<ImageInterface> {
+    return this.http.put<ImageInterface>(`${this.configUrl}/image/${pk}/`, image);
   }
 }

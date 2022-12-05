@@ -6,7 +6,7 @@ const testCameraIncomplete = {
   sensor: null,
   cooled: null,
   maxCooling: null,
-  backFocus: null
+  backFocus: null,
 };
 context("Equipment", () => {
   beforeEach(() => {
@@ -18,21 +18,19 @@ context("Equipment", () => {
       count: 1,
       next: null,
       previous: null,
-      results: [testCameraIncomplete]
+      results: [testCameraIncomplete],
     }).as("findCameras");
 
     cy.route("get", "**/api/v2/equipment/camera-edit-proposal/?edit_proposal_target=*", { results: [] });
   });
 
-  context("Explorer", () => {
+  context("Edit proposal camera workflow", () => {
     it("should not have the 'Propose edit' button if logged out", () => {
       cy.visitPage("/equipment/explorer");
 
       cy.equipmentItemBrowserSelectFirstCamera("#equipment-item-field", "Test", testCameraIncomplete);
 
-      cy.get(".card .card-header")
-        .contains("Camera")
-        .should("be.visible");
+      cy.get(".card .card-header").contains("Camera").should("be.visible");
 
       cy.get(".card .card-body astrobin-equipment-item-summary").should("be.visible");
 
@@ -45,9 +43,7 @@ context("Equipment", () => {
 
       cy.equipmentItemBrowserSelectFirstCamera("#equipment-item-field", "Test", testCameraIncomplete);
 
-      cy.get(".card .card-header")
-        .contains("Camera")
-        .should("be.visible");
+      cy.get(".card .card-header").contains("Camera").should("be.visible");
 
       cy.get(".card .card-body astrobin-equipment-item-summary").should("be.visible");
 
@@ -59,8 +55,6 @@ context("Equipment", () => {
       cy.get("astrobin-camera-editor").should("be.visible");
       cy.get("#equipment-item-field-name").should("have.value", testCameraIncomplete.name);
       cy.ngSelectValueShouldContain("#camera-field-type", "Other");
-      cy.get("#camera-field-cooled").should("not.be.checked");
-      cy.get("#camera-field-max-cooling").should("have.value", "");
       cy.get("#camera-field-back-focus").should("have.value", "");
     });
 
@@ -73,16 +67,12 @@ context("Equipment", () => {
         count: 0,
         next: null,
         previous: null,
-        results: []
+        results: [],
       }).as("findCamerasByName");
 
-      cy.get("#equipment-item-field-name")
-        .clear()
-        .type("Foo");
+      cy.get("#equipment-item-field-name").clear().type("Foo");
 
-      cy.get(".alert-warning span")
-        .contains("Change the name only to fix a typo")
-        .should("be.visible");
+      cy.get(".alert-warning span").contains("Change the name only to fix a typo").should("be.visible");
     });
 
     it("should update some data", () => {
@@ -96,7 +86,7 @@ context("Equipment", () => {
     it("should submit the form", () => {
       cy.route("post", "**/api/v2/equipment/camera-edit-proposal/", testCameraEditProposal).as("saveEditProposal");
       cy.route("get", "**/api/v2/equipment/camera-edit-proposal/?edit_proposal_target=*", {
-        results: [testCameraEditProposal]
+        results: [testCameraEditProposal],
       }).as("getEditProposals");
 
       cy.get("[data-test=propose-edit-confirm]").click();
@@ -104,11 +94,9 @@ context("Equipment", () => {
       cy.wait("@saveEditProposal");
       cy.wait("@getEditProposals");
 
-      cy.get(".toast-message")
-        .contains("Your edit proposal has been submitted")
-        .should("be.visible");
+      cy.get(".toast-message").contains("Your edit proposal has been submitted").should("be.visible");
 
-      cy.get("astrobin-camera-editor").should("not.be.visible");
+      cy.get("astrobin-camera-editor").should("not.exist");
     });
 
     it("should show the new edit proposal on the page", () => {
@@ -118,19 +106,12 @@ context("Equipment", () => {
         "AstroBin Dev"
       );
       cy.get("astrobin-item-edit-proposal").click();
-      cy.get("astrobin-item-edit-proposal .change .before")
-        .contains("Test")
-        .should("be.visible");
-      cy.get("astrobin-item-edit-proposal .change .after")
-        .contains("Test Pro")
-        .should("be.visible");
+      cy.get("astrobin-item-edit-proposal .change .before").contains("Test").should("be.visible");
+      cy.get("astrobin-item-edit-proposal .change .after").contains("Test Pro").should("be.visible");
     });
 
     it("should have disabled buttons because the proposer cannot review", () => {
-      cy.get("astrobin-item-edit-proposal .btn")
-        .contains("Approve edit…")
-        .should("be.visible")
-        .should("be.disabled");
+      cy.get("astrobin-item-edit-proposal .btn").contains("Approve edit…").should("be.visible").should("be.disabled");
       cy.get(".approve-disabled-reason")
         .contains("You cannot approve this edit proposal because you were the one who proposed it.")
         .should("be.visible");

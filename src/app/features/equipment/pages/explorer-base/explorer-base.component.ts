@@ -29,6 +29,7 @@ export class ExplorerBaseComponent extends BaseComponentDirective implements OnI
   activeEditProposalId: EditProposalInterface<EquipmentItemBaseInterface>["id"];
   items$: Observable<PaginatedApiResultInterface<EquipmentItemBaseInterface> | BrandInterface[]>;
   sortOrder: EquipmentItemsSortOrder = EquipmentItemsSortOrder.AZ;
+  enableCollapse = true;
   navCollapsed = false;
 
   constructor(
@@ -64,6 +65,10 @@ export class ExplorerBaseComponent extends BaseComponentDirective implements OnI
 
   ngOnInit() {
     super.ngOnInit();
+
+    if (this.windowRefService.nativeWindow.innerWidth > 1200) {
+      this.enableCollapse = false;
+    }
 
     this.page = +this.activatedRoute.snapshot?.queryParamMap.get("page") || 1;
     this.activeType = this.activatedRoute.snapshot?.paramMap.get("itemType");
@@ -146,7 +151,8 @@ export class ExplorerBaseComponent extends BaseComponentDirective implements OnI
     this.changeDetectionRef.detectChanges();
   }
 
-  getItems() {}
+  getItems() {
+  }
 
   protected _scrollToItemBrowser(): void {
     if (this.windowRefService.nativeWindow.innerWidth < 768) {

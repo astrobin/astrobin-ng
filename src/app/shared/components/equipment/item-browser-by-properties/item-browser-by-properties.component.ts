@@ -164,13 +164,13 @@ export class ItemBrowserByPropertiesComponent extends BaseComponentDirective imp
         brand: this.model.brand,
         filters: filters
           ? Object.keys(filters).map(key => ({
-              type: key as ExplorerFilterType,
-              value: filters[key],
-              label: null,
-              icon: null,
-              widget: null,
-              valueType: null
-            }))
+            type: key as ExplorerFilterType,
+            value: filters[key],
+            label: null,
+            icon: null,
+            widget: null,
+            valueType: null
+          }))
           : [],
         page: this.page
       })
@@ -227,7 +227,11 @@ export class ItemBrowserByPropertiesComponent extends BaseComponentDirective imp
         )
       )
       .subscribe(options => {
-        this.fields.find(brandField => brandField.key === "brand").templateOptions.options = options;
+        const brandField = this.fields.find(f => f.key === "brand");
+        brandField.props = {
+          ...brandField.props,
+          options
+        };
       });
   }
 
@@ -248,9 +252,9 @@ export class ItemBrowserByPropertiesComponent extends BaseComponentDirective imp
       type: "ng-select",
       id: "brand",
       expressionProperties: {
-        "templateOptions.disabled": () => this.loadingPage
+        "props.disabled": () => this.loadingPage
       },
-      templateOptions: {
+      props: {
         required: false,
         clearable: true,
         label,
@@ -282,9 +286,9 @@ export class ItemBrowserByPropertiesComponent extends BaseComponentDirective imp
       type: "ng-select",
       id: "telescope-type",
       expressionProperties: {
-        "templateOptions.disabled": () => this.loadingPage
+        "props.disabled": () => this.loadingPage
       },
-      templateOptions: {
+      props: {
         label: this.telescopeService.getPrintablePropertyName(TelescopeDisplayProperty.TYPE),
         required: false,
         clearable: true,
@@ -301,11 +305,11 @@ export class ItemBrowserByPropertiesComponent extends BaseComponentDirective imp
       key: "telescope-aperture",
       id: "telescope-aperture",
       expressionProperties: {
-        "templateOptions.disabled": () => this.loadingPage
+        "props.disabled": () => this.loadingPage
       },
       fieldGroupClassName: "row",
       wrappers: ["default-wrapper"],
-      templateOptions: {
+      props: {
         label: this.telescopeService.getPrintablePropertyName(TelescopeDisplayProperty.APERTURE)
       },
       fieldGroup: [
@@ -314,7 +318,7 @@ export class ItemBrowserByPropertiesComponent extends BaseComponentDirective imp
           key: "from",
           type: "input",
           wrappers: ["default-wrapper"],
-          templateOptions: {
+          props: {
             required: false,
             label: this.translateService.instant("From"),
             type: "number",
@@ -343,7 +347,7 @@ export class ItemBrowserByPropertiesComponent extends BaseComponentDirective imp
           key: "to",
           type: "input",
           wrappers: ["default-wrapper"],
-          templateOptions: {
+          props: {
             required: false,
             label: this.translateService.instant("To"),
             type: "number",
@@ -378,9 +382,9 @@ export class ItemBrowserByPropertiesComponent extends BaseComponentDirective imp
       fieldGroupClassName: "row",
       wrappers: ["default-wrapper"],
       expressionProperties: {
-        "templateOptions.disabled": () => this.loadingPage
+        "props.disabled": () => this.loadingPage
       },
-      templateOptions: {
+      props: {
         label: this.telescopeService.getPrintablePropertyName(TelescopeDisplayProperty.FOCAL_LENGTH)
       },
       fieldGroup: [
@@ -389,7 +393,7 @@ export class ItemBrowserByPropertiesComponent extends BaseComponentDirective imp
           key: "from",
           type: "input",
           wrappers: ["default-wrapper"],
-          templateOptions: {
+          props: {
             required: false,
             label: this.translateService.instant("From"),
             type: "number",
@@ -418,7 +422,7 @@ export class ItemBrowserByPropertiesComponent extends BaseComponentDirective imp
           key: "to",
           type: "input",
           wrappers: ["default-wrapper"],
-          templateOptions: {
+          props: {
             required: false,
             label: this.translateService.instant("To"),
             type: "number",
@@ -452,9 +456,9 @@ export class ItemBrowserByPropertiesComponent extends BaseComponentDirective imp
       type: "ng-select",
       id: "camera-type",
       expressionProperties: {
-        "templateOptions.disabled": () => this.loadingPage
+        "props.disabled": () => this.loadingPage
       },
-      templateOptions: {
+      props: {
         label: this.cameraService.getPrintablePropertyName(CameraDisplayProperty.TYPE),
         required: false,
         clearable: true,
@@ -472,9 +476,9 @@ export class ItemBrowserByPropertiesComponent extends BaseComponentDirective imp
       type: "ng-select",
       id: "mount-type",
       expressionProperties: {
-        "templateOptions.disabled": () => this.loadingPage
+        "props.disabled": () => this.loadingPage
       },
-      templateOptions: {
+      props: {
         label: this.mountService.getPrintablePropertyName(MountDisplayProperty.TYPE),
         required: false,
         clearable: true,
@@ -492,9 +496,9 @@ export class ItemBrowserByPropertiesComponent extends BaseComponentDirective imp
       type: "ng-select",
       id: "filter-type",
       expressionProperties: {
-        "templateOptions.disabled": () => this.loadingPage
+        "props.disabled": () => this.loadingPage
       },
-      templateOptions: {
+      props: {
         label: this.filterService.getPrintablePropertyName(FilterDisplayProperty.TYPE),
         required: false,
         clearable: true,
@@ -512,9 +516,9 @@ export class ItemBrowserByPropertiesComponent extends BaseComponentDirective imp
       type: "ng-select",
       id: "accessory-type",
       expressionProperties: {
-        "templateOptions.disabled": () => this.loadingPage
+        "props.disabled": () => this.loadingPage
       },
-      templateOptions: {
+      props: {
         label: this.accessoryService.getPrintablePropertyName(AccessoryDisplayProperty.TYPE),
         required: false,
         clearable: true,

@@ -1,70 +1,70 @@
 <ng-container *ngIf="item; else loading">
   <div
-    class="edit-proposal"
-    [class.opened]="opened"
-    [class.pending]="editProposal.editProposalReviewStatus == null"
-    [attr.data-id]="editProposal.id"
     (click)="opened = !opened"
+    [attr.data-id]="editProposal.id"
+    [class.opened]="opened"
+    [class.pending]="editProposal.editProposalReviewStatus === null"
+    class="edit-proposal"
   >
     <div class="row">
       <span class="col user">
         <astrobin-username [user]="editProposalBy$ | async" linkTarget="_blank"></astrobin-username>
       </span>
       <span class="col-2 d-none d-lg-inline changes">{{ changes.length }}</span>
-      <span class="col-4 col-lg-3 status" [class]="editProposal.editProposalReviewStatus?.toLowerCase() || 'pending'">
+      <span [class]="editProposal.editProposalReviewStatus?.toLowerCase() || 'pending'" class="col-4 col-lg-3 status">
         {{ reviewStatusText }}
       </span>
       <span class="col-3 d-none d-lg-inline timeago">{{ editProposal.created | localDate | timeago: true }}</span>
     </div>
   </div>
 
-  <div class="edit-proposal-details" *ngIf="opened">
+  <div *ngIf="opened" class="edit-proposal-details">
     <ng-container *ngIf="hasChanges; else noChanges">
       <span>{{ "The following changes are proposed:" | translate }}</span>
     </ng-container>
 
     <table class="table table-striped changes">
       <thead>
-        <tr>
-          <th>{{ "Property" | translate }}</th>
-          <th>{{ "Before" | translate }}</th>
-          <th>{{ "After" | translate }}</th>
-        </tr>
+      <tr>
+        <th>{{ "Property" | translate }}</th>
+        <th>{{ "Before" | translate }}</th>
+        <th>{{ "After" | translate }}</th>
+      </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let change of changes" class="change">
-          <td class="property-name">{{ change.propertyName }}</td>
+      <tr *ngFor="let change of changes" class="change">
+        <td class="property-name">{{ change.propertyName }}</td>
 
-          <td class="before" [innerHTML]="change.before || 'n/a' | translate"></td>
+        <td [innerHTML]="change.before || 'n/a' | translate" class="before"></td>
 
-          <td class="after" [innerHTML]="change.after || 'n/a' | translate"></td>
+        <td [innerHTML]="change.after || 'n/a' | translate" class="after"></td>
 
-          <td *ngIf="change.propertyName === 'name'" class="alert alert-warning" colspan="3">
-            <span [innerHTML]="equipmentItemService.nameChangeWarningMessage()"></span>
-          </td>
-        </tr>
-        <tr *ngIf="editProposal.editProposalComment" class="change">
-          <td class="property-name">{{ "Proposer's comment" | translate }}:</td>
-          <td colspan="2" class="after">{{ editProposal.editProposalComment }}</td>
-        </tr>
+        <td *ngIf="change.propertyName === 'name'" class="alert alert-warning" colspan="3">
+          <span [innerHTML]="equipmentItemService.nameChangeWarningMessage()"></span>
+        </td>
+      </tr>
+      <tr *ngIf="editProposal.editProposalComment" class="change">
+        <td class="property-name">{{ "Proposer's comment" | translate }}:</td>
+        <td class="after" colspan="2">{{ editProposal.editProposalComment }}</td>
+      </tr>
 
-        <tr *ngIf="editProposal.editProposalReviewedBy" class="change">
-          <td class="property-name">{{ "Reviewer" | translate }}</td>
-          <td colspan="2" class="after">
-            <astrobin-username [userId]="editProposal.editProposalReviewedBy"></astrobin-username>
-          </td>
-        </tr>
+      <tr *ngIf="editProposal.editProposalReviewedBy" class="change">
+        <td class="property-name">{{ "Reviewer" | translate }}</td>
+        <td class="after" colspan="2">
+          <astrobin-username [userId]="editProposal.editProposalReviewedBy"></astrobin-username>
+        </td>
+      </tr>
 
-        <tr *ngIf="editProposal.editProposalReviewComment" class="change">
-          <td class="property-name">{{ "Reviewer's comment" | translate }}</td>
-          <td colspan="2" class="after">{{ editProposal.editProposalReviewComment }}</td>
-        </tr>
+      <tr *ngIf="editProposal.editProposalReviewComment" class="change">
+        <td class="property-name">{{ "Reviewer's comment" | translate }}</td>
+        <td class="after" colspan="2">{{ editProposal.editProposalReviewComment }}</td>
+      </tr>
       </tbody>
     </table>
 
     <ng-container *ngIf="showReviewButtons$ | async as showReviewButtons">
       <ng-container *ngIf="showReviewButtons && approveButtonsStatus$ | async as buttonStatus">
-        <div class="approve-disabled-reason" *ngIf="buttonStatus.disabled">
+        <div *ngIf="buttonStatus.disabled" class="approve-disabled-reason">
           <fa-icon icon="exclamation-triangle"></fa-icon>
           {{ buttonStatus.reason }}
         </div>
@@ -73,21 +73,21 @@
 
     <div class="form-actions">
       <ng-container *ngIf="(currentUser$ | async) as currentUser">
-        <button *ngIf="!editProposal.editProposalReviewStatus" class="btn px-1 assign-edit-proposal">
-          <span class="text-muted mr-2">{{ "Assignee" | translate }}:</span>
+        <button *ngIf="!editProposal.editProposalReviewStatus" class="btn btn-link px-1 assign-edit-proposal">
+          <span class="text-muted me-2">{{ "Assignee" | translate }}:</span>
           <astrobin-username
             *ngIf="!!editProposal.editProposalAssignee"
             [userId]="editProposal.editProposalAssignee"
           ></astrobin-username>
           <span *ngIf="!editProposal.editProposalAssignee">{{ "Anyone" | translate }}</span>
           <a
-            *ngIf="editProposal.editProposalAssignee === null || editProposal.editProposalAssignee === currentUser.id"
-            href="#"
-            class="assign"
-            appEventStopPropagation
-            appEventPreventDefault
-            [ngbTooltip]="'Assign' | translate"
             (click)="assign()"
+            *ngIf="editProposal.editProposalAssignee === null || editProposal.editProposalAssignee === currentUser.id"
+            [ngbTooltip]="'Assign' | translate"
+            astrobinEventPreventDefault
+            astrobinEventStopPropagation
+            class="assign"
+            href="#"
           >
             <fa-icon icon="pen"></fa-icon>
           </a>
@@ -96,20 +96,20 @@
 
       <ng-container *ngIf="showReviewButtons$ | async as showReviewButtons">
         <button
-          *ngIf="showReviewButtons && rejectButtonsStatus$ | async as buttonStatus"
-          class="btn btn-outline-danger"
-          [disabled]="buttonStatus.disabled"
-          [class.loading]="loadingService.loading$ | async"
           (click)="rejectEdit()"
+          *ngIf="showReviewButtons && rejectButtonsStatus$ | async as buttonStatus"
+          [class.loading]="loadingService.loading$ | async"
+          [disabled]="buttonStatus.disabled"
+          class="btn btn-outline-danger"
         >
           {{ "Reject edit" | translate }}&hellip;
         </button>
         <button
-          *ngIf="showReviewButtons && approveButtonsStatus$ | async as buttonStatus"
-          class="btn btn-success"
-          [disabled]="buttonStatus.disabled"
-          [class.loading]="loadingService.loading$ | async"
           (click)="approveEdit()"
+          *ngIf="showReviewButtons && approveButtonsStatus$ | async as buttonStatus"
+          [class.loading]="loadingService.loading$ | async"
+          [disabled]="buttonStatus.disabled"
+          class="btn btn-success"
         >
           {{ "Approve edit" | translate }}&hellip;
         </button>

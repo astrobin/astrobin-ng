@@ -17,7 +17,7 @@ describe("TelescopeEditorComponent", () => {
 
   beforeEach(async () => {
     await MockBuilder(TelescopeEditorComponent, EquipmentModule)
-      .mock(AppModule)
+      .mock(AppModule, { export: true })
       .provide([provideMockStore({ initialState }), provideMockActions(() => new ReplaySubject<any>()), UtilsService])
       .mock(BrandEditorCardComponent);
   });

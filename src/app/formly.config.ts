@@ -134,8 +134,8 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
         message(): string {
           return translateService.instant(
             "This camera already exists in AstroBin's database. Certain Canon cameras have multiple names for " +
-              "multiple markets (e.g. EOS / Rebel / Kiss) and they are grouped as a single item on AstroBin for " +
-              "simplicity."
+            "multiple markets (e.g. EOS / Rebel / Kiss) and they are grouped as a single item on AstroBin for " +
+            "simplicity."
           );
         }
       },
@@ -150,7 +150,7 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
         message(): string {
           return translateService.instant(
             "The name of the filter must end with its size in parentheses, as found from the Size selection " +
-              "dropdown, e.g.: (Round 50mm)."
+            "dropdown, e.g.: (Round 50mm)."
           );
         }
       },

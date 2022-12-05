@@ -2,13 +2,12 @@ import { Inject, Injectable } from "@angular/core";
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { DOCUMENT } from "@angular/common";
-import { take } from "rxjs/operators";
-import { interval } from "rxjs";
 import { UtilsService } from "@shared/services/utils/utils.service";
 
 // @ts-ignore
-// tslint:disable-next-line:no-empty-interface
-export interface CustomWindowInterface extends Window {}
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface CustomWindowInterface extends Window {
+}
 
 @Injectable()
 export class WindowRefService extends BaseService {

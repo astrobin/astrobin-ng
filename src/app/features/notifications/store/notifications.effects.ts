@@ -5,8 +5,8 @@ import { State } from "@app/store/state";
 import { NotificationsApiService } from "@features/notifications/services/notifications-api.service";
 import { EMPTY, Observable, of } from "rxjs";
 import {
-  LoadNotificationTypesSuccess,
   LoadNotificationSettingsSuccess,
+  LoadNotificationTypesSuccess,
   NotificationsActionTypes,
   SetNotificationSetting,
   SetNotificationSettingSuccess
@@ -28,9 +28,9 @@ export class NotificationsEffects {
             typesFromStore !== null
               ? of(typesFromStore).pipe(map(types => new LoadNotificationTypesSuccess({ types })))
               : this.notificationsApiService.getTypes().pipe(
-                  map(types => new LoadNotificationTypesSuccess({ types })),
-                  catchError(() => EMPTY)
-                )
+                map(types => new LoadNotificationTypesSuccess({ types })),
+                catchError(() => EMPTY)
+              )
           )
         )
       )
@@ -46,9 +46,9 @@ export class NotificationsEffects {
             settingsFromStore !== null
               ? of(settingsFromStore).pipe(map(settings => new LoadNotificationSettingsSuccess({ settings })))
               : this.notificationsApiService.getSettings().pipe(
-                  map(settings => new LoadNotificationSettingsSuccess({ settings })),
-                  catchError(() => EMPTY)
-                )
+                map(settings => new LoadNotificationSettingsSuccess({ settings })),
+                catchError(() => EMPTY)
+              )
           )
         )
       )
@@ -72,5 +72,6 @@ export class NotificationsEffects {
     public readonly store$: Store<State>,
     public readonly actions$: Actions,
     public readonly notificationsApiService: NotificationsApiService
-  ) {}
+  ) {
+  }
 }

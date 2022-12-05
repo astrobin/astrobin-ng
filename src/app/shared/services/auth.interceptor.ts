@@ -24,7 +24,8 @@ export class AuthInterceptor implements HttpInterceptor {
     public readonly popNotificationsService: PopNotificationsService,
     public readonly authService: AuthService,
     public readonly translate: TranslateService
-  ) {}
+  ) {
+  }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     let authToken: string;

@@ -344,22 +344,22 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
   private _classProperty(itemType: EquipmentItemType): EquipmentItemProperty {
     return this.showClass
       ? {
-          name: this.translateService.instant("Class"),
-          value: of(this.equipmentItemService.humanizeType(itemType))
-        }
+        name: this.translateService.instant("Class"),
+        value: of(this.equipmentItemService.humanizeType(itemType))
+      }
       : null;
   }
 
   private _variantOfProperty(variantOfItem: EquipmentItem | null): EquipmentItemProperty {
     return !!variantOfItem
       ? {
-          name: this.equipmentItemService.getPrintablePropertyName(
-            variantOfItem.klass,
-            EquipmentItemDisplayProperty.VARIANT_OF
-          ),
-          value: this.equipmentItemService.getFullDisplayName$(variantOfItem),
-          link: `/equipment/explorer/${variantOfItem.klass.toLowerCase()}/${variantOfItem.id}`
-        }
+        name: this.equipmentItemService.getPrintablePropertyName(
+          variantOfItem.klass,
+          EquipmentItemDisplayProperty.VARIANT_OF
+        ),
+        value: this.equipmentItemService.getFullDisplayName$(variantOfItem),
+        link: `/equipment/explorer/${variantOfItem.klass.toLowerCase()}/${variantOfItem.id}`
+      }
       : null;
   }
 
@@ -427,15 +427,15 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
       },
       item.type === CameraType.DEDICATED_DEEP_SKY
         ? {
-            name: this.cameraService.getPrintablePropertyName(CameraDisplayProperty.COOLED, true),
-            value: this.cameraService.getPrintableProperty$(item, CameraDisplayProperty.COOLED)
-          }
+          name: this.cameraService.getPrintablePropertyName(CameraDisplayProperty.COOLED, true),
+          value: this.cameraService.getPrintableProperty$(item, CameraDisplayProperty.COOLED)
+        }
         : null,
       item.type === CameraType.DEDICATED_DEEP_SKY && item.cooled
         ? {
-            name: this.cameraService.getPrintablePropertyName(CameraDisplayProperty.MAX_COOLING, true),
-            value: this.cameraService.getPrintableProperty$(item, CameraDisplayProperty.MAX_COOLING)
-          }
+          name: this.cameraService.getPrintablePropertyName(CameraDisplayProperty.MAX_COOLING, true),
+          value: this.cameraService.getPrintableProperty$(item, CameraDisplayProperty.MAX_COOLING)
+        }
         : null,
       {
         name: this.cameraService.getPrintablePropertyName(CameraDisplayProperty.BACK_FOCUS, true),

@@ -103,7 +103,7 @@ export class BrandEditorFormComponent extends BaseComponentDirective implements 
         wrappers: ["default-wrapper"],
         id: "brand-field-name",
         defaultValue: this.name,
-        templateOptions: {
+        props: {
           required: true,
           label: this.translateService.instant("Name of the brand (or company, or developer(s))"),
           description: this.translateService.instant("The name of this brand. Make sure it's spelled correctly.")
@@ -122,7 +122,7 @@ export class BrandEditorFormComponent extends BaseComponentDirective implements 
                   }
                 }),
                 tap(similarBrands => {
-                  this.formlyFieldService.clearMessages(field.templateOptions);
+                  this.formlyFieldService.clearMessages(field);
                   this._showSimilarBrandsWarning(similarBrands);
                 })
               )
@@ -159,9 +159,9 @@ export class BrandEditorFormComponent extends BaseComponentDirective implements 
             expression: (control: FormControl) => {
               return of(
                 control.value.toLowerCase().indexOf("teleskop-express") === -1 &&
-                  control.value.toLowerCase().indexOf("teleskop express") === -1 &&
-                  control.value.toLowerCase().indexOf("teleskop-service") === -1 &&
-                  control.value.toLowerCase().indexOf("teleskop service") === -1
+                control.value.toLowerCase().indexOf("teleskop express") === -1 &&
+                control.value.toLowerCase().indexOf("teleskop-service") === -1 &&
+                control.value.toLowerCase().indexOf("teleskop service") === -1
               );
             },
             message: (error, field: FormlyFieldConfig) => {
@@ -193,7 +193,7 @@ export class BrandEditorFormComponent extends BaseComponentDirective implements 
         type: "input",
         wrappers: ["default-wrapper"],
         id: "brand-field-website",
-        templateOptions: {
+        props: {
           required: true,
           label: this.translateService.instant("Website")
         },
@@ -221,7 +221,7 @@ export class BrandEditorFormComponent extends BaseComponentDirective implements 
         key: "logo",
         type: "file",
         id: "brand-field-logo",
-        templateOptions: {
+        props: {
           required: false,
           label: this.translateService.instant("Logo"),
           accept: "image/jpeg, image/png"
@@ -246,7 +246,7 @@ export class BrandEditorFormComponent extends BaseComponentDirective implements 
       template = this.similarItemsTemplate;
       data = similarBrands;
 
-      this.formlyFieldService.addMessage(fieldConfig.templateOptions, {
+      this.formlyFieldService.addMessage(fieldConfig, {
         level: FormlyFieldMessageLevel.WARNING,
         template,
         data

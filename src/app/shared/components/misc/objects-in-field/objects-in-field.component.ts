@@ -12,7 +12,8 @@ export class ObjectsInFieldComponent {
   @Input()
   solution: SolutionInterface;
 
-  constructor(public readonly solutionService: SolutionService, public readonly translateService: TranslateService) {}
+  constructor(public readonly solutionService: SolutionService, public readonly translateService: TranslateService) {
+  }
 
   get objectsInField(): string {
     const objects = this.solutionService.getObjectsInField(this.solution);

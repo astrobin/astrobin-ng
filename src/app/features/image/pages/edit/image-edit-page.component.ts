@@ -19,7 +19,7 @@ import { UtilsService } from "@shared/services/utils/utils.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { ImageEditBasicFieldsService } from "@features/image/services/image-edit-basic-fields.service";
-import { ImageEditService } from "@features/image/services/image-edit.service";
+import { ImageEditModelInterface, ImageEditService } from "@features/image/services/image-edit.service";
 import { ImageEditContentFieldsService } from "@features/image/services/image-edit-content-fields.service";
 import { ImageEditWatermarkFieldsService } from "@features/image/services/image-edit-watermark-fields.service";
 import { ImageEditThumbnailFieldsService } from "@features/image/services/image-edit-thumbnail-fields.service";
@@ -59,11 +59,6 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
   editingExistingImage: boolean;
 
   showMigrationInfo = false;
-
-  @HostListener("window:beforeunload")
-  canDeactivate(): Observable<boolean> | boolean {
-    return this.imageEditService.form.pristine;
-  }
 
   constructor(
     public readonly store$: Store<State>,
@@ -106,40 +101,50 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     return this.store$.select(selectEquipmentPresets).pipe(takeUntil(this.destroyed$));
   }
 
+  @HostListener("window:beforeunload")
+  canDeactivate(): Observable<boolean> | boolean {
+    return this.imageEditService.form.pristine;
+  }
+
   ngOnInit(): void {
     super.ngOnInit();
 
-    this.imageEditService.image = this.route.snapshot.data.image;
+    const image = this.route.snapshot.data.image;
+
+    this.imageEditService.model = image;
+
     this.imageEditService.model = {
-      ...this.imageEditService.image,
+      ...this.imageEditService.model,
       ...{
-        imagingTelescopes2: this.imageEditService.image.imagingTelescopes2.map(x => x.id),
-        imagingCameras2: this.imageEditService.image.imagingCameras2.map(x => x.id),
-        mounts2: this.imageEditService.image.mounts2.map(x => x.id),
-        filters2: this.imageEditService.image.filters2.map(x => x.id),
-        accessories2: this.imageEditService.image.accessories2.map(x => x.id),
-        software2: this.imageEditService.image.software2.map(x => x.id),
-        guidingTelescopes2: this.imageEditService.image.guidingTelescopes2.map(x => x.id),
-        guidingCameras2: this.imageEditService.image.guidingCameras2.map(x => x.id)
+        imagingTelescopes2: image.imagingTelescopes2.map(x => x.id),
+        imagingCameras2: image.imagingCameras2.map(x => x.id),
+        mounts2: image.mounts2.map(x => x.id),
+        filters2: image.filters2.map(x => x.id),
+        accessories2: image.accessories2.map(x => x.id),
+        software2: image.software2.map(x => x.id),
+        guidingTelescopes2: image.guidingTelescopes2.map(x => x.id),
+        guidingCameras2: image.guidingCameras2.map(x => x.id)
       }
     };
     this.imageEditService.groups = this.route.snapshot.data.groups;
     this.imageEditService.locations = this.route.snapshot.data.locations;
 
-    this.editingExistingImage = !!this.imageEditService.image.subjectType;
+    this.editingExistingImage = !!this.imageEditService.model.subjectType;
 
     this.titleService.setTitle("Edit image");
 
     this._initBreadcrumb();
 
-    this.currentUser$.pipe(switchMap(user => this.jsonApiService.hasLegacyGear(user.id))).subscribe(hasLegacyGear => {
-      const dontShowMigrationInfoCookie = this.cookieService.get(this.DONT_SHOW_MIGRATION_INFO_COOKIE);
-      this.showMigrationInfo = hasLegacyGear && !dontShowMigrationInfoCookie;
-    });
+    this.currentUser$
+      .pipe(switchMap(user => this.jsonApiService.hasLegacyGear(user.id)))
+      .subscribe(hasLegacyGear => {
+        const dontShowMigrationInfoCookie = this.cookieService.get(this.DONT_SHOW_MIGRATION_INFO_COOKIE);
+        this.showMigrationInfo = hasLegacyGear && !dontShowMigrationInfoCookie;
+      });
 
     this.store$.dispatch(
       new LoadThumbnail({
-        data: { id: this.imageEditService.image.pk, revision: "0", alias: ImageAlias.HD },
+        data: { id: this.imageEditService.model.pk, revision: "0", alias: ImageAlias.HD },
         bustCache: false
       })
     );
@@ -148,7 +153,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
 
     this.route.fragment.subscribe((fragment: string) => {
       if (!fragment) {
-        this.router.navigate([`/i/${this.imageEditService.image.hash || this.imageEditService.image.pk}/edit`], {
+        this.router.navigate([`/i/${this.imageEditService.model.hash || this.imageEditService.model.pk}/edit`], {
           fragment: "1"
         });
       } else if (fragment === "3") {
@@ -260,7 +265,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     UtilsService.openLink(
       this.windowRefService.nativeWindow.document,
       this.classicRoutesService.EDIT_IMAGE_THUMBNAILS(
-        this.imageEditService.image.hash || "" + this.imageEditService.image.pk
+        this.imageEditService.model.hash || "" + this.imageEditService.model.pk
       ) + "?upload"
     );
   }
@@ -274,7 +279,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
       this.popNotificationsService.error(
         this.translateService.instant(
           "It looks like you are in the process of creating an equipment item, please complete or cancel that " +
-            "operation before saving the entire form."
+          "operation before saving the entire form."
         ),
         null,
         {
@@ -293,9 +298,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
         topLevelField.fieldGroup.forEach(stepField => {
           stepField.fieldGroup.forEach(field => {
             if (field.formControl.errors !== null) {
-              errorList.push(
-                `<li><strong>${stepField.templateOptions.label}:</strong> ${field.templateOptions.label}</li>`
-              );
+              errorList.push(`<li><strong>${stepField.props.label}:</strong> ${field.props.label}</li>`);
             }
           });
         });
@@ -321,8 +324,8 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
 
     this.store$.dispatch(
       new SaveImage({
-        pk: this.imageEditService.image.pk,
-        data: { ...this.imageEditService.image, ...this.imageEditService.form.value }
+        pk: this.imageEditService.model.pk,
+        image: { ...this.imageEditService.model, ...this.imageEditService.form.value } as ImageEditModelInterface
       })
     );
 
@@ -355,7 +358,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
       .subscribe(user => {
         const basic = {
           id: "image-stepper-basic-information",
-          templateOptions: { label: this.translateService.instant("Basic information") },
+          props: { label: this.translateService.instant("Basic information") },
           fieldGroup: [
             this.imageEditBasicFieldsService.getTitleField(),
             this.imageEditBasicFieldsService.getDescriptionField(),
@@ -367,7 +370,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
 
         const content = {
           id: "image-stepper-content",
-          templateOptions: { label: this.translateService.instant("Content") },
+          props: { label: this.translateService.instant("Content") },
           fieldGroup: [
             this.imageEditContentFieldsService.getAcquisitionTypeField(),
             this.imageEditContentFieldsService.getSubjectTypeField(),
@@ -381,7 +384,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
 
         const thumbnail = {
           id: "image-stepper-thumbnail",
-          templateOptions: { label: this.translateService.instant("Thumbnail") },
+          props: { label: this.translateService.instant("Thumbnail") },
           fieldGroup: [
             this.imageEditThumbnailFieldsService.getThumbnailField(),
             this.imageEditThumbnailFieldsService.getSharpenThumbnailsField()
@@ -390,7 +393,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
 
         const watermark = {
           id: "image-stepper-watermark",
-          templateOptions: { label: this.translateService.instant("Watermark") },
+          props: { label: this.translateService.instant("Watermark") },
           fieldGroup: [
             this.imageEditWatermarkFieldsService.getWatermarkCheckboxField(),
             this.imageEditWatermarkFieldsService.getWatermarkTextField(),
@@ -402,7 +405,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
 
         const equipment = {
           id: "image-stepper-equipment",
-          templateOptions: {
+          props: {
             label: this.translateService.instant("Equipment"),
             stepActionsTemplate: this.equipmentStepButtonsTemplate
           },
@@ -421,7 +424,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
 
         const settings = {
           id: "image-stepper-settings",
-          templateOptions: { label: this.translateService.instant("Settings") },
+          props: { label: this.translateService.instant("Settings") },
           fieldGroup: [
             this.imageEditSettingsFieldsService.getLicenseField(),
             this.imageEditSettingsFieldsService.getMouseHoverImageField(),
@@ -444,8 +447,8 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
           {
             type: "stepper",
             id: "image-stepper-field",
-            templateOptions: {
-              image: this.imageEditService.image,
+            props: {
+              // image: this.imageEditService.model,
               buttonsTemplate: this.stepperButtonsTemplate,
               fixed: true
             },
@@ -463,7 +466,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
             label: this.translateService.instant("Image")
           },
           {
-            label: this.imageEditService.image.title
+            label: this.imageEditService.model.title
           },
           {
             label: this.translateService.instant("Edit")

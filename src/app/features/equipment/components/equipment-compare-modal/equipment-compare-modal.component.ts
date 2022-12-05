@@ -21,6 +21,16 @@ export class EquipmentCompareModalComponent extends BaseComponentDirective imple
 
   public data: ComparisonInterface;
 
+  constructor(
+    public readonly store$: Store<State>,
+    public readonly modal: NgbActiveModal,
+    public readonly compareService: CompareService,
+    public readonly windowRefService: WindowRefService,
+    public readonly router: Router
+  ) {
+    super(store$);
+  }
+
   get rows() {
     if (!this.data) {
       return [];
@@ -35,16 +45,6 @@ export class EquipmentCompareModalComponent extends BaseComponentDirective imple
     }
 
     return retVal;
-  }
-
-  constructor(
-    public readonly store$: Store<State>,
-    public readonly modal: NgbActiveModal,
-    public readonly compareService: CompareService,
-    public readonly windowRefService: WindowRefService,
-    public readonly router: Router
-  ) {
-    super(store$);
   }
 
   ngOnInit(): void {

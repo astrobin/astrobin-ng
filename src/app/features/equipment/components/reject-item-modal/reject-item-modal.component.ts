@@ -55,6 +55,22 @@ export class RejectItemModalComponent extends BaseComponentDirective implements 
     }
   );
 
+  constructor(
+    public readonly store$: Store<State>,
+    public readonly actions$: Actions,
+    public readonly loadingService: LoadingService,
+    public readonly translateService: TranslateService,
+    public readonly modal: NgbActiveModal,
+    public readonly equipmentItemService: EquipmentItemService,
+    public readonly equipmentApiService: EquipmentApiService,
+    public readonly formlyFieldService: FormlyFieldService,
+    public readonly router: Router,
+    public readonly popNotificationsService: PopNotificationsService,
+    public readonly utilsService: UtilsService
+  ) {
+    super(store$);
+  }
+
   get rejectWarningMessage(): string {
     switch (this.model.reason) {
       case EquipmentItemReviewerRejectionReason.DUPLICATE:
@@ -72,22 +88,6 @@ export class RejectItemModalComponent extends BaseComponentDirective implements 
     }
   }
 
-  constructor(
-    public readonly store$: Store<State>,
-    public readonly actions$: Actions,
-    public readonly loadingService: LoadingService,
-    public readonly translateService: TranslateService,
-    public readonly modal: NgbActiveModal,
-    public readonly equipmentItemService: EquipmentItemService,
-    public readonly equipmentApiService: EquipmentApiService,
-    public readonly formlyFieldService: FormlyFieldService,
-    public readonly router: Router,
-    public readonly popNotificationsService: PopNotificationsService,
-    public readonly utilsService: UtilsService
-  ) {
-    super(store$);
-  }
-
   ngOnInit(): void {
     super.ngOnInit();
 
@@ -97,7 +97,7 @@ export class RejectItemModalComponent extends BaseComponentDirective implements 
         type: "ng-select",
         wrappers: ["default-wrapper"],
         id: "reason",
-        templateOptions: {
+        props: {
           required: true,
           clearable: false,
           label: this.translateService.instant("Reason"),
@@ -110,7 +110,7 @@ export class RejectItemModalComponent extends BaseComponentDirective implements 
               value: EquipmentItemReviewerRejectionReason.WRONG_BRAND,
               label: this.translateService.instant(
                 "The item doesn't seem to have the correct brand, or the brand is misspelled, or it's the " +
-                  "duplicate of an existing brand."
+                "duplicate of an existing brand."
               )
             },
             {
@@ -145,10 +145,10 @@ export class RejectItemModalComponent extends BaseComponentDirective implements 
                 case EquipmentItemReviewerRejectionReason.TYPO:
                 case EquipmentItemReviewerRejectionReason.INACCURATE_DATA:
                 case EquipmentItemReviewerRejectionReason.INSUFFICIENT_DATA:
-                  this.formlyFieldService.addMessage(field.templateOptions, message);
+                  this.formlyFieldService.addMessage(field, message);
                   break;
                 default:
-                  this.formlyFieldService.removeMessage(field.templateOptions, message);
+                  this.formlyFieldService.removeMessage(field, message);
               }
             });
           }
@@ -161,9 +161,9 @@ export class RejectItemModalComponent extends BaseComponentDirective implements 
         wrappers: ["default-wrapper"],
         hideExpression: () => this.model.reason !== EquipmentItemReviewerRejectionReason.OTHER,
         expressionProperties: {
-          "templateOptions.required": "model.reason === 'OTHER'"
+          "props.required": "model.reason === 'OTHER'"
         },
-        templateOptions: {
+        props: {
           label: this.translateService.instant("Comment"),
           rows: 4
         }
@@ -174,10 +174,10 @@ export class RejectItemModalComponent extends BaseComponentDirective implements 
         id: "duplicate-of-klass",
         hideExpression: () => this.model.reason !== EquipmentItemReviewerRejectionReason.DUPLICATE,
         expressionProperties: {
-          "templateOptions.required": "model.reason === 'DUPLICATE'"
+          "props.required": "model.reason === 'DUPLICATE'"
         },
         defaultValue: EquipmentItemType[this.equipmentItem.klass],
-        templateOptions: {
+        props: {
           label: this.translateService.instant("Item class"),
           clearable: false,
           options: Object.keys(EquipmentItemType).map(itemType => ({
@@ -192,7 +192,11 @@ export class RejectItemModalComponent extends BaseComponentDirective implements 
 
               this.fields = this.fields.filter(x => x.key !== duplicateOfField.key);
 
-              duplicateOfField.templateOptions.itemType = value;
+              duplicateOfField.props = {
+                ...duplicateOfField.props,
+                itemType: value
+              };
+
               this.fields.push(duplicateOfField);
             });
           }
@@ -206,10 +210,10 @@ export class RejectItemModalComponent extends BaseComponentDirective implements 
           this.model.reason !== EquipmentItemReviewerRejectionReason.DUPLICATE ||
           [EquipmentItemType.TELESCOPE, EquipmentItemType.CAMERA].indexOf(this.model.duplicateOfKlass) === -1,
         expressionProperties: {
-          "templateOptions.required": "model.reason === 'DUPLICATE'"
+          "props.required": "model.reason === 'DUPLICATE'"
         },
         defaultValue: EquipmentItemUsageType.GUIDING,
-        templateOptions: {
+        props: {
           label: this.translateService.instant("Usage type"),
           clearable: false,
           options: Object.keys(EquipmentItemUsageType).map(usageType => ({
@@ -280,9 +284,9 @@ export class RejectItemModalComponent extends BaseComponentDirective implements 
       id: "duplicate-of",
       hideExpression: () => this.model.reason !== EquipmentItemReviewerRejectionReason.DUPLICATE,
       expressionProperties: {
-        "templateOptions.required": "model.reason === 'DUPLICATE'"
+        "props.required": "model.reason === 'DUPLICATE'"
       },
-      templateOptions: {
+      props: {
         label: this.translateService.instant("Duplicate of"),
         itemType: this.equipmentItemService.getType(this.equipmentItem),
         showQuickAddRecent: false,

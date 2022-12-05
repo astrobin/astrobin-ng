@@ -50,7 +50,7 @@ export class RevisionUploaderPageComponent extends BaseComponentDirective implem
       key: "image_file",
       id: "image_file",
       type: "chunked-file",
-      templateOptions: {
+      props: {
         required: true,
         experimentalTiffSupportWarning: true,
         veryLargeSizeWarning: true
@@ -61,7 +61,7 @@ export class RevisionUploaderPageComponent extends BaseComponentDirective implem
       wrappers: ["default-wrapper"],
       id: "title",
       type: "input",
-      templateOptions: {
+      props: {
         label: this.translate.instant("Title"),
         description: this.translate.instant(
           "The revision's title will be shown as an addendum to the original image's title."
@@ -76,7 +76,7 @@ export class RevisionUploaderPageComponent extends BaseComponentDirective implem
       id: "description",
       type: "textarea",
       wrappers: ["default-wrapper"],
-      templateOptions: {
+      props: {
         label: this.translate.instant("Description"),
         required: false,
         change: this._onDescriptionChange.bind(this),
@@ -87,7 +87,7 @@ export class RevisionUploaderPageComponent extends BaseComponentDirective implem
       key: "skip_notifications",
       id: "skip_notifications",
       type: "checkbox",
-      templateOptions: {
+      props: {
         label: this.translate.instant("Skip notifications"),
         description: this.translate.instant("Do not notify your followers about this revision."),
         change: this._onSkipNotificationsChange.bind(this)
@@ -97,7 +97,7 @@ export class RevisionUploaderPageComponent extends BaseComponentDirective implem
       key: "mark_as_final",
       id: "mark_as_final",
       type: "checkbox",
-      templateOptions: {
+      props: {
         label: this.translate.instant("Mark as final"),
         description: this.translate.instant("Mark this revision as the final rendition of your image."),
         change: this._onMarkAsFinalChange.bind(this)
@@ -149,7 +149,9 @@ export class RevisionUploaderPageComponent extends BaseComponentDirective implem
       this.currentUserProfile$
         .pipe(
           switchMap(currentUserProfile =>
-            this.store$.select(selectBackendConfig).pipe(map(backendConfig => ({ currentUserProfile, backendConfig })))
+            this.store$
+              .select(selectBackendConfig)
+              .pipe(map(backendConfig => ({ currentUserProfile, backendConfig })))
           ),
           map(({ currentUserProfile, backendConfig }) => {
             this.userSubscriptionService
@@ -204,7 +206,9 @@ export class RevisionUploaderPageComponent extends BaseComponentDirective implem
       this.currentUserProfile$
         .pipe(
           switchMap(currentUserProfile =>
-            this.store$.select(selectBackendConfig).pipe(map(backendConfig => ({ currentUserProfile, backendConfig })))
+            this.store$
+              .select(selectBackendConfig)
+              .pipe(map(backendConfig => ({ currentUserProfile, backendConfig })))
           ),
           map(({ currentUserProfile, backendConfig }) => {
             this.userSubscriptionService
@@ -292,7 +296,11 @@ export class RevisionUploaderPageComponent extends BaseComponentDirective implem
   private _setBreadcrumb() {
     this.store$.dispatch(
       new SetBreadcrumb({
-        breadcrumb: [{ label: this.translate.instant("Image") }, { label: this.image.title }, { label: this.pageTitle }]
+        breadcrumb: [
+          { label: this.translate.instant("Image") },
+          { label: this.image.title },
+          { label: this.pageTitle }
+        ]
       })
     );
   }

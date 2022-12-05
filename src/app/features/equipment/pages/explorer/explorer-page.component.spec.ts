@@ -11,6 +11,8 @@ import { provideMockActions } from "@ngrx/effects/testing";
 import { ExplorerComponent } from "@features/equipment/components/explorer/explorer.component";
 import { ItemTypeNavComponent } from "@features/equipment/components/item-type-nav/item-type-nav.component";
 import { UtilsService } from "@shared/services/utils/utils.service";
+import { EquipmentCompareComponent } from "@features/equipment/components/equipment-compare/equipment-compare.component";
+import { ExplorerFiltersComponent } from "@features/equipment/pages/explorer/explorer-filters/explorer-filters.component";
 
 describe("ExplorerComponent", () => {
   let component: ExplorerPageComponent;
@@ -18,8 +20,10 @@ describe("ExplorerComponent", () => {
 
   beforeEach(async () => {
     await MockBuilder(ExplorerPageComponent, AppModule)
-      .mock(ItemTypeNavComponent)
-      .mock(ExplorerComponent)
+      .mock(ItemTypeNavComponent, { export: true })
+      .mock(ExplorerComponent, { export: true })
+      .mock(EquipmentCompareComponent, { export: true })
+      .mock(ExplorerFiltersComponent, { export: true })
       .provide([
         provideMockStore({ initialState }),
         provideMockActions(() => new ReplaySubject<any>()),

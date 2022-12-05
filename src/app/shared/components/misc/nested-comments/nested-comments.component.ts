@@ -113,7 +113,7 @@ export class NestedCommentsComponent extends BaseComponentDirective implements O
         type: "ckeditor",
         wrappers: ["default-wrapper"],
         id: "top-level-comment-field",
-        templateOptions: {
+        props: {
           required: true
         }
       }

@@ -135,8 +135,8 @@ export class EquipmentListingsComponent extends BaseComponentDirective implement
     const componentInstance = modalRef.componentInstance;
     componentInstance.message = this.translateService.instant(
       "AstroBin partners with retailer of astrophotography equipment in your country. For some of them, when " +
-        "you make a purchase within a few weeks after clicking on a link on a page like this, AstroBin gets a " +
-        "commission and it doesn't cost you anything."
+      "you make a purchase within a few weeks after clicking on a link on a page like this, AstroBin gets a " +
+      "commission and it doesn't cost you anything."
     );
   }
 

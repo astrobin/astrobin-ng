@@ -43,8 +43,8 @@
     <tbody>
       <tr
         *ngFor="let proposal of proposals"
-        [class.approved]="proposal.status == GearRenamingProposalStatus.APPROVED"
-        [class.rejected]="proposal.status == GearRenamingProposalStatus.REJECTED"
+        [class.approved]="proposal.status === GearRenamingProposalStatus.APPROVED"
+        [class.rejected]="proposal.status === GearRenamingProposalStatus.REJECTED"
       >
         <td>{{ proposal.oldMake }}</td>
         <td>{{ proposal.oldName }}</td>
@@ -58,7 +58,7 @@
         </td>
         <td>
           <button
-            class="btn btn-xs btn-success mb-2 mb-md-0 mr-lg-2"
+            class="btn btn-xs btn-success mb-2 mb-md-0 me-lg-2"
             [class.loading]="this.loadingService.loading$ | async"
             [disabled]="proposal.status !== GearRenamingProposalStatus.PENDING"
             (click)="approve($event, proposal)"

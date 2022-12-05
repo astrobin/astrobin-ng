@@ -62,8 +62,10 @@ export class AssignEditProposalModalComponent extends BaseComponentDirective imp
         key: "assignee",
         type: "radio",
         wrappers: ["default-wrapper"],
-        templateOptions: {
+        props: {
           required: false,
+          labelProp: "value",
+          valueProp: "key",
           options: this.equipmentApiService
             .getPossibleEditProposalAssignees(this.editProposal.klass, this.editProposal.id)
             .pipe(

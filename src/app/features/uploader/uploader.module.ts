@@ -15,4 +15,5 @@ import { UploaderPageComponent } from "./pages/uploader-page/uploader-page.compo
   imports: [RouterModule.forChild(routes), SharedModule, UploadxModule],
   providers: [PremiumSubscriptionGuardService, UltimateSubscriptionGuardService, UploaderGuardService]
 })
-export class UploaderModule {}
+export class UploaderModule {
+}

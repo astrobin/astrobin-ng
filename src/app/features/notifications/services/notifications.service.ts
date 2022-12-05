@@ -5,8 +5,8 @@ import { NotificationServiceInterface } from "@features/notifications/services/n
 import { NotificationsApiService } from "@features/notifications/services/notifications-api.service";
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
-import { Observable, ReplaySubject, Subject, throwError } from "rxjs";
-import { catchError, switchMap, take, tap } from "rxjs/operators";
+import { Observable, ReplaySubject, throwError } from "rxjs";
+import { catchError, switchMap, tap } from "rxjs/operators";
 
 @Injectable({
   providedIn: "root"

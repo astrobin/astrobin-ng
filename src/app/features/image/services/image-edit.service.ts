@@ -20,6 +20,26 @@ import { FilterInterface } from "@features/equipment/types/filter.interface";
 import { AccessoryInterface } from "@features/equipment/types/accessory.interface";
 import { SoftwareInterface } from "@features/equipment/types/software.interface";
 
+export type ImageEditModelInterface = Partial<Omit<ImageInterface,
+  | "user"
+  | "imagingTelescopes2"
+  | "imagingCameras2"
+  | "mounts2"
+  | "filters2"
+  | "accessories2"
+  | "software2"
+  | "guidingTelescopes2"
+  | "guidingCameras2"> & {
+  imagingTelescopes2: TelescopeInterface["id"][];
+  imagingCameras2: CameraInterface["id"][];
+  mounts2: MountInterface["id"][];
+  filters2: FilterInterface["id"][];
+  accessories2: AccessoryInterface["id"][];
+  software2: SoftwareInterface["id"][];
+  guidingTelescopes2: TelescopeInterface["id"][];
+  guidingCameras2: CameraInterface["id"][];
+}>;
+
 export function KeyValueTagsValidator(control: FormControl): ValidationErrors {
   if (!control.value) {
     return null;
@@ -40,29 +60,7 @@ export function KeyValueTagsValidator(control: FormControl): ValidationErrors {
   providedIn: null
 })
 export class ImageEditService extends BaseService {
-  image: ImageInterface;
-  model: Partial<
-    Omit<
-      ImageInterface,
-      | "imagingTelescopes2"
-      | "imagingCameras2"
-      | "mounts2"
-      | "filters2"
-      | "accessories2"
-      | "software2"
-      | "guidingTelescopes2"
-      | "guidingCameras2"
-    > & {
-      imagingTelescopes2: TelescopeInterface["id"][];
-      imagingCameras2: CameraInterface["id"][];
-      mounts2: MountInterface["id"][];
-      filters2: FilterInterface["id"][];
-      accessories2: AccessoryInterface["id"][];
-      software2: SoftwareInterface["id"][];
-      guidingTelescopes2: TelescopeInterface["id"][];
-      guidingCameras2: CameraInterface["id"][];
-    }
-  >;
+  model: ImageEditModelInterface;
   form = new FormGroup({});
   groups: GroupInterface[];
   locations: LocationInterface[];
@@ -112,13 +110,13 @@ export class ImageEditService extends BaseService {
         for (const preset of presets) {
           if (
             JSON.stringify([...preset.imagingTelescopes].sort()) ===
-              JSON.stringify([...this.model.imagingTelescopes2].sort()) &&
+            JSON.stringify([...this.model.imagingTelescopes2].sort()) &&
             JSON.stringify([...preset.guidingTelescopes].sort()) ===
-              JSON.stringify([...this.model.guidingTelescopes2].sort()) &&
+            JSON.stringify([...this.model.guidingTelescopes2].sort()) &&
             JSON.stringify([...preset.imagingCameras].sort()) ===
-              JSON.stringify([...this.model.imagingCameras2].sort()) &&
+            JSON.stringify([...this.model.imagingCameras2].sort()) &&
             JSON.stringify([...preset.guidingCameras].sort()) ===
-              JSON.stringify([...this.model.guidingCameras2].sort()) &&
+            JSON.stringify([...this.model.guidingCameras2].sort()) &&
             JSON.stringify([...preset.mounts].sort()) === JSON.stringify([...this.model.mounts2].sort()) &&
             JSON.stringify([...preset.filters].sort()) === JSON.stringify([...this.model.filters2].sort()) &&
             JSON.stringify([...preset.accessories].sort()) === JSON.stringify([...this.model.accessories2].sort()) &&

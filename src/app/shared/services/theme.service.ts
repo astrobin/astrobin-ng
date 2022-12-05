@@ -20,7 +20,8 @@ export class ThemeService {
     public readonly windowRef: WindowRefService,
     public readonly cookieService: CookieService,
     public readonly utilsService: UtilsService
-  ) {}
+  ) {
+  }
 
   preferredTheme(): Theme {
     const cookie = this.cookieService.get(Constants.USE_HIGH_CONTRAST_THEME_COOKIE);
@@ -55,7 +56,7 @@ export class ThemeService {
     newLink.id = "astrobin-theme";
     newLink.type = "text/css";
     newLink.rel = "stylesheet";
-    newLink.href = `/assets/themes/${preferredTheme}.css?build=${environment.buildVersion}`;
+    newLink.href = `/${preferredTheme}.css?build=${environment.buildVersion}`;
 
     head.appendChild(newLink);
 

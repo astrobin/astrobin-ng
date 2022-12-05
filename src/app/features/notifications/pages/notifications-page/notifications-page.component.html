@@ -2,7 +2,7 @@
   <h1 class="d-sm-flex justify-content-between align-items-center">
     <span class="flex-fill">
       {{ pageTitle }}
-      <span *ngIf="notificationsService.unreadCount$ | async as unreadCount" class="badge badge-danger badge-pill"
+      <span *ngIf="notificationsService.unreadCount$ | async as unreadCount" class="badge bg-danger badge-pill"
         id="unread-notifications-count">
         {{ unreadCount }}
       </span>

@@ -19,12 +19,10 @@ context("Equipment", () => {
       it("should see 'others in brand' info", () => {
         cy.route("get", "**/api/v2/equipment/mount/others-in-brand/*", [testMount]);
 
-        cy.equipmentItemBrowserSelectFirstBrand("#equipment-item-field-brand", "Test brand", testBrand);
+        cy.equipmentItemBrowserSelectFirstBrand("#equipment-item-field-brand", "Test Brand", testBrand);
 
         cy.get("astrobin-equipment-others-in-brand").should("be.visible");
-        cy.get("astrobin-equipment-others-in-brand .item")
-          .contains("Test")
-          .should("be.visible");
+        cy.get("astrobin-equipment-others-in-brand .item").contains("Test").should("be.visible");
       });
     });
   });

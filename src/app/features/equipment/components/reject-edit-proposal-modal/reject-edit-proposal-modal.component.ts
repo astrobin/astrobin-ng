@@ -55,7 +55,7 @@ export class RejectEditProposalModalComponent extends BaseComponentDirective imp
         type: "textarea",
         id: "comment",
         wrappers: ["default-wrapper"],
-        templateOptions: {
+        props: {
           label: this.translateService.instant("Comment"),
           required: false,
           rows: 4

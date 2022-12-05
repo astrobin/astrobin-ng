@@ -19,7 +19,7 @@ context("Equipment", () => {
       it("should create a brand", () => {
         cy.equipmentItemBrowserCreateBrand(
           "#equipment-item-field-brand",
-          "Test brand",
+          "Test Brand",
           "https://www.test-brand.com/",
           testBrand
         );
@@ -30,15 +30,11 @@ context("Equipment", () => {
       });
 
       it("should not allow the word OAG", () => {
-        cy.get("#equipment-item-field-name")
-          .clear()
-          .type("My OAG foo");
+        cy.get("#equipment-item-field-name").clear().type("My OAG foo");
         cy.get("formly-validation-message")
           .contains("Off-axis guiders are found among Accessories. Please find your item in that category, thanks!")
           .should("be.visible");
-        cy.get("#equipment-item-field-name")
-          .clear()
-          .type("Test camera");
+        cy.get("#equipment-item-field-name").clear().type("Test camera");
       });
 
       it("should fill the type", () => {
@@ -51,7 +47,7 @@ context("Equipment", () => {
         cy.equipmentItemBrowserCreate("#camera-field-sensor", "Test sensor", "@findSensors");
         cy.equipmentItemBrowserCreateBrand(
           "#create-new-item #create-new-item #equipment-item-field-brand",
-          "Test brand",
+          "Test Brand",
           "https://www.test-brand.com/",
           testBrand
         );
@@ -73,9 +69,7 @@ context("Equipment", () => {
         cy.get("[for=confirm-unambiguous]").click();
         cy.get("[for=confirm-english]").click();
         cy.get("[for=confirm-no-personal-information]").click();
-        cy.get(".modal-footer .btn")
-          .contains("Confirm")
-          .click();
+        cy.get(".modal-footer .btn").contains("Confirm").click();
 
         cy.wait("@createSensor");
 
@@ -98,11 +92,9 @@ context("Equipment", () => {
 
         cy.get("#create-new-item .btn-primary").click();
 
-        cy.get(".modal-title")
-          .contains("Confirm item creation")
-          .should("be.visible");
+        cy.get(".modal-title").contains("Confirm item creation").should("be.visible");
 
-        cy.equipmentItemSummaryShouldHaveItem(".modal", "Test brand", "Test camera");
+        cy.equipmentItemSummaryShouldHaveItem(".modal", "Test Brand", "Test camera");
         cy.equipmentItemSummaryShouldHaveProperty(".modal", "Class", "Camera");
         cy.equipmentItemSummaryShouldHaveProperty(".modal", "Type", "Dedicated deep-sky camera");
         cy.equipmentItemSummaryShouldHaveProperty(".modal", "Cooled", "Yes");
@@ -115,13 +107,11 @@ context("Equipment", () => {
         cy.get("[for=confirm-unambiguous]").click();
         cy.get("[for=confirm-english]").click();
         cy.get("[for=confirm-no-personal-information]").click();
-        cy.get(".modal-footer .btn")
-          .contains("Confirm")
-          .click();
+        cy.get(".modal-footer .btn").contains("Confirm").click();
 
         cy.wait("@createCamera");
 
-        cy.equipmentItemBrowserShouldContain("#equipment-item-field", "Test brand", "Test camera");
+        cy.equipmentItemBrowserShouldContain("#equipment-item-field", "Test Brand", "Test camera");
       });
     });
   });

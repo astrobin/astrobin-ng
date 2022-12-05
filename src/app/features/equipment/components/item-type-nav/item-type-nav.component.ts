@@ -395,9 +395,9 @@ export class ItemTypeNavComponent extends BaseComponentDirective
 
             this.reviewPendingEditNotification = this.popNotificationsService.info(
               `${message} ` +
-                this.translateService.instant(
-                  "Please contribute to the AstroBin equipment database by " + "reviewing them!"
-                ),
+              this.translateService.instant(
+                "Please contribute to the AstroBin equipment database by " + "reviewing them!"
+              ),
               null,
               {
                 enableHtml: true,

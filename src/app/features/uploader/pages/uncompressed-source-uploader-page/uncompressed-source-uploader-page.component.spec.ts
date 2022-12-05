@@ -12,7 +12,7 @@ describe("UncompressedSourceUploader.PageComponent", () => {
 
   beforeEach(() =>
     MockBuilder(UncompressedSourceUploaderPageComponent, UploaderModule)
-      .mock(AppModule)
+      .mock(AppModule, { export: true })
       .provide([
         provideMockStore({ initialState }),
         {

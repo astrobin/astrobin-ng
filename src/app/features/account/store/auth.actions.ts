@@ -1,4 +1,4 @@
-// tslint:disable:max-classes-per-file
+/* eslint-disable max-classes-per-file */
 
 import { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
 import {
@@ -33,25 +33,30 @@ export class InitializeAuth implements Action {
 
 export class InitializeAuthSuccess implements PayloadActionInterface {
   readonly type = AuthActionTypes.INITIALIZE_SUCCESS;
-  constructor(public payload: InitializeAuthSuccessInterface) {}
+
+  constructor(public payload: InitializeAuthSuccessInterface) {
+  }
 }
 
 export class Login implements PayloadActionInterface {
   readonly type = AuthActionTypes.LOGIN;
 
-  constructor(public payload: LoginPayloadInterface) {}
+  constructor(public payload: LoginPayloadInterface) {
+  }
 }
 
 export class LoginSuccess implements PayloadActionInterface {
   readonly type = AuthActionTypes.LOGIN_SUCCESS;
 
-  constructor(public payload: LoginSuccessInterface) {}
+  constructor(public payload: LoginSuccessInterface) {
+  }
 }
 
 export class LoginFailure implements PayloadActionInterface {
   readonly type = AuthActionTypes.LOGIN_FAILURE;
 
-  constructor(public payload: LoginFailureInterface) {}
+  constructor(public payload: LoginFailureInterface) {
+  }
 }
 
 export class Logout implements Action {
@@ -65,37 +70,43 @@ export class LogoutSuccess implements Action {
 export class UpdateCurrentUserProfile implements PayloadActionInterface {
   readonly type = AuthActionTypes.UPDATE_CURRENT_USER_PROFILE;
 
-  constructor(public payload: Partial<UserProfileInterface>) {}
+  constructor(public payload: Partial<UserProfileInterface>) {
+  }
 }
 
 export class UpdateCurrentUserProfileSuccess implements PayloadActionInterface {
   readonly type = AuthActionTypes.UPDATE_CURRENT_USER_PROFILE_SUCCESS;
 
-  constructor(public payload: UserProfileInterface) {}
+  constructor(public payload: UserProfileInterface) {
+  }
 }
 
 export class LoadUser implements PayloadActionInterface {
   readonly type = AuthActionTypes.LOAD_USER;
 
-  constructor(public payload: { id: UserInterface["id"] }) {}
+  constructor(public payload: { id: UserInterface["id"] }) {
+  }
 }
 
 export class LoadUserSuccess implements PayloadActionInterface {
   readonly type = AuthActionTypes.LOAD_USER_SUCCESS;
 
-  constructor(public payload: { user: UserInterface }) {}
+  constructor(public payload: { user: UserInterface }) {
+  }
 }
 
 export class LoadUserProfile implements PayloadActionInterface {
   readonly type = AuthActionTypes.LOAD_USER_PROFILE;
 
-  constructor(public payload: { id: UserProfileInterface["id"] }) {}
+  constructor(public payload: { id: UserProfileInterface["id"] }) {
+  }
 }
 
 export class LoadUserProfileSuccess implements PayloadActionInterface {
   readonly type = AuthActionTypes.LOAD_USER_PROFILE_SUCCESS;
 
-  constructor(public payload: { userProfile: UserProfileInterface }) {}
+  constructor(public payload: { userProfile: UserProfileInterface }) {
+  }
 }
 
 export type All =

@@ -2,12 +2,11 @@ import { Component, Input, OnChanges, OnInit } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { UsernameService } from "@shared/components/misc/username/username.service";
 import { UserInterface } from "@shared/interfaces/user.interface";
-import { Observable, of } from "rxjs";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { selectUser } from "@features/account/store/auth.selectors";
-import { filter, map, switchMap, take, tap } from "rxjs/operators";
+import { filter, switchMap, take, tap } from "rxjs/operators";
 import { LoadUser } from "@features/account/store/auth.actions";
 
 @Component({

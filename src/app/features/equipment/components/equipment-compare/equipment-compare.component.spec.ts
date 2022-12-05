@@ -6,6 +6,7 @@ import { AppModule } from "@app/app.module";
 import { provideMockStore } from "@ngrx/store/testing";
 import { initialState } from "@app/store/state";
 import { CompareService } from "@features/equipment/services/compare.service";
+import { WindowRefService } from "@shared/services/window-ref.service";
 
 describe("CompareComponent", () => {
   let component: EquipmentCompareComponent;
@@ -13,6 +14,7 @@ describe("CompareComponent", () => {
 
   beforeEach(async () => {
     await MockBuilder(EquipmentCompareComponent, AppModule).provide([
+      WindowRefService,
       provideMockStore({ initialState }),
       CompareService
     ]);

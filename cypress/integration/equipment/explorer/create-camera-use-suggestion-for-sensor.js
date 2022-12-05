@@ -17,7 +17,7 @@ context("Equipment", () => {
       });
 
       it("should select a brand", () => {
-        cy.equipmentItemBrowserSelectFirstBrand("#equipment-item-field-brand", "Test brand", testBrand);
+        cy.equipmentItemBrowserSelectFirstBrand("#equipment-item-field-brand", "Test Brand", testBrand);
       });
 
       it("should create a sensor", () => {
@@ -27,7 +27,7 @@ context("Equipment", () => {
 
         cy.equipmentItemBrowserSelectFirstBrand(
           "astrobin-sensor-editor #equipment-item-field-brand",
-          "Test brand",
+          "Test Brand",
           testBrand
         );
 
@@ -39,7 +39,7 @@ context("Equipment", () => {
         cy.get("astrobin-similar-items-suggestion").should("be.visible");
         cy.get("astrobin-similar-items-suggestion .btn").click();
 
-        cy.equipmentItemBrowserShouldContain("#camera-field-sensor", "Test brand", "Test sensor");
+        cy.equipmentItemBrowserShouldContain("#camera-field-sensor", "Test Brand", "Test sensor");
       });
     });
   });

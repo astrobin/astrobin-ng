@@ -189,7 +189,7 @@ export abstract class BasePromotionSlotsComponent extends BaseComponentDirective
           this.popNotificationsService.warning(
             this.translateService.instant(
               "You requested a comment for a scheduled IOTD that is not scheduled anymore: " +
-                "either it became IOTD because the scheduled date has been reached, or it was retracted."
+              "either it became IOTD because the scheduled date has been reached, or it was retracted."
             )
           );
         }

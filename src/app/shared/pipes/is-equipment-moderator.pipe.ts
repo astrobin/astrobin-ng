@@ -6,7 +6,8 @@ import { UserService } from "@shared/services/user.service";
   name: "isEquipmentModerator"
 })
 export class IsEquipmentModeratorPipe implements PipeTransform {
-  constructor(public userService: UserService) {}
+  constructor(public userService: UserService) {
+  }
 
   transform(user: UserInterface, args?: any): any {
     return this.userService.isInGroup(user, "equipment_moderators");

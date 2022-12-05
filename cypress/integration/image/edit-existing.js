@@ -72,7 +72,7 @@ context("Image edit (existing)", () => {
   });
 
   it("should show the Save button", () => {
-    cy.get("#save-dropdown").should("not.be.visible");
+    cy.get("#save-dropdown").should("not.exist");
     cy.get("#save-button").should("be.visible");
   });
 
@@ -84,9 +84,7 @@ context("Image edit (existing)", () => {
   });
 
   it("should have prefilled the content step", () => {
-    cy.get("#image-stepper-basic-information .form-actions .btn")
-      .contains("Next")
-      .click();
+    cy.get("#image-stepper-basic-information .form-actions .btn").contains("Next").click();
 
     cy.url().should("contain", "#2");
 
@@ -94,38 +92,24 @@ context("Image edit (existing)", () => {
     cy.get("#image-subject-type-field .ng-value").should("contain.text", "Deep sky");
     cy.get("#image-data-source-field .ng-value").should("contain.text", "Backyard");
 
-    cy.get("#image-groups-field .ng-value")
-      .contains("First test group")
-      .should("exist");
-    cy.get("#image-groups-field .ng-value")
-      .contains("Second test group")
-      .should("exist");
-    cy.get("#image-groups-field .ng-value")
-      .contains("Third test group")
-      .should("exist");
+    cy.get("#image-groups-field .ng-value").contains("First test group").should("exist");
+    cy.get("#image-groups-field .ng-value").contains("Second test group").should("exist");
+    cy.get("#image-groups-field .ng-value").contains("Third test group").should("exist");
   });
 
   it("should have locations", () => {
     cy.get("#image-locations-field").click();
 
-    cy.get("#image-locations-field .ng-value")
-      .contains("Home observatory")
-      .should("exist");
+    cy.get("#image-locations-field .ng-value").contains("Home observatory").should("exist");
 
-    cy.get("#image-locations-field .ng-option")
-      .contains("Backyard observatory")
-      .should("exist");
+    cy.get("#image-locations-field .ng-option").contains("Backyard observatory").should("exist");
   });
 
   it("should have prefilled the watermark step", () => {
-    cy.get("#image-stepper-content .form-actions .btn")
-      .contains("Next")
-      .click();
+    cy.get("#image-stepper-content .form-actions .btn").contains("Next").click();
 
     // Skip over thumbnail step.
-    cy.get("#image-stepper-thumbnail .form-actions .btn")
-      .contains("Next")
-      .click();
+    cy.get("#image-stepper-thumbnail .form-actions .btn").contains("Next").click();
 
     cy.url().should("contain", "#4");
 
@@ -137,57 +121,33 @@ context("Image edit (existing)", () => {
   });
 
   it("should have prefilled the equipment step", () => {
-    cy.get("#image-stepper-watermark .form-actions .btn")
-      .contains("Next")
-      .click();
+    cy.get("#image-stepper-watermark .form-actions .btn").contains("Next").click();
 
     cy.url().should("contain", "#5");
 
-    cy.get("#image-imaging-telescopes-field .ng-value")
-      .contains("Test Brand Test Telescope 1")
-      .should("be.visible");
+    cy.get("#image-imaging-telescopes-field .ng-value").contains("Test Brand Test Telescope 1").should("be.visible");
 
-    cy.get("#image-imaging-telescopes-field .ng-value")
-      .contains("Test Brand Test Telescope 2")
-      .should("be.visible");
+    cy.get("#image-imaging-telescopes-field .ng-value").contains("Test Brand Test Telescope 2").should("be.visible");
 
-    cy.get("#image-imaging-cameras-field .ng-value")
-      .contains("Test Brand Test Camera 1")
-      .should("be.visible");
+    cy.get("#image-imaging-cameras-field .ng-value").contains("Test Brand Test Camera 1").should("be.visible");
 
-    cy.get("#image-imaging-cameras-field .ng-value")
-      .contains("Test Brand Test Camera 2")
-      .should("be.visible");
+    cy.get("#image-imaging-cameras-field .ng-value").contains("Test Brand Test Camera 2").should("be.visible");
 
-    cy.get("#image-mounts-field .ng-value")
-      .contains("Test Brand Test Mount 1")
-      .should("be.visible");
+    cy.get("#image-mounts-field .ng-value").contains("Test Brand Test Mount 1").should("be.visible");
 
-    cy.get("#image-filters-field .ng-value")
-      .contains("Test Brand Test Filter 1")
-      .should("be.visible");
+    cy.get("#image-filters-field .ng-value").contains("Test Brand Test Filter 1").should("be.visible");
 
-    cy.get("#image-accessories-field .ng-value")
-      .contains("Test Brand Test Accessory 1")
-      .should("be.visible");
+    cy.get("#image-accessories-field .ng-value").contains("Test Brand Test Accessory 1").should("be.visible");
 
-    cy.get("#image-software-field .ng-value")
-      .contains("Test Brand Test Software 1")
-      .should("be.visible");
+    cy.get("#image-software-field .ng-value").contains("Test Brand Test Software 1").should("be.visible");
 
-    cy.get("#image-guiding-telescopes-field .ng-value")
-      .contains("Test Brand Test Telescope 3")
-      .should("be.visible");
+    cy.get("#image-guiding-telescopes-field .ng-value").contains("Test Brand Test Telescope 3").should("be.visible");
 
-    cy.get("#image-guiding-cameras-field .ng-value")
-      .contains("Test Brand Test Camera 3")
-      .should("be.visible");
+    cy.get("#image-guiding-cameras-field .ng-value").contains("Test Brand Test Camera 3").should("be.visible");
   });
 
   it("should have prefilled the settings step", () => {
-    cy.get("#image-stepper-equipment .form-actions .btn")
-      .contains("Next")
-      .click();
+    cy.get("#image-stepper-equipment .form-actions .btn").contains("Next").click();
 
     cy.url().should("contain", "#6");
 

@@ -15,11 +15,12 @@ export class UtilsService {
     public readonly store$: Store<State>,
     public readonly translateService: TranslateService,
     @Inject(PLATFORM_ID) public readonly platformId
-  ) {}
+  ) {
+  }
 
   static uuid(): string {
     const S4 = (): string => {
-      // tslint:disable-next-line:no-bitwise
+      // eslint-disable-next-line no-bitwise
       return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
     };
 
@@ -72,7 +73,7 @@ export class UtilsService {
     let m;
     const links = [];
 
-    // tslint:disable-next-line:no-conditional-assignment
+    // eslint-disable-next-line no-cond-assign
     while ((m = regex.exec(text)) !== null) {
       // This is necessary to avoid infinite loops with zero-width matches
       if (m.index === regex.lastIndex) {
@@ -119,7 +120,7 @@ export class UtilsService {
       const prefix = encodeURIComponent(parameter) + "=";
       const pars = urlParts[1].split(/[&;]/g);
 
-      for (let i = pars.length; i-- > 0; ) {
+      for (let i = pars.length; i-- > 0;) {
         if (pars[i].lastIndexOf(prefix, 0) !== -1) {
           pars.splice(i, 1);
         }
@@ -193,10 +194,7 @@ export class UtilsService {
     }
 
     return s.replace(/([-_][a-z])/gi, $1 => {
-      return $1
-        .toUpperCase()
-        .replace("-", "")
-        .replace("_", "");
+      return $1.toUpperCase().replace("-", "").replace("_", "");
     });
   }
 

@@ -23,4 +23,5 @@ import { CookieBackendModule } from "ngx-cookie-backend";
   ],
   bootstrap: [AppComponent]
 })
-export class AppServerModule {}
+export class AppServerModule {
+}

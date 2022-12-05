@@ -274,7 +274,8 @@ describe("UtilsService", () => {
       expect(UtilsService.isObject({})).toBe(true);
       expect(UtilsService.isObject([])).toBe(false);
       expect(UtilsService.isObject("hello")).toBe(false);
-      expect(UtilsService.isObject(() => {})).toBe(false);
+      expect(UtilsService.isObject(() => {
+      })).toBe(false);
       expect(UtilsService.isObject(null)).toBe(false);
       expect(UtilsService.isObject(undefined)).toBe(false);
     });

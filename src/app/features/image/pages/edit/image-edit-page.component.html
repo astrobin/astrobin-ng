@@ -25,7 +25,7 @@
     [class.loading]="loadingService.loading$ | async"
     [disabled]="!imageEditService.hasEquipmentItems()"
     id="clear-equipment-btn"
-    class="btn btn-outline-danger mr-2"
+    class="btn btn-outline-danger me-2"
     (click)="onClearEquipmentClicked()"
   >
     {{ "Clear" | translate }}
@@ -60,7 +60,7 @@
     class="btn btn-primary"
     *ngIf="editingExistingImage"
     [class.loading]="loadingService.loading$ | async"
-    (click)="onSave($event, classicRoutesService.IMAGE(imageEditService.image.hash || '' + imageEditService.image.pk))"
+    (click)="onSave($event, classicRoutesService.IMAGE(imageEditService.model.hash || '' + imageEditService.model.pk))"
   >
     {{ "Save" | translate }}
   </button>
@@ -83,7 +83,7 @@
           (click)="
             onSave(
               $event,
-              classicRoutesService.EDIT_IMAGE_GEAR(imageEditService.image.hash || '' + imageEditService.image.pk) +
+              classicRoutesService.EDIT_IMAGE_GEAR(imageEditService.model.hash || '' + imageEditService.model.pk) +
                 '?upload'
             )
           "
@@ -97,7 +97,7 @@
             onSave(
               $event,
               classicRoutesService.EDIT_IMAGE_ACQUISITION(
-                imageEditService.image.hash || '' + imageEditService.image.pk
+                imageEditService.model.hash || '' + imageEditService.model.pk
               ) + '?upload'
             )
           "
@@ -108,7 +108,7 @@
 
         <button
           (click)="
-            onSave($event, classicRoutesService.IMAGE(imageEditService.image.hash || '' + imageEditService.image.pk))
+            onSave($event, classicRoutesService.IMAGE(imageEditService.model.hash || '' + imageEditService.model.pk))
           "
           class="dropdown-item"
         >

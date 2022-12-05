@@ -19,7 +19,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { CameraInterface, CameraType } from "@features/equipment/types/camera.interface";
 
 export enum ConfirmItemCreationResult {
-  CANCEL
+  CANCEL,
 }
 
 @Component({
@@ -85,7 +85,7 @@ export class ConfirmItemCreationModalComponent extends BaseComponentDirective im
         type: "checkbox",
         id: "confirm-no-typos",
         wrappers: ["default-wrapper"],
-        templateOptions: {
+        props: {
           label: this.translateService.instant("I have carefully checked for typos")
         }
       },
@@ -94,7 +94,7 @@ export class ConfirmItemCreationModalComponent extends BaseComponentDirective im
         type: "checkbox",
         id: "confirm-no-duplication",
         wrappers: ["default-wrapper"],
-        templateOptions: {
+        props: {
           label: this.translateService.instant(
             "I have carefully checked that this item does not duplicate an existing one"
           )
@@ -105,7 +105,7 @@ export class ConfirmItemCreationModalComponent extends BaseComponentDirective im
         type: "checkbox",
         id: "confirm-naming-convention",
         wrappers: ["default-wrapper"],
-        templateOptions: {
+        props: {
           label: this.translateService.instant(
             "I have carefully checked that this item conforms to existing naming conventions for this brand"
           )
@@ -116,14 +116,14 @@ export class ConfirmItemCreationModalComponent extends BaseComponentDirective im
         type: "checkbox",
         id: "confirm-unambiguous",
         wrappers: ["default-wrapper"],
-        templateOptions: {
+        props: {
           label: this.translateService.instant(
             "The name of this product identifies it in a manner that is sufficiently unambiguous"
           ),
           description: this.translateService.instant(
             "You want to be precise enough that this product's name distinguishes it from similar products that " +
-              "people might want to search for on AstroBin, but not so precise as to create too many variants of " +
-              "what is essentially the same product."
+            "people might want to search for on AstroBin, but not so precise as to create too many variants of " +
+            "what is essentially the same product."
           )
         }
       },
@@ -132,11 +132,11 @@ export class ConfirmItemCreationModalComponent extends BaseComponentDirective im
         type: "checkbox",
         id: "confirm-english",
         wrappers: ["default-wrapper"],
-        templateOptions: {
+        props: {
           label: this.translateService.instant("The name of this product is in English (if applicable)"),
           description: this.translateService.instant(
             "AstroBin does not translate product names into other languages, so if the name of this product has" +
-              "words that are not in English, please fix it."
+            "words that are not in English, please fix it."
           )
         }
       }
@@ -148,10 +148,10 @@ export class ConfirmItemCreationModalComponent extends BaseComponentDirective im
         type: "checkbox",
         id: "confirm-no-personal-information",
         wrappers: ["default-wrapper"],
-        templateOptions: {
+        props: {
           label: this.translateService.instant(
             "I have not included information that pertains to my personal item " +
-              "(e.g. sold/broken/refurbished...) and this is the general description of a product"
+            "(e.g. sold/broken/refurbished...) and this is the general description of a product"
           )
         }
       });

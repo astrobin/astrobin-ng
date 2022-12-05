@@ -19,7 +19,7 @@ context("Equipment", () => {
       it("should create a brand", () => {
         cy.equipmentItemBrowserCreateBrand(
           "#equipment-item-field-brand",
-          "Test brand",
+          "Test Brand",
           "https://www.test-brand.com/",
           testBrand
         );
@@ -40,11 +40,9 @@ context("Equipment", () => {
 
         cy.get("#create-new-item .btn-primary").click();
 
-        cy.get(".modal-title")
-          .contains("Confirm item creation")
-          .should("be.visible");
+        cy.get(".modal-title").contains("Confirm item creation").should("be.visible");
 
-        cy.equipmentItemSummaryShouldHaveItem(".modal", "Test brand", "Test");
+        cy.equipmentItemSummaryShouldHaveItem(".modal", "Test Brand", "Test");
         cy.equipmentItemSummaryShouldHaveProperty(".modal", "Type", "Computer");
         cy.equipmentItemSummaryShouldHaveProperty(".modal", "Class", "Accessory");
 
@@ -54,13 +52,11 @@ context("Equipment", () => {
         cy.get("[for=confirm-unambiguous]").click();
         cy.get("[for=confirm-english]").click();
         cy.get("[for=confirm-no-personal-information]").click();
-        cy.get(".modal-footer .btn")
-          .contains("Confirm")
-          .click();
+        cy.get(".modal-footer .btn").contains("Confirm").click();
 
         cy.wait("@createAccessory");
 
-        cy.equipmentItemBrowserShouldContain("#equipment-item-field", "Test brand", "Test accessory");
+        cy.equipmentItemBrowserShouldContain("#equipment-item-field", "Test Brand", "Test accessory");
       });
     });
   });

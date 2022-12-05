@@ -31,7 +31,7 @@ export enum CompareServiceError {
   NON_MATCHING_CLASS = "NON_MATCHING_CLASS",
   ITEM_NOT_FOUND = "ITEM_NOT_FOUND",
   TOO_MANY_ITEMS = "TOO_MANY_ITEMS",
-  ALREADY_IN_LIST = "ALREADY_IN_LIST"
+  ALREADY_IN_LIST = "ALREADY_IN_LIST",
 }
 
 export interface ComparisonInterface {
@@ -281,17 +281,17 @@ export class CompareService extends BaseService {
               name: this.sensorService.getPrintablePropertyName(sensorPrintableProperty, true),
               value$: !!camera.sensor
                 ? this.store$
-                    .select(selectEquipmentItem, {
-                      type: EquipmentItemType.SENSOR,
-                      id: camera.sensor
-                    })
-                    .pipe(
-                      filter(sensor => !!sensor),
-                      take(1),
-                      switchMap((sensor: SensorInterface) =>
-                        this.sensorService.getPrintableProperty$(sensor, sensorPrintableProperty)
-                      )
+                  .select(selectEquipmentItem, {
+                    type: EquipmentItemType.SENSOR,
+                    id: camera.sensor
+                  })
+                  .pipe(
+                    filter(sensor => !!sensor),
+                    take(1),
+                    switchMap((sensor: SensorInterface) =>
+                      this.sensorService.getPrintableProperty$(sensor, sensorPrintableProperty)
                     )
+                  )
                 : of(null)
             });
           }
@@ -324,7 +324,7 @@ export class CompareService extends BaseService {
         )
       ).subscribe(computedResults => {
         for (const result of computedResults) {
-          for (const resultData of result) {
+          for (const resultData of result as any[]) {
             const entry = data[resultData["itemId"]].find(property => property.name === resultData["name"]);
             entry.value = resultData["value"];
             delete entry.value$;

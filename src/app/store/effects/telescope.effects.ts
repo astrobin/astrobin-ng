@@ -19,13 +19,13 @@ export class TelescopeEffects {
           switchMap(telescopeFromStore =>
             telescopeFromStore !== null
               ? of(telescopeFromStore).pipe(
-                  take(1),
-                  map(telescope => new LoadTelescopeSuccess(telescope))
-                )
+                take(1),
+                map(telescope => new LoadTelescopeSuccess(telescope))
+              )
               : this.telescopeApiService.get(action.payload).pipe(
-                  map(telescope => new LoadTelescopeSuccess(telescope)),
-                  catchError(error => EMPTY)
-                )
+                map(telescope => new LoadTelescopeSuccess(telescope)),
+                catchError(error => EMPTY)
+              )
           )
         )
       )
@@ -36,5 +36,6 @@ export class TelescopeEffects {
     public readonly store$: Store<State>,
     public readonly actions$: Actions<All>,
     public readonly telescopeApiService: TelescopeApiService
-  ) {}
+  ) {
+  }
 }

@@ -41,6 +41,8 @@ astrobin-root .app-loading,
 }
 
 a {
+  text-decoration: none;
+
   &[target="_blank"]:after {
     content: " \279a";
     font-size: 0.8em;

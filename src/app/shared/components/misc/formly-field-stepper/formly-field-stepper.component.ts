@@ -26,7 +26,7 @@ import {
   NgWizardStepComponent,
   STEP_STATE,
   StepChangedArgs
-} from "ng-wizard";
+} from "@kronscht/ng-wizard";
 import { isPlatformServer } from "@angular/common";
 import { Subscription } from "rxjs";
 
@@ -35,7 +35,8 @@ import { Subscription } from "rxjs";
   templateUrl: "./formly-field-stepper.component.html",
   styleUrls: ["./formly-field-stepper.component.scss"]
 })
-export class FormlyFieldStepperComponent extends FieldType
+export class FormlyFieldStepperComponent
+  extends FieldType
   implements OnInit, AfterViewInit, OnDestroy, AfterContentChecked {
   @ViewChild("wizard")
   wizard: NgWizardComponent;
@@ -126,7 +127,7 @@ export class FormlyFieldStepperComponent extends FieldType
   }
 
   getStepTitle(field: FormlyFieldConfig, stepNumber: number): string {
-    let title = field.templateOptions.label;
+    let title = field.props.label;
 
     if (this.isStepErrored(stepNumber)) {
       title += "*";

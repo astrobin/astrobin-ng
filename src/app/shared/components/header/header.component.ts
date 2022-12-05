@@ -128,7 +128,7 @@ export class HeaderComponent extends BaseComponentDirective implements OnInit {
     return this.domSanitizer.bypassSecurityTrustHtml(
       this.translateService.instant(
         "The <strong>Image Index</strong> is a system based on likes received on images, that incentivizes the " +
-          "most active and liked members of the community. {{_0}}Learn more.{{_1}}",
+        "most active and liked members of the community. {{_0}}Learn more.{{_1}}",
         {
           _0: `<a href="https://welcome.astrobin.com/features/image-index" target="_blank">`,
           _1: "</a>"
@@ -141,7 +141,7 @@ export class HeaderComponent extends BaseComponentDirective implements OnInit {
     return this.domSanitizer.bypassSecurityTrustHtml(
       this.translateService.instant(
         "The <strong>Contribution Index (beta)</strong> is system to reward informative, constructive, and " +
-          "valuable commentary on AstroBin. {{_0}}Learn more.{{_1}}",
+        "valuable commentary on AstroBin. {{_0}}Learn more.{{_1}}",
         {
           _0: `<a href="https://welcome.astrobin.com/features/contribution-index" target="_blank">`,
           _1: "</a>"

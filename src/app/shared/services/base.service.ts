@@ -14,7 +14,7 @@ export class BaseService implements OnDestroy {
     .pipe(takeUntil(this.destroyed$), debounceTime(LoadingService.DEBOUNCE_TIME));
 
   constructor(public readonly loadingService: LoadingService) {
-    this.loading$.subscribe((value) => this.loadingService.setLoading(value));
+    this.loading$.subscribe(value => this.loadingService.setLoading(value));
   }
 
   ngOnDestroy(): void {

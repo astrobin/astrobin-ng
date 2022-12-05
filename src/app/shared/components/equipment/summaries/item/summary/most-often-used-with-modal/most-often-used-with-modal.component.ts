@@ -5,10 +5,9 @@ import { State } from "@app/store/state";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { selectEquipmentItem, selectMostOftenUsedWithForItem } from "@features/equipment/store/equipment.selectors";
-import { filter, take, takeUntil } from "rxjs/operators";
+import { filter, take } from "rxjs/operators";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import { GetMostOftenUsedWith, LoadEquipmentItem } from "@features/equipment/store/equipment.actions";
-import { Subscription } from "rxjs";
+import { GetMostOftenUsedWith } from "@features/equipment/store/equipment.actions";
 
 @Component({
   selector: "astrobin-most-often-used-with-modal",

@@ -1,0 +1,18 @@
+@import "mixins";
+
+.accordion-item {
+  box-shadow: 0 0 .5rem rgba(0, 0, 0, .5);
+  border-color: var(--darkestGrey);
+
+  .accordion-button {
+    @include darkest-background-texture;
+    color: var(--accentColor);
+    padding: .75rem 1rem;
+    font-size: 1rem;
+    box-shadow: none;
+  }
+
+  .accordion-body {
+    @include darker-background-texture;
+  }
+}

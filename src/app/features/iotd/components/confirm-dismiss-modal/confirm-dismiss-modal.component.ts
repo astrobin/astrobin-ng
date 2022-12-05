@@ -13,7 +13,7 @@ import { CookieService } from "ngx-cookie";
 
 export enum ConfirmDismissResult {
   CANCEL,
-  CONFIRM
+  CONFIRM,
 }
 
 export const DISMISSAL_NOTICE_COOKIE = "astrobin-iotd-do-not-show-dismissal-notice";
@@ -47,6 +47,21 @@ export class ConfirmDismissModalComponent extends BaseComponentDirective impleme
     super(store$);
   }
 
+  get maxDismissalsMessage$(): Observable<string> {
+    return this.maxDismissals$.pipe(
+      map(maxDismissals => {
+        return this.translateService.instant(
+          "When an image is dismissed by {{0}} members of the IOTD/TP staff, it's automatically removed from " +
+          "all queues. Please only perform this action if you want to vote against this image advancing in the " +
+          "process.",
+          {
+            "0": maxDismissals
+          }
+        );
+      })
+    );
+  }
+
   ngOnInit() {
     super.ngOnInit();
 
@@ -55,7 +70,7 @@ export class ConfirmDismissModalComponent extends BaseComponentDirective impleme
         key: "dontRemindMeForAMonth",
         type: "checkbox",
         id: "dont-remind-me-for-a-month-field",
-        templateOptions: {
+        props: {
           label: this.translateService.instant("Don't remind me for a month")
         },
         hooks: {
@@ -70,20 +85,5 @@ export class ConfirmDismissModalComponent extends BaseComponentDirective impleme
         }
       }
     ];
-  }
-
-  get maxDismissalsMessage$(): Observable<string> {
-    return this.maxDismissals$.pipe(
-      map(maxDismissals => {
-        return this.translateService.instant(
-          "When an image is dismissed by {{0}} members of the IOTD/TP staff, it's automatically removed from " +
-            "all queues. Please only perform this action if you want to vote against this image advancing in the " +
-            "process.",
-          {
-            "0": maxDismissals
-          }
-        );
-      })
-    );
   }
 }

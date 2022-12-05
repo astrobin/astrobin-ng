@@ -5,5 +5,6 @@ import { BreadcrumbInterface } from "@shared/components/misc/breadcrumb/breadcru
 export class SetBreadcrumb implements PayloadActionInterface {
   readonly type = AppActionTypes.SET_BREADCRUMB;
 
-  constructor(public payload: { breadcrumb: BreadcrumbInterface[] }) {}
+  constructor(public payload: { breadcrumb: BreadcrumbInterface[] }) {
+  }
 }

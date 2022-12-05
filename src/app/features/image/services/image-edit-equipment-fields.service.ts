@@ -32,7 +32,7 @@ export class ImageEditEquipmentFieldsService extends BaseService {
       key: "imagingTelescopes2",
       type: "equipment-item-browser",
       id: "image-imaging-telescopes-field",
-      templateOptions: {
+      props: {
         multiple: true,
         required: false,
         label: this.translateService.instant("Acquisition telescopes or lenses"),
@@ -54,7 +54,7 @@ export class ImageEditEquipmentFieldsService extends BaseService {
       key: "imagingCameras2",
       type: "equipment-item-browser",
       id: "image-imaging-cameras-field",
-      templateOptions: {
+      props: {
         multiple: true,
         required: false,
         label: this.translateService.instant("Acquisition cameras"),
@@ -76,7 +76,7 @@ export class ImageEditEquipmentFieldsService extends BaseService {
       key: "mounts2",
       type: "equipment-item-browser",
       id: "image-mounts-field",
-      templateOptions: {
+      props: {
         multiple: true,
         required: false,
         label: this.translateService.instant("Mounts"),
@@ -97,7 +97,7 @@ export class ImageEditEquipmentFieldsService extends BaseService {
       key: "filters2",
       type: "equipment-item-browser",
       id: "image-filters-field",
-      templateOptions: {
+      props: {
         multiple: true,
         required: false,
         label: this.translateService.instant("Filters"),
@@ -118,7 +118,7 @@ export class ImageEditEquipmentFieldsService extends BaseService {
       key: "accessories2",
       type: "equipment-item-browser",
       id: "image-accessories-field",
-      templateOptions: {
+      props: {
         multiple: true,
         required: false,
         label: this.translateService.instant("Accessories"),
@@ -139,7 +139,7 @@ export class ImageEditEquipmentFieldsService extends BaseService {
       key: "software2",
       type: "equipment-item-browser",
       id: "image-software-field",
-      templateOptions: {
+      props: {
         multiple: true,
         required: false,
         label: this.translateService.instant("Software"),
@@ -165,7 +165,7 @@ export class ImageEditEquipmentFieldsService extends BaseService {
       defaultValue:
         (this.imageEditService.model.guidingTelescopes2 && this.imageEditService.model.guidingTelescopes2.length > 0) ||
         (this.imageEditService.model.guidingCameras2 && this.imageEditService.model.guidingCameras2.length > 0),
-      templateOptions: {
+      props: {
         required: false,
         label: this.translateService.instant("Show guiding equipment")
       }
@@ -178,7 +178,7 @@ export class ImageEditEquipmentFieldsService extends BaseService {
       type: "equipment-item-browser",
       id: "image-guiding-telescopes-field",
       hideExpression: () => !this.imageEditService.model.showGuidingEquipment,
-      templateOptions: {
+      props: {
         multiple: true,
         required: false,
         label: this.translateService.instant("Guiding telescopes or lenses"),
@@ -201,7 +201,7 @@ export class ImageEditEquipmentFieldsService extends BaseService {
           this._getGuidingTelescopesSubscription = field.formControl.valueChanges.subscribe(value => {
             if (value && value.length > 0) {
               this.imageEditService.model.showGuidingEquipment = true;
-              this.imageEditService.form.get("showGuidingEquipment").setValue(true);
+              // this.imageEditService.form.get("showGuidingEquipment").setValue(true);
             }
           });
         },
@@ -219,7 +219,7 @@ export class ImageEditEquipmentFieldsService extends BaseService {
       type: "equipment-item-browser",
       id: "image-guiding-cameras-field",
       hideExpression: () => !this.imageEditService.model.showGuidingEquipment,
-      templateOptions: {
+      props: {
         multiple: true,
         required: false,
         label: this.translateService.instant("Guiding cameras"),
@@ -242,7 +242,7 @@ export class ImageEditEquipmentFieldsService extends BaseService {
           this._getGuidingCamerasSubscription = field.formControl.valueChanges.subscribe(value => {
             if (value && value.length > 0) {
               this.imageEditService.model.showGuidingEquipment = true;
-              this.imageEditService.form.get("showGuidingEquipment").setValue(true);
+              // this.imageEditService.form.get("showGuidingEquipment").setValue(true);
             }
           });
         },

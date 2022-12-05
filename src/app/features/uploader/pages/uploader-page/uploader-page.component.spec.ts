@@ -10,7 +10,7 @@ describe("Uploader.PageComponent", () => {
 
   beforeEach(() =>
     MockBuilder(UploaderPageComponent, UploaderModule)
-      .mock(AppModule)
+      .mock(AppModule, { export: true })
       .provide(provideMockStore({ initialState }))
   );
 

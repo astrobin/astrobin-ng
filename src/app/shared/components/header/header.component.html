@@ -322,7 +322,7 @@
       <fa-icon class="d-none d-lg-block" icon="bell"></fa-icon>
       <span class="d-lg-none">{{ "Notifications" | translate }}</span>
       <ng-container *ngIf="notificationsService.unreadCount$ | async as unreadCount">
-        <span class="badge badge-danger badge-pill">
+        <span class="badge bg-danger badge-pill">
           {{ unreadCount }}
         </span>
       </ng-container>

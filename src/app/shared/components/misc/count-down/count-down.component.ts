@@ -2,7 +2,7 @@ import { Component, Inject, Input, OnInit, PLATFORM_ID } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
-import { interval, Subscription } from "rxjs";
+import { interval } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { isPlatformBrowser } from "@angular/common";
 
@@ -63,11 +63,11 @@ export class CountDownComponent extends BaseComponentDirective implements OnInit
     );
     this.hoursToTargetDate = Math.floor(
       (timeDifference / (this.MILLISECONDS_IN_A_SECOND * this.MINUTES_IN_AN_HOUR * this.SECONDS_IN_A_MINUTE)) %
-        this.HOURS_IN_A_DAY
+      this.HOURS_IN_A_DAY
     );
     this.daysToTargetDate = Math.floor(
       timeDifference /
-        (this.MILLISECONDS_IN_A_SECOND * this.MINUTES_IN_AN_HOUR * this.SECONDS_IN_A_MINUTE * this.HOURS_IN_A_DAY)
+      (this.MILLISECONDS_IN_A_SECOND * this.MINUTES_IN_AN_HOUR * this.SECONDS_IN_A_MINUTE * this.HOURS_IN_A_DAY)
     );
   }
 }

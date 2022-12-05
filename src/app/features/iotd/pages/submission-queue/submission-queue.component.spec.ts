@@ -17,9 +17,9 @@ describe("SubmissionQueueComponent", () => {
   beforeEach(async () => {
     await MockBuilder(SubmissionQueueComponent, AppModule)
       .provide(provideMockStore({ initialState }))
-      .mock(QueueSortButtonComponent)
-      .mock(SubmissionEntryComponent)
-      .mock(SubmissionSlotsComponent);
+      .mock(QueueSortButtonComponent, { export: true })
+      .mock(SubmissionEntryComponent, { export: true })
+      .mock(SubmissionSlotsComponent, { export: true });
   });
 
   beforeEach(() =>

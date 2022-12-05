@@ -83,7 +83,7 @@
                       [value]="filter.value"
                       (toggle)="setFilterValue(filter, $event)"
                     ></astrobin-toggle-button>
-                    <label class="ml-2">
+                    <label class="ms-2">
                       {{ filter.label }}
                     </label>
                   </div>
@@ -154,7 +154,7 @@
       </button>
 
       <a
-        appEventPreventDefault
+        astrobinEventPreventDefault
         href="#"
         *ngIf="activeFilters.length > 0"
         class="d-block d-sm-inline-block clear-filters"
