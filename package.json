@@ -13,7 +13,7 @@
     "start:cypress": "ng serve --host 0.0.0.0 --port 4400 --configuration=cypress",
     "build": "ng build",
     "build:stats": "ng build --stats-json",
-    "build:prod": "replace-in-file __BUILD_VERSION__ ${CODEBUILD_RESOLVED_SOURCE_VERSION} ${CODEBUILD_SRC_DIR}/src/environments/environment.prod.ts && ng build --aot --configuration=production",
+    "build:prod": "replace-in-file __BUILD_VERSION__ ${CODEBUILD_RESOLVED_SOURCE_VERSION} ${CODEBUILD_SRC_DIR}/src/environments/environment.prod.ts,${CODEBUILD_SRC_DIR}/src/index*.html && ng build --aot --configuration=production",
     "build:beta": "ng build --aot --configuration=beta",
     "test": "jest --config jest.config.js",
     "test:cov": "jest --config jest.config.js --coverage",
@@ -27,7 +27,7 @@
     "dev:ssr": "ng run frontend:serve-ssr",
     "serve:ssr": "node dist/frontend/server/main.js",
     "build:ssr:dev": "ng build --configuration=development && ng run frontend:server --configuration=development",
-    "build:ssr:prod": "replace-in-file __BUILD_VERSION__ ${CODEBUILD_RESOLVED_SOURCE_VERSION} ${CODEBUILD_SRC_DIR}/src/environments/environment.prod.ts && ng build --aot --configuration=production && ng run frontend:server:production",
+    "build:ssr:prod": "replace-in-file __BUILD_VERSION__ ${CODEBUILD_RESOLVED_SOURCE_VERSION} ${CODEBUILD_SRC_DIR}/src/environments/environment.prod.ts,${CODEBUILD_SRC_DIR}/src/index*.html && ng build --aot --configuration=production && ng run frontend:server:production",
     "prerender": "ng run frontend:prerender"
   },
   "private": true,

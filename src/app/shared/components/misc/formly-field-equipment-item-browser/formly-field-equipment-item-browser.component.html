@@ -23,8 +23,13 @@
   <div class="quick-add">
     <span class="quick-add-label">{{ "Quick-add recent" | translate }}:</span>
 
-    <ng-container *ngIf="hasRecent; else noRecent">
-      <ng-container *ngIf="recent.length > 0; else allRecentUsed">
+    <ng-container
+      *ngIf="!recentLoaded; else recentLoadedTemplate"
+      [ngTemplateOutlet]="loadingRecentTemplate"
+    ></ng-container>
+
+    <ng-template #recentLoadedTemplate>
+      <ng-container *ngIf="recent.length > 0; else noRecentTemplate">
         <ng-container *ngFor="let item of recent; let last = last">
           <a (click)="quickAddItem(item)" astrobinEventPreventDefault class="quick-add-item" href="#">
             <astrobin-equipment-item-display-name
@@ -35,7 +40,7 @@
           <span *ngIf="!last" class="quick-add-separator">&middot;</span>
         </ng-container>
       </ng-container>
-    </ng-container>
+    </ng-template>
   </div>
 
   <div
@@ -53,10 +58,11 @@
   </div>
 </ng-container>
 
-<ng-template #noRecent>
-  <span [innerHTML]="noRecentMessage" class="no-recent"></span>
+<ng-template #noRecentTemplate>
+  <span *ngIf="!recentUsed" [innerHTML]="noRecentMessage" class="no-recent"></span>
+  <span *ngIf="recentUsed" [innerHTML]="allRecentUsedMessage" class="no-recent"></span>
 </ng-template>
 
-<ng-template #allRecentUsed>
-  <span [innerHTML]="allRecentUsedMessage" class="no-recent"></span>
+<ng-template #loadingRecentTemplate>
+  <astrobin-text-loading-indicator></astrobin-text-loading-indicator>
 </ng-template>

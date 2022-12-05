@@ -16,7 +16,7 @@
 }
 
 .dropdown-menu {
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   box-shadow: 1rem 1rem 2rem rgba(0, 0, 0, 0.9);
 
   @media (max-width: $xs-max) {
@@ -40,10 +40,10 @@
 }
 
 .dropdown-divider {
-    border-top-color: var(--grey);
+  border-top-color: var(--grey);
 }
 
 .dropdown-header {
-  font-size: .85rem;
+  font-size: .9rem;
   color: var(--lighterGrey);
 }

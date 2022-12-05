@@ -6,7 +6,7 @@
 
     <div class="scrollable-container">
       <form [formGroup]="form">
-        <formly-form [fields]="fields" [form]="form" [model]="model"></formly-form>
+        <formly-form [fields]="fields" [form]="form" [model]="model" [options]="options"></formly-form>
       </form>
     </div>
   </div>
@@ -14,7 +14,7 @@
     <div class="results">
       <h4>{{ "Results" | translate }}</h4>
 
-      <div *ngIf="!loadingPage && results.length === 0">
+      <div *ngIf="!options.formState.loadingPage && results.length === 0">
         <p>{{ "No equipment items found by the selected properties." | translate }}</p>
         <ng-container [ngTemplateOutlet]="createNewButton"></ng-container>
       </div>
@@ -22,8 +22,8 @@
       <div
         #resultsScrollable
         *ngIf="results?.length > 0"
+        [class.loading]="options.formState.loadingPage"
         class="scrollable-container"
-        [class.loading]="loadingPage"
       >
         <table class="table table-striped items">
           <thead>
@@ -76,9 +76,9 @@
                   <p class="item-variants-list">
                     <span *ngFor="let variant of item.variants">
                       <astrobin-equipment-item-display-name
+                        [cut]="item.name"
                         [item]="variant"
                         [showBrand]="false"
-                        [cut]="item.name"
                       ></astrobin-equipment-item-display-name>
                     </span>
                   </p>
@@ -138,7 +138,7 @@
           </tbody>
         </table>
 
-        <div *ngIf="!loadingPage && !hasNextPage" class="mt-3 p-1">
+        <div *ngIf="!options.formState.loadingPage && !hasNextPage" class="mt-3 p-1">
           <hr />
 
           <p>{{ "Can't find what you're looking for?" | translate }}</p>
@@ -147,18 +147,18 @@
       </div>
 
       <a
-        *ngIf="hasNextPage && !loadingPage"
-        href="#"
-        astrobinEventStopPropagation
-        astrobinEventPreventDefault
         (click)="loadNextPage()"
+        *ngIf="hasNextPage && !options.formState.loadingPage"
+        astrobinEventPreventDefault
+        astrobinEventStopPropagation
         class="text-center d-block d-lg-none p-2"
+        href="#"
       >
         {{ "Load more" | translate }}
       </a>
 
       <astrobin-loading-indicator
-        *ngIf="loadingPage"
+        *ngIf="options.formState.loadingPage"
         class="mt-3"
       ></astrobin-loading-indicator>
     </div>
@@ -175,7 +175,7 @@
     <a href="https://welcome.astrobin.com/features/equipment-database" target="_blank">{{"Learn more"}}.</a>
   </p>
 
-  <button class="btn btn-primary d-block mt-3" (click)="createClicked.emit()">
+  <button (click)="createClicked.emit()" class="btn btn-primary d-block mt-3">
     {{ "Create new" | translate }}
   </button>
 </ng-template>

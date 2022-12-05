@@ -112,7 +112,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     super.ngOnInit();
 
     const image = this.route.snapshot.data.image;
-
+this.imageEditService.model = image;
     this.imageEditService.model = {
       ...image,
       ...{

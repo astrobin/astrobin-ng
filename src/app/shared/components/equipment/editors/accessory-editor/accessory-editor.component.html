@@ -1,18 +1,18 @@
 <form [formGroup]="form" id="accessory-editor-form">
-  <formly-form [fields]="fields" [form]="form" [model]="model"></formly-form>
+  <formly-form [fields]="fields" [form]="form" [model]="model" [options]="options"></formly-form>
 </form>
 
-<ng-container *ngIf="brandCreation.inProgress">
+<ng-container *ngIf="options.formState.brandCreation.inProgress">
   <div class="mt-4 mb-4 text-center">
     <fa-icon icon="arrow-down"></fa-icon>
   </div>
 
   <astrobin-brand-editor-card
-    [form]="brandCreation.form"
-    [model]="brandCreation.model"
-    [name]="brandCreation.name"
-    [disabled]="subCreation.inProgress"
     (brand)="brandCreated($event)"
+    [disabled]="options.formState.subCreation.inProgress"
+    [form]="options.formState.brandCreation.form"
+    [model]="options.formState.brandCreation.model"
+    [name]="options.formState.brandCreation.name"
   ></astrobin-brand-editor-card>
 </ng-container>
 
@@ -22,8 +22,8 @@
 
 <ng-template #similarItemsTemplate let-items="data">
   <astrobin-similar-items-suggestion
-    [items]="items"
     (itemSelected)="suggestionSelected.emit($event)"
+    [items]="items"
   ></astrobin-similar-items-suggestion>
 </ng-template>
 

@@ -127,8 +127,8 @@ export class MountEditorComponent extends BaseItemEditorComponent<MountInterface
       key: "type",
       type: "ng-select",
       id: "mount-field-type",
-      expressionProperties: {
-        "props.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+      expressions: {
+        "props.disabled": "formState.subCreation.inProgress || formState.brandCreation.inProgress"
       },
       props: {
         label: this.mountService.getPrintablePropertyName(MountDisplayProperty.TYPE),
@@ -158,8 +158,8 @@ export class MountEditorComponent extends BaseItemEditorComponent<MountInterface
       type: "input",
       wrappers: ["default-wrapper"],
       id: "mount-field-weight",
-      expressionProperties: {
-        "props.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+      expressions: {
+        "props.disabled": "formState.subCreation.inProgress || formState.brandCreation.inProgress"
       },
       props: {
         type: "number",
@@ -192,8 +192,8 @@ export class MountEditorComponent extends BaseItemEditorComponent<MountInterface
       type: "input",
       wrappers: ["default-wrapper"],
       id: "mount-field-max-payload",
-      expressionProperties: {
-        "props.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+      expressions: {
+        "props.disabled": "formState.subCreation.inProgress || formState.brandCreation.inProgress"
       },
       props: {
         type: "number",
@@ -221,8 +221,8 @@ export class MountEditorComponent extends BaseItemEditorComponent<MountInterface
       wrappers: ["default-wrapper"],
       id: "mount-field-computerized",
       hideExpression: () => this.model.type === MountType.TRIPOD,
-      expressionProperties: {
-        "props.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+      expressions: {
+        "props.disabled": "formState.subCreation.inProgress || formState.brandCreation.inProgress"
       },
       props: {
         label: this.mountService.getPrintablePropertyName(MountDisplayProperty.COMPUTERIZED)
@@ -237,8 +237,8 @@ export class MountEditorComponent extends BaseItemEditorComponent<MountInterface
       wrappers: ["default-wrapper"],
       id: "mount-field-periodic-error",
       hideExpression: () => !this.model.computerized,
-      expressionProperties: {
-        "props.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+      expressions: {
+        "props.disabled": "formState.subCreation.inProgress || formState.brandCreation.inProgress"
       },
       props: {
         type: "number",
@@ -273,8 +273,8 @@ export class MountEditorComponent extends BaseItemEditorComponent<MountInterface
       id: "mount-field-pec",
       defaultValue: false,
       hideExpression: () => !this.model.computerized,
-      expressionProperties: {
-        "props.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+      expressions: {
+        "props.disabled": "formState.subCreation.inProgress || formState.brandCreation.inProgress"
       },
       props: {
         label: this.mountService.getPrintablePropertyName(MountDisplayProperty.PEC)
@@ -289,8 +289,8 @@ export class MountEditorComponent extends BaseItemEditorComponent<MountInterface
       wrappers: ["default-wrapper"],
       id: "mount-field-slew-speed",
       hideExpression: () => !this.model.computerized,
-      expressionProperties: {
-        "props.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+      expressions: {
+        "props.disabled": "formState.subCreation.inProgress || formState.brandCreation.inProgress"
       },
       props: {
         type: "number",

@@ -135,7 +135,7 @@ export class ImageEditContentFieldsService extends BaseService {
       type: "ng-select",
       id: "image-solar-system-main-subject-field",
       hideExpression: () => this.imageEditService.model.subjectType !== SubjectType.SOLAR_SYSTEM,
-      expressionProperties: {
+      expressions: {
         "props.required": "model.subjectType === 'SOLAR_SYSTEM'"
       },
       props: {
@@ -269,7 +269,7 @@ export class ImageEditContentFieldsService extends BaseService {
       id: "image-remote-source-field",
       hideExpression: () =>
         [DataSource.OWN_REMOTE, DataSource.AMATEUR_HOSTING].indexOf(this.imageEditService.model.dataSource) === -1,
-      expressionProperties: {
+      expressions: {
         "props.required": "model.dataSource === 'OWN_REMOTE' || model.dataSource === 'AMATEUR_HOSTING'"
       },
       props: {

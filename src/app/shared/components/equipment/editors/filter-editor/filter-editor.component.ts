@@ -200,8 +200,8 @@ export class FilterEditorComponent extends BaseItemEditorComponent<FilterInterfa
       key: "type",
       type: "ng-select",
       id: "filter-field-type",
-      expressionProperties: {
-        "props.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+      expressions: {
+        "props.disabled": "formState.subCreation.inProgress || formState.brandCreation.inProgress"
       },
       props: {
         label: this.filterService.getPrintablePropertyName(FilterDisplayProperty.TYPE),
@@ -231,10 +231,9 @@ export class FilterEditorComponent extends BaseItemEditorComponent<FilterInterfa
       type: "input",
       wrappers: ["default-wrapper"],
       id: "filter-field-bandwidth",
-      expressionProperties: {
-        "props.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress,
-        "props.required": () =>
-          [FilterType.H_ALPHA, FilterType.H_BETA, FilterType.SII, FilterType.OIII].indexOf(this.model.type) > -1
+      expressions: {
+        "props.disabled": "formState.subCreation.inProgress || formState.brandCreation.inProgress",
+        "props.required": "['H_ALPHA', 'H_BETA', 'SII', 'OIII'].indexOf(model.type) > -1"
       },
       props: {
         type: "number",
@@ -276,8 +275,8 @@ export class FilterEditorComponent extends BaseItemEditorComponent<FilterInterfa
       key: "size",
       type: "ng-select",
       id: "filter-field-size",
-      expressionProperties: {
-        "props.disabled": () => this.subCreation.inProgress || this.brandCreation.inProgress
+      expressions: {
+        "props.disabled": "formState.subCreation.inProgress || formState.brandCreation.inProgress"
       },
       props: {
         label: this.filterService.getPrintablePropertyName(FilterDisplayProperty.SIZE),

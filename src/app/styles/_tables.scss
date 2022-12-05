@@ -3,7 +3,7 @@
 .table {
   thead {
     th {
-      @include darker-background-texture;
+      @include darkest-background-texture;
       color: var(--white);
 
       .help-tooltip {
