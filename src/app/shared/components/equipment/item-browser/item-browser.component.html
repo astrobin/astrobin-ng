@@ -28,7 +28,7 @@
       [showFrozenAsAmbiguous]="object.item.variants.length === 0"
     ></astrobin-equipment-item-display-name>
 
-    <ng-container *ngIf="object.item?.variants?.length > 0">
+    <ng-container *ngIf="!!object.item.variants && object.item.variants.length > 0">
       <p class="item-variants-info">{{ variantsMessage(object.item.variants.length) }}</p>
       <p class="item-variants-list">
         <span *ngFor="let variant of object.item.variants">
