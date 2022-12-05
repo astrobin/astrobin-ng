@@ -1,23 +1,30 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { AdditionalDeepSkyAcquisitionPropertiesModalComponent } from './additional-deep-sky-acquisition-properties-modal.component';
+import { AdditionalDeepSkyAcquisitionPropertiesModalComponent } from "./additional-deep-sky-acquisition-properties-modal.component";
+import { MockBuilder } from "ng-mocks";
+import { AppModule } from "@app/app.module";
+import { provideMockStore } from "@ngrx/store/testing";
+import { initialState } from "@app/store/state";
+import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
+import { ImageEditService } from "@features/image/services/image-edit.service";
 
-describe('AdditionalDeepSkyAcquisitionPropertiesModalComponent', () => {
+describe("AdditionalDeepSkyAcquisitionPropertiesModalComponent", () => {
   let component: AdditionalDeepSkyAcquisitionPropertiesModalComponent;
   let fixture: ComponentFixture<AdditionalDeepSkyAcquisitionPropertiesModalComponent>;
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ AdditionalDeepSkyAcquisitionPropertiesModalComponent ]
-    })
-    .compileComponents();
+    await MockBuilder(AdditionalDeepSkyAcquisitionPropertiesModalComponent, AppModule).provide([
+      provideMockStore({ initialState }),
+      NgbActiveModal,
+      ImageEditService
+    ]);
 
     fixture = TestBed.createComponent(AdditionalDeepSkyAcquisitionPropertiesModalComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

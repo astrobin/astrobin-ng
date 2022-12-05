@@ -63,7 +63,9 @@ export class ImageGenerator {
       fullSizeDisplayLimitation: null,
       downloadLimitation: null,
       thumbnails: [],
-      submittedForIotdTpConsideration: null
+      submittedForIotdTpConsideration: null,
+      deepSkyAcquisitions: [],
+      solarSystemAcquisitions: []
     };
   }
 }
