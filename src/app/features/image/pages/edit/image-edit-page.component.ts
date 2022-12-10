@@ -84,7 +84,8 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     public readonly modalService: NgbModal,
     public readonly userService: UserService,
     public readonly jsonApiService: JsonApiService,
-    public readonly cookieService: CookieService
+    public readonly cookieService: CookieService,
+    public readonly utilsService: UtilsService
   ) {
     super(store$);
   }
@@ -112,7 +113,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     super.ngOnInit();
 
     const image = this.route.snapshot.data.image;
-this.imageEditService.model = image;
+    this.imageEditService.model = image;
     this.imageEditService.model = {
       ...image,
       ...{
@@ -260,16 +261,6 @@ this.imageEditService.model = image;
     }
   }
 
-  onReturnToClassicEditor() {
-    this.loadingService.setLoading(true);
-    UtilsService.openLink(
-      this.windowRefService.nativeWindow.document,
-      this.classicRoutesService.EDIT_IMAGE_THUMBNAILS(
-        this.imageEditService.model.hash || "" + this.imageEditService.model.pk
-      ) + "?upload"
-    );
-  }
-
   onSave(event: Event, next?: string) {
     if (event) {
       event.preventDefault();
@@ -339,14 +330,6 @@ this.imageEditService.model = image;
         this.popNotificationsService.success(this.translateService.instant("Image saved."));
       }
     });
-  }
-
-  dontShowMigrationInfoAgain() {
-    this.cookieService.put(this.DONT_SHOW_MIGRATION_INFO_COOKIE, "1", {
-      path: "/",
-      expires: null
-    });
-    this.showMigrationInfo = false;
   }
 
   private _initFields(): void {
@@ -463,6 +446,16 @@ this.imageEditService.model = image;
             fieldGroup
           }
         ];
+
+        this.utilsService.delay(1).subscribe(() => {
+          this.imageEditBasicFieldsService.onFieldsInitialized();
+          this.imageEditContentFieldsService.onFieldsInitialized();
+          this.imageEditWatermarkFieldsService.onFieldsInitialized();
+          this.imageEditThumbnailFieldsService.onFieldsInitialized();
+          this.imageEditEquipmentFieldsService.onFieldsInitialized();
+          this.imageEditAcquisitionFieldsService.onFieldsInitialized();
+          this.imageEditSettingsFieldsService.onFieldsInitialized();
+        });
       });
   }
 

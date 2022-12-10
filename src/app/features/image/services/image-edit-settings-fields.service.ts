@@ -1,5 +1,4 @@
 import { Injectable } from "@angular/core";
-import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
 import {
   DownloadLimitationOptions,
@@ -17,11 +16,12 @@ import { map, tap } from "rxjs/operators";
 import { LoadImageRevisions } from "@app/store/actions/image.actions";
 import { distinctUntilChangedObj } from "@shared/services/utils/utils.service";
 import { FormlyFieldConfig } from "@ngx-formly/core";
+import { ImageEditFieldsBaseService } from "@features/image/services/image-edit-fields-base.service";
 
 @Injectable({
   providedIn: null
 })
-export class ImageEditSettingsFieldsService extends BaseService {
+export class ImageEditSettingsFieldsService extends ImageEditFieldsBaseService {
   constructor(
     public readonly store$: Store<State>,
     public readonly loadingService: LoadingService,
@@ -29,6 +29,9 @@ export class ImageEditSettingsFieldsService extends BaseService {
     public readonly imageEditService: ImageEditService
   ) {
     super(loadingService);
+  }
+
+  onFieldsInitialized(): void {
   }
 
   getLicenseField(): FormlyFieldConfig {

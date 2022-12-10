@@ -40,7 +40,13 @@ export class FormlyFieldTableComponent extends FieldArrayType implements OnInit 
   }
 
   clear(): void {
-    this.model.splice(0);
+    if (!this.model) {
+      return;
+    }
+
+    for (let i = this.model.length - 1; i >= 0; i--) {
+      this.remove(i);
+    }
   }
 
   private _buildColumns(field: FormlyFieldConfig): TableColumn[] {

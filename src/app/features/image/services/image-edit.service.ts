@@ -19,6 +19,7 @@ import { MountInterface } from "@features/equipment/types/mount.interface";
 import { FilterInterface } from "@features/equipment/types/filter.interface";
 import { AccessoryInterface } from "@features/equipment/types/accessory.interface";
 import { SoftwareInterface } from "@features/equipment/types/software.interface";
+import { TranslateService } from "@ngx-translate/core";
 
 export type ImageEditModelInterface = Partial<Omit<ImageInterface,
   | "user"
@@ -70,7 +71,11 @@ export class ImageEditService extends BaseService {
   remoteSourceLabelTemplate: TemplateRef<any>;
   remoteSourceOptionTemplate: TemplateRef<any>;
 
-  constructor(public readonly store$: Store<State>, public readonly loadingService: LoadingService) {
+  constructor(
+    public readonly store$: Store<State>,
+    public readonly loadingService: LoadingService,
+    public readonly translateService: TranslateService
+  ) {
     super(loadingService);
   }
 
@@ -79,7 +84,7 @@ export class ImageEditService extends BaseService {
       value = this.model.subjectType;
     }
 
-    return [SubjectType.DEEP_SKY, SubjectType.WIDE_FIELD].indexOf(value) > -1;
+    return [SubjectType.DEEP_SKY, SubjectType.WIDE_FIELD, SubjectType.STAR_TRAILS].indexOf(value) > -1;
   }
 
   isSolarSystem(value?: SubjectType): boolean {
@@ -88,6 +93,27 @@ export class ImageEditService extends BaseService {
     }
 
     return [SubjectType.SOLAR_SYSTEM].indexOf(value) > -1;
+  }
+
+  public humanizeSubjectType(value: SubjectType): string {
+    switch (value) {
+      case SubjectType.DEEP_SKY:
+        return this.translateService.instant("Deep sky object or field");
+      case SubjectType.SOLAR_SYSTEM:
+        return this.translateService.instant("Solar system body or event");
+      case SubjectType.WIDE_FIELD:
+        return this.translateService.instant("Extremely wide field");
+      case SubjectType.STAR_TRAILS:
+        return this.translateService.instant("Star trails");
+      case SubjectType.NORTHERN_LIGHTS:
+        return this.translateService.instant("Northern lights");
+      case SubjectType.NOCTILUCENT_CLOUDS:
+        return this.translateService.instant("Noctilucent clouds");
+      case SubjectType.GEAR:
+        return this.translateService.instant("Equipment");
+      case SubjectType.OTHER:
+        return this.translateService.instant("Other");
+    }
   }
 
   public isSponsor(code: string): boolean {

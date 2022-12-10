@@ -1,23 +1,26 @@
-import { Injectable } from "@angular/core";
+import { Injectable, OnDestroy } from "@angular/core";
 import { LoadingService } from "@shared/services/loading.service";
-import { BaseService } from "@shared/services/base.service";
 import { TranslateService } from "@ngx-translate/core";
 import { ImageEditService } from "@features/image/services/image-edit.service";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { FormlyFieldConfig } from "@ngx-formly/core";
-import { SubjectType } from "@shared/interfaces/image.interface";
 import { selectEquipmentItems } from "@features/equipment/store/equipment.selectors";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { map, takeUntil } from "rxjs/operators";
 import { distinctUntilChangedObj, UtilsService } from "@shared/services/utils/utils.service";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { AdditionalDeepSkyAcquisitionPropertiesModalComponent } from "@features/image/components/additional-deep-sky-acquisition-properties-modal/additional-deep-sky-acquisition-properties-modal.component";
+import { Subscription } from "rxjs";
+import { SubjectType } from "@shared/interfaces/image.interface";
+import { ImageEditFieldsBaseService } from "@features/image/services/image-edit-fields-base.service";
 
 @Injectable({
   providedIn: null
 })
-export class ImageEditAcquisitionFieldsService extends BaseService {
+export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseService implements OnDestroy {
+  private _subjectTypeChangesSubscription: Subscription;
+
   constructor(
     public readonly store$: Store<State>,
     public readonly loadingService: LoadingService,
@@ -28,8 +31,18 @@ export class ImageEditAcquisitionFieldsService extends BaseService {
     super(loadingService);
   }
 
+  onFieldsInitialized(): void {
+    this._subjectTypeChangesSubscription = this.imageEditService.form.get("subjectType").valueChanges.subscribe(subjectType => {
+      const stepper = this.imageEditService.fields.find(field => field.id === "image-stepper-field");
+      const acquisitionStep = stepper.fieldGroup.find(field => field.id === "image-stepper-acquisition");
+      const field = acquisitionStep.fieldGroup.find(field => field.key === "unsupportedSubjectTypeForAcquisitions");
+
+      field.template = this._getUnsupportedSubjectTypeForAcquisitionsTemplate(subjectType);
+    });
+  }
+
   getFields(): FormlyFieldConfig[] {
-    return this.getDeepSkyFields().concat(this.getSolarSystemFields());
+    return this.getDeepSkyFields().concat(this.getSolarSystemFields(), this.getUnsupportedSubjectTypeFields());
   }
 
   getDeepSkyFields(): FormlyFieldConfig[] {
@@ -37,8 +50,9 @@ export class ImageEditAcquisitionFieldsService extends BaseService {
       {
         key: "deepSkyAcquisitions",
         type: "table",
-        hideExpression: () => !this._isDeepSky(),
+        hideExpression: () => !this.imageEditService.isDeepSky(),
         props: {
+          required: false,
           label: this.translateService.instant("Deep sky acquisition sessions"),
           addLabel: this.translateService.instant("Add session"),
           additionalPropertiesClicked: (index: number) => {
@@ -48,12 +62,7 @@ export class ImageEditAcquisitionFieldsService extends BaseService {
           }
         },
         fieldArray: {
-          fieldGroup: [
-            this._getDateField(),
-            this._getFilterField(),
-            this._getNumberField(),
-            this._getDurationField()
-          ]
+          fieldGroup: [this._getDateField(), this._getFilterField(), this._getNumberField(), this._getDurationField()]
         }
       }
     ];
@@ -64,8 +73,9 @@ export class ImageEditAcquisitionFieldsService extends BaseService {
       {
         key: "solarSystemAcquisitions",
         type: "table",
-        hideExpression: () => !this._isSolarSystem(),
+        hideExpression: () => !this.imageEditService.isSolarSystem(),
         props: {
+          required: false,
           label: this.translateService.instant("Solar system acquisition sessions"),
           addLabel: this.translateService.instant("Add session")
         },
@@ -76,12 +86,38 @@ export class ImageEditAcquisitionFieldsService extends BaseService {
     ];
   }
 
-  private _isDeepSky(): boolean {
-    return [SubjectType.DEEP_SKY, SubjectType.WIDE_FIELD].indexOf(this.imageEditService.model.subjectType) > -1;
+  getUnsupportedSubjectTypeFields(): FormlyFieldConfig[] {
+    const subjectType: string = this.imageEditService.humanizeSubjectType(this.imageEditService.model.subjectType);
+    const message: string = this.translateService.instant(
+      "The subject type \"{{0}}\" does not support acquisition sessions.",
+      {
+        0: subjectType
+      }
+    );
+
+    return [
+      {
+        className: "section-label",
+        template: `<p>${message}</p>`,
+        hideExpression: () => this.imageEditService.isDeepSky() || this.imageEditService.isSolarSystem(),
+        key: "unsupportedSubjectTypeForAcquisitions",
+        props: {
+          required: false
+        }
+      }
+    ];
   }
 
-  private _isSolarSystem(): boolean {
-    return [SubjectType.SOLAR_SYSTEM].indexOf(this.imageEditService.model.subjectType) > -1;
+  private _getUnsupportedSubjectTypeForAcquisitionsTemplate(subjectType: SubjectType): string {
+    const value: string = this.imageEditService.humanizeSubjectType(subjectType);
+    const message: string = this.translateService.instant(
+      "The subject type \"{{0}}\" does not support acquisition sessions.",
+      {
+        0: value
+      }
+    );
+
+    return `<p>${message}</p>`;
   }
 
   private _getDateField(): FormlyFieldConfig {
@@ -157,9 +193,7 @@ export class ImageEditAcquisitionFieldsService extends BaseService {
         min: 1
       },
       validators: {
-        validation: [
-          "whole-number"
-        ]
+        validation: ["whole-number"]
       }
     };
   }

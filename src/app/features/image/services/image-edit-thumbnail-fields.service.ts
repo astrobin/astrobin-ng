@@ -1,6 +1,5 @@
 import { Injectable } from "@angular/core";
 import { LoadingService } from "@shared/services/loading.service";
-import { BaseService } from "@shared/services/base.service";
 import { selectThumbnail } from "@app/store/selectors/app/thumbnail.selectors";
 import { catchError, map, retry } from "rxjs/operators";
 import { EMPTY } from "rxjs";
@@ -11,11 +10,12 @@ import { PopNotificationsService } from "@shared/services/pop-notifications.serv
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { FormlyFieldConfig } from "@ngx-formly/core";
+import { ImageEditFieldsBaseService } from "@features/image/services/image-edit-fields-base.service";
 
 @Injectable({
   providedIn: null
 })
-export class ImageEditThumbnailFieldsService extends BaseService {
+export class ImageEditThumbnailFieldsService extends ImageEditFieldsBaseService {
   constructor(
     public readonly store$: Store<State>,
     public readonly loadingService: LoadingService,
@@ -24,6 +24,9 @@ export class ImageEditThumbnailFieldsService extends BaseService {
     public readonly popNotificationsService: PopNotificationsService
   ) {
     super(loadingService);
+  }
+
+  onFieldsInitialized(): void {
   }
 
   getThumbnailField(): FormlyFieldConfig {

@@ -140,11 +140,12 @@ export class FormlyFieldNgSelectComponent extends FieldType implements OnInit, O
       componentInstance.message = this.props.changeConfirmationMessage;
 
       modalRef.dismissed.subscribe(() => {
-        this._ngSelect.writeValue(this._previousModelValue);
+        this.formControl.setValue(this._previousModelValue);
       });
 
       modalRef.closed.subscribe(() => {
         this._previousModelValue = event.value;
+        this.props.onChangeConfirmation(event.value);
       });
     } else {
       this._previousModelValue = event.value;

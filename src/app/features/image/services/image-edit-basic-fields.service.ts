@@ -1,5 +1,4 @@
 import { Injectable } from "@angular/core";
-import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { TranslateService } from "@ngx-translate/core";
 import { ImageEditService } from "@features/image/services/image-edit.service";
@@ -12,11 +11,12 @@ import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { FormControl } from "@angular/forms";
 import { selectCurrentUser } from "@features/account/store/auth.selectors";
+import { ImageEditFieldsBaseService } from "@features/image/services/image-edit-fields-base.service";
 
 @Injectable({
   providedIn: null
 })
-export class ImageEditBasicFieldsService extends BaseService {
+export class ImageEditBasicFieldsService extends ImageEditFieldsBaseService {
   constructor(
     public readonly store$: Store<State>,
     public readonly loadingService: LoadingService,
@@ -25,6 +25,9 @@ export class ImageEditBasicFieldsService extends BaseService {
     public readonly commonApiService: CommonApiService
   ) {
     super(loadingService);
+  }
+
+  onFieldsInitialized(): void {
   }
 
   getTitleField(): FormlyFieldConfig {
