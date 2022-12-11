@@ -18,7 +18,8 @@ import { ImageEditEquipmentFieldsService } from "@features/image/services/image-
 import { SaveEquipmentPresetModalComponent } from "@features/image/components/save-equipment-preset-modal/save-equipment-preset-modal.component";
 import { LoadEquipmentPresetModalComponent } from "./components/load-equipment-preset-modal/load-equipment-preset-modal.component";
 import { ImageEditAcquisitionFieldsService } from "@features/image/services/image-edit-acquisition-fields.service";
-import { AdditionalDeepSkyAcquisitionPropertiesModalComponent } from './components/additional-deep-sky-acquisition-properties-modal/additional-deep-sky-acquisition-properties-modal.component';
+import { AdditionalDeepSkyAcquisitionPropertiesModalComponent } from "./components/additional-deep-sky-acquisition-properties-modal/additional-deep-sky-acquisition-properties-modal.component";
+import { AdditionalSolarSystemAcquisitionPropertiesModalComponent } from "@features/image/components/additional-solar-system-acquisition-properties-modal/additional-solar-system-acquisition-properties-modal.component";
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { AdditionalDeepSkyAcquisitionPropertiesModalComponent } from './componen
     CreateLocationModalComponent,
     SaveEquipmentPresetModalComponent,
     LoadEquipmentPresetModalComponent,
-    AdditionalDeepSkyAcquisitionPropertiesModalComponent
+    AdditionalDeepSkyAcquisitionPropertiesModalComponent,
+    AdditionalSolarSystemAcquisitionPropertiesModalComponent
   ],
   imports: [
     RouterModule.forChild(routes),

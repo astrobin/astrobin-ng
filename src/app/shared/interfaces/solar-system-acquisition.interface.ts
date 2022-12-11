@@ -1,3 +1,24 @@
+export enum SeeingScale {
+  VERY_BAD = 1,
+  BAD,
+  ACCEPTABLE,
+  GOOD,
+  EXCELLENT
+}
+
+export enum TransparencyScale {
+  EXTREMELY_BAD = 1,
+  VERY_BAD,
+  BAD,
+  MEDIOCRE,
+  ACCEPTABLE,
+  FAIR,
+  GOOD,
+  VERY_GOOD,
+  EXCELLENT,
+  SUPERB
+}
+
 export interface SolarSystemAcquisitionInterface {
   id: number;
   date: string;
@@ -9,7 +30,7 @@ export interface SolarSystemAcquisitionInterface {
   cmi: number | null;
   cmii: number | null;
   cmiii: number | null;
-  seeing: number | null;
-  transparency: number | null;
+  seeing: SeeingScale | null;
+  transparency: TransparencyScale | null;
   time: string | null;
 }

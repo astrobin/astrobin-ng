@@ -263,15 +263,21 @@ export class AdditionalDeepSkyAcquisitionPropertiesModalComponent extends BaseCo
               ),
               required: false,
               options: [
-                { value: BortleScale.ONE, label: "1 - Excellent dark-site sky (BLACK)" },
-                { value: BortleScale.TWO, label: "2 - Typical truly dark site (GRAY)" },
-                { value: BortleScale.THREE, label: "3 - Rural sky (BLUE)" },
-                { value: BortleScale.FOUR, label: "4 - Rural/suburban transition (GREEN/YELLOW)" },
-                { value: BortleScale.FIVE, label: "5 - Suburban sky (ORANGE)" },
-                { value: BortleScale.SIX, label: "6 - Bright suburban sky (RED)" },
-                { value: BortleScale.SEVEN, label: "7 - Suburban/urban transition or Full Moon (RED)" },
-                { value: BortleScale.EIGHT, label: "8 - City sky (WHITE)" },
-                { value: BortleScale.NINE, label: "9 - Inner city sky (WHITE)" }
+                { value: BortleScale.ONE, label: this.translateService.instant("1 - Excellent dark-site sky (BLACK)") },
+                { value: BortleScale.TWO, label: this.translateService.instant("2 - Typical truly dark site (GRAY)") },
+                { value: BortleScale.THREE, label: this.translateService.instant("3 - Rural sky (BLUE)") },
+                {
+                  value: BortleScale.FOUR,
+                  label: this.translateService.instant("4 - Rural/suburban transition (GREEN/YELLOW)")
+                },
+                { value: BortleScale.FIVE, label: this.translateService.instant("5 - Suburban sky (ORANGE)") },
+                { value: BortleScale.SIX, label: this.translateService.instant("6 - Bright suburban sky (RED)") },
+                {
+                  value: BortleScale.SEVEN,
+                  label: this.translateService.instant("7 - Suburban/urban transition or Full Moon (RED)")
+                },
+                { value: BortleScale.EIGHT, label: this.translateService.instant("8 - City sky (WHITE)") },
+                { value: BortleScale.NINE, label: this.translateService.instant("9 - Inner city sky (WHITE)") }
               ],
               searchable: false,
               clearable: true

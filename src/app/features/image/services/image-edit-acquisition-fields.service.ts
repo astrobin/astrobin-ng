@@ -14,6 +14,7 @@ import { AdditionalDeepSkyAcquisitionPropertiesModalComponent } from "@features/
 import { Subscription } from "rxjs";
 import { SubjectType } from "@shared/interfaces/image.interface";
 import { ImageEditFieldsBaseService } from "@features/image/services/image-edit-fields-base.service";
+import { AdditionalSolarSystemAcquisitionPropertiesModalComponent } from "@features/image/components/additional-solar-system-acquisition-properties-modal/additional-solar-system-acquisition-properties-modal.component";
 
 @Injectable({
   providedIn: null
@@ -32,13 +33,15 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
   }
 
   onFieldsInitialized(): void {
-    this._subjectTypeChangesSubscription = this.imageEditService.form.get("subjectType").valueChanges.subscribe(subjectType => {
-      const stepper = this.imageEditService.fields.find(field => field.id === "image-stepper-field");
-      const acquisitionStep = stepper.fieldGroup.find(field => field.id === "image-stepper-acquisition");
-      const field = acquisitionStep.fieldGroup.find(field => field.key === "unsupportedSubjectTypeForAcquisitions");
+    this._subjectTypeChangesSubscription = this.imageEditService.form
+      .get("subjectType")
+      .valueChanges.subscribe(subjectType => {
+        const stepper = this.imageEditService.fields.find(field => field.id === "image-stepper-field");
+        const acquisitionStep = stepper.fieldGroup.find(field => field.id === "image-stepper-acquisition");
+        const field = acquisitionStep.fieldGroup.find(field => field.key === "unsupportedSubjectTypeForAcquisitions");
 
-      field.template = this._getUnsupportedSubjectTypeForAcquisitionsTemplate(subjectType);
-    });
+        field.template = this._getUnsupportedSubjectTypeForAcquisitionsTemplate(subjectType);
+      });
   }
 
   getFields(): FormlyFieldConfig[] {
@@ -77,10 +80,21 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
         props: {
           required: false,
           label: this.translateService.instant("Solar system acquisition sessions"),
-          addLabel: this.translateService.instant("Add session")
+          addLabel: this.translateService.instant("Add session"),
+          additionalPropertiesClicked: (index: number) => {
+            const modalRef: NgbModalRef = this.modalService.open(AdditionalSolarSystemAcquisitionPropertiesModalComponent);
+            const componentInstance: AdditionalSolarSystemAcquisitionPropertiesModalComponent = modalRef.componentInstance;
+            componentInstance.index = index;
+          }
         },
         fieldArray: {
-          fieldGroup: [this._getDateField()]
+          fieldGroup: [
+            this._getDateField(),
+            this._getTimeField(),
+            this._getFramesField(),
+            this._getFPSField(),
+            this._getExposurePerFrame()
+          ]
         }
       }
     ];
@@ -210,6 +224,90 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
         required: true,
         step: 1,
         min: 0.01
+      },
+      validators: {
+        validation: [
+          {
+            name: "max-decimals",
+            options: {
+              value: 2
+            }
+          }
+        ]
+      }
+    };
+  }
+
+  private _getTimeField(): FormlyFieldConfig {
+    return {
+      key: "time",
+      type: "input",
+      wrappers: ["default-wrapper"],
+      props: {
+        type: "time",
+        label: this.translateService.instant("Time"),
+        description: this.translateService.instant("Acquisition time (local timezone)."),
+        required: false
+      }
+    };
+  }
+
+  private _getFramesField(): FormlyFieldConfig {
+    return {
+      key: "frames",
+      type: "input",
+      wrappers: ["default-wrapper"],
+      props: {
+        type: "number",
+        label: this.translateService.instant("Frames"),
+        description: this.translateService.instant("Number of frames."),
+        required: false,
+        step: 1,
+        min: 1
+      },
+      validators: {
+        validation: ["whole-number"]
+      }
+    };
+  }
+
+  private _getFPSField(): FormlyFieldConfig {
+    return {
+      key: "fps",
+      type: "input",
+      wrappers: ["default-wrapper"],
+      props: {
+        type: "number",
+        label: this.translateService.instant("FPS"),
+        description: this.translateService.instant("Frames per second."),
+        required: false,
+        step: 1,
+        min: 1
+      },
+      validators: {
+        validation: [
+          {
+            name: "max-decimals",
+            options: {
+              value: 5
+            }
+          }
+        ]
+      }
+    };
+  }
+
+  private _getExposurePerFrame(): FormlyFieldConfig {
+    return {
+      key: "exposurePerFrame",
+      type: "input",
+      wrappers: ["default-wrapper"],
+      props: {
+        type: "number",
+        label: this.translateService.instant("Exposure per frame") + " ms",
+        required: false,
+        step: 1,
+        min: 1
       },
       validators: {
         validation: [
