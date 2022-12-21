@@ -241,7 +241,10 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
   }
 
   onLoadEquipmentPresetClicked() {
-    this.modalService.open(LoadEquipmentPresetModalComponent);
+    const modalRef: NgbModalRef = this.modalService.open(LoadEquipmentPresetModalComponent);
+    const componentInstance: LoadEquipmentPresetModalComponent = modalRef.componentInstance;
+
+    componentInstance.alreadyHasEquipment = this.imageEditService.hasEquipmentItems();
   }
 
   onSaveEquipmentPresetClicked() {
