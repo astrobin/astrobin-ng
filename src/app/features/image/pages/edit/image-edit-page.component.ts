@@ -256,6 +256,18 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
           const modalRef: NgbModalRef = this.modalService.open(SaveEquipmentPresetModalComponent);
           const componentInstance: SaveEquipmentPresetModalComponent = modalRef.componentInstance;
 
+          componentInstance.initialPreset = {
+            name: !!currentEquipmentPreset ? currentEquipmentPreset.name : "",
+            imagingTelescopes: this.imageEditService.model.imagingTelescopes2,
+            guidingTelescopes: this.imageEditService.model.guidingTelescopes2,
+            imagingCameras: this.imageEditService.model.imagingCameras2,
+            guidingCameras: this.imageEditService.model.guidingCameras2,
+            mounts: this.imageEditService.model.mounts2,
+            filters: this.imageEditService.model.filters2,
+            accessories: this.imageEditService.model.accessories2,
+            software: this.imageEditService.model.software2
+          };
+
           if (!!currentEquipmentPreset) {
             componentInstance.model.name = currentEquipmentPreset.name;
           }
