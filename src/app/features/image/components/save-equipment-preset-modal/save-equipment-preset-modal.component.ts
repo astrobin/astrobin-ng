@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, Input, OnInit } from "@angular/core";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { FormGroup } from "@angular/forms";
 import { Store } from "@ngrx/store";
@@ -11,7 +11,6 @@ import { selectEquipmentPresets } from "@features/equipment/store/equipment.sele
 import { filter, take } from "rxjs/operators";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
 import { EquipmentPresetInterface } from "@features/equipment/types/equipment-preset.interface";
-import { ImageEditService } from "@features/image/services/image-edit.service";
 import {
   CreateEquipmentPreset,
   CreateEquipmentPresetSuccess,
@@ -36,6 +35,9 @@ export class SaveEquipmentPresetModalComponent extends BaseComponentDirective im
     name: null
   };
 
+  @Input()
+  initialPreset: EquipmentPresetInterface;
+
   constructor(
     public readonly store$: Store<State>,
     public readonly actions$: Actions,
@@ -43,7 +45,6 @@ export class SaveEquipmentPresetModalComponent extends BaseComponentDirective im
     public readonly translateService: TranslateService,
     public readonly modal: NgbActiveModal,
     public readonly modalService: NgbModal,
-    public readonly imageEditService: ImageEditService,
     public readonly popNotificationsService: PopNotificationsService
   ) {
     super(store$);
@@ -72,7 +73,7 @@ export class SaveEquipmentPresetModalComponent extends BaseComponentDirective im
   }
 
   create() {
-    const preset = this._getPreset();
+    const preset = this.initialPreset;
 
     this.loadingService.setLoading(true);
 
@@ -96,7 +97,7 @@ export class SaveEquipmentPresetModalComponent extends BaseComponentDirective im
   }
 
   update(preset: EquipmentPresetInterface) {
-    const update = { ...preset, ...this._getPreset() };
+    const update = { ...preset, ...this.initialPreset };
 
     this.loadingService.setLoading(true);
 
@@ -136,19 +137,5 @@ export class SaveEquipmentPresetModalComponent extends BaseComponentDirective im
           this.create();
         }
       });
-  }
-
-  _getPreset(): EquipmentPresetInterface {
-    return {
-      name: this.model.name,
-      imagingTelescopes: this.imageEditService.model.imagingTelescopes2,
-      guidingTelescopes: this.imageEditService.model.guidingTelescopes2,
-      imagingCameras: this.imageEditService.model.imagingCameras2,
-      guidingCameras: this.imageEditService.model.guidingCameras2,
-      mounts: this.imageEditService.model.mounts2,
-      filters: this.imageEditService.model.filters2,
-      accessories: this.imageEditService.model.accessories2,
-      software: this.imageEditService.model.software2
-    };
   }
 }

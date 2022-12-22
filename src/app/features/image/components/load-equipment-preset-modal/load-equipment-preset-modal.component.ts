@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, Input, OnInit } from "@angular/core";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { FormGroup } from "@angular/forms";
 import { Store } from "@ngrx/store";
@@ -7,7 +7,6 @@ import { Actions, ofType } from "@ngrx/effects";
 import { LoadingService } from "@shared/services/loading.service";
 import { TranslateService } from "@ngx-translate/core";
 import { NgbActiveModal, NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { ImageEditService } from "@features/image/services/image-edit.service";
 import { filter, first, take } from "rxjs/operators";
 import { EquipmentPresetInterface } from "@features/equipment/types/equipment-preset.interface";
 import {
@@ -44,14 +43,16 @@ export class LoadEquipmentPresetModalComponent extends BaseComponentDirective im
     preset: null
   };
 
+  @Input()
+  alreadyHasEquipment = false;
+
   constructor(
     public readonly store$: Store<State>,
     public readonly actions$: Actions,
     public readonly loadingService: LoadingService,
     public readonly translateService: TranslateService,
     public readonly modal: NgbActiveModal,
-    public readonly modalService: NgbModal,
-    public readonly imageEditService: ImageEditService
+    public readonly modalService: NgbModal
   ) {
     super(store$);
   }
@@ -70,7 +71,7 @@ export class LoadEquipmentPresetModalComponent extends BaseComponentDirective im
         take(1)
       )
       .subscribe(preset => {
-        if (this.imageEditService.hasEquipmentItems()) {
+        if (this.alreadyHasEquipment) {
           const modalRef = this.modalService.open(ConfirmationDialogComponent, { size: "sm" });
           const componentInstance: ConfirmationDialogComponent = modalRef.componentInstance;
 
