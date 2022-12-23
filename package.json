@@ -64,7 +64,7 @@
     "bootstrap": "5.2.2",
     "bootswatch": "5.2.2",
     "class-transformer": "0.5.1",
-    "class-validator": "0.13.2",
+    "class-validator": "0.14.0",
     "core-js": "3.26.1",
     "country-js": "0.0.9",
     "dotenv": "16.0.3",
