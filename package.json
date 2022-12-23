@@ -114,7 +114,7 @@
     "concurrently": "7.6.0",
     "cross-var": "1.1.0",
     "cypress": "6.9.1",
-    "eslint": "8.28.0",
+    "eslint": "8.30.0",
     "eslint-plugin-import": "latest",
     "eslint-plugin-jsdoc": "latest",
     "eslint-plugin-prefer-arrow": "latest",
