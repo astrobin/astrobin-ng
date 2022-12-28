@@ -73,7 +73,7 @@ export class SaveEquipmentPresetModalComponent extends BaseComponentDirective im
   }
 
   create() {
-    const preset = this.initialPreset;
+    const preset = { ...this.initialPreset, ...{ name: this.model.name } };
 
     this.loadingService.setLoading(true);
 
