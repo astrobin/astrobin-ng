@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from "@angular/core";
 import { State } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { FieldType } from "@ngx-formly/core";
@@ -64,7 +64,8 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
     public readonly translateService: TranslateService,
     public readonly userSubscriptionService: UserSubscriptionService,
     public readonly classicRoutesService: ClassicRoutesService,
-    public readonly windowRefService: WindowRefService
+    public readonly windowRefService: WindowRefService,
+    public readonly changeDetectorRef: ChangeDetectorRef
   ) {
     super();
   }
@@ -210,6 +211,8 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
           }
         });
       }
+
+      this.changeDetectorRef.detectChanges();
     });
 
     this._metadataChangesSubscription = this.uploadDataService.metadataChanges$

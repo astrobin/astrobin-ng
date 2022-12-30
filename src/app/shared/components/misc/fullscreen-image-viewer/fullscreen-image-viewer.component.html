@@ -7,26 +7,26 @@
   >
     <ng-container
       *ngIf="isTouchDevice"
-      [ngTemplateOutlet]="noZoom"
       [ngTemplateOutletContext]="{
         url: thumbnails.real ? thumbnails.real : thumbnails.hd
       }"
+      [ngTemplateOutlet]="noZoom"
     >
     </ng-container>
 
     <ng-container *ngIf="!isTouchDevice">
       <ng-container
         *ngIf="thumbnails.hd && thumbnails.real; else hdOnly"
-        [ngTemplateOutlet]="imageZoom"
         [ngTemplateOutletContext]="{ hd: thumbnails.hd, real: thumbnails.real }"
+        [ngTemplateOutlet]="imageZoom"
       >
       </ng-container>
 
       <ng-template #hdOnly>
         <ng-container
           *ngIf="thumbnails.hd; else hdImageLoadingTmpl"
-          [ngTemplateOutlet]="noZoom"
           [ngTemplateOutletContext]="{ url: thumbnails.hd }"
+          [ngTemplateOutlet]="noZoom"
         >
         </ng-container>
       </ng-template>
@@ -41,22 +41,23 @@
 
 <ng-template #imageZoom let-hd="hd" let-real="real">
   <lib-ngx-image-zoom
-    class="image-zoom"
-    [zoomMode]="'click'"
-    [thumbImage]="hd"
-    [fullImage]="real"
-    [enableLens]="true"
-    [circularLens]="true"
-    [lensHeight]="zoomLensSize"
-    [lensWidth]="zoomLensSize"
-    [enableScrollZoom]="true"
-    [maxZoomRatio]="8"
     (zoomPosition)="setZoomPosition($event)"
     (zoomScroll)="setZoomScroll($event)"
+    [circularLens]="true"
+    [enableLens]="true"
+    [enableScrollZoom]="true"
+    [fullImage]="real"
+    [lensHeight]="zoomLensSize"
+    [lensWidth]="zoomLensSize"
+    [maxZoomRatio]="8"
+    [minZoomRatio]="0.1"
+    [thumbImage]="hd"
+    [zoomMode]="'click'"
+    class="image-zoom"
   >
   </lib-ngx-image-zoom>
 
-  <div class="image-zoom-indicator" *ngIf="showZoomIndicator && getZoomPosition()">
+  <div *ngIf="showZoomIndicator && getZoomPosition()" class="image-zoom-indicator">
     {{ getZoomScroll() | number: "1.2-2" }}x
   </div>
 </ng-template>
