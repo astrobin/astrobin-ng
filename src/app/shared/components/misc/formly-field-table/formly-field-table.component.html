@@ -3,6 +3,7 @@
   [columns]="columns"
   [externalSorting]="true"
   [headerHeight]="0"
+  [messages]="messages"
   [rowHeight]="'auto'"
   [rows]="model"
   class="bootstrap striped"
@@ -63,7 +64,11 @@
     {{ field.props.clearLabel || "Clear" | translate }}
   </button>
 
-  <button (click)="add(null, {})" class="btn btn-outline-secondary">
+  <button
+    (click)="add(null, {})"
+    *ngIf="mayAdd"
+    class="btn btn-outline-secondary"
+  >
     {{ field.props.addLabel || "Add" | translate }}
   </button>
 </div>
