@@ -67,10 +67,10 @@ msgid "Accessory"
 msgstr ""
 
 msgid "Acquired with this brand"
-msgstr ""
+msgstr "Ezzel a márkával szerezve"
 
 msgid "Acquired with this item"
-msgstr ""
+msgstr "Ezzel az eszközzel szerezve"
 
 msgid "Acquisition cameras"
 msgstr ""
@@ -101,6 +101,8 @@ msgstr ""
 
 msgid "All your recent items of this equipment class are already used above."
 msgstr ""
+"Ennek a felszerelési osztálynak az összes legutóbbi elemét már fentebb "
+"használtad."
 
 msgid "Allow comments"
 msgstr ""
@@ -145,13 +147,13 @@ msgid "Any changes you make will be reviewed by other members."
 msgstr ""
 
 msgid "Any moderator"
-msgstr ""
+msgstr "Bármelyik moderátor"
 
 msgid "Anybody can review edit proposals made by any other member."
 msgstr ""
 
 msgid "Anyone"
-msgstr ""
+msgstr "Bárki"
 
 msgid "Apply"
 msgstr ""
@@ -175,10 +177,10 @@ msgid "Are you sure?"
 msgstr ""
 
 msgid "Assign"
-msgstr ""
+msgstr "Hozzárendelés"
 
 msgid "Assignee"
-msgstr ""
+msgstr "Címzett"
 
 msgid ""
 "AstroBin automatically sets the name of a filter from its properties, to "
@@ -186,6 +188,10 @@ msgid ""
 "product name that's more recognizable, please check this box and change its "
 "name."
 msgstr ""
+"Az AstroBin automatikusan beállítja egy szűrő nevét a tulajdonságaiból, "
+"hogy következetes elnevezése legyen. Ha a szűrődnek van egy konkrét, jobban "
+"felismerhető neve, kérjük, jelöld be ezt a négyzetet, és változtasd meg a "
+"nevét."
 
 msgid "AstroBin can protect your images from theft by applying a watermark to them."
 msgstr ""
@@ -230,9 +236,13 @@ msgid ""
 "after clicking on a link on a page like this, AstroBin gets a commission "
 "and it doesn't cost you anything."
 msgstr ""
+"Az AstroBin együttműködik az országodban működő asztrofotó-felszerelések "
+"kereskedőivel. Néhányuk esetében, ha egy ilyen oldalon található linkre "
+"kattintva néhány héten belül vásárolsz, az AstroBin jutalékot kap, és ez "
+"neked nem kerül semmibe."
 
 msgid "AstroBin sponsors that sell {{0}}"
-msgstr ""
+msgstr "AstroBin szponzorok, amik a(z) {{0}} nevű terméket árulják"
 
 msgid ""
 "AstroBin will automatically create variants of this camera marked as "
@@ -323,7 +333,7 @@ msgid "Begin"
 msgstr ""
 
 msgid "Begin migration"
-msgstr ""
+msgstr "Áthelyezés megkezdése"
 
 msgid "Binoculars"
 msgstr ""
@@ -353,7 +363,7 @@ msgid "Brands"
 msgstr ""
 
 msgid "Browse by brand and properties"
-msgstr ""
+msgstr "Böngészés márka és tulajdonságok szerint"
 
 msgid "Buy"
 msgstr "Vásárlás"
@@ -374,7 +384,7 @@ msgid "Can't find <strong>{{0}}</strong>?"
 msgstr ""
 
 msgid "Can't find what you're looking for?"
-msgstr ""
+msgstr "Nem találod, amit keresel?"
 
 msgid "Cancel"
 msgstr ""
@@ -460,7 +470,7 @@ msgid "Close"
 msgstr ""
 
 msgid "Collaborators"
-msgstr ""
+msgstr "Hozzájárulók"
 
 msgid "Color"
 msgstr ""
@@ -499,7 +509,7 @@ msgid "Compare"
 msgstr ""
 
 msgid "Computer"
-msgstr ""
+msgstr "Számítógép"
 
 msgid "Computerized"
 msgstr ""
@@ -511,7 +521,7 @@ msgid "Confirm item creation"
 msgstr ""
 
 msgid "Confirm migration"
-msgstr ""
+msgstr "Áthelyezés megerősítése"
 
 msgid "Confirm selected migrations"
 msgstr ""
@@ -553,7 +563,7 @@ msgid "Create item"
 msgstr ""
 
 msgid "Create new"
-msgstr ""
+msgstr "Új létrehozása"
 
 msgid "Create new brand"
 msgstr ""
@@ -598,13 +608,13 @@ msgid "Developer(s)"
 msgstr ""
 
 msgid "Dew mitigation"
-msgstr ""
+msgstr "Harmat-csökkentés"
 
 msgid "Diameter"
-msgstr ""
+msgstr "Átmérő"
 
 msgid "Disable fullscreen mode"
-msgstr ""
+msgstr "Teljes képernyős mód kikapcsolása"
 
 msgid "Disable high contrast theme"
 msgstr ""
@@ -628,7 +638,7 @@ msgid "Do not notify your followers about this revision."
 msgstr "Ne legyenek értesítve a követőid erről az átdolgozásról."
 
 msgid "Do not repeat the brand's name in the item's name."
-msgstr ""
+msgstr "Ne ismételd meg a márkanevet a termék nevében."
 
 msgid "Dobsonian"
 msgstr ""
@@ -637,7 +647,7 @@ msgid "Don't remind me for a month"
 msgstr ""
 
 msgid "Done"
-msgstr ""
+msgstr "Kész"
 
 msgid "Downloaded"
 msgstr ""
@@ -664,7 +674,7 @@ msgid "Edit"
 msgstr ""
 
 msgid "Edit proposal assigned to {{0}} for review."
-msgstr ""
+msgstr "{{0}} szerkesztési kérelem beküldve felülvizsgálatra."
 
 msgid "Edit proposal by"
 msgstr ""
@@ -673,7 +683,7 @@ msgid "Edit proposal comment"
 msgstr ""
 
 msgid "Edit proposal unassigned: anyone can review it."
-msgstr ""
+msgstr "Szerkesztési kérelem hozzárendelés nélkül: bárki felülvizsgálhatja."
 
 msgid "Editing this field is not possible."
 msgstr ""
@@ -700,16 +710,16 @@ msgid "Equipment explorer"
 msgstr ""
 
 msgid "Equipment item"
-msgstr ""
+msgstr "Felszerelési elem"
 
 msgid "Equipment item assigned to {{0}} for review."
-msgstr ""
+msgstr "{{0}} felszerelési elem beküldve felülvizsgálatra."
 
 msgid "Equipment item summary"
 msgstr ""
 
 msgid "Equipment item unassigned: any moderator can review it."
-msgstr ""
+msgstr "Felszerelési elem hozzárendelés nélkül: bárki felülvizsgálhatja."
 
 msgid "Equipment moderation"
 msgstr ""
@@ -739,6 +749,11 @@ msgid ""
 "same equipment as you. {{ _0 }}Learn more about the AstroBin equipment "
 "database!{{ _1 }}"
 msgstr ""
+"Az AstroBin minden felszerelési tárgyához tartozik egy fórum. Mindenki, aki "
+"használt egy felszerelési tárgyat, értesítést kap a fóruma új témáiról, "
+"kivéve, ha leiratkozik. Ez nagyon hasznos, hogy kapcsolatba léphess más "
+"felhasználókkal, akik ugyanazt a felszerelést használják, mint te. {{ _0 "
+"}}Tudj meg többet az AstroBin felszerelési adatbázisáról!{{ _1 }}"
 
 msgid "Everybody"
 msgstr ""
@@ -762,7 +777,7 @@ msgid "Feel free to contribute!"
 msgstr ""
 
 msgid "Field derotator / camera rotator"
-msgstr ""
+msgstr "Mező derotátor / kamera-forgató"
 
 msgid ""
 "File too large. If you just upgraded your subscription, please try again in "
@@ -779,7 +794,7 @@ msgid "Filter"
 msgstr ""
 
 msgid "Filter results"
-msgstr ""
+msgstr "Eredmények szűrése"
 
 msgid ""
 "Filter sets should be added one filter at a time, individually, so that "
@@ -787,7 +802,7 @@ msgid ""
 msgstr ""
 
 msgid "Filter wheel"
-msgstr ""
+msgstr "Szűrőváltó"
 
 msgid "Filters"
 msgstr ""
@@ -796,46 +811,46 @@ msgid "Finalizing upload, please wait..."
 msgstr ""
 
 msgid "Find accessory"
-msgstr ""
+msgstr "Kiegészítő keresése"
 
 msgid "Find camera"
-msgstr ""
+msgstr "Kamera keresése"
 
 msgid "Find equipment item"
 msgstr ""
 
 msgid "Find filter"
-msgstr ""
+msgstr "Szűrő keresése"
 
 msgid "Find images"
 msgstr ""
 
 msgid "Find mount"
-msgstr ""
+msgstr "Állvány keresése"
 
 msgid "Find sensor"
-msgstr ""
+msgstr "Szenzor keresése"
 
 msgid "Find software"
-msgstr ""
+msgstr "Szoftver keresése"
 
 msgid "Find telescope or lens"
-msgstr ""
+msgstr "Távcső vagy lencse keresése"
 
 msgid "Fixed focal length"
 msgstr ""
 
 msgid "Flat box"
-msgstr ""
+msgstr "Flatbox"
 
 msgid "Focal length"
 msgstr ""
 
 msgid "Focal modifier / field corrector"
-msgstr ""
+msgstr "Fokális módosító / field corrector"
 
 msgid "Focuser"
-msgstr ""
+msgstr "Fókuszírozó"
 
 msgid "For CentralDS cameras, please select \"Dedicated deep-sky camera\""
 msgstr ""
@@ -876,13 +891,13 @@ msgid "Frame rate"
 msgstr ""
 
 msgid "Freeze"
-msgstr ""
+msgstr "Fagyasztás"
 
 msgid "From"
 msgstr ""
 
 msgid "Frozen as ambiguous"
-msgstr ""
+msgstr "Frozen as ambiguous"
 
 msgid "Full search"
 msgstr "Teljes keresés"
@@ -970,6 +985,8 @@ msgstr "Kezdőlap"
 
 msgid "However, please let me offer you a good reason to allow ads on AstroBin:"
 msgstr ""
+"Azonban engedd meg, hogy felajánljak egy jó okot arra, hogy engedélyezd a "
+"hirdetéseket az AstroBinen:"
 
 msgid "Hydrogen-alpha (Hα)"
 msgstr ""
@@ -1014,6 +1031,8 @@ msgid ""
 "If this image was a group effort, please add additional collaborators "
 "(other than you) here."
 msgstr ""
+"Ha ez a kép csoportos munka volt, kérjük, add meg itt a hozzájárulókat "
+"(rajtad kívül)."
 
 msgid ""
 "If this item is a variant of another product, please select it here. This "
@@ -1027,6 +1046,8 @@ msgid ""
 "If you assign this edit proposal to a specific user, only they will be able "
 "to review it or unassign themselves."
 msgstr ""
+"Ha ezt a szerkesztési javaslatot egy adott felhasználóhoz rendelsz, akkor "
+"csak ő tudja majd felülvizsgálni, vagy feloldani a hozzárendelést."
 
 msgid ""
 "If you assign this item to a specific moderator, only they will be able to "
@@ -1111,7 +1132,7 @@ msgid "Invalid data, please refresh the page and try again."
 msgstr ""
 
 msgid "Inverted monochrome"
-msgstr ""
+msgstr "Invertált monokróm"
 
 msgid ""
 "It looks like you are in the process of creating an equipment item, please "
@@ -1152,13 +1173,13 @@ msgid "Jump to"
 msgstr ""
 
 msgid "Jupiter"
-msgstr ""
+msgstr "Jupiter"
 
 msgid "Key/value tags"
-msgstr ""
+msgstr "Kulcs/érték megjelölések"
 
 msgid "Known retailers"
-msgstr ""
+msgstr "Ismert viszonteladók"
 
 msgid "Known stock availability"
 msgstr ""
@@ -1170,7 +1191,7 @@ msgid "Language"
 msgstr "Nyelv"
 
 msgid "Large"
-msgstr ""
+msgstr "Nagy"
 
 msgid "Last update"
 msgstr ""
@@ -1194,10 +1215,10 @@ msgid "Light pollution suppression"
 msgstr ""
 
 msgid "Link"
-msgstr ""
+msgstr "Link"
 
 msgid "Link to TIFF/FITS"
-msgstr ""
+msgstr "Link TIFF/FITS-hez"
 
 msgid "Load"
 msgstr ""
@@ -1206,7 +1227,7 @@ msgid "Load equipment preset"
 msgstr ""
 
 msgid "Load more"
-msgstr ""
+msgstr "Több betöltése"
 
 msgid "Load preset"
 msgstr ""
@@ -1215,7 +1236,7 @@ msgid "Loading edit proposals"
 msgstr ""
 
 msgid "Loading..."
-msgstr ""
+msgstr "Töltés..."
 
 msgid "Locations"
 msgstr ""
@@ -1239,7 +1260,7 @@ msgid "Logout"
 msgstr "Kijelentkezés"
 
 msgid "Lucky imaging"
-msgstr ""
+msgstr "Lucky imaging"
 
 msgid "Luminance/clear (L)"
 msgstr ""
@@ -1248,7 +1269,7 @@ msgid "Lunar"
 msgstr ""
 
 msgid "Main solar system subject"
-msgstr ""
+msgstr "Fő naprendszeri tárgy"
 
 msgid "Mark all as read"
 msgstr "Összes megjelölése olvasottként"
@@ -1270,7 +1291,7 @@ msgid ""
 msgstr ""
 
 msgid "Mars"
-msgstr ""
+msgstr "Mars"
 
 msgid "Max. cooling"
 msgstr ""
@@ -1294,13 +1315,13 @@ msgid "Me only"
 msgstr ""
 
 msgid "Medium"
-msgstr ""
+msgstr "Médium"
 
 msgid "Members only"
 msgstr ""
 
 msgid "Mercury"
-msgstr ""
+msgstr "Merkúr"
 
 msgid "Meteor shower"
 msgstr ""
@@ -1321,10 +1342,10 @@ msgid "Min. focal length"
 msgstr ""
 
 msgid "Minor planet"
-msgstr ""
+msgstr "Kisbolygó"
 
 msgid "Mix of multiple sources"
-msgstr ""
+msgstr "Több forrás keveréke"
 
 msgid "Moderate"
 msgstr "Moderálás"
@@ -1359,13 +1380,13 @@ msgid "Mount"
 msgstr ""
 
 msgid "Mount control"
-msgstr ""
+msgstr "Állvány-irányítás"
 
 msgid "Mounts"
 msgstr ""
 
 msgid "Mouse hover image"
-msgstr ""
+msgstr "Kép fölé lebegés egérrel"
 
 msgid "Move the map until the marker points at right location"
 msgstr ""
@@ -1395,7 +1416,7 @@ msgid "Name/Model"
 msgstr ""
 
 msgid "Neptune"
-msgstr ""
+msgstr "Neptunusz"
 
 msgid "Neutral density (ND)"
 msgstr ""
@@ -1410,7 +1431,7 @@ msgid "Newest first"
 msgstr ""
 
 msgid "Next"
-msgstr ""
+msgstr "Következő"
 
 msgid "Nitrogen-II (NII)"
 msgstr ""
@@ -1422,13 +1443,13 @@ msgid "No changes are proposed, or all proposed changes are outdated."
 msgstr ""
 
 msgid "No equipment items found by the selected properties."
-msgstr ""
+msgstr "Nincsenek a megadott tulajdonságoknak megfelelő elemek."
 
 msgid "No items found."
 msgstr ""
 
 msgid "No need to include yourself as a collaborator."
-msgstr ""
+msgstr "Magadat nem kell megadnod a munkatársak között"
 
 msgid "No plate-solving"
 msgstr "Nincs plate-solving"
@@ -1443,25 +1464,25 @@ msgid "Noctilucent clouds"
 msgstr ""
 
 msgid "Non-commercial independent facility"
-msgstr ""
+msgstr "Nem kereskedelmi célú független létesítmény"
 
 msgid "None (All rights reserved)"
 msgstr ""
 
 msgid "None of the above"
-msgstr ""
+msgstr "A fentiek közül egyik sem"
 
 msgid "None specified"
-msgstr ""
+msgstr "Nincs megadva"
 
 msgid "Northern lights"
-msgstr ""
+msgstr "Sarki fény"
 
 msgid "Not enough info"
 msgstr ""
 
 msgid "Nothing"
-msgstr ""
+msgstr "Semmi"
 
 msgid "Notification settings"
 msgstr ""
@@ -1488,7 +1509,7 @@ msgid "Observatory dome"
 msgstr ""
 
 msgid "Occultation"
-msgstr ""
+msgstr "Okkultáció"
 
 msgid "Off-axis guider"
 msgstr ""
@@ -1531,19 +1552,19 @@ msgid ""
 msgstr ""
 
 msgid "Opacity"
-msgstr ""
+msgstr "Átlátszóság"
 
 msgid "Other"
-msgstr ""
+msgstr "Egyéb"
 
 msgid "Other/Unknown"
-msgstr ""
+msgstr "Egyéb/Ismeretlen"
 
 msgid "Override generated name above"
 msgstr ""
 
 msgid "Own remote observatory"
-msgstr ""
+msgstr "Saját obszervatórium"
 
 msgid "Oxygen-III (OIII)"
 msgstr ""
@@ -1552,10 +1573,10 @@ msgid "PEC"
 msgstr ""
 
 msgid "Partial lunar eclipse"
-msgstr ""
+msgstr "Részleges holdfogyatkozás"
 
 msgid "Partial solar eclipse"
-msgstr ""
+msgstr "Részleges napfogyatkozás"
 
 msgid "Password"
 msgstr "Jelszó"
@@ -1579,7 +1600,7 @@ msgid "Periodic error correction"
 msgstr ""
 
 msgid "Permission denied"
-msgstr ""
+msgstr "Hozzáférés megtagadva"
 
 msgid ""
 "Permission denied. You don't have the required subscription level to "
@@ -1623,7 +1644,7 @@ msgid "Planetary"
 msgstr ""
 
 msgid "Plate-solution annotations (if available)"
-msgstr ""
+msgstr "Plate-solution megjelölések (ha rendelkezésre állnak)"
 
 msgid "Please DO NOT approve this item if it's a duplicate of another one!"
 msgstr ""
@@ -1659,15 +1680,20 @@ msgid "Please make sure that the information you entered is accurate."
 msgstr ""
 
 msgid "Please note"
-msgstr ""
+msgstr "Kérjük, vedd figyelembe"
 
 msgid "Please note: animated GIFs cannot be watermarked at this time."
 msgstr ""
+"Kérjük, vedd figyelembe: az animált GIF-eket jelenleg nem lehet vízjellel "
+"ellátni."
 
 msgid ""
 "Please note: you don't <strong>have to</strong> use all your slots. It's ok "
 "to use fewer if you don't think there are that many worthy images today."
 msgstr ""
+"Megjegyzés: nem <strong>kell</strong> az összes helyet felhasználnod. Az is "
+"rendben van, ha kevesebbet használsz, ha úgy gondolod, hogy ma nincs olyan "
+"sok méltó képed."
 
 msgid "Please read the equipment migration guidelines"
 msgstr ""
@@ -1683,7 +1709,7 @@ msgid ""
 msgstr ""
 
 msgid "Please wait until your subscription expires, then come back to this page."
-msgstr ""
+msgstr "Kérjük, várj, amíg az előfizetésed lejár, majd térj vissza erre az oldalra."
 
 msgid "Plots"
 msgstr "Területek"
@@ -1692,7 +1718,7 @@ msgid "Portable English"
 msgstr ""
 
 msgid "Position"
-msgstr ""
+msgstr "Pozíció"
 
 msgid "Power distribution"
 msgstr ""
@@ -1704,7 +1730,7 @@ msgid "Preset name"
 msgstr ""
 
 msgid "Previous"
-msgstr ""
+msgstr "Előző"
 
 msgid "Private messages"
 msgstr ""
@@ -1713,13 +1739,13 @@ msgid "Processed item {{0}}/{{1}}."
 msgstr ""
 
 msgid "Professional, scientific grade data"
-msgstr ""
+msgstr "Professzionális, tudományos minőségű adatok"
 
 msgid "Promote"
-msgstr ""
+msgstr "Népszerűsítés"
 
 msgid "Properties"
-msgstr ""
+msgstr "Tulajdonságok"
 
 msgid "Property"
 msgstr ""
@@ -1738,15 +1764,19 @@ msgid ""
 "'=' symbol between key and value, and provide one pair per line. These tags "
 "can be used to sort images by arbitrary properties."
 msgstr ""
+"Adj meg egy listát egyedi kulcs/érték párokból, amelyekkel a képet meg "
+"szeretnéd jelölni. A kulcs és az érték között használd az \"=\" "
+"szimbólumot, és soronként egy párt adj meg. Ezek a megjelölések a képek "
+"tetszőleges tulajdonságok szerinti rendezésére használhatók."
 
 msgid "Public Gallery"
 msgstr "Nyilvános Galéria"
 
 msgid "Public amateur data"
-msgstr ""
+msgstr "Nyilvános amatőr adat"
 
 msgid "Published"
-msgstr ""
+msgstr "Közzétéve"
 
 msgid "Quantum efficiency"
 msgstr ""
@@ -1827,7 +1857,7 @@ msgid "Regular"
 msgstr ""
 
 msgid "Regular (e.g. medium/long exposure with a CCD or DSLR)"
-msgstr ""
+msgstr "Normál (pl. közepes/hosszú expozíció CCD-vel vagy DSLR-ral)"
 
 msgid "Reject"
 msgstr ""
@@ -1847,7 +1877,7 @@ msgid "Remote astrophotography"
 msgstr "Külső forrásos asztrofotózás"
 
 msgid "Remote data source"
-msgstr ""
+msgstr "Külső adatforrás"
 
 msgid "Reply"
 msgstr ""
@@ -1856,13 +1886,13 @@ msgid "Reset password"
 msgstr "Jelszó visszaállítása"
 
 msgid "Results"
-msgstr ""
+msgstr "Eredmények"
 
 msgid "Retract"
 msgstr ""
 
 msgid "Retract promotion"
-msgstr ""
+msgstr "Promóció visszavonása"
 
 msgid "Return to the classic uploader"
 msgstr "Vissza a hagyományos feltöltőhöz"
@@ -1892,19 +1922,19 @@ msgid "Round"
 msgstr ""
 
 msgid "Saturn"
-msgstr ""
+msgstr "Szaturnusz"
 
 msgid "Save"
-msgstr ""
+msgstr "Mentés"
 
 msgid "Save and proceed to acquisition details"
-msgstr ""
+msgstr "Mentés és tovább az adatok beszerzésének részleteihez"
 
 msgid "Save and proceed to gear selection"
-msgstr ""
+msgstr "Mentés és ugrás a felszerelés kiválasztásához"
 
 msgid "Save and proceed to image"
-msgstr ""
+msgstr "Mentés és ugrás a képre"
 
 msgid "Save and remain on this page"
 msgstr ""
@@ -1922,7 +1952,7 @@ msgid "Search results"
 msgstr ""
 
 msgid "Secure payment by Stripe™"
-msgstr ""
+msgstr "Biztonságos fizetés a Stripe™ által"
 
 msgid "Seems like it's your first time editing this kind of information!"
 msgstr ""
@@ -1932,6 +1962,8 @@ msgstr ""
 
 msgid "Select an area of the image to be used as thumbnail in your gallery."
 msgstr ""
+"Válaszd ki a kép egy területét, amelyet indexképként szeretnél használni a "
+"galériádban."
 
 msgid "Select equipment class"
 msgstr ""
@@ -1940,7 +1972,7 @@ msgid "Select variant"
 msgstr ""
 
 msgid "Self acquired"
-msgstr ""
+msgstr "Saját gyűjtés"
 
 msgid "Self-made / non-commercial (no brand)"
 msgstr ""
@@ -1967,7 +1999,7 @@ msgid "Settings"
 msgstr "Beállítások"
 
 msgid "Sharpen thumbnails"
-msgstr ""
+msgstr "Indexképek élesítése"
 
 msgid ""
 "Should that happen, and you're using this equipment item on one or more of "
@@ -1975,13 +2007,13 @@ msgid ""
 msgstr ""
 
 msgid "Show"
-msgstr ""
+msgstr "Mutatás"
 
 msgid "Show guiding equipment"
 msgstr ""
 
 msgid "Size"
-msgstr ""
+msgstr "Méret"
 
 msgid "Skip notifications"
 msgstr "Értesítések kihagyása"
@@ -1993,7 +2025,7 @@ msgid "Slew speed"
 msgstr ""
 
 msgid "Small"
-msgstr ""
+msgstr "Kicsi"
 
 msgid "Software"
 msgstr ""
@@ -2002,7 +2034,7 @@ msgid "Solar"
 msgstr ""
 
 msgid "Solar system body or event"
-msgstr ""
+msgstr "Naprendszeri test vagy esemény"
 
 msgid "Something went wrong"
 msgstr ""
@@ -2021,6 +2053,8 @@ msgid ""
 "Sorry, but this image is too large. Under your current subscription plan, "
 "the maximum allowed image size is {{max}}."
 msgstr ""
+"Sajnáljuk, de ez a kép túl nagy. A jelenlegi előfizetési csomagod szerint a "
+"megengedett maximális képméret {{max}}."
 
 msgid "Sorry, revisions are not included at your membership level."
 msgstr ""
@@ -2029,6 +2063,8 @@ msgid ""
 "Sorry, unfortunately AstroBin does not have a bank account in the selected "
 "territory."
 msgstr ""
+"Sajnáljuk, de az AstroBin sajnos nem rendelkezik bankszámlával a "
+"kiválasztott területen."
 
 msgid ""
 "Sorry, you cannot select an IOTD right now: <strong>{{ reason }}</strong>. "
@@ -2054,7 +2090,7 @@ msgid "Star tracker"
 msgstr ""
 
 msgid "Star trails"
-msgstr ""
+msgstr "Star trails"
 
 msgid "Start typing in the text box to show the dropdown suggestions."
 msgstr ""
@@ -2069,7 +2105,7 @@ msgid "Sub-item"
 msgstr ""
 
 msgid "Subject type"
-msgstr ""
+msgstr "Tárgy típusa"
 
 msgid "Submission queue"
 msgstr "Beküldési várólista"
@@ -2078,7 +2114,7 @@ msgid "Submit"
 msgstr ""
 
 msgid "Submit this image to the selected groups."
-msgstr ""
+msgstr "Kép beküldése a kiválasztott csoportokba."
 
 msgid "Subscribed topics"
 msgstr "Feliratkozott témák"
@@ -2105,13 +2141,13 @@ msgid "Summary"
 msgstr ""
 
 msgid "Sun"
-msgstr ""
+msgstr "Nap"
 
 msgid "Superseded"
 msgstr ""
 
 msgid "TIFF support on AstroBin is experimental."
-msgstr ""
+msgstr "Az AstroBin TIFF-támogatása kísérleti jellegű."
 
 msgid ""
 "Take a look at them so you can be consistent with the naming conventions "
@@ -2134,7 +2170,7 @@ msgid "Tell me more!"
 msgstr ""
 
 msgid "Text"
-msgstr ""
+msgstr "Szöveg"
 
 msgid "Thank you for supporting AstroBin!"
 msgstr "Köszönjük, hogy támogatod az AstroBint!"
@@ -2179,14 +2215,17 @@ msgid ""
 "on AstroBin. For this reason, we recommend that you upgrade to Premium or "
 "Ultimate instead."
 msgstr ""
+"A Lite terv <strong>{{maxImagesForLite}}</strong> kép feltöltésére elég, és "
+"jelenleg <strong>{{numberOfImages}}</strong> képed van az AstroBinen. "
+"Emiatt az ajánljuk, hogy válts Prémiumra vagy Ultimate-re."
 
 msgid ""
 "The brand you are looking for is {{0}} and it already exists on AstroBin's "
 "database."
-msgstr ""
+msgstr "Az általad keresett márka {{0}} és az AstroBin adatbázisában már benne van."
 
 msgid "The final font size will depend on how long your watermark is."
-msgstr ""
+msgstr "A végleges betűméret attól függ, hogy milyen hosszú a vízjel."
 
 msgid "The following changes are proposed:"
 msgstr ""
@@ -2195,7 +2234,7 @@ msgid "The following form fields have errors, please correct them and try again:
 msgstr ""
 
 msgid "The image will permanently disappear from your queue."
-msgstr ""
+msgstr "A kép véglegesen el fog tűnni a várólistádból."
 
 msgid "The item already exists in the database"
 msgstr ""
@@ -2261,6 +2300,8 @@ msgid ""
 "The price is shown in Swiss Francs even though you might have paid the "
 "equivalent amount in your country's currency."
 msgstr ""
+"Az ár svájci frankban van feltüntetve, még akkor is, ha az országod "
+"pénznemében ennek megfelelő összeget fizettél."
 
 msgid ""
 "The recommended naming convention for camera lenses is: optional model "
@@ -2338,7 +2379,7 @@ msgid ""
 msgstr ""
 
 msgid "This edit proposal has already been reviewed."
-msgstr ""
+msgstr "A szerkesztési kérelem már át lett nézve."
 
 msgid "This edit proposal has been approved."
 msgstr ""
@@ -2405,7 +2446,7 @@ msgid ""
 msgstr ""
 
 msgid "This operation can not be undone."
-msgstr ""
+msgstr "Ez a művelet nem vonható vissza."
 
 msgid "This operation cannot be undone."
 msgstr ""
@@ -2414,6 +2455,8 @@ msgid ""
 "This operation could take several seconds (especially for large images), "
 "please wait"
 msgstr ""
+"Ez a művelet több másodpercig is eltarthat (különösen nagyméretű képek "
+"esetében), kérjük, várj"
 
 msgid "This operation will let equipment moderators review this item again."
 msgstr ""
@@ -2451,7 +2494,7 @@ msgid "This should never happen. If the problem persists, please contact us."
 msgstr ""
 
 msgid "Thumbnail"
-msgstr ""
+msgstr "Indexkép"
 
 msgid "Time"
 msgstr ""
@@ -2474,10 +2517,10 @@ msgid "Too many requests"
 msgstr ""
 
 msgid "Top center"
-msgstr ""
+msgstr "Közép felső"
 
 msgid "Top left"
-msgstr ""
+msgstr "Bal felső"
 
 msgid "Top pick nominations"
 msgstr "Top pick jelöltek"
@@ -2486,22 +2529,22 @@ msgid "Top picks"
 msgstr "Top pickek"
 
 msgid "Top right"
-msgstr ""
+msgstr "Jobb felső"
 
 msgid "Total lunar eclipse"
-msgstr ""
+msgstr "Teljes holdfogyatkozás"
 
 msgid "Total number of edit proposals created or reviewed"
 msgstr ""
 
 msgid "Total solar eclipse"
-msgstr ""
+msgstr "Teljes napfogyatkozás"
 
 msgid "Transit"
 msgstr ""
 
 msgid "Traveller"
-msgstr ""
+msgstr "Utazó"
 
 msgid "Tripod"
 msgstr ""
@@ -2519,7 +2562,7 @@ msgid "Type to search options or to create a new one..."
 msgstr ""
 
 msgid "Type to search options..."
-msgstr ""
+msgstr "Kezdj el írni a keresési opciókért..."
 
 msgid "Ultra High Contrast (UHC)"
 msgstr ""
@@ -2546,7 +2589,7 @@ msgid "Unfreeze"
 msgstr ""
 
 msgid "Unknown"
-msgstr ""
+msgstr "Ismertelen"
 
 msgid "Unknown error"
 msgstr "Ismeretlen hiba"
@@ -2567,10 +2610,10 @@ msgid "Uploader"
 msgstr "Feltöltő"
 
 msgid "Uploading..."
-msgstr ""
+msgstr "Feltöltés..."
 
 msgid "Uranus"
-msgstr ""
+msgstr "Uránusz"
 
 msgid "Usage"
 msgstr ""
@@ -2602,7 +2645,7 @@ msgid "Variant of"
 msgstr ""
 
 msgid "Venus"
-msgstr ""
+msgstr "Vénusz"
 
 msgid "View"
 msgstr ""
@@ -2630,9 +2673,13 @@ msgid ""
 "subscription, but we cannot guarantee that all images above 200 MB or "
 "~8000x8000 pixels will work. Feel free to give it a shot tho!"
 msgstr ""
+"Figyelem! Ez egy nagy fájl! Az AstroBin nem szab mesterséges korlátozást az "
+"Ultimate előfizetéssel feltölthető fájlok méretére, de nem tudjuk "
+"garantálni, hogy minden 200 MB vagy ~8000x8000 pixel feletti kép működni "
+"fog. Azért nyugodtan próbáld meg!"
 
 msgid "Watermark"
-msgstr ""
+msgstr "Vízjel"
 
 msgid "We could not log you in. Please check your credentials and try again."
 msgstr ""
@@ -2689,6 +2736,8 @@ msgstr ""
 
 msgid "When a paid subscription expires, nothing happens to your images or content."
 msgstr ""
+"Ha egy fizetett feliratkozás lejár, semmi sem történik a képeiddel vagy "
+"tartalmaiddal."
 
 msgid ""
 "When an image is dismissed by {{0}} members of the IOTD/TP staff, it's "
@@ -2697,16 +2746,18 @@ msgid ""
 msgstr ""
 
 msgid "Where do you want to go after saving?"
-msgstr ""
+msgstr "Hová szeretnél menni a mentés után?"
 
 msgid "Where does the data for this image come from?"
-msgstr ""
+msgstr "Honnan származnak a kép adatai?"
 
 msgid "Whether this camera is equipped with a cooling mechanism."
 msgstr ""
 
 msgid "Which remote hosting facility did you use to acquire data for this image?"
 msgstr ""
+"Melyik távoli megosztó létesítményt használtad a kép adatainak "
+"megszerzéséhez?"
 
 msgid ""
 "Would you be interested in upgrading? AstroBin is a very small business and "
@@ -2749,9 +2800,11 @@ msgid ""
 "You are already on this plan. If you buy it again, your expiration date "
 "will be extended by one year."
 msgstr ""
+"Már ebben a tervben vagy. Ha újra megveszed, a lejárati idő egy évvel "
+"meghosszabbodik."
 
 msgid "You are already subscribed to a higher plan."
-msgstr ""
+msgstr "Már elő vagy fizetve egy magasabb tervre."
 
 msgid ""
 "You can associate a Creative Commons license with your content if you wish, "
@@ -2796,6 +2849,8 @@ msgid ""
 "You don't need to use the word \"{{0}}\", as this meaning is already "
 "conveyed by clicking on the checkbox above: \"{{1}}\"."
 msgstr ""
+"Nem kell a \"{{0}}\" szót használnod, mivel ez a jelentés már a fenti "
+"négyzetre kattintva is megjelenik: \"{{1}}\"."
 
 msgid ""
 "You have a <strong>{{0}}</strong> subscription. Enjoy your unlimited "
@@ -2911,7 +2966,7 @@ msgid ""
 msgstr ""
 
 msgid "Zoom ready"
-msgstr ""
+msgstr "Nagyítás kész"
 
 msgid "consider making an edit proposal instead."
 msgstr ""
@@ -2926,7 +2981,7 @@ msgid "days"
 msgstr ""
 
 msgid "e.g."
-msgstr ""
+msgstr "pl."
 
 msgid "e.g. 'Home observatory'"
 msgstr ""
