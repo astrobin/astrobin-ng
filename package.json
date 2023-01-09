@@ -46,7 +46,7 @@
     "@fortawesome/fontawesome-svg-core": "6.2.1",
     "@fortawesome/free-solid-svg-icons": "6.2.1",
     "@kronscht/ng-wizard": "1.4.3",
-    "@ng-bootstrap/ng-bootstrap": "14.0.0",
+    "@ng-bootstrap/ng-bootstrap": "14.0.1",
     "@ng-select/ng-select": "10.0.3",
     "@ngrx/effects": "15.1.0",
     "@ngrx/store": "15.1.0",
