@@ -197,6 +197,7 @@ export class UploaderPageComponent extends BaseComponentDirective implements OnI
       "crop",
       "wider",
       "rework",
+      "redux",
       "reprocess",
       "zoom",
 
