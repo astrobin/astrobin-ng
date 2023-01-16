@@ -6,6 +6,7 @@ import { UserInterface } from "@shared/interfaces/user.interface";
 import { UserProfileInterface } from "@shared/interfaces/user-profile.interface";
 import { map, switchMap, takeUntil } from "rxjs/operators";
 import { distinctUntilKeyChangedOrNull } from "@shared/services/utils/utils.service";
+import { selectApp } from "@app/store/selectors/app/app.selectors";
 
 @Directive()
 export class BaseComponentDirective implements OnInit, OnDestroy {
@@ -16,6 +17,11 @@ export class BaseComponentDirective implements OnInit, OnDestroy {
   currentUser$: Observable<UserInterface | null>;
   currentUserProfile$: Observable<UserProfileInterface | null>;
   currentUserWrapper$: Observable<{ user: UserInterface | null; userProfile: UserProfileInterface | null }>;
+
+  readOnlyMode$: Observable<boolean> = this.store$.select(selectApp).pipe(
+    map(app => app.backendConfig.readOnly),
+    takeUntil(this.destroyed$)
+  );
 
   constructor(public readonly store$: Store) {
     this.currentUser$ = this.store$
