@@ -1,4 +1,4 @@
-<div class="nested-comments card" *ngIf="comments$ | async as comments">
+<div *ngIf="comments$ | async as comments" class="nested-comments card">
 
   <div class="card-header">
     {{ "Comments" | translate }}
@@ -10,7 +10,7 @@
 
   <div class="card-body">
 
-    <p class="alert alert-info" *ngIf="!!info">
+    <p *ngIf="!!info" class="alert alert-info">
       <fa-icon icon="info-circle"></fa-icon>
       <span [innerHTML]="info"></span>
     </p>
@@ -22,8 +22,8 @@
     <ng-container *ngIf="!loadingComments; else loadingTpl">
       <ng-container
         *ngFor="let comment of comments"
-        [ngTemplateOutlet]="commentsTpl"
         [ngTemplateOutletContext]="{comment}"
+        [ngTemplateOutlet]="commentsTpl"
       ></ng-container>
       <ng-container *ngIf="comments.length === 0" [ngTemplateOutlet]="noCommentsTpl"></ng-container>
     </ng-container>
@@ -38,27 +38,34 @@
 
 <ng-template #topLevelFormTpl>
   <div class="top-level-form">
-    <form [formGroup]="form">
-      <formly-form [fields]="fields" [form]="form" [model]="model"></formly-form>
-    </form>
+    <astrobin-read-only-mode
+      *ngIf="(readOnlyMode$ | async) === true; else formTemplate"
+    ></astrobin-read-only-mode>
 
-    <button class="btn btn-secondary" [class.loading]="loadingService.loading$ | async" (click)="cancelTopLevelComment()">
-      {{ "Cancel" | translate }}
-    </button>
+    <ng-template #formTemplate>
+      <form [formGroup]="form">
+        <formly-form [fields]="fields" [form]="form" [model]="model"></formly-form>
+      </form>
 
-    <button
-      class="btn btn-primary ms-sm-2"
-      (click)="submitTopLevelComment()"
-      [disabled]="!form.valid"
-      [class.loading]="loadingService.loading$ | async"
-    >
-      {{ "Submit" | translate }}
-    </button>
+      <button (click)="cancelTopLevelComment()" [class.loading]="loadingService.loading$ | async"
+              class="btn btn-secondary">
+        {{ "Cancel" | translate }}
+      </button>
+
+      <button
+        (click)="submitTopLevelComment()"
+        [class.loading]="loadingService.loading$ | async"
+        [disabled]="!form.valid"
+        class="btn btn-primary ms-sm-2"
+      >
+        {{ "Submit" | translate }}
+      </button>
+    </ng-template>
   </div>
 </ng-template>
 
 <ng-template #addCommentButtonTpl>
-  <button class="btn btn-primary add-comment" (click)="showTopLevelForm = true">
+  <button (click)="showTopLevelForm = true" class="btn btn-primary add-comment">
     <fa-icon icon="comment"></fa-icon>
     {{ "Add a comment" | translate }}
   </button>

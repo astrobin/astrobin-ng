@@ -1,49 +1,56 @@
 <div class="page has-breadcrumb">
   <h1>{{ pageTitle | translate }}</h1>
 
-  <div *ngIf="settingCategories$ | async as categories; else loading" class="notification-settings">
-    <ngb-accordion #accordion="ngbAccordion">
-      <ngb-panel *ngFor="let category of categories">
-        <ng-template ngbPanelTitle>
+  <astrobin-read-only-mode
+    *ngIf="(readOnlyMode$ | async) === true; else formTemplate"
+  ></astrobin-read-only-mode>
+
+  <ng-template #formTemplate>
+    <div *ngIf="settingCategories$ | async as categories; else loading" class="notification-settings">
+      <ngb-accordion #accordion="ngbAccordion">
+        <ngb-panel *ngFor="let category of categories">
+          <ng-template ngbPanelTitle>
             {{ category.label }}
-        </ng-template>
+          </ng-template>
 
-        <ng-template ngbPanelContent>
-          <form *ngFor="let item of category.items | keyvalue" class="notification-form d-flex flex-row align-items-center flex-wrap">
-            <div class="form-group">
-              <label>{{ getNotificationTypeById(item.key).display }}</label>
-            </div>
-
-            <div class="form-group">
-              <div class="form-check form-check-inline">
-                <astrobin-toggle-button
-                  (toggle)="notificationSettingChanged(item.value['EMAIL'], $event)"
-                  [attr.id]="'notification-' + item.key + '-email'"
-                  [value]="item.value['EMAIL'].send"
-                  class="me-2"
-                ></astrobin-toggle-button>
-                <label [attr.for]="'notification-' + item.key + '-email'" class="form-check-label">
-                  {{ "E-mail" | translate }}
-                </label>
+          <ng-template ngbPanelContent>
+            <form *ngFor="let item of category.items | keyvalue"
+                  class="notification-form d-flex flex-row align-items-center flex-wrap">
+              <div class="form-group">
+                <label>{{ getNotificationTypeById(item.key).display }}</label>
               </div>
 
-              <div class="form-check form-check-inline">
-                <astrobin-toggle-button
-                  (toggle)="notificationSettingChanged(item.value['ON_SITE'], $event)"
-                  [attr.id]="'notification-' + item.key + '-onsite'"
-                  [value]="item.value['ON_SITE'].send"
-                  class="me-2"
-                ></astrobin-toggle-button>
-                <label [attr.for]="'notification-' + item.key + '-onsite'" class="form-check-label">
-                  {{ "On-site" | translate }}
-                </label>
+              <div class="form-group">
+                <div class="form-check form-check-inline">
+                  <astrobin-toggle-button
+                    (toggle)="notificationSettingChanged(item.value['EMAIL'], $event)"
+                    [attr.id]="'notification-' + item.key + '-email'"
+                    [value]="item.value['EMAIL'].send"
+                    class="me-2"
+                  ></astrobin-toggle-button>
+                  <label [attr.for]="'notification-' + item.key + '-email'" class="form-check-label">
+                    {{ "E-mail" | translate }}
+                  </label>
+                </div>
+
+                <div class="form-check form-check-inline">
+                  <astrobin-toggle-button
+                    (toggle)="notificationSettingChanged(item.value['ON_SITE'], $event)"
+                    [attr.id]="'notification-' + item.key + '-onsite'"
+                    [value]="item.value['ON_SITE'].send"
+                    class="me-2"
+                  ></astrobin-toggle-button>
+                  <label [attr.for]="'notification-' + item.key + '-onsite'" class="form-check-label">
+                    {{ "On-site" | translate }}
+                  </label>
+                </div>
               </div>
-            </div>
-          </form>
-        </ng-template>
-      </ngb-panel>
-    </ngb-accordion>
-  </div>
+            </form>
+          </ng-template>
+        </ngb-panel>
+      </ngb-accordion>
+    </div>
+  </ng-template>
 </div>
 
 <ng-template #loading>
