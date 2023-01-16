@@ -43,7 +43,7 @@
       *ngIf="(readOnlyMode$ | async) === true; else replyFormTemplate"
     ></astrobin-read-only-mode>
 
-    <ng-template replyFormTemplate>
+    <ng-template #replyFormTemplate>
       <form [formGroup]="replyForm">
         <formly-form [fields]="replyFields" [form]="replyForm" [model]="replyModel"></formly-form>
       </form>
