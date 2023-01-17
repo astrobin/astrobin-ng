@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit, TemplateRef, ViewChild } from "@angular/core";
+import { AfterViewInit, Component, HostListener, OnInit, TemplateRef, ViewChild } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
@@ -46,7 +46,7 @@ import { ImageEditAcquisitionFieldsService } from "@features/image/services/imag
   templateUrl: "./image-edit-page.component.html",
   styleUrls: ["./image-edit-page.component.scss"]
 })
-export class ImageEditPageComponent extends BaseComponentDirective implements OnInit, ComponentCanDeactivate {
+export class ImageEditPageComponent extends BaseComponentDirective implements OnInit, ComponentCanDeactivate, AfterViewInit {
   readonly DONT_SHOW_MIGRATION_INFO_COOKIE = "astrobin_apps_equipment_dont_show_migration_info";
 
   ImageAlias = ImageAlias;
@@ -56,6 +56,9 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
 
   @ViewChild("equipmentStepButtonsTemplate")
   equipmentStepButtonsTemplate: TemplateRef<any>;
+
+  @ViewChild("acquisitionFilterSelectFooterTemplateExtra")
+  acquisitionFilterSelectFooterTemplateExtra: TemplateRef<any>;
 
   editingExistingImage: boolean;
 
@@ -166,6 +169,10 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
       this.imageEditService.remoteSourceAffiliates = remoteSourceAffiliates;
       this._initFields();
     });
+  }
+
+  ngAfterViewInit(): void {
+    this.imageEditAcquisitionFieldsService.acquisitionFilterSelectFooterTemplateExtra = this.acquisitionFilterSelectFooterTemplateExtra;
   }
 
   clearEquipment() {

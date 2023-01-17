@@ -151,12 +151,15 @@
 
       .ng-dropdown-panel-items {
         .ng-option {
-          padding: 0 !important;
+          padding: 1rem !important;
+
+          &:empty {
+            padding: 0 !important;
+          }
 
           .option-wrapper {
-            padding: .75rem;
+            padding: 0;
           }
-        ;
 
           ::ng-deep astrobin-equipment-item-display-name {
             display: inline-block;
@@ -235,9 +238,17 @@
 }
 
 .ng-dropdown-panel {
-  background: var(--darkestGrey) !important;
+  background: var(--black) !important;
   border-top: 1px solid var(--darkGrey) !important;
   box-shadow: .25rem .5rem 1rem rgba(0, 0, 0, .5) !important;
+
+  .ng-dropdown-header {
+    background-color: var(--black);
+
+    &:empty {
+      padding: 0;
+    }
+  }
 
   .ng-dropdown-panel-items {
     max-height: 220px !important;
@@ -272,14 +283,18 @@
 
     &.ng-option-disabled {
       color: var(--lightGrey) !important;
+      background-color: transparent !important;
+      pointer-events: none;
     }
   }
 }
 
 .ng-dropdown-footer {
-  padding: 0;
+  padding: 1rem !important;
+  border-top: 0 !important;
+  background-color: var(--black);
 
-  .add-tag {
-    margin: 1rem;
+  &:empty {
+    padding: 0 !important;
   }
 }

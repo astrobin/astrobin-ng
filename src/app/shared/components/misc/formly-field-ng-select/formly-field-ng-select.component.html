@@ -87,14 +87,10 @@
       </ng-template>
 
       <ng-template ng-footer-tmp>
-        <div *ngIf="!!value && !!props.addTag && showCreateNewButton" class="add-tag">
+        <div *ngIf="!!value && !!props.addTag && showCreateNewButton; else footerTemplateExtra" class="add-tag">
           <div [innerHTML]="'Can\'t find <strong>{{0}}</strong>?' | translate:{'0': value}" class="cant-find"></div>
 
-          <ng-container *ngIf="props.footerTemplateExtra">
-            <div class="footer-template-extra">
-              <ng-template [ngTemplateOutlet]="props.footerTemplateExtra"></ng-template>
-            </div>
-          </ng-container>
+          <ng-container [ngTemplateOutlet]="footerTemplateExtra"></ng-container>
 
           <button
             (click)="onAddTag(value)"
@@ -105,6 +101,15 @@
             {{ "Create new" }}
           </button>
         </div>
+      </ng-template>
+
+      <ng-template #footerTemplateExtra>
+        <ng-container *ngIf="props.footerTemplateExtra">
+          <div class="footer-template-extra">
+            <ng-template [ngTemplateOutlet]="props.footerTemplateExtra"></ng-template>
+          </div>
+        </ng-container>
+
       </ng-template>
     </ng-select>
 

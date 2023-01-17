@@ -1,4 +1,4 @@
-import { Injectable, OnDestroy } from "@angular/core";
+import { Injectable, OnDestroy, TemplateRef } from "@angular/core";
 import { LoadingService } from "@shared/services/loading.service";
 import { TranslateService } from "@ngx-translate/core";
 import { ImageEditService } from "@features/image/services/image-edit.service";
@@ -22,6 +22,8 @@ import { BortleScale } from "@shared/interfaces/deep-sky-acquisition.interface";
   providedIn: null
 })
 export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseService implements OnDestroy {
+  acquisitionFilterSelectFooterTemplateExtra: TemplateRef<any>;
+
   private _subjectTypeChangesSubscription: Subscription;
 
   constructor(
@@ -116,9 +118,7 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
               min: 0
             },
             validators: {
-              validation: [
-                "whole-number"
-              ]
+              validation: ["whole-number"]
             }
           },
           {
@@ -168,9 +168,7 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
               min: 0
             },
             validators: {
-              validation: [
-                "whole-number"
-              ]
+              validation: ["whole-number"]
             }
           }
         ]
@@ -230,9 +228,7 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
               min: 0
             },
             validators: {
-              validation: [
-                "whole-number"
-              ]
+              validation: ["whole-number"]
             }
           },
           {
@@ -261,9 +257,7 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
               min: 0
             },
             validators: {
-              validation: [
-                "whole-number"
-              ]
+              validation: ["whole-number"]
             }
           },
           {
@@ -279,9 +273,7 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
               min: 0
             },
             validators: {
-              validation: [
-                "whole-number"
-              ]
+              validation: ["whole-number"]
             }
           }
         ]
@@ -331,7 +323,9 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
             props: {
               type: "number",
               label: this.translateService.instant("Mean mag/arcsec^2"),
-              description: this.translateService.instant("Mean SQM mag/arcsec^2 as measured by your Sky Quality Meter."),
+              description: this.translateService.instant(
+                "Mean SQM mag/arcsec^2 as measured by your Sky Quality Meter."
+              ),
               required: false,
               step: 1,
               min: 0
@@ -354,7 +348,9 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
             props: {
               type: "number",
               label: this.translateService.instant("Mean FWHM"),
-              description: this.translateService.instant("Mean SQM mag/arcsec^2 as measured by your Sky Quality Meter."),
+              description: this.translateService.instant(
+                "Mean SQM mag/arcsec^2 as measured by your Sky Quality Meter."
+              ),
               required: false,
               step: 1,
               min: 0
@@ -381,7 +377,7 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
               required: false,
               step: 1,
               min: -88, // Minimum temperature ever recorded on Earth.
-              max: 58   // Maximum temperature ever recorded on Earth.
+              max: 58 // Maximum temperature ever recorded on Earth.
             },
             validators: {
               validation: [
@@ -411,8 +407,11 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
           addLabel: this.translateService.instant("Add session"),
           maxRows: 1,
           additionalPropertiesClicked: (index: number) => {
-            const modalRef: NgbModalRef = this.modalService.open(AdditionalSolarSystemAcquisitionPropertiesModalComponent);
-            const componentInstance: AdditionalSolarSystemAcquisitionPropertiesModalComponent = modalRef.componentInstance;
+            const modalRef: NgbModalRef = this.modalService.open(
+              AdditionalSolarSystemAcquisitionPropertiesModalComponent
+            );
+            const componentInstance: AdditionalSolarSystemAcquisitionPropertiesModalComponent =
+              modalRef.componentInstance;
             componentInstance.imageEditService = this.imageEditService;
             componentInstance.fieldGroup = this.getAdditionalSolarSystemFields();
             componentInstance.index = index;
@@ -475,9 +474,7 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
                 wrappers: ["default-wrapper"],
                 props: {
                   label: this.translateService.instant("Seeing"),
-                  description: this.translateService.instant(
-                    "Your estimation of the seeing."
-                  ),
+                  description: this.translateService.instant("Your estimation of the seeing."),
                   required: false,
                   options: [
                     { value: SeeingScale.VERY_BAD, label: this.translateService.instant("Very bad") },
@@ -496,9 +493,7 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
                 wrappers: ["default-wrapper"],
                 props: {
                   label: this.translateService.instant("Transparency"),
-                  description: this.translateService.instant(
-                    "Your estimation of the transparency."
-                  ),
+                  description: this.translateService.instant("Your estimation of the transparency."),
                   required: false,
                   options: [
                     { value: TransparencyScale.EXTREMELY_BAD, label: this.translateService.instant("Extremely bad") },
@@ -671,9 +666,13 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
       wrappers: ["default-wrapper"],
       props: {
         label: this.translateService.instant("Filter"),
-        description: this.translateService.instant("Filter used (to add more, go to the equipment step)."),
+        description:
+          this.translateService.instant("Filter used.") +
+          " " +
+          this.translateService.instant("To add more, go back to the Equipment step."),
         clearable: true,
         searchable: false,
+        footerTemplateExtra: this.acquisitionFilterSelectFooterTemplateExtra,
         options: this.store$.select(selectEquipmentItems).pipe(
           takeUntil(this.destroyed$),
           map(items =>
