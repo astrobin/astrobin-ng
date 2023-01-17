@@ -63,7 +63,9 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
           label: this.translateService.instant("Deep sky acquisition sessions"),
           addLabel: this.translateService.instant("Add session"),
           additionalPropertiesClicked: (index: number) => {
-            const modalRef: NgbModalRef = this.modalService.open(AdditionalDeepSkyAcquisitionPropertiesModalComponent);
+            const modalRef: NgbModalRef = this.modalService.open(AdditionalDeepSkyAcquisitionPropertiesModalComponent, {
+              backdrop: "static"
+            });
             const componentInstance: AdditionalDeepSkyAcquisitionPropertiesModalComponent = modalRef.componentInstance;
             componentInstance.imageEditService = this.imageEditService;
             componentInstance.fieldGroup = this.getAdditionalDeepSkyFields();
@@ -408,7 +410,9 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
           maxRows: 1,
           additionalPropertiesClicked: (index: number) => {
             const modalRef: NgbModalRef = this.modalService.open(
-              AdditionalSolarSystemAcquisitionPropertiesModalComponent
+              AdditionalSolarSystemAcquisitionPropertiesModalComponent, {
+                backdrop: "static"
+              }
             );
             const componentInstance: AdditionalSolarSystemAcquisitionPropertiesModalComponent =
               modalRef.componentInstance;

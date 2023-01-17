@@ -3,7 +3,7 @@
     {{ "Additional properties" | translate }}
   </h4>
 
-  <button (click)="modal.dismiss()" aria-describedby="modal-title" class="close" type="button">
+  <button (click)="close()" aria-describedby="modal-title" class="close" type="button">
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
@@ -19,7 +19,7 @@
 </div>
 
 <div class="modal-footer">
-  <button (click)="modal.dismiss()" class="btn btn-outline-secondary" type="button">
+  <button (click)="close()" class="btn btn-outline-secondary" type="button">
     {{ "Close" | translate }}
   </button>
 </div>
