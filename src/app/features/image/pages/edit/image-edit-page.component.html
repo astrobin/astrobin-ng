@@ -1,5 +1,9 @@
 <div class="page has-breadcrumb">
-  {{imageEditService.form.value|json}}
+  <astrobin-read-only-mode *ngIf="(readOnlyMode$ | async) === true; else editTemplate">
+  </astrobin-read-only-mode>
+</div>
+
+<ng-template #editTemplate>
   <form [formGroup]="imageEditService.form">
     <formly-form
       [fields]="imageEditService.fields"
@@ -9,7 +13,7 @@
   </form>
 
   <div *ngIf="imageEditEquipmentFieldsService.creationMode" class="equipment-item-creation-mode-overlay"></div>
-</div>
+</ng-template>
 
 <ng-template #remoteSourceLabelTemplate let-item="item">
   <span class="code">{{ item.label }}</span>

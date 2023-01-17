@@ -1,29 +1,30 @@
-<div class="nested-comment" [class.highlighted]="highlighted" id="c{{ comment.id }}" style="margin-left:{{ comment.depth - 1 }}rem">
+<div [class.highlighted]="highlighted" class="nested-comment" id="c{{ comment.id }}"
+     style="margin-left:{{ comment.depth - 1 }}rem">
   <div class="meta">
     <astrobin-username [user]="user$ | async"></astrobin-username>
 
-    <span class="timestamp" [attr.data-test-value]="comment.created">
+    <span [attr.data-test-value]="comment.created" class="timestamp">
       {{ comment.created | localDate | timeago: true }}
     </span>
 
     <span
       *ngIf="comment.likes.length === 1"
-      class="likes"
-      [translate]="'1 like'"
       [translateParams]="{ '0': comment.likes.length }"
+      [translate]="'1 like'"
+      class="likes"
     >
     </span>
 
     <span
       *ngIf="comment.likes.length > 1"
-      class="likes"
-      [translate]="'{{0}} like'"
       [translateParams]="{ '0': comment.likes.length }"
+      [translate]="'{{0}} like'"
+      class="likes"
     >
     </span>
   </div>
 
-  <div #commentText class="text" [innerHTML]="comment.html"></div>
+  <div #commentText [innerHTML]="comment.html" class="text"></div>
 
   <div class="actions">
     <a [href]="getLink()" class="link">
@@ -31,33 +32,38 @@
       {{ "Link" | translate }}
     </a>
 
-    <button [hidden]="showReplyForm" class="btn btn-primary btn-sm reply" (click)="showReplyForm = true">
+    <button (click)="showReplyForm = true" [hidden]="showReplyForm" class="btn btn-primary btn-sm reply">
       <fa-icon icon="reply"></fa-icon>
       {{ "Reply" | translate }}
     </button>
   </div>
 
   <div *ngIf="showReplyForm" class="reply-form">
-    <form [formGroup]="replyForm">
-      <formly-form [fields]="replyFields" [form]="replyForm" [model]="replyModel"></formly-form>
-    </form>
+    <astrobin-read-only-mode
+      *ngIf="(readOnlyMode$ | async) === true; else replyFormTemplate"
+    ></astrobin-read-only-mode>
 
-    <button
-      [class.loading]="loadingService.loading$ | async"
-      class="btn btn-secondary"
-      (click)="cancelReply()"
-    >
-      {{ "Cancel" | translate }}
-    </button>
+    <ng-template #replyFormTemplate>
+      <form [formGroup]="replyForm">
+        <formly-form [fields]="replyFields" [form]="replyForm" [model]="replyModel"></formly-form>
+      </form>
 
+      <button
+        (click)="cancelReply()"
+        [class.loading]="loadingService.loading$ | async"
+        class="btn btn-secondary"
+      >
+        {{ "Cancel" | translate }}
+      </button>
 
-    <button
-      [disabled]="!replyForm.valid"
-      [class.loading]="loadingService.loading$ | async"
-      class="btn btn-primary ms-sm-2"
-      (click)="submitReply()"
-    >
-      {{ "Submit" | translate }}
-    </button>
+      <button
+        (click)="submitReply()"
+        [class.loading]="loadingService.loading$ | async"
+        [disabled]="!replyForm.valid"
+        class="btn btn-primary ms-sm-2"
+      >
+        {{ "Submit" | translate }}
+      </button>
+    </ng-template>
   </div>
 </div>

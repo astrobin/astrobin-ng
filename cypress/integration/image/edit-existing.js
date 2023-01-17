@@ -1,7 +1,8 @@
 context("Image edit (existing)", () => {
-  it("should navigate to the edit page", () => {
+  beforeEach("should init things", () => {
     cy.server();
     cy.setupInitializationRoutes();
+
     cy.route("get", "**/api/v2/images/image/?hash=abc123", "fixture:api/images/image_1_by_hashes.json").as("getImage");
     cy.route("get", "/abc123/0/thumb/hd/", "fixture:api/images/image_thumbnail_1_regular_loaded").as("getThumbnail");
     cy.route(
@@ -52,7 +53,9 @@ context("Image edit (existing)", () => {
       "**/common/userprofiles/current",
       "fixture:api/common/userprofile_current_1_with_locations.json"
     ).as("getCurrentUserProfile");
+  });
 
+  it("should navigate to the edit page", () => {
     cy.visitPage("/i/abc123/edit");
     cy.wait("@getImage");
     cy.wait("@getUsersLocations");
@@ -158,4 +161,10 @@ context("Image edit (existing)", () => {
     cy.get("#image-mouse-hover-image-field .ng-value").should("contain.text", "Inverted monochrome");
     cy.get("#image-allow-comments-field").should("be.checked");
   });
+
+  it("should show warning if in read-only mode", () => {
+    cy.route("get", "**/json-api/common/app-config/", "fixture:api/json/app-config-read-only.json").as("appConfig");
+    cy.visitPage("/i/abc123/edit");
+    cy.get("astrobin-read-only-mode").should("exist");
+  })
 });

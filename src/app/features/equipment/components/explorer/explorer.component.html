@@ -1,16 +1,16 @@
 <div class="row">
   <div class="col-12">
     <astrobin-equipment-item-browser
-      *ngIf="enableBrowser"
       #itemBrowser
-      [type]="activeType"
-      [value]="this.activeId"
-      [enableFullscreen]="true"
-      [showItemTypeSelector]="true"
-      (creationModeStarted)="onCreationModeStarted()"
       (creationModeEnded)="onCreationModeEnded()"
+      (creationModeStarted)="onCreationModeStarted()"
       (itemTypeChanged)="onItemTypeChanged($event)"
       (valueChanged)="onSelectedItemChanged($event)"
+      *ngIf="enableBrowser"
+      [enableFullscreen]="true"
+      [showItemTypeSelector]="true"
+      [type]="activeType"
+      [value]="this.activeId"
     ></astrobin-equipment-item-browser>
   </div>
 </div>
@@ -18,7 +18,7 @@
 
 <div class="row">
   <div class="col order-last order-lg-first">
-    <div class="card" [class.disabled-with-backdrop]="subCreationMode" *ngIf="!!selectedItem">
+    <div *ngIf="!!selectedItem" [class.disabled-with-backdrop]="subCreationMode" class="card">
       <div class="backdrop"></div>
 
       <div class="card-header">
@@ -28,8 +28,8 @@
       <div class="card-body">
         <div *ngIf="selectedItem.reviewerDecision === null && !!selectedItem.brand" class="alert alert-warning">
           {{
-            "This item has not been approved yet, so it's not available to be associated with images, except for the user who created it."
-              | translate
+          "This item has not been approved yet, so it's not available to be associated with images, except for the user who created it."
+            | translate
           }}
         </div>
 
@@ -38,15 +38,15 @@
         </div>
 
         <astrobin-equipment-item-summary
+          (editButtonClick)="startEditMode()"
+          [enableBrandLink]="true"
           [item]="selectedItem"
           [showClass]="false"
+          [showCommunityNotes]="true"
           [showEmptyProperties]="true"
           [showLargeImage]="true"
           [showMeta]="true"
-          [enableBrandLink]="true"
-          [showCommunityNotes]="true"
           [showMostOftenUsedWith]="true"
-          (editButtonClick)="startEditMode()"
         ></astrobin-equipment-item-summary>
 
         <div *ngIf="!!selectedItem.variantOf || selectedItem.variants.length > 0" class="item-variants-container">
@@ -55,8 +55,8 @@
 
             <span class="item-variants">
               <a
-                [routerLink]="['/equipment/explorer/', variant.klass.toLowerCase(), variant.id]"
                 *ngFor="let variant of selectedItem.variants"
+                [routerLink]="['/equipment/explorer/', variant.klass.toLowerCase(), variant.id]"
                 class="item-variant"
               >
                 <ng-container
@@ -107,9 +107,9 @@
 
                 <ng-template #notDslrOrMirrorlessCamera>
                   <astrobin-equipment-item-display-name
+                    [cut]="selectedItem.name"
                     [item]="variant"
                     [showBrand]="false"
-                    [cut]="selectedItem.name"
                   ></astrobin-equipment-item-display-name>
                 </ng-template>
               </a>
@@ -143,10 +143,10 @@
 
       <div class="card-footer">
         <button
-          class="btn btn-sm-block btn-outline-secondary"
+          (click)="resetBrowser()"
           [class.loading]="loadingService.loading$ | async"
           [disabled]="editMode"
-          (click)="resetBrowser()"
+          class="btn btn-sm-block btn-outline-secondary"
         >
           {{ "Close" | translate }}
         </button>
@@ -154,34 +154,35 @@
         <ng-container *ngIf="currentUser$ | async as currentUser">
           <ng-container *ngIf="!!currentUser">
             <button
+              (click)="startEditMode()"
               *ngIf="!selectedItem.frozenAsAmbiguous || (currentUser | isEquipmentModerator)"
-              class="btn btn-secondary"
-              data-test="propose-edit"
               [class.loading]="loadingService.loading$ | async"
               [disabled]="editMode"
-              (click)="startEditMode()"
+              class="btn btn-secondary"
+              data-test="propose-edit"
             >
               {{ "Propose edit" | translate }}&hellip;
             </button>
 
             <div *ngIf="currentUser | isEquipmentModerator" ngbDropdown>
               <button
+                [class.loading]="loadingService.loading$ | async"
+                [disabled]="(readOnlyMode$ | async) === true"
+                class="btn btn-danger"
+                id="moderate-menu"
                 ngbDropdownToggle
                 type="button"
-                id="moderate-menu"
-                class="btn btn-danger"
-                [class.loading]="loadingService.loading$ | async"
               >
                 {{ "Moderate" | translate }}
               </button>
 
-              <div ngbDropdownMenu aria-labelledby="moderate-menu">
+              <div aria-labelledby="moderate-menu" ngbDropdownMenu>
                 <button
-                  *ngIf="typeSupportsMigrateInto()"
-                  ngbDropdownItem
-                  data-test="migrate-into"
-                  [disabled]="editMode"
                   (click)="startMigrationMode()"
+                  *ngIf="typeSupportsMigrateInto()"
+                  [disabled]="editMode"
+                  data-test="migrate-into"
+                  ngbDropdownItem
                 >
                   {{ "Migrate into" | translate }}&hellip;
                 </button>
@@ -194,12 +195,12 @@
                   "
                 >
                   <button
-                    ngbDropdownItem
-                    class="text-warning"
-                    data-test="freeze-as-ambiguous"
+                    (click)="startFreezeAsAmbiguous()"
                     [class.loading]="loadingService.loading$ | async"
                     [disabled]="editMode"
-                    (click)="startFreezeAsAmbiguous()"
+                    class="text-warning"
+                    data-test="freeze-as-ambiguous"
+                    ngbDropdownItem
                   >
                     {{ "Freeze" | translate }}&hellip;
                   </button>
@@ -213,12 +214,12 @@
                   "
                 >
                   <button
-                    ngbDropdownItem
-                    class="text-warning"
-                    data-test="freeze-as-ambiguous"
+                    (click)="startUnfreezeAsAmbiguous()"
                     [class.loading]="loadingService.loading$ | async"
                     [disabled]="editMode"
-                    (click)="startUnfreezeAsAmbiguous()"
+                    class="text-warning"
+                    data-test="freeze-as-ambiguous"
+                    ngbDropdownItem
                   >
                     {{ "Unfreeze" | translate }}&hellip;
                   </button>
@@ -231,23 +232,23 @@
                     *ngIf="selectedItem.reviewerDecision === null && selectedItem.createdBy !== currentUser.id"
                   >
                     <button
-                      ngbDropdownItem
-                      class="text-danger"
-                      data-test="reject"
+                      (click)="startRejection()"
                       [class.loading]="loadingService.loading$ | async"
                       [disabled]="editMode"
-                      (click)="startRejection()"
+                      class="text-danger"
+                      data-test="reject"
+                      ngbDropdownItem
                     >
                       {{ "Reject" | translate }}&hellip;
                     </button>
 
                     <button
-                      ngbDropdownItem
-                      class="text-success"
-                      data-test="reject"
+                      (click)="startApproval()"
                       [class.loading]="loadingService.loading$ | async"
                       [disabled]="editMode"
-                      (click)="startApproval()"
+                      class="text-success"
+                      data-test="reject"
+                      ngbDropdownItem
                     >
                       {{ "Approve" | translate }}&hellip;
                     </button>
@@ -260,12 +261,12 @@
                     "
                   >
                     <button
-                      ngbDropdownItem
-                      class="text-danger"
-                      data-test="unapprove"
+                      (click)="startUnapproval()"
                       [class.loading]="loadingService.loading$ | async"
                       [disabled]="editMode"
-                      (click)="startUnapproval()"
+                      class="text-danger"
+                      data-test="unapprove"
+                      ngbDropdownItem
                     >
                       {{ "Unapprove" | translate }}&hellip;
                     </button>
@@ -275,13 +276,13 @@
             </div>
 
             <a
-              href="#"
+              (click)="compareService.addWithErrorHandling(selectedItem)"
+              [class.loading]="loadingService.loading$ | async"
               astrobinEventPreventDefault
               class="add-to-compare"
-              [class.loading]="loadingService.loading$ | async"
-              (click)="compareService.addWithErrorHandling(selectedItem)"
+              href="#"
             >
-              <fa-icon icon="list-alt" [ngbTooltip]="'Add to comparison list' | translate"></fa-icon>
+              <fa-icon [ngbTooltip]="'Add to comparison list' | translate" icon="list-alt"></fa-icon>
             </a>
           </ng-container>
         </ng-container>
@@ -290,9 +291,9 @@
 
     <ng-container *ngIf="selectedItem">
       <ng-container *ngIf="editProposals !== null; else loadingEditProposals">
-        <div class="edit-proposals" *ngIf="editProposals.length > 0">
+        <div *ngIf="editProposals.length > 0" class="edit-proposals">
           <ng-container *ngIf="showEditProposals(); else editProposalsCollapsedTemplate">
-            <div class="edit-proposals-header" (click)="collapseEditProposals()">
+            <div (click)="collapseEditProposals()" class="edit-proposals-header">
               <div class="row">
                 <span class="col">{{ "Edit proposal by" | translate }}</span>
                 <span class="col-2 d-none d-lg-inline">{{ "Changes" | translate }}</span>
@@ -310,9 +311,9 @@
 
           <ng-template #editProposalsCollapsedTemplate>
             <div
-              class="edit-proposals-collapsed"
-              [innerHTML]="collapsedEditProposalsMessage(editProposals)"
               (click)="expandEditProposals()"
+              [innerHTML]="collapsedEditProposalsMessage(editProposals)"
+              class="edit-proposals-collapsed"
             ></div>
           </ng-template>
         </div>
@@ -331,7 +332,7 @@
         <fa-icon icon="arrow-down"></fa-icon>
       </div>
 
-      <div class="card mt-4 mb-4" [class.disabled-with-backdrop]="subCreationMode" id="edit-item">
+      <div [class.disabled-with-backdrop]="subCreationMode" class="card mt-4 mb-4" id="edit-item">
         <div class="backdrop"></div>
 
         <div class="card-info alert alert-info">
@@ -346,84 +347,91 @@
         </div>
 
         <div class="card-body">
-          <astrobin-camera-editor
-            #editor
-            *ngIf="activeType === EquipmentItemType.CAMERA"
-            [form]="editForm"
-            [model]="editModel"
-            (subCreationInProgress)="subCreationMode = $event"
-            [editorMode]="EquipmentItemEditorMode.EDIT_PROPOSAL"
-          ></astrobin-camera-editor>
+          <astrobin-read-only-mode
+            *ngIf="(readOnlyMode$ | async) === true; else formTemplate"
+          ></astrobin-read-only-mode>
 
-          <astrobin-sensor-editor
-            #editor
-            *ngIf="activeType === EquipmentItemType.SENSOR"
-            [form]="editForm"
-            [model]="editModel"
-            (subCreationInProgress)="subCreationMode = $event"
-            [editorMode]="EquipmentItemEditorMode.EDIT_PROPOSAL"
-          ></astrobin-sensor-editor>
+          <ng-template #formTemplate>
+            <astrobin-camera-editor
+              #editor
+              (subCreationInProgress)="subCreationMode = $event"
+              *ngIf="activeType === EquipmentItemType.CAMERA"
+              [editorMode]="EquipmentItemEditorMode.EDIT_PROPOSAL"
+              [form]="editForm"
+              [model]="editModel"
+            ></astrobin-camera-editor>
 
-          <astrobin-telescope-editor
-            #editor
-            *ngIf="activeType === EquipmentItemType.TELESCOPE"
-            [form]="editForm"
-            [model]="editModel"
-            (subCreationInProgress)="subCreationMode = $event"
-            [editorMode]="EquipmentItemEditorMode.EDIT_PROPOSAL"
-          ></astrobin-telescope-editor>
+            <astrobin-sensor-editor
+              #editor
+              (subCreationInProgress)="subCreationMode = $event"
+              *ngIf="activeType === EquipmentItemType.SENSOR"
+              [editorMode]="EquipmentItemEditorMode.EDIT_PROPOSAL"
+              [form]="editForm"
+              [model]="editModel"
+            ></astrobin-sensor-editor>
 
-          <astrobin-mount-editor
-            #editor
-            *ngIf="activeType === EquipmentItemType.MOUNT"
-            [form]="editForm"
-            [model]="editModel"
-            (subCreationInProgress)="subCreationMode = $event"
-            [editorMode]="EquipmentItemEditorMode.EDIT_PROPOSAL"
-          ></astrobin-mount-editor>
+            <astrobin-telescope-editor
+              #editor
+              (subCreationInProgress)="subCreationMode = $event"
+              *ngIf="activeType === EquipmentItemType.TELESCOPE"
+              [editorMode]="EquipmentItemEditorMode.EDIT_PROPOSAL"
+              [form]="editForm"
+              [model]="editModel"
+            ></astrobin-telescope-editor>
 
-          <astrobin-filter-editor
-            #editor
-            *ngIf="activeType === EquipmentItemType.FILTER"
-            [form]="editForm"
-            [model]="editModel"
-            (subCreationInProgress)="subCreationMode = $event"
-            [editorMode]="EquipmentItemEditorMode.EDIT_PROPOSAL"
-          ></astrobin-filter-editor>
+            <astrobin-mount-editor
+              #editor
+              (subCreationInProgress)="subCreationMode = $event"
+              *ngIf="activeType === EquipmentItemType.MOUNT"
+              [editorMode]="EquipmentItemEditorMode.EDIT_PROPOSAL"
+              [form]="editForm"
+              [model]="editModel"
+            ></astrobin-mount-editor>
 
-          <astrobin-accessory-editor
-            #editor
-            *ngIf="activeType === EquipmentItemType.ACCESSORY"
-            [form]="editForm"
-            [model]="editModel"
-            (subCreationInProgress)="subCreationMode = $event"
-            [editorMode]="EquipmentItemEditorMode.EDIT_PROPOSAL"
-          ></astrobin-accessory-editor>
+            <astrobin-filter-editor
+              #editor
+              (subCreationInProgress)="subCreationMode = $event"
+              *ngIf="activeType === EquipmentItemType.FILTER"
+              [editorMode]="EquipmentItemEditorMode.EDIT_PROPOSAL"
+              [form]="editForm"
+              [model]="editModel"
+            ></astrobin-filter-editor>
 
-          <astrobin-software-editor
-            #editor
-            *ngIf="activeType === EquipmentItemType.SOFTWARE"
-            [form]="editForm"
-            [model]="editModel"
-            (subCreationInProgress)="subCreationMode = $event"
-            [editorMode]="EquipmentItemEditorMode.EDIT_PROPOSAL"
-          ></astrobin-software-editor>
+            <astrobin-accessory-editor
+              #editor
+              (subCreationInProgress)="subCreationMode = $event"
+              *ngIf="activeType === EquipmentItemType.ACCESSORY"
+              [editorMode]="EquipmentItemEditorMode.EDIT_PROPOSAL"
+              [form]="editForm"
+              [model]="editModel"
+            ></astrobin-accessory-editor>
+
+            <astrobin-software-editor
+              #editor
+              (subCreationInProgress)="subCreationMode = $event"
+              *ngIf="activeType === EquipmentItemType.SOFTWARE"
+              [editorMode]="EquipmentItemEditorMode.EDIT_PROPOSAL"
+              [form]="editForm"
+              [model]="editModel"
+            ></astrobin-software-editor>
+          </ng-template>
         </div>
 
         <div class="card-footer">
           <button
-            class="btn btn-sm-block btn-secondary"
-            [class.loading]="loadingService.loading$ | async"
             (click)="cancelEditMode()"
+            [class.loading]="loadingService.loading$ | async"
+            class="btn btn-sm-block btn-secondary"
           >
             {{ "Cancel" | translate }}
           </button>
 
           <button
+            (click)="proposeEdit()"
+            [class.loading]="(loadingService.loading$ | async) || editForm.pending"
+            [disabled]="(readOnlyMode$ | async) === true"
             class="btn btn-sm-block btn-primary"
             data-test="propose-edit-confirm"
-            [class.loading]="(loadingService.loading$ | async) || editForm.pending"
-            (click)="proposeEdit()"
           >
             {{ "Propose edit" | translate }}
           </button>
@@ -438,8 +446,8 @@
         <div *ngIf="contentType$ | async as contentType" class="comments mt-3">
           <astrobin-nested-comments
             [contentType]="contentType"
-            [objectId]="selectedItem.id"
             [info]="commentsSectionInfoMessage$ | async"
+            [objectId]="selectedItem.id"
           ></astrobin-nested-comments>
         </div>
       </ng-container>
@@ -455,11 +463,11 @@
 
       <astrobin-image-search
         [header]="'Acquired with this item' | translate"
-        [text]="equipmentItemService.getFullDisplayName$(selectedItem) | async"
-        [itemType]="activeType"
         [itemId]="selectedItem.id"
-        ordering="-likes"
+        [itemType]="activeType"
+        [text]="equipmentItemService.getFullDisplayName$(selectedItem) | async"
         class="mt-5 d-block"
+        ordering="-likes"
       ></astrobin-image-search>
     </ng-container>
   </div>

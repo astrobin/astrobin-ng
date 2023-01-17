@@ -64,75 +64,81 @@
       </div>
 
       <div class="card-body">
-        <astrobin-camera-editor
-          #editor
-          (subCreationInProgress)="onSubCreationInProgress($event)"
-          (suggestionSelected)="itemCreated($event)"
-          *ngIf="type === EquipmentItemType.CAMERA"
-          [form]="creationForm"
-          [model]="creationModel"
-          [name]="q"
-        ></astrobin-camera-editor>
+        <astrobin-read-only-mode
+          *ngIf="(readOnlyMode$ | async) === true; else formTemplate"
+        ></astrobin-read-only-mode>
 
-        <astrobin-sensor-editor
-          #editor
-          (subCreationInProgress)="onSubCreationInProgress($event)"
-          (suggestionSelected)="itemCreated($event)"
-          *ngIf="type === EquipmentItemType.SENSOR"
-          [form]="creationForm"
-          [model]="creationModel"
-          [name]="q"
-        ></astrobin-sensor-editor>
+        <ng-template #formTemplate>
+          <astrobin-camera-editor
+            #editor
+            (subCreationInProgress)="onSubCreationInProgress($event)"
+            (suggestionSelected)="itemCreated($event)"
+            *ngIf="type === EquipmentItemType.CAMERA"
+            [form]="creationForm"
+            [model]="creationModel"
+            [name]="q"
+          ></astrobin-camera-editor>
 
-        <astrobin-telescope-editor
-          #editor
-          (subCreationInProgress)="onSubCreationInProgress($event)"
-          (suggestionSelected)="itemCreated($event)"
-          *ngIf="type === EquipmentItemType.TELESCOPE"
-          [form]="creationForm"
-          [model]="creationModel"
-          [name]="q"
-        ></astrobin-telescope-editor>
+          <astrobin-sensor-editor
+            #editor
+            (subCreationInProgress)="onSubCreationInProgress($event)"
+            (suggestionSelected)="itemCreated($event)"
+            *ngIf="type === EquipmentItemType.SENSOR"
+            [form]="creationForm"
+            [model]="creationModel"
+            [name]="q"
+          ></astrobin-sensor-editor>
 
-        <astrobin-mount-editor
-          #editor
-          (subCreationInProgress)="onSubCreationInProgress($event)"
-          (suggestionSelected)="itemCreated($event)"
-          *ngIf="type === EquipmentItemType.MOUNT"
-          [form]="creationForm"
-          [model]="creationModel"
-          [name]="q"
-        ></astrobin-mount-editor>
+          <astrobin-telescope-editor
+            #editor
+            (subCreationInProgress)="onSubCreationInProgress($event)"
+            (suggestionSelected)="itemCreated($event)"
+            *ngIf="type === EquipmentItemType.TELESCOPE"
+            [form]="creationForm"
+            [model]="creationModel"
+            [name]="q"
+          ></astrobin-telescope-editor>
 
-        <astrobin-filter-editor
-          #editor
-          (subCreationInProgress)="onSubCreationInProgress($event)"
-          (suggestionSelected)="itemCreated($event)"
-          *ngIf="type === EquipmentItemType.FILTER"
-          [form]="creationForm"
-          [model]="creationModel"
-          [name]="q"
-        ></astrobin-filter-editor>
+          <astrobin-mount-editor
+            #editor
+            (subCreationInProgress)="onSubCreationInProgress($event)"
+            (suggestionSelected)="itemCreated($event)"
+            *ngIf="type === EquipmentItemType.MOUNT"
+            [form]="creationForm"
+            [model]="creationModel"
+            [name]="q"
+          ></astrobin-mount-editor>
 
-        <astrobin-accessory-editor
-          #editor
-          (subCreationInProgress)="onSubCreationInProgress($event)"
-          (suggestionSelected)="itemCreated($event)"
-          *ngIf="type === EquipmentItemType.ACCESSORY"
-          [form]="creationForm"
-          [model]="creationModel"
-          [name]="q"
-        ></astrobin-accessory-editor>
+          <astrobin-filter-editor
+            #editor
+            (subCreationInProgress)="onSubCreationInProgress($event)"
+            (suggestionSelected)="itemCreated($event)"
+            *ngIf="type === EquipmentItemType.FILTER"
+            [form]="creationForm"
+            [model]="creationModel"
+            [name]="q"
+          ></astrobin-filter-editor>
 
-        <astrobin-software-editor
-          #editor
-          (subCreationInProgress)="onSubCreationInProgress($event)"
-          (suggestionSelected)="itemCreated($event)"
-          *ngIf="type === EquipmentItemType.SOFTWARE"
-          [form]="creationForm"
-          [model]="creationModel"
-          [name]="q"
-        ></astrobin-software-editor>
+          <astrobin-accessory-editor
+            #editor
+            (subCreationInProgress)="onSubCreationInProgress($event)"
+            (suggestionSelected)="itemCreated($event)"
+            *ngIf="type === EquipmentItemType.ACCESSORY"
+            [form]="creationForm"
+            [model]="creationModel"
+            [name]="q"
+          ></astrobin-accessory-editor>
+
+          <astrobin-software-editor
+            #editor
+            (subCreationInProgress)="onSubCreationInProgress($event)"
+            (suggestionSelected)="itemCreated($event)"
+            *ngIf="type === EquipmentItemType.SOFTWARE"
+            [form]="creationForm"
+            [model]="creationModel"
+            [name]="q"
+          ></astrobin-software-editor>
+        </ng-template>
       </div>
 
       <div class="card-footer">
@@ -147,6 +153,7 @@
         <button
           (click)="createItem()"
           [class.loading]="(loadingService.loading$ | async) || creationForm.pending"
+          [disabled]="(readOnlyMode$ | async) === true"
           class="btn btn-sm-block btn-primary"
         >
           {{ "Create item" | translate }}
