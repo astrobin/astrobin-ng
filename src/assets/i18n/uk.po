@@ -25,8 +25,35 @@ msgstr ""
 "значення: 10, якщо водяний знак з’явиться на темному тлі неба, 50 якщо на "
 "якомусь яскравому об’єкті."
 
+msgid "1 - Excellent dark-site sky (BLACK)"
+msgstr ""
+
 msgid "1 like"
 msgstr "1 лайк"
+
+msgid "2 - Typical truly dark site (GRAY)"
+msgstr ""
+
+msgid "3 - Rural sky (BLUE)"
+msgstr ""
+
+msgid "4 - Rural/suburban transition (GREEN/YELLOW)"
+msgstr ""
+
+msgid "5 - Suburban sky (ORANGE)"
+msgstr ""
+
+msgid "6 - Bright suburban sky (RED)"
+msgstr ""
+
+msgid "7 - Suburban/urban transition or Full Moon (RED)"
+msgstr ""
+
+msgid "8 - City sky (WHITE)"
+msgstr ""
+
+msgid "9 - Inner city sky (WHITE)"
+msgstr ""
 
 msgid ""
 "<strong>Careful!</strong> Change the name only to fix a typo or the naming "
@@ -66,6 +93,9 @@ msgstr "АЦП"
 msgid "API Keys"
 msgstr "Ключі API"
 
+msgid "Acceptable"
+msgstr ""
+
 msgid "Accepted formats"
 msgstr "Доступні формати"
 
@@ -84,10 +114,19 @@ msgstr ""
 msgid "Acquired with this item"
 msgstr ""
 
+msgid "Acquisition"
+msgstr ""
+
 msgid "Acquisition cameras"
 msgstr ""
 
+msgid "Acquisition date."
+msgstr ""
+
 msgid "Acquisition telescopes or lenses"
+msgstr ""
+
+msgid "Acquisition time (local timezone)."
 msgstr ""
 
 msgid "Acquisition type"
@@ -96,8 +135,14 @@ msgstr "Тип придбання"
 msgid "Add a comment"
 msgstr "Коментувати"
 
+msgid "Add session"
+msgstr ""
+
 msgid "Add to comparison list"
 msgstr "Додати до списку порівняння"
+
+msgid "Additional properties"
+msgstr ""
 
 msgid "Advanced plate-solving"
 msgstr "Розширене розпізнавання поля"
@@ -134,6 +179,9 @@ msgstr "Висота"
 
 msgid "Amateur hosting facility"
 msgstr "Аматорський хостинг"
+
+msgid "Ambient temperature in Celsius degrees."
+msgstr ""
 
 msgid "Amount"
 msgstr "Кількість"
@@ -321,6 +369,9 @@ msgstr "Задній відрізок"
 msgid "Backyard"
 msgstr "Задній двір"
 
+msgid "Bad"
+msgstr ""
+
 msgid "Bad request"
 msgstr "Невірний запит"
 
@@ -354,6 +405,12 @@ msgstr "Почніть"
 msgid "Begin migration"
 msgstr ""
 
+msgid "Bias"
+msgstr ""
+
+msgid "Binning"
+msgstr ""
+
 msgid "Binoculars"
 msgstr "Бінокль"
 
@@ -362,6 +419,9 @@ msgstr "Синій канал (B)"
 
 msgid "Bookmarks"
 msgstr "Закладки"
+
+msgid "Bortle dark-sky scale"
+msgstr ""
 
 msgid "Bottom center"
 msgstr "По центру знизу"
@@ -386,6 +446,18 @@ msgstr ""
 
 msgid "Buy"
 msgstr "Придбати"
+
+msgid "CMI"
+msgstr ""
+
+msgid "CMII"
+msgstr ""
+
+msgid "CMIII"
+msgstr ""
+
+msgid "Calibration"
+msgstr ""
 
 msgid "Camera"
 msgstr "Камера"
@@ -455,6 +527,11 @@ msgstr "По центру"
 
 msgid "Changes"
 msgstr "Зміни"
+
+msgid ""
+"Changing this value will remove any acquisition sessions you have already "
+"added."
+msgstr ""
 
 msgid ""
 "Check this box if this item is self-made, and/or was never on the market as "
@@ -577,6 +654,12 @@ msgstr "Список авторів"
 msgid "Cooled"
 msgstr "З охолодженням"
 
+msgid "Cooling"
+msgstr ""
+
+msgid "Copy"
+msgstr ""
+
 msgid "Create"
 msgstr "Створити"
 
@@ -613,6 +696,9 @@ msgstr ""
 "які не продаються з охолодженням, але механізм охолодження додається як "
 "спеціальна модифікація."
 
+msgid "Darks"
+msgstr ""
+
 msgid "Data source"
 msgstr "Джерело даних"
 
@@ -621,6 +707,9 @@ msgstr "Дата"
 
 msgid "Dedicated deep-sky camera"
 msgstr "Спеціальна deep-sky камера"
+
+msgid "Deep sky acquisition sessions"
+msgstr ""
 
 msgid "Deep sky object or field"
 msgstr "Об’єкт або поле глибокого космосу"
@@ -692,6 +781,12 @@ msgid "Dual Alt-Az/Equatorial"
 msgstr "Подвійний Alt-Az/EQ"
 
 msgid "Duplicate of"
+msgstr ""
+
+msgid "Duration"
+msgstr ""
+
+msgid "Duration of each frame in seconds."
 msgstr ""
 
 msgid "E-mail"
@@ -786,6 +881,9 @@ msgstr ""
 msgid "Everybody"
 msgstr "Кожен"
 
+msgid "Excellent"
+msgstr ""
+
 msgid "Expiration date"
 msgstr "Дата закінчення"
 
@@ -795,11 +893,23 @@ msgstr "Огляд"
 msgid "Explorer"
 msgstr "Огляд"
 
+msgid "Exposure per frame"
+msgstr ""
+
+msgid "Extremely bad"
+msgstr ""
+
 msgid "Extremely wide field"
 msgstr "Надзвичайно широке поле"
 
 msgid "FAQ"
 msgstr "Часті питання"
+
+msgid "FPS"
+msgstr ""
+
+msgid "Fair"
+msgstr ""
 
 msgid "Feel free to contribute!"
 msgstr ""
@@ -829,6 +939,9 @@ msgstr ""
 msgid ""
 "Filter sets should be added one filter at a time, individually, so that "
 "they may be added to acquisition sessions."
+msgstr ""
+
+msgid "Filter used."
 msgstr ""
 
 msgid "Filter wheel"
@@ -871,6 +984,9 @@ msgid "Fixed focal length"
 msgstr "Фіксована фокусна відстань"
 
 msgid "Flat box"
+msgstr ""
+
+msgid "Flats"
 msgstr ""
 
 msgid "Focal length"
@@ -922,6 +1038,12 @@ msgstr "Форум"
 msgid "Frame rate"
 msgstr "Частота кадрів"
 
+msgid "Frames"
+msgstr ""
+
+msgid "Frames per second."
+msgstr ""
+
 msgid "Freeze"
 msgstr ""
 
@@ -937,8 +1059,8 @@ msgstr "Повний пошук"
 msgid "Full well capacity"
 msgstr "Глибина ями"
 
-msgid "Gear"
-msgstr "Обладнання"
+msgid "Gain"
+msgstr ""
 
 msgid "Gear renaming proposals"
 msgstr "Пропозиції перейменування сетапів"
@@ -963,6 +1085,9 @@ msgstr "Перейти до базового варіанту."
 
 msgid "Go to regular variant."
 msgstr "Перейти до звичайного варіанту."
+
+msgid "Good"
+msgstr ""
 
 msgid "Good job! {{0}} items marked for migration."
 msgstr "Хороша робота! {{0}} елементів позначені для перенесення."
@@ -1119,6 +1244,11 @@ msgid ""
 msgstr ""
 
 msgid ""
+"If you used a camera lens, please specify the f-number (also known as "
+"f-ratio or f-stop) that you used for this acquisition session."
+msgstr ""
+
+msgid ""
 "If you want to share the TIFF or FITS file of your image, put a link to the "
 "file here. Unfortunately, AstroBin cannot offer to store these files at the "
 "moment, so you will have to host them on your personal space."
@@ -1256,6 +1386,15 @@ msgstr "Останнє оновлення"
 msgid "Latest topics"
 msgstr "Останні теми"
 
+msgid "Latitude of the first Central Meridian."
+msgstr ""
+
+msgid "Latitude of the second Central Meridian."
+msgstr ""
+
+msgid "Latitude of the third Central Meridian."
+msgstr ""
+
 msgid "Learn more"
 msgstr "Дізнатись більше"
 
@@ -1374,6 +1513,18 @@ msgstr "Макс. {{ max }}  завантажень"
 
 msgid "Me only"
 msgstr "Тільки я"
+
+msgid "Mean FWHM"
+msgstr ""
+
+msgid "Mean SQM mag/arcsec^2 as measured by your Sky Quality Meter."
+msgstr ""
+
+msgid "Mean mag/arcsec^2"
+msgstr ""
+
+msgid "Mediocre"
+msgstr ""
 
 msgid "Medium"
 msgstr "Середній"
@@ -1547,11 +1698,20 @@ msgstr "Недостатньо інформації"
 msgid "Nothing"
 msgstr "Нічого"
 
+msgid "Nothing to display."
+msgstr ""
+
 msgid "Notification settings"
 msgstr "Налаштування сповіщень"
 
 msgid "Notifications"
 msgstr "Попередження"
+
+msgid "Number"
+msgstr ""
+
+msgid "Number of frames."
+msgstr ""
 
 msgid "Number of pixels"
 msgstr "Кількість пікселів"
@@ -1634,6 +1794,9 @@ msgstr ""
 
 msgid "Opacity"
 msgstr "Непрозорість"
+
+msgid "Optics"
+msgstr ""
 
 msgid "Other"
 msgstr "Інше"
@@ -1868,6 +2031,12 @@ msgstr "Публічні аматорські дані"
 msgid "Published"
 msgstr "Опубліковано"
 
+msgid ""
+"Quality of the sky according to <a "
+"href=\"http://en.wikipedia.org/wiki/Bortle_Dark-Sky_Scale\" "
+"target=\"_blank\">the Bortle Scale</a>."
+msgstr ""
+
 msgid "Quantum efficiency"
 msgstr "Квантова ефективність"
 
@@ -2044,6 +2213,9 @@ msgstr ""
 msgid "Secure payment by Stripe™"
 msgstr "Безпечна оплата через Stripe™"
 
+msgid "Seeing"
+msgstr ""
+
 msgid "Seems like it's your first time editing this kind of information!"
 msgstr "Здається, ви вперше редагуєте таку інформацію!"
 
@@ -2124,6 +2296,9 @@ msgstr "Програми"
 
 msgid "Solar"
 msgstr "Сонячна"
+
+msgid "Solar system acquisition sessions"
+msgstr ""
 
 msgid "Solar system body or event"
 msgstr "Тіло або подія Сонячної системи"
@@ -2235,8 +2410,14 @@ msgstr "Резюме"
 msgid "Sun"
 msgstr "Сонце"
 
+msgid "Superb"
+msgstr ""
+
 msgid "Superseded"
 msgstr "Замінено"
+
+msgid "Synthetic channel"
+msgstr ""
 
 msgid "TIFF support on AstroBin is experimental."
 msgstr "Підтримка TIFF на AstroBin є екперементальною."
@@ -2262,6 +2443,9 @@ msgstr "Телескопи та об‘єктиви"
 
 msgid "Tell me more!"
 msgstr "Розкажи мені більше!"
+
+msgid "Temperature"
+msgstr ""
 
 msgid "Text"
 msgstr "Текст"
@@ -2330,6 +2514,11 @@ msgstr ""
 
 msgid "The final font size will depend on how long your watermark is."
 msgstr "Остаточний розмір шрифту буде залежати від довжини вашого водяного знака."
+
+msgid ""
+"The focal length of the whole optical train, including barlow lenses or "
+"other components."
+msgstr ""
 
 msgid "The following changes are proposed:"
 msgstr "Пропонуються такі зміни:"
@@ -2413,6 +2602,18 @@ msgstr ""
 "Назва цього продукту. Не вказуйте назву бренду та переконайтеся, що він "
 "написаний правильно."
 
+msgid "The number of bias/offset frames."
+msgstr ""
+
+msgid "The number of dark flat frames."
+msgstr ""
+
+msgid "The number of dark frames."
+msgstr ""
+
+msgid "The number of flat frames."
+msgstr ""
+
 msgid ""
 "The price is shown in Swiss Francs even though you might have paid the "
 "equivalent amount in your country's currency."
@@ -2443,6 +2644,9 @@ msgstr "Назва редакції буде показана як додато�
 msgid "The size of the individual pixels in μm."
 msgstr "Розмір окремих пікселів у μm."
 
+msgid "The subject type \"{{0}}\" does not support acquisition sessions."
+msgstr ""
+
 msgid "The submission queue is currently empty or being refreshed."
 msgstr "Наразі черга подання порожня або оновлюється."
 
@@ -2460,6 +2664,9 @@ msgstr "Цільовий елемент містить деякі неточні
 
 msgid "The target item is a duplicate of an existing equipment item"
 msgstr "Цільовий елемент є дублікатом наявного елемента обладнання"
+
+msgid "The temperature of the chip in Celsius degrees, e.g. -20."
+msgstr ""
 
 msgid ""
 "There are <strong>{{n}} items</strong> of this class that have pending "
@@ -2647,6 +2854,9 @@ msgstr "Заголовок"
 msgid "To"
 msgstr "До"
 
+msgid "To add more, go back to the Equipment step."
+msgstr ""
+
 msgid ""
 "To use this feature, you need the <strong>{{0}}</strong> subscription or "
 "higher."
@@ -2688,6 +2898,9 @@ msgstr "Повне сонячне затемнення"
 
 msgid "Transit"
 msgstr "Транзит"
+
+msgid "Transparency"
+msgstr ""
 
 msgid "Traveller"
 msgstr "Мандрівник"
@@ -2779,6 +2992,9 @@ msgstr ""
 "Використовуйте знак <strong>@</strong> і почніть вводити, щоб згадати "
 "будь-якого користувача."
 
+msgid "Use the button below to add data."
+msgstr ""
+
 msgid "Username"
 msgstr "Ім‘я користувача"
 
@@ -2796,6 +3012,12 @@ msgstr "Варіант"
 
 msgid "Venus"
 msgstr "Венера"
+
+msgid "Very bad"
+msgstr ""
+
+msgid "Very good"
+msgstr ""
 
 msgid "View"
 msgstr "Перегляд"
@@ -3100,6 +3322,12 @@ msgid ""
 "possible."
 msgstr "Вашу пропозицію редагування надіслано та буде розглянуто якомога швидше."
 
+msgid "Your estimation of the seeing."
+msgstr ""
+
+msgid "Your estimation of the transparency."
+msgstr ""
+
 msgid "Your most recent applied migrations (all equipment classes)"
 msgstr ""
 
@@ -3173,6 +3401,9 @@ msgstr "напр."
 
 msgid "e.g. 'Home observatory'"
 msgstr "наприклад, «Домашня обсерваторія»"
+
+msgid "f-number"
+msgstr ""
 
 msgid "modified"
 msgstr "модифіковано"

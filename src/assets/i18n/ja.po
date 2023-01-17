@@ -24,8 +24,35 @@ msgstr ""
 "0は完全透過、100は完全不透過を意味します。推奨される値は以下の通りです。透明率が良い暗い空の背景に表示される場合は10、透明率が悪い場合は50"
 "を推奨します。"
 
+msgid "1 - Excellent dark-site sky (BLACK)"
+msgstr ""
+
 msgid "1 like"
 msgstr "1 いいね！"
+
+msgid "2 - Typical truly dark site (GRAY)"
+msgstr ""
+
+msgid "3 - Rural sky (BLUE)"
+msgstr ""
+
+msgid "4 - Rural/suburban transition (GREEN/YELLOW)"
+msgstr ""
+
+msgid "5 - Suburban sky (ORANGE)"
+msgstr ""
+
+msgid "6 - Bright suburban sky (RED)"
+msgstr ""
+
+msgid "7 - Suburban/urban transition or Full Moon (RED)"
+msgstr ""
+
+msgid "8 - City sky (WHITE)"
+msgstr ""
+
+msgid "9 - Inner city sky (WHITE)"
+msgstr ""
 
 msgid ""
 "<strong>Careful!</strong> Change the name only to fix a typo or the naming "
@@ -61,6 +88,9 @@ msgstr "ADC"
 msgid "API Keys"
 msgstr "APIキー"
 
+msgid "Acceptable"
+msgstr ""
+
 msgid "Accepted formats"
 msgstr "許可されたフォーマット"
 
@@ -79,11 +109,20 @@ msgstr "このブランドで撮影した"
 msgid "Acquired with this item"
 msgstr "このアイテムで撮影された画像"
 
+msgid "Acquisition"
+msgstr ""
+
 msgid "Acquisition cameras"
 msgstr "撮影カメラ"
 
+msgid "Acquisition date."
+msgstr ""
+
 msgid "Acquisition telescopes or lenses"
 msgstr "撮影に利用した望遠鏡またはレンズ"
+
+msgid "Acquisition time (local timezone)."
+msgstr ""
 
 msgid "Acquisition type"
 msgstr "撮影方法"
@@ -91,8 +130,14 @@ msgstr "撮影方法"
 msgid "Add a comment"
 msgstr "コメントを追加する"
 
+msgid "Add session"
+msgstr ""
+
 msgid "Add to comparison list"
 msgstr "比較リストに追加"
+
+msgid "Additional properties"
+msgstr ""
 
 msgid "Advanced plate-solving"
 msgstr "高度なプレートソルビング"
@@ -129,6 +174,9 @@ msgstr "標高"
 
 msgid "Amateur hosting facility"
 msgstr "アマチュア提供施設"
+
+msgid "Ambient temperature in Celsius degrees."
+msgstr ""
 
 msgid "Amount"
 msgstr "量"
@@ -304,6 +352,9 @@ msgstr "バックフォーカス"
 msgid "Backyard"
 msgstr "裏庭"
 
+msgid "Bad"
+msgstr ""
+
 msgid "Bad request"
 msgstr "不正なリクエスト"
 
@@ -334,6 +385,12 @@ msgstr "開始する"
 msgid "Begin migration"
 msgstr "移行を開始する"
 
+msgid "Bias"
+msgstr ""
+
+msgid "Binning"
+msgstr ""
+
 msgid "Binoculars"
 msgstr "双眼鏡"
 
@@ -342,6 +399,9 @@ msgstr "Blue channel (B)"
 
 msgid "Bookmarks"
 msgstr "ブックマーク"
+
+msgid "Bortle dark-sky scale"
+msgstr ""
 
 msgid "Bottom center"
 msgstr "下中央"
@@ -366,6 +426,18 @@ msgstr "ブランド別・プロパティ別にみる"
 
 msgid "Buy"
 msgstr "購入する"
+
+msgid "CMI"
+msgstr ""
+
+msgid "CMII"
+msgstr ""
+
+msgid "CMIII"
+msgstr ""
+
+msgid "Calibration"
+msgstr ""
 
 msgid "Camera"
 msgstr "カメラ"
@@ -435,6 +507,11 @@ msgstr "中央"
 
 msgid "Changes"
 msgstr "変更箇所"
+
+msgid ""
+"Changing this value will remove any acquisition sessions you have already "
+"added."
+msgstr ""
 
 msgid ""
 "Check this box if this item is self-made, and/or was never on the market as "
@@ -552,6 +629,12 @@ msgstr "貢献者リスト"
 msgid "Cooled"
 msgstr "冷却"
 
+msgid "Cooling"
+msgstr ""
+
+msgid "Copy"
+msgstr ""
+
 msgid "Create"
 msgstr "作成する"
 
@@ -587,6 +670,9 @@ msgstr ""
 "カスタムクーリングカメラとは、純正で冷却機能を搭載して販売されていないデジタル一眼レフカメラやミラーレスカメラに、カスタム改造として冷却機構を追加したも"
 "のです。"
 
+msgid "Darks"
+msgstr ""
+
 msgid "Data source"
 msgstr "データソース"
 
@@ -595,6 +681,9 @@ msgstr "日付"
 
 msgid "Dedicated deep-sky camera"
 msgstr "天体撮影専用カメラ"
+
+msgid "Deep sky acquisition sessions"
+msgstr ""
 
 msgid "Deep sky object or field"
 msgstr "深宇宙対象もしくは写野"
@@ -664,6 +753,12 @@ msgstr "経緯台モード付赤道儀"
 
 msgid "Duplicate of"
 msgstr "の複製"
+
+msgid "Duration"
+msgstr ""
+
+msgid "Duration of each frame in seconds."
+msgstr ""
 
 msgid "E-mail"
 msgstr "電子メール"
@@ -757,6 +852,9 @@ msgstr ""
 msgid "Everybody"
 msgstr "全員"
 
+msgid "Excellent"
+msgstr ""
+
 msgid "Expiration date"
 msgstr "有効期限"
 
@@ -766,11 +864,23 @@ msgstr "Explore"
 msgid "Explorer"
 msgstr "探索"
 
+msgid "Exposure per frame"
+msgstr ""
+
+msgid "Extremely bad"
+msgstr ""
+
 msgid "Extremely wide field"
 msgstr "超広角写野"
 
 msgid "FAQ"
 msgstr "FAQ"
+
+msgid "FPS"
+msgstr ""
+
+msgid "Fair"
+msgstr ""
 
 msgid "Feel free to contribute!"
 msgstr "お気軽に貢献してください。"
@@ -799,6 +909,9 @@ msgid ""
 "Filter sets should be added one filter at a time, individually, so that "
 "they may be added to acquisition sessions."
 msgstr "フィルターセットは、利用時に追加できるように、1つずつ個別に追加する必要があります。"
+
+msgid "Filter used."
+msgstr ""
 
 msgid "Filter wheel"
 msgstr "フィルターホイール"
@@ -841,6 +954,9 @@ msgstr "固定焦点距離"
 
 msgid "Flat box"
 msgstr "フラットボックス"
+
+msgid "Flats"
+msgstr ""
 
 msgid "Focal length"
 msgstr "焦点距離"
@@ -885,6 +1001,12 @@ msgstr "フォーラム"
 msgid "Frame rate"
 msgstr "フレームレート"
 
+msgid "Frames"
+msgstr ""
+
+msgid "Frames per second."
+msgstr ""
+
 msgid "Freeze"
 msgstr "フリーズ"
 
@@ -900,8 +1022,8 @@ msgstr "全件検索"
 msgid "Full well capacity"
 msgstr "フルウェルキャパシティ"
 
-msgid "Gear"
-msgstr "機材"
+msgid "Gain"
+msgstr ""
 
 msgid "Gear renaming proposals"
 msgstr "機材名称の変更案"
@@ -926,6 +1048,9 @@ msgstr "元バージョンへ"
 
 msgid "Go to regular variant."
 msgstr "基本バージョンへ移動"
+
+msgid "Good"
+msgstr ""
 
 msgid "Good job! {{0}} items marked for migration."
 msgstr "Good job!  {{0}} アイテムが移行対象としてマークされています。"
@@ -1067,6 +1192,11 @@ msgid ""
 msgstr "それでもなお、これらの広告を表示したくないと感じる場合は、設定ページで変更することができます。"
 
 msgid ""
+"If you used a camera lens, please specify the f-number (also known as "
+"f-ratio or f-stop) that you used for this acquisition session."
+msgstr ""
+
+msgid ""
 "If you want to share the TIFF or FITS file of your image, put a link to the "
 "file here. Unfortunately, AstroBin cannot offer to store these files at the "
 "moment, so you will have to host them on your personal space."
@@ -1202,6 +1332,15 @@ msgstr "最終更新"
 msgid "Latest topics"
 msgstr "最新のトピックス"
 
+msgid "Latitude of the first Central Meridian."
+msgstr ""
+
+msgid "Latitude of the second Central Meridian."
+msgstr ""
+
+msgid "Latitude of the third Central Meridian."
+msgstr ""
+
 msgid "Learn more"
 msgstr "もっと知る"
 
@@ -1318,6 +1457,18 @@ msgstr "Max. {{ max }} uploads"
 
 msgid "Me only"
 msgstr "自分限定"
+
+msgid "Mean FWHM"
+msgstr ""
+
+msgid "Mean SQM mag/arcsec^2 as measured by your Sky Quality Meter."
+msgstr ""
+
+msgid "Mean mag/arcsec^2"
+msgstr ""
+
+msgid "Mediocre"
+msgstr ""
 
 msgid "Medium"
 msgstr "中"
@@ -1489,11 +1640,20 @@ msgstr "情報不足"
 msgid "Nothing"
 msgstr "何もなし"
 
+msgid "Nothing to display."
+msgstr ""
+
 msgid "Notification settings"
 msgstr "通知設定"
 
 msgid "Notifications"
 msgstr "通知"
+
+msgid "Number"
+msgstr ""
+
+msgid "Number of frames."
+msgstr ""
 
 msgid "Number of pixels"
 msgstr "ピクセル数"
@@ -1566,6 +1726,9 @@ msgstr "おっと! あなたのリクエストは、2つのAstroBinサーバー�
 
 msgid "Opacity"
 msgstr "不透明度"
+
+msgid "Optics"
+msgstr ""
 
 msgid "Other"
 msgstr "Other"
@@ -1785,6 +1948,12 @@ msgstr "公開されたアマチュアのデータ"
 msgid "Published"
 msgstr "公開する"
 
+msgid ""
+"Quality of the sky according to <a "
+"href=\"http://en.wikipedia.org/wiki/Bortle_Dark-Sky_Scale\" "
+"target=\"_blank\">the Bortle Scale</a>."
+msgstr ""
+
 msgid "Quantum efficiency"
 msgstr "量子効率"
 
@@ -1961,6 +2130,9 @@ msgstr "検索結果"
 msgid "Secure payment by Stripe™"
 msgstr "Stripe™によるセキュアな支払い"
 
+msgid "Seeing"
+msgstr ""
+
 msgid "Seems like it's your first time editing this kind of information!"
 msgstr "このような情報を編集するのは初めてのようですね！？"
 
@@ -2037,6 +2209,9 @@ msgstr "ソフトウエア"
 
 msgid "Solar"
 msgstr "太陽"
+
+msgid "Solar system acquisition sessions"
+msgstr ""
 
 msgid "Solar system body or event"
 msgstr "太陽系天体もしくはそのイベント"
@@ -2144,8 +2319,14 @@ msgstr "概要"
 msgid "Sun"
 msgstr "太陽"
 
+msgid "Superb"
+msgstr ""
+
 msgid "Superseded"
 msgstr "置き換わった"
+
+msgid "Synthetic channel"
+msgstr ""
 
 msgid "TIFF support on AstroBin is experimental."
 msgstr "AstroBinでのTIFFのサポートは実験的なものです。"
@@ -2169,6 +2350,9 @@ msgstr "望遠鏡＆レンズ"
 
 msgid "Tell me more!"
 msgstr "もっと教えてほしい！"
+
+msgid "Temperature"
+msgstr ""
 
 msgid "Text"
 msgstr "テキスト"
@@ -2231,6 +2415,11 @@ msgstr "お探しのブランドは{{0}}で、AstroBinのデータベースに�
 
 msgid "The final font size will depend on how long your watermark is."
 msgstr "最終的なフォントサイズは、透かしの長さによって異なります。"
+
+msgid ""
+"The focal length of the whole optical train, including barlow lenses or "
+"other components."
+msgstr ""
 
 msgid "The following changes are proposed:"
 msgstr "以下の変更案が提案されました："
@@ -2301,6 +2490,18 @@ msgid ""
 "it's spelled correctly."
 msgstr "この製品の名称です。ブランド名は入れず、スペルを間違えないようにしましょう。"
 
+msgid "The number of bias/offset frames."
+msgstr ""
+
+msgid "The number of dark flat frames."
+msgstr ""
+
+msgid "The number of dark frames."
+msgstr ""
+
+msgid "The number of flat frames."
+msgstr ""
+
 msgid ""
 "The price is shown in Swiss Francs even though you might have paid the "
 "equivalent amount in your country's currency."
@@ -2328,6 +2529,9 @@ msgstr "修正版のタイトルは、元画像のタイトルに追記される
 msgid "The size of the individual pixels in μm."
 msgstr "個々のピクセルサイズをμmで。"
 
+msgid "The subject type \"{{0}}\" does not support acquisition sessions."
+msgstr ""
+
 msgid "The submission queue is currently empty or being refreshed."
 msgstr "投稿待ちは現在は空になっているか更新中です。"
 
@@ -2345,6 +2549,9 @@ msgstr "対象アイテムは情報が不足している"
 
 msgid "The target item is a duplicate of an existing equipment item"
 msgstr "対象品目が既存の装備品と重複している場合"
+
+msgid "The temperature of the chip in Celsius degrees, e.g. -20."
+msgstr ""
 
 msgid ""
 "There are <strong>{{n}} items</strong> of this class that have pending "
@@ -2508,6 +2715,9 @@ msgstr "件名"
 msgid "To"
 msgstr "宛先"
 
+msgid "To add more, go back to the Equipment step."
+msgstr ""
+
 msgid ""
 "To use this feature, you need the <strong>{{0}}</strong> subscription or "
 "higher."
@@ -2545,6 +2755,9 @@ msgstr "皆既日食"
 
 msgid "Transit"
 msgstr "乗換"
+
+msgid "Transparency"
+msgstr ""
 
 msgid "Traveller"
 msgstr "旅行者"
@@ -2632,6 +2845,9 @@ msgstr "<strong>#</strong> 記号を使用して入力を開始すると、ギ�
 msgid "Use the <strong>@</strong> sign and start typing to mention any user."
 msgstr "<strong>@</strong> 記号を使用して入力を開始すると、他のユーザーをメンションすることができます。"
 
+msgid "Use the button below to add data."
+msgstr ""
+
 msgid "Username"
 msgstr "ユーザー名"
 
@@ -2649,6 +2865,12 @@ msgstr "元バージョン"
 
 msgid "Venus"
 msgstr "金星"
+
+msgid "Very bad"
+msgstr ""
+
+msgid "Very good"
+msgstr ""
 
 msgid "View"
 msgstr "みる"
@@ -2930,6 +3152,12 @@ msgid ""
 "possible."
 msgstr "編集案は提出され、できるだけ早く審査されます。"
 
+msgid "Your estimation of the seeing."
+msgstr ""
+
+msgid "Your estimation of the transparency."
+msgstr ""
+
 msgid "Your most recent applied migrations (all equipment classes)"
 msgstr "最近適用したマイグレーション（全機材分類）"
 
@@ -2995,6 +3223,9 @@ msgstr "例えば、"
 
 msgid "e.g. 'Home observatory'"
 msgstr "例えば、自宅観測所"
+
+msgid "f-number"
+msgstr ""
 
 msgid "modified"
 msgstr "改造"

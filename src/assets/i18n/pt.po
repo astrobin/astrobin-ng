@@ -25,7 +25,34 @@ msgstr ""
 "recomendados: 10 se a marca d'água deve aparecer no plano de fundo escuro, "
 "50 se for aparecer num objeto brilhante."
 
+msgid "1 - Excellent dark-site sky (BLACK)"
+msgstr ""
+
 msgid "1 like"
+msgstr ""
+
+msgid "2 - Typical truly dark site (GRAY)"
+msgstr ""
+
+msgid "3 - Rural sky (BLUE)"
+msgstr ""
+
+msgid "4 - Rural/suburban transition (GREEN/YELLOW)"
+msgstr ""
+
+msgid "5 - Suburban sky (ORANGE)"
+msgstr ""
+
+msgid "6 - Bright suburban sky (RED)"
+msgstr ""
+
+msgid "7 - Suburban/urban transition or Full Moon (RED)"
+msgstr ""
+
+msgid "8 - City sky (WHITE)"
+msgstr ""
+
+msgid "9 - Inner city sky (WHITE)"
 msgstr ""
 
 msgid ""
@@ -57,6 +84,9 @@ msgstr ""
 msgid "API Keys"
 msgstr "Chaves de API"
 
+msgid "Acceptable"
+msgstr ""
+
 msgid "Accepted formats"
 msgstr "Formatos aceitos"
 
@@ -75,10 +105,19 @@ msgstr ""
 msgid "Acquired with this item"
 msgstr ""
 
+msgid "Acquisition"
+msgstr ""
+
 msgid "Acquisition cameras"
 msgstr ""
 
+msgid "Acquisition date."
+msgstr ""
+
 msgid "Acquisition telescopes or lenses"
+msgstr ""
+
+msgid "Acquisition time (local timezone)."
 msgstr ""
 
 msgid "Acquisition type"
@@ -87,7 +126,13 @@ msgstr "Tipo de captura"
 msgid "Add a comment"
 msgstr ""
 
+msgid "Add session"
+msgstr ""
+
 msgid "Add to comparison list"
+msgstr ""
+
+msgid "Additional properties"
 msgstr ""
 
 msgid "Advanced plate-solving"
@@ -125,6 +170,9 @@ msgstr ""
 
 msgid "Amateur hosting facility"
 msgstr "Hospedagem amadora"
+
+msgid "Ambient temperature in Celsius degrees."
+msgstr ""
 
 msgid "Amount"
 msgstr "Quantia"
@@ -299,6 +347,9 @@ msgstr ""
 msgid "Backyard"
 msgstr "Quintal"
 
+msgid "Bad"
+msgstr ""
+
 msgid "Bad request"
 msgstr ""
 
@@ -329,6 +380,12 @@ msgstr ""
 msgid "Begin migration"
 msgstr ""
 
+msgid "Bias"
+msgstr ""
+
+msgid "Binning"
+msgstr ""
+
 msgid "Binoculars"
 msgstr ""
 
@@ -337,6 +394,9 @@ msgstr ""
 
 msgid "Bookmarks"
 msgstr "Favoritos"
+
+msgid "Bortle dark-sky scale"
+msgstr ""
 
 msgid "Bottom center"
 msgstr "Inferior central"
@@ -361,6 +421,18 @@ msgstr ""
 
 msgid "Buy"
 msgstr "Comprar"
+
+msgid "CMI"
+msgstr ""
+
+msgid "CMII"
+msgstr ""
+
+msgid "CMIII"
+msgstr ""
+
+msgid "Calibration"
+msgstr ""
 
 msgid "Camera"
 msgstr ""
@@ -429,6 +501,11 @@ msgid "Center"
 msgstr "Centro"
 
 msgid "Changes"
+msgstr ""
+
+msgid ""
+"Changing this value will remove any acquisition sessions you have already "
+"added."
 msgstr ""
 
 msgid ""
@@ -550,6 +627,12 @@ msgstr "Lista de contribuintes"
 msgid "Cooled"
 msgstr ""
 
+msgid "Cooling"
+msgstr ""
+
+msgid "Copy"
+msgstr ""
+
 msgid "Create"
 msgstr ""
 
@@ -583,6 +666,9 @@ msgid ""
 "modification."
 msgstr ""
 
+msgid "Darks"
+msgstr ""
+
 msgid "Data source"
 msgstr "Fonte de dados"
 
@@ -590,6 +676,9 @@ msgid "Date"
 msgstr "Data"
 
 msgid "Dedicated deep-sky camera"
+msgstr ""
+
+msgid "Deep sky acquisition sessions"
 msgstr ""
 
 msgid "Deep sky object or field"
@@ -659,6 +748,12 @@ msgid "Dual Alt-Az/Equatorial"
 msgstr ""
 
 msgid "Duplicate of"
+msgstr ""
+
+msgid "Duration"
+msgstr ""
+
+msgid "Duration of each frame in seconds."
 msgstr ""
 
 msgid "E-mail"
@@ -750,6 +845,9 @@ msgstr ""
 msgid "Everybody"
 msgstr ""
 
+msgid "Excellent"
+msgstr ""
+
 msgid "Expiration date"
 msgstr "Data de validade"
 
@@ -759,11 +857,23 @@ msgstr "Explorar"
 msgid "Explorer"
 msgstr ""
 
+msgid "Exposure per frame"
+msgstr ""
+
+msgid "Extremely bad"
+msgstr ""
+
 msgid "Extremely wide field"
 msgstr "Campo extremamente grande"
 
 msgid "FAQ"
 msgstr "Perguntas frequentes"
+
+msgid "FPS"
+msgstr ""
+
+msgid "Fair"
+msgstr ""
 
 msgid "Feel free to contribute!"
 msgstr ""
@@ -791,6 +901,9 @@ msgstr ""
 msgid ""
 "Filter sets should be added one filter at a time, individually, so that "
 "they may be added to acquisition sessions."
+msgstr ""
+
+msgid "Filter used."
 msgstr ""
 
 msgid "Filter wheel"
@@ -833,6 +946,9 @@ msgid "Fixed focal length"
 msgstr ""
 
 msgid "Flat box"
+msgstr ""
+
+msgid "Flats"
 msgstr ""
 
 msgid "Focal length"
@@ -882,6 +998,12 @@ msgstr ""
 msgid "Frame rate"
 msgstr ""
 
+msgid "Frames"
+msgstr ""
+
+msgid "Frames per second."
+msgstr ""
+
 msgid "Freeze"
 msgstr ""
 
@@ -897,8 +1019,8 @@ msgstr "Busca completa"
 msgid "Full well capacity"
 msgstr ""
 
-msgid "Gear"
-msgstr "Equipamento"
+msgid "Gain"
+msgstr ""
 
 msgid "Gear renaming proposals"
 msgstr ""
@@ -922,6 +1044,9 @@ msgid "Go to base variant."
 msgstr ""
 
 msgid "Go to regular variant."
+msgstr ""
+
+msgid "Good"
 msgstr ""
 
 msgid "Good job! {{0}} items marked for migration."
@@ -1054,6 +1179,11 @@ msgstr ""
 msgid ""
 "If you still feel that you would rather not see these ads, you can change "
 "this on your settings page."
+msgstr ""
+
+msgid ""
+"If you used a camera lens, please specify the f-number (also known as "
+"f-ratio or f-stop) that you used for this acquisition session."
 msgstr ""
 
 msgid ""
@@ -1194,6 +1324,15 @@ msgstr ""
 msgid "Latest topics"
 msgstr "Últimos tópicos"
 
+msgid "Latitude of the first Central Meridian."
+msgstr ""
+
+msgid "Latitude of the second Central Meridian."
+msgstr ""
+
+msgid "Latitude of the third Central Meridian."
+msgstr ""
+
 msgid "Learn more"
 msgstr "Saiba mais"
 
@@ -1307,6 +1446,18 @@ msgid "Max. {{ max }} uploads"
 msgstr "Máx. {{ max }} uploads"
 
 msgid "Me only"
+msgstr ""
+
+msgid "Mean FWHM"
+msgstr ""
+
+msgid "Mean SQM mag/arcsec^2 as measured by your Sky Quality Meter."
+msgstr ""
+
+msgid "Mean mag/arcsec^2"
+msgstr ""
+
+msgid "Mediocre"
 msgstr ""
 
 msgid "Medium"
@@ -1479,11 +1630,20 @@ msgstr ""
 msgid "Nothing"
 msgstr "Nada"
 
+msgid "Nothing to display."
+msgstr ""
+
 msgid "Notification settings"
 msgstr ""
 
 msgid "Notifications"
 msgstr "Notificações"
+
+msgid "Number"
+msgstr ""
+
+msgid "Number of frames."
+msgstr ""
 
 msgid "Number of pixels"
 msgstr ""
@@ -1548,6 +1708,9 @@ msgstr ""
 
 msgid "Opacity"
 msgstr "Opacidade"
+
+msgid "Optics"
+msgstr ""
 
 msgid "Other"
 msgstr "Outro"
@@ -1769,6 +1932,12 @@ msgstr "Dado amador público"
 msgid "Published"
 msgstr ""
 
+msgid ""
+"Quality of the sky according to <a "
+"href=\"http://en.wikipedia.org/wiki/Bortle_Dark-Sky_Scale\" "
+"target=\"_blank\">the Bortle Scale</a>."
+msgstr ""
+
 msgid "Quantum efficiency"
 msgstr ""
 
@@ -1945,6 +2114,9 @@ msgstr ""
 msgid "Secure payment by Stripe™"
 msgstr ""
 
+msgid "Seeing"
+msgstr ""
+
 msgid "Seems like it's your first time editing this kind of information!"
 msgstr ""
 
@@ -2020,6 +2192,9 @@ msgid "Software"
 msgstr ""
 
 msgid "Solar"
+msgstr ""
+
+msgid "Solar system acquisition sessions"
 msgstr ""
 
 msgid "Solar system body or event"
@@ -2128,7 +2303,13 @@ msgstr ""
 msgid "Sun"
 msgstr "Sol"
 
+msgid "Superb"
+msgstr ""
+
 msgid "Superseded"
+msgstr ""
+
+msgid "Synthetic channel"
 msgstr ""
 
 msgid "TIFF support on AstroBin is experimental."
@@ -2152,6 +2333,9 @@ msgid "Telescopes & lenses"
 msgstr ""
 
 msgid "Tell me more!"
+msgstr ""
+
+msgid "Temperature"
 msgstr ""
 
 msgid "Text"
@@ -2208,6 +2392,11 @@ msgstr ""
 
 msgid "The final font size will depend on how long your watermark is."
 msgstr "O tamanho da fonte final dependerá de quão grande é sua marca d'água."
+
+msgid ""
+"The focal length of the whole optical train, including barlow lenses or "
+"other components."
+msgstr ""
 
 msgid "The following changes are proposed:"
 msgstr ""
@@ -2278,6 +2467,18 @@ msgid ""
 "it's spelled correctly."
 msgstr ""
 
+msgid "The number of bias/offset frames."
+msgstr ""
+
+msgid "The number of dark flat frames."
+msgstr ""
+
+msgid "The number of dark frames."
+msgstr ""
+
+msgid "The number of flat frames."
+msgstr ""
+
 msgid ""
 "The price is shown in Swiss Francs even though you might have paid the "
 "equivalent amount in your country's currency."
@@ -2305,6 +2506,9 @@ msgstr ""
 msgid "The size of the individual pixels in μm."
 msgstr ""
 
+msgid "The subject type \"{{0}}\" does not support acquisition sessions."
+msgstr ""
+
 msgid "The submission queue is currently empty or being refreshed."
 msgstr ""
 
@@ -2321,6 +2525,9 @@ msgid "The target item has some inaccurate data"
 msgstr ""
 
 msgid "The target item is a duplicate of an existing equipment item"
+msgstr ""
+
+msgid "The temperature of the chip in Celsius degrees, e.g. -20."
 msgstr ""
 
 msgid ""
@@ -2485,6 +2692,9 @@ msgstr "Título"
 msgid "To"
 msgstr ""
 
+msgid "To add more, go back to the Equipment step."
+msgstr ""
+
 msgid ""
 "To use this feature, you need the <strong>{{0}}</strong> subscription or "
 "higher."
@@ -2521,6 +2731,9 @@ msgid "Total solar eclipse"
 msgstr "Eclipse solar total"
 
 msgid "Transit"
+msgstr ""
+
+msgid "Transparency"
 msgstr ""
 
 msgid "Traveller"
@@ -2609,6 +2822,9 @@ msgstr ""
 msgid "Use the <strong>@</strong> sign and start typing to mention any user."
 msgstr ""
 
+msgid "Use the button below to add data."
+msgstr ""
+
 msgid "Username"
 msgstr "Nome do usuário"
 
@@ -2626,6 +2842,12 @@ msgstr ""
 
 msgid "Venus"
 msgstr "Vênus"
+
+msgid "Very bad"
+msgstr ""
+
+msgid "Very good"
+msgstr ""
 
 msgid "View"
 msgstr ""
@@ -2894,6 +3116,12 @@ msgid ""
 "possible."
 msgstr ""
 
+msgid "Your estimation of the seeing."
+msgstr ""
+
+msgid "Your estimation of the transparency."
+msgstr ""
+
 msgid "Your most recent applied migrations (all equipment classes)"
 msgstr ""
 
@@ -2957,6 +3185,9 @@ msgid "e.g."
 msgstr ""
 
 msgid "e.g. 'Home observatory'"
+msgstr ""
+
+msgid "f-number"
 msgstr ""
 
 msgid "modified"

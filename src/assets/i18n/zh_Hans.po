@@ -22,8 +22,35 @@ msgid ""
 "bright object."
 msgstr "0表示不可见的，100表示完全不透明。如果水印出现在暗色天空背景里，推荐值是：10。如果是在一些比较亮天体上，推荐值是：50。"
 
+msgid "1 - Excellent dark-site sky (BLACK)"
+msgstr ""
+
 msgid "1 like"
 msgstr "1个喜欢"
+
+msgid "2 - Typical truly dark site (GRAY)"
+msgstr ""
+
+msgid "3 - Rural sky (BLUE)"
+msgstr ""
+
+msgid "4 - Rural/suburban transition (GREEN/YELLOW)"
+msgstr ""
+
+msgid "5 - Suburban sky (ORANGE)"
+msgstr ""
+
+msgid "6 - Bright suburban sky (RED)"
+msgstr ""
+
+msgid "7 - Suburban/urban transition or Full Moon (RED)"
+msgstr ""
+
+msgid "8 - City sky (WHITE)"
+msgstr ""
+
+msgid "9 - Inner city sky (WHITE)"
+msgstr ""
 
 msgid ""
 "<strong>Careful!</strong> Change the name only to fix a typo or the naming "
@@ -57,6 +84,9 @@ msgstr "ADC"
 msgid "API Keys"
 msgstr "API Keys"
 
+msgid "Acceptable"
+msgstr ""
+
 msgid "Accepted formats"
 msgstr "支持的格式"
 
@@ -75,10 +105,19 @@ msgstr ""
 msgid "Acquired with this item"
 msgstr ""
 
+msgid "Acquisition"
+msgstr ""
+
 msgid "Acquisition cameras"
 msgstr ""
 
+msgid "Acquisition date."
+msgstr ""
+
 msgid "Acquisition telescopes or lenses"
+msgstr ""
+
+msgid "Acquisition time (local timezone)."
 msgstr ""
 
 msgid "Acquisition type"
@@ -87,7 +126,13 @@ msgstr "拍摄方法"
 msgid "Add a comment"
 msgstr "添加评论"
 
+msgid "Add session"
+msgstr ""
+
 msgid "Add to comparison list"
+msgstr ""
+
+msgid "Additional properties"
 msgstr ""
 
 msgid "Advanced plate-solving"
@@ -125,6 +170,9 @@ msgstr "海拔高度"
 
 msgid "Amateur hosting facility"
 msgstr "业余托管天文台"
+
+msgid "Ambient temperature in Celsius degrees."
+msgstr ""
 
 msgid "Amount"
 msgstr "数量"
@@ -296,6 +344,9 @@ msgstr "后截距"
 msgid "Backyard"
 msgstr "后院拍摄"
 
+msgid "Bad"
+msgstr ""
+
 msgid "Bad request"
 msgstr "错误请求"
 
@@ -326,6 +377,12 @@ msgstr ""
 msgid "Begin migration"
 msgstr ""
 
+msgid "Bias"
+msgstr ""
+
+msgid "Binning"
+msgstr ""
+
 msgid "Binoculars"
 msgstr "双筒望远镜"
 
@@ -334,6 +391,9 @@ msgstr "蓝色通道（B）"
 
 msgid "Bookmarks"
 msgstr "收藏夹"
+
+msgid "Bortle dark-sky scale"
+msgstr ""
 
 msgid "Bottom center"
 msgstr "底部中心"
@@ -358,6 +418,18 @@ msgstr ""
 
 msgid "Buy"
 msgstr "购买"
+
+msgid "CMI"
+msgstr ""
+
+msgid "CMII"
+msgstr ""
+
+msgid "CMIII"
+msgstr ""
+
+msgid "Calibration"
+msgstr ""
 
 msgid "Camera"
 msgstr "相机"
@@ -427,6 +499,11 @@ msgstr "中心"
 
 msgid "Changes"
 msgstr "更改"
+
+msgid ""
+"Changing this value will remove any acquisition sessions you have already "
+"added."
+msgstr ""
 
 msgid ""
 "Check this box if this item is self-made, and/or was never on the market as "
@@ -544,6 +621,12 @@ msgstr "贡献榜"
 msgid "Cooled"
 msgstr "制冷的"
 
+msgid "Cooling"
+msgstr ""
+
+msgid "Copy"
+msgstr ""
+
 msgid "Create"
 msgstr "创建"
 
@@ -577,6 +660,9 @@ msgid ""
 "modification."
 msgstr ""
 
+msgid "Darks"
+msgstr ""
+
 msgid "Data source"
 msgstr "数据来源"
 
@@ -585,6 +671,9 @@ msgstr "日期"
 
 msgid "Dedicated deep-sky camera"
 msgstr "深空摄影专用相机"
+
+msgid "Deep sky acquisition sessions"
+msgstr ""
 
 msgid "Deep sky object or field"
 msgstr "深空天体或深空视场"
@@ -653,6 +742,12 @@ msgid "Dual Alt-Az/Equatorial"
 msgstr "AZ/EQ赤道仪"
 
 msgid "Duplicate of"
+msgstr ""
+
+msgid "Duration"
+msgstr ""
+
+msgid "Duration of each frame in seconds."
 msgstr ""
 
 msgid "E-mail"
@@ -744,6 +839,9 @@ msgstr ""
 msgid "Everybody"
 msgstr "所有人"
 
+msgid "Excellent"
+msgstr ""
+
 msgid "Expiration date"
 msgstr "失效日期"
 
@@ -753,11 +851,23 @@ msgstr "探索"
 msgid "Explorer"
 msgstr "浏览器"
 
+msgid "Exposure per frame"
+msgstr ""
+
+msgid "Extremely bad"
+msgstr ""
+
 msgid "Extremely wide field"
 msgstr "超广角"
 
 msgid "FAQ"
 msgstr "FAQ"
+
+msgid "FPS"
+msgstr ""
+
+msgid "Fair"
+msgstr ""
 
 msgid "Feel free to contribute!"
 msgstr ""
@@ -785,6 +895,9 @@ msgstr ""
 msgid ""
 "Filter sets should be added one filter at a time, individually, so that "
 "they may be added to acquisition sessions."
+msgstr ""
+
+msgid "Filter used."
 msgstr ""
 
 msgid "Filter wheel"
@@ -827,6 +940,9 @@ msgid "Fixed focal length"
 msgstr "固定焦距"
 
 msgid "Flat box"
+msgstr ""
+
+msgid "Flats"
 msgstr ""
 
 msgid "Focal length"
@@ -872,6 +988,12 @@ msgstr "论坛"
 msgid "Frame rate"
 msgstr "帧率"
 
+msgid "Frames"
+msgstr ""
+
+msgid "Frames per second."
+msgstr ""
+
 msgid "Freeze"
 msgstr ""
 
@@ -887,8 +1009,8 @@ msgstr "全局搜索"
 msgid "Full well capacity"
 msgstr "满阱电荷容量"
 
-msgid "Gear"
-msgstr "器材"
+msgid "Gain"
+msgstr ""
 
 msgid "Gear renaming proposals"
 msgstr "设备重命名建议"
@@ -912,6 +1034,9 @@ msgid "Go to base variant."
 msgstr ""
 
 msgid "Go to regular variant."
+msgstr ""
+
+msgid "Good"
 msgstr ""
 
 msgid "Good job! {{0}} items marked for migration."
@@ -1043,6 +1168,11 @@ msgstr ""
 msgid ""
 "If you still feel that you would rather not see these ads, you can change "
 "this on your settings page."
+msgstr ""
+
+msgid ""
+"If you used a camera lens, please specify the f-number (also known as "
+"f-ratio or f-stop) that you used for this acquisition session."
 msgstr ""
 
 msgid ""
@@ -1179,6 +1309,15 @@ msgstr "最近更新"
 msgid "Latest topics"
 msgstr "最新主题"
 
+msgid "Latitude of the first Central Meridian."
+msgstr ""
+
+msgid "Latitude of the second Central Meridian."
+msgstr ""
+
+msgid "Latitude of the third Central Meridian."
+msgstr ""
+
 msgid "Learn more"
 msgstr "了解更多"
 
@@ -1293,6 +1432,18 @@ msgstr "最大。{{ max }} 上传张数"
 
 msgid "Me only"
 msgstr "仅我可见"
+
+msgid "Mean FWHM"
+msgstr ""
+
+msgid "Mean SQM mag/arcsec^2 as measured by your Sky Quality Meter."
+msgstr ""
+
+msgid "Mean mag/arcsec^2"
+msgstr ""
+
+msgid "Mediocre"
+msgstr ""
 
 msgid "Medium"
 msgstr "中"
@@ -1464,11 +1615,20 @@ msgstr "信息不足"
 msgid "Nothing"
 msgstr "无"
 
+msgid "Nothing to display."
+msgstr ""
+
 msgid "Notification settings"
 msgstr "消息提醒设置"
 
 msgid "Notifications"
 msgstr "通知"
+
+msgid "Number"
+msgstr ""
+
+msgid "Number of frames."
+msgstr ""
 
 msgid "Number of pixels"
 msgstr "像素数量"
@@ -1533,6 +1693,9 @@ msgstr "糟糕！您的请求发送到了两台服务器之间，请清除缓存
 
 msgid "Opacity"
 msgstr "透明度"
+
+msgid "Optics"
+msgstr ""
 
 msgid "Other"
 msgstr "其他"
@@ -1748,6 +1911,12 @@ msgstr "公开的业余天文台"
 msgid "Published"
 msgstr "已发布"
 
+msgid ""
+"Quality of the sky according to <a "
+"href=\"http://en.wikipedia.org/wiki/Bortle_Dark-Sky_Scale\" "
+"target=\"_blank\">the Bortle Scale</a>."
+msgstr ""
+
 msgid "Quantum efficiency"
 msgstr "两字效率"
 
@@ -1924,6 +2093,9 @@ msgstr ""
 msgid "Secure payment by Stripe™"
 msgstr "Stripe™安全付款"
 
+msgid "Seeing"
+msgstr ""
+
 msgid "Seems like it's your first time editing this kind of information!"
 msgstr ""
 
@@ -2000,6 +2172,9 @@ msgstr "软件"
 
 msgid "Solar"
 msgstr "太阳"
+
+msgid "Solar system acquisition sessions"
+msgstr ""
 
 msgid "Solar system body or event"
 msgstr "太阳系天体或天象"
@@ -2107,8 +2282,14 @@ msgstr "总览"
 msgid "Sun"
 msgstr "太阳"
 
+msgid "Superb"
+msgstr ""
+
 msgid "Superseded"
 msgstr "被取代"
+
+msgid "Synthetic channel"
+msgstr ""
 
 msgid "TIFF support on AstroBin is experimental."
 msgstr "当前AstroBin对TIFF格式的支持是实验性的。"
@@ -2131,6 +2312,9 @@ msgid "Telescopes & lenses"
 msgstr "望远镜&镜头"
 
 msgid "Tell me more!"
+msgstr ""
+
+msgid "Temperature"
 msgstr ""
 
 msgid "Text"
@@ -2191,6 +2375,11 @@ msgstr ""
 
 msgid "The final font size will depend on how long your watermark is."
 msgstr "字体最终的大小取决于水印长度。"
+
+msgid ""
+"The focal length of the whole optical train, including barlow lenses or "
+"other components."
+msgstr ""
 
 msgid "The following changes are proposed:"
 msgstr "建议作出以下修改："
@@ -2261,6 +2450,18 @@ msgid ""
 "it's spelled correctly."
 msgstr "此产品的名称。请勿包含品牌名称，并确保拼写正确。"
 
+msgid "The number of bias/offset frames."
+msgstr ""
+
+msgid "The number of dark flat frames."
+msgstr ""
+
+msgid "The number of dark frames."
+msgstr ""
+
+msgid "The number of flat frames."
+msgstr ""
+
 msgid ""
 "The price is shown in Swiss Francs even though you might have paid the "
 "equivalent amount in your country's currency."
@@ -2288,6 +2489,9 @@ msgstr "修订版的标题将作为原始图像标题的附录显示。"
 msgid "The size of the individual pixels in μm."
 msgstr "单个像素的大小，以μm为单位。"
 
+msgid "The subject type \"{{0}}\" does not support acquisition sessions."
+msgstr ""
+
 msgid "The submission queue is currently empty or being refreshed."
 msgstr ""
 
@@ -2304,6 +2508,9 @@ msgid "The target item has some inaccurate data"
 msgstr "此项目的某些信息不正确"
 
 msgid "The target item is a duplicate of an existing equipment item"
+msgstr ""
+
+msgid "The temperature of the chip in Celsius degrees, e.g. -20."
 msgstr ""
 
 msgid ""
@@ -2464,6 +2671,9 @@ msgstr "标题"
 msgid "To"
 msgstr ""
 
+msgid "To add more, go back to the Equipment step."
+msgstr ""
+
 msgid ""
 "To use this feature, you need the <strong>{{0}}</strong> subscription or "
 "higher."
@@ -2501,6 +2711,9 @@ msgstr "日全食"
 
 msgid "Transit"
 msgstr "过境"
+
+msgid "Transparency"
+msgstr ""
 
 msgid "Traveller"
 msgstr "移动拍摄"
@@ -2588,6 +2801,9 @@ msgstr "请输入 <strong>#</strong> 符号，插入图库中的图像。"
 msgid "Use the <strong>@</strong> sign and start typing to mention any user."
 msgstr "请输入 <strong> @</strong> 符号，并在此后输入信息，以插入图库中的图像。"
 
+msgid "Use the button below to add data."
+msgstr ""
+
 msgid "Username"
 msgstr "用户名"
 
@@ -2605,6 +2821,12 @@ msgstr ""
 
 msgid "Venus"
 msgstr "金星"
+
+msgid "Very bad"
+msgstr ""
+
+msgid "Very good"
+msgstr ""
 
 msgid "View"
 msgstr "查看"
@@ -2870,6 +3092,12 @@ msgid ""
 "possible."
 msgstr ""
 
+msgid "Your estimation of the seeing."
+msgstr ""
+
+msgid "Your estimation of the transparency."
+msgstr ""
+
 msgid "Your most recent applied migrations (all equipment classes)"
 msgstr ""
 
@@ -2933,6 +3161,9 @@ msgstr "例如："
 
 msgid "e.g. 'Home observatory'"
 msgstr "例如“家庭天文台”"
+
+msgid "f-number"
+msgstr ""
 
 msgid "modified"
 msgstr ""
