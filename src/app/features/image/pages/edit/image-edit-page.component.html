@@ -91,7 +91,7 @@
                 '?upload'
             )
           "
-          *ngIf="!(user | isInGroup: 'own_equipment_migrators')"
+          *ngIf="!(user | isInGroup: Constants.OWN_EQUIPMENT_MIGRATORS_GROUP)"
           class="dropdown-item"
         >
           {{ "Save and proceed to gear selection" | translate }}

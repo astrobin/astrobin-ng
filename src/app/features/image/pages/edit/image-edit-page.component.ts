@@ -40,6 +40,7 @@ import { JsonApiService } from "@shared/services/api/classic/json/json-api.servi
 import { CookieService } from "ngx-cookie";
 import { ComponentCanDeactivate } from "@shared/services/guards/pending-changes-guard.service";
 import { ImageEditAcquisitionFieldsService } from "@features/image/services/image-edit-acquisition-fields.service";
+import { Constants } from "@shared/constants";
 
 @Component({
   selector: "astrobin-image-edit-page",
@@ -48,6 +49,7 @@ import { ImageEditAcquisitionFieldsService } from "@features/image/services/imag
 })
 export class ImageEditPageComponent extends BaseComponentDirective implements OnInit, ComponentCanDeactivate, AfterViewInit {
   readonly DONT_SHOW_MIGRATION_INFO_COOKIE = "astrobin_apps_equipment_dont_show_migration_info";
+  readonly Constants = Constants;
 
   ImageAlias = ImageAlias;
 
@@ -450,7 +452,7 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
 
         const fieldGroup = [basic, content, thumbnail, watermark];
 
-        if (this.userService.isInGroup(user, "own_equipment_migrators")) {
+        if (this.userService.isInGroup(user, Constants.OWN_EQUIPMENT_MIGRATORS_GROUP)) {
           fieldGroup.push(equipment);
         }
 

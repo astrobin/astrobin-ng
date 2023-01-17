@@ -20,6 +20,7 @@ import { AccessoryDisplayProperty, AccessoryService } from "@features/equipment/
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { switchMap, take } from "rxjs/operators";
 import { isGroupMember } from "@shared/operators/is-group-member.operator";
+import { Constants } from "@shared/constants";
 
 @Component({
   selector: "astrobin-accessory-editor",
@@ -77,7 +78,7 @@ export class AccessoryEditorComponent extends BaseItemEditorComponent<AccessoryI
 
   private _initFields() {
     this.initBrandAndName()
-      .pipe(switchMap(() => this.currentUser$.pipe(take(1), isGroupMember("equipment_moderators"))))
+      .pipe(switchMap(() => this.currentUser$.pipe(take(1), isGroupMember(Constants.EQUIPMENT_MODERATORS_GROUP))))
       .subscribe(isModerator => {
         if (this.editorMode === EquipmentItemEditorMode.CREATION || !this.model.reviewerDecision || isModerator) {
           this.fields = [

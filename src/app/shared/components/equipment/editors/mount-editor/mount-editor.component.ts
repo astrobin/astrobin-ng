@@ -19,6 +19,7 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { switchMap, take, takeUntil } from "rxjs/operators";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { isGroupMember } from "@shared/operators/is-group-member.operator";
+import { Constants } from "@shared/constants";
 
 @Component({
   selector: "astrobin-mount-editor",
@@ -68,7 +69,7 @@ export class MountEditorComponent extends BaseItemEditorComponent<MountInterface
 
   private _initFields() {
     this.initBrandAndName()
-      .pipe(switchMap(() => this.currentUser$.pipe(take(1), isGroupMember("equipment_moderators"))))
+      .pipe(switchMap(() => this.currentUser$.pipe(take(1), isGroupMember(Constants.EQUIPMENT_MODERATORS_GROUP))))
       .subscribe(isModerator => {
         if (this.editorMode === EquipmentItemEditorMode.CREATION || !this.model.reviewerDecision || isModerator) {
           this.fields = [

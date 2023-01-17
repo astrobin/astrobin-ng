@@ -40,6 +40,7 @@ import { ConfirmationDialogComponent } from "@shared/components/misc/confirmatio
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { ActiveToast } from "ngx-toastr";
 import { UtilsService } from "@shared/services/utils/utils.service";
+import { Constants } from "@shared/constants";
 
 @Component({
   selector: "astrobin-migration-tool",
@@ -115,7 +116,7 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
   }
 
   get isEquipmentModerator(): Observable<boolean> {
-    return this.currentUser$.pipe(isGroupMember("equipment_moderators"));
+    return this.currentUser$.pipe(isGroupMember(Constants.EQUIPMENT_MODERATORS_GROUP));
   }
 
   ngOnInit(): void {
@@ -184,7 +185,7 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
         this.currentUser$
           .pipe(
             take(1),
-            isGroupMember("equipment_moderators"),
+            isGroupMember(Constants.EQUIPMENT_MODERATORS_GROUP),
             switchMap(isEquipmentModerator =>
               api.getRandomNonMigrated(isEquipmentModerator).pipe(
                 map((items: any[]) => ({
@@ -351,7 +352,7 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
       this.currentUser$
         .pipe(
           take(1),
-          isGroupMember("equipment_moderators"),
+          isGroupMember(Constants.EQUIPMENT_MODERATORS_GROUP),
           switchMap(isEquipmentModerator => {
             if (isEquipmentModerator) {
               return api.getSimilarNonMigrated(object.pk, isEquipmentModerator);
@@ -407,7 +408,7 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
       .pipe(
         filter(user => !!user),
         take(1),
-        isGroupMember("equipment_moderators")
+        isGroupMember(Constants.EQUIPMENT_MODERATORS_GROUP)
       )
       .subscribe(isEquipmentModerator => {
         const modalRef = this.modalService.open(ConfirmationDialogComponent, { size: "sm" });
@@ -487,7 +488,7 @@ export class MigrationToolComponent extends BaseComponentDirective implements On
   }
 
   _updateCounts() {
-    this.currentUser$.pipe(take(1), isGroupMember("equipment_moderators")).subscribe(isEquipmentModerator => {
+    this.currentUser$.pipe(take(1), isGroupMember(Constants.EQUIPMENT_MODERATORS_GROUP)).subscribe(isEquipmentModerator => {
       this.nonMigratedCamerasCount$ = this.legacyCameraApi.getNonMigratedCount(isEquipmentModerator);
       this.nonMigratedTelescopesCount$ = this.legacyTelescopeApi.getNonMigratedCount(isEquipmentModerator);
       this.nonMigratedMountsCount$ = this.legacyMountApi.getNonMigratedCount(isEquipmentModerator);

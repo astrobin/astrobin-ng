@@ -3,6 +3,7 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { Location } from "@angular/common";
+import { Constants } from "@shared/constants";
 
 @Component({
   selector: "astrobin-migration-nav",
@@ -10,6 +11,8 @@ import { Location } from "@angular/common";
   styleUrls: ["./migration-nav.component.scss"]
 })
 export class MigrationNavComponent extends BaseComponentDirective implements OnInit {
+  readonly Constants = Constants;
+
   activeId = "migration";
 
   constructor(public readonly store$: Store<State>, public readonly location: Location) {

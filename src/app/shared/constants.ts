@@ -14,4 +14,6 @@ export class Constants {
   static readonly ORIGINAL_REVISION = "0";
   static readonly SUPPORTED_CURRENCIES = ["USD", "EUR", "GBP", "CAD", "AUD", "CHF", "CNY"];
   static readonly USE_HIGH_CONTRAST_THEME_COOKIE = "astrobin_use_high_contrast_theme";
+  static readonly OWN_EQUIPMENT_MIGRATORS_GROUP = "own_equipment_migrators";
+  static readonly EQUIPMENT_MODERATORS_GROUP = "equipment_moderators";
 }
