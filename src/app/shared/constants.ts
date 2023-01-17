@@ -16,4 +16,5 @@ export class Constants {
   static readonly USE_HIGH_CONTRAST_THEME_COOKIE = "astrobin_use_high_contrast_theme";
   static readonly OWN_EQUIPMENT_MIGRATORS_GROUP = "own_equipment_migrators";
   static readonly EQUIPMENT_MODERATORS_GROUP = "equipment_moderators";
+  static readonly ACQUISITION_EDIT_TESTERS_GROUP = "acquisition_edit_testers";
 }

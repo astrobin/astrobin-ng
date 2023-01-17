@@ -456,7 +456,10 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
           fieldGroup.push(equipment);
         }
 
-        fieldGroup.push(acquisition);
+        if (this.userService.isInGroup(user, Constants.ACQUISITION_EDIT_TESTERS_GROUP)) {
+          fieldGroup.push(acquisition);
+        }
+
         fieldGroup.push(settings);
 
         this.imageEditService.fields = [

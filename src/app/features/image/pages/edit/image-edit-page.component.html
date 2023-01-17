@@ -106,6 +106,7 @@
               ) + '?upload'
             )
           "
+          *ngIf="!(user | isInGroup: Constants.ACQUISITION_EDIT_TESTERS_GROUP)"
           class="dropdown-item"
         >
           {{ "Save and proceed to acquisition details" | translate }}
