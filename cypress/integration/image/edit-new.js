@@ -43,7 +43,7 @@ context("Image edit (new)", () => {
   });
 
   it("should have all tabs", () => {
-    cy.get("#image-stepper-field .nav-link").should("have.length", 6);
+    cy.get("#image-stepper-field .nav-link").should("have.length", 7);
   });
 
   it("should not have any tabs marked as error, since we haven't visited any yet", () => {
@@ -153,12 +153,12 @@ context("Image edit (new)", () => {
       lon_min: 11,
       lon_sec: 12,
       lon_side: "E",
-      altitude: 400,
+      altitude: 400
     };
 
     cy.route("post", "**/api/v2/astrobin/location/", location).as("createLocation");
     cy.route("put", "**/api/v2/common/userprofiles/1/partial/", {
-      locations: [location],
+      locations: [location]
     }).as("updateUserProfile");
 
     cy.get("#image-locations-field").click();
@@ -300,9 +300,9 @@ context("Image edit (new)", () => {
           reviewedBy: null,
           brand: 1,
           group: null,
-          variants: [],
-        },
-      ],
+          variants: []
+        }
+      ]
     }).as("findTelescopes");
 
     cy.get("#image-imaging-telescopes-field + .toggle-enable-fullscreen").scrollIntoView().click();

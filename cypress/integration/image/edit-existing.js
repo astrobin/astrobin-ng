@@ -67,7 +67,7 @@ context("Image edit (existing)", () => {
   });
 
   it("should have all tabs", () => {
-    cy.get("#image-stepper-field .nav-link").should("have.length", 6);
+    cy.get("#image-stepper-field .nav-link").should("have.length", 7);
   });
 
   it("should have the #1 fragment", () => {
@@ -166,5 +166,5 @@ context("Image edit (existing)", () => {
     cy.route("get", "**/json-api/common/app-config/", "fixture:api/json/app-config-read-only.json").as("appConfig");
     cy.visitPage("/i/abc123/edit");
     cy.get("astrobin-read-only-mode").should("exist");
-  })
+  });
 });
