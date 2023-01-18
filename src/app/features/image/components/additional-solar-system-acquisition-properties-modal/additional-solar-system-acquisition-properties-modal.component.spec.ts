@@ -21,6 +21,9 @@ describe("AdditionalsolarSystemAcquisitionPropertiesModalComponent", () => {
 
     fixture = TestBed.createComponent(AdditionalSolarSystemAcquisitionPropertiesModalComponent);
     component = fixture.componentInstance;
+    component.imageEditService = TestBed.inject(ImageEditService);
+    component.fieldGroup = [];
+    component.index = 0;
     fixture.detectChanges();
   });
 

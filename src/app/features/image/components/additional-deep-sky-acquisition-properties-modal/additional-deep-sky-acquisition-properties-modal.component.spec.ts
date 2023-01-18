@@ -21,6 +21,9 @@ describe("AdditionalDeepSkyAcquisitionPropertiesModalComponent", () => {
 
     fixture = TestBed.createComponent(AdditionalDeepSkyAcquisitionPropertiesModalComponent);
     component = fixture.componentInstance;
+    component.imageEditService = TestBed.inject(ImageEditService);
+    component.fieldGroup = [];
+    component.index = 0;
     fixture.detectChanges();
   });
 
