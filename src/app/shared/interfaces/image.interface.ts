@@ -74,6 +74,7 @@ export enum RemoteSource {
   AHK = "Astro Hostel Krasnodar",
   AOWA = "Astro Observatories Western Australia",
   CS = "ChileScope",
+  DMA = "Dark Matters Astrophotography",
   DSNM = "Dark Sky New Mexico",
   DSP = "Dark Sky Portal",
   DSV = "Deepsky Villa",
