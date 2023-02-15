@@ -649,7 +649,7 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
         type: "date",
         label: this.translateService.instant("Date"),
         description: this.translateService.instant("Acquisition date."),
-        required: true
+        required: false
       },
       validators: {
         validation: [
