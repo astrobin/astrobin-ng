@@ -12,6 +12,7 @@ import { PendingReviewExplorerComponent } from "@features/equipment/pages/pendin
 import { ReviewGearRenamingProposalsComponent } from "@features/equipment/pages/review-gear-renaming-proposals/review-gear-renaming-proposals.component";
 import { BrandExplorerPageComponent } from "@features/equipment/pages/explorer/brand-explorer-page/brand-explorer-page.component";
 import { ContributorsPageComponent } from "@features/equipment/pages/contributors-page/contributors-page.component";
+import { Constants } from "@shared/constants";
 
 export const routes: Routes = [
   {
@@ -26,24 +27,24 @@ export const routes: Routes = [
     path: "migration-tool/:itemType",
     component: MigrationToolComponent,
     canActivate: [AuthGuardService, GroupGuardService],
-    data: { anyOfGroups: ["equipment_moderators", "own_equipment_migrators"] }
+    data: { anyOfGroups: [Constants.EQUIPMENT_MODERATORS_GROUP, Constants.OWN_EQUIPMENT_MIGRATORS_GROUP] }
   },
   {
     path: "migration-review",
     component: MigrationReviewComponent,
     canActivate: [AuthGuardService, GroupGuardService],
-    data: { group: "equipment_moderators" }
+    data: { group: Constants.EQUIPMENT_MODERATORS_GROUP }
   },
   {
     path: "migration-review/:migrationStrategyId",
     component: MigrationReviewItemComponent,
     canActivate: [AuthGuardService, GroupGuardService, MigrationReviewItemGuardService],
-    data: { group: "equipment_moderators" }
+    data: { group: Constants.EQUIPMENT_MODERATORS_GROUP }
   },
   {
     path: "migration-explorer",
     canActivate: [AuthGuardService, GroupGuardService],
-    data: { group: "equipment_moderators" },
+    data: { group: Constants.EQUIPMENT_MODERATORS_GROUP },
     children: [
       {
         path: "",
@@ -123,12 +124,12 @@ export const routes: Routes = [
     path: "pending-review-explorer/:itemType",
     component: PendingReviewExplorerComponent,
     canActivate: [AuthGuardService, GroupGuardService],
-    data: { group: "equipment_moderators" }
+    data: { group: Constants.EQUIPMENT_MODERATORS_GROUP }
   },
   {
     path: "pending-edit-explorer/:itemType",
     component: PendingEditExplorerComponent,
     canActivate: [AuthGuardService, GroupGuardService],
-    data: { anyOfGroups: ["equipment_moderators", "own_equipment_migrators"] }
+    data: { anyOfGroups: [Constants.EQUIPMENT_MODERATORS_GROUP, Constants.OWN_EQUIPMENT_MIGRATORS_GROUP] }
   }
 ];

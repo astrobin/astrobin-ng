@@ -330,7 +330,7 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
     const MB = 1024 * 1024;
     let message;
 
-    if (!this.to.veryLargeSizeWarning) {
+    if (!this.props.veryLargeSizeWarning) {
       return;
     }
 
@@ -365,7 +365,7 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
   }
 
   private _warnAbout16BitTiff(filename: string): void {
-    if (!this.to.experimentalTiffSupportWarning) {
+    if (!this.props.experimentalTiffSupportWarning) {
       return;
     }
 

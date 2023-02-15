@@ -1,5 +1,4 @@
 import { Injectable } from "@angular/core";
-import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { WatermarkPositionOptions, WatermarkSizeOptions } from "@shared/interfaces/image.interface";
@@ -8,11 +7,12 @@ import { ImageEditService } from "@features/image/services/image-edit.service";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { Subscription } from "rxjs";
+import { ImageEditFieldsBaseService } from "@features/image/services/image-edit-fields-base.service";
 
 @Injectable({
   providedIn: null
 })
-export class ImageEditWatermarkFieldsService extends BaseService {
+export class ImageEditWatermarkFieldsService extends ImageEditFieldsBaseService {
   private _watermarkTextValueChangesSubscription: Subscription;
   private _watermarkPositionValueChangesSubscription: Subscription;
   private _watermarkTextSizeValueChangesSubscription: Subscription;
@@ -25,6 +25,9 @@ export class ImageEditWatermarkFieldsService extends BaseService {
     public readonly imageEditService: ImageEditService
   ) {
     super(loadingService);
+  }
+
+  onFieldsInitialized(): void {
   }
 
   getWatermarkCheckboxField(): FormlyFieldConfig {

@@ -56,7 +56,7 @@ export class FormlyFieldEquipmentItemBrowserComponent extends FieldType implemen
     const value = this.formControl.value;
 
     if (!this.formControl.value) {
-      return this.to.multiple ? [] : null;
+      return this.props.multiple ? [] : null;
     }
 
     return value;
@@ -67,14 +67,14 @@ export class FormlyFieldEquipmentItemBrowserComponent extends FieldType implemen
   }
 
   onCreationModeStarted() {
-    if (this.to.creationModeStarted && UtilsService.isFunction(this.to.creationModeStarted)) {
-      this.to.creationModeStarted();
+    if (this.props.creationModeStarted && UtilsService.isFunction(this.props.creationModeStarted)) {
+      this.props.creationModeStarted();
     }
   }
 
   onCreationModeEnded() {
-    if (this.to.creationModeEnded && UtilsService.isFunction(this.to.creationModeEnded)) {
-      this.to.creationModeEnded();
+    if (this.props.creationModeEnded && UtilsService.isFunction(this.props.creationModeEnded)) {
+      this.props.creationModeEnded();
     }
   }
 
@@ -87,11 +87,11 @@ export class FormlyFieldEquipmentItemBrowserComponent extends FieldType implemen
         this.formControl.markAsDirty();
       }
 
-      this.formControl.setValue(this.to.multiple ? [] : null);
+      this.formControl.setValue(this.props.multiple ? [] : null);
       return;
     }
 
-    if (this.to.multiple) {
+    if (this.props.multiple) {
       const values = (value as EquipmentItem[]).map(x => x.id);
       const formValues = this.formControl.value as EquipmentItem[];
 
@@ -113,28 +113,28 @@ export class FormlyFieldEquipmentItemBrowserComponent extends FieldType implemen
   }
 
   quickAddItem(item: EquipmentItemBaseInterface) {
-    this.store$.dispatch(new ItemBrowserAdd({ type: this.to.itemType, usageType: this.to.usageType, item }));
+    this.store$.dispatch(new ItemBrowserAdd({ type: this.props.itemType, usageType: this.props.usageType, item }));
     this.recentUsed = true;
   }
 
   _loadRecent(): void {
-    if (this.to.showQuickAddRecent) {
+    if (this.props.showQuickAddRecent) {
       this.store$.dispatch(
         new FindRecentlyUsedEquipmentItems({
-          type: this.to.itemType,
-          usageType: this.to.usageType
+          type: this.props.itemType,
+          usageType: this.props.usageType
         })
       );
       this.actions$
         .pipe(
           ofType(EquipmentActionTypes.FIND_RECENTLY_USED_EQUIPMENT_ITEMS_SUCCESS),
           map((action: FindRecentlyUsedEquipmentItemsSuccess) => action.payload),
-          filter(payload => payload.type === this.to.itemType && payload.usageType === this.to.usageType),
+          filter(payload => payload.type === this.props.itemType && payload.usageType === this.props.usageType),
           take(1),
           map(payload => payload.items)
         )
         .subscribe(items => {
-          if (this.to.multiple) {
+          if (this.props.multiple) {
             this.recent = items.filter(x => (this.value as EquipmentItem["id"][]).indexOf(x.id) === -1);
           } else {
             this.recent = items.filter(x => x.id !== this.value);

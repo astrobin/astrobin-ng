@@ -1,5 +1,5 @@
 <div class="modal-header">
-  <h4 class="modal-title" id="modal-title">
+  <h4 class="modal-title" id="remove-ads-modal">
     <fa-icon icon="info-circle"></fa-icon>
     {{ "Please note" | translate }}
   </h4>
@@ -39,9 +39,9 @@
 
 <div class="modal-footer">
   <a
+    [class.loading]="loadingService.loading$ | async"
     [href]="classicRoutesService.SETTINGS_PREFERENCES"
     class="btn btn-outline-secondary"
-    [class.loading]="loadingService.loading$ | async"
     type="button"
   >
     {{ "Settings" | translate }}
@@ -49,8 +49,8 @@
 
   <button
     (click)="modal.close()"
-    class="btn btn-secondary"
     [class.loading]="loadingService.loading$ | async"
+    class="btn btn-secondary"
     type="button"
   >
     {{ "Close" | translate }}

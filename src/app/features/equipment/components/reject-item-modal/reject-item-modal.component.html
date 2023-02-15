@@ -1,5 +1,5 @@
 <div class="modal-header">
-  <h4 class="modal-title" id="modal-title">
+  <h4 class="modal-title" id="reject-item-modal">
     {{ "Reject" | translate }}: {{ equipmentItemService.getName$(equipmentItem) | async }}
   </h4>
 
@@ -30,10 +30,10 @@
 
   <button
     (click)="reject()"
+    [class.loading]="loadingService.loading$ | async"
+    [disabled]="!form.valid"
     class="btn btn-danger"
     type="button"
-    [disabled]="!form.valid"
-    [class.loading]="loadingService.loading$ | async"
   >
     {{ "Reject" | translate }}
   </button>

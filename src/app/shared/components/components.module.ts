@@ -97,6 +97,10 @@ import { RemoveAdsDialogComponent } from "@shared/components/misc/remove-ads-dia
 import { ItemBrowserByPropertiesComponent } from "@shared/components/equipment/item-browser-by-properties/item-browser-by-properties.component";
 import { HrComponent } from "@shared/components/misc/hr/hr.component";
 import { NgWizardModule } from "@kronscht/ng-wizard";
+import { FormlyFieldTableComponent } from "@shared/components/misc/formly-field-table/formly-field-table.component";
+import { NgxDatatableModule } from "@swimlane/ngx-datatable";
+import { FormlyFieldButtonComponent } from "@shared/components/misc/formly-field-button/formly-field-button.component";
+import { FormlyCardWrapperComponent } from "@shared/components/misc/formly-card-wrapper/formly-card-wrapper.component";
 
 const modules = [
   CommonModule,
@@ -114,6 +118,7 @@ const modules = [
   NgSelectModule,
   NgToggleModule,
   NgxFilesizeModule,
+  NgxDatatableModule,
   NgxImageZoomModule,
   NgWizardModule,
   PipesModule,
@@ -136,16 +141,19 @@ const components = [
   EmptyListComponent,
   FileValueAccessorDirective,
   FooterComponent,
-  FormlyFieldChunkedFileComponent,
+  FormlyCardWrapperComponent,
+  FormlyEquipmentItemBrowserWrapperComponent,
+  FormlyFieldButtonComponent,
   FormlyFieldCKEditorComponent,
+  FormlyFieldChunkedFileComponent,
+  FormlyFieldEquipmentItemBrowserComponent,
   FormlyFieldFileComponent,
   FormlyFieldGoogleMapComponent,
   FormlyFieldImageCropperComponent,
   FormlyFieldNgSelectComponent,
   FormlyFieldStepperComponent,
-  FormlyFieldEquipmentItemBrowserComponent,
+  FormlyFieldTableComponent,
   FormlyWrapperComponent,
-  FormlyEquipmentItemBrowserWrapperComponent,
   ForumPreviewComponent,
   FullscreenImageViewerComponent,
   HeaderComponent,
@@ -159,8 +167,8 @@ const components = [
   MostOftenUsedWithModalComponent,
   NestedCommentComponent,
   NestedCommentsComponent,
-  NestedCommentsModalComponent,
   NestedCommentsCountComponent,
+  NestedCommentsModalComponent,
   NothingHereComponent,
   ObjectsInFieldComponent,
   ReadOnlyModeComponent,
@@ -174,29 +182,29 @@ const components = [
   UsernameComponent,
 
   // Equipment
-  ItemBrowserComponent,
-  ItemBrowserByPropertiesComponent,
-  VariantSelectorModalComponent,
-  ItemSummaryComponent,
-  ItemUnapprovedInfoModalComponent,
-  ItemSummaryModalComponent,
-  EquipmentItemDisplayNameComponent,
-  BrandSummaryComponent,
-  CameraEditorComponent,
-  SensorEditorComponent,
-  TelescopeEditorComponent,
-  MountEditorComponent,
-  FilterEditorComponent,
   AccessoryEditorComponent,
-  SoftwareEditorComponent,
+  AssignEditProposalModalComponent,
+  AssignItemModalComponent,
   BaseItemEditorComponent,
   BrandEditorCardComponent,
   BrandEditorFormComponent,
-  SimilarItemsSuggestionComponent,
+  BrandSummaryComponent,
+  CameraEditorComponent,
   ConfirmItemCreationModalComponent,
+  EquipmentItemDisplayNameComponent,
+  FilterEditorComponent,
+  ItemBrowserByPropertiesComponent,
+  ItemBrowserComponent,
+  ItemSummaryComponent,
+  ItemSummaryModalComponent,
+  ItemUnapprovedInfoModalComponent,
+  MountEditorComponent,
   OthersInBrandComponent,
-  AssignItemModalComponent,
-  AssignEditProposalModalComponent
+  SensorEditorComponent,
+  SimilarItemsSuggestionComponent,
+  SoftwareEditorComponent,
+  TelescopeEditorComponent,
+  VariantSelectorModalComponent
 ];
 
 const services = [UsernameService];

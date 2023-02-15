@@ -1,4 +1,4 @@
-<ng-container *ngIf="to.thumbnailURL$ | async as thumbnailURL; else loadingThumbnail">
+<ng-container *ngIf="props.thumbnailURL$ | async as thumbnailURL; else loadingThumbnail">
   <image-cropper
     (cropperReady)="onCropperReady($event)"
     (imageCropped)="onImageCropped($event)"

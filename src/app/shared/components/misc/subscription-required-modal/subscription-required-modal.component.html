@@ -1,5 +1,5 @@
 <div class="modal-header">
-  <h4 class="modal-title" id="modal-title">{{ "Sorry" | translate }} :-(</h4>
+  <h4 class="modal-title" id="subscription-required-modal">{{ "Sorry" | translate }} :-(</h4>
   <button (click)="modal.dismiss()" aria-describedby="modal-title" class="close" type="button">
     <span aria-hidden="true">&times;</span>
   </button>
@@ -32,9 +32,9 @@
   </button>
 
   <a
+    class="btn btn-primary"
     href="https://welcome.astrobin.com/pricing"
     target="_blank"
-    class="btn btn-primary"
   >
     {{ "Tell me more!" | translate }}
   </a>

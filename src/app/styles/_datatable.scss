@@ -1,0 +1,36 @@
+@import "breakpoints";
+
+.ngx-datatable.bootstrap {
+  font-size: inherit;
+
+  .datatable-header {
+    .datatable-header-cell {
+      border-bottom-color: var(--lightGrey);
+    }
+  }
+
+  .datatable-body {
+    .datatable-row-wrapper {
+      @media screen and (max-width: $md-max) {
+        &:not(:first-child) {
+          margin-top: 2rem;
+        }
+      }
+    }
+
+    .datatable-body-row {
+      border-top: 0;
+
+      > div {
+        flex-wrap: wrap;
+        align-items: flex-end;
+      }
+
+      .datatable-body-cell {
+        @media screen and (max-width: $md-max) {
+          flex-basis: 100%;
+        }
+      }
+    }
+  }
+}

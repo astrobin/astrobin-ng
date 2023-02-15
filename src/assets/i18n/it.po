@@ -25,8 +25,35 @@ msgstr ""
 "raccomandato sono: 10 se il watermark apparirà sul fondo cielo scuro, 50 se "
 "su qualche oggetto luminoso."
 
+msgid "1 - Excellent dark-site sky (BLACK)"
+msgstr ""
+
 msgid "1 like"
 msgstr "1 mi piace"
+
+msgid "2 - Typical truly dark site (GRAY)"
+msgstr ""
+
+msgid "3 - Rural sky (BLUE)"
+msgstr ""
+
+msgid "4 - Rural/suburban transition (GREEN/YELLOW)"
+msgstr ""
+
+msgid "5 - Suburban sky (ORANGE)"
+msgstr ""
+
+msgid "6 - Bright suburban sky (RED)"
+msgstr ""
+
+msgid "7 - Suburban/urban transition or Full Moon (RED)"
+msgstr ""
+
+msgid "8 - City sky (WHITE)"
+msgstr ""
+
+msgid "9 - Inner city sky (WHITE)"
+msgstr ""
 
 msgid ""
 "<strong>Careful!</strong> Change the name only to fix a typo or the naming "
@@ -66,6 +93,9 @@ msgstr "ADC"
 msgid "API Keys"
 msgstr "Chiavi API"
 
+msgid "Acceptable"
+msgstr ""
+
 msgid "Accepted formats"
 msgstr "Formati accettati"
 
@@ -84,11 +114,20 @@ msgstr "Acquisite con questa marca"
 msgid "Acquired with this item"
 msgstr "Acquisite con questo strumento"
 
+msgid "Acquisition"
+msgstr ""
+
 msgid "Acquisition cameras"
 msgstr "Camere di acquisizione"
 
+msgid "Acquisition date."
+msgstr ""
+
 msgid "Acquisition telescopes or lenses"
 msgstr "Telescopi o lenti di acquisizione"
+
+msgid "Acquisition time (local timezone)."
+msgstr ""
 
 msgid "Acquisition type"
 msgstr "Tipo di acquisizione"
@@ -96,8 +135,14 @@ msgstr "Tipo di acquisizione"
 msgid "Add a comment"
 msgstr "Aggiungi commento"
 
+msgid "Add session"
+msgstr ""
+
 msgid "Add to comparison list"
 msgstr "Aggiungi alla lista di paragone"
+
+msgid "Additional properties"
+msgstr ""
 
 msgid "Advanced plate-solving"
 msgstr "Riduzione astrometrica avanzata"
@@ -136,6 +181,9 @@ msgstr "Altitudine"
 
 msgid "Amateur hosting facility"
 msgstr "Struttura di hosting amatoriale"
+
+msgid "Ambient temperature in Celsius degrees."
+msgstr ""
 
 msgid "Amount"
 msgstr "Importo"
@@ -337,6 +385,9 @@ msgstr "Distanza focale"
 msgid "Backyard"
 msgstr "Giardino"
 
+msgid "Bad"
+msgstr ""
+
 msgid "Bad request"
 msgstr "Richiesta incorretta"
 
@@ -370,6 +421,12 @@ msgstr "Inizia"
 msgid "Begin migration"
 msgstr "Inizia migrazione"
 
+msgid "Bias"
+msgstr ""
+
+msgid "Binning"
+msgstr ""
+
 msgid "Binoculars"
 msgstr "Binicolo"
 
@@ -378,6 +435,9 @@ msgstr "Canale blu (B)"
 
 msgid "Bookmarks"
 msgstr "Bookmark"
+
+msgid "Bortle dark-sky scale"
+msgstr ""
 
 msgid "Bottom center"
 msgstr "In basso al centro"
@@ -402,6 +462,18 @@ msgstr "Cerca per marca e proprietà"
 
 msgid "Buy"
 msgstr "Acquista"
+
+msgid "CMI"
+msgstr ""
+
+msgid "CMII"
+msgstr ""
+
+msgid "CMIII"
+msgstr ""
+
+msgid "Calibration"
+msgstr ""
 
 msgid "Camera"
 msgstr "Camera"
@@ -471,6 +543,11 @@ msgstr "Al centro"
 
 msgid "Changes"
 msgstr "Modifiche"
+
+msgid ""
+"Changing this value will remove any acquisition sessions you have already "
+"added."
+msgstr ""
 
 msgid ""
 "Check this box if this item is self-made, and/or was never on the market as "
@@ -593,6 +670,12 @@ msgstr "Lista dei contributrori"
 msgid "Cooled"
 msgstr "Raffreddato/a"
 
+msgid "Cooling"
+msgstr ""
+
+msgid "Copy"
+msgstr ""
+
 msgid "Create"
 msgstr "Crea"
 
@@ -629,6 +712,9 @@ msgstr ""
 "che non vengono venduto con il raffreddamento da fabbrica, ma un sistema di "
 "raffreddamento è stato aggiunto dopo come una modifica speciale."
 
+msgid "Darks"
+msgstr ""
+
 msgid "Data source"
 msgstr "Origine dei dati"
 
@@ -637,6 +723,9 @@ msgstr "Data"
 
 msgid "Dedicated deep-sky camera"
 msgstr "Camera specifica per il cielo profondo"
+
+msgid "Deep sky acquisition sessions"
+msgstr ""
 
 msgid "Deep sky object or field"
 msgstr "Oggetto o campo del cielo profondo"
@@ -710,6 +799,12 @@ msgstr "Doppio sistema altazimutale/equatoriale"
 
 msgid "Duplicate of"
 msgstr "Duplicato di"
+
+msgid "Duration"
+msgstr ""
+
+msgid "Duration of each frame in seconds."
+msgstr ""
 
 msgid "E-mail"
 msgstr "E-mail"
@@ -809,6 +904,9 @@ msgstr ""
 msgid "Everybody"
 msgstr "Tutti"
 
+msgid "Excellent"
+msgstr ""
+
 msgid "Expiration date"
 msgstr "Data di scadenza"
 
@@ -818,11 +916,23 @@ msgstr "Esplora"
 msgid "Explorer"
 msgstr "Esploratore"
 
+msgid "Exposure per frame"
+msgstr ""
+
+msgid "Extremely bad"
+msgstr ""
+
 msgid "Extremely wide field"
 msgstr "Campo molto esteso"
 
 msgid "FAQ"
 msgstr "FAQ"
+
+msgid "FPS"
+msgstr ""
+
+msgid "Fair"
+msgstr ""
 
 msgid "Feel free to contribute!"
 msgstr "Sentiti libero di contribuire!"
@@ -855,6 +965,9 @@ msgid ""
 msgstr ""
 "I set di filtri devono essere aggiunti uno alla volta, in modo che possano "
 "essere aggiunti alle sessioni di acquisizione."
+
+msgid "Filter used."
+msgstr ""
 
 msgid "Filter wheel"
 msgstr "Ruote portafiltri"
@@ -897,6 +1010,9 @@ msgstr "Lunghezza focale fissa"
 
 msgid "Flat box"
 msgstr "Flat box"
+
+msgid "Flats"
+msgstr ""
 
 msgid "Focal length"
 msgstr "Lunghezza focale"
@@ -945,6 +1061,12 @@ msgstr "Forum"
 msgid "Frame rate"
 msgstr ""
 
+msgid "Frames"
+msgstr ""
+
+msgid "Frames per second."
+msgstr ""
+
 msgid "Freeze"
 msgstr "Congela"
 
@@ -960,8 +1082,8 @@ msgstr "Ricerca completa"
 msgid "Full well capacity"
 msgstr ""
 
-msgid "Gear"
-msgstr "Strumentazione"
+msgid "Gain"
+msgstr ""
 
 msgid "Gear renaming proposals"
 msgstr "Proposta di rinomina strumentazione"
@@ -986,6 +1108,9 @@ msgstr "Vai alla variante di base."
 
 msgid "Go to regular variant."
 msgstr "Vai alla variante normale."
+
+msgid "Good"
+msgstr ""
 
 msgid "Good job! {{0}} items marked for migration."
 msgstr "Ottimo lavoro! {{0}} strumenti pronti per la migrazione."
@@ -1154,6 +1279,11 @@ msgstr ""
 "impostazioni."
 
 msgid ""
+"If you used a camera lens, please specify the f-number (also known as "
+"f-ratio or f-stop) that you used for this acquisition session."
+msgstr ""
+
+msgid ""
 "If you want to share the TIFF or FITS file of your image, put a link to the "
 "file here. Unfortunately, AstroBin cannot offer to store these files at the "
 "moment, so you will have to host them on your personal space."
@@ -1298,6 +1428,15 @@ msgstr "Ultimo aggiornamento"
 msgid "Latest topics"
 msgstr "Ultimi argomenti"
 
+msgid "Latitude of the first Central Meridian."
+msgstr ""
+
+msgid "Latitude of the second Central Meridian."
+msgstr ""
+
+msgid "Latitude of the third Central Meridian."
+msgstr ""
+
 msgid "Learn more"
 msgstr "Maggiori informazioni"
 
@@ -1416,6 +1555,18 @@ msgstr "Max. {{ max }} upload"
 
 msgid "Me only"
 msgstr "Solo io"
+
+msgid "Mean FWHM"
+msgstr ""
+
+msgid "Mean SQM mag/arcsec^2 as measured by your Sky Quality Meter."
+msgstr ""
+
+msgid "Mean mag/arcsec^2"
+msgstr ""
+
+msgid "Mediocre"
+msgstr ""
 
 msgid "Medium"
 msgstr "Medio"
@@ -1589,11 +1740,20 @@ msgstr "Informazioni insufficienti"
 msgid "Nothing"
 msgstr "Niente/nessuno"
 
+msgid "Nothing to display."
+msgstr ""
+
 msgid "Notification settings"
 msgstr "Impostazioni notifiche"
 
 msgid "Notifications"
 msgstr "Notifiche"
+
+msgid "Number"
+msgstr ""
+
+msgid "Number of frames."
+msgstr ""
 
 msgid "Number of pixels"
 msgstr "Numero di pixel"
@@ -1677,6 +1837,9 @@ msgstr ""
 
 msgid "Opacity"
 msgstr "Opacità"
+
+msgid "Optics"
+msgstr ""
 
 msgid "Other"
 msgstr "Altro"
@@ -1914,6 +2077,12 @@ msgstr "Dati pubblici amatoriali"
 msgid "Published"
 msgstr "Pubblicazione"
 
+msgid ""
+"Quality of the sky according to <a "
+"href=\"http://en.wikipedia.org/wiki/Bortle_Dark-Sky_Scale\" "
+"target=\"_blank\">the Bortle Scale</a>."
+msgstr ""
+
 msgid "Quantum efficiency"
 msgstr "Efficienza quantica"
 
@@ -2092,6 +2261,9 @@ msgstr "Risultati di ricerca"
 msgid "Secure payment by Stripe™"
 msgstr "Pagamenti sicuri via Stripe™"
 
+msgid "Seeing"
+msgstr ""
+
 msgid "Seems like it's your first time editing this kind of information!"
 msgstr "Sembra che sia la tua prima volta qui!"
 
@@ -2170,6 +2342,9 @@ msgstr "Software"
 
 msgid "Solar"
 msgstr "Solare"
+
+msgid "Solar system acquisition sessions"
+msgstr ""
 
 msgid "Solar system body or event"
 msgstr "Corpo o evento del sistema solare"
@@ -2283,8 +2458,14 @@ msgstr "Riassunto"
 msgid "Sun"
 msgstr "Sole"
 
+msgid "Superb"
+msgstr ""
+
 msgid "Superseded"
 msgstr "Sostituito"
+
+msgid "Synthetic channel"
+msgstr ""
 
 msgid "TIFF support on AstroBin is experimental."
 msgstr "Il supporto ai TIFF su AstroBin è sperimentale."
@@ -2310,6 +2491,9 @@ msgstr "Telescopi e obiettivi"
 
 msgid "Tell me more!"
 msgstr "Dimmi di più!"
+
+msgid "Temperature"
+msgstr ""
 
 msgid "Text"
 msgstr "Testo"
@@ -2384,6 +2568,11 @@ msgstr "La marca che cerchi è {{0}} ed esiste già nel database di AstroBin."
 
 msgid "The final font size will depend on how long your watermark is."
 msgstr "La dimensione finale del carattere dipende da quanto è lungo il watermark."
+
+msgid ""
+"The focal length of the whole optical train, including barlow lenses or "
+"other components."
+msgstr ""
 
 msgid "The following changes are proposed:"
 msgstr "Le seguenti modifiche sono state proposte:"
@@ -2473,6 +2662,18 @@ msgstr ""
 "Il nome di questo prodotto. Non includere il nome della marca ed assicurati "
 "che sia scritto correttamente."
 
+msgid "The number of bias/offset frames."
+msgstr ""
+
+msgid "The number of dark flat frames."
+msgstr ""
+
+msgid "The number of dark frames."
+msgstr ""
+
+msgid "The number of flat frames."
+msgstr ""
+
 msgid ""
 "The price is shown in Swiss Francs even though you might have paid the "
 "equivalent amount in your country's currency."
@@ -2505,6 +2706,9 @@ msgstr ""
 msgid "The size of the individual pixels in μm."
 msgstr "La dimensione di ciascun pixel in μm."
 
+msgid "The subject type \"{{0}}\" does not support acquisition sessions."
+msgstr ""
+
 msgid "The submission queue is currently empty or being refreshed."
 msgstr "La coda di proposta al momento è vuota o in fase di ricalcolo."
 
@@ -2522,6 +2726,9 @@ msgstr "L'elemento di destinazione ha dei dati non corretti"
 
 msgid "The target item is a duplicate of an existing equipment item"
 msgstr "Lo strumento di destinazione è il duplicato di uno strumento esistente"
+
+msgid "The temperature of the chip in Celsius degrees, e.g. -20."
+msgstr ""
 
 msgid ""
 "There are <strong>{{n}} items</strong> of this class that have pending "
@@ -2730,6 +2937,9 @@ msgstr "Titolo"
 msgid "To"
 msgstr "A"
 
+msgid "To add more, go back to the Equipment step."
+msgstr ""
+
 msgid ""
 "To use this feature, you need the <strong>{{0}}</strong> subscription or "
 "higher."
@@ -2769,6 +2979,9 @@ msgstr "Eclisse totale di Sole"
 
 msgid "Transit"
 msgstr "Transito"
+
+msgid "Transparency"
+msgstr ""
 
 msgid "Traveller"
 msgstr "Itinerante"
@@ -2860,6 +3073,9 @@ msgstr ""
 "Usa il segno <strong>@</strong> ed inizia a scrivere per menzionare "
 "qualsiasi utente."
 
+msgid "Use the button below to add data."
+msgstr ""
+
 msgid "Username"
 msgstr "Nome utente"
 
@@ -2877,6 +3093,12 @@ msgstr "Variante di"
 
 msgid "Venus"
 msgstr "Venere"
+
+msgid "Very bad"
+msgstr ""
+
+msgid "Very good"
+msgstr ""
 
 msgid "View"
 msgstr "Visualizza"
@@ -3209,6 +3431,12 @@ msgstr ""
 "La tua proposta di modifica è stata salvata e verrà controllato il prima "
 "possibile."
 
+msgid "Your estimation of the seeing."
+msgstr ""
+
+msgid "Your estimation of the transparency."
+msgstr ""
+
 msgid "Your most recent applied migrations (all equipment classes)"
 msgstr "Le tue migrazioni applicate più recenti (tutte le classi di strumentazione)"
 
@@ -3282,6 +3510,9 @@ msgstr "p.e."
 
 msgid "e.g. 'Home observatory'"
 msgstr "p.e. 'Osservatorio di casa'"
+
+msgid "f-number"
+msgstr ""
 
 msgid "modified"
 msgstr "modificata"

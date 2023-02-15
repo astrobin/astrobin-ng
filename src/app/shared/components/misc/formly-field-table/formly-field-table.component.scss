@@ -1,0 +1,11 @@
+::ng-deep {
+  .datatable-row-wrapper:not(:first-child) label {
+    display: none;
+  }
+
+  .datatable-body-cell {
+    &.hidden {
+      display: none !important;
+    }
+  }
+}

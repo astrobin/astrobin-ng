@@ -3,23 +3,23 @@
   (creationModeEnded)="onCreationModeEnded()"
   (creationModeStarted)="onCreationModeStarted()"
   (valueChanged)="onValueChanged($event)"
-  [description]="to.description"
-  [enableCreation]="to.enableCreation"
-  [enableFullscreen]="to.enableFullscreen"
-  [enableSelectFrozen]="to.enableSelectFrozen !== undefined ? to.enableSelectFrozen : true"
+  [description]="props.description"
+  [enableCreation]="props.enableCreation"
+  [enableFullscreen]="props.enableFullscreen"
+  [enableSelectFrozen]="props.enableSelectFrozen !== undefined ? props.enableSelectFrozen : true"
   [enableSummaryModal]="false"
-  [enableVariantSelection]="to.enableVariantSelection !== undefined ? to.enableVariantSelection : true"
-  [excludeId]="to.excludeId"
+  [enableVariantSelection]="props.enableVariantSelection !== undefined ? props.enableVariantSelection : true"
+  [excludeId]="props.excludeId"
   [id]="field.id"
-  [label]="to.label"
-  [multiple]="to.multiple"
-  [required]="to.required"
-  [type]="to.itemType"
-  [usageType]="to.usageType"
+  [label]="props.label"
+  [multiple]="props.multiple"
+  [required]="props.required"
+  [type]="props.itemType"
+  [usageType]="props.usageType"
   [value]="value"
 ></astrobin-equipment-item-browser>
 
-<ng-container *ngIf="to.showQuickAddRecent">
+<ng-container *ngIf="props.showQuickAddRecent">
   <div class="quick-add">
     <span class="quick-add-label">{{ "Quick-add recent" | translate }}:</span>
 
@@ -45,8 +45,8 @@
 
   <div
     *ngIf="
-      to.itemType === EquipmentItemType.TELESCOPE &&
-      to.usageType === EquipmentItemUsageType.IMAGING &&
+      props.itemType === EquipmentItemType.TELESCOPE &&
+      props.usageType === EquipmentItemUsageType.IMAGING &&
       recentLoaded &&
       recent.length === 0 &&
       formControl.value?.length === 0

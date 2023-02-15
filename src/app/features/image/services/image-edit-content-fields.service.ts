@@ -1,5 +1,4 @@
 import { Injectable } from "@angular/core";
-import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
 import {
   AcquisitionType,
@@ -19,12 +18,12 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { UtilsService } from "@shared/services/utils/utils.service";
+import { ImageEditFieldsBaseService } from "@features/image/services/image-edit-fields-base.service";
 
 @Injectable({
   providedIn: null
 })
-export class ImageEditContentFieldsService extends BaseService {
-  private _subjectTypeValueChangesSubscription: Subscription;
+export class ImageEditContentFieldsService extends ImageEditFieldsBaseService {
   private _dataSourceValueChangesSubscription: Subscription;
 
   constructor(
@@ -36,6 +35,9 @@ export class ImageEditContentFieldsService extends BaseService {
     public readonly utilsService: UtilsService
   ) {
     super(loadingService);
+  }
+
+  onFieldsInitialized(): void {
   }
 
   getAcquisitionTypeField(): FormlyFieldConfig {
@@ -84,32 +86,36 @@ export class ImageEditContentFieldsService extends BaseService {
         required: true,
         clearable: false,
         label: this.translateService.instant("Subject type"),
-        options: [
-          { value: SubjectType.DEEP_SKY, label: this.translateService.instant("Deep sky object or field") },
-          { value: SubjectType.SOLAR_SYSTEM, label: this.translateService.instant("Solar system body or event") },
-          { value: SubjectType.WIDE_FIELD, label: this.translateService.instant("Extremely wide field") },
-          { value: SubjectType.STAR_TRAILS, label: this.translateService.instant("Star trails") },
-          { value: SubjectType.NORTHERN_LIGHTS, label: this.translateService.instant("Northern lights") },
-          { value: SubjectType.NOCTILUCENT_CLOUDS, label: this.translateService.instant("Noctilucent clouds") },
-          { value: SubjectType.GEAR, label: this.translateService.instant("Gear") },
-          { value: SubjectType.OTHER, label: this.translateService.instant("Other") }
-        ]
-      },
-      hooks: {
-        onInit: (field: FormlyFieldConfig) => {
-          if (!!this._subjectTypeValueChangesSubscription) {
-            this._subjectTypeValueChangesSubscription.unsubscribe();
+        options: Object.keys(SubjectType).map((subjectType: SubjectType) => ({
+          value: subjectType,
+          label: this.imageEditService.humanizeSubjectType(subjectType)
+        })),
+        changeConfirmationCondition: (currentValue: SubjectType, newValue: SubjectType): boolean => {
+          if (this.imageEditService.isDeepSky(currentValue) && !this.imageEditService.isDeepSky(newValue)) {
+            return this.imageEditService.model.deepSkyAcquisitions.length > 0;
           }
 
-          this._subjectTypeValueChangesSubscription = field.formControl.valueChanges.subscribe(value => {
-            if (value !== SubjectType.SOLAR_SYSTEM) {
-              this.imageEditService.model.solarSystemMainSubject = null;
-            }
-          });
+          if (this.imageEditService.isSolarSystem(currentValue) && !this.imageEditService.isSolarSystem(newValue)) {
+            return this.imageEditService.model.solarSystemAcquisitions.length > 0;
+          }
+
+          return false;
         },
-        onDestroy: () => {
-          this._subjectTypeValueChangesSubscription.unsubscribe();
-          this._subjectTypeValueChangesSubscription = undefined;
+        changeConfirmationMessage: this.translateService.instant(
+          "Changing this value will remove any acquisition sessions you have already added."
+        ),
+        onChangeConfirmation: (value: SubjectType): void => {
+          if (this.imageEditService.isSolarSystem(value)) {
+            this.imageEditService.model.solarSystemMainSubject = null;
+          }
+
+          if (!this.imageEditService.isDeepSky(value)) {
+            this.imageEditService.model.deepSkyAcquisitions = [];
+          }
+
+          if (!this.imageEditService.isSolarSystem(value)) {
+            this.imageEditService.model.solarSystemAcquisitions = [];
+          }
         }
       }
     };

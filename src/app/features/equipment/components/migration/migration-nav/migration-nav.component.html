@@ -1,13 +1,13 @@
-<ul ngbNav #nav="ngbNav" [activeId]="activeId" class="nav-pills mb-5" orientation="vertical">
+<ul #nav="ngbNav" [activeId]="activeId" class="nav-pills mb-5" ngbNav orientation="vertical">
   <li ngbNavItem="migration">
     <a ngbNavLink routerLink="/equipment/migration-tool"><strong>Migrate</strong> legacy items</a>
   </li>
 
-  <li ngbNavItem="explorer" *ngIf="(currentUser$ | async) | isInGroup:'equipment_moderators'">
+  <li *ngIf="(currentUser$ | async) | isInGroup:Constants.EQUIPMENT_MODERATORS_GROUP" ngbNavItem="explorer">
     <a ngbNavLink routerLink="/equipment/migration-explorer"><strong>Explore</strong> new database</a>
   </li>
 
-  <li ngbNavItem="review" *ngIf="(currentUser$ | async) | isInGroup:'equipment_moderators'">
+  <li *ngIf="(currentUser$ | async) | isInGroup:Constants.EQUIPMENT_MODERATORS_GROUP" ngbNavItem="review">
     <a ngbNavLink routerLink="/equipment/migration-review"><strong>Review</strong> migrations</a>
   </li>
 </ul>

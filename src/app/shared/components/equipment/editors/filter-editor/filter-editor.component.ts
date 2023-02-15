@@ -21,6 +21,7 @@ import { UtilsService } from "@shared/services/utils/utils.service";
 import { switchMap, take, takeUntil } from "rxjs/operators";
 import { interval } from "rxjs";
 import { isGroupMember } from "@shared/operators/is-group-member.operator";
+import { Constants } from "@shared/constants";
 
 @Component({
   selector: "astrobin-filter-editor",
@@ -130,7 +131,7 @@ export class FilterEditorComponent extends BaseItemEditorComponent<FilterInterfa
 
   private _initFields() {
     this.initBrandAndName()
-      .pipe(switchMap(() => this.currentUser$.pipe(take(1), isGroupMember("equipment_moderators"))))
+      .pipe(switchMap(() => this.currentUser$.pipe(take(1), isGroupMember(Constants.EQUIPMENT_MODERATORS_GROUP))))
       .subscribe(isModerator => {
         if (this.editorMode === EquipmentItemEditorMode.CREATION || !this.model.reviewerDecision || isModerator) {
           this.fields = [

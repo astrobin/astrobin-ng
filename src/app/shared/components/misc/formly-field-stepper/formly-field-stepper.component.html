@@ -3,11 +3,11 @@
     #wizardSteps
     *ngFor="let field of field?.fieldGroup; let index = index; let last = last"
     [attr.id]="field.id"
+    [canExit]="!isStepErrored(index)"
     [class.error]="isStepErrored(index)"
     [class.visited]="highestVisitedStep > index"
     [state]="getState(field)"
     [title]="getStepTitle(field, index)"
-    [canExit]="!isStepErrored(index)"
     class="wizard-step"
   >
     <div *ngIf="!!field.props.stepPreambleTemplate" class="step-preamble">
@@ -20,27 +20,27 @@
       <ng-container [ngTemplateOutlet]="field.props.stepActionsTemplate"></ng-container>
     </div>
 
-    <div class="form-actions" [class.fixed]="to.fixed">
+    <div [class.fixed]="props.fixed" class="form-actions">
       <div class="form-actions-container">
         <button
-          class="btn btn-outline-secondary"
+          (click)="goToPreviousStep($event, index)"
           [class.loading]="loadingService.loading$ | async"
           [disabled]="isFirstStep(index)"
-          (click)="goToPreviousStep($event, index)"
+          class="btn btn-outline-secondary"
         >
           {{ "Previous" | translate }}
         </button>
 
         <button
-          class="btn btn-outline-primary"
+          (click)="goToNextStep($event, index)"
           [class.loading]="loadingService.loading$ | async"
           [disabled]="isLastStep(index)"
-          (click)="goToNextStep($event, index)"
+          class="btn btn-outline-primary"
         >
           {{ "Next" | translate }}
         </button>
 
-        <ng-container *ngIf="to.buttonsTemplate" [ngTemplateOutlet]="to.buttonsTemplate"></ng-container>
+        <ng-container *ngIf="props.buttonsTemplate" [ngTemplateOutlet]="props.buttonsTemplate"></ng-container>
       </div>
     </div>
 

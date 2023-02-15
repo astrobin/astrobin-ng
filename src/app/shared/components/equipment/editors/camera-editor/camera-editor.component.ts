@@ -25,6 +25,7 @@ import { AbstractControl, FormControl } from "@angular/forms";
 import { LoadBrand } from "@features/equipment/store/equipment.actions";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { isGroupMember } from "@shared/operators/is-group-member.operator";
+import { Constants } from "@shared/constants";
 
 @Component({
   selector: "astrobin-camera-editor",
@@ -217,7 +218,7 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
 
   private _initFields() {
     const _doInitFields = () => {
-      this.currentUser$.pipe(take(1), isGroupMember("equipment_moderators")).subscribe(isModerator => {
+      this.currentUser$.pipe(take(1), isGroupMember(Constants.EQUIPMENT_MODERATORS_GROUP)).subscribe(isModerator => {
         if (this.editorMode === EquipmentItemEditorMode.CREATION || !this.model.reviewerDecision || isModerator) {
           this.fields = [
             this._getDIYField(),

@@ -25,6 +25,7 @@ import { selectCurrentUser } from "@features/account/store/auth.selectors";
 import { NgbAccordion } from "@ng-bootstrap/ng-bootstrap";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { isPlatformBrowser } from "@angular/common";
+import { Constants } from "@shared/constants";
 
 enum NotificationCategory {
   COMMENTS = "COMMENTS",
@@ -126,7 +127,7 @@ export class SettingsPageComponent extends BaseComponentDirective implements OnI
         this.store$.select(selectCurrentUser).pipe(
           tap(user => {
             const isIotdStaff = user.groups.filter(group => group.name === "iotd_staff").length > 0;
-            const isEquipmentModerator = user.groups.filter(group => group.name === "equipment_moderators").length > 0;
+            const isEquipmentModerator = user.groups.filter(group => group.name === Constants.EQUIPMENT_MODERATORS_GROUP).length > 0;
 
             if (!isIotdStaff) {
               delete this.categories[NotificationCategory.IOTD_STAFF];

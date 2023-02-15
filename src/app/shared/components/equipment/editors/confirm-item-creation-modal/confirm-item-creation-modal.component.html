@@ -1,5 +1,5 @@
 <div class="modal-header">
-  <h4 class="modal-title" id="modal-title">{{ "Confirm item creation" | translate }}</h4>
+  <h4 class="modal-title" id="confirm-item-creation-modal">{{ "Confirm item creation" | translate }}</h4>
   <button
     (click)="modal.dismiss(ConfirmItemCreationResult.CANCEL)"
     aria-describedby="modal-title"
@@ -18,8 +18,8 @@
     </strong>
 
     {{
-      "This item will be part of AstroBin's equipment database, and it's very important that the information is accurate and this item is not the duplicate of another."
-        | translate
+    "This item will be part of AstroBin's equipment database, and it's very important that the information is accurate and this item is not the duplicate of another."
+      | translate
     }}
   </p>
 
@@ -50,8 +50,8 @@
         <strong>{{ "Warning!" | translate }} {{ "We found similar items from the same brand." | translate }}</strong>
       </p>
       <astrobin-similar-items-suggestion
-        [items]="similarItems"
         (itemSelected)="useSuggestion($event)"
+        [items]="similarItems"
       ></astrobin-similar-items-suggestion>
     </div>
   </ng-container>
@@ -68,7 +68,7 @@
     {{ "Cancel" | translate }}
   </button>
 
-  <button (click)="modal.close(item)" class="btn btn-danger" type="button" [disabled]="!formIsValid()">
+  <button (click)="modal.close(item)" [disabled]="!formIsValid()" class="btn btn-danger" type="button">
     {{ "Confirm" | translate }}
   </button>
 </div>

@@ -24,6 +24,7 @@ import { AccessoryApiService } from "@shared/services/api/classic/astrobin/acces
 import { SoftwareApiService } from "@shared/services/api/classic/astrobin/software/software-api.service";
 import { ActiveToast } from "ngx-toastr";
 import { TranslateService } from "@ngx-translate/core";
+import { Constants } from "@shared/constants";
 
 @Component({
   selector: "astrobin-merge-into-modal",
@@ -116,7 +117,7 @@ export class MergeIntoModalComponent extends BaseComponentDirective implements O
             api.getSimilarNonMigratedByMakeAndName(
               brand.name,
               this.equipmentItem.name,
-              user.groups.filter(group => group.name === "equipment_moderators").length > 0
+              user.groups.filter(group => group.name === Constants.EQUIPMENT_MODERATORS_GROUP).length > 0
             )
           ),
           switchMap((legacyItems: any[]) => {

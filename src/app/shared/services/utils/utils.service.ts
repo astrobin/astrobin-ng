@@ -6,6 +6,7 @@ import { State } from "@app/store/state";
 import { SelectorWithProps } from "@ngrx/store/src/models";
 import { interval, Observable, of } from "rxjs";
 import { isPlatformBrowser } from "@angular/common";
+import { FormlyFieldConfig } from "@ngx-formly/core";
 
 @Injectable({
   providedIn: "root"
@@ -313,6 +314,23 @@ export class UtilsService {
     const data = await response.blob();
     const name = url.substring(url.lastIndexOf("/") + 1);
     return new File([data], name);
+  }
+
+  static fieldWithErrors(topFields: FormlyFieldConfig[]): FormlyFieldConfig[] {
+    let errored = [];
+
+    topFields.forEach(field => {
+      if (field.fieldGroup !== undefined) {
+        errored = [...errored, ...UtilsService.fieldWithErrors(field.fieldGroup)];
+      } else {
+        if (field.formControl.invalid) {
+          console.log(field);
+          errored.push(field);
+        }
+      }
+    });
+
+    return errored;
   }
 
   isNearBelowViewport(element: HTMLElement): boolean {

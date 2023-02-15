@@ -1,0 +1,74 @@
+<ngx-datatable
+  [columnMode]="ColumnMode.flex"
+  [columns]="columns"
+  [externalSorting]="true"
+  [headerHeight]="0"
+  [messages]="messages"
+  [rowHeight]="'auto'"
+  [rows]="model"
+  class="bootstrap striped"
+>
+
+  <ng-template
+    #cellTemplate
+    let-column="column"
+    let-rowIndex="rowIndex"
+    ngx-datatable-cell-template
+  >
+    <formly-field
+      [field]="getField(field, column, rowIndex)"
+    ></formly-field>
+  </ng-template>
+
+  <ng-template
+    #buttonsTemplate
+    let-row="row"
+    let-rowIndex="rowIndex"
+    let-value="value"
+    ngx-datatable-cell-template
+  >
+    <div class="d-flex align-items-center justify-content-center">
+      <button
+        (click)="field.props.additionalPropertiesClicked(rowIndex)"
+        class="btn btn-link p-2"
+        type="button"
+      >
+        <fa-icon [ngbTooltip]="'Additional properties' | translate" icon="ellipsis"></fa-icon>
+        <span class="sr-only">{{ "Additional properties" | translate }}</span>
+      </button>
+
+      <button
+        (click)="add(rowIndex + 1, model[rowIndex])"
+        class="btn btn-link p-2"
+        type="button"
+      >
+        <fa-icon [ngbTooltip]="'Copy' | translate" icon="copy"></fa-icon>
+        <span class="sr-only">{{ "Copy" | translate }}</span>
+      </button>
+
+      <button
+        (click)="remove(rowIndex)"
+        class="btn btn-link p-2"
+        type="button"
+      >
+        <fa-icon [ngbTooltip]="'Delete' | translate" icon="trash"></fa-icon>
+        <span class="sr-only">{{ "Delete" | translate }}</span>
+      </button>
+    </div>
+  </ng-template>
+
+</ngx-datatable>
+
+<div class="form-actions mt-2">
+  <button (click)="clear()" class="btn btn-outline-danger">
+    {{ field.props.clearLabel || "Clear" | translate }}
+  </button>
+
+  <button
+    (click)="add(null, {})"
+    *ngIf="mayAdd"
+    class="btn btn-outline-secondary"
+  >
+    {{ field.props.addLabel || "Add" | translate }}
+  </button>
+</div>

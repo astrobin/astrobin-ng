@@ -1,10 +1,10 @@
 <ng-container *ngIf="item; else loading">
   <div
-    (click)="opened = !opened"
-    [attr.data-id]="editProposal.id"
+    class="edit-proposal"
     [class.opened]="opened"
     [class.pending]="editProposal.editProposalReviewStatus === null"
-    class="edit-proposal"
+    [attr.data-id]="editProposal.id"
+    (click)="opened = !opened"
   >
     <div class="row">
       <span class="col user">

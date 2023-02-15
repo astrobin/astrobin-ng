@@ -1,0 +1,9 @@
+<button (click)="props.click(field, $event)" [className]="props.className">
+  <ng-container *ngIf="!!props.icon">
+    <fa-icon [icon]="props.icon" [ngbTooltip]="props.tooltip"></fa-icon>
+  </ng-container>
+
+  <ng-container *ngIf="!!props.label">
+    {{props.label}}
+  </ng-container>
+</button>

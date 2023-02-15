@@ -5,8 +5,7 @@ import {
   Component,
   EventEmitter,
   Input,
-  OnInit,
-  Output,
+ OnInit, Output,
   TemplateRef,
   ViewChild
 } from "@angular/core";

@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit, TemplateRef, ViewChild } from "@angular/core";
+import { AfterViewInit, Component, HostListener, OnInit, TemplateRef, ViewChild } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
@@ -39,14 +39,17 @@ import { UserService } from "@shared/services/user.service";
 import { JsonApiService } from "@shared/services/api/classic/json/json-api.service";
 import { CookieService } from "ngx-cookie";
 import { ComponentCanDeactivate } from "@shared/services/guards/pending-changes-guard.service";
+import { ImageEditAcquisitionFieldsService } from "@features/image/services/image-edit-acquisition-fields.service";
+import { Constants } from "@shared/constants";
 
 @Component({
   selector: "astrobin-image-edit-page",
   templateUrl: "./image-edit-page.component.html",
   styleUrls: ["./image-edit-page.component.scss"]
 })
-export class ImageEditPageComponent extends BaseComponentDirective implements OnInit, ComponentCanDeactivate {
+export class ImageEditPageComponent extends BaseComponentDirective implements OnInit, ComponentCanDeactivate, AfterViewInit {
   readonly DONT_SHOW_MIGRATION_INFO_COOKIE = "astrobin_apps_equipment_dont_show_migration_info";
+  readonly Constants = Constants;
 
   ImageAlias = ImageAlias;
 
@@ -55,6 +58,9 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
 
   @ViewChild("equipmentStepButtonsTemplate")
   equipmentStepButtonsTemplate: TemplateRef<any>;
+
+  @ViewChild("acquisitionFilterSelectFooterTemplateExtra")
+  acquisitionFilterSelectFooterTemplateExtra: TemplateRef<any>;
 
   editingExistingImage: boolean;
 
@@ -78,11 +84,13 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     public readonly imageEditWatermarkFieldsService: ImageEditWatermarkFieldsService,
     public readonly imageEditThumbnailFieldsService: ImageEditThumbnailFieldsService,
     public readonly imageEditEquipmentFieldsService: ImageEditEquipmentFieldsService,
+    public readonly imageEditAcquisitionFieldsService: ImageEditAcquisitionFieldsService,
     public readonly imageEditSettingsFieldsService: ImageEditSettingsFieldsService,
     public readonly modalService: NgbModal,
     public readonly userService: UserService,
     public readonly jsonApiService: JsonApiService,
-    public readonly cookieService: CookieService
+    public readonly cookieService: CookieService,
+    public readonly utilsService: UtilsService
   ) {
     super(store$);
   }
@@ -110,11 +118,9 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     super.ngOnInit();
 
     const image = this.route.snapshot.data.image;
-
     this.imageEditService.model = image;
-
     this.imageEditService.model = {
-      ...this.imageEditService.model,
+      ...image,
       ...{
         imagingTelescopes2: image.imagingTelescopes2.map(x => x.id),
         imagingCameras2: image.imagingCameras2.map(x => x.id),
@@ -165,6 +171,10 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
       this.imageEditService.remoteSourceAffiliates = remoteSourceAffiliates;
       this._initFields();
     });
+  }
+
+  ngAfterViewInit(): void {
+    this.imageEditAcquisitionFieldsService.acquisitionFilterSelectFooterTemplateExtra = this.acquisitionFilterSelectFooterTemplateExtra;
   }
 
   clearEquipment() {
@@ -275,16 +285,6 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     }
   }
 
-  onReturnToClassicEditor() {
-    this.loadingService.setLoading(true);
-    UtilsService.openLink(
-      this.windowRefService.nativeWindow.document,
-      this.classicRoutesService.EDIT_IMAGE_THUMBNAILS(
-        this.imageEditService.model.hash || "" + this.imageEditService.model.pk
-      ) + "?upload"
-    );
-  }
-
   onSave(event: Event, next?: string) {
     if (event) {
       event.preventDefault();
@@ -354,14 +354,6 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
         this.popNotificationsService.success(this.translateService.instant("Image saved."));
       }
     });
-  }
-
-  dontShowMigrationInfoAgain() {
-    this.cookieService.put(this.DONT_SHOW_MIGRATION_INFO_COOKIE, "1", {
-      path: "/",
-      expires: null
-    });
-    this.showMigrationInfo = false;
   }
 
   private _initFields(): void {
@@ -437,6 +429,14 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
           ]
         };
 
+        const acquisition = {
+          id: "image-stepper-acquisition",
+          props: {
+            label: this.translateService.instant("Acquisition")
+          },
+          fieldGroup: this.imageEditAcquisitionFieldsService.getFields()
+        };
+
         const settings = {
           id: "image-stepper-settings",
           props: { label: this.translateService.instant("Settings") },
@@ -452,8 +452,12 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
 
         const fieldGroup = [basic, content, thumbnail, watermark];
 
-        if (this.userService.isInGroup(user, "own_equipment_migrators")) {
+        if (this.userService.isInGroup(user, Constants.OWN_EQUIPMENT_MIGRATORS_GROUP)) {
           fieldGroup.push(equipment);
+        }
+
+        if (this.userService.isInGroup(user, Constants.ACQUISITION_EDIT_TESTERS_GROUP)) {
+          fieldGroup.push(acquisition);
         }
 
         fieldGroup.push(settings);
@@ -463,13 +467,22 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
             type: "stepper",
             id: "image-stepper-field",
             props: {
-              // image: this.imageEditService.model,
               buttonsTemplate: this.stepperButtonsTemplate,
               fixed: true
             },
             fieldGroup
           }
         ];
+
+        this.utilsService.delay(1).subscribe(() => {
+          this.imageEditBasicFieldsService.onFieldsInitialized();
+          this.imageEditContentFieldsService.onFieldsInitialized();
+          this.imageEditWatermarkFieldsService.onFieldsInitialized();
+          this.imageEditThumbnailFieldsService.onFieldsInitialized();
+          this.imageEditEquipmentFieldsService.onFieldsInitialized();
+          this.imageEditAcquisitionFieldsService.onFieldsInitialized();
+          this.imageEditSettingsFieldsService.onFieldsInitialized();
+        });
       });
   }
 

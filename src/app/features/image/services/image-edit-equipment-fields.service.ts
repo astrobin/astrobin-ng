@@ -1,6 +1,5 @@
 import { Injectable } from "@angular/core";
 import { LoadingService } from "@shared/services/loading.service";
-import { BaseService } from "@shared/services/base.service";
 import { TranslateService } from "@ngx-translate/core";
 import { ImageEditService } from "@features/image/services/image-edit.service";
 import { Store } from "@ngrx/store";
@@ -8,11 +7,12 @@ import { State } from "@app/store/state";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/types/equipment-item-base.interface";
 import { Subscription } from "rxjs";
+import { ImageEditFieldsBaseService } from "@features/image/services/image-edit-fields-base.service";
 
 @Injectable({
   providedIn: null
 })
-export class ImageEditEquipmentFieldsService extends BaseService {
+export class ImageEditEquipmentFieldsService extends ImageEditFieldsBaseService {
   creationMode = false;
 
   private _getGuidingTelescopesSubscription: Subscription;
@@ -25,6 +25,9 @@ export class ImageEditEquipmentFieldsService extends BaseService {
     public readonly imageEditService: ImageEditService
   ) {
     super(loadingService);
+  }
+
+  onFieldsInitialized(): void {
   }
 
   getImagingTelescopes(): FormlyFieldConfig {

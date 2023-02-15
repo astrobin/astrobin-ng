@@ -14,6 +14,8 @@ import { FilterInterface as FilterInterface2 } from "@features/equipment/types/f
 import { AccessoryInterface as AccessoryInterface2 } from "@features/equipment/types/accessory.interface";
 import { SoftwareInterface as SoftwareInterface2 } from "@features/equipment/types/software.interface";
 import { GroupInterface } from "@shared/interfaces/group.interface";
+import { DeepSkyAcquisitionInterface } from "@shared/interfaces/deep-sky-acquisition.interface";
+import { SolarSystemAcquisitionInterface } from "@shared/interfaces/solar-system-acquisition.interface";
 
 export enum AcquisitionType {
   REGULAR = "REGULAR",
@@ -214,6 +216,8 @@ export interface ImageInterface {
   downloadLimitation: DownloadLimitationOptions;
   thumbnails: ImageThumbnailInterface[];
   submittedForIotdTpConsideration: string | null;
+  deepSkyAcquisitions: DeepSkyAcquisitionInterface[];
+  solarSystemAcquisitions: SolarSystemAcquisitionInterface[];
 
   // Ephemeral form fields
   showGuidingEquipment?: boolean;

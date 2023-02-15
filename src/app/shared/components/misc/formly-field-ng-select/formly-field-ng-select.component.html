@@ -1,11 +1,12 @@
 <ng-template #selectContainer>
-  <ng-container *ngIf="to.options !== null">
+  <ng-container *ngIf="props.options !== null">
     <ng-container *ngIf="hasAsyncItems; else hasSyncItems">
-      <ng-container [ngTemplateOutlet]="select" [ngTemplateOutletContext]="{ options: to.options | async }"></ng-container>
+      <ng-container [ngTemplateOutletContext]="{ options: props.options | async }"
+                    [ngTemplateOutlet]="select"></ng-container>
     </ng-container>
 
     <ng-template #hasSyncItems>
-      <ng-container [ngTemplateOutlet]="select" [ngTemplateOutletContext]="{ options: to.options }"></ng-container>
+      <ng-container [ngTemplateOutletContext]="{ options: props.options }" [ngTemplateOutlet]="select"></ng-container>
     </ng-template>
   </ng-container>
 </ng-template>
@@ -15,67 +16,69 @@
 
     <ng-select
       #ngSelect
-      [attr.id]="field.id"
-      [bindValue]="to.bindValue || 'value'"
-      [bindLabel]="to.bindLabel || 'label'"
-      [clearable]="to.clearable || false"
-      [clearSearchOnAdd]="true"
-      [closeOnSelect]="to.closeOnSelect !== undefined ? to.closeOnSelect : !to.multiple"
-      [formControl]="formControl"
-      [hideSelected]="to.multiple"
-      [items]="options"
-      [loading]="loading"
-      [multiple]="to.multiple"
-      [notFoundText]="notFoundText"
-      [typeToSearchText]="fullscreen ? '' : placeholder"
-      [placeholder]="fullscreen ? '' : placeholder"
-      [searchable]="to.searchable !== undefined ? to.searchable : true"
-      [typeahead]="input$"
-      [dropdownPosition]="this.fullscreen ? 'bottom' : 'auto'"
-      groupBy="group"
-      [class.ng-select-striped]="!!to.striped"
-      [class.fullscreen]="fullscreen"
-      [class.enable-fullscreen]="to.enableFullscreen"
-      [class.too-many-options]="hasAsyncItems && (to.options | async)?.length > TOO_MANY_OPTIONS"
-      [class.show-arrow]="to.showArrow !== false"
-      class="{{ to.classNames }} flex-grow-1"
+      (change)="onChange($event)"
       (click)="goFullscreen($event, null)"
       (search)="goFullscreen(null, $event)"
+      [appendTo]="props.appendTo"
+      [attr.id]="field.id"
+      [bindLabel]="props.bindLabel || 'label'"
+      [bindValue]="props.bindValue || 'value'"
+      [class.enable-fullscreen]="props.enableFullscreen"
+      [class.fullscreen]="fullscreen"
+      [class.ng-select-striped]="!!props.striped"
+      [class.show-arrow]="props.showArrow !== false"
+      [class.too-many-options]="hasAsyncItems && (props.options | async)?.length > TOO_MANY_OPTIONS"
+      [clearSearchOnAdd]="true"
+      [clearable]="props.clearable || false"
+      [closeOnSelect]="props.closeOnSelect !== undefined ? props.closeOnSelect : !props.multiple"
+      [dropdownPosition]="this.fullscreen ? 'bottom' : 'auto'"
+      [formControl]="formControl"
+      [hideSelected]="props.multiple"
+      [items]="options"
+      [loading]="loading"
+      [multiple]="props.multiple"
+      [notFoundText]="notFoundText"
+      [placeholder]="fullscreen ? '' : placeholder"
+      [searchable]="props.searchable !== undefined ? props.searchable : true"
+      [typeToSearchText]="fullscreen ? '' : placeholder"
+      [typeahead]="input$"
+      class="{{ props.classNames }} flex-grow-1"
+      groupBy="group"
     >
       <ng-template let-item="item" ng-optgroup-tmp>
         {{ item.group }}
       </ng-template>
 
       <ng-template let-clear="clear" let-item="item" ng-label-tmp>
-        <ng-container *ngIf="!to.labelTemplate">{{ item.label }}</ng-container>
+        <ng-container *ngIf="!props.labelTemplate">{{ item.label }}</ng-container>
         <ng-container
-          *ngIf="to.labelTemplate"
+          *ngIf="props.labelTemplate"
           [ngTemplateOutletContext]="{ item: item }"
-          [ngTemplateOutlet]="to.labelTemplate"
+          [ngTemplateOutlet]="props.labelTemplate"
         ></ng-container>
         <span
           (click)="clear(item)"
+          aria-hidden="true"
           astrobinEventPreventDefault
           astrobinEventStopPropagation
-          aria-hidden="true"
           class="ng-value-icon right"
-          >×</span
+        >×</span
         >
       </ng-template>
 
       <ng-template let-item="item" ng-option-tmp>
-        <ng-container *ngIf="!to.optionTemplate">{{ item.label }}</ng-container>
+        <ng-container *ngIf="!props.optionTemplate">{{ item.label }}</ng-container>
         <ng-container
-          *ngIf="to.optionTemplate"
+          *ngIf="props.optionTemplate"
           [ngTemplateOutletContext]="{ item }"
-          [ngTemplateOutlet]="to.optionTemplate"
+          [ngTemplateOutlet]="props.optionTemplate"
         ></ng-container>
       </ng-template>
 
       <ng-template ng-header-tmp>
         <ng-container *ngIf="hasAsyncItems">
-          <ng-container *ngIf="to.options | async as options">
-            <div class="too-many-options-label" *ngIf="value?.length > 0 && options?.length > TOO_MANY_OPTIONS">
+          <ng-container *ngIf="props.options | async as options">
+            <div *ngIf="value?.length > 0 && options?.length > TOO_MANY_OPTIONS" class="too-many-options-label">
               <fa-icon icon="exclamation-triangle"></fa-icon>
               {{ "Type more to refine your search." | translate }}
             </div>
@@ -84,18 +87,14 @@
       </ng-template>
 
       <ng-template ng-footer-tmp>
-        <div *ngIf="!!value && !!to.addTag && showCreateNewButton" class="add-tag">
+        <div *ngIf="!!value && !!props.addTag && showCreateNewButton; else footerTemplateExtra" class="add-tag">
           <div [innerHTML]="'Can\'t find <strong>{{0}}</strong>?' | translate:{'0': value}" class="cant-find"></div>
 
-          <ng-container *ngIf="to.footerTemplateExtra">
-            <div class="footer-template-extra">
-              <ng-template [ngTemplateOutlet]="to.footerTemplateExtra"></ng-template>
-            </div>
-          </ng-container>
+          <ng-container [ngTemplateOutlet]="footerTemplateExtra"></ng-container>
 
           <button
-            *ngIf="!!value && !!to.addTag && showCreateNewButton"
             (click)="onAddTag(value)"
+            *ngIf="!!value && !!props.addTag && showCreateNewButton"
             [class.loading]="loading"
             class="btn btn-outline-primary"
           >
@@ -103,25 +102,34 @@
           </button>
         </div>
       </ng-template>
+
+      <ng-template #footerTemplateExtra>
+        <ng-container *ngIf="props.footerTemplateExtra">
+          <div class="footer-template-extra">
+            <ng-template [ngTemplateOutlet]="props.footerTemplateExtra"></ng-template>
+          </div>
+        </ng-container>
+
+      </ng-template>
     </ng-select>
 
     <a
-      *ngIf="!fullscreen && to.enableFullscreen && cypressTesting"
-      href="#"
-      astrobinEventStopPropagation
-      astrobinEventPreventDefault
-      class="toggle-enable-fullscreen"
-      [ngbTooltip]="'Disable fullscreen mode' | translate"
       (click)="toggleEnableFullscreen()"
+      *ngIf="!fullscreen && props.enableFullscreen && cypressTesting"
+      [ngbTooltip]="'Disable fullscreen mode' | translate"
+      astrobinEventPreventDefault
+      astrobinEventStopPropagation
+      class="toggle-enable-fullscreen"
+      href="#"
     >
-      <fa-icon [class.text-muted]="!to.enableFullscreen" icon="expand"></fa-icon>
+      <fa-icon [class.text-muted]="!props.enableFullscreen" icon="expand"></fa-icon>
     </a>
   </div>
 </ng-template>
 
 <ng-template #ngSelectModal>
   <div class="modal-header">
-    <h4 class="modal-title" id="modal-title">
+    <h4 class="modal-title" id="ng-select-modal">
       <ng-container *ngIf="field.props.fullScreenLabel; else noFullScreenLabel">
         {{ field.props.fullScreenLabel}}
       </ng-container>
@@ -144,14 +152,14 @@
         <div class="flex-grow-1">
           <ng-container [ngTemplateOutlet]="selectContainer"></ng-container>
         </div>
-        <button *ngIf="to.multiple" class="btn btn-primary btn-sm btn-no-block" (click)="exitFullscreen()">
+        <button (click)="exitFullscreen()" *ngIf="props.multiple" class="btn btn-primary btn-sm btn-no-block">
           {{ "Done" | translate }}
         </button>
       </div>
     </div>
 
-    <div *ngIf="!!to.fullScreenBodyTemplate" class="full-screen-body-template-container mt-3">
-      <ng-container [ngTemplateOutlet]="to.fullScreenBodyTemplate"></ng-container>
+    <div *ngIf="!!props.fullScreenBodyTemplate" class="full-screen-body-template-container mt-3">
+      <ng-container [ngTemplateOutlet]="props.fullScreenBodyTemplate"></ng-container>
     </div>
   </div>
 
@@ -163,3 +171,4 @@
 </ng-template>
 
 <ng-container [ngTemplateOutlet]="selectContainer"></ng-container>
+

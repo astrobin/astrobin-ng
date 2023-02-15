@@ -91,7 +91,7 @@
                 '?upload'
             )
           "
-          *ngIf="!(user | isInGroup: 'own_equipment_migrators')"
+          *ngIf="!(user | isInGroup: Constants.OWN_EQUIPMENT_MIGRATORS_GROUP)"
           class="dropdown-item"
         >
           {{ "Save and proceed to gear selection" | translate }}
@@ -106,6 +106,7 @@
               ) + '?upload'
             )
           "
+          *ngIf="!(user | isInGroup: Constants.ACQUISITION_EDIT_TESTERS_GROUP)"
           class="dropdown-item"
         >
           {{ "Save and proceed to acquisition details" | translate }}
@@ -128,4 +129,10 @@
       </div>
     </div>
   </ng-container>
+</ng-template>
+
+<ng-template #acquisitionFilterSelectFooterTemplateExtra>
+  <div class="text-muted">
+    {{ "To add more, go back to the Equipment step." | translate }}
+  </div>
 </ng-template>
