@@ -167,7 +167,8 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
               description: this.translateService.instant("The temperature of the chip in Celsius degrees, e.g. -20."),
               required: false,
               step: 1,
-              min: 0
+              min: -274,
+              max: 100
             },
             validators: {
               validation: ["whole-number"]
@@ -288,7 +289,7 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
         },
         fieldGroup: [
           {
-            key: "bortleScale",
+            key: "bortle",
             type: "ng-select",
             wrappers: ["default-wrapper"],
             props: {
