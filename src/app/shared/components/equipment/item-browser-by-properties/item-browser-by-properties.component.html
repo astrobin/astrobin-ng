@@ -65,7 +65,12 @@
           <tbody>
           <tr *ngFor="let item of results">
             <td>
-              <a href="#" astrobinEventPreventDefault astrobinEventStopPropagation (click)="itemSelected.emit(item)">
+              <a
+                (click)="itemSelected.emit(item)"
+                [href]="'/equipment/explorer/' + item.klass.toLowerCase() + '/' + item.id + '/'"
+                astrobinEventPreventDefault
+                astrobinEventStopPropagation
+              >
                 <astrobin-equipment-item-display-name
                   [item]="item"
                   [showFrozenAsAmbiguous]="item.variants.length === 0"
