@@ -352,7 +352,7 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
               type: "number",
               label: this.translateService.instant("Mean FWHM"),
               description: this.translateService.instant(
-                "Mean SQM mag/arcsec^2 as measured by your Sky Quality Meter."
+                "Mean Full Width at Half Maximum in arc seconds, a measure of seeing."
               ),
               required: false,
               step: 1,
