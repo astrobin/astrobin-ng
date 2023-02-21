@@ -1,0 +1,139 @@
+import { Component, Input, OnInit } from "@angular/core";
+import { FormlyFieldConfig } from "@ngx-formly/core";
+import { FormGroup } from "@angular/forms";
+import { Store } from "@ngrx/store";
+import { State } from "@app/store/state";
+import { LoadingService } from "@shared/services/loading.service";
+import { TranslateService } from "@ngx-translate/core";
+import { NgbActiveModal, NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { filter, take } from "rxjs/operators";
+import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
+import { Actions, ofType } from "@ngrx/effects";
+import { PopNotificationsService } from "@shared/services/pop-notifications.service";
+import { DeepSkyAcquisitionPresetInterface } from "@shared/interfaces/deep-sky-acquisition-preset.interface";
+import {
+  CreateDeepSkyAcquisitionPreset,
+  CreateDeepSkyAcquisitionPresetSuccess,
+  ImageActionTypes
+} from "@features/image/store/image.actions";
+import { selectDeepSkyAcquisitionPresets } from "@features/image/store/image.selectors";
+
+@Component({
+  selector: "astrobin-create-equipment-preset-modal",
+  templateUrl: "./save-deep-sky-acquisition-preset-modal.component.html",
+  styleUrls: ["./save-deep-sky-acquisition-preset-modal.component.scss"]
+})
+export class SaveDeepSkyAcquisitionPresetModalComponent extends BaseComponentDirective implements OnInit {
+  fields: FormlyFieldConfig[];
+  form: FormGroup = new FormGroup({});
+  model: {
+    name: string;
+  } = {
+    name: null
+  };
+
+  @Input()
+  initialPreset: DeepSkyAcquisitionPresetInterface[];
+
+  constructor(
+    public readonly store$: Store<State>,
+    public readonly actions$: Actions,
+    public readonly loadingService: LoadingService,
+    public readonly translateService: TranslateService,
+    public readonly modal: NgbActiveModal,
+    public readonly modalService: NgbModal,
+    public readonly popNotificationsService: PopNotificationsService
+  ) {
+    super(store$);
+  }
+
+  ngOnInit(): void {
+    super.ngOnInit();
+
+    this.fields = [
+      {
+        key: "name",
+        type: "input",
+        id: "name",
+        wrappers: ["default-wrapper"],
+        props: {
+          label: this.translateService.instant("Preset name"),
+          description: this.translateService.instant(
+            `Here you can save an acquisition preset so you can easily load it later on a different image ` +
+            `<em>(e.g. "Default LRGB", "Hubble Palette 2023", etc)</em>`
+          ),
+          required: true,
+          maxLength: 128
+        }
+      }
+    ];
+  }
+
+  create() {
+    const preset: DeepSkyAcquisitionPresetInterface[] = this.initialPreset.map(x => ({ ...x, ...{ name: this.model.name } }));
+
+    this.loadingService.setLoading(true);
+
+    this.store$.dispatch(new CreateDeepSkyAcquisitionPreset({ presetItems: preset }));
+    this.actions$
+      .pipe(
+        ofType(ImageActionTypes.CREATE_DEEP_SKY_ACQUISITION_PRESET_SUCCESS),
+        filter((action: CreateDeepSkyAcquisitionPresetSuccess) => action.payload.presetItems[0].name === this.model.name),
+        take(1)
+      )
+      .subscribe(() => {
+        this.modal.close();
+        this.loadingService.setLoading(false);
+        this.popNotificationsService.success(
+          this.translateService.instant(
+            `Acquisition preset created! You can use the "Load preset" button on a different image to assign the
+            same acquisition sessions to it.`
+          )
+        );
+      });
+  }
+
+  // update(preset: DeepSkyAcquisitionPresetInterface) {
+  //   const update = { ...preset, ...this.initialPreset };
+  //
+  //   this.loadingService.setLoading(true);
+  //
+  //   this.store$.dispatch(new UpdateEquipmentPreset({ preset: update }));
+  //   this.actions$
+  //     .pipe(
+  //       ofType(EquipmentActionTypes.UPDATE_EQUIPMENT_PRESET_SUCCESS),
+  //       filter((action: UpdateEquipmentPresetSuccess) => action.payload.preset.name === this.model.name),
+  //       take(1)
+  //     )
+  //     .subscribe(() => {
+  //       this.modal.close();
+  //       this.loadingService.setLoading(false);
+  //       this.popNotificationsService.success(this.translateService.instant("Equipment preset updated."));
+  //     });
+  // }
+
+  onCreateClicked() {
+    this.store$
+      .select(selectDeepSkyAcquisitionPresets)
+      .pipe(take(1))
+      .subscribe(presets => {
+        const existingPreset = presets.find(preset => preset.name === this.model.name);
+
+        if (!!existingPreset) {
+          const modalRef: NgbModalRef = this.modalService.open(ConfirmationDialogComponent, { size: "sm" });
+          const componentInstance: ConfirmationDialogComponent = modalRef.componentInstance;
+
+          componentInstance.message = this.translateService.instant(
+            "You will overwrite your existing preset with the same name."
+          );
+
+          modalRef.closed.pipe(take(1)).subscribe(() => {
+            // this.update(existingPreset);
+          });
+        } else {
+          this.create();
+        }
+      });
+  }
+}

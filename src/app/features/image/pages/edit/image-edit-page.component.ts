@@ -5,7 +5,11 @@ import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { SaveImage } from "@app/store/actions/image.actions";
 import { LoadThumbnail } from "@app/store/actions/thumbnail.actions";
 import { State } from "@app/store/state";
-import { ImageEditorSetCropperShown } from "@features/image/store/image.actions";
+import {
+  FindDeepSkyAcquisitionPresets,
+  FindSolarSystemAcquisitionPresets,
+  ImageEditorSetCropperShown
+} from "@features/image/store/image.actions";
 import { Actions, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
@@ -41,6 +45,8 @@ import { CookieService } from "ngx-cookie";
 import { ComponentCanDeactivate } from "@shared/services/guards/pending-changes-guard.service";
 import { ImageEditAcquisitionFieldsService } from "@features/image/services/image-edit-acquisition-fields.service";
 import { Constants } from "@shared/constants";
+import { LoadDeepSkyAcquisitionPresetModalComponent } from "@features/image/components/load-deep-sky-acquisition-preset-modal/load-deep-sky-acquisition-preset-modal.component";
+import { SaveDeepSkyAcquisitionPresetModalComponent } from "@features/image/components/save-deep-sky-acquisition-preset-modal/save-deep-sky-acquisition-preset-modal.component";
 
 @Component({
   selector: "astrobin-image-edit-page",
@@ -61,6 +67,12 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
 
   @ViewChild("acquisitionFilterSelectFooterTemplateExtra")
   acquisitionFilterSelectFooterTemplateExtra: TemplateRef<any>;
+
+  @ViewChild("deepSkyAcquisitionPresetButtonsTemplate")
+  deepSkyAcquisitionPresetButtonsTemplate: TemplateRef<any>;
+
+  @ViewChild("solarSystemAcquisitionPresetButtonsTemplate")
+  solarSystemAcquisitionPresetButtonsTemplate: TemplateRef<any>;
 
   editingExistingImage: boolean;
 
@@ -156,6 +168,8 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
     );
 
     this.store$.dispatch(new FindEquipmentPresets());
+    this.store$.dispatch(new FindDeepSkyAcquisitionPresets());
+    this.store$.dispatch(new FindSolarSystemAcquisitionPresets());
 
     this.route.fragment.subscribe((fragment: string) => {
       if (!fragment) {
@@ -174,7 +188,12 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
   }
 
   ngAfterViewInit(): void {
-    this.imageEditAcquisitionFieldsService.acquisitionFilterSelectFooterTemplateExtra = this.acquisitionFilterSelectFooterTemplateExtra;
+    this.imageEditAcquisitionFieldsService.acquisitionFilterSelectFooterTemplateExtra =
+      this.acquisitionFilterSelectFooterTemplateExtra;
+    this.imageEditAcquisitionFieldsService.deepSkyAcquisitionPresetButtonsTemplate =
+      this.deepSkyAcquisitionPresetButtonsTemplate;
+    this.imageEditAcquisitionFieldsService.solarSystemAcquisitionPresetButtonsTemplate =
+      this.solarSystemAcquisitionPresetButtonsTemplate;
   }
 
   clearEquipment() {
@@ -282,6 +301,37 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
             componentInstance.model.name = currentEquipmentPreset.name;
           }
         });
+    }
+  }
+
+  onLoadDeepSkyAcquisitionPresetClicked() {
+    const modalRef: NgbModalRef = this.modalService.open(LoadDeepSkyAcquisitionPresetModalComponent);
+    const componentInstance: LoadDeepSkyAcquisitionPresetModalComponent = modalRef.componentInstance;
+  }
+
+  onSaveDeepSkyAcquisitionPresetClicked() {
+    if (this.imageEditService.hasDeepSkyAcquisitions()) {
+      const modalRef: NgbModalRef = this.modalService.open(SaveDeepSkyAcquisitionPresetModalComponent);
+      const componentInstance: SaveDeepSkyAcquisitionPresetModalComponent = modalRef.componentInstance;
+      componentInstance.initialPreset = this.imageEditService.model.deepSkyAcquisitions.map(acquisition => ({
+        id: null,
+        name: null,
+        isSynthetic: acquisition.isSynthetic,
+        filter2: acquisition.filter2,
+        binning: acquisition.binning,
+        number: acquisition.number,
+        duration: acquisition.duration,
+        iso: acquisition.iso,
+        gain: acquisition.gain,
+        fNumber: acquisition.fNumber,
+        sensorCooling: acquisition.sensorCooling,
+        darks: acquisition.darks,
+        flats: acquisition.flats,
+        flatDarks: acquisition.flatDarks,
+        bias: acquisition.bias,
+        savedOn: null,
+        user: null
+      }));
     }
   }
 

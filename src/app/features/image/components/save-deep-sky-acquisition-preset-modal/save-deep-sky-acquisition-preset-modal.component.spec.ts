@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { SaveEquipmentPresetModalComponent } from "./save-equipment-preset-modal.component";
+import { SaveDeepSkyAcquisitionPresetModalComponent } from "./save-deep-sky-acquisition-preset-modal.component";
 import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
@@ -9,11 +9,11 @@ import { provideMockStore } from "@ngrx/store/testing";
 import { initialState } from "@app/store/state";
 
 describe("SaveDeepSkyAcquisitionPresetModalComponent", () => {
-  let component: SaveEquipmentPresetModalComponent;
-  let fixture: ComponentFixture<SaveEquipmentPresetModalComponent>;
+  let component: SaveDeepSkyAcquisitionPresetModalComponent;
+  let fixture: ComponentFixture<SaveDeepSkyAcquisitionPresetModalComponent>;
 
   beforeEach(async () => {
-    await MockBuilder(SaveEquipmentPresetModalComponent, AppModule).provide([
+    await MockBuilder(SaveDeepSkyAcquisitionPresetModalComponent, AppModule).provide([
       NgbActiveModal,
       ImageEditService,
       provideMockStore({ initialState })
@@ -21,7 +21,7 @@ describe("SaveDeepSkyAcquisitionPresetModalComponent", () => {
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SaveEquipmentPresetModalComponent);
+    fixture = TestBed.createComponent(SaveDeepSkyAcquisitionPresetModalComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

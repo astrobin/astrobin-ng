@@ -136,3 +136,31 @@
     {{ "To add more, go back to the Equipment step." | translate }}
   </div>
 </ng-template>
+
+<ng-template #deepSkyAcquisitionPresetButtonsTemplate>
+  <div class="btn-group" role="group">
+    <button
+      (click)="onLoadDeepSkyAcquisitionPresetClicked()"
+      [class.loading]="loadingService.loading$ | async"
+      [disabled]="(deepSkyAcquisitionPresets$ | async)?.length === 0"
+      class="btn btn-outline-secondary"
+      id="load-deep-sky-acquisition-preset-btn"
+    >
+      {{ "Load preset" | translate }}&hellip;
+    </button>
+
+    <button
+      (click)="onSaveDeepSkyAcquisitionPresetClicked()"
+      [class.loading]="loadingService.loading$ | async"
+      [disabled]="!imageEditService.hasDeepSkyAcquisitions()"
+      class="btn btn-outline-secondary"
+      id="save-deep-sky-acquisition-btn"
+    >
+      {{ "Save preset" | translate }}&hellip;
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #solarSystemAcquisitionPresetButtonsTemplate>
+  CIAO2
+</ng-template>
