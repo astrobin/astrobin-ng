@@ -72,16 +72,16 @@ context("lite", () => {
       cy.get(".buy.btn").should("exist");
     });
 
-    it("should not show warning about 50 images if use has less than 25 images", () => {
+    it("should not show warning about 50 images if use has less than 50 images", () => {
       cy.route("get", "**/common/usersubscriptions/?user=*", []).as("getUserSubscriptions");
-      cy.route("get", "**/images/image/?user=1", { count: 24 }).as("userImages");
+      cy.route("get", "**/images/image/public-images-count/?user=1", 49).as("userImages");
       cy.visitPage("/subscriptions/lite");
       cy.get(".lite-limit.alert").should("not.exist");
     });
 
     it("should show warning about 50 images if use has 25 images", () => {
       cy.route("get", "**/common/usersubscriptions/?user=*", []).as("getUserSubscriptions");
-      cy.route("get", "**/images/image/?user=1", { count: 25 }).as("userImages");
+      cy.route("get", "**/images/image/public-images-count/?user=1", 50).as("userImages");
       cy.visitPage("/subscriptions/lite");
       cy.get(".lite-limit.alert").should("exist");
     });
