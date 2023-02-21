@@ -18,7 +18,8 @@
             <li>{{ "No plate-solving" | translate }}</li>
             <li>&nbsp;</li>
           </ul>
-          <a [href]="classicRoutesService.PRICING" class="btn btn-lg btn-block btn-outline-primary" type="button">
+
+          <a [href]="classicRoutesService.PRICING" class="btn btn-lg btn-block btn-outline-secondary" type="button">
             {{ "Learn more" | translate }}
           </a>
         </div>
@@ -46,8 +47,14 @@
             <li>{{ "Basic plate-solving" | translate }}</li>
             <li>&hellip;</li>
           </ul>
-          <a [href]="classicRoutesService.PRICING" class="btn btn-lg btn-block btn-outline-primary" type="button">
+
+          <a [href]="classicRoutesService.PRICING" class="btn btn-lg btn-block btn-outline-secondary me-2"
+             type="button">
             {{ "Learn more" | translate }}
+          </a>
+
+          <a [routerLink]="['/subscriptions/lite']" class="btn btn-lg btn-block btn-outline-primary" type="button">
+            {{ "Buy" | translate }}
           </a>
         </div>
       </div>
@@ -73,8 +80,14 @@
             <li>{{ "Basic plate-solving" | translate }}</li>
             <li>&hellip;</li>
           </ul>
-          <a [href]="classicRoutesService.PRICING" class="btn btn-lg btn-block btn-outline-primary" type="button">
+
+          <a [href]="classicRoutesService.PRICING" class="btn btn-lg btn-block btn-outline-secondary me-2"
+             type="button">
             {{ "Learn more" | translate }}
+          </a>
+
+          <a [routerLink]="['/subscriptions/premium']" class="btn btn-lg btn-block btn-outline-primary" type="button">
+            {{ "Buy" | translate }}
           </a>
         </div>
       </div>
@@ -101,8 +114,14 @@
             <li>{{ "Advanced plate-solving" | translate }}</li>
             <li><em>{{ "And much more!" | translate }}</em></li>
           </ul>
-          <a [href]="classicRoutesService.PRICING" class="btn btn-lg btn-block btn-outline-primary" type="button">
+
+          <a [href]="classicRoutesService.PRICING" class="btn btn-lg btn-block btn-outline-secondary me-2"
+             type="button">
             {{ "Learn more" | translate }}
+          </a>
+
+          <a [routerLink]="['/subscriptions/ultimate']" class="btn btn-lg btn-block btn-outline-primary" type="button">
+            {{ "Buy" | translate }}
           </a>
         </div>
       </div>

@@ -21,7 +21,8 @@ import { PopNotificationsService } from "@shared/services/pop-notifications.serv
 import { TitleService } from "@shared/services/title/title.service";
 import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
 import { Observable } from "rxjs";
-import { distinctUntilChanged, map, startWith, switchMap, takeUntil, tap } from "rxjs/operators";
+import { distinctUntilChanged, map, startWith, switchMap, take, takeUntil, tap } from "rxjs/operators";
+import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
 
 declare var Stripe: any;
 
@@ -36,6 +37,9 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
   alreadySubscribed$: Observable<boolean>;
   alreadySubscribedHigher$: Observable<boolean>;
   numberOfImages$: Observable<number>;
+  maxLiteImages$: Observable<number> = this.store$
+    .select(selectBackendConfig)
+    .pipe(map(config => config.PREMIUM_MAX_IMAGES_LITE_2020));
   pricing$: Observable<PricingInterface>;
   product: PayableProductInterface;
   bankDetailsMessage$: Observable<string>;
@@ -190,9 +194,10 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
           )
         );
 
-      this.numberOfImages$ = this.store$
-        .select(selectCurrentUser)
-        .pipe(switchMap(user => this.imageApiService.getImagesByUserId(user.id).pipe(map(response => response.count))));
+      this.numberOfImages$ = this.store$.select(selectCurrentUser).pipe(
+        switchMap(user => this.imageApiService.getPublicImagesCountByUserId(user.id)),
+        take(1)
+      );
 
       this.subscriptionsService.currency$
         .pipe(takeUntil(this.destroyed$), distinctUntilChanged())
@@ -234,43 +239,44 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
     });
   }
 
-  getLiteLimitMessage(numberOfImages): SafeHtml {
-    return this.domSanitizer.bypassSecurityTrustHtml(
-      this.translate.instant(
-        "The Lite plan is capped at <strong>{{maxImagesForLite}}</strong> total images, and you currently have " +
-        "<strong>{{numberOfImages}}</strong> images on AstroBin. For this reason, we recommend that you upgrade to " +
-        "Premium or Ultimate instead.",
-        {
-          maxImagesForLite: 50,
-          numberOfImages
-        }
-      )
+  getLiteLimitMessage$(numberOfImages): Observable<SafeHtml> {
+    return this.maxLiteImages$.pipe(
+      map(maxImages => {
+        return this.domSanitizer.bypassSecurityTrustHtml(
+          this.translate.instant(
+            "The Lite plan is capped at <strong>{{maxImagesForLite}}</strong> total images, and you currently have " +
+            "<strong>{{numberOfImages}}</strong> images on AstroBin. For this reason, we recommend that you upgrade to " +
+            "Premium or Ultimate instead.",
+            {
+              maxImagesForLite: maxImages,
+              numberOfImages
+            }
+          )
+        );
+      })
     );
   }
 
   buy(): void {
     let stripe: any;
     let config: PaymentsApiConfigInterface;
-    let userId: number;
 
     this.loadingService.setLoading(true);
 
-    this.store$
+    this.paymentsApiService
+      .getConfig()
       .pipe(
-        tap(state => {
-          userId = state.auth.user.id;
-        }),
-        switchMap(() => this.paymentsApiService.getConfig().pipe(tap(_config => (config = _config)))),
+        tap(_config => (config = _config)),
         switchMap(() => {
           if (!Stripe) {
             return null;
           }
 
           stripe = Stripe(config.publicKey);
-          return this.paymentsApiService.createCheckoutSession(
-            userId,
-            this.product,
-            this.subscriptionsService.currency
+          return this.currentUser$.pipe(
+            switchMap(user =>
+              this.paymentsApiService.createCheckoutSession(user.id, this.product, this.subscriptionsService.currency)
+            )
           );
         })
       )

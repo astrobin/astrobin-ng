@@ -58,6 +58,10 @@ export class ImageApiService extends BaseClassicApiService {
     return this.http.get<PaginatedApiResultInterface<ImageInterface>>(`${this.configUrl}/image/?user=${userId}`);
   }
 
+  getPublicImagesCountByUserId(userId: UserInterface["id"]): Observable<number> {
+    return this.http.get<number>(`${this.configUrl}/image/public-images-count/?user=${userId}`);
+  }
+
   getThumbnail(
     id: ImageInterface["pk"] | ImageInterface["hash"],
     revision: string,

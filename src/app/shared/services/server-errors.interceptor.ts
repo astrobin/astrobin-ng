@@ -59,7 +59,7 @@ export class ServerErrorsInterceptor implements HttpInterceptor {
           }
         }
 
-        if (errorMessage.indexOf("AstroBin stands with Ukraine") > -1) {
+        if (!!errorMessage && errorMessage.indexOf("AstroBin stands with Ukraine") > -1) {
           this.windowRefService.nativeWindow.location.assign(
             "https://welcome.astrobin.com/astrobin-stands-with-ukraine"
           );
