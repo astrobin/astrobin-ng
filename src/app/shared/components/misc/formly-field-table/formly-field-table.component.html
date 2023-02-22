@@ -71,4 +71,8 @@
   >
     {{ field.props.addLabel || "Add" | translate }}
   </button>
+
+  <ng-container *ngIf="!!field.props.additionalButtonsTemplate">
+    <ng-container [ngTemplateOutlet]="field.props.additionalButtonsTemplate"></ng-container>
+  </ng-container>
 </div>

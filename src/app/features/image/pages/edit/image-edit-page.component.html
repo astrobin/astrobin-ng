@@ -59,6 +59,17 @@
   </div>
 </ng-template>
 
+<ng-template #acquisitionAdditionalButtonsTemplate>
+  <button
+    (click)="onCopyAcquisitionSessionsFromAnotherImageClicked($event)"
+    [class.loading]="loadingService.loading$ | async"
+    class="btn btn-outline-secondary"
+    id="copy-acquisition-sessions-from-another-image-btn"
+  >
+    {{ "Copy from another image" | translate }}&hellip;
+  </button>
+</ng-template>
+
 <ng-template #stepperButtonsTemplate>
   <button
     (click)="onSave($event, classicRoutesService.IMAGE(imageEditService.model.hash || '' + imageEditService.model.pk))"

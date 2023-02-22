@@ -1,0 +1,54 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="copy-acquisition-sessions-from-another-image-modal">
+    {{ "Copy from another image" | translate }}
+  </h4>
+
+  <button (click)="modal.dismiss()" aria-describedby="modal-title" class="close" type="button">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body">
+  <form [formGroup]="form">
+    <formly-form [fields]="fields" [form]="form" [model]="model"></formly-form>
+  </form>
+</div>
+
+<div class="modal-footer">
+  <button (click)="modal.dismiss()" class="btn btn-outline-secondary" type="button">
+    {{ "Cancel" | translate }}
+  </button>
+
+  <button
+    (click)="onCopyClicked()"
+    [class.loading]="(loadingService.loading$ | async) || form.pending"
+    [disabled]="form.invalid"
+    class="btn btn-primary"
+    type="button"
+  >
+    {{ "Copy" | translate }}
+  </button>
+</div>
+
+<ng-template #imageOptionTemplate let-item="item">
+  <div class="image-option-template">
+    <div class="row">
+      <div class="col-2">
+        <img [alt]="item.value.title" [src]="getGalleryThumbnail(item.value)" class="w-100" />
+      </div>
+      <div class="col">
+        <h5 class="title">{{item.value.title}}</h5>
+        <div class="uploaded">
+          {{ "Published" | translate}}:
+          <abbr *ngIf="!!item.value.published; else unpublishedTemplate" [title]="item.value.published | localDate">
+            {{ item.value.published | localDate | timeago: true }}
+          </abbr>
+
+          <ng-template #unpublishedTemplate>
+            <span class="text-muted">{{ "Unpublished" | translate }}</span>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>

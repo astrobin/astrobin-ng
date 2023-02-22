@@ -41,13 +41,16 @@ import { CookieService } from "ngx-cookie";
 import { ComponentCanDeactivate } from "@shared/services/guards/pending-changes-guard.service";
 import { ImageEditAcquisitionFieldsService } from "@features/image/services/image-edit-acquisition-fields.service";
 import { Constants } from "@shared/constants";
+import { CopyAcquisitionSessionsFromAnotherImageModalComponent } from "@features/image/components/copy-acquisition-sessions-from-another-image-modal/copy-acquisition-sessions-from-another-image-modal.component";
 
 @Component({
   selector: "astrobin-image-edit-page",
   templateUrl: "./image-edit-page.component.html",
   styleUrls: ["./image-edit-page.component.scss"]
 })
-export class ImageEditPageComponent extends BaseComponentDirective implements OnInit, ComponentCanDeactivate, AfterViewInit {
+export class ImageEditPageComponent
+  extends BaseComponentDirective
+  implements OnInit, ComponentCanDeactivate, AfterViewInit {
   readonly DONT_SHOW_MIGRATION_INFO_COOKIE = "astrobin_apps_equipment_dont_show_migration_info";
   readonly Constants = Constants;
 
@@ -61,6 +64,9 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
 
   @ViewChild("acquisitionFilterSelectFooterTemplateExtra")
   acquisitionFilterSelectFooterTemplateExtra: TemplateRef<any>;
+
+  @ViewChild("acquisitionAdditionalButtonsTemplate")
+  acquisitionAdditionalButtonsTemplate: TemplateRef<any>;
 
   editingExistingImage: boolean;
 
@@ -174,7 +180,10 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
   }
 
   ngAfterViewInit(): void {
-    this.imageEditAcquisitionFieldsService.acquisitionFilterSelectFooterTemplateExtra = this.acquisitionFilterSelectFooterTemplateExtra;
+    this.imageEditAcquisitionFieldsService.acquisitionFilterSelectFooterTemplateExtra =
+      this.acquisitionFilterSelectFooterTemplateExtra;
+    this.imageEditAcquisitionFieldsService.acquisitionAdditionalButtonsTemplate =
+      this.acquisitionAdditionalButtonsTemplate;
   }
 
   clearEquipment() {
@@ -283,6 +292,18 @@ export class ImageEditPageComponent extends BaseComponentDirective implements On
           }
         });
     }
+  }
+
+  onCopyAcquisitionSessionsFromAnotherImageClicked(event: Event) {
+    if (event) {
+      event.preventDefault();
+    }
+
+    const modalRef: NgbModalRef = this.modalService.open(CopyAcquisitionSessionsFromAnotherImageModalComponent);
+    const componentInstance: CopyAcquisitionSessionsFromAnotherImageModalComponent = modalRef.componentInstance;
+
+    componentInstance.alreadyHasAcquisitions =
+      this.imageEditService.hasDeepSkyAcquisitions() || this.imageEditService.hasSolarSystemAcquisitions();
   }
 
   onSave(event: Event, next?: string) {

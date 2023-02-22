@@ -129,6 +129,7 @@
 
       &:not(:last-child) {
         border-right-color: var(--lightGrey);
+        margin-right: 0;
       }
     }
   }
