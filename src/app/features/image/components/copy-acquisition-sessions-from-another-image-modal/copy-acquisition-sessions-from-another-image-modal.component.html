@@ -32,11 +32,11 @@
 
 <ng-template #imageOptionTemplate let-item="item">
   <div class="image-option-template">
-    <div class="row">
+    <div class="row align-items-center">
       <div class="col-2">
         <img [alt]="item.value.title" [src]="getGalleryThumbnail(item.value)" class="w-100" />
       </div>
-      <div class="col">
+      <div class="col ps-2">
         <h5 class="title">{{item.value.title}}</h5>
         <div class="uploaded">
           {{ "Published" | translate}}:
