@@ -90,7 +90,10 @@ export class FormlyFieldNgSelectComponent extends FieldType implements OnInit, O
           debounceTime(500),
           map(value => (value ? value.trim() : value)),
           distinctUntilChanged(),
-          tap(() => (this.loading = true))
+          tap(() => {
+            this.loading = true;
+            this.changeDetectionRef.detectChanges();
+          })
         )
         .subscribe(value => {
           this.value = value;

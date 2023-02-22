@@ -13,6 +13,7 @@ import { Observable, throwError } from "rxjs";
 import { map } from "rxjs/operators";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { ImageEditModelInterface } from "@features/image/services/image-edit.service";
+import { UtilsService } from "@shared/services/utils/utils.service";
 
 @Injectable({
   providedIn: "root"
@@ -54,12 +55,35 @@ export class ImageApiService extends BaseClassicApiService {
     return this.http.get<PaginatedApiResultInterface<ImageInterface>>(`${this.configUrl}/image/?id=${ids.join(",")}`);
   }
 
-  getImagesByUserId(userId: UserInterface["id"]): Observable<PaginatedApiResultInterface<ImageInterface>> {
-    return this.http.get<PaginatedApiResultInterface<ImageInterface>>(`${this.configUrl}/image/?user=${userId}`);
-  }
-
   getPublicImagesCountByUserId(userId: UserInterface["id"]): Observable<number> {
     return this.http.get<number>(`${this.configUrl}/image/public-images-count/?user=${userId}`);
+  }
+
+  findImages(options: {
+    userId?: UserInterface["id"],
+    q?: string,
+    hasDeepSkyAcquisitions?: boolean,
+    hasSolarSystemAcquisitions?: boolean
+  }): Observable<PaginatedApiResultInterface<ImageInterface>> {
+    let url = `${this.configUrl}/image/`;
+
+    if (!!options.userId) {
+      url = UtilsService.addOrUpdateUrlParam(url, "user", "" + options.userId);
+    }
+
+    if (!!options.q) {
+      url = UtilsService.addOrUpdateUrlParam(url, "q", options.q);
+    }
+
+    if (!!options.hasDeepSkyAcquisitions) {
+      url = UtilsService.addOrUpdateUrlParam(url, "has-deepsky-acquisitions", "1");
+    }
+
+    if (!!options.hasSolarSystemAcquisitions) {
+      url = UtilsService.addOrUpdateUrlParam(url, "has-solarsystem-acquisitions", "1");
+    }
+
+    return this.http.get<PaginatedApiResultInterface<ImageInterface>>(url);
   }
 
   getThumbnail(

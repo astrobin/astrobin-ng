@@ -92,11 +92,11 @@ export class ImageEditContentFieldsService extends ImageEditFieldsBaseService {
         })),
         changeConfirmationCondition: (currentValue: SubjectType, newValue: SubjectType): boolean => {
           if (this.imageEditService.isDeepSky(currentValue) && !this.imageEditService.isDeepSky(newValue)) {
-            return this.imageEditService.model.deepSkyAcquisitions.length > 0;
+            return this.imageEditService.hasDeepSkyAcquisitions();
           }
 
           if (this.imageEditService.isSolarSystem(currentValue) && !this.imageEditService.isSolarSystem(newValue)) {
-            return this.imageEditService.model.solarSystemAcquisitions.length > 0;
+            return this.imageEditService.hasSolarSystemAcquisitions();
           }
 
           return false;

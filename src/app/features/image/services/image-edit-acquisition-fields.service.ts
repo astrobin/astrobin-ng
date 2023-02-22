@@ -24,6 +24,8 @@ import { BortleScale } from "@shared/interfaces/deep-sky-acquisition.interface";
 export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseService implements OnDestroy {
   acquisitionFilterSelectFooterTemplateExtra: TemplateRef<any>;
 
+  acquisitionAdditionalButtonsTemplate: TemplateRef<any>;
+
   private _subjectTypeChangesSubscription: Subscription;
 
   constructor(
@@ -70,7 +72,8 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
             componentInstance.imageEditService = this.imageEditService;
             componentInstance.fieldGroup = this.getAdditionalDeepSkyFields();
             componentInstance.index = index;
-          }
+          },
+          additionalButtonsTemplate: this.acquisitionAdditionalButtonsTemplate
         },
         fieldArray: {
           fieldGroup: [
@@ -420,7 +423,8 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
             componentInstance.imageEditService = this.imageEditService;
             componentInstance.fieldGroup = this.getAdditionalSolarSystemFields();
             componentInstance.index = index;
-          }
+          },
+          additionalButtonsTemplate: this.acquisitionAdditionalButtonsTemplate
         },
         fieldArray: {
           fieldGroup: [

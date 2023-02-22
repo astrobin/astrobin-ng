@@ -18,8 +18,8 @@ export interface DeepSkyAcquisitionInterface {
   date: string;
   image: number; // Avoiding circular import.
   isSynthetic: boolean | null;
-  filter: LegacyFilterInterface | null;
-  filter2: FilterInterface | null;
+  filter: LegacyFilterInterface["pk"] | null;
+  filter2: FilterInterface["id"] | null;
   binning: number | null;
   number: number | null;
   duration: number | null;

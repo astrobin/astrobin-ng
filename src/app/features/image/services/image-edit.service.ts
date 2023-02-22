@@ -142,6 +142,14 @@ export class ImageEditService extends BaseService {
     );
   }
 
+  public hasDeepSkyAcquisitions(): boolean {
+    return this.model.deepSkyAcquisitions && this.model.deepSkyAcquisitions.length > 0;
+  }
+
+  public hasSolarSystemAcquisitions(): boolean {
+    return this.model.solarSystemAcquisitions && this.model.solarSystemAcquisitions.length > 0;
+  }
+
   public currentEquipmentPreset$(): Observable<EquipmentPresetInterface | null> {
     return this.store$.select(selectEquipmentPresets).pipe(
       map(presets => {
