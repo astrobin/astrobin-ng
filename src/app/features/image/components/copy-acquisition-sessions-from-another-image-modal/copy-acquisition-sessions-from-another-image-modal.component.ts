@@ -30,8 +30,12 @@ export class CopyAcquisitionSessionsFromAnotherImageModalComponent extends BaseC
   form: FormGroup = new FormGroup({});
   model: {
     image: ImageInterface | null;
+    copyDatesAndTimesToo: boolean;
+    copyLocalConditionsToo: boolean;
   } = {
-    image: null
+    image: null,
+    copyDatesAndTimesToo: false,
+    copyLocalConditionsToo: false
   };
 
   @Input()
@@ -87,18 +91,13 @@ export class CopyAcquisitionSessionsFromAnotherImageModalComponent extends BaseC
   }
 
   load(image: ImageInterface) {
-    this.imageEditService.model = {
+    let newModel = {
       ...this.imageEditService.model,
       ...{
         deepSkyAcquisitions: image.deepSkyAcquisitions.map(acquisition => ({
           ...acquisition,
           ...{
             id: null,
-            date: null,
-            bortle: null,
-            meanSqm: null,
-            meanFwhm: null,
-            temperature: null,
             savedOn: null
           }
         })),
@@ -106,17 +105,57 @@ export class CopyAcquisitionSessionsFromAnotherImageModalComponent extends BaseC
           ...acquisition,
           ...{
             id: null,
-            date: null,
-            time: null,
-            cmi: null,
-            cmii: null,
-            cmiii: null,
-            seeing: null,
-            transparency: null,
             saveOn: null
           }
         }))
       }
+    };
+
+    if (!this.model.copyDatesAndTimesToo) {
+      newModel.deepSkyAcquisitions = newModel.deepSkyAcquisitions.map(acquisition => ({
+        ...acquisition,
+        ...{
+          date: null
+        }
+      }));
+
+      newModel.solarSystemAcquisitions = newModel.solarSystemAcquisitions.map(acquisition => ({
+        ...acquisition,
+        ...{
+          id: null,
+          date: null,
+          time: null
+        }
+      }));
+    }
+
+    if (!this.model.copyLocalConditionsToo) {
+      newModel.deepSkyAcquisitions = newModel.deepSkyAcquisitions.map(acquisition => ({
+        ...acquisition,
+        ...{
+          bortle: null,
+          meanSqm: null,
+          meanFwhm: null,
+          temperature: null
+        }
+      }));
+
+      newModel.solarSystemAcquisitions = newModel.solarSystemAcquisitions.map(acquisition => ({
+        ...acquisition,
+        ...{
+          id: null,
+          cmi: null,
+          cmii: null,
+          cmiii: null,
+          seeing: null,
+          transparency: null
+        }
+      }));
+    }
+
+    this.imageEditService.model = {
+      ...this.imageEditService.model,
+      ...newModel
     };
 
     const acquisitionWithFilters = image.deepSkyAcquisitions.filter(acquisition => !!acquisition.filter2);
@@ -146,10 +185,8 @@ export class CopyAcquisitionSessionsFromAnotherImageModalComponent extends BaseC
     }
   }
 
-  _setFields() {
-    let description = this.translateService.instant(
-      "All acquisition details will be copied except dates, times, and local conditions."
-    );
+  _getImageFieldDescription() {
+    let description = "";
 
     if (this.imageEditService.isDeepSky()) {
       description += ` ${this.translateService.instant(
@@ -161,6 +198,42 @@ export class CopyAcquisitionSessionsFromAnotherImageModalComponent extends BaseC
       )}`;
     }
 
+    return description;
+  }
+
+  _getCopyDatesAndTimesTooFieldLabel() {
+    let label = "";
+
+    if (this.imageEditService.isDeepSky()) {
+      label += ` ${this.translateService.instant(
+        "Copy dates too"
+      )}`;
+    } else if (this.imageEditService.isSolarSystem()) {
+      label += ` ${this.translateService.instant(
+        "Copy dates and times too"
+      )}`;
+    }
+
+    return label;
+  }
+
+  _getCopyLocalConditionsTooFieldDescription() {
+    let description = "";
+
+    if (this.imageEditService.isDeepSky()) {
+      description += ` ${this.translateService.instant(
+        "This includes: Bortle scale, mean SQM, mean FWMW, and temperature."
+      )}`;
+    } else if (this.imageEditService.isSolarSystem()) {
+      description += ` ${this.translateService.instant(
+        "This includes: CMI/CMII/CMIII, seeing, and transparency."
+      )}`;
+    }
+
+    return description;
+  }
+
+  _setFields() {
     this.fields = [
       {
         key: "image",
@@ -170,7 +243,7 @@ export class CopyAcquisitionSessionsFromAnotherImageModalComponent extends BaseC
           required: true,
           optionTemplate: this.imageOptionTemplate,
           label: this.translateService.instant("Image"),
-          description,
+          description: this._getImageFieldDescription(),
           options: of([]),
           onSearch: (q: string): Observable<any[]> => {
             return new Observable<any[]>(observer => {
@@ -209,6 +282,25 @@ export class CopyAcquisitionSessionsFromAnotherImageModalComponent extends BaseC
                 });
             });
           }
+        }
+      },
+      {
+        key: "copyDatesAndTimesToo",
+        type: "checkbox",
+        wrappers: ["default-wrapper"],
+        props: {
+          required: true,
+          label: this._getCopyDatesAndTimesTooFieldLabel()
+        }
+      },
+      {
+        key: "copyLocalConditionsToo",
+        type: "checkbox",
+        wrappers: ["default-wrapper"],
+        props: {
+          required: true,
+          label: this.translateService.instant("Copy local conditions too"),
+          description: this._getCopyLocalConditionsTooFieldDescription()
         }
       }
     ];

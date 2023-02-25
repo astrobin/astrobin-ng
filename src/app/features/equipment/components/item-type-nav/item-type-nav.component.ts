@@ -116,7 +116,7 @@ export class ItemTypeNavComponent extends BaseComponentDirective
   activeSubNav = "";
   reviewPendingEditNotification: ActiveToast<any>;
   isSmallDevice: boolean;
-  collapsed: boolean;
+  collapsed: boolean = false;
 
   constructor(
     public readonly store$: Store<State>,
@@ -179,8 +179,6 @@ export class ItemTypeNavComponent extends BaseComponentDirective
   }
 
   ngAfterViewInit() {
-    this.collapse();
-
     const _setIsSmallDevice = () => {
       this.isSmallDevice = this.windowRefService.nativeWindow.window.innerWidth < 768;
     };
