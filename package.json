@@ -93,9 +93,9 @@
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "15.1.1",
-    "@angular-eslint/builder": "15.1.0",
-    "@angular-eslint/schematics": "15.1.0",
-    "@angular-eslint/template-parser": "15.1.0",
+    "@angular-eslint/builder": "15.2.1",
+    "@angular-eslint/schematics": "15.2.1",
+    "@angular-eslint/template-parser": "15.2.1",
     "@angular/cli": "15.1.1",
     "@angular/compiler-cli": "15.1.0",
     "@angular/language-service": "15.1.0",
