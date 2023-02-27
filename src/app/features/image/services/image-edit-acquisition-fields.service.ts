@@ -256,8 +256,8 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
             wrappers: ["default-wrapper"],
             props: {
               type: "number",
-              label: this.translateService.instant("Darks"),
-              description: this.translateService.instant("The number of dark flat frames."),
+              label: this.translateService.instant("Flat darks"),
+              description: this.translateService.instant("The number of flat dark frames."),
               required: false,
               step: 1,
               min: 0
