@@ -97,7 +97,7 @@ export class SaveEquipmentPresetModalComponent extends BaseComponentDirective im
   }
 
   update(preset: EquipmentPresetInterface) {
-    const update = { ...preset, ...this.initialPreset };
+    const update = { ...preset, ...this.initialPreset, ...{ name: this.model.name } };
 
     this.loadingService.setLoading(true);
 
