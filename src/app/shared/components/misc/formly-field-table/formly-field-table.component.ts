@@ -1,41 +1,47 @@
-import { Component, OnInit, TemplateRef, ViewChild } from "@angular/core";
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, TemplateRef, ViewChild } from "@angular/core";
 import { FieldArrayType, FormlyFieldConfig } from "@ngx-formly/core";
 import { ColumnMode, TableColumn } from "@swimlane/ngx-datatable";
 import { TranslateService } from "@ngx-translate/core";
+import { UtilsService } from "@shared/services/utils/utils.service";
+import { startWith } from "rxjs/operators";
+import { Subscription } from "rxjs";
 
 @Component({
   selector: "astrobin-formly-field-table",
   templateUrl: "./formly-field-table.component.html",
   styleUrls: ["./formly-field-table.component.scss"]
 })
-export class FormlyFieldTableComponent extends FieldArrayType implements OnInit {
+export class FormlyFieldTableComponent extends FieldArrayType implements OnInit, OnDestroy {
   readonly ColumnMode = ColumnMode;
 
   columns: TableColumn[];
+  nonNullProperties: { [key: number]: number } = {};
+  fieldChangesSubscription: Subscription;
 
   @ViewChild("cellTemplate", { static: true }) cellTemplate: TemplateRef<any>;
   @ViewChild("buttonsTemplate", { static: true }) buttonsTemplate: TemplateRef<any>;
 
-  constructor(public readonly translateService: TranslateService) {
+  constructor(
+    public readonly translateService: TranslateService,
+    public readonly changeDetectorRef: ChangeDetectorRef
+  ) {
     super();
   }
 
   get messages(): any {
-    const emptyMessage = this.translateService.instant("Nothing to display.") +
-      (
-        this.mayAdd
-          ? " " + this.translateService.instant("Use the button below to add data.")
-          : ""
-      );
+    const emptyMessage =
+      this.translateService.instant("Nothing to display.") +
+      (this.mayAdd ? " " + this.translateService.instant("Use the button below to add data.") : "");
 
     return {
       emptyMessage
     };
-  };
+  }
 
   get mayAdd(): boolean {
-    return this.props.allowAdd !== false && (
-      !this.model || this.model.length < this.props.maxRows || this.props.maxRows === undefined
+    return (
+      this.props.allowAdd !== false &&
+      (!this.model || this.model.length < this.props.maxRows || this.props.maxRows === undefined)
     );
   }
 
@@ -52,6 +58,25 @@ export class FormlyFieldTableComponent extends FieldArrayType implements OnInit 
       canAutoResize: true,
       flexGrow: 0
     });
+
+    this.fieldChangesSubscription = this.field.formControl.valueChanges
+      .pipe(startWith(this.field.formControl.value))
+      .subscribe(() => {
+        this.model.forEach((item, index) => {
+          this.nonNullProperties = {
+            ...this.nonNullProperties,
+            [index]: UtilsService.countNonNullProperties(
+              this.model[index],
+              this.field.props.excludeFromCountNonNullProperties
+            )
+          };
+          this.changeDetectorRef.detectChanges();
+        });
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.fieldChangesSubscription.unsubscribe();
   }
 
   getField(field: FormlyFieldConfig, column: TableColumn, rowIndex: number): any {

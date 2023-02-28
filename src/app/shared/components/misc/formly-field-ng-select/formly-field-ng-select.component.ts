@@ -151,7 +151,7 @@ export class FormlyFieldNgSelectComponent extends FieldType implements OnInit, O
         this.props.onChangeConfirmation(event.value);
       });
     } else {
-      this._previousModelValue = event.value;
+      this._previousModelValue = !!event ? event.value : null;
     }
   }
 

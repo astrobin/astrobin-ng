@@ -333,6 +333,22 @@ export class UtilsService {
     return errored;
   }
 
+  static countNonNullProperties(obj: any, excludeProps: string[] = []) {
+    let count: number = 0;
+
+    for (let prop in obj) {
+      if (excludeProps.includes(prop)) {
+        continue;
+      }
+
+      if (obj[prop] !== null && obj[prop] !== undefined && obj[prop] !== false) {
+        count++;
+      }
+    }
+
+    return count;
+  }
+
   isNearBelowViewport(element: HTMLElement): boolean {
     if (!isPlatformBrowser(this.platformId)) {
       return false;
