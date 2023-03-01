@@ -73,7 +73,17 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
             componentInstance.fieldGroup = this.getAdditionalDeepSkyFields();
             componentInstance.index = index;
           },
-          additionalButtonsTemplate: this.acquisitionAdditionalButtonsTemplate
+          additionalButtonsTemplate: this.acquisitionAdditionalButtonsTemplate,
+          excludeFromCountNonNullProperties: [
+            "date",
+            "filter2",
+            "number",
+            "duration",
+            "id",
+            "image",
+            "filter",
+            "savedOn"
+          ]
         },
         fieldArray: {
           fieldGroup: [
@@ -414,7 +424,8 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
           maxRows: 1,
           additionalPropertiesClicked: (index: number) => {
             const modalRef: NgbModalRef = this.modalService.open(
-              AdditionalSolarSystemAcquisitionPropertiesModalComponent, {
+              AdditionalSolarSystemAcquisitionPropertiesModalComponent,
+              {
                 backdrop: "static"
               }
             );
@@ -424,7 +435,17 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
             componentInstance.fieldGroup = this.getAdditionalSolarSystemFields();
             componentInstance.index = index;
           },
-          additionalButtonsTemplate: this.acquisitionAdditionalButtonsTemplate
+          additionalButtonsTemplate: this.acquisitionAdditionalButtonsTemplate,
+          excludeFromCountNonNullProperties: [
+            "id",
+            "date",
+            "time",
+            "image",
+            "frames",
+            "fps",
+            "exposurePerFrame",
+            "savedOn"
+          ]
         },
         fieldArray: {
           fieldGroup: [
