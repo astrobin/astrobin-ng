@@ -76,7 +76,10 @@ export class FormlyFieldTableComponent extends FieldArrayType implements OnInit,
   }
 
   ngOnDestroy(): void {
-    this.fieldChangesSubscription.unsubscribe();
+    if (!!this.fieldChangesSubscription) {
+      this.fieldChangesSubscription.unsubscribe();
+      this.fieldChangesSubscription = undefined;
+    }
   }
 
   getField(field: FormlyFieldConfig, column: TableColumn, rowIndex: number): any {
