@@ -82,7 +82,8 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
             "id",
             "image",
             "filter",
-            "savedOn"
+            "savedOn",
+            "advanced"
           ]
         },
         fieldArray: {
