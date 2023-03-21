@@ -82,6 +82,10 @@ export class FormlyFieldImageCropperComponent extends FieldType implements OnDes
   }
 
   onImageCropped(event: ImageCroppedEvent) {
+    if (!this.ratio) {
+      return
+    }
+
     const x1 = Math.round(event.cropperPosition.x1 * this.ratio);
     const y1 = Math.round(event.cropperPosition.y1 * this.ratio);
     const x2 = Math.round(event.cropperPosition.x2 * this.ratio);
