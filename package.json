@@ -92,11 +92,11 @@
     "zone.js": "0.12.0"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "15.1.1",
+    "@angular-devkit/build-angular": "15.2.4",
     "@angular-eslint/builder": "15.2.1",
     "@angular-eslint/schematics": "15.2.1",
     "@angular-eslint/template-parser": "15.2.1",
-    "@angular/cli": "15.1.1",
+    "@angular/cli": "15.2.4",
     "@angular/compiler-cli": "15.2.1",
     "@angular/language-service": "15.2.1",
     "@vendure/ngx-translate-extract": "8.0.3",
