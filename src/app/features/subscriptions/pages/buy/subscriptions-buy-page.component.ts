@@ -23,6 +23,7 @@ import { UserSubscriptionService } from "@shared/services/user-subscription/user
 import { Observable } from "rxjs";
 import { distinctUntilChanged, map, startWith, switchMap, take, takeUntil, tap } from "rxjs/operators";
 import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
+import { PaymentInterval } from "@features/subscriptions/types/payment.interval";
 
 declare var Stripe: any;
 
@@ -33,6 +34,7 @@ declare var Stripe: any;
 })
 export class SubscriptionsBuyPageComponent extends BaseComponentDirective implements OnInit {
   PayableProductInterface = PayableProductInterface;
+  PaymentInterval = PaymentInterval;
 
   alreadySubscribed$: Observable<boolean>;
   alreadySubscribedHigher$: Observable<boolean>;
@@ -54,6 +56,8 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
   ];
   selectedBankLocation = "USA";
   currencyPipe: CurrencyPipe;
+  state$ = this.store.select(selectSubscriptionState);
+  paymentInterval = PaymentInterval.YEARLY;
 
   constructor(
     public readonly store$: Store<State>,
@@ -294,5 +298,13 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
           this.loadingService.setLoading(false);
         }
       });
+  }
+
+  payYearly(): void {
+    this.paymentInterval = PaymentInterval.YEARLY;
+  }
+
+  payMonthly(): void {
+    this.paymentInterval = PaymentInterval.MONTHLY;
   }
 }
