@@ -621,6 +621,18 @@ msgstr ""
 msgid "Copy"
 msgstr ""
 
+msgid "Copy dates and times too"
+msgstr ""
+
+msgid "Copy dates too"
+msgstr ""
+
+msgid "Copy from another image"
+msgstr ""
+
+msgid "Copy local conditions too"
+msgstr ""
+
 msgid "Create"
 msgstr ""
 
@@ -934,6 +946,9 @@ msgid "Fixed focal length"
 msgstr ""
 
 msgid "Flat box"
+msgstr ""
+
+msgid "Flat darks"
 msgstr ""
 
 msgid "Flats"
@@ -1426,6 +1441,9 @@ msgstr ""
 msgid "Mean FWHM"
 msgstr ""
 
+msgid "Mean Full Width at Half Maximum in arc seconds, a measure of seeing."
+msgstr ""
+
 msgid "Mean SQM mag/arcsec^2 as measured by your Sky Quality Meter."
 msgstr ""
 
@@ -1780,6 +1798,9 @@ msgid "Plate-solution annotations (if available)"
 msgstr ""
 
 msgid "Please DO NOT approve this item if it's a duplicate of another one!"
+msgstr ""
+
+msgid "Please address all fields with errors before closing this window."
 msgstr ""
 
 msgid "Please come back in {{0}} minutes!"
@@ -2435,10 +2456,10 @@ msgstr ""
 msgid "The number of bias/offset frames."
 msgstr ""
 
-msgid "The number of dark flat frames."
+msgid "The number of dark frames."
 msgstr ""
 
-msgid "The number of dark frames."
+msgid "The number of flat dark frames."
 msgstr ""
 
 msgid "The number of flat frames."
@@ -2542,9 +2563,21 @@ msgstr ""
 msgid "This field is disabled because you haven't joined any groups yet."
 msgstr ""
 
+msgid "This field only searches images with deep sky acquisitions filled in."
+msgstr ""
+
+msgid "This field only searches images with solar system acquisitions filled in."
+msgstr ""
+
 msgid ""
 "This image will be uploaded to your staging area as a work in progress. You "
 "can make it public at the end of the process."
+msgstr ""
+
+msgid "This includes: Bortle scale, mean SQM, mean FWMW, and temperature."
+msgstr ""
+
+msgid "This includes: CMI/CMII/CMIII, seeing, and transparency."
 msgstr ""
 
 msgid "This is a modified and/or custom-cooled variant of this camera."
@@ -2610,6 +2643,9 @@ msgid "This operation will let equipment moderators review this item again."
 msgstr ""
 
 msgid "This operation will make the item available to everyone on AstroBin."
+msgstr ""
+
+msgid "This operation will overwrite the current acquisition sessions."
 msgstr ""
 
 msgid "This operation will overwrite the current equipment selection."
@@ -2753,6 +2789,9 @@ msgid "Unlimited revisions"
 msgstr ""
 
 msgid "Unlimited size"
+msgstr ""
+
+msgid "Unpublished"
 msgstr ""
 
 msgid "Upload"
