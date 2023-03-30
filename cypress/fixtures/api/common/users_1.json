@@ -34,11 +34,6 @@
       "id": 5,
       "name": "own_equipment_migrators",
       "permissions": []
-    },
-    {
-      "id": 5,
-      "name": "acquisition_edit_testers",
-      "permissions": []
     }
   ],
   "user_permissions": [
