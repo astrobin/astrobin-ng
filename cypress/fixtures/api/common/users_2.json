@@ -29,11 +29,6 @@
       "id": 4,
       "name": "equipment_moderators",
       "permissions": []
-    },
-    {
-      "id": 5,
-      "name": "acquisition_edit_testers",
-      "permissions": []
     }
   ],
   "user_permissions": [

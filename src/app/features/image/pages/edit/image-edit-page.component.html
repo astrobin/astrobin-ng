@@ -110,21 +110,6 @@
 
         <button
           (click)="
-            onSave(
-              $event,
-              classicRoutesService.EDIT_IMAGE_ACQUISITION(
-                imageEditService.model.hash || '' + imageEditService.model.pk
-              ) + '?upload'
-            )
-          "
-          *ngIf="!(user | isInGroup: Constants.ACQUISITION_EDIT_TESTERS_GROUP)"
-          class="dropdown-item"
-        >
-          {{ "Save and proceed to acquisition details" | translate }}
-        </button>
-
-        <button
-          (click)="
             onSave($event, classicRoutesService.IMAGE(imageEditService.model.hash || '' + imageEditService.model.pk))
           "
           class="dropdown-item"
