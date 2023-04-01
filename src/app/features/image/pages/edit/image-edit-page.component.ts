@@ -28,7 +28,7 @@ import { ImageEditEquipmentFieldsService } from "@features/image/services/image-
 import { Observable } from "rxjs";
 import { EquipmentPresetInterface } from "@features/equipment/types/equipment-preset.interface";
 import { selectEquipmentPresets } from "@features/equipment/store/equipment.selectors";
-import { filter, switchMap, take, takeUntil } from "rxjs/operators";
+import { filter, take, takeUntil } from "rxjs/operators";
 import { FindEquipmentPresets, ItemBrowserSet } from "@features/equipment/store/equipment.actions";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/types/equipment-item-base.interface";
@@ -51,7 +51,6 @@ import { CopyAcquisitionSessionsFromAnotherImageModalComponent } from "@features
 export class ImageEditPageComponent
   extends BaseComponentDirective
   implements OnInit, ComponentCanDeactivate, AfterViewInit {
-  readonly DONT_SHOW_MIGRATION_INFO_COOKIE = "astrobin_apps_equipment_dont_show_migration_info";
   readonly Constants = Constants;
 
   ImageAlias = ImageAlias;
@@ -69,8 +68,6 @@ export class ImageEditPageComponent
   acquisitionAdditionalButtonsTemplate: TemplateRef<any>;
 
   editingExistingImage: boolean;
-
-  showMigrationInfo = false;
 
   constructor(
     public readonly store$: Store<State>,
@@ -146,13 +143,6 @@ export class ImageEditPageComponent
     this.titleService.setTitle("Edit image");
 
     this._initBreadcrumb();
-
-    this.currentUser$
-      .pipe(switchMap(user => this.jsonApiService.hasLegacyGear(user.id)))
-      .subscribe(hasLegacyGear => {
-        const dontShowMigrationInfoCookie = this.cookieService.get(this.DONT_SHOW_MIGRATION_INFO_COOKIE);
-        this.showMigrationInfo = hasLegacyGear && !dontShowMigrationInfoCookie;
-      });
 
     this.store$.dispatch(
       new LoadThumbnail({
