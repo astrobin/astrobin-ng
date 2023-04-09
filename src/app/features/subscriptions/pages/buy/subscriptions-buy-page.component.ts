@@ -56,7 +56,6 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
   ];
   selectedBankLocation = "USA";
   currencyPipe: CurrencyPipe;
-  state$ = this.store.select(selectSubscriptionState);
   paymentInterval = PaymentInterval.YEARLY;
 
   constructor(

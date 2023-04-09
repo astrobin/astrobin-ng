@@ -6,6 +6,7 @@ import { PaymentsApiCkeckoutSessionInterface } from "@features/subscriptions/int
 import { PaymentsApiConfigInterface } from "@features/subscriptions/interfaces/payments-api-config.interface";
 import { PricingInterface } from "@features/subscriptions/interfaces/pricing.interface";
 import { Observable } from "rxjs";
+import { AvailableSubscriptionsInterface } from "@features/subscriptions/interfaces/available-subscriptions.interface";
 
 @Injectable({
   providedIn: "root"
@@ -32,6 +33,12 @@ export class PaymentsApiService {
   public getPrice(product: string, currency: string): Observable<PricingInterface> {
     return this.http.get<PricingInterface>(
       `${environment.classicApiUrl}/api/v2/payments/pricing/${product}/${currency}/`
+    );
+  }
+
+  public getAvailableSubscriptions(): Observable<AvailableSubscriptionsInterface> {
+    return this.http.get<AvailableSubscriptionsInterface>(
+      `${environment.classicApiUrl}/api/v2/payments/pricing/available-subscriptions/`
     );
   }
 }

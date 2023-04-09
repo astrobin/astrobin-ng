@@ -11,6 +11,8 @@ import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { TitleService } from "@shared/services/title/title.service";
 import { Observable } from "rxjs";
 import { takeUntil } from "rxjs/operators";
+import { AvailableSubscriptionsInterface } from "@features/subscriptions/interfaces/available-subscriptions.interface";
+import { PaymentsApiService } from "@features/subscriptions/services/payments-api.service";
 
 @Component({
   selector: "astrobin-subscriptions-options-page",
@@ -21,13 +23,16 @@ export class SubscriptionsOptionsPageComponent extends BaseComponentDirective im
   litePricing$: Observable<PricingInterface>;
   premiumPricing$: Observable<PricingInterface>;
   ultimatePricing$: Observable<PricingInterface>;
+  availableSubscriptions$: Observable<AvailableSubscriptionsInterface> =
+    this.paymentsApiService.getAvailableSubscriptions();
 
   constructor(
     public readonly store$: Store<State>,
     public readonly classicRoutesService: ClassicRoutesService,
     public readonly subscriptionsService: SubscriptionsService,
     public readonly translate: TranslateService,
-    public readonly titleService: TitleService
+    public readonly titleService: TitleService,
+    public readonly paymentsApiService: PaymentsApiService
   ) {
     super(store$);
   }

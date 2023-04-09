@@ -3,7 +3,7 @@
   <div class="row">
 
     <div class="col-md-3 text-center text-lg-left mb-4 mb-lg-0">
-      <ul ngbNav #nav="ngbNav" [(activeId)]="active" class="nav-pills" orientation="vertical">
+      <ul #nav="ngbNav" [(activeId)]="active" class="nav-pills" ngbNav orientation="vertical">
 
         <li ngbNavItem="options">
           <a ngbNavLink routerLink="options" translate>Subscription plans</a>
@@ -13,19 +13,13 @@
           &nbsp;
         </li>
 
-        <li ngbNavItem="lite">
-          <a ngbNavLink routerLink="lite">
-            <fa-icon icon="shopping-cart" class="me-2"></fa-icon>AstroBin Lite
-          </a>
-        </li>
-        <li ngbNavItem="premium">
-          <a ngbNavLink routerLink="premium">
-            <fa-icon icon="shopping-cart" class="me-2"></fa-icon>AstroBin Premium
-          </a>
-        </li>
-        <li ngbNavItem="ultimate">
-          <a ngbNavLink routerLink="ultimate">
-            <fa-icon icon="shopping-cart" class="me-2"></fa-icon>AstroBin Ultimate
+        <li
+          *ngFor="let subscription of (availableSubscriptions$ | async).subscriptions"
+          [ngbNavItem]="subscription.displayName|slugify"
+        >
+          <a [routerLink]="subscription.displayName|slugify" ngbNavLink>
+            <fa-icon class="me-2" icon="shopping-cart"></fa-icon>
+            {{ subscription.displayName }}
           </a>
         </li>
 
@@ -33,10 +27,10 @@
           &nbsp;
         </li>
 
-        <li ngbNavItem="view" *ngIf="authService.isAuthenticated$() | async">
+        <li *ngIf="authService.isAuthenticated$() | async" ngbNavItem="view">
           <a ngbNavLink routerLink="view" translate>Your subscriptions</a>
         </li>
-        <li ngbNavItem="payments" *ngIf="authService.isAuthenticated$() | async">
+        <li *ngIf="authService.isAuthenticated$() | async" ngbNavItem="payments">
           <a ngbNavLink routerLink="payments" translate>Your payments</a>
         </li>
 
