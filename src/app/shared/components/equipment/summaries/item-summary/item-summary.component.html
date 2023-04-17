@@ -1,8 +1,8 @@
 <ng-container *ngIf="item">
   <div class="row">
     <div *ngIf="showImage" class="col-12 col-lg-3">
-      <div class="image" [class.image-large]="showLargeImage" [style.background-image]="'url(' + image + ')'">
-        <fa-icon *ngIf="showEditButtons" class="edit" icon="pen" (click)="editButtonClick.emit(item)"></fa-icon>
+      <div [class.image-large]="showLargeImage" [style.background-image]="'url(' + image + ')'" class="image">
+        <fa-icon (click)="editButtonClick.emit(item)" *ngIf="showEditButtons" class="edit" icon="pen"></fa-icon>
       </div>
     </div>
 
@@ -10,18 +10,18 @@
       <div class="label">
         <h2>
           <astrobin-equipment-item-display-name
-            [item]="item"
             [enableBrandLink]="enableBrandLink"
             [enableNameLink]="showViewLink"
+            [item]="item"
           ></astrobin-equipment-item-display-name>
-          <fa-icon *ngIf="showEditButtons" class="edit" icon="pen" (click)="editButtonClick.emit(item)"></fa-icon>
+          <fa-icon (click)="editButtonClick.emit(item)" *ngIf="showEditButtons" class="edit" icon="pen"></fa-icon>
         </h2>
         <h6 *ngIf="showProperties && !!item.website" class="website">
-          <a target="_blank" [href]="item.website">{{ UtilsService.shortenUrl(item.website) }}</a>
+          <a [href]="item.website" target="_blank">{{ UtilsService.shortenUrl(item.website) }}</a>
         </h6>
       </div>
 
-      <table class="table table-sm table-striped properties" *ngIf="showProperties && !!properties">
+      <table *ngIf="showProperties && !!properties" class="table table-sm table-striped properties">
         <tbody>
         <ng-container *ngFor="let property of properties">
           <tr *ngIf="(showProperty$(property) | async) === true" class="property">
@@ -41,7 +41,7 @@
 
               <ng-template #propertyValueTemplate>
                 <ng-container *ngIf="property.value | async as value; else noValue">
-                  <span class="property-value" [innerHTML]="value"></span>
+                  <span [innerHTML]="value" class="property-value"></span>
                 </ng-container>
               </ng-template>
 
@@ -50,10 +50,10 @@
               </ng-template>
 
               <fa-icon
+                (click)="editButtonClick.emit(item)"
                 *ngIf="showEditButtons && (property.value | async) === ''"
                 class="edit"
                 icon="pen"
-                (click)="editButtonClick.emit(item)"
               ></fa-icon>
             </td>
           </tr>
@@ -64,7 +64,7 @@
             {{ subItemLabel }}
           </th>
           <td class="property-value">
-            <a href="#" astrobinEventPreventDefault astrobinEventStopPropagation (click)="subItemCollapsed = false">
+            <a (click)="subItemCollapsed = false" astrobinEventPreventDefault astrobinEventStopPropagation href="#">
               <astrobin-equipment-item-display-name [item]="subItem"></astrobin-equipment-item-display-name>
             </a>
           </td>
@@ -98,8 +98,8 @@
               <ng-container *ngIf="mostOftenUsedWith.length > 0; else noMostOftenUsedWithTemplate">
                 <ng-container *ngIf="mostOftenUsedWith[0].item$ | async as currentItem">
                   <a
-                    [routerLink]="['/equipment/explorer', currentItem.klass.toLowerCase(), currentItem.id]"
                     [ngbTooltip]="'{{0}} images in common' | translate:{'0': mostOftenUsedWith[0].matches}"
+                    [routerLink]="['/equipment/explorer', currentItem.klass.toLowerCase(), currentItem.id]"
                   >
                     <astrobin-equipment-item-display-name [item]="currentItem"></astrobin-equipment-item-display-name>
                   </a>
@@ -107,10 +107,10 @@
               </ng-container>
 
               <button
-                *ngIf="mostOftenUsedWith.length > 0"
-                class="ms-2 btn btn-outline-primary btn-sm d-none d-lg-inline"
-                [class.loading]="loadingService.loading$ | async"
                 (click)="viewMoreMostOftenUsedWith()"
+                *ngIf="mostOftenUsedWith.length > 0"
+                [class.loading]="loadingService.loading$ | async"
+                class="ms-2 btn btn-outline-primary btn-sm d-none d-lg-inline"
               >
                 {{ "More" | translate }}
               </button>
@@ -128,9 +128,13 @@
           </th>
           <td class="property-value retailers">
             <ng-container *ngFor="let listing of item.listings.itemListings; let isLast = last">
-              <a  [href]="listing.url" target="_blank">
+              <a [href]="listing.url" target="_blank">
                 {{ listing.retailer.name }}
               </a>
+
+              <span *ngIf="!!listing.stockStatus" class="no-wrap small">
+                  (<astrobin-stock-status [listing]="listing"></astrobin-stock-status>)
+              </span>
 
               {{ isLast ? "" : "&nbsp;&middot;&nbsp;" }}
             </ng-container>
@@ -139,26 +143,26 @@
         </tbody>
       </table>
 
-      <div class="community-notes" *ngIf="showCommunityNotes && !!item.communityNotes">
+      <div *ngIf="showCommunityNotes && !!item.communityNotes" class="community-notes">
         <h5>
           {{ equipmentItemService.getPrintablePropertyName(null, EquipmentItemDisplayProperty.COMMUNITY_NOTES) }}
         </h5>
-        <div class="community-notes-content" [innerHTML]="item.communityNotes | BBCodeToHtml"></div>
+        <div [innerHTML]="item.communityNotes | BBCodeToHtml" class="community-notes-content"></div>
       </div>
 
       <div *ngIf="showSubItem && !!subItem && !subItemCollapsed" class="sub-item">
         <astrobin-equipment-item-summary
-          [item]="subItem"
-          [showSubItem]="showSubItem"
-          [showClass]="showClass"
-          [showLargeImage]="showLargeImage"
-          [showImage]="showImage"
-          [showProperties]="showProperties"
-          [showEmptyProperties]="showEmptyProperties"
-          [showMeta]="false"
-          [showViewLink]="true"
           [enableBrandLink]="enableBrandLink"
+          [item]="subItem"
+          [showClass]="showClass"
           [showEditButtons]="false"
+          [showEmptyProperties]="showEmptyProperties"
+          [showImage]="showImage"
+          [showLargeImage]="showLargeImage"
+          [showMeta]="false"
+          [showProperties]="showProperties"
+          [showSubItem]="showSubItem"
+          [showViewLink]="true"
         ></astrobin-equipment-item-summary>
       </div>
     </div>
@@ -166,7 +170,7 @@
 
   <ng-container *ngIf="currentUser$ | async as currentUser">
     <ng-container *ngIf="!!currentUser && currentUser | isEquipmentModerator">
-      <div class="meta" *ngIf="showMeta">
+      <div *ngIf="showMeta" class="meta">
         <p *ngIf="item.createdBy">
           <strong>{{ "Created by" | translate }}:</strong>
           <astrobin-username [user]="getCreatedBy() | async"></astrobin-username>
@@ -178,13 +182,13 @@
           <astrobin-username *ngIf="!!item.assignee" [user]="getAssignee() | async"></astrobin-username>
           <span *ngIf="!item.assignee">{{ "Any moderator" | translate }}</span>
           <a
-            *ngIf="item.assignee === null || item.assignee === currentUser.id"
-            href="#"
-            class="assign"
-            astrobinEventStopPropagation
-            astrobinEventPreventDefault
-            [ngbTooltip]="'Assign' | translate"
             (click)="assign()"
+            *ngIf="item.assignee === null || item.assignee === currentUser.id"
+            [ngbTooltip]="'Assign' | translate"
+            astrobinEventPreventDefault
+            astrobinEventStopPropagation
+            class="assign"
+            href="#"
           >
             <fa-icon icon="pen"></fa-icon>
           </a>
