@@ -664,6 +664,8 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
   }
 
   private _getDateField(): FormlyFieldConfig {
+    const supportsDateInput = UtilsService.supportsDateInput();
+
     const now = new Date();
     now.setHours(23, 59, 59, 999);
 
@@ -672,13 +674,20 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
       type: "input",
       wrappers: ["default-wrapper"],
       props: {
-        type: "date",
+        type: supportsDateInput ? "date" : "text",
         label: this.translateService.instant("Date"),
         description: this.translateService.instant("Acquisition date."),
-        required: false
+        required: false,
+        placeholder: supportsDateInput ? "" : "YYYY-MM-DD"
       },
       validators: {
         validation: [
+          {
+            name: "is-date",
+            options: {
+              format: supportsDateInput ? UtilsService.getDateFormatString() : "YYYY-MM-DD"
+            }
+          },
           {
             name: "max-date",
             options: {

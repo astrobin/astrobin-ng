@@ -19,6 +19,35 @@ export class UtilsService {
   ) {
   }
 
+  static supportsDateInput() {
+    const input = document.createElement("input");
+    input.setAttribute("type", "date");
+
+    const notADateValue = "not-a-date";
+    input.setAttribute("value", notADateValue);
+
+    return input.value !== notADateValue;
+  }
+
+  static getDateFormatString(lang = "default") {
+    const formatObj = new Intl.DateTimeFormat(lang).formatToParts(new Date());
+
+    return formatObj
+      .map(obj => {
+        switch (obj.type) {
+          case "day":
+            return "DD";
+          case "month":
+            return "MM";
+          case "year":
+            return "YYYY";
+          default:
+            return obj.value;
+        }
+      })
+      .join("");
+  }
+
   static uuid(): string {
     const S4 = (): string => {
       // eslint-disable-next-line no-bitwise
