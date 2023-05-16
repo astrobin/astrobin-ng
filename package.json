@@ -47,7 +47,7 @@
     "@fortawesome/free-solid-svg-icons": "6.3.0",
     "@kronscht/ng-wizard": "1.4.3",
     "@ng-bootstrap/ng-bootstrap": "14.0.1",
-    "@ng-select/ng-select": "10.0.3",
+    "@ng-select/ng-select": "10.0.4",
     "@ngrx/effects": "15.1.0",
     "@ngrx/store": "15.1.0",
     "@nguniversal/express-engine": "15.1.0",
