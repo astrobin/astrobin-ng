@@ -55,7 +55,7 @@
     "@ngx-formly/core": "6.0.4",
     "@ngx-translate/core": "14.0.0",
     "@ngx-translate/http-loader": "7.0.0",
-    "@popperjs/core": "2.11.6",
+    "@popperjs/core": "2.11.7",
     "@sentry/angular": "7.30.0",
     "@sentry/tracing": "7.30.0",
     "@swimlane/ngx-datatable": "20.1.0",
