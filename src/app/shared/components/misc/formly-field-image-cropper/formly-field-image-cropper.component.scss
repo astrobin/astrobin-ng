@@ -1,0 +1,10 @@
+@import "../../../../styles/mixins";
+
+image-cropper {
+  ::ng-deep {
+    .ngx-ic-overlay,
+    .ngx-ic-cropper {
+      outline-color: transparent !important;
+    }
+  }
+}
