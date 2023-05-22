@@ -50,7 +50,7 @@
     "@ng-select/ng-select": "10.0.4",
     "@ngrx/effects": "15.1.0",
     "@ngrx/store": "15.1.0",
-    "@nguniversal/express-engine": "15.1.0",
+    "@nguniversal/express-engine": "15.2.1",
     "@ngx-formly/bootstrap": "6.0.4",
     "@ngx-formly/core": "6.0.4",
     "@ngx-translate/core": "14.0.0",
