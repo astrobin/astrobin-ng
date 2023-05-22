@@ -97,25 +97,25 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
   }
 
   load() {
-    if (!!this.thumbnailUrl) {
-      return;
-    }
-
-    if (this.loading) {
-      return;
-    }
-
-    if (!this.utilsService.isNearBelowViewport(this.elementRef.nativeElement)) {
-      return;
-    }
-
-    this.loading = true;
-
     // 0-200 ms
     this.utilsService
       .delay(Math.floor(Math.random() * 200))
       .pipe(take(1))
       .subscribe(() => {
+        if (!!this.thumbnailUrl) {
+          return;
+        }
+
+        if (this.loading) {
+          return;
+        }
+
+        if (!this.utilsService.isNearBelowViewport(this.elementRef.nativeElement)) {
+          return;
+        }
+
+        this.loading = true;
+
         this.store$
           .select(selectImage, this.id)
           .pipe(
