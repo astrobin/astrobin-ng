@@ -27,6 +27,8 @@ export interface SolarSystemAcquisitionInterface {
   fps: number | null;
   exposurePerFrame: number | null;
   focalLength: number | null;
+  iso: number | null;
+  gain: number | null;
   cmi: number | null;
   cmii: number | null;
   cmiii: number | null;
