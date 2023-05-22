@@ -577,7 +577,7 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
     });
   }
 
-  resetBrowser() {
+  resetBrowser(overrideGoBackOnClose?: boolean) {
     if (!!this._itemBrowser) {
       this._itemBrowser.reset();
     }
@@ -585,7 +585,7 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
     this.selectedItem = null;
     this._endEditMode();
 
-    if (this.goBackOnClose) {
+    if (overrideGoBackOnClose ?? this.goBackOnClose) {
       this.location.back();
     }
   }
@@ -608,7 +608,7 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
   }
 
   onCreationModeStarted() {
-    this.resetBrowser();
+    this.resetBrowser(false);
     this.creationMode.emit(true);
   }
 
