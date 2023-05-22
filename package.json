@@ -86,7 +86,7 @@
     "popper": "1.0.1",
     "reflect-metadata": "0.1.13",
     "rimraf": "4.3.0",
-    "rxjs": "7.8.0",
+    "rxjs": "7.8.1",
     "tslib": "2.4.1",
     "webpack-bundle-tracker": "1.8.1",
     "zone.js": "0.12.0"
