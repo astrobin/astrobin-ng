@@ -2075,9 +2075,6 @@ msgstr ""
 msgid "Save"
 msgstr ""
 
-msgid "Save and proceed to acquisition details"
-msgstr ""
-
 msgid "Save and proceed to gear selection"
 msgstr ""
 
@@ -2974,6 +2971,9 @@ msgid ""
 "to see this item (except moderators and the item's creator). Nobody will be "
 "able to add this item to images. Any items marked as 'variant of' this item "
 "will lose the relationship."
+msgstr ""
+
+msgid "You are about to remove all acquisition sessions you have entered thus far."
 msgstr ""
 
 msgid ""

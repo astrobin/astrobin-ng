@@ -57,6 +57,9 @@ export class TelescopeService extends BaseService implements EquipmentItemServic
       [TelescopeType.CATADIOPTRIC_MAKSUTOV_CASSEGRAIN]: this.translateService.instant(
         "Catadioptric: Maksutov-Cassegrain"
       ),
+      [TelescopeType.CATADIOPTRIC_MAKSUTOV_NEWTONIAN]: this.translateService.instant(
+        "Catadioptric: Maksutov-Newtonian"
+      ),
       [TelescopeType.CATADIOPTRIC_MODIFIED_DALL_KIRKHAM]: this.translateService.instant(
         "Catadioptric: modified Dall-Kirkham"
       ),

@@ -150,6 +150,14 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
         }
       },
       {
+        name: "is-date",
+        message(options: { format: string }): string {
+          return translateService.instant("This is not a valid date. Please use the format {{0}}.", {
+            0: options.format
+          });
+        }
+      },
+      {
         name: "max-date",
         message(options: { value: Date }): string {
           return translateService.instant("This date must not be after {{0}}.", {
@@ -364,13 +372,29 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
         }
       },
       {
+        name: "is-date",
+        validation: (control: FormControl, field: FormlyFieldConfig, options: { format: string }) => {
+          if (control.value === null || control.value === undefined) {
+            return null;
+          }
+
+          return !isNaN(new Date(control.value).getTime()) ? null : { "is-date": options };
+        }
+      },
+      {
         name: "max-date",
         validation: (control: FormControl, field: FormlyFieldConfig, options: { value: Date }) => {
           if (control.value === null || control.value === undefined) {
             return null;
           }
 
-          return new Date(control.value) <= options.value ? null : { "max-date": options };
+          const d = new Date(control.value);
+
+          if (isNaN(d.getTime())) {
+            return null;
+          }
+
+          return d <= options.value ? null : { "max-date": options };
         }
       },
       {

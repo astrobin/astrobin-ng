@@ -4,12 +4,12 @@
   <div class="constellation-jump-to">
     <label for="constellation-selector">{{ "Jump to" | translate }}:</label>
     <ng-select
-      [clearable]="false"
-      [items]="constellationsService.constellations"
-      bindValue="id"
-      bindLabel="name"
-      id="constellation-selector"
       (change)="jumpTo($event)"
+      [clearable]="false"
+      [items]="constellations"
+      bindLabel="name"
+      bindValue="id"
+      id="constellation-selector"
     >
       <ng-template let-item="item" ng-label-tmp> {{ item.id }}: {{ item.name }} </ng-template>
 
@@ -19,14 +19,15 @@
 
   <ng-container *ssrExclude>
     <div
-      *ngFor="let constellation of constellationsService.constellations"
-      id="constellation-{{ constellation.id }}"
+      *ngFor="let constellation of constellations"
       class="constellation"
+      id="constellation-{{ constellation.id }}"
     >
       <ng-container *ngIf="constellation.data$ | async as constellationData">
         <div class="row align-items-center">
           <div class="col-12 col-lg-4">
-            <img class="constellation-image" [src]="constellationData.originalimage?.source" [alt]="constellation.name" />
+            <img [alt]="constellation.name" [src]="constellationData.originalimage?.source"
+                 class="constellation-image" />
           </div>
           <div class="col-12 col-lg-8">
             <h3 class="mt-4 mt-lg-0">
@@ -34,9 +35,9 @@
             </h3>
             <p>{{ constellationData.extract }}</p>
             <a
-              class="btn btn-outline-primary"
-              [class.loading]="loadingService.loading$ | async"
               (click)="findImages(constellation)"
+              [class.loading]="loadingService.loading$ | async"
+              class="btn btn-outline-primary"
             >
               {{ "Find images" | translate }}
             </a>

@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: AstroBin Angular App\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-03 14:04+0200\n"
-"PO-Revision-Date: 2023-03-22 22:54+0100\n"
+"PO-Revision-Date: 2023-05-15 10:09+0200\n"
 "Last-Translator: Salvatore Iovene\n"
 "Language-Team: German\n"
 "Language: de\n"
@@ -14,7 +14,7 @@ msgstr ""
 "X-Generator: Loco https://localise.biz\n"
 "X-Loco-Source-Locale: en\n"
 "X-Loco-Project-Id: 108356\n"
-"X-Loco-Api-Version: 1.0.27 20230321-1"
+"X-Loco-Api-Version: 1.0.28 20230504-1"
 
 #: loco:60685a683b0b1d485a736d12
 msgid "API Keys"
@@ -4815,361 +4815,376 @@ msgstr "Dieser Änderungsvorschlag wurde bereits geprüft."
 
 #: loco:641b7636eed538513c175728
 msgid "1 - Excellent dark-site sky (BLACK)"
-msgstr ""
+msgstr "1 - Ausgezeichneter dunkler Standort (SCHWARZ)"
 
 #: loco:641b7636eed538513c175729
 msgid "2 - Typical truly dark site (GRAY)"
-msgstr ""
+msgstr "2 - Typisch dunkler Standort (GRAU)"
 
 #: loco:641b7636eed538513c17572a
 msgid "3 - Rural sky (BLUE)"
-msgstr ""
+msgstr "3 - Ländlicher Standort (BLAU)"
 
 #: loco:641b7636eed538513c17572b
 msgid "4 - Rural/suburban transition (GREEN/YELLOW)"
-msgstr ""
+msgstr "4 - Land/Vorstadt Übergang (GRÜN/GELB)"
 
 #: loco:641b7636eed538513c17572c
 msgid "5 - Suburban sky (ORANGE)"
-msgstr ""
+msgstr "5 - Vorstadt-Standort (ORANGE)"
 
 #: loco:641b7636eed538513c17572d
 msgid "6 - Bright suburban sky (RED)"
-msgstr ""
+msgstr "6  -Heller Vorort-Standort (ROT)"
 
 #: loco:641b7636eed538513c17572e
 msgid "7 - Suburban/urban transition or Full Moon (RED)"
-msgstr ""
+msgstr "7 - Vorort/Stadt Übergang oder Vollmond (ROT)"
 
 #: loco:641b7636eed538513c17572f
 msgid "8 - City sky (WHITE)"
-msgstr ""
+msgstr "8 - Stadthimmel (WEISS)"
 
 #: loco:641b7636eed538513c175730
 msgid "9 - Inner city sky (WHITE)"
-msgstr ""
+msgstr "9 - Stadtzentrum Himmel (WEISS)"
 
 #: loco:641b7636eed538513c175731
 msgid "Acceptable"
-msgstr ""
+msgstr "Akzeptabel"
 
 #: loco:641b7636eed538513c175732
 msgid "Acquisition"
-msgstr ""
+msgstr "Aufnahme"
 
 #: loco:641b7636eed538513c175733
 msgid "Acquisition date."
-msgstr ""
+msgstr "Aufnahmedatum"
 
 #: loco:641b7636eed538513c175734
 msgid "Acquisition time (local timezone)."
-msgstr ""
+msgstr "Aufnahmezeit lokale Zeitzone"
 
 #: loco:641b7636eed538513c175735
 msgid "Add session"
-msgstr ""
+msgstr "Session hinzufügen"
 
 #: loco:641b7636eed538513c175736
 msgid "Additional properties"
-msgstr ""
+msgstr "Zusätzliche Eigenschaften"
 
 #: loco:641b7636eed538513c175737
 msgid "Ambient temperature in Celsius degrees."
-msgstr ""
+msgstr "Umgebungstemperatur in Grad Celsius"
 
 #: loco:641b7636eed538513c175738
 msgid "Bad"
-msgstr ""
+msgstr "Schlecht"
 
 #: loco:641b7636eed538513c175739
 msgid "Bias"
-msgstr ""
+msgstr "Bias"
 
 #: loco:641b7636eed538513c17573a
 msgid "Binning"
-msgstr ""
+msgstr "Binning"
 
 #: loco:641b7636eed538513c17573b
 msgid "Bortle dark-sky scale"
-msgstr ""
+msgstr "Bortle Dark Sky Skala"
 
 #: loco:641b7636eed538513c17573c
 msgid "CMI"
-msgstr ""
+msgstr "CMI"
 
 #: loco:641b7636eed538513c17573d
 msgid "CMII"
-msgstr ""
+msgstr "CMII"
 
 #: loco:641b7636eed538513c17573e
 msgid "CMIII"
-msgstr ""
+msgstr "CMIII"
 
 #: loco:641b7636eed538513c17573f
 msgid "Calibration"
-msgstr ""
+msgstr "Kalibrierung"
 
 #: loco:641b7636eed538513c175740
 msgid ""
 "Changing this value will remove any acquisition sessions you have already "
 "added."
-msgstr ""
+msgstr "Ändern dieses Wertes entfernt alle bisher erfassten Aufnahme Sessions"
 
 #: loco:641b7636eed538513c175741
 msgid "Cooling"
-msgstr ""
+msgstr "Kühlung"
 
 #: loco:641b7636eed538513c175742
 msgid "Copy"
-msgstr ""
+msgstr "Kopieren"
 
 #: loco:641b7636eed538513c175743
 msgid "Copy dates and times too"
-msgstr ""
+msgstr "Datum und Uhrzeit auch kopieren"
 
 #: loco:641b7636eed538513c175744
 msgid "Copy dates too"
-msgstr ""
+msgstr "Datum auch kopieren"
 
 #: loco:641b7636eed538513c175745
 msgid "Copy from another image"
-msgstr ""
+msgstr "Von einen anderen Bild kopieren"
 
 #: loco:641b7636eed538513c175746
 msgid "Copy local conditions too"
-msgstr ""
+msgstr "Lokale Bedingungen auch kopieren"
 
 #: loco:641b7636eed538513c175747
 msgid "Darks"
-msgstr ""
+msgstr "Darks"
 
 #: loco:641b7636eed538513c175748
 msgid "Deep sky acquisition sessions"
-msgstr ""
+msgstr "DeepSky Aufnahme Sessions"
 
 #: loco:641b7636eed538513c175749
 msgid "Duration"
-msgstr ""
+msgstr "Dauer"
 
 #: loco:641b7636eed538513c17574a
 msgid "Duration of each frame in seconds."
-msgstr ""
+msgstr "Dauer für jedes Einzelbild in Sekunden"
 
 #: loco:641b7636eed538513c17574b
 msgid "Excellent"
-msgstr ""
+msgstr "Sehr gut"
 
 #: loco:641b7636eed538513c17574c
 msgid "Exposure per frame"
-msgstr ""
+msgstr "Belichtung pro Einzelbild"
 
 #: loco:641b7636eed538513c17574d
 msgid "Extremely bad"
-msgstr ""
+msgstr "Sehr schlecht"
 
 #: loco:641b7636eed538513c17574e
 msgid "FPS"
-msgstr ""
+msgstr "FPS"
 
 #: loco:641b7636eed538513c17574f
 msgid "Fair"
-msgstr ""
+msgstr "Brauchbar"
 
 #: loco:641b7636eed538513c175750
 msgid "Filter used."
-msgstr ""
+msgstr "genutzte Filter"
 
 #: loco:641b7636eed538513c175751
 msgid "Flat darks"
-msgstr ""
+msgstr "Flat-Darks"
 
 #: loco:641b7636eed538513c175752
 msgid "Flats"
-msgstr ""
+msgstr "Flats"
 
 #: loco:641b7636eed538513c175753
 msgid "Frames"
-msgstr ""
+msgstr "Einzelbilder"
 
 #: loco:641b7636eed538513c175754
 msgid "Frames per second."
-msgstr ""
+msgstr "Bilder pro Sekunde"
 
 #: loco:641b7636eed538513c175755
 msgid "Gain"
-msgstr ""
+msgstr "Gain"
 
 #: loco:641b7636eed538513c175756
 msgid "Good"
-msgstr ""
+msgstr "Gut"
 
 #: loco:641b7636eed538513c175757
 msgid ""
 "If you used a camera lens, please specify the f-number (also known as f-"
 "ratio or f-stop) that you used for this acquisition session."
 msgstr ""
+"Wenn Sie ein Objektiv verwendet haben, geben Sie bitte die Blende an, die "
+"Sie für diese Aufnahme-Session verwendet haben."
 
 #: loco:641b7636eed538513c175758
 msgid "Latitude of the first Central Meridian."
-msgstr ""
+msgstr "Breitengrad des ersten Zentralmeridians."
 
 #: loco:641b7636eed538513c175759
 msgid "Latitude of the second Central Meridian."
-msgstr ""
+msgstr "Breitengrad des zweiten Zentralmeridians."
 
 #: loco:641b7636eed538513c17575a
 msgid "Latitude of the third Central Meridian."
-msgstr ""
+msgstr "Breitengrad des dritten Zentralmeridians."
 
 #: loco:641b7636eed538513c17575b
 msgid "Mean FWHM"
-msgstr ""
+msgstr "Durchschnittlicher FWHM"
 
 #: loco:641b7636eed538513c17575c
 msgid "Mean Full Width at Half Maximum in arc seconds, a measure of seeing."
-msgstr ""
+msgstr "Mittlere Halbwertsbreite in Bogensekunden, ein Maß für Seeing."
 
 #: loco:641b7636eed538513c17575d
 msgid "Mean SQM mag/arcsec^2 as measured by your Sky Quality Meter."
 msgstr ""
+"Durchschnittlicher SQM mag/arcsec^2 wie mit dem Sky-Quality-Meter gemessen."
 
 #: loco:641b7636eed538513c17575e
 msgid "Mean mag/arcsec^2"
-msgstr ""
+msgstr "Durchschnittliche mag/arcsec^2"
 
 #: loco:641b7636eed538513c17575f
 msgid "Mediocre"
-msgstr ""
+msgstr "Mittelmäßig"
 
 #: loco:641b7636eed538513c175760
 msgid "Nothing to display."
-msgstr ""
+msgstr "Nichts anzuzeigen."
 
 #: loco:641b7636eed538513c175761
 msgid "Number"
-msgstr ""
+msgstr "Anzahl"
 
 #: loco:641b7636eed538513c175762
 msgid "Number of frames."
-msgstr ""
+msgstr "Anzahl der Einzelbilder"
 
 #: loco:641b7636eed538513c175763
 msgid "Optics"
-msgstr ""
+msgstr "Optik"
 
 #: loco:641b7636eed538513c175764
 msgid "Please address all fields with errors before closing this window."
 msgstr ""
+"Bitte korrigieren Sie alle Felder mit Fehlern, bevor Sie dieses Fenster "
+"schließen."
 
 #: loco:641b7636eed538513c175765
 msgid ""
 "Quality of the sky according to <a href=\"http://en.wikipedia."
 "org/wiki/Bortle_Dark-Sky_Scale\" target=\"_blank\">the Bortle Scale</a>."
 msgstr ""
+"Qualität des Himmels gemäß <a href=\"http://en.wikipedia."
+"org/wiki/Bortle_Dark-Sky_Scale\" target=\"_blank\">the Bortle Scale</a>."
 
 #: loco:641b7636eed538513c175766
 msgid "Seeing"
-msgstr ""
+msgstr "Seeing"
 
 #: loco:641b7636eed538513c175767
 msgid "Solar system acquisition sessions"
-msgstr ""
+msgstr "Sonnensystem Aufnahme Sessions"
 
 #: loco:641b7636eed538513c175768
 msgid "Superb"
-msgstr ""
+msgstr "Sehr gut"
 
 #: loco:641b7636eed538513c175769
 msgid "Synthetic channel"
-msgstr ""
+msgstr "Synthetischer Kanal"
 
 #: loco:641b7636eed538513c17576a
 msgid "Temperature"
-msgstr ""
+msgstr "Temperatur"
 
 #: loco:641b7636eed538513c17576b
 msgid ""
 "The focal length of the whole optical train, including barlow lenses or "
 "other components."
 msgstr ""
+"Die Brennweite des gesamten optischen Systems, einschließlich Barlow-Linsen "
+"oder anderer Komponenten."
 
 #: loco:641b7636eed538513c17576c
 msgid "The number of bias/offset frames."
-msgstr ""
+msgstr "Anzahl der Bias/Offset-Aufnahmen."
 
 #: loco:641b7636eed538513c17576d
 msgid "The number of dark frames."
-msgstr ""
+msgstr "Anzahl der Darks"
 
 #: loco:641b7636eed538513c17576e
 msgid "The number of flat dark frames."
-msgstr ""
+msgstr "Anzahl der Flat-Darks."
 
 #: loco:641b7636eed538513c17576f
 msgid "The number of flat frames."
-msgstr ""
+msgstr "Anzahl der Flats."
 
 #: loco:641b7636eed538513c175770
 msgid "The subject type \"{{0}}\" does not support acquisition sessions."
-msgstr ""
+msgstr "Der Subjekttyp \"{{0}}\" unterstützt keine Aufnahme-Sessions."
 
 #: loco:641b7636eed538513c175771
 msgid "The temperature of the chip in Celsius degrees, e.g. -20."
-msgstr ""
+msgstr "Die Chip-Temperatur in Grad Celsius, z.B. -20."
 
 #: loco:641b7636eed538513c175772
 msgid "This field only searches images with deep sky acquisitions filled in."
-msgstr ""
+msgstr "Dieses Feld sucht nur eingetragene DeepSky-Bilder."
 
 #: loco:641b7636eed538513c175773
 msgid ""
 "This field only searches images with solar system acquisitions filled in."
-msgstr ""
+msgstr "Dieses Feld sucht nur eingetragene Sonnensystem-Bilder."
 
 #: loco:641b7636eed538513c175774
 msgid "This includes: Bortle scale, mean SQM, mean FWMW, and temperature."
 msgstr ""
+"Dazu gehören: Bortle-Skala, mittlerer SQM, mittlerer FWMW und Temperatur."
 
 #: loco:641b7636eed538513c175775
 msgid "This includes: CMI/CMII/CMIII, seeing, and transparency."
-msgstr ""
+msgstr "Dazu gehören: CMI/CMII/CMIII, Seeing und Transparenz."
 
 #: loco:641b7636eed538513c175776
 msgid "This operation will overwrite the current acquisition sessions."
-msgstr ""
+msgstr "Dieser Vorgang überschreibt die aktuellen Aufnahme-Sessions."
 
 #: loco:641b7636eed538513c175777
 msgid "To add more, go back to the Equipment step."
-msgstr ""
+msgstr "Um mehr hinzuzufügen, gehen Sie zurück zum Schritt Ausrüstung."
 
 #: loco:641b7636eed538513c175778
 msgid "Transparency"
-msgstr ""
+msgstr "Transparenz"
 
 #: loco:641b7636eed538513c175779
 msgid "Unpublished"
-msgstr ""
+msgstr "Unveröffentlicht"
 
 #: loco:641b7636eed538513c17577a
 msgid "Use the button below to add data."
-msgstr ""
+msgstr "Klicken Sie auf die Schaltfläche unten, um Daten hinzuzufügen."
 
 #: loco:641b7636eed538513c17577b
 msgid "Very bad"
-msgstr ""
+msgstr "Sehr schlecht"
 
 #: loco:641b7636eed538513c17577c
 msgid "Very good"
-msgstr ""
+msgstr "Sehr gut"
 
 #: loco:641b7636eed538513c17577d
 msgid "Your estimation of the seeing."
-msgstr ""
+msgstr "Ihre Einschätzung des Seeings."
 
 #: loco:641b7636eed538513c17577e
 msgid "Your estimation of the transparency."
-msgstr ""
+msgstr "Ihre Einschätzung der Transparenz."
 
 #: loco:641b7636eed538513c17577f
 msgid "f-number"
+msgstr "Blende"
+
+#: loco:6461e861768f819b9b097582
+msgid ""
+"You are about to remove all acquisition sessions you have entered thus far."
 msgstr ""

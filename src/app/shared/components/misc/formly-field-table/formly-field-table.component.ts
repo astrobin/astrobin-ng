@@ -5,6 +5,8 @@ import { TranslateService } from "@ngx-translate/core";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { startWith } from "rxjs/operators";
 import { Subscription } from "rxjs";
+import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
 
 @Component({
   selector: "astrobin-formly-field-table",
@@ -23,7 +25,8 @@ export class FormlyFieldTableComponent extends FieldArrayType implements OnInit,
 
   constructor(
     public readonly translateService: TranslateService,
-    public readonly changeDetectorRef: ChangeDetectorRef
+    public readonly changeDetectorRef: ChangeDetectorRef,
+    public readonly modalService: NgbModal
   ) {
     super();
   }
@@ -96,9 +99,18 @@ export class FormlyFieldTableComponent extends FieldArrayType implements OnInit,
       return;
     }
 
-    for (let i = this.model.length - 1; i >= 0; i--) {
-      this.remove(i);
-    }
+    const modal: NgbModalRef = this.modalService.open(ConfirmationDialogComponent);
+    const componentInstance: ConfirmationDialogComponent = modal.componentInstance;
+
+    componentInstance.message = this.translateService.instant(
+      "You are about to remove all acquisition sessions you have entered thus far."
+    );
+
+    modal.closed.subscribe(item => {
+      for (let i = this.model.length - 1; i >= 0; i--) {
+        this.remove(i);
+      }
+    });
   }
 
   private _buildColumns(field: FormlyFieldConfig): TableColumn[] {

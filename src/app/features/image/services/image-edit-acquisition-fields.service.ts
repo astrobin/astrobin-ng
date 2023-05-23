@@ -155,7 +155,7 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
             wrappers: ["default-wrapper"],
             props: {
               type: "number",
-              label: this.translateService.instant("Gain"),
+              label: "Gain",
               required: false,
               step: 1,
               min: 0
@@ -492,137 +492,182 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
             validators: {
               validation: ["whole-number"]
             }
+          }
+        ]
+      },
+      {
+        wrappers: ["card-wrapper"],
+        templateOptions: {
+          label: this.translateService.instant("Camera")
+        },
+        fieldGroup: [
+          {
+            key: "iso",
+            type: "input",
+            wrappers: ["default-wrapper"],
+            props: {
+              type: "number",
+              label: "ISO",
+              required: false,
+              step: 1,
+              min: 0
+            },
+            validators: {
+              validation: ["whole-number"]
+            }
           },
           {
-            wrappers: ["card-wrapper"],
-            templateOptions: {
-              label: "Sky/Ambient conditions"
+            key: "gain",
+            type: "input",
+            wrappers: ["default-wrapper"],
+            props: {
+              type: "number",
+              label: "Gain",
+              required: false,
+              step: 1,
+              min: 0
             },
-            fieldGroup: [
-              {
-                key: "seeing",
-                type: "ng-select",
-                wrappers: ["default-wrapper"],
-                props: {
-                  label: this.translateService.instant("Seeing"),
-                  description: this.translateService.instant("Your estimation of the seeing."),
-                  required: false,
-                  options: [
-                    { value: SeeingScale.VERY_BAD, label: this.translateService.instant("Very bad") },
-                    { value: SeeingScale.BAD, label: this.translateService.instant("Bad") },
-                    { value: SeeingScale.ACCEPTABLE, label: this.translateService.instant("Acceptable") },
-                    { value: SeeingScale.GOOD, label: this.translateService.instant("Good") },
-                    { value: SeeingScale.EXCELLENT, label: this.translateService.instant("Excellent") }
-                  ],
-                  searchable: false,
-                  clearable: true
+            validators: {
+              validation: [
+                {
+                  name: "max-decimals",
+                  options: {
+                    value: 2
+                  }
                 }
-              },
-              {
-                key: "transparency",
-                type: "ng-select",
-                wrappers: ["default-wrapper"],
-                props: {
-                  label: this.translateService.instant("Transparency"),
-                  description: this.translateService.instant("Your estimation of the transparency."),
-                  required: false,
-                  options: [
-                    { value: TransparencyScale.EXTREMELY_BAD, label: this.translateService.instant("Extremely bad") },
-                    { value: TransparencyScale.VERY_BAD, label: this.translateService.instant("Very bad") },
-                    { value: TransparencyScale.BAD, label: this.translateService.instant("Bad") },
-                    { value: TransparencyScale.MEDIOCRE, label: this.translateService.instant("Mediocre") },
-                    { value: TransparencyScale.ACCEPTABLE, label: this.translateService.instant("Acceptable") },
-                    { value: TransparencyScale.FAIR, label: this.translateService.instant("Fair") },
-                    { value: TransparencyScale.GOOD, label: this.translateService.instant("Good") },
-                    { value: TransparencyScale.VERY_GOOD, label: this.translateService.instant("Very good") },
-                    { value: TransparencyScale.EXCELLENT, label: this.translateService.instant("Excellent") },
-                    { value: TransparencyScale.SUPERB, label: this.translateService.instant("Superb") }
-                  ],
-                  searchable: false,
-                  clearable: true
-                }
-              }
-            ]
+              ]
+            }
+          }
+        ]
+      },
+      {
+        wrappers: ["card-wrapper"],
+        templateOptions: {
+          label: "Sky/Ambient conditions"
+        },
+        fieldGroup: [
+          {
+            key: "seeing",
+            type: "ng-select",
+            wrappers: ["default-wrapper"],
+            props: {
+              label: this.translateService.instant("Seeing"),
+              description: this.translateService.instant("Your estimation of the seeing."),
+              required: false,
+              options: [
+                { value: SeeingScale.VERY_BAD, label: this.translateService.instant("Very bad") },
+                { value: SeeingScale.BAD, label: this.translateService.instant("Bad") },
+                { value: SeeingScale.ACCEPTABLE, label: this.translateService.instant("Acceptable") },
+                { value: SeeingScale.GOOD, label: this.translateService.instant("Good") },
+                { value: SeeingScale.EXCELLENT, label: this.translateService.instant("Excellent") }
+              ],
+              searchable: false,
+              clearable: true
+            }
           },
           {
-            wrappers: ["card-wrapper"],
-            templateOptions: {
-              label: "Central meridians"
+            key: "transparency",
+            type: "ng-select",
+            wrappers: ["default-wrapper"],
+            props: {
+              label: this.translateService.instant("Transparency"),
+              description: this.translateService.instant("Your estimation of the transparency."),
+              required: false,
+              options: [
+                { value: TransparencyScale.EXTREMELY_BAD, label: this.translateService.instant("Extremely bad") },
+                { value: TransparencyScale.VERY_BAD, label: this.translateService.instant("Very bad") },
+                { value: TransparencyScale.BAD, label: this.translateService.instant("Bad") },
+                { value: TransparencyScale.MEDIOCRE, label: this.translateService.instant("Mediocre") },
+                { value: TransparencyScale.ACCEPTABLE, label: this.translateService.instant("Acceptable") },
+                { value: TransparencyScale.FAIR, label: this.translateService.instant("Fair") },
+                { value: TransparencyScale.GOOD, label: this.translateService.instant("Good") },
+                { value: TransparencyScale.VERY_GOOD, label: this.translateService.instant("Very good") },
+                { value: TransparencyScale.EXCELLENT, label: this.translateService.instant("Excellent") },
+                { value: TransparencyScale.SUPERB, label: this.translateService.instant("Superb") }
+              ],
+              searchable: false,
+              clearable: true
+            }
+          }
+        ]
+      },
+      {
+        wrappers: ["card-wrapper"],
+        templateOptions: {
+          label: "Central meridians"
+        },
+        fieldGroup: [
+          {
+            key: "cmi",
+            type: "input",
+            wrappers: ["default-wrapper"],
+            props: {
+              type: "number",
+              label: this.translateService.instant("CMI"),
+              description: this.translateService.instant("Latitude of the first Central Meridian."),
+              required: false,
+              step: 1,
+              min: 0,
+              max: 359.99
             },
-            fieldGroup: [
-              {
-                key: "cmi",
-                type: "input",
-                wrappers: ["default-wrapper"],
-                props: {
-                  type: "number",
-                  label: this.translateService.instant("CMI"),
-                  description: this.translateService.instant("Latitude of the first Central Meridian."),
-                  required: false,
-                  step: 1,
-                  min: 0,
-                  max: 359.99
-                },
-                validators: {
-                  validation: [
-                    {
-                      name: "max-decimals",
-                      options: {
-                        value: 2
-                      }
-                    }
-                  ]
+            validators: {
+              validation: [
+                {
+                  name: "max-decimals",
+                  options: {
+                    value: 2
+                  }
                 }
-              },
-              {
-                key: "cmii",
-                type: "input",
-                wrappers: ["default-wrapper"],
-                props: {
-                  type: "number",
-                  label: this.translateService.instant("CMII"),
-                  description: this.translateService.instant("Latitude of the second Central Meridian."),
-                  required: false,
-                  step: 1,
-                  min: 0,
-                  max: 359.99
-                },
-                validators: {
-                  validation: [
-                    {
-                      name: "max-decimals",
-                      options: {
-                        value: 2
-                      }
-                    }
-                  ]
+              ]
+            }
+          },
+          {
+            key: "cmii",
+            type: "input",
+            wrappers: ["default-wrapper"],
+            props: {
+              type: "number",
+              label: this.translateService.instant("CMII"),
+              description: this.translateService.instant("Latitude of the second Central Meridian."),
+              required: false,
+              step: 1,
+              min: 0,
+              max: 359.99
+            },
+            validators: {
+              validation: [
+                {
+                  name: "max-decimals",
+                  options: {
+                    value: 2
+                  }
                 }
-              },
-              {
-                key: "cmiii",
-                type: "input",
-                wrappers: ["default-wrapper"],
-                props: {
-                  type: "number",
-                  label: this.translateService.instant("CMIII"),
-                  description: this.translateService.instant("Latitude of the third Central Meridian."),
-                  required: false,
-                  step: 1,
-                  min: 0,
-                  max: 359.99
-                },
-                validators: {
-                  validation: [
-                    {
-                      name: "max-decimals",
-                      options: {
-                        value: 2
-                      }
-                    }
-                  ]
+              ]
+            }
+          },
+          {
+            key: "cmiii",
+            type: "input",
+            wrappers: ["default-wrapper"],
+            props: {
+              type: "number",
+              label: this.translateService.instant("CMIII"),
+              description: this.translateService.instant("Latitude of the third Central Meridian."),
+              required: false,
+              step: 1,
+              min: 0,
+              max: 359.99
+            },
+            validators: {
+              validation: [
+                {
+                  name: "max-decimals",
+                  options: {
+                    value: 2
+                  }
                 }
-              }
-            ]
+              ]
+            }
           }
         ]
       }
@@ -664,6 +709,8 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
   }
 
   private _getDateField(): FormlyFieldConfig {
+    const supportsDateInput = UtilsService.supportsDateInput();
+
     const now = new Date();
     now.setHours(23, 59, 59, 999);
 
@@ -672,13 +719,20 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
       type: "input",
       wrappers: ["default-wrapper"],
       props: {
-        type: "date",
+        type: supportsDateInput ? "date" : "text",
         label: this.translateService.instant("Date"),
         description: this.translateService.instant("Acquisition date."),
-        required: false
+        required: false,
+        placeholder: supportsDateInput ? "" : "YYYY-MM-DD"
       },
       validators: {
         validation: [
+          {
+            name: "is-date",
+            options: {
+              format: supportsDateInput ? UtilsService.getDateFormatString() : "YYYY-MM-DD"
+            }
+          },
           {
             name: "max-date",
             options: {
