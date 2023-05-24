@@ -2,11 +2,10 @@ astrobin-price {
   height: 28px;
 }
 
-.already-subscribed,
-.already-subscribed-higher,
-.info {
-  display: block;
-  margin-bottom: 3rem;
+h1 fa-icon {
+  font-size: 1.25rem;
+  vertical-align: middle;
+  color: var(--white);
 }
 
 .btn.buy {

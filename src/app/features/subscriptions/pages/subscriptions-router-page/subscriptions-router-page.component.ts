@@ -8,6 +8,7 @@ import { Observable } from "rxjs";
 import { AvailableSubscriptionsInterface } from "@features/subscriptions/interfaces/available-subscriptions.interface";
 import { selectAvailableSubscriptions } from "@features/subscriptions/store/subscriptions.selectors";
 import { GetAvailableSubscriptions } from "@features/subscriptions/store/subscriptions.actions";
+import { SubscriptionsService } from "@features/subscriptions/services/subscriptions.service";
 
 @Component({
   selector: "astrobin-subscriptions-router-page",
@@ -16,12 +17,14 @@ import { GetAvailableSubscriptions } from "@features/subscriptions/store/subscri
 })
 export class SubscriptionsRouterPageComponent extends BaseComponentDirective implements OnInit {
   active: string;
-  availableSubscriptions$: Observable<AvailableSubscriptionsInterface> = this.store$.select(selectAvailableSubscriptions);
+  availableSubscriptions$: Observable<AvailableSubscriptionsInterface> =
+    this.store$.select(selectAvailableSubscriptions);
 
   constructor(
     public readonly store$: Store<State>,
     public readonly authService: AuthService,
-    public readonly location: Location
+    public readonly location: Location,
+    public readonly subscriptionService: SubscriptionsService
   ) {
     super(store$);
   }

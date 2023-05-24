@@ -1,31 +1,24 @@
 <div class="page has-breadcrumb">
-
   <div class="row">
-
     <div class="col-md-3 text-center text-lg-left mb-4 mb-lg-0">
       <ul #nav="ngbNav" [(activeId)]="active" class="nav-pills" ngbNav orientation="vertical">
-
         <li ngbNavItem="options">
           <a ngbNavLink routerLink="options" translate>Subscription plans</a>
         </li>
 
-        <li class="nav-item-separator" ngbNavItem="separator">
-          &nbsp;
-        </li>
+        <li class="nav-item-separator" ngbNavItem="separator">&nbsp;</li>
 
         <li
           *ngFor="let subscription of (availableSubscriptions$ | async)?.subscriptions"
-          [ngbNavItem]="subscription.displayName|slugify"
+          [ngbNavItem]="subscription.displayName | slugify"
         >
-          <a [routerLink]="subscription.displayName|slugify" ngbNavLink>
+          <a [routerLink]="subscription.displayName | slugify" ngbNavLink>
             <fa-icon class="me-2" icon="shopping-cart"></fa-icon>
             {{ subscription.displayName }}
           </a>
         </li>
 
-        <li class="nav-item-separator" ngbNavItem="separator">
-          &nbsp;
-        </li>
+        <li class="nav-item-separator" ngbNavItem="separator">&nbsp;</li>
 
         <li *ngIf="authService.isAuthenticated$() | async" ngbNavItem="view">
           <a ngbNavLink routerLink="view" translate>Your subscriptions</a>
@@ -34,16 +27,32 @@
           <a ngbNavLink routerLink="payments" translate>Your payments</a>
         </li>
 
-        <li ngbNavItem="separator">
-          &nbsp;
-        </li>
-
+        <li ngbNavItem="separator">&nbsp;</li>
       </ul>
+
+      <a
+        *ngIf="(subscriptionService.hasStripeAutorenewingSubscription$() | async) === true"
+        [href]="subscriptionService.stripeCustomerPortalUrl$ | async"
+        class="btn btn-secondary mt-4"
+        target="_blank"
+        translate
+      >
+        Manage your Stripe subscription
+      </a>
+
+      <a
+        *ngIf="(subscriptionService.hasPayPalAutorenewingSubscription$() | async) === true"
+        [href]="subscriptionService.payPalCustomerPortalUrl"
+        class="btn btn-secondary mt-4"
+        target="_blank"
+        translate
+      >
+        Manage your PayPal subscription
+      </a>
     </div>
 
     <div class="col-md-9">
       <router-outlet></router-outlet>
     </div>
   </div>
-
 </div>
