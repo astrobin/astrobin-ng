@@ -2,7 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { environment } from "@env/environment";
 import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
-import { PaymentsApiCkeckoutSessionInterface } from "@features/subscriptions/interfaces/payments-api-ckeckout-session.interface";
+import { PaymentsApiCheckoutSessionInterface } from "@features/subscriptions/interfaces/payments-api-checkout-session.interface";
 import { PaymentsApiConfigInterface } from "@features/subscriptions/interfaces/payments-api-config.interface";
 import { PricingInterface } from "@features/subscriptions/interfaces/pricing.interface";
 import { Observable } from "rxjs";
@@ -26,8 +26,8 @@ export class PaymentsApiService {
     currency: string,
     recurringUnit: RecurringUnit,
     autorenew: boolean
-  ): Observable<PaymentsApiCkeckoutSessionInterface> {
-    return this.http.post<PaymentsApiCkeckoutSessionInterface>(
+  ): Observable<PaymentsApiCheckoutSessionInterface> {
+    return this.http.post<PaymentsApiCheckoutSessionInterface>(
       `${environment.classicApiUrl}/payments/create-checkout-session/${userId}/${product}/${currency}/${recurringUnit}/${autorenew}/`,
       {}
     );
