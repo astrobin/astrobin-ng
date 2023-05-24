@@ -1,13 +1,5 @@
-
-.price {
-  .full-price {
-    color: var(--lightGrey);
-    text-decoration: line-through;
-    margin-right: .5rem;
-  }
-
-  font-size: 2.5rem;
-  color: var(--gold);
+astrobin-price {
+  height: 28px;
 }
 
 .already-subscribed,

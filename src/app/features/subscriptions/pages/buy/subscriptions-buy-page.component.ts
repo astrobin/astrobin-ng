@@ -10,7 +10,7 @@ import { PaymentsApiConfigInterface } from "@features/subscriptions/interfaces/p
 import { PricingInterface } from "@features/subscriptions/interfaces/pricing.interface";
 import { PaymentsApiService } from "@features/subscriptions/services/payments-api.service";
 import { SubscriptionsService } from "@features/subscriptions/services/subscriptions.service";
-import { Store } from "@ngrx/store";
+import { select, Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { ImageApiService } from "@shared/services/api/classic/images/image/image-api.service";
@@ -21,9 +21,12 @@ import { PopNotificationsService } from "@shared/services/pop-notifications.serv
 import { TitleService } from "@shared/services/title/title.service";
 import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
 import { Observable } from "rxjs";
-import { distinctUntilChanged, map, startWith, switchMap, take, takeUntil, tap } from "rxjs/operators";
+import { distinctUntilChanged, filter, map, startWith, switchMap, take, takeUntil, tap } from "rxjs/operators";
 import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
-import { PaymentInterval } from "@features/subscriptions/types/payment.interval";
+import { AvailableSubscriptionsInterface } from "@features/subscriptions/interfaces/available-subscriptions.interface";
+import { selectAvailableSubscriptions, selectPricing } from "@features/subscriptions/store/subscriptions.selectors";
+import { RecurringUnit } from "@features/subscriptions/types/recurring.unit";
+import { GetPricing } from "@features/subscriptions/store/subscriptions.actions";
 
 declare var Stripe: any;
 
@@ -34,7 +37,7 @@ declare var Stripe: any;
 })
 export class SubscriptionsBuyPageComponent extends BaseComponentDirective implements OnInit {
   PayableProductInterface = PayableProductInterface;
-  PaymentInterval = PaymentInterval;
+  RecurringUnit = RecurringUnit;
 
   alreadySubscribed$: Observable<boolean>;
   alreadySubscribedHigher$: Observable<boolean>;
@@ -42,9 +45,14 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
   maxLiteImages$: Observable<number> = this.store$
     .select(selectBackendConfig)
     .pipe(map(config => config.PREMIUM_MAX_IMAGES_LITE_2020));
-  pricing$: Observable<PricingInterface>;
+  availableSubscriptions$: Observable<AvailableSubscriptionsInterface> =
+    this.store$.select(selectAvailableSubscriptions);
   product: PayableProductInterface;
-  bankDetailsMessage$: Observable<string>;
+  pricing$: Observable<{ [product: string]: { [recurringUnit: string]: PricingInterface } }> = this.store$.pipe(
+    select(selectPricing),
+    filter(pricing => !!pricing[this.product].monthly && !!pricing[this.product].yearly)
+  );
+  bankDetailsMessage: string;
   bankLocations = [
     { id: "USA", label: "United States of America" },
     { id: "CA", label: "Canada" },
@@ -56,7 +64,8 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
   ];
   selectedBankLocation = "USA";
   currencyPipe: CurrencyPipe;
-  paymentInterval = PaymentInterval.YEARLY;
+  recurringUnit = RecurringUnit.YEARLY;
+  automaticRenewal = true;
 
   constructor(
     public readonly store$: Store<State>,
@@ -153,8 +162,6 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
   ngOnInit(): void {
     super.ngOnInit();
 
-    this.loadingService.setLoading(true);
-
     this.activatedRoute.params.pipe(takeUntil(this.destroyed$)).subscribe(params => {
       this.product = params["product"];
 
@@ -172,6 +179,20 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
       this.store$.dispatch(
         new SetBreadcrumb({
           breadcrumb: [{ label: "Subscriptions" }, { label: title }]
+        })
+      );
+
+      this.store$.dispatch(
+        new GetPricing({
+          product: this.product,
+          recurringUnit: RecurringUnit.MONTHLY
+        })
+      );
+
+      this.store$.dispatch(
+        new GetPricing({
+          product: this.product,
+          recurringUnit: RecurringUnit.YEARLY
         })
       );
 
@@ -214,31 +235,14 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
             CHF: "CH",
             CNY: "CN"
           }[currency];
-
-          this.pricing$ = this.subscriptionsService.getPrice(this.product).pipe(
-            takeUntil(this.destroyed$),
-            tap(() => this.loadingService.setLoading(false))
-          );
-
-          this.bankDetailsMessage$ = this.pricing$.pipe(
-            takeUntil(this.destroyed$),
-            map(pricing => pricing.price),
-            switchMap(price =>
-              this.translate.stream(
-                "Please make a deposit of {{ currency }} {{ amount }} to the following bank details and then email " +
-                "us at {{ email_prefix }}{{ email }}{{ email_postfix }} with your username so we may upgrade your " +
-                "account manually.",
-                {
-                  currency: "",
-                  amount: `<strong>${this.currencyPipe.transform(price, this.subscriptionsService.currency)}</strong>`,
-                  email_prefix: "<a href='mailto:support@astrobin.com'>",
-                  email: "support@astrobin.com",
-                  email_postfix: "</a>"
-                }
-              )
-            )
-          );
         });
+
+      this.pricing$.pipe(
+        takeUntil(this.destroyed$)
+      ).subscribe(() => {
+          this._updateBankDetailsMessage();
+        }
+      );
     });
   }
 
@@ -278,7 +282,12 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
           stripe = Stripe(config.publicKey);
           return this.currentUser$.pipe(
             switchMap(user =>
-              this.paymentsApiService.createCheckoutSession(user.id, this.product, this.subscriptionsService.currency)
+              this.paymentsApiService.createCheckoutSession(
+                user.id,
+                this.product,
+                this.subscriptionsService.currency,
+                this.recurringUnit,
+                this.automaticRenewal)
             )
           );
         })
@@ -300,10 +309,29 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
   }
 
   payYearly(): void {
-    this.paymentInterval = PaymentInterval.YEARLY;
+    this.recurringUnit = RecurringUnit.YEARLY;
+    this._updateBankDetailsMessage();
   }
 
   payMonthly(): void {
-    this.paymentInterval = PaymentInterval.MONTHLY;
+    this.recurringUnit = RecurringUnit.MONTHLY;
+    this.automaticRenewal = true;
+    this._updateBankDetailsMessage();
+  }
+
+  private _updateBankDetailsMessage() {
+    this.pricing$.pipe(take(1)).subscribe(pricing => {
+      this.bankDetailsMessage = this.translate.instant(
+        "Please make a deposit of {{ currency }} {{ amount }} to the following bank details and then email " +
+        "us at {{ email_prefix }}{{ email }}{{ email_postfix }} with your username so we may upgrade your " +
+        "account manually.",
+        {
+          currency: "",
+          amount: `<strong>${this.currencyPipe.transform(pricing[this.product][this.recurringUnit].price, this.subscriptionsService.currency)}</strong>`,
+          email_prefix: "<a href='mailto:support@astrobin.com'>",
+          email: "support@astrobin.com",
+          email_postfix: "</a>"
+        });
+    });
   }
 }

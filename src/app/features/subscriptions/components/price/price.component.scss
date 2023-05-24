@@ -1,0 +1,15 @@
+:host {
+  display: inline-block;
+  color: var(--gold);
+}
+
+.full-price {
+  color: var(--lightGrey);
+  text-decoration: line-through;
+  margin-right: .5rem;
+}
+
+.or {
+  color: var(--lightGrey);
+  font-size: .8em;
+}

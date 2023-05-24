@@ -1,0 +1,48 @@
+<ng-container *ngIf="!!recurringUnit; else noRecurringUnitTemplate">
+  <ng-container *ngIf="!!pricing[recurringUnit]; else loadingTemplate">
+    <ng-container
+      [ngTemplateOutletContext]="{
+        priceObject: pricing[recurringUnit],
+        recurringUnitLabel: recurringUnitLabel
+      }"
+      [ngTemplateOutlet]="priceTemplate"
+    >
+    </ng-container>
+  </ng-container>
+</ng-container>
+
+<ng-template #noRecurringUnitTemplate>
+  <ng-container *ngIf="!!pricing.monthly && !!pricing.yearly; else loadingTemplate">
+    <span class="monthly">
+      <ng-container
+        [ngTemplateOutletContext]="{ priceObject: pricing.monthly, recurringUnitLabel: 'month' | translate }"
+        [ngTemplateOutlet]="priceTemplate"
+      ></ng-container>
+    </span>
+
+    <span class="or">
+      {{ 'or' | translate }}
+    </span>
+
+    <span class="yearly">
+      <ng-container
+        [ngTemplateOutletContext]="{ priceObject: pricing.yearly, recurringUnitLabel: 'year' | translate }"
+        [ngTemplateOutlet]="priceTemplate"
+      ></ng-container>
+    </span>
+  </ng-container>
+</ng-template>
+
+<ng-template #priceTemplate let-priceObject="priceObject" let-recurringUnitLabel="recurringUnitLabel">
+  <span *ngIf="priceObject.discount > 0" class="full-price">
+    {{ priceObject.fullPrice | currency : currency : "symbol" : "1.2-2" : translateService.currentLang }}
+  </span>
+
+  {{ priceObject.price | currency : currency : "symbol" : "1.2-2" : translateService.currentLang }}
+
+  <small *ngIf="showRecurringUnit" class="text-muted">/ {{ recurringUnitLabel }}</small>
+</ng-template>
+
+<ng-template #loadingTemplate>
+  <astrobin-loading-indicator></astrobin-loading-indicator>
+</ng-template>

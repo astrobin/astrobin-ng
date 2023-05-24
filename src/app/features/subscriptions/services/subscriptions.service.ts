@@ -9,8 +9,10 @@ import { Constants } from "@shared/constants";
 import { SubscriptionName } from "@shared/types/subscription-name.type";
 import * as countryJs from "country-js";
 import { BehaviorSubject, Observable } from "rxjs";
-import { take } from "rxjs/operators";
+import { filter, take } from "rxjs/operators";
 import { UtilsService } from "@shared/services/utils/utils.service";
+import { RecurringUnit } from "@features/subscriptions/types/recurring.unit";
+import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
 
 @Injectable({
   providedIn: "root"
@@ -30,10 +32,10 @@ export class SubscriptionsService {
     public readonly utilsService: UtilsService
   ) {
     this.store$
-      .select(state => state.app)
-      .pipe(take(1))
-      .subscribe(state => {
-        const country = state.backendConfig.REQUEST_COUNTRY;
+      .select(selectBackendConfig)
+      .pipe(filter(config => !!config), take(1))
+      .subscribe(config => {
+        const country = config.REQUEST_COUNTRY;
         const results = countryJs.search(country);
 
         if (results.length !== 0) {
@@ -70,11 +72,11 @@ export class SubscriptionsService {
     return resultMap[product];
   }
 
-  getPrice(product: PayableProductInterface): Observable<PricingInterface> {
+  getPrice(product: PayableProductInterface, recurringUnit: RecurringUnit): Observable<PricingInterface> {
     if (!this.currency) {
       return new Observable<PricingInterface>(observer => {
         this.utilsService.delay(100).subscribe(() => {
-          this.getPrice(product).subscribe(price => {
+          this.getPrice(product, recurringUnit).subscribe(price => {
             observer.next(price);
             observer.complete();
           });
@@ -83,9 +85,9 @@ export class SubscriptionsService {
     }
 
     const observables = {
-      [PayableProductInterface.LITE]: this.paymentsApiService.getPrice("lite", this.currency),
-      [PayableProductInterface.PREMIUM]: this.paymentsApiService.getPrice("premium", this.currency),
-      [PayableProductInterface.ULTIMATE]: this.paymentsApiService.getPrice("ultimate", this.currency)
+      [PayableProductInterface.LITE]: this.paymentsApiService.getPrice(PayableProductInterface.LITE, this.currency, recurringUnit),
+      [PayableProductInterface.PREMIUM]: this.paymentsApiService.getPrice(PayableProductInterface.PREMIUM, this.currency, recurringUnit),
+      [PayableProductInterface.ULTIMATE]: this.paymentsApiService.getPrice(PayableProductInterface.ULTIMATE, this.currency, recurringUnit)
     };
 
     return observables[product];

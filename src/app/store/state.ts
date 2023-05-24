@@ -19,26 +19,32 @@ import * as equipment from "@features/equipment/store/equipment.reducer";
 import { initialEquipmentState } from "@features/equipment/store/equipment.reducer";
 import { NestedCommentsEffects } from "@app/store/effects/nested-comments.effects";
 import { EquipmentEffects } from "@features/equipment/store/equipment.effects";
+import * as subscriptions from "@features/subscriptions/store/subscriptions.reducers";
+import { initialSubscriptionsState } from "@features/subscriptions/store/subscriptions.reducers";
+import { SubscriptionsEffects } from "@features/subscriptions/store/subscriptions.effects";
 
 export interface State {
   app: app.AppState;
   auth: auth.AuthState;
   equipment: equipment.EquipmentState;
   notifications: notifications.NotificationsState;
+  subscriptions: subscriptions.SubscriptionsState;
 }
 
 export const initialState: State = {
   app: initialAppState,
   auth: initialAuthState,
   equipment: initialEquipmentState,
-  notifications: initialNotificationsState
+  notifications: initialNotificationsState,
+  subscriptions: initialSubscriptionsState
 };
 
 export const appStateReducers = {
   app: app.reducer,
   auth: auth.reducer,
   equipment: equipment.reducer,
-  notifications: notifications.reducer
+  notifications: notifications.reducer,
+  subscriptions: subscriptions.reducer
 };
 
 export const appStateEffects = [
@@ -54,5 +60,6 @@ export const appStateEffects = [
   SolutionEffects,
   ThumbnailEffects,
   TelescopeEffects,
-  EquipmentEffects
+  EquipmentEffects,
+  SubscriptionsEffects
 ];

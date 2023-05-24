@@ -10,9 +10,11 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { TitleService } from "@shared/services/title/title.service";
 import { Observable } from "rxjs";
-import { takeUntil } from "rxjs/operators";
+import { map, takeUntil } from "rxjs/operators";
 import { AvailableSubscriptionsInterface } from "@features/subscriptions/interfaces/available-subscriptions.interface";
-import { PaymentsApiService } from "@features/subscriptions/services/payments-api.service";
+import { selectAvailableSubscriptions, selectPricing } from "@features/subscriptions/store/subscriptions.selectors";
+import { GetAvailableSubscriptions, GetPricing } from "@features/subscriptions/store/subscriptions.actions";
+import { RecurringUnit } from "@features/subscriptions/types/recurring.unit";
 
 @Component({
   selector: "astrobin-subscriptions-options-page",
@@ -20,19 +22,24 @@ import { PaymentsApiService } from "@features/subscriptions/services/payments-ap
   styleUrls: ["./subscriptions-options-page.component.scss"]
 })
 export class SubscriptionsOptionsPageComponent extends BaseComponentDirective implements OnInit {
-  litePricing$: Observable<PricingInterface>;
-  premiumPricing$: Observable<PricingInterface>;
-  ultimatePricing$: Observable<PricingInterface>;
+  litePricing$: Observable<{ [recurringUnit: string]: PricingInterface }> = this.store$
+    .select(selectPricing)
+    .pipe(map(pricing => pricing[PayableProductInterface.LITE]));
+  premiumPricing$: Observable<{ [recurringUnit: string]: PricingInterface }> = this.store$
+    .select(selectPricing)
+    .pipe(map(pricing => pricing[PayableProductInterface.PREMIUM]));
+  ultimatePricing$: Observable<{ [recurringUnit: string]: PricingInterface }> = this.store$
+    .select(selectPricing)
+    .pipe(map(pricing => pricing[PayableProductInterface.ULTIMATE]));
   availableSubscriptions$: Observable<AvailableSubscriptionsInterface> =
-    this.paymentsApiService.getAvailableSubscriptions();
+    this.store$.select(selectAvailableSubscriptions);
 
   constructor(
     public readonly store$: Store<State>,
     public readonly classicRoutesService: ClassicRoutesService,
     public readonly subscriptionsService: SubscriptionsService,
     public readonly translate: TranslateService,
-    public readonly titleService: TitleService,
-    public readonly paymentsApiService: PaymentsApiService
+    public readonly titleService: TitleService
   ) {
     super(store$);
   }
@@ -43,10 +50,47 @@ export class SubscriptionsOptionsPageComponent extends BaseComponentDirective im
     const title = this.translate.instant("Subscription plans");
     this.store$.dispatch(new SetBreadcrumb({ breadcrumb: [{ label: "Subscriptions" }, { label: title }] }));
 
+    this.store$.dispatch(new GetAvailableSubscriptions());
+
     this.subscriptionsService.currency$.pipe(takeUntil(this.destroyed$)).subscribe(() => {
-      this.litePricing$ = this.subscriptionsService.getPrice(PayableProductInterface.LITE);
-      this.premiumPricing$ = this.subscriptionsService.getPrice(PayableProductInterface.PREMIUM);
-      this.ultimatePricing$ = this.subscriptionsService.getPrice(PayableProductInterface.ULTIMATE);
+      this.store$.dispatch(
+        new GetPricing({
+          product: PayableProductInterface.LITE,
+          recurringUnit: RecurringUnit.MONTHLY
+        })
+      );
+      this.store$.dispatch(
+        new GetPricing({
+          product: PayableProductInterface.LITE,
+          recurringUnit: RecurringUnit.YEARLY
+        })
+      );
+
+      this.store$.dispatch(
+        new GetPricing({
+          product: PayableProductInterface.PREMIUM,
+          recurringUnit: RecurringUnit.MONTHLY
+        })
+      );
+      this.store$.dispatch(
+        new GetPricing({
+          product: PayableProductInterface.PREMIUM,
+          recurringUnit: RecurringUnit.YEARLY
+        })
+      );
+
+      this.store$.dispatch(
+        new GetPricing({
+          product: PayableProductInterface.ULTIMATE,
+          recurringUnit: RecurringUnit.MONTHLY
+        })
+      );
+      this.store$.dispatch(
+        new GetPricing({
+          product: PayableProductInterface.ULTIMATE,
+          recurringUnit: RecurringUnit.YEARLY
+        })
+      );
     });
   }
 }

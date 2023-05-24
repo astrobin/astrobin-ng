@@ -9,12 +9,12 @@
           <a ngbNavLink routerLink="options" translate>Subscription plans</a>
         </li>
 
-        <li ngbNavItem="separator">
+        <li class="nav-item-separator" ngbNavItem="separator">
           &nbsp;
         </li>
 
         <li
-          *ngFor="let subscription of (availableSubscriptions$ | async).subscriptions"
+          *ngFor="let subscription of (availableSubscriptions$ | async)?.subscriptions"
           [ngbNavItem]="subscription.displayName|slugify"
         >
           <a [routerLink]="subscription.displayName|slugify" ngbNavLink>
@@ -23,7 +23,7 @@
           </a>
         </li>
 
-        <li ngbNavItem="separator">
+        <li class="nav-item-separator" ngbNavItem="separator">
           &nbsp;
         </li>
 

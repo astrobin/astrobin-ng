@@ -24,13 +24,6 @@ export class SubscriptionsViewPaymentsPageComponent extends BaseComponentDirecti
     super(store$);
   }
 
-  get currencyHelpTooltipMessage(): string {
-    return this.translate.instant(
-      "The price is shown in Swiss Francs even though you might have paid the equivalent amount in your " +
-      "country's currency."
-    );
-  }
-
   ngOnInit(): void {
     super.ngOnInit();
 

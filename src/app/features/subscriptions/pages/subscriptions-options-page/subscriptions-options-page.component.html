@@ -27,7 +27,7 @@
     </div>
 
     <ng-container
-      *ngFor="let subscription of (availableSubscriptions$ | async).subscriptions"
+      *ngFor="let subscription of (availableSubscriptions$ | async)?.subscriptions"
     >
       <div *ngIf="subscription.displayName === 'Lite'" class="col-md-6">
         <div class="card mb-4 box-shadow">
@@ -37,11 +37,7 @@
           <div class="card-body">
             <ul class="list-unstyled mt-3 mb-4">
               <li *ngIf="litePricing$ | async as pricing" class="price">
-              <span *ngIf="pricing.discount > 0" class="full-price">
-                {{ pricing.fullPrice | currency:this.subscriptionsService.currency:'symbol':'1.2-2':translate.currentLang }}
-              </span>
-                {{ pricing.price | currency:this.subscriptionsService.currency:'symbol':'1.2-2':translate.currentLang }}
-                <small class="text-muted">/ {{ "year" | translate }}</small>
+                <astrobin-price [currency]="subscriptionsService.currency" [pricing]="pricing"></astrobin-price>
               </li>
               <li [innerHTML]="subscriptionsService.maxImagesMessage(50)"></li>
               <li [innerHTML]="subscriptionsService.maxSizeMessage(25)"></li>
@@ -71,11 +67,7 @@
           <div class="card-body">
             <ul class="list-unstyled mt-3 mb-4">
               <li *ngIf="premiumPricing$ | async as pricing" class="price">
-                <span *ngIf="pricing.discount > 0" class="full-price">
-                  {{ pricing.fullPrice | currency:this.subscriptionsService.currency:'symbol':'1.2-2':translate.currentLang }}
-                </span>
-                {{ pricing.price | currency:this.subscriptionsService.currency:'symbol':'1.2-2':translate.currentLang }}
-                <small class="text-muted">/ {{ "year" | translate }}</small>
+                <astrobin-price [currency]="subscriptionsService.currency" [pricing]="pricing"></astrobin-price>
               </li>
               <li>{{ "Unlimited images" | translate }}</li>
               <li [innerHTML]="subscriptionsService.maxSizeMessage(50)"></li>
@@ -105,11 +97,7 @@
           <div class="card-body">
             <ul class="list-unstyled mt-3 mb-4">
               <li *ngIf="ultimatePricing$ | async as pricing" class="price">
-                <span *ngIf="pricing.discount > 0" class="full-price">
-                  {{ pricing.fullPrice | currency:this.subscriptionsService.currency:'symbol':'1.2-2':translate.currentLang }}
-                </span>
-                {{ pricing.price | currency:this.subscriptionsService.currency:'symbol':'1.2-2':translate.currentLang }}
-                <small class="text-muted">/ {{ "year" | translate }}</small>
+                <astrobin-price [currency]="subscriptionsService.currency" [pricing]="pricing"></astrobin-price>
               </li>
               <li>{{ "Unlimited images" | translate }}</li>
               <li>{{ "Unlimited size" | translate }}</li>

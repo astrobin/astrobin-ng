@@ -1,10 +1,17 @@
 <h1 class="d-flex align-items-center">
   <span class="flex-fill">{{ subscriptionsService.getName(product) }}</span>
-  <span *ngIf="pricing$ | async as pricing" class="price">
-    <div class="btn-group" role="group">
+  <span *ngIf="pricing$ | async as pricing; else loadingTemplate" class="price">
+    <astrobin-price
+      [currency]="subscriptionsService.currency"
+      [pricing]="pricing[product]"
+      [recurringUnit]="recurringUnit"
+      [showRecurringUnit]="false"
+    ></astrobin-price>
+
+    <div class="btn-group ms-3" role="group">
       <input
         (click)="payYearly()"
-        [checked]="paymentInterval === PaymentInterval.YEARLY"
+        [checked]="recurringUnit === RecurringUnit.YEARLY"
         autocomplete="off"
         checked
         class="btn-check"
@@ -16,7 +23,7 @@
 
       <input
         (click)="payMonthly()"
-        [checked]="paymentInterval === PaymentInterval.MONTHLY"
+        [checked]="recurringUnit === RecurringUnit.MONTHLY"
         autocomplete="off"
         class="btn-check"
         id="pay-monthly"
@@ -25,20 +32,21 @@
       />
       <label class="btn btn-outline-primary" for="pay-monthly">{{ "Monthly" | translate }}</label>
     </div>
-
-    <span *ngIf="pricing.discount > 0" class="full-price">
-      {{
-      pricing.fullPrice | currency : this.subscriptionsService.currency : "symbol" : "1.2-2" : translate.currentLang
-      }}
-    </span>
-
-    {{ pricing.price | currency : this.subscriptionsService.currency : "symbol" : "1.2-2" : translate.currentLang }}
   </span>
 </h1>
 
-<small>
-  {{ "Validity" | translate }}: <strong>1 {{ "year" | translate }}</strong> &middot; {{ "Autorenew" | translate }}:
-  <strong>{{ "No" | translate }}</strong>
+<small *ngIf="(availableSubscriptions$ | async)?.nonAutorenewingSupported">
+  {{ " Automatic renewal" | translate }}:
+
+  <astrobin-toggle-button
+    (toggle)="automaticRenewal = $event"
+    *ngIf="recurringUnit === RecurringUnit.YEARLY"
+    [value]="automaticRenewal">
+  </astrobin-toggle-button>
+
+  <strong *ngIf="recurringUnit === RecurringUnit.MONTHLY">
+    {{ "Yes" | translate }}
+  </strong>
 </small>
 
 <small [innerHTML]="moreInfoMessage" class="mt-2 mb-4 d-block"></small>
@@ -53,7 +61,7 @@
     </ng-template>
   </ngb-panel>
 
-  <ngb-panel title="{{ 'Prefer to pay via bank transfer?' | translate }}">
+  <ngb-panel *ngIf="recurringUnit === null" title="{{ 'Prefer to pay via bank transfer?' | translate }}">
     <ng-template ngbPanelContent>
       <p *ngIf="subscriptionsService.supportsSepaDebitPaymentType" class="alert alert-info">
         <strong>{{ "Please note" | translate }}</strong
@@ -62,7 +70,7 @@
       </p>
 
       <p>
-        <span [innerHtml]="bankDetailsMessage$ | async"></span>&nbsp;
+        <span [innerHtml]="bankDetailsMessage"></span>&nbsp;
         <span translate>Thanks!</span>
       </p>
 
@@ -89,8 +97,8 @@
     </p>
     <p>
       {{
-        "For this reason, you cannot purchase this at the moment, as AstroBin does not currently offer a downgrade path."
-          | translate
+      "For this reason, you cannot purchase this at the moment, as AstroBin does not currently offer a downgrade path."
+        | translate
       }}
     </p>
 
@@ -108,8 +116,8 @@
       <h5>{{ "Please note" | translate }}</h5>
       <p>
         {{
-          "You are already on this plan. If you buy it again, your expiration date will be extended by one year."
-            | translate
+        "You are already on this plan. If you buy it again, your expiration date will be extended by one year."
+          | translate
         }}
       </p>
     </div>
@@ -147,7 +155,13 @@
       [disabled]="loadingService.loading$ | async"
       class="btn btn-xl btn-primary buy"
     >
-      {{ "Buy" | translate }}
+      <ng-container *ngIf="!automaticRenewal">
+        {{ "Buy 1 year" | translate }}
+      </ng-container>
+      <ng-container *ngIf="automaticRenewal">
+        {{ "Subscribe" | translate }}
+      </ng-container>
+
       <span class="icons">
         <img *ngIf="subscriptionsService.supportsAliPayPaymentType" alt="AliPay" class="icon"
              src="/assets/images/alipay-brands.svg" />
@@ -168,4 +182,8 @@
       </span>
     </button>
   </div>
+</ng-template>
+
+<ng-template #loadingTemplate>
+  <astrobin-loading-indicator></astrobin-loading-indicator>
 </ng-template>

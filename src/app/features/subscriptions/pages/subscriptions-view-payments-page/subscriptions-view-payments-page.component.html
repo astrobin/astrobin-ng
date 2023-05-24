@@ -1,32 +1,27 @@
 <h3 translate>Your payments</h3>
 
-<table class="table table-striped" *ngIf="payments$ | async as payments">
+<table *ngIf="payments$ | async as payments" class="table table-striped">
   <thead>
-    <tr>
-      <th scope="col" translate>Date</th>
-      <th scope="col">
-        {{ "Amount" | translate }}
-        <span class="help-tooltip" [ngbTooltip]="currencyHelpTooltip">(CHF)</span>
-      </th>
-    </tr>
+  <tr>
+    <th scope="col" translate>Date</th>
+    <th scope="col" translate>Subscription</th>
+    <th scope="col" translate>Event</th>
+  </tr>
   </thead>
   <tbody>
-    <ng-container *ngIf="payments.length > 0; else noPayments">
-      <tr *ngFor="let payment of payments">
-        <th scope="row">{{ payment.timestamp | date }}</th>
-        <td>{{ payment.amount | currency:payment.currency:'symbol':'1.2-2':translate.currentLang }}</td>
-      </tr>
-    </ng-container>
-    <ng-template #noPayments>
-      <tr>
-        <td class="empty-table" colspan="2">
-          <astrobin-empty-list></astrobin-empty-list>
-        </td>
-      </tr>
-    </ng-template>
+  <ng-container *ngIf="payments.length > 0; else noPayments">
+    <tr *ngFor="let payment of payments">
+      <th scope="row">{{ payment.timestamp | localDate | timeago:true }}</th>
+      <td>{{ payment.subscription_name }}</td>
+      <td>"{{ payment.event }}"</td>
+    </tr>
+  </ng-container>
+  <ng-template #noPayments>
+    <tr>
+      <td class="empty-table" colspan="3">
+        <astrobin-empty-list></astrobin-empty-list>
+      </td>
+    </tr>
+  </ng-template>
   </tbody>
 </table>
-
-<ng-template #currencyHelpTooltip>
-  {{ currencyHelpTooltipMessage | translate }}
-</ng-template>

@@ -7,6 +7,7 @@ import { PaymentsApiConfigInterface } from "@features/subscriptions/interfaces/p
 import { PricingInterface } from "@features/subscriptions/interfaces/pricing.interface";
 import { Observable } from "rxjs";
 import { AvailableSubscriptionsInterface } from "@features/subscriptions/interfaces/available-subscriptions.interface";
+import { RecurringUnit } from "@features/subscriptions/types/recurring.unit";
 
 @Injectable({
   providedIn: "root"
@@ -22,17 +23,23 @@ export class PaymentsApiService {
   public createCheckoutSession(
     userId: number,
     product: PayableProductInterface,
-    currency: string
+    currency: string,
+    recurringUnit: RecurringUnit,
+    autorenew: boolean
   ): Observable<PaymentsApiCkeckoutSessionInterface> {
     return this.http.post<PaymentsApiCkeckoutSessionInterface>(
-      `${environment.classicApiUrl}/payments/create-checkout-session/${userId}/${product}/${currency}/`,
+      `${environment.classicApiUrl}/payments/create-checkout-session/${userId}/${product}/${currency}/${recurringUnit}/${autorenew}/`,
       {}
     );
   }
 
-  public getPrice(product: string, currency: string): Observable<PricingInterface> {
+  public getPrice(
+    product: PayableProductInterface,
+    currency: string,
+    recurringUnit: RecurringUnit
+  ): Observable<PricingInterface> {
     return this.http.get<PricingInterface>(
-      `${environment.classicApiUrl}/api/v2/payments/pricing/${product}/${currency}/`
+      `${environment.classicApiUrl}/api/v2/payments/pricing/${product}/${currency}/${recurringUnit}/`
     );
   }
 

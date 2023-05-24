@@ -6,7 +6,8 @@ import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { Observable } from "rxjs";
 import { AvailableSubscriptionsInterface } from "@features/subscriptions/interfaces/available-subscriptions.interface";
-import { PaymentsApiService } from "@features/subscriptions/services/payments-api.service";
+import { selectAvailableSubscriptions } from "@features/subscriptions/store/subscriptions.selectors";
+import { GetAvailableSubscriptions } from "@features/subscriptions/store/subscriptions.actions";
 
 @Component({
   selector: "astrobin-subscriptions-router-page",
@@ -15,20 +16,20 @@ import { PaymentsApiService } from "@features/subscriptions/services/payments-ap
 })
 export class SubscriptionsRouterPageComponent extends BaseComponentDirective implements OnInit {
   active: string;
-  availableSubscriptions$: Observable<AvailableSubscriptionsInterface> =
-    this.paymentsApiService.getAvailableSubscriptions();
+  availableSubscriptions$: Observable<AvailableSubscriptionsInterface> = this.store$.select(selectAvailableSubscriptions);
 
   constructor(
     public readonly store$: Store<State>,
     public readonly authService: AuthService,
-    public readonly location: Location,
-    public readonly paymentsApiService: PaymentsApiService
+    public readonly location: Location
   ) {
     super(store$);
   }
 
   ngOnInit(): void {
     super.ngOnInit();
+
+    this.store$.dispatch(new GetAvailableSubscriptions());
 
     const path = this.location.path();
 
