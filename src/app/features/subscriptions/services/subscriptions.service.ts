@@ -9,11 +9,12 @@ import { Constants } from "@shared/constants";
 import { SubscriptionName } from "@shared/types/subscription-name.type";
 import * as countryJs from "country-js";
 import { BehaviorSubject, Observable } from "rxjs";
-import { filter, map, take } from "rxjs/operators";
+import { filter, map, switchMap, take } from "rxjs/operators";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { RecurringUnit } from "@features/subscriptions/types/recurring.unit";
 import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
 import { SubscriptionInterface } from "@shared/interfaces/subscription.interface";
+import { selectCurrentUserProfile } from "@features/account/store/auth.selectors";
 
 @Injectable({
   providedIn: "root"
@@ -22,9 +23,16 @@ export class SubscriptionsService {
   readonly DEFAULT_CURRENCY = "USD";
 
   currency: string;
-  stripeCustomerPortalUrl$: Observable<string> = this.store$
-    .select(selectBackendConfig)
-    .pipe(map(config => `https://billing.stripe.com/p/login/${config.STRIPE_CUSTOMER_PORTAL_KEY}`));
+  stripeCustomerPortalUrl$: Observable<string> = this.store$.select(selectBackendConfig).pipe(
+    switchMap(config => this.store$.select(selectCurrentUserProfile).pipe(filter(profile => !!profile), map(profile => ({
+      config,
+      profile
+    })))),
+    map(
+      ({ config, profile }) =>
+        `https://billing.stripe.com/p/login/${config.STRIPE_CUSTOMER_PORTAL_KEY}?prefilled_email=${profile.email}`
+    )
+  );
   payPalCustomerPortalUrl = "https://www.paypal.com/myaccount/autopay/";
   private _currencySubject = new BehaviorSubject<string>(this.DEFAULT_CURRENCY);
   currency$: Observable<string> = this._currencySubject.asObservable();

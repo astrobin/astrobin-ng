@@ -34,7 +34,7 @@
 </ng-template>
 
 <ng-template #priceTemplate let-priceObject="priceObject" let-recurringUnitLabel="recurringUnitLabel">
-  <span *ngIf="priceObject.discount > 0" class="full-price">
+  <span *ngIf="priceObject.discount > 0 || priceObject.prorateAmount > 0" class="full-price">
     {{ priceObject.fullPrice | currency : currency : "symbol" : "1.2-2" : translateService.currentLang }}
   </span>
 

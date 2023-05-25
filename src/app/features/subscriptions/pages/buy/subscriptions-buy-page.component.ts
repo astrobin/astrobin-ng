@@ -110,18 +110,6 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
     );
   }
 
-  get upgradeMessage(): string {
-    return this.translateService.instant(
-      "AstroBin doesn't support subscription upgrades at the moment, but we're happy to make it happen manually. If " +
-      "you're on a lower subscription tier and would like to upgrade to <strong>{{0}}</strong>, please just buy it " +
-      "and then contact us at {{1}} to get a refund for the unused time on your old subscription. Thanks!",
-      {
-        0: this.subscriptionsService.getName(this.product),
-        1: `<a href="mailto:support@astrobin.com">support@astrobin.com</a>`
-      }
-    );
-  }
-
   get bankDetails(): string {
     switch (this.selectedBankLocation) {
       case "CH":
@@ -318,42 +306,60 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
          ]) => {
           const modal = this.modalService.open(InformationDialogComponent);
           const componentInstance: InformationDialogComponent = modal.componentInstance;
-          let message: string;
+          let message: string = "<ul>";
 
           if (hasNonRecurringPayPalSubscription) {
-            message =
+            message +=
+              "<li>" +
               this.translateService.instant("You have a non-recurring PayPal subscription.") +
-              "<br><br>" +
-              this.translateService.instant("You don't need to cancel it, it will expire automatically.");
-          } else if (hasRecurringPayPalSubscription) {
-            message =
-              this.translateService.instant(
-                "You have a recurring PayPal subscription. You can cancel it on PayPal's settings."
-              ) +
-              "<br><br>" +
-              `<a href="${this.subscriptionsService.payPalCustomerPortalUrl}" target="_blank" class="btn btn-primary">` +
-              this.translateService.instant("Manage your PayPal subscription") +
-              "</a>";
-          } else if (hasNonRecurringStripeSubscription) {
-            message =
-              this.translateService.instant(
-                "You have a non-recurring Stripe subscription (paid by credit card, Sepa, AliPay, or other)"
-              ) +
-              "<br><br>" +
-              this.translateService.instant("You don't need to cancel it, it will expire automatically.");
-          } else if (hasRecurringStripeSubscription) {
-            message =
-              this.translateService.instant(
-                "You have a recurring PayPal subscription. You can cancel it on Stripe's customer portal by " +
-                "logging in with the email address associated to your AstroBin account."
-              ) +
-              "<br><br>" +
-              `<a href="${stripeCustomerPortalUrl}" target="_blank" class="btn btn-primary">` +
-              this.translateService.instant("Manage your Stripe subscription") +
-              "</a>";
-          } else {
-            message = this.translateService.instant("You don't have any active subscription.");
+              " " +
+              this.translateService.instant("You don't need to cancel it, it will expire automatically." + "</li>");
           }
+
+          if (hasRecurringPayPalSubscription) {
+            message +=
+              "<li>" +
+              this.translateService.instant(
+                "You have a recurring PayPal subscription. You can cancel it on PayPal's settings:"
+              ) +
+              " " +
+              `<a href="${this.subscriptionsService.payPalCustomerPortalUrl}" target="_blank">` +
+              this.translateService.instant("Manage your PayPal subscription") +
+              "</a></li>";
+          }
+
+          if (hasNonRecurringStripeSubscription) {
+            message +=
+              "<li>" +
+              this.translateService.instant(
+                "You have a non-recurring Stripe subscription (paid by credit card, Sepa, AliPay, or other)."
+              ) +
+              " " +
+              this.translateService.instant("You don't need to cancel it, it will expire automatically.") +
+              "</li>";
+          }
+
+          if (hasRecurringStripeSubscription) {
+            message += "<li>" +
+              this.translateService.instant(
+                "You have a recurring Stripe subscription (paid by credit card, Sepa, AliPay, or other). You can " +
+                "cancel it on Stripe's customer portal by logging in with the email address associated to your " +
+                "AstroBin account:"
+              ) +
+              " " +
+              `<a href="${stripeCustomerPortalUrl}" target="_blank">` +
+              this.translateService.instant("Manage your Stripe subscription") +
+              "</a></li>";
+          }
+
+          message += "</ul>";
+
+          message +=
+            "<p>" +
+            this.translateService.instant("If you have any question, please contact us at {{0}}.", {
+              0: `<a href="mailto:support@astrobin.com">support@astrobin.com</a>`
+            }) +
+            "</p>";
 
           componentInstance.message = message;
         }
@@ -406,66 +412,88 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
         });
     };
 
-    combineLatest([this.alreadySubscribed$, this.alreadySubscribedHigher$, this.alreadySubscribedLower$]).subscribe(
-      ([alreadySubscribed, alreadySubscribedHigher, alreadySubscribedLower]) => {
-        if (alreadySubscribed) {
-          if (this.automaticRenewal) {
-            this.popNotificationsService.error(
-              this.translateService.instant("You already have an active subscription of this kind.")
-            );
+    const startUpgrade = () => {
+      this.loadingService.setLoading(true);
+      this.currentUser$
+        .pipe(
+          switchMap(user =>
+            this.paymentsApiService.upgradeSubscription(
+              user.id,
+              this.product,
+              this.subscriptionsService.currency,
+              this.recurringUnit
+            )
+          )
+        )
+        .subscribe(() => {
+          this.loadingService.setLoading(false);
+        });
+    };
+
+    combineLatest([
+      this.userSubscriptionService.upgradeAllowed$(),
+      this.alreadySubscribed$,
+      this.alreadySubscribedHigher$,
+      this.alreadySubscribedLower$
+    ]).subscribe(([upgradeAllowed, alreadySubscribed, alreadySubscribedHigher, alreadySubscribedLower]) => {
+      if (alreadySubscribed) {
+        if (this.automaticRenewal) {
+          this.popNotificationsService.error(
+            this.translateService.instant("You already have an active subscription of this kind.")
+          );
+          this.loadingService.setLoading(false);
+          return;
+        } else {
+          const modal: NgbModalRef = this.modalService.open(ConfirmationDialogComponent);
+          const componentInstance: ConfirmationDialogComponent = modal.componentInstance;
+
+          componentInstance.message = this.translateService.instant(
+            "You are already on this plan. If you buy it again, your expiration date will be extended by one year."
+          );
+
+          modal.closed.subscribe(item => {
+            startCheckout();
+          });
+
+          modal.dismissed.subscribe(() => {
             this.loadingService.setLoading(false);
-            return;
-          } else {
-            const modal: NgbModalRef = this.modalService.open(ConfirmationDialogComponent);
-            const componentInstance: ConfirmationDialogComponent = modal.componentInstance;
+          });
+        }
+      } else if (alreadySubscribedHigher) {
+        const modal: NgbModalRef = this.modalService.open(InformationDialogComponent);
+        const componentInstance: InformationDialogComponent = modal.componentInstance;
 
-            componentInstance.message = this.translateService.instant(
-              "You are already on this plan. If you buy it again, your expiration date will be extended by one year."
-            );
+        componentInstance.message =
+          this.translateService.instant("You are already subscribed to a higher plan.") +
+          " " +
+          this.translateService.instant(
+            "For this reason, you cannot purchase this at the moment, as AstroBin does not currently offer a " +
+            "downgrade path."
+          );
 
-            modal.closed.subscribe(item => {
-              startCheckout();
-            });
+        this.loadingService.setLoading(false);
+      } else if (alreadySubscribedLower) {
+        if (upgradeAllowed) {
+          const modal: NgbModalRef = this.modalService.open(ConfirmationDialogComponent);
+          const componentInstance: ConfirmationDialogComponent = modal.componentInstance;
 
-            modal.dismissed.subscribe(() => {
-              this.loadingService.setLoading(false);
-            });
-          }
-        } else if (alreadySubscribedHigher) {
-          const modal: NgbModalRef = this.modalService.open(InformationDialogComponent);
-          const componentInstance: InformationDialogComponent = modal.componentInstance;
-
-          componentInstance.message =
-            this.translateService.instant("You are already subscribed to a higher plan.") +
-            " " +
-            this.translateService.instant(
-              "For this reason, you cannot purchase this at the moment, as AstroBin does not currently offer a " +
-              "downgrade path."
-            );
+          componentInstance.message = this.translateService.instant(
+            "Upgrade your subscription now, and only pay the difference at your next billing cycle. Your next " +
+            "payment will include the next billing period, minus the unused portion of your current billing period."
+          );
 
           this.loadingService.setLoading(false);
-        } else if (alreadySubscribedLower) {
-          const modal: NgbModalRef = this.modalService.open(InformationDialogComponent);
-          const componentInstance: InformationDialogComponent = modal.componentInstance;
 
-          componentInstance.message =
-            this.translateService.instant("You are already subscribed to a lower plan.") +
-            " " +
-            this.translateService.instant(
-              "For this reason, you cannot purchase this at the moment, as AstroBin does not currently offer an " +
-              "upgrade path."
-            ) +
-            " " +
-            this.translateService.instant(
-              "Please first cancel your current subscription, and then you will be able to purchase this one."
-            );
-
-          this.loadingService.setLoading(false);
+          modal.closed.subscribe(() => {
+            startUpgrade();
+          });
         } else {
           startCheckout();
         }
+      } else {
+        startCheckout();
       }
-    );
+    });
   }
 
   payYearly(): void {

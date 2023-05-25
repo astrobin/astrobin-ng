@@ -19,7 +19,8 @@ context("lite", () => {
       cy.route("get", "**/payments/pricing/lite/USD/", {
         discount: 0,
         price: 20,
-        fullPrice: 20
+        fullPrice: 20,
+        prorateAmount: 0
       }).as("pricing");
       cy.route("get", "**/images/image/?user=1", {}).as("userImages");
 

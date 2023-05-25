@@ -8,16 +8,104 @@ import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { UserSubscriptionServiceInterface } from "@shared/services/user-subscription/user-subscription.service-interface";
 import { SubscriptionName } from "@shared/types/subscription-name.type";
-import { Observable, zip } from "rxjs";
+import { combineLatest, Observable, zip } from "rxjs";
 import { map, switchMap, take } from "rxjs/operators";
 import { selectAuth, selectCurrentUserProfile } from "@features/account/store/auth.selectors";
+import { SubscriptionsService } from "@features/subscriptions/services/subscriptions.service";
+import { TranslateService } from "@ngx-translate/core";
+import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
 
 @Injectable({
   providedIn: "root"
 })
 export class UserSubscriptionService extends BaseService implements UserSubscriptionServiceInterface {
-  constructor(public readonly store$: Store<State>, public readonly loadingService: LoadingService) {
+  constructor(
+    public readonly store$: Store<State>,
+    public readonly loadingService: LoadingService,
+    public readonly subscriptionsService: SubscriptionsService,
+    public readonly translateService: TranslateService
+  ) {
     super(loadingService);
+  }
+
+  getUpgradeMessage$(product: PayableProductInterface): Observable<string> {
+    return this.store$.select(selectCurrentUserProfile).pipe(
+      switchMap(userProfile =>
+        combineLatest([
+          this.hasValidSubscription$(userProfile, [
+            SubscriptionName.ASTROBIN_LITE,
+            SubscriptionName.ASTROBIN_PREMIUM
+          ]),
+          this.hasValidSubscription$(userProfile, [
+            SubscriptionName.ASTROBIN_LITE_AUTORENEW,
+            SubscriptionName.ASTROBIN_PREMIUM_AUTORENEW
+          ]),
+          this.hasValidSubscription$(userProfile, [
+            SubscriptionName.ASTROBIN_LITE_2020,
+            SubscriptionName.ASTROBIN_PREMIUM_2020,
+            SubscriptionName.ASTROBIN_ULTIMATE_2020
+          ]),
+          this.hasValidSubscription$(userProfile, [
+            SubscriptionName.ASTROBIN_LITE_2020_AUTORENEW_MONTHLY,
+            SubscriptionName.ASTROBIN_PREMIUM_2020_AUTORENEW_MONTHLY,
+            SubscriptionName.ASTROBIN_ULTIMATE_2020_AUTORENEW_MONTHLY,
+            SubscriptionName.ASTROBIN_LITE_2020_AUTORENEW_YEARLY,
+            SubscriptionName.ASTROBIN_PREMIUM_2020_AUTORENEW_YEARLY,
+            SubscriptionName.ASTROBIN_ULTIMATE_2020_AUTORENEW_YEARLY
+          ])
+        ])
+      ),
+      map(
+        ([
+           hasNonRecurringPayPalSubscription,
+           hasRecurringPayPalSubscription,
+           hasNonRecurringStripeSubscription,
+           hasRecurringStripeSubscription
+         ]) => {
+          if (
+            hasNonRecurringStripeSubscription ||
+            hasRecurringPayPalSubscription ||
+            hasNonRecurringPayPalSubscription
+          ) {
+            return this.translateService.instant(
+              "AstroBin doesn't support pro-rated subscription upgrades for customers with a non-recurring " +
+              "subscription or a subscription purchased via PayPal, but we're happy to make it happen manually. If " +
+              "you're on a lower subscription tier and would like to upgrade to <strong>{{0}}</strong>, please just " +
+              "subscribe using the button below, and then contact us at {{1}} to get a refund for the unused time on " +
+              "your old subscription. Thanks!",
+              {
+                0: this.subscriptionsService.getName(product),
+                1: `<a href="mailto:support@astrobin.com">support@astrobin.com</a>`
+              }
+            );
+          } else {
+            return this.translateService.instant(
+              "AstroBin couldn't recognize your subscription and this shouldn't happen. Please contact us at " +
+              "{{0}} so we can investigate, thanks!",
+              {
+                0: `<a href="mailto:support@astrobin.com">support@astrobin.com</a>`
+              }
+            );
+          }
+        }
+      )
+    );
+  }
+
+  upgradeAllowed$(): Observable<boolean> {
+    return this.store$.select(selectCurrentUserProfile).pipe(
+      switchMap(userProfile =>
+        this.hasValidSubscription$(userProfile, [
+          SubscriptionName.ASTROBIN_LITE_2020_AUTORENEW_MONTHLY,
+          SubscriptionName.ASTROBIN_PREMIUM_2020_AUTORENEW_MONTHLY,
+          SubscriptionName.ASTROBIN_ULTIMATE_2020_AUTORENEW_MONTHLY,
+          SubscriptionName.ASTROBIN_LITE_2020_AUTORENEW_YEARLY,
+          SubscriptionName.ASTROBIN_PREMIUM_2020_AUTORENEW_YEARLY,
+          SubscriptionName.ASTROBIN_ULTIMATE_2020_AUTORENEW_YEARLY
+        ])
+      ),
+      map(hasRecurringStripeSubscription => hasRecurringStripeSubscription)
+    );
   }
 
   hasValidSubscription$(userProfile: UserProfileInterface, subscriptionNames: SubscriptionName[]): Observable<boolean> {

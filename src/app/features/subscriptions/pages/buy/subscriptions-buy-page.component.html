@@ -1,5 +1,4 @@
 <h1 class="d-flex align-items-center">
-
   <span class="flex-fill">
     {{ subscriptionsService.getName(product) }}
     <ng-container *ngIf="alreadySubscribed$ | async as alreadySubscribed">
@@ -9,49 +8,51 @@
     </ng-container>
   </span>
 
-  <span *ngIf="pricing$ | async as pricing; else loadingTemplate" class="price">
-    <astrobin-price
-      [currency]="subscriptionsService.currency"
-      [pricing]="pricing[product]"
-      [recurringUnit]="recurringUnit"
-      [showRecurringUnit]="false"
-    ></astrobin-price>
+  <ng-container *ngIf="(alreadySubscribed$ | async) === false && (alreadySubscribedHigher$ | async) === false">
+    <span *ngIf="pricing$ | async as pricing; else loadingTemplate" class="price">
+      <astrobin-price
+        [currency]="subscriptionsService.currency"
+        [pricing]="pricing[product]"
+        [recurringUnit]="recurringUnit"
+        [showRecurringUnit]="false"
+      ></astrobin-price>
 
-    <div class="btn-group ms-3" role="group">
-      <input
-        (click)="payYearly()"
-        [checked]="recurringUnit === RecurringUnit.YEARLY"
-        autocomplete="off"
-        checked
-        class="btn-check"
-        id="pay-yearly"
-        name="pay-yearly"
-        type="radio"
-      />
-      <label class="btn btn-outline-primary" for="pay-yearly">{{ "Yearly" | translate }}</label>
+      <div class="btn-group ms-3" role="group">
+        <input
+          (click)="payYearly()"
+          [checked]="recurringUnit === RecurringUnit.YEARLY"
+          autocomplete="off"
+          checked
+          class="btn-check"
+          id="pay-yearly"
+          name="pay-yearly"
+          type="radio"
+        />
+        <label class="btn btn-outline-primary" for="pay-yearly">{{ "Yearly" | translate }}</label>
 
-      <input
-        (click)="payMonthly()"
-        [checked]="recurringUnit === RecurringUnit.MONTHLY"
-        autocomplete="off"
-        class="btn-check"
-        id="pay-monthly"
-        name="pay-monthly"
-        type="radio"
-      />
-      <label class="btn btn-outline-primary" for="pay-monthly">{{ "Monthly" | translate }}</label>
-    </div>
-  </span>
-
+        <input
+          (click)="payMonthly()"
+          [checked]="recurringUnit === RecurringUnit.MONTHLY"
+          autocomplete="off"
+          class="btn-check"
+          id="pay-monthly"
+          name="pay-monthly"
+          type="radio"
+        />
+        <label class="btn btn-outline-primary" for="pay-monthly">{{ "Monthly" | translate }}</label>
+      </div>
+    </span>
+  </ng-container>
 </h1>
 
-<small *ngIf="(availableSubscriptions$ | async)?.nonAutorenewingSupported">
+<small *ngIf="(availableSubscriptions$ | async)?.nonAutorenewingSupported && (alreadySubscribed$ | async) === false">
   {{ " Automatic renewal" | translate }}:
 
   <astrobin-toggle-button
     (toggle)="automaticRenewal = $event"
     *ngIf="recurringUnit === RecurringUnit.YEARLY"
-    [value]="automaticRenewal">
+    [value]="automaticRenewal"
+  >
   </astrobin-toggle-button>
 
   <strong *ngIf="recurringUnit === RecurringUnit.MONTHLY">
@@ -63,11 +64,15 @@
 
 <ngb-accordion class="info">
   <ngb-panel
-    *ngIf="product === 'premium' || product === 'ultimate'"
+    *ngIf="
+      (alreadySubscribedLower$ | async) === true &&
+      (alreadySubscribed$ | async) === false &&
+      (userSubscriptionService.upgradeAllowed$() | async) === false
+    "
     title="{{ 'Want to upgrade from a lower subscription tier?' | translate }}"
   >
     <ng-template ngbPanelContent>
-      <p [innerHTML]="upgradeMessage"></p>
+      <p [innerHTML]="userSubscriptionService.getUpgradeMessage$(product) | async"></p>
     </ng-template>
   </ngb-panel>
 
@@ -99,15 +104,8 @@
   </ngb-panel>
 </ngb-accordion>
 
-
-<ng-container *ngIf="alreadySubscribed$ | async as alreadySubscribed">
-  <ng-container *ngIf="!alreadySubscribed">
-    <ng-container [ngTemplateOutlet]="buyButtonTemplate"></ng-container>
-  </ng-container>
-
-  <ng-container *ngIf="alreadySubscribed">
-    <ng-container [ngTemplateOutlet]="cancelButtonTemplate"></ng-container>
-  </ng-container>
+<ng-container *ngIf="(alreadySubscribed$ | async) === true; else buyButtonTemplate">
+  <ng-container [ngTemplateOutlet]="cancelButtonTemplate"></ng-container>
 </ng-container>
 
 <ng-template #cancelButtonTemplate>
@@ -154,22 +152,47 @@
         {{ "Buy 1 year" | translate }}
       </ng-container>
       <ng-container *ngIf="automaticRenewal">
-        {{ "Subscribe" | translate }}
+        <ng-container *ngIf="(userSubscriptionService.upgradeAllowed$() | async) === true">
+          {{ "Upgrade" | translate }}
+        </ng-container>
+        <ng-container *ngIf="(userSubscriptionService.upgradeAllowed$() | async) === false">
+          {{ "Subscribe" | translate }}
+        </ng-container>
       </ng-container>
 
       <span class="icons">
-        <img *ngIf="subscriptionsService.supportsAliPayPaymentType" alt="AliPay" class="icon"
-             src="/assets/images/alipay-brands.svg" />
+        <img
+          *ngIf="subscriptionsService.supportsAliPayPaymentType"
+          alt="AliPay"
+          class="icon"
+          src="/assets/images/alipay-brands.svg"
+        />
 
-        <img *ngIf="subscriptionsService.supportsCardPaymentType" alt="Visa" class="icon"
-             src="/assets/images/cc-visa-brands.svg" />
-        <img *ngIf="subscriptionsService.supportsCardPaymentType" alt="Mastercard" class="icon"
-             src="/assets/images/cc-mastercard-brands.svg" />
-        <img *ngIf="subscriptionsService.supportsCardPaymentType" alt="Amex" class="icon"
-             src="/assets/images/cc-amex-brands.svg" />
+        <img
+          *ngIf="subscriptionsService.supportsCardPaymentType"
+          alt="Visa"
+          class="icon"
+          src="/assets/images/cc-visa-brands.svg"
+        />
+        <img
+          *ngIf="subscriptionsService.supportsCardPaymentType"
+          alt="Mastercard"
+          class="icon"
+          src="/assets/images/cc-mastercard-brands.svg"
+        />
+        <img
+          *ngIf="subscriptionsService.supportsCardPaymentType"
+          alt="Amex"
+          class="icon"
+          src="/assets/images/cc-amex-brands.svg"
+        />
 
-        <img *ngIf="subscriptionsService.supportsSepaDebitPaymentType" alt="SEPA" class="icon"
-             src="/assets/images/bank.svg" />
+        <img
+          *ngIf="subscriptionsService.supportsSepaDebitPaymentType"
+          alt="SEPA"
+          class="icon"
+          src="/assets/images/bank.svg"
+        />
       </span>
 
       <span class="stripe-info">

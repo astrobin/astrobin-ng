@@ -33,6 +33,18 @@ export class PaymentsApiService {
     );
   }
 
+  public upgradeSubscription(
+    userId: number,
+    product: PayableProductInterface,
+    currency: string,
+    recurringUnit: RecurringUnit
+  ): Observable<void> {
+    return this.http.post<void>(
+      `${environment.classicApiUrl}/payments/upgrade-subscription/${userId}/${product}/${currency}/${recurringUnit}/`,
+      {}
+    );
+  }
+
   public getPrice(
     product: PayableProductInterface,
     currency: string,

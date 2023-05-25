@@ -2,10 +2,16 @@ astrobin-price {
   height: 28px;
 }
 
-h1 fa-icon {
-  font-size: 1.25rem;
-  vertical-align: middle;
-  color: var(--white);
+h1 {
+  astrobin-loading-indicator {
+    width: auto;
+  }
+
+  fa-icon {
+    font-size: 1.25rem;
+    vertical-align: middle;
+    color: var(--white);
+  }
 }
 
 .btn.buy {
@@ -13,7 +19,7 @@ h1 fa-icon {
 
   .icons {
     display: inline-block;
-    margin-left: .75rem;
+    margin-left: 0.75rem;
 
     .icon {
       height: 1.5rem;
@@ -21,10 +27,10 @@ h1 fa-icon {
   }
 
   .stripe-info {
-    font-size: .75rem;
-    opacity: .5;
+    font-size: 0.75rem;
+    opacity: 0.5;
     display: block;
-    margin-top: .5rem;
+    margin-top: 0.5rem;
   }
 }
 
