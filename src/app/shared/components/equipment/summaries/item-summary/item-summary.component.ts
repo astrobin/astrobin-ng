@@ -30,7 +30,7 @@ import {
   EquipmentItemService
 } from "@features/equipment/services/equipment-item.service";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
-import { SensorInterface } from "@features/equipment/types/sensor.interface";
+import { SensorInterface, instanceOfSensor } from "@features/equipment/types/sensor.interface";
 import { MountInterface } from "@features/equipment/types/mount.interface";
 import { MountDisplayProperty, MountService } from "@features/equipment/services/mount.service";
 import { FilterInterface } from "@features/equipment/types/filter.interface";
@@ -187,6 +187,10 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
       return this.cameraService.getPrintablePropertyName(CameraDisplayProperty.SENSOR, true);
     }
 
+    if (this.item.klass === EquipmentItemType.SENSOR) {
+      return this.sensorService.getPrintablePropertyName(SensorDisplayProperty.CAMERAS, true);
+    }
+    
     return this.translateService.instant("Sub-item");
   }
 
@@ -255,6 +259,23 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
         )
         .subscribe(sensor => (this.subItem = sensor));
     }
+
+    if (instanceOfSensor(this.item) && this.item.cameras) {
+      this.store$.dispatch(new LoadSensor({ id: this.item.cameras[0] }));
+      this.store$
+        .select(selectEquipmentItem, { id: this.item.cameras[0], type: EquipmentItemType.CAMERA })
+        .pipe(
+          filter(camera => !!camera),
+          take(1),
+          tap(camera => {
+            if (!!camera.brand) {
+              this.store$.dispatch(new LoadBrand({ id: camera.brand }));
+            }
+          })
+        )
+        .subscribe(camera => (this.subItem = camera));
+    }
+
 
     if (this.showMostOftenUsedWith) {
       const payload = { itemType: this.item.klass, itemId: this.item.id };
