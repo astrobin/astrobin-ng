@@ -231,7 +231,9 @@ export class SubscriptionsService {
           SubscriptionName.ASTROBIN_LITE_2020_AUTORENEW_MONTHLY,
           SubscriptionName.ASTROBIN_LITE_2020_AUTORENEW_YEARLY,
           SubscriptionName.ASTROBIN_PREMIUM_2020_AUTORENEW_MONTHLY,
-          SubscriptionName.ASTROBIN_PREMIUM_2020_AUTORENEW_YEARLY
+          SubscriptionName.ASTROBIN_PREMIUM_2020_AUTORENEW_YEARLY,
+          SubscriptionName.ASTROBIN_ULTIMATE_2020_AUTORENEW_MONTHLY,
+          SubscriptionName.ASTROBIN_ULTIMATE_2020_AUTORENEW_YEARLY
         ]) {
           const subscription: SubscriptionInterface = state.app.subscriptions.filter(
             s => s.name === subscriptionName
