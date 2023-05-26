@@ -41,7 +41,8 @@ export class SensorGenerator {
         itemListings: [],
         brandListings: [],
         allowFullRetailerIntegration: false
-      }
+      },
+      cameras: source.cameras || []
     };
   }
 }
