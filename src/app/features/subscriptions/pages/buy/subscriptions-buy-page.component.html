@@ -2,9 +2,10 @@
   <span class="flex-fill">
     {{ subscriptionsService.getName(product) }}
     <ng-container *ngIf="alreadySubscribed$ | async as alreadySubscribed">
-      <span *ngIf="alreadySubscribed">
+      <sup *ngIf="alreadySubscribed" class="text-success">
         <fa-icon class="text-success" icon="check-circle" ngbTooltip="{{ 'Subscribed' | translate }}"></fa-icon>
-      </span>
+        {{ "Subscribed" | translate }}
+      </sup>
     </ng-container>
   </span>
 

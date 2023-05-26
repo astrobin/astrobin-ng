@@ -7,10 +7,12 @@ h1 {
     width: auto;
   }
 
-  fa-icon {
+  sup {
     font-size: 1.25rem;
     vertical-align: middle;
     color: var(--white);
+    margin-bottom: 1.5rem;
+    display: inline-block;
   }
 }
 
