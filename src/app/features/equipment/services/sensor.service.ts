@@ -19,7 +19,8 @@ export enum SensorDisplayProperty {
   READ_NOISE = "READ_NOISE",
   FRAME_RATE = "FRAME_RATE",
   ADC = "ADC",
-  COLOR_OR_MONO = "COLOR_OR_MONO"
+  COLOR_OR_MONO = "COLOR_OR_MONO",
+  CAMERAS = "CAMERAS"
 }
 
 @Injectable({
@@ -54,7 +55,8 @@ export class SensorService extends BaseService implements EquipmentItemServiceIn
       SensorDisplayProperty.READ_NOISE,
       SensorDisplayProperty.FRAME_RATE,
       SensorDisplayProperty.ADC,
-      SensorDisplayProperty.COLOR_OR_MONO
+      SensorDisplayProperty.COLOR_OR_MONO,
+      SensorDisplayProperty.CAMERAS
     ];
   }
 
@@ -114,6 +116,11 @@ export class SensorService extends BaseService implements EquipmentItemServiceIn
         return of(propertyValue || item.adc ? `${propertyValue || item.adc}-bit` : "");
       case SensorDisplayProperty.COLOR_OR_MONO:
         return of(this.humanizeColorOrMono(propertyValue || item.colorOrMono));
+      case SensorDisplayProperty.CAMERAS:
+        const ids = propertyValue || item.cameras;
+        if (ids == null) return of(null);
+        return of(ids ? `sum: ${ids[0] + ids[1]}` : "nothing");
+
       default:
         throw Error(`Invalid property: ${property}`);
     }
@@ -165,6 +172,8 @@ export class SensorService extends BaseService implements EquipmentItemServiceIn
         return shortForm ? this.translateService.instant("ADC") : this.translateService.instant("ADC") + " (bits)";
       case SensorDisplayProperty.COLOR_OR_MONO:
         return this.translateService.instant("Color or mono");
+      case SensorDisplayProperty.CAMERAS:
+        return this.translateService.instant("Cameras");
       default:
         throw Error(`Invalid property: ${propertyName}`);
     }
