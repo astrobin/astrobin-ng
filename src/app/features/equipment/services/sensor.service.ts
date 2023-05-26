@@ -2,9 +2,16 @@ import { Injectable } from "@angular/core";
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { EquipmentItemServiceInterface } from "@features/equipment/services/equipment-item.service-interface";
+import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { ColorOrMono, SensorInterface } from "@features/equipment/types/sensor.interface";
 import { TranslateService } from "@ngx-translate/core";
 import { Observable, of } from "rxjs";
+import { filter, map, switchMap, take, tap } from "rxjs/operators";
+import { Store } from "@ngrx/store";
+import { State } from "@app/store/state";
+import { selectBrand, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
+import { LoadBrand, LoadEquipmentItem } from "@features/equipment/store/equipment.actions";
+import { CameraInterface } from "@features/equipment/types/camera.interface";
 
 export enum SensorDisplayProperty {
   QUANTUM_EFFICIENCY = "QUANTUM_EFFICIENCY",
@@ -27,7 +34,11 @@ export enum SensorDisplayProperty {
   providedIn: "root"
 })
 export class SensorService extends BaseService implements EquipmentItemServiceInterface {
-  constructor(public readonly loadingService: LoadingService, public readonly translateService: TranslateService) {
+  constructor(
+    public readonly store$: Store<State>,
+    public readonly loadingService: LoadingService, 
+    public readonly translateService: TranslateService
+    ) {
     super(loadingService);
   }
 
@@ -119,7 +130,43 @@ export class SensorService extends BaseService implements EquipmentItemServiceIn
       case SensorDisplayProperty.CAMERAS:
         const ids = propertyValue || item.cameras;
         if (ids == null) return of(null);
-        return of(ids ? `sum: ${ids[0] + ids[1]}` : "nothing");
+
+        // Just get the first Camera
+
+        const id = ids[0];
+        const payload = {
+          id,
+          type: EquipmentItemType.CAMERA
+        };
+
+        this.store$.dispatch(new LoadEquipmentItem(payload));
+
+        return this.store$.select(selectEquipmentItem, payload).pipe(
+          filter(camera => !!camera),
+          take(1),
+          tap(camera => {
+            if (!!camera.brand) {
+              this.store$.dispatch(new LoadBrand({ id: camera.brand }));
+            }
+          }),
+          switchMap((camera: CameraInterface) =>
+            this.store$.select(selectBrand, camera.brand).pipe(
+              filter(brand => {
+                if (!!camera.brand) {
+                  return !!brand;
+                }
+
+                return true;
+              }),
+              take(1),
+              map(brand => ({ brand, camera }))
+            )
+          ),
+          map(
+            ({ brand, camera }) =>
+              `<strong>${brand ? brand.name : this.translateService.instant("(DIY)")}</strong> ${camera.name}`
+          )
+        );
 
       default:
         throw Error(`Invalid property: ${property}`);
@@ -171,7 +218,7 @@ export class SensorService extends BaseService implements EquipmentItemServiceIn
       case SensorDisplayProperty.ADC:
         return shortForm ? this.translateService.instant("ADC") : this.translateService.instant("ADC") + " (bits)";
       case SensorDisplayProperty.COLOR_OR_MONO:
-        return this.translateService.instant("Color or mono");
+        return this.translateService.instant("Color or mono or both");
       case SensorDisplayProperty.CAMERAS:
         return this.translateService.instant("Cameras");
       default:
