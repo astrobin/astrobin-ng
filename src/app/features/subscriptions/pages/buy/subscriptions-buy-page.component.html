@@ -151,13 +151,20 @@
       <ng-container *ngIf="!automaticRenewal">
         {{ "Buy 1 year" | translate }}
       </ng-container>
+
       <ng-container *ngIf="automaticRenewal">
-        <ng-container *ngIf="(userSubscriptionService.upgradeAllowed$() | async) === true">
+        <ng-container
+          *ngIf="
+            (userSubscriptionService.upgradeAllowed$() | async) === true && (alreadySubscribedLower$ | async) === true;
+            else subscribeLabelTemplate
+          "
+        >
           {{ "Upgrade" | translate }}
         </ng-container>
-        <ng-container *ngIf="(userSubscriptionService.upgradeAllowed$() | async) === false">
+
+        <ng-template #subscribeLabelTemplate>
           {{ "Subscribe" | translate }}
-        </ng-container>
+        </ng-template>
       </ng-container>
 
       <span class="icons">

@@ -5,6 +5,8 @@ import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
 import { State } from "@app/store/state";
 import { RecurringUnit } from "@features/subscriptions/types/recurring.unit";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { InformationDialogComponent } from "@shared/components/misc/information-dialog/information-dialog.component";
 
 @Component({
   selector: "astrobin-price",
@@ -24,7 +26,11 @@ export class PriceComponent extends BaseComponentDirective {
   @Input()
   showRecurringUnit = true;
 
-  constructor(public readonly store$: Store<State>, public readonly translateService: TranslateService) {
+  constructor(
+    public readonly store$: Store<State>,
+    public readonly translateService: TranslateService,
+    public readonly modalService: NgbModal
+  ) {
     super(store$);
   }
 
@@ -36,5 +42,13 @@ export class PriceComponent extends BaseComponentDirective {
     }
 
     return "";
+  }
+
+  negativePriceInfo(): void {
+    const modal = this.modalService.open(InformationDialogComponent);
+    const componentInstance: InformationDialogComponent = modal.componentInstance;
+    componentInstance.message = this.translateService.instant(
+      "If you switch to this pricing model, the cost will be temporarily covered by your positive balance."
+    );
   }
 }

@@ -63,9 +63,9 @@ export class UserSubscriptionService extends BaseService implements UserSubscrip
            hasRecurringStripeSubscription
          ]) => {
           if (
-            hasNonRecurringStripeSubscription ||
-            hasRecurringPayPalSubscription ||
-            hasNonRecurringPayPalSubscription
+            (hasNonRecurringStripeSubscription ||
+              hasRecurringPayPalSubscription ||
+              hasNonRecurringPayPalSubscription) && !hasRecurringStripeSubscription
           ) {
             return this.translateService.instant(
               "AstroBin doesn't support pro-rated subscription upgrades for customers with a non-recurring " +
@@ -103,8 +103,7 @@ export class UserSubscriptionService extends BaseService implements UserSubscrip
           SubscriptionName.ASTROBIN_PREMIUM_2020_AUTORENEW_YEARLY,
           SubscriptionName.ASTROBIN_ULTIMATE_2020_AUTORENEW_YEARLY
         ])
-      ),
-      map(hasRecurringStripeSubscription => hasRecurringStripeSubscription)
+      )
     );
   }
 

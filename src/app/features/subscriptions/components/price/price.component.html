@@ -21,7 +21,7 @@
     </span>
 
     <span class="or">
-      {{ 'or' | translate }}
+      {{ "or" | translate }}
     </span>
 
     <span class="yearly">
@@ -34,13 +34,28 @@
 </ng-template>
 
 <ng-template #priceTemplate let-priceObject="priceObject" let-recurringUnitLabel="recurringUnitLabel">
-  <span *ngIf="priceObject.discount > 0 || priceObject.prorateAmount > 0" class="full-price">
-    {{ priceObject.fullPrice | currency : currency : "symbol" : "1.2-2" : translateService.currentLang }}
-  </span>
+  <ng-container *ngIf="priceObject.price > 0; else negativePriceTemplate">
+    <span *ngIf="priceObject.discount > 0 || priceObject.prorateAmount > 0" class="full-price">
+      {{ priceObject.fullPrice | currency : currency : "symbol" : "1.2-2" : translateService.currentLang }}
+    </span>
 
-  {{ priceObject.price | currency : currency : "symbol" : "1.2-2" : translateService.currentLang }}
+    {{ priceObject.price | currency : currency : "symbol" : "1.2-2" : translateService.currentLang }}
+    <ng-container [ngTemplateOutlet]="recurringUnitTemplate"></ng-container>
+  </ng-container>
 
-  <small *ngIf="showRecurringUnit" class="text-muted">/ {{ recurringUnitLabel }}</small>
+  <ng-template #negativePriceTemplate>
+    {{ 0 | currency : currency : "symbol" : "1.2-2" : translateService.currentLang }}
+    <sup>
+      <a (click)="negativePriceInfo()" astrobinEventPreventDefault astrobinEventStopPropagation href="">
+        <fa-icon icon="info-circle"></fa-icon>
+      </a>
+    </sup>
+    <ng-container [ngTemplateOutlet]="recurringUnitTemplate"></ng-container>
+  </ng-template>
+
+  <ng-template #recurringUnitTemplate>
+    <small *ngIf="showRecurringUnit" class="text-muted">/ {{ recurringUnitLabel }}</small>
+  </ng-template>
 </ng-template>
 
 <ng-template #loadingTemplate>

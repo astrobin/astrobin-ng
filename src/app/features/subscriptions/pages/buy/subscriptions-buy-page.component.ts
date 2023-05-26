@@ -31,6 +31,7 @@ import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
 import { InformationDialogComponent } from "@shared/components/misc/information-dialog/information-dialog.component";
 import { SubscriptionName } from "@shared/types/subscription-name.type";
+import { WindowRefService } from "@shared/services/window-ref.service";
 
 declare var Stripe: any;
 
@@ -87,7 +88,8 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
     public readonly jsonApiService: JsonApiService,
     public readonly imageApiService: ImageApiService,
     public readonly domSanitizer: DomSanitizer,
-    public readonly modalService: NgbModal
+    public readonly modalService: NgbModal,
+    public readonly windowRefService: WindowRefService
   ) {
     super(store$);
 
@@ -426,7 +428,7 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
           )
         )
         .subscribe(() => {
-          this.loadingService.setLoading(false);
+          this.windowRefService.locationAssign(`/subscriptions/success?product=${this.product}`);
         });
     };
 
@@ -477,10 +479,19 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
           const modal: NgbModalRef = this.modalService.open(ConfirmationDialogComponent);
           const componentInstance: ConfirmationDialogComponent = modal.componentInstance;
 
-          componentInstance.message = this.translateService.instant(
+          componentInstance.message = "<p>" + this.translateService.instant(
             "Upgrade your subscription now, and only pay the difference at your next billing cycle. Your next " +
-            "payment will include the next billing period, minus the unused portion of your current billing period."
-          );
+            "payment will include the next billing period, minus the unused portion of your current billing period. " +
+            "If you switch from a yearly to a monthly plan, any balance in your favor will be automatically applied " +
+            "to your future invoices until exhausted."
+          ) + "</p>";
+
+          componentInstance.message +=
+            "<p>" +
+            this.translateService.instant("If you have any question, please contact us at {{0}}.", {
+              0: `<a href="mailto:support@astrobin.com">support@astrobin.com</a>`
+            }) +
+            "</p>";
 
           this.loadingService.setLoading(false);
 
