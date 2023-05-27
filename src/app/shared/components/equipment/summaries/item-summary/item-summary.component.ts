@@ -432,13 +432,6 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
           this.item as SensorInterface,
           SensorDisplayProperty.COLOR_OR_MONO
         )
-      },
-      {
-        name: this.sensorService.getPrintablePropertyName(SensorDisplayProperty.CAMERAS, true),
-        value: this.sensorService.getPrintableProperty$(
-          this.item as SensorInterface,
-          SensorDisplayProperty.CAMERAS
-        )
       }
     ]);
   }
