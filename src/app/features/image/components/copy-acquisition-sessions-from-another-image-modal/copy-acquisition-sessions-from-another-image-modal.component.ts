@@ -158,6 +158,9 @@ export class CopyAcquisitionSessionsFromAnotherImageModalComponent extends BaseC
       ...newModel
     };
 
+    this.imageEditService.form.patchValue({ deepSkyAcquisitions: newModel.deepSkyAcquisitions });
+    this.imageEditService.form.patchValue({ solarSystemAcquisitions: newModel.solarSystemAcquisitions });
+
     const acquisitionWithFilters = image.deepSkyAcquisitions.filter(acquisition => !!acquisition.filter2);
     let processedAcquisitions = 0;
 
