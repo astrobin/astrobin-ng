@@ -131,6 +131,30 @@ describe("UserSubscriptionService", () => {
     });
   });
 
+  describe("getUserSubscription$", () => {
+    it("should get active Ultimate", done => {
+      service
+        .getActiveUserSubscription$(initialState.auth.userProfile, SubscriptionName.ASTROBIN_ULTIMATE_2020)
+        .subscribe(result => {
+          expect(result).not.toBeNull();
+          done();
+        });
+    });
+
+    it("should not get inactive Ultimate", done => {
+      const state = { ...initialState };
+      state.auth.userSubscriptions[0].active = false;
+      store.setState(state);
+
+      service
+        .getActiveUserSubscription$(initialState.auth.userProfile, SubscriptionName.ASTROBIN_ULTIMATE_2020)
+        .subscribe(result => {
+          expect(result).toBeNull();
+          done();
+        });
+    });
+  });
+
   describe("uploadAllowed", () => {
     it("should be true if user is Ultimate 2020", done => {
       service.uploadAllowed$().subscribe(allowed => {

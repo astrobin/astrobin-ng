@@ -32,6 +32,7 @@ import { ConfirmationDialogComponent } from "@shared/components/misc/confirmatio
 import { InformationDialogComponent } from "@shared/components/misc/information-dialog/information-dialog.component";
 import { SubscriptionName } from "@shared/types/subscription-name.type";
 import { WindowRefService } from "@shared/services/window-ref.service";
+import { UserSubscriptionInterface } from "@shared/interfaces/user-subscription.interface";
 
 declare var Stripe: any;
 
@@ -72,6 +73,33 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
   currencyPipe: CurrencyPipe;
   recurringUnit = RecurringUnit.YEARLY;
   automaticRenewal = true;
+  activeUserSubscription$: Observable<UserSubscriptionInterface | null> = this.currentUserProfile$.pipe(
+    filter(userProfile => !!userProfile),
+    switchMap(userProfile => {
+      const subscriptionNames = {
+        [PayableProductInterface.LITE]: {
+          [RecurringUnit.YEARLY]: SubscriptionName.ASTROBIN_LITE_2020_AUTORENEW_YEARLY,
+          [RecurringUnit.MONTHLY]: SubscriptionName.ASTROBIN_LITE_2020_AUTORENEW_MONTHLY,
+          default: SubscriptionName.ASTROBIN_LITE_2020
+        },
+        [PayableProductInterface.PREMIUM]: {
+          [RecurringUnit.MONTHLY]: SubscriptionName.ASTROBIN_PREMIUM_2020_AUTORENEW_MONTHLY,
+          [RecurringUnit.YEARLY]: SubscriptionName.ASTROBIN_PREMIUM_2020_AUTORENEW_YEARLY,
+          default: SubscriptionName.ASTROBIN_PREMIUM_2020
+        },
+        [PayableProductInterface.ULTIMATE]: {
+          [RecurringUnit.MONTHLY]: SubscriptionName.ASTROBIN_ULTIMATE_2020_AUTORENEW_MONTHLY,
+          [RecurringUnit.YEARLY]: SubscriptionName.ASTROBIN_ULTIMATE_2020_AUTORENEW_YEARLY,
+          default: SubscriptionName.ASTROBIN_ULTIMATE_2020
+        }
+      };
+
+      const subscriptionName =
+        subscriptionNames[this.product]?.[this.recurringUnit] || subscriptionNames[this.product]?.default;
+
+      return this.userSubscriptionService.getActiveUserSubscription$(userProfile, subscriptionName);
+    })
+  );
 
   constructor(
     public readonly store$: Store<State>,
@@ -342,7 +370,8 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
           }
 
           if (hasRecurringStripeSubscription) {
-            message += "<li>" +
+            message +=
+              "<li>" +
               this.translateService.instant(
                 "You have a recurring Stripe subscription (paid by credit card, Sepa, AliPay, or other). You can " +
                 "cancel it on Stripe's customer portal by logging in with the email address associated to your " +
@@ -479,12 +508,15 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
           const modal: NgbModalRef = this.modalService.open(ConfirmationDialogComponent);
           const componentInstance: ConfirmationDialogComponent = modal.componentInstance;
 
-          componentInstance.message = "<p>" + this.translateService.instant(
-            "Upgrade your subscription now, and only pay the difference at your next billing cycle. Your next " +
-            "payment will include the next billing period, minus the unused portion of your current billing period. " +
-            "If you switch from a yearly to a monthly plan, any balance in your favor will be automatically applied " +
-            "to your future invoices until exhausted."
-          ) + "</p>";
+          componentInstance.message =
+            "<p>" +
+            this.translateService.instant(
+              "Upgrade your subscription now, and only pay the difference at your next billing cycle. Your next " +
+              "payment will include the next billing period, minus the unused portion of your current billing period. " +
+              "If you switch from a yearly to a monthly plan, any balance in your favor will be automatically applied " +
+              "to your future invoices until exhausted."
+            ) +
+            "</p>";
 
           componentInstance.message +=
             "<p>" +

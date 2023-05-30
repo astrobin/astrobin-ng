@@ -32,10 +32,7 @@ export class UserSubscriptionService extends BaseService implements UserSubscrip
     return this.store$.select(selectCurrentUserProfile).pipe(
       switchMap(userProfile =>
         combineLatest([
-          this.hasValidSubscription$(userProfile, [
-            SubscriptionName.ASTROBIN_LITE,
-            SubscriptionName.ASTROBIN_PREMIUM
-          ]),
+          this.hasValidSubscription$(userProfile, [SubscriptionName.ASTROBIN_LITE, SubscriptionName.ASTROBIN_PREMIUM]),
           this.hasValidSubscription$(userProfile, [
             SubscriptionName.ASTROBIN_LITE_AUTORENEW,
             SubscriptionName.ASTROBIN_PREMIUM_AUTORENEW
@@ -65,7 +62,8 @@ export class UserSubscriptionService extends BaseService implements UserSubscrip
           if (
             (hasNonRecurringStripeSubscription ||
               hasRecurringPayPalSubscription ||
-              hasNonRecurringPayPalSubscription) && !hasRecurringStripeSubscription
+              hasNonRecurringPayPalSubscription) &&
+            !hasRecurringStripeSubscription
           ) {
             return this.translateService.instant(
               "AstroBin doesn't support pro-rated subscription upgrades for customers with a non-recurring " +
@@ -93,18 +91,20 @@ export class UserSubscriptionService extends BaseService implements UserSubscrip
   }
 
   upgradeAllowed$(): Observable<boolean> {
-    return this.store$.select(selectCurrentUserProfile).pipe(
-      switchMap(userProfile =>
-        this.hasValidSubscription$(userProfile, [
-          SubscriptionName.ASTROBIN_LITE_2020_AUTORENEW_MONTHLY,
-          SubscriptionName.ASTROBIN_PREMIUM_2020_AUTORENEW_MONTHLY,
-          SubscriptionName.ASTROBIN_ULTIMATE_2020_AUTORENEW_MONTHLY,
-          SubscriptionName.ASTROBIN_LITE_2020_AUTORENEW_YEARLY,
-          SubscriptionName.ASTROBIN_PREMIUM_2020_AUTORENEW_YEARLY,
-          SubscriptionName.ASTROBIN_ULTIMATE_2020_AUTORENEW_YEARLY
-        ])
-      )
-    );
+    return this.store$
+      .select(selectCurrentUserProfile)
+      .pipe(
+        switchMap(userProfile =>
+          this.hasValidSubscription$(userProfile, [
+            SubscriptionName.ASTROBIN_LITE_2020_AUTORENEW_MONTHLY,
+            SubscriptionName.ASTROBIN_PREMIUM_2020_AUTORENEW_MONTHLY,
+            SubscriptionName.ASTROBIN_ULTIMATE_2020_AUTORENEW_MONTHLY,
+            SubscriptionName.ASTROBIN_LITE_2020_AUTORENEW_YEARLY,
+            SubscriptionName.ASTROBIN_PREMIUM_2020_AUTORENEW_YEARLY,
+            SubscriptionName.ASTROBIN_ULTIMATE_2020_AUTORENEW_YEARLY
+          ])
+        )
+      );
   }
 
   hasValidSubscription$(userProfile: UserProfileInterface, subscriptionNames: SubscriptionName[]): Observable<boolean> {
@@ -129,6 +129,34 @@ export class UserSubscriptionService extends BaseService implements UserSubscrip
         }
 
         return false;
+      })
+    );
+  }
+
+  getActiveUserSubscription$(
+    userProfile: UserProfileInterface,
+    subscriptionName: SubscriptionName
+  ): Observable<UserSubscriptionInterface | null> {
+    return this.store$.pipe(
+      take(1),
+      map(state => {
+        const subscription: SubscriptionInterface = state.app.subscriptions.filter(
+          s => s.name === subscriptionName
+        )[0];
+
+        if (!subscription) {
+          return null;
+        }
+
+        const userSubscriptions = state.auth.userSubscriptions.filter(userSubscription => {
+          return userSubscription.subscription === subscription.id && userSubscription.active;
+        });
+
+        if (userSubscriptions.length > 0) {
+          return userSubscriptions[0];
+        }
+
+        return null;
       })
     );
   }

@@ -105,19 +105,30 @@
   </ngb-panel>
 </ngb-accordion>
 
-<ng-container *ngIf="(alreadySubscribed$ | async) === true; else buyButtonTemplate">
+<ng-container
+  *ngIf="(alreadySubscribed$ | async) === true; else buyButtonTemplate">
   <ng-container [ngTemplateOutlet]="cancelButtonTemplate"></ng-container>
 </ng-container>
 
 <ng-template #cancelButtonTemplate>
-  <button
-    (click)="cancel()"
-    [class.loading]="loadingService.loading$ | async"
-    [disabled]="loadingService.loading$ | async"
-    class="btn btn-primary"
-  >
-    {{ "Cancel subscription" | translate }}
-  </button>
+  <ng-container *ngIf="activeUserSubscription$ | async as activeUserSubscription">
+    <button
+      (click)="cancel()"
+      *ngIf="!activeUserSubscription.cancelled; else alreadyCancelledTemplate"
+      [class.loading]="loadingService.loading$ | async"
+      [disabled]="loadingService.loading$ | async"
+      class="btn btn-primary"
+    >
+      {{ "Cancel subscription" | translate }}
+    </button>
+
+    <ng-template #alreadyCancelledTemplate>
+      <p
+        [translateParams]="{'0': activeUserSubscription.expires | localDate | date: 'mediumDate'}"
+        [translate]="'Your subscription is currently cancelled and it will expire on {{0}}.'">
+      </p>
+    </ng-template>
+  </ng-container>
 </ng-template>
 
 <ng-template #buyButtonTemplate>
