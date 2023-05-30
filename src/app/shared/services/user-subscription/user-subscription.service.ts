@@ -168,11 +168,19 @@ export class UserSubscriptionService extends BaseService implements UserSubscrip
         zip(
           this.hasValidSubscription$(state.auth.userProfile, [
             SubscriptionName.ASTROBIN_ULTIMATE_2020,
+            SubscriptionName.ASTROBIN_ULTIMATE_2020_AUTORENEW_YEARLY,
+            SubscriptionName.ASTROBIN_ULTIMATE_2020_AUTORENEW_MONTHLY,
             SubscriptionName.ASTROBIN_PREMIUM,
             SubscriptionName.ASTROBIN_PREMIUM_AUTORENEW,
-            SubscriptionName.ASTROBIN_PREMIUM_2020
+            SubscriptionName.ASTROBIN_PREMIUM_2020,
+            SubscriptionName.ASTROBIN_PREMIUM_2020_AUTORENEW_YEARLY,
+            SubscriptionName.ASTROBIN_PREMIUM_2020_AUTORENEW_MONTHLY
           ]),
-          this.hasValidSubscription$(state.auth.userProfile, [SubscriptionName.ASTROBIN_LITE_2020]),
+          this.hasValidSubscription$(state.auth.userProfile, [
+            SubscriptionName.ASTROBIN_LITE_2020,
+            SubscriptionName.ASTROBIN_LITE_2020_AUTORENEW_YEARLY,
+            SubscriptionName.ASTROBIN_LITE_2020_AUTORENEW_MONTHLY
+          ]),
           this.hasValidSubscription$(state.auth.userProfile, [
             SubscriptionName.ASTROBIN_LITE,
             SubscriptionName.ASTROBIN_LITE_AUTORENEW
@@ -223,7 +231,11 @@ export class UserSubscriptionService extends BaseService implements UserSubscrip
           SubscriptionName.ASTROBIN_PREMIUM,
           SubscriptionName.ASTROBIN_PREMIUM_AUTORENEW,
           SubscriptionName.ASTROBIN_PREMIUM_2020,
-          SubscriptionName.ASTROBIN_ULTIMATE_2020
+          SubscriptionName.ASTROBIN_PREMIUM_2020_AUTORENEW_YEARLY,
+          SubscriptionName.ASTROBIN_PREMIUM_2020_AUTORENEW_MONTHLY,
+          SubscriptionName.ASTROBIN_ULTIMATE_2020,
+          SubscriptionName.ASTROBIN_ULTIMATE_2020_AUTORENEW_YEARLY,
+          SubscriptionName.ASTROBIN_ULTIMATE_2020_AUTORENEW_MONTHLY
         ])
       )
     );
@@ -236,13 +248,23 @@ export class UserSubscriptionService extends BaseService implements UserSubscrip
         zip(
           this.hasValidSubscription$(state.auth.userProfile, [
             SubscriptionName.ASTROBIN_ULTIMATE_2020,
+            SubscriptionName.ASTROBIN_ULTIMATE_2020_AUTORENEW_YEARLY,
+            SubscriptionName.ASTROBIN_ULTIMATE_2020_AUTORENEW_MONTHLY,
             SubscriptionName.ASTROBIN_PREMIUM,
             SubscriptionName.ASTROBIN_PREMIUM_AUTORENEW,
             SubscriptionName.ASTROBIN_LITE,
             SubscriptionName.ASTROBIN_LITE_AUTORENEW
           ]),
-          this.hasValidSubscription$(state.auth.userProfile, [SubscriptionName.ASTROBIN_PREMIUM_2020]),
-          this.hasValidSubscription$(state.auth.userProfile, [SubscriptionName.ASTROBIN_LITE_2020])
+          this.hasValidSubscription$(state.auth.userProfile, [
+            SubscriptionName.ASTROBIN_PREMIUM_2020,
+            SubscriptionName.ASTROBIN_PREMIUM_2020_AUTORENEW_YEARLY,
+            SubscriptionName.ASTROBIN_PREMIUM_2020_AUTORENEW_MONTHLY
+          ]),
+          this.hasValidSubscription$(state.auth.userProfile, [
+            SubscriptionName.ASTROBIN_LITE_2020,
+            SubscriptionName.ASTROBIN_LITE_2020_AUTORENEW_YEARLY,
+            SubscriptionName.ASTROBIN_LITE_2020_AUTORENEW_MONTHLY
+          ])
         ).pipe(
           map(([isUltimateOrEquivalent, isPremium, isLite]) => ({
             backendConfig: state.app.backendConfig,
