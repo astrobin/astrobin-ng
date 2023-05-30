@@ -131,81 +131,42 @@ export class SensorService extends BaseService implements EquipmentItemServiceIn
         const ids = propertyValue || item.cameras;
         if (ids == null) return of(null);
 
-        // Just get the first Camera
+        let cameraProperties = [];
+        for (const id of ids) {
+          const payload = {
+            id,
+            type: EquipmentItemType.CAMERA
+          };
+          this.store$.dispatch(new LoadEquipmentItem(payload));
 
-        const id0 = ids[0];
-        const payload0 = {
-          id: id0,
-          type: EquipmentItemType.CAMERA
-        };
-
-        this.store$.dispatch(new LoadEquipmentItem(payload0));
-
-        const ret0 = this.store$.select(selectEquipmentItem, payload0).pipe(
-          filter(camera => !!camera),
-          take(1),
-          tap(camera => {
-            if (!!camera.brand) {
-              this.store$.dispatch(new LoadBrand({ id: camera.brand }));
-            }
-          }),
-          switchMap((camera: CameraInterface) =>
-            this.store$.select(selectBrand, camera.brand).pipe(
-              filter(brand => {
-                if (!!camera.brand) {
-                  return !!brand;
-                }
-
-                return true;
-              }),
-              take(1),
-              map(brand => ({ brand, camera }))
+          cameraProperties.push(this.store$.select(selectEquipmentItem, payload).pipe(
+            filter(camera => !!camera),
+            take(1),
+            tap(camera => {
+              if (!!camera.brand) {
+                this.store$.dispatch(new LoadBrand({ id: camera.brand }));
+              }
+            }),
+            switchMap((camera: CameraInterface) =>
+              this.store$.select(selectBrand, camera.brand).pipe(
+                filter(brand => {
+                  if (!!camera.brand) {
+                    return !!brand;
+                  }
+                  return true;
+                }),
+                take(1),
+                map(brand => ({ brand, camera }))
+              )
+            ),
+            map(
+              ({ brand, camera }) =>
+                `<strong>${brand ? brand.name : this.translateService.instant("(DIY)")}</strong> ${camera.name}`
             )
-          ),
-          map(
-            ({ brand, camera }) =>
-              `<strong>${brand ? brand.name : this.translateService.instant("(DIY)")}</strong> ${camera.name}`
-          )
-        );
+          ));
+        }
 
-        const id1 = ids[1];
-        const payload1 = {
-          id: id1,
-          type: EquipmentItemType.CAMERA
-        };
-
-        this.store$.dispatch(new LoadEquipmentItem(payload1));
-
-        const ret1 =  this.store$.select(selectEquipmentItem, payload1).pipe(
-          filter(camera => !!camera),
-          take(1),
-          tap(camera => {
-            if (!!camera.brand) {
-              this.store$.dispatch(new LoadBrand({ id: camera.brand }));
-            }
-          }),
-          switchMap((camera: CameraInterface) =>
-            this.store$.select(selectBrand, camera.brand).pipe(
-              filter(brand => {
-                if (!!camera.brand) {
-                  return !!brand;
-                }
-
-                return true;
-              }),
-              take(1),
-              map(brand => ({ brand, camera }))
-            )
-          ),
-          map(
-            ({ brand, camera }) =>
-              `<strong>${brand ? brand.name : this.translateService.instant("(DIY)")}</strong> ${camera.name}`
-          )
-        );
-
-
-        return merge(ret0, ret1).pipe(reduce((a, b) => a + " &middot; " + b, ""));
-
+        return merge(...cameraProperties).pipe(reduce((a, b) => a + " &middot; " + b, ""));
 
       default:
         throw Error(`Invalid property: ${property}`);
