@@ -5,7 +5,7 @@ import { EquipmentItemServiceInterface } from "@features/equipment/services/equi
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { ColorOrMono, SensorInterface } from "@features/equipment/types/sensor.interface";
 import { TranslateService } from "@ngx-translate/core";
-import { Observable, of } from "rxjs";
+import { Observable, merge, of, reduce } from "rxjs";
 import { filter, map, switchMap, take, tap } from "rxjs/operators";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
@@ -133,15 +133,15 @@ export class SensorService extends BaseService implements EquipmentItemServiceIn
 
         // Just get the first Camera
 
-        const id = ids[0];
-        const payload = {
-          id,
+        const id0 = ids[0];
+        const payload0 = {
+          id: id0,
           type: EquipmentItemType.CAMERA
         };
 
-        this.store$.dispatch(new LoadEquipmentItem(payload));
+        this.store$.dispatch(new LoadEquipmentItem(payload0));
 
-        return this.store$.select(selectEquipmentItem, payload).pipe(
+        const ret0 = this.store$.select(selectEquipmentItem, payload0).pipe(
           filter(camera => !!camera),
           take(1),
           tap(camera => {
@@ -167,6 +167,45 @@ export class SensorService extends BaseService implements EquipmentItemServiceIn
               `<strong>${brand ? brand.name : this.translateService.instant("(DIY)")}</strong> ${camera.name}`
           )
         );
+
+        const id1 = ids[1];
+        const payload1 = {
+          id: id1,
+          type: EquipmentItemType.CAMERA
+        };
+
+        this.store$.dispatch(new LoadEquipmentItem(payload1));
+
+        const ret1 =  this.store$.select(selectEquipmentItem, payload1).pipe(
+          filter(camera => !!camera),
+          take(1),
+          tap(camera => {
+            if (!!camera.brand) {
+              this.store$.dispatch(new LoadBrand({ id: camera.brand }));
+            }
+          }),
+          switchMap((camera: CameraInterface) =>
+            this.store$.select(selectBrand, camera.brand).pipe(
+              filter(brand => {
+                if (!!camera.brand) {
+                  return !!brand;
+                }
+
+                return true;
+              }),
+              take(1),
+              map(brand => ({ brand, camera }))
+            )
+          ),
+          map(
+            ({ brand, camera }) =>
+              `<strong>${brand ? brand.name : this.translateService.instant("(DIY)")}</strong> ${camera.name}`
+          )
+        );
+
+
+        return merge(ret0, ret1).pipe(reduce((a, b) => a + " &middot; " + b, ""));
+
 
       default:
         throw Error(`Invalid property: ${property}`);

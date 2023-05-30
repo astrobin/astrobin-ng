@@ -49,6 +49,7 @@ import { SubscriptionRequiredModalComponent } from "@shared/components/misc/subs
 import { SimplifiedSubscriptionName } from "@shared/types/subscription-name.type";
 import { MostOftenUsedWithModalComponent } from "@shared/components/equipment/summaries/item/summary/most-often-used-with-modal/most-often-used-with-modal.component";
 import { LoadingService } from "@shared/services/loading.service";
+import { LoadCamera } from "@app/store/actions/camera.actions";
 
 interface EquipmentItemProperty {
   name: string;
@@ -261,7 +262,6 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
     }
 
     if (instanceOfSensor(this.item) && this.item.cameras) {
-      this.store$.dispatch(new LoadSensor({ id: this.item.cameras[0] }));
       this.store$
         .select(selectEquipmentItem, { id: this.item.cameras[0], type: EquipmentItemType.CAMERA })
         .pipe(
