@@ -1,5 +1,5 @@
 <ng-container *ngIf="!!recurringUnit; else noRecurringUnitTemplate">
-  <ng-container *ngIf="!!pricing[recurringUnit]; else loadingTemplate">
+  <ng-container *ngIf="!!pricing && !!pricing[recurringUnit]; else loadingTemplate">
     <ng-container
       [ngTemplateOutletContext]="{
         priceObject: pricing[recurringUnit],
@@ -12,7 +12,7 @@
 </ng-container>
 
 <ng-template #noRecurringUnitTemplate>
-  <ng-container *ngIf="!!pricing.monthly && !!pricing.yearly; else loadingTemplate">
+  <ng-container *ngIf="!!pricing && !!pricing.monthly && !!pricing.yearly; else loadingTemplate">
     <span class="monthly">
       <ng-container
         [ngTemplateOutletContext]="{ priceObject: pricing.monthly, recurringUnitLabel: 'month' | translate }"
