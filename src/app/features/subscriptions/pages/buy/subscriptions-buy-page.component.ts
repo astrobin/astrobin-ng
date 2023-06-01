@@ -188,6 +188,7 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
 
     this.activatedRoute.params.pipe(takeUntil(this.destroyed$)).subscribe(params => {
       this.product = params["product"];
+      this.recurringUnit = params["recurringUnit"] || RecurringUnit.YEARLY;
 
       if (
         [PayableProductInterface.LITE, PayableProductInterface.PREMIUM, PayableProductInterface.ULTIMATE].indexOf(
