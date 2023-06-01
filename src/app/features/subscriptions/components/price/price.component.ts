@@ -51,4 +51,13 @@ export class PriceComponent extends BaseComponentDirective {
       "If you switch to this pricing model, the cost will be temporarily covered by your positive balance."
     );
   }
+
+  proratedPriceInfo(): void {
+    const modal = this.modalService.open(InformationDialogComponent);
+    const componentInstance: InformationDialogComponent = modal.componentInstance;
+    componentInstance.message = this.translateService.instant(
+      "This price is prorated for the remaining days of your current subscription. This means that you will pay " +
+      "the reduced amount on your next billing date, and the full amount on the following billing dates."
+    );
+  }
 }

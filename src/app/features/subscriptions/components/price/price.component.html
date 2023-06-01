@@ -41,6 +41,12 @@
 
     {{ priceObject.price | currency : currency : "symbol" : "1.2-2" : translateService.currentLang }}
     <ng-container [ngTemplateOutlet]="recurringUnitTemplate"></ng-container>
+
+    <sup *ngIf="priceObject.prorateAmount > 0">
+      <a (click)="proratedPriceInfo()" astrobinEventPreventDefault astrobinEventStopPropagation href="">
+        <fa-icon icon="info-circle"></fa-icon>
+      </a>
+    </sup>
   </ng-container>
 
   <ng-template #negativePriceTemplate>
