@@ -133,6 +133,8 @@ describe("UserSubscriptionService", () => {
 
   describe("getUserSubscription$", () => {
     it("should get active Ultimate", done => {
+      store.setState(StateGenerator.default());
+
       service
         .getActiveUserSubscription$(initialState.auth.userProfile, SubscriptionName.ASTROBIN_ULTIMATE_2020)
         .subscribe(result => {
@@ -142,7 +144,7 @@ describe("UserSubscriptionService", () => {
     });
 
     it("should not get inactive Ultimate", done => {
-      const state = { ...initialState };
+      const state = StateGenerator.default();
       state.auth.userSubscriptions[0].active = false;
       store.setState(state);
 
