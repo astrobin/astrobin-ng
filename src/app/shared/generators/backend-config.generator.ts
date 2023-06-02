@@ -44,7 +44,8 @@ export class BackendConfigGenerator {
       IOTD_MAX_DISMISSALS: 5,
       IMAGE_UPLOAD_ENDPOINT: "/api/v2/images/image-upload/",
       IMAGE_REVISION_UPLOAD_ENDPOINT: "/api/v2/images/image-revision-upload/",
-      DATA_UPLOAD_MAX_MEMORY_SIZE: 10 * 1024 * 1024
+      DATA_UPLOAD_MAX_MEMORY_SIZE: 10 * 1024 * 1024,
+      STRIPE_CUSTOMER_PORTAL_KEY: "abc123"
     };
   }
 }

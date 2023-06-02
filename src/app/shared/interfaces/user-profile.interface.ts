@@ -59,4 +59,5 @@ export interface UserProfileInterface {
   followers?: number;
   premiumCounter: number;
   locations: LocationInterface[];
+  email?: string;
 }

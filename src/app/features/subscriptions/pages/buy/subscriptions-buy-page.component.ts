@@ -10,7 +10,7 @@ import { PaymentsApiConfigInterface } from "@features/subscriptions/interfaces/p
 import { PricingInterface } from "@features/subscriptions/interfaces/pricing.interface";
 import { PaymentsApiService } from "@features/subscriptions/services/payments-api.service";
 import { SubscriptionsService } from "@features/subscriptions/services/subscriptions.service";
-import { Store } from "@ngrx/store";
+import { select, Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { ImageApiService } from "@shared/services/api/classic/images/image/image-api.service";
@@ -20,9 +20,19 @@ import { LoadingService } from "@shared/services/loading.service";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { TitleService } from "@shared/services/title/title.service";
 import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
-import { Observable } from "rxjs";
-import { distinctUntilChanged, map, startWith, switchMap, take, takeUntil, tap } from "rxjs/operators";
+import { combineLatest, Observable } from "rxjs";
+import { distinctUntilChanged, filter, map, startWith, switchMap, take, takeUntil, tap } from "rxjs/operators";
 import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
+import { AvailableSubscriptionsInterface } from "@features/subscriptions/interfaces/available-subscriptions.interface";
+import { selectAvailableSubscriptions, selectPricing } from "@features/subscriptions/store/subscriptions.selectors";
+import { RecurringUnit } from "@features/subscriptions/types/recurring.unit";
+import { GetPricing } from "@features/subscriptions/store/subscriptions.actions";
+import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
+import { InformationDialogComponent } from "@shared/components/misc/information-dialog/information-dialog.component";
+import { SubscriptionName } from "@shared/types/subscription-name.type";
+import { WindowRefService } from "@shared/services/window-ref.service";
+import { UserSubscriptionInterface } from "@shared/interfaces/user-subscription.interface";
 
 declare var Stripe: any;
 
@@ -33,16 +43,23 @@ declare var Stripe: any;
 })
 export class SubscriptionsBuyPageComponent extends BaseComponentDirective implements OnInit {
   PayableProductInterface = PayableProductInterface;
+  RecurringUnit = RecurringUnit;
 
   alreadySubscribed$: Observable<boolean>;
   alreadySubscribedHigher$: Observable<boolean>;
+  alreadySubscribedLower$: Observable<boolean>;
   numberOfImages$: Observable<number>;
   maxLiteImages$: Observable<number> = this.store$
     .select(selectBackendConfig)
     .pipe(map(config => config.PREMIUM_MAX_IMAGES_LITE_2020));
-  pricing$: Observable<PricingInterface>;
+  availableSubscriptions$: Observable<AvailableSubscriptionsInterface> =
+    this.store$.select(selectAvailableSubscriptions);
   product: PayableProductInterface;
-  bankDetailsMessage$: Observable<string>;
+  pricing$: Observable<{ [product: string]: { [recurringUnit: string]: PricingInterface } }> = this.store$.pipe(
+    select(selectPricing),
+    filter(pricing => !!pricing[this.product].monthly && !!pricing[this.product].yearly)
+  );
+  bankDetailsMessage: string;
   bankLocations = [
     { id: "USA", label: "United States of America" },
     { id: "CA", label: "Canada" },
@@ -54,6 +71,35 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
   ];
   selectedBankLocation = "USA";
   currencyPipe: CurrencyPipe;
+  recurringUnit = RecurringUnit.YEARLY;
+  automaticRenewal = true;
+  activeUserSubscription$: Observable<UserSubscriptionInterface | null> = this.currentUserProfile$.pipe(
+    filter(userProfile => !!userProfile),
+    switchMap(userProfile => {
+      const subscriptionNames = {
+        [PayableProductInterface.LITE]: {
+          [RecurringUnit.YEARLY]: SubscriptionName.ASTROBIN_LITE_2020_AUTORENEW_YEARLY,
+          [RecurringUnit.MONTHLY]: SubscriptionName.ASTROBIN_LITE_2020_AUTORENEW_MONTHLY,
+          default: SubscriptionName.ASTROBIN_LITE_2020
+        },
+        [PayableProductInterface.PREMIUM]: {
+          [RecurringUnit.MONTHLY]: SubscriptionName.ASTROBIN_PREMIUM_2020_AUTORENEW_MONTHLY,
+          [RecurringUnit.YEARLY]: SubscriptionName.ASTROBIN_PREMIUM_2020_AUTORENEW_YEARLY,
+          default: SubscriptionName.ASTROBIN_PREMIUM_2020
+        },
+        [PayableProductInterface.ULTIMATE]: {
+          [RecurringUnit.MONTHLY]: SubscriptionName.ASTROBIN_ULTIMATE_2020_AUTORENEW_MONTHLY,
+          [RecurringUnit.YEARLY]: SubscriptionName.ASTROBIN_ULTIMATE_2020_AUTORENEW_YEARLY,
+          default: SubscriptionName.ASTROBIN_ULTIMATE_2020
+        }
+      };
+
+      const subscriptionName =
+        subscriptionNames[this.product]?.[this.recurringUnit] || subscriptionNames[this.product]?.default;
+
+      return this.userSubscriptionService.getActiveUserSubscription$(userProfile, subscriptionName);
+    })
+  );
 
   constructor(
     public readonly store$: Store<State>,
@@ -63,18 +109,20 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
     public readonly paymentsApiService: PaymentsApiService,
     public readonly loadingService: LoadingService,
     public readonly popNotificationsService: PopNotificationsService,
-    public readonly translate: TranslateService,
+    public readonly translateService: TranslateService,
     public readonly titleService: TitleService,
     public readonly subscriptionsService: SubscriptionsService,
     public readonly classicRoutesService: ClassicRoutesService,
     public readonly jsonApiService: JsonApiService,
     public readonly imageApiService: ImageApiService,
-    public readonly domSanitizer: DomSanitizer
+    public readonly domSanitizer: DomSanitizer,
+    public readonly modalService: NgbModal,
+    public readonly windowRefService: WindowRefService
   ) {
     super(store$);
 
-    this.translate.onLangChange
-      .pipe(takeUntil(this.destroyed$), startWith({ lang: this.translate.currentLang }))
+    this.translateService.onLangChange
+      .pipe(takeUntil(this.destroyed$), startWith({ lang: this.translateService.currentLang }))
       .subscribe(event => {
         this.currencyPipe = new CurrencyPipe(event.lang);
       });
@@ -83,23 +131,11 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
   get moreInfoMessage() {
     const url = "https://welcome.astrobin.com/pricing";
 
-    return this.translate.instant(
+    return this.translateService.instant(
       "For more information about this and other subscription plans, please visit the {{0}}pricing{{1}} page.",
       {
         0: `<a href="${url}" target="_blank">`,
         1: `</a>`
-      }
-    );
-  }
-
-  get upgradeMessage(): string {
-    return this.translate.instant(
-      "AstroBin doesn't support subscription upgrades at the moment, but we're happy to make it happen manually. If " +
-      "you're on a lower subscription tier and would like to upgrade to <strong>{{0}}</strong>, please just buy it " +
-      "and then contact us at {{1}} to get a refund for the unused time on your old subscription. Thanks!",
-      {
-        0: this.subscriptionsService.getName(this.product),
-        1: `<a href="mailto:support@astrobin.com">support@astrobin.com</a>`
       }
     );
   }
@@ -141,7 +177,7 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
           "SWIFT/BIC: CMFGUS33"
         );
       default:
-        return this.translate.instant(
+        return this.translateService.instant(
           "Sorry, unfortunately AstroBin does not have a bank account in the selected territory."
         );
     }
@@ -150,10 +186,9 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
   ngOnInit(): void {
     super.ngOnInit();
 
-    this.loadingService.setLoading(true);
-
     this.activatedRoute.params.pipe(takeUntil(this.destroyed$)).subscribe(params => {
       this.product = params["product"];
+      this.recurringUnit = params["recurringUnit"] || RecurringUnit.YEARLY;
 
       if (
         [PayableProductInterface.LITE, PayableProductInterface.PREMIUM, PayableProductInterface.ULTIMATE].indexOf(
@@ -169,6 +204,20 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
       this.store$.dispatch(
         new SetBreadcrumb({
           breadcrumb: [{ label: "Subscriptions" }, { label: title }]
+        })
+      );
+
+      this.store$.dispatch(
+        new GetPricing({
+          product: this.product,
+          recurringUnit: RecurringUnit.MONTHLY
+        })
+      );
+
+      this.store$.dispatch(
+        new GetPricing({
+          product: this.product,
+          recurringUnit: RecurringUnit.YEARLY
         })
       );
 
@@ -194,6 +243,17 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
           )
         );
 
+      this.alreadySubscribedLower$ = this.store$
+        .select(selectCurrentUserProfile)
+        .pipe(
+          switchMap(userProfile =>
+            this.userSubscriptionService.hasValidSubscription$(
+              userProfile,
+              this.subscriptionsService.getLowerTier(this.product)
+            )
+          )
+        );
+
       this.numberOfImages$ = this.store$.select(selectCurrentUser).pipe(
         switchMap(user => this.imageApiService.getPublicImagesCountByUserId(user.id)),
         take(1)
@@ -211,31 +271,11 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
             CHF: "CH",
             CNY: "CN"
           }[currency];
-
-          this.pricing$ = this.subscriptionsService.getPrice(this.product).pipe(
-            takeUntil(this.destroyed$),
-            tap(() => this.loadingService.setLoading(false))
-          );
-
-          this.bankDetailsMessage$ = this.pricing$.pipe(
-            takeUntil(this.destroyed$),
-            map(pricing => pricing.price),
-            switchMap(price =>
-              this.translate.stream(
-                "Please make a deposit of {{ currency }} {{ amount }} to the following bank details and then email " +
-                "us at {{ email_prefix }}{{ email }}{{ email_postfix }} with your username so we may upgrade your " +
-                "account manually.",
-                {
-                  currency: "",
-                  amount: `<strong>${this.currencyPipe.transform(price, this.subscriptionsService.currency)}</strong>`,
-                  email_prefix: "<a href='mailto:support@astrobin.com'>",
-                  email: "support@astrobin.com",
-                  email_postfix: "</a>"
-                }
-              )
-            )
-          );
         });
+
+      this.pricing$.pipe(takeUntil(this.destroyed$)).subscribe(() => {
+        this._updateBankDetailsMessage();
+      });
     });
   }
 
@@ -243,7 +283,7 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
     return this.maxLiteImages$.pipe(
       map(maxImages => {
         return this.domSanitizer.bypassSecurityTrustHtml(
-          this.translate.instant(
+          this.translateService.instant(
             "The Lite plan is capped at <strong>{{maxImagesForLite}}</strong> total images, and you currently have " +
             "<strong>{{numberOfImages}}</strong> images on AstroBin. For this reason, we recommend that you upgrade to " +
             "Premium or Ultimate instead.",
@@ -257,42 +297,277 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
     );
   }
 
+  cancel(): void {
+    this.currentUserProfile$
+      .pipe(
+        switchMap(userProfile =>
+          combineLatest([
+            this.subscriptionsService.stripeCustomerPortalUrl$,
+            this.userSubscriptionService.hasValidSubscription$(userProfile, [
+              SubscriptionName.ASTROBIN_LITE,
+              SubscriptionName.ASTROBIN_PREMIUM
+            ]),
+            this.userSubscriptionService.hasValidSubscription$(userProfile, [
+              SubscriptionName.ASTROBIN_LITE_AUTORENEW,
+              SubscriptionName.ASTROBIN_PREMIUM_AUTORENEW
+            ]),
+            this.userSubscriptionService.hasValidSubscription$(userProfile, [
+              SubscriptionName.ASTROBIN_LITE_2020,
+              SubscriptionName.ASTROBIN_PREMIUM_2020,
+              SubscriptionName.ASTROBIN_ULTIMATE_2020
+            ]),
+            this.userSubscriptionService.hasValidSubscription$(userProfile, [
+              SubscriptionName.ASTROBIN_LITE_2020_AUTORENEW_MONTHLY,
+              SubscriptionName.ASTROBIN_PREMIUM_2020_AUTORENEW_MONTHLY,
+              SubscriptionName.ASTROBIN_ULTIMATE_2020_AUTORENEW_MONTHLY,
+              SubscriptionName.ASTROBIN_LITE_2020_AUTORENEW_YEARLY,
+              SubscriptionName.ASTROBIN_PREMIUM_2020_AUTORENEW_YEARLY,
+              SubscriptionName.ASTROBIN_ULTIMATE_2020_AUTORENEW_YEARLY
+            ])
+          ])
+        )
+      )
+      .subscribe(
+        ([
+           stripeCustomerPortalUrl,
+           hasNonRecurringPayPalSubscription,
+           hasRecurringPayPalSubscription,
+           hasNonRecurringStripeSubscription,
+           hasRecurringStripeSubscription
+         ]) => {
+          const modal = this.modalService.open(InformationDialogComponent);
+          const componentInstance: InformationDialogComponent = modal.componentInstance;
+          let message: string = "<ul>";
+
+          if (hasNonRecurringPayPalSubscription) {
+            message +=
+              "<li>" +
+              this.translateService.instant("You have a non-recurring PayPal subscription.") +
+              " " +
+              this.translateService.instant("You don't need to cancel it, it will expire automatically." + "</li>");
+          }
+
+          if (hasRecurringPayPalSubscription) {
+            message +=
+              "<li>" +
+              this.translateService.instant(
+                "You have a recurring PayPal subscription. You can cancel it on PayPal's settings:"
+              ) +
+              " " +
+              `<a href="${this.subscriptionsService.payPalCustomerPortalUrl}" target="_blank">` +
+              this.translateService.instant("Manage your PayPal subscription") +
+              "</a></li>";
+          }
+
+          if (hasNonRecurringStripeSubscription) {
+            message +=
+              "<li>" +
+              this.translateService.instant(
+                "You have a non-recurring Stripe subscription (paid by credit card, Sepa, AliPay, or other)."
+              ) +
+              " " +
+              this.translateService.instant("You don't need to cancel it, it will expire automatically.") +
+              "</li>";
+          }
+
+          if (hasRecurringStripeSubscription) {
+            message +=
+              "<li>" +
+              this.translateService.instant(
+                "You have a recurring Stripe subscription (paid by credit card, Sepa, AliPay, or other). You can " +
+                "cancel it on Stripe's customer portal by logging in with the email address associated to your " +
+                "AstroBin account:"
+              ) +
+              " " +
+              `<a href="${stripeCustomerPortalUrl}" target="_blank">` +
+              this.translateService.instant("Manage your Stripe subscription") +
+              "</a></li>";
+          }
+
+          message += "</ul>";
+
+          message +=
+            "<p>" +
+            this.translateService.instant("If you have any question, please contact us at {{0}}.", {
+              0: `<a href="mailto:support@astrobin.com">support@astrobin.com</a>`
+            }) +
+            "</p>";
+
+          componentInstance.message = message;
+        }
+      );
+  }
+
   buy(): void {
     let stripe: any;
     let config: PaymentsApiConfigInterface;
 
     this.loadingService.setLoading(true);
 
-    this.paymentsApiService
-      .getConfig()
-      .pipe(
-        tap(_config => (config = _config)),
-        switchMap(() => {
-          if (!Stripe) {
-            return null;
+    const startCheckout = () => {
+      this.paymentsApiService
+        .getConfig()
+        .pipe(
+          tap(_config => (config = _config)),
+          switchMap(() => {
+            if (!Stripe) {
+              return null;
+            }
+
+            stripe = Stripe(config.publicKey);
+            return this.currentUser$.pipe(
+              switchMap(user =>
+                this.paymentsApiService.createCheckoutSession(
+                  user.id,
+                  this.product,
+                  this.subscriptionsService.currency,
+                  this.recurringUnit,
+                  this.automaticRenewal
+                )
+              )
+            );
+          })
+        )
+        .subscribe(response => {
+          if (!response) {
+            this.popNotificationsService.error("Unable to load payment processor. Is your browser blocking Stripe?");
+            this.loadingService.setLoading(false);
+            return;
           }
 
-          stripe = Stripe(config.publicKey);
-          return this.currentUser$.pipe(
-            switchMap(user =>
-              this.paymentsApiService.createCheckoutSession(user.id, this.product, this.subscriptionsService.currency)
+          if (response.sessionId) {
+            stripe.redirectToCheckout({ sessionId: response.sessionId });
+          } else {
+            this.popNotificationsService.error(response.error || this.translateService.instant("Unknown error"));
+            this.loadingService.setLoading(false);
+          }
+        });
+    };
+
+    const startUpgrade = () => {
+      this.loadingService.setLoading(true);
+      this.currentUser$
+        .pipe(
+          switchMap(user =>
+            this.paymentsApiService.upgradeSubscription(
+              user.id,
+              this.product,
+              this.subscriptionsService.currency,
+              this.recurringUnit
             )
+          )
+        )
+        .subscribe(() => {
+          this.windowRefService.locationAssign(`/subscriptions/success?product=${this.product}`);
+        });
+    };
+
+    combineLatest([
+      this.userSubscriptionService.upgradeAllowed$(),
+      this.alreadySubscribed$,
+      this.alreadySubscribedHigher$,
+      this.alreadySubscribedLower$
+    ]).subscribe(([upgradeAllowed, alreadySubscribed, alreadySubscribedHigher, alreadySubscribedLower]) => {
+      if (alreadySubscribed) {
+        if (this.automaticRenewal) {
+          this.popNotificationsService.error(
+            this.translateService.instant("You already have an active subscription of this kind.")
           );
-        })
-      )
-      .subscribe(response => {
-        if (!response) {
-          this.popNotificationsService.error("Unable to load payment processor. Is your browser blocking Stripe?");
           this.loadingService.setLoading(false);
           return;
-        }
-
-        if (response.sessionId) {
-          stripe.redirectToCheckout({ sessionId: response.sessionId });
         } else {
-          this.popNotificationsService.error(response.error || this.translate.instant("Unknown error"));
-          this.loadingService.setLoading(false);
+          const modal: NgbModalRef = this.modalService.open(ConfirmationDialogComponent);
+          const componentInstance: ConfirmationDialogComponent = modal.componentInstance;
+
+          componentInstance.message = this.translateService.instant(
+            "You are already on this plan. If you buy it again, your expiration date will be extended by one year."
+          );
+
+          modal.closed.subscribe(item => {
+            startCheckout();
+          });
+
+          modal.dismissed.subscribe(() => {
+            this.loadingService.setLoading(false);
+          });
         }
-      });
+      } else if (alreadySubscribedHigher) {
+        const modal: NgbModalRef = this.modalService.open(InformationDialogComponent);
+        const componentInstance: InformationDialogComponent = modal.componentInstance;
+
+        componentInstance.message =
+          this.translateService.instant("You are already subscribed to a higher plan.") +
+          " " +
+          this.translateService.instant(
+            "For this reason, you cannot purchase this at the moment, as AstroBin does not currently offer a " +
+            "downgrade path."
+          );
+
+        this.loadingService.setLoading(false);
+      } else if (alreadySubscribedLower) {
+        if (upgradeAllowed) {
+          const modal: NgbModalRef = this.modalService.open(ConfirmationDialogComponent);
+          const componentInstance: ConfirmationDialogComponent = modal.componentInstance;
+
+          componentInstance.message =
+            "<p>" +
+            this.translateService.instant(
+              "Upgrade your subscription now, and only pay the difference at your next billing cycle. Your next " +
+              "payment will include the next billing period, minus the unused portion of your current billing period. " +
+              "If you switch from a yearly to a monthly plan, any balance in your favor will be automatically applied " +
+              "to your future invoices until exhausted."
+            ) +
+            "</p>";
+
+          componentInstance.message +=
+            "<p>" +
+            this.translateService.instant("If you have any question, please contact us at {{0}}.", {
+              0: `<a href="mailto:support@astrobin.com">support@astrobin.com</a>`
+            }) +
+            "</p>";
+
+          this.loadingService.setLoading(false);
+
+          modal.closed.subscribe(() => {
+            startUpgrade();
+          });
+        } else {
+          startCheckout();
+        }
+      } else {
+        startCheckout();
+      }
+    });
+  }
+
+  payYearly(): void {
+    this.recurringUnit = RecurringUnit.YEARLY;
+    this._updateBankDetailsMessage();
+  }
+
+  payMonthly(): void {
+    this.recurringUnit = RecurringUnit.MONTHLY;
+    this.automaticRenewal = true;
+    this._updateBankDetailsMessage();
+  }
+
+  private _updateBankDetailsMessage() {
+    this.pricing$.pipe(take(1)).subscribe(pricing => {
+      this.bankDetailsMessage = this.translateService.instant(
+        "Please make a deposit of {{ currency }} {{ amount }} to the following bank details and then email " +
+        "us at {{ email_prefix }}{{ email }}{{ email_postfix }} with your username so we may upgrade your " +
+        "account manually.",
+        {
+          currency: "",
+          amount: `<strong>${this.currencyPipe.transform(
+            pricing[this.product][this.recurringUnit].price,
+            this.subscriptionsService.currency
+          )}</strong>`,
+          email_prefix: "<a href='mailto:support@astrobin.com'>",
+          email: "support@astrobin.com",
+          email_postfix: "</a>"
+        }
+      );
+    });
   }
 }

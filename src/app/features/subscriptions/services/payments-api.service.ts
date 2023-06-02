@@ -2,10 +2,12 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { environment } from "@env/environment";
 import { PayableProductInterface } from "@features/subscriptions/interfaces/payable-product.interface";
-import { PaymentsApiCkeckoutSessionInterface } from "@features/subscriptions/interfaces/payments-api-ckeckout-session.interface";
+import { PaymentsApiCheckoutSessionInterface } from "@features/subscriptions/interfaces/payments-api-checkout-session.interface";
 import { PaymentsApiConfigInterface } from "@features/subscriptions/interfaces/payments-api-config.interface";
 import { PricingInterface } from "@features/subscriptions/interfaces/pricing.interface";
 import { Observable } from "rxjs";
+import { AvailableSubscriptionsInterface } from "@features/subscriptions/interfaces/available-subscriptions.interface";
+import { RecurringUnit } from "@features/subscriptions/types/recurring.unit";
 
 @Injectable({
   providedIn: "root"
@@ -21,17 +23,41 @@ export class PaymentsApiService {
   public createCheckoutSession(
     userId: number,
     product: PayableProductInterface,
-    currency: string
-  ): Observable<PaymentsApiCkeckoutSessionInterface> {
-    return this.http.post<PaymentsApiCkeckoutSessionInterface>(
-      `${environment.classicApiUrl}/payments/create-checkout-session/${userId}/${product}/${currency}/`,
+    currency: string,
+    recurringUnit: RecurringUnit,
+    autorenew: boolean
+  ): Observable<PaymentsApiCheckoutSessionInterface> {
+    return this.http.post<PaymentsApiCheckoutSessionInterface>(
+      `${environment.classicApiUrl}/payments/create-checkout-session/${userId}/${product}/${currency}/${recurringUnit}/${autorenew}/`,
       {}
     );
   }
 
-  public getPrice(product: string, currency: string): Observable<PricingInterface> {
+  public upgradeSubscription(
+    userId: number,
+    product: PayableProductInterface,
+    currency: string,
+    recurringUnit: RecurringUnit
+  ): Observable<void> {
+    return this.http.post<void>(
+      `${environment.classicApiUrl}/payments/upgrade-subscription/${userId}/${product}/${currency}/${recurringUnit}/`,
+      {}
+    );
+  }
+
+  public getPrice(
+    product: PayableProductInterface,
+    currency: string,
+    recurringUnit: RecurringUnit
+  ): Observable<PricingInterface> {
     return this.http.get<PricingInterface>(
-      `${environment.classicApiUrl}/api/v2/payments/pricing/${product}/${currency}/`
+      `${environment.classicApiUrl}/api/v2/payments/pricing/${product}/${currency}/${recurringUnit}/`
+    );
+  }
+
+  public getAvailableSubscriptions(): Observable<AvailableSubscriptionsInterface> {
+    return this.http.get<AvailableSubscriptionsInterface>(
+      `${environment.classicApiUrl}/api/v2/payments/pricing/available-subscriptions/`
     );
   }
 }
