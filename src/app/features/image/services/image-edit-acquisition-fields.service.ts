@@ -894,7 +894,8 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
         label: this.translateService.instant("Exposure per frame") + " ms",
         required: false,
         step: 1,
-        min: 1
+        min: 0.01,
+        max: 99999.99
       },
       validators: {
         validation: [
