@@ -1,20 +1,19 @@
-
-.price {
-  .full-price {
-    color: var(--lightGrey);
-    text-decoration: line-through;
-    margin-right: .5rem;
-  }
-
-  font-size: 2.5rem;
-  color: var(--gold);
+astrobin-price {
+  height: 28px;
 }
 
-.already-subscribed,
-.already-subscribed-higher,
-.info {
-  display: block;
-  margin-bottom: 3rem;
+h1 {
+  astrobin-loading-indicator {
+    width: auto;
+  }
+
+  sup {
+    font-size: 1.25rem;
+    vertical-align: middle;
+    color: var(--white);
+    margin-bottom: 1.5rem;
+    display: inline-block;
+  }
 }
 
 .btn.buy {
@@ -22,7 +21,7 @@
 
   .icons {
     display: inline-block;
-    margin-left: .75rem;
+    margin-left: 0.75rem;
 
     .icon {
       height: 1.5rem;
@@ -30,10 +29,10 @@
   }
 
   .stripe-info {
-    font-size: .75rem;
-    opacity: .5;
+    font-size: 0.75rem;
+    opacity: 0.5;
     display: block;
-    margin-top: .5rem;
+    margin-top: 0.5rem;
   }
 }
 

@@ -29,3 +29,5 @@ export const selectUserProfile = createSelector(
     return matching.length > 0 ? matching[0] : null;
   }
 );
+
+export const selectUserSubscriptions = createSelector(selectAuth, state => state.userSubscriptions);

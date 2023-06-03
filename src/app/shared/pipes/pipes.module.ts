@@ -17,6 +17,7 @@ import { CamelCaseToSentenceCasePipe } from "@shared/pipes/camel-case-to-sentenc
 import { IsEquipmentModeratorPipe } from "@shared/pipes/is-equipment-moderator.pipe";
 import { IsInGroupPipe } from "@shared/pipes/is-in-group.pipe";
 import { BBCodeToHtmlPipe } from "@shared/pipes/bbcode-to-html.pipe";
+import { SlugifyPipe } from "@shared/pipes/slugify.pipe";
 
 const pipes = [
   BBCodeToHtmlPipe,
@@ -35,7 +36,8 @@ const pipes = [
   IsInGroupPipe,
   HasValidUserSubscriptionPipe,
   LocalDatePipe,
-  YesNoPipe
+  YesNoPipe,
+  SlugifyPipe
 ];
 
 @NgModule({

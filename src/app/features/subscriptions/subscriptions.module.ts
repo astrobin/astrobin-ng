@@ -9,6 +9,7 @@ import { SubscriptionsRouterPageComponent } from "./pages/subscriptions-router-p
 import { SubscriptionsViewPaymentsPageComponent } from "./pages/subscriptions-view-payments-page/subscriptions-view-payments-page.component";
 import { SubscriptionsViewSubscriptionsPageComponent } from "./pages/subscriptions-view-subscriptions-page/subscriptions-view-subscriptions-page.component";
 import { SubscriptionsSuccessPageComponent } from "./pages/success-page/subscriptions-success-page.component";
+import { PriceComponent } from './components/price/price.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { SubscriptionsSuccessPageComponent } from "./pages/success-page/subscrip
     SubscriptionsRouterPageComponent,
     SubscriptionsViewSubscriptionsPageComponent,
     SubscriptionsViewPaymentsPageComponent,
-    SubscriptionsOptionsPageComponent
+    SubscriptionsOptionsPageComponent,
+    PriceComponent
   ],
   imports: [RouterModule.forChild(routes), SharedModule]
 })

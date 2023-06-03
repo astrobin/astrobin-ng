@@ -41,6 +41,11 @@ export const routes: Routes = [
         path: ":product",
         component: SubscriptionsBuyPageComponent,
         canActivate: [AuthGuardService]
+      },
+      {
+        path: ":product/:recurringUnit",
+        component: SubscriptionsBuyPageComponent,
+        canActivate: [AuthGuardService]
       }
     ]
   }

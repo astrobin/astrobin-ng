@@ -95,6 +95,7 @@ export interface BackendUserProfileInterface {
   followers: number;
   premium_counter: number;
   locations: LocationInterface[];
+  email?: string;
 }
 
 @Injectable({
@@ -195,7 +196,8 @@ export class CommonApiAdaptorService extends BaseService {
       contributionIndex: userProfile.contribution_index,
       followers: userProfile.followers,
       premiumCounter: userProfile.premium_counter,
-      locations: userProfile.locations
+      locations: userProfile.locations,
+      email: userProfile.email
     };
   }
 }
