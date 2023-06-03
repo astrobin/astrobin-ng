@@ -147,7 +147,7 @@ export class SensorService extends BaseService implements EquipmentItemServiceIn
               }
             }),
             map(
-              ( camera ) =>
+              camera =>
                 `<strong>${camera.brandName ? camera.brandName : this.translateService.instant("(DIY)")}</strong> ${camera.name}`
             )
           ));
