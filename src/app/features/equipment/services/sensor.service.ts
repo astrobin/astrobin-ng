@@ -5,13 +5,12 @@ import { EquipmentItemServiceInterface } from "@features/equipment/services/equi
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { ColorOrMono, SensorInterface } from "@features/equipment/types/sensor.interface";
 import { TranslateService } from "@ngx-translate/core";
-import { Observable, merge, of, reduce } from "rxjs";
-import { filter, map, switchMap, take, tap } from "rxjs/operators";
+import { Observable, combineLatest, of } from "rxjs";
+import { filter, map, take, tap } from "rxjs/operators";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
-import { selectBrand, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
+import {  selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import { LoadBrand, LoadEquipmentItem } from "@features/equipment/store/equipment.actions";
-import { CameraInterface } from "@features/equipment/types/camera.interface";
 
 export enum SensorDisplayProperty {
   QUANTUM_EFFICIENCY = "QUANTUM_EFFICIENCY",
@@ -129,9 +128,9 @@ export class SensorService extends BaseService implements EquipmentItemServiceIn
         return of(this.humanizeColorOrMono(propertyValue || item.colorOrMono));
       case SensorDisplayProperty.CAMERAS:
         const ids = propertyValue || item.cameras;
-        if (ids == null) return of(null);
+        if (! ids || ids.length === 0) return of(null);
 
-        let cameraProperties = [];
+        let cameras$ = [];
         for (const id of ids) {
           const payload = {
             id,
@@ -139,7 +138,7 @@ export class SensorService extends BaseService implements EquipmentItemServiceIn
           };
           this.store$.dispatch(new LoadEquipmentItem(payload));
 
-          cameraProperties.push(this.store$.select(selectEquipmentItem, payload).pipe(
+          cameras$.push(this.store$.select(selectEquipmentItem, payload).pipe(
             filter(camera => !!camera),
             take(1),
             tap(camera => {
@@ -147,26 +146,15 @@ export class SensorService extends BaseService implements EquipmentItemServiceIn
                 this.store$.dispatch(new LoadBrand({ id: camera.brand }));
               }
             }),
-            switchMap((camera: CameraInterface) =>
-              this.store$.select(selectBrand, camera.brand).pipe(
-                filter(brand => {
-                  if (!!camera.brand) {
-                    return !!brand;
-                  }
-                  return true;
-                }),
-                take(1),
-                map(brand => ({ brand, camera }))
-              )
-            ),
             map(
-              ({ brand, camera }) =>
-                `<strong>${brand ? brand.name : this.translateService.instant("(DIY)")}</strong> ${camera.name}`
+              ( camera ) =>
+                `<strong>${camera.brandName ? camera.brandName : this.translateService.instant("(DIY)")}</strong> ${camera.name}`
             )
           ));
         }
-
-        return merge(...cameraProperties).pipe(reduce((a, b) => a + " &middot; " + b, ""));
+        return combineLatest(cameras$).pipe(
+          map(cameras => cameras.join(" &middot; "))
+       );
 
       default:
         throw Error(`Invalid property: ${property}`);

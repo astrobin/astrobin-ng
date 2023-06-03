@@ -261,22 +261,6 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
         .subscribe(sensor => (this.subItem = sensor));
     }
 
-    if (instanceOfSensor(this.item) && this.item.cameras) {
-      this.store$
-        .select(selectEquipmentItem, { id: this.item.cameras[0], type: EquipmentItemType.CAMERA })
-        .pipe(
-          filter(camera => !!camera),
-          take(1),
-          tap(camera => {
-            if (!!camera.brand) {
-              this.store$.dispatch(new LoadBrand({ id: camera.brand }));
-            }
-          })
-        )
-        .subscribe(camera => (this.subItem = camera));
-    }
-
-
     if (this.showMostOftenUsedWith) {
       const payload = { itemType: this.item.klass, itemId: this.item.id };
       this.store$.dispatch(new GetMostOftenUsedWith(payload));
