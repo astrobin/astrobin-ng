@@ -15,19 +15,12 @@ context("Equipment", () => {
         cy.login();
         cy.visitPage("/equipment/explorer/software");
 
-        cy.route("get", "**/api/v2/equipment/software/?q=*", {
+        cy.route("get", "**/api/v2/equipment/software/?*q=*", {
           count: 1,
           next: null,
           previous: null,
-          results: [testSoftware],
+          results: [testSoftware]
         }).as("findSoftwareItems");
-
-        cy.route("get", "**/api/v2/equipment/software/?page=*", {
-          count: 1,
-          next: null,
-          previous: null,
-          results: [testSoftware],
-        }).as("getSoftwareItems");
 
         cy.route("get", "**/api/v2/equipment/brand/1/", testBrand).as("getBrand");
 
