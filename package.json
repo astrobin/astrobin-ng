@@ -114,7 +114,7 @@
     "@typescript-eslint/parser": "5.48.1",
     "concurrently": "7.6.0",
     "cross-var": "1.1.0",
-    "cypress": "6.9.1",
+    "cypress": "11.2.0",
     "eslint": "8.41.0",
     "eslint-plugin-import": "latest",
     "eslint-plugin-jsdoc": "latest",

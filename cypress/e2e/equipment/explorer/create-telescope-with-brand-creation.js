@@ -71,6 +71,8 @@ context("Equipment", () => {
         cy.ngSelectOpen("#telescope-field-type");
         cy.ngSelectOptionClick("#telescope-field-type", 29);
 
+        cy.wait(1000);
+
         cy.get("#telescope-field-aperture").should("not.be.visible");
         cy.get(".info-feedback span")
           .contains("The recommended naming convention for camera lenses is")

@@ -13,7 +13,7 @@ const testEquipmentPreset = {
   mounts: [1],
   filters: [1],
   accessories: [1],
-  software: [1],
+  software: [1]
 };
 
 const testEquipmentPreset2 = {
@@ -31,7 +31,7 @@ const testEquipmentPreset2 = {
   mounts: [],
   filters: [],
   accessories: [],
-  software: [],
+  software: []
 };
 
 context("Image edit (existing), test equipment presets", () => {
@@ -96,8 +96,8 @@ context("Image edit (existing), test equipment presets", () => {
         createdBy: 1,
         reviewedBy: null,
         brand: 1,
-        group: null,
-      },
+        group: null
+      }
     ]).as("getRecentlyUsedTelescopeForImaging");
     cy.route("get", /.*\/api\/v2\/equipment\/mount\/recently-used\//, []).as("getRecentlyUsedMount");
     cy.route("get", /.*\/api\/v2\/equipment\/filter\/recently-used\//, []).as("getRecentlyUsedFilter");
@@ -216,9 +216,9 @@ context("Image edit (existing), test equipment presets", () => {
           createdBy: 1,
           reviewedBy: null,
           brand: 1,
-          group: null,
-        },
-      ],
+          group: null
+        }
+      ]
     }).as("findTelescopes");
 
     cy.get("#image-imaging-telescopes-field + .toggle-enable-fullscreen").scrollIntoView().click();

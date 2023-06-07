@@ -1,8 +1,0 @@
-{
-  "projectId": "g1xont",
-  "baseUrl": "http://localhost:4400",
-  "retries": {
-    "runMode": 2,
-    "openMode": 0
-  }
-}
