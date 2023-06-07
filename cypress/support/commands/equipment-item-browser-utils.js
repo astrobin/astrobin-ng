@@ -300,12 +300,19 @@ Cypress.Commands.add("setupEquipmentDefaultRoutesForCameras", () => {
     results: [testCamera]
   }).as("findCameras");
 
-  cy.intercept({ method: "get", path: "**/api/v2/equipment/camera/find-similar-in-brand/*" }, { body: [] });
+  cy.intercept({
+    method: "get",
+    path: /.*\/api\/v2\/equipment\/camera\/find-similar-in-brand\/.*/
+  }, {
+    body: []
+  });
 
   cy.intercept({
     method: "get",
     path: /.*\/api\/v2\/equipment\/camera\/others-in-brand\/.*/
-  }, { body: [] }).as("otherCamerassInBrand");
+  }, {
+    body: []
+  }).as("otherCamerasInBrand");
 
   cy.intercept({ method: "get", path: "**/api/v2/equipment/camera/?brand=*" }, {
     body: {
@@ -437,7 +444,7 @@ Cypress.Commands.add("setupEquipmentDefaultRoutesForMounts", () => {
       previous: null,
       results: []
     }
-  }).as("findCMountsByName");
+  }).as("findMountsByName");
 
   cy.route("GET", "**/api/v2/equipment/mount/?pending_review=true&page=*", {
     count: 0,

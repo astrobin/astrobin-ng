@@ -4,7 +4,9 @@ context("Equipment", () => {
   beforeEach(() => {
     cy.server();
     cy.setupInitializationRoutes();
-    cy.setupEquipmentDefaultRoutes();
+    cy.setupEquipmentDefaultRoutesForAllClasses();
+    cy.setupEquipmentDefaultRoutesForBrands();
+    cy.setupEquipmentDefaultRoutesForAccessories();
 
     cy.route("get", "**/api/v2/equipment/accessory-edit-proposal/?edit_proposal_target=*", { results: [] });
   });
@@ -54,6 +56,8 @@ context("Equipment", () => {
       }).as("findAccessoriesByName");
 
       cy.get("#equipment-item-field-name").clear().type("Foo");
+
+      cy.wait("@findAccessoriesByName");
 
       cy.get(".alert-warning span").contains("Change the name only to fix a typo").should("be.visible");
     });

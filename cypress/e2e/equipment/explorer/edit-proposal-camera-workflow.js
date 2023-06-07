@@ -1,4 +1,4 @@
-import { testBrand, testCamera, testCameraEditProposal } from "../../../support/commands/equipment-item-browser-utils";
+import { testCamera, testCameraEditProposal } from "../../../support/commands/equipment-item-browser-utils";
 
 const testCameraIncomplete = {
   ...testCamera,
@@ -6,19 +6,21 @@ const testCameraIncomplete = {
   sensor: null,
   cooled: null,
   maxCooling: null,
-  backFocus: null,
+  backFocus: null
 };
 context("Equipment", () => {
   beforeEach(() => {
     cy.server();
     cy.setupInitializationRoutes();
-    cy.setupEquipmentDefaultRoutes();
+    cy.setupEquipmentDefaultRoutesForAllClasses();
+    cy.setupEquipmentDefaultRoutesForBrands();
+    cy.setupEquipmentDefaultRoutesForCameras();
 
     cy.route("GET", "**/api/v2/equipment/camera/?page=*", {
       count: 1,
       next: null,
       previous: null,
-      results: [testCameraIncomplete],
+      results: [testCameraIncomplete]
     }).as("findCameras");
 
     cy.route("get", "**/api/v2/equipment/camera-edit-proposal/?edit_proposal_target=*", { results: [] });
@@ -67,10 +69,12 @@ context("Equipment", () => {
         count: 0,
         next: null,
         previous: null,
-        results: [],
+        results: []
       }).as("findCamerasByName");
 
       cy.get("#equipment-item-field-name").clear().type("Foo");
+
+      cy.wait("@findCamerasByName");
 
       cy.get(".alert-warning span").contains("Change the name only to fix a typo").should("be.visible");
     });
@@ -86,7 +90,7 @@ context("Equipment", () => {
     it("should submit the form", () => {
       cy.route("post", "**/api/v2/equipment/camera-edit-proposal/", testCameraEditProposal).as("saveEditProposal");
       cy.route("get", "**/api/v2/equipment/camera-edit-proposal/?edit_proposal_target=*", {
-        results: [testCameraEditProposal],
+        results: [testCameraEditProposal]
       }).as("getEditProposals");
 
       cy.get("[data-test=propose-edit-confirm]").click();
