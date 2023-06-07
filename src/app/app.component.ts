@@ -45,7 +45,7 @@ export class AppComponent extends BaseComponentDirective implements OnInit {
   }
 
   ngOnInit(): void {
-    if (isPlatformBrowser(this.platformId)) {
+    if (isPlatformBrowser(this.platformId) && Object.keys(this.windowRefService.nativeWindow).indexOf("Cypress") === -1) {
       this.includeAnalytics$().subscribe(includeAnalytics => {
         if (includeAnalytics) {
           this.utilsService.insertScript(

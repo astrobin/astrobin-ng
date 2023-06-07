@@ -1,5 +1,5 @@
-import { CurrencyPipe } from "@angular/common";
-import { Component, OnInit, Renderer2 } from "@angular/core";
+import { CurrencyPipe, isPlatformBrowser } from "@angular/common";
+import { Component, Inject, OnInit, PLATFORM_ID, Renderer2 } from "@angular/core";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { ActivatedRoute, Router } from "@angular/router";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
@@ -120,7 +120,8 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
     public readonly modalService: NgbModal,
     public readonly windowRefService: WindowRefService,
     public readonly utilsService: UtilsService,
-    public readonly renderer: Renderer2
+    public readonly renderer: Renderer2,
+    @Inject(PLATFORM_ID) public readonly platformId: any
   ) {
     super(store$);
 
@@ -189,7 +190,9 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
   ngOnInit(): void {
     super.ngOnInit();
 
-    this.utilsService.insertScript("https://js.stripe.com/v3/", this.renderer);
+    if (isPlatformBrowser(this.platformId) && Object.keys(this.windowRefService.nativeWindow).indexOf("Cypress") === -1) {
+      this.utilsService.insertScript("https://js.stripe.com/v3/", this.renderer);
+    }
 
     this.activatedRoute.params.pipe(takeUntil(this.destroyed$)).subscribe(params => {
       this.product = params["product"];
