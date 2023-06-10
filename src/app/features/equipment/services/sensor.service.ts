@@ -148,7 +148,7 @@ export class SensorService extends BaseService implements EquipmentItemServiceIn
             }),
             map(
               camera =>
-                `<strong>${camera.brandName ? camera.brandName : this.translateService.instant("(DIY)")}</strong> ${camera.name}`
+              `<a href=/equipment/explorer/camera/${camera.id}> ${camera.brandName ? camera.brandName : this.translateService.instant("(DIY)")} ${camera.name}</a>`
             )
           ));
         }
