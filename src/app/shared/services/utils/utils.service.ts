@@ -362,6 +362,27 @@ export class UtilsService {
     return new File([data], name);
   }
 
+  static fullFieldPath(fieldConfig: FormlyFieldConfig): string[] {
+    let path: string[] = [];
+
+    // Start with the current field
+    if (fieldConfig.props && fieldConfig.props.label) {
+      path.unshift(fieldConfig.props.label);
+    }
+
+    // Traverse up the tree
+    let currentFieldConfig = fieldConfig;
+    while (currentFieldConfig.parent) {
+      currentFieldConfig = currentFieldConfig.parent;
+
+      if (currentFieldConfig.templateOptions && currentFieldConfig.props.label) {
+        path.unshift(currentFieldConfig.props.label);
+      }
+    }
+
+    return path;
+  }
+
   static fieldWithErrors(topFields: FormlyFieldConfig[]): FormlyFieldConfig[] {
     let errored = [];
 
