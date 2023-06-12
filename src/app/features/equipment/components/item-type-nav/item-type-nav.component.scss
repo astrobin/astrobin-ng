@@ -7,6 +7,8 @@
 
   &.collapsed {
     overflow: hidden;
+    background: transparent;
+    box-shadow: none;
 
     @media screen and (max-width: $sm-max) {
       display: none;
@@ -16,11 +18,23 @@
       width: 40px;
     }
 
+    .nav-item-separator {
+      margin-left: -.5rem;
+    }
+
     .nav-link {
       &.active,
       &:hover {
         background-color: transparent;
       }
+
+      img {
+        left: -9px;
+      }
+    }
+
+    .contributors-icon {
+      left: -5px !important;
     }
 
     // Nested list for pending review/edit.
