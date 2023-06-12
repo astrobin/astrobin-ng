@@ -1,4 +1,4 @@
-import { testBrand, testAccessory } from "../../../support/commands/equipment-item-browser-utils";
+import { testAccessory, testBrand } from "../../../support/commands/equipment-item-browser-utils";
 
 context("Equipment", () => {
   beforeEach(() => {
@@ -17,7 +17,7 @@ context("Equipment", () => {
       });
 
       it("should see 'others in brand' info", () => {
-        cy.route("get", "**/api/v2/equipment/accessory/others-in-brand/*", [testAccessory]);
+        cy.route("get", "**/api/v2/equipment/accessory/others-in-brand/*", [testAccessory]).as("otherAccessoriesInBrand");
 
         cy.equipmentItemBrowserSelectFirstBrand("#equipment-item-field-brand", "Test Brand", testBrand);
 

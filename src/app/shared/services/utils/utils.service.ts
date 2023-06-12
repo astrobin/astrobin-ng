@@ -1,4 +1,4 @@
-import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
+import { Inject, Injectable, PLATFORM_ID, Renderer2 } from "@angular/core";
 import { distinctUntilChanged, switchMap, take } from "rxjs/operators";
 import { TranslateService } from "@ngx-translate/core";
 import { Store } from "@ngrx/store";
@@ -7,6 +7,7 @@ import { SelectorWithProps } from "@ngrx/store/src/models";
 import { interval, Observable, of } from "rxjs";
 import { isPlatformBrowser } from "@angular/common";
 import { FormlyFieldConfig } from "@ngx-formly/core";
+import { CookieService } from "ngx-cookie";
 
 @Injectable({
   providedIn: "root"
@@ -15,6 +16,7 @@ export class UtilsService {
   constructor(
     public readonly store$: Store<State>,
     public readonly translateService: TranslateService,
+    public readonly cookieService: CookieService,
     @Inject(PLATFORM_ID) public readonly platformId
   ) {
   }
@@ -27,6 +29,13 @@ export class UtilsService {
     input.setAttribute("value", notADateValue);
 
     return input.value !== notADateValue;
+  }
+
+  static removeQuotes(str: string): string {
+    if (str.length >= 2 && str.startsWith("\"") && str.endsWith("\"")) {
+      return str.slice(1, -1);
+    }
+    return str;
   }
 
   static getDateFormatString(lang = "default") {
@@ -182,6 +191,14 @@ export class UtilsService {
 
   static isObject(obj): boolean {
     return obj != null && obj.constructor.name === "Object";
+  }
+
+  static isNotEmptyDictionary<T>(variable: T | null | undefined): boolean {
+    if (variable === null || variable === undefined) {
+      return false;
+    }
+
+    return !(typeof variable === "object" && Object.keys(variable).length === 0);
   }
 
   static isUrl(s: string): boolean {
@@ -376,6 +393,52 @@ export class UtilsService {
     }
 
     return count;
+  }
+
+  static isGDPRCountry(countryCode: string): boolean {
+    return [
+      "AT",  // Austria
+      "BE",  // Belgium
+      "BG",  // Bulgaria
+      "CY",  // Cyprus
+      "CZ",  // Czech Republic
+      "DE",  // Germany
+      "DK",  // Denmark
+      "EE",  // Estonia
+      "ES",  // Spain
+      "FI",  // Finland
+      "FR",  // France
+      "GB",  // United Kingdom
+      "GR",  // Greece
+      "HR",  // Croatia
+      "HU",  // Hungary
+      "IE",  // Ireland
+      "IT",  // Italy
+      "LT",  // Lithuania
+      "LU",  // Luxembourg
+      "LV",  // Latvia
+      "MT",  // Malta
+      "NL",  // The Netherlands
+      "PL",  // Poland
+      "PT",  // Portugal
+      "RO",  // Romania
+      "SE",  // Sweden
+      "SI",  // Slovenia
+      "SK"  // Slovakia
+    ].includes(countryCode.toUpperCase());
+  }
+
+  insertScript(url: string, renderer: Renderer2, cb?: () => void) {
+    const script = renderer.createElement("script");
+    script.src = url;
+    script.async = true;
+    if (cb) {
+      script.onload = () => {
+        cb();
+      };
+    }
+
+    renderer.appendChild(document.body, script);
   }
 
   isNearBelowViewport(element: HTMLElement): boolean {

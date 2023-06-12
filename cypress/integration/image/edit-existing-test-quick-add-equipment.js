@@ -79,8 +79,8 @@ context("Image edit (existing). test quick add equipment", () => {
   });
 
   it("should have quick-add for imaging telescopes", () => {
-    cy.get('[ng-reflect-id="image-imaging-telescopes-field"] + .quick-add').should("be.visible");
-    cy.get('[ng-reflect-id="image-imaging-telescopes-field"] + .quick-add .quick-add-item').click();
+    cy.get("[ng-reflect-id=\"image-imaging-telescopes-field\"] + .quick-add").should("be.visible");
+    cy.get("[ng-reflect-id=\"image-imaging-telescopes-field\"] + .quick-add .quick-add-item").click();
 
     cy.get("#image-imaging-telescopes-field .ng-value")
       .contains("Test Brand Test Telescope 3")
@@ -88,6 +88,6 @@ context("Image edit (existing). test quick add equipment", () => {
   });
 
   it("should not have quick-add for guiding telescopes", () => {
-    cy.get('[ng-reflect-id="image-guiding-telescopes-field"] + .quick-add .no-recent').should("be.visible");
+    cy.get("[ng-reflect-id=\"image-guiding-telescopes-field\"] + .quick-add .no-recent").should("be.visible");
   });
 });

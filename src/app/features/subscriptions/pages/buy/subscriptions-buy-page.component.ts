@@ -1,5 +1,5 @@
-import { CurrencyPipe } from "@angular/common";
-import { Component, OnInit } from "@angular/core";
+import { CurrencyPipe, isPlatformBrowser } from "@angular/common";
+import { Component, Inject, OnInit, PLATFORM_ID, Renderer2 } from "@angular/core";
 import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 import { ActivatedRoute, Router } from "@angular/router";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
@@ -33,6 +33,7 @@ import { InformationDialogComponent } from "@shared/components/misc/information-
 import { SubscriptionName } from "@shared/types/subscription-name.type";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { UserSubscriptionInterface } from "@shared/interfaces/user-subscription.interface";
+import { UtilsService } from "@shared/services/utils/utils.service";
 
 declare var Stripe: any;
 
@@ -117,7 +118,10 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
     public readonly imageApiService: ImageApiService,
     public readonly domSanitizer: DomSanitizer,
     public readonly modalService: NgbModal,
-    public readonly windowRefService: WindowRefService
+    public readonly windowRefService: WindowRefService,
+    public readonly utilsService: UtilsService,
+    public readonly renderer: Renderer2,
+    @Inject(PLATFORM_ID) public readonly platformId: any
   ) {
     super(store$);
 
@@ -185,6 +189,10 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
 
   ngOnInit(): void {
     super.ngOnInit();
+
+    if (isPlatformBrowser(this.platformId) && Object.keys(this.windowRefService.nativeWindow).indexOf("Cypress") === -1) {
+      this.utilsService.insertScript("https://js.stripe.com/v3/", this.renderer);
+    }
 
     this.activatedRoute.params.pipe(takeUntil(this.destroyed$)).subscribe(params => {
       this.product = params["product"];

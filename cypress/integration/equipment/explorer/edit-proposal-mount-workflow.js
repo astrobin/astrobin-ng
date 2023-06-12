@@ -4,20 +4,22 @@ const testMountIncomplete = {
   ...testMount,
   type: "OTHER",
   weight: null,
-  maxPayload: null,
+  maxPayload: null
 };
 
 context("Equipment", () => {
   beforeEach(() => {
     cy.server();
     cy.setupInitializationRoutes();
-    cy.setupEquipmentDefaultRoutes();
+    cy.setupEquipmentDefaultRoutesForAllClasses();
+    cy.setupEquipmentDefaultRoutesForBrands();
+    cy.setupEquipmentDefaultRoutesForMounts();
 
     cy.route("GET", "**/api/v2/equipment/mount/?page=*", {
       count: 1,
       next: null,
       previous: null,
-      results: [testMountIncomplete],
+      results: [testMountIncomplete]
     }).as("findMounts");
 
     cy.route("get", "**/api/v2/equipment/mount-edit-proposal/?edit_proposal_target=*", { results: [] });
@@ -67,10 +69,12 @@ context("Equipment", () => {
         count: 0,
         next: null,
         previous: null,
-        results: [],
+        results: []
       }).as("findMountsByName");
 
       cy.get("#equipment-item-field-name").clear().type("Foo");
+
+      cy.wait("@findMountsByName");
 
       cy.get(".alert-warning span").contains("Change the name only to fix a typo").should("be.visible");
     });
@@ -85,7 +89,7 @@ context("Equipment", () => {
     it("should submit the form", () => {
       cy.route("post", "**/api/v2/equipment/mount-edit-proposal/", testMountEditProposal).as("saveEditProposal");
       cy.route("get", "**/api/v2/equipment/mount-edit-proposal/?edit_proposal_target=*", {
-        results: [testMountEditProposal],
+        results: [testMountEditProposal]
       }).as("getEditProposals");
 
       cy.get("[data-test=propose-edit-confirm]").click();

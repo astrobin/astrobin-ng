@@ -42,7 +42,7 @@ context("Equipment", () => {
       it("should input the 'Size'", () => {
         cy.ngSelectOpen("#filter-field-size");
         cy.ngSelectOptionClick("#filter-field-size", 1);
-        cy.ngSelectValueShouldContain("#filter-field-size", 'Round 1.25"');
+        cy.ngSelectValueShouldContain("#filter-field-size", "Round 1.25\"");
       });
 
       it("should have generated the name", () => {
@@ -56,7 +56,8 @@ context("Equipment", () => {
       });
 
       it("should have the filter name info messages", () => {
-        cy.get(".alert-info").contains("contain the bandwidth").should("be.visible");
+        cy.wait(1000);
+        cy.get(".alert-info ").contains("contain the bandwidth").should("be.visible");
       });
 
       it("should create the item", () => {
@@ -70,7 +71,7 @@ context("Equipment", () => {
         cy.equipmentItemSummaryShouldHaveProperty(".modal", "Class", "Filter");
         cy.equipmentItemSummaryShouldHaveProperty(".modal", "Type", "Hydrogen-alpha (Hα)");
         cy.equipmentItemSummaryShouldHaveProperty(".modal", "Bandwidth", "3 nm");
-        cy.equipmentItemSummaryShouldHaveProperty(".modal", "Size", 'Round 1.25"');
+        cy.equipmentItemSummaryShouldHaveProperty(".modal", "Size", "Round 1.25\"");
 
         cy.get("[for=confirm-no-typos]").click();
         cy.get("[for=confirm-no-duplication]").click();
