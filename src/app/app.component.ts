@@ -64,7 +64,11 @@ export class AppComponent extends BaseComponentDirective implements OnInit {
   }
 
   initGtag(): void {
-    dataLayer = dataLayer || [];
+    try {
+      dataLayer = dataLayer || [];
+    } catch (e) {
+      return;
+    }
 
     // @ts-ignore
     gtag("js", new Date());
