@@ -147,14 +147,25 @@ export class SensorService extends BaseService implements EquipmentItemServiceIn
               }
             }),
             map(
-              camera =>
-              `<a href=/equipment/explorer/camera/${camera.id}> ${camera.brandName ? camera.brandName : this.translateService.instant("(DIY)")} ${camera.name}</a>`
+              camera =>`${camera.brandName ? camera.brandName : this.translateService.instant("(DIY)")} ${camera.name}`
+              // remove link for now
+              // `<a href=/equipment/explorer/camera/${camera.id}> ${camera.brandName ? camera.brandName : this.translateService.instant("(DIY)")} ${camera.name}</a>`
             )
           ));
         }
-        return combineLatest(cameras$).pipe(
-          map(cameras => cameras.join(" &middot; "))
-       );
+        if (cameras$.length <= 3 ) {
+          return combineLatest(cameras$).pipe(
+            map(cameras => cameras.join(" &middot; "))
+          )
+        } else {
+          const firstThree$ = combineLatest(cameras$.slice(0,3)).pipe(
+            map(cameras => cameras.join(" &middot; "))
+          )
+          const suffix$ = of("and " + (cameras$.length - 3) + " more")
+          return combineLatest([firstThree$, suffix$]).pipe(
+            map(([firstThree, suffix]) => firstThree + ", " + suffix)
+          )
+        }
 
       default:
         throw Error(`Invalid property: ${property}`);
