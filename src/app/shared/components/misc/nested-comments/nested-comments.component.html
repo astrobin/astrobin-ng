@@ -47,19 +47,21 @@
         <formly-form [fields]="fields" [form]="form" [model]="model"></formly-form>
       </form>
 
-      <button (click)="cancelTopLevelComment()" [class.loading]="loadingService.loading$ | async"
-              class="btn btn-secondary">
-        {{ "Cancel" | translate }}
-      </button>
+      <div class="form-actions">
+        <button (click)="cancelTopLevelComment()" [class.loading]="loadingService.loading$ | async"
+                class="btn btn-secondary">
+          {{ "Cancel" | translate }}
+        </button>
 
-      <button
-        (click)="submitTopLevelComment()"
-        [class.loading]="loadingService.loading$ | async"
-        [disabled]="!form.valid"
-        class="btn btn-primary ms-sm-2"
-      >
-        {{ "Submit" | translate }}
-      </button>
+        <button
+          (click)="submitTopLevelComment()"
+          [class.loading]="loadingService.loading$ | async"
+          [disabled]="!form.valid"
+          class="btn btn-primary ms-sm-2"
+        >
+          {{ "Submit" | translate }}
+        </button>
+      </div>
     </ng-template>
   </div>
 </ng-template>
