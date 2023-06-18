@@ -40,6 +40,8 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
   // We keep a local "loading" state because we don't want to freeze the whole app.
   loading = false;
 
+  buttonState: "default" | "success" = "default";
+
   constructor(
     public readonly store$: Store<State>,
     public readonly actions$: Actions,
@@ -98,6 +100,20 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
       takeUntil(this.destroyed$)
     ).subscribe(() => {
       this.loading = false;
+    });
+
+    this.actions$.pipe(
+      ofType(
+        AppActionTypes.CREATE_TOGGLE_PROPERTY_SUCCESS,
+        AppActionTypes.DELETE_TOGGLE_PROPERTY_SUCCESS
+      ),
+      takeUntil(this.destroyed$)
+    ).subscribe(() => {
+      this.buttonState = "success";
+
+      this.utilsService.delay(1000).subscribe(() => {
+        this.buttonState = "default";
+      });
     });
   }
 
