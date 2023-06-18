@@ -39,6 +39,17 @@ import {
   LoadNestedComments,
   LoadNestedCommentsSuccess
 } from "@app/store/actions/nested-comments.actions";
+import {
+  CreateToggleProperty,
+  CreateTogglePropertyFailure,
+  CreateTogglePropertySuccess,
+  DeleteToggleProperty,
+  DeleteTogglePropertyFailure,
+  DeleteTogglePropertySuccess,
+  LoadToggleProperty,
+  LoadTogglePropertyFailure,
+  LoadTogglePropertySuccess
+} from "@app/store/actions/toggle-property.actions";
 
 export enum AppActionTypes {
   INITIALIZE = "[App] Initialize",
@@ -95,7 +106,17 @@ export enum AppActionTypes {
 
   CREATE_NESTED_COMMENT = "[App] Save nested comment",
   CREATE_NESTED_COMMENT_SUCCESS = "[App] Save nested comment success",
-  CREATE_NESTED_COMMENT_FAILURE = "[App] Save nested comment failure"
+  CREATE_NESTED_COMMENT_FAILURE = "[App] Save nested comment failure",
+
+  CREATE_TOGGLE_PROPERTY = "[App] Create toggle property",
+  CREATE_TOGGLE_PROPERTY_SUCCESS = "[App] Create toggle property success",
+  CREATE_TOGGLE_PROPERTY_FAILURE = "[App] Create toggle property failure",
+  DELETE_TOGGLE_PROPERTY = "[App] Delete toggle property",
+  DELETE_TOGGLE_PROPERTY_SUCCESS = "[App] Delete toggle property success",
+  DELETE_TOGGLE_PROPERTY_FAILURE = "[App] Delete toggle property failure",
+  LOAD_TOGGLE_PROPERTY = "[App] Load toggle property",
+  LOAD_TOGGLE_PROPERTY_SUCCESS = "[App] Load toggle property success",
+  LOAD_TOGGLE_PROPERTY_FAILURE = "[App] Load toggle property failure"
 }
 
 export type All =
@@ -136,4 +157,13 @@ export type All =
   | LoadNestedCommentsSuccess
   | CreateNestedComment
   | CreateNestedCommentSuccess
-  | CreateNestedCommentFailure;
+  | CreateNestedCommentFailure
+  | CreateToggleProperty
+  | CreateTogglePropertySuccess
+  | CreateTogglePropertyFailure
+  | DeleteToggleProperty
+  | DeleteTogglePropertySuccess
+  | DeleteTogglePropertyFailure
+  | LoadToggleProperty
+  | LoadTogglePropertySuccess
+  | LoadTogglePropertyFailure;

@@ -1,0 +1,10 @@
+<svg class="lds-dual-ring" height="200px" preserveAspectRatio="xMidYMid" style="background: none;"
+     viewBox="0 0 100 100" width="200px" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="50" cy="50" fill="none" ng-attr-r="{{config.radius}}"
+          ng-attr-stroke="{{config.stroke}}" ng-attr-stroke-dasharray="{{config.dasharray}}" ng-attr-stroke-width="{{config.width}}"
+          r="40" stroke="#000000" stroke-dasharray="62.83185307179586 62.83185307179586" stroke-linecap="round"
+          stroke-width="4" transform="rotate(257.86 50 50)">
+    <animateTransform attributeName="transform" begin="0s" calcMode="linear" dur="1s"
+                      keyTimes="0;1" repeatCount="indefinite" type="rotate" values="0 50 50;360 50 50"></animateTransform>
+  </circle>
+</svg>

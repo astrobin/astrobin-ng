@@ -22,6 +22,7 @@ import { EquipmentEffects } from "@features/equipment/store/equipment.effects";
 import * as subscriptions from "@features/subscriptions/store/subscriptions.reducers";
 import { initialSubscriptionsState } from "@features/subscriptions/store/subscriptions.reducers";
 import { SubscriptionsEffects } from "@features/subscriptions/store/subscriptions.effects";
+import { TogglePropertyEffects } from "@app/store/effects/toggle-property.effects";
 
 export interface State {
   app: app.AppState;
@@ -61,5 +62,6 @@ export const appStateEffects = [
   ThumbnailEffects,
   TelescopeEffects,
   EquipmentEffects,
-  SubscriptionsEffects
+  SubscriptionsEffects,
+  TogglePropertyEffects
 ];

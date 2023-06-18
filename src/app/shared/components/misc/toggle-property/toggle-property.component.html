@@ -1,0 +1,16 @@
+<ng-container *ngIf="{ toggleProperty: toggleProperty$ | async } as context">
+  <button
+    (click)="onClick(context.toggleProperty)"
+    [class.loading-bars]="loading"
+    [class.loading]="(loadingService.loading$ | async) === true"
+    class="btn btn-secondary"
+  >
+    <ng-container *ngIf="!!context.toggleProperty">
+      {{ unsetTogglePropertyLabel }}
+    </ng-container>
+
+    <ng-container *ngIf="context.toggleProperty === null">
+      {{ setTogglePropertyLabel }}
+    </ng-container>
+  </button>
+</ng-container>

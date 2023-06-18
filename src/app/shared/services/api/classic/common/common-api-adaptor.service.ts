@@ -6,6 +6,7 @@ import { UserInterface } from "@shared/interfaces/user.interface";
 import { BaseService } from "@shared/services/base.service";
 import { WatermarkPositionOptions, WatermarkSizeOptions } from "@shared/interfaces/image.interface";
 import { LocationInterface } from "@shared/interfaces/location.interface";
+import { TogglePropertyInterface } from "@shared/interfaces/toggle-property.interface";
 
 export interface BackendPermissionInterface {
   id: number;
@@ -96,6 +97,15 @@ export interface BackendUserProfileInterface {
   premium_counter: number;
   locations: LocationInterface[];
   email?: string;
+}
+
+export interface BackendTogglePropertyInterface {
+  pk: number;
+  property_type: "like" | "bookmark" | "follow";
+  user: number;
+  content_type: number;
+  object_id: string;
+  created_on: string;
 }
 
 @Injectable({
@@ -198,6 +208,26 @@ export class CommonApiAdaptorService extends BaseService {
       premiumCounter: userProfile.premium_counter,
       locations: userProfile.locations,
       email: userProfile.email
+    };
+  }
+
+  togglePropertyFromBackend(toggleProperty: Partial<BackendTogglePropertyInterface>): TogglePropertyInterface {
+    return {
+      id: toggleProperty.pk,
+      propertyType: toggleProperty.property_type,
+      user: toggleProperty.user,
+      contentType: toggleProperty.content_type,
+      objectId: toggleProperty.object_id,
+      createdOn: new Date(toggleProperty.created_on)
+    };
+  }
+
+  togglePropertyToBackend(toggleProperty: Partial<TogglePropertyInterface>): Partial<BackendTogglePropertyInterface> {
+    return {
+      property_type: toggleProperty.propertyType,
+      user: toggleProperty.user,
+      content_type: toggleProperty.contentType,
+      object_id: toggleProperty.objectId
     };
   }
 }

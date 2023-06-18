@@ -164,6 +164,15 @@
               {{ "Propose edit" | translate }}&hellip;
             </button>
 
+            <ng-container *ngIf="contentType$ | async as contentType">
+              <astrobin-toggle-property
+                [contentType]="contentType.id"
+                [objectId]="selectedItem.id.toString()"
+                [userId]="currentUser.id"
+                propertyType="follow"
+              ></astrobin-toggle-property>
+            </ng-container>
+
             <div *ngIf="currentUser | isEquipmentModerator" ngbDropdown>
               <button
                 [class.loading]="loadingService.loading$ | async"
