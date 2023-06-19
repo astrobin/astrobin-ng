@@ -9,6 +9,7 @@ import { MigrationExplorerComponent } from "@features/equipment/pages/migration/
 import { ExplorerPageComponent } from "@features/equipment/pages/explorer/explorer-page.component";
 import { PendingEditExplorerComponent } from "@features/equipment/pages/pending-edit-explorer/pending-edit-explorer.component";
 import { PendingReviewExplorerComponent } from "@features/equipment/pages/pending-review-explorer/pending-review-explorer.component";
+import { FollowedExplorerComponent } from "@features/equipment/pages/followed-explorer/followed-explorer.component";
 import { ReviewGearRenamingProposalsComponent } from "@features/equipment/pages/review-gear-renaming-proposals/review-gear-renaming-proposals.component";
 import { BrandExplorerPageComponent } from "@features/equipment/pages/explorer/brand-explorer-page/brand-explorer-page.component";
 import { ContributorsPageComponent } from "@features/equipment/pages/contributors-page/contributors-page.component";
@@ -129,6 +130,12 @@ export const routes: Routes = [
   {
     path: "pending-edit-explorer/:itemType",
     component: PendingEditExplorerComponent,
+    canActivate: [AuthGuardService, GroupGuardService],
+    data: { anyOfGroups: [Constants.EQUIPMENT_MODERATORS_GROUP, Constants.OWN_EQUIPMENT_MIGRATORS_GROUP] }
+  },
+  {
+    path: "followed-explorer/:itemType",
+    component: FollowedExplorerComponent,
     canActivate: [AuthGuardService, GroupGuardService],
     data: { anyOfGroups: [Constants.EQUIPMENT_MODERATORS_GROUP, Constants.OWN_EQUIPMENT_MIGRATORS_GROUP] }
   }

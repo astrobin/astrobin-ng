@@ -61,36 +61,43 @@ export class ItemTypeNavComponent extends BaseComponentDirective
   cameraCount: Observable<number | null> = null;
   camerasPendingReviewCount: Observable<number | null> = null;
   camerasPendingEditCount: Observable<number | null> = null;
+  camerasFollowedCount: Observable<number | null> = null;
 
   @Input()
   sensorCount: Observable<number | null> = null;
   sensorsPendingReviewCount: Observable<number | null> = null;
   sensorsPendingEditCount: Observable<number | null> = null;
+  sensorsFollowedCount: Observable<number | null> = null;
 
   @Input()
   telescopeCount: Observable<number | null> = null;
   telescopesPendingReviewCount: Observable<number | null> = null;
   telescopesPendingEditCount: Observable<number | null> = null;
+  telescopesFollowedCount: Observable<number | null> = null;
 
   @Input()
   mountCount: Observable<number | null> = null;
   mountsPendingReviewCount: Observable<number | null> = null;
   mountsPendingEditCount: Observable<number | null> = null;
+  mountsFollowedCount: Observable<number | null> = null;
 
   @Input()
   filterCount: Observable<number | null> = null;
   filtersPendingReviewCount: Observable<number | null> = null;
   filtersPendingEditCount: Observable<number | null> = null;
+  filtersFollowedCount: Observable<number | null> = null;
 
   @Input()
   accessoryCount: Observable<number | null> = null;
   accessoriesPendingReviewCount: Observable<number | null> = null;
   accessoriesPendingEditCount: Observable<number | null> = null;
+  accessoriesFollowedCount: Observable<number | null> = null;
 
   @Input()
   softwareCount: Observable<number | null> = null;
   softwarePendingReviewCount: Observable<number | null> = null;
   softwarePendingEditCount: Observable<number | null> = null;
+  softwareFollowedCount: Observable<number | null> = null;
 
   @Input()
   activeType = this.activatedRoute.snapshot?.paramMap.get("itemType");
@@ -110,6 +117,7 @@ export class ItemTypeNavComponent extends BaseComponentDirective
     providedCount: Observable<number | null>;
     pendingReviewCount: Observable<number | null>;
     pendingEditCount: Observable<number | null>;
+    followedCount: Observable<number | null>;
     disabled?: boolean;
   }[];
 
@@ -227,6 +235,8 @@ export class ItemTypeNavComponent extends BaseComponentDirective
       this.activeSubNav = "pending-review-explorer";
     } else if (url.indexOf("pending-edit-explorer") > -1) {
       this.activeSubNav = "pending-edit-explorer";
+    } else if (url.indexOf("followed-explorer") > -1) {
+      this.activeSubNav = "followed-explorer";
     }
   }
 
@@ -282,7 +292,8 @@ export class ItemTypeNavComponent extends BaseComponentDirective
         count: this.cameraCount,
         providedCount: this.cameraCount,
         pendingReviewCount: this.camerasPendingReviewCount,
-        pendingEditCount: this.camerasPendingEditCount
+        pendingEditCount: this.camerasPendingEditCount,
+        followedCount: this.camerasFollowedCount
       },
       {
         label: this.translateService.instant("Sensors"),
@@ -290,7 +301,8 @@ export class ItemTypeNavComponent extends BaseComponentDirective
         count: this.sensorCount,
         providedCount: this.sensorCount,
         pendingReviewCount: this.sensorsPendingReviewCount,
-        pendingEditCount: this.sensorsPendingEditCount
+        pendingEditCount: this.sensorsPendingEditCount,
+        followedCount: this.sensorsFollowedCount
       },
       {
         label: this.translateService.instant("Telescopes & lenses"),
@@ -298,7 +310,8 @@ export class ItemTypeNavComponent extends BaseComponentDirective
         count: this.telescopeCount,
         providedCount: this.telescopeCount,
         pendingReviewCount: this.telescopesPendingReviewCount,
-        pendingEditCount: this.telescopesPendingEditCount
+        pendingEditCount: this.telescopesPendingEditCount,
+        followedCount: this.telescopesFollowedCount
       },
       {
         label: this.translateService.instant("Mounts"),
@@ -306,7 +319,8 @@ export class ItemTypeNavComponent extends BaseComponentDirective
         count: this.mountCount,
         providedCount: this.mountCount,
         pendingReviewCount: this.mountsPendingReviewCount,
-        pendingEditCount: this.mountsPendingEditCount
+        pendingEditCount: this.mountsPendingEditCount,
+        followedCount: this.mountsFollowedCount
       },
       {
         label: this.translateService.instant("Filters"),
@@ -314,7 +328,8 @@ export class ItemTypeNavComponent extends BaseComponentDirective
         count: this.filterCount,
         providedCount: this.filterCount,
         pendingReviewCount: this.filtersPendingReviewCount,
-        pendingEditCount: this.filtersPendingEditCount
+        pendingEditCount: this.filtersPendingEditCount,
+        followedCount: this.filtersFollowedCount
       },
       {
         label: this.translateService.instant("Accessories"),
@@ -322,7 +337,8 @@ export class ItemTypeNavComponent extends BaseComponentDirective
         count: this.accessoryCount,
         providedCount: this.accessoryCount,
         pendingReviewCount: this.accessoriesPendingReviewCount,
-        pendingEditCount: this.accessoriesPendingEditCount
+        pendingEditCount: this.accessoriesPendingEditCount,
+        followedCount: this.accessoriesFollowedCount
       },
       {
         label: this.translateService.instant("Software"),
@@ -330,7 +346,8 @@ export class ItemTypeNavComponent extends BaseComponentDirective
         count: this.softwareCount,
         providedCount: this.softwareCount,
         pendingReviewCount: this.softwarePendingReviewCount,
-        pendingEditCount: this.softwarePendingEditCount
+        pendingEditCount: this.softwarePendingEditCount,
+        followedCount: this.softwareFollowedCount
       }
     ].filter(type => this.excludeTypes.indexOf(type.value) === -1);
   }
@@ -416,6 +433,13 @@ export class ItemTypeNavComponent extends BaseComponentDirective
             });
           }
         })
+      );
+
+      type.followedCount = this.equipmentApiService.getAllFollowedEquipmentItems(type.value).pipe(
+        takeUntil(this.destroyed$),
+        catchError(() => of({ count: 0 })),
+        map(response => response.count),
+        tap(() => this.loadingService.setLoading(false))
       );
     }
   }
