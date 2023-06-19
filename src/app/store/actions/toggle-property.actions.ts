@@ -35,7 +35,7 @@ export class DeleteToggleProperty implements PayloadActionInterface {
 export class DeleteTogglePropertySuccess implements PayloadActionInterface {
   readonly type = AppActionTypes.DELETE_TOGGLE_PROPERTY_SUCCESS;
 
-  constructor(public payload: { togglePropertyId: TogglePropertyInterface["id"] }) {
+  constructor(public payload: { toggleProperty: Partial<TogglePropertyInterface> }) {
   }
 }
 

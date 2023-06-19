@@ -7,10 +7,12 @@
     class="btn btn-secondary"
   >
     <ng-container *ngIf="!!context.toggleProperty">
+      <fa-icon [icon]="unsetTogglePropertyIcon"></fa-icon>
       {{ unsetTogglePropertyLabel }}
     </ng-container>
 
     <ng-container *ngIf="context.toggleProperty === null">
+      <fa-icon [icon]="setTogglePropertyIcon"></fa-icon>
       {{ setTogglePropertyLabel }}
     </ng-container>
   </button>

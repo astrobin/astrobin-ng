@@ -333,7 +333,7 @@ export function reducer(state = initialAppState, action: All): AppState {
     case AppActionTypes.DELETE_TOGGLE_PROPERTY_SUCCESS: {
       return {
         ...state,
-        toggleProperties: state.toggleProperties.filter(toggleProperty => toggleProperty.id !== action.payload.togglePropertyId)
+        toggleProperties: state.toggleProperties.filter(toggleProperty => toggleProperty.id !== action.payload.toggleProperty.id)
       };
     }
 

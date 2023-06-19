@@ -16,6 +16,7 @@ import { takeUntil, tap } from "rxjs/operators";
 import { Actions, ofType } from "@ngrx/effects";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { UtilsService } from "@shared/services/utils/utils.service";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
 
 @Component({
   selector: "astrobin-toggle-property",
@@ -52,6 +53,28 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
     super(store$);
   }
 
+  get unsetTogglePropertyLabel(): string {
+    switch (this.propertyType) {
+      case "like":
+        return this.translateService.instant("Unlike");
+      case "bookmark":
+        return this.translateService.instant("Remove bookmark");
+      case "follow":
+        return this.translateService.instant("Unfollow");
+    }
+  }
+
+  get unsetTogglePropertyIcon(): IconProp {
+    switch (this.propertyType) {
+      case "like":
+        return "thumbs-down";
+      case "bookmark":
+        return "bookmark-slash";
+      case "follow":
+        return "bell-slash";
+    }
+  }
+
   get setTogglePropertyLabel(): string {
     switch (this.propertyType) {
       case "like":
@@ -63,14 +86,14 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
     }
   }
 
-  get unsetTogglePropertyLabel(): string {
+  get setTogglePropertyIcon(): IconProp {
     switch (this.propertyType) {
       case "like":
-        return this.translateService.instant("Unlike");
+        return "thumbs-up";
       case "bookmark":
-        return this.translateService.instant("Remove bookmark");
+        return "bookmark";
       case "follow":
-        return this.translateService.instant("Unfollow");
+        return "bell";
     }
   }
 

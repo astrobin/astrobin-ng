@@ -100,7 +100,7 @@ export class TogglePropertyEffects {
       map((action: DeleteToggleProperty) => action.payload.toggleProperty),
       mergeMap((toggleProperty: Partial<TogglePropertyInterface>) =>
         this.commonApiService.deleteToggleProperty(toggleProperty.id).pipe(
-          map(() => new DeleteTogglePropertySuccess({ togglePropertyId: toggleProperty.id })),
+          map(() => new DeleteTogglePropertySuccess({ toggleProperty })),
           catchError(() => of(new DeleteTogglePropertyFailure({ toggleProperty })))
         )
       )
