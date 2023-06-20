@@ -288,7 +288,10 @@ Cypress.Commands.add("setupEquipmentDefaultRoutesForAllClasses", () => {
   cy.route("POST", "**/api/v2/equipment/**/release-edit-proposal-review-lock/", {}).as("releaseEditProposalReviewLock");
   cy.route("GET", /\/api\/v2\/equipment\/\w+\/\d+\/listings\/$/, []).as("listings");
   cy.route("GET", /\/api\/v2\/images\/image-search\/\?.*/, { count: 0, results: [] }).as("imageSearch");
-
+  cy.route("GET", /\/api\/v2\/common\/toggleproperties\/\?property_type=follow.*/, {
+    count: 0,
+    results: []
+  }).as("follows");
   cy.route("GET", "**/api/v2/equipment/contributors/", []).as("getContributors");
 });
 
@@ -466,6 +469,13 @@ Cypress.Commands.add("setupEquipmentDefaultRoutesForMounts", () => {
     previous: null,
     results: []
   }).as("findMountsFollowed");
+
+  cy.route("GET", "**/api/v2/equipment/mount/?pending_review=true?page=*", {
+    count: 0,
+    next: null,
+    previous: null,
+    results: []
+  }).as("findMountsPendingReview");
 
   cy.route("GET", "**/api/v2/equipment/mount/?pending_edit=true?page=*", {
     count: 0,
