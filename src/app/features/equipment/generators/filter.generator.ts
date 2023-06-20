@@ -33,7 +33,9 @@ export class FilterGenerator {
         itemListings: [],
         brandListings: [],
         allowFullRetailerIntegration: false
-      }
+      },
+      followed: false,
+      contentType: 2
     };
   }
 }
