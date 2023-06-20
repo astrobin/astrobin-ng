@@ -37,7 +37,9 @@ export class MountGenerator {
         itemListings: [],
         brandListings: [],
         allowFullRetailerIntegration: false
-      }
+      },
+      followed: false,
+      contentType: 3
     };
   }
 }

@@ -101,6 +101,7 @@ import { FormlyFieldTableComponent } from "@shared/components/misc/formly-field-
 import { NgxDatatableModule } from "@swimlane/ngx-datatable";
 import { FormlyFieldButtonComponent } from "@shared/components/misc/formly-field-button/formly-field-button.component";
 import { FormlyCardWrapperComponent } from "@shared/components/misc/formly-card-wrapper/formly-card-wrapper.component";
+import { TogglePropertyComponent } from "@shared/components/misc/toggle-property/toggle-property.component";
 
 const modules = [
   CommonModule,
@@ -179,6 +180,7 @@ const components = [
   TelescopeComponent,
   TextLoadingIndicatorComponent,
   ToggleButtonComponent,
+  TogglePropertyComponent,
   UsernameComponent,
 
   // Equipment

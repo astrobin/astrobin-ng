@@ -288,7 +288,10 @@ Cypress.Commands.add("setupEquipmentDefaultRoutesForAllClasses", () => {
   cy.route("POST", "**/api/v2/equipment/**/release-edit-proposal-review-lock/", {}).as("releaseEditProposalReviewLock");
   cy.route("GET", /\/api\/v2\/equipment\/\w+\/\d+\/listings\/$/, []).as("listings");
   cy.route("GET", /\/api\/v2\/images\/image-search\/\?.*/, { count: 0, results: [] }).as("imageSearch");
-
+  cy.route("GET", /\/api\/v2\/common\/toggleproperties\/\?property_type=follow.*/, {
+    count: 0,
+    results: []
+  }).as("follows");
   cy.route("GET", "**/api/v2/equipment/contributors/", []).as("getContributors");
 });
 
@@ -336,6 +339,13 @@ Cypress.Commands.add("setupEquipmentDefaultRoutesForCameras", () => {
     previous: null,
     results: []
   }).as("findCamerasPendingEdit");
+
+  cy.route("GET", "**/api/v2/equipment/camera/?followed=true?page=*", {
+    count: 0,
+    next: null,
+    previous: null,
+    results: []
+  }).as("findCamerasFollowed");
 
   cy.route("GET", "**/api/v2/equipment/camera-edit-proposal/?edit_proposal_target=*", {
     results: []
@@ -409,6 +419,13 @@ Cypress.Commands.add("setupEquipmentDefaultRoutesForTelescopes", () => {
     results: []
   }).as("findTelescopesPendingEdit");
 
+  cy.route("GET", "**/api/v2/equipment/telescope/?followed=true?page=*", {
+    count: 0,
+    next: null,
+    previous: null,
+    results: []
+  }).as("findTelescopesFollowed");
+
   cy.route("GET", "**/api/v2/equipment/telescope-edit-proposal/?edit_proposal_target=*", {
     results: []
   }).as("getEditProposals");
@@ -446,7 +463,14 @@ Cypress.Commands.add("setupEquipmentDefaultRoutesForMounts", () => {
     }
   }).as("findMountsByName");
 
-  cy.route("GET", "**/api/v2/equipment/mount/?pending_review=true&page=*", {
+  cy.route("GET", "**/api/v2/equipment/mount/?followed=true&page=*", {
+    count: 0,
+    next: null,
+    previous: null,
+    results: []
+  }).as("findMountsFollowed");
+
+  cy.route("GET", "**/api/v2/equipment/mount/?pending_review=true?page=*", {
     count: 0,
     next: null,
     previous: null,
@@ -511,6 +535,13 @@ Cypress.Commands.add("setupEquipmentDefaultRoutesForFilters", () => {
     results: []
   }).as("findFiltersPendingEdit");
 
+  cy.route("GET", "**/api/v2/equipment/filter/?followed=true?page=*", {
+    count: 0,
+    next: null,
+    previous: null,
+    results: []
+  }).as("findFiltersFollowed");
+
   cy.route("GET", "**/api/v2/equipment/filter-edit-proposal/?edit_proposal_target=*", {
     results: []
   }).as("getEditProposals");
@@ -562,6 +593,13 @@ Cypress.Commands.add("setupEquipmentDefaultRoutesForAccessories", () => {
     results: []
   }).as("findAccessoriesPendingEdit");
 
+  cy.route("GET", "**/api/v2/equipment/accessory/?followed=true&page=*", {
+    count: 0,
+    next: null,
+    previous: null,
+    results: []
+  }).as("findAccessoriesFollowed");
+
   cy.route("GET", "**/api/v2/equipment/accessory-edit-proposal/?edit_proposal_target=*", {
     results: []
   }).as("getEditProposals");
@@ -612,6 +650,13 @@ Cypress.Commands.add("setupEquipmentDefaultRoutesForSoftware", () => {
     previous: null,
     results: []
   }).as("findSoftwareItemsPendingEdit");
+
+  cy.route("GET", "**/api/v2/equipment/software/?followed=true&page=*", {
+    count: 0,
+    next: null,
+    previous: null,
+    results: []
+  }).as("findSoftwareItemsFollowed");
 
   cy.route("GET", "**/api/v2/equipment/software-edit-proposal/?edit_proposal_target=*", {
     results: []

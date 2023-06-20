@@ -35,7 +35,9 @@ export class TelescopeGenerator {
         itemListings: [],
         brandListings: [],
         allowFullRetailerIntegration: false
-      }
+      },
+      followed: false,
+      contentType: 6
     };
   }
 }
