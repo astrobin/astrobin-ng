@@ -1,15 +1,17 @@
 import { Injectable } from "@angular/core";
+import { InformationDialogComponent } from "@shared/components/misc/information-dialog/information-dialog.component";
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { EquipmentItemServiceInterface } from "@features/equipment/services/equipment-item.service-interface";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { ColorOrMono, SensorInterface } from "@features/equipment/types/sensor.interface";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { TranslateService } from "@ngx-translate/core";
 import { Observable, combineLatest, of } from "rxjs";
 import { filter, map, take, tap } from "rxjs/operators";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
-import {  selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
+import { selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import { LoadBrand, LoadEquipmentItem } from "@features/equipment/store/equipment.actions";
 
 export enum SensorDisplayProperty {
@@ -36,7 +38,8 @@ export class SensorService extends BaseService implements EquipmentItemServiceIn
   constructor(
     public readonly store$: Store<State>,
     public readonly loadingService: LoadingService, 
-    public readonly translateService: TranslateService
+    public readonly translateService: TranslateService,
+    public readonly modalService: NgbModal
     ) {
     super(loadingService);
   }
@@ -147,9 +150,17 @@ export class SensorService extends BaseService implements EquipmentItemServiceIn
               }
             }),
             map(
-              camera =>`${camera.brandName ? camera.brandName : this.translateService.instant("(DIY)")} ${camera.name}`
-              // remove link for now
-              // `<a href=/equipment/explorer/camera/${camera.id}> ${camera.brandName ? camera.brandName : this.translateService.instant("(DIY)")} ${camera.name}</a>`
+              camera =>
+              // `${camera.brandName ? camera.brandName : this.translateService.instant("(DIY)")} ${camera.name}`
+              `<a href=/equipment/explorer/camera/${camera.id}> ${camera.brandName ? camera.brandName : this.translateService.instant("(DIY)")} ${camera.name}</a>`
+            // Doesn't work
+            //   `<a
+            //   (click)="modal.dismiss()"
+            //   [routerLink]="['/equipment/explorer/camera/1']"
+            // >
+            // Hello
+            // </a>`
+
             )
           ));
         }
@@ -158,6 +169,7 @@ export class SensorService extends BaseService implements EquipmentItemServiceIn
             map(cameras => cameras.join(" &middot; "))
           )
         } else {
+          this.extraCameras(cameras$)
           const firstThree$ = combineLatest(cameras$.slice(0,3)).pipe(
             map(cameras => cameras.join(" &middot; "))
           )
@@ -170,6 +182,12 @@ export class SensorService extends BaseService implements EquipmentItemServiceIn
       default:
         throw Error(`Invalid property: ${property}`);
     }
+  }
+
+  extraCameras(cameras$: any[]): void {
+    const modal = this.modalService.open(InformationDialogComponent);
+    const componentInstance: InformationDialogComponent = modal.componentInstance;
+    componentInstance.message = "Add links to all the cameras here somehow?"
   }
 
   getPrintablePropertyName(propertyName: SensorDisplayProperty, shortForm = false): string {
