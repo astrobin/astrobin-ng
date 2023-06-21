@@ -22,6 +22,8 @@ context("Image edit (new, with no groups)", () => {
     cy.route("get", "**/api/v2/equipment/software/recently-used/", []);
 
     cy.route("get", "**/api/v2/equipment/equipment-preset/", []);
+
+    cy.route("get", "**/api/v2/images/image-revision/?image=1", "fixture:api/images/image_1.json");
   });
 
   it("should navigate to the edit page", () => {

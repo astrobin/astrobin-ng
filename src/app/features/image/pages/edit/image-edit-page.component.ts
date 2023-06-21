@@ -318,17 +318,7 @@ export class ImageEditPageComponent
     if (!this.imageEditService.form.valid) {
       this.imageEditService.form.markAllAsTouched();
 
-      const errorList: string[] = [];
-
-      this.imageEditService.fields.forEach(topLevelField => {
-        topLevelField.fieldGroup.forEach(stepField => {
-          stepField.fieldGroup.forEach(field => {
-            if (field.formControl.errors !== null) {
-              errorList.push(`<li><strong>${stepField.props.label}:</strong> ${field.props.label}</li>`);
-            }
-          });
-        });
-      });
+      const errorList: string[] = UtilsService.fieldWithErrors(this.imageEditService.fields).map(field => `<li><strong>${UtilsService.fullFieldPath(field).join(" / ")}</strong>`);
 
       this.popNotificationsService.error(
         `

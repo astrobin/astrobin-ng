@@ -7,6 +7,7 @@ import { UserProfileInterface } from "@shared/interfaces/user-profile.interface"
 import { UserSubscriptionInterface } from "@shared/interfaces/user-subscription.interface";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import {
+  BackendTogglePropertyInterface,
   BackendUserInterface,
   BackendUserProfileInterface,
   CommonApiAdaptorService
@@ -16,6 +17,8 @@ import { LoadingService } from "@shared/services/loading.service";
 import { Observable, of } from "rxjs";
 import { catchError, map } from "rxjs/operators";
 import { BaseClassicApiService } from "../base-classic-api.service";
+import { TogglePropertyInterface } from "@shared/interfaces/toggle-property.interface";
+import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
 
 @Injectable({
   providedIn: "root"
@@ -120,5 +123,35 @@ export class CommonApiService extends BaseClassicApiService implements CommonApi
 
   getPayments(): Observable<PaymentInterface[]> {
     return this.http.get<PaymentInterface[]>(`${this.configUrl}/payments/`);
+  }
+
+  getToggleProperty(params: Partial<TogglePropertyInterface>): Observable<TogglePropertyInterface | null> {
+    return this.http
+      .get<PaginatedApiResultInterface<BackendTogglePropertyInterface>>(
+        `${this.configUrl}/toggleproperties/?` +
+        `property_type=${params.propertyType}&user_id=${params.user}&` +
+        `content_type=${params.contentType}&object_id=${params.objectId}`
+      )
+      .pipe(
+        map(response => {
+          if (response.results.length > 0) {
+            return this.commonApiAdaptorService.togglePropertyFromBackend(response.results[0]);
+          }
+
+          return null;
+        })
+      );
+  }
+
+  createToggleProperty(params: Partial<TogglePropertyInterface>): Observable<TogglePropertyInterface> {
+    return this.http.post<BackendTogglePropertyInterface>(
+      `${this.configUrl}/toggleproperties/`, this.commonApiAdaptorService.togglePropertyToBackend(params)
+    ).pipe(
+      map(response => this.commonApiAdaptorService.togglePropertyFromBackend(response))
+    );
+  }
+
+  deleteToggleProperty(id: TogglePropertyInterface["id"]): Observable<void> {
+    return this.http.delete<void>(`${this.configUrl}/toggleproperties/${id}/`);
   }
 }

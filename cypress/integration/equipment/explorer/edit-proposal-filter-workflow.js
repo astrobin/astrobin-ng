@@ -6,13 +6,15 @@ context("Equipment", () => {
   beforeEach(() => {
     cy.server();
     cy.setupInitializationRoutes();
-    cy.setupEquipmentDefaultRoutes();
+    cy.setupEquipmentDefaultRoutesForAllClasses();
+    cy.setupEquipmentDefaultRoutesForBrands();
+    cy.setupEquipmentDefaultRoutesForFilters();
 
     cy.route("GET", "**/api/v2/equipment/filter/?page=*", {
       count: 1,
       next: null,
       previous: null,
-      results: [testFilterIncomplete],
+      results: [testFilterIncomplete]
     }).as("findFilters");
 
     cy.route("get", "**/api/v2/equipment/filter-edit-proposal/?edit_proposal_target=*", { results: [] });
@@ -60,10 +62,12 @@ context("Equipment", () => {
         count: 0,
         next: null,
         previous: null,
-        results: [],
+        results: []
       }).as("findFiltersByName");
 
       cy.get("#equipment-item-field-name").clear().type("Foo");
+
+      cy.wait("@findFiltersByName");
 
       cy.get(".alert-warning span").contains("Change the name only to fix a typo").should("be.visible");
     });
@@ -71,7 +75,7 @@ context("Equipment", () => {
     it("should submit the form", () => {
       cy.route("post", "**/api/v2/equipment/filter-edit-proposal/", testFilterEditProposal).as("saveEditProposal");
       cy.route("get", "**/api/v2/equipment/filter-edit-proposal/?edit_proposal_target=*", {
-        results: [testFilterEditProposal],
+        results: [testFilterEditProposal]
       }).as("getEditProposals");
 
       cy.get("[data-test=propose-edit-confirm]").click();

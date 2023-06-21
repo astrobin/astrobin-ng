@@ -21,4 +21,11 @@
     margin: 0 -.5rem;
     border-radius: 0;
   }
+
+  .nav {
+    &[orientation=vertical] {
+      background: transparent;
+      box-shadow: none;
+    }
+  }
 }

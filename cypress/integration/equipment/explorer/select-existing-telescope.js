@@ -15,19 +15,12 @@ context("Equipment", () => {
         cy.login();
         cy.visitPage("/equipment/explorer/telescope");
 
-        cy.route("get", "**/api/v2/equipment/telescope/?q=*", {
+        cy.route("get", "**/api/v2/equipment/telescope/?*q=*", {
           count: 1,
           next: null,
           previous: null,
-          results: [testTelescope],
+          results: [testTelescope]
         }).as("findTelescopes");
-
-        cy.route("get", "**/api/v2/equipment/telescope/?page=*", {
-          count: 1,
-          next: null,
-          previous: null,
-          results: [testTelescope],
-        }).as("getTelescopes");
 
         cy.route("get", "**/api/v2/equipment/brand/1/", testBrand).as("getBrand");
 

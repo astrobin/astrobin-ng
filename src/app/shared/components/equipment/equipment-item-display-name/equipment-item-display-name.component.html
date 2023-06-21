@@ -1,5 +1,5 @@
 <ng-container *ngIf="showBrand">
-  <span class="brand" *ngIf="!!brandName; else loading">
+  <span *ngIf="!!brandName; else loading" class="brand">
     <a *ngIf="enableBrandLink && !!brandLink" [routerLink]="brandLink">{{ brandName }}</a>
 
     <ng-container *ngIf="!enableBrandLink || !brandLink">
@@ -8,15 +8,15 @@
   </span>
 </ng-container>
 
-<span class="name" *ngIf="!!itemName; else loading">
+<span *ngIf="!!itemName; else loading" class="name">
   <ng-template #nameTemplate>
     {{ itemName }}
     <a
+      (click)="openItemUnapprovedInfoModal(item)"
       *ngIf="showItemUnapprovedInfo"
-      href="#"
       astrobinEventPreventDefault
       astrobinEventStopPropagation
-      (click)="openItemUnapprovedInfoModal(item)"
+      href="#"
     >
       <fa-icon icon="asterisk"></fa-icon>
     </a>
@@ -25,6 +25,13 @@
       *ngIf="showFrozenAsAmbiguous && item.frozenAsAmbiguous"
       [ngbTooltip]="'Frozen as ambiguous' | translate"
       icon="snowflake"
+    ></fa-icon>
+
+    <fa-icon
+      *ngIf="item.followed"
+      [ngbTooltip]="'You follow this equipment item' | translate"
+      container="body"
+      icon="bell"
     ></fa-icon>
   </ng-template>
 
@@ -40,11 +47,11 @@
 </span>
 
 <a
-  *ngIf="enableSummaryModal"
-  href=""
-  class="btn-info-modal"
-  astrobinEventPreventDefault
   (click)="openItemSummaryModal(item)"
+  *ngIf="enableSummaryModal"
+  astrobinEventPreventDefault
+  class="btn-info-modal"
+  href=""
 >
   <fa-icon icon="info-circle"></fa-icon>
 </a>

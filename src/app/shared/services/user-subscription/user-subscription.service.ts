@@ -218,7 +218,11 @@ export class UserSubscriptionService extends BaseService implements UserSubscrip
     return this.store$.select(selectAuth).pipe(
       take(1),
       map(auth => auth.userProfile),
-      switchMap(userProfile => this.hasValidSubscription$(userProfile, [SubscriptionName.ASTROBIN_ULTIMATE_2020]))
+      switchMap(userProfile => this.hasValidSubscription$(userProfile, [
+        SubscriptionName.ASTROBIN_ULTIMATE_2020,
+        SubscriptionName.ASTROBIN_ULTIMATE_2020_AUTORENEW_YEARLY,
+        SubscriptionName.ASTROBIN_ULTIMATE_2020_AUTORENEW_MONTHLY,
+      ]))
     );
   }
 

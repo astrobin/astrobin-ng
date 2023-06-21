@@ -124,7 +124,11 @@ export class ExplorerFiltersComponent extends BaseComponentDirective implements 
 
   permissions$: Observable<{ mayAccess: boolean }> = this.currentUserProfile$.pipe(
     switchMap(profile =>
-      this.userSubscriptionService.hasValidSubscription$(profile, [SubscriptionName.ASTROBIN_ULTIMATE_2020])
+      this.userSubscriptionService.hasValidSubscription$(profile, [
+        SubscriptionName.ASTROBIN_ULTIMATE_2020,
+        SubscriptionName.ASTROBIN_ULTIMATE_2020_AUTORENEW_MONTHLY,
+        SubscriptionName.ASTROBIN_ULTIMATE_2020_AUTORENEW_YEARLY
+      ])
     ),
     map(isUltimate => ({ mayAccess: isUltimate }))
   );

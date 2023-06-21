@@ -15,18 +15,11 @@ context("Equipment", () => {
         cy.login();
         cy.visitPage("/equipment/explorer/mount");
 
-        cy.route("get", "**/api/v2/equipment/mount/?q=*", {
+        cy.route("get", "**/api/v2/equipment/mount/?*q=*", {
           count: 1,
           next: null,
           previous: null,
-          results: [testMount],
-        }).as("findMounts");
-
-        cy.route("get", "**/api/v2/equipment/mount/?page=*", {
-          count: 1,
-          next: null,
-          previous: null,
-          results: [testMount],
+          results: [testMount]
         }).as("findMounts");
 
         cy.route("get", "**/api/v2/equipment/brand/1/", testBrand).as("getBrand");

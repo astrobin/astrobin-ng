@@ -161,8 +161,18 @@
               class="btn btn-secondary"
               data-test="propose-edit"
             >
+              <fa-icon icon="pencil"></fa-icon>
               {{ "Propose edit" | translate }}&hellip;
             </button>
+
+            <ng-container *ngIf="contentType$ | async as contentType">
+              <astrobin-toggle-property
+                [contentType]="contentType.id"
+                [objectId]="selectedItem.id.toString()"
+                [userId]="currentUser.id"
+                propertyType="follow"
+              ></astrobin-toggle-property>
+            </ng-container>
 
             <div *ngIf="currentUser | isEquipmentModerator" ngbDropdown>
               <button
@@ -173,6 +183,7 @@
                 ngbDropdownToggle
                 type="button"
               >
+                <fa-icon icon="gavel"></fa-icon>
                 {{ "Moderate" | translate }}
               </button>
 
@@ -184,6 +195,7 @@
                   data-test="migrate-into"
                   ngbDropdownItem
                 >
+                  <fa-icon icon="fly"></fa-icon>
                   {{ "Migrate into" | translate }}&hellip;
                 </button>
 
@@ -202,6 +214,7 @@
                     data-test="freeze-as-ambiguous"
                     ngbDropdownItem
                   >
+                    <fa-icon icon="snowflake"></fa-icon>
                     {{ "Freeze" | translate }}&hellip;
                   </button>
                 </ng-container>

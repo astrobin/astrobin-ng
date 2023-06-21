@@ -1,14 +1,16 @@
 import {
   testBrand,
   testSoftware,
-  testSoftwareEditProposal,
+  testSoftwareEditProposal
 } from "../../../support/commands/equipment-item-browser-utils";
 
 context("Equipment", () => {
   beforeEach(() => {
     cy.server();
     cy.setupInitializationRoutes();
-    cy.setupEquipmentDefaultRoutes();
+    cy.setupEquipmentDefaultRoutesForAllClasses();
+    cy.setupEquipmentDefaultRoutesForBrands();
+    cy.setupEquipmentDefaultRoutesForSoftware();
 
     cy.route("get", "**/api/v2/equipment/software-edit-proposal/?edit_proposal_target=*", { results: [] });
   });
@@ -55,10 +57,12 @@ context("Equipment", () => {
         count: 0,
         next: null,
         previous: null,
-        results: [],
+        results: []
       }).as("findSoftwareItemsByName");
 
       cy.get("#equipment-item-field-name").clear().type("Foo");
+
+      cy.wait("@findSoftwareItemsByName");
 
       cy.get(".alert-warning span").contains("Change the name only to fix a typo").should("be.visible");
     });
@@ -66,7 +70,7 @@ context("Equipment", () => {
     it("should submit the form", () => {
       cy.route("post", "**/api/v2/equipment/software-edit-proposal/", testSoftwareEditProposal).as("saveEditProposal");
       cy.route("get", "**/api/v2/equipment/software-edit-proposal/?edit_proposal_target=*", {
-        results: [testSoftwareEditProposal],
+        results: [testSoftwareEditProposal]
       }).as("getEditProposals");
 
       cy.get("[data-test=propose-edit-confirm]").click();
