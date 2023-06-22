@@ -151,16 +151,10 @@ export class SensorService extends BaseService implements EquipmentItemServiceIn
             }),
             map(
               camera =>
-              // `${camera.brandName ? camera.brandName : this.translateService.instant("(DIY)")} ${camera.name}`
+              // Works but it's an href
               `<a href=/equipment/explorer/camera/${camera.id}> ${camera.brandName ? camera.brandName : this.translateService.instant("(DIY)")} ${camera.name}</a>`
             // Doesn't work
-            //   `<a
-            //   (click)="modal.dismiss()"
-            //   [routerLink]="['/equipment/explorer/camera/1']"
-            // >
-            // Hello
-            // </a>`
-
+              // `<a [routerLink]="['/equipment/explorer/camera/${camera.id}> ${camera.brandName ? camera.brandName : this.translateService.instant("(DIY)")} ${camera.name}</a>`
             )
           ));
         }
@@ -169,7 +163,6 @@ export class SensorService extends BaseService implements EquipmentItemServiceIn
             map(cameras => cameras.join(" &middot; "))
           )
         } else {
-          this.extraCameras(cameras$)
           const firstThree$ = combineLatest(cameras$.slice(0,3)).pipe(
             map(cameras => cameras.join(" &middot; "))
           )
@@ -184,10 +177,10 @@ export class SensorService extends BaseService implements EquipmentItemServiceIn
     }
   }
 
-  extraCameras(cameras$: any[]): void {
+  showExtraCameras(cameras$: any[]): void {
     const modal = this.modalService.open(InformationDialogComponent);
     const componentInstance: InformationDialogComponent = modal.componentInstance;
-    componentInstance.message = "Add links to all the cameras here somehow?"
+    componentInstance.message = "Add links to all the cameras here somehow? message is a string and cameras are observables, doesn't work";
   }
 
   getPrintablePropertyName(propertyName: SensorDisplayProperty, shortForm = false): string {
