@@ -121,7 +121,7 @@ export class UserSubscriptionService extends BaseService implements UserSubscrip
             state.auth.userSubscriptions.filter(userSubscription => {
               const expiration = new Date(userSubscription.expires);
               expiration.setUTCHours(23, 59, 59, 999);
-              return userSubscription.subscription === subscription.id && expiration >= new Date();
+              return userSubscription.subscription === subscription.id && userSubscription.active && expiration >= new Date();
             }).length > 0
           ) {
             return true;
@@ -221,7 +221,7 @@ export class UserSubscriptionService extends BaseService implements UserSubscrip
       switchMap(userProfile => this.hasValidSubscription$(userProfile, [
         SubscriptionName.ASTROBIN_ULTIMATE_2020,
         SubscriptionName.ASTROBIN_ULTIMATE_2020_AUTORENEW_YEARLY,
-        SubscriptionName.ASTROBIN_ULTIMATE_2020_AUTORENEW_MONTHLY,
+        SubscriptionName.ASTROBIN_ULTIMATE_2020_AUTORENEW_MONTHLY
       ]))
     );
   }

@@ -5,7 +5,8 @@
   <tr>
     <th scope="col" translate>{{ "Name" | translate }}</th>
     <th scope="col" translate>{{ "Expiration date" | translate }}</th>
-    <th scope="col" translate>{{"Cancelled" | translate }}</th>
+    <th scope="col" translate>{{ "Active" | translate }}</th>
+    <th scope="col" translate>{{ "Cancelled" | translate }}</th>
   </tr>
   </thead>
   <tbody>
@@ -14,6 +15,7 @@
       <ng-container *ngIf="userSubscriptionService.getSubscription(userSubscription) | async as subscription">
         <th scope="row">{{ subscription.name }}</th>
         <td>{{ userSubscription.expires | date }}</td>
+        <td>{{ userSubscription.active | yesNo | translate }}</td>
         <td>
           <ng-container *ngIf="subscription.recurrence_unit; else cancelledNotApplicable">
             {{ userSubscription.cancelled | yesNo | translate}}
@@ -27,7 +29,7 @@
   </ng-container>
   <ng-template #noUserSubscriptions>
     <tr>
-      <td class="empty-table" colspan="3">
+      <td class="empty-table" colspan="4">
         <astrobin-empty-list></astrobin-empty-list>
       </td>
     </tr>
