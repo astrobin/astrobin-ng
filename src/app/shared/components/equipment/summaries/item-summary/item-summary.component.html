@@ -9,6 +9,7 @@
     <div class="col">
       <div class="label">
         <h2>
+          SJA 
           <astrobin-equipment-item-display-name
             [item]="item"
             [enableBrandLink]="enableBrandLink"
@@ -42,8 +43,18 @@
               <ng-template #propertyValueTemplate>
                 <ng-container *ngIf="property.value | async as value; else noValue">
                   <span class="property-value" [innerHTML]="value"></span>
+
                   <a *ngIf="property.showExtraCameras | async" (click)="property.showExtraCameras()"> More Cameras Link 1</a> <!-- "if" doesn't work -->
+
+                  <!-- Just shows moving dots and no link -->
+                  <astrobin-equipment-item-display-name
+                    [itemId]="1"
+                    [itemType]="CAMERA"
+                    [enableNameLink]="true"
+                  ></astrobin-equipment-item-display-name>
+
                   <a  (click)="property.showExtraCameras()"> More Cameras Link 2</a> <!-- not a link ? -->
+
                 </ng-container>
               </ng-template>
 
