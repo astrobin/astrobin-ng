@@ -1,5 +1,4 @@
 import { Injectable } from "@angular/core";
-import { InformationDialogComponent } from "@shared/components/misc/information-dialog/information-dialog.component";
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { EquipmentItemServiceInterface } from "@features/equipment/services/equipment-item.service-interface";
@@ -7,12 +6,12 @@ import { EquipmentItemType } from "@features/equipment/types/equipment-item-base
 import { ColorOrMono, SensorInterface } from "@features/equipment/types/sensor.interface";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { TranslateService } from "@ngx-translate/core";
-import { Observable, combineLatest, of } from "rxjs";
-import { filter, map, take, tap } from "rxjs/operators";
+import { combineLatest, Observable, of } from "rxjs";
+import { filter, map, take } from "rxjs/operators";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
-import { LoadBrand, LoadEquipmentItem } from "@features/equipment/store/equipment.actions";
+import { LoadEquipmentItem } from "@features/equipment/store/equipment.actions";
 
 export enum SensorDisplayProperty {
   QUANTUM_EFFICIENCY = "QUANTUM_EFFICIENCY",
@@ -37,10 +36,10 @@ export enum SensorDisplayProperty {
 export class SensorService extends BaseService implements EquipmentItemServiceInterface {
   constructor(
     public readonly store$: Store<State>,
-    public readonly loadingService: LoadingService, 
+    public readonly loadingService: LoadingService,
     public readonly translateService: TranslateService,
     public readonly modalService: NgbModal
-    ) {
+  ) {
     super(loadingService);
   }
 
@@ -131,7 +130,9 @@ export class SensorService extends BaseService implements EquipmentItemServiceIn
         return of(this.humanizeColorOrMono(propertyValue || item.colorOrMono));
       case SensorDisplayProperty.CAMERAS:
         const ids = propertyValue || item.cameras;
-        if (! ids || ids.length === 0) return of(null);
+        if (!ids || ids.length === 0) {
+          return of(null);
+        }
 
         let cameras$ = [];
         for (const id of ids) {
@@ -144,43 +145,20 @@ export class SensorService extends BaseService implements EquipmentItemServiceIn
           cameras$.push(this.store$.select(selectEquipmentItem, payload).pipe(
             filter(camera => !!camera),
             take(1),
-            tap(camera => {
-              if (!!camera.brand) {
-                this.store$.dispatch(new LoadBrand({ id: camera.brand }));
-              }
-            }),
             map(
               camera =>
-              // Works but it's an href
-              `<a href=/equipment/explorer/camera/${camera.id}> ${camera.brandName ? camera.brandName : this.translateService.instant("(DIY)")} ${camera.name}</a>`
-            // Doesn't work
-              // `<a [routerLink]="['/equipment/explorer/camera/${camera.id}> ${camera.brandName ? camera.brandName : this.translateService.instant("(DIY)")} ${camera.name}</a>`
+                `${camera.brandName ? camera.brandName : this.translateService.instant("(DIY)")} ${camera.name}`
             )
           ));
         }
-        if (cameras$.length <= 3 ) {
-          return combineLatest(cameras$).pipe(
-            map(cameras => cameras.join(" &middot; "))
-          )
-        } else {
-          const firstThree$ = combineLatest(cameras$.slice(0,3)).pipe(
-            map(cameras => cameras.join(" &middot; "))
-          )
-          const suffix$ = of("and " + (cameras$.length - 3) + " more")
-          return combineLatest([firstThree$, suffix$]).pipe(
-            map(([firstThree, suffix]) => firstThree + ", " + suffix)
-          )
-        }
+
+        return combineLatest(cameras$).pipe(
+          map(cameras => cameras.join(", "))
+        );
 
       default:
         throw Error(`Invalid property: ${property}`);
     }
-  }
-
-  showExtraCameras(cameras$: any[]): void {
-    const modal = this.modalService.open(InformationDialogComponent);
-    const componentInstance: InformationDialogComponent = modal.componentInstance;
-    componentInstance.message = "Add links to all the cameras here somehow? message is a string and cameras are observables, doesn't work";
   }
 
   getPrintablePropertyName(propertyName: SensorDisplayProperty, shortForm = false): string {
