@@ -34,7 +34,7 @@ describe("UserSubscriptionService", () => {
         });
     });
 
-    it("should match Ultimate if not active but not expired", done => {
+    it("should not match Ultimate if not active and not expired", done => {
       const state = { ...initialState };
       state.auth.userSubscriptions[0] = UserSubscriptionGenerator.nonExpiredButNotActiveUserSubscription();
       store.setState(state);
@@ -42,7 +42,7 @@ describe("UserSubscriptionService", () => {
       service
         .hasValidSubscription$(initialState.auth.userProfile, [SubscriptionName.ASTROBIN_ULTIMATE_2020])
         .subscribe(result => {
-          expect(result).toBe(true);
+          expect(result).toBe(false);
           done();
         });
     });
@@ -50,6 +50,7 @@ describe("UserSubscriptionService", () => {
     it("should match Ultimate on the last day", done => {
       const state = { ...initialState };
       state.auth.userSubscriptions[0].expires = new Date().toISOString().split("T")[0];
+      state.auth.userSubscriptions[0].active = true;
       store.setState(state);
 
       service
