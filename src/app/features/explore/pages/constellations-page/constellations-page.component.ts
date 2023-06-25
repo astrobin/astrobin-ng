@@ -9,6 +9,7 @@ import { ViewportScroller } from "@angular/common";
 import { LoadingService } from "@shared/services/loading.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
+import { startWith, takeUntil } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-constellations-page",
@@ -17,6 +18,7 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
 })
 export class ConstellationsPageComponent extends BaseComponentDirective implements OnInit {
   pageTitle = this.translateService.instant("Constellations");
+  constellations: ConstellationInterface[] = [];
 
   constructor(
     public readonly store$: Store<State>,
@@ -39,6 +41,12 @@ export class ConstellationsPageComponent extends BaseComponentDirective implemen
         breadcrumb: [{ label: this.translateService.instant("Explore") }, { label: this.pageTitle }]
       })
     );
+
+    this.translateService.onLangChange
+      .pipe(takeUntil(this.destroyed$), startWith({ lang: this.translateService.currentLang }))
+      .subscribe(event => {
+        this.constellations = this.constellationsService.getConstellations(event.lang);
+      });
   }
 
   jumpTo(constellation: ConstellationInterface) {

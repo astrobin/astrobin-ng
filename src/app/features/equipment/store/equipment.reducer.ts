@@ -1,4 +1,4 @@
-import { EquipmentActions, EquipmentActionTypes } from "./equipment.actions";
+import { EquipmentActionTypes } from "./equipment.actions";
 import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { BrandInterface } from "@features/equipment/types/brand.interface";
@@ -8,6 +8,8 @@ import { CameraInterface } from "@features/equipment/types/camera.interface";
 import { EquipmentPresetInterface } from "@features/equipment/types/equipment-preset.interface";
 import { EquipmentItemMostOftenUsedWithData } from "@features/equipment/types/equipment-item-most-often-used-with-data.interface";
 import { ContributorInterface } from "@features/equipment/types/contributor.interface";
+import { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
+import { AppActionTypes } from "@app/store/actions/app.actions";
 
 export const equipmentFeatureKey = "equipment";
 
@@ -49,7 +51,7 @@ function editProposalCompareFunction(
   return 0;
 }
 
-export function reducer(state = initialEquipmentState, action: EquipmentActions): EquipmentState {
+export function reducer(state = initialEquipmentState, action: PayloadActionInterface): EquipmentState {
   switch (action.type) {
     case EquipmentActionTypes.GET_ALL_BRANDS_SUCCESS:
       return {
@@ -222,6 +224,50 @@ export function reducer(state = initialEquipmentState, action: EquipmentActions)
         ...state,
         contributors: action.payload.contributors
       };
+    }
+
+    case AppActionTypes.CREATE_TOGGLE_PROPERTY_SUCCESS: {
+      const contentType = action.payload.toggleProperty.contentType;
+      const objectId = action.payload.toggleProperty.objectId;
+      const propertyType = action.payload.toggleProperty.propertyType;
+
+      const item = state.equipmentItems.find(item => item.id == objectId && item.contentType === contentType);
+
+      if (propertyType === "follow" && !!item) {
+        return {
+          ...state,
+          equipmentItems: state.equipmentItems.map(item => {
+            if (item.id == objectId && item.contentType === contentType) {
+              item.followed = true;
+            }
+            return item;
+          })
+        };
+      } else {
+        return { ...state };
+      }
+    }
+
+    case AppActionTypes.DELETE_TOGGLE_PROPERTY_SUCCESS: {
+      const contentType = action.payload.toggleProperty.contentType;
+      const objectId = action.payload.toggleProperty.objectId;
+      const propertyType = action.payload.toggleProperty.propertyType;
+
+      const item = state.equipmentItems.find(item => item.id == objectId && item.contentType === contentType);
+
+      if (propertyType === "follow" && !!item) {
+        return {
+          ...state,
+          equipmentItems: state.equipmentItems.map(item => {
+            if (item.id == objectId && item.contentType === contentType) {
+              item.followed = false;
+            }
+            return item;
+          })
+        };
+      } else {
+        return { ...state };
+      }
     }
 
     default: {

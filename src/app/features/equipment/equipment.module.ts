@@ -33,6 +33,7 @@ import { ContributorsPageComponent } from "./pages/contributors-page/contributor
 import { EquipmentCompareComponent } from "./components/equipment-compare/equipment-compare.component";
 import { EquipmentCompareModalComponent } from "./components/equipment-compare-modal/equipment-compare-modal.component";
 import { EquipmentListingsComponent } from "./components/equipment-listings/equipment-listings.component";
+import { FollowedExplorerComponent } from "@features/equipment/pages/followed-explorer/followed-explorer.component";
 
 @NgModule({
   declarations: [
@@ -50,6 +51,7 @@ import { EquipmentListingsComponent } from "./components/equipment-listings/equi
     ExplorerPageComponent,
     ExplorerComponent,
     PendingReviewExplorerComponent,
+    FollowedExplorerComponent,
     PendingEditExplorerComponent,
     ApproveItemModalComponent,
     UnapproveItemModalComponent,

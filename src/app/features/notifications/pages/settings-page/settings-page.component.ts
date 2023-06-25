@@ -263,6 +263,7 @@ export class SettingsPageComponent extends BaseComponentDirective implements OnI
       case "api_key_request_approved":
         return NotificationCategory.OTHER;
       case "new_image":
+      case "new-image-from-followed-equipment":
       case "new_image_revision":
       case "new_like":
       case "new_bookmark":

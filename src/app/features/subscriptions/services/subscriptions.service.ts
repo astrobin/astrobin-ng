@@ -9,8 +9,12 @@ import { Constants } from "@shared/constants";
 import { SubscriptionName } from "@shared/types/subscription-name.type";
 import * as countryJs from "country-js";
 import { BehaviorSubject, Observable } from "rxjs";
-import { take } from "rxjs/operators";
+import { filter, map, switchMap, take } from "rxjs/operators";
 import { UtilsService } from "@shared/services/utils/utils.service";
+import { RecurringUnit } from "@features/subscriptions/types/recurring.unit";
+import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
+import { SubscriptionInterface } from "@shared/interfaces/subscription.interface";
+import { selectCurrentUserProfile } from "@features/account/store/auth.selectors";
 
 @Injectable({
   providedIn: "root"
@@ -19,7 +23,17 @@ export class SubscriptionsService {
   readonly DEFAULT_CURRENCY = "USD";
 
   currency: string;
-
+  stripeCustomerPortalUrl$: Observable<string> = this.store$.select(selectBackendConfig).pipe(
+    switchMap(config => this.store$.select(selectCurrentUserProfile).pipe(filter(profile => !!profile), map(profile => ({
+      config,
+      profile
+    })))),
+    map(
+      ({ config, profile }) =>
+        `https://billing.stripe.com/p/login/${config.STRIPE_CUSTOMER_PORTAL_KEY}?prefilled_email=${profile.email}`
+    )
+  );
+  payPalCustomerPortalUrl = "https://www.paypal.com/myaccount/autopay/";
   private _currencySubject = new BehaviorSubject<string>(this.DEFAULT_CURRENCY);
   currency$: Observable<string> = this._currencySubject.asObservable();
 
@@ -30,10 +44,13 @@ export class SubscriptionsService {
     public readonly utilsService: UtilsService
   ) {
     this.store$
-      .select(state => state.app)
-      .pipe(take(1))
-      .subscribe(state => {
-        const country = state.backendConfig.REQUEST_COUNTRY;
+      .select(selectBackendConfig)
+      .pipe(
+        filter(config => !!config),
+        take(1)
+      )
+      .subscribe(config => {
+        const country = config.REQUEST_COUNTRY;
         const results = countryJs.search(country);
 
         if (results.length !== 0) {
@@ -70,11 +87,11 @@ export class SubscriptionsService {
     return resultMap[product];
   }
 
-  getPrice(product: PayableProductInterface): Observable<PricingInterface> {
+  getPrice(product: PayableProductInterface, recurringUnit: RecurringUnit): Observable<PricingInterface> {
     if (!this.currency) {
       return new Observable<PricingInterface>(observer => {
         this.utilsService.delay(100).subscribe(() => {
-          this.getPrice(product).subscribe(price => {
+          this.getPrice(product, recurringUnit).subscribe(price => {
             observer.next(price);
             observer.complete();
           });
@@ -83,9 +100,21 @@ export class SubscriptionsService {
     }
 
     const observables = {
-      [PayableProductInterface.LITE]: this.paymentsApiService.getPrice("lite", this.currency),
-      [PayableProductInterface.PREMIUM]: this.paymentsApiService.getPrice("premium", this.currency),
-      [PayableProductInterface.ULTIMATE]: this.paymentsApiService.getPrice("ultimate", this.currency)
+      [PayableProductInterface.LITE]: this.paymentsApiService.getPrice(
+        PayableProductInterface.LITE,
+        this.currency,
+        recurringUnit
+      ),
+      [PayableProductInterface.PREMIUM]: this.paymentsApiService.getPrice(
+        PayableProductInterface.PREMIUM,
+        this.currency,
+        recurringUnit
+      ),
+      [PayableProductInterface.ULTIMATE]: this.paymentsApiService.getPrice(
+        PayableProductInterface.ULTIMATE,
+        this.currency,
+        recurringUnit
+      )
     };
 
     return observables[product];
@@ -96,14 +125,22 @@ export class SubscriptionsService {
       [PayableProductInterface.LITE]: [
         SubscriptionName.ASTROBIN_LITE,
         SubscriptionName.ASTROBIN_LITE_AUTORENEW,
-        SubscriptionName.ASTROBIN_LITE_2020
+        SubscriptionName.ASTROBIN_LITE_2020,
+        SubscriptionName.ASTROBIN_LITE_2020_AUTORENEW_YEARLY,
+        SubscriptionName.ASTROBIN_LITE_2020_AUTORENEW_MONTHLY
       ],
       [PayableProductInterface.PREMIUM]: [
         SubscriptionName.ASTROBIN_PREMIUM,
         SubscriptionName.ASTROBIN_PREMIUM_AUTORENEW,
-        SubscriptionName.ASTROBIN_PREMIUM_2020
+        SubscriptionName.ASTROBIN_PREMIUM_2020,
+        SubscriptionName.ASTROBIN_PREMIUM_2020_AUTORENEW_YEARLY,
+        SubscriptionName.ASTROBIN_PREMIUM_2020_AUTORENEW_MONTHLY
       ],
-      [PayableProductInterface.ULTIMATE]: [SubscriptionName.ASTROBIN_ULTIMATE_2020]
+      [PayableProductInterface.ULTIMATE]: [
+        SubscriptionName.ASTROBIN_ULTIMATE_2020,
+        SubscriptionName.ASTROBIN_ULTIMATE_2020_AUTORENEW_YEARLY,
+        SubscriptionName.ASTROBIN_ULTIMATE_2020_AUTORENEW_MONTHLY
+      ]
     };
 
     return resultMap[product];
@@ -115,13 +152,106 @@ export class SubscriptionsService {
         SubscriptionName.ASTROBIN_PREMIUM,
         SubscriptionName.ASTROBIN_PREMIUM_AUTORENEW,
         SubscriptionName.ASTROBIN_PREMIUM_2020,
-        SubscriptionName.ASTROBIN_ULTIMATE_2020
+        SubscriptionName.ASTROBIN_PREMIUM_2020_AUTORENEW_YEARLY,
+        SubscriptionName.ASTROBIN_PREMIUM_2020_AUTORENEW_MONTHLY,
+        SubscriptionName.ASTROBIN_ULTIMATE_2020,
+        SubscriptionName.ASTROBIN_ULTIMATE_2020_AUTORENEW_YEARLY,
+        SubscriptionName.ASTROBIN_ULTIMATE_2020_AUTORENEW_MONTHLY
       ],
-      [PayableProductInterface.PREMIUM]: [SubscriptionName.ASTROBIN_ULTIMATE_2020],
+      [PayableProductInterface.PREMIUM]: [
+        SubscriptionName.ASTROBIN_ULTIMATE_2020,
+        SubscriptionName.ASTROBIN_ULTIMATE_2020_AUTORENEW_YEARLY,
+        SubscriptionName.ASTROBIN_ULTIMATE_2020_AUTORENEW_MONTHLY
+      ],
       [PayableProductInterface.ULTIMATE]: []
     };
 
     return resultMap[product];
+  }
+
+  getLowerTier(product: PayableProductInterface): SubscriptionName[] {
+    const resultMap = {
+      [PayableProductInterface.LITE]: [],
+      [PayableProductInterface.PREMIUM]: [
+        SubscriptionName.ASTROBIN_LITE,
+        SubscriptionName.ASTROBIN_LITE_AUTORENEW,
+        SubscriptionName.ASTROBIN_LITE_2020,
+        SubscriptionName.ASTROBIN_LITE_2020_AUTORENEW_YEARLY,
+        SubscriptionName.ASTROBIN_LITE_2020_AUTORENEW_MONTHLY
+      ],
+      [PayableProductInterface.ULTIMATE]: [
+        SubscriptionName.ASTROBIN_LITE,
+        SubscriptionName.ASTROBIN_LITE_AUTORENEW,
+        SubscriptionName.ASTROBIN_LITE_2020,
+        SubscriptionName.ASTROBIN_LITE_2020_AUTORENEW_YEARLY,
+        SubscriptionName.ASTROBIN_LITE_2020_AUTORENEW_MONTHLY,
+        SubscriptionName.ASTROBIN_PREMIUM,
+        SubscriptionName.ASTROBIN_PREMIUM_AUTORENEW,
+        SubscriptionName.ASTROBIN_PREMIUM_2020,
+        SubscriptionName.ASTROBIN_PREMIUM_2020_AUTORENEW_YEARLY,
+        SubscriptionName.ASTROBIN_PREMIUM_2020_AUTORENEW_MONTHLY
+      ]
+    };
+
+    return resultMap[product];
+  }
+
+  hasPayPalAutorenewingSubscription$(): Observable<boolean> {
+    return this.store$.pipe(
+      take(1),
+      map(state => {
+        for (const subscriptionName of [
+          SubscriptionName.ASTROBIN_LITE_AUTORENEW,
+          SubscriptionName.ASTROBIN_PREMIUM_AUTORENEW
+        ]) {
+          const subscription: SubscriptionInterface = state.app.subscriptions.filter(
+            s => s.name === subscriptionName
+          )[0];
+
+          if (
+            subscription &&
+            state.auth.userSubscriptions.filter(userSubscription => {
+              return userSubscription.subscription === subscription.id;
+            }).length > 0
+          ) {
+            return true;
+          }
+        }
+
+        return false;
+      })
+    );
+  }
+
+  hasStripeAutorenewingSubscription$(): Observable<boolean> {
+    return this.store$.pipe(
+      take(1),
+      map(state => {
+        for (const subscriptionName of [
+          SubscriptionName.ASTROBIN_LITE_2020_AUTORENEW_MONTHLY,
+          SubscriptionName.ASTROBIN_LITE_2020_AUTORENEW_YEARLY,
+          SubscriptionName.ASTROBIN_PREMIUM_2020_AUTORENEW_MONTHLY,
+          SubscriptionName.ASTROBIN_PREMIUM_2020_AUTORENEW_YEARLY,
+          SubscriptionName.ASTROBIN_ULTIMATE_2020_AUTORENEW_MONTHLY,
+          SubscriptionName.ASTROBIN_ULTIMATE_2020_AUTORENEW_YEARLY
+        ]) {
+          const subscription: SubscriptionInterface = state.app.subscriptions.filter(
+            s => s.name === subscriptionName
+          )[0];
+
+          if (
+            subscription &&
+            state.auth.userSubscriptions.filter(userSubscription => {
+              return userSubscription.subscription === subscription.id;
+            }).length > 0
+          ) {
+            return true;
+          }
+        }
+
+        return false;
+      })
+    );
   }
 
   getConversionId(product: PayableProductInterface): string {

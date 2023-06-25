@@ -1,4 +1,4 @@
-import { testBrand, testAccessory } from "../../../support/commands/equipment-item-browser-utils";
+import { testAccessory, testBrand } from "../../../support/commands/equipment-item-browser-utils";
 
 context("Equipment", () => {
   beforeEach(() => {

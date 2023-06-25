@@ -163,6 +163,23 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
       );
   }
 
+  getAllFollowedEquipmentItems(
+    type: EquipmentItemType,
+    page = 1
+  ): Observable<PaginatedApiResultInterface<EquipmentItem>> {
+    return this.http.get<PaginatedApiResultInterface<EquipmentItem>>(
+      `${this.configUrl}/${type.toLowerCase()}/?followed=true&page=${page}`
+    )
+      .pipe(
+        map(response => ({
+          ...response,
+          ...{
+            results: response.results.map(result => this._parseItem(result))
+          }
+        }))
+      );
+  }
+
   findRecentlyUsedEquipmentItems(
     type: EquipmentItemType,
     usageType: EquipmentItemUsageType

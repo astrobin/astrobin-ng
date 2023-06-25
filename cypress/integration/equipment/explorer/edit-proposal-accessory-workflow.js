@@ -1,14 +1,12 @@
-import {
-  testBrand,
-  testAccessory,
-  testAccessoryEditProposal,
-} from "../../../support/commands/equipment-item-browser-utils";
+import { testAccessory, testAccessoryEditProposal } from "../../../support/commands/equipment-item-browser-utils";
 
 context("Equipment", () => {
   beforeEach(() => {
     cy.server();
     cy.setupInitializationRoutes();
-    cy.setupEquipmentDefaultRoutes();
+    cy.setupEquipmentDefaultRoutesForAllClasses();
+    cy.setupEquipmentDefaultRoutesForBrands();
+    cy.setupEquipmentDefaultRoutesForAccessories();
 
     cy.route("get", "**/api/v2/equipment/accessory-edit-proposal/?edit_proposal_target=*", { results: [] });
   });
@@ -54,10 +52,12 @@ context("Equipment", () => {
         count: 0,
         next: null,
         previous: null,
-        results: [],
+        results: []
       }).as("findAccessoriesByName");
 
       cy.get("#equipment-item-field-name").clear().type("Foo");
+
+      cy.wait("@findAccessoriesByName");
 
       cy.get(".alert-warning span").contains("Change the name only to fix a typo").should("be.visible");
     });
@@ -67,7 +67,7 @@ context("Equipment", () => {
         "saveEditProposal"
       );
       cy.route("get", "**/api/v2/equipment/accessory-edit-proposal/?edit_proposal_target=*", {
-        results: [testAccessoryEditProposal],
+        results: [testAccessoryEditProposal]
       }).as("getEditProposals");
 
       cy.get("[data-test=propose-edit-confirm]").click();

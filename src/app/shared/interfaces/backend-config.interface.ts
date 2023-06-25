@@ -41,4 +41,5 @@ export interface BackendConfigInterface {
   IMAGE_UPLOAD_ENDPOINT: string;
   IMAGE_REVISION_UPLOAD_ENDPOINT: string;
   DATA_UPLOAD_MAX_MEMORY_SIZE: number;
+  STRIPE_CUSTOMER_PORTAL_KEY: string;
 }

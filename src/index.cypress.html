@@ -2,51 +2,12 @@
 <html lang="en">
 
 <head>
-  <!-- Google Tag Manager -->
-  <script>(function(w, d, s, l, i) {
-    w[l] = w[l] || [];
-    w[l].push({
-      "gtm.start":
-        new Date().getTime(), event: "gtm.js"
-    });
-    var f = d.getElementsByTagName(s)[0],
-      j = d.createElement(s), dl = l != "dataLayer" ? "&l=" + l : "";
-    j.async = true;
-    j.src =
-      "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
-    f.parentNode.insertBefore(j, f);
-  })(window, document, "script", "dataLayer", "GTM-KFP9R82");</script>
-  <!-- End Google Tag Manager -->
-
-  <!-- Global site tag (gtag.js) - Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-844985-10"></script>
-
   <script>
-    window.dataLayer = window.dataLayer || [];
-
     function gtag() {
-      dataLayer.push(arguments);
-    }
-
-    gtag("js", new Date());
-
-    gtag("config", "UA-844985-10", {
-      "linker": {
-        "domains": [
-          "www.astrobin.com",
-          "app.astrobin.com",
-          "welcome.astrobin.com",
-          "de.welcome.astrobin.com",
-          "es.welcome.astrobin.com",
-          "fr.welcome.astrobin.com",
-          "it.welcome.astrobin.com",
-          "pt.welcome.astrobin.com"
-        ],
-        "accept_incoming": true
+      if (!!window.dataLayer) {
+        dataLayer.push(arguments);
       }
-    });
-
-    gtag("config", "AW-1062298010");
+    }
   </script>
 
   <meta charset="utf-8" />
@@ -74,71 +35,87 @@
 <!-- Google maps -->
 <script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD-yl2h4BvziVebLTTawv9a6DKFky5O2eU"></script>
 
-<!-- Stripe for payment processing -->
-<script async src="https://js.stripe.com/v3/"></script>
-
 <!-- CKEditor -->
 <script src="http://localhost:8083/static/astrobin/ckeditor/ckeditor.js"></script>
 <script src="http://localhost:8083/static/astrobin/ckeditor/plugins/bbcode/plugin.js"></script>
 
 <!-- highlightjs -->
 <script crossorigin="anonymous"
-        integrity="sha512-bgHRAiTjGrzHzLyKOnpFvaEpGzJet3z4tZnXGjpsCcqOnAH6VGUx9frc5bcIhKTVLEiCO6vEhNAgx5jtLUYrfA=="
-        referrerpolicy="no-referrer" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+        integrity="sha512-rdhY3cbXURo13l/WU9VlaRyaIYeJ/KBakckXIvJNAQde8DgpOmE+eZf7ha4vdqVjTtwQt69bD2wH2LXob/LB7Q=="
+        referrerpolicy="no-referrer"
+        src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
 <script crossorigin="anonymous"
-        integrity="sha512-9bPi6w/qt27Z67/ln57Bu2QT7ns5O+/vhM4yigmsQB45YElEV9DiYyL4EfRAqd35NLfyVxuiV6iST0BxGo+61Q=="
-        referrerpolicy="no-referrer" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/bash.min.js"></script>
+        integrity="sha512-10MAbvV683nchyNnutInZDUUmwsAF8IpMc8V+qUNPv9wb26Bv9inyKzAdMfmbFdSIgxxjQhBsZq6sEP+UgsqWg=="
+        referrerpolicy="no-referrer"
+        src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/bash.min.js"></script>
 <script crossorigin="anonymous"
-        integrity="sha512-0emlUmZnl5OT9SxTwHxgDiEqRKnJhXnWO7I3YFCJ72b0jDWNSTDaQAffQNWxh2hIWp6QYOhRUWryYK67frlKBQ=="
-        referrerpolicy="no-referrer" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/coffeescript.min.js"></script>
+        integrity="sha512-/phGw7SoKH5m5SBUFmX548Fqu48hDqkTYbh5jJDOqqgYos02hZVTG7azcHvZfmj0AIP1ek+P82YwIxq7mOoHLg=="
+        referrerpolicy="no-referrer"
+        src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/coffeescript.min.js"></script>
 <script crossorigin="anonymous"
-        integrity="sha512-a/buQiyg1/3Xa0ygqNy7JJkLxec4pxQVhLnQRu2Z6VAfZoBfNQSfSseAwQGSqJ1yJAUrZl6MP62LcTsleRtDJg=="
-        referrerpolicy="no-referrer" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/cpp.min.js"></script>
+        integrity="sha512-JFldgcS/aYHmXYJTEChuXPk3kwEuPmlUXKZbwX81HEs/bhYJ7WJjXcPJucpBvkFB5rAde47IxZPvLv4//+0Ang=="
+        referrerpolicy="no-referrer"
+        src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/cpp.min.js"></script>
 <script crossorigin="anonymous"
-        integrity="sha512-9ia7twbVj1OAzFDTFTzf/x2LrAc/Hf1KlzHTbyxfJZXA+YQP2eXOFWr7E3ZZ6SgtAZZza2PDXvcQjXQ5nZ9GAw=="
-        referrerpolicy="no-referrer" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/csharp.min.js"></script>
+        integrity="sha512-8VlT2217w8Ye/26rZnP7uUmwplGztonMV/DOieBmUnNRfSIqnMsFSWiCFx6tc2SUvtPq8k59zxM3uoxOVugsYA=="
+        referrerpolicy="no-referrer"
+        src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/csharp.min.js"></script>
 <script crossorigin="anonymous"
-        integrity="sha512-xR3r57wYgwm5sn+JFRs5G8aNXMYSdxRGGrs1slFiVtREckY/+aBUNrhkn/4XpbTLke39koHzUIcotRI4Ka0Bpw=="
-        referrerpolicy="no-referrer" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/css.min.js"></script>
+        integrity="sha512-uBsoRq+wrUJAA0QtfRkqa+JJLBEee4DGLMH899H1pXVFodJS3YJu9B/hBRyOxJgPe4cbXo/blfHgADUKQyyEwQ=="
+        referrerpolicy="no-referrer"
+        src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/css.min.js"></script>
 <script crossorigin="anonymous"
-        integrity="sha512-vVDetTaV5RveA4UNrJthHNNRTMtJv7DLP72lEFvj9elID7Gjn8IpbsAA+tnqOfJzIgoY1dq5dk7AH9o/mJyxAg=="
-        referrerpolicy="no-referrer" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/diff.min.js"></script>
+        integrity="sha512-5JQbFkPWbNPf+CE8ImQrqzCQ58zMzEV+mhYAzZikMIIjTn7WvWem3PP2BuIMeRezXObaVtFnfoUrkL07zvXKdQ=="
+        referrerpolicy="no-referrer"
+        src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/diff.min.js"></script>
 <script crossorigin="anonymous"
-        integrity="sha512-q/u4kyu81EzgKqKU/DkkkkK+7VvaGlXUAJDO5dalSHbDap/D/smEW881gaIURe6bh3FjKxGkW/w6MKgjI8Eorw=="
-        referrerpolicy="no-referrer" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/java.min.js"></script>
+        integrity="sha512-QKVBmhfjJaMu0msCCdZ6rzwE9Iw6GHpcs7MdjZmJGI5ALVMUs5Bv9rOw5Z/UlYisn5oduATamQWJ5deVH6ewCw=="
+        referrerpolicy="no-referrer"
+        src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/java.min.js"></script>
 <script crossorigin="anonymous"
-        integrity="sha512-/PyN7qb/AgAY5toh7Aq89f/DXt8AWSUxx++9ILRU/D4QwgjE3avvxL2Wi/Ft3aT22kzp29kgKc0o6GwTb+Jmnw=="
-        referrerpolicy="no-referrer" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/javascript.min.js"></script>
+        integrity="sha512-ZFn1l/cmJ8LLHH5TWJhNnV1PCQiNqBD+TFitO1ECtYJuQvn8zhhrzvQyYXLrb5cR7gzmLTkgka8DDR7fIAO9MQ=="
+        referrerpolicy="no-referrer"
+        src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/javascript.min.js"></script>
 <script crossorigin="anonymous"
-        integrity="sha512-0xYvyncS9OLE7GOpNBZFnwyh9+bq4HVgk4yVVYI678xRvE22ASicF1v6fZ1UiST+M6pn17MzFZdvVCI3jTHSyw=="
-        referrerpolicy="no-referrer" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/json.min.js"></script>
+        integrity="sha512-hvC/ByqSWukSREyVyHBARP6ikFgmevNdPr1yPz+ik58Y1MPJzfsLwu2NUQYTYZ3zj9EzpYyZmrISJZjUMeaWPg=="
+        referrerpolicy="no-referrer"
+        src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/json.min.js"></script>
 <script crossorigin="anonymous"
-        integrity="sha512-/prNMVPwy35Zm+gPI14zb3RrCmLsrQuZUSEjjRFyicrJitlbTw/QYUAakBRNLCAomONynyEbZ8Su4N6ce2JkQQ=="
-        referrerpolicy="no-referrer" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/objectivec.min.js"></script>
+        integrity="sha512-HDdOzxkqePI3V839yESXhp7nnJMuOtmKTznGq9pKIRAyMM5DTU5ATmn63N2HmE9v0e2a7nzLrQfneRuO81Kzng=="
+        referrerpolicy="no-referrer"
+        src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/objectivec.min.js"></script>
 <script crossorigin="anonymous"
-        integrity="sha512-wXlNjCJvHZhzmJCJ7KzBDtzbc8HXJ0RdlE4FzU71xhSv1XnPc0U3BRsKTDpw0jHqL0LITkM44fUpZowyg1vllg=="
-        referrerpolicy="no-referrer" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/perl.min.js"></script>
+        integrity="sha512-0XUmFe0tIcKOwAfGeSAPOFFENkEo2XyKAVpDzvNy+hQZ/dfRfV8A+vp2buydEdIUCxIQ9p+5T8LPxnOWO9rMlg=="
+        referrerpolicy="no-referrer"
+        src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/perl.min.js"></script>
 <script crossorigin="anonymous"
-        integrity="sha512-i89+r6qS24YWtMTVAeAa9wIA91n8nsrLMyTUM6O2bd4erYL/acU79OLHR6Mp8bGdajJExUZCb4g5OQn+WGP18Q=="
-        referrerpolicy="no-referrer" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/php.min.js"></script>
+        integrity="sha512-LXJ0dCEH9OzHP1yk2uLXzeouoZHyATDxGyrW62VHcwD3B1JptYd4LvjDPOJxawmqUbRSXrf+tmitQLFq3flRUg=="
+        referrerpolicy="no-referrer"
+        src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/php.min.js"></script>
 <script crossorigin="anonymous"
-        integrity="sha512-YulS+eyi43Y7kdDoXxhCnsH8OlBesGO1kJ31qeCLSYkhB0X0/onxXa5xEe6FK71WGx6eQlAEaeTdwbGdtOU7Zw=="
-        referrerpolicy="no-referrer" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/python.min.js"></script>
+        integrity="sha512-UsuvR/LRT1kQthy0F2+lc93U0HuKMQAcwcIVBqnGJOZCycza2xYO+0QAatJNl89B5IHl9HO3PexXG/1eR7W9JA=="
+        referrerpolicy="no-referrer"
+        src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/python.min.js"></script>
 <script crossorigin="anonymous"
-        integrity="sha512-xRUQANk9Iw3wtAp0cBOa1Ghr7yIFrMiJiEujrMGf04qOau23exxj4R7DLUeLGfLiDbVSK0FyN8v2ns4m/6iNmQ=="
-        referrerpolicy="no-referrer" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/ruby.min.js"></script>
+        integrity="sha512-CodtXF69yrF+WC9mdciInVG1X0GeAaZrjjNB+gaEmVsyUn3YR7yfSHad1Q+SwDAfivwmUDo8qTlaUUCtlbLeMg=="
+        referrerpolicy="no-referrer"
+        src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/ruby.min.js"></script>
 <script crossorigin="anonymous"
-        integrity="sha512-Peqqjy5bIeDold17e/HyMQqnfD3r1Bl64zCs6HM51YrJqToF/3fPwkvrdYvEFtdlKDOLPA8j9EcEjAVlUHKiaw=="
-        referrerpolicy="no-referrer" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/sql.min.js"></script>
+        integrity="sha512-RcwTpjeV56Bo8lR1Dou3pLSv4jegUW1+dOZcZV3kObx/R5KswUkAVLn5RVD38FMkHXF+mDI6bidcimahubf4aQ=="
+        referrerpolicy="no-referrer"
+        src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/sql.min.js"></script>
 <script crossorigin="anonymous"
-        integrity="sha512-VzL+cZF9lp9MjbmdEFApJ3vSd9fhPNVfkXS5rC/zEaELY43yYxQDeQGTs0uZlWxMyVUNe1l8PORsaOTIHuO2gQ=="
-        referrerpolicy="no-referrer" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/vbscript.min.js"></script>
+        integrity="sha512-ZVdPOdnJcON33VJf/fIj7H8b69k7iSZS3Ms9+dRVjkA8bdgj53apvMmFR9YEf0lLSDiqe1n+PdYnue+gSPLDSg=="
+        referrerpolicy="no-referrer"
+        src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/vbscript.min.js"></script>
 <script crossorigin="anonymous"
-        integrity="sha512-5zBcw+OKRkaNyvUEPlTSfYylVzgpi7KpncY36b0gRudfxIYIH0q0kl2j26uCUB3YBRM6ytQQEZSgRg+ZlBTmdA=="
-        referrerpolicy="no-referrer" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/xml.min.js"></script>
+        integrity="sha512-tE1cKjOB1PrxY5MIT9lECv3rUYjHTL5YBu7dMo+2+P42vjoCkgYpTvf/lxslTrIndQLUSFl4vO52NERPfeH6dg=="
+        referrerpolicy="no-referrer"
+        src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/xml.min.js"></script>
 <script crossorigin="anonymous"
         integrity="sha512-axd5V66bnXpNVQzm1c7u1M614TVRXXtouyWCE+eMYl8ALK8ePJEs96Xtx7VVrPBc0UraCn63U1+ARFI3ofW+aA=="
-        referrerpolicy="no-referrer" src="https://cdnjs.cloudflare.com/ajax/libs/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
+        referrerpolicy="no-referrer"
+        src="https://cdnjs.cloudflare.com/ajax/libs/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
 </body>
 
 </html>

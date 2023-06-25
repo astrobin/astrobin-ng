@@ -30,7 +30,7 @@ export class ImageEffects {
             imageFromStore !== null
               ? of(imageFromStore).pipe(map(image => new LoadImageSuccess(image)))
               : this.imageApiService.getImage(action.payload).pipe(
-                map(image => new LoadImageSuccess(image)),
+                map(image => !!image ? new LoadImageSuccess(image) : new LoadImageFailure(null)),
                 catchError(error => of(new LoadImageFailure(error)))
               )
           )

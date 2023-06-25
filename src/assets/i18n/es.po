@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: AstroBin Angular App\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-03 14:04+0200\n"
-"PO-Revision-Date: 2023-03-22 22:54+0100\n"
+"PO-Revision-Date: 2023-05-15 10:09+0200\n"
 "Last-Translator: Salvatore Iovene\n"
 "Language-Team: Spanish\n"
 "Language: es\n"
@@ -14,7 +14,7 @@ msgstr ""
 "X-Generator: Loco https://localise.biz\n"
 "X-Loco-Source-Locale: en\n"
 "X-Loco-Project-Id: 108356\n"
-"X-Loco-Api-Version: 1.0.27 20230321-1"
+"X-Loco-Api-Version: 1.0.28 20230504-1"
 
 #: loco:60685a683b0b1d485a736d12
 msgid "API Keys"
@@ -4691,4 +4691,9 @@ msgstr ""
 
 #: loco:641b7636eed538513c17577f
 msgid "f-number"
+msgstr ""
+
+#: loco:6461e861768f819b9b097582
+msgid ""
+"You are about to remove all acquisition sessions you have entered thus far."
 msgstr ""

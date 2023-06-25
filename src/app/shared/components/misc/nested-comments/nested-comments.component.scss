@@ -7,3 +7,13 @@
   font-style: italic;
   color: var(--lighterGrey);
 }
+
+.form-actions {
+  margin-top: 1rem;
+  padding-top: 0;
+  text-align: left;
+
+  .btn:not(:last-child) {
+    margin-right: .25rem;
+  }
+}

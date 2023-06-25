@@ -27,7 +27,9 @@ export class UltimateSubscriptionGuardService extends BaseService implements Can
           take(1),
           switchMap(storeState =>
             this.userSubscriptionService.hasValidSubscription$(storeState.auth.userProfile, [
-              SubscriptionName.ASTROBIN_ULTIMATE_2020
+              SubscriptionName.ASTROBIN_ULTIMATE_2020,
+              SubscriptionName.ASTROBIN_ULTIMATE_2020_AUTORENEW_MONTHLY,
+              SubscriptionName.ASTROBIN_ULTIMATE_2020_AUTORENEW_YEARLY
             ])
           )
         )

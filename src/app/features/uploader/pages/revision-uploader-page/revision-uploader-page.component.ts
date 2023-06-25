@@ -157,6 +157,8 @@ export class RevisionUploaderPageComponent extends BaseComponentDirective implem
             this.userSubscriptionService
               .hasValidSubscription$(currentUserProfile, [
                 SubscriptionName.ASTROBIN_ULTIMATE_2020,
+                SubscriptionName.ASTROBIN_ULTIMATE_2020_AUTORENEW_YEARLY,
+                SubscriptionName.ASTROBIN_ULTIMATE_2020_AUTORENEW_MONTHLY,
                 SubscriptionName.ASTROBIN_PREMIUM,
                 SubscriptionName.ASTROBIN_PREMIUM_AUTORENEW,
                 SubscriptionName.ASTROBIN_LITE,
@@ -170,7 +172,11 @@ export class RevisionUploaderPageComponent extends BaseComponentDirective implem
               });
 
             this.userSubscriptionService
-              .hasValidSubscription$(currentUserProfile, [SubscriptionName.ASTROBIN_PREMIUM_2020])
+              .hasValidSubscription$(currentUserProfile, [
+                SubscriptionName.ASTROBIN_PREMIUM_2020,
+                SubscriptionName.ASTROBIN_PREMIUM_2020_AUTORENEW_YEARLY,
+                SubscriptionName.ASTROBIN_PREMIUM_2020_AUTORENEW_MONTHLY
+              ])
               .subscribe(has => {
                 if (has) {
                   observer.next(message(backendConfig.PREMIUM_MAX_REVISIONS_PREMIUM_2020));
@@ -179,7 +185,11 @@ export class RevisionUploaderPageComponent extends BaseComponentDirective implem
               });
 
             this.userSubscriptionService
-              .hasValidSubscription$(currentUserProfile, [SubscriptionName.ASTROBIN_LITE_2020])
+              .hasValidSubscription$(currentUserProfile, [
+                SubscriptionName.ASTROBIN_LITE_2020,
+                SubscriptionName.ASTROBIN_LITE_2020_AUTORENEW_YEARLY,
+                SubscriptionName.ASTROBIN_LITE_2020_AUTORENEW_MONTHLY
+              ])
               .subscribe(has => {
                 if (has) {
                   observer.next(message(backendConfig.PREMIUM_MAX_REVISIONS_LITE_2020));
@@ -214,6 +224,8 @@ export class RevisionUploaderPageComponent extends BaseComponentDirective implem
             this.userSubscriptionService
               .hasValidSubscription$(currentUserProfile, [
                 SubscriptionName.ASTROBIN_ULTIMATE_2020,
+                SubscriptionName.ASTROBIN_ULTIMATE_2020_AUTORENEW_YEARLY,
+                SubscriptionName.ASTROBIN_ULTIMATE_2020_AUTORENEW_MONTHLY,
                 SubscriptionName.ASTROBIN_PREMIUM,
                 SubscriptionName.ASTROBIN_PREMIUM_AUTORENEW,
                 SubscriptionName.ASTROBIN_LITE,
@@ -227,7 +239,11 @@ export class RevisionUploaderPageComponent extends BaseComponentDirective implem
               });
 
             this.userSubscriptionService
-              .hasValidSubscription$(currentUserProfile, [SubscriptionName.ASTROBIN_PREMIUM_2020])
+              .hasValidSubscription$(currentUserProfile, [
+                SubscriptionName.ASTROBIN_PREMIUM_2020,
+                SubscriptionName.ASTROBIN_PREMIUM_2020_AUTORENEW_YEARLY,
+                SubscriptionName.ASTROBIN_PREMIUM_2020_AUTORENEW_MONTHLY
+              ])
               .subscribe(has => {
                 if (has) {
                   observer.next(this.revisionCount < backendConfig.PREMIUM_MAX_REVISIONS_PREMIUM_2020);
@@ -236,7 +252,11 @@ export class RevisionUploaderPageComponent extends BaseComponentDirective implem
               });
 
             this.userSubscriptionService
-              .hasValidSubscription$(currentUserProfile, [SubscriptionName.ASTROBIN_LITE_2020])
+              .hasValidSubscription$(currentUserProfile, [
+                SubscriptionName.ASTROBIN_LITE_2020,
+                SubscriptionName.ASTROBIN_LITE_2020_AUTORENEW_YEARLY,
+                SubscriptionName.ASTROBIN_LITE_2020_AUTORENEW_MONTHLY
+              ])
               .subscribe(has => {
                 if (has) {
                   observer.next(this.revisionCount < backendConfig.PREMIUM_MAX_REVISIONS_LITE_2020);

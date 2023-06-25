@@ -38,7 +38,9 @@ export class CameraGenerator {
         itemListings: [],
         brandListings: [],
         allowFullRetailerIntegration: false
-      }
+      },
+      followed: false,
+      contentType: 1
     };
   }
 

@@ -10,6 +10,7 @@ import { SubscriptionInterface } from "@shared/interfaces/subscription.interface
 import { TelescopeInterface } from "@shared/interfaces/telescope.interface";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { NestedCommentInterface } from "@shared/interfaces/nested-comment.interface";
+import { TogglePropertyInterface } from "@shared/interfaces/toggle-property.interface";
 
 export interface AppState {
   // Weather the app has been initialized.
@@ -57,6 +58,9 @@ export interface AppState {
 
   // All seen nested comments.
   nestedComments: NestedCommentInterface[];
+
+  // All seen toggle properties.
+  toggleProperties: TogglePropertyInterface[];
 }
 
 export const initialAppState: AppState = {
@@ -75,7 +79,8 @@ export const initialAppState: AppState = {
   telescopes: [],
   cameras: [],
   createLocationAddTag: null,
-  nestedComments: []
+  nestedComments: [],
+  toggleProperties: []
 };
 
 export function reducer(state = initialAppState, action: All): AppState {
@@ -304,6 +309,31 @@ export function reducer(state = initialAppState, action: All): AppState {
           UtilsService.arrayUniqueObjects([...state.nestedComments, ...[action.payload.nestedComment]], "id"),
           "created"
         )
+      };
+    }
+
+    case AppActionTypes.LOAD_TOGGLE_PROPERTY_SUCCESS: {
+      if (action.payload.toggleProperty !== null) {
+        return {
+          ...state,
+          toggleProperties: UtilsService.arrayUniqueObjects([...state.toggleProperties, action.payload.toggleProperty], "id")
+        };
+      }
+
+      return state;
+    }
+
+    case AppActionTypes.CREATE_TOGGLE_PROPERTY_SUCCESS: {
+      return {
+        ...state,
+        toggleProperties: UtilsService.arrayUniqueObjects([...state.toggleProperties, action.payload.toggleProperty], "id")
+      };
+    }
+
+    case AppActionTypes.DELETE_TOGGLE_PROPERTY_SUCCESS: {
+      return {
+        ...state,
+        toggleProperties: state.toggleProperties.filter(toggleProperty => toggleProperty.id !== action.payload.toggleProperty.id)
       };
     }
 

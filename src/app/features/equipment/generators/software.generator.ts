@@ -30,7 +30,9 @@ export class SoftwareGenerator {
         itemListings: [],
         brandListings: [],
         allowFullRetailerIntegration: false
-      }
+      },
+      followed: false,
+      contentType: 5
     };
   }
 }

@@ -1,4 +1,4 @@
-import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
+import { Inject, Injectable, PLATFORM_ID, Renderer2 } from "@angular/core";
 import { distinctUntilChanged, switchMap, take } from "rxjs/operators";
 import { TranslateService } from "@ngx-translate/core";
 import { Store } from "@ngrx/store";
@@ -7,6 +7,7 @@ import { SelectorWithProps } from "@ngrx/store/src/models";
 import { interval, Observable, of } from "rxjs";
 import { isPlatformBrowser } from "@angular/common";
 import { FormlyFieldConfig } from "@ngx-formly/core";
+import { CookieService } from "ngx-cookie";
 
 @Injectable({
   providedIn: "root"
@@ -15,8 +16,45 @@ export class UtilsService {
   constructor(
     public readonly store$: Store<State>,
     public readonly translateService: TranslateService,
+    public readonly cookieService: CookieService,
     @Inject(PLATFORM_ID) public readonly platformId
   ) {
+  }
+
+  static supportsDateInput() {
+    const input = document.createElement("input");
+    input.setAttribute("type", "date");
+
+    const notADateValue = "not-a-date";
+    input.setAttribute("value", notADateValue);
+
+    return input.value !== notADateValue;
+  }
+
+  static removeQuotes(str: string): string {
+    if (str.length >= 2 && str.startsWith("\"") && str.endsWith("\"")) {
+      return str.slice(1, -1);
+    }
+    return str;
+  }
+
+  static getDateFormatString(lang = "default") {
+    const formatObj = new Intl.DateTimeFormat(lang).formatToParts(new Date());
+
+    return formatObj
+      .map(obj => {
+        switch (obj.type) {
+          case "day":
+            return "DD";
+          case "month":
+            return "MM";
+          case "year":
+            return "YYYY";
+          default:
+            return obj.value;
+        }
+      })
+      .join("");
   }
 
   static uuid(): string {
@@ -153,6 +191,14 @@ export class UtilsService {
 
   static isObject(obj): boolean {
     return obj != null && obj.constructor.name === "Object";
+  }
+
+  static isNotEmptyDictionary<T>(variable: T | null | undefined): boolean {
+    if (variable === null || variable === undefined) {
+      return false;
+    }
+
+    return !(typeof variable === "object" && Object.keys(variable).length === 0);
   }
 
   static isUrl(s: string): boolean {
@@ -316,6 +362,27 @@ export class UtilsService {
     return new File([data], name);
   }
 
+  static fullFieldPath(fieldConfig: FormlyFieldConfig): string[] {
+    let path: string[] = [];
+
+    // Start with the current field
+    if (fieldConfig.props && fieldConfig.props.label) {
+      path.unshift(fieldConfig.props.label);
+    }
+
+    // Traverse up the tree
+    let currentFieldConfig = fieldConfig;
+    while (currentFieldConfig.parent) {
+      currentFieldConfig = currentFieldConfig.parent;
+
+      if (currentFieldConfig.templateOptions && currentFieldConfig.props.label) {
+        path.unshift(currentFieldConfig.props.label);
+      }
+    }
+
+    return path;
+  }
+
   static fieldWithErrors(topFields: FormlyFieldConfig[]): FormlyFieldConfig[] {
     let errored = [];
 
@@ -347,6 +414,52 @@ export class UtilsService {
     }
 
     return count;
+  }
+
+  static isGDPRCountry(countryCode: string): boolean {
+    return [
+      "AT",  // Austria
+      "BE",  // Belgium
+      "BG",  // Bulgaria
+      "CY",  // Cyprus
+      "CZ",  // Czech Republic
+      "DE",  // Germany
+      "DK",  // Denmark
+      "EE",  // Estonia
+      "ES",  // Spain
+      "FI",  // Finland
+      "FR",  // France
+      "GB",  // United Kingdom
+      "GR",  // Greece
+      "HR",  // Croatia
+      "HU",  // Hungary
+      "IE",  // Ireland
+      "IT",  // Italy
+      "LT",  // Lithuania
+      "LU",  // Luxembourg
+      "LV",  // Latvia
+      "MT",  // Malta
+      "NL",  // The Netherlands
+      "PL",  // Poland
+      "PT",  // Portugal
+      "RO",  // Romania
+      "SE",  // Sweden
+      "SI",  // Slovenia
+      "SK"  // Slovakia
+    ].includes(countryCode.toUpperCase());
+  }
+
+  insertScript(url: string, renderer: Renderer2, cb?: () => void) {
+    const script = renderer.createElement("script");
+    script.src = url;
+    script.async = true;
+    if (cb) {
+      script.onload = () => {
+        cb();
+      };
+    }
+
+    renderer.appendChild(document.body, script);
   }
 
   isNearBelowViewport(element: HTMLElement): boolean {

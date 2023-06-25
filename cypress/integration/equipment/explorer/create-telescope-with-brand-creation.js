@@ -69,7 +69,9 @@ context("Equipment", () => {
 
       it("should hide the 'Aperture' and show naming convention info if type is 'Camera lens'", () => {
         cy.ngSelectOpen("#telescope-field-type");
-        cy.ngSelectOptionClick("#telescope-field-type", 28);
+        cy.ngSelectOptionClick("#telescope-field-type", 29);
+
+        cy.wait(1000);
 
         cy.get("#telescope-field-aperture").should("not.be.visible");
         cy.get(".info-feedback span")

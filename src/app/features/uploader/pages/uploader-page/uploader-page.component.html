@@ -6,7 +6,11 @@
       <small>
         <span
           *ngIf="
-            state.auth.userProfile | hasValidUserSubscription: [SubscriptionName.ASTROBIN_ULTIMATE_2020] | async;
+            state.auth.userProfile | hasValidUserSubscription: [
+              SubscriptionName.ASTROBIN_ULTIMATE_2020,
+              SubscriptionName.ASTROBIN_ULTIMATE_2020_AUTORENEW_MONTHLY,
+              SubscriptionName.ASTROBIN_ULTIMATE_2020_AUTORENEW_YEARLY
+            ] | async;
             else noUltimate
           "
           [innerHTML]="subscriptionWithUnlimitedSlotsMessage('Ultimate')"
@@ -21,7 +25,9 @@
                   : [
                       SubscriptionName.ASTROBIN_PREMIUM,
                       SubscriptionName.ASTROBIN_PREMIUM_AUTORENEW,
-                      SubscriptionName.ASTROBIN_PREMIUM_2020
+                      SubscriptionName.ASTROBIN_PREMIUM_2020,
+                      SubscriptionName.ASTROBIN_PREMIUM_2020_AUTORENEW_MONTHLY,
+                      SubscriptionName.ASTROBIN_PREMIUM_2020_AUTORENEW_YEARLY
                     ]
                 | async;
               else noPremium
@@ -35,7 +41,10 @@
           <span
             *ngIf="
               state.auth.userProfile
-                | hasValidUserSubscription: [SubscriptionName.ASTROBIN_LITE, SubscriptionName.ASTROBIN_LITE_AUTORENEW]
+                | hasValidUserSubscription: [
+                  SubscriptionName.ASTROBIN_LITE,
+                  SubscriptionName.ASTROBIN_LITE_AUTORENEW
+                ]
                 | async;
               else lite2020
             "
@@ -53,7 +62,11 @@
         <ng-template #lite2020>
           <span
             *ngIf="
-              state.auth.userProfile | hasValidUserSubscription: [SubscriptionName.ASTROBIN_LITE_2020] | async;
+              state.auth.userProfile | hasValidUserSubscription: [
+                SubscriptionName.ASTROBIN_LITE_2020,
+                SubscriptionName.ASTROBIN_LITE_2020_AUTORENEW_MONTHLY,
+                SubscriptionName.ASTROBIN_LITE_2020_AUTORENEW_YEARLY
+              ] | async;
               else free
             "
             [innerHTML]="

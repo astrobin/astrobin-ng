@@ -1,9 +1,31 @@
+@import "mixins";
+
 .nav {
   &[orientation=vertical] {
+    @include darkest-background-texture;
+    box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.75);
+    padding: .5rem;
+    border-radius: .25rem;
+    text-align: left;
+
     .nav-item-separator {
-      margin-top: .5rem;
-      margin-bottom: 1.75rem;
+      margin-top: .75rem;
+      margin-bottom: .75rem;
+      height: 0;
       border-bottom: 1px solid rgba(255, 255, 255, .1);
+    }
+  }
+
+  &.nav-pills .nav-link,
+  &.nav-pills .show > .nav-link {
+    margin: 0 -.5rem;
+    border-radius: 0;
+  }
+
+  .nav {
+    &[orientation=vertical] {
+      background: transparent;
+      box-shadow: none;
     }
   }
 }

@@ -1,4 +1,4 @@
-import { testBrand, testAccessory } from "../../../support/commands/equipment-item-browser-utils";
+import { testAccessory, testBrand } from "../../../support/commands/equipment-item-browser-utils";
 
 context("Equipment", () => {
   beforeEach(() => {
@@ -15,19 +15,12 @@ context("Equipment", () => {
         cy.login();
         cy.visitPage("/equipment/explorer/accessory");
 
-        cy.route("get", /\/api\/v2\/equipment\/accessory\/.*/, {
+        cy.route("get", "/api/v2/equipment/accessory/?*q=*", {
           count: 1,
           next: null,
           previous: null,
-          results: [testAccessory],
+          results: [testAccessory]
         }).as("findAccessories");
-
-        cy.route("get", "**/api/v2/equipment/accessory/?page=*", {
-          count: 1,
-          next: null,
-          previous: null,
-          results: [testAccessory],
-        }).as("getAccessories");
 
         cy.route("get", "**/api/v2/equipment/brand/1/", testBrand).as("getBrand");
 
