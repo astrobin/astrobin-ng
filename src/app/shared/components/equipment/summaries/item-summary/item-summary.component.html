@@ -85,12 +85,13 @@
                 &middot;
               </ng-container>
 
-              <span *ngIf="relatedItems.length > SHOW_MAX_RELATED_ITEMS">
-                &middot;
-                <button (click)="viewMoreRelatedItems()" class="btn btn-link">
-                   {{ moreRelatedItemsLabel}}
-                </button>
-              </span>
+            </ng-container>
+
+            <ng-container *ngIf="relatedItems.length > SHOW_MAX_RELATED_ITEMS">
+              &middot;
+              <button (click)="viewMoreRelatedItems()" class="btn btn-link">
+                  {{ moreRelatedItemsLabel}}
+              </button>
             </ng-container>
           </td>
         </tr>
