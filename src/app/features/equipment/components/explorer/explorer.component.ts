@@ -642,7 +642,7 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
       return;
     }
 
-    if (this.editForm.untouched || this.editForm.pristine) {
+    if (JSON.stringify(this.editModel) === JSON.stringify(this.selectedItem)) {
       this.popNotificationsService.error("In order to make an edit proposal, you need to edit some properties.");
       return;
     }
