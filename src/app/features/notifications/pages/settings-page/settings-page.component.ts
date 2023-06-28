@@ -267,6 +267,7 @@ export class SettingsPageComponent extends BaseComponentDirective implements OnI
       case "new_image_revision":
       case "new_like":
       case "new_bookmark":
+      case "image_approved":
       case "image_not_solved":
       case "image_solved":
       case "image_not_solved_advanced":
