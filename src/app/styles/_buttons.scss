@@ -9,9 +9,8 @@
   }
 }
 
-.btn {
-  font-size: 0.85rem;
-
+.btn,
+astrobin-toggle-property {
   @media (max-width: $xs-max) {
     &:not(.btn-no-block) {
       display: block;
@@ -24,6 +23,10 @@
       }
     }
   }
+}
+
+.btn {
+  font-size: 0.85rem;
 
   img.icon,
   fa-icon {
