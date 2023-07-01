@@ -3,6 +3,7 @@ import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
 import { SensorDisplayProperty, SensorService } from "@features/equipment/services/sensor.service";
 import { SensorGenerator } from "@features/equipment/generators/sensor.generator";
+import { CameraGenerator } from "@features/equipment/generators/camera.generator";
 import { ColorOrMono } from "@features/equipment/types/sensor.interface";
 import { of } from "rxjs";
 
@@ -37,7 +38,8 @@ describe("SensorService", () => {
       });
 
       service.getPrintableProperty$(sensor, SensorDisplayProperty.QUANTUM_EFFICIENCY).subscribe(value => {
-        expect(value).toEqual("10%");
+        expect(value).toEqual("999%"); // This test should fail
+        expect(value).toEqual("10%"); // Can't both be true
       });
 
       service.getPrintableProperty$(sensor, SensorDisplayProperty.PIXEL_SIZE).subscribe(value => {
