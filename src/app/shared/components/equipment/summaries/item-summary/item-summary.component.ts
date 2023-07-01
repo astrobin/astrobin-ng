@@ -66,7 +66,7 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
   readonly UtilsService = UtilsService;
   readonly EquipmentItemDisplayProperty = EquipmentItemDisplayProperty;
 
-  readonly SHOW_MAX_RELATED_ITEMS = 1;
+  readonly SHOW_MAX_RELATED_ITEMS = 2;
 
   @Input()
   item: EquipmentItem;
@@ -208,7 +208,7 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
 
   get moreRelatedItemsLabel(): string {
     return this.translateService.instant(
-      "+{{ count }} more", { count: this.relatedItems.length - this.SHOW_MAX_RELATED_ITEMS }
+      "+ {{ count }} more", { count: this.relatedItems.length - this.SHOW_MAX_RELATED_ITEMS }
     );
   }
 

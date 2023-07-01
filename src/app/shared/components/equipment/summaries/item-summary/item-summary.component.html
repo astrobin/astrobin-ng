@@ -70,7 +70,7 @@
           </td>
         </tr>
 
-        <tr *ngIf="relatedItems?.length > 0" class="property">
+        <tr *ngIf="relatedItems?.length > 0" class="property related-items">
           <th class="property-name">{{ relatedItemsLabel }}</th>
           <td class="property-value">
             <ng-container *ngFor="let relatedItem of relatedItems.slice(0, SHOW_MAX_RELATED_ITEMS); let last = last">
