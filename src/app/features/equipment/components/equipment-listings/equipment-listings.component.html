@@ -1,4 +1,4 @@
-<div class="card mb-4" *ngIf="listings.itemListings.length > 0">
+<div *ngIf="listings.itemListings.length > 0" class="card mb-4">
   <div class="card-header">
     <ng-container *ngTemplateOutlet="itemCardHeaderTemplate"></ng-container>
   </div>
@@ -10,12 +10,12 @@
   </div>
 
   <div class="card-footer flex-row">
-    <fa-icon icon="info-circle" (click)="infoButtonClicked()"></fa-icon>
-    <fa-icon icon="times" (click)="removeButtonClicked()"></fa-icon>
+    <fa-icon (click)="infoButtonClicked()" icon="info-circle"></fa-icon>
+    <fa-icon (click)="removeButtonClicked()" icon="times"></fa-icon>
   </div>
 </div>
 
-<div class="card" *ngIf="listings.brandListings?.length > 0">
+<div *ngIf="listings.brandListings?.length > 0" class="card">
   <div class="card-header">
     <ng-container *ngTemplateOutlet="brandCardHeaderTemplate"></ng-container>
   </div>
@@ -27,8 +27,8 @@
   </div>
 
   <div class="card-footer flex-row">
-    <fa-icon icon="info-circle" (click)="infoButtonClicked()"></fa-icon>
-    <fa-icon icon="times" (click)="removeButtonClicked()"></fa-icon>
+    <fa-icon (click)="infoButtonClicked()" icon="info-circle"></fa-icon>
+    <fa-icon (click)="removeButtonClicked()" icon="times"></fa-icon>
   </div>
 </div>
 
@@ -54,7 +54,7 @@
 
 <ng-template #cardBodyItemListingsFullTemplate>
   <div *ngFor="let listing of listings.itemListings" class="listing">
-    <ng-container [ngTemplateOutlet]="listingFull" [ngTemplateOutletContext]="{listing}"></ng-container>
+    <ng-container [ngTemplateOutletContext]="{listing}" [ngTemplateOutlet]="listingFull"></ng-container>
   </div>
 </ng-template>
 
@@ -64,7 +64,7 @@
 
 <ng-template #cardBodyBrandListingsFullTemplate>
   <div *ngFor="let listing of listings.brandListings" class="listing">
-    <ng-container [ngTemplateOutlet]="listingFull" [ngTemplateOutletContext]="{listing}"></ng-container>
+    <ng-container [ngTemplateOutletContext]="{listing}" [ngTemplateOutlet]="listingFull"></ng-container>
   </div>
 </ng-template>
 
@@ -78,12 +78,17 @@
       [href]="urlWithTags(listing)"
       [ngbTooltip]="listing.retailer.name"
       astrobinGtagOutboundClickEvent
-      target="_blank"
       class="with-logo"
+      target="_blank"
     >
-      <img [src]="listing.retailer.logo" [alt]="listing.retailer.name" />
+      <img [alt]="listing.retailer.name" [src]="listing.retailer.logo" />
     </a>
+
+    <div *ngIf="!!listing.stockStatus" class="stock-status">
+      <astrobin-stock-status [listing]="listing"></astrobin-stock-status>
+    </div>
   </ng-container>
+
   <ng-template #noLogoTemplate>
     <a
       [href]="urlWithTags(listing)"
