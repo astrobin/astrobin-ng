@@ -1,23 +1,27 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { StockStatusComponent } from './stock-status.component';
+import { StockStatusComponent } from "./stock-status.component";
+import { MockBuilder } from "ng-mocks";
+import { AppModule } from "@app/app.module";
+import { StockStatus } from "@features/equipment/types/stock-status.type";
+import { EquipmentItemListingInterface } from "@features/equipment/types/equipment-listings.interface";
 
-describe('StockStatusComponent', () => {
+describe("StockStatusComponent", () => {
   let component: StockStatusComponent;
   let fixture: ComponentFixture<StockStatusComponent>;
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ StockStatusComponent ]
-    })
-    .compileComponents();
-
+    await MockBuilder(StockStatusComponent, AppModule);
     fixture = TestBed.createComponent(StockStatusComponent);
     component = fixture.componentInstance;
+    component.listing = {
+      updated: "2021-08-31T14:00:00.000Z",
+      stockStatus: StockStatus.UNKNOWN
+    } as EquipmentItemListingInterface;
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });
