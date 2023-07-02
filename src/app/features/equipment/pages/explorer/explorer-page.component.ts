@@ -142,7 +142,7 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
 
   private _updateTitle(item?: EquipmentItem) {
     if (!!item) {
-      this.equipmentItemService.getFullDisplayName$(this.activatedRoute.snapshot.data.item).subscribe(fullDisplayName => {
+      this.equipmentItemService.getFullDisplayName$(item).subscribe(fullDisplayName => {
         this.title = `${this.translateService.instant("Equipment explorer")}: ${fullDisplayName}`;
         this.titleService.setTitle(this.title);
       });
@@ -153,7 +153,7 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
 
   private _updateDescription(item?: EquipmentItem) {
     if (!!item) {
-      this.equipmentItemService.getFullDisplayName$(this.activatedRoute.snapshot.data.item).subscribe(fullDisplayName => {
+      this.equipmentItemService.getFullDisplayName$(item).subscribe(fullDisplayName => {
         this.titleService.setDescription(
           this.translateService.instant(
             "{{ item }} is an equipment item of class {{ klass }} on AstroBin equipment database.",
