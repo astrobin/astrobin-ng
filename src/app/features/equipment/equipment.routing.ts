@@ -14,6 +14,7 @@ import { ReviewGearRenamingProposalsComponent } from "@features/equipment/pages/
 import { BrandExplorerPageComponent } from "@features/equipment/pages/explorer/brand-explorer-page/brand-explorer-page.component";
 import { ContributorsPageComponent } from "@features/equipment/pages/contributors-page/contributors-page.component";
 import { Constants } from "@shared/constants";
+import { ItemResolver } from "@features/equipment/resolvers/item.resolver";
 
 export const routes: Routes = [
   {
@@ -102,17 +103,26 @@ export const routes: Routes = [
       {
         path: ":itemType/:itemId/:itemSlug/edit-proposals/:editProposalId",
         pathMatch: "full",
-        component: ExplorerPageComponent
+        component: ExplorerPageComponent,
+        resolve: {
+          item: ItemResolver
+        }
       },
       {
         path: ":itemType/:itemId/:itemSlug",
         pathMatch: "full",
-        component: ExplorerPageComponent
+        component: ExplorerPageComponent,
+        resolve: {
+          item: ItemResolver
+        }
       },
       {
         path: ":itemType/:itemId",
         pathMatch: "full",
-        component: ExplorerPageComponent
+        component: ExplorerPageComponent,
+        resolve: {
+          item: ItemResolver
+        }
       },
       {
         path: ":itemType",
