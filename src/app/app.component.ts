@@ -12,7 +12,7 @@ import { UtilsService } from "@shared/services/utils/utils.service";
 import { CookieConsentService } from "@shared/services/cookie-consent/cookie-consent.service";
 import { CookieConsentEnum } from "@shared/types/cookie-consent.enum";
 import { Observable } from "rxjs";
-import { isPlatformBrowser } from "@angular/common";
+import { DOCUMENT, isPlatformBrowser } from "@angular/common";
 import { NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
 import { Constants } from "@shared/constants";
 
@@ -35,7 +35,8 @@ export class AppComponent extends BaseComponentDirective implements OnInit {
     public readonly cookieConsentService: CookieConsentService,
     public readonly utilsService: UtilsService,
     @Inject(PLATFORM_ID) public readonly platformId: any,
-    public readonly renderer: Renderer2
+    public readonly renderer: Renderer2,
+    @Inject(DOCUMENT) public document: any
   ) {
     super(store$);
     this.initRouterEvents();
@@ -104,6 +105,7 @@ export class AppComponent extends BaseComponentDirective implements OnInit {
     this.router.events?.subscribe(event => {
       if (event instanceof NavigationEnd) {
         this.tagGoogleAnalyticsPage(event.urlAfterRedirects);
+        this.setCanonicalUrl(event.urlAfterRedirects);
       }
     });
   }
@@ -132,6 +134,15 @@ export class AppComponent extends BaseComponentDirective implements OnInit {
         }
       });
     }
+  }
+
+  setCanonicalUrl(url: string): void {
+    const canonicalUrl = this.windowRefService.nativeWindow.location.origin + url;
+    let link: HTMLLinkElement = this.document.createElement("link");
+
+    link.setAttribute("rel", "canonical");
+    this.document.head.appendChild(link);
+    link.setAttribute("href", canonicalUrl);
   }
 
   markNotificationAsRead() {
