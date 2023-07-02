@@ -81,8 +81,8 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
   ngOnInit(): void {
     super.ngOnInit();
 
-    this._updateTitle(this.activatedRoute.snapshot.data.item);
-    this._updateDescription(this.activatedRoute.snapshot.data.item);
+    this._updateTitle(this.activatedRoute.snapshot.data?.item);
+    this._updateDescription(this.activatedRoute.snapshot.data?.item);
     this._setBreadcrumb();
     this._setParams();
     this._setLocation();
