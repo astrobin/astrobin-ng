@@ -294,14 +294,16 @@ export class ItemEditProposalComponent extends BaseComponentDirective implements
       .subscribe(changes => {
         changes.forEach(change => {
           const enumValue = this.equipmentItemService.propertyNameToPropertyEnum(change.propertyName);
+          const before$ = this.equipmentItemService.getPrintableProperty$(this.item, enumValue, change.before);
+          const after$ = this.equipmentItemService.getPrintableProperty$(this.editProposal, enumValue, change.after);
 
-          forkJoin({
-            before: this.equipmentItemService.getPrintableProperty$(this.item, enumValue, change.before),
-            after: this.equipmentItemService.getPrintableProperty$(this.editProposal, enumValue, change.after)
-          }).subscribe(({ before, after }) => {
-            const propertyName = this.equipmentItemService.getPrintablePropertyName(this.type, enumValue, true);
-            this.changes.push({ propertyName, before, after });
-          });
+
+          if (before$ && after$) {
+            forkJoin([before$, after$]).subscribe(([before, after]) => {
+              const propertyName = this.equipmentItemService.getPrintablePropertyName(this.type, enumValue, true);
+              this.changes.push({ propertyName, before, after });
+            });
+          }
         });
       });
   }

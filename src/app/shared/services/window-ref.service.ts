@@ -1,8 +1,9 @@
 import { Inject, Injectable } from "@angular/core";
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
-import { DOCUMENT } from "@angular/common";
+import { DOCUMENT, Location } from "@angular/common";
 import { UtilsService } from "@shared/services/utils/utils.service";
+import { Router } from "@angular/router";
 
 // @ts-ignore
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -14,7 +15,9 @@ export class WindowRefService extends BaseService {
   constructor(
     public readonly loadingService: LoadingService,
     @Inject(DOCUMENT) private _doc: Document,
-    public readonly utilsService: UtilsService
+    public readonly utilsService: UtilsService,
+    public readonly router: Router,
+    private readonly location: Location
   ) {
     super(loadingService);
   }
@@ -90,5 +93,11 @@ export class WindowRefService extends BaseService {
   locationAssign(url: string) {
     this.loadingService.setLoading(true);
     this.nativeWindow.location.assign(url);
+  }
+
+  routeTo404(fromUrl: string) {
+    this.router.navigateByUrl("/404", { skipLocationChange: true }).then(() => {
+      this.location.replaceState(fromUrl);
+    });
   }
 }

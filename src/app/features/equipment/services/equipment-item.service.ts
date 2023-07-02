@@ -222,6 +222,7 @@ export class EquipmentItemService extends BaseService {
 
     const ignoredKeys = [
       "id",
+      "contentType",
       "brand",
       "brandName",
       "created",
