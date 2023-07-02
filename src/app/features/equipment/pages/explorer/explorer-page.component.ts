@@ -81,7 +81,8 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
   ngOnInit(): void {
     super.ngOnInit();
 
-    this._setTitle();
+    this._updateTitle(this.activatedRoute.snapshot.data.item);
+    this._updateDescription(this.activatedRoute.snapshot.data.item);
     this._setBreadcrumb();
     this._setParams();
     this._setLocation();
@@ -99,6 +100,8 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
   onSelectedItemChanged(item: EquipmentItemBaseInterface) {
     this.activeId = !!item ? item.id : null;
 
+    this._updateTitle(item);
+    this._updateDescription(item);
     this._setLocation();
     this._scrollToItemBrowser();
   }
@@ -137,8 +140,31 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
     this.getItems();
   }
 
-  private _setTitle() {
-    this.titleService.setTitle(this.title);
+  private _updateTitle(item?: EquipmentItem) {
+    if (!!item) {
+      this.equipmentItemService.getFullDisplayName$(this.activatedRoute.snapshot.data.item).subscribe(fullDisplayName => {
+        this.title = `${this.translateService.instant("Equipment explorer")}: ${fullDisplayName}`;
+        this.titleService.setTitle(this.title);
+      });
+    } else {
+      this.titleService.setTitle(this.title);
+    }
+  }
+
+  private _updateDescription(item?: EquipmentItem) {
+    if (!!item) {
+      this.equipmentItemService.getFullDisplayName$(this.activatedRoute.snapshot.data.item).subscribe(fullDisplayName => {
+        this.titleService.setDescription(
+          this.translateService.instant(
+            "{{ item }} is an equipment item of class {{ klass }} on AstroBin equipment database.",
+            { item: fullDisplayName, klass: this.equipmentItemService.humanizeType(item.klass) })
+        );
+      });
+    } else {
+      this.titleService.setDescription(
+        this.translateService.instant("Explore the AstroBin equipment database.")
+      );
+    }
   }
 
   private _setBreadcrumb() {

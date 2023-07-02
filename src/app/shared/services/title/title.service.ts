@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { Title } from "@angular/platform-browser";
+import { Meta, Title } from "@angular/platform-browser";
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { TitleServiceInterface } from "@shared/services/title/title.service-interface";
@@ -8,11 +8,19 @@ import { TitleServiceInterface } from "@shared/services/title/title.service-inte
   providedIn: "root"
 })
 export class TitleService extends BaseService implements TitleServiceInterface {
-  constructor(public loadingService: LoadingService, public titleService: Title) {
+  constructor(
+    public readonly loadingService: LoadingService,
+    public readonly titleService: Title,
+    public readonly meta: Meta
+  ) {
     super(loadingService);
   }
 
-  public setTitle(newTitle: string) {
-    this.titleService.setTitle(newTitle + " - AstroBin");
+  public setTitle(title: string) {
+    this.titleService.setTitle(title + " - AstroBin");
+  }
+
+  public setDescription(description: string) {
+    this.meta.updateTag({ name: "description", content: description });
   }
 }
