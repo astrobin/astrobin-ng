@@ -13,7 +13,7 @@ Sentry.init({
   dsn: `https://${environment.sentryKeys[0]}@${environment.sentryKeys[1]}.ingest.sentry.io/${environment.sentryKeys[2]}`,
   integrations: [
     new BrowserTracing({
-      tracingOrigins: ["localhost", "https://app.astrobin.com/"],
+      tracingOrigins: ["localhost", "https://app.astrobin.com/", "https://app2.astrobin.com/"],
       routingInstrumentation: Sentry.routingInstrumentation
     })
   ],
