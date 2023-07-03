@@ -17,7 +17,8 @@ export const ItemResolver: ResolveFn<EquipmentItem> = (
   store$ = inject(Store<State>),
   windowRefService = inject(WindowRefService)
 ): Observable<EquipmentItem> => {
-  const type: EquipmentItemType = EquipmentItemType[route.paramMap.get("itemType").toUpperCase()];
+  const type: EquipmentItemType =
+    EquipmentItemType[route.paramMap.get("itemType").toUpperCase()];
   const id: number = +route.paramMap.get("itemId");
 
   return equipmentApiService.getEquipmentItem(+id, type).pipe(

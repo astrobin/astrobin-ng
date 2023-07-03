@@ -46,6 +46,19 @@ export function app(): express.Express {
         { provide: REQUEST, useValue: req },
         { provide: RESPONSE, useValue: res }
       ]
+    }, (err, html) => {
+      if (html) {
+        // If the URL after redirects is '/404', send a 404 status
+        if (req.url === "/404") {
+          res.status(404).send(html);
+        } else {
+          res.status(200).send(html);
+        }
+      } else {
+        // If there was an error during rendering, send a 500 status
+        console.error(err);
+        res.sendStatus(500);
+      }
     });
   });
 
