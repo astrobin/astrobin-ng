@@ -12,7 +12,7 @@
 </ng-container>
 
 <ng-container *ngIf="listing.stockStatus === StockStatus.IN_STOCK">
-  {{ "{{x}} in stock" | translate:{ x: listing.stockAmount } }}
+  {{ "{{x}} in stock" | translate:{ x: listing.stockAmount <= 10 ? listing.stockAmount : "10+" } }}
 </ng-container>
 
 <ng-container *ngIf="listing.stockStatus === StockStatus.OUT_OF_STOCK">
