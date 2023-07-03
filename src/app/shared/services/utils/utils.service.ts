@@ -391,7 +391,6 @@ export class UtilsService {
         errored = [...errored, ...UtilsService.fieldWithErrors(field.fieldGroup)];
       } else {
         if (field.formControl.invalid) {
-          console.log(field);
           errored.push(field);
         }
       }
