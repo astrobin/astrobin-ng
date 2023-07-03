@@ -8,20 +8,22 @@ import { BrowserTracing } from "@sentry/tracing";
 
 declare const window: any;
 
-Sentry.init({
-  release: environment.buildVersion,
-  dsn: `https://${environment.sentryKeys[0]}@${environment.sentryKeys[1]}.ingest.sentry.io/${environment.sentryKeys[2]}`,
-  integrations: [
-    new BrowserTracing({
-      tracingOrigins: ["localhost", "https://app.astrobin.com/", "https://app2.astrobin.com/"],
-      routingInstrumentation: Sentry.routingInstrumentation
-    })
-  ],
+if (typeof window !== "undefined") {
+  Sentry.init({
+    release: environment.buildVersion,
+    dsn: `https://${environment.sentryKeys[0]}@${environment.sentryKeys[1]}.ingest.sentry.io/${environment.sentryKeys[2]}`,
+    integrations: [
+      new BrowserTracing({
+        tracingOrigins: ["localhost", "https://app.astrobin.com/", "https://app2.astrobin.com/"],
+        routingInstrumentation: Sentry.routingInstrumentation
+      })
+    ],
 
-  // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
-  // We recommend adjusting this value in production
-  tracesSampleRate: 0.1
-});
+    // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
+    // We recommend adjusting this value in production
+    tracesSampleRate: 0.1
+  });
+}
 
 if (environment.production) {
   enableProdMode();
