@@ -1,23 +1,19 @@
 <fa-icon [class]="listing.stockStatus.toLowerCase()" icon="circle"></fa-icon>
 
-<span [ngbTooltip]="('Last update' | translate) + ': ' + (listing.updated | localDate | timeago)"
-      class="stock-status"
->
+<span [ngbTooltip]="('Last update' | translate) + ': ' + (listing.updated | localDate)" class="stock-status">
   <ng-container *ngIf="listing.stockStatus === StockStatus.UNKNOWN">
-  {{ "Stock status unknown" | translate }}
-</ng-container>
+      {{ "Stock status unknown" | translate }}
+    </ng-container>
 
-<ng-container *ngIf="listing.stockStatus === StockStatus.BACK_ORDER">
-  {{ "Back ordered" | translate }}
-</ng-container>
+    <ng-container *ngIf="listing.stockStatus === StockStatus.BACK_ORDER">
+      {{ "Back ordered" | translate }}
+    </ng-container>
 
-<ng-container *ngIf="listing.stockStatus === StockStatus.IN_STOCK">
-  {{ "{{x}} in stock" | translate:{ x: listing.stockAmount <= 10 ? listing.stockAmount : "10+" } }}
-</ng-container>
+    <ng-container *ngIf="listing.stockStatus === StockStatus.IN_STOCK">
+      {{ "{{x}} in stock" | translate:{ x: listing.stockAmount <= 10 ? listing.stockAmount : "10+" } }}
+    </ng-container>
 
-<ng-container *ngIf="listing.stockStatus === StockStatus.OUT_OF_STOCK">
-  {{ "Currently out of stock" | translate }}
-</ng-container>
+    <ng-container *ngIf="listing.stockStatus === StockStatus.OUT_OF_STOCK">
+      {{ "Currently out of stock" | translate }}
+    </ng-container>
 </span>
-
-
