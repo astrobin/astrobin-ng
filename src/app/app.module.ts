@@ -75,6 +75,7 @@ import { CustomMissingTranslationHandler } from "./missing-translation-handler";
 import { translateLoaderFactory } from "./translate-loader";
 import * as Sentry from "@sentry/angular";
 import { Router } from "@angular/router";
+import { CLIENT_IP } from "@app/client-ip.injector";
 
 // Supported languages
 registerLocaleData(localeEnglish);
@@ -200,7 +201,8 @@ export function initFontAwesome(iconLibrary: FaIconLibrary) {
       useValue: Sentry.createErrorHandler({
         showDialog: false
       })
-    }
+    },
+    { provide: CLIENT_IP, useValue: "" } // provide a fallback value for CLIENT_IP
   ],
   declarations: [AppComponent],
   bootstrap: [AppComponent]

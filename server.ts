@@ -26,6 +26,11 @@ export function app(): express.Express {
   server.set("view engine", "html");
   server.set("views", distFolder);
 
+  server.use((req, res, next) => {
+    global['clientIp'] = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+    next();
+  });
+
   // Example Express Rest API endpoints
   // server.get('/api/**', (req, res) => { });
   // Serve static files from /browser
