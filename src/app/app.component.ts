@@ -6,7 +6,7 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
 import { ThemeService } from "@shared/services/theme.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { NotificationsApiService } from "@features/notifications/services/notifications-api.service";
-import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
+import { selectRequestCountry } from "@app/store/selectors/app/app.selectors";
 import { filter, map, take } from "rxjs/operators";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { CookieConsentService } from "@shared/services/cookie-consent/cookie-consent.service";
@@ -121,12 +121,11 @@ export class AppComponent extends BaseComponentDirective implements OnInit {
   }
 
   includeAnalytics$(): Observable<boolean> {
-    return this.store$.select(selectBackendConfig).pipe(
-      filter(config => !!config),
+    return this.store$.select(selectRequestCountry).pipe(
+      filter(requestCountry => !!requestCountry),
       take(1),
-      map(config => config.REQUEST_COUNTRY),
-      map(countryCode => {
-        const isGDPRCountry = UtilsService.isGDPRCountry(countryCode);
+      map(requestCountry => {
+        const isGDPRCountry = UtilsService.isGDPRCountry(requestCountry);
         const hasCookieConsent = this.cookieConsentService.cookieGroupAccepted(CookieConsentEnum.ANALYTICS);
 
         return !isGDPRCountry || hasCookieConsent;

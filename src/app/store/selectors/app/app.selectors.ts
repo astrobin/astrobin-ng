@@ -9,6 +9,8 @@ export const selectBreadcrumb = createSelector(selectApp, state => state.breadcr
 
 export const selectBackendConfig = createSelector(selectApp, (state): BackendConfigInterface => state.backendConfig);
 
+export const selectRequestCountry = createSelector(selectApp, (state): string => state.requestCountry);
+
 export const selectIotdMaxSubmissionsPerDay = createSelector(
   selectBackendConfig,
   (backendConfig): number => backendConfig.IOTD_SUBMISSION_MAX_PER_DAY
