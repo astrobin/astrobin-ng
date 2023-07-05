@@ -26,15 +26,17 @@ export class InitializeAppEffects {
         const subscriptions$ = this.commonApiService.getSubscriptions().pipe(catchError(() => of([])));
         const language$ = of(language);
         const backendConfig$ = this.jsonApiService.getBackendConfig();
+        const requestCountry$ = this.jsonApiService.requestCountry();
 
-        return forkJoin([language$, subscriptions$, backendConfig$, this.translate.use(language)]).pipe(
+        return forkJoin([language$, subscriptions$, backendConfig$, requestCountry$, this.translate.use(language)]).pipe(
           map(results => {
             this.translate.setDefaultLang(language);
             setTimeagoIntl(this.timeagoIntl, language);
             return new InitializeAppSuccess({
               language: results[0],
               subscriptions: results[1],
-              backendConfig: results[2]
+              backendConfig: results[2],
+              requestCountry: results[3]
             });
           })
         );
