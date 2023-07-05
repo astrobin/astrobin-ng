@@ -12,9 +12,11 @@ import { UtilsService } from "@shared/services/utils/utils.service";
 import { CookieConsentService } from "@shared/services/cookie-consent/cookie-consent.service";
 import { CookieConsentEnum } from "@shared/types/cookie-consent.enum";
 import { Observable } from "rxjs";
-import { DOCUMENT, isPlatformBrowser } from "@angular/common";
+import { DOCUMENT, isPlatformBrowser, isPlatformServer } from "@angular/common";
 import { NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
 import { Constants } from "@shared/constants";
+import { TransferState } from "@angular/platform-browser";
+import { CLIENT_IP, CLIENT_IP_KEY } from "@app/client-ip.injector";
 
 declare var dataLayer: any;
 declare var gtag: any;
@@ -36,9 +38,17 @@ export class AppComponent extends BaseComponentDirective implements OnInit {
     public readonly utilsService: UtilsService,
     @Inject(PLATFORM_ID) public readonly platformId: any,
     public readonly renderer: Renderer2,
-    @Inject(DOCUMENT) public document: any
+    @Inject(DOCUMENT) public document: any,
+    public readonly transferState: TransferState,
+    @Inject(CLIENT_IP) public readonly clientIp: string
   ) {
     super(store$);
+
+    if (isPlatformServer(this.platformId)) {
+      // On the server-side, add the IP to the TransferState
+      this.transferState.set(CLIENT_IP_KEY, this.clientIp);
+    }
+
     this.initRouterEvents();
     this.initPagination();
     this.markNotificationAsRead();
