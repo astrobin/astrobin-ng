@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
@@ -52,7 +52,8 @@ export class EquipmentItemService extends BaseService {
     public readonly equipmentApiService: EquipmentApiService,
     public readonly ckEditorService: CKEditorService,
     public readonly windowRefService: WindowRefService,
-    public readonly popNotificationsService: PopNotificationsService
+    public readonly popNotificationsService: PopNotificationsService,
+    @Inject(PLATFORM_ID) public readonly platformId: Object
   ) {
     super(loadingService);
   }
@@ -174,7 +175,11 @@ export class EquipmentItemService extends BaseService {
         );
       case EquipmentItemDisplayProperty.COMMUNITY_NOTES:
         return of(
-          new BBCodeToHtmlPipe(this.ckEditorService, this.windowRefService).transform(propertyValue.toString())
+          new BBCodeToHtmlPipe(
+            this.ckEditorService,
+            this.windowRefService,
+            this.platformId
+          ).transform(propertyValue.toString())
         );
     }
   }
