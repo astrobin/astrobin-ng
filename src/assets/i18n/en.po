@@ -4,6 +4,9 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+msgid " Automatic renewal"
+msgstr ""
+
 msgid "(DIY)"
 msgstr ""
 
@@ -120,6 +123,9 @@ msgstr ""
 msgid "Acquisition type"
 msgstr ""
 
+msgid "Active"
+msgstr ""
+
 msgid "Add a comment"
 msgstr ""
 
@@ -222,6 +228,13 @@ msgstr ""
 msgid "Are you sure?"
 msgstr ""
 
+msgid ""
+"As a member of the {{0}}AstroBin Beta Testers{{1}} group, you are currently "
+"on the beta version of this app. To learn why a beta version is currently "
+"being tested, please see the latest posts on the {{2}}AstroBin Beta Testers "
+"forum{{3}}."
+msgstr ""
+
 msgid "Assign"
 msgstr ""
 
@@ -243,6 +256,11 @@ msgid ""
 "format."
 msgstr ""
 
+msgid ""
+"AstroBin couldn't recognize your subscription and this shouldn't happen. "
+"Please contact us at {{0}} so we can investigate, thanks!"
+msgstr ""
+
 msgid "AstroBin does not share your coordinates with anyone."
 msgstr ""
 
@@ -252,11 +270,12 @@ msgid ""
 msgstr ""
 
 msgid ""
-"AstroBin doesn't support subscription upgrades at the moment, but we're "
-"happy to make it happen manually. If you're on a lower subscription tier "
-"and would like to upgrade to <strong>{{0}}</strong>, please just buy it and "
-"then contact us at {{1}} to get a refund for the unused time on your old "
-"subscription. Thanks!"
+"AstroBin doesn't support pro-rated subscription upgrades for customers with "
+"a non-recurring subscription or a subscription purchased via PayPal, but "
+"we're happy to make it happen manually. If you're on a lower subscription "
+"tier and would like to upgrade to <strong>{{0}}</strong>, please just "
+"subscribe using the button below, and then contact us at {{1}} to get a "
+"refund for the unused time on your old subscription. Thanks!"
 msgstr ""
 
 msgid ""
@@ -326,13 +345,13 @@ msgstr ""
 msgid "Authentication error. Please log out and in again."
 msgstr ""
 
-msgid "Autorenew"
-msgstr ""
-
 msgid "Available in {{0}} additional variants:"
 msgstr ""
 
 msgid "Back focus"
+msgstr ""
+
+msgid "Back ordered"
 msgstr ""
 
 msgid "Backyard"
@@ -383,6 +402,9 @@ msgstr ""
 msgid "Blue channel (B)"
 msgstr ""
 
+msgid "Bookmark"
+msgstr ""
+
 msgid "Bookmarks"
 msgstr ""
 
@@ -411,6 +433,9 @@ msgid "Browse by brand and properties"
 msgstr ""
 
 msgid "Buy"
+msgstr ""
+
+msgid "Buy 1 year"
 msgstr ""
 
 msgid "CMI"
@@ -446,6 +471,9 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
+msgid "Cancel subscription"
+msgstr ""
+
 msgid "Cancelled"
 msgstr ""
 
@@ -465,6 +493,9 @@ msgid "Catadioptric: Maksutov"
 msgstr ""
 
 msgid "Catadioptric: Maksutov-Cassegrain"
+msgstr ""
+
+msgid "Catadioptric: Maksutov-Newtonian"
 msgstr ""
 
 msgid "Catadioptric: Riccardi-Honders"
@@ -657,6 +688,9 @@ msgstr ""
 msgid "Created by"
 msgstr ""
 
+msgid "Currently out of stock"
+msgstr ""
+
 msgid "Custom-cooled"
 msgstr ""
 
@@ -834,6 +868,9 @@ msgstr ""
 msgid "Error!"
 msgstr ""
 
+msgid "Event"
+msgstr ""
+
 msgid ""
 "Every equipment item on AstroBin has a forum associated with it. Anybody "
 "who used an equipment item is notified of new topics in its forum, unless "
@@ -852,6 +889,9 @@ msgid "Expiration date"
 msgstr ""
 
 msgid "Explore"
+msgstr ""
+
+msgid "Explore the AstroBin equipment database."
 msgstr ""
 
 msgid "Explorer"
@@ -963,6 +1003,15 @@ msgstr ""
 msgid "Focuser"
 msgstr ""
 
+msgid "Follow"
+msgstr ""
+
+msgid "Followed"
+msgstr ""
+
+msgid "Followed equipment"
+msgstr ""
+
 msgid "For CentralDS cameras, please select \"Dedicated deep-sky camera\""
 msgstr ""
 
@@ -1016,9 +1065,6 @@ msgid "Full search"
 msgstr ""
 
 msgid "Full well capacity"
-msgstr ""
-
-msgid "Gain"
 msgstr ""
 
 msgid "Gear renaming proposals"
@@ -1167,6 +1213,9 @@ msgstr ""
 msgid "If you can reproduce this issue reliably, please contact us."
 msgstr ""
 
+msgid "If you have any question, please contact us at {{0}}."
+msgstr ""
+
 msgid ""
 "If you just upgraded and still see this message, please allow a few minute "
 "for your subscription to take effect."
@@ -1175,6 +1224,11 @@ msgstr ""
 msgid ""
 "If you still feel that you would rather not see these ads, you can change "
 "this on your settings page."
+msgstr ""
+
+msgid ""
+"If you switch to this pricing model, the cost will be temporarily covered "
+"by your positive balance."
 msgstr ""
 
 msgid ""
@@ -1338,6 +1392,9 @@ msgstr ""
 msgid "Light pollution suppression"
 msgstr ""
 
+msgid "Like"
+msgstr ""
+
 msgid "Link"
 msgstr ""
 
@@ -1393,6 +1450,12 @@ msgid "Lunar"
 msgstr ""
 
 msgid "Main solar system subject"
+msgstr ""
+
+msgid "Manage your PayPal subscription"
+msgstr ""
+
+msgid "Manage your Stripe subscription"
 msgstr ""
 
 msgid "Mark all as read"
@@ -1501,6 +1564,9 @@ msgid "Modified for astrophotography"
 msgstr ""
 
 msgid "Mono"
+msgstr ""
+
+msgid "Monthly"
 msgstr ""
 
 msgid "More"
@@ -1837,6 +1903,11 @@ msgid "Please note: animated GIFs cannot be watermarked at this time."
 msgstr ""
 
 msgid ""
+"Please note: this page might take a few minutes to update if you just made "
+"a purchase."
+msgstr ""
+
+msgid ""
 "Please note: you don't <strong>have to</strong> use all your slots. It's ok "
 "to use fewer if you don't think there are that many worthy images today."
 msgstr ""
@@ -1852,9 +1923,6 @@ msgstr ""
 msgid ""
 "Please use a device with a minimum horizontal resolution of 1024 pixels to "
 "view this content."
-msgstr ""
-
-msgid "Please wait until your subscription expires, then come back to this page."
 msgstr ""
 
 msgid "Plots"
@@ -2027,6 +2095,9 @@ msgstr ""
 msgid "Remote data source"
 msgstr ""
 
+msgid "Remove bookmark"
+msgstr ""
+
 msgid "Reply"
 msgstr ""
 
@@ -2191,9 +2262,7 @@ msgstr ""
 msgid "Sorry"
 msgstr ""
 
-msgid ""
-"Sorry, but the page you are looking for is not here. If you expected an "
-"image, this means that the author deleted it."
+msgid "Sorry, but the page you are looking for is not here."
 msgstr ""
 
 msgid ""
@@ -2241,6 +2310,9 @@ msgstr ""
 msgid "Status"
 msgstr ""
 
+msgid "Stock status unknown"
+msgstr ""
+
 msgid "Strategy"
 msgstr ""
 
@@ -2259,7 +2331,16 @@ msgstr ""
 msgid "Submit this image to the selected groups."
 msgstr ""
 
+msgid "Subscribe"
+msgstr ""
+
+msgid "Subscribed"
+msgstr ""
+
 msgid "Subscribed topics"
+msgstr ""
+
+msgid "Subscription"
 msgstr ""
 
 msgid "Subscription confirmed"
@@ -2463,11 +2544,6 @@ msgid "The number of flat frames."
 msgstr ""
 
 msgid ""
-"The price is shown in Swiss Francs even though you might have paid the "
-"equivalent amount in your country's currency."
-msgstr ""
-
-msgid ""
 "The recommended naming convention for camera lenses is: optional model "
 "name, focal length range, f-ratio range, additional properties. E.g. "
 "<strong>Nikkor Z 28mm f/2.8 (SE)</strong>."
@@ -2654,6 +2730,12 @@ msgid ""
 msgstr ""
 
 msgid ""
+"This price is prorated for the remaining days of your current subscription. "
+"This means that you will pay the reduced amount on your next billing date, "
+"and the full amount on the following billing dates."
+msgstr ""
+
+msgid ""
 "This section can be used as a community page to share information about "
 "this item that doesn't fit the available data fields. Please use English "
 "and do not include any personal information or anecdotes."
@@ -2764,10 +2846,10 @@ msgstr ""
 msgid "Uncompressed source uploader"
 msgstr ""
 
-msgid "Understood"
+msgid "Undo"
 msgstr ""
 
-msgid "Undo"
+msgid "Unfollow"
 msgstr ""
 
 msgid "Unfreeze"
@@ -2777,6 +2859,9 @@ msgid "Unknown"
 msgstr ""
 
 msgid "Unknown error"
+msgstr ""
+
+msgid "Unlike"
 msgstr ""
 
 msgid "Unlimited images"
@@ -2789,6 +2874,17 @@ msgid "Unlimited size"
 msgstr ""
 
 msgid "Unpublished"
+msgstr ""
+
+msgid "Upgrade"
+msgstr ""
+
+msgid ""
+"Upgrade your subscription now, and only pay the difference at your next "
+"billing cycle. Your next payment will include the next billing period, "
+"minus the unused portion of your current billing period. If you switch from "
+"a yearly to a monthly plan, any balance in your favor will be automatically "
+"applied to your future invoices until exhausted."
 msgstr ""
 
 msgid "Upload"
@@ -2827,9 +2923,6 @@ msgid "Users"
 msgstr ""
 
 msgid "Validation error"
-msgstr ""
-
-msgid "Validity"
 msgstr ""
 
 msgid "Variant of"
@@ -2925,9 +3018,6 @@ msgstr ""
 msgid "When"
 msgstr ""
 
-msgid "When a paid subscription expires, nothing happens to your images or content."
-msgstr ""
-
 msgid ""
 "When an image is dismissed by {{0}} members of the IOTD/TP staff, it's "
 "automatically removed from all queues. Please only perform this action if "
@@ -2954,10 +3044,16 @@ msgstr ""
 msgid "Would you like to upgrade?"
 msgstr ""
 
+msgid "Yearly"
+msgstr ""
+
 msgid "Yes"
 msgstr ""
 
 msgid "Yes, continue"
+msgstr ""
+
+msgid "You already have an active subscription of this kind."
 msgstr ""
 
 msgid ""
@@ -3033,9 +3129,18 @@ msgid ""
 "buttons at the end of this form."
 msgstr ""
 
+msgid "You don't need to cancel it, it will expire automatically."
+msgstr ""
+
+msgid "You don't need to cancel it, it will expire automatically.</li>"
+msgstr ""
+
 msgid ""
 "You don't need to use the word \"{{0}}\", as this meaning is already "
 "conveyed by clicking on the checkbox above: \"{{1}}\"."
+msgstr ""
+
+msgid "You follow this equipment item"
 msgstr ""
 
 msgid ""
@@ -3057,6 +3162,25 @@ msgstr ""
 msgid ""
 "You have a <strong>{{0}}</strong> subscription. You have used "
 "<strong>{{1}}</strong> of your <strong>{{2}}</strong> yearly upload slots."
+msgstr ""
+
+msgid "You have a non-recurring PayPal subscription."
+msgstr ""
+
+msgid ""
+"You have a non-recurring Stripe subscription (paid by credit card, Sepa, "
+"AliPay, or other)."
+msgstr ""
+
+msgid ""
+"You have a recurring PayPal subscription. You can cancel it on PayPal's "
+"settings:"
+msgstr ""
+
+msgid ""
+"You have a recurring Stripe subscription (paid by credit card, Sepa, "
+"AliPay, or other). You can cancel it on Stripe's customer portal by logging "
+"in with the email address associated to your AstroBin account:"
 msgstr ""
 
 msgid "You have been logged in."
@@ -3124,6 +3248,9 @@ msgstr ""
 msgid "Your session is invalid, please log in again"
 msgstr ""
 
+msgid "Your subscription is currently cancelled and it will expire on {{0}}."
+msgstr ""
+
 msgid "Your subscriptions"
 msgstr ""
 
@@ -3175,6 +3302,9 @@ msgstr ""
 msgid "modified"
 msgstr ""
 
+msgid "month"
+msgstr ""
+
 msgid "multiple items"
 msgstr ""
 
@@ -3201,6 +3331,11 @@ msgstr ""
 msgid "year"
 msgstr ""
 
+msgid ""
+"{{ item }} is an equipment item of class {{ klass }} on AstroBin equipment "
+"database."
+msgstr ""
+
 msgid "{{ max }} revisions / image"
 msgstr ""
 
@@ -3211,4 +3346,7 @@ msgid "{{0}} like"
 msgstr ""
 
 msgid "{{0}} replies"
+msgstr ""
+
+msgid "{{x}} in stock"
 msgstr ""
