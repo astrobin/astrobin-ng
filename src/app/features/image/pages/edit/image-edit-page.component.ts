@@ -1,4 +1,13 @@
-import { AfterViewInit, Component, HostListener, OnInit, TemplateRef, ViewChild } from "@angular/core";
+import {
+  AfterViewInit,
+  Component,
+  HostListener,
+  Inject,
+  OnInit,
+  PLATFORM_ID,
+  TemplateRef,
+  ViewChild
+} from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
@@ -42,6 +51,7 @@ import { ComponentCanDeactivate } from "@shared/services/guards/pending-changes-
 import { ImageEditAcquisitionFieldsService } from "@features/image/services/image-edit-acquisition-fields.service";
 import { Constants } from "@shared/constants";
 import { CopyAcquisitionSessionsFromAnotherImageModalComponent } from "@features/image/components/copy-acquisition-sessions-from-another-image-modal/copy-acquisition-sessions-from-another-image-modal.component";
+import { isPlatformBrowser } from "@angular/common";
 
 @Component({
   selector: "astrobin-image-edit-page",
@@ -52,6 +62,8 @@ export class ImageEditPageComponent
   extends BaseComponentDirective
   implements OnInit, ComponentCanDeactivate, AfterViewInit {
   readonly Constants = Constants;
+
+  isBrowser: boolean;
 
   ImageAlias = ImageAlias;
 
@@ -93,7 +105,8 @@ export class ImageEditPageComponent
     public readonly userService: UserService,
     public readonly jsonApiService: JsonApiService,
     public readonly cookieService: CookieService,
-    public readonly utilsService: UtilsService
+    public readonly utilsService: UtilsService,
+    @Inject(PLATFORM_ID) public readonly platformId: any
   ) {
     super(store$);
   }
@@ -119,6 +132,8 @@ export class ImageEditPageComponent
 
   ngOnInit(): void {
     super.ngOnInit();
+
+    this.isBrowser = isPlatformBrowser(this.platformId);
 
     const image = this.route.snapshot.data.image;
     this.imageEditService.model = image;
@@ -165,7 +180,6 @@ export class ImageEditPageComponent
 
     this.remoteSourceAffiliateApiService.getAll().subscribe(remoteSourceAffiliates => {
       this.imageEditService.remoteSourceAffiliates = remoteSourceAffiliates;
-      this._initFields();
     });
   }
 
@@ -174,6 +188,8 @@ export class ImageEditPageComponent
       this.acquisitionFilterSelectFooterTemplateExtra;
     this.imageEditAcquisitionFieldsService.acquisitionAdditionalButtonsTemplate =
       this.acquisitionAdditionalButtonsTemplate;
+
+    this._initFields();
   }
 
   clearEquipment() {

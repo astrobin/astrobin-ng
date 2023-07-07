@@ -5,7 +5,7 @@ import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { SelectorWithProps } from "@ngrx/store/src/models";
 import { interval, Observable, of } from "rxjs";
-import { isPlatformBrowser } from "@angular/common";
+import { isPlatformBrowser, isPlatformServer } from "@angular/common";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { CookieService } from "ngx-cookie";
 
@@ -19,16 +19,6 @@ export class UtilsService {
     public readonly cookieService: CookieService,
     @Inject(PLATFORM_ID) public readonly platformId
   ) {
-  }
-
-  static supportsDateInput() {
-    const input = document.createElement("input");
-    input.setAttribute("type", "date");
-
-    const notADateValue = "not-a-date";
-    input.setAttribute("value", notADateValue);
-
-    return input.value !== notADateValue;
   }
 
   static removeQuotes(str: string): string {
@@ -417,35 +407,49 @@ export class UtilsService {
 
   static isGDPRCountry(countryCode: string): boolean {
     return [
-      "AT",  // Austria
-      "BE",  // Belgium
-      "BG",  // Bulgaria
-      "CY",  // Cyprus
-      "CZ",  // Czech Republic
-      "DE",  // Germany
-      "DK",  // Denmark
-      "EE",  // Estonia
-      "ES",  // Spain
-      "FI",  // Finland
-      "FR",  // France
-      "GB",  // United Kingdom
-      "GR",  // Greece
-      "HR",  // Croatia
-      "HU",  // Hungary
-      "IE",  // Ireland
-      "IT",  // Italy
-      "LT",  // Lithuania
-      "LU",  // Luxembourg
-      "LV",  // Latvia
-      "MT",  // Malta
-      "NL",  // The Netherlands
-      "PL",  // Poland
-      "PT",  // Portugal
-      "RO",  // Romania
-      "SE",  // Sweden
-      "SI",  // Slovenia
-      "SK"  // Slovakia
+      "AT", // Austria
+      "BE", // Belgium
+      "BG", // Bulgaria
+      "CY", // Cyprus
+      "CZ", // Czech Republic
+      "DE", // Germany
+      "DK", // Denmark
+      "EE", // Estonia
+      "ES", // Spain
+      "FI", // Finland
+      "FR", // France
+      "GB", // United Kingdom
+      "GR", // Greece
+      "HR", // Croatia
+      "HU", // Hungary
+      "IE", // Ireland
+      "IT", // Italy
+      "LT", // Lithuania
+      "LU", // Luxembourg
+      "LV", // Latvia
+      "MT", // Malta
+      "NL", // The Netherlands
+      "PL", // Poland
+      "PT", // Portugal
+      "RO", // Romania
+      "SE", // Sweden
+      "SI", // Slovenia
+      "SK" // Slovakia
     ].includes(countryCode.toUpperCase());
+  }
+
+  supportsDateInput() {
+    if (isPlatformServer(this.platformId)) {
+      return false;
+    }
+
+    const input = document.createElement("input");
+    input.setAttribute("type", "date");
+
+    const notADateValue = "not-a-date";
+    input.setAttribute("value", notADateValue);
+
+    return input.value !== notADateValue;
   }
 
   insertScript(url: string, renderer: Renderer2, cb?: () => void) {
