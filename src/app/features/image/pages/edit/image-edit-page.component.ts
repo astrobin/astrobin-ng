@@ -177,10 +177,6 @@ export class ImageEditPageComponent
         this.store$.dispatch(new ImageEditorSetCropperShown(true));
       }
     });
-
-    this.remoteSourceAffiliateApiService.getAll().subscribe(remoteSourceAffiliates => {
-      this.imageEditService.remoteSourceAffiliates = remoteSourceAffiliates;
-    });
   }
 
   ngAfterViewInit(): void {
@@ -189,7 +185,12 @@ export class ImageEditPageComponent
     this.imageEditAcquisitionFieldsService.acquisitionAdditionalButtonsTemplate =
       this.acquisitionAdditionalButtonsTemplate;
 
-    this._initFields();
+    if (this.isBrowser) {
+      this.remoteSourceAffiliateApiService.getAll().subscribe(remoteSourceAffiliates => {
+        this.imageEditService.remoteSourceAffiliates = remoteSourceAffiliates;
+        this._initFields();
+      });
+    }
   }
 
   clearEquipment() {
