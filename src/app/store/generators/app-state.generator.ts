@@ -32,6 +32,7 @@ export class AppStateGenerator {
         )
       ],
       backendConfig: BackendConfigGenerator.backendConfig(),
+      requestCountry: "us",
       currentFullscreenImage: null,
       contentTypes: [],
       images: [],

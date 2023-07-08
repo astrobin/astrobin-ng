@@ -29,6 +29,9 @@ export interface AppState {
   // Constants and configuration items from the backend.
   backendConfig: BackendConfigInterface | null;
 
+  // The country code of the user's location.
+  requestCountry: string;
+
   // All seen content types.
   contentTypes: ContentTypeInterface[];
 
@@ -70,6 +73,7 @@ export const initialAppState: AppState = {
   language: "en",
   subscriptions: [],
   backendConfig: null,
+  requestCountry: null,
   contentTypes: [],
   images: [],
   imageRevisions: [],
@@ -90,7 +94,8 @@ export function reducer(state = initialAppState, action: All): AppState {
         ...state,
         initialized: true,
         subscriptions: action.payload.subscriptions,
-        backendConfig: action.payload.backendConfig
+        backendConfig: action.payload.backendConfig,
+        requestCountry: action.payload.requestCountry
       };
     }
 

@@ -70,10 +70,12 @@
       flex-direction: row;
     }
 
-    .btn:not(:last-child) {
+    .btn:not(:last-child),
+    astrobin-toggle-property:not(:last-child) {
       @media screen and (max-width: $xs-max) {
         margin-bottom: .5rem;
       }
+
       @media screen and (min-width: $sm-min) {
         margin-right: .5rem;
       }

@@ -78,3 +78,7 @@ pre {
   border-bottom: 1px dotted var(--lightestGrey);
   cursor: help;
 }
+
+.no-wrap {
+  white-space: nowrap;
+}

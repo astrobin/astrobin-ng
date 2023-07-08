@@ -1,0 +1,21 @@
+:host {
+  display: inline-block;
+}
+
+[icon=circle] {
+  &.unknown {
+    color: var(--lightGrey);
+  }
+
+  &.back_order {
+    color: var(--warningColor);
+  }
+
+  &.in_stock {
+    color: var(--successColor);
+  }
+
+  &.out_of_stock {
+    color: var(--dangerColor);
+  }
+}

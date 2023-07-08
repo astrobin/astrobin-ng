@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: AstroBin Angular App\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-03 14:04+0200\n"
-"PO-Revision-Date: 2023-05-15 10:09+0200\n"
+"PO-Revision-Date: 2023-07-06 17:42+0200\n"
 "Last-Translator: Salvatore Iovene\n"
 "Language-Team: Spanish\n"
 "Language: es\n"
@@ -14,7 +14,7 @@ msgstr ""
 "X-Generator: Loco https://localise.biz\n"
 "X-Loco-Source-Locale: en\n"
 "X-Loco-Project-Id: 108356\n"
-"X-Loco-Api-Version: 1.0.28 20230504-1"
+"X-Loco-Api-Version: 1.0.28 20230626-1"
 
 #: loco:60685a683b0b1d485a736d12
 msgid "API Keys"
@@ -4696,4 +4696,225 @@ msgstr ""
 #: loco:6461e861768f819b9b097582
 msgid ""
 "You are about to remove all acquisition sessions you have entered thus far."
+msgstr ""
+
+#: loco:64a6de99b29abd797f03cda2
+msgid " Automatic renewal"
+msgstr ""
+
+#: loco:64a6de99b29abd797f03cda3
+msgid "Active"
+msgstr ""
+
+#: loco:64a6de99b29abd797f03cda4
+msgid ""
+"As a member of the {{0}}AstroBin Beta Testers{{1}} group, you are currently "
+"on the beta version of this app. To learn why a beta version is currently "
+"being tested, please see the latest posts on the {{2}}AstroBin Beta Testers "
+"forum{{3}}."
+msgstr ""
+
+#: loco:64a6de99b29abd797f03cda5
+msgid ""
+"AstroBin couldn't recognize your subscription and this shouldn't happen. "
+"Please contact us at {{0}} so we can investigate, thanks!"
+msgstr ""
+
+#: loco:64a6de99b29abd797f03cda6
+msgid ""
+"AstroBin doesn't support pro-rated subscription upgrades for customers with "
+"a non-recurring subscription or a subscription purchased via PayPal, but "
+"we're happy to make it happen manually. If you're on a lower subscription "
+"tier and would like to upgrade to <strong>{{0}}</strong>, please just "
+"subscribe using the button below, and then contact us at {{1}} to get a "
+"refund for the unused time on your old subscription. Thanks!"
+msgstr ""
+
+#: loco:64a6de99b29abd797f03cda7
+msgid "Back ordered"
+msgstr ""
+
+#: loco:64a6de99b29abd797f03cda8
+msgid "Bookmark"
+msgstr ""
+
+#: loco:64a6de99b29abd797f03cda9
+msgid "Buy 1 year"
+msgstr ""
+
+#: loco:64a6de99b29abd797f03cdaa
+msgid "Cancel subscription"
+msgstr ""
+
+#: loco:64a6de99b29abd797f03cdab
+msgid "Catadioptric: Maksutov-Newtonian"
+msgstr ""
+
+#: loco:64a6de99b29abd797f03cdac
+msgid "Currently out of stock"
+msgstr ""
+
+#: loco:64a6de99b29abd797f03cdad
+msgid "Event"
+msgstr ""
+
+#: loco:64a6de99b29abd797f03cdae
+msgid "Explore the AstroBin equipment database."
+msgstr ""
+
+#: loco:64a6de99b29abd797f03cdaf
+msgid "Follow"
+msgstr ""
+
+#: loco:64a6de99b29abd797f03cdb0
+msgid "Followed"
+msgstr ""
+
+#: loco:64a6de99b29abd797f03cdb1
+msgid "Followed equipment"
+msgstr ""
+
+#: loco:64a6de99b29abd797f03cdb2
+msgid "If you have any question, please contact us at {{0}}."
+msgstr ""
+
+#: loco:64a6de99b29abd797f03cdb3
+msgid ""
+"If you switch to this pricing model, the cost will be temporarily covered by "
+"your positive balance."
+msgstr ""
+
+#: loco:64a6de99b29abd797f03cdb4
+msgid "Like"
+msgstr ""
+
+#: loco:64a6de99b29abd797f03cdb5
+msgid "Manage your PayPal subscription"
+msgstr ""
+
+#: loco:64a6de99b29abd797f03cdb6
+msgid "Manage your Stripe subscription"
+msgstr ""
+
+#: loco:64a6de99b29abd797f03cdb7
+msgid "Monthly"
+msgstr ""
+
+#: loco:64a6de99b29abd797f03cdb8
+msgid ""
+"Please note: this page might take a few minutes to update if you just made a "
+"purchase."
+msgstr ""
+
+#: loco:64a6de99b29abd797f03cdb9
+msgid "Remove bookmark"
+msgstr ""
+
+#: loco:64a6de99b29abd797f03cdba
+msgid "Sorry, but the page you are looking for is not here."
+msgstr ""
+
+#: loco:64a6de99b29abd797f03cdbb
+msgid "Stock status unknown"
+msgstr ""
+
+#: loco:64a6de99b29abd797f03cdbc
+msgid "Subscribe"
+msgstr ""
+
+#: loco:64a6de99b29abd797f03cdbd
+msgid "Subscribed"
+msgstr ""
+
+#: loco:64a6de99b29abd797f03cdbe
+msgid "Subscription"
+msgstr ""
+
+#: loco:64a6de99b29abd797f03cdbf
+msgid ""
+"This price is prorated for the remaining days of your current subscription. "
+"This means that you will pay the reduced amount on your next billing date, "
+"and the full amount on the following billing dates."
+msgstr ""
+
+#: loco:64a6de99b29abd797f03cdc0
+msgid "Unfollow"
+msgstr ""
+
+#: loco:64a6de99b29abd797f03cdc1
+msgid "Unlike"
+msgstr ""
+
+#: loco:64a6de99b29abd797f03cdc2
+msgid "Upgrade"
+msgstr ""
+
+#: loco:64a6de99b29abd797f03cdc3
+msgid ""
+"Upgrade your subscription now, and only pay the difference at your next "
+"billing cycle. Your next payment will include the next billing period, minus "
+"the unused portion of your current billing period. If you switch from a "
+"yearly to a monthly plan, any balance in your favor will be automatically "
+"applied to your future invoices until exhausted."
+msgstr ""
+
+#: loco:64a6de99b29abd797f03cdc4
+msgid "Yearly"
+msgstr ""
+
+#: loco:64a6de99b29abd797f03cdc5
+msgid "You already have an active subscription of this kind."
+msgstr ""
+
+#: loco:64a6de99b29abd797f03cdc6
+msgid "You don't need to cancel it, it will expire automatically."
+msgstr ""
+
+#: loco:64a6de99b29abd797f03cdc7
+msgid "You don't need to cancel it, it will expire automatically.</li>"
+msgstr ""
+
+#: loco:64a6de99b29abd797f03cdc8
+msgid "You follow this equipment item"
+msgstr ""
+
+#: loco:64a6de99b29abd797f03cdc9
+msgid "You have a non-recurring PayPal subscription."
+msgstr ""
+
+#: loco:64a6de99b29abd797f03cdca
+msgid ""
+"You have a non-recurring Stripe subscription (paid by credit card, Sepa, "
+"AliPay, or other)."
+msgstr ""
+
+#: loco:64a6de99b29abd797f03cdcb
+msgid ""
+"You have a recurring PayPal subscription. You can cancel it on PayPal's "
+"settings:"
+msgstr ""
+
+#: loco:64a6de99b29abd797f03cdcc
+msgid ""
+"You have a recurring Stripe subscription (paid by credit card, Sepa, AliPay, "
+"or other). You can cancel it on Stripe's customer portal by logging in with "
+"the email address associated to your AstroBin account:"
+msgstr ""
+
+#: loco:64a6de99b29abd797f03cdcd
+msgid "Your subscription is currently cancelled and it will expire on {{0}}."
+msgstr ""
+
+#: loco:64a6de99b29abd797f03cdce
+msgid "month"
+msgstr ""
+
+#: loco:64a6de99b29abd797f03cdcf
+msgid ""
+"{{ item }} is an equipment item of class {{ klass }} on AstroBin equipment "
+"database."
+msgstr ""
+
+#: loco:64a6de99b29abd797f03cdd0
+msgid "{{x}} in stock"
 msgstr ""

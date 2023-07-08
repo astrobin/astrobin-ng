@@ -42,4 +42,10 @@ export class JsonApiService extends BaseClassicApiService implements JsonApiServ
       .get<{ result: boolean }>(`${this.configUrl}/user/has-legacy-gear/?userId=${userId}`)
       .pipe(map(response => response.result));
   }
+
+  requestCountry(): Observable<string> {
+    return this.http
+      .get<{ country: string }>(`${this.configUrl}/common/request-country/`)
+      .pipe(map(response => response.country));
+  }
 }

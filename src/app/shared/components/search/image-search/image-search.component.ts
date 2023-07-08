@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, OnChanges, OnInit, SimpleChanges } from "@angular/core";
+import { Component, ElementRef, Inject, Input, OnChanges, OnInit, PLATFORM_ID, SimpleChanges } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
@@ -11,6 +11,7 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 import { TranslateService } from "@ngx-translate/core";
 import { EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/types/equipment-item-base.interface";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import { isPlatformServer } from "@angular/common";
 
 @Component({
   selector: "astrobin-image-search",
@@ -50,7 +51,8 @@ export class ImageSearchComponent extends BaseComponentDirective implements OnIn
     public readonly classicRoutesService: ClassicRoutesService,
     public readonly windowRefService: WindowRefService,
     public readonly elementRef: ElementRef,
-    public readonly translateService: TranslateService
+    public readonly translateService: TranslateService,
+    @Inject(PLATFORM_ID) public readonly platformId: Record<string, unknown>
   ) {
     super(store$);
   }
@@ -114,6 +116,10 @@ export class ImageSearchComponent extends BaseComponentDirective implements OnIn
   }
 
   private _onScroll() {
+    if (isPlatformServer(this.platformId)) {
+      return;
+    }
+
     const window = this.windowRefService.nativeWindow;
     const rect = this.elementRef.nativeElement.getBoundingClientRect();
 

@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: AstroBin Angular App\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-03 14:04+0200\n"
-"PO-Revision-Date: 2023-05-15 10:09+0200\n"
+"PO-Revision-Date: 2023-07-06 17:42+0200\n"
 "Last-Translator: Salvatore Iovene\n"
 "Language-Team: Italian\n"
 "Language: it\n"
@@ -14,7 +14,7 @@ msgstr ""
 "X-Generator: Loco https://localise.biz\n"
 "X-Loco-Source-Locale: en\n"
 "X-Loco-Project-Id: 108356\n"
-"X-Loco-Api-Version: 1.0.28 20230504-1"
+"X-Loco-Api-Version: 1.0.28 20230626-1"
 
 #: loco:60685a683b0b1d485a736d12
 msgid "API Keys"
@@ -3149,6 +3149,9 @@ msgid ""
 "will be notified of the outcome. If the migration is approved, you will be "
 "able to add the equipment item to your images."
 msgstr ""
+"La migrazione verrà esaminata da un moderatore il prima possibile e "
+"riceverai una notifica dell'esito. Se la migrazione viene approvata, sarai "
+"in grado di aggiungere l'attrezzatura alle tue immagini."
 
 #: loco:6268fd225fe45c28a865cf07
 msgid "The review queue is currently empty or being refreshed."
@@ -5121,3 +5124,261 @@ msgid ""
 "You are about to remove all acquisition sessions you have entered thus far."
 msgstr ""
 "Stai per rimuovere tutte le sessioni di acquisizione che hai inserito finora."
+
+#: loco:64a6de99b29abd797f03cda2
+msgid " Automatic renewal"
+msgstr "Rinnovo automatico"
+
+#: loco:64a6de99b29abd797f03cda3
+msgid "Active"
+msgstr "Attivo"
+
+#: loco:64a6de99b29abd797f03cda4
+msgid ""
+"As a member of the {{0}}AstroBin Beta Testers{{1}} group, you are currently "
+"on the beta version of this app. To learn why a beta version is currently "
+"being tested, please see the latest posts on the {{2}}AstroBin Beta Testers "
+"forum{{3}}."
+msgstr ""
+"Come membro del gruppo {{0}}AstroBin Beta Testers{{1}}, al momento utilizzi "
+"la versione beta di questa app. Per sapere perché una versione beta è "
+"attualmente in fase di test, consulta gli ultimi post sul {{2}}forum dei "
+"beta tester di AstroBin{{3}}."
+
+#: loco:64a6de99b29abd797f03cda5
+msgid ""
+"AstroBin couldn't recognize your subscription and this shouldn't happen. "
+"Please contact us at {{0}} so we can investigate, thanks!"
+msgstr ""
+"AstroBin non è riuscito a riconoscere il tuo abbonamento e questo non "
+"dovrebbe accadere. Contattaci all'indirizzo {{0}} in modo che possiamo "
+"indagare, grazie!"
+
+#: loco:64a6de99b29abd797f03cda6
+msgid ""
+"AstroBin doesn't support pro-rated subscription upgrades for customers with "
+"a non-recurring subscription or a subscription purchased via PayPal, but "
+"we're happy to make it happen manually. If you're on a lower subscription "
+"tier and would like to upgrade to <strong>{{0}}</strong>, please just "
+"subscribe using the button below, and then contact us at {{1}} to get a "
+"refund for the unused time on your old subscription. Thanks!"
+msgstr ""
+"AstroBin non supporta gli aggiornamenti dell'abbonamento ripartiti per i "
+"clienti con un abbonamento non ricorrente o un abbonamento acquistato "
+"tramite PayPal, ma siamo felici di farlo accadere manualmente. Se disponi di "
+"un livello di abbonamento inferiore e desideri eseguire l'upgrade a <strong>"
+"{{0}}</strong>, abbonati semplicemente utilizzando il pulsante in basso, "
+"quindi contattaci all'indirizzo {{1}} per ottenere un rimborso per il tempo "
+"inutilizzato sul tuo vecchio abbonamento. Grazie!"
+
+#: loco:64a6de99b29abd797f03cda7
+msgid "Back ordered"
+msgstr "Ordinato"
+
+#: loco:64a6de99b29abd797f03cda8
+msgid "Bookmark"
+msgstr "Preferiti"
+
+#: loco:64a6de99b29abd797f03cda9
+msgid "Buy 1 year"
+msgstr "Compra 1 anno"
+
+#: loco:64a6de99b29abd797f03cdaa
+msgid "Cancel subscription"
+msgstr "Annulla abbonamento"
+
+#: loco:64a6de99b29abd797f03cdab
+msgid "Catadioptric: Maksutov-Newtonian"
+msgstr "Catadiottrico: Maksutov-Newton"
+
+#: loco:64a6de99b29abd797f03cdac
+msgid "Currently out of stock"
+msgstr "Al momento non disponibile"
+
+#: loco:64a6de99b29abd797f03cdad
+msgid "Event"
+msgstr "Evento"
+
+#: loco:64a6de99b29abd797f03cdae
+msgid "Explore the AstroBin equipment database."
+msgstr "Esplora il database della strumentazione di AstroBin"
+
+#: loco:64a6de99b29abd797f03cdaf
+msgid "Follow"
+msgstr "Segui"
+
+#: loco:64a6de99b29abd797f03cdb0
+msgid "Followed"
+msgstr "Seguiti"
+
+#: loco:64a6de99b29abd797f03cdb1
+msgid "Followed equipment"
+msgstr "Strumentazione seguita"
+
+#: loco:64a6de99b29abd797f03cdb2
+msgid "If you have any question, please contact us at {{0}}."
+msgstr "Se hai domande, contattaci a {{0}}."
+
+#: loco:64a6de99b29abd797f03cdb3
+msgid ""
+"If you switch to this pricing model, the cost will be temporarily covered by "
+"your positive balance."
+msgstr ""
+"Se passi a questo modello di prezzo, il costo sarà temporaneamente coperto "
+"dal tuo saldo positivo."
+
+#: loco:64a6de99b29abd797f03cdb4
+msgid "Like"
+msgstr "Mi piace"
+
+#: loco:64a6de99b29abd797f03cdb5
+msgid "Manage your PayPal subscription"
+msgstr "Gestisci il tuo abbonamento PayPal"
+
+#: loco:64a6de99b29abd797f03cdb6
+msgid "Manage your Stripe subscription"
+msgstr "Gestisci il tuo abbonamento Stripe"
+
+#: loco:64a6de99b29abd797f03cdb7
+msgid "Monthly"
+msgstr "Al mese"
+
+#: loco:64a6de99b29abd797f03cdb8
+msgid ""
+"Please note: this page might take a few minutes to update if you just made a "
+"purchase."
+msgstr ""
+"Nota: l'aggiornamento di questa pagina potrebbe richiedere alcuni minuti se "
+"hai appena effettuato un acquisto."
+
+#: loco:64a6de99b29abd797f03cdb9
+msgid "Remove bookmark"
+msgstr "Rimuovi dai preferiti"
+
+#: loco:64a6de99b29abd797f03cdba
+msgid "Sorry, but the page you are looking for is not here."
+msgstr "Siamo spiacenti, ma la pagina che stai cercando non è qui."
+
+#: loco:64a6de99b29abd797f03cdbb
+msgid "Stock status unknown"
+msgstr "Disponibilità sconociuta"
+
+#: loco:64a6de99b29abd797f03cdbc
+msgid "Subscribe"
+msgstr "Abbonati"
+
+#: loco:64a6de99b29abd797f03cdbd
+msgid "Subscribed"
+msgstr "Abbonato"
+
+#: loco:64a6de99b29abd797f03cdbe
+msgid "Subscription"
+msgstr "Abbonamento"
+
+#: loco:64a6de99b29abd797f03cdbf
+msgid ""
+"This price is prorated for the remaining days of your current subscription. "
+"This means that you will pay the reduced amount on your next billing date, "
+"and the full amount on the following billing dates."
+msgstr ""
+"Questo prezzo è ripartito proporzionalmente per i giorni rimanenti "
+"dell'abbonamento corrente. Ciò significa che pagherai l'importo ridotto alla "
+"prossima data di fatturazione e l'intero importo alle successive date di "
+"fatturazione."
+
+#: loco:64a6de99b29abd797f03cdc0
+msgid "Unfollow"
+msgstr "Smetti di seguire"
+
+#: loco:64a6de99b29abd797f03cdc1
+msgid "Unlike"
+msgstr "Non mi piace più"
+
+#: loco:64a6de99b29abd797f03cdc2
+msgid "Upgrade"
+msgstr "Fai l'upgrade"
+
+#: loco:64a6de99b29abd797f03cdc3
+msgid ""
+"Upgrade your subscription now, and only pay the difference at your next "
+"billing cycle. Your next payment will include the next billing period, minus "
+"the unused portion of your current billing period. If you switch from a "
+"yearly to a monthly plan, any balance in your favor will be automatically "
+"applied to your future invoices until exhausted."
+msgstr ""
+"Aggiorna subito il tuo abbonamento e paga solo la differenza al tuo prossimo "
+"ciclo di fatturazione. Il tuo prossimo pagamento includerà il prossimo "
+"periodo di fatturazione, meno la parte inutilizzata del tuo attuale periodo "
+"di fatturazione. Se passi da un piano annuale a uno mensile, l'eventuale "
+"saldo a tuo favore verrà automaticamente applicato alle tue fatture future "
+"fino ad esaurimento."
+
+#: loco:64a6de99b29abd797f03cdc4
+msgid "Yearly"
+msgstr "All'anno"
+
+#: loco:64a6de99b29abd797f03cdc5
+msgid "You already have an active subscription of this kind."
+msgstr "Hai già un abbonamento attivo di questo tipo."
+
+#: loco:64a6de99b29abd797f03cdc6
+msgid "You don't need to cancel it, it will expire automatically."
+msgstr "Non è necessario annullarlo, scadrà automaticamente."
+
+#: loco:64a6de99b29abd797f03cdc7
+msgid "You don't need to cancel it, it will expire automatically.</li>"
+msgstr "Non è necessario annullarlo, scadrà automaticamente.</li>"
+
+#: loco:64a6de99b29abd797f03cdc8
+msgid "You follow this equipment item"
+msgstr "Segui questo oggetto di strumentazione"
+
+#: loco:64a6de99b29abd797f03cdc9
+msgid "You have a non-recurring PayPal subscription."
+msgstr "Hai un abbonamento PayPal non ricorrente."
+
+#: loco:64a6de99b29abd797f03cdca
+msgid ""
+"You have a non-recurring Stripe subscription (paid by credit card, Sepa, "
+"AliPay, or other)."
+msgstr ""
+"Hai un abbonamento Stripe non ricorrente (pagato con carta di credito, Sepa, "
+"AliPay o altro)."
+
+#: loco:64a6de99b29abd797f03cdcb
+msgid ""
+"You have a recurring PayPal subscription. You can cancel it on PayPal's "
+"settings:"
+msgstr ""
+"Hai un abbonamento PayPal ricorrente. Puoi annullarlo nelle impostazioni di "
+"PayPal:"
+
+#: loco:64a6de99b29abd797f03cdcc
+msgid ""
+"You have a recurring Stripe subscription (paid by credit card, Sepa, AliPay, "
+"or other). You can cancel it on Stripe's customer portal by logging in with "
+"the email address associated to your AstroBin account:"
+msgstr ""
+"Hai un abbonamento ricorrente a Stripe (pagato con carta di credito, Sepa, "
+"AliPay o altro). Puoi cancellarlo sul portale clienti di Stripe accedendo "
+"con l'indirizzo email associato al tuo account AstroBin:"
+
+#: loco:64a6de99b29abd797f03cdcd
+msgid "Your subscription is currently cancelled and it will expire on {{0}}."
+msgstr "Il tuo abbonamento è attualmente annullato e scadrà il giorno {{0}}."
+
+#: loco:64a6de99b29abd797f03cdce
+msgid "month"
+msgstr "mese"
+
+#: loco:64a6de99b29abd797f03cdcf
+msgid ""
+"{{ item }} is an equipment item of class {{ klass }} on AstroBin equipment "
+"database."
+msgstr ""
+"{{ item }} è un articolo della strumentazione di classe {{ klass }} nel "
+"database della strumentazione di AstroBin."
+
+#: loco:64a6de99b29abd797f03cdd0
+msgid "{{x}} in stock"
+msgstr "{{x}} disponibili"

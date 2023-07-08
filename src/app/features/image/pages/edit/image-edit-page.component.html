@@ -4,15 +4,17 @@
 </div>
 
 <ng-template #editTemplate>
-  <form [formGroup]="imageEditService.form">
-    <formly-form
-      [fields]="imageEditService.fields"
-      [form]="imageEditService.form"
-      [model]="imageEditService.model"
-    ></formly-form>
-  </form>
+  <ng-container *ngIf="isBrowser; else loadingTemplate">
+    <form [formGroup]="imageEditService.form">
+      <formly-form
+        [fields]="imageEditService.fields"
+        [form]="imageEditService.form"
+        [model]="imageEditService.model"
+      ></formly-form>
+    </form>
 
-  <div *ngIf="imageEditEquipmentFieldsService.creationMode" class="equipment-item-creation-mode-overlay"></div>
+    <div *ngIf="imageEditEquipmentFieldsService.creationMode" class="equipment-item-creation-mode-overlay"></div>
+  </ng-container>
 </ng-template>
 
 <ng-template #remoteSourceLabelTemplate let-item="item">
@@ -131,4 +133,8 @@
   <div class="text-muted">
     {{ "To add more, go back to the Equipment step." | translate }}
   </div>
+</ng-template>
+
+<ng-template #loadingTemplate>
+  <astrobin-loading-indicator></astrobin-loading-indicator>
 </ng-template>

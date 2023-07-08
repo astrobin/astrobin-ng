@@ -23,7 +23,6 @@ export class BackendConfigGenerator {
       PREMIUM_PRICE_ULTIMATE_2020: 60,
       MAX_IMAGE_PIXELS: 16536 * 16536,
       GOOGLE_ADS_ID: "GOOGLE_ADS_1234",
-      REQUEST_COUNTRY: "us",
       IMAGE_CONTENT_TYPE_ID: 1,
       THUMBNAIL_ALIASES: {
         [ImageAlias.REGULAR]: {

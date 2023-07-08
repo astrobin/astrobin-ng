@@ -13,6 +13,8 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { TransferStateInterceptor } from "@shared/services/transfer-state.interceptor";
 import { DebugCountryInterceptor } from "@shared/services/debug-country.interceptor";
+import { ClientIpInterceptor } from "@shared/services/client-ip.interceptor";
+import { TransferState } from "@angular/platform-browser";
 
 @NgModule({
   imports: [HttpClientModule],
@@ -32,6 +34,12 @@ import { DebugCountryInterceptor } from "@shared/services/debug-country.intercep
       provide: HTTP_INTERCEPTORS,
       useClass: DebugCountryInterceptor,
       deps: [WindowRefService],
+      multi: true
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: ClientIpInterceptor,
+      deps: [TransferState],
       multi: true
     },
     {

@@ -10,6 +10,7 @@ export interface InitializeAppSuccessInterface {
   language: string;
   subscriptions: SubscriptionInterface[];
   backendConfig: BackendConfigInterface;
+  requestCountry: string;
 }
 
 export class InitializeApp implements Action {

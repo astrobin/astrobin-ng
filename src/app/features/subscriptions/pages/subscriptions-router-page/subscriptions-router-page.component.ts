@@ -9,6 +9,8 @@ import { AvailableSubscriptionsInterface } from "@features/subscriptions/interfa
 import { selectAvailableSubscriptions } from "@features/subscriptions/store/subscriptions.selectors";
 import { GetAvailableSubscriptions } from "@features/subscriptions/store/subscriptions.actions";
 import { SubscriptionsService } from "@features/subscriptions/services/subscriptions.service";
+import { NavigationEnd, Router } from "@angular/router";
+import { InitializeAuth } from "@features/account/store/auth.actions";
 
 @Component({
   selector: "astrobin-subscriptions-router-page",
@@ -24,7 +26,8 @@ export class SubscriptionsRouterPageComponent extends BaseComponentDirective imp
     public readonly store$: Store<State>,
     public readonly authService: AuthService,
     public readonly location: Location,
-    public readonly subscriptionService: SubscriptionsService
+    public readonly subscriptionService: SubscriptionsService,
+    public readonly router: Router
   ) {
     super(store$);
   }
@@ -34,20 +37,26 @@ export class SubscriptionsRouterPageComponent extends BaseComponentDirective imp
 
     this.store$.dispatch(new GetAvailableSubscriptions());
 
-    const path = this.location.path();
+    this.router.events?.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        const path = this.location.path();
 
-    if (path === "/subscriptions/options") {
-      this.active = "options";
-    } else if (path === "/subscriptions/view") {
-      this.active = "view";
-    } else if (path === "/subscriptions/payments") {
-      this.active = "payments";
-    } else if (path === "/subscriptions/lite") {
-      this.active = "lite";
-    } else if (path === "/subscriptions/premium") {
-      this.active = "premium";
-    } else if (path === "/subscriptions/ultimate") {
-      this.active = "ultimate";
-    }
+        if (path === "/subscriptions/options") {
+          this.active = "options";
+        } else if (path === "/subscriptions/view") {
+          this.active = "view";
+        } else if (path === "/subscriptions/payments") {
+          this.active = "payments";
+        } else if (path === "/subscriptions/lite") {
+          this.active = "lite";
+        } else if (path === "/subscriptions/premium") {
+          this.active = "premium";
+        } else if (path === "/subscriptions/ultimate") {
+          this.active = "ultimate";
+        }
+
+        this.store$.dispatch(new InitializeAuth());
+      }
+    });
   }
 }

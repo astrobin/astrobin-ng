@@ -2,6 +2,7 @@ import { BrandInterface } from "@features/equipment/types/brand.interface";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import { StockStatus } from "@features/equipment/types/stock-status.type";
 
 export interface EquipmentRetailerInterface {
   id: number;
@@ -35,6 +36,8 @@ export interface EquipmentItemListingInterface {
   itemType: EquipmentItemType;
   item: EquipmentItem["id"];
   retailer: EquipmentRetailerInterface;
+  stockStatus?: StockStatus;
+  stockAmount?: number;
 }
 
 export interface EquipmentListingsInterface {

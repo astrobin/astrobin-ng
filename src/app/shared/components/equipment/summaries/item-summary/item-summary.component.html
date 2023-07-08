@@ -158,6 +158,10 @@
                 {{ listing.retailer.name }}
               </a>
 
+              <span *ngIf="!!listing.stockStatus" class="no-wrap small">
+                (<astrobin-stock-status [listing]="listing"></astrobin-stock-status>)
+              </span>
+
               {{ isLast ? "" : "&nbsp;&middot;&nbsp;" }}
             </ng-container>
           </td>

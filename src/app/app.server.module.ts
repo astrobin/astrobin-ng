@@ -6,6 +6,7 @@ import { TranslateLoader, TranslateModule } from "@ngx-translate/core";
 import { translateServerLoaderFactory } from "@app/translate-server-loader";
 import { HttpClient } from "@angular/common/http";
 import { CookieBackendModule } from "ngx-cookie-backend";
+import { CLIENT_IP } from "@app/client-ip.injector";
 
 @NgModule({
   imports: [
@@ -20,6 +21,14 @@ import { CookieBackendModule } from "ngx-cookie-backend";
       }
     }),
     CookieBackendModule.forRoot()
+  ],
+  providers: [
+    {
+      provide: CLIENT_IP,
+      useFactory: () => {
+        return global["clientIp"];
+      }
+    }
   ],
   bootstrap: [AppComponent]
 })
