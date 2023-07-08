@@ -33,7 +33,8 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
     public readonly loadingService: LoadingService,
     public readonly translateService: TranslateService,
     public readonly imageEditService: ImageEditService,
-    public readonly modalService: NgbModal
+    public readonly modalService: NgbModal,
+    public readonly utilsService: UtilsService
   ) {
     super(loadingService);
   }
@@ -709,7 +710,7 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
   }
 
   private _getDateField(): FormlyFieldConfig {
-    const supportsDateInput = UtilsService.supportsDateInput();
+    const supportsDateInput = this.utilsService.supportsDateInput();
 
     const now = new Date();
     now.setHours(23, 59, 59, 999);

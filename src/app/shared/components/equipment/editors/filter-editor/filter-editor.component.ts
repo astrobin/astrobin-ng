@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, Inject, OnInit, PLATFORM_ID } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { Actions } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
@@ -22,6 +22,7 @@ import { switchMap, take, takeUntil } from "rxjs/operators";
 import { interval } from "rxjs";
 import { isGroupMember } from "@shared/operators/is-group-member.operator";
 import { Constants } from "@shared/constants";
+import { isPlatformBrowser } from "@angular/common";
 
 @Component({
   selector: "astrobin-filter-editor",
@@ -41,7 +42,8 @@ export class FilterEditorComponent extends BaseItemEditorComponent<FilterInterfa
     public readonly filterService: FilterService,
     public readonly modalService: NgbModal,
     public readonly utilsService: UtilsService,
-    public readonly changeDetectorRef: ChangeDetectorRef
+    public readonly changeDetectorRef: ChangeDetectorRef,
+    @Inject(PLATFORM_ID) public readonly platformId: Object
   ) {
     super(
       store$,
@@ -172,6 +174,10 @@ export class FilterEditorComponent extends BaseItemEditorComponent<FilterInterfa
   }
 
   private _updateGeneratedName() {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+
     interval(10)
       .pipe(take(1))
       .subscribe(() => {

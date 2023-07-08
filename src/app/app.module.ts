@@ -69,12 +69,14 @@ import { MissingTranslationHandler, TranslateLoader, TranslateModule, TranslateP
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { SharedModule } from "@shared/shared.module";
 import { CookieModule, CookieService } from "ngx-cookie";
-import { TimeagoCustomFormatter, TimeagoFormatter, TimeagoIntl, TimeagoModule } from "ngx-timeago";
+import { TimeagoClock, TimeagoCustomFormatter, TimeagoFormatter, TimeagoIntl, TimeagoModule } from "ngx-timeago";
 import { AppRoutingModule } from "./app-routing.module";
 import { CustomMissingTranslationHandler } from "./missing-translation-handler";
 import { translateLoaderFactory } from "./translate-loader";
 import * as Sentry from "@sentry/angular";
 import { Router } from "@angular/router";
+import { CLIENT_IP } from "@app/client-ip.injector";
+import { TimeagoAppClock } from "@shared/services/timeago-app-clock.service";
 
 // Supported languages
 registerLocaleData(localeEnglish);
@@ -164,7 +166,11 @@ export function initFontAwesome(iconLibrary: FaIconLibrary) {
 
     TimeagoModule.forRoot({
       intl: TimeagoIntl,
-      formatter: { provide: TimeagoFormatter, useClass: TimeagoCustomFormatter }
+      formatter: { provide: TimeagoFormatter, useClass: TimeagoCustomFormatter },
+      clock: {
+        provide: TimeagoClock,
+        useClass: TimeagoAppClock
+      }
     }),
     TranslateModule.forRoot({
       missingTranslationHandler: {
@@ -200,7 +206,8 @@ export function initFontAwesome(iconLibrary: FaIconLibrary) {
       useValue: Sentry.createErrorHandler({
         showDialog: false
       })
-    }
+    },
+    { provide: CLIENT_IP, useValue: "" } // provide a fallback value for CLIENT_IP
   ],
   declarations: [AppComponent],
   bootstrap: [AppComponent]

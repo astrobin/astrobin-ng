@@ -103,6 +103,8 @@ import { FormlyFieldButtonComponent } from "@shared/components/misc/formly-field
 import { FormlyCardWrapperComponent } from "@shared/components/misc/formly-card-wrapper/formly-card-wrapper.component";
 import { TogglePropertyComponent } from "@shared/components/misc/toggle-property/toggle-property.component";
 import { MoreRelatedItemsModalComponent } from "@shared/components/equipment/summaries/item/summary/more-related-items-modal/more-related-items-modal.component";
+import { StockStatusComponent } from "@shared/components/equipment/stock-status/stock-status.component";
+import { BetaBannerComponent } from "@shared/components/misc/beta-banner/beta-banner.component";
 
 const modules = [
   CommonModule,
@@ -134,6 +136,7 @@ const modules = [
 
 const components = [
   AvatarComponent,
+  BetaBannerComponent,
   BreadcrumbComponent,
   CameraComponent,
   ConfirmationDialogComponent,
@@ -207,6 +210,7 @@ const components = [
   SensorEditorComponent,
   SimilarItemsSuggestionComponent,
   SoftwareEditorComponent,
+  StockStatusComponent,
   TelescopeEditorComponent,
   VariantSelectorModalComponent
 ];

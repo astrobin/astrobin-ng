@@ -1,15 +1,23 @@
-import { Pipe, PipeTransform } from "@angular/core";
+import { Inject, Pipe, PipeTransform, PLATFORM_ID } from "@angular/core";
 import { CKEditorService } from "@shared/services/ckeditor.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
+import { isPlatformServer } from "@angular/common";
 
 @Pipe({
   name: "BBCodeToHtml"
 })
 export class BBCodeToHtmlPipe implements PipeTransform {
-  constructor(public readonly ckEditorService: CKEditorService, public readonly windowRefService: WindowRefService) {
+  constructor(
+    public readonly ckEditorService: CKEditorService,
+    public readonly windowRefService: WindowRefService,
+    @Inject(PLATFORM_ID) public readonly platformId: Object) {
   }
 
   BBCodeToHtml(code) {
+    if (isPlatformServer(this.platformId)) {
+      return code;
+    }
+
     const window = this.windowRefService.nativeWindow as any;
     const CKEDITOR = window.CKEDITOR;
 

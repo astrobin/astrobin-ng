@@ -12,7 +12,7 @@ import { BehaviorSubject, Observable } from "rxjs";
 import { filter, map, switchMap, take } from "rxjs/operators";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { RecurringUnit } from "@features/subscriptions/types/recurring.unit";
-import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
+import { selectBackendConfig, selectRequestCountry } from "@app/store/selectors/app/app.selectors";
 import { SubscriptionInterface } from "@shared/interfaces/subscription.interface";
 import { selectCurrentUserProfile } from "@features/account/store/auth.selectors";
 
@@ -44,14 +44,13 @@ export class SubscriptionsService {
     public readonly utilsService: UtilsService
   ) {
     this.store$
-      .select(selectBackendConfig)
+      .select(selectRequestCountry)
       .pipe(
-        filter(config => !!config),
+        filter(requestCountry => !!requestCountry),
         take(1)
       )
-      .subscribe(config => {
-        const country = config.REQUEST_COUNTRY;
-        const results = countryJs.search(country);
+      .subscribe(requestCountry => {
+        const results = countryJs.search(requestCountry);
 
         if (results.length !== 0) {
           this.currency = results[0].currency.currencyCode;

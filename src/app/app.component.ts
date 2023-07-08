@@ -6,15 +6,17 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
 import { ThemeService } from "@shared/services/theme.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { NotificationsApiService } from "@features/notifications/services/notifications-api.service";
-import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
+import { selectRequestCountry } from "@app/store/selectors/app/app.selectors";
 import { filter, map, take } from "rxjs/operators";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { CookieConsentService } from "@shared/services/cookie-consent/cookie-consent.service";
 import { CookieConsentEnum } from "@shared/types/cookie-consent.enum";
 import { Observable } from "rxjs";
-import { isPlatformBrowser } from "@angular/common";
+import { DOCUMENT, isPlatformBrowser, isPlatformServer } from "@angular/common";
 import { NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
 import { Constants } from "@shared/constants";
+import { TransferState } from "@angular/platform-browser";
+import { CLIENT_IP, CLIENT_IP_KEY } from "@app/client-ip.injector";
 
 declare var dataLayer: any;
 declare var gtag: any;
@@ -35,9 +37,18 @@ export class AppComponent extends BaseComponentDirective implements OnInit {
     public readonly cookieConsentService: CookieConsentService,
     public readonly utilsService: UtilsService,
     @Inject(PLATFORM_ID) public readonly platformId: any,
-    public readonly renderer: Renderer2
+    public readonly renderer: Renderer2,
+    @Inject(DOCUMENT) public document: any,
+    public readonly transferState: TransferState,
+    @Inject(CLIENT_IP) public readonly clientIp: string
   ) {
     super(store$);
+
+    if (isPlatformServer(this.platformId)) {
+      // On the server-side, add the IP to the TransferState
+      this.transferState.set(CLIENT_IP_KEY, this.clientIp);
+    }
+
     this.initRouterEvents();
     this.initPagination();
     this.markNotificationAsRead();
@@ -104,17 +115,17 @@ export class AppComponent extends BaseComponentDirective implements OnInit {
     this.router.events?.subscribe(event => {
       if (event instanceof NavigationEnd) {
         this.tagGoogleAnalyticsPage(event.urlAfterRedirects);
+        this.setCanonicalUrl(event.urlAfterRedirects);
       }
     });
   }
 
   includeAnalytics$(): Observable<boolean> {
-    return this.store$.select(selectBackendConfig).pipe(
-      filter(config => !!config),
+    return this.store$.select(selectRequestCountry).pipe(
+      filter(requestCountry => !!requestCountry),
       take(1),
-      map(config => config.REQUEST_COUNTRY),
-      map(countryCode => {
-        const isGDPRCountry = UtilsService.isGDPRCountry(countryCode);
+      map(requestCountry => {
+        const isGDPRCountry = UtilsService.isGDPRCountry(requestCountry);
         const hasCookieConsent = this.cookieConsentService.cookieGroupAccepted(CookieConsentEnum.ANALYTICS);
 
         return !isGDPRCountry || hasCookieConsent;
@@ -132,6 +143,15 @@ export class AppComponent extends BaseComponentDirective implements OnInit {
         }
       });
     }
+  }
+
+  setCanonicalUrl(url: string): void {
+    const canonicalUrl = this.windowRefService.nativeWindow.location.origin + url;
+    let link: HTMLLinkElement = this.document.createElement("link");
+
+    link.setAttribute("rel", "canonical");
+    this.document.head.appendChild(link);
+    link.setAttribute("href", canonicalUrl);
   }
 
   markNotificationAsRead() {

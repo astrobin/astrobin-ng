@@ -13,7 +13,7 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
   styleUrls: ["./subscriptions-view-payments-page.component.scss"]
 })
 export class SubscriptionsViewPaymentsPageComponent extends BaseComponentDirective implements OnInit {
-  payments$ = this.commonApiService.getPayments();
+  payments$;
 
   constructor(
     public readonly store$: Store<State>,
@@ -26,6 +26,8 @@ export class SubscriptionsViewPaymentsPageComponent extends BaseComponentDirecti
 
   ngOnInit(): void {
     super.ngOnInit();
+
+    this.payments$ = this.commonApiService.getPayments();
 
     const title = this.translate.instant("Your payments");
     this.titleService.setTitle(title);

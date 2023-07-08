@@ -26,7 +26,7 @@
     "i18n:extract": "ngx-translate-extract --input ./src --output ./src/assets/i18n/{en,de,fr,es,it,pt,ru,uk,zh_Hans,ja,hu}.po --clean --format pot --sort",
     "dev:ssr": "ng run frontend:serve-ssr",
     "serve:ssr": "node dist/frontend/server/main.js",
-    "build:ssr:dev": "ng build --configuration=development && ng run frontend:server --configuration=development",
+    "build:ssr:dev": "ng build --configuration=development && ng run frontend:server:development",
     "build:ssr:prod": "replace-in-file __BUILD_VERSION__ ${CODEBUILD_RESOLVED_SOURCE_VERSION} ${CODEBUILD_SRC_DIR}/src/environments/environment.prod.ts,${CODEBUILD_SRC_DIR}/src/index*.html && ng build --aot --configuration=production && ng run frontend:server:production",
     "prerender": "ng run frontend:prerender"
   },

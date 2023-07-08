@@ -26,6 +26,11 @@ export function app(): express.Express {
   server.set("view engine", "html");
   server.set("views", distFolder);
 
+  server.use((req, res, next) => {
+    global['clientIp'] = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+    next();
+  });
+
   // Example Express Rest API endpoints
   // server.get('/api/**', (req, res) => { });
   // Serve static files from /browser
@@ -46,6 +51,19 @@ export function app(): express.Express {
         { provide: REQUEST, useValue: req },
         { provide: RESPONSE, useValue: res }
       ]
+    }, (err, html) => {
+      if (html) {
+        // If the URL after redirects is '/404', send a 404 status
+        if (req.url === "/404") {
+          res.status(404).send(html);
+        } else {
+          res.status(200).send(html);
+        }
+      } else {
+        // If there was an error during rendering, send a 500 status
+        console.error(err);
+        res.sendStatus(500);
+      }
     });
   });
 

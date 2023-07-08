@@ -108,8 +108,7 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
     };
 
     this.toggleProperty$ = this.store$
-      .select(selectToggleProperty(params))
-      .pipe(tap(toggleProperty => console.log("toggleProperty", toggleProperty)));
+      .select(selectToggleProperty(params));
 
     this.store$.dispatch(new LoadToggleProperty({ toggleProperty: params }));
 
