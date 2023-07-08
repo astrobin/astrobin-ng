@@ -2,7 +2,7 @@ import { inject } from "@angular/core";
 import { ActivatedRouteSnapshot, ResolveFn, RouterStateSnapshot } from "@angular/router";
 import { State } from "@app/store/state";
 import { Store } from "@ngrx/store";
-import { EMPTY, Observable } from "rxjs";
+import { EMPTY, Observable, of } from "rxjs";
 import { catchError, tap } from "rxjs/operators";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
@@ -21,7 +21,11 @@ export const ItemResolver: ResolveFn<EquipmentItem> = (
     EquipmentItemType[route.paramMap.get("itemType").toUpperCase()];
   const id: number = +route.paramMap.get("itemId");
 
-  return equipmentApiService.getEquipmentItem(+id, type).pipe(
+  if (id === 0) {
+    return of(null);
+  }
+
+  return equipmentApiService.getEquipmentItem(id, type).pipe(
     tap(item => {
       store$.dispatch(new LoadEquipmentItemSuccess({ item }));
     }),
