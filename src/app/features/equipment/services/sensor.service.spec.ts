@@ -3,6 +3,7 @@ import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
 import { SensorDisplayProperty, SensorService } from "@features/equipment/services/sensor.service";
 import { SensorGenerator } from "@features/equipment/generators/sensor.generator";
+import { CameraGenerator } from "@features/equipment/generators/camera.generator";
 import { SensorInterface } from "@features/equipment/types/sensor.interface";
 import { ColorOrMono } from "@features/equipment/types/sensor.interface";
 import { of } from "rxjs";
@@ -10,6 +11,8 @@ import { of } from "rxjs";
 describe("SensorService", () => {
   let service: SensorService;
   let sensor: SensorInterface;
+  let camera1 = CameraGenerator.camera({ id: 1, name: "Camera 1" });
+  let camera2 = CameraGenerator.camera({ id: 2, name: "Camera 2" });
 
   beforeEach(async () => {
     await MockBuilder(SensorService, AppModule);
@@ -27,7 +30,8 @@ describe("SensorService", () => {
       readNoise: 1000,
       frameRate: 24,
       adc: 12,
-      colorOrMono: ColorOrMono.M
+      colorOrMono: ColorOrMono.M,
+      cameras: [camera1.id, camera2.id]
     });
   });
 
@@ -94,6 +98,13 @@ describe("SensorService", () => {
 
     it("should work for color or mono'", (done) => {
       service.getPrintableProperty$(sensor, SensorDisplayProperty.COLOR_OR_MONO).subscribe(value => {
+        expect(value).toEqual("Mono");
+        done();
+      });
+    });
+
+    it("should work for cameras'", (done) => {
+      service.getPrintableProperty$(sensor, SensorDisplayProperty.CAMERAS).subscribe(value => {
         expect(value).toEqual("Mono");
         done();
       });
