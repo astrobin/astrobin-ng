@@ -131,7 +131,7 @@
     "prettier": "2.8.8",
     "protractor": "7.0.0",
     "replace-in-file": "6.3.5",
-    "stylelint": "14.16.1",
+    "stylelint": "15.10.1",
     "supertest": "6.3.3",
     "ts-jest": "28.0.8",
     "ts-node": "10.9.1",
