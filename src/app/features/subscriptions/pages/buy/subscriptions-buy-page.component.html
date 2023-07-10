@@ -205,6 +205,12 @@
           class="icon"
           src="/assets/images/cc-amex-brands.svg"
         />
+        <img
+          *ngIf="subscriptionsService.supportsCardPaymentType"
+          alt="Discover"
+          class="icon"
+          src="/assets/images/cc-discover-brands.svg"
+        />
 
         <img
           *ngIf="subscriptionsService.supportsSepaDebitPaymentType"
