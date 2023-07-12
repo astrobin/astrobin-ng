@@ -70,6 +70,15 @@
   >
     {{ "Copy from another image" | translate }}&hellip;
   </button>
+
+  <button
+    (click)="onOverrideAcquisitionFormClicked($event)"
+    [class.loading]="loadingService.loading$ | async"
+    class="btn btn-outline-secondary"
+    id="override-acquisition-form-btn"
+  >
+    {{ "Override acquisition form" | translate }}&hellip;
+  </button>
 </ng-template>
 
 <ng-template #stepperButtonsTemplate>

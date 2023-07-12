@@ -52,6 +52,10 @@ import { ImageEditAcquisitionFieldsService } from "@features/image/services/imag
 import { Constants } from "@shared/constants";
 import { CopyAcquisitionSessionsFromAnotherImageModalComponent } from "@features/image/components/copy-acquisition-sessions-from-another-image-modal/copy-acquisition-sessions-from-another-image-modal.component";
 import { isPlatformBrowser } from "@angular/common";
+import {
+  AcquisitionForm,
+  OverrideAcquisitionFormModalComponent
+} from "@features/image/components/override-acquisition-form-modal/override-acquisition-form-modal.component";
 
 @Component({
   selector: "astrobin-image-edit-page",
@@ -137,6 +141,15 @@ export class ImageEditPageComponent
 
     const image = this.route.snapshot.data.image;
     this.imageEditService.model = image;
+
+    let overrideAcquisitionForm = null;
+
+    if (image.deepSkyAcquisitions?.length > 0) {
+      overrideAcquisitionForm = AcquisitionForm.LONG_EXPOSURE;
+    } else if (image.solarSystemAcquisitions?.length > 0) {
+      overrideAcquisitionForm = AcquisitionForm.VIDEO_BASED;
+    }
+
     this.imageEditService.model = {
       ...image,
       ...{
@@ -148,8 +161,10 @@ export class ImageEditPageComponent
         software2: image.software2.map(x => x.id),
         guidingTelescopes2: image.guidingTelescopes2.map(x => x.id),
         guidingCameras2: image.guidingCameras2.map(x => x.id)
-      }
+      },
+      overrideAcquisitionForm: overrideAcquisitionForm
     };
+
     this.imageEditService.groups = this.route.snapshot.data.groups;
     this.imageEditService.locations = this.route.snapshot.data.locations;
 
@@ -311,6 +326,54 @@ export class ImageEditPageComponent
 
     componentInstance.alreadyHasAcquisitions =
       this.imageEditService.hasDeepSkyAcquisitions() || this.imageEditService.hasSolarSystemAcquisitions();
+  }
+
+  onOverrideAcquisitionFormClicked(event: Event) {
+    if (event) {
+      event.preventDefault();
+    }
+
+    const modalRef: NgbModalRef = this.modalService.open(OverrideAcquisitionFormModalComponent);
+    const componentInstance: OverrideAcquisitionFormModalComponent = modalRef.componentInstance;
+
+    componentInstance.model = {
+      acquisitionForm: this.imageEditService.model.overrideAcquisitionForm
+    };
+
+    if (!componentInstance.model.acquisitionForm) {
+      componentInstance.model = {
+        acquisitionForm:
+          this.imageEditService.isDeepSky()
+            ? AcquisitionForm.LONG_EXPOSURE
+            : AcquisitionForm.VIDEO_BASED
+      };
+    }
+
+    modalRef.closed.subscribe(acquisitionForm => {
+      const clearModel = () => {
+        this.imageEditService.model = {
+          ...this.imageEditService.model,
+          deepSkyAcquisitions: [],
+          solarSystemAcquisitions: [],
+          overrideAcquisitionForm: acquisitionForm
+        };
+      };
+      if (
+        this.imageEditService.model.deepSkyAcquisitions?.length > 0 ||
+        this.imageEditService.model.solarSystemAcquisitions?.length > 0
+      ) {
+        const confirmationModalRef: NgbModalRef = this.modalService.open(ConfirmationDialogComponent);
+        const confirmationComponentInstance: ConfirmationDialogComponent = confirmationModalRef.componentInstance;
+        confirmationComponentInstance.message = this.translateService.instant(
+          "Changing this value will remove any acquisition sessions you have already added."
+        );
+        confirmationModalRef.closed.subscribe(() => {
+          clearModel();
+        });
+      } else {
+        clearModel();
+      }
+    });
   }
 
   onSave(event: Event, next?: string) {

@@ -61,7 +61,9 @@ describe("EditComponent", () => {
   });
 
   it("should initialize data", () => {
-    expect(component.imageEditService.model).toEqual(image);
-    expect(component.imageEditService.model).toEqual(image);
+    expect(component.imageEditService.model).toEqual({
+      ...image,
+      overrideAcquisitionForm: null
+    });
   });
 });
