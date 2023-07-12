@@ -1,0 +1,43 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="override-acquisition-form-modal">
+    {{ "Override acquisition form" | translate }}
+  </h4>
+
+  <button (click)="modal.dismiss()" aria-describedby="modal-title" class="close" type="button">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body">
+  <p class="alert alert-info" translate>
+    AstroBin preselected the most commonly used type of form to input acquisition details for the subject type you
+    selected, but if you used a different technique, you can change the form here.
+  </p>
+
+  <form [formGroup]="form">
+    <formly-form [fields]="fields" [form]="form" [model]="model"></formly-form>
+  </form>
+</div>
+
+<div class="modal-footer">
+  <button (click)="modal.dismiss()" class="btn btn-outline-secondary" type="button">
+    {{ "Cancel" | translate }}
+  </button>
+
+  <button
+    (click)="onOverrideClicked()"
+    [class.loading]="(loadingService.loading$ | async) || form.pending"
+    [disabled]="form.invalid"
+    class="btn btn-primary"
+    type="button"
+  >
+    {{ "Override" | translate }}
+  </button>
+</div>
+
+<ng-template #optionTemplate let-item="item">
+  <div class="option-template">
+    <div class="option-template__title">{{ item.label }}</div>
+    <div class="option-template__description">{{ item.description }}</div>
+  </div>
+</ng-template>

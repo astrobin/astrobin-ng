@@ -19,6 +19,7 @@ import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { ImageEditFieldsBaseService } from "@features/image/services/image-edit-fields-base.service";
+import { AcquisitionForm } from "@features/image/components/override-acquisition-form-modal/override-acquisition-form-modal.component";
 
 @Injectable({
   providedIn: null
@@ -91,11 +92,22 @@ export class ImageEditContentFieldsService extends ImageEditFieldsBaseService {
           label: this.imageEditService.humanizeSubjectType(subjectType)
         })),
         changeConfirmationCondition: (currentValue: SubjectType, newValue: SubjectType): boolean => {
-          if (this.imageEditService.isDeepSky(currentValue) && !this.imageEditService.isDeepSky(newValue)) {
+          if (
+            (
+              this.imageEditService.isDeepSky(currentValue) ||
+              this.imageEditService.model.overrideAcquisitionForm === AcquisitionForm.LONG_EXPOSURE
+            ) &&
+            !this.imageEditService.isDeepSky(newValue)) {
             return this.imageEditService.hasDeepSkyAcquisitions();
           }
 
-          if (this.imageEditService.isSolarSystem(currentValue) && !this.imageEditService.isSolarSystem(newValue)) {
+          if (
+            (
+              this.imageEditService.isSolarSystem(currentValue) ||
+              this.imageEditService.model.overrideAcquisitionForm === AcquisitionForm.VIDEO_BASED
+            ) &&
+            !this.imageEditService.isSolarSystem(newValue)
+          ) {
             return this.imageEditService.hasSolarSystemAcquisitions();
           }
 
@@ -105,8 +117,16 @@ export class ImageEditContentFieldsService extends ImageEditFieldsBaseService {
           "Changing this value will remove any acquisition sessions you have already added."
         ),
         onChangeConfirmation: (value: SubjectType): void => {
+          this.imageEditService.model = {
+            ...this.imageEditService.model,
+            overrideAcquisitionForm: null
+          }
+
           if (this.imageEditService.isSolarSystem(value)) {
-            this.imageEditService.model.solarSystemMainSubject = null;
+            this.imageEditService.model = {
+              ...this.imageEditService.model,
+              solarSystemMainSubject: null
+            };
           }
 
           if (!this.imageEditService.isDeepSky(value)) {

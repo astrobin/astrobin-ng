@@ -20,6 +20,7 @@ import { FilterInterface } from "@features/equipment/types/filter.interface";
 import { AccessoryInterface } from "@features/equipment/types/accessory.interface";
 import { SoftwareInterface } from "@features/equipment/types/software.interface";
 import { TranslateService } from "@ngx-translate/core";
+import { AcquisitionForm } from "@features/image/components/override-acquisition-form-modal/override-acquisition-form-modal.component";
 
 export type ImageEditModelInterface = Partial<Omit<ImageInterface,
   | "user"
@@ -39,6 +40,7 @@ export type ImageEditModelInterface = Partial<Omit<ImageInterface,
   software2: SoftwareInterface["id"][];
   guidingTelescopes2: TelescopeInterface["id"][];
   guidingCameras2: CameraInterface["id"][];
+  overrideAcquisitionForm: AcquisitionForm | null
 }>;
 
 export function KeyValueTagsValidator(control: FormControl): ValidationErrors {

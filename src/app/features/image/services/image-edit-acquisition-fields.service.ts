@@ -17,6 +17,7 @@ import { ImageEditFieldsBaseService } from "@features/image/services/image-edit-
 import { AdditionalSolarSystemAcquisitionPropertiesModalComponent } from "@features/image/components/additional-solar-system-acquisition-properties-modal/additional-solar-system-acquisition-properties-modal.component";
 import { SeeingScale, TransparencyScale } from "@shared/interfaces/solar-system-acquisition.interface";
 import { BortleScale } from "@shared/interfaces/deep-sky-acquisition.interface";
+import { AcquisitionForm } from "@features/image/components/override-acquisition-form-modal/override-acquisition-form-modal.component";
 
 @Injectable({
   providedIn: null
@@ -60,10 +61,16 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
       {
         key: "deepSkyAcquisitions",
         type: "table",
-        hideExpression: () => !this.imageEditService.isDeepSky(),
+        hideExpression: () => {
+          if (!this.imageEditService.model.overrideAcquisitionForm) {
+            return !this.imageEditService.isDeepSky();
+          }
+
+          return this.imageEditService.model.overrideAcquisitionForm !== AcquisitionForm.LONG_EXPOSURE;
+        },
         props: {
           required: false,
-          label: this.translateService.instant("Deep sky acquisition sessions"),
+          label: this.translateService.instant("Long exposure acquisition sessions"),
           addLabel: this.translateService.instant("Add session"),
           additionalPropertiesClicked: (index: number) => {
             const modalRef: NgbModalRef = this.modalService.open(AdditionalDeepSkyAcquisitionPropertiesModalComponent, {
@@ -418,10 +425,16 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
       {
         key: "solarSystemAcquisitions",
         type: "table",
-        hideExpression: () => !this.imageEditService.isSolarSystem(),
+        hideExpression: () => {
+          if (!this.imageEditService.model.overrideAcquisitionForm) {
+            return !this.imageEditService.isSolarSystem();
+          }
+
+          return this.imageEditService.model.overrideAcquisitionForm !== AcquisitionForm.VIDEO_BASED
+        },
         props: {
           required: false,
-          label: this.translateService.instant("Solar system acquisition sessions"),
+          label: this.translateService.instant("Video based acquisition sessions"),
           addLabel: this.translateService.instant("Add session"),
           maxRows: 1,
           additionalPropertiesClicked: (index: number) => {
