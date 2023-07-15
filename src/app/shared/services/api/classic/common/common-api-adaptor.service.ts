@@ -97,6 +97,7 @@ export interface BackendUserProfileInterface {
   premium_counter: number;
   locations: LocationInterface[];
   email?: string;
+  signup_country?: string;
 }
 
 export interface BackendTogglePropertyInterface {
@@ -207,7 +208,8 @@ export class CommonApiAdaptorService extends BaseService {
       followers: userProfile.followers,
       premiumCounter: userProfile.premium_counter,
       locations: userProfile.locations,
-      email: userProfile.email
+      email: userProfile.email,
+      signUpCountry: userProfile.signup_country
     };
   }
 

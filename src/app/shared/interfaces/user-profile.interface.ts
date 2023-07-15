@@ -60,4 +60,5 @@ export interface UserProfileInterface {
   premiumCounter: number;
   locations: LocationInterface[];
   email?: string;
+  signUpCountry?: string;
 }
