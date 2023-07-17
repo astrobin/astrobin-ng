@@ -56,9 +56,17 @@
   }
 
   .btn-close {
-    border-left: 0;
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
+    border: 1px solid var(--lighterGrey);
+    border-left-color: var(--lightGrey);
+    border-radius: 0 .25rem .25rem 0;
+    background: none;
+    box-sizing: initial;
+    width: auto;
+    height: auto;
+    opacity: 1;
+    color: var(--lighterGrey);
+    font-size: 1rem;
+    padding: 2px .375rem;
 
     @media screen and (max-width: $xs_max) {
       padding-top: .75rem;
@@ -66,7 +74,6 @@
     }
 
     &:hover {
-      background: none;
       color: var(--accentColor);
     }
   }
