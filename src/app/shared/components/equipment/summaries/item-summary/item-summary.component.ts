@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import { BrandInterface } from "@features/equipment/types/brand.interface";
 import { CameraInterface, CameraType, instanceOfCamera } from "@features/equipment/types/camera.interface";
@@ -30,7 +30,7 @@ import {
   EquipmentItemService
 } from "@features/equipment/services/equipment-item.service";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
-import { SensorInterface } from "@features/equipment/types/sensor.interface";
+import { instanceOfSensor, SensorInterface } from "@features/equipment/types/sensor.interface";
 import { MountInterface } from "@features/equipment/types/mount.interface";
 import { MountDisplayProperty, MountService } from "@features/equipment/services/mount.service";
 import { FilterInterface } from "@features/equipment/types/filter.interface";
@@ -49,6 +49,7 @@ import { SubscriptionRequiredModalComponent } from "@shared/components/misc/subs
 import { SimplifiedSubscriptionName } from "@shared/types/subscription-name.type";
 import { MostOftenUsedWithModalComponent } from "@shared/components/equipment/summaries/item/summary/most-often-used-with-modal/most-often-used-with-modal.component";
 import { LoadingService } from "@shared/services/loading.service";
+import { MoreRelatedItemsModalComponent } from "@shared/components/equipment/summaries/item/summary/more-related-items-modal/more-related-items-modal.component";
 
 interface EquipmentItemProperty {
   name: string;
@@ -64,6 +65,8 @@ interface EquipmentItemProperty {
 export class ItemSummaryComponent extends BaseComponentDirective implements OnChanges {
   readonly UtilsService = UtilsService;
   readonly EquipmentItemDisplayProperty = EquipmentItemDisplayProperty;
+
+  readonly SHOW_MAX_RELATED_ITEMS = 2;
 
   @Input()
   item: EquipmentItem;
@@ -111,7 +114,8 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
   editButtonClick = new EventEmitter<EquipmentItem>();
 
   brand: BrandInterface;
-  subItem: EquipmentItemBaseInterface;
+  subItem: EquipmentItem;
+  relatedItems: EquipmentItem[];
   subItemCollapsed = true;
   properties: EquipmentItemProperty[];
   mostOftenUsedWith$: Observable<{ item$: Observable<EquipmentItem>; matches: number }[]>;
@@ -187,7 +191,25 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
       return this.cameraService.getPrintablePropertyName(CameraDisplayProperty.SENSOR, true);
     }
 
+    if (this.item.klass === EquipmentItemType.SENSOR) {
+      return this.sensorService.getPrintablePropertyName(SensorDisplayProperty.CAMERAS, true);
+    }
+
     return this.translateService.instant("Sub-item");
+  }
+
+  get relatedItemsLabel(): string {
+    if (instanceOfSensor(this.item)) {
+      return this.sensorService.getPrintablePropertyName(SensorDisplayProperty.CAMERAS, true);
+    }
+
+    return this.translateService.instant("Related items");
+  }
+
+  get moreRelatedItemsLabel(): string {
+    return this.translateService.instant(
+      "+ {{ count }} more", { count: this.relatedItems.length - this.SHOW_MAX_RELATED_ITEMS }
+    );
   }
 
   getCreatedBy(): Observable<UserInterface> {
@@ -256,6 +278,30 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
         .subscribe(sensor => (this.subItem = sensor));
     }
 
+    if (instanceOfSensor(this.item) && this.item.cameras) {
+      this.item.cameras.forEach(cameraId => {
+        this.store$.dispatch(new LoadEquipmentItem({ id: cameraId, type: EquipmentItemType.CAMERA }));
+        this.store$
+          .select(selectEquipmentItem, { id: cameraId, type: EquipmentItemType.CAMERA })
+          .pipe(
+            filter(camera => !!camera),
+            take(1),
+            tap(camera => {
+              if (!!camera.brand) {
+                this.store$.dispatch(new LoadBrand({ id: camera.brand }));
+              }
+            })
+          )
+          .subscribe(camera => {
+            if (!this.relatedItems) {
+              this.relatedItems = [];
+            }
+
+            this.relatedItems.push(camera);
+          });
+      });
+    }
+
     if (this.showMostOftenUsedWith) {
       const payload = { itemType: this.item.klass, itemId: this.item.id };
       this.store$.dispatch(new GetMostOftenUsedWith(payload));
@@ -318,6 +364,13 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
         EquipmentItemType.FILTER
       ].indexOf(this.item.klass) > -1
     );
+  }
+
+  viewMoreRelatedItems() {
+    const modalRef: NgbModalRef = this.modalService.open(MoreRelatedItemsModalComponent);
+    const componentInstance: MoreRelatedItemsModalComponent = modalRef.componentInstance;
+    componentInstance.items = this.relatedItems.slice(this.SHOW_MAX_RELATED_ITEMS);
+    componentInstance.title = this.relatedItemsLabel;
   }
 
   viewMoreMostOftenUsedWith() {

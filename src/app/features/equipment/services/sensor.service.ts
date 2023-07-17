@@ -2,9 +2,16 @@ import { Injectable } from "@angular/core";
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { EquipmentItemServiceInterface } from "@features/equipment/services/equipment-item.service-interface";
+import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { ColorOrMono, SensorInterface } from "@features/equipment/types/sensor.interface";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { TranslateService } from "@ngx-translate/core";
-import { Observable, of } from "rxjs";
+import { combineLatest, Observable, of } from "rxjs";
+import { filter, map, take } from "rxjs/operators";
+import { Store } from "@ngrx/store";
+import { State } from "@app/store/state";
+import { selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
+import { LoadEquipmentItem } from "@features/equipment/store/equipment.actions";
 
 export enum SensorDisplayProperty {
   QUANTUM_EFFICIENCY = "QUANTUM_EFFICIENCY",
@@ -19,14 +26,20 @@ export enum SensorDisplayProperty {
   READ_NOISE = "READ_NOISE",
   FRAME_RATE = "FRAME_RATE",
   ADC = "ADC",
-  COLOR_OR_MONO = "COLOR_OR_MONO"
+  COLOR_OR_MONO = "COLOR_OR_MONO",
+  CAMERAS = "CAMERAS"
 }
 
 @Injectable({
   providedIn: "root"
 })
 export class SensorService extends BaseService implements EquipmentItemServiceInterface {
-  constructor(public readonly loadingService: LoadingService, public readonly translateService: TranslateService) {
+  constructor(
+    public readonly store$: Store<State>,
+    public readonly loadingService: LoadingService,
+    public readonly translateService: TranslateService,
+    public readonly modalService: NgbModal
+  ) {
     super(loadingService);
   }
 
@@ -54,7 +67,8 @@ export class SensorService extends BaseService implements EquipmentItemServiceIn
       SensorDisplayProperty.READ_NOISE,
       SensorDisplayProperty.FRAME_RATE,
       SensorDisplayProperty.ADC,
-      SensorDisplayProperty.COLOR_OR_MONO
+      SensorDisplayProperty.COLOR_OR_MONO,
+      SensorDisplayProperty.CAMERAS
     ];
   }
 
@@ -114,6 +128,34 @@ export class SensorService extends BaseService implements EquipmentItemServiceIn
         return of(propertyValue || item.adc ? `${propertyValue || item.adc}-bit` : "");
       case SensorDisplayProperty.COLOR_OR_MONO:
         return of(this.humanizeColorOrMono(propertyValue || item.colorOrMono));
+      case SensorDisplayProperty.CAMERAS:
+        const ids = propertyValue || item.cameras;
+        if (!ids || ids.length === 0) {
+          return of(null);
+        }
+
+        let cameras$ = [];
+        for (const id of ids) {
+          const payload = {
+            id,
+            type: EquipmentItemType.CAMERA
+          };
+          this.store$.dispatch(new LoadEquipmentItem(payload));
+
+          cameras$.push(this.store$.select(selectEquipmentItem, payload).pipe(
+            filter(camera => !!camera),
+            take(1),
+            map(
+              camera =>
+                `${camera.brandName ? camera.brandName : this.translateService.instant("(DIY)")} ${camera.name}`
+            )
+          ));
+        }
+
+        return combineLatest(cameras$).pipe(
+          map(cameras => cameras.join(", "))
+        );
+
       default:
         throw Error(`Invalid property: ${property}`);
     }
@@ -165,6 +207,8 @@ export class SensorService extends BaseService implements EquipmentItemServiceIn
         return shortForm ? this.translateService.instant("ADC") : this.translateService.instant("ADC") + " (bits)";
       case SensorDisplayProperty.COLOR_OR_MONO:
         return this.translateService.instant("Color or mono");
+      case SensorDisplayProperty.CAMERAS:
+        return this.translateService.instant("Cameras");
       default:
         throw Error(`Invalid property: ${propertyName}`);
     }

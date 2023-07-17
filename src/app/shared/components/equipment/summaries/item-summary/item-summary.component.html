@@ -70,6 +70,32 @@
           </td>
         </tr>
 
+        <tr *ngIf="relatedItems?.length > 0" class="property related-items">
+          <th class="property-name">{{ relatedItemsLabel }}</th>
+          <td class="property-value">
+            <ng-container *ngFor="let relatedItem of relatedItems.slice(0, SHOW_MAX_RELATED_ITEMS); let last = last">
+              <a
+                [routerLink]="['/equipment/explorer', relatedItem.klass.toLowerCase(), relatedItem.id]"
+                class="me-2"
+              >
+                <astrobin-equipment-item-display-name [item]="relatedItem"></astrobin-equipment-item-display-name>
+              </a>
+
+              <ng-container *ngIf="!last">
+                &middot;
+              </ng-container>
+
+            </ng-container>
+
+            <ng-container *ngIf="relatedItems.length > SHOW_MAX_RELATED_ITEMS">
+              &middot;
+              <button (click)="viewMoreRelatedItems()" class="btn btn-link">
+                  {{ moreRelatedItemsLabel}}
+              </button>
+            </ng-container>
+          </td>
+        </tr>
+
         <ng-container *ngIf="showStats">
           <tr class="property">
             <th class="property-name">

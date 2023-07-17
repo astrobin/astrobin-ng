@@ -42,6 +42,7 @@ export class SensorGenerator {
         brandListings: [],
         allowFullRetailerIntegration: false
       },
+      cameras: source.cameras || [],
       followed: false,
       contentType: 4
     };

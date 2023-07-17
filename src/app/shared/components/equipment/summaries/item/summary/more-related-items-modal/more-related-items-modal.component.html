@@ -1,0 +1,28 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="most-often-used-with-modal">{{ title }}</h4>
+  <button (click)="modal.dismiss()" aria-describedby="modal-title" class="close" type="button">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body related-items">
+  <ng-container *ngFor="let relatedItem of items; let last = last">
+    <a
+      (click)="modal.dismiss()"
+      [routerLink]="['/equipment/explorer', relatedItem.klass.toLowerCase(), relatedItem.id]"
+      class="me-2"
+    >
+      <astrobin-equipment-item-display-name [item]="relatedItem"></astrobin-equipment-item-display-name>
+    </a>
+
+    <ng-container *ngIf="!last">
+      &middot;
+    </ng-container>
+  </ng-container>
+</div>
+
+<div class="modal-footer">
+  <button (click)="modal.dismiss()" class="btn btn-secondary" type="button">
+    {{ "Close" | translate }}
+  </button>
+</div>

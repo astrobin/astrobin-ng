@@ -102,6 +102,7 @@ import { NgxDatatableModule } from "@swimlane/ngx-datatable";
 import { FormlyFieldButtonComponent } from "@shared/components/misc/formly-field-button/formly-field-button.component";
 import { FormlyCardWrapperComponent } from "@shared/components/misc/formly-card-wrapper/formly-card-wrapper.component";
 import { TogglePropertyComponent } from "@shared/components/misc/toggle-property/toggle-property.component";
+import { MoreRelatedItemsModalComponent } from "@shared/components/equipment/summaries/item/summary/more-related-items-modal/more-related-items-modal.component";
 import { StockStatusComponent } from "@shared/components/equipment/stock-status/stock-status.component";
 import { BetaBannerComponent } from "@shared/components/misc/beta-banner/beta-banner.component";
 
@@ -168,6 +169,7 @@ const components = [
   LoadingIndicatorComponent,
   LoginFormComponent,
   LoginModalComponent,
+  MoreRelatedItemsModalComponent,
   MostOftenUsedWithModalComponent,
   NestedCommentComponent,
   NestedCommentsComponent,
