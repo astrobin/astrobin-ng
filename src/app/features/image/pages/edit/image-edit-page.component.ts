@@ -569,7 +569,7 @@ export class ImageEditPageComponent
       new SetBreadcrumb({
         breadcrumb: [
           {
-            label: this.translateService.instant("Image")
+            label: this.translateService.instant("Image or video")
           },
           {
             label: this.imageEditService.model.title

@@ -75,6 +75,15 @@ export class UtilsService {
     return ["png", "jpg", "jpeg", "gif"].indexOf(extension) > -1;
   }
 
+  static isVideo(filename: string): boolean {
+    if (!filename) {
+      return false;
+    }
+
+    const extension = UtilsService.fileExtension(filename).toLowerCase();
+    return ["mov", "avi", "mp4", "mpeg"].indexOf(extension) > -1;
+  }
+
   /**
    * Removes duplicates from an array. Items must be able to be stringified using JSON, or a key must be provided.
    */

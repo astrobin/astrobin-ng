@@ -5,7 +5,8 @@ import {
   Component,
   EventEmitter,
   Input,
- OnInit, Output,
+  OnInit,
+  Output,
   TemplateRef,
   ViewChild
 } from "@angular/core";
@@ -727,7 +728,7 @@ export class BaseItemEditorComponent<T extends EquipmentItemBaseInterface, SUB e
       },
 
       validators: {
-        validation: [{ name: "file-size", options: { max: 1024 * 1024 } }, { name: "image-file" }]
+        validation: [{ name: "file-size", options: { max: 1024 * 1024 } }, { name: "image-or-video-file" }]
       }
     };
   }
