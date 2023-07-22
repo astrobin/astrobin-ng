@@ -430,7 +430,7 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
             return !this.imageEditService.isSolarSystem();
           }
 
-          return this.imageEditService.model.overrideAcquisitionForm !== AcquisitionForm.VIDEO_BASED
+          return this.imageEditService.model.overrideAcquisitionForm !== AcquisitionForm.VIDEO_BASED;
         },
         props: {
           required: false,
@@ -824,14 +824,15 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
         description: this.translateService.instant("Duration of each frame in seconds."),
         required: true,
         step: 1,
-        min: 0.01
+        min: 0.0001,
+        max: 999999.9999
       },
       validators: {
         validation: [
           {
             name: "max-decimals",
             options: {
-              value: 2
+              value: 4
             }
           }
         ]
