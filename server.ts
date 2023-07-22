@@ -9,6 +9,8 @@ import { APP_BASE_HREF } from "@angular/common";
 import { existsSync } from "fs";
 import { REQUEST, RESPONSE } from "@nguniversal/express-engine/tokens";
 
+const compression = require("compression");
+
 // The Express app is exported so that it can be used by serverless Functions.
 export function app(): express.Express {
   const server = express();
@@ -27,9 +29,11 @@ export function app(): express.Express {
   server.set("views", distFolder);
 
   server.use((req, res, next) => {
-    global['clientIp'] = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+    global["clientIp"] = req.headers["x-forwarded-for"] || req.connection.remoteAddress;
     next();
   });
+
+  server.use(compression());
 
   // Example Express Rest API endpoints
   // server.get('/api/**', (req, res) => { });
