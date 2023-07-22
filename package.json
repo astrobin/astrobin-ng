@@ -112,6 +112,7 @@
     "@typescript-eslint/eslint-plugin": "5.48.1",
     "@typescript-eslint/parser": "5.48.1",
     "@vendure/ngx-translate-extract": "8.1.1",
+    "compression": "1.7.4",
     "concurrently": "7.6.0",
     "cross-var": "1.1.0",
     "cypress": "6.9.1",
