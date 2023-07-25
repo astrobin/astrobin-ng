@@ -181,6 +181,13 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
               "AstroBin encountered an internal error. Please try again and contact us if the problem persists!"
             );
             break;
+          case 0:
+            message = this.translateService.instant(
+              "AstroBin could not connect to the server. Often this is caused by an anti-virus or privacy " +
+              "extension that blocks the connection. Please try disabling them and try again. If the problem " +
+              "persists, please contact us."
+            );
+            break;
           default:
             message = this.translateService.instant(
               `Unhandled error (code: ${state.responseStatus}), please refresh the page and try again.`
