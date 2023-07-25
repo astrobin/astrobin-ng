@@ -647,73 +647,87 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
       return;
     }
 
-    let action: Action;
-    let actionSuccessType: EquipmentActionTypes;
+    const _createEditProposal = () => {
+      let action: Action;
+      let actionSuccessType: EquipmentActionTypes;
 
-    // Remove id and set `editModelTarget`.
-    const { id, ...editModelWithTarget } = { ...this.editModel, ...{ editProposalTarget: this.editModel.id } };
+      // Remove id and set `editModelTarget`.
+      const { id, ...editModelWithTarget } = { ...this.editModel, ...{ editProposalTarget: this.editModel.id } };
 
-    switch (this.activeType) {
-      case EquipmentItemType.SENSOR:
-        action = new CreateSensorEditProposal({
-          sensor: editModelWithTarget as EditProposalInterface<SensorInterface>
-        });
-        actionSuccessType = EquipmentActionTypes.CREATE_SENSOR_EDIT_PROPOSAL_SUCCESS;
-        break;
-      case EquipmentItemType.CAMERA:
-        action = new CreateCameraEditProposal({
-          camera: editModelWithTarget as EditProposalInterface<CameraInterface>
-        });
-        actionSuccessType = EquipmentActionTypes.CREATE_CAMERA_EDIT_PROPOSAL_SUCCESS;
-        break;
-      case EquipmentItemType.TELESCOPE:
-        action = new CreateTelescopeEditProposal({
-          telescope: editModelWithTarget as EditProposalInterface<TelescopeInterface>
-        });
-        actionSuccessType = EquipmentActionTypes.CREATE_TELESCOPE_EDIT_PROPOSAL_SUCCESS;
-        break;
-      case EquipmentItemType.MOUNT:
-        action = new CreateMountEditProposal({
-          mount: editModelWithTarget as EditProposalInterface<MountInterface>
-        });
-        actionSuccessType = EquipmentActionTypes.CREATE_MOUNT_EDIT_PROPOSAL_SUCCESS;
-        break;
-      case EquipmentItemType.FILTER:
-        action = new CreateFilterEditProposal({
-          filter: editModelWithTarget as EditProposalInterface<FilterInterface>
-        });
-        actionSuccessType = EquipmentActionTypes.CREATE_FILTER_EDIT_PROPOSAL_SUCCESS;
-        break;
-      case EquipmentItemType.ACCESSORY:
-        action = new CreateAccessoryEditProposal({
-          accessory: editModelWithTarget as EditProposalInterface<AccessoryInterface>
-        });
-        actionSuccessType = EquipmentActionTypes.CREATE_ACCESSORY_EDIT_PROPOSAL_SUCCESS;
-        break;
-      case EquipmentItemType.SOFTWARE:
-        action = new CreateSoftwareEditProposal({
-          software: editModelWithTarget as EditProposalInterface<SoftwareInterface>
-        });
-        actionSuccessType = EquipmentActionTypes.CREATE_SOFTWARE_EDIT_PROPOSAL_SUCCESS;
-        break;
+      switch (this.activeType) {
+        case EquipmentItemType.SENSOR:
+          action = new CreateSensorEditProposal({
+            sensor: editModelWithTarget as EditProposalInterface<SensorInterface>
+          });
+          actionSuccessType = EquipmentActionTypes.CREATE_SENSOR_EDIT_PROPOSAL_SUCCESS;
+          break;
+        case EquipmentItemType.CAMERA:
+          action = new CreateCameraEditProposal({
+            camera: editModelWithTarget as EditProposalInterface<CameraInterface>
+          });
+          actionSuccessType = EquipmentActionTypes.CREATE_CAMERA_EDIT_PROPOSAL_SUCCESS;
+          break;
+        case EquipmentItemType.TELESCOPE:
+          action = new CreateTelescopeEditProposal({
+            telescope: editModelWithTarget as EditProposalInterface<TelescopeInterface>
+          });
+          actionSuccessType = EquipmentActionTypes.CREATE_TELESCOPE_EDIT_PROPOSAL_SUCCESS;
+          break;
+        case EquipmentItemType.MOUNT:
+          action = new CreateMountEditProposal({
+            mount: editModelWithTarget as EditProposalInterface<MountInterface>
+          });
+          actionSuccessType = EquipmentActionTypes.CREATE_MOUNT_EDIT_PROPOSAL_SUCCESS;
+          break;
+        case EquipmentItemType.FILTER:
+          action = new CreateFilterEditProposal({
+            filter: editModelWithTarget as EditProposalInterface<FilterInterface>
+          });
+          actionSuccessType = EquipmentActionTypes.CREATE_FILTER_EDIT_PROPOSAL_SUCCESS;
+          break;
+        case EquipmentItemType.ACCESSORY:
+          action = new CreateAccessoryEditProposal({
+            accessory: editModelWithTarget as EditProposalInterface<AccessoryInterface>
+          });
+          actionSuccessType = EquipmentActionTypes.CREATE_ACCESSORY_EDIT_PROPOSAL_SUCCESS;
+          break;
+        case EquipmentItemType.SOFTWARE:
+          action = new CreateSoftwareEditProposal({
+            software: editModelWithTarget as EditProposalInterface<SoftwareInterface>
+          });
+          actionSuccessType = EquipmentActionTypes.CREATE_SOFTWARE_EDIT_PROPOSAL_SUCCESS;
+          break;
+      }
+
+      if (action) {
+        this.loadingService.setLoading(true);
+        this.store$.dispatch(action);
+        this.actions$
+          .pipe(
+            ofType(actionSuccessType),
+            take(1),
+            map(
+              (result: { payload: { editProposal: EditProposalInterface<EquipmentItemBaseInterface> } }) =>
+                result.payload.editProposal
+            )
+          )
+          .subscribe(() => {
+            this.editProposalCreated();
+            this.loadingService.setLoading(false);
+          });
+      }
     }
 
-    if (action) {
-      this.loadingService.setLoading(true);
-      this.store$.dispatch(action);
-      this.actions$
-        .pipe(
-          ofType(actionSuccessType),
-          take(1),
-          map(
-            (result: { payload: { editProposal: EditProposalInterface<EquipmentItemBaseInterface> } }) =>
-              result.payload.editProposal
-          )
-        )
-        .subscribe(() => {
-          this.editProposalCreated();
-          this.loadingService.setLoading(false);
-        });
+    if (this.editModel.name !== this.selectedItem.name) {
+      const modal: NgbModalRef = this.modalService.open(ConfirmationDialogComponent);
+      const componentInstance: ConfirmationDialogComponent = modal.componentInstance;
+      componentInstance.message = this.equipmentItemService.nameChangeWarningMessage();
+
+      modal.closed.pipe(take(1)).subscribe(() => {
+        _createEditProposal();
+      });
+    } else {
+      _createEditProposal();
     }
   }
 
