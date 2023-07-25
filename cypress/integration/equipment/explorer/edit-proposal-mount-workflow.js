@@ -94,6 +94,8 @@ context("Equipment", () => {
 
       cy.get("[data-test=propose-edit-confirm]").click();
 
+      cy.get("astrobin-confirmation-dialog .modal-footer .btn-primary").click();
+
       cy.wait("@saveEditProposal");
       cy.wait("@getEditProposals");
 
