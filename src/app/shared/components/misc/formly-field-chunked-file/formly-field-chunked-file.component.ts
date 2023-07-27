@@ -328,6 +328,31 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
 
         image.src = URL.createObjectURL(file);
       });
+    } else if (UtilsService.isVideo(file.name)) {
+      return new Observable<boolean>(observer => {
+        const video = document.createElement("video");
+
+        video.onerror = () => {
+          const message =
+            "Sorry, but we couldn't detect this file as a video. Are you sure it's a supported video type?";
+          this.popNotificationsService.error(this.translateService.instant(message));
+          observer.next(false);
+          observer.complete();
+        };
+
+        video.onloadedmetadata = () => {
+          console.log(video.videoWidth, video.videoHeight); // log the width and height
+
+          this.uploadDataService.patchMetadata("image-upload", {
+            width: video.videoWidth,
+            height: video.videoHeight
+          });
+
+          URL.revokeObjectURL(video.src);
+        };
+
+        video.src = URL.createObjectURL(file);
+      });
     }
 
     return of(true);
