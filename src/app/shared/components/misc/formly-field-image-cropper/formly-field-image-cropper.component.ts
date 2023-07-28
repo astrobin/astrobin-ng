@@ -8,7 +8,7 @@ import { PopNotificationsService } from "@shared/services/pop-notifications.serv
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { CropperPosition, Dimensions, ImageCroppedEvent, LoadedImage } from "ngx-image-cropper";
 import { fromEvent, Subscription } from "rxjs";
-import { debounceTime, filter, map, take } from "rxjs/operators";
+import { debounceTime, filter, map, take, tap } from "rxjs/operators";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { isPlatformBrowser } from "@angular/common";
 
@@ -27,7 +27,16 @@ export class FormlyFieldImageCropperComponent extends FieldType implements OnDes
   ratio: number;
   cropperReady = false;
   firstReset = false;
-  showCropper$ = this.store$.select(selectImageEditorState).pipe(map(state => state.cropperShown));
+  showCropper$ = this.store$
+    .select(selectImageEditorState)
+    .pipe(
+      map(state => state.cropperShown),
+      tap(cropperShown => {
+        if (cropperShown) {
+          this.onCropperReady(null);
+        }
+      })
+    );
 
   private readonly _resizeEventSubscription: Subscription;
 
@@ -71,19 +80,41 @@ export class FormlyFieldImageCropperComponent extends FieldType implements OnDes
   onCropperReady(dimensions: Dimensions) {
     const image = this.props.image;
 
-    this.ratio = image.w / dimensions.width;
+    if (dimensions && image.squareCropping && image.squareCropping !== "") {
+      this.ratio = image.w / dimensions.width;
 
-    this.cropper = {
-      x1: image.squareCropping.split(",")[0] / this.ratio,
-      y1: image.squareCropping.split(",")[1] / this.ratio,
-      x2: image.squareCropping.split(",")[2] / this.ratio,
-      y2: image.squareCropping.split(",")[3] / this.ratio
-    };
+      this.cropper = {
+        x1: image.squareCropping.split(",")[0] / this.ratio,
+        y1: image.squareCropping.split(",")[1] / this.ratio,
+        x2: image.squareCropping.split(",")[2] / this.ratio,
+        y2: image.squareCropping.split(",")[3] / this.ratio
+      };
+    } else {
+      const w = image.w;
+      const h = image.h;
+      const size = Math.min(w, h);
+
+      // Calculate the coordinates of the top left corner of the square
+      let x1 = (w - size) / 2;
+      let y1 = (h - size) / 2;
+
+      // Calculate the coordinates of the bottom right corner of the square
+      let x2 = x1 + size;
+      let y2 = y1 + size;
+
+      this.cropper = {
+        x1,
+        y1,
+        x2,
+        y2
+      };
+      this.formControl.setValue(`${x1},${y1},${x2},${y2}`);
+    }
   }
 
   onImageCropped(event: ImageCroppedEvent) {
     if (!this.ratio) {
-      return
+      return;
     }
 
     const x1 = Math.round(event.cropperPosition.x1 * this.ratio);
