@@ -341,14 +341,15 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
         };
 
         video.onloadedmetadata = () => {
-          console.log(video.videoWidth, video.videoHeight); // log the width and height
-
           this.uploadDataService.patchMetadata("image-upload", {
             width: video.videoWidth,
             height: video.videoHeight
           });
 
           URL.revokeObjectURL(video.src);
+
+          observer.next(true);
+          observer.complete();
         };
 
         video.src = URL.createObjectURL(file);
