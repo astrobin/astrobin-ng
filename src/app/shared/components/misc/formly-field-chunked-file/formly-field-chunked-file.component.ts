@@ -348,6 +348,12 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
 
           URL.revokeObjectURL(video.src);
 
+          this.popNotificationsService.warning(
+            this.translateService.instant(
+              "Video support is experimental. Please report any issue you might encounter."
+            )
+          );
+
           observer.next(true);
           observer.complete();
         };
