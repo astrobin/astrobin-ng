@@ -206,7 +206,7 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
 
         forkJoin({
           extensionCheck: this._checkFileExtension(state.name),
-          fileSizeCheck: this._checkFileSize(state.size),
+          fileSizeCheck: this._checkFileSize(state.name, state.size),
           imageDimensionsCheck: this._checkImageDimensions(state.file)
         }).subscribe(result => {
           if (result.extensionCheck && result.fileSizeCheck && result.imageDimensionsCheck) {
@@ -256,11 +256,11 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
     return of(false);
   }
 
-  private _checkFileSize(size: number): Observable<boolean> {
+  private _checkFileSize(filename: string, size: number): Observable<boolean> {
     return this.userSubscriptionService.fileSizeAllowed(size).pipe(
       map(result => {
         if (result.allowed) {
-          this._warnAboutVeryLargeFile(size);
+          this._warnAboutVeryLargeFile(filename, size);
           return true;
         } else {
           this.popNotificationsService.error(
@@ -365,7 +365,7 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
     return of(true);
   }
 
-  private _warnAboutVeryLargeFile(size: number): void {
+  private _warnAboutVeryLargeFile(filename: string, size: number): void {
     const MB = 1024 * 1024;
     let message;
 
@@ -373,33 +373,35 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
       return;
     }
 
-    if (size > 200 * MB) {
-      message =
-        this.translateService.instant(
-          "Warning! That's a large file you got there! AstroBin does not impose artificial limitation in the file " +
-          "size you can upload with an Ultimate subscription, but we cannot guarantee that all images above 200 MB or " +
-          "~8000x8000 pixels will work. Feel free to give it a shot tho!"
-        ) +
-        " <a class='d-block mt-2' target='_blank' href='https://welcome.astrobin.com/faq#image-limits'>" +
-        this.translateService.instant("Learn more") +
-        "</a>";
-    } else if (size > 25 * MB) {
-      message =
-        this.translateService.instant(
-          "Heads up! Are you sure you want to upload such a large file? It's okay to do so but probably not many " +
-          "people will want to see it at its full resolution, if it will take too long for them to download it."
-        ) +
-        " <a class='d-block mt-2' target='_blank' href='https://welcome.astrobin.com/faq#image-limits'>" +
-        this.translateService.instant("Learn more") +
-        "</a>";
-    }
+    if (UtilsService.isImage(filename)) {
+      if (size > 200 * MB) {
+        message =
+          this.translateService.instant(
+            "Warning! That's a large file you got there! AstroBin does not impose artificial limitation in the file " +
+            "size you can upload with an Ultimate subscription, but we cannot guarantee that all images above 200 MB or " +
+            "~8000x8000 pixels will work. Feel free to give it a shot tho!"
+          ) +
+          " <a class='d-block mt-2' target='_blank' href='https://welcome.astrobin.com/faq#image-limits'>" +
+          this.translateService.instant("Learn more") +
+          "</a>";
+      } else if (size > 25 * MB) {
+        message =
+          this.translateService.instant(
+            "Heads up! Are you sure you want to upload such a large file? It's okay to do so but probably not many " +
+            "people will want to see it at its full resolution, if it will take too long for them to download it."
+          ) +
+          " <a class='d-block mt-2' target='_blank' href='https://welcome.astrobin.com/faq#image-limits'>" +
+          this.translateService.instant("Learn more") +
+          "</a>";
+      }
 
-    if (!!message) {
-      this.popNotificationsService.warning(message, null, {
-        enableHtml: true,
-        timeOut: 30000,
-        closeButton: true
-      });
+      if (!!message) {
+        this.popNotificationsService.warning(message, null, {
+          enableHtml: true,
+          timeOut: 30000,
+          closeButton: true
+        });
+      }
     }
   }
 
