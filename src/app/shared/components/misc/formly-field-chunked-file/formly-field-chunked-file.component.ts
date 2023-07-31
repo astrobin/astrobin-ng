@@ -333,10 +333,8 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
         const video = document.createElement("video");
 
         video.onerror = () => {
-          const message =
-            "Sorry, but we couldn't detect this file as a video. Are you sure it's a supported video type?";
-          this.popNotificationsService.error(this.translateService.instant(message));
-          observer.next(false);
+          // We will let the backend verify the video and get the width and height.
+          observer.next(true);
           observer.complete();
         };
 
