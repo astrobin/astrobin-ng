@@ -332,10 +332,21 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
       return new Observable<boolean>(observer => {
         const video = document.createElement("video");
 
-        video.onerror = () => {
-          // We will let the backend verify the video and get the width and height.
+        const handleCompletion = () => {
+          URL.revokeObjectURL(video.src);
           observer.next(true);
           observer.complete();
+        };
+
+        this.popNotificationsService.warning(
+          this.translateService.instant(
+            "Video support is experimental. Please report any issue you might encounter."
+          )
+        );
+
+        video.onerror = () => {
+          // We will let the backend verify the video and get the width and height.
+          handleCompletion();
         };
 
         video.onloadedmetadata = () => {
@@ -344,16 +355,7 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
             height: video.videoHeight
           });
 
-          URL.revokeObjectURL(video.src);
-
-          this.popNotificationsService.warning(
-            this.translateService.instant(
-              "Video support is experimental. Please report any issue you might encounter."
-            )
-          );
-
-          observer.next(true);
-          observer.complete();
+          handleCompletion();
         };
 
         video.src = URL.createObjectURL(file);
