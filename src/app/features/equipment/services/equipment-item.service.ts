@@ -270,7 +270,8 @@ export class EquipmentItemService extends BaseService {
       "lastAddedOrRemovedFromImage",
       "searchFriendlyName",
       "listings",
-      "forum"
+      "forum",
+      "cameras" // For sensors.
     ];
 
     const _autoConvertValue = (value: any): any => {
