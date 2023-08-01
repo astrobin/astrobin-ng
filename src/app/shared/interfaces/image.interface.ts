@@ -170,7 +170,10 @@ export interface ImageInterface {
   collaborators: UserInterface["id"][] | null;
   hash: string;
   title: string;
-  imageFile: string;
+  imageFile: string | null;
+  videoFile: string | null;
+  encodedVideoFile: string | null;
+  loopVideo: string | null;
   isWip: boolean;
   skipNotifications: boolean;
   w: number;

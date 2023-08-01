@@ -531,6 +531,14 @@ export class ImageEditPageComponent
           ]
         };
 
+        if (this.imageEditService.model.videoFile) {
+          const loopVideoField = this.imageEditSettingsFieldsService.getLoopVideoField();
+          const index = settings.fieldGroup.findIndex(field => field.key === "mouseHoverImage");
+          if (index > -1) {
+            settings.fieldGroup.splice(index + 1, 0, loopVideoField);
+          }
+        }
+
         const fieldGroup = [basic, content, thumbnail, watermark];
 
         if (this.userService.isInGroup(user, Constants.OWN_EQUIPMENT_MIGRATORS_GROUP)) {
