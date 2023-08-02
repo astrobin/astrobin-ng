@@ -521,22 +521,26 @@ export class ImageEditPageComponent
         const settings = {
           id: "image-stepper-settings",
           props: { label: this.translateService.instant("Settings") },
-          fieldGroup: [
+          fieldGroup: []
+        };
+
+        if (this.imageEditService.model.videoFile) {
+          settings.fieldGroup = [
+            this.imageEditSettingsFieldsService.getLicenseField(),
+            this.imageEditSettingsFieldsService.getKeyValueTagsField(),
+            this.imageEditSettingsFieldsService.getLoopVideoField(),
+            this.imageEditSettingsFieldsService.getDownloadLimitationField(),
+            this.imageEditSettingsFieldsService.getAllowCommentsField()
+          ];
+        } else {
+          settings.fieldGroup = [
             this.imageEditSettingsFieldsService.getLicenseField(),
             this.imageEditSettingsFieldsService.getMouseHoverImageField(),
             this.imageEditSettingsFieldsService.getKeyValueTagsField(),
             this.imageEditSettingsFieldsService.getFullSizeDisplayLimitationField(),
             this.imageEditSettingsFieldsService.getDownloadLimitationField(),
             this.imageEditSettingsFieldsService.getAllowCommentsField()
-          ]
-        };
-
-        if (this.imageEditService.model.videoFile) {
-          const loopVideoField = this.imageEditSettingsFieldsService.getLoopVideoField();
-          const index = settings.fieldGroup.findIndex(field => field.key === "mouseHoverImage");
-          if (index > -1) {
-            settings.fieldGroup.splice(index + 1, 0, loopVideoField);
-          }
+          ];
         }
 
         const fieldGroup = [basic, content, thumbnail, watermark];
@@ -577,7 +581,7 @@ export class ImageEditPageComponent
       new SetBreadcrumb({
         breadcrumb: [
           {
-            label: this.translateService.instant("Image or video")
+            label: this.translateService.instant("Image")
           },
           {
             label: this.imageEditService.model.title
