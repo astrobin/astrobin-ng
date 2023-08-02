@@ -462,6 +462,15 @@ export class UtilsService {
   }
 
   insertScript(url: string, renderer: Renderer2, cb?: () => void) {
+    const alreadyInserted = document.querySelectorAll(`script[src="${url}"]`).length > 0;
+
+    if (alreadyInserted) {
+      if (cb) {
+        cb();
+      }
+      return;
+    }
+
     const script = renderer.createElement("script");
     script.src = url;
     script.async = true;
@@ -472,6 +481,29 @@ export class UtilsService {
     }
 
     renderer.appendChild(document.body, script);
+  }
+
+  insertStylesheet(url: string, renderer: Renderer2, cb?: () => void) {
+    const alreadyInserted = document.querySelectorAll(`link[rel="stylesheet"][href="${url}"]`).length > 0;
+
+    if (alreadyInserted) {
+      if (cb) {
+        cb();
+      }
+      return;
+    }
+
+    const link = renderer.createElement("link");
+    link.rel = "stylesheet";
+    link.href = url;
+    link.type = "text/css";
+    if (cb) {
+      link.onload = () => {
+        cb();
+      };
+    }
+
+    renderer.appendChild(document.head, link);
   }
 
   isNearBelowViewport(element: HTMLElement): boolean {

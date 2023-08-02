@@ -1,13 +1,18 @@
 import {
+  ChangeDetectorRef,
   Component,
   ElementRef,
   EventEmitter,
   HostBinding,
+  Inject,
   Input,
   OnChanges,
   OnInit,
   Output,
-  SimpleChanges
+  PLATFORM_ID,
+  Renderer2,
+  SimpleChanges,
+  ViewChild
 } from "@angular/core";
 import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
 import { LoadImage, LoadImageRevisions } from "@app/store/actions/image.actions";
@@ -28,6 +33,9 @@ import { fromEvent, Observable, of } from "rxjs";
 import { selectImageRevisionsForImage } from "@app/store/selectors/app/image-revision.selectors";
 import { Actions } from "@ngrx/effects";
 import { ImageThumbnailInterface } from "@shared/interfaces/image-thumbnail.interface";
+import { isPlatformBrowser } from "@angular/common";
+
+declare const videojs: any;
 
 @Component({
   selector: "astrobin-image",
@@ -57,11 +65,15 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
   @HostBinding("class.loading")
   loading = false;
 
+  @ViewChild("videoPlayer", { static: false })
+  videoPlayer: ElementRef;
+
   image: ImageInterface;
   thumbnailUrl: SafeUrl;
   width: number;
   height: number;
   progress = 0;
+  videoJsReady = false;
 
   constructor(
     public readonly store$: Store<State>,
@@ -71,9 +83,21 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
     public readonly elementRef: ElementRef,
     public readonly utilsService: UtilsService,
     public readonly windowRefService: WindowRefService,
-    public readonly domSanitizer: DomSanitizer
+    public readonly domSanitizer: DomSanitizer,
+    @Inject(PLATFORM_ID) private readonly platformId: Object,
+    public readonly renderer: Renderer2,
+    public readonly changeDetectorRef: ChangeDetectorRef
   ) {
     super(store$);
+  }
+
+  get videoSetup(): string {
+    const setup = {
+      fluid: false,
+      liveui: true,
+      loop: this.image?.loopVideo || false
+    };
+    return JSON.stringify(setup);
   }
 
   ngOnInit() {
@@ -87,9 +111,7 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
       throw new Error("Attribute 'alias' is required");
     }
 
-    fromEvent(this.windowRefService.nativeWindow, "scroll")
-      .pipe(takeUntil(this.destroyed$), debounceTime(50), distinctUntilChanged())
-      .subscribe(() => this.load());
+    this._setupOnScroll();
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -135,6 +157,10 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
             const h = !!revision ? revision.h : image.h;
             this._setWidthAndHeight(w, h);
             this._loadThumbnail();
+
+            if (!!image.videoFile) {
+              this._insertVideoJs();
+            }
           });
 
         this.store$.dispatch(new LoadImage(this.id));
@@ -223,5 +249,27 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
       this.width = containerWidth;
       this.height = undefined;
     }
+  }
+
+  private _setupOnScroll() {
+    if (isPlatformBrowser(this.platformId)) {
+      fromEvent(this.windowRefService.nativeWindow, "scroll")
+        .pipe(takeUntil(this.destroyed$), debounceTime(50), distinctUntilChanged())
+        .subscribe(() => this.load());
+    }
+  }
+
+  private _insertVideoJs() {
+    this.utilsService.insertStylesheet("https://vjs.zencdn.net/8.3.0/video-js.min.css", this.renderer, () => {
+      this.utilsService.insertScript("https://vjs.zencdn.net/8.3.0/video.min.js", this.renderer, () => {
+        this.videoJsReady = true;
+        this.changeDetectorRef.detectChanges();
+
+        if (!!this.videoPlayer) {
+          videojs(this.videoPlayer.nativeElement, {}, () => {
+          });
+        }
+      });
+    });
   }
 }
