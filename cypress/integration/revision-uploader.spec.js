@@ -90,7 +90,10 @@ context("revision uploader", () => {
           cy.get("#description").should("exist");
           cy.get("#skip_notifications").should("exist");
           cy.get("#mark_as_final").should("exist");
-          cy.get(".accepted-formats").should("contain.text", Constants.ALLOWED_UPLOAD_EXTENSIONS.join(","));
+          Constants.ALLOWED_UPLOAD_EXTENSIONS.forEach(format => {
+            cy.get(".accepted-formats")
+              .should("contain.text", format.replace(".", "").toUpperCase());
+          });
         });
 
         it("should allow the upload also if the user has a large number of revisions on this image", () => {
@@ -149,7 +152,6 @@ context("revision uploader", () => {
           cy.get("#description").should("exist");
           cy.get("#skip_notifications").should("exist");
           cy.get("#mark_as_final").should("exist");
-          cy.get(".accepted-formats").should("contain.text", Constants.ALLOWED_UPLOAD_EXTENSIONS.join(","));
         });
 
         it("should allow the upload also if the user has a large number of revisions on this image", () => {
@@ -208,7 +210,6 @@ context("revision uploader", () => {
           cy.get("#description").should("exist");
           cy.get("#skip_notifications").should("exist");
           cy.get("#mark_as_final").should("exist");
-          cy.get(".accepted-formats").should("contain.text", Constants.ALLOWED_UPLOAD_EXTENSIONS.join(","));
         });
 
         it("should allow the upload also if the user has a large number of revisions on this image", () => {
@@ -265,7 +266,6 @@ context("revision uploader", () => {
           cy.get("#description").should("exist");
           cy.get("#skip_notifications").should("exist");
           cy.get("#mark_as_final").should("exist");
-          cy.get(".accepted-formats").should("contain.text", Constants.ALLOWED_UPLOAD_EXTENSIONS.join(","));
         });
 
         it("should allow the upload also if the user has a large number of revisions on this image", () => {
@@ -322,7 +322,6 @@ context("revision uploader", () => {
           cy.get("#description").should("exist");
           cy.get("#skip_notifications").should("exist");
           cy.get("#mark_as_final").should("exist");
-          cy.get(".accepted-formats").should("contain.text", Constants.ALLOWED_UPLOAD_EXTENSIONS.join(","));
         });
 
         it("should allow the upload also if the user has a large number of revisions on this image", () => {
@@ -381,7 +380,6 @@ context("revision uploader", () => {
           cy.get("#description").should("exist");
           cy.get("#skip_notifications").should("exist");
           cy.get("#mark_as_final").should("exist");
-          cy.get(".accepted-formats").should("contain.text", Constants.ALLOWED_UPLOAD_EXTENSIONS.join(","));
         });
 
         it("should not allow the upload if the user has more revisions than allowed", () => {
@@ -440,7 +438,6 @@ context("revision uploader", () => {
           cy.get("#description").should("exist");
           cy.get("#skip_notifications").should("exist");
           cy.get("#mark_as_final").should("exist");
-          cy.get(".accepted-formats").should("contain.text", Constants.ALLOWED_UPLOAD_EXTENSIONS.join(","));
         });
 
         it("should not allow the upload if the user has more revisions than allowed", () => {

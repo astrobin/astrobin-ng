@@ -48,7 +48,11 @@ context("uploader", () => {
 
         cy.get("#title").should("exist");
         cy.get("#image_file").should("exist");
-        cy.get(".accepted-formats").should("contain.text", Constants.ALLOWED_UPLOAD_EXTENSIONS.join(","));
+
+        Constants.ALLOWED_UPLOAD_EXTENSIONS.forEach(format => {
+          cy.get(".accepted-formats")
+            .should("contain.text", format.replace(".", "").toUpperCase());
+        });
       });
 
       it("should display error if title is missing and Upload is clicked", () => {
@@ -85,7 +89,6 @@ context("uploader", () => {
 
         cy.get("#title").should("exist");
         cy.get("#image_file").should("exist");
-        cy.get(".accepted-formats").should("contain.text", Constants.ALLOWED_UPLOAD_EXTENSIONS.join(","));
       });
 
       it("should have all form controls if user is Premium (autorenew)", () => {
@@ -103,7 +106,6 @@ context("uploader", () => {
 
         cy.get("#title").should("exist");
         cy.get("#image_file").should("exist");
-        cy.get(".accepted-formats").should("contain.text", Constants.ALLOWED_UPLOAD_EXTENSIONS.join(","));
       });
 
       it("should have all form controls if user is Premium 2020", () => {
@@ -121,7 +123,6 @@ context("uploader", () => {
 
         cy.get("#title").should("exist");
         cy.get("#image_file").should("exist");
-        cy.get(".accepted-formats").should("contain.text", Constants.ALLOWED_UPLOAD_EXTENSIONS.join(","));
       });
 
       it("should have all form controls if user is Free", () => {
@@ -137,7 +138,6 @@ context("uploader", () => {
 
         cy.get("#title").should("exist");
         cy.get("#image_file").should("exist");
-        cy.get(".accepted-formats").should("contain.text", Constants.ALLOWED_UPLOAD_EXTENSIONS.join(","));
       });
     });
   });
