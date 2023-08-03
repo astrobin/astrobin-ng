@@ -25,6 +25,7 @@ export interface BackendConfigInterface {
   PREMIUM_PRICE_PREMIUM_2020: number;
   PREMIUM_PRICE_ULTIMATE_2020: number;
   MAX_IMAGE_PIXELS: number;
+  MAX_FILE_SIZE: number;
   GOOGLE_ADS_ID?: string;
   IMAGE_CONTENT_TYPE_ID: number;
   THUMBNAIL_ALIASES: ThumbnailAliases;

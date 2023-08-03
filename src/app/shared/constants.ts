@@ -9,8 +9,11 @@ export class Constants {
     ".tiff",
     ".mov",
     ".mpg",
+    ".mpeg",
     ".mp4",
-    ".avi"
+    ".avi",
+    ".wmv",
+    ".webm"
   ];
   static readonly ALLOWED_UNCOMPRESSED_SOURCE_UPLOAD_EXTENSIONS = [
     ".xisf",

@@ -12,7 +12,7 @@ import { UploadDataService } from "@shared/services/upload-metadata/upload-data.
 import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { Tus, UploadState, UploadxOptions, UploadxService } from "ngx-uploadx";
-import { forkJoin, Observable, of, Subscription } from "rxjs";
+import { forkJoin, Observable, of, Subscription, switchMap } from "rxjs";
 import { filter, map, take } from "rxjs/operators";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
@@ -257,22 +257,39 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
   }
 
   private _checkFileSize(filename: string, size: number): Observable<boolean> {
-    return this.userSubscriptionService.fileSizeAllowed(size).pipe(
-      map(result => {
-        if (result.allowed) {
-          this._warnAboutVeryLargeFile(filename, size);
-          return true;
-        } else {
+    return this.store$.select(selectBackendConfig).pipe(
+      switchMap(backendConfig => {
+        if (!!backendConfig.MAX_FILE_SIZE && size > backendConfig.MAX_FILE_SIZE) {
           this.popNotificationsService.error(
             this.translateService.instant(
-              "Sorry, but this image is too large. Under your current subscription plan, the maximum " +
-              "allowed image size is {{max}}.",
+              "Sorry, but this file is too large. For technical reasons, the largest size that's possible on " +
+              "AstroBin is {{max}}.",
               {
-                max: result.max / 1024 / 1024 + " MB"
+                max: backendConfig.MAX_FILE_SIZE / 1024 / 1024 + " MB"
               }
             )
           );
-          return false;
+          return of(false);
+        } else {
+          return this.userSubscriptionService.fileSizeAllowed(size).pipe(
+            map(result => {
+              if (result.allowed) {
+                this._warnAboutVeryLargeFile(filename, size);
+                return true;
+              } else {
+                this.popNotificationsService.error(
+                  this.translateService.instant(
+                    "Sorry, but this image is too large. Under your current subscription plan, the maximum " +
+                    "allowed image size is {{max}}.",
+                    {
+                      max: result.max / 1024 / 1024 + " MB"
+                    }
+                  )
+                );
+                return false;
+              }
+            })
+          );
         }
       })
     );
