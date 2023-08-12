@@ -225,6 +225,13 @@ export class EquipmentItemService extends BaseService {
       throw Error("Cannot detect changes for items of different types");
     }
 
+    const service = this.equipmentItemServiceFactory.getService(item);
+    const baseAllowedKeys = Object.values(EquipmentItemDisplayProperty) as string[];
+    const serviceAllowedKeys = service.getSupportedPrintableProperties();
+    const allowedKeys = [
+      ...new Set([...baseAllowedKeys, ...serviceAllowedKeys])
+    ].map(key => key.toLowerCase());
+
     const ignoredKeys = [
       "id",
       "contentType",
@@ -304,6 +311,33 @@ export class EquipmentItemService extends BaseService {
       return { name, value };
     };
 
+    const _parseData = (data: string, keys: string[]): string[] => {
+      const result: string[] = [];
+
+      // Step 1: Construct the indexes of the keys
+      const indexes: { key: string; index: number }[] = keys.map(key => {
+        return { key: key, index: data.indexOf(key + "=") };
+      });
+
+      // Step 2: Sort the indexes in ascending order
+      indexes.sort((a, b) => a.index - b.index);
+
+      // Step 3: Iterate through the sorted indexes and extract the key/value pairs
+      for (let i = 0; i < indexes.length; i++) {
+        const start = indexes[i].index;
+        const end = i < indexes.length - 1 ? indexes[i + 1].index : data.length;
+
+        if (start === -1) {
+          continue;
+        } // Skip if the key is not found
+
+        const keyValue = data.substring(start, end).replace(/,$/, ""); // Remove trailing comma if present
+        result.push(keyValue);
+      }
+
+      return result;
+    };
+
     const _getChanges = (): EditProposalChange[] => {
       const changes: EditProposalChange[] = [];
 
@@ -315,7 +349,7 @@ export class EquipmentItemService extends BaseService {
         | null = null;
 
       if (editProposal.editProposalOriginalProperties) {
-        originalProperties = editProposal.editProposalOriginalProperties.split(",").map(property => {
+        originalProperties = _parseData(editProposal.editProposalOriginalProperties, allowedKeys).map(property => {
           return _getNameValuePair(property);
         });
       }
