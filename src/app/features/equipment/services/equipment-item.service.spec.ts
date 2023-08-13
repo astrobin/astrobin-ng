@@ -8,13 +8,27 @@ import {
   EquipmentItemReviewerDecision,
   EquipmentItemReviewerRejectionReason
 } from "@features/equipment/types/equipment-item-base.interface";
+import { CameraDisplayProperty, CameraService } from "@features/equipment/services/camera.service";
 
 describe("EquipmentItemService", () => {
   let service: EquipmentItemService;
+  let cameraService: CameraService;
 
   beforeEach(async () => {
     await MockBuilder(EquipmentItemService, AppModule);
     service = TestBed.inject(EquipmentItemService);
+    cameraService = TestBed.inject(CameraService);
+
+    jest.spyOn(service.equipmentItemServiceFactory, "getService").mockReturnValue(cameraService);
+    jest.spyOn(cameraService, "getSupportedPrintableProperties").mockReturnValue([
+      CameraDisplayProperty.NAME,
+      CameraDisplayProperty.TYPE,
+      CameraDisplayProperty.SENSOR,
+      CameraDisplayProperty.COOLED,
+      CameraDisplayProperty.MAX_COOLING,
+      CameraDisplayProperty.BACK_FOCUS,
+      CameraDisplayProperty.MODIFIED
+    ]);
   });
 
   it("should be created", () => {
@@ -103,7 +117,7 @@ describe("EquipmentItemService", () => {
           ...item1,
           ...{
             editProposalReviewStatus: EditProposalReviewStatus.APPROVED,
-            editProposalOriginalProperties: "cooled=false,maxCooling=null,backFocus=40.5"
+            editProposalOriginalProperties: "cooled=false,max_cooling=null,back_focus=40.5"
           }
         });
 
