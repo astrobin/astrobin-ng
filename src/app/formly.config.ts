@@ -235,6 +235,12 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
         message(): string {
           return translateService.instant("Sky-Watcher is spelled with a dash sign.");
         }
+      },
+      {
+        name: "enum-value",
+        message(): string {
+          return translateService.instant("This value is not valid.");
+        }
       }
     ],
     validators: [
@@ -413,6 +419,16 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
           }
 
           return countDecimals(control.value) <= options.value ? null : { "max-decimals": options };
+        }
+      },
+      {
+        name: "enum-value",
+        validation: (control: FormControl, field: FormlyFieldConfig, options: { allowedValues: any[] }) => {
+          if (control.value === null || control.value === undefined) {
+            return null;
+          }
+
+          return options.allowedValues.includes(control.value) ? null : { "enum-value": options };
         }
       }
     ]

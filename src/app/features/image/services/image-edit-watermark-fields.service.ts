@@ -127,6 +127,9 @@ export class ImageEditWatermarkFieldsService extends ImageEditFieldsBaseService 
           this._watermarkPositionValueChangesSubscription.unsubscribe();
           this._watermarkPositionValueChangesSubscription = undefined;
         }
+      },
+      validators: {
+        validation: [{ name: "enum-value", options: { allowedValues: Object.values(WatermarkPositionOptions) } }]
       }
     };
   }
@@ -170,6 +173,9 @@ export class ImageEditWatermarkFieldsService extends ImageEditFieldsBaseService 
           this._watermarkTextSizeValueChangesSubscription.unsubscribe();
           this._watermarkTextSizeValueChangesSubscription = undefined;
         }
+      },
+      validators: {
+        validation: [{ name: "enum-value", options: { allowedValues: Object.values(WatermarkSizeOptions) } }]
       }
     };
   }
