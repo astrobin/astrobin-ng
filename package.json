@@ -115,7 +115,7 @@
     "compression": "1.7.4",
     "concurrently": "7.6.0",
     "cross-var": "1.1.0",
-    "cypress": "6.9.1",
+    "cypress": "12.17.4",
     "eslint": "8.41.0",
     "eslint-plugin-import": "latest",
     "eslint-plugin-jsdoc": "latest",
