@@ -204,12 +204,12 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
 
         this.popNotificationsService.clear();
 
-        forkJoin({
-          extensionCheck: this._checkFileExtension(state.name),
-          fileSizeCheck: this._checkFileSize(state.name, state.size),
-          imageDimensionsCheck: this._checkImageDimensions(state.file)
-        }).subscribe(result => {
-          if (result.extensionCheck && result.fileSizeCheck && result.imageDimensionsCheck) {
+        forkJoin([
+          this._checkFileExtension(state.name),
+          this._checkFileSize(state.name, state.size),
+          this._checkImageDimensions(state.file)
+        ]).subscribe(result => {
+          if (result[0] && result[1] && result[2]) {
             this.upload = new FileUpload(state);
             this.uploadSize = state.size;
             this.formControl.setValue(this.uploadState.file);
@@ -257,42 +257,47 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
   }
 
   private _checkFileSize(filename: string, size: number): Observable<boolean> {
-    return this.store$.select(selectBackendConfig).pipe(
-      switchMap(backendConfig => {
-        if (!!backendConfig.MAX_FILE_SIZE && size > backendConfig.MAX_FILE_SIZE) {
-          this.popNotificationsService.error(
-            this.translateService.instant(
-              "Sorry, but this file is too large. For technical reasons, the largest size that's possible on " +
-              "AstroBin is {{max}}.",
-              {
-                max: backendConfig.MAX_FILE_SIZE / 1024 / 1024 + " MB"
-              }
-            )
-          );
-          return of(false);
-        } else {
-          return this.userSubscriptionService.fileSizeAllowed(size).pipe(
-            map(result => {
-              if (result.allowed) {
-                this._warnAboutVeryLargeFile(filename, size);
-                return true;
-              } else {
-                this.popNotificationsService.error(
-                  this.translateService.instant(
-                    "Sorry, but this image is too large. Under your current subscription plan, the maximum " +
-                    "allowed image size is {{max}}.",
-                    {
-                      max: result.max / 1024 / 1024 + " MB"
-                    }
-                  )
-                );
-                return false;
-              }
-            })
-          );
-        }
-      })
-    );
+    return new Observable<boolean>(observer => {
+      this.store$.select(selectBackendConfig).pipe(
+        switchMap(backendConfig => {
+          if (!!backendConfig.MAX_FILE_SIZE && size > backendConfig.MAX_FILE_SIZE) {
+            this.popNotificationsService.error(
+              this.translateService.instant(
+                "Sorry, but this file is too large. For technical reasons, the largest size that's possible on " +
+                "AstroBin is {{max}}.",
+                {
+                  max: backendConfig.MAX_FILE_SIZE / 1024 / 1024 + " MB"
+                }
+              )
+            );
+            observer.next(false);
+            observer.complete();
+          } else {
+            return this.userSubscriptionService.fileSizeAllowed(size).pipe(
+              map(result => {
+                if (result.allowed) {
+                  this._warnAboutVeryLargeFile(filename, size);
+                  observer.next(true);
+                } else {
+                  this.popNotificationsService.error(
+                    this.translateService.instant(
+                      "Sorry, but this image is too large. Under your current subscription plan, the maximum " +
+                      "allowed image size is {{max}}.",
+                      {
+                        max: result.max / 1024 / 1024 + " MB"
+                      }
+                    )
+                  );
+                  observer.next(false);
+                }
+
+                observer.complete();
+              })
+            );
+          }
+        })
+      ).subscribe();
+    });
   }
 
   private _checkImageDimensions(file: File): Observable<boolean> {
