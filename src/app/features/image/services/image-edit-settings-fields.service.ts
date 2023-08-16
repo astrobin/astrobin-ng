@@ -82,6 +82,9 @@ export class ImageEditSettingsFieldsService extends ImageEditFieldsBaseService {
             label: this.translateService.instant("Attribution-NoDerivs Creative Commons")
           }
         ]
+      },
+      validators: {
+        validation: [{ name: "enum-value", options: { allowedValues: Object.values(LicenseOptions) } }]
       }
     };
   }
@@ -233,6 +236,12 @@ export class ImageEditSettingsFieldsService extends ImageEditFieldsBaseService {
             label: this.translateService.instant("Nobody")
           }
         ]
+      },
+      validators: {
+        validation: [{
+          name: "enum-value",
+          options: { allowedValues: Object.values(FullSizeLimitationDisplayOptions) }
+        }]
       }
     };
   }
@@ -255,6 +264,9 @@ export class ImageEditSettingsFieldsService extends ImageEditFieldsBaseService {
             label: this.translateService.instant("Me only")
           }
         ]
+      },
+      validators: {
+        validation: [{ name: "enum-value", options: { allowedValues: Object.values(DownloadLimitationOptions) } }]
       }
     };
   }

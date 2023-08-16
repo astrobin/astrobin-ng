@@ -74,6 +74,9 @@ export class ImageEditContentFieldsService extends ImageEditFieldsBaseService {
             label: this.translateService.instant("Other/Unknown")
           }
         ]
+      },
+      validators: {
+        validation: [{ name: "enum-value", options: { allowedValues: Object.values(AcquisitionType) } }]
       }
     };
   }
@@ -120,7 +123,7 @@ export class ImageEditContentFieldsService extends ImageEditFieldsBaseService {
           this.imageEditService.model = {
             ...this.imageEditService.model,
             overrideAcquisitionForm: null
-          }
+          };
 
           if (this.imageEditService.isSolarSystem(value)) {
             this.imageEditService.model = {
@@ -137,6 +140,9 @@ export class ImageEditContentFieldsService extends ImageEditFieldsBaseService {
             this.imageEditService.model.solarSystemAcquisitions = [];
           }
         }
+      },
+      validators: {
+        validation: [{ name: "enum-value", options: { allowedValues: Object.values(SubjectType) } }]
       }
     };
   }
@@ -192,6 +198,9 @@ export class ImageEditContentFieldsService extends ImageEditFieldsBaseService {
           },
           { value: SolarSystemSubjectType.OTHER, label: this.translateService.instant("Other") }
         ]
+      },
+      validators: {
+        validation: [{ name: "enum-value", options: { allowedValues: Object.values(SolarSystemSubjectType) } }]
       }
     };
   }
@@ -270,6 +279,9 @@ export class ImageEditContentFieldsService extends ImageEditFieldsBaseService {
           this._dataSourceValueChangesSubscription.unsubscribe();
           this._dataSourceValueChangesSubscription = undefined;
         }
+      },
+      validators: {
+        validation: [{ name: "enum-value", options: { allowedValues: Object.values(DataSource) } }]
       }
     };
   }
