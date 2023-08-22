@@ -16,6 +16,7 @@ import { forkJoin, Observable, of, Subscription, switchMap } from "rxjs";
 import { filter, map, take } from "rxjs/operators";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
+import { selectCurrentUser } from "@features/account/store/auth.selectors";
 
 // PLEASE NOTE: due to the usage of the UploaderDataService, there can be only one chunked file upload field on a page
 // at any given time.
@@ -30,7 +31,7 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
   uploadSize: number;
   uploadState: UploadState;
   uploadOptions: UploadxOptions = {
-    allowedTypes: Constants.ALLOWED_UPLOAD_EXTENSIONS.join(","),
+    allowedTypes: Constants.ALLOWED_IMAGE_UPLOAD_EXTENSIONS.join(","),
     uploaderClass: Tus,
     maxChunkSize: 2 * 1024 * 1024,
     multiple: false,
@@ -100,6 +101,17 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
         );
         this._initUploader();
       });
+
+    this.store$.select(selectCurrentUser).pipe(
+      filter(user => !!user),
+      take(1)
+    ).subscribe(user => {
+      if (user.id % 10 <= 1) {
+        this.uploadOptions.allowedTypes = Constants.ALLOWED_IMAGE_UPLOAD_EXTENSIONS.concat(
+          Constants.ALLOWED_VIDEO_UPLOAD_EXTENSIONS).join(",");
+        this.uploadDataService.setAllowedTypes(this.uploadOptions.allowedTypes);
+      }
+    });
   }
 
   isActive(): boolean {
