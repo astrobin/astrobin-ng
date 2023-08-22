@@ -90,7 +90,10 @@ context("revision uploader", () => {
           cy.get("#description").should("exist");
           cy.get("#skip_notifications").should("exist");
           cy.get("#mark_as_final").should("exist");
-          Constants.ALLOWED_UPLOAD_EXTENSIONS.forEach(format => {
+          [
+            ...Constants.ALLOWED_IMAGE_UPLOAD_EXTENSIONS,
+            ...Constants.ALLOWED_VIDEO_UPLOAD_EXTENSIONS
+          ].forEach(format => {
             cy.get(".accepted-formats")
               .should("contain.text", format.replace(".", "").toUpperCase());
           });

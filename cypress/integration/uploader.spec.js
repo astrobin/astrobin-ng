@@ -49,7 +49,10 @@ context("uploader", () => {
         cy.get("#title").should("exist");
         cy.get("#image_file").should("exist");
 
-        Constants.ALLOWED_UPLOAD_EXTENSIONS.forEach(format => {
+        [
+          ...Constants.ALLOWED_IMAGE_UPLOAD_EXTENSIONS,
+          ...Constants.ALLOWED_VIDEO_UPLOAD_EXTENSIONS
+        ].forEach(format => {
           cy.get(".accepted-formats")
             .should("contain.text", format.replace(".", "").toUpperCase());
         });
