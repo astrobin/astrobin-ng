@@ -14,7 +14,15 @@
       <ng-template #withoutFile>
         <fa-icon icon="upload"></fa-icon>
         <div class="choose-file">{{ "Drop file here or click to browse" | translate }}</div>
-        <div class="accepted-formats">{{ "Accepted formats" | translate }}: {{ uploadOptions.allowedTypes }}</div>
+        <div class="accepted-formats">
+          {{ "Accepted formats" | translate }}:
+          <span
+            *ngFor="let allowedType of uploadOptions.allowedTypes.split(','); let isLast = last"
+            class="accepted-format">
+            {{ allowedType.replace(".", "").toUpperCase() }}
+            {{ isLast ? "" : " &middot; " }}
+          </span>
+        </div>
       </ng-template>
     </span>
 

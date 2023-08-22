@@ -61,10 +61,11 @@ context("uncompressed source uploader", () => {
         cy.visitPage("/uploader/uncompressed-source/2");
 
         cy.get("#image_file").should("exist");
-        cy.get(".accepted-formats").should(
-          "contain.text",
-          Constants.ALLOWED_UNCOMPRESSED_SOURCE_UPLOAD_EXTENSIONS.join(",")
-        );
+
+        Constants.ALLOWED_UNCOMPRESSED_SOURCE_UPLOAD_EXTENSIONS.forEach(format => {
+          cy.get(".accepted-formats")
+            .should("contain.text", format.replace(".", "").toUpperCase());
+        });
       });
 
       it("should have all form controls if user is Premium", () => {
@@ -87,10 +88,6 @@ context("uncompressed source uploader", () => {
         cy.visitPage("/uploader/uncompressed-source/2");
 
         cy.get("#image_file").should("exist");
-        cy.get(".accepted-formats").should(
-          "contain.text",
-          Constants.ALLOWED_UNCOMPRESSED_SOURCE_UPLOAD_EXTENSIONS.join(",")
-        );
       });
 
       it("should have all form controls if user is Premium (autorenew)", () => {
@@ -113,10 +110,6 @@ context("uncompressed source uploader", () => {
         cy.visitPage("/uploader/uncompressed-source/2");
 
         cy.get("#image_file").should("exist");
-        cy.get(".accepted-formats").should(
-          "contain.text",
-          Constants.ALLOWED_UNCOMPRESSED_SOURCE_UPLOAD_EXTENSIONS.join(",")
-        );
       });
 
       it("should redirect if user is Premium 2020", () => {

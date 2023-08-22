@@ -1,6 +1,22 @@
 export class Constants {
   static readonly AUTO_REFRESH_INTERVAL = 30000;
-  static readonly ALLOWED_UPLOAD_EXTENSIONS = [".jpg", ".jpeg", ".png", ".gif", ".tif", ".tiff"];
+  static readonly ALLOWED_IMAGE_UPLOAD_EXTENSIONS = [
+    ".jpg",
+    ".jpeg",
+    ".png",
+    ".gif",
+    ".tif",
+    ".tiff"
+  ];
+  static readonly ALLOWED_VIDEO_UPLOAD_EXTENSIONS = [
+    ".mov",
+    ".mpg",
+    ".mpeg",
+    ".mp4",
+    ".avi",
+    ".wmv",
+    ".webm"
+  ];
   static readonly ALLOWED_UNCOMPRESSED_SOURCE_UPLOAD_EXTENSIONS = [
     ".xisf",
     ".fits",

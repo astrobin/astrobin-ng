@@ -89,8 +89,8 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
           )
       },
       {
-        name: "image-file",
-        message: () => translateService.instant("This file is not an image.")
+        name: "image-or-video-file",
+        message: () => translateService.instant("This file is not an image or a video.")
       },
       {
         name: "url",
@@ -267,7 +267,7 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
         }
       },
       {
-        name: "image-file",
+        name: "image-or-video-file",
         validation: (control: FormControl, field: FormlyFieldConfig): ValidationErrors => {
           let value;
 
@@ -277,7 +277,10 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
             value = control.value;
           }
 
-          return !value || UtilsService.isString(value) || UtilsService.isImage(value.name)
+          return !value ||
+          UtilsService.isString(value) ||
+          UtilsService.isImage(value.name) ||
+          UtilsService.isVideo(value.name)
             ? null
             : { "image-file": true };
         }

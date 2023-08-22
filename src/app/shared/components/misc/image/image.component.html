@@ -1,21 +1,58 @@
-<ng-container *ngIf="!!image && !!thumbnailUrl; else loading">
-  <img
-    id="image-{{ id }}{{ image.hash ? '-' + image.hash : '' }}-{{ revision }}-{{ alias }}"
-    class="astrobin-image"
-    [src]="thumbnailUrl"
-    [alt]="image.title"
-    [attr.width]="!!width ? width : null"
-    [attr.height]="!!height ? height : null"
-    (load)="onLoad($event)"
-  />
+<ng-container *ngIf="!!image && !!thumbnailUrl; else loadingTemplate">
+  <ng-container *ngIf="!!image.videoFile; else imageTemplate">
+    <ng-container *ngIf="videoJsReady; else simpleLoadingTemplate">
+      <ng-container *ngIf="!!image.encodedVideoFile; else stillProcessingTemplate">
+        <video
+          #videoPlayer
+          [attr.data-setup]='videoSetup'
+          [attr.height]="height"
+          [attr.poster]="thumbnailUrl"
+          [attr.width]="width"
+          class="video-js vjs-default-skin"
+          controls
+          preload="auto"
+        >
+          <source src="{{ image.encodedVideoFile }}" type="video/mp4" />
+        </video>
+      </ng-container>
+    </ng-container>
+  </ng-container>
+
+  <ng-template #imageTemplate>
+    <img
+      (load)="onLoad($event)"
+      [alt]="image.title"
+      [attr.height]="!!height ? height : null"
+      [attr.width]="!!width ? width : null"
+      [src]="thumbnailUrl"
+      class="astrobin-image"
+      id="image-{{ id }}{{ image.hash ? '-' + image.hash : '' }}-{{ revision }}-{{ alias }}"
+    >
+  </ng-template>
 </ng-container>
 
-<ng-template #loading>
+<ng-template #loadingTemplate>
   <div
-    class="loading-container"
     [style.height]="!!height ? height + 'px' : 'auto'"
     [style.padding]="!!height ? 0 : '2rem'"
+    class="loading-container"
   >
     <astrobin-loading-indicator [progress]="progress"></astrobin-loading-indicator>
   </div>
+</ng-template>
+
+<ng-template #simpleLoadingTemplate>
+  <div
+    [style.height]="!!height ? height + 'px' : 'auto'"
+    [style.padding]="!!height ? 0 : '2rem'"
+    class="loading-container"
+  >
+    <astrobin-loading-indicator></astrobin-loading-indicator>
+  </div>
+</ng-template>
+
+<ng-template #stillProcessingTemplate>
+  <p class="alert alert-info video-still-processing" translate>
+    This video is still processing, please return to this page later.
+  </p>
 </ng-template>

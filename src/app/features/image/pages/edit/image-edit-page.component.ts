@@ -521,15 +521,27 @@ export class ImageEditPageComponent
         const settings = {
           id: "image-stepper-settings",
           props: { label: this.translateService.instant("Settings") },
-          fieldGroup: [
+          fieldGroup: []
+        };
+
+        if (this.imageEditService.model.videoFile) {
+          settings.fieldGroup = [
+            this.imageEditSettingsFieldsService.getLicenseField(),
+            this.imageEditSettingsFieldsService.getKeyValueTagsField(),
+            this.imageEditSettingsFieldsService.getLoopVideoField(),
+            this.imageEditSettingsFieldsService.getDownloadLimitationField(),
+            this.imageEditSettingsFieldsService.getAllowCommentsField()
+          ];
+        } else {
+          settings.fieldGroup = [
             this.imageEditSettingsFieldsService.getLicenseField(),
             this.imageEditSettingsFieldsService.getMouseHoverImageField(),
             this.imageEditSettingsFieldsService.getKeyValueTagsField(),
             this.imageEditSettingsFieldsService.getFullSizeDisplayLimitationField(),
             this.imageEditSettingsFieldsService.getDownloadLimitationField(),
             this.imageEditSettingsFieldsService.getAllowCommentsField()
-          ]
-        };
+          ];
+        }
 
         const fieldGroup = [basic, content, thumbnail, watermark];
 

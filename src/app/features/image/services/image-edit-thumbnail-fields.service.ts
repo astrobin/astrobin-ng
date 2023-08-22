@@ -35,7 +35,7 @@ export class ImageEditThumbnailFieldsService extends ImageEditFieldsBaseService 
       type: "image-cropper",
       id: "image-cropper-field",
       props: {
-        required: true,
+        required: false,
         description: this.translateService.instant(
           "Select an area of the image to be used as thumbnail in your gallery."
         ),
@@ -53,7 +53,7 @@ export class ImageEditThumbnailFieldsService extends ImageEditFieldsBaseService 
               }
               return `${thumbnail.url}?cache-block=true`;
             }),
-            retry({ count: 60, delay: 1000 }),
+            retry({ count: 600, delay: 2000 }),
             catchError(() => {
               this.popNotificationsService.error(
                 "Timeout while loading the thumbnail, please refresh the page to try again!"

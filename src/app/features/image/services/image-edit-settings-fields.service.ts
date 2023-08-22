@@ -156,6 +156,20 @@ export class ImageEditSettingsFieldsService extends ImageEditFieldsBaseService {
     };
   }
 
+  getLoopVideoField(): FormlyFieldConfig {
+    return {
+      key: "loopVideo",
+      type: "checkbox",
+      id: "image-loop-video-field",
+      props: {
+        label: this.translateService.instant("Loop video"),
+        description: this.translateService.instant(
+          "If checked, the video will loop."
+        )
+      }
+    };
+  }
+
   getKeyValueTagsField(): FormlyFieldConfig {
     return {
       key: "keyValueTags",

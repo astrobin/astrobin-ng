@@ -12,10 +12,11 @@ import { UploadDataService } from "@shared/services/upload-metadata/upload-data.
 import { UserSubscriptionService } from "@shared/services/user-subscription/user-subscription.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { Tus, UploadState, UploadxOptions, UploadxService } from "ngx-uploadx";
-import { forkJoin, Observable, of, Subscription } from "rxjs";
+import { forkJoin, Observable, of, Subscription, switchMap } from "rxjs";
 import { filter, map, take } from "rxjs/operators";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
+import { selectCurrentUser } from "@features/account/store/auth.selectors";
 
 // PLEASE NOTE: due to the usage of the UploaderDataService, there can be only one chunked file upload field on a page
 // at any given time.
@@ -30,7 +31,7 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
   uploadSize: number;
   uploadState: UploadState;
   uploadOptions: UploadxOptions = {
-    allowedTypes: Constants.ALLOWED_UPLOAD_EXTENSIONS.join(","),
+    allowedTypes: Constants.ALLOWED_IMAGE_UPLOAD_EXTENSIONS.join(","),
     uploaderClass: Tus,
     maxChunkSize: 2 * 1024 * 1024,
     multiple: false,
@@ -100,6 +101,21 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
         );
         this._initUploader();
       });
+
+    this.store$.select(selectCurrentUser).pipe(
+      filter(user => !!user),
+      take(1)
+    ).subscribe(user => {
+      const isCypress = Object.keys(this.windowRefService.nativeWindow).indexOf("Cypress") !== -1;
+      const isImageUploader = this.uploadOptions.allowedTypes === Constants.ALLOWED_IMAGE_UPLOAD_EXTENSIONS.join(",");
+      const allow = user.id % 10 <= 1;
+
+      if (isImageUploader && (allow || isCypress)) {
+        this.uploadOptions.allowedTypes = Constants.ALLOWED_IMAGE_UPLOAD_EXTENSIONS.concat(
+          Constants.ALLOWED_VIDEO_UPLOAD_EXTENSIONS).join(",");
+        this.uploadDataService.setAllowedTypes(this.uploadOptions.allowedTypes);
+      }
+    });
   }
 
   isActive(): boolean {
@@ -204,12 +220,12 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
 
         this.popNotificationsService.clear();
 
-        forkJoin({
-          extensionCheck: this._checkFileExtension(state.name),
-          fileSizeCheck: this._checkFileSize(state.size),
-          imageDimensionsCheck: this._checkImageDimensions(state.file)
-        }).subscribe(result => {
-          if (result.extensionCheck && result.fileSizeCheck && result.imageDimensionsCheck) {
+        forkJoin([
+          this._checkFileExtension(state.name),
+          this._checkFileSize(state.name, state.size),
+          this._checkImageDimensions(state.file)
+        ]).subscribe(result => {
+          if (result[0] && result[1] && result[2]) {
             this.upload = new FileUpload(state);
             this.uploadSize = state.size;
             this.formControl.setValue(this.uploadState.file);
@@ -256,26 +272,48 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
     return of(false);
   }
 
-  private _checkFileSize(size: number): Observable<boolean> {
-    return this.userSubscriptionService.fileSizeAllowed(size).pipe(
-      map(result => {
-        if (result.allowed) {
-          this._warnAboutVeryLargeFile(size);
-          return true;
-        } else {
-          this.popNotificationsService.error(
-            this.translateService.instant(
-              "Sorry, but this image is too large. Under your current subscription plan, the maximum " +
-              "allowed image size is {{max}}.",
-              {
-                max: result.max / 1024 / 1024 + " MB"
-              }
-            )
-          );
-          return false;
-        }
-      })
-    );
+  private _checkFileSize(filename: string, size: number): Observable<boolean> {
+    return new Observable<boolean>(observer => {
+      this.store$.select(selectBackendConfig).pipe(
+        switchMap(backendConfig => {
+          if (!!backendConfig.MAX_FILE_SIZE && size > backendConfig.MAX_FILE_SIZE) {
+            this.popNotificationsService.error(
+              this.translateService.instant(
+                "Sorry, but this file is too large. For technical reasons, the largest size that's possible on " +
+                "AstroBin is {{max}}.",
+                {
+                  max: backendConfig.MAX_FILE_SIZE / 1024 / 1024 + " MB"
+                }
+              )
+            );
+            observer.next(false);
+            observer.complete();
+          } else {
+            return this.userSubscriptionService.fileSizeAllowed(size).pipe(
+              map(result => {
+                if (result.allowed) {
+                  this._warnAboutVeryLargeFile(filename, size);
+                  observer.next(true);
+                } else {
+                  this.popNotificationsService.error(
+                    this.translateService.instant(
+                      "Sorry, but this image is too large. Under your current subscription plan, the maximum " +
+                      "allowed image size is {{max}}.",
+                      {
+                        max: result.max / 1024 / 1024 + " MB"
+                      }
+                    )
+                  );
+                  observer.next(false);
+                }
+
+                observer.complete();
+              })
+            );
+          }
+        })
+      ).subscribe();
+    });
   }
 
   private _checkImageDimensions(file: File): Observable<boolean> {
@@ -328,12 +366,44 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
 
         image.src = URL.createObjectURL(file);
       });
+    } else if (UtilsService.isVideo(file.name)) {
+      return new Observable<boolean>(observer => {
+        const video = document.createElement("video");
+
+        const handleCompletion = () => {
+          URL.revokeObjectURL(video.src);
+          observer.next(true);
+          observer.complete();
+        };
+
+        this.popNotificationsService.warning(
+          this.translateService.instant(
+            "Video support is experimental. Please report any issue you might encounter."
+          )
+        );
+
+        video.onerror = () => {
+          // We will let the backend verify the video and get the width and height.
+          handleCompletion();
+        };
+
+        video.onloadedmetadata = () => {
+          this.uploadDataService.patchMetadata("image-upload", {
+            width: video.videoWidth,
+            height: video.videoHeight
+          });
+
+          handleCompletion();
+        };
+
+        video.src = URL.createObjectURL(file);
+      });
     }
 
     return of(true);
   }
 
-  private _warnAboutVeryLargeFile(size: number): void {
+  private _warnAboutVeryLargeFile(filename: string, size: number): void {
     const MB = 1024 * 1024;
     let message;
 
@@ -341,33 +411,35 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
       return;
     }
 
-    if (size > 200 * MB) {
-      message =
-        this.translateService.instant(
-          "Warning! That's a large file you got there! AstroBin does not impose artificial limitation in the file " +
-          "size you can upload with an Ultimate subscription, but we cannot guarantee that all images above 200 MB or " +
-          "~8000x8000 pixels will work. Feel free to give it a shot tho!"
-        ) +
-        " <a class='d-block mt-2' target='_blank' href='https://welcome.astrobin.com/faq#image-limits'>" +
-        this.translateService.instant("Learn more") +
-        "</a>";
-    } else if (size > 25 * MB) {
-      message =
-        this.translateService.instant(
-          "Heads up! Are you sure you want to upload such a large file? It's okay to do so but probably not many " +
-          "people will want to see it at its full resolution, if it will take too long for them to download it."
-        ) +
-        " <a class='d-block mt-2' target='_blank' href='https://welcome.astrobin.com/faq#image-limits'>" +
-        this.translateService.instant("Learn more") +
-        "</a>";
-    }
+    if (UtilsService.isImage(filename)) {
+      if (size > 200 * MB) {
+        message =
+          this.translateService.instant(
+            "Warning! That's a large file you got there! AstroBin does not impose artificial limitation in the file " +
+            "size you can upload with an Ultimate subscription, but we cannot guarantee that all images above 200 MB or " +
+            "~8000x8000 pixels will work. Feel free to give it a shot tho!"
+          ) +
+          " <a class='d-block mt-2' target='_blank' href='https://welcome.astrobin.com/faq#image-limits'>" +
+          this.translateService.instant("Learn more") +
+          "</a>";
+      } else if (size > 25 * MB) {
+        message =
+          this.translateService.instant(
+            "Heads up! Are you sure you want to upload such a large file? It's okay to do so but probably not many " +
+            "people will want to see it at its full resolution, if it will take too long for them to download it."
+          ) +
+          " <a class='d-block mt-2' target='_blank' href='https://welcome.astrobin.com/faq#image-limits'>" +
+          this.translateService.instant("Learn more") +
+          "</a>";
+      }
 
-    if (!!message) {
-      this.popNotificationsService.warning(message, null, {
-        enableHtml: true,
-        timeOut: 30000,
-        closeButton: true
-      });
+      if (!!message) {
+        this.popNotificationsService.warning(message, null, {
+          enableHtml: true,
+          timeOut: 30000,
+          closeButton: true
+        });
+      }
     }
   }
 
