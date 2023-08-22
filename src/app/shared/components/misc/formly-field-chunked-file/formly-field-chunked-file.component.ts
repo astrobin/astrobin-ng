@@ -106,7 +106,11 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
       filter(user => !!user),
       take(1)
     ).subscribe(user => {
-      if (user.id % 10 <= 1 || Object.keys(this.windowRefService.nativeWindow).indexOf("Cypress") !== -1) {
+      const isCypress = Object.keys(this.windowRefService.nativeWindow).indexOf("Cypress") !== -1;
+      const isImageUploader = this.uploadOptions.allowedTypes === Constants.ALLOWED_IMAGE_UPLOAD_EXTENSIONS.join(",");
+      const allow = user.id % 10 <= 1;
+
+      if (isImageUploader && (allow || isCypress)) {
         this.uploadOptions.allowedTypes = Constants.ALLOWED_IMAGE_UPLOAD_EXTENSIONS.concat(
           Constants.ALLOWED_VIDEO_UPLOAD_EXTENSIONS).join(",");
         this.uploadDataService.setAllowedTypes(this.uploadOptions.allowedTypes);
