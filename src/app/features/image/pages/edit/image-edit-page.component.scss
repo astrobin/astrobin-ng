@@ -24,6 +24,16 @@
         margin-left: 0.5rem;
         color: var(--gold);
       }
+
+      &[id*='filter2'] {
+        .ng-select-container {
+          height: auto;
+
+          .ng-value-container .ng-value {
+            white-space: initial;
+          }
+        }
+      }
     }
 
     image-cropper {
