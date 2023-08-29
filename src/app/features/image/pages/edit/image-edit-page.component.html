@@ -71,6 +71,16 @@
     {{ "Copy from another image" | translate }}&hellip;
   </button>
 
+
+  <button
+    (click)="onImportFromCsvClicked($event)"
+    [class.loading]="loadingService.loading$ | async"
+    class="btn btn-outline-secondary"
+    id="import-from-csv-btn"
+  >
+    {{ "Import from CSV" | translate }}&hellip;
+  </button>
+
   <button
     (click)="onOverrideAcquisitionFormClicked($event)"
     [class.loading]="loadingService.loading$ | async"

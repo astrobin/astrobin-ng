@@ -56,6 +56,7 @@ import {
   AcquisitionForm,
   OverrideAcquisitionFormModalComponent
 } from "@features/image/components/override-acquisition-form-modal/override-acquisition-form-modal.component";
+import { ImportAcquisitionsFromCsvFormModalComponent } from "@features/image/components/import-acquisitions-from-csv-form-modal/import-acquisitions-from-csv-form-modal.component";
 
 @Component({
   selector: "astrobin-image-edit-page",
@@ -326,6 +327,17 @@ export class ImageEditPageComponent
 
     componentInstance.alreadyHasAcquisitions =
       this.imageEditService.hasDeepSkyAcquisitions() || this.imageEditService.hasSolarSystemAcquisitions();
+  }
+
+  onImportFromCsvClicked(event: Event) {
+    if (event) {
+      event.preventDefault();
+    }
+
+    const modalRef: NgbModalRef = this.modalService.open(ImportAcquisitionsFromCsvFormModalComponent);
+    modalRef.closed.subscribe(() => {
+      this.imageEditService.reloadAcquisitions();
+    }
   }
 
   onOverrideAcquisitionFormClicked(event: Event) {

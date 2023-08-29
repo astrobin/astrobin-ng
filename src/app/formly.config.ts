@@ -241,6 +241,40 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
         message(): string {
           return translateService.instant("This value is not valid.");
         }
+      },
+      {
+        name: "invalid-csv",
+        message(): string {
+          return translateService.instant("This is not a valid comma-separated value (CSV).");
+        }
+      },
+      {
+        name: "invalid-csv-missing-header-line",
+        message(): string {
+          return translateService.instant("The comma-separated value must have a header line.");
+        }
+      },
+      {
+        name: "invalid-csv-unexpected-header",
+        message(options: { unexpectedHeaders: string[] } = { unexpectedHeaders: [] }): string {
+          return translateService.instant(
+            "The CSV header contains unexpected values: {{0}}.",
+            {
+              0: options.unexpectedHeaders.join(", ")
+            }
+          );
+        }
+      },
+      {
+        name: "invalid-csv-missing-required-header",
+        message(options: { requiredHeaders: string[] } = { requiredHeaders: [] }): string {
+          return translateService.instant(
+            "The CSV header does not contain the following mandatory values: {{0}}.",
+            {
+              0: options.requiredHeaders.join(", ")
+            }
+          );
+        }
       }
     ],
     validators: [
@@ -432,6 +466,53 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
           }
 
           return options.allowedValues.includes(control.value) ? null : { "enum-value": options };
+        }
+      },
+      {
+        name: "csv",
+        validation: (control: FormControl, field: FormlyFieldConfig, options: { requiredHeaders: string[], allowedHeaders: string[] }) => {
+          const hasRequiredHeaders = (header: string[], requiredHeaders: string[]): boolean => {
+            return requiredHeaders.every(h => header.includes(h));
+          };
+
+          const findUnexpectedHeaders = (header: string[], allowedHeaders: string[]): string[] => {
+            return header.filter(h => !allowedHeaders.includes(h));
+          };
+
+          const isValidCsv = (lines: string[], headerLength: number): boolean => {
+            return lines.slice(1).every(line => {
+              const row = line.split(",");
+              return row.length === headerLength;
+            });
+          };
+
+          const value = control.value;
+
+          if (value === null || value === undefined) {
+            return null;
+          }
+
+          const lines: string[] = value.split("\n");
+          const header: string[] = lines[0].split(",");
+
+          if (!isValidCsv(lines, header.length)) {
+            return { "invalid-csv": true };
+          }
+
+          if (lines.filter(line => line !== "").length < 2) {
+            return { "invalid-csv-missing-header-line": true };
+          }
+
+          if (!hasRequiredHeaders(header, options.requiredHeaders)) {
+            return { "invalid-csv-missing-required-header": options };
+          }
+
+          const unexpectedHeaders = findUnexpectedHeaders(header, options.allowedHeaders);
+          if (unexpectedHeaders.length > 0) {
+            return { "invalid-csv-unexpected-header": { unexpectedHeaders } };
+          }
+
+          return null;
         }
       }
     ]

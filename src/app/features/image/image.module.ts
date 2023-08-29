@@ -22,6 +22,7 @@ import { AdditionalDeepSkyAcquisitionPropertiesModalComponent } from "./componen
 import { AdditionalSolarSystemAcquisitionPropertiesModalComponent } from "@features/image/components/additional-solar-system-acquisition-properties-modal/additional-solar-system-acquisition-properties-modal.component";
 import { CopyAcquisitionSessionsFromAnotherImageModalComponent } from "@features/image/components/copy-acquisition-sessions-from-another-image-modal/copy-acquisition-sessions-from-another-image-modal.component";
 import { OverrideAcquisitionFormModalComponent } from "@features/image/components/override-acquisition-form-modal/override-acquisition-form-modal.component";
+import { ImportAcquisitionsFromCsvFormModalComponent } from "@features/image/components/import-acquisitions-from-csv-form-modal/import-acquisitions-from-csv-form-modal.component";
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import { OverrideAcquisitionFormModalComponent } from "@features/image/component
     AdditionalDeepSkyAcquisitionPropertiesModalComponent,
     AdditionalSolarSystemAcquisitionPropertiesModalComponent,
     CopyAcquisitionSessionsFromAnotherImageModalComponent,
-    OverrideAcquisitionFormModalComponent
+    OverrideAcquisitionFormModalComponent,
+    ImportAcquisitionsFromCsvFormModalComponent
   ],
   imports: [
     RouterModule.forChild(routes),
