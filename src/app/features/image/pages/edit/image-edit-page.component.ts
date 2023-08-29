@@ -57,6 +57,8 @@ import {
   OverrideAcquisitionFormModalComponent
 } from "@features/image/components/override-acquisition-form-modal/override-acquisition-form-modal.component";
 import { ImportAcquisitionsFromCsvFormModalComponent } from "@features/image/components/import-acquisitions-from-csv-form-modal/import-acquisitions-from-csv-form-modal.component";
+import { DeepSkyAcquisitionInterface } from "@shared/interfaces/deep-sky-acquisition.interface";
+import { SolarSystemAcquisitionInterface } from "@shared/interfaces/solar-system-acquisition.interface";
 
 @Component({
   selector: "astrobin-image-edit-page",
@@ -334,9 +336,41 @@ export class ImageEditPageComponent
       event.preventDefault();
     }
 
-    const modalRef: NgbModalRef = this.modalService.open(ImportAcquisitionsFromCsvFormModalComponent);
-    modalRef.closed.subscribe(() => {
-      this.imageEditService.reloadAcquisitions();
+    const startImport = () => {
+      const modalRef: NgbModalRef = this.modalService.open(ImportAcquisitionsFromCsvFormModalComponent, { size: "lg" });
+      modalRef.closed.subscribe(csv => {
+        const value = UtilsService.csvToArrayOfDictionaries(csv);
+
+        if (this.imageEditService.isLongExposure()) {
+          this.imageEditService.form.patchValue({ "deepSkyAcquisitions": value });
+          this.imageEditService.model = {
+            ...this.imageEditService.model,
+            deepSkyAcquisitions: (value as any) as DeepSkyAcquisitionInterface[]
+          };
+        } else {
+          this.imageEditService.form.patchValue({ "solarSystemAcquisitions": value });
+          this.imageEditService.model = {
+            ...this.imageEditService.model,
+            solarSystemAcquisitions: (value as any) as SolarSystemAcquisitionInterface[]
+          };
+        }
+      });
+    };
+
+    if (this.imageEditService.hasDeepSkyAcquisitions() || this.imageEditService.hasSolarSystemAcquisitions()) {
+      const confirmationDialog: NgbModalRef = this.modalService.open(ConfirmationDialogComponent);
+      const componentInstance: ConfirmationDialogComponent = confirmationDialog.componentInstance;
+
+      componentInstance.message = this.translateService.instant(
+        "You are about to remove all acquisition sessions you have entered thus far."
+      );
+
+      confirmationDialog.closed.pipe(take(1))
+        .subscribe(() => {
+          startImport();
+        });
+    } else {
+      startImport();
     }
   }
 

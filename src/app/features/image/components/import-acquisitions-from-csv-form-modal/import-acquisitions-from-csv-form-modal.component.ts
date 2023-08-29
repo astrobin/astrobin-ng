@@ -10,7 +10,6 @@ import { NgbActiveModal, NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { ImageEditService } from "@features/image/services/image-edit.service";
-import { AcquisitionForm } from "@features/image/components/override-acquisition-form-modal/override-acquisition-form-modal.component";
 import { ImageEditAcquisitionFieldsService } from "@features/image/services/image-edit-acquisition-fields.service";
 
 @Component({
@@ -70,6 +69,10 @@ export class ImportAcquisitionsFromCsvFormModalComponent extends BaseComponentDi
         props: {
           required: true,
           label: this.translateService.instant("Comma-separated values (CSV) of acquisition sessions"),
+          description: this.translateService.instant("Invalid values will be ignored. Documentation is available here: {{link}}", {
+            link: `<a href="https://welcome.astrobin.com/importing-acquisitions-from-csv/" target="_blank">
+              ${this.translateService.instant("Importing acquisitions from CSV")}</a>`
+          }),
           rows: 10
         },
         validators: {
@@ -87,16 +90,6 @@ export class ImportAcquisitionsFromCsvFormModalComponent extends BaseComponentDi
     ];
   }
 
-  private _isLongExposure() {
-    const { overrideAcquisitionForm } = this.imageEditService.model;
-
-    if (!!overrideAcquisitionForm) {
-      return overrideAcquisitionForm === AcquisitionForm.LONG_EXPOSURE;
-    }
-
-    return this.imageEditService.isDeepSky();
-  }
-
   private _requiredHeaders() {
     const longExposureValue = this._allDeepSkyFields()
       .filter(field => field.props?.required)
@@ -106,14 +99,14 @@ export class ImportAcquisitionsFromCsvFormModalComponent extends BaseComponentDi
       .filter(field => field.props?.required)
       .map(field => field.key);
 
-    return this._isLongExposure() ? longExposureValue : videoBasedValue;
+    return this.imageEditService.isLongExposure() ? longExposureValue : videoBasedValue;
   }
 
   private _allowedHeaders() {
     const longExposureValue = this._allDeepSkyFields().map(field => field.key);
     const videoBasedValue = this._allSolarSystemFields().map(field => field.key);
 
-    return this._isLongExposure() ? longExposureValue : videoBasedValue;
+    return this.imageEditService.isLongExposure() ? longExposureValue : videoBasedValue;
   }
 
   private _allDeepSkyFields() {

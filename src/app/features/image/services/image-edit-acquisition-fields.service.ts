@@ -170,6 +170,7 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
             },
             validators: {
               validation: [
+                "number",
                 {
                   name: "max-decimals",
                   options: {
@@ -222,6 +223,7 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
             },
             validators: {
               validation: [
+                "number",
                 {
                   name: "max-decimals",
                   options: {
@@ -357,6 +359,7 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
             },
             validators: {
               validation: [
+                "number",
                 {
                   name: "max-decimals",
                   options: {
@@ -382,6 +385,7 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
             },
             validators: {
               validation: [
+                "number",
                 {
                   name: "max-decimals",
                   options: {
@@ -406,6 +410,7 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
             },
             validators: {
               validation: [
+                "number",
                 {
                   name: "max-decimals",
                   options: {
@@ -543,6 +548,7 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
             },
             validators: {
               validation: [
+                "number",
                 {
                   name: "max-decimals",
                   options: {
@@ -618,7 +624,7 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
             props: {
               type: "number",
               label: this.translateService.instant("CMI"),
-              description: this.translateService.instant("Latitude of the first Central Meridian."),
+                description: this.translateService.instant("Latitude of the first Central Meridian."),
               required: false,
               step: 1,
               min: 0,
@@ -626,6 +632,7 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
             },
             validators: {
               validation: [
+                "number",
                 {
                   name: "max-decimals",
                   options: {
@@ -650,6 +657,7 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
             },
             validators: {
               validation: [
+                "number",
                 {
                   name: "max-decimals",
                   options: {
@@ -674,6 +682,7 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
             },
             validators: {
               validation: [
+                "number",
                 {
                   name: "max-decimals",
                   options: {
@@ -808,7 +817,7 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
         min: 1
       },
       validators: {
-        validation: ["whole-number"]
+        validation: ["number", "whole-number"]
       }
     };
   }
@@ -829,6 +838,7 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
       },
       validators: {
         validation: [
+          "number",
           {
             name: "max-decimals",
             options: {
@@ -884,10 +894,11 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
         description: this.translateService.instant("Frames per second."),
         required: false,
         step: 1,
-        min: 1
+        min: 0.00001
       },
       validators: {
         validation: [
+          "number",
           {
             name: "max-decimals",
             options: {
@@ -914,6 +925,7 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
       },
       validators: {
         validation: [
+          "number",
           {
             name: "max-decimals",
             options: {

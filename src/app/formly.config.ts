@@ -448,7 +448,13 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
               return 0;
             }
 
-            return num.toString().split(".")[1].length || 0;
+            const split = num.toString().split(".");
+
+            if (split.length === 1 || split[1].length === 0) {
+              return 0;
+            }
+
+            return split[1].length || 0;
           };
 
           if (control.value === null || control.value === undefined) {
