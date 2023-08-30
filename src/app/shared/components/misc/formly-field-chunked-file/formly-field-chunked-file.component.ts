@@ -16,7 +16,6 @@ import { forkJoin, Observable, of, Subscription, switchMap } from "rxjs";
 import { filter, map, take } from "rxjs/operators";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
-import { selectCurrentUser } from "@features/account/store/auth.selectors";
 
 // PLEASE NOTE: due to the usage of the UploaderDataService, there can be only one chunked file upload field on a page
 // at any given time.
@@ -102,20 +101,12 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
         this._initUploader();
       });
 
-    this.store$.select(selectCurrentUser).pipe(
-      filter(user => !!user),
-      take(1)
-    ).subscribe(user => {
-      const isCypress = Object.keys(this.windowRefService.nativeWindow).indexOf("Cypress") !== -1;
-      const isImageUploader = this.uploadOptions.allowedTypes === Constants.ALLOWED_IMAGE_UPLOAD_EXTENSIONS.join(",");
-      const allow = user.id % 10 <= 8;
-
-      if (isImageUploader && (allow || isCypress)) {
-        this.uploadOptions.allowedTypes = Constants.ALLOWED_IMAGE_UPLOAD_EXTENSIONS.concat(
-          Constants.ALLOWED_VIDEO_UPLOAD_EXTENSIONS).join(",");
-        this.uploadDataService.setAllowedTypes(this.uploadOptions.allowedTypes);
-      }
-    });
+    const isImageUploader = this.uploadOptions.allowedTypes === Constants.ALLOWED_IMAGE_UPLOAD_EXTENSIONS.join(",");
+    if (isImageUploader) {
+      const types = Constants.ALLOWED_IMAGE_UPLOAD_EXTENSIONS.concat(Constants.ALLOWED_VIDEO_UPLOAD_EXTENSIONS);
+      this.uploadOptions.allowedTypes = types.join(",");
+      this.uploadDataService.setAllowedTypes(this.uploadOptions.allowedTypes);
+    }
   }
 
   isActive(): boolean {
