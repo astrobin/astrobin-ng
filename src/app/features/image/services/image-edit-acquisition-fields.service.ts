@@ -475,7 +475,7 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
             this._getFPSField(),
             this._getExposurePerFrame(),
             {
-              fieldGroup: this.getAdditionalDeepSkyFields(),
+              fieldGroup: this.getAdditionalSolarSystemFields(),
               props: {
                 hide: true
               }
@@ -624,7 +624,7 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
             props: {
               type: "number",
               label: this.translateService.instant("CMI"),
-                description: this.translateService.instant("Latitude of the first Central Meridian."),
+              description: this.translateService.instant("Latitude of the first Central Meridian."),
               required: false,
               step: 1,
               min: 0,

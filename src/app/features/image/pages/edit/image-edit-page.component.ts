@@ -34,11 +34,17 @@ import { ImageEditWatermarkFieldsService } from "@features/image/services/image-
 import { ImageEditThumbnailFieldsService } from "@features/image/services/image-edit-thumbnail-fields.service";
 import { ImageEditSettingsFieldsService } from "@features/image/services/image-edit-settings-fields.service";
 import { ImageEditEquipmentFieldsService } from "@features/image/services/image-edit-equipment-fields.service";
-import { Observable } from "rxjs";
+import { forkJoin, Observable, of } from "rxjs";
 import { EquipmentPresetInterface } from "@features/equipment/types/equipment-preset.interface";
 import { selectEquipmentPresets } from "@features/equipment/store/equipment.selectors";
-import { filter, take, takeUntil } from "rxjs/operators";
-import { FindEquipmentPresets, ItemBrowserSet } from "@features/equipment/store/equipment.actions";
+import { filter, map, take, takeUntil } from "rxjs/operators";
+import {
+  EquipmentActionTypes,
+  FindEquipmentPresets,
+  ItemBrowserSet,
+  LoadEquipmentItem,
+  LoadEquipmentItemSuccess
+} from "@features/equipment/store/equipment.actions";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/types/equipment-item-base.interface";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
@@ -59,6 +65,7 @@ import {
 import { ImportAcquisitionsFromCsvFormModalComponent } from "@features/image/components/import-acquisitions-from-csv-form-modal/import-acquisitions-from-csv-form-modal.component";
 import { DeepSkyAcquisitionInterface } from "@shared/interfaces/deep-sky-acquisition.interface";
 import { SolarSystemAcquisitionInterface } from "@shared/interfaces/solar-system-acquisition.interface";
+import { FilterInterface } from "@features/equipment/types/filter.interface";
 
 @Component({
   selector: "astrobin-image-edit-page",
@@ -336,24 +343,78 @@ export class ImageEditPageComponent
       event.preventDefault();
     }
 
+    const _setModel = (acquisitions: any[]): void => {
+      if (this.imageEditService.isLongExposure()) {
+        this.imageEditService.form.patchValue({ deepSkyAcquisitions: acquisitions });
+        this.imageEditService.model = {
+          ...this.imageEditService.model,
+          deepSkyAcquisitions: acquisitions as DeepSkyAcquisitionInterface[]
+        };
+      } else {
+        this.imageEditService.form.patchValue({ solarSystemAcquisitions: acquisitions });
+        this.imageEditService.model = {
+          ...this.imageEditService.model,
+          solarSystemAcquisitions: acquisitions as SolarSystemAcquisitionInterface[]
+        };
+      }
+    };
+
+    const _fixNumbers = (acquisitions: any[]): void => {
+      acquisitions.forEach(acquisition => {
+        Object.keys(acquisition).forEach(key => {
+          const value = acquisition[key];
+          acquisition[key] = UtilsService.isString(value) && UtilsService.isNumeric(value) ? +value : value;
+        });
+      });
+    };
+
+    const _fixFilters = (acquisitions: any[]): void => {
+      acquisitions.forEach(acquisition => {
+        if (acquisition.filter !== undefined) {
+          acquisition["filter2"] = acquisition.filter;
+          delete acquisition.filter;
+        }
+      });
+    };
+
+    const _loadFilters$ = (acquisitions: any[]): Observable<FilterInterface[]> => {
+      const filterIds: FilterInterface["id"][] = acquisitions
+        .filter(acquisition => acquisition["filter2"] !== undefined)
+        .map(acquisition => acquisition["filter2"]);
+
+      if (filterIds.length === 0) {
+        return of([]);
+      } else {
+        const observables: Observable<FilterInterface>[] = filterIds.map(id => {
+          const payload = { type: EquipmentItemType.FILTER, id };
+          this.store$.dispatch(new LoadEquipmentItem(payload));
+          return this.actions$.pipe(
+            ofType(EquipmentActionTypes.LOAD_EQUIPMENT_ITEM_SUCCESS),
+            map((action: LoadEquipmentItemSuccess) => action.payload.item),
+            filter((filter: FilterInterface) => filter.id === id && filter.klass === payload.type),
+            take(1)
+          );
+        });
+
+        return forkJoin(observables);
+      }
+    };
+
     const startImport = () => {
       const modalRef: NgbModalRef = this.modalService.open(ImportAcquisitionsFromCsvFormModalComponent, { size: "lg" });
       modalRef.closed.subscribe(csv => {
-        const value = UtilsService.csvToArrayOfDictionaries(csv);
+        const acquisitions: any[] = UtilsService.csvToArrayOfDictionaries(csv);
 
-        if (this.imageEditService.isLongExposure()) {
-          this.imageEditService.form.patchValue({ "deepSkyAcquisitions": value });
-          this.imageEditService.model = {
-            ...this.imageEditService.model,
-            deepSkyAcquisitions: (value as any) as DeepSkyAcquisitionInterface[]
-          };
-        } else {
-          this.imageEditService.form.patchValue({ "solarSystemAcquisitions": value });
-          this.imageEditService.model = {
-            ...this.imageEditService.model,
-            solarSystemAcquisitions: (value as any) as SolarSystemAcquisitionInterface[]
-          };
-        }
+        _fixNumbers(acquisitions);
+        _fixFilters(acquisitions);
+        _loadFilters$(acquisitions).subscribe(filters => {
+          filters.forEach(filter => {
+            this.imageEditService.model.filters2.push(filter.id);
+            this.imageEditService.form.patchValue({ filters2: this.imageEditService.model.filters2 });
+          });
+
+          _setModel(acquisitions);
+        });
       });
     };
 
@@ -365,10 +426,9 @@ export class ImageEditPageComponent
         "You are about to remove all acquisition sessions you have entered thus far."
       );
 
-      confirmationDialog.closed.pipe(take(1))
-        .subscribe(() => {
-          startImport();
-        });
+      confirmationDialog.closed.pipe(take(1)).subscribe(() => {
+        startImport();
+      });
     } else {
       startImport();
     }
@@ -388,10 +448,9 @@ export class ImageEditPageComponent
 
     if (!componentInstance.model.acquisitionForm) {
       componentInstance.model = {
-        acquisitionForm:
-          this.imageEditService.isDeepSky()
-            ? AcquisitionForm.LONG_EXPOSURE
-            : AcquisitionForm.VIDEO_BASED
+        acquisitionForm: this.imageEditService.isDeepSky()
+          ? AcquisitionForm.LONG_EXPOSURE
+          : AcquisitionForm.VIDEO_BASED
       };
     }
 
@@ -444,7 +503,9 @@ export class ImageEditPageComponent
     if (!this.imageEditService.form.valid) {
       this.imageEditService.form.markAllAsTouched();
 
-      const errorList: string[] = UtilsService.fieldWithErrors(this.imageEditService.fields).map(field => `<li><strong>${UtilsService.fullFieldPath(field).join(" / ")}</strong>`);
+      const errorList: string[] = UtilsService.fieldWithErrors(this.imageEditService.fields).map(
+        field => `<li><strong>${UtilsService.fullFieldPath(field).join(" / ")}</strong>`
+      );
 
       this.popNotificationsService.error(
         `

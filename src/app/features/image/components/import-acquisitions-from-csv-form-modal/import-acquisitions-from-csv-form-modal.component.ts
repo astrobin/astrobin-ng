@@ -103,7 +103,9 @@ export class ImportAcquisitionsFromCsvFormModalComponent extends BaseComponentDi
   }
 
   private _allowedHeaders() {
-    const longExposureValue = this._allDeepSkyFields().map(field => field.key);
+    const longExposureValue = this._allDeepSkyFields()
+      .map(field => field.key)
+      .map(key => key === "filter2" ? "filter" : key);
     const videoBasedValue = this._allSolarSystemFields().map(field => field.key);
 
     return this.imageEditService.isLongExposure() ? longExposureValue : videoBasedValue;
