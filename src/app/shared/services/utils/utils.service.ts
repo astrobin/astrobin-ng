@@ -447,6 +447,25 @@ export class UtilsService {
     ].includes(countryCode.toUpperCase());
   }
 
+  static csvToArrayOfDictionaries(csvString: string): Record<string, string>[] {
+    const lines = csvString.split("\n");
+    const headers = lines[0].split(",");
+    const result: Record<string, string>[] = [];
+
+    for (const line of lines.slice(1)) {
+      const values = line.split(",");
+      if (values.length !== headers.length) continue;
+
+      const row: Record<string, string> = {};
+      for (let i = 0; i < headers.length; i++) {
+        row[headers[i]] = values[i];
+      }
+      result.push(row);
+    }
+
+    return result;
+  }
+
   supportsDateInput() {
     if (isPlatformServer(this.platformId)) {
       return false;

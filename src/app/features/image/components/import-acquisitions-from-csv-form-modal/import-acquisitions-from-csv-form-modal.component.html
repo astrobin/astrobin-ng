@@ -1,0 +1,31 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="override-acquisition-form-modal">
+    {{ "Import acquisition sessions from CSV" | translate }}
+  </h4>
+
+  <button (click)="modal.dismiss()" aria-describedby="modal-title" class="close" type="button">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body">
+  <form [formGroup]="form">
+    <formly-form [fields]="fields" [form]="form" [model]="model"></formly-form>
+  </form>
+</div>
+
+<div class="modal-footer">
+  <button (click)="modal.dismiss()" class="btn btn-outline-secondary" type="button">
+    {{ "Cancel" | translate }}
+  </button>
+
+  <button
+    (click)="onImportClicked()"
+    [class.loading]="(loadingService.loading$ | async) || form.pending"
+    [disabled]="form.pending"
+    class="btn btn-primary"
+    type="button"
+  >
+    {{ "Import" | translate }}
+  </button>
+</div>

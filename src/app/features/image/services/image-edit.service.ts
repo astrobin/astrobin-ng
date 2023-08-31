@@ -81,6 +81,16 @@ export class ImageEditService extends BaseService {
     super(loadingService);
   }
 
+  isLongExposure(): boolean {
+    const { overrideAcquisitionForm } = this.model;
+
+    if (!!overrideAcquisitionForm) {
+      return overrideAcquisitionForm === AcquisitionForm.LONG_EXPOSURE;
+    }
+
+    return this.isDeepSky();
+  }
+
   isDeepSky(value?: SubjectType): boolean {
     if (value === undefined) {
       value = this.model.subjectType;
