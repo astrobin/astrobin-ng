@@ -71,6 +71,7 @@ import {
   LoadBrand,
   LoadBrandSuccess,
   LoadEquipmentItem,
+  LoadEquipmentItemFailure,
   LoadEquipmentItemSuccess,
   LoadSensor,
   LoadSensorSuccess,
@@ -90,7 +91,7 @@ import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { All } from "@app/store/actions/app.actions";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
-import { filter, map, mergeMap, switchMap } from "rxjs/operators";
+import { catchError, filter, map, mergeMap, switchMap } from "rxjs/operators";
 import { selectBrand, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import { SensorInterface } from "@features/equipment/types/sensor.interface";
 import { BrandInterface } from "@features/equipment/types/brand.interface";
@@ -181,7 +182,7 @@ export class EquipmentEffects {
    * Generic equipment items
    ********************************************************************************************************************/
 
-  LoadEquipmentItem: Observable<LoadEquipmentItemSuccess> = createEffect(() =>
+  LoadEquipmentItem: Observable<LoadEquipmentItemSuccess | LoadEquipmentItemFailure> = createEffect(() =>
     this.actions$.pipe(
       ofType(EquipmentActionTypes.LOAD_EQUIPMENT_ITEM),
       map((action: LoadEquipmentItem) => action.payload),
@@ -197,7 +198,10 @@ export class EquipmentEffects {
           selectEquipmentItem,
           this.equipmentApiService.getEquipmentItem,
           this.equipmentApiService
-        ).pipe(map(item => new LoadEquipmentItemSuccess({ item })));
+        ).pipe(
+          map(item => new LoadEquipmentItemSuccess({ item })),
+          catchError(() => of(new LoadEquipmentItemFailure({ id: payload.id, klass: payload.type })))
+        );
       })
     )
   );

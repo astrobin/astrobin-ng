@@ -52,10 +52,11 @@ export enum EquipmentActionTypes {
 
   LOAD_EQUIPMENT_ITEM = "[Equipment] Load equipment item",
   LOAD_EQUIPMENT_ITEM_SUCCESS = "[Equipment] Load equipment item success",
+  LOAD_EQUIPMENT_ITEM_FAILURE = "[Equipment] Load equipment item failure",
   FIND_ALL_EQUIPMENT_ITEMS = "[Equipment] Find all equipment items",
   FIND_ALL_EQUIPMENT_ITEMS_SUCCESS = "[Equipment] Find all equipment success",
-  FIND_RECENTLY_USED_EQUIPMENT_ITEMS = "[Equipment] Find recentrly used equipment items",
-  FIND_RECENTLY_USED_EQUIPMENT_ITEMS_SUCCESS = "[Equipment] Find recentrly used equipment items success",
+  FIND_RECENTLY_USED_EQUIPMENT_ITEMS = "[Equipment] Find recently used equipment items",
+  FIND_RECENTLY_USED_EQUIPMENT_ITEMS_SUCCESS = "[Equipment] Find recently used equipment items success",
   FIND_SIMILAR_IN_BRAND = "[Equipment] Find similar in brand",
   FIND_SIMILAR_IN_BRAND_SUCCESS = "[Equipment] Find similar in brand success",
   GET_ALL_IN_BRAND = "[Equipment] Get all in brand",
@@ -244,6 +245,16 @@ export class LoadEquipmentItemSuccess implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.LOAD_EQUIPMENT_ITEM_SUCCESS;
 
   constructor(public payload: { item: EquipmentItemBaseInterface }) {
+  }
+}
+
+export class LoadEquipmentItemFailure implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.LOAD_EQUIPMENT_ITEM_FAILURE;
+
+  constructor(public payload: {
+    id: EquipmentItemBaseInterface["id"];
+    klass: EquipmentItemBaseInterface["klass"];
+  }) {
   }
 }
 

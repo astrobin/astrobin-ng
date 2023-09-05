@@ -75,6 +75,10 @@ export class ImportAcquisitionsFromCsvFormModalComponent extends BaseComponentDi
           }),
           rows: 10
         },
+        modelOptions: {
+          updateOn: "blur"
+        },
+        parsers: [value => value ? value.trim() : value],
         validators: {
           validation: [
             {

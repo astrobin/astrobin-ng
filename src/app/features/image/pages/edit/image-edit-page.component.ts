@@ -43,6 +43,7 @@ import {
   FindEquipmentPresets,
   ItemBrowserSet,
   LoadEquipmentItem,
+  LoadEquipmentItemFailure,
   LoadEquipmentItemSuccess
 } from "@features/equipment/store/equipment.actions";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
@@ -387,13 +388,28 @@ export class ImageEditPageComponent
       } else {
         const observables: Observable<FilterInterface>[] = filterIds.map(id => {
           const payload = { type: EquipmentItemType.FILTER, id };
-          this.store$.dispatch(new LoadEquipmentItem(payload));
           return this.actions$.pipe(
-            ofType(EquipmentActionTypes.LOAD_EQUIPMENT_ITEM_SUCCESS),
-            map((action: LoadEquipmentItemSuccess) => action.payload.item),
-            filter((filter: FilterInterface) => filter.id === id && filter.klass === payload.type),
+            ofType(EquipmentActionTypes.LOAD_EQUIPMENT_ITEM_SUCCESS, EquipmentActionTypes.LOAD_EQUIPMENT_ITEM_FAILURE),
+            map((action: LoadEquipmentItemSuccess | LoadEquipmentItemFailure) => {
+              if (action instanceof LoadEquipmentItemSuccess) {
+                return action.payload.item as FilterInterface;
+              } else {
+                this.popNotificationsService.warning(
+                  this.translateService.instant("Filter with id {{id}} could not be found.", { id: action.payload.id })
+                );
+                return null;
+              }
+            }),
+            filter(filter => filter === null || (filter.id === payload.id && filter.klass === payload.type)),
             take(1)
           );
+        });
+
+        this.utilsService.delay(1).subscribe(() => {
+          filterIds.forEach(id => {
+            const payload = { type: EquipmentItemType.FILTER, id };
+            this.store$.dispatch(new LoadEquipmentItem(payload));
+          });
         });
 
         return forkJoin(observables);
@@ -405,15 +421,20 @@ export class ImageEditPageComponent
       modalRef.closed.subscribe(csv => {
         const acquisitions: any[] = UtilsService.csvToArrayOfDictionaries(csv);
 
+        this.loadingService.setLoading(true);
+
         _fixNumbers(acquisitions);
         _fixFilters(acquisitions);
         _loadFilters$(acquisitions).subscribe(filters => {
           filters.forEach(filter => {
-            this.imageEditService.model.filters2.push(filter.id);
-            this.imageEditService.form.patchValue({ filters2: this.imageEditService.model.filters2 });
+            if (filter !== null) {
+              this.imageEditService.model.filters2.push(filter.id);
+              this.imageEditService.form.patchValue({ filters2: this.imageEditService.model.filters2 });
+            }
           });
 
           _setModel(acquisitions);
+          this.loadingService.setLoading(false);
         });
       });
     };
