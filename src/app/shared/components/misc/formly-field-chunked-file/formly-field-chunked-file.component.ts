@@ -38,7 +38,8 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
     storeIncompleteHours: 0,
     retryConfig: {
       shouldRetry: (code, attempts) => {
-        return (code === 423 || code === 520) && attempts < 5;
+        const retryCodes = [423, 503, 504, 520];
+        return retryCodes.indexOf(code) !== -1 && attempts < 5;
       }
     },
     authorize: req => {
