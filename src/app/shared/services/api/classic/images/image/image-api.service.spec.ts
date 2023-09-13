@@ -47,7 +47,7 @@ describe("ImageApiService", () => {
       expect(response.pk).toEqual(image.pk);
     });
 
-    const req = httpMock.expectOne(`${service.configUrl}/image/?hash=${image.hash}`);
+    const req = httpMock.expectOne(`${service.configUrl}/image/?hash=${image.hash}&skip-thumbnails=false`);
     expect(req.request.method).toBe("GET");
     req.flush(image);
   });
