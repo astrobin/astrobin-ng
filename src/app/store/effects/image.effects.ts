@@ -25,11 +25,11 @@ export class ImageEffects {
     this.actions$.pipe(
       ofType(AppActionTypes.LOAD_IMAGE),
       mergeMap(action =>
-        this.store$.select(selectImage, action.payload).pipe(
+        this.store$.select(selectImage, action.payload.imageId).pipe(
           switchMap(imageFromStore =>
             imageFromStore !== null
               ? of(imageFromStore).pipe(map(image => new LoadImageSuccess(image)))
-              : this.imageApiService.getImage(action.payload).pipe(
+              : this.imageApiService.getImage(action.payload.imageId, action.payload.options).pipe(
                 map(image => !!image ? new LoadImageSuccess(image) : new LoadImageFailure(null)),
                 catchError(error => of(new LoadImageFailure(error)))
               )

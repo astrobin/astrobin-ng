@@ -163,7 +163,7 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
             }
           });
 
-        this.store$.dispatch(new LoadImage(this.id));
+        this.store$.dispatch(new LoadImage({ imageId: this.id }));
 
         if (this.autoLoadRevisions) {
           this.store$.dispatch(new LoadImageRevisions({ imageId: this.id }));

@@ -7,10 +7,16 @@ import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/pag
 import { HttpErrorResponse } from "@angular/common/http";
 import { ImageEditModelInterface } from "@features/image/services/image-edit.service";
 
+export interface LoadImageOptionsInterface {
+  skipThumbnails: boolean;
+}
+
 export class LoadImage implements PayloadActionInterface {
   readonly type = AppActionTypes.LOAD_IMAGE;
 
-  constructor(public payload: number | string) {
+  constructor(
+    public payload: { imageId: ImageInterface["pk"] | ImageInterface["hash"]; options?: LoadImageOptionsInterface }
+  ) {
   }
 }
 

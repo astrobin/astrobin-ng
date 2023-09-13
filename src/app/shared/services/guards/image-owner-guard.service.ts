@@ -53,7 +53,7 @@ export class ImageOwnerGuardService extends BaseService implements CanActivate {
 
         const imageId = route.params["imageId"];
 
-        this.store$.dispatch(new LoadImage(imageId));
+        this.store$.dispatch(new LoadImage({ imageId: imageId, options: { skipThumbnails: true } }));
 
         combineLatest([
           this.store$.select(selectCurrentUser).pipe(

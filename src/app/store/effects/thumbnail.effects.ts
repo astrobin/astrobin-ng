@@ -33,7 +33,7 @@ export class ThumbnailEffects {
                     );
                   }
 
-                  this.store$.dispatch(new LoadImage(action.payload.data.id));
+                  this.store$.dispatch(new LoadImage({ imageId: action.payload.data.id }));
 
                   return this.store$.select(selectImage, action.payload.data.id).pipe(
                     filter(image => !!image),
