@@ -23,8 +23,9 @@ export class ImageResolver implements Resolve<ImageInterface> {
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> | Promise<any> | any {
     const id = route.paramMap.get("imageId");
+    const skipThumbnails = route.data["skipThumbnails"] || false;
 
-    return this.service.getImage(id).pipe(
+    return this.service.getImage(id, { skipThumbnails }).pipe(
       tap(image => {
         this.store$.dispatch(new SetImage(image));
       }),

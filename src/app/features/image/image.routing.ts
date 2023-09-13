@@ -17,6 +17,9 @@ export const routes: Routes = [
       image: ImageResolver,
       groups: CurrentUsersGroupsResolver,
       locations: CurrentUsersLocationsResolver
+    },
+    data: {
+      skipThumbnails: true
     }
   }
 ];
