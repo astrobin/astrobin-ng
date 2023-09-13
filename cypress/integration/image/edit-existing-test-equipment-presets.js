@@ -40,7 +40,7 @@ context("Image edit (existing), test equipment presets", () => {
     cy.setupInitializationRoutes();
     cy.route(
       "GET",
-      "**/api/v2/images/image/?hash=abc123",
+      "**/api/v2/images/image/?hash=abc123&skip-thumbnails=*",
       "fixture:api/images/image_without_equipment_by_hashes.json"
     ).as("getImage");
     cy.route("get", "/abc123/0/thumb/hd/", "fixture:api/images/image_thumbnail_1_regular_loaded").as("getThumbnail");

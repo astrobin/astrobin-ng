@@ -2,7 +2,7 @@ context("Image edit (existing). test quick add equipment", () => {
   beforeEach(() => {
     cy.server();
     cy.setupInitializationRoutes();
-    cy.route("get", "**/api/v2/images/image/?hash=abc123", "fixture:api/images/image_1_by_hashes.json").as("getImage");
+    cy.route("get", "**/api/v2/images/image/?hash=abc123&skip-thumbnails=*", "fixture:api/images/image_1_by_hashes.json").as("getImage");
     cy.route("get", "/abc123/0/thumb/hd/", "fixture:api/images/image_thumbnail_1_regular_loaded").as("getThumbnail");
     cy.route(
       "GET",
