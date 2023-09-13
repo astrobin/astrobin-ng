@@ -14,6 +14,7 @@ import { map } from "rxjs/operators";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { ImageEditModelInterface } from "@features/image/services/image-edit.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
+import { LoadImageOptionsInterface } from "@app/store/actions/image.actions";
 
 @Injectable({
   providedIn: "root"
@@ -29,9 +30,16 @@ export class ImageApiService extends BaseClassicApiService {
     super(loadingService);
   }
 
-  getImage(id: ImageInterface["pk"] | ImageInterface["hash"]): Observable<ImageInterface> {
+  getImage(
+    id: ImageInterface["pk"] | ImageInterface["hash"],
+    options: LoadImageOptionsInterface = { skipThumbnails: false }
+  ): Observable<ImageInterface> {
     if (isNaN(Number(id))) {
-      const url = `${this.configUrl}/image/?hash=${id}`;
+      let url = `${this.configUrl}/image/`;
+
+      url = UtilsService.addOrUpdateUrlParam(url, "hash", `${id}`);
+      url = UtilsService.addOrUpdateUrlParam(url, "skip-thumbnails", `${options.skipThumbnails}`);
+
       return this.http.get<PaginatedApiResultInterface<ImageInterface>>(url).pipe(
         map(response => {
           if (response.results.length > 0) {
