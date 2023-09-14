@@ -80,7 +80,11 @@ export class FormlyFieldImageCropperComponent extends FieldType implements OnDes
   onCropperReady(dimensions: Dimensions) {
     const image = this.props.image;
 
-    if (dimensions && image.squareCropping && image.squareCropping !== "") {
+    if (!dimensions) {
+      return;
+    }
+
+    if (image.squareCropping && image.squareCropping !== "") {
       this.ratio = image.w / dimensions.width;
 
       this.cropper = {
