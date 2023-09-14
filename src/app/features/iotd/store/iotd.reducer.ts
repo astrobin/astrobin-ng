@@ -97,6 +97,12 @@ export function reducer(state = initialIotdState, action: IotdActions): IotdStat
         submissionQueue: action.payload
       };
 
+    case IotdActionTypes.CLEAR_SUBMISSION_QUEUE:
+      return {
+        ...state,
+        submissionQueue: { count: 0, results: [], next: null, prev: null }
+      };
+
     case IotdActionTypes.LOAD_SUBMISSIONS_SUCCESS:
       return {
         ...state,
@@ -125,6 +131,12 @@ export function reducer(state = initialIotdState, action: IotdActions): IotdStat
         reviewQueue: action.payload
       };
 
+    case IotdActionTypes.CLEAR_REVIEW_QUEUE:
+      return {
+        ...state,
+        reviewQueue: { count: 0, results: [], next: null, prev: null }
+      };
+
     case IotdActionTypes.LOAD_VOTES_SUCCESS:
       return {
         ...state,
@@ -151,6 +163,12 @@ export function reducer(state = initialIotdState, action: IotdActions): IotdStat
       return {
         ...state,
         judgementQueue: action.payload
+      };
+
+    case IotdActionTypes.CLEAR_JUDGEMENT_QUEUE:
+      return {
+        ...state,
+        judgementQueue: { count: 0, results: [], next: null, prev: null }
       };
 
     case IotdActionTypes.LOAD_FUTURE_IOTDS_SUCCESS:

@@ -3,7 +3,7 @@ import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { State } from "@app/store/state";
 import { BasePromotionQueueComponent } from "@features/iotd/components/base-promotion-queue/base-promotion-queue.component";
 import { IotdApiService, IotdInterface } from "@features/iotd/services/iotd-api.service";
-import { LoadFutureIods, LoadJudgementQueue } from "@features/iotd/store/iotd.actions";
+import { ClearJudgementQueue, LoadFutureIods, LoadJudgementQueue } from "@features/iotd/store/iotd.actions";
 import { selectFutureIotds, selectJudgementQueue } from "@features/iotd/store/iotd.selectors";
 import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
@@ -19,7 +19,7 @@ import { ReviewImageInterface } from "@features/iotd/types/review-image.interfac
 import { Actions } from "@ngrx/effects";
 import { TimeagoClock, TimeagoFormatter, TimeagoIntl, TimeagoPipe } from "ngx-timeago";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
-import { takeUntil } from "rxjs/operators";
+import { filter, takeUntil, tap } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-judgement-queue",
@@ -29,7 +29,7 @@ import { takeUntil } from "rxjs/operators";
 export class JudgementQueueComponent extends BasePromotionQueueComponent implements OnInit {
   queue$: Observable<PaginatedApiResultInterface<ReviewImageInterface>> = this.store$
     .select(selectJudgementQueue)
-    .pipe(takeUntil(this.destroyed$));
+    .pipe(filter(queue => !!queue), tap(() => this.loadingQueue = false), takeUntil(this.destroyed$));
   promotions$: Observable<IotdInterface[]> = this.store$.select(selectFutureIotds).pipe(takeUntil(this.destroyed$));
   cannotSelectReason: string;
   nextAvailableSelectionTime: string;
@@ -46,7 +46,7 @@ export class JudgementQueueComponent extends BasePromotionQueueComponent impleme
     public readonly cookieService: CookieService,
     public readonly iotdApiService: IotdApiService,
     public readonly timeagoIntl: TimeagoIntl,
-    public readonly changeDectectorRef: ChangeDetectorRef,
+    public readonly changeDetectorRef: ChangeDetectorRef,
     public readonly timeagoFormatter: TimeagoFormatter,
     public readonly timeagoClock: TimeagoClock,
     public readonly classicRoutesService: ClassicRoutesService
@@ -70,7 +70,7 @@ export class JudgementQueueComponent extends BasePromotionQueueComponent impleme
         reason: this.cannotSelectReason,
         time: new TimeagoPipe(
           this.timeagoIntl,
-          this.changeDectectorRef,
+          this.changeDetectorRef,
           this.timeagoFormatter,
           this.timeagoClock
         ).transform(this.nextAvailableSelectionTime)
@@ -105,6 +105,11 @@ export class JudgementQueueComponent extends BasePromotionQueueComponent impleme
   }
 
   loadQueue(page: number, sort: "newest" | "oldest" | "default" = "default"): void {
+    this.store$.dispatch(new ClearJudgementQueue());
+
+    this.loadingQueue = true;
+    this.changeDetectorRef.detectChanges();
+
     this.store$.dispatch(new LoadJudgementQueue({ page, sort }));
   }
 
