@@ -47,6 +47,7 @@ export abstract class BasePromotionQueueComponent extends BaseComponentDirective
   hiddenImages$: Observable<HiddenImage[]> = this.store$.select(selectHiddenImages).pipe(takeUntil(this.destroyed$));
 
   isDismissed: boolean;
+  loadingQueue: boolean;
 
   abstract queue$: Observable<PaginatedApiResultInterface<SubmissionImageInterface | ReviewImageInterface>>;
   abstract promotions$: Observable<SubmissionInterface[] | VoteInterface[] | IotdInterface[]>;

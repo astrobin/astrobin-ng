@@ -39,6 +39,8 @@ export enum IotdActionTypes {
   LOAD_SUBMISSION_QUEUE_SUCCESS = "[IOTD] Load Submission queue success",
   LOAD_SUBMISSION_QUEUE_FAILURE = "[IOTD] Load Submission queue failure",
 
+  CLEAR_SUBMISSION_QUEUE = "[IOTD] Clear Submission queue",
+
   LOAD_SUBMISSIONS = "[IOTD] Load submissions",
   LOAD_SUBMISSIONS_SUCCESS = "[IOTD] Load submissions success",
   LOAD_SUBMISSIONS_FAILURE = "[IOTD] Load submissions failure",
@@ -57,6 +59,8 @@ export enum IotdActionTypes {
   LOAD_REVIEW_QUEUE_SUCCESS = "[IOTD] Load Review queue success",
   LOAD_REVIEW_QUEUE_FAILURE = "[IOTD] Load Review queue failure",
 
+  CLEAR_REVIEW_QUEUE = "[IOTD] Clear Review queue",
+
   LOAD_VOTES = "[IOTD] Load reviews",
   LOAD_VOTES_SUCCESS = "[IOTD] Load reviews success",
   LOAD_VOTES_FAILURE = "[IOTD] Load reviews failure",
@@ -74,6 +78,8 @@ export enum IotdActionTypes {
   LOAD_JUDGEMENT_QUEUE = "[IOTD] Load Judgement queue",
   LOAD_JUDGEMENT_QUEUE_SUCCESS = "[IOTD] Load Judgement queue success",
   LOAD_JUDGEMENT_QUEUE_FAILURE = "[IOTD] Load Judgement queue failure",
+
+  CLEAR_JUDGEMENT_QUEUE = "[IOTD] Clear Judgement queue",
 
   LOAD_FUTURE_IOTDS = "[IOTD] Load future IOTDs",
   LOAD_FUTURE_IOTDS_SUCCESS = "[IOTD] Load future IOTDs success",
@@ -194,6 +200,10 @@ export class LoadSubmissionQueueFailure implements Action {
   readonly type = IotdActionTypes.LOAD_SUBMISSION_QUEUE_FAILURE;
 }
 
+export class ClearSubmissionQueue implements Action {
+  readonly type = IotdActionTypes.CLEAR_SUBMISSION_QUEUE;
+}
+
 export class LoadSubmissions implements Action {
   readonly type = IotdActionTypes.LOAD_SUBMISSIONS;
 }
@@ -273,6 +283,10 @@ export class LoadReviewQueueSuccess implements PayloadActionInterface {
 
 export class LoadReviewQueueFailure implements Action {
   readonly type = IotdActionTypes.LOAD_REVIEW_QUEUE_FAILURE;
+}
+
+export class ClearReviewQueue implements Action {
+  readonly type = IotdActionTypes.CLEAR_REVIEW_QUEUE;
 }
 
 export class LoadVotes implements Action {
@@ -356,6 +370,10 @@ export class LoadJudgementQueueFailure implements Action {
   readonly type = IotdActionTypes.LOAD_JUDGEMENT_QUEUE_FAILURE;
 }
 
+export class ClearJudgementQueue implements Action {
+  readonly type = IotdActionTypes.CLEAR_JUDGEMENT_QUEUE;
+}
+
 export class LoadFutureIods implements Action {
   readonly type = IotdActionTypes.LOAD_FUTURE_IOTDS;
 }
@@ -429,6 +447,7 @@ export type IotdActions =
   | LoadSubmissionQueue
   | LoadSubmissionQueueSuccess
   | LoadSubmissionQueueFailure
+  | ClearSubmissionQueue
   | LoadSubmissions
   | LoadSubmissionsSuccess
   | LoadSubmissionsFailure
@@ -443,6 +462,7 @@ export type IotdActions =
   | LoadReviewQueue
   | LoadReviewQueueSuccess
   | LoadReviewQueueFailure
+  | ClearReviewQueue
   | LoadVotes
   | LoadVotesSuccess
   | LoadVotesFailure
@@ -457,6 +477,7 @@ export type IotdActions =
   | LoadJudgementQueue
   | LoadJudgementQueueSuccess
   | LoadJudgementQueueFailure
+  | ClearJudgementQueue
   | LoadFutureIods
   | LoadFutureIodsSuccess
   | LoadFutureIodsFailure
