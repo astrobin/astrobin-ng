@@ -20,10 +20,10 @@ import { selectImage } from "@app/store/selectors/app/image.selectors";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { TranslateService } from "@ngx-translate/core";
-import { LoadEquipmentItem } from "@features/equipment/store/equipment.actions";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
+import { LoadEquipmentItem } from "@features/equipment/store/equipment.actions";
 
 @Component({
   selector: "astrobin-base-promotion-entry",
@@ -112,8 +112,7 @@ export abstract class BasePromotionEntryComponent extends BaseComponentDirective
       this.store$.dispatch(
         new LoadEquipmentItem({
           type: EquipmentItemType.TELESCOPE,
-          id: telescope.id,
-          item: telescope
+          id: telescope
         })
       );
     }
@@ -122,8 +121,7 @@ export abstract class BasePromotionEntryComponent extends BaseComponentDirective
       this.store$.dispatch(
         new LoadEquipmentItem({
           type: EquipmentItemType.CAMERA,
-          id: camera.id,
-          item: camera
+          id: camera
         })
       );
     }

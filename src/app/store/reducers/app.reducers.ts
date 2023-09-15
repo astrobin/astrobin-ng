@@ -148,8 +148,12 @@ export function reducer(state = initialAppState, action: All): AppState {
         images: [...state.images.filter(i => i.pk !== action.payload.pk), action.payload],
         thumbnails: UtilsService.arrayUniqueObjects([...state.thumbnails, ...thumbnails], null, false),
         loadingThumbnails,
-        telescopes: UtilsService.arrayUniqueObjects([...state.telescopes, ...action.payload.imagingTelescopes], "pk"),
-        cameras: UtilsService.arrayUniqueObjects([...state.cameras, ...action.payload.imagingCameras], "pk")
+        telescopes: action.payload.imagingTelescopes
+          ? UtilsService.arrayUniqueObjects([...state.telescopes, ...action.payload.imagingTelescopes], "pk")
+          : [],
+        cameras: action.payload.imagingCameras
+          ? UtilsService.arrayUniqueObjects([...state.cameras, ...action.payload.imagingCameras], "pk")
+          : []
       };
     }
 
@@ -193,7 +197,7 @@ export function reducer(state = initialAppState, action: All): AppState {
       const telescopes = UtilsService.arrayUniqueObjects(
         [].concat.apply(
           state.telescopes,
-          action.payload.results.map(image => image.imagingTelescopes)
+          action.payload.results.filter(image => !!image.imagingTelescopes).map(image => image.imagingTelescopes)
         ),
         "pk"
       );
@@ -201,7 +205,7 @@ export function reducer(state = initialAppState, action: All): AppState {
       const cameras = UtilsService.arrayUniqueObjects(
         [].concat.apply(
           state.cameras,
-          action.payload.results.map(image => image.imagingCameras)
+          action.payload.results.filter(image => !!image.imagingCameras).map(image => image.imagingCameras)
         ),
         "pk"
       );

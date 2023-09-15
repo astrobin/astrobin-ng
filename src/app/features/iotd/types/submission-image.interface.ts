@@ -1,5 +1,5 @@
-import { ImageInterface } from "@shared/interfaces/image.interface";
+import { BaseQueueEntryImageInterface } from "@features/iotd/types/base-queue-entry-image.interface";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface SubmissionImageInterface extends ImageInterface {
+export interface SubmissionImageInterface extends BaseQueueEntryImageInterface {
 }
