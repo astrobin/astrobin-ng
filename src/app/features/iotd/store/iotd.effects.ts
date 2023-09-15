@@ -45,8 +45,6 @@ import {
   PostVoteSuccess,
   ShowImageSuccess
 } from "./iotd.actions";
-import { LoadImagesSuccess } from "@app/store/actions/image.actions";
-import { ImageInterface } from "@shared/interfaces/image.interface";
 
 @Injectable()
 export class IotdEffects {
@@ -186,7 +184,6 @@ export class IotdEffects {
       ),
       mergeMap(({ entries, contentTypeId }) => [
         new LoadStaffMemberSettings(),
-        new LoadImagesSuccess({ ...entries, results: entries.results.map(result => result as ImageInterface) }),
         new LoadSubmissionQueueSuccess(entries)
       ]),
       catchError(error => of(new LoadSubmissionQueueFailure()))
@@ -329,7 +326,6 @@ export class IotdEffects {
       ),
       mergeMap(({ entries, contentTypeId }) => [
         new LoadStaffMemberSettings(),
-        new LoadImagesSuccess({ ...entries, results: entries.results.map(result => result as ImageInterface) }),
         new LoadReviewQueueSuccess(entries)
       ]),
       catchError(() => of(new LoadReviewQueueFailure()))
@@ -473,7 +469,6 @@ export class IotdEffects {
       ),
       mergeMap(({ entries, contentTypeId }) => [
         new LoadStaffMemberSettings(),
-        new LoadImagesSuccess({ ...entries, results: entries.results.map(result => result as ImageInterface) }),
         new LoadJudgementQueueSuccess(entries)
       ]),
       catchError(() => of(new LoadJudgementQueueFailure()))

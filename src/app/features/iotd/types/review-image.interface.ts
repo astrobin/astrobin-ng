@@ -1,5 +1,5 @@
-import { ImageInterface } from "@shared/interfaces/image.interface";
+import { BaseQueueEntryImageInterface } from "@features/iotd/types/base-queue-entry-image.interface";
 
-export interface ReviewImageInterface extends ImageInterface {
+export interface ReviewImageInterface extends BaseQueueEntryImageInterface {
   lastSubmissionTimestamp?: string;
 }

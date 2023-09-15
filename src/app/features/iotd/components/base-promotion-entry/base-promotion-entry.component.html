@@ -1,14 +1,14 @@
 <div class="card-header d-flex justify-content-between align-items-center flex-column flex-sm-row">
   {{ entry.title }}
 
-  <div class="expiration" *ngIf="!hidden">
-    <astrobin-count-down [targetDate]="expirationDate" [showSeconds]="false"></astrobin-count-down>
+  <div *ngIf="!hidden" class="expiration">
+    <astrobin-count-down [showSeconds]="false" [targetDate]="expirationDate"></astrobin-count-down>
   </div>
 
   <button
-    [hidden]="!hidden"
     (click)="show(entry.pk)"
     [class.loading]="loadingService.loading$ | async"
+    [hidden]="!hidden"
     class="btn btn-outline-primary mt-2 mt-sm-0 ms-0 ms-sm-2"
   >
     <fa-icon icon="eye"></fa-icon>
@@ -16,9 +16,10 @@
   </button>
 </div>
 
-<div class="card-body" [hidden]="hidden">
+<div [hidden]="hidden" class="card-body">
   <div [class.promoted]="isPromoted" class="promotion-queue-entry">
-    <astrobin-fullscreen-image-viewer [id]="entry.pk" [anonymized]="anonymizedThumbnails"></astrobin-fullscreen-image-viewer>
+    <astrobin-fullscreen-image-viewer [anonymized]="anonymizedThumbnails"
+                                      [id]="entry.pk"></astrobin-fullscreen-image-viewer>
 
     <div class="col-image">
       <astrobin-image
@@ -35,26 +36,20 @@
     <div *ngIf="showMetadata" class="col-metadata">
       <p>
         <strong>{{ "Imaging telescopes" | translate }}:</strong>
-        <ng-container *ngIf="entry.imagingTelescopes?.length > 0 || entry.imagingTelescopes2?.length > 0; else noneSpecified">
-          <astrobin-telescope *ngFor="let telescope of entry.imagingTelescopes" [id]="telescope.pk" [loadDelay]="500">
-          </astrobin-telescope>
-
+        <ng-container *ngIf="entry.imagingTelescopes2?.length > 0; else noneSpecified">
           <astrobin-equipment-item-display-name
             *ngFor="let telescope of entry.imagingTelescopes2"
-            [item]="selectItem(EquipmentItemType.TELESCOPE, telescope.id) | async"
+            [item]="selectItem(EquipmentItemType.TELESCOPE, telescope) | async"
           ></astrobin-equipment-item-display-name>
         </ng-container>
       </p>
 
       <p>
         <strong>{{ "Imaging cameras" | translate }}:</strong>
-        <ng-container *ngIf="entry.imagingCameras?.length > 0 || entry.imagingCameras2?.length > 0; else noneSpecified">
-          <astrobin-camera *ngFor="let camera of entry.imagingCameras" [id]="camera.pk" [loadDelay]="500">
-          </astrobin-camera>
-
+        <ng-container *ngIf="entry.imagingCameras2?.length > 0; else noneSpecified">
           <astrobin-equipment-item-display-name
             *ngFor="let camera of entry.imagingCameras2"
-            [item]="selectItem(EquipmentItemType.CAMERA, camera.id) | async"
+            [item]="selectItem(EquipmentItemType.CAMERA, camera) | async"
           ></astrobin-equipment-item-display-name>
         </ng-container>
       </p>
@@ -71,10 +66,10 @@
   <!-- promotion-queue-entry -->
 </div>
 
-<div class="card-footer" [hidden]="hidden">
+<div [hidden]="hidden" class="card-footer">
   <button
-    *ngIf="showViewButton"
     (click)="viewPage(entry.pk)"
+    *ngIf="showViewButton"
     [class.loading]="loadingService.loading$ | async"
     class="btn btn-outline-secondary"
   >
@@ -114,7 +109,8 @@
   </button>
 
   <ng-template #retract>
-    <button (click)="retractPromotion(entry.pk)" [class.loading]="loadingService.loading$ | async" class="btn btn-danger">
+    <button (click)="retractPromotion(entry.pk)" [class.loading]="loadingService.loading$ | async"
+            class="btn btn-danger">
       <fa-icon icon="undo"></fa-icon>
       {{ retractPromotionButtonLabel }}
     </button>
