@@ -23,7 +23,7 @@ describe("SubmissionEntryComponent", () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(SubmissionEntryComponent);
     component = fixture.componentInstance;
-    component.entry = ImageGenerator.image();
+    component.entry = ImageGenerator.image() as any;
     fixture.detectChanges();
   });
 

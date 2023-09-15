@@ -12,18 +12,10 @@
       "w": 2533,
       "h": 2046,
       "imagingTelescopes": [
-        {
-          "pk": 1,
-          "make": "Test telescope make 1",
-          "name": "Test telescope name 1"
-        }
+        1
       ],
       "imagingCameras": [
-        {
-          "pk": 1,
-          "make": "Test camera make 1",
-          "name": "Test camera name 1"
-        }
+        1
       ],
       "published": "2020-12-28T21:56:23.741000"
     },
@@ -37,27 +29,7 @@
       "h": 1124,
       "imagingTelescopes": [],
       "imagingCameras": [],
-      "published": "2020-12-28T21:56:23.741000",
-      "thumbnails": [
-        {
-          "url": "assets/test/images/regular.jpg",
-          "alias": "regular",
-          "id": 1,
-          "revision": "final"
-        },
-        {
-          "url": "assets/test/images/hd.jpg",
-          "alias": "hd",
-          "id": 1,
-          "revision": "final"
-        },
-        {
-          "url": "assets/test/images/story.jpg",
-          "alias": "story",
-          "id": 1,
-          "revision": "final"
-        }
-      ]
+      "published": "2020-12-28T21:56:23.741000"
     }
   ]
 }
