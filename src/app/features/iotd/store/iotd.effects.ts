@@ -35,8 +35,10 @@ import {
   LoadSubmissionQueueSuccess,
   LoadSubmissionsFailure,
   LoadSubmissionsSuccess,
+  LoadSubmitterSeenImagesSuccess,
   LoadVotesFailure,
   LoadVotesSuccess,
+  MarkSubmitterSeenImageSuccess,
   PostIotdFailure,
   PostIotdSuccess,
   PostSubmissionFailure,
@@ -68,7 +70,9 @@ export class IotdEffects {
       ofType(IotdActionTypes.LOAD_HIDDEN_IMAGES),
       tap(() => this.loadingService.setLoading(true)),
       mergeMap(() =>
-        this.iotdApiService.loadHiddenImages().pipe(map(hiddenImages => new LoadHiddenImagesSuccess({ hiddenImages })))
+        this.iotdApiService
+          .loadHiddenImages()
+          .pipe(map(hiddenImages => new LoadHiddenImagesSuccess({ hiddenImages })))
       )
     )
   );
@@ -120,6 +124,39 @@ export class IotdEffects {
         tap(() => this.loadingService.setLoading(false))
       ),
     { dispatch: false }
+  );
+
+  loadSubmitterSeenImages$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(IotdActionTypes.LOAD_SUBMITTER_SEEN_IMAGES),
+      tap(() => this.loadingService.setLoading(true)),
+      mergeMap(() =>
+        this.iotdApiService
+          .loadSubmitterSeenImages()
+          .pipe(map(submitterSeenImages => new LoadSubmitterSeenImagesSuccess({ submitterSeenImages })))
+      )
+    )
+  );
+
+  loadSubmitterSeenImagesSuccess$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(IotdActionTypes.LOAD_SUBMITTER_SEEN_IMAGES_SUCCESS),
+        tap(() => this.loadingService.setLoading(false))
+      ),
+    { dispatch: false }
+  );
+
+  markSubmitterSeenImage$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(IotdActionTypes.MARK_SUBMITTER_SEEN_IMAGE),
+      map(action => action.payload),
+      mergeMap(payload =>
+        this.iotdApiService
+          .markSubmitterSeenImage(payload.id)
+          .pipe(map(submitterSeenImage => new MarkSubmitterSeenImageSuccess({ submitterSeenImage })))
+      )
+    )
   );
 
   loadDismissedImage$ = createEffect(() =>
@@ -324,10 +361,7 @@ export class IotdEffects {
           }))
         )
       ),
-      mergeMap(({ entries, contentTypeId }) => [
-        new LoadStaffMemberSettings(),
-        new LoadReviewQueueSuccess(entries)
-      ]),
+      mergeMap(({ entries, contentTypeId }) => [new LoadStaffMemberSettings(), new LoadReviewQueueSuccess(entries)]),
       catchError(() => of(new LoadReviewQueueFailure()))
     )
   );
@@ -467,10 +501,7 @@ export class IotdEffects {
           }))
         )
       ),
-      mergeMap(({ entries, contentTypeId }) => [
-        new LoadStaffMemberSettings(),
-        new LoadJudgementQueueSuccess(entries)
-      ]),
+      mergeMap(({ entries, contentTypeId }) => [new LoadStaffMemberSettings(), new LoadJudgementQueueSuccess(entries)]),
       catchError(() => of(new LoadJudgementQueueFailure()))
     )
   );

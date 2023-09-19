@@ -3,6 +3,7 @@ import {
   HiddenImage,
   IotdInterface,
   SubmissionInterface,
+  SubmitterSeenImage,
   VoteInterface
 } from "@features/iotd/services/iotd-api.service";
 import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
@@ -17,6 +18,7 @@ export const iotdFeatureKey = "iotd";
 export interface IotdState {
   staffMemberSettings: StaffMemberSettingsInterface;
   hiddenImages: HiddenImage[];
+  submitterSeenImages: SubmitterSeenImage[];
   dismissedImages: DismissedImage[];
 
   submissionQueue: PaginatedApiResultInterface<SubmissionImageInterface> | null;
@@ -32,6 +34,7 @@ export interface IotdState {
 export const initialIotdState: IotdState = {
   staffMemberSettings: null,
   hiddenImages: [],
+  submitterSeenImages: [],
   dismissedImages: [],
 
   submissionQueue: null,
@@ -73,6 +76,18 @@ export function reducer(state = initialIotdState, action: IotdActions): IotdStat
       return {
         ...state,
         dismissedImages: action.payload.dismissedImages
+      };
+
+    case IotdActionTypes.LOAD_SUBMITTER_SEEN_IMAGES_SUCCESS:
+      return {
+        ...state,
+        submitterSeenImages: action.payload.submitterSeenImages
+      };
+
+    case IotdActionTypes.MARK_SUBMITTER_SEEN_IMAGE_SUCCESS:
+      return {
+        ...state,
+        submitterSeenImages: [...state.submitterSeenImages, action.payload.submitterSeenImage]
       };
 
     case IotdActionTypes.DISMISS_IMAGE_SUCCESS:
