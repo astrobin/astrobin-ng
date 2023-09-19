@@ -5,6 +5,7 @@ import {
   HiddenImage,
   IotdInterface,
   SubmissionInterface,
+  SubmitterSeenImage,
   VoteInterface
 } from "@features/iotd/services/iotd-api.service";
 import { Action } from "@ngrx/store";
@@ -27,6 +28,11 @@ export enum IotdActionTypes {
   HIDE_IMAGE_SUCCESS = "[IOTD] Hide image success",
   SHOW_IMAGE = "[IOTD] Show image",
   SHOW_IMAGE_SUCCESS = "[IOTD] Show image success",
+
+  LOAD_SUBMITTER_SEEN_IMAGES = "[IOTD] Load submitter seen images",
+  LOAD_SUBMITTER_SEEN_IMAGES_SUCCESS = "[IOTD] Load submitter seen images success",
+  MARK_SUBMITTER_SEEN_IMAGE = "[IOTD] Mark Submitter seen image",
+  MARK_SUBMITTER_SEEN_IMAGE_SUCCESS = "[IOTD] Mark Submitter seen image success",
 
   LOAD_DISMISSED_IMAGES = "[IOTD] Load dismissed images",
   LOAD_DISMISSED_IMAGES_SUCCESS = "[IOTD] Load dismissed images success",
@@ -145,6 +151,32 @@ export class ShowImageSuccess implements PayloadActionInterface {
   readonly type = IotdActionTypes.SHOW_IMAGE_SUCCESS;
 
   constructor(public payload: { id: number }) {
+  }
+}
+
+export class LoadSubmitterSeenImages implements Action {
+  readonly type = IotdActionTypes.LOAD_SUBMITTER_SEEN_IMAGES;
+}
+
+export class LoadSubmitterSeenImagesSuccess implements PayloadActionInterface {
+  readonly type = IotdActionTypes.LOAD_SUBMITTER_SEEN_IMAGES_SUCCESS;
+
+  constructor(public payload: { submitterSeenImages: SubmitterSeenImage[] }) {
+  }
+}
+
+export class MarkSubmitterSeenImage implements PayloadActionInterface {
+  readonly type = IotdActionTypes.MARK_SUBMITTER_SEEN_IMAGE;
+
+  constructor(public payload: { id: number }) {
+  }
+}
+
+export class MarkSubmitterSeenImageSuccess implements PayloadActionInterface {
+  readonly type = IotdActionTypes.MARK_SUBMITTER_SEEN_IMAGE_SUCCESS;
+
+  constructor(public payload: { submitterSeenImage: SubmitterSeenImage }) {
+
   }
 }
 
@@ -438,6 +470,10 @@ export type IotdActions =
   | HideImageSuccess
   | ShowImage
   | ShowImageSuccess
+  | LoadSubmitterSeenImages
+  | LoadSubmitterSeenImagesSuccess
+  | MarkSubmitterSeenImage
+  | MarkSubmitterSeenImageSuccess
   | LoadDismissedImages
   | LoadDismissedImagesSuccess
   | DismissImage

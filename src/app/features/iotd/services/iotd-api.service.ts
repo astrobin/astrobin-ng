@@ -4,11 +4,12 @@ import { BaseClassicApiService } from "@shared/services/api/classic/base-classic
 import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
 import { LoadingService } from "@shared/services/loading.service";
 import { Observable } from "rxjs";
-import { map } from "rxjs/operators";
+import { catchError, map } from "rxjs/operators";
 import { SubmissionImageInterface } from "@features/iotd/types/submission-image.interface";
 import { ReviewImageInterface } from "@features/iotd/types/review-image.interface";
 import { StaffMemberSettingsInterface } from "@features/iotd/types/staff-member-settings.interface";
 import { JudgementImageInterface } from "@features/iotd/types/judgement-image.interface";
+import { ImageInterface } from "@shared/interfaces/image.interface";
 
 export interface SubmissionInterface {
   id: number;
@@ -32,6 +33,13 @@ export interface IotdInterface {
 }
 
 export interface HiddenImage {
+  id: number;
+  user: number;
+  image: number;
+  created: string;
+}
+
+export interface SubmitterSeenImage {
   id: number;
   user: number;
   image: number;
@@ -79,6 +87,21 @@ export class IotdApiService extends BaseClassicApiService {
     return this.http
       .delete<void>(`${this.baseUrl}/iotd/hidden-image/${hiddenImage.id}/`)
       .pipe(map(() => hiddenImage.image));
+  }
+
+  loadSubmitterSeenImages(): Observable<SubmitterSeenImage[]> {
+    return this.http.get<SubmitterSeenImage[]>(`${this.baseUrl}/iotd/submitter-seen-image/`);
+  }
+
+  markSubmitterSeenImage(id: ImageInterface["pk"]): Observable<SubmitterSeenImage> {
+    return this.http
+      .post<SubmitterSeenImage>(`${this.baseUrl}/iotd/submitter-seen-image/`, { image: id })
+      .pipe(
+        catchError(() => {
+          // If the image has already been marked as seen, we get a 400 error. We don't care about this.
+          return [];
+        })
+      );
   }
 
   loadDismissedImages(): Observable<DismissedImage[]> {

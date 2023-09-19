@@ -3,6 +3,7 @@ import {
   HiddenImage,
   IotdInterface,
   SubmissionInterface,
+  SubmitterSeenImage,
   VoteInterface
 } from "@features/iotd/services/iotd-api.service";
 import { createFeatureSelector, createSelector } from "@ngrx/store";
@@ -28,6 +29,11 @@ export const selectStaffMemberSettings = createSelector(
 export const selectHiddenImages = createSelector(
   selectIotdState,
   (state: IotdState): HiddenImage[] => state.hiddenImages
+);
+
+export const selectSubmitterSeenImages = createSelector(
+  selectIotdState,
+  (state: IotdState): SubmitterSeenImage[] => state.submitterSeenImages
 );
 
 export const selectHiddenImageByImageId = createSelector(
