@@ -5,6 +5,7 @@ import { LoadCamera, LoadCameraSuccess } from "@app/store/actions/camera.actions
 import { LoadContentType, LoadContentTypeSuccess } from "@app/store/actions/content-type.actions";
 import { HideFullscreenImage, ShowFullscreenImage } from "@app/store/actions/fullscreen-image.actions";
 import {
+  ForceCheckImageAutoLoad,
   LoadImage,
   LoadImageRevisions,
   LoadImageRevisionsSuccess,
@@ -62,6 +63,10 @@ export enum AppActionTypes {
 
   LOAD_CONTENT_TYPE = "[App] Load content type",
   LOAD_CONTENT_TYPE_SUCCESS = "[App] Load content type success",
+
+  // Emit this to instruct images on a page to check for visibility and possibly autoload, for instance if items were
+  // removed from the page, which might have caused images to become visible.
+  FORCE_CHECK_IMAGE_AUTO_LOAD = "[App] Force check image auto load",
 
   LOAD_IMAGE = "[App] Load image",
   LOAD_IMAGE_SUCCESS = "[App] Load image success",
@@ -127,6 +132,7 @@ export type All =
   | HideFullscreenImage
   | LoadContentType
   | LoadContentTypeSuccess
+  | ForceCheckImageAutoLoad
   | LoadImage
   | LoadImageSuccess
   | SetImage

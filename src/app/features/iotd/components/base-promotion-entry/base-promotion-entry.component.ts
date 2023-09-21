@@ -5,7 +5,14 @@ import {
   ConfirmDismissModalComponent,
   DISMISSAL_NOTICE_COOKIE
 } from "@features/iotd/components/confirm-dismiss-modal/confirm-dismiss-modal.component";
-import { DismissImage, HideImage, ShowImage } from "@features/iotd/store/iotd.actions";
+import {
+  DismissImage,
+  DismissImageSuccess,
+  HideImage,
+  HideImageSuccess,
+  IotdActionTypes,
+  ShowImage
+} from "@features/iotd/store/iotd.actions";
 import { selectDismissedImageByImageId, selectHiddenImageByImageId } from "@features/iotd/store/iotd.selectors";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Store } from "@ngrx/store";
@@ -24,6 +31,8 @@ import { EquipmentItemType } from "@features/equipment/types/equipment-item-base
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import { LoadEquipmentItem } from "@features/equipment/store/equipment.actions";
+import { Actions, ofType } from "@ngrx/effects";
+import { ForceCheckImageAutoLoad } from "@app/store/actions/image.actions";
 
 @Component({
   selector: "astrobin-base-promotion-entry",
@@ -77,6 +86,7 @@ export abstract class BasePromotionEntryComponent extends BaseComponentDirective
 
   protected constructor(
     public readonly store$: Store<State>,
+    public readonly actions$: Actions,
     public readonly elementRef: ElementRef,
     public readonly modalService: NgbModal,
     public readonly cookieService: CookieService,
@@ -148,11 +158,25 @@ export abstract class BasePromotionEntryComponent extends BaseComponentDirective
   }
 
   hide(pk: PromotionImageInterface["pk"]): void {
+    this.actions$.pipe(
+      ofType(IotdActionTypes.HIDE_IMAGE_SUCCESS),
+      filter((action: HideImageSuccess) => action.payload.hiddenImage.id === pk),
+      take(1)
+    ).subscribe(() => {
+      this.store$.dispatch(new ForceCheckImageAutoLoad());
+    });
     this.store$.dispatch(new HideImage({ id: pk }));
   }
 
   dismiss(pk: PromotionImageInterface["pk"]): void {
     const _confirmDismiss = () => {
+      this.actions$.pipe(
+        ofType(IotdActionTypes.DISMISS_IMAGE_SUCCESS),
+        filter((action: DismissImageSuccess) => action.payload.dismissedImage.id === pk),
+        take(1)
+      ).subscribe(() => {
+        this.store$.dispatch(new ForceCheckImageAutoLoad());
+      });
       this.store$.dispatch(new DismissImage({ id: pk }));
     };
 

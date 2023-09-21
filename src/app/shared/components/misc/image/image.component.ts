@@ -29,11 +29,12 @@ import { ImageService } from "@shared/services/image/image.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { debounceTime, distinctUntilChanged, filter, map, switchMap, take, takeUntil } from "rxjs/operators";
-import { fromEvent, Observable, of } from "rxjs";
+import { fromEvent, merge, Observable, of } from "rxjs";
 import { selectImageRevisionsForImage } from "@app/store/selectors/app/image-revision.selectors";
-import { Actions } from "@ngrx/effects";
+import { Actions, ofType } from "@ngrx/effects";
 import { ImageThumbnailInterface } from "@shared/interfaces/image-thumbnail.interface";
 import { isPlatformBrowser } from "@angular/common";
+import { AppActionTypes } from "@app/store/actions/app.actions";
 
 declare const videojs: any;
 
@@ -111,7 +112,7 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
       throw new Error("Attribute 'alias' is required");
     }
 
-    this._setupOnScroll();
+    this._setupAutoLoad();
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -251,9 +252,13 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
     }
   }
 
-  private _setupOnScroll() {
+  private _setupAutoLoad() {
     if (isPlatformBrowser(this.platformId)) {
-      fromEvent(this.windowRefService.nativeWindow, "scroll")
+      const scroll$ = fromEvent(this.windowRefService.nativeWindow, "scroll");
+      const resize$ = fromEvent(this.windowRefService.nativeWindow, "resize");
+      const forceCheck$ = this.actions$.pipe(ofType(AppActionTypes.FORCE_CHECK_IMAGE_AUTO_LOAD));
+
+      merge(scroll$, resize$, forceCheck$)
         .pipe(takeUntil(this.destroyed$), debounceTime(50), distinctUntilChanged())
         .subscribe(() => this.load());
     }
