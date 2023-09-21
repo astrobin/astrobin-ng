@@ -6,9 +6,14 @@ import { ImageInterface, ImageRevisionInterface } from "@shared/interfaces/image
 import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
 import { HttpErrorResponse } from "@angular/common/http";
 import { ImageEditModelInterface } from "@features/image/services/image-edit.service";
+import { Action } from "@ngrx/store";
 
 export interface LoadImageOptionsInterface {
   skipThumbnails: boolean;
+}
+
+export class ForceCheckImageAutoLoad implements Action {
+  readonly type = AppActionTypes.FORCE_CHECK_IMAGE_AUTO_LOAD;
 }
 
 export class LoadImage implements PayloadActionInterface {

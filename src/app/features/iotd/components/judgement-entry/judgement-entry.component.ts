@@ -16,6 +16,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
 import { JudgementImageInterface } from "@features/iotd/types/judgement-image.interface";
 import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
+import { Actions } from "@ngrx/effects";
 
 @Component({
   selector: "astrobin-judgement-entry",
@@ -25,6 +26,7 @@ import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
 export class JudgementEntryComponent extends BasePromotionEntryComponent implements OnInit {
   constructor(
     public readonly store$: Store<State>,
+    public readonly actions$: Actions,
     public readonly elementRef: ElementRef,
     public readonly loadingService: LoadingService,
     public readonly modalService: NgbModal,
@@ -33,7 +35,16 @@ export class JudgementEntryComponent extends BasePromotionEntryComponent impleme
     public readonly classicRoutesService: ClassicRoutesService,
     public readonly translateService: TranslateService
   ) {
-    super(store$, elementRef, modalService, cookieService, windowRefService, classicRoutesService, translateService);
+    super(
+      store$,
+      actions$,
+      elementRef,
+      modalService,
+      cookieService,
+      windowRefService,
+      classicRoutesService,
+      translateService
+    );
   }
 
   ngOnInit() {

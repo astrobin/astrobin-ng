@@ -15,6 +15,7 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { TranslateService } from "@ngx-translate/core";
 import { ReviewImageInterface } from "@features/iotd/types/review-image.interface";
+import { Actions } from "@ngrx/effects";
 
 @Component({
   selector: "astrobin-review-entry",
@@ -24,6 +25,7 @@ import { ReviewImageInterface } from "@features/iotd/types/review-image.interfac
 export class ReviewEntryComponent extends BasePromotionEntryComponent {
   constructor(
     public readonly store$: Store<State>,
+    public readonly actions$: Actions,
     public readonly elementRef: ElementRef,
     public readonly loadingService: LoadingService,
     public readonly modalService: NgbModal,
@@ -32,7 +34,16 @@ export class ReviewEntryComponent extends BasePromotionEntryComponent {
     public readonly classicRoutesService: ClassicRoutesService,
     public readonly translateService: TranslateService
   ) {
-    super(store$, elementRef, modalService, cookieService, windowRefService, classicRoutesService, translateService);
+    super(
+      store$,
+      actions$,
+      elementRef,
+      modalService,
+      cookieService,
+      windowRefService,
+      classicRoutesService,
+      translateService
+    );
   }
 
   isPromoted$(pk: ReviewImageInterface["pk"]): Observable<boolean> {

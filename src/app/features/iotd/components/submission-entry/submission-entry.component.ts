@@ -19,6 +19,7 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { TranslateService } from "@ngx-translate/core";
 import { SubmissionImageInterface } from "@features/iotd/types/submission-image.interface";
+import { Actions } from "@ngrx/effects";
 
 @Component({
   selector: "astrobin-submission-entry",
@@ -28,6 +29,7 @@ import { SubmissionImageInterface } from "@features/iotd/types/submission-image.
 export class SubmissionEntryComponent extends BasePromotionEntryComponent {
   constructor(
     public readonly store$: Store<State>,
+    public readonly actions$: Actions,
     public readonly elementRef: ElementRef,
     public readonly loadingService: LoadingService,
     public readonly modalService: NgbModal,
@@ -36,7 +38,16 @@ export class SubmissionEntryComponent extends BasePromotionEntryComponent {
     public readonly classicRoutesService: ClassicRoutesService,
     public readonly translateService: TranslateService
   ) {
-    super(store$, elementRef, modalService, cookieService, windowRefService, classicRoutesService, translateService);
+    super(
+      store$,
+      actions$,
+      elementRef,
+      modalService,
+      cookieService,
+      windowRefService,
+      classicRoutesService,
+      translateService
+    );
   }
 
   isPromoted$(imageId: ImageInterface["pk"]): Observable<boolean> {
