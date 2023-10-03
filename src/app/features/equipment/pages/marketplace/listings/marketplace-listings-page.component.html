@@ -3,8 +3,9 @@
     <span class="flex-grow-1 me-3">{{ title }}</span>
     <a
       [routerLink]="['create']"
-      class="btn btn-primary me-3"
-    >{{ "Sell something" | translate }}
+      class="btn btn-primary btn-create-listing me-3"
+    >
+      {{ "Sell something" | translate }}
     </a>
     <astrobin-refresh-button (click)="refresh()"></astrobin-refresh-button>
   </h1>
@@ -13,6 +14,7 @@
     <ng-container *ngIf="listings === null" [ngTemplateOutlet]="loadingTemplate"></ng-container>
     <ng-container *ngIf="listings !== null">
       <ng-container *ngIf="listings.length > 0; else noListingsTemplate">
+        <div class="listing"></div>
       </ng-container>
     </ng-container>
   </div>
