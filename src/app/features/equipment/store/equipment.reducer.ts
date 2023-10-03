@@ -10,6 +10,7 @@ import { EquipmentItemMostOftenUsedWithData } from "@features/equipment/types/eq
 import { ContributorInterface } from "@features/equipment/types/contributor.interface";
 import { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
 import { AppActionTypes } from "@app/store/actions/app.actions";
+import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
 
 export const equipmentFeatureKey = "equipment";
 
@@ -21,6 +22,9 @@ export interface EquipmentState {
   presets: EquipmentPresetInterface[];
   mostOftenUsedWithData: EquipmentItemMostOftenUsedWithData | {};
   contributors: ContributorInterface[];
+  marketplace: {
+    listings: MarketplaceListingInterface[] | null
+  };
 }
 
 export const initialEquipmentState: EquipmentState = {
@@ -30,7 +34,10 @@ export const initialEquipmentState: EquipmentState = {
   editProposals: [],
   presets: [],
   mostOftenUsedWithData: {},
-  contributors: []
+  contributors: [],
+  marketplace: {
+    listings: null
+  }
 };
 
 function editProposalCompareFunction(
@@ -268,6 +275,16 @@ export function reducer(state = initialEquipmentState, action: PayloadActionInte
       } else {
         return { ...state };
       }
+    }
+
+    case EquipmentActionTypes.LOAD_MARKETPLACE_LISTINGS_SUCCESS: {
+      return {
+        ...state,
+        marketplace: {
+          ...state.marketplace,
+          listings: action.payload.listings
+        }
+      };
     }
 
     default: {

@@ -36,6 +36,7 @@ import { ContributorInterface } from "@features/equipment/types/contributor.inte
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { EquipmentListingsInterface } from "@features/equipment/types/equipment-listings.interface";
+import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
 
 export interface AllEquipmentItemsOptionsInterface {
   brand?: BrandInterface["id"];
@@ -52,7 +53,7 @@ export enum EquipmentItemsSortOrder {
   USERS = "users",
   USERS_DESC = "-users",
   IMAGES = "images",
-  IMAGES_DESC = "-images"
+  IMAGES_DESC = "-images",
 }
 
 @Injectable({
@@ -167,9 +168,10 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     type: EquipmentItemType,
     page = 1
   ): Observable<PaginatedApiResultInterface<EquipmentItem>> {
-    return this.http.get<PaginatedApiResultInterface<EquipmentItem>>(
-      `${this.configUrl}/${type.toLowerCase()}/?followed=true&page=${page}`
-    )
+    return this.http
+      .get<PaginatedApiResultInterface<EquipmentItem>>(
+        `${this.configUrl}/${type.toLowerCase()}/?followed=true&page=${page}`
+      )
       .pipe(
         map(response => ({
           ...response,
@@ -689,7 +691,9 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
   }
 
   getMount(id: MountInterface["id"]): Observable<MountInterface> {
-    return this.http.get<MountInterface>(`${this.configUrl}/mount/${id}/`).pipe(map(mount => this._parseMount(mount)));
+    return this.http
+      .get<MountInterface>(`${this.configUrl}/mount/${id}/`)
+      .pipe(map(mount => this._parseMount(mount)));
   }
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -753,6 +757,18 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
   }
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // MARKETPLACE API
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  public loadMarketplaceListings(
+    page: number = 1
+  ): Observable<PaginatedApiResultInterface<MarketplaceListingInterface>> {
+    return this.http.get<PaginatedApiResultInterface<MarketplaceListingInterface>>(
+      `${this.configUrl}/marketplace/listing/?page=${page}`
+    );
+  }
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // PRIVATE
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -787,12 +803,12 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     return {
       ...item,
       ...{
-        pixelSize: item.pixelSize !== null ? parseFloat((item.pixelSize as unknown) as string) : null,
-        sensorWidth: item.sensorWidth !== null ? parseFloat((item.sensorWidth as unknown) as string) : null,
-        sensorHeight: item.sensorHeight !== null ? parseFloat((item.sensorHeight as unknown) as string) : null,
-        readNoise: item.readNoise !== null ? parseFloat((item.readNoise as unknown) as string) : null,
+        pixelSize: item.pixelSize !== null ? parseFloat(item.pixelSize as unknown as string) : null,
+        sensorWidth: item.sensorWidth !== null ? parseFloat(item.sensorWidth as unknown as string) : null,
+        sensorHeight: item.sensorHeight !== null ? parseFloat(item.sensorHeight as unknown as string) : null,
+        readNoise: item.readNoise !== null ? parseFloat(item.readNoise as unknown as string) : null,
         fullWellCapacity:
-          item.fullWellCapacity !== null ? parseFloat((item.fullWellCapacity as unknown) as string) : null
+          item.fullWellCapacity !== null ? parseFloat(item.fullWellCapacity as unknown as string) : null
       }
     };
   }
@@ -801,7 +817,7 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     return {
       ...item,
       ...{
-        backFocus: item.backFocus !== null ? parseFloat((item.backFocus as unknown) as string) : null
+        backFocus: item.backFocus !== null ? parseFloat(item.backFocus as unknown as string) : null
       }
     };
   }
@@ -810,9 +826,9 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     return {
       ...item,
       ...{
-        aperture: item.aperture !== null ? parseFloat((item.aperture as unknown) as string) : null,
-        minFocalLength: item.minFocalLength !== null ? parseFloat((item.minFocalLength as unknown) as string) : null,
-        maxFocalLength: item.maxFocalLength !== null ? parseFloat((item.maxFocalLength as unknown) as string) : null
+        aperture: item.aperture !== null ? parseFloat(item.aperture as unknown as string) : null,
+        minFocalLength: item.minFocalLength !== null ? parseFloat(item.minFocalLength as unknown as string) : null,
+        maxFocalLength: item.maxFocalLength !== null ? parseFloat(item.maxFocalLength as unknown as string) : null
       }
     };
   }
@@ -821,8 +837,8 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     return {
       ...item,
       ...{
-        weight: item.weight !== null ? parseFloat((item.weight as unknown) as string) : null,
-        maxPayload: item.maxPayload !== null ? parseFloat((item.maxPayload as unknown) as string) : null
+        weight: item.weight !== null ? parseFloat(item.weight as unknown as string) : null,
+        maxPayload: item.maxPayload !== null ? parseFloat(item.maxPayload as unknown as string) : null
       }
     };
   }
@@ -831,7 +847,7 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     return {
       ...item,
       ...{
-        bandwidth: item.bandwidth !== null ? parseFloat((item.bandwidth as unknown) as string) : null
+        bandwidth: item.bandwidth !== null ? parseFloat(item.bandwidth as unknown as string) : null
       }
     };
   }

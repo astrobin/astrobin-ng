@@ -27,6 +27,7 @@ import {
   EquipmentItemsSortOrder
 } from "@features/equipment/services/equipment-api.service";
 import { ContributorInterface } from "@features/equipment/types/contributor.interface";
+import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
 
 export interface EquipmentItemCreationSuccessPayloadInterface {
   item: EquipmentItemBaseInterface;
@@ -159,7 +160,13 @@ export enum EquipmentActionTypes {
   // Item browser
   ITEM_BROWSER_ADD = "[Equipment] Item browser add",
   ITEM_BROWSER_SET = "[Equipment] Item browser set",
-  ITEM_BROWSER_EXIT_FULLSCREEN = "[Equipment] Item browser exit fullscreen"
+  ITEM_BROWSER_EXIT_FULLSCREEN = "[Equipment] Item browser exit fullscreen",
+
+  // Marketplace
+
+  LOAD_MARKETPLACE_LISTINGS = "[Equipment] Load marketplace listings",
+  LOAD_MARKETPLACE_LISTINGS_SUCCESS = "[Equipment] Load marketplace listings success",
+  LOAD_MARKETPLACE_LISTINGS_FAILURE = "[Equipment] Load marketplace listing failure",
 }
 
 /**********************************************************************************************************************
@@ -864,6 +871,31 @@ export class ItemBrowserExitFullscreen implements Action {
   readonly type = EquipmentActionTypes.ITEM_BROWSER_EXIT_FULLSCREEN;
 }
 
+/**********************************************************************************************************************
+ * Marketplace
+ *********************************************************************************************************************/
+
+export class LoadMarketplaceListings implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.LOAD_MARKETPLACE_LISTINGS;
+
+  constructor(public payload: { page: number } = { page: 1 }) {
+  }
+}
+
+export class LoadMarketplaceListingsSuccess implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.LOAD_MARKETPLACE_LISTINGS_SUCCESS;
+
+  constructor(public payload: { listings: PaginatedApiResultInterface<MarketplaceListingInterface> }) {
+  }
+}
+
+export class LoadMarketplaceListingsFailure implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.LOAD_MARKETPLACE_LISTINGS_FAILURE;
+
+  constructor(public payload: { error: string }) {
+  }
+}
+
 export type EquipmentActions =
 // Brands
   | GetAllBrands
@@ -972,4 +1004,9 @@ export type EquipmentActions =
   // Item browser
   | ItemBrowserAdd
   | ItemBrowserSet
-  | ItemBrowserExitFullscreen;
+  | ItemBrowserExitFullscreen
+
+  // Marketplace
+  | LoadMarketplaceListings
+  | LoadMarketplaceListingsSuccess
+  | LoadMarketplaceListingsFailure;

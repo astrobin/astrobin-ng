@@ -34,6 +34,7 @@ import { EquipmentCompareComponent } from "./components/equipment-compare/equipm
 import { EquipmentCompareModalComponent } from "./components/equipment-compare-modal/equipment-compare-modal.component";
 import { EquipmentListingsComponent } from "./components/equipment-listings/equipment-listings.component";
 import { FollowedExplorerComponent } from "@features/equipment/pages/followed-explorer/followed-explorer.component";
+import { MarketplaceListingsPageComponent } from "./pages/marketplace/listings/marketplace-listings-page.component";
 
 @NgModule({
   declarations: [
@@ -66,7 +67,8 @@ import { FollowedExplorerComponent } from "@features/equipment/pages/followed-ex
     ContributorsPageComponent,
     EquipmentCompareComponent,
     EquipmentCompareModalComponent,
-    EquipmentListingsComponent
+    EquipmentListingsComponent,
+    MarketplaceListingsPageComponent
   ],
   imports: [RouterModule.forChild(routes), SharedModule, StoreModule.forFeature(equipmentFeatureKey, reducer)]
 })

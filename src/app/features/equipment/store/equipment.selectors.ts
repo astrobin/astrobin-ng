@@ -128,3 +128,7 @@ export const selectMostOftenUsedWithForItem = createSelector(
 );
 
 export const selectEquipmentContributors = createSelector(selectEquipment, state => state.contributors);
+
+export const selectMarketplace = createSelector(selectEquipment, state => state.marketplace);
+
+export const selectMarketplaceListings = createSelector(selectMarketplace, state => state.listings);

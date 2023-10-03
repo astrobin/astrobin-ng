@@ -15,6 +15,7 @@ import { BrandExplorerPageComponent } from "@features/equipment/pages/explorer/b
 import { ContributorsPageComponent } from "@features/equipment/pages/contributors-page/contributors-page.component";
 import { Constants } from "@shared/constants";
 import { ItemResolver } from "@features/equipment/resolvers/item.resolver";
+import { MarketplaceListingsPageComponent } from "@features/equipment/pages/marketplace/listings/marketplace-listings-page.component";
 
 export const routes: Routes = [
   {
@@ -78,7 +79,6 @@ export const routes: Routes = [
         pathMatch: "full",
         redirectTo: "camera"
       },
-
       {
         path: "contributors",
         pathMatch: "full",
@@ -148,5 +148,19 @@ export const routes: Routes = [
     component: FollowedExplorerComponent,
     canActivate: [AuthGuardService, GroupGuardService],
     data: { anyOfGroups: [Constants.EQUIPMENT_MODERATORS_GROUP, Constants.OWN_EQUIPMENT_MIGRATORS_GROUP] }
+  },
+  {
+    path: "marketplace",
+    children: [
+      {
+        path: "",
+        pathMatch: "full",
+        redirectTo: "listings"
+      },
+      {
+        path: "listings",
+        component: MarketplaceListingsPageComponent
+      }
+    ]
   }
 ];

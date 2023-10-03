@@ -73,6 +73,8 @@ import {
   LoadEquipmentItem,
   LoadEquipmentItemFailure,
   LoadEquipmentItemSuccess,
+  LoadMarketplaceListings,
+  LoadMarketplaceListingsSuccess,
   LoadSensor,
   LoadSensorSuccess,
   RejectEquipmentItem,
@@ -736,6 +738,21 @@ export class EquipmentEffects {
                 new CreateSoftwareEditProposalSuccess({ editProposal: createdSoftwareEditProposal })
             )
           )
+      )
+    )
+  );
+
+  /*********************************************************************************************************************
+   * Marketplace
+   ********************************************************************************************************************/
+  LoadMarketplaceListings: Observable<LoadMarketplaceListingsSuccess> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(EquipmentActionTypes.LOAD_MARKETPLACE_LISTINGS),
+      map((action: LoadMarketplaceListings) => action.payload),
+      mergeMap(payload =>
+        this.equipmentApiService
+          .loadMarketplaceListings(payload.page)
+          .pipe(map(listings => new LoadMarketplaceListingsSuccess({ listings })))
       )
     )
   );
