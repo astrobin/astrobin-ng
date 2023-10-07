@@ -108,6 +108,10 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
       this.uploadOptions.allowedTypes = types.join(",");
       this.uploadDataService.setAllowedTypes(this.uploadOptions.allowedTypes);
     }
+
+    if (!!this.props.autoUpload) {
+      this.uploadOptions.autoUpload = this.props.autoUpload;
+    }
   }
 
   isActive(): boolean {

@@ -18,6 +18,7 @@ import { filter, map, take } from "rxjs/operators";
 import { TranslateService } from "@ngx-translate/core";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import { ItemBrowserLayout } from "@shared/components/equipment/item-browser/item-browser.component";
 
 @Component({
   selector: "astrobin-formly-field-equipment-item-browser",
@@ -25,8 +26,9 @@ import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
   styleUrls: ["./formly-field-equipment-item-browser.component.scss"]
 })
 export class FormlyFieldEquipmentItemBrowserComponent extends FieldType implements OnInit {
-  EquipmentItemType: typeof EquipmentItemType = EquipmentItemType;
-  EquipmentItemUsageType: typeof EquipmentItemUsageType = EquipmentItemUsageType;
+  readonly EquipmentItemType: typeof EquipmentItemType = EquipmentItemType;
+  readonly EquipmentItemUsageType: typeof EquipmentItemUsageType = EquipmentItemUsageType;
+  readonly ItemBrowserLayout: typeof ItemBrowserLayout = ItemBrowserLayout;
 
   recent: EquipmentItemBaseInterface[] = [];
   recentLoaded = false;

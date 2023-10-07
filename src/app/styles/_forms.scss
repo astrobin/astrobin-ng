@@ -8,6 +8,10 @@ label {
 formly-field {
   display: block;
 
+  &.hidden {
+    display: none;
+  }
+
   &:not(:last-of-type) {
     margin-bottom: 2rem;
   }
@@ -55,7 +59,7 @@ formly-field-checkbox {
   }
 
   &:last-child {
-    margin-bottom: 0;
+    margin-bottom: 0 !important;
   }
 
   &.error,

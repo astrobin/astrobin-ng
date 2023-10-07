@@ -4,7 +4,7 @@ import { ContentTypeInterface } from "@shared/interfaces/content-type.interface"
 export enum MarketplaceListingCondition {
   UNOPENED = "UNOPENED",
   NEW = "NEW",
-  USER = "USED",
+  USED = "USED",
   DAMAGED_OR_DEFECTIVE = "DAMAGED_OR_DEFECTIVE",
   OTHER = "OTHER",
 }

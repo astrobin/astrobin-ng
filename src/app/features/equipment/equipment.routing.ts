@@ -16,6 +16,7 @@ import { ContributorsPageComponent } from "@features/equipment/pages/contributor
 import { Constants } from "@shared/constants";
 import { ItemResolver } from "@features/equipment/resolvers/item.resolver";
 import { MarketplaceListingsPageComponent } from "@features/equipment/pages/marketplace/listings/marketplace-listings-page.component";
+import { MarketplaceCreateListingPageComponent } from "@features/equipment/pages/marketplace/create-listing/marketplace-create-listing-page.component";
 
 export const routes: Routes = [
   {
@@ -160,6 +161,10 @@ export const routes: Routes = [
       {
         path: "listings",
         component: MarketplaceListingsPageComponent
+      },
+      {
+        path: "listings/create",
+        component: MarketplaceCreateListingPageComponent
       }
     ]
   }

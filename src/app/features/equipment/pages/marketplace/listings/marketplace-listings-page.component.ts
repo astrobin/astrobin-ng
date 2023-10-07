@@ -15,7 +15,7 @@ import { LoadMarketplaceListings } from "@features/equipment/store/equipment.act
   styleUrls: ["./marketplace-listings-page.component.scss"]
 })
 export class MarketplaceListingsPageComponent extends BaseComponentDirective implements OnInit {
-  title = this.translateService.instant("Equipment marketplace");
+  readonly title = this.translateService.instant("Equipment marketplace");
 
   listings$ = this.store$.select(selectMarketplaceListings).pipe(takeUntil(this.destroyed$));
   page = 1;

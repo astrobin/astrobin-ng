@@ -6,6 +6,7 @@ import { formlyConfig } from "@app/formly.config";
 import { ObjectsInFieldComponent } from "@app/shared/components/misc/objects-in-field/objects-in-field.component";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import {
+  NgbAccordionModule,
   NgbCollapseModule,
   NgbDropdownModule,
   NgbModalConfig,
@@ -105,6 +106,7 @@ import { TogglePropertyComponent } from "@shared/components/misc/toggle-property
 import { MoreRelatedItemsModalComponent } from "@shared/components/equipment/summaries/item/summary/more-related-items-modal/more-related-items-modal.component";
 import { StockStatusComponent } from "@shared/components/equipment/stock-status/stock-status.component";
 import { BetaBannerComponent } from "@shared/components/misc/beta-banner/beta-banner.component";
+import { FormlyFieldToggleComponent } from "@shared/components/misc/formly-field-toggle/formly-field-toggle.component";
 
 const modules = [
   CommonModule,
@@ -113,6 +115,7 @@ const modules = [
   FormsModule,
   FormlySelectModule,
   ImageCropperModule,
+  NgbAccordionModule,
   NgbCollapseModule,
   NgbDropdownModule,
   NgbModalModule,
@@ -158,6 +161,7 @@ const components = [
   FormlyFieldNgSelectComponent,
   FormlyFieldStepperComponent,
   FormlyFieldTableComponent,
+  FormlyFieldToggleComponent,
   FormlyWrapperComponent,
   ForumPreviewComponent,
   FullscreenImageViewerComponent,
