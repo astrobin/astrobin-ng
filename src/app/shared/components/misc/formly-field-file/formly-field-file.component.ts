@@ -13,7 +13,7 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 export class FormlyFieldFileComponent extends FieldType implements OnInit {
   @ViewChild("fileInput") el: ElementRef;
 
-  selectedFiles: { file: File; url: SafeUrl }[];
+  selectedFile: { file: File; url: SafeUrl };
 
   constructor(
     public readonly sanitizer: DomSanitizer,
@@ -27,7 +27,7 @@ export class FormlyFieldFileComponent extends FieldType implements OnInit {
     if (this.formControl.value) {
       this.loadingService.setLoading(true);
       UtilsService.fileFromUrl(this.formControl.value).then((file: File) => {
-        this._setValueFromFiles([file]);
+        this._setValueFromFile(file);
         this.loadingService.setLoading(false);
       });
     }
@@ -37,15 +37,17 @@ export class FormlyFieldFileComponent extends FieldType implements OnInit {
     this.el.nativeElement.click();
   }
 
-  onDelete(index) {
-    this.selectedFiles.splice(index, 1);
-    this.formControl.patchValue(this.selectedFiles);
+  onDelete(event: Event) {
+    event.stopPropagation();
+
+    this.selectedFile = null;
+    this.formControl.setValue(this.selectedFile);
     this.formControl.markAsTouched();
     this.formControl.markAsDirty();
   }
 
-  onChange(event) {
-    this._setValueFromFiles(Array.from(event.target.files));
+  onChange(event: any) {
+    this._setValueFromFile(event.target.files.item(0));
     this.formControl.markAsTouched();
     this.formControl.markAsDirty();
   }
@@ -54,16 +56,14 @@ export class FormlyFieldFileComponent extends FieldType implements OnInit {
     return /^image\//.test(file.type);
   }
 
-  _setValueFromFiles(files: File[]) {
-    this.selectedFiles = [];
+  _setValueFromFile(file: File) {
+    this.selectedFile = {
+      file,
+      url: this.sanitizer.bypassSecurityTrustUrl(
+        (this.windowRefService.nativeWindow as any).URL.createObjectURL(file)
+      )
+    };
 
-    for (const file of files) {
-      this.selectedFiles.push({
-        file,
-        url: this.sanitizer.bypassSecurityTrustUrl(
-          (this.windowRefService.nativeWindow as any).URL.createObjectURL(file)
-        )
-      });
-    }
+    this.formControl.patchValue([this.selectedFile]);
   }
 }

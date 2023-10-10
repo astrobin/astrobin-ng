@@ -27,6 +27,7 @@ import { UtilsService } from "@shared/services/utils/utils.service";
 })
 export class MarketplaceCreateListingPageComponent extends BaseComponentDirective implements OnInit {
   readonly UtilsService = UtilsService;
+  readonly maxImages = 9;
 
   readonly title = this.translateService.instant("Create listing");
   readonly breadcrumb = new SetBreadcrumb({
@@ -68,6 +69,20 @@ export class MarketplaceCreateListingPageComponent extends BaseComponentDirectiv
   }
 
   private _initFields() {
+    const getFileField = (n: number): FormlyFieldConfig => {
+      return {
+        key: `image_${n}`,
+        type: "file",
+        props: {
+          accept: "image/jpeg, image/png",
+          image: true
+        },
+        validators: {
+          validation: [{ name: "file-size", options: { max: 1024 * 1024 * 10 } }, { name: "image-or-video-file" }]
+        }
+      };
+    };
+
     return this.store$
       .select(selectRequestCountry)
       .pipe(take(1))
@@ -82,22 +97,6 @@ export class MarketplaceCreateListingPageComponent extends BaseComponentDirectiv
         }
 
         this.fields = [
-          {
-            key: "",
-            wrappers: ["card-wrapper"],
-            props: {
-              label: this.translateService.instant("Pictures")
-            },
-            fieldGroup: [
-              {
-                key: "image_1",
-                type: "chunked-file",
-                props: {
-                  autoUpload: true
-                }
-              }
-            ]
-          },
           {
             key: "",
             wrappers: ["card-wrapper"],
@@ -120,6 +119,14 @@ export class MarketplaceCreateListingPageComponent extends BaseComponentDirectiv
                 }
               }
             ]
+          }, {
+            key: "",
+            wrappers: ["card-wrapper"],
+            fieldGroupClassName: "d-flex flex-wrap flex-column flex-xl-row justify-content-evenly field-group-images",
+            props: {
+              label: this.translateService.instant("Up to {{0}} images", { 0: this.maxImages })
+            },
+            fieldGroup: [...Array(this.maxImages).keys()].map(n => getFileField(n))
           },
           {
             key: "",

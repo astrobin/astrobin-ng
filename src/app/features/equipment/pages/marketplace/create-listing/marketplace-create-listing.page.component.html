@@ -18,7 +18,10 @@
           {{ "Preview" | translate }}
         </div>
         <div class="card-body">
-          <pre>{{ form.value | json }}</pre>
+          <pre>
+            {{ form.status | json }}
+            {{ form.value | json }}
+          </pre>
         </div>
       </div>
     </div>

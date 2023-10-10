@@ -89,9 +89,10 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
       },
       {
         name: "file-size",
-        message: () =>
+        message: (options: { max: number }) =>
           translateService.instant(
-            "This file is too large. Please check the size requirement in the field's description."
+            "This file is too large. The maximum allowed size is {{0}}.",
+            { 0: UtilsService.humanFileSize(options.max) }
           )
       },
       {
@@ -303,7 +304,7 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
             value = control.value;
           }
 
-          return !value || UtilsService.isString(value) || value?.size < options.max ? null : { "file-size": true };
+          return !value || UtilsService.isString(value) || value?.size < options.max ? null : { "file-size": options };
         }
       },
       {
@@ -322,7 +323,7 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
           UtilsService.isImage(value.name) ||
           UtilsService.isVideo(value.name)
             ? null
-            : { "image-file": true };
+            : { "image-or-video-file": true };
         }
       },
       {

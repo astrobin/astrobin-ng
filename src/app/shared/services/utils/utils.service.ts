@@ -454,7 +454,9 @@ export class UtilsService {
 
     for (const line of lines.slice(1)) {
       const values = line.split(",");
-      if (values.length !== headers.length) continue;
+      if (values.length !== headers.length) {
+        continue;
+      }
 
       const row: Record<string, string> = {};
       for (let i = 0; i < headers.length; i++) {
@@ -464,6 +466,10 @@ export class UtilsService {
     }
 
     return result;
+  }
+
+  static humanFileSize(size: number) {
+    return size / (1024 * 1024) > 1 ? (size / (1024 * 1024)).toFixed(2) + " MB" : (size / 1024).toFixed(2) + " KB";
   }
 
   supportsDateInput() {
