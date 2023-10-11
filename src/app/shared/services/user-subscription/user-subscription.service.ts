@@ -69,7 +69,7 @@ export class UserSubscriptionService extends BaseService implements UserSubscrip
               "AstroBin doesn't support pro-rated subscription upgrades for customers with a non-recurring " +
               "subscription or a subscription purchased via PayPal, but we're happy to make it happen manually. If " +
               "you're on a lower subscription tier and would like to upgrade to <strong>{{0}}</strong>, please just " +
-              "subscribe using the button below, and then contact us at {{1}} to get a refund for the unused time on " +
+              "subscribe using the button below, and then contact us at {{1}} to get a credit for the unused time on " +
               "your old subscription. Thanks!",
               {
                 0: this.subscriptionsService.getName(product),
