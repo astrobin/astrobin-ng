@@ -243,12 +243,17 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
   private _setWidthAndHeight(imageWidth: number, imageHeight: number) {
     const containerWidth = this.elementRef.nativeElement.offsetWidth;
 
-    if (this.autoHeight) {
-      this.width = containerWidth;
-      this.height = (imageHeight / imageWidth) * containerWidth;
+    if (imageWidth > containerWidth) {
+      if (this.autoHeight) {
+        this.width = containerWidth;
+        this.height = (imageHeight / imageWidth) * containerWidth;
+      } else {
+        this.width = containerWidth;
+        this.height = undefined;
+      }
     } else {
-      this.width = containerWidth;
-      this.height = undefined;
+      this.width = imageWidth;
+      this.height = imageHeight;
     }
   }
 
@@ -271,7 +276,26 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
         this.changeDetectorRef.detectChanges();
 
         if (!!this.videoPlayer) {
-          videojs(this.videoPlayer.nativeElement, {}, () => {
+          const player = videojs(this.videoPlayer.nativeElement, {});
+          player.on("fullscreenchange", function() {
+            const isFullscreen = player.isFullscreen();
+            const el = player.el().firstChild;
+
+            if (isFullscreen) {
+              el.style.maxWidth = `${player.videoWidth()}px`;
+              el.style.maxHeight = `${player.videoHeight()}px`;
+              el.style.top = `50%`;
+              el.style.left = `50%`;
+              el.style.transform = `translate(-50%, -50%)`;
+              el.style.margin = "auto";
+            } else {
+              el.style.maxWidth = "";
+              el.style.maxHeight = "";
+              el.style.top = "";
+              el.style.left = "";
+              el.style.transform = "";
+              el.style.margin = "";
+            }
           });
         }
       });
