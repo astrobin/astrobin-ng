@@ -5,20 +5,20 @@ import { State } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
 import { TitleService } from "@shared/services/title/title.service";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
-import {
-  MarketplaceListingCondition,
-  MarketplaceListingInterface,
-  MarketplaceListingShippingMethod
-} from "@features/equipment/types/marketplace-listing.interface";
+import { MarketplaceListingShippingMethod } from "@features/equipment/types/marketplace-listing.interface";
 import { FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { Constants } from "@shared/constants";
-import { take } from "rxjs/operators";
+import { filter, take } from "rxjs/operators";
 import { selectRequestCountry } from "@app/store/selectors/app/app.selectors";
 import * as countryJs from "country-js";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
-import { ItemBrowserLayout } from "@shared/components/equipment/item-browser/item-browser.component";
 import { UtilsService } from "@shared/services/utils/utils.service";
+import { MarketplaceListingCondition } from "@features/equipment/types/marketplace-listing-line-item.interface";
+import { ItemBrowserLayout } from "@shared/components/equipment/item-browser/item-browser.component";
+import { FormlyFieldEquipmentItemBrowserComponent } from "@shared/components/misc/formly-field-equipment-item-browser/formly-field-equipment-item-browser.component";
+import { LoadContentType } from "@app/store/actions/content-type.actions";
+import { selectContentType } from "@app/store/selectors/app/content-type.selectors";
 
 @Component({
   selector: "astrobin-marketplace-create-listing",
@@ -46,7 +46,9 @@ export class MarketplaceCreateListingPageComponent extends BaseComponentDirectiv
     ]
   });
 
-  model: Partial<MarketplaceListingInterface> = {};
+  model: any = {
+    lineItems: [{}]
+  };
   form: FormGroup = new FormGroup({});
   fields: FormlyFieldConfig[];
 
@@ -69,13 +71,14 @@ export class MarketplaceCreateListingPageComponent extends BaseComponentDirectiv
   }
 
   private _initFields() {
-    const getFileField = (n: number): FormlyFieldConfig => {
+    const getImageField = (n: number): FormlyFieldConfig => {
       return {
         key: `image_${n}`,
         type: "file",
         props: {
           accept: "image/jpeg, image/png",
-          image: true
+          image: true,
+          required: false
         },
         validators: {
           validation: [{ name: "file-size", options: { max: 1024 * 1024 * 10 } }, { name: "image-or-video-file" }]
@@ -98,129 +101,187 @@ export class MarketplaceCreateListingPageComponent extends BaseComponentDirectiv
 
         this.fields = [
           {
-            key: "",
-            wrappers: ["card-wrapper"],
-            props: {
-              label: this.translateService.instant("Equipment item for sale")
-            },
-            fieldGroup: [
-              {
-                key: "itemObjectId",
-                type: "equipment-item-browser",
-                props: {
-                  required: true,
-                  label: this.translateService.instant("Item"),
-                  showQuickAddRecent: false,
-                  showPlaceholderImage: false,
-                  multiple: false,
-                  enableCreation: false,
-                  showItemTypeSelector: true,
-                  layout: ItemBrowserLayout.VERTICAL
-                }
-              }
-            ]
-          }, {
-            key: "",
-            wrappers: ["card-wrapper"],
-            fieldGroupClassName: "d-flex flex-wrap flex-column flex-xl-row justify-content-evenly field-group-images",
-            props: {
-              label: this.translateService.instant("Up to {{0}} images", { 0: this.maxImages })
-            },
-            fieldGroup: [...Array(this.maxImages).keys()].map(n => getFileField(n))
-          },
-          {
-            key: "",
-            wrappers: ["card-wrapper"],
-            fieldGroupClassName: "row",
-            props: {
-              label: this.translateService.instant("Item information")
-            },
-            fieldGroup: [
-              {
-                key: "condition",
-                type: "ng-select",
-                defaultValue: MarketplaceListingCondition.USED,
-                wrappers: ["default-wrapper"],
-                className: "col-xl-6",
-                props: {
-                  required: true,
-                  label: this.translateService.instant("Condition"),
-                  options: Object.keys(MarketplaceListingCondition).map(key => ({
-                    value: key,
-                    label: this.equipmentItemService.humanizeCondition(MarketplaceListingCondition[key])
-                  }))
-                }
+            key: "lineItems",
+            type: "array",
+            wrappers: ["default-wrapper"],
+            fieldArray: {
+              fieldGroupClassName: "field-group-line-items",
+              props: {
+                label: this.translateService.instant("Equipment item for sale"),
+                addLabel: this.translateService.instant("Add another item to this listing")
               },
-              {
-                key: "yearOfPurchase",
-                type: "input",
-                wrappers: ["default-wrapper"],
-                className: "col-xl-6",
-                props: {
-                  type: "number",
-                  min: 1900,
-                  max: new Date().getFullYear(),
-                  label: this.translateService.instant("Year of purchase")
-                }
-              },
-              {
-                key: "description",
-                type: "textarea",
-                wrappers: ["default-wrapper"],
-                props: {
-                  label: this.translateService.instant("Description"),
-                  rows: 6
-                }
-              }
-            ]
-          },
-          {
-            key: "",
-            wrappers: ["card-wrapper"],
-            props: {
-              label: this.translateService.instant("Pricing information")
-            },
-            fieldGroup: [
-              {
-                key: "",
-                fieldGroupClassName: "row",
-                fieldGroup: [
-                  {
-                    key: "price",
-                    type: "input",
-                    wrappers: ["default-wrapper"],
-                    className: "col-xl-5 mb-xl-0",
-                    props: {
-                      type: "number",
-                      min: 0,
-                      label: this.translateService.instant("Price"),
-                      required: true
-                    }
+              fieldGroup: [
+                {
+                  key: "itemContentType",
+                  type: "input",
+                  className: "hidden"
+                },
+                {
+                  key: "itemObjectId",
+                  type: "equipment-item-browser",
+                  props: {
+                    required: true,
+                    label: this.translateService.instant("Item"),
+                    showQuickAddRecent: false,
+                    showPlaceholderImage: false,
+                    multiple: false,
+                    enableCreation: false,
+                    showItemTypeSelector: true,
+                    layout: ItemBrowserLayout.VERTICAL
                   },
-                  {
-                    key: "currency",
-                    type: "ng-select",
-                    defaultValue: initialCurrency,
-                    wrappers: ["default-wrapper"],
-                    className: "col-xl-7",
-                    props: {
-                      label: this.translateService.instant("Currency"),
-                      options: Object.keys(Constants.ALL_CURRENCIES).map(code => ({
-                        value: code,
-                        label: `${Constants.ALL_CURRENCIES[code]} (${code})`
-                      })),
-                      required: true,
-                      placeholder: this.translateService.instant("Select a currency")
+                  hooks: {
+                    onInit: field => {
+                      let componentInstance: FormlyFieldEquipmentItemBrowserComponent;
+                      for (const ref of (field as any)._componentRefs) {
+                        if (ref.instance instanceof FormlyFieldEquipmentItemBrowserComponent) {
+                          componentInstance = ref.instance;
+                        }
+                      }
+
+                      if (!!componentInstance) {
+                        componentInstance.itemTypeChanged.subscribe(itemType => {
+                          const index = this.model.lineItems.indexOf(field.model);
+                          const patload = {
+                            appLabel: "astrobin_apps_equipment",
+                            model: `${itemType.toLowerCase()}`
+                          };
+
+                          this.store$
+                            .select(selectContentType, patload)
+                            .pipe(
+                              filter(contentType => !!contentType),
+                              take(1)
+                            )
+                            .subscribe(contentType => {
+                                this.model.lineItems[index].itemContentType = contentType.id;
+                                this.form.get(`lineItems.${index}`).patchValue({ "itemContentType": contentType.id });
+                              }
+                            );
+
+                          this.store$.dispatch(new LoadContentType(patload));
+                        });
+                      }
                     }
                   }
-                ]
-              }
-            ]
+                },
+                {
+                  key: "",
+                  wrappers: ["default-wrapper"],
+                  fieldGroupClassName:
+                    "d-flex flex-wrap flex-column flex-xl-row justify-content-evenly field-group-images",
+                  props: {
+                    label: this.translateService.instant("Up to {{0}} images", { 0: this.maxImages })
+                  },
+                  fieldGroup: [...Array(this.maxImages).keys()].map(n => getImageField(n))
+                },
+                {
+                  key: "",
+                  fieldGroupClassName: "row",
+                  props: {
+                    label: this.translateService.instant("Item information")
+                  },
+                  fieldGroup: [
+                    {
+                      key: "condition",
+                      type: "ng-select",
+                      defaultValue: MarketplaceListingCondition.USED,
+                      wrappers: ["default-wrapper"],
+                      className: "col-xl-6",
+                      props: {
+                        required: true,
+                        label: this.translateService.instant("Condition"),
+                        options: Object.keys(MarketplaceListingCondition).map(key => ({
+                          value: key,
+                          label: this.equipmentItemService.humanizeCondition(MarketplaceListingCondition[key])
+                        }))
+                      }
+                    },
+                    {
+                      key: "yearOfPurchase",
+                      type: "input",
+                      wrappers: ["default-wrapper"],
+                      className: "col-xl-6",
+                      props: {
+                        type: "number",
+                        min: 1900,
+                        max: new Date().getFullYear(),
+                        label: this.translateService.instant("Year of purchase")
+                      }
+                    },
+                    {
+                      key: "description",
+                      type: "textarea",
+                      wrappers: ["default-wrapper"],
+                      props: {
+                        label: this.translateService.instant("Description"),
+                        description: this.translateService.instant(
+                          "Describe the item you are selling. This field refers to this specific equipment item, " +
+                          "and down below you can find a Description field that refers to the entire listing."
+                        ),
+                        rows: 6
+                      }
+                    }
+                  ]
+                },
+                {
+                  key: "",
+                  props: {
+                    label: this.translateService.instant("Pricing information")
+                  },
+                  fieldGroup: [
+                    {
+                      key: "",
+                      fieldGroup: [
+                        {
+                          key: "price",
+                          type: "input",
+                          wrappers: ["default-wrapper"],
+                          props: {
+                            type: "number",
+                            min: 0,
+                            label: this.translateService.instant("Price"),
+                            required: true
+                          }
+                        },
+                        {
+                          key: "shippingCost",
+                          type: "input",
+                          wrappers: ["default-wrapper"],
+                          expressions: {
+                            hide: () => !this.model.deliveryByShipping
+                          },
+                          props: {
+                            label: this.translateService.instant("Shipping cost"),
+                            type: "number",
+                            description: this.translateService.instant("Leave blank for free shipping"),
+                            min: 0
+                          }
+                        },
+                        {
+                          key: "currency",
+                          type: "ng-select",
+                          defaultValue: initialCurrency,
+                          wrappers: ["default-wrapper"],
+                          props: {
+                            label: this.translateService.instant("Currency"),
+                            options: Object.keys(Constants.ALL_CURRENCIES).map(code => ({
+                              value: code,
+                              label: `${Constants.ALL_CURRENCIES[code]} (${code})`
+                            })),
+                            required: true,
+                            placeholder: this.translateService.instant("Select a currency")
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
           },
           {
             key: "",
             wrappers: ["card-wrapper"],
-            fieldGroupClassName: "row",
             props: {
               label: this.translateService.instant("Available delivery options")
             },
@@ -231,7 +292,7 @@ export class MarketplaceCreateListingPageComponent extends BaseComponentDirectiv
                 wrappers: ["default-wrapper"],
                 defaultValue: true,
                 props: {
-                  label: this.translateService.instant("Buyer picks up the item")
+                  label: this.translateService.instant("Buyer picks up")
                 }
               },
               {
@@ -249,7 +310,7 @@ export class MarketplaceCreateListingPageComponent extends BaseComponentDirectiv
                 wrappers: ["default-wrapper"],
                 defaultValue: true,
                 props: {
-                  label: this.translateService.instant("Seller ships the item")
+                  label: this.translateService.instant("Seller ships")
                 }
               },
               {
@@ -260,29 +321,12 @@ export class MarketplaceCreateListingPageComponent extends BaseComponentDirectiv
                   hide: "!model.deliveryByShipping",
                   "props.required": "!!model.deliveryByShipping"
                 },
-                className: "col-xl-6",
                 props: {
                   label: this.translateService.instant("Shipping method"),
                   options: Object.keys(MarketplaceListingShippingMethod).map(key => ({
                     value: key,
                     label: this.equipmentItemService.humanizeShippingMethod(MarketplaceListingShippingMethod[key])
                   }))
-                }
-              },
-              {
-                key: "shippingCost",
-                type: "input",
-                wrappers: ["default-wrapper"],
-                expressions: {
-                  hide: "!model.deliveryByShipping",
-                  "props.label": field =>
-                    `${this.translateService.instant("Shipping cost")} (${field.model.currency})`
-                },
-                className: "col-xl-6",
-                props: {
-                  type: "number",
-                  description: this.translateService.instant("Leave blank for free shipping"),
-                  min: 0
                 }
               }
             ]
@@ -327,13 +371,15 @@ export class MarketplaceCreateListingPageComponent extends BaseComponentDirectiv
 
                     field.formControl.valueChanges.subscribe(coordinates => {
                       if (coordinates) {
-                        const geocoder = new google.maps.Geocoder;
+                        const geocoder = new google.maps.Geocoder();
 
-                        geocoder.geocode({ "location": coordinates }, function(results, status) {
+                        geocoder.geocode({ location: coordinates }, function(results, status) {
                           if (status === "OK") {
                             if (results[0]) {
                               const addressComponents = results[0].address_components;
-                              const countryComponent = addressComponents.find(component => component.types.includes("country"));
+                              const countryComponent = addressComponents.find(component =>
+                                component.types.includes("country")
+                              );
                               if (countryComponent) {
                                 form.get("country").setValue(countryComponent.short_name);
                               }
@@ -347,10 +393,24 @@ export class MarketplaceCreateListingPageComponent extends BaseComponentDirectiv
                     });
                   }
                 }
+              },
+              {
+                key: "description",
+                type: "textarea",
+                wrappers: ["default-wrapper"],
+                props: {
+                  label: this.translateService.instant("Description"),
+                  description: this.translateService.instant(
+                    "This description field is for generic information that pertain this listing. You can find " +
+                    "Description field for individual equipment items above."
+                  ),
+                  rows: 6
+                }
               }
             ]
           }
         ];
       });
+
   }
 }

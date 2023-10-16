@@ -2,6 +2,7 @@
   #itemBrowser
   (creationModeEnded)="onCreationModeEnded()"
   (creationModeStarted)="onCreationModeStarted()"
+  (itemTypeChanged)="itemTypeChanged.emit($event)"
   (valueChanged)="onValueChanged($event)"
   [description]="props.description"
   [enableCreation]="props.enableCreation"

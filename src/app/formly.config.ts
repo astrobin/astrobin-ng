@@ -16,6 +16,7 @@ import { FormlyFieldEquipmentItemBrowserComponent } from "@shared/components/mis
 import { FormlyFieldTableComponent } from "@shared/components/misc/formly-field-table/formly-field-table.component";
 import { FormlyFieldButtonComponent } from "@shared/components/misc/formly-field-button/formly-field-button.component";
 import { FormlyFieldToggleComponent } from "@shared/components/misc/formly-field-toggle/formly-field-toggle.component";
+import { FormlyFieldArrayComponent } from "@shared/components/misc/formly-field-array/formly-field-array.component";
 
 export interface FileSizeValidatorOptionsInterface {
   max: number;
@@ -77,6 +78,11 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
       {
         name: "toggle",
         component: FormlyFieldToggleComponent,
+        wrappers: ["default-wrapper"]
+      },
+      {
+        name: "array",
+        component: FormlyFieldArrayComponent,
         wrappers: ["default-wrapper"]
       }
     ],

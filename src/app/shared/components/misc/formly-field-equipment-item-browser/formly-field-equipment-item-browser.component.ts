@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, EventEmitter, OnInit, Output } from "@angular/core";
 import { FieldType } from "@ngx-formly/core";
 import {
   EquipmentItemBaseInterface,
@@ -29,6 +29,9 @@ export class FormlyFieldEquipmentItemBrowserComponent extends FieldType implemen
   readonly EquipmentItemType: typeof EquipmentItemType = EquipmentItemType;
   readonly EquipmentItemUsageType: typeof EquipmentItemUsageType = EquipmentItemUsageType;
   readonly ItemBrowserLayout: typeof ItemBrowserLayout = ItemBrowserLayout;
+
+  @Output()
+  itemTypeChanged = new EventEmitter<EquipmentItemType>();
 
   recent: EquipmentItemBaseInterface[] = [];
   recentLoaded = false;

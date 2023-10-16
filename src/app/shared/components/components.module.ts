@@ -107,12 +107,15 @@ import { MoreRelatedItemsModalComponent } from "@shared/components/equipment/sum
 import { StockStatusComponent } from "@shared/components/equipment/stock-status/stock-status.component";
 import { BetaBannerComponent } from "@shared/components/misc/beta-banner/beta-banner.component";
 import { FormlyFieldToggleComponent } from "@shared/components/misc/formly-field-toggle/formly-field-toggle.component";
+import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
+import { FormlyFieldArrayComponent } from "@shared/components/misc/formly-field-array/formly-field-array.component";
 
 const modules = [
   CommonModule,
   DirectivesModule,
   FontAwesomeModule,
   FormsModule,
+  FormlyBootstrapModule,
   FormlySelectModule,
   ImageCropperModule,
   NgbAccordionModule,
@@ -151,6 +154,7 @@ const components = [
   FooterComponent,
   FormlyCardWrapperComponent,
   FormlyEquipmentItemBrowserWrapperComponent,
+  FormlyFieldArrayComponent,
   FormlyFieldButtonComponent,
   FormlyFieldCKEditorComponent,
   FormlyFieldChunkedFileComponent,

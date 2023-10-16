@@ -5,6 +5,22 @@
       clear: both;
     }
 
+    .field-group-line-items {
+      > formly-field {
+        margin-bottom: 0;
+      }
+
+      > formly-field:not(:last-child) {
+        border-bottom: 1px solid var(--darkGrey);
+        padding-bottom: 2rem;
+      }
+
+      > formly-field:not(:first-child) {
+        border-top: 1px solid var(--darkestGrey);
+        padding-top: 2rem;
+      }
+    }
+
     .field-group-images {
       formly-field {
         width: calc(100% / 3);

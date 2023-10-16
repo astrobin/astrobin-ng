@@ -1,0 +1,24 @@
+<div *ngFor="let arrayField of field.fieldGroup; let i = index;" class="card mb-4">
+  <div class="card-header d-flex">
+      <span class="flex-grow-1">
+        {{ arrayField.props.label }}
+      </span>
+
+    <button (click)="remove(i)" class="btn btn-link btn-remove">
+      <fa-icon [ngbTooltip]="'Remove' | translate" icon="trash"></fa-icon>
+    </button>
+  </div>
+
+  <div class="card-body">
+    <formly-group [field]="arrayField"></formly-group>
+  </div>
+</div>
+
+<button (click)="add()" class="btn btn-link w-100">
+  <ng-container *ngIf="field.fieldArray.props.addLabel; else noAddLabelTemplate">
+    {{ field.fieldArray.props.addLabel }}
+  </ng-container>
+  <ng-template #noAddLabelTemplate>
+    {{ "Add another" | translate }}
+  </ng-template>
+</button>

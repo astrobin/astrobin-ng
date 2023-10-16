@@ -17,6 +17,7 @@ import { NgbPaginationConfig } from "@ng-bootstrap/ng-bootstrap";
 import { Constants } from "@shared/constants";
 import { TransferState } from "@angular/platform-browser";
 import { CLIENT_IP, CLIENT_IP_KEY } from "@app/client-ip.injector";
+import { FormlyConfig } from "@ngx-formly/core";
 
 declare var dataLayer: any;
 declare var gtag: any;
@@ -40,7 +41,8 @@ export class AppComponent extends BaseComponentDirective implements OnInit {
     public readonly renderer: Renderer2,
     @Inject(DOCUMENT) public document: any,
     public readonly transferState: TransferState,
-    @Inject(CLIENT_IP) public readonly clientIp: string
+    @Inject(CLIENT_IP) public readonly clientIp: string,
+    private formlyConfig: FormlyConfig
   ) {
     super(store$);
 
@@ -53,6 +55,8 @@ export class AppComponent extends BaseComponentDirective implements OnInit {
     this.initPagination();
     this.markNotificationAsRead();
     this.themeService.setTheme();
+
+    console.log(this.formlyConfig.types);
   }
 
   ngOnInit(): void {
