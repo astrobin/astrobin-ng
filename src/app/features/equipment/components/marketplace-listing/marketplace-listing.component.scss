@@ -19,3 +19,21 @@
     margin-top: -.5rem;
   }
 }
+
+.shipping-options {
+  th {
+    font-weight: normal;
+  }
+
+  td {
+    font-weight: bold;
+  }
+
+  .true {
+    color: var(--successColor);
+  }
+
+  .false {
+    color: var(--dangerColor);
+  }
+}

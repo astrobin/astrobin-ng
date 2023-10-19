@@ -5,6 +5,7 @@ import { State } from "@app/store/state";
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
 import { GoogleMapsService } from "@shared/services/google-maps/google-maps.service";
 import { CountryService } from "@shared/services/country.service";
+import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 
 @Component({
   selector: "astrobin-marketplace-listing",
@@ -28,7 +29,8 @@ export class MarketplaceListingComponent extends BaseComponentDirective implemen
   constructor(
     public readonly store$: Store<State>,
     public readonly googleMapsService: GoogleMapsService,
-    public readonly countryService: CountryService
+    public readonly countryService: CountryService,
+    public readonly equipmentItemService: EquipmentItemService
   ) {
     super(store$);
   }

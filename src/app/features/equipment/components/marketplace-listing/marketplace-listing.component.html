@@ -7,7 +7,7 @@
   </div>
 </div>
 
-<div class="line-items mb-4">
+<div class="line-items mb-5">
   <astrobin-marketplace-listing-line-item
     *ngFor="let lineItem of listing.lineItems"
     [lineItem]="lineItem"
@@ -15,19 +15,52 @@
   ></astrobin-marketplace-listing-line-item>
 </div>
 
+<div class="map-container mb-5">
+  <h5>{{ countryService.getCountryName(listing.country) }}</h5>
 
-<div *ngIf="!!listing.description" class="description mt-4">
-  <h5>{{ "Listing description" | translate }}</h5>
-  {{ listing.description }}
-</div>
-
-<div class="map-container mt-4">
   <div #map class="map mb-2"></div>
 
-  <h5>{{ countryService.getCountryName(listing.country) }}</h5>
-  <div *ngIf="!mapLoading" class="form-text">
+  <div *ngIf="!mapLoading" class="form-text mt-1">
     {{ "The location shown above is approximate to protect the seller's privacy." | translate }}
   </div>
   <astrobin-loading-indicator *ngIf="mapLoading"></astrobin-loading-indicator>
 </div>
 
+<div class="shipping-options mb-5">
+  <h5>{{ "Shipping options" | translate }}</h5>
+
+  <table class="table table-striped">
+    <tbody>
+    <tr>
+      <th>{{ "Buyer picks up" | translate}}</th>
+      <td [class]="listing.deliveryByBuyerPickup | json">{{ listing.deliveryByBuyerPickup | yesNo }}</td>
+    </tr>
+    <tr>
+      <th>{{ "Seller delivers in person" | translate}}</th>
+      <td [class]="listing.deliveryBySellerDelivery | json">{{ listing.deliveryBySellerDelivery | yesNo }}</td>
+    </tr>
+    <tr>
+      <th>{{ "Seller ships" | translate}}</th>
+      <td [class]="listing.deliveryByShipping | json">{{ listing.deliveryByShipping | yesNo }}</td>
+    </tr>
+    <tr>
+      <th>{{ "Shipping method" | translate}}</th>
+      <td>{{ equipmentItemService.humanizeShippingMethod(listing.shippingMethod) }}</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="description">
+  <h5>{{ "Description" | translate }}</h5>
+
+  <ng-container *ngIf="!!listing.description; else noDescriptionTemplate">
+    {{ listing.description }}
+  </ng-container>
+</div>
+
+<ng-template #noDescriptionTemplate>
+  <p class="text-muted">{{ "No description provided." | translate }}</p>
+</ng-template>
+
+{{ listing | json }}

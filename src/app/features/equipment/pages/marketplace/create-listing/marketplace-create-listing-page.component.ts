@@ -326,9 +326,10 @@ export class MarketplaceCreateListingPageComponent extends BaseComponentDirectiv
             },
             fieldGroup: [
               {
-                key: "deliveryByBuyerPickUp",
+                key: "deliveryByBuyerPickup",
                 type: "toggle",
                 wrappers: ["default-wrapper"],
+                defaultValue: true,
                 props: {
                   label: this.translateService.instant("Buyer picks up")
                 }
@@ -337,6 +338,7 @@ export class MarketplaceCreateListingPageComponent extends BaseComponentDirectiv
                 key: "deliveryBySellerDelivery",
                 type: "toggle",
                 wrappers: ["default-wrapper"],
+                defaultValue: true,
                 props: {
                   label: this.translateService.instant("Seller delivers in person")
                 }
@@ -345,6 +347,7 @@ export class MarketplaceCreateListingPageComponent extends BaseComponentDirectiv
                 key: "deliveryByShipping",
                 type: "toggle",
                 wrappers: ["default-wrapper"],
+                defaultValue: true,
                 props: {
                   label: this.translateService.instant("Seller ships")
                 }
