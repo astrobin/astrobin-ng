@@ -23,6 +23,12 @@
           ></astrobin-marketplace-listing-line-item-price>
         </div>
 
+        <div class="w-100 images">
+          <astrobin-marketplace-listing-line-item-images
+            [images]="lineItem.images"
+          ></astrobin-marketplace-listing-line-item-images>
+        </div>
+
         <div class="w-100">
           <div *ngIf="!!lineItem.description" class="description">
             {{ lineItem.description }}

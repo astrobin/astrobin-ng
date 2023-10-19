@@ -103,7 +103,7 @@ export class MarketplaceCreateListingPageComponent extends BaseComponentDirectiv
   private _initFields() {
     const getImageField = (n: number): FormlyFieldConfig => {
       return {
-        key: `image_${n}`,
+        key: `${n}`,
         type: "file",
         props: {
           accept: "image/jpeg, image/png",
@@ -204,7 +204,7 @@ export class MarketplaceCreateListingPageComponent extends BaseComponentDirectiv
                   className: "hidden"
                 },
                 {
-                  key: "",
+                  key: "images",
                   wrappers: ["default-wrapper"],
                   fieldGroupClassName:
                     "d-flex flex-wrap flex-column flex-xl-row justify-content-evenly field-group-images",

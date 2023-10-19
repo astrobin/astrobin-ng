@@ -192,6 +192,10 @@ export class UtilsService {
     return obj != null && obj.constructor.name === "Object";
   }
 
+  static isArray(obj): boolean {
+    return obj != null && obj.constructor.name === "Array";
+  }
+
   static isNotEmptyDictionary<T>(variable: T | null | undefined): boolean {
     if (variable === null || variable === undefined) {
       return false;

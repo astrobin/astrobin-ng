@@ -1,0 +1,14 @@
+img {
+  flex: 1;
+  min-width: 0;
+  aspect-ratio: 1 / 1;
+  object-fit: contain;
+  max-width: calc(100% / 9);
+  border: 1px solid var(--grey);
+  background: var(--darkestGrey);
+  border-radius: 5px;
+
+  &:not(:first-child) {
+    margin-left: .125rem;
+  }
+}
