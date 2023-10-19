@@ -1,4 +1,5 @@
 import { UserInterface } from "@shared/interfaces/user.interface";
+import { MarketplaceListingLineItemInterface } from "@features/equipment/types/marketplace-listing-line-item.interface";
 
 
 export enum MarketplaceListingShippingMethod {
@@ -9,8 +10,8 @@ export enum MarketplaceListingShippingMethod {
 }
 
 export interface MarketplaceListingInterface {
-  id: number;
-  user: UserInterface["id"];
+  id?: number;
+  user?: UserInterface["id"];
   created: string;
   updated: string;
   expiration: string;
@@ -22,4 +23,5 @@ export interface MarketplaceListingInterface {
   latitude: number | null;
   longitude: number | null;
   country: string | null;
+  lineItems: MarketplaceListingLineItemInterface[];
 }

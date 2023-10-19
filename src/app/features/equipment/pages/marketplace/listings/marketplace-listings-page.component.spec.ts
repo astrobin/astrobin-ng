@@ -57,8 +57,6 @@ describe("ListingsComponent", () => {
 
     fixture.detectChanges();
 
-    console.log(fixture.nativeElement.innerHTML);
-
     const nothingHere = fixture.nativeElement.querySelector("astrobin-nothing-here");
     expect(nothingHere).toBeTruthy();
   });

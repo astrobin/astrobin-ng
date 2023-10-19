@@ -1,0 +1,22 @@
+<div *ngIf="!!lineItem.price && !!lineItem.currency; else noPrice" class="text-center">
+  <div class="price">
+    {{ lineItem.price | currency : lineItem.currency : "symbol" : "1.2-2" : translateService.currentLang }}
+  </div>
+
+  <div *ngIf="!!lineItem.shippingCost; else freeShippingTemplate" class="shipping-cost">
+    {{ "+ shipping" | translate }}:
+    {{ lineItem.shippingCost | currency : lineItem.currency : "symbol" : "1.2-2" : translateService.currentLang }}
+  </div>
+
+  <ng-template #freeShippingTemplate>
+    <div class="shipping-cost">
+      {{ "free shipping" | translate }}
+    </div>
+  </ng-template>
+</div>
+
+<ng-template #noPrice>
+  <div class="price">
+    {{ "0.-" | translate }}
+  </div>
+</ng-template>

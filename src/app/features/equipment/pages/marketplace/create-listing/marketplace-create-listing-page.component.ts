@@ -5,7 +5,10 @@ import { State } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
 import { TitleService } from "@shared/services/title/title.service";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
-import { MarketplaceListingShippingMethod } from "@features/equipment/types/marketplace-listing.interface";
+import {
+  MarketplaceListingInterface,
+  MarketplaceListingShippingMethod
+} from "@features/equipment/types/marketplace-listing.interface";
 import { FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { Constants } from "@shared/constants";
@@ -46,8 +49,35 @@ export class MarketplaceCreateListingPageComponent extends BaseComponentDirectiv
     ]
   });
 
-  model: any = {
-    lineItems: [{}]
+  model: MarketplaceListingInterface = {
+    created: null,
+    updated: null,
+    expiration: null,
+    description: null,
+    deliveryByBuyerPickup: true,
+    deliveryBySellerDelivery: true,
+    deliveryByShipping: true,
+    shippingMethod: null,
+    latitude: null,
+    longitude: null,
+    country: null,
+    lineItems: [{
+      created: null,
+      updated: null,
+      sold: null,
+      soldTo: null,
+      reserved: null,
+      reservedTo: null,
+      price: null,
+      currency: null,
+      condition: null,
+      yearOfPurchase: null,
+      shippingCost: null,
+      description: null,
+      itemObjectId: null,
+      itemContentType: null,
+      images: []
+    }]
   };
   form: FormGroup = new FormGroup({});
   fields: FormlyFieldConfig[];
@@ -99,6 +129,15 @@ export class MarketplaceCreateListingPageComponent extends BaseComponentDirectiv
           }
         }
 
+        this.model = {
+          ...this.model,
+          lineItems: this.model.lineItems.map(lineItem => ({
+            ...lineItem,
+            currency: initialCurrency,
+            condition: MarketplaceListingCondition.USED
+          }))
+        };
+
         this.fields = [
           {
             key: "lineItems",
@@ -111,11 +150,6 @@ export class MarketplaceCreateListingPageComponent extends BaseComponentDirectiv
                 addLabel: this.translateService.instant("Add another item to this listing")
               },
               fieldGroup: [
-                {
-                  key: "itemContentType",
-                  type: "input",
-                  className: "hidden"
-                },
                 {
                   key: "itemObjectId",
                   type: "equipment-item-browser",
@@ -141,13 +175,13 @@ export class MarketplaceCreateListingPageComponent extends BaseComponentDirectiv
                       if (!!componentInstance) {
                         componentInstance.itemTypeChanged.subscribe(itemType => {
                           const index = this.model.lineItems.indexOf(field.model);
-                          const patload = {
+                          const payload = {
                             appLabel: "astrobin_apps_equipment",
                             model: `${itemType.toLowerCase()}`
                           };
 
                           this.store$
-                            .select(selectContentType, patload)
+                            .select(selectContentType, payload)
                             .pipe(
                               filter(contentType => !!contentType),
                               take(1)
@@ -158,11 +192,16 @@ export class MarketplaceCreateListingPageComponent extends BaseComponentDirectiv
                               }
                             );
 
-                          this.store$.dispatch(new LoadContentType(patload));
+                          this.store$.dispatch(new LoadContentType(payload));
                         });
                       }
                     }
                   }
+                },
+                {
+                  key: "itemContentType",
+                  type: "input",
+                  className: "hidden"
                 },
                 {
                   key: "",
@@ -184,7 +223,6 @@ export class MarketplaceCreateListingPageComponent extends BaseComponentDirectiv
                     {
                       key: "condition",
                       type: "ng-select",
-                      defaultValue: MarketplaceListingCondition.USED,
                       wrappers: ["default-wrapper"],
                       className: "col-xl-6",
                       props: {
@@ -260,7 +298,6 @@ export class MarketplaceCreateListingPageComponent extends BaseComponentDirectiv
                         {
                           key: "currency",
                           type: "ng-select",
-                          defaultValue: initialCurrency,
                           wrappers: ["default-wrapper"],
                           props: {
                             label: this.translateService.instant("Currency"),
@@ -290,7 +327,6 @@ export class MarketplaceCreateListingPageComponent extends BaseComponentDirectiv
                 key: "deliveryByBuyerPickUp",
                 type: "toggle",
                 wrappers: ["default-wrapper"],
-                defaultValue: true,
                 props: {
                   label: this.translateService.instant("Buyer picks up")
                 }
@@ -299,7 +335,6 @@ export class MarketplaceCreateListingPageComponent extends BaseComponentDirectiv
                 key: "deliveryBySellerDelivery",
                 type: "toggle",
                 wrappers: ["default-wrapper"],
-                defaultValue: true,
                 props: {
                   label: this.translateService.instant("Seller delivers in person")
                 }
@@ -308,7 +343,6 @@ export class MarketplaceCreateListingPageComponent extends BaseComponentDirectiv
                 key: "deliveryByShipping",
                 type: "toggle",
                 wrappers: ["default-wrapper"],
-                defaultValue: true,
                 props: {
                   label: this.translateService.instant("Seller ships")
                 }

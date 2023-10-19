@@ -12,9 +12,9 @@ export enum MarketplaceListingCondition {
 }
 
 export interface MarketplaceListingLineItemInterface {
-  id: number;
-  user: UserInterface["id"];
-  listing: MarketplaceListingInterface["id"];
+  id?: number;
+  user?: UserInterface["id"];
+  listing?: MarketplaceListingInterface["id"];
   created: string;
   updated: string;
   sold: string | null;
@@ -29,4 +29,5 @@ export interface MarketplaceListingLineItemInterface {
   description: string | null;
   itemObjectId: number;
   itemContentType: ContentTypeInterface["id"];
+  images: string[];
 }

@@ -1,0 +1,47 @@
+<ng-container *ngIf="equipmentItem$ | async as equipmentItem; else noEquipmentItem">
+  <div class="d-flex align-items-start">
+    <div class="image">
+      <img
+        alt="{{ equipmentItemType(equipmentItem) }}"
+        class="type-image"
+        src="/assets/images/{{ equipmentItem.klass.toLowerCase() }}-placeholder.png?v=2"
+      />
+    </div>
+
+    <div class="flex-grow-1">
+      <div class="d-flex flex-wrap">
+        <div class="flex-grow-1">
+          <astrobin-equipment-item-display-name [item]="equipmentItem"></astrobin-equipment-item-display-name>
+          <astrobin-marketplace-listing-line-item-condition
+            [lineItem]="lineItem"
+          ></astrobin-marketplace-listing-line-item-condition>
+        </div>
+
+        <div>
+          <astrobin-marketplace-listing-line-item-price
+            [lineItem]="lineItem"
+          ></astrobin-marketplace-listing-line-item-price>
+        </div>
+
+        <div class="w-100">
+          <div *ngIf="!!lineItem.description" class="description">
+            {{ lineItem.description }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-container>
+
+<ng-template #noEquipmentItem>
+  <ng-container *ngIf="previewMode; else loadingTemplate">
+    <div class="alert alert-warning">
+      <fa-icon icon="warning"></fa-icon>
+      {{ "Please specify an equipment item." | translate }}
+    </div>
+  </ng-container>
+</ng-template>
+
+<ng-template #loadingTemplate>
+  <astrobin-loading-indicator></astrobin-loading-indicator>
+</ng-template>

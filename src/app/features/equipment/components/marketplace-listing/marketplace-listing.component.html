@@ -1,0 +1,33 @@
+<div *ngIf="listing.lineItems.length > 1">
+  <div class="alert alert-info">
+    <fa-icon icon="info-circle"></fa-icon>
+    <span>
+      {{ "This listing contains multiple line items. You can buy them separately or all together." | translate }}
+    </span>
+  </div>
+</div>
+
+<div class="line-items mb-4">
+  <astrobin-marketplace-listing-line-item
+    *ngFor="let lineItem of listing.lineItems"
+    [lineItem]="lineItem"
+    [previewMode]="previewMode"
+  ></astrobin-marketplace-listing-line-item>
+</div>
+
+
+<div *ngIf="!!listing.description" class="description mt-4">
+  <h5>{{ "Listing description" | translate }}</h5>
+  {{ listing.description }}
+</div>
+
+<div class="map-container mt-4">
+  <div #map class="map mb-2"></div>
+
+  <h5>{{ countryService.getCountryName(listing.country) }}</h5>
+  <div *ngIf="!mapLoading" class="form-text">
+    {{ "The location shown above is approximate to protect the seller's privacy." | translate }}
+  </div>
+  <astrobin-loading-indicator *ngIf="mapLoading"></astrobin-loading-indicator>
+</div>
+

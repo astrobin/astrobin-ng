@@ -71,6 +71,7 @@
     "dotenv": "16.0.3",
     "express": "4.18.2",
     "filesize": "9.0.11",
+    "i18n-iso-countries": "7.7.0",
     "intl": "1.2.5",
     "ng-toggle-button": "1.5.2",
     "ng2-sticky-nav": "10.0.0",

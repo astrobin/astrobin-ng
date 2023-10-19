@@ -1,0 +1,21 @@
+.map-container {
+  min-height: 348px;
+}
+
+.map {
+  height: 300px;
+}
+
+.map-container {
+  position: relative;
+
+  astrobin-loading-indicator {
+    position: absolute;
+    top: 50%;
+    height: auto;
+  }
+
+  .form-text {
+    margin-top: -.5rem;
+  }
+}

@@ -1,0 +1,30 @@
+:host {
+  display: block;
+  border-bottom: 1px dashed var(--grey);
+  padding-bottom: 1rem;
+
+  &:not(:first-child) {
+    padding-top: 1rem;
+  }
+}
+
+.type-image {
+  width: 4rem;
+  margin-right: .75rem;
+}
+
+astrobin-equipment-item-display-name {
+  font-size: 1.5rem;
+  line-height: 1.5rem;
+}
+
+.condition,
+.year-of-purchase {
+  color: var(--lighterGrey);
+}
+
+.description {
+  color: var(--lightestGrey);
+  margin-top: .5rem;
+  font-style: italic;
+}

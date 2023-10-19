@@ -21,10 +21,10 @@
           {{ "Preview" | translate }}
         </div>
         <div class="card-body">
-          <pre>
-            {{ form.status | json }}
-            {{ form.value | json }}
-          </pre>
+          <astrobin-marketplace-listing
+            [listing]="form.value"
+            [previewMode]="true"
+          ></astrobin-marketplace-listing>
         </div>
       </div>
     </div>

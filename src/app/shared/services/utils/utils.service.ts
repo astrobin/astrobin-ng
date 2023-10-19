@@ -309,6 +309,7 @@ export class UtilsService {
       .toString()
       .toLowerCase()
       .replace(/\s+/g, "-") // Replace spaces with -
+      .replace(/_/g, "-") // Replace _ with -
       .replace(/[^\w\-]+/g, "") // Remove all non-word chars
       .replace(/\-\-+/g, "-") // Replace multiple - with single -
       .replace(/^-+/, "") // Trim - from start of text

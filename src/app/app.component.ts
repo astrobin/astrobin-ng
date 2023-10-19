@@ -55,8 +55,6 @@ export class AppComponent extends BaseComponentDirective implements OnInit {
     this.initPagination();
     this.markNotificationAsRead();
     this.themeService.setTheme();
-
-    console.log(this.formlyConfig.types);
   }
 
   ngOnInit(): void {

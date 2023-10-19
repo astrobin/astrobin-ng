@@ -107,8 +107,10 @@ export class EquipmentItemService extends BaseService {
       case MarketplaceListingCondition.UNOPENED:
         return this.translateService.instant("Unopened");
       case MarketplaceListingCondition.OTHER:
-        return this.translateService.instant("Other");
+        return this.translateService.instant("Unspecified condition");
     }
+
+    return this.translateService.instant("Unknown");
   }
 
   humanizeShippingMethod(shippingMethod: MarketplaceListingShippingMethod) {
@@ -122,6 +124,8 @@ export class EquipmentItemService extends BaseService {
       case MarketplaceListingShippingMethod.OTHER:
         return this.translateService.instant("Other");
     }
+
+    return this.translateService.instant("Unknown");
   }
 
   getFullDisplayName$(item: EquipmentItem): Observable<string> {
