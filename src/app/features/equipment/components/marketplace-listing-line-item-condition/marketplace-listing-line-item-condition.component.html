@@ -1,7 +1,7 @@
 <div>
   {{ "Condition" | translate }}:
   <span
-    class="condition {{ lineItem.condition.toLowerCase() | slugify }}"
+    class="condition {{ lineItem.condition ? (lineItem.condition.toLowerCase() | slugify) : '' }}"
   >
     {{ equipmentItemService.humanizeCondition(lineItem.condition) }}
   </span>

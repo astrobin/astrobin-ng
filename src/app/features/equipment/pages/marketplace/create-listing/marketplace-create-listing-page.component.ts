@@ -225,6 +225,7 @@ export class MarketplaceCreateListingPageComponent extends BaseComponentDirectiv
                       type: "ng-select",
                       wrappers: ["default-wrapper"],
                       className: "col-xl-6",
+                      defaultValue: MarketplaceListingCondition.USED,
                       props: {
                         required: true,
                         label: this.translateService.instant("Condition"),
@@ -299,6 +300,7 @@ export class MarketplaceCreateListingPageComponent extends BaseComponentDirectiv
                           key: "currency",
                           type: "ng-select",
                           wrappers: ["default-wrapper"],
+                          defaultValue: initialCurrency,
                           props: {
                             label: this.translateService.instant("Currency"),
                             options: Object.keys(Constants.ALL_CURRENCIES).map(code => ({
