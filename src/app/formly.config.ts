@@ -310,6 +310,10 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
             value = control.value;
           }
 
+          if (!!value && !!value.file) {
+            value = value.file;
+          }
+
           return !value || UtilsService.isString(value) || value?.size < options.max ? null : { "file-size": options };
         }
       },
@@ -322,6 +326,10 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
             value = control.value[0];
           } else {
             value = control.value;
+          }
+
+          if (!!value && !!value.file) {
+            value = value.file;
           }
 
           return !value ||

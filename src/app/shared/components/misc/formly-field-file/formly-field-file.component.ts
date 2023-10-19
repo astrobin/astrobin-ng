@@ -13,7 +13,7 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 export class FormlyFieldFileComponent extends FieldType implements OnInit {
   @ViewChild("fileInput") el: ElementRef;
 
-  selectedFile: { file: File; url: SafeUrl };
+  selectedFiles: { file: File; url: SafeUrl }[];
 
   constructor(
     public readonly sanitizer: DomSanitizer,
@@ -27,7 +27,7 @@ export class FormlyFieldFileComponent extends FieldType implements OnInit {
     if (this.formControl.value) {
       this.loadingService.setLoading(true);
       UtilsService.fileFromUrl(this.formControl.value).then((file: File) => {
-        this._setValueFromFile(file);
+        this._setValueFromFiles([file]);
         this.loadingService.setLoading(false);
       });
     }
@@ -40,14 +40,14 @@ export class FormlyFieldFileComponent extends FieldType implements OnInit {
   onDelete(event: Event) {
     event.stopPropagation();
 
-    this.selectedFile = null;
-    this.formControl.setValue(this.selectedFile);
+    this.selectedFiles = [];
+    this.formControl.setValue(this.selectedFiles);
     this.formControl.markAsTouched();
     this.formControl.markAsDirty();
   }
 
   onChange(event: any) {
-    this._setValueFromFile(event.target.files.item(0));
+    this._setValueFromFiles(event.target.files);
     this.formControl.markAsTouched();
     this.formControl.markAsDirty();
   }
@@ -56,14 +56,18 @@ export class FormlyFieldFileComponent extends FieldType implements OnInit {
     return /^image\//.test(file.type);
   }
 
-  _setValueFromFile(file: File) {
-    this.selectedFile = {
-      file,
-      url: this.sanitizer.bypassSecurityTrustUrl(
-        (this.windowRefService.nativeWindow as any).URL.createObjectURL(file)
-      )
-    };
+  _setValueFromFiles(files: File[]) {
+    this.selectedFiles = [];
 
-    this.formControl.patchValue([this.selectedFile]);
+    for (const file of files) {
+      this.selectedFiles.push({
+        file,
+        url: this.sanitizer.bypassSecurityTrustUrl(
+          (this.windowRefService.nativeWindow as any).URL.createObjectURL(file)
+        )
+      });
+    }
+
+    this.formControl.patchValue(this.selectedFiles);
   }
 }

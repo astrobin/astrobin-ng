@@ -1,13 +1,15 @@
 <div (click)="openFileInput()" class="upload-container">
-  <div *ngIf="!!selectedFile; else chooseFileTemplate" class="file">
-    <img *ngIf="isImage(selectedFile.file); else notImageTemplate" [src]="selectedFile.url" alt="" />
-    <ng-template #notImageTemplate>
-      <div class="file-icon">
-        <i class="fas fa-file"></i>
-      </div>
-    </ng-template>
+  <div *ngIf="!!selectedFiles && selectedFiles.length > 0; else chooseFileTemplate" class="file">
+    <ng-container *ngFor="let selectedFile of selectedFiles">
+      <img *ngIf="isImage(selectedFile.file); else notImageTemplate" [src]="selectedFile.url" alt="" />
+      <ng-template #notImageTemplate>
+        <div class="file-icon">
+          <i class="fas fa-file"></i>
+        </div>
+      </ng-template>
 
-    <span (click)="onDelete($event)">&times;</span>
+      <span (click)="onDelete($event)">&times;</span>
+    </ng-container>
   </div>
 
   <ng-template #chooseFileTemplate>
@@ -32,7 +34,6 @@
       #fileInput
       (change)="onChange($event)"
       [accept]="props.accept || '*'"
-      [formControl]="formControl"
       [formlyAttributes]="field"
       [multiple]="false"
       id="file-input"
