@@ -63,6 +63,7 @@ import * as Sentry from "@sentry/angular";
 import { NgWizardModule, THEME } from "@kronscht/ng-wizard";
 import { NgxDatatableModule } from "@swimlane/ngx-datatable";
 import { FormlyCardWrapperComponent } from "@shared/components/misc/formly-card-wrapper/formly-card-wrapper.component";
+import { NgImageSliderModule } from "ng-image-slider";
 
 export function appInitializer(store: Store<State>, actions$: Actions) {
   return () =>
@@ -115,6 +116,7 @@ export function appInitializer(store: Store<State>, actions$: Actions) {
     NgbProgressbarModule,
     NgSelectModule,
     NgxDatatableModule,
+    NgImageSliderModule,
     NgxFilesizeModule,
     NgWizardModule.forRoot({
       theme: THEME.default,
@@ -174,6 +176,7 @@ export function appInitializer(store: Store<State>, actions$: Actions) {
     NgbPaginationModule,
     NgbPopoverModule,
     NgbProgressbarModule,
+    NgImageSliderModule,
     NgSelectModule,
     NgxFilesizeModule,
     NgWizardModule,

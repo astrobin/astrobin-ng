@@ -1,10 +1,6 @@
-<div *ngIf="!!images" class="d-flex">
-  <ng-container *ngIf="UtilsService.isArray(images)">
-  </ng-container>
-
-  <ng-container *ngIf="UtilsService.isObject(images)">
-    <ng-container *ngFor="let image of images | keyvalue">
-      <img *ngIf="!!image.value && !!image.value[0].url" [src]="image.value[0].url" alt="" class="img-fluid" />
-    </ng-container>
-  </ng-container>
-</div>
+<ng-image-slider
+  *ngIf="sliderImages.length > 0"
+  [imageSize]="{width: 150}"
+  [images]="sliderImages"
+  [manageImageRatio]="true"
+></ng-image-slider>
