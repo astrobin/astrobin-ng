@@ -72,7 +72,7 @@ import { ContentTypeInterface } from "@shared/interfaces/content-type.interface"
 import { Observable, Subscription } from "rxjs";
 import { selectContentType } from "@app/store/selectors/app/content-type.selectors";
 import { LoadContentType } from "@app/store/actions/content-type.actions";
-import { distinctUntilChangedObj } from "@shared/services/utils/utils.service";
+import { distinctUntilChangedObj, UtilsService } from "@shared/services/utils/utils.service";
 import { UnapproveItemModalComponent } from "@features/equipment/components/unapprove-item-modal/unapprove-item-modal.component";
 import { ActiveToast } from "ngx-toastr";
 import { CompareService } from "@features/equipment/services/compare.service";
@@ -619,26 +619,7 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
   proposeEdit() {
     if (this.editForm.invalid) {
       this.editForm.markAllAsTouched();
-      const errorList: string[] = [];
-      this.editor.fields.forEach(field => {
-        if (field.formControl.errors !== null) {
-          errorList.push(`<li>${field.props.label}</li>`);
-        }
-      });
-      this.popNotificationsService.error(
-        `
-        <p>
-          ${this.translateService.instant("The following form fields have errors, please correct them and try again:")}
-        </p>
-        <ul>
-          ${errorList.join("\n")}
-        </ul>
-        `,
-        null,
-        {
-          enableHtml: true
-        }
-      );
+      UtilsService.notifyAboutFieldsWithErrors(this.editor.fields, this.popNotificationsService, this.translateService);
       return;
     }
 
@@ -716,7 +697,7 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
             this.loadingService.setLoading(false);
           });
       }
-    }
+    };
 
     if (this.editModel.name !== this.selectedItem.name) {
       const modal: NgbModalRef = this.modalService.open(ConfirmationDialogComponent);

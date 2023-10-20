@@ -22,6 +22,7 @@ import { ItemBrowserLayout } from "@shared/components/equipment/item-browser/ite
 import { FormlyFieldEquipmentItemBrowserComponent } from "@shared/components/misc/formly-field-equipment-item-browser/formly-field-equipment-item-browser.component";
 import { LoadContentType } from "@app/store/actions/content-type.actions";
 import { selectContentType } from "@app/store/selectors/app/content-type.selectors";
+import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 
 @Component({
   selector: "astrobin-marketplace-create-listing",
@@ -86,7 +87,8 @@ export class MarketplaceCreateListingPageComponent extends BaseComponentDirectiv
     public readonly store$: Store<State>,
     public readonly translateService: TranslateService,
     public readonly titleService: TitleService,
-    public readonly equipmentItemService: EquipmentItemService
+    public readonly equipmentItemService: EquipmentItemService,
+    public readonly popNotificationsService: PopNotificationsService
   ) {
     super(store$);
   }
@@ -98,6 +100,16 @@ export class MarketplaceCreateListingPageComponent extends BaseComponentDirectiv
     this.store$.dispatch(this.breadcrumb);
 
     this._initFields();
+  }
+
+  onCreate(event: Event) {
+    event.stopPropagation();
+
+    if (!this.form.valid) {
+      this.form.markAllAsTouched();
+      UtilsService.notifyAboutFieldsWithErrors(this.fields, this.popNotificationsService, this.translateService);
+      return;
+    }
   }
 
   private _initFields() {
@@ -454,6 +466,5 @@ export class MarketplaceCreateListingPageComponent extends BaseComponentDirectiv
           field.modelOptions = { updateOn: "blur" };
         });
       });
-
   }
 }

@@ -367,26 +367,7 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
   createItem() {
     if (!this.creationForm.valid) {
       this.creationForm.markAllAsTouched();
-      const errorList: string[] = [];
-      this.editor.fields.forEach(field => {
-        if (field.formControl.errors !== null) {
-          errorList.push(`<li>${field.props.label}</li>`);
-        }
-      });
-      this.popNotificationsService.error(
-        `
-        <p>
-          ${this.translateService.instant("The following form fields have errors, please correct them and try again:")}
-        </p>
-        <ul>
-          ${errorList.join("\n")}
-        </ul>
-        `,
-        null,
-        {
-          enableHtml: true
-        }
-      );
+      UtilsService.notifyAboutFieldsWithErrors(this.editor.fields, this.popNotificationsService, this.translateService);
       return;
     }
 

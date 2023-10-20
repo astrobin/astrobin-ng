@@ -8,6 +8,7 @@ import { interval, Observable, of } from "rxjs";
 import { isPlatformBrowser, isPlatformServer } from "@angular/common";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { CookieService } from "ngx-cookie";
+import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 
 @Injectable({
   providedIn: "root"
@@ -387,12 +388,38 @@ export class UtilsService {
     return path;
   }
 
-  static fieldWithErrors(topFields: FormlyFieldConfig[]): FormlyFieldConfig[] {
+  static notifyAboutFieldsWithErrors(
+    topFields: FormlyFieldConfig[],
+    popNotificationsService: PopNotificationsService,
+    translateService: TranslateService) {
+    const errorList: string[] = UtilsService.fieldsWithErrors(topFields).map(
+      field => `<li><strong>${UtilsService.fullFieldPath(field).join(" / ")}</strong>`
+    );
+
+    popNotificationsService.error(
+      `
+        <p>
+          ${translateService.instant("The following form fields have errors, please correct them and try again:")}
+        </p>
+        <ul>
+          ${errorList.join("\n")}
+        </ul>
+        `,
+      null,
+      {
+        enableHtml: true
+      }
+    );
+
+    return;
+  }
+
+  static fieldsWithErrors(topFields: FormlyFieldConfig[]): FormlyFieldConfig[] {
     let errored = [];
 
     topFields.forEach(field => {
       if (field.fieldGroup !== undefined) {
-        errored = [...errored, ...UtilsService.fieldWithErrors(field.fieldGroup)];
+        errored = [...errored, ...UtilsService.fieldsWithErrors(field.fieldGroup)];
       } else {
         if (field.formControl.invalid) {
           errored.push(field);

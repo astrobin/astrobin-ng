@@ -523,26 +523,11 @@ export class ImageEditPageComponent
 
     if (!this.imageEditService.form.valid) {
       this.imageEditService.form.markAllAsTouched();
-
-      const errorList: string[] = UtilsService.fieldWithErrors(this.imageEditService.fields).map(
-        field => `<li><strong>${UtilsService.fullFieldPath(field).join(" / ")}</strong>`
+      UtilsService.notifyAboutFieldsWithErrors(
+        this.imageEditService.fields,
+        this.popNotificationsService,
+        this.translateService
       );
-
-      this.popNotificationsService.error(
-        `
-        <p>
-          ${this.translateService.instant("The following form fields have errors, please correct them and try again:")}
-        </p>
-        <ul>
-          ${errorList.join("\n")}
-        </ul>
-        `,
-        null,
-        {
-          enableHtml: true
-        }
-      );
-
       return;
     }
 

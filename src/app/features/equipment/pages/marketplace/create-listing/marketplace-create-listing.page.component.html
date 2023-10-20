@@ -12,6 +12,14 @@
           [form]="form"
           [model]="model"
         ></formly-form>
+
+        <button
+          (click)="onCreate($event)"
+          [class.loading]="form.pending"
+          class="btn btn-lg btn-primary w-100 mt-4"
+        >
+          {{ "Create listing" | translate }}
+        </button>
       </form>
     </div>
 
