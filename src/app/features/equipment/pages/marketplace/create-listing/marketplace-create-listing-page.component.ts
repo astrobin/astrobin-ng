@@ -449,6 +449,10 @@ export class MarketplaceCreateListingPageComponent extends BaseComponentDirectiv
             ]
           }
         ];
+
+        this.fields.forEach(field => {
+          field.modelOptions = { updateOn: "blur" };
+        });
       });
 
   }
