@@ -1,6 +1,20 @@
 :host ng-image-slider ::ng-deep {
+  .image-popup img {
+    min-width: 0;
+    aspect-ratio: 1 / 1;
+    object-fit: contain;
+    border: 1px solid var(--grey);
+    background: var(--darkestGrey);
+    border-radius: 5px !important;
+
+    &:not(:first-child) {
+      margin-left: .125rem;
+    }
+  }
+
   .next-icon,
   .prev-icon {
-    border: 1px solid var(--black);
+    background-color: var(--accentColor) !important;
+    color: var(--white) !important;
   }
 }
