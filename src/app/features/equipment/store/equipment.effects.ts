@@ -25,6 +25,8 @@ import {
   CreateFilterEditProposal,
   CreateFilterEditProposalSuccess,
   CreateFilterSuccess,
+  CreateMarketplaceListing,
+  CreateMarketplaceListingSuccess,
   CreateMount,
   CreateMountEditProposal,
   CreateMountEditProposalSuccess,
@@ -753,6 +755,18 @@ export class EquipmentEffects {
         this.equipmentApiService
           .loadMarketplaceListings(payload.page)
           .pipe(map(listings => new LoadMarketplaceListingsSuccess({ listings })))
+      )
+    )
+  );
+
+  CreateMarketplaceListing: Observable<CreateMarketplaceListingSuccess> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(EquipmentActionTypes.CREATE_MARKETPLACE_LISTING),
+      map((action: CreateMarketplaceListing) => action.payload.listing),
+      mergeMap(listing =>
+        this.equipmentApiService
+          .createMarketplaceListing(listing)
+          .pipe(map(createdListing => new CreateMarketplaceListingSuccess({ listing: createdListing })))
       )
     )
   );

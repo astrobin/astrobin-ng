@@ -6,13 +6,14 @@ import { TranslateService } from "@ngx-translate/core";
 import { TitleService } from "@shared/services/title/title.service";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import {
+  MarketplaceListingExpiration,
   MarketplaceListingInterface,
   MarketplaceListingShippingMethod
 } from "@features/equipment/types/marketplace-listing.interface";
 import { FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { Constants } from "@shared/constants";
-import { filter, take } from "rxjs/operators";
+import { filter, map, startWith, switchMap, take, takeUntil } from "rxjs/operators";
 import { selectRequestCountry } from "@app/store/selectors/app/app.selectors";
 import * as countryJs from "country-js";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
@@ -23,6 +24,14 @@ import { FormlyFieldEquipmentItemBrowserComponent } from "@shared/components/mis
 import { LoadContentType } from "@app/store/actions/content-type.actions";
 import { selectContentType } from "@app/store/selectors/app/content-type.selectors";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
+import {
+  CreateMarketplaceListing,
+  CreateMarketplaceListingFailure,
+  CreateMarketplaceListingSuccess,
+  EquipmentActionTypes
+} from "@features/equipment/store/equipment.actions";
+import { Actions, ofType } from "@ngrx/effects";
+import { LoadingService } from "@shared/services/loading.service";
 
 @Component({
   selector: "astrobin-marketplace-create-listing",
@@ -85,10 +94,12 @@ export class MarketplaceCreateListingPageComponent extends BaseComponentDirectiv
 
   constructor(
     public readonly store$: Store<State>,
+    public readonly actions$: Actions,
     public readonly translateService: TranslateService,
     public readonly titleService: TitleService,
     public readonly equipmentItemService: EquipmentItemService,
-    public readonly popNotificationsService: PopNotificationsService
+    public readonly popNotificationsService: PopNotificationsService,
+    public readonly loadingService: LoadingService
   ) {
     super(store$);
   }
@@ -110,6 +121,27 @@ export class MarketplaceCreateListingPageComponent extends BaseComponentDirectiv
       UtilsService.notifyAboutFieldsWithErrors(this.fields, this.popNotificationsService, this.translateService);
       return;
     }
+
+    this.loadingService.setLoading(true);
+
+    this.actions$.pipe(
+      ofType(EquipmentActionTypes.CREATE_MARKETPLACE_LISTING_SUCCESS),
+      take(1),
+      map((action: CreateMarketplaceListingSuccess) => action.payload.listing)
+    ).subscribe(listing => {
+      this.loadingService.setLoading(false);
+    });
+
+    this.actions$.pipe(
+      ofType(EquipmentActionTypes.CREATE_MARKETPLACE_LISTING_FAILURE),
+      take(1),
+      map((action: CreateMarketplaceListingFailure) => action.payload.error)
+    ).subscribe(error => {
+      this.loadingService.setLoading(false);
+      alert(error);
+    });
+
+    this.store$.dispatch(new CreateMarketplaceListing({ listing: this.form.value }));
   }
 
   private _initFields() {
@@ -130,8 +162,11 @@ export class MarketplaceCreateListingPageComponent extends BaseComponentDirectiv
 
     return this.store$
       .select(selectRequestCountry)
-      .pipe(take(1))
-      .subscribe(requestCountry => {
+      .pipe(
+        take(1),
+        switchMap(requestCountry => this.currentUser$.pipe(map(user => ({ requestCountry, user }))))
+      )
+      .subscribe(({ requestCountry, user }) => {
         let initialCurrency = "USD";
 
         if (!!requestCountry && requestCountry !== "UNKNOWN") {
@@ -143,6 +178,7 @@ export class MarketplaceCreateListingPageComponent extends BaseComponentDirectiv
 
         this.model = {
           ...this.model,
+          user: user.id,
           lineItems: this.model.lineItems.map(lineItem => ({
             ...lineItem,
             currency: initialCurrency,
@@ -151,6 +187,11 @@ export class MarketplaceCreateListingPageComponent extends BaseComponentDirectiv
         };
 
         this.fields = [
+          {
+            key: "user",
+            type: "input",
+            className: "hidden"
+          },
           {
             key: "lineItems",
             type: "array",
@@ -269,7 +310,10 @@ export class MarketplaceCreateListingPageComponent extends BaseComponentDirectiv
                           "Describe the item you are selling. This field refers to this specific equipment item, " +
                           "and down below you can find a Description field that refers to the entire listing."
                         ),
-                        rows: 6
+                        rows: 6,
+                        modelOptions: {
+                          updateOn: "blur"
+                        }
                       }
                     }
                   ]
@@ -420,7 +464,7 @@ export class MarketplaceCreateListingPageComponent extends BaseComponentDirectiv
                   onInit: field => {
                     const form = field.parent.formControl;
 
-                    field.formControl.valueChanges.subscribe(coordinates => {
+                    field.formControl.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(coordinates => {
                       if (coordinates) {
                         const geocoder = new google.maps.Geocoder();
 
@@ -455,16 +499,76 @@ export class MarketplaceCreateListingPageComponent extends BaseComponentDirectiv
                     "This description field is for generic information that pertain this listing. You can find " +
                     "Description field for individual equipment items above."
                   ),
-                  rows: 6
+                  rows: 6,
+                  modelOptions: {
+                    updateOn: "blur"
+                  }
                 }
+              },
+              {
+                key: "",
+                type: "ng-select",
+                wrappers: ["default-wrapper"],
+                defaultValue: MarketplaceListingExpiration.ONE_WEEK,
+                props: {
+                  label: this.translateService.instant("Expiration"),
+                  options: [
+                    {
+                      value: MarketplaceListingExpiration.ONE_WEEK,
+                      label: this.translateService.instant("One week")
+                    },
+                    {
+                      value: MarketplaceListingExpiration.TWO_WEEKS,
+                      label: this.translateService.instant("Two weeks")
+                    },
+                    {
+                      value: MarketplaceListingExpiration.ONE_MONTH,
+                      label: this.translateService.instant("One month")
+                    }
+                  ],
+                  required: true,
+                  description: this.translateService.instant(
+                    "After this period, the listing will be automatically removed from the marketplace, but " +
+                    "you will be able to renew it."
+                  )
+                },
+                hooks: {
+                  onInit: field => {
+                    field.formControl.valueChanges.pipe(
+                      takeUntil(this.destroyed$),
+                      startWith(field.formControl.value)
+                    ).subscribe(value => {
+                      if (!!value) {
+                        const now = new Date();
+                        let expirationDate = new Date(now);
+
+                        switch (value) {
+                          case MarketplaceListingExpiration.ONE_WEEK:
+                            expirationDate.setDate(now.getDate() + 7);
+                            break;
+                          case MarketplaceListingExpiration.TWO_WEEKS:
+                            expirationDate.setDate(now.getDate() + 14);
+                            break;
+                          case MarketplaceListingExpiration.ONE_MONTH:
+                            expirationDate.setMonth(now.getMonth() + 1);
+                            break;
+                        }
+
+                        // Update the actual value with the computed datetime string
+                        this.form.get("expiration").setValue(expirationDate.toISOString());
+                      }
+                    });
+                  }
+                }
+              },
+              {
+                key: "expiration",
+                type: "input",
+                className: "hidden"
               }
             ]
           }
         ];
-
-        this.fields.forEach(field => {
-          field.modelOptions = { updateOn: "blur" };
-        });
       });
   }
 }

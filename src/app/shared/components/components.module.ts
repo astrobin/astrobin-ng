@@ -109,6 +109,7 @@ import { BetaBannerComponent } from "@shared/components/misc/beta-banner/beta-ba
 import { FormlyFieldToggleComponent } from "@shared/components/misc/formly-field-toggle/formly-field-toggle.component";
 import { FormlyBootstrapModule } from "@ngx-formly/bootstrap";
 import { FormlyFieldArrayComponent } from "@shared/components/misc/formly-field-array/formly-field-array.component";
+import { PrivateInformationComponent } from "@shared/components/misc/private-information/private-information.component";
 
 const modules = [
   CommonModule,
@@ -185,6 +186,7 @@ const components = [
   NestedCommentsModalComponent,
   NothingHereComponent,
   ObjectsInFieldComponent,
+  PrivateInformationComponent,
   ReadOnlyModeComponent,
   RefreshButtonComponent,
   RemoveAdsDialogComponent,

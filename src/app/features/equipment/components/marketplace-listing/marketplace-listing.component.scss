@@ -37,3 +37,16 @@
     color: var(--dangerColor);
   }
 }
+
+.expiration {
+  .expiration-value {
+    color: var(--lighterGrey);
+    font-style: italic;
+  }
+
+  astrobin-private-information {
+    color: var(--lightGrey);
+    font-size: .8rem;
+    vertical-align: super;
+  }
+}

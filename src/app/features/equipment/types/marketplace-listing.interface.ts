@@ -9,6 +9,12 @@ export enum MarketplaceListingShippingMethod {
   OTHER = "OTHER",
 }
 
+export enum MarketplaceListingExpiration {
+  ONE_WEEK = "ONE_WEEK",
+  TWO_WEEKS = "TWO_WEEKS",
+  ONE_MONTH = "ONE_MONTH",
+}
+
 export interface MarketplaceListingInterface {
   id?: number;
   user?: UserInterface["id"];

@@ -768,6 +768,12 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     );
   }
 
+  public createMarketplaceListing(
+    listing: Omit<MarketplaceListingInterface, "id">
+  ): Observable<MarketplaceListingInterface> {
+    return this.http.post<MarketplaceListingInterface>(`${this.configUrl}/marketplace/listing/`, listing);
+  }
+
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // PRIVATE
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
