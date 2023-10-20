@@ -1,10 +1,9 @@
 :host {
   display: block;
-  border-bottom: 1px dashed var(--grey);
-  padding-bottom: 1rem;
+  padding: 1rem;
 
-  &:not(:first-child) {
-    padding-top: 1rem;
+  &:nth-child(even) {
+    background-color: var(--grey);
   }
 }
 
