@@ -29,5 +29,5 @@ export interface MarketplaceListingLineItemInterface {
   description: string | null;
   itemObjectId: number;
   itemContentType: ContentTypeInterface["id"];
-  images: string[] | { file: File, url: string }[];
+  images?: string[] | { file: File, url: string }[];
 }

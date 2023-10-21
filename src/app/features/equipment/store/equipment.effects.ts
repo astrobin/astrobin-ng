@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { Observable, of } from "rxjs";
+import { forkJoin, Observable, of } from "rxjs";
 import {
   ApproveEquipmentItem,
   ApproveEquipmentItemEditProposal,
@@ -759,16 +759,30 @@ export class EquipmentEffects {
     )
   );
 
-  CreateMarketplaceListing: Observable<CreateMarketplaceListingSuccess> = createEffect(() =>
-    this.actions$.pipe(
-      ofType(EquipmentActionTypes.CREATE_MARKETPLACE_LISTING),
-      map((action: CreateMarketplaceListing) => action.payload.listing),
-      mergeMap(listing =>
-        this.equipmentApiService
-          .createMarketplaceListing(listing)
-          .pipe(map(createdListing => new CreateMarketplaceListingSuccess({ listing: createdListing })))
-      )
-    )
+  CreateMarketplaceListing: Observable<CreateMarketplaceListingSuccess> = createEffect(() => {
+      return this.actions$.pipe(
+        ofType(EquipmentActionTypes.CREATE_MARKETPLACE_LISTING),
+        map((action: CreateMarketplaceListing) => action.payload.listing),
+        mergeMap(listing => {
+          return this.equipmentApiService
+            .createMarketplaceListing(listing)
+            .pipe(
+              switchMap(createdListing =>
+                forkJoin(listing.lineItems.map(lineItem =>
+                  this.equipmentApiService.createMarketplaceListingLineItem(
+                    {
+                      ...lineItem,
+                      listing: createdListing.id
+                    }
+                  ))).pipe(
+                  map(() => createdListing)
+                )
+              ),
+              map(createdListing => new CreateMarketplaceListingSuccess({ listing: createdListing }))
+            );
+        })
+      );
+    }
   );
 
   constructor(

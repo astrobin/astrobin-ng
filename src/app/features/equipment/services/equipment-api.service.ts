@@ -37,6 +37,7 @@ import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { EquipmentListingsInterface } from "@features/equipment/types/equipment-listings.interface";
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
+import { MarketplaceListingLineItemInterface } from "@features/equipment/types/marketplace-listing-line-item.interface";
 
 export interface AllEquipmentItemsOptionsInterface {
   brand?: BrandInterface["id"];
@@ -772,6 +773,15 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     listing: Omit<MarketplaceListingInterface, "id">
   ): Observable<MarketplaceListingInterface> {
     return this.http.post<MarketplaceListingInterface>(`${this.configUrl}/marketplace/listing/`, listing);
+  }
+
+  public createMarketplaceListingLineItem(
+    lineItem: Omit<MarketplaceListingLineItemInterface, "id">
+  ): Observable<MarketplaceListingLineItemInterface> {
+    return this.http.post<MarketplaceListingLineItemInterface>(
+      `${this.configUrl}/marketplace/listing-line-item/`,
+      lineItem
+    );
   }
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -26,7 +26,6 @@ import { selectContentType } from "@app/store/selectors/app/content-type.selecto
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import {
   CreateMarketplaceListing,
-  CreateMarketplaceListingFailure,
   CreateMarketplaceListingSuccess,
   EquipmentActionTypes
 } from "@features/equipment/store/equipment.actions";
@@ -130,15 +129,6 @@ export class MarketplaceCreateListingPageComponent extends BaseComponentDirectiv
       map((action: CreateMarketplaceListingSuccess) => action.payload.listing)
     ).subscribe(listing => {
       this.loadingService.setLoading(false);
-    });
-
-    this.actions$.pipe(
-      ofType(EquipmentActionTypes.CREATE_MARKETPLACE_LISTING_FAILURE),
-      take(1),
-      map((action: CreateMarketplaceListingFailure) => action.payload.error)
-    ).subscribe(error => {
-      this.loadingService.setLoading(false);
-      alert(error);
     });
 
     this.store$.dispatch(new CreateMarketplaceListing({ listing: this.form.value }));
