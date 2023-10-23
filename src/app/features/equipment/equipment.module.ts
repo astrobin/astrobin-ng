@@ -36,11 +36,11 @@ import { EquipmentListingsComponent } from "./components/equipment-listings/equi
 import { FollowedExplorerComponent } from "@features/equipment/pages/followed-explorer/followed-explorer.component";
 import { MarketplaceListingsPageComponent } from "./pages/marketplace/listings/marketplace-listings-page.component";
 import { MarketplaceCreateListingPageComponent } from "./pages/marketplace/create-listing/marketplace-create-listing-page.component";
-import { MarketplaceListingLineItemComponent } from './components/marketplace-listing-line-item/marketplace-listing-line-item.component';
-import { MarketplaceListingComponent } from './components/marketplace-listing/marketplace-listing.component';
-import { MarketplaceListingLineItemPriceComponent } from './components/marketplace-listing-line-item-price/marketplace-listing-line-item-price.component';
-import { MarketplaceListingLineItemConditionComponent } from './components/marketplace-listing-line-item-condition/marketplace-listing-line-item-condition.component';
-import { MarketplaceListingLineItemImagesComponent } from './components/marketplace-listing-line-item-images/marketplace-listing-line-item-images.component';
+import { MarketplaceLineItemComponent } from "./components/marketplace-listing-line-item/marketplace-line-item.component";
+import { MarketplaceListingComponent } from "./components/marketplace-listing/marketplace-listing.component";
+import { MarketplaceListingLineItemPriceComponent } from "./components/marketplace-listing-line-item-price/marketplace-listing-line-item-price.component";
+import { MarketplaceLineItemConditionComponent } from "./components/marketplace-listing-line-item-condition/marketplace-line-item-condition.component";
+import { MarketplaceImagesComponent } from "./components/marketplace-listing-line-item-images/marketplace-images.component";
 
 @NgModule({
   declarations: [
@@ -76,11 +76,11 @@ import { MarketplaceListingLineItemImagesComponent } from './components/marketpl
     EquipmentListingsComponent,
     MarketplaceListingsPageComponent,
     MarketplaceCreateListingPageComponent,
-    MarketplaceListingLineItemComponent,
+    MarketplaceLineItemComponent,
     MarketplaceListingComponent,
     MarketplaceListingLineItemPriceComponent,
-    MarketplaceListingLineItemConditionComponent,
-    MarketplaceListingLineItemImagesComponent
+    MarketplaceLineItemConditionComponent,
+    MarketplaceImagesComponent
   ],
   imports: [RouterModule.forChild(routes), SharedModule, StoreModule.forFeature(equipmentFeatureKey, reducer)]
 })

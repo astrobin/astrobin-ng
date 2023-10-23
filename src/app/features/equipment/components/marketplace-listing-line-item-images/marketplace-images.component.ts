@@ -7,10 +7,10 @@ import { UtilsService } from "@shared/services/utils/utils.service";
 
 @Component({
   selector: "astrobin-marketplace-listing-line-item-images",
-  templateUrl: "./marketplace-listing-line-item-images.component.html",
-  styleUrls: ["./marketplace-listing-line-item-images.component.scss"]
+  templateUrl: "./marketplace-images.component.html",
+  styleUrls: ["./marketplace-images.component.scss"]
 })
-export class MarketplaceListingLineItemImagesComponent extends BaseComponentDirective implements OnChanges {
+export class MarketplaceImagesComponent extends BaseComponentDirective implements OnChanges {
   readonly UtilsService = UtilsService;
 
   sliderImages: Array<object> = [];
@@ -50,8 +50,8 @@ export class MarketplaceListingLineItemImagesComponent extends BaseComponentDire
       }
     } else if (UtilsService.isArray(this.images)) {
       this.sliderImages = this.images.map(image => ({
-        image: image,
-        thumbImage: image
+        image: image.imageFile,
+        thumbImage: image.imageFile
       }));
     }
   }

@@ -6,6 +6,7 @@ import { MarketplaceListingInterface } from "@features/equipment/types/marketpla
 import { GoogleMapsService } from "@shared/services/google-maps/google-maps.service";
 import { CountryService } from "@shared/services/country.service";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
+import { UtilsService } from "@shared/services/utils/utils.service";
 
 @Component({
   selector: "astrobin-marketplace-listing",
@@ -30,7 +31,8 @@ export class MarketplaceListingComponent extends BaseComponentDirective implemen
     public readonly store$: Store<State>,
     public readonly googleMapsService: GoogleMapsService,
     public readonly countryService: CountryService,
-    public readonly equipmentItemService: EquipmentItemService
+    public readonly equipmentItemService: EquipmentItemService,
+    public readonly utilsService: UtilsService
   ) {
     super(store$);
   }
@@ -41,17 +43,18 @@ export class MarketplaceListingComponent extends BaseComponentDirective implemen
       const previous: MarketplaceListingInterface = changes.listing.previousValue;
 
       if (
-        listing.latitude &&
-        listing.longitude &&
-        listing.latitude !== previous.latitude &&
-        listing.longitude !== previous.longitude) {
-        this.initMap(listing.latitude, listing.longitude);
+        (listing.latitude && listing.longitude && !previous) ||
+        (listing.latitude !== previous.latitude && listing.longitude !== previous.longitude)
+      ) {
+        this.utilsService.delay(100).subscribe(() => {
+          this.initMap(listing.latitude, listing.longitude);
+        });
       }
     }
   }
 
   initMap(latitude: number, longitude: number) {
-    const randomOffset = maxOffset => Math.random() * maxOffset - (maxOffset / 2);
+    const randomOffset = maxOffset => Math.random() * maxOffset - maxOffset / 2;
 
     const location = new this.googleMapsService.maps.LatLng(
       latitude + randomOffset(0.01), // 0.01 degrees ~ 1.11 km,

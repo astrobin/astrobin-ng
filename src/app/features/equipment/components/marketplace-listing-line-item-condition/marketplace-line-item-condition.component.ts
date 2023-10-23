@@ -7,10 +7,10 @@ import { EquipmentItemService } from "@features/equipment/services/equipment-ite
 
 @Component({
   selector: "astrobin-marketplace-listing-line-item-condition",
-  templateUrl: "./marketplace-listing-line-item-condition.component.html",
-  styleUrls: ["./marketplace-listing-line-item-condition.component.scss"]
+  templateUrl: "./marketplace-line-item-condition.component.html",
+  styleUrls: ["./marketplace-line-item-condition.component.scss"]
 })
-export class MarketplaceListingLineItemConditionComponent extends BaseComponentDirective {
+export class MarketplaceLineItemConditionComponent extends BaseComponentDirective {
   @Input()
   lineItem: MarketplaceLineItemInterface;
 

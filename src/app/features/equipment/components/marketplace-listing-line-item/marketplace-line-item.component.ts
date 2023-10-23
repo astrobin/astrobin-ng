@@ -14,10 +14,10 @@ import { EquipmentItemService } from "@features/equipment/services/equipment-ite
 
 @Component({
   selector: "astrobin-marketplace-listing-line-item",
-  templateUrl: "./marketplace-listing-line-item.component.html",
-  styleUrls: ["./marketplace-listing-line-item.component.scss"]
+  templateUrl: "./marketplace-line-item.component.html",
+  styleUrls: ["./marketplace-line-item.component.scss"]
 })
-export class MarketplaceListingLineItemComponent extends BaseComponentDirective implements OnChanges {
+export class MarketplaceLineItemComponent extends BaseComponentDirective implements OnChanges {
   @Input()
   lineItem: MarketplaceLineItemInterface;
 

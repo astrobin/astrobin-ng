@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { MarketplaceListingLineItemComponent } from "./marketplace-listing-line-item.component";
+import { MarketplaceLineItemComponent } from "./marketplace-line-item.component";
 import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
 import { provideMockStore } from "@ngrx/store/testing";
 import { initialState } from "@app/store/state";
 
 describe("MarketplaceListingLineItemComponent", () => {
-  let component: MarketplaceListingLineItemComponent;
-  let fixture: ComponentFixture<MarketplaceListingLineItemComponent>;
+  let component: MarketplaceLineItemComponent;
+  let fixture: ComponentFixture<MarketplaceLineItemComponent>;
 
   beforeEach(async () => {
-    await MockBuilder(MarketplaceListingLineItemComponent, AppModule).provide(provideMockStore({ initialState }));
+    await MockBuilder(MarketplaceLineItemComponent, AppModule).provide(provideMockStore({ initialState }));
 
 
-    fixture = TestBed.createComponent(MarketplaceListingLineItemComponent);
+    fixture = TestBed.createComponent(MarketplaceLineItemComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

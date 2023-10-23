@@ -1,6 +1,7 @@
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
 import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
+import { MarketplaceImageInterface } from "@features/equipment/types/marketplace-image.interface";
 
 
 export enum MarketplaceListingCondition {
@@ -29,5 +30,5 @@ export interface MarketplaceLineItemInterface {
   description: string | null;
   itemObjectId: number;
   itemContentType: ContentTypeInterface["id"];
-  images?: string[] | { file: File, url: string }[];
+  images?: MarketplaceImageInterface[] | { file: File, url: string }[];
 }

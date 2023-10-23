@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { MarketplaceListingLineItemConditionComponent } from "./marketplace-listing-line-item-condition.component";
+import { MarketplaceLineItemConditionComponent } from "./marketplace-line-item-condition.component";
 import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
 import { provideMockStore } from "@ngrx/store/testing";
 import { initialState } from "@app/store/state";
 
 describe("MarketplaceListingLineItemConditionComponent", () => {
-  let component: MarketplaceListingLineItemConditionComponent;
-  let fixture: ComponentFixture<MarketplaceListingLineItemConditionComponent>;
+  let component: MarketplaceLineItemConditionComponent;
+  let fixture: ComponentFixture<MarketplaceLineItemConditionComponent>;
 
   beforeEach(async () => {
-    await MockBuilder(MarketplaceListingLineItemConditionComponent, AppModule).provide(provideMockStore({ initialState }));
+    await MockBuilder(MarketplaceLineItemConditionComponent, AppModule).provide(provideMockStore({ initialState }));
 
 
-    fixture = TestBed.createComponent(MarketplaceListingLineItemConditionComponent);
+    fixture = TestBed.createComponent(MarketplaceLineItemConditionComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
