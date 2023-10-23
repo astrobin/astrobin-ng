@@ -380,7 +380,8 @@ export class EquipmentEffects {
           .rejectEditProposal(payload.editProposal, payload.comment)
           .pipe(
             map(
-              rejectedEditProposal => new RejectEquipmentItemEditProposalSuccess({ editProposal: rejectedEditProposal })
+              rejectedEditProposal =>
+                new RejectEquipmentItemEditProposalSuccess({ editProposal: rejectedEditProposal })
             )
           )
       )
@@ -638,7 +639,8 @@ export class EquipmentEffects {
           .createMountEditProposal(mount)
           .pipe(
             map(
-              createdMountEditProposal => new CreateMountEditProposalSuccess({ editProposal: createdMountEditProposal })
+              createdMountEditProposal =>
+                new CreateMountEditProposalSuccess({ editProposal: createdMountEditProposal })
             )
           )
       )
@@ -760,30 +762,43 @@ export class EquipmentEffects {
   );
 
   CreateMarketplaceListing: Observable<CreateMarketplaceListingSuccess> = createEffect(() => {
-      return this.actions$.pipe(
-        ofType(EquipmentActionTypes.CREATE_MARKETPLACE_LISTING),
-        map((action: CreateMarketplaceListing) => action.payload.listing),
-        mergeMap(listing => {
-          return this.equipmentApiService
-            .createMarketplaceListing(listing)
-            .pipe(
-              switchMap(createdListing =>
-                forkJoin(listing.lineItems.map(lineItem =>
-                  this.equipmentApiService.createMarketplaceListingLineItem(
-                    {
-                      ...lineItem,
-                      listing: createdListing.id
-                    }
-                  ))).pipe(
-                  map(() => createdListing)
+    return this.actions$.pipe(
+      ofType(EquipmentActionTypes.CREATE_MARKETPLACE_LISTING),
+      map((action: CreateMarketplaceListing) => action.payload.listing),
+      mergeMap(listing => {
+        return this.equipmentApiService.createMarketplaceListing(listing).pipe(
+          switchMap(createdListing =>
+            forkJoin(
+              listing.lineItems.map(lineItem =>
+                this.equipmentApiService.createMarketplaceListingLineItem({
+                  ...lineItem,
+                  listing: createdListing.id
+                }).pipe(
+                  switchMap(createdLineItem =>
+                    forkJoin(
+                      Object.keys(lineItem.images).map(key => {
+                          const image = lineItem.images[key];
+
+                          if (!image) {
+                            return of(null);
+                          }
+
+                          return this.equipmentApiService.createMarketplaceListingLineItemImage(
+                            createdLineItem.id, image[0].file
+                          );
+                        }
+                      )
+                    )
+                  )
                 )
-              ),
-              map(createdListing => new CreateMarketplaceListingSuccess({ listing: createdListing }))
-            );
-        })
-      );
-    }
-  );
+              )
+            ).pipe(map(() => createdListing))
+          ),
+          map(createdListing => new CreateMarketplaceListingSuccess({ listing: createdListing }))
+        );
+      })
+    );
+  });
 
   constructor(
     public readonly store$: Store<State>,

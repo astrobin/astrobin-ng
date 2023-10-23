@@ -38,6 +38,7 @@ import { State } from "@app/store/state";
 import { EquipmentListingsInterface } from "@features/equipment/types/equipment-listings.interface";
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
 import { MarketplaceListingLineItemInterface } from "@features/equipment/types/marketplace-listing-line-item.interface";
+import { MarketplaceListingLineItemImageInterface } from "@features/equipment/types/marketplace-listing-line-item-image.interface";
 
 export interface AllEquipmentItemsOptionsInterface {
   brand?: BrandInterface["id"];
@@ -781,6 +782,28 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     return this.http.post<MarketplaceListingLineItemInterface>(
       `${this.configUrl}/marketplace/listing-line-item/`,
       lineItem
+    );
+  }
+
+  public createMarketplaceListingLineItemImage(
+    lineItemId: MarketplaceListingLineItemInterface["id"],
+    image: File
+  ): Observable<MarketplaceListingLineItemImageInterface> {
+    const formData: FormData = new FormData();
+    formData.append("image_file", image);
+
+    const httpOptions = {
+      headers: new HttpHeaders({
+        // Unsetting the Content-Type is necessary so it gets set to multipart/form-data with the correct boundary.
+        "Content-Type": "__unset__",
+        "Content-Disposition": `form-data; name="image"; filename=${image.name}`
+      })
+    };
+
+    return this.http.post<MarketplaceListingLineItemImageInterface>(
+      `${this.configUrl}/marketplace/listing-line-item-image/`,
+      formData,
+      httpOptions
     );
   }
 

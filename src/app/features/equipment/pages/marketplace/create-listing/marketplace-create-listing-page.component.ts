@@ -31,6 +31,7 @@ import {
 } from "@features/equipment/store/equipment.actions";
 import { Actions, ofType } from "@ngrx/effects";
 import { LoadingService } from "@shared/services/loading.service";
+import { Router } from "@angular/router";
 
 @Component({
   selector: "astrobin-marketplace-create-listing",
@@ -98,7 +99,8 @@ export class MarketplaceCreateListingPageComponent extends BaseComponentDirectiv
     public readonly titleService: TitleService,
     public readonly equipmentItemService: EquipmentItemService,
     public readonly popNotificationsService: PopNotificationsService,
-    public readonly loadingService: LoadingService
+    public readonly loadingService: LoadingService,
+    public readonly router: Router
   ) {
     super(store$);
   }
@@ -129,6 +131,7 @@ export class MarketplaceCreateListingPageComponent extends BaseComponentDirectiv
       map((action: CreateMarketplaceListingSuccess) => action.payload.listing)
     ).subscribe(listing => {
       this.loadingService.setLoading(false);
+      this.router.navigateByUrl(`/equipment/marketplace/listing/${listing.id}`);
     });
 
     this.store$.dispatch(new CreateMarketplaceListing({ listing: this.form.value }));

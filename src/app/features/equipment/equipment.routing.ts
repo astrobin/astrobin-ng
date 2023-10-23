@@ -159,11 +159,11 @@ export const routes: Routes = [
         redirectTo: "listings"
       },
       {
-        path: "listings",
+        path: "",
         component: MarketplaceListingsPageComponent
       },
       {
-        path: "listings/create",
+        path: "create",
         component: MarketplaceCreateListingPageComponent
       }
     ]

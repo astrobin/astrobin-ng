@@ -15,7 +15,7 @@
 
         <button
           (click)="onCreate($event)"
-          [class.loading]="form.pending"
+          [class.loading]="(loadingService.loading$ | async) || form.pending"
           class="btn btn-lg btn-primary w-100 mt-4"
         >
           {{ "Create listing" | translate }}
