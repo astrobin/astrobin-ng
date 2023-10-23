@@ -1,5 +1,5 @@
 import { Component, Input } from "@angular/core";
-import { MarketplaceListingLineItemInterface } from "@features/equipment/types/marketplace-listing-line-item.interface";
+import { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { TranslateService } from "@ngx-translate/core";
 import { State } from "@app/store/state";
@@ -12,11 +12,11 @@ import { Store } from "@ngrx/store";
 })
 export class MarketplaceListingLineItemPriceComponent extends BaseComponentDirective {
   @Input()
-  lineItem: MarketplaceListingLineItemInterface;
+  lineItem: MarketplaceLineItemInterface;
 
   constructor(
     public readonly store$: Store<State>,
-    public readonly translateService: TranslateService,
+    public readonly translateService: TranslateService
   ) {
     super(store$);
   }

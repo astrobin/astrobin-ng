@@ -37,8 +37,8 @@ import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { EquipmentListingsInterface } from "@features/equipment/types/equipment-listings.interface";
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
-import { MarketplaceListingLineItemInterface } from "@features/equipment/types/marketplace-listing-line-item.interface";
-import { MarketplaceListingLineItemImageInterface } from "@features/equipment/types/marketplace-listing-line-item-image.interface";
+import { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
+import { MarketplaceImageInterface } from "@features/equipment/types/marketplace-image.interface";
 
 export interface AllEquipmentItemsOptionsInterface {
   brand?: BrandInterface["id"];
@@ -776,21 +776,22 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     return this.http.post<MarketplaceListingInterface>(`${this.configUrl}/marketplace/listing/`, listing);
   }
 
-  public createMarketplaceListingLineItem(
-    lineItem: Omit<MarketplaceListingLineItemInterface, "id">
-  ): Observable<MarketplaceListingLineItemInterface> {
-    return this.http.post<MarketplaceListingLineItemInterface>(
-      `${this.configUrl}/marketplace/listing-line-item/`,
+  public createMarketplaceLineItem(
+    lineItem: Omit<MarketplaceLineItemInterface, "id">
+  ): Observable<MarketplaceLineItemInterface> {
+    return this.http.post<MarketplaceLineItemInterface>(
+      `${this.configUrl}/marketplace/line-item/`,
       lineItem
     );
   }
 
-  public createMarketplaceListingLineItemImage(
-    lineItemId: MarketplaceListingLineItemInterface["id"],
+  public createMarketplaceImage(
+    lineItemId: MarketplaceLineItemInterface["id"],
     image: File
-  ): Observable<MarketplaceListingLineItemImageInterface> {
+  ): Observable<MarketplaceImageInterface> {
     const formData: FormData = new FormData();
     formData.append("image_file", image);
+    formData.append("line_item", lineItemId.toString());
 
     const httpOptions = {
       headers: new HttpHeaders({
@@ -800,8 +801,8 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
       })
     };
 
-    return this.http.post<MarketplaceListingLineItemImageInterface>(
-      `${this.configUrl}/marketplace/listing-line-item-image/`,
+    return this.http.post<MarketplaceImageInterface>(
+      `${this.configUrl}/marketplace/image/`,
       formData,
       httpOptions
     );

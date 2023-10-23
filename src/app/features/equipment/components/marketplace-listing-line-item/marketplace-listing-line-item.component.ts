@@ -2,7 +2,7 @@ import { Component, Input, OnChanges, SimpleChanges } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
-import { MarketplaceListingLineItemInterface } from "@features/equipment/types/marketplace-listing-line-item.interface";
+import { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { Observable } from "rxjs";
 import { CommonApiService } from "@shared/services/api/classic/common/common-api.service";
@@ -19,7 +19,7 @@ import { EquipmentItemService } from "@features/equipment/services/equipment-ite
 })
 export class MarketplaceListingLineItemComponent extends BaseComponentDirective implements OnChanges {
   @Input()
-  lineItem: MarketplaceListingLineItemInterface;
+  lineItem: MarketplaceLineItemInterface;
 
   @Input()
   previewMode = false;
@@ -37,7 +37,7 @@ export class MarketplaceListingLineItemComponent extends BaseComponentDirective 
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.lineItem && changes.lineItem.currentValue) {
-      const lineItem: MarketplaceListingLineItemInterface = changes.lineItem.currentValue;
+      const lineItem: MarketplaceLineItemInterface = changes.lineItem.currentValue;
 
       if (lineItem.itemContentType && lineItem.itemObjectId) {
         this.commonApiService.getContentTypeById(lineItem.itemContentType).subscribe(contentType => {

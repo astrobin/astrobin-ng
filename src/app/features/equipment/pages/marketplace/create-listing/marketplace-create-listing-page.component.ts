@@ -18,7 +18,7 @@ import { selectRequestCountry } from "@app/store/selectors/app/app.selectors";
 import * as countryJs from "country-js";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
-import { MarketplaceListingCondition } from "@features/equipment/types/marketplace-listing-line-item.interface";
+import { MarketplaceListingCondition } from "@features/equipment/types/marketplace-line-item.interface";
 import { ItemBrowserLayout } from "@shared/components/equipment/item-browser/item-browser.component";
 import { FormlyFieldEquipmentItemBrowserComponent } from "@shared/components/misc/formly-field-equipment-item-browser/formly-field-equipment-item-browser.component";
 import { LoadContentType } from "@app/store/actions/content-type.actions";

@@ -282,7 +282,7 @@ export function reducer(state = initialEquipmentState, action: PayloadActionInte
         ...state,
         marketplace: {
           ...state.marketplace,
-          listings: action.payload.listings
+          listings: action.payload.listings.results
         }
       };
     }

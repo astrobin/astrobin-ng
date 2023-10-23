@@ -770,7 +770,7 @@ export class EquipmentEffects {
           switchMap(createdListing =>
             forkJoin(
               listing.lineItems.map(lineItem =>
-                this.equipmentApiService.createMarketplaceListingLineItem({
+                this.equipmentApiService.createMarketplaceLineItem({
                   ...lineItem,
                   listing: createdListing.id
                 }).pipe(
@@ -783,7 +783,7 @@ export class EquipmentEffects {
                             return of(null);
                           }
 
-                          return this.equipmentApiService.createMarketplaceListingLineItemImage(
+                          return this.equipmentApiService.createMarketplaceImage(
                             createdLineItem.id, image[0].file
                           );
                         }

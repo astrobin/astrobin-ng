@@ -11,7 +11,7 @@ export enum MarketplaceListingCondition {
   OTHER = "OTHER",
 }
 
-export interface MarketplaceListingLineItemInterface {
+export interface MarketplaceLineItemInterface {
   id?: number;
   user?: UserInterface["id"];
   listing?: MarketplaceListingInterface["id"];

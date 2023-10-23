@@ -1,6 +1,6 @@
 import { Component, Input } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { MarketplaceListingLineItemInterface } from "@features/equipment/types/marketplace-listing-line-item.interface";
+import { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
@@ -12,7 +12,7 @@ import { EquipmentItemService } from "@features/equipment/services/equipment-ite
 })
 export class MarketplaceListingLineItemConditionComponent extends BaseComponentDirective {
   @Input()
-  lineItem: MarketplaceListingLineItemInterface;
+  lineItem: MarketplaceLineItemInterface;
 
   constructor(
     public readonly store$: Store<State>,

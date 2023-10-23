@@ -1,5 +1,5 @@
 import { UserInterface } from "@shared/interfaces/user.interface";
-import { MarketplaceListingLineItemInterface } from "@features/equipment/types/marketplace-listing-line-item.interface";
+import { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
 
 
 export enum MarketplaceListingShippingMethod {
@@ -29,5 +29,5 @@ export interface MarketplaceListingInterface {
   latitude: number | null;
   longitude: number | null;
   country: string | null;
-  lineItems?: MarketplaceListingLineItemInterface[];
+  lineItems?: MarketplaceLineItemInterface[];
 }

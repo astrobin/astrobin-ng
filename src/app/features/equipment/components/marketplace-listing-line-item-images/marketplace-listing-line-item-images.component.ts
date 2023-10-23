@@ -1,6 +1,6 @@
 import { Component, Input, OnChanges } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { MarketplaceListingLineItemInterface } from "@features/equipment/types/marketplace-listing-line-item.interface";
+import { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { UtilsService } from "@shared/services/utils/utils.service";
@@ -16,7 +16,7 @@ export class MarketplaceListingLineItemImagesComponent extends BaseComponentDire
   sliderImages: Array<object> = [];
 
   @Input()
-  images: MarketplaceListingLineItemInterface["images"];
+  images: MarketplaceLineItemInterface["images"];
 
   constructor(public readonly store$: Store<State>) {
     super(store$);

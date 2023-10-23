@@ -30,7 +30,7 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { MarketplaceListingShippingMethod } from "@features/equipment/types/marketplace-listing.interface";
-import { MarketplaceListingCondition } from "@features/equipment/types/marketplace-listing-line-item.interface";
+import { MarketplaceListingCondition } from "@features/equipment/types/marketplace-line-item.interface";
 
 export enum EquipmentItemDisplayProperty {
   BRAND = "BRAND",
