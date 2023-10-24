@@ -377,7 +377,7 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
             return null;
           }
 
-          return /^\d+\.\d+$|^\d+$/.test(control.value) ? null : { number: true };
+          return /^-?\d+\.\d+$|^-?\d+$/.test(control.value) ? null : { number: true };
         }
       },
       {
