@@ -412,6 +412,18 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
               validation: [
                 "number",
                 {
+                  name: "min-value",
+                  options: {
+                    minValue: -88
+                  }
+                },
+                {
+                  name: "max-value",
+                  options: {
+                    maxValue: 58
+                  }
+                },
+                {
                   name: "max-decimals",
                   options: {
                     value: 2
