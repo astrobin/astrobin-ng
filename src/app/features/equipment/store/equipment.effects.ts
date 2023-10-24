@@ -75,8 +75,10 @@ import {
   LoadEquipmentItem,
   LoadEquipmentItemFailure,
   LoadEquipmentItemSuccess,
+  LoadMarketplaceListing,
   LoadMarketplaceListings,
   LoadMarketplaceListingsSuccess,
+  LoadMarketplaceListingSuccess,
   LoadSensor,
   LoadSensorSuccess,
   RejectEquipmentItem,
@@ -799,6 +801,18 @@ export class EquipmentEffects {
       })
     );
   });
+
+  LoadMarketplaceListing: Observable<LoadMarketplaceListingSuccess> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(EquipmentActionTypes.LOAD_MARKETPLACE_LISTING),
+      map((action: LoadMarketplaceListing) => action.payload),
+      mergeMap(payload =>
+        this.equipmentApiService
+          .loadMarketplaceListing(payload.id)
+          .pipe(map(listing => new LoadMarketplaceListingSuccess({ listing })))
+      )
+    )
+  );
 
   constructor(
     public readonly store$: Store<State>,

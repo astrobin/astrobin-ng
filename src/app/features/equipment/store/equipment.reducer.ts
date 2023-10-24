@@ -287,12 +287,13 @@ export function reducer(state = initialEquipmentState, action: PayloadActionInte
       };
     }
 
-    case EquipmentActionTypes.CREATE_MARKETPLACE_LISTING_SUCCESS: {
+    case EquipmentActionTypes.CREATE_MARKETPLACE_LISTING_SUCCESS:
+    case EquipmentActionTypes.LOAD_MARKETPLACE_LISTING_SUCCESS: {
       return {
         ...state,
         marketplace: {
           ...state.marketplace,
-          listings: [...state.marketplace.listings, action.payload.listing]
+          listings: [...state.marketplace.listings || [], action.payload.listing]
         }
       };
     }

@@ -51,10 +51,9 @@ export function arrayUniqueEquipmentItems(
   array: (EquipmentItemBaseInterface | EditProposalInterface<EquipmentItemBaseInterface>)[]
 ): (EquipmentItemBaseInterface | EditProposalInterface<EquipmentItemBaseInterface>)[] {
   // The array is reverser because this algorithm prefers to keep the object appearing later in the array.
-  const a: (
-    | EquipmentItemBaseInterface
-    | EditProposalInterface<EquipmentItemBaseInterface>
-    )[] = array.concat().reverse();
+  const a: (EquipmentItemBaseInterface | EditProposalInterface<EquipmentItemBaseInterface>)[] = array
+    .concat()
+    .reverse();
 
   for (let i = 0; i < a.length; ++i) {
     for (let j = i + 1; j < a.length; ++j) {
@@ -132,3 +131,6 @@ export const selectEquipmentContributors = createSelector(selectEquipment, state
 export const selectMarketplace = createSelector(selectEquipment, state => state.marketplace);
 
 export const selectMarketplaceListings = createSelector(selectMarketplace, state => state.listings);
+
+export const selectMarketplaceListing = (id: number) =>
+  createSelector(selectMarketplaceListings, listings => listings?.find(listing => listing.id === id) || null);

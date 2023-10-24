@@ -34,7 +34,7 @@ import { LoadingService } from "@shared/services/loading.service";
 import { Router } from "@angular/router";
 
 @Component({
-  selector: "astrobin-marketplace-create-listing",
+  selector: "astrobin-marketplace-create-listing-page",
   templateUrl: "./marketplace-create-listing.page.component.html",
   styleUrls: ["./marketplace-create-listing.page.component.scss"]
 })

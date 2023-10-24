@@ -170,6 +170,9 @@ export enum EquipmentActionTypes {
   CREATE_MARKETPLACE_LISTING = "[Equipment] Create marketplace listing",
   CREATE_MARKETPLACE_LISTING_SUCCESS = "[Equipment] Create marketplace listing success",
   CREATE_MARKETPLACE_LISTING_FAILURE = "[Equipment] Create marketplace listing failure",
+  LOAD_MARKETPLACE_LISTING = "[Equipment] Load marketplace listing",
+  LOAD_MARKETPLACE_LISTING_SUCCESS = "[Equipment] Load marketplace listing success",
+  LOAD_MARKETPLACE_LISTING_FAILURE = "[Equipment] Load marketplace listing failure",
 }
 
 /**********************************************************************************************************************
@@ -920,6 +923,27 @@ export class CreateMarketplaceListingFailure implements PayloadActionInterface {
   }
 }
 
+export class LoadMarketplaceListing implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.LOAD_MARKETPLACE_LISTING;
+
+  constructor(public payload: { id: number }) {
+  }
+}
+
+export class LoadMarketplaceListingSuccess implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.LOAD_MARKETPLACE_LISTING_SUCCESS;
+
+  constructor(public payload: { listing: MarketplaceListingInterface }) {
+  }
+}
+
+export class LoadMarketplaceListingFailure implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.LOAD_MARKETPLACE_LISTING_FAILURE;
+
+  constructor(public payload: { error: string }) {
+  }
+}
+
 export type EquipmentActions =
 // Brands
   | GetAllBrands
@@ -1036,4 +1060,7 @@ export type EquipmentActions =
   | LoadMarketplaceListingsFailure
   | CreateMarketplaceListing
   | CreateMarketplaceListingSuccess
-  | CreateMarketplaceListingFailure;
+  | CreateMarketplaceListingFailure
+  | LoadMarketplaceListing
+  | LoadMarketplaceListingSuccess
+  | LoadMarketplaceListingFailure;
