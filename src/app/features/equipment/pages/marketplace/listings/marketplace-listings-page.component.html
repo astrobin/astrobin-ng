@@ -14,10 +14,13 @@
     <ng-container *ngIf="listings === null" [ngTemplateOutlet]="loadingTemplate"></ng-container>
     <ng-container *ngIf="listings !== null">
       <ng-container *ngIf="listings.length > 0; else noListingsTemplate">
-        <astrobin-marketplace-listing
-          *ngFor="let listing of listings"
-          [listing]="listing"
-        ></astrobin-marketplace-listing>
+        <ng-container *ngFor="let listing of listings">
+          <astrobin-marketplace-line-item-card
+            *ngFor="let lineItem of listing.lineItems"
+            [lineItem]="lineItem"
+            [listing]="listing"
+          ></astrobin-marketplace-line-item-card>
+        </ng-container>
       </ng-container>
     </ng-container>
   </div>

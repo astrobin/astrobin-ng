@@ -773,7 +773,10 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
   public createMarketplaceListing(
     listing: Omit<MarketplaceListingInterface, "id">
   ): Observable<MarketplaceListingInterface> {
-    return this.http.post<MarketplaceListingInterface>(`${this.configUrl}/marketplace/listing/`, listing);
+    return this.http.post<MarketplaceListingInterface>(
+      `${this.configUrl}/marketplace/listing/`,
+      (({ lineItems, ...rest }) => rest)(listing)
+    );
   }
 
   public createMarketplaceLineItem(
@@ -781,7 +784,7 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
   ): Observable<MarketplaceLineItemInterface> {
     return this.http.post<MarketplaceLineItemInterface>(
       `${this.configUrl}/marketplace/line-item/`,
-      lineItem
+      (({ images, ...rest }) => rest)(lineItem)
     );
   }
 

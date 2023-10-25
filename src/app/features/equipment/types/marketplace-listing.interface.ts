@@ -29,5 +29,6 @@ export interface MarketplaceListingInterface {
   latitude: number | null;
   longitude: number | null;
   country: string | null;
+  city: string | null;
   lineItems?: MarketplaceLineItemInterface[];
 }

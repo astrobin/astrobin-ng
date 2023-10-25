@@ -71,23 +71,26 @@ export class MarketplaceCreateListingPageComponent extends BaseComponentDirectiv
     latitude: null,
     longitude: null,
     country: null,
-    lineItems: [{
-      created: null,
-      updated: null,
-      sold: null,
-      soldTo: null,
-      reserved: null,
-      reservedTo: null,
-      price: null,
-      currency: null,
-      condition: null,
-      yearOfPurchase: null,
-      shippingCost: null,
-      description: null,
-      itemObjectId: null,
-      itemContentType: null,
-      images: []
-    }]
+    city: null,
+    lineItems: [
+      {
+        created: null,
+        updated: null,
+        sold: null,
+        soldTo: null,
+        reserved: null,
+        reservedTo: null,
+        price: null,
+        currency: null,
+        condition: null,
+        yearOfPurchase: null,
+        shippingCost: null,
+        description: null,
+        itemObjectId: null,
+        itemContentType: null,
+        images: []
+      }
+    ]
   };
   form: FormGroup = new FormGroup({});
   fields: FormlyFieldConfig[];
@@ -125,14 +128,16 @@ export class MarketplaceCreateListingPageComponent extends BaseComponentDirectiv
 
     this.loadingService.setLoading(true);
 
-    this.actions$.pipe(
-      ofType(EquipmentActionTypes.CREATE_MARKETPLACE_LISTING_SUCCESS),
-      take(1),
-      map((action: CreateMarketplaceListingSuccess) => action.payload.listing)
-    ).subscribe(listing => {
-      this.loadingService.setLoading(false);
-      this.router.navigateByUrl(`/equipment/marketplace/listing/${listing.id}`);
-    });
+    this.actions$
+      .pipe(
+        ofType(EquipmentActionTypes.CREATE_MARKETPLACE_LISTING_SUCCESS),
+        take(1),
+        map((action: CreateMarketplaceListingSuccess) => action.payload.listing)
+      )
+      .subscribe(listing => {
+        this.loadingService.setLoading(false);
+        this.router.navigateByUrl(`/equipment/marketplace/listing/${listing.id}`);
+      });
 
     this.store$.dispatch(new CreateMarketplaceListing({ listing: this.form.value }));
   }
@@ -145,7 +150,7 @@ export class MarketplaceCreateListingPageComponent extends BaseComponentDirectiv
         props: {
           accept: "image/jpeg, image/png",
           image: true,
-          required: false
+          required: n === 0
         },
         validators: {
           validation: [{ name: "file-size", options: { max: 1024 * 1024 * 10 } }, { name: "image-or-video-file" }]
@@ -233,10 +238,9 @@ export class MarketplaceCreateListingPageComponent extends BaseComponentDirectiv
                               take(1)
                             )
                             .subscribe(contentType => {
-                                this.model.lineItems[index].itemContentType = contentType.id;
-                                this.form.get(`lineItems.${index}`).patchValue({ "itemContentType": contentType.id });
-                              }
-                            );
+                              this.model.lineItems[index].itemContentType = contentType.id;
+                              this.form.get(`lineItems.${index}`).patchValue({ itemContentType: contentType.id });
+                            });
 
                           this.store$.dispatch(new LoadContentType(payload));
                         });
@@ -255,7 +259,15 @@ export class MarketplaceCreateListingPageComponent extends BaseComponentDirectiv
                   fieldGroupClassName:
                     "d-flex flex-wrap flex-column flex-xl-row justify-content-evenly field-group-images",
                   props: {
-                    label: this.translateService.instant("Up to {{0}} images", { 0: this.maxImages })
+                    label: this.translateService.instant("Images"),
+                    description: this.translateService.instant(
+                      "You can upload up to {{ maxImages }} images. The first image will be used as the cover " +
+                      "image and is required.",
+                      {
+                        maxImages: this.maxImages
+                      }
+                    ),
+                    required: true
                   },
                   fieldGroup: [...Array(this.maxImages).keys()].map(n => getImageField(n))
                 },
@@ -435,6 +447,11 @@ export class MarketplaceCreateListingPageComponent extends BaseComponentDirectiv
             className: "hidden"
           },
           {
+            key: "city",
+            type: "input",
+            className: "hidden"
+          },
+          {
             key: "",
             wrappers: ["card-wrapper"],
             props: {
@@ -449,8 +466,8 @@ export class MarketplaceCreateListingPageComponent extends BaseComponentDirectiv
                   height: 300,
                   description: this.translateService.instant(
                     "Drag the map to set the location. AstroBin will not disclose your exact location, but " +
-                    "only the country where the item is located. The location information will be used to find " +
-                    "listings within a certain distance from the user's location."
+                    "only the city and country where the item is located. The location information will be used to " +
+                    "find listings within a certain distance from the user's location."
                   )
                 },
                 hooks: {
@@ -468,8 +485,16 @@ export class MarketplaceCreateListingPageComponent extends BaseComponentDirectiv
                               const countryComponent = addressComponents.find(component =>
                                 component.types.includes("country")
                               );
+                              const cityComponent = addressComponents.find(component =>
+                                component.types.includes("locality")
+                              );
+
                               if (countryComponent) {
                                 form.get("country").setValue(countryComponent.short_name);
+                              }
+
+                              if (cityComponent) {
+                                form.get("city").setValue(cityComponent.long_name);
                               }
                             }
                           }
@@ -527,30 +552,29 @@ export class MarketplaceCreateListingPageComponent extends BaseComponentDirectiv
                 },
                 hooks: {
                   onInit: field => {
-                    field.formControl.valueChanges.pipe(
-                      takeUntil(this.destroyed$),
-                      startWith(field.formControl.value)
-                    ).subscribe(value => {
-                      if (!!value) {
-                        const now = new Date();
-                        let expirationDate = new Date(now);
+                    field.formControl.valueChanges
+                      .pipe(takeUntil(this.destroyed$), startWith(field.formControl.value))
+                      .subscribe(value => {
+                        if (!!value) {
+                          const now = new Date();
+                          let expirationDate = new Date(now);
 
-                        switch (value) {
-                          case MarketplaceListingExpiration.ONE_WEEK:
-                            expirationDate.setDate(now.getDate() + 7);
-                            break;
-                          case MarketplaceListingExpiration.TWO_WEEKS:
-                            expirationDate.setDate(now.getDate() + 14);
-                            break;
-                          case MarketplaceListingExpiration.ONE_MONTH:
-                            expirationDate.setMonth(now.getMonth() + 1);
-                            break;
+                          switch (value) {
+                            case MarketplaceListingExpiration.ONE_WEEK:
+                              expirationDate.setDate(now.getDate() + 7);
+                              break;
+                            case MarketplaceListingExpiration.TWO_WEEKS:
+                              expirationDate.setDate(now.getDate() + 14);
+                              break;
+                            case MarketplaceListingExpiration.ONE_MONTH:
+                              expirationDate.setMonth(now.getMonth() + 1);
+                              break;
+                          }
+
+                          // Update the actual value with the computed datetime string
+                          this.form.get("expiration").setValue(expirationDate.toISOString());
                         }
-
-                        // Update the actual value with the computed datetime string
-                        this.form.get("expiration").setValue(expirationDate.toISOString());
-                      }
-                    });
+                      });
                   }
                 }
               },

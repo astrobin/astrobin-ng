@@ -11,6 +11,13 @@ export class LoadContentType implements PayloadActionInterface {
   }
 }
 
+export class LoadContentTypeById implements PayloadActionInterface {
+  readonly type = AppActionTypes.LOAD_CONTENT_TYPE_BY_ID;
+
+  constructor(public payload: { id: ContentTypeInterface["id"] }) {
+  }
+}
+
 export class LoadContentTypeSuccess implements PayloadActionInterface {
   readonly type = AppActionTypes.LOAD_CONTENT_TYPE_SUCCESS;
 

@@ -7,10 +7,9 @@ import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { Observable } from "rxjs";
 import { CommonApiService } from "@shared/services/api/classic/common/common-api.service";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
-import { LoadEquipmentItem } from "@features/equipment/store/equipment.actions";
-import { selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import { TranslateService } from "@ngx-translate/core";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
+import { EquipmentMarketplaceService } from "@features/equipment/services/equipment-marketplace.service";
 
 @Component({
   selector: "astrobin-marketplace-listing-line-item",
@@ -30,7 +29,8 @@ export class MarketplaceLineItemComponent extends BaseComponentDirective impleme
     public readonly store$: Store<State>,
     public readonly commonApiService: CommonApiService,
     public readonly translateService: TranslateService,
-    public readonly equipmentItemService: EquipmentItemService
+    public readonly equipmentItemService: EquipmentItemService,
+    public readonly equipmentMarketplaceService: EquipmentMarketplaceService
   ) {
     super(store$);
   }
@@ -40,15 +40,7 @@ export class MarketplaceLineItemComponent extends BaseComponentDirective impleme
       const lineItem: MarketplaceLineItemInterface = changes.lineItem.currentValue;
 
       if (lineItem.itemContentType && lineItem.itemObjectId) {
-        this.commonApiService.getContentTypeById(lineItem.itemContentType).subscribe(contentType => {
-          const payload = {
-            id: lineItem.itemObjectId,
-            type: EquipmentItemType[contentType.model.toUpperCase()]
-          };
-
-          this.equipmentItem$ = this.store$.select(selectEquipmentItem, payload);
-          this.store$.dispatch(new LoadEquipmentItem(payload));
-        });
+        this.equipmentItem$ = this.equipmentMarketplaceService.getEquipmentItem$(lineItem);
       }
     }
   }

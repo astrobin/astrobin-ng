@@ -42,6 +42,7 @@ import { MarketplaceListingLineItemPriceComponent } from "./components/marketpla
 import { MarketplaceLineItemConditionComponent } from "./components/marketplace-listing-line-item-condition/marketplace-line-item-condition.component";
 import { MarketplaceImagesComponent } from "./components/marketplace-listing-line-item-images/marketplace-images.component";
 import { MarketplaceListingPageComponent } from "./pages/marketplace/listing/marketplace-listing.page.component";
+import { MarketplaceLineItemCardComponent } from "./components/marketplace-line-item-card/marketplace-line-item-card.component";
 
 @NgModule({
   declarations: [
@@ -82,7 +83,8 @@ import { MarketplaceListingPageComponent } from "./pages/marketplace/listing/mar
     MarketplaceListingLineItemPriceComponent,
     MarketplaceLineItemConditionComponent,
     MarketplaceImagesComponent,
-    MarketplaceListingPageComponent
+    MarketplaceListingPageComponent,
+    MarketplaceLineItemCardComponent
   ],
   imports: [RouterModule.forChild(routes), SharedModule, StoreModule.forFeature(equipmentFeatureKey, reducer)]
 })

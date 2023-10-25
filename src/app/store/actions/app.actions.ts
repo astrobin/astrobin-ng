@@ -62,6 +62,7 @@ export enum AppActionTypes {
   HIDE_FULLSCREEN_IMAGE = "[App] Hide full screen image",
 
   LOAD_CONTENT_TYPE = "[App] Load content type",
+  LOAD_CONTENT_TYPE_BY_ID = "[App] Load content type by id",
   LOAD_CONTENT_TYPE_SUCCESS = "[App] Load content type success",
 
   // Emit this to instruct images on a page to check for visibility and possibly autoload, for instance if items were

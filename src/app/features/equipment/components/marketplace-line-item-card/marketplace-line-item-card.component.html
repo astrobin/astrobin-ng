@@ -1,0 +1,38 @@
+<div class="card">
+  <div class="card-header">
+    <div class="name">
+      <ng-container *ngIf="!!displayName; else textLoadingTemplate">
+        {{ displayName }}
+      </ng-container>
+    </div>
+    <div class="created">
+      {{ lineItem.created | localDate | timeago: true }}
+    </div>
+  </div>
+
+  <div class="card-body">
+    <img
+      *ngIf="lineItem.images.length > 0"
+      [alt]=""
+      [src]="lineItem.images[0].imageFile"
+    />
+  </div>
+
+  <div class="card-footer">
+    <div class="d-flex w-100 justify-content-between">
+      <div class="location">
+        <ng-container *ngIf="!!listing.city">
+          {{ listing.city }},
+        </ng-container>
+        {{ countryService.getCountryName(listing.country) }}
+      </div>
+      <div class="price">
+        {{ lineItem.price | currency: lineItem.currency }}
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #textLoadingTemplate>
+  <astrobin-text-loading-indicator></astrobin-text-loading-indicator>
+</ng-template>

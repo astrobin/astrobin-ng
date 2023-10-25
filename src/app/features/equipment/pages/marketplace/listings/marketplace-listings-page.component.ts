@@ -6,7 +6,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { TitleService } from "@shared/services/title/title.service";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { selectMarketplaceListings } from "@features/equipment/store/equipment.selectors";
-import { takeUntil } from "rxjs/operators";
+import { filter, map, takeUntil } from "rxjs/operators";
 import { LoadMarketplaceListings } from "@features/equipment/store/equipment.actions";
 
 @Component({
@@ -17,7 +17,12 @@ import { LoadMarketplaceListings } from "@features/equipment/store/equipment.act
 export class MarketplaceListingsPageComponent extends BaseComponentDirective implements OnInit {
   readonly title = this.translateService.instant("Equipment marketplace");
 
-  listings$ = this.store$.select(selectMarketplaceListings).pipe(takeUntil(this.destroyed$));
+  listings$ = this.store$.select(selectMarketplaceListings).pipe(
+    takeUntil(this.destroyed$),
+    filter(listings => !!listings),
+    map(listings => listings.filter(listing => listing.lineItems.length > 0))
+  );
+
   page = 1;
 
   constructor(

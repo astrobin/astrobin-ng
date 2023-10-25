@@ -16,7 +16,12 @@
 </div>
 
 <div class="map-container mt-5">
-  <h5>{{ countryService.getCountryName(listing.country) }}</h5>
+  <h5 *ngIf="listing.country">
+    <ng-container *ngIf="!!listing.city">
+      {{ listing.city }},
+    </ng-container>
+    {{ countryService.getCountryName(listing.country) }}
+  </h5>
 
   <div #map class="map mb-2"></div>
 
