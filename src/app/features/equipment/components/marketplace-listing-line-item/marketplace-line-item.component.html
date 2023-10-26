@@ -11,7 +11,13 @@
     <div class="flex-grow-1">
       <div class="d-flex flex-wrap">
         <div class="flex-grow-1">
-          <astrobin-equipment-item-display-name [item]="equipmentItem"></astrobin-equipment-item-display-name>
+          <astrobin-equipment-item-display-name
+            [enableBrandLink]="true"
+            [enableNameLink]="true"
+            [item]="equipmentItem"
+            [showFrozenAsAmbiguous]="false"
+            [showItemUnapprovedInfo]="false"
+          ></astrobin-equipment-item-display-name>
           <astrobin-marketplace-listing-line-item-condition
             [lineItem]="lineItem"
           ></astrobin-marketplace-listing-line-item-condition>

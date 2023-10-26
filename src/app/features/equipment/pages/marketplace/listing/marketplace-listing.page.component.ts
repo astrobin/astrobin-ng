@@ -7,6 +7,11 @@ import { LoadMarketplaceListing } from "@features/equipment/store/equipment.acti
 import { selectMarketplaceListing } from "@features/equipment/store/equipment.selectors";
 import { Observable } from "rxjs";
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
+import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
+import { TranslateService } from "@ngx-translate/core";
+import { filter, takeUntil, tap } from "rxjs/operators";
+import { TitleService } from "@shared/services/title/title.service";
+import { LoadingService } from "@shared/services/loading.service";
 
 @Component({
   selector: "astrobin-marketplace-listing-page",
@@ -14,12 +19,33 @@ import { MarketplaceListingInterface } from "@features/equipment/types/marketpla
   styleUrls: ["./marketplace-listing.page.component.scss"]
 })
 export class MarketplaceListingPageComponent extends BaseComponentDirective implements OnInit {
-  title: string;
+  readonly breadcrumb = new SetBreadcrumb({
+    breadcrumb: [
+      {
+        label: this.translateService.instant("Equipment"),
+        link: "/equipment/explorer"
+      },
+      {
+        label: this.translateService.instant("Marketplace"),
+        link: "/equipment/marketplace"
+      },
+      {
+        label: this.translateService.instant("Listing")
+      }
+    ]
+  });
+
+  title = this.translateService.instant("Equipment marketplace listing");
   listing$: Observable<MarketplaceListingInterface>;
+
+  private _listingId: MarketplaceListingInterface["id"];
 
   constructor(
     public readonly store$: Store<State>,
-    public readonly activatedRoute: ActivatedRoute
+    public readonly activatedRoute: ActivatedRoute,
+    public readonly translateService: TranslateService,
+    public readonly titleService: TitleService,
+    public readonly loadingService: LoadingService
   ) {
     super(store$);
   }
@@ -27,14 +53,27 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
   ngOnInit(): void {
     super.ngOnInit();
     this._getListingFromRoute();
+
+    this.titleService.setTitle(this.title);
+    this.store$.dispatch(this.breadcrumb);
+
+    this.refresh();
+  }
+
+  public refresh() {
+    this.loadingService.setLoading(true);
+    this.store$.dispatch(new LoadMarketplaceListing({ id: this._listingId }));
   }
 
   private _getListingFromRoute() {
     this.activatedRoute.paramMap.subscribe(params => {
-      const id = +params.get("listingId");
-      if (!!id) {
-        this.listing$ = this.store$.select(selectMarketplaceListing(id));
-        this.store$.dispatch(new LoadMarketplaceListing({ id }));
+      this._listingId = +params.get("listingId");
+      if (!!this._listingId) {
+        this.listing$ = this.store$.select(selectMarketplaceListing(this._listingId)).pipe(
+          filter(listing => !!listing),
+          tap(() => this.loadingService.setLoading(false)),
+          takeUntil(this.destroyed$)
+        );
       }
     });
   }

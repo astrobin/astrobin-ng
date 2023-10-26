@@ -1,4 +1,14 @@
-<div class="page">
+<div class="page has-breadcrumb">
+  <h1 class="d-flex justify-content-between align-items-center">
+    <span class="flex-grow-1 me-3">{{ title }}</span>
+    <a
+      [routerLink]="['create']"
+      class="btn btn-primary btn-create-listing me-3"
+    >
+      {{ "Create listing" | translate }}
+    </a>
+  </h1>
+
   <ng-container *ngIf="listing$  | async as listing; else loadingTemplate">
     <div class="row">
       <div class="col-md-8">

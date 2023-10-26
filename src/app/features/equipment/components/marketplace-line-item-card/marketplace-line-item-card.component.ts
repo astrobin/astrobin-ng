@@ -52,7 +52,8 @@ export class MarketplaceLineItemCardComponent extends BaseComponentDirective imp
       .pipe(
         filter(item => !!item),
         take(1),
-        switchMap(item => this.equipmentItemService.getFullDisplayName$(item))
+        switchMap(item => this.equipmentItemService.getFullDisplayName$(item)),
+        take(1)
       )
       .subscribe(displayName => (this.displayName = displayName));
   }
