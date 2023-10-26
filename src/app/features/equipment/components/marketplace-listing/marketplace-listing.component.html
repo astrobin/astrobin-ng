@@ -1,12 +1,3 @@
-<div *ngIf="listing.lineItems.length > 1">
-  <div class="alert alert-info mb-4">
-    <fa-icon icon="info-circle"></fa-icon>
-    <span>
-      {{ "This listing contains multiple equipment items." | translate }}
-    </span>
-  </div>
-</div>
-
 <div class="line-items">
   <astrobin-marketplace-listing-line-item
     *ngFor="let lineItem of listing.lineItems"

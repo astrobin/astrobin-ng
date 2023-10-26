@@ -2,8 +2,12 @@
   display: block;
   padding: 1rem;
 
+  &:nth-child(odd) {
+    background-color: rgba(255, 255, 255, .02)
+  }
+
   &:nth-child(even) {
-    background-color: var(--grey);
+    background-color: rgba(0, 0, 0, .2)
   }
 }
 
