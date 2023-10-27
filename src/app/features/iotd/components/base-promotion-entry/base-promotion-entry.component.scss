@@ -48,9 +48,26 @@
     transition: opacity 0.25s ease-in-out;
   }
 
+  .promotion-image-hover-label {
+    opacity: 0;
+    position: absolute;
+    bottom: .5rem;
+    right: 1rem;
+    transition: opacity 0.25s ease-in-out;
+    font-weight: bold;
+    font-size: 4rem;
+    line-height: 4rem;
+    color: var(--white);
+    text-shadow: 1px 1px 1px var(--black);
+  }
+
   &:hover {
     .promotion-image-hover {
       opacity: 1;
+    }
+
+    .promotion-image-hover-label {
+      opacity: .5;
     }
   }
 }
