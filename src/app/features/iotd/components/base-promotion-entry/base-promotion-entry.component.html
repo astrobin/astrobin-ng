@@ -31,6 +31,15 @@
         class="promotion-image"
       >
       </astrobin-image>
+
+      <astrobin-image
+        (click)="viewFullscreen(entry.pk)"
+        [alias]="ImageAlias.HD_ANONYMIZED_CROP"
+        [autoHeight]="imageAutoHeight"
+        [id]="entry.pk"
+        class="promotion-image-hover"
+      >
+      </astrobin-image>
     </div>
 
     <div *ngIf="showMetadata" class="col-metadata">

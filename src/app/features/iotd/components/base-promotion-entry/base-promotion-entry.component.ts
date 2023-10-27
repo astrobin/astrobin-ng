@@ -40,6 +40,7 @@ import { ForceCheckImageAutoLoad } from "@app/store/actions/image.actions";
 })
 export abstract class BasePromotionEntryComponent extends BaseComponentDirective implements OnInit {
   readonly EquipmentItemType = EquipmentItemType;
+  readonly ImageAlias = ImageAlias;
 
   @Input()
   entry: PromotionImageInterface;
