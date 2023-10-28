@@ -34,6 +34,7 @@
 
       <astrobin-image
         (click)="viewFullscreen(entry.pk)"
+        *ngIf="!entry.videoFile"
         [alias]="ImageAlias.HD_ANONYMIZED_CROP"
         [autoHeight]="imageAutoHeight"
         [id]="entry.pk"
