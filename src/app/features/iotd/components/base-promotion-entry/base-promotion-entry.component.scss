@@ -31,7 +31,7 @@
   position: relative;
 
   astrobin-image {
-    &.promotion-image:not(.loading) {
+    &:not(.loading) {
       cursor: zoom-in;
     }
 
@@ -39,10 +39,46 @@
       margin-bottom: 4rem !important;
     }
   }
+
+  .promotion-image-hover {
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transition: opacity 0.25s ease-in-out;
+  }
+
+  .promotion-image-hover-label {
+    opacity: 0;
+    position: fixed;
+    bottom: 1rem;
+    right: 50%;
+    padding: 1rem;
+    transform: translateX(50%);
+    transition: opacity 0.25s ease-in-out;
+    font-weight: bold;
+    font-size: 4rem;
+    line-height: 4rem;
+    color: var(--white);
+    background-color: rgba(0, 0, 0, .5);
+    border: 1px solid var(--white);
+    z-index: 1;
+  }
+
+  &:hover {
+    .promotion-image-hover {
+      opacity: 1;
+    }
+
+    .promotion-image-hover-label {
+      opacity: .5;
+    }
+  }
 }
 
 .col-metadata {
   padding: 1rem;
+
   p {
     margin: 0.25rem;
   }
