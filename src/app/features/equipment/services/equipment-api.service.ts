@@ -815,6 +815,18 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     return this.http.get<MarketplaceListingInterface>(`${this.configUrl}/marketplace/listing/${id}/`);
   }
 
+  public loadMarketplaceListingByHash(hash: MarketplaceListingInterface["hash"]): Observable<MarketplaceListingInterface> {
+    return this.http.get<PaginatedApiResultInterface<MarketplaceListingInterface>>(`${this.configUrl}/marketplace/listing/?hash=${hash}`).pipe(
+      map((result: PaginatedApiResultInterface<MarketplaceListingInterface>) => {
+          if (result.results.length === 0) {
+            throw new Error(`No marketplace listing found with hash ${hash}`);
+          }
+          return result.results[0];
+        }
+      )
+    );
+  }
+
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // PRIVATE
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

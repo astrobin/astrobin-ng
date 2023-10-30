@@ -1,4 +1,4 @@
-import { Component, HostListener, Input, OnInit } from "@angular/core";
+import { Component, Input, OnInit } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
 import { filter, switchMap, take } from "rxjs/operators";
@@ -33,11 +33,6 @@ export class MarketplaceLineItemCardComponent extends BaseComponentDirective imp
     public readonly router: Router
   ) {
     super(store$);
-  }
-
-  @HostListener("click")
-  onClick() {
-    this.router.navigate(["/equipment/marketplace/listing", this.listing.id]);
   }
 
   ngOnInit(): void {

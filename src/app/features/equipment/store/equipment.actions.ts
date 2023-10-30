@@ -926,7 +926,10 @@ export class CreateMarketplaceListingFailure implements PayloadActionInterface {
 export class LoadMarketplaceListing implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.LOAD_MARKETPLACE_LISTING;
 
-  constructor(public payload: { id: number }) {
+  constructor(public payload: {
+    id?: MarketplaceListingInterface["id"],
+    hash?: MarketplaceListingInterface["hash"]
+  }) {
   }
 }
 

@@ -6,20 +6,20 @@
   justify-content: space-between;
   gap: 1rem;
 
-  astrobin-marketplace-line-item-card {
+  .line-item {
     width: calc(25% - 1rem);
   }
 
   @media screen and (max-width: $md-max) {
     gap: .5rem;
-    astrobin-marketplace-line-item-card {
+    .line-item {
       width: calc(33.3333333333% - .5rem);
     }
   }
 
   @media screen and (max-width: $sm-max) {
     gap: .5rem;
-    astrobin-marketplace-line-item-card {
+    .line-item {
       width: calc(50% - .5rem);
     }
   }

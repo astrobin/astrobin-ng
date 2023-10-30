@@ -4,7 +4,7 @@ import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { ActivatedRoute } from "@angular/router";
 import { LoadMarketplaceListing } from "@features/equipment/store/equipment.actions";
-import { selectMarketplaceListing } from "@features/equipment/store/equipment.selectors";
+import { selectMarketplaceListingByHash } from "@features/equipment/store/equipment.selectors";
 import { Observable } from "rxjs";
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
@@ -38,7 +38,7 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
   title = this.translateService.instant("Equipment marketplace listing");
   listing$: Observable<MarketplaceListingInterface>;
 
-  private _listingId: MarketplaceListingInterface["id"];
+  private _hash: MarketplaceListingInterface["hash"];
 
   constructor(
     public readonly store$: Store<State>,
@@ -62,14 +62,14 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
 
   public refresh() {
     this.loadingService.setLoading(true);
-    this.store$.dispatch(new LoadMarketplaceListing({ id: this._listingId }));
+    this.store$.dispatch(new LoadMarketplaceListing({ hash: this._hash }));
   }
 
   private _getListingFromRoute() {
     this.activatedRoute.paramMap.subscribe(params => {
-      this._listingId = +params.get("listingId");
-      if (!!this._listingId) {
-        this.listing$ = this.store$.select(selectMarketplaceListing(this._listingId)).pipe(
+      this._hash = params.get("hash");
+      if (!!this._hash) {
+        this.listing$ = this.store$.select(selectMarketplaceListingByHash(this._hash)).pipe(
           filter(listing => !!listing),
           tap(() => this.loadingService.setLoading(false)),
           takeUntil(this.destroyed$)

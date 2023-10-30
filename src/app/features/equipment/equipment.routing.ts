@@ -168,7 +168,7 @@ export const routes: Routes = [
         component: MarketplaceCreateListingPageComponent
       },
       {
-        path: "listing/:listingId",
+        path: "listing/:hash",
         component: MarketplaceListingPageComponent
       }
     ]

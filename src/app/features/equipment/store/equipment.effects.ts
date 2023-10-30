@@ -104,6 +104,7 @@ import { BrandInterface } from "@features/equipment/types/brand.interface";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { SelectorWithProps } from "@ngrx/store/src/models";
+import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
 
 function getFromStoreOrApiByIdAndType<T>(
   store$: Store<State>,
@@ -806,11 +807,15 @@ export class EquipmentEffects {
     this.actions$.pipe(
       ofType(EquipmentActionTypes.LOAD_MARKETPLACE_LISTING),
       map((action: LoadMarketplaceListing) => action.payload),
-      mergeMap(payload =>
-        this.equipmentApiService
-          .loadMarketplaceListing(payload.id)
-          .pipe(map(listing => new LoadMarketplaceListingSuccess({ listing })))
-      )
+      mergeMap(payload => {
+        let obs$: Observable<MarketplaceListingInterface>;
+        if (payload.id) {
+          obs$ = this.equipmentApiService.loadMarketplaceListing(payload.id);
+        } else if (payload.hash) {
+          obs$ = this.equipmentApiService.loadMarketplaceListingByHash(payload.hash);
+        }
+        return obs$.pipe(map(listing => new LoadMarketplaceListingSuccess({ listing })));
+      })
     )
   );
 

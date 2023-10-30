@@ -17,6 +17,7 @@ export enum MarketplaceListingExpiration {
 
 export interface MarketplaceListingInterface {
   id?: number;
+  hash?: string;
   user?: UserInterface["id"];
   created: string;
   updated: string;

@@ -14,6 +14,7 @@ export enum MarketplaceListingCondition {
 
 export interface MarketplaceLineItemInterface {
   id?: number;
+  hash?: string;
   user?: UserInterface["id"];
   listing?: MarketplaceListingInterface["id"];
   created: string;
