@@ -24,17 +24,10 @@
     </div>
 
     <div class="col-lg-7">
-      <div class="card">
-        <div class="card-header">
-          {{ "Preview" | translate }}
-        </div>
-        <div class="card-body">
-          <astrobin-marketplace-listing
-            [listing]="form.value"
-            [previewMode]="true"
-          ></astrobin-marketplace-listing>
-        </div>
-      </div>
+      <astrobin-marketplace-listing
+        [listing]="form.value"
+        [previewMode]="true"
+      ></astrobin-marketplace-listing>
     </div>
   </div>
 </div>

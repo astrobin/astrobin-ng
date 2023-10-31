@@ -1,66 +1,73 @@
-<div class="line-items">
-  <astrobin-marketplace-listing-line-item
-    *ngFor="let lineItem of listing.lineItems"
-    [lineItem]="lineItem"
-    [previewMode]="previewMode"
-  ></astrobin-marketplace-listing-line-item>
-</div>
+<astrobin-marketplace-listing-line-item
+  *ngFor="let lineItem of listing.lineItems"
+  [lineItem]="lineItem"
+  [previewMode]="previewMode"
+  class="line-item"
+></astrobin-marketplace-listing-line-item>
 
-<div class="map-container mt-5">
-  <h5 *ngIf="listing.country">
+<div class="card map-container">
+  <div *ngIf="listing.country" class="card-header">
     <ng-container *ngIf="!!listing.city">
       {{ listing.city }},
     </ng-container>
     {{ countryService.getCountryName(listing.country) }}
-  </h5>
-
-  <div #map class="map mb-2"></div>
-
-  <div *ngIf="!mapLoading" class="form-text mt-1">
-    {{ "The location shown above is approximate to protect the seller's privacy." | translate }}
   </div>
-  <astrobin-loading-indicator *ngIf="mapLoading"></astrobin-loading-indicator>
+
+  <div class="card-body p-0">
+    <div #map class="map"></div>
+    <astrobin-loading-indicator *ngIf="mapLoading"></astrobin-loading-indicator>
+  </div>
+
+  <div class="card-footer">
+    <div *ngIf="!mapLoading" class="form-text mt-1">
+      {{ "The location shown above is approximate to protect the seller's privacy." | translate }}
+    </div>
+  </div>
 </div>
 
-<div class="shipping-options mt-5">
-  <h5>{{ "Shipping options" | translate }}</h5>
+<div class="card shipping-options">
+  <div class="card-header">{{ "Shipping options" | translate }}</div>
 
-  <table class="table table-striped">
-    <tbody>
-    <tr>
-      <th>{{ "Buyer picks up" | translate}}</th>
-      <td [class]="listing.deliveryByBuyerPickup | json">{{ listing.deliveryByBuyerPickup | yesNo }}</td>
-    </tr>
-    <tr>
-      <th>{{ "Seller delivers in person" | translate}}</th>
-      <td [class]="listing.deliveryBySellerDelivery | json">{{ listing.deliveryBySellerDelivery | yesNo }}</td>
-    </tr>
-    <tr>
-      <th>{{ "Seller ships" | translate}}</th>
-      <td [class]="listing.deliveryByShipping | json">{{ listing.deliveryByShipping | yesNo }}</td>
-    </tr>
-    <tr>
-      <th>{{ "Shipping method" | translate}}</th>
-      <td>{{ equipmentItemService.humanizeShippingMethod(listing.shippingMethod) }}</td>
-    </tr>
-    </tbody>
-  </table>
+  <div class="card-body">
+    <table class="table table-striped mb-0">
+      <tbody>
+      <tr>
+        <th>{{ "Buyer picks up" | translate}}</th>
+        <td [class]="!!listing.deliveryByBuyerPickup | json">{{ !!listing.deliveryByBuyerPickup | yesNo }}</td>
+      </tr>
+      <tr>
+        <th>{{ "Seller delivers in person" | translate}}</th>
+        <td [class]="!!listing.deliveryBySellerDelivery | json">{{ !!listing.deliveryBySellerDelivery | yesNo }}</td>
+      </tr>
+      <tr>
+        <th>{{ "Seller ships" | translate}}</th>
+        <td [class]="!!listing.deliveryByShipping | json">{{ !!listing.deliveryByShipping | yesNo }}</td>
+      </tr>
+      <tr>
+        <th>{{ "Shipping method" | translate}}</th>
+        <td>{{ equipmentItemService.humanizeShippingMethod(listing.shippingMethod) }}</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
 </div>
 
-<div class="description mt-5">
-  <h5>{{ "Description" | translate }}</h5>
+<div class="card description">
+  <div class="card-header">{{ "Description" | translate }}</div>
 
-  <ng-container *ngIf="!!listing.description; else noDescriptionTemplate">
-    {{ listing.description }}
-  </ng-container>
+  <div class="card-body">
+    <ng-container *ngIf="!!listing.description; else noDescriptionTemplate">
+      {{ listing.description }}
+    </ng-container>
 
-  <ng-template #noDescriptionTemplate>
-    <p class="text-muted">{{ "No description provided." | translate }}</p>
-  </ng-template>
+    <ng-template #noDescriptionTemplate>
+      <p class="text-muted">{{ "No description provided." | translate }}</p>
+    </ng-template>
+  </div>
 </div>
 
 <ng-container *ngIf="currentUser$ | async as currentUser">
-  <div *ngIf="currentUser.id === listing.user && !!listing.expiration" class="expiration mt-5">
+  <div *ngIf="currentUser.id === listing.user && !!listing.expiration" class="expiration">
     <h5>{{ "Expiration" | translate }}</h5>
 
     <span class="expiration-value">

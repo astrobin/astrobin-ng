@@ -1,0 +1,35 @@
+<ng-container *ngIf="user$ | async as user; else loadingTemplate">
+  <div class="card">
+    <div class="card-header">
+      <div>
+        {{ "Seller" | translate }}:
+        <astrobin-username [user]="user"></astrobin-username>
+      </div>
+      <div class="date-joined mt-1">
+        <strong>
+          {{ "Joined AstroBin" | translate }}:
+        </strong>
+        {{ user.dateJoined | localDate | timeago }}
+      </div>
+    </div>
+
+    <div class="card-body">
+      <div class="row">
+        <div class="col-4">
+          <astrobin-avatar [user]="user"></astrobin-avatar>
+        </div>
+        <div class="col">
+
+        </div>
+      </div>
+    </div>
+
+    <div class="card-footer">
+
+    </div>
+  </div>
+</ng-container>
+
+<ng-template #loadingTemplate>
+  <astrobin-loading-indicator></astrobin-loading-indicator>
+</ng-template>

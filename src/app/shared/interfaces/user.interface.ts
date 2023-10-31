@@ -10,8 +10,8 @@ export interface UserInterface {
   displayName: string;
   avatar: string;
   largeAvatar: string;
-  lastLogin: Date;
-  dateJoined: Date;
+  lastLogin: string;
+  dateJoined: string;
   isSuperUser: boolean;
   isStaff: boolean;
   isActive: boolean;

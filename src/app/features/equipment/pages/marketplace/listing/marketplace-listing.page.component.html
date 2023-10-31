@@ -9,19 +9,13 @@
     </a>
   </h1>
 
-  <ng-container *ngIf="listing$  | async as listing; else loadingTemplate">
-    <div class="row">
-      <div class="col-md-8">
-        <astrobin-marketplace-listing [listing]="listing"></astrobin-marketplace-listing>
-      </div>
-
-      <div class="col">
-
-      </div>
+  <div class="row">
+    <div class="col-md-8">
+      <astrobin-marketplace-listing [listing]="listing"></astrobin-marketplace-listing>
     </div>
-  </ng-container>
-</div>
 
-<ng-template #loadingTemplate>
-  <astrobin-loading-indicator></astrobin-loading-indicator>
-</ng-template>
+    <div class="col">
+      <astrobin-marketplace-user-card [userId]="listing.user"></astrobin-marketplace-user-card>
+    </div>
+  </div>
+</div>

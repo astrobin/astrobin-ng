@@ -76,6 +76,7 @@ import {
   LoadEquipmentItemFailure,
   LoadEquipmentItemSuccess,
   LoadMarketplaceListing,
+  LoadMarketplaceListingFailure,
   LoadMarketplaceListings,
   LoadMarketplaceListingsSuccess,
   LoadMarketplaceListingSuccess,
@@ -803,7 +804,7 @@ export class EquipmentEffects {
     );
   });
 
-  LoadMarketplaceListing: Observable<LoadMarketplaceListingSuccess> = createEffect(() =>
+  LoadMarketplaceListing: Observable<LoadMarketplaceListingSuccess | LoadMarketplaceListingFailure> = createEffect(() =>
     this.actions$.pipe(
       ofType(EquipmentActionTypes.LOAD_MARKETPLACE_LISTING),
       map((action: LoadMarketplaceListing) => action.payload),
@@ -814,7 +815,10 @@ export class EquipmentEffects {
         } else if (payload.hash) {
           obs$ = this.equipmentApiService.loadMarketplaceListingByHash(payload.hash);
         }
-        return obs$.pipe(map(listing => new LoadMarketplaceListingSuccess({ listing })));
+        return obs$.pipe(
+          map(listing => new LoadMarketplaceListingSuccess({ listing })),
+          catchError(error => of(new LoadMarketplaceListingFailure({ error })))
+        );
       })
     )
   );
