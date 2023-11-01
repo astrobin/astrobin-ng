@@ -75,15 +75,3 @@
     </ng-template>
   </div>
 </div>
-
-<ng-container *ngIf="currentUser$ | async as currentUser">
-  <div *ngIf="currentUser.id === listing.user && !!listing.expiration" class="expiration">
-    <h5>{{ "Expiration" | translate }}</h5>
-
-    <span class="expiration-value">
-      {{ listing.expiration | localDate | date }}
-    </span>
-
-    <astrobin-private-information></astrobin-private-information>
-  </div>
-</ng-container>

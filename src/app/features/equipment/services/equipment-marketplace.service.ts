@@ -14,6 +14,9 @@ import { selectEquipmentItem } from "@features/equipment/store/equipment.selecto
 import { LoadEquipmentItem } from "@features/equipment/store/equipment.actions";
 import { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
 import { UserInterface } from "@shared/interfaces/user.interface";
+import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
+import { selectUser } from "@features/account/store/auth.selectors";
+import { LoadUser } from "@features/account/store/auth.actions";
 
 @Injectable({
   providedIn: "root"
@@ -26,7 +29,7 @@ export class EquipmentMarketplaceService extends BaseService {
     super(loadingService);
   }
 
-  getEquipmentItem$(lineItem: MarketplaceLineItemInterface): Observable<EquipmentItem> {
+  getLineItemEquipmentItem$(lineItem: MarketplaceLineItemInterface): Observable<EquipmentItem> {
     const contentTypePayload = { id: lineItem.itemContentType };
 
     this.store$.dispatch(new LoadContentTypeById(contentTypePayload));
@@ -41,13 +44,15 @@ export class EquipmentMarketplaceService extends BaseService {
           };
 
           this.store$.dispatch(new LoadEquipmentItem(payload));
-          return this.store$.select(selectEquipmentItem, payload).pipe(
-            filter(equipmentItem => !!equipmentItem),
-            take(1)
-          );
+          return this.store$.select(selectEquipmentItem, payload);
         }
       )
     );
+  }
+
+  getListingUser$(listing: MarketplaceListingInterface): Observable<UserInterface> {
+    this.store$.dispatch(new LoadUser({ id: listing.user }));
+    return this.store$.select(selectUser, listing.user);
   }
 
   userHasFeedback(user: UserInterface): boolean {

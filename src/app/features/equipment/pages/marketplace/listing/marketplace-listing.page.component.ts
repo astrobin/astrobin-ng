@@ -13,6 +13,9 @@ import { filter, take } from "rxjs/operators";
 import { LoadContentType } from "@app/store/actions/content-type.actions";
 import { Observable } from "rxjs";
 import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
+import { ClassicRoutesService } from "@shared/services/classic-routes.service";
+import { EquipmentMarketplaceService } from "@features/equipment/services/equipment-marketplace.service";
+import { UserInterface } from "@shared/interfaces/user.interface";
 
 @Component({
   selector: "astrobin-marketplace-listing-page",
@@ -39,6 +42,7 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
   title = this.translateService.instant("Equipment marketplace listing");
   listing: MarketplaceListingInterface;
   listingContentType$: Observable<ContentTypeInterface>;
+  listingUser$: Observable<UserInterface>;
 
   private _contentTypePayload = { appLabel: "astrobin_apps_equipment", model: "equipmentitemmarketplacelisting" };
 
@@ -47,7 +51,9 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
     public readonly activatedRoute: ActivatedRoute,
     public readonly translateService: TranslateService,
     public readonly titleService: TitleService,
-    public readonly loadingService: LoadingService
+    public readonly loadingService: LoadingService,
+    public readonly classicRoutesService: ClassicRoutesService,
+    public readonly equipmentMarketplaceService: EquipmentMarketplaceService
   ) {
     super(store$);
   }
@@ -55,17 +61,20 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
   ngOnInit(): void {
     super.ngOnInit();
 
-    this.listingContentType$ = this.store$.select(selectContentType, this._contentTypePayload).pipe(
-      filter(contentType => !!contentType),
-      take(1)
-    );
-
     this.titleService.setTitle(this.title);
     this.store$.dispatch(this.breadcrumb);
     this.store$.dispatch(new LoadContentType(this._contentTypePayload));
 
     this.listing = this.activatedRoute.snapshot.data.listing;
+
+    this.listingContentType$ = this.store$.select(selectContentType, this._contentTypePayload).pipe(
+      filter(contentType => !!contentType),
+      take(1)
+    );
+
+    this.listingUser$ = this.equipmentMarketplaceService.getListingUser$(this.listing).pipe(
+      filter(user => !!user),
+      take(1)
+    );
   }
-
-
 }

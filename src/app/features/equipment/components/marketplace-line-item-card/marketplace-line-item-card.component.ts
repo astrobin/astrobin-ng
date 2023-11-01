@@ -43,7 +43,7 @@ export class MarketplaceLineItemCardComponent extends BaseComponentDirective imp
 
   _buildDisplayName() {
     this.equipmentMarketplaceService
-      .getEquipmentItem$(this.lineItem)
+      .getLineItemEquipmentItem$(this.lineItem)
       .pipe(
         filter(item => !!item),
         take(1),

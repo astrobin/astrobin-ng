@@ -10,6 +10,7 @@ import { EquipmentItemType } from "@features/equipment/types/equipment-item-base
 import { TranslateService } from "@ngx-translate/core";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 import { EquipmentMarketplaceService } from "@features/equipment/services/equipment-marketplace.service";
+import { filter, take } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-marketplace-listing-line-item",
@@ -40,7 +41,10 @@ export class MarketplaceLineItemComponent extends BaseComponentDirective impleme
       const lineItem: MarketplaceLineItemInterface = changes.lineItem.currentValue;
 
       if (lineItem.itemContentType && lineItem.itemObjectId) {
-        this.equipmentItem$ = this.equipmentMarketplaceService.getEquipmentItem$(lineItem);
+        this.equipmentItem$ = this.equipmentMarketplaceService.getLineItemEquipmentItem$(lineItem).pipe(
+          filter(item => !!item),
+          take(1)
+        );
       }
     }
   }

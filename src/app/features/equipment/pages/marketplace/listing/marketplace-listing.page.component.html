@@ -9,33 +9,41 @@
     </a>
   </h1>
 
-  <ng-container *ngIf="listingContentType$ | async as listingContentType; else loadingTemplate">
-    <ng-container *ngIf="currentUser$ | async as currentUser; else loadingTemplate">
-      <div class="row">
-        <div class="col-md-7 col-lg-9">
-          <astrobin-marketplace-listing [listing]="listing"></astrobin-marketplace-listing>
-          <astrobin-nested-comments
-            [addCommentLabel]="'Ask a question' | translate"
-            [contentType]="listingContentType"
-            [noCommentsLabel]="'There are no questions or discussions yet.'"
-            [objectId]="listing.id"
-            [title]="'Public questions' | translate"
-          ></astrobin-nested-comments>
-        </div>
+  <ng-container *ngIf="currentUser$ | async as currentUser; else loadingTemplate">
+    <ng-container *ngIf="listingContentType$ | async as listingContentType; else loadingTemplate">
+      <ng-container *ngIf="listingUser$ | async as listingUser; else loadingTemplate">
+        <div class="row">
+          <div class="col-md-7 col-lg-9">
+            <astrobin-marketplace-listing [listing]="listing"></astrobin-marketplace-listing>
+            <astrobin-nested-comments
+              [addCommentLabel]="'Ask a question' | translate"
+              [contentType]="listingContentType"
+              [noCommentsLabel]="'There are no questions or discussions yet.'"
+              [objectId]="listing.id"
+              [title]="'Public questions' | translate"
+            ></astrobin-nested-comments>
+          </div>
 
-        <div class="col">
-          <astrobin-toggle-property
-            [contentType]="listingContentType.id"
-            [objectId]="listing.id.toString()"
-            [userId]="currentUser.id"
-            btnClass="btn btn-lg btn-primary d-block w-100 mb-4"
-            propertyType="follow"
-            setLabel="{{ 'Get updates' | translate }}"
-            unsetLabel="{{ 'Stop getting updates' | translate }}"
-          ></astrobin-toggle-property>
-          <astrobin-marketplace-user-card [userId]="listing.user"></astrobin-marketplace-user-card>
+          <div class="col">
+            <astrobin-marketplace-user-card [userId]="listing.user"></astrobin-marketplace-user-card>
+            <astrobin-toggle-property
+              [contentType]="listingContentType.id"
+              [objectId]="listing.id.toString()"
+              [userId]="currentUser.id"
+              btnClass="btn btn-lg btn-primary d-block w-100 mt-4"
+              propertyType="follow"
+              setLabel="{{ 'Subscribe to listing updates' | translate }}"
+              unsetLabel="{{ 'Unsubscribe from updates' | translate }}"
+            ></astrobin-toggle-property>
+            <a
+              [attr.href]="classicRoutesService.COMPOSE_MESSAGE(listingUser.username, 'Question about listing: ' + listing.hash)"
+              class="btn btn-lg btn-secondary d-block w-100 mt-4">
+              <fa-icon icon="envelope"></fa-icon>
+              {{ "Message seller" | translate }}
+            </a>
+          </div>
         </div>
-      </div>
+      </ng-container>
     </ng-container>
   </ng-container>
 </div> <!-- page -->
