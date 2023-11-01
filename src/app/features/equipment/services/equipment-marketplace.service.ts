@@ -13,6 +13,7 @@ import { ContentTypeInterface } from "@shared/interfaces/content-type.interface"
 import { selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import { LoadEquipmentItem } from "@features/equipment/store/equipment.actions";
 import { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
+import { UserInterface } from "@shared/interfaces/user.interface";
 
 @Injectable({
   providedIn: "root"
@@ -46,6 +47,15 @@ export class EquipmentMarketplaceService extends BaseService {
           );
         }
       )
+    );
+  }
+
+  userHasFeedback(user: UserInterface): boolean {
+    return (
+      user.marketplaceCommunicationFeedback !== null &&
+      user.marketplaceAccuracyFeedback !== null &&
+      user.marketplaceSpeedFeedback !== null &&
+      user.marketplacePackagingFeedback !== null
     );
   }
 }

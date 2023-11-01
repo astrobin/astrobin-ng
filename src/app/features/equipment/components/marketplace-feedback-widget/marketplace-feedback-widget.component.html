@@ -1,0 +1,35 @@
+<div class="feedback">
+  <div class="feedback-label">
+    {{ "Communication and friendliness" | translate }} ({{ user.marketplaceCommunicationFeedback }}%)
+  </div>
+  <div class="feedback-container">
+    <div [style.left]="user.marketplaceCommunicationFeedback + '%'" class="feedback-bar"></div>
+  </div>
+</div>
+
+<div class="feedback">
+  <div class="feedback-label">
+    {{ "Speed of delivery" | translate }} ({{ user.marketplaceSpeedFeedback }}%)
+  </div>
+  <div class="feedback-container">
+    <div [style.left]="user.marketplaceSpeedFeedback + '%'" class="feedback-bar"></div>
+  </div>
+</div>
+
+<div class="feedback">
+  <div class="feedback-label">
+    {{ "Accuracy of item descriptions" | translate }} ({{ user.marketplaceAccuracyFeedback }}%)
+  </div>
+  <div class="feedback-container">
+    <div [style.left]="user.marketplaceAccuracyFeedback + '%'" class="feedback-bar"></div>
+  </div>
+</div>
+
+<div class="feedback">
+  <div class="feedback-label">
+    {{ "Packaging quality" | translate }} ({{ user.marketplacePackagingFeedback }}%)
+  </div>
+  <div class="feedback-container">
+    <div [style.left]="user.marketplacePackagingFeedback + '%'" class="feedback-bar"></div>
+  </div>
+</div>

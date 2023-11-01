@@ -1,31 +1,32 @@
 <ng-container *ngIf="user$ | async as user; else loadingTemplate">
   <div class="card">
     <div class="card-header">
-      <div>
-        {{ "Seller" | translate }}:
-        <astrobin-username [user]="user"></astrobin-username>
-      </div>
-      <div class="date-joined mt-1">
-        <strong>
-          {{ "Joined AstroBin" | translate }}:
-        </strong>
-        {{ user.dateJoined | localDate | timeago }}
-      </div>
+      {{ "Seller" | translate }}
     </div>
 
     <div class="card-body">
-      <div class="row">
-        <div class="col-4">
-          <astrobin-avatar [user]="user"></astrobin-avatar>
-        </div>
-        <div class="col">
-
-        </div>
+      <div class="d-flex align-items-center flex-column">
+        <astrobin-avatar [user]="user"></astrobin-avatar>
+        <astrobin-username [user]="user"></astrobin-username>
       </div>
     </div>
 
-    <div class="card-footer">
+    <div class="feedback">
+      <ng-container *ngIf="equipmentMarketplaceService.userHasFeedback(user); else noFeedbackTemplate">
+        <strong class="d-block mb-2">{{ "Feedback" | translate }} ({{ user.marketplaceFeedbackCount }})</strong>
+        <astrobin-marketplace-feedback-widget [user]="user"></astrobin-marketplace-feedback-widget>
+      </ng-container>
 
+      <ng-template #noFeedbackTemplate>
+        <div class="alert alert-info mb-0">
+          {{ "This user has no feedback yet." | translate }}
+        </div>
+      </ng-template>
+    </div>
+
+    <div class="card-footer">
+      <strong>{{ "Joined AstroBin" | translate }}:</strong>&nbsp;
+      {{ user.dateJoined | localDate | timeago }}
     </div>
   </div>
 </ng-container>

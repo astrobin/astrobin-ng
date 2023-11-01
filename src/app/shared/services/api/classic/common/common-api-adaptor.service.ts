@@ -36,6 +36,11 @@ export interface BackendUserInterface {
   date_joined: string;
   groups: BackendGroupInterface[];
   user_permissions: BackendPermissionInterface[];
+  marketplace_communication_feedback: number;
+  marketplace_speed_feedback: number;
+  marketplace_accuracy_feedback: number;
+  marketplace_packaging_feedback: number;
+  marketplace_feedback_count: number;
 }
 
 export interface BackendUserProfileInterface {
@@ -145,7 +150,12 @@ export class CommonApiAdaptorService extends BaseService {
       isStaff: user.is_staff,
       isActive: user.is_active,
       groups: user.groups.map(group => this.authGroupFromBackend(group)),
-      userPermissions: user.user_permissions.map(permission => this.permissionFromBackend(permission))
+      userPermissions: user.user_permissions.map(permission => this.permissionFromBackend(permission)),
+      marketplaceCommunicationFeedback: user.marketplace_communication_feedback,
+      marketplaceSpeedFeedback: user.marketplace_speed_feedback,
+      marketplaceAccuracyFeedback: user.marketplace_accuracy_feedback,
+      marketplacePackagingFeedback: user.marketplace_packaging_feedback,
+      marketplaceFeedbackCount: user.marketplace_feedback_count
     };
   }
 

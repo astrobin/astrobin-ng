@@ -7,6 +7,7 @@ import { LoadUser } from "@features/account/store/auth.actions";
 import { Observable } from "rxjs";
 import { selectUser } from "@features/account/store/auth.selectors";
 import { filter, takeUntil } from "rxjs/operators";
+import { EquipmentMarketplaceService } from "@features/equipment/services/equipment-marketplace.service";
 
 @Component({
   selector: "astrobin-marketplace-user-card",
@@ -19,7 +20,10 @@ export class MarketplaceUserCardComponent extends BaseComponentDirective impleme
 
   user$: Observable<UserInterface>;
 
-  constructor(public readonly store$: Store<State>) {
+  constructor(
+    public readonly store$: Store<State>,
+    public readonly equipmentMarketplaceService: EquipmentMarketplaceService
+  ) {
     super(store$);
   }
 
@@ -31,6 +35,6 @@ export class MarketplaceUserCardComponent extends BaseComponentDirective impleme
       takeUntil(this.destroyed$)
     );
 
-    this.store$.dispatch(new LoadUser({ id: this.userId }))
+    this.store$.dispatch(new LoadUser({ id: this.userId }));
   }
 }
