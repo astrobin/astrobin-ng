@@ -1,7 +1,7 @@
 <div *ngIf="comments$ | async as comments" class="nested-comments card">
 
   <div class="card-header">
-    {{ "Comments" | translate }}
+    {{ title }}
 
     <div class="actions">
       <astrobin-refresh-button (click)="refresh()"></astrobin-refresh-button>
@@ -69,7 +69,7 @@
 <ng-template #addCommentButtonTpl>
   <button (click)="showTopLevelForm = true" class="btn btn-primary add-comment">
     <fa-icon icon="comment"></fa-icon>
-    {{ "Add a comment" | translate }}
+    {{ addCommentLabel }}
   </button>
 </ng-template>
 
@@ -79,6 +79,6 @@
 
 <ng-template #noCommentsTpl>
   <p data-test="no-comments">
-    {{ "There are no comments yet." | translate }}
+    {{ noCommentsLabel }}
   </p>
 </ng-template>

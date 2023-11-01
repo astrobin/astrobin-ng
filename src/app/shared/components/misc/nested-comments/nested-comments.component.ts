@@ -31,7 +31,16 @@ export class NestedCommentsComponent extends BaseComponentDirective implements O
   highlightId: number;
 
   @Input()
+  title: string = this.translateService.instant("Comments");
+
+  @Input()
   info: string;
+
+  @Input()
+  addCommentLabel: string = this.translateService.instant("Add a comment");
+
+  @Input()
+  noCommentsLabel: string = this.translateService.instant("There are no comments yet.");
 
   comments$: Observable<NestedCommentInterface[]>;
   loadingComments = true;
