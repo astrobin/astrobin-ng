@@ -5,50 +5,60 @@
   class="line-item"
 ></astrobin-marketplace-listing-line-item>
 
-<div class="card map-container">
-  <div *ngIf="listing.country" class="card-header">
-    <ng-container *ngIf="!!listing.city">
-      {{ listing.city }},
-    </ng-container>
-    {{ countryService.getCountryName(listing.country) }}
-  </div>
+<div class="row">
+  <div class="col-md-6">
+    <div class="card map-container">
+      <div class="card-header">
+        <ng-container *ngIf="!!listing.country; else loadingCountryTemplate">
+          <ng-container *ngIf="!!listing.city">
+            {{ listing.city }},
+          </ng-container>
+          {{ countryService.getCountryName(listing.country) }}
+        </ng-container>
+        <ng-template #loadingCountryTemplate>
+          <astrobin-text-loading-indicator></astrobin-text-loading-indicator>
+        </ng-template>
+      </div>
 
-  <div class="card-body p-0">
-    <div #map class="map"></div>
-    <astrobin-loading-indicator *ngIf="mapLoading"></astrobin-loading-indicator>
-  </div>
+      <div class="card-body p-0">
+        <div #map class="map"></div>
+        <astrobin-loading-indicator *ngIf="mapLoading"></astrobin-loading-indicator>
+      </div>
 
-  <div class="card-footer">
-    <div *ngIf="!mapLoading" class="form-text mt-1">
-      {{ "The location shown above is approximate to protect the seller's privacy." | translate }}
+      <div class="card-footer">
+        <div class="form-text mt-1">
+          {{ "The location shown above is approximate to protect the seller's privacy." | translate }}
+        </div>
+      </div>
     </div>
   </div>
-</div>
-
-<div class="card shipping-options">
-  <div class="card-header">{{ "Shipping options" | translate }}</div>
-
-  <div class="card-body">
-    <table class="table table-striped mb-0">
-      <tbody>
-      <tr>
-        <th>{{ "Buyer picks up" | translate}}</th>
-        <td [class]="!!listing.deliveryByBuyerPickup | json">{{ !!listing.deliveryByBuyerPickup | yesNo }}</td>
-      </tr>
-      <tr>
-        <th>{{ "Seller delivers in person" | translate}}</th>
-        <td [class]="!!listing.deliveryBySellerDelivery | json">{{ !!listing.deliveryBySellerDelivery | yesNo }}</td>
-      </tr>
-      <tr>
-        <th>{{ "Seller ships" | translate}}</th>
-        <td [class]="!!listing.deliveryByShipping | json">{{ !!listing.deliveryByShipping | yesNo }}</td>
-      </tr>
-      <tr>
-        <th>{{ "Shipping method" | translate}}</th>
-        <td>{{ equipmentItemService.humanizeShippingMethod(listing.shippingMethod) }}</td>
-      </tr>
-      </tbody>
-    </table>
+  <div class="col-md-6">
+    <div class="card shipping-options">
+      <div class="card-header">{{ "Shipping options" | translate }}</div>
+      <div class="card-body">
+        <table class="table table-striped mb-0">
+          <tbody>
+          <tr>
+            <th>{{ "Buyer picks up" | translate}}</th>
+            <td [class]="!!listing.deliveryByBuyerPickup | json">{{ !!listing.deliveryByBuyerPickup | yesNo }}</td>
+          </tr>
+          <tr>
+            <th>{{ "Seller delivers in person" | translate}}</th>
+            <td
+              [class]="!!listing.deliveryBySellerDelivery | json">{{ !!listing.deliveryBySellerDelivery | yesNo }}</td>
+          </tr>
+          <tr>
+            <th>{{ "Seller ships" | translate}}</th>
+            <td [class]="!!listing.deliveryByShipping | json">{{ !!listing.deliveryByShipping | yesNo }}</td>
+          </tr>
+          <tr>
+            <th>{{ "Shipping method" | translate}}</th>
+            <td>{{ equipmentItemService.humanizeShippingMethod(listing.shippingMethod) }}</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
 </div>
 

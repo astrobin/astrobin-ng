@@ -63,10 +63,10 @@ export class MarketplaceListingComponent extends BaseComponentDirective implemen
 
     const mapOptions = {
       center: location,
-      zoom: 13,
+      zoom: 12,
       mapTypeId: this.googleMapsService.maps.MapTypeId.ROADMAP,
-      draggable: false,
-      zoomControl: false,
+      draggable: true,
+      zoomControl: true,
       scrollwheel: false,
       disableDoubleClickZoom: true,
       streetViewControl: false,
