@@ -15,6 +15,16 @@
     </div>
 
     <div class="col">
+      <astrobin-toggle-property
+        [contentType]="(listingContentType$ | async).id"
+        [objectId]="listing.id.toString()"
+        [userId]="(currentUser$ | async).id"
+        btnClass="btn btn-lg btn-primary d-block w-100 mb-4"
+        propertyType="follow"
+        setLabel="{{ 'Get updates' | translate }}"
+        unsetLabel="{{ 'Stop getting updates' | translate }}"
+      ></astrobin-toggle-property>
+
       <astrobin-marketplace-user-card [userId]="listing.user"></astrobin-marketplace-user-card>
     </div>
   </div>

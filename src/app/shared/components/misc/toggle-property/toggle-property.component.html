@@ -4,7 +4,7 @@
     [class.loading-bars]="loading"
     [class.loading]="(loadingService.loading$ | async) === true"
     [class.success]="buttonState === 'success'"
-    class="btn btn-secondary"
+    [class]="btnClass"
   >
     <ng-container *ngIf="!!context.toggleProperty">
       <fa-icon [icon]="unsetTogglePropertyIcon"></fa-icon>

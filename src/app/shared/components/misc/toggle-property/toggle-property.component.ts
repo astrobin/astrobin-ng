@@ -12,7 +12,7 @@ import {
   DeleteToggleProperty,
   LoadToggleProperty
 } from "@app/store/actions/toggle-property.actions";
-import { takeUntil, tap } from "rxjs/operators";
+import { takeUntil } from "rxjs/operators";
 import { Actions, ofType } from "@ngrx/effects";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { UtilsService } from "@shared/services/utils/utils.service";
@@ -36,6 +36,15 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
   @Input()
   contentType: TogglePropertyInterface["contentType"];
 
+  @Input()
+  setLabel: string;
+
+  @Input()
+  unsetLabel: string;
+
+  @Input()
+  btnClass: string = "btn btn-secondary";
+
   toggleProperty$: Observable<TogglePropertyInterface | null>;
 
   // We keep a local "loading" state because we don't want to freeze the whole app.
@@ -54,6 +63,10 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
   }
 
   get unsetTogglePropertyLabel(): string {
+    if (this.unsetLabel) {
+      return this.unsetLabel;
+    }
+
     switch (this.propertyType) {
       case "like":
         return this.translateService.instant("Unlike");
@@ -76,6 +89,10 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
   }
 
   get setTogglePropertyLabel(): string {
+    if (this.setLabel) {
+      return this.setLabel;
+    }
+
     switch (this.propertyType) {
       case "like":
         return this.translateService.instant("Like");

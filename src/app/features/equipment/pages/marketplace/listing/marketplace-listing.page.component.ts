@@ -8,6 +8,11 @@ import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { TranslateService } from "@ngx-translate/core";
 import { TitleService } from "@shared/services/title/title.service";
 import { LoadingService } from "@shared/services/loading.service";
+import { selectContentType } from "@app/store/selectors/app/content-type.selectors";
+import { filter, take } from "rxjs/operators";
+import { LoadContentType } from "@app/store/actions/content-type.actions";
+import { Observable } from "rxjs";
+import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
 
 @Component({
   selector: "astrobin-marketplace-listing-page",
@@ -33,6 +38,9 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
 
   title = this.translateService.instant("Equipment marketplace listing");
   listing: MarketplaceListingInterface;
+  listingContentType$: Observable<ContentTypeInterface>;
+
+  private _contentTypePayload = { appLabel: "astrobin_apps_equipment", model: "equipmentitemmarketplacelisting" };
 
   constructor(
     public readonly store$: Store<State>,
@@ -42,6 +50,11 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
     public readonly loadingService: LoadingService
   ) {
     super(store$);
+
+    this.listingContentType$ = this.store$.select(selectContentType, this._contentTypePayload).pipe(
+      filter(contentType => !!contentType),
+      take(1)
+    );
   }
 
   ngOnInit(): void {
@@ -49,6 +62,7 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
 
     this.titleService.setTitle(this.title);
     this.store$.dispatch(this.breadcrumb);
+    this.store$.dispatch(new LoadContentType(this._contentTypePayload));
 
     this.listing = this.activatedRoute.snapshot.data.listing;
   }
