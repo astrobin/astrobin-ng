@@ -35,6 +35,12 @@ export function app(): express.Express {
 
   server.use(compression());
 
+  // Serve robots.txt
+  server.get("/robots.txt", (req, res) => {
+    res.type("text/plain");
+    res.send(`User-agent: *\nDisallow:\n\nSitemap: https://cdn.astrobin.com/sitemaps/app/sitemap_index.xml`);
+  });
+
   // Example Express Rest API endpoints
   // server.get('/api/**', (req, res) => { });
   // Serve static files from /browser
