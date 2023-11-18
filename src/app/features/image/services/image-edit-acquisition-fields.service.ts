@@ -166,7 +166,8 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
               label: "Gain",
               required: false,
               step: 1,
-              min: 0
+              min: -99999.99,
+              max: 99999.99
             },
             validators: {
               validation: [
@@ -556,7 +557,8 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
               label: "Gain",
               required: false,
               step: 1,
-              min: 0
+              min: -99999.99,
+              max: 99999.99
             },
             validators: {
               validation: [
