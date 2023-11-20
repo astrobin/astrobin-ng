@@ -15,6 +15,9 @@ export class ToggleButtonComponent extends BaseComponentDirective {
   @Input()
   value: boolean;
 
+  @Input()
+  label: string;
+
   @Output()
   toggle = new EventEmitter<boolean>();
 

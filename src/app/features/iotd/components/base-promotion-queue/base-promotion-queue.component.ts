@@ -27,6 +27,7 @@ import { ReviewImageInterface } from "@features/iotd/types/review-image.interfac
 import { Actions } from "@ngrx/effects";
 
 const FILL_SLOT_REMINDER_COOKIE = "astrobin-iotd-fill-slot-reminder";
+const IOTD_PROMOTION_QUEUE_DISPLAY_HIDDEN_IMAGES_COOKIE = "astrobin-iotd-promotion-queue-display-hidden-images";
 
 @Component({
   selector: "astrobin-base-promotion-queue",
@@ -45,6 +46,7 @@ export abstract class BasePromotionQueueComponent extends BaseComponentDirective
   );
 
   hiddenImages$: Observable<HiddenImage[]> = this.store$.select(selectHiddenImages).pipe(takeUntil(this.destroyed$));
+  displayHiddenImages = true;
 
   isDismissed: boolean;
   loadingQueue: boolean;
@@ -72,6 +74,16 @@ export abstract class BasePromotionQueueComponent extends BaseComponentDirective
     super.ngOnInit();
 
     this.page = this.activatedRoute.snapshot?.queryParamMap.get("page") || 1;
+
+    const displayHiddenImagesCookieValue = this.cookieService.get(IOTD_PROMOTION_QUEUE_DISPLAY_HIDDEN_IMAGES_COOKIE);
+    if (displayHiddenImagesCookieValue === null) {
+      this.displayHiddenImages = false;
+      this.toggleDisplayHiddenImages();
+    } else if (displayHiddenImagesCookieValue === "1") {
+      this.displayHiddenImages = true;
+    } else if (displayHiddenImagesCookieValue === "0") {
+      this.displayHiddenImages = false;
+    }
 
     this.promotions$
       .pipe(
@@ -145,8 +157,20 @@ export abstract class BasePromotionQueueComponent extends BaseComponentDirective
       });
   }
 
+  toggleDisplayHiddenImages(): void {
+    this.displayHiddenImages = !this.displayHiddenImages;
+    this.cookieService.put(IOTD_PROMOTION_QUEUE_DISPLAY_HIDDEN_IMAGES_COOKIE, this.displayHiddenImages ? "1" : "0", {
+      path: "/",
+      expires: null
+    });
+  }
+
   entryExists(imageId: number): boolean {
     return this._getEntryElement(imageId) !== null;
+  }
+
+  isHidden(imageId, hiddenImages): boolean {
+    return hiddenImages.some(hiddenImage => hiddenImage.image === imageId);
   }
 
   scrollToEntry(imageId: number): void {
