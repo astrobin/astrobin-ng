@@ -54,6 +54,7 @@ export function app(): express.Express {
   // Apply the proxy middleware to the /api route
   server.use("/api", apiProxy);
   server.use("/json-api", apiProxy);
+  server.use("/payments", apiProxy);
 
 
   // Example Express Rest API endpoints
