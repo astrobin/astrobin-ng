@@ -429,7 +429,7 @@ export class CKEditorService extends BaseService {
       disableObjectResizing: true,
       extraPlugins: this.plugins().join(","),
       toolbar: this.toolbar(),
-      filebrowserUploadUrl: `${environment.classicBaseUrl}/json-api/common/ckeditor-upload/`,
+      filebrowserUploadUrl: `${environment.classicApiUrl}/json-api/common/ckeditor-upload/`,
       mentions: this.mentions(),
       smiley_columns: 10,
       smiley_path: "https://cdn.astrobin.com/static/astrobin/emoticons/",
