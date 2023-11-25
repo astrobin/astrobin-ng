@@ -48,14 +48,11 @@ export function app(): express.Express {
   // Define the proxy middleware explicitly
   const apiProxy = createProxyMiddleware({
     target: target,
-    changeOrigin: true,
+    changeOrigin: true
   });
 
   // Apply the proxy middleware to the /api route
   server.use("/api", apiProxy);
-  server.use("/json-api", apiProxy);
-  server.use("/payments", apiProxy);
-
 
   // Example Express Rest API endpoints
   // server.get('/api/**', (req, res) => { });
