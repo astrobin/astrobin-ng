@@ -3,14 +3,15 @@ import { FilterInterface } from "@features/equipment/types/filter.interface";
 
 export enum BortleScale {
   ONE = 1,
-  TWO,
-  THREE,
-  FOUR,
-  FIVE,
-  SIX,
-  SEVEN,
-  EIGHT,
-  NINE
+  TWO = 2,
+  THREE = 3,
+  FOUR = 4,
+  FOUR_POINT_FIVE = 4.5,
+  FIVE = 5,
+  SIX = 6,
+  SEVEN = 7,
+  EIGHT = 8,
+  NINE = 9
 }
 
 export interface DeepSkyAcquisitionInterface {
