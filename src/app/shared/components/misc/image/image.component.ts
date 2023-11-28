@@ -120,23 +120,15 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
   }
 
   load() {
+    if (!!this.thumbnailUrl || this.loading || !this.utilsService.isNearBelowViewport(this.elementRef.nativeElement)) {
+      return;
+    }
+
     // 0-200 ms
     this.utilsService
       .delay(Math.floor(Math.random() * 200))
       .pipe(take(1))
       .subscribe(() => {
-        if (!!this.thumbnailUrl) {
-          return;
-        }
-
-        if (this.loading) {
-          return;
-        }
-
-        if (!this.utilsService.isNearBelowViewport(this.elementRef.nativeElement)) {
-          return;
-        }
-
         this.loading = true;
 
         this.store$
@@ -264,7 +256,7 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
       const forceCheck$ = this.actions$.pipe(ofType(AppActionTypes.FORCE_CHECK_IMAGE_AUTO_LOAD));
 
       merge(scroll$, resize$, forceCheck$)
-        .pipe(takeUntil(this.destroyed$), debounceTime(50), distinctUntilChanged())
+        .pipe(takeUntil(this.destroyed$), debounceTime(200), distinctUntilChanged())
         .subscribe(() => this.load());
     }
   }
