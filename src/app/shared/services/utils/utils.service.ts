@@ -200,6 +200,10 @@ export class UtilsService {
     return !(typeof variable === "object" && Object.keys(variable).length === 0);
   }
 
+  static isNullOrEmpty(array) {
+    return !array || array.length === 0;
+  }
+
   static isUrl(s: string): boolean {
     const regex = /(https?:\/\/)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#()?&//=]*)/;
 
@@ -454,7 +458,9 @@ export class UtilsService {
 
     for (const line of lines.slice(1)) {
       const values = line.split(",");
-      if (values.length !== headers.length) continue;
+      if (values.length !== headers.length) {
+        continue;
+      }
 
       const row: Record<string, string> = {};
       for (let i = 0; i < headers.length; i++) {
