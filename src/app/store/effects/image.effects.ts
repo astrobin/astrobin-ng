@@ -8,7 +8,6 @@ import {
   SaveImageFailure,
   SaveImageSuccess
 } from "@app/store/actions/image.actions";
-import { selectImage } from "@app/store/selectors/app/image.selectors";
 import { State } from "@app/store/state";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
@@ -17,26 +16,22 @@ import { ImageApiService } from "@shared/services/api/classic/images/image/image
 import { LoadingService } from "@shared/services/loading.service";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { EMPTY, Observable, of } from "rxjs";
-import { catchError, map, mergeMap, switchMap, tap } from "rxjs/operators";
+import { catchError, map, mergeMap, tap } from "rxjs/operators";
+import { loadResourceEffect } from "@app/store/effects/load-resource.effect";
 
 @Injectable()
 export class ImageEffects {
-  LoadImage: Observable<LoadImageSuccess | LoadImageFailure> = createEffect(() =>
-    this.actions$.pipe(
-      ofType(AppActionTypes.LOAD_IMAGE),
-      mergeMap(action =>
-        this.store$.select(selectImage, action.payload.imageId).pipe(
-          switchMap(imageFromStore =>
-            imageFromStore !== null
-              ? of(imageFromStore).pipe(map(image => new LoadImageSuccess(image)))
-              : this.imageApiService.getImage(action.payload.imageId, action.payload.options).pipe(
-                map(image => !!image ? new LoadImageSuccess(image) : new LoadImageFailure(null)),
-                catchError(error => of(new LoadImageFailure(error)))
-              )
-          )
-        )
-      )
-    )
+  LoadImage: Observable<LoadImageSuccess | LoadImageFailure> = loadResourceEffect(
+    this.actions$,
+    this.store$,
+    AppActionTypes.LOAD_IMAGE,
+    action => action.payload.imageId, // Extracting imageId from action
+    (state, id) => state.app.images[id], // Selector for the image
+    id => this.imageApiService.getImage(id), // API call to load image
+    image => new LoadImageSuccess(image), // Success action
+    error => new LoadImageFailure(error), // Failure action
+    this.loadingService,
+    "image"
   );
 
   LoadImages: Observable<LoadImagesSuccess> = createEffect(() =>

@@ -7,6 +7,7 @@ import {
   Inject,
   Input,
   OnChanges,
+  OnDestroy,
   OnInit,
   Output,
   PLATFORM_ID,
@@ -43,7 +44,7 @@ declare const videojs: any;
   templateUrl: "./image.component.html",
   styleUrls: ["./image.component.scss"]
 })
-export class ImageComponent extends BaseComponentDirective implements OnInit, OnChanges {
+export class ImageComponent extends BaseComponentDirective implements OnInit, OnChanges, OnDestroy {
   @Input()
   @HostBinding("attr.data-id")
   id: number;
@@ -119,8 +120,17 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
     this.load();
   }
 
+  ngOnDestroy(): void {
+    if (this.thumbnailUrl) {
+      (this.windowRefService.nativeWindow as any).URL.revokeObjectURL(this.thumbnailUrl as string);
+    }
+  }
+
   load() {
-    if (!!this.thumbnailUrl || this.loading || !this.utilsService.isNearBelowViewport(this.elementRef.nativeElement)) {
+    const noNeedToLoad = () => !!this.thumbnailUrl ||
+      !this.utilsService.isNearBelowViewport(this.elementRef.nativeElement);
+
+    if (noNeedToLoad()) {
       return;
     }
 
@@ -129,6 +139,10 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
       .delay(Math.floor(Math.random() * 200))
       .pipe(take(1))
       .subscribe(() => {
+        if (noNeedToLoad()) {
+          return;
+        }
+
         this.loading = true;
 
         this.store$
