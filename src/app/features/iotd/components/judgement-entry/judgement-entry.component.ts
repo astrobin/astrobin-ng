@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit } from "@angular/core";
+import { Component, ElementRef, Inject, OnInit, PLATFORM_ID } from "@angular/core";
 import { State } from "@app/store/state";
 import { BasePromotionEntryComponent } from "@features/iotd/components/base-promotion-entry/base-promotion-entry.component";
 import { selectFutureIotdForImage, selectJudgementQueueEntry } from "@features/iotd/store/iotd.selectors";
@@ -17,6 +17,7 @@ import { ImageAlias } from "@shared/enums/image-alias.enum";
 import { JudgementImageInterface } from "@features/iotd/types/judgement-image.interface";
 import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
 import { Actions } from "@ngrx/effects";
+import { UtilsService } from "@shared/services/utils/utils.service";
 
 @Component({
   selector: "astrobin-judgement-entry",
@@ -33,7 +34,9 @@ export class JudgementEntryComponent extends BasePromotionEntryComponent impleme
     public readonly cookieService: CookieService,
     public readonly windowRefService: WindowRefService,
     public readonly classicRoutesService: ClassicRoutesService,
-    public readonly translateService: TranslateService
+    public readonly translateService: TranslateService,
+    public readonly utilsService: UtilsService,
+    @Inject(PLATFORM_ID) public readonly platformId: Object
   ) {
     super(
       store$,
@@ -43,7 +46,9 @@ export class JudgementEntryComponent extends BasePromotionEntryComponent impleme
       cookieService,
       windowRefService,
       classicRoutesService,
-      translateService
+      translateService,
+      utilsService,
+      platformId
     );
   }
 
