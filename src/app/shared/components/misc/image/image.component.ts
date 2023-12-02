@@ -128,6 +128,7 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
 
     if (this.autoLoadSubscription) {
       this.autoLoadSubscription.unsubscribe();
+      this.autoLoadSubscription = null;
     }
   }
 
@@ -186,6 +187,7 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
   onLoad(event) {
     if (this.autoLoadSubscription) {
       this.autoLoadSubscription.unsubscribe();
+      this.autoLoadSubscription = null;
     }
 
     this.loaded.emit();
