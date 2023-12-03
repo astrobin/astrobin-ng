@@ -83,7 +83,8 @@ export class SubmissionQueueComponent extends BasePromotionQueueComponent implem
       popNotificationsService,
       translateService,
       windowRefService,
-      cookieService
+      cookieService,
+      platformId
     );
   }
 
@@ -100,6 +101,8 @@ export class SubmissionQueueComponent extends BasePromotionQueueComponent implem
   }
 
   ngAfterViewInit(): void {
+    super.ngAfterViewInit();
+
     if (isPlatformBrowser(this.platformId)) {
       fromEvent(this.windowRefService.nativeWindow, "scroll")
         .pipe(takeUntil(this.destroyed$), debounceTime(100), distinctUntilChanged())

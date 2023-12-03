@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, OnInit, QueryList, ViewChildren } from "@angular/core";
+import { AfterViewInit, Component, ElementRef, Input, OnInit, QueryList, ViewChildren } from "@angular/core";
 import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
 import { State } from "@app/store/state";
 import {
@@ -18,13 +18,14 @@ import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/pag
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { distinctUntilChangedObj } from "@shared/services/utils/utils.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
-import { Observable } from "rxjs";
-import { map, switchMap, takeUntil } from "rxjs/operators";
+import { fromEvent, merge, Observable } from "rxjs";
+import { debounceTime, distinctUntilChanged, map, switchMap, takeUntil } from "rxjs/operators";
 import { ActivatedRoute, Params, Router } from "@angular/router";
 import { CookieService } from "ngx-cookie";
 import { SubmissionImageInterface } from "@features/iotd/types/submission-image.interface";
 import { ReviewImageInterface } from "@features/iotd/types/review-image.interface";
 import { Actions } from "@ngrx/effects";
+import { isPlatformBrowser } from "@angular/common";
 
 const FILL_SLOT_REMINDER_COOKIE = "astrobin-iotd-fill-slot-reminder";
 const IOTD_PROMOTION_QUEUE_DISPLAY_HIDDEN_IMAGES_COOKIE = "astrobin-iotd-promotion-queue-display-hidden-images";
@@ -33,7 +34,7 @@ const IOTD_PROMOTION_QUEUE_DISPLAY_HIDDEN_IMAGES_COOKIE = "astrobin-iotd-promoti
   selector: "astrobin-base-promotion-queue",
   template: ""
 })
-export abstract class BasePromotionQueueComponent extends BaseComponentDirective implements OnInit {
+export abstract class BasePromotionQueueComponent extends BaseComponentDirective implements OnInit, AfterViewInit {
   ImageAlias = ImageAlias;
 
   @Input()
@@ -57,6 +58,11 @@ export abstract class BasePromotionQueueComponent extends BaseComponentDirective
   @ViewChildren("promotionQueueEntries")
   promotionQueueEntries: QueryList<any>;
 
+  @ViewChildren("promotionSlots", { read: ElementRef })
+  promotionSlots: QueryList<ElementRef>;
+
+  private _initialPromotionSlotsTopOffset: number;
+
   protected constructor(
     public readonly store$: Store<State>,
     public readonly actions$: Actions,
@@ -65,8 +71,8 @@ export abstract class BasePromotionQueueComponent extends BaseComponentDirective
     public readonly popNotificationsService: PopNotificationsService,
     public readonly translateService: TranslateService,
     public readonly windowRefService: WindowRefService,
-    public readonly cookieService: CookieService
-  ) {
+    public readonly cookieService: CookieService,
+    public readonly platformId: Object) {
     super(store$);
   }
 
@@ -124,6 +130,40 @@ export abstract class BasePromotionQueueComponent extends BaseComponentDirective
       });
 
     this.refresh();
+  }
+
+  ngAfterViewInit() {
+    this.promotionSlots.changes.subscribe(() => {
+      if (this.promotionSlots.length > 0) {
+        this._initialPromotionSlotsTopOffset = this.promotionSlots.first.nativeElement.getBoundingClientRect().top;
+      }
+    });
+
+    if (isPlatformBrowser(this.platformId)) {
+      merge(
+        fromEvent(this.windowRefService.nativeWindow, "scroll"),
+        fromEvent(this.windowRefService.nativeWindow, "resize")
+      ).pipe(
+        takeUntil(this.destroyed$),
+        debounceTime(200),
+        distinctUntilChanged()
+      ).subscribe(() => {
+        if (!this.promotionSlots || this.promotionSlots.length === 0) {
+          return;
+        }
+
+        const nativeElement = this.promotionSlots.first.nativeElement;
+        const currentScrollPosition =
+          this.windowRefService.nativeWindow.pageYOffset ||
+          this.windowRefService.nativeWindow.document.documentElement.scrollTop;
+
+        if (currentScrollPosition >= this._initialPromotionSlotsTopOffset) {
+          nativeElement.classList.add("sticky");
+        } else {
+          nativeElement.classList.remove("sticky");
+        }
+      });
+    }
   }
 
   refresh(sort: "newest" | "oldest" | "default" = "default"): void {

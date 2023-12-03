@@ -26,10 +26,9 @@
         <ng-container *ngIf="!loadingQueue; else loading">
           <ng-container *ngIf="queue?.count > 0; else noEntries">
             <astrobin-submission-slots
+              #promotionSlots
               (slotClick)="scrollToEntry($event)"
               [availableEntries]="queue.results"
-              ngStickyNav
-              stickyClass="sticky-promotion-slots"
             >
             </astrobin-submission-slots>
 

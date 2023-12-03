@@ -8,6 +8,13 @@
   astrobin-review-slots,
   astrobin-future-iotd-slots {
     margin-bottom: 2rem;
+    margin-left: -1rem;
+    margin-right: -1rem;
+    transition: transform .2s ease-in-out;
+
+    &.sticky {
+      transform: scale(.7);
+    }
   }
 
   astrobin-submission-entry,
