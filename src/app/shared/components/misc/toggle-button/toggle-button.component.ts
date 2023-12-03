@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from "@angular/core";
+import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Theme, ThemeService } from "@shared/services/theme.service";
 import { Store } from "@ngrx/store";
@@ -9,7 +9,7 @@ import { State } from "@app/store/state";
   templateUrl: "./toggle-button.component.html",
   styleUrls: ["./toggle-button.component.scss"]
 })
-export class ToggleButtonComponent extends BaseComponentDirective {
+export class ToggleButtonComponent extends BaseComponentDirective implements OnInit {
   model: boolean;
 
   @Input()
@@ -21,21 +21,23 @@ export class ToggleButtonComponent extends BaseComponentDirective {
   @Output()
   toggle = new EventEmitter<boolean>();
 
+  color: { checked: string, unchecked: string };
+  switchColor: { checked: string, unchecked: string };
+
   constructor(public readonly store$: Store<State>, public readonly themeService: ThemeService) {
     super(store$);
   }
 
-  get color(): any {
+  ngOnInit(): void {
+    super.ngOnInit();
+
     const highContrast = this.themeService.preferredTheme() === Theme.HIGH_CONTRAST;
-    return {
+    this.color = {
       checked: highContrast ? "#888" : "#cc4b2e",
       unchecked: highContrast ? "#000" : "#111"
     };
-  }
 
-  get switchColor(): any {
-    const highContrast = this.themeService.preferredTheme() === Theme.HIGH_CONTRAST;
-    return {
+    this.switchColor = {
       checked: "#fff",
       unchecked: highContrast ? "#888" : "#666"
     };
