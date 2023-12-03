@@ -29,7 +29,7 @@ export function loadResourceEffect<T, K>(
           take(1),
           switchMap(resourceFromStore => {
             if (resourceFromStore) {
-              return of(successActionCreator(resourceFromStore));
+              return of(failureActionCreator(null));
             }
 
             if (loadingService.objectIsLoading(loadingKey)) {
