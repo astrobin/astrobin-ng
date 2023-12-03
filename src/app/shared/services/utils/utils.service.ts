@@ -88,22 +88,39 @@ export class UtilsService {
    * Removes duplicates from an array. Items must be able to be stringified using JSON, or a key must be provided.
    */
   static arrayUniqueObjects(array: any[], key?: string, reverse = true): any[] {
-    let a = array.concat();
+    if (!Array.isArray(array) || array.length === 0) {
+      return array;
+    }
+
+    let copy = array.concat();
 
     if (reverse) {
-      // The array is reverser because this algorithm prefers to keep the object appearing later in the array.
-      a = a.reverse();
+      copy = array.reverse();
     }
 
-    for (let i = 0; i < a.length; ++i) {
-      for (let j = i + 1; j < a.length; ++j) {
-        if ((!key && JSON.stringify(a[i]) === JSON.stringify(a[j])) || (!!key && a[i][key] === a[j][key])) {
-          a.splice(j--, 1);
+    if (key) {
+      const seen = new Set();
+      copy = copy.filter(item => {
+        const keyValue = item[key];
+        if (seen.has(keyValue)) {
+          return false;
         }
-      }
+        seen.add(keyValue);
+        return true;
+      });
+    } else {
+      const seen = new Map();
+      copy = copy.filter(item => {
+        const itemJson = JSON.stringify(item);
+        if (seen.has(itemJson)) {
+          return false;
+        }
+        seen.set(itemJson, true);
+        return true;
+      });
     }
 
-    return a;
+    return copy;
   }
 
   static getLinksInText(text: string): string[] {

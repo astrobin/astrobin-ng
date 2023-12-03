@@ -118,6 +118,42 @@ describe("UtilsService", () => {
 
       expect(UtilsService.arrayUniqueObjects([a, b], "pk")).toEqual([b]);
     });
+
+    it("should handle an empty array", () => {
+      expect(UtilsService.arrayUniqueObjects([])).toEqual([]);
+    });
+
+    it("should handle key not present in some objects", () => {
+      const a = { pk: 1 };
+      const b = { foo: 2 };
+      const c = { pk: 1 };
+      expect(UtilsService.arrayUniqueObjects([a, b, c], "pk")).toEqual([a, b]);
+    });
+
+    it("should handle all duplicates", () => {
+      const a = { pk: 1 };
+      const b = { pk: 1 };
+      expect(UtilsService.arrayUniqueObjects([a, b], "pk")).toEqual([a]);
+    });
+
+    it("should handle null and undefined values", () => {
+      const a = { pk: null };
+      const b = { pk: undefined };
+      const c = { pk: null };
+      expect(UtilsService.arrayUniqueObjects([a, b, c], "pk")).toEqual([a, b]);
+    });
+
+    it("should not reverse array if reverse flag is false", () => {
+      const a = { pk: 1, foo: "a" };
+      const b = { pk: 1, foo: "b" };
+      expect(UtilsService.arrayUniqueObjects([a, b], "pk", false)).toEqual([a]);
+    });
+
+    it("should handle nested objects", () => {
+      const a = { pk: 1, data: { x: 10 } };
+      const b = { pk: 1, data: { x: 10 } };
+      expect(UtilsService.arrayUniqueObjects([a, b])).toEqual([a]);
+    });
   });
 
   describe("addOrUpdateUrlParam", () => {
