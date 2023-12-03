@@ -26,7 +26,7 @@ export class ImageEffects {
     this.store$,
     AppActionTypes.LOAD_IMAGE,
     action => action.payload.imageId, // Extracting imageId from action
-    (state, id) => state.app.images[id], // Selector for the image
+    (state, id) => state.app.images.find(image => image.pk = id), // Selector for the image
     id => this.imageApiService.getImage(id), // API call to load image
     image => new LoadImageSuccess(image), // Success action
     error => new LoadImageFailure(error), // Failure action
