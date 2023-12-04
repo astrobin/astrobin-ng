@@ -3,37 +3,9 @@
 :host {
   display: flex;
   justify-content: space-between;
-
-  &.sticky-promotion-slots {
-    z-index: 2;
-    margin-top: 1.5rem;
-    transition: .3s ease-in-out;
-    display: none;
-
-    @media screen and (min-width: $md-min) {
-      display: flex;
-      width: 626px;
-      transform: scale(.5) translateY(-74px);
-    }
-
-    @media screen and (min-width: $lg-min) {
-      width: 866px;
-      transform: scale(.5) translateY(-88px);
-    }
-
-    @media screen and (min-width: $xl-min) {
-      width: 940px;
-      transform: scale(.5) translateY(-100px);
-    }
-
-    &.is-empty {
-      top: 2vw !important;
-
-      ::ng-deep .promotion-slot {
-        min-height: 100px;
-      }
-    }
-  }
+  position: sticky;
+  top: 1rem;
+  z-index: 4;
 
   .promotion-slot-container {
     display: flex;
@@ -49,18 +21,25 @@
       border: 2px dashed var(--lightGrey);
       font-size: 3rem;
       color: var(--lightGrey);
-      height: auto;
+      height: 140px;
       display: flex;
       justify-content: center;
       align-items: center;
+      box-shadow: 0 0 1rem rgba(0, 0, 0, .75);
 
-      astrobin-image {
-        &.clickable {
-          cursor: pointer;
-        }
+      ::ng-deep {
+        .astrobin-image, .video-js {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
 
-        &:not(.clickable) {
-          cursor: not-allowed;
+          &.clickable {
+            cursor: pointer;
+          }
+
+          &:not(.clickable) {
+            cursor: not-allowed;
+          }
         }
       }
     }
