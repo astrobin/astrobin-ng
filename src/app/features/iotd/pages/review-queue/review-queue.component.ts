@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Inject, OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, Inject, OnInit, PLATFORM_ID } from "@angular/core";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { State } from "@app/store/state";
 import { BasePromotionQueueComponent } from "@features/iotd/components/base-promotion-queue/base-promotion-queue.component";
@@ -41,7 +41,7 @@ export class ReviewQueueComponent extends BasePromotionQueueComponent implements
     public readonly windowRefService: WindowRefService,
     public readonly cookieService: CookieService,
     public readonly changeDetectorRef: ChangeDetectorRef,
-    @Inject("PLATFORM_ID") public readonly platformId: Object
+    @Inject(PLATFORM_ID) public readonly platformId: Object
   ) {
     super(
       store$,
