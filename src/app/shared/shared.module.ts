@@ -40,7 +40,6 @@ import { PopNotificationsService } from "@shared/services/pop-notifications.serv
 import { SessionService } from "@shared/services/session.service";
 import { UserService } from "@shared/services/user.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
-import { StickyNavModule } from "ng2-sticky-nav";
 import { CookieService } from "ngx-cookie";
 import { NgxFilesizeModule } from "ngx-filesize";
 import { ImageCropperModule } from "ngx-image-cropper";
@@ -154,7 +153,6 @@ export function appInitializer(store: Store<State>, actions$: Actions) {
       },
       isolate: false
     }),
-    StickyNavModule,
 
     ApiModule,
     PipesModule
@@ -183,7 +181,6 @@ export function appInitializer(store: Store<State>, actions$: Actions) {
     ToastrModule,
     TimeagoModule,
     TranslateModule,
-    StickyNavModule,
 
     ApiModule,
     PipesModule

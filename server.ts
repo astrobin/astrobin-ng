@@ -10,12 +10,16 @@ import { existsSync } from "fs";
 import { REQUEST, RESPONSE } from "@nguniversal/express-engine/tokens";
 
 const compression = require("compression");
+const { createProxyMiddleware } = require("http-proxy-middleware");
 
 // The Express app is exported so that it can be used by serverless Functions.
 export function app(): express.Express {
   const server = express();
   const distFolder = join(process.cwd(), "dist/frontend/browser");
   const indexHtml = existsSync(join(distFolder, "index.original.html")) ? "index.original.html" : "index";
+  // Determine the proxy target based on the environment
+  const isProduction = process.env.NODE_ENV === "production";
+  const target = isProduction ? "https://www.astrobin.com" : "http://localhost:8084";
 
   // Our Universal express-engine (found @ https://github.com/angular/universal/tree/master/modules/express-engine)
   server.engine(
@@ -34,6 +38,21 @@ export function app(): express.Express {
   });
 
   server.use(compression());
+
+  // Serve robots.txt
+  server.get("/robots.txt", (req, res) => {
+    res.type("text/plain");
+    res.send(`User-agent: *\nDisallow:\n\nSitemap: https://cdn.astrobin.com/sitemaps/app/sitemap_index.xml`);
+  });
+
+  // Define the proxy middleware explicitly
+  const apiProxy = createProxyMiddleware({
+    target: target,
+    changeOrigin: true
+  });
+
+  // Apply the proxy middleware to the /api route
+  server.use("/api", apiProxy);
 
   // Example Express Rest API endpoints
   // server.get('/api/**', (req, res) => { });

@@ -13,7 +13,7 @@ import { UserInterface } from "@shared/interfaces/user.interface";
   providedIn: "root"
 })
 export class JsonApiService extends BaseClassicApiService implements JsonApiServiceInterface {
-  configUrl = environment.classicApiUrl + "/json-api";
+  configUrl = environment.classicBaseUrl + "/json-api";
 
   constructor(public loadingService: LoadingService, private http: HttpClient) {
     super(loadingService);

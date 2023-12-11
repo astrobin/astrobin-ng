@@ -17,7 +17,7 @@ export class PaymentsApiService {
   }
 
   public getConfig(): Observable<PaymentsApiConfigInterface> {
-    return this.http.get<PaymentsApiConfigInterface>(`${environment.classicApiUrl}/payments/config/`);
+    return this.http.get<PaymentsApiConfigInterface>(`${environment.classicBaseUrl}/payments/config/`);
   }
 
   public createCheckoutSession(
@@ -28,7 +28,7 @@ export class PaymentsApiService {
     autorenew: boolean
   ): Observable<PaymentsApiCheckoutSessionInterface> {
     return this.http.post<PaymentsApiCheckoutSessionInterface>(
-      `${environment.classicApiUrl}/payments/create-checkout-session/${userId}/${product}/${currency}/${recurringUnit}/${autorenew}/`,
+      `${environment.classicBaseUrl}/payments/create-checkout-session/${userId}/${product}/${currency}/${recurringUnit}/${autorenew}/`,
       {}
     );
   }
@@ -40,7 +40,7 @@ export class PaymentsApiService {
     recurringUnit: RecurringUnit
   ): Observable<void> {
     return this.http.post<void>(
-      `${environment.classicApiUrl}/payments/upgrade-subscription/${userId}/${product}/${currency}/${recurringUnit}/`,
+      `${environment.classicBaseUrl}/payments/upgrade-subscription/${userId}/${product}/${currency}/${recurringUnit}/`,
       {}
     );
   }

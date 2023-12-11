@@ -94,6 +94,7 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
       )
       .subscribe(() => {
         this._setParams();
+        this._updateTitle(this.activatedRoute.snapshot.data?.item);
       });
   }
 
@@ -143,10 +144,11 @@ export class ExplorerPageComponent extends ExplorerBaseComponent implements OnIn
   private _updateTitle(item?: EquipmentItem) {
     if (!!item) {
       this.equipmentItemService.getFullDisplayName$(item).subscribe(fullDisplayName => {
-        this.title = `${this.translateService.instant("Equipment explorer")}: ${fullDisplayName}`;
+        this.title = fullDisplayName;
         this.titleService.setTitle(this.title);
       });
     } else {
+      this.title = this.translateService.instant("Equipment explorer");
       this.titleService.setTitle(this.title);
     }
   }

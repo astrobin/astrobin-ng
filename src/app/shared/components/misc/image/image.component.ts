@@ -7,6 +7,7 @@ import {
   Inject,
   Input,
   OnChanges,
+  OnDestroy,
   OnInit,
   Output,
   PLATFORM_ID,
@@ -29,7 +30,7 @@ import { ImageService } from "@shared/services/image/image.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { debounceTime, distinctUntilChanged, filter, map, switchMap, take, takeUntil } from "rxjs/operators";
-import { fromEvent, merge, Observable, of } from "rxjs";
+import { fromEvent, merge, Observable, of, Subscription } from "rxjs";
 import { selectImageRevisionsForImage } from "@app/store/selectors/app/image-revision.selectors";
 import { Actions, ofType } from "@ngrx/effects";
 import { ImageThumbnailInterface } from "@shared/interfaces/image-thumbnail.interface";
@@ -43,7 +44,7 @@ declare const videojs: any;
   templateUrl: "./image.component.html",
   styleUrls: ["./image.component.scss"]
 })
-export class ImageComponent extends BaseComponentDirective implements OnInit, OnChanges {
+export class ImageComponent extends BaseComponentDirective implements OnInit, OnChanges, OnDestroy {
   @Input()
   @HostBinding("attr.data-id")
   id: number;
@@ -75,6 +76,7 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
   height: number;
   progress = 0;
   videoJsReady = false;
+  autoLoadSubscription: Subscription;
 
   constructor(
     public readonly store$: Store<State>,
@@ -119,21 +121,31 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
     this.load();
   }
 
+  ngOnDestroy(): void {
+    if (this.thumbnailUrl) {
+      (this.windowRefService.nativeWindow as any).URL.revokeObjectURL(this.thumbnailUrl as string);
+    }
+
+    if (this.autoLoadSubscription) {
+      this.autoLoadSubscription.unsubscribe();
+      this.autoLoadSubscription = null;
+    }
+  }
+
   load() {
+    const noNeedToLoad = () => !!this.thumbnailUrl ||
+      !this.utilsService.isNearBelowViewport(this.elementRef.nativeElement);
+
+    if (noNeedToLoad()) {
+      return;
+    }
+
     // 0-200 ms
     this.utilsService
       .delay(Math.floor(Math.random() * 200))
       .pipe(take(1))
       .subscribe(() => {
-        if (!!this.thumbnailUrl) {
-          return;
-        }
-
-        if (this.loading) {
-          return;
-        }
-
-        if (!this.utilsService.isNearBelowViewport(this.elementRef.nativeElement)) {
+        if (noNeedToLoad()) {
           return;
         }
 
@@ -173,6 +185,11 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
   }
 
   onLoad(event) {
+    if (this.autoLoadSubscription) {
+      this.autoLoadSubscription.unsubscribe();
+      this.autoLoadSubscription = null;
+    }
+
     this.loaded.emit();
   }
 
@@ -263,8 +280,8 @@ export class ImageComponent extends BaseComponentDirective implements OnInit, On
       const resize$ = fromEvent(this.windowRefService.nativeWindow, "resize");
       const forceCheck$ = this.actions$.pipe(ofType(AppActionTypes.FORCE_CHECK_IMAGE_AUTO_LOAD));
 
-      merge(scroll$, resize$, forceCheck$)
-        .pipe(takeUntil(this.destroyed$), debounceTime(50), distinctUntilChanged())
+      this.autoLoadSubscription = merge(scroll$, resize$, forceCheck$)
+        .pipe(takeUntil(this.destroyed$), debounceTime(200), distinctUntilChanged())
         .subscribe(() => this.load());
     }
   }

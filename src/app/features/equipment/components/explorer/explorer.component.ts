@@ -232,7 +232,7 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
   onItemTypeChanged(itemType: EquipmentItemType) {
     if (!!itemType && itemType !== this.activeType) {
       this.activeType = itemType;
-      this.router.navigateByUrl(`/equipment/explorer/${itemType.toLowerCase()}/`);
+      this.router.navigateByUrl(`/equipment/explorer/${itemType.toLowerCase()}`);
     }
   }
 

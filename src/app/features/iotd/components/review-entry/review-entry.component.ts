@@ -1,4 +1,4 @@
-import { Component, ElementRef } from "@angular/core";
+import { Component, ElementRef, Inject, PLATFORM_ID } from "@angular/core";
 import { State } from "@app/store/state";
 import { BasePromotionEntryComponent } from "@features/iotd/components/base-promotion-entry/base-promotion-entry.component";
 import { DeleteVote, PostVote } from "@features/iotd/store/iotd.actions";
@@ -16,6 +16,7 @@ import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { TranslateService } from "@ngx-translate/core";
 import { ReviewImageInterface } from "@features/iotd/types/review-image.interface";
 import { Actions } from "@ngrx/effects";
+import { UtilsService } from "@shared/services/utils/utils.service";
 
 @Component({
   selector: "astrobin-review-entry",
@@ -32,7 +33,9 @@ export class ReviewEntryComponent extends BasePromotionEntryComponent {
     public readonly cookieService: CookieService,
     public readonly windowRefService: WindowRefService,
     public readonly classicRoutesService: ClassicRoutesService,
-    public readonly translateService: TranslateService
+    public readonly translateService: TranslateService,
+    public readonly utilsService: UtilsService,
+    @Inject(PLATFORM_ID) public readonly platformId: Object
   ) {
     super(
       store$,
@@ -42,7 +45,9 @@ export class ReviewEntryComponent extends BasePromotionEntryComponent {
       cookieService,
       windowRefService,
       classicRoutesService,
-      translateService
+      translateService,
+      utilsService,
+      platformId
     );
   }
 

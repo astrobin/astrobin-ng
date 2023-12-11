@@ -19,8 +19,8 @@ import { Store } from "@ngrx/store";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { ImageComponent } from "@shared/components/misc/image/image.component";
 import { ImageAlias } from "@shared/enums/image-alias.enum";
-import { Observable } from "rxjs";
-import { filter, map, take, takeUntil } from "rxjs/operators";
+import { fromEvent, merge, Observable, Subscription } from "rxjs";
+import { debounceTime, distinctUntilChanged, filter, map, take, takeUntil } from "rxjs/operators";
 import { PromotionImageInterface } from "@features/iotd/types/promotion-image.interface";
 import { CookieService } from "ngx-cookie";
 import { selectImage } from "@app/store/selectors/app/image.selectors";
@@ -33,6 +33,8 @@ import { selectEquipmentItem } from "@features/equipment/store/equipment.selecto
 import { LoadEquipmentItem } from "@features/equipment/store/equipment.actions";
 import { Actions, ofType } from "@ngrx/effects";
 import { ForceCheckImageAutoLoad } from "@app/store/actions/image.actions";
+import { isPlatformBrowser } from "@angular/common";
+import { UtilsService } from "@shared/services/utils/utils.service";
 
 @Component({
   selector: "astrobin-base-promotion-entry",
@@ -84,6 +86,7 @@ export abstract class BasePromotionEntryComponent extends BaseComponentDirective
   expirationDate: string;
   isPromoted: boolean;
   mayPromote: boolean;
+  autoLoadSubscription: Subscription;
 
   protected constructor(
     public readonly store$: Store<State>,
@@ -93,7 +96,9 @@ export abstract class BasePromotionEntryComponent extends BaseComponentDirective
     public readonly cookieService: CookieService,
     public readonly windowRefService: WindowRefService,
     public readonly classicRoutesService: ClassicRoutesService,
-    public readonly translateService: TranslateService
+    public readonly translateService: TranslateService,
+    public readonly utilsService: UtilsService,
+    public readonly platformId: Object
   ) {
     super(store$);
   }
@@ -119,23 +124,7 @@ export abstract class BasePromotionEntryComponent extends BaseComponentDirective
       .pipe(takeUntil(this.destroyed$))
       .subscribe(mayPromote => (this.mayPromote = mayPromote));
 
-    for (const telescope of this.entry.imagingTelescopes2) {
-      this.store$.dispatch(
-        new LoadEquipmentItem({
-          type: EquipmentItemType.TELESCOPE,
-          id: telescope
-        })
-      );
-    }
-
-    for (const camera of this.entry.imagingCameras2) {
-      this.store$.dispatch(
-        new LoadEquipmentItem({
-          type: EquipmentItemType.CAMERA,
-          id: camera
-        })
-      );
-    }
+    this._setupAutoloadEquipment();
   }
 
   isHidden$(pk: PromotionImageInterface["pk"]): Observable<boolean> {
@@ -217,6 +206,47 @@ export abstract class BasePromotionEntryComponent extends BaseComponentDirective
   viewFullscreen(pk: PromotionImageInterface["pk"]): void {
     if (!this.image.loading && !this.image.image.videoFile) {
       this.store$.dispatch(new ShowFullscreenImage(pk));
+    }
+  }
+
+  private _setupAutoloadEquipment(): void {
+    if (
+      UtilsService.isNullOrEmpty(this.entry.imagingCameras2) &&
+      UtilsService.isNullOrEmpty(this.entry.imagingTelescopes2)
+    ) {
+      return;
+    }
+
+    if (isPlatformBrowser(this.platformId)) {
+      const scroll$ = fromEvent(this.windowRefService.nativeWindow, "scroll");
+      const resize$ = fromEvent(this.windowRefService.nativeWindow, "resize");
+
+      this.autoLoadSubscription = merge(scroll$, resize$)
+        .pipe(takeUntil(this.destroyed$), debounceTime(200), distinctUntilChanged())
+        .subscribe(() => {
+          if (this.utilsService.isNearBelowViewport(this.elementRef.nativeElement)) {
+            for (const telescope of this.entry.imagingTelescopes2) {
+              this.store$.dispatch(
+                new LoadEquipmentItem({
+                  type: EquipmentItemType.TELESCOPE,
+                  id: telescope
+                })
+              );
+            }
+
+            for (const camera of this.entry.imagingCameras2) {
+              this.store$.dispatch(
+                new LoadEquipmentItem({
+                  type: EquipmentItemType.CAMERA,
+                  id: camera
+                })
+              );
+            }
+
+            this.autoLoadSubscription.unsubscribe();
+            this.autoLoadSubscription = null;
+          }
+        });
     }
   }
 }

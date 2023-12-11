@@ -1,14 +1,24 @@
 <div class="page has-breadcrumb">
-  <div class="d-flex justify-content-between">
-    <h1 class="flex-grow-1">
-      {{ "Submission queue" | translate }}
-    </h1>
+  <h1 class="d-flex justify-content-between">
+    <span class="flex-grow-1">{{ "Submission queue" | translate }}</span>
 
-    <div class="actions">
+    <span class="actions">
       <astrobin-queue-sort-button (queueSortOrderChanged)="refresh($event)" class="me-2"></astrobin-queue-sort-button>
-      <astrobin-refresh-button (click)="refresh()"></astrobin-refresh-button>
-    </div>
-  </div>
+
+      <button (click)="refresh()" class="btn me-2">
+        <fa-icon icon="sync"></fa-icon>
+        {{ "Refresh" | translate }}
+      </button>
+
+      <astrobin-toggle-button
+        (toggle)="toggleDisplayHiddenImages()"
+        [label]="'Display hidden images' | translate"
+        [value]="displayHiddenImages"
+        class="me-1"
+        id="display-hidden-images"
+      ></astrobin-toggle-button>
+    </span>
+  </h1>
 
   <ng-container *ngIf="queue$ | async as queue; else loading">
     <ng-container *ngIf="hiddenImages$ | async as hiddenImages">
@@ -16,10 +26,9 @@
         <ng-container *ngIf="!loadingQueue; else loading">
           <ng-container *ngIf="queue?.count > 0; else noEntries">
             <astrobin-submission-slots
+              #promotionSlots
               (slotClick)="scrollToEntry($event)"
               [availableEntries]="queue.results"
-              ngStickyNav
-              stickyClass="sticky-promotion-slots"
             >
             </astrobin-submission-slots>
 
@@ -28,6 +37,7 @@
             <ng-container *ngFor="let entry of queue.results">
               <astrobin-submission-entry
                 #promotionQueueEntries
+                *ngIf="displayHiddenImages || !isHidden(entry.pk, hiddenImages)"
                 [entry]="entry"
                 id="promotion-queue-entry-{{ entry.pk }}"
               >
@@ -45,7 +55,11 @@
 </div>
 
 <ng-template #noEntries>
-  <p>{{ "The submission queue is currently empty or being refreshed." | translate }}&nbsp;{{ comeBackInMinutesMessage(15) }}</p>
+  <p>
+    {{ "The submission queue is currently empty or being refreshed." | translate }}&nbsp;{{
+    comeBackInMinutesMessage(15)
+    }}
+  </p>
 </ng-template>
 
 <ng-template #pagination let-queue="queue">

@@ -166,7 +166,8 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
               label: "Gain",
               required: false,
               step: 1,
-              min: 0
+              min: -99999.99,
+              max: 99999.99
             },
             validators: {
               validation: [
@@ -329,6 +330,10 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
                 {
                   value: BortleScale.FOUR,
                   label: this.translateService.instant("4 - Rural/suburban transition (GREEN/YELLOW)")
+                },
+                {
+                  value: BortleScale.FOUR_POINT_FIVE,
+                  label: this.translateService.instant("4.5 - Semi-Suburban/Transition sky (YELLOW)")
                 },
                 { value: BortleScale.FIVE, label: this.translateService.instant("5 - Suburban sky (ORANGE)") },
                 { value: BortleScale.SIX, label: this.translateService.instant("6 - Bright suburban sky (RED)") },
@@ -556,7 +561,8 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
               label: "Gain",
               required: false,
               step: 1,
-              min: 0
+              min: -99999.99,
+              max: 99999.99
             },
             validators: {
               validation: [

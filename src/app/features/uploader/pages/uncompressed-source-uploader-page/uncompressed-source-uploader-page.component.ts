@@ -89,7 +89,7 @@ export class UncompressedSourceUploaderPageComponent extends BaseComponentDirect
       .getThumbnailGroup(this.image.pk, Constants.ORIGINAL_REVISION)
       .pipe(map(thumbnailGroup => thumbnailGroup.gallery));
 
-    this.uploadDataService.setEndpoint(`${environment.classicBaseUrl}/api/v2/images/uncompressed-source-upload/`);
+    this.uploadDataService.setEndpoint(`${environment.classicApiUrl}/api/v2/images/uncompressed-source-upload/`);
     this.uploadDataService.setAllowedTypes(Constants.ALLOWED_UNCOMPRESSED_SOURCE_UPLOAD_EXTENSIONS.join(","));
 
     this.uploaderService.events.pipe(takeUntil(this.destroyed$)).subscribe(uploadState => {

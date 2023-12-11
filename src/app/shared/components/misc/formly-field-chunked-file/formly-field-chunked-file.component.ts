@@ -20,6 +20,36 @@ import { selectBackendConfig } from "@app/store/selectors/app/app.selectors";
 // PLEASE NOTE: due to the usage of the UploadDataService, there can be only one chunked file upload field on a page
 // at any given time.
 
+export class TusPost extends Tus {
+  usePOST = false;
+
+  override async sendFileContent(): Promise<number | undefined> {
+    const uploadUsingPost = async (): Promise<number | undefined> => {
+      const { body, start, end } = this.getChunk();
+      const headers = {
+        "X-HTTP-Method-Override": "PATCH",
+        "Content-Type": "application/offset+octet-stream",
+        "Upload-Offset": start
+      };
+      await this.request({ method: "POST", body, headers });
+      return this.getOffsetFromResponse() || end;
+    }
+
+    if (this.usePOST) {
+      return await uploadUsingPost();
+    }
+
+    try {
+      // First try with PATCH (native Tus).
+      return await super.sendFileContent();
+    } catch (error) {
+      // If PATCH fails, fallback to POST from now on.
+      this.usePOST = true;
+      return await uploadUsingPost();
+    }
+  }
+}
+
 @Component({
   selector: "astrobin-formly-field-chunked-file",
   templateUrl: "./formly-field-chunked-file.component.html",
@@ -31,7 +61,7 @@ export class FormlyFieldChunkedFileComponent extends FieldType implements OnInit
   uploadState: UploadState;
   uploadOptions: UploadxOptions = {
     allowedTypes: Constants.ALLOWED_IMAGE_UPLOAD_EXTENSIONS.join(","),
-    uploaderClass: Tus,
+    uploaderClass: TusPost,
     maxChunkSize: 2 * 1024 * 1024,
     multiple: false,
     autoUpload: false,

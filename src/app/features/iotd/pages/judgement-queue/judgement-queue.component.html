@@ -1,38 +1,43 @@
 <div class="page has-breadcrumb">
-  <div class="d-flex justify-content-between">
-    <h1 class="flex-grow-1">
-      {{ "Judgement queue" | translate }}
-    </h1>
+  <h1 class="d-flex justify-content-between">
+    <span class="flex-grow-1">{{ "Judgement queue" | translate }}</span>
 
-    <div class="options">
-      <astrobin-queue-sort-button
-        class="me-2"
-        (queueSortOrderChanged)="refresh($event)"
-      ></astrobin-queue-sort-button>
-      <astrobin-refresh-button (click)="refresh()"></astrobin-refresh-button>
-    </div>
-  </div>
+    <span class="actions">
+      <astrobin-queue-sort-button (queueSortOrderChanged)="refresh($event)" class="me-2"></astrobin-queue-sort-button>
+
+      <button (click)="refresh()" class="btn me-2">
+        <fa-icon icon="sync"></fa-icon>
+        {{ "Refresh" | translate }}
+      </button>
+
+      <astrobin-toggle-button
+        (toggle)="toggleDisplayHiddenImages()"
+        [label]="'Display hidden images' | translate"
+        [value]="displayHiddenImages"
+        class="me-1"
+        id="display-hidden-images"
+      ></astrobin-toggle-button>
+    </span>
+  </h1>
 
   <ng-container *ngIf="queue$ | async as queue; else loading">
     <ng-container *ngIf="hiddenImages$ | async as hiddenImages">
       <ng-container *ngIf="promotions$ | async as promotions">
         <ng-container *ngIf="queue?.count > 0; else noEntries">
-          <astrobin-future-iotd-slots
-            (slotClick)="scrollToEntry($event)"
-            [availableEntries]="queue.results"
-          >
+          <astrobin-future-iotd-slots (slotClick)="scrollToEntry($event)" [availableEntries]="queue.results">
           </astrobin-future-iotd-slots>
 
           <ng-container [ngTemplateOutletContext]="{ queue: queue }" [ngTemplateOutlet]="pagination"></ng-container>
 
-          <div class="alert alert-warning" *ngIf="!!cannotSelectReason">
+          <div *ngIf="!!cannotSelectReason" class="alert alert-warning">
             <span [innerHTML]="cannotSelectMessage"></span>
           </div>
 
           <div class="row">
-            <div class="col-lg-6" *ngFor="let entry of queue.results">
+            <div *ngFor="let entry of queue.results" class="col-lg-6">
               <astrobin-judgement-entry
                 #promotionQueueEntries
+                *ngIf="displayHiddenImages || !isHidden(entry.pk, hiddenImages)"
                 [entry]="entry"
                 id="promotion-queue-entry-{{ entry.pk }}"
               >
@@ -50,7 +55,11 @@
 </div>
 
 <ng-template #noEntries>
-  <p>{{ "The judgement queue is currently empty or being refreshed." | translate }}&nbsp;{{ comeBackInMinutesMessage(15) }}</p>
+  <p>
+    {{ "The judgement queue is currently empty or being refreshed." | translate }}&nbsp;{{
+    comeBackInMinutesMessage(15)
+    }}
+  </p>
 </ng-template>
 
 <ng-template #pagination let-queue="queue">

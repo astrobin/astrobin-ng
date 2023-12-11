@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, Inject, OnInit, PLATFORM_ID } from "@angular/core";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { State } from "@app/store/state";
 import { BasePromotionQueueComponent } from "@features/iotd/components/base-promotion-queue/base-promotion-queue.component";
@@ -49,7 +49,8 @@ export class JudgementQueueComponent extends BasePromotionQueueComponent impleme
     public readonly changeDetectorRef: ChangeDetectorRef,
     public readonly timeagoFormatter: TimeagoFormatter,
     public readonly timeagoClock: TimeagoClock,
-    public readonly classicRoutesService: ClassicRoutesService
+    public readonly classicRoutesService: ClassicRoutesService,
+    @Inject(PLATFORM_ID) public readonly platformId: Object
   ) {
     super(
       store$,
@@ -59,7 +60,8 @@ export class JudgementQueueComponent extends BasePromotionQueueComponent impleme
       popNotificationsService,
       translateService,
       windowRefService,
-      cookieService
+      cookieService,
+      platformId
     );
   }
 

@@ -135,15 +135,15 @@ export class BrandExplorerPageComponent extends ExplorerBaseComponent implements
       componentInstance.enableSelectFrozen = false;
 
       modal.closed.pipe(take(1)).subscribe((variant: EquipmentItem) => {
-        this.router.navigateByUrl(`/equipment/explorer/${variant.klass}/${variant.id}/`);
+        this.router.navigateByUrl(`/equipment/explorer/${variant.klass}/${variant.id}`);
       });
     } else {
-      this.router.navigateByUrl(`/equipment/explorer/${item.klass}/${item.id}/`);
+      this.router.navigateByUrl(`/equipment/explorer/${item.klass}/${item.id}`);
     }
   }
 
   closeBrand() {
-    this.router.navigateByUrl("/equipment/explorer/brand/");
+    this.router.navigateByUrl("/equipment/explorer/brand");
   }
 
   private _loadAllPages() {
