@@ -26,15 +26,31 @@
 
           <div class="col">
             <astrobin-marketplace-user-card [userId]="listing.user"></astrobin-marketplace-user-card>
+
+            <a
+              class="btn btn-xl btn-primary d-block w-100 mt-4"
+              href="#">
+              <fa-icon icon="shopping-cart"></fa-icon>
+              {{ "Buy now" | translate }}
+            </a>
+
+            <a
+              class="btn btn-xl btn-primary d-block w-100 mt-4"
+              href="#">
+              <fa-icon icon="handshake"></fa-icon>
+              {{ "Make an offer" | translate }}
+            </a>
+
             <astrobin-toggle-property
               [contentType]="listingContentType.id"
               [objectId]="listing.id.toString()"
               [userId]="currentUser.id"
-              btnClass="btn btn-lg btn-primary d-block w-100 mt-4"
+              btnClass="btn btn-lg btn-secondary d-block w-100 mt-4"
               propertyType="follow"
               setLabel="{{ 'Subscribe to listing updates' | translate }}"
               unsetLabel="{{ 'Unsubscribe from updates' | translate }}"
             ></astrobin-toggle-property>
+
             <a
               [attr.href]="classicRoutesService.COMPOSE_MESSAGE(listingUser.username, 'Question about listing: ' + listing.hash)"
               class="btn btn-lg btn-secondary d-block w-100 mt-4">
