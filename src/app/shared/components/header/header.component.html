@@ -62,7 +62,7 @@
             type="text"
           />
         </label>
-        <input type="hidden" name="d" value="i" />
+        <input name="d" type="hidden" value="i" />
       </form>
     </li>
     <!-- ./Quick search form -->
@@ -189,8 +189,16 @@
             [routerLink]="['equipment', 'explorer']"
             class="dropdown-item"
           >
-            <fa-icon icon="camera"></fa-icon>
-            {{ "Equipment" | translate }}
+            <fa-icon icon="database"></fa-icon>
+            {{ "Equipment database" | translate }}
+          </a>
+
+          <a
+            [routerLink]="['equipment', 'marketplace']"
+            class="dropdown-item"
+          >
+            <fa-icon icon="shop"></fa-icon>
+            {{ "Equipment marketplace" | translate }}
           </a>
 
           <a [routerLink]="['explore', 'constellations']" class="dropdown-item">
@@ -305,7 +313,7 @@
 
         <div class="dropdown-divider"></div>
 
-        <a class="dropdown-item" [attr.href]="helpWithTranslationsUrl" target="_blank">
+        <a [attr.href]="helpWithTranslationsUrl" class="dropdown-item" target="_blank">
           <fa-icon icon="tasks"></fa-icon>
           {{ "Help with translations!" | translate }}
         </a>
@@ -351,9 +359,9 @@
         <button class="btn btn-primary user-dropdown-toggle" id="user-dropdown" ngbDropdownToggle>
           <astrobin-username [user]="userWrapper.user"></astrobin-username>
           <span
-            class="indexes"
             *ngIf="!userWrapper.userProfile?.excludeFromCompetition"
             [ngbPopover]="indexesPopoverContent"
+            class="indexes"
             triggers="mouseenter:click"
           >
             <span class="image-index index">
