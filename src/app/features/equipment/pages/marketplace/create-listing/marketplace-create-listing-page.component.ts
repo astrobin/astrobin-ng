@@ -136,7 +136,7 @@ export class MarketplaceCreateListingPageComponent extends BaseComponentDirectiv
       )
       .subscribe(listing => {
         this.loadingService.setLoading(false);
-        this.router.navigateByUrl(`/equipment/marketplace/listing/${listing.id}`);
+        this.router.navigateByUrl(`/equipment/marketplace/listing/${listing.hash}`);
       });
 
     this.store$.dispatch(new CreateMarketplaceListing({ listing: this.form.value }));
