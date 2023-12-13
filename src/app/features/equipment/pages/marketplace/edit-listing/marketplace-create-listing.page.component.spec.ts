@@ -8,6 +8,8 @@ import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { HttpClientModule } from "@angular/common/http";
 import { StoreModule } from "@ngrx/store";
 import { MarketplaceEditListingPageComponent } from "@features/equipment/pages/marketplace/edit-listing/marketplace-edit-listing-page.component";
+import { ActivatedRoute } from "@angular/router";
+import { MarketplaceGenerator } from "@features/equipment/generators/marketplace.generator";
 
 describe("MarketplaceEditListingPageComponent", () => {
   let component: MarketplaceEditListingPageComponent;
@@ -16,7 +18,19 @@ describe("MarketplaceEditListingPageComponent", () => {
 
   beforeEach(async () => {
     await MockBuilder(MarketplaceEditListingPageComponent, AppModule)
-      .provide([provideMockStore({ initialState })])
+      .provide([
+        provideMockStore({ initialState }),
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              data: {
+                listing: MarketplaceGenerator.listing()
+              }
+            }
+          }
+        }
+      ])
       .keep(StoreModule.forRoot(appStateReducers))
       .keep(EffectsModule.forRoot(appStateEffects))
       .replace(HttpClientModule, HttpClientTestingModule);

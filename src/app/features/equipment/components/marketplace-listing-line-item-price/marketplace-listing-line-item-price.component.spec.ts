@@ -5,6 +5,7 @@ import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
 import { provideMockStore } from "@ngrx/store/testing";
 import { initialState } from "@app/store/state";
+import { MarketplaceGenerator } from "@features/equipment/generators/marketplace.generator";
 
 describe("MarketplaceListingLineItemPriceComponent", () => {
   let component: MarketplaceListingLineItemPriceComponent;
@@ -15,6 +16,7 @@ describe("MarketplaceListingLineItemPriceComponent", () => {
 
     fixture = TestBed.createComponent(MarketplaceListingLineItemPriceComponent);
     component = fixture.componentInstance;
+    component.lineItem = MarketplaceGenerator.lineItem();
     fixture.detectChanges();
   });
 

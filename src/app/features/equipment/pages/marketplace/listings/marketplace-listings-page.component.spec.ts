@@ -9,6 +9,7 @@ import { EffectsModule } from "@ngrx/effects";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { HttpClientModule } from "@angular/common/http";
 import { StoreModule } from "@ngrx/store";
+import { MarketplaceGenerator } from "@features/equipment/generators/marketplace.generator";
 
 describe("ListingsComponent", () => {
   let component: MarketplaceListingsPageComponent;
@@ -67,9 +68,7 @@ describe("ListingsComponent", () => {
       next: null,
       previous: null,
       results: [
-        {
-          id: 1
-        }
+        MarketplaceGenerator.listing()
       ]
     };
 
@@ -83,7 +82,7 @@ describe("ListingsComponent", () => {
     const nothingHere = fixture.nativeElement.querySelector("astrobin-nothing-here");
     expect(nothingHere).toBeFalsy();
 
-    const listingElements = fixture.nativeElement.querySelectorAll(".listing");
+    const listingElements = fixture.nativeElement.querySelectorAll(".line-item");
     expect(listingElements.length).toEqual(listings.results.length);
   });
 });
