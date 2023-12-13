@@ -25,6 +25,9 @@ import { UtilsService } from "@shared/services/utils/utils.service";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { forkJoin } from "rxjs";
+import { ActivatedRoute, Router } from "@angular/router";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
 
 @Component({
   selector: "astrobin-marketplace-listing-form",
@@ -81,7 +84,10 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
     public readonly loadingService: LoadingService,
     public readonly translateService: TranslateService,
     public readonly equipmentItemService: EquipmentItemService,
-    public readonly popNotificationsService: PopNotificationsService
+    public readonly popNotificationsService: PopNotificationsService,
+    public readonly modalService: NgbModal,
+    public readonly router: Router,
+    public readonly activatedRoute: ActivatedRoute
   ) {
     super(store$);
   }
@@ -101,6 +107,25 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
     }
 
     this.save.emit(this.form.value);
+  }
+
+  onCancel(event: Event) {
+    event.stopPropagation();
+
+    const _doCancel = () => {
+      this.form.reset();
+      this.router.navigate(["../"], { relativeTo: this.activatedRoute });
+    };
+
+    if (this.form.dirty) {
+      const modal = this.modalService.open(ConfirmationDialogComponent);
+      modal.componentInstance.message = this.translateService.instant("This will discard your changes.");
+      modal.closed.pipe(take(1)).subscribe(result => {
+        _doCancel();
+      });
+    } else {
+      _doCancel();
+    }
   }
 
   private _initFields() {

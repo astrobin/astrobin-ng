@@ -21,6 +21,14 @@
           {{ "Create" | translate }}
         </ng-template>
       </button>
+
+      <button
+        (click)="onCancel($event)"
+        [class.loading]="(loadingService.loading$ | async) || form.pending"
+        class="btn btn-lg btn-secondary w-100 mt-2"
+      >
+        {{ "Cancel" | translate }}
+      </button>
     </form>
   </div>
 
