@@ -298,6 +298,16 @@ export function reducer(state = initialEquipmentState, action: PayloadActionInte
       };
     }
 
+    case EquipmentActionTypes.DELETE_MARKETPLACE_LISTING_SUCCESS: {
+      return {
+        ...state,
+        marketplace: {
+          ...state.marketplace,
+          listings: state.marketplace.listings.filter(listing => listing.id !== action.payload.id)
+        }
+      }
+    }
+
     default: {
       return state;
     }

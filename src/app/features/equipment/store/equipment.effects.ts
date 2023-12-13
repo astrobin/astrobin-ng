@@ -45,6 +45,9 @@ import {
   CreateTelescopeSuccess,
   DeleteEquipmentPreset,
   DeleteEquipmentPresetSuccess,
+  DeleteMarketplaceListing,
+  DeleteMarketplaceListingFailure,
+  DeleteMarketplaceListingSuccess,
   EquipmentActionTypes,
   FindAllBrands,
   FindAllBrandsSuccess,
@@ -98,7 +101,7 @@ import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { All } from "@app/store/actions/app.actions";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
-import { catchError, filter, map, mergeMap, switchMap } from "rxjs/operators";
+import { catchError, filter, map, mergeMap, switchMap, tap } from "rxjs/operators";
 import { selectBrand, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
 import { SensorInterface } from "@features/equipment/types/sensor.interface";
 import { BrandInterface } from "@features/equipment/types/brand.interface";
@@ -106,6 +109,7 @@ import { UtilsService } from "@shared/services/utils/utils.service";
 import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { SelectorWithProps } from "@ngrx/store/src/models";
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
+import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 
 function getFromStoreOrApiByIdAndType<T>(
   store$: Store<State>,
@@ -823,11 +827,46 @@ export class EquipmentEffects {
     )
   );
 
+  DeleteMarketplaceListing: Observable<DeleteMarketplaceListingSuccess | DeleteMarketplaceListingFailure> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(EquipmentActionTypes.DELETE_MARKETPLACE_LISTING),
+      map((action: DeleteMarketplaceListing) => action.payload),
+      mergeMap(payload =>
+        this.equipmentApiService.deleteMarketplaceListing(payload.listing.id)
+          .pipe(
+            map(() => new DeleteMarketplaceListingSuccess({ id: payload.listing.id })),
+            catchError(error => of(new DeleteMarketplaceListingFailure({ error })))
+          )
+      )
+    )
+  );
+
+  DeleteMarketplaceListingSuccess: Observable<void> = createEffect(() =>
+      this.actions$.pipe(
+        ofType(EquipmentActionTypes.DELETE_MARKETPLACE_LISTING_SUCCESS),
+        tap(() => this.popNotificationsService.success("Listing deleted successfully"))
+      ),
+    { dispatch: false }
+  );
+
+  DeleteMarketplaceListingFailure: Observable<{ error: string; }> = createEffect(() =>
+      this.actions$.pipe(
+        ofType(EquipmentActionTypes.DELETE_MARKETPLACE_LISTING_FAILURE),
+        map((action: DeleteMarketplaceListingFailure) => action.payload),
+        tap(payload => this.popNotificationsService.error(
+          "There was an error performing this operation. Please try again later or contact support if the issue " +
+          "persists. Error: " + payload.error
+        ))
+      ),
+    { dispatch: false }
+  );
+
   constructor(
     public readonly store$: Store<State>,
     public readonly actions$: Actions<All>,
     public readonly equipmentApiService: EquipmentApiService,
-    public readonly utilsService: UtilsService
+    public readonly utilsService: UtilsService,
+    public readonly popNotificationsService: PopNotificationsService
   ) {
   }
 }
