@@ -4,31 +4,5 @@
     {{ "Publish your listing on AstroBin's Marketplace. A listing can have one or more equipment items in it." | translate }}
   </small>
 
-  <div class="row">
-    <div class="col-lg-5">
-      <form [formGroup]="form">
-        <formly-form
-          [fields]="fields"
-          [form]="form"
-          [model]="model"
-        ></formly-form>
-
-        <button
-          (click)="onCreate($event)"
-          [class.loading]="(loadingService.loading$ | async) || form.pending"
-          class="btn btn-lg btn-primary w-100 mt-4"
-        >
-          <fa-icon icon="plus"></fa-icon>
-          {{ "Create listing" | translate }}
-        </button>
-      </form>
-    </div>
-
-    <div class="col-lg-7">
-      <astrobin-marketplace-listing
-        [listing]="form.value"
-        [previewMode]="true"
-      ></astrobin-marketplace-listing>
-    </div>
-  </div>
+  <astrobin-marketplace-listing-form (save)="onCreate($event)"></astrobin-marketplace-listing-form>
 </div>
