@@ -33,7 +33,7 @@
       </div>
 
       <div class="w-100">
-        <div *ngIf="!!lineItem.description" class="description">
+        <div *ngIf="!!lineItem.description; else noDescriptionTemplate" class="description">
           {{ lineItem.description }}
         </div>
       </div>
@@ -58,4 +58,8 @@
 
 <ng-template #loadingTemplate>
   <astrobin-loading-indicator></astrobin-loading-indicator>
+</ng-template>
+
+<ng-template #noDescriptionTemplate>
+  <p class="text-muted">{{ "No description provided." | translate }}</p>
 </ng-template>

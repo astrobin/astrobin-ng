@@ -6,9 +6,6 @@ import { TranslateService } from "@ngx-translate/core";
 import { TitleService } from "@shared/services/title/title.service";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { map, take } from "rxjs/operators";
-import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
-import { UtilsService } from "@shared/services/utils/utils.service";
-import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import {
   CreateMarketplaceListing,
   CreateMarketplaceListingSuccess,
@@ -24,9 +21,6 @@ import { Router } from "@angular/router";
   styleUrls: ["./marketplace-create-listing.page.component.scss"]
 })
 export class MarketplaceCreateListingPageComponent extends BaseComponentDirective implements OnInit {
-  readonly UtilsService = UtilsService;
-  readonly maxImages = 9;
-
   readonly title = this.translateService.instant("Create listing");
   readonly breadcrumb = new SetBreadcrumb({
     breadcrumb: [
@@ -49,8 +43,6 @@ export class MarketplaceCreateListingPageComponent extends BaseComponentDirectiv
     public readonly actions$: Actions,
     public readonly translateService: TranslateService,
     public readonly titleService: TitleService,
-    public readonly equipmentItemService: EquipmentItemService,
-    public readonly popNotificationsService: PopNotificationsService,
     public readonly loadingService: LoadingService,
     public readonly router: Router
   ) {

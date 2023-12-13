@@ -203,6 +203,10 @@ export class EquipmentEffects {
           return of(new LoadEquipmentItemSuccess({ item: payload.item }));
         }
 
+        if (!payload.id || !payload.type) {
+          return of(new LoadEquipmentItemFailure({ id: payload.id, klass: payload.type }));
+        }
+
         return getFromStoreOrApiByIdAndType<EquipmentItemBaseInterface>(
           this.store$,
           payload.id,

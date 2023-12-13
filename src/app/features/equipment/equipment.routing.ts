@@ -19,6 +19,7 @@ import { MarketplaceListingsPageComponent } from "@features/equipment/pages/mark
 import { MarketplaceCreateListingPageComponent } from "@features/equipment/pages/marketplace/create-listing/marketplace-create-listing-page.component";
 import { MarketplaceListingPageComponent } from "@features/equipment/pages/marketplace/listing/marketplace-listing.page.component";
 import { MarketplaceListingResolver } from "@features/equipment/resolvers/marketplace-listing.resolver";
+import { MarketplaceEditListingPageComponent } from "@features/equipment/pages/marketplace/edit-listing/marketplace-edit-listing-page.component";
 
 export const routes: Routes = [
   {
@@ -167,6 +168,13 @@ export const routes: Routes = [
       {
         path: "create",
         component: MarketplaceCreateListingPageComponent
+      },
+      {
+        path: "listing/:hash/edit",
+        component: MarketplaceEditListingPageComponent,
+        resolve: {
+          listing: MarketplaceListingResolver
+        }
       },
       {
         path: "listing/:hash",

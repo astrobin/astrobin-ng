@@ -1,0 +1,8 @@
+<div class="page has-breadcrumb">
+  <h1>{{ title }}</h1>
+  <small>
+    {{ "Edit your marketplace listing." | translate }}
+  </small>
+
+  <astrobin-marketplace-listing-form (save)="onSave($event)" [model]="listing"></astrobin-marketplace-listing-form>
+</div>

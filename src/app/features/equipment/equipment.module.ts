@@ -43,9 +43,10 @@ import { MarketplaceLineItemConditionComponent } from "./components/marketplace-
 import { MarketplaceImagesComponent } from "./components/marketplace-listing-line-item-images/marketplace-images.component";
 import { MarketplaceListingPageComponent } from "./pages/marketplace/listing/marketplace-listing.page.component";
 import { MarketplaceLineItemCardComponent } from "./components/marketplace-line-item-card/marketplace-line-item-card.component";
-import { MarketplaceUserCardComponent } from './components/marketplace-user-card/marketplace-user-card.component';
-import { MarketplaceFeedbackWidgetComponent } from './components/marketplace-feedback-widget/marketplace-feedback-widget.component';
-import { MarketplaceListingFormComponent } from './components/marketplace-listing-form/marketplace-listing-form.component';
+import { MarketplaceUserCardComponent } from "./components/marketplace-user-card/marketplace-user-card.component";
+import { MarketplaceFeedbackWidgetComponent } from "./components/marketplace-feedback-widget/marketplace-feedback-widget.component";
+import { MarketplaceListingFormComponent } from "./components/marketplace-listing-form/marketplace-listing-form.component";
+import { MarketplaceEditListingPageComponent } from "@features/equipment/pages/marketplace/edit-listing/marketplace-edit-listing-page.component";
 
 @NgModule({
   declarations: [
@@ -90,7 +91,8 @@ import { MarketplaceListingFormComponent } from './components/marketplace-listin
     MarketplaceLineItemCardComponent,
     MarketplaceUserCardComponent,
     MarketplaceFeedbackWidgetComponent,
-    MarketplaceListingFormComponent
+    MarketplaceListingFormComponent,
+    MarketplaceEditListingPageComponent
   ],
   imports: [RouterModule.forChild(routes), SharedModule, StoreModule.forFeature(equipmentFeatureKey, reducer)]
 })

@@ -43,7 +43,7 @@ export class MarketplaceListingComponent extends BaseComponentDirective implemen
       const previous: MarketplaceListingInterface = changes.listing.previousValue;
 
       if (
-        (listing.latitude && listing.longitude && !previous) ||
+        changes.listing.isFirstChange() ||
         (listing.latitude !== previous.latitude && listing.longitude !== previous.longitude)
       ) {
         this.utilsService.delay(100).subscribe(() => {
@@ -54,6 +54,10 @@ export class MarketplaceListingComponent extends BaseComponentDirective implemen
   }
 
   initMap(latitude: number, longitude: number) {
+    if (latitude === undefined || longitude === undefined) {
+      return;
+    }
+
     const randomOffset = maxOffset => Math.random() * maxOffset - maxOffset / 2;
 
     const location = new this.googleMapsService.maps.LatLng(

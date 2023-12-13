@@ -41,18 +41,21 @@ export class MarketplaceImagesComponent extends BaseComponentDirective implement
           continue;
         }
 
-        const url: string = this.images[key][0].url.changingThisBreaksApplicationSecurity;
+        let url: string;
+
+        if (UtilsService.isString(this.images[key])) {
+          // The image is coming from the initialized form.
+          url = this.images[key];
+        } else {
+          // The image is coming from the uploader.
+          url = this.images[key][0].url.changingThisBreaksApplicationSecurity;
+        }
 
         this.sliderImages.push({
           image: url,
           thumbImage: url
         });
       }
-    } else if (UtilsService.isArray(this.images)) {
-      this.sliderImages = this.images.map(image => ({
-        image: image.imageFile,
-        thumbImage: image.imageFile
-      }));
     }
   }
 }

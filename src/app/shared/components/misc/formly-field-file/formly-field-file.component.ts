@@ -25,11 +25,13 @@ export class FormlyFieldFileComponent extends FieldType implements OnInit {
 
   ngOnInit() {
     if (this.formControl.value) {
-      this.loadingService.setLoading(true);
-      UtilsService.fileFromUrl(this.formControl.value).then((file: File) => {
-        this._setValueFromFiles([file]);
-        this.loadingService.setLoading(false);
-      });
+      if (UtilsService.isString(this.formControl.value)) {
+        this.loadingService.setLoading(true);
+        UtilsService.fileFromUrl(this.formControl.value).then((file: File) => {
+          this._setValueFromFiles([file]);
+          this.loadingService.setLoading(false);
+        });
+      }
     }
   }
 
@@ -50,10 +52,6 @@ export class FormlyFieldFileComponent extends FieldType implements OnInit {
     this._setValueFromFiles(event.target.files);
     this.formControl.markAsTouched();
     this.formControl.markAsDirty();
-  }
-
-  isImage(file: File): boolean {
-    return /^image\//.test(file.type);
   }
 
   _setValueFromFiles(files: File[]) {
