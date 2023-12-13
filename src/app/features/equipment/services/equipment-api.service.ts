@@ -783,16 +783,21 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     return this.http.get<MarketplaceListingInterface>(`${this.configUrl}/marketplace/listing/${id}/`);
   }
 
-  public loadMarketplaceListingByHash(hash: MarketplaceListingInterface["hash"]): Observable<MarketplaceListingInterface> {
-    return this.http.get<PaginatedApiResultInterface<MarketplaceListingInterface>>(`${this.configUrl}/marketplace/listing/?hash=${hash}`).pipe(
-      map((result: PaginatedApiResultInterface<MarketplaceListingInterface>) => {
+  public loadMarketplaceListingByHash(
+    hash: MarketplaceListingInterface["hash"]
+  ): Observable<MarketplaceListingInterface> {
+    return this.http
+      .get<PaginatedApiResultInterface<MarketplaceListingInterface>>(
+        `${this.configUrl}/marketplace/listing/?hash=${hash}`
+      )
+      .pipe(
+        map((result: PaginatedApiResultInterface<MarketplaceListingInterface>) => {
           if (result.results.length === 0) {
             throw new Error(`No marketplace listing found with hash ${hash}`);
           }
           return result.results[0];
-        }
-      )
-    );
+        })
+      );
   }
 
   public updateMarketplaceListing(listing: MarketplaceListingInterface) {
@@ -813,6 +818,13 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
       `${this.configUrl}/marketplace/listing/${lineItem.listing}/line-item/`,
       (({ images, ...rest }) => rest)(lineItem)
     );
+  }
+
+  public deleteMarketplaceLineItem(
+    listingId: MarketplaceListingInterface["id"],
+    lineItemId: MarketplaceLineItemInterface["id"]
+  ): Observable<void> {
+    return this.http.delete<void>(`${this.configUrl}/marketplace/listing/${listingId}/line-item/${lineItemId}/`);
   }
 
   public createMarketplaceImage(
@@ -836,6 +848,16 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
       `${this.configUrl}/marketplace/listing/${listingId}/line-item/${lineItemId}/image/`,
       formData,
       httpOptions
+    );
+  }
+
+  public deleteMarketplaceImage(
+    listingId: MarketplaceListingInterface["id"],
+    lineItemId: MarketplaceLineItemInterface["id"],
+    imageId: MarketplaceImageInterface["id"]
+  ): Observable<void> {
+    return this.http.delete<void>(
+      `${this.configUrl}/marketplace/listing/${listingId}/line-item/${lineItemId}/image/${imageId}/`
     );
   }
 

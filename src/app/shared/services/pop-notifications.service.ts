@@ -56,13 +56,6 @@ export class PopNotificationsService extends BaseService {
     return this.toastrService.error(message, title ? title : this.translateService.instant("Error!"), options);
   }
 
-  public genericError(errorMessage: string): ActiveToast<any> {
-    const prefix = this.translateService.instant(
-      "There was an error performing this operation. Please try again later or contact support if the issue " +
-      "persists. The error message is: ");
-    return this.error(`${prefix} ${errorMessage}`);
-  }
-
   public remove(toastId?: number) {
     this.toastrService.remove(toastId);
   }

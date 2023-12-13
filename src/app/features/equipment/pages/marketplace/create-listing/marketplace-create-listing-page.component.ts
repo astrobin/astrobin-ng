@@ -5,15 +5,17 @@ import { State } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
 import { TitleService } from "@shared/services/title/title.service";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
-import { map, take } from "rxjs/operators";
+import { take, tap } from "rxjs/operators";
 import {
   CreateMarketplaceListing,
+  CreateMarketplaceListingFailure,
   CreateMarketplaceListingSuccess,
   EquipmentActionTypes
 } from "@features/equipment/store/equipment.actions";
 import { Actions, ofType } from "@ngrx/effects";
 import { LoadingService } from "@shared/services/loading.service";
 import { Router } from "@angular/router";
+import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 
 @Component({
   selector: "astrobin-marketplace-create-listing-page",
@@ -44,7 +46,8 @@ export class MarketplaceCreateListingPageComponent extends BaseComponentDirectiv
     public readonly translateService: TranslateService,
     public readonly titleService: TitleService,
     public readonly loadingService: LoadingService,
-    public readonly router: Router
+    public readonly router: Router,
+    public readonly popNotificationsService: PopNotificationsService
   ) {
     super(store$);
   }
@@ -61,15 +64,22 @@ export class MarketplaceCreateListingPageComponent extends BaseComponentDirectiv
 
     this.actions$
       .pipe(
-        ofType(EquipmentActionTypes.CREATE_MARKETPLACE_LISTING_SUCCESS),
+        ofType(
+          EquipmentActionTypes.CREATE_MARKETPLACE_LISTING_SUCCESS,
+          EquipmentActionTypes.CREATE_MARKETPLACE_LISTING_FAILURE
+        ),
         take(1),
-        map((action: CreateMarketplaceListingSuccess) => action.payload.listing)
+        tap((action: CreateMarketplaceListingSuccess | CreateMarketplaceListingFailure) => {
+          if (action.type === EquipmentActionTypes.CREATE_MARKETPLACE_LISTING_SUCCESS) {
+            this.router.navigateByUrl(`/equipment/marketplace/listing/${action.payload.listing.hash}`).then(() => {
+              this.loadingService.setLoading(false);
+            });
+          } else {
+            this.loadingService.setLoading(false);
+          }
+        })
       )
-      .subscribe(listing => {
-        this.router.navigateByUrl(`/equipment/marketplace/listing/${listing.hash}`).then(() => {
-          this.loadingService.setLoading(false);
-        });
-      });
+      .subscribe();
 
     this.store$.dispatch(new CreateMarketplaceListing({ listing: value }));
   }

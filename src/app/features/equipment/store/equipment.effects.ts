@@ -26,6 +26,7 @@ import {
   CreateFilterEditProposalSuccess,
   CreateFilterSuccess,
   CreateMarketplaceListing,
+  CreateMarketplaceListingFailure,
   CreateMarketplaceListingSuccess,
   CreateMount,
   CreateMountEditProposal,
@@ -777,40 +778,51 @@ export class EquipmentEffects {
     )
   );
 
-  CreateMarketplaceListing: Observable<CreateMarketplaceListingSuccess> = createEffect(() => {
+  CreateMarketplaceListing: Observable<CreateMarketplaceListingSuccess | CreateMarketplaceListingFailure> = createEffect(() => {
     return this.actions$.pipe(
       ofType(EquipmentActionTypes.CREATE_MARKETPLACE_LISTING),
       map((action: CreateMarketplaceListing) => action.payload.listing),
       mergeMap(listing => {
+        let listingId: MarketplaceListingInterface["id"];
+
         return this.equipmentApiService.createMarketplaceListing(listing).pipe(
-          switchMap(createdListing =>
-            forkJoin(
-              listing.lineItems.map(lineItem =>
-                this.equipmentApiService.createMarketplaceLineItem({
-                  ...lineItem,
-                  listing: createdListing.id
-                }).pipe(
-                  switchMap(createdLineItem =>
-                    forkJoin(
-                      Object.keys(lineItem.images).map(key => {
-                          const image = lineItem.images[key];
+          switchMap(createdListing => {
+              listingId = createdListing.id;
+              return forkJoin(
+                listing.lineItems.map(lineItem =>
+                  this.equipmentApiService.createMarketplaceLineItem({
+                    ...lineItem,
+                    listing: createdListing.id
+                  }).pipe(
+                    switchMap(createdLineItem =>
+                      forkJoin(
+                        Object.keys(lineItem.images).map(key => {
+                            const image = lineItem.images[key];
 
-                          if (!image) {
-                            return of(null);
+                            if (!image) {
+                              return of(null);
+                            }
+
+                            return this.equipmentApiService.createMarketplaceImage(
+                              createdListing.id, createdLineItem.id, image[0].file
+                            );
                           }
-
-                          return this.equipmentApiService.createMarketplaceImage(
-                            createdListing.id, createdLineItem.id, image[0].file
-                          );
-                        }
+                        )
                       )
                     )
                   )
                 )
-              )
-            ).pipe(map(() => createdListing))
+              ).pipe(map(() => createdListing));
+            }
           ),
-          map(createdListing => new CreateMarketplaceListingSuccess({ listing: createdListing }))
+          map(createdListing => new CreateMarketplaceListingSuccess({ listing: createdListing })),
+          catchError(error => {
+            if (!!listingId) {
+              const deleteOperation$ = this.equipmentApiService.deleteMarketplaceListing(listingId);
+              deleteOperation$.subscribe();
+            }
+            return of(new CreateMarketplaceListingFailure({ error }));
+          })
         );
       })
     );
@@ -859,15 +871,6 @@ export class EquipmentEffects {
     { dispatch: false }
   );
 
-  DeleteMarketplaceListingFailure: Observable<{ error: string; }> = createEffect(() =>
-      this.actions$.pipe(
-        ofType(EquipmentActionTypes.DELETE_MARKETPLACE_LISTING_FAILURE),
-        map((action: DeleteMarketplaceListingFailure) => action.payload),
-        tap(payload => this.popNotificationsService.genericError(payload.error))
-      ),
-    { dispatch: false }
-  );
-
   UpdateMarketplaceListing: Observable<UpdateMarketplaceListingSuccess | UpdateMarketplaceListingFailure> = createEffect(() =>
     this.actions$.pipe(
       ofType(EquipmentActionTypes.UPDATE_MARKETPLACE_LISTING),
@@ -891,16 +894,6 @@ export class EquipmentEffects {
       ),
     { dispatch: false }
   );
-
-  UpdateMarketplaceListingFailure: Observable<{ error: string; }> = createEffect(() =>
-      this.actions$.pipe(
-        ofType(EquipmentActionTypes.UPDATE_MARKETPLACE_LISTING_FAILURE),
-        map((action: UpdateMarketplaceListingFailure) => action.payload),
-        tap(payload => this.popNotificationsService.genericError(payload.error))
-      ),
-    { dispatch: false }
-  );
-
 
   constructor(
     public readonly store$: Store<State>,

@@ -8,8 +8,6 @@ import { LoadingService } from "@shared/services/loading.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { AuthService } from "@shared/services/auth.service";
 import { WindowRefService } from "@shared/services/window-ref.service";
-import { isPlatformBrowser } from "@angular/common";
-import { Inject, PLATFORM_ID } from "@angular/core";
 
 export class ServerErrorsInterceptor implements HttpInterceptor {
   constructor(
@@ -18,13 +16,13 @@ export class ServerErrorsInterceptor implements HttpInterceptor {
     public readonly popNotificationsService: PopNotificationsService,
     public readonly loadingService: LoadingService,
     public readonly authService: AuthService,
-    public readonly utilsService: UtilsService,
-    @Inject(PLATFORM_ID) public readonly platformId: Object
+    public readonly utilsService: UtilsService
   ) {
   }
 
   public intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    if (!isPlatformBrowser(this.platformId)) {
+    // Check if running in a browser environment
+    if (typeof window === "undefined") {
       return next.handle(request);
     }
 
