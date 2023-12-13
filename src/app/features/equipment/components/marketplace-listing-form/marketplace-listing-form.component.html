@@ -12,8 +12,14 @@
         [class.loading]="(loadingService.loading$ | async) || form.pending"
         class="btn btn-lg btn-primary w-100 mt-4"
       >
-        <fa-icon icon="save"></fa-icon>
-        {{ saveButtonLabel }}
+        <ng-container *ngIf="!!model?.id; else createButtonLabel">
+          <fa-icon icon="save"></fa-icon>
+          {{ "Save" | translate }}
+        </ng-container>
+        <ng-template #createButtonLabel>
+          <fa-icon icon="plus"></fa-icon>
+          {{ "Create" | translate }}
+        </ng-template>
       </button>
     </form>
   </div>

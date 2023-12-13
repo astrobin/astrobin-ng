@@ -35,9 +35,6 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
   readonly maxImages: number = 9;
 
   @Input()
-  saveButtonLabel: string = this.translateService.instant("Save");
-
-  @Input()
   model: MarketplaceListingInterface = {
     created: null,
     updated: null,
