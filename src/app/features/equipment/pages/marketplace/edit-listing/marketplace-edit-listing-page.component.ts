@@ -5,10 +5,16 @@ import { State } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
 import { TitleService } from "@shared/services/title/title.service";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
-import { Actions } from "@ngrx/effects";
+import { Actions, ofType } from "@ngrx/effects";
 import { LoadingService } from "@shared/services/loading.service";
 import { ActivatedRoute, Router } from "@angular/router";
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
+import {
+  EquipmentActionTypes,
+  UpdateMarketplaceListing,
+  UpdateMarketplaceListingSuccess
+} from "@features/equipment/store/equipment.actions";
+import { map, take } from "rxjs/operators";
 
 @Component({
   selector: "astrobin-marketplace-create-listing-page",
@@ -57,19 +63,20 @@ export class MarketplaceEditListingPageComponent extends BaseComponentDirective 
   }
 
   onSave(value) {
-    // this.loadingService.setLoading(true);
-    //
-    // this.actions$
-    //   .pipe(
-    //     ofType(EquipmentActionTypes.SAVE_MARKETPLACE_LISTING_SUCCESS),
-    //     take(1),
-    //     map((action: SaveMarketplaceListingSuccess) => action.payload.listing)
-    //   )
-    //   .subscribe(listing => {
-    //     this.loadingService.setLoading(false);
-    //     this.router.navigateByUrl(`/equipment/marketplace/listing/${listing.hash}`);
-    //   });
-    //
-    // this.store$.dispatch(new SaveMarketplaceListing({ listing: value }));
+    this.loadingService.setLoading(true);
+
+    this.actions$
+      .pipe(
+        ofType(EquipmentActionTypes.UPDATE_MARKETPLACE_LISTING_SUCCESS),
+        take(1),
+        map((action: UpdateMarketplaceListingSuccess) => action.payload.listing)
+      )
+      .subscribe(listing => {
+        this.router.navigateByUrl(`/equipment/marketplace/listing/${listing.hash}`).then(() => {
+          this.loadingService.setLoading(false);
+        });
+      });
+
+    this.store$.dispatch(new UpdateMarketplaceListing({ listing: value }));
   }
 }

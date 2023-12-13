@@ -779,6 +779,33 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     );
   }
 
+  public loadMarketplaceListing(id: MarketplaceListingInterface["id"]): Observable<MarketplaceListingInterface> {
+    return this.http.get<MarketplaceListingInterface>(`${this.configUrl}/marketplace/listing/${id}/`);
+  }
+
+  public loadMarketplaceListingByHash(hash: MarketplaceListingInterface["hash"]): Observable<MarketplaceListingInterface> {
+    return this.http.get<PaginatedApiResultInterface<MarketplaceListingInterface>>(`${this.configUrl}/marketplace/listing/?hash=${hash}`).pipe(
+      map((result: PaginatedApiResultInterface<MarketplaceListingInterface>) => {
+          if (result.results.length === 0) {
+            throw new Error(`No marketplace listing found with hash ${hash}`);
+          }
+          return result.results[0];
+        }
+      )
+    );
+  }
+
+  public updateMarketplaceListing(listing: MarketplaceListingInterface) {
+    return this.http.put<MarketplaceListingInterface>(
+      `${this.configUrl}/marketplace/listing/${listing.id}/`,
+      (({ lineItems, ...rest }) => rest)(listing)
+    );
+  }
+
+  public deleteMarketplaceListing(id: MarketplaceListingInterface["id"]): Observable<void> {
+    return this.http.delete<void>(`${this.configUrl}/marketplace/listing/${id}/`);
+  }
+
   public createMarketplaceLineItem(
     lineItem: Omit<MarketplaceLineItemInterface, "id">
   ): Observable<MarketplaceLineItemInterface> {
@@ -810,26 +837,6 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
       formData,
       httpOptions
     );
-  }
-
-  public loadMarketplaceListing(id: MarketplaceListingInterface["id"]): Observable<MarketplaceListingInterface> {
-    return this.http.get<MarketplaceListingInterface>(`${this.configUrl}/marketplace/listing/${id}/`);
-  }
-
-  public loadMarketplaceListingByHash(hash: MarketplaceListingInterface["hash"]): Observable<MarketplaceListingInterface> {
-    return this.http.get<PaginatedApiResultInterface<MarketplaceListingInterface>>(`${this.configUrl}/marketplace/listing/?hash=${hash}`).pipe(
-      map((result: PaginatedApiResultInterface<MarketplaceListingInterface>) => {
-          if (result.results.length === 0) {
-            throw new Error(`No marketplace listing found with hash ${hash}`);
-          }
-          return result.results[0];
-        }
-      )
-    );
-  }
-
-  public deleteMarketplaceListing(id: MarketplaceListingInterface["id"]): Observable<void> {
-    return this.http.delete<void>(`${this.configUrl}/marketplace/listing/${id}/`);
   }
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -1,1 +1,3 @@
-<astrobin-toggle-button (toggle)="onToggle($event)" [value]="true"></astrobin-toggle-button>
+<astrobin-toggle-button
+  (toggle)="onToggle($event)" [value]="this.formControl.value"
+></astrobin-toggle-button>

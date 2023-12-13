@@ -40,7 +40,7 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
     updated: null,
     expiration: null,
     description: null,
-    deliveryByBuyerPickup: true,
+    deliveryByBuyerPickUp: true,
     deliveryBySellerDelivery: true,
     deliveryByShipping: true,
     shippingMethod: null,
@@ -134,6 +134,16 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
       this.model = _preprocessModel(this.model);
 
       this.fields = [
+        {
+          key: "id",
+          type: "input",
+          className: "hidden"
+        },
+        {
+          key: "hash",
+          type: "input",
+          className: "hidden"
+        },
         {
           key: "user",
           type: "input",
@@ -340,10 +350,10 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
           },
           fieldGroup: [
             {
-              key: "deliveryByBuyerPickup",
+              key: "deliveryByBuyerPickUp",
               type: "toggle",
               wrappers: ["default-wrapper"],
-              defaultValue: true,
+              defaultValue: this.model.deliveryByBuyerPickUp !== undefined ? this.model.deliveryByBuyerPickUp : true,
               props: {
                 label: this.translateService.instant("Buyer picks up")
               }
@@ -352,7 +362,7 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
               key: "deliveryBySellerDelivery",
               type: "toggle",
               wrappers: ["default-wrapper"],
-              defaultValue: true,
+              defaultValue: this.model.deliveryBySellerDelivery !== undefined ? this.model.deliveryBySellerDelivery : true,
               props: {
                 label: this.translateService.instant("Seller delivers in person")
               }
@@ -361,7 +371,7 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
               key: "deliveryByShipping",
               type: "toggle",
               wrappers: ["default-wrapper"],
-              defaultValue: true,
+              defaultValue: this.model.deliveryByShipping !== undefined ? this.model.deliveryByShipping : true,
               props: {
                 label: this.translateService.instant("Seller ships")
               }
@@ -482,6 +492,7 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
               wrappers: ["default-wrapper"],
               defaultValue: MarketplaceListingExpiration.ONE_WEEK,
               props: {
+                readonly: this.model.id !== undefined,
                 label: this.translateService.instant("Expiration"),
                 options: [
                   {

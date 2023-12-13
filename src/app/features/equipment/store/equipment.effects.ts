@@ -94,7 +94,10 @@ import {
   UnfreezeEquipmentItemAsAmbiguous,
   UnfreezeEquipmentItemAsAmbiguousSuccess,
   UpdateEquipmentPreset,
-  UpdateEquipmentPresetSuccess
+  UpdateEquipmentPresetSuccess,
+  UpdateMarketplaceListing,
+  UpdateMarketplaceListingFailure,
+  UpdateMarketplaceListingSuccess
 } from "@features/equipment/store/equipment.actions";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
@@ -110,6 +113,7 @@ import { EquipmentItemBaseInterface, EquipmentItemType } from "@features/equipme
 import { SelectorWithProps } from "@ngrx/store/src/models";
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
+import { TranslateService } from "@ngx-translate/core";
 
 function getFromStoreOrApiByIdAndType<T>(
   store$: Store<State>,
@@ -848,7 +852,9 @@ export class EquipmentEffects {
   DeleteMarketplaceListingSuccess: Observable<void> = createEffect(() =>
       this.actions$.pipe(
         ofType(EquipmentActionTypes.DELETE_MARKETPLACE_LISTING_SUCCESS),
-        tap(() => this.popNotificationsService.success("Listing deleted successfully"))
+        tap(() => this.popNotificationsService.success(
+          this.translateService.instant("Listing deleted successfully")
+        ))
       ),
     { dispatch: false }
   );
@@ -857,20 +863,52 @@ export class EquipmentEffects {
       this.actions$.pipe(
         ofType(EquipmentActionTypes.DELETE_MARKETPLACE_LISTING_FAILURE),
         map((action: DeleteMarketplaceListingFailure) => action.payload),
-        tap(payload => this.popNotificationsService.error(
-          "There was an error performing this operation. Please try again later or contact support if the issue " +
-          "persists. Error: " + payload.error
-        ))
+        tap(payload => this.popNotificationsService.genericError(payload.error))
       ),
     { dispatch: false }
   );
+
+  UpdateMarketplaceListing: Observable<UpdateMarketplaceListingSuccess | UpdateMarketplaceListingFailure> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(EquipmentActionTypes.UPDATE_MARKETPLACE_LISTING),
+      map((action: UpdateMarketplaceListing) => action.payload),
+      mergeMap(payload =>
+        this.equipmentApiService.updateMarketplaceListing(payload.listing)
+          .pipe(
+            map(() => new UpdateMarketplaceListingSuccess({ listing: payload.listing })),
+            catchError(error => of(new UpdateMarketplaceListingFailure({ error })))
+          )
+      )
+    )
+  );
+
+  UpdateMarketplaceListingSuccess: Observable<void> = createEffect(() =>
+      this.actions$.pipe(
+        ofType(EquipmentActionTypes.UPDATE_MARKETPLACE_LISTING_SUCCESS),
+        tap(() => this.popNotificationsService.success(
+          this.translateService.instant("Listing updated successfully"))
+        )
+      ),
+    { dispatch: false }
+  );
+
+  UpdateMarketplaceListingFailure: Observable<{ error: string; }> = createEffect(() =>
+      this.actions$.pipe(
+        ofType(EquipmentActionTypes.UPDATE_MARKETPLACE_LISTING_FAILURE),
+        map((action: UpdateMarketplaceListingFailure) => action.payload),
+        tap(payload => this.popNotificationsService.genericError(payload.error))
+      ),
+    { dispatch: false }
+  );
+
 
   constructor(
     public readonly store$: Store<State>,
     public readonly actions$: Actions<All>,
     public readonly equipmentApiService: EquipmentApiService,
     public readonly utilsService: UtilsService,
-    public readonly popNotificationsService: PopNotificationsService
+    public readonly popNotificationsService: PopNotificationsService,
+    public readonly translateService: TranslateService
   ) {
   }
 }

@@ -23,7 +23,7 @@ export interface MarketplaceListingInterface {
   updated: string;
   expiration: string;
   description: string | null;
-  deliveryByBuyerPickup: boolean;
+  deliveryByBuyerPickUp: boolean;
   deliveryBySellerDelivery: boolean;
   deliveryByShipping: boolean;
   shippingMethod: MarketplaceListingShippingMethod | null;

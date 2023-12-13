@@ -66,8 +66,9 @@ export class MarketplaceCreateListingPageComponent extends BaseComponentDirectiv
         map((action: CreateMarketplaceListingSuccess) => action.payload.listing)
       )
       .subscribe(listing => {
-        this.loadingService.setLoading(false);
-        this.router.navigateByUrl(`/equipment/marketplace/listing/${listing.hash}`);
+        this.router.navigateByUrl(`/equipment/marketplace/listing/${listing.hash}`).then(() => {
+          this.loadingService.setLoading(false);
+        });
       });
 
     this.store$.dispatch(new CreateMarketplaceListing({ listing: value }));
