@@ -9,7 +9,10 @@ export class EquipmentStateGenerator {
       editProposals: [],
       presets: [],
       mostOftenUsedWithData: {},
-      contributors: []
+      contributors: [],
+      marketplace: {
+        listings: null
+      }
     };
   }
 }

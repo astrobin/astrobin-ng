@@ -11,13 +11,18 @@ export class UserGenerator {
       displayName: "Test",
       avatar: null,
       largeAvatar: null,
-      lastLogin: new Date("2010-01-01"),
-      dateJoined: new Date("2010-01-01"),
+      lastLogin: "2010-01-01",
+      dateJoined: "2010-01-01",
       isSuperUser: false,
       isStaff: false,
       isActive: true,
       groups: [AuthGroupGenerator.group()],
-      userPermissions: []
+      userPermissions: [],
+      marketplaceAccuracyFeedback: null,
+      marketplaceCommunicationFeedback: null,
+      marketplacePackagingFeedback: null,
+      marketplaceSpeedFeedback: null,
+      marketplaceFeedbackCount: 0
     };
   }
 }

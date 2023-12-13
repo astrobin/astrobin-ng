@@ -128,7 +128,12 @@ describe("CommonApiAdaptorService", () => {
             codename: "bar2",
             content_type: 2
           }
-        ]
+        ],
+        marketplace_accuracy_feedback: null,
+        marketplace_packaging_feedback: null,
+        marketplace_speed_feedback: null,
+        marketplace_communication_feedback: null,
+        marketplace_feedback_count: 0
       };
 
       expect(service.userFromBackend(backendUser)).toEqual({
@@ -136,13 +141,13 @@ describe("CommonApiAdaptorService", () => {
         avatar: "/foo/avatar.jpg",
         largeAvatar: "/foo/large-avatar.jpg",
         userProfile: 1,
-        lastLogin: new Date("2020-04-10T19:05:51.400207"),
+        lastLogin: "2020-04-10T19:05:51.400207",
         isSuperUser: true,
         username: "foo",
         firstName: "Foo",
         isStaff: true,
         isActive: true,
-        dateJoined: new Date("2020-04-09T19:45:21.522611"),
+        dateJoined: "2020-04-09T19:45:21.522611",
         displayName: "Foo",
         groups: [
           {
@@ -177,7 +182,12 @@ describe("CommonApiAdaptorService", () => {
             codeName: "bar2",
             contentType: 2
           }
-        ]
+        ],
+        marketplaceAccuracyFeedback: null,
+        marketplaceCommunicationFeedback: null,
+        marketplaceFeedbackCount: 0,
+        marketplacePackagingFeedback: null,
+        marketplaceSpeedFeedback: null
       });
     });
   });
