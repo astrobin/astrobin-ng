@@ -133,8 +133,11 @@ export const selectMarketplace = createSelector(selectEquipment, state => state.
 
 export const selectMarketplaceListings = createSelector(selectMarketplace, state => state.listings);
 
-export const selectMarketplaceListing = (id: MarketplaceListingInterface["id"]) =>
-  createSelector(selectMarketplaceListings, listings => listings?.find(listing => listing.id === id) || null);
+export const selectMarketplaceListing = createSelector(
+  selectMarketplaceListings,
+  (listings: MarketplaceListingInterface[], props: { id: MarketplaceListingInterface["id"] }) =>
+    listings?.find(listing => listing.id === props.id) || null
+);
 
 export const selectMarketplaceListingByHash = (hash: MarketplaceListingInterface["hash"]) =>
   createSelector(selectMarketplaceListings, listings => listings?.find(listing => listing.hash === hash) || null);

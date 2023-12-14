@@ -820,6 +820,15 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     );
   }
 
+  public updateMarketplaceLineItem(
+    lineItem: MarketplaceLineItemInterface
+  ) {
+    return this.http.put<MarketplaceLineItemInterface>(
+      `${this.configUrl}/marketplace/listing/${lineItem.listing}/line-item/${lineItem.id}/`,
+      (({ images, ...rest }) => rest)(lineItem)
+    );
+  }
+
   public deleteMarketplaceLineItem(
     listingId: MarketplaceListingInterface["id"],
     lineItemId: MarketplaceLineItemInterface["id"]

@@ -63,4 +63,49 @@ export class EquipmentMarketplaceService extends BaseService {
       user.marketplacePackagingFeedback !== null
     );
   }
+
+  // This method assumes that `previousListing` has lineItem IDs/ It's used to compare an existing listing to a listing
+  // that's being updated. It returns an array of changed, added, and removed line items.
+  compareLineItems(
+    updatedListing: MarketplaceListingInterface,
+    previousListing: MarketplaceListingInterface
+  ): [MarketplaceLineItemInterface[], MarketplaceLineItemInterface[], MarketplaceLineItemInterface[]] {
+    function getLineItemsMap(listing: MarketplaceListingInterface): Map<number, MarketplaceLineItemInterface> {
+      return new Map<number, MarketplaceLineItemInterface>(
+        listing.lineItems?.filter(item => item.id != null).map(item => [item.id!, item]) ?? []
+      );
+    }
+
+    const updatedLineItemsMap = getLineItemsMap(updatedListing);
+    const previousLineItemsMap = getLineItemsMap(previousListing);
+
+    let preservedLineItems: MarketplaceLineItemInterface[] = [];
+    let addedLineItems: MarketplaceLineItemInterface[] = [];
+    let removedLineItems: MarketplaceLineItemInterface[] = [];
+
+    // Check for changed and added line items
+    updatedLineItemsMap.forEach((item, id) => {
+      if (!previousLineItemsMap.has(id)) {
+        addedLineItems.push(item);
+      }
+
+      if (item.id && previousLineItemsMap.has(id)) {
+        preservedLineItems.push(item);
+      }
+    });
+
+    // Check for added line items without an id (they wouldn't be in the Map)
+    updatedListing.lineItems?.filter(item => !item.id).forEach(item => {
+      addedLineItems.push(item);
+    });
+
+    // Check for removed line items
+    previousLineItemsMap.forEach((item, id) => {
+      if (!updatedLineItemsMap.has(id)) {
+        removedLineItems.push(previousLineItemsMap.get(id)!);
+      }
+    });
+
+    return [preservedLineItems, addedLineItems, removedLineItems];
+  }
 }

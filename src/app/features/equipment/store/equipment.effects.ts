@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { forkJoin, Observable, of } from "rxjs";
+import { concat, forkJoin, last, Observable, of } from "rxjs";
 import {
   ApproveEquipmentItem,
   ApproveEquipmentItemEditProposal,
@@ -100,13 +100,17 @@ import {
   UpdateMarketplaceListingFailure,
   UpdateMarketplaceListingSuccess
 } from "@features/equipment/store/equipment.actions";
-import { Actions, createEffect, ofType } from "@ngrx/effects";
+import { Actions, concatLatestFrom, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { All } from "@app/store/actions/app.actions";
 import { EquipmentApiService } from "@features/equipment/services/equipment-api.service";
 import { catchError, filter, map, mergeMap, switchMap, tap } from "rxjs/operators";
-import { selectBrand, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
+import {
+  selectBrand,
+  selectEquipmentItem,
+  selectMarketplaceListing
+} from "@features/equipment/store/equipment.selectors";
 import { SensorInterface } from "@features/equipment/types/sensor.interface";
 import { BrandInterface } from "@features/equipment/types/brand.interface";
 import { UtilsService } from "@shared/services/utils/utils.service";
@@ -115,6 +119,7 @@ import { SelectorWithProps } from "@ngrx/store/src/models";
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { TranslateService } from "@ngx-translate/core";
+import { EquipmentMarketplaceService } from "@features/equipment/services/equipment-marketplace.service";
 
 function getFromStoreOrApiByIdAndType<T>(
   store$: Store<State>,
@@ -778,25 +783,28 @@ export class EquipmentEffects {
     )
   );
 
-  CreateMarketplaceListing: Observable<CreateMarketplaceListingSuccess | CreateMarketplaceListingFailure> = createEffect(() => {
-    return this.actions$.pipe(
-      ofType(EquipmentActionTypes.CREATE_MARKETPLACE_LISTING),
-      map((action: CreateMarketplaceListing) => action.payload.listing),
-      mergeMap(listing => {
-        let listingId: MarketplaceListingInterface["id"];
+  CreateMarketplaceListing: Observable<CreateMarketplaceListingSuccess | CreateMarketplaceListingFailure> =
+    createEffect(() => {
+      return this.actions$.pipe(
+        ofType(EquipmentActionTypes.CREATE_MARKETPLACE_LISTING),
+        map((action: CreateMarketplaceListing) => action.payload.listing),
+        mergeMap(listing => {
+          let listingId: MarketplaceListingInterface["id"];
 
-        return this.equipmentApiService.createMarketplaceListing(listing).pipe(
-          switchMap(createdListing => {
+          return this.equipmentApiService.createMarketplaceListing(listing).pipe(
+            switchMap(createdListing => {
               listingId = createdListing.id;
               return forkJoin(
                 listing.lineItems.map(lineItem =>
-                  this.equipmentApiService.createMarketplaceLineItem({
-                    ...lineItem,
-                    listing: createdListing.id
-                  }).pipe(
-                    switchMap(createdLineItem =>
-                      forkJoin(
-                        Object.keys(lineItem.images).map(key => {
+                  this.equipmentApiService
+                    .createMarketplaceLineItem({
+                      ...lineItem,
+                      listing: createdListing.id
+                    })
+                    .pipe(
+                      switchMap(createdLineItem =>
+                        forkJoin(
+                          Object.keys(lineItem.images).map(key => {
                             const image = lineItem.images[key];
 
                             if (!image) {
@@ -804,29 +812,29 @@ export class EquipmentEffects {
                             }
 
                             return this.equipmentApiService.createMarketplaceImage(
-                              createdListing.id, createdLineItem.id, image[0].file
+                              createdListing.id,
+                              createdLineItem.id,
+                              image[0].file
                             );
-                          }
+                          })
                         )
                       )
                     )
-                  )
                 )
               ).pipe(map(() => createdListing));
-            }
-          ),
-          map(createdListing => new CreateMarketplaceListingSuccess({ listing: createdListing })),
-          catchError(error => {
-            if (!!listingId) {
-              const deleteOperation$ = this.equipmentApiService.deleteMarketplaceListing(listingId);
-              deleteOperation$.subscribe();
-            }
-            return of(new CreateMarketplaceListingFailure({ error }));
-          })
-        );
-      })
-    );
-  });
+            }),
+            map(createdListing => new CreateMarketplaceListingSuccess({ listing: createdListing })),
+            catchError(error => {
+              if (!!listingId) {
+                const deleteOperation$ = this.equipmentApiService.deleteMarketplaceListing(listingId);
+                deleteOperation$.subscribe();
+              }
+              return of(new CreateMarketplaceListingFailure({ error }));
+            })
+          );
+        })
+      );
+    });
 
   LoadMarketplaceListing: Observable<LoadMarketplaceListingSuccess | LoadMarketplaceListingFailure> = createEffect(() =>
     this.actions$.pipe(
@@ -847,50 +855,69 @@ export class EquipmentEffects {
     )
   );
 
-  DeleteMarketplaceListing: Observable<DeleteMarketplaceListingSuccess | DeleteMarketplaceListingFailure> = createEffect(() =>
-    this.actions$.pipe(
-      ofType(EquipmentActionTypes.DELETE_MARKETPLACE_LISTING),
-      map((action: DeleteMarketplaceListing) => action.payload),
-      mergeMap(payload =>
-        this.equipmentApiService.deleteMarketplaceListing(payload.listing.id)
-          .pipe(
+  DeleteMarketplaceListing: Observable<DeleteMarketplaceListingSuccess | DeleteMarketplaceListingFailure> =
+    createEffect(() =>
+      this.actions$.pipe(
+        ofType(EquipmentActionTypes.DELETE_MARKETPLACE_LISTING),
+        map((action: DeleteMarketplaceListing) => action.payload),
+        mergeMap(payload =>
+          this.equipmentApiService.deleteMarketplaceListing(payload.listing.id).pipe(
             map(() => new DeleteMarketplaceListingSuccess({ id: payload.listing.id })),
             catchError(error => of(new DeleteMarketplaceListingFailure({ error })))
           )
+        )
       )
-    )
-  );
+    );
 
-  DeleteMarketplaceListingSuccess: Observable<void> = createEffect(() =>
+  DeleteMarketplaceListingSuccess: Observable<void> = createEffect(
+    () =>
       this.actions$.pipe(
         ofType(EquipmentActionTypes.DELETE_MARKETPLACE_LISTING_SUCCESS),
-        tap(() => this.popNotificationsService.success(
-          this.translateService.instant("Listing deleted successfully")
-        ))
+        tap(() => this.popNotificationsService.success(this.translateService.instant("Listing deleted successfully")))
       ),
     { dispatch: false }
   );
 
-  UpdateMarketplaceListing: Observable<UpdateMarketplaceListingSuccess | UpdateMarketplaceListingFailure> = createEffect(() =>
-    this.actions$.pipe(
-      ofType(EquipmentActionTypes.UPDATE_MARKETPLACE_LISTING),
-      map((action: UpdateMarketplaceListing) => action.payload),
-      mergeMap(payload =>
-        this.equipmentApiService.updateMarketplaceListing(payload.listing)
-          .pipe(
-            map(() => new UpdateMarketplaceListingSuccess({ listing: payload.listing })),
-            catchError(error => of(new UpdateMarketplaceListingFailure({ error })))
-          )
-      )
-    )
-  );
+  UpdateMarketplaceListing: Observable<UpdateMarketplaceListingSuccess | UpdateMarketplaceListingFailure> =
+    createEffect(() =>
+      this.actions$.pipe(
+        ofType(EquipmentActionTypes.UPDATE_MARKETPLACE_LISTING),
+        map((action: UpdateMarketplaceListing) => action.payload.listing),
+        concatLatestFrom(updatedListing => this.store$.select(selectMarketplaceListing, { id: updatedListing.id })),
+        switchMap(([updatedListing, previousListing]) => {
+          const [preserved, added, removed] = this.equipmentMarketplaceService.compareLineItems(
+            updatedListing,
+            previousListing
+          );
 
-  UpdateMarketplaceListingSuccess: Observable<void> = createEffect(() =>
+          const updateOperations$ = preserved.map(lineItem =>
+            this.equipmentApiService.updateMarketplaceLineItem(lineItem)
+          );
+
+          const createOperations$ = added.map(lineItem =>
+            this.equipmentApiService.createMarketplaceLineItem(lineItem)
+          );
+
+          const deleteOperations$ = removed.map(lineItem =>
+            this.equipmentApiService.deleteMarketplaceLineItem(updatedListing.id, lineItem.id)
+          );
+
+          const updateListingOperation$ = this.equipmentApiService.updateMarketplaceListing(updatedListing);
+
+          return concat(...updateOperations$, ...createOperations$, ...deleteOperations$, updateListingOperation$).pipe(
+            last(),
+            map((updatedListingResponse: MarketplaceListingInterface) => new UpdateMarketplaceListingSuccess({ listing: updatedListingResponse })),
+            catchError(error => of(new UpdateMarketplaceListingFailure({ error })))
+          );
+        })
+      )
+    );
+
+  UpdateMarketplaceListingSuccess: Observable<void> = createEffect(
+    () =>
       this.actions$.pipe(
         ofType(EquipmentActionTypes.UPDATE_MARKETPLACE_LISTING_SUCCESS),
-        tap(() => this.popNotificationsService.success(
-          this.translateService.instant("Listing updated successfully"))
-        )
+        tap(() => this.popNotificationsService.success(this.translateService.instant("Listing updated successfully")))
       ),
     { dispatch: false }
   );
@@ -901,7 +928,8 @@ export class EquipmentEffects {
     public readonly equipmentApiService: EquipmentApiService,
     public readonly utilsService: UtilsService,
     public readonly popNotificationsService: PopNotificationsService,
-    public readonly translateService: TranslateService
+    public readonly translateService: TranslateService,
+    public readonly equipmentMarketplaceService: EquipmentMarketplaceService
   ) {
   }
 }

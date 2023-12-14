@@ -297,7 +297,7 @@ export function reducer(state = initialEquipmentState, action: PayloadActionInte
           listings: [
             ...state.marketplace.listings?.filter(listing => listing.id !== action.payload.listing) || [],
             action.payload.listing
-          ]
+          ].sort((a, b) => b.id - a.id)
         }
       };
     }

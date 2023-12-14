@@ -53,6 +53,7 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
     city: null,
     lineItems: [
       {
+        listing: null,
         created: null,
         updated: null,
         sold: null,
@@ -133,6 +134,7 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
       if (!!model.lineItems && model.lineItems.length > 0) {
         model.lineItems = model.lineItems.map(lineItem => {
           lineItem.images = lineItem.images.map(image => image.imageFile);
+          lineItem.listing = model.id;
           return lineItem;
         });
       }
@@ -147,7 +149,7 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
         props: {
           accept: "image/jpeg, image/png",
           image: true,
-          required: n === 0
+          required: false // TODO: make this "n === 0 after fixing the API usage
         },
         validators: {
           validation: [{ name: "file-size", options: { max: 1024 * 1024 * 10 } }, { name: "image-or-video-file" }]
@@ -185,6 +187,17 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
               addLabel: this.translateService.instant("Add another item to this listing")
             },
             fieldGroup: [
+              {
+                key: "id",
+                type: "input",
+                className: "hidden"
+              },
+              {
+                key: "listing",
+                type: "input",
+                className: "hidden",
+                defaultValue: this.model.id
+              },
               {
                 key: "itemObjectId",
                 type: "equipment-item-browser",
@@ -255,7 +268,7 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                       maxImages: this.maxImages
                     }
                   ),
-                  required: true
+                  required: false // TODO: make this true after fixing the API usage
                 },
                 fieldGroup: [...Array(this.maxImages).keys()].map(n => _getImageField(n))
               },
