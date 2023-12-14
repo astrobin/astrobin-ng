@@ -149,7 +149,7 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
         props: {
           accept: "image/jpeg, image/png",
           image: true,
-          required: false // TODO: make this "n === 0 after fixing the API usage
+          required: n === 0
         },
         validators: {
           validation: [{ name: "file-size", options: { max: 1024 * 1024 * 10 } }, { name: "image-or-video-file" }]
@@ -268,7 +268,7 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                       maxImages: this.maxImages
                     }
                   ),
-                  required: false // TODO: make this true after fixing the API usage
+                  required: true
                 },
                 fieldGroup: [...Array(this.maxImages).keys()].map(n => _getImageField(n))
               },
