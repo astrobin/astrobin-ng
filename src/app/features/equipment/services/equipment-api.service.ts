@@ -860,6 +860,31 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     );
   }
 
+  public updateMarketplaceImage(
+    listingId: MarketplaceListingInterface["id"],
+    lineItemId: MarketplaceLineItemInterface["id"],
+    imageId: MarketplaceImageInterface["id"],
+    image: File
+  ): Observable<MarketplaceImageInterface> {
+    const formData: FormData = new FormData();
+    formData.append("image_file", image);
+    formData.append("line_item", lineItemId.toString());
+
+    const httpOptions = {
+      headers: new HttpHeaders({
+        // Unsetting the Content-Type is necessary so it gets set to multipart/form-data with the correct boundary.
+        "Content-Type": "__unset__",
+        "Content-Disposition": `form-data; name="image"; filename=${image.name}`
+      })
+    };
+
+    return this.http.put<MarketplaceImageInterface>(
+      `${this.configUrl}/marketplace/listing/${listingId}/line-item/${lineItemId}/image/${imageId}/`,
+      formData,
+      httpOptions
+    );
+  }
+
   public deleteMarketplaceImage(
     listingId: MarketplaceListingInterface["id"],
     lineItemId: MarketplaceLineItemInterface["id"],

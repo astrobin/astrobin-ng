@@ -37,7 +37,7 @@ export class MarketplaceImagesComponent extends BaseComponentDirective implement
       }
 
       for (const key of Object.keys(this.images)) {
-        if (this.images[key] === undefined) {
+        if (this.images[key] === undefined || this.images[key] === null || this.images[key].length === 0) {
           continue;
         }
 
@@ -56,6 +56,11 @@ export class MarketplaceImagesComponent extends BaseComponentDirective implement
           thumbImage: url
         });
       }
+    } else if (UtilsService.isArray(this.images)) {
+      this.sliderImages = this.images.map(image => ({
+        image: image.imageFile,
+        thumbImage: image.imageFile
+      }));
     }
   }
 }

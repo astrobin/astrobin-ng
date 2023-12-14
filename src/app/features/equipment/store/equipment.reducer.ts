@@ -282,7 +282,10 @@ export function reducer(state = initialEquipmentState, action: PayloadActionInte
         ...state,
         marketplace: {
           ...state.marketplace,
-          listings: action.payload.listings.results
+          listings: [
+            ...state.marketplace.listings?.filter(listing => listing.id !== action.payload.listing.id) || [],
+            action.payload.listing
+          ].sort((a, b) => b.id - a.id)
         }
       };
     }
@@ -295,7 +298,7 @@ export function reducer(state = initialEquipmentState, action: PayloadActionInte
         marketplace: {
           ...state.marketplace,
           listings: [
-            ...state.marketplace.listings?.filter(listing => listing.id !== action.payload.listing) || [],
+            ...state.marketplace.listings?.filter(listing => listing.id !== action.payload.listing.id) || [],
             action.payload.listing
           ].sort((a, b) => b.id - a.id)
         }

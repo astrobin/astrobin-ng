@@ -120,6 +120,8 @@ import { MarketplaceListingInterface } from "@features/equipment/types/marketpla
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { TranslateService } from "@ngx-translate/core";
 import { EquipmentMarketplaceService } from "@features/equipment/services/equipment-marketplace.service";
+import { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
+import { MarketplaceImageInterface } from "@features/equipment/types/marketplace-image.interface";
 
 function getFromStoreOrApiByIdAndType<T>(
   store$: Store<State>,
@@ -890,6 +892,49 @@ export class EquipmentEffects {
             previousListing
           );
 
+          const _buildImageOperations = (lineItem: MarketplaceLineItemInterface) => {
+            return Object.keys(lineItem.images).map(key => {
+              const image = lineItem.images[key];
+
+              if (image === undefined || image === null) {
+                return of(null);
+              }
+
+              let matchingImage: MarketplaceImageInterface;
+              const matchingListing = previousListing.lineItems.find(previousLineItem => previousLineItem.id === lineItem.id);
+              if (matchingListing) {
+                matchingImage = matchingListing.images[key];
+              }
+
+              if (matchingImage && matchingImage.id) {
+                if (image.length > 0) {
+                  return this.equipmentApiService.updateMarketplaceImage(
+                    updatedListing.id,
+                    lineItem.id,
+                    matchingImage.id,
+                    image[0].file
+                  );
+                } else {
+                  return this.equipmentApiService.deleteMarketplaceImage(
+                    updatedListing.id,
+                    lineItem.id,
+                    matchingImage.id
+                  );
+                }
+              } else {
+                return this.equipmentApiService.createMarketplaceImage(
+                  updatedListing.id,
+                  lineItem.id,
+                  image[0].file
+                );
+              }
+            });
+          };
+
+          const imageOperations$ = preserved.map(lineItem => _buildImageOperations(lineItem)).concat(
+            added.map(lineItem => _buildImageOperations(lineItem))
+          );
+
           const updateOperations$ = preserved.map(lineItem =>
             this.equipmentApiService.updateMarketplaceLineItem(lineItem)
           );
@@ -904,9 +949,18 @@ export class EquipmentEffects {
 
           const updateListingOperation$ = this.equipmentApiService.updateMarketplaceListing(updatedListing);
 
-          return concat(...updateOperations$, ...createOperations$, ...deleteOperations$, updateListingOperation$).pipe(
+          return concat(
+            ...[].concat(...imageOperations$), // flattens the array
+            ...updateOperations$,
+            ...createOperations$,
+            ...deleteOperations$,
+            updateListingOperation$
+          ).pipe(
             last(),
-            map((updatedListingResponse: MarketplaceListingInterface) => new UpdateMarketplaceListingSuccess({ listing: updatedListingResponse })),
+            map((updatedListingResponse: MarketplaceListingInterface) => {
+              console.log(updatedListingResponse);
+              return new UpdateMarketplaceListingSuccess({ listing: updatedListingResponse });
+            }),
             catchError(error => of(new UpdateMarketplaceListingFailure({ error })))
           );
         })
