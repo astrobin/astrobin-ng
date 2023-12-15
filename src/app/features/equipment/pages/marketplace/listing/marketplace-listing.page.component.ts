@@ -9,7 +9,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { TitleService } from "@shared/services/title/title.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { selectContentType } from "@app/store/selectors/app/content-type.selectors";
-import { filter, map, switchMap, take, tap } from "rxjs/operators";
+import { filter, map, switchMap, take, takeUntil, tap } from "rxjs/operators";
 import { LoadContentType } from "@app/store/actions/content-type.actions";
 import { Observable } from "rxjs";
 import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
@@ -97,7 +97,9 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
       take(1)
     );
 
-    this.privateConversations$ = this.store$.select(selectMarketplacePrivateConversations(this.listing.id));
+    this.privateConversations$ = this.store$.select(selectMarketplacePrivateConversations(this.listing.id)).pipe(
+      takeUntil(this.destroyed$)
+    );
 
     this.store$.dispatch(new LoadContentType(this._contentTypePayload));
     this.store$.dispatch(new LoadMarketplacePrivateConversations({ listingId: this.listing.id }));
