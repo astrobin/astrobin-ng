@@ -9,7 +9,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { TitleService } from "@shared/services/title/title.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { selectContentType } from "@app/store/selectors/app/content-type.selectors";
-import { filter, map, switchMap, take, takeUntil, tap } from "rxjs/operators";
+import { filter, map, switchMap, take, takeUntil, tap, withLatestFrom } from "rxjs/operators";
 import { LoadContentType } from "@app/store/actions/content-type.actions";
 import { Observable } from "rxjs";
 import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
@@ -97,9 +97,9 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
       take(1)
     );
 
-    this.privateConversations$ = this.store$.select(selectMarketplacePrivateConversations(this.listing.id)).pipe(
-      takeUntil(this.destroyed$)
-    );
+    this.privateConversations$ = this.store$
+      .select(selectMarketplacePrivateConversations(this.listing.id))
+      .pipe(takeUntil(this.destroyed$));
 
     this.store$.dispatch(new LoadContentType(this._contentTypePayload));
     this.store$.dispatch(new LoadMarketplacePrivateConversations({ listingId: this.listing.id }));
@@ -107,17 +107,103 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
 
   delete() {
     const confirmationModal = this.modalService.open(ConfirmationDialogComponent);
-    confirmationModal.closed.pipe(
-      tap(() => this.loadingService.setLoading(true)),
-      tap(() => this.store$.dispatch(new DeleteMarketplaceListing({ listing: this.listing }))),
-      switchMap(() => this.actions$.pipe(ofType(EquipmentActionTypes.DELETE_MARKETPLACE_LISTING_SUCCESS))),
-      filter((action: DeleteMarketplaceListingSuccess) => action.payload.id === this.listing.id),
-      take(1)
-    ).subscribe(() => {
-      this.router.navigateByUrl("/equipment/marketplace").then(() => {
-        this.loadingService.setLoading(false);
+    confirmationModal.closed
+      .pipe(
+        tap(() => this.loadingService.setLoading(true)),
+        tap(() => this.store$.dispatch(new DeleteMarketplaceListing({ listing: this.listing }))),
+        switchMap(() => this.actions$.pipe(ofType(EquipmentActionTypes.DELETE_MARKETPLACE_LISTING_SUCCESS))),
+        filter((action: DeleteMarketplaceListingSuccess) => action.payload.id === this.listing.id),
+        take(1)
+      )
+      .subscribe(() => {
+        this.router.navigateByUrl("/equipment/marketplace").then(() => {
+          this.loadingService.setLoading(false);
+        });
       });
-    });
+  }
+
+  startPrivateConversation(privateConversation: MarketplacePrivateConversationInterface) {
+    const contentTypePayload = {
+      appLabel: "astrobin_apps_equipment",
+      model: "equipmentitemmarketplaceprivateconversation"
+    };
+
+    this.store$
+      .select(selectContentType, contentTypePayload)
+      .pipe(
+        filter(contentType => !!contentType),
+        take(1),
+        withLatestFrom(this.currentUser$)
+      )
+      .subscribe(([contentType, currentUser]) => {
+        this.loadingService.setLoading(false);
+
+        const modalRef = this.modalService.open(NestedCommentsModalComponent, {
+          size: "lg",
+          centered: true
+        });
+        const componentInstance: NestedCommentsModalComponent = modalRef.componentInstance;
+
+        componentInstance.contentType = contentType;
+        componentInstance.objectId = privateConversation.id;
+        componentInstance.title =
+          currentUser.id === this.listing.user
+            ? this.translateService.instant("Private conversation with a prospective buyer")
+            : this.translateService.instant("Private conversation with the seller");
+        componentInstance.addCommentLabel = this.translateService.instant("Start a new conversation");
+        componentInstance.noCommentsLabel = this.translateService.instant("No messages yet.");
+
+        modalRef.dismissed
+          .pipe(
+            tap(() => this.loadingService.setLoading(true)),
+            tap(() =>
+              this.store$.dispatch(
+                new LoadNestedComments({
+                  contentTypeId: contentType.id,
+                  objectId: privateConversation.id
+                })
+              )
+            ),
+            switchMap(() => this.actions$.pipe(ofType(AppActionTypes.LOAD_NESTED_COMMENTS_SUCCESS))),
+            map((action: LoadNestedCommentsSuccess) => action.payload.nestedComments),
+            take(1)
+          )
+          .subscribe(nestedComments => {
+            const currentTime = new Date().toISOString();
+            const updatedPrivateConversation = {
+              ...privateConversation,
+              userLastAccessed:
+                currentUser.id !== this.listing.user ? currentTime : privateConversation.userLastAccessed,
+              listingUserLastAccessed:
+                currentUser.id === this.listing.user ? currentTime : privateConversation.listingUserLastAccessed
+            };
+
+            this.store$.dispatch(
+              new UpdateMarketplacePrivateConversation({ privateConversation: updatedPrivateConversation })
+            );
+
+            if (nestedComments.length === 0) {
+              this.actions$
+                .pipe(
+                  ofType(EquipmentActionTypes.DELETE_MARKETPLACE_PRIVATE_CONVERSATION_SUCCESS),
+                  filter(
+                    (action: DeleteMarketplacePrivateConversationSuccess) =>
+                      action.payload.listingId === this.listing.id
+                  ),
+                  take(1)
+                )
+                .subscribe(() => {
+                  this.loadingService.setLoading(false);
+                });
+
+              this.store$.dispatch(new DeleteMarketplacePrivateConversation({ privateConversation }));
+            } else {
+              this.loadingService.setLoading(false);
+            }
+          });
+      });
+
+    this.store$.dispatch(new LoadContentType(contentTypePayload));
   }
 
   onMessageSellerClicked(event: Event) {
@@ -125,82 +211,29 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
 
     this.loadingService.setLoading(true);
 
-    const _startPrivateConversation = (privateConversation: MarketplacePrivateConversationInterface) => {
-      const contentTypePayload = {
-        appLabel: "astrobin_apps_equipment",
-        model: "equipmentitemmarketplaceprivateconversation"
-      };
-      this.store$.select(selectContentType, contentTypePayload).pipe(
-        filter(contentType => !!contentType),
-        take(1)
-      ).subscribe(contentType => {
-        this.loadingService.setLoading(false);
-
-        const modalRef = this.modalService.open(NestedCommentsModalComponent, {
-          size: "lg",
-          centered: true,
-          scrollable: false
-        });
-        const componentInstance: NestedCommentsModalComponent = modalRef.componentInstance;
-        componentInstance.contentType = contentType;
-        componentInstance.objectId = privateConversation.id;
-        componentInstance.title = this.translateService.instant("Private conversation with the seller");
-        componentInstance.addCommentLabel = this.translateService.instant("Start a new conversation");
-        componentInstance.noCommentsLabel = this.translateService.instant("No messages yet.");
-
-        modalRef.dismissed.pipe(
-          tap(() => this.loadingService.setLoading(true)),
-          tap(() => this.store$.dispatch(new LoadNestedComments({
-            contentTypeId: contentType.id,
-            objectId: privateConversation.id
-          }))),
-          switchMap(() => this.actions$.pipe(ofType(AppActionTypes.LOAD_NESTED_COMMENTS_SUCCESS))),
-          map((action: LoadNestedCommentsSuccess) => action.payload.nestedComments),
-          take(1)
-        ).subscribe(nestedComments => {
-          this.store$.dispatch(new UpdateMarketplacePrivateConversation({
-            privateConversation: {
-              ...privateConversation,
-              userLastAccessed: new Date().toISOString()
-            }
-          }));
-
-          if (nestedComments.length === 0) {
-            this.actions$.pipe(
-              ofType(EquipmentActionTypes.DELETE_MARKETPLACE_PRIVATE_CONVERSATION_SUCCESS),
-              filter((action: DeleteMarketplacePrivateConversationSuccess) => action.payload.listingId === this.listing.id),
+    this.store$
+      .select(selectMarketplacePrivateConversations(this.listing.id))
+      .pipe(take(1))
+      .subscribe(privateConversations => {
+        if (privateConversations.length === 0) {
+          this.actions$
+            .pipe(
+              ofType(EquipmentActionTypes.CREATE_MARKETPLACE_PRIVATE_CONVERSATION_SUCCESS),
+              filter(
+                (action: CreateMarketplacePrivateConversationSuccess) =>
+                  action.payload.privateConversation.listing === this.listing.id
+              ),
+              map((action: CreateMarketplacePrivateConversationSuccess) => action.payload.privateConversation),
               take(1)
-            ).subscribe(() => {
-              this.loadingService.setLoading(false);
+            )
+            .subscribe(privateConversation => {
+              this.startPrivateConversation(privateConversation);
             });
 
-            this.store$.dispatch(new DeleteMarketplacePrivateConversation({ privateConversation }));
-          } else {
-            this.loadingService.setLoading(false);
-          }
-        });
+          this.store$.dispatch(new CreateMarketplacePrivateConversation({ listingId: this.listing.id }));
+        } else {
+          this.startPrivateConversation(privateConversations[0]);
+        }
       });
-
-      this.store$.dispatch(new LoadContentType(contentTypePayload));
-    };
-
-    this.store$.select(selectMarketplacePrivateConversations(this.listing.id)).pipe(
-      take(1)
-    ).subscribe(privateConversations => {
-      if (privateConversations.length === 0) {
-        this.actions$.pipe(
-          ofType(EquipmentActionTypes.CREATE_MARKETPLACE_PRIVATE_CONVERSATION_SUCCESS),
-          filter((action: CreateMarketplacePrivateConversationSuccess) => action.payload.privateConversation.listing === this.listing.id),
-          map((action: CreateMarketplacePrivateConversationSuccess) => action.payload.privateConversation),
-          take(1)
-        ).subscribe(privateConversation => {
-          _startPrivateConversation(privateConversation);
-        });
-
-        this.store$.dispatch(new CreateMarketplacePrivateConversation({ listingId: this.listing.id }));
-      } else {
-        _startPrivateConversation(privateConversations[0]);
-      }
-    });
   }
 }

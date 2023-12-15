@@ -38,18 +38,12 @@
             </ng-container>
 
             <ng-container *ngIf="listingUser.id !== currentUserWrapper.user?.id">
-              <button
-                [class.loading]="loadingService.loading$ | async"
-                class="btn btn-primary d-block w-100 mt-4"
-              >
+              <button [class.loading]="loadingService.loading$ | async" class="btn btn-primary d-block w-100 mt-4">
                 <fa-icon icon="shopping-cart"></fa-icon>
                 {{ "Buy now" | translate }}
               </button>
 
-              <button
-                [class.loading]="loadingService.loading$ | async"
-                class="btn btn-primary d-block w-100 mt-2"
-              >
+              <button [class.loading]="loadingService.loading$ | async" class="btn btn-primary d-block w-100 mt-2">
                 <fa-icon icon="handshake"></fa-icon>
                 {{ "Make an offer" | translate }}
               </button>
@@ -83,6 +77,32 @@
                   </ng-container>
                 </ng-container>
               </button>
+            </ng-container>
+
+            <ng-container *ngIf="listing.user === currentUserWrapper.user?.id">
+              <ng-container *ngIf="privateConversations$ | async as privateConversations">
+                <div *ngIf="privateConversations?.length > 0" class="private-conversations card mt-4">
+                  <div class="card-header">
+                    {{ "Private conversations" | translate }}
+                  </div>
+                  <div class="card-body">
+                    <div class="flex flex-wrap justify-content-center">
+                      <div *ngFor="let privateConversation of privateConversations" class="avatar-wrapper">
+                        <astrobin-avatar
+                          (click)="onMessageSellerClicked($event)"
+                          [userId]="privateConversation.user"
+                        ></astrobin-avatar>
+                        <span *ngIf="privateConversation.unreadMessages > 0" class="badge bg-danger">
+                          {{ privateConversation.unreadMessages }}
+                        </span>
+                        <span *ngIf="privateConversation.unreadMessages === 0" class="badge bg-info">
+                          {{ privateConversation.totalMessages }}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </ng-container>
             </ng-container>
           </div>
         </div>

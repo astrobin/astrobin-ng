@@ -1,0 +1,13 @@
+.private-conversations {
+  .avatar-wrapper {
+    position: relative;
+    display: block;
+    max-width: calc(33.33% - .5rem);
+
+    .badge {
+      position: absolute;
+      top: -.25rem;
+      right: -.25rem;
+    }
+  }
+}
