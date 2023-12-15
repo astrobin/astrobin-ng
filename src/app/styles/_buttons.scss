@@ -38,6 +38,10 @@ astrobin-toggle-property {
     }
   }
 
+  .badge {
+    margin-left: .5rem;
+  }
+
   &.disabled {
     opacity: .5;
     cursor: not-allowed;

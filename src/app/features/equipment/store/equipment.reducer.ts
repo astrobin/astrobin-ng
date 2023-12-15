@@ -11,6 +11,7 @@ import { ContributorInterface } from "@features/equipment/types/contributor.inte
 import { PayloadActionInterface } from "@app/store/actions/payload-action.interface";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
+import { MarketplacePrivateConversationInterface } from "@features/equipment/types/marketplace-private-conversation.interface";
 
 export const equipmentFeatureKey = "equipment";
 
@@ -23,7 +24,8 @@ export interface EquipmentState {
   mostOftenUsedWithData: EquipmentItemMostOftenUsedWithData | {};
   contributors: ContributorInterface[];
   marketplace: {
-    listings: MarketplaceListingInterface[] | null
+    listings: MarketplaceListingInterface[] | null,
+    privateConversations: MarketplacePrivateConversationInterface[]
   };
 }
 
@@ -36,7 +38,8 @@ export const initialEquipmentState: EquipmentState = {
   mostOftenUsedWithData: {},
   contributors: [],
   marketplace: {
-    listings: null
+    listings: null,
+    privateConversations: []
   }
 };
 
@@ -314,6 +317,41 @@ export function reducer(state = initialEquipmentState, action: PayloadActionInte
         }
       };
     }
+
+    case EquipmentActionTypes.LOAD_MARKETPLACE_PRIVATE_CONVERSATIONS_SUCCESS: {
+      return {
+        ...state,
+        marketplace: {
+          ...state.marketplace,
+          privateConversations: UtilsService.arrayUniqueObjects([
+            ...state.marketplace.privateConversations || [],
+            ...action.payload.privateConversations
+          ], "id").sort((a, b) => b.id - a.id)
+        }
+      };
+    }
+
+    case EquipmentActionTypes.CREATE_MARKETPLACE_PRIVATE_CONVERSATION_SUCCESS:
+    case EquipmentActionTypes.UPDATE_MARKETPLACE_PRIVATE_CONVERSATION_SUCCESS:
+      return {
+        ...state,
+        marketplace: {
+          ...state.marketplace,
+          privateConversations: [
+            ...state.marketplace.privateConversations?.filter(conversation => conversation.id !== action.payload.privateConversation.id) || [],
+            action.payload.privateConversation
+          ].sort((a, b) => b.id - a.id)
+        }
+      };
+
+    case EquipmentActionTypes.DELETE_MARKETPLACE_PRIVATE_CONVERSATION_SUCCESS:
+      return {
+        ...state,
+        marketplace: {
+          ...state.marketplace,
+          privateConversations: state.marketplace.privateConversations.filter(conversation => conversation.id !== action.payload.id)
+        }
+      };
 
     default: {
       return state;

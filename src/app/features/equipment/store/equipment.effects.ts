@@ -28,6 +28,9 @@ import {
   CreateMarketplaceListing,
   CreateMarketplaceListingFailure,
   CreateMarketplaceListingSuccess,
+  CreateMarketplacePrivateConversation,
+  CreateMarketplacePrivateConversationFailure,
+  CreateMarketplacePrivateConversationSuccess,
   CreateMount,
   CreateMountEditProposal,
   CreateMountEditProposalSuccess,
@@ -49,6 +52,9 @@ import {
   DeleteMarketplaceListing,
   DeleteMarketplaceListingFailure,
   DeleteMarketplaceListingSuccess,
+  DeleteMarketplacePrivateConversation,
+  DeleteMarketplacePrivateConversationFailure,
+  DeleteMarketplacePrivateConversationSuccess,
   EquipmentActionTypes,
   FindAllBrands,
   FindAllBrandsSuccess,
@@ -84,6 +90,9 @@ import {
   LoadMarketplaceListings,
   LoadMarketplaceListingsSuccess,
   LoadMarketplaceListingSuccess,
+  LoadMarketplacePrivateConversations,
+  LoadMarketplacePrivateConversationsFailure,
+  LoadMarketplacePrivateConversationsSuccess,
   LoadSensor,
   LoadSensorSuccess,
   RejectEquipmentItem,
@@ -98,7 +107,10 @@ import {
   UpdateEquipmentPresetSuccess,
   UpdateMarketplaceListing,
   UpdateMarketplaceListingFailure,
-  UpdateMarketplaceListingSuccess
+  UpdateMarketplaceListingSuccess,
+  UpdateMarketplacePrivateConversation,
+  UpdateMarketplacePrivateConversationFailure,
+  UpdateMarketplacePrivateConversationSuccess
 } from "@features/equipment/store/equipment.actions";
 import { Actions, concatLatestFrom, createEffect, ofType } from "@ngrx/effects";
 import { Store } from "@ngrx/store";
@@ -901,7 +913,9 @@ export class EquipmentEffects {
               }
 
               let matchingImage: MarketplaceImageInterface;
-              const matchingListing = previousListing.lineItems.find(previousLineItem => previousLineItem.id === lineItem.id);
+              const matchingListing = previousListing.lineItems.find(
+                previousLineItem => previousLineItem.id === lineItem.id
+              );
               if (matchingListing) {
                 matchingImage = matchingListing.images[key];
               }
@@ -922,18 +936,14 @@ export class EquipmentEffects {
                   );
                 }
               } else {
-                return this.equipmentApiService.createMarketplaceImage(
-                  updatedListing.id,
-                  lineItem.id,
-                  image[0].file
-                );
+                return this.equipmentApiService.createMarketplaceImage(updatedListing.id, lineItem.id, image[0].file);
               }
             });
           };
 
-          const imageOperations$ = preserved.map(lineItem => _buildImageOperations(lineItem)).concat(
-            added.map(lineItem => _buildImageOperations(lineItem))
-          );
+          const imageOperations$ = preserved
+            .map(lineItem => _buildImageOperations(lineItem))
+            .concat(added.map(lineItem => _buildImageOperations(lineItem)));
 
           const updateOperations$ = preserved.map(lineItem =>
             this.equipmentApiService.updateMarketplaceLineItem(lineItem)
@@ -974,6 +984,112 @@ export class EquipmentEffects {
         tap(() => this.popNotificationsService.success(this.translateService.instant("Listing updated successfully")))
       ),
     { dispatch: false }
+  );
+
+  LoadMarketplacePrivateConversations: Observable<LoadMarketplacePrivateConversationsSuccess | LoadMarketplacePrivateConversationsFailure> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(EquipmentActionTypes.LOAD_MARKETPLACE_PRIVATE_CONVERSATIONS),
+      map((action: LoadMarketplacePrivateConversations) => action.payload),
+      mergeMap(payload =>
+        this.equipmentApiService.loadMarketplacePrivateConversations(payload.listingId).pipe(
+          map(
+            privateConversations =>
+              new LoadMarketplacePrivateConversationsSuccess({
+                listingId: payload.listingId,
+                privateConversations
+              })
+          ),
+          catchError(error =>
+            of(
+              new LoadMarketplacePrivateConversationsFailure({
+                listingId: payload.listingId,
+                error
+              })
+            )
+          )
+        )
+      )
+    )
+  );
+
+  CreateMarketplacePrivateConversation: Observable<CreateMarketplacePrivateConversationSuccess | CreateMarketplacePrivateConversationFailure> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(EquipmentActionTypes.CREATE_MARKETPLACE_PRIVATE_CONVERSATION),
+      map((action: CreateMarketplacePrivateConversation) => action.payload),
+      mergeMap(payload =>
+        this.equipmentApiService.createMarketplacePrivateConversation(payload.listingId).pipe(
+          map(
+            privateConversation =>
+              new CreateMarketplacePrivateConversationSuccess({
+                privateConversation
+              })
+          ),
+          catchError(error =>
+            of(
+              new CreateMarketplacePrivateConversationFailure({
+                listingId: payload.listingId,
+                error
+              })
+            )
+          )
+        )
+      )
+    )
+  );
+
+  UpdateMarketplacePrivateConversation: Observable<UpdateMarketplacePrivateConversationSuccess | UpdateMarketplacePrivateConversationFailure> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(EquipmentActionTypes.UPDATE_MARKETPLACE_PRIVATE_CONVERSATION),
+      map((action: UpdateMarketplacePrivateConversation) => action.payload),
+      mergeMap(payload =>
+        this.equipmentApiService.updateMarketplacePrivateConversation(payload.privateConversation).pipe(
+          map(
+            privateConversation =>
+              new UpdateMarketplacePrivateConversationSuccess({
+                privateConversation
+              })
+          ),
+          catchError(error =>
+            of(
+              new UpdateMarketplacePrivateConversationFailure({
+                privateConversation: payload.privateConversation,
+                error
+              })
+            )
+          )
+        )
+      )
+    )
+  );
+
+  DeleteMarketplacePrivateConversation: Observable<DeleteMarketplacePrivateConversationSuccess | DeleteMarketplacePrivateConversationFailure> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(EquipmentActionTypes.DELETE_MARKETPLACE_PRIVATE_CONVERSATION),
+      map((action: DeleteMarketplacePrivateConversation) => action.payload),
+
+      mergeMap(payload =>
+        this.equipmentApiService
+          .deleteMarketplacePrivateConversation(payload.privateConversation.listing, payload.privateConversation.id)
+          .pipe(
+            map(
+              () =>
+                new DeleteMarketplacePrivateConversationSuccess({
+                  userId: payload.privateConversation.user,
+                  listingId: payload.privateConversation.listing
+                })
+            ),
+            catchError(error =>
+              of(
+                new DeleteMarketplacePrivateConversationFailure({
+                  userId: payload.privateConversation.user,
+                  listingId: payload.privateConversation.listing,
+                  error
+                })
+              )
+            )
+          )
+      )
+    )
   );
 
   constructor(

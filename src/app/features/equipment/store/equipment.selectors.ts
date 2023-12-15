@@ -141,3 +141,8 @@ export const selectMarketplaceListing = createSelector(
 
 export const selectMarketplaceListingByHash = (hash: MarketplaceListingInterface["hash"]) =>
   createSelector(selectMarketplaceListings, listings => listings?.find(listing => listing.hash === hash) || null);
+
+export const selectMarketplacePrivateConversations = (listingId: MarketplaceListingInterface["id"]) =>
+  createSelector(selectMarketplace, marketplace =>
+    marketplace.privateConversations.filter(conversation => conversation.listing === listingId)
+  );

@@ -11,7 +11,7 @@ import {
   EquipmentItemUsageType
 } from "@features/equipment/types/equipment-item-base.interface";
 import { PaginatedApiResultInterface } from "@shared/services/api/interfaces/paginated-api-result.interface";
-import { catchError, map, switchMap, take } from "rxjs/operators";
+import { catchError, expand, map, reduce, switchMap, take } from "rxjs/operators";
 import { BrandInterface } from "@features/equipment/types/brand.interface";
 import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
 import { CommonApiService } from "@shared/services/api/classic/common/common-api.service";
@@ -39,6 +39,7 @@ import { EquipmentListingsInterface } from "@features/equipment/types/equipment-
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
 import { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
 import { MarketplaceImageInterface } from "@features/equipment/types/marketplace-image.interface";
+import { MarketplacePrivateConversationInterface } from "@features/equipment/types/marketplace-private-conversation.interface";
 
 export interface AllEquipmentItemsOptionsInterface {
   brand?: BrandInterface["id"];
@@ -820,9 +821,7 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     );
   }
 
-  public updateMarketplaceLineItem(
-    lineItem: MarketplaceLineItemInterface
-  ) {
+  public updateMarketplaceLineItem(lineItem: MarketplaceLineItemInterface) {
     return this.http.put<MarketplaceLineItemInterface>(
       `${this.configUrl}/marketplace/listing/${lineItem.listing}/line-item/${lineItem.id}/`,
       (({ images, ...rest }) => rest)(lineItem)
@@ -893,6 +892,47 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     return this.http.delete<void>(
       `${this.configUrl}/marketplace/listing/${listingId}/line-item/${lineItemId}/image/${imageId}/`
     );
+  }
+
+  public loadMarketplacePrivateConversations(
+    listingId: MarketplaceListingInterface["id"]
+  ): Observable<MarketplacePrivateConversationInterface[]> {
+    const url = `${this.configUrl}/marketplace/listing/${listingId}/private-conversation/`;
+
+    return this.http.get<PaginatedApiResultInterface<MarketplacePrivateConversationInterface>>(url).pipe(
+      expand(response =>
+        response.next
+          ? this.http.get<PaginatedApiResultInterface<MarketplacePrivateConversationInterface>>(response.next)
+          : EMPTY
+      ),
+      map(response => response.results),
+      reduce((acc, results) => acc.concat(results), [] as MarketplacePrivateConversationInterface[])
+    );
+  }
+
+  public createMarketplacePrivateConversation(
+    listingId: MarketplaceListingInterface["id"]
+  ): Observable<MarketplacePrivateConversationInterface> {
+    const url = `${this.configUrl}/marketplace/listing/${listingId}/private-conversation/`;
+
+    return this.http.post<MarketplacePrivateConversationInterface>(url, {});
+  }
+
+  public updateMarketplacePrivateConversation(
+    privateConversation: MarketplacePrivateConversationInterface
+  ): Observable<MarketplacePrivateConversationInterface> {
+    const url = `${this.configUrl}/marketplace/listing/${privateConversation.listing}/private-conversation/${privateConversation.id}/`;
+
+    return this.http.put<MarketplacePrivateConversationInterface>(url, privateConversation);
+  }
+
+  public deleteMarketplacePrivateConversation(
+    listingId: MarketplaceListingInterface["id"],
+    privateConversationId: MarketplacePrivateConversationInterface["id"]
+  ): Observable<void> {
+    const url = `${this.configUrl}/marketplace/listing/${listingId}/private-conversation/${privateConversationId}/`;
+
+    return this.http.delete<void>(url);
   }
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

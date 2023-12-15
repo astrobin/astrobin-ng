@@ -9,21 +9,31 @@ import { TranslateService } from "@ngx-translate/core";
 import { TitleService } from "@shared/services/title/title.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { selectContentType } from "@app/store/selectors/app/content-type.selectors";
-import { filter, switchMap, take, tap } from "rxjs/operators";
+import { filter, map, switchMap, take, tap } from "rxjs/operators";
 import { LoadContentType } from "@app/store/actions/content-type.actions";
 import { Observable } from "rxjs";
 import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
-import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { EquipmentMarketplaceService } from "@features/equipment/services/equipment-marketplace.service";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
 import { Actions, ofType } from "@ngrx/effects";
 import {
+  CreateMarketplacePrivateConversation,
+  CreateMarketplacePrivateConversationSuccess,
   DeleteMarketplaceListing,
   DeleteMarketplaceListingSuccess,
-  EquipmentActionTypes
+  DeleteMarketplacePrivateConversation,
+  DeleteMarketplacePrivateConversationSuccess,
+  EquipmentActionTypes,
+  LoadMarketplacePrivateConversations,
+  UpdateMarketplacePrivateConversation
 } from "@features/equipment/store/equipment.actions";
+import { MarketplacePrivateConversationInterface } from "@features/equipment/types/marketplace-private-conversation.interface";
+import { NestedCommentsModalComponent } from "@shared/components/misc/nested-comments-modal/nested-comments-modal.component";
+import { LoadNestedComments, LoadNestedCommentsSuccess } from "@app/store/actions/nested-comments.actions";
+import { AppActionTypes } from "@app/store/actions/app.actions";
+import { selectMarketplacePrivateConversations } from "@features/equipment/store/equipment.selectors";
 
 @Component({
   selector: "astrobin-marketplace-listing-page",
@@ -51,6 +61,7 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
   listing: MarketplaceListingInterface;
   listingContentType$: Observable<ContentTypeInterface>;
   listingUser$: Observable<UserInterface>;
+  privateConversations$: Observable<MarketplacePrivateConversationInterface[]>;
 
   private _contentTypePayload = { appLabel: "astrobin_apps_equipment", model: "equipmentitemmarketplacelisting" };
 
@@ -61,7 +72,6 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
     public readonly translateService: TranslateService,
     public readonly titleService: TitleService,
     public readonly loadingService: LoadingService,
-    public readonly classicRoutesService: ClassicRoutesService,
     public readonly equipmentMarketplaceService: EquipmentMarketplaceService,
     public readonly modalService: NgbModal,
     public readonly router: Router
@@ -74,7 +84,6 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
 
     this.titleService.setTitle(this.title);
     this.store$.dispatch(this.breadcrumb);
-    this.store$.dispatch(new LoadContentType(this._contentTypePayload));
 
     this.listing = this.activatedRoute.snapshot.data.listing;
 
@@ -87,6 +96,11 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
       filter(user => !!user),
       take(1)
     );
+
+    this.privateConversations$ = this.store$.select(selectMarketplacePrivateConversations(this.listing.id));
+
+    this.store$.dispatch(new LoadContentType(this._contentTypePayload));
+    this.store$.dispatch(new LoadMarketplacePrivateConversations({ listingId: this.listing.id }));
   }
 
   delete() {
@@ -101,6 +115,90 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
       this.router.navigateByUrl("/equipment/marketplace").then(() => {
         this.loadingService.setLoading(false);
       });
+    });
+  }
+
+  onMessageSellerClicked(event: Event) {
+    event.preventDefault();
+
+    this.loadingService.setLoading(true);
+
+    const _startPrivateConversation = (privateConversation: MarketplacePrivateConversationInterface) => {
+      const contentTypePayload = {
+        appLabel: "astrobin_apps_equipment",
+        model: "equipmentitemmarketplaceprivateconversation"
+      };
+      this.store$.select(selectContentType, contentTypePayload).pipe(
+        filter(contentType => !!contentType),
+        take(1)
+      ).subscribe(contentType => {
+        this.loadingService.setLoading(false);
+
+        const modalRef = this.modalService.open(NestedCommentsModalComponent, {
+          size: "lg",
+          centered: true,
+          scrollable: false
+        });
+        const componentInstance: NestedCommentsModalComponent = modalRef.componentInstance;
+        componentInstance.contentType = contentType;
+        componentInstance.objectId = privateConversation.id;
+        componentInstance.title = this.translateService.instant("Private conversation with the seller");
+        componentInstance.addCommentLabel = this.translateService.instant("Start a new conversation");
+        componentInstance.noCommentsLabel = this.translateService.instant("No messages yet.");
+
+        modalRef.dismissed.pipe(
+          tap(() => this.loadingService.setLoading(true)),
+          tap(() => this.store$.dispatch(new LoadNestedComments({
+            contentTypeId: contentType.id,
+            objectId: privateConversation.id
+          }))),
+          switchMap(() => this.actions$.pipe(ofType(AppActionTypes.LOAD_NESTED_COMMENTS_SUCCESS))),
+          map((action: LoadNestedCommentsSuccess) => action.payload.nestedComments),
+          take(1)
+        ).subscribe(nestedComments => {
+          this.store$.dispatch(new UpdateMarketplacePrivateConversation({
+            privateConversation: {
+              ...privateConversation,
+              userLastAccessed: new Date().toISOString()
+            }
+          }));
+
+          if (nestedComments.length === 0) {
+            this.actions$.pipe(
+              ofType(EquipmentActionTypes.DELETE_MARKETPLACE_PRIVATE_CONVERSATION_SUCCESS),
+              filter((action: DeleteMarketplacePrivateConversationSuccess) => action.payload.listingId === this.listing.id),
+              take(1)
+            ).subscribe(() => {
+              this.loadingService.setLoading(false);
+            });
+
+            this.store$.dispatch(new DeleteMarketplacePrivateConversation({ privateConversation }));
+          } else {
+            this.loadingService.setLoading(false);
+          }
+        });
+      });
+
+      this.store$.dispatch(new LoadContentType(contentTypePayload));
+    };
+
+    this.store$.select(selectMarketplacePrivateConversations(this.listing.id)).pipe(
+      take(1)
+    ).subscribe(privateConversations => {
+      if (privateConversations.length === 0) {
+        this.actions$.pipe(
+          ofType(EquipmentActionTypes.CREATE_MARKETPLACE_PRIVATE_CONVERSATION_SUCCESS),
+          filter((action: CreateMarketplacePrivateConversationSuccess) => action.payload.privateConversation.listing === this.listing.id),
+          map((action: CreateMarketplacePrivateConversationSuccess) => action.payload.privateConversation),
+          take(1)
+        ).subscribe(privateConversation => {
+          _startPrivateConversation(privateConversation);
+        });
+
+        this.store$.dispatch(new CreateMarketplacePrivateConversation({ listingId: this.listing.id }));
+      } else {
+        _startPrivateConversation(privateConversations[0]);
+      }
     });
   }
 }
