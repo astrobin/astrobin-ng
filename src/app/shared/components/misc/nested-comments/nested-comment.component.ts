@@ -16,6 +16,7 @@ import { CreateNestedComment } from "@app/store/actions/nested-comments.actions"
 import { Actions, ofType } from "@ngrx/effects";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { WindowRefService } from "@shared/services/window-ref.service";
+import { RouterService } from "@shared/services/router.service";
 
 @Component({
   selector: "astrobin-nested-comment",
@@ -43,7 +44,8 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
     public readonly actions$: Actions,
     public readonly translateService: TranslateService,
     public readonly loadingService: LoadingService,
-    public readonly windowRefService: WindowRefService
+    public readonly windowRefService: WindowRefService,
+    public readonly routerService: RouterService
   ) {
     super(store$);
   }
@@ -90,24 +92,43 @@ export class NestedCommentComponent extends BaseComponentDirective implements On
   }
 
   submitReply() {
-    this.store$.dispatch(
-      new CreateNestedComment({
-        nestedComment: {
-          contentType: this.comment.contentType,
-          objectId: this.comment.objectId,
-          text: this.replyForm.get("commentReply").value,
-          parent: this.comment.id
-        }
-      })
-    );
+    this.currentUser$.pipe(take(1)).subscribe(user => {
+      if (!user) {
+        this.routerService.redirectToLogin();
+        return;
+      }
 
-    this.actions$
-      .pipe(
-        ofType(AppActionTypes.CREATE_NESTED_COMMENT_SUCCESS),
-        take(1),
-        tap(() => this.cancelReply())
-      )
-      .subscribe();
+      this.store$.dispatch(
+        new CreateNestedComment({
+          nestedComment: {
+            contentType: this.comment.contentType,
+            objectId: this.comment.objectId,
+            text: this.replyForm.get("commentReply").value,
+            parent: this.comment.id
+          }
+        })
+      );
+
+      this.actions$
+        .pipe(
+          ofType(AppActionTypes.CREATE_NESTED_COMMENT_SUCCESS),
+          take(1),
+          tap(() => this.cancelReply())
+        )
+        .subscribe();
+    });
+  }
+
+  onReplyClicked(event: Event) {
+    event.preventDefault();
+
+    this.currentUser$.pipe(take(1)).subscribe(user => {
+      if (!user) {
+        this.routerService.redirectToLogin();
+        return;
+      }
+      this.showReplyForm = true;
+    });
   }
 
   _initReplyFields() {

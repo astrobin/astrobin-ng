@@ -14,6 +14,7 @@ import { FormlyFieldConfig } from "@ngx-formly/core";
 import { TranslateService } from "@ngx-translate/core";
 import { Actions, ofType } from "@ngrx/effects";
 import { AppActionTypes } from "@app/store/actions/app.actions";
+import { RouterService } from "@shared/services/router.service";
 
 @Component({
   selector: "astrobin-nested-comments",
@@ -53,7 +54,8 @@ export class NestedCommentsComponent extends BaseComponentDirective implements O
     public readonly store$: Store,
     public readonly actions$: Actions,
     public readonly loadingService: LoadingService,
-    public readonly translateService: TranslateService
+    public readonly translateService: TranslateService,
+    public readonly routerService: RouterService
   ) {
     super(store$);
   }
@@ -81,24 +83,43 @@ export class NestedCommentsComponent extends BaseComponentDirective implements O
   }
 
   submitTopLevelComment() {
-    this.store$.dispatch(
-      new CreateNestedComment({
-        nestedComment: {
-          contentType: this.contentType.id,
-          objectId: this.objectId,
-          text: this.form.get("topLevelComment").value,
-          parent: null
-        }
-      })
-    );
+    this.currentUser$.pipe(take(1)).subscribe(user => {
+      if (!user) {
+        this.routerService.redirectToLogin();
+        return;
+      }
 
-    this.actions$
-      .pipe(
-        ofType(AppActionTypes.CREATE_NESTED_COMMENT_SUCCESS),
-        take(1),
-        tap(() => this.cancelTopLevelComment())
-      )
-      .subscribe();
+      this.store$.dispatch(
+        new CreateNestedComment({
+          nestedComment: {
+            contentType: this.contentType.id,
+            objectId: this.objectId,
+            text: this.form.get("topLevelComment").value,
+            parent: null
+          }
+        })
+      );
+
+      this.actions$
+        .pipe(
+          ofType(AppActionTypes.CREATE_NESTED_COMMENT_SUCCESS),
+          take(1),
+          tap(() => this.cancelTopLevelComment())
+        )
+        .subscribe();
+    });
+  }
+
+  onAddCommentClicked(event: Event) {
+    event.preventDefault();
+
+    this.currentUser$.pipe(take(1)).subscribe(user => {
+      if (!user) {
+        this.routerService.redirectToLogin();
+        return;
+      }
+      this.showTopLevelForm = true;
+    });
   }
 
   _initComments() {

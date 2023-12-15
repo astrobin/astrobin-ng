@@ -67,7 +67,7 @@
 </ng-template>
 
 <ng-template #addCommentButtonTpl>
-  <button (click)="showTopLevelForm = true" class="btn btn-primary add-comment">
+  <button (click)="onAddCommentClicked($event)" class="btn btn-primary add-comment">
     <fa-icon icon="comment"></fa-icon>
     {{ addCommentLabel }}
   </button>

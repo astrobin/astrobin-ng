@@ -7,7 +7,7 @@
     </a>
   </h1>
 
-  <ng-container *ngIf="currentUser$ | async as currentUser; else loadingTemplate">
+  <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
     <ng-container *ngIf="listingContentType$ | async as listingContentType; else loadingTemplate">
       <ng-container *ngIf="listingUser$ | async as listingUser; else loadingTemplate">
         <div class="row">
@@ -25,7 +25,7 @@
           <div class="col">
             <astrobin-marketplace-user-card [userId]="listing.user"></astrobin-marketplace-user-card>
 
-            <ng-container *ngIf="listingUser.id === currentUser.id">
+            <ng-container *ngIf="listingUser.id === currentUserWrapper.user?.id">
               <a [routerLink]="'edit'" class="btn btn-primary d-block w-100 mt-4">
                 <fa-icon icon="pencil"></fa-icon>
                 {{ "Edit" | translate }}
@@ -37,7 +37,7 @@
               </button>
             </ng-container>
 
-            <ng-container *ngIf="listingUser.id !== currentUser.id">
+            <ng-container *ngIf="listingUser.id !== currentUserWrapper.user?.id">
               <a class="btn btn-xl btn-primary d-block w-100 mt-4" href="#">
                 <fa-icon icon="shopping-cart"></fa-icon>
                 {{ "Buy now" | translate }}
@@ -51,7 +51,7 @@
               <astrobin-toggle-property
                 [contentType]="listingContentType.id"
                 [objectId]="listing.id.toString()"
-                [userId]="currentUser.id"
+                [userId]="currentUserWrapper.user?.id"
                 btnClass="btn btn-lg btn-secondary d-block w-100 mt-4"
                 propertyType="follow"
                 setLabel="{{ 'Subscribe to updates' | translate }}"

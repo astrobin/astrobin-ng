@@ -15,8 +15,9 @@ import {
 import { takeUntil } from "rxjs/operators";
 import { Actions, ofType } from "@ngrx/effects";
 import { AppActionTypes } from "@app/store/actions/app.actions";
-import { UtilsService } from "@shared/services/utils/utils.service";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import { RouterService } from "@shared/services/router.service";
+import { UtilsService } from "@shared/services/utils/utils.service";
 
 @Component({
   selector: "astrobin-toggle-property",
@@ -57,7 +58,8 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
     public readonly actions$: Actions,
     public readonly loadingService: LoadingService,
     public readonly translateService: TranslateService,
-    public readonly utilsService: UtilsService
+    public readonly utilsService: UtilsService,
+    public readonly routerService: RouterService
   ) {
     super(store$);
   }
@@ -116,6 +118,37 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
 
   public ngOnInit(): void {
     super.ngOnInit();
+    this._initStatus();
+  }
+
+  public onClick(toggleProperty: Partial<TogglePropertyInterface>): void {
+    if (!this.userId) {
+      this.routerService.redirectToLogin();
+      return;
+    }
+
+    this.loading = true;
+
+    if (!!toggleProperty) {
+      this.store$.dispatch(new DeleteToggleProperty({ toggleProperty }));
+    } else {
+      this.store$.dispatch(
+        new CreateToggleProperty({
+          toggleProperty: {
+            propertyType: this.propertyType,
+            user: this.userId,
+            objectId: this.objectId,
+            contentType: this.contentType
+          }
+        })
+      );
+    }
+  }
+
+  private _initStatus(): void {
+    if (!this.userId) {
+      return;
+    }
 
     const params: Partial<TogglePropertyInterface> = {
       propertyType: this.propertyType,
@@ -154,24 +187,5 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
         this.buttonState = "default";
       });
     });
-  }
-
-  public onClick(toggleProperty: Partial<TogglePropertyInterface>): void {
-    this.loading = true;
-
-    if (!!toggleProperty) {
-      this.store$.dispatch(new DeleteToggleProperty({ toggleProperty }));
-    } else {
-      this.store$.dispatch(
-        new CreateToggleProperty({
-          toggleProperty: {
-            propertyType: this.propertyType,
-            user: this.userId,
-            objectId: this.objectId,
-            contentType: this.contentType
-          }
-        })
-      );
-    }
   }
 }

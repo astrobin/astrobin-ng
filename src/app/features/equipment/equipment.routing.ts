@@ -167,11 +167,13 @@ export const routes: Routes = [
       },
       {
         path: "create",
-        component: MarketplaceCreateListingPageComponent
+        component: MarketplaceCreateListingPageComponent,
+        canActivate: [AuthGuardService]
       },
       {
         path: "listing/:hash/edit",
         component: MarketplaceEditListingPageComponent,
+        canActivate: [AuthGuardService],
         resolve: {
           listing: MarketplaceListingResolver
         }

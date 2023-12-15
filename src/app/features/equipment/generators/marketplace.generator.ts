@@ -3,10 +3,13 @@ import {
   MarketplaceLineItemInterface,
   MarketplaceListingCondition
 } from "@features/equipment/types/marketplace-line-item.interface";
+import { UserInterface } from "@shared/interfaces/user.interface";
+import { UserGenerator } from "@shared/generators/user.generator";
 
 export class MarketplaceGenerator {
   static listing(source: Partial<MarketplaceListingInterface> = {}): MarketplaceListingInterface {
     let lineItems: MarketplaceLineItemInterface[];
+    let user: UserInterface["id"];
 
     if (source.lineItems) {
       lineItems = [...source.lineItems];
@@ -14,8 +17,15 @@ export class MarketplaceGenerator {
       lineItems = [this.lineItem()];
     }
 
+    if (source.user) {
+      user = source.user;
+    } else {
+      user = UserGenerator.user().id;
+    }
+
     return {
       id: source.id || 1,
+      user,
       hash: source.hash || "abc123",
       created: source.created || "1970-01-01",
       updated: source.updated || "1970-01-01",

@@ -78,6 +78,7 @@ import { ActiveToast } from "ngx-toastr";
 import { CompareService } from "@features/equipment/services/compare.service";
 import { isPlatformBrowser, Location } from "@angular/common";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
+import { RouterService } from "@shared/services/router.service";
 
 @Component({
   selector: "astrobin-equipment-explorer",
@@ -193,7 +194,8 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
     public readonly modalService: NgbModal,
     public readonly compareService: CompareService,
     public readonly location: Location,
-    @Inject(PLATFORM_ID) public readonly platformId
+    @Inject(PLATFORM_ID) public readonly platformId,
+    public readonly routerService: RouterService
   ) {
     super(store$);
   }
@@ -349,33 +351,40 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
   }
 
   startEditMode() {
-    if (!this._verifyCameraVariantCanBeEdited()) {
-      return;
-    }
+    this.currentUser$.pipe(take(1)).subscribe(user => {
+      if (!user) {
+        this.routerService.redirectToLogin();
+        return;
+      }
 
-    if (
-      this.editProposals &&
-      this.editProposals.length > 0 &&
-      this.editProposals.filter(editProposal => editProposal.editProposalReviewStatus === null).length > 0
-    ) {
-      this.popNotificationsService.error(
-        this.translateService.instant(
-          "You cannot propose an edit while there is a pending one. Please review the pending edit proposal first, " +
-          "thank you!"
-        )
-      );
-      return;
-    }
+      if (!this._verifyCameraVariantCanBeEdited()) {
+        return;
+      }
 
-    this.loadingService.setLoading(true);
+      if (
+        this.editProposals &&
+        this.editProposals.length > 0 &&
+        this.editProposals.filter(editProposal => editProposal.editProposalReviewStatus === null).length > 0
+      ) {
+        this.popNotificationsService.error(
+          this.translateService.instant(
+            "You cannot propose an edit while there is a pending one. Please review the pending edit proposal first, " +
+            "thank you!"
+          )
+        );
+        return;
+      }
 
-    this.equipmentApiService.acquireEditProposalLock(this.selectedItem.klass, this.selectedItem.id).subscribe(() => {
-      this.loadingService.setLoading(false);
+      this.loadingService.setLoading(true);
 
-      this.editMode = true;
-      this.editModel = { ...this.selectedItem };
+      this.equipmentApiService.acquireEditProposalLock(this.selectedItem.klass, this.selectedItem.id).subscribe(() => {
+        this.loadingService.setLoading(false);
 
-      this.windowRefService.scrollToElement("#edit-item");
+        this.editMode = true;
+        this.editModel = { ...this.selectedItem };
+
+        this.windowRefService.scrollToElement("#edit-item");
+      });
     });
   }
 
