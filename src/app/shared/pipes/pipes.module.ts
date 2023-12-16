@@ -18,6 +18,7 @@ import { IsEquipmentModeratorPipe } from "@shared/pipes/is-equipment-moderator.p
 import { IsInGroupPipe } from "@shared/pipes/is-in-group.pipe";
 import { BBCodeToHtmlPipe } from "@shared/pipes/bbcode-to-html.pipe";
 import { SlugifyPipe } from "@shared/pipes/slugify.pipe";
+import { Nl2BrPipe } from "@shared/pipes/nl2br.pipe";
 
 const pipes = [
   BBCodeToHtmlPipe,
@@ -37,7 +38,8 @@ const pipes = [
   HasValidUserSubscriptionPipe,
   LocalDatePipe,
   YesNoPipe,
-  SlugifyPipe
+  SlugifyPipe,
+  Nl2BrPipe
 ];
 
 @NgModule({

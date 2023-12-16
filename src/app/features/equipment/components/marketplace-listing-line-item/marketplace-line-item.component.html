@@ -32,11 +32,11 @@
         ></astrobin-marketplace-listing-line-item-images>
       </div>
 
-      <div class="w-100">
-        <div *ngIf="!!lineItem.description; else noDescriptionTemplate" class="description">
-          {{ lineItem.description }}
-        </div>
-      </div>
+      <div
+        *ngIf="!!lineItem.description; else noDescriptionTemplate"
+        [innerHTML]="lineItem.description | nl2br"
+        class="description w-100"
+      ></div>
     </div>
 
     <div class="card-footer">

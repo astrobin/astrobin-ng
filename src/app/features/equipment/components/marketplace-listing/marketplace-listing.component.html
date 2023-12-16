@@ -10,9 +10,7 @@
     <div class="card map-container">
       <div class="card-header">
         <ng-container *ngIf="!!listing.country; else loadingCountryTemplate">
-          <ng-container *ngIf="!!listing.city">
-            {{ listing.city }},
-          </ng-container>
+          <ng-container *ngIf="!!listing.city"> {{ listing.city }},</ng-container>
           {{ countryService.getCountryName(listing.country) }}
         </ng-container>
         <ng-template #loadingCountryTemplate>
@@ -39,20 +37,21 @@
         <table class="table table-striped mb-0">
           <tbody>
           <tr>
-            <th>{{ "Buyer picks up" | translate}}</th>
+            <th>{{ "Buyer picks up" | translate }}</th>
             <td [class]="!!listing.deliveryByBuyerPickUp | json">{{ !!listing.deliveryByBuyerPickUp | yesNo }}</td>
           </tr>
           <tr>
-            <th>{{ "Seller delivers in person" | translate}}</th>
-            <td
-              [class]="!!listing.deliveryBySellerDelivery | json">{{ !!listing.deliveryBySellerDelivery | yesNo }}</td>
+            <th>{{ "Seller delivers in person" | translate }}</th>
+            <td [class]="!!listing.deliveryBySellerDelivery | json">
+              {{ !!listing.deliveryBySellerDelivery | yesNo }}
+            </td>
           </tr>
           <tr>
-            <th>{{ "Seller ships" | translate}}</th>
+            <th>{{ "Seller ships" | translate }}</th>
             <td [class]="!!listing.deliveryByShipping | json">{{ !!listing.deliveryByShipping | yesNo }}</td>
           </tr>
           <tr>
-            <th>{{ "Shipping method" | translate}}</th>
+            <th>{{ "Shipping method" | translate }}</th>
             <td>{{ equipmentItemService.humanizeShippingMethod(listing.shippingMethod) }}</td>
           </tr>
           </tbody>
@@ -67,7 +66,7 @@
 
   <div class="card-body">
     <ng-container *ngIf="!!listing.description; else noDescriptionTemplate">
-      {{ listing.description }}
+      <span [innerHTML]="listing.description | nl2br"></span>
     </ng-container>
 
     <ng-template #noDescriptionTemplate>
