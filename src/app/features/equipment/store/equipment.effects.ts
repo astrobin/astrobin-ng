@@ -941,16 +941,32 @@ export class EquipmentEffects {
             });
           };
 
-          const imageOperations$ = preserved
-            .map(lineItem => _buildImageOperations(lineItem))
-            .concat(added.map(lineItem => _buildImageOperations(lineItem)));
+          const imageOperations$ = preserved.map(lineItem => _buildImageOperations(lineItem));
 
           const updateOperations$ = preserved.map(lineItem =>
             this.equipmentApiService.updateMarketplaceLineItem(lineItem)
           );
 
           const createOperations$ = added.map(lineItem =>
-            this.equipmentApiService.createMarketplaceLineItem(lineItem)
+            this.equipmentApiService.createMarketplaceLineItem(lineItem).pipe(
+              switchMap(createdLineItem =>
+                forkJoin(
+                  Object.keys(lineItem.images).map(key => {
+                    const image = lineItem.images[key];
+
+                    if (!image) {
+                      return of(null);
+                    }
+
+                    return this.equipmentApiService.createMarketplaceImage(
+                      updatedListing.id,
+                      createdLineItem.id,
+                      image[0].file
+                    );
+                  })
+                )
+              )
+            )
           );
 
           const deleteOperations$ = removed.map(lineItem =>
