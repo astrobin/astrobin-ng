@@ -9,7 +9,6 @@
 
     <span
       *ngIf="comment.likes.length === 1"
-      [translateParams]="{ '0': comment.likes.length }"
       [translate]="'1 like'"
       class="likes"
     >
@@ -18,7 +17,7 @@
     <span
       *ngIf="comment.likes.length > 1"
       [translateParams]="{ '0': comment.likes.length }"
-      [translate]="'{{0}} like'"
+      [translate]="'{{0}} likes'"
       class="likes"
     >
     </span>

@@ -32,4 +32,6 @@ export interface MarketplaceLineItemInterface {
   itemObjectId: number;
   itemContentType: ContentTypeInterface["id"];
   images?: MarketplaceImageInterface[] | { file: File, url: string }[];
+  totalImageCount?: number;
+  sellerImageCount?: number;
 }

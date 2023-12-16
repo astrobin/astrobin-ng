@@ -1,4 +1,4 @@
-<ng-container *ngIf="equipmentItem$ | async as equipmentItem; else noEquipmentItem">
+<ng-container *ngIf="equipmentItem; else noEquipmentItem">
   <div class="card">
     <div class="card-header">
       <div class="d-flex align-items-center">
@@ -40,6 +40,10 @@
     </div>
 
     <div class="card-footer">
+      <a [href]="sellerImagesUrl" [innerHTML]="sellerImageCount"></a>
+      <span class="middot-separator"></span>
+      <a [href]="allImagesUrl" [innerHTML]="totalImageCount"></a>
+      <span class="middot-separator"></span>
       <astrobin-marketplace-listing-line-item-condition
         [lineItem]="lineItem"
       ></astrobin-marketplace-listing-line-item-condition>

@@ -63,11 +63,22 @@
     @include darkest-background-texture;
     display: flex;
     justify-content: end;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
+    gap: .25rem;
 
-    @media screen and (min-width: $sm-min) {
-      flex-direction: row;
+    .middot-separator {
+      &:after {
+        content: "·";
+      }
+    }
+
+    @media screen and (max-width: $md-min) {
+      flex-direction: column;
+
+      .middot-separator {
+        display: none;
+      }
     }
 
     .btn:not(:last-child),
