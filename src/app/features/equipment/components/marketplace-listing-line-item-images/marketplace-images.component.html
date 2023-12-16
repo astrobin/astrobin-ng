@@ -2,5 +2,6 @@
   *ngIf="sliderImages.length > 0"
   [imageSize]="{height: 100, width: 100}"
   [images]="sliderImages"
-  [showArrow]="false"
+  [lazyLoading]="true"
+  [manageImageRatio]="true"
 ></ng-image-slider>
