@@ -37,8 +37,11 @@ import {
   CreateNestedComment,
   CreateNestedCommentFailure,
   CreateNestedCommentSuccess,
+  LoadNestedComment,
+  LoadNestedCommentFailure,
   LoadNestedComments,
-  LoadNestedCommentsSuccess
+  LoadNestedCommentsSuccess,
+  LoadNestedCommentSuccess
 } from "@app/store/actions/nested-comments.actions";
 import {
   CreateToggleProperty,
@@ -110,6 +113,10 @@ export enum AppActionTypes {
   LOAD_NESTED_COMMENTS = "[App] Load nested comments",
   LOAD_NESTED_COMMENTS_SUCCESS = "[App] Load nested comments success",
 
+  LOAD_NESTED_COMMENT = "[App] Load nested comment",
+  LOAD_NESTED_COMMENT_SUCCESS = "[App] Load nested comment success",
+  LOAD_NESTED_COMMENT_FAILURE = "[App] Load nested comment failure",
+
   CREATE_NESTED_COMMENT = "[App] Save nested comment",
   CREATE_NESTED_COMMENT_SUCCESS = "[App] Save nested comment success",
   CREATE_NESTED_COMMENT_FAILURE = "[App] Save nested comment failure",
@@ -162,6 +169,9 @@ export type All =
   | CreateLocationSuccess
   | LoadNestedComments
   | LoadNestedCommentsSuccess
+  | LoadNestedComment
+  | LoadNestedCommentSuccess
+  | LoadNestedCommentFailure
   | CreateNestedComment
   | CreateNestedCommentSuccess
   | CreateNestedCommentFailure

@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { AfterViewInit, Component, OnInit } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
@@ -8,9 +8,9 @@ import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { TranslateService } from "@ngx-translate/core";
 import { TitleService } from "@shared/services/title/title.service";
 import { LoadingService } from "@shared/services/loading.service";
-import { selectContentType } from "@app/store/selectors/app/content-type.selectors";
+import { selectContentType, selectContentTypeById } from "@app/store/selectors/app/content-type.selectors";
 import { filter, map, switchMap, take, takeUntil, tap, withLatestFrom } from "rxjs/operators";
-import { LoadContentType } from "@app/store/actions/content-type.actions";
+import { LoadContentType, LoadContentTypeById } from "@app/store/actions/content-type.actions";
 import { Observable } from "rxjs";
 import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
 import { EquipmentMarketplaceService } from "@features/equipment/services/equipment-marketplace.service";
@@ -31,16 +31,25 @@ import {
 } from "@features/equipment/store/equipment.actions";
 import { MarketplacePrivateConversationInterface } from "@features/equipment/types/marketplace-private-conversation.interface";
 import { NestedCommentsModalComponent } from "@shared/components/misc/nested-comments-modal/nested-comments-modal.component";
-import { LoadNestedComments, LoadNestedCommentsSuccess } from "@app/store/actions/nested-comments.actions";
+import {
+  LoadNestedComment,
+  LoadNestedComments,
+  LoadNestedCommentsSuccess
+} from "@app/store/actions/nested-comments.actions";
 import { AppActionTypes } from "@app/store/actions/app.actions";
-import { selectMarketplacePrivateConversations } from "@features/equipment/store/equipment.selectors";
+import {
+  selectMarketplacePrivateConversation,
+  selectMarketplacePrivateConversations
+} from "@features/equipment/store/equipment.selectors";
+import { selectNestedCommentById } from "@app/store/selectors/app/nested-comments.selectors";
+import { NestedCommentInterface } from "@shared/interfaces/nested-comment.interface";
 
 @Component({
   selector: "astrobin-marketplace-listing-page",
   templateUrl: "./marketplace-listing.page.component.html",
   styleUrls: ["./marketplace-listing.page.component.scss"]
 })
-export class MarketplaceListingPageComponent extends BaseComponentDirective implements OnInit {
+export class MarketplaceListingPageComponent extends BaseComponentDirective implements OnInit, AfterViewInit {
   readonly breadcrumb = new SetBreadcrumb({
     breadcrumb: [
       {
@@ -103,6 +112,34 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
 
     this.store$.dispatch(new LoadContentType(this._contentTypePayload));
     this.store$.dispatch(new LoadMarketplacePrivateConversations({ listingId: this.listing.id }));
+  }
+
+  ngAfterViewInit(): void {
+    const fragment = this.activatedRoute.snapshot.fragment;
+    if (fragment && fragment[0] === "c") {
+      const commentId = +fragment.substring(1);
+
+      this.store$.select(selectNestedCommentById, commentId).pipe(
+        takeUntil(this.destroyed$),
+        filter(comment => !!comment),
+        take(1)
+      ).subscribe((comment: NestedCommentInterface) => {
+        const contentTypeId = comment.contentType;
+
+        this.store$.select(selectContentTypeById, { id: contentTypeId }).pipe(
+          takeUntil(this.destroyed$),
+          filter(contentType => !!contentType && contentType.model === "equipmentitemmarketplaceprivateconversation"),
+          switchMap(() => this.store$.select(selectMarketplacePrivateConversation(comment.objectId))),
+          take(1)
+        ).subscribe(privateConversation => {
+          this.startPrivateConversation(privateConversation);
+        });
+
+        this.store$.dispatch(new LoadContentTypeById({ id: contentTypeId }));
+      });
+
+      this.store$.dispatch(new LoadNestedComment({ id: commentId }));
+    }
   }
 
   delete() {

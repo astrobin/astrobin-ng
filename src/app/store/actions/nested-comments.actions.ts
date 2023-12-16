@@ -19,6 +19,27 @@ export class LoadNestedCommentsSuccess implements PayloadActionInterface {
   }
 }
 
+export class LoadNestedComment implements PayloadActionInterface {
+  readonly type = AppActionTypes.LOAD_NESTED_COMMENT;
+
+  constructor(public payload: { id: NestedCommentInterface["id"] }) {
+  }
+}
+
+export class LoadNestedCommentSuccess implements PayloadActionInterface {
+  readonly type = AppActionTypes.LOAD_NESTED_COMMENT_SUCCESS;
+
+  constructor(public payload: { nestedComment: NestedCommentInterface }) {
+  }
+}
+
+export class LoadNestedCommentFailure implements PayloadActionInterface {
+  readonly type = AppActionTypes.LOAD_NESTED_COMMENT_FAILURE;
+
+  constructor(public payload: { id: NestedCommentInterface["id"] }) {
+  }
+}
+
 export class CreateNestedComment implements PayloadActionInterface {
   readonly type = AppActionTypes.CREATE_NESTED_COMMENT;
 

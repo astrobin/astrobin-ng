@@ -9,7 +9,9 @@ import { catchError, debounceTime, filter, first, map, mapTo, mergeMap, take, ta
 import {
   CreateNestedCommentFailure,
   CreateNestedCommentSuccess,
-  LoadNestedCommentsSuccess
+  LoadNestedCommentFailure,
+  LoadNestedCommentsSuccess,
+  LoadNestedCommentSuccess
 } from "@app/store/actions/nested-comments.actions";
 import { NestedCommentsApiService } from "@shared/services/api/classic/nested-comments/nested-comments-api.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
@@ -28,6 +30,19 @@ export class NestedCommentsEffects {
         this.nestedCommentsApiService.getForContentTypeIdAndObjectId(payload.contentTypeId, payload.objectId).pipe(
           map(nestedComments => new LoadNestedCommentsSuccess({ nestedComments })),
           tap(() => this.loadingService.setLoading(false))
+        )
+      )
+    )
+  );
+
+  LoadNestedComment: Observable<LoadNestedCommentSuccess | LoadNestedCommentFailure> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AppActionTypes.LOAD_NESTED_COMMENT),
+      map(action => action.payload),
+      mergeMap(payload =>
+        this.nestedCommentsApiService.getById(payload.id).pipe(
+          map(nestedComment => new LoadNestedCommentSuccess({ nestedComment })),
+          catchError(() => of(new LoadNestedCommentFailure({ id: payload.id })))
         )
       )
     )

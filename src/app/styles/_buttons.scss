@@ -83,6 +83,10 @@ astrobin-toggle-property {
     background-size: 1rem !important;
     color: transparent !important;
     text-shadow: none !important;
+
+    .badge {
+      display: none;
+    }
   }
 
   &.success {

@@ -39,7 +39,8 @@ enum NotificationCategory {
   SUBSCRIPTIONS = "SUBSCRIPTIONS",
   USERS = "USERS",
   EQUIPMENT = "EQUIPMENT",
-  EQUIPMENT_MODERATION = "EQUIPMENT_MODERATION"
+  EQUIPMENT_MODERATION = "EQUIPMENT_MODERATION",
+  MARKETPLACE = "MARKETPLACE",
 }
 
 interface NotificationCategoriesInterface {
@@ -96,6 +97,10 @@ export class SettingsPageComponent extends BaseComponentDirective implements OnI
     },
     [NotificationCategory.EQUIPMENT_MODERATION]: {
       label: this.translateService.instant("Equipment moderation"),
+      items: {}
+    },
+    [NotificationCategory.MARKETPLACE]: {
+      label: this.translateService.instant("Equipment marketplace"),
       items: {}
     },
     [NotificationCategory.IOTD_STAFF]: {
@@ -293,6 +298,10 @@ export class SettingsPageComponent extends BaseComponentDirective implements OnI
       case "equipment-item-requires-moderation":
       case "equipment-item-assigned":
         return NotificationCategory.EQUIPMENT_MODERATION;
+      case "new_comment_to_marketplace_private_conv":
+      case "new_comment_to_marketplace_private_conv2":
+      case "new_question_to_listing":
+        return NotificationCategory.MARKETPLACE;
     }
 
     return null;

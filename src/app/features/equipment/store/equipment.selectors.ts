@@ -15,6 +15,7 @@ import { instanceOfSoftware } from "@features/equipment/types/software.interface
 import { EquipmentPresetInterface } from "@features/equipment/types/equipment-preset.interface";
 import { EquipmentItemMostOftenUsedWithData } from "@features/equipment/types/equipment-item-most-often-used-with-data.interface";
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
+import { MarketplacePrivateConversationInterface } from "@features/equipment/types/marketplace-private-conversation.interface";
 
 export function getEquipmentItemType(item: EquipmentItemBaseInterface): EquipmentItemType {
   if (instanceOfSensor(item)) {
@@ -145,4 +146,9 @@ export const selectMarketplaceListingByHash = (hash: MarketplaceListingInterface
 export const selectMarketplacePrivateConversations = (listingId: MarketplaceListingInterface["id"]) =>
   createSelector(selectMarketplace, marketplace =>
     marketplace.privateConversations.filter(conversation => conversation.listing === listingId)
+  );
+
+export const selectMarketplacePrivateConversation = (conversationId: MarketplacePrivateConversationInterface["id"]) =>
+  createSelector(selectMarketplace, marketplace =>
+    marketplace.privateConversations.find(conversation => conversation.id === conversationId) || null
   );
