@@ -16,9 +16,12 @@
     <ng-container *ngIf="listings !== null">
       <ng-container *ngIf="listings.length > 0; else noListingsTemplate">
         <ng-container *ngFor="let listing of listings">
-          <a [routerLink]="['/equipment/marketplace/listing', listing.hash]" class="line-item">
+          <a
+            *ngFor="let lineItem of listing.lineItems"
+            [routerLink]="['/equipment/marketplace/listing', listing.hash]"
+            class="line-item"
+          >
             <astrobin-marketplace-line-item-card
-              *ngFor="let lineItem of listing.lineItems"
               [lineItem]="lineItem"
               [listing]="listing"
             ></astrobin-marketplace-line-item-card>
