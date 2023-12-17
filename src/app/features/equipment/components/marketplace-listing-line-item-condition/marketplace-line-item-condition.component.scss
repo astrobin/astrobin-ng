@@ -1,3 +1,11 @@
+:host {
+  color: var(--lightestGrey);
+}
+
+strong {
+  color: var(--white);
+}
+
 .condition {
   &.unopened,
   &.new {

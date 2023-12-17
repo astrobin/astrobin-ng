@@ -37,4 +37,5 @@ export interface MarketplaceLineItemInterface {
   sellerImageCount?: number;
   itemKlass?: EquipmentItemType;
   username?: string;
+  firstAddedToAnImage?: string;
 }

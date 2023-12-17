@@ -201,7 +201,8 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
               {
                 key: "user",
                 type: "input",
-                className: "hidden"
+                className: "hidden",
+                defaultValue: this.model.user
               },
               {
                 key: "itemObjectId",

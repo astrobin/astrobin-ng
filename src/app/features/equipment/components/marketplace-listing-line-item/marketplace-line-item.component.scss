@@ -16,10 +16,21 @@
 
   .display-name {
     font-size: 2rem;
+    margin-bottom: .25rem;
 
     .line-item-item-link {
       font-size: 1rem;
       vertical-align: super;
+    }
+  }
+
+  .first-added {
+    font-weight: normal;
+    color: var(--lightestGrey);
+
+    .first-added-date {
+      font-weight: bold;
+      color: var(--white);
     }
   }
 
@@ -31,6 +42,7 @@
     font-weight: normal;
     font-size: .9rem;
     color: var(--lightGrey);
+    margin-top: .5rem;
   }
 }
 

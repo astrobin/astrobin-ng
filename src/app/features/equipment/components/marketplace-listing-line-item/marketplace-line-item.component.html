@@ -16,10 +16,6 @@
 
         <div class="flex-grow-1">
           <div class="display-name">
-            <span *ngIf="lineItemIndex !== undefined" class="line-item-index">
-              {{ "Line item {{0}}" | translate: { '0': "#" + (lineItemIndex + 1) } }}:
-            </span>
-
             <astrobin-equipment-item-display-name
               [enableBrandLink]="false"
               [enableNameLink]="false"
@@ -42,7 +38,23 @@
             [lineItem]="lineItem"
           ></astrobin-marketplace-listing-line-item-condition>
 
-          <div class="image-counts">
+          <div *ngIf="!previewMode" class="first-added">
+            {{ "First added to an image" | translate }}:
+            <span class="first-added-date">
+              <ng-container *ngIf="lineItem.firstAddedToAnImage; else noFirstAddedDateTemplate">
+                {{ lineItem.firstAddedToAnImage | date: 'mediumDate' }}
+              </ng-container>
+              <ng-template #noFirstAddedDateTemplate>
+                {{ "Unknown" | translate }}
+              </ng-template>
+            </span>
+            <fa-icon
+              [ngbTooltip]="'AstroBin records the dates when users associate equipment items to images. This information can be used to corroborate the legitimacy of the information provided by the seller.' | translate"
+              icon="question-circle"
+            ></fa-icon>
+          </div>
+
+          <div *ngIf="!previewMode" class="image-counts">
             <span [innerHTML]="sellerImageCount"></span>
             &middot;
             <span [innerHTML]="totalImageCount"></span>
