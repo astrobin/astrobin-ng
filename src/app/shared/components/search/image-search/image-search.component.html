@@ -5,54 +5,59 @@
     <div class="buttons d-flex align-items-center">
       <div
         *ngIf="
-          itemType === EquipmentItemType.TELESCOPE ||
-          itemType === EquipmentItemType.CAMERA ||
-          itemType === EquipmentItemType.SENSOR
+          showUsageButton && (
+            itemType === EquipmentItemType.TELESCOPE ||
+            itemType === EquipmentItemType.CAMERA ||
+            itemType === EquipmentItemType.SENSOR
+          )
         "
-        ngbDropdown
         class="usage-menu me-2 mb-0"
+        ngbDropdown
       >
-        <button ngbDropdownToggle id="usage-menu" type="button" class="btn btn-outline-secondary mb-0">
+        <button class="btn btn-outline-secondary mb-0" id="usage-menu" ngbDropdownToggle type="button">
           {{ "Usage" | translate }}
         </button>
 
-        <div ngbDropdownMenu aria-labelledby="sort-search-results">
-          <button ngbDropdownItem (click)="setUsageType(null)">
-            <fa-icon icon="check" *ngIf="!usageType; else notSelected"></fa-icon>
+        <div aria-labelledby="sort-search-results" ngbDropdownMenu>
+          <button (click)="setUsageType(null)" ngbDropdownItem>
+            <fa-icon *ngIf="!usageType; else notSelected" icon="check"></fa-icon>
             {{ "Any" | translate }}
           </button>
 
-          <button ngbDropdownItem (click)="setUsageType(EquipmentItemUsageType.IMAGING)">
-            <fa-icon icon="check" *ngIf="usageType === EquipmentItemUsageType.IMAGING; else notSelected"></fa-icon>
+          <button (click)="setUsageType(EquipmentItemUsageType.IMAGING)" ngbDropdownItem>
+            <fa-icon *ngIf="usageType === EquipmentItemUsageType.IMAGING; else notSelected" icon="check"></fa-icon>
             {{ "Imaging" | translate }}
           </button>
 
-          <button ngbDropdownItem (click)="setUsageType(EquipmentItemUsageType.GUIDING)">
-            <fa-icon icon="check" *ngIf="usageType === EquipmentItemUsageType.GUIDING; else notSelected"></fa-icon>
+          <button (click)="setUsageType(EquipmentItemUsageType.GUIDING)" ngbDropdownItem>
+            <fa-icon *ngIf="usageType === EquipmentItemUsageType.GUIDING; else notSelected" icon="check"></fa-icon>
             {{ "Guiding" | translate }}
           </button>
         </div>
       </div>
 
-      <div ngbDropdown class="sort-menu me-2 mb-0">
-        <button ngbDropdownToggle id="sort-search-results" type="button" class="btn btn-outline-secondary mb-0">
+      <div
+        *ngIf="showSortButton"
+        class="sort-menu me-2 mb-0" ngbDropdown
+      >
+        <button class="btn btn-outline-secondary mb-0" id="sort-search-results" ngbDropdownToggle type="button">
           {{ "Sort" | translate }}
         </button>
 
-        <div ngbDropdownMenu aria-labelledby="sort-search-results">
-          <button ngbDropdownItem (click)="sortBy('-likes')">
-            <fa-icon icon="check" *ngIf="ordering === '-likes'; else notSelected"></fa-icon>
+        <div aria-labelledby="sort-search-results" ngbDropdownMenu>
+          <button (click)="sortBy('-likes')" ngbDropdownItem>
+            <fa-icon *ngIf="ordering === '-likes'; else notSelected" icon="check"></fa-icon>
             {{ "Most liked" | translate }}
           </button>
 
-          <button ngbDropdownItem (click)="sortBy('-published')">
-            <fa-icon icon="check" *ngIf="ordering === '-published'; else notSelected"></fa-icon>
+          <button (click)="sortBy('-published')" ngbDropdownItem>
+            <fa-icon *ngIf="ordering === '-published'; else notSelected" icon="check"></fa-icon>
             {{ "Most recent" | translate }}
           </button>
         </div>
       </div>
 
-      <a class="btn btn-outline-primary float-end" [href]="searchUrl">
+      <a [href]="searchUrl" class="btn btn-outline-primary float-end">
         {{ "More" | translate }}
       </a>
     </div>
@@ -63,7 +68,7 @@
       <ng-container *ngIf="!initialLoading; else loadingTemplate">
         <ng-container *ngIf="images.length > 0; else noImages">
           <a *ngFor="let image of images" [href]="classicRoutesService.IMAGE(image.hash || image.objectId.toString())">
-            <img [src]="image.galleryThumbnail" [alt]="image.title" />
+            <img [alt]="image.title" [src]="image.galleryThumbnail" />
           </a>
         </ng-container>
       </ng-container>

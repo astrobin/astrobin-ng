@@ -5,11 +5,8 @@
   >
     {{ equipmentItemService.humanizeCondition(lineItem.condition) }}
   </span>
-
-  <ng-container *ngIf="!!lineItem.yearOfPurchase">
-    &middot;
-    <span class="year-of-purchase">
-      {{ "Year of purchase" }}: <strong>{{ lineItem.yearOfPurchase }}</strong>
-    </span>
-  </ng-container>
+  &middot;
+  <span class="year-of-purchase">
+    {{ "Year of purchase" }}: <strong>{{ lineItem.yearOfPurchase || "Unspecified" | translate }}</strong>
+  </span>
 </div>

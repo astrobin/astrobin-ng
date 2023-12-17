@@ -1,4 +1,9 @@
-.line-item,
+.line-item-container {
+  &:not(:first-child) {
+    margin-top: 1.5rem;
+  }
+}
+
 .card {
   display: block;
   margin-bottom: 2rem;

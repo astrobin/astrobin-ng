@@ -1,7 +1,11 @@
 <ng-container *ngIf="equipmentItem; else noEquipmentItem">
   <div class="card">
-    <div class="card-header">
-      <div class="d-flex align-items-center gap-1">
+    <div
+      (click)="collapsed = !collapsed"
+      [class.collapsed-body]="collapsed"
+      class="card-header"
+    >
+      <div class="d-flex align-items-center gap-3">
         <div class="image">
           <img
             alt="{{ equipmentItemType(equipmentItem) }}"
@@ -11,26 +15,51 @@
         </div>
 
         <div class="flex-grow-1">
-          <astrobin-equipment-item-display-name
-            [enableBrandLink]="true"
-            [enableNameLink]="true"
-            [item]="equipmentItem"
-            [showFrozenAsAmbiguous]="false"
-            [showItemUnapprovedInfo]="false"
-          ></astrobin-equipment-item-display-name>
+          <div class="display-name">
+            <span *ngIf="lineItemIndex !== undefined" class="line-item-index">
+              {{ "Line item {{0}}" | translate: { '0': "#" + (lineItemIndex + 1) } }}:
+            </span>
+
+            <astrobin-equipment-item-display-name
+              [enableBrandLink]="false"
+              [enableNameLink]="false"
+              [item]="equipmentItem"
+              [showFrozenAsAmbiguous]="false"
+              [showItemUnapprovedInfo]="false"
+            ></astrobin-equipment-item-display-name>
+
+            <a
+              [routerLink]="['/equipment/explorer/', equipmentItem.klass.toLowerCase(), equipmentItem.id]"
+              astrobinEventPreventDefault
+              astrobinEventStopPropagation
+              class="line-item-item-link"
+            >
+              <fa-icon icon="info-circle"></fa-icon>
+            </a>
+          </div>
+
+          <astrobin-marketplace-listing-line-item-condition
+            [lineItem]="lineItem"
+          ></astrobin-marketplace-listing-line-item-condition>
+
           <div class="image-counts">
-            <a [href]="sellerImagesUrl" [innerHTML]="sellerImageCount"></a>
+            <span [innerHTML]="sellerImageCount"></span>
             &middot;
-            <a [href]="allImagesUrl" [innerHTML]="totalImageCount"></a>
+            <span [innerHTML]="totalImageCount"></span>
           </div>
         </div>
+
         <astrobin-marketplace-listing-line-item-price
           [lineItem]="lineItem"
         ></astrobin-marketplace-listing-line-item-price>
+
+        <fa-icon
+          [icon]="collapsed ? 'chevron-down' : 'chevron-up'"
+        ></fa-icon>
       </div>
     </div>
 
-    <div class="card-body">
+    <div *ngIf="!collapsed" class="card-body">
       <div class="w-100 images">
         <astrobin-marketplace-listing-line-item-images
           [images]="lineItem.images"
@@ -42,12 +71,33 @@
         [innerHTML]="lineItem.description | nl2br"
         class="description w-100"
       ></div>
-    </div>
 
-    <div class="card-footer">
-      <astrobin-marketplace-listing-line-item-condition
-        [lineItem]="lineItem"
-      ></astrobin-marketplace-listing-line-item-condition>
+      <astrobin-image-search
+        #sellerImageSearch
+        *ngIf="lineItem.sellerImageCount > 0"
+        [header]="'Image by the seller' | translate"
+        [itemId]="lineItem.itemObjectId"
+        [itemType]="lineItem.itemKlass"
+        [loadMoreOnScroll]="false"
+        [pageSize]="21"
+        [showSortButton]="false"
+        [showUsageButton]="false"
+        [username]="lineItem.username"
+        ordering="-likes"
+      ></astrobin-image-search>
+
+      <astrobin-image-search
+        #astrobinImageSearh
+        *ngIf="lineItem.totalImageCount > 0"
+        [header]="'Images on AstroBin' | translate"
+        [itemId]="lineItem.itemObjectId"
+        [itemType]="lineItem.itemKlass"
+        [loadMoreOnScroll]="false"
+        [pageSize]="21"
+        [showSortButton]="false"
+        [showUsageButton]="false"
+        ordering="-likes"
+      ></astrobin-image-search>
     </div>
   </div>
 </ng-container>

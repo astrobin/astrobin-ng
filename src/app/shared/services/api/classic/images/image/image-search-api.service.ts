@@ -17,6 +17,8 @@ export interface ImageSearchOptions {
   itemId?: EquipmentItem["id"];
   usageType?: EquipmentItemUsageType;
   ordering?: string;
+  pageSize?: number;
+  username?: string;
   page: number;
 }
 
@@ -41,6 +43,10 @@ export class ImageSearchApiService extends BaseClassicApiService {
 
     if (!!options.ordering) {
       url = UtilsService.addOrUpdateUrlParam(url, "ordering", options.ordering);
+    }
+
+    if (!!options.pageSize) {
+      url = UtilsService.addOrUpdateUrlParam(url, "page_size", options.pageSize.toString());
     }
 
     let prop: string;
@@ -91,6 +97,10 @@ export class ImageSearchApiService extends BaseClassicApiService {
       url = UtilsService.addOrUpdateUrlParam(url, prop, options.itemId.toString());
     } else if (!!options.text) {
       url = UtilsService.addOrUpdateUrlParam(url, "text", options.text);
+    }
+
+    if (!!options.username) {
+      url = UtilsService.addOrUpdateUrlParam(url, "username", options.username);
     }
 
     return this.http.get<PaginatedApiResultInterface<ImageSearchInterface>>(url);

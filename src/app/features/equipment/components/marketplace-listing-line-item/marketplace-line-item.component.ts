@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, SimpleChanges } from "@angular/core";
+import { Component, ElementRef, Input, OnChanges, SimpleChanges, ViewChild } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
@@ -24,13 +24,20 @@ export class MarketplaceLineItemComponent extends BaseComponentDirective impleme
   lineItem: MarketplaceLineItemInterface;
 
   @Input()
+  lineItemIndex: number;
+
+  @Input()
   previewMode = false;
+
+  @Input()
+  collapsed = true;
 
   equipmentItem: EquipmentItem;
   sellerImageCount: string;
   totalImageCount: string;
-  sellerImagesUrl: string;
-  allImagesUrl: string;
+
+  @ViewChild("sellerImageSearch", { read: ElementRef, static: false })
+  private _sellerImageSearch: ElementRef;
 
   constructor(
     public readonly store$: Store<State>,
@@ -67,14 +74,6 @@ export class MarketplaceLineItemComponent extends BaseComponentDirective impleme
           )
           .subscribe(([item, user]) => {
             this.equipmentItem = item;
-
-            this.sellerImagesUrl = `${
-              this.classicRoutesService.GALLERY(user)
-            }?public=&sub=gear&active=N${item.klass[0]}${item.id}`;
-
-            this.allImagesUrl = `${
-              this.classicRoutesService.SEARCH
-            }?d=i&sort=-likes&${item.klass.toLowerCase()}_ids=${item.id}`;
           });
       }
     }
@@ -88,3 +87,4 @@ export class MarketplaceLineItemComponent extends BaseComponentDirective impleme
     return this.equipmentItemService.humanizeType(EquipmentItemType.TELESCOPE);
   }
 }
+

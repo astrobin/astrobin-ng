@@ -1,11 +1,19 @@
-<astrobin-marketplace-listing-line-item
-  *ngFor="let lineItem of listing.lineItems"
-  [lineItem]="lineItem"
-  [previewMode]="previewMode"
-  class="line-item"
-></astrobin-marketplace-listing-line-item>
+<div>
+  <div
+    *ngFor="let lineItem of listing.lineItems; let lineItemIndex = index"
+    [id]="'line-item-' + lineItem.id"
+    class="line-item-container"
+  >
+    <astrobin-marketplace-listing-line-item
+      [collapsed]="listing.lineItems.length > 1"
+      [lineItemIndex]="listing.lineItems.length > 1 ? lineItemIndex : undefined"
+      [lineItem]="lineItem"
+      [previewMode]="previewMode"
+    ></astrobin-marketplace-listing-line-item>
+  </div>
+</div>
 
-<div class="row">
+<div class="row mt-4">
   <div class="col-md-6">
     <div class="card map-container">
       <div class="card-header">

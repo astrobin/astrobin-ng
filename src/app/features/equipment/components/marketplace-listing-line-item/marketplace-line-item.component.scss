@@ -1,19 +1,36 @@
 @import "../../../../styles/breakpoints";
 
 .card-header {
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
+  cursor: pointer;
+
+  &.collapsed-body {
+    border-radius: var(--bs-card-inner-border-radius);
+  }
+
   .type-image {
     width: 4rem;
     margin-right: .75rem;
   }
 
-  astrobin-equipment-item-display-name {
-    font-size: 1.5rem;
-    line-height: 2rem;
+  .display-name {
+    font-size: 2rem;
+
+    .line-item-item-link {
+      font-size: 1rem;
+      vertical-align: super;
+    }
+  }
+
+  astrobin-marketplace-listing-line-item-condition ::ng-deep {
+    font-weight: normal;
   }
 
   .image-counts {
     font-weight: normal;
     font-size: .9rem;
+    color: var(--lightGrey);
   }
 }
 
@@ -24,14 +41,29 @@
 
   .description {
     color: var(--lightestGrey);
-    margin-top: .5rem;
-    font-style: italic;
+    margin-top: 1.5rem;
   }
 }
 
-.card-footer {
-  .condition,
-  .year-of-purchase {
-    color: var(--lighterGrey);
+astrobin-image-search ::ng-deep {
+  display: block;
+  margin-left: -1rem;
+  margin-right: -1rem;
+  margin-top: 1.5rem;
+
+  .card {
+    box-shadow: none;
+    border: 0;
+
+    .card-header {
+      border-radius: 0;
+      background: var(--darkestGrey);
+    }
+
+    .card-body {
+      .search-results {
+        justify-content: flex-start;
+      }
+    }
   }
 }
