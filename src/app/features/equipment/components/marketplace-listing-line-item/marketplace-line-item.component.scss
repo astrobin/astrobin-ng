@@ -1,41 +1,37 @@
 @import "../../../../styles/breakpoints";
 
-.type-image {
-  width: 4rem;
-  margin-right: .75rem;
+.card-header {
+  .type-image {
+    width: 4rem;
+    margin-right: .75rem;
+  }
+
+  astrobin-equipment-item-display-name {
+    font-size: 1.5rem;
+    line-height: 2rem;
+  }
+
+  .image-counts {
+    font-weight: normal;
+    font-size: .9rem;
+  }
 }
 
-astrobin-equipment-item-display-name {
-  font-size: 1.5rem;
-  line-height: 1.5rem;
-}
+.card-body {
+  .images {
+    margin-top: .5rem;
+  }
 
-.condition,
-.year-of-purchase {
-  color: var(--lighterGrey);
-}
-
-.images {
-  margin-top: .5rem;
-}
-
-.description {
-  color: var(--lightestGrey);
-  margin-top: .5rem;
-  font-style: italic;
+  .description {
+    color: var(--lightestGrey);
+    margin-top: .5rem;
+    font-style: italic;
+  }
 }
 
 .card-footer {
-  @media screen and (max-width: $xl-min) {
-    flex-direction: column;
-    align-items: end;
-
-    .middot-separator {
-      display: none;
-    }
-  }
-
-  @media screen and (max-width: $lg-min) {
-    align-items: center;
+  .condition,
+  .year-of-purchase {
+    color: var(--lighterGrey);
   }
 }

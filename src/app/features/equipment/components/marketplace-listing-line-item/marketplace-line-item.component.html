@@ -1,7 +1,7 @@
 <ng-container *ngIf="equipmentItem; else noEquipmentItem">
   <div class="card">
     <div class="card-header">
-      <div class="d-flex align-items-center">
+      <div class="d-flex align-items-center gap-1">
         <div class="image">
           <img
             alt="{{ equipmentItemType(equipmentItem) }}"
@@ -18,6 +18,11 @@
             [showFrozenAsAmbiguous]="false"
             [showItemUnapprovedInfo]="false"
           ></astrobin-equipment-item-display-name>
+          <div class="image-counts">
+            <a [href]="sellerImagesUrl" [innerHTML]="sellerImageCount"></a>
+            &middot;
+            <a [href]="allImagesUrl" [innerHTML]="totalImageCount"></a>
+          </div>
         </div>
         <astrobin-marketplace-listing-line-item-price
           [lineItem]="lineItem"
@@ -40,10 +45,6 @@
     </div>
 
     <div class="card-footer">
-      <a [href]="sellerImagesUrl" [innerHTML]="sellerImageCount"></a>
-      <span class="middot-separator"></span>
-      <a [href]="allImagesUrl" [innerHTML]="totalImageCount"></a>
-      <span class="middot-separator"></span>
       <astrobin-marketplace-listing-line-item-condition
         [lineItem]="lineItem"
       ></astrobin-marketplace-listing-line-item-condition>
