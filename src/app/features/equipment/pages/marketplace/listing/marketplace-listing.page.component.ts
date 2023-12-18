@@ -11,11 +11,11 @@ import { LoadingService } from "@shared/services/loading.service";
 import { selectContentType, selectContentTypeById } from "@app/store/selectors/app/content-type.selectors";
 import { filter, map, switchMap, take, takeUntil, tap, withLatestFrom } from "rxjs/operators";
 import { LoadContentType, LoadContentTypeById } from "@app/store/actions/content-type.actions";
-import { Observable } from "rxjs";
+import { merge, Observable } from "rxjs";
 import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
 import { EquipmentMarketplaceService } from "@features/equipment/services/equipment-marketplace.service";
 import { UserInterface } from "@shared/interfaces/user.interface";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
 import { Actions, ofType } from "@ngrx/effects";
 import {
@@ -175,7 +175,7 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
       .subscribe(([contentType, currentUser]) => {
         this.loadingService.setLoading(false);
 
-        const modalRef = this.modalService.open(NestedCommentsModalComponent, {
+        const modalRef: NgbModalRef = this.modalService.open(NestedCommentsModalComponent, {
           size: "lg",
           centered: true
         });
@@ -190,7 +190,7 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
         componentInstance.addCommentLabel = this.translateService.instant("Start a new conversation");
         componentInstance.noCommentsLabel = this.translateService.instant("No messages yet.");
 
-        modalRef.dismissed
+        merge(modalRef.closed, modalRef.dismissed, modalRef.shown)
           .pipe(
             tap(() => this.loadingService.setLoading(true)),
             tap(() =>
@@ -202,8 +202,7 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
               )
             ),
             switchMap(() => this.actions$.pipe(ofType(AppActionTypes.LOAD_NESTED_COMMENTS_SUCCESS))),
-            map((action: LoadNestedCommentsSuccess) => action.payload.nestedComments),
-            take(1)
+            map((action: LoadNestedCommentsSuccess) => action.payload.nestedComments)
           )
           .subscribe(nestedComments => {
             const currentTime = new Date().toISOString();
