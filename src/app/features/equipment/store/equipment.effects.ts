@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { concat, forkJoin, last, Observable, of } from "rxjs";
+import { concat, finalize, forkJoin, last, Observable, of } from "rxjs";
 import {
   ApproveEquipmentItem,
   ApproveEquipmentItemEditProposal,
@@ -805,35 +805,62 @@ export class EquipmentEffects {
         mergeMap(listing => {
           let listingId: MarketplaceListingInterface["id"];
 
+          const toast = this.popNotificationsService.info(
+            this.translateService.instant("Creating listing..."),
+            this.translateService.instant("Please wait"),
+            {
+              progressBar: false,
+              timeOut: 0
+            }
+          );
+
           return this.equipmentApiService.createMarketplaceListing(listing).pipe(
             switchMap(createdListing => {
               listingId = createdListing.id;
               return forkJoin(
-                listing.lineItems.map(lineItem =>
-                  this.equipmentApiService
-                    .createMarketplaceLineItem({
-                      ...lineItem,
-                      listing: createdListing.id
-                    })
-                    .pipe(
-                      switchMap(createdLineItem =>
-                        forkJoin(
-                          Object.keys(lineItem.images).map(key => {
-                            const image = lineItem.images[key];
+                listing.lineItems.map((lineItem, index) =>
+                  of(null).pipe(
+                    tap(() => {
+                      toast.toastRef.componentInstance.message = this.translateService.instant(
+                        `Creating line item ${index + 1}/${listing.lineItems.length}...`
+                      );
+                    }),
+                    mergeMap(() =>
+                      this.equipmentApiService
+                        .createMarketplaceLineItem({
+                          ...lineItem,
+                          listing: createdListing.id
+                        })
+                        .pipe(
+                          switchMap(createdLineItem =>
+                            forkJoin(
+                              Object.keys(lineItem.images).map(key => {
+                                const image = lineItem.images[key];
 
-                            if (!image) {
-                              return of(null);
-                            }
+                                if (!image) {
+                                  return of(null);
+                                }
 
-                            return this.equipmentApiService.createMarketplaceImage(
-                              createdListing.id,
-                              createdLineItem.id,
-                              image[0].file
-                            );
-                          })
+                                return of(null).pipe(
+                                  tap(() => {
+                                    toast.toastRef.componentInstance.message = this.translateService.instant(
+                                      `Uploading image ${+key + 1}/${Object.keys(lineItem.images).length}...`
+                                    );
+                                  }),
+                                  mergeMap(() =>
+                                    this.equipmentApiService.createMarketplaceImage(
+                                      createdListing.id,
+                                      createdLineItem.id,
+                                      image[0].file
+                                    )
+                                  )
+                                );
+                              })
+                            )
+                          )
                         )
-                      )
                     )
+                  )
                 )
               ).pipe(map(() => createdListing));
             }),
@@ -844,6 +871,9 @@ export class EquipmentEffects {
                 deleteOperation$.subscribe();
               }
               return of(new CreateMarketplaceListingFailure({ error }));
+            }),
+            finalize(() => {
+              this.popNotificationsService.clear(toast.toastId);
             })
           );
         })
@@ -904,6 +934,15 @@ export class EquipmentEffects {
             previousListing
           );
 
+          const toast = this.popNotificationsService.info(
+            this.translateService.instant("Updating listing..."),
+            this.translateService.instant("Please wait"),
+            {
+              progressBar: false,
+              timeOut: 0
+            }
+          );
+
           const _buildImageOperations = (lineItem: MarketplaceLineItemInterface) => {
             return Object.keys(lineItem.images).map(key => {
               const image = lineItem.images[key];
@@ -922,21 +961,47 @@ export class EquipmentEffects {
 
               if (matchingImage && matchingImage.id) {
                 if (image.length > 0) {
-                  return this.equipmentApiService.updateMarketplaceImage(
-                    updatedListing.id,
-                    lineItem.id,
-                    matchingImage.id,
-                    image[0].file
+                  return of(null).pipe(
+                    tap(
+                      () =>
+                        (toast.toastRef.componentInstance.message = this.translateService.instant(
+                          `Updating line item image ${+key + 1} in line item ${lineItem.hash}...`
+                        ))
+                    ),
+                    mergeMap(() =>
+                      this.equipmentApiService.updateMarketplaceImage(
+                        updatedListing.id,
+                        lineItem.id,
+                        matchingImage.id,
+                        image[0].file
+                      )
+                    )
                   );
                 } else {
-                  return this.equipmentApiService.deleteMarketplaceImage(
-                    updatedListing.id,
-                    lineItem.id,
-                    matchingImage.id
+                  return of(null).pipe(
+                    tap(
+                      () =>
+                        (toast.toastRef.componentInstance.message = this.translateService.instant(
+                          `Deleting line item image ${+key + 1} in line item ${lineItem.hash}...`
+                        ))
+                    ),
+                    mergeMap(() =>
+                      this.equipmentApiService.deleteMarketplaceImage(updatedListing.id, lineItem.id, matchingImage.id)
+                    )
                   );
                 }
               } else {
-                return this.equipmentApiService.createMarketplaceImage(updatedListing.id, lineItem.id, image[0].file);
+                return of(null).pipe(
+                  tap(
+                    () =>
+                      (toast.toastRef.componentInstance.message = this.translateService.instant(
+                        `Creating line item image ${+key + 1} in line item ${lineItem.hash}...`
+                      ))
+                  ),
+                  mergeMap(() =>
+                    this.equipmentApiService.createMarketplaceImage(updatedListing.id, lineItem.id, image[0].file)
+                  )
+                );
               }
             });
           };
@@ -944,33 +1009,57 @@ export class EquipmentEffects {
           const imageOperations$ = preserved.map(lineItem => _buildImageOperations(lineItem));
 
           const updateOperations$ = preserved.map(lineItem =>
-            this.equipmentApiService.updateMarketplaceLineItem(lineItem)
+            of(null).pipe(
+              tap(
+                () =>
+                  (toast.toastRef.componentInstance.message = this.translateService.instant(
+                    `Updating line item ${lineItem.hash}...`
+                  ))
+              ),
+              mergeMap(() => this.equipmentApiService.updateMarketplaceLineItem(lineItem))
+            )
           );
 
           const createOperations$ = added.map(lineItem =>
-            this.equipmentApiService.createMarketplaceLineItem(lineItem).pipe(
-              switchMap(createdLineItem =>
-                forkJoin(
-                  Object.keys(lineItem.images).map(key => {
-                    const image = lineItem.images[key];
+            of(null).pipe(
+              tap(
+                () =>
+                  (toast.toastRef.componentInstance.message = this.translateService.instant("Creating line item..."))
+              ),
+              mergeMap(() =>
+                this.equipmentApiService.createMarketplaceLineItem(lineItem).pipe(
+                  switchMap(createdLineItem =>
+                    forkJoin(
+                      Object.keys(lineItem.images).map(key => {
+                        const image = lineItem.images[key];
 
-                    if (!image) {
-                      return of(null);
-                    }
+                        if (!image) {
+                          return of(null);
+                        }
 
-                    return this.equipmentApiService.createMarketplaceImage(
-                      updatedListing.id,
-                      createdLineItem.id,
-                      image[0].file
-                    );
-                  })
+                        return this.equipmentApiService.createMarketplaceImage(
+                          updatedListing.id,
+                          createdLineItem.id,
+                          image[0].file
+                        );
+                      })
+                    )
+                  )
                 )
               )
             )
           );
 
           const deleteOperations$ = removed.map(lineItem =>
-            this.equipmentApiService.deleteMarketplaceLineItem(updatedListing.id, lineItem.id)
+            of(null).pipe(
+              tap(
+                () =>
+                  (toast.toastRef.componentInstance.message = this.translateService.instant(
+                    `Deleting line item ${lineItem.hash}...`
+                  ))
+              ),
+              mergeMap(() => this.equipmentApiService.deleteMarketplaceLineItem(updatedListing.id, lineItem.id))
+            )
           );
 
           const updateListingOperation$ = this.equipmentApiService.updateMarketplaceListing(updatedListing);
@@ -987,7 +1076,10 @@ export class EquipmentEffects {
               console.log(updatedListingResponse);
               return new UpdateMarketplaceListingSuccess({ listing: updatedListingResponse });
             }),
-            catchError(error => of(new UpdateMarketplaceListingFailure({ error })))
+            catchError(error => of(new UpdateMarketplaceListingFailure({ error }))),
+            finalize(() => {
+              this.popNotificationsService.clear(toast.toastId);
+            })
           );
         })
       )
