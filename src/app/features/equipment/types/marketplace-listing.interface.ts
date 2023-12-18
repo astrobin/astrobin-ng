@@ -32,4 +32,5 @@ export interface MarketplaceListingInterface {
   country: string | null;
   city: string | null;
   lineItems?: MarketplaceLineItemInterface[];
+  bundleSaleOnly: boolean;
 }
