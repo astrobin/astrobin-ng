@@ -22,4 +22,5 @@ export interface UserInterface {
   marketplaceAccuracyFeedback: number;
   marketplacePackagingFeedback: number;
   marketplaceFeedbackCount: number;
+  marketplaceListingCount: number;
 }

@@ -31,6 +31,7 @@ export class UserGenerator {
       marketplacePackagingFeedback: source.marketplacePackagingFeedback || null,
       marketplaceSpeedFeedback: source.marketplaceSpeedFeedback || null,
       marketplaceFeedbackCount: source.marketplaceFeedbackCount || 0,
+      marketplaceListingCount: source.marketplaceListingCount || 0
     };
   }
 }

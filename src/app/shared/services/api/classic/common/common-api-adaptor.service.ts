@@ -41,6 +41,7 @@ export interface BackendUserInterface {
   marketplace_accuracy_feedback: number;
   marketplace_packaging_feedback: number;
   marketplace_feedback_count: number;
+  marketplace_listing_count: number;
 }
 
 export interface BackendUserProfileInterface {
@@ -155,7 +156,8 @@ export class CommonApiAdaptorService extends BaseService {
       marketplaceSpeedFeedback: user.marketplace_speed_feedback,
       marketplaceAccuracyFeedback: user.marketplace_accuracy_feedback,
       marketplacePackagingFeedback: user.marketplace_packaging_feedback,
-      marketplaceFeedbackCount: user.marketplace_feedback_count
+      marketplaceFeedbackCount: user.marketplace_feedback_count,
+      marketplaceListingCount: user.marketplace_listing_count
     };
   }
 
