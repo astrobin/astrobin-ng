@@ -9,5 +9,8 @@ export interface MarketplaceImageInterface {
   imageFile: string;
   w: number;
   h: number;
+  thumbnailFile: string;
+  thumbnailW: number;
+  thumbnailH: number;
   created: string;
 }

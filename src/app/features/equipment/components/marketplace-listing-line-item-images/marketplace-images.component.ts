@@ -59,7 +59,7 @@ export class MarketplaceImagesComponent extends BaseComponentDirective implement
     } else if (UtilsService.isArray(this.images)) {
       this.sliderImages = this.images.map(image => ({
         image: image.imageFile,
-        thumbImage: image.imageFile
+        thumbImage: image.thumbnailFile || image.imageFile
       }));
     }
   }

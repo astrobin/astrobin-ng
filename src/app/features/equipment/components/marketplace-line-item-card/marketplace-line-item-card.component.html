@@ -14,7 +14,7 @@
     <img
       *ngIf="lineItem.images.length > 0"
       [alt]=""
-      [src]="lineItem.images[0].imageFile"
+      [src]="lineItem.images[0].thumbnailFile || lineItem.images[0].imageFile"
     />
   </div>
 
