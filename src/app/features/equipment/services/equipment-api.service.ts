@@ -1122,7 +1122,7 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
           if (item.image && item.image.length > 0) {
             this._uploadEditProposalImage<T>(
               createdEditProposal.id,
-              UtilsService.isString(item.image) ? item.image : (item.image as File[])[0],
+              UtilsService.isString(item.image) ? item.image : (item.image as any[])[0].file,
               path
             )
               .pipe(
