@@ -313,9 +313,13 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                     className: "col-xl-6",
                     props: {
                       type: "number",
-                      min: 1900,
-                      max: new Date().getFullYear(),
                       label: this.translateService.instant("Year of purchase")
+                    },
+                    validators: {
+                      validation: [
+                        { name: "min-value", options: { minValue: 1900 } },
+                        { name: "max-value", options: { maxValue: new Date().getFullYear() } }
+                      ]
                     }
                   },
                   {
