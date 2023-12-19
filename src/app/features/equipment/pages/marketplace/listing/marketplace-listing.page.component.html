@@ -1,11 +1,32 @@
 <div class="page has-breadcrumb">
   <h1 class="d-flex justify-content-between align-items-center">
-    <span class="flex-grow-1 me-3">{{ title }}</span>
+    <div class="flex-grow-1 me-3">
+      {{ title }}
+    </div>
     <a [routerLink]="['../../create']" class="btn btn-primary btn-create-listing me-3">
       <fa-icon icon="plus"></fa-icon>
       {{ "Create listing" | translate }}
     </a>
   </h1>
+
+  <small>
+    <fa-icon icon="calendar"></fa-icon>
+    {{ listing.created | localDate | timeago: true }}
+
+    &middot;
+
+    <fa-icon icon="bell"></fa-icon>
+    <span [translateParams]="{
+      '0': listing.followerCount
+    }" [translate]="'{{0}} followers'"></span>
+
+    &middot;
+
+    <fa-icon icon="eye"></fa-icon>
+    <span [translateParams]="{
+      '0': listing.viewCount
+    }" [translate]="'{{0}} views'"></span>
+  </small>
 
   <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
     <ng-container *ngIf="listingContentType$ | async as listingContentType; else loadingTemplate">

@@ -11,7 +11,7 @@ import { LoadingService } from "@shared/services/loading.service";
 import { selectContentType, selectContentTypeById } from "@app/store/selectors/app/content-type.selectors";
 import { filter, map, switchMap, take, takeUntil, tap, withLatestFrom } from "rxjs/operators";
 import { LoadContentType, LoadContentTypeById } from "@app/store/actions/content-type.actions";
-import { merge, Observable } from "rxjs";
+import { merge, Observable, of } from "rxjs";
 import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
 import { EquipmentMarketplaceService } from "@features/equipment/services/equipment-marketplace.service";
 import { UserInterface } from "@shared/interfaces/user.interface";
@@ -43,6 +43,8 @@ import {
 } from "@features/equipment/store/equipment.selectors";
 import { selectNestedCommentById } from "@app/store/selectors/app/nested-comments.selectors";
 import { NestedCommentInterface } from "@shared/interfaces/nested-comment.interface";
+import { HttpClient } from "@angular/common/http";
+import { environment } from "@env/environment";
 
 @Component({
   selector: "astrobin-marketplace-listing-page",
@@ -83,7 +85,8 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
     public readonly loadingService: LoadingService,
     public readonly equipmentMarketplaceService: EquipmentMarketplaceService,
     public readonly modalService: NgbModal,
-    public readonly router: Router
+    public readonly router: Router,
+    public readonly http: HttpClient
   ) {
     super(store$);
   }
@@ -140,6 +143,8 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
 
       this.store$.dispatch(new LoadNestedComment({ id: commentId }));
     }
+
+    this._recordHit();
   }
 
   delete() {
@@ -271,5 +276,27 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
           this.startPrivateConversation(privateConversations[0]);
         }
       });
+  }
+
+  private _recordHit() {
+    this.currentUser$.pipe(
+      switchMap(user => this.store$.select(selectContentType, this._contentTypePayload).pipe(
+          filter(contentType => !!contentType),
+          take(1),
+          map(contentType => [user, contentType])
+        )
+      ),
+      switchMap(([user, contentType]) => {
+          if (user.id !== this.listing.user) {
+            return this.http.post(`${environment.classicBaseUrl}/json-api/common/record-hit/`, {
+              content_type_id: contentType.id,
+              object_id: this.listing.id
+            });
+          }
+
+          return of(null);
+        }
+      )
+    ).subscribe();
   }
 }
