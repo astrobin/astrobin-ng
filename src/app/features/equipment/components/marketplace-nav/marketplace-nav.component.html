@@ -1,0 +1,22 @@
+<ul #nav="ngbNav" [(activeId)]="active" class="nav-pills" ngbNav orientation="vertical">
+  <li [ngbNavItem]="MarketplaceNavPage.ALL_LISTINGS">
+    <a ngbNavLink routerLink="/equipment/marketplace">
+      <fa-icon icon="list"></fa-icon> &nbsp;
+      {{ "All listings" | translate }}
+    </a>
+  </li>
+
+  <li [ngbNavItem]="MarketplaceNavPage.MY_LISTINGS">
+    <a ngbNavLink routerLink="/equipment/marketplace/my-listings">
+      <fa-icon icon="user"></fa-icon> &nbsp;
+      {{ "My listings" | translate }}
+    </a>
+  </li>
+
+  <li [ngbNavItem]="MarketplaceNavPage.MY_PURCHASES">
+    <a ngbNavLink routerLink="/equipment/marketplace/my-purchases">
+      <fa-icon icon="shopping-cart"></fa-icon> &nbsp;
+      {{ "My purchases" | translate }}
+    </a>
+  </li>
+</ul>

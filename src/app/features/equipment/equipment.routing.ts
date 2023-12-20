@@ -20,6 +20,7 @@ import { MarketplaceCreateListingPageComponent } from "@features/equipment/pages
 import { MarketplaceListingPageComponent } from "@features/equipment/pages/marketplace/listing/marketplace-listing.page.component";
 import { MarketplaceListingResolver } from "@features/equipment/resolvers/marketplace-listing.resolver";
 import { MarketplaceEditListingPageComponent } from "@features/equipment/pages/marketplace/edit-listing/marketplace-edit-listing-page.component";
+import { MarketplaceMyListingsPageComponent } from "@features/equipment/pages/marketplace/my-listings/marketplace-my-listings-page.component";
 
 export const routes: Routes = [
   {
@@ -164,6 +165,11 @@ export const routes: Routes = [
       {
         path: "",
         component: MarketplaceListingsPageComponent
+      },
+      {
+        path: "my-listings",
+        component: MarketplaceMyListingsPageComponent,
+        canActivate: [AuthGuardService]
       },
       {
         path: "create",

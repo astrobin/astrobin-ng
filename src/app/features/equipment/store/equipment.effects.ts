@@ -791,7 +791,7 @@ export class EquipmentEffects {
       map((action: LoadMarketplaceListings) => action.payload),
       mergeMap(payload =>
         this.equipmentApiService
-          .loadMarketplaceListings(payload.page)
+          .loadMarketplaceListings(payload.page, payload.user)
           .pipe(map(listings => new LoadMarketplaceListingsSuccess({ listings })))
       )
     )

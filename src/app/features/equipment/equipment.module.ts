@@ -47,6 +47,9 @@ import { MarketplaceUserCardComponent } from "./components/marketplace-user-card
 import { MarketplaceFeedbackWidgetComponent } from "./components/marketplace-feedback-widget/marketplace-feedback-widget.component";
 import { MarketplaceListingFormComponent } from "./components/marketplace-listing-form/marketplace-listing-form.component";
 import { MarketplaceEditListingPageComponent } from "@features/equipment/pages/marketplace/edit-listing/marketplace-edit-listing-page.component";
+import { MarketplaceNavComponent } from "./components/marketplace-nav/marketplace-nav.component";
+import { MarketplaceSidebarComponent } from "./components/marketplace-sidebar/marketplace-sidebar.component";
+import { MarketplaceMyListingsPageComponent } from "./pages/marketplace/my-listings/marketplace-my-listings-page.component";
 
 @NgModule({
   declarations: [
@@ -92,7 +95,10 @@ import { MarketplaceEditListingPageComponent } from "@features/equipment/pages/m
     MarketplaceUserCardComponent,
     MarketplaceFeedbackWidgetComponent,
     MarketplaceListingFormComponent,
-    MarketplaceEditListingPageComponent
+    MarketplaceEditListingPageComponent,
+    MarketplaceNavComponent,
+    MarketplaceSidebarComponent,
+    MarketplaceMyListingsPageComponent
   ],
   imports: [RouterModule.forChild(routes), SharedModule, StoreModule.forFeature(equipmentFeatureKey, reducer)]
 })

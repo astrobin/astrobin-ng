@@ -913,7 +913,7 @@ export class ItemBrowserExitFullscreen implements Action {
 export class LoadMarketplaceListings implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.LOAD_MARKETPLACE_LISTINGS;
 
-  constructor(public payload: { page: number } = { page: 1 }) {
+  constructor(public payload: { page: number, user?: UserInterface } = { page: 1 }) {
   }
 }
 

@@ -764,11 +764,16 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   public loadMarketplaceListings(
-    page: number = 1
+    page: number = 1,
+    user?: UserInterface
   ): Observable<PaginatedApiResultInterface<MarketplaceListingInterface>> {
-    return this.http.get<PaginatedApiResultInterface<MarketplaceListingInterface>>(
-      `${this.configUrl}/marketplace/listing/?page=${page}`
-    );
+    let url = `${this.configUrl}/marketplace/listing/?page=${page}`;
+
+    if (!!user) {
+      url = UtilsService.addOrUpdateUrlParam(url, "user", user.id.toString());
+    }
+
+    return this.http.get<PaginatedApiResultInterface<MarketplaceListingInterface>>(url);
   }
 
   public createMarketplaceListing(
