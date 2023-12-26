@@ -142,7 +142,7 @@ export class ItemSummaryComponent extends BaseComponentDirective implements OnCh
   }
 
   get image(): string {
-    return (this.item.image as string) || this.placeholder;
+    return (this.item.thumbnail as string) || (this.item.image as string) || this.placeholder;
   }
 
   get placeholder(): string {
