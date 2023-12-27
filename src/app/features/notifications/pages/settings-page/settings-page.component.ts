@@ -232,6 +232,7 @@ export class SettingsPageComponent extends BaseComponentDirective implements OnI
         return NotificationCategory.IOTD;
       case "new_forum_post_mention":
       case "new_forum_reply":
+      case "new_forum_reply_started_topic":
       case "new_forum_post_like":
       case "forum_post_approved":
       case "new_topic_for_equipment_you_use":
