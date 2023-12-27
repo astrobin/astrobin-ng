@@ -775,6 +775,12 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
             }
           },
           {
+            name: "min-date",
+            options: {
+              value: new Date(1000, 0, 1)
+            }
+          },
+          {
             name: "max-date",
             options: {
               value: now
