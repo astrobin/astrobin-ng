@@ -9,8 +9,7 @@
     </ng-container>
   </span>
 
-  <ng-container *ngIf="(alreadySubscribed$ | async) === false && (alreadySubscribedHigher$ | async) === false">
-    <span *ngIf="pricing$ | async as pricing; else loadingTemplate" class="price">
+  <span *ngIf="pricing$ | async as pricing; else loadingTemplate" class="price">
       <astrobin-price
         [currency]="subscriptionsService.currency"
         [pricing]="pricing[product]"
@@ -43,14 +42,13 @@
         <label class="btn btn-outline-primary" for="pay-monthly">{{ "Monthly" | translate }}</label>
       </div>
     </span>
-  </ng-container>
 </h1>
 
-<small *ngIf="(availableSubscriptions$ | async)?.nonAutorenewingSupported && (alreadySubscribed$ | async) === false">
+<small *ngIf="(availableSubscriptions$ | async)?.nonAutorenewingSupported">
   {{ " Automatic renewal" | translate }}:
 
   <astrobin-toggle-button
-    (toggle)="automaticRenewal = $event"
+    (toggle)="automaticRenewal = $event; setActiveUserSubscription()"
     *ngIf="recurringUnit === RecurringUnit.YEARLY"
     [value]="automaticRenewal"
   >
@@ -67,7 +65,6 @@
   <ngb-panel
     *ngIf="
       (alreadySubscribedLower$ | async) === true &&
-      (alreadySubscribed$ | async) === false &&
       (userSubscriptionService.upgradeAllowed$() | async) === false
     "
     title="{{ 'Want to upgrade from a lower subscription tier?' | translate }}"
@@ -105,127 +102,120 @@
   </ngb-panel>
 </ngb-accordion>
 
-<ng-container
-  *ngIf="(alreadySubscribed$ | async) === true; else buyButtonTemplate">
-  <ng-container [ngTemplateOutlet]="cancelButtonTemplate"></ng-container>
+<ng-container *ngIf="product === PayableProductInterface.LITE && numberOfImages$ | async as numberOfImages">
+  <div *ngIf="numberOfImages >= (maxLiteImages$ | async)" class="lite-limit alert alert-danger">
+    <h5>
+      {{ "Please note" | translate }}
+    </h5>
+    <p>
+      <span [innerHTML]="getLiteLimitMessage$(numberOfImages) | async"></span>&nbsp;
+      <span [innerHTML]="moreInfoMessage"></span>
+    </p>
+  </div>
 </ng-container>
 
-<ng-template #cancelButtonTemplate>
-  <ng-container *ngIf="activeUserSubscription$ | async as activeUserSubscription">
-    <button
-      (click)="cancel()"
-      *ngIf="!activeUserSubscription.cancelled; else alreadyCancelledTemplate"
-      [class.loading]="loadingService.loading$ | async"
-      [disabled]="loadingService.loading$ | async"
-      class="btn btn-primary"
-    >
-      {{ "Cancel subscription" | translate }}
-    </button>
+<div class="form-actions">
+  <a
+    [class.disabled]="loadingService.loading$ | async"
+    [href]="classicRoutesService.PRICING"
+    class="btn btn-outline-secondary"
+  >
+    <fa-icon icon="info"></fa-icon>
+    {{ "Learn more" | translate }}
+  </a>
 
-    <ng-template #alreadyCancelledTemplate>
-      <p
-        [translateParams]="{'0': activeUserSubscription.expires | localDate | date: 'mediumDate'}"
-        [translate]="'Your subscription is currently cancelled and it will expire on {{0}}.'">
-      </p>
-    </ng-template>
-  </ng-container>
-</ng-template>
+  <ng-container *ngIf="(alreadySubscribed$ | async) === true">
+    <ng-container *ngIf="activeUserSubscription$ | async as activeUserSubscription">
+      <button
+        (click)="cancel()"
+        *ngIf="!activeUserSubscription.cancelled; else alreadyCancelledTemplate"
+        [class.loading]="loadingService.loading$ | async"
+        [disabled]="loadingService.loading$ | async"
+        class="btn btn-secondary"
+      >
+        {{ "Cancel subscription" | translate }}
+      </button>
 
-<ng-template #buyButtonTemplate>
-  <ng-container *ngIf="product === PayableProductInterface.LITE && numberOfImages$ | async as numberOfImages">
-    <div *ngIf="numberOfImages >= (maxLiteImages$ | async)" class="lite-limit alert alert-danger">
-      <h5>
-        {{ "Please note" | translate }}
-      </h5>
-      <p>
-        <span [innerHTML]="getLiteLimitMessage$(numberOfImages) | async"></span>&nbsp;
-        <span [innerHTML]="moreInfoMessage"></span>
-      </p>
-    </div>
+      <ng-template #alreadyCancelledTemplate>
+        <p
+          [translateParams]="{'0': activeUserSubscription.expires | localDate | date: 'mediumDate'}"
+          [translate]="'Your subscription is currently cancelled and it will expire on {{0}}.'">
+        </p>
+      </ng-template>
+    </ng-container>
   </ng-container>
 
-  <div class="form-actions">
-    <a
-      [class.disabled]="loadingService.loading$ | async"
-      [href]="classicRoutesService.PRICING"
-      class="btn btn-outline-secondary"
-    >
-      <fa-icon icon="info"></fa-icon>
-      {{ "Learn more" | translate }}
-    </a>
+  <button
+    (click)="buy()"
+    [class.loading]="loadingService.loading$ | async"
+    [disabled]="loadingService.loading$ | async"
+    class="btn btn-xl btn-primary buy"
+  >
+    <ng-container *ngIf="!automaticRenewal">
+      {{ "Buy 1 year" | translate }}
+    </ng-container>
 
-    <button
-      (click)="buy()"
-      [class.loading]="loadingService.loading$ | async"
-      [disabled]="loadingService.loading$ | async"
-      class="btn btn-xl btn-primary buy"
-    >
-      <ng-container *ngIf="!automaticRenewal">
-        {{ "Buy 1 year" | translate }}
+    <ng-container *ngIf="automaticRenewal">
+      <ng-container
+        *ngIf="
+          (userSubscriptionService.upgradeAllowed$() | async) === true && (alreadySubscribedLower$ | async) === true;
+          else subscribeLabelTemplate
+        "
+      >
+        {{ "Upgrade" | translate }}
       </ng-container>
 
-      <ng-container *ngIf="automaticRenewal">
-        <ng-container
-          *ngIf="
-            (userSubscriptionService.upgradeAllowed$() | async) === true && (alreadySubscribedLower$ | async) === true;
-            else subscribeLabelTemplate
-          "
-        >
-          {{ "Upgrade" | translate }}
-        </ng-container>
+      <ng-template #subscribeLabelTemplate>
+        {{ "Subscribe" | translate }}
+      </ng-template>
+    </ng-container>
 
-        <ng-template #subscribeLabelTemplate>
-          {{ "Subscribe" | translate }}
-        </ng-template>
-      </ng-container>
+    <span class="icons">
+      <img
+        *ngIf="subscriptionsService.supportsAliPayPaymentType"
+        alt="AliPay"
+        class="icon"
+        src="/assets/images/alipay-brands.svg"
+      />
 
-      <span class="icons">
-        <img
-          *ngIf="subscriptionsService.supportsAliPayPaymentType"
-          alt="AliPay"
-          class="icon"
-          src="/assets/images/alipay-brands.svg"
-        />
+      <img
+        *ngIf="subscriptionsService.supportsCardPaymentType"
+        alt="Visa"
+        class="icon"
+        src="/assets/images/cc-visa-brands.svg"
+      />
+      <img
+        *ngIf="subscriptionsService.supportsCardPaymentType"
+        alt="Mastercard"
+        class="icon"
+        src="/assets/images/cc-mastercard-brands.svg"
+      />
+      <img
+        *ngIf="subscriptionsService.supportsCardPaymentType"
+        alt="Amex"
+        class="icon"
+        src="/assets/images/cc-amex-brands.svg"
+      />
+      <img
+        *ngIf="subscriptionsService.supportsCardPaymentType"
+        alt="Discover"
+        class="icon"
+        src="/assets/images/cc-discover-brands.svg"
+      />
 
-        <img
-          *ngIf="subscriptionsService.supportsCardPaymentType"
-          alt="Visa"
-          class="icon"
-          src="/assets/images/cc-visa-brands.svg"
-        />
-        <img
-          *ngIf="subscriptionsService.supportsCardPaymentType"
-          alt="Mastercard"
-          class="icon"
-          src="/assets/images/cc-mastercard-brands.svg"
-        />
-        <img
-          *ngIf="subscriptionsService.supportsCardPaymentType"
-          alt="Amex"
-          class="icon"
-          src="/assets/images/cc-amex-brands.svg"
-        />
-        <img
-          *ngIf="subscriptionsService.supportsCardPaymentType"
-          alt="Discover"
-          class="icon"
-          src="/assets/images/cc-discover-brands.svg"
-        />
+      <img
+        *ngIf="subscriptionsService.supportsSepaDebitPaymentType"
+        alt="SEPA"
+        class="icon"
+        src="/assets/images/bank.svg"
+      />
+    </span>
 
-        <img
-          *ngIf="subscriptionsService.supportsSepaDebitPaymentType"
-          alt="SEPA"
-          class="icon"
-          src="/assets/images/bank.svg"
-        />
-      </span>
-
-      <span class="stripe-info">
-        {{ "Secure payment by Stripe™" | translate }}
-      </span>
-    </button>
-  </div>
-</ng-template>
+    <span class="stripe-info">
+      {{ "Secure payment by Stripe™" | translate }}
+    </span>
+  </button>
+</div>
 
 <ng-template #loadingTemplate>
   <astrobin-loading-indicator></astrobin-loading-indicator>

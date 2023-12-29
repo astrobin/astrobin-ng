@@ -74,33 +74,7 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
   currencyPipe: CurrencyPipe;
   recurringUnit = RecurringUnit.YEARLY;
   automaticRenewal = true;
-  activeUserSubscription$: Observable<UserSubscriptionInterface | null> = this.currentUserProfile$.pipe(
-    filter(userProfile => !!userProfile),
-    switchMap(userProfile => {
-      const subscriptionNames = {
-        [PayableProductInterface.LITE]: {
-          [RecurringUnit.YEARLY]: SubscriptionName.ASTROBIN_LITE_2020_AUTORENEW_YEARLY,
-          [RecurringUnit.MONTHLY]: SubscriptionName.ASTROBIN_LITE_2020_AUTORENEW_MONTHLY,
-          default: SubscriptionName.ASTROBIN_LITE_2020
-        },
-        [PayableProductInterface.PREMIUM]: {
-          [RecurringUnit.MONTHLY]: SubscriptionName.ASTROBIN_PREMIUM_2020_AUTORENEW_MONTHLY,
-          [RecurringUnit.YEARLY]: SubscriptionName.ASTROBIN_PREMIUM_2020_AUTORENEW_YEARLY,
-          default: SubscriptionName.ASTROBIN_PREMIUM_2020
-        },
-        [PayableProductInterface.ULTIMATE]: {
-          [RecurringUnit.MONTHLY]: SubscriptionName.ASTROBIN_ULTIMATE_2020_AUTORENEW_MONTHLY,
-          [RecurringUnit.YEARLY]: SubscriptionName.ASTROBIN_ULTIMATE_2020_AUTORENEW_YEARLY,
-          default: SubscriptionName.ASTROBIN_ULTIMATE_2020
-        }
-      };
-
-      const subscriptionName =
-        subscriptionNames[this.product]?.[this.recurringUnit] || subscriptionNames[this.product]?.default;
-
-      return this.userSubscriptionService.getActiveUserSubscription$(userProfile, subscriptionName);
-    })
-  );
+  activeUserSubscription$: Observable<UserSubscriptionInterface | null>;
 
   constructor(
     public readonly store$: Store<State>,
@@ -190,7 +164,12 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
   ngOnInit(): void {
     super.ngOnInit();
 
-    if (isPlatformBrowser(this.platformId) && Object.keys(this.windowRefService.nativeWindow).indexOf("Cypress") === -1) {
+    this.setActiveUserSubscription();
+
+    if (
+      isPlatformBrowser(this.platformId) &&
+      Object.keys(this.windowRefService.nativeWindow).indexOf("Cypress") === -1
+    ) {
       this.utilsService.insertScript("https://js.stripe.com/v3/", this.renderer);
     }
 
@@ -285,6 +264,46 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
         this._updateBankDetailsMessage();
       });
     });
+  }
+
+  setActiveUserSubscription() {
+    this.activeUserSubscription$ = this.currentUserProfile$.pipe(
+      filter(userProfile => !!userProfile),
+      switchMap(userProfile => {
+        const subscriptionNames = {
+          [PayableProductInterface.LITE]: {
+            [RecurringUnit.YEARLY]: SubscriptionName.ASTROBIN_LITE_2020_AUTORENEW_YEARLY,
+            [RecurringUnit.MONTHLY]: SubscriptionName.ASTROBIN_LITE_2020_AUTORENEW_MONTHLY,
+            default: SubscriptionName.ASTROBIN_LITE_2020
+          },
+          [PayableProductInterface.PREMIUM]: {
+            [RecurringUnit.MONTHLY]: SubscriptionName.ASTROBIN_PREMIUM_2020_AUTORENEW_MONTHLY,
+            [RecurringUnit.YEARLY]: SubscriptionName.ASTROBIN_PREMIUM_2020_AUTORENEW_YEARLY,
+            default: SubscriptionName.ASTROBIN_PREMIUM_2020
+          },
+          [PayableProductInterface.ULTIMATE]: {
+            [RecurringUnit.MONTHLY]: SubscriptionName.ASTROBIN_ULTIMATE_2020_AUTORENEW_MONTHLY,
+            [RecurringUnit.YEARLY]: SubscriptionName.ASTROBIN_ULTIMATE_2020_AUTORENEW_YEARLY,
+            default: SubscriptionName.ASTROBIN_ULTIMATE_2020
+          }
+        };
+
+        let subscriptionName: SubscriptionName;
+
+        if (this.automaticRenewal) {
+          subscriptionName =
+            subscriptionNames[this.product]?.[this.recurringUnit] || subscriptionNames[this.product]?.default;
+        } else {
+          subscriptionName = subscriptionNames[this.product]?.default;
+        }
+
+        console.log(subscriptionName);
+
+        return this.userSubscriptionService
+          .getActiveUserSubscription$(userProfile, subscriptionName)
+          .pipe(tap(activeUserSubscription => console.log(activeUserSubscription)));
+      })
+    );
   }
 
   getLiteLimitMessage$(numberOfImages): Observable<SafeHtml> {
@@ -475,77 +494,67 @@ export class SubscriptionsBuyPageComponent extends BaseComponentDirective implem
       this.alreadySubscribed$,
       this.alreadySubscribedHigher$,
       this.alreadySubscribedLower$
-    ]).subscribe(([upgradeAllowed, alreadySubscribed, alreadySubscribedHigher, alreadySubscribedLower]) => {
-      if (alreadySubscribed) {
-        if (this.automaticRenewal) {
-          this.popNotificationsService.error(
-            this.translateService.instant("You already have an active subscription of this kind.")
-          );
-          this.loadingService.setLoading(false);
-          return;
-        } else {
-          const modal: NgbModalRef = this.modalService.open(ConfirmationDialogComponent);
-          const componentInstance: ConfirmationDialogComponent = modal.componentInstance;
+    ])
+      .pipe(take(1))
+      .subscribe(([upgradeAllowed, alreadySubscribed, alreadySubscribedHigher, alreadySubscribedLower]) => {
+        if (alreadySubscribed) {
+          const modal: NgbModalRef = this.modalService.open(InformationDialogComponent);
+          const componentInstance: InformationDialogComponent = modal.componentInstance;
 
           componentInstance.message = this.translateService.instant(
-            "You are already on this plan. If you buy it again, your expiration date will be extended by one year."
+            "You are already on this plan. If you are on an automatically renewing plan, you don't need to " +
+            "do anything to renew. If you are on a non-automatically renewing plan, please come back after its " +
+            "expiration date. Thank you!"
           );
-
-          modal.closed.subscribe(item => {
-            startCheckout();
-          });
-
-          modal.dismissed.subscribe(() => {
-            this.loadingService.setLoading(false);
-          });
-        }
-      } else if (alreadySubscribedHigher) {
-        const modal: NgbModalRef = this.modalService.open(InformationDialogComponent);
-        const componentInstance: InformationDialogComponent = modal.componentInstance;
-
-        componentInstance.message =
-          this.translateService.instant("You are already subscribed to a higher plan.") +
-          " " +
-          this.translateService.instant(
-            "For this reason, you cannot purchase this at the moment, as AstroBin does not currently offer a " +
-            "downgrade path."
-          );
-
-        this.loadingService.setLoading(false);
-      } else if (alreadySubscribedLower) {
-        if (upgradeAllowed) {
-          const modal: NgbModalRef = this.modalService.open(ConfirmationDialogComponent);
-          const componentInstance: ConfirmationDialogComponent = modal.componentInstance;
-
-          componentInstance.message =
-            "<p>" +
-            this.translateService.instant(
-              "Upgrade your subscription now, and only pay the difference at your next billing cycle. Your next " +
-              "payment will include the next billing period, minus the unused portion of your current billing period. " +
-              "If you switch from a yearly to a monthly plan, any balance in your favor will be automatically applied " +
-              "to your future invoices until exhausted."
-            ) +
-            "</p>";
-
-          componentInstance.message +=
-            "<p>" +
-            this.translateService.instant("If you have any question, please contact us at {{0}}.", {
-              0: `<a href="mailto:support@astrobin.com">support@astrobin.com</a>`
-            }) +
-            "</p>";
 
           this.loadingService.setLoading(false);
+        } else if (alreadySubscribedHigher) {
+          const modal: NgbModalRef = this.modalService.open(InformationDialogComponent);
+          const componentInstance: InformationDialogComponent = modal.componentInstance;
 
-          modal.closed.subscribe(() => {
-            startUpgrade();
-          });
+          componentInstance.message =
+            this.translateService.instant("You are already subscribed to a higher plan.") +
+            " " +
+            this.translateService.instant(
+              "For this reason, you cannot purchase this at the moment, as AstroBin does not currently offer a " +
+              "downgrade path."
+            );
+
+          this.loadingService.setLoading(false);
+        } else if (alreadySubscribedLower) {
+          if (upgradeAllowed) {
+            const modal: NgbModalRef = this.modalService.open(ConfirmationDialogComponent);
+            const componentInstance: ConfirmationDialogComponent = modal.componentInstance;
+
+            componentInstance.message =
+              "<p>" +
+              this.translateService.instant(
+                "Upgrade your subscription now, and only pay the difference at your next billing cycle. Your next " +
+                "payment will include the next billing period, minus the unused portion of your current billing period. " +
+                "If you switch from a yearly to a monthly plan, any balance in your favor will be automatically applied " +
+                "to your future invoices until exhausted."
+              ) +
+              "</p>";
+
+            componentInstance.message +=
+              "<p>" +
+              this.translateService.instant("If you have any question, please contact us at {{0}}.", {
+                0: `<a href="mailto:support@astrobin.com">support@astrobin.com</a>`
+              }) +
+              "</p>";
+
+            this.loadingService.setLoading(false);
+
+            modal.closed.subscribe(() => {
+              startUpgrade();
+            });
+          } else {
+            startCheckout();
+          }
         } else {
           startCheckout();
         }
-      } else {
-        startCheckout();
-      }
-    });
+      });
   }
 
   payYearly(): void {
