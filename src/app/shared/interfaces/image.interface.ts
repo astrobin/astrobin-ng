@@ -111,6 +111,7 @@ export enum RemoteSource {
   SRO2 = "Sky Ranch Observatory",
   SPOO = "SkyPi Remote Observatory",
   SLO = "Slooh",
+  SPI = "Spica",
   SSLLC = "Stellar Skies LLC",
   SKIESAWAY = "SkiesAway Remote Observatories",
   TAIYUGE = "TaiYuge Observatory",
