@@ -96,7 +96,14 @@ export class ImageEditService extends BaseService {
       value = this.model.subjectType;
     }
 
-    return [SubjectType.DEEP_SKY, SubjectType.WIDE_FIELD, SubjectType.STAR_TRAILS].indexOf(value) > -1;
+    return [
+      SubjectType.DEEP_SKY,
+      SubjectType.WIDE_FIELD,
+      SubjectType.STAR_TRAILS,
+      SubjectType.NORTHERN_LIGHTS,
+      SubjectType.NOCTILUCENT_CLOUDS,
+      SubjectType.LANDSCAPE
+    ].indexOf(value) > -1;
   }
 
   isSolarSystem(value?: SubjectType): boolean {
@@ -121,6 +128,8 @@ export class ImageEditService extends BaseService {
         return this.translateService.instant("Northern lights");
       case SubjectType.NOCTILUCENT_CLOUDS:
         return this.translateService.instant("Noctilucent clouds");
+      case SubjectType.LANDSCAPE:
+        return this.translateService.instant("Landscape");
       case SubjectType.GEAR:
         return this.translateService.instant("Equipment");
       case SubjectType.OTHER:
