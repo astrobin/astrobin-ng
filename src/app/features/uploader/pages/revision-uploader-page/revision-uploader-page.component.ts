@@ -42,6 +42,7 @@ export class RevisionUploaderPageComponent extends BaseComponentDirective implem
     title: "",
     description: "",
     skip_notifications: false,
+    skip_activity_stream: false,
     mark_as_final: true
   };
 
@@ -91,6 +92,18 @@ export class RevisionUploaderPageComponent extends BaseComponentDirective implem
         label: this.translate.instant("Skip notifications"),
         description: this.translate.instant("Do not notify your followers about this revision."),
         change: this._onSkipNotificationsChange.bind(this)
+      }
+    },
+    {
+      key: "skip_activity_stream",
+      id: "skip_activity_stream",
+      type: "checkbox",
+      props: {
+        label: this.translate.instant("Skip activity stream"),
+        description: this.translate.instant(
+          "Do not create an entry on the front page's activity stream for this event."
+        ),
+        change: this._onSkipActivityStreamChange.bind(this)
       }
     },
     {
@@ -292,6 +305,7 @@ export class RevisionUploaderPageComponent extends BaseComponentDirective implem
     this._onTitleChange();
     this._onDescriptionChange();
     this._onSkipNotificationsChange();
+    this._onSkipActivityStreamChange();
     this._onMarkAsFinalChange();
   }
 
@@ -373,6 +387,10 @@ export class RevisionUploaderPageComponent extends BaseComponentDirective implem
 
   private _onSkipNotificationsChange() {
     this.uploadDataService.patchMetadata("image-upload", { skip_notifications: this.model.skip_notifications });
+  }
+
+  private _onSkipActivityStreamChange() {
+    this.uploadDataService.patchMetadata("image-upload", { skip_activity_stream: this.model.skip_activity_stream });
   }
 
   private _onMarkAsFinalChange() {
