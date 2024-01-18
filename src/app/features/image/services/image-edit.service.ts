@@ -21,6 +21,7 @@ import { AccessoryInterface } from "@features/equipment/types/accessory.interfac
 import { SoftwareInterface } from "@features/equipment/types/software.interface";
 import { TranslateService } from "@ngx-translate/core";
 import { AcquisitionForm } from "@features/image/components/override-acquisition-form-modal/override-acquisition-form-modal.component";
+import { CollectionInterface } from "@shared/interfaces/collection.interface";
 
 export type ImageEditModelInterface = Partial<Omit<ImageInterface,
   | "user"
@@ -66,6 +67,7 @@ export class ImageEditService extends BaseService {
   model: ImageEditModelInterface;
   form = new FormGroup({});
   groups: GroupInterface[];
+  collections: CollectionInterface[];
   locations: LocationInterface[];
   fields: FormlyFieldConfig[];
   remoteSourceAffiliates: RemoteSourceAffiliateInterface[];
