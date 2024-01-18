@@ -50,6 +50,7 @@ context("Image edit (existing), test equipment presets", () => {
       "fixture:api/remote-source-affiliation/remote-source-affiliates.json"
     ).as("getRemoteSourceAffiliates");
     cy.route("get", "**/api/v2/groups/group/?members=1", "fixture:api/groups/groups.json").as("getGroups");
+    cy.route("get", "**/api/v2/astrobin/collection/?user=1", "fixture:api/collections/no_collections.json").as("getCollection");
     cy.route("get", "**/api/v2/users/locations/", { count: 0, results: [] }).as("getUsersLocations");
 
     cy.route("get", "**/api/v2/equipment/brand/1/", "fixture:api/equipment_v2/brand_1.json").as("getBrand1");
