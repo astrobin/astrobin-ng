@@ -14,6 +14,7 @@ context("Image edit (new)", () => {
       "fixture:api/remote-source-affiliation/remote-source-affiliates.json"
     ).as("getRemoteSourceAffiliates");
     cy.route("get", "**/api/v2/groups/group/*", "fixture:api/groups/groups.json").as("getGroups");
+    cy.route("get", "**/api/v2/astrobin/collection/?user=1", "fixture:api/collections/no_collections.json").as("getCollections");
     cy.route("get", "**/api/v2/users/locations/", { count: 0, results: [] }).as("getUsersLocations");
 
     cy.route("get", "**/api/v2/equipment/camera/recently-used/*", []);
