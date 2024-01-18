@@ -387,7 +387,12 @@ export class ImageEditContentFieldsService extends ImageEditFieldsBaseService {
   }
 
   getGroupsField(): FormlyFieldConfig {
-    let description = this.translateService.instant("Submit this image to the selected groups.");
+    let description =
+      this.translateService.instant("Submit this image to the selected groups.") +
+      " " +
+      "<a href=\"https://welcome.astrobin.com/features/groups\" target=\"_blank\">" +
+      this.translateService.instant("Learn more about AstroBin Groups.") +
+      "</a>";
 
     if (this.imageEditService.groups.length === 0) {
       const reason = this.translateService.instant("This field is disabled because you haven't joined any groups yet.");
