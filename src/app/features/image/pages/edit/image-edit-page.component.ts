@@ -177,6 +177,7 @@ export class ImageEditPageComponent
     };
 
     this.imageEditService.groups = this.route.snapshot.data.groups;
+    this.imageEditService.collections = this.route.snapshot.data.collections;
     this.imageEditService.locations = this.route.snapshot.data.locations;
 
     this.editingExistingImage = !!this.imageEditService.model.subjectType;
@@ -579,7 +580,8 @@ export class ImageEditPageComponent
             this.imageEditContentFieldsService.getDataSourceField(),
             this.imageEditContentFieldsService.getRemoteSourceField(),
             this.imageEditContentFieldsService.getLocationsField(),
-            this.imageEditContentFieldsService.getGroupsField()
+            this.imageEditContentFieldsService.getGroupsField(),
+            this.imageEditContentFieldsService.getCollectionsField()
           ]
         };
 

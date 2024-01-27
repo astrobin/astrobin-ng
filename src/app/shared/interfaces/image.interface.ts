@@ -32,6 +32,7 @@ export enum SubjectType {
   STAR_TRAILS = "STAR_TRAILS",
   NORTHERN_LIGHTS = "NORTHERN_LIGHTS",
   NOCTILUCENT_CLOUDS = "NOCTILUCENT_CLOUDS",
+  LANDSCAPE = "LANDSCAPE",
   GEAR = "GEAR",
   OTHER = "OTHER"
 }
@@ -111,10 +112,12 @@ export enum RemoteSource {
   SRO2 = "Sky Ranch Observatory",
   SPOO = "SkyPi Remote Observatory",
   SLO = "Slooh",
+  SPI = "Spica",
   SSLLC = "Stellar Skies LLC",
   SKIESAWAY = "SkiesAway Remote Observatories",
   TAIYUGE = "TaiYuge Observatory",
   TELI = "Telescope Live",
+  TREV = "Trevinca Skies",
   UDRO = "Utah Desert Remote Observatories",
   WTO = "West Texas Observatory (WTO)",
   YINHE = "YinHe Observatory",

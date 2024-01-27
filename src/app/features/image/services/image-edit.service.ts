@@ -21,6 +21,7 @@ import { AccessoryInterface } from "@features/equipment/types/accessory.interfac
 import { SoftwareInterface } from "@features/equipment/types/software.interface";
 import { TranslateService } from "@ngx-translate/core";
 import { AcquisitionForm } from "@features/image/components/override-acquisition-form-modal/override-acquisition-form-modal.component";
+import { CollectionInterface } from "@shared/interfaces/collection.interface";
 
 export type ImageEditModelInterface = Partial<Omit<ImageInterface,
   | "user"
@@ -66,6 +67,7 @@ export class ImageEditService extends BaseService {
   model: ImageEditModelInterface;
   form = new FormGroup({});
   groups: GroupInterface[];
+  collections: CollectionInterface[];
   locations: LocationInterface[];
   fields: FormlyFieldConfig[];
   remoteSourceAffiliates: RemoteSourceAffiliateInterface[];
@@ -96,7 +98,14 @@ export class ImageEditService extends BaseService {
       value = this.model.subjectType;
     }
 
-    return [SubjectType.DEEP_SKY, SubjectType.WIDE_FIELD, SubjectType.STAR_TRAILS].indexOf(value) > -1;
+    return [
+      SubjectType.DEEP_SKY,
+      SubjectType.WIDE_FIELD,
+      SubjectType.STAR_TRAILS,
+      SubjectType.NORTHERN_LIGHTS,
+      SubjectType.NOCTILUCENT_CLOUDS,
+      SubjectType.LANDSCAPE
+    ].indexOf(value) > -1;
   }
 
   isSolarSystem(value?: SubjectType): boolean {
@@ -121,6 +130,8 @@ export class ImageEditService extends BaseService {
         return this.translateService.instant("Northern lights");
       case SubjectType.NOCTILUCENT_CLOUDS:
         return this.translateService.instant("Noctilucent clouds");
+      case SubjectType.LANDSCAPE:
+        return this.translateService.instant("Landscape");
       case SubjectType.GEAR:
         return this.translateService.instant("Equipment");
       case SubjectType.OTHER:

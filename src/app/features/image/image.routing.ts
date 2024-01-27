@@ -6,6 +6,7 @@ import { ImageOwnerGuardService } from "@shared/services/guards/image-owner-guar
 import { CurrentUsersGroupsResolver } from "@shared/resolvers/current-users-groups.resolver";
 import { CurrentUsersLocationsResolver } from "@shared/resolvers/current-users-locations.resolver";
 import { PendingChangesGuard } from "@shared/services/guards/pending-changes-guard.service";
+import { CurrentUsersCollectionsResolver } from "@shared/resolvers/current-users-collections.resolver";
 
 export const routes: Routes = [
   {
@@ -16,6 +17,7 @@ export const routes: Routes = [
     resolve: {
       image: ImageResolver,
       groups: CurrentUsersGroupsResolver,
+      collections: CurrentUsersCollectionsResolver,
       locations: CurrentUsersLocationsResolver
     },
     data: {

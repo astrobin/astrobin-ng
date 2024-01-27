@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
+import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from "@angular/core";
 import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
 import { FieldType } from "@ngx-formly/core";
 import { LoadingService } from "@shared/services/loading.service";
@@ -18,7 +18,8 @@ export class FormlyFieldFileComponent extends FieldType implements OnInit {
   constructor(
     public readonly sanitizer: DomSanitizer,
     public readonly loadingService: LoadingService,
-    public readonly windowRefService: WindowRefService
+    public readonly windowRefService: WindowRefService,
+    public readonly changeDetectorRef: ChangeDetectorRef
   ) {
     super();
   }
@@ -67,5 +68,6 @@ export class FormlyFieldFileComponent extends FieldType implements OnInit {
     }
 
     this.formControl.patchValue(this.selectedFiles);
+    this.changeDetectorRef.detectChanges();
   }
 }

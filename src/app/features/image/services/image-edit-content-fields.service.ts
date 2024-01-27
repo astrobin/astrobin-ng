@@ -387,7 +387,12 @@ export class ImageEditContentFieldsService extends ImageEditFieldsBaseService {
   }
 
   getGroupsField(): FormlyFieldConfig {
-    let description = this.translateService.instant("Submit this image to the selected groups.");
+    let description =
+      this.translateService.instant("Submit this image to the selected groups.") +
+      " " +
+      "<a href=\"https://welcome.astrobin.com/features/groups\" target=\"_blank\">" +
+      this.translateService.instant("Learn more about AstroBin Groups.") +
+      "</a>";
 
     if (this.imageEditService.groups.length === 0) {
       const reason = this.translateService.instant("This field is disabled because you haven't joined any groups yet.");
@@ -412,6 +417,39 @@ export class ImageEditContentFieldsService extends ImageEditFieldsBaseService {
         options: this.imageEditService.groups.map(group => ({
           value: group.id,
           label: group.name
+        }))
+      }
+    };
+  }
+
+  getCollectionsField(): FormlyFieldConfig {
+    let description =
+      this.translateService.instant("Add this image to the selected collections.") +
+      " " +
+      "<a href=\"https://welcome.astrobin.com/image-collections\" target=\"_blank\">" +
+      this.translateService.instant("Learn more about collections.") +
+      "</a>";
+
+    if (this.imageEditService.collections.length === 0) {
+      const reason = this.translateService.instant(
+        "This field is disabled because you haven't created any collections yet."
+      );
+      description += ` <strong>${reason}</strong>`;
+    }
+
+    return {
+      key: "collections",
+      type: "ng-select",
+      id: "image-collections-field",
+      props: {
+        multiple: true,
+        required: false,
+        disabled: this.imageEditService.collections.length === 0,
+        label: this.translateService.instant("Collections"),
+        description,
+        options: this.imageEditService.collections.map(collection => ({
+          value: collection.id,
+          label: collection.name
         }))
       }
     };

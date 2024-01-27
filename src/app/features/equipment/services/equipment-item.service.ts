@@ -312,7 +312,8 @@ export class EquipmentItemService extends BaseService {
       "searchFriendlyName",
       "listings",
       "forum",
-      "cameras" // For sensors.
+      "cameras", // For sensors
+      "thumbnail"
     ];
 
     const _autoConvertValue = (value: any): any => {

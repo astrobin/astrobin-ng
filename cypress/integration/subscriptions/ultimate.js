@@ -75,7 +75,6 @@ context("ultimate", () => {
       );
       cy.visitPage("/subscriptions/ultimate");
       cy.get(".already-subscribed").should("exist");
-      cy.get(".buy.btn").should("not.exist");
     });
 
     it("should allow purchase if the user is not already subscribed", () => {

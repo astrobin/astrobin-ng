@@ -171,6 +171,14 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
         }
       },
       {
+        name: "min-date",
+        message(options: { value: Date }): string {
+          return translateService.instant("This date must not be before {{0}}.", {
+            0: options.value.toDateString()
+          });
+        }
+      },
+      {
         name: "max-date",
         message(options: { value: Date }): string {
           return translateService.instant("This date must not be after {{0}}.", {
@@ -443,6 +451,22 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
           }
 
           return !isNaN(new Date(control.value).getTime()) ? null : { "is-date": options };
+        }
+      },
+      {
+        name: "min-date",
+        validation: (control: FormControl, field: FormlyFieldConfig, options: { value: Date }) => {
+          if (control.value === null || control.value === undefined) {
+            return null;
+          }
+
+          const d = new Date(control.value);
+
+          if (isNaN(d.getTime())) {
+            return null;
+          }
+
+          return d >= options.value ? null : { "min-date": options };
         }
       },
       {

@@ -1035,7 +1035,7 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
   }
 
   private _createItem<T extends EquipmentItemBaseInterface>(item: Omit<T, "id">, path: string): Observable<T> {
-    const { image, ...itemWithoutImage } = item;
+    const { image, thumbnail, ...itemWithoutImage } = item;
 
     if (itemWithoutImage.diy) {
       itemWithoutImage.brand = null;
@@ -1106,7 +1106,7 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     item: Omit<EditProposalInterface<T>, "id">,
     path: string
   ): Observable<EditProposalInterface<T>> {
-    const { image, ...itemWithoutImage } = item;
+    const { image, thumbnail, ...itemWithoutImage } = item;
 
     return new Observable<EditProposalInterface<T>>(observer => {
       this.http

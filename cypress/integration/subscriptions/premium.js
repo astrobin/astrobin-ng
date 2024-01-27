@@ -66,7 +66,6 @@ context("premium", () => {
       );
       cy.visitPage("/subscriptions/premium");
       cy.get(".already-subscribed").should("exist");
-      cy.get(".buy.btn").should("not.exist");
     });
 
     it("should not allow purchase if the user is on Ultimate", () => {

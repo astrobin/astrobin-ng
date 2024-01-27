@@ -142,8 +142,8 @@ export abstract class BasePromotionSlotsComponent extends BaseComponentDirective
 
   futureDate(slotNumber: number): Date {
     const d = new Date();
-    d.setDate(d.getDate() + slotNumber + 1);
-    d.setHours(0, 0, 0, 0);
+    d.setUTCDate(d.getUTCDate() + slotNumber + 1);
+    d.setUTCHours(0, 0, 0, 0);
     return d;
   }
 
