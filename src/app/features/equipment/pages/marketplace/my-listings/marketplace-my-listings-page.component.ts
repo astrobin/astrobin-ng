@@ -10,6 +10,7 @@ import { LoadingService } from "@shared/services/loading.service";
 import { selectMarketplaceListings } from "@features/equipment/store/equipment.selectors";
 import { filter, map, take, takeUntil, tap } from "rxjs/operators";
 import { concatLatestFrom } from "@ngrx/effects";
+import { MarketplaceFilterModel } from "@features/equipment/components/marketplace-filter/marketplace-filter.component";
 
 @Component({
   selector: "astrobin-marketplace-my-listings-page",
@@ -31,6 +32,7 @@ export class MarketplaceMyListingsPageComponent extends BaseComponentDirective i
   );
 
   page = 1;
+  filterModel: MarketplaceFilterModel;
 
   constructor(
     public readonly store$: Store<State>,
@@ -66,10 +68,17 @@ export class MarketplaceMyListingsPageComponent extends BaseComponentDirective i
     this.refresh();
   }
 
-  public refresh() {
+  public refresh(filterModel?: MarketplaceFilterModel) {
     this.loadingService.setLoading(true);
+    this.filterModel = filterModel;
     this.currentUser$.pipe(take(1)).subscribe(user => {
-      this.store$.dispatch(new LoadMarketplaceListings({ page: this.page, user }));
+      this.store$.dispatch(new LoadMarketplaceListings({
+        options: {
+          ...(filterModel || {}),
+          page: this.page,
+          user
+        }
+      }));
     });
   }
 }

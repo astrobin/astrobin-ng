@@ -68,7 +68,7 @@ export class EquipmentItemService extends BaseService {
     return getEquipmentItemType(item);
   }
 
-  humanizeType(itemType: EquipmentItemType) {
+  humanizeType(itemType: EquipmentItemType): string {
     switch (itemType) {
       case EquipmentItemType.CAMERA:
         return this.translateService.instant("Camera");

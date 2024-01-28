@@ -13,7 +13,7 @@
 
   <div class="row">
     <div class="col-3">
-      <astrobin-marketplace-sidebar></astrobin-marketplace-sidebar>
+      <astrobin-marketplace-sidebar (filterChange)="refresh($event)"></astrobin-marketplace-sidebar>
     </div>
 
     <div class="col">
@@ -22,16 +22,18 @@
         <ng-container *ngIf="listings !== null">
           <ng-container *ngIf="listings.length > 0; else noListingsTemplate">
             <ng-container *ngFor="let listing of listings">
-              <a
-                *ngFor="let lineItem of listing.lineItems"
-                [routerLink]="['/equipment/marketplace/listing', listing.hash]"
-                class="line-item"
-              >
-                <astrobin-marketplace-line-item-card
-                  [lineItem]="lineItem"
-                  [listing]="listing"
-                ></astrobin-marketplace-line-item-card>
-              </a>
+              <ng-container *ngFor="let lineItem of listing.lineItems">
+                <a
+                  *ngIf="!filterModel || !filterModel.itemType || filterModel.itemType === lineItem.itemKlass"
+                  [routerLink]="['/equipment/marketplace/listing', listing.hash]"
+                  class="line-item"
+                >
+                  <astrobin-marketplace-line-item-card
+                    [lineItem]="lineItem"
+                    [listing]="listing"
+                  ></astrobin-marketplace-line-item-card>
+                </a>
+              </ng-container>
             </ng-container>
           </ng-container>
         </ng-container>

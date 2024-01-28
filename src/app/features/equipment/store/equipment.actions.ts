@@ -29,6 +29,7 @@ import {
 import { ContributorInterface } from "@features/equipment/types/contributor.interface";
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
 import { MarketplacePrivateConversationInterface } from "@features/equipment/types/marketplace-private-conversation.interface";
+import { MarketplaceListingQueryOptionsInterface } from "@features/equipment/types/marketplace-listing-query-options.interface";
 
 export interface EquipmentItemCreationSuccessPayloadInterface {
   item: EquipmentItemBaseInterface;
@@ -913,7 +914,11 @@ export class ItemBrowserExitFullscreen implements Action {
 export class LoadMarketplaceListings implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.LOAD_MARKETPLACE_LISTINGS;
 
-  constructor(public payload: { page: number, user?: UserInterface } = { page: 1 }) {
+  constructor(
+    public payload: {
+      options?: MarketplaceListingQueryOptionsInterface;
+    }
+  ) {
   }
 }
 

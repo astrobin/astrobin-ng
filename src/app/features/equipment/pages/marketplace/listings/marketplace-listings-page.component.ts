@@ -9,6 +9,8 @@ import { selectMarketplaceListings } from "@features/equipment/store/equipment.s
 import { filter, map, takeUntil, tap } from "rxjs/operators";
 import { LoadMarketplaceListings } from "@features/equipment/store/equipment.actions";
 import { LoadingService } from "@shared/services/loading.service";
+import { MarketplaceFilterModel } from "@features/equipment/components/marketplace-filter/marketplace-filter.component";
+import { ActivatedRoute } from "@angular/router";
 
 @Component({
   selector: "astrobin-marketplace-listings-page",
@@ -18,20 +20,28 @@ import { LoadingService } from "@shared/services/loading.service";
 export class MarketplaceListingsPageComponent extends BaseComponentDirective implements OnInit {
   readonly title = this.translateService.instant("Equipment marketplace");
 
+  page = 1;
+  filterModel: MarketplaceFilterModel;
+
   listings$ = this.store$.select(selectMarketplaceListings).pipe(
     takeUntil(this.destroyed$),
     filter(listings => !!listings),
     map(listings => listings.filter(listing => listing.lineItems.length > 0)),
+    map(listings =>
+      listings.filter(listing =>
+        listing.lineItems.filter(lineItem => {
+          const itemType = (this.filterModel || { itemType: null }).itemType;
+          return !itemType || lineItem.itemKlass === itemType;
+        }).length > 0)),
     tap(() => this.loadingService.setLoading(false))
   );
-
-  page = 1;
 
   constructor(
     public readonly store$: Store<State>,
     public readonly translateService: TranslateService,
     public readonly titleService: TitleService,
-    public readonly loadingService: LoadingService
+    public readonly loadingService: LoadingService,
+    public readonly activatedRoute: ActivatedRoute
   ) {
     super(store$);
   }
@@ -58,11 +68,21 @@ export class MarketplaceListingsPageComponent extends BaseComponentDirective imp
       })
     );
 
-    this.refresh();
+    this.activatedRoute.queryParams.subscribe(params => {
+      this.refresh(params);
+    });
   }
 
-  public refresh() {
+  public refresh(filterModel?: MarketplaceFilterModel) {
     this.loadingService.setLoading(true);
-    this.store$.dispatch(new LoadMarketplaceListings({ page: this.page }));
+    this.filterModel = filterModel;
+    this.store$.dispatch(new LoadMarketplaceListings(
+      {
+        options: {
+          ...(filterModel || {}),
+          page: this.page
+        }
+      })
+    );
   }
 }

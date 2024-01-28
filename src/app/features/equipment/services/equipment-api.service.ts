@@ -40,6 +40,7 @@ import { MarketplaceListingInterface } from "@features/equipment/types/marketpla
 import { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
 import { MarketplaceImageInterface } from "@features/equipment/types/marketplace-image.interface";
 import { MarketplacePrivateConversationInterface } from "@features/equipment/types/marketplace-private-conversation.interface";
+import { MarketplaceListingQueryOptionsInterface } from "@features/equipment/types/marketplace-listing-query-options.interface";
 
 export interface AllEquipmentItemsOptionsInterface {
   brand?: BrandInterface["id"];
@@ -764,13 +765,16 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   public loadMarketplaceListings(
-    page: number = 1,
-    user?: UserInterface
+    options: MarketplaceListingQueryOptionsInterface = { page: 1 }
   ): Observable<PaginatedApiResultInterface<MarketplaceListingInterface>> {
-    let url = `${this.configUrl}/marketplace/listing/?page=${page}`;
+    let url = `${this.configUrl}/marketplace/listing/`;
 
-    if (!!user) {
-      url = UtilsService.addOrUpdateUrlParam(url, "user", user.id.toString());
+    if (!!options.user) {
+      url = UtilsService.addOrUpdateUrlParam(url, "user", options.user.id.toString());
+    }
+
+    if (!!options.itemType) {
+      url = UtilsService.addOrUpdateUrlParam(url, "item_type", options.itemType);
     }
 
     return this.http.get<PaginatedApiResultInterface<MarketplaceListingInterface>>(url);
