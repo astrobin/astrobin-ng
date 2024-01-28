@@ -11,6 +11,7 @@ import { selectMarketplaceListings } from "@features/equipment/store/equipment.s
 import { filter, map, take, takeUntil, tap } from "rxjs/operators";
 import { concatLatestFrom } from "@ngrx/effects";
 import { MarketplaceFilterModel } from "@features/equipment/components/marketplace-filter/marketplace-filter.component";
+import { ActivatedRoute } from "@angular/router";
 
 @Component({
   selector: "astrobin-marketplace-my-listings-page",
@@ -38,7 +39,8 @@ export class MarketplaceMyListingsPageComponent extends BaseComponentDirective i
     public readonly store$: Store<State>,
     public readonly translateService: TranslateService,
     public readonly titleService: TitleService,
-    public readonly loadingService: LoadingService
+    public readonly loadingService: LoadingService,
+    public readonly activatedRoute: ActivatedRoute
   ) {
     super(store$);
   }
@@ -65,7 +67,9 @@ export class MarketplaceMyListingsPageComponent extends BaseComponentDirective i
       })
     );
 
-    this.refresh();
+    this.activatedRoute.queryParams.subscribe(params => {
+      this.refresh(params);
+    });
   }
 
   public refresh(filterModel?: MarketplaceFilterModel) {
