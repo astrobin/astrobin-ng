@@ -13,6 +13,7 @@ import { LoadingService } from "@shared/services/loading.service";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { Constants } from "@shared/constants";
+import { MarketplaceListingCondition } from "@features/equipment/types/marketplace-line-item.interface";
 
 export interface MarketplaceFilterModel {
   itemType?: EquipmentItemType | null;
@@ -120,6 +121,10 @@ export class MarketplaceFilterComponent extends BaseComponentDirective implement
         }
       },
       {
+        key: "",
+        template: "<hr />"
+      },
+      {
         key: "latitude",
         type: "input",
         className: "hidden"
@@ -165,6 +170,10 @@ export class MarketplaceFilterComponent extends BaseComponentDirective implement
         }
       },
       {
+        key: "",
+        template: "<hr />"
+      },
+      {
         key: "minPrice",
         type: "input",
         wrappers: ["default-wrapper"],
@@ -205,6 +214,23 @@ export class MarketplaceFilterComponent extends BaseComponentDirective implement
         },
         expressionProperties: {
           "props.required": "model.minPrice || model.maxPrice"
+        }
+      },
+      {
+        key: "",
+        template: "<hr />"
+      },
+      {
+        key: "condition",
+        type: "ng-select",
+        wrappers: ["default-wrapper"],
+        defaultValue: params["condition"],
+        props: {
+          label: this.translateService.instant("Condition"),
+          options: Object.values(MarketplaceListingCondition).map(condition => ({
+            label: this.equipmentItemService.humanizeCondition(condition),
+            value: condition
+          }))
         }
       }
     ];
