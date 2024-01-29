@@ -8,9 +8,17 @@ import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
 import { ActivatedRoute, Params, Router } from "@angular/router";
+import { GeolocationService } from "@shared/services/geolocation.service";
+import { LoadingService } from "@shared/services/loading.service";
+import { PopNotificationsService } from "@shared/services/pop-notifications.service";
+import { UtilsService } from "@shared/services/utils/utils.service";
 
 export interface MarketplaceFilterModel {
   itemType?: EquipmentItemType | null;
+  maxDistance?: number | null;
+  distanceUnit?: string | null;
+  latitude?: number | null;
+  longitude?: number | null;
 }
 
 @Component({
@@ -30,7 +38,10 @@ export class MarketplaceFilterComponent extends BaseComponentDirective implement
     public readonly translateService: TranslateService,
     public readonly equipmentItemService: EquipmentItemService,
     public readonly router: Router,
-    public readonly activatedRoute: ActivatedRoute
+    public readonly activatedRoute: ActivatedRoute,
+    public readonly geolocationService: GeolocationService,
+    public readonly loadingService: LoadingService,
+    public readonly popNotificationsService: PopNotificationsService
   ) {
     super(store$);
   }
@@ -44,13 +55,40 @@ export class MarketplaceFilterComponent extends BaseComponentDirective implement
   }
 
   applyFilters() {
-    this.router.navigate([], {
-      relativeTo: this.activatedRoute,
-      queryParams: this.filterForm.value,
-      queryParamsHandling: "merge"
-    }).then(() => {
-      this.filterChange.emit(this.filterForm.value);
-    });
+    const _doApplyFilters = () => {
+      this.router.navigate([], {
+        relativeTo: this.activatedRoute,
+        queryParams: this.filterForm.value,
+        queryParamsHandling: "merge"
+      }).then(() => {
+        this.filterChange.emit(this.filterForm.value);
+      });
+    };
+
+    if (!this.filterForm.valid) {
+      this.filterForm.markAllAsTouched();
+      UtilsService.notifyAboutFieldsWithErrors(this.filterFields, this.popNotificationsService, this.translateService);
+      return;
+    }
+
+    if (this.filterForm.value.maxDistance !== null) {
+      this.geolocationService.getCurrentPosition().then(position => {
+        this.filterForm.patchValue({
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude
+        });
+        _doApplyFilters();
+      }).catch(() => {
+        this.popNotificationsService.error(
+          this.translateService.instant(
+            "AstroBin could not determine your location because you didn't grant the require permission."
+          )
+        );
+        _doApplyFilters();
+      });
+    } else {
+      _doApplyFilters();
+    }
   }
 
   private _initFilterFields(params: Params) {
@@ -67,6 +105,51 @@ export class MarketplaceFilterComponent extends BaseComponentDirective implement
             value: itemType
           })),
           clearable: true
+        }
+      },
+      {
+        key: "latitude",
+        type: "input",
+        className: "hidden"
+      },
+      {
+        key: "longitude",
+        type: "input",
+        className: "hidden"
+      },
+      {
+        key: "maxDistance",
+        type: "input",
+        wrappers: ["default-wrapper"],
+        defaultValue: params["maxDistance"],
+        props: {
+          type: "number",
+          label: this.translateService.instant("Max. distance"),
+          description: this.translateService.instant("Max. distance from your location."),
+          min: 0
+        }
+      },
+      {
+        key: "distanceUnit",
+        type: "ng-select",
+        wrappers: ["default-wrapper"],
+        defaultValue: params["distanceUnit"],
+        props: {
+          label: this.translateService.instant("Distance unit"),
+          searchable: false,
+          options: [
+            {
+              label: "km",
+              value: "km"
+            },
+            {
+              label: "mi",
+              value: "mi"
+            }
+          ]
+        },
+        expressionProperties: {
+          "props.required": "model.maxDistance && model.maxDistance > 0"
         }
       }
     ];

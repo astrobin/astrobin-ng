@@ -11,7 +11,11 @@
   </div>
 
   <div class="card-footer">
-    <button (click)="applyFilters()" class="btn btn-primary btn-block w-100">
+    <button
+      (click)="applyFilters()"
+      [class.loading]="(loadingService.loading$ | async) || filterForm.pending"
+      class="btn btn-primary btn-block w-100"
+    >
       <fa-icon icon="check"></fa-icon> &nbsp;
       {{ "Apply" | translate }}
     </button>

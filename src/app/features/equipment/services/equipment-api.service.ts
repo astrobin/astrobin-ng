@@ -769,13 +769,14 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
   ): Observable<PaginatedApiResultInterface<MarketplaceListingInterface>> {
     let url = `${this.configUrl}/marketplace/listing/`;
 
-    if (!!options.user) {
-      url = UtilsService.addOrUpdateUrlParam(url, "user", options.user.id.toString());
-    }
-
-    if (!!options.itemType) {
-      url = UtilsService.addOrUpdateUrlParam(url, "item_type", options.itemType);
-    }
+    Object.keys(options).forEach(key => {
+      const value = options[key];
+      if (value != null) {
+        const paramKey = UtilsService.camelCaseToSnakeCase(key);
+        const valueStr = (key === 'user' && value.id) ? value.id.toString() : value.toString();
+        url = UtilsService.addOrUpdateUrlParam(url, paramKey, valueStr);
+      }
+    });
 
     return this.http.get<PaginatedApiResultInterface<MarketplaceListingInterface>>(url);
   }
