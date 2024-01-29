@@ -14,10 +14,19 @@
     <button
       (click)="applyFilters()"
       [class.loading]="(loadingService.loading$ | async) || filterForm.pending"
-      class="btn btn-primary btn-block w-100"
+      class="btn btn-primary btn-block w-50"
     >
       <fa-icon icon="check"></fa-icon> &nbsp;
       {{ "Apply" | translate }}
+    </button>
+
+    <button
+      (click)="resetFilters()"
+      [class.loading]="(loadingService.loading$ | async) || filterForm.pending"
+      class="btn btn-secondary btn-block w-50"
+    >
+      <fa-icon icon="undo"></fa-icon> &nbsp;
+      {{ "Reset" | translate }}
     </button>
   </div>
 </div>

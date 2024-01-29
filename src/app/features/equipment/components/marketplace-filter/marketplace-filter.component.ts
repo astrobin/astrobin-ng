@@ -92,6 +92,17 @@ export class MarketplaceFilterComponent extends BaseComponentDirective implement
     }
   }
 
+  resetFilters() {
+    Object.keys(this.filterForm.controls).forEach(key => {
+      const control = this.filterForm.get(key);
+      control.setValue(null);
+      control.markAsPristine();
+      control.markAsUntouched();
+    });
+
+    this.applyFilters();
+  }
+
   private _initFilterFields(params: Params) {
     this.filterFields = [
       {
