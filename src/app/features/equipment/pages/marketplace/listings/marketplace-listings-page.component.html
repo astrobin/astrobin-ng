@@ -1,10 +1,38 @@
 <div class="page has-breadcrumb">
   <h1 class="d-flex justify-content-between align-items-center">
     <span class="flex-grow-1 me-3">{{ title }}</span>
-    <a
-      [routerLink]="['create']"
-      class="btn btn-primary btn-create-listing me-3"
-    >
+
+    <span class="d-inline-block me-3" ngbDropdown>
+      <button
+        [class.loading]="loadingService.loading$ | async"
+        class="btn btn-outline-primary"
+        id="region-selector"
+        ngbDropdownToggle
+      >
+        <ng-container *ngIf="!!selectedRegion">
+          <fa-icon icon="flag"></fa-icon>
+          {{ requestCountryLabel }}
+        </ng-container>
+        <ng-container *ngIf="!selectedRegion">
+          <fa-icon icon="globe"></fa-icon>
+          {{ "Worldwide" | translate }}
+        </ng-container>
+      </button>
+
+      <span aria-labelledby="region-selector" ngbDropdownMenu>
+        <button (click)="setRegion(null)" ngbDropdownItem>
+          <fa-icon icon="globe"></fa-icon>
+          {{ "Worldwide" | translate }}
+        </button>
+
+        <button (click)="setRegion(requestCountryCode)" *ngIf="!!requestCountryLabel" ngbDropdownItem>
+          <fa-icon icon="flag"></fa-icon>
+          {{ requestCountryLabel }}
+        </button>
+      </span>
+    </span>
+
+    <a [routerLink]="['create']" class="btn btn-primary btn-create-listing me-3">
       <fa-icon icon="plus"></fa-icon>
       {{ "Create listing" | translate }}
     </a>

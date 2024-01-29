@@ -10,7 +10,9 @@ import { filter, map, takeUntil, tap } from "rxjs/operators";
 import { LoadMarketplaceListings } from "@features/equipment/store/equipment.actions";
 import { LoadingService } from "@shared/services/loading.service";
 import { MarketplaceFilterModel } from "@features/equipment/components/marketplace-filter/marketplace-filter.component";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
+import { selectRequestCountry } from "@app/store/selectors/app/app.selectors";
+import { CountryService } from "@shared/services/country.service";
 
 @Component({
   selector: "astrobin-marketplace-listings-page",
@@ -21,6 +23,10 @@ export class MarketplaceListingsPageComponent extends BaseComponentDirective imp
   readonly title = this.translateService.instant("Equipment marketplace");
 
   page = 1;
+  filterModel: MarketplaceFilterModel | null = null;
+  requestCountryCode: string | null;
+  requestCountryLabel: string | null;
+  selectedRegion: string | null;
 
   listings$ = this.store$.select(selectMarketplaceListings).pipe(
     takeUntil(this.destroyed$),
@@ -34,7 +40,9 @@ export class MarketplaceListingsPageComponent extends BaseComponentDirective imp
     public readonly translateService: TranslateService,
     public readonly titleService: TitleService,
     public readonly loadingService: LoadingService,
-    public readonly activatedRoute: ActivatedRoute
+    public readonly activatedRoute: ActivatedRoute,
+    public readonly countryService: CountryService,
+    public readonly router: Router
   ) {
     super(store$);
   }
@@ -42,8 +50,51 @@ export class MarketplaceListingsPageComponent extends BaseComponentDirective imp
   ngOnInit(): void {
     super.ngOnInit();
 
-    this.titleService.setTitle(this.title);
+    this._setTitle();
+    this._setBreadcrumb();
+    this._refreshOnQueryParamsChange();
+    this._updateRequestCountry();
+  }
 
+  setRegion(region: string) {
+    this.selectedRegion = region;
+    this.refresh();
+  }
+
+  public refresh(filterModel?: MarketplaceFilterModel) {
+    this.loadingService.setLoading(true);
+
+    this.filterModel = {
+      ...this.filterModel,
+      ...filterModel
+    };
+
+    if (this.selectedRegion) {
+      this.filterModel.region = this.selectedRegion;
+    } else {
+      delete this.filterModel.region;
+    }
+
+    this.router.navigate([], {
+      relativeTo: this.activatedRoute,
+      queryParams: this.filterModel
+    }).then(() => {
+        this.store$.dispatch(new LoadMarketplaceListings(
+          {
+            options: {
+              ...(this.filterModel || {}),
+              page: this.page
+            }
+          }));
+      }
+    );
+  }
+
+  private _setTitle() {
+    this.titleService.setTitle(this.title);
+  }
+
+  private _setBreadcrumb() {
     this.store$.dispatch(
       new SetBreadcrumb({
         breadcrumb: [
@@ -55,26 +106,34 @@ export class MarketplaceListingsPageComponent extends BaseComponentDirective imp
             label: this.translateService.instant("Marketplace")
           },
           {
-            label: this.translateService.instant("All listings")
+            label: this.translateService.instant("Listings")
           }
         ]
       })
     );
+  }
 
-    this.activatedRoute.queryParams.subscribe(params => {
+  private _refreshOnQueryParamsChange() {
+    this.activatedRoute.queryParams.pipe(takeUntil(this.destroyed$)).subscribe(params => {
+      if (params.region) {
+        this.selectedRegion = params.region;
+      }
+
+      if (params.page) {
+        this.page = params.page;
+      }
+
       this.refresh(params);
     });
   }
 
-  public refresh(filterModel?: MarketplaceFilterModel) {
-    this.loadingService.setLoading(true);
-    this.store$.dispatch(new LoadMarketplaceListings(
-      {
-        options: {
-          ...(filterModel || {}),
-          page: this.page
+  private _updateRequestCountry() {
+    this.store$.select(selectRequestCountry).pipe(
+      takeUntil(this.destroyed$),
+      map(requestCountry => {
+          this.requestCountryCode = requestCountry;
+          this.requestCountryLabel = this.countryService.getCountryName(requestCountry, this.translateService.currentLang);
         }
-      })
-    );
+      )).subscribe();
   }
 }

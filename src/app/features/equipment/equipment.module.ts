@@ -50,7 +50,7 @@ import { MarketplaceEditListingPageComponent } from "@features/equipment/pages/m
 import { MarketplaceNavComponent } from "./components/marketplace-nav/marketplace-nav.component";
 import { MarketplaceSidebarComponent } from "./components/marketplace-sidebar/marketplace-sidebar.component";
 import { MarketplaceMyListingsPageComponent } from "./pages/marketplace/my-listings/marketplace-my-listings-page.component";
-import { MarketplaceFilterComponent } from './components/marketplace-filter/marketplace-filter.component';
+import { MarketplaceFilterComponent } from "./components/marketplace-filter/marketplace-filter.component";
 
 @NgModule({
   declarations: [
@@ -102,7 +102,11 @@ import { MarketplaceFilterComponent } from './components/marketplace-filter/mark
     MarketplaceMyListingsPageComponent,
     MarketplaceFilterComponent
   ],
-  imports: [RouterModule.forChild(routes), SharedModule, StoreModule.forFeature(equipmentFeatureKey, reducer)]
+  imports: [
+    RouterModule.forChild(routes),
+    SharedModule,
+    StoreModule.forFeature(equipmentFeatureKey, reducer)
+  ]
 })
 export class EquipmentModule {
 }

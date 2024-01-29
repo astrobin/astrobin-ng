@@ -10,6 +10,7 @@ import { AuthActionTypes, InitializeAuth } from "@features/account/store/auth.ac
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import {
   NgbAccordionModule,
+  NgbDropdownModule,
   NgbModule,
   NgbPaginationModule,
   NgbPopoverModule,
@@ -110,6 +111,7 @@ export function appInitializer(store: Store<State>, actions$: Actions) {
     ImageCropperModule,
     NgbModule,
     NgbAccordionModule,
+    NgbDropdownModule,
     NgbPaginationModule,
     NgbPopoverModule,
     NgbProgressbarModule,
@@ -171,6 +173,7 @@ export function appInitializer(store: Store<State>, actions$: Actions) {
     ImageCropperModule,
     NgbModule,
     NgbAccordionModule,
+    NgbDropdownModule,
     NgbPaginationModule,
     NgbPopoverModule,
     NgbProgressbarModule,

@@ -21,6 +21,7 @@ export interface MarketplaceFilterModel {
   distanceUnit?: string | null;
   latitude?: number | null;
   longitude?: number | null;
+  region?: string | null;
 }
 
 @Component({
@@ -232,6 +233,12 @@ export class MarketplaceFilterComponent extends BaseComponentDirective implement
             value: condition
           }))
         }
+      },
+      {
+        key: "region",
+        type: "input",
+        defaultValue: params["region"],
+        className: "hidden"
       }
     ];
   }
