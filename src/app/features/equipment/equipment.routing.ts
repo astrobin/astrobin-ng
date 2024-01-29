@@ -185,7 +185,22 @@ export const routes: Routes = [
         }
       },
       {
+        path: "listing/:hash/:slug/edit",
+        component: MarketplaceEditListingPageComponent,
+        canActivate: [AuthGuardService],
+        resolve: {
+          listing: MarketplaceListingResolver
+        }
+      },
+      {
         path: "listing/:hash",
+        component: MarketplaceListingPageComponent,
+        resolve: {
+          listing: MarketplaceListingResolver
+        }
+      },
+      {
+        path: "listing/:hash/:slug",
         component: MarketplaceListingPageComponent,
         resolve: {
           listing: MarketplaceListingResolver

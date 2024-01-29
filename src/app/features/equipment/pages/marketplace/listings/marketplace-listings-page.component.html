@@ -24,7 +24,7 @@
             <ng-container *ngFor="let listing of listings">
               <a
                 *ngFor="let lineItem of listing.lineItems"
-                [routerLink]="['/equipment/marketplace/listing', listing.hash]"
+                [routerLink]="['/equipment/marketplace/listing', listing.hash, listing.slug]"
                 class="line-item"
               >
                 <astrobin-marketplace-line-item-card

@@ -115,6 +115,17 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
 
     this.store$.dispatch(new LoadContentType(this._contentTypePayload));
     this.store$.dispatch(new LoadMarketplacePrivateConversations({ listingId: this.listing.id }));
+
+    this.appendSlugToUrl();
+  }
+
+  appendSlugToUrl() {
+    const slug = this.listing.slug;
+    const url = this.router.url;
+
+    if (url.indexOf(slug) === -1) {
+      this.router.navigate([slug], { relativeTo: this.activatedRoute });
+    }
   }
 
   ngAfterViewInit(): void {

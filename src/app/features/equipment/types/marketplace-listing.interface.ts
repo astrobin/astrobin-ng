@@ -36,4 +36,5 @@ export interface MarketplaceListingInterface {
   followerCount?: number;
   viewCount?: number;
   hitcountPk?: number;
+  slug?: string;
 }

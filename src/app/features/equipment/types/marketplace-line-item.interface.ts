@@ -38,4 +38,5 @@ export interface MarketplaceLineItemInterface {
   itemKlass?: EquipmentItemType;
   username?: string;
   firstAddedToAnImage?: string;
+  slug?: string;
 }
