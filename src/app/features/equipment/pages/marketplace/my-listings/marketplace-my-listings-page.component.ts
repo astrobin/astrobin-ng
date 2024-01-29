@@ -33,7 +33,6 @@ export class MarketplaceMyListingsPageComponent extends BaseComponentDirective i
   );
 
   page = 1;
-  filterModel: MarketplaceFilterModel;
 
   constructor(
     public readonly store$: Store<State>,
@@ -74,7 +73,6 @@ export class MarketplaceMyListingsPageComponent extends BaseComponentDirective i
 
   public refresh(filterModel?: MarketplaceFilterModel) {
     this.loadingService.setLoading(true);
-    this.filterModel = filterModel;
     this.currentUser$.pipe(take(1)).subscribe(user => {
       this.store$.dispatch(new LoadMarketplaceListings({
         options: {

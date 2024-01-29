@@ -12,6 +12,7 @@ import { GeolocationService } from "@shared/services/geolocation.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
+import { Constants } from "@shared/constants";
 
 export interface MarketplaceFilterModel {
   itemType?: EquipmentItemType | null;
@@ -150,6 +151,49 @@ export class MarketplaceFilterComponent extends BaseComponentDirective implement
         },
         expressionProperties: {
           "props.required": "model.maxDistance && model.maxDistance > 0"
+        }
+      },
+      {
+        key: "minPrice",
+        type: "input",
+        wrappers: ["default-wrapper"],
+        defaultValue: params["minPrice"],
+        props: {
+          type: "number",
+          label: this.translateService.instant("Min. price"),
+          description: this.translateService.instant("Min. price of the item."),
+          min: 0
+        }
+      },
+      {
+        key: "maxPrice",
+        type: "input",
+        wrappers: ["default-wrapper"],
+        defaultValue: params["maxPrice"],
+        props: {
+          type: "number",
+          label: this.translateService.instant("Max. price"),
+          description: this.translateService.instant("Max. price of the item."),
+          min: 0
+        }
+      },
+      {
+        key: "currency",
+        type: "ng-select",
+        wrappers: ["default-wrapper"],
+        defaultValue: params["currency"],
+        props: {
+          label: this.translateService.instant("Currency"),
+          searchable: false,
+          options: Constants.SUPPORTED_CURRENCIES.map(
+            currency => ({
+              label: currency,
+              value: currency
+            })
+          )
+        },
+        expressionProperties: {
+          "props.required": "model.minPrice || model.maxPrice"
         }
       }
     ];

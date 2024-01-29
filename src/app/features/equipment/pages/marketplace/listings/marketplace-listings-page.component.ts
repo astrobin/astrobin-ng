@@ -21,18 +21,11 @@ export class MarketplaceListingsPageComponent extends BaseComponentDirective imp
   readonly title = this.translateService.instant("Equipment marketplace");
 
   page = 1;
-  filterModel: MarketplaceFilterModel;
 
   listings$ = this.store$.select(selectMarketplaceListings).pipe(
     takeUntil(this.destroyed$),
     filter(listings => !!listings),
     map(listings => listings.filter(listing => listing.lineItems.length > 0)),
-    map(listings =>
-      listings.filter(listing =>
-        listing.lineItems.filter(lineItem => {
-          const itemType = (this.filterModel || { itemType: null }).itemType;
-          return !itemType || lineItem.itemKlass === itemType;
-        }).length > 0)),
     tap(() => this.loadingService.setLoading(false))
   );
 
@@ -75,7 +68,6 @@ export class MarketplaceListingsPageComponent extends BaseComponentDirective imp
 
   public refresh(filterModel?: MarketplaceFilterModel) {
     this.loadingService.setLoading(true);
-    this.filterModel = filterModel;
     this.store$.dispatch(new LoadMarketplaceListings(
       {
         options: {
