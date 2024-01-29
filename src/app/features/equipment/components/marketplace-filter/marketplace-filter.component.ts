@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from "@angular/core";
+import { Component, EventEmitter, Inject, OnInit, Output, PLATFORM_ID } from "@angular/core";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { FormGroup } from "@angular/forms";
 import { TranslateService } from "@ngx-translate/core";
@@ -14,6 +14,8 @@ import { PopNotificationsService } from "@shared/services/pop-notifications.serv
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { Constants } from "@shared/constants";
 import { MarketplaceListingCondition } from "@features/equipment/types/marketplace-line-item.interface";
+import { WindowRefService } from "@shared/services/window-ref.service";
+import { isPlatformBrowser } from "@angular/common";
 
 export interface MarketplaceFilterModel {
   itemType?: EquipmentItemType | null;
@@ -44,7 +46,9 @@ export class MarketplaceFilterComponent extends BaseComponentDirective implement
     public readonly activatedRoute: ActivatedRoute,
     public readonly geolocationService: GeolocationService,
     public readonly loadingService: LoadingService,
-    public readonly popNotificationsService: PopNotificationsService
+    public readonly popNotificationsService: PopNotificationsService,
+    public windowRefService: WindowRefService,
+    @Inject(PLATFORM_ID) public readonly platformId: Object
   ) {
     super(store$);
   }
@@ -65,6 +69,16 @@ export class MarketplaceFilterComponent extends BaseComponentDirective implement
         queryParamsHandling: "merge"
       }).then(() => {
         this.filterChange.emit(this.filterForm.value);
+
+        this.loadingService.setLoading(false);
+
+        if (isPlatformBrowser(this.platformId)) {
+          this.windowRefService.nativeWindow.scrollTo({
+            top: 0,
+            left: 0,
+            behavior: "smooth"
+          });
+        }
       });
     };
 
@@ -73,6 +87,8 @@ export class MarketplaceFilterComponent extends BaseComponentDirective implement
       UtilsService.notifyAboutFieldsWithErrors(this.filterFields, this.popNotificationsService, this.translateService);
       return;
     }
+
+    this.loadingService.setLoading(true);
 
     if (this.filterForm.value.maxDistance !== null) {
       this.geolocationService.getCurrentPosition().then(position => {
