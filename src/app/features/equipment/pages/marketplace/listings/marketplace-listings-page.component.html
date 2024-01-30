@@ -45,33 +45,9 @@
     </div>
 
     <div class="col">
-      <div *ngIf="listings$ | async as listings; else loadingTemplate" class="listings">
-        <ng-container *ngIf="listings === null" [ngTemplateOutlet]="loadingTemplate"></ng-container>
-        <ng-container *ngIf="listings !== null">
-          <ng-container *ngIf="listings.length > 0; else noListingsTemplate">
-            <ng-container *ngFor="let listing of listings">
-              <a
-                *ngFor="let lineItem of listing.lineItems"
-                [routerLink]="['/equipment/marketplace/listing', listing.hash, listing.slug]"
-                class="line-item"
-              >
-                <astrobin-marketplace-line-item-card
-                  [lineItem]="lineItem"
-                  [listing]="listing"
-                ></astrobin-marketplace-line-item-card>
-              </a>
-            </ng-container>
-          </ng-container>
-        </ng-container>
-      </div>
+      <astrobin-marketplace-line-item-cards
+        [listings]="listings$ | async"
+      ></astrobin-marketplace-line-item-cards>
     </div>
   </div>
 </div>
-
-<ng-template #noListingsTemplate>
-  <astrobin-nothing-here [withAlert]="false" [withInfoSign]="false"></astrobin-nothing-here>
-</ng-template>
-
-<ng-template #loadingTemplate>
-  <astrobin-loading-indicator></astrobin-loading-indicator>
-</ng-template>

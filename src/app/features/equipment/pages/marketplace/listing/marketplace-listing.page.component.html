@@ -34,6 +34,7 @@
         <div class="row">
           <div class="col-md-7 col-lg-9">
             <astrobin-marketplace-listing [listing]="listing"></astrobin-marketplace-listing>
+
             <astrobin-nested-comments
               [addCommentLabel]="'Ask a question' | translate"
               [contentType]="listingContentType"
@@ -41,6 +42,10 @@
               [objectId]="listing.id"
               [title]="'Public questions' | translate"
             ></astrobin-nested-comments>
+
+            <astrobin-marketplace-more-from-user
+              [listing]="listing"
+            ></astrobin-marketplace-more-from-user>
           </div>
 
           <div class="col">
