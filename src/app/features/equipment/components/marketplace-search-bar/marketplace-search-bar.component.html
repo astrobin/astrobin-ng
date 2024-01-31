@@ -1,0 +1,13 @@
+<div class="marketplace-search-container">
+  <fa-icon icon="search"></fa-icon>
+
+  <input
+    (keyup.enter)="onInputEnter($event)"
+    [(ngModel)]="query"
+    autocomplete="off"
+    class="marketplace-search-input form-control w-100"
+    name="marketplace-search"
+    placeholder="{{ 'Search listings...' | translate }}"
+    type="text"
+  />
+</div>

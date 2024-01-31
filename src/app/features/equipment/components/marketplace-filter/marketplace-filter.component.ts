@@ -24,6 +24,7 @@ export interface MarketplaceFilterModel {
   latitude?: number | null;
   longitude?: number | null;
   region?: string | null;
+  query?: string | null;
 }
 
 @Component({

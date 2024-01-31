@@ -45,6 +45,11 @@
     </div>
 
     <div class="col">
+      <astrobin-marketplace-search-bar
+        (search)="refresh($event)"
+        class="d-block mb-3"
+      ></astrobin-marketplace-search-bar>
+
       <astrobin-marketplace-line-item-cards
         [listings]="listings$ | async"
       ></astrobin-marketplace-line-item-cards>
