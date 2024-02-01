@@ -13,6 +13,11 @@ export enum MarketplaceListingCondition {
   OTHER = "OTHER",
 }
 
+export enum MarketplaceLineItemFindItemMode {
+  USER = "USER",
+  ALL = "ALL"
+}
+
 export interface MarketplaceLineItemInterface {
   id?: number;
   hash?: string;
@@ -30,6 +35,7 @@ export interface MarketplaceLineItemInterface {
   yearOfPurchase: number | null;
   shippingCost: number | null;
   description: string | null;
+  findItemMode?: MarketplaceLineItemFindItemMode;
   itemObjectId: number;
   itemContentType: ContentTypeInterface["id"];
   images?: MarketplaceImageInterface[] | { file: File, url: string }[];

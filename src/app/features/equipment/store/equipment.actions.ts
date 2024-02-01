@@ -323,7 +323,12 @@ export class FindAllEquipmentItemsSuccess implements PayloadActionInterface {
 export class FindRecentlyUsedEquipmentItems implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.FIND_RECENTLY_USED_EQUIPMENT_ITEMS;
 
-  constructor(public payload: { type: EquipmentItemType; usageType: EquipmentItemUsageType | null }) {
+  constructor(public payload: {
+    type: EquipmentItemType;
+    usageType: EquipmentItemUsageType | null;
+    includeFrozen?: boolean;
+    query?: string;
+  }) {
   }
 }
 

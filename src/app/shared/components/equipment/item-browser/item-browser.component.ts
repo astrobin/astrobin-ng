@@ -35,6 +35,8 @@ import {
   EquipmentItemCreationSuccessPayloadInterface,
   FindAllEquipmentItems,
   FindAllEquipmentItemsSuccess,
+  FindRecentlyUsedEquipmentItems,
+  FindRecentlyUsedEquipmentItemsSuccess,
   ItemBrowserAdd,
   ItemBrowserExitFullscreen,
   ItemBrowserSet,
@@ -124,6 +126,9 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
 
   @Input()
   enableSelectFrozen = true;
+
+  @Input()
+  restrictToUserEquipment = false;
 
   @Input()
   excludeId: number;
@@ -844,6 +849,51 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
     );
   }
 
+  _onSearchRestrictedToUserEquipment(q: string): Observable<any[]> {
+    return this.currentUser$.pipe(
+      switchMap(currentUser => {
+        if (!currentUser) {
+          return of([]);
+        }
+
+        this.store$.dispatch(
+          new FindRecentlyUsedEquipmentItems({
+            type: this.model.klass,
+            usageType: null,
+            includeFrozen: true,
+            query: q
+          })
+        );
+
+        return this.actions$
+          .pipe(
+            ofType(EquipmentActionTypes.FIND_RECENTLY_USED_EQUIPMENT_ITEMS_SUCCESS),
+            map((action: FindRecentlyUsedEquipmentItemsSuccess) => action.payload),
+            take(1),
+            map(payload => payload.items)
+          );
+      })
+    );
+  }
+
+  _onSearchUnrestricted(q: string): Observable<any[]> {
+    this.store$.dispatch(
+      new FindAllEquipmentItems({
+        type: this.type,
+        options: {
+          query: q
+        }
+      })
+    );
+
+    return this.actions$
+      .pipe(
+        ofType(EquipmentActionTypes.FIND_ALL_EQUIPMENT_ITEMS_SUCCESS),
+        take(1),
+        map((action: FindAllEquipmentItemsSuccess) => action.payload.items)
+      );
+  }
+
   _onSearch(q: string): Observable<any[]> {
     return new Observable<any[]>(observer => {
       if (!q || q.length < 1) {
@@ -854,37 +904,26 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
 
       this.q = q;
 
-      this.actions$
-        .pipe(
-          ofType(EquipmentActionTypes.FIND_ALL_EQUIPMENT_ITEMS_SUCCESS),
-          take(1),
-          map((action: FindAllEquipmentItemsSuccess) => action.payload.items),
-          map(items => {
-            if (items.length > 0) {
-              return items
-                .filter(item => item.id !== this.excludeId)
-                .map(item => {
-                  return this._getNgOptionValue(item);
-                });
-            }
+      let searchMethod: (q: string) => Observable<any[]>;
 
-            return [];
-          })
-        )
-        .subscribe(options => {
+      if (this.restrictToUserEquipment) {
+        searchMethod = this._onSearchRestrictedToUserEquipment.bind(this);
+      } else {
+        searchMethod = this._onSearchUnrestricted.bind(this);
+      }
+
+      searchMethod(q).subscribe((items: EquipmentItemBaseInterface[]) => {
+          items = items
+            .filter(item => item.id !== this.excludeId)
+            .map(item => {
+              return this._getNgOptionValue(item);
+            });
+
           const field = this._getValueField();
-          field.props = { ...field.props, options: of(options) };
-          observer.next(options);
+          field.props = { ...field.props, options: of(items) };
+          observer.next(items);
           observer.complete();
-        });
-
-      this.store$.dispatch(
-        new FindAllEquipmentItems({
-          type: this.type,
-          options: {
-            query: q
-          }
-        })
+        }
       );
     });
   }

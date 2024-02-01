@@ -12,7 +12,10 @@ import { State } from "@app/store/state";
 import { LoadingService } from "@shared/services/loading.service";
 import { selectRequestCountry } from "@app/store/selectors/app/app.selectors";
 import { filter, map, startWith, switchMap, take, takeUntil, tap } from "rxjs/operators";
-import { MarketplaceListingCondition } from "@features/equipment/types/marketplace-line-item.interface";
+import {
+  MarketplaceLineItemFindItemMode,
+  MarketplaceListingCondition
+} from "@features/equipment/types/marketplace-line-item.interface";
 import { ItemBrowserLayout } from "@shared/components/equipment/item-browser/item-browser.component";
 import { FormlyFieldEquipmentItemBrowserComponent } from "@shared/components/misc/formly-field-equipment-item-browser/formly-field-equipment-item-browser.component";
 import { selectContentType, selectContentTypeById } from "@app/store/selectors/app/content-type.selectors";
@@ -67,6 +70,7 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
         yearOfPurchase: null,
         shippingCost: null,
         description: null,
+        findItemMode: MarketplaceLineItemFindItemMode.USER,
         itemObjectId: null,
         itemContentType: null,
         images: []
@@ -211,6 +215,28 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                 defaultValue: this.model.user
               },
               {
+                key: "findItemMode",
+                type: "ng-select",
+                defaultValue: MarketplaceLineItemFindItemMode.USER,
+                props: {
+                  required: true,
+                  searchable: false,
+                  clearable: false,
+                  label: this.translateService.instant("Find item in"),
+                  description: this.translateService.instant("Where do you want to find the item you're selling?"),
+                  options: [
+                    {
+                      label: this.translateService.instant("Equipment I used on my images"),
+                      value: MarketplaceLineItemFindItemMode.USER
+                    },
+                    {
+                      label: this.translateService.instant("All equipment on AstroBin"),
+                      value: MarketplaceLineItemFindItemMode.ALL
+                    }
+                  ]
+                }
+              },
+              {
                 key: "itemObjectId",
                 type: "equipment-item-browser",
                 props: {
@@ -223,6 +249,11 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                   showItemTypeSelector: true,
                   layout: ItemBrowserLayout.VERTICAL,
                   itemType: lineItemMap.get(0)
+                },
+                expressions: {
+                  "props.restrictToUserEquipment": config => {
+                    return config.model.findItemMode === MarketplaceLineItemFindItemMode.USER;
+                  }
                 },
                 hooks: {
                   onInit: field => {

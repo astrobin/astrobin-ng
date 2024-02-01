@@ -188,12 +188,22 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
 
   findRecentlyUsedEquipmentItems(
     type: EquipmentItemType,
-    usageType: EquipmentItemUsageType
+    usageType: EquipmentItemUsageType,
+    includeFrozen = false,
+    query?: string
   ): Observable<EquipmentItemBaseInterface[]> {
     let url = `${this.configUrl}/${type.toLowerCase()}/recently-used/`;
 
     if (!!usageType) {
-      url += `?usage-type=${usageType.toLowerCase()}`;
+      url = UtilsService.addOrUpdateUrlParam(url, "usage-type", usageType.toLowerCase());
+    }
+
+    if (includeFrozen) {
+      url = UtilsService.addOrUpdateUrlParam(url, "include-frozen", String(includeFrozen));
+    }
+
+    if (query) {
+      url = UtilsService.addOrUpdateUrlParam(url, "q", query);
     }
 
     return this.http
@@ -773,7 +783,7 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
       const value = options[key];
       if (value != null) {
         const paramKey = UtilsService.camelCaseToSnakeCase(key);
-        const valueStr = (key === 'user' && value.id) ? value.id.toString() : value.toString();
+        const valueStr = (key === "user" && value.id) ? value.id.toString() : value.toString();
         url = UtilsService.addOrUpdateUrlParam(url, paramKey, valueStr);
       }
     });

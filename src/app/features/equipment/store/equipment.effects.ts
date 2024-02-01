@@ -264,7 +264,7 @@ export class EquipmentEffects {
       map((action: FindRecentlyUsedEquipmentItems) => action.payload),
       mergeMap(payload =>
         this.equipmentApiService
-          .findRecentlyUsedEquipmentItems(payload.type, payload.usageType)
+          .findRecentlyUsedEquipmentItems(payload.type, payload.usageType, payload.includeFrozen, payload.query)
           .pipe(
             map(
               items =>
