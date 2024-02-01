@@ -175,6 +175,25 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
       });
   }
 
+  deletePrivateConversation(privateConversation: MarketplacePrivateConversationInterface) {
+    this.loadingService.setLoading(true);
+
+    this.actions$
+      .pipe(
+        ofType(EquipmentActionTypes.DELETE_MARKETPLACE_PRIVATE_CONVERSATION_SUCCESS),
+        filter(
+          (action: DeleteMarketplacePrivateConversationSuccess) =>
+            action.payload.listingId === this.listing.id
+        ),
+        take(1)
+      )
+      .subscribe(() => {
+        this.loadingService.setLoading(false);
+      });
+
+    this.store$.dispatch(new DeleteMarketplacePrivateConversation({ privateConversation }));
+  }
+
   startPrivateConversation(privateConversation: MarketplacePrivateConversationInterface) {
     const contentTypePayload = {
       appLabel: "astrobin_apps_equipment",
@@ -206,7 +225,7 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
         componentInstance.addCommentLabel = this.translateService.instant("Start a new conversation");
         componentInstance.noCommentsLabel = this.translateService.instant("No messages yet.");
 
-        merge(modalRef.closed, modalRef.dismissed, modalRef.shown)
+        modalRef.shown
           .pipe(
             tap(() => this.loadingService.setLoading(true)),
             tap(() =>
@@ -218,7 +237,8 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
               )
             ),
             switchMap(() => this.actions$.pipe(ofType(AppActionTypes.LOAD_NESTED_COMMENTS_SUCCESS))),
-            map((action: LoadNestedCommentsSuccess) => action.payload.nestedComments)
+            map((action: LoadNestedCommentsSuccess) => action.payload.nestedComments),
+            take(1)
           )
           .subscribe(nestedComments => {
             const currentTime = new Date().toISOString();
@@ -234,24 +254,30 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
               new UpdateMarketplacePrivateConversation({ privateConversation: updatedPrivateConversation })
             );
 
-            if (nestedComments.length === 0) {
-              this.actions$
-                .pipe(
-                  ofType(EquipmentActionTypes.DELETE_MARKETPLACE_PRIVATE_CONVERSATION_SUCCESS),
-                  filter(
-                    (action: DeleteMarketplacePrivateConversationSuccess) =>
-                      action.payload.listingId === this.listing.id
-                  ),
-                  take(1)
-                )
-                .subscribe(() => {
-                  this.loadingService.setLoading(false);
-                });
+            this.loadingService.setLoading(false);
+          });
 
-              this.store$.dispatch(new DeleteMarketplacePrivateConversation({ privateConversation }));
-            } else {
-              this.loadingService.setLoading(false);
+        merge(modalRef.closed, modalRef.dismissed)
+          .pipe(
+            tap(() => this.loadingService.setLoading(true)),
+            tap(() =>
+              this.store$.dispatch(
+                new LoadNestedComments({
+                  contentTypeId: contentType.id,
+                  objectId: privateConversation.id
+                })
+              )
+            ),
+            switchMap(() => this.actions$.pipe(ofType(AppActionTypes.LOAD_NESTED_COMMENTS_SUCCESS))),
+            map((action: LoadNestedCommentsSuccess) => action.payload.nestedComments),
+            take(1)
+          )
+          .subscribe(nestedComments => {
+            if (nestedComments.length === 0) {
+              this.deletePrivateConversation(privateConversation);
             }
+
+            this.loadingService.setLoading(false);
           });
       });
 

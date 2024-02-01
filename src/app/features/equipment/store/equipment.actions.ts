@@ -1118,7 +1118,11 @@ export class DeleteMarketplacePrivateConversation implements PayloadActionInterf
 export class DeleteMarketplacePrivateConversationSuccess implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.DELETE_MARKETPLACE_PRIVATE_CONVERSATION_SUCCESS;
 
-  constructor(public payload: { userId: UserInterface["id"]; listingId: MarketplaceListingInterface["id"] }) {
+  constructor(public payload: {
+    id: MarketplacePrivateConversationInterface["id"];
+    userId: UserInterface["id"];
+    listingId: MarketplaceListingInterface["id"]
+  }) {
   }
 }
 

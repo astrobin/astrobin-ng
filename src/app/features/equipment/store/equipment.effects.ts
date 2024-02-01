@@ -1182,6 +1182,7 @@ export class EquipmentEffects {
             map(
               () =>
                 new DeleteMarketplacePrivateConversationSuccess({
+                  id: payload.privateConversation.id,
                   userId: payload.privateConversation.user,
                   listingId: payload.privateConversation.listing
                 })
