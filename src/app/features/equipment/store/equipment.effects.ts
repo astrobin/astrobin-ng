@@ -28,6 +28,9 @@ import {
   CreateMarketplaceListing,
   CreateMarketplaceListingFailure,
   CreateMarketplaceListingSuccess,
+  CreateMarketplaceOffer,
+  CreateMarketplaceOfferFailure,
+  CreateMarketplaceOfferSuccess,
   CreateMarketplacePrivateConversation,
   CreateMarketplacePrivateConversationFailure,
   CreateMarketplacePrivateConversationSuccess,
@@ -52,6 +55,9 @@ import {
   DeleteMarketplaceListing,
   DeleteMarketplaceListingFailure,
   DeleteMarketplaceListingSuccess,
+  DeleteMarketplaceOffer,
+  DeleteMarketplaceOfferFailure,
+  DeleteMarketplaceOfferSuccess,
   DeleteMarketplacePrivateConversation,
   DeleteMarketplacePrivateConversationFailure,
   DeleteMarketplacePrivateConversationSuccess,
@@ -90,6 +96,9 @@ import {
   LoadMarketplaceListings,
   LoadMarketplaceListingsSuccess,
   LoadMarketplaceListingSuccess,
+  LoadMarketplaceOffers,
+  LoadMarketplaceOffersFailure,
+  LoadMarketplaceOffersSuccess,
   LoadMarketplacePrivateConversations,
   LoadMarketplacePrivateConversationsFailure,
   LoadMarketplacePrivateConversationsSuccess,
@@ -108,6 +117,9 @@ import {
   UpdateMarketplaceListing,
   UpdateMarketplaceListingFailure,
   UpdateMarketplaceListingSuccess,
+  UpdateMarketplaceOffer,
+  UpdateMarketplaceOfferFailure,
+  UpdateMarketplaceOfferSuccess,
   UpdateMarketplacePrivateConversation,
   UpdateMarketplacePrivateConversationFailure,
   UpdateMarketplacePrivateConversationSuccess
@@ -1197,6 +1209,58 @@ export class EquipmentEffects {
               )
             )
           )
+      )
+    )
+  );
+
+  LoadMarketplaceOffers: Observable<LoadMarketplaceOffersSuccess | LoadMarketplaceOffersFailure> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(EquipmentActionTypes.LOAD_MARKETPLACE_OFFERS),
+      map((action: LoadMarketplaceOffers) => action.payload),
+      mergeMap(payload =>
+        this.equipmentApiService.loadMarketplaceOffers(payload.listingId, payload.lineItemId).pipe(
+          map(offers => new LoadMarketplaceOffersSuccess({ offers })),
+          catchError(error => of(new LoadMarketplaceOffersFailure({ listingId: payload.listingId, error })))
+        )
+      )
+    )
+  );
+
+  CreateMarketplaceOffer: Observable<CreateMarketplaceOfferSuccess | CreateMarketplaceOfferFailure> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(EquipmentActionTypes.CREATE_MARKETPLACE_OFFER),
+      map((action: CreateMarketplaceOffer) => action.payload),
+      mergeMap(payload =>
+        this.equipmentApiService.createMarketplaceOffer(payload.offer).pipe(
+          map(offer => new CreateMarketplaceOfferSuccess({ offer })),
+          catchError(error => of(new CreateMarketplaceOfferFailure({ offer: payload.offer, error })))
+        )
+      )
+    )
+  );
+
+  UpdateMarketplaceOffer: Observable<UpdateMarketplaceOfferSuccess | UpdateMarketplaceOfferFailure> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(EquipmentActionTypes.UPDATE_MARKETPLACE_OFFER),
+      map((action: UpdateMarketplaceOffer) => action.payload),
+      mergeMap(payload =>
+        this.equipmentApiService.updateMarketplaceOffer(payload.offer).pipe(
+          map(offer => new UpdateMarketplaceOfferSuccess({ offer })),
+          catchError(error => of(new UpdateMarketplaceOfferFailure({ offer: payload.offer, error })))
+        )
+      )
+    )
+  );
+
+  DeleteMarketplaceOffer: Observable<DeleteMarketplaceOfferSuccess | DeleteMarketplaceOfferFailure> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(EquipmentActionTypes.DELETE_MARKETPLACE_OFFER),
+      map((action: DeleteMarketplaceOffer) => action.payload),
+      mergeMap(payload =>
+        this.equipmentApiService.deleteMarketplaceOffer(payload.offer).pipe(
+          map(() => new DeleteMarketplaceOfferSuccess({ offer: payload.offer })),
+          catchError(error => of(new DeleteMarketplaceOfferFailure({ offer: payload.offer, error })))
+        )
       )
     )
   );

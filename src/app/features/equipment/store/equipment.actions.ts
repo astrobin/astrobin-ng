@@ -30,6 +30,7 @@ import { ContributorInterface } from "@features/equipment/types/contributor.inte
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
 import { MarketplacePrivateConversationInterface } from "@features/equipment/types/marketplace-private-conversation.interface";
 import { MarketplaceListingQueryOptionsInterface } from "@features/equipment/types/marketplace-listing-query-options.interface";
+import { MarketplaceOfferInterface } from "@features/equipment/types/marketplace-offer.interface";
 
 export interface EquipmentItemCreationSuccessPayloadInterface {
   item: EquipmentItemBaseInterface;
@@ -201,6 +202,16 @@ export enum EquipmentActionTypes {
   DELETE_MARKETPLACE_PRIVATE_CONVERSATION = "[Equipment] Delete marketplace private conversation",
   DELETE_MARKETPLACE_PRIVATE_CONVERSATION_SUCCESS = "[Equipment] Delete marketplace private conversation success",
   DELETE_MARKETPLACE_PRIVATE_CONVERSATION_FAILURE = "[Equipment] Delete marketplace private conversation failure",
+
+  CREATE_MARKETPLACE_OFFER = "[Equipment] Create marketplace offer",
+  CREATE_MARKETPLACE_OFFER_SUCCESS = "[Equipment] Create marketplace offer success",
+  CREATE_MARKETPLACE_OFFER_FAILURE = "[Equipment] Create marketplace offer failure",
+  UPDATE_MARKETPLACE_OFFER = "[Equipment] Update marketplace offer",
+  UPDATE_MARKETPLACE_OFFER_SUCCESS = "[Equipment] Update marketplace offer success",
+  UPDATE_MARKETPLACE_OFFER_FAILURE = "[Equipment] Update marketplace offer failure",
+  DELETE_MARKETPLACE_OFFER = "[Equipment] Delete marketplace offer",
+  DELETE_MARKETPLACE_OFFER_SUCCESS = "[Equipment] Delete marketplace offer success",
+  DELETE_MARKETPLACE_OFFER_FAILURE = "[Equipment] Delete marketplace offer failure",
 }
 
 /**********************************************************************************************************************
@@ -323,12 +334,14 @@ export class FindAllEquipmentItemsSuccess implements PayloadActionInterface {
 export class FindRecentlyUsedEquipmentItems implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.FIND_RECENTLY_USED_EQUIPMENT_ITEMS;
 
-  constructor(public payload: {
-    type: EquipmentItemType;
-    usageType: EquipmentItemUsageType | null;
-    includeFrozen?: boolean;
-    query?: string;
-  }) {
+  constructor(
+    public payload: {
+      type: EquipmentItemType;
+      usageType: EquipmentItemUsageType | null;
+      includeFrozen?: boolean;
+      query?: string;
+    }
+  ) {
   }
 }
 
@@ -1118,11 +1131,13 @@ export class DeleteMarketplacePrivateConversation implements PayloadActionInterf
 export class DeleteMarketplacePrivateConversationSuccess implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.DELETE_MARKETPLACE_PRIVATE_CONVERSATION_SUCCESS;
 
-  constructor(public payload: {
-    id: MarketplacePrivateConversationInterface["id"];
-    userId: UserInterface["id"];
-    listingId: MarketplaceListingInterface["id"]
-  }) {
+  constructor(
+    public payload: {
+      id: MarketplacePrivateConversationInterface["id"];
+      userId: UserInterface["id"];
+      listingId: MarketplaceListingInterface["id"];
+    }
+  ) {
   }
 }
 
@@ -1132,6 +1147,69 @@ export class DeleteMarketplacePrivateConversationFailure implements PayloadActio
   constructor(
     public payload: { userId: UserInterface["id"]; listingId: MarketplaceListingInterface["id"]; error: string }
   ) {
+  }
+}
+
+export class CreateMarketplaceOffer implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.CREATE_MARKETPLACE_OFFER;
+
+  constructor(public payload: { offer: MarketplaceOfferInterface }) {
+  }
+}
+
+export class CreateMarketplaceOfferSuccess implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.CREATE_MARKETPLACE_OFFER_SUCCESS;
+
+  constructor(public payload: { offer: MarketplaceOfferInterface }) {
+  }
+}
+
+export class CreateMarketplaceOfferFailure implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.CREATE_MARKETPLACE_OFFER_FAILURE;
+
+  constructor(public payload: { offer: MarketplaceOfferInterface; error: string }) {
+  }
+}
+
+export class UpdateMarketplaceOffer implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.UPDATE_MARKETPLACE_OFFER;
+
+  constructor(public payload: { offer: MarketplaceOfferInterface }) {
+  }
+}
+
+export class UpdateMarketplaceOfferSuccess implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.UPDATE_MARKETPLACE_OFFER_SUCCESS;
+
+  constructor(public payload: { offer: MarketplaceOfferInterface }) {
+  }
+}
+
+export class UpdateMarketplaceOfferFailure implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.UPDATE_MARKETPLACE_OFFER_FAILURE;
+
+  constructor(public payload: { offer: MarketplaceOfferInterface; error: string }) {
+  }
+}
+
+export class DeleteMarketplaceOffer implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.DELETE_MARKETPLACE_OFFER;
+
+  constructor(public payload: { offer: MarketplaceOfferInterface }) {
+  }
+}
+
+export class DeleteMarketplaceOfferSuccess implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.DELETE_MARKETPLACE_OFFER_SUCCESS;
+
+  constructor(public payload: { offer: MarketplaceOfferInterface }) {
+  }
+}
+
+export class DeleteMarketplaceOfferFailure implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.DELETE_MARKETPLACE_OFFER_FAILURE;
+
+  constructor(public payload: { offer: MarketplaceOfferInterface; error: string }) {
   }
 }
 
@@ -1272,4 +1350,13 @@ export type EquipmentActions =
   | UpdateMarketplacePrivateConversationFailure
   | DeleteMarketplacePrivateConversation
   | DeleteMarketplacePrivateConversationSuccess
-  | DeleteMarketplacePrivateConversationFailure;
+  | DeleteMarketplacePrivateConversationFailure
+  | CreateMarketplaceOffer
+  | CreateMarketplaceOfferSuccess
+  | CreateMarketplaceOfferFailure
+  | UpdateMarketplaceOffer
+  | UpdateMarketplaceOfferSuccess
+  | UpdateMarketplaceOfferFailure
+  | DeleteMarketplaceOffer
+  | DeleteMarketplaceOfferSuccess
+  | DeleteMarketplaceOfferFailure;

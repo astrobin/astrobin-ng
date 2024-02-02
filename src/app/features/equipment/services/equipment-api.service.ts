@@ -41,6 +41,7 @@ import { MarketplaceLineItemInterface } from "@features/equipment/types/marketpl
 import { MarketplaceImageInterface } from "@features/equipment/types/marketplace-image.interface";
 import { MarketplacePrivateConversationInterface } from "@features/equipment/types/marketplace-private-conversation.interface";
 import { MarketplaceListingQueryOptionsInterface } from "@features/equipment/types/marketplace-listing-query-options.interface";
+import { MarketplaceOfferInterface } from "@features/equipment/types/marketplace-offer.interface";
 
 export interface AllEquipmentItemsOptionsInterface {
   brand?: BrandInterface["id"];
@@ -951,6 +952,24 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     privateConversationId: MarketplacePrivateConversationInterface["id"]
   ): Observable<void> {
     const url = `${this.configUrl}/marketplace/listing/${listingId}/private-conversation/${privateConversationId}/`;
+
+    return this.http.delete<void>(url);
+  }
+
+  public createMarketplaceOffer(offer: MarketplaceOfferInterface): Observable<MarketplaceOfferInterface> {
+    const url = `${this.configUrl}/marketplace/listing/${offer.listing}/line-item/${offer.lineItem}/offer/`;
+
+    return this.http.post<MarketplaceOfferInterface>(url, offer);
+  }
+
+  public updateMarketplaceOffer(offer: MarketplaceOfferInterface): Observable<MarketplaceOfferInterface> {
+    const url = `${this.configUrl}/marketplace/listing/${offer.listing}/line-item/${offer.lineItem}/offer/${offer.id}/`;
+
+    return this.http.put<MarketplaceOfferInterface>(url, offer);
+  }
+
+  public deleteMarketplaceOffer(offer: MarketplaceOfferInterface): Observable<void> {
+    const url = `${this.configUrl}/marketplace/listing/${offer.listing}/line-item/${offer.lineItem}/offer/${offer.id}/`;
 
     return this.http.delete<void>(url);
   }

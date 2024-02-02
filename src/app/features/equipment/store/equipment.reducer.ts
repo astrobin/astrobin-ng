@@ -350,6 +350,48 @@ export function reducer(state = initialEquipmentState, action: PayloadActionInte
         }
       };
 
+    case EquipmentActionTypes.CREATE_MARKETPLACE_OFFER_SUCCESS: {
+      const offer = action.payload.offer;
+      const updatedState = { ...state };
+
+      updatedState.marketplace.listings.filter(listing => listing.id === offer.listingId).forEach(listing => {
+        listing.lineItems.filter(lineItem => lineItem.id === offer.lineItemId).forEach(lineItem => {
+          lineItem.offers = [
+            ...lineItem.offers,
+            offer
+          ];
+        });
+      });
+
+      return updatedState;
+    }
+
+    case EquipmentActionTypes.UPDATE_MARKETPLACE_OFFER_SUCCESS: {
+      const offer = action.payload.offer;
+      const updatedState = { ...state };
+
+      updatedState.marketplace.listings.filter(listing => listing.id === offer.listingId).forEach(listing => {
+        listing.lineItems.filter(lineItem => lineItem.id === offer.lineItemId).forEach(lineItem => {
+          lineItem.offers = lineItem.offers.map(offer => offer.id === action.payload.offer.id ? action.payload.offer : offer);
+        });
+      });
+
+      return updatedState;
+    }
+
+    case EquipmentActionTypes.DELETE_MARKETPLACE_OFFER_SUCCESS: {
+      const offer = action.payload.offer;
+      const updatedState = { ...state };
+
+      updatedState.marketplace.listings.filter(listing => listing.id === offer.listingId).forEach(listing => {
+        listing.lineItems.filter(lineItem => lineItem.id === offer.lineItemId).forEach(lineItem => {
+          lineItem.offers = lineItem.offers.filter(offer => offer.id !== action.payload.offer.id);
+        });
+      });
+
+      return updatedState;
+    }
+
     default: {
       return state;
     }

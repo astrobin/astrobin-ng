@@ -3,6 +3,7 @@ import { MarketplaceListingInterface } from "@features/equipment/types/marketpla
 import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
 import { MarketplaceImageInterface } from "@features/equipment/types/marketplace-image.interface";
 import { EquipmentItemType } from "@features/equipment/types/equipment-item-base.interface";
+import { MarketplaceOfferInterface } from "@features/equipment/types/marketplace-offer.interface";
 
 
 export enum MarketplaceListingCondition {
@@ -45,4 +46,5 @@ export interface MarketplaceLineItemInterface {
   username?: string;
   firstAddedToAnImage?: string;
   slug?: string;
+  offers?: MarketplaceOfferInterface[];
 }
