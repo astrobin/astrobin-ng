@@ -1,0 +1,29 @@
+::ng-deep {
+  astrobin-formly-field-toggle {
+    display: block;
+    margin-top: 5px;
+  }
+
+  .item-name formly-template > div {
+    margin-top: .375rem;
+    font-weight: bold;
+    color: var(--white);
+  }
+
+  input[readonly] {
+    background-color: transparent !important;
+    color: var(--white);
+    padding: 0.375rem 0;
+  }
+
+  formly-field {
+    margin-bottom: 0 !important;
+
+    &:not(:last-of-type) {
+      formly-group.row {
+        margin-bottom: .5rem;
+        padding-bottom: .5rem;
+      }
+    }
+  }
+}

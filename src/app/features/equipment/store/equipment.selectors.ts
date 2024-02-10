@@ -16,6 +16,8 @@ import { EquipmentPresetInterface } from "@features/equipment/types/equipment-pr
 import { EquipmentItemMostOftenUsedWithData } from "@features/equipment/types/equipment-item-most-often-used-with-data.interface";
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
 import { MarketplacePrivateConversationInterface } from "@features/equipment/types/marketplace-private-conversation.interface";
+import { UserInterface } from "@shared/interfaces/user.interface";
+import { EquipmentMarketplaceService } from "@features/equipment/services/equipment-marketplace.service";
 
 export function getEquipmentItemType(item: EquipmentItemBaseInterface): EquipmentItemType {
   if (instanceOfSensor(item)) {
@@ -152,3 +154,18 @@ export const selectMarketplacePrivateConversation = (conversationId: Marketplace
   createSelector(selectMarketplace, marketplace =>
     marketplace.privateConversations.find(conversation => conversation.id === conversationId) || null
   );
+
+export const selectMarketplaceOffersByUser = (
+  userId: UserInterface["id"],
+  listingId: MarketplaceListingInterface["id"]
+) => {
+  return createSelector(selectMarketplace, marketplace => {
+    const listing = marketplace.listings.find(listing => listing.id === listingId);
+
+    if (!!listing) {
+      return EquipmentMarketplaceService.offersByUser(userId, listing);
+    }
+
+    return [];
+  });
+};

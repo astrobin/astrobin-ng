@@ -17,6 +17,7 @@ import { UserInterface } from "@shared/interfaces/user.interface";
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
 import { selectUser } from "@features/account/store/auth.selectors";
 import { LoadUser } from "@features/account/store/auth.actions";
+import { MarketplaceOfferInterface } from "@features/equipment/types/marketplace-offer.interface";
 
 @Injectable({
   providedIn: "root"
@@ -27,6 +28,13 @@ export class EquipmentMarketplaceService extends BaseService {
     public readonly loadingService: LoadingService
   ) {
     super(loadingService);
+  }
+
+  static offersByUser(userId: UserInterface["id"], listing: MarketplaceListingInterface): MarketplaceOfferInterface[] {
+    return listing.lineItems.reduce((acc, lineItem) => {
+      const userOffers = lineItem.offers.filter(offer => offer.user === userId);
+      return acc.concat(userOffers);
+    }, []);
   }
 
   getLineItemEquipmentItem$(lineItem: MarketplaceLineItemInterface): Observable<EquipmentItem> {
@@ -55,6 +63,8 @@ export class EquipmentMarketplaceService extends BaseService {
     return this.store$.select(selectUser, listing.user);
   }
 
+  // This method assumes that `previousListing` has lineItem IDs/ It's used to compare an existing listing to a listing
+
   userHasFeedback(user: UserInterface): boolean {
     return (
       user.marketplaceCommunicationFeedback !== null &&
@@ -64,7 +74,6 @@ export class EquipmentMarketplaceService extends BaseService {
     );
   }
 
-  // This method assumes that `previousListing` has lineItem IDs/ It's used to compare an existing listing to a listing
   // that's being updated. It returns an array of changed, added, and removed line items.
   compareLineItems(
     updatedListing: MarketplaceListingInterface,

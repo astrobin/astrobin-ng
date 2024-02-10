@@ -27,7 +27,7 @@
         {{ countryService.getCountryName(listing.country) }}
       </div>
       <div class="price">
-        {{ lineItem.price | currency: lineItem.currency }}
+        {{ lineItem.price | currency: lineItem.currency : "symbol" : "1.2-2" : translateService.currentLang }}
       </div>
     </div>
   </div>

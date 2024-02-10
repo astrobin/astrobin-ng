@@ -6,7 +6,7 @@ export interface MarketplaceOfferInterface {
   id?: number;
   listing: MarketplaceListingInterface["id"];
   lineItem: MarketplaceLineItemInterface["id"];
-  user: UserInterface["id"];
+  user?: UserInterface["id"];
   created?: string;
   updated?: string;
   amount?: number;

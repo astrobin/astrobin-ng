@@ -9,6 +9,7 @@ import { EquipmentItemService } from "@features/equipment/services/equipment-ite
 import { CountryService } from "@shared/services/country.service";
 import { Router } from "@angular/router";
 import { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
+import { TranslateService } from "@ngx-translate/core";
 
 @Component({
   selector: "astrobin-marketplace-line-item-card",
@@ -30,7 +31,8 @@ export class MarketplaceLineItemCardComponent extends BaseComponentDirective imp
     public readonly equipmentMarketplaceService: EquipmentMarketplaceService,
     public readonly equipmentItemService: EquipmentItemService,
     public readonly countryService: CountryService,
-    public readonly router: Router
+    public readonly router: Router,
+    public readonly translateService: TranslateService
   ) {
     super(store$);
   }

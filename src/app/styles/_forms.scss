@@ -122,3 +122,23 @@ formly-field-checkbox {
 ::-webkit-calendar-picker-indicator {
   filter: invert(1) opacity(20%);
 }
+
+.input-group-text {
+  padding: 0.375rem 0.5rem;
+  background: var(--lighterGrey);
+  color: var(--darkerGrey);
+}
+
+.input-group-prepend {
+  .input-group-text {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+}
+
+.input-group-append {
+  .input-group-text {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+}

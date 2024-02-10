@@ -1,4 +1,4 @@
-import { CommonModule } from "@angular/common";
+import { CommonModule, CurrencyPipe } from "@angular/common";
 import { HttpClient, HttpClientModule } from "@angular/common/http";
 import { APP_INITIALIZER, ModuleWithProviders, NgModule } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
@@ -199,6 +199,7 @@ export class SharedModule {
         ClassicRoutesService,
         CKEditorService,
         CookieService,
+        CurrencyPipe,
         GroupGuardService,
         ImageOwnerGuardService,
         LoadingService,

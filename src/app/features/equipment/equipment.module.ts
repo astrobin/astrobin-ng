@@ -54,6 +54,7 @@ import { MarketplaceFilterComponent } from "./components/marketplace-filter/mark
 import { MarketplaceMoreFromUserComponent } from "./components/marketplace-more-from-user/marketplace-more-from-user.component";
 import { MarketplaceLineItemCardsComponent } from './components/marketplace-line-item-cards/marketplace-line-item-cards.component';
 import { MarketplaceSearchBarComponent } from './components/marketplace-search-bar/marketplace-search-bar.component';
+import { MarketplaceOfferModalComponent } from './components/marketplace-offer-modal/marketplace-offer-modal.component';
 
 @NgModule({
   declarations: [
@@ -106,7 +107,8 @@ import { MarketplaceSearchBarComponent } from './components/marketplace-search-b
     MarketplaceFilterComponent,
     MarketplaceMoreFromUserComponent,
     MarketplaceLineItemCardsComponent,
-    MarketplaceSearchBarComponent
+    MarketplaceSearchBarComponent,
+    MarketplaceOfferModalComponent
   ],
   imports: [
     RouterModule.forChild(routes),

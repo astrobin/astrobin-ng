@@ -1,0 +1,38 @@
+<div class="modal-header" id="marketplace-offer-modal">
+  <h4 class="modal-title">{{ title }}</h4>
+
+  <button (click)="modal.dismiss()" aria-describedby="modal-title" class="close" type="button">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="modal-body">
+  <div class="mb-4">
+    <p>
+      <fa-icon class="me-2" icon="info-circle"></fa-icon>
+      <span [innerHTML]="rulesText"></span>
+    </p>
+  </div>
+
+  <formly-form [fields]="fields" [form]="form"></formly-form>
+</div>
+
+<div class="modal-footer">
+  <button
+    (click)="modal.dismiss()"
+    [class.loading]="loadingService.loading$ | async"
+    class="btn btn-outline-secondary"
+    type="button"
+  >
+    {{ "Cancel" | translate }}
+  </button>
+
+  <button
+    (click)="makeOffer()"
+    [class.loading]="loadingService.loading$ | async"
+    class="btn btn-primary"
+    type="button"
+  >
+    {{ makeOfferLabel() }}
+  </button>
+</div>

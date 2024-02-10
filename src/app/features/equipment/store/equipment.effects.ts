@@ -96,9 +96,6 @@ import {
   LoadMarketplaceListings,
   LoadMarketplaceListingsSuccess,
   LoadMarketplaceListingSuccess,
-  LoadMarketplaceOffers,
-  LoadMarketplaceOffersFailure,
-  LoadMarketplaceOffersSuccess,
   LoadMarketplacePrivateConversations,
   LoadMarketplacePrivateConversationsFailure,
   LoadMarketplacePrivateConversationsSuccess,
@@ -1209,19 +1206,6 @@ export class EquipmentEffects {
               )
             )
           )
-      )
-    )
-  );
-
-  LoadMarketplaceOffers: Observable<LoadMarketplaceOffersSuccess | LoadMarketplaceOffersFailure> = createEffect(() =>
-    this.actions$.pipe(
-      ofType(EquipmentActionTypes.LOAD_MARKETPLACE_OFFERS),
-      map((action: LoadMarketplaceOffers) => action.payload),
-      mergeMap(payload =>
-        this.equipmentApiService.loadMarketplaceOffers(payload.listingId, payload.lineItemId).pipe(
-          map(offers => new LoadMarketplaceOffersSuccess({ offers })),
-          catchError(error => of(new LoadMarketplaceOffersFailure({ listingId: payload.listingId, error })))
-        )
       )
     )
   );

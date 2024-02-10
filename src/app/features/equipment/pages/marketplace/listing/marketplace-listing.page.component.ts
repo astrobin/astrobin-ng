@@ -38,6 +38,7 @@ import {
 } from "@app/store/actions/nested-comments.actions";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import {
+  selectMarketplaceOffersByUser,
   selectMarketplacePrivateConversation,
   selectMarketplacePrivateConversations
 } from "@features/equipment/store/equipment.selectors";
@@ -45,6 +46,7 @@ import { selectNestedCommentById } from "@app/store/selectors/app/nested-comment
 import { NestedCommentInterface } from "@shared/interfaces/nested-comment.interface";
 import { HttpClient } from "@angular/common/http";
 import { environment } from "@env/environment";
+import { MarketplaceOfferModalComponent } from "@features/equipment/components/marketplace-offer-modal/marketplace-offer-modal.component";
 
 @Component({
   selector: "astrobin-marketplace-listing-page",
@@ -73,6 +75,7 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
   listingContentType$: Observable<ContentTypeInterface>;
   listingUser$: Observable<UserInterface>;
   privateConversations$: Observable<MarketplacePrivateConversationInterface[]>;
+  hasOffered$: Observable<boolean>;
 
   private _contentTypePayload = { appLabel: "astrobin_apps_equipment", model: "equipmentitemmarketplacelisting" };
 
@@ -112,6 +115,14 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
     this.privateConversations$ = this.store$
       .select(selectMarketplacePrivateConversations(this.listing.id))
       .pipe(takeUntil(this.destroyed$));
+
+    this.hasOffered$ = this.currentUser$.pipe(
+      switchMap(user => this.store$.select(
+          selectMarketplaceOffersByUser(user.id, this.listing.id)
+        )
+      ),
+      map(offers => offers.length > 0)
+    );
 
     this.store$.dispatch(new LoadContentType(this._contentTypePayload));
     this.store$.dispatch(new LoadMarketplacePrivateConversations({ listingId: this.listing.id }));
@@ -173,6 +184,12 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
           this.loadingService.setLoading(false);
         });
       });
+  }
+
+  onMakeAnOfferClicked(event: Event) {
+    event.preventDefault();
+    const modalRef: NgbModalRef = this.modalService.open(MarketplaceOfferModalComponent, { size: "lg" });
+    modalRef.componentInstance.listing = this.listing;
   }
 
   deletePrivateConversation(privateConversation: MarketplacePrivateConversationInterface) {

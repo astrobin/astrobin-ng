@@ -64,15 +64,26 @@
             </ng-container>
 
             <ng-container *ngIf="listingUser.id !== currentUserWrapper.user?.id">
-              <button [class.loading]="loadingService.loading$ | async" class="btn btn-primary d-block w-100 mt-4">
-                <fa-icon icon="shopping-cart"></fa-icon>
-                {{ "Buy now" | translate }}
+              <button
+                (click)="onMakeAnOfferClicked($event)"
+                *ngIf="hasOffered$ | async; else makeAnOfferButtonTemplate"
+                [class.loading]="loadingService.loading$ | async"
+                class="btn btn-primary btn-lg d-block w-100 mt-4"
+              >
+                <fa-icon icon="handshake"></fa-icon>
+                {{ "Modify your offer" | translate }}
               </button>
 
-              <button [class.loading]="loadingService.loading$ | async" class="btn btn-primary d-block w-100 mt-2">
-                <fa-icon icon="handshake"></fa-icon>
-                {{ "Make an offer" | translate }}
-              </button>
+              <ng-template #makeAnOfferButtonTemplate>
+                <button
+                  (click)="onMakeAnOfferClicked($event)"
+                  [class.loading]="loadingService.loading$ | async"
+                  class="btn btn-primary btn-lg d-block w-100 mt-4"
+                >
+                  <fa-icon icon="handshake"></fa-icon>
+                  {{ "Make an offer" | translate }}
+                </button>
+              </ng-template>
 
               <astrobin-toggle-property
                 [contentType]="listingContentType.id"
