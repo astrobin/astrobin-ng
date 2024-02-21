@@ -87,6 +87,7 @@ export abstract class BasePromotionEntryComponent extends BaseComponentDirective
   isPromoted: boolean;
   mayPromote: boolean;
   autoLoadSubscription: Subscription;
+  showDismissButton = true;
 
   protected constructor(
     public readonly store$: Store<State>,
