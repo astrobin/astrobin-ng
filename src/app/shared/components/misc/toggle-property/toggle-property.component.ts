@@ -107,8 +107,7 @@ export class TogglePropertyComponent extends BaseComponentDirective implements O
       contentType: this.contentType
     };
 
-    this.toggleProperty$ = this.store$
-      .select(selectToggleProperty(params));
+    this.toggleProperty$ = this.store$.select(selectToggleProperty(params));
 
     this.store$.dispatch(new LoadToggleProperty({ toggleProperty: params }));
 

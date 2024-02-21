@@ -168,7 +168,7 @@
             <ng-container *ngIf="contentType$ | async as contentType">
               <astrobin-toggle-property
                 [contentType]="contentType.id"
-                [objectId]="selectedItem.id.toString()"
+                [objectId]="selectedItem.id"
                 [userId]="currentUser.id"
                 propertyType="follow"
               ></astrobin-toggle-property>

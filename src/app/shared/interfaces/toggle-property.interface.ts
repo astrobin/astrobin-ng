@@ -6,6 +6,6 @@ export interface TogglePropertyInterface {
   propertyType: "like" | "bookmark" | "follow";
   user: UserInterface["id"];
   contentType: ContentTypeInterface["id"];
-  objectId: string;
+  objectId: number;
   createdOn: Date;
 }
