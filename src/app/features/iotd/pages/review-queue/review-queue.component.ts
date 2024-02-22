@@ -3,7 +3,7 @@ import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { State } from "@app/store/state";
 import { BasePromotionQueueComponent } from "@features/iotd/components/base-promotion-queue/base-promotion-queue.component";
 import { VoteInterface } from "@features/iotd/services/iotd-api.service";
-import { ClearReviewQueue, LoadReviewQueue, LoadVotes } from "@features/iotd/store/iotd.actions";
+import { ClearReviewQueue, LoadDismissedImages, LoadReviewQueue, LoadVotes } from "@features/iotd/store/iotd.actions";
 import { selectReviewQueue, selectReviews } from "@features/iotd/store/iotd.selectors";
 import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
@@ -66,6 +66,11 @@ export class ReviewQueueComponent extends BasePromotionQueueComponent implements
         breadcrumb: [{ label: "IOTD" }, { label: title }]
       })
     );
+  }
+
+  refresh(sort: "newest" | "oldest" | "default" = "default"): void {
+    super.refresh(sort);
+    this.store$.dispatch(new LoadDismissedImages());
   }
 
   loadQueue(page: number, sort: "newest" | "oldest" | "default" = "default"): void {
