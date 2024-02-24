@@ -35,6 +35,8 @@ const PROHIBITED_WORDS = [
   "hand made",
   "handcrafted",
   "custom",
+  "n/a",
+  "n.a.",
 
   // Italian
   "autocostruito",
