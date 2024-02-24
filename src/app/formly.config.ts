@@ -231,6 +231,15 @@ export function formlyConfig(translateService: TranslateService, jsonApiService:
         }
       },
       {
+        name: "has-focal-modifier-in-wrong-class",
+        message(): string {
+          return translateService.instant(
+            "Focal reducers/modifiers/correctors/field flatteners are found among Accessories. " +
+            "Please find your item in that category, thanks!"
+          );
+        }
+      },
+      {
         name: "has-lacerta-mgen-in-wrong-class",
         message(): string {
           return translateService.instant(

@@ -55,6 +55,25 @@ context("Equipment", () => {
         cy.get("#equipment-item-field-name").clear().type("Test");
       });
 
+      it("should not allow the word reducer", () => {
+        cy.get("#equipment-item-field-name").clear().type("0.75x Reducer");
+        cy.get("formly-validation-message")
+          .contains(
+            "Focal reducers/modifiers/correctors/field flatteners are found among Accessories."
+          )
+          .should("be.visible");
+        cy.get("#equipment-item-field-name").clear().type("Test");
+      });
+
+      it("should not allow the word barlow", () => {
+        cy.get("#equipment-item-field-name").clear().type("2x barlow lens");
+        cy.get("formly-validation-message")
+          .contains(
+            "Focal reducers/modifiers/correctors/field flatteners are found among Accessories."
+          ).should("be.visible");
+        cy.get("#equipment-item-field-name").clear().type("Test");
+      });
+
       it("should not allow the word skywatcher", () => {
         cy.get("#equipment-item-field-name").clear().type("Skywatcher");
         cy.get("formly-validation-message").contains("Sky-Watcher is spelled with a dash sign.").should("be.visible");
