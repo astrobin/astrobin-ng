@@ -32,7 +32,9 @@ const PROHIBITED_WORDS = [
   "self-made",
   "self made",
   "handmade",
+  "hand made",
   "handcrafted",
+  "custom",
 
   // Italian
   "autocostruito",
