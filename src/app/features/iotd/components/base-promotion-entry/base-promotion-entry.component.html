@@ -103,6 +103,7 @@
 
   <button
     (click)="dismiss(entry.pk)"
+    *ngIf="showDismissButton"
     [class.loading]="loadingService.loading$ | async"
     [disabled]="isPromoted"
     class="btn btn-danger"

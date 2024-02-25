@@ -111,7 +111,7 @@ export interface BackendTogglePropertyInterface {
   property_type: "like" | "bookmark" | "follow";
   user: number;
   content_type: number;
-  object_id: string;
+  object_id: number;
   created_on: string;
 }
 

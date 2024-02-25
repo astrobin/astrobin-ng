@@ -87,6 +87,7 @@ export abstract class BasePromotionEntryComponent extends BaseComponentDirective
   isPromoted: boolean;
   mayPromote: boolean;
   autoLoadSubscription: Subscription;
+  showDismissButton = true;
 
   protected constructor(
     public readonly store$: Store<State>,
@@ -204,7 +205,7 @@ export abstract class BasePromotionEntryComponent extends BaseComponentDirective
   abstract setExpiration(pk: PromotionImageInterface["pk"]): void;
 
   viewFullscreen(pk: PromotionImageInterface["pk"]): void {
-    if (!this.image.loading && !this.image.image.videoFile) {
+    if (!this.image.loading && !!this.image.image && !this.image.image.videoFile) {
       this.store$.dispatch(new ShowFullscreenImage(pk));
     }
   }

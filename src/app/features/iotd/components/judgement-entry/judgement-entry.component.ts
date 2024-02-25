@@ -25,6 +25,8 @@ import { UtilsService } from "@shared/services/utils/utils.service";
   styleUrls: ["../base-promotion-entry/base-promotion-entry.component.scss"]
 })
 export class JudgementEntryComponent extends BasePromotionEntryComponent implements OnInit {
+  showDismissButton = false;
+
   constructor(
     public readonly store$: Store<State>,
     public readonly actions$: Actions,

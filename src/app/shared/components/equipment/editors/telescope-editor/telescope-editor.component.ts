@@ -77,6 +77,16 @@ export class TelescopeEditorComponent extends BaseItemEditorComponent<TelescopeI
       field.formControl.setErrors({ "has-teleconverter-in-wrong-class": true });
       field.formControl.markAsTouched();
       field.formControl.markAsDirty();
+    } else if (
+      value.toLowerCase().indexOf("reducer") > -1 ||
+      value.toLowerCase().indexOf("flattener") > -1 ||
+      value.toLowerCase().indexOf("corrector") > -1 ||
+      value.toLowerCase().indexOf("extender") > -1 ||
+      value.toLowerCase().indexOf("barlow") > -1
+    ) {
+      field.formControl.setErrors({ "has-focal-modifier-in-wrong-class": true });
+      field.formControl.markAsTouched();
+      field.formControl.markAsDirty();
     } else if (value.toLowerCase().indexOf("skywatcher") > -1) {
       field.formControl.setErrors({ "has-skywatcher-without-dash": true });
       field.formControl.markAsTouched();

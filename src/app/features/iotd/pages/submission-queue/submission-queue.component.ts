@@ -14,6 +14,7 @@ import { BasePromotionQueueComponent } from "@features/iotd/components/base-prom
 import { SubmissionInterface, SubmitterSeenImage } from "@features/iotd/services/iotd-api.service";
 import {
   ClearSubmissionQueue,
+  LoadDismissedImages,
   LoadSubmissionQueue,
   LoadSubmissions,
   LoadSubmitterSeenImages,
@@ -130,6 +131,7 @@ export class SubmissionQueueComponent extends BasePromotionQueueComponent implem
 
   refresh(sort: "newest" | "oldest" | "default" = "default"): void {
     super.refresh(sort);
+    this.store$.dispatch(new LoadDismissedImages());
     this.store$.dispatch(new LoadSubmitterSeenImages());
   }
 

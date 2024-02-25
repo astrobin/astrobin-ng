@@ -7,7 +7,7 @@ import {
   SubmissionInterface,
   VoteInterface
 } from "@features/iotd/services/iotd-api.service";
-import { LoadDismissedImages, LoadHiddenImages } from "@features/iotd/store/iotd.actions";
+import { LoadHiddenImages } from "@features/iotd/store/iotd.actions";
 import { selectHiddenImages } from "@features/iotd/store/iotd.selectors";
 import { Store } from "@ngrx/store";
 import { TranslateService } from "@ngx-translate/core";
@@ -168,7 +168,6 @@ export abstract class BasePromotionQueueComponent extends BaseComponentDirective
 
   refresh(sort: "newest" | "oldest" | "default" = "default"): void {
     this.store$.dispatch(new LoadHiddenImages());
-    this.store$.dispatch(new LoadDismissedImages());
 
     this.loadQueue(this.page, sort);
     this.loadPromotions();
