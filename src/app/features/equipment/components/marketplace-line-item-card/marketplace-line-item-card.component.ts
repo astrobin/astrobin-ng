@@ -52,6 +52,12 @@ export class MarketplaceLineItemCardComponent extends BaseComponentDirective imp
         switchMap(item => this.equipmentItemService.getFullDisplayName$(item)),
         take(1)
       )
-      .subscribe(displayName => (this.displayName = displayName));
+      .subscribe(displayName => {
+        if (!!this.listing.title) {
+          this.displayName = `${this.listing.title} - ${displayName}`;
+        } else {
+          this.displayName = displayName;
+        }
+      });
   }
 }

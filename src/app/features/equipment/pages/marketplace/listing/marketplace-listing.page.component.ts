@@ -98,9 +98,13 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
     super.ngOnInit();
 
     this.titleService.setTitle(this.title);
-    this.store$.dispatch(this.breadcrumb);
-
     this.listing = this.activatedRoute.snapshot.data.listing;
+    if (!!this.listing.title) {
+      this.title = this.listing.title;
+      this.titleService.setTitle(this.title);
+    }
+
+    this.store$.dispatch(this.breadcrumb);
 
     this.listingContentType$ = this.store$.select(selectContentType, this._contentTypePayload).pipe(
       filter(contentType => !!contentType),

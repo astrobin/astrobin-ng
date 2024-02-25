@@ -6,20 +6,13 @@
   gap: 1rem;
 
   .line-item {
-    width: calc(25% - .75rem);
+    width: calc(50% - .75rem);
   }
 
   @media screen and (max-width: $md-max) {
     gap: .5rem;
     .line-item {
-      width: calc(33.3333333333% - .5rem);
-    }
-  }
-
-  @media screen and (max-width: $sm-max) {
-    gap: .5rem;
-    .line-item {
-      width: calc(50% - .25rem);
+      width: 100%;
     }
   }
 }

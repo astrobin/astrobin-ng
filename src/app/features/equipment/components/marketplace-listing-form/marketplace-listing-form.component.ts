@@ -45,6 +45,7 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
     created: null,
     updated: null,
     expiration: null,
+    title: null,
     description: null,
     bundleSaleOnly: false,
     deliveryByBuyerPickUp: true,
@@ -180,6 +181,197 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
           key: "user",
           type: "input",
           className: "hidden"
+        },
+        {
+          key: "latitude",
+          type: "input",
+          className: "hidden"
+        },
+        {
+          key: "longitude",
+          type: "input",
+          className: "hidden"
+        },
+        {
+          key: "country",
+          type: "input",
+          className: "hidden"
+        },
+        {
+          key: "city",
+          type: "input",
+          className: "hidden"
+        },
+        {
+          key: "",
+          wrappers: ["card-wrapper"],
+          props: {
+            label: this.translateService.instant("General information")
+          },
+          fieldGroup: [
+            {
+              key: "title",
+              type: "input",
+              wrappers: ["default-wrapper"],
+              props: {
+                label: this.translateService.instant("Title"),
+                description: this.translateService.instant(
+                  "If omitted, AstroBin will use the equipment item names to create a title."
+                ),
+                required: false,
+                modelOptions: {
+                  updateOn: "blur"
+                }
+              },
+              validators: {
+                maxLength: {
+                  value: 256
+                }
+              }
+            },
+            {
+              key: "description",
+              type: "textarea",
+              wrappers: ["default-wrapper"],
+              props: {
+                label: this.translateService.instant("Description"),
+                description: this.translateService.instant(
+                  "This description field is for generic information that pertain this listing. You can find " +
+                  "Description field for individual equipment items above."
+                ),
+                rows: 6,
+                modelOptions: {
+                  updateOn: "blur"
+                }
+              }
+            },
+            {
+              key: "",
+              type: "google-map",
+              wrappers: ["default-wrapper"],
+              props: {
+                height: 300,
+                label: this.translateService.instant("Location"),
+                required: true,
+                description: this.translateService.instant(
+                  "Drag the map to set the location. AstroBin will not disclose your exact location, but " +
+                  "only the city and country where the item is located. The location information will be used to " +
+                  "find listings within a certain distance from the user's location."
+                )
+              },
+              hooks: {
+                onInit: field => {
+                  const form = field.parent.formControl;
+
+                  field.formControl.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(coordinates => {
+                    if (coordinates) {
+                      const geocoder = new google.maps.Geocoder();
+
+                      geocoder.geocode({ location: coordinates }, function(results, status) {
+                        if (status === "OK") {
+                          if (results[0]) {
+                            const addressComponents = results[0].address_components;
+                            const countryComponent = addressComponents.find(component =>
+                              component.types.includes("country")
+                            );
+                            const cityComponent = addressComponents.find(component =>
+                              component.types.includes("locality")
+                            );
+
+                            if (countryComponent) {
+                              form.get("country").setValue(countryComponent.short_name);
+                            }
+
+                            if (cityComponent) {
+                              form.get("city").setValue(cityComponent.long_name);
+                            }
+                          }
+                        }
+                      });
+
+                      form.get("latitude").setValue(coordinates.lat());
+                      form.get("longitude").setValue(coordinates.lng());
+                    }
+                  });
+                }
+              }
+            },
+            {
+              key: "bundleSaleOnly",
+              type: "checkbox",
+              wrappers: ["default-wrapper"],
+              expressions: {
+                hide: () => this.model.lineItems.length < 2
+              },
+              props: {
+                label: this.translateService.instant("Sell as a bundle only"),
+                description: this.translateService.instant(
+                  "Check this if you want to sell all items together as a single package, not separately."
+                )
+              }
+            },
+            {
+              key: "",
+              type: "ng-select",
+              wrappers: ["default-wrapper"],
+              defaultValue: MarketplaceListingExpiration.ONE_WEEK,
+              props: {
+                readonly: this.model.id !== undefined,
+                label: this.translateService.instant("Expiration"),
+                options: [
+                  {
+                    value: MarketplaceListingExpiration.ONE_WEEK,
+                    label: this.translateService.instant("One week")
+                  },
+                  {
+                    value: MarketplaceListingExpiration.TWO_WEEKS,
+                    label: this.translateService.instant("Two weeks")
+                  },
+                  {
+                    value: MarketplaceListingExpiration.ONE_MONTH,
+                    label: this.translateService.instant("One month")
+                  }
+                ],
+                required: true,
+                description: this.translateService.instant(
+                  "After this period, the listing will be automatically removed from the marketplace, but " +
+                  "you will be able to renew it."
+                )
+              },
+              hooks: {
+                onInit: field => {
+                  field.formControl.valueChanges
+                    .pipe(takeUntil(this.destroyed$), startWith(field.formControl.value))
+                    .subscribe(value => {
+                      if (!!value) {
+                        const now = new Date();
+                        let expirationDate = new Date(now);
+
+                        switch (value) {
+                          case MarketplaceListingExpiration.ONE_WEEK:
+                            expirationDate.setDate(now.getDate() + 7);
+                            break;
+                          case MarketplaceListingExpiration.TWO_WEEKS:
+                            expirationDate.setDate(now.getDate() + 14);
+                            break;
+                          case MarketplaceListingExpiration.ONE_MONTH:
+                            expirationDate.setMonth(now.getMonth() + 1);
+                            break;
+                        }
+
+                        // Update the actual value with the computed datetime string
+                        this.form.get("expiration").setValue(expirationDate.toISOString());
+                      }
+                    });
+                }
+              }
+            },
+            {
+              key: "expiration",
+              type: "input",
+              className: "hidden"
+            }
+          ]
         },
         {
           key: "lineItems",
@@ -476,175 +668,6 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                   label: this.equipmentItemService.humanizeShippingMethod(MarketplaceListingShippingMethod[key])
                 }))
               }
-            }
-          ]
-        },
-        {
-          key: "latitude",
-          type: "input",
-          className: "hidden"
-        },
-        {
-          key: "longitude",
-          type: "input",
-          className: "hidden"
-        },
-        {
-          key: "country",
-          type: "input",
-          className: "hidden"
-        },
-        {
-          key: "city",
-          type: "input",
-          className: "hidden"
-        },
-        {
-          key: "",
-          wrappers: ["card-wrapper"],
-          props: {
-            label: this.translateService.instant("Location")
-          },
-          fieldGroup: [
-            {
-              key: "",
-              type: "google-map",
-              wrappers: ["default-wrapper"],
-              props: {
-                height: 300,
-                description: this.translateService.instant(
-                  "Drag the map to set the location. AstroBin will not disclose your exact location, but " +
-                  "only the city and country where the item is located. The location information will be used to " +
-                  "find listings within a certain distance from the user's location."
-                )
-              },
-              hooks: {
-                onInit: field => {
-                  const form = field.parent.formControl;
-
-                  field.formControl.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(coordinates => {
-                    if (coordinates) {
-                      const geocoder = new google.maps.Geocoder();
-
-                      geocoder.geocode({ location: coordinates }, function(results, status) {
-                        if (status === "OK") {
-                          if (results[0]) {
-                            const addressComponents = results[0].address_components;
-                            const countryComponent = addressComponents.find(component =>
-                              component.types.includes("country")
-                            );
-                            const cityComponent = addressComponents.find(component =>
-                              component.types.includes("locality")
-                            );
-
-                            if (countryComponent) {
-                              form.get("country").setValue(countryComponent.short_name);
-                            }
-
-                            if (cityComponent) {
-                              form.get("city").setValue(cityComponent.long_name);
-                            }
-                          }
-                        }
-                      });
-
-                      form.get("latitude").setValue(coordinates.lat());
-                      form.get("longitude").setValue(coordinates.lng());
-                    }
-                  });
-                }
-              }
-            },
-            {
-              key: "description",
-              type: "textarea",
-              wrappers: ["default-wrapper"],
-              props: {
-                label: this.translateService.instant("Description"),
-                description: this.translateService.instant(
-                  "This description field is for generic information that pertain this listing. You can find " +
-                  "Description field for individual equipment items above."
-                ),
-                rows: 6,
-                modelOptions: {
-                  updateOn: "blur"
-                }
-              }
-            },
-            {
-              key: "bundleSaleOnly",
-              type: "checkbox",
-              wrappers: ["default-wrapper"],
-              expressions: {
-                hide: () => this.model.lineItems.length < 2
-              },
-              props: {
-                label: this.translateService.instant("Sell as a bundle only"),
-                description: this.translateService.instant(
-                  "Check this if you want to sell all items together as a single package, not separately."
-                )
-              }
-            },
-            {
-              key: "",
-              type: "ng-select",
-              wrappers: ["default-wrapper"],
-              defaultValue: MarketplaceListingExpiration.ONE_WEEK,
-              props: {
-                readonly: this.model.id !== undefined,
-                label: this.translateService.instant("Expiration"),
-                options: [
-                  {
-                    value: MarketplaceListingExpiration.ONE_WEEK,
-                    label: this.translateService.instant("One week")
-                  },
-                  {
-                    value: MarketplaceListingExpiration.TWO_WEEKS,
-                    label: this.translateService.instant("Two weeks")
-                  },
-                  {
-                    value: MarketplaceListingExpiration.ONE_MONTH,
-                    label: this.translateService.instant("One month")
-                  }
-                ],
-                required: true,
-                description: this.translateService.instant(
-                  "After this period, the listing will be automatically removed from the marketplace, but " +
-                  "you will be able to renew it."
-                )
-              },
-              hooks: {
-                onInit: field => {
-                  field.formControl.valueChanges
-                    .pipe(takeUntil(this.destroyed$), startWith(field.formControl.value))
-                    .subscribe(value => {
-                      if (!!value) {
-                        const now = new Date();
-                        let expirationDate = new Date(now);
-
-                        switch (value) {
-                          case MarketplaceListingExpiration.ONE_WEEK:
-                            expirationDate.setDate(now.getDate() + 7);
-                            break;
-                          case MarketplaceListingExpiration.TWO_WEEKS:
-                            expirationDate.setDate(now.getDate() + 14);
-                            break;
-                          case MarketplaceListingExpiration.ONE_MONTH:
-                            expirationDate.setMonth(now.getMonth() + 1);
-                            break;
-                        }
-
-                        // Update the actual value with the computed datetime string
-                        this.form.get("expiration").setValue(expirationDate.toISOString());
-                      }
-                    });
-                }
-              }
-            },
-            {
-              key: "expiration",
-              type: "input",
-              className: "hidden"
             }
           ]
         }
