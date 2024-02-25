@@ -2,7 +2,7 @@ import { AfterViewInit, Component, OnInit } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
-import { ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { TranslateService } from "@ngx-translate/core";
@@ -11,7 +11,7 @@ import { LoadingService } from "@shared/services/loading.service";
 import { selectContentType, selectContentTypeById } from "@app/store/selectors/app/content-type.selectors";
 import { filter, map, switchMap, take, takeUntil, tap, withLatestFrom } from "rxjs/operators";
 import { LoadContentType, LoadContentTypeById } from "@app/store/actions/content-type.actions";
-import { merge, Observable, of } from "rxjs";
+import { merge, Observable, of, ReplaySubject } from "rxjs";
 import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
 import { EquipmentMarketplaceService } from "@features/equipment/services/equipment-marketplace.service";
 import { UserInterface } from "@shared/interfaces/user.interface";
@@ -47,6 +47,7 @@ import { NestedCommentInterface } from "@shared/interfaces/nested-comment.interf
 import { HttpClient } from "@angular/common/http";
 import { environment } from "@env/environment";
 import { MarketplaceOfferModalComponent } from "@features/equipment/components/marketplace-offer-modal/marketplace-offer-modal.component";
+import { WindowRefService } from "@shared/services/window-ref.service";
 
 @Component({
   selector: "astrobin-marketplace-listing-page",
@@ -78,6 +79,7 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
   hasOffered$: Observable<boolean>;
 
   private _contentTypePayload = { appLabel: "astrobin_apps_equipment", model: "equipmentitemmarketplacelisting" };
+  private _listingUpdated$ = new ReplaySubject<void>();
 
   constructor(
     public readonly store$: Store<State>,
@@ -89,7 +91,8 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
     public readonly equipmentMarketplaceService: EquipmentMarketplaceService,
     public readonly modalService: NgbModal,
     public readonly router: Router,
-    public readonly http: HttpClient
+    public readonly http: HttpClient,
+    public readonly windowRefService: WindowRefService
   ) {
     super(store$);
   }
@@ -98,40 +101,63 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
     super.ngOnInit();
 
     this.titleService.setTitle(this.title);
+    this.store$.dispatch(this.breadcrumb);
+
+    this.setListing();
+
+    this.loadContentType();
+    this.loadPrivateConversations();
+    this.loadUser();
+    this.loadHasOffered();
+
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd),
+      takeUntil(this.destroyed$)
+    ).subscribe(() => {
+      this.setListing();
+      this.windowRefService.scroll({ top: 0 });
+    });
+  }
+
+  setListing() {
     this.listing = this.activatedRoute.snapshot.data.listing;
+    this.appendSlugToUrl();
+
     if (!!this.listing.title) {
       this.title = this.listing.title;
       this.titleService.setTitle(this.title);
     }
 
-    this.store$.dispatch(this.breadcrumb);
+    this._listingUpdated$.next();
+  }
 
+  loadHasOffered() {
+    this.hasOffered$ = this._listingUpdated$.pipe(
+      switchMap(() => this.currentUser$),
+      switchMap(user => this.store$.select(
+          selectMarketplaceOffersByUser(user.id, this.listing.id)
+        )
+      ),
+      map(offers => offers.length > 0),
+      takeUntil(this.destroyed$)
+    );
+  }
+
+  loadUser() {
+    this.listingUser$ = this._listingUpdated$.pipe(
+      switchMap(() => this.equipmentMarketplaceService.getListingUser$(this.listing)),
+      filter(user => !!user),
+      take(1)
+    );
+  }
+
+  loadContentType() {
     this.listingContentType$ = this.store$.select(selectContentType, this._contentTypePayload).pipe(
       filter(contentType => !!contentType),
       take(1)
     );
 
-    this.listingUser$ = this.equipmentMarketplaceService.getListingUser$(this.listing).pipe(
-      filter(user => !!user),
-      take(1)
-    );
-
-    this.privateConversations$ = this.store$
-      .select(selectMarketplacePrivateConversations(this.listing.id))
-      .pipe(takeUntil(this.destroyed$));
-
-    this.hasOffered$ = this.currentUser$.pipe(
-      switchMap(user => this.store$.select(
-          selectMarketplaceOffersByUser(user.id, this.listing.id)
-        )
-      ),
-      map(offers => offers.length > 0)
-    );
-
     this.store$.dispatch(new LoadContentType(this._contentTypePayload));
-    this.store$.dispatch(new LoadMarketplacePrivateConversations({ listingId: this.listing.id }));
-
-    this.appendSlugToUrl();
   }
 
   appendSlugToUrl() {
@@ -194,6 +220,15 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
     event.preventDefault();
     const modalRef: NgbModalRef = this.modalService.open(MarketplaceOfferModalComponent, { size: "lg" });
     modalRef.componentInstance.listing = this.listing;
+  }
+
+  loadPrivateConversations() {
+    this.privateConversations$ = this._listingUpdated$.pipe(
+      switchMap(() => this.store$.select(selectMarketplacePrivateConversations(this.listing.id))),
+      takeUntil(this.destroyed$)
+    );
+
+    this.store$.dispatch(new LoadMarketplacePrivateConversations({ listingId: this.listing.id }));
   }
 
   deletePrivateConversation(privateConversation: MarketplacePrivateConversationInterface) {
