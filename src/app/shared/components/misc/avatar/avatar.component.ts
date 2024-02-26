@@ -19,7 +19,11 @@ export class AvatarComponent extends BaseComponentDirective {
   }
 
   get avatar(): string {
-    if (this.user.largeAvatar?.indexOf("astrobin-default-avatar") > -1) {
+    if (
+      this.user.hasOwnProperty('largeAvatar') &&
+      typeof this.user.largeAvatar === 'string'
+      && this.user.largeAvatar.indexOf("astrobin-default-avatar") > -1
+    ) {
       return "/assets/images/default-avatar.jpeg?v=2";
     }
 
