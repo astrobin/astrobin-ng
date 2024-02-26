@@ -129,6 +129,10 @@ export function reducer(state = initialAppState, action: All): AppState {
 
     case AppActionTypes.SET_IMAGE:
     case AppActionTypes.LOAD_IMAGE_SUCCESS: {
+      if (action.payload === null || action.payload === undefined) {
+        return state;
+      }
+
       let loadingThumbnails = [...state.loadingThumbnails];
       const thumbnails = !!action.payload.thumbnails ? [...action.payload.thumbnails] : [];
 
@@ -167,7 +171,10 @@ export function reducer(state = initialAppState, action: All): AppState {
     //   };
     // }
 
-    case AppActionTypes.LOAD_IMAGES_SUCCESS: {
+    case
+    AppActionTypes.LOAD_IMAGES_SUCCESS
+
+    : {
       const flatImages = action.payload.results.map(image => ({
         ...image,
         imagingTelescopes: [],
@@ -220,7 +227,10 @@ export function reducer(state = initialAppState, action: All): AppState {
       };
     }
 
-    case AppActionTypes.LOAD_IMAGE_REVISIONS_SUCCESS: {
+    case
+    AppActionTypes.LOAD_IMAGE_REVISIONS_SUCCESS
+
+    : {
       return {
         ...state,
         imageRevisions: UtilsService.arrayUniqueObjects(
@@ -230,7 +240,10 @@ export function reducer(state = initialAppState, action: All): AppState {
       };
     }
 
-    case AppActionTypes.LOAD_THUMBNAIL: {
+    case
+    AppActionTypes.LOAD_THUMBNAIL
+
+    : {
       return {
         ...state,
         loadingThumbnails: UtilsService.arrayUniqueObjects(
@@ -241,7 +254,10 @@ export function reducer(state = initialAppState, action: All): AppState {
       };
     }
 
-    case AppActionTypes.LOAD_THUMBNAIL_CANCEL: {
+    case
+    AppActionTypes.LOAD_THUMBNAIL_CANCEL
+
+    : {
       return {
         ...state,
         loadingThumbnails: state.loadingThumbnails.filter(
@@ -253,7 +269,10 @@ export function reducer(state = initialAppState, action: All): AppState {
       };
     }
 
-    case AppActionTypes.LOAD_THUMBNAIL_SUCCESS: {
+    case
+    AppActionTypes.LOAD_THUMBNAIL_SUCCESS
+
+    : {
       return {
         ...state,
         thumbnails: UtilsService.arrayUniqueObjects([...state.thumbnails, action.payload], null, false),
@@ -266,42 +285,60 @@ export function reducer(state = initialAppState, action: All): AppState {
       };
     }
 
-    case AppActionTypes.LOAD_SOLUTION_SUCCESS: {
+    case
+    AppActionTypes.LOAD_SOLUTION_SUCCESS
+
+    : {
       return {
         ...state,
         solutions: UtilsService.arrayUniqueObjects([...state.solutions, action.payload], "id")
       };
     }
 
-    case AppActionTypes.LOAD_SOLUTIONS_SUCCESS: {
+    case
+    AppActionTypes.LOAD_SOLUTIONS_SUCCESS
+
+    : {
       return {
         ...state,
         solutions: UtilsService.arrayUniqueObjects([...state.solutions, ...action.payload], "id")
       };
     }
 
-    case AppActionTypes.LOAD_TELESCOPE_SUCCESS: {
+    case
+    AppActionTypes.LOAD_TELESCOPE_SUCCESS
+
+    : {
       return {
         ...state,
         telescopes: [...state.telescopes.filter(i => i.pk !== action.payload.pk), action.payload]
       };
     }
 
-    case AppActionTypes.LOAD_CAMERA_SUCCESS: {
+    case
+    AppActionTypes.LOAD_CAMERA_SUCCESS
+
+    : {
       return {
         ...state,
         cameras: [...state.cameras.filter(i => i.pk !== action.payload.pk), action.payload]
       };
     }
 
-    case AppActionTypes.CREATE_LOCATION_ADD_TAG: {
+    case
+    AppActionTypes.CREATE_LOCATION_ADD_TAG
+
+    : {
       return {
         ...state,
         createLocationAddTag: action.payload
       };
     }
 
-    case AppActionTypes.LOAD_NESTED_COMMENTS_SUCCESS: {
+    case
+    AppActionTypes.LOAD_NESTED_COMMENTS_SUCCESS
+
+    : {
       return {
         ...state,
         nestedComments: UtilsService.sortObjectsByProperty(
@@ -311,7 +348,10 @@ export function reducer(state = initialAppState, action: All): AppState {
       };
     }
 
-    case AppActionTypes.CREATE_NESTED_COMMENT_SUCCESS: {
+    case
+    AppActionTypes.CREATE_NESTED_COMMENT_SUCCESS
+
+    : {
       return {
         ...state,
         nestedComments: UtilsService.sortObjectsByProperty(
@@ -321,7 +361,10 @@ export function reducer(state = initialAppState, action: All): AppState {
       };
     }
 
-    case AppActionTypes.LOAD_TOGGLE_PROPERTY_SUCCESS: {
+    case
+    AppActionTypes.LOAD_TOGGLE_PROPERTY_SUCCESS
+
+    : {
       if (action.payload.toggleProperty !== null) {
         return {
           ...state,
@@ -332,14 +375,20 @@ export function reducer(state = initialAppState, action: All): AppState {
       return state;
     }
 
-    case AppActionTypes.CREATE_TOGGLE_PROPERTY_SUCCESS: {
+    case
+    AppActionTypes.CREATE_TOGGLE_PROPERTY_SUCCESS
+
+    : {
       return {
         ...state,
         toggleProperties: UtilsService.arrayUniqueObjects([...state.toggleProperties, action.payload.toggleProperty], "id")
       };
     }
 
-    case AppActionTypes.DELETE_TOGGLE_PROPERTY_SUCCESS: {
+    case
+    AppActionTypes.DELETE_TOGGLE_PROPERTY_SUCCESS
+
+    : {
       return {
         ...state,
         toggleProperties: state.toggleProperties.filter(toggleProperty => toggleProperty.id !== action.payload.toggleProperty.id)
