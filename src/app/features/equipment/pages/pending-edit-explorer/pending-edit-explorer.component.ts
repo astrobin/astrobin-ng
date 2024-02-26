@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, Inject, OnInit, PLATFORM_ID } from "@angular/core";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
@@ -36,7 +36,8 @@ export class PendingEditExplorerComponent extends PendingExplorerBaseComponent i
     public readonly windowRefService: WindowRefService,
     public readonly cookieService: CookieService,
     public readonly equipmentItemService: EquipmentItemService,
-    public readonly changeDetectionRef: ChangeDetectorRef
+    public readonly changeDetectionRef: ChangeDetectorRef,
+    @Inject(PLATFORM_ID) public readonly platformId: Object
   ) {
     super(
       store$,
@@ -46,7 +47,8 @@ export class PendingEditExplorerComponent extends PendingExplorerBaseComponent i
       windowRefService,
       cookieService,
       equipmentItemService,
-      changeDetectionRef
+      changeDetectionRef,
+      platformId
     );
     this.pendingType = PendingType.PENDING_EDIT;
   }

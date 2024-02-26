@@ -428,9 +428,11 @@ export class ItemTypeNavComponent extends BaseComponentDirective
               }
             );
 
-            this.reviewPendingEditNotification.onAction.subscribe(() => {
-              this.router.navigateByUrl(`/equipment/pending-edit-explorer/${type.value.toLowerCase()}`);
-            });
+            if (!!this.reviewPendingEditNotification.onAction) {
+              this.reviewPendingEditNotification.onAction.subscribe(() => {
+                this.router.navigateByUrl(`/equipment/pending-edit-explorer/${type.value.toLowerCase()}`);
+              });
+            }
           }
         })
       );

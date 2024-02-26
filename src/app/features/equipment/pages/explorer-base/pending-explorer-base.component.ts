@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component } from "@angular/core";
+import { ChangeDetectorRef, Component, Inject, PLATFORM_ID } from "@angular/core";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { Actions } from "@ngrx/effects";
@@ -29,8 +29,17 @@ export class PendingExplorerBaseComponent extends ExplorerBaseComponent {
     public readonly windowRefService: WindowRefService,
     public readonly cookieService: CookieService,
     public readonly equipmentItemService: EquipmentItemService,
-    public readonly changeDetectionRef: ChangeDetectorRef
+    public readonly changeDetectionRef: ChangeDetectorRef,
+    @Inject(PLATFORM_ID) public readonly platformId: Object
   ) {
-    super(store$, actions$, activatedRoute, router, windowRefService, cookieService, changeDetectionRef);
+    super(
+      store$,
+      actions$,
+      activatedRoute,
+      router,
+      windowRefService,
+      cookieService,
+      changeDetectionRef,
+      platformId);
   }
 }
