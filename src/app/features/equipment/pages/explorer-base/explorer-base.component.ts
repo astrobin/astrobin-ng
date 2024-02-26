@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, Inject, OnInit, PLATFORM_ID } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
@@ -15,6 +15,7 @@ import { CookieService } from "ngx-cookie";
 import { EquipmentItemsSortOrder } from "@features/equipment/services/equipment-api.service";
 import { GetContributors } from "@features/equipment/store/equipment.actions";
 import { EquipmentItemDisplayProperty } from "@features/equipment/services/equipment-item.service";
+import { isPlatformBrowser } from "@angular/common";
 
 export const EQUIPMENT_EXPLORER_PAGE_SORTING_COOKIE = "astrobin-equipment-explorer-page-sorting";
 
@@ -39,7 +40,8 @@ export class ExplorerBaseComponent extends BaseComponentDirective implements OnI
     public readonly router: Router,
     public readonly windowRefService: WindowRefService,
     public readonly cookieService: CookieService,
-    public readonly changeDetectionRef: ChangeDetectorRef
+    public readonly changeDetectionRef: ChangeDetectorRef,
+    @Inject(PLATFORM_ID) public readonly platformId: Object
   ) {
     super(store$);
   }
@@ -97,7 +99,9 @@ export class ExplorerBaseComponent extends BaseComponentDirective implements OnI
         queryParams
       })
       .then(() => {
-        this.windowRefService.scroll({ top: 0 });
+        if (isPlatformBrowser(this.platformId)) {
+          this.windowRefService.scroll({ top: 0 });
+        }
       });
   }
 

@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, Inject, OnInit, PLATFORM_ID } from "@angular/core";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import {
@@ -62,9 +62,19 @@ export class BrandExplorerPageComponent extends ExplorerBaseComponent implements
     public readonly equipmentItemService: EquipmentItemService,
     public readonly modalService: NgbModal,
     public readonly equipmentApiService: EquipmentApiService,
-    public readonly changeDetectionRef: ChangeDetectorRef
+    public readonly changeDetectionRef: ChangeDetectorRef,
+    @Inject(PLATFORM_ID) public readonly platformId: Object
   ) {
-    super(store$, actions$, activatedRoute, router, windowRefService, cookieService, changeDetectionRef);
+    super(
+      store$,
+      actions$,
+      activatedRoute,
+      router,
+      windowRefService,
+      cookieService,
+      changeDetectionRef,
+      platformId
+    );
     this.activeType = "BRAND";
   }
 

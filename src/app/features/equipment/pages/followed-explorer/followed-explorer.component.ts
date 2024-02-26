@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, Inject, OnInit, PLATFORM_ID } from "@angular/core";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { TranslateService } from "@ngx-translate/core";
@@ -40,6 +40,7 @@ export class FollowedExplorerComponent extends ExplorerBaseComponent implements 
     public readonly cookieService: CookieService,
     public readonly loadingService: LoadingService,
     public readonly changeDetectionRef: ChangeDetectorRef,
+    @Inject(PLATFORM_ID) public readonly platformId: Object,
     public readonly equipmentItemService: EquipmentItemService
   ) {
     super(
@@ -49,7 +50,8 @@ export class FollowedExplorerComponent extends ExplorerBaseComponent implements 
       router,
       windowRefService,
       cookieService,
-      changeDetectionRef
+      changeDetectionRef,
+      platformId
     );
   }
 
