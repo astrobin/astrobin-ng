@@ -428,7 +428,7 @@ export class ItemTypeNavComponent extends BaseComponentDirective
               }
             );
 
-            if (!!this.reviewPendingEditNotification.onAction) {
+            if (!!this.reviewPendingEditNotification && !!this.reviewPendingEditNotification.onAction) {
               this.reviewPendingEditNotification.onAction.subscribe(() => {
                 this.router.navigateByUrl(`/equipment/pending-edit-explorer/${type.value.toLowerCase()}`);
               });
