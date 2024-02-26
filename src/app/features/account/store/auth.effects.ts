@@ -152,6 +152,9 @@ export class AuthEffects {
     userSubscriptions: UserSubscriptionInterface[];
   }> = this._getCurrentUser$.pipe(
     concatMap(userData => {
+      if (userData === null) {
+        return of(null);
+      }
       return this.commonApiService.getUserSubscriptions(userData.user).pipe(
         map(userSubscriptions => {
           return {
