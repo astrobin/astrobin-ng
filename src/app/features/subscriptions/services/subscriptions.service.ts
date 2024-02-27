@@ -93,11 +93,22 @@ export class SubscriptionsService {
     return resultMap[product];
   }
 
-  getPrice(product: PayableProductInterface, recurringUnit: RecurringUnit): Observable<PricingInterface> {
+  getPrice(
+    product: PayableProductInterface,
+    recurringUnit: RecurringUnit,
+    retryCount = 0
+  ): Observable<PricingInterface> {
+    const maxRetries = 10; // In case the currency is not ready yet.
+    const defaultCurrency = "USD";
+
+    if (retryCount >= maxRetries) {
+      this.currency = defaultCurrency; // Default to USD if max retries reached
+    }
+
     if (!this.currency) {
       return new Observable<PricingInterface>(observer => {
         this.utilsService.delay(100).subscribe(() => {
-          this.getPrice(product, recurringUnit).subscribe(price => {
+          this.getPrice(product, recurringUnit, retryCount + 1).subscribe(price => {
             observer.next(price);
             observer.complete();
           });
