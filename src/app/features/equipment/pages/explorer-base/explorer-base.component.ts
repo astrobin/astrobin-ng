@@ -15,7 +15,6 @@ import { CookieService } from "ngx-cookie";
 import { EquipmentItemsSortOrder } from "@features/equipment/services/equipment-api.service";
 import { GetContributors } from "@features/equipment/store/equipment.actions";
 import { EquipmentItemDisplayProperty } from "@features/equipment/services/equipment-item.service";
-import { isPlatformBrowser } from "@angular/common";
 
 export const EQUIPMENT_EXPLORER_PAGE_SORTING_COOKIE = "astrobin-equipment-explorer-page-sorting";
 
@@ -99,9 +98,7 @@ export class ExplorerBaseComponent extends BaseComponentDirective implements OnI
         queryParams
       })
       .then(() => {
-        if (isPlatformBrowser(this.platformId)) {
-          this.windowRefService.scroll({ top: 0 });
-        }
+        this.windowRefService.scroll({ top: 0 });
       });
   }
 

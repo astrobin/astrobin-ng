@@ -133,13 +133,16 @@ export abstract class BasePromotionQueueComponent extends BaseComponentDirective
   }
 
   ngAfterViewInit() {
-    this.promotionSlots.changes.subscribe(() => {
-      if (this.promotionSlots.length > 0) {
-        this._initialPromotionSlotsTopOffset = this.promotionSlots.first.nativeElement.getBoundingClientRect().top;
-      }
-    });
-
     if (isPlatformBrowser(this.platformId)) {
+      this.promotionSlots.changes.subscribe(() => {
+        if (
+          this.promotionSlots.length > 0 &&
+          typeof (this.promotionSlots.first.nativeElement?.getBoundingClientRect) !== undefined
+        ) {
+          this._initialPromotionSlotsTopOffset = this.promotionSlots.first.nativeElement.getBoundingClientRect().top;
+        }
+      });
+
       merge(
         fromEvent(this.windowRefService.nativeWindow, "scroll"),
         fromEvent(this.windowRefService.nativeWindow, "resize")
