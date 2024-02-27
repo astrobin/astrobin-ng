@@ -102,7 +102,7 @@ export abstract class BasePromotionQueueComponent extends BaseComponentDirective
       .subscribe(({ promotions, backendConfig }) => {
         const showInfo = this.supportsMaxPromotionsPerDayInfo && !this.cookieService.get(FILL_SLOT_REMINDER_COOKIE);
         if (showInfo && promotions.length === this.maxPromotionsPerDay(backendConfig)) {
-          this.popNotificationsService
+          const notification = this.popNotificationsService
             .info(
               this.translateService.instant(
                 "Please note: you don't <strong>have to</strong> use all your slots. It's ok to use fewer if you " +
@@ -119,13 +119,16 @@ export abstract class BasePromotionQueueComponent extends BaseComponentDirective
                   }
                 ]
               }
-            )
-            .onAction.subscribe(() => {
-            this.cookieService.put(FILL_SLOT_REMINDER_COOKIE, "1", {
-              path: "/",
-              expires: new Date(new Date().getTime() + 30 * 24 * 60 * 60 * 1000)
+            );
+
+          if (!!notification && !!notification.onAction) {
+            notification.onAction.subscribe(() => {
+              this.cookieService.put(FILL_SLOT_REMINDER_COOKIE, "1", {
+                path: "/",
+                expires: new Date(new Date().getTime() + 30 * 24 * 60 * 60 * 1000)
+              });
             });
-          });
+          }
         }
       });
 
