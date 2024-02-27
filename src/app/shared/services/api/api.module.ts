@@ -15,6 +15,7 @@ import { TransferStateInterceptor } from "@shared/services/transfer-state.interc
 import { DebugCountryInterceptor } from "@shared/services/debug-country.interceptor";
 import { ClientIpInterceptor } from "@shared/services/client-ip.interceptor";
 import { TransferState } from "@angular/platform-browser";
+import { TimeoutRetryInterceptor } from "@shared/services/timeout-retry.interceptor";
 
 @NgModule({
   imports: [HttpClientModule],
@@ -22,6 +23,11 @@ import { TransferState } from "@angular/platform-browser";
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
+      multi: true
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: TimeoutRetryInterceptor,
       multi: true
     },
     {
