@@ -298,7 +298,7 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
         }
       },
       asyncValidators: {
-        centralDS: {
+        stockModified: {
           expression: (control: FormControl) => {
             if (!control.value || control.value === CameraType.DEDICATED_DEEP_SKY) {
               return of(true);
@@ -316,13 +316,15 @@ export class CameraEditorComponent extends BaseItemEditorComponent<CameraInterfa
                   return this.store$.select(selectBrand, brandId).pipe(
                     filter(brand => !!brand),
                     take(1),
-                    map(brand => brand.name !== "CentralDS")
+                    map(brand => brand.name !== "CentralDS" && brand.name !== "EOS FOR ASTRO")
                   );
                 })
               );
             }
           },
-          message: this.translateService.instant(`For CentralDS cameras, please select "Dedicated deep-sky camera"`)
+          message: this.translateService.instant(
+            `As cameras from this brands are already modified, please select "Dedicated deep-sky camera"`
+          )
         }
       }
     };
