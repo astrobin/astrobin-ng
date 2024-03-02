@@ -7,7 +7,7 @@
         </ng-container>
       </div>
       <div class="created">
-        {{ lineItem.created | localDate | timeago: true }}
+        {{ lineItem.created | localDate | timeago : true }}
       </div>
     </div>
 
@@ -22,22 +22,41 @@
     <div class="card-footer">
       <div class="d-flex w-100 justify-content-between align-items-center">
         <div class="location">
-          <ng-container *ngIf="!!listing.city">
-            {{ listing.city }},
-          </ng-container>
+          <ng-container *ngIf="!!listing.city"> {{ listing.city }},</ng-container>
           {{ countryService.getCountryName(listing.country) }}
         </div>
         <div class="price">
-          {{ lineItem.price | currency: lineItem.currency : "symbol" : "1.2-2" : translateService.currentLang }}
+          {{ lineItem.price | currency : lineItem.currency : "symbol" : "1.2-2" : translateService.currentLang }}
         </div>
       </div>
     </div>
   </div>
 
   <div class="card-badges">
-    <ng-container *ngIf="(currentUser$ | async)?.id === lineItem.user">
-      <div class="badge badge-own-marketplace-listing">
-        <fa-icon icon="user"></fa-icon>
+    <div
+      [ngbTooltip]="translateService.instant('Views')"
+      class="badge rounded-pill"
+      container="body"
+    >
+      <span class="d-inline-block me-1">
+        <fa-icon icon="eye"></fa-icon>
+        {{ listing.viewCount }}
+      </span>
+
+      <span class="d-inline-block">
+        <fa-icon icon="camera-alt"></fa-icon>
+        {{ lineItem.images.length }}
+      </span>
+    </div>
+
+    <ng-container *ngIf="lineItem.offers?.length">
+      <div
+        [ngbTooltip]="translateService.instant('This listing has offers')"
+        class="badge rounded-pill bg-danger border border-light ms-1"
+        container="body"
+      >
+        <fa-icon icon="comment-dollar"></fa-icon>
+        {{ lineItem.offers.length }}
       </div>
     </ng-container>
   </div>
