@@ -38,7 +38,7 @@ export class SubscriptionsSuccessPageComponent extends BaseComponentDirective im
         const googleAdsId = state.backendConfig.GOOGLE_ADS_ID;
         const conversionId = this.subscriptionsService.getConversionId(product);
 
-        if (googleAdsId) {
+        if (googleAdsId && typeof gtag !== "undefined" && conversionId) {
           gtag("event", "conversion", {
             send_to: `${googleAdsId}/${conversionId}`
           });

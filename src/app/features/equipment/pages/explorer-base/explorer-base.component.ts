@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, Inject, OnInit, PLATFORM_ID } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
@@ -39,7 +39,8 @@ export class ExplorerBaseComponent extends BaseComponentDirective implements OnI
     public readonly router: Router,
     public readonly windowRefService: WindowRefService,
     public readonly cookieService: CookieService,
-    public readonly changeDetectionRef: ChangeDetectorRef
+    public readonly changeDetectionRef: ChangeDetectorRef,
+    @Inject(PLATFORM_ID) public readonly platformId: Object
   ) {
     super(store$);
   }

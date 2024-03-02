@@ -43,7 +43,11 @@ export class AvatarComponent extends BaseComponentDirective implements OnInit {
   }
 
   private _setAvatar(): void {
-    if (this.user.largeAvatar?.indexOf("astrobin-default-avatar") > -1) {
+    if (
+      this.user.hasOwnProperty('largeAvatar') &&
+      typeof this.user.largeAvatar === 'string'
+      && this.user.largeAvatar.indexOf("astrobin-default-avatar") > -1
+    ) {
       this.avatarUrl = "/assets/images/default-avatar.jpeg?v=2";
     } else {
       this.avatarUrl = this.user.largeAvatar;

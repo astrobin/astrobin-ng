@@ -61,6 +61,22 @@ import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 import { TranslatePoHttpLoader } from "@tobyodonnell-aiau/ngx-translate-po-http-loader";
 
+export function normalizeToSupportedLanguage(lang: string): string {
+  if (!lang) {
+    return "en";
+  }
+
+  if (lang.toLowerCase() === "zh-hans" || lang.toLowerCase() === "zh-hant" || lang.toLowerCase() === "zh") {
+    return "zh_Hans";
+  }
+
+  if (["de", "en", "es", "fr", "it", "pt", "ru", "uk", "zh_hans", "ja", "hu"].indexOf(lang.toLowerCase()) === -1) {
+    return "en";
+  }
+
+  return lang;
+}
+
 @Injectable()
 export class LanguageLoader extends TranslatePoHttpLoader {
   constructor(public readonly http: HttpClient) {
@@ -76,18 +92,7 @@ export class LanguageLoader extends TranslatePoHttpLoader {
   };
 
   getTranslation(lang: string): Observable<any> {
-    if (!lang) {
-      lang = "en";
-    }
-
-    if (lang.toLowerCase() === "zh-hans" || lang.toLowerCase() === "zh-hant" || lang.toLowerCase() === "zh") {
-      lang = "zh_Hans";
-    }
-
-    if (["de", "en", "es", "fr", "it", "pt", "ru", "uk", "zh_hans", "ja", "hu"].indexOf(lang.toLowerCase()) === -1) {
-      lang = "en";
-    }
-
+    lang = normalizeToSupportedLanguage(lang);
     return this.ngTranslations$(lang);
   }
 

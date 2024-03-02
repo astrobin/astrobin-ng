@@ -11,7 +11,7 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 import { TranslateService } from "@ngx-translate/core";
 import { EquipmentItemType, EquipmentItemUsageType } from "@features/equipment/types/equipment-item-base.interface";
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
-import { isPlatformServer } from "@angular/common";
+import { isPlatformBrowser, isPlatformServer } from "@angular/common";
 
 @Component({
   selector: "astrobin-image-search",
@@ -75,9 +75,11 @@ export class ImageSearchComponent extends BaseComponentDirective implements OnIn
   ngOnInit(): void {
     super.ngOnInit();
 
-    fromEvent(this.windowRefService.nativeWindow, "scroll")
-      .pipe(takeUntil(this.destroyed$), debounceTime(50), distinctUntilChanged())
-      .subscribe(() => this._onScroll());
+    if (isPlatformBrowser(this.platformId)) {
+      fromEvent(this.windowRefService.nativeWindow, "scroll")
+        .pipe(takeUntil(this.destroyed$), debounceTime(50), distinctUntilChanged())
+        .subscribe(() => this._onScroll());
+    }
   }
 
   ngOnChanges(changes: SimpleChanges) {

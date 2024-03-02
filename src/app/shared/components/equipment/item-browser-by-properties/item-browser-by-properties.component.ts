@@ -3,9 +3,11 @@ import {
   Component,
   ElementRef,
   EventEmitter,
+  Inject,
   Input,
   OnInit,
   Output,
+  PLATFORM_ID,
   QueryList,
   ViewChildren
 } from "@angular/core";
@@ -42,6 +44,7 @@ import { FilterDisplayProperty, FilterService } from "@features/equipment/servic
 import { FilterType } from "@features/equipment/types/filter.interface";
 import { AccessoryDisplayProperty, AccessoryService } from "@features/equipment/services/accessory.service";
 import { AccessoryType } from "@features/equipment/types/accessory.interface";
+import { isPlatformBrowser } from "@angular/common";
 
 @Component({
   selector: "astrobin-item-browser-by-properties",
@@ -96,7 +99,8 @@ export class ItemBrowserByPropertiesComponent extends BaseComponentDirective imp
     public readonly sensorService: SensorService,
     public readonly mountService: MountService,
     public readonly filterService: FilterService,
-    public readonly accessoryService: AccessoryService
+    public readonly accessoryService: AccessoryService,
+    @Inject(PLATFORM_ID) public readonly platformId: Object
   ) {
     super(store$);
   }
@@ -116,11 +120,13 @@ export class ItemBrowserByPropertiesComponent extends BaseComponentDirective imp
   ngAfterViewInit(): void {
     this._resultsScrollable.changes.subscribe((elements: QueryList<ElementRef>) => {
       if (elements.length > 0) {
-        fromEvent(elements.first.nativeElement, "scroll")
-          .pipe(takeUntil(this.destroyed$), debounceTime(100), distinctUntilChanged())
-          .subscribe(event => {
-            this.onResultsScroll(event);
-          });
+        if (isPlatformBrowser(this.platformId)) {
+          fromEvent(elements.first.nativeElement, "scroll")
+            .pipe(takeUntil(this.destroyed$), debounceTime(100), distinctUntilChanged())
+            .subscribe(event => {
+              this.onResultsScroll(event);
+            });
+        }
       }
     });
   }

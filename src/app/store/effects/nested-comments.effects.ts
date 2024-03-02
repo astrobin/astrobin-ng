@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
 import { All, AppActionTypes } from "@app/store/actions/app.actions";
 import { State } from "@app/store/state";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
@@ -18,6 +18,7 @@ import { UtilsService } from "@shared/services/utils/utils.service";
 import { NestedCommentInterface } from "@shared/interfaces/nested-comment.interface";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { selectNestedCommentById } from "@app/store/selectors/app/nested-comments.selectors";
+import { isPlatformBrowser } from "@angular/common";
 
 @Injectable()
 export class NestedCommentsEffects {
@@ -80,15 +81,17 @@ export class NestedCommentsEffects {
               this.utilsService.delay(1).subscribe(() => {
                 const element = this.windowRefService.nativeWindow.document.getElementById(`c${nestedComment.id}`);
                 element.scrollIntoView({ behavior: "smooth", block: "start", inline: "nearest" });
-                fromEvent(this.windowRefService.nativeWindow, "scroll")
-                  .pipe(debounceTime(50), first(), mapTo(true))
-                  .subscribe(() => {
-                    element.classList.add("created");
+                if (isPlatformBrowser(this.platformId)) {
+                  fromEvent(this.windowRefService.nativeWindow, "scroll")
+                    .pipe(debounceTime(50), first(), mapTo(true))
+                    .subscribe(() => {
+                      element.classList.add("created");
 
-                    this.utilsService.delay(1000).subscribe(() => {
-                      element.classList.remove("created");
+                      this.utilsService.delay(1000).subscribe(() => {
+                        element.classList.remove("created");
+                      });
                     });
-                  });
+                }
               });
             });
         }),
@@ -114,7 +117,8 @@ export class NestedCommentsEffects {
     public readonly loadingService: LoadingService,
     public readonly nestedCommentsApiService: NestedCommentsApiService,
     public readonly windowRefService: WindowRefService,
-    public readonly utilsService: UtilsService
+    public readonly utilsService: UtilsService,
+    @Inject(PLATFORM_ID) public readonly platformId: Object
   ) {
   }
 }

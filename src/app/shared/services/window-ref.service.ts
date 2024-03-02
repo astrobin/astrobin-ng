@@ -1,7 +1,7 @@
-import { Inject, Injectable } from "@angular/core";
+import { Inject, Injectable, PLATFORM_ID } from "@angular/core";
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
-import { DOCUMENT, Location } from "@angular/common";
+import { DOCUMENT, isPlatformBrowser, Location } from "@angular/common";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { Router } from "@angular/router";
 
@@ -17,7 +17,8 @@ export class WindowRefService extends BaseService {
     @Inject(DOCUMENT) private _doc: Document,
     public readonly utilsService: UtilsService,
     public readonly router: Router,
-    private readonly location: Location
+    private readonly location: Location,
+    @Inject(PLATFORM_ID) public readonly platformId: Object
   ) {
     super(loadingService);
   }
@@ -27,10 +28,18 @@ export class WindowRefService extends BaseService {
   }
 
   scroll(options: any) {
+    if (!isPlatformBrowser(this.platformId) || typeof (this.nativeWindow?.scroll) === "undefined") {
+      return;
+    }
+
     this.nativeWindow.scroll(options);
   }
 
   scrollToElement(selector: string, options?: boolean | ScrollIntoViewOptions) {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+
     let attempts = 0;
 
     const _doScroll = () => {
@@ -61,6 +70,10 @@ export class WindowRefService extends BaseService {
   }
 
   focusElement(selector: string) {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+
     let attempts = 0;
 
     const _doFocus = () => {

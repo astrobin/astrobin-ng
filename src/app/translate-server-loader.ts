@@ -3,6 +3,7 @@ import { Observable } from "rxjs";
 import * as fs from "fs";
 import { HttpClient } from "@angular/common/http";
 import { TranslatePoHttpLoader } from "@tobyodonnell-aiau/ngx-translate-po-http-loader";
+import { normalizeToSupportedLanguage } from "@app/translate-loader";
 
 export class TranslateServerLoader extends TranslatePoHttpLoader {
   constructor(
@@ -16,6 +17,8 @@ export class TranslateServerLoader extends TranslatePoHttpLoader {
   public getTranslation(lang: string): Observable<any> {
     return new Observable(observer => {
       const assets_folder = join(process.cwd(), "dist", "frontend", "browser", "assets", this.prefix);
+
+      lang = normalizeToSupportedLanguage(lang);
 
       const poData = fs.readFileSync(`${assets_folder}/${lang}${this.suffix}`, "utf8");
 
