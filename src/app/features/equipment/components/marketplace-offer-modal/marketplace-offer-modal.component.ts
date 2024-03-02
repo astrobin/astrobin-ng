@@ -21,7 +21,8 @@ import {
   UpdateMarketplaceOffer,
   UpdateMarketplaceOfferSuccess
 } from "@features/equipment/store/equipment.actions";
-import { filter, takeUntil } from "rxjs/operators";
+import { filter, map, switchMap, take, takeUntil } from "rxjs/operators";
+import { selectMarketplaceListing } from "@features/equipment/store/equipment.selectors";
 
 @Component({
   selector: "astrobin-marketplace-offer-modal",
@@ -250,11 +251,16 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
             filter(
               (action: CreateMarketplaceOfferSuccess | UpdateMarketplaceOfferSuccess) =>
                 action.payload.offer.lineItem === lineItem.id
-            )
+            ),
+            switchMap(() => this.store$.select(selectMarketplaceListing, { id: this.listing.id })),
+            take(1)
           );
         })
-    ).subscribe(() => {
-      this.modal.close();
+    ).pipe(
+      // It's only one listing so we can take the first result.
+      map(result => result[0])
+    ).subscribe(listing => {
+      this.modal.close(listing);
       this.loadingService.setLoading(false);
     });
 

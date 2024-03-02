@@ -341,56 +341,144 @@ export function reducer(state = initialEquipmentState, action: PayloadActionInte
         }
       };
 
-    case EquipmentActionTypes.DELETE_MARKETPLACE_PRIVATE_CONVERSATION_SUCCESS:
+    case EquipmentActionTypes.CREATE_MARKETPLACE_OFFER_SUCCESS: {
+      const newOffer = action.payload.offer;
+
+      // Create a new updatedListings array with immutability in mind
+      const updatedListings = state.marketplace.listings.map(listing => {
+        if (listing.id !== newOffer.listingId) {
+          // If the listing does not match, return it as is
+          return listing;
+        }
+
+        // Map over lineItems to find the one that matches and update it
+        const updatedLineItems = listing.lineItems.map(lineItem => {
+          if (lineItem.id !== newOffer.lineItem) {
+            // If the lineItem does not match, return it as is
+            return lineItem;
+          }
+
+          // Add the new offer to the lineItem's offers array
+          return {
+            ...lineItem,
+            offers: [...lineItem.offers, newOffer]
+          };
+        });
+
+        // Return the listing with the updated lineItems
+        return {
+          ...listing,
+          lineItems: updatedLineItems
+        };
+      });
+
+      // Return the updated state with the updated listings
       return {
         ...state,
         marketplace: {
           ...state.marketplace,
-          privateConversations: state.marketplace.privateConversations.filter(conversation => conversation.id !== action.payload.id)
+          listings: updatedListings
         }
       };
-
-    case EquipmentActionTypes.CREATE_MARKETPLACE_OFFER_SUCCESS: {
-      const offer = action.payload.offer;
-      const updatedState = { ...state };
-
-      updatedState.marketplace.listings.filter(listing => listing.id === offer.listingId).forEach(listing => {
-        listing.lineItems.filter(lineItem => lineItem.id === offer.lineItemId).forEach(lineItem => {
-          lineItem.offers = [
-            ...lineItem.offers,
-            offer
-          ];
-        });
-      });
-
-      return updatedState;
     }
 
     case EquipmentActionTypes.UPDATE_MARKETPLACE_OFFER_SUCCESS: {
-      const offer = action.payload.offer;
-      const updatedState = { ...state };
+      const updatedOffer = action.payload.offer;
 
-      updatedState.marketplace.listings.filter(listing => listing.id === offer.listingId).forEach(listing => {
-        listing.lineItems.filter(lineItem => lineItem.id === offer.lineItemId).forEach(lineItem => {
-          lineItem.offers = lineItem.offers.map(offer => offer.id === action.payload.offer.id ? action.payload.offer : offer);
+      // Map over the listings to find the one that matches the updated offer's listing
+      const updatedListings = state.marketplace.listings.map(listing => {
+        if (listing.id !== updatedOffer.listing) {
+          // If the listing does not match, return it as is
+          return listing;
+        }
+
+        // Map over the lineItems in the matching listing to find the one that matches the offer's lineItem
+        const updatedLineItems = listing.lineItems.map(lineItem => {
+          if (lineItem.id !== updatedOffer.lineItem) {
+            // If the lineItem does not match, return it as is
+            return lineItem;
+          }
+
+          // Map over the offers in the matching lineItem to update the offer
+          const updatedOffers = lineItem.offers.map(offer => {
+            if (offer.id !== updatedOffer.id) {
+              // If the offer does not match, return it as is
+              return offer;
+            }
+
+            // Return the updated offer
+            return updatedOffer;
+          });
+
+          // Return the lineItem with the updated offers
+          return {
+            ...lineItem,
+            offers: updatedOffers
+          };
         });
+
+        // Return the listing with the updated lineItems
+        return {
+          ...listing,
+          lineItems: updatedLineItems
+        };
       });
 
-      return updatedState;
+      // Return the updated state with the updated listings
+      return {
+        ...state,
+        marketplace: {
+          ...state.marketplace,
+          listings: updatedListings
+        }
+      };
     }
+
 
     case EquipmentActionTypes.DELETE_MARKETPLACE_OFFER_SUCCESS: {
-      const offer = action.payload.offer;
-      const updatedState = { ...state };
+      const deletedOffer = action.payload.offer;
 
-      updatedState.marketplace.listings.filter(listing => listing.id === offer.listingId).forEach(listing => {
-        listing.lineItems.filter(lineItem => lineItem.id === offer.lineItemId).forEach(lineItem => {
-          lineItem.offers = lineItem.offers.filter(offer => offer.id !== action.payload.offer.id);
+      // Create a new updatedListings array with immutability in mind
+      const updatedListings = state.marketplace.listings.map(listing => {
+        if (listing.id !== deletedOffer.listing) {
+          // If the listing does not match, return it as is
+          return listing;
+        }
+
+        // Map over lineItems to find the one that matches and update it
+        const updatedLineItems = listing.lineItems.map(lineItem => {
+          if (lineItem.id !== deletedOffer.lineItem) {
+            // If the lineItem does not match, return it as is
+            return lineItem;
+          }
+
+          // Filter out the deleted offer from the lineItem's offers array
+          const updatedOffers = lineItem.offers.filter(offer => offer.id !== deletedOffer.id);
+
+          // Return the lineItem with the updated offers array
+          return {
+            ...lineItem,
+            offers: updatedOffers
+          };
         });
+
+        // Return the listing with the updated lineItems
+        return {
+          ...listing,
+          lineItems: updatedLineItems
+        };
       });
 
-      return updatedState;
+      // Return the updated state with the updated listings
+      return {
+        ...state,
+        marketplace: {
+          ...state.marketplace,
+          listings: updatedListings
+        }
+      };
     }
+
 
     default: {
       return state;

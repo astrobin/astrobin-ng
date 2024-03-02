@@ -219,7 +219,15 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
   onMakeAnOfferClicked(event: Event) {
     event.preventDefault();
     const modalRef: NgbModalRef = this.modalService.open(MarketplaceOfferModalComponent, { size: "lg" });
-    modalRef.componentInstance.listing = this.listing;
+    const component = modalRef.componentInstance;
+
+    component.listing = this.listing;
+
+    modalRef.closed.subscribe(listing => {
+      if (listing) {
+        this.listing = listing;
+      }
+    });
   }
 
   loadPrivateConversations() {
