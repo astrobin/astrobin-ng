@@ -1,35 +1,45 @@
-<div class="card">
-  <div class="card-header">
-    <div class="name">
-      <ng-container *ngIf="!!displayName; else textLoadingTemplate">
-        {{ displayName }}
-      </ng-container>
-    </div>
-    <div class="created">
-      {{ lineItem.created | localDate | timeago: true }}
-    </div>
-  </div>
-
-  <div class="card-body">
-    <img
-      *ngIf="lineItem.images.length > 0"
-      [alt]=""
-      [src]="lineItem.images[0].thumbnailFile || lineItem.images[0].imageFile"
-    />
-  </div>
-
-  <div class="card-footer">
-    <div class="d-flex w-100 justify-content-between align-items-center">
-      <div class="location">
-        <ng-container *ngIf="!!listing.city">
-          {{ listing.city }},
+<div class="card-container">
+  <div class="card">
+    <div class="card-header">
+      <div class="name">
+        <ng-container *ngIf="!!displayName; else textLoadingTemplate">
+          {{ displayName }}
         </ng-container>
-        {{ countryService.getCountryName(listing.country) }}
       </div>
-      <div class="price">
-        {{ lineItem.price | currency: lineItem.currency : "symbol" : "1.2-2" : translateService.currentLang }}
+      <div class="created">
+        {{ lineItem.created | localDate | timeago: true }}
       </div>
     </div>
+
+    <div class="card-body">
+      <img
+        *ngIf="lineItem.images.length > 0"
+        [alt]=""
+        [src]="lineItem.images[0].thumbnailFile || lineItem.images[0].imageFile"
+      />
+    </div>
+
+    <div class="card-footer">
+      <div class="d-flex w-100 justify-content-between align-items-center">
+        <div class="location">
+          <ng-container *ngIf="!!listing.city">
+            {{ listing.city }},
+          </ng-container>
+          {{ countryService.getCountryName(listing.country) }}
+        </div>
+        <div class="price">
+          {{ lineItem.price | currency: lineItem.currency : "symbol" : "1.2-2" : translateService.currentLang }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-badges">
+    <ng-container *ngIf="(currentUser$ | async)?.id === lineItem.user">
+      <div class="badge badge-own-marketplace-listing">
+        <fa-icon icon="user"></fa-icon>
+      </div>
+    </ng-container>
   </div>
 </div>
 

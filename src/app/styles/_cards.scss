@@ -1,6 +1,25 @@
 @import "mixins";
 @import "breakpoints";
 
+.card-container {
+  position: relative;
+}
+
+.card-badges {
+  position: absolute;
+  top: -.5rem;
+  right: -.5rem;
+
+  .badge {
+    width: 1.75rem;
+    height: 1.75rem;
+    font-size: .75rem;
+    line-height: 1rem;
+    border-radius: 50%;
+    text-align: center;
+  }
+}
+
 .card {
   box-shadow: 0 0 .5rem rgba(0, 0, 0, .5);
 
