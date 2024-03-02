@@ -7,7 +7,17 @@
         </ng-container>
       </div>
       <div class="created">
+        <fa-icon icon="calendar-alt"></fa-icon>
         {{ lineItem.created | localDate | timeago : true }}
+        &middot;
+        <fa-icon icon="bell"></fa-icon>
+        {{ listing.followerCount }}
+        &middot;
+        <fa-icon icon="eye"></fa-icon>
+        {{ listing.viewCount }}
+        &middot;
+        <fa-icon icon="camera-alt"></fa-icon>
+        {{ lineItem.images.length }}
       </div>
     </div>
 
@@ -33,26 +43,10 @@
   </div>
 
   <div class="card-badges">
-    <div
-      [ngbTooltip]="translateService.instant('Views')"
-      class="badge rounded-pill"
-      container="body"
-    >
-      <span class="d-inline-block me-1">
-        <fa-icon icon="eye"></fa-icon>
-        {{ listing.viewCount }}
-      </span>
-
-      <span class="d-inline-block">
-        <fa-icon icon="camera-alt"></fa-icon>
-        {{ lineItem.images.length }}
-      </span>
-    </div>
-
     <ng-container *ngIf="lineItem.offers?.length">
       <div
         [ngbTooltip]="translateService.instant('This listing has offers')"
-        class="badge rounded-pill bg-danger border border-light ms-1"
+        class="badge rounded-pill bg-danger border border-light"
         container="body"
       >
         <fa-icon icon="comment-dollar"></fa-icon>
