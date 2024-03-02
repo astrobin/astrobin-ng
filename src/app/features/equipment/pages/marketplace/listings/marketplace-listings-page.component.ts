@@ -131,6 +131,10 @@ export class MarketplaceListingsPageComponent extends BaseComponentDirective imp
     this.store$.select(selectRequestCountry).pipe(
       takeUntil(this.destroyed$),
       map(requestCountry => {
+          if (!requestCountry || requestCountry === "UNKNOWN") {
+            requestCountry = "US";
+          }
+
           this.requestCountryCode = requestCountry;
           this.requestCountryLabel = this.countryService.getCountryName(requestCountry, this.translateService.currentLang);
         }
