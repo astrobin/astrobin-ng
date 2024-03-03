@@ -388,7 +388,7 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
         )
       ),
       switchMap(([user, contentType]) => {
-          if (user.id !== this.listing.user) {
+          if (!user || user.id !== this.listing.user) {
             return this.http.post(`${environment.classicBaseUrl}/json-api/common/record-hit/`, {
               content_type_id: contentType.id,
               object_id: this.listing.id
