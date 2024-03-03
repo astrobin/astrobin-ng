@@ -22,7 +22,7 @@ import { ActivatedRoute } from "@angular/router";
   ]
 })
 export class MarketplaceMyOffersPageComponent extends BaseComponentDirective implements OnInit {
-  readonly title = this.translateService.instant("My listings");
+  readonly title = this.translateService.instant("My offers");
 
   listings$ = this.store$.select(selectMarketplaceListings).pipe(
     takeUntil(this.destroyed$),
