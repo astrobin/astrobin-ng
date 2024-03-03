@@ -48,6 +48,7 @@ import { HttpClient } from "@angular/common/http";
 import { environment } from "@env/environment";
 import { MarketplaceOfferModalComponent } from "@features/equipment/components/marketplace-offer-modal/marketplace-offer-modal.component";
 import { WindowRefService } from "@shared/services/window-ref.service";
+import { RouterService } from "@shared/services/router.service";
 
 @Component({
   selector: "astrobin-marketplace-listing-page",
@@ -92,7 +93,8 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
     public readonly modalService: NgbModal,
     public readonly router: Router,
     public readonly http: HttpClient,
-    public readonly windowRefService: WindowRefService
+    public readonly windowRefService: WindowRefService,
+    public readonly routerService: RouterService
   ) {
     super(store$);
   }
@@ -134,9 +136,15 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
   loadHasOffered() {
     this.hasOffered$ = this._listingUpdated$.pipe(
       switchMap(() => this.currentUser$),
-      switchMap(user => this.store$.select(
-          selectMarketplaceOffersByUser(user.id, this.listing.id)
-        )
+      switchMap(user => {
+          if (!!user) {
+            return this.store$.select(
+              selectMarketplaceOffersByUser(user.id, this.listing.id)
+            );
+          }
+
+          return of([]);
+        }
       ),
       map(offers => offers.length > 0),
       takeUntil(this.destroyed$)
@@ -218,15 +226,25 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
 
   onMakeAnOfferClicked(event: Event) {
     event.preventDefault();
-    const modalRef: NgbModalRef = this.modalService.open(MarketplaceOfferModalComponent, { size: "lg" });
-    const component = modalRef.componentInstance;
 
-    component.listing = this.listing;
-
-    modalRef.closed.subscribe(listing => {
-      if (listing) {
-        this.listing = listing;
+    this.currentUser$.pipe(
+      take(1)
+    ).subscribe(user => {
+      if (!user) {
+        this.routerService.redirectToLogin();
+        return;
       }
+
+      const modalRef: NgbModalRef = this.modalService.open(MarketplaceOfferModalComponent, { size: "lg" });
+      const component = modalRef.componentInstance;
+
+      component.listing = this.listing;
+
+      modalRef.closed.subscribe(listing => {
+        if (listing) {
+          this.listing = listing;
+        }
+      });
     });
   }
 
