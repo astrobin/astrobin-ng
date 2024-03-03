@@ -8,6 +8,7 @@ import { isPlatformBrowser, Location } from "@angular/common";
 export enum MarketplaceNavPage {
   ALL_LISTINGS = "all-listings",
   MY_LISTINGS = "my-listings",
+  MY_OFFERS = "my-offers",
   MY_PURCHASES = "my-purchases",
 }
 
@@ -52,6 +53,8 @@ export class MarketplaceNavComponent extends BaseComponentDirective implements O
       this.active = MarketplaceNavPage.ALL_LISTINGS;
     } else if (path === "/equipment/marketplace/my-listings") {
       this.active = MarketplaceNavPage.MY_LISTINGS;
+    } else if (path === "/equipment/marketplace/my-offers") {
+      this.active = MarketplaceNavPage.MY_OFFERS;
     } else if (path === "/equipment/marketplace/my-purchases") {
       this.active = MarketplaceNavPage.MY_PURCHASES;
     }

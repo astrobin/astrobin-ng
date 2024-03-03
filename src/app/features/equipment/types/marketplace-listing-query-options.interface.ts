@@ -4,4 +4,5 @@ import { MarketplaceFilterModel } from "@features/equipment/components/marketpla
 export type MarketplaceListingQueryOptionsInterface = {
   page: number;
   user?: UserInterface | null;
+  offersByUser?: UserInterface | null;
 } & MarketplaceFilterModel;

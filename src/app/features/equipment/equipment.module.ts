@@ -52,9 +52,10 @@ import { MarketplaceSidebarComponent } from "./components/marketplace-sidebar/ma
 import { MarketplaceMyListingsPageComponent } from "./pages/marketplace/my-listings/marketplace-my-listings-page.component";
 import { MarketplaceFilterComponent } from "./components/marketplace-filter/marketplace-filter.component";
 import { MarketplaceMoreFromUserComponent } from "./components/marketplace-more-from-user/marketplace-more-from-user.component";
-import { MarketplaceLineItemCardsComponent } from './components/marketplace-line-item-cards/marketplace-line-item-cards.component';
-import { MarketplaceSearchBarComponent } from './components/marketplace-search-bar/marketplace-search-bar.component';
-import { MarketplaceOfferModalComponent } from './components/marketplace-offer-modal/marketplace-offer-modal.component';
+import { MarketplaceLineItemCardsComponent } from "./components/marketplace-line-item-cards/marketplace-line-item-cards.component";
+import { MarketplaceSearchBarComponent } from "./components/marketplace-search-bar/marketplace-search-bar.component";
+import { MarketplaceOfferModalComponent } from "./components/marketplace-offer-modal/marketplace-offer-modal.component";
+import { MarketplaceMyOffersPageComponent } from "@features/equipment/pages/marketplace/my-offers/marketplace-my-offers-page.component";
 
 @NgModule({
   declarations: [
@@ -104,6 +105,7 @@ import { MarketplaceOfferModalComponent } from './components/marketplace-offer-m
     MarketplaceNavComponent,
     MarketplaceSidebarComponent,
     MarketplaceMyListingsPageComponent,
+    MarketplaceMyOffersPageComponent,
     MarketplaceFilterComponent,
     MarketplaceMoreFromUserComponent,
     MarketplaceLineItemCardsComponent,

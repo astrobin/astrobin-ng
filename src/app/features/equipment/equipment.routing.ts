@@ -21,6 +21,7 @@ import { MarketplaceListingPageComponent } from "@features/equipment/pages/marke
 import { MarketplaceListingResolver } from "@features/equipment/resolvers/marketplace-listing.resolver";
 import { MarketplaceEditListingPageComponent } from "@features/equipment/pages/marketplace/edit-listing/marketplace-edit-listing-page.component";
 import { MarketplaceMyListingsPageComponent } from "@features/equipment/pages/marketplace/my-listings/marketplace-my-listings-page.component";
+import { MarketplaceMyOffersPageComponent } from "@features/equipment/pages/marketplace/my-offers/marketplace-my-offers-page.component";
 
 export const routes: Routes = [
   {
@@ -169,6 +170,11 @@ export const routes: Routes = [
       {
         path: "my-listings",
         component: MarketplaceMyListingsPageComponent,
+        canActivate: [AuthGuardService]
+      },
+      {
+        path: "my-offers",
+        component: MarketplaceMyOffersPageComponent,
         canActivate: [AuthGuardService]
       },
       {

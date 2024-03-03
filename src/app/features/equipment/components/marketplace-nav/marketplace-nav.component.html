@@ -2,21 +2,32 @@
   <li [ngbNavItem]="MarketplaceNavPage.ALL_LISTINGS">
     <a ngbNavLink routerLink="/equipment/marketplace">
       <fa-icon icon="list"></fa-icon> &nbsp;
-      {{ "All listings" | translate }}
+      <span class="title">{{ "All listings" | translate }}</span>
+      <span class="subtitle">{{ "The entire equipment marketplace" | translate }}</span>
     </a>
   </li>
 
   <li [ngbNavItem]="MarketplaceNavPage.MY_LISTINGS">
     <a ngbNavLink routerLink="/equipment/marketplace/my-listings">
       <fa-icon icon="user"></fa-icon> &nbsp;
-      {{ "My listings" | translate }}
+      <span class="title">{{ "My listings" | translate }}</span>
+      <span class="subtitle">{{ "Items that you have put up for sale" | translate }}</span>
+    </a>
+  </li>
+
+  <li [ngbNavItem]="MarketplaceNavPage.MY_OFFERS">
+    <a ngbNavLink routerLink="/equipment/marketplace/my-offers">
+      <fa-icon icon="comment-dollar"></fa-icon> &nbsp;
+      <span class="title">{{ "My offers" | translate }}</span>
+      <span class="subtitle">{{ "Items that have a pending offer for" | translate }}</span>
     </a>
   </li>
 
   <li [ngbNavItem]="MarketplaceNavPage.MY_PURCHASES">
     <a ngbNavLink routerLink="/equipment/marketplace/my-purchases">
-      <fa-icon icon="shopping-cart"></fa-icon> &nbsp;
-      {{ "My purchases" | translate }}
+      <fa-icon icon="handshake"></fa-icon> &nbsp;
+      <span class="title">{{ "My purchases" | translate }}</span>
+      <span class="subtitle">{{ "Items that you have purchased" | translate }}</span>
     </a>
   </li>
 </ul>

@@ -20,6 +20,19 @@
   &.nav-pills .show > .nav-link {
     margin: 0;
     border-radius: 0;
+
+    &.active {
+      .subtitle {
+        color: var(--lightestGrey);
+      }
+    }
+
+    .subtitle {
+      display: block;
+      color: var(--lightGrey);
+      font-style: italic;
+      font-size: .9rem;
+    }
   }
 
   .nav {

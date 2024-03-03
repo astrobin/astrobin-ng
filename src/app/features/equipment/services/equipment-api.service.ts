@@ -93,7 +93,7 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     if (allowUnapproved) {
       url = UtilsService.addOrUpdateUrlParam(url, "allow-unapproved", "true");
     }
-    
+
     if (allowDIY) {
       url = UtilsService.addOrUpdateUrlParam(url, "allow-DIY", "true");
     }
@@ -794,7 +794,14 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
       const value = options[key];
       if (value != null) {
         const paramKey = UtilsService.camelCaseToSnakeCase(key);
-        const valueStr = (key === "user" && value.id) ? value.id.toString() : value.toString();
+        let valueStr = value.toString();
+
+        if (key === "user" && value.id) {
+          valueStr = value.id.toString();
+        } else if (key === "offersByUser" && value.id) {
+          valueStr = value.id.toString();
+        }
+
         url = UtilsService.addOrUpdateUrlParam(url, paramKey, valueStr);
       }
     });
