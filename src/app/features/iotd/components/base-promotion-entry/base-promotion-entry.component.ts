@@ -230,7 +230,8 @@ export abstract class BasePromotionEntryComponent extends BaseComponentDirective
               this.store$.dispatch(
                 new LoadEquipmentItem({
                   type: EquipmentItemType.TELESCOPE,
-                  id: telescope
+                  id: telescope,
+                  allowUnapproved: true
                 })
               );
             }
@@ -239,7 +240,8 @@ export abstract class BasePromotionEntryComponent extends BaseComponentDirective
               this.store$.dispatch(
                 new LoadEquipmentItem({
                   type: EquipmentItemType.CAMERA,
-                  id: camera
+                  id: camera,
+                  allowUnapproved: true
                 })
               );
             }

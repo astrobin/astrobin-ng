@@ -235,6 +235,7 @@ export class LoadEquipmentItem implements PayloadActionInterface {
     public payload: {
       id: EquipmentItemBaseInterface["id"];
       type: EquipmentItemType;
+      allowUnapproved?: boolean;
       item?: EquipmentItem; // The dispatcher already has the item and just wants it added to the store.
     }
   ) {
