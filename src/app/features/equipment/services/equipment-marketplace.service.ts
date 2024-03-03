@@ -48,7 +48,9 @@ export class EquipmentMarketplaceService extends BaseService {
       switchMap((contentType: ContentTypeInterface) => {
           const payload = {
             id: lineItem.itemObjectId,
-            type: EquipmentItemType[contentType.model.toUpperCase()]
+            type: EquipmentItemType[contentType.model.toUpperCase()],
+            allowUnapproved: true,
+            allowDIY: true
           };
 
           this.store$.dispatch(new LoadEquipmentItem(payload));

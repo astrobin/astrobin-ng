@@ -231,7 +231,8 @@ export abstract class BasePromotionEntryComponent extends BaseComponentDirective
                 new LoadEquipmentItem({
                   type: EquipmentItemType.TELESCOPE,
                   id: telescope,
-                  allowUnapproved: true
+                  allowUnapproved: true,
+                  allowDIY: true
                 })
               );
             }
@@ -241,7 +242,8 @@ export abstract class BasePromotionEntryComponent extends BaseComponentDirective
                 new LoadEquipmentItem({
                   type: EquipmentItemType.CAMERA,
                   id: camera,
-                  allowUnapproved: true
+                  allowUnapproved: true,
+                  allowDIY: true
                 })
               );
             }

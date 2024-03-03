@@ -85,12 +85,17 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
   getEquipmentItem(
     id: EquipmentItemBaseInterface["id"],
     type: EquipmentItemType,
-    allowUnapproved = false
+    allowUnapproved = false,
+    allowDIY = false
   ): Observable<EquipmentItemBaseInterface> {
     let url = `${this.configUrl}/${type.toLowerCase()}/${id}/`;
 
     if (allowUnapproved) {
       url = UtilsService.addOrUpdateUrlParam(url, "allow-unapproved", "true");
+    }
+    
+    if (allowDIY) {
+      url = UtilsService.addOrUpdateUrlParam(url, "allow-DIY", "true");
     }
 
     return this.http.get<EquipmentItemBaseInterface>(url).pipe(map(item => this._parseItem(item)));
