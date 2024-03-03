@@ -25,7 +25,7 @@ export const ItemResolver: ResolveFn<EquipmentItem> = (
     return of(null);
   }
 
-  return equipmentApiService.getEquipmentItem(id, type).pipe(
+  return equipmentApiService.getEquipmentItem(id, type, true).pipe(
     tap(item => {
       store$.dispatch(new LoadEquipmentItemSuccess({ item }));
     }),

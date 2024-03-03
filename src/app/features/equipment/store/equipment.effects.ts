@@ -148,11 +148,12 @@ function getFromStoreOrApiByIdAndType<T>(
   store$: Store<State>,
   id: number,
   type: EquipmentItemType,
+  allowUnapproved: boolean,
   selector: SelectorWithProps<any, { id: number; type: EquipmentItemType }, T>,
-  apiCall: (number, EquipmentItemType) => Observable<T>,
+  apiCall: (number, EquipmentItemType, boolean) => Observable<T>,
   apiContext: any
 ): Observable<T> {
-  const fromApi: Observable<T> = apiCall.apply(apiContext, [id, type]);
+  const fromApi: Observable<T> = apiCall.apply(apiContext, [id, type, allowUnapproved]);
   return store$
     .select(selector, { id, type })
     .pipe(switchMap(fromStore => (fromStore !== null ? of(fromStore) : fromApi)));
@@ -244,6 +245,7 @@ export class EquipmentEffects {
           this.store$,
           payload.id,
           payload.type,
+          payload.allowUnapproved,
           selectEquipmentItem,
           this.equipmentApiService.getEquipmentItem,
           this.equipmentApiService
@@ -544,6 +546,7 @@ export class EquipmentEffects {
           this.store$,
           id,
           EquipmentItemType.SENSOR,
+          false,
           selectEquipmentItem as SelectorWithProps<any, { id: number; type: EquipmentItemType }, SensorInterface>,
           this.equipmentApiService.getSensor,
           this.equipmentApiService
