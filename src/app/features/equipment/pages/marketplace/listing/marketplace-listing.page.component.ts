@@ -373,8 +373,19 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
 
     this.store$
       .select(selectMarketplacePrivateConversations(this.listing.id))
-      .pipe(take(1))
-      .subscribe(privateConversations => {
+      .pipe(
+        switchMap(privateConversations => this.currentUser$.pipe(map(currentUser => [privateConversations, currentUser]))),
+        take(1)
+      )
+      .subscribe((data: [MarketplacePrivateConversationInterface[], UserInterface]) => {
+        const [privateConversations, currentUser] = data;
+
+        if (!currentUser) {
+          this.loadingService.setLoading(false);
+          this.routerService.redirectToLogin();
+          return;
+        }
+
         if (privateConversations.length === 0) {
           this.actions$
             .pipe(
