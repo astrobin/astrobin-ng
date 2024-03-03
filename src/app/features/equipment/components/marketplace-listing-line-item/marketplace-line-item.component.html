@@ -1,10 +1,6 @@
 <ng-container *ngIf="equipmentItem; else noEquipmentItem">
   <div class="card">
-    <div
-      (click)="collapsed = !collapsed"
-      [class.collapsed-body]="collapsed"
-      class="card-header"
-    >
+    <div (click)="collapsed = !collapsed" [class.collapsed-body]="collapsed" class="card-header">
       <div class="d-flex align-items-center gap-3">
         <div class="image">
           <img
@@ -34,6 +30,24 @@
             </a>
           </div>
 
+          <div class="offers-count">
+            <span
+              *ngIf="lineItem.offers.length === 0"
+              [translate]="'No offers yet'"
+            ></span>
+            <span
+              *ngIf="lineItem.offers.length === 1"
+              [translate]="'One offer'"
+            ></span>
+            <span
+              *ngIf="lineItem.offers.length > 1"
+              [translateParams]="{
+                '0': lineItem.offers.length
+              }"
+              [translate]="'{{0}} offers'"
+            ></span>
+          </div>
+
           <astrobin-marketplace-listing-line-item-condition
             [lineItem]="lineItem"
           ></astrobin-marketplace-listing-line-item-condition>
@@ -42,14 +56,17 @@
             {{ "First added to an image" | translate }}:
             <span class="first-added-date">
               <ng-container *ngIf="lineItem.firstAddedToAnImage; else noFirstAddedDateTemplate">
-                {{ lineItem.firstAddedToAnImage | date: 'mediumDate' }}
+                {{ lineItem.firstAddedToAnImage | date : "mediumDate" }}
               </ng-container>
               <ng-template #noFirstAddedDateTemplate>
                 {{ "Unknown" | translate }}
               </ng-template>
             </span>
             <fa-icon
-              [ngbTooltip]="'AstroBin records the dates when users associate equipment items to images. This information can be used to corroborate the legitimacy of the information provided by the seller.' | translate"
+              [ngbTooltip]="
+                'AstroBin records the dates when users associate equipment items to images. This information can be used to corroborate the legitimacy of the information provided by the seller.'
+                  | translate
+              "
               icon="question-circle"
             ></fa-icon>
           </div>
@@ -65,9 +82,7 @@
           [lineItem]="lineItem"
         ></astrobin-marketplace-listing-line-item-price>
 
-        <fa-icon
-          [icon]="collapsed ? 'chevron-down' : 'chevron-up'"
-        ></fa-icon>
+        <fa-icon [icon]="collapsed ? 'chevron-down' : 'chevron-up'"></fa-icon>
       </div>
     </div>
 

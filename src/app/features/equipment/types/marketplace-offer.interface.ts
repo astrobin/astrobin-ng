@@ -2,6 +2,12 @@ import { MarketplaceListingInterface } from "@features/equipment/types/marketpla
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
 
+export enum MarketplaceOfferStatus {
+  PENDING = "PENDING",
+  ACCEPTED = "ACCEPTED",
+  REJECTED = "REJECTED"
+}
+
 export interface MarketplaceOfferInterface {
   id?: number;
   listing: MarketplaceListingInterface["id"];
@@ -10,4 +16,5 @@ export interface MarketplaceOfferInterface {
   created?: string;
   updated?: string;
   amount?: number;
+  status?: MarketplaceOfferStatus;
 }

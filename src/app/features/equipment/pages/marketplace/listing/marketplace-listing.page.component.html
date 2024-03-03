@@ -11,21 +11,45 @@
 
   <small>
     <fa-icon icon="calendar"></fa-icon>
-    {{ listing.created | localDate | timeago: true }}
+    {{ listing.created | localDate | timeago : true }}
 
     &middot;
 
     <fa-icon icon="bell"></fa-icon>
-    <span [translateParams]="{
-      '0': listing.followerCount
-    }" [translate]="'{{0}} followers'"></span>
+    <span
+      *ngIf="listing.followerCount === 0"
+      [translate]="'No followers yet'"
+    ></span>
+    <span
+      *ngIf="listing.followerCount === 1"
+      [translate]="'One follower'"
+    ></span>
+    <span
+      *ngIf="listing.followerCount > 1"
+      [translateParams]="{
+        '0': listing.followerCount
+      }"
+      [translate]="'{{0}} followers'"
+    ></span>
 
     &middot;
 
     <fa-icon icon="eye"></fa-icon>
-    <span [translateParams]="{
-      '0': listing.viewCount
-    }" [translate]="'{{0}} views'"></span>
+    <span
+      *ngIf="listing.viewCount === 0"
+      [translate]="'No views yet'"
+    ></span>
+    <span
+      *ngIf="listing.viewCount === 1"
+      [translate]="'One view'"
+    ></span>
+    <span
+      *ngIf="listing.viewCount > 1"
+      [translateParams]="{
+        '0': listing.viewCount
+      }"
+      [translate]="'{{0}} views'"
+    ></span>
   </small>
 
   <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
@@ -43,9 +67,7 @@
               [title]="'Public questions' | translate"
             ></astrobin-nested-comments>
 
-            <astrobin-marketplace-more-from-user
-              [listing]="listing"
-            ></astrobin-marketplace-more-from-user>
+            <astrobin-marketplace-more-from-user [listing]="listing"></astrobin-marketplace-more-from-user>
           </div>
 
           <div class="col">
