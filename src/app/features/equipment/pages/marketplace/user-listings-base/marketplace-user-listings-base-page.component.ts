@@ -16,6 +16,7 @@ import { UserInterface } from "@shared/interfaces/user.interface";
 import { MarketplaceListingsBasePageComponent } from "@features/equipment/pages/marketplace/listings-base/marketplace-listings-base-page.component";
 import { CountryService } from "@shared/services/country.service";
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
+import { UtilsService } from "@shared/services/utils/utils.service";
 
 @Component({
   selector: "astrobin-marketplace-user-listings-base-page",
@@ -36,10 +37,21 @@ export abstract class MarketplaceUserListingsBasePageComponent
     public readonly activatedRoute: ActivatedRoute,
     public readonly countryService: CountryService,
     public readonly router: Router,
+    public readonly utilsService: UtilsService,
     public readonly location: Location,
     public readonly windowRefService: WindowRefService
   ) {
-    super(store$, translateService, titleService, loadingService, activatedRoute, countryService, router);
+    super(
+      store$,
+      actions$,
+      translateService,
+      titleService,
+      loadingService,
+      activatedRoute,
+      countryService,
+      router,
+      utilsService
+    );
   }
 
   ngOnInit(): void {

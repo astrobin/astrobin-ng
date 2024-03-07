@@ -6,8 +6,8 @@ import { TranslateService } from "@ngx-translate/core";
 import { TitleService } from "@shared/services/title/title.service";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { selectMarketplaceListings } from "@features/equipment/store/equipment.selectors";
-import { filter, map, takeUntil, tap } from "rxjs/operators";
-import { LoadMarketplaceListings } from "@features/equipment/store/equipment.actions";
+import { map, take, takeUntil, tap } from "rxjs/operators";
+import { EquipmentActionTypes, LoadMarketplaceListings } from "@features/equipment/store/equipment.actions";
 import { LoadingService } from "@shared/services/loading.service";
 import { MarketplaceFilterModel } from "@features/equipment/components/marketplace-filter/marketplace-filter.component";
 import { ActivatedRoute, Router } from "@angular/router";
@@ -16,7 +16,8 @@ import { CountryService } from "@shared/services/country.service";
 import { Observable } from "rxjs";
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
 import { UserInterface } from "@shared/interfaces/user.interface";
-import { concatLatestFrom } from "@ngrx/effects";
+import { Actions, concatLatestFrom, ofType } from "@ngrx/effects";
+import { UtilsService } from "@shared/services/utils/utils.service";
 
 @Component({
   selector: "astrobin-marketplace-listings-base-page",
@@ -33,12 +34,14 @@ export abstract class MarketplaceListingsBasePageComponent extends BaseComponent
 
   constructor(
     public readonly store$: Store<State>,
+    public readonly actions$: Actions,
     public readonly translateService: TranslateService,
     public readonly titleService: TitleService,
     public readonly loadingService: LoadingService,
     public readonly activatedRoute: ActivatedRoute,
     public readonly countryService: CountryService,
-    public readonly router: Router
+    public readonly router: Router,
+    public readonly utilsService: UtilsService
   ) {
     super(store$);
   }
@@ -76,31 +79,38 @@ export abstract class MarketplaceListingsBasePageComponent extends BaseComponent
       relativeTo: this.activatedRoute,
       queryParams
     }).then(() => {
-        this.store$.dispatch(new LoadMarketplaceListings(
-          {
-            options: {
-              ...(this.filterModel || {}),
-              page: this.page
-            }
-          }));
-
+      this.actions$.pipe(
+        ofType(EquipmentActionTypes.LOAD_MARKETPLACE_LISTINGS_SUCCESS),
+        take(1)
+      ).subscribe(() => {
         this._initializeListingsStream();
-        this._setTitle();
-        this._setBreadcrumb();
-        this.loadingService.setLoading(false);
-      }
-    );
+      });
+
+      this.utilsService.delay(1).subscribe(() => {
+          this.store$.dispatch(new LoadMarketplaceListings(
+            {
+              options: {
+                ...(this.filterModel || {}),
+                page: this.page
+              }
+            }));
+        }
+      );
+
+      this._setTitle();
+      this._setBreadcrumb();
+      this.loadingService.setLoading(false);
+    });
   }
 
   protected abstract _getListingsFilterPredicate(currentUser: UserInterface | null): (listing: MarketplaceListingInterface) => boolean;
 
   protected _initializeListingsStream() {
     this.listings$ = this.store$.select(selectMarketplaceListings).pipe(
-      takeUntil(this.destroyed$),
-      filter(listings => !!listings),
       concatLatestFrom(() => this.currentUser$),
-      map(([listings, currentUser]) => listings.filter(this._getListingsFilterPredicate(currentUser))),
-      tap(() => this.loadingService.setLoading(false))
+      map(([listings, currentUser]) => !!listings ? listings.filter(this._getListingsFilterPredicate(currentUser)) : []),
+      tap(() => this.loadingService.setLoading(false)),
+      takeUntil(this.destroyed$)
     );
   }
 

@@ -24,8 +24,8 @@ export interface EquipmentState {
   mostOftenUsedWithData: EquipmentItemMostOftenUsedWithData | {};
   contributors: ContributorInterface[];
   marketplace: {
-    listings: MarketplaceListingInterface[] | null,
-    privateConversations: MarketplacePrivateConversationInterface[]
+    listings: MarketplaceListingInterface[] | null;
+    privateConversations: MarketplacePrivateConversationInterface[];
   };
 }
 
@@ -142,7 +142,9 @@ export function reducer(state = initialEquipmentState, action: PayloadActionInte
 
       return {
         ...state,
-        equipmentItems: equipmentItems.filter(item => item.klass !== rejectedItem.klass && item.id !== rejectedItem.id)
+        equipmentItems: equipmentItems.filter(
+          item => item.klass !== rejectedItem.klass && item.id !== rejectedItem.id
+        )
       };
     }
 
@@ -157,10 +159,12 @@ export function reducer(state = initialEquipmentState, action: PayloadActionInte
     case EquipmentActionTypes.ASSIGN_EDIT_PROPOSAL_SUCCESS: {
       return {
         ...state,
-        editProposals: (arrayUniqueEquipmentItems([
-          ...state.editProposals,
-          ...[action.payload.editProposal]
-        ]) as EditProposalInterface<EquipmentItemBaseInterface>[])
+        editProposals: (
+          arrayUniqueEquipmentItems([
+            ...state.editProposals,
+            ...[action.payload.editProposal]
+          ]) as EditProposalInterface<EquipmentItemBaseInterface>[]
+        )
           .sort(editProposalCompareFunction)
           .reverse()
       };
@@ -175,10 +179,12 @@ export function reducer(state = initialEquipmentState, action: PayloadActionInte
             getEquipmentItemType(item) !== getEquipmentItemType(action.payload.editProposal)
           );
         }),
-        editProposals: (arrayUniqueEquipmentItems([
-          ...state.editProposals,
-          ...[action.payload.editProposal]
-        ]) as EditProposalInterface<EquipmentItemBaseInterface>[])
+        editProposals: (
+          arrayUniqueEquipmentItems([
+            ...state.editProposals,
+            ...[action.payload.editProposal]
+          ]) as EditProposalInterface<EquipmentItemBaseInterface>[]
+        )
           .sort(editProposalCompareFunction)
           .reverse()
       };
@@ -298,7 +304,7 @@ export function reducer(state = initialEquipmentState, action: PayloadActionInte
         marketplace: {
           ...state.marketplace,
           listings: [
-            ...state.marketplace.listings?.filter(listing => listing.id !== action.payload.listing.id) || [],
+            ...(state.marketplace.listings?.filter(listing => listing.id !== action.payload.listing.id) || []),
             action.payload.listing
           ].sort((a, b) => b.id - a.id)
         }
@@ -320,10 +326,10 @@ export function reducer(state = initialEquipmentState, action: PayloadActionInte
         ...state,
         marketplace: {
           ...state.marketplace,
-          privateConversations: UtilsService.arrayUniqueObjects([
-            ...state.marketplace.privateConversations || [],
-            ...action.payload.privateConversations
-          ], "id").sort((a, b) => b.id - a.id)
+          privateConversations: UtilsService.arrayUniqueObjects(
+            [...(state.marketplace.privateConversations || []), ...action.payload.privateConversations],
+            "id"
+          ).sort((a, b) => b.id - a.id)
         }
       };
     }
@@ -335,7 +341,9 @@ export function reducer(state = initialEquipmentState, action: PayloadActionInte
         marketplace: {
           ...state.marketplace,
           privateConversations: [
-            ...state.marketplace.privateConversations?.filter(conversation => conversation.id !== action.payload.privateConversation.id) || [],
+            ...(state.marketplace.privateConversations?.filter(
+              conversation => conversation.id !== action.payload.privateConversation.id
+            ) || []),
             action.payload.privateConversation
           ].sort((a, b) => b.id - a.id)
         }
@@ -434,7 +442,6 @@ export function reducer(state = initialEquipmentState, action: PayloadActionInte
       };
     }
 
-
     case EquipmentActionTypes.DELETE_MARKETPLACE_OFFER_SUCCESS: {
       const deletedOffer = action.payload.offer;
 
@@ -478,7 +485,6 @@ export function reducer(state = initialEquipmentState, action: PayloadActionInte
         }
       };
     }
-
 
     default: {
       return state;
