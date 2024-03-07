@@ -5,6 +5,7 @@ import {
   AuthActionTypes,
   InitializeAuthSuccess,
   LoadUser,
+  LoadUserFailure,
   LoadUserProfile,
   LoadUserProfileSuccess,
   LoadUserSuccess,
@@ -86,7 +87,7 @@ export class AuthEffects {
     )
   );
 
-  LoadUser: Observable<LoadUserSuccess> = createEffect(() =>
+  LoadUser: Observable<LoadUserSuccess | LoadUserFailure> = createEffect(() =>
     this.actions$.pipe(
       ofType(AuthActionTypes.LOAD_USER),
       map((action: LoadUser) => action.payload),
@@ -95,10 +96,12 @@ export class AuthEffects {
           switchMap(userFromStore =>
             userFromStore !== null
               ? of(userFromStore).pipe(map(() => new LoadUserSuccess({ user: userFromStore })))
-              : this.commonApiService.getUser(payload.id).pipe(
+              : this.commonApiService.getUser(payload.id, payload.username).pipe(
                 map(
-                  user => new LoadUserSuccess({ user }),
-                  catchError(error => EMPTY)
+                  user => !!user
+                    ? new LoadUserSuccess({ user })
+                    : new LoadUserFailure(payload),
+                  catchError(error => of(new LoadUserFailure(payload)))
                 )
               )
           )

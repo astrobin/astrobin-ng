@@ -23,6 +23,7 @@ export enum AuthActionTypes {
   UPDATE_CURRENT_USER_PROFILE_SUCCESS = "[Auth] Update current user profile success",
   LOAD_USER = "[Auth] Load user",
   LOAD_USER_SUCCESS = "[Auth] Load user success",
+  LOAD_USER_FAILURE = "[Auth] Load user failure",
   LOAD_USER_PROFILE = "[Auth] Load user profile",
   LOAD_USER_PROFILE_SUCCESS = "[Auth] Load user profile success"
 }
@@ -84,7 +85,10 @@ export class UpdateCurrentUserProfileSuccess implements PayloadActionInterface {
 export class LoadUser implements PayloadActionInterface {
   readonly type = AuthActionTypes.LOAD_USER;
 
-  constructor(public payload: { id: UserInterface["id"] }) {
+  constructor(public payload: {
+    id?: UserInterface["id"],
+    username?: UserInterface["username"]
+  }) {
   }
 }
 
@@ -92,6 +96,16 @@ export class LoadUserSuccess implements PayloadActionInterface {
   readonly type = AuthActionTypes.LOAD_USER_SUCCESS;
 
   constructor(public payload: { user: UserInterface }) {
+  }
+}
+
+export class LoadUserFailure implements PayloadActionInterface {
+  readonly type = AuthActionTypes.LOAD_USER_FAILURE;
+
+  constructor(public payload: {
+    id?: UserInterface["id"],
+    username?: UserInterface["username"]
+  }) {
   }
 }
 

@@ -20,8 +20,12 @@ import { MarketplaceCreateListingPageComponent } from "@features/equipment/pages
 import { MarketplaceListingPageComponent } from "@features/equipment/pages/marketplace/listing/marketplace-listing.page.component";
 import { MarketplaceListingResolver } from "@features/equipment/resolvers/marketplace-listing.resolver";
 import { MarketplaceEditListingPageComponent } from "@features/equipment/pages/marketplace/edit-listing/marketplace-edit-listing-page.component";
-import { MarketplaceMyListingsPageComponent } from "@features/equipment/pages/marketplace/my-listings/marketplace-my-listings-page.component";
+import { MarketplaceUserListingsPageComponent } from "@features/equipment/pages/marketplace/user-listings/marketplace-user-listings-page.component";
 import { MarketplaceMyOffersPageComponent } from "@features/equipment/pages/marketplace/my-offers/marketplace-my-offers-page.component";
+import { MarketplaceSoldListingsPageComponent } from "@features/equipment/pages/marketplace/sold-listings/marketplace-sold-listings-page.component";
+import { MarketplaceUserSoldListingsPageComponent } from "@features/equipment/pages/marketplace/user-sold-listings/marketplace-user-sold-listings-page.component";
+import { MarketplaceUserExpiredListingsPageComponent } from "@features/equipment/pages/marketplace/user-expired-listings/marketplace-user-expired-listings-page.component";
+import { UsernameMatchGuard } from "@shared/services/guards/username-match-guard";
 
 export const routes: Routes = [
   {
@@ -160,17 +164,32 @@ export const routes: Routes = [
     children: [
       {
         path: "",
-        pathMatch: "full",
-        redirectTo: "listings"
-      },
-      {
-        path: "",
         component: MarketplaceListingsPageComponent
       },
       {
-        path: "my-listings",
-        component: MarketplaceMyListingsPageComponent,
-        canActivate: [AuthGuardService]
+        path: "listings",
+        component: MarketplaceListingsPageComponent
+      },
+      {
+        path: "sold",
+        component: MarketplaceSoldListingsPageComponent
+      },
+      {
+        path: "users/:username",
+        component: MarketplaceUserListingsPageComponent
+      },
+      {
+        path: "users/:username/listings",
+        component: MarketplaceUserListingsPageComponent
+      },
+      {
+        path: "users/:username/sold",
+        component: MarketplaceUserSoldListingsPageComponent
+      },
+      {
+        path: "users/:username/expired",
+        component: MarketplaceUserExpiredListingsPageComponent,
+        canActivate: [AuthGuardService, UsernameMatchGuard]
       },
       {
         path: "my-offers",

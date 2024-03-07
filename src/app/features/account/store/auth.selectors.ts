@@ -20,6 +20,14 @@ export const selectUser = createSelector(
   }
 );
 
+export const selectUserByUsername = createSelector(
+  selectUsers,
+  (users: UserInterface[], username: UserInterface["username"]): UserInterface => {
+    const matching = users.filter(user => user.username === username);
+    return matching.length > 0 ? matching[0] : null;
+  }
+);
+
 export const selectUserProfiles = createSelector(selectAuth, state => state.userProfiles);
 
 export const selectUserProfile = createSelector(

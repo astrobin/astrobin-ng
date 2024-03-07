@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
-import { Router } from "@angular/router";
+import { Router, UrlTree } from "@angular/router";
 import { WindowRefService } from "@shared/services/window-ref.service";
 
 @Injectable(
@@ -16,14 +16,27 @@ export class RouterService extends BaseService {
     super(loadingService);
   }
 
+  getLoginUrlTree(redirectUrl?: string): UrlTree {
+    if (!redirectUrl) {
+      redirectUrl = this.windowRefService.getCurrentUrl().toString();
+    }
+
+    return this.router.createUrlTree(["/account/logging-in"], {
+      queryParams: {
+        redirectUrl
+      }
+    });
+  }
+
+  getPermissionDeniedUrlTree(): UrlTree {
+    return this.router.createUrlTree(["/permission-denied"]);
+  }
+
   redirectToLogin(): Promise<boolean> {
-    return this.router
-      .navigateByUrl(
-        this.router.createUrlTree(["/account/logging-in"], {
-          queryParams: {
-            redirectUrl: this.windowRefService.getCurrentUrl().toString()
-          }
-        })
-      );
+    return this.router.navigateByUrl(this.getLoginUrlTree());
+  }
+
+  redirectToPermissionDenied(): Promise<boolean> {
+    return this.router.navigateByUrl(this.getPermissionDeniedUrlTree());
   }
 }

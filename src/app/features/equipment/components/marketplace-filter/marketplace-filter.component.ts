@@ -16,6 +16,7 @@ import { Constants } from "@shared/constants";
 import { MarketplaceListingCondition } from "@features/equipment/types/marketplace-line-item.interface";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { isPlatformBrowser } from "@angular/common";
+import { UserInterface } from "@shared/interfaces/user.interface";
 
 export interface MarketplaceFilterModel {
   itemType?: EquipmentItemType | null;
@@ -25,6 +26,9 @@ export interface MarketplaceFilterModel {
   longitude?: number | null;
   region?: string | null;
   query?: string | null;
+  userId?: UserInterface["id"] | null;
+  sold?: boolean | null;
+  expired?: boolean | null;
 }
 
 @Component({

@@ -18,7 +18,7 @@ import { ActivatedRoute } from "@angular/router";
   templateUrl: "./marketplace-my-offers-page.component.html",
   styleUrls: [
     "./marketplace-my-offers-page.component.scss",
-    "../listings/marketplace-listings-page.component.scss"
+    "../listings-base/marketplace-listings-base-page.component.scss"
   ]
 })
 export class MarketplaceMyOffersPageComponent extends BaseComponentDirective implements OnInit {

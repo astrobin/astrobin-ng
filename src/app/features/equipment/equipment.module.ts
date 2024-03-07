@@ -49,13 +49,16 @@ import { MarketplaceListingFormComponent } from "./components/marketplace-listin
 import { MarketplaceEditListingPageComponent } from "@features/equipment/pages/marketplace/edit-listing/marketplace-edit-listing-page.component";
 import { MarketplaceNavComponent } from "./components/marketplace-nav/marketplace-nav.component";
 import { MarketplaceSidebarComponent } from "./components/marketplace-sidebar/marketplace-sidebar.component";
-import { MarketplaceMyListingsPageComponent } from "./pages/marketplace/my-listings/marketplace-my-listings-page.component";
+import { MarketplaceUserListingsPageComponent } from "./pages/marketplace/user-listings/marketplace-user-listings-page.component";
 import { MarketplaceFilterComponent } from "./components/marketplace-filter/marketplace-filter.component";
 import { MarketplaceMoreFromUserComponent } from "./components/marketplace-more-from-user/marketplace-more-from-user.component";
 import { MarketplaceLineItemCardsComponent } from "./components/marketplace-line-item-cards/marketplace-line-item-cards.component";
 import { MarketplaceSearchBarComponent } from "./components/marketplace-search-bar/marketplace-search-bar.component";
 import { MarketplaceOfferModalComponent } from "./components/marketplace-offer-modal/marketplace-offer-modal.component";
 import { MarketplaceMyOffersPageComponent } from "@features/equipment/pages/marketplace/my-offers/marketplace-my-offers-page.component";
+import { MarketplaceSoldListingsPageComponent } from "@features/equipment/pages/marketplace/sold-listings/marketplace-sold-listings-page.component";
+import { MarketplaceUserSoldListingsPageComponent } from "@features/equipment/pages/marketplace/user-sold-listings/marketplace-user-sold-listings-page.component";
+import { MarketplaceUserExpiredListingsPageComponent } from "@features/equipment/pages/marketplace/user-expired-listings/marketplace-user-expired-listings-page.component";
 
 @NgModule({
   declarations: [
@@ -90,6 +93,7 @@ import { MarketplaceMyOffersPageComponent } from "@features/equipment/pages/mark
     EquipmentCompareModalComponent,
     EquipmentListingsComponent,
     MarketplaceListingsPageComponent,
+    MarketplaceSoldListingsPageComponent,
     MarketplaceCreateListingPageComponent,
     MarketplaceLineItemComponent,
     MarketplaceListingComponent,
@@ -104,7 +108,9 @@ import { MarketplaceMyOffersPageComponent } from "@features/equipment/pages/mark
     MarketplaceEditListingPageComponent,
     MarketplaceNavComponent,
     MarketplaceSidebarComponent,
-    MarketplaceMyListingsPageComponent,
+    MarketplaceUserListingsPageComponent,
+    MarketplaceUserSoldListingsPageComponent,
+    MarketplaceUserExpiredListingsPageComponent,
     MarketplaceMyOffersPageComponent,
     MarketplaceFilterComponent,
     MarketplaceMoreFromUserComponent,
