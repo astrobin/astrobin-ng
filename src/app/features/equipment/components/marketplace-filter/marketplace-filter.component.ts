@@ -26,7 +26,8 @@ export interface MarketplaceFilterModel {
   longitude?: number | null;
   region?: string | null;
   query?: string | null;
-  userId?: UserInterface["id"] | null;
+  user?: UserInterface["id"] | null;
+  offersByUser?: UserInterface["id"] | null;
   sold?: boolean | null;
   expired?: boolean | null;
 }

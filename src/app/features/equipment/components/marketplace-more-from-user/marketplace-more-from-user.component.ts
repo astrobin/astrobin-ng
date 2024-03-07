@@ -34,7 +34,7 @@ export class MarketplaceMoreFromUserComponent extends BaseComponentDirective imp
       filter(user => !!user),
       take(1)
     ).subscribe(user => {
-      this.store$.dispatch(new LoadMarketplaceListings({ options: { user, page: 1 } }));
+      this.store$.dispatch(new LoadMarketplaceListings({ options: { user: user.id, page: 1 } }));
     });
 
     this.store$.select(selectMarketplaceListings).pipe(

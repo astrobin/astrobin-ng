@@ -20,7 +20,8 @@ export class MarketplaceUserExpiredListingsPageComponent extends MarketplaceUser
     super.refresh(modifiedFilterModel);
   }
 
-  protected _getListingsFilterPredicate(): (listing: MarketplaceListingInterface) => boolean {
+  protected _getListingsFilterPredicate(currentUser: UserInterface | null):
+    (listing: MarketplaceListingInterface) => boolean {
     return listing => (
       listing.lineItems.length > 0 &&
       listing.user === this.user.id &&

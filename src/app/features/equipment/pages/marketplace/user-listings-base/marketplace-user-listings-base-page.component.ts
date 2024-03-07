@@ -21,7 +21,9 @@ import { MarketplaceListingInterface } from "@features/equipment/types/marketpla
   selector: "astrobin-marketplace-user-listings-base-page",
   template: ""
 })
-export abstract class MarketplaceUserListingsBasePageComponent extends MarketplaceListingsBasePageComponent implements OnInit {
+export abstract class MarketplaceUserListingsBasePageComponent
+  extends MarketplaceListingsBasePageComponent
+  implements OnInit {
   username: string;
   user: UserInterface;
 
@@ -37,15 +39,7 @@ export abstract class MarketplaceUserListingsBasePageComponent extends Marketpla
     public readonly location: Location,
     public readonly windowRefService: WindowRefService
   ) {
-    super(
-      store$,
-      translateService,
-      titleService,
-      loadingService,
-      activatedRoute,
-      countryService,
-      router
-    );
+    super(store$, translateService, titleService, loadingService, activatedRoute, countryService, router);
   }
 
   ngOnInit(): void {
@@ -56,39 +50,45 @@ export abstract class MarketplaceUserListingsBasePageComponent extends Marketpla
   public refresh(filterModel?: MarketplaceFilterModel) {
     this.store$.dispatch(new LoadUser({ username: this.username }));
 
-    this.actions$.pipe(
-      ofType(AuthActionTypes.LOAD_USER_SUCCESS),
-      map((action: LoadUserSuccess) => action.payload.user),
-      filter(user => user.username === this.username),
-      take(1)
-    ).subscribe(user => {
-      this.user = user;
+    this.actions$
+      .pipe(
+        ofType(AuthActionTypes.LOAD_USER_SUCCESS),
+        map((action: LoadUserSuccess) => action.payload.user),
+        filter(user => user.username === this.username),
+        take(1)
+      )
+      .subscribe(user => {
+        this.user = user;
 
-      if (!user) {
-        this.router.navigateByUrl("/404", { skipLocationChange: true });
-        return;
-      }
+        if (!user) {
+          this.windowRefService.routeTo404();
+          return;
+        }
 
-      this._setTitle(user);
-      this._setBreadcrumbs(user);
+        this._setTitle(user);
+        this._setBreadcrumbs(user);
 
-      // Call the base class refresh method with additional filter for user
-      const userFilterModel = { ...filterModel, userId: user.id };
-      super.refresh(userFilterModel);
-    });
+        // Call the base class refresh method with additional filter for user
+        const userFilterModel = { ...filterModel, user: user.id };
+        super.refresh(userFilterModel);
+      });
 
-    this.actions$.pipe(
-      ofType(AuthActionTypes.LOAD_USER_FAILURE),
-      map((action: LoadUserFailure) => action.payload.username),
-      filter(username => username === this.username),
-      take(1)
-    ).subscribe(() => {
-      this.windowRefService.routeTo404();
-      this.loadingService.setLoading(false);
-    });
+    this.actions$
+      .pipe(
+        ofType(AuthActionTypes.LOAD_USER_FAILURE),
+        map((action: LoadUserFailure) => action.payload.username),
+        filter(username => username === this.username),
+        take(1)
+      )
+      .subscribe(() => {
+        this.windowRefService.routeTo404();
+        this.loadingService.setLoading(false);
+      });
   }
 
-  protected _getListingsFilterPredicate(): (listing: MarketplaceListingInterface) => boolean {
+  protected _getListingsFilterPredicate(
+    currentUser: UserInterface | null
+  ): (listing: MarketplaceListingInterface) => boolean {
     return listing => listing.lineItems.length > 0 && listing.user === this.user?.id;
   }
 

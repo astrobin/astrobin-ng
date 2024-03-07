@@ -795,13 +795,6 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
       if (value != null) {
         const paramKey = UtilsService.camelCaseToSnakeCase(key);
         let valueStr = value.toString();
-
-        if (key === "user" && value.id) {
-          valueStr = value.id.toString();
-        } else if (key === "offersByUser" && value.id) {
-          valueStr = value.id.toString();
-        }
-
         url = UtilsService.addOrUpdateUrlParam(url, paramKey, valueStr);
       }
     });

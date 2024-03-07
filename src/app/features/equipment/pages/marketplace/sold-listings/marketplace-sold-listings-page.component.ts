@@ -3,6 +3,7 @@ import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { MarketplaceFilterModel } from "@features/equipment/components/marketplace-filter/marketplace-filter.component";
 import { MarketplaceListingsBasePageComponent } from "@features/equipment/pages/marketplace/listings-base/marketplace-listings-base-page.component";
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
+import { UserInterface } from "@shared/interfaces/user.interface";
 
 @Component({
   selector: "astrobin-marketplace-sold-listings-page",
@@ -19,7 +20,7 @@ export class MarketplaceSoldListingsPageComponent extends MarketplaceListingsBas
     super.refresh(modifiedFilterModel);
   }
 
-  protected _getListingsFilterPredicate(): (listing: MarketplaceListingInterface) => boolean {
+  protected _getListingsFilterPredicate(currentUser: UserInterface | null): (listing: MarketplaceListingInterface) => boolean {
     return listing => listing.lineItems.length > 0 && listing.lineItems.some(item => !!item.sold);
   }
 

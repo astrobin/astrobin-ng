@@ -16,6 +16,7 @@ import { CountryService } from "@shared/services/country.service";
 import { Observable } from "rxjs";
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
 import { UserInterface } from "@shared/interfaces/user.interface";
+import { concatLatestFrom } from "@ngrx/effects";
 
 @Component({
   selector: "astrobin-marketplace-listings-base-page",
@@ -68,7 +69,8 @@ export abstract class MarketplaceListingsBasePageComponent extends BaseComponent
       delete this.filterModel.region;
     }
 
-    const { sold, expired, userId, ...queryParams } = this.filterModel;
+    // Remove unwanted query params.
+    const { sold, expired, user, offersByUser, ...queryParams } = this.filterModel;
 
     this.router.navigate([], {
       relativeTo: this.activatedRoute,
@@ -90,13 +92,14 @@ export abstract class MarketplaceListingsBasePageComponent extends BaseComponent
     );
   }
 
-  protected abstract _getListingsFilterPredicate(): (listing: MarketplaceListingInterface) => boolean;
+  protected abstract _getListingsFilterPredicate(currentUser: UserInterface | null): (listing: MarketplaceListingInterface) => boolean;
 
   protected _initializeListingsStream() {
     this.listings$ = this.store$.select(selectMarketplaceListings).pipe(
       takeUntil(this.destroyed$),
       filter(listings => !!listings),
-      map(listings => listings.filter(this._getListingsFilterPredicate())),
+      concatLatestFrom(() => this.currentUser$),
+      map(([listings, currentUser]) => listings.filter(this._getListingsFilterPredicate(currentUser))),
       tap(() => this.loadingService.setLoading(false))
     );
   }

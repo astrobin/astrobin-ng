@@ -20,7 +20,7 @@ export class MarketplaceUserSoldListingsPageComponent extends MarketplaceUserLis
     super.refresh(modifiedFilterModel);
   }
 
-  protected _getListingsFilterPredicate(): (listing: MarketplaceListingInterface) => boolean {
+  protected _getListingsFilterPredicate(currentUser: UserInterface | null): (listing: MarketplaceListingInterface) => boolean {
     return listing => (
       listing.lineItems.length > 0 &&
       listing.user === this.user.id &&
@@ -41,7 +41,7 @@ export class MarketplaceUserSoldListingsPageComponent extends MarketplaceUserLis
     if (!user) {
       return;
     }
-    
+
     this.store$.dispatch(
       new SetBreadcrumb({
         breadcrumb: [

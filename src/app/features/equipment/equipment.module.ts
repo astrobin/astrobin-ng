@@ -55,7 +55,7 @@ import { MarketplaceMoreFromUserComponent } from "./components/marketplace-more-
 import { MarketplaceLineItemCardsComponent } from "./components/marketplace-line-item-cards/marketplace-line-item-cards.component";
 import { MarketplaceSearchBarComponent } from "./components/marketplace-search-bar/marketplace-search-bar.component";
 import { MarketplaceOfferModalComponent } from "./components/marketplace-offer-modal/marketplace-offer-modal.component";
-import { MarketplaceMyOffersPageComponent } from "@features/equipment/pages/marketplace/my-offers/marketplace-my-offers-page.component";
+import { MarketplaceUserOffersPageComponent } from "@features/equipment/pages/marketplace/user-offers/marketplace-user-offers-page.component";
 import { MarketplaceSoldListingsPageComponent } from "@features/equipment/pages/marketplace/sold-listings/marketplace-sold-listings-page.component";
 import { MarketplaceUserSoldListingsPageComponent } from "@features/equipment/pages/marketplace/user-sold-listings/marketplace-user-sold-listings-page.component";
 import { MarketplaceUserExpiredListingsPageComponent } from "@features/equipment/pages/marketplace/user-expired-listings/marketplace-user-expired-listings-page.component";
@@ -111,7 +111,7 @@ import { MarketplaceUserExpiredListingsPageComponent } from "@features/equipment
     MarketplaceUserListingsPageComponent,
     MarketplaceUserSoldListingsPageComponent,
     MarketplaceUserExpiredListingsPageComponent,
-    MarketplaceMyOffersPageComponent,
+    MarketplaceUserOffersPageComponent,
     MarketplaceFilterComponent,
     MarketplaceMoreFromUserComponent,
     MarketplaceLineItemCardsComponent,

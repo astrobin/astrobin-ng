@@ -21,7 +21,7 @@ import { MarketplaceListingPageComponent } from "@features/equipment/pages/marke
 import { MarketplaceListingResolver } from "@features/equipment/resolvers/marketplace-listing.resolver";
 import { MarketplaceEditListingPageComponent } from "@features/equipment/pages/marketplace/edit-listing/marketplace-edit-listing-page.component";
 import { MarketplaceUserListingsPageComponent } from "@features/equipment/pages/marketplace/user-listings/marketplace-user-listings-page.component";
-import { MarketplaceMyOffersPageComponent } from "@features/equipment/pages/marketplace/my-offers/marketplace-my-offers-page.component";
+import { MarketplaceUserOffersPageComponent } from "@features/equipment/pages/marketplace/user-offers/marketplace-user-offers-page.component";
 import { MarketplaceSoldListingsPageComponent } from "@features/equipment/pages/marketplace/sold-listings/marketplace-sold-listings-page.component";
 import { MarketplaceUserSoldListingsPageComponent } from "@features/equipment/pages/marketplace/user-sold-listings/marketplace-user-sold-listings-page.component";
 import { MarketplaceUserExpiredListingsPageComponent } from "@features/equipment/pages/marketplace/user-expired-listings/marketplace-user-expired-listings-page.component";
@@ -192,9 +192,9 @@ export const routes: Routes = [
         canActivate: [AuthGuardService, UsernameMatchGuard]
       },
       {
-        path: "my-offers",
-        component: MarketplaceMyOffersPageComponent,
-        canActivate: [AuthGuardService]
+        path: "users/:username/offers",
+        component: MarketplaceUserOffersPageComponent,
+        canActivate: [AuthGuardService, UsernameMatchGuard]
       },
       {
         path: "create",
