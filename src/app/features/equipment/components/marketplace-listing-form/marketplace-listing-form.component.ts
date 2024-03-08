@@ -221,12 +221,8 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                 required: false,
                 modelOptions: {
                   updateOn: "blur"
-                }
-              },
-              validators: {
-                maxLength: {
-                  value: 256
-                }
+                },
+                maxLength: 256
               }
             },
             {
