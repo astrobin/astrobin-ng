@@ -63,7 +63,7 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
         type: "table",
         hideExpression: () => {
           if (!this.imageEditService.model.overrideAcquisitionForm) {
-            return !this.imageEditService.isDeepSky();
+            return !this.imageEditService.isLongExposure();
           }
 
           return this.imageEditService.model.overrideAcquisitionForm !== AcquisitionForm.LONG_EXPOSURE;
@@ -449,7 +449,7 @@ export class ImageEditAcquisitionFieldsService extends ImageEditFieldsBaseServic
         type: "table",
         hideExpression: () => {
           if (!this.imageEditService.model.overrideAcquisitionForm) {
-            return !this.imageEditService.isSolarSystem();
+            return !this.imageEditService.isVideoBased();
           }
 
           return this.imageEditService.model.overrideAcquisitionForm !== AcquisitionForm.VIDEO_BASED;
