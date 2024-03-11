@@ -151,7 +151,7 @@ function getFromStoreOrApiByIdAndType<T>(
   allowUnapproved: boolean,
   allowDIY: boolean,
   selector: SelectorWithProps<any, { id: number; type: EquipmentItemType }, T>,
-  apiCall: (number, EquipmentItemType, boolean) => Observable<T>,
+  apiCall: (id: number, type: EquipmentItemType, allowUnapproved: boolean, allowDIY: boolean) => Observable<T>,
   apiContext: any
 ): Observable<T> {
   const fromApi: Observable<T> = apiCall.apply(apiContext, [id, type, allowUnapproved, allowDIY]);
