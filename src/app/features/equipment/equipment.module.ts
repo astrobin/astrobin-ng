@@ -60,6 +60,7 @@ import { MarketplaceSoldListingsPageComponent } from "@features/equipment/pages/
 import { MarketplaceUserSoldListingsPageComponent } from "@features/equipment/pages/marketplace/user-sold-listings/marketplace-user-sold-listings-page.component";
 import { MarketplaceUserExpiredListingsPageComponent } from "@features/equipment/pages/marketplace/user-expired-listings/marketplace-user-expired-listings-page.component";
 import { MarketplaceUserPurchasesPageComponent } from "@features/equipment/pages/marketplace/user-purchases/marketplace-user-purchases-page.component";
+import { MarketplaceUserFollowedListingsPageComponent } from "@features/equipment/pages/marketplace/user-followed-listings/marketplace-user-followed-listings-page.component";
 
 @NgModule({
   declarations: [
@@ -114,6 +115,7 @@ import { MarketplaceUserPurchasesPageComponent } from "@features/equipment/pages
     MarketplaceUserExpiredListingsPageComponent,
     MarketplaceUserOffersPageComponent,
     MarketplaceUserPurchasesPageComponent,
+    MarketplaceUserFollowedListingsPageComponent,
     MarketplaceFilterComponent,
     MarketplaceMoreFromUserComponent,
     MarketplaceLineItemCardsComponent,

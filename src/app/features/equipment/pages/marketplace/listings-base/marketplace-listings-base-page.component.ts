@@ -73,7 +73,7 @@ export abstract class MarketplaceListingsBasePageComponent extends BaseComponent
     }
 
     // Remove unwanted query params.
-    const { sold, expired, user, offersByUser, soldToUser, ...queryParams } = this.filterModel;
+    const { sold, expired, user, offersByUser, soldToUser, followedByUser, ...queryParams } = this.filterModel;
 
     this.router.navigate([], {
       relativeTo: this.activatedRoute,

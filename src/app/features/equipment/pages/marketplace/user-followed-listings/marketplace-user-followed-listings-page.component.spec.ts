@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { MarketplaceUserPurchasesPageComponent } from "./marketplace-user-purchases-page.component";
+import { MarketplaceUserFollowedListingsPageComponent } from "./marketplace-user-followed-listings-page.component";
 import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
 import { provideMockStore } from "@ngrx/store/testing";
@@ -10,18 +10,18 @@ import { EffectsModule } from "@ngrx/effects";
 import { HttpClientModule } from "@angular/common/http";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 
-describe("MarketplaceUserPurchasesPageComponent", () => {
-  let component: MarketplaceUserPurchasesPageComponent;
-  let fixture: ComponentFixture<MarketplaceUserPurchasesPageComponent>;
+describe("MarketplaceUserFollowedListingsPageComponent", () => {
+  let component: MarketplaceUserFollowedListingsPageComponent;
+  let fixture: ComponentFixture<MarketplaceUserFollowedListingsPageComponent>;
 
   beforeEach(async () => {
-    await MockBuilder(MarketplaceUserPurchasesPageComponent, AppModule)
+    await MockBuilder(MarketplaceUserFollowedListingsPageComponent, AppModule)
       .provide([provideMockStore({ initialState })])
       .keep(StoreModule.forRoot(appStateReducers))
       .keep(EffectsModule.forRoot(appStateEffects))
       .replace(HttpClientModule, HttpClientTestingModule);
 
-    fixture = TestBed.createComponent(MarketplaceUserPurchasesPageComponent);
+    fixture = TestBed.createComponent(MarketplaceUserFollowedListingsPageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

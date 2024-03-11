@@ -29,6 +29,7 @@ export interface MarketplaceFilterModel {
   user?: UserInterface["id"] | null;
   offersByUser?: UserInterface["id"] | null;
   soldToUser?: UserInterface["id"] | null;
+  followedByUser?: UserInterface["id"] | null;
   sold?: boolean | null;
   expired?: boolean | null;
 }

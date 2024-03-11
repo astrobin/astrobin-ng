@@ -38,4 +38,6 @@ export interface MarketplaceListingInterface {
   viewCount?: number;
   hitcountPk?: number;
   slug?: string;
+  // Whether the current user is following this listing
+  followed?: boolean;
 }
