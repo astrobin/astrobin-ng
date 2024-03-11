@@ -26,6 +26,7 @@ import { MarketplaceSoldListingsPageComponent } from "@features/equipment/pages/
 import { MarketplaceUserSoldListingsPageComponent } from "@features/equipment/pages/marketplace/user-sold-listings/marketplace-user-sold-listings-page.component";
 import { MarketplaceUserExpiredListingsPageComponent } from "@features/equipment/pages/marketplace/user-expired-listings/marketplace-user-expired-listings-page.component";
 import { UsernameMatchGuard } from "@shared/services/guards/username-match-guard";
+import { MarketplaceUserPurchasesPageComponent } from "@features/equipment/pages/marketplace/user-purchases/marketplace-user-purchases-page.component";
 
 export const routes: Routes = [
   {
@@ -194,6 +195,11 @@ export const routes: Routes = [
       {
         path: "users/:username/offers",
         component: MarketplaceUserOffersPageComponent,
+        canActivate: [AuthGuardService, UsernameMatchGuard]
+      },
+      {
+        path: "users/:username/purchases",
+        component: MarketplaceUserPurchasesPageComponent,
         canActivate: [AuthGuardService, UsernameMatchGuard]
       },
       {
