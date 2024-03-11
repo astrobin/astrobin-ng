@@ -2,7 +2,7 @@ import { Injectable, TemplateRef } from "@angular/core";
 import { BaseService } from "@shared/services/base.service";
 import { LoadingService } from "@shared/services/loading.service";
 import { FormControl, FormGroup, ValidationErrors } from "@angular/forms";
-import { ImageInterface, SubjectType } from "@shared/interfaces/image.interface";
+import { ImageInterface, SolarSystemSubjectType, SubjectType } from "@shared/interfaces/image.interface";
 import { GroupInterface } from "@shared/interfaces/group.interface";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { RemoteSourceAffiliateInterface } from "@shared/interfaces/remote-source-affiliate.interface";
@@ -41,7 +41,7 @@ export type ImageEditModelInterface = Partial<Omit<ImageInterface,
   software2: SoftwareInterface["id"][];
   guidingTelescopes2: TelescopeInterface["id"][];
   guidingCameras2: CameraInterface["id"][];
-  overrideAcquisitionForm: AcquisitionForm | null
+  overrideAcquisitionForm: AcquisitionForm | null;
 }>;
 
 export function KeyValueTagsValidator(control: FormControl): ValidationErrors {
@@ -83,37 +83,47 @@ export class ImageEditService extends BaseService {
     super(loadingService);
   }
 
-  isLongExposure(): boolean {
+  isLongExposure(subjectType?: SubjectType, solarSystemMainSubject?: SolarSystemSubjectType): boolean {
     const { overrideAcquisitionForm } = this.model;
 
     if (!!overrideAcquisitionForm) {
       return overrideAcquisitionForm === AcquisitionForm.LONG_EXPOSURE;
     }
 
-    return this.isDeepSky();
+    return (
+      this.isDeepSky(subjectType) ||
+      (this.isSolarSystem(subjectType) &&
+        (solarSystemMainSubject || this.model.solarSystemMainSubject) === SolarSystemSubjectType.COMET)
+    );
   }
 
-  isDeepSky(value?: SubjectType): boolean {
-    if (value === undefined) {
-      value = this.model.subjectType;
-    }
-
-    return [
-      SubjectType.DEEP_SKY,
-      SubjectType.WIDE_FIELD,
-      SubjectType.STAR_TRAILS,
-      SubjectType.NORTHERN_LIGHTS,
-      SubjectType.NOCTILUCENT_CLOUDS,
-      SubjectType.LANDSCAPE
-    ].indexOf(value) > -1;
+  isVideoBased(subjectType?: SubjectType, solarSystemMainSubject?: SolarSystemSubjectType): boolean {
+    return !this.isLongExposure(subjectType, solarSystemMainSubject);
   }
 
-  isSolarSystem(value?: SubjectType): boolean {
-    if (value === undefined) {
-      value = this.model.subjectType;
+  isDeepSky(subjectType?: SubjectType): boolean {
+    if (subjectType === undefined) {
+      subjectType = this.model.subjectType;
     }
 
-    return [SubjectType.SOLAR_SYSTEM].indexOf(value) > -1;
+    return (
+      [
+        SubjectType.DEEP_SKY,
+        SubjectType.WIDE_FIELD,
+        SubjectType.STAR_TRAILS,
+        SubjectType.NORTHERN_LIGHTS,
+        SubjectType.NOCTILUCENT_CLOUDS,
+        SubjectType.LANDSCAPE
+      ].indexOf(subjectType) > -1
+    );
+  }
+
+  isSolarSystem(subjectType?: SubjectType): boolean {
+    if (subjectType === undefined) {
+      subjectType = this.model.subjectType;
+    }
+
+    return [SubjectType.SOLAR_SYSTEM].indexOf(subjectType) > -1;
   }
 
   public humanizeSubjectType(value: SubjectType): string {

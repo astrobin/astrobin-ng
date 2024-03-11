@@ -97,19 +97,19 @@ export class ImageEditContentFieldsService extends ImageEditFieldsBaseService {
         changeConfirmationCondition: (currentValue: SubjectType, newValue: SubjectType): boolean => {
           if (
             (
-              this.imageEditService.isDeepSky(currentValue) ||
+              this.imageEditService.isLongExposure(currentValue) ||
               this.imageEditService.model.overrideAcquisitionForm === AcquisitionForm.LONG_EXPOSURE
             ) &&
-            !this.imageEditService.isDeepSky(newValue)) {
+            !this.imageEditService.isLongExposure(newValue)) {
             return this.imageEditService.hasDeepSkyAcquisitions();
           }
 
           if (
             (
-              this.imageEditService.isSolarSystem(currentValue) ||
+              this.imageEditService.isVideoBased(currentValue) ||
               this.imageEditService.model.overrideAcquisitionForm === AcquisitionForm.VIDEO_BASED
             ) &&
-            !this.imageEditService.isSolarSystem(newValue)
+            !this.imageEditService.isVideoBased(newValue)
           ) {
             return this.imageEditService.hasSolarSystemAcquisitions();
           }
@@ -125,18 +125,18 @@ export class ImageEditContentFieldsService extends ImageEditFieldsBaseService {
             overrideAcquisitionForm: null
           };
 
-          if (this.imageEditService.isSolarSystem(value)) {
+          if (this.imageEditService.isVideoBased(value)) {
             this.imageEditService.model = {
               ...this.imageEditService.model,
               solarSystemMainSubject: null
             };
           }
 
-          if (!this.imageEditService.isDeepSky(value)) {
+          if (!this.imageEditService.isLongExposure(value)) {
             this.imageEditService.model.deepSkyAcquisitions = [];
           }
 
-          if (!this.imageEditService.isSolarSystem(value)) {
+          if (!this.imageEditService.isVideoBased(value)) {
             this.imageEditService.model.solarSystemAcquisitions = [];
           }
         }
