@@ -579,7 +579,7 @@ export class ImageEditPageComponent
           fieldGroup: [
             this.imageEditBasicFieldsService.getTitleField(),
             this.imageEditBasicFieldsService.getDescriptionField(),
-            this.imageEditBasicFieldsService.getCollaboratorsField(),
+            this.imageEditBasicFieldsService.getPendingCollaboratorsField(),
             this.imageEditBasicFieldsService.getLinkField(),
             this.imageEditBasicFieldsService.getLinkToFitsField()
           ]
