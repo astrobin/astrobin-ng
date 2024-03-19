@@ -82,7 +82,7 @@ export class ImageEditBasicFieldsService extends ImageEditFieldsBaseService {
     return this.getDescriptionHtmlField();
   }
 
-  getCollaboratorsField(): FormlyFieldConfig {
+  getPendingCollaboratorsField(): FormlyFieldConfig {
     const ngSelectData = (userProfile: UserProfileInterface): { value: number; label: string } => ({
       value: userProfile.user,
       label: userProfile.realName ? `${userProfile.realName} (${userProfile.username})` : userProfile.username
@@ -93,10 +93,10 @@ export class ImageEditBasicFieldsService extends ImageEditFieldsBaseService {
     };
 
     return {
-      key: "collaborators",
+      key: "pendingCollaborators",
       type: "ng-select",
       wrappers: ["default-wrapper"],
-      id: "image-collaborators-field",
+      id: "image-pending-collaborators-field",
       props: {
         label: this.translateService.instant("Collaborators"),
         description: this.translateService.instant(
@@ -107,11 +107,11 @@ export class ImageEditBasicFieldsService extends ImageEditFieldsBaseService {
         clearable: true,
         enableFullscreen: false,
         striped: true,
-        options: this.imageEditService.model.collaborators
+        options: this.imageEditService.model.pendingCollaborators
           ? forkJoin(
-            this.imageEditService.model.collaborators.map(collaborator => {
+            this.imageEditService.model.pendingCollaborators.map(pending_collaborator => {
               return this.commonApiService
-                .getUserProfileByUserId(collaborator)
+                .getUserProfileByUserId(pending_collaborator)
                 .pipe(map(userProfile => ngSelectData(userProfile)));
             })
           )

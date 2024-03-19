@@ -173,6 +173,7 @@ export enum DownloadLimitationOptions {
 export interface ImageInterface {
   pk: number;
   user: UserInterface["id"];
+  pendingCollaborators: UserInterface["id"][] | null;
   collaborators: UserInterface["id"][] | null;
   hash: string;
   title: string;
