@@ -19,7 +19,10 @@ import { map, take } from "rxjs/operators";
 @Component({
   selector: "astrobin-marketplace-create-listing-page",
   templateUrl: "./marketplace-edit-listing.page.component.html",
-  styleUrls: ["./marketplace-edit-listing.page.component.scss"]
+  styleUrls: [
+    "../create-listing/marketplace-create-listing.page.component.scss",
+    "./marketplace-edit-listing.page.component.scss"
+  ]
 })
 export class MarketplaceEditListingPageComponent extends BaseComponentDirective implements OnInit {
   readonly title = this.translateService.instant("Edit listing");

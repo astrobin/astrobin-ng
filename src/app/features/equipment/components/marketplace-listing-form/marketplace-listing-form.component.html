@@ -1,5 +1,5 @@
-<div class="row">
-  <div class="col-lg-5">
+<div class="row main-row">
+  <div class="col-lg-4 col-form">
     <form [formGroup]="form">
       <formly-form
         [fields]="fields"
@@ -32,7 +32,9 @@
     </form>
   </div>
 
-  <div class="col-lg-7">
+  <div class="col col-preview">
+    <h2 *ngIf="form.value.title">{{ form.value.title }}</h2>
+
     <astrobin-marketplace-listing
       [listing]="form.value"
       [previewMode]="true"
