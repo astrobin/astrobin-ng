@@ -50,6 +50,11 @@ formly-field-checkbox {
   &[readonly],
   &.readonly {
     background-color: var(--grey);
+    cursor: text;
+
+    &:focus {
+      box-shadow: none;
+    }
   }
 }
 

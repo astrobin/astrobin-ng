@@ -38,6 +38,7 @@ import {
 } from "@app/store/actions/nested-comments.actions";
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import {
+  selectMarketplaceListing,
   selectMarketplaceOffersByUser,
   selectMarketplacePrivateConversation,
   selectMarketplacePrivateConversations
@@ -241,9 +242,13 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
       component.listing = this.listing;
 
       modalRef.closed.subscribe(listing => {
-        if (listing) {
+        this.store$.select(selectMarketplaceListing, { id: listing.id }).pipe(
+          filter(listing => !!listing),
+          take(1)
+        ).subscribe(listing => {
           this.listing = listing;
-        }
+          this._listingUpdated$.next();
+        });
       });
     });
   }

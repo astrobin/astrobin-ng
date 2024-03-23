@@ -17,6 +17,8 @@ import { Actions, ofType } from "@ngrx/effects";
 import {
   CreateMarketplaceOffer,
   CreateMarketplaceOfferSuccess,
+  DeleteMarketplaceOffer,
+  DeleteMarketplaceOfferSuccess,
   EquipmentActionTypes,
   UpdateMarketplaceOffer,
   UpdateMarketplaceOfferSuccess
@@ -76,6 +78,14 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
       this._performOfferAction(UpdateMarketplaceOffer, EquipmentActionTypes.UPDATE_MARKETPLACE_OFFER_SUCCESS);
     } else {
       this._performOfferAction(CreateMarketplaceOffer, EquipmentActionTypes.CREATE_MARKETPLACE_OFFER_SUCCESS);
+    }
+  }
+
+  retractOffer() {
+    if (this.hasAnyOffers()) {
+      this._performOfferAction(DeleteMarketplaceOffer, EquipmentActionTypes.DELETE_MARKETPLACE_OFFER_SUCCESS);
+    } else {
+      this.popNotificationsService.error(this.translateService.instant("No offers to retract."));
     }
   }
 
@@ -146,6 +156,9 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
               wrappers: ["default-wrapper"],
               className: "col-1 toggle",
               defaultValue: hasAnyOffers ? hasLineItemOffer : true,
+              expressions: {
+                "hide": () => this.listing.bundleSaleOnly
+              },
               props: {
                 label: "&nbsp;",
                 hideOptionalMarker: true,
@@ -218,7 +231,7 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
                 label: this.translateService.instant("Offer amount"),
                 required: true,
                 type: "number",
-                min: 0,
+                min: 0.01,
                 step: 1,
                 addonLeft: {
                   text: lineItem.currency
@@ -234,10 +247,11 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
   }
 
   private _performOfferAction(
-    action: typeof CreateMarketplaceOffer | typeof UpdateMarketplaceOffer,
+    action: typeof CreateMarketplaceOffer | typeof UpdateMarketplaceOffer | typeof DeleteMarketplaceOffer,
     successActionType:
       | typeof EquipmentActionTypes.CREATE_MARKETPLACE_OFFER_SUCCESS
       | typeof EquipmentActionTypes.UPDATE_MARKETPLACE_OFFER_SUCCESS
+      | typeof EquipmentActionTypes.DELETE_MARKETPLACE_OFFER_SUCCESS
   ) {
     forkJoin(
       this.listing.lineItems
@@ -249,7 +263,7 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
           return this.actions$.pipe(
             ofType(successActionType),
             filter(
-              (action: CreateMarketplaceOfferSuccess | UpdateMarketplaceOfferSuccess) =>
+              (action: CreateMarketplaceOfferSuccess | UpdateMarketplaceOfferSuccess | DeleteMarketplaceOfferSuccess) =>
                 action.payload.offer.lineItem === lineItem.id
             ),
             switchMap(() => this.store$.select(selectMarketplaceListing, { id: this.listing.id })),
@@ -262,6 +276,18 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
     ).subscribe(listing => {
       this.modal.close(listing);
       this.loadingService.setLoading(false);
+
+      let message: string;
+
+      if (action === CreateMarketplaceOffer) {
+        message = this.translateService.instant("Your offer has been successfully submitted.");
+      } else if (action === UpdateMarketplaceOffer) {
+        message = this.translateService.instant("Your offer has been successfully updated.");
+      } else {
+        message = this.translateService.instant("Your offer has been successfully retracted.");
+      }
+
+      this.popNotificationsService.success(message);
     });
 
     this.loadingService.setLoading(true);

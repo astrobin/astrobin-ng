@@ -35,4 +35,14 @@
   >
     {{ makeOfferLabel() }}
   </button>
+
+  <button
+    (click)="retractOffer()"
+    *ngIf="hasAnyOffers()"
+    [class.loading]="loadingService.loading$ | async"
+    class="btn btn-danger"
+    type="button"
+  >
+    {{ "Retract offer" | translate }}
+  </button>
 </div>

@@ -354,7 +354,7 @@ export function reducer(state = initialEquipmentState, action: PayloadActionInte
 
       // Create a new updatedListings array with immutability in mind
       const updatedListings = state.marketplace.listings.map(listing => {
-        if (listing.id !== newOffer.listingId) {
+        if (listing.id !== newOffer.listing) {
           // If the listing does not match, return it as is
           return listing;
         }
