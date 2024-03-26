@@ -4,6 +4,13 @@
       <div class="d-flex align-items-center gap-3">
         <div class="image">
           <img
+            *ngIf="lineItem.images.length > 0"
+            [src]="lineItem.images[0].thumbnailFile"
+            alt="{{ equipmentItemType(equipmentItem) }}"
+            class="type-image"
+          />
+          <img
+            *ngIf="lineItem.images.length === 0"
             alt="{{ equipmentItemType(equipmentItem) }}"
             class="type-image"
             src="/assets/images/{{ equipmentItem.klass.toLowerCase() }}-placeholder.png?v=2"
