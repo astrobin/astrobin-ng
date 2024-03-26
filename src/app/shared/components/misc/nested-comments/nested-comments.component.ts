@@ -70,7 +70,6 @@ export class NestedCommentsComponent extends BaseComponentDirective implements O
   }
 
   refresh() {
-    this.loadingService.setLoading(true);
     this.actions$
       .pipe(ofType(AppActionTypes.LOAD_NESTED_COMMENTS_SUCCESS), take(1))
       .subscribe(() => (this.loadingComments = false));
