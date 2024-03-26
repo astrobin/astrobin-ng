@@ -11,7 +11,7 @@ import { LoadingService } from "@shared/services/loading.service";
 import { selectContentType, selectContentTypeById } from "@app/store/selectors/app/content-type.selectors";
 import { filter, map, switchMap, take, takeUntil, tap, withLatestFrom } from "rxjs/operators";
 import { LoadContentType, LoadContentTypeById } from "@app/store/actions/content-type.actions";
-import { merge, Observable, of, ReplaySubject } from "rxjs";
+import { forkJoin, merge, Observable, of, ReplaySubject } from "rxjs";
 import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
 import { EquipmentMarketplaceService } from "@features/equipment/services/equipment-marketplace.service";
 import { UserInterface } from "@shared/interfaces/user.interface";
@@ -23,6 +23,8 @@ import {
   CreateMarketplacePrivateConversationSuccess,
   DeleteMarketplaceListing,
   DeleteMarketplaceListingSuccess,
+  DeleteMarketplaceOffer,
+  DeleteMarketplaceOfferSuccess,
   DeleteMarketplacePrivateConversation,
   DeleteMarketplacePrivateConversationSuccess,
   EquipmentActionTypes,
@@ -54,6 +56,7 @@ import { MarketplaceOfferInterface } from "@features/equipment/types/marketplace
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
 import { LoadUser } from "@features/account/store/auth.actions";
+import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 
 interface UserOfferGroup {
   userId: UserInterface["id"];
@@ -107,7 +110,8 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
     public readonly http: HttpClient,
     public readonly windowRefService: WindowRefService,
     public readonly routerService: RouterService,
-    public readonly utilsService: UtilsService
+    public readonly utilsService: UtilsService,
+    public readonly popNotificationsService: PopNotificationsService
   ) {
     super(store$);
   }
@@ -473,6 +477,34 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
 
   getLineItem(id: MarketplaceLineItemInterface["id"]): MarketplaceLineItemInterface {
     return this.listing.lineItems.find(lineItem => lineItem.id === id);
+  }
+
+  onRejectOfferClicked(event: Event, userId: UserInterface["id"]) {
+    const modalRef: NgbModalRef = this.modalService.open(ConfirmationDialogComponent);
+
+    modalRef.closed.subscribe(() => {
+      const offers = EquipmentMarketplaceService.offersByUser(userId, this.listing);
+
+      forkJoin(
+        offers.map(offer => this.actions$.pipe(
+            ofType(EquipmentActionTypes.DELETE_MARKETPLACE_OFFER_SUCCESS),
+            filter((action: DeleteMarketplaceOfferSuccess) => action.payload.offer.id === offer.id),
+            take(1)
+          )
+        )
+      ).pipe(
+        switchMap(() => this.store$.select(selectMarketplaceListing, { id: this.listing.id })),
+        take(1)
+      ).subscribe(listing => {
+        this.listing = listing;
+        this._listingUpdated$.next();
+        this.popNotificationsService.success(this.translateService.instant("Offer rejected successfully."));
+      });
+
+      offers.forEach(offer => {
+        this.store$.dispatch(new DeleteMarketplaceOffer({ offer }));
+      });
+    });
   }
 
   onMessageProspectBuyerClicked(event: Event, userId: UserInterface["id"]) {
