@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
-import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
+import { NgbActiveModal, NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
 import { TranslateService } from "@ngx-translate/core";
 import { FormGroup } from "@angular/forms";
@@ -24,6 +24,7 @@ import {
 } from "@features/equipment/store/equipment.actions";
 import { filter, map, switchMap, take, takeUntil } from "rxjs/operators";
 import { selectMarketplaceListing } from "@features/equipment/store/equipment.selectors";
+import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
 
 @Component({
   selector: "astrobin-marketplace-offer-modal",
@@ -54,7 +55,8 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
     public readonly translateService: TranslateService,
     public readonly currencyPipe: CurrencyPipe,
     public readonly popNotificationsService: PopNotificationsService,
-    public readonly loadingService: LoadingService
+    public readonly loadingService: LoadingService,
+    public readonly modalService: NgbModal
   ) {
     super(store$);
   }
@@ -82,7 +84,10 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
 
   retractOffer() {
     if (this.hasAnyOffers()) {
-      this._performOfferAction(DeleteMarketplaceOffer, EquipmentActionTypes.DELETE_MARKETPLACE_OFFER_SUCCESS);
+      const modalRef: NgbModalRef = this.modalService.open(ConfirmationDialogComponent);
+      modalRef.closed.subscribe(() => {
+        this._performOfferAction(DeleteMarketplaceOffer, EquipmentActionTypes.DELETE_MARKETPLACE_OFFER_SUCCESS);
+      });
     } else {
       this.popNotificationsService.error(this.translateService.instant("No offers to retract."));
     }
