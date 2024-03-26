@@ -97,22 +97,15 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
       let total = 0;
 
       for (const key of Object.keys(this.form.value)) {
-        if (key.indexOf("amount-") === 0) {
+        if (key.indexOf("amount-") === 0 || key.indexOf("shippingCost-raw") === 0) {
           total += +this.form.value[key];
         }
       }
 
       const totalLabel = this.currencyPipe.transform(total, this.listing.lineItems[0].currency);
 
-      if (this.hasAnyOffers()) {
-        return this.translateService.instant(
-          "Modify offer for {{0}} + shipping",
-          { 0: totalLabel }
-        );
-      }
-
       return this.translateService.instant(
-        "Make offer for {{0}} + shipping",
+        "Offer {{0}} incl. shipping",
         { 0: totalLabel }
       );
     }
@@ -203,6 +196,12 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
               }
             },
             {
+              key: `shippingCost-raw-${lineItem.id}`,
+              type: "input",
+              className: "hidden",
+              defaultValue: +lineItem.shippingCost
+            },
+            {
               key: `shippingCost-${lineItem.id}`,
               type: "input",
               wrappers: ["default-wrapper"],
@@ -248,7 +247,7 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
                 "symbol-narrow"
               ),
               props: {
-                label: this.translateService.instant("Total incl. shipping"),
+                label: this.translateService.instant("Total"),
                 readonly: true,
                 hideOptionalMarker: true,
                 hideLabel: index > 0
