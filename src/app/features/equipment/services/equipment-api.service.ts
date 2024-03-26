@@ -942,9 +942,14 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
   }
 
   public createMarketplacePrivateConversation(
-    listingId: MarketplaceListingInterface["id"]
+    listingId: MarketplaceListingInterface["id"],
+    userId?: UserInterface["id"]
   ): Observable<MarketplacePrivateConversationInterface> {
-    const url = `${this.configUrl}/marketplace/listing/${listingId}/private-conversation/`;
+    let url = `${this.configUrl}/marketplace/listing/${listingId}/private-conversation/`;
+
+    if (userId) {
+      url = UtilsService.addOrUpdateUrlParam(url, "user", userId.toString());
+    }
 
     return this.http.post<MarketplacePrivateConversationInterface>(url, {});
   }

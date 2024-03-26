@@ -4,7 +4,6 @@ import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
-import { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
 import { TranslateService } from "@ngx-translate/core";
 import { FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
@@ -106,10 +105,16 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
       const totalLabel = this.currencyPipe.transform(total, this.listing.lineItems[0].currency);
 
       if (this.hasAnyOffers()) {
-        return this.translateService.instant("Modify offer to") + " " + totalLabel;
+        return this.translateService.instant(
+          "Modify offer for {{0}} + shipping",
+          { 0: totalLabel }
+        );
       }
 
-      return this.translateService.instant("Make offer for") + " " + totalLabel;
+      return this.translateService.instant(
+        "Make offer for {{0}} + shipping",
+        { 0: totalLabel }
+      );
     }
 
     if (this.hasAnyOffers()) {
@@ -117,14 +122,6 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
     }
 
     return this.translateService.instant("Make offer");
-  }
-
-  defaultOfferAmount(lineItem: MarketplaceLineItemInterface): number {
-    if (!!lineItem.shippingCost) {
-      return +lineItem.price + +lineItem.shippingCost;
-    }
-
-    return +lineItem.price;
   }
 
   hasAnyOffers(): boolean {
@@ -138,7 +135,7 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
       this.fields = this.listing.lineItems.map((lineItem, index) => {
         const hasLineItemOffer = lineItem.offers.some(offer => offer.user === currentUser.id);
         const offeredAmount = hasLineItemOffer
-          ? lineItem.offers.find(offer => offer.user === currentUser.id).amount
+          ? +lineItem.offers.find(offer => offer.user === currentUser.id).amount
           : 0;
 
         return {
@@ -170,7 +167,7 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
                     const amountControl = this.form.get(`amount-${lineItem.id}`);
                     if (value) {
                       amountControl.enable();
-                      amountControl.setValue(this.defaultOfferAmount(lineItem));
+                      amountControl.setValue(+lineItem.price);
                     } else {
                       amountControl.disable();
                       amountControl.setValue(0);
@@ -197,7 +194,7 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
               type: "input",
               wrappers: ["default-wrapper"],
               className: "col price",
-              defaultValue: this.currencyPipe.transform(lineItem.price, lineItem.currency, "symbol-narrow"),
+              defaultValue: this.currencyPipe.transform(+lineItem.price, lineItem.currency, "symbol-narrow"),
               props: {
                 label: this.translateService.instant("Ask price"),
                 readonly: true,
@@ -211,7 +208,7 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
               wrappers: ["default-wrapper"],
               className: "col shipping-cost",
               defaultValue: lineItem.shippingCost
-                ? this.currencyPipe.transform(lineItem.shippingCost, lineItem.currency, "symbol-narrow")
+                ? this.currencyPipe.transform(+lineItem.shippingCost, lineItem.currency, "symbol-narrow")
                 : this.translateService.instant("Free"),
               props: {
                 label: this.translateService.instant("Shipping cost"),
@@ -225,7 +222,8 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
               type: "input",
               wrappers: ["default-wrapper"],
               className: "col-4 offer-amount",
-              defaultValue: hasAnyOffers ? offeredAmount : this.defaultOfferAmount(lineItem),
+              focus: index === 0,
+              defaultValue: hasAnyOffers ? offeredAmount : +lineItem.price,
               props: {
                 disabled: hasAnyOffers ? !hasLineItemOffer : false,
                 label: this.translateService.instant("Offer amount"),
@@ -237,6 +235,22 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
                   text: lineItem.currency
                 },
                 hideRequiredMarker: true,
+                hideLabel: index > 0
+              }
+            },
+            {
+              key: `total-${lineItem.id}`,
+              type: "input",
+              wrappers: ["default-wrapper"],
+              className: "col total",
+              defaultValue: this.currencyPipe.transform(
+                (offeredAmount || +lineItem.price) + (+lineItem.shippingCost || 0), lineItem.currency,
+                "symbol-narrow"
+              ),
+              props: {
+                label: this.translateService.instant("Total incl. shipping"),
+                readonly: true,
+                hideOptionalMarker: true,
                 hideLabel: index > 0
               }
             }

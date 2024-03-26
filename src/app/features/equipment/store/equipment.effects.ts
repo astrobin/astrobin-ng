@@ -1140,7 +1140,7 @@ export class EquipmentEffects {
       ofType(EquipmentActionTypes.CREATE_MARKETPLACE_PRIVATE_CONVERSATION),
       map((action: CreateMarketplacePrivateConversation) => action.payload),
       mergeMap(payload =>
-        this.equipmentApiService.createMarketplacePrivateConversation(payload.listingId).pipe(
+        this.equipmentApiService.createMarketplacePrivateConversation(payload.listingId, payload.userId).pipe(
           map(
             privateConversation =>
               new CreateMarketplacePrivateConversationSuccess({
@@ -1151,6 +1151,7 @@ export class EquipmentEffects {
             of(
               new CreateMarketplacePrivateConversationFailure({
                 listingId: payload.listingId,
+                userId: payload.userId,
                 error
               })
             )

@@ -16,14 +16,8 @@
     &middot;
 
     <fa-icon icon="bell"></fa-icon>
-    <span
-      *ngIf="listing.followerCount === 0"
-      [translate]="'No followers yet'"
-    ></span>
-    <span
-      *ngIf="listing.followerCount === 1"
-      [translate]="'One follower'"
-    ></span>
+    <span *ngIf="listing.followerCount === 0" [translate]="'No followers yet'"></span>
+    <span *ngIf="listing.followerCount === 1" [translate]="'One follower'"></span>
     <span
       *ngIf="listing.followerCount > 1"
       [translateParams]="{
@@ -35,14 +29,8 @@
     &middot;
 
     <fa-icon icon="eye"></fa-icon>
-    <span
-      *ngIf="listing.viewCount === 0"
-      [translate]="'No views yet'"
-    ></span>
-    <span
-      *ngIf="listing.viewCount === 1"
-      [translate]="'One view'"
-    ></span>
+    <span *ngIf="listing.viewCount === 0" [translate]="'No views yet'"></span>
+    <span *ngIf="listing.viewCount === 1" [translate]="'One view'"></span>
     <span
       *ngIf="listing.viewCount > 1"
       [translateParams]="{
@@ -56,7 +44,7 @@
     <ng-container *ngIf="listingContentType$ | async as listingContentType; else loadingTemplate">
       <ng-container *ngIf="listingUser$ | async as listingUser; else loadingTemplate">
         <div class="row">
-          <div class="col-md-7 col-lg-9">
+          <div class="col-md-7 col-lg-8">
             <astrobin-marketplace-listing [listing]="listing"></astrobin-marketplace-listing>
 
             <astrobin-nested-comments
@@ -70,104 +58,32 @@
             <astrobin-marketplace-more-from-user [listing]="listing"></astrobin-marketplace-more-from-user>
           </div>
 
-          <div class="col">
+          <div class="col-md-5 col-lg-4">
             <astrobin-marketplace-user-card [userId]="listing.user"></astrobin-marketplace-user-card>
 
             <ng-container *ngIf="listingUser.id === currentUserWrapper.user?.id">
-              <a [routerLink]="'edit'" class="btn btn-primary d-block w-100 mt-4">
-                <fa-icon icon="pencil"></fa-icon>
-                {{ "Edit" | translate }}
-              </a>
-
-              <button (click)="delete()" class="btn btn-danger d-block w-100 mt-2">
-                <fa-icon icon="trash"></fa-icon>
-                {{ "Delete" | translate }}
-              </button>
+              <ng-container
+                [ngTemplateOutletContext]="{ currentUserWrapper }"
+                [ngTemplateOutlet]="sidebarOwnerTemplate"
+              ></ng-container>
             </ng-container>
 
             <ng-container *ngIf="listingUser.id !== currentUserWrapper.user?.id">
-              <button
-                (click)="onMakeAnOfferClicked($event)"
-                *ngIf="hasOffered$ | async; else makeAnOfferButtonTemplate"
-                [class.loading]="loadingService.loading$ | async"
-                class="btn btn-primary btn-lg d-block w-100 mt-4"
-              >
-                <fa-icon icon="handshake"></fa-icon>
-                {{ "Modify your offer" | translate }}
-              </button>
-
-              <ng-template #makeAnOfferButtonTemplate>
-                <button
-                  (click)="onMakeAnOfferClicked($event)"
-                  [class.loading]="loadingService.loading$ | async"
-                  class="btn btn-primary btn-lg d-block w-100 mt-4"
-                >
-                  <fa-icon icon="handshake"></fa-icon>
-                  {{ "Make an offer" | translate }}
-                </button>
-              </ng-template>
-
-              <astrobin-toggle-property
-                [contentType]="listingContentType.id"
-                [objectId]="listing.id.toString()"
-                [userId]="currentUserWrapper.user?.id"
-                btnClass="btn btn-secondary d-block w-100 mt-2"
-                propertyType="follow"
-                setLabel="{{ 'Subscribe to updates' | translate }}"
-                unsetLabel="{{ 'Unsubscribe from updates' | translate }}"
-              ></astrobin-toggle-property>
-
-              <button
-                (click)="onMessageSellerClicked($event)"
-                [class.loading]="loadingService.loading$ | async"
-                class="btn btn-secondary d-block w-100 mt-2"
-              >
-                <fa-icon icon="envelope"></fa-icon>
-                {{ "Message seller" | translate }}
-
-                <ng-container *ngIf="privateConversations$ | async as privateConversations">
-                  <ng-container *ngIf="privateConversations?.length === 1">
-                    <span *ngIf="privateConversations[0].unreadMessages > 0" class="badge bg-danger">
-                      {{ privateConversations[0].unreadMessages }}
-                    </span>
-                    <span *ngIf="privateConversations[0].unreadMessages === 0" class="badge bg-info">
-                      {{ privateConversations[0].totalMessages }}
-                    </span>
-                  </ng-container>
-                </ng-container>
-              </button>
-            </ng-container>
-
-            <ng-container *ngIf="listing.user === currentUserWrapper.user?.id">
-              <ng-container *ngIf="privateConversations$ | async as privateConversations">
-                <div *ngIf="privateConversations?.length > 0" class="private-conversations card mt-4">
-                  <div class="card-header">
-                    {{ "Private conversations" | translate }}
-                  </div>
-                  <div class="card-body">
-                    <div class="flex flex-wrap justify-content-center">
-                      <div *ngFor="let privateConversation of privateConversations" class="avatar-wrapper">
-                        <astrobin-avatar
-                          (click)="onMessageSellerClicked($event)"
-                          [userId]="privateConversation.user"
-                        ></astrobin-avatar>
-                        <span *ngIf="privateConversation.unreadMessages > 0" class="badge bg-danger">
-                          {{ privateConversation.unreadMessages }}
-                        </span>
-                        <span *ngIf="privateConversation.unreadMessages === 0" class="badge bg-info">
-                          {{ privateConversation.totalMessages }}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </ng-container>
+              <ng-container
+                [ngTemplateOutletContext]="{ currentUserWrapper, listingContentType }"
+                [ngTemplateOutlet]="sidebarNonOwnerTemplate"
+              ></ng-container>
             </ng-container>
           </div>
+          <!-- col -->
         </div>
+        <!-- row -->
       </ng-container>
+      <!-- listingUser -->
     </ng-container>
+    <!-- listingContentType -->
   </ng-container>
+  <!-- currentUserWrapper -->
 
   <astrobin-scroll-to-top></astrobin-scroll-to-top>
 </div>
@@ -175,4 +91,158 @@
 
 <ng-template #loadingTemplate>
   <astrobin-loading-indicator></astrobin-loading-indicator>
+</ng-template>
+
+<ng-template #offers let-currentUserWrapper="currentUserWrapper">
+  <div class="offers mt-4">
+    <ng-container *ngFor="let userGroup of offersGroupedByUser">
+      <div class="offer card mb-2">
+        <div class="card-header">
+          <ng-container *ngIf="listing.user === currentUserWrapper.user?.id">
+            {{ "Offer by {{0}}" | translate: { "0": userGroup.userDisplayName } }}
+          </ng-container>
+          <ng-container *ngIf="listing.user !== currentUserWrapper.user?.id">
+            {{ "Your offer" | translate }}
+          </ng-container>
+        </div>
+        <div class="card-body">
+          <ul>
+            <ng-container *ngFor="let lineItemId of utilsService.objectKeys(userGroup.offersByLineItem)">
+              <ng-container *ngFor="let offer of userGroup.offersByLineItem[lineItemId]">
+                <ng-container *ngIf="getLineItem(+lineItemId) as lineItem">
+                  <li>
+                    <div class="item-name">{{ lineItem.itemName }}</div>
+                    <span class="amount">{{ offer.amount | currency : lineItem.currency }}</span>
+                    <span class="shipping"
+                    >({{ "shipping" | translate }}:
+                      <ng-container *ngIf="lineItem.shippingCost">
+                        {{ lineItem.shippingCost | currency : lineItem.currency }})
+                      </ng-container>
+                      <ng-container *ngIf="!lineItem.shippingCost"> {{ "Free" | translate }}) </ng-container>
+                    </span>
+                  </li>
+                </ng-container>
+              </ng-container>
+            </ng-container>
+          </ul>
+        </div>
+        <!-- card-body -->
+
+        <ng-container *ngIf="listing.user === currentUserWrapper.user?.id">
+          <div class="card-footer">
+            <button (click)="onAcceptOfferClicked($event, userGroup.userId)" class="btn btn-success d-block w-100">
+              {{ "Accept" | translate }}
+            </button>
+            <button (click)="onRejectOfferClicked($event, userGroup.userId)" class="btn btn-danger d-block w-100">
+              {{ "Reject" | translate }}
+            </button>
+            <button (click)="onMessageProspectBuyerClicked($event, userGroup.userId)"
+                    class="btn btn-secondary d-block w-100">
+              {{ "Message" | translate }}
+            </button>
+          </div>
+          <!-- card-footer -->
+        </ng-container>
+      </div>
+      <!-- offer -->
+    </ng-container>
+  </div>
+  <!-- offers -->
+</ng-template>
+
+<ng-template #sidebarOwnerTemplate let-currentUserWrapper="currentUserWrapper">
+  <a [routerLink]="'edit'" class="btn btn-primary d-block w-100 mt-4">
+    <fa-icon icon="pencil"></fa-icon>
+    {{ "Edit" | translate }}
+  </a>
+
+  <button (click)="delete()" class="btn btn-danger d-block w-100 mt-2">
+    <fa-icon icon="trash"></fa-icon>
+    {{ "Delete" | translate }}
+  </button>
+
+  <ng-container [ngTemplateOutletContext]="{ currentUserWrapper }" [ngTemplateOutlet]="offers"></ng-container>
+
+  <ng-container *ngIf="privateConversations$ | async as privateConversations">
+    <div *ngIf="privateConversations?.length > 0" class="private-conversations card mt-4">
+      <div class="card-header">
+        {{ "Private conversations" | translate }}
+      </div>
+      <div class="card-body">
+        <div class="flex flex-wrap justify-content-center">
+          <div *ngFor="let privateConversation of privateConversations" class="avatar-wrapper">
+            <astrobin-avatar
+              (click)="startPrivateConversation(privateConversation, $event)"
+              [userId]="privateConversation.user"
+            ></astrobin-avatar>
+            <span *ngIf="privateConversation.unreadMessages > 0" class="badge bg-danger">
+              {{ privateConversation.unreadMessages }}
+            </span>
+            <span *ngIf="privateConversation.unreadMessages === 0" class="badge bg-info">
+              {{ privateConversation.totalMessages }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</ng-template>
+
+<ng-template
+  #sidebarNonOwnerTemplate
+  let-currentUserWrapper="currentUserWrapper"
+  let-listingContentType="listingContentType"
+>
+  <ng-container [ngTemplateOutletContext]="{ currentUserWrapper }" [ngTemplateOutlet]="offers"></ng-container>
+
+  <button
+    (click)="onMakeAnOfferClicked($event)"
+    *ngIf="hasOffered$ | async; else makeAnOfferButtonTemplate"
+    [class.loading]="loadingService.loading$ | async"
+    class="btn btn-primary btn-lg d-block w-100 mt-4"
+  >
+    <fa-icon icon="handshake"></fa-icon>
+    {{ "Modify your offer" | translate }}
+  </button>
+
+  <ng-template #makeAnOfferButtonTemplate>
+    <button
+      (click)="onMakeAnOfferClicked($event)"
+      [class.loading]="loadingService.loading$ | async"
+      class="btn btn-primary btn-lg d-block w-100 mt-4"
+    >
+      <fa-icon icon="handshake"></fa-icon>
+      {{ "Make an offer" | translate }}
+    </button>
+  </ng-template>
+
+  <astrobin-toggle-property
+    [contentType]="listingContentType.id"
+    [objectId]="listing.id.toString()"
+    [userId]="currentUserWrapper.user?.id"
+    btnClass="btn btn-secondary d-block w-100 mt-2"
+    propertyType="follow"
+    setLabel="{{ 'Subscribe to updates' | translate }}"
+    unsetLabel="{{ 'Unsubscribe from updates' | translate }}"
+  ></astrobin-toggle-property>
+
+  <button
+    (click)="onMessageSellerClicked($event)"
+    [class.loading]="loadingService.loading$ | async"
+    class="btn btn-secondary d-block w-100 mt-2"
+  >
+    <fa-icon icon="envelope"></fa-icon>
+    {{ "Message seller" | translate }}
+
+    <ng-container *ngIf="privateConversations$ | async as privateConversations">
+      <ng-container *ngIf="privateConversations?.length === 1">
+        <span *ngIf="privateConversations[0].unreadMessages > 0" class="badge bg-danger">
+          {{ privateConversations[0].unreadMessages }}
+        </span>
+        <span *ngIf="privateConversations[0].unreadMessages === 0" class="badge bg-info">
+          {{ privateConversations[0].totalMessages }}
+        </span>
+      </ng-container>
+    </ng-container>
+  </button>
 </ng-template>

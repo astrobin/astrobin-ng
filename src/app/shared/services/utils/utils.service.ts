@@ -635,6 +635,10 @@ export class UtilsService {
     const fromApi: Observable<T> = apiCall.apply(apiContext, [id]);
     return store$.select(selector, id).pipe(switchMap(fromStore => (fromStore !== null ? of(fromStore) : fromApi)));
   }
+
+  objectKeys(obj: any): string[] {
+    return Object.keys(obj);
+  }
 }
 
 export function distinctUntilChangedObj<T>() {

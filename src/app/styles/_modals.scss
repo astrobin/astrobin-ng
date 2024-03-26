@@ -36,6 +36,12 @@
 
 .modal-xl {
   @media screen and (min-width: $lg-min) {
+    max-width: 66.67%;
+  }
+}
+
+.modal-xxl {
+  @media screen and (min-width: $lg-min) {
     max-width: calc(100% - 3rem);
   }
 }

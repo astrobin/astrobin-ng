@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, OnInit } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
-import { Store } from "@ngrx/store";
+import { select, Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
@@ -50,6 +50,16 @@ import { environment } from "@env/environment";
 import { MarketplaceOfferModalComponent } from "@features/equipment/components/marketplace-offer-modal/marketplace-offer-modal.component";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { RouterService } from "@shared/services/router.service";
+import { MarketplaceOfferInterface } from "@features/equipment/types/marketplace-offer.interface";
+import { UtilsService } from "@shared/services/utils/utils.service";
+import { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
+import { LoadUser } from "@features/account/store/auth.actions";
+
+interface UserOfferGroup {
+  userId: UserInterface["id"];
+  userDisplayName: string;
+  offersByLineItem: { [lineItemId: number]: MarketplaceOfferInterface[] };
+}
 
 @Component({
   selector: "astrobin-marketplace-listing-page",
@@ -79,6 +89,7 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
   listingUser$: Observable<UserInterface>;
   privateConversations$: Observable<MarketplacePrivateConversationInterface[]>;
   hasOffered$: Observable<boolean>;
+  offersGroupedByUser: UserOfferGroup[] = [];
 
   private _contentTypePayload = { appLabel: "astrobin_apps_equipment", model: "equipmentitemmarketplacelisting" };
   private _listingUpdated$ = new ReplaySubject<void>();
@@ -95,7 +106,8 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
     public readonly router: Router,
     public readonly http: HttpClient,
     public readonly windowRefService: WindowRefService,
-    public readonly routerService: RouterService
+    public readonly routerService: RouterService,
+    public readonly utilsService: UtilsService
   ) {
     super(store$);
   }
@@ -112,14 +124,17 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
     this.loadPrivateConversations();
     this.loadUser();
     this.loadHasOffered();
+    this.loadOffersGroupedByUser();
 
-    this.router.events.pipe(
-      filter(event => event instanceof NavigationEnd),
-      takeUntil(this.destroyed$)
-    ).subscribe(() => {
-      this.setListing();
-      this.windowRefService.scroll({ top: 0 });
-    });
+    this.router.events
+      .pipe(
+        filter(event => event instanceof NavigationEnd),
+        takeUntil(this.destroyed$)
+      )
+      .subscribe(() => {
+        this.setListing();
+        this.windowRefService.scroll({ top: 0 });
+      });
   }
 
   setListing() {
@@ -138,18 +153,43 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
     this.hasOffered$ = this._listingUpdated$.pipe(
       switchMap(() => this.currentUser$),
       switchMap(user => {
-          if (!!user) {
-            return this.store$.select(
-              selectMarketplaceOffersByUser(user.id, this.listing.id)
-            );
-          }
-
-          return of([]);
+        if (!!user) {
+          return this.store$.select(selectMarketplaceOffersByUser(user.id, this.listing.id));
         }
-      ),
+
+        return of([]);
+      }),
       map(offers => offers.length > 0),
       takeUntil(this.destroyed$)
     );
+  }
+
+  loadOffersGroupedByUser() {
+    this._listingUpdated$.pipe(takeUntil(this.destroyed$)).subscribe(() => {
+      this.offersGroupedByUser = [];
+
+      this.listing.lineItems.forEach(lineItem => {
+        lineItem.offers.forEach(offer => {
+          const userId = offer.user;
+          let userGroup = this.offersGroupedByUser.find(group => group.userId === userId);
+
+          if (!userGroup) {
+            userGroup = {
+              userId,
+              userDisplayName: offer.userDisplayName,
+              offersByLineItem: {}
+            };
+            this.offersGroupedByUser.push(userGroup);
+          }
+
+          if (!userGroup.offersByLineItem[lineItem.id]) {
+            userGroup.offersByLineItem[lineItem.id] = [];
+          }
+
+          userGroup.offersByLineItem[lineItem.id].push(offer);
+        });
+      });
+    });
   }
 
   loadUser() {
@@ -183,24 +223,32 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
     if (fragment && fragment[0] === "c") {
       const commentId = +fragment.substring(1);
 
-      this.store$.select(selectNestedCommentById, commentId).pipe(
-        takeUntil(this.destroyed$),
-        filter(comment => !!comment),
-        take(1)
-      ).subscribe((comment: NestedCommentInterface) => {
-        const contentTypeId = comment.contentType;
-
-        this.store$.select(selectContentTypeById, { id: contentTypeId }).pipe(
+      this.store$
+        .select(selectNestedCommentById, commentId)
+        .pipe(
           takeUntil(this.destroyed$),
-          filter(contentType => !!contentType && contentType.model === "equipmentitemmarketplaceprivateconversation"),
-          switchMap(() => this.store$.select(selectMarketplacePrivateConversation(comment.objectId))),
+          filter(comment => !!comment),
           take(1)
-        ).subscribe(privateConversation => {
-          this.startPrivateConversation(privateConversation);
-        });
+        )
+        .subscribe((comment: NestedCommentInterface) => {
+          const contentTypeId = comment.contentType;
 
-        this.store$.dispatch(new LoadContentTypeById({ id: contentTypeId }));
-      });
+          this.store$
+            .select(selectContentTypeById, { id: contentTypeId })
+            .pipe(
+              takeUntil(this.destroyed$),
+              filter(
+                contentType => !!contentType && contentType.model === "equipmentitemmarketplaceprivateconversation"
+              ),
+              switchMap(() => this.store$.select(selectMarketplacePrivateConversation(comment.objectId))),
+              take(1)
+            )
+            .subscribe(privateConversation => {
+              this.startPrivateConversation(privateConversation);
+            });
+
+          this.store$.dispatch(new LoadContentTypeById({ id: contentTypeId }));
+        });
 
       this.store$.dispatch(new LoadNestedComment({ id: commentId }));
     }
@@ -228,28 +276,31 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
   onMakeAnOfferClicked(event: Event) {
     event.preventDefault();
 
-    this.currentUser$.pipe(
-      take(1)
-    ).subscribe(user => {
+    this.currentUser$.pipe(take(1)).subscribe(user => {
       if (!user) {
         this.routerService.redirectToLogin();
         return;
       }
 
-      const modalRef: NgbModalRef = this.modalService.open(MarketplaceOfferModalComponent, { size: "lg" });
+      const modalRef: NgbModalRef = this.modalService.open(MarketplaceOfferModalComponent, { size: "xl" });
       const component = modalRef.componentInstance;
 
       component.listing = this.listing;
 
-      modalRef.closed.subscribe(listing => {
-        this.store$.select(selectMarketplaceListing, { id: listing.id }).pipe(
+      modalRef.closed
+        .pipe(
           filter(listing => !!listing),
-          take(1)
-        ).subscribe(listing => {
+          switchMap(listing =>
+            this.store$.select(selectMarketplaceListing, { id: listing.id }).pipe(
+              filter(innerListing => !!innerListing),
+              take(1)
+            )
+          )
+        )
+        .subscribe(listing => {
           this.listing = listing;
           this._listingUpdated$.next();
         });
-      });
     });
   }
 
@@ -268,10 +319,7 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
     this.actions$
       .pipe(
         ofType(EquipmentActionTypes.DELETE_MARKETPLACE_PRIVATE_CONVERSATION_SUCCESS),
-        filter(
-          (action: DeleteMarketplacePrivateConversationSuccess) =>
-            action.payload.listingId === this.listing.id
-        ),
+        filter((action: DeleteMarketplacePrivateConversationSuccess) => action.payload.listingId === this.listing.id),
         take(1)
       )
       .subscribe(() => {
@@ -281,7 +329,11 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
     this.store$.dispatch(new DeleteMarketplacePrivateConversation({ privateConversation }));
   }
 
-  startPrivateConversation(privateConversation: MarketplacePrivateConversationInterface) {
+  startPrivateConversation(privateConversation: MarketplacePrivateConversationInterface, event: Event = null) {
+    if (event) {
+      event.preventDefault();
+    }
+
     const contentTypePayload = {
       appLabel: "astrobin_apps_equipment",
       model: "equipmentitemmarketplaceprivateconversation"
@@ -307,8 +359,8 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
         componentInstance.objectId = privateConversation.id;
         componentInstance.title =
           currentUser.id === this.listing.user
-            ? this.translateService.instant("Private conversation with a prospective buyer")
-            : this.translateService.instant("Private conversation with the seller");
+            ? this.translateService.instant("Private conversations with a prospective buyer")
+            : this.translateService.instant("Private conversations with the seller");
         componentInstance.addCommentLabel = this.translateService.instant("Start a new conversation");
         componentInstance.noCommentsLabel = this.translateService.instant("No messages yet.");
 
@@ -376,10 +428,13 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
 
     this.loadingService.setLoading(true);
 
-    this.store$
-      .select(selectMarketplacePrivateConversations(this.listing.id))
+    this.currentUser$
       .pipe(
-        switchMap(privateConversations => this.currentUser$.pipe(map(currentUser => [privateConversations, currentUser]))),
+        switchMap(currentUser =>
+          this.store$
+            .select(selectMarketplacePrivateConversations(this.listing.id, currentUser.id))
+            .pipe(map(privateConversations => [privateConversations, currentUser]))
+        ),
         take(1)
       )
       .subscribe((data: [MarketplacePrivateConversationInterface[], UserInterface]) => {
@@ -397,7 +452,8 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
               ofType(EquipmentActionTypes.CREATE_MARKETPLACE_PRIVATE_CONVERSATION_SUCCESS),
               filter(
                 (action: CreateMarketplacePrivateConversationSuccess) =>
-                  action.payload.privateConversation.listing === this.listing.id
+                  action.payload.privateConversation.listing === this.listing.id &&
+                  action.payload.privateConversation.user === currentUser.id
               ),
               map((action: CreateMarketplacePrivateConversationSuccess) => action.payload.privateConversation),
               take(1)
@@ -408,20 +464,67 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
 
           this.store$.dispatch(new CreateMarketplacePrivateConversation({ listingId: this.listing.id }));
         } else {
+          // There can be only one private conversation per listing per user, so we can safely assume that the first one
+          // is the one we want.
           this.startPrivateConversation(privateConversations[0]);
         }
       });
   }
 
+  getLineItem(id: MarketplaceLineItemInterface["id"]): MarketplaceLineItemInterface {
+    return this.listing.lineItems.find(lineItem => lineItem.id === id);
+  }
+
+  onMessageProspectBuyerClicked(event: Event, userId: UserInterface["id"]) {
+    event.preventDefault();
+
+    this.loadingService.setLoading(true);
+
+    this.store$.pipe(
+      select(selectMarketplacePrivateConversations(this.listing.id, userId)),
+      take(1)
+    )
+      .subscribe(privateConversations => {
+        privateConversations = privateConversations.filter(
+          privateConversation => privateConversation.user === userId
+        );
+
+        if (privateConversations.length === 0) {
+          this.actions$
+            .pipe(
+              ofType(EquipmentActionTypes.CREATE_MARKETPLACE_PRIVATE_CONVERSATION_SUCCESS),
+              filter(
+                (action: CreateMarketplacePrivateConversationSuccess) =>
+                  action.payload.privateConversation.listing === this.listing.id &&
+                  action.payload.privateConversation.user === userId
+              ),
+              map((action: CreateMarketplacePrivateConversationSuccess) => action.payload.privateConversation),
+              take(1)
+            )
+            .subscribe(privateConversation => {
+              this.startPrivateConversation(privateConversation);
+            });
+
+          this.store$.dispatch(new CreateMarketplacePrivateConversation({ listingId: this.listing.id, userId }));
+        } else {
+          this.startPrivateConversation(privateConversations[0]);
+        }
+      });
+
+    this.store$.dispatch(new LoadUser({ id: userId }));
+  }
+
   private _recordHit() {
-    this.currentUser$.pipe(
-      switchMap(user => this.store$.select(selectContentType, this._contentTypePayload).pipe(
-          filter(contentType => !!contentType),
-          take(1),
-          map(contentType => [user, contentType])
-        )
-      ),
-      switchMap(([user, contentType]) => {
+    this.currentUser$
+      .pipe(
+        switchMap(user =>
+          this.store$.select(selectContentType, this._contentTypePayload).pipe(
+            filter(contentType => !!contentType),
+            take(1),
+            map(contentType => [user, contentType])
+          )
+        ),
+        switchMap(([user, contentType]) => {
           if (!user || user.id !== this.listing.user) {
             return this.http.post(`${environment.classicBaseUrl}/json-api/common/record-hit/`, {
               content_type_id: contentType.id,
@@ -430,8 +533,8 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
           }
 
           return of(null);
-        }
+        })
       )
-    ).subscribe();
+      .subscribe();
   }
 }

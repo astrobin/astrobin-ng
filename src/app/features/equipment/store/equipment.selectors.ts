@@ -18,6 +18,7 @@ import { MarketplaceListingInterface } from "@features/equipment/types/marketpla
 import { MarketplacePrivateConversationInterface } from "@features/equipment/types/marketplace-private-conversation.interface";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { EquipmentMarketplaceService } from "@features/equipment/services/equipment-marketplace.service";
+import { MarketplaceOfferInterface } from "@features/equipment/types/marketplace-offer.interface";
 
 export function getEquipmentItemType(item: EquipmentItemBaseInterface): EquipmentItemType {
   if (instanceOfSensor(item)) {
@@ -145,15 +146,43 @@ export const selectMarketplaceListing = createSelector(
 export const selectMarketplaceListingByHash = (hash: MarketplaceListingInterface["hash"]) =>
   createSelector(selectMarketplaceListings, listings => listings?.find(listing => listing.hash === hash) || null);
 
-export const selectMarketplacePrivateConversations = (listingId: MarketplaceListingInterface["id"]) =>
+export const selectMarketplacePrivateConversations = (
+  listingId: MarketplaceListingInterface["id"],
+  userId?: UserInterface["id"]
+) =>
   createSelector(selectMarketplace, marketplace =>
-    marketplace.privateConversations.filter(conversation => conversation.listing === listingId)
+    marketplace.privateConversations.filter(
+      conversation => {
+        let result = conversation.listing === listingId;
+
+        if (userId) {
+          result = result && conversation.user === userId;
+        }
+
+        return result;
+      }
+    )
   );
 
 export const selectMarketplacePrivateConversation = (conversationId: MarketplacePrivateConversationInterface["id"]) =>
-  createSelector(selectMarketplace, marketplace =>
-    marketplace.privateConversations.find(conversation => conversation.id === conversationId) || null
+  createSelector(
+    selectMarketplace,
+    marketplace => marketplace.privateConversations.find(conversation => conversation.id === conversationId) || null
   );
+
+export const selectMarketplaceOffers = (listingId: MarketplaceListingInterface["id"]) => {
+  return createSelector(selectMarketplace, marketplace => {
+    const listing = marketplace.listings.find(listing => listing.id === listingId);
+
+    if (!!listing) {
+      return listing.lineItems.reduce<MarketplaceOfferInterface[]>((offers, lineItem) => {
+        return offers.concat(lineItem.offers);
+      }, []);
+    }
+
+    return [];
+  });
+};
 
 export const selectMarketplaceOffersByUser = (
   userId: UserInterface["id"],

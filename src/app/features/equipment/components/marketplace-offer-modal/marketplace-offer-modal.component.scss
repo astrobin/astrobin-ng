@@ -29,5 +29,12 @@
         padding-bottom: .5rem;
       }
     }
+
+    &.total input {
+      background-color: var(--successColor) !important;
+      font-weight: bold;
+      color: var(--white);
+      padding: .375rem;
+    }
   }
 }

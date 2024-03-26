@@ -1074,7 +1074,10 @@ export class LoadMarketplacePrivateConversationsFailure implements PayloadAction
 export class CreateMarketplacePrivateConversation implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.CREATE_MARKETPLACE_PRIVATE_CONVERSATION;
 
-  constructor(public payload: { listingId: MarketplaceListingInterface["id"] }) {
+  constructor(public payload: {
+    listingId: MarketplaceListingInterface["id"];
+    userId?: UserInterface["id"];
+  }) {
   }
 }
 
@@ -1091,6 +1094,7 @@ export class CreateMarketplacePrivateConversationFailure implements PayloadActio
   constructor(
     public payload: {
       listingId: MarketplaceListingInterface["id"];
+      userId?: UserInterface["id"];
       error: string;
     }
   ) {

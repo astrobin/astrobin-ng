@@ -12,7 +12,9 @@ export interface MarketplaceOfferInterface {
   id?: number;
   listing: MarketplaceListingInterface["id"];
   lineItem: MarketplaceLineItemInterface["id"];
+  linetItemDisplayName?: string;
   user?: UserInterface["id"];
+  userDisplayName?: string;
   created?: string;
   updated?: string;
   amount?: number;
