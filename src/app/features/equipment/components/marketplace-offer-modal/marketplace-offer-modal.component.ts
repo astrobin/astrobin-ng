@@ -99,19 +99,9 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
     );
 
     if (sameCurrency) {
-      let total = 0;
-
-      for (const key of Object.keys(this.form.value)) {
-        if (key.indexOf("amount-") === 0 || key.indexOf("shippingCost-raw") === 0) {
-          total += +this.form.value[key];
-        }
-      }
-
-      const totalLabel = this.currencyPipe.transform(total, this.listing.lineItems[0].currency);
-
       return this.translateService.instant(
         "Offer {{0}} incl. shipping",
-        { 0: totalLabel }
+        { 0: this.currencyPipe.transform(this._getTotalAmountIncludingShipping(), this.listing.lineItems[0].currency) }
       );
     }
 
@@ -328,21 +318,38 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
   }
 
   private _checkFormHasItems() {
-    let hasItems = false;
+    const total = this._getTotalAmount();
 
-    for (const key of Object.keys(this.form.value)) {
-      if (key.indexOf("checkbox-")) {
-        hasItems = true;
-        break;
-      }
-    }
-
-    if (!hasItems) {
+    if (total === 0) {
       this.popNotificationsService.error(
-        this.translateService.instant("You cannot make an offer without selecting at least one item.")
+        this.translateService.instant("You cannot offer nothing, sorry.")
       );
     }
+    return total > 0;
+  }
 
-    return hasItems;
+  private _getTotalAmountIncludingShipping(): number {
+    return this.listing.lineItems.reduce((total, lineItem) => {
+      const id = lineItem.id;
+
+      if (this.form.value[`checkbox-${id}`]) {
+        total += +this.form.value[`amount-${id}`] + +this.form.value[`shippingCost-raw-${id}`];
+      }
+
+      return total;
+    }, 0);
+  }
+
+  private _getTotalAmount(): number {
+    return this.listing.lineItems.reduce((total, lineItem) => {
+      const id = lineItem.id;
+
+      if (this.form.value[`checkbox-${id}`]) {
+        total += +this.form.value[`amount-${id}`];
+      }
+
+      return total;
+    }, 0);
   }
 }
+
