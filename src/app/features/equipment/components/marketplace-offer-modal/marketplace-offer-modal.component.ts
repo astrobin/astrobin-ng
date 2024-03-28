@@ -14,11 +14,14 @@ import { MarketplaceOfferInterface } from "@features/equipment/types/marketplace
 import { Actions, ofType } from "@ngrx/effects";
 import {
   CreateMarketplaceOffer,
+  CreateMarketplaceOfferFailure,
   CreateMarketplaceOfferSuccess,
   DeleteMarketplaceOffer,
+  DeleteMarketplaceOfferFailure,
   DeleteMarketplaceOfferSuccess,
   EquipmentActionTypes,
   UpdateMarketplaceOffer,
+  UpdateMarketplaceOfferFailure,
   UpdateMarketplaceOfferSuccess
 } from "@features/equipment/store/equipment.actions";
 import { filter, map, switchMap, take, takeUntil } from "rxjs/operators";
@@ -76,9 +79,16 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
     }
 
     if (this.hasAnyOffers()) {
-      this._performOfferAction(UpdateMarketplaceOffer, EquipmentActionTypes.UPDATE_MARKETPLACE_OFFER_SUCCESS);
+      this._performOfferAction(
+        UpdateMarketplaceOffer,
+        EquipmentActionTypes.UPDATE_MARKETPLACE_OFFER_SUCCESS,
+        EquipmentActionTypes.UPDATE_MARKETPLACE_OFFER_FAILURE);
     } else {
-      this._performOfferAction(CreateMarketplaceOffer, EquipmentActionTypes.CREATE_MARKETPLACE_OFFER_SUCCESS);
+      this._performOfferAction(
+        CreateMarketplaceOffer,
+        EquipmentActionTypes.CREATE_MARKETPLACE_OFFER_SUCCESS,
+        EquipmentActionTypes.CREATE_MARKETPLACE_OFFER_FAILURE
+      );
     }
   }
 
@@ -86,7 +96,11 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
     if (this.hasAnyOffers()) {
       const modalRef: NgbModalRef = this.modalService.open(ConfirmationDialogComponent);
       modalRef.closed.subscribe(() => {
-        this._performOfferAction(DeleteMarketplaceOffer, EquipmentActionTypes.DELETE_MARKETPLACE_OFFER_SUCCESS);
+        this._performOfferAction(
+          DeleteMarketplaceOffer,
+          EquipmentActionTypes.DELETE_MARKETPLACE_OFFER_SUCCESS,
+          EquipmentActionTypes.DELETE_MARKETPLACE_OFFER_FAILURE
+        );
       });
     } else {
       this.popNotificationsService.error(this.translateService.instant("No offers to retract."));
@@ -259,25 +273,41 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
     successActionType:
       | typeof EquipmentActionTypes.CREATE_MARKETPLACE_OFFER_SUCCESS
       | typeof EquipmentActionTypes.UPDATE_MARKETPLACE_OFFER_SUCCESS
-      | typeof EquipmentActionTypes.DELETE_MARKETPLACE_OFFER_SUCCESS
+      | typeof EquipmentActionTypes.DELETE_MARKETPLACE_OFFER_SUCCESS,
+    failureActionType:
+      | typeof EquipmentActionTypes.CREATE_MARKETPLACE_OFFER_FAILURE
+      | typeof EquipmentActionTypes.UPDATE_MARKETPLACE_OFFER_FAILURE
+      | typeof EquipmentActionTypes.DELETE_MARKETPLACE_OFFER_FAILURE
   ) {
-    forkJoin(
-      this.listing.lineItems
-        .filter(lineItem => {
-          const amount = this.form.value[`amount-${lineItem.id}`];
-          return !!amount;
-        })
-        .map(lineItem =>
-          this.actions$.pipe(
-            ofType(successActionType),
-            filter(
-              (action: CreateMarketplaceOfferSuccess | UpdateMarketplaceOfferSuccess | DeleteMarketplaceOfferSuccess) =>
-                action.payload.offer.lineItem === lineItem.id
-            ),
-            switchMap(() => this.store$.select(selectMarketplaceListing, { id: this.listing.id })),
-            take(1)
-          ))
-    ).pipe(
+    const lineItems = this.listing.lineItems.filter(lineItem => {
+      const amount = this.form.value[`amount-${lineItem.id}`];
+      return !!amount;
+    });
+
+    const successObservables$ = lineItems.map(lineItem =>
+      this.actions$.pipe(
+        ofType(successActionType),
+        filter(
+          (action: CreateMarketplaceOfferSuccess | UpdateMarketplaceOfferSuccess | DeleteMarketplaceOfferSuccess) =>
+            action.payload.offer.lineItem === lineItem.id
+        ),
+        switchMap(() => this.store$.select(selectMarketplaceListing, { id: this.listing.id })),
+        take(1)
+      )
+    );
+
+    const failureObservables$ = lineItems.map(lineItem =>
+      this.actions$.pipe(
+        ofType(failureActionType),
+        filter(
+          (action: CreateMarketplaceOfferFailure | UpdateMarketplaceOfferFailure | DeleteMarketplaceOfferFailure) =>
+            action.payload.offer.lineItem === lineItem.id
+        ),
+        take(1)
+      )
+    );
+
+    forkJoin(successObservables$).pipe(
       // It's only one listing so we can take the first result.
       map(result => result[0])
     ).subscribe(listing => {
@@ -295,6 +325,16 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
       }
 
       this.popNotificationsService.success(message);
+    });
+
+    forkJoin(failureObservables$).pipe(
+    ).subscribe(() => {
+      this.loadingService.setLoading(false);
+      this.popNotificationsService.error(
+        this.translateService.instant(
+          "This operation could not be completed. Perhaps this offer does not exist anymore. Please refresh the page."
+        )
+      );
     });
 
     this.loadingService.setLoading(true);

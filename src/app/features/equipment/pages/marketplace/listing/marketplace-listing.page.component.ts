@@ -485,6 +485,8 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
     modalRef.closed.subscribe(() => {
       const offers = EquipmentMarketplaceService.offersByUser(userId, this.listing);
 
+      this.loadingService.setLoading(true);
+
       forkJoin(
         offers.map(offer => this.actions$.pipe(
             ofType(EquipmentActionTypes.DELETE_MARKETPLACE_OFFER_SUCCESS),
@@ -499,6 +501,7 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
         this.listing = listing;
         this._listingUpdated$.next();
         this.popNotificationsService.success(this.translateService.instant("Offer rejected successfully."));
+        this.loadingService.setLoading(false);
       });
 
       offers.forEach(offer => {
