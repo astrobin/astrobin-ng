@@ -18,6 +18,7 @@ import { MarketplaceListingInterface } from "@features/equipment/types/marketpla
 import { selectUser } from "@features/account/store/auth.selectors";
 import { LoadUser } from "@features/account/store/auth.actions";
 import { MarketplaceOfferInterface } from "@features/equipment/types/marketplace-offer.interface";
+import { TranslateService } from "@ngx-translate/core";
 
 @Injectable({
   providedIn: "root"
@@ -25,7 +26,8 @@ import { MarketplaceOfferInterface } from "@features/equipment/types/marketplace
 export class EquipmentMarketplaceService extends BaseService {
   constructor(
     public readonly store$: Store<State>,
-    public readonly loadingService: LoadingService
+    public readonly loadingService: LoadingService,
+    public readonly translateService: TranslateService
   ) {
     super(loadingService);
   }
@@ -35,6 +37,18 @@ export class EquipmentMarketplaceService extends BaseService {
       const userOffers = lineItem.offers.filter(offer => offer.user === userId);
       return acc.concat(userOffers);
     }, []);
+  }
+
+  offerErrorMessageForSeller(): string {
+    return this.translateService.instant(
+      "This operation cannot be performed. Perhaps the buyer already retracted the offer. Please refresh the page."
+    );
+  }
+
+  offerErrorMessageForBuyer(): string {
+    return this.translateService.instant(
+      "This operation cannot be performed. Perhaps the seller already rejected the offer. Please refresh the page."
+    );
   }
 
   getLineItemEquipmentItem$(lineItem: MarketplaceLineItemInterface): Observable<EquipmentItem> {

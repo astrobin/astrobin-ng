@@ -28,6 +28,7 @@ import { filter, map, switchMap, take, takeUntil } from "rxjs/operators";
 import { selectMarketplaceListing } from "@features/equipment/store/equipment.selectors";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
 import { forkJoin } from "rxjs";
+import { EquipmentMarketplaceService } from "@features/equipment/services/equipment-marketplace.service";
 
 @Component({
   selector: "astrobin-marketplace-offer-modal",
@@ -59,7 +60,8 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
     public readonly currencyPipe: CurrencyPipe,
     public readonly popNotificationsService: PopNotificationsService,
     public readonly loadingService: LoadingService,
-    public readonly modalService: NgbModal
+    public readonly modalService: NgbModal,
+    public readonly equipmentMarketplaceService: EquipmentMarketplaceService
   ) {
     super(store$);
   }
@@ -327,14 +329,9 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
       this.popNotificationsService.success(message);
     });
 
-    forkJoin(failureObservables$).pipe(
-    ).subscribe(() => {
+    forkJoin(failureObservables$).subscribe(() => {
       this.loadingService.setLoading(false);
-      this.popNotificationsService.error(
-        this.translateService.instant(
-          "This operation could not be completed. Perhaps this offer does not exist anymore. Please refresh the page."
-        )
-      );
+      this.popNotificationsService.error(this.equipmentMarketplaceService.offerErrorMessageForBuyer());
     });
 
     this.loadingService.setLoading(true);

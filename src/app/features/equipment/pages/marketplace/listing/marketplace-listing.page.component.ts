@@ -24,6 +24,7 @@ import {
   DeleteMarketplaceListing,
   DeleteMarketplaceListingSuccess,
   DeleteMarketplaceOffer,
+  DeleteMarketplaceOfferFailure,
   DeleteMarketplaceOfferSuccess,
   DeleteMarketplacePrivateConversation,
   DeleteMarketplacePrivateConversationSuccess,
@@ -486,6 +487,18 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
       const offers = EquipmentMarketplaceService.offersByUser(userId, this.listing);
 
       this.loadingService.setLoading(true);
+
+      forkJoin(
+        offers.map(offer => this.actions$.pipe(
+            ofType(EquipmentActionTypes.DELETE_MARKETPLACE_OFFER_FAILURE),
+            filter((action: DeleteMarketplaceOfferFailure) => action.payload.offer.id === offer.id),
+            take(1)
+          )
+        )
+      ).subscribe(() => {
+        this.popNotificationsService.error(this.equipmentMarketplaceService.offerErrorMessageForSeller());
+        this.loadingService.setLoading(false);
+      });
 
       forkJoin(
         offers.map(offer => this.actions$.pipe(
