@@ -139,10 +139,10 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
               key: `checkbox-${lineItem.id}`,
               type: "toggle",
               wrappers: ["default-wrapper"],
-              className: "col-1 toggle",
               defaultValue: hasAnyOffers ? hasLineItemOffer : true,
               expressions: {
-                "hide": () => this.listing.bundleSaleOnly
+                "hide": () => this.listing.bundleSaleOnly,
+                className: () => this.hasAnyOffers() ? "hidden" : "col-1 toggle"
               },
               props: {
                 label: "&nbsp;",
