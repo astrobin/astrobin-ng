@@ -6,7 +6,7 @@ import { MarketplaceListingInterface } from "@features/equipment/types/marketpla
 import { LoadUser } from "@features/account/store/auth.actions";
 import { selectUser } from "@features/account/store/auth.selectors";
 import { LoadMarketplaceListings } from "@features/equipment/store/equipment.actions";
-import { filter, map, take, takeUntil, tap } from "rxjs/operators";
+import { filter, map, take, takeUntil } from "rxjs/operators";
 import { selectMarketplaceListings } from "@features/equipment/store/equipment.selectors";
 import { LoadingService } from "@shared/services/loading.service";
 
@@ -40,8 +40,7 @@ export class MarketplaceMoreFromUserComponent extends BaseComponentDirective imp
     this.store$.select(selectMarketplaceListings).pipe(
       takeUntil(this.destroyed$),
       filter(listings => !!listings),
-      map(listings => listings.filter(listing => listing.user === this.listing.user && listing.lineItems.length > 0)),
-      tap(() => this.loadingService.setLoading(false))
+      map(listings => listings.filter(listing => listing.user === this.listing.user && listing.lineItems.length > 0))
     ).subscribe(listings => {
       this.otherListings = listings.filter(listing => listing.id !== this.listing.id);
     });

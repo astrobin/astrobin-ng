@@ -9,7 +9,6 @@ import { FormGroup } from "@angular/forms";
 import { FormlyFieldConfig } from "@ngx-formly/core";
 import { CurrencyPipe } from "@angular/common";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
-import { forkJoin } from "rxjs";
 import { LoadingService } from "@shared/services/loading.service";
 import { MarketplaceOfferInterface } from "@features/equipment/types/marketplace-offer.interface";
 import { Actions, ofType } from "@ngrx/effects";
@@ -25,6 +24,7 @@ import {
 import { filter, map, switchMap, take, takeUntil } from "rxjs/operators";
 import { selectMarketplaceListing } from "@features/equipment/store/equipment.selectors";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
+import { forkJoin } from "rxjs";
 
 @Component({
   selector: "astrobin-marketplace-offer-modal",
@@ -267,8 +267,8 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
           const amount = this.form.value[`amount-${lineItem.id}`];
           return !!amount;
         })
-        .map(lineItem => {
-          return this.actions$.pipe(
+        .map(lineItem =>
+          this.actions$.pipe(
             ofType(successActionType),
             filter(
               (action: CreateMarketplaceOfferSuccess | UpdateMarketplaceOfferSuccess | DeleteMarketplaceOfferSuccess) =>
@@ -276,8 +276,7 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
             ),
             switchMap(() => this.store$.select(selectMarketplaceListing, { id: this.listing.id })),
             take(1)
-          );
-        })
+          ))
     ).pipe(
       // It's only one listing so we can take the first result.
       map(result => result[0])
