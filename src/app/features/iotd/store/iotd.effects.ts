@@ -27,6 +27,7 @@ import {
   LoadHiddenImagesSuccess,
   LoadJudgementQueueFailure,
   LoadJudgementQueueSuccess,
+  LoadReviewerSeenImagesSuccess,
   LoadReviewQueueFailure,
   LoadReviewQueueSuccess,
   LoadStaffMemberSettings,
@@ -38,6 +39,8 @@ import {
   LoadSubmitterSeenImagesSuccess,
   LoadVotesFailure,
   LoadVotesSuccess,
+  MarkReviewerSeenImage,
+  MarkReviewerSeenImageSuccess,
   MarkSubmitterSeenImageSuccess,
   PostIotdFailure,
   PostIotdSuccess,
@@ -155,6 +158,39 @@ export class IotdEffects {
         this.iotdApiService
           .markSubmitterSeenImage(payload.id)
           .pipe(map(submitterSeenImage => new MarkSubmitterSeenImageSuccess({ submitterSeenImage })))
+      )
+    )
+  );
+
+  loadReviewerSeenImages$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(IotdActionTypes.LOAD_REVIEWER_SEEN_IMAGES),
+      tap(() => this.loadingService.setLoading(true)),
+      mergeMap(() =>
+        this.iotdApiService
+          .loadReviewerSeenImages()
+          .pipe(map(reviewerSeenImages => new LoadReviewerSeenImagesSuccess({ reviewerSeenImages })))
+      )
+    )
+  );
+
+  loadReviewerSeenImagesSuccess$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(IotdActionTypes.LOAD_REVIEWER_SEEN_IMAGES_SUCCESS),
+        tap(() => this.loadingService.setLoading(false))
+      ),
+    { dispatch: false }
+  );
+
+  markReviewerSeenImage$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(IotdActionTypes.MARK_REVIEWER_SEEN_IMAGE),
+      map((action: MarkReviewerSeenImage) => action.payload),
+      mergeMap(payload =>
+        this.iotdApiService
+          .markReviewerSeenImage(payload.id)
+          .pipe(map(reviewerSeenImage => new MarkReviewerSeenImageSuccess({ reviewerSeenImage })))
       )
     )
   );

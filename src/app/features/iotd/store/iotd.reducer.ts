@@ -2,6 +2,7 @@ import {
   DismissedImage,
   HiddenImage,
   IotdInterface,
+  ReviewerSeenImage,
   SubmissionInterface,
   SubmitterSeenImage,
   VoteInterface
@@ -19,6 +20,7 @@ export interface IotdState {
   staffMemberSettings: StaffMemberSettingsInterface;
   hiddenImages: HiddenImage[];
   submitterSeenImages: SubmitterSeenImage[];
+  reviewerSeenImages: ReviewerSeenImage[];
   dismissedImages: DismissedImage[];
 
   submissionQueue: PaginatedApiResultInterface<SubmissionImageInterface> | null;
@@ -35,6 +37,7 @@ export const initialIotdState: IotdState = {
   staffMemberSettings: null,
   hiddenImages: [],
   submitterSeenImages: [],
+  reviewerSeenImages: [],
   dismissedImages: [],
 
   submissionQueue: null,
@@ -88,6 +91,18 @@ export function reducer(state = initialIotdState, action: IotdActions): IotdStat
       return {
         ...state,
         submitterSeenImages: [...state.submitterSeenImages, action.payload.submitterSeenImage]
+      };
+
+    case IotdActionTypes.LOAD_REVIEWER_SEEN_IMAGES_SUCCESS:
+      return {
+        ...state,
+        reviewerSeenImages: action.payload.reviewerSeenImages
+      };
+
+    case IotdActionTypes.MARK_REVIEWER_SEEN_IMAGE_SUCCESS:
+      return {
+        ...state,
+        reviewerSeenImages: [...state.reviewerSeenImages, action.payload.reviewerSeenImage]
       };
 
     case IotdActionTypes.DISMISS_IMAGE_SUCCESS:

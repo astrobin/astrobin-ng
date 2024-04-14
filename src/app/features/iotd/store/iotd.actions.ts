@@ -4,6 +4,7 @@ import {
   DismissedImage,
   HiddenImage,
   IotdInterface,
+  ReviewerSeenImage,
   SubmissionInterface,
   SubmitterSeenImage,
   VoteInterface
@@ -33,6 +34,11 @@ export enum IotdActionTypes {
   LOAD_SUBMITTER_SEEN_IMAGES_SUCCESS = "[IOTD] Load submitter seen images success",
   MARK_SUBMITTER_SEEN_IMAGE = "[IOTD] Mark Submitter seen image",
   MARK_SUBMITTER_SEEN_IMAGE_SUCCESS = "[IOTD] Mark Submitter seen image success",
+
+  LOAD_REVIEWER_SEEN_IMAGES = "[IOTD] Load reviewer seen images",
+  LOAD_REVIEWER_SEEN_IMAGES_SUCCESS = "[IOTD] Load reviewer seen images success",
+  MARK_REVIEWER_SEEN_IMAGE = "[IOTD] Mark Reviewer seen image",
+  MARK_REVIEWER_SEEN_IMAGE_SUCCESS = "[IOTD] Mark Reviewer seen image success",
 
   LOAD_DISMISSED_IMAGES = "[IOTD] Load dismissed images",
   LOAD_DISMISSED_IMAGES_SUCCESS = "[IOTD] Load dismissed images success",
@@ -176,6 +182,32 @@ export class MarkSubmitterSeenImageSuccess implements PayloadActionInterface {
   readonly type = IotdActionTypes.MARK_SUBMITTER_SEEN_IMAGE_SUCCESS;
 
   constructor(public payload: { submitterSeenImage: SubmitterSeenImage }) {
+
+  }
+}
+
+export class LoadReviewerSeenImages implements Action {
+  readonly type = IotdActionTypes.LOAD_REVIEWER_SEEN_IMAGES;
+}
+
+export class LoadReviewerSeenImagesSuccess implements PayloadActionInterface {
+  readonly type = IotdActionTypes.LOAD_REVIEWER_SEEN_IMAGES_SUCCESS;
+
+  constructor(public payload: { reviewerSeenImages: ReviewerSeenImage[] }) {
+  }
+}
+
+export class MarkReviewerSeenImage implements PayloadActionInterface {
+  readonly type = IotdActionTypes.MARK_REVIEWER_SEEN_IMAGE;
+
+  constructor(public payload: { id: number }) {
+  }
+}
+
+export class MarkReviewerSeenImageSuccess implements PayloadActionInterface {
+  readonly type = IotdActionTypes.MARK_REVIEWER_SEEN_IMAGE_SUCCESS;
+
+  constructor(public payload: { reviewerSeenImage: ReviewerSeenImage }) {
 
   }
 }
@@ -474,6 +506,10 @@ export type IotdActions =
   | LoadSubmitterSeenImagesSuccess
   | MarkSubmitterSeenImage
   | MarkSubmitterSeenImageSuccess
+  | LoadReviewerSeenImages
+  | LoadReviewerSeenImagesSuccess
+  | MarkReviewerSeenImage
+  | MarkReviewerSeenImageSuccess
   | LoadDismissedImages
   | LoadDismissedImagesSuccess
   | DismissImage
