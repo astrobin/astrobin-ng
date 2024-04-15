@@ -46,6 +46,13 @@ export interface SubmitterSeenImage {
   created: string;
 }
 
+export interface ReviewerSeenImage {
+  id: number;
+  user: number;
+  image: number;
+  created: string;
+}
+
 export interface DismissedImage {
   id: number;
   user: number;
@@ -96,6 +103,15 @@ export class IotdApiService extends BaseClassicApiService {
   markSubmitterSeenImage(id: ImageInterface["pk"]): Observable<SubmitterSeenImage> {
     return this.http
       .post<SubmitterSeenImage>(`${this.baseUrl}/iotd/submitter-seen-image/`, { image: id });
+  }
+
+  loadReviewerSeenImages(): Observable<ReviewerSeenImage[]> {
+    return this.http.get<ReviewerSeenImage[]>(`${this.baseUrl}/iotd/reviewer-seen-image/`);
+  }
+
+  markReviewerSeenImage(id: ImageInterface["pk"]): Observable<ReviewerSeenImage> {
+    return this.http
+      .post<ReviewerSeenImage>(`${this.baseUrl}/iotd/reviewer-seen-image/`, { image: id });
   }
 
   loadDismissedImages(): Observable<DismissedImage[]> {
