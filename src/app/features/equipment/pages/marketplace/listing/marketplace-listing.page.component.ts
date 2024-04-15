@@ -241,7 +241,6 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
           this.store$
             .select(selectContentTypeById, { id: contentTypeId })
             .pipe(
-              takeUntil(this.destroyed$),
               filter(
                 contentType => !!contentType && contentType.model === "equipmentitemmarketplaceprivateconversation"
               ),
