@@ -2,6 +2,7 @@ import {
   DismissedImage,
   HiddenImage,
   IotdInterface,
+  ReviewerSeenImage,
   SubmissionInterface,
   SubmitterSeenImage,
   VoteInterface
@@ -34,6 +35,11 @@ export const selectHiddenImages = createSelector(
 export const selectSubmitterSeenImages = createSelector(
   selectIotdState,
   (state: IotdState): SubmitterSeenImage[] => state.submitterSeenImages
+);
+
+export const selectReviewerSeenImages = createSelector(
+  selectIotdState,
+  (state: IotdState): ReviewerSeenImage[] => state.reviewerSeenImages
 );
 
 export const selectHiddenImageByImageId = createSelector(

@@ -54,14 +54,17 @@ export class SubmissionQueueComponent extends BasePromotionQueueComponent implem
       tap(() => (this.loadingQueue = false)),
       takeUntil(this.destroyed$)
     );
+
   promotions$: Observable<SubmissionInterface[]> = this.store$
     .select(selectSubmissions)
     .pipe(takeUntil(this.destroyed$));
+
   submitterSeenImages$: Observable<SubmitterSeenImage[]> = this.store$
     .select(selectSubmitterSeenImages)
     .pipe(takeUntil(this.destroyed$));
 
-  @ViewChildren(SubmissionEntryComponent) submissionEntryComponents: QueryList<SubmissionEntryComponent>;
+  @ViewChildren(SubmissionEntryComponent)
+  submissionEntryComponents: QueryList<SubmissionEntryComponent>;
 
   constructor(
     public readonly store$: Store<State>,
