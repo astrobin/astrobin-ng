@@ -69,7 +69,7 @@
     "core-js": "3.30.2",
     "country-js": "0.0.9",
     "dotenv": "16.0.3",
-    "express": "4.18.2",
+    "express": "4.19.2",
     "filesize": "9.0.11",
     "intl": "1.2.5",
     "ng-toggle-button": "1.5.2",
