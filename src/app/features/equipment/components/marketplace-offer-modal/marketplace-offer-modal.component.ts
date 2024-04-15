@@ -29,6 +29,7 @@ import { selectMarketplaceListing } from "@features/equipment/store/equipment.se
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
 import { forkJoin } from "rxjs";
 import { EquipmentMarketplaceService } from "@features/equipment/services/equipment-marketplace.service";
+import { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
 
 @Component({
   selector: "astrobin-marketplace-offer-modal",
@@ -167,8 +168,9 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
               },
               hooks: {
                 onInit: field => {
-                  field.formControl.valueChanges.subscribe(value => {
+                  field.formControl.valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(value => {
                     const amountControl = this.form.get(`amount-${lineItem.id}`);
+
                     if (value) {
                       amountControl.enable();
                       amountControl.setValue(+lineItem.price);
@@ -246,6 +248,19 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
                 },
                 hideRequiredMarker: true,
                 hideLabel: index > 0
+              },
+              hooks: {
+                onInit: field => {
+                  this.form.get(`amount-${lineItem.id}`).valueChanges.pipe(takeUntil(this.destroyed$)).subscribe(value => {
+                    this.form.get(`total-${lineItem.id}`).setValue(
+                      this.currencyPipe.transform(
+                        this._getTotalAmountPerLineItem(lineItem, value), lineItem.currency,
+                        "symbol-narrow"
+                      )
+                    );
+                    this.form.updateValueAndValidity();
+                  });
+                }
               }
             },
             {
@@ -254,7 +269,7 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
               wrappers: ["default-wrapper"],
               className: "col total",
               defaultValue: this.currencyPipe.transform(
-                (offeredAmount || +lineItem.price) + (+lineItem.shippingCost || 0), lineItem.currency,
+                this._getTotalAmountPerLineItem(lineItem, offeredAmount), lineItem.currency,
                 "symbol-narrow"
               ),
               props: {
@@ -386,6 +401,10 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
 
       return total;
     }, 0);
+  }
+
+  private _getTotalAmountPerLineItem(lineItem: MarketplaceLineItemInterface, offeredAmount: number): number {
+    return (offeredAmount || +lineItem.price) + (+lineItem.shippingCost || 0);
   }
 }
 
