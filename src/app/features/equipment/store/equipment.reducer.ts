@@ -349,6 +349,17 @@ export function reducer(state = initialEquipmentState, action: PayloadActionInte
         }
       };
 
+    case EquipmentActionTypes.DELETE_MARKETPLACE_PRIVATE_CONVERSATION_SUCCESS:
+      return {
+        ...state,
+        marketplace: {
+          ...state.marketplace,
+          privateConversations: state.marketplace.privateConversations.filter(
+            conversation => conversation.id !== action.payload.id
+          )
+        }
+      };
+
     case EquipmentActionTypes.CREATE_MARKETPLACE_OFFER_SUCCESS: {
       const newOffer = action.payload.offer;
 
