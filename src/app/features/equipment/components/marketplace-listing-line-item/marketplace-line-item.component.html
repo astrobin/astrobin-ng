@@ -39,10 +39,6 @@
 
           <div class="offers-count">
             <span
-              *ngIf="lineItem.offers?.length === 0"
-              [translate]="'No offers yet'"
-            ></span>
-            <span
               *ngIf="lineItem.offers?.length === 1"
               [translate]="'One offer'"
             ></span>
