@@ -19,6 +19,9 @@ import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
 import { Actions, ofType } from "@ngrx/effects";
 import {
+  AcceptMarketplaceOffer,
+  AcceptMarketplaceOfferFailure,
+  AcceptMarketplaceOfferSuccess,
   CreateMarketplacePrivateConversation,
   CreateMarketplacePrivateConversationSuccess,
   DeleteMarketplaceListing,
@@ -53,7 +56,10 @@ import { environment } from "@env/environment";
 import { MarketplaceOfferModalComponent } from "@features/equipment/components/marketplace-offer-modal/marketplace-offer-modal.component";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { RouterService } from "@shared/services/router.service";
-import { MarketplaceOfferInterface } from "@features/equipment/types/marketplace-offer.interface";
+import {
+  MarketplaceOfferInterface,
+  MarketplaceOfferStatus
+} from "@features/equipment/types/marketplace-offer.interface";
 import { UtilsService } from "@shared/services/utils/utils.service";
 import { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
 import { LoadUser } from "@features/account/store/auth.actions";
@@ -62,6 +68,7 @@ import { PopNotificationsService } from "@shared/services/pop-notifications.serv
 interface UserOfferGroup {
   userId: UserInterface["id"];
   userDisplayName: string;
+  status: MarketplaceOfferStatus;
   offersByLineItem: { [lineItemId: number]: MarketplaceOfferInterface[] };
 }
 
@@ -71,6 +78,8 @@ interface UserOfferGroup {
   styleUrls: ["./marketplace-listing.page.component.scss"]
 })
 export class MarketplaceListingPageComponent extends BaseComponentDirective implements OnInit, AfterViewInit {
+  readonly MarketplaceOfferStatus = MarketplaceOfferStatus;
+
   readonly breadcrumb = new SetBreadcrumb({
     breadcrumb: [
       {
@@ -182,6 +191,7 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
             userGroup = {
               userId,
               userDisplayName: offer.userDisplayName,
+              status: MarketplaceOfferStatus.PENDING,
               offersByLineItem: {}
             };
             this.offersGroupedByUser.push(userGroup);
@@ -192,6 +202,10 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
           }
 
           userGroup.offersByLineItem[lineItem.id].push(offer);
+
+          if (lineItem.offers.filter(offer => offer.user === userId).every(offer => offer.status === MarketplaceOfferStatus.ACCEPTED)) {
+            userGroup.status = MarketplaceOfferStatus.ACCEPTED;
+          }
         });
       });
     });
@@ -477,6 +491,53 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
 
   getLineItem(id: MarketplaceLineItemInterface["id"]): MarketplaceLineItemInterface {
     return this.listing.lineItems.find(lineItem => lineItem.id === id);
+  }
+
+  onAcceptOfferClicked(event: Event, userId: UserInterface["id"]) {
+    const modalRef: NgbModalRef = this.modalService.open(ConfirmationDialogComponent);
+    const componentInstance: ConfirmationDialogComponent = modalRef.componentInstance;
+
+    componentInstance.message = this.translateService.instant(
+      "Accepting this offer will mark the affected line items as sold, and it constitutes a binding agreement " +
+      "with the buyer. Failure to deliver the equipment as described may result in negative feedback and " +
+      "possible disciplinary action. Are you sure you want to proceed?"
+    );
+
+    modalRef.closed.subscribe(() => {
+      const offers = EquipmentMarketplaceService.offersByUser(userId, this.listing);
+
+      this.loadingService.setLoading(true);
+
+      forkJoin(
+        offers.map(offer => this.actions$.pipe(
+            ofType(EquipmentActionTypes.ACCEPT_MARKETPLACE_OFFER_FAILURE),
+            filter((action: AcceptMarketplaceOfferFailure) => action.payload.offer.id === offer.id),
+            take(1)
+          )
+        )
+      ).subscribe(() => {
+        this.popNotificationsService.error(this.equipmentMarketplaceService.offerErrorMessageForSeller());
+        this.loadingService.setLoading(false);
+      });
+
+      forkJoin(
+        offers.map(offer => this.actions$.pipe(
+            ofType(EquipmentActionTypes.ACCEPT_MARKETPLACE_OFFER_SUCCESS),
+            filter((action: AcceptMarketplaceOfferSuccess) => action.payload.offer.id === offer.id),
+            take(1)
+          )
+        )
+      ).subscribe(() => {
+        this.popNotificationsService.success(
+          this.translateService.instant("The offer has been accepted. The buyer will be notified.")
+        );
+        this.loadingService.setLoading(false);
+      });
+
+      offers.forEach(offer => {
+        this.store$.dispatch(new AcceptMarketplaceOffer({ offer }));
+      });
+    });
   }
 
   onRejectOfferClicked(event: Event, userId: UserInterface["id"]) {

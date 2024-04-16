@@ -104,6 +104,10 @@
           <ng-container *ngIf="listing.user !== currentUserWrapper.user?.id">
             {{ "Your offer" | translate }}
           </ng-container>
+
+          <ng-container *ngIf="userGroup.status === MarketplaceOfferStatus.ACCEPTED">
+            <span class="badge bg-success">{{ "Accepted" | translate }}</span>
+          </ng-container>
         </div>
         <div class="card-body">
           <ul>
@@ -128,7 +132,9 @@
         </div>
         <!-- card-body -->
 
-        <ng-container *ngIf="listing.user === currentUserWrapper.user?.id">
+        <ng-container
+          *ngIf="listing.user === currentUserWrapper.user?.id && userGroup.status === MarketplaceOfferStatus.PENDING"
+        >
           <div class="card-footer">
             <button (click)="onAcceptOfferClicked($event, userGroup.userId)" class="btn btn-success d-block w-100">
               {{ "Accept" | translate }}

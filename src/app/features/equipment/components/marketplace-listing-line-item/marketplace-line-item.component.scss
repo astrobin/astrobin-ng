@@ -11,12 +11,19 @@
 
   .type-image {
     width: 4rem;
-    margin-right: .75rem;
+    margin-right: 0.75rem;
+  }
+
+  .sold-badge {
+    font-size: 2rem;
+    margin-right: .5rem;
+    display: inline-block;
+    padding: .25rem 1rem;
   }
 
   .display-name {
     font-size: 2rem;
-    margin-bottom: .25rem;
+    margin-bottom: 0.25rem;
 
     .line-item-item-link {
       font-size: 1rem;
@@ -40,15 +47,15 @@
 
   .image-counts {
     font-weight: normal;
-    font-size: .9rem;
+    font-size: 0.9rem;
     color: var(--lightGrey);
-    margin-top: .5rem;
+    margin-top: 0.5rem;
   }
 }
 
 .card-body {
   .images {
-    margin-top: .5rem;
+    margin-top: 0.5rem;
   }
 
   .description {

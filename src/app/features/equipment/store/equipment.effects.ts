@@ -1,6 +1,9 @@
 import { Injectable } from "@angular/core";
 import { concat, finalize, forkJoin, last, Observable, of } from "rxjs";
 import {
+  AcceptMarketplaceOffer,
+  AcceptMarketplaceOfferFailure,
+  AcceptMarketplaceOfferSuccess,
   ApproveEquipmentItem,
   ApproveEquipmentItemEditProposal,
   ApproveEquipmentItemEditProposalSuccess,
@@ -1251,6 +1254,19 @@ export class EquipmentEffects {
         this.equipmentApiService.deleteMarketplaceOffer(payload.offer).pipe(
           map(() => new DeleteMarketplaceOfferSuccess({ offer: payload.offer })),
           catchError(error => of(new DeleteMarketplaceOfferFailure({ offer: payload.offer, error })))
+        )
+      )
+    )
+  );
+
+  AcceptMarketplaceOffer: Observable<AcceptMarketplaceOfferSuccess | AcceptMarketplaceOfferFailure> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(EquipmentActionTypes.ACCEPT_MARKETPLACE_OFFER),
+      map((action: AcceptMarketplaceOffer) => action.payload),
+      mergeMap(payload =>
+        this.equipmentApiService.acceptMarketplaceOffer(payload.offer).pipe(
+          map(() => new AcceptMarketplaceOfferSuccess({ offer: payload.offer })),
+          catchError(error => of(new AcceptMarketplaceOfferFailure({ offer: payload.offer, error })))
         )
       )
     )

@@ -43,16 +43,25 @@
   </div>
 
   <div class="card-badges">
-    <ng-container *ngIf="lineItem.offers?.length">
-      <div
-        [ngbTooltip]="translateService.instant('This listing has offers')"
-        class="badge rounded-pill bg-danger border border-light"
-        container="body"
-      >
-        <fa-icon icon="comment-dollar"></fa-icon>
-        {{ lineItem.offers.length }}
-      </div>
+    <ng-container *ngIf="!!lineItem.sold; else unsoldBadges">
+      <span class="badge rounded-pill bg-danger border border-light">
+        <fa-icon icon="check"></fa-icon>
+        {{ translateService.instant("Sold") }}
+      </span>
     </ng-container>
+
+    <ng-template #unsoldBadges>
+      <ng-container *ngIf="lineItem.offers?.length">
+        <div
+          [ngbTooltip]="translateService.instant('This listing has offers')"
+          class="badge rounded-pill bg-danger border border-light"
+          container="body"
+        >
+          <fa-icon icon="comment-dollar"></fa-icon>
+          {{ lineItem.offers.length }}
+        </div>
+      </ng-container>
+    </ng-template>
   </div>
 </div>
 

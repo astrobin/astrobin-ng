@@ -7,6 +7,7 @@ import { GoogleMapsService } from "@shared/services/google-maps/google-maps.serv
 import { CountryService } from "@shared/services/country.service";
 import { EquipmentItemService } from "@features/equipment/services/equipment-item.service";
 import { UtilsService } from "@shared/services/utils/utils.service";
+import { EquipmentMarketplaceService } from "@features/equipment/services/equipment-marketplace.service";
 
 @Component({
   selector: "astrobin-marketplace-listing",
@@ -32,7 +33,8 @@ export class MarketplaceListingComponent extends BaseComponentDirective implemen
     public readonly googleMapsService: GoogleMapsService,
     public readonly countryService: CountryService,
     public readonly equipmentItemService: EquipmentItemService,
-    public readonly utilsService: UtilsService
+    public readonly utilsService: UtilsService,
+    public readonly equipmentMarketplaceService: EquipmentMarketplaceService
   ) {
     super(store$);
   }

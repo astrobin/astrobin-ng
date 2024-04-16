@@ -497,6 +497,54 @@ export function reducer(state = initialEquipmentState, action: PayloadActionInte
       };
     }
 
+    case EquipmentActionTypes.ACCEPT_MARKETPLACE_OFFER_SUCCESS: {
+      const acceptedOffer = action.payload.offer;
+
+      // Create a new updatedListings array with immutability in mind
+      const updatedListings = state.marketplace.listings.map(listing => {
+        if (listing.id !== acceptedOffer.listing) {
+          // If the listing does not match, return it as is
+          return listing;
+        }
+
+        // Map over lineItems to find the one that matches and update it
+        const updatedLineItems = listing.lineItems.map(lineItem => {
+          if (lineItem.id !== acceptedOffer.lineItem) {
+            // If the lineItem does not match, return it as is
+            return lineItem;
+          }
+
+          // Map over the offers in the lineItem to update the offer
+          const updatedOffers = lineItem.offers.map(offer => {
+            if (offer.id === acceptedOffer.id) {
+              return offer;
+            }
+          });
+
+          // Return the lineItem with the updated offers
+          return {
+            ...lineItem,
+            offers: updatedOffers
+          };
+        });
+
+        // Return the listing with the updated lineItems
+        return {
+          ...listing,
+          lineItems: updatedLineItems
+        };
+      });
+
+      // Return the updated state with the updated listings
+      return {
+        ...state,
+        marketplace: {
+          ...state.marketplace,
+          listings: updatedListings
+        }
+      };
+    }
+
     default: {
       return state;
     }

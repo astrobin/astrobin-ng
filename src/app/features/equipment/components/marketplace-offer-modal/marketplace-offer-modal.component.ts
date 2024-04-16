@@ -10,7 +10,10 @@ import { FormlyFieldConfig } from "@ngx-formly/core";
 import { CurrencyPipe } from "@angular/common";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { LoadingService } from "@shared/services/loading.service";
-import { MarketplaceOfferInterface } from "@features/equipment/types/marketplace-offer.interface";
+import {
+  MarketplaceOfferInterface,
+  MarketplaceOfferStatus
+} from "@features/equipment/types/marketplace-offer.interface";
 import { Actions, ofType } from "@ngrx/effects";
 import {
   CreateMarketplaceOffer,
@@ -133,6 +136,12 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
     return this.listing.lineItems.some(lineItem => lineItem.offers.length > 0);
   }
 
+  hasAnyPendingOffers(): boolean {
+    return this.listing.lineItems.some(
+      lineItem => lineItem.offers.filter(offer => offer.status === MarketplaceOfferStatus.PENDING).length > 0
+    );
+  }
+
   _initFields() {
     this.currentUser$.pipe(takeUntil(this.destroyed$)).subscribe(currentUser => {
       const hasAnyOffers = this.hasAnyOffers();
@@ -145,7 +154,7 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
 
         return {
           key: "",
-          fieldGroupClassName: "row",
+          fieldGroupClassName: `row ${!!lineItem.sold ? "sold" : ""}`,
           fieldGroup: [
             {
               key: `lineItemId-${lineItem.id}`,
@@ -187,7 +196,7 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
               type: "html",
               wrappers: ["default-wrapper"],
               className: "col item-name",
-              template: lineItem.itemName,
+              template: lineItem.itemName + (!!lineItem.sold ? ` (${this.translateService.instant("sold")})` : ""),
               props: {
                 label: this.translateService.instant("Item"),
                 readonly: true,
@@ -237,7 +246,7 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
               focus: index === 0,
               defaultValue: hasAnyOffers ? offeredAmount : +lineItem.price,
               props: {
-                disabled: hasAnyOffers ? !hasLineItemOffer : false,
+                disabled: !!lineItem.sold || (hasAnyOffers ? !hasLineItemOffer : false),
                 label: this.translateService.instant("Offer amount"),
                 required: true,
                 type: "number",

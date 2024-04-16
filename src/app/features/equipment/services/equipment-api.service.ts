@@ -799,6 +799,11 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
       }
     });
 
+    // The "sold" parameter needs to be explicit.
+    if (options.sold === undefined) {
+      url = UtilsService.addOrUpdateUrlParam(url, "sold", "false");
+    }
+
     return this.http.get<PaginatedApiResultInterface<MarketplaceListingInterface>>(url);
   }
 
@@ -987,6 +992,12 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     const url = `${this.configUrl}/marketplace/listing/${offer.listing}/line-item/${offer.lineItem}/offer/${offer.id}/`;
 
     return this.http.delete<void>(url);
+  }
+
+  public acceptMarketplaceOffer(offer: MarketplaceOfferInterface): Observable<MarketplaceOfferInterface> {
+    const url = `${this.configUrl}/marketplace/listing/${offer.listing}/line-item/${offer.lineItem}/offer/${offer.id}/accept/`;
+
+    return this.http.post<MarketplaceOfferInterface>(url, {});
   }
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -77,6 +77,15 @@
     }
   }
 
+  &.alert-danger {
+    &,
+    fa-icon,
+    h5,
+    > p, & {
+      color: var(--textOnErrorColor);
+    }
+  }
+
   &.alert-warning {
     background-color: var(--warningColor);
 

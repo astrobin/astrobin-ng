@@ -133,4 +133,8 @@ export class EquipmentMarketplaceService extends BaseService {
 
     return [preservedLineItems, addedLineItems, removedLineItems];
   }
+
+  listingSold(listing: MarketplaceListingInterface): boolean {
+    return listing.lineItems.every(lineItem => !!lineItem.sold);
+  }
 }

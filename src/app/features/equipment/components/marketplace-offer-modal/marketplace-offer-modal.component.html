@@ -29,6 +29,7 @@
 
   <button
     (click)="makeOffer()"
+    *ngIf="!equipmentMarketplaceService.listingSold(listing)"
     [class.loading]="loadingService.loading$ | async"
     class="btn btn-primary"
     type="button"
@@ -38,7 +39,7 @@
 
   <button
     (click)="retractOffer()"
-    *ngIf="hasAnyOffers()"
+    *ngIf="hasAnyPendingOffers()"
     [class.loading]="loadingService.loading$ | async"
     class="btn btn-danger"
     type="button"

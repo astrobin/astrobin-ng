@@ -212,6 +212,9 @@ export enum EquipmentActionTypes {
   DELETE_MARKETPLACE_OFFER = "[Equipment] Delete marketplace offer",
   DELETE_MARKETPLACE_OFFER_SUCCESS = "[Equipment] Delete marketplace offer success",
   DELETE_MARKETPLACE_OFFER_FAILURE = "[Equipment] Delete marketplace offer failure",
+  ACCEPT_MARKETPLACE_OFFER = "[Equipment] Accept marketplace offer",
+  ACCEPT_MARKETPLACE_OFFER_SUCCESS = "[Equipment] Accept marketplace offer success",
+  ACCEPT_MARKETPLACE_OFFER_FAILURE = "[Equipment] Accept marketplace offer failure",
 }
 
 /**********************************************************************************************************************
@@ -1219,6 +1222,27 @@ export class DeleteMarketplaceOfferFailure implements PayloadActionInterface {
   }
 }
 
+export class AcceptMarketplaceOffer implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.ACCEPT_MARKETPLACE_OFFER;
+
+  constructor(public payload: { offer: MarketplaceOfferInterface }) {
+  }
+}
+
+export class AcceptMarketplaceOfferSuccess implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.ACCEPT_MARKETPLACE_OFFER_SUCCESS;
+
+  constructor(public payload: { offer: MarketplaceOfferInterface }) {
+  }
+}
+
+export class AcceptMarketplaceOfferFailure implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.ACCEPT_MARKETPLACE_OFFER_FAILURE;
+
+  constructor(public payload: { offer: MarketplaceOfferInterface; error: string }) {
+  }
+}
+
 export type EquipmentActions =
 // Brands
   | GetAllBrands
@@ -1365,4 +1389,7 @@ export type EquipmentActions =
   | UpdateMarketplaceOfferFailure
   | DeleteMarketplaceOffer
   | DeleteMarketplaceOfferSuccess
-  | DeleteMarketplaceOfferFailure;
+  | DeleteMarketplaceOfferFailure
+  | AcceptMarketplaceOffer
+  | AcceptMarketplaceOfferSuccess
+  | AcceptMarketplaceOfferFailure;
