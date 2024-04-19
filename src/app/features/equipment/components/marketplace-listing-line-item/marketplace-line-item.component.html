@@ -19,11 +19,6 @@
 
         <div class="flex-grow-1">
           <div class="display-name">
-            <ng-container *ngIf="lineItem.sold">
-              <span class="badge rounded-pill bg-danger border border-light sold-badge">
-                {{ "Sold" | translate }}
-              </span>
-            </ng-container>
             <astrobin-equipment-item-display-name
               [enableBrandLink]="false"
               [enableNameLink]="false"

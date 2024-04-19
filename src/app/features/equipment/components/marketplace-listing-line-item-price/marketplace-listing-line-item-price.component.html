@@ -1,4 +1,8 @@
-<div *ngIf="!!lineItem.price && !!lineItem.currency; else noPrice" class="text-center">
+<div *ngIf="!!lineItem.price && !!lineItem.currency; else noPrice" [class.sold]="!!lineItem.sold" class="text-center">
+  <span *ngIf="lineItem.sold" class="badge rounded-pill bg-danger border border-light sold-badge">
+    {{ "Sold" | translate }}
+  </span>
+
   <div class="price">
     {{ lineItem.price | currency : lineItem.currency : "symbol" : "1.2-2" : translateService.currentLang }}
   </div>

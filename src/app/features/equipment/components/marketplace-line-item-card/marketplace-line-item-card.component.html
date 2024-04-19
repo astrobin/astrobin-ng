@@ -45,7 +45,6 @@
   <div class="card-badges">
     <ng-container *ngIf="!!lineItem.sold; else unsoldBadges">
       <span class="badge rounded-pill bg-danger border border-light">
-        <fa-icon icon="check"></fa-icon>
         {{ translateService.instant("Sold") }}
       </span>
     </ng-container>

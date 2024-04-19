@@ -11,3 +11,15 @@
   font-style: italic;
   color: var(--lighterGrey);
 }
+
+.sold {
+  .sold-badge {
+    font-size: 1rem;
+    margin-bottom: .5rem;
+  }
+
+  .price,
+  .shipping-cost {
+    text-decoration: line-through;
+  }
+}
