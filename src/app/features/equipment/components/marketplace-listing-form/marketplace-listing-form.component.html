@@ -32,7 +32,7 @@
     </form>
   </div>
 
-  <div class="col col-preview">
+  <div *ngIf="formInitialized" class="col col-preview">
     <h2 *ngIf="form.value.title">{{ form.value.title }}</h2>
 
     <astrobin-marketplace-listing

@@ -80,7 +80,7 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
   };
 
   form: FormGroup = new FormGroup({});
-
+  formInitialized = false;
   fields: FormlyFieldConfig[];
 
   @Output()
@@ -712,6 +712,7 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                 tap(itemType => lineItemMap.set(index, itemType))
               ))).subscribe(() => {
               _doInitFields(lineItemMap, initialCurrency);
+              this.formInitialized = true;
             });
 
             lineItems.forEach(lineItem => {
