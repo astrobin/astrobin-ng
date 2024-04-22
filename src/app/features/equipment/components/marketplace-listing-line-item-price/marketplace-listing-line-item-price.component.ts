@@ -4,6 +4,7 @@ import { BaseComponentDirective } from "@shared/components/base-component.direct
 import { TranslateService } from "@ngx-translate/core";
 import { State } from "@app/store/state";
 import { Store } from "@ngrx/store";
+import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
 
 @Component({
   selector: "astrobin-marketplace-listing-line-item-price",
@@ -11,6 +12,9 @@ import { Store } from "@ngrx/store";
   styleUrls: ["./marketplace-listing-line-item-price.component.scss"]
 })
 export class MarketplaceListingLineItemPriceComponent extends BaseComponentDirective {
+  @Input()
+  listing: MarketplaceListingInterface;
+
   @Input()
   lineItem: MarketplaceLineItemInterface;
 

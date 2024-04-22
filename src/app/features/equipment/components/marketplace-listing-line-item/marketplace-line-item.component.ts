@@ -13,6 +13,7 @@ import { filter, take, withLatestFrom } from "rxjs/operators";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 import { selectUser } from "@features/account/store/auth.selectors";
 import { LoadUser } from "@features/account/store/auth.actions";
+import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
 
 @Component({
   selector: "astrobin-marketplace-listing-line-item",
@@ -20,6 +21,9 @@ import { LoadUser } from "@features/account/store/auth.actions";
   styleUrls: ["./marketplace-line-item.component.scss"]
 })
 export class MarketplaceLineItemComponent extends BaseComponentDirective implements OnChanges {
+  @Input()
+  listing: MarketplaceListingInterface;
+
   @Input()
   lineItem: MarketplaceLineItemInterface;
 

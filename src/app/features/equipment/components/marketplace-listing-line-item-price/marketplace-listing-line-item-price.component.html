@@ -13,7 +13,7 @@
   </div>
 
   <ng-template #freeShippingTemplate>
-    <div class="shipping-cost">
+    <div *ngIf="listing.deliveryByShipping" class="shipping-cost">
       {{ "free shipping" | translate }}
     </div>
   </ng-template>

@@ -1091,7 +1091,6 @@ export class EquipmentEffects {
           ).pipe(
             last(),
             map((updatedListingResponse: MarketplaceListingInterface) => {
-              console.log(updatedListingResponse);
               return new UpdateMarketplaceListingSuccess({ listing: updatedListingResponse });
             }),
             catchError(error => of(new UpdateMarketplaceListingFailure({ error }))),

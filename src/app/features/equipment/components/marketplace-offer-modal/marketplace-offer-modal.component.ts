@@ -119,10 +119,19 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
     );
 
     if (sameCurrency) {
-      return this.translateService.instant(
-        "Offer {{0}} incl. shipping",
-        { 0: this.currencyPipe.transform(this._getTotalAmountIncludingShipping(), this.listing.lineItems[0].currency) }
-      );
+      const amount = this.currencyPipe.transform(this._getTotalAmount(), this.listing.lineItems[0].currency);
+
+      if (this.listing.deliveryByShipping) {
+        return this.translateService.instant(
+          "Offer {{0}} incl. shipping",
+          { 0: amount }
+        );
+      } else {
+        return this.translateService.instant(
+          "Offer {{0}}",
+          { 0: amount }
+        );
+      }
     }
 
     if (this.hasAnyOffers()) {

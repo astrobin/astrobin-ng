@@ -15,6 +15,7 @@ import {
   UpdateMarketplaceListingSuccess
 } from "@features/equipment/store/equipment.actions";
 import { map, take } from "rxjs/operators";
+import { EquipmentMarketplaceService } from "@features/equipment/services/equipment-marketplace.service";
 
 @Component({
   selector: "astrobin-marketplace-create-listing-page",
@@ -51,7 +52,8 @@ export class MarketplaceEditListingPageComponent extends BaseComponentDirective 
     public readonly titleService: TitleService,
     public readonly loadingService: LoadingService,
     public readonly router: Router,
-    public readonly activatedRoute: ActivatedRoute
+    public readonly activatedRoute: ActivatedRoute,
+    public readonly equipmentMarketplaceService: EquipmentMarketplaceService
   ) {
     super(store$);
   }
@@ -63,6 +65,10 @@ export class MarketplaceEditListingPageComponent extends BaseComponentDirective 
     this.store$.dispatch(this.breadcrumb);
 
     this.listing = this.activatedRoute.snapshot.data.listing;
+
+    if (this.equipmentMarketplaceService.listingSold(this.listing)) {
+      this.router.navigateByUrl(`/equipment/marketplace/listing/${this.listing.hash}`).then();
+    }
   }
 
   onSave(value) {

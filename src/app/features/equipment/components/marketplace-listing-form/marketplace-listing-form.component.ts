@@ -374,12 +374,23 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
           type: "array",
           wrappers: ["default-wrapper"],
           fieldArray: {
-            fieldGroupClassName: "field-group-line-items",
             props: {
               label: this.translateService.instant("Equipment item for sale"),
-              addLabel: this.translateService.instant("Add another item to this listing")
+              addLabel: this.translateService.instant("Add another item to this listing"),
+              mayRemove: index => !this.model.lineItems[index].sold
+            },
+            expressions: {
+              fieldGroupClassName: config => config.model.sold ? "field-group-line-items sold" : "field-group-line-items"
             },
             fieldGroup: [
+              {
+                type: "html",
+                template: this.translateService.instant("You cannot edit this line item because it has been sold."),
+                className: "cannot-edit-because-sold",
+                expressions: {
+                  hide: config => !config.model.sold
+                }
+              },
               {
                 key: "id",
                 type: "input",
@@ -391,16 +402,34 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                 className: "hidden"
               },
               {
-                key: "listing",
-                type: "input",
-                className: "hidden",
-                defaultValue: this.model.id
-              },
-              {
                 key: "user",
                 type: "input",
-                className: "hidden",
-                defaultValue: this.model.user
+                className: "hidden"
+              },
+              {
+                key: "listing",
+                type: "input",
+                className: "hidden"
+              },
+              {
+                key: "created",
+                type: "input",
+                className: "hidden"
+              },
+              {
+                key: "updated",
+                type: "input",
+                className: "hidden"
+              },
+              {
+                key: "sold",
+                type: "input",
+                className: "hidden"
+              },
+              {
+                key: "soldTo",
+                type: "input",
+                className: "hidden"
               },
               {
                 key: "findItemMode",

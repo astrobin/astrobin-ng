@@ -13,6 +13,7 @@
       [collapsed]="listing.lineItems.length > 1 || !!lineItem.sold"
       [lineItemIndex]="listing.lineItems.length > 1 ? lineItemIndex : undefined"
       [lineItem]="lineItem"
+      [listing]="listing"
       [previewMode]="previewMode"
     ></astrobin-marketplace-listing-line-item>
   </div>
@@ -72,7 +73,7 @@
             <th>{{ "Seller ships" | translate }}</th>
             <td [class]="!!listing.deliveryByShipping | json">{{ !!listing.deliveryByShipping | yesNo }}</td>
           </tr>
-          <tr>
+          <tr *ngIf="listing.deliveryByShipping">
             <th>{{ "Shipping method" | translate }}</th>
             <td>{{ equipmentItemService.humanizeShippingMethod(listing.shippingMethod) }}</td>
           </tr>

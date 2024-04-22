@@ -6,6 +6,13 @@
     }
 
     .field-group-line-items {
+      &.sold {
+        > formly-field:not(.cannot-edit-because-sold) {
+          opacity: .5;
+          pointer-events: none;
+        }
+      }
+
       > formly-field {
         margin-bottom: 0;
       }
@@ -18,6 +25,13 @@
       > formly-field:not(:first-child) {
         border-top: 1px solid var(--darkestGrey);
         padding-top: 2rem;
+      }
+
+      .cannot-edit-because-sold {
+        color: var(--textOnDangerColor);
+        background-color: var(--dangerColor);
+        padding: .5rem !important;
+        margin: -1rem -1rem 0;
       }
     }
 

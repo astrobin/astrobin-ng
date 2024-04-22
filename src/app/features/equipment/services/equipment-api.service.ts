@@ -858,6 +858,10 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
   }
 
   public updateMarketplaceLineItem(lineItem: MarketplaceLineItemInterface) {
+    if (lineItem.sold) {
+      return of(lineItem);
+    }
+
     return this.http.put<MarketplaceLineItemInterface>(
       `${this.configUrl}/marketplace/listing/${lineItem.listing}/line-item/${lineItem.id}/`,
       (({ images, ...rest }) => rest)(lineItem)
