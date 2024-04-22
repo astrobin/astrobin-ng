@@ -305,6 +305,14 @@ export class SettingsPageComponent extends BaseComponentDirective implements OnI
       case "new_comment_to_marketplace_private_conv":
       case "new_comment_to_marketplace_private_conv2":
       case "new_question_to_listing":
+      case "marketplace-offer-created":
+      case "marketplace-offer-updated":
+      case "marketplace-offer-accepted-by-seller":
+      case "marketplace-offer-accepted-by-you":
+      case "marketplace-offer-rejected-by-seller":
+      case "marketplace-offer-retracted":
+      case "marketplace-listing-updated":
+      case "marketplace-listing-deleted":
         return NotificationCategory.MARKETPLACE;
     }
 
