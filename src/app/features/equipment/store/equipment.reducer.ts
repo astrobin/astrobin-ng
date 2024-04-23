@@ -286,6 +286,16 @@ export function reducer(state = initialEquipmentState, action: PayloadActionInte
       }
     }
 
+    case EquipmentActionTypes.CLEAR_MARKETPLACE_LISTINGS: {
+      return {
+        ...state,
+        marketplace: {
+          ...state.marketplace,
+          listings: []
+        }
+      };
+    }
+
     case EquipmentActionTypes.LOAD_MARKETPLACE_LISTINGS_SUCCESS: {
       return {
         ...state,

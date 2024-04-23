@@ -7,7 +7,11 @@ import { TitleService } from "@shared/services/title/title.service";
 import { SetBreadcrumb } from "@app/store/actions/breadcrumb.actions";
 import { selectMarketplaceListings } from "@features/equipment/store/equipment.selectors";
 import { map, take, takeUntil, tap } from "rxjs/operators";
-import { EquipmentActionTypes, LoadMarketplaceListings } from "@features/equipment/store/equipment.actions";
+import {
+  ClearMarketplaceListings,
+  EquipmentActionTypes,
+  LoadMarketplaceListings
+} from "@features/equipment/store/equipment.actions";
 import { LoadingService } from "@shared/services/loading.service";
 import { MarketplaceFilterModel } from "@features/equipment/components/marketplace-filter/marketplace-filter.component";
 import { ActivatedRoute, Router } from "@angular/router";
@@ -87,6 +91,7 @@ export abstract class MarketplaceListingsBasePageComponent extends BaseComponent
       });
 
       this.utilsService.delay(1).subscribe(() => {
+          this.store$.dispatch(new ClearMarketplaceListings());
           this.store$.dispatch(new LoadMarketplaceListings(
             {
               options: {

@@ -167,6 +167,7 @@ export enum EquipmentActionTypes {
 
   // Marketplace
 
+  CLEAR_MARKETPLACE_LISTINGS = "[Equipment] Clear marketplace listings",
   LOAD_MARKETPLACE_LISTINGS = "[Equipment] Load marketplace listings",
   LOAD_MARKETPLACE_LISTINGS_SUCCESS = "[Equipment] Load marketplace listings success",
   LOAD_MARKETPLACE_LISTINGS_FAILURE = "[Equipment] Load marketplace listing failure",
@@ -933,6 +934,10 @@ export class ItemBrowserExitFullscreen implements Action {
 /**********************************************************************************************************************
  * Marketplace
  *********************************************************************************************************************/
+
+export class ClearMarketplaceListings implements Action {
+  readonly type = EquipmentActionTypes.CLEAR_MARKETPLACE_LISTINGS;
+}
 
 export class LoadMarketplaceListings implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.LOAD_MARKETPLACE_LISTINGS;
