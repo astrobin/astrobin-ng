@@ -313,6 +313,7 @@ export class SettingsPageComponent extends BaseComponentDirective implements OnI
       case "marketplace-offer-retracted":
       case "marketplace-listing-updated":
       case "marketplace-listing-deleted":
+      case "marketplace-listing-line-item-sold":
         return NotificationCategory.MARKETPLACE;
     }
 
