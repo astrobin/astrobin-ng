@@ -291,7 +291,10 @@ export function reducer(state = initialEquipmentState, action: PayloadActionInte
         ...state,
         marketplace: {
           ...state.marketplace,
-          listings: UtilsService.arrayUniqueObjects(action.payload.listings.results, "id")
+          listings: UtilsService.arrayUniqueObjects([
+            ...state.marketplace.listings,
+            ...action.payload.listings.results
+          ], "id")
         }
       };
     }

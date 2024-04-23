@@ -17,6 +17,7 @@ import { MarketplaceListingCondition } from "@features/equipment/types/marketpla
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { isPlatformBrowser } from "@angular/common";
 import { UserInterface } from "@shared/interfaces/user.interface";
+import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
 
 export interface MarketplaceFilterModel {
   itemType?: EquipmentItemType | null;
@@ -32,6 +33,7 @@ export interface MarketplaceFilterModel {
   followedByUser?: UserInterface["id"] | null;
   sold?: boolean | null;
   expired?: boolean | null;
+  excludeListing?: MarketplaceListingInterface["hash"] | null;
 }
 
 @Component({
