@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit, PLATFORM_ID } from "@angular/core";
-import { Router } from "@angular/router";
+import { IsActiveMatchOptions, Router } from "@angular/router";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
@@ -26,6 +26,12 @@ export enum MarketplaceNavPage {
 })
 export class MarketplaceNavComponent extends BaseComponentDirective implements OnInit {
   readonly MarketplaceNavPage = MarketplaceNavPage;
+  readonly routerLinkActiveOptions: IsActiveMatchOptions = {
+    fragment: "ignored",
+    queryParams: "ignored",
+    paths: "exact",
+    matrixParams: "ignored"
+  };
 
   constructor(
     public readonly store$: Store<State>,

@@ -10,7 +10,7 @@
   <li [ngbNavItem]="MarketplaceNavPage.ALL_LISTINGS" class="subnav">
     <a *ngIf="(getLink$(MarketplaceNavPage.ALL_LISTINGS) | async) as link"
        [queryParams]="link.queryParams"
-       [routerLinkActiveOptions]="{ exact: true }"
+       [routerLinkActiveOptions]="routerLinkActiveOptions"
        [routerLink]="link.path"
        ngbNavLink
        routerLinkActive="active">
@@ -23,7 +23,7 @@
   <li [ngbNavItem]="MarketplaceNavPage.SOLD_LISTINGS" class="subnav">
     <a *ngIf="(getLink$(MarketplaceNavPage.SOLD_LISTINGS) | async) as link"
        [queryParams]="link.queryParams"
-       [routerLinkActiveOptions]="{ exact: true }"
+       [routerLinkActiveOptions]="routerLinkActiveOptions"
        [routerLink]="link.path"
        ngbNavLink
        routerLinkActive="active">
@@ -44,7 +44,7 @@
     <li [ngbNavItem]="MarketplaceNavPage.USER_LISTINGS" class="subnav">
       <a *ngIf="(getLink$(MarketplaceNavPage.USER_LISTINGS) | async) as link"
          [queryParams]="link.queryParams"
-         [routerLinkActiveOptions]="{ exact: true }"
+         [routerLinkActiveOptions]="routerLinkActiveOptions"
          [routerLink]="link.path"
          ngbNavLink
          routerLinkActive="active">
@@ -56,7 +56,7 @@
     <li [ngbNavItem]="MarketplaceNavPage.USER_SOLD_LISTINGS" class="subnav">
       <a *ngIf="(getLink$(MarketplaceNavPage.USER_SOLD_LISTINGS) | async) as link"
          [queryParams]="link.queryParams"
-         [routerLinkActiveOptions]="{ exact: true }"
+         [routerLinkActiveOptions]="routerLinkActiveOptions"
          [routerLink]="link.path"
          ngbNavLink
          routerLinkActive="active">
@@ -68,7 +68,7 @@
     <li [ngbNavItem]="MarketplaceNavPage.USER_EXPIRED_LISTINGS" class="subnav">
       <a *ngIf="(getLink$(MarketplaceNavPage.USER_EXPIRED_LISTINGS) | async) as link"
          [queryParams]="link.queryParams"
-         [routerLinkActiveOptions]="{ exact: true }"
+         [routerLinkActiveOptions]="routerLinkActiveOptions"
          [routerLink]="link.path"
          ngbNavLink
          routerLinkActive="active">
@@ -88,7 +88,7 @@
     <li [ngbNavItem]="MarketplaceNavPage.USER_OFFERS" class="subnav">
       <a *ngIf="(getLink$(MarketplaceNavPage.USER_OFFERS) | async) as link"
          [queryParams]="link.queryParams"
-         [routerLinkActiveOptions]="{ exact: true }"
+         [routerLinkActiveOptions]="routerLinkActiveOptions"
          [routerLink]="link.path"
          ngbNavLink
          routerLinkActive="active">
@@ -101,7 +101,7 @@
     <li [ngbNavItem]="MarketplaceNavPage.USER_PURCHASES" class="subnav">
       <a *ngIf="(getLink$(MarketplaceNavPage.USER_PURCHASES) | async) as link"
          [queryParams]="link.queryParams"
-         [routerLinkActiveOptions]="{ exact: true }"
+         [routerLinkActiveOptions]="routerLinkActiveOptions"
          [routerLink]="link.path"
          ngbNavLink
          routerLinkActive="active">
@@ -114,7 +114,7 @@
     <li [ngbNavItem]="MarketplaceNavPage.USER_FOLLOWED" class="subnav">
       <a *ngIf="(getLink$(MarketplaceNavPage.USER_FOLLOWED) | async) as link"
          [queryParams]="link.queryParams"
-         [routerLinkActiveOptions]="{ exact: true }"
+         [routerLinkActiveOptions]="routerLinkActiveOptions"
          [routerLink]="link.path"
          ngbNavLink
          routerLinkActive="active">
