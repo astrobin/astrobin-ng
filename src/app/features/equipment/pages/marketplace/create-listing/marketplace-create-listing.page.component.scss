@@ -4,29 +4,6 @@ astrobin-marketplace-listing-form ::ng-deep {
       overflow-y: auto;
       max-height: calc(100vh - 270px);
 
-      &::-webkit-scrollbar {
-        width: .25rem;
-        visibility: hidden;
-      }
-
-      &:hover {
-        &::-webkit-scrollbar {
-          visibility: visible;
-        }
-
-        &::-webkit-scrollbar-track {
-          background: var(--grey);
-        }
-
-        &::-webkit-scrollbar-thumb {
-          background: var(--lighterGrey);
-
-          &:hover {
-            background: var(--lightestGrey);
-          }
-        }
-      }
-
       &.col-form {
         padding: 0;
       }

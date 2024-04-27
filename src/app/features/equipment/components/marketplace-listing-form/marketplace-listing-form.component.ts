@@ -203,6 +203,284 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
           className: "hidden"
         },
         {
+          key: "lineItems",
+          type: "array",
+          wrappers: ["default-wrapper"],
+          fieldArray: {
+            props: {
+              label: this.translateService.instant("Equipment item for sale"),
+              addLabel: this.translateService.instant("Add another item to this listing"),
+              mayRemove: index => !this.model.lineItems[index].sold
+            },
+            expressions: {
+              fieldGroupClassName: config => config.model.sold ? "field-group-line-items sold" : "field-group-line-items"
+            },
+            fieldGroup: [
+              {
+                type: "html",
+                template: this.translateService.instant("You cannot edit this line item because it has been sold."),
+                className: "cannot-edit-because-sold",
+                expressions: {
+                  hide: config => !config.model.sold
+                }
+              },
+              {
+                key: "id",
+                type: "input",
+                className: "hidden"
+              },
+              {
+                key: "hash",
+                type: "input",
+                className: "hidden"
+              },
+              {
+                key: "user",
+                type: "input",
+                className: "hidden"
+              },
+              {
+                key: "listing",
+                type: "input",
+                className: "hidden"
+              },
+              {
+                key: "created",
+                type: "input",
+                className: "hidden"
+              },
+              {
+                key: "updated",
+                type: "input",
+                className: "hidden"
+              },
+              {
+                key: "sold",
+                type: "input",
+                className: "hidden"
+              },
+              {
+                key: "soldTo",
+                type: "input",
+                className: "hidden"
+              },
+              {
+                key: "findItemMode",
+                type: "ng-select",
+                defaultValue: MarketplaceLineItemFindItemMode.USER,
+                props: {
+                  required: true,
+                  searchable: false,
+                  clearable: false,
+                  label: this.translateService.instant("Find item in"),
+                  description: this.translateService.instant(
+                    "You can only sell items that are already in AstroBin's equipment database. Please select " +
+                    "whether you want to find the item by selecting from equipment that you have used on your images " +
+                    "or from all equipment that is available on AstroBin."
+                  ),
+                  options: [
+                    {
+                      label: this.translateService.instant("Equipment I used on my images"),
+                      value: MarketplaceLineItemFindItemMode.USER
+                    },
+                    {
+                      label: this.translateService.instant("All equipment on AstroBin"),
+                      value: MarketplaceLineItemFindItemMode.ALL
+                    }
+                  ]
+                }
+              },
+              {
+                key: "itemObjectId",
+                type: "equipment-item-browser",
+                props: {
+                  required: true,
+                  label: this.translateService.instant("Item"),
+                  showQuickAddRecent: false,
+                  showPlaceholderImage: false,
+                  multiple: false,
+                  enableCreation: false,
+                  showItemTypeSelector: true,
+                  layout: ItemBrowserLayout.VERTICAL,
+                  itemType: lineItemMap.get(0)
+                },
+                expressions: {
+                  "props.restrictToUserEquipment": config => {
+                    return config.model.findItemMode === MarketplaceLineItemFindItemMode.USER;
+                  }
+                },
+                hooks: {
+                  onInit: field => {
+                    let componentInstance: FormlyFieldEquipmentItemBrowserComponent;
+                    for (const ref of (field as any)._componentRefs) {
+                      if (ref.instance instanceof FormlyFieldEquipmentItemBrowserComponent) {
+                        componentInstance = ref.instance;
+                      }
+                    }
+
+                    if (!!componentInstance) {
+                      const index = this.model.lineItems.indexOf(field.model);
+                      field.props.itemType = lineItemMap.get(index);
+
+                      componentInstance.itemTypeChanged.subscribe(itemType => {
+                        const index = this.model.lineItems.indexOf(field.model);
+                        const payload = {
+                          appLabel: "astrobin_apps_equipment",
+                          model: `${itemType.toLowerCase()}`
+                        };
+
+                        this.store$
+                          .select(selectContentType, payload)
+                          .pipe(
+                            filter(contentType => !!contentType),
+                            take(1)
+                          )
+                          .subscribe(contentType => {
+                            this.model.lineItems[index].itemContentType = contentType.id;
+                            this.form.get(`lineItems.${index}`).patchValue({ itemContentType: contentType.id });
+                          });
+
+                        this.store$.dispatch(new LoadContentType(payload));
+                      });
+                    }
+                  }
+                }
+              },
+              {
+                key: "itemContentType",
+                type: "input",
+                className: "hidden"
+              },
+              {
+                key: "images",
+                wrappers: ["default-wrapper"],
+                fieldGroupClassName:
+                  "d-flex flex-wrap flex-column flex-xl-row justify-content-evenly field-group-images",
+                props: {
+                  label: this.translateService.instant("Images"),
+                  description: this.translateService.instant(
+                    "You can upload up to {{ maxImages }} images. The first image will be used as the cover " +
+                    "image and is required.",
+                    {
+                      maxImages: this.maxImages
+                    }
+                  ),
+                  required: true
+                },
+                fieldGroup: [...Array(this.maxImages).keys()].map(n => _getImageField(n))
+              },
+              {
+                key: "",
+                fieldGroupClassName: "row",
+                props: {
+                  label: this.translateService.instant("Item information")
+                },
+                fieldGroup: [
+                  {
+                    key: "condition",
+                    type: "ng-select",
+                    wrappers: ["default-wrapper"],
+                    defaultValue: MarketplaceListingCondition.USED,
+                    props: {
+                      required: true,
+                      label: this.translateService.instant("Condition"),
+                      options: Object.keys(MarketplaceListingCondition).map(key => ({
+                        value: key,
+                        label: this.equipmentItemService.humanizeCondition(MarketplaceListingCondition[key])
+                      }))
+                    }
+                  },
+                  {
+                    key: "yearOfPurchase",
+                    type: "input",
+                    wrappers: ["default-wrapper"],
+                    props: {
+                      type: "number",
+                      label: this.translateService.instant("Year of purchase")
+                    },
+                    validators: {
+                      validation: [
+                        { name: "min-value", options: { minValue: 1900 } },
+                        { name: "max-value", options: { maxValue: new Date().getFullYear() } }
+                      ]
+                    }
+                  },
+                  {
+                    key: "description",
+                    type: "textarea",
+                    wrappers: ["default-wrapper"],
+                    props: {
+                      label: this.translateService.instant("Description"),
+                      description: this.translateService.instant(
+                        "Describe the item you are selling. This field refers to this specific equipment item, " +
+                        "and down below you can find a Description field that refers to the entire listing."
+                      ),
+                      rows: 6,
+                      modelOptions: {
+                        updateOn: "blur"
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                key: "",
+                props: {
+                  label: this.translateService.instant("Pricing information")
+                },
+                fieldGroup: [
+                  {
+                    key: "",
+                    fieldGroup: [
+                      {
+                        key: "price",
+                        type: "input",
+                        wrappers: ["default-wrapper"],
+                        props: {
+                          type: "number",
+                          min: 0,
+                          label: this.translateService.instant("Price"),
+                          required: true
+                        }
+                      },
+                      {
+                        key: "shippingCost",
+                        type: "input",
+                        wrappers: ["default-wrapper"],
+                        expressions: {
+                          hide: () => !this.model.deliveryByShipping
+                        },
+                        props: {
+                          label: this.translateService.instant("Shipping cost"),
+                          type: "number",
+                          description: this.translateService.instant("Leave blank for free shipping"),
+                          min: 0
+                        }
+                      },
+                      {
+                        key: "currency",
+                        type: "ng-select",
+                        wrappers: ["default-wrapper"],
+                        defaultValue: initialCurrency,
+                        props: {
+                          label: this.translateService.instant("Currency"),
+                          options: Object.keys(Constants.ALL_CURRENCIES).map(code => ({
+                            value: code,
+                            label: `${Constants.ALL_CURRENCIES[code]} (${code})`
+                          })),
+                          required: true,
+                          placeholder: this.translateService.instant("Select a currency")
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        },
+
+        {
           key: "",
           wrappers: ["card-wrapper"],
           props: {
@@ -214,7 +492,7 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
               type: "input",
               wrappers: ["default-wrapper"],
               props: {
-                label: this.translateService.instant("Title"),
+                label: this.translateService.instant("Title for the entire listing"),
                 description: this.translateService.instant(
                   "If omitted, AstroBin will use the equipment item names to create a title."
                 ),
@@ -230,10 +508,12 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
               type: "textarea",
               wrappers: ["default-wrapper"],
               props: {
-                label: this.translateService.instant("Description"),
+                label: this.translateService.instant("Description for the entire listing"),
                 description: this.translateService.instant(
                   "This description field is for generic information that pertain this listing. You can find " +
-                  "Description field for individual equipment items above."
+                  "Description field for individual equipment items above. Please do not list your equipment items " +
+                  "here, but rather describe the listing as a whole, if needed. If you're selling multiple items, " +
+                  "please add multiple equipment items above."
                 ),
                 rows: 6,
                 modelOptions: {
@@ -370,281 +650,6 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
           ]
         },
         {
-          key: "lineItems",
-          type: "array",
-          wrappers: ["default-wrapper"],
-          fieldArray: {
-            props: {
-              label: this.translateService.instant("Equipment item for sale"),
-              addLabel: this.translateService.instant("Add another item to this listing"),
-              mayRemove: index => !this.model.lineItems[index].sold
-            },
-            expressions: {
-              fieldGroupClassName: config => config.model.sold ? "field-group-line-items sold" : "field-group-line-items"
-            },
-            fieldGroup: [
-              {
-                type: "html",
-                template: this.translateService.instant("You cannot edit this line item because it has been sold."),
-                className: "cannot-edit-because-sold",
-                expressions: {
-                  hide: config => !config.model.sold
-                }
-              },
-              {
-                key: "id",
-                type: "input",
-                className: "hidden"
-              },
-              {
-                key: "hash",
-                type: "input",
-                className: "hidden"
-              },
-              {
-                key: "user",
-                type: "input",
-                className: "hidden"
-              },
-              {
-                key: "listing",
-                type: "input",
-                className: "hidden"
-              },
-              {
-                key: "created",
-                type: "input",
-                className: "hidden"
-              },
-              {
-                key: "updated",
-                type: "input",
-                className: "hidden"
-              },
-              {
-                key: "sold",
-                type: "input",
-                className: "hidden"
-              },
-              {
-                key: "soldTo",
-                type: "input",
-                className: "hidden"
-              },
-              {
-                key: "findItemMode",
-                type: "ng-select",
-                defaultValue: MarketplaceLineItemFindItemMode.USER,
-                props: {
-                  required: true,
-                  searchable: false,
-                  clearable: false,
-                  label: this.translateService.instant("Find item in"),
-                  description: this.translateService.instant("Where do you want to find the item you're selling?"),
-                  options: [
-                    {
-                      label: this.translateService.instant("Equipment I used on my images"),
-                      value: MarketplaceLineItemFindItemMode.USER
-                    },
-                    {
-                      label: this.translateService.instant("All equipment on AstroBin"),
-                      value: MarketplaceLineItemFindItemMode.ALL
-                    }
-                  ]
-                }
-              },
-              {
-                key: "itemObjectId",
-                type: "equipment-item-browser",
-                props: {
-                  required: true,
-                  label: this.translateService.instant("Item"),
-                  showQuickAddRecent: false,
-                  showPlaceholderImage: false,
-                  multiple: false,
-                  enableCreation: false,
-                  showItemTypeSelector: true,
-                  layout: ItemBrowserLayout.VERTICAL,
-                  itemType: lineItemMap.get(0)
-                },
-                expressions: {
-                  "props.restrictToUserEquipment": config => {
-                    return config.model.findItemMode === MarketplaceLineItemFindItemMode.USER;
-                  }
-                },
-                hooks: {
-                  onInit: field => {
-                    let componentInstance: FormlyFieldEquipmentItemBrowserComponent;
-                    for (const ref of (field as any)._componentRefs) {
-                      if (ref.instance instanceof FormlyFieldEquipmentItemBrowserComponent) {
-                        componentInstance = ref.instance;
-                      }
-                    }
-
-                    if (!!componentInstance) {
-                      const index = this.model.lineItems.indexOf(field.model);
-                      field.props.itemType = lineItemMap.get(index);
-
-                      componentInstance.itemTypeChanged.subscribe(itemType => {
-                        const index = this.model.lineItems.indexOf(field.model);
-                        const payload = {
-                          appLabel: "astrobin_apps_equipment",
-                          model: `${itemType.toLowerCase()}`
-                        };
-
-                        this.store$
-                          .select(selectContentType, payload)
-                          .pipe(
-                            filter(contentType => !!contentType),
-                            take(1)
-                          )
-                          .subscribe(contentType => {
-                            this.model.lineItems[index].itemContentType = contentType.id;
-                            this.form.get(`lineItems.${index}`).patchValue({ itemContentType: contentType.id });
-                          });
-
-                        this.store$.dispatch(new LoadContentType(payload));
-                      });
-                    }
-                  }
-                }
-              },
-              {
-                key: "itemContentType",
-                type: "input",
-                className: "hidden"
-              },
-              {
-                key: "images",
-                wrappers: ["default-wrapper"],
-                fieldGroupClassName:
-                  "d-flex flex-wrap flex-column flex-xl-row justify-content-evenly field-group-images",
-                props: {
-                  label: this.translateService.instant("Images"),
-                  description: this.translateService.instant(
-                    "You can upload up to {{ maxImages }} images. The first image will be used as the cover " +
-                    "image and is required.",
-                    {
-                      maxImages: this.maxImages
-                    }
-                  ),
-                  required: true
-                },
-                fieldGroup: [...Array(this.maxImages).keys()].map(n => _getImageField(n))
-              },
-              {
-                key: "",
-                fieldGroupClassName: "row",
-                props: {
-                  label: this.translateService.instant("Item information")
-                },
-                fieldGroup: [
-                  {
-                    key: "condition",
-                    type: "ng-select",
-                    wrappers: ["default-wrapper"],
-                    className: "col-xl-6",
-                    defaultValue: MarketplaceListingCondition.USED,
-                    props: {
-                      required: true,
-                      label: this.translateService.instant("Condition"),
-                      options: Object.keys(MarketplaceListingCondition).map(key => ({
-                        value: key,
-                        label: this.equipmentItemService.humanizeCondition(MarketplaceListingCondition[key])
-                      }))
-                    }
-                  },
-                  {
-                    key: "yearOfPurchase",
-                    type: "input",
-                    wrappers: ["default-wrapper"],
-                    className: "col-xl-6",
-                    props: {
-                      type: "number",
-                      label: this.translateService.instant("Year of purchase")
-                    },
-                    validators: {
-                      validation: [
-                        { name: "min-value", options: { minValue: 1900 } },
-                        { name: "max-value", options: { maxValue: new Date().getFullYear() } }
-                      ]
-                    }
-                  },
-                  {
-                    key: "description",
-                    type: "textarea",
-                    wrappers: ["default-wrapper"],
-                    props: {
-                      label: this.translateService.instant("Description"),
-                      description: this.translateService.instant(
-                        "Describe the item you are selling. This field refers to this specific equipment item, " +
-                        "and down below you can find a Description field that refers to the entire listing."
-                      ),
-                      rows: 6,
-                      modelOptions: {
-                        updateOn: "blur"
-                      }
-                    }
-                  }
-                ]
-              },
-              {
-                key: "",
-                props: {
-                  label: this.translateService.instant("Pricing information")
-                },
-                fieldGroup: [
-                  {
-                    key: "",
-                    fieldGroup: [
-                      {
-                        key: "price",
-                        type: "input",
-                        wrappers: ["default-wrapper"],
-                        props: {
-                          type: "number",
-                          min: 0,
-                          label: this.translateService.instant("Price"),
-                          required: true
-                        }
-                      },
-                      {
-                        key: "shippingCost",
-                        type: "input",
-                        wrappers: ["default-wrapper"],
-                        expressions: {
-                          hide: () => !this.model.deliveryByShipping
-                        },
-                        props: {
-                          label: this.translateService.instant("Shipping cost"),
-                          type: "number",
-                          description: this.translateService.instant("Leave blank for free shipping"),
-                          min: 0
-                        }
-                      },
-                      {
-                        key: "currency",
-                        type: "ng-select",
-                        wrappers: ["default-wrapper"],
-                        defaultValue: initialCurrency,
-                        props: {
-                          label: this.translateService.instant("Currency"),
-                          options: Object.keys(Constants.ALL_CURRENCIES).map(code => ({
-                            value: code,
-                            label: `${Constants.ALL_CURRENCIES[code]} (${code})`
-                          })),
-                          required: true,
-                          placeholder: this.translateService.instant("Select a currency")
-                        }
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        },
-        {
           key: "",
           wrappers: ["card-wrapper"],
           props: {
@@ -687,7 +692,6 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                 "props.required": "!!model.deliveryByShipping"
               },
               props: {
-                label: this.translateService.instant("Shipping method"),
                 options: Object.keys(MarketplaceListingShippingMethod).map(key => ({
                   value: key,
                   label: this.equipmentItemService.humanizeShippingMethod(MarketplaceListingShippingMethod[key])
@@ -697,6 +701,8 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
           ]
         }
       ];
+
+      this.formInitialized = true;
     };
 
     return this.store$
@@ -741,7 +747,6 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                 tap(itemType => lineItemMap.set(index, itemType))
               ))).subscribe(() => {
               _doInitFields(lineItemMap, initialCurrency);
-              this.formInitialized = true;
             });
 
             lineItems.forEach(lineItem => {
