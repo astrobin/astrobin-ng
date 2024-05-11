@@ -232,7 +232,7 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
     const slug = this.listing.slug;
     const url = this.router.url;
 
-    if (url.indexOf(slug) === -1) {
+    if (!!slug && url.indexOf(slug) === -1) {
       this.router.navigate([slug], { relativeTo: this.activatedRoute });
     }
   }

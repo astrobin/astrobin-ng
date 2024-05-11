@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { AfterViewInit, Component, EventEmitter, Input, Output, TemplateRef, ViewChild } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import {
   MarketplaceListingExpiration,
@@ -37,7 +37,7 @@ import { ConfirmationDialogComponent } from "@shared/components/misc/confirmatio
   templateUrl: "./marketplace-listing-form.component.html",
   styleUrls: ["./marketplace-listing-form.component.scss"]
 })
-export class MarketplaceListingFormComponent extends BaseComponentDirective implements OnInit {
+export class MarketplaceListingFormComponent extends BaseComponentDirective implements AfterViewInit {
   readonly maxImages: number = 9;
 
   @Input()
@@ -86,6 +86,9 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
   @Output()
   save: EventEmitter<MarketplaceListingInterface> = new EventEmitter<MarketplaceListingInterface>();
 
+  @ViewChild("findItemModeOptionTemplate")
+  findItemModeOptionTemplate: TemplateRef<any>;
+
   constructor(
     public readonly store$: Store<State>,
     public readonly loadingService: LoadingService,
@@ -99,7 +102,7 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
     super(store$);
   }
 
-  ngOnInit(): void {
+  ngAfterViewInit(): void {
     super.ngOnInit();
     this._initFields();
   }
@@ -273,28 +276,45 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                   searchable: false,
                   clearable: false,
                   label: this.translateService.instant("Find item in"),
-                  description: this.translateService.instant(
-                    "You can only sell items that are already in AstroBin's equipment database. Please select " +
-                    "whether you want to find the item by selecting from equipment that you have used on your images " +
-                    "or from all equipment that is available on AstroBin."
-                  ),
+                  optionTemplate: this.findItemModeOptionTemplate,
                   options: [
                     {
                       label: this.translateService.instant("Equipment I used on my images"),
+                      description: this.translateService.instant("Restrict search to equipment you have used on your images."),
                       value: MarketplaceLineItemFindItemMode.USER
                     },
                     {
                       label: this.translateService.instant("All equipment on AstroBin"),
+                      description: this.translateService.instant("Search all equipment available on AstroBin."),
                       value: MarketplaceLineItemFindItemMode.ALL
+                    },
+                    {
+                      label: this.translateService.instant("Input as plain text"),
+                      description: this.translateService.instant("Input the item as plain text if you cannot find it using one of the options above."),
+                      value: MarketplaceLineItemFindItemMode.PLAIN
                     }
                   ]
+                }
+              },
+              {
+                key: "itemPlainText",
+                type: "input",
+                props: {
+                  label: this.translateService.instant("Item"),
+                  description: this.translateService.instant(
+                    "Enter only one item. If you want to sell multiple items, add them as separate line items " +
+                    "using the button below."
+                  )
+                },
+                expressions: {
+                  hide: config => config.model.findItemMode !== MarketplaceLineItemFindItemMode.PLAIN,
+                  required: config => config.model.findItemMode === MarketplaceLineItemFindItemMode.PLAIN
                 }
               },
               {
                 key: "itemObjectId",
                 type: "equipment-item-browser",
                 props: {
-                  required: true,
                   label: this.translateService.instant("Item"),
                   showQuickAddRecent: false,
                   showPlaceholderImage: false,
@@ -305,6 +325,8 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                   itemType: lineItemMap.get(0)
                 },
                 expressions: {
+                  hide: config => config.model.findItemMode === MarketplaceLineItemFindItemMode.PLAIN,
+                  required: config => config.model.findItemMode !== MarketplaceLineItemFindItemMode.PLAIN,
                   "props.restrictToUserEquipment": config => {
                     return config.model.findItemMode === MarketplaceLineItemFindItemMode.USER;
                   }

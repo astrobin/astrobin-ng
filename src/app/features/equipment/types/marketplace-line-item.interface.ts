@@ -16,7 +16,8 @@ export enum MarketplaceListingCondition {
 
 export enum MarketplaceLineItemFindItemMode {
   USER = "USER",
-  ALL = "ALL"
+  ALL = "ALL",
+  PLAIN = "PLAIN"
 }
 
 export interface MarketplaceLineItemInterface {
