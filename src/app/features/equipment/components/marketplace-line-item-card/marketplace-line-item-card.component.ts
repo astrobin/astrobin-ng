@@ -44,20 +44,24 @@ export class MarketplaceLineItemCardComponent extends BaseComponentDirective imp
   }
 
   _buildDisplayName() {
-    this.equipmentMarketplaceService
-      .getLineItemEquipmentItem$(this.lineItem)
-      .pipe(
-        filter(item => !!item),
-        take(1),
-        switchMap(item => this.equipmentItemService.getFullDisplayName$(item)),
-        take(1)
-      )
-      .subscribe(displayName => {
-        if (!!this.listing.title) {
-          this.displayName = `${this.listing.title} - ${displayName}`;
-        } else {
-          this.displayName = displayName;
-        }
-      });
+    if (!!this.lineItem && !!this.lineItem.itemObjectId) {
+      this.equipmentMarketplaceService
+        .getLineItemEquipmentItem$(this.lineItem)
+        .pipe(
+          filter(item => !!item),
+          take(1),
+          switchMap(item => this.equipmentItemService.getFullDisplayName$(item)),
+          take(1)
+        )
+        .subscribe(displayName => {
+          if (!!this.listing.title) {
+            this.displayName = `${this.listing.title} - ${displayName}`;
+          } else {
+            this.displayName = displayName;
+          }
+        });
+    } else {
+      this.displayName = this.lineItem.itemPlainText;
+    }
   }
 }

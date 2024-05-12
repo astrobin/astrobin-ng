@@ -40,6 +40,7 @@ export interface MarketplaceLineItemInterface {
   findItemMode?: MarketplaceLineItemFindItemMode;
   itemObjectId: number;
   itemContentType: ContentTypeInterface["id"];
+  itemPlainText?: string;
   itemName?: string;
   images?: MarketplaceImageInterface[] | { file: File, url: string }[];
   totalImageCount?: number;
