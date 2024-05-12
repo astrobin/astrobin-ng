@@ -81,8 +81,8 @@
     &,
     fa-icon,
     h5,
-    > p, & {
-      color: var(--textOnErrorColor);
+    > p, strong, & {
+      color: var(--textOnDangerColor);
     }
   }
 

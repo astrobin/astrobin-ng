@@ -144,6 +144,9 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
         model.lineItems = model.lineItems.map(lineItem => {
           lineItem.images = lineItem.images.map(image => image.imageFile);
           lineItem.listing = model.id;
+          lineItem.findItemMode = lineItem.findItemMode || (
+            lineItem.itemPlainText ? MarketplaceLineItemFindItemMode.PLAIN : MarketplaceLineItemFindItemMode.USER
+          );
           return lineItem;
         });
       }
@@ -270,7 +273,6 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
               {
                 key: "findItemMode",
                 type: "ng-select",
-                defaultValue: MarketplaceLineItemFindItemMode.USER,
                 props: {
                   required: true,
                   searchable: false,
@@ -501,7 +503,6 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
             ]
           }
         },
-
         {
           key: "",
           wrappers: ["card-wrapper"],
@@ -714,6 +715,7 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                 "props.required": "!!model.deliveryByShipping"
               },
               props: {
+                label: this.translateService.instant("Shipping method"),
                 options: Object.keys(MarketplaceListingShippingMethod).map(key => ({
                   value: key,
                   label: this.equipmentItemService.humanizeShippingMethod(MarketplaceListingShippingMethod[key])
