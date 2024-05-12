@@ -1,4 +1,4 @@
-<ng-container *ngIf="equipmentItem; else noEquipmentItem">
+<ng-container *ngIf="equipmentItem || lineItem.itemPlainText; else noEquipmentItem">
   <div [class.sold]="!!lineItem.sold" class="card">
     <div (click)="collapsed = !collapsed" [class.collapsed-body]="collapsed" class="card-header">
       <div class="d-flex align-items-center gap-3">
@@ -10,7 +10,7 @@
             class="type-image"
           />
           <img
-            *ngIf="lineItem.images.length === 0"
+            *ngIf="lineItem.images.length === 0 && !!equipmentItem"
             alt="{{ equipmentItemType(equipmentItem) }}"
             class="type-image"
             src="/assets/images/{{ equipmentItem.klass.toLowerCase() }}-placeholder.png?v=2"
@@ -19,22 +19,27 @@
 
         <div class="flex-grow-1">
           <div class="display-name">
-            <astrobin-equipment-item-display-name
-              [enableBrandLink]="false"
-              [enableNameLink]="false"
-              [item]="equipmentItem"
-              [showFrozenAsAmbiguous]="false"
-              [showItemUnapprovedInfo]="false"
-            ></astrobin-equipment-item-display-name>
+            <ng-container *ngIf="!!equipmentItem">
+              <astrobin-equipment-item-display-name
+                [enableBrandLink]="false"
+                [enableNameLink]="false"
+                [item]="equipmentItem"
+                [showFrozenAsAmbiguous]="false"
+                [showItemUnapprovedInfo]="false"
+              ></astrobin-equipment-item-display-name>
 
-            <a
-              [routerLink]="['/equipment/explorer/', equipmentItem.klass.toLowerCase(), equipmentItem.id]"
-              astrobinEventPreventDefault
-              astrobinEventStopPropagation
-              class="line-item-item-link"
-            >
-              <fa-icon icon="info-circle"></fa-icon>
-            </a>
+              <a
+                [routerLink]="['/equipment/explorer/', equipmentItem.klass.toLowerCase(), equipmentItem.id]"
+                astrobinEventPreventDefault
+                astrobinEventStopPropagation
+                class="line-item-item-link"
+              >
+                <fa-icon icon="info-circle"></fa-icon>
+              </a>
+            </ng-container>
+            <ng-container *ngIf="!equipmentItem">
+              {{ lineItem.itemPlainText || "Unknown" | translate }}
+            </ng-container>
           </div>
 
           <div *ngIf="!lineItem.sold" class="offers-count">
@@ -55,7 +60,7 @@
             [lineItem]="lineItem"
           ></astrobin-marketplace-listing-line-item-condition>
 
-          <div *ngIf="!previewMode" class="first-added">
+          <div *ngIf="!previewMode && !!equipmentItem" class="first-added">
             {{ "First added to an image" | translate }}:
             <span class="first-added-date">
               <ng-container *ngIf="lineItem.firstAddedToAnImage; else noFirstAddedDateTemplate">
@@ -74,7 +79,7 @@
             ></fa-icon>
           </div>
 
-          <div *ngIf="!previewMode" class="image-counts">
+          <div *ngIf="!previewMode && !!equipmentItem" class="image-counts">
             <span [innerHTML]="sellerImageCount"></span>
             &middot;
             <span [innerHTML]="totalImageCount"></span>
@@ -105,7 +110,7 @@
 
       <astrobin-image-search
         #sellerImageSearch
-        *ngIf="lineItem.sellerImageCount > 0"
+        *ngIf="!!equipmentItem && lineItem.sellerImageCount > 0"
         [header]="'Images by the seller' | translate"
         [itemId]="lineItem.itemObjectId"
         [itemType]="lineItem.itemKlass"
@@ -118,8 +123,8 @@
       ></astrobin-image-search>
 
       <astrobin-image-search
-        #astrobinImageSearh
-        *ngIf="lineItem.totalImageCount > 0"
+        #astrobinImageSearch
+        *ngIf="!!equipmentItem && lineItem.totalImageCount > 0"
         [header]="'Images on AstroBin' | translate"
         [itemId]="lineItem.itemObjectId"
         [itemType]="lineItem.itemKlass"
