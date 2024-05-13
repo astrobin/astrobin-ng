@@ -79,8 +79,6 @@ export class EquipmentMarketplaceService extends BaseService {
     return this.store$.select(selectUser, listing.user);
   }
 
-  // This method assumes that `previousListing` has lineItem IDs/ It's used to compare an existing listing to a listing
-
   userHasFeedback(user: UserInterface): boolean {
     return (
       user.marketplaceCommunicationFeedback !== null &&
@@ -90,6 +88,7 @@ export class EquipmentMarketplaceService extends BaseService {
     );
   }
 
+  // This method assumes that `previousListing` has lineItem IDs/ It's used to compare an existing listing to a listing
   // that's being updated. It returns an array of changed, added, and removed line items.
   compareLineItems(
     updatedListing: MarketplaceListingInterface,
