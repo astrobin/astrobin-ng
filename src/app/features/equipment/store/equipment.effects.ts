@@ -28,6 +28,9 @@ import {
   CreateFilterEditProposal,
   CreateFilterEditProposalSuccess,
   CreateFilterSuccess,
+  CreateMarketplaceFeedback,
+  CreateMarketplaceFeedbackFailure,
+  CreateMarketplaceFeedbackSuccess,
   CreateMarketplaceListing,
   CreateMarketplaceListingFailure,
   CreateMarketplaceListingSuccess,
@@ -85,6 +88,9 @@ import {
   GetAllInBrand,
   GetAllInBrandSuccess,
   GetContributorsSuccess,
+  GetMarketplaceFeedback,
+  GetMarketplaceFeedbackFailure,
+  GetMarketplaceFeedbackSuccess,
   GetMostOftenUsedWith,
   GetMostOftenUsedWithSuccess,
   GetOthersInBrand,
@@ -1266,6 +1272,32 @@ export class EquipmentEffects {
         this.equipmentApiService.acceptMarketplaceOffer(payload.offer).pipe(
           map(() => new AcceptMarketplaceOfferSuccess({ offer: payload.offer })),
           catchError(error => of(new AcceptMarketplaceOfferFailure({ offer: payload.offer, error })))
+        )
+      )
+    )
+  );
+
+  CreateMarketplaceFeedback: Observable<CreateMarketplaceFeedbackSuccess | CreateMarketplaceFeedbackFailure> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(EquipmentActionTypes.CREATE_MARKETPLACE_FEEDBACK),
+      map((action: CreateMarketplaceFeedback) => action.payload),
+      mergeMap(payload =>
+        this.equipmentApiService.createMarketplaceFeedback(payload.feedback).pipe(
+          map(feedback => new CreateMarketplaceFeedbackSuccess({ feedback })),
+          catchError(error => of(new CreateMarketplaceFeedbackFailure({ feedback: payload.feedback, error })))
+        )
+      )
+    )
+  );
+
+  GetMarketplaceFeedback: Observable<GetMarketplaceFeedbackSuccess | GetMarketplaceFeedbackFailure> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(EquipmentActionTypes.GET_MARKETPLACE_FEEDBACK),
+      map((action: GetMarketplaceFeedback) => action.payload),
+      mergeMap(payload =>
+        this.equipmentApiService.getMarketplaceFeedback(payload.lineItem.id).pipe(
+          map(feedback => new GetMarketplaceFeedbackSuccess({ feedback })),
+          catchError(error => of(new GetMarketplaceFeedbackFailure({ lineItem: payload.lineItem, error })))
         )
       )
     )

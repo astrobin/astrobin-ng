@@ -1,21 +1,17 @@
-.feedback {
-  &:not(:last-child) {
-    margin-bottom: .5rem;
-  }
-}
-
 .feedback-label {
+  margin-top: .25rem;
   font-size: .85rem;
-  margin-bottom: .25rem;
   color: var(--lighterGrey);
+  text-align: center;
 }
 
 .feedback-container {
   width: 100%;
-  height: 1rem;
+  height: 2rem;
   background: linear-gradient(to right, red, yellow, green);
   position: relative;
   border: 1px solid var(--grey);
+  border-radius: 1rem;
 }
 
 .feedback-bar {

@@ -19,8 +19,7 @@ export interface MarketplaceFeedbackInterface {
   id?: number;
   user?: UserInterface["id"];
   lineItem?: MarketplaceLineItemInterface["id"];
-  created: string;
+  created?: string;
   value: MarketplaceFeedbackValue;
   category: MarketplaceFeedbackCategory;
-  text: string;
 }

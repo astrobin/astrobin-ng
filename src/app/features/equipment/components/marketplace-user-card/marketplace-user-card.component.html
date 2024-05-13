@@ -1,27 +1,13 @@
 <ng-container *ngIf="user$ | async as user; else loadingTemplate">
   <div class="card">
-    <div class="card-header">
-      {{ "Seller" | translate }}
-    </div>
-
     <div class="card-body">
-      <div class="d-flex align-items-center flex-column">
-        <astrobin-avatar [user]="user"></astrobin-avatar>
-        <astrobin-username [user]="user"></astrobin-username>
-      </div>
-    </div>
-
-    <div class="feedback">
-      <ng-container *ngIf="equipmentMarketplaceService.userHasFeedback(user); else noFeedbackTemplate">
-        <strong class="d-block mb-2">{{ "Feedback" | translate }} ({{ user.marketplaceFeedbackCount }})</strong>
-        <astrobin-marketplace-feedback-widget [user]="user"></astrobin-marketplace-feedback-widget>
-      </ng-container>
-
-      <ng-template #noFeedbackTemplate>
-        <div class="alert alert-info mb-0">
-          {{ "This user has no feedback yet." | translate }}
-        </div>
-      </ng-template>
+      <astrobin-avatar [user]="user"></astrobin-avatar>
+      <astrobin-username [user]="user"></astrobin-username>
+      <astrobin-marketplace-feedback-widget
+        [listing]="listing"
+        [user]="user"
+        class="d-block mt-3"
+      ></astrobin-marketplace-feedback-widget>
     </div>
 
     <div class="card-footer flex-column align-items-start">

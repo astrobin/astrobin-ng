@@ -17,10 +17,7 @@ export interface UserInterface {
   isActive: boolean;
   groups: AuthGroupInterface[];
   userPermissions: PermissionInterface[];
-  marketplaceCommunicationFeedback: number;
-  marketplaceSpeedFeedback: number;
-  marketplaceAccuracyFeedback: number;
-  marketplacePackagingFeedback: number;
+  marketplaceFeedback: number;
   marketplaceFeedbackCount: number;
   marketplaceListingCount: number;
 }

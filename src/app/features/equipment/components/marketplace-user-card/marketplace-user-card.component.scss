@@ -1,7 +1,16 @@
 astrobin-avatar {
   display: block;
-  width: 50%;
-  padding: 1rem;
+  width: 30%;
+  position: absolute;
+  top: -15%;
+  left: 35%;
+}
+
+astrobin-username {
+  display: block;
+  text-align: center;
+  font-size: 1.25rem;
+  margin-top: 2rem;
 }
 
 .feedback {

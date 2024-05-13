@@ -129,11 +129,9 @@ describe("CommonApiAdaptorService", () => {
             content_type: 2
           }
         ],
-        marketplace_accuracy_feedback: null,
-        marketplace_packaging_feedback: null,
-        marketplace_speed_feedback: null,
-        marketplace_communication_feedback: null,
-        marketplace_feedback_count: 0
+        marketplace_feedback: null,
+        marketplace_feedback_count: 0,
+        marketplace_listing_count: 0
       };
 
       expect(service.userFromBackend(backendUser)).toEqual({
@@ -183,11 +181,9 @@ describe("CommonApiAdaptorService", () => {
             contentType: 2
           }
         ],
-        marketplaceAccuracyFeedback: null,
-        marketplaceCommunicationFeedback: null,
+        marketplaceFeedback: null,
         marketplaceFeedbackCount: 0,
-        marketplacePackagingFeedback: null,
-        marketplaceSpeedFeedback: null
+        marketplaceListingCount: 0
       });
     });
   });

@@ -8,6 +8,7 @@ import { Observable } from "rxjs";
 import { selectUser } from "@features/account/store/auth.selectors";
 import { filter, takeUntil } from "rxjs/operators";
 import { EquipmentMarketplaceService } from "@features/equipment/services/equipment-marketplace.service";
+import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
 
 @Component({
   selector: "astrobin-marketplace-user-card",
@@ -16,7 +17,7 @@ import { EquipmentMarketplaceService } from "@features/equipment/services/equipm
 })
 export class MarketplaceUserCardComponent extends BaseComponentDirective implements OnInit {
   @Input()
-  userId: UserInterface["id"];
+  listing: MarketplaceListingInterface;
 
   user$: Observable<UserInterface>;
 
@@ -30,11 +31,11 @@ export class MarketplaceUserCardComponent extends BaseComponentDirective impleme
   ngOnInit(): void {
     super.ngOnInit();
 
-    this.user$ = this.store$.select(selectUser, this.userId).pipe(
+    this.user$ = this.store$.select(selectUser, this.listing.user).pipe(
       filter(user => !!user),
       takeUntil(this.destroyed$)
     );
 
-    this.store$.dispatch(new LoadUser({ id: this.userId }));
+    this.store$.dispatch(new LoadUser({ id: this.listing.user }));
   }
 }

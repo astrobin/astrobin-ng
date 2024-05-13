@@ -31,6 +31,8 @@ import { MarketplaceListingInterface } from "@features/equipment/types/marketpla
 import { MarketplacePrivateConversationInterface } from "@features/equipment/types/marketplace-private-conversation.interface";
 import { MarketplaceListingQueryOptionsInterface } from "@features/equipment/types/marketplace-listing-query-options.interface";
 import { MarketplaceOfferInterface } from "@features/equipment/types/marketplace-offer.interface";
+import { MarketplaceFeedbackInterface } from "@features/equipment/types/marketplace-feedback.interface";
+import { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
 
 export interface EquipmentItemCreationSuccessPayloadInterface {
   item: EquipmentItemBaseInterface;
@@ -216,6 +218,13 @@ export enum EquipmentActionTypes {
   ACCEPT_MARKETPLACE_OFFER = "[Equipment] Accept marketplace offer",
   ACCEPT_MARKETPLACE_OFFER_SUCCESS = "[Equipment] Accept marketplace offer success",
   ACCEPT_MARKETPLACE_OFFER_FAILURE = "[Equipment] Accept marketplace offer failure",
+
+  CREATE_MARKETPLACE_FEEDBACK = "[Equipment] Create marketplace feedback",
+  CREATE_MARKETPLACE_FEEDBACK_SUCCESS = "[Equipment] Create marketplace feedback success",
+  CREATE_MARKETPLACE_FEEDBACK_FAILURE = "[Equipment] Create marketplace feedback failure",
+  GET_MARKETPLACE_FEEDBACK = "[Equipment] Get marketplace feedback",
+  GET_MARKETPLACE_FEEDBACK_SUCCESS = "[Equipment] Get marketplace feedback success",
+  GET_MARKETPLACE_FEEDBACK_FAILURE = "[Equipment] Get marketplace feedback failure",
 }
 
 /**********************************************************************************************************************
@@ -1248,6 +1257,48 @@ export class AcceptMarketplaceOfferFailure implements PayloadActionInterface {
   }
 }
 
+export class CreateMarketplaceFeedback implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.CREATE_MARKETPLACE_FEEDBACK;
+
+  constructor(public payload: { feedback: MarketplaceFeedbackInterface }) {
+  }
+}
+
+export class CreateMarketplaceFeedbackSuccess implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.CREATE_MARKETPLACE_FEEDBACK_SUCCESS;
+
+  constructor(public payload: { feedback: MarketplaceFeedbackInterface }) {
+  }
+}
+
+export class CreateMarketplaceFeedbackFailure implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.CREATE_MARKETPLACE_FEEDBACK_FAILURE;
+
+  constructor(public payload: { feedback: MarketplaceFeedbackInterface; error: string }) {
+  }
+}
+
+export class GetMarketplaceFeedback implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.GET_MARKETPLACE_FEEDBACK;
+
+  constructor(public payload: { lineItem: MarketplaceLineItemInterface }) {
+  }
+}
+
+export class GetMarketplaceFeedbackSuccess implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.GET_MARKETPLACE_FEEDBACK_SUCCESS;
+
+  constructor(public payload: { feedback: MarketplaceFeedbackInterface[] }) {
+  }
+}
+
+export class GetMarketplaceFeedbackFailure implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.GET_MARKETPLACE_FEEDBACK_FAILURE;
+
+  constructor(public payload: { lineItem: MarketplaceLineItemInterface; error: string }) {
+  }
+}
+
 export type EquipmentActions =
 // Brands
   | GetAllBrands
@@ -1397,4 +1448,10 @@ export type EquipmentActions =
   | DeleteMarketplaceOfferFailure
   | AcceptMarketplaceOffer
   | AcceptMarketplaceOfferSuccess
-  | AcceptMarketplaceOfferFailure;
+  | AcceptMarketplaceOfferFailure
+  | CreateMarketplaceFeedback
+  | CreateMarketplaceFeedbackSuccess
+  | CreateMarketplaceFeedbackFailure
+  | GetMarketplaceFeedback
+  | GetMarketplaceFeedbackSuccess
+  | GetMarketplaceFeedbackFailure;

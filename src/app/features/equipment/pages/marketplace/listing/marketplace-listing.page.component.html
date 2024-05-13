@@ -44,7 +44,7 @@
     <ng-container *ngIf="listingContentType$ | async as listingContentType; else loadingTemplate">
       <ng-container *ngIf="listingUser$ | async as listingUser; else loadingTemplate">
         <div class="row">
-          <div class="col-md-7 col-lg-8">
+          <div class="col-md-8 col-lg-9">
             <astrobin-marketplace-listing [listing]="listing"></astrobin-marketplace-listing>
 
             <astrobin-nested-comments
@@ -58,8 +58,8 @@
             <astrobin-marketplace-more-from-user [listing]="listing"></astrobin-marketplace-more-from-user>
           </div>
 
-          <div class="col-md-5 col-lg-4">
-            <astrobin-marketplace-user-card [userId]="listing.user"></astrobin-marketplace-user-card>
+          <div class="col-md-4 col-lg-3">
+            <astrobin-marketplace-user-card [listing]="listing"></astrobin-marketplace-user-card>
 
             <ng-container *ngIf="listingUser.id === currentUserWrapper.user?.id">
               <ng-container

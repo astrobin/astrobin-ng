@@ -343,6 +343,7 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
     );
 
     forkJoin(successObservables$).pipe(
+      take(1),
       // It's only one listing so we can take the first result.
       map(result => result[0])
     ).subscribe(listing => {
@@ -362,7 +363,9 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
       this.popNotificationsService.success(message);
     });
 
-    forkJoin(failureObservables$).subscribe(() => {
+    forkJoin(failureObservables$).pipe(
+      take(1)
+    ).subscribe(() => {
       this.loadingService.setLoading(false);
       this.popNotificationsService.error(this.equipmentMarketplaceService.offerErrorMessageForBuyer());
     });

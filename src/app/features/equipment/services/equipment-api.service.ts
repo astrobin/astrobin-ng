@@ -42,6 +42,7 @@ import { MarketplaceImageInterface } from "@features/equipment/types/marketplace
 import { MarketplacePrivateConversationInterface } from "@features/equipment/types/marketplace-private-conversation.interface";
 import { MarketplaceListingQueryOptionsInterface } from "@features/equipment/types/marketplace-listing-query-options.interface";
 import { MarketplaceOfferInterface } from "@features/equipment/types/marketplace-offer.interface";
+import { MarketplaceFeedbackInterface } from "@features/equipment/types/marketplace-feedback.interface";
 
 export interface AllEquipmentItemsOptionsInterface {
   brand?: BrandInterface["id"];
@@ -1002,6 +1003,18 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     const url = `${this.configUrl}/marketplace/listing/${offer.listing}/line-item/${offer.lineItem}/offer/${offer.id}/accept/`;
 
     return this.http.post<MarketplaceOfferInterface>(url, {});
+  }
+
+  public createMarketplaceFeedback(feedback: MarketplaceFeedbackInterface): Observable<MarketplaceFeedbackInterface> {
+    const url = `${this.configUrl}/marketplace/line-item/${feedback.lineItem}/feedback/`;
+
+    return this.http.post<MarketplaceFeedbackInterface>(url, feedback);
+  }
+
+  public getMarketplaceFeedback(lineItemId: MarketplaceLineItemInterface["id"]): Observable<MarketplaceFeedbackInterface[]> {
+    const url = `${this.configUrl}/marketplace/line-item/${lineItemId}/feedback/`;
+
+    return this.http.get<MarketplaceFeedbackInterface[]>(url);
   }
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

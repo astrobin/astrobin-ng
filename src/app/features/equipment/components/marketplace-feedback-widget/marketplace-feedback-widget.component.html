@@ -1,35 +1,26 @@
-<div class="feedback">
-  <div class="feedback-label">
-    {{ "Communication and friendliness" | translate }} ({{ user.marketplaceCommunicationFeedback }}%)
+<ng-container *ngIf="marketplaceService.userHasFeedback(user); else noFeedbackTemplate">
+  <div class="feedback">
+    <div class="feedback-container">
+      <div [style.left]="user.marketplaceFeedback + '%'" class="feedback-bar"></div>
+    </div>
   </div>
-  <div class="feedback-container">
-    <div [style.left]="user.marketplaceCommunicationFeedback + '%'" class="feedback-bar"></div>
-  </div>
-</div>
 
-<div class="feedback">
   <div class="feedback-label">
-    {{ "Speed of delivery" | translate }} ({{ user.marketplaceSpeedFeedback }}%)
+    {{ "Feedback" | translate }}: {{ user.marketplaceFeedback }}%
   </div>
-  <div class="feedback-container">
-    <div [style.left]="user.marketplaceSpeedFeedback + '%'" class="feedback-bar"></div>
-  </div>
-</div>
+</ng-container>
 
-<div class="feedback">
-  <div class="feedback-label">
-    {{ "Accuracy of item descriptions" | translate }} ({{ user.marketplaceAccuracyFeedback }}%)
+<ng-container *ngIf="currentUserIsBuyer">
+  <div *ngIf="!hasFeedback" class="mt-3 text-center">
+    <button (click)="showFeedbackModal()" class="btn btn-primary">
+      {{ "Leave feedback" | translate }}
+    </button>
   </div>
-  <div class="feedback-container">
-    <div [style.left]="user.marketplaceAccuracyFeedback + '%'" class="feedback-bar"></div>
-  </div>
-</div>
+</ng-container>
 
-<div class="feedback">
-  <div class="feedback-label">
-    {{ "Packaging quality" | translate }} ({{ user.marketplacePackagingFeedback }}%)
+<ng-template #noFeedbackTemplate>
+  <div class="alert alert-info mb-0">
+    {{ "This user has no feedback yet." | translate }}
   </div>
-  <div class="feedback-container">
-    <div [style.left]="user.marketplacePackagingFeedback + '%'" class="feedback-bar"></div>
-  </div>
-</div>
+</ng-template>
+

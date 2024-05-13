@@ -26,10 +26,7 @@ export class UserGenerator {
       isActive: source.isActive || true,
       groups,
       userPermissions: source.userPermissions || [],
-      marketplaceAccuracyFeedback: source.marketplaceAccuracyFeedback || null,
-      marketplaceCommunicationFeedback: source.marketplaceCommunicationFeedback || null,
-      marketplacePackagingFeedback: source.marketplacePackagingFeedback || null,
-      marketplaceSpeedFeedback: source.marketplaceSpeedFeedback || null,
+      marketplaceFeedback: source.marketplaceFeedback || null,
       marketplaceFeedbackCount: source.marketplaceFeedbackCount || 0,
       marketplaceListingCount: source.marketplaceListingCount || 0
     };

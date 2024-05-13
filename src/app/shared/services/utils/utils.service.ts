@@ -525,6 +525,10 @@ export class UtilsService {
     return size / (1024 * 1024) > 1 ? (size / (1024 * 1024)).toFixed(2) + " MB" : (size / 1024).toFixed(2) + " KB";
   }
 
+  static isValidEnumValue(value: any, enumType: any): boolean {
+    return Object.values(enumType).includes(value);
+  }
+
   supportsDateInput() {
     if (isPlatformServer(this.platformId)) {
       return false;

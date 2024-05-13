@@ -80,12 +80,12 @@ export class EquipmentMarketplaceService extends BaseService {
   }
 
   userHasFeedback(user: UserInterface): boolean {
-    return (
-      user.marketplaceCommunicationFeedback !== null &&
-      user.marketplaceAccuracyFeedback !== null &&
-      user.marketplaceSpeedFeedback !== null &&
-      user.marketplacePackagingFeedback !== null
-    );
+    return user.marketplaceFeedbackCount > 0;
+  }
+
+  // Returns whether the user is the buyer of any line item in the listing.
+  userIsBuyer(user: UserInterface, listing: MarketplaceListingInterface): boolean {
+    return listing.lineItems.some(lineItem => lineItem.soldTo === user.id);
   }
 
   // This method assumes that `previousListing` has lineItem IDs/ It's used to compare an existing listing to a listing

@@ -12,6 +12,7 @@ import { PayloadActionInterface } from "@app/store/actions/payload-action.interf
 import { AppActionTypes } from "@app/store/actions/app.actions";
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
 import { MarketplacePrivateConversationInterface } from "@features/equipment/types/marketplace-private-conversation.interface";
+import { MarketplaceFeedbackInterface } from "@features/equipment/types/marketplace-feedback.interface";
 
 export const equipmentFeatureKey = "equipment";
 
@@ -542,6 +543,49 @@ export function reducer(state = initialEquipmentState, action: PayloadActionInte
         });
 
         // Return the listing with the updated lineItems
+        return {
+          ...listing,
+          lineItems: updatedLineItems
+        };
+      });
+
+      // Return the updated state with the updated listings
+      return {
+        ...state,
+        marketplace: {
+          ...state.marketplace,
+          listings: updatedListings
+        }
+      };
+    }
+
+    case EquipmentActionTypes.CREATE_MARKETPLACE_FEEDBACK_SUCCESS: {
+      const newFeedback: MarketplaceFeedbackInterface = action.payload.feedback;
+      const lineItemId = newFeedback.lineItem;
+
+      // Find listing that has this line item id.
+      const listing = state.marketplace.listings.find(listing => listing.lineItems.some(lineItem => lineItem.id === lineItemId));
+
+      // Update feedback in line item.
+      const updatedLineItems = listing.lineItems.map(lineItem => {
+        if (lineItem.id !== lineItemId) {
+          return lineItem;
+        }
+
+        const updatedFeedbacks = lineItem.feedbacks.concat(newFeedback);
+
+        return {
+          ...lineItem,
+          feedbacks: updatedFeedbacks
+        };
+      });
+
+      // Update state with the updated listing.
+      const updatedListings = state.marketplace.listings.map(listing => {
+        if (listing.id !== listing.id) {
+          return listing;
+        }
+
         return {
           ...listing,
           lineItems: updatedLineItems
