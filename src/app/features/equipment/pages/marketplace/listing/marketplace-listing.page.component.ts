@@ -641,7 +641,8 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
           }
 
           return of(null);
-        })
+        }),
+        take(1)
       )
       .subscribe();
   }
