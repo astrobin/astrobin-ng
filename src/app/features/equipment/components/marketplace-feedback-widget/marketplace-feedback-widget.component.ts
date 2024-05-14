@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { AfterViewInit, Component, Input, OnInit } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import { State } from "@app/store/state";
 import { Store } from "@ngrx/store";
@@ -9,13 +9,14 @@ import { take, takeUntil } from "rxjs/operators";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { MarketplaceFeedbackModalComponent } from "@features/equipment/components/marketplace-feedback-modal/marketplace-feedback-modal.component";
 import { selectMarketplaceListing } from "@features/equipment/store/equipment.selectors";
+import { ActivatedRoute } from "@angular/router";
 
 @Component({
   selector: "astrobin-marketplace-feedback-widget",
   templateUrl: "./marketplace-feedback-widget.component.html",
   styleUrls: ["./marketplace-feedback-widget.component.scss"]
 })
-export class MarketplaceFeedbackWidgetComponent extends BaseComponentDirective implements OnInit {
+export class MarketplaceFeedbackWidgetComponent extends BaseComponentDirective implements OnInit, AfterViewInit {
   @Input()
   user: UserInterface;
 
@@ -28,7 +29,9 @@ export class MarketplaceFeedbackWidgetComponent extends BaseComponentDirective i
   constructor(
     public readonly store$: Store<State>,
     public readonly marketplaceService: EquipmentMarketplaceService,
-    public readonly modalService: NgbModal) {
+    public readonly modalService: NgbModal,
+    public readonly activatedRoute: ActivatedRoute
+  ) {
     super(store$);
   }
 
@@ -40,6 +43,14 @@ export class MarketplaceFeedbackWidgetComponent extends BaseComponentDirective i
       this.listing = listing;
       this.updateState();
     });
+  }
+
+  ngAfterViewInit(): void {
+    const fragment = this.activatedRoute.snapshot.fragment;
+
+    if (fragment === "feedback") {
+      this.showFeedbackModal();
+    }
   }
 
   updateState(): void {
