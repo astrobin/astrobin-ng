@@ -60,8 +60,6 @@ export abstract class MarketplaceUserListingsBasePageComponent
   }
 
   public refresh(filterModel?: MarketplaceFilterModel) {
-    this.store$.dispatch(new LoadUser({ username: this.username }));
-
     this.actions$
       .pipe(
         ofType(AuthActionTypes.LOAD_USER_SUCCESS),
@@ -96,6 +94,8 @@ export abstract class MarketplaceUserListingsBasePageComponent
         this.windowRefService.routeTo404();
         this.loadingService.setLoading(false);
       });
+
+    this.store$.dispatch(new LoadUser({ username: this.username }));
   }
 
   protected _getListingsFilterPredicate(

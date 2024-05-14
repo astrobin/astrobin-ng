@@ -31,7 +31,12 @@ import { EMPTY, Observable, of } from "rxjs";
 import { catchError, concatMap, map, mergeMap, switchMap, take, tap } from "rxjs/operators";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
-import { selectCurrentUserProfile, selectUser, selectUserProfile } from "@features/account/store/auth.selectors";
+import {
+  selectCurrentUserProfile,
+  selectUser,
+  selectUserByUsername,
+  selectUserProfile
+} from "@features/account/store/auth.selectors";
 
 @Injectable()
 export class AuthEffects {
@@ -91,8 +96,19 @@ export class AuthEffects {
     this.actions$.pipe(
       ofType(AuthActionTypes.LOAD_USER),
       map((action: LoadUser) => action.payload),
-      mergeMap(payload =>
-        this.store$.select(selectUser, payload.id).pipe(
+      mergeMap(payload => {
+        let selector;
+        let selectorArgument;
+
+        if (payload.id) {
+          selector = selectUser;
+          selectorArgument = payload.id;
+        } else if (payload.username) {
+          selector = selectUserByUsername;
+          selectorArgument = payload.username;
+        }
+
+        return this.store$.select(selector, selectorArgument).pipe(
           switchMap(userFromStore =>
             userFromStore !== null
               ? of(userFromStore).pipe(map(() => new LoadUserSuccess({ user: userFromStore })))
@@ -105,8 +121,8 @@ export class AuthEffects {
                 )
               )
           )
-        )
-      )
+        );
+      })
     )
   );
 
