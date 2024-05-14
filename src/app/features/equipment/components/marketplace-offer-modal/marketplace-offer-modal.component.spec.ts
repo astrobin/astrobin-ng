@@ -6,6 +6,7 @@ import { AppModule } from "@app/app.module";
 import { provideMockStore } from "@ngrx/store/testing";
 import { initialState } from "@app/store/state";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
+import { MarketplaceGenerator } from "@features/equipment/generators/marketplace.generator";
 
 describe("MarketplaceOfferModalComponent", () => {
   let component: MarketplaceOfferModalComponent;
@@ -19,6 +20,7 @@ describe("MarketplaceOfferModalComponent", () => {
 
     fixture = TestBed.createComponent(MarketplaceOfferModalComponent);
     component = fixture.componentInstance;
+    component.listing = MarketplaceGenerator.listing();
     fixture.detectChanges();
   });
 

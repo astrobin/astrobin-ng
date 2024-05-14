@@ -9,6 +9,8 @@ import { StoreModule } from "@ngrx/store";
 import { EffectsModule } from "@ngrx/effects";
 import { HttpClientModule } from "@angular/common/http";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { ActivatedRoute } from "@angular/router";
+import { of } from "rxjs";
 
 describe("MarketplaceUserExpiredListingsPageComponent", () => {
   let component: MarketplaceUserExpiredListingsPageComponent;
@@ -16,7 +18,18 @@ describe("MarketplaceUserExpiredListingsPageComponent", () => {
 
   beforeEach(async () => {
     await MockBuilder(MarketplaceUserExpiredListingsPageComponent, AppModule)
-      .provide([provideMockStore({ initialState })])
+      .provide([
+        provideMockStore({ initialState }),
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            queryParams: of({ region: "us" }),
+            snapshot: {
+              paramMap: { get: key => "test-username" }
+            }
+          }
+        }
+      ])
       .keep(StoreModule.forRoot(appStateReducers))
       .keep(EffectsModule.forRoot(appStateEffects))
       .replace(HttpClientModule, HttpClientTestingModule);

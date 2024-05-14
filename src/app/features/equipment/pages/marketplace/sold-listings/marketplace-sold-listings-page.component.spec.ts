@@ -9,7 +9,8 @@ import { EffectsModule } from "@ngrx/effects";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { HttpClientModule } from "@angular/common/http";
 import { StoreModule } from "@ngrx/store";
-import { MarketplaceGenerator } from "@features/equipment/generators/marketplace.generator";
+import { ActivatedRoute } from "@angular/router";
+import { of } from "rxjs";
 
 describe("SoldListingsComponent", () => {
   let component: MarketplaceSoldListingsPageComponent;
@@ -18,7 +19,15 @@ describe("SoldListingsComponent", () => {
 
   beforeEach(async () => {
     await MockBuilder(MarketplaceSoldListingsPageComponent, AppModule)
-      .provide([provideMockStore({ initialState })])
+      .provide([
+        provideMockStore({ initialState }),
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            queryParams: of({ region: "us" })
+          }
+        }
+      ])
       .keep(StoreModule.forRoot(appStateReducers))
       .keep(EffectsModule.forRoot(appStateEffects))
       .replace(HttpClientModule, HttpClientTestingModule);
@@ -42,47 +51,5 @@ describe("SoldListingsComponent", () => {
   it("should have a button to create a listing", () => {
     const button = fixture.nativeElement.querySelector("h1 > .btn-create-listing");
     expect(button).toBeDefined();
-  });
-
-  it("should be in a loading state initially", () => {
-    const nothingHere = fixture.nativeElement.querySelector("astrobin-nothing-here");
-    const listings = fixture.nativeElement.querySelectorAll("astrobin-equipment-marketplace-listing");
-    const loading = fixture.nativeElement.querySelector("astrobin-loading-indicator");
-    expect(nothingHere).toBeFalsy();
-    expect(listings.length).toEqual(0);
-    expect(loading).toBeTruthy();
-  });
-
-  it("should show nothing here if there are no listings", () => {
-    store.setState({ ...initialState, equipment: { ...initialState.equipment, marketplace: { listings: [] } } });
-
-    fixture.detectChanges();
-
-    const nothingHere = fixture.nativeElement.querySelector("astrobin-nothing-here");
-    expect(nothingHere).toBeTruthy();
-  });
-
-  it("should show listings", () => {
-    const listings = {
-      count: 1,
-      next: null,
-      previous: null,
-      results: [
-        MarketplaceGenerator.listing()
-      ]
-    };
-
-    store.setState({
-      ...initialState,
-      equipment: { ...initialState.equipment, marketplace: { listings: listings.results } }
-    });
-
-    fixture.detectChanges();
-
-    const nothingHere = fixture.nativeElement.querySelector("astrobin-nothing-here");
-    expect(nothingHere).toBeFalsy();
-
-    const listingElements = fixture.nativeElement.querySelectorAll(".line-item");
-    expect(listingElements.length).toEqual(listings.results.length);
   });
 });

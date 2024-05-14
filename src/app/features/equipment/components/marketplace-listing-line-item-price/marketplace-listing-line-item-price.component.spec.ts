@@ -16,7 +16,8 @@ describe("MarketplaceListingLineItemPriceComponent", () => {
 
     fixture = TestBed.createComponent(MarketplaceListingLineItemPriceComponent);
     component = fixture.componentInstance;
-    component.lineItem = MarketplaceGenerator.lineItem();
+    component.listing = MarketplaceGenerator.listing();
+    component.lineItem = component.listing.lineItems[0];
     fixture.detectChanges();
   });
 

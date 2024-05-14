@@ -17,6 +17,7 @@ describe("MarketplaceLineItemCardsComponent", () => {
 
     fixture = TestBed.createComponent(MarketplaceLineItemCardsComponent);
     component = fixture.componentInstance;
+    component.listings = [];
     fixture.detectChanges();
   });
 

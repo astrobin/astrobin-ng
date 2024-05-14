@@ -10,8 +10,8 @@ import { EffectsModule } from "@ngrx/effects";
 import { HttpClientModule } from "@angular/common/http";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { MarketplaceGenerator } from "@features/equipment/generators/marketplace.generator";
-import { ActivatedRoute } from "@angular/router";
-import { of } from "rxjs";
+import { ActivatedRoute, Router } from "@angular/router";
+import { EMPTY, of } from "rxjs";
 import { UserGenerator } from "@shared/generators/user.generator";
 
 describe("MarketplaceListingPageComponent", () => {
@@ -30,6 +30,12 @@ describe("MarketplaceListingPageComponent", () => {
                 listing: MarketplaceGenerator.listing()
               }
             }
+          }
+        },
+        {
+          provide: Router,
+          useValue: {
+            events: EMPTY
           }
         }
       ])

@@ -4,7 +4,7 @@ import { MarketplaceFeedbackModalComponent } from "./marketplace-feedback-modal.
 import { MockBuilder } from "ng-mocks";
 import { AppModule } from "@app/app.module";
 import { provideMockStore } from "@ngrx/store/testing";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 
 describe("MarketplaceFeedbackModalComponent", () => {
   let component: MarketplaceFeedbackModalComponent;
@@ -13,7 +13,7 @@ describe("MarketplaceFeedbackModalComponent", () => {
   beforeEach(async () => {
     await MockBuilder(MarketplaceFeedbackModalComponent, AppModule).provide([
       provideMockStore({ initialState: {} }),
-      NgbModal
+      NgbActiveModal
     ]);
 
     fixture = TestBed.createComponent(MarketplaceFeedbackModalComponent);

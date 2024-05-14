@@ -39,7 +39,9 @@ export class MarketplaceGenerator {
       longitude: source.longitude || null,
       country: source.country || null,
       city: source.city || null,
-      lineItems
+      lineItems,
+      title: source.title || "Test title",
+      bundleSaleOnly: source.bundleSaleOnly || false
     };
   }
 
@@ -63,7 +65,8 @@ export class MarketplaceGenerator {
       description: source.description || null,
       itemObjectId: source.itemObjectId || 1,
       itemContentType: source.itemContentType || 1,
-      images: source.images || []
+      images: source.images || [],
+      offers: source.offers || []
     };
   }
 }
