@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, EventEmitter, Input, Output, TemplateRef, ViewChild } from "@angular/core";
+import { Component, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild } from "@angular/core";
 import { BaseComponentDirective } from "@shared/components/base-component.directive";
 import {
   MarketplaceListingExpiration,
@@ -37,7 +37,7 @@ import { ConfirmationDialogComponent } from "@shared/components/misc/confirmatio
   templateUrl: "./marketplace-listing-form.component.html",
   styleUrls: ["./marketplace-listing-form.component.scss"]
 })
-export class MarketplaceListingFormComponent extends BaseComponentDirective implements AfterViewInit {
+export class MarketplaceListingFormComponent extends BaseComponentDirective implements OnInit {
   readonly maxImages: number = 9;
 
   @Input()
@@ -78,10 +78,30 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
       }
     ]
   };
-
   form: FormGroup = new FormGroup({});
   formInitialized = false;
   fields: FormlyFieldConfig[];
+
+  initialLineItemCountModel = { count: null };
+  initialLineItemCountForm = new FormGroup({});
+  initialLineItemCountFields: FormlyFieldConfig[] = [
+    {
+      key: "count",
+      type: "input",
+      props: {
+        label: this.translateService.instant("How many items do you want to sell in this listing?"),
+        placeholder: this.translateService.instant("Enter a number"),
+        description: this.translateService.instant(
+          "The AstroBin Marketplace supports multiple line items per listing. This makes it easy for you to " +
+          "have a bundle sale or avoid repeating the same information in multiple listings if you're selling " +
+          "multiple items. PS: you can always add more line items later."
+        ),
+        required: true,
+        type: "number"
+      }
+    }
+  ];
+  initialLineItemCount = null;
 
   @Output()
   save: EventEmitter<MarketplaceListingInterface> = new EventEmitter<MarketplaceListingInterface>();
@@ -102,8 +122,18 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
     super(store$);
   }
 
-  ngAfterViewInit(): void {
+  ngOnInit() {
     super.ngOnInit();
+
+    if (this.model.id) {
+      this.initialLineItemCount = this.model.lineItems.length;
+      this._initFields();
+    }
+  }
+
+  setInitialLineItemCount(event: Event) {
+    event.stopPropagation();
+    this.initialLineItemCount = this.initialLineItemCountForm.get("count").value;
     this._initFields();
   }
 
@@ -214,11 +244,17 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
           wrappers: ["default-wrapper"],
           fieldArray: {
             props: {
-              label: this.translateService.instant("Equipment item for sale"),
               addLabel: this.translateService.instant("Add another item to this listing"),
               mayRemove: index => !this.model.lineItems[index].sold
             },
             expressions: {
+              "props.label": config => {
+                const index = this.model.lineItems.indexOf(config.model);
+
+                return this.initialLineItemCount > 1
+                  ? this.translateService.instant("Equipment item for sale") + ` #${index + 1}`
+                  : this.translateService.instant("Equipment item for sale");
+              },
               fieldGroupClassName: config => config.model.sold ? "field-group-line-items sold" : "field-group-line-items"
             },
             fieldGroup: [
@@ -757,6 +793,28 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
 
           const lineItems = this.model.lineItems;
           const lineItemMap: Map<number, EquipmentItemType> = new Map();
+
+          if (!this.model.id && this.initialLineItemCount > 0) {
+            this.model.lineItems = Array.from({ length: this.initialLineItemCount }).map(() => ({
+              listing: null,
+              created: null,
+              updated: null,
+              sold: null,
+              soldTo: null,
+              reserved: null,
+              reservedTo: null,
+              price: null,
+              currency: initialCurrency,
+              condition: MarketplaceListingCondition.USED,
+              yearOfPurchase: null,
+              shippingCost: null,
+              description: null,
+              findItemMode: MarketplaceLineItemFindItemMode.USER,
+              itemObjectId: null,
+              itemContentType: null,
+              images: []
+            }));
+          }
 
           if (
             lineItems &&
