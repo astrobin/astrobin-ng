@@ -21,7 +21,7 @@
 
   <!-- Pending moderation -->
   <li
-    *ngIf="(currentUser$ | async) | isInGroup:Constants.MARKETPLACE_MODERATORS_GROUP"
+    *ngIf="(currentUser$ | async) | isMarketplaceModerator"
     [ngbNavItem]="MarketplaceNavPage.PENDING_MODERATION"
     class="subnav"
   >

@@ -838,7 +838,7 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
       );
   }
 
-  public updateMarketplaceListing(listing: MarketplaceListingInterface) {
+  public updateMarketplaceListing(listing: MarketplaceListingInterface): Observable<MarketplaceListingInterface> {
     return this.http.put<MarketplaceListingInterface>(
       `${this.configUrl}/marketplace/listing/${listing.id}/`,
       (({ lineItems, ...rest }) => rest)(listing)
@@ -847,6 +847,10 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
 
   public deleteMarketplaceListing(id: MarketplaceListingInterface["id"]): Observable<void> {
     return this.http.delete<void>(`${this.configUrl}/marketplace/listing/${id}/`);
+  }
+
+  public approveMarketplaceListing(id: MarketplaceListingInterface["id"]): Observable<MarketplaceListingInterface> {
+    return this.http.put<MarketplaceListingInterface>(`${this.configUrl}/marketplace/listing/${id}/approve/`, {});
   }
 
   public createMarketplaceLineItem(

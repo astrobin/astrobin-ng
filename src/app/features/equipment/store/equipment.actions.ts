@@ -190,6 +190,10 @@ export enum EquipmentActionTypes {
   UPDATE_MARKETPLACE_LISTING_SUCCESS = "[Equipment] Update marketplace listing success",
   UPDATE_MARKETPLACE_LISTING_FAILURE = "[Equipment] Update marketplace listing failure",
 
+  APPROVE_MARKETPLACE_LISTING = "[Equipment] Approve marketplace listing",
+  APPROVE_MARKETPLACE_LISTING_SUCCESS = "[Equipment] Approve marketplace listing success",
+  APPROVE_MARKETPLACE_LISTING_FAILURE = "[Equipment] Approve marketplace listing failure",
+
   LOAD_MARKETPLACE_PRIVATE_CONVERSATIONS = "[Equipment] Load marketplace private conversations",
   LOAD_MARKETPLACE_PRIVATE_CONVERSATIONS_SUCCESS = "[Equipment] Load marketplace private conversations success",
   LOAD_MARKETPLACE_PRIVATE_CONVERSATIONS_FAILURE = "[Equipment] Load marketplace private conversations failure",
@@ -1062,6 +1066,27 @@ export class UpdateMarketplaceListingFailure implements PayloadActionInterface {
   }
 }
 
+export class ApproveMarketplaceListing implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.APPROVE_MARKETPLACE_LISTING;
+
+  constructor(public payload: { listing: MarketplaceListingInterface }) {
+  }
+}
+
+export class ApproveMarketplaceListingSuccess implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.APPROVE_MARKETPLACE_LISTING_SUCCESS;
+
+  constructor(public payload: { listing: MarketplaceListingInterface }) {
+  }
+}
+
+export class ApproveMarketplaceListingFailure implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.APPROVE_MARKETPLACE_LISTING_FAILURE;
+
+  constructor(public payload: { listing: MarketplaceListingInterface, error: string }) {
+  }
+}
+
 export class LoadMarketplacePrivateConversations implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.LOAD_MARKETPLACE_PRIVATE_CONVERSATIONS;
 
@@ -1443,6 +1468,9 @@ export type EquipmentActions =
   | UpdateMarketplaceOffer
   | UpdateMarketplaceOfferSuccess
   | UpdateMarketplaceOfferFailure
+  | ApproveMarketplaceListing
+  | ApproveMarketplaceListingSuccess
+  | ApproveMarketplaceListingFailure
   | DeleteMarketplaceOffer
   | DeleteMarketplaceOfferSuccess
   | DeleteMarketplaceOfferFailure

@@ -8,6 +8,9 @@ import {
   ApproveEquipmentItemEditProposal,
   ApproveEquipmentItemEditProposalSuccess,
   ApproveEquipmentItemSuccess,
+  ApproveMarketplaceListing,
+  ApproveMarketplaceListingFailure,
+  ApproveMarketplaceListingSuccess,
   AssignEditProposal,
   AssignEditProposalSuccess,
   AssignItem,
@@ -1117,6 +1120,29 @@ export class EquipmentEffects {
     { dispatch: false }
   );
 
+  ApproveMarketplaceListing: Observable<ApproveMarketplaceListingSuccess | ApproveMarketplaceListingFailure> =
+    createEffect(() =>
+      this.actions$.pipe(
+        ofType(EquipmentActionTypes.APPROVE_MARKETPLACE_LISTING),
+        map((action: ApproveMarketplaceListing) => action.payload),
+        mergeMap(payload =>
+          this.equipmentApiService.approveMarketplaceListing(payload.listing.id).pipe(
+            map(listing => new ApproveMarketplaceListingSuccess({ listing })),
+            catchError(error => of(new ApproveMarketplaceListingFailure({ listing: payload.listing, error })))
+          )
+        )
+      )
+    );
+
+  ApproveMarketplaceListingSuccess: Observable<void> = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(EquipmentActionTypes.APPROVE_MARKETPLACE_LISTING_SUCCESS),
+        tap(() => this.popNotificationsService.success(this.translateService.instant("Listing approved successfully")))
+      ),
+    { dispatch: false }
+  );
+
   LoadMarketplacePrivateConversations: Observable<LoadMarketplacePrivateConversationsSuccess | LoadMarketplacePrivateConversationsFailure> = createEffect(() =>
     this.actions$.pipe(
       ofType(EquipmentActionTypes.LOAD_MARKETPLACE_PRIVATE_CONVERSATIONS),
@@ -1277,18 +1303,19 @@ export class EquipmentEffects {
     )
   );
 
-  CreateMarketplaceFeedback: Observable<CreateMarketplaceFeedbackSuccess | CreateMarketplaceFeedbackFailure> = createEffect(() =>
-    this.actions$.pipe(
-      ofType(EquipmentActionTypes.CREATE_MARKETPLACE_FEEDBACK),
-      map((action: CreateMarketplaceFeedback) => action.payload),
-      mergeMap(payload =>
-        this.equipmentApiService.createMarketplaceFeedback(payload.feedback).pipe(
-          map(feedback => new CreateMarketplaceFeedbackSuccess({ feedback })),
-          catchError(error => of(new CreateMarketplaceFeedbackFailure({ feedback: payload.feedback, error })))
+  CreateMarketplaceFeedback: Observable<CreateMarketplaceFeedbackSuccess | CreateMarketplaceFeedbackFailure> =
+    createEffect(() =>
+      this.actions$.pipe(
+        ofType(EquipmentActionTypes.CREATE_MARKETPLACE_FEEDBACK),
+        map((action: CreateMarketplaceFeedback) => action.payload),
+        mergeMap(payload =>
+          this.equipmentApiService.createMarketplaceFeedback(payload.feedback).pipe(
+            map(feedback => new CreateMarketplaceFeedbackSuccess({ feedback })),
+            catchError(error => of(new CreateMarketplaceFeedbackFailure({ feedback: payload.feedback, error })))
+          )
         )
       )
-    )
-  );
+    );
 
   GetMarketplaceFeedback: Observable<GetMarketplaceFeedbackSuccess | GetMarketplaceFeedbackFailure> = createEffect(() =>
     this.actions$.pipe(

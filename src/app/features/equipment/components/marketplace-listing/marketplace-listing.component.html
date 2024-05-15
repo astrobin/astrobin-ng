@@ -1,9 +1,4 @@
 <div>
-  <div *ngIf="!listing.approved" class="alert alert-warning" role="alert">
-    <fa-icon icon="exclamation-triangle"></fa-icon>
-    {{ "This listing is pending moderation." | translate }}
-  </div>
-
   <div *ngIf="equipmentMarketplaceService.listingSold(listing)" class="alert alert-danger" role="alert">
     <fa-icon icon="exclamation-triangle"></fa-icon>
     {{ "All line items in this listings have been sold." | translate }}

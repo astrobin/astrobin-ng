@@ -312,7 +312,8 @@ export function reducer(state = initialEquipmentState, action: PayloadActionInte
 
     case EquipmentActionTypes.CREATE_MARKETPLACE_LISTING_SUCCESS:
     case EquipmentActionTypes.LOAD_MARKETPLACE_LISTING_SUCCESS:
-    case EquipmentActionTypes.UPDATE_MARKETPLACE_LISTING_SUCCESS: {
+    case EquipmentActionTypes.UPDATE_MARKETPLACE_LISTING_SUCCESS:
+    case EquipmentActionTypes.APPROVE_MARKETPLACE_LISTING_SUCCESS: {
       return {
         ...state,
         marketplace: {

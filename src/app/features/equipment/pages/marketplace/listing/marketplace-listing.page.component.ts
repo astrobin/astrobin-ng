@@ -22,6 +22,8 @@ import {
   AcceptMarketplaceOffer,
   AcceptMarketplaceOfferFailure,
   AcceptMarketplaceOfferSuccess,
+  ApproveMarketplaceListing,
+  ApproveMarketplaceListingSuccess,
   CreateMarketplacePrivateConversation,
   CreateMarketplacePrivateConversationSuccess,
   DeleteMarketplaceListing,
@@ -272,6 +274,22 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
     }
 
     this._recordHit();
+  }
+
+  approve() {
+    this.actions$.pipe(
+      ofType(EquipmentActionTypes.APPROVE_MARKETPLACE_LISTING_SUCCESS),
+      filter((action: ApproveMarketplaceListingSuccess) => action.payload.listing.id === this.listing.id),
+      map(action => action.payload.listing),
+      take(1)
+    ).subscribe(listing => {
+      this.loadingService.setLoading(false);
+      this.listing = listing;
+      this._listingUpdated$.next();
+    });
+
+    this.loadingService.setLoading(true);
+    this.store$.dispatch(new ApproveMarketplaceListing({ listing: this.listing }));
   }
 
   delete() {

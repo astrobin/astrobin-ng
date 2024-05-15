@@ -45,6 +45,41 @@
       <ng-container *ngIf="listingUser$ | async as listingUser; else loadingTemplate">
         <div class="row">
           <div class="col-md-8 col-lg-9">
+            <div *ngIf="!listing.approved" class="alert alert-warning" role="alert">
+              <fa-icon icon="exclamation-triangle"></fa-icon>
+              {{ "This listing is pending moderation." | translate }}
+
+              <span
+                *ngIf="currentUser$ | async | isMarketplaceModerator"
+                class="mt-2 mt-md-0 ms-md-2 d-block d-md-inline-block float-md-end"
+              >
+                <button
+                  (click)="approve()" [class.loading]="loadingService.loading$ | async"
+                  class="btn btn-link btn-no-block"
+                >
+                  <fa-icon icon="check"></fa-icon>
+                </button>
+
+                <a
+                  *ngIf="!equipmentMarketplaceService.listingSold(listing)"
+                  [class.loading]="loadingService.loading$ | async"
+                  [routerLink]="'edit'"
+                  class="btn btn-link btn-no-block ms-md-2"
+                >
+                  <fa-icon icon="pencil"></fa-icon>
+                </a>
+
+                <button
+                  (click)="delete()"
+                  *ngIf="!equipmentMarketplaceService.listingSold(listing)"
+                  [class.loading]="loadingService.loading$ | async"
+                  class="btn btn-link btn-no-block ms-md-2"
+                >
+                  <fa-icon icon="trash-alt"></fa-icon>
+                </button>
+              </span>
+            </div>
+
             <astrobin-marketplace-listing [listing]="listing"></astrobin-marketplace-listing>
 
             <astrobin-nested-comments
