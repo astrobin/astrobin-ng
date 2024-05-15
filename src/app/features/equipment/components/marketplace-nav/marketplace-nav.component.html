@@ -19,6 +19,23 @@
     </a>
   </li>
 
+  <!-- Pending moderation -->
+  <li
+    *ngIf="(currentUser$ | async) | isInGroup:Constants.MARKETPLACE_MODERATORS_GROUP"
+    [ngbNavItem]="MarketplaceNavPage.PENDING_MODERATION"
+    class="subnav"
+  >
+    <a *ngIf="(getLink$(MarketplaceNavPage.PENDING_MODERATION) | async) as link"
+       [queryParams]="link.queryParams"
+       [routerLinkActiveOptions]="routerLinkActiveOptions"
+       [routerLink]="link.path"
+       ngbNavLink
+       routerLinkActive="active">
+      <fa-icon icon="gavel"></fa-icon> &nbsp;
+      {{ "Pending moderation" | translate }}
+    </a>
+  </li>
+
   <!-- Sold Listings -->
   <li [ngbNavItem]="MarketplaceNavPage.SOLD_LISTINGS" class="subnav">
     <a *ngIf="(getLink$(MarketplaceNavPage.SOLD_LISTINGS) | async) as link"

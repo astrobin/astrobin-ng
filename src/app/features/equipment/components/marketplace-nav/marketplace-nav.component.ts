@@ -7,9 +7,11 @@ import { Location } from "@angular/common";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 import { RouterService } from "@shared/services/router.service";
+import { Constants } from "@shared/constants";
 
 export enum MarketplaceNavPage {
   ALL_LISTINGS,
+  PENDING_MODERATION,
   SOLD_LISTINGS,
   USER_LISTINGS,
   USER_SOLD_LISTINGS,
@@ -25,6 +27,7 @@ export enum MarketplaceNavPage {
   styleUrls: ["./marketplace-nav.component.scss"]
 })
 export class MarketplaceNavComponent extends BaseComponentDirective implements OnInit {
+  readonly Constants = Constants;
   readonly MarketplaceNavPage = MarketplaceNavPage;
   readonly routerLinkActiveOptions: IsActiveMatchOptions = {
     fragment: "ignored",
@@ -52,6 +55,9 @@ export class MarketplaceNavComponent extends BaseComponentDirective implements O
         switch (page) {
           case MarketplaceNavPage.ALL_LISTINGS:
             path = ["/equipment/marketplace"];
+            break;
+          case MarketplaceNavPage.PENDING_MODERATION:
+            path = ["/equipment/marketplace/pending-moderation"];
             break;
           case MarketplaceNavPage.SOLD_LISTINGS:
             path = ["/equipment/marketplace/sold"];

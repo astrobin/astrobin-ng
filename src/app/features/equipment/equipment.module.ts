@@ -61,7 +61,8 @@ import { MarketplaceUserSoldListingsPageComponent } from "@features/equipment/pa
 import { MarketplaceUserExpiredListingsPageComponent } from "@features/equipment/pages/marketplace/user-expired-listings/marketplace-user-expired-listings-page.component";
 import { MarketplaceUserPurchasesPageComponent } from "@features/equipment/pages/marketplace/user-purchases/marketplace-user-purchases-page.component";
 import { MarketplaceUserFollowedListingsPageComponent } from "@features/equipment/pages/marketplace/user-followed-listings/marketplace-user-followed-listings-page.component";
-import { MarketplaceFeedbackModalComponent } from './components/marketplace-feedback-modal/marketplace-feedback-modal.component';
+import { MarketplaceFeedbackModalComponent } from "./components/marketplace-feedback-modal/marketplace-feedback-modal.component";
+import { MarketplacePendingModerationListingsPageComponent } from "@features/equipment/pages/marketplace/pending-moderation-listings/marketplace-pending-moderation-listings-page.component";
 
 @NgModule({
   declarations: [
@@ -96,6 +97,7 @@ import { MarketplaceFeedbackModalComponent } from './components/marketplace-feed
     EquipmentCompareModalComponent,
     EquipmentListingsComponent,
     MarketplaceListingsPageComponent,
+    MarketplacePendingModerationListingsPageComponent,
     MarketplaceSoldListingsPageComponent,
     MarketplaceCreateListingPageComponent,
     MarketplaceLineItemComponent,

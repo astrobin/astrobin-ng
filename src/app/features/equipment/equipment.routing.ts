@@ -28,6 +28,7 @@ import { MarketplaceUserExpiredListingsPageComponent } from "@features/equipment
 import { UsernameMatchGuard } from "@shared/services/guards/username-match-guard";
 import { MarketplaceUserPurchasesPageComponent } from "@features/equipment/pages/marketplace/user-purchases/marketplace-user-purchases-page.component";
 import { MarketplaceUserFollowedListingsPageComponent } from "@features/equipment/pages/marketplace/user-followed-listings/marketplace-user-followed-listings-page.component";
+import { MarketplacePendingModerationListingsPageComponent } from "@features/equipment/pages/marketplace/pending-moderation-listings/marketplace-pending-moderation-listings-page.component";
 
 export const routes: Routes = [
   {
@@ -171,6 +172,13 @@ export const routes: Routes = [
       {
         path: "listings",
         component: MarketplaceListingsPageComponent
+      },
+      {
+        path: "pending-moderation",
+        component: MarketplacePendingModerationListingsPageComponent,
+        canActivate: [GroupGuardService],
+        data: { anyOfGroups: [Constants.MARKETPLACE_MODERATORS_GROUP] }
+
       },
       {
         path: "sold",

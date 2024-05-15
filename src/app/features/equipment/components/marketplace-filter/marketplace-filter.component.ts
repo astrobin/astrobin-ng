@@ -32,6 +32,7 @@ export interface MarketplaceFilterModel {
   soldToUser?: UserInterface["id"] | null;
   followedByUser?: UserInterface["id"] | null;
   sold?: boolean | null;
+  pendingModeration?: boolean | null;
   expired?: boolean | null;
   excludeListing?: MarketplaceListingInterface["hash"] | null;
 }

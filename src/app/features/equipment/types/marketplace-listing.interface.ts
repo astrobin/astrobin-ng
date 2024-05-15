@@ -21,6 +21,9 @@ export interface MarketplaceListingInterface {
   user?: UserInterface["id"];
   created: string;
   updated: string;
+  firstApproved?: string | null;
+  approved?: string | null;
+  approvedBy?: UserInterface["id"];
   expiration: string;
   title: string | null;
   description: string | null;

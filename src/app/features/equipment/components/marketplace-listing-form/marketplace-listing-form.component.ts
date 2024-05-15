@@ -44,6 +44,8 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
   model: MarketplaceListingInterface = {
     created: null,
     updated: null,
+    approved: null,
+    approvedBy: null,
     expiration: null,
     title: null,
     description: null,
@@ -303,6 +305,21 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
               },
               {
                 key: "soldTo",
+                type: "input",
+                className: "hidden"
+              },
+              {
+                key: "firstApproved",
+                type: "input",
+                className: "hidden"
+              },
+              {
+                key: "approved",
+                type: "input",
+                className: "hidden"
+              },
+              {
+                key: "approvedBy",
                 type: "input",
                 className: "hidden"
               },

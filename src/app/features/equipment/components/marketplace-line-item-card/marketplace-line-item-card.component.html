@@ -50,16 +50,24 @@
     </ng-container>
 
     <ng-template #unsoldBadges>
-      <ng-container *ngIf="lineItem.offers?.length">
-        <div
-          [ngbTooltip]="translateService.instant('This listing has offers')"
-          class="badge rounded-pill bg-danger border border-light"
-          container="body"
-        >
-          <fa-icon icon="comment-dollar"></fa-icon>
-          {{ lineItem.offers.length }}
-        </div>
-      </ng-container>
+      <div
+        *ngIf="lineItem.offers?.length"
+        [ngbTooltip]="translateService.instant('This listing has offers')"
+        class="badge rounded-pill bg-danger border border-light"
+        container="body"
+      >
+        <fa-icon icon="comment-dollar"></fa-icon>
+        {{ lineItem.offers.length }}
+      </div>
+
+      <div
+        *ngIf="!listing.approved"
+        [ngbTooltip]="translateService.instant('This listing is pending moderation')"
+        class="badge rounded-pill bg-warning border border-light"
+        container="body"
+      >
+        <fa-icon icon="exclamation-triangle"></fa-icon>
+      </div>
     </ng-template>
   </div>
 </div>
