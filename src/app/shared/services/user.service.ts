@@ -8,6 +8,7 @@ import { selectUser } from "@features/account/store/auth.selectors";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { LoadingService } from "@shared/services/loading.service";
+import { GroupInterface } from "@shared/interfaces/group.interface";
 
 @Injectable({
   providedIn: "root"
@@ -26,5 +27,13 @@ export class UserService extends BaseService implements UserServiceInterface {
       return false;
     }
     return user.groups.filter((group: AuthGroupInterface) => group.name === name).length > 0;
+  }
+
+  isInAstroBinGroup(user: UserInterface, name: string): boolean {
+    if (!user || !user.astrobinGroups) {
+      return false;
+    }
+
+    return user.astrobinGroups.filter((group: GroupInterface) => group.name === name).length > 0;
   }
 }

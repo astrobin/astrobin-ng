@@ -1,14 +1,22 @@
 import { AuthGroupGenerator } from "@shared/generators/auth-group.generator";
 import { UserInterface } from "@shared/interfaces/user.interface";
+import { AstroBinGroupGenerator } from "@shared/generators/astrobin-group.generator";
 
 export class UserGenerator {
   static user(source: Partial<UserInterface> = {}): UserInterface {
     let groups;
+    let astrobinGroups;
 
     if (!!source.groups) {
       groups = source.groups;
     } else {
       groups = [AuthGroupGenerator.group()];
+    }
+
+    if (!!source.astrobinGroups) {
+      astrobinGroups = source.astrobinGroups;
+    } else {
+      astrobinGroups = [AstroBinGroupGenerator.group()];
     }
 
     return {
@@ -25,6 +33,7 @@ export class UserGenerator {
       isStaff: source.isStaff || false,
       isActive: source.isActive || true,
       groups,
+      astrobinGroups,
       userPermissions: source.userPermissions || [],
       marketplaceFeedback: source.marketplaceFeedback || null,
       marketplaceFeedbackCount: source.marketplaceFeedbackCount || 0,

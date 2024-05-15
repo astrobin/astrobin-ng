@@ -21,7 +21,7 @@ describe("IsContentModeratorPipe", () => {
     expect(pipe.transform(UserGenerator.user())).toBe(true);
   });
 
-  it("pipe should work for content moderator", () => {
+  it("pipe should work if not content moderator", () => {
     jest.spyOn(pipe.userService, "isInGroup").mockReturnValue(false);
     expect(pipe.transform(UserGenerator.user())).toBe(false);
   });

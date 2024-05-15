@@ -7,6 +7,7 @@ import { BaseService } from "@shared/services/base.service";
 import { WatermarkPositionOptions, WatermarkSizeOptions } from "@shared/interfaces/image.interface";
 import { LocationInterface } from "@shared/interfaces/location.interface";
 import { TogglePropertyInterface } from "@shared/interfaces/toggle-property.interface";
+import { GroupInterface } from "@shared/interfaces/group.interface";
 
 export interface BackendPermissionInterface {
   id: number;
@@ -35,6 +36,7 @@ export interface BackendUserInterface {
   is_active: boolean;
   date_joined: string;
   groups: BackendGroupInterface[];
+  astrobin_groups: GroupInterface[];
   user_permissions: BackendPermissionInterface[];
   marketplace_feedback: number;
   marketplace_feedback_count: number;
@@ -148,6 +150,7 @@ export class CommonApiAdaptorService extends BaseService {
       isStaff: user.is_staff,
       isActive: user.is_active,
       groups: user.groups.map(group => this.authGroupFromBackend(group)),
+      astrobinGroups: user.astrobin_groups,
       userPermissions: user.user_permissions.map(permission => this.permissionFromBackend(permission)),
       marketplaceFeedback: user.marketplace_feedback,
       marketplaceFeedbackCount: user.marketplace_feedback_count,

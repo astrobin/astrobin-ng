@@ -64,6 +64,7 @@ import { NgWizardModule, THEME } from "@kronscht/ng-wizard";
 import { NgxDatatableModule } from "@swimlane/ngx-datatable";
 import { FormlyCardWrapperComponent } from "@shared/components/misc/formly-card-wrapper/formly-card-wrapper.component";
 import { NgImageSliderModule } from "ng-image-slider";
+import { AstroBinGroupGuardService } from "@shared/services/guards/astrobin-group-guard.service";
 
 export function appInitializer(store: Store<State>, actions$: Actions) {
   return () =>
@@ -194,6 +195,7 @@ export class SharedModule {
     return {
       ngModule: SharedModule,
       providers: [
+        AstroBinGroupGuardService,
         AuthGuardService,
         AuthService,
         ClassicRoutesService,

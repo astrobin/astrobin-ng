@@ -20,11 +20,13 @@ import { BBCodeToHtmlPipe } from "@shared/pipes/bbcode-to-html.pipe";
 import { SlugifyPipe } from "@shared/pipes/slugify.pipe";
 import { Nl2BrPipe } from "@shared/pipes/nl2br.pipe";
 import { IsMarketplaceModeratorPipe } from "@shared/pipes/is-marketplace-moderator.pipe";
+import { IsBetaTesterPipe } from "@shared/pipes/is-beta-tester.pipe";
 
 const pipes = [
   BBCodeToHtmlPipe,
   CamelCaseToSentenceCasePipe,
   EnsureUrlProtocolPipe,
+  IsBetaTesterPipe,
   IsContentModeratorPipe,
   IsImageModeratorPipe,
   IsIotdJudgePipe,

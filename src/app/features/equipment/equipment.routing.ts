@@ -29,6 +29,7 @@ import { UsernameMatchGuard } from "@shared/services/guards/username-match-guard
 import { MarketplaceUserPurchasesPageComponent } from "@features/equipment/pages/marketplace/user-purchases/marketplace-user-purchases-page.component";
 import { MarketplaceUserFollowedListingsPageComponent } from "@features/equipment/pages/marketplace/user-followed-listings/marketplace-user-followed-listings-page.component";
 import { MarketplacePendingModerationListingsPageComponent } from "@features/equipment/pages/marketplace/pending-moderation-listings/marketplace-pending-moderation-listings-page.component";
+import { AstroBinGroupGuardService } from "@shared/services/guards/astrobin-group-guard.service";
 
 export const routes: Routes = [
   {
@@ -164,6 +165,10 @@ export const routes: Routes = [
   },
   {
     path: "marketplace",
+    canActivate: [AstroBinGroupGuardService],
+    data: {
+      group: Constants.BETA_TESTERS_ASTROBIN_GROUP
+    },
     children: [
       {
         path: "",
@@ -178,7 +183,6 @@ export const routes: Routes = [
         component: MarketplacePendingModerationListingsPageComponent,
         canActivate: [GroupGuardService],
         data: { anyOfGroups: [Constants.MARKETPLACE_MODERATORS_GROUP] }
-
       },
       {
         path: "sold",

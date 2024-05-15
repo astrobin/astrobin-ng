@@ -198,6 +198,7 @@ export class Constants {
   static readonly OWN_EQUIPMENT_MIGRATORS_GROUP = "own_equipment_migrators";
   static readonly EQUIPMENT_MODERATORS_GROUP = "equipment_moderators";
   static readonly MARKETPLACE_MODERATORS_GROUP = "marketplace_moderators";
+  static readonly BETA_TESTERS_ASTROBIN_GROUP = "AstroBin Beta Testers";
   static readonly COOKIE_CONSENT_COOKIE = "astrobin_cookie_consent";
   static readonly COOKIE_CONSENT_DECLINE = "-1";
   static readonly GOOGLE_ANALYTICS_ID = "UA-844985-10";
