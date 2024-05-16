@@ -31,6 +31,7 @@ import { forkJoin } from "rxjs";
 import { ActivatedRoute, Router } from "@angular/router";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
+import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 
 @Component({
   selector: "astrobin-marketplace-listing-form",
@@ -101,6 +102,23 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
         required: true,
         type: "number"
       }
+    },
+    {
+      key: "terms",
+      type: "checkbox",
+      defaultValue: false,
+      props: {
+        label: this.translateService.instant("I agree to the AstroBin Marketplace terms of service"),
+        description: this.translateService.instant(
+          "By creating a listing on the AstroBin Marketplace, you agree to the {0}terms of service{1}.",
+          {
+            0: `<a href="${this.classicRoutesService.MARKETPLACE_TERMS}" target="_blank">`,
+            1: "</a>"
+          }
+        ),
+        required: true,
+        type: "number"
+      }
     }
   ];
   initialLineItemCount = null;
@@ -119,7 +137,8 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
     public readonly popNotificationsService: PopNotificationsService,
     public readonly modalService: NgbModal,
     public readonly router: Router,
-    public readonly activatedRoute: ActivatedRoute
+    public readonly activatedRoute: ActivatedRoute,
+    public readonly classicRoutesService: ClassicRoutesService
   ) {
     super(store$);
   }
@@ -135,6 +154,12 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
 
   setInitialLineItemCount(event: Event) {
     event.stopPropagation();
+
+    if (!this.initialLineItemCountForm.get('terms').value) {
+      this.popNotificationsService.error(this.translateService.instant("You must agree to the terms of service."));
+      return;
+    }
+
     this.initialLineItemCount = this.initialLineItemCountForm.get("count").value;
     this._initFields();
   }

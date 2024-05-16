@@ -33,6 +33,7 @@ import { ConfirmationDialogComponent } from "@shared/components/misc/confirmatio
 import { forkJoin } from "rxjs";
 import { EquipmentMarketplaceService } from "@features/equipment/services/equipment-marketplace.service";
 import { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
+import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 
 @Component({
   selector: "astrobin-marketplace-offer-modal",
@@ -51,7 +52,7 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
     "Before making an offer, please make sure you reviewed all the details of this listing. By making an offer, " +
     "you agree to the {{0}}terms and conditions{{1}} of the AstroBin marketplace.",
     {
-      0: "<a href='https://welcome.astrobin.com/features/marketplace-terms-of-service' target='_blank'>",
+      0: `<a href='${this.classicRoutesService.MARKETPLACE_TERMS}' target='_blank'>`,
       1: "</a>"
     }
   );
@@ -65,7 +66,8 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
     public readonly popNotificationsService: PopNotificationsService,
     public readonly loadingService: LoadingService,
     public readonly modalService: NgbModal,
-    public readonly equipmentMarketplaceService: EquipmentMarketplaceService
+    public readonly equipmentMarketplaceService: EquipmentMarketplaceService,
+    public readonly classicRoutesService: ClassicRoutesService
   ) {
     super(store$);
   }
