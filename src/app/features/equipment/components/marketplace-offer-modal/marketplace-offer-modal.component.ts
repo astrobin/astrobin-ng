@@ -51,7 +51,7 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
     "Before making an offer, please make sure you reviewed all the details of this listing. By making an offer, " +
     "you agree to the {{0}}terms and conditions{{1}} of the AstroBin marketplace.",
     {
-      0: "<a href='https://welcome.astrobin.com/features/marketplace#terms-and-conditions' target='_blank'>",
+      0: "<a href='https://welcome.astrobin.com/features/marketplace-terms-of-service' target='_blank'>",
       1: "</a>"
     }
   );

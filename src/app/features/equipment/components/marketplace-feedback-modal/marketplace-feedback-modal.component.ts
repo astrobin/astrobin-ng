@@ -45,7 +45,7 @@ export class MarketplaceFeedbackModalComponent extends BaseComponentDirective im
     "Please be truthful and honest when providing feedback after a transaction, and make sure you respect the " +
     "{{0}}terms and conditions{{1}} of the AstroBin marketplace.",
     {
-      0: "<a href='https://welcome.astrobin.com/features/marketplace#terms-and-conditions' target='_blank'>",
+      0: "<a href='https://welcome.astrobin.com/features/marketplace-terms-of-service' target='_blank'>",
       1: "</a>"
     }
   );
