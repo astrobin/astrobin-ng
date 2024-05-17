@@ -20,7 +20,8 @@ export class MarketplaceUserPurchasesPageComponent extends MarketplaceListingsBa
 
       const modifiedFilterModel = {
         ...filterModel,
-        soldToUser: currentUser.id
+        soldToUser: currentUser.id,
+        sold: true
       };
 
       super.refresh(modifiedFilterModel);
