@@ -6,7 +6,7 @@
   </div>
 
   <div class="feedback-label">
-    {{ "Feedback" | translate }}: {{ user.marketplaceFeedback }}%
+    {{ "Feedback" | translate }}: {{ user.marketplaceFeedback|number:"1.0-2" }}%
   </div>
 </ng-container>
 
