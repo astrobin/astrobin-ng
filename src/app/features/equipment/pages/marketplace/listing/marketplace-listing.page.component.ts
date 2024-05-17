@@ -192,33 +192,40 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
 
           this.store$.dispatch(new LoadUser({ id: userId }));
 
-          this.store$.select(selectUser, userId).pipe(
-            filter(user => !!user),
-            take(1),
-          ).subscribe(user => {
-            let userGroup = this.offersGroupedByUser.find(group => group.userId === userId);
+          this.store$
+            .select(selectUser, userId)
+            .pipe(
+              filter(user => !!user),
+              take(1)
+            )
+            .subscribe(user => {
+              let userGroup = this.offersGroupedByUser.find(group => group.userId === userId);
 
-            if (!userGroup) {
-              userGroup = {
-                user,
-                userId,
-                userDisplayName: offer.userDisplayName,
-                status: MarketplaceOfferStatus.PENDING,
-                offersByLineItem: {}
-              };
-              this.offersGroupedByUser.push(userGroup);
-            }
+              if (!userGroup) {
+                userGroup = {
+                  user,
+                  userId,
+                  userDisplayName: offer.userDisplayName,
+                  status: MarketplaceOfferStatus.PENDING,
+                  offersByLineItem: {}
+                };
+                this.offersGroupedByUser.push(userGroup);
+              }
 
-            if (!userGroup.offersByLineItem[lineItem.id]) {
-              userGroup.offersByLineItem[lineItem.id] = [];
-            }
+              if (!userGroup.offersByLineItem[lineItem.id]) {
+                userGroup.offersByLineItem[lineItem.id] = [];
+              }
 
-            userGroup.offersByLineItem[lineItem.id].push(offer);
+              userGroup.offersByLineItem[lineItem.id].push(offer);
 
-            if (lineItem.offers.filter(offer => offer.user === userId).every(offer => offer.status === MarketplaceOfferStatus.ACCEPTED)) {
-              userGroup.status = MarketplaceOfferStatus.ACCEPTED;
-            }
-          });
+              if (
+                lineItem.offers
+                  .filter(offer => offer.user === userId)
+                  .every(offer => offer.status === MarketplaceOfferStatus.ACCEPTED)
+              ) {
+                userGroup.status = MarketplaceOfferStatus.ACCEPTED;
+              }
+            });
         });
       });
     });
@@ -288,16 +295,18 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
   }
 
   approve() {
-    this.actions$.pipe(
-      ofType(EquipmentActionTypes.APPROVE_MARKETPLACE_LISTING_SUCCESS),
-      filter((action: ApproveMarketplaceListingSuccess) => action.payload.listing.id === this.listing.id),
-      map(action => action.payload.listing),
-      take(1)
-    ).subscribe(listing => {
-      this.loadingService.setLoading(false);
-      this.listing = listing;
-      this._listingUpdated$.next();
-    });
+    this.actions$
+      .pipe(
+        ofType(EquipmentActionTypes.APPROVE_MARKETPLACE_LISTING_SUCCESS),
+        filter((action: ApproveMarketplaceListingSuccess) => action.payload.listing.id === this.listing.id),
+        map(action => action.payload.listing),
+        take(1)
+      )
+      .subscribe(listing => {
+        this.loadingService.setLoading(false);
+        this.listing = listing;
+        this._listingUpdated$.next();
+      });
 
     this.loadingService.setLoading(true);
     this.store$.dispatch(new ApproveMarketplaceListing({ listing: this.listing }));
@@ -538,7 +547,8 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
       this.loadingService.setLoading(true);
 
       forkJoin(
-        offers.map(offer => this.actions$.pipe(
+        offers.map(offer =>
+          this.actions$.pipe(
             ofType(EquipmentActionTypes.ACCEPT_MARKETPLACE_OFFER_FAILURE),
             filter((action: AcceptMarketplaceOfferFailure) => action.payload.offer.id === offer.id),
             take(1)
@@ -550,13 +560,20 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
       });
 
       forkJoin(
-        offers.map(offer => this.actions$.pipe(
+        offers.map(offer =>
+          this.actions$.pipe(
             ofType(EquipmentActionTypes.ACCEPT_MARKETPLACE_OFFER_SUCCESS),
             filter((action: AcceptMarketplaceOfferSuccess) => action.payload.offer.id === offer.id),
+            take(1),
+            switchMap(() => this.store$.select(selectMarketplaceListing, { id: this.listing.id })),
             take(1)
           )
         )
-      ).subscribe(() => {
+      ).subscribe(listings => {
+        // It's always the same listing, so we can safely assume that the first one is the one we want.
+        this.listing = listings[0];
+        this._listingUpdated$.next();
+
         this.popNotificationsService.success(
           this.translateService.instant("The offer has been accepted. The buyer will be notified.")
         );
@@ -578,7 +595,8 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
       this.loadingService.setLoading(true);
 
       forkJoin(
-        offers.map(offer => this.actions$.pipe(
+        offers.map(offer =>
+          this.actions$.pipe(
             ofType(EquipmentActionTypes.DELETE_MARKETPLACE_OFFER_FAILURE),
             filter((action: DeleteMarketplaceOfferFailure) => action.payload.offer.id === offer.id),
             take(1)
@@ -590,21 +608,24 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
       });
 
       forkJoin(
-        offers.map(offer => this.actions$.pipe(
+        offers.map(offer =>
+          this.actions$.pipe(
             ofType(EquipmentActionTypes.DELETE_MARKETPLACE_OFFER_SUCCESS),
             filter((action: DeleteMarketplaceOfferSuccess) => action.payload.offer.id === offer.id),
             take(1)
           )
         )
-      ).pipe(
-        switchMap(() => this.store$.select(selectMarketplaceListing, { id: this.listing.id })),
-        take(1)
-      ).subscribe(listing => {
-        this.listing = listing;
-        this._listingUpdated$.next();
-        this.popNotificationsService.success(this.translateService.instant("Offer rejected successfully."));
-        this.loadingService.setLoading(false);
-      });
+      )
+        .pipe(
+          switchMap(() => this.store$.select(selectMarketplaceListing, { id: this.listing.id })),
+          take(1)
+        )
+        .subscribe(listing => {
+          this.listing = listing;
+          this._listingUpdated$.next();
+          this.popNotificationsService.success(this.translateService.instant("Offer rejected successfully."));
+          this.loadingService.setLoading(false);
+        });
 
       offers.forEach(offer => {
         this.store$.dispatch(new DeleteMarketplaceOffer({ offer }));
@@ -617,10 +638,8 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
 
     this.loadingService.setLoading(true);
 
-    this.store$.pipe(
-      select(selectMarketplacePrivateConversations(this.listing.id, userId)),
-      take(1)
-    )
+    this.store$
+      .pipe(select(selectMarketplacePrivateConversations(this.listing.id, userId)), take(1))
       .subscribe(privateConversations => {
         privateConversations = privateConversations.filter(
           privateConversation => privateConversation.user === userId

@@ -1296,7 +1296,7 @@ export class EquipmentEffects {
       map((action: AcceptMarketplaceOffer) => action.payload),
       mergeMap(payload =>
         this.equipmentApiService.acceptMarketplaceOffer(payload.offer).pipe(
-          map(() => new AcceptMarketplaceOfferSuccess({ offer: payload.offer })),
+          map(updatedOffer => new AcceptMarketplaceOfferSuccess({ offer: updatedOffer })),
           catchError(error => of(new AcceptMarketplaceOfferFailure({ offer: payload.offer, error })))
         )
       )

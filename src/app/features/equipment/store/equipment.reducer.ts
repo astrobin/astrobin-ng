@@ -532,7 +532,7 @@ export function reducer(state = initialEquipmentState, action: PayloadActionInte
           // Map over the offers in the lineItem to update the offer
           const updatedOffers = lineItem.offers.map(offer => {
             if (offer.id === acceptedOffer.id) {
-              return offer;
+              return acceptedOffer;
             }
           });
 
