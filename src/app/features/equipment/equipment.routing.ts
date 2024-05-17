@@ -167,7 +167,7 @@ export const routes: Routes = [
     path: "marketplace",
     canActivate: [AstroBinGroupGuardService],
     data: {
-      group: Constants.BETA_TESTERS_ASTROBIN_GROUP
+      astroBinGroup: Constants.BETA_TESTERS_ASTROBIN_GROUP
     },
     children: [
       {

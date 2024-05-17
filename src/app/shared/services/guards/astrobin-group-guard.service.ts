@@ -68,20 +68,20 @@ export class AstroBinGroupGuardService extends BaseService implements CanActivat
                 return false;
               }
 
-              if (route.data.group) {
-                return user.astrobinGroups.filter(group => group.name === route.data.group).length > 0;
+              if (route.data.astroBinGroup) {
+                return user.astrobinGroups.filter(group => group.name === route.data.astroBinGroup).length > 0;
               }
 
               const intersection = user.astrobinGroups
                 .map(group => group.name)
-                .filter(value => route.data.anyOfGroups.includes(value));
+                .filter(value => route.data.anyOfAstroBinGroups.includes(value));
 
-              if (route.data.anyOfGroups) {
+              if (route.data.anyOfAstroBinGroups) {
                 return intersection.length > 0;
               }
 
-              if (route.data.allOfGroups) {
-                return intersection.length === route.data.allOfGroups;
+              if (route.data.allOfAstroBinGroups) {
+                return intersection.length === route.data.allOfAstroBinGroups;
               }
             })
           )
