@@ -141,7 +141,7 @@
           </ng-container>
 
           <ng-container *ngIf="userGroup.status === MarketplaceOfferStatus.ACCEPTED">
-            <span class="badge bg-success">{{ "Accepted" | translate }}</span>
+            <span class="badge bg-success ms-2">{{ "Accepted" | translate }}</span>
           </ng-container>
         </div>
         <div class="card-body">
@@ -163,6 +163,12 @@
                 </ng-container>
               </ng-container>
             </ng-container>
+
+            <astrobin-marketplace-feedback-widget
+              [listing]="listing"
+              [user]="userGroup.user"
+              class="d-block mt-3"
+            ></astrobin-marketplace-feedback-widget>
           </ul>
         </div>
         <!-- card-body -->

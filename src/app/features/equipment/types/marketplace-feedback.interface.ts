@@ -15,6 +15,11 @@ export enum MarketplaceFeedbackCategory {
   PACKAGING = "PACKAGING",
 }
 
+export enum MarketplaceFeedbackTargetType {
+  SELLER = "SELLER",
+  BUYER = "BUYER"
+}
+
 export interface MarketplaceFeedbackInterface {
   id?: number;
   user?: UserInterface["id"];
@@ -22,4 +27,5 @@ export interface MarketplaceFeedbackInterface {
   created?: string;
   value: MarketplaceFeedbackValue;
   category: MarketplaceFeedbackCategory;
+  targetType?: MarketplaceFeedbackTargetType;
 }

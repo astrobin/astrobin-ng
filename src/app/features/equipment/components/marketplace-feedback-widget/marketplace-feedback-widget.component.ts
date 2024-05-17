@@ -10,6 +10,7 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { MarketplaceFeedbackModalComponent } from "@features/equipment/components/marketplace-feedback-modal/marketplace-feedback-modal.component";
 import { selectMarketplaceListing } from "@features/equipment/store/equipment.selectors";
 import { ActivatedRoute } from "@angular/router";
+import { MarketplaceFeedbackTargetType } from "@features/equipment/types/marketplace-feedback.interface";
 
 @Component({
   selector: "astrobin-marketplace-feedback-widget",
@@ -23,7 +24,7 @@ export class MarketplaceFeedbackWidgetComponent extends BaseComponentDirective i
   @Input()
   listing: MarketplaceListingInterface;
 
-  currentUserIsBuyer: boolean;
+  leaveFeedback: boolean;
   hasFeedback: boolean;
 
   constructor(
@@ -56,11 +57,24 @@ export class MarketplaceFeedbackWidgetComponent extends BaseComponentDirective i
   updateState(): void {
     this.currentUser$
       .pipe(take(1))
-      .subscribe(user => {
-        this.currentUserIsBuyer = this.marketplaceService.userIsBuyer(user, this.listing);
+      .subscribe(currentUser => {
+        // We allow to leave feedback if:
+        // - The current user is the seller, and the user in this component has some accepted offers
+        // - The current user is a buyer with some accepted offers, and the user in this component is the seller
+
+        if (currentUser.id === this.user.id) {
+          this.leaveFeedback = false;
+        } else if (currentUser.id === this.listing.user) {
+          // The current user is the seller of this listing. They can leave feedback if the user in this component is a
+          // buyer and has some accepted offers.
+          this.leaveFeedback = this.marketplaceService.userIsBuyer(this.user, this.listing);
+        } else {
+          this.leaveFeedback = this.marketplaceService.userIsBuyer(currentUser, this.listing);
+        }
+
         this.listing.lineItems.forEach(lineItem => {
           lineItem.feedbacks.forEach(feedback => {
-            if (feedback.user === user.id) {
+            if (feedback.user === currentUser.id) {
               this.hasFeedback = true;
             }
           });
@@ -69,9 +83,21 @@ export class MarketplaceFeedbackWidgetComponent extends BaseComponentDirective i
   }
 
   showFeedbackModal(): void {
-    const modalRef = this.modalService.open(MarketplaceFeedbackModalComponent, { size: "xl" });
-    const componentInstance: MarketplaceFeedbackModalComponent = modalRef.componentInstance;
-    componentInstance.listing = this.listing;
-    componentInstance.user = this.user;
+    this.currentUser$
+      .pipe(take(1))
+      .subscribe(currentUser => {
+        const targetType = currentUser.id === this.listing.user
+          ? MarketplaceFeedbackTargetType.BUYER
+          : MarketplaceFeedbackTargetType.SELLER;
+
+        const modalRef = this.modalService.open(MarketplaceFeedbackModalComponent, {
+          size: targetType === MarketplaceFeedbackTargetType.SELLER ? "xl" : "lg"
+        });
+        const componentInstance: MarketplaceFeedbackModalComponent = modalRef.componentInstance;
+
+        componentInstance.listing = this.listing;
+        componentInstance.user = this.user;
+        componentInstance.targetType = targetType;
+      });
   }
 }

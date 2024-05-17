@@ -13,6 +13,7 @@ import { FormlyFieldConfig } from "@ngx-formly/core";
 import {
   MarketplaceFeedbackCategory,
   MarketplaceFeedbackInterface,
+  MarketplaceFeedbackTargetType,
   MarketplaceFeedbackValue
 } from "@features/equipment/types/marketplace-feedback.interface";
 import { UtilsService } from "@shared/services/utils/utils.service";
@@ -33,6 +34,9 @@ export class MarketplaceFeedbackModalComponent extends BaseComponentDirective im
 
   @Input()
   user: UserInterface;
+
+  @Input()
+  targetType: MarketplaceFeedbackTargetType;
 
   @ViewChild("feedbackOptionTemplate")
   feedbackOptionTemplate: TemplateRef<any>;
@@ -78,7 +82,8 @@ export class MarketplaceFeedbackModalComponent extends BaseComponentDirective im
           const feedback: MarketplaceFeedbackInterface = {
             lineItem: parseInt(lineItemId),
             value: MarketplaceFeedbackValue[input[key] as keyof typeof MarketplaceFeedbackValue],
-            category: MarketplaceFeedbackCategory[categoryKey.toUpperCase() as keyof typeof MarketplaceFeedbackCategory]
+            category:
+              MarketplaceFeedbackCategory[categoryKey.toUpperCase() as keyof typeof MarketplaceFeedbackCategory]
           };
           feedbackList.push(feedback);
         }
@@ -111,20 +116,22 @@ export class MarketplaceFeedbackModalComponent extends BaseComponentDirective im
       )
     );
 
-    forkJoin(successObservables$).pipe(
-      take(1)
-    ).subscribe(() => {
-      this.loadingService.setLoading(false);
-      this.modal.close();
-      this.popNotificationsService.success(this.translateService.instant("Feedback saved successfully. Thank you!"));
-    });
+    forkJoin(successObservables$)
+      .pipe(take(1))
+      .subscribe(() => {
+        this.loadingService.setLoading(false);
+        this.modal.close();
+        this.popNotificationsService.success(this.translateService.instant("Feedback saved successfully. Thank you!"));
+      });
 
-    forkJoin(failureObservables$).pipe(
-      take(1)
-    ).subscribe(() => {
-      this.loadingService.setLoading(false);
-      this.popNotificationsService.error(this.translateService.instant("An error occurred while saving the feedback."));
-    });
+    forkJoin(failureObservables$)
+      .pipe(take(1))
+      .subscribe(() => {
+        this.loadingService.setLoading(false);
+        this.popNotificationsService.error(
+          this.translateService.instant("An error occurred while saving the feedback.")
+        );
+      });
 
     this.loadingService.setLoading(true);
 
@@ -136,7 +143,13 @@ export class MarketplaceFeedbackModalComponent extends BaseComponentDirective im
   _initFields() {
     this.currentUser$.pipe(takeUntil(this.destroyed$)).subscribe(currentUser => {
       this.fields = this.listing.lineItems
-        .filter(lineItem => lineItem.soldTo === currentUser.id)
+        .filter(lineItem => {
+          if (this.targetType === MarketplaceFeedbackTargetType.SELLER) {
+            return lineItem.soldTo === currentUser.id;
+          } else {
+            return lineItem.soldTo === this.user.id;
+          }
+        })
         .map((lineItem, index) => {
           const options = [
             {
@@ -156,11 +169,11 @@ export class MarketplaceFeedbackModalComponent extends BaseComponentDirective im
             }
           ];
 
-          const feedbackField = (key: string, label: string) => ({
+          const feedbackField = (key: string, label: string, className: string): FormlyFieldConfig => ({
             key,
             type: "ng-select",
             wrappers: ["default-wrapper"],
-            className: "col-2",
+            className,
             props: {
               label,
               required: true,
@@ -173,7 +186,7 @@ export class MarketplaceFeedbackModalComponent extends BaseComponentDirective im
             }
           });
 
-          return {
+          const fields: FormlyFieldConfig = {
             key: "",
             fieldGroupClassName: "row feedback-line-item",
             fieldGroup: [
@@ -194,13 +207,47 @@ export class MarketplaceFeedbackModalComponent extends BaseComponentDirective im
                   hideOptionalMarker: true,
                   hideLabel: index > 0
                 }
-              },
-              feedbackField(`communication-${lineItem.id}`, this.translateService.instant("Communication")),
-              feedbackField(`speed-${lineItem.id}`, this.translateService.instant("Speed of delivery")),
-              feedbackField(`accuracy-${lineItem.id}`, this.translateService.instant("Accuracy of item descriptions")),
-              feedbackField(`packaging-${lineItem.id}`, this.translateService.instant("Packaging quality"))
+              }
             ]
           };
+
+          const communication = feedbackField(
+            `communication-${lineItem.id}`,
+            this.translateService.instant("Communication"),
+            this.targetType === MarketplaceFeedbackTargetType.SELLER ? "col-2" : "col-4"
+          );
+          const speedOfDelivery = feedbackField(
+            `speed-${lineItem.id}`,
+            this.translateService.instant("Speed of delivery"),
+            "col-2"
+          );
+          const speedOfPayment = feedbackField(
+            `speed-${lineItem.id}`,
+            this.translateService.instant("Speed of payment"),
+            "col-4"
+          );
+          const accuracy = feedbackField(
+            `accuracy-${lineItem.id}`,
+            this.translateService.instant("Accuracy of item descriptions"),
+            "col-2"
+          );
+          const packaging = feedbackField(
+            `packaging-${lineItem.id}`,
+            this.translateService.instant("Packaging quality"),
+            "col-2"
+          );
+
+          if (this.targetType === MarketplaceFeedbackTargetType.SELLER) {
+            fields.fieldGroup.push(communication);
+            fields.fieldGroup.push(speedOfDelivery);
+            fields.fieldGroup.push(accuracy);
+            fields.fieldGroup.push(packaging);
+          } else {
+            fields.fieldGroup.push(communication);
+            fields.fieldGroup.push(speedOfPayment);
+          }
+
+          return fields;
         });
     });
   }

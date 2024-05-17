@@ -66,8 +66,10 @@ import { UtilsService } from "@shared/services/utils/utils.service";
 import { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
 import { LoadUser } from "@features/account/store/auth.actions";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
+import { selectUser } from "@features/account/store/auth.selectors";
 
 interface UserOfferGroup {
+  user: UserInterface;
   userId: UserInterface["id"];
   userDisplayName: string;
   status: MarketplaceOfferStatus;
@@ -187,27 +189,36 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
       this.listing.lineItems.forEach(lineItem => {
         lineItem.offers.forEach(offer => {
           const userId = offer.user;
-          let userGroup = this.offersGroupedByUser.find(group => group.userId === userId);
 
-          if (!userGroup) {
-            userGroup = {
-              userId,
-              userDisplayName: offer.userDisplayName,
-              status: MarketplaceOfferStatus.PENDING,
-              offersByLineItem: {}
-            };
-            this.offersGroupedByUser.push(userGroup);
-          }
+          this.store$.dispatch(new LoadUser({ id: userId }));
 
-          if (!userGroup.offersByLineItem[lineItem.id]) {
-            userGroup.offersByLineItem[lineItem.id] = [];
-          }
+          this.store$.select(selectUser, userId).pipe(
+            filter(user => !!user),
+            take(1),
+          ).subscribe(user => {
+            let userGroup = this.offersGroupedByUser.find(group => group.userId === userId);
 
-          userGroup.offersByLineItem[lineItem.id].push(offer);
+            if (!userGroup) {
+              userGroup = {
+                user,
+                userId,
+                userDisplayName: offer.userDisplayName,
+                status: MarketplaceOfferStatus.PENDING,
+                offersByLineItem: {}
+              };
+              this.offersGroupedByUser.push(userGroup);
+            }
 
-          if (lineItem.offers.filter(offer => offer.user === userId).every(offer => offer.status === MarketplaceOfferStatus.ACCEPTED)) {
-            userGroup.status = MarketplaceOfferStatus.ACCEPTED;
-          }
+            if (!userGroup.offersByLineItem[lineItem.id]) {
+              userGroup.offersByLineItem[lineItem.id] = [];
+            }
+
+            userGroup.offersByLineItem[lineItem.id].push(offer);
+
+            if (lineItem.offers.filter(offer => offer.user === userId).every(offer => offer.status === MarketplaceOfferStatus.ACCEPTED)) {
+              userGroup.status = MarketplaceOfferStatus.ACCEPTED;
+            }
+          });
         });
       });
     });
