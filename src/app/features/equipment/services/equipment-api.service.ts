@@ -853,6 +853,10 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     return this.http.put<MarketplaceListingInterface>(`${this.configUrl}/marketplace/listing/${id}/approve/`, {});
   }
 
+  public renewMarketplaceListing(id: MarketplaceListingInterface["id"]): Observable<MarketplaceListingInterface> {
+    return this.http.put<MarketplaceListingInterface>(`${this.configUrl}/marketplace/listing/${id}/renew/`, {});
+  }
+
   public createMarketplaceLineItem(
     lineItem: Omit<MarketplaceLineItemInterface, "id">
   ): Observable<MarketplaceLineItemInterface> {

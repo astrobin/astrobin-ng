@@ -117,6 +117,9 @@ import {
   RejectEquipmentItemEditProposal,
   RejectEquipmentItemEditProposalSuccess,
   RejectEquipmentItemSuccess,
+  RenewMarketplaceListing,
+  RenewMarketplaceListingFailure,
+  RenewMarketplaceListingSuccess,
   UnapproveEquipmentItem,
   UnapproveEquipmentItemSuccess,
   UnfreezeEquipmentItemAsAmbiguous,
@@ -155,6 +158,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { EquipmentMarketplaceService } from "@features/equipment/services/equipment-marketplace.service";
 import { MarketplaceLineItemInterface } from "@features/equipment/types/marketplace-line-item.interface";
 import { MarketplaceImageInterface } from "@features/equipment/types/marketplace-image.interface";
+import { LocalDatePipe } from "@shared/pipes/local-date.pipe";
 
 function getFromStoreOrApiByIdAndType<T>(
   store$: Store<State>,
@@ -174,6 +178,8 @@ function getFromStoreOrApiByIdAndType<T>(
 
 @Injectable()
 export class EquipmentEffects {
+  localDatePipe: LocalDatePipe;
+
   /*********************************************************************************************************************
    * Brands
    ********************************************************************************************************************/
@@ -1143,6 +1149,33 @@ export class EquipmentEffects {
     { dispatch: false }
   );
 
+  RenewMarketplaceListing: Observable<RenewMarketplaceListingSuccess | RenewMarketplaceListingFailure> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(EquipmentActionTypes.RENEW_MARKETPLACE_LISTING),
+      map((action: RenewMarketplaceListing) => action.payload),
+      mergeMap(payload =>
+        this.equipmentApiService.renewMarketplaceListing(payload.listing.id).pipe(
+          map(listing => new RenewMarketplaceListingSuccess({ listing })),
+          catchError(error => of(new RenewMarketplaceListingFailure({ listing: payload.listing, error })))
+        )
+      )
+    )
+  );
+
+  RenewMarketplaceListingSuccess: Observable<MarketplaceListingInterface> = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(EquipmentActionTypes.RENEW_MARKETPLACE_LISTING_SUCCESS),
+        map((action: RenewMarketplaceListingSuccess) => action.payload.listing),
+        tap(listing => this.popNotificationsService.success(
+          this.translateService.instant("Listing renewed until: {{0}}", {
+            0: this.localDatePipe.transform(listing.expiration)
+          }))
+        )
+      ),
+    { dispatch: false }
+  );
+
   LoadMarketplacePrivateConversations: Observable<LoadMarketplacePrivateConversationsSuccess | LoadMarketplacePrivateConversationsFailure> = createEffect(() =>
     this.actions$.pipe(
       ofType(EquipmentActionTypes.LOAD_MARKETPLACE_PRIVATE_CONVERSATIONS),
@@ -1339,5 +1372,6 @@ export class EquipmentEffects {
     public readonly translateService: TranslateService,
     public readonly equipmentMarketplaceService: EquipmentMarketplaceService
   ) {
+    this.localDatePipe = new LocalDatePipe();
   }
 }

@@ -35,6 +35,8 @@ import {
   DeleteMarketplacePrivateConversationSuccess,
   EquipmentActionTypes,
   LoadMarketplacePrivateConversations,
+  RenewMarketplaceListing,
+  RenewMarketplaceListingSuccess,
   UpdateMarketplacePrivateConversation
 } from "@features/equipment/store/equipment.actions";
 import { MarketplacePrivateConversationInterface } from "@features/equipment/types/marketplace-private-conversation.interface";
@@ -327,6 +329,22 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
           this.loadingService.setLoading(false);
         });
       });
+  }
+
+  renew() {
+    this.actions$
+      .pipe(
+        ofType(EquipmentActionTypes.RENEW_MARKETPLACE_LISTING_SUCCESS),
+        filter((action: RenewMarketplaceListingSuccess) => action.payload.listing.id === this.listing.id),
+        map(action => action.payload.listing),
+        take(1)
+      )
+      .subscribe(listing => {
+        this.listing = listing;
+        this._listingUpdated$.next();
+      });
+
+    this.store$.dispatch(new RenewMarketplaceListing({ listing: this.listing }));
   }
 
   onMakeAnOfferClicked(event: Event) {

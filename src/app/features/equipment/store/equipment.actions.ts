@@ -194,6 +194,10 @@ export enum EquipmentActionTypes {
   APPROVE_MARKETPLACE_LISTING_SUCCESS = "[Equipment] Approve marketplace listing success",
   APPROVE_MARKETPLACE_LISTING_FAILURE = "[Equipment] Approve marketplace listing failure",
 
+  RENEW_MARKETPLACE_LISTING = "[Equipment] Renew marketplace listing",
+  RENEW_MARKETPLACE_LISTING_SUCCESS = "[Equipment] Renew marketplace listing success",
+  RENEW_MARKETPLACE_LISTING_FAILURE = "[Equipment] Renew marketplace listing failure",
+
   LOAD_MARKETPLACE_PRIVATE_CONVERSATIONS = "[Equipment] Load marketplace private conversations",
   LOAD_MARKETPLACE_PRIVATE_CONVERSATIONS_SUCCESS = "[Equipment] Load marketplace private conversations success",
   LOAD_MARKETPLACE_PRIVATE_CONVERSATIONS_FAILURE = "[Equipment] Load marketplace private conversations failure",
@@ -1087,6 +1091,27 @@ export class ApproveMarketplaceListingFailure implements PayloadActionInterface 
   }
 }
 
+export class RenewMarketplaceListing implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.RENEW_MARKETPLACE_LISTING;
+
+  constructor(public payload: { listing: MarketplaceListingInterface }) {
+  }
+}
+
+export class RenewMarketplaceListingSuccess implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.RENEW_MARKETPLACE_LISTING_SUCCESS;
+
+  constructor(public payload: { listing: MarketplaceListingInterface }) {
+  }
+}
+
+export class RenewMarketplaceListingFailure implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.RENEW_MARKETPLACE_LISTING_FAILURE;
+
+  constructor(public payload: { listing: MarketplaceListingInterface, error: string }) {
+  }
+}
+
 export class LoadMarketplacePrivateConversations implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.LOAD_MARKETPLACE_PRIVATE_CONVERSATIONS;
 
@@ -1471,6 +1496,9 @@ export type EquipmentActions =
   | ApproveMarketplaceListing
   | ApproveMarketplaceListingSuccess
   | ApproveMarketplaceListingFailure
+  | RenewMarketplaceListing
+  | RenewMarketplaceListingSuccess
+  | RenewMarketplaceListingFailure
   | DeleteMarketplaceOffer
   | DeleteMarketplaceOfferSuccess
   | DeleteMarketplaceOfferFailure
