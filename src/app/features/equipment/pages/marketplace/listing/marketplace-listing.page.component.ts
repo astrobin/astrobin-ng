@@ -34,6 +34,8 @@ import {
   DeleteMarketplacePrivateConversation,
   DeleteMarketplacePrivateConversationSuccess,
   EquipmentActionTypes,
+  LoadMarketplaceListing,
+  LoadMarketplaceListingSuccess,
   LoadMarketplacePrivateConversations,
   RenewMarketplaceListing,
   RenewMarketplaceListingSuccess,
@@ -69,6 +71,7 @@ import { MarketplaceLineItemInterface } from "@features/equipment/types/marketpl
 import { LoadUser } from "@features/account/store/auth.actions";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { selectUser } from "@features/account/store/auth.selectors";
+import { MarketplaceMarkLineItemsAsSoldModalComponent } from "@features/equipment/components/marketplace-mark-line-items-as-sold-modal/marketplace-mark-line-items-as-sold-modal.component";
 
 interface UserOfferGroup {
   user: UserInterface;
@@ -312,6 +315,27 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
 
     this.loadingService.setLoading(true);
     this.store$.dispatch(new ApproveMarketplaceListing({ listing: this.listing }));
+  }
+
+  markAsSold() {
+    const modal: NgbModalRef = this.modalService.open(MarketplaceMarkLineItemsAsSoldModalComponent);
+    const componentInstance: MarketplaceMarkLineItemsAsSoldModalComponent = modal.componentInstance;
+
+    componentInstance.listing = this.listing;
+
+    modal.closed.subscribe(() => {
+      this.actions$.pipe(
+        ofType(EquipmentActionTypes.LOAD_MARKETPLACE_LISTING_SUCCESS),
+        filter((action: LoadMarketplaceListingSuccess) => action.payload.listing.id === this.listing.id),
+        map(action => action.payload.listing),
+        take(1)
+      ).subscribe(listing => {
+        this.listing = listing;
+        this._listingUpdated$.next();
+      });
+
+      this.store$.dispatch(new LoadMarketplaceListing({ id: this.listing.id }));
+    });
   }
 
   delete() {

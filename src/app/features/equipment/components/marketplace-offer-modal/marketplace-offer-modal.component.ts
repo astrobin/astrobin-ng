@@ -76,7 +76,7 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
     super.ngOnInit();
     this._initFields();
 
-    if (this.hasAnyOffers()) {
+    if (this.equipmentMarketplaceService.listingHasOffers(this.listing)) {
       this.title = this.translateService.instant("Modify your offer");
     }
   }
@@ -86,7 +86,7 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
       return;
     }
 
-    if (this.hasAnyOffers()) {
+    if (this.equipmentMarketplaceService.listingHasOffers(this.listing)) {
       this._performOfferAction(
         UpdateMarketplaceOffer,
         EquipmentActionTypes.UPDATE_MARKETPLACE_OFFER_SUCCESS,
@@ -101,7 +101,7 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
   }
 
   retractOffer() {
-    if (this.hasAnyOffers()) {
+    if (this.equipmentMarketplaceService.listingHasOffers(this.listing)) {
       const modalRef: NgbModalRef = this.modalService.open(ConfirmationDialogComponent);
       modalRef.closed.subscribe(() => {
         this._performOfferAction(
@@ -136,15 +136,11 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
       }
     }
 
-    if (this.hasAnyOffers()) {
+    if (this.equipmentMarketplaceService.listingHasOffers(this.listing)) {
       return this.translateService.instant("Modify offer");
     }
 
     return this.translateService.instant("Make offer");
-  }
-
-  hasAnyOffers(): boolean {
-    return this.listing.lineItems.some(lineItem => lineItem.offers.length > 0);
   }
 
   hasAnyPendingOffers(): boolean {
@@ -155,7 +151,7 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
 
   _initFields() {
     this.currentUser$.pipe(takeUntil(this.destroyed$)).subscribe(currentUser => {
-      const hasAnyOffers = this.hasAnyOffers();
+      const hasAnyOffers = this.equipmentMarketplaceService.listingHasOffers(this.listing);
 
       this.fields = this.listing.lineItems.map((lineItem, index) => {
         const hasLineItemOffer = lineItem.offers.some(offer => offer.user === currentUser.id);
@@ -179,7 +175,9 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
               defaultValue: hasAnyOffers ? hasLineItemOffer : true,
               expressions: {
                 "hide": () => this.listing.bundleSaleOnly,
-                className: () => this.hasAnyOffers() ? "hidden" : "col-1 toggle"
+                className: () => this.equipmentMarketplaceService.listingHasOffers(this.listing)
+                  ? "hidden"
+                  : "col-1 toggle"
               },
               props: {
                 label: "&nbsp;",

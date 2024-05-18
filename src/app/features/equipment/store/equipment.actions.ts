@@ -198,6 +198,10 @@ export enum EquipmentActionTypes {
   RENEW_MARKETPLACE_LISTING_SUCCESS = "[Equipment] Renew marketplace listing success",
   RENEW_MARKETPLACE_LISTING_FAILURE = "[Equipment] Renew marketplace listing failure",
 
+  MARK_MARKETPLACE_LINE_ITEM_AS_SOLD = "[Equipment] Mark marketplace line item as sold",
+  MARK_MARKETPLACE_LINE_ITEM_AS_SOLD_SUCCESS = "[Equipment] Mark marketplace line item as sold success",
+  MARK_MARKETPLACE_LINE_ITEM_AS_SOLD_FAILURE = "[Equipment] Mark marketplace line item as sold failure",
+
   LOAD_MARKETPLACE_PRIVATE_CONVERSATIONS = "[Equipment] Load marketplace private conversations",
   LOAD_MARKETPLACE_PRIVATE_CONVERSATIONS_SUCCESS = "[Equipment] Load marketplace private conversations success",
   LOAD_MARKETPLACE_PRIVATE_CONVERSATIONS_FAILURE = "[Equipment] Load marketplace private conversations failure",
@@ -1112,6 +1116,27 @@ export class RenewMarketplaceListingFailure implements PayloadActionInterface {
   }
 }
 
+export class MarkMarketplaceLineItemAsSold implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.MARK_MARKETPLACE_LINE_ITEM_AS_SOLD;
+
+  constructor(public payload: { lineItem: MarketplaceLineItemInterface }) {
+  }
+}
+
+export class MarkMarketplaceLineItemAsSoldSuccess implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.MARK_MARKETPLACE_LINE_ITEM_AS_SOLD_SUCCESS;
+
+  constructor(public payload: { lineItem: MarketplaceLineItemInterface }) {
+  }
+}
+
+export class MarkMarketplaceLineItemAsSoldFailure implements PayloadActionInterface {
+  readonly type = EquipmentActionTypes.MARK_MARKETPLACE_LINE_ITEM_AS_SOLD_FAILURE;
+
+  constructor(public payload: { lineItem: MarketplaceLineItemInterface; error: string }) {
+  }
+}
+
 export class LoadMarketplacePrivateConversations implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.LOAD_MARKETPLACE_PRIVATE_CONVERSATIONS;
 
@@ -1499,6 +1524,9 @@ export type EquipmentActions =
   | RenewMarketplaceListing
   | RenewMarketplaceListingSuccess
   | RenewMarketplaceListingFailure
+  | MarkMarketplaceLineItemAsSold
+  | MarkMarketplaceLineItemAsSoldSuccess
+  | MarkMarketplaceLineItemAsSoldFailure
   | DeleteMarketplaceOffer
   | DeleteMarketplaceOfferSuccess
   | DeleteMarketplaceOfferFailure

@@ -1,3 +1,5 @@
 <astrobin-toggle-button
-  (toggle)="onToggle($event)" [value]="this.formControl.value"
+  (toggle)="onToggle($event)"
+  [label]="props.toggleLabel || ''"
+  [value]="this.formControl.value"
 ></astrobin-toggle-button>

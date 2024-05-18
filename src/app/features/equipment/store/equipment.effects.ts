@@ -113,6 +113,9 @@ import {
   LoadMarketplacePrivateConversationsSuccess,
   LoadSensor,
   LoadSensorSuccess,
+  MarkMarketplaceLineItemAsSold,
+  MarkMarketplaceLineItemAsSoldFailure,
+  MarkMarketplaceLineItemAsSoldSuccess,
   RejectEquipmentItem,
   RejectEquipmentItemEditProposal,
   RejectEquipmentItemEditProposalSuccess,
@@ -1174,6 +1177,19 @@ export class EquipmentEffects {
         )
       ),
     { dispatch: false }
+  );
+
+  MarkMarketplaceLineItemAsSold: Observable<MarkMarketplaceLineItemAsSoldSuccess | MarkMarketplaceLineItemAsSoldFailure> = createEffect(() =>
+    this.actions$.pipe(
+      ofType(EquipmentActionTypes.MARK_MARKETPLACE_LINE_ITEM_AS_SOLD),
+      map((action: MarkMarketplaceLineItemAsSold) => action.payload),
+      mergeMap(payload =>
+        this.equipmentApiService.markMarketplaceLineItemAsSold(payload.lineItem.listing, payload.lineItem.id).pipe(
+          map(lineItem => new MarkMarketplaceLineItemAsSoldSuccess({ lineItem })),
+          catchError(error => of(new MarkMarketplaceLineItemAsSoldFailure({ lineItem: payload.lineItem, error })))
+        )
+      )
+    )
   );
 
   LoadMarketplacePrivateConversations: Observable<LoadMarketplacePrivateConversationsSuccess | LoadMarketplacePrivateConversationsFailure> = createEffect(() =>

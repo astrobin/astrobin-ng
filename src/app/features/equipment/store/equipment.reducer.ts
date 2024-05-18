@@ -365,6 +365,42 @@ export function reducer(state = initialEquipmentState, action: PayloadActionInte
         }
       };
 
+    case EquipmentActionTypes.MARK_MARKETPLACE_LINE_ITEM_AS_SOLD_SUCCESS:
+      const updatedLineItem = action.payload.lineItem;
+
+      // Create a new updatedListings array with immutability in mind
+      const updatedListings = state.marketplace.listings.map(listing => {
+        if (listing.id !== updatedLineItem.listing) {
+          // If the listing does not match, return it as is
+          return listing;
+        }
+
+        // Map over lineItems to find the one that matches and update it
+        const updatedLineItems = listing.lineItems.map(lineItem => {
+          if (lineItem.id !== updatedLineItem.id) {
+            // If the lineItem does not match, return it as is
+            return lineItem;
+          }
+
+          // If the lineItem matches, update it
+          return updatedLineItem;
+        });
+
+        // Return the listing with the updated lineItems
+        return {
+          ...listing,
+          lineItems: updatedLineItems
+        };
+      });
+
+      return {
+        ...state,
+        marketplace: {
+          ...state.marketplace,
+          listings: updatedListings
+        }
+      };
+
     case EquipmentActionTypes.DELETE_MARKETPLACE_PRIVATE_CONVERSATION_SUCCESS:
       return {
         ...state,

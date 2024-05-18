@@ -884,6 +884,16 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
     return this.http.delete<void>(`${this.configUrl}/marketplace/listing/${listingId}/line-item/${lineItemId}/`);
   }
 
+  public markMarketplaceLineItemAsSold(
+    listingId: MarketplaceListingInterface["id"],
+    lineItemId: MarketplaceLineItemInterface["id"]
+  ): Observable<MarketplaceLineItemInterface> {
+    return this.http.put<MarketplaceLineItemInterface>(
+      `${this.configUrl}/marketplace/listing/${listingId}/line-item/${lineItemId}/mark-as-sold/`,
+      {}
+    );
+  }
+
   public createMarketplaceImage(
     listingId: MarketplaceListingInterface["id"],
     lineItemId: MarketplaceLineItemInterface["id"],
