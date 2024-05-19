@@ -136,6 +136,9 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
   @Input()
   layout: ItemBrowserLayout = ItemBrowserLayout.HORIZONTAL;
 
+  @Input()
+  allowedTypes: EquipmentItemType[] = Object.keys(EquipmentItemType).map(key => EquipmentItemType[key]);
+
   model: { klass: EquipmentItemType; value: TypeUnion } = {
     klass: null,
     value: null
@@ -640,9 +643,11 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
                     label: this.translateService.instant("Item class"),
                     clearable: false,
                     required: true,
-                    options: Object.keys(EquipmentItemType).map(itemType => ({
-                      value: EquipmentItemType[itemType],
-                      label: this.equipmentItemService.humanizeType(EquipmentItemType[itemType])
+                    options: (
+                      this.allowedTypes || Object.keys(EquipmentItemType).map(key => key as keyof EquipmentItemType)
+                    ).map(itemType => ({
+                      value: itemType,
+                      label: this.equipmentItemService.humanizeType(itemType)
                     }))
                   },
                   hooks: {

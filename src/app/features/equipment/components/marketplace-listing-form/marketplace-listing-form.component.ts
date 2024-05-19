@@ -155,7 +155,7 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
   setInitialLineItemCount(event: Event) {
     event.stopPropagation();
 
-    if (!this.initialLineItemCountForm.get('terms').value) {
+    if (!this.initialLineItemCountForm.get("terms").value) {
       this.popNotificationsService.error(this.translateService.instant("You must agree to the terms of service."));
       return;
     }
@@ -402,7 +402,15 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                   enableCreation: false,
                   showItemTypeSelector: true,
                   layout: ItemBrowserLayout.VERTICAL,
-                  itemType: lineItemMap.get(0)
+                  itemType: lineItemMap.get(0),
+                  allowedTypes: [
+                    EquipmentItemType.CAMERA,
+                    EquipmentItemType.TELESCOPE,
+                    EquipmentItemType.MOUNT,
+                    EquipmentItemType.FILTER,
+                    EquipmentItemType.ACCESSORY,
+                    EquipmentItemType.SOFTWARE
+                  ]
                 },
                 expressions: {
                   hide: config => config.model.findItemMode === MarketplaceLineItemFindItemMode.PLAIN,

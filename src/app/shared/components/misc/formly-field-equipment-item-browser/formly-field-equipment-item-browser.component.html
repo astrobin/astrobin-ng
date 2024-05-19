@@ -4,6 +4,7 @@
   (creationModeStarted)="onCreationModeStarted()"
   (itemTypeChanged)="itemTypeChanged.emit($event)"
   (valueChanged)="onValueChanged($event)"
+  [allowedTypes]="props.allowedTypes"
   [description]="props.description"
   [enableCreation]="props.enableCreation"
   [enableFullscreen]="props.enableFullscreen"
