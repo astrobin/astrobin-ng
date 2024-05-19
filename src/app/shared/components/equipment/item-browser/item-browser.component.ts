@@ -634,6 +634,7 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
                   key: "klass",
                   type: "ng-select",
                   id: "klass",
+                  wrappers: ["default-wrapper"],
                   expressions: {
                     "props.disabled": "formState.creationMode"
                   },
@@ -674,6 +675,7 @@ export class ItemBrowserComponent extends BaseComponentDirective implements OnIn
                   key: "value",
                   type: "ng-select",
                   id: `${this.id}`,
+                  wrappers: ["default-wrapper"],
                   expressions: {
                     "props.disabled": "formState.creationMode"
                   },

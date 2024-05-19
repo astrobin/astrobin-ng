@@ -91,6 +91,7 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
     {
       key: "count",
       type: "input",
+      wrappers: ["default-wrapper"],
       props: {
         label: this.translateService.instant("How many items do you want to sell in this listing?"),
         placeholder: this.translateService.instant("Enter a number"),
@@ -106,11 +107,12 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
     {
       key: "terms",
       type: "checkbox",
+      wrappers: ["default-wrapper"],
       defaultValue: false,
       props: {
         label: this.translateService.instant("I agree to the AstroBin Marketplace terms of service"),
         description: this.translateService.instant(
-          "By creating a listing on the AstroBin Marketplace, you agree to the {0}terms of service{1}.",
+          "By creating a listing on the AstroBin Marketplace, you agree to the {{0}}terms of service{{1}}.",
           {
             0: `<a href="${this.classicRoutesService.MARKETPLACE_TERMS}" target="_blank">`,
             1: "</a>"
@@ -351,6 +353,7 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
               {
                 key: "findItemMode",
                 type: "ng-select",
+                wrappers: ["default-wrapper"],
                 props: {
                   required: true,
                   searchable: false,
@@ -379,6 +382,7 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
               {
                 key: "itemPlainText",
                 type: "input",
+                wrappers: ["default-wrapper"],
                 props: {
                   label: this.translateService.instant("Item"),
                   description: this.translateService.instant(
@@ -394,8 +398,8 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
               {
                 key: "itemObjectId",
                 type: "equipment-item-browser",
+                wrappers: ["default-wrapper"],
                 props: {
-                  label: this.translateService.instant("Item"),
                   showQuickAddRecent: false,
                   showPlaceholderImage: false,
                   multiple: false,
@@ -414,7 +418,7 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                 },
                 expressions: {
                   hide: config => config.model.findItemMode === MarketplaceLineItemFindItemMode.PLAIN,
-                  required: config => config.model.findItemMode !== MarketplaceLineItemFindItemMode.PLAIN,
+                  "props.required": config => config.model.findItemMode !== MarketplaceLineItemFindItemMode.PLAIN,
                   "props.restrictToUserEquipment": config => {
                     return config.model.findItemMode === MarketplaceLineItemFindItemMode.USER;
                   }

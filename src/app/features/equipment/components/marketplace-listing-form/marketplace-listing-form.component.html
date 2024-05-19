@@ -1,5 +1,5 @@
 <div *ngIf="!initialLineItemCount" class="row">
-  <div class="col-12 col-md-5 mx-auto">
+  <div class="col-12 col-md-6 mx-auto">
     <form [formGroup]="initialLineItemCountForm">
       <formly-form
         [fields]="initialLineItemCountFields"
@@ -7,21 +7,23 @@
         [model]="initialLineItemCountModel"
       ></formly-form>
 
-      <button
-        (click)="setInitialLineItemCount($event)"
-        [class.loading]="(loadingService.loading$ | async) || initialLineItemCountForm.pending"
-        class="btn btn-primary"
-      >
-        {{ "Continue" | translate }}
-      </button>
+      <div class="mt-4">
+        <button
+          (click)="setInitialLineItemCount($event)"
+          [class.loading]="(loadingService.loading$ | async) || initialLineItemCountForm.pending"
+          class="btn btn-primary"
+        >
+          {{ "Continue" | translate }}
+        </button>
 
-      <button
-        (click)="onCancel($event)"
-        [class.loading]="(loadingService.loading$ | async) || initialLineItemCountForm.pending"
-        class="btn btn-secondary ms-sm-2"
-      >
-        {{ "Cancel" | translate }}
-      </button>
+        <button
+          (click)="onCancel($event)"
+          [class.loading]="(loadingService.loading$ | async) || initialLineItemCountForm.pending"
+          class="btn btn-secondary ms-sm-2"
+        >
+          {{ "Cancel" | translate }}
+        </button>
+      </div>
     </form>
   </div>
 </div>
