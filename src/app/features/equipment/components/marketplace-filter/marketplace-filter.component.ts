@@ -18,6 +18,8 @@ import { WindowRefService } from "@shared/services/window-ref.service";
 import { isPlatformBrowser } from "@angular/common";
 import { UserInterface } from "@shared/interfaces/user.interface";
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
+import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
+import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
 
 export interface MarketplaceFilterModel {
   itemType?: EquipmentItemType | null;
@@ -35,6 +37,8 @@ export interface MarketplaceFilterModel {
   pendingModeration?: boolean | null;
   expired?: boolean | null;
   excludeListing?: MarketplaceListingInterface["hash"] | null;
+  itemId?: EquipmentItem["id"] | null;
+  contentTypeId?: ContentTypeInterface["id"] | null;
 }
 
 @Component({

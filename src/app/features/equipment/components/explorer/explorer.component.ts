@@ -42,6 +42,7 @@ import {
   FreezeEquipmentItemAsAmbiguous,
   FreezeEquipmentItemAsAmbiguousSuccess,
   LoadEquipmentItem,
+  LoadMarketplaceListings,
   UnapproveEquipmentItemSuccess,
   UnfreezeEquipmentItemAsAmbiguous,
   UnfreezeEquipmentItemAsAmbiguousSuccess
@@ -56,7 +57,11 @@ import {
 } from "@shared/components/equipment/editors/base-item-editor/base-item-editor.component";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { ItemBrowserComponent } from "@shared/components/equipment/item-browser/item-browser.component";
-import { selectEditProposalsForItem, selectEquipmentItem } from "@features/equipment/store/equipment.selectors";
+import {
+  selectEditProposalsForItem,
+  selectEquipmentItem,
+  selectMarketplaceListings
+} from "@features/equipment/store/equipment.selectors";
 import { WindowRefService } from "@shared/services/window-ref.service";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { RejectItemModalComponent } from "@features/equipment/components/reject-item-modal/reject-item-modal.component";
@@ -79,6 +84,7 @@ import { CompareService } from "@features/equipment/services/compare.service";
 import { isPlatformBrowser, Location } from "@angular/common";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
 import { RouterService } from "@shared/services/router.service";
+import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
 
 @Component({
   selector: "astrobin-equipment-explorer",
@@ -158,6 +164,20 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
   editProposalsSubscription: Subscription;
   editProposals: EditProposalInterface<EquipmentItemBaseInterface>[] | null = null;
   editProposalsCollapsed = true;
+
+  marketplaceListings$: Observable<MarketplaceListingInterface[]> = this.store$.select(selectMarketplaceListings).pipe(
+    map(listings =>
+      listings?.filter(
+        listing => listing.lineItems.some(
+          lineItem =>
+            lineItem.itemObjectId === this.selectedItem.id &&
+            lineItem.itemContentType === this.selectedItem.contentType
+        )
+      )
+    ),
+    distinctUntilChangedObj(),
+    takeUntil(this.destroyed$)
+  );
 
   reviewPendingEditNotification: ActiveToast<any>;
 
@@ -624,6 +644,7 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
 
     this._endEditMode();
     this._loadEditProposals();
+    this._loadMarketplaceLineItems();
   }
 
   onCreationModeStarted() {
@@ -809,5 +830,17 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
       });
 
     this.store$.dispatch(new FindEquipmentItemEditProposals({ item: this.selectedItem }));
+  }
+
+  private _loadMarketplaceLineItems() {
+    this.store$.dispatch(new LoadMarketplaceListings({
+      options: {
+        page: 1,
+        itemId: this.selectedItem.id,
+        contentTypeId: this.selectedItem.contentType,
+        sold: false,
+        pendingModeration: false
+      }
+    }));
   }
 }

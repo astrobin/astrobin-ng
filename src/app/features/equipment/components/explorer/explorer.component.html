@@ -479,6 +479,22 @@
     </ng-container>
 
     <ng-container *ngIf="!!selectedItem && isBrowser">
+      <ng-container *ngIf="marketplaceListings$ | async as listings">
+        <div *ngIf="listings?.length > 0" class="card mt-5">
+          <div class="card-header">
+            {{ "Marketplace listings" | translate }}
+          </div>
+
+          <div class="card-body">
+            <astrobin-marketplace-line-item-cards
+              [listings]="listings"
+            ></astrobin-marketplace-line-item-cards>
+          </div>
+        </div>
+      </ng-container>
+    </ng-container>
+
+    <ng-container *ngIf="!!selectedItem && isBrowser">
       <astrobin-forum-preview
         *ngIf="showForum && !!selectedItem.forum"
         [forumId]="selectedItem.forum"
