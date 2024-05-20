@@ -72,6 +72,7 @@ import { LoadUser } from "@features/account/store/auth.actions";
 import { PopNotificationsService } from "@shared/services/pop-notifications.service";
 import { selectUser } from "@features/account/store/auth.selectors";
 import { MarketplaceMarkLineItemsAsSoldModalComponent } from "@features/equipment/components/marketplace-mark-line-items-as-sold-modal/marketplace-mark-line-items-as-sold-modal.component";
+import { Location } from "@angular/common";
 
 interface UserOfferGroup {
   user: UserInterface;
@@ -130,7 +131,8 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
     public readonly windowRefService: WindowRefService,
     public readonly routerService: RouterService,
     public readonly utilsService: UtilsService,
-    public readonly popNotificationsService: PopNotificationsService
+    public readonly popNotificationsService: PopNotificationsService,
+    public readonly location: Location
   ) {
     super(store$);
   }
@@ -254,11 +256,12 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
   }
 
   appendSlugToUrl() {
-    const slug = this.listing.slug;
     const url = this.router.url;
+    const baseUrl = `/equipment/marketplace/listing/${this.listing.hash}`;
+    const slugUrl = `${baseUrl}/${this.listing.slug}`;
 
-    if (!!slug && url.indexOf(slug) === -1) {
-      this.router.navigate([slug], { relativeTo: this.activatedRoute });
+    if (url !== slugUrl) {
+      this.location.replaceState(slugUrl);
     }
   }
 
