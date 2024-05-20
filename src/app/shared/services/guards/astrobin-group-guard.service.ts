@@ -50,8 +50,7 @@ export class AstroBinGroupGuardService extends BaseService implements CanActivat
     return new Observable<boolean>(observer => {
       this.authService.isAuthenticated$().subscribe(authenticated => {
         if (!authenticated) {
-          observer.next(false);
-          observer.complete();
+          onError(observer, "/permission-denied");
           return;
         }
 

@@ -85,6 +85,8 @@ import { isPlatformBrowser, Location } from "@angular/common";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
 import { RouterService } from "@shared/services/router.service";
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
+import { UserService } from "@shared/services/user.service";
+import { Constants } from "@shared/constants";
 
 @Component({
   selector: "astrobin-equipment-explorer",
@@ -215,7 +217,8 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
     public readonly compareService: CompareService,
     public readonly location: Location,
     @Inject(PLATFORM_ID) public readonly platformId,
-    public readonly routerService: RouterService
+    public readonly routerService: RouterService,
+    public readonly userService: UserService
   ) {
     super(store$);
   }
@@ -833,14 +836,18 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
   }
 
   private _loadMarketplaceLineItems() {
-    this.store$.dispatch(new LoadMarketplaceListings({
-      options: {
-        page: 1,
-        itemId: this.selectedItem.id,
-        contentTypeId: this.selectedItem.contentType,
-        sold: false,
-        pendingModeration: false
+    this.currentUser$.pipe(filter(user => !!user), take(1)).subscribe(user => {
+      if (this.userService.isInAstroBinGroup(user, Constants.BETA_TESTERS_ASTROBIN_GROUP)) {
+        this.store$.dispatch(new LoadMarketplaceListings({
+          options: {
+            page: 1,
+            itemId: this.selectedItem.id,
+            contentTypeId: this.selectedItem.contentType,
+            sold: false,
+            pendingModeration: false
+          }
+        }));
       }
-    }));
+    });
   }
 }
