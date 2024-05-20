@@ -148,7 +148,12 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
   ngOnInit() {
     super.ngOnInit();
 
-    if (this.model.id) {
+    const providedLineItemCount = this.activatedRoute.snapshot.queryParams.lineItemCount;
+
+    if (providedLineItemCount) {
+      this.initialLineItemCount = parseInt(providedLineItemCount, 10);
+      this._initFields();
+    } else if (this.model.id) {
       this.initialLineItemCount = this.model.lineItems.length;
       this._initFields();
     }
@@ -203,9 +208,9 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
         model.lineItems = model.lineItems.map(lineItem => {
           lineItem.images = lineItem.images.map(image => image.imageFile);
           lineItem.listing = model.id;
-          lineItem.findItemMode = lineItem.findItemMode || (
-            lineItem.itemPlainText ? MarketplaceLineItemFindItemMode.PLAIN : MarketplaceLineItemFindItemMode.USER
-          );
+          lineItem.findItemMode =
+            lineItem.findItemMode ||
+            (lineItem.itemPlainText ? MarketplaceLineItemFindItemMode.PLAIN : MarketplaceLineItemFindItemMode.USER);
           return lineItem;
         });
       }
@@ -284,7 +289,8 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                   ? this.translateService.instant("Equipment item for sale") + ` #${index + 1}`
                   : this.translateService.instant("Equipment item for sale");
               },
-              fieldGroupClassName: config => config.model.sold ? "field-group-line-items sold" : "field-group-line-items"
+              fieldGroupClassName: config =>
+                config.model.sold ? "field-group-line-items sold" : "field-group-line-items"
             },
             fieldGroup: [
               {
@@ -363,7 +369,9 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                   options: [
                     {
                       label: this.translateService.instant("Equipment I used on my images"),
-                      description: this.translateService.instant("Restrict search to equipment you have used on your images."),
+                      description: this.translateService.instant(
+                        "Restrict search to equipment you have used on your images."
+                      ),
                       value: MarketplaceLineItemFindItemMode.USER
                     },
                     {
@@ -373,7 +381,9 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                     },
                     {
                       label: this.translateService.instant("Input as plain text"),
-                      description: this.translateService.instant("Input the item as plain text if you cannot find it using one of the options above."),
+                      description: this.translateService.instant(
+                        "Input the item as plain text if you cannot find it using one of the options above."
+                      ),
                       value: MarketplaceLineItemFindItemMode.PLAIN
                     }
                   ]
@@ -398,7 +408,6 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
               {
                 key: "itemObjectId",
                 type: "equipment-item-browser",
-                wrappers: ["default-wrapper"],
                 props: {
                   showQuickAddRecent: false,
                   showPlaceholderImage: false,
@@ -782,7 +791,8 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
               key: "deliveryBySellerDelivery",
               type: "toggle",
               wrappers: ["default-wrapper"],
-              defaultValue: this.model.deliveryBySellerDelivery !== undefined ? this.model.deliveryBySellerDelivery : true,
+              defaultValue:
+                this.model.deliveryBySellerDelivery !== undefined ? this.model.deliveryBySellerDelivery : true,
               props: {
                 label: this.translateService.instant("Seller delivers in person")
               }
@@ -813,6 +823,20 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
               }
             }
           ]
+        },
+        {
+          type: "html",
+          template: this.translateService.instant(
+            "By creating a listing on the AstroBin Marketplace, you agree to the {{0}}terms of service{{1}}.",
+            {
+              0: `<a href="${this.classicRoutesService.MARKETPLACE_TERMS}" target="_blank">`,
+              1: "</a>"
+            }
+          ),
+          className: "alert alert-info",
+          expressions: {
+            hide: config => !!this.initialLineItemCountForm.get("terms").value
+          }
         }
       ];
 
@@ -826,72 +850,90 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
         switchMap(requestCountry => this.currentUser$.pipe(map(user => ({ requestCountry, user }))))
       )
       .subscribe(({ requestCountry, user }) => {
-          let initialCurrency = "USD";
+        let initialCurrency = "USD";
 
-          if (!!requestCountry && requestCountry !== "UNKNOWN") {
-            const currencyResults = countryJs.search(requestCountry);
-            if (currencyResults.length > 0) {
-              initialCurrency = currencyResults[0].currency.currencyCode;
-            }
+        if (!!requestCountry && requestCountry !== "UNKNOWN") {
+          const currencyResults = countryJs.search(requestCountry);
+          if (currencyResults.length > 0) {
+            initialCurrency = currencyResults[0].currency.currencyCode;
           }
+        }
 
-          this.model = {
-            ...this.model,
+        this.model = {
+          ...this.model,
+          user: user.id,
+          lineItems: this.model.lineItems.map(lineItem => ({
+            ...lineItem,
+            currency: initialCurrency,
+            condition: MarketplaceListingCondition.USED
+          }))
+        };
+
+        const lineItemMap: Map<number, EquipmentItemType> = new Map();
+
+        if (!this.model.id && this.initialLineItemCount > 0) {
+          this.model.lineItems = Array.from({ length: this.initialLineItemCount }).map(() => ({
             user: user.id,
-            lineItems: this.model.lineItems.map(lineItem => ({
-              ...lineItem,
-              currency: initialCurrency,
-              condition: MarketplaceListingCondition.USED
-            }))
-          };
-
-          const lineItems = this.model.lineItems;
-          const lineItemMap: Map<number, EquipmentItemType> = new Map();
-
-          if (!this.model.id && this.initialLineItemCount > 0) {
-            this.model.lineItems = Array.from({ length: this.initialLineItemCount }).map(() => ({
-              listing: null,
-              created: null,
-              updated: null,
-              sold: null,
-              soldTo: null,
-              reserved: null,
-              reservedTo: null,
-              price: null,
-              currency: initialCurrency,
-              condition: MarketplaceListingCondition.USED,
-              yearOfPurchase: null,
-              shippingCost: null,
-              description: null,
-              findItemMode: MarketplaceLineItemFindItemMode.USER,
-              itemObjectId: null,
-              itemContentType: null,
-              images: []
-            }));
-          }
+            listing: null,
+            created: null,
+            updated: null,
+            sold: null,
+            soldTo: null,
+            reserved: null,
+            reservedTo: null,
+            price: null,
+            currency: initialCurrency,
+            condition: MarketplaceListingCondition.USED,
+            yearOfPurchase: null,
+            shippingCost: null,
+            description: null,
+            findItemMode: MarketplaceLineItemFindItemMode.USER,
+            itemObjectId: null,
+            itemContentType: null,
+            images: []
+          }));
 
           if (
-            lineItems &&
-            lineItems.length > 0 &&
-            lineItems.filter(lineItem => !!lineItem.itemObjectId && !!lineItem.itemContentType).length > 0
+            this.initialLineItemCount === 1 &&
+            this.activatedRoute.snapshot.queryParams["equipmentItemId"] &&
+            this.activatedRoute.snapshot.queryParams["equipmentItemContentTypeId"]
           ) {
-            forkJoin(lineItems.map((lineItem, index) =>
+            const itemId = parseInt(this.activatedRoute.snapshot.queryParams["equipmentItemId"], 10);
+            const itemContentTypeId = parseInt(
+              this.activatedRoute.snapshot.queryParams["equipmentItemContentTypeId"],
+              10
+            );
+
+            this.model.lineItems[0].itemObjectId = itemId;
+            this.model.lineItems[0].itemContentType = itemContentTypeId;
+            this.model.lineItems[0].findItemMode = MarketplaceLineItemFindItemMode.ALL;
+          }
+        }
+
+        if (
+          this.model.lineItems &&
+          this.model.lineItems.length > 0 &&
+          this.model.lineItems.filter(lineItem => !!lineItem.itemObjectId && !!lineItem.itemContentType).length > 0
+        ) {
+          forkJoin(
+            this.model.lineItems.map((lineItem, index) =>
               this.store$.select(selectContentTypeById, { id: lineItem.itemContentType }).pipe(
                 filter(contentType => !!contentType),
                 take(1),
                 map(contentType => EquipmentItemType[contentType.model.toUpperCase()]),
                 tap(itemType => lineItemMap.set(index, itemType))
-              ))).subscribe(() => {
-              _doInitFields(lineItemMap, initialCurrency);
-            });
-
-            lineItems.forEach(lineItem => {
-              this.store$.dispatch(new LoadContentTypeById({ id: lineItem.itemContentType }));
-            });
-          } else {
+              )
+            )
+          ).subscribe(() => {
             _doInitFields(lineItemMap, initialCurrency);
-          }
+          });
+
+          this.model.lineItems.forEach(lineItem => {
+            this.store$.dispatch(new LoadContentTypeById({ id: lineItem.itemContentType }));
+          });
+        } else {
+          _doInitFields(lineItemMap, initialCurrency);
         }
-      );
+      });
   }
 }

@@ -173,6 +173,16 @@
             ></astrobin-toggle-property>
           </ng-container>
 
+          <button
+            (click)="sellInMarketplace()"
+            *ngIf="selectedItem.klass !== 'SENSOR' && (currentUser$ | async) | isBetaTester"
+            class="btn btn-secondary"
+            data-test="sell-in-marketplace"
+          >
+            <fa-icon icon="shopping-cart"></fa-icon>
+            {{ "Sell in the marketplace" | translate }}
+          </button>
+
           <div *ngIf="currentUserWrapper.user | isEquipmentModerator" ngbDropdown>
             <button
               [class.loading]="loadingService.loading$ | async"

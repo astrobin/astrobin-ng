@@ -350,6 +350,16 @@ export class ExplorerComponent extends BaseComponentDirective implements OnInit,
     return item as unknown as CameraInterface;
   }
 
+  sellInMarketplace() {
+    this.router.navigate(["/equipment/marketplace/create"], {
+      queryParams: {
+        lineItemCount: 1,
+        equipmentItemId: this.selectedItem.id,
+        equipmentItemContentTypeId: this.selectedItem.contentType
+      }
+    });
+  }
+
   startEditMode() {
     this.currentUser$.pipe(take(1)).subscribe(user => {
       if (!user) {
