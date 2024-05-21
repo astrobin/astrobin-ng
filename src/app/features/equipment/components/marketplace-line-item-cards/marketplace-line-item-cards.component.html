@@ -1,7 +1,7 @@
-<div class="listings">
-  <ng-container *ngIf="listings === null" [ngTemplateOutlet]="loadingTemplate"></ng-container>
-  <ng-container *ngIf="listings !== null">
-    <ng-container *ngIf="listings.length > 0; else noListingsTemplate">
+<ng-container *ngIf="listings === null" [ngTemplateOutlet]="loadingTemplate"></ng-container>
+<ng-container *ngIf="listings !== null">
+  <ng-container *ngIf="listings.length > 0; else noListingsTemplate">
+    <div class="listings">
       <ng-container *ngFor="let listing of listings">
         <a
           *ngFor="let lineItem of listing.lineItems"
@@ -14,12 +14,14 @@
           ></astrobin-marketplace-line-item-card>
         </a>
       </ng-container>
-    </ng-container>
+    </div>
   </ng-container>
-</div>
+</ng-container>
 
 <ng-template #noListingsTemplate>
-  <astrobin-nothing-here [withAlert]="false" [withInfoSign]="false"></astrobin-nothing-here>
+  <astrobin-nothing-here [withAlert]="false" [withInfoSign]="false" class="d-inline-block"></astrobin-nothing-here>
+  {{ "Do you want to sell something?" | translate }}
+  <a routerLink="/equipment/marketplace/create">{{ "Create a listing" | translate }}.</a>
 </ng-template>
 
 <ng-template #loadingTemplate>
