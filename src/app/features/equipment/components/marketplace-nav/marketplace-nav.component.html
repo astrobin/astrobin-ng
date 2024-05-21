@@ -6,16 +6,16 @@
     </a>
   </li>
 
-  <!-- All Listings -->
-  <li [ngbNavItem]="MarketplaceNavPage.ALL_LISTINGS" class="subnav">
-    <a *ngIf="(getLink$(MarketplaceNavPage.ALL_LISTINGS) | async) as link"
+  <!-- Active Listings -->
+  <li [ngbNavItem]="MarketplaceNavPage.ACTIVE_LISTINGS" class="subnav">
+    <a *ngIf="(getLink$(MarketplaceNavPage.ACTIVE_LISTINGS) | async) as link"
        [queryParams]="link.queryParams"
        [routerLinkActiveOptions]="routerLinkActiveOptions"
        [routerLink]="link.path"
        ngbNavLink
        routerLinkActive="active">
       <fa-icon icon="grip"></fa-icon> &nbsp;
-      {{ "All listings" | translate }}
+      {{ "Active listings" | translate }}
     </a>
   </li>
 
