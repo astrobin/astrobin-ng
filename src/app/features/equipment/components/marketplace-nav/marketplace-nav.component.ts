@@ -9,7 +9,7 @@ import { map } from "rxjs/operators";
 import { RouterService } from "@shared/services/router.service";
 
 export enum MarketplaceNavPage {
-  ACTIVE_LISTINGS,
+  ALL_LISTINGS,
   PENDING_MODERATION,
   SOLD_LISTINGS,
   USER_LISTINGS,
@@ -51,7 +51,7 @@ export class MarketplaceNavComponent extends BaseComponentDirective implements O
         let shouldRedirectToLogin = false;
 
         switch (page) {
-          case MarketplaceNavPage.ACTIVE_LISTINGS:
+          case MarketplaceNavPage.ALL_LISTINGS:
             path = ["/equipment/marketplace"];
             break;
           case MarketplaceNavPage.PENDING_MODERATION:

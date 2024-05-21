@@ -615,6 +615,9 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
               key: "title",
               type: "input",
               wrappers: ["default-wrapper"],
+              expressions: {
+                hide: () => this.model.lineItems.length === 1 && !this.model.title
+              },
               props: {
                 label: this.translateService.instant("Title for the entire listing"),
                 description: this.translateService.instant(
@@ -631,6 +634,9 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
               key: "description",
               type: "textarea",
               wrappers: ["default-wrapper"],
+              expressions: {
+                hide: () => this.model.lineItems.length === 1 && !this.model.description
+              },
               props: {
                 label: this.translateService.instant("Description for the entire listing"),
                 description: this.translateService.instant(
