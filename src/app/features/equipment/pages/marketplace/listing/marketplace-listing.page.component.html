@@ -307,7 +307,7 @@
     class="btn btn-secondary d-block w-100 mt-2"
   >
     <fa-icon icon="envelope"></fa-icon>
-    {{ "Message seller" | translate }}
+    {{ "Message seller privately" | translate }}
 
     <ng-container *ngIf="privateConversations$ | async as privateConversations">
       <ng-container *ngIf="privateConversations?.length === 1">
