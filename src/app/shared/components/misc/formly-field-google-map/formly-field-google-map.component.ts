@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ViewChild } from "@angular/core";
+import { AfterViewInit, ChangeDetectorRef, Component, ViewChild } from "@angular/core";
 import { FieldType } from "@ngx-formly/core";
 import { Observable } from "rxjs";
 import { take } from "rxjs/operators";
@@ -14,11 +14,17 @@ import { UtilsService } from "@shared/services/utils/utils.service";
 export class FormlyFieldGoogleMapComponent extends FieldType implements AfterViewInit {
   @ViewChild("map") mapElement: any;
 
+  search: string;
+
   map: google.maps.Map;
 
   tilesLoaded = false;
 
-  constructor(public readonly googleMapsService: GoogleMapsService, public readonly utilsService: UtilsService) {
+  constructor(
+    public readonly googleMapsService: GoogleMapsService,
+    public readonly utilsService: UtilsService,
+    public readonly changeDetectorRef: ChangeDetectorRef
+  ) {
     super();
   }
 
@@ -46,6 +52,7 @@ export class FormlyFieldGoogleMapComponent extends FieldType implements AfterVie
             const center = this.map.getCenter();
             marker.setPosition(center);
             this.formControl.setValue(center);
+            this.updateSearch();
           });
         });
 
@@ -54,10 +61,43 @@ export class FormlyFieldGoogleMapComponent extends FieldType implements AfterVie
           if (this.props.mapReady !== undefined) {
             this.props.mapReady();
           }
+          this.changeDetectorRef.detectChanges();
         });
 
         this.formControl.setValue(this.map.getCenter());
+        this.updateSearch();
       });
+  }
+
+  updateSearch() {
+    const geocoder = this.googleMapsService.createGeocoder();
+    const lat = this.formControl.value.lat();
+    const lng = this.formControl.value.lng();
+
+    if (!lat || !lng) {
+      return;
+    }
+
+    const location = { lat: parseFloat(lat), lng: parseFloat(lng) };
+
+    geocoder.geocode({ location }, (results, status) => {
+      if (status === "OK") {
+        this.search = results[0].formatted_address;
+        this.changeDetectorRef.detectChanges();
+      }
+    });
+  }
+
+  searchChanged(event: Event) {
+    event.stopPropagation();
+
+    const geocoder = this.googleMapsService.createGeocoder();
+    geocoder.geocode({ address: this.search }, (results, status) => {
+      if (status === "OK") {
+        this.map.setCenter(results[0].geometry.location);
+        this.formControl.setValue(results[0].geometry.location);
+      }
+    });
   }
 
   getLocation(): Observable<{ latitude: number; longitude: number }> {

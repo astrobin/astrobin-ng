@@ -850,7 +850,7 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
           ),
           className: "alert alert-info",
           expressions: {
-            hide: config => !!this.initialLineItemCountForm.get("terms").value
+            hide: config => !!this.initialLineItemCountForm.get("terms")?.value
           }
         }
       ];
