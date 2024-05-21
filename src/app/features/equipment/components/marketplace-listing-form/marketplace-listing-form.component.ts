@@ -403,7 +403,7 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                 wrappers: ["default-wrapper"],
                 className: "border-top-0",
                 props: {
-                  label: this.translateService.instant("Item"),
+                  label: this.translateService.instant("Item for sale"),
                   description: this.translateService.instant(
                     "Enter only one item. If you want to sell multiple items, add them as separate line items " +
                     "using the button below."
