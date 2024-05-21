@@ -33,6 +33,8 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { ConfirmationDialogComponent } from "@shared/components/misc/confirmation-dialog/confirmation-dialog.component";
 import { ClassicRoutesService } from "@shared/services/classic-routes.service";
 
+declare var google: any;
+
 @Component({
   selector: "astrobin-marketplace-listing-form",
   templateUrl: "./marketplace-listing-form.component.html",
