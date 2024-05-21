@@ -33,8 +33,8 @@ export class MarketplaceMarkLineItemsAsSoldModalComponent extends BaseComponentD
   title: string = this.translateService.instant("Mark line items as sold");
 
   helpText: string = this.translateService.instant(
-    "Use this form if you've sold one or more line items in this listing outside of AstroBin, or without " +
-    "going thru the offers workflow on AstroBin."
+    "If you've sold one or more line items in this listing outside of AstroBin, or without " +
+    "going thru the offers workflow on AstroBin, mark the line items as sold."
   );
 
   constructor(
