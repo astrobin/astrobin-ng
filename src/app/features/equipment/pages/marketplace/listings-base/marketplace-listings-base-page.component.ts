@@ -13,7 +13,10 @@ import {
   LoadMarketplaceListings
 } from "@features/equipment/store/equipment.actions";
 import { LoadingService } from "@shared/services/loading.service";
-import { MarketplaceFilterModel } from "@features/equipment/components/marketplace-filter/marketplace-filter.component";
+import {
+  MarketplaceFilterModel,
+  marketplaceFilterModelKeys
+} from "@features/equipment/components/marketplace-filter/marketplace-filter.component";
 import { ActivatedRoute, Router } from "@angular/router";
 import { selectRequestCountry } from "@app/store/selectors/app/app.selectors";
 import { CountryService } from "@shared/services/country.service";
@@ -87,6 +90,15 @@ export abstract class MarketplaceListingsBasePageComponent extends BaseComponent
       pendingModeration,
       ...queryParams
     } = this.filterModel;
+
+    // Remove query parameters that don't belong.
+    for (const key of Object.keys(queryParams)) {
+      // Check if key is not in MarketplaceFilterModel as an interface.
+      if (!marketplaceFilterModelKeys.includes(key)) {
+        delete queryParams[key];
+        delete this.filterModel[key];
+      }
+    }
 
     this.router.navigate([], {
       relativeTo: this.activatedRoute,

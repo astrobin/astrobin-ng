@@ -21,6 +21,27 @@ import { MarketplaceListingInterface } from "@features/equipment/types/marketpla
 import { EquipmentItem } from "@features/equipment/types/equipment-item.type";
 import { ContentTypeInterface } from "@shared/interfaces/content-type.interface";
 
+export const marketplaceFilterModelKeys: string[] = [
+  "itemType",
+  "maxDistance",
+  "distanceUnit",
+  "latitude",
+  "longitude",
+  "region",
+  "query",
+  "user",
+  "offersByUser",
+  "soldToUser",
+  "followedByUser",
+  "sold",
+  "pendingModeration",
+  "expired",
+  "excludeListing",
+  "itemId",
+  "contentTypeId"
+];
+
+// If you're updating this, make sure to update marketplaceFilterModelKeys above.
 export interface MarketplaceFilterModel {
   itemType?: EquipmentItemType | null;
   maxDistance?: number | null;
