@@ -1,5 +1,5 @@
 import { Component } from "@angular/core";
-import { FieldArrayType } from "@ngx-formly/core";
+import { FieldArrayType, FormlyFieldConfig } from "@ngx-formly/core";
 
 @Component({
   selector: "astrobin-formly-field-array",
@@ -7,6 +7,10 @@ import { FieldArrayType } from "@ngx-formly/core";
   styleUrls: ["./formly-field-array.component.scss"]
 })
 export class FormlyFieldArrayComponent extends FieldArrayType {
+  get props() {
+    return (this.field.fieldArray as FormlyFieldConfig).props;
+  }
+
   remove(i: number) {
     if (this.mayRemove(i)) {
       return super.remove(i, { markAsDirty: true });

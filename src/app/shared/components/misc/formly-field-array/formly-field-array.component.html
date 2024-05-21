@@ -15,8 +15,8 @@
 </div>
 
 <button (click)="add()" class="btn btn-link w-100">
-  <ng-container *ngIf="field.fieldArray.props.addLabel; else noAddLabelTemplate">
-    {{ field.fieldArray.props.addLabel }}
+  <ng-container *ngIf="props.addLabel; else noAddLabelTemplate">
+    {{ props.addLabel }}
   </ng-container>
   <ng-template #noAddLabelTemplate>
     {{ "Add another" | translate }}
