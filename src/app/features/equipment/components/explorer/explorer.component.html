@@ -152,164 +152,166 @@
         </button>
 
         <ng-container *ngIf="currentUserWrapper$ | async as currentUserWrapper">
-          <button
-            (click)="startEditMode()"
-            *ngIf="!selectedItem.frozenAsAmbiguous || (currentUserWrapper.user | isEquipmentModerator)"
-            [class.loading]="loadingService.loading$ | async"
-            [disabled]="editMode"
-            class="btn btn-secondary"
-            data-test="propose-edit"
-          >
-            <fa-icon icon="pencil"></fa-icon>
-            {{ "Propose edit" | translate }}&hellip;
-          </button>
-
-          <ng-container *ngIf="contentType$ | async as contentType">
-            <astrobin-toggle-property
-              [contentType]="contentType.id"
-              [objectId]="selectedItem.id"
-              [userId]="currentUserWrapper.user?.id"
-              propertyType="follow"
-            ></astrobin-toggle-property>
-          </ng-container>
-
-          <button
-            (click)="sellInMarketplace()"
-            *ngIf="selectedItem.klass !== 'SENSOR' && (currentUser$ | async) | isBetaTester"
-            class="btn btn-secondary"
-            data-test="sell-in-marketplace"
-          >
-            <fa-icon icon="shopping-cart"></fa-icon>
-            {{ "Sell in the marketplace" | translate }}
-          </button>
-
-          <div *ngIf="currentUserWrapper.user | isEquipmentModerator" ngbDropdown>
+          <ng-container *ngIf="!!currentUserWrapper.user">
             <button
+              (click)="startEditMode()"
+              *ngIf="!selectedItem.frozenAsAmbiguous || (currentUserWrapper.user | isEquipmentModerator)"
               [class.loading]="loadingService.loading$ | async"
-              [disabled]="(readOnlyMode$ | async) === true"
-              class="btn btn-danger"
-              id="moderate-menu"
-              ngbDropdownToggle
-              type="button"
+              [disabled]="editMode"
+              class="btn btn-secondary"
+              data-test="propose-edit"
             >
-              <fa-icon icon="gavel"></fa-icon>
-              {{ "Moderate" | translate }}
+              <fa-icon icon="pencil"></fa-icon>
+              {{ "Propose edit" | translate }}&hellip;
             </button>
 
-            <div aria-labelledby="moderate-menu" ngbDropdownMenu>
+            <ng-container *ngIf="contentType$ | async as contentType">
+              <astrobin-toggle-property
+                [contentType]="contentType.id"
+                [objectId]="selectedItem.id"
+                [userId]="currentUserWrapper.user?.id"
+                propertyType="follow"
+              ></astrobin-toggle-property>
+            </ng-container>
+
+            <button
+              (click)="sellInMarketplace()"
+              *ngIf="selectedItem.klass !== 'SENSOR' && (currentUser$ | async) | isBetaTester"
+              class="btn btn-secondary"
+              data-test="sell-in-marketplace"
+            >
+              <fa-icon icon="shopping-cart"></fa-icon>
+              {{ "Sell in the marketplace" | translate }}
+            </button>
+
+            <div *ngIf="currentUserWrapper.user | isEquipmentModerator" ngbDropdown>
               <button
-                (click)="startMigrationMode()"
-                *ngIf="typeSupportsMigrateInto()"
-                [disabled]="editMode"
-                data-test="migrate-into"
-                ngbDropdownItem
+                [class.loading]="loadingService.loading$ | async"
+                [disabled]="(readOnlyMode$ | async) === true"
+                class="btn btn-danger"
+                id="moderate-menu"
+                ngbDropdownToggle
+                type="button"
               >
-                <fa-icon icon="dot-circle"></fa-icon>
-                {{ "Migrate into" | translate }}&hellip;
+                <fa-icon icon="gavel"></fa-icon>
+                {{ "Moderate" | translate }}
               </button>
 
-              <ng-container
-                *ngIf="
-                  !!selectedItem.brand &&
-                  selectedItem.reviewerDecision === EquipmentItemReviewerDecision.APPROVED &&
-                  !selectedItem.frozenAsAmbiguous
-                "
-              >
+              <div aria-labelledby="moderate-menu" ngbDropdownMenu>
                 <button
-                  (click)="startFreezeAsAmbiguous()"
-                  [class.loading]="loadingService.loading$ | async"
+                  (click)="startMigrationMode()"
+                  *ngIf="typeSupportsMigrateInto()"
                   [disabled]="editMode"
-                  class="text-warning"
-                  data-test="freeze-as-ambiguous"
+                  data-test="migrate-into"
                   ngbDropdownItem
                 >
-                  <fa-icon icon="snowflake"></fa-icon>
-                  {{ "Freeze" | translate }}&hellip;
+                  <fa-icon icon="dot-circle"></fa-icon>
+                  {{ "Migrate into" | translate }}&hellip;
                 </button>
-              </ng-container>
 
-              <ng-container
-                *ngIf="
-                  !!selectedItem.brand &&
-                  selectedItem.reviewerDecision === EquipmentItemReviewerDecision.APPROVED &&
-                  selectedItem.frozenAsAmbiguous
-                "
-              >
-                <button
-                  (click)="startUnfreezeAsAmbiguous()"
-                  [class.loading]="loadingService.loading$ | async"
-                  [disabled]="editMode"
-                  class="text-warning"
-                  data-test="freeze-as-ambiguous"
-                  ngbDropdownItem
-                >
-                  <fa-icon icon="temperature-high"></fa-icon>
-                  {{ "Unfreeze" | translate }}&hellip;
-                </button>
-              </ng-container>
-
-              <ng-container
-                *ngIf="(!selectedItem.assignee || selectedItem.assignee === currentUserWrapper.user?.id)"
-              >
                 <ng-container
-                  *ngIf="selectedItem.reviewerDecision === null && selectedItem.createdBy !== currentUserWrapper.user?.id"
+                  *ngIf="
+                    !!selectedItem.brand &&
+                    selectedItem.reviewerDecision === EquipmentItemReviewerDecision.APPROVED &&
+                    !selectedItem.frozenAsAmbiguous
+                  "
                 >
                   <button
-                    (click)="startRejection()"
+                    (click)="startFreezeAsAmbiguous()"
                     [class.loading]="loadingService.loading$ | async"
                     [disabled]="editMode"
-                    class="text-danger"
-                    data-test="reject"
+                    class="text-warning"
+                    data-test="freeze-as-ambiguous"
                     ngbDropdownItem
                   >
-                    <fa-icon icon="ban"></fa-icon>
-                    {{ "Reject" | translate }}&hellip;
-                  </button>
-
-                  <button
-                    (click)="startApproval()"
-                    [class.loading]="loadingService.loading$ | async"
-                    [disabled]="editMode"
-                    class="text-success"
-                    data-test="reject"
-                    ngbDropdownItem
-                  >
-                    <fa-icon icon="check"></fa-icon>
-                    {{ "Approve" | translate }}&hellip;
+                    <fa-icon icon="snowflake"></fa-icon>
+                    {{ "Freeze" | translate }}&hellip;
                   </button>
                 </ng-container>
 
                 <ng-container
                   *ngIf="
+                    !!selectedItem.brand &&
                     selectedItem.reviewerDecision === EquipmentItemReviewerDecision.APPROVED &&
-                    selectedItem.createdBy !== currentUserWrapper.user?.id
+                    selectedItem.frozenAsAmbiguous
                   "
                 >
                   <button
-                    (click)="startUnapproval()"
+                    (click)="startUnfreezeAsAmbiguous()"
                     [class.loading]="loadingService.loading$ | async"
                     [disabled]="editMode"
-                    class="text-danger"
-                    data-test="unapprove"
+                    class="text-warning"
+                    data-test="freeze-as-ambiguous"
                     ngbDropdownItem
                   >
-                    <fa-icon icon="rotate-left"></fa-icon>
-                    {{ "Unapprove" | translate }}&hellip;
+                    <fa-icon icon="temperature-high"></fa-icon>
+                    {{ "Unfreeze" | translate }}&hellip;
                   </button>
                 </ng-container>
-              </ng-container>
-            </div>
-          </div>
 
-          <a
-            (click)="compareService.addWithErrorHandling(selectedItem)"
-            [class.loading]="loadingService.loading$ | async"
-            astrobinEventPreventDefault
-            class="add-to-compare"
-            href="#"
-          >
-            <fa-icon [ngbTooltip]="'Add to comparison list' | translate" icon="list-alt"></fa-icon>
-          </a>
+                <ng-container
+                  *ngIf="(!selectedItem.assignee || selectedItem.assignee === currentUserWrapper.user?.id)"
+                >
+                  <ng-container
+                    *ngIf="selectedItem.reviewerDecision === null && selectedItem.createdBy !== currentUserWrapper.user?.id"
+                  >
+                    <button
+                      (click)="startRejection()"
+                      [class.loading]="loadingService.loading$ | async"
+                      [disabled]="editMode"
+                      class="text-danger"
+                      data-test="reject"
+                      ngbDropdownItem
+                    >
+                      <fa-icon icon="ban"></fa-icon>
+                      {{ "Reject" | translate }}&hellip;
+                    </button>
+
+                    <button
+                      (click)="startApproval()"
+                      [class.loading]="loadingService.loading$ | async"
+                      [disabled]="editMode"
+                      class="text-success"
+                      data-test="reject"
+                      ngbDropdownItem
+                    >
+                      <fa-icon icon="check"></fa-icon>
+                      {{ "Approve" | translate }}&hellip;
+                    </button>
+                  </ng-container>
+
+                  <ng-container
+                    *ngIf="
+                      selectedItem.reviewerDecision === EquipmentItemReviewerDecision.APPROVED &&
+                      selectedItem.createdBy !== currentUserWrapper.user?.id
+                    "
+                  >
+                    <button
+                      (click)="startUnapproval()"
+                      [class.loading]="loadingService.loading$ | async"
+                      [disabled]="editMode"
+                      class="text-danger"
+                      data-test="unapprove"
+                      ngbDropdownItem
+                    >
+                      <fa-icon icon="rotate-left"></fa-icon>
+                      {{ "Unapprove" | translate }}&hellip;
+                    </button>
+                  </ng-container>
+                </ng-container>
+              </div>
+            </div>
+
+            <a
+              (click)="compareService.addWithErrorHandling(selectedItem)"
+              [class.loading]="loadingService.loading$ | async"
+              astrobinEventPreventDefault
+              class="add-to-compare"
+              href="#"
+            >
+              <fa-icon [ngbTooltip]="'Add to comparison list' | translate" icon="list-alt"></fa-icon>
+            </a>
+          </ng-container>
         </ng-container>
       </div>
     </div>
