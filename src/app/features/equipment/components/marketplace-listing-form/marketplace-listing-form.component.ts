@@ -76,7 +76,7 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
         yearOfPurchase: null,
         shippingCost: null,
         description: null,
-        findItemMode: MarketplaceLineItemFindItemMode.USER,
+        findItemMode: MarketplaceLineItemFindItemMode.PLAIN,
         itemObjectId: null,
         itemContentType: null,
         images: []
@@ -362,31 +362,37 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                 key: "findItemMode",
                 type: "ng-select",
                 wrappers: ["default-wrapper"],
+                className: "border-bottom-0 pb-0",
                 props: {
                   required: true,
                   searchable: false,
                   clearable: false,
-                  label: this.translateService.instant("Find item in"),
+                  label: this.translateService.instant("How do you want to input your item?"),
                   optionTemplate: this.findItemModeOptionTemplate,
                   options: [
                     {
-                      label: this.translateService.instant("Equipment I used on my images"),
+                      label: this.translateService.instant("Input as plain text"),
                       description: this.translateService.instant(
-                        "Restrict search to equipment you have used on your images."
+                        "Use this option if you want to keep things simple and let a moderator associate your " +
+                        "listing to an equipment item in the AstroBin equipment database."
+                      ),
+                      value: MarketplaceLineItemFindItemMode.PLAIN
+                    },
+                    {
+                      label: this.translateService.instant("Search equipment you have used on your images"),
+                      description: this.translateService.instant(
+                        "Associate this listing to an equipment item you have used on your images. Choose this" +
+                        " option if you have used this equipment item on your images and want to sell it."
                       ),
                       value: MarketplaceLineItemFindItemMode.USER
                     },
                     {
-                      label: this.translateService.instant("All equipment on AstroBin"),
-                      description: this.translateService.instant("Search all equipment available on AstroBin."),
-                      value: MarketplaceLineItemFindItemMode.ALL
-                    },
-                    {
-                      label: this.translateService.instant("Input as plain text"),
+                      label: this.translateService.instant("Search all equipment available on AstroBin"),
                       description: this.translateService.instant(
-                        "Input the item as plain text if you cannot find it using one of the options above."
+                        "Associate this listing to any equipment item available on AstroBin. Choose this option " +
+                        "if you want to sell an equipment item that you have not used on your images on AstroBin."
                       ),
-                      value: MarketplaceLineItemFindItemMode.PLAIN
+                      value: MarketplaceLineItemFindItemMode.ALL
                     }
                   ]
                 }
@@ -395,6 +401,7 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                 key: "itemPlainText",
                 type: "input",
                 wrappers: ["default-wrapper"],
+                className: "border-top-0",
                 props: {
                   label: this.translateService.instant("Item"),
                   description: this.translateService.instant(
@@ -404,7 +411,7 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                 },
                 expressions: {
                   hide: config => config.model.findItemMode !== MarketplaceLineItemFindItemMode.PLAIN,
-                  required: config => config.model.findItemMode === MarketplaceLineItemFindItemMode.PLAIN
+                  "props.required": config => config.model.findItemMode === MarketplaceLineItemFindItemMode.PLAIN
                 }
               },
               {
@@ -895,7 +902,7 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
             yearOfPurchase: null,
             shippingCost: null,
             description: null,
-            findItemMode: MarketplaceLineItemFindItemMode.USER,
+            findItemMode: MarketplaceLineItemFindItemMode.PLAIN,
             itemObjectId: null,
             itemContentType: null,
             images: []
