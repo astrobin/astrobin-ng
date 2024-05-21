@@ -61,7 +61,7 @@
           ></astrobin-marketplace-listing-line-item-condition>
 
           <div *ngIf="!previewMode && !!equipmentItem" class="first-added">
-            {{ "First added to an image" | translate }}:
+            {{ "First added to an image by the seller" | translate }}:
             <span class="first-added-date">
               <ng-container *ngIf="lineItem.firstAddedToAnImage; else noFirstAddedDateTemplate">
                 {{ lineItem.firstAddedToAnImage | date : "mediumDate" }}
