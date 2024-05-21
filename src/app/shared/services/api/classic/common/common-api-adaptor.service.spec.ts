@@ -115,6 +115,7 @@ describe("CommonApiAdaptorService", () => {
             ]
           }
         ],
+        astrobin_groups: [],
         user_permissions: [
           {
             id: 1,
@@ -167,6 +168,7 @@ describe("CommonApiAdaptorService", () => {
             ]
           }
         ],
+        astrobinGroups: [],
         userPermissions: [
           {
             id: 1,

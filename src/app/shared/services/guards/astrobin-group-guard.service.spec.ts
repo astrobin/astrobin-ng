@@ -22,7 +22,7 @@ describe("AstroBinGroupGuardService", () => {
     service = TestBed.inject(AstroBinGroupGuardService);
 
     route = MockService(ActivatedRouteSnapshot, {
-      data: { group: "Test group" }
+      data: { astroBinGroup: "Test group" }
     });
     jest
       .spyOn(service.router, "navigateByUrl")

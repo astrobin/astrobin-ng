@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input } from "@angular/core";
+import { Component, Input, OnInit } from "@angular/core";
 import { Store } from "@ngrx/store";
 import { State } from "@app/store/state";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
@@ -23,7 +23,7 @@ import { forkJoin } from "rxjs";
   templateUrl: "./marketplace-mark-line-items-as-sold-modal.component.html",
   styleUrls: ["./marketplace-mark-line-items-as-sold-modal.component.scss"]
 })
-export class MarketplaceMarkLineItemsAsSoldModalComponent extends BaseComponentDirective implements AfterViewInit {
+export class MarketplaceMarkLineItemsAsSoldModalComponent extends BaseComponentDirective implements OnInit {
   @Input()
   listing: MarketplaceListingInterface;
 
@@ -48,7 +48,7 @@ export class MarketplaceMarkLineItemsAsSoldModalComponent extends BaseComponentD
     super(store$);
   }
 
-  ngAfterViewInit(): void {
+  ngOnInit(): void {
     this._initFields();
   }
 
@@ -90,7 +90,7 @@ export class MarketplaceMarkLineItemsAsSoldModalComponent extends BaseComponentD
     });
 
     forkJoin(successObservables$).pipe(
-      take(1),
+      take(1)
     ).subscribe(() => {
       this.modal.close();
       this.loadingService.setLoading(false);
@@ -98,7 +98,7 @@ export class MarketplaceMarkLineItemsAsSoldModalComponent extends BaseComponentD
     });
 
     forkJoin(failureObservables$).pipe(
-      take(1),
+      take(1)
     ).subscribe(() => {
       this.modal.close();
       this.loadingService.setLoading(false);

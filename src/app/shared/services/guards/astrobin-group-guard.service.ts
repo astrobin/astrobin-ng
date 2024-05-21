@@ -73,7 +73,7 @@ export class AstroBinGroupGuardService extends BaseService implements CanActivat
 
               const intersection = user.astrobinGroups
                 .map(group => group.name)
-                .filter(value => route.data.anyOfAstroBinGroups.includes(value));
+                .filter(value => route.data.anyOfAstroBinGroups?.includes(value));
 
               if (route.data.anyOfAstroBinGroups) {
                 return intersection.length > 0;
