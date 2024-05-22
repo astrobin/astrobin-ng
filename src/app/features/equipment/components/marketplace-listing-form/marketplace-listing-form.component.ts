@@ -690,7 +690,8 @@ export class MarketplaceListingFormComponent extends BaseComponentDirective impl
                   "Drag the map to set the location. AstroBin will not disclose your exact location, but " +
                   "only the city and country where the item is located. The location information will be used to " +
                   "find listings within a certain distance from the user's location."
-                )
+                ),
+                scrollwheel: false
               },
               hooks: {
                 onInit: field => {

@@ -36,7 +36,11 @@ export class FormlyFieldGoogleMapComponent extends FieldType implements AfterVie
         const mapOptions = {
           center: new this.googleMapsService.maps.LatLng(location.lat(), location.lng()),
           zoom: 13,
-          mapTypeId: this.googleMapsService.maps.MapTypeId.ROADMAP
+          mapTypeId: this.googleMapsService.maps.MapTypeId.ROADMAP,
+          scrollwheel: this.props.scrollwheel === undefined ? true : this.props.scrollwheel,
+          disableDoubleClickZoom: true,
+          streetViewControl: false,
+          mapTypeControl: false
         };
 
         this.map = new this.googleMapsService.maps.Map(this.mapElement.nativeElement, mapOptions);
