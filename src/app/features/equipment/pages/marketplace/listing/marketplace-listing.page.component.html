@@ -218,7 +218,12 @@
     class="btn btn-secondary d-block w-100 mt-2"
   >
     <fa-icon icon="sack-dollar"></fa-icon>
-    {{ "Mark as sold..." | translate }}
+    <ng-container *ngIf="listing.lineItems.length > 1">
+      {{ "Mark items as sold..." | translate }}
+    </ng-container>
+    <ng-container *ngIf="listing.lineItems.length === 1">
+      {{ "Mark as sold..." | translate }}
+    </ng-container>
   </button>
 
   <button

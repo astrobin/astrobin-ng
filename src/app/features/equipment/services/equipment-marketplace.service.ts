@@ -41,13 +41,13 @@ export class EquipmentMarketplaceService extends BaseService {
 
   offerErrorMessageForSeller(): string {
     return this.translateService.instant(
-      "This operation cannot be performed. Perhaps the buyer already retracted the offer. Please refresh the page."
+      "This operation cannot be performed. Perhaps the buyer retracted the offer, or the line item is sold."
     );
   }
 
   offerErrorMessageForBuyer(): string {
     return this.translateService.instant(
-      "This operation cannot be performed. Perhaps the seller already rejected the offer. Please refresh the page."
+      "This operation cannot be performed. Perhaps the seller rejected the offer, or the line item is sold."
     );
   }
 
