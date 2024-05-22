@@ -886,11 +886,12 @@ export class EquipmentApiService extends BaseClassicApiService implements BaseSe
 
   public markMarketplaceLineItemAsSold(
     listingId: MarketplaceListingInterface["id"],
-    lineItemId: MarketplaceLineItemInterface["id"]
+    lineItemId: MarketplaceLineItemInterface["id"],
+    soldTo: UserInterface["id"]
   ): Observable<MarketplaceLineItemInterface> {
     return this.http.put<MarketplaceLineItemInterface>(
       `${this.configUrl}/marketplace/listing/${listingId}/line-item/${lineItemId}/mark-as-sold/`,
-      {}
+      { soldTo }
     );
   }
 

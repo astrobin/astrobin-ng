@@ -1119,7 +1119,7 @@ export class RenewMarketplaceListingFailure implements PayloadActionInterface {
 export class MarkMarketplaceLineItemAsSold implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.MARK_MARKETPLACE_LINE_ITEM_AS_SOLD;
 
-  constructor(public payload: { lineItem: MarketplaceLineItemInterface }) {
+  constructor(public payload: { lineItem: MarketplaceLineItemInterface, soldTo: UserInterface["id"] }) {
   }
 }
 
@@ -1133,7 +1133,7 @@ export class MarkMarketplaceLineItemAsSoldSuccess implements PayloadActionInterf
 export class MarkMarketplaceLineItemAsSoldFailure implements PayloadActionInterface {
   readonly type = EquipmentActionTypes.MARK_MARKETPLACE_LINE_ITEM_AS_SOLD_FAILURE;
 
-  constructor(public payload: { lineItem: MarketplaceLineItemInterface; error: string }) {
+  constructor(public payload: { lineItem: MarketplaceLineItemInterface; soldTo: UserInterface["id"]; error: string }) {
   }
 }
 

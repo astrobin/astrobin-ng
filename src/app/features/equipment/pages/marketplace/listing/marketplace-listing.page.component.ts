@@ -321,7 +321,7 @@ export class MarketplaceListingPageComponent extends BaseComponentDirective impl
   }
 
   markAsSold() {
-    const modal: NgbModalRef = this.modalService.open(MarketplaceMarkLineItemsAsSoldModalComponent);
+    const modal: NgbModalRef = this.modalService.open(MarketplaceMarkLineItemsAsSoldModalComponent, { size: "lg" });
     const componentInstance: MarketplaceMarkLineItemsAsSoldModalComponent = modal.componentInstance;
 
     componentInstance.listing = this.listing;

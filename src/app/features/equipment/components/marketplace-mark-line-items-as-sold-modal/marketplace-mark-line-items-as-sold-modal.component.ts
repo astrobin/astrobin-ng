@@ -17,6 +17,11 @@ import {
 } from "@features/equipment/store/equipment.actions";
 import { filter, take } from "rxjs/operators";
 import { forkJoin } from "rxjs";
+import {
+  MarketplaceOfferInterface,
+  MarketplaceOfferStatus
+} from "@features/equipment/types/marketplace-offer.interface";
+import { UserInterface } from "@shared/interfaces/user.interface";
 
 @Component({
   selector: "astrobin-marketplace-feedback-modal",
@@ -61,17 +66,18 @@ export class MarketplaceMarkLineItemsAsSoldModalComponent extends BaseComponentD
       return;
     }
 
-    const selectedLineItemIds = Object.keys(this.form.value).filter(
-      key => this.form.value[key]
-    ).map(
-      key => key.replace("checkbox-", "")
-    ).map(
-      id => parseInt(id, 10)
-    );
+    if (!this.form.valid) {
+      this.popNotificationsService.error("Please fill in all required fields.");
+      this.form.markAllAsTouched();
+      return;
+    }
 
-    const selectedLineItems = this.listing.lineItems.filter(
-      lineItem => selectedLineItemIds.includes(lineItem.id)
-    );
+    const selectedLineItemIds = Object.keys(this.form.value)
+      .filter(key => this.form.value[key])
+      .map(key => key.replace("checkbox-", ""))
+      .map(id => parseInt(id, 10));
+
+    const selectedLineItems = this.listing.lineItems.filter(lineItem => selectedLineItemIds.includes(lineItem.id));
 
     const successObservables$ = selectedLineItems.map(lineItem => {
       return this.actions$.pipe(
@@ -89,47 +95,113 @@ export class MarketplaceMarkLineItemsAsSoldModalComponent extends BaseComponentD
       );
     });
 
-    forkJoin(successObservables$).pipe(
-      take(1)
-    ).subscribe(() => {
-      this.modal.close();
-      this.loadingService.setLoading(false);
-      this.popNotificationsService.success("Line items marked as sold.");
-    });
+    forkJoin(successObservables$)
+      .pipe(take(1))
+      .subscribe(() => {
+        this.modal.close();
+        this.loadingService.setLoading(false);
+        this.popNotificationsService.success("Line items marked as sold.");
+      });
 
-    forkJoin(failureObservables$).pipe(
-      take(1)
-    ).subscribe(() => {
-      this.modal.close();
-      this.loadingService.setLoading(false);
-      this.popNotificationsService.error("Error while marking line items as sold.");
-    });
+    forkJoin(failureObservables$)
+      .pipe(take(1))
+      .subscribe(() => {
+        this.modal.close();
+        this.loadingService.setLoading(false);
+        this.popNotificationsService.error("Error while marking line items as sold.");
+      });
 
     this.loadingService.setLoading(true);
 
     selectedLineItems.forEach(lineItem => {
-      this.store$.dispatch(new MarkMarketplaceLineItemAsSold({ lineItem }));
+      this.store$.dispatch(new MarkMarketplaceLineItemAsSold({
+        lineItem,
+        soldTo: this.form.get(`soldTo-${lineItem.id}`).value
+      }));
     });
   }
 
   _initFields() {
-    this.fields = this.listing.lineItems.map((lineItem, index) => ({
-      key: "",
-      fieldGroup: [
-        {
-          key: `checkbox-${lineItem.id}`,
-          type: "toggle",
-          wrappers: ["default-wrapper"],
-          defaultValue: false,
-          expressions: {
-            className: () => !!lineItem.sold ? "hidden" : "toggle"
+    function sortOffers(a: MarketplaceOfferInterface, b: MarketplaceOfferInterface) {
+      const statusOrder = { [MarketplaceOfferStatus.ACCEPTED]: 1, [MarketplaceOfferStatus.PENDING]: 2 };
+
+      if (statusOrder[a.status] < statusOrder[b.status]) {
+        return -1;
+      }
+
+      if (statusOrder[a.status] > statusOrder[b.status]) {
+        return 1;
+      }
+
+      // If statuses are the same, sort by the created date, most recent first.
+      return new Date(b.created).getTime() - new Date(a.created).getTime();
+    }
+
+    this.fields = this.listing.lineItems.map((lineItem, index) => {
+      const usersWithAcceptedOffers: { value: UserInterface["id"]; label: string }[] = lineItem.offers
+        .filter(offer => offer.status === MarketplaceOfferStatus.ACCEPTED)
+        .sort(sortOffers)
+        .map(offer => ({
+          value: offer.user,
+          label: offer.userDisplayName + this.translateService.instant(" (accepted offer)")
+        }));
+
+      const usersWithPendingOffers: { value: UserInterface["id"]; label: string }[] = lineItem.offers
+        .filter(offer => offer.status === MarketplaceOfferStatus.PENDING)
+        .filter(offer => !usersWithAcceptedOffers.find(acceptedOffer => acceptedOffer.value === offer.user))
+        .sort(sortOffers)
+        .map(offer => ({
+          value: offer.user,
+          label: offer.userDisplayName + this.translateService.instant(" (pending offer)")
+        }));
+
+      return {
+        key: "",
+        fieldGroupClassName: "d-flex align-items-end w-100",
+        fieldGroup: [
+          {
+            key: `checkbox-${lineItem.id}`,
+            type: "toggle",
+            wrappers: ["default-wrapper"],
+            defaultValue: false,
+            expressions: {
+              className: () => ("w-50 mb-2 " + (!!lineItem.sold ? "hidden" : "toggle"))
+            },
+            props: {
+              label: "",
+              toggleLabel: lineItem.itemName,
+              hideOptionalMarker: true
+            }
           },
-          props: {
-            toggleLabel: lineItem.itemName,
-            hideOptionalMarker: true
+          {
+            key: `soldTo-${lineItem.id}`,
+            type: "ng-select",
+            wrappers: ["default-wrapper"],
+            expressions: {
+              className: () => ("w-50 " + (!!lineItem.sold ? "hidden" : "")),
+              "props.required": () => !lineItem.sold
+            },
+            props: {
+              label: this.translateService.instant("Buyer"),
+              options: [
+                ...usersWithAcceptedOffers,
+                ...usersWithPendingOffers,
+                ...[{
+                  value: null,
+                  label: this.translateService.instant("Someone else")
+                }]
+              ]
+            },
+            hooks: {
+              onInit: (field: FormlyFieldConfig) => {
+                field.formControl.valueChanges.subscribe(() => {
+                  this.form.get(`checkbox-${lineItem.id}`).setValue(true);
+                });
+              }
+            }
           }
-        }
-      ]
-    }));
+        ]
+      };
+    });
   }
 }

@@ -1184,9 +1184,17 @@ export class EquipmentEffects {
       ofType(EquipmentActionTypes.MARK_MARKETPLACE_LINE_ITEM_AS_SOLD),
       map((action: MarkMarketplaceLineItemAsSold) => action.payload),
       mergeMap(payload =>
-        this.equipmentApiService.markMarketplaceLineItemAsSold(payload.lineItem.listing, payload.lineItem.id).pipe(
+        this.equipmentApiService.markMarketplaceLineItemAsSold(
+          payload.lineItem.listing,
+          payload.lineItem.id,
+          payload.soldTo
+        ).pipe(
           map(lineItem => new MarkMarketplaceLineItemAsSoldSuccess({ lineItem })),
-          catchError(error => of(new MarkMarketplaceLineItemAsSoldFailure({ lineItem: payload.lineItem, error })))
+          catchError(error => of(new MarkMarketplaceLineItemAsSoldFailure({
+            lineItem: payload.lineItem,
+            soldTo: payload.soldTo,
+            error
+          })))
         )
       )
     )
