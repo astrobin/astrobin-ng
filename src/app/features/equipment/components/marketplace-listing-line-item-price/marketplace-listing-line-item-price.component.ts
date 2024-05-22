@@ -6,7 +6,8 @@ import { State } from "@app/store/state";
 import { Store } from "@ngrx/store";
 import { MarketplaceListingInterface } from "@features/equipment/types/marketplace-listing.interface";
 import { selectMarketplaceListing } from "@features/equipment/store/equipment.selectors";
-import { takeUntil } from "rxjs/operators";
+import { filter, takeUntil } from "rxjs/operators";
+import { distinctUntilChangedObj } from "@shared/services/utils/utils.service";
 
 @Component({
   selector: "astrobin-marketplace-listing-line-item-price",
@@ -31,11 +32,11 @@ export class MarketplaceListingLineItemPriceComponent extends BaseComponentDirec
     super.ngOnInit();
 
     this.store$.select(selectMarketplaceListing, { id: this.listing.id }).pipe(
+      filter(listing => !!listing),
+      distinctUntilChangedObj(),
       takeUntil(this.destroyed$)
     ).subscribe(listing => {
-      this.listing = {
-        ...listing
-      };
+      this.listing = listing;
     });
   }
 }
