@@ -9,6 +9,10 @@
   position: absolute;
   top: -.5rem;
   right: -.5rem;
+
+  .badge:not(:last-child) {
+    margin-right: .25rem;
+  }
 }
 
 .card {

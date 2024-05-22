@@ -60,6 +60,7 @@
           <fa-icon icon="exclamation-triangle"></fa-icon>
         </div>
       </ng-container>
+
       <div
         *ngIf="lineItem.offers?.length"
         [ngbTooltip]="translateService.instant('This listing has offers')"
@@ -76,7 +77,7 @@
         class="badge rounded-pill bg-warning border border-light"
         container="body"
       >
-        <fa-icon icon="exclamation-triangle"></fa-icon>
+        <fa-icon icon="gavel"></fa-icon>
       </div>
     </ng-template>
   </div>
