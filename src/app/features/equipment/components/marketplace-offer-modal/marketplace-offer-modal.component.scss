@@ -20,30 +20,26 @@
     }
   }
 
-  formly-group.sold,
-  formly-group.reserved {
-    position: relative;
-    opacity: .25;
-
-    &:after {
-      position: absolute;
-      left: 1rem;
-      top: 1rem;
-      height: 2px;
-      background: var(--lightestGrey);
-      content: "";
-      width: calc(100% - 2rem);
-      display: block;
-    }
-  }
-
   formly-field {
     margin-bottom: 0 !important;
 
-    &:not(:last-of-type) {
+    > formly-group {
+      &.sold,
+      &.reserved {
+        position: relative;
+        opacity: .25;
+
+        &,
+        * {
+          cursor: not-allowed !important;
+        }
+      }
+    }
+
+    &:not(:first-of-type) {
       formly-group.row {
-        margin-bottom: .5rem;
-        padding-bottom: .5rem;
+        margin-top: .5rem;
+        padding-top: .5rem;
       }
     }
 

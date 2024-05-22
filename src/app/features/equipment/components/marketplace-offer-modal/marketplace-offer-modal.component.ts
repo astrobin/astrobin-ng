@@ -230,7 +230,6 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
               type: "html",
               wrappers: ["default-wrapper"],
               className: "col item-name",
-              template: lineItem.itemName + (!!lineItem.sold ? ` (${this.translateService.instant("sold")})` : ""),
               props: {
                 label: this.translateService.instant("Item"),
                 readonly: true,
@@ -238,7 +237,18 @@ export class MarketplaceOfferModalComponent extends BaseComponentDirective imple
                 hideLabel: index > 0
               },
               expressions: {
-                "props.disabled": () => !!lineItem.sold || !!lineItem.reserved
+                "props.disabled": () => !!lineItem.sold || !!lineItem.reserved,
+                template: () => {
+                  if (lineItem.sold) {
+                    return lineItem.itemName + ` (${this.translateService.instant("sold")})`;
+                  }
+
+                  if (lineItem.reserved) {
+                    return lineItem.itemName + ` (${this.translateService.instant("reserved")})`;
+                  }
+
+                  return lineItem.itemName;
+                }
               }
             },
             {
