@@ -38,7 +38,6 @@ export class MarketplaceFeedbackWidgetComponent extends BaseComponentDirective i
 
   ngOnInit(): void {
     super.ngOnInit();
-    this.updateState();
 
     this.store$.select(selectMarketplaceListing, { id: this.listing.id }).pipe(takeUntil(this.destroyed$)).subscribe(listing => {
       this.listing = listing;
@@ -74,7 +73,7 @@ export class MarketplaceFeedbackWidgetComponent extends BaseComponentDirective i
 
         this.listing.lineItems.forEach(lineItem => {
           lineItem.feedbacks.forEach(feedback => {
-            if (feedback.user === currentUser.id) {
+            if (feedback.user === this.user.id) {
               this.hasFeedback = true;
             }
           });

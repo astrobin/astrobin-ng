@@ -72,7 +72,7 @@ export class MarketplaceFeedbackModalComponent extends BaseComponentDirective im
   }
 
   saveFeedback(): void {
-    function transformToFeedbackList(input: { [key: string]: string | undefined }): MarketplaceFeedbackInterface[] {
+    const transformToFeedbackList = (input: { [key: string]: string | undefined }): MarketplaceFeedbackInterface[] => {
       const feedbackList: MarketplaceFeedbackInterface[] = [];
 
       // Loop through each key in the input object
@@ -80,6 +80,7 @@ export class MarketplaceFeedbackModalComponent extends BaseComponentDirective im
         const [categoryKey, lineItemId] = key.split("-"); // Split key to category and ID
         if (UtilsService.isValidEnumValue(categoryKey.toUpperCase(), MarketplaceFeedbackCategory)) {
           const feedback: MarketplaceFeedbackInterface = {
+            recipient: this.user.id,
             lineItem: parseInt(lineItemId),
             value: MarketplaceFeedbackValue[input[key] as keyof typeof MarketplaceFeedbackValue],
             category:
@@ -90,7 +91,7 @@ export class MarketplaceFeedbackModalComponent extends BaseComponentDirective im
       }
 
       return feedbackList;
-    }
+    };
 
     if (!this.form.valid) {
       this.form.markAllAsTouched();
@@ -190,6 +191,11 @@ export class MarketplaceFeedbackModalComponent extends BaseComponentDirective im
             key: "",
             fieldGroupClassName: "row feedback-line-item",
             fieldGroup: [
+              {
+                key: `recipient-${lineItem.id}`,
+                type: "input",
+                className: "hidden"
+              },
               {
                 key: `lineItemId-${lineItem.id}`,
                 type: "input",

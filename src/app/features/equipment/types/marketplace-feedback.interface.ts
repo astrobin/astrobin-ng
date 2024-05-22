@@ -23,6 +23,7 @@ export enum MarketplaceFeedbackTargetType {
 export interface MarketplaceFeedbackInterface {
   id?: number;
   user?: UserInterface["id"];
+  recipient?: UserInterface["id"];
   lineItem?: MarketplaceLineItemInterface["id"];
   created?: string;
   value: MarketplaceFeedbackValue;
